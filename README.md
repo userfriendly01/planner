@@ -2,9 +2,9 @@
 
 <!-- shields -->
 
-<!-- /shields -->
+[![Build Status](https://shields.lmig.com/bamboo/tests/CICCT/CSAU.svg?style=flat-square)](https://forge.lmig.com/builds/browse/CICCT-CSAU)<!-- /shields -->
 
-* * *
+---
 
 ## Project Structure
 
