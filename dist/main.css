@@ -1,0 +1,9 @@
+body {
+    margin: 0;
+}
+
+:root {
+    --mdc-theme-primary: #ffcf00;
+    --mdc-theme-secondary: #98e4e9;
+    --mdc-them-textPrimaryOnBackground: blue;
+}

@@ -1,18 +1,30 @@
-const path = require('path');
-const webpack = require('webpack');
+const path = require("path");
+const webpack = require("webpack");
 
 module.exports = {
-  entry: './src/index.js',
+  entry: "./src/index.js",
   devServer: {
-    contentBase: './dist',
-    host: '100.115.92.206',
+    contentBase: "./dist",
     hot: true
   },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin()
-  ],
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader"
+        }
+      },
+      {
+        test: /\.css$/,
+        use: [ 'style-loader', 'css-loader' ]
+      }
+    ]
+  },
+  plugins: [new webpack.HotModuleReplacementPlugin()],
   output: {
-    filename: 'main.js',
-    path: path.resolve(__dirname, 'dist')
+    filename: "main.js",
+    path: path.resolve(__dirname, "dist")
   }
 };
