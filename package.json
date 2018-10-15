@@ -8,7 +8,7 @@
     "react-dom": "^16.5.2",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
-    "rmwc": "^3.0.4"
+    "rmwc": "^3.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",
@@ -16,6 +16,7 @@
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.4",
     "css-loader": "^1.0.0",
+    "file-loader": "^2.0.0",
     "jest": "^23.6.0",
     "style-loader": "^0.23.1",
     "webpack": "^4.20.2",
