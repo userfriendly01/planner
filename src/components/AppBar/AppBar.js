@@ -8,33 +8,31 @@ import {
   TopAppBarActionItem,
   TopAppBarTitle
 } from "@rmwc/top-app-bar";
-import "./header.css";
+import "./appBar.css";
 import tritonLogo from "../../images/triton_logo.ico";
 
-class Header extends React.Component {
+export class AppBar extends React.Component {
   render() {
     return (
       <TopAppBar dense={true} fixed={true}>
         <TopAppBarRow>
           <TopAppBarSection alignStart>
-            <TopAppBarNavigationIcon icon="menu" />
+            <TopAppBarNavigationIcon icon="menu" onClick={()=>this.props.toggleDrawer(!this.props.drawerState)} />
             <TopAppBarTitle className="appTitle">
               <img src={tritonLogo} />
               Triton Admin
             </TopAppBarTitle>
           </TopAppBarSection>
           <TopAppBarSection alignEnd>
-            <TopAppBarActionItem
+            {/* <TopAppBarActionItem
               aria-label="Bookmark this page"
               alt="Bookmark this page"
             >
               David Klimaszewski
-            </TopAppBarActionItem>
+            </TopAppBarActionItem> */}
           </TopAppBarSection>
         </TopAppBarRow>
       </TopAppBar>
     );
   }
 }
-
-export default Header;
