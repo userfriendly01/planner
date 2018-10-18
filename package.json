@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "An admin tool for the Triton Softphone",
   "dependencies": {
-    "lodash": "^4.17.11",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-redux": "^5.0.7",
@@ -17,6 +16,7 @@
     "babel-loader": "^8.0.4",
     "css-loader": "^1.0.0",
     "file-loader": "^2.0.0",
+    "flow-bin": "^0.83.0",
     "jest": "^23.6.0",
     "style-loader": "^0.23.1",
     "webpack": "^4.20.2",
@@ -25,6 +25,7 @@
   },
   "scripts": {
     "build": "webpack --mode production",
+    "flow": "flow",
     "start": "webpack-dev-server --open --mode development",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

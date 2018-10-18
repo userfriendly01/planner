@@ -5,5 +5,5 @@ body {
 :root {
     --mdc-theme-primary: #ffcf00;
     --mdc-theme-secondary: #98e4e9;
-    --mdc-them-textPrimaryOnBackground: blue;
+    --mdc-theme-textPrimaryOnBackground: blue;
 }

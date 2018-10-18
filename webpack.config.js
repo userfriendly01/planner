@@ -26,7 +26,9 @@ module.exports = {
       }
     ]
   },
-  plugins: [new webpack.HotModuleReplacementPlugin()],
+  plugins: [
+    new webpack.HotModuleReplacementPlugin()
+  ],
   output: {
     filename: "main.js",
     path: path.resolve(__dirname, "dist")
