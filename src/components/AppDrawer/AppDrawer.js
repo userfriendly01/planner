@@ -7,10 +7,11 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import StarRateRounded from "@material-ui/icons/StarRateRounded";
-import VideogameAssetRounded from "@material-ui/icons/VideogameAssetRounded";
+import Assignment from "@material-ui/icons/Assignment";
+import People from "@material-ui/icons/People";
+import Settings from "@material-ui/icons/Settings";
 
-const drawerWidth = 200;
+const drawerWidth = 220;
 
 const styles = theme => ({
   drawerPaper: {
@@ -55,15 +56,21 @@ class AppDrawer extends React.Component {
         <List className={classes.sideNav}>
           <ListItem button>
             <ListItemIcon>
-              <VideogameAssetRounded />
+              <People />
             </ListItemIcon>
-            <ListItemText primary="Latest Reviews" />
+            <ListItemText primary="Team Roles" />
           </ListItem>
           <ListItem button>
             <ListItemIcon>
-              <StarRateRounded />
+              <Assignment />
             </ListItemIcon>
-            <ListItemText primary="All Ratings" />
+            <ListItemText primary="Role Capabilities" />
+          </ListItem>
+          <ListItem button>
+            <ListItemIcon>
+              <Settings />
+            </ListItemIcon>
+            <ListItemText primary="Triton Settings" />
           </ListItem>
         </List>
       </Drawer>
