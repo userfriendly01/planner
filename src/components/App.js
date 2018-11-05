@@ -1,20 +1,40 @@
 import React from "react";
+import PropTypes from "prop-types";
+import { withStyles } from "@material-ui/core/styles";
+import MainAppBar from "./MainAppBar/MainAppBarContainer";
 import AppDrawer from "./AppDrawer/AppDrawerContainer";
-import '@material/drawer/dist/mdc.drawer.css';
-import '@material/list/dist/mdc.list.css';
-import "@material/top-app-bar/dist/mdc.top-app-bar.css";
-import "./App.css";
+// import Main from "./Main/Main";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+    height: '100vh',
+    zIndex: 1,
+    overflow: "hidden",
+    position: "relative",
+    display: "flex"
+  }
+});
 
 class App extends React.Component {
   render() {
+    const { classes } = this.props;
+
     return (
-      <div className="flexColumn">
-        <div className="flexRow">
+      <Router>
+        <div className={classes.root}>
+          <MainAppBar />
           <AppDrawer />
+          {/* <Route exact path="/" component={Main} /> */}
         </div>
-      </div>
+      </Router>
     );
   }
 }
 
-export default App;
+App.propTypes = {
+  classes: PropTypes.object.isRequired
+};
+
+export default withStyles(styles, { withTheme: true })(App);
