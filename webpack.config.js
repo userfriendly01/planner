@@ -5,7 +5,8 @@ module.exports = {
   entry: "./src/index.js",
   devServer: {
     contentBase: "./dist",
-    hot: true
+    hot: true,
+    port: 8084
   },
   module: {
     rules: [

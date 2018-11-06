@@ -1,4 +1,4 @@
-import { TOGGLE_DRAWER } from "../actionTypes";
+import { TOGGLE_DRAWER } from "../actions/actionTypes";
 
 const initialState = {
   drawerOpen: false

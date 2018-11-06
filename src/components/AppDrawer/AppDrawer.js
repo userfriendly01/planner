@@ -18,6 +18,7 @@ const styles = theme => ({
     position: "relative",
     whiteSpace: "nowrap",
     width: drawerWidth,
+    backgroundColor: '#eeeeee',
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen

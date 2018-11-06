@@ -1,10 +1,9 @@
 import { connect } from "react-redux";
 import MainAppBar from "./MainAppBar";
-import { toggleDrawer } from "../../redux/actions";
+import { toggleDrawer } from "../../redux/actions/actions";
 
 const mapStateToProps = (state) => {
   return {
-    drawerState: state.navigation.drawerOpen
   };
 };
 
