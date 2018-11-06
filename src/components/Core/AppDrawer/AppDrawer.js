@@ -10,35 +10,8 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Assignment from "@material-ui/icons/Assignment";
 import People from "@material-ui/icons/People";
 import Settings from "@material-ui/icons/Settings";
-
-const drawerWidth = 220;
-
-const styles = theme => ({
-  drawerPaper: {
-    position: "relative",
-    whiteSpace: "nowrap",
-    width: drawerWidth,
-    backgroundColor: '#eeeeee',
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen
-    })
-  },
-  drawerPaperClose: {
-    overflowX: "hidden",
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    }),
-    width: theme.spacing.unit * 7,
-    [theme.breakpoints.up("sm")]: {
-      width: theme.spacing.unit * 9
-    }
-  },
-  sideNav: {
-    marginTop: 48
-  }
-});
+import { styles } from "./AppDrawerStyles";
+import { Link } from "react-router-dom";
 
 class AppDrawer extends React.Component {
   render() {
@@ -55,24 +28,30 @@ class AppDrawer extends React.Component {
         open={sideNav}
       >
         <List className={classes.sideNav}>
-          <ListItem button>
-            <ListItemIcon>
-              <People />
-            </ListItemIcon>
-            <ListItemText primary="Team Roles" />
-          </ListItem>
+          <Link to="/">
+            <ListItem button>
+              <ListItemIcon>
+                <People />
+              </ListItemIcon>
+              <ListItemText primary="Team Roles" />
+            </ListItem>
+          </Link>
+          <Link to="/capabilities/">
           <ListItem button>
             <ListItemIcon>
               <Assignment />
             </ListItemIcon>
             <ListItemText primary="Role Capabilities" />
           </ListItem>
+          </Link>
+          <Link to="/settings/">
           <ListItem button>
             <ListItemIcon>
               <Settings />
             </ListItemIcon>
             <ListItemText primary="Triton Settings" />
           </ListItem>
+          </Link>
         </List>
       </Drawer>
     );

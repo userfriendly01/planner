@@ -5,34 +5,8 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
-import tritonLogo from "../../images/triton.png";
-
-const styles = theme => ({
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-    display: 'flex',
-    backgroundColor: '#335182'
-  },
-  menuButton: {
-    marginLeft: '12px',
-    marginRight: '12px'
-  },
-  titleName: {
-    display: 'flex',
-    fontFamily: `'Comfortaa', cursive`
-  },
-  titleText: {
-    alignItems: 'center',
-    display: 'flex',
-    fontSize: '1.6em',
-  },
-  tritonLogo: {
-    height: '32px',
-    marginLeft: '12px',
-    marginRight: '5px',
-    width: '32px',
-  }
-});
+import tritonLogo from "../../../images/triton.png";
+import { styles } from "./MainAppBarStyles";
 
 class MainAppBar extends React.Component {
   render() {

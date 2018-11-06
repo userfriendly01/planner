@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import MainAppBar from "./MainAppBar";
-import { toggleDrawer } from "../../redux/actions/actions";
+import { toggleDrawer } from "../../../redux/actions/actions";
 
 const mapStateToProps = (state) => {
   return {

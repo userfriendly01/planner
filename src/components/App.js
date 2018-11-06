@@ -1,21 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import MainAppBar from "./MainAppBar/MainAppBarContainer";
-import AppDrawer from "./AppDrawer/AppDrawerContainer";
-// import Main from "./Main/Main";
+import MainAppBar from "./Core/MainAppBar/MainAppBarContainer";
+import AppDrawer from "./Core/AppDrawer/AppDrawerContainer";
+import CapabilitiesMain from "./RoleCapabilities/RoleCapabilitiesMain/RoleCapabilitiesMain";
+import TeamRolesMain from "./TeamRoles/TeamRolesMain/TeamRolesMain";
+import Settings from "./TritonSettings/TritonSettingsMain/TritonSettingsMain";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-
-const styles = theme => ({
-  root: {
-    flexGrow: 1,
-    height: '100vh',
-    zIndex: 1,
-    overflow: "hidden",
-    position: "relative",
-    display: "flex"
-  }
-});
+import { styles } from "./AppStyles";
 
 class App extends React.Component {
   render() {
@@ -26,7 +18,11 @@ class App extends React.Component {
         <div className={classes.root}>
           <MainAppBar />
           <AppDrawer />
-          {/* <Route exact path="/" component={Main} /> */}
+          <main className={classes.main}>
+            <Route exact path="/" component={TeamRolesMain} />
+            <Route path="/capabilities/" component={CapabilitiesMain} />
+            <Route path="/settings/" component={Settings} />
+          </main>
         </div>
       </Router>
     );
