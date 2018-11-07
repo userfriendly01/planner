@@ -6,7 +6,8 @@ module.exports = {
   devServer: {
     contentBase: "./dist",
     hot: true,
-    port: 8084
+    port: 8084,
+    historyApiFallback: true,
   },
   module: {
     rules: [
@@ -32,6 +33,7 @@ module.exports = {
   ],
   output: {
     filename: "main.js",
-    path: path.resolve(__dirname, "dist")
+    path: path.resolve(__dirname, "dist"),
+    publicPath: '/'
   }
 };

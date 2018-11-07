@@ -1,5 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
+import compose from 'recompose/compose';
+import withWidth from '@material-ui/core/withWidth';
 import { withStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -9,6 +11,15 @@ import tritonLogo from "../../../images/triton.png";
 import { styles } from "./MainAppBarStyles";
 
 class MainAppBar extends React.Component {
+
+  handleClick = () => {
+    if (this.props.width === "xs") {
+      this.props.toggleMobileSideNav();
+    } else {
+      this.props.toggleSideNav();
+    }
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -18,7 +29,7 @@ class MainAppBar extends React.Component {
           <IconButton
             color="inherit"
             aria-label="Open drawer"
-            onClick={() => this.props.toggleSideNav()}
+            onClick={() => this.handleClick()}
             className={classes.menuButton}
           >
             <MenuIcon />
@@ -37,7 +48,12 @@ class MainAppBar extends React.Component {
 
 MainAppBar.propTypes = {
   classes: PropTypes.object.isRequired,
-  toggleSideNav: PropTypes.func.isRequired
+  toggleMobileSideNav: PropTypes.func.isRequired,
+  toggleSideNav: PropTypes.func.isRequired,
+  width: PropTypes.string.isRequired
 };
 
-export default withStyles(styles, { withTheme: true })(MainAppBar);
+export default compose(
+  withStyles(styles),
+  withWidth(),
+)(MainAppBar);

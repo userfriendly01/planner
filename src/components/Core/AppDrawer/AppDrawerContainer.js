@@ -1,15 +1,18 @@
 import { connect } from "react-redux";
 import AppDrawer from "./AppDrawer";
+import { toggleMobileDrawer } from "../../../redux/actions/actions";
 
 const mapStateToProps = (state) => {
   return {
-    sideNav: state.navigation.drawerOpen
+    drawerState: state.navigation.drawerOpen,
+    mobileDrawerState: state.navigation.mobileDrawerOpen
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {
-    };
+  return {
+    toggleMobileSideNav: () => dispatch(toggleMobileDrawer())
   };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppDrawer);

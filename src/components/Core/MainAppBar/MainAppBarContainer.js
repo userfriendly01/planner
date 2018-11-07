@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import MainAppBar from "./MainAppBar";
-import { toggleDrawer } from "../../../redux/actions/actions";
+import { toggleDrawer, toggleMobileDrawer } from "../../../redux/actions/actions";
 
 const mapStateToProps = (state) => {
   return {
@@ -9,7 +9,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-      toggleSideNav: (state) => dispatch(toggleDrawer(state))
+      toggleSideNav: () => dispatch(toggleDrawer()),
+      toggleMobileSideNav: () => dispatch(toggleMobileDrawer())
     };
   };
 

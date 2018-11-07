@@ -1,7 +1,8 @@
-import { TOGGLE_DRAWER } from "../actions/actionTypes";
+import { TOGGLE_DRAWER, TOGGLE_MOBILE_DRAWER } from "../actions/actionTypes";
 
 const initialState = {
-  drawerOpen: false
+  drawerOpen: false,
+  mobileDrawerOpen: false
 };
 
 export default function(state = initialState, action) {
@@ -11,7 +12,13 @@ export default function(state = initialState, action) {
         ...state,
         drawerOpen: !state.drawerOpen
       };
-    }
+    };
+    case TOGGLE_MOBILE_DRAWER: {
+      return {
+        ...state,
+        mobileDrawerOpen: !state.mobileDrawerOpen
+      };
+    };
     default:
       return state;
   }

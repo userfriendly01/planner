@@ -22,6 +22,9 @@ export const styles = theme => ({
       width: theme.spacing.unit * 9
     }
   },
+  drawerPaperModal: {
+    width: drawerWidth
+  },
   sideNav: {
     marginTop: 48
   }
