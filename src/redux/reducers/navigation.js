@@ -1,18 +1,24 @@
-import { TOGGLE_DRAWER } from "../actionTypes";
+import { TOGGLE_DRAWER, TOGGLE_MOBILE_DRAWER } from "../actions/actionTypes";
 
 const initialState = {
-  drawerOpen: false
+  drawerOpen: false,
+  mobileDrawerOpen: false
 };
 
 export default function(state = initialState, action) {
   switch (action.type) {
     case TOGGLE_DRAWER: {
-      const { drawerState } = action.payload;
       return {
         ...state,
-        drawerOpen: drawerState
+        drawerOpen: !state.drawerOpen
       };
-    }
+    };
+    case TOGGLE_MOBILE_DRAWER: {
+      return {
+        ...state,
+        mobileDrawerOpen: !state.mobileDrawerOpen
+      };
+    };
     default:
       return state;
   }
