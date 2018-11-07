@@ -28,7 +28,7 @@ class AppDrawer extends React.Component {
     const { classes, drawerState, mobileDrawerState, width } = this.props;
     const drawer = (
       <List className={classes.sideNav}>
-        <Link to="/">
+        <Link className={classes.link} to="/">
           <ListItem onClick={() => this.handleClick()} button>
             <ListItemIcon>
               <People />
@@ -36,7 +36,7 @@ class AppDrawer extends React.Component {
             <ListItemText primary="Team Roles" />
           </ListItem>
         </Link>
-        <Link to="/capabilities/">
+        <Link className={classes.link} to="/capabilities/">
           <ListItem onClick={() => this.handleClick()} button>
             <ListItemIcon>
               <Assignment />
@@ -44,7 +44,7 @@ class AppDrawer extends React.Component {
             <ListItemText primary="Role Capabilities" />
           </ListItem>
         </Link>
-        <Link to="/settings/">
+        <Link className={classes.link} to="/settings/">
           <ListItem onClick={() => this.handleClick()} button>
             <ListItemIcon>
               <Settings />
@@ -102,6 +102,6 @@ AppDrawer.propTypes = {
 };
 
 export default compose(
-  withStyles(styles),
+  withStyles(styles, { withTheme: true }),
   withWidth()
 )(AppDrawer);

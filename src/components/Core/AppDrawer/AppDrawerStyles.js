@@ -1,10 +1,12 @@
 const drawerWidth = 220;
+const modalDrawerWidth = 240;
 
 export const styles = theme => ({
   drawerPaper: {
     position: "relative",
     whiteSpace: "nowrap",
     width: drawerWidth,
+    height: '100vh',
     backgroundColor: '#eeeeee',
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
@@ -23,9 +25,14 @@ export const styles = theme => ({
     }
   },
   drawerPaperModal: {
-    width: drawerWidth
+    width: modalDrawerWidth
+  },
+  link: {
+    textDecoration: 'none'
   },
   sideNav: {
-    marginTop: 48
+    [theme.breakpoints.up('sm')]: {
+      marginTop: 48,
+    },
   }
 });
