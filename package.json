@@ -1,0 +1,15 @@
+{
+  "name": "cicct-softphone-admin-ui",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.forge.lmig.com/scm/cicct/cicct-softphone-admin-ui.git"
+  },
+  "author": "n0274027",
+  "license": "ISC"
+}
