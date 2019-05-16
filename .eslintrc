@@ -1,0 +1,140 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "jest/globals": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended"
+  ],
+  "globals": {
+    "classes": true
+  },
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "plugins": [
+    "jest",
+    "react"
+  ],
+  "rules": {
+    "array-bracket-newline": [
+      "error",
+      "consistent"
+    ],
+    "arrow-parens": [
+      "error",
+      "as-needed"
+    ],
+    "block-spacing": [
+      "error",
+      "always"
+    ],
+    "comma-dangle": [
+      "error",
+      "never"
+    ],
+    "curly": [
+      "error",
+      "all"
+    ],
+    "eqeqeq": [
+      "error",
+      "always"
+    ],
+    "default-case": "error",
+    "indent": [
+      "error",
+      2,
+      {
+        "ArrayExpression": 1,
+        "ImportDeclaration": 1,
+        "ObjectExpression": 1,
+        "SwitchCase": 1
+      }
+    ],
+    "key-spacing": [
+      "error",
+      {
+        "afterColon": true,
+        "beforeColon": false
+      }
+    ],
+    "no-console": "off",
+    "no-path-concat": "error",
+    "no-tabs": "error",
+    "no-trailing-spaces": [
+      "error",
+      {
+        "ignoreComments": true,
+        "skipBlankLines": false
+      }
+    ],
+    "object-curly-newline": [
+      "error",
+      {
+        "ExportDeclaration": {
+          "consistent": true,
+          "multiline": true,
+          "minProperties": 2
+        },
+        "ImportDeclaration": {
+          "consistent": true,
+          "multiline": true,
+          "minProperties": 2
+        },
+        "ObjectExpression": {
+          "consistent": true,
+          "multiline": true,
+          "minProperties": 2
+        },
+        "ObjectPattern": {
+          "consistent": true,
+          "multiline": true,
+          "minProperties": 2
+        }
+      }
+    ],
+    "object-curly-spacing": [
+      "error",
+      "always",
+      {
+        "arraysInObjects": false,
+        "objectsInObjects": false
+      }
+    ],
+    "object-property-newline": "error",
+    "prefer-const": "error",
+    "quotes": [
+      "error",
+      "double"
+    ],
+    "react/display-name": [0],
+    "semi": [
+      "error",
+      "always"
+    ],
+    "semi-spacing": [
+      "error",
+      {
+        "before": false,
+        "after": true
+      }
+    ],
+    "semi-style": [
+      "error",
+      "last"
+    ]
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}
