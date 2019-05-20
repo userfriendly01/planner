@@ -1,7 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import Hello from "./Hello.jsx";
 
 ReactDOM.render(
-  <div>Hellooooooo!  We did it!  Horaaay!</div>,
+  <Hello />,
   document.getElementById("root")
 );

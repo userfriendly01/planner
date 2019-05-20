@@ -17,7 +17,7 @@ config = {
     })
   ],
   output: {
-    // filename: "[name].bundle.js",
+    filename: "admin-ui.js",
     path: path.resolve(__dirname, "dist")
   },
   module: {
@@ -29,6 +29,14 @@ config = {
           presets: ["@babel/react"]
         },
         loader: "babel-loader"
+      },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: "eslint-loader",
+        options: {
+          failOnWarning: true
+        }
       }
     ]
   }
