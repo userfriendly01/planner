@@ -2,7 +2,7 @@ import React from "react";
 
 const Hello = props => {
   return (
-    <div>Render a react component</div>
+    <div>Render a React component</div>
   );
 };
 
