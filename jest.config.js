@@ -17,6 +17,9 @@ const jestConfig = {
     "jsx",
     "json"
   ],
+  testMatch: [
+    "<rootDir>/src/**/test/**/*.test.js?(x)"
+  ],
   transform: {
     "^.+\\.jsx?$": "babel-jest"
   },
