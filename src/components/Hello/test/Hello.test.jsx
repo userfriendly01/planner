@@ -6,6 +6,6 @@ import Hello from "../Hello.jsx";
 describe("<Hello />", () => {
   test("should render a div with content 'Render a React component'", () => {
     const rendered = render(<Hello />);
-    expect(rendered.container).toHaveTextContent("Render a React component");
+    expect(rendered.container).toHaveTextContent("WHAT UP BILL?!?!");
   });
 });
