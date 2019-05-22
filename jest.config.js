@@ -17,6 +17,7 @@ const jestConfig = {
     "jsx",
     "json"
   ],
+  setupFilesAfterEnv: ["<rootDir>/jestSetup.js"],
   testMatch: [
     "<rootDir>/src/**/test/**/*.test.js?(x)"
   ],
