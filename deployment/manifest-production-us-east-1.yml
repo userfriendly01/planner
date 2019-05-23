@@ -5,12 +5,10 @@ applications:
   buildpack: nodejs_current
   command: node server.js
   instances: 2
-  memory: 512M
+  memory: 1024M
   timeout: 180
   env:
     NODE_ENV: production
     NEW_RELIC_APP_NAME: cicct-softphone-admin-ui
-  services:
-    - everyday-curfew
   blue-green:
     health-check-endpoint: /health

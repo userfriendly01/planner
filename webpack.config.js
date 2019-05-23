@@ -5,7 +5,6 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 
 config = {
-  mode: "production",
   entry: {
     app: "./src/index.js"
   },
@@ -31,7 +30,7 @@ config = {
         loader: "babel-loader"
       },
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
         loader: "eslint-loader",
         options: {
