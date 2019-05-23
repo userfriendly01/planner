@@ -1,0 +1,16 @@
+applications:
+- name: cicct-softphone-admin-ui
+  routes:
+    - route: cicct-softphone-admin-ui.us-east-1.np.paas.lmig.com
+  buildpack: nodejs_current
+  command: node server.js
+  instances: 2
+  memory: 512M
+  timeout: 180
+  env:
+    NODE_ENV: production
+    NEW_RELIC_APP_NAME: cicct-softphone-admin-ui
+  services:
+    - everyday-curfew
+  blue-green:
+    health-check-endpoint: /health

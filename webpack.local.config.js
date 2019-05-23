@@ -6,8 +6,10 @@ module.exports = merge(
   {
     mode: "development",
     devServer: {
+      compress: true,
       contentBase: "./dist",
-      hot: true
+      hot: true,
+      port: 8082
     }
   }
 );
