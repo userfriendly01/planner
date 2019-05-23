@@ -41,7 +41,7 @@ npm install
 Run this frontend application locally (cicct-softphone-ui)
 ```
 npm start
-``
+```
 The application will load automatically in port 8083
 
 ## Running the tests
