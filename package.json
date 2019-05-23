@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack",
     "eslint": "eslint ./src",
-    "start": "webpack-dev-server --open",
+    "start": "webpack-dev-server --config webpack.local.config.js --open",
     "test": "jest --config=jest.config.js --coverage",
     "test-bamboo": "jest --config=jest.bamboo.config.js --coverage"
   },

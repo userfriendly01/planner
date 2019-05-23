@@ -24,7 +24,7 @@ const jestConfig = {
   transform: {
     "^.+\\.jsx?$": "babel-jest"
   },
-  testURL: "http://localhost:8082/",
+  testURL: "http://localhost:8083/",
   verbose: true
 };
 
