@@ -10,9 +10,9 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 
 const config = {
-  entry: {
-    app: "./src/index.js"
-  },
+  // entry: {
+  //   app: "./src/index.js"
+  // },
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
