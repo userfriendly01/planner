@@ -11,6 +11,8 @@ const port = 8080;
 const serveDir = path.resolve(__dirname, "dist");
 const healthCheckEndpoint = "/health";
 
+console.log("we in the server file");
+
 // Expose health endpoint
 app.use(healthCheckEndpoint, healthCheck());
 // Expose dir to serve serveDir as static
