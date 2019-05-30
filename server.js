@@ -11,12 +11,19 @@ const port = 8080;
 const serveDir = path.resolve(__dirname, "dist");
 const healthCheckEndpoint = "/health";
 
+console.log("we in the server file");
+
 // Expose health endpoint
 app.use(healthCheckEndpoint, healthCheck());
 // Expose dir to serve serveDir as static
 app.use(express.static(serveDir));
 // Wildcard route to always serve index.html regardless of URL routes
-app.get("/*", (req, res) => res.sendFile(path.resolve(__dirname, "dist", "index.html")));
+app.get("/*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "dist", "index.html"));
+  console.log(">>>>>>>>>>>>>>>>>>>>> path:", path);
+});
+// app.get("/", (req, res) => res.sendFile(path.resolve(__dirname, "dist", "index.html")));
+
 // express to listen on specified port and serve index.html
 app.listen(port);
 
