@@ -6,20 +6,8 @@ const resolvePathInSrc = resourceInSrc => {
     : path.resolve(__dirname, "src");
 };
 
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const CleanWebpackPlugin = require("clean-webpack-plugin");
-
 const config = {
-  // entry: {
-  //   app: "./src/index.js"
-  // },
-  plugins: [
-    new CleanWebpackPlugin(),
-    new HtmlWebpackPlugin({
-      filename: "index.html",
-      template: "template.html"
-    })
-  ],
+  entry: resolvePathInSrc("index"),
   output: {
     filename: "admin-ui.js",
     path: path.resolve(__dirname, "dist")
