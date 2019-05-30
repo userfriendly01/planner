@@ -31,18 +31,20 @@ Recommended IDEs:
 Install [node.js and npm](https://nodejs.org/en/download/) to run this project
 The required versions needed are defined in package.json under ```engines```
 
-### Install and start this (frontend) application
+### Install and start this application
 
 Install package dependencies for this project
 ```
 npm install
 ```
 
-Run this frontend application locally (cicct-softphone-ui)
-```
-npm start
-```
-The application will load automatically in port 8083
+Run this application locally
+1. Open cicct-user-gateway > application-local.yml
+2. Change softphone-admin-ui url to `http://localhost:8080`
+3. Change softphone-service url to anything other than 8080
+4. Start user gateway with `mvn spring-boot:run`
+5. Build admin-ui with `npm run-script build`
+6. Run admin-ui server with `node server.js`
 
 ## Running the tests
 
