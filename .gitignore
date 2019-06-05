@@ -1,0 +1,6 @@
+coverage/*
+dist/*
+!dist/index.html
+.DS_Store
+node_modules
+.vscode
