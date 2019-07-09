@@ -4,8 +4,8 @@ import { render } from "react-testing-library";
 import Hello from "../Hello.jsx";
 
 describe("<Hello />", () => {
-  test("should render a div with content 'Render a React component'", () => {
+  test("should render a div with correct content", () => {
     const rendered = render(<Hello />);
-    expect(rendered.container).toHaveTextContent("Render a React component");
+    expect(rendered.container).toHaveTextContent("This page is under construction. Click here to return to Triton");
   });
 });
