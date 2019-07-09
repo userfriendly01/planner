@@ -8,7 +8,7 @@ const localConfig = merge(
     devServer: {
       contentBase: "./dist",
       hot: true,
-      port: 8083
+      port: 8084
     }
   }
 );
