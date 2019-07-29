@@ -1,4 +1,4 @@
-import Wrapper from "../Wrapper";
+import Header from "../Header";
 import {
   Logo,
   UserCard
@@ -16,7 +16,7 @@ jest.mock("components", () => ({
   UserCard: jest.fn()
 }));
 
-describe("<Wrapper />", () => {
+describe("<Header />", () => {
 
   beforeEach(() => {
     setupMockedComponents({
@@ -25,8 +25,8 @@ describe("<Wrapper />", () => {
     });
   });
 
-  test("the header wrapper should simply render the Logo and UserCard components.", () => {
-    const rendered = render(<Wrapper />);
+  test("the header should simply render the Logo and UserCard components.", () => {
+    const rendered = render(<Header />);
     expectMockedComponent(rendered, { Logo });
     expectMockedComponent(rendered, { UserCard });
   });

@@ -18,7 +18,7 @@ const StyledToolBar = styled(Toolbar)`
   justify-content: space-between;
 `;
 
-const Wrapper = () => {
+const Header = () => {
   return (
     <StyledAppBar position="static" color="default">
       <StyledToolBar>
@@ -29,4 +29,4 @@ const Wrapper = () => {
   );
 };
 
-export default Wrapper;
+export default Header;
