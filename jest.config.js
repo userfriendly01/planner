@@ -20,16 +20,25 @@ const jestConfig = {
   moduleNameMapper: {
     "^src/(.*)": "<rootDir>/src/$1",
     "^components/(.*)": "<rootDir>/src/components/$1",
-    "^components$": "<rootDir>/src/components"
+    "^components$": "<rootDir>/src/components",
+    "^icons/(.*)": "<rootDir>/src/assets/icons/$1",
+    "^testUtils$": "<rootDir>/__test__/index"
   },
   setupFilesAfterEnv: ["<rootDir>/jestSetup.js"],
   testMatch: [
     "<rootDir>/src/**/test/**/*.test.js?(x)"
   ],
+  testPathIgnorePatterns: [
+    "<rootDir>/node_modules/",
+    "<rootDir>/src/__test__",
+    "<rootDir>/src/assets"
+  ],
   transform: {
-    "^.+\\.jsx?$": "babel-jest"
+    "^.+\\.jsx?$": "babel-jest",
+    "^.+\\.png$": "jest-raw-loader",
+    "^.+\\.svg$": "jest-raw-loader"
   },
-  testURL: "http://localhost:8083/",
+  testURL: "http://localhost:8084/",
   verbose: true
 };
 
