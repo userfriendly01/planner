@@ -23,7 +23,7 @@ const Header = () => {
     <StyledAppBar position="static" color="default">
       <StyledToolBar>
         <Logo />
-        <UserCard name="David Klimaszewski" />
+        <UserCard name="Change Me" />
       </StyledToolBar>
     </StyledAppBar>
   );
