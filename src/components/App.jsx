@@ -1,13 +1,22 @@
 import axios from "axios";
+import {
+  Header,
+  NavTabs
+} from "components";
 import React, {
-  useState,
-  useEffect
+  useEffect,
+  useState
 } from "react";
 import { isErrorIn400s } from "src/utils";
 import styled from "styled-components";
 import { CircularProgress } from "@material-ui/core";
 
 const myAxios = axios.create({ withCredentials: true });
+
+const AppWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
 const LoadingContainer = styled.div`
   align-items: center;
@@ -22,13 +31,13 @@ const LoadingMessage = styled.div`
   padding-bottom: 32px;
 `;
 
-const Hello = () => {
+const App = () => {
   const [authorized, setAuthorized] = useState(null);
   const [nNumber, setNNumber] = useState(null);
   const getNNumber = str => str.slice(-8);
 
   useEffect(() => {
-    myAxios.get("http://localhost:8085/admin-login")
+    myAxios.get("http://localhost:8080/admin-login")
       .then(res => {
         setAuthorized(res.data ? "yes" : "no");
         setNNumber(getNNumber(res.data));
@@ -44,11 +53,13 @@ const Hello = () => {
   }, []);
 
   if (authorized === "yes") {
-    return <div>
-      Welcome, {nNumber}
-      <br></br>
-      This page is under construction. Click <span><a href="https://www.triton.lmig.com">here</a></span> to return to Triton
-    </div>;
+    console.log("nNumber", nNumber);
+    return (
+      <AppWrapper>
+        <Header />
+        <NavTabs />
+      </AppWrapper>
+    );
   } else if (authorized === "no") {
     return <div>You&#39;re not authorized to view this page</div>;
   } else if (authorized === "unknown") {
@@ -63,4 +74,4 @@ const Hello = () => {
   }
 };
 
-export default Hello;
+export default App;

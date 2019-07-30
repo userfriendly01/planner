@@ -1,4 +1,4 @@
-export { default as Hello } from "./Hello/Hello";
+export { default as App } from "./App";
 export * from "./header";
 export * from "./navigation";
 export * from "./teammanagement";
