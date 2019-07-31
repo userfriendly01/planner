@@ -21,8 +21,12 @@ const jestConfig = {
     "^src/(.*)": "<rootDir>/src/$1",
     "^components/(.*)": "<rootDir>/src/components/$1",
     "^components$": "<rootDir>/src/components",
+    "^constants$": "<rootDir>/src/constants",
+    "^constants/(.*)": "<rootDir>/src/constants/$1",
     "^icons/(.*)": "<rootDir>/src/assets/icons/$1",
-    "^testUtils$": "<rootDir>/__test__/index"
+    "^testUtils$": "<rootDir>/__test__/index",
+    "^utils$": "<rootDir>/src/utils",
+    "^utils/(.*)": "<rootDir>/src/utils/$1"
   },
   setupFilesAfterEnv: ["<rootDir>/jestSetup.js"],
   testMatch: [
