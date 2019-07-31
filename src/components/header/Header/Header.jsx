@@ -21,7 +21,7 @@ const StyledToolBar = styled(Toolbar)`
 const Header = () => {
   return (
     <StyledAppBar position="static" color="default">
-      <StyledToolBar>
+      <StyledToolBar variant="dense">
         <Logo />
         <UserCard name="Change Me" />
       </StyledToolBar>
