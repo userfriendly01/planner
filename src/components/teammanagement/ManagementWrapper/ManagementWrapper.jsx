@@ -39,7 +39,7 @@ const ManagementWrapper = props => {
 
   return (
     <ManagementContainer>
-      <StyledPaper>
+      <StyledPaper elevation={3}>
         {
           workers.length !== 0 ? <ManagementTable workers={workers} ></ManagementTable> : <CircularProgress size={60} />
         }

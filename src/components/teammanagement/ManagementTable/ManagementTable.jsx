@@ -24,6 +24,12 @@ const CustomTableData = styled.td`
   padding: 1%;
 `;
 
+const CustomTableRow = styled.tr`
+  &:hover {
+    background-color: #E6E6E6;
+  }
+`;
+
 const CustomTableHeader = styled.th`
   color: #1A1446;
   border-bottom: 2px solid #F5F5F5;
@@ -53,17 +59,11 @@ const ManagementTable = props => {
         <tbody>
           {workers.map((worker,index) => {
             return (
-              <tr key={index}>
+              <CustomTableRow key={index}>
                 <CustomTableData>{worker.attributes.full_name}</CustomTableData>
                 <CustomTableData>{worker.id}</CustomTableData>
-                <CustomTableData>
-                  <CustomButton>
-                    {/* <TouchRipple> */}
-                      Remove
-                    {/* </TouchRipple> */}
-                  </CustomButton>
-                </CustomTableData>
-              </tr>
+                <CustomTableData><CustomButton>Remove</CustomButton></CustomTableData>
+              </CustomTableRow>
             );
           })}
         </tbody>
