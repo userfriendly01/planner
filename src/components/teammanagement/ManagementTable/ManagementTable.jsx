@@ -24,17 +24,17 @@ const CustomTableData = styled.td`
   padding: 1%;
 `;
 
-const CustomTableRow = styled.tr`
-  &:hover {
-    background-color: #E6E6E6;
-  }
-`;
-
 const CustomTableHeader = styled.th`
   color: #1A1446;
   border-bottom: 2px solid #F5F5F5;
   padding: 1%;
   text-align: left;
+`;
+
+const CustomTableRow = styled.tr`
+  &:hover {
+    background-color: #E6E6E6;
+  }
 `;
 
 const TableContainer = styled.div`

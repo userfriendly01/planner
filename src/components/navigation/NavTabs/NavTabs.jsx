@@ -70,7 +70,7 @@ const NavTabs = () => {
         <StyledTab label="Settings" href="/settings" id="nav-tab-settings" aria-controls="nav-tabpanel-settings" onClick={event => event.preventDefault()}/>
       </StyledTabs>
       <TabPanel value={value} tabName="myTeam" index={0}>
-        <ManagementWrapper profileId={1} />
+        <ManagementWrapper profileId={2} />
       </TabPanel>
       <TabPanel value={value} tabName="settings" index={1}>
         <SettingsWrapper />
