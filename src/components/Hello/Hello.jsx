@@ -24,14 +24,13 @@ const LoadingMessage = styled.div`
 
 const Hello = () => {
   const [authorized, setAuthorized] = useState(null);
-  const [nNumber, setNNumber] = useState(null);
-  const getNNumber = str => str.slice(-8);
+  const [pingToken, parsePingToken] = useState(null);
 
   useEffect(() => {
-    myAxios.get("http://localhost:8085/admin-login")
+    myAxios.get("http://localhost:8080/admin-login")
       .then(res => {
         setAuthorized(res.data ? "yes" : "no");
-        setNNumber(getNNumber(res.data));
+        parsePingToken(res.data);
       })
       .catch(err => {
         if(err.response && isErrorIn400s(err.response.status)) {
@@ -43,9 +42,11 @@ const Hello = () => {
       });
   }, []);
 
-  if (authorized === "yes") {
-    return <div>
-      Welcome, {nNumber}
+  if (authorized === "yes" && pingToken) {
+    console.log(pingToken.firstName);
+    return <div data-testid="authorized">
+      Welcome, {pingToken.firstName}
+      <br></br>
       <br></br>
       This page is under construction. Click <span><a href="https://www.triton.lmig.com">here</a></span> to return to Triton
     </div>;
