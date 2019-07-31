@@ -1,13 +1,22 @@
 import axios from "axios";
+import {
+  Header,
+  NavTabs
+} from "components";
 import React, {
-  useState,
-  useEffect
+  useEffect,
+  useState
 } from "react";
 import { isErrorIn400s } from "src/utils";
 import styled from "styled-components";
 import { CircularProgress } from "@material-ui/core";
 
 const myAxios = axios.create({ withCredentials: true });
+
+const AppWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
 const LoadingContainer = styled.div`
   align-items: center;
@@ -22,7 +31,7 @@ const LoadingMessage = styled.div`
   padding-bottom: 32px;
 `;
 
-const Hello = () => {
+const App = () => {
   const [authorized, setAuthorized] = useState(null);
   const [pingToken, parsePingToken] = useState(null);
 
@@ -64,4 +73,4 @@ const Hello = () => {
   }
 };
 
-export default Hello;
+export default App;

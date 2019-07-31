@@ -29,6 +29,13 @@ const config = {
         options: {
           failOnWarning: true
         }
+      },
+      {
+        test: /\.png?$/,
+        loader: "file-loader",
+        options: {
+          name: "/[name].[ext]"
+        }
       }
     ]
   },
@@ -36,7 +43,8 @@ const config = {
     alias: {
       // You will need to define similar aliases in jest.config.js
       src: resolvePathInSrc(),
-      components: resolvePathInSrc("components")
+      components: resolvePathInSrc("components"),
+      icons: resolvePathInSrc("assets/icons")
     },
     extensions: [ ".js", ".jsx" ],
     mainFiles: [ "index" ]
