@@ -1,11 +1,11 @@
 // import { theme } from "consts";
 import React from "react";
 // import { Provider } from "react-redux";
-// import { render } from "react-testing-library";
+// import { render } from "@testing-library/react";
 // import configureStore from "redux-mock-store";
 // import thunk from "redux-thunk";
 // import { ThemeProvider } from "styled-components";
-export * from "react-testing-library";
+export * from "@testing-library/react";
 
 // const frozenTheme = { ...theme };
 // Object.freeze(frozenTheme);
