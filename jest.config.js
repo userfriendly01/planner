@@ -18,11 +18,13 @@ const jestConfig = {
     "json"
   ],
   moduleNameMapper: {
+    // to understand our module paths (ex: files in /src reference other files simply by using 'src/components')
+    // "\\.(css|less|scss)$": "<rootDir>/src/__test__/__mocks__/fileMock.js",
     "^src/(.*)": "<rootDir>/src/$1",
     "^components/(.*)": "<rootDir>/src/components/$1",
     "^components$": "<rootDir>/src/components",
-    "^constants$": "<rootDir>/src/constants",
-    "^constants/(.*)": "<rootDir>/src/constants/$1",
+    "^globals$": "<rootDir>/src/globals",
+    "^globals/(.*)": "<rootDir>/src/globals/$1",
     "^icons/(.*)": "<rootDir>/src/assets/icons/$1",
     "^testUtils$": "<rootDir>/__test__/index",
     "^utils$": "<rootDir>/src/utils",

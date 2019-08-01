@@ -4,7 +4,7 @@ import {
 } from "@material-ui/core";
 import axios from "axios";
 import { ManagementTable } from "components";
-import { apiPaths } from "constants";
+import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, {
   useEffect,
