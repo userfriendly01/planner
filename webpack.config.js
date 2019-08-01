@@ -44,7 +44,7 @@ const config = {
       // You will need to define similar aliases in jest.config.js
       src: resolvePathInSrc(),
       components: resolvePathInSrc("components"),
-      constants: resolvePathInSrc("constants"),
+      globals: resolvePathInSrc("globals"),
       icons: resolvePathInSrc("assets/icons"),
       utils: resolvePathInSrc("utils")
     },

@@ -5,7 +5,7 @@ const jestConfig = {
   coveragePathIgnorePatterns: [
     "<rootDir>/__test__",
     "<rootDir>/src/assets",
-    "<rootDir>/src/consts",
+    "<rootDir>/src/constants",
     "<rootDir>/jestSetup.js",
     "/index.js"
   ],
@@ -21,8 +21,8 @@ const jestConfig = {
     "^src/(.*)": "<rootDir>/src/$1",
     "^components/(.*)": "<rootDir>/src/components/$1",
     "^components$": "<rootDir>/src/components",
-    "^constants$": "<rootDir>/src/constants",
-    "^constants/(.*)": "<rootDir>/src/constants/$1",
+    "^globals$": "<rootDir>/src/globals",
+    "^globals/(.*)": "<rootDir>/src/globals/$1",
     "^icons/(.*)": "<rootDir>/src/assets/icons/$1",
     "^testUtils$": "<rootDir>/__test__/index",
     "^utils$": "<rootDir>/src/utils",

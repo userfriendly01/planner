@@ -42,23 +42,28 @@ describe("formatWorkerResponse()", () => {
   ];
 
   test("if input is null, return empty object", () => {
-    expect(formatWorkerResponse(null)).toEqual({});
+    expect(formatWorkerResponse(null)).toEqual([]);
   });
 
   test("should response with a simplified object in key/value pair format", () => {
-    const formattedProfile = {
-      auto_answd_i: false,
-      email_txt: "CIIT_Contact_Center_Telephony@libertymutual.com",
-      otbnd_recorded_i: false,
-      phonetic_nme: "N I Billing and Collections",
-      pmt_prcsg_i: false,
-      profile_id: 1,
-      profile_nme: "NI Billing & Collections",
-      push_ntfctn_i: false,
-      recorded_i: false,
-      row_crtn_dtm: "2018-08-21T15:07:02.000Z",
-      row_updt_dtm: "2018-11-05T16:38:20.000Z"
-    };
-    expect(formatWorkerResponse(unformattedResponse)).toEqual(formattedProfile);
+    const formattedWorker = [
+      {
+        attributes: {
+          email_address: "Noone@libertymutual.com",
+          full_name: "Lemming",
+          manager_last_name: "Doe",
+          manager_n_number: "n1111111",
+          n_number: "n1111111",
+          primary_dept_name: "CI TECH APP SERVICES",
+          profile_id: 1,
+          roles: ["supervisor", "agent"],
+          skills: ["466"],
+          unique_id: "n00000000"
+        },
+        id: "n0317496",
+        sid: "WK8b0da13d2eca675babceedb76d7a15eb"
+      }
+    ];
+    expect(formatWorkerResponse(unformattedResponse)).toEqual(formattedWorker);
   });
 });

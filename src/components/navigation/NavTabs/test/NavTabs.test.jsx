@@ -4,10 +4,10 @@ import {
   SettingsWrapper
 } from "components";
 import React from "react";
-import { render } from "react-testing-library";
 import {
   expectMockedComponent,
   fireEvent,
+  render,
   setupMockedComponents
 } from "testUtils";
 
