@@ -1,17 +1,18 @@
-import axios from "axios";
+import { CircularProgress } from "@material-ui/core";
 import {
   Header,
   NavTabs
 } from "components";
+import { apiPaths } from "globals";
 import React, {
   useEffect,
   useState
 } from "react";
-import { isErrorIn400s } from "src/utils";
 import styled from "styled-components";
-import { CircularProgress } from "@material-ui/core";
-
-const myAxios = axios.create({ withCredentials: true });
+import {
+  isErrorIn400s,
+  myAxios
+} from "utils";
 
 const AppWrapper = styled.div`
   display: flex;
@@ -33,13 +34,14 @@ const LoadingMessage = styled.div`
 
 const App = () => {
   const [authorized, setAuthorized] = useState(null);
-  const [pingToken, parsePingToken] = useState(null);
+  const [pingToken, setPingToken] = useState(null);
 
   useEffect(() => {
-    myAxios.get("http://localhost:8080/admin-login")
+    // myAxios.get("http://localhost:8080/admin-login")
+    myAxios.get(apiPaths.AUTH)
       .then(res => {
         setAuthorized(res.data ? "yes" : "no");
-        parsePingToken(res.data);
+        setPingToken(res.data);
       })
       .catch(err => {
         if(err.response && isErrorIn400s(err.response.status)) {
@@ -52,13 +54,15 @@ const App = () => {
   }, []);
 
   if (authorized === "yes" && pingToken) {
-    console.log(pingToken.firstName);
-    return <div data-testid="authorized">
-      Welcome, {pingToken.firstName}
-      <br></br>
-      <br></br>
-      This page is under construction. Click <span><a href="https://www.triton.lmig.com">here</a></span> to return to Triton
-    </div>;
+    console.log(pingToken);
+    return (
+      <AppWrapper>
+        <Header />
+        <NavTabs />
+      </AppWrapper>
+    );
+  } else if (authorized === "yes" && !pingToken) {
+    return <div>An unknown error occurred</div>;
   } else if (authorized === "no") {
     return <div>You&#39;re not authorized to view this page</div>;
   } else if (authorized === "unknown") {
