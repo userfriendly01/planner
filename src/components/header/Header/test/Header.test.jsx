@@ -4,9 +4,9 @@ import {
   UserCard
 } from "components";
 import React from "react";
-import { render } from "@testing-library/react";
 import {
   expectMockedComponent,
+  render,
   setupMockedComponents
 } from "testUtils";
 

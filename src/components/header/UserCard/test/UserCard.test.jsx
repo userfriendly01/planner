@@ -1,9 +1,9 @@
 import UserCard from "../UserCard";
 import { AccountBox } from "@material-ui/icons";
 import React from "react";
-import { render } from "@testing-library/react";
 import {
   expectMockedComponent,
+  render,
   setupMockedComponents
 } from "testUtils";
 

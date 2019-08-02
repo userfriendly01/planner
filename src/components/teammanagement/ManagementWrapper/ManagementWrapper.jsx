@@ -31,15 +31,15 @@ const PaginationWrapper = styled.div`
 `;
 
 const PageButton = styled.button`
-  margin: 0 2 0 2;
   background-color: ${props => props.value !== props.pageSelected ? "transparent" : "#1A1446"};
-  color: #C0BFC0;
-  border-radius: 5px;
-  cursor: pointer;
-  outline: none;
   border: ${props => props.value !== props.pageSelected ? "#C0BFC0" : "#1A1446"};
+  border-radius: 5px;
   border-style: solid;
   border-width: 2px;
+  color: #C0BFC0;
+  cursor: pointer;
+  margin: 0 2 0 2;
+  outline: none;
 `;
 
 const PageSection = styled.div`

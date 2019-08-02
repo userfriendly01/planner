@@ -5,7 +5,7 @@ const jestConfig = {
   coveragePathIgnorePatterns: [
     "<rootDir>/__test__",
     "<rootDir>/src/assets",
-    "<rootDir>/src/consts",
+    "<rootDir>/src/globals",
     "<rootDir>/jestSetup.js",
     "/index.js"
   ],
