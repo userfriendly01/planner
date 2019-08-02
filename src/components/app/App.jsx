@@ -33,40 +33,53 @@ const LoadingMessage = styled.div`
 `;
 
 const App = () => {
-  const [authorized, setAuthorized] = useState(null);
-  const [pingToken, setPingToken] = useState(null);
+  // TODO: add Twilio worker info and pass all data via React Context, i.e.
+  /* data
+    {
+      authorized: true/false
+      error?: error object
+      pingToken: ping stuff
+      worker: worker
+    }
+  */
+  const [data, setData] = useState({});
 
   useEffect(() => {
     // myAxios.get("http://localhost:8080/admin-login")
     myAxios.get(apiPaths.AUTH)
       .then(res => {
-        setAuthorized(res.data ? "yes" : "no");
-        setPingToken(res.data);
+        setData({
+          authorized: true,
+          pingToken: res.data
+        });
       })
       .catch(err => {
         if(err.response && isErrorIn400s(err.response.status)) {
-          setAuthorized("no");
+          setData({
+            authorized: false
+          });
         } else {
           console.error("An unknown error has occurred.", err);
-          setAuthorized("unknown");
+          setData({
+            unknownError: err
+          });
         }
       });
   }, []);
 
-  if (authorized === "yes" && pingToken) {
-    console.log(pingToken);
+  if (data.authorized === true) {
+    console.log(data.pingToken);
     return (
-      <AppWrapper>
+      // TODO: wrap in context that provides pingToken and worker
+      <AppWrapper data-testid="app-wrapper">
         <Header />
         <NavTabs />
       </AppWrapper>
     );
-  } else if (authorized === "yes" && !pingToken) {
-    return <div>An unknown error occurred</div>;
-  } else if (authorized === "no") {
-    return <div>You&#39;re not authorized to view this page</div>;
-  } else if (authorized === "unknown") {
-    return <div>An unknown error occurred</div>;
+  } else if (data.authorized === false) {
+    return <div data-testid="unauthorized">{"You are not authorized to view this page"}</div>;
+  } else if (data.unknownError) {
+    return <div data-testid="unknownError">{"An unknown error has occurred"}</div>;
   } else {
     return (
       <LoadingContainer>

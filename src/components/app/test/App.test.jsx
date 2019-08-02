@@ -1,4 +1,4 @@
-import axios from "axios";
+import { CircularProgress } from "@material-ui/core";
 import MockAdapter from "axios-mock-adapter";
 import {
   Header,
@@ -6,67 +6,78 @@ import {
 } from "components";
 import { apiPaths } from "globals";
 import React from "react";
-import { render } from "@testing-library/react";
-import { expectMockedComponent } from "testUtils";
+import {
+  expectMockedComponent,
+  render,
+  setupMockedComponents,
+  waitForElement
+} from "testUtils";
+import { myAxios } from "utils";
 import App from "../App";
 
-const axiosMock = new MockAdapter(axios);
 const endpoint = apiPaths.AUTH;
+const axiosMock = new MockAdapter(myAxios);
+
+jest.mock("@material-ui/core", () => ({
+  CircularProgress: jest.fn()
+}));
+
+jest.mock("components", () => ({
+  __esModule: true,
+  Header: jest.fn(),
+  NavTabs: jest.fn()
+}));
 
 describe("<App />", () => {
-
-  beforeEach(() => axiosMock.reset());
-
-  describe("initial state, page is loading", () => {
-    afterEach(() => axiosMock.onGet(endpoint).reply(200, {} ));
-    test("should render LoadingMessage", () => {
-      axios.get(endpoint).then(() => {
+  beforeEach(() => {
+    setupMockedComponents({
+      CircularProgress,
+      Header,
+      NavTabs
+    });
+  });
+  describe("service call successful, res.data was returned", () => {
+    beforeEach(() => axiosMock.onGet(endpoint).reply(200, { data: "whatever" }));
+    describe("initial state, page is loading", () => {
+      test("should render LoadingMessage", () => {
         const rendered = render(<App />);
         expect(rendered.container).toHaveTextContent("Connecting...");
+        expectMockedComponent(rendered, { CircularProgress });
+      });
+    });
+    describe("once service call is completed renders Header and NavTabs components", () => {
+      test("should render Header & NavTabs", done => {
+        const rendered = render(<App />);
+        waitForElement(() => rendered.getByTestId("app-wrapper"))
+          .then(() => {
+            expectMockedComponent(rendered, { Header });
+            expectMockedComponent(rendered, { NavTabs });
+            expect(rendered.container).not.toHaveTextContent("Connecting...");
+            done();
+          });
       });
     });
   });
-
-  describe(`call to ${endpoint} is successful`, () => {
-    // describe("authorized = 'yes' & pingToken is not null", () => {
-    //   beforeEach(() => {
-    //     axiosMock.onGet(endpoint).reply(200, {
-    //       data: { whatever: "res.data exists" }
-    //     });
-    //   });
-    //   test("should render Header & NavTabs", done => {
-    //     axios.get(endpoint).then(() => {
-    //       const rendered = render(<App />);
-    //       expect(rendered.container).not.toHaveTextContent("Connecting...");
-    //       expectMockedComponent(rendered, <Header />);
-    //       expectMockedComponent(rendered, <NavTabs />);
-    //       done();
-    //     });
-    //   });
-    // });
-
-    describe("authorized = 'yes' but pingToken is null", () => {
-      test("should render div with correct content", () => {
-        //
-      });
-    });
-
-    describe("authorized = 'no'", () => {
-      test("should render div with 'You're not authorized to view this page'", () => {
-        //
-      });
-    });
-
-    describe("authorized = 'unknown'", () => {
-      test("should render div with 'An unknown error occurred'", () => {
-        //
-      });
+  describe("service call returned an error in the 400's", () => {
+    beforeEach(() => axiosMock.onGet(endpoint).reply(403, { error: "Forbidden" }));
+    test("should return 'You are not authorized to view this page'", done => {
+      const rendered = render(<App />);
+      waitForElement(() => rendered.getByTestId("unauthorized"))
+        .then(() => {
+          expect(rendered.container).toHaveTextContent("You are not authorized to view this page");
+          done();
+        });
     });
   });
-
-  describe("call to endpoint fails", () => {
-    test("", () => {
-      //
+  describe("service call returned an error not in the 400's", () => {
+    beforeEach(() => axiosMock.onGet(endpoint).reply(500, { error: "Internal Server Error" }));
+    test("should return 'An unknown error has occurred'", done => {
+      const rendered = render(<App />);
+      waitForElement(() => rendered.getByTestId("unknownError"))
+        .then(() => {
+          expect(rendered.container).toHaveTextContent("An unknown error has occurred");
+          done();
+        });
     });
   });
 });
