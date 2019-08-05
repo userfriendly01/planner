@@ -40,7 +40,7 @@ npm install
 
 ### Using the applications locally
 
-##### You must access this application through the cicct-user-gateway over port 8084 locally
+##### You must access this application through the cicct-user-gateway over port 8082 locally
 
 This application (cicct-softphone-admin-ui) must be accessed through the cicct-user-gateway and will need to communicate to cicct-softphone-service (also through the gateway)
 
