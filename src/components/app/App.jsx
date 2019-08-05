@@ -45,7 +45,6 @@ const App = () => {
   const [data, setData] = useState({});
 
   useEffect(() => {
-    // myAxios.get("http://localhost:8080/admin-login")
     myAxios.get(apiPaths.AUTH)
       .then(res => {
         setData({
@@ -68,7 +67,6 @@ const App = () => {
   }, []);
 
   if (data.authorized === true) {
-    console.log(data.pingToken);
     return (
       // TODO: wrap in context that provides pingToken and worker
       <AppWrapper data-testid="app-wrapper">
