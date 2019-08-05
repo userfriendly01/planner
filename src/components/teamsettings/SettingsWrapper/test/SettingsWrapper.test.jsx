@@ -1,6 +1,6 @@
 import SettingsWrapper from "../SettingsWrapper";
 import React from "react";
-import { render } from "react-testing-library";
+import { render } from "testUtils";
 
 describe("<SettingsWrapper />", () => {
   test("we should show the temporary text.", () => {
