@@ -38,13 +38,22 @@ Install package dependencies for this project
 npm install
 ```
 
-Run this application locally
-1. Open cicct-user-gateway > application-local.yml
-2. Change softphone-admin-ui url to `http://localhost:8080`
-3. Change softphone-service url to anything other than 8080
-4. Start user gateway with `mvn spring-boot:run`
-5. Build admin-ui with `npm run-script build`
-6. Run admin-ui server with `node server.js`
+### Using the applications locally
+
+##### You must access this application through the cicct-user-gateway over port 8084 locally
+
+This application (cicct-softphone-admin-ui) must be accessed through the cicct-user-gateway and will need to communicate to cicct-softphone-service (also through the gateway)
+
+These applications will run on the following ports when started locally:
+```
+cicct-user-gateway        8082
+cicct-softphone-admin-ui  8084
+cicct-softphone-service   8080
+```
+
+Make sure all three applications are running locally on the specified ports above
+
+This app uses PING authentication in a deployed state when `NODE_ENV=production`. When running locally you should have `NODE_ENV=development` and the application will simply bypass the authentication middleware in the `cicct-softphone-service` application.
 
 ## Running the tests
 
