@@ -12,7 +12,7 @@ import {
   waitForElement
 } from "testUtils";
 
-export const axiosMock = new MockAdapter(axios);
+const axiosMock = new MockAdapter(axios);
 
 jest.mock("components", () => ({
   __esModule: true,

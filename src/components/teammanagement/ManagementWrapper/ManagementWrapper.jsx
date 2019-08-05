@@ -88,7 +88,7 @@ const ManagementWrapper = props => {
   const numWorkers = workers.length;
   const numPages = Math.ceil(numWorkers / workersPerPage);
 
-  for (var i = 0; i < numPages; i++) {
+  for (let i = 0; i < numPages; i++) {
     const page = i + 1;
     buttons.push(<PageButton key={i} value={page} pageSelected={pageSelected} onClick={() => setPageSelected(page)}>{page}</PageButton>);
   }
