@@ -3,6 +3,9 @@ import {
   Header,
   NavTabs
 } from "components";
+import {
+  UserContext
+} from "context";
 import { apiPaths } from "globals";
 import React, {
   useEffect,
@@ -33,51 +36,61 @@ const LoadingMessage = styled.div`
 `;
 
 const App = () => {
-  // TODO: add Twilio worker info and pass all data via React Context, i.e.
-  /* data
-    {
-      authorized: true/false
-      error?: error object
-      pingToken: ping stuff
-      worker: worker
-    }
-  */
-  const [data, setData] = useState({});
+
+  const [workerData, setWorkerData] = useState({});
 
   useEffect(() => {
+    const loadedData = {};
     myAxios.get(apiPaths.AUTH)
       .then(res => {
-        setData({
-          authorized: true,
-          pingToken: res.data
-        });
+        loadedData.authorized = true;
+        loadedData.pingIdentity = res.data;
+        return res.data.sub;
       })
       .catch(err => {
         if(err.response && isErrorIn400s(err.response.status)) {
-          setData({
-            authorized: false
-          });
+          loadedData.authorized = false;
         } else {
           console.error("An unknown error has occurred.", err);
-          setData({
-            unknownError: err
-          });
+          loadedData.authError = err;
         }
+      })
+      .then(id => {
+        return myAxios.get(apiPaths.GET_WORKER_BY_ID(id));
+      })
+      .then(res => {
+        setWorkerData({
+          ... loadedData,
+          ready: true,
+          twilioWorker: {
+            ... res.data,
+            attributes: JSON.parse(res.data.attributes)
+          }
+        });
+      })
+      .catch(err => {
+        setWorkerData({
+          ... loadedData,
+          getWorkerError: err
+        });
       });
   }, []);
 
-  if (data.authorized === true) {
+  console.log("Worker Data: ", workerData);
+
+  if (workerData.authorized && workerData.ready) {
     return (
-      // TODO: wrap in context that provides pingToken and worker
-      <AppWrapper data-testid="app-wrapper">
-        <Header />
-        <NavTabs />
-      </AppWrapper>
+      <UserContext.Provider value={workerData}>
+        <AppWrapper data-testid="app-wrapper">
+          <Header />
+          <NavTabs />
+        </AppWrapper>
+      </UserContext.Provider>
     );
-  } else if (data.authorized === false) {
+  } else if (workerData.authorized === false) {
     return <div data-testid="unauthorized">{"You are not authorized to view this page"}</div>;
-  } else if (data.unknownError) {
-    return <div data-testid="unknownError">{"An unknown error has occurred"}</div>;
+  } else if (workerData.authError || workerData.getWorkerError) {
+    return <div data-testid="unknownError">{"An error occured while logging in."}</div>;
   } else {
     return (
       <LoadingContainer>

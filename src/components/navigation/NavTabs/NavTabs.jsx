@@ -56,7 +56,6 @@ TabPanel.propTypes = {
 };
 
 const NavTabs = () => {
-
   const [value, setValue] = React.useState(0);
 
   function handleChange(event, newValue) {
@@ -70,7 +69,7 @@ const NavTabs = () => {
         <StyledTab label="Settings" href="/settings" id="nav-tab-settings" aria-controls="nav-tabpanel-settings" onClick={event => event.preventDefault()}/>
       </StyledTabs>
       <TabPanel value={value} tabName="myTeam" index={0}>
-        <ManagementWrapper profileId={2} />
+        <ManagementWrapper  />
       </TabPanel>
       <TabPanel value={value} tabName="settings" index={1}>
         <SettingsWrapper />

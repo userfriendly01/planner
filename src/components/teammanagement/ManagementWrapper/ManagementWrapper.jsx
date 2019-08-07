@@ -4,9 +4,10 @@ import {
 } from "@material-ui/core";
 import axios from "axios";
 import { ManagementTable } from "components";
+import { UserContext } from "context";
 import { apiPaths } from "globals";
-import PropTypes from "prop-types";
 import React, {
+  useContext,
   useEffect,
   useState
 } from "react";
@@ -60,15 +61,21 @@ const StyledPaper = styled(Paper)`
 
 const workersPerPage = 10;
 
-const ManagementWrapper = props => {
-  const { profileId } = props;
+const ManagementWrapper = () => {
+  const {
+    twilioWorker: {
+      attributes: {
+        profile_id
+      }
+    }
+  } = useContext(UserContext);
   const [workers, setWorkers] = useState([]);
   const [workersStart, setWorkersStart] = useState(1);
   const [workersEnd, setWorkersEnd] = useState(workersPerPage);
   const [pageSelected, setPageSelected] = useState(1);
 
   useEffect(() => {
-    axios.get(apiPaths.GET_WORKERS_BY_PROFILEID(profileId))
+    axios.get(apiPaths.GET_WORKERS_BY_PROFILEID(profile_id))
       .then(res => {
         setWorkers(formatWorkerResponse(res.data));
       })
@@ -115,10 +122,6 @@ const ManagementWrapper = props => {
       }
     </ManagementContainer>
   );
-};
-
-ManagementWrapper.propTypes = {
-  profileId: PropTypes.number.isRequired
 };
 
 export default ManagementWrapper;

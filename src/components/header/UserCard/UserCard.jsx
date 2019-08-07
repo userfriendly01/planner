@@ -1,6 +1,8 @@
 import { AccountBox } from "@material-ui/icons";
-import React from "react";
-import PropTypes from "prop-types";
+import { UserContext } from "context";
+import React, {
+  useContext
+} from "react";
 import styled from "styled-components";
 
 const Card = styled.div`
@@ -23,15 +25,13 @@ const StyledAccountBox = styled(AccountBox)`
   }
 `;
 
-const UserCard = props => {
-  const { name } = props;
+const UserCard = () => {
+  const {
+    pingIdentity: { displayName }
+  } = useContext(UserContext);
   return (
-    <Card>{name}<StyledAccountBox /></Card>
+    <Card>{displayName}<StyledAccountBox /></Card>
   );
-};
-
-UserCard.propTypes = {
-  name: PropTypes.string.isRequired
 };
 
 export default UserCard;
