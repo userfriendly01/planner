@@ -4,7 +4,8 @@ import {
   NavTabs
 } from "components";
 import {
-  UserContext
+  UserContext,
+  WorkersContext
 } from "context";
 import { apiPaths } from "globals";
 import React, {
@@ -13,6 +14,7 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import {
+  formatWorkerResponse,
   isErrorIn400s,
   myAxios
 } from "utils";
@@ -37,59 +39,60 @@ const LoadingMessage = styled.div`
 
 const App = () => {
 
-  const [workerData, setWorkerData] = useState({});
+  const [authData, setAuthData] = useState({});
+  const [workers, setWorkers] = useState({
+    workers: []
+  });
 
   useEffect(() => {
-    const loadedData = {};
     myAxios.get(apiPaths.AUTH)
       .then(res => {
-        loadedData.authorized = true;
-        loadedData.pingIdentity = res.data;
-        return res.data.sub;
-      })
-      .catch(err => {
-        if(err.response && isErrorIn400s(err.response.status)) {
-          loadedData.authorized = false;
-        } else {
-          console.error("An unknown error has occurred.", err);
-          loadedData.authError = err;
-        }
-      })
-      .then(id => {
-        return myAxios.get(apiPaths.GET_WORKER_BY_ID(id));
-      })
-      .then(res => {
-        setWorkerData({
-          ... loadedData,
-          ready: true,
-          twilioWorker: {
-            ... res.data,
-            attributes: JSON.parse(res.data.attributes)
-          }
+        setAuthData({
+          authorized: true,
+          pingIdentity: res.data
         });
       })
       .catch(err => {
-        setWorkerData({
-          ... loadedData,
-          getWorkerError: err
+        if(err.response && isErrorIn400s(err.response.status)) {
+          setAuthData({
+            authorized: false
+          });
+        } else {
+          console.error("An unknown error has occurred.", err);
+          setAuthData({
+            authError: err
+          });
+        }
+      });
+    myAxios
+      .get(apiPaths.GET_WORKERS)
+      .then(res => {
+        setWorkers({
+          workers: formatWorkerResponse(res.data)
+        });
+      })
+      .catch(err => {
+        console.error("An unknown error has occurred.", err);
+        setWorkers({
+          error: err
         });
       });
   }, []);
 
-  console.log("Worker Data: ", workerData);
-
-  if (workerData.authorized && workerData.ready) {
+  if (authData.authorized && workers.length !== 0) {
     return (
-      <UserContext.Provider value={workerData}>
-        <AppWrapper data-testid="app-wrapper">
-          <Header />
-          <NavTabs />
-        </AppWrapper>
+      <UserContext.Provider value={authData}>
+        <WorkersContext.Provider value={workers}>
+          <AppWrapper data-testid="app-wrapper">
+            <Header />
+            <NavTabs />
+          </AppWrapper>
+        </WorkersContext.Provider>
       </UserContext.Provider>
     );
-  } else if (workerData.authorized === false) {
+  } else if (authData.authorized === false) {
     return <div data-testid="unauthorized">{"You are not authorized to view this page"}</div>;
-  } else if (workerData.authError || workerData.getWorkerError) {
+  } else if (authData.authError) {
     return <div data-testid="unknownError">{"An error occured while logging in."}</div>;
   } else {
     return (

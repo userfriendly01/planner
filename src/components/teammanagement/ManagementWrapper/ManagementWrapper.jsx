@@ -1,18 +1,19 @@
 import {
-  CircularProgress,
-  Paper
+  FilledInput,
+  FormControl,
+  InputLabel,
+  Paper,
+  Select
 } from "@material-ui/core";
-import axios from "axios";
 import { ManagementTable } from "components";
-import { UserContext } from "context";
-import { apiPaths } from "globals";
+import { WorkersContext } from "context";
 import React, {
   useContext,
   useEffect,
   useState
 } from "react";
+import { getUniqueManagerList } from "utils";
 import styled from "styled-components";
-import { formatWorkerResponse } from "utils";
 
 const Highlight = styled.span`
   color: #1A1446;
@@ -62,37 +63,34 @@ const StyledPaper = styled(Paper)`
 const workersPerPage = 10;
 
 const ManagementWrapper = () => {
-  const {
-    twilioWorker: {
-      attributes: {
-        profile_id
-      }
-    }
-  } = useContext(UserContext);
-  const [workers, setWorkers] = useState([]);
+  const { workers } = useContext(WorkersContext);
+  const [filterBy, setFilterBy] = useState("");
+  const [filteredWorkers, setFilteredWorkers] = useState(workers);
   const [workersStart, setWorkersStart] = useState(1);
   const [workersEnd, setWorkersEnd] = useState(workersPerPage);
   const [pageSelected, setPageSelected] = useState(1);
 
   useEffect(() => {
-    axios.get(apiPaths.GET_WORKERS_BY_PROFILEID(profile_id))
-      .then(res => {
-        setWorkers(formatWorkerResponse(res.data));
-      })
-      .catch(err => console.error("An unknown error has occurred.", err));
-  }, []);
-
-  useEffect(() => {
-    if (pageSelected * workersPerPage > workers.length) {
-      setWorkersEnd((((pageSelected - 1) * workersPerPage) + (workers.length % workersPerPage)));
+    if (pageSelected * workersPerPage > filteredWorkers.length) {
+      setWorkersEnd((((pageSelected - 1) * workersPerPage) + (filteredWorkers.length % workersPerPage)));
     } else {
       setWorkersEnd(pageSelected * workersPerPage);
     }
     setWorkersStart(((pageSelected - 1) * workersPerPage) + 1);
-  }, [workers, pageSelected]);
+  }, [filteredWorkers, pageSelected]);
+
+  useEffect(() => {
+    setPageSelected(1);
+    if (filterBy === "") {
+      setFilteredWorkers(workers);
+    } else {
+      setFilteredWorkers(workers.filter(worker => worker.attributes.manager_n_number === filterBy));
+    }
+  }, [filterBy, workers]);
 
   const buttons = [];
-  const numWorkers = workers.length;
+  const filterOptions = getUniqueManagerList(workers);
+  const numWorkers = filteredWorkers.length;
   const numPages = Math.ceil(numWorkers / workersPerPage);
 
   for (let i = 0; i < numPages; i++) {
@@ -100,26 +98,38 @@ const ManagementWrapper = () => {
     buttons.push(<PageButton key={i} value={page} pageSelected={pageSelected} onClick={() => setPageSelected(page)}>{page}</PageButton>);
   }
 
+  const handleChange = () => event => {
+    const filter = event.target.value;
+    setFilterBy(filter);
+  };
+
   return (
     <ManagementContainer>
+      <FormControl variant="filled">
+        <InputLabel shrink htmlFor="filled-filter-native-simple">Manager Filter</InputLabel>
+        <Select
+          native
+          value={filterBy}
+          onChange={handleChange()}
+          input={<FilledInput name="filter" id="filled-filter-native-simple" />}
+        >
+          <option value="">Show All</option>
+          {
+            filterOptions.map(manager => <option key={manager.manager_n_number} value={manager.manager_n_number}>{manager.manager_first_name} {manager.manager_last_name}</option>)
+          }
+        </Select>
+      </FormControl>
       <StyledPaper elevation={3}>
-        {
-          workers.length !== 0 ? (
-            <ManagementTable workers={workers.slice((workersStart - 1), workersEnd)} ></ManagementTable>
-          ) : <CircularProgress size={60} />
-        }
+        <ManagementTable workers={filteredWorkers.slice((workersStart - 1), workersEnd)} ></ManagementTable>
       </StyledPaper>
-      {
-        workers.length !== 0 ?
-          <PaginationWrapper>
-            <ShowingSection>
-              Showing <Highlight>{workersStart}</Highlight> to <Highlight>{workersEnd}</Highlight> of <Highlight>{workers.length}</Highlight> workers
-            </ShowingSection>
-            <PageSection>
-              Pages: {buttons}
-            </PageSection>
-          </PaginationWrapper> : null
-      }
+      <PaginationWrapper>
+        <ShowingSection>
+          Showing <Highlight>{workersStart}</Highlight> to <Highlight>{workersEnd}</Highlight> of <Highlight>{filteredWorkers.length}</Highlight> workers
+        </ShowingSection>
+        <PageSection>
+          Pages: {buttons}
+        </PageSection>
+      </PaginationWrapper>
     </ManagementContainer>
   );
 };

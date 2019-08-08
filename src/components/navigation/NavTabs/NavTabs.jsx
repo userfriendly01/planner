@@ -65,10 +65,10 @@ const NavTabs = () => {
   return (
     <Content >
       <StyledTabs variant="fullWidth" value={value} onChange={handleChange}>
-        <StyledTab label="My Team" href="/myTeam" id="nav-tab-myTeam" aria-controls="nav-tabpanel-myTeam" onClick={event => event.preventDefault()}/>
+        <StyledTab label="User Management" href="/userManagement" id="nav-tab-userManagement" aria-controls="nav-tabpanel-userManagement" onClick={event => event.preventDefault()}/>
         <StyledTab label="Settings" href="/settings" id="nav-tab-settings" aria-controls="nav-tabpanel-settings" onClick={event => event.preventDefault()}/>
       </StyledTabs>
-      <TabPanel value={value} tabName="myTeam" index={0}>
+      <TabPanel value={value} tabName="userManagement" index={0}>
         <ManagementWrapper  />
       </TabPanel>
       <TabPanel value={value} tabName="settings" index={1}>
