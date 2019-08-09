@@ -1,4 +1,5 @@
 import {
+  ButtonBase,
   FilledInput,
   FormControl,
   InputLabel,
@@ -14,6 +15,27 @@ import React, {
 } from "react";
 import { getUniqueManagerList } from "utils";
 import styled from "styled-components";
+
+const CustomButton = styled(ButtonBase)`
+  && {
+    background-color: #AAEDED;
+    border: none;
+    border-radius: 3px;
+    color: #1A1446;
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 700;
+    outline: none;
+    padding: 5 10 5 10;
+  }
+`;
+
+const FilterWrapper = styled.div`
+  justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  padding 1%;
+`;
 
 const Highlight = styled.span`
   color: #1A1446;
@@ -105,20 +127,23 @@ const ManagementWrapper = () => {
 
   return (
     <ManagementContainer>
-      <FormControl variant="filled">
-        <InputLabel shrink htmlFor="filled-filter-native-simple">Manager Filter</InputLabel>
-        <Select
-          native
-          value={filterBy}
-          onChange={handleChange()}
-          input={<FilledInput name="filter" id="filled-filter-native-simple" />}
-        >
-          <option value="">Show All</option>
-          {
-            filterOptions.map(manager => <option key={manager.manager_n_number} value={manager.manager_n_number}>{manager.manager_first_name} {manager.manager_last_name}</option>)
-          }
-        </Select>
-      </FormControl>
+      <FilterWrapper>
+        <FormControl variant="filled">
+          <InputLabel shrink htmlFor="filled-filter-native-simple">Manager Filter</InputLabel>
+          <Select
+            native
+            value={filterBy}
+            onChange={handleChange()}
+            input={<FilledInput name="filter" id="filled-filter-native-simple" />}
+          >
+            <option value="">Show All</option>
+            {
+              filterOptions.map(manager => <option key={manager.manager_n_number} value={manager.manager_n_number}>{manager.manager_first_name} {manager.manager_last_name}</option>)
+            }
+          </Select>
+        </FormControl>
+        <CustomButton>Add User</CustomButton>
+      </FilterWrapper>
       <StyledPaper elevation={3}>
         <ManagementTable workers={filteredWorkers.slice((workersStart - 1), workersEnd)} ></ManagementTable>
       </StyledPaper>
