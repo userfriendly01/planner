@@ -3,6 +3,7 @@ import {
   FilledInput,
   FormControl,
   InputLabel,
+  Modal,
   Paper,
   Select
 } from "@material-ui/core";
@@ -88,6 +89,7 @@ const ManagementWrapper = () => {
   const { workers } = useContext(WorkersContext);
   const [filterBy, setFilterBy] = useState("");
   const [filteredWorkers, setFilteredWorkers] = useState(workers);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [workersStart, setWorkersStart] = useState(1);
   const [workersEnd, setWorkersEnd] = useState(workersPerPage);
   const [pageSelected, setPageSelected] = useState(1);
@@ -125,35 +127,57 @@ const ManagementWrapper = () => {
     setFilterBy(filter);
   };
 
+  const handleOpen = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleClose = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <ManagementContainer>
       <FilterWrapper>
         <FormControl variant="filled">
-          <InputLabel shrink htmlFor="filled-filter-native-simple">Manager Filter</InputLabel>
+          <InputLabel shrink htmlFor="filled-filter-native-simple">
+            Manager Filter
+          </InputLabel>
           <Select
             native
             value={filterBy}
             onChange={handleChange()}
-            input={<FilledInput name="filter" id="filled-filter-native-simple" />}
+            input={
+              <FilledInput name="filter" id="filled-filter-native-simple" />
+            }
           >
             <option value="">Show All</option>
-            {
-              filterOptions.map(manager => <option key={manager.manager_n_number} value={manager.manager_n_number}>{manager.manager_first_name} {manager.manager_last_name}</option>)
-            }
+            {filterOptions.map(manager => (
+              <option
+                key={manager.manager_n_number}
+                value={manager.manager_n_number}
+              >
+                {manager.manager_first_name} {manager.manager_last_name}
+              </option>
+            ))}
           </Select>
         </FormControl>
-        <CustomButton>Add User</CustomButton>
+        <CustomButton onClick={handleOpen}>Add User</CustomButton>
+        <Modal open={isModalOpen} onClose={handleClose}>
+          <div />
+        </Modal>
       </FilterWrapper>
       <StyledPaper elevation={3}>
-        <ManagementTable workers={filteredWorkers.slice((workersStart - 1), workersEnd)} ></ManagementTable>
+        <ManagementTable
+          workers={filteredWorkers.slice(workersStart - 1, workersEnd)}
+        />
       </StyledPaper>
       <PaginationWrapper>
         <ShowingSection>
-          Showing <Highlight>{workersStart}</Highlight> to <Highlight>{workersEnd}</Highlight> of <Highlight>{filteredWorkers.length}</Highlight> workers
+          Showing <Highlight>{workersStart}</Highlight> to{" "}
+          <Highlight>{workersEnd}</Highlight> of{" "}
+          <Highlight>{filteredWorkers.length}</Highlight> workers
         </ShowingSection>
-        <PageSection>
-          Pages: {buttons}
-        </PageSection>
+        <PageSection>Pages: {buttons}</PageSection>
       </PaginationWrapper>
     </ManagementContainer>
   );
