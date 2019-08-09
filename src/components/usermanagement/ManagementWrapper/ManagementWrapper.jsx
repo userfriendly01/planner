@@ -7,7 +7,10 @@ import {
   Paper,
   Select
 } from "@material-ui/core";
-import { ManagementTable } from "components";
+import {
+  AddUserModal,
+  ManagementTable
+} from "components";
 import { WorkersContext } from "context";
 import React, {
   useContext,
@@ -16,6 +19,13 @@ import React, {
 } from "react";
 import { getUniqueManagerList } from "utils";
 import styled from "styled-components";
+
+const ControlsWrapper = styled.div`
+  justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  padding 1%;
+`;
 
 const CustomButton = styled(ButtonBase)`
   && {
@@ -29,13 +39,6 @@ const CustomButton = styled(ButtonBase)`
     outline: none;
     padding: 5 10 5 10;
   }
-`;
-
-const FilterWrapper = styled.div`
-  justify-content: space-between;
-  display: flex;
-  flex-direction: row;
-  padding 1%;
 `;
 
 const Highlight = styled.span`
@@ -89,6 +92,7 @@ const ManagementWrapper = () => {
   const { workers } = useContext(WorkersContext);
   const [filterBy, setFilterBy] = useState("");
   const [filteredWorkers, setFilteredWorkers] = useState(workers);
+  const [filterOptions, setFilterOptions] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [workersStart, setWorkersStart] = useState(1);
   const [workersEnd, setWorkersEnd] = useState(workersPerPage);
@@ -110,10 +114,10 @@ const ManagementWrapper = () => {
     } else {
       setFilteredWorkers(workers.filter(worker => worker.attributes.manager_n_number === filterBy));
     }
+    setFilterOptions(getUniqueManagerList(workers));
   }, [filterBy, workers]);
 
   const buttons = [];
-  const filterOptions = getUniqueManagerList(workers);
   const numWorkers = filteredWorkers.length;
   const numPages = Math.ceil(numWorkers / workersPerPage);
 
@@ -137,7 +141,7 @@ const ManagementWrapper = () => {
 
   return (
     <ManagementContainer>
-      <FilterWrapper>
+      <ControlsWrapper>
         <FormControl variant="filled">
           <InputLabel shrink htmlFor="filled-filter-native-simple">
             Manager Filter
@@ -162,14 +166,12 @@ const ManagementWrapper = () => {
           </Select>
         </FormControl>
         <CustomButton onClick={handleOpen}>Add User</CustomButton>
-        <Modal open={isModalOpen} onClose={handleClose}>
-          <div />
+        <Modal disableBackdropClick={true} open={isModalOpen}>
+          <AddUserModal handleClose={handleClose} managerList={filterOptions} />
         </Modal>
-      </FilterWrapper>
+      </ControlsWrapper>
       <StyledPaper elevation={3}>
-        <ManagementTable
-          workers={filteredWorkers.slice(workersStart - 1, workersEnd)}
-        />
+        <ManagementTable workers={filteredWorkers.slice(workersStart - 1, workersEnd)} />
       </StyledPaper>
       <PaginationWrapper>
         <ShowingSection>

@@ -62,7 +62,7 @@ const ManagementTable = props => {
               <CustomTableRow key={index}>
                 <CustomTableData>{worker.attributes.full_name}</CustomTableData>
                 <CustomTableData>{worker.id}</CustomTableData>
-                <CustomTableData><CustomButton>Remove</CustomButton></CustomTableData>
+                <CustomTableData><CustomButton disabled>Remove</CustomButton></CustomTableData>
               </CustomTableRow>
             );
           })}

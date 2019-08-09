@@ -4,6 +4,7 @@ import {
   NavTabs
 } from "components";
 import {
+  ProfilesContext,
   UserContext,
   WorkersContext
 } from "context";
@@ -40,6 +41,9 @@ const LoadingMessage = styled.div`
 const App = () => {
 
   const [authData, setAuthData] = useState({});
+  const [profiles, setProfiles] = useState({
+    profiles: []
+  });
   const [workers, setWorkers] = useState({
     workers: []
   });
@@ -77,16 +81,30 @@ const App = () => {
           error: err
         });
       });
+    myAxios.get(apiPaths.GET_PROFILES)
+      .then(res => {
+        setProfiles({
+          profiles: res.data
+        });
+      })
+      .catch(err => {
+        console.error("An unknown error has occurred.", err);
+        setProfiles({
+          error: err
+        });
+      });
   }, []);
 
   if (authData.authorized && workers.length !== 0) {
     return (
       <UserContext.Provider value={authData}>
         <WorkersContext.Provider value={workers}>
-          <AppWrapper data-testid="app-wrapper">
-            <Header />
-            <NavTabs />
-          </AppWrapper>
+          <ProfilesContext.Provider value={profiles}>
+            <AppWrapper data-testid="app-wrapper">
+              <Header />
+              <NavTabs />
+            </AppWrapper>
+          </ProfilesContext.Provider>
         </WorkersContext.Provider>
       </UserContext.Provider>
     );
