@@ -19,18 +19,6 @@ const ManagementContainer = styled.div`
   padding: 2%;
 `;
 
-const PageButton = styled.button`
-  background-color: ${props => props.value !== props.pageSelected ? "transparent" : "#1A1446"};
-  border: ${props => props.value !== props.pageSelected ? "#C0BFC0" : "#1A1446"};
-  border-radius: 5px;
-  border-style: solid;
-  border-width: 2px;
-  color: #C0BFC0;
-  cursor: pointer;
-  margin: 0 2 0 2;
-  outline: none;
-`;
-
 const StyledPaper = styled(Paper)`
   align-items: center;
   display: flex;
@@ -67,22 +55,13 @@ const ManagementWrapper = () => {
     setFilterOptions(getUniqueManagerList(workers));
   }, [filterBy, workers]);
 
-  const buttons = [];
-  const numWorkers = filteredWorkers.length;
-  const numPages = Math.ceil(numWorkers / workersPerPage);
-
-  for (let i = 0; i < numPages; i++) {
-    const page = i + 1;
-    buttons.push(<PageButton key={i} value={page} pageSelected={pageSelected} onClick={() => setPageSelected(page)}>{page}</PageButton>);
-  }
-
   return (
     <ManagementContainer>
       <ManagementFilter filterBy={filterBy} options={filterOptions} setFilter={setFilterBy} />
       <StyledPaper elevation={3}>
         <ManagementTable workers={filteredWorkers.slice(workersStart - 1, workersEnd)} />
       </StyledPaper>
-      <ManagementPagination buttons={buttons} end={workersEnd} length={filteredWorkers.length}  start={workersStart}/>
+      <ManagementPagination end={workersEnd} length={filteredWorkers.length} page={pageSelected} setPage={setPageSelected} start={workersStart}/>
     </ManagementContainer>
   );
 };
