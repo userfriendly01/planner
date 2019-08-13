@@ -126,11 +126,6 @@ const ManagementWrapper = () => {
     buttons.push(<PageButton key={i} value={page} pageSelected={pageSelected} onClick={() => setPageSelected(page)}>{page}</PageButton>);
   }
 
-  const handleChange = () => event => {
-    const filter = event.target.value;
-    setFilterBy(filter);
-  };
-
   const handleOpen = () => {
     setIsModalOpen(true);
   };
@@ -149,7 +144,7 @@ const ManagementWrapper = () => {
           <Select
             native
             value={filterBy}
-            onChange={handleChange()}
+            onChange={event => setFilterBy(event.target.value)}
             input={
               <FilledInput name="filter" id="filled-filter-native-simple" />
             }
