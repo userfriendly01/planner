@@ -113,16 +113,23 @@ const TextInput = styled(TextField)`
 
 const ManagementTable = props => {
 
+  const nNumMatcher = /[n,N]\d{7}/g;
   const {
     handleClose,
     managerList
   } = props;
-
   const { profiles } = useContext(ProfilesContext);
-  const [fetching, setFetching] = useState(false);
-  const [formReady, setFormReady] = useState(false);
-  const nNumMatcher = /[n,N]\d{7}/g;
-  const [nNumber, setNNumber] = useState("N");
+  const [form, setForm] = useState({
+    nNumber: "N",
+    outgoing: "",
+    manager: "",
+    team: "",
+    ready: false
+  });
+  const [loading, updateLoading] = useState({
+    lookupUser: false,
+    saveUser: false
+  });
   const [newUser, setNewUser] = useState({
     did: "",
     email: "",
@@ -136,22 +143,27 @@ const ManagementTable = props => {
     primary_dept_number: "",
     profile_id: ""
   });
-  const [outgoing, setOutgoing] = useState("");
-  const [saving, setSaving] = useState(false);
-  const [selectedManager, setSelectedManager] = useState("");
-  const [selectedTeam, setSelectedTeam] = useState("");
 
   useEffect(() => {
     console.log("User: ", newUser);
     if (newUser.n_number.match(nNumMatcher)) {
-      setFormReady(true);
+      setForm({
+        ...form,
+        ready: true
+      });
     } else {
-      setFormReady(false);
+      setForm({
+        ...form,
+        ready: false
+      });
     }
   }, [newUser]);
 
   const saveUser = () => {
-    setSaving(true);
+    updateLoading({
+      ...loading,
+      saveUser: true
+    });
     myAxios
       .post(apiPaths.CREATE_WORKER, {
         attributes: {
@@ -159,7 +171,10 @@ const ManagementTable = props => {
         }
       })
       .then(res => {
-        setNNumber("N");
+        setForm({
+          ...form,
+          nNumber: "N"
+        });
         setNewUser({
           ...newUser,
           email: "",
@@ -169,7 +184,10 @@ const ManagementTable = props => {
           primary_dept_name: "",
           primary_dept_number: ""
         });
-        setSaving(false);
+        updateLoading({
+          ...loading,
+          saveUser: false
+        });
         console.log(res);
       });
   };
@@ -177,13 +195,22 @@ const ManagementTable = props => {
   const updateForm = field => event => {
     if (field === "nNumber") {
       const nNum = event.target.value;
-      setNNumber(nNum);
+      setForm({
+        ...form,
+        nNumber: nNum
+      });
       if (nNum.match(nNumMatcher)) {
-        setFetching(true);
+        updateLoading({
+          ...loading,
+          lookupUser: true
+        });
         myAxios
           .get(apiPaths.EMPLOYEE_LOOKUP(nNum.substring(1)))
           .then(res => {
-            setFetching(false);
+            updateLoading({
+              ...loading,
+              lookupUser: false
+            });
             setNewUser({
               ...newUser,
               email: res.data[0].person.data.EMail,
@@ -196,7 +223,10 @@ const ManagementTable = props => {
           });
       }
     } else if (field === "manager") {
-      setSelectedManager(event.target.value);
+      setForm({
+        ...form,
+        manager: event.target.value
+      });
       if(event.target.value !== ""){
         const parsedValue = JSON.parse(event.target.value);
         setNewUser({
@@ -207,13 +237,19 @@ const ManagementTable = props => {
         });
       }
     } else if (field === "team") {
-      setSelectedTeam(event.target.value);
+      setForm({
+        ...form,
+        team: event.target.value
+      });
       setNewUser({
         ...newUser,
         profile_id: event.target.value
       });
     } else if (field === "did") {
-      setOutgoing(event.target.value);
+      setForm({
+        ...form,
+        outgoing: event.target.value
+      });
       setNewUser({
         ...newUser,
         did: event.target.value
@@ -224,13 +260,13 @@ const ManagementTable = props => {
   return (
     <ModalContainer>
       <PaperContainer>
-        {saving ? null : null}
+        {loading.saveUser ? null : null}
         <Header>Add a User</Header>
         <FormField variant="outlined">
           <InputLabel htmlFor="outlined-selectedManager-native-simple">Manager</InputLabel>
           <Select
             native
-            value={selectedManager}
+            value={form.manager}
             onChange={updateForm("manager")}
             input={
               <OutlinedInput name="selectedManager" labelWidth={65} id="outlined-selectedManager-native-simple" />
@@ -253,7 +289,7 @@ const ManagementTable = props => {
           <InputLabel htmlFor="outlined-selectedTeam-native-simple">Team</InputLabel>
           <Select
             native
-            value={selectedTeam}
+            value={form.team}
             onChange={updateForm("team")}
             input={
               <OutlinedInput name="selectedTeam" labelWidth={41} id="outlined-selectedTeam-native-simple" />
@@ -273,7 +309,7 @@ const ManagementTable = props => {
           onChange={updateForm("did")}
           margin="normal"
           variant="outlined"
-          value={outgoing}
+          value={form.outgoing}
         />
         <div style={ { "display": "flex" } }>
           <TextInput
@@ -284,12 +320,12 @@ const ManagementTable = props => {
             onChange={updateForm("nNumber")}
             margin="normal"
             variant="outlined"
-            value={nNumber}
+            value={form.nNumber}
           />
-          {fetching ? <FetchingRing /> : null}
+          {loading.lookupUser ? <FetchingRing /> : null}
         </div>
         <ButtonWrapper>
-          <CustomButton disabled={!formReady} onClick={saveUser}>Add User</CustomButton>
+          <CustomButton disabled={!form.ready} onClick={saveUser}>Add User</CustomButton>
           <CustomButton onClick={handleClose}>Done</CustomButton>
         </ButtonWrapper>
       </PaperContainer>
