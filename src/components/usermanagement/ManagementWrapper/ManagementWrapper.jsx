@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import {
   AddUserModal,
+  ManagementPagination,
   ManagementTable
 } from "components";
 import { WorkersContext } from "context";
@@ -41,21 +42,10 @@ const CustomButton = styled(ButtonBase)`
   }
 `;
 
-const Highlight = styled.span`
-  color: #1A1446;
-`;
-
 const ManagementContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 2%;
-`;
-
-const PaginationWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 1% 2% 1% 2%;
 `;
 
 const PageButton = styled.button`
@@ -68,16 +58,6 @@ const PageButton = styled.button`
   cursor: pointer;
   margin: 0 2 0 2;
   outline: none;
-`;
-
-const PageSection = styled.div`
-  color: #C0BFC0;
-  font-size: 1em;
-`;
-
-const ShowingSection = styled.div`
-  color: #C0BFC0;
-  font-size: .825em;
 `;
 
 const StyledPaper = styled(Paper)`
@@ -168,14 +148,7 @@ const ManagementWrapper = () => {
       <StyledPaper elevation={3}>
         <ManagementTable workers={filteredWorkers.slice(workersStart - 1, workersEnd)} />
       </StyledPaper>
-      <PaginationWrapper>
-        <ShowingSection>
-          Showing <Highlight>{workersStart}</Highlight> to{" "}
-          <Highlight>{workersEnd}</Highlight> of{" "}
-          <Highlight>{filteredWorkers.length}</Highlight> workers
-        </ShowingSection>
-        <PageSection>Pages: {buttons}</PageSection>
-      </PaginationWrapper>
+      <ManagementPagination buttons={buttons} end={workersEnd} length={filteredWorkers.length}  start={workersStart}/>
     </ManagementContainer>
   );
 };
