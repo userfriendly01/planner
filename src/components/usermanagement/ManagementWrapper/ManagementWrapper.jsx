@@ -1,14 +1,6 @@
+import { Paper } from "@material-ui/core";
 import {
-  ButtonBase,
-  FilledInput,
-  FormControl,
-  InputLabel,
-  Modal,
-  Paper,
-  Select
-} from "@material-ui/core";
-import {
-  AddUserModal,
+  ManagementFilter,
   ManagementPagination,
   ManagementTable
 } from "components";
@@ -20,27 +12,6 @@ import React, {
 } from "react";
 import { getUniqueManagerList } from "utils";
 import styled from "styled-components";
-
-const ControlsWrapper = styled.div`
-  justify-content: space-between;
-  display: flex;
-  flex-direction: row;
-  padding 1%;
-`;
-
-const CustomButton = styled(ButtonBase)`
-  && {
-    background-color: #AAEDED;
-    border: none;
-    border-radius: 3px;
-    color: #1A1446;
-    cursor: pointer;
-    font-size: 1.15em;
-    font-weight: 700;
-    outline: none;
-    padding: 5 10 5 10;
-  }
-`;
 
 const ManagementContainer = styled.div`
   display: flex;
@@ -73,7 +44,6 @@ const ManagementWrapper = () => {
   const [filterBy, setFilterBy] = useState("");
   const [filteredWorkers, setFilteredWorkers] = useState(workers);
   const [filterOptions, setFilterOptions] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [workersStart, setWorkersStart] = useState(1);
   const [workersEnd, setWorkersEnd] = useState(workersPerPage);
   const [pageSelected, setPageSelected] = useState(1);
@@ -106,45 +76,9 @@ const ManagementWrapper = () => {
     buttons.push(<PageButton key={i} value={page} pageSelected={pageSelected} onClick={() => setPageSelected(page)}>{page}</PageButton>);
   }
 
-  const handleOpen = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleClose = () => {
-    setIsModalOpen(false);
-  };
-
   return (
     <ManagementContainer>
-      <ControlsWrapper>
-        <FormControl variant="filled">
-          <InputLabel shrink htmlFor="filled-filter-native-simple">
-            Manager Filter
-          </InputLabel>
-          <Select
-            native
-            value={filterBy}
-            onChange={event => setFilterBy(event.target.value)}
-            input={
-              <FilledInput name="filter" id="filled-filter-native-simple" />
-            }
-          >
-            <option value="">Show All</option>
-            {filterOptions.map(manager => (
-              <option
-                key={manager.manager_n_number}
-                value={manager.manager_n_number}
-              >
-                {manager.manager_first_name} {manager.manager_last_name}
-              </option>
-            ))}
-          </Select>
-        </FormControl>
-        <CustomButton onClick={handleOpen}>Add User</CustomButton>
-        <Modal disableBackdropClick={true} open={isModalOpen}>
-          <AddUserModal handleClose={handleClose} managerList={filterOptions} />
-        </Modal>
-      </ControlsWrapper>
+      <ManagementFilter filterBy={filterBy} options={filterOptions} setFilter={setFilterBy} />
       <StyledPaper elevation={3}>
         <ManagementTable workers={filteredWorkers.slice(workersStart - 1, workersEnd)} />
       </StyledPaper>
