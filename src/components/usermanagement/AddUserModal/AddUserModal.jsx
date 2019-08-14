@@ -22,12 +22,32 @@ import {
   myAxios
 } from "utils";
 
-const spin = keyframes`
+const Spin = keyframes`
   0% {
     transform: rotate(0deg);
   }
   100% {
     transform: rotate(360deg);
+  }
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: space-around;
+  padding: 1%;
+`;
+
+const CustomButton = styled(ButtonBase)`
+  && {
+    opacity: ${props => props.disabled ? ".5" : "1"};
+    background-color: #AAEDED;
+    border: none;
+    border-radius: 3px;
+    color: #1A1446;
+    cursor: pointer;
+    font-size: 1.2em;
+    outline: none;
+    padding: 5 10 5 10;
   }
 `;
 
@@ -45,26 +65,13 @@ const FetchingRing = styled.div`
     border-radius: 50%;
     border: 5px solid #AAEDED;
     border-color: #AAEDED transparent #AAEDED transparent;
-    animation: ${spin} 1.2s linear infinite;
+    animation: ${Spin} 1.2s linear infinite;
   }
 `;
 
-const ButtonWrapper = styled.div`
-  display: flex;
-  justify-content: space-around;
-  padding: 1%;
-`;
-
-const CustomButton = styled(ButtonBase)`
+const FormField = styled(FormControl)`
   && {
-    background-color: #AAEDED;
-    border: none;
-    border-radius: 3px;
-    color: #1A1446;
-    cursor: pointer;
-    font-size: 1.2em;
-    outline: none;
-    padding: 5 10 5 10;
+    margin: 2%;
   }
 `;
 
@@ -98,12 +105,6 @@ const PaperContainer = styled(Paper)`
   padding: 2%;
 `;
 
-const FormField = styled(FormControl)`
-  && {
-    margin: 2%;
-  }
-`;
-
 const TextInput = styled(TextField)`
   flex-grow: 1;
   && {
@@ -120,69 +121,118 @@ const ManagementTable = props => {
   } = props;
   const { profiles } = useContext(ProfilesContext);
   const [form, setForm] = useState({
+    lookupInfo: {},
     nNumber: "N",
-    outgoing: "",
     manager: "",
-    team: "",
-    ready: false
+    outgoing: "",
+    team: ""
   });
+  const [formReady, setFormReady] = useState(false);
   const [loading, updateLoading] = useState({
     lookupUser: false,
     saveUser: false
   });
-  const [newUser, setNewUser] = useState({
-    did: "",
-    email: "",
-    manager_first_name: "",
-    manager_last_name: "",
-    manager_n_number: "",
-    n_number: "N",
-    office_location_name: "",
-    office_location_number: "",
-    primary_dept_name: "",
-    primary_dept_number: "",
-    profile_id: ""
-  });
 
   useEffect(() => {
-    console.log("User: ", newUser);
-    if (newUser.n_number.match(nNumMatcher)) {
-      setForm({
-        ...form,
-        ready: true
+    if (form.nNumber.match(nNumMatcher)) {
+      updateLoading({
+        ...loading,
+        lookupUser: true
       });
-    } else {
-      setForm({
-        ...form,
-        ready: false
-      });
+      myAxios
+        .get(apiPaths.EMPLOYEE_LOOKUP(form.nNumber.substring(1)))
+        .then(res => {
+          updateLoading({
+            ...loading,
+            lookupUser: false
+          });
+          if (res.data !== []) {
+            setForm({
+              ...form,
+              lookupInfo: {
+                email: res.data[0].person.data.Email,
+                firstName: res.data[0].person.data.FirstName,
+                lastName: res.data[0].person.data.LastName,
+                officeName: res.data[0].person.data.OfficeName,
+                officeNumber: res.data[0].person.data.OfficeNumber,
+                departmentName: res.data[0].person.data.DepartmentName,
+                departmentNumber: res.data[0].person.data.DepartmentNumber
+              }
+            });
+          } else {
+            setForm({
+              ...form,
+              lookupInfo: {},
+              lookupError: "No User Found"
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          updateLoading({
+            ...loading,
+            lookupUser: false
+          });
+          setForm({
+            ...form,
+            lookupInfo: {},
+            lookupError: "Error calling lookup service"
+          });
+        });
     }
-  }, [newUser]);
+  }, [form.nNumber]);
+
+  useEffect(() => {
+    if (JSON.stringify(form.lookupInfo) !== JSON.stringify({}) && form.team !== "" && form.manager !== "" && form.outgoing !== "") {
+      setFormReady(true);
+    } else {
+      setFormReady(false);
+    }
+    console.log(form);
+  }, [form]);
 
   const saveUser = () => {
     updateLoading({
       ...loading,
       saveUser: true
     });
+    const parsedManager = JSON.parse(form.manager);
+    console.log({
+      attributes: {
+        did: form.outgoing,
+        email: form.lookupInfo.email,
+        manager_first_name: parsedManager.manager_first_name,
+        manager_last_name: parsedManager.manager_last_name,
+        manager_n_number: parsedManager.manager_n_number,
+        n_number: form.nNumber,
+        office_location_name: form.lookupInfo.officeName,
+        office_location_number: form.lookupInfo.officeNumber,
+        primary_dept_name: form.lookupInfo.departmentName,
+        primary_dept_number: form.lookupInfo.departmentNumber,
+        profile_id: form.team
+      }
+    });
     myAxios
       .post(apiPaths.CREATE_WORKER, {
         attributes: {
-          ...newUser
+          did: form.outgoing,
+          email: form.lookupInfo.email,
+          manager_first_name: parsedManager.manager_first_name,
+          manager_last_name: parsedManager.manager_last_name,
+          manager_n_number: parsedManager.manager_n_number,
+          n_number: form.nNumber,
+          office_location_name: form.lookupInfo.officeName,
+          office_location_number: form.lookupInfo.officeNumber,
+          primary_dept_name: form.lookupInfo.departmentName,
+          primary_dept_number: form.lookupInfo.departmentNumber,
+          profile_id: form.team
         }
       })
       .then(res => {
         setForm({
           ...form,
+          lookupInfo: {},
           nNumber: "N"
-        });
-        setNewUser({
-          ...newUser,
-          email: "",
-          n_number: "N",
-          office_location_name: "",
-          office_location_number: "",
-          primary_dept_name: "",
-          primary_dept_number: ""
         });
         updateLoading({
           ...loading,
@@ -192,132 +242,99 @@ const ManagementTable = props => {
       });
   };
 
-  const updateForm = field => event => {
-    if (field === "nNumber") {
-      const nNum = event.target.value;
-      setForm({
-        ...form,
-        nNumber: nNum
-      });
-      if (nNum.match(nNumMatcher)) {
-        updateLoading({
-          ...loading,
-          lookupUser: true
-        });
-        myAxios
-          .get(apiPaths.EMPLOYEE_LOOKUP(nNum.substring(1)))
-          .then(res => {
-            updateLoading({
-              ...loading,
-              lookupUser: false
-            });
-            setNewUser({
-              ...newUser,
-              email: res.data[0].person.data.EMail,
-              n_number: nNum,
-              office_location_name: res.data[0].person.data.OfficeName,
-              office_location_number: res.data[0].person.data.OfficeNumber,
-              primary_dept_name: res.data[0].person.data.DepartmentName,
-              primary_dept_number: res.data[0].person.data.DepartmentNumber
-            });
-          });
-      }
-    } else if (field === "manager") {
-      setForm({
-        ...form,
-        manager: event.target.value
-      });
-      if(event.target.value !== ""){
-        const parsedValue = JSON.parse(event.target.value);
-        setNewUser({
-          ...newUser,
-          manager_first_name: parsedValue.manager_first_name,
-          manager_last_name: parsedValue.manager_last_name,
-          manager_n_number: parsedValue.manager_n_number
-        });
-      }
-    } else if (field === "team") {
-      setForm({
-        ...form,
-        team: event.target.value
-      });
-      setNewUser({
-        ...newUser,
-        profile_id: event.target.value
-      });
-    } else if (field === "did") {
-      setForm({
-        ...form,
-        outgoing: event.target.value
-      });
-      setNewUser({
-        ...newUser,
-        did: event.target.value
-      });
-    }
-  };
-
   return (
     <ModalContainer>
       <PaperContainer>
         {loading.saveUser ? null : null}
         <Header>Add a User</Header>
         <FormField variant="outlined">
-          <InputLabel htmlFor="outlined-selectedManager-native-simple">Manager</InputLabel>
+          <InputLabel htmlFor="outlined-selectedManager-native-simple">
+            Manager
+          </InputLabel>
           <Select
             native
             value={form.manager}
-            onChange={updateForm("manager")}
+            onChange={event =>
+              setForm({
+                ...form,
+                manager: event.target.value
+              })
+            }
             input={
-              <OutlinedInput name="selectedManager" labelWidth={65} id="outlined-selectedManager-native-simple" />
+              <OutlinedInput
+                name="selectedManager"
+                labelWidth={65}
+                id="outlined-selectedManager-native-simple"
+              />
             }
           >
             <option value="" />
-            {
-              managerList.map(manager => (
-                <option
-                  key={manager.manager_n_number}
-                  value={JSON.stringify(manager)}
-                >
-                  {manager.manager_first_name} {manager.manager_last_name}
-                </option>
-              ))
-            }
+            {managerList.map(manager => (
+              <option
+                key={manager.manager_n_number}
+                value={JSON.stringify(manager)}
+              >
+                {manager.manager_first_name} {manager.manager_last_name}
+              </option>
+            ))}
           </Select>
         </FormField>
         <FormField variant="outlined">
-          <InputLabel htmlFor="outlined-selectedTeam-native-simple">Team</InputLabel>
+          <InputLabel htmlFor="outlined-selectedTeam-native-simple">
+            Team
+          </InputLabel>
           <Select
             native
             value={form.team}
-            onChange={updateForm("team")}
+            onChange={event =>
+              setForm({
+                ...form,
+                team: event.target.value
+              })
+            }
             input={
-              <OutlinedInput name="selectedTeam" labelWidth={41} id="outlined-selectedTeam-native-simple" />
+              <OutlinedInput
+                name="selectedTeam"
+                labelWidth={41}
+                id="outlined-selectedTeam-native-simple"
+              />
             }
           >
             <option value="" />
             {profiles.map(profile => (
-              <option key={profile.profile_id} value={profile.profile_id}>{profile.profile_nme}</option>
+              <option key={profile.profile_id} value={profile.profile_id}>
+                {profile.profile_nme}
+              </option>
             ))}
           </Select>
         </FormField>
         <TextInput
           id="outlined-outgoing-input"
-          inputProps={{ "maxLength": "10" }}
+          inputProps={{ maxLength: "10" }}
           label="Outgoing Number"
           name="Outgoing Number"
-          onChange={updateForm("did")}
+          onChange={event =>
+            setForm({
+              ...form,
+              outgoing: event.target.value
+            })
+          }
           margin="normal"
           variant="outlined"
           value={form.outgoing}
         />
-        <div style={ { "display": "flex" } }>
+        <div style={{ display: "flex" }}>
           <TextInput
             id="outlined-nNumber-input"
-            inputProps={{ "maxLength": "8" }}
+            inputProps={{ maxLength: "8" }}
             label="N Number"
             name="N Number"
-            onChange={updateForm("nNumber")}
+            onChange={event =>
+              setForm({
+                ...form,
+                nNumber: event.target.value
+              })
+            }
             margin="normal"
             variant="outlined"
             value={form.nNumber}
@@ -325,7 +342,9 @@ const ManagementTable = props => {
           {loading.lookupUser ? <FetchingRing /> : null}
         </div>
         <ButtonWrapper>
-          <CustomButton disabled={!form.ready} onClick={saveUser}>Add User</CustomButton>
+          <CustomButton disabled={!formReady} onClick={saveUser}>
+            Add User
+          </CustomButton>
           <CustomButton onClick={handleClose}>Done</CustomButton>
         </ButtonWrapper>
       </PaperContainer>

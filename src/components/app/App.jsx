@@ -115,7 +115,7 @@ const App = () => {
   } else {
     return (
       <LoadingContainer>
-        <LoadingMessage>{"Connecting..."}</LoadingMessage>
+        <LoadingMessage>{"Loading..."}</LoadingMessage>
         <CircularProgress size={60} />
       </LoadingContainer>
     );
