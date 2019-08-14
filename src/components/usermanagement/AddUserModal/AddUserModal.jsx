@@ -22,6 +22,17 @@ import {
   myAxios
 } from "utils";
 
+const FlexColumn = styled.div`
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+`;
+
+const FlexRow = styled.div`
+  display: flex;
+  flex: 1 1 auto;
+`;
+
 const Spin = keyframes`
   0% {
     transform: rotate(0deg);
@@ -31,8 +42,7 @@ const Spin = keyframes`
   }
 `;
 
-const ButtonWrapper = styled.div`
-  display: flex;
+const ButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
   padding: 1%;
 `;
@@ -55,7 +65,6 @@ const FetchingRing = styled.div`
   display: inline-block;
   width: 64px;
   height: 64px;
-
   &:after {
     content: " ";
     display: block;
@@ -86,10 +95,7 @@ const Header = styled.div`
   margin: 2%;
 `;
 
-const ModalContainer = styled.div`
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
+const ModalContainer = styled(FlexColumn)`
   left: 50%;
   padding: 2%;
   position: absolute;
@@ -142,10 +148,6 @@ const ManagementTable = props => {
       myAxios
         .get(apiPaths.EMPLOYEE_LOOKUP(form.nNumber.substring(1)))
         .then(res => {
-          updateLoading({
-            ...loading,
-            lookupUser: false
-          });
           if (res.data !== []) {
             setForm({
               ...form,
@@ -163,20 +165,21 @@ const ManagementTable = props => {
             setForm({
               ...form,
               lookupInfo: {},
-              lookupError: "No User Found"
+              lookupError: "User Not Found"
             });
           }
         })
         .catch(err => {
-          console.log(err);
-          updateLoading({
-            ...loading,
-            lookupUser: false
-          });
           setForm({
             ...form,
             lookupInfo: {},
-            lookupError: "Error calling lookup service"
+            lookupError: `Error calling lookup service: ${err.message}`
+          });
+        })
+        .finally(() => {
+          updateLoading({
+            ...loading,
+            lookupUser: false
           });
         });
     }
@@ -323,24 +326,27 @@ const ManagementTable = props => {
           variant="outlined"
           value={form.outgoing}
         />
-        <div style={{ display: "flex" }}>
-          <TextInput
-            id="outlined-nNumber-input"
-            inputProps={{ maxLength: "8" }}
-            label="N Number"
-            name="N Number"
-            onChange={event =>
-              setForm({
-                ...form,
-                nNumber: event.target.value
-              })
-            }
-            margin="normal"
-            variant="outlined"
-            value={form.nNumber}
-          />
-          {loading.lookupUser ? <FetchingRing /> : null}
-        </div>
+        <FlexColumn>
+          <FlexRow>
+            <TextInput
+              id="outlined-nNumber-input"
+              inputProps={{ maxLength: "8" }}
+              label="N Number"
+              name="N Number"
+              onChange={event =>
+                setForm({
+                  ...form,
+                  nNumber: event.target.value
+                })
+              }
+              margin="normal"
+              variant="outlined"
+              value={form.nNumber}
+            />
+            {loading.lookupUser ? <FetchingRing /> : null}
+          </FlexRow>
+          <FlexRow style={{ margin: "-2% 2% 2% 2%" }}>Some helper Text</FlexRow>
+        </FlexColumn>
         <ButtonWrapper>
           <CustomButton disabled={!formReady} onClick={saveUser}>
             Add User
