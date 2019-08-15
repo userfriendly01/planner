@@ -103,12 +103,27 @@ const ModalContainer = styled(FlexColumn)`
   transform: translate(-50%, -50%);
 `;
 
+const Overlay = styled(FlexRow)`
+  align-items: center;
+  background-color: black;
+  border-radius: 4px;
+  height: 100%;
+  justify-content: center;
+  left: 0;
+  opacity: .5;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+`;
+
 const PaperContainer = styled(Paper)`
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
   min-width: 400px;
   padding: 2%;
+  position: relative;
 `;
 
 const TextInput = styled(TextField)`
@@ -248,7 +263,7 @@ const ManagementTable = props => {
   return (
     <ModalContainer>
       <PaperContainer>
-        {loading.saveUser ? null : null}
+        {loading.saveUser ? <Overlay ><FetchingRing /></Overlay> : null}
         <Header>Add a User</Header>
         <FormField variant="outlined">
           <InputLabel htmlFor="outlined-selectedManager-native-simple">
