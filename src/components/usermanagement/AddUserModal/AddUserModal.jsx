@@ -233,6 +233,7 @@ const ManagementTable = props => {
   const clearUser = () => {
     setForm({
       ...form,
+      lookupError: null,
       lookupInfo: {},
       nNumber: "N"
     });
