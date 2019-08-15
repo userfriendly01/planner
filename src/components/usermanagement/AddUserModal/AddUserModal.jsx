@@ -61,6 +61,15 @@ const CustomButton = styled(ButtonBase)`
   }
 `;
 
+const ClearButton = styled.button`
+  background-color: #AAEDED;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: 'Roboto',sans-serif;
+  outline: none;
+`;
+
 const FetchingRing = styled.div`
   display: inline-block;
   width: 64px;
@@ -93,6 +102,16 @@ const Header = styled.div`
   letter-spacing: 0rem;
   line-height: 1.30357em;
   margin: 2%;
+`;
+
+const HelperText = styled(FlexRow)`
+  color: ${props => props.error ? "red" : "green"};
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.8em;
+  font-weight: 800;
+  line-height: 1.2em;
+  justify-content: space-between;
+  margin: -1% 2% 2% 2%;
 `;
 
 const ModalContainer = styled(FlexColumn)`
@@ -141,6 +160,7 @@ const ManagementTable = props => {
     managerList
   } = props;
   const { profiles } = useContext(ProfilesContext);
+  const [disableNNumber, setDisableNNumber] = useState(false);
   const [form, setForm] = useState({
     lookupInfo: {},
     nNumber: "N",
@@ -163,7 +183,7 @@ const ManagementTable = props => {
       myAxios
         .get(apiPaths.EMPLOYEE_LOOKUP(form.nNumber.substring(1)))
         .then(res => {
-          if (res.data !== []) {
+          if (res.data.length !== 0) {
             setForm({
               ...form,
               lookupInfo: {
@@ -176,6 +196,7 @@ const ManagementTable = props => {
                 departmentNumber: res.data[0].person.data.DepartmentNumber
               }
             });
+            setDisableNNumber(true);
           } else {
             setForm({
               ...form,
@@ -208,6 +229,15 @@ const ManagementTable = props => {
     }
     console.log(form);
   }, [form]);
+
+  const clearUser = () => {
+    setForm({
+      ...form,
+      lookupInfo: {},
+      nNumber: "N"
+    });
+    setDisableNNumber(false);
+  };
 
   const saveUser = () => {
     updateLoading({
@@ -259,6 +289,17 @@ const ManagementTable = props => {
         console.log(res);
       });
   };
+
+  let helperText = null;
+  if (JSON.stringify(form.lookupInfo) !== JSON.stringify({})) {
+    helperText =
+      <HelperText>
+        <div>{form.lookupInfo.firstName} {form.lookupInfo.lastName}</div>
+        <ClearButton onClick={clearUser}>X</ClearButton>
+      </HelperText>;
+  } else if (form.lookupError) {
+    helperText = <HelperText error>{form.lookupError}</HelperText>;
+  }
 
   return (
     <ModalContainer>
@@ -344,6 +385,7 @@ const ManagementTable = props => {
         <FlexColumn>
           <FlexRow>
             <TextInput
+              disabled={disableNNumber}
               id="outlined-nNumber-input"
               inputProps={{ maxLength: "8" }}
               label="N Number"
@@ -360,7 +402,7 @@ const ManagementTable = props => {
             />
             {loading.lookupUser ? <FetchingRing /> : null}
           </FlexRow>
-          <FlexRow style={{ margin: "-2% 2% 2% 2%" }}>Some helper Text</FlexRow>
+          {helperText}
         </FlexColumn>
         <ButtonWrapper>
           <CustomButton disabled={!formReady} onClick={saveUser}>
