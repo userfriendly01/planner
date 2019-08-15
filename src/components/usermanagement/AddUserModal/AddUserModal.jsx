@@ -111,7 +111,7 @@ const HelperText = styled(FlexRow)`
   font-weight: 800;
   line-height: 1.2em;
   justify-content: space-between;
-  margin: -1% 2% 2% 2%;
+  margin: -1% 4% 2% 4%;
 `;
 
 const ModalContainer = styled(FlexColumn)`
@@ -245,26 +245,12 @@ const ManagementTable = props => {
       saveUser: true
     });
     const parsedManager = JSON.parse(form.manager);
-    console.log({
-      attributes: {
-        did: form.outgoing,
-        email: form.lookupInfo.email,
-        manager_first_name: parsedManager.manager_first_name,
-        manager_last_name: parsedManager.manager_last_name,
-        manager_n_number: parsedManager.manager_n_number,
-        n_number: form.nNumber,
-        office_location_name: form.lookupInfo.officeName,
-        office_location_number: form.lookupInfo.officeNumber,
-        primary_dept_name: form.lookupInfo.departmentName,
-        primary_dept_number: form.lookupInfo.departmentNumber,
-        profile_id: form.team
-      }
-    });
     myAxios
       .post(apiPaths.CREATE_WORKER, {
         attributes: {
           did: form.outgoing,
           email: form.lookupInfo.email,
+          full_name: `${form.lookupInfo.firstName} ${form.lookupInfo.lastName}`,
           manager_first_name: parsedManager.manager_first_name,
           manager_last_name: parsedManager.manager_last_name,
           manager_n_number: parsedManager.manager_n_number,
