@@ -15,6 +15,7 @@ import React, {
   useEffect,
   useState
 } from "react";
+import MaskedInput from "react-text-mask";
 import styled, {
   keyframes
 } from "styled-components";
@@ -152,6 +153,24 @@ const TextInput = styled(TextField)`
   }
 `;
 
+function TextMaskCustom(inputProps) {
+  const {
+    inputRef,
+    ...other
+  }  = inputProps;
+  return (
+    <MaskedInput
+      {...other}
+      guide={false}
+      mask={["(", /[1-9]/, /\d/, /\d/, ")", " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/]}
+      placeholderChar={"\u2000"}
+      ref={ref => {
+        inputRef(ref ? ref.inputElement : null);
+      }}
+      showMask />
+  );
+}
+
 const ManagementTable = props => {
 
   const nNumMatcher = /[n,N]\d{7}/g;
@@ -186,6 +205,7 @@ const ManagementTable = props => {
           if (res.data.length !== 0) {
             setForm({
               ...form,
+              lookupError: null,
               lookupInfo: {
                 email: res.data[0].person.data.Email,
                 firstName: res.data[0].person.data.FirstName,
@@ -249,7 +269,7 @@ const ManagementTable = props => {
     myAxios
       .post(apiPaths.CREATE_WORKER, {
         attributes: {
-          did: form.outgoing,
+          did: `+1${form.outgoing}`,
           email: form.lookupInfo.email,
           full_name: `${form.lookupInfo.firstName} ${form.lookupInfo.lastName}`,
           manager_first_name: parsedManager.manager_first_name,
@@ -356,7 +376,8 @@ const ManagementTable = props => {
         </FormField>
         <TextInput
           id="outlined-outgoing-input"
-          inputProps={{ maxLength: "10" }}
+          InputLabelProps={{ shrink: true }}
+          InputProps={{ inputComponent: TextMaskCustom }}
           label="Outgoing Number"
           name="Outgoing Number"
           onChange={event =>
