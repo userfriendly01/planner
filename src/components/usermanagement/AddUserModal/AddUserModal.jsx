@@ -7,11 +7,10 @@ import {
   Select,
   TextField
 } from "@material-ui/core";
-import { AdminUIContext } from "context";
+import { useStateValue } from "context";
 import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, {
-  useContext,
   useEffect,
   useState
 } from "react";
@@ -178,11 +177,12 @@ const ManagementTable = props => {
     handleClose,
     managerList
   } = props;
-  const {
+  const [{
     profileContext: {
       profiles
     }
-  } = useContext(AdminUIContext);
+  // eslint-disable-next-line no-unused-vars
+  }, dispatch] = useStateValue();
   const [disableNNumber, setDisableNNumber] = useState(false);
   const [form, setForm] = useState({
     lookupInfo: {},

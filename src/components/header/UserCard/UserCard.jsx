@@ -1,8 +1,6 @@
 import { AccountBox } from "@material-ui/icons";
-import { AdminUIContext } from "context";
-import React, {
-  useContext
-} from "react";
+import { useStateValue } from "context";
+import React from "react";
 import styled from "styled-components";
 
 const Card = styled.div`
@@ -26,11 +24,12 @@ const StyledAccountBox = styled(AccountBox)`
 `;
 
 const UserCard = () => {
-  const {
+  const [{
     userContext: {
       pingIdentity: { displayName }
     }
-  } = useContext(AdminUIContext);
+  // eslint-disable-next-line no-unused-vars
+  }, dispatch] = useStateValue();
   return (
     <Card>{displayName}<StyledAccountBox /></Card>
   );

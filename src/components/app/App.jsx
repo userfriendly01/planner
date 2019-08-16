@@ -3,7 +3,7 @@ import {
   Header,
   NavTabs
 } from "components";
-import { AdminUIContext } from "context";
+import { useStateValue } from "context";
 import { apiPaths } from "globals";
 import React, {
   useEffect,
@@ -36,30 +36,30 @@ const LoadingMessage = styled.div`
 
 const App = () => {
 
-  const [authData, setAuthData] = useState({});
-  const [profiles, setProfiles] = useState({
-    profiles: []
-  });
-  const [workers, setWorkers] = useState({
-    workers: []
-  });
+  const [authorized, setAuthorized] = useState(undefined);
+  const [error, setError] = useState(undefined);
+  const [workersLoaded, setWorkersLoaded] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [state, dispatch] = useStateValue();
 
   useEffect(() => {
     myAxios.get(apiPaths.AUTH)
       .then(res => {
-        setAuthData({
-          authorized: true,
-          pingIdentity: res.data
-        });
+        setAuthorized(true);
+        dispatch(({
+          type: "loadUserData",
+          payload: {
+            pingIdentity: res.data
+          }
+        }));
       })
       .catch(err => {
         if(err.response && isErrorIn400s(err.response.status)) {
-          setAuthData({
-            authorized: false
-          });
+          setAuthorized(false);
         } else {
           console.error("An unknown error has occurred.", err);
-          setAuthData({
+          setAuthorized(false);
+          setError({
             authError: err
           });
         }
@@ -67,46 +67,43 @@ const App = () => {
     myAxios
       .get(apiPaths.GET_WORKERS)
       .then(res => {
-        setWorkers({
-          workers: formatWorkerResponse(res.data)
-        });
+        setWorkersLoaded(true);
+        dispatch(({
+          type: "loadWorkers",
+          payload: formatWorkerResponse(res.data)
+        }));
       })
       .catch(err => {
         console.error("An unknown error has occurred.", err);
-        setWorkers({
+        setError({
           error: err
         });
       });
     myAxios.get(apiPaths.GET_PROFILES)
       .then(res => {
-        setProfiles({
-          profiles: res.data
-        });
+        dispatch(({
+          type: "loadProfiles",
+          payload: res.data
+        }));
       })
       .catch(err => {
         console.error("An unknown error has occurred.", err);
-        setProfiles({
+        setError({
           error: err
         });
       });
   }, []);
 
-  if (authData.authorized && workers.length !== 0) {
+  if (authorized && workersLoaded) {
     return (
-      <AdminUIContext.Provider value={{
-        profileContext: profiles,
-        workerContext: workers,
-        userContext: authData
-      }}>
-        <AppWrapper data-testid="app-wrapper">
-          <Header />
-          <NavTabs />
-        </AppWrapper>
-      </AdminUIContext.Provider>
+      <AppWrapper data-testid="app-wrapper">
+        <Header />
+        <NavTabs />
+      </AppWrapper>
     );
-  } else if (authData.authorized === false) {
+  } else if (!authorized && authorized !== undefined) {
     return <div data-testid="unauthorized">{"You are not authorized to view this page"}</div>;
-  } else if (authData.authError) {
+  } else if (error && error !== undefined) {
     return <div data-testid="unknownError">{"An error occured while logging in."}</div>;
   } else {
     return (
