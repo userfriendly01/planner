@@ -1,3 +1,1 @@
-export { default as ProfilesContext } from "./ProfilesContext";
-export { default as UserContext } from "./UserContext";
-export { default as WorkersContext } from "./WorkersContext";
+export { default as AdminUIContext } from "./AdminUIContext";

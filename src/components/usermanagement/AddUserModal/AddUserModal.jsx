@@ -7,7 +7,7 @@ import {
   Select,
   TextField
 } from "@material-ui/core";
-import { ProfilesContext } from "context";
+import { AdminUIContext } from "context";
 import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, {
@@ -178,7 +178,11 @@ const ManagementTable = props => {
     handleClose,
     managerList
   } = props;
-  const { profiles } = useContext(ProfilesContext);
+  const {
+    profileContext: {
+      profiles
+    }
+  } = useContext(AdminUIContext);
   const [disableNNumber, setDisableNNumber] = useState(false);
   const [form, setForm] = useState({
     lookupInfo: {},
@@ -377,7 +381,6 @@ const ManagementTable = props => {
         </FormField>
         <TextInput
           id="outlined-outgoing-input"
-          InputLabelProps={{ shrink: true }}
           InputProps={{ inputComponent: TextMaskCustom }}
           label="Outgoing Number"
           name="Outgoing Number"

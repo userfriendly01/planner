@@ -1,5 +1,5 @@
 import { AccountBox } from "@material-ui/icons";
-import { UserContext } from "context";
+import { AdminUIContext } from "context";
 import React, {
   useContext
 } from "react";
@@ -27,8 +27,10 @@ const StyledAccountBox = styled(AccountBox)`
 
 const UserCard = () => {
   const {
-    pingIdentity: { displayName }
-  } = useContext(UserContext);
+    userContext: {
+      pingIdentity: { displayName }
+    }
+  } = useContext(AdminUIContext);
   return (
     <Card>{displayName}<StyledAccountBox /></Card>
   );

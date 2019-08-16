@@ -4,7 +4,7 @@ import {
   ManagementPagination,
   ManagementTable
 } from "components";
-import { WorkersContext } from "context";
+import { AdminUIContext } from "context";
 import React, {
   useContext,
   useEffect,
@@ -28,9 +28,13 @@ const StyledPaper = styled(Paper)`
 const workersPerPage = 10;
 
 const ManagementWrapper = () => {
-  const { workers } = useContext(WorkersContext);
+  const {
+    workerContext: {
+      workers
+    }
+  } = useContext(AdminUIContext);
   const [filterBy, setFilterBy] = useState("");
-  const [filteredWorkers, setFilteredWorkers] = useState(workers);
+  const [filteredWorkers, setFilteredWorkers] = useState([]);
   const [filterOptions, setFilterOptions] = useState([]);
   const [workersStart, setWorkersStart] = useState(1);
   const [workersEnd, setWorkersEnd] = useState(workersPerPage);

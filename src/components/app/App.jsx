@@ -3,11 +3,7 @@ import {
   Header,
   NavTabs
 } from "components";
-import {
-  ProfilesContext,
-  UserContext,
-  WorkersContext
-} from "context";
+import { AdminUIContext } from "context";
 import { apiPaths } from "globals";
 import React, {
   useEffect,
@@ -97,16 +93,16 @@ const App = () => {
 
   if (authData.authorized && workers.length !== 0) {
     return (
-      <UserContext.Provider value={authData}>
-        <WorkersContext.Provider value={workers}>
-          <ProfilesContext.Provider value={profiles}>
-            <AppWrapper data-testid="app-wrapper">
-              <Header />
-              <NavTabs />
-            </AppWrapper>
-          </ProfilesContext.Provider>
-        </WorkersContext.Provider>
-      </UserContext.Provider>
+      <AdminUIContext.Provider value={{
+        profileContext: profiles,
+        workerContext: workers,
+        userContext: authData
+      }}>
+        <AppWrapper data-testid="app-wrapper">
+          <Header />
+          <NavTabs />
+        </AppWrapper>
+      </AdminUIContext.Provider>
     );
   } else if (authData.authorized === false) {
     return <div data-testid="unauthorized">{"You are not authorized to view this page"}</div>;
