@@ -3,7 +3,6 @@ export const getUniqueManagerList = workersArray => {
   if (workersArray.length !== 0) {
     const result = [];
     const map = new Map();
-    console.log("FUCK YOU", workersArray);
     for (const worker of workersArray) {
       if (!map.has(worker.attributes.manager_n_number) && worker.attributes.manager_n_number !== undefined) {
         map.set(worker.attributes.manager_n_number, true);
