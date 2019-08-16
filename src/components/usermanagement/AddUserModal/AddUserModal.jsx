@@ -269,7 +269,7 @@ const ManagementTable = props => {
     myAxios
       .post(apiPaths.CREATE_WORKER, {
         attributes: {
-          did: `+1${form.outgoing}`,
+          did: `+1${form.outgoing.replace(/[\D]/g, "")}`,
           email: form.lookupInfo.email,
           full_name: `${form.lookupInfo.firstName} ${form.lookupInfo.lastName}`,
           manager_first_name: parsedManager.manager_first_name,
@@ -289,6 +289,7 @@ const ManagementTable = props => {
           lookupInfo: {},
           nNumber: "N"
         });
+        setDisableNNumber(false);
         updateLoading({
           ...loading,
           saveUser: false
