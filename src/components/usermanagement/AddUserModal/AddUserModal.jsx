@@ -1,13 +1,13 @@
 import {
   ButtonBase,
-  Paper,
-  TextField
+  Paper
 } from "@material-ui/core";
 import {
   CustomSelect,
   ModalHelperText,
   ModalNNumber,
-  ModalOverlay
+  ModalOverlay,
+  ModalPhoneNumber
 } from "components";
 import { useStateValue } from "context";
 import { apiPaths } from "globals";
@@ -16,7 +16,6 @@ import React, {
   useEffect,
   useState
 } from "react";
-import MaskedInput from "react-text-mask";
 import styled from "styled-components";
 import { myAxios } from "utils";
 
@@ -77,31 +76,6 @@ const PaperContainer = styled(Paper)`
   padding: 2%;
   position: relative;
 `;
-
-const TextInput = styled(TextField)`
-  flex-grow: 1;
-  && {
-    margin: 2%;
-  }
-`;
-
-function TextMaskCustom(inputProps) {
-  const {
-    inputRef,
-    ...other
-  }  = inputProps;
-  return (
-    <MaskedInput
-      {...other}
-      guide={false}
-      mask={["(", /[1-9]/, /\d/, /\d/, ")", " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/]}
-      placeholderChar={"\u2000"}
-      ref={ref => {
-        inputRef(ref ? ref.inputElement : null);
-      }}
-      showMask />
-  );
-}
 
 const AddUserModal = props => {
 
@@ -268,20 +242,12 @@ const AddUserModal = props => {
           })}
           value={form.team}
         />
-        <TextInput
-          id="outlined-outgoing-input"
-          InputProps={{ inputComponent: TextMaskCustom }}
-          label="Outgoing Number"
-          name="Outgoing Number"
-          onChange={event =>
-            setForm({
-              ...form,
-              outgoing: event.target.value
-            })
-          }
-          margin="normal"
-          variant="outlined"
-          value={form.outgoing}
+        <ModalPhoneNumber
+          outgoingNumber={form.outgoing}
+          updateValue={newValue => setForm({
+            ...form,
+            outgoing: newValue
+          })}
         />
         <FlexColumn>
           <ModalNNumber
