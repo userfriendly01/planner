@@ -1,12 +1,9 @@
 import {
   ButtonBase,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
   Paper,
-  Select,
   TextField
 } from "@material-ui/core";
+import { CustomSelect } from "components";
 import { useStateValue } from "context";
 import { apiPaths } from "globals";
 import PropTypes from "prop-types";
@@ -87,12 +84,6 @@ const FetchingRing = styled.div`
   }
 `;
 
-const FormField = styled(FormControl)`
-  && {
-    margin: 2%;
-  }
-`;
-
 const Header = styled.div`
   align-self: center;
   color: #1A1446;
@@ -170,7 +161,7 @@ function TextMaskCustom(inputProps) {
   );
 }
 
-const ManagementTable = props => {
+const AddUserModal = props => {
 
   const nNumMatcher = /[n,N]\d{7}/g;
   const {
@@ -251,7 +242,6 @@ const ManagementTable = props => {
     } else {
       setFormReady(false);
     }
-    console.log(form);
   }, [form]);
 
   const clearUser = () => {
@@ -290,6 +280,7 @@ const ManagementTable = props => {
       .then(res => {
         setForm({
           ...form,
+          lookupError: null,
           lookupInfo: {},
           nNumber: "N"
         });
@@ -318,67 +309,40 @@ const ManagementTable = props => {
       <PaperContainer>
         {loading.saveUser ? <Overlay ><FetchingRing /></Overlay> : null}
         <Header>Add a User</Header>
-        <FormField variant="outlined">
-          <InputLabel htmlFor="outlined-selectedManager-native-simple">
-            Manager
-          </InputLabel>
-          <Select
-            native
-            value={form.manager}
-            onChange={event =>
-              setForm({
-                ...form,
-                manager: event.target.value
-              })
-            }
-            input={
-              <OutlinedInput
-                name="selectedManager"
-                labelWidth={65}
-                id="outlined-selectedManager-native-simple"
-              />
-            }
-          >
-            <option value="" />
-            {managerList.map(manager => (
-              <option
-                key={manager.manager_n_number}
-                value={JSON.stringify(manager)}
-              >
-                {manager.manager_first_name} {manager.manager_last_name}
-              </option>
-            ))}
-          </Select>
-        </FormField>
-        <FormField variant="outlined">
-          <InputLabel htmlFor="outlined-selectedTeam-native-simple">
-            Team
-          </InputLabel>
-          <Select
-            native
-            value={form.team}
-            onChange={event =>
-              setForm({
-                ...form,
-                team: event.target.value
-              })
-            }
-            input={
-              <OutlinedInput
-                name="selectedTeam"
-                labelWidth={41}
-                id="outlined-selectedTeam-native-simple"
-              />
-            }
-          >
-            <option value="" />
-            {profiles.map(profile => (
-              <option key={profile.profile_id} value={profile.profile_id}>
-                {profile.profile_nme}
-              </option>
-            ))}
-          </Select>
-        </FormField>
+        <CustomSelect
+          label={"Manager"}
+          labelWidth={65}
+          optionsList={managerList}
+          optionsDisplayFunc={option => {
+            return {
+              display: `${option.manager_first_name} ${option.manager_last_name}`,
+              key: option.manager_n_number,
+              value: JSON.stringify(option)
+            };
+          }}
+          updateValue={newValue => setForm({
+            ...form,
+            manager: newValue
+          })}
+          value={form.manager}
+        />
+        <CustomSelect
+          label={"Team"}
+          labelWidth={41}
+          optionsList={profiles}
+          optionsDisplayFunc={option => {
+            return {
+              display: option.profile_nme,
+              key: option.profile_id,
+              value: option.profile_id
+            };
+          }}
+          updateValue={newValue => setForm({
+            ...form,
+            team: newValue
+          })}
+          value={form.team}
+        />
         <TextInput
           id="outlined-outgoing-input"
           InputProps={{ inputComponent: TextMaskCustom }}
@@ -427,7 +391,7 @@ const ManagementTable = props => {
   );
 };
 
-ManagementTable.propTypes = {
+AddUserModal.propTypes = {
   handleClose: PropTypes.func,
   managerList: PropTypes.arrayOf(
     PropTypes.shape({
@@ -438,4 +402,4 @@ ManagementTable.propTypes = {
   )
 };
 
-export default ManagementTable;
+export default AddUserModal;
