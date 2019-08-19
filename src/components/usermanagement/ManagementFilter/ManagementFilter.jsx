@@ -6,7 +6,10 @@ import {
   Modal,
   Select
 } from "@material-ui/core";
-import { AddUserModal } from "components";
+import {
+  AddUserModal,
+  AddManagerModal
+} from "components";
 import PropTypes from "prop-types";
 import React, {
   useState
@@ -41,14 +44,23 @@ const ManagementFilter = props => {
     setFilter
   } = props;
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
+  const [isAddManagerModalOpen, setIsAddManagerModalOpen] = useState(false);
 
-  const handleOpen = () => {
-    setIsModalOpen(true);
+  const handleOpenAddUser = () => {
+    setIsAddUserModalOpen(true);
   };
 
-  const handleClose = () => {
-    setIsModalOpen(false);
+  const handleCloseAddUser = () => {
+    setIsAddUserModalOpen(false);
+  };
+
+  const handleOpenAddManager = () => {
+    setIsAddManagerModalOpen(true);
+  };
+
+  const handleCloseAddManager = () => {
+    setIsAddManagerModalOpen(false);
   };
 
   return (
@@ -76,9 +88,13 @@ const ManagementFilter = props => {
           ))}
         </Select>
       </FormControl>
-      <CustomButton onClick={handleOpen}>Add User</CustomButton>
-      <Modal disableBackdropClick={true} open={isModalOpen}>
-        <AddUserModal handleClose={handleClose} managerList={options} />
+      <CustomButton onClick={handleOpenAddManager}>Add Manager</CustomButton>
+      <CustomButton onClick={handleOpenAddUser}>Add User</CustomButton>
+      <Modal disableBackdropClick={true} open={isAddUserModalOpen}>
+        <AddUserModal handleClose={handleCloseAddUser} managerList={options} />
+      </Modal>
+      <Modal disableBackdropClick={true} open={isAddManagerModalOpen}>
+        <AddManagerModal handleClose={handleCloseAddManager} />
       </Modal>
     </ControlsWrapper>
   );
