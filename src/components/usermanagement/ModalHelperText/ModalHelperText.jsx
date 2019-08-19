@@ -26,7 +26,7 @@ const HelperTextSection = styled(FlexRow)`
   margin: -1% 4% 2% 4%;
 `;
 
-const HelperText = props => {
+const ModalHelperText = props => {
   const {
     clearUser,
     error,
@@ -45,10 +45,10 @@ const HelperText = props => {
   return null;
 };
 
-HelperText.propTypes = {
+ModalHelperText.propTypes = {
   clearUser: PropTypes.func,
   error: PropTypes.string,
   lookupInfo: PropTypes.object
 };
 
-export default HelperText;
+export default ModalHelperText;

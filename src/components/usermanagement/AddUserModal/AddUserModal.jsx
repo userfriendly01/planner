@@ -5,8 +5,9 @@ import {
 } from "@material-ui/core";
 import {
   CustomSelect,
-  HelperText,
-  ModalNNumber
+  ModalHelperText,
+  ModalNNumber,
+  ModalOverlay
 } from "components";
 import { useStateValue } from "context";
 import { apiPaths } from "globals";
@@ -16,9 +17,7 @@ import React, {
   useState
 } from "react";
 import MaskedInput from "react-text-mask";
-import styled, {
-  keyframes
-} from "styled-components";
+import styled from "styled-components";
 import { myAxios } from "utils";
 
 const FlexColumn = styled.div`
@@ -30,15 +29,6 @@ const FlexColumn = styled.div`
 const FlexRow = styled.div`
   display: flex;
   flex: 1 1 auto;
-`;
-
-const Spin = keyframes`
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 `;
 
 const ButtonWrapper = styled(FlexRow)`
@@ -60,23 +50,6 @@ const CustomButton = styled(ButtonBase)`
   }
 `;
 
-const FetchingRing = styled.div`
-  display: inline-block;
-  width: 64px;
-  height: 64px;
-  &:after {
-    content: " ";
-    display: block;
-    width: 46px;
-    height: 46px;
-    margin: 1px;
-    border-radius: 50%;
-    border: 5px solid #AAEDED;
-    border-color: #AAEDED transparent #AAEDED transparent;
-    animation: ${Spin} 1.2s linear infinite;
-  }
-`;
-
 const Header = styled.div`
   align-self: center;
   color: #1A1446;
@@ -94,20 +67,6 @@ const ModalContainer = styled(FlexColumn)`
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
-`;
-
-const Overlay = styled(FlexRow)`
-  align-items: center;
-  background-color: black;
-  border-radius: 4px;
-  height: 100%;
-  justify-content: center;
-  left: 0;
-  opacity: .5;
-  position: absolute;
-  top: 0;
-  width: 100%;
-  z-index: 100;
 `;
 
 const PaperContainer = styled(Paper)`
@@ -273,7 +232,7 @@ const AddUserModal = props => {
   return (
     <ModalContainer>
       <PaperContainer>
-        {loading.saveUser ? <Overlay ><FetchingRing /></Overlay> : null}
+        <ModalOverlay loading={loading.saveUser} />
         <Header>Add a User</Header>
         <CustomSelect
           label={"Manager"}
@@ -334,7 +293,7 @@ const AddUserModal = props => {
               nNumber: newValue
             })}
           />
-          <HelperText
+          <ModalHelperText
             clearUser={clearUser}
             error={form.lookupError}
             lookupInfo={form.lookupInfo}
@@ -344,7 +303,7 @@ const AddUserModal = props => {
           <CustomButton disabled={!formReady} onClick={saveUser}>
             Add User
           </CustomButton>
-          <CustomButton onClick={handleClose}>Done</CustomButton>
+          <CustomButton onClick={handleClose}>Close</CustomButton>
         </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>
