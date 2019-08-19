@@ -3,7 +3,11 @@ import {
   Paper,
   TextField
 } from "@material-ui/core";
-import { CustomSelect } from "components";
+import {
+  CustomSelect,
+  HelperText,
+  ModalNNumber
+} from "components";
 import { useStateValue } from "context";
 import { apiPaths } from "globals";
 import PropTypes from "prop-types";
@@ -15,9 +19,7 @@ import MaskedInput from "react-text-mask";
 import styled, {
   keyframes
 } from "styled-components";
-import {
-  myAxios
-} from "utils";
+import { myAxios } from "utils";
 
 const FlexColumn = styled.div`
   display: flex;
@@ -58,15 +60,6 @@ const CustomButton = styled(ButtonBase)`
   }
 `;
 
-const ClearButton = styled.button`
-  background-color: #AAEDED;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-family: 'Roboto',sans-serif;
-  outline: none;
-`;
-
 const FetchingRing = styled.div`
   display: inline-block;
   width: 64px;
@@ -93,16 +86,6 @@ const Header = styled.div`
   letter-spacing: 0rem;
   line-height: 1.30357em;
   margin: 2%;
-`;
-
-const HelperText = styled(FlexRow)`
-  color: ${props => props.error ? "red" : "green"};
-  font-family: 'Roboto', sans-serif;
-  font-size: 0.8em;
-  font-weight: 800;
-  line-height: 1.2em;
-  justify-content: space-between;
-  margin: -1% 4% 2% 4%;
 `;
 
 const ModalContainer = styled(FlexColumn)`
@@ -278,13 +261,7 @@ const AddUserModal = props => {
         }
       })
       .then(res => {
-        setForm({
-          ...form,
-          lookupError: null,
-          lookupInfo: {},
-          nNumber: "N"
-        });
-        setDisableNNumber(false);
+        clearUser();
         updateLoading({
           ...loading,
           saveUser: false
@@ -292,17 +269,6 @@ const AddUserModal = props => {
         console.log(res);
       });
   };
-
-  let helperText = null;
-  if (JSON.stringify(form.lookupInfo) !== JSON.stringify({})) {
-    helperText =
-      <HelperText>
-        <div>{form.lookupInfo.firstName} {form.lookupInfo.lastName}</div>
-        <ClearButton onClick={clearUser}>X</ClearButton>
-      </HelperText>;
-  } else if (form.lookupError) {
-    helperText = <HelperText error>{form.lookupError}</HelperText>;
-  }
 
   return (
     <ModalContainer>
@@ -359,26 +325,20 @@ const AddUserModal = props => {
           value={form.outgoing}
         />
         <FlexColumn>
-          <FlexRow>
-            <TextInput
-              disabled={disableNNumber}
-              id="outlined-nNumber-input"
-              inputProps={{ maxLength: "8" }}
-              label="N Number"
-              name="N Number"
-              onChange={event =>
-                setForm({
-                  ...form,
-                  nNumber: event.target.value
-                })
-              }
-              margin="normal"
-              variant="outlined"
-              value={form.nNumber}
-            />
-            {loading.lookupUser ? <FetchingRing /> : null}
-          </FlexRow>
-          {helperText}
+          <ModalNNumber
+            disabled={disableNNumber}
+            loading={loading.lookupUser}
+            nNumber={form.nNumber}
+            updateValue={newValue => setForm({
+              ...form,
+              nNumber: newValue
+            })}
+          />
+          <HelperText
+            clearUser={clearUser}
+            error={form.lookupError}
+            lookupInfo={form.lookupInfo}
+          />
         </FlexColumn>
         <ButtonWrapper>
           <CustomButton disabled={!formReady} onClick={saveUser}>
