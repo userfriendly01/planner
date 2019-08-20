@@ -3,7 +3,7 @@ import {
   Header,
   NavTabs
 } from "components";
-import { useStateValue } from "context";
+import { useAdminDispatch } from "context";
 import { apiPaths } from "globals";
 import React, {
   useEffect,
@@ -39,8 +39,7 @@ const App = () => {
   const [authorized, setAuthorized] = useState(undefined);
   const [error, setError] = useState(undefined);
   const [workersLoaded, setWorkersLoaded] = useState(false);
-  // eslint-disable-next-line no-unused-vars
-  const [state, dispatch] = useStateValue();
+  const dispatch = useAdminDispatch();
 
   useEffect(() => {
     myAxios.get(apiPaths.AUTH)

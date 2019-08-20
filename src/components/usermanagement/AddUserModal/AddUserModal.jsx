@@ -1,23 +1,23 @@
 import {
   ButtonBase,
-  Paper,
-  TextField
+  Paper
 } from "@material-ui/core";
-import { CustomSelect } from "components";
-import { useStateValue } from "context";
+import {
+  CustomSelect,
+  ModalHelperText,
+  ModalNNumber,
+  ModalOverlay,
+  ModalPhoneNumber
+} from "components";
+import { useAdminState } from "context";
 import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, {
   useEffect,
   useState
 } from "react";
-import MaskedInput from "react-text-mask";
-import styled, {
-  keyframes
-} from "styled-components";
-import {
-  myAxios
-} from "utils";
+import styled from "styled-components";
+import { myAxios } from "utils";
 
 const FlexColumn = styled.div`
   display: flex;
@@ -28,15 +28,6 @@ const FlexColumn = styled.div`
 const FlexRow = styled.div`
   display: flex;
   flex: 1 1 auto;
-`;
-
-const Spin = keyframes`
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 `;
 
 const ButtonWrapper = styled(FlexRow)`
@@ -58,32 +49,6 @@ const CustomButton = styled(ButtonBase)`
   }
 `;
 
-const ClearButton = styled.button`
-  background-color: #AAEDED;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-family: 'Roboto',sans-serif;
-  outline: none;
-`;
-
-const FetchingRing = styled.div`
-  display: inline-block;
-  width: 64px;
-  height: 64px;
-  &:after {
-    content: " ";
-    display: block;
-    width: 46px;
-    height: 46px;
-    margin: 1px;
-    border-radius: 50%;
-    border: 5px solid #AAEDED;
-    border-color: #AAEDED transparent #AAEDED transparent;
-    animation: ${Spin} 1.2s linear infinite;
-  }
-`;
-
 const Header = styled.div`
   align-self: center;
   color: #1A1446;
@@ -95,36 +60,12 @@ const Header = styled.div`
   margin: 2%;
 `;
 
-const HelperText = styled(FlexRow)`
-  color: ${props => props.error ? "red" : "green"};
-  font-family: 'Roboto', sans-serif;
-  font-size: 0.8em;
-  font-weight: 800;
-  line-height: 1.2em;
-  justify-content: space-between;
-  margin: -1% 4% 2% 4%;
-`;
-
 const ModalContainer = styled(FlexColumn)`
   left: 50%;
   padding: 2%;
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
-`;
-
-const Overlay = styled(FlexRow)`
-  align-items: center;
-  background-color: black;
-  border-radius: 4px;
-  height: 100%;
-  justify-content: center;
-  left: 0;
-  opacity: .5;
-  position: absolute;
-  top: 0;
-  width: 100%;
-  z-index: 100;
 `;
 
 const PaperContainer = styled(Paper)`
@@ -136,31 +77,6 @@ const PaperContainer = styled(Paper)`
   position: relative;
 `;
 
-const TextInput = styled(TextField)`
-  flex-grow: 1;
-  && {
-    margin: 2%;
-  }
-`;
-
-function TextMaskCustom(inputProps) {
-  const {
-    inputRef,
-    ...other
-  }  = inputProps;
-  return (
-    <MaskedInput
-      {...other}
-      guide={false}
-      mask={["(", /[1-9]/, /\d/, /\d/, ")", " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/]}
-      placeholderChar={"\u2000"}
-      ref={ref => {
-        inputRef(ref ? ref.inputElement : null);
-      }}
-      showMask />
-  );
-}
-
 const AddUserModal = props => {
 
   const nNumMatcher = /[n,N]\d{7}/g;
@@ -168,12 +84,11 @@ const AddUserModal = props => {
     handleClose,
     managerList
   } = props;
-  const [{
+  const {
     profileContext: {
       profiles
     }
-  // eslint-disable-next-line no-unused-vars
-  }, dispatch] = useStateValue();
+  } = useAdminState();
   const [disableNNumber, setDisableNNumber] = useState(false);
   const [form, setForm] = useState({
     lookupInfo: {},
@@ -185,6 +100,7 @@ const AddUserModal = props => {
   const [formReady, setFormReady] = useState(false);
   const [loading, updateLoading] = useState({
     lookupUser: false,
+    saveStatus: "saving",
     saveUser: false
   });
 
@@ -257,6 +173,7 @@ const AddUserModal = props => {
   const saveUser = () => {
     updateLoading({
       ...loading,
+      saveStatus: "saving",
       saveUser: true
     });
     const parsedManager = JSON.parse(form.manager);
@@ -278,36 +195,40 @@ const AddUserModal = props => {
         }
       })
       .then(res => {
-        setForm({
-          ...form,
-          lookupError: null,
-          lookupInfo: {},
-          nNumber: "N"
-        });
-        setDisableNNumber(false);
+        clearUser();
         updateLoading({
           ...loading,
-          saveUser: false
+          saveStatus: "success",
+          saveUser: true
         });
+        setTimeout(() => {
+          updateLoading({
+            ...loading,
+            saveUser: false
+          });
+        }, 2000);
         console.log(res);
+      })
+      .catch(err => {
+        updateLoading({
+          ...loading,
+          saveStatus: "fail",
+          saveUser: true
+        });
+        setTimeout(() => {
+          updateLoading({
+            ...loading,
+            saveUser: false
+          });
+        }, 2000);
+        console.log(err);
       });
   };
-
-  let helperText = null;
-  if (JSON.stringify(form.lookupInfo) !== JSON.stringify({})) {
-    helperText =
-      <HelperText>
-        <div>{form.lookupInfo.firstName} {form.lookupInfo.lastName}</div>
-        <ClearButton onClick={clearUser}>X</ClearButton>
-      </HelperText>;
-  } else if (form.lookupError) {
-    helperText = <HelperText error>{form.lookupError}</HelperText>;
-  }
 
   return (
     <ModalContainer>
       <PaperContainer>
-        {loading.saveUser ? <Overlay ><FetchingRing /></Overlay> : null}
+        {loading.saveUser ? <ModalOverlay status={loading.saveStatus} /> : null}
         <Header>Add a User</Header>
         <CustomSelect
           label={"Manager"}
@@ -343,48 +264,34 @@ const AddUserModal = props => {
           })}
           value={form.team}
         />
-        <TextInput
-          id="outlined-outgoing-input"
-          InputProps={{ inputComponent: TextMaskCustom }}
-          label="Outgoing Number"
-          name="Outgoing Number"
-          onChange={event =>
-            setForm({
-              ...form,
-              outgoing: event.target.value
-            })
-          }
-          margin="normal"
-          variant="outlined"
-          value={form.outgoing}
+        <ModalPhoneNumber
+          outgoingNumber={form.outgoing}
+          updateValue={newValue => setForm({
+            ...form,
+            outgoing: newValue
+          })}
         />
         <FlexColumn>
-          <FlexRow>
-            <TextInput
-              disabled={disableNNumber}
-              id="outlined-nNumber-input"
-              inputProps={{ maxLength: "8" }}
-              label="N Number"
-              name="N Number"
-              onChange={event =>
-                setForm({
-                  ...form,
-                  nNumber: event.target.value
-                })
-              }
-              margin="normal"
-              variant="outlined"
-              value={form.nNumber}
-            />
-            {loading.lookupUser ? <FetchingRing /> : null}
-          </FlexRow>
-          {helperText}
+          <ModalNNumber
+            disabled={disableNNumber}
+            loading={loading.lookupUser}
+            nNumber={form.nNumber}
+            updateValue={newValue => setForm({
+              ...form,
+              nNumber: newValue
+            })}
+          />
+          <ModalHelperText
+            clearUser={clearUser}
+            error={form.lookupError}
+            lookupInfo={form.lookupInfo}
+          />
         </FlexColumn>
         <ButtonWrapper>
           <CustomButton disabled={!formReady} onClick={saveUser}>
             Add User
           </CustomButton>
-          <CustomButton onClick={handleClose}>Done</CustomButton>
+          <CustomButton onClick={handleClose}>Close</CustomButton>
         </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>

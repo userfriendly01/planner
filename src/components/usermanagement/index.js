@@ -4,3 +4,7 @@ export { default as ManagementFilter } from "./ManagementFilter/ManagementFilter
 export { default as ManagementPagination } from "./ManagementPagination/ManagementPagination";
 export { default as ManagementTable } from "./ManagementTable/ManagementTable";
 export { default as ManagementWrapper } from "./ManagementWrapper/ManagementWrapper";
+export { default as ModalHelperText } from "./ModalHelperText/ModalHelperText";
+export { default as ModalNNumber } from "./ModalNNumber/ModalNNumber";
+export { default as ModalOverlay } from "./ModalOverlay/ModalOverlay";
+export { default as ModalPhoneNumber } from "./ModalPhoneNumber/ModalPhoneNumber";

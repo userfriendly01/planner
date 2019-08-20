@@ -1,27 +1,47 @@
-// https://medium.com/simply/state-management-with-react-hooks-and-context-api-at-10-lines-of-code-baf6be8302c
-import PropTypes from "prop-types";
-import React, {
-  createContext,
-  useContext,
-  useReducer
-} from "react";
-
-export const StateContext = createContext();
-
-export const StateProvider = ({
-  reducer,
+// Our Boy Kent C https://kentcdodds.com/blog/how-to-use-react-context-effectively
+import {
   initialState,
-  children
-}) =>(
-  <StateContext.Provider value={useReducer(reducer, initialState)}>
-    {children}
-  </StateContext.Provider>
-);
+  reducer
+} from "context";
+import PropTypes from "prop-types";
+import React from "react";
 
-StateProvider.propTypes = {
-  children: PropTypes.object,
-  initialState: PropTypes.object,
-  reducer: PropTypes.func
+export const DispatchContext = React.createContext();
+export const StateContext = React.createContext();
+
+const StateProvider = ({ children }) => {
+  const [state, dispatch] = React.useReducer(reducer, initialState);
+  return (
+    <StateContext.Provider value={state}>
+      <DispatchContext.Provider value={dispatch}>
+        {children}
+      </DispatchContext.Provider>
+    </StateContext.Provider>
+  );
 };
 
-export const useStateValue = () => useContext(StateContext);
+StateProvider.propTypes = {
+  children: PropTypes.any
+};
+
+const useAdminDispatch = () => {
+  const context = React.useContext(DispatchContext);
+  if (context === undefined) {
+    throw new Error("DispatchContext must be used within a CountProvider");
+  }
+  return context;
+};
+
+const useAdminState = () => {
+  const context = React.useContext(StateContext);
+  if (context === undefined) {
+    throw new Error("useCountState must be used within a CountProvider");
+  }
+  return context;
+};
+
+export {
+  StateProvider,
+  useAdminDispatch,
+  useAdminState
+};
