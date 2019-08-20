@@ -4,7 +4,10 @@ import {
   ManagementPagination,
   ManagementTable
 } from "components";
-import { useAdminState } from "context";
+import {
+  useAdminDispatch,
+  useAdminState
+} from "context";
 import React, {
   useEffect,
   useState
@@ -32,9 +35,9 @@ const ManagementWrapper = () => {
       workers
     }
   } = useAdminState();
+  const dispatch = useAdminDispatch();
   const [filterBy, setFilterBy] = useState("");
   const [filteredWorkers, setFilteredWorkers] = useState([]);
-  const [filterOptions, setFilterOptions] = useState([]);
   const [workersStart, setWorkersStart] = useState(1);
   const [workersEnd, setWorkersEnd] = useState(workersPerPage);
   const [pageSelected, setPageSelected] = useState(1);
@@ -55,12 +58,15 @@ const ManagementWrapper = () => {
     } else {
       setFilteredWorkers(workers.filter(worker => worker.attributes.manager_n_number === filterBy));
     }
-    setFilterOptions(getUniqueManagerList(workers));
+    dispatch({
+      type: "loadManagers",
+      payload: getUniqueManagerList(workers)
+    });
   }, [filterBy, workers]);
 
   return (
     <ManagementContainer>
-      <ManagementFilter filterBy={filterBy} options={filterOptions} setFilter={setFilterBy} />
+      <ManagementFilter filterBy={filterBy} setFilter={setFilterBy} />
       <StyledPaper elevation={3}>
         <ManagementTable workers={filteredWorkers.slice(workersStart - 1, workersEnd)} />
       </StyledPaper>

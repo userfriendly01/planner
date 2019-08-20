@@ -10,6 +10,7 @@ import {
   AddUserModal,
   AddManagerModal
 } from "components";
+import { useAdminState } from "context";
 import PropTypes from "prop-types";
 import React, {
   useState
@@ -40,9 +41,14 @@ const CustomButton = styled(ButtonBase)`
 const ManagementFilter = props => {
   const {
     filterBy,
-    options,
     setFilter
   } = props;
+
+  const {
+    managerContext: {
+      managers
+    }
+  } = useAdminState();
 
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
   const [isAddManagerModalOpen, setIsAddManagerModalOpen] = useState(false);
@@ -78,20 +84,24 @@ const ManagementFilter = props => {
           }
         >
           <option value="">Show All</option>
-          {options.map(manager => (
-            <option
-              key={manager.manager_n_number}
-              value={manager.manager_n_number}
-            >
-              {manager.manager_first_name} {manager.manager_last_name}
-            </option>
-          ))}
+          {managers.map(manager => {
+            console.log(manager);
+            return (
+              <option
+                key={manager.manager_n_number}
+                value={manager.manager_n_number}
+              >
+                {manager.manager_first_name} {manager.manager_last_name}
+              </option>
+            );
+          }
+          )}
         </Select>
       </FormControl>
       <CustomButton onClick={handleOpenAddManager}>Add Manager</CustomButton>
       <CustomButton onClick={handleOpenAddUser}>Add User</CustomButton>
       <Modal disableBackdropClick={true} open={isAddUserModalOpen}>
-        <AddUserModal handleClose={handleCloseAddUser} managerList={options} />
+        <AddUserModal handleClose={handleCloseAddUser} managerList={managers} />
       </Modal>
       <Modal disableBackdropClick={true} open={isAddManagerModalOpen}>
         <AddManagerModal handleClose={handleCloseAddManager} />
@@ -102,7 +112,6 @@ const ManagementFilter = props => {
 
 ManagementFilter.propTypes = {
   filterBy: PropTypes.string.isRequired,
-  options: PropTypes.arrayOf(PropTypes.object),
   setFilter: PropTypes.func.isRequired
 };
 

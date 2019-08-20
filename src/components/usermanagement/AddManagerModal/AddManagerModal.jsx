@@ -8,7 +8,7 @@ import {
   // Select,
   TextField
 } from "@material-ui/core";
-// import { ProfilesContext } from "context";
+import { useAdminDispatch } from "context";
 import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, {
@@ -152,12 +152,35 @@ const AddManagerModal = props => {
 
   const nNumMatcher = /[n,N]\d{7}/g;
 
+  const [disableNNumber, setDisableNNumber] = useState(false);
+  const [form, setForm] = useState({
+    lookupInfo: {},
+    nNumber: "N"
+  });
+  const [formReady, setFormReady] = useState(false);
+  const [loading, updateLoading] = useState({
+    lookupUser: false,
+    saveManager: false
+  });
+  const dispatch = useAdminDispatch();
+
   const saveManager = () => {
-    console.log("saveManager:", form.lookupInfo.firstName);
-    // updateLoading({
-    //   ...loading,
-    //   saveManager: true
-    // });
+    updateLoading({
+      ...loading,
+      saveManager: true
+    });
+    const manager = {
+      manager_first_name: form.lookupInfo.firstName,
+      manager_last_name: form.lookupInfo.lastName,
+      manager_n_number: form.nNumber
+    };
+    dispatch(({
+      type: "addManager",
+      payload: {
+        manager
+      }
+    }));
+    handleClose(); // TODO: "Mangaer successfully added"
   };
 
   const clearUser = () => {
@@ -169,16 +192,6 @@ const AddManagerModal = props => {
     });
     setDisableNNumber(false);
   };
-
-  const [disableNNumber, setDisableNNumber] = useState(false);
-  const [form, setForm] = useState({
-    lookupInfo: {},
-    nNumber: "N"
-  });
-  const [formReady, setFormReady] = useState(false);
-  const [loading, updateLoading] = useState({
-    lookupUser: false
-  });
 
   useEffect(() => {
     if (form.nNumber.match(nNumMatcher)) {
@@ -251,7 +264,6 @@ const AddManagerModal = props => {
     <ModalContainer>
       <PaperContainer>
         <HeaderAndCloseButtonWrapper>
-          <div></div>
           <Header>Add a Manager</Header>
           <CloseRoundedIcon onClick={handleClose} tooltip="Close Add Manager Modal"/> {/* TODO: tooltip & hover */}
         </HeaderAndCloseButtonWrapper>
