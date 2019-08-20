@@ -121,6 +121,10 @@ const HelperText = styled(FlexRow)`
   margin: -1% 4% 2% 4%;
 `;
 
+const LeftDiv = styled.div`
+  width: 1em;
+`;
+
 const ModalContainer = styled(FlexColumn)`
 left: 50%;
 padding: 2%;
@@ -264,6 +268,7 @@ const AddManagerModal = props => {
     <ModalContainer>
       <PaperContainer>
         <HeaderAndCloseButtonWrapper>
+          <LeftDiv></LeftDiv>
           <Header>Add a Manager</Header>
           <CloseRoundedIcon onClick={handleClose} tooltip="Close Add Manager Modal"/> {/* TODO: tooltip & hover */}
         </HeaderAndCloseButtonWrapper>
