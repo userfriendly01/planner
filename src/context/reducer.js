@@ -1,4 +1,7 @@
 export const initialState = {
+  managerContext: {
+    managers: []
+  },
   profileContext: {
     profiles: []
   },
@@ -12,6 +15,20 @@ export const initialState = {
 
 export const reducer = (state, action) => {
   switch (action.type) {
+    case "addManager":
+      return {
+        ...state,
+        managerContext: {
+          managers: [...state.managerContext.managers.slice(), action.payload.manager]
+        }
+      };
+    case "loadManagers":
+      return {
+        ...state,
+        managerContext: {
+          managers: action.payload
+        }
+      };
     case "loadProfiles":
       return {
         ...state,

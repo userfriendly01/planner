@@ -6,7 +6,11 @@ import {
   Modal,
   Select
 } from "@material-ui/core";
-import { AddUserModal } from "components";
+import {
+  AddUserModal,
+  AddManagerModal
+} from "components";
+import { useAdminState } from "context";
 import PropTypes from "prop-types";
 import React, {
   useState
@@ -37,18 +41,32 @@ const CustomButton = styled(ButtonBase)`
 const ManagementFilter = props => {
   const {
     filterBy,
-    options,
     setFilter
   } = props;
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const {
+    managerContext: {
+      managers
+    }
+  } = useAdminState();
 
-  const handleOpen = () => {
-    setIsModalOpen(true);
+  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
+  const [isAddManagerModalOpen, setIsAddManagerModalOpen] = useState(false);
+
+  const handleOpenAddUser = () => {
+    setIsAddUserModalOpen(true);
   };
 
-  const handleClose = () => {
-    setIsModalOpen(false);
+  const handleCloseAddUser = () => {
+    setIsAddUserModalOpen(false);
+  };
+
+  const handleOpenAddManager = () => {
+    setIsAddManagerModalOpen(true);
+  };
+
+  const handleCloseAddManager = () => {
+    setIsAddManagerModalOpen(false);
   };
 
   return (
@@ -66,19 +84,27 @@ const ManagementFilter = props => {
           }
         >
           <option value="">Show All</option>
-          {options.map(manager => (
-            <option
-              key={manager.manager_n_number}
-              value={manager.manager_n_number}
-            >
-              {manager.manager_first_name} {manager.manager_last_name}
-            </option>
-          ))}
+          {managers.map(manager => {
+            console.log(manager);
+            return (
+              <option
+                key={manager.manager_n_number}
+                value={manager.manager_n_number}
+              >
+                {manager.manager_first_name} {manager.manager_last_name}
+              </option>
+            );
+          }
+          )}
         </Select>
       </FormControl>
-      <CustomButton onClick={handleOpen}>Add User</CustomButton>
-      <Modal disableBackdropClick={true} open={isModalOpen}>
-        <AddUserModal handleClose={handleClose} managerList={options} />
+      <CustomButton onClick={handleOpenAddManager}>Add Manager</CustomButton>
+      <CustomButton onClick={handleOpenAddUser}>Add User</CustomButton>
+      <Modal disableBackdropClick={true} open={isAddUserModalOpen}>
+        <AddUserModal handleClose={handleCloseAddUser} managerList={managers} />
+      </Modal>
+      <Modal disableBackdropClick={true} open={isAddManagerModalOpen}>
+        <AddManagerModal handleClose={handleCloseAddManager} />
       </Modal>
     </ControlsWrapper>
   );
@@ -86,7 +112,6 @@ const ManagementFilter = props => {
 
 ManagementFilter.propTypes = {
   filterBy: PropTypes.string.isRequired,
-  options: PropTypes.arrayOf(PropTypes.object),
   setFilter: PropTypes.func.isRequired
 };
 
