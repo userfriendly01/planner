@@ -32,7 +32,7 @@ const Spin = keyframes`
   }
 `;
 
-const Check = styled.circle`
+const Check = styled.polyline`
   stroke-dasharray: 1000;
   stroke-dashoffset: -100;
   animation: ${DashCheck} .9s .35s ease-in-out forwards;
@@ -90,6 +90,10 @@ const Overlay = styled(FlexRow)`
   z-index: 100;
 `;
 
+const Icon = styled.svg`
+  width: 50%;
+`;
+
 const ModalOverlay = props => {
   const { status } = props;
   let icon = <FetchingRing />;
@@ -98,20 +102,20 @@ const ModalOverlay = props => {
 
   if (status === "success") {
     icon = (
-      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+      <Icon version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
         <Circle fill="none" stroke="#FFFFFF" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
         <Check fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
-      </svg>
+      </Icon>
     );
     loadingText = "User Added Successfully";
     modalBackground = "green";
   } else if (status === "fail") {
     icon = (
-      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+      <Icon version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
         <Circle fill="none" stroke="#FFFFFF" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
         <Line fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3"/>
         <Line fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2"/>
-      </svg>
+      </Icon>
     );
     loadingText = "Failed To Add User";
     modalBackground = "red";
