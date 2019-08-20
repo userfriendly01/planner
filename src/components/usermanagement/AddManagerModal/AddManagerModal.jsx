@@ -1,28 +1,24 @@
 import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
 import {
   ButtonBase,
-  // FormControl,
-  // InputLabel,
-  // OutlinedInput,
   Paper,
-  // Select,
   TextField
 } from "@material-ui/core";
-import { useAdminDispatch } from "context";
+import { ModalOverlay } from "components";
+import {
+  useAdminDispatch,
+  useAdminState
+} from "context";
 import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, {
-  // useContext,
   useEffect,
   useState
 } from "react";
-// import MaskedInput from "react-text-mask";
 import styled, {
   keyframes
 } from "styled-components";
-import {
-  myAxios
-} from "utils";
+import { myAxios } from "utils";
 
 const FlexColumn = styled.div`
   display: flex;
@@ -71,12 +67,6 @@ const CustomButton = styled(ButtonBase)`
     padding: 5 10 5 10;
   }
 `;
-
-// const CustomButtonWrapper = styled.div`
-//   align-self: flex-start;
-//   justify-self: flex-end;
-//   margin-left: auto;
-// `;
 
 const FetchingRing = styled.div`
   display: inline-block;
@@ -163,31 +153,61 @@ const AddManagerModal = props => {
   });
   const [formReady, setFormReady] = useState(false);
   const [loading, updateLoading] = useState({
-    lookupUser: false,
-    saveManager: false
+    lookupManager: false,
+    saveManager: false,
+    saveStatus: "saving"
   });
   const dispatch = useAdminDispatch();
+  const state = useAdminState();
 
   const saveManager = () => {
     updateLoading({
       ...loading,
-      saveManager: true
+      saveStatus: "saving",
+      saveUser: true
     });
     const manager = {
       manager_first_name: form.lookupInfo.firstName,
       manager_last_name: form.lookupInfo.lastName,
       manager_n_number: form.nNumber
     };
-    dispatch(({
-      type: "addManager",
-      payload: {
-        manager
-      }
-    }));
-    handleClose(); // TODO: "Mangaer successfully added"
+    const newManagerNNumber = manager.manager_n_number;
+    const listOfCurrentManagers = state.managerContext.managers;
+    if (!listOfCurrentManagers.some(existingManager => existingManager.manager_n_number === newManagerNNumber)) {
+      dispatch(({
+        type: "addManager",
+        payload: {
+          manager
+        }
+      }));
+      updateLoading({
+        ...loading,
+        saveManager: true,
+        saveStatus: "success"
+      });
+      setTimeout(() => {
+        updateLoading({
+          ...loading,
+          saveManager: false
+        });
+        handleClose();
+      }, 2000);
+    } else {
+      updateLoading({
+        ...loading,
+        saveManager: true,
+        saveStatus: "fail"
+      });
+      setTimeout(() => {
+        updateLoading({
+          ...loading,
+          saveManager: false
+        });
+      }, 2000);
+    }
   };
 
-  const clearUser = () => {
+  const clearManager = () => {
     setForm({
       ...form,
       lookupError: null,
@@ -239,7 +259,7 @@ const AddManagerModal = props => {
         .finally(() => {
           updateLoading({
             ...loading,
-            lookupUser: false
+            lookupManager: false
           });
         });
     }
@@ -258,7 +278,7 @@ const AddManagerModal = props => {
     helperText =
       <HelperText>
         <div>{form.lookupInfo.firstName} {form.lookupInfo.lastName}</div>
-        <ClearButton onClick={clearUser}>X</ClearButton>
+        <ClearButton onClick={clearManager}>X</ClearButton>
       </HelperText>;
   } else if (form.lookupError) {
     helperText = <HelperText error>{form.lookupError}</HelperText>;
@@ -267,6 +287,7 @@ const AddManagerModal = props => {
   return (
     <ModalContainer>
       <PaperContainer>
+        {loading.saveManager ? <ModalOverlay status={loading.saveStatus} /> : null}
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>
           <Header>Add a Manager</Header>
@@ -295,9 +316,7 @@ const AddManagerModal = props => {
           {helperText}
         </FlexColumn>
         <ButtonWrapper>
-          <CustomButton
-            disabled={!formReady}
-            onClick={saveManager}>
+          <CustomButton disabled={!formReady} onClick={saveManager}>
             Add Manager
           </CustomButton>
         </ButtonWrapper>
