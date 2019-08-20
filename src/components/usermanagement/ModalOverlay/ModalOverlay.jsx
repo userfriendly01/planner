@@ -95,7 +95,11 @@ const Icon = styled.svg`
 `;
 
 const ModalOverlay = props => {
-  const { status } = props;
+  const {
+    status,
+    successMessage,
+    failMessage
+  } = props;
   let icon = <FetchingRing />;
   let loadingText = "Saving";
   let modalBackground = "black";
@@ -107,7 +111,7 @@ const ModalOverlay = props => {
         <Check fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
       </Icon>
     );
-    loadingText = "User Added Successfully";
+    loadingText = successMessage;
     modalBackground = "green";
   } else if (status === "fail") {
     icon = (
@@ -117,7 +121,7 @@ const ModalOverlay = props => {
         <Line fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2"/>
       </Icon>
     );
-    loadingText = "Failed To Add User";
+    loadingText = failMessage;
     modalBackground = "red";
   }
 
@@ -130,6 +134,8 @@ const ModalOverlay = props => {
 };
 
 ModalOverlay.propTypes = {
+  failMessage: PropTypes.string.isRequired,
+  successMessage: PropTypes.string.isRequired,
   status: PropTypes.oneOf(["saving", "success", "fail"]).isRequired
 };
 

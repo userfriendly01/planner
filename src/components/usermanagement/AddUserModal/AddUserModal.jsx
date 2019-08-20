@@ -228,7 +228,12 @@ const AddUserModal = props => {
   return (
     <ModalContainer>
       <PaperContainer>
-        {loading.saveUser ? <ModalOverlay status={loading.saveStatus} /> : null}
+        {loading.saveUser ?
+          <ModalOverlay
+            status={loading.saveStatus}
+            successMessage={"User Added Successfully"}
+            failMessage={"Failed To Add User"}
+          /> : null}
         <Header>Add a User</Header>
         <CustomSelect
           label={"Manager"}
