@@ -4,7 +4,7 @@ import {
   ManagementPagination,
   ManagementTable
 } from "components";
-import { useStateValue } from "context";
+import { useAdminState } from "context";
 import React, {
   useEffect,
   useState
@@ -27,12 +27,11 @@ const StyledPaper = styled(Paper)`
 const workersPerPage = 10;
 
 const ManagementWrapper = () => {
-  const [{
+  const {
     workerContext: {
       workers
     }
-  // eslint-disable-next-line no-unused-vars
-  }, dispatch] = useStateValue();
+  } = useAdminState();
   const [filterBy, setFilterBy] = useState("");
   const [filteredWorkers, setFilteredWorkers] = useState([]);
   const [filterOptions, setFilterOptions] = useState([]);

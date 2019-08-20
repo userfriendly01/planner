@@ -33,12 +33,16 @@ const FetchingRing = styled.div`
 const FlexRow = styled.div`
   display: flex;
   flex: 1 1 auto;
+  flex-direction: column;
 `;
 
 const Overlay = styled(FlexRow)`
   align-items: center;
-  background-color: black;
+  background-color: ${props => props.modalBackground};
   border-radius: 4px;
+  color: white;
+  font-family: 'Roboto', sans-serif;
+  font-size: 2em;
   height: 100%;
   justify-content: center;
   left: 0;
@@ -50,17 +54,26 @@ const Overlay = styled(FlexRow)`
 `;
 
 const ModalOverlay = props => {
-  const { loading } = props;
-
-  if (loading) {
-    return <Overlay ><FetchingRing /></Overlay>;
-  } else {
-    return null;
+  const { status } = props;
+  let modalBackground = "black";
+  let loadingText = "Saving";
+  if (status === "success") {
+    modalBackground = "green";
+    loadingText = "User Added Successfully";
+  } else if (status === "fail") {
+    modalBackground = "red";
+    loadingText = "Failed To Add User";
   }
+  return (
+    <Overlay modalBackground={modalBackground} >
+      {status === "saving" ? <FetchingRing /> : null }
+      {loadingText}
+    </Overlay>
+  );
 };
 
 ModalOverlay.propTypes = {
-  loading: PropTypes.bool.isRequired
+  status: PropTypes.oneOf(["saving", "success", "fail"]).isRequired
 };
 
 export default ModalOverlay;

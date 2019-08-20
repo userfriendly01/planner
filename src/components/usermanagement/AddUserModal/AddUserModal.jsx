@@ -9,7 +9,7 @@ import {
   ModalOverlay,
   ModalPhoneNumber
 } from "components";
-import { useStateValue } from "context";
+import { useAdminState } from "context";
 import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, {
@@ -84,12 +84,11 @@ const AddUserModal = props => {
     handleClose,
     managerList
   } = props;
-  const [{
+  const {
     profileContext: {
       profiles
     }
-  // eslint-disable-next-line no-unused-vars
-  }, dispatch] = useStateValue();
+  } = useAdminState();
   const [disableNNumber, setDisableNNumber] = useState(false);
   const [form, setForm] = useState({
     lookupInfo: {},
@@ -101,6 +100,7 @@ const AddUserModal = props => {
   const [formReady, setFormReady] = useState(false);
   const [loading, updateLoading] = useState({
     lookupUser: false,
+    saveStatus: "saving",
     saveUser: false
   });
 
@@ -173,6 +173,7 @@ const AddUserModal = props => {
   const saveUser = () => {
     updateLoading({
       ...loading,
+      saveStatus: "saving",
       saveUser: true
     });
     const parsedManager = JSON.parse(form.manager);
@@ -197,16 +198,37 @@ const AddUserModal = props => {
         clearUser();
         updateLoading({
           ...loading,
-          saveUser: false
+          saveStatus: "success",
+          saveUser: true
         });
+        setTimeout(() => {
+          updateLoading({
+            ...loading,
+            saveUser: false
+          });
+        }, 2000);
         console.log(res);
+      })
+      .catch(err => {
+        updateLoading({
+          ...loading,
+          saveStatus: "fail",
+          saveUser: true
+        });
+        setTimeout(() => {
+          updateLoading({
+            ...loading,
+            saveUser: false
+          });
+        }, 2000);
+        console.log(err);
       });
   };
 
   return (
     <ModalContainer>
       <PaperContainer>
-        <ModalOverlay loading={loading.saveUser} />
+        {loading.saveUser ? <ModalOverlay status={loading.saveStatus} /> : null}
         <Header>Add a User</Header>
         <CustomSelect
           label={"Manager"}
