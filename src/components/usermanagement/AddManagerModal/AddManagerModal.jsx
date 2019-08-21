@@ -5,6 +5,7 @@ import {
 } from "@material-ui/core";
 import {
   CustomButton,
+  ModalHelperText,
   ModalHeader,
   ModalOverlay
 } from "components";
@@ -48,15 +49,6 @@ const ButtonWrapper = styled(FlexRow)`
   padding: 1%;
 `;
 
-const ClearButton = styled.button`
-  background-color: #AAEDED;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-family: 'Roboto',sans-serif;
-  outline: none;
-`;
-
 const FetchingRing = styled.div`
   display: inline-block;
   width: 64px;
@@ -77,16 +69,6 @@ const FetchingRing = styled.div`
 const HeaderAndCloseButtonWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-`;
-
-const HelperText = styled(FlexRow)`
-  color: ${props => props.error ? "red" : "green"};
-  font-family: 'Roboto', sans-serif;
-  font-size: 0.8em;
-  font-weight: 800;
-  line-height: 1.2em;
-  justify-content: space-between;
-  margin: -1% 4% 2% 4%;
 `;
 
 const LeftDiv = styled.div`
@@ -251,17 +233,6 @@ const AddManagerModal = props => {
     }
   }, [form]);
 
-  let helperText = null;
-  if (JSON.stringify(form.lookupInfo) !== JSON.stringify({})) {
-    helperText =
-      <HelperText>
-        <div>{form.lookupInfo.firstName} {form.lookupInfo.lastName}</div>
-        <ClearButton onClick={clearManager}>X</ClearButton>
-      </HelperText>;
-  } else if (form.lookupError) {
-    helperText = <HelperText error>{form.lookupError}</HelperText>;
-  }
-
   return (
     <ModalContainer>
       <PaperContainer>
@@ -274,7 +245,7 @@ const AddManagerModal = props => {
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>
           <ModalHeader>Add a Manager</ModalHeader>
-          <CloseRoundedIcon onClick={handleClose} tooltip="Close Add Manager Modal"/> {/* TODO: tooltip & hover */}
+          <CloseRoundedIcon onClick={handleClose} tooltip="Close Add Manager Modal"/>
         </HeaderAndCloseButtonWrapper>
         <FlexColumn>
           <FlexRow>
@@ -296,7 +267,7 @@ const AddManagerModal = props => {
             />
             {loading.lookupManager ? <FetchingRing /> : null}
           </FlexRow>
-          {helperText}
+          <ModalHelperText clearUser={clearManager} error={form.lookupError} lookupInfo={form.lookupInfo} />
         </FlexColumn>
         <ButtonWrapper>
           <CustomButton disabled={!formReady} onClick={saveManager}>
