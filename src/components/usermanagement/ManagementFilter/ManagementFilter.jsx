@@ -4,7 +4,8 @@ import {
   FormControl,
   InputLabel,
   Modal,
-  Select
+  Select,
+  Tooltip
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import {
@@ -112,9 +113,11 @@ const ManagementFilter = props => {
           ))}
         </Select>
       </FormControl>
-      <AddManagerButton onClick={handleOpenAddManager}>
-        <AddIcon />
-      </AddManagerButton>
+      <Tooltip title="Add a manager" placement="right">
+        <AddManagerButton onClick={handleOpenAddManager}>
+          <AddIcon/>
+        </AddManagerButton>
+      </Tooltip>
       <AddUserButton onClick={handleOpenAddUser}>Add User</AddUserButton>
       <Modal disableBackdropClick={true} open={isAddUserModalOpen}>
         <AddUserModal handleClose={handleCloseAddUser} managerList={managers} />
