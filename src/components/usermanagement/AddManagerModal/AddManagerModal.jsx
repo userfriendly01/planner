@@ -5,6 +5,7 @@ import {
 } from "@material-ui/core";
 import {
   CustomButton,
+  ModalFetchingRing,
   ModalHelperText,
   ModalHeader,
   ModalOverlay
@@ -19,9 +20,7 @@ import React, {
   useEffect,
   useState
 } from "react";
-import styled, {
-  keyframes
-} from "styled-components";
+import styled from "styled-components";
 import { myAxios } from "utils";
 
 const FlexColumn = styled.div`
@@ -35,35 +34,9 @@ const FlexRow = styled.div`
   flex: 1 1 auto;
 `;
 
-const Spin = keyframes`
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-`;
-
 const ButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
   padding: 1%;
-`;
-
-const FetchingRing = styled.div`
-  display: inline-block;
-  width: 64px;
-  height: 64px;
-  &:after {
-    content: " ";
-    display: block;
-    width: 46px;
-    height: 46px;
-    margin: 1px;
-    border-radius: 50%;
-    border: 5px solid #AAEDED;
-    border-color: #AAEDED transparent #AAEDED transparent;
-    animation: ${Spin} 1.2s linear infinite;
-  }
 `;
 
 const HeaderAndCloseButtonWrapper = styled.div`
@@ -265,7 +238,7 @@ const AddManagerModal = props => {
               variant="outlined"
               value={form.nNumber}
             />
-            {loading.lookupManager ? <FetchingRing /> : null}
+            {loading.lookupManager ? <ModalFetchingRing /> : null}
           </FlexRow>
           <ModalHelperText clearUser={clearManager} error={form.lookupError} lookupInfo={form.lookupInfo} />
         </FlexColumn>

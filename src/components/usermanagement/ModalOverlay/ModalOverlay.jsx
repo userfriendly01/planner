@@ -1,8 +1,7 @@
+import { ModalFetchingRing } from "components";
 import PropTypes from "prop-types";
 import React from "react";
-import styled, {
-  keyframes
-} from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 const Dash = keyframes`
   0% {
@@ -23,15 +22,6 @@ const DashCheck = keyframes`
 }
 `;
 
-const Spin = keyframes`
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-`;
-
 const Check = styled.polyline`
   stroke-dasharray: 1000;
   stroke-dashoffset: -100;
@@ -42,23 +32,6 @@ const Circle = styled.circle`
   stroke-dasharray: 1000;
   stroke-dashoffset: 0;
   animation: ${Dash} .9s ease-in-out;
-`;
-
-const FetchingRing = styled.div`
-  display: inline-block;
-  width: 64px;
-  height: 64px;
-  &:after {
-    content: " ";
-    display: block;
-    width: 46px;
-    height: 46px;
-    margin: 1px;
-    border-radius: 50%;
-    border: 5px solid #AAEDED;
-    border-color: #AAEDED transparent #AAEDED transparent;
-    animation: ${Spin} 1.2s linear infinite;
-  }
 `;
 
 const FlexRow = styled.div`
@@ -100,7 +73,7 @@ const ModalOverlay = props => {
     successMessage,
     failMessage
   } = props;
-  let icon = <FetchingRing />;
+  let icon = <ModalFetchingRing />;
   let loadingText = "Saving";
   let modalBackground = "black";
 
