@@ -64,7 +64,7 @@ const ModalNNumber = props => {
         variant="outlined"
         value={nNumber}
       />
-      {loading ? <FetchingRing /> : null}
+      {loading ? <FetchingRing data-testid="loading" /> : null}
     </FlexRow>
   );
 };
