@@ -1,14 +1,12 @@
 import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
-import {
-  Paper,
-  TextField
-} from "@material-ui/core";
+import { TextField } from "@material-ui/core";
 import {
   CustomButton,
   ModalFetchingRing,
   ModalHelperText,
   ModalHeader,
-  ModalOverlay
+  ModalOverlay,
+  PaperContainer
 } from "components";
 import {
   useAdminDispatch,
@@ -54,15 +52,6 @@ padding: 2%;
 position: absolute;
 top: 50%;
 transform: translate(-50%, -50%);
-`;
-
-const PaperContainer = styled(Paper)`
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  min-width: 400px;
-  padding: 2%;
-  position: relative;
 `;
 
 const TextInput = styled(TextField)`

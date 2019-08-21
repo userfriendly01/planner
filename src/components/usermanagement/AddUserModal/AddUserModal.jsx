@@ -1,14 +1,12 @@
 import {
-  Paper
-} from "@material-ui/core";
-import {
   CustomButton,
   CustomSelect,
   ModalHeader,
   ModalHelperText,
   ModalNNumber,
   ModalOverlay,
-  ModalPhoneNumber
+  ModalPhoneNumber,
+  PaperContainer
 } from "components";
 import { useAdminState } from "context";
 import { apiPaths } from "globals";
@@ -42,15 +40,6 @@ const ModalContainer = styled(FlexColumn)`
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
-`;
-
-const PaperContainer = styled(Paper)`
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  min-width: 400px;
-  padding: 2%;
-  position: relative;
 `;
 
 const AddUserModal = props => {
