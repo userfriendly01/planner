@@ -1,5 +1,6 @@
 export { default as AddUserModal } from "./AddUserModal/AddUserModal";
 export { default as AddManagerModal } from "./AddManagerModal/AddManagerModal";
+export { default as CustomButton } from "./CustomButton/CustomButton";
 export { default as ManagementFilter } from "./ManagementFilter/ManagementFilter";
 export { default as ManagementPagination } from "./ManagementPagination/ManagementPagination";
 export { default as ManagementTable } from "./ManagementTable/ManagementTable";

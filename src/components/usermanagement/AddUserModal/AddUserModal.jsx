@@ -1,8 +1,8 @@
 import {
-  ButtonBase,
   Paper
 } from "@material-ui/core";
 import {
+  CustomButton,
   CustomSelect,
   ModalHelperText,
   ModalNNumber,
@@ -35,23 +35,9 @@ const ButtonWrapper = styled(FlexRow)`
   padding: 1%;
 `;
 
-const CustomButton = styled(ButtonBase)`
-  && {
-    opacity: ${props => props.disabled ? ".5" : "1"};
-    background-color: #AAEDED;
-    border: none;
-    border-radius: 3px;
-    color: #1A1446;
-    cursor: pointer;
-    font-size: 1.2em;
-    outline: none;
-    padding: 5 10 5 10;
-  }
-`;
-
 const Header = styled.div`
   align-self: center;
-  color: #1A1446;
+  color: theme.textColor;
   font-family: 'Roboto', sans-serif;
   font-size: 3rem;
   font-weight: 400;
