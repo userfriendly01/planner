@@ -29,7 +29,7 @@ const AddUserButton = styled(ButtonBase)`
     background-color: #AAEDED;
     border: none;
     border-radius: 3px;
-    color: #1A1446;
+    color: theme.textColor;
     cursor: pointer;
     font-size: 1.15em;
     font-weight: 700;
@@ -47,7 +47,7 @@ const AddManagerButton = styled(ButtonBase)`
     background-color: rgba(0, 0, 0, 0.09);
     border: none;
     border-radius: 50%;
-    color: #1A1446;
+    color: theme.textColor;
     cursor: pointer;
     font-size: 1.15em;
     font-weight: 700;

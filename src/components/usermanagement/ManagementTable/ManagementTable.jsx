@@ -8,7 +8,7 @@ const CustomButton = styled(ButtonBase)`
     background-color: #AAEDED;
     border: none;
     border-radius: 3px;
-    color: #1A1446;
+    color: theme.textColor;
     cursor: pointer;
     outline: none;
     padding: 5 10 5 10;
@@ -20,12 +20,12 @@ const CustomTable = styled.table`
 `;
 
 const CustomTableData = styled.td`
-  color: #1A1446;
+  color: theme.textColor;
   padding: 1%;
 `;
 
 const CustomTableHeader = styled.th`
-  color: #1A1446;
+  color: theme.textColor;
   border-bottom: 2px solid #F5F5F5;
   padding: 1%;
   text-align: left;

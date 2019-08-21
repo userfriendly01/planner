@@ -1,4 +1,3 @@
-
 const CONTACT_MANAGER_BASE_URI = "/contact-manager";
 const SERVICE_BASE_URI = "/service";
 
@@ -9,3 +8,5 @@ export const apiPaths = {
   GET_PROFILES: `${CONTACT_MANAGER_BASE_URI}/profiles`,
   GET_WORKERS: `${SERVICE_BASE_URI}/workers`
 };
+
+export * from "./theme";

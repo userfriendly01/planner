@@ -16,7 +16,7 @@ const Content = styled.div`
 
 const StyledTabs = styled(Tabs)`
   background-color: #FFE280;
-  color: #1A1446;
+  color: theme.textColor;
 `;
 
 const StyledTab = styled(Tab)`
