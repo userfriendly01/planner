@@ -1,4 +1,5 @@
 import { ButtonBase } from "@material-ui/core";
+import { theme } from "globals";
 import styled from "styled-components";
 
 const CustomButton = styled(ButtonBase)`
@@ -7,7 +8,7 @@ const CustomButton = styled(ButtonBase)`
     background-color: #AAEDED;
     border: none;
     border-radius: 3px;
-    color: theme.textColor;
+    color: ${theme.textColor};
     cursor: pointer;
     font-size: 1.2em;
     outline: none;

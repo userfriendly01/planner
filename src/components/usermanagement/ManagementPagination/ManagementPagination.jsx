@@ -1,9 +1,10 @@
+import { theme } from "globals";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
 
 const Highlight = styled.span`
-  color: theme.textColor;
+  color: ${theme.textColor};
 `;
 
 const PageSection = styled.div`

@@ -1,4 +1,5 @@
 import { ButtonBase } from "@material-ui/core";
+import { theme } from "globals";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
@@ -8,7 +9,7 @@ const CustomButton = styled(ButtonBase)`
     background-color: #AAEDED;
     border: none;
     border-radius: 3px;
-    color: theme.textColor;
+    color: ${theme.textColor};
     cursor: pointer;
     outline: none;
     padding: 5 10 5 10;
@@ -20,12 +21,12 @@ const CustomTable = styled.table`
 `;
 
 const CustomTableData = styled.td`
-  color: theme.textColor;
+  color: ${theme.textColor};
   padding: 1%;
 `;
 
 const CustomTableHeader = styled.th`
-  color: theme.textColor;
+  color: ${theme.textColor};
   border-bottom: 2px solid #F5F5F5;
   padding: 1%;
   text-align: left;

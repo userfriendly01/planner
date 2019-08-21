@@ -1,11 +1,12 @@
 import { AccountBox } from "@material-ui/icons";
 import { useAdminState } from "context";
+import { theme } from "globals";
 import React from "react";
 import styled from "styled-components";
 
 const Card = styled.div`
   align-items: center;
-  color: theme.textColor;
+  color: ${theme.textColor};
   display: flex;
   flex: 1 1;
   font-family: 'Roboto', sans-serif;

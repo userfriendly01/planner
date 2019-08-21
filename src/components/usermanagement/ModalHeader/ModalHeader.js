@@ -1,8 +1,9 @@
+import { theme } from "globals";
 import styled from "styled-components";
 
 const ModalHeader = styled.div`
   align-self: center;
-  color: theme.textColor;
+  color: ${theme.textColor};
   font-family: 'Roboto', sans-serif;
   font-size: 3rem;
   font-weight: 400;
