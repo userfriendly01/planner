@@ -6,13 +6,12 @@ import {
 } from "context";
 import PropTypes from "prop-types";
 import React from "react";
-import { render } from "@testing-library/react";
+import {
+  render,
+  waitForElement
+} from "@testing-library/react";
 // import { ThemeProvider } from "styled-components";
 export * from "@testing-library/react";
-
-// const frozenTheme = { ...theme };
-// Object.freeze(frozenTheme);
-// export { frozenTheme as theme };
 
 const customRender = (childElements, initial = initialState) => {
 
@@ -39,12 +38,6 @@ const customRender = (childElements, initial = initialState) => {
 };
 export { customRender as render };
 
-// export const createMockStore = state => {
-//   const middlewares = [ thunk ];
-//   const mockStore = configureStore(middlewares);
-//   return mockStore({ ...state });
-// };
-
 export const expectMockedComponent = (rendered, component, numExpected = 1) => {
   let componentStr;
   if (typeof component === "string") {
@@ -69,13 +62,22 @@ export const expectOnlyPassedProps = (mockedComponent, expectedProps, instanceCa
   });
 };
 
+const getDataTestIdWithInstanceCalled = (componentName, instanceCalled) => `${componentName}-${instanceCalled}`;
+
 const getNumberOfComponents = (rendered, componentString) => rendered.queryAllByText(componentString).length || 0;
 
 export const setupMockedComponents = objOfMockedComponents => {
   const keys = Object.keys(objOfMockedComponents);
-  keys.forEach(k => {
-    const jestFn = objOfMockedComponents[k];
+  keys.forEach(componentName => {
+    const jestFn = objOfMockedComponents[componentName];
     jestFn.mockClear();
-    jestFn.mockReturnValue(<div>{k}</div>);
+    const maxCalls = 20;
+    for (let i = 0; i < maxCalls - 1; i++) {
+      jestFn.mockReturnValueOnce(<div data-testid={getDataTestIdWithInstanceCalled(componentName, i)}>{componentName}</div>);
+    }
   });
+};
+
+export const waitForMockedComponent = (rendered, componentName, instanceCalled) => {
+  return waitForElement(() => rendered.queryByTestId(getDataTestIdWithInstanceCalled(componentName, instanceCalled)) !== undefined);
 };
