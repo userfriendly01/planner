@@ -6,6 +6,7 @@ import {
   Modal,
   Select
 } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
 import {
   AddUserModal,
   AddManagerModal
@@ -18,13 +19,11 @@ import React, {
 import styled from "styled-components";
 
 const ControlsWrapper = styled.div`
-  justify-content: space-between;
   display: flex;
-  flex-direction: row;
   padding 1%;
 `;
 
-const CustomButton = styled(ButtonBase)`
+const AddUserButton = styled(ButtonBase)`
   && {
     background-color: #AAEDED;
     border: none;
@@ -33,8 +32,29 @@ const CustomButton = styled(ButtonBase)`
     cursor: pointer;
     font-size: 1.15em;
     font-weight: 700;
+    justify-self: flex-end;
+    margin-left: auto;
+    margin-right: 1em;
     outline: none;
     padding: 5 10 5 10;
+  }
+`;
+
+const AddManagerButton = styled(ButtonBase)`
+  && {
+    align-self: center;
+    background-color: rgba(0, 0, 0, 0.09);
+    border: none;
+    border-radius: 50%;
+    color: #1A1446;
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 700;
+    height: 2em;
+    margin-left: .5em;
+    outline: none;
+    padding: 5 10 5 10;
+    width: 2em;
   }
 `;
 
@@ -79,9 +99,7 @@ const ManagementFilter = props => {
           native
           value={filterBy}
           onChange={event => setFilter(event.target.value)}
-          input={
-            <FilledInput name="filter" id="filled-filter-native-simple" />
-          }
+          input={<FilledInput name="filter" id="filled-filter-native-simple" />}
         >
           <option value="">Show All</option>
           {managers.map(manager => (
@@ -92,11 +110,12 @@ const ManagementFilter = props => {
               {manager.manager_first_name} {manager.manager_last_name}
             </option>
           ))}
-  )
         </Select>
       </FormControl>
-      <CustomButton onClick={handleOpenAddManager}>Add Manager</CustomButton>
-      <CustomButton onClick={handleOpenAddUser}>Add User</CustomButton>
+      <AddManagerButton onClick={handleOpenAddManager}>
+        <AddIcon />
+      </AddManagerButton>
+      <AddUserButton onClick={handleOpenAddUser}>Add User</AddUserButton>
       <Modal disableBackdropClick={true} open={isAddUserModalOpen}>
         <AddUserModal handleClose={handleCloseAddUser} managerList={managers} />
       </Modal>
