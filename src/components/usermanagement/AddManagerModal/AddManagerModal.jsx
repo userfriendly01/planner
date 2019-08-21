@@ -5,6 +5,7 @@ import {
 } from "@material-ui/core";
 import {
   CustomButton,
+  ModalHeader,
   ModalOverlay
 } from "components";
 import {
@@ -71,17 +72,6 @@ const FetchingRing = styled.div`
     border-color: #AAEDED transparent #AAEDED transparent;
     animation: ${Spin} 1.2s linear infinite;
   }
-`;
-
-const Header = styled.div`
-  align-self: center;
-  color: theme.textColor;
-  font-family: 'Roboto', sans-serif;
-  font-size: 3rem;
-  font-weight: 400;
-  letter-spacing: 0rem;
-  line-height: 1.30357em;
-  margin: 2%;
 `;
 
 const HeaderAndCloseButtonWrapper = styled.div`
@@ -283,7 +273,7 @@ const AddManagerModal = props => {
           /> : null}
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>
-          <Header>Add a Manager</Header>
+          <ModalHeader>Add a Manager</ModalHeader>
           <CloseRoundedIcon onClick={handleClose} tooltip="Close Add Manager Modal"/> {/* TODO: tooltip & hover */}
         </HeaderAndCloseButtonWrapper>
         <FlexColumn>

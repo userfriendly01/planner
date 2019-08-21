@@ -4,6 +4,7 @@ import {
 import {
   CustomButton,
   CustomSelect,
+  ModalHeader,
   ModalHelperText,
   ModalNNumber,
   ModalOverlay,
@@ -33,17 +34,6 @@ const FlexRow = styled.div`
 const ButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
   padding: 1%;
-`;
-
-const Header = styled.div`
-  align-self: center;
-  color: theme.textColor;
-  font-family: 'Roboto', sans-serif;
-  font-size: 3rem;
-  font-weight: 400;
-  letter-spacing: 0rem;
-  line-height: 1.30357em;
-  margin: 2%;
 `;
 
 const ModalContainer = styled(FlexColumn)`
@@ -220,7 +210,7 @@ const AddUserModal = props => {
             successMessage={"User Added Successfully"}
             failMessage={"Failed To Add User"}
           /> : null}
-        <Header>Add a User</Header>
+        <ModalHeader>Add a User</ModalHeader>
         <CustomSelect
           label={"Manager"}
           labelWidth={65}
