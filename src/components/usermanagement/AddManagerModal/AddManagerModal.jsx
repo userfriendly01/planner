@@ -61,7 +61,6 @@ const AddManagerModal = props => {
     handleClose
   } = props;
 
-  const [disableNNumber, setDisableNNumber] = useState(false);
   const [form, setForm] = useState({
     lookupInfo: {},
     nNumber: "N"
@@ -129,7 +128,6 @@ const AddManagerModal = props => {
       lookupInfo: {},
       nNumber: "N"
     });
-    setDisableNNumber(false);
   };
 
   useEffect(() => {
@@ -155,7 +153,6 @@ const AddManagerModal = props => {
                 departmentNumber: res.data[0].person.data.DepartmentNumber
               }
             });
-            setDisableNNumber(true);
           } else {
             setForm({
               ...form,
@@ -204,7 +201,7 @@ const AddManagerModal = props => {
         </HeaderAndCloseButtonWrapper>
         <FlexColumn>
           <ModalNNumber
-            disabled={disableNNumber}
+            disabled={JSON.stringify(form.lookupInfo) !== "{}"}
             label="Manager N Number"
             loading={loading.lookupManager}
             name="Manager N Number"
