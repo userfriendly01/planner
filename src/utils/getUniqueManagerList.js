@@ -1,6 +1,6 @@
 // https://codeburst.io/javascript-array-distinct-5edc93501dc4 really good read.
 export const getUniqueManagerList = workersArray => {
-  if (workersArray.length !== 0) {
+  if (workersArray && workersArray.length !== 0) {
     const result = [];
     const map = new Map();
     for (const worker of workersArray) {

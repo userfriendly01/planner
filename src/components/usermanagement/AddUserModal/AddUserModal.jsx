@@ -89,7 +89,6 @@ const AddUserModal = props => {
       profiles
     }
   } = useAdminState();
-  const [disableNNumber, setDisableNNumber] = useState(false);
   const [form, setForm] = useState({
     lookupInfo: {},
     nNumber: "N",
@@ -127,7 +126,6 @@ const AddUserModal = props => {
                 departmentNumber: res.data[0].person.data.DepartmentNumber
               }
             });
-            setDisableNNumber(true);
           } else {
             setForm({
               ...form,
@@ -167,7 +165,6 @@ const AddUserModal = props => {
       lookupInfo: {},
       nNumber: "N"
     });
-    setDisableNNumber(false);
   };
 
   const saveUser = () => {
@@ -273,7 +270,7 @@ const AddUserModal = props => {
         />
         <FlexColumn>
           <ModalNNumber
-            disabled={disableNNumber}
+            disabled={JSON.stringify(form.lookupInfo) !== "{}"}
             loading={loading.lookupUser}
             nNumber={form.nNumber}
             updateValue={newValue => setForm({
