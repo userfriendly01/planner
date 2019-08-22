@@ -9,4 +9,6 @@ export const apiPaths = {
   GET_WORKERS: `${SERVICE_BASE_URI}/workers`
 };
 
+export const nNumMatcher = /[n,N]\d{7}/g;
+
 export * from "./theme";

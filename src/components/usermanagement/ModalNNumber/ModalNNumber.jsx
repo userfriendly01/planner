@@ -19,7 +19,9 @@ const TextInput = styled(TextField)`
 const ModalNNumber = props => {
   const {
     disabled,
+    label,
     loading,
+    name,
     nNumber,
     updateValue
   } = props;
@@ -30,8 +32,8 @@ const ModalNNumber = props => {
         disabled={disabled}
         id="outlined-nNumber-input"
         inputProps={{ maxLength: "8" }}
-        label="N Number"
-        name="N Number"
+        label={label}
+        name={name}
         onChange={event => updateValue(event.target.value)}
         margin="normal"
         variant="outlined"
@@ -44,7 +46,9 @@ const ModalNNumber = props => {
 
 ModalNNumber.propTypes = {
   disabled: PropTypes.bool.isRequired,
+  label: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
+  name: PropTypes.string.isRequired,
   nNumber: PropTypes.string.isRequired,
   updateValue: PropTypes.func.isRequired
 };

@@ -1,10 +1,9 @@
 import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
-import { TextField } from "@material-ui/core";
 import {
   CustomButton,
-  ModalFetchingRing,
   ModalHelperText,
   ModalHeader,
+  ModalNNumber,
   ModalOverlay,
   PaperContainer
 } from "components";
@@ -12,7 +11,10 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import { apiPaths } from "globals";
+import {
+  apiPaths,
+  nNumMatcher
+} from "globals";
 import PropTypes from "prop-types";
 import React, {
   useEffect,
@@ -54,19 +56,10 @@ top: 50%;
 transform: translate(-50%, -50%);
 `;
 
-const TextInput = styled(TextField)`
-  flex-grow: 1;
-  && {
-    margin: 2%;
-  }
-`;
-
 const AddManagerModal = props => {
   const {
     handleClose
   } = props;
-
-  const nNumMatcher = /[n,N]\d{7}/g;
 
   const [disableNNumber, setDisableNNumber] = useState(false);
   const [form, setForm] = useState({
@@ -210,25 +203,17 @@ const AddManagerModal = props => {
           <CloseRoundedIcon onClick={handleClose} tooltip="Close Add Manager Modal"/>
         </HeaderAndCloseButtonWrapper>
         <FlexColumn>
-          <FlexRow>
-            <TextInput
-              disabled={disableNNumber}
-              id="outlined-nNumber-input"
-              inputProps={{ maxLength: "8" }}
-              label="Manager N Number"
-              name="Manager N Number"
-              onChange={event =>
-                setForm({
-                  ...form,
-                  nNumber: event.target.value
-                })
-              }
-              margin="normal"
-              variant="outlined"
-              value={form.nNumber}
-            />
-            {loading.lookupManager ? <ModalFetchingRing /> : null}
-          </FlexRow>
+          <ModalNNumber
+            disabled={disableNNumber}
+            label="Manager N Number"
+            loading={loading.lookupManager}
+            name="Manager N Number"
+            nNumber={form.nNumber}
+            updateValue={newValue => setForm({
+              ...form,
+              nNumber: newValue
+            })}
+          ></ModalNNumber>
           <ModalHelperText clearUser={clearManager} error={form.lookupError} lookupInfo={form.lookupInfo} />
         </FlexColumn>
         <ButtonWrapper>

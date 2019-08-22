@@ -9,7 +9,10 @@ import {
   PaperContainer
 } from "components";
 import { useAdminState } from "context";
-import { apiPaths } from "globals";
+import {
+  apiPaths,
+  nNumMatcher
+} from "globals";
 import PropTypes from "prop-types";
 import React, {
   useEffect,
@@ -44,7 +47,6 @@ const ModalContainer = styled(FlexColumn)`
 
 const AddUserModal = props => {
 
-  const nNumMatcher = /[n,N]\d{7}/g;
   const {
     handleClose,
     managerList
@@ -244,7 +246,9 @@ const AddUserModal = props => {
         <FlexColumn>
           <ModalNNumber
             disabled={disableNNumber}
+            label="N Number"
             loading={loading.lookupUser}
+            name="N Number"
             nNumber={form.nNumber}
             updateValue={newValue => setForm({
               ...form,
