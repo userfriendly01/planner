@@ -1,9 +1,12 @@
-// import { theme } from "consts";
+import {
+  DispatchContext,
+  StateContext,
+  initialState,
+  reducer
+} from "context";
+import PropTypes from "prop-types";
 import React from "react";
-// import { Provider } from "react-redux";
-// import { render } from "@testing-library/react";
-// import configureStore from "redux-mock-store";
-// import thunk from "redux-thunk";
+import { render } from "@testing-library/react";
 // import { ThemeProvider } from "styled-components";
 export * from "@testing-library/react";
 
@@ -11,17 +14,30 @@ export * from "@testing-library/react";
 // Object.freeze(frozenTheme);
 // export { frozenTheme as theme };
 
-// const customRender = (children, store) => {
-//   const reduxStore = store || createMockStore({});
-//   return render(
-//     <Provider store={reduxStore}>
-//       <ThemeProvider theme={theme}>
-//         {children}
-//       </ThemeProvider>
-//     </Provider>
-//   );
-// };
-// export { customRender as render };
+const customRender = (childElements, initial = initialState) => {
+
+  const TestStateProvider = ({ children }) => {
+    const [state, dispatch] = React.useReducer(reducer, initial);
+    return (
+      <StateContext.Provider value={state}>
+        <DispatchContext.Provider value={dispatch}>
+          {children}
+        </DispatchContext.Provider>
+      </StateContext.Provider>
+    );
+  };
+
+  TestStateProvider.propTypes = {
+    children: PropTypes.any
+  };
+
+  return render(
+    <TestStateProvider>
+      {childElements}
+    </TestStateProvider>
+  );
+};
+export { customRender as render };
 
 // export const createMockStore = state => {
 //   const middlewares = [ thunk ];

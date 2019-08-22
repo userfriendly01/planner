@@ -7,7 +7,7 @@
     "build": "webpack",
     "eslint": "eslint ./src",
     "start": "webpack-dev-server --config webpack.local.config.js",
-    "test": "jest --config=jest.config.js --coverage",
+    "test": "jest --config=jest.config.js --coverage --detectOpenHandles",
     "test-bamboo": "jest --config=jest.bamboo.config.js --coverage"
   },
   "repository": {
@@ -43,8 +43,8 @@
     "jest-dom": "^3.2.2",
     "jest-raw-loader": "^1.0.1",
     "jest-styled-components": "^6.3.3",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
     "style-loader": "^0.23.1",
     "styled-components": "^4.3.2",
     "webpack": "^4.31.0",
