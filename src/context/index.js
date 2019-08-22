@@ -1,2 +1,2 @@
-export * from "./AdminUIContext";
+export * from "./appContext";
 export * from "./reducer";
