@@ -78,7 +78,7 @@ const AddManagerModal = props => {
     updateLoading({
       ...loading,
       saveStatus: "saving",
-      saveUser: true
+      saveManager: true
     });
     const manager = {
       manager_first_name: form.lookupInfo.firstName,
