@@ -224,7 +224,7 @@ const AddManagerModal = props => {
 };
 
 AddManagerModal.propTypes = {
-  handleClose: PropTypes.func
+  handleClose: PropTypes.func.isRequired
 };
 
 export default AddManagerModal;
