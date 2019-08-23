@@ -63,7 +63,6 @@ const AddUserModal = props => {
     outgoing: "",
     team: ""
   });
-  const [formReady, setFormReady] = useState(false);
   const [loading, updateLoading] = useState({
     lookupUser: false,
     saveStatus: "saving",
@@ -116,14 +115,6 @@ const AddUserModal = props => {
         });
     }
   }, [form.nNumber]);
-
-  useEffect(() => {
-    if (JSON.stringify(form.lookupInfo) !== JSON.stringify({}) && form.team !== "" && form.manager !== "" && form.outgoing !== "") {
-      setFormReady(true);
-    } else {
-      setFormReady(false);
-    }
-  }, [form]);
 
   const clearUser = () => {
     setForm({
@@ -188,6 +179,8 @@ const AddUserModal = props => {
         console.log(err);
       });
   };
+
+  const formReady = JSON.stringify(form.lookupInfo) !== JSON.stringify({}) && form.team !== "" && form.manager !== "" && form.outgoing !== "";
 
   return (
     <ModalContainer>
