@@ -64,6 +64,10 @@ export const expectOnlyPassedProps = (mockedComponent, expectedProps, instanceCa
 
 const getDataTestIdWithInstanceCalled = (componentName, instanceCalled) => `${componentName}-${instanceCalled}`;
 
+export const getLastInstanceCalled = mockedComponent => mockedComponent.mock.calls.length - 1;
+
+export const getMockedComponentProps = (mockedComponent, instanceCalled = 0) => mockedComponent.mock.calls[instanceCalled][0];
+
 const getNumberOfComponents = (rendered, componentString) => rendered.queryAllByText(componentString).length || 0;
 
 export const setupMockedComponents = objOfMockedComponents => {
