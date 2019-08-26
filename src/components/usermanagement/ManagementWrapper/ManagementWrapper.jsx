@@ -66,12 +66,6 @@ const ManagementWrapper = () => {
     workersEnd
   } = getWorkersStartAndEnd(state.pageSelected, filteredWorkers);
 
-  // console.log("RENDERED", {
-  //   sortedWorkers,
-  //   state,
-  //   filteredWorkers
-  // });
-
   const setStateFromFilterChange = filterBy => setState({
     pageSelected: 1,
     filterBy

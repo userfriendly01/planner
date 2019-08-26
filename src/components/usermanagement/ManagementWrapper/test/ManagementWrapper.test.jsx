@@ -61,7 +61,7 @@ describe("ManagementWrapper", () => {
       expectMockedComponent(rendered, { ManagementTable });
     });
   };
-  describe("<10 (6) workers", () => {
+  describe("6 workers. less than workersPerPage", () => {
     const workers = [
       getWorker(0, 0),
       getWorker(5, 1),
@@ -98,7 +98,7 @@ describe("ManagementWrapper", () => {
         });
       });
     });
-    describe("when set filter to manager 0", () => {
+    describe("when set filter to manager n0000000", () => {
       const doSetFilter = () => act(() => {
         const setStateFromFilterChange = ManagementFilter.mock.calls[0][0].setFilter;
         setStateFromFilterChange("n0000000");
@@ -108,7 +108,7 @@ describe("ManagementWrapper", () => {
         doSetFilter();
         expectOnlyPassedProps(ManagementFilter, { filterBy: "n0000000" }, 1);
       });
-      test("ManagementTable should be passed filtered workers 0, 1, 3", () => {
+      test("ManagementTable should be passed filtered workers having manager n0000000", () => {
         doRender(workers);
         doSetFilter();
         expectOnlyPassedProps(ManagementTable, {
@@ -131,18 +131,18 @@ describe("ManagementWrapper", () => {
       });
     });
   });
-  describe("<10 (26) workers", () => {
+  describe("26 workers. more than workersPerPage", () => {
     const workers = [
       getWorker("f", 1),
       getWorker("g", 1),
       getWorker("h", 2),
       getWorker("i", 2),
-      getWorker("c", 0),
+      getWorker("c", 3),
       getWorker("d", 1),
       getWorker("e", 1),
       getWorker("l", 2),
       getWorker("m", 2),
-      getWorker("b", 0),
+      getWorker("b", 3),
       getWorker("p", 2),
       getWorker("v", 2),
       getWorker("w", 2),
@@ -152,7 +152,7 @@ describe("ManagementWrapper", () => {
       getWorker("o", 2),
       getWorker("j", 2),
       getWorker("k", 2),
-      getWorker("a", 0),
+      getWorker("a", 3),
       getWorker("z", 2),
       getWorker("q", 2),
       getWorker("r", 2),
@@ -161,9 +161,9 @@ describe("ManagementWrapper", () => {
       getWorker("u", 2)
     ];
     const sortedWorkers = [
-      getWorker("a", 0),
-      getWorker("b", 0),
-      getWorker("c", 0),
+      getWorker("a", 3),
+      getWorker("b", 3),
+      getWorker("c", 3),
       getWorker("d", 1),
       getWorker("e", 1),
       getWorker("f", 1),
@@ -208,17 +208,17 @@ describe("ManagementWrapper", () => {
         });
       });
     });
-    describe("when set filter to manager 0", () => {
+    describe("when set filter to manager n3333333", () => {
       const doSetFilter = () => act(() => {
         const setStateFromFilterChange = ManagementFilter.mock.calls[0][0].setFilter;
-        setStateFromFilterChange("n0000000");
+        setStateFromFilterChange("n3333333");
       });
-      test("ManagementFilter should be passed filterBy n0000000", () => {
+      test("ManagementFilter should be passed filterBy n3333333", () => {
         doRender(workers);
         doSetFilter();
-        expectOnlyPassedProps(ManagementFilter, { filterBy: "n0000000" }, 1);
+        expectOnlyPassedProps(ManagementFilter, { filterBy: "n3333333" }, 1);
       });
-      test("ManagementTable should be passed filtered workers a, b, c", () => {
+      test("ManagementTable should be passed filtered workers having manager n3333333", () => {
         doRender(workers);
         doSetFilter();
         expectOnlyPassedProps(ManagementTable, {
@@ -240,7 +240,7 @@ describe("ManagementWrapper", () => {
         }, 1);
       });
     });
-    describe("when set filter to manager 2", () => {
+    describe("when set filter to manager n2222222", () => {
       const doSetFilter = () => act(() => {
         const setStateFromFilterChange = getMockedComponentProps(ManagementFilter, getLastInstanceCalled(ManagementFilter)).setFilter;
         setStateFromFilterChange("n2222222");
