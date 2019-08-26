@@ -13,6 +13,8 @@ import React from "react";
 import { act } from "react-dom/test-utils";
 import {
   expectOnlyPassedProps,
+  getLastInstanceCalled,
+  getMockedComponentProps,
   fireEvent,
   render,
   setupMockedComponents
@@ -20,6 +22,7 @@ import {
 import { myAxios } from "utils";
 
 const axiosMock = new MockAdapter(myAxios);
+jest.useFakeTimers();
 
 jest.mock("components", () => ({
   __esModule: true,
@@ -319,35 +322,86 @@ describe("<AddUserModal />", () => {
       expect(mockHandleClose.mock.calls.length).toBe(1);
     });
 
-    // describe("if the form becomes valid", () => {
+    describe("if the form becomes valid", () => {
 
-    //   beforeEach(() => {
-    //     axiosMock.onGet(apiPaths.EMPLOYEE_LOOKUP("1234567")).reply(200, mockSuccessfulResponse);
-    //   });
+      beforeEach(() => {
+        axiosMock.onGet(apiPaths.EMPLOYEE_LOOKUP("1234567")).reply(200, mockSuccessfulResponse);
+      });
 
-    //   test("if we click the save button, and the save call passes", () => {
-    //     axiosMock.onPost(apiPaths.CREATE_WORKER).reply(200, { worker: "success" });
-    //     const rendered = renderComponent();
-    //     act(() => {
-    //       const updateManager = CustomSelect.mock.calls[0][0].updateValue;
-    //       updateManager(JSON.stringify(managerList[0]));
-    //     });
-    //     act(() => {
-    //       const updateProfile = CustomSelect.mock.calls[1][0].updateValue;
-    //       updateProfile(profileList[0].profile_id);
-    //     });
-    //     act(() => {
-    //       const updatePhone = ModalPhoneNumber.mock.calls[0][0].updateValue;
-    //       updatePhone("6034567890");
-    //     });
-    //     act(() => {
-    //       const updateNNum = ModalNNumber.mock.calls[0][0].updateValue;
-    //       updateNNum("N1234567");
-    //     });
-    //     expect(rendered.getByText("Close", { selector: "button" })).not.toHaveClass("Mui-disabled");
-    //     expect(rendered.getByText("Add User", { selector: "button" })).not.toHaveClass("Mui-disabled");
-    //   });
-    // });
+      test("and we click the save button, and the save call passes, we should clear the user, which should disable 'Add User'", done => {
+        axiosMock.onPost(apiPaths.CREATE_WORKER).reply(200, { worker: "success" });
+        const rendered = renderComponent();
+        act(() => {
+          const updateManager = CustomSelect.mock.calls[0][0].updateValue;
+          updateManager(JSON.stringify(managerList[0]));
+        });
+        act(() => {
+          const updateProfile = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect, 1)).updateValue;
+          updateProfile(profileList[0].profile_id);
+        });
+        act(() => {
+          const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber, 0)).updateValue;
+          updatePhone("6034567890");
+        });
+        act(() => {
+          const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber, 0)).updateValue;
+          updateNNum("N1234567");
+          return Promise.resolve();
+        }).then(() => {
+          expect(rendered.getByText("Add User", { selector: "button" })).not.toHaveClass("Mui-disabled");
+          act(() => {
+            fireEvent.click(rendered.getByText("Add User", { selector: "button" }));
+            return Promise.resolve();
+          }).then(() => {
+            const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
+            const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
+            expect(rendered.getByText("Add User", { selector: "button" })).toHaveClass("Mui-disabled");
+            expect(saveStatus).toBe("success");
+            expect(nNumber).toBe("N");
+            jest.runAllTimers();
+            expect(rendered.queryAllByText("ModalOverlay").length).toBe(0);
+            done();
+          });
+        });
+      });
+
+      test("and we click the save button, and the save call fails, we should not clear the user, or disable 'Add User'", done => {
+        axiosMock.onPost(apiPaths.CREATE_WORKER).networkError();
+        const rendered = renderComponent();
+        act(() => {
+          const updateManager = CustomSelect.mock.calls[0][0].updateValue;
+          updateManager(JSON.stringify(managerList[0]));
+        });
+        act(() => {
+          const updateProfile = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect, 1)).updateValue;
+          updateProfile(profileList[0].profile_id);
+        });
+        act(() => {
+          const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber, 0)).updateValue;
+          updatePhone("6034567890");
+        });
+        act(() => {
+          const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber, 0)).updateValue;
+          updateNNum("N1234567");
+          return Promise.resolve();
+        }).then(() => {
+          expect(rendered.getByText("Add User", { selector: "button" })).not.toHaveClass("Mui-disabled");
+          act(() => {
+            fireEvent.click(rendered.getByText("Add User", { selector: "button" }));
+            return Promise.resolve();
+          }).then(() => {
+            const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
+            const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
+            expect(rendered.getByText("Add User", { selector: "button" })).not.toHaveClass("Mui-disabled");
+            expect(saveStatus).toBe("fail");
+            expect(nNumber).toBe("N1234567");
+            jest.runAllTimers();
+            expect(rendered.queryAllByText("ModalOverlay").length).toBe(0);
+            done();
+          });
+        });
+      });
+    });
 
   });
 });
