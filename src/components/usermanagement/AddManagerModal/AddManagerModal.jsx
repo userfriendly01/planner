@@ -210,7 +210,7 @@ const AddManagerModal = props => {
               ...form,
               nNumber: newValue
             })}
-          ></ModalNNumber>
+          />
           <ModalHelperText clearUser={clearManager} error={form.lookupError} lookupInfo={form.lookupInfo} />
         </FlexColumn>
         <ButtonWrapper>

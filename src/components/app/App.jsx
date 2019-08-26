@@ -110,7 +110,7 @@ const App = () => {
   } else if (!authorized && authorized !== undefined) {
     return <div data-testid="unauthorized">{"You are not authorized to view this page"}</div>;
   } else if (error && error !== undefined) {
-    return <div data-testid="unknownError">{"An error occured while logging in."}</div>;
+    return <div data-testid="unknownError">{"An error occurred while logging in."}</div>;
   } else {
     return (
       <LoadingContainer>
