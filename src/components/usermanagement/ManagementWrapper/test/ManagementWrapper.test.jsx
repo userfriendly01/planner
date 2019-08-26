@@ -1,175 +1,327 @@
 import ManagementWrapper from "../ManagementWrapper";
-import axios from "axios";
-import MockAdapter from "axios-mock-adapter";
-import { ManagementTable } from "components";
-import { apiPaths } from "globals";
+import {
+  ManagementFilter,
+  ManagementPagination,
+  ManagementTable
+} from "components";
+import { initialState } from "context";
 import React from "react";
 import {
+  act,
   expectMockedComponent,
-  fireEvent,
+  expectOnlyPassedProps,
+  getLastInstanceCalled,
+  getMockedComponentProps,
   render,
-  setupMockedComponents,
-  waitForElement
+  setupMockedComponents
 } from "testUtils";
 
-const axiosMock = new MockAdapter(axios);
-
 jest.mock("components", () => ({
-  __esModule: true,
+  ManagementFilter: jest.fn(),
+  ManagementPagination: jest.fn(),
   ManagementTable: jest.fn()
 }));
 
-const getWorkersRespnse = [
-  {
-    attributes:
-      "{\"unique_id\":\"n00000000\",\"manager_n_number\":\"n1111111\",\"roles\":[\"supervisor\",\"agent\"],\"manager_last_name\":\"Doe\",\"n_number\":\"n1111111\",\"skills\":[\"466\"],\"primary_dept_name\":\"CI TECH APP SERVICES\",\"email_address\":\"Noone@libertymutual.com\",\"full_name\":\"Lemming\",\"profile_id\":1}",
-    friendlyName: "n1111111",
-    sid: "WK8b0da13d2eca675babceedb76d7a15eb"
-  },
-  {
-    attributes:
-      "{\"unique_id\":\"n00000000\",\"manager_n_number\":\"n1111111\",\"roles\":[\"supervisor\",\"agent\"],\"manager_last_name\":\"Doe\",\"n_number\":\"n1111111\",\"skills\":[\"466\"],\"primary_dept_name\":\"CI TECH APP SERVICES\",\"email_address\":\"Noone@libertymutual.com\",\"full_name\":\"Lemming\",\"profile_id\":1}",
-    friendlyName: "n2222222",
-    sid: "WK8b0da13d2eca675babceedb76d7a15eb"
-  },
-  {
-    attributes:
-      "{\"unique_id\":\"n00000000\",\"manager_n_number\":\"n1111111\",\"roles\":[\"supervisor\",\"agent\"],\"manager_last_name\":\"Doe\",\"n_number\":\"n1111111\",\"skills\":[\"466\"],\"primary_dept_name\":\"CI TECH APP SERVICES\",\"email_address\":\"Noone@libertymutual.com\",\"full_name\":\"Lemming\",\"profile_id\":1}",
-    friendlyName: "n3333333",
-    sid: "WK8b0da13d2eca675babceedb76d7a15eb"
-  },
-  {
-    attributes:
-      "{\"unique_id\":\"n00000000\",\"manager_n_number\":\"n1111111\",\"roles\":[\"supervisor\",\"agent\"],\"manager_last_name\":\"Doe\",\"n_number\":\"n1111111\",\"skills\":[\"466\"],\"primary_dept_name\":\"CI TECH APP SERVICES\",\"email_address\":\"Noone@libertymutual.com\",\"full_name\":\"Lemming\",\"profile_id\":1}",
-    friendlyName: "n4444444",
-    sid: "WK8b0da13d2eca675babceedb76d7a15eb"
-  },
-  {
-    attributes:
-      "{\"unique_id\":\"n00000000\",\"manager_n_number\":\"n1111111\",\"roles\":[\"supervisor\",\"agent\"],\"manager_last_name\":\"Doe\",\"n_number\":\"n1111111\",\"skills\":[\"466\"],\"primary_dept_name\":\"CI TECH APP SERVICES\",\"email_address\":\"Noone@libertymutual.com\",\"full_name\":\"Lemming\",\"profile_id\":1}",
-    friendlyName: "n5555555",
-    sid: "WK8b0da13d2eca675babceedb76d7a15eb"
-  },
-  {
-    attributes:
-      "{\"unique_id\":\"n00000000\",\"manager_n_number\":\"n1111111\",\"roles\":[\"supervisor\",\"agent\"],\"manager_last_name\":\"Doe\",\"n_number\":\"n1111111\",\"skills\":[\"466\"],\"primary_dept_name\":\"CI TECH APP SERVICES\",\"email_address\":\"Noone@libertymutual.com\",\"full_name\":\"Lemming\",\"profile_id\":1}",
-    friendlyName: "n6666666",
-    sid: "WK8b0da13d2eca675babceedb76d7a15eb"
-  },
-  {
-    attributes:
-      "{\"unique_id\":\"n00000000\",\"manager_n_number\":\"n1111111\",\"roles\":[\"supervisor\",\"agent\"],\"manager_last_name\":\"Doe\",\"n_number\":\"n1111111\",\"skills\":[\"466\"],\"primary_dept_name\":\"CI TECH APP SERVICES\",\"email_address\":\"Noone@libertymutual.com\",\"full_name\":\"Lemming\",\"profile_id\":1}",
-    friendlyName: "n7777777",
-    sid: "WK8b0da13d2eca675babceedb76d7a15eb"
-  },
-  {
-    attributes:
-      "{\"unique_id\":\"n00000000\",\"manager_n_number\":\"n1111111\",\"roles\":[\"supervisor\",\"agent\"],\"manager_last_name\":\"Doe\",\"n_number\":\"n1111111\",\"skills\":[\"466\"],\"primary_dept_name\":\"CI TECH APP SERVICES\",\"email_address\":\"Noone@libertymutual.com\",\"full_name\":\"Lemming\",\"profile_id\":1}",
-    friendlyName: "n8888888",
-    sid: "WK8b0da13d2eca675babceedb76d7a15eb"
-  },
-  {
-    attributes:
-      "{\"unique_id\":\"n00000000\",\"manager_n_number\":\"n1111111\",\"roles\":[\"supervisor\",\"agent\"],\"manager_last_name\":\"Doe\",\"n_number\":\"n1111111\",\"skills\":[\"466\"],\"primary_dept_name\":\"CI TECH APP SERVICES\",\"email_address\":\"Noone@libertymutual.com\",\"full_name\":\"Lemming\",\"profile_id\":1}",
-    friendlyName: "n9999999",
-    sid: "WK8b0da13d2eca675babceedb76d7a15eb"
-  },
-  {
-    attributes:
-      "{\"unique_id\":\"n00000000\",\"manager_n_number\":\"n1111111\",\"roles\":[\"supervisor\",\"agent\"],\"manager_last_name\":\"Doe\",\"n_number\":\"n1111111\",\"skills\":[\"466\"],\"primary_dept_name\":\"CI TECH APP SERVICES\",\"email_address\":\"Noone@libertymutual.com\",\"full_name\":\"Lemming\",\"profile_id\":1}",
-    friendlyName: "naaaaaaa",
-    sid: "WK8b0da13d2eca675babceedb76d7a15eb"
-  },
-  {
-    attributes:
-      "{\"unique_id\":\"n00000000\",\"manager_n_number\":\"n1111111\",\"roles\":[\"supervisor\",\"agent\"],\"manager_last_name\":\"Doe\",\"n_number\":\"n1111111\",\"skills\":[\"466\"],\"primary_dept_name\":\"CI TECH APP SERVICES\",\"email_address\":\"Noone@libertymutual.com\",\"full_name\":\"Lemming\",\"profile_id\":1}",
-    friendlyName: "nbbbbbbb",
-    sid: "WK8b0da13d2eca675babceedb76d7a15eb"
-  }
-];
+const getWorker = (number, managerNumber = 0) => {
+  const numberStr = `${number}`;
+  const managerNumberStr = `${managerNumber}`;
+  return {
+    id: `n${numberStr.repeat(7)}`,
+    sid: `WK${number}`,
+    attributes: {
+      full_name: numberStr,
+      manager_n_number: `n${managerNumberStr.repeat(7)}`
+    }
+  };
+};
 
-describe("<ManagementWrapper />", () => {
-  beforeEach(()=> {
+describe("ManagementWrapper", () => {
+
+  const component = <ManagementWrapper />;
+
+  const doRender = (workers = []) => {
+    const state = { ...initialState };
+    state.workerContext.workers = workers;
+    return render(component, state);
+  };
+
+  beforeEach(() => {
     setupMockedComponents({
+      ManagementFilter,
+      ManagementPagination,
       ManagementTable
     });
   });
-  describe("when we successfully return a list of workers", () => {
-    const url = apiPaths.GET_WORKERS_BY_PROFILEID(2);
-    beforeEach(()=> {
-      axiosMock.onGet(url).reply(200, getWorkersRespnse);
-    });
 
-    test("while loading we should show a loading icon.", () => {
-      const rendered = render(<ManagementWrapper profileId={2} />);
-      expectMockedComponent(rendered, { ManagementTable }, 0);
-      expect(rendered.getByRole("progressbar")).toBeTruthy();
+  const commonTests = workers => {
+    test("should render ManagementFilter, ManagementPagination, ManagementTable", () => {
+      const rendered = doRender(workers);
+      expectMockedComponent(rendered, { ManagementFilter });
+      expectMockedComponent(rendered, { ManagementPagination });
+      expectMockedComponent(rendered, { ManagementTable });
     });
-
-    test("we should render a table, send it 10 workers, and preselect page 1.", done => {
-      const rendered = render(<ManagementWrapper profileId={2} />);
-      waitForElement(() =>
-        rendered.getByText("ManagementTable")
-      ).then(() => {
-        expectMockedComponent(rendered, { ManagementTable });
-        expect(ManagementTable.mock.calls[1][0].workers.length).toBe(10);
-        expect(ManagementTable.mock.calls[1][0].workers[2]).toEqual({
-          attributes: {
-            unique_id: "n00000000",
-            manager_n_number: "n1111111",
-            roles: ["supervisor", "agent"],
-            manager_last_name: "Doe",
-            n_number: "n1111111",
-            skills: ["466"],
-            primary_dept_name: "CI TECH APP SERVICES",
-            email_address: "Noone@libertymutual.com",
-            full_name: "Lemming",
-            profile_id: 1
-          },
-          id: "n3333333",
-          sid: "WK8b0da13d2eca675babceedb76d7a15eb"
+  };
+  describe("6 workers. less than workersPerPage", () => {
+    const workers = [
+      getWorker(0, 0),
+      getWorker(5, 1),
+      getWorker(4, 1),
+      getWorker(1, 0),
+      getWorker(3, 0),
+      getWorker(3, 1)
+    ];
+    const sortedWorkers = [
+      getWorker(0, 0),
+      getWorker(1, 0),
+      getWorker(3, 0),
+      getWorker(3, 1),
+      getWorker(4, 1),
+      getWorker(5, 1)
+    ];
+    commonTests(workers);
+    describe("initial state", () => {
+      test("ManagementFilter should be passed filterBy show-all", () => {
+        doRender(workers);
+        expectOnlyPassedProps(ManagementFilter, { filterBy: "show-all" });
+      });
+      test("ManagementTable should be passed all workers (sorted) as prop", () => {
+        doRender(workers);
+        expectOnlyPassedProps(ManagementTable, { workers: sortedWorkers });
+      });
+      test("ManagementPagination should be passed end = 6, length = 6, page = 1, start = 1", () => {
+        doRender(workers);
+        expectOnlyPassedProps(ManagementPagination, {
+          end: 6,
+          length: 6,
+          page: 1,
+          start: 1
         });
-        done();
       });
     });
-
-    test("when we select page 2, we shoud only send 1 worker the 11th", done => {
-      const rendered = render(<ManagementWrapper profileId={2} />);
-      waitForElement(() =>
-        rendered.getByText("ManagementTable")
-      ).then(() => {
-        expectMockedComponent(rendered, { ManagementTable });
-        fireEvent.click(rendered.getByText("2", { seletor: "button" }));
-        expect(ManagementTable.mock.calls[3][0].workers.length).toBe(1);
-        expect(ManagementTable.mock.calls[3][0].workers[0]).toEqual({
-          attributes: {
-            unique_id: "n00000000",
-            manager_n_number: "n1111111",
-            roles: ["supervisor", "agent"],
-            manager_last_name: "Doe",
-            n_number: "n1111111",
-            skills: ["466"],
-            primary_dept_name: "CI TECH APP SERVICES",
-            email_address: "Noone@libertymutual.com",
-            full_name: "Lemming",
-            profile_id: 1
-          },
-          id: "nbbbbbbb",
-          sid: "WK8b0da13d2eca675babceedb76d7a15eb"
-        });
-        done();
+    describe("when set filter to manager n0000000", () => {
+      const doSetFilter = () => act(() => {
+        const setStateFromFilterChange = ManagementFilter.mock.calls[0][0].setFilter;
+        setStateFromFilterChange("n0000000");
+      });
+      test("ManagementFilter should be passed filterBy n0000000", () => {
+        doRender(workers);
+        doSetFilter();
+        expectOnlyPassedProps(ManagementFilter, { filterBy: "n0000000" }, 1);
+      });
+      test("ManagementTable should be passed filtered workers having manager n0000000", () => {
+        doRender(workers);
+        doSetFilter();
+        expectOnlyPassedProps(ManagementTable, {
+          workers: [
+            sortedWorkers[0],
+            sortedWorkers[1],
+            sortedWorkers[2]
+          ]
+        }, 1);
+      });
+      test("ManagementPagination should be passed end = 3, length = 3, page = 1, start = 1", () => {
+        doRender(workers);
+        doSetFilter();
+        expectOnlyPassedProps(ManagementPagination, {
+          end: 3,
+          length: 3,
+          page: 1,
+          start: 1
+        }, 1);
       });
     });
   });
-  describe("when we reject the call return a list of workers", () => {
-    const url = apiPaths.GET_WORKERS_BY_PROFILEID(2);
-    beforeEach(()=> {
-      axiosMock.onGet(url).reply(500, { error: "HOSED!" });
+  describe("26 workers. more than workersPerPage", () => {
+    const workers = [
+      getWorker("f", 1),
+      getWorker("g", 1),
+      getWorker("h", 2),
+      getWorker("i", 2),
+      getWorker("c", 3),
+      getWorker("d", 1),
+      getWorker("e", 1),
+      getWorker("l", 2),
+      getWorker("m", 2),
+      getWorker("b", 3),
+      getWorker("p", 2),
+      getWorker("v", 2),
+      getWorker("w", 2),
+      getWorker("x", 2),
+      getWorker("y", 2),
+      getWorker("n", 2),
+      getWorker("o", 2),
+      getWorker("j", 2),
+      getWorker("k", 2),
+      getWorker("a", 3),
+      getWorker("z", 2),
+      getWorker("q", 2),
+      getWorker("r", 2),
+      getWorker("s", 2),
+      getWorker("t", 2),
+      getWorker("u", 2)
+    ];
+    const sortedWorkers = [
+      getWorker("a", 3),
+      getWorker("b", 3),
+      getWorker("c", 3),
+      getWorker("d", 1),
+      getWorker("e", 1),
+      getWorker("f", 1),
+      getWorker("g", 1),
+      getWorker("h", 2),
+      getWorker("i", 2),
+      getWorker("j", 2),
+      getWorker("k", 2),
+      getWorker("l", 2),
+      getWorker("m", 2),
+      getWorker("n", 2),
+      getWorker("o", 2),
+      getWorker("p", 2),
+      getWorker("q", 2),
+      getWorker("r", 2),
+      getWorker("s", 2),
+      getWorker("t", 2),
+      getWorker("u", 2),
+      getWorker("v", 2),
+      getWorker("w", 2),
+      getWorker("x", 2),
+      getWorker("y", 2),
+      getWorker("z", 2)
+    ];
+    commonTests(workers);
+    describe("initial state", () => {
+      test("ManagementFilter should be passed filterBy show-all", () => {
+        doRender(workers);
+        expectOnlyPassedProps(ManagementFilter, { filterBy: "show-all" });
+      });
+      test("ManagementTable should be passed first 10 workers (sorted) as prop", () => {
+        doRender(workers);
+        expectOnlyPassedProps(ManagementTable, { workers: sortedWorkers.slice(0, 10) });
+      });
+      test("ManagementPagination should be passed end = 10, length = 26, page = 1, start = 1", () => {
+        doRender(workers);
+        expectOnlyPassedProps(ManagementPagination, {
+          end: 10,
+          length: 26,
+          page: 1,
+          start: 1
+        });
+      });
     });
-    test("it will hang on loading.", () => {
-      const rendered = render(<ManagementWrapper profileId={2} />);
-      expectMockedComponent(rendered, { ManagementTable }, 0);
-      expect(rendered.getByRole("progressbar")).toBeTruthy();
+    describe("when set filter to manager n3333333", () => {
+      const doSetFilter = () => act(() => {
+        const setStateFromFilterChange = ManagementFilter.mock.calls[0][0].setFilter;
+        setStateFromFilterChange("n3333333");
+      });
+      test("ManagementFilter should be passed filterBy n3333333", () => {
+        doRender(workers);
+        doSetFilter();
+        expectOnlyPassedProps(ManagementFilter, { filterBy: "n3333333" }, 1);
+      });
+      test("ManagementTable should be passed filtered workers having manager n3333333", () => {
+        doRender(workers);
+        doSetFilter();
+        expectOnlyPassedProps(ManagementTable, {
+          workers: [
+            sortedWorkers[0],
+            sortedWorkers[1],
+            sortedWorkers[2]
+          ]
+        }, 1);
+      });
+      test("ManagementPagination should be passed end = 3, length = 3, page = 1, start = 1", () => {
+        doRender(workers);
+        doSetFilter();
+        expectOnlyPassedProps(ManagementPagination, {
+          end: 3,
+          length: 3,
+          page: 1,
+          start: 1
+        }, 1);
+      });
+    });
+    describe("when set filter to manager n2222222", () => {
+      const doSetFilter = () => act(() => {
+        const setStateFromFilterChange = getMockedComponentProps(ManagementFilter, getLastInstanceCalled(ManagementFilter)).setFilter;
+        setStateFromFilterChange("n2222222");
+      });
+      test("ManagementFilter should be passed filterBy n2222222", () => {
+        doRender(workers);
+        doSetFilter();
+        expectOnlyPassedProps(ManagementFilter, { filterBy: "n2222222" }, 1);
+      });
+      test("ManagementTable should be passed filtered workers h -> q", () => {
+        doRender(workers);
+        doSetFilter();
+        expectOnlyPassedProps(ManagementTable, {
+          workers: [
+            sortedWorkers[7],
+            sortedWorkers[8],
+            sortedWorkers[9],
+            sortedWorkers[10],
+            sortedWorkers[11],
+            sortedWorkers[12],
+            sortedWorkers[13],
+            sortedWorkers[14],
+            sortedWorkers[15],
+            sortedWorkers[16]
+          ]
+        }, 1);
+      });
+      test("ManagementPagination should be passed end = 10, length = 19, page = 1, start = 1", () => {
+        doRender(workers);
+        doSetFilter();
+        expectOnlyPassedProps(ManagementPagination, {
+          end: 10,
+          length: 19,
+          page: 1,
+          start: 1
+        }, 1);
+      });
+    });
+    describe("when set filter to manager 2 and then change page to 2", () => {
+      const doSetFilterAndChangePage = () => {
+        act(() => {
+          const setStateFromFilterChange = getMockedComponentProps(ManagementFilter, getLastInstanceCalled(ManagementFilter)).setFilter;
+          setStateFromFilterChange("n2222222");
+        });
+        act(() => {
+          const setStateFromPageChange = getMockedComponentProps(ManagementPagination, getLastInstanceCalled(ManagementPagination)).setPage;
+          setStateFromPageChange(2);
+        });
+      };
+      test("ManagementFilter should be passed filterBy n2222222", () => {
+        doRender(workers);
+        doSetFilterAndChangePage();
+        expectOnlyPassedProps(ManagementFilter, { filterBy: "n2222222" }, getLastInstanceCalled(ManagementFilter));
+      });
+      test("ManagementTable should be passed filtered workers r -> z", () => {
+        doRender(workers);
+        doSetFilterAndChangePage();
+        expectOnlyPassedProps(ManagementTable, {
+          workers: [
+            sortedWorkers[17],
+            sortedWorkers[18],
+            sortedWorkers[19],
+            sortedWorkers[20],
+            sortedWorkers[21],
+            sortedWorkers[22],
+            sortedWorkers[23],
+            sortedWorkers[24],
+            sortedWorkers[25]
+          ]
+        }, getLastInstanceCalled(ManagementTable));
+      });
+      test("ManagementPagination should be passed end = 19, length = 19, page = 2, start = 11", () => {
+        doRender(workers);
+        doSetFilterAndChangePage();
+        expectOnlyPassedProps(ManagementPagination, {
+          end: 19,
+          length: 19,
+          page: 2,
+          start: 11
+        }, getLastInstanceCalled(ManagementPagination));
+      });
     });
   });
 });
