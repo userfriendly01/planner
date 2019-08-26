@@ -89,7 +89,6 @@ const AddUserModal = props => {
       profiles
     }
   } = useAdminState();
-  const [disableNNumber, setDisableNNumber] = useState(false);
   const [form, setForm] = useState({
     lookupInfo: {},
     nNumber: "N",
@@ -97,7 +96,6 @@ const AddUserModal = props => {
     outgoing: "",
     team: ""
   });
-  const [formReady, setFormReady] = useState(false);
   const [loading, updateLoading] = useState({
     lookupUser: false,
     saveStatus: "saving",
@@ -127,7 +125,6 @@ const AddUserModal = props => {
                 departmentNumber: res.data[0].person.data.DepartmentNumber
               }
             });
-            setDisableNNumber(true);
           } else {
             setForm({
               ...form,
@@ -152,14 +149,6 @@ const AddUserModal = props => {
     }
   }, [form.nNumber]);
 
-  useEffect(() => {
-    if (JSON.stringify(form.lookupInfo) !== JSON.stringify({}) && form.team !== "" && form.manager !== "" && form.outgoing !== "") {
-      setFormReady(true);
-    } else {
-      setFormReady(false);
-    }
-  }, [form]);
-
   const clearUser = () => {
     setForm({
       ...form,
@@ -167,7 +156,6 @@ const AddUserModal = props => {
       lookupInfo: {},
       nNumber: "N"
     });
-    setDisableNNumber(false);
   };
 
   const saveUser = () => {
@@ -225,6 +213,8 @@ const AddUserModal = props => {
       });
   };
 
+  const formReady = JSON.stringify(form.lookupInfo) !== JSON.stringify({}) && form.team !== "" && form.manager !== "" && form.outgoing !== "";
+
   return (
     <ModalContainer>
       <PaperContainer>
@@ -273,7 +263,7 @@ const AddUserModal = props => {
         />
         <FlexColumn>
           <ModalNNumber
-            disabled={disableNNumber}
+            disabled={JSON.stringify(form.lookupInfo) !== "{}"}
             loading={loading.lookupUser}
             nNumber={form.nNumber}
             updateValue={newValue => setForm({
