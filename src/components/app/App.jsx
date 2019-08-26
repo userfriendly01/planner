@@ -12,6 +12,7 @@ import React, {
 import styled from "styled-components";
 import {
   formatWorkerResponse,
+  getUniqueManagerList,
   isErrorIn400s,
   myAxios
 } from "utils";
@@ -67,10 +68,16 @@ const App = () => {
       .get(apiPaths.GET_WORKERS)
       .then(res => {
         setWorkersLoaded(true);
+        const workers = formatWorkerResponse(res.data);
         dispatch(({
           type: "loadWorkers",
-          payload: formatWorkerResponse(res.data)
+          payload: workers
         }));
+        const managerList = getUniqueManagerList(workers);
+        dispatch({
+          type: "loadManagers",
+          payload: managerList
+        });
       })
       .catch(err => {
         console.error("An unknown error has occurred.", err);

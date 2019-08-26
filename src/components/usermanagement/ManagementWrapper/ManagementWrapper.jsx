@@ -5,14 +5,11 @@ import {
   ManagementTable
 } from "components";
 import {
-  useAdminDispatch,
   useAdminState
 } from "context";
 import React, {
-  useEffect,
   useState
 } from "react";
-import { getUniqueManagerList } from "utils";
 import styled from "styled-components";
 
 const ManagementContainer = styled.div`
@@ -27,50 +24,73 @@ const StyledPaper = styled(Paper)`
   justify-content: center;
 `;
 
+const sortByWorkerFullName = (a, b) => {
+  const [aName, bName] = [a.attributes.full_name, b.attributes.full_name];
+  if (aName < bName) { return -1; }
+  if (aName > bName) { return 1; }
+  return 0;
+};
+
+const getWorkersStartAndEnd = (pageSelected, filteredWorkers) => {
+  const workersStart = ((pageSelected - 1) * workersPerPage);
+  if (pageSelected * workersPerPage > filteredWorkers.length) {
+    return {
+      workersStart,
+      workersEnd: (((pageSelected - 1) * workersPerPage) + (filteredWorkers.length % workersPerPage))
+    };
+  } else {
+    return {
+      workersStart,
+      workersEnd: pageSelected * workersPerPage
+    };
+  }
+};
+
 const workersPerPage = 10;
 
 const ManagementWrapper = () => {
+  const workers = useAdminState().workerContext.workers;
+  const sortedWorkers = [ ...workers ].sort(sortByWorkerFullName);
+
+  const [state, setState] = useState({
+    pageSelected: 1,
+    filterBy: "show-all"
+  });
+
+  const filteredWorkers = state.filterBy === "show-all"
+    ? sortedWorkers
+    : sortedWorkers.filter(worker => worker.attributes.manager_n_number === state.filterBy);
+
   const {
-    workerContext: {
-      workers
-    }
-  } = useAdminState();
-  const dispatch = useAdminDispatch();
-  const [filterBy, setFilterBy] = useState("");
-  const [filteredWorkers, setFilteredWorkers] = useState([]);
-  const [workersStart, setWorkersStart] = useState(1);
-  const [workersEnd, setWorkersEnd] = useState(workersPerPage);
-  const [pageSelected, setPageSelected] = useState(1);
+    workersStart,
+    workersEnd
+  } = getWorkersStartAndEnd(state.pageSelected, filteredWorkers);
 
-  useEffect(() => {
-    if (pageSelected * workersPerPage > filteredWorkers.length) {
-      setWorkersEnd((((pageSelected - 1) * workersPerPage) + (filteredWorkers.length % workersPerPage)));
-    } else {
-      setWorkersEnd(pageSelected * workersPerPage);
-    }
-    setWorkersStart(((pageSelected - 1) * workersPerPage) + 1);
-  }, [filteredWorkers, pageSelected]);
+  const setStateFromFilterChange = filterBy => setState({
+    pageSelected: 1,
+    filterBy
+  });
 
-  useEffect(() => {
-    setPageSelected(1);
-    if (filterBy === "") {
-      setFilteredWorkers(workers);
-    } else {
-      setFilteredWorkers(workers.filter(worker => worker.attributes.manager_n_number === filterBy));
-    }
-    dispatch({
-      type: "loadManagers",
-      payload: getUniqueManagerList(workers)
-    });
-  }, [filterBy, workers]);
+  const setStateFromPageChange = pageSelected => setState({
+    pageSelected,
+    filterBy: state.filterBy
+  });
 
   return (
     <ManagementContainer>
-      <ManagementFilter filterBy={filterBy} setFilter={setFilterBy} />
+      <ManagementFilter
+        filterBy={state.filterBy}
+        setFilter={setStateFromFilterChange} />
       <StyledPaper elevation={3}>
-        <ManagementTable workers={filteredWorkers.slice(workersStart - 1, workersEnd)} />
+        <ManagementTable
+          workers={filteredWorkers.slice(workersStart, workersEnd)} />
       </StyledPaper>
-      <ManagementPagination end={workersEnd} length={filteredWorkers.length} page={pageSelected} setPage={setPageSelected} start={workersStart}/>
+      <ManagementPagination
+        end={workersEnd}
+        length={filteredWorkers.length}
+        page={state.pageSelected}
+        setPage={setStateFromPageChange}
+        start={workersStart + 1}/>
     </ManagementContainer>
   );
 };

@@ -83,19 +83,17 @@ const ManagementFilter = props => {
             <FilledInput name="filter" id="filled-filter-native-simple" />
           }
         >
-          <option value="">Show All</option>
-          {managers.map(manager => {
-            console.log(manager);
-            return (
+          {[
+            <option key={"show-all"} value={"show-all"}>Show All</option>,
+            ...managers.map(manager => (
               <option
                 key={manager.manager_n_number}
                 value={manager.manager_n_number}
               >
                 {manager.manager_first_name} {manager.manager_last_name}
               </option>
-            );
-          }
-          )}
+            ))
+          ]}
         </Select>
       </FormControl>
       <CustomButton onClick={handleOpenAddManager}>Add Manager</CustomButton>
