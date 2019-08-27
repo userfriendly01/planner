@@ -1,4 +1,4 @@
-import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
+import { CloseRounded } from "@material-ui/icons";
 import {
   CustomButton,
   ModalHelperText,
@@ -197,7 +197,7 @@ const AddManagerModal = props => {
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>
           <ModalHeader>Add a Manager</ModalHeader>
-          <CloseRoundedIcon onClick={handleClose} tooltip="Close Add Manager Modal"/>
+          <CloseRounded onClick={handleClose}/>
         </HeaderAndCloseButtonWrapper>
         <FlexColumn>
           <ModalNNumber
