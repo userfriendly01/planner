@@ -59,18 +59,21 @@ const AddManagerButton = styled(ButtonBase)`
   }
 `;
 
+const sortByFirstName = (a, b) => {
+  const [aName, bName] = [a.manager_first_name, b.manager_first_name];
+  if (aName < bName) { return -1; }
+  if (aName > bName) { return 1; }
+  return 0;
+};
+
 const ManagementFilter = props => {
   const {
     filterBy,
     setFilter
   } = props;
 
-  const {
-    managerContext: {
-      managers
-    }
-  } = useAdminState();
-
+  const managers = useAdminState().managerContext.managers;
+  const sortedManagers = [ ...managers ].sort(sortByFirstName);
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
   const [isAddManagerModalOpen, setIsAddManagerModalOpen] = useState(false);
 
@@ -104,7 +107,7 @@ const ManagementFilter = props => {
         >
           {[
             <option key={"show-all"} value={"show-all"}>Show All</option>,
-            ...managers.map(manager => (
+            ...sortedManagers.map(manager => (
               <option
                 key={manager.manager_n_number}
                 value={manager.manager_n_number}
