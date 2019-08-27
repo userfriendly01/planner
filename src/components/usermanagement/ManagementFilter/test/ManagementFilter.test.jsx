@@ -1,16 +1,17 @@
 import ManagementFilter from "../ManagementFilter";
-import {
-  AddUserModal,
-  AddManagerModal
-} from "components";
 import React from "react";
 import {
+  act,
+  expectMockedComponent,
   fireEvent,
   render,
   setupMockedComponents
 } from "testUtils";
+import {
+  AddUserModal,
+  AddManagerModal
+} from "components";
 import { initialState } from "context";
-
 
 jest.mock("components", () => ({
   __esModule: true,
@@ -43,31 +44,31 @@ const mockManagerData = [
   }
 ];
 
-// const initialTestState  = {
-//   ...initialState,
-//   managerContext: {
-//     managers: mockManagerData
-//   },
-//   isAddUserModalOpen: false,
-//   isAddManagerModalOpen: false
-// };
+const initialTestState  = {
+  ...initialState,
+  managerContext: {
+    managers: mockManagerData
+  },
+  isAddUserModalOpen: false,
+  isAddManagerModalOpen: false
+};
 
 const renderComponent = () => {
-  const state = {...initialState};
-  state.managerContext.managers = mockManagerData;
-  state.isAddUserModalOpen = false;
-  state.isAddManagerModalOpen = false;
   return render(
     <ManagementFilter
       filterBy={filterBy}
       setFilter={setFilter}
-    />, state);
+    />, initialTestState);
 };
-
 
 describe("<ManagementFilter />", () => {
   beforeEach(() => {
+    setupMockedComponents({
+      AddManagerModal,
+      AddUserModal
+    });
   });
+
   test("upon initial render, all managers should be listed in the dropdown", () => {
     const rendered = renderComponent();
     expect(rendered.container).toHaveTextContent("Manager Filter");
@@ -78,24 +79,45 @@ describe("<ManagementFilter />", () => {
     expect(rendered.getByText("Christine Haley", { selector: "option" })).toBeInTheDocument();
     expect(rendered.getByText("Faith Cuneo", { selector: "option" })).toBeInTheDocument();
     expect(rendered.getByText("Michael Nieman", { selector: "option" })).toBeInTheDocument();
-    expect(rendered.getAllByText("Add Manager", { selector: "button" }).length).toBe(1);
-    expect(rendered.getAllByText("Add User", { selector: "button" }).length).toBe(1);
-
-
+    expect(rendered.getByText("Add Manager", { selector: "button" })).toBeInTheDocument();
+    expect(rendered.getByText("Add User", { selector: "button" })).toBeInTheDocument();
   });
-  test("when you click on the add manager button, the manager modal is opened", () => {
+
+  test("when you click on the add manager button, the manager modal is rendered. When you call handleClose, the modal is no longer rendered", () => {
     const rendered = renderComponent();
-    fireEvent.click(rendered.getByText("Add Manager", {selector: "button"}));
-    expect(rendered.getAllByText("ModalNNumber").length).toBe(1);
-    //expect("isAddManagerModalOpen").toBe(true);
+    const button = rendered.getByText("Add Manager", { selector: "button" });
+    expectMockedComponent(rendered, { AddManagerModal }, 0);
+    act(() => {
+      fireEvent.click(button);
+    });
+    expectMockedComponent(rendered, { AddManagerModal }, 1);
+    const handleClose = AddManagerModal.mock.calls[0][0].handleClose;
+    act(() => {
+      handleClose();
+    });
+    expectMockedComponent(rendered, { AddManagerModal }, 0);
   });
-  test("when you click on the add user button, the user modal is opened", () => {
-    // const rendered = doRender();
-    // const addUserButton = rendered.getByText("Add User");
-    // fireEvent.click(addUserButton);
+  test("when you click on the add user button, the user modal is rendered. When you call handleClose, the modal is no longer rendered", () => {
+    const rendered = renderComponent();
+    const button = rendered.getByText("Add User", { selector: "button" });
+    expectMockedComponent(rendered, { AddUserModal }, 0);
+    act(() => {
+      fireEvent.click(button);
+    });
+    expectMockedComponent(rendered, { AddUserModal }, 1);
+    const handleClose = AddUserModal.mock.calls[0][0].handleClose;
+    act(() => {
+      handleClose();
+    });
+    expectMockedComponent(rendered, { AddUserModal }, 0);
   });
-  test("when you click on the add user close button, the user modal is closed", () => {
-  });
-  test("when you click on a manager, the onChange action is dispatched and setFilter is activated", () => {
+  test("When an option is clicked in the filter, the setFilter method is fired with the correct parameters", () => {
+    const rendered = renderComponent();
+    const select = rendered.getByTestId("select");
+    const expectedTarget = "n0222222";
+    act(() => {
+      fireEvent.change(select, { target: { value: expectedTarget }});
+    });
+    expect(setFilter).toHaveBeenCalledWith(expectedTarget);
   });
 });
