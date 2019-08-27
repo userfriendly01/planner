@@ -63,33 +63,27 @@ const loadingStates = {
   userNotFound: "User not found"
 };
 
+const defaultManager = {};
+const defaultNNumber = "n";
+
 const AddManagerModal = props => {
   const {
     handleClose
   } = props;
 
-  const [manager, setManager] = useState(null);
+  const [manager, setManager] = useState(defaultManager);
   const [saveManager, setSaveManager] = useState(null);
-  const [nNumber, setNNumber] = useState(null);
+  const [nNumber, setNNumber] = useState(defaultNNumber);
 
   const dispatch = useAdminDispatch();
   const state = useAdminState();
 
   const addManagerClicked = () => {
     setSaveManager(loadingStates.loading);
-    // const manager = {
-    //   manager_first_name: form.lookupInfo.firstName,
-    //   manager_last_name: form.lookupInfo.lastName,
-    //   manager_n_number: form.nNumber
-    // };
-    const newManagerNNumber = manager.manager_n_number;
-    const listOfCurrentManagers = state.managerContext.managers;
-    if (!listOfCurrentManagers.some(existingManager => existingManager.manager_n_number === newManagerNNumber)) {
+    if (!state.managerContext.managers.find(mgr => mgr.manager_n_number === nNumber)) {
       dispatch(({
         type: "addManager",
-        payload: {
-          manager
-        }
+        payload: { manager }
       }));
       setSaveManager(loadingStates.success);
       setTimeout(() => handleClose(), 2000);
@@ -100,14 +94,8 @@ const AddManagerModal = props => {
   };
 
   const clearManager = () => {
-    // setForm({
-    //   ...form,
-    //   lookupError: null,
-    //   lookupInfo: {},
-    //   nNumber: "N"
-    // });
-    setManager(null);
-    setNNumber("N");
+    setManager(defaultManager);
+    setNNumber(defaultNNumber);
   };
 
   const isValidNNumber = nNumber.match(nNumMatcher);
@@ -118,14 +106,11 @@ const AddManagerModal = props => {
       .get(apiPaths.EMPLOYEE_LOOKUP(nNumber.substring(1)))
       .then(res => {
         if (res.data.length !== 0) {
+          const rawManager = res.data[0];
           setManager({
-            email: res.data[0].person.data.Email,
-            firstName: res.data[0].person.data.FirstName,
-            lastName: res.data[0].person.data.LastName,
-            officeName: res.data[0].person.data.OfficeName,
-            officeNumber: res.data[0].person.data.OfficeNumber,
-            departmentName: res.data[0].person.data.DepartmentName,
-            departmentNumber: res.data[0].person.data.DepartmentNumber
+            manager_first_name: rawManager.person.data.FirstName,
+            manager_last_name: rawManager.person.data.LastName,
+            manager_n_number: nNumber
           });
         } else {
           setManager(loadingStates.userNotFound);
@@ -157,7 +142,7 @@ const AddManagerModal = props => {
         <FlexColumn>
           <ModalNNumber
             // disabled={JSON.stringify(form.lookupInfo) !== "{}"}
-            disabled={!isManagerValid}
+            disabled={false /*TODO fix this*/}
             label="Manager N Number"
             name="Manager N Number"
             loading={manager === loadingStates.loading}
