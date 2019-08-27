@@ -84,13 +84,15 @@ const AddUserModal = props => {
 
   const nNumMatcher = /[n,N]\d{7}/g;
   const {
-    handleClose,
-    managerList
+    handleClose
   } = props;
   const dispatch = useAdminDispatch();
   const {
     profileContext: {
       profiles
+    },
+    managerContext: {
+      managers
     }
   } = useAdminState();
   const [form, setForm] = useState({
@@ -233,7 +235,7 @@ const AddUserModal = props => {
         <CustomSelect
           label={"Manager"}
           labelWidth={65}
-          optionsList={managerList}
+          optionsList={managers}
           optionsDisplayFunc={option => {
             return {
               display: `${option.manager_first_name} ${option.manager_last_name}`,
