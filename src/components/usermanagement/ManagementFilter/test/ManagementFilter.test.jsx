@@ -3,10 +3,14 @@ import React from "react";
 import {
   act,
   fireEvent,
-  render
+  render,
+  setupMockedComponents
 } from "testUtils";
+import {
+  AddUserModal,
+  AddManagerModal
+} from "components";
 import { initialState } from "context";
-
 
 jest.mock("components", () => ({
   __esModule: true,
@@ -56,10 +60,14 @@ const renderComponent = () => {
     />, initialTestState);
 };
 
-
 describe("<ManagementFilter />", () => {
   beforeEach(() => {
+    setupMockedComponents({
+      AddManagerModal,
+      AddUserModal
+    });
   });
+
   test("upon initial render, all managers should be listed in the dropdown", () => {
     const rendered = renderComponent();
     expect(rendered.container).toHaveTextContent("Manager Filter");
@@ -72,12 +80,11 @@ describe("<ManagementFilter />", () => {
     expect(rendered.getByText("Michael Nieman", { selector: "option" })).toBeInTheDocument();
     expect(rendered.getByText("Add Manager", { selector: "button" })).toBeInTheDocument();
     expect(rendered.getByText("Add User", { selector: "button" })).toBeInTheDocument();
-
-
   });
+
   test("when you click on the add manager button, the manager modal is opened", () => {
     const rendered = renderComponent();
-    //expect(rendered.container).toBe({})
+    // expect(rendered.container).toBe({});
     const button = rendered.getByText("Add Manager", { selector: "button" });
     //expect(button).toBe({})
     act(() => {
@@ -86,13 +93,13 @@ describe("<ManagementFilter />", () => {
     expect(rendered.getAllByText("ModalNNumber").length).toBe(1);
     //expect("isAddManagerModalOpen").toBe(true);
   });
-  test("when you click on the add user button, the user modal is opened", () => {
-    // const rendered = doRender();
-    // const addUserButton = rendered.getByText("Add User");
-    // fireEvent.click(addUserButton);
-  });
-  test("when you click on the add user close button, the user modal is closed", () => {
-  });
-  test("when you click on a manager, the onChange action is dispatched and setFilter is activated", () => {
-  });
+  // test("when you click on the add user button, the user modal is opened", () => {
+  //   const rendered = doRender();
+  //   const addUserButton = rendered.getByText("Add User");
+  //   fireEvent.click(addUserButton);
+  // });
+  // test("when you click on the add user close button, the user modal is closed", () => {
+  // });
+  // test("when you click on a manager, the onChange action is dispatched and setFilter is activated", () => {
+  // });
 });
