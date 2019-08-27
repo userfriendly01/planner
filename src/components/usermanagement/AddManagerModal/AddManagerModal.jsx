@@ -17,7 +17,7 @@ import {
 } from "globals";
 import PropTypes from "prop-types";
 import React, {
-  // useEffect,
+  useEffect,
   useState
 } from "react";
 import styled from "styled-components";
@@ -100,27 +100,29 @@ const AddManagerModal = props => {
 
   const isValidNNumber = nNumber.match(nNumMatcher);
 
-  if (isValidNNumber) {
-    setManager(loadingStates.loading);
-    myAxios
-      .get(apiPaths.EMPLOYEE_LOOKUP(nNumber.substring(1)))
-      .then(res => {
-        if (res.data.length !== 0) {
-          const rawManager = res.data[0];
-          setManager({
-            manager_first_name: rawManager.person.data.FirstName,
-            manager_last_name: rawManager.person.data.LastName,
-            manager_n_number: nNumber
-          });
-        } else {
-          setManager(loadingStates.userNotFound);
-        }
-      })
-      .catch(err => {
-        setManager(loadingStates.fail);
-        console.error("Failed to lookup manager by nNumber", err);
-      });
-  }
+  useEffect(() => {
+    if (isValidNNumber) {
+      setManager(loadingStates.loading);
+      myAxios
+        .get(apiPaths.EMPLOYEE_LOOKUP(nNumber.substring(1)))
+        .then(res => {
+          if (res.data.length !== 0) {
+            const rawManager = res.data[0];
+            setManager({
+              manager_first_name: rawManager.person.data.FirstName,
+              manager_last_name: rawManager.person.data.LastName,
+              manager_n_number: nNumber
+            });
+          } else {
+            setManager(loadingStates.userNotFound);
+          }
+        })
+        .catch(err => {
+          setManager(loadingStates.fail);
+          console.error("Failed to lookup manager by nNumber", err);
+        });
+    }
+  }, [nNumber]);
 
   const isManagerValid = manager.manager_n_number ? true : false;
 
@@ -141,16 +143,17 @@ const AddManagerModal = props => {
         </HeaderAndCloseButtonWrapper>
         <FlexColumn>
           <ModalNNumber
-            // disabled={JSON.stringify(form.lookupInfo) !== "{}"}
-            disabled={false /*TODO fix this*/}
+            disabled={saveManager === loadingStates.loading || manager === loadingStates.loading}
             label="Manager N Number"
             name="Manager N Number"
             loading={manager === loadingStates.loading}
             nNumber={nNumber}
             updateValue={setNNumber}
           />
-          {/* <ModalHelperText clearUser={clearManager} error={manager === loadingStates.fail ? } lookupInfo={form.lookupInfo} /> */}
-          <ModalHelperText clearUser={clearManager} success={isManagerValid} message={"whatever"}/>
+          {isManagerValid
+            ? <ModalHelperText clearUser={clearManager} success={isManagerValid} message={`${manager.manager_first_name} ${manager.manager_last_name}`}/>
+            : null
+          }
         </FlexColumn>
         <ButtonWrapper>
           <CustomButton disabled={!isManagerValid} onClick={addManagerClicked}>
