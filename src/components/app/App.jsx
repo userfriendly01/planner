@@ -12,6 +12,7 @@ import React, {
 import styled from "styled-components";
 import {
   formatWorkerResponse,
+  getUniqueManagerList,
   isErrorIn400s,
   myAxios
 } from "utils";
@@ -57,9 +58,8 @@ const App = () => {
           setAuthorized(false);
         } else {
           console.error("An unknown error has occurred.", err);
-          setAuthorized(false);
           setError({
-            authError: err
+            error: err
           });
         }
       });
@@ -67,10 +67,16 @@ const App = () => {
       .get(apiPaths.GET_WORKERS)
       .then(res => {
         setWorkersLoaded(true);
+        const workers = formatWorkerResponse(res.data);
         dispatch(({
           type: "loadWorkers",
-          payload: formatWorkerResponse(res.data)
+          payload: workers
         }));
+        const managerList = getUniqueManagerList(workers);
+        dispatch({
+          type: "loadManagers",
+          payload: managerList
+        });
       })
       .catch(err => {
         console.error("An unknown error has occurred.", err);
@@ -101,13 +107,13 @@ const App = () => {
       </AppWrapper>
     );
   } else if (!authorized && authorized !== undefined) {
-    return <div data-testid="unauthorized">{"You are not authorized to view this page"}</div>;
+    return <div data-testid="unauthorized">You are not authorized to view this page</div>;
   } else if (error && error !== undefined) {
-    return <div data-testid="unknownError">{"An error occured while logging in."}</div>;
+    return <div data-testid="unknownError">An error occured while logging in.</div>;
   } else {
     return (
       <LoadingContainer>
-        <LoadingMessage>{"Loading..."}</LoadingMessage>
+        <LoadingMessage>Loading...</LoadingMessage>
         <CircularProgress size={60} />
       </LoadingContainer>
     );

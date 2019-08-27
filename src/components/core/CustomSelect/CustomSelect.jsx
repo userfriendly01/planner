@@ -39,6 +39,7 @@ const CustomSelect = props => {
             id={`outlined-${label}-native-simple`}
           />
         }
+        inputProps={{ "data-testid": "customSelect" }}
       >
         <option value="" />
         {optionsList.map(option => {

@@ -27,7 +27,7 @@ StateProvider.propTypes = {
 const useAdminDispatch = () => {
   const context = React.useContext(DispatchContext);
   if (context === undefined) {
-    throw new Error("DispatchContext must be used within a CountProvider");
+    throw new Error("DispatchContext must be used within a Context Provider");
   }
   return context;
 };
@@ -35,7 +35,7 @@ const useAdminDispatch = () => {
 const useAdminState = () => {
   const context = React.useContext(StateContext);
   if (context === undefined) {
-    throw new Error("useCountState must be used within a CountProvider");
+    throw new Error("StateContext must be used within a Context Provider");
   }
   return context;
 };

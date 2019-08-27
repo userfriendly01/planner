@@ -28,7 +28,7 @@ describe("<NavTabs />", () => {
 
   test("we should load the two links, as well as default to showing the Management Pane", () => {
     const rendered = render(<NavTabs />);
-    expect(rendered.getByText("My Team", { selector: "span" })).toBeInTheDocument();
+    expect(rendered.getByText("User Management", { selector: "span" })).toBeInTheDocument();
     expect(rendered.getByText("Settings", { selector: "span" })).toBeInTheDocument();
     expectMockedComponent(rendered, { ManagementWrapper });
     expectMockedComponent(rendered, { SettingsWrapper });
@@ -45,7 +45,7 @@ describe("<NavTabs />", () => {
 
   test("when we click on the already clicked link, nothing should change", () => {
     const rendered = render(<NavTabs />);
-    fireEvent.click(rendered.getByText("My Team", { selector: "span" }));
+    fireEvent.click(rendered.getByText("User Management", { selector: "span" }));
     expect(rendered.getByText("ManagementWrapper")).toBeVisible();
     expect(rendered.getByText("SettingsWrapper")).not.toBeVisible();
   });
