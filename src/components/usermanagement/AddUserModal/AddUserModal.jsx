@@ -9,7 +9,10 @@ import {
   ModalOverlay,
   ModalPhoneNumber
 } from "components";
-import { useAdminState } from "context";
+import {
+  useAdminDispatch,
+  useAdminState
+} from "context";
 import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, {
@@ -84,6 +87,7 @@ const AddUserModal = props => {
     handleClose,
     managerList
   } = props;
+  const dispatch = useAdminDispatch();
   const {
     profileContext: {
       profiles
@@ -165,25 +169,31 @@ const AddUserModal = props => {
       saveUser: true
     });
     const parsedManager = JSON.parse(form.manager);
+    const attributes = {
+      did: `+1${form.outgoing.replace(/[\D]/g, "")}`,
+      email: form.lookupInfo.email,
+      full_name: `${form.lookupInfo.firstName} ${form.lookupInfo.lastName}`,
+      manager_first_name: parsedManager.manager_first_name,
+      manager_last_name: parsedManager.manager_last_name,
+      manager_n_number: parsedManager.manager_n_number,
+      n_number: form.nNumber,
+      office_location_name: form.lookupInfo.officeName,
+      office_location_number: form.lookupInfo.officeNumber,
+      primary_dept_name: form.lookupInfo.departmentName,
+      primary_dept_number: form.lookupInfo.departmentNumber,
+      profile_id: form.team
+    };
     myAxios
-      .post(apiPaths.CREATE_WORKER, {
-        attributes: {
-          did: `+1${form.outgoing.replace(/[\D]/g, "")}`,
-          email: form.lookupInfo.email,
-          full_name: `${form.lookupInfo.firstName} ${form.lookupInfo.lastName}`,
-          manager_first_name: parsedManager.manager_first_name,
-          manager_last_name: parsedManager.manager_last_name,
-          manager_n_number: parsedManager.manager_n_number,
-          n_number: form.nNumber,
-          office_location_name: form.lookupInfo.officeName,
-          office_location_number: form.lookupInfo.officeNumber,
-          primary_dept_name: form.lookupInfo.departmentName,
-          primary_dept_number: form.lookupInfo.departmentNumber,
-          profile_id: form.team
-        }
-      })
+      .post(apiPaths.CREATE_WORKER, { attributes })
       .then(res => {
         clearUser();
+        dispatch({
+          type: "addWorker",
+          payload: {
+            id: form.nNumber,
+            attributes
+          }
+        });
         updateLoading({
           ...loading,
           saveStatus: "success",

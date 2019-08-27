@@ -40,6 +40,36 @@ describe("the reducer", () => {
     const result = reducer(testState, action);
     expect(result.managerContext.managers).toEqual([...initialManager, [payload]]);
   });
+  test("add worker should add to the workers array", () => {
+    const payload = {
+      attributes: {
+        manager_first_name: "test",
+        manager_last_name: "fun"
+      },
+      id: "n1234556"
+    };
+    const action = {
+      type: "addWorker",
+      payload
+    };
+    const initialWorkers = [
+      {
+        attributes: {
+          manager_first_name: "frank",
+          manager_last_name: "smith"
+        },
+        id: "n7685955"
+      }
+    ];
+    const testState = {
+      ...initialState,
+      workerContext: {
+        workers: initialWorkers
+      }
+    };
+    const result = reducer(testState, action);
+    expect(result.workerContext.workers).toEqual([...initialWorkers, payload]);
+  });
   test("loadManager should initialize or reinitialize the managers array", () => {
     const payload = [
       {
