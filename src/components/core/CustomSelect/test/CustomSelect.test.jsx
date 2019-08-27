@@ -58,7 +58,6 @@ describe("<CustomSelect />", () => {
   test("selecting an option should fire the change event function.", () => {
     const rendered = renderWithProps("test", 41, testList, mockDisplayFunc, updateValueFunc, "testone");
     fireEvent.change(rendered.getByTestId("customSelect"),  { target: { value: "testtwo" }});
-    expect(rendered.getByTestId("customSelect"),  { target: { value: "testtwo" }}).toBe({});
     expect(updateValueFunc.mock.calls.length).toBe(1);
   });
 });
