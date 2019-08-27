@@ -66,7 +66,7 @@ const NavTabs = () => {
     <Content >
       <StyledTabs variant="fullWidth" value={value} onChange={handleChange}>
         <StyledTab label="User Management" href="/userManagement" id="nav-tab-userManagement" aria-controls="nav-tabpanel-userManagement" onClick={event => event.preventDefault()}/>
-        <StyledTab disabled label="Settings" href="/settings" id="nav-tab-settings" aria-controls="nav-tabpanel-settings" onClick={event => event.preventDefault()}/>
+        {/* <StyledTab disabled label="Settings" href="/settings" id="nav-tab-settings" aria-controls="nav-tabpanel-settings" onClick={event => event.preventDefault()}/> */}
       </StyledTabs>
       <TabPanel value={value} tabName="userManagement" index={0}>
         <ManagementWrapper  />
