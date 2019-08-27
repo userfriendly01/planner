@@ -17,7 +17,7 @@ import {
 } from "globals";
 import PropTypes from "prop-types";
 import React, {
-  useEffect,
+  // useEffect,
   useState
 } from "react";
 import styled from "styled-components";
@@ -56,35 +56,32 @@ top: 50%;
 transform: translate(-50%, -50%);
 `;
 
+const loadingStates = {
+  success: "success",
+  fail: "fail",
+  loading: "loading",
+  userNotFound: "User not found"
+};
+
 const AddManagerModal = props => {
   const {
     handleClose
   } = props;
 
-  const [form, setForm] = useState({
-    lookupInfo: {},
-    nNumber: "N"
-  });
-  const [formReady, setFormReady] = useState(false);
-  const [loading, updateLoading] = useState({
-    lookupManager: false,
-    saveManager: false,
-    saveStatus: "saving"
-  });
+  const [manager, setManager] = useState(null);
+  const [saveManager, setSaveManager] = useState(null);
+  const [nNumber, setNNumber] = useState(null);
+
   const dispatch = useAdminDispatch();
   const state = useAdminState();
 
-  const saveManager = () => {
-    updateLoading({
-      ...loading,
-      saveStatus: "saving",
-      saveManager: true
-    });
-    const manager = {
-      manager_first_name: form.lookupInfo.firstName,
-      manager_last_name: form.lookupInfo.lastName,
-      manager_n_number: form.nNumber
-    };
+  const addManagerClicked = () => {
+    setSaveManager(loadingStates.loading);
+    // const manager = {
+    //   manager_first_name: form.lookupInfo.firstName,
+    //   manager_last_name: form.lookupInfo.lastName,
+    //   manager_n_number: form.nNumber
+    // };
     const newManagerNNumber = manager.manager_n_number;
     const listOfCurrentManagers = state.managerContext.managers;
     if (!listOfCurrentManagers.some(existingManager => existingManager.manager_n_number === newManagerNNumber)) {
@@ -94,103 +91,61 @@ const AddManagerModal = props => {
           manager
         }
       }));
-      updateLoading({
-        ...loading,
-        saveManager: true,
-        saveStatus: "success"
-      });
-      setTimeout(() => {
-        updateLoading({
-          ...loading,
-          saveManager: false
-        });
-        handleClose();
-      }, 2000);
+      setSaveManager(loadingStates.success);
+      setTimeout(() => handleClose(), 2000);
     } else {
-      updateLoading({
-        ...loading,
-        saveManager: true,
-        saveStatus: "fail"
-      });
-      setTimeout(() => {
-        updateLoading({
-          ...loading,
-          saveManager: false
-        });
-      }, 2000);
+      setSaveManager(loadingStates.fail);
+      setTimeout(() => setSaveManager(null), 2000);
     }
   };
 
   const clearManager = () => {
-    setForm({
-      ...form,
-      lookupError: null,
-      lookupInfo: {},
-      nNumber: "N"
-    });
+    // setForm({
+    //   ...form,
+    //   lookupError: null,
+    //   lookupInfo: {},
+    //   nNumber: "N"
+    // });
+    setManager(null);
+    setNNumber("N");
   };
 
-  useEffect(() => {
-    if (form.nNumber.match(nNumMatcher)) {
-      updateLoading({
-        ...loading,
-        lookupManager: true
-      });
-      myAxios
-        .get(apiPaths.EMPLOYEE_LOOKUP(form.nNumber.substring(1)))
-        .then(res => {
-          if (res.data.length !== 0) {
-            setForm({
-              ...form,
-              lookupError: null,
-              lookupInfo: {
-                email: res.data[0].person.data.Email,
-                firstName: res.data[0].person.data.FirstName,
-                lastName: res.data[0].person.data.LastName,
-                officeName: res.data[0].person.data.OfficeName,
-                officeNumber: res.data[0].person.data.OfficeNumber,
-                departmentName: res.data[0].person.data.DepartmentName,
-                departmentNumber: res.data[0].person.data.DepartmentNumber
-              }
-            });
-          } else {
-            setForm({
-              ...form,
-              lookupInfo: {},
-              lookupError: "User not found"
-            });
-          }
-        })
-        .catch(err => {
-          setForm({
-            ...form,
-            lookupInfo: {},
-            lookupError: `Error calling lookup service: ${err.message}`
-          });
-        })
-        .finally(() => {
-          updateLoading({
-            ...loading,
-            lookupManager: false
-          });
-        });
-    }
-  }, [form.nNumber]);
+  const isValidNNumber = nNumber.match(nNumMatcher);
 
-  useEffect(() => {
-    if (JSON.stringify(form.lookupInfo) !== JSON.stringify({}) && form.team !== "" && form.manager !== "" && form.outgoing !== "") {
-      setFormReady(true);
-    } else {
-      setFormReady(false);
-    }
-  }, [form]);
+  if (isValidNNumber) {
+    setManager(loadingStates.loading);
+    myAxios
+      .get(apiPaths.EMPLOYEE_LOOKUP(nNumber.substring(1)))
+      .then(res => {
+        if (res.data.length !== 0) {
+          setManager({
+            email: res.data[0].person.data.Email,
+            firstName: res.data[0].person.data.FirstName,
+            lastName: res.data[0].person.data.LastName,
+            officeName: res.data[0].person.data.OfficeName,
+            officeNumber: res.data[0].person.data.OfficeNumber,
+            departmentName: res.data[0].person.data.DepartmentName,
+            departmentNumber: res.data[0].person.data.DepartmentNumber
+          });
+        } else {
+          setManager(loadingStates.userNotFound);
+        }
+      })
+      .catch(err => {
+        setManager(loadingStates.fail);
+        console.error("Failed to lookup manager by nNumber", err);
+      });
+  }
+
+  const isManagerValid = manager.manager_n_number ? true : false;
 
   return (
     <ModalContainer>
       <PaperContainer>
-        {loading.saveManager ?
+        {saveManager === loadingStates.success || saveManager === loadingStates.fail ?
+        // can we pass one prop 'options'?
           <ModalOverlay
-            status={loading.saveStatus}
+            status={saveManager}
             successMessage={"Manager added successfully"}
             failMessage={"Manager already exists"}
           /> : null}
@@ -201,20 +156,19 @@ const AddManagerModal = props => {
         </HeaderAndCloseButtonWrapper>
         <FlexColumn>
           <ModalNNumber
-            disabled={JSON.stringify(form.lookupInfo) !== "{}"}
+            // disabled={JSON.stringify(form.lookupInfo) !== "{}"}
+            disabled={!isManagerValid}
             label="Manager N Number"
-            loading={loading.lookupManager}
             name="Manager N Number"
-            nNumber={form.nNumber}
-            updateValue={newValue => setForm({
-              ...form,
-              nNumber: newValue
-            })}
+            loading={manager === loadingStates.loading}
+            nNumber={nNumber}
+            updateValue={setNNumber}
           />
-          <ModalHelperText clearUser={clearManager} error={form.lookupError} lookupInfo={form.lookupInfo} />
+          {/* <ModalHelperText clearUser={clearManager} error={manager === loadingStates.fail ? } lookupInfo={form.lookupInfo} /> */}
+          <ModalHelperText clearUser={clearManager} success={isManagerValid} message={"whatever"}/>
         </FlexColumn>
         <ButtonWrapper>
-          <CustomButton disabled={!formReady} onClick={saveManager}>
+          <CustomButton disabled={!isManagerValid} onClick={addManagerClicked}>
             Add Manager
           </CustomButton>
         </ButtonWrapper>

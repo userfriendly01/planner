@@ -29,26 +29,22 @@ const HelperTextSection = styled(FlexRow)`
 const ModalHelperText = props => {
   const {
     clearUser,
-    error,
-    lookupInfo
+    message,
+    success
   } = props;
-  if (JSON.stringify(lookupInfo) !== JSON.stringify({})) {
-    return (
-      <HelperTextSection>
-        <div>{lookupInfo.firstName} {lookupInfo.lastName}</div>
-        <ClearButton onClick={clearUser}>X</ClearButton>
-      </HelperTextSection>
-    );
-  } else if (error) {
-    return <HelperTextSection error>{error}</HelperTextSection>;
-  }
-  return null;
+
+  return (
+    <HelperTextSection>
+      <div>{message}</div>
+      {success ? <ClearButton onClick={clearUser}>X</ClearButton> : null}
+    </HelperTextSection>
+  );
 };
 
 ModalHelperText.propTypes = {
   clearUser: PropTypes.func,
-  error: PropTypes.string,
-  lookupInfo: PropTypes.object
+  message: PropTypes.string,
+  success: PropTypes.bool
 };
 
 export default ModalHelperText;
