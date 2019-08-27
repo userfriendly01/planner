@@ -1,60 +1,101 @@
 import ManagementFilter from "../ManagementFilter";
+import {
+  AddUserModal,
+  AddManagerModal
+} from "components";
 import React from "react";
-import { render } from "testUtils";
-import { useAdminState } from "context";
+import {
+  fireEvent,
+  render,
+  setupMockedComponents
+} from "testUtils";
+import { initialState } from "context";
 
+
+jest.mock("components", () => ({
+  __esModule: true,
+  AddUserModal: jest.fn(),
+  AddManagerModal: jest.fn()
+}));
 
 const filterBy = "";
 const setFilter = jest.fn();
-//Need to figure out how to pass in this mocked data so that the component is rendered. Right now, I think it's being overridden with the test useAdminState method
+const mockManagerData = [
+  {
+    manager_n_number: "n0222222",
+    manager_first_name: "Ben",
+    manager_last_name: "Redman"
+  },
+  {
+    manager_n_number: "n0333333",
+    manager_first_name: "Christine",
+    manager_last_name: "Haley"
+  },
+  {
+    manager_n_number: "n0444444",
+    manager_first_name: "Faith",
+    manager_last_name: "Cuneo"
+  },
+  {
+    manager_n_number: "n0555555",
+    manager_first_name: "Michael",
+    manager_last_name: "Nieman"
+  }
+];
 
-jest.mock("context", () => ({
-  useAdminState: jest.fn()
-}));
+// const initialTestState  = {
+//   ...initialState,
+//   managerContext: {
+//     managers: mockManagerData
+//   },
+//   isAddUserModalOpen: false,
+//   isAddManagerModalOpen: false
+// };
 
-const mockManagerData = {
-  managers: [
-    {
-      manager_n_number: "n0222222",
-      manager_first_name: "Ben",
-      manager_last_name: "Redman"
-    },
-    {
-      manager_n_number: "n0333333",
-      manager_first_name: "Christine",
-      manager_last_name: "Haley"
-    },
-    {
-      manager_n_number: "n0444444",
-      manager_first_name: "Faith",
-      manager_last_name: "Cuneo"
-    },
-    {
-      manager_n_number: "n0555555",
-      manager_first_name: "Michael",
-      manager_last_name: "Nieman"
-    }
-  ]
+const renderComponent = () => {
+  const state = {...initialState};
+  state.managerContext.managers = mockManagerData;
+  state.isAddUserModalOpen = false;
+  state.isAddManagerModalOpen = false;
+  return render(
+    <ManagementFilter
+      filterBy={filterBy}
+      setFilter={setFilter}
+    />, state);
 };
+
 
 describe("<ManagementFilter />", () => {
   beforeEach(() => {
-    useAdminState.mockClear();
-    useAdminState.mockImplementation(() => mockManagerData);
   });
-  test("upon initial render, all employees should be listed in the table", () => {
-    const rendered = render(<ManagementFilter filterBy={filterBy} setFilter={setFilter}/>);
+  test("upon initial render, all managers should be listed in the dropdown", () => {
+    const rendered = renderComponent();
     expect(rendered.container).toHaveTextContent("Manager Filter");
     expect(rendered.container).toHaveTextContent("Add Manager");
     expect(rendered.container).toHaveTextContent("Add User");
     expect(rendered.getByText("Show All", { selector: "option" })).toBeInTheDocument();
-    expect(rendered.getByText("Ben", { selector: "option" })).toBeInTheDocument();
+    expect(rendered.getByText("Ben Redman", { selector: "option" })).toBeInTheDocument();
+    expect(rendered.getByText("Christine Haley", { selector: "option" })).toBeInTheDocument();
+    expect(rendered.getByText("Faith Cuneo", { selector: "option" })).toBeInTheDocument();
+    expect(rendered.getByText("Michael Nieman", { selector: "option" })).toBeInTheDocument();
+    expect(rendered.getAllByText("Add Manager", { selector: "button" }).length).toBe(1);
+    expect(rendered.getAllByText("Add User", { selector: "button" }).length).toBe(1);
+
 
   });
-  test("when you click on the filter, the managers are displayed", () => {
+  test("when you click on the add manager button, the manager modal is opened", () => {
+    const rendered = renderComponent();
+    fireEvent.click(rendered.getByText("Add Manager", {selector: "button"}));
+    expect(rendered.getAllByText("ModalNNumber").length).toBe(1);
+    //expect("isAddManagerModalOpen").toBe(true);
   });
-  test("when you click on a manager in the filter, only the managers employees are displayed", () => {
+  test("when you click on the add user button, the user modal is opened", () => {
+    // const rendered = doRender();
+    // const addUserButton = rendered.getByText("Add User");
+    // fireEvent.click(addUserButton);
   });
-  test("when you clear the filter, all employees return to the table", () => {
+  test("when you click on the add user close button, the user modal is closed", () => {
+  });
+  test("when you click on a manager, the onChange action is dispatched and setFilter is activated", () => {
   });
 });
