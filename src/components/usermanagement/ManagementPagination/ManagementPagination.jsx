@@ -68,7 +68,7 @@ const ManagementPagination = props => {
 ManagementPagination.propTypes = {
   end: PropTypes.number.isRequired,
   length: PropTypes.number.isRequired,
-  page: PropTypes.number,
+  page: PropTypes.number.isRequired,
   setPage: PropTypes.func.isRequired,
   start: PropTypes.number.isRequired
 };
