@@ -9,7 +9,7 @@ export const initialState = {
     workers: []
   },
   userContext: {
-    pingIdentity: ""
+    pingIdentity: {}
   }
 };
 
