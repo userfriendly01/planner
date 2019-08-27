@@ -2,6 +2,7 @@ import ManagementFilter from "../ManagementFilter";
 import React from "react";
 import {
   act,
+  expectMockedComponent,
   fireEvent,
   render,
   setupMockedComponents
@@ -82,24 +83,41 @@ describe("<ManagementFilter />", () => {
     expect(rendered.getByText("Add User", { selector: "button" })).toBeInTheDocument();
   });
 
-  test("when you click on the add manager button, the manager modal is opened", () => {
+  test("when you click on the add manager button, the manager modal is rendered. When you call handleClose, the modal is no longer rendered", () => {
     const rendered = renderComponent();
-    // expect(rendered.container).toBe({});
     const button = rendered.getByText("Add Manager", { selector: "button" });
-    //expect(button).toBe({})
+    expectMockedComponent(rendered, { AddManagerModal }, 0);
     act(() => {
       fireEvent.click(button);
     });
-    expect(rendered.getAllByText("ModalNNumber").length).toBe(1);
-    //expect("isAddManagerModalOpen").toBe(true);
+    expectMockedComponent(rendered, { AddManagerModal }, 1);
+    const handleClose = AddManagerModal.mock.calls[0][0].handleClose;
+    act(() => {
+      handleClose();
+    });
+    expectMockedComponent(rendered, { AddManagerModal }, 0);
   });
-  // test("when you click on the add user button, the user modal is opened", () => {
-  //   const rendered = doRender();
-  //   const addUserButton = rendered.getByText("Add User");
-  //   fireEvent.click(addUserButton);
-  // });
-  // test("when you click on the add user close button, the user modal is closed", () => {
-  // });
-  // test("when you click on a manager, the onChange action is dispatched and setFilter is activated", () => {
-  // });
+  test("when you click on the add user button, the user modal is rendered. When you call handleClose, the modal is no longer rendered", () => {
+    const rendered = renderComponent();
+    const button = rendered.getByText("Add User", { selector: "button" });
+    expectMockedComponent(rendered, { AddUserModal }, 0);
+    act(() => {
+      fireEvent.click(button);
+    });
+    expectMockedComponent(rendered, { AddUserModal }, 1);
+    const handleClose = AddUserModal.mock.calls[0][0].handleClose;
+    act(() => {
+      handleClose();
+    });
+    expectMockedComponent(rendered, { AddUserModal }, 0);
+  });
+  test("When an option is clicked in the filter, the setFilter method is fired with the correct parameters", () => {
+    const rendered = renderComponent();
+    const select = rendered.getByTestId("select");
+    const expectedTarget = "n0222222";
+    act(() => {
+      fireEvent.change(select, { target: { value: expectedTarget }});
+    });
+    expect(setFilter).toHaveBeenCalledWith(expectedTarget);
+  });
 });
