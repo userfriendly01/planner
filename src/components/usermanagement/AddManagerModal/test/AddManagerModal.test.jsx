@@ -9,7 +9,7 @@ import {
   ModalOverlay,
   PaperContainer
 } from "components";
-// import { initialState } from "context";
+import { initialState } from "context";
 import { apiPaths } from "globals";
 import React from "react";
 import { act } from "react-dom/test-utils";
@@ -202,32 +202,75 @@ describe("<AddManagerModal />", () => {
         expect(disabled).toBe(true);
       });
     });
-    describe("form is valid and Add Manager button is clicked", () => {
+    describe("form is valid", () => {
       beforeEach(() => {
         axiosMock.onGet(apiPaths.EMPLOYEE_LOOKUP(nNumberWithoutN)).reply(200, mockSuccessfulResponse);
       });
-      test("button should be enabled; after button is clicked saveStatus should be 'success'; after 2 seconds ModalOverlay should close & handleClose should be called", done => {
-        const rendered = renderComponent();
+      test("Add Manager button should be enabled", done => {
+        renderComponent();
         act(() => {
           const updateNNumber = ModalNNumber.mock.calls[0][0].updateValue;
           updateNNumber(nNumber);
           return Promise.resolve();
         }).then(() => {
-          const {
-            disabled,
-            onClick
-          } = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton));
+          const { disabled } = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton));
           expect(disabled).toBe(false);
-          act(() => onClick());
-          const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
-          expect(saveStatus).toBe("success");
-          act(() => jest.runAllTimers());
-          expect(rendered.queryAllByText("ModalOverlay").length).toBe(0);
-          expect(mockHandleClose).toBeCalled();
           done();
         });
       });
     });
+
+    describe("Add Manager button is clicked", () => {
+
+      describe("manager is already in the list of managers", () => {
+        const testState = {
+          ...initialState,
+          managerContext: {
+            managers: [{ manager_n_number: nNumber }]
+          }
+        };
+        console.log(testState);
+        test("saveStatus should be 'fail' & modal should remain open", done => {
+          const rendered = render(<AddManagerModal handleClose={mockHandleClose}/>, testState);
+          act(() => {
+            const updateNNumber = ModalNNumber.mock.calls[0][0].updateValue;
+            updateNNumber(nNumber);
+            return Promise.resolve();
+          }).then(() => {
+            const { onClick } = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton));
+            act(() => onClick());
+            const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
+            expect(saveStatus).toBe("fail");
+            act(() => jest.runAllTimers());
+            expect(rendered.queryAllByText("ModalOverlay").length).toBe(0);
+            expect(mockHandleClose).not.toBeCalled();
+            done();
+          });
+        });
+      });
+
+      describe("manager is not in list of managers", () => {
+
+        test("saveStatus should be 'success' & modal should close after 2 seconds", done => {
+          const rendered = renderComponent();
+          act(() => {
+            const updateNNumber = ModalNNumber.mock.calls[0][0].updateValue;
+            updateNNumber(nNumber);
+            return Promise.resolve();
+          }).then(() => {
+            const { onClick } = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton));
+            act(() => onClick());
+            const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
+            expect(saveStatus).toBe("success");
+            act(() => jest.runAllTimers());
+            expect(rendered.queryAllByText("ModalOverlay").length).toBe(0);
+            expect(mockHandleClose).toBeCalled();
+            done();
+          });
+        });
+      });
+    });
+
   });
 
   describe("close button", () => {
