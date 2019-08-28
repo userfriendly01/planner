@@ -178,7 +178,7 @@ const AddUserModal = props => {
       manager_first_name: parsedManager.manager_first_name,
       manager_last_name: parsedManager.manager_last_name,
       manager_n_number: parsedManager.manager_n_number,
-      n_number: form.nNumber,
+      n_number: form.nNumber.toLowerCase(),
       office_location_name: form.lookupInfo.officeName,
       office_location_number: form.lookupInfo.officeNumber,
       primary_dept_name: form.lookupInfo.departmentName,
