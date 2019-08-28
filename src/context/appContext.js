@@ -1,25 +1,13 @@
 // Our Boy Kent C https://kentcdodds.com/blog/how-to-use-react-context-effectively
-import { reducer } from "context";
+import {
+  initialState,
+  reducer
+} from "context";
 import PropTypes from "prop-types";
 import React from "react";
 
 export const DispatchContext = React.createContext();
 export const StateContext = React.createContext();
-
-export const initialState = {
-  managerContext: {
-    managers: []
-  },
-  profileContext: {
-    profiles: []
-  },
-  workerContext: {
-    workers: []
-  },
-  userContext: {
-    pingIdentity: ""
-  }
-};
 
 const StateProvider = ({ children }) => {
   const [state, dispatch] = React.useReducer(reducer, initialState);

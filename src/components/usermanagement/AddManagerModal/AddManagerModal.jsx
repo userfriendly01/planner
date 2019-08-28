@@ -60,7 +60,7 @@ const loadingStates = {
   success: "success",
   fail: "fail",
   loading: "loading",
-  userNotFound: "User not found"
+  userNotFound: "user-not-found"
 };
 
 const defaultManager = {};

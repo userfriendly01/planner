@@ -1,11 +1,14 @@
 import AddUserModal from "../AddUserModal";
 import MockAdapter from "axios-mock-adapter";
 import {
+  CustomButton,
   CustomSelect,
+  ModalHeader,
   ModalHelperText,
   ModalNNumber,
   ModalOverlay,
-  ModalPhoneNumber
+  ModalPhoneNumber,
+  PaperContainer
 } from "components";
 import { initialState } from "context";
 import { apiPaths } from "globals";
@@ -26,11 +29,14 @@ jest.useFakeTimers();
 
 jest.mock("components", () => ({
   __esModule: true,
+  CustomButton: jest.fn(),
   CustomSelect: jest.fn(),
+  ModalHeader: jest.fn(),
   ModalHelperText: jest.fn(),
   ModalNNumber: jest.fn(),
   ModalOverlay: jest.fn(),
-  ModalPhoneNumber: jest.fn()
+  ModalPhoneNumber: jest.fn(),
+  PaperContainer: jest.fn()
 }));
 
 const managerList = [
@@ -93,13 +99,17 @@ describe("<AddUserModal />", () => {
 
   beforeEach(() => {
     setupMockedComponents({
+      CustomButton,
       CustomSelect,
+      ModalHeader,
       ModalHelperText,
       ModalNNumber,
       ModalOverlay,
       ModalPhoneNumber
     });
     mockHandleClose.mockClear();
+    PaperContainer.mockClear();
+    PaperContainer.mockImplementation(props => <div>{props.children}</div>);
   });
 
   describe("the intial state of the add user modal", () => {
@@ -120,7 +130,7 @@ describe("<AddUserModal />", () => {
 
   describe("the Manager dropdown", () => {
 
-    test("the initial state as well as the functionality of the display function", () => {   
+    test("the initial state as well as the functionality of the display function", () => {
       render(
         <AddUserModal
           handleClose={mockHandleClose}

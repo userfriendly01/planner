@@ -48,6 +48,8 @@ const ModalContainer = styled(FlexColumn)`
   transform: translate(-50%, -50%);
 `;
 
+const defaultNNumber = "n";
+
 const AddUserModal = props => {
 
   const {
@@ -64,7 +66,7 @@ const AddUserModal = props => {
   } = useAdminState();
   const [form, setForm] = useState({
     lookupInfo: {},
-    nNumber: "N",
+    nNumber: defaultNNumber,
     manager: "",
     outgoing: "",
     team: ""
@@ -127,7 +129,7 @@ const AddUserModal = props => {
       ...form,
       lookupError: null,
       lookupInfo: {},
-      nNumber: "N"
+      nNumber: defaultNNumber
     });
   };
 
@@ -191,8 +193,9 @@ const AddUserModal = props => {
         console.log(err);
       });
   };
-
-  const formReady = JSON.stringify(form.lookupInfo) !== JSON.stringify({}) && form.team !== "" && form.manager !== "" && form.outgoing !== "";
+  const isLookupInfoEmpty = JSON.stringify(form.lookupInfo) === JSON.stringify({});
+  const formReady = !isLookupInfoEmpty && form.team !== "" && form.manager !== "" && form.outgoing !== "";
+  const showModalHelperText = !isLookupInfoEmpty || form.lookupError;
 
   return (
     <ModalContainer>
@@ -257,11 +260,15 @@ const AddUserModal = props => {
               nNumber: newValue
             })}
           />
-          <ModalHelperText
-            clearUser={clearUser}
-            error={form.lookupError}
-            lookupInfo={form.lookupInfo}
-          />
+          {
+            showModalHelperText
+              ? <ModalHelperText
+                clearUser={clearUser}
+                error={form.lookupError ? true : false}
+                message={form.lookupError ? "User not found" : `${form.lookupInfo.firstName} ${form.lookupInfo.lastName}`}
+              />
+              : null
+          }
         </FlexColumn>
         <ButtonWrapper>
           <CustomButton disabled={!formReady} onClick={saveUser}>
