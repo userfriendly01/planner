@@ -30,21 +30,21 @@ const ModalHelperText = props => {
   const {
     clearUser,
     message,
-    success
+    error
   } = props;
 
   return (
-    <HelperTextSection>
+    <HelperTextSection error={error}>
       <div>{message}</div>
-      {success ? <ClearButton onClick={clearUser}>X</ClearButton> : null}
+      <ClearButton onClick={clearUser}>X</ClearButton>
     </HelperTextSection>
   );
 };
 
 ModalHelperText.propTypes = {
   clearUser: PropTypes.func,
-  message: PropTypes.string,
-  success: PropTypes.bool
+  error: PropTypes.bool,
+  message: PropTypes.string
 };
 
 export default ModalHelperText;

@@ -49,11 +49,11 @@ const LeftDiv = styled.div`
 `;
 
 const ModalContainer = styled(FlexColumn)`
-left: 50%;
-padding: 2%;
-position: absolute;
-top: 50%;
-transform: translate(-50%, -50%);
+  left: 50%;
+  padding: 2%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 const loadingStates = {
@@ -125,12 +125,13 @@ const AddManagerModal = props => {
   }, [nNumber]);
 
   const isManagerValid = manager.manager_n_number ? true : false;
+  const helperTextMessage = isManagerValid ? `${manager.manager_first_name} ${manager.manager_last_name}` : "User not found";
 
   return (
     <ModalContainer>
       <PaperContainer>
         {saveManager === loadingStates.success || saveManager === loadingStates.fail ?
-        // can we pass one prop 'options'?
+        // TODO: can we pass one prop 'options'?
           <ModalOverlay
             status={saveManager}
             successMessage={"Manager added successfully"}
@@ -150,8 +151,8 @@ const AddManagerModal = props => {
             nNumber={nNumber}
             updateValue={setNNumber}
           />
-          {isManagerValid
-            ? <ModalHelperText clearUser={clearManager} success={isManagerValid} message={`${manager.manager_first_name} ${manager.manager_last_name}`}/>
+          {isValidNNumber && manager !== loadingStates.loading
+            ? <ModalHelperText clearUser={clearManager} message={helperTextMessage} error={!isManagerValid} />
             : null
           }
         </FlexColumn>
