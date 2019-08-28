@@ -60,7 +60,6 @@ describe("<AddManagerModal />", () => {
       }
     }
   ];
-  // beforeEach(() => axiosMock.reset());
   const renderComponent = () => render(<AddManagerModal handleClose={mockHandleClose} />);
   beforeEach(() => {
     setupMockedComponents({
@@ -128,6 +127,28 @@ describe("<AddManagerModal />", () => {
             });
             expect(ModalHelperText.mock.calls[3][0].error).toBe(null);
             expect(ModalNNumber.mock.calls[4][0].loading).toBe(false);
+            done();
+          });
+        });
+
+        test("should reset field to 'N', lookupInfo should be ", done => {
+          axiosMock.onGet(apiPaths.EMPLOYEE_LOOKUP(nNumberWithoutN)).reply(200, mockSuccessfulResponse);
+          renderComponent();
+          act(() => {
+            const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
+            updateValue(nNumber);
+            return Promise.resolve();
+          }).then(() => {
+            const { clearUser } = getMockedComponentProps(ModalHelperText, getLastInstanceCalled(ModalHelperText));
+            act(() => clearUser());
+            const {
+              lookupInfo,
+              nNumber
+            } = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber));
+            // const { lookupInfo } = getMockedComponentProps(ModalHelperText, getLastInstanceCalled(ModalHelperText));
+            // check Add Manager button is disabled
+            expect(nNumber).toBe("N");
+            expect(lookupInfo).toStrictEqual({});
             done();
           });
         });
