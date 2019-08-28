@@ -144,7 +144,7 @@ const AddManagerModal = props => {
         </HeaderAndCloseButtonWrapper>
         <FlexColumn>
           <ModalNNumber
-            disabled={saveManager === loadingStates.loading || manager === loadingStates.loading}
+            disabled={saveManager === loadingStates.loading || manager === loadingStates.loading || manager === loadingStates.success}
             label="Manager N Number"
             name="Manager N Number"
             loading={manager === loadingStates.loading}
