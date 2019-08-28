@@ -103,7 +103,10 @@ const ManagementFilter = props => {
           native
           value={filterBy}
           onChange={event => setFilter(event.target.value)}
-          input={<FilledInput name="filter" id="filled-filter-native-simple" />}
+          input={
+            <FilledInput name="filter" id="filled-filter-native-simple" />
+          }
+          inputProps={{ "data-testid": "select" }}
         >
           {[
             <option key={"show-all"} value={"show-all"}>Show All</option>,
@@ -125,7 +128,7 @@ const ManagementFilter = props => {
       </Tooltip>
       <AddUserButton onClick={handleOpenAddUser}>Add User</AddUserButton>
       <Modal disableBackdropClick={true} open={isAddUserModalOpen}>
-        <AddUserModal handleClose={handleCloseAddUser} managerList={managers} />
+        <AddUserModal handleClose={handleCloseAddUser} />
       </Modal>
       <Modal disableBackdropClick={true} open={isAddManagerModalOpen}>
         <AddManagerModal handleClose={handleCloseAddManager} />

@@ -1,3 +1,18 @@
+export const initialState = {
+  managerContext: {
+    managers: []
+  },
+  profileContext: {
+    profiles: []
+  },
+  userContext: {
+    pingIdentity: {}
+  },
+  workerContext: {
+    workers: []
+  }
+};
+
 export const reducer = (state, action) => {
   switch (action.type) {
     case "addManager":
@@ -5,6 +20,13 @@ export const reducer = (state, action) => {
         ...state,
         managerContext: {
           managers: [...state.managerContext.managers.slice(), action.payload.manager]
+        }
+      };
+    case "addWorker":
+      return {
+        ...state,
+        workerContext: {
+          workers: [...state.workerContext.workers.slice(), action.payload]
         }
       };
     case "loadManagers":

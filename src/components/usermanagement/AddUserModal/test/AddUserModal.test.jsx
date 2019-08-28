@@ -61,6 +61,9 @@ const initialTestState = {
   ...initialState,
   profileContext: {
     profiles: profileList
+  },
+  managerContext: {
+    managers: managerList
   }
 };
 
@@ -117,11 +120,10 @@ describe("<AddUserModal />", () => {
 
   describe("the Manager dropdown", () => {
 
-    test("the initial state as well as the functionality of the display function", () => {
+    test("the initial state as well as the functionality of the display function", () => {   
       render(
         <AddUserModal
           handleClose={mockHandleClose}
-          managerList={managerList}
         />,
         initialTestState
       );

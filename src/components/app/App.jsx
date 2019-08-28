@@ -58,9 +58,8 @@ const App = () => {
           setAuthorized(false);
         } else {
           console.error("An unknown error has occurred.", err);
-          setAuthorized(false);
           setError({
-            authError: err
+            error: err
           });
         }
       });
@@ -108,13 +107,13 @@ const App = () => {
       </AppWrapper>
     );
   } else if (!authorized && authorized !== undefined) {
-    return <div data-testid="unauthorized">{"You are not authorized to view this page"}</div>;
+    return <div data-testid="unauthorized">You are not authorized to view this page</div>;
   } else if (error && error !== undefined) {
     return <div data-testid="unknownError">{"An error occurred while logging in."}</div>;
   } else {
     return (
       <LoadingContainer>
-        <LoadingMessage>{"Loading..."}</LoadingMessage>
+        <LoadingMessage>Loading...</LoadingMessage>
         <CircularProgress size={60} />
       </LoadingContainer>
     );
