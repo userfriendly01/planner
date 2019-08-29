@@ -203,7 +203,7 @@ const AddUserModal = props => {
         {loading.saveUser ?
           <ModalOverlay
             status={loading.saveStatus}
-            message={loading.saveStatus === "success" ? "User Added Successfully" : "Failed To Add User"}
+            message={loading.saveStatus === "success" ? "User added successfully" : "Failed to add user"}
           /> : null}
         <ModalHeader>
           {"Add a User"}
