@@ -72,11 +72,10 @@ const ModalOverlay = props => {
     status,
     message
   } = props;
+
   let icon = <ModalFetchingRing />;
-  // let loadingText = "Saving";
   let modalBackground = "black";
 
-  // loadingText = message;
   if (status === "success") {
     icon = (
       <Icon version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
@@ -94,15 +93,12 @@ const ModalOverlay = props => {
       </Icon>
     );
     modalBackground = "red";
-  } else {
-    props.message = "Saving";
-    console.log(props);
   }
 
   return (
     <Overlay modalBackground={modalBackground} >
       {icon}
-      {message}
+      {status === "saving" ? "Loading" : message}
     </Overlay>
   );
 };
