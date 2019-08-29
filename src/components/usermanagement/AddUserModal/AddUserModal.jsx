@@ -104,7 +104,7 @@ const AddUserModal = props => {
             setForm({
               ...form,
               lookupInfo: {},
-              lookupError: "User Not Found"
+              lookupError: "User not found"
             });
           }
         })
@@ -206,7 +206,9 @@ const AddUserModal = props => {
             successMessage={"User Added Successfully"}
             failMessage={"Failed To Add User"}
           /> : null}
-        <ModalHeader>Add a User</ModalHeader>
+        <ModalHeader>
+          {"Add a User"}
+        </ModalHeader>
         <CustomSelect
           label={"Manager"}
           labelWidth={65}
@@ -265,16 +267,18 @@ const AddUserModal = props => {
               ? <ModalHelperText
                 clearUser={clearUser}
                 error={form.lookupError ? true : false}
-                message={form.lookupError ? "User not found" : `${form.lookupInfo.firstName} ${form.lookupInfo.lastName}`}
+                message={form.lookupError || `${form.lookupInfo.firstName} ${form.lookupInfo.lastName}`}
               />
               : null
           }
         </FlexColumn>
         <ButtonWrapper>
           <CustomButton disabled={!formReady} onClick={saveUser}>
-            Add User
+            {"Add User"}
           </CustomButton>
-          <CustomButton onClick={handleClose}>Close</CustomButton>
+          <CustomButton onClick={handleClose}>
+            {"Close"}
+          </CustomButton>
         </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>
