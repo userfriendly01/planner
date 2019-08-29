@@ -120,12 +120,10 @@ describe("<AddManagerModal />", () => {
             expect(ModalNNumber.mock.calls[3][0].disabled).toBe(true);
             expect(ModalHelperText.mock.calls.length).toBe(2);
             expectMockedComponent(rendered, { ModalHelperText });
-            // expectOnlyPassedProps(getLastInstanceCalled(ModalHelperText), {
-            //   message: "Frank Rizzo",
-            //   error: false
-            // });
-            expect(ModalHelperText.mock.calls[1][0].message).toBe("Frank Rizzo");
-            expect(ModalHelperText.mock.calls[1][0].error).toBe(false);
+            expectOnlyPassedProps(ModalHelperText, {
+              message: "Frank Rizzo",
+              error: false
+            }, getLastInstanceCalled(ModalHelperText));
             const { clearUser } = getMockedComponentProps(ModalHelperText, getLastInstanceCalled(ModalHelperText));
             act(() => clearUser());
             expect(ModalHelperText.mock.calls[1][0].clearUser).toBe(clearUser);
