@@ -227,7 +227,6 @@ describe("<AddUserModal />", () => {
       const newValue = ModalPhoneNumber.mock.calls[1][0].outgoingNumber;
       expect(newValue).toEqual("12345678");
     });
-
   });
 
   describe("the N Number field", () => {
@@ -383,7 +382,7 @@ describe("<AddUserModal />", () => {
             expect(addUserButtonProps2.disabled).toBe(true);
             expect(saveStatus).toBe("success");
             expect(nNumber).toBe("n");
-            jest.runAllTimers();
+            act(() => jest.runAllTimers());
             expectMockedComponent(rendered, { ModalOverlay }, 0);
             done();
           });
@@ -423,7 +422,7 @@ describe("<AddUserModal />", () => {
             expect(addUserButtonProps2.disabled).toBe(false);
             expect(saveStatus).toBe("fail");
             expect(nNumber).toBe("n1234567");
-            jest.runAllTimers();
+            act(() => jest.runAllTimers());
             expectMockedComponent(rendered, { ModalOverlay }, 0);
             done();
           });
