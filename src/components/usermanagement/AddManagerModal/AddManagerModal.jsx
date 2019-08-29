@@ -130,8 +130,7 @@ const AddManagerModal = props => {
         {saveManager === loadingStates.success || saveManager === loadingStates.fail ?
           <ModalOverlay
             status={saveManager}
-            successMessage={"Manager added successfully"}
-            failMessage={"Manager already exists"}
+            message={saveManager === "success" ? "Manager added successfully" : "Manager already exists"}
           /> : null}
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>

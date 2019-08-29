@@ -73,6 +73,7 @@ describe("<AddManagerModal />", () => {
     axiosMock.reset();
     PaperContainer.mockClear();
     PaperContainer.mockImplementation(props => <div>{props.children}</div>);
+    mockHandleClose.mockClear();
   });
 
   describe("initial state of the modal", () => {
@@ -83,7 +84,7 @@ describe("<AddManagerModal />", () => {
       expect(rendered.getAllByText("ModalHeader").length).toBe(1);
       expect(rendered.getAllByText("ModalNNumber").length).toBe(1);
     });
-    test("should not render ModalHelperText & ModalOverlay", () => {
+    test("should not render ModalHelperText or ModalOverlay", () => {
       const rendered = renderComponent();
       expect(rendered.queryAllByText("ModalHelperText").length).toBe(0);
       expect(rendered.queryAllByText("ModalOverlay").length).toBe(0);
@@ -232,33 +233,8 @@ describe("<AddManagerModal />", () => {
       });
     });
     describe("Add Manager button is clicked", () => {
-      describe("manager is already in the list of managers", () => {
-        const testState = {
-          ...initialState,
-          managerContext: {
-            managers: [{ manager_n_number: nNumber }]
-          }
-        };
-        test("ModalOverlay should render with status of 'fail' & modal should remain open (handleClose should not be called)", done => {
-          const rendered = render(<AddManagerModal handleClose={mockHandleClose}/>, testState);
-          act(() => {
-            const updateNNumber = ModalNNumber.mock.calls[0][0].updateValue;
-            updateNNumber(nNumber);
-            return Promise.resolve();
-          }).then(() => {
-            const { onClick } = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton));
-            act(() => onClick());
-            expectMockedComponent(rendered, { ModalOverlay });
-            const status = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
-            expect(status).toBe("fail");
-            act(() => jest.runAllTimers());
-            expect(mockHandleClose).not.toBeCalled();
-            done();
-          });
-        });
-      });
       describe("manager is not in list of managers", () => {
-        test("ModalOverlay status should render with status of 'success' & modal should close after 2 seconds (handleClose should be called)", done => {
+        test("ModalOverlay should render with 'Manager added successfully' & modal should close after 2 seconds (handleClose should be called)", done => {
           const rendered = renderComponent();
           act(() => {
             const updateNNumber = ModalNNumber.mock.calls[0][0].updateValue;
@@ -268,12 +244,41 @@ describe("<AddManagerModal />", () => {
             const { onClick } = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton));
             act(() => onClick());
             expectMockedComponent(rendered, { ModalOverlay });
-            const status = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
-            expect(status).toBe("success");
+            expectOnlyPassedProps(ModalOverlay, {
+              status: "success",
+              message: "Manager added successfully"
+            });
             act(() => jest.runAllTimers());
             expect(mockHandleClose).toBeCalled();
             done();
           });
+        });
+      });
+    });
+    describe("manager is already in the list of managers", () => {
+      const testState = {
+        ...initialState,
+        managerContext: {
+          managers: [{ manager_n_number: nNumber }]
+        }
+      };
+      test("ModalOverlay should render 'Manager already exists' & modal should remain open (handleClose should not be called)", done => {
+        const rendered = render(<AddManagerModal handleClose={mockHandleClose}/>, testState);
+        act(() => {
+          const updateNNumber = ModalNNumber.mock.calls[0][0].updateValue;
+          updateNNumber(nNumber);
+          return Promise.resolve();
+        }).then(() => {
+          const { onClick } = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton));
+          act(() => onClick());
+          expectMockedComponent(rendered, { ModalOverlay });
+          expectOnlyPassedProps(ModalOverlay, {
+            status: "fail",
+            message: "Manager already exists"
+          });
+          act(() => jest.runAllTimers());
+          expect(mockHandleClose).not.toBeCalled();
+          done();
         });
       });
     });
@@ -287,7 +292,7 @@ describe("<AddManagerModal />", () => {
     describe("when clicked", () => {
       test("should close the modal", () => {
         renderComponent();
-        const { onClick } = getMockedComponentProps(CustomButton);
+        const { onClick } = getMockedComponentProps(CloseRounded);
         act(() => onClick());
         expect(mockHandleClose).toBeCalled();
       });
