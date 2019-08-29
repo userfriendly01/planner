@@ -15,10 +15,10 @@ import { apiPaths } from "globals";
 import React from "react";
 import { act } from "react-dom/test-utils";
 import {
+  expectMockedComponent,
   expectOnlyPassedProps,
   getLastInstanceCalled,
   getMockedComponentProps,
-  fireEvent,
   render,
   setupMockedComponents
 } from "testUtils";
@@ -116,16 +116,21 @@ describe("<AddUserModal />", () => {
 
     test("we should render the header, the correct components, and read profiles defined in the context API.", () => {
       const rendered = render(<AddUserModal handleClose={mockHandleClose} managerList={[]} />, initialTestState);
-      expect(rendered.getAllByText("CustomSelect").length).toBe(2);
-      expect(rendered.getAllByText("ModalNNumber").length).toBe(1);
-      expect(rendered.getAllByText("ModalPhoneNumber").length).toBe(1);
-      expect(rendered.queryAllByText("ModalOverlay").length).toBe(0);
-      expect(rendered.queryAllByText("ModalHelperText").length).toBe(1);
-      expect(rendered.getByText("Add a User")).toBeInTheDocument();
-      expect(rendered.getByText("Add User", { selector: "button" })).toBeInTheDocument();
-      expect(rendered.getByText("Close", { selector: "button" })).toBeInTheDocument();
+      expectMockedComponent(rendered, { CustomSelect }, 2);
+      expectMockedComponent(rendered, { ModalNNumber }, 1);
+      expectMockedComponent(rendered, { ModalPhoneNumber }, 1);
+      expectMockedComponent(rendered, { ModalOverlay }, 0);
+      expectMockedComponent(rendered, { ModalHelperText }, 0);
+      expect(getMockedComponentProps(ModalHeader, getLastInstanceCalled(ModalHeader)).children).toBe("Add a User");
+      expectMockedComponent(rendered, { CustomButton }, 2);
+      expectOnlyPassedProps(CustomButton, {
+        children: "Add User",
+        disabled: true
+      }, 0);
+      expectOnlyPassedProps(CustomButton, {
+        children: "Close"
+      }, 1);
     });
-
   });
 
   describe("the Manager dropdown", () => {
@@ -232,7 +237,7 @@ describe("<AddUserModal />", () => {
       const expectedNNumProps = {
         disabled: false,
         loading: false,
-        nNumber: "N"
+        nNumber: "n"
       };
       expectOnlyPassedProps(ModalNNumber, expectedNNumProps, 0);
     });
@@ -249,7 +254,7 @@ describe("<AddUserModal />", () => {
       expect(newValue).toEqual("12345678");
     });
 
-    test("changes made to the n number field - valid n number - good response", done => {
+    test("changes made to the n number field - valid n number - good response and when click ModalHelperText close button", done => {
       axiosMock.onGet(apiPaths.EMPLOYEE_LOOKUP("1234567")).reply(200, mockSuccessfulResponse);
       renderComponent();
       // Next I'll call the update function, which should update the form and cause a re-render.
@@ -262,17 +267,13 @@ describe("<AddUserModal />", () => {
         expect(ModalNNumber.mock.calls[1][0].nNumber).toEqual("n1234567");
         expect(ModalNNumber.mock.calls[2][0].loading).toEqual(true);
         expect(ModalNNumber.mock.calls[3][0].disabled).toEqual(true);
-        expect(ModalHelperText.mock.calls[3][0].lookupInfo).toEqual({
-          departmentName: "Computers",
-          departmentNumber: "4848",
-          email: "test@abc.com",
-          firstName: "Frank",
-          lastName: "Rizzo",
-          officeName: "Springfield 012B",
-          officeNumber: "ABC123"
-        });
-        expect(ModalHelperText.mock.calls[3][0].error).toEqual(null);
-        expect(ModalNNumber.mock.calls[4][0].loading).toEqual(false);
+        const modalHelperTextProps = getMockedComponentProps(ModalHelperText, getLastInstanceCalled(ModalHelperText));
+        expect(modalHelperTextProps.error).toBe(false);
+        expect(modalHelperTextProps.message).toBe("Frank Rizzo");
+        expect(ModalNNumber.mock.calls[getLastInstanceCalled(ModalNNumber)][0].loading).toEqual(false);
+        act(() => modalHelperTextProps.clearUser());
+        const modalNNumberProps = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber));
+        expect(modalNNumberProps.nNumber).toBe("n");
         done();
       });
     });
@@ -290,9 +291,10 @@ describe("<AddUserModal />", () => {
         expect(ModalNNumber.mock.calls[1][0].nNumber).toEqual("n1234567");
         expect(ModalNNumber.mock.calls[2][0].loading).toEqual(true);
         expect(ModalNNumber.mock.calls[3][0].disabled).toEqual(false);
-        expect(ModalHelperText.mock.calls[3][0].lookupInfo).toEqual({});
-        expect(ModalHelperText.mock.calls[3][0].error).toEqual("User Not Found");
         expect(ModalNNumber.mock.calls[4][0].loading).toEqual(false);
+        const modalHelperTextProps = getMockedComponentProps(ModalHelperText, getLastInstanceCalled(ModalHelperText));
+        expect(modalHelperTextProps.error).toBe(true);
+        expect(modalHelperTextProps.message).toBe("User not found");
         done();
       });
     });
@@ -310,28 +312,35 @@ describe("<AddUserModal />", () => {
         expect(ModalNNumber.mock.calls[1][0].nNumber).toEqual("n1234567");
         expect(ModalNNumber.mock.calls[2][0].loading).toEqual(true);
         expect(ModalNNumber.mock.calls[3][0].disabled).toEqual(false);
-        expect(ModalHelperText.mock.calls[3][0].lookupInfo).toEqual({});
-        expect(ModalHelperText.mock.calls[3][0].error).toEqual("Error calling lookup service: Network Error");
         expect(ModalNNumber.mock.calls[4][0].loading).toEqual(false);
+        const modalHelperTextProps = getMockedComponentProps(ModalHelperText, getLastInstanceCalled(ModalHelperText));
+        expect(modalHelperTextProps.error).toBe(true);
+        expect(modalHelperTextProps.message).toBe("Error calling lookup service: Network Error");
         done();
       });
     });
-
   });
 
   describe("Add User and Close buttons", () => {
 
     test("the initial state add should be disabled, and close should be enabled", () => {
       const rendered = renderComponent();
-      expect(rendered.getByText("Close", { selector: "button" })).not.toHaveClass("Mui-disabled");
-      expect(rendered.getByText("Add User", { selector: "button" })).toHaveClass("Mui-disabled");
-      expect(mockHandleClose.mock.calls.length).toBe(0);
+      expectMockedComponent(rendered, { CustomButton }, 2);
+      expectOnlyPassedProps(CustomButton, {
+        children: "Add User",
+        disabled: true
+      }, 0);
+      expectOnlyPassedProps(CustomButton, {
+        children: "Close"
+      }, 1);
     });
 
-    test("if we click the close button, it should fire the sent in method", () => {
+    test("if we click the close button, it should fire props.handleClose", () => {
       const rendered = renderComponent();
-      fireEvent.click(rendered.getByText("Close", { selector: "button" }));
-      expect(mockHandleClose.mock.calls.length).toBe(1);
+      expectMockedComponent(rendered, { CustomButton }, 2);
+      const closeFn = getMockedComponentProps(CustomButton, 1).onClick;
+      closeFn();
+      expect(mockHandleClose).toHaveBeenCalledTimes(1);
     });
 
     describe("if the form becomes valid", () => {
@@ -344,34 +353,38 @@ describe("<AddUserModal />", () => {
         axiosMock.onPost(apiPaths.CREATE_WORKER).reply(200, { worker: "success" });
         const rendered = renderComponent();
         act(() => {
-          const updateManager = CustomSelect.mock.calls[0][0].updateValue;
+          const updateManager = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect) - 1).updateValue;
           updateManager(JSON.stringify(managerList[0]));
         });
         act(() => {
-          const updateProfile = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect, 1)).updateValue;
+          const updateProfile = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect)).updateValue;
           updateProfile(profileList[0].profile_id);
         });
         act(() => {
-          const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber, 0)).updateValue;
+          const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).updateValue;
           updatePhone("6034567890");
         });
         act(() => {
-          const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber, 0)).updateValue;
-          updateNNum("N1234567");
+          const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).updateValue;
+          updateNNum("n1234567");
           return Promise.resolve();
         }).then(() => {
-          expect(rendered.getByText("Add User", { selector: "button" })).not.toHaveClass("Mui-disabled");
+          const addUserButtonProps = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1);
+          expect(addUserButtonProps.disabled).toBe(false);
           act(() => {
-            fireEvent.click(rendered.getByText("Add User", { selector: "button" }));
+            const addUserButtonOnClick = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1).onClick;
+            addUserButtonOnClick();
             return Promise.resolve();
           }).then(() => {
+            expectMockedComponent(rendered, { ModalOverlay });
             const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
             const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
-            expect(rendered.getByText("Add User", { selector: "button" })).toHaveClass("Mui-disabled");
+            const addUserButtonProps2 = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1);
+            expect(addUserButtonProps2.disabled).toBe(true);
             expect(saveStatus).toBe("success");
-            expect(nNumber).toBe("N");
+            expect(nNumber).toBe("n");
             jest.runAllTimers();
-            expect(rendered.queryAllByText("ModalOverlay").length).toBe(0);
+            expectMockedComponent(rendered, { ModalOverlay }, 0);
             done();
           });
         });
@@ -381,34 +394,37 @@ describe("<AddUserModal />", () => {
         axiosMock.onPost(apiPaths.CREATE_WORKER).networkError();
         const rendered = renderComponent();
         act(() => {
-          const updateManager = CustomSelect.mock.calls[0][0].updateValue;
+          const updateManager = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect) - 1).updateValue;
           updateManager(JSON.stringify(managerList[0]));
         });
         act(() => {
-          const updateProfile = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect, 1)).updateValue;
+          const updateProfile = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect)).updateValue;
           updateProfile(profileList[0].profile_id);
         });
         act(() => {
-          const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber, 0)).updateValue;
+          const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).updateValue;
           updatePhone("6034567890");
         });
         act(() => {
-          const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber, 0)).updateValue;
-          updateNNum("N1234567");
+          const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).updateValue;
+          updateNNum("n1234567");
           return Promise.resolve();
         }).then(() => {
-          expect(rendered.getByText("Add User", { selector: "button" })).not.toHaveClass("Mui-disabled");
+          const addUserButtonProps = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1);
+          expect(addUserButtonProps.disabled).toBe(false);
           act(() => {
-            fireEvent.click(rendered.getByText("Add User", { selector: "button" }));
+            const addUserButtonOnClick = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1).onClick;
+            addUserButtonOnClick();
             return Promise.resolve();
           }).then(() => {
             const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
             const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
-            expect(rendered.getByText("Add User", { selector: "button" })).not.toHaveClass("Mui-disabled");
+            const addUserButtonProps2 = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1);
+            expect(addUserButtonProps2.disabled).toBe(false);
             expect(saveStatus).toBe("fail");
-            expect(nNumber).toBe("N1234567");
+            expect(nNumber).toBe("n1234567");
             jest.runAllTimers();
-            expect(rendered.queryAllByText("ModalOverlay").length).toBe(0);
+            expectMockedComponent(rendered, { ModalOverlay }, 0);
             done();
           });
         });
