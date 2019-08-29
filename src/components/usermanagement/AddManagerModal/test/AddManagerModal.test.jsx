@@ -3,8 +3,8 @@ import { CloseRounded } from "@material-ui/icons";
 import MockAdapter from "axios-mock-adapter";
 import {
   CustomButton,
-  ModalHelperText,
   ModalHeader,
+  ModalHelperText,
   ModalNNumber,
   ModalOverlay,
   PaperContainer
@@ -65,8 +65,8 @@ describe("<AddManagerModal />", () => {
     setupMockedComponents({
       CloseRounded,
       CustomButton,
-      ModalHelperText,
       ModalHeader,
+      ModalHelperText,
       ModalNNumber,
       ModalOverlay
     });
@@ -74,22 +74,25 @@ describe("<AddManagerModal />", () => {
     PaperContainer.mockClear();
     PaperContainer.mockImplementation(props => <div>{props.children}</div>);
   });
+
   describe("initial state of the modal", () => {
-    test("should render CustomButton, ModalHeader & ModalNNumber once each", () => {
+    test("should render CustomButton, CloseRounded, ModalHeader & ModalNNumber once each", () => {
       const rendered = renderComponent();
       expect(rendered.getAllByText("CustomButton").length).toBe(1);
+      expect(rendered.getAllByText("CloseRounded").length).toBe(1);
       expect(rendered.getAllByText("ModalHeader").length).toBe(1);
       expect(rendered.getAllByText("ModalNNumber").length).toBe(1);
     });
-    test("should not render ModalOverlay", () => {
+    test("should not render ModalHelperText & ModalOverlay", () => {
       const rendered = renderComponent();
+      expect(rendered.queryAllByText("ModalHelperText").length).toBe(0);
       expect(rendered.queryAllByText("ModalOverlay").length).toBe(0);
     });
   });
 
   describe("manager N number field", () => {
     describe("initial state", () => {
-      test("should render ModalNNumber with expected props", () => {
+      test("should render ModalNNumber with expected props; should not render ModalHelperText", () => {
         const rendered = renderComponent();
         expectMockedComponent(rendered, { ModalNNumber });
         expectOnlyPassedProps(ModalNNumber, {
@@ -97,11 +100,11 @@ describe("<AddManagerModal />", () => {
           loading: false,
           nNumber: "n"
         });
+        expect(rendered.queryAllByText("ModalHelperText").length).toBe(0);
       });
     });
 
     describe("valid N number entered", () => {
-
       describe("good response", () => {
         test("should render ModalNNumber & ModalHelperText with correct props", done => {
           axiosMock.onGet(apiPaths.EMPLOYEE_LOOKUP(nNumberWithoutN)).reply(200, mockSuccessfulResponse);
@@ -129,8 +132,7 @@ describe("<AddManagerModal />", () => {
             done();
           });
         });
-
-        test("should reset field to 'n'", done => {
+        test("should reset nNumber field to 'n'", done => {
           axiosMock.onGet(apiPaths.EMPLOYEE_LOOKUP(nNumberWithoutN)).reply(200, mockSuccessfulResponse);
           renderComponent();
           act(() => {
@@ -148,7 +150,6 @@ describe("<AddManagerModal />", () => {
           });
         });
       });
-
       describe("user not found", () => {
         test("ModalHelperText should display 'User not found'", done => {
           axiosMock.onGet(apiPaths.EMPLOYEE_LOOKUP(nNumberWithoutN)).reply(200, []);
@@ -169,9 +170,8 @@ describe("<AddManagerModal />", () => {
           });
         });
       });
-
       describe("service error", () => {
-        test("should return network error", done => {
+        test("should set ModalHelperText error to true", done => {
           axiosMock.onGet(apiPaths.EMPLOYEE_LOOKUP(nNumberWithoutN)).networkError();
           renderComponent();
           act(() => {
@@ -188,11 +188,10 @@ describe("<AddManagerModal />", () => {
           });
         });
       });
-
     });
 
     describe("invalid N number entered", () => {
-      test("ModalNNumber should remain disabled", () => {
+      test("ModalNNumber should remain enabled and ModalHelperText should not render", () => {
         renderComponent();
         act(() => {
           const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
@@ -203,6 +202,7 @@ describe("<AddManagerModal />", () => {
         expect(newValue).toEqual("12345678");
         expect(ModalNNumber.mock.calls[0][0].disabled).toEqual(false);
         expect(ModalNNumber.mock.calls[1][0].disabled).toEqual(false);
+        expect(ModalHelperText.mock.calls.length).toBe(0);
       });
     });
   });
@@ -216,11 +216,11 @@ describe("<AddManagerModal />", () => {
         expect(disabled).toBe(true);
       });
     });
-    describe("nNumber is valid", () => {
+    describe("valid nNumber is entered", () => {
       beforeEach(() => {
         axiosMock.onGet(apiPaths.EMPLOYEE_LOOKUP(nNumberWithoutN)).reply(200, mockSuccessfulResponse);
       });
-      test("Add Manager button should be enabled", done => {
+      test("should be enabled", done => {
         renderComponent();
         act(() => {
           const updateNNumber = ModalNNumber.mock.calls[0][0].updateValue;
@@ -233,9 +233,7 @@ describe("<AddManagerModal />", () => {
         });
       });
     });
-
     describe("Add Manager button is clicked", () => {
-
       describe("manager is already in the list of managers", () => {
         const testState = {
           ...initialState,
@@ -243,8 +241,8 @@ describe("<AddManagerModal />", () => {
             managers: [{ manager_n_number: nNumber }]
           }
         };
-        test("ModalOverlay status should be 'fail' & modal should remain open (handleClose is not called)", done => {
-          render(<AddManagerModal handleClose={mockHandleClose}/>, testState);
+        test("ModalOverlay should render with status of 'fail' & modal should remain open (handleClose should not be called)", done => {
+          const rendered = render(<AddManagerModal handleClose={mockHandleClose}/>, testState);
           act(() => {
             const updateNNumber = ModalNNumber.mock.calls[0][0].updateValue;
             updateNNumber(nNumber);
@@ -252,19 +250,18 @@ describe("<AddManagerModal />", () => {
           }).then(() => {
             const { onClick } = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton));
             act(() => onClick());
+            expectMockedComponent(rendered, { ModalOverlay });
             const status = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
             expect(status).toBe("fail");
             act(() => jest.runAllTimers());
-            // expect(rendered.queryAllByText("ModalOverlay").length).toBe(1);
             expect(mockHandleClose).not.toBeCalled();
             done();
           });
         });
       });
-
       describe("manager is not in list of managers", () => {
-        test("ModalOverlay status should be 'success' & modal should close after 2 seconds (handleClose is called)", done => {
-          renderComponent();
+        test("ModalOverlay status should render with status of 'success' & modal should close after 2 seconds (handleClose should be called)", done => {
+          const rendered = renderComponent();
           act(() => {
             const updateNNumber = ModalNNumber.mock.calls[0][0].updateValue;
             updateNNumber(nNumber);
@@ -272,6 +269,7 @@ describe("<AddManagerModal />", () => {
           }).then(() => {
             const { onClick } = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton));
             act(() => onClick());
+            expectMockedComponent(rendered, { ModalOverlay });
             const status = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
             expect(status).toBe("success");
             act(() => jest.runAllTimers());
@@ -281,7 +279,6 @@ describe("<AddManagerModal />", () => {
         });
       });
     });
-
   });
 
   describe("close button", () => {
@@ -294,8 +291,8 @@ describe("<AddManagerModal />", () => {
         renderComponent();
         const { onClick } = getMockedComponentProps(CustomButton);
         act(() => onClick());
+        expect(mockHandleClose).toBeCalled();
       });
     });
   });
-
 });

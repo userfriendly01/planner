@@ -1,8 +1,8 @@
 import { CloseRounded } from "@material-ui/icons";
 import {
   CustomButton,
-  ModalHelperText,
   ModalHeader,
+  ModalHelperText,
   ModalNNumber,
   ModalOverlay,
   PaperContainer
@@ -56,6 +56,8 @@ const ModalContainer = styled(FlexColumn)`
   transform: translate(-50%, -50%);
 `;
 
+const defaultManager = {};
+const defaultNNumber = "n";
 const loadingStates = {
   success: "success",
   fail: "fail",
@@ -63,13 +65,8 @@ const loadingStates = {
   userNotFound: "user-not-found"
 };
 
-const defaultManager = {};
-const defaultNNumber = "n";
-
 const AddManagerModal = props => {
-  const {
-    handleClose
-  } = props;
+  const { handleClose } = props;
 
   const [manager, setManager] = useState(defaultManager);
   const [saveManager, setSaveManager] = useState(null);
@@ -80,7 +77,7 @@ const AddManagerModal = props => {
 
   const addManagerClicked = () => {
     setSaveManager(loadingStates.loading);
-    if (!state.managerContext.managers.find(mgr => mgr.manager_n_number === nNumber)) {
+    if (!state.managerContext.managers.some(mgr => mgr.manager_n_number === nNumber)) {
       dispatch(({
         type: "addManager",
         payload: { manager }
@@ -131,7 +128,6 @@ const AddManagerModal = props => {
     <ModalContainer>
       <PaperContainer>
         {saveManager === loadingStates.success || saveManager === loadingStates.fail ?
-        // TODO: can we pass one prop 'options'?
           <ModalOverlay
             status={saveManager}
             successMessage={"Manager added successfully"}
