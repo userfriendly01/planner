@@ -3,7 +3,7 @@ import { theme } from "globals";
 import styled from "styled-components";
 
 const CustomButton = styled(ButtonBase)`
-  && {
+&& {
     opacity: ${props => props.disabled ? ".5" : "1"};
     background-color: #AAEDED;
     border: none;
