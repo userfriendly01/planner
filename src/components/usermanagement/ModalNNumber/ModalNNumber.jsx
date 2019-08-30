@@ -33,9 +33,9 @@ const ModalNNumber = props => {
         id="outlined-nNumber-input"
         inputProps={{ maxLength: "8" }}
         label={label}
+        margin="normal"
         name={name}
         onChange={event => updateValue(event.target.value)}
-        margin="normal"
         variant="outlined"
         value={nNumber}
       />

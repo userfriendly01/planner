@@ -8,15 +8,19 @@ import {
 const mockFunction = jest.fn();
 
 const renderComponent = (disabled, loading, nNumber) => {
-  return render(<ModalNNumber disabled={disabled} loading={loading} nNumber={nNumber} updateValue={mockFunction} />);
+  return render(<ModalNNumber
+    disabled={disabled}
+    label="N Number"
+    loading={loading}
+    name="N Number"
+    nNumber={nNumber}
+    updateValue={mockFunction} />);
 };
 
 describe("<ModalNNumber />", () => {
-
   beforeEach(() => {
     mockFunction.mockClear();
   });
-
   test("the initial state should be just an empty text field, with the correct label", () => {
     const rendered = renderComponent(false, false, "");
     expect(rendered.getByDisplayValue("")).toBeTruthy();
@@ -25,7 +29,6 @@ describe("<ModalNNumber />", () => {
     expect(rendered.getByLabelText("N Number")).not.toHaveClass("Mui-disabled");
     expect(mockFunction.mock.calls.length).toBe(0);
   });
-
   test("when we update the value, we should fire the event being sent to the component", () => {
     const rendered = renderComponent(false, false, "N");
     expect(rendered.getByDisplayValue("N")).toBeTruthy();
