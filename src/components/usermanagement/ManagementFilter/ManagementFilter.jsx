@@ -109,9 +109,9 @@ const ManagementFilter = props => {
           inputProps={{ "data-testid": "select" }}
         >
           {[
-            <option key={"show-all"} value={"show-all"}>Show All</option>,
+            <option data-testid="manager-list" key={"show-all"} value={"show-all"}>Show All</option>,
             ...sortedManagers.map(manager => (
-              <option
+              <option data-testid="manager-list"
                 key={manager.manager_n_number}
                 value={manager.manager_n_number}
               >
@@ -122,7 +122,7 @@ const ManagementFilter = props => {
         </Select>
       </FormControl>
       <Tooltip title="Add a manager" placement="right">
-        <AddManagerButton onClick={handleOpenAddManager}>
+        <AddManagerButton data-testid="add-manager-button" onClick={handleOpenAddManager}>
           <AddIcon/>
         </AddManagerButton>
       </Tooltip>
