@@ -6,36 +6,25 @@ import {
 } from "testUtils";
 
 const mockFunction = jest.fn();
-const mockInfo = {
-  firstName: "John",
-  lastName: "Wick"
-};
 
 describe("<ModalHelperText />", () => {
-
   beforeEach(() => {
     mockFunction.mockClear();
   });
-
-  test("if there is no lookup object or error, we should render null", () => {
-    const rendered = render(<ModalHelperText clearUser={mockFunction} lookupInfo={{}} />);
-    expect(rendered.container).toBeEmpty();
+  test("if there is no error, should display message in green and clear button", () => {
+    const message = "found a user or whatever";
+    const rendered = render(<ModalHelperText clearUser={mockFunction} message={message} error={null}
+    />);
+    expect(rendered.container).toHaveTextContent(message);
+    expect(rendered.getByTestId("helper-text-section")).toHaveStyleRule("color", "green");
   });
-
-  test("if we have user information, we should display it, as well as a clear button.", () => {
-    const rendered = render(<ModalHelperText clearUser={mockFunction} error={""} lookupInfo={mockInfo} />);
-    expect(rendered.getByText("John Wick")).toBeInTheDocument();
-    expect(rendered.getByText("X", { selector: "button" })).toBeInTheDocument();
-  });
-
-  test("if we have click that button, we should fire whatever function was sent in.", () => {
-    const rendered = render(<ModalHelperText clearUser={mockFunction} error={""} lookupInfo={mockInfo} />);
+  test("when the clear button is clicked, should fire whatever function was sent in.", () => {
+    const rendered = render(<ModalHelperText clearUser={mockFunction} message={"whatever"} error={null} />);
     fireEvent.click(rendered.getByText("X", { selector: "button" }));
     expect(mockFunction.mock.calls.length).toBe(1);
   });
-
-  test("if we have an error, we should display that.", () => {
-    const rendered = render(<ModalHelperText clearUser={mockFunction} error={"Bad news bears."} lookupInfo={{}} />);
-    expect(rendered.getByText("Bad news bears.")).toBeInTheDocument();
+  test("if there is an error, should display message in red", () => {
+    const rendered = render(<ModalHelperText clearUser={mockFunction} message={"user not found or whatever"} error={"Bad News Bears"} />);
+    expect(rendered.getByTestId("helper-text-section")).toHaveStyleRule("color", "red");
   });
 });

@@ -34,7 +34,7 @@ const ModalHelperText = props => {
   } = props;
 
   return (
-    <HelperTextSection error={error}>
+    <HelperTextSection data-testid="helper-text-section" error={error}>
       <div>{message}</div>
       <ClearButton onClick={clearUser}>X</ClearButton>
     </HelperTextSection>
