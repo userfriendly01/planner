@@ -3,26 +3,36 @@ import React from "react";
 import { render } from "testUtils";
 
 describe("<ModalOverlay />", () => {
-  test("with the wrong status being sent, we should fail to render.", () => {
-    console.error = jest.fn();
-    render(<ModalOverlay status="test" />);
-    expect(console.error.mock.calls.length).toBe(1);
-    expect(console.error.mock.calls[0][0]).
-      toContain("Warning: Failed prop type: Invalid prop `status` of value `test` supplied to `ModalOverlay`, expected one of [\"saving\",\"success\",\"fail\"].");
+  describe("status = 'saving'", () => {
+    test("should display 'Loading'", () => {
+      const rendered = render(<ModalOverlay status="saving" message="whatever" />);
+      expect(rendered).toBeTruthy();
+      expect(rendered.getByText("Loading")).toBeInTheDocument();
+    });
   });
-  test("with with a status of fail, we should notify the user correctly.", () => {
-    const rendered = render(<ModalOverlay status="saving" />);
-    expect(rendered).toBeTruthy();
-    expect(rendered.getByText("Saving")).toBeInTheDocument();
+  describe("status = 'success'", () => {
+    const successMessage = "something good";
+    test("should display success message", () => {
+      const rendered = render(<ModalOverlay status="success" message={successMessage} />);
+      expect(rendered).toBeTruthy();
+      expect(rendered.getByText(successMessage)).toBeInTheDocument();
+    });
   });
-  test("with with a status of fail, we should notify the user correctly.", () => {
-    const rendered = render(<ModalOverlay status="success" />);
-    expect(rendered).toBeTruthy();
-    expect(rendered.getByText("User Added Successfully")).toBeInTheDocument();
+  describe("status = 'fail'", () => {
+    const failMessage = "oh nooooo";
+    test("should display fail message", () => {
+      const rendered = render(<ModalOverlay status="fail" message={failMessage} />);
+      expect(rendered).toBeTruthy();
+      expect(rendered.getByText(failMessage)).toBeInTheDocument();
+    });
   });
-  test("with with a status of fail, we should notify the user correctly.", () => {
-    const rendered = render(<ModalOverlay status="fail" />);
-    expect(rendered).toBeTruthy();
-    expect(rendered.getByText("Failed To Add User")).toBeInTheDocument();
+  describe("status other than 'saving', 'success', or 'fail' is sent", () => {
+    test("should log error message", () => {
+      console.error = jest.fn();
+      render(<ModalOverlay status="test" message="whatever" />);
+      expect(console.error.mock.calls.length).toBe(1);
+      expect(console.error.mock.calls[0][0]).
+        toContain("Warning: Failed prop type: Invalid prop `status` of value `test` supplied to `ModalOverlay`, expected one of [\"saving\",\"success\",\"fail\"].");
+    });
   });
 });

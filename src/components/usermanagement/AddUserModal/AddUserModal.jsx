@@ -1,19 +1,21 @@
 import {
-  ButtonBase,
-  Paper
-} from "@material-ui/core";
-import {
+  CustomButton,
   CustomSelect,
+  ModalHeader,
   ModalHelperText,
   ModalNNumber,
   ModalOverlay,
-  ModalPhoneNumber
+  ModalPhoneNumber,
+  PaperContainer
 } from "components";
 import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import { apiPaths } from "globals";
+import {
+  apiPaths,
+  nNumMatcher
+} from "globals";
 import PropTypes from "prop-types";
 import React, {
   useEffect,
@@ -38,31 +40,6 @@ const ButtonWrapper = styled(FlexRow)`
   padding: 1%;
 `;
 
-const CustomButton = styled(ButtonBase)`
-  && {
-    opacity: ${props => props.disabled ? ".5" : "1"};
-    background-color: #AAEDED;
-    border: none;
-    border-radius: 3px;
-    color: #1A1446;
-    cursor: pointer;
-    font-size: 1.2em;
-    outline: none;
-    padding: 5 10 5 10;
-  }
-`;
-
-const Header = styled.div`
-  align-self: center;
-  color: #1A1446;
-  font-family: 'Roboto', sans-serif;
-  font-size: 3rem;
-  font-weight: 400;
-  letter-spacing: 0rem;
-  line-height: 1.30357em;
-  margin: 2%;
-`;
-
 const ModalContainer = styled(FlexColumn)`
   left: 50%;
   padding: 2%;
@@ -71,18 +48,10 @@ const ModalContainer = styled(FlexColumn)`
   transform: translate(-50%, -50%);
 `;
 
-const PaperContainer = styled(Paper)`
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  min-width: 400px;
-  padding: 2%;
-  position: relative;
-`;
+const defaultNNumber = "n";
 
 const AddUserModal = props => {
 
-  const nNumMatcher = /[n,N]\d{7}/g;
   const {
     handleClose
   } = props;
@@ -97,7 +66,7 @@ const AddUserModal = props => {
   } = useAdminState();
   const [form, setForm] = useState({
     lookupInfo: {},
-    nNumber: "N",
+    nNumber: defaultNNumber,
     manager: "",
     outgoing: "",
     team: ""
@@ -135,7 +104,7 @@ const AddUserModal = props => {
             setForm({
               ...form,
               lookupInfo: {},
-              lookupError: "User Not Found"
+              lookupError: "User not found"
             });
           }
         })
@@ -160,7 +129,7 @@ const AddUserModal = props => {
       ...form,
       lookupError: null,
       lookupInfo: {},
-      nNumber: "N"
+      nNumber: defaultNNumber
     });
   };
 
@@ -224,14 +193,21 @@ const AddUserModal = props => {
         console.log(err);
       });
   };
-
-  const formReady = JSON.stringify(form.lookupInfo) !== JSON.stringify({}) && form.team !== "" && form.manager !== "" && form.outgoing !== "";
+  const isLookupInfoEmpty = JSON.stringify(form.lookupInfo) === JSON.stringify({});
+  const formReady = !isLookupInfoEmpty && form.team !== "" && form.manager !== "" && form.outgoing !== "";
+  const showModalHelperText = !isLookupInfoEmpty || form.lookupError;
 
   return (
     <ModalContainer>
       <PaperContainer>
-        {loading.saveUser ? <ModalOverlay status={loading.saveStatus} /> : null}
-        <Header>Add a User</Header>
+        {loading.saveUser ?
+          <ModalOverlay
+            status={loading.saveStatus}
+            message={loading.saveStatus === "success" ? "User added successfully" : "Failed to add user"}
+          /> : null}
+        <ModalHeader>
+          {"Add a User"}
+        </ModalHeader>
         <CustomSelect
           label={"Manager"}
           labelWidth={65}
@@ -276,24 +252,32 @@ const AddUserModal = props => {
         <FlexColumn>
           <ModalNNumber
             disabled={JSON.stringify(form.lookupInfo) !== "{}"}
+            label="N Number"
             loading={loading.lookupUser}
+            name="N Number"
             nNumber={form.nNumber}
             updateValue={newValue => setForm({
               ...form,
               nNumber: newValue
             })}
           />
-          <ModalHelperText
-            clearUser={clearUser}
-            error={form.lookupError}
-            lookupInfo={form.lookupInfo}
-          />
+          {
+            showModalHelperText
+              ? <ModalHelperText
+                clearUser={clearUser}
+                error={form.lookupError ? true : false}
+                message={form.lookupError || `${form.lookupInfo.firstName} ${form.lookupInfo.lastName}`}
+              />
+              : null
+          }
         </FlexColumn>
         <ButtonWrapper>
           <CustomButton disabled={!formReady} onClick={saveUser}>
-            Add User
+            {"Add User"}
           </CustomButton>
-          <CustomButton onClick={handleClose}>Close</CustomButton>
+          <CustomButton onClick={handleClose}>
+            {"Close"}
+          </CustomButton>
         </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>

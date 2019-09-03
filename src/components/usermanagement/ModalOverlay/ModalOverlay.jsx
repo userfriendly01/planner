@@ -1,8 +1,7 @@
+import { ModalFetchingRing } from "components";
 import PropTypes from "prop-types";
 import React from "react";
-import styled, {
-  keyframes
-} from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 const Dash = keyframes`
   0% {
@@ -23,15 +22,6 @@ const DashCheck = keyframes`
 }
 `;
 
-const Spin = keyframes`
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-`;
-
 const Check = styled.polyline`
   stroke-dasharray: 1000;
   stroke-dashoffset: -100;
@@ -42,23 +32,6 @@ const Circle = styled.circle`
   stroke-dasharray: 1000;
   stroke-dashoffset: 0;
   animation: ${Dash} .9s ease-in-out;
-`;
-
-const FetchingRing = styled.div`
-  display: inline-block;
-  width: 64px;
-  height: 64px;
-  &:after {
-    content: " ";
-    display: block;
-    width: 46px;
-    height: 46px;
-    margin: 1px;
-    border-radius: 50%;
-    border: 5px solid #AAEDED;
-    border-color: #AAEDED transparent #AAEDED transparent;
-    animation: ${Spin} 1.2s linear infinite;
-  }
 `;
 
 const FlexRow = styled.div`
@@ -95,9 +68,12 @@ const Icon = styled.svg`
 `;
 
 const ModalOverlay = props => {
-  const { status } = props;
-  let icon = <FetchingRing />;
-  let loadingText = "Saving";
+  const {
+    status,
+    message
+  } = props;
+
+  let icon = <ModalFetchingRing />;
   let modalBackground = "black";
 
   if (status === "success") {
@@ -107,7 +83,6 @@ const ModalOverlay = props => {
         <Check fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
       </Icon>
     );
-    loadingText = "User Added Successfully";
     modalBackground = "green";
   } else if (status === "fail") {
     icon = (
@@ -117,19 +92,19 @@ const ModalOverlay = props => {
         <Line fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2"/>
       </Icon>
     );
-    loadingText = "Failed To Add User";
     modalBackground = "red";
   }
 
   return (
     <Overlay modalBackground={modalBackground} >
       {icon}
-      {loadingText}
+      {status === "saving" ? "Loading" : message}
     </Overlay>
   );
 };
 
 ModalOverlay.propTypes = {
+  message: PropTypes.string.isRequired,
   status: PropTypes.oneOf(["saving", "success", "fail"]).isRequired
 };
 

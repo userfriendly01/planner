@@ -76,11 +76,11 @@ describe("<App />", () => {
     });
     describe("authentication service call returned an error not in the 400's", () => {
       beforeEach(() => axiosMock.onGet(authEndpoint).reply(500, { error: "Internal Server Error" }));
-      test("should return 'An error occured while logging in.'", done => {
+      test("should return 'An error occurred while logging in.'", done => {
         const rendered = render(<App />);
         waitForElement(() => rendered.getByTestId("unknownError"))
           .then(() => {
-            expect(rendered.container).toHaveTextContent("An error occured while logging in.");
+            expect(rendered.container).toHaveTextContent("An error occurred while logging in.");
             done();
           });
       });
@@ -98,11 +98,11 @@ describe("<App />", () => {
   describe(workersEndpoint, () => {
     describe("workers service call returned an error", () => {
       beforeEach(() => axiosMock.onGet(workersEndpoint).reply(500, { error: "Internal Server Error" }));
-      test("should return 'An error occured while logging in.'", done => {
+      test("should return 'An error occurred while logging in.'", done => {
         const rendered = render(<App />);
         waitForElement(() => rendered.getByTestId("unknownError"))
           .then(() => {
-            expect(rendered.container).toHaveTextContent("An error occured while logging in.");
+            expect(rendered.container).toHaveTextContent("An error occurred while logging in.");
             done();
           });
       });

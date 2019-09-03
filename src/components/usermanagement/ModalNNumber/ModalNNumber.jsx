@@ -1,35 +1,8 @@
 import { TextField } from "@material-ui/core";
+import { ModalFetchingRing } from "components";
 import PropTypes from "prop-types";
 import React from "react";
-import styled, {
-  keyframes
-} from "styled-components";
-
-const Spin = keyframes`
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-`;
-
-const FetchingRing = styled.div`
-  display: inline-block;
-  width: 64px;
-  height: 64px;
-  &:after {
-    content: " ";
-    display: block;
-    width: 46px;
-    height: 46px;
-    margin: 1px;
-    border-radius: 50%;
-    border: 5px solid #AAEDED;
-    border-color: #AAEDED transparent #AAEDED transparent;
-    animation: ${Spin} 1.2s linear infinite;
-  }
-`;
+import styled from "styled-components";
 
 const FlexRow = styled.div`
   display: flex;
@@ -46,7 +19,9 @@ const TextInput = styled(TextField)`
 const ModalNNumber = props => {
   const {
     disabled,
+    label,
     loading,
+    name,
     nNumber,
     updateValue
   } = props;
@@ -57,21 +32,23 @@ const ModalNNumber = props => {
         disabled={disabled}
         id="outlined-nNumber-input"
         inputProps={{ maxLength: "8" }}
-        label="N Number"
-        name="N Number"
-        onChange={event => updateValue(event.target.value)}
+        label={label}
         margin="normal"
+        name={name}
+        onChange={event => updateValue(event.target.value)}
         variant="outlined"
         value={nNumber}
       />
-      {loading ? <FetchingRing data-testid="loading" /> : null}
+      {loading ? <ModalFetchingRing data-testid="loading" /> : null}
     </FlexRow>
   );
 };
 
 ModalNNumber.propTypes = {
   disabled: PropTypes.bool.isRequired,
+  label: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
+  name: PropTypes.string.isRequired,
   nNumber: PropTypes.string.isRequired,
   updateValue: PropTypes.func.isRequired
 };

@@ -23,9 +23,9 @@ const filterBy = "";
 const setFilter = jest.fn();
 const mockManagerData = [
   {
-    manager_n_number: "n0222222",
-    manager_first_name: "Ben",
-    manager_last_name: "Redman"
+    manager_n_number: "n0444444",
+    manager_first_name: "Faith",
+    manager_last_name: "Cuneo"
   },
   {
     manager_n_number: "n0333333",
@@ -33,14 +33,19 @@ const mockManagerData = [
     manager_last_name: "Haley"
   },
   {
-    manager_n_number: "n0444444",
-    manager_first_name: "Faith",
-    manager_last_name: "Cuneo"
+    manager_n_number: "n0555555",
+    manager_first_name: "Michael",
+    manager_last_name: "Nieman"
   },
   {
     manager_n_number: "n0555555",
     manager_first_name: "Michael",
     manager_last_name: "Nieman"
+  },
+  {
+    manager_n_number: "n0222222",
+    manager_first_name: "Ben",
+    manager_last_name: "Redman"
   }
 ];
 
@@ -69,23 +74,22 @@ describe("<ManagementFilter />", () => {
     });
   });
 
-  test("upon initial render, all managers should be listed in the dropdown", () => {
+  test("upon initial render, should display Manager Filter, add manager & add user buttons, and all managers should be listed in the dropdown sorted by first name", () => {
     const rendered = renderComponent();
     expect(rendered.container).toHaveTextContent("Manager Filter");
-    expect(rendered.container).toHaveTextContent("Add Manager");
+    expect(rendered.getByTestId("add-manager-button", { selector: "button" })).toBeInTheDocument();
     expect(rendered.container).toHaveTextContent("Add User");
-    expect(rendered.getByText("Show All", { selector: "option" })).toBeInTheDocument();
-    expect(rendered.getByText("Ben Redman", { selector: "option" })).toBeInTheDocument();
-    expect(rendered.getByText("Christine Haley", { selector: "option" })).toBeInTheDocument();
-    expect(rendered.getByText("Faith Cuneo", { selector: "option" })).toBeInTheDocument();
-    expect(rendered.getByText("Michael Nieman", { selector: "option" })).toBeInTheDocument();
-    expect(rendered.getByText("Add Manager", { selector: "button" })).toBeInTheDocument();
-    expect(rendered.getByText("Add User", { selector: "button" })).toBeInTheDocument();
+    expect(rendered.queryAllByTestId("manager-list")[0]).toHaveTextContent("Show All");
+    expect(rendered.queryAllByTestId("manager-list")[1]).toHaveTextContent("Ben Redman");
+    expect(rendered.queryAllByTestId("manager-list")[2]).toHaveTextContent("Christine Haley");
+    expect(rendered.queryAllByTestId("manager-list")[3]).toHaveTextContent("Faith Cuneo");
+    expect(rendered.queryAllByTestId("manager-list")[4]).toHaveTextContent("Michael Nieman");
+    expect(rendered.queryAllByTestId("manager-list")[5]).toHaveTextContent("Michael Nieman");
   });
 
   test("when you click on the add manager button, the manager modal is rendered. When you call handleClose, the modal is no longer rendered", () => {
     const rendered = renderComponent();
-    const button = rendered.getByText("Add Manager", { selector: "button" });
+    const button = rendered.getByTestId("add-manager-button", { selector: "button" });
     expectMockedComponent(rendered, { AddManagerModal }, 0);
     act(() => {
       fireEvent.click(button);

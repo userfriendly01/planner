@@ -1,10 +1,14 @@
 export { default as AddUserModal } from "./AddUserModal/AddUserModal";
 export { default as AddManagerModal } from "./AddManagerModal/AddManagerModal";
+export { default as CustomButton } from "./CustomButton/CustomButton";
 export { default as ManagementFilter } from "./ManagementFilter/ManagementFilter";
 export { default as ManagementPagination } from "./ManagementPagination/ManagementPagination";
 export { default as ManagementTable } from "./ManagementTable/ManagementTable";
 export { default as ManagementWrapper } from "./ManagementWrapper/ManagementWrapper";
+export { default as ModalFetchingRing } from "./ModalFetchingRing/ModalFetchingRing";
+export { default as ModalHeader } from "./ModalHeader/ModalHeader";
 export { default as ModalHelperText } from "./ModalHelperText/ModalHelperText";
 export { default as ModalNNumber } from "./ModalNNumber/ModalNNumber";
 export { default as ModalOverlay } from "./ModalOverlay/ModalOverlay";
 export { default as ModalPhoneNumber } from "./ModalPhoneNumber/ModalPhoneNumber";
+export { default as PaperContainer } from "./PaperContainer/PaperContainer";
