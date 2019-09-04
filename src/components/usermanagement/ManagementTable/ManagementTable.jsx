@@ -1,31 +1,19 @@
-import { ButtonBase } from "@material-ui/core";
+import { theme } from "globals";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
-
-const CustomButton = styled(ButtonBase)`
-  && {
-    background-color: #AAEDED;
-    border: none;
-    border-radius: 3px;
-    color: #1A1446;
-    cursor: pointer;
-    outline: none;
-    padding: 5 10 5 10;
-  }
-`;
 
 const CustomTable = styled.table`
   border-spacing: 0px;
 `;
 
 const CustomTableData = styled.td`
-  color: #1A1446;
+  color: ${theme.textColor};
   padding: 1%;
 `;
 
 const CustomTableHeader = styled.th`
-  color: #1A1446;
+  color: ${theme.textColor};
   border-bottom: 2px solid #F5F5F5;
   padding: 1%;
   text-align: left;
@@ -53,7 +41,7 @@ const ManagementTable = props => {
           <tr>
             <CustomTableHeader>NAME</CustomTableHeader>
             <CustomTableHeader>N NUMBER</CustomTableHeader>
-            <CustomTableHeader></CustomTableHeader>
+            <CustomTableHeader>OFFICE</CustomTableHeader>
           </tr>
         </thead>
         <tbody>
@@ -62,7 +50,7 @@ const ManagementTable = props => {
               <CustomTableRow key={index}>
                 <CustomTableData>{worker.attributes.full_name}</CustomTableData>
                 <CustomTableData>{worker.id}</CustomTableData>
-                <CustomTableData><CustomButton>Remove</CustomButton></CustomTableData>
+                <CustomTableData>{worker.attributes.office_location_name}</CustomTableData>
               </CustomTableRow>
             );
           })}

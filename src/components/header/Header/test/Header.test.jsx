@@ -17,14 +17,12 @@ jest.mock("components", () => ({
 }));
 
 describe("<Header />", () => {
-
   beforeEach(() => {
     setupMockedComponents({
       Logo,
       UserCard
     });
   });
-
   test("the header should simply render the Logo and UserCard components.", () => {
     const rendered = render(<Header />);
     expectMockedComponent(rendered, { Logo });

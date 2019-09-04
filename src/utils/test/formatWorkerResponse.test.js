@@ -45,6 +45,10 @@ describe("formatWorkerResponse()", () => {
     expect(formatWorkerResponse(null)).toEqual([]);
   });
 
+  test("if input is empty, return empty object", () => {
+    expect(formatWorkerResponse([])).toEqual([]);
+  });
+
   test("should response with a simplified object in key/value pair format", () => {
     const formattedWorker = [
       {

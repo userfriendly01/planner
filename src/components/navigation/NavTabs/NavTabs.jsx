@@ -5,6 +5,7 @@ import {
   ManagementWrapper,
   SettingsWrapper
 } from "components";
+import { theme } from "globals";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
@@ -16,7 +17,7 @@ const Content = styled.div`
 
 const StyledTabs = styled(Tabs)`
   background-color: #FFE280;
-  color: #1A1446;
+  color: ${theme.textColor};
 `;
 
 const StyledTab = styled(Tab)`
@@ -56,7 +57,6 @@ TabPanel.propTypes = {
 };
 
 const NavTabs = () => {
-
   const [value, setValue] = React.useState(0);
 
   function handleChange(event, newValue) {
@@ -66,11 +66,11 @@ const NavTabs = () => {
   return (
     <Content >
       <StyledTabs variant="fullWidth" value={value} onChange={handleChange}>
-        <StyledTab label="My Team" href="/myTeam" id="nav-tab-myTeam" aria-controls="nav-tabpanel-myTeam" onClick={event => event.preventDefault()}/>
-        <StyledTab label="Settings" href="/settings" id="nav-tab-settings" aria-controls="nav-tabpanel-settings" onClick={event => event.preventDefault()}/>
+        <StyledTab label="User Management" href="/userManagement" id="nav-tab-userManagement" aria-controls="nav-tabpanel-userManagement" onClick={event => event.preventDefault()}/>
+        {/* <StyledTab disabled label="Settings" href="/settings" id="nav-tab-settings" aria-controls="nav-tabpanel-settings" onClick={event => event.preventDefault()}/> */}
       </StyledTabs>
-      <TabPanel value={value} tabName="myTeam" index={0}>
-        <ManagementWrapper profileId={2} />
+      <TabPanel value={value} tabName="userManagement" index={0}>
+        <ManagementWrapper  />
       </TabPanel>
       <TabPanel value={value} tabName="settings" index={1}>
         <SettingsWrapper />

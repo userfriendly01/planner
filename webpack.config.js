@@ -10,7 +10,8 @@ const config = {
   entry: resolvePathInSrc("index"),
   output: {
     filename: "admin-ui.js",
-    path: path.resolve(__dirname, "dist")
+    path: path.resolve(__dirname, "dist"),
+    publicPath: "/triton-admin/"
   },
   module: {
     rules: [
@@ -34,7 +35,7 @@ const config = {
         test: /\.png?$/,
         loader: "file-loader",
         options: {
-          name: "/[name].[ext]"
+          name: "[name].[ext]"
         }
       }
     ]
@@ -44,6 +45,7 @@ const config = {
       // You will need to define similar aliases in jest.config.js
       src: resolvePathInSrc(),
       components: resolvePathInSrc("components"),
+      context: resolvePathInSrc("context"),
       globals: resolvePathInSrc("globals"),
       icons: resolvePathInSrc("assets/icons"),
       utils: resolvePathInSrc("utils")

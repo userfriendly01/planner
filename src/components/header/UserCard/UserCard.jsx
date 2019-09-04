@@ -1,11 +1,12 @@
 import { AccountBox } from "@material-ui/icons";
+import { useAdminState } from "context";
+import { theme } from "globals";
 import React from "react";
-import PropTypes from "prop-types";
 import styled from "styled-components";
 
 const Card = styled.div`
   align-items: center;
-  color: #1A1446;
+  color: ${theme.textColor};
   display: flex;
   flex: 1 1;
   font-family: 'Roboto', sans-serif;
@@ -23,15 +24,15 @@ const StyledAccountBox = styled(AccountBox)`
   }
 `;
 
-const UserCard = props => {
-  const { name } = props;
+const UserCard = () => {
+  const {
+    userContext: {
+      pingIdentity: { displayName }
+    }
+  } = useAdminState();
   return (
-    <Card>{name}<StyledAccountBox /></Card>
+    <Card>{displayName}<StyledAccountBox /></Card>
   );
-};
-
-UserCard.propTypes = {
-  name: PropTypes.string.isRequired
 };
 
 export default UserCard;
