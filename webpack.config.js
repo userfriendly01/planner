@@ -34,7 +34,7 @@ const config = {
         test: /\.png?$/,
         loader: "file-loader",
         options: {
-          name: "/[name].[ext]"
+          name: "/triton-admin/[name].[ext]"
         }
       }
     ]
