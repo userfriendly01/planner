@@ -1,6 +1,7 @@
 coverage/*
 dist/*
 !dist/index.html
+!dist/tritonAdmin.css
 .DS_Store
 node_modules
 .vscode
