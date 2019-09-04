@@ -10,7 +10,8 @@ const config = {
   entry: resolvePathInSrc("index"),
   output: {
     filename: "admin-ui.js",
-    path: path.resolve(__dirname, "dist")
+    path: path.resolve(__dirname, "dist"),
+    publicPath: "/triton-admin/"
   },
   module: {
     rules: [
@@ -34,7 +35,7 @@ const config = {
         test: /\.png?$/,
         loader: "file-loader",
         options: {
-          name: "/triton-admin/[name].[ext]"
+          name: "[name].[ext]"
         }
       }
     ]
