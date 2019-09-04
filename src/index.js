@@ -1,8 +1,11 @@
+import { App } from "components";
+import { StateProvider } from "context";
 import React from "react";
 import ReactDOM from "react-dom";
-import { App } from "components";
 
 ReactDOM.render(
-  <App />,
+  <StateProvider>
+    <App />
+  </StateProvider>,
   document.getElementById("root")
 );

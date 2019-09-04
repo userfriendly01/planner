@@ -1,4 +1,7 @@
 require("jest-dom/extend-expect");
 require("jest-styled-components");
-// this is basically: afterEach(cleanup)
-require("@testing-library/react/cleanup-after-each");
+
+beforeAll(() => {
+  console.error= jest.fn();
+  console.warn = jest.fn();
+});

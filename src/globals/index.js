@@ -1,6 +1,14 @@
+const CONTACT_MANAGER_BASE_URI = "/contact-manager";
 const SERVICE_BASE_URI = "/service";
 
 export const apiPaths = {
   AUTH: `${SERVICE_BASE_URI}/admin-login`,
-  GET_WORKERS_BY_PROFILEID: id => `${SERVICE_BASE_URI}/workers/profile/${id}`
+  CREATE_WORKER: `${SERVICE_BASE_URI}/createworker`,
+  EMPLOYEE_LOOKUP: nNum => `${SERVICE_BASE_URI}/employeelookup/${nNum}`,
+  GET_PROFILES: `${CONTACT_MANAGER_BASE_URI}/profiles`,
+  GET_WORKERS: `${SERVICE_BASE_URI}/workers`
 };
+
+export const nNumMatcher = /[n,N]\d{7}/g;
+
+export * from "./theme";

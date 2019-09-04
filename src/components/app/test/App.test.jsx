@@ -15,8 +15,10 @@ import {
 import { myAxios } from "utils";
 import App from "../App";
 
-const endpoint = apiPaths.AUTH;
+const authEndpoint = apiPaths.AUTH;
 const axiosMock = new MockAdapter(myAxios);
+const profilesEndpoint = apiPaths.GET_PROFILES;
+const workersEndpoint = apiPaths.GET_WORKERS;
 
 jest.mock("@material-ui/core", () => ({
   CircularProgress: jest.fn()
@@ -36,12 +38,14 @@ describe("<App />", () => {
       NavTabs
     });
   });
-  describe("service call successful, res.data was returned", () => {
-    beforeEach(() => axiosMock.onGet(endpoint).reply(200, { data: "whatever" }));
+  describe("all service calls successful", () => {
+    beforeEach(() => axiosMock.onGet(authEndpoint).reply(200, { stuff: "whatever" }));
+    beforeEach(() => axiosMock.onGet(workersEndpoint).reply(200, []));
+    beforeEach(() => axiosMock.onGet(profilesEndpoint).reply(200, { stuff: "whatever" }));
     describe("initial state, page is loading", () => {
       test("should render LoadingMessage", () => {
         const rendered = render(<App />);
-        expect(rendered.container).toHaveTextContent("Connecting...");
+        expect(rendered.container).toHaveTextContent("Loading...");
         expectMockedComponent(rendered, { CircularProgress });
       });
     });
@@ -52,32 +56,56 @@ describe("<App />", () => {
           .then(() => {
             expectMockedComponent(rendered, { Header });
             expectMockedComponent(rendered, { NavTabs });
-            expect(rendered.container).not.toHaveTextContent("Connecting...");
+            expect(rendered.container).not.toHaveTextContent("Loading...");
             done();
           });
       });
     });
   });
-  describe("service call returned an error in the 400's", () => {
-    beforeEach(() => axiosMock.onGet(endpoint).reply(403, { error: "Forbidden" }));
-    test("should return 'You are not authorized to view this page'", done => {
-      const rendered = render(<App />);
-      waitForElement(() => rendered.getByTestId("unauthorized"))
-        .then(() => {
-          expect(rendered.container).toHaveTextContent("You are not authorized to view this page");
-          done();
-        });
+  describe(authEndpoint, () => {
+    describe("authentication service call returned an error in the 400's", () => {
+      beforeEach(() => axiosMock.onGet(authEndpoint).reply(403, { error: "Forbidden" }));
+      test("should return 'You are not authorized to view this page'", done => {
+        const rendered = render(<App />);
+        waitForElement(() => rendered.getByTestId("unauthorized"))
+          .then(() => {
+            expect(rendered.container).toHaveTextContent("You are not authorized to view this page");
+            done();
+          });
+      });
+    });
+    describe("authentication service call returned an error not in the 400's", () => {
+      beforeEach(() => axiosMock.onGet(authEndpoint).reply(500, { error: "Internal Server Error" }));
+      test("should return 'An error occurred while logging in.'", done => {
+        const rendered = render(<App />);
+        waitForElement(() => rendered.getByTestId("unknownError"))
+          .then(() => {
+            expect(rendered.container).toHaveTextContent("An error occurred while logging in.");
+            done();
+          });
+      });
     });
   });
-  describe("service call returned an error not in the 400's", () => {
-    beforeEach(() => axiosMock.onGet(endpoint).reply(500, { error: "Internal Server Error" }));
-    test("should return 'An unknown error has occurred'", done => {
-      const rendered = render(<App />);
-      waitForElement(() => rendered.getByTestId("unknownError"))
-        .then(() => {
-          expect(rendered.container).toHaveTextContent("An unknown error has occurred");
-          done();
-        });
+  describe(profilesEndpoint, () => {
+    describe("profiles service call returned an error", () => {
+      beforeEach(() => axiosMock.onGet(profilesEndpoint).reply(500, { error: "Internal Server Error" }));
+      test("should return 'You are not authorized to view this page'", () => {
+        const rendered = render(<App />);
+        expect(rendered.container).toHaveTextContent("Loading...");
+      });
+    });
+  });
+  describe(workersEndpoint, () => {
+    describe("workers service call returned an error", () => {
+      beforeEach(() => axiosMock.onGet(workersEndpoint).reply(500, { error: "Internal Server Error" }));
+      test("should return 'An error occurred while logging in.'", done => {
+        const rendered = render(<App />);
+        waitForElement(() => rendered.getByTestId("unknownError"))
+          .then(() => {
+            expect(rendered.container).toHaveTextContent("An error occurred while logging in.");
+            done();
+          });
+      });
     });
   });
 });
