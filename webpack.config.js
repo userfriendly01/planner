@@ -11,7 +11,7 @@ const config = {
   output: {
     filename: "admin-ui.js",
     path: path.resolve(__dirname, "dist"),
-    publicPath: "/triton-admin/"
+    // publicPath: "/triton-admin/"
   },
   module: {
     rules: [

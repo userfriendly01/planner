@@ -1,7 +1,9 @@
 import { theme } from "globals";
+import { Modal } from "@material-ui/core";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import EditUserModal from "../EditUserModal/EditUserModal";
 
 const CustomTable = styled.table`
   border-spacing: 0px;
@@ -10,6 +12,13 @@ const CustomTable = styled.table`
 const CustomTableData = styled.td`
   color: ${theme.textColor};
   padding: 1%;
+`;
+
+const CustomName = styled.div`
+  &:hover {
+    color: blue;
+    cursor: pointer;
+  }
 `;
 
 const CustomTableHeader = styled.th`
@@ -33,6 +42,14 @@ const TableContainer = styled.div`
 `;
 
 const ManagementTable = props => {
+
+  const [isEditUserModalOpen, setIsEditUserModalOpen] = useState(false);
+
+  // const handleEditUserModal = value => {
+  //   console.log(value);
+  //   setIsEditUserModalOpen(value);
+  // };
+
   const { workers } = props;
   return (
     <TableContainer>
@@ -48,7 +65,9 @@ const ManagementTable = props => {
           {workers.map((worker,index) => {
             return (
               <CustomTableRow key={index}>
-                <CustomTableData>{worker.attributes.full_name}</CustomTableData>
+                <CustomTableData onClick={() => setIsEditUserModalOpen(true)}>
+                  <CustomName >{worker.attributes.full_name}</CustomName>
+                </CustomTableData>
                 <CustomTableData>{worker.id}</CustomTableData>
                 <CustomTableData>{worker.attributes.office_location_name}</CustomTableData>
               </CustomTableRow>
@@ -56,6 +75,9 @@ const ManagementTable = props => {
           })}
         </tbody>
       </CustomTable>
+      <Modal disableBackdropClick={true} open={isEditUserModalOpen} >
+        <EditUserModal />
+      </Modal>
     </TableContainer>
   );
 };
