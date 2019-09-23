@@ -3,7 +3,7 @@ import { Modal } from "@material-ui/core";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
-import EditUserModal from "../EditUserModal/EditUserModal";
+import { EditUserModal } from "components";
 
 const CustomTable = styled.table`
   border-spacing: 0px;
@@ -44,11 +44,12 @@ const TableContainer = styled.div`
 const ManagementTable = props => {
 
   const [isEditUserModalOpen, setIsEditUserModalOpen] = useState(false);
+  const [userSelected, setUserSelected] = useState(null);
 
-  // const handleEditUserModal = value => {
-  //   console.log(value);
-  //   setIsEditUserModalOpen(value);
-  // };
+  const handleEditUserModal = worker => {
+    setUserSelected(worker);
+    setIsEditUserModalOpen(!isEditUserModalOpen);
+  };
 
   const { workers } = props;
   return (
@@ -65,7 +66,7 @@ const ManagementTable = props => {
           {workers.map((worker,index) => {
             return (
               <CustomTableRow key={index}>
-                <CustomTableData onClick={() => setIsEditUserModalOpen(true)}>
+                <CustomTableData onClick={() => handleEditUserModal(worker)}>
                   <CustomName >{worker.attributes.full_name}</CustomName>
                 </CustomTableData>
                 <CustomTableData>{worker.id}</CustomTableData>
@@ -74,10 +75,10 @@ const ManagementTable = props => {
             );
           })}
         </tbody>
+        <Modal open={isEditUserModalOpen}>
+          <EditUserModal handleClose={handleEditUserModal} worker={userSelected}/>
+        </Modal>
       </CustomTable>
-      <Modal disableBackdropClick={true} open={isEditUserModalOpen} >
-        <EditUserModal handleClose={() => { console.log("I'm gonna need that boat"); }}/>
-      </Modal>
     </TableContainer>
   );
 };

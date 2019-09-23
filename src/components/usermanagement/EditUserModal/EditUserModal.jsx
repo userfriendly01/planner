@@ -8,16 +8,17 @@ import {
   PaperContainer
 } from "components";
 import {
-  useAdminDispatch,
+  // useAdminDispatch,
   useAdminState
 } from "context";
-import {
-  apiPaths
-} from "globals";
+// import {
+//   // apiPaths
+// } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { myAxios } from "utils";
+import { theme } from "globals";
+// import { myAxios } from "utils";
 
 const FlexColumn = styled.div`
   display: flex;
@@ -43,25 +44,34 @@ const ModalContainer = styled(FlexColumn)`
   transform: translate(-50%, -50%);
 `;
 
-const defaultNNumber = "n";
-//Is the default number where I should pull in the clicked employees n#
-//If I can pass the lookup details, may not need to do addt axios call to get user deets
+const ModalText = styled.div`
+  align-self: center;
+  color: ${theme.textColor};
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: 0rem;
+  line-height: 1.30357em;
+  margin: 2%;
+`;
+
 //Need to create a method in the service to edit user
 
 const EditUserModal = props => {
 
   const {
-    handleClose
+    handleClose,
+    worker
   } = props;
-  const dispatch = useAdminDispatch();
+  // const dispatch = useAdminDispatch();
   const {
     managerContext: {
       managers
     }
   } = useAdminState();
+
   const [form, setForm] = useState({
-    lookupInfo: {},
-    nNumber: defaultNNumber,
+    nNumber: worker.attributes.n_number,
     manager: "",
     outgoing: "",
     team: ""
@@ -74,9 +84,7 @@ const EditUserModal = props => {
   const clearUser = () => {
     setForm({
       ...form,
-      lookupError: null,
-      lookupInfo: {},
-      nNumber: defaultNNumber
+      nNumber: worker.attributes.n_number
     });
   };
   const saveUser = () => {
@@ -85,63 +93,50 @@ const EditUserModal = props => {
       saveStatus: "saving",
       saveUser: true
     });
+    //Take this away after
+    clearUser();
   };
-  const parsedManager = JSON.parse(form.manager);
-  const attributes = {
-    did: `+1${form.outgoing.replace(/[\D]/g, "")}`,
-    email: form.lookupInfo.email,
-    full_name: `${form.lookupInfo.firstName} ${form.lookupInfo.lastName}`,
-    manager_first_name: parsedManager.manager_first_name,
-    manager_last_name: parsedManager.manager_last_name,
-    manager_n_number: parsedManager.manager_n_number,
-    n_number: form.nNumber.toLowerCase(),
-    office_location_name: form.lookupInfo.officeName,
-    office_location_number: form.lookupInfo.officeNumber,
-    primary_dept_name: form.lookupInfo.departmentName,
-    primary_dept_number: form.lookupInfo.departmentNumber,
-    profile_id: form.team
-  };
-  myAxios
-    .post(apiPaths.EDIT_WORKER, { attributes })
-    .then(res => {
-      clearUser();
-      dispatch({
-        type: "editWorker",
-        payload: {
-          id: form.nNumber,
-          attributes
-        }
-      });
-      updateLoading({
-        ...loading,
-        saveStatus: "success",
-        saveUser: true
-      });
-      setTimeout(() => {
-        updateLoading({
-          ...loading,
-          saveUser: false
-        });
-      }, 2000);
-      console.log(res);
-    })
-    .catch(err => {
-      updateLoading({
-        ...loading,
-        saveStatus: "fail",
-        saveUser: true
-      });
-      setTimeout(() => {
-        updateLoading({
-          ...loading,
-          saveUser: false
-        });
-      }, 2000);
-      console.log(err);
-    });
 
-  const isLookupInfoEmpty = JSON.stringify(form.lookupInfo) === JSON.stringify({});
-  const formReady = !isLookupInfoEmpty && form.team !== "" && form.manager !== "" && form.outgoing !== "";
+  // myAxios
+  //   .post(apiPaths.EDIT_WORKER, { attributes })
+  //   .then(res => {
+  //     clearUser();
+  //     dispatch({
+  //       type: "editWorker",
+  //       payload: {
+  //         id: form.nNumber,
+  //         attributes
+  //       }
+  //     });
+  //     updateLoading({
+  //       ...loading,
+  //       saveStatus: "success",
+  //       saveUser: true
+  //     });
+  //     setTimeout(() => {
+  //       updateLoading({
+  //         ...loading,
+  //         saveUser: false
+  //       });
+  //     }, 2000);
+  //     console.log(res);
+  //   })
+  //   .catch(err => {
+  //     updateLoading({
+  //       ...loading,
+  //       saveStatus: "fail",
+  //       saveUser: true
+  //     });
+  //     setTimeout(() => {
+  //       updateLoading({
+  //         ...loading,
+  //         saveUser: false
+  //       });
+  //     }, 2000);
+  //     console.log(err);
+  //   });
+
+  const formReady = form.manager !== "";
 
   return (
     <ModalContainer>
@@ -154,6 +149,7 @@ const EditUserModal = props => {
         <ModalHeader>
           {"Edit User"}
         </ModalHeader>
+        <ModalText>{worker.attributes.full_name}</ModalText>
         <CustomSelect
           label={"Manager"}
           labelWidth={65}
@@ -173,7 +169,7 @@ const EditUserModal = props => {
         />
         <ButtonWrapper>
           <CustomButton disabled={!formReady} onClick={saveUser}>
-            {"Add User"}
+            {"Update"}
           </CustomButton>
           <CustomButton onClick={handleClose}>
             {"Close"}
@@ -185,7 +181,13 @@ const EditUserModal = props => {
 };
 
 EditUserModal.propTypes = {
-  handleClose: PropTypes.func
+  handleClose: PropTypes.func,
+  worker: PropTypes.shape({
+    attributes: PropTypes.shape({
+      full_name: PropTypes.string,
+      n_number: PropTypes.string
+    })
+  })
 };
 
 export default EditUserModal;
