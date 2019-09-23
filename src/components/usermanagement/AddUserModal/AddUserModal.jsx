@@ -139,6 +139,7 @@ const AddUserModal = props => {
       saveStatus: "saving",
       saveUser: true
     });
+    console.log(form.manager);
     const parsedManager = JSON.parse(form.manager);
     const attributes = {
       did: `+1${form.outgoing.replace(/[\D]/g, "")}`,
