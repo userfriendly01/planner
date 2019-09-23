@@ -76,7 +76,7 @@ const ManagementTable = props => {
         </tbody>
       </CustomTable>
       <Modal disableBackdropClick={true} open={isEditUserModalOpen} >
-        <EditUserModal />
+        <EditUserModal handleClose={() => { console.log("I'm gonna need that boat"); }}/>
       </Modal>
     </TableContainer>
   );

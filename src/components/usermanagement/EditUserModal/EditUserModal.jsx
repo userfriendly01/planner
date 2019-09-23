@@ -49,6 +49,7 @@ const defaultNNumber = "n";
 //Need to create a method in the service to edit user
 
 const EditUserModal = props => {
+
   const {
     handleClose
   } = props;
@@ -184,14 +185,7 @@ const EditUserModal = props => {
 };
 
 EditUserModal.propTypes = {
-  handleClose: PropTypes.func,
-  managerList: PropTypes.arrayOf(
-    PropTypes.shape({
-      manager_first_name: PropTypes.string,
-      manager_last_name: PropTypes.string,
-      manager_n_number: PropTypes.string
-    })
-  )
+  handleClose: PropTypes.func
 };
 
 export default EditUserModal;
