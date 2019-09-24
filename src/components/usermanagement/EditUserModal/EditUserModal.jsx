@@ -13,7 +13,10 @@ import {
   apiPaths
 } from "globals";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React, {
+  useState,
+  useEffect
+} from "react";
 import styled from "styled-components";
 import { theme } from "globals";
 import { myAxios } from "utils";
@@ -54,7 +57,6 @@ const ModalText = styled.div`
 `;
 
 const EditUserModal = props => {
-
   const {
     handleClose,
     worker
@@ -69,22 +71,52 @@ const EditUserModal = props => {
   const [form, setForm] = useState({
     nNumber: worker.attributes.n_number,
     manager: "",
-    outgoing: "",
-    team: ""
+    workerSid: "",
+    sidLookupError: null
   });
   const [loading, updateLoading] = useState({
     lookupUser: false,
     saveStatus: "saving",
     saveUser: false
   });
-  const clearUser = () => {
-    setForm({
-      ...form,
-      nNumber: worker.attributes.n_number
-    });
-  };
+
+  useEffect(() => {
+    if (form.nNumber !== "") {
+      const nNumber = form.nNumber;
+      updateLoading({
+        ...loading,
+        lookupUser: true
+      });
+      myAxios
+        .get(apiPaths.GET_WORKERS_BY_ID + nNumber)
+        .then(res => {
+          if (res.data.length !== 0) {
+            console.log(res.data.sid);
+            setForm({
+              ...form,
+              sidLookupError: "There was no error",
+              workerSid: res.data.sid
+            });
+          } else {
+            setForm({
+              ...form,
+              workerSid: null,
+              lookupError: "Worker Sid not found"
+            });
+          }
+        })
+        .catch(err => {
+          setForm({
+            ...form,
+            workerSid: null,
+            lookupError: `Error retrieving worker Sid: ${err.message}`
+          });
+        });
+    }
+  }, [form.nNumber]);
 
   const saveUser = () => {
+    console.log(form);
     updateLoading({
       ...loading,
       saveStatus: "saving",
@@ -97,15 +129,19 @@ const EditUserModal = props => {
       manager_last_name: parsedManager.manager_last_name,
       manager_n_number: parsedManager.manager_n_number
     };
+    const workerSid = form.workerSid;
 
     myAxios
-      .post(apiPaths.EDIT_WORKER, { attributes })
-      .then(res => {
-        clearUser();
+      .post(apiPaths.EDIT_WORKER, {
+        workerSid,
+        attributes
+      })
+      .then(() => {
         dispatch({
           type: "editWorker",
           payload: {
             id: form.nNumber,
+            sid: workerSid,
             attributes
           }
         });
@@ -120,7 +156,6 @@ const EditUserModal = props => {
             saveUser: false
           });
         }, 2000);
-        console.log(res);
       })
       .catch(err => {
         updateLoading({
@@ -138,6 +173,12 @@ const EditUserModal = props => {
       });
   };
 
+  useEffect(() => {
+    if(loading.saveStatus === "success"){
+      setTimeout(() => { handleClose(false); }, 2000);
+    }
+  }, [loading.saveStatus]);
+
   const formReady = form.manager !== "";
 
   return (
@@ -146,7 +187,7 @@ const EditUserModal = props => {
         {loading.saveUser ?
           <ModalOverlay
             status={loading.saveStatus}
-            message={loading.saveStatus === "success" ? "User added successfully" : "Failed to add user"}
+            message={loading.saveStatus === "success" ? "User updated successfully" : "Failed to add user"}
           /> : null}
         <ModalHeader>
           {"Edit User"}
@@ -178,7 +219,7 @@ const EditUserModal = props => {
           <CustomButton disabled={!formReady} onClick={saveUser}>
             {"Update"}
           </CustomButton>
-          <CustomButton onClick={handleClose}>
+          <CustomButton onClick={() => handleClose(false)}>
             {"Close"}
           </CustomButton>
         </ButtonWrapper>

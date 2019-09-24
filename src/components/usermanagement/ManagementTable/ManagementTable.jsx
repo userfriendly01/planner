@@ -76,7 +76,7 @@ const ManagementTable = props => {
           })}
         </tbody>
         <Modal open={isEditUserModalOpen}>
-          <EditUserModal handleClose={handleEditUserModal} worker={userSelected}/>
+          <EditUserModal handleClose={setIsEditUserModalOpen} worker={userSelected}/>
         </Modal>
       </CustomTable>
     </TableContainer>
