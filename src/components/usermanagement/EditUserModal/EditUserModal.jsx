@@ -71,7 +71,7 @@ const EditUserModal = props => {
   const [form, setForm] = useState({
     nNumber: worker.attributes.n_number,
     manager: "",
-    workerSid: "",
+    workerSid: worker.sid,
     sidLookupError: null
   });
   const [loading, updateLoading] = useState({
@@ -80,42 +80,7 @@ const EditUserModal = props => {
     saveUser: false
   });
 
-  useEffect(() => {
-    if (form.nNumber !== "") {
-      const nNumber = form.nNumber;
-      updateLoading({
-        ...loading,
-        lookupUser: true
-      });
-      myAxios
-        .get(apiPaths.GET_WORKERS_BY_ID + nNumber)
-        .then(res => {
-          if (res.data.length !== 0) {
-            console.log(res.data.sid);
-            setForm({
-              ...form,
-              sidLookupError: "There was no error",
-              workerSid: res.data.sid
-            });
-          } else {
-            setForm({
-              ...form,
-              workerSid: null,
-              lookupError: "Worker Sid not found"
-            });
-          }
-        })
-        .catch(err => {
-          setForm({
-            ...form,
-            workerSid: null,
-            lookupError: `Error retrieving worker Sid: ${err.message}`
-          });
-        });
-    }
-  }, [form.nNumber]);
-
-  const saveUser = () => {
+  const updateUser = () => {
     console.log(form);
     updateLoading({
       ...loading,
@@ -216,7 +181,7 @@ const EditUserModal = props => {
           value={form.manager}
         />
         <ButtonWrapper>
-          <CustomButton disabled={!formReady} onClick={saveUser}>
+          <CustomButton disabled={!formReady} onClick={updateUser}>
             {"Update"}
           </CustomButton>
           <CustomButton onClick={() => handleClose(false)}>
@@ -231,6 +196,7 @@ const EditUserModal = props => {
 EditUserModal.propTypes = {
   handleClose: PropTypes.func,
   worker: PropTypes.shape({
+    sid: PropTypes.string,
     attributes: PropTypes.shape({
       full_name: PropTypes.string,
       manager_n_number: PropTypes.string,
