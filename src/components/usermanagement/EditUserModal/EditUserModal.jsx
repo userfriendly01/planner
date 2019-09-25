@@ -61,13 +61,19 @@ const EditUserModal = props => {
     handleClose,
     worker
   } = props;
-  const dispatch = useAdminDispatch();
-  const {
-    managerContext: {
-      managers
-    }
-  } = useAdminState();
 
+  const defaultManager = `${worker.attributes.manager_first_name} ${worker.attributes.manager_last_name}`;
+  const loadingStates = {
+    success: "success",
+    fail: "fail",
+    loading: "loading",
+    userNotFound: "user-not-found"
+  };
+
+  const dispatch = useAdminDispatch();
+  const state = useAdminState();
+
+  const [saveUser, setSaveUser] = useState(null);
   const [form, setForm] = useState({
     nNumber: worker.attributes.n_number,
     manager: "",
@@ -115,13 +121,9 @@ const EditUserModal = props => {
     }
   }, [form.nNumber]);
 
-  const saveUser = () => {
-    console.log(form);
-    updateLoading({
-      ...loading,
-      saveStatus: "saving",
-      saveUser: true
-    });
+  const saveUserClicked = () => {
+    console.log("form:", form);
+    setSaveUser(loadingStates.loading);
     const parsedManager = JSON.parse(form.manager);
     const attributes = {
       ...worker.attributes,
@@ -136,7 +138,7 @@ const EditUserModal = props => {
         workerSid,
         attributes
       })
-      .then(() => {
+      .then(res => {
         dispatch({
           type: "editWorker",
           payload: {
@@ -145,49 +147,33 @@ const EditUserModal = props => {
             attributes
           }
         });
-        updateLoading({
-          ...loading,
-          saveStatus: "success",
-          saveUser: true
-        });
-        setTimeout(() => {
-          updateLoading({
-            ...loading,
-            saveUser: false
-          });
-        }, 2000);
+        setSaveUser(loadingStates.success);
+        // this dispatch hasn't been implemented yet - it does nothing
+        dispatch(({
+          type: "editWorker",
+          payload: { worker }
+        }));
+        setTimeout(() => handleClose(), 2000);
+        console.log(res);
       })
       .catch(err => {
-        updateLoading({
-          ...loading,
-          saveStatus: "fail",
-          saveUser: true
-        });
-        setTimeout(() => {
-          updateLoading({
-            ...loading,
-            saveUser: false
-          });
-        }, 2000);
+        setSaveUser(loadingStates.fail);
+        setTimeout(() => handleClose(), 2000);
         console.log(err);
       });
   };
 
-  useEffect(() => {
-    if(loading.saveStatus === "success"){
-      setTimeout(() => { handleClose(false); }, 2000);
-    }
-  }, [loading.saveStatus]);
+  // I deleted a useEffect here!! Horray! :party_parrot:
 
   const formReady = form.manager !== "";
 
   return (
     <ModalContainer>
       <PaperContainer>
-        {loading.saveUser ?
+        {saveUser ?
           <ModalOverlay
-            status={loading.saveStatus}
-            message={loading.saveStatus === "success" ? "User updated successfully" : "Failed to add user"}
+            status={saveUser}
+            message={saveUser === "success" ? "User updated successfully" : "Failed to update user"}
           /> : null}
         <ModalHeader>
           {"Edit User"}
@@ -199,9 +185,9 @@ const EditUserModal = props => {
           {worker.attributes.n_number}
         </ModalText>
         <CustomSelect
-          label={"Manager"}
+          label={defaultManager}
           labelWidth={65}
-          optionsList={managers}
+          optionsList={state.managerContext.managers}
           optionsDisplayFunc={option => {
             return {
               display: `${option.manager_first_name} ${option.manager_last_name}`,
@@ -216,7 +202,7 @@ const EditUserModal = props => {
           value={form.manager}
         />
         <ButtonWrapper>
-          <CustomButton disabled={!formReady} onClick={saveUser}>
+          <CustomButton disabled={!formReady} onClick={saveUserClicked}>
             {"Update"}
           </CustomButton>
           <CustomButton onClick={() => handleClose(false)}>
@@ -233,6 +219,8 @@ EditUserModal.propTypes = {
   worker: PropTypes.shape({
     attributes: PropTypes.shape({
       full_name: PropTypes.string,
+      manager_first_name: PropTypes.string,
+      manager_last_name: PropTypes.string,
       manager_n_number: PropTypes.string,
       n_number: PropTypes.string
     })
