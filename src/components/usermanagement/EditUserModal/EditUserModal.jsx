@@ -172,14 +172,14 @@ const EditUserModal = props => {
 EditUserModal.propTypes = {
   handleClose: PropTypes.func,
   worker: PropTypes.shape({
+    sid: PropTypes.string.isRequired,
     attributes: PropTypes.shape({
       full_name: PropTypes.string,
       manager_first_name: PropTypes.string,
       manager_last_name: PropTypes.string,
       manager_n_number: PropTypes.string,
       n_number: PropTypes.string
-    }),
-    sid: PropTypes.string.isRequired
+    })
   })
 };
 
