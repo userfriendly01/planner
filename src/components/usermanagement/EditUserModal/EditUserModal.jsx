@@ -14,13 +14,13 @@ import {
   apiPaths
 } from "globals";
 import PropTypes from "prop-types";
-import React, {
-  useState,
-  useEffect
-} from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { theme } from "globals";
-import { myAxios } from "utils";
+import {
+  mapWorkerFromTwilioWorker,
+  myAxios
+} from "utils";
 
 const FlexColumn = styled.div`
   display: flex;
@@ -65,6 +65,11 @@ const ModalText = styled.div`
   line-height: 1.30357em;
   margin: 2% 2% 0% 2%;
 `;
+const loadingStates = {
+  fail: "fail",
+  saving: "saving",
+  success: "success"
+};
 
 const EditUserModal = props => {
   const {
@@ -72,108 +77,51 @@ const EditUserModal = props => {
     worker
   } = props;
 
-  const defaultManager = `${worker.attributes.manager_first_name} ${worker.attributes.manager_last_name}`;
-  const loadingStates = {
-    success: "success",
-    fail: "fail",
-    loading: "loading",
-    userNotFound: "user-not-found"
-  };
-
   const dispatch = useAdminDispatch();
   const state = useAdminState();
+  const managers = state.managerContext.managers;
 
   const [saveUser, setSaveUser] = useState(null);
   const [form, setForm] = useState({
-    nNumber: worker.attributes.n_number,
-    manager: "",
-    workerSid: "",
-    sidLookupError: null
-  });
-  const [loading, updateLoading] = useState({
-    lookupUser: false,
-    saveStatus: "saving",
-    saveUser: false
+    manager: JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number))
   });
 
-  useEffect(() => {
-    if (form.nNumber !== "") {
-      const nNumber = form.nNumber;
-      updateLoading({
-        ...loading,
-        lookupUser: true
-      });
-      myAxios
-        .get(apiPaths.GET_WORKERS_BY_ID + nNumber)
-        .then(res => {
-          if (res.data.length !== 0) {
-            console.log(res.data.sid);
-            setForm({
-              ...form,
-              sidLookupError: "There was no error",
-              workerSid: res.data.sid
-            });
-          } else {
-            setForm({
-              ...form,
-              workerSid: null,
-              lookupError: "Worker Sid not found"
-            });
-          }
-        })
-        .catch(err => {
-          setForm({
-            ...form,
-            workerSid: null,
-            lookupError: `Error retrieving worker Sid: ${err.message}`
-          });
-        });
-    }
-  }, [form.nNumber]);
+  // TODO remove me after we are done developing this component
+  console.log("EDIT USER MODAL STUFF", {
+    form,
+    managers,
+    worker
+  });
 
   const saveUserClicked = () => {
-    console.log("form:", form);
-    setSaveUser(loadingStates.loading);
+    setSaveUser(loadingStates.saving);
     const parsedManager = JSON.parse(form.manager);
     const attributes = {
-      ...worker.attributes,
       manager_first_name: parsedManager.manager_first_name,
       manager_last_name: parsedManager.manager_last_name,
       manager_n_number: parsedManager.manager_n_number
     };
-    const workerSid = form.workerSid;
 
     myAxios
-      .post(apiPaths.EDIT_WORKER, {
-        workerSid,
+      .post(apiPaths.UPDATE_WORKER_ATTRIBUTES, {
+        workerSid: worker.sid,
         attributes
       })
       .then(res => {
-        dispatch({
-          type: "editWorker",
-          payload: {
-            id: form.nNumber,
-            sid: workerSid,
-            attributes
-          }
-        });
-        setSaveUser(loadingStates.success);
-        // this dispatch hasn't been implemented yet - it does nothing
+        const updatedWorker = res.data;
         dispatch(({
-          type: "editWorker",
-          payload: { worker }
+          type: "updateWorker",
+          payload: mapWorkerFromTwilioWorker(updatedWorker)
         }));
+        setSaveUser(loadingStates.success);
         setTimeout(() => handleClose(), 2000);
-        console.log(res);
       })
       .catch(err => {
         setSaveUser(loadingStates.fail);
-        setTimeout(() => handleClose(), 2000);
-        console.log(err);
+        setTimeout(() => setSaveUser(null), 2000);
+        console.error("EditUserModal - Failed to update twilio worker", err);
       });
   };
-
-  // I deleted a useEffect here!! Horray! :party_parrot:
 
   const formReady = form.manager !== "";
 
@@ -187,7 +135,7 @@ const EditUserModal = props => {
           /> : null}
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>
-          <ModalHeader>{"Add a Manager"}</ModalHeader>
+          <ModalHeader>{"Update User's Manager"}</ModalHeader>
           <CloseRounded onClick={handleClose}/>
         </HeaderAndCloseButtonWrapper>
         <ModalText>
@@ -197,9 +145,7 @@ const EditUserModal = props => {
           {worker.attributes.n_number}
         </ModalText>
         <CustomSelect
-          label={defaultManager}
-          labelWidth={65}
-          optionsList={state.managerContext.managers}
+          optionsList={managers}
           optionsDisplayFunc={option => {
             return {
               display: `${option.manager_first_name} ${option.manager_last_name}`,
@@ -217,9 +163,6 @@ const EditUserModal = props => {
           <CustomButton disabled={!formReady} onClick={saveUserClicked}>
             {"Update"}
           </CustomButton>
-          {/* <CustomButton onClick={() => handleClose(false)}>
-            {"Close"}
-          </CustomButton> */}
         </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>
@@ -235,7 +178,8 @@ EditUserModal.propTypes = {
       manager_last_name: PropTypes.string,
       manager_n_number: PropTypes.string,
       n_number: PropTypes.string
-    })
+    }),
+    sid: PropTypes.string.isRequired
   })
 };
 
