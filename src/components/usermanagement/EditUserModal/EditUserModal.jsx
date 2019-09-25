@@ -1,3 +1,4 @@
+import { CloseRounded } from "@material-ui/icons";
 import {
   CustomButton,
   CustomSelect,
@@ -35,6 +36,15 @@ const FlexRow = styled.div`
 const ButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
   padding: 1%;
+`;
+
+const HeaderAndCloseButtonWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const LeftDiv = styled.div`
+  width: 1em;
 `;
 
 const ModalContainer = styled(FlexColumn)`
@@ -175,9 +185,11 @@ const EditUserModal = props => {
             status={saveUser}
             message={saveUser === "success" ? "User updated successfully" : "Failed to update user"}
           /> : null}
-        <ModalHeader>
-          {"Edit User"}
-        </ModalHeader>
+        <HeaderAndCloseButtonWrapper>
+          <LeftDiv></LeftDiv>
+          <ModalHeader>{"Add a Manager"}</ModalHeader>
+          <CloseRounded onClick={handleClose}/>
+        </HeaderAndCloseButtonWrapper>
         <ModalText>
           {worker.attributes.full_name}
         </ModalText>
@@ -205,9 +217,9 @@ const EditUserModal = props => {
           <CustomButton disabled={!formReady} onClick={saveUserClicked}>
             {"Update"}
           </CustomButton>
-          <CustomButton onClick={() => handleClose(false)}>
+          {/* <CustomButton onClick={() => handleClose(false)}>
             {"Close"}
-          </CustomButton>
+          </CustomButton> */}
         </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>
