@@ -1,4 +1,9 @@
 import ManagementFilter from "../ManagementFilter";
+import {
+  AddUserModal,
+  AddManagerModal
+} from "components";
+import { initialState } from "context";
 import React from "react";
 import {
   act,
@@ -7,11 +12,6 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import {
-  AddUserModal,
-  AddManagerModal
-} from "components";
-import { initialState } from "context";
 
 jest.mock("components", () => ({
   __esModule: true,

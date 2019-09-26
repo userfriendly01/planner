@@ -35,7 +35,7 @@ const CustomSelect = props => {
         input={
           <OutlinedInput
             name={label}
-            labelWidth={labelWidth}
+            labelWidth={labelWidth ? labelWidth : 65}
             id={`outlined-${label}-native-simple`}
           />
         }

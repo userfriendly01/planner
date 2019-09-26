@@ -14,13 +14,6 @@ const CustomTableData = styled.td`
   padding: 1%;
 `;
 
-const CustomName = styled.div`
-  &:hover {
-    color: blue;
-    cursor: pointer;
-  }
-`;
-
 const CustomTableHeader = styled.th`
   color: ${theme.textColor};
   border-bottom: 2px solid #F5F5F5;
@@ -31,6 +24,7 @@ const CustomTableHeader = styled.th`
 const CustomTableRow = styled.tr`
   &:hover {
     background-color: #E6E6E6;
+    cursor: pointer;
   }
 `;
 
@@ -69,9 +63,9 @@ const ManagementTable = props => {
         <tbody>
           {workers.map((worker,index) => {
             return (
-              <CustomTableRow key={index} onClick={() => handleOpenEditUser(worker)}>
+              <CustomTableRow key={index} onClick={() => handleOpenEditUser(worker)} data-testid="table-row">
                 <CustomTableData>
-                  <CustomName >{worker.attributes.full_name}</CustomName>
+                  <div >{worker.attributes.full_name}</div>
                 </CustomTableData>
                 <CustomTableData>{worker.id}</CustomTableData>
                 <CustomTableData>{worker.attributes.office_location_name}</CustomTableData>

@@ -129,7 +129,7 @@ const EditUserModal = props => {
           /> : null}
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>
-          <ModalHeader>{"Update User's Manager"}</ModalHeader>
+          <ModalHeader fontSize={"2rem"}>{"Update User's Manager"}</ModalHeader>
           <CloseRounded onClick={handleClose}/>
         </HeaderAndCloseButtonWrapper>
         <ModalText>
@@ -139,6 +139,7 @@ const EditUserModal = props => {
           {worker.attributes.n_number}
         </ModalText>
         <CustomSelect
+          label={"Manager"}
           optionsList={managers}
           optionsDisplayFunc={option => {
             return {
