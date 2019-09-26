@@ -83,14 +83,8 @@ const EditUserModal = props => {
 
   const [saveUser, setSaveUser] = useState(null);
   const [form, setForm] = useState({
-    manager: JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number))
-  });
-
-  // TODO remove me after we are done developing this component
-  console.log("EDIT USER MODAL STUFF", {
-    form,
-    managers,
-    worker
+    manager: JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number)),
+    managerChanged: false
   });
 
   const saveUserClicked = () => {
@@ -123,7 +117,7 @@ const EditUserModal = props => {
       });
   };
 
-  const formReady = form.manager !== "";
+  const formReady = form.manager !== "" && form.managerChanged === true;
 
   return (
     <ModalContainer>
@@ -155,7 +149,8 @@ const EditUserModal = props => {
           }}
           updateValue={newValue => setForm({
             ...form,
-            manager: newValue
+            manager: newValue,
+            managerChanged: true
           })}
           value={form.manager}
         />

@@ -1,4 +1,5 @@
 import EditUserModal from "../EditUserModal";
+import { CloseRounded } from "@material-ui/icons";
 import MockAdapter from "axios-mock-adapter";
 import {
   CustomButton,
@@ -16,14 +17,24 @@ import {
   expectOnlyPassedProps,
   getLastInstanceCalled,
   getMockedComponentProps,
+  mockStore,
   render,
   setupMockedComponents
 } from "testUtils";
-import { myAxios } from "utils";
+import {
+  myAxios,
+  mapWorkerFromTwilioWorker
+} from "utils";
 
 const axiosMock = new MockAdapter(myAxios);
 
 jest.useFakeTimers();
+
+jest.mock("@material-ui/icons", () => ({
+  __esModule: true,
+  CloseRounded: jest.fn()
+}));
+
 jest.mock("components", () => ({
   __esModule: true,
   CustomButton: jest.fn(),
@@ -55,6 +66,12 @@ const mockManagers = [
   }
 ];
 
+const mockSuccessfulResponse = {
+  sid: "WK123456789",
+  friendlyName: "Test Worker",
+  attributes: "{\"skill\":\"466\"}"
+};
+
 const mockHandleClose = jest.fn();
 
 const initialTestState = {
@@ -71,13 +88,13 @@ const renderComponent = () => {
 describe("<EditUserModal />", () => {
   beforeEach(() => {
     setupMockedComponents({
+      CloseRounded,
       CustomButton,
       CustomSelect,
       ModalHeader,
       ModalOverlay
     });
     mockHandleClose.mockClear();
-    //Understand why we mock the implementation of the paper container
     PaperContainer.mockClear();
     PaperContainer.mockImplementation(props => <div>{props.children}</div>);
   });
@@ -86,16 +103,13 @@ describe("<EditUserModal />", () => {
     test("Edit User Modal Renders the appropriate elements", () => {
       const rendered = renderComponent();
       expectMockedComponent(rendered, { CustomSelect }, 1);
-      expectMockedComponent(rendered, { CustomButton }, 2);
+      expectMockedComponent(rendered, { CustomButton }, 1);
       expectMockedComponent(rendered, { ModalOverlay }, 0);
       expectOnlyPassedProps(CustomButton, {
         children: "Update",
         disabled: true
       }, 0);
-      expectOnlyPassedProps(CustomButton, {
-        children: "Close"
-      }, 1);
-      expect(getMockedComponentProps(ModalHeader, getLastInstanceCalled(ModalHeader)).children).toBe("Edit User");
+      expect(getMockedComponentProps(ModalHeader, getLastInstanceCalled(ModalHeader)).children).toBe("Update User's Manager");
     });
   });
 
@@ -103,10 +117,8 @@ describe("<EditUserModal />", () => {
     test("EditUserModal shows the correct manager list is in it's initial state", () => {
       renderComponent();
       const expectedManagerProps = {
-        label: "Manager",
-        labelWidth: 65,
-        optionsList: mockManagers,
-        value: ""
+        // label: "Manager",
+        optionsList: mockManagers
       };
       expectOnlyPassedProps(CustomSelect, expectedManagerProps, 0);
       const optionsDisplayFunc = CustomSelect.mock.calls[0][0].optionsDisplayFunc;
@@ -119,34 +131,33 @@ describe("<EditUserModal />", () => {
     });
   });
 
-  describe("Update and Close buttons", () => {
-
+  describe("update Button", () => {
     test("the initial state update should be disabled, and close should be enabled", () => {
       const rendered = renderComponent();
-      expectMockedComponent(rendered, { CustomButton }, 2);
+      expectMockedComponent(rendered, { CustomButton }, 1);
       expectOnlyPassedProps(CustomButton, {
         children: "Update",
         disabled: true
       }, 0);
-      expectOnlyPassedProps(CustomButton, {
-        children: "Close"
-      }, 1);
     });
+  });
 
-    test("if we click the close button, it should fire props.handleClose", () => {
+  describe("close button", () => {
+    test("should render whenever modal is open", () => {
       const rendered = renderComponent();
-      expectMockedComponent(rendered, { CustomButton }, 2);
-      const closeFn = getMockedComponentProps(CustomButton, 1).onClick;
-      closeFn();
-      expect(mockHandleClose).toHaveBeenCalledTimes(1);
+      expectMockedComponent(rendered, { CloseRounded }, 1);
+    });
+    describe("when clicked", () => {
+      test("should close the modal", () => {
+        renderComponent();
+        const { onClick } = getMockedComponentProps(CloseRounded);
+        act(() => onClick());
+        expect(mockHandleClose).toBeCalled();
+      });
     });
   });
 
   describe("New Manager is selected", () => {
-    beforeEach(() => {
-      axiosMock.onGet(apiPaths.EDIT_WORKER).reply(200, {});
-    });
-
     test("changes made to the manager dropdown", () => {
       renderComponent();
       act(() => {
@@ -165,11 +176,11 @@ describe("<EditUserModal />", () => {
         updateValue(JSON.stringify(mockManagers[0]));
         return Promise.resolve();
       }).then(() => {
-        expect(CustomButton.mock.calls.length).toBe(4);
+        expect(CustomButton.mock.calls.length).toBe(2);
         expectOnlyPassedProps(CustomButton, {
           children: "Update",
           disabled: false
-        }, 2);
+        }, 1);
         done();
       });
     });
@@ -178,7 +189,7 @@ describe("<EditUserModal />", () => {
   describe("Edit User button is clicked", () => {
     describe("Success", () => {
       test("ModalOverlay should render with 'User updated successfully' & modal should close after 2 seconds (handleClose should be called)", done => {
-        axiosMock.onPost(apiPaths.EDIT_WORKER).reply(200, { worker: "success" });
+        axiosMock.onPost(apiPaths.EDIT_WORKER).reply(200, mockSuccessfulResponse);
         const rendered = renderComponent();
         act(() => {
           const updateValue = CustomSelect.mock.calls[0][0].updateValue;
@@ -188,8 +199,8 @@ describe("<EditUserModal />", () => {
           expectOnlyPassedProps(CustomButton, {
             children: "Update",
             disabled: false
-          }, 2);
-          const { onClick } = CustomButton.mock.calls[2][0];
+          }, 1);
+          const { onClick } = CustomButton.mock.calls[1][0];
           act(() => {
             onClick();
             return Promise.resolve();
@@ -199,6 +210,12 @@ describe("<EditUserModal />", () => {
             expect(saveStatus).toBe("success");
             act(() => jest.runAllTimers());
             expect(mockHandleClose).toBeCalled();
+            const actions = mockStore.getActions();
+            expect(actions).toHaveLength(1);
+            expect(actions[0]).toEqual({
+              type: "updateWorker",
+              payload: mapWorkerFromTwilioWorker(mockSuccessfulResponse)
+            });
             done();
           });
         });
@@ -216,8 +233,8 @@ describe("<EditUserModal />", () => {
           expectOnlyPassedProps(CustomButton, {
             children: "Update",
             disabled: false
-          }, 2);
-          const { onClick } = CustomButton.mock.calls[2][0];
+          }, 1);
+          const { onClick } = CustomButton.mock.calls[1][0];
           act(() => {
             onClick();
             return Promise.resolve();
