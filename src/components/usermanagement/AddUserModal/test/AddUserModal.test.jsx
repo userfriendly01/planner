@@ -148,7 +148,6 @@ describe("<AddUserModal />", () => {
       );
       const expectedManagerProps = {
         label: "Manager",
-        labelWidth: 65,
         optionsList: managerList,
         value: ""
       };

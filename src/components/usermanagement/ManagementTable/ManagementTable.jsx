@@ -63,7 +63,7 @@ const ManagementTable = props => {
         <tbody>
           {workers.map((worker,index) => {
             return (
-              <CustomTableRow key={index} onClick={() => handleOpenEditUser(worker)}>
+              <CustomTableRow key={index} onClick={() => handleOpenEditUser(worker)} data-testid="table-row">
                 <CustomTableData>
                   <div >{worker.attributes.full_name}</div>
                 </CustomTableData>

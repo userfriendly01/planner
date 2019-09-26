@@ -1,6 +1,20 @@
 import ManagementTable from "../ManagementTable";
+import { EditUserModal } from "components";
+import { initialState } from "context";
 import React from "react";
-import { render } from "testUtils";
+import {
+  act,
+  expectMockedComponent,
+  expectOnlyPassedProps,
+  fireEvent,
+  render,
+  setupMockedComponents
+} from "testUtils";
+
+jest.mock("components", () => ({
+  __esModule: true,
+  EditUserModal: jest.fn()
+}));
 
 const mockWorkerData = [
   {
@@ -29,23 +43,42 @@ const mockWorkerData = [
   }
 ];
 
+const initialTestState  = {
+  ...initialState,
+  isAddEditModalOpen: false
+};
+
 describe("<ManagementTable />", () => {
+  beforeEach(() => setupMockedComponents({ EditUserModal }));
   test("with no workers, we should just render a header.", () => {
     const rendered = render(<ManagementTable workers={[]} />);
     expect(rendered.getByText("NAME", { selector: "th" })).toBeInTheDocument();
     expect(rendered.getByText("N NUMBER", { selector: "th" })).toBeInTheDocument();
     expect(rendered.getByText("OFFICE", { selector: "th" })).toBeInTheDocument();
   });
-  test("with workers, we should display each, along with a remove button.", () => {
+  test("with workers, we should display full name, id & office location for each", () => {
     const rendered = render(<ManagementTable workers={mockWorkerData} />);
-    expect(rendered.getByText("Test 1", { selector: "td" })).toBeInTheDocument();
-    expect(rendered.getByText("Test 2", { selector: "td" })).toBeInTheDocument();
-    expect(rendered.getByText("Test 3", { selector: "td" })).toBeInTheDocument();
-    expect(rendered.getByText("n1234567", { selector: "td" })).toBeInTheDocument();
-    expect(rendered.getByText("n0999999", { selector: "td" })).toBeInTheDocument();
-    expect(rendered.getByText("n0498575", { selector: "td" })).toBeInTheDocument();
-    expect(rendered.getByText("Neptune", { selector: "td" })).toBeInTheDocument();
-    expect(rendered.getByText("Uranus", { selector: "td" })).toBeInTheDocument();
-    expect(rendered.getByText("Jupiter", { selector: "td" })).toBeInTheDocument();
+    mockWorkerData.forEach(entry => {
+      expect(rendered.container).toHaveTextContent(entry.attributes.full_name);
+      expect(rendered.container).toHaveTextContent(entry.id);
+      expect(rendered.container).toHaveTextContent(entry.attributes.office_location_name);
+      expect(rendered.container).not.toHaveTextContent(entry.sid);
+    });
+  });
+  describe("user row is clicked", () => {
+    test("should open the edit user modal for the selected worker; when handleClose is called, should close the modal", () => {
+      const rendered = render(<ManagementTable workers={mockWorkerData} />, initialTestState);
+      const tableRow = rendered.getAllByTestId("table-row");
+      expectMockedComponent(rendered, { EditUserModal }, 0);
+      act(() => fireEvent.click(tableRow[0]));
+      expectMockedComponent(rendered, { EditUserModal });
+      const handleClose = EditUserModal.mock.calls[0][0].handleClose;
+      expectOnlyPassedProps(EditUserModal, {
+        handleClose,
+        worker: mockWorkerData[0]
+      });
+      act(() => handleClose());
+      expectMockedComponent(rendered, { EditUserModal }, 0);
+    });
   });
 });
