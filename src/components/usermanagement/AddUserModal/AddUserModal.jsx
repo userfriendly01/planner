@@ -177,7 +177,6 @@ const AddUserModal = props => {
             saveUser: false
           });
         }, 2000);
-        console.log(res);
       })
       .catch(err => {
         updateLoading({
@@ -191,7 +190,7 @@ const AddUserModal = props => {
             saveUser: false
           });
         }, 2000);
-        console.log(err);
+        console.error("AddUserModal - Failed to add create worker in twilio workspace", err);
       });
   };
   const isLookupInfoEmpty = JSON.stringify(form.lookupInfo) === JSON.stringify({});
