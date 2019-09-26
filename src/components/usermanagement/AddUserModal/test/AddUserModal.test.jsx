@@ -349,7 +349,21 @@ describe("<AddUserModal />", () => {
       });
 
       test("and we click the save button, and the save call passes, we should clear the user, which should disable 'Add User'", done => {
-        axiosMock.onPost(apiPaths.CREATE_WORKER).reply(200, { worker: "success" });
+        const twilioWorker = {
+          "accountSid": "AC240dd0bc4d65ef2ab1c390f0fb9146da",
+          "activityName": "Offline",
+          "activitySid": "WA98fb57313627153d707a17f549566046",
+          "attributes": "{\"did\":\"+16039998888\",\"email\":\"Chris.Plankey@libertymutual.com\",\"full_name\":\"Chris Plankey\",\"manager_first_name\":\"Joanna\",\"manager_last_name\":\"Makowiecka\",\"manager_n_number\":\"n0360870\",\"n_number\":\"n0287898\",\"office_location_name\":\"Dover, NH-150 Liberty Way\",\"office_location_number\":\"016C\",\"primary_dept_name\":\"016C-12160 GRM US PL - Agent & Partners\",\"primary_dept_number\":\"12160\",\"profile_id\":\"0\"}",
+          "available": false,
+          "dateCreated": "2019-09-25T20:58:26.000Z",
+          "dateStatusChanged":"2019-09-25T20:58:26.000Z",
+          "dateUpdated": "2019-09-26T16:33:44.000Z",
+          "friendlyName": "n0287898",
+          "sid": "WK2a1bf01df1bb7a50aac8429e5467e0ee",
+          "workspaceSid": "WSde21cfcdde7bcb69cd82f1c060e5dba0",
+          "url": "https://taskrouter.twilio.com/v1/Workspaces/WSde21cfcdde7bcb69cd82f1c060e5dba0/Workers/WK2a1bf01df1bb7a50aac8429e5467e0ee"
+        };
+        axiosMock.onPost(apiPaths.CREATE_WORKER).reply(200, twilioWorker);
         const rendered = renderComponent();
         act(() => {
           const updateManager = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect) - 1).updateValue;
