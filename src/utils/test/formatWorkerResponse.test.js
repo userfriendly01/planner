@@ -1,6 +1,9 @@
-import { formatWorkerResponse } from "utils";
+import {
+  formatWorkerResponse,
+  mapWorkerFromTwilioWorker
+} from "utils";
 
-describe("formatWorkerResponse()", () => {
+describe("formatWorkerResponse", () => {
 
   const unformattedResponse = [
     {
@@ -69,5 +72,57 @@ describe("formatWorkerResponse()", () => {
       }
     ];
     expect(formatWorkerResponse(unformattedResponse)).toEqual(formattedWorker);
+  });
+});
+
+describe("mapWorkerFromTwilioWorker", () => {
+  describe("twilio worker attributes is a json string", () => {
+    const twilioWorker = {
+      friendlyName: "n0269913",
+      sid: "WK123123123",
+      attributes: "{\"whatever\":12345}"
+    };
+    test("should return object with parsed attributes object, sid, id", () => {
+      expect(mapWorkerFromTwilioWorker(twilioWorker)).toEqual({
+        id: "n0269913",
+        sid: "WK123123123",
+        attributes: { whatever: 12345 }
+      });
+    });
+  });
+  describe("twilio worker attributes is undefined", () => {
+    const twilioWorker = {
+      friendlyName: "n0269913",
+      sid: "WK123123123"
+    };
+    test("should return object where attributes is empty object", () => {
+      expect(mapWorkerFromTwilioWorker(twilioWorker)).toEqual({
+        id: "n0269913",
+        sid: "WK123123123",
+        attributes: {}
+      });
+    });
+  });
+  describe("twilio worker attributes is not valid JSON", () => {
+    const twilioWorker = {
+      friendlyName: "n0269913",
+      sid: "WK123123123",
+      attributes: "{\"invalid\":\"uh oh\", \"nooooo\"}"
+    };
+    test("should return object where attributes is empty object", () => {
+      expect(mapWorkerFromTwilioWorker(twilioWorker)).toEqual({
+        id: "n0269913",
+        sid: "WK123123123",
+        attributes: {}
+      });
+    });
+  });
+  describe("twilio worker is empty object", () => {
+    const twilioWorker = {};
+    test("should return object where attributes is empty object and id and sid are undefined", () => {
+      expect(mapWorkerFromTwilioWorker(twilioWorker)).toEqual({
+        attributes: {}
+      });
+    });
   });
 });
