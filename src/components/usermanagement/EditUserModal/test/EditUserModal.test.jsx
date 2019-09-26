@@ -99,9 +99,11 @@ describe("<EditUserModal />", () => {
     PaperContainer.mockImplementation(props => <div>{props.children}</div>);
   });
 
-  describe("EditUserModal is in it's initial state", () => {
-    test("Edit User Modal Renders the appropriate elements", () => {
+  describe("EditUserModal is in its initial state", () => {
+    test("EditUserModal Renders the appropriate elements", () => {
       const rendered = renderComponent();
+      expectMockedComponent(rendered, { ModalHeader }, 1);
+      expectMockedComponent(rendered, { CloseRounded }, 1);
       expectMockedComponent(rendered, { CustomSelect }, 1);
       expectMockedComponent(rendered, { CustomButton }, 1);
       expectMockedComponent(rendered, { ModalOverlay }, 0);
@@ -113,8 +115,8 @@ describe("<EditUserModal />", () => {
     });
   });
 
-  describe("EditUserModal Manager List in it's initial state", () => {
-    test("EditUserModal shows the correct manager list is in it's initial state", () => {
+  describe("EditUserModal Manager List in its initial state", () => {
+    test("EditUserModal shows the correct manager list is in its initial state", () => {
       renderComponent();
       const expectedManagerProps = {
         // label: "Manager",

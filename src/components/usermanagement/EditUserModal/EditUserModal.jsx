@@ -11,12 +11,12 @@ import {
   useAdminState
 } from "context";
 import {
-  apiPaths
+  apiPaths,
+  theme
 } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { theme } from "globals";
 import {
   mapWorkerFromTwilioWorker,
   myAxios
