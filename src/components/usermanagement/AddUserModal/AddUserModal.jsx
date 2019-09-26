@@ -22,7 +22,10 @@ import React, {
   useState
 } from "react";
 import styled from "styled-components";
-import { myAxios } from "utils";
+import {
+  mapWorkerFromTwilioWorker,
+  myAxios
+} from "utils";
 
 const FlexColumn = styled.div`
   display: flex;
@@ -157,13 +160,11 @@ const AddUserModal = props => {
     myAxios
       .post(apiPaths.CREATE_WORKER, { attributes })
       .then(res => {
+        const twilioWorker = res.data;
         clearUser();
         dispatch({
           type: "addWorker",
-          payload: {
-            id: form.nNumber,
-            attributes
-          }
+          payload: mapWorkerFromTwilioWorker(twilioWorker)
         });
         updateLoading({
           ...loading,

@@ -42,16 +42,20 @@ const TableContainer = styled.div`
 `;
 
 const ManagementTable = props => {
+  const { workers } = props;
 
   const [isEditUserModalOpen, setIsEditUserModalOpen] = useState(false);
   const [userSelected, setUserSelected] = useState(null);
 
-  const handleEditUserModal = worker => {
+  const handleOpenEditUser = worker => {
+    setIsEditUserModalOpen(true);
     setUserSelected(worker);
-    setIsEditUserModalOpen(!isEditUserModalOpen);
   };
 
-  const { workers } = props;
+  const handleCloseEditUser = () => {
+    setIsEditUserModalOpen(false);
+  };
+
   return (
     <TableContainer>
       <CustomTable>
@@ -65,8 +69,8 @@ const ManagementTable = props => {
         <tbody>
           {workers.map((worker,index) => {
             return (
-              <CustomTableRow key={index}>
-                <CustomTableData onClick={() => handleEditUserModal(worker)}>
+              <CustomTableRow key={index} onClick={() => handleOpenEditUser(worker)}>
+                <CustomTableData>
                   <CustomName >{worker.attributes.full_name}</CustomName>
                 </CustomTableData>
                 <CustomTableData>{worker.id}</CustomTableData>
@@ -76,7 +80,7 @@ const ManagementTable = props => {
           })}
         </tbody>
         <Modal open={isEditUserModalOpen}>
-          <EditUserModal handleClose={setIsEditUserModalOpen} worker={userSelected}/>
+          <EditUserModal handleClose={handleCloseEditUser} worker={userSelected}/>
         </Modal>
       </CustomTable>
     </TableContainer>

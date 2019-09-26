@@ -1,3 +1,4 @@
+import { CloseRounded } from "@material-ui/icons";
 import {
   CustomButton,
   CustomSelect,
@@ -13,13 +14,13 @@ import {
   apiPaths
 } from "globals";
 import PropTypes from "prop-types";
-import React, {
-  useState,
-  useEffect
-} from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { theme } from "globals";
-import { myAxios } from "utils";
+import {
+  mapWorkerFromTwilioWorker,
+  myAxios
+} from "utils";
 
 const FlexColumn = styled.div`
   display: flex;
@@ -35,6 +36,15 @@ const FlexRow = styled.div`
 const ButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
   padding: 1%;
+`;
+
+const HeaderAndCloseButtonWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const LeftDiv = styled.div`
+  width: 1em;
 `;
 
 const ModalContainer = styled(FlexColumn)`
@@ -55,108 +65,79 @@ const ModalText = styled.div`
   line-height: 1.30357em;
   margin: 2% 2% 0% 2%;
 `;
+const loadingStates = {
+  fail: "fail",
+  saving: "saving",
+  success: "success"
+};
 
 const EditUserModal = props => {
   const {
     handleClose,
     worker
   } = props;
+
   const dispatch = useAdminDispatch();
-  const {
-    managerContext: {
-      managers
-    }
-  } = useAdminState();
+  const state = useAdminState();
+  const managers = state.managerContext.managers;
 
+  const [saveUser, setSaveUser] = useState(null);
   const [form, setForm] = useState({
-    nNumber: worker.attributes.n_number,
-    manager: "",
-    workerSid: worker.sid,
-    sidLookupError: null
-  });
-  const [loading, updateLoading] = useState({
-    lookupUser: false,
-    saveStatus: "saving",
-    saveUser: false
+    manager: JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number))
   });
 
-  const updateUser = () => {
-    console.log(form);
-    updateLoading({
-      ...loading,
-      saveStatus: "saving",
-      saveUser: true
-    });
+  // TODO remove me after we are done developing this component
+  console.log("EDIT USER MODAL STUFF", {
+    form,
+    managers,
+    worker
+  });
+
+  const saveUserClicked = () => {
+    setSaveUser(loadingStates.saving);
     const parsedManager = JSON.parse(form.manager);
     const attributes = {
-      ...worker.attributes,
       manager_first_name: parsedManager.manager_first_name,
       manager_last_name: parsedManager.manager_last_name,
       manager_n_number: parsedManager.manager_n_number
     };
-    const workerSid = form.workerSid;
 
     myAxios
-      .post(apiPaths.EDIT_WORKER, {
-        workerSid,
+      .post(apiPaths.UPDATE_WORKER_ATTRIBUTES, {
+        workerSid: worker.sid,
         attributes
       })
-      .then(() => {
-        dispatch({
-          type: "editWorker",
-          payload: {
-            id: form.nNumber,
-            sid: workerSid,
-            attributes
-          }
-        });
-        updateLoading({
-          ...loading,
-          saveStatus: "success",
-          saveUser: true
-        });
-        setTimeout(() => {
-          updateLoading({
-            ...loading,
-            saveUser: false
-          });
-        }, 2000);
+      .then(res => {
+        const updatedWorker = res.data;
+        dispatch(({
+          type: "updateWorker",
+          payload: mapWorkerFromTwilioWorker(updatedWorker)
+        }));
+        setSaveUser(loadingStates.success);
+        setTimeout(() => handleClose(), 2000);
       })
       .catch(err => {
-        updateLoading({
-          ...loading,
-          saveStatus: "fail",
-          saveUser: true
-        });
-        setTimeout(() => {
-          updateLoading({
-            ...loading,
-            saveUser: false
-          });
-        }, 2000);
-        console.log(err);
+        setSaveUser(loadingStates.fail);
+        setTimeout(() => setSaveUser(null), 2000);
+        console.error("EditUserModal - Failed to update twilio worker", err);
       });
   };
-
-  useEffect(() => {
-    if(loading.saveStatus === "success"){
-      setTimeout(() => { handleClose(false); }, 2000);
-    }
-  }, [loading.saveStatus]);
 
   const formReady = form.manager !== "";
 
   return (
     <ModalContainer>
       <PaperContainer>
-        {loading.saveUser ?
+        {saveUser ?
           <ModalOverlay
-            status={loading.saveStatus}
-            message={loading.saveStatus === "success" ? "User updated successfully" : "Failed to add user"}
+            status={saveUser}
+            message={saveUser === "success" ? "User updated successfully" : "Failed to update user"}
           /> : null}
-        <ModalHeader>
-          {"Edit User"}
-        </ModalHeader>
+        <HeaderAndCloseButtonWrapper>
+          <LeftDiv></LeftDiv>
+          <ModalHeader>{"Update User's Manager"}</ModalHeader>
+          <CloseRounded onClick={handleClose}/>
+        </HeaderAndCloseButtonWrapper>
         <ModalText>
           {worker.attributes.full_name}
         </ModalText>
@@ -164,8 +145,6 @@ const EditUserModal = props => {
           {worker.attributes.n_number}
         </ModalText>
         <CustomSelect
-          label={"Manager"}
-          labelWidth={65}
           optionsList={managers}
           optionsDisplayFunc={option => {
             return {
@@ -181,11 +160,8 @@ const EditUserModal = props => {
           value={form.manager}
         />
         <ButtonWrapper>
-          <CustomButton disabled={!formReady} onClick={updateUser}>
+          <CustomButton disabled={!formReady} onClick={saveUserClicked}>
             {"Update"}
-          </CustomButton>
-          <CustomButton onClick={() => handleClose(false)}>
-            {"Close"}
           </CustomButton>
         </ButtonWrapper>
       </PaperContainer>
@@ -196,9 +172,11 @@ const EditUserModal = props => {
 EditUserModal.propTypes = {
   handleClose: PropTypes.func,
   worker: PropTypes.shape({
-    sid: PropTypes.string,
+    sid: PropTypes.string.isRequired,
     attributes: PropTypes.shape({
       full_name: PropTypes.string,
+      manager_first_name: PropTypes.string,
+      manager_last_name: PropTypes.string,
       manager_n_number: PropTypes.string,
       n_number: PropTypes.string
     })
