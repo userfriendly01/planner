@@ -19,10 +19,14 @@ import {
   expectOnlyPassedProps,
   getLastInstanceCalled,
   getMockedComponentProps,
+  mockStore,
   render,
   setupMockedComponents
 } from "testUtils";
-import { myAxios } from "utils";
+import {
+  mapWorkerFromTwilioWorker,
+  myAxios
+} from "utils";
 
 const axiosMock = new MockAdapter(myAxios);
 jest.useFakeTimers();
@@ -344,91 +348,115 @@ describe("<AddUserModal />", () => {
 
     describe("if the form becomes valid", () => {
 
-      beforeEach(() => {
-        axiosMock.onGet(apiPaths.EMPLOYEE_LOOKUP("1234567")).reply(200, mockSuccessfulResponse);
-      });
+      describe("service call to add worker succeeds", () => {
+        beforeEach(() => axiosMock.onGet(apiPaths.EMPLOYEE_LOOKUP("1234567")).reply(200, mockSuccessfulResponse));
 
-      test("and we click the save button, and the save call passes, we should clear the user, which should disable 'Add User'", done => {
-        axiosMock.onPost(apiPaths.CREATE_WORKER).reply(200, { worker: "success" });
-        const rendered = renderComponent();
-        act(() => {
-          const updateManager = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect) - 1).updateValue;
-          updateManager(JSON.stringify(managerList[0]));
-        });
-        act(() => {
-          const updateProfile = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect)).updateValue;
-          updateProfile(profileList[0].profile_id);
-        });
-        act(() => {
-          const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).updateValue;
-          updatePhone("6034567890");
-        });
-        act(() => {
-          const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).updateValue;
-          updateNNum("n1234567");
-          return Promise.resolve();
-        }).then(() => {
-          const addUserButtonProps = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1);
-          expect(addUserButtonProps.disabled).toBe(false);
+        test("when save button is clicked we should clear the user, which should disable 'Add User', and dispatch addWorker", done => {
+          const twilioWorker = {
+            "accountSid": "AC240dd0bc4d65ef2ab1c390f0fb9146da",
+            "activityName": "Offline",
+            "activitySid": "WA98fb57313627153d707a17f549566046",
+            "attributes": "{\"did\":\"+16039998888\",\"email\":\"Chris.Plankey@libertymutual.com\",\"full_name\":\"Chris Plankey\",\"manager_first_name\":\"Joanna\",\"manager_last_name\":\"Makowiecka\",\"manager_n_number\":\"n0360870\",\"n_number\":\"n0287898\",\"office_location_name\":\"Dover, NH-150 Liberty Way\",\"office_location_number\":\"016C\",\"primary_dept_name\":\"016C-12160 GRM US PL - Agent & Partners\",\"primary_dept_number\":\"12160\",\"profile_id\":\"0\"}",
+            "available": false,
+            "dateCreated": "2019-09-25T20:58:26.000Z",
+            "dateStatusChanged": "2019-09-25T20:58:26.000Z",
+            "dateUpdated": "2019-09-26T16:33:44.000Z",
+            "friendlyName": "n0287898",
+            "sid": "WK2a1bf01df1bb7a50aac8429e5467e0ee",
+            "workspaceSid": "WSde21cfcdde7bcb69cd82f1c060e5dba0",
+            "url": "https://taskrouter.twilio.com/v1/Workspaces/WSde21cfcdde7bcb69cd82f1c060e5dba0/Workers/WK2a1bf01df1bb7a50aac8429e5467e0ee"
+          };
+          axiosMock.onPost(apiPaths.CREATE_WORKER).reply(200, twilioWorker);
+          const rendered = renderComponent();
           act(() => {
-            const addUserButtonOnClick = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1).onClick;
-            addUserButtonOnClick();
+            const updateManager = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect) - 1).updateValue;
+            updateManager(JSON.stringify(managerList[0]));
+          });
+          act(() => {
+            const updateProfile = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect)).updateValue;
+            updateProfile(profileList[0].profile_id);
+          });
+          act(() => {
+            const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).updateValue;
+            updatePhone("6034567890");
+          });
+          act(() => {
+            const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).updateValue;
+            updateNNum("n1234567");
             return Promise.resolve();
           }).then(() => {
-            expectMockedComponent(rendered, { ModalOverlay });
-            const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
-            const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
-            const addUserButtonProps2 = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1);
-            expect(addUserButtonProps2.disabled).toBe(true);
-            expect(saveStatus).toBe("success");
-            expect(nNumber).toBe("n");
-            act(() => jest.runAllTimers());
-            expectMockedComponent(rendered, { ModalOverlay }, 0);
-            done();
+            const addUserButtonProps = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1);
+            expect(addUserButtonProps.disabled).toBe(false);
+            act(() => {
+              const addUserButtonOnClick = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1).onClick;
+              addUserButtonOnClick();
+              return Promise.resolve();
+            }).then(() => {
+              expectMockedComponent(rendered, { ModalOverlay });
+              const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
+              const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
+              const addUserButtonProps2 = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1);
+              expect(addUserButtonProps2.disabled).toBe(true);
+              expect(saveStatus).toBe("success");
+              expect(nNumber).toBe("n");
+              act(() => jest.runAllTimers());
+              expectMockedComponent(rendered, { ModalOverlay }, 0);
+              const actions = mockStore.getActions();
+              expect(actions).toHaveLength(1);
+              expect(actions[0]).toEqual({
+                type: "addWorker",
+                payload: mapWorkerFromTwilioWorker(twilioWorker)
+              });
+              done();
+            });
           });
         });
       });
 
-      test("and we click the save button, and the save call fails, we should not clear the user, or disable 'Add User'", done => {
-        axiosMock.onPost(apiPaths.CREATE_WORKER).networkError();
-        const rendered = renderComponent();
-        act(() => {
-          const updateManager = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect) - 1).updateValue;
-          updateManager(JSON.stringify(managerList[0]));
-        });
-        act(() => {
-          const updateProfile = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect)).updateValue;
-          updateProfile(profileList[0].profile_id);
-        });
-        act(() => {
-          const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).updateValue;
-          updatePhone("6034567890");
-        });
-        act(() => {
-          const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).updateValue;
-          updateNNum("n1234567");
-          return Promise.resolve();
-        }).then(() => {
-          const addUserButtonProps = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1);
-          expect(addUserButtonProps.disabled).toBe(false);
+      describe("service call to add worker fails", () => {
+        beforeEach(() => axiosMock.onPost(apiPaths.CREATE_WORKER).networkError());
+
+        test("when save button is clicked we should not clear the user, or disable 'Add User' and not dispatch an action", done => {
+          const rendered = renderComponent();
           act(() => {
-            const addUserButtonOnClick = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1).onClick;
-            addUserButtonOnClick();
+            const updateManager = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect) - 1).updateValue;
+            updateManager(JSON.stringify(managerList[0]));
+          });
+          act(() => {
+            const updateProfile = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect)).updateValue;
+            updateProfile(profileList[0].profile_id);
+          });
+          act(() => {
+            const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).updateValue;
+            updatePhone("6034567890");
+          });
+          act(() => {
+            const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).updateValue;
+            updateNNum("n1234567");
             return Promise.resolve();
           }).then(() => {
-            const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
-            const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
-            const addUserButtonProps2 = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1);
-            expect(addUserButtonProps2.disabled).toBe(false);
-            expect(saveStatus).toBe("fail");
-            expect(nNumber).toBe("n1234567");
-            act(() => jest.runAllTimers());
-            expectMockedComponent(rendered, { ModalOverlay }, 0);
-            done();
+            const addUserButtonProps = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1);
+            expect(addUserButtonProps.disabled).toBe(false);
+            act(() => {
+              const addUserButtonOnClick = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1).onClick;
+              addUserButtonOnClick();
+              return Promise.resolve();
+            }).then(() => {
+              const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
+              const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
+              const addUserButtonProps2 = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1);
+              expect(addUserButtonProps2.disabled).toBe(false);
+              expect(saveStatus).toBe("fail");
+              expect(nNumber).toBe("n1234567");
+              act(() => jest.runAllTimers());
+              expectMockedComponent(rendered, { ModalOverlay }, 0);
+              const actions = mockStore.getActions();
+              expect(actions).toHaveLength(0);
+              done();
+            });
           });
         });
       });
     });
-
   });
 });
