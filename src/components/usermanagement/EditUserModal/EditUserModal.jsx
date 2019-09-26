@@ -145,6 +145,7 @@ const EditUserModal = props => {
           {worker.attributes.n_number}
         </ModalText>
         <CustomSelect
+          label={"Manager"}
           optionsList={managers}
           optionsDisplayFunc={option => {
             return {

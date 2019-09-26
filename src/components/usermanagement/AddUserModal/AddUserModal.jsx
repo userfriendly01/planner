@@ -211,7 +211,6 @@ const AddUserModal = props => {
         </ModalHeader>
         <CustomSelect
           label={"Manager"}
-          labelWidth={65}
           optionsList={managers}
           optionsDisplayFunc={option => {
             return {
