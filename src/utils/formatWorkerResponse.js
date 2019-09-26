@@ -7,8 +7,19 @@ export const formatWorkerResponse = response => {
   }
 };
 
-export const mapWorkerFromTwilioWorker = twilioWorker => ({
-  attributes: JSON.parse(twilioWorker.attributes),
-  id: twilioWorker.friendlyName,
-  sid: twilioWorker.sid
-});
+export const mapWorkerFromTwilioWorker = twilioWorker => {
+  let attributes = {};
+  try {
+    attributes = JSON.parse(twilioWorker.attributes);
+  } catch (error) {
+    console.error("mapWorkerFromTwilioWorker - Failed to parse worker attributes to JSON", {
+      twilioWorker,
+      error
+    });
+  }
+  return {
+    attributes,
+    id: twilioWorker.friendlyName,
+    sid: twilioWorker.sid
+  };
+};
