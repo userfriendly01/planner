@@ -140,6 +140,7 @@ const EditUserModal = props => {
         </ModalText>
         <CustomSelect
           label={"Manager"}
+          labelWidth={65}
           optionsList={managers}
           optionsDisplayFunc={option => {
             return {
