@@ -1,9 +1,9 @@
-import { theme } from "globals";
 import { Modal } from "@material-ui/core";
+import { EditUserModal } from "components";
+import { theme } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { EditUserModal } from "components";
 
 const CustomTable = styled.table`
   border-spacing: 0px;
