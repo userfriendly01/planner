@@ -205,9 +205,7 @@ const AddUserModal = props => {
             status={loading.saveStatus}
             message={loading.saveStatus === "success" ? "User added successfully" : "Failed to add user"}
           /> : null}
-        <ModalHeader>
-          {"Add a User"}
-        </ModalHeader>
+        <ModalHeader>Add a User</ModalHeader>
         <CustomSelect
           label={"Manager"}
           optionsList={managers}
@@ -271,12 +269,8 @@ const AddUserModal = props => {
           }
         </FlexColumn>
         <ButtonWrapper>
-          <CustomButton disabled={!formReady} onClick={saveUser}>
-            {"Add User"}
-          </CustomButton>
-          <CustomButton onClick={handleClose}>
-            {"Close"}
-          </CustomButton>
+          <CustomButton disabled={!formReady} onClick={saveUser}>Add User</CustomButton>
+          <CustomButton onClick={handleClose}>Close</CustomButton>
         </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>

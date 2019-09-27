@@ -126,7 +126,7 @@ const ManagementFilter = props => {
           <AddIcon/>
         </AddManagerButton>
       </Tooltip>
-      <AddUserButton onClick={handleOpenAddUser}>{"Add User"}</AddUserButton>
+      <AddUserButton onClick={handleOpenAddUser}>Add User</AddUserButton>
       <Modal disableBackdropClick={true} open={isAddUserModalOpen}>
         <AddUserModal handleClose={handleCloseAddUser} />
       </Modal>

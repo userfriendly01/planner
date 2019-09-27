@@ -156,9 +156,7 @@ const EditUserModal = props => {
           value={form.manager}
         />
         <ButtonWrapper>
-          <CustomButton disabled={!formReady} onClick={saveUserClicked}>
-            {"Update"}
-          </CustomButton>
+          <CustomButton disabled={!formReady} onClick={saveUserClicked}>Update</CustomButton>
         </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>

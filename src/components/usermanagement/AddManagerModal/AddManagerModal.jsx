@@ -134,7 +134,7 @@ const AddManagerModal = props => {
           /> : null}
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>
-          <ModalHeader>{"Add a Manager"}</ModalHeader>
+          <ModalHeader>Add a Manager</ModalHeader>
           <CloseRounded onClick={handleClose}/>
         </HeaderAndCloseButtonWrapper>
         <FlexColumn>
