@@ -119,7 +119,7 @@ describe("<EditUserModal />", () => {
     test("EditUserModal shows the correct manager list is in its initial state", () => {
       renderComponent();
       const expectedManagerProps = {
-        // label: "Manager",
+        label: "Manager",
         optionsList: mockManagers
       };
       expectOnlyPassedProps(CustomSelect, expectedManagerProps, 0);
@@ -134,7 +134,7 @@ describe("<EditUserModal />", () => {
   });
 
   describe("update Button", () => {
-    test("the initial state update should be disabled, and close should be enabled", () => {
+    test("initial state should be disabled", () => {
       const rendered = renderComponent();
       expectMockedComponent(rendered, { CustomButton }, 1);
       expectOnlyPassedProps(CustomButton, {
@@ -210,6 +210,8 @@ describe("<EditUserModal />", () => {
             expectMockedComponent(rendered, { ModalOverlay }, 1);
             const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
             expect(saveStatus).toBe("success");
+            const message = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).message;
+            expect(message).toBe("User updated successfully");
             act(() => jest.runAllTimers());
             expect(mockHandleClose).toBeCalled();
             const actions = mockStore.getActions();
@@ -244,6 +246,8 @@ describe("<EditUserModal />", () => {
             expectMockedComponent(rendered, { ModalOverlay }, 1);
             const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
             expect(saveStatus).toBe("fail");
+            const message = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).message;
+            expect(message).toBe("Failed to update user");
             act(() => jest.runAllTimers());
             done();
           });
