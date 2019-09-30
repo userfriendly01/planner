@@ -1,6 +1,8 @@
+import { Modal } from "@material-ui/core";
+import { EditUserModal } from "components";
 import { theme } from "globals";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 const CustomTable = styled.table`
@@ -22,6 +24,7 @@ const CustomTableHeader = styled.th`
 const CustomTableRow = styled.tr`
   &:hover {
     background-color: #E6E6E6;
+    cursor: pointer;
   }
 `;
 
@@ -34,6 +37,19 @@ const TableContainer = styled.div`
 
 const ManagementTable = props => {
   const { workers } = props;
+
+  const [isEditUserModalOpen, setIsEditUserModalOpen] = useState(false);
+  const [userSelected, setUserSelected] = useState(null);
+
+  const handleOpenEditUser = worker => {
+    setIsEditUserModalOpen(true);
+    setUserSelected(worker);
+  };
+
+  const handleCloseEditUser = () => {
+    setIsEditUserModalOpen(false);
+  };
+
   return (
     <TableContainer>
       <CustomTable>
@@ -47,7 +63,7 @@ const ManagementTable = props => {
         <tbody>
           {workers.map((worker,index) => {
             return (
-              <CustomTableRow key={index}>
+              <CustomTableRow key={index} onClick={() => handleOpenEditUser(worker)} data-testid="table-row">
                 <CustomTableData>{worker.attributes.full_name}</CustomTableData>
                 <CustomTableData>{worker.id}</CustomTableData>
                 <CustomTableData>{worker.attributes.office_location_name}</CustomTableData>
@@ -55,6 +71,9 @@ const ManagementTable = props => {
             );
           })}
         </tbody>
+        <Modal open={isEditUserModalOpen}>
+          <EditUserModal handleClose={handleCloseEditUser} worker={userSelected}/>
+        </Modal>
       </CustomTable>
     </TableContainer>
   );

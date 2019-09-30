@@ -60,4 +60,15 @@ describe("<CustomSelect />", () => {
     fireEvent.change(rendered.getByTestId("customSelect"),  { target: { value: "testtwo" }});
     expect(updateValueFunc.mock.calls.length).toBe(1);
   });
+  test("omitting the labelWidth prop will still render Select component properly", () => {
+    const rendered = render(<CustomSelect
+      label={"label whatever"}
+      optionsList={testList}
+      optionsDisplayFunc={mockDisplayFunc}
+      updateValue={updateValueFunc}
+      value={"value whatever"} />);
+    expect(rendered.container).toHaveTextContent("label whatever");
+    expect(rendered.container).toHaveTextContent("testone");
+    expect(rendered.container).toHaveTextContent("testtwo");
+  });
 });
