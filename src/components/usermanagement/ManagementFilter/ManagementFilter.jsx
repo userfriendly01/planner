@@ -18,6 +18,7 @@ import React, {
   useState
 } from "react";
 import styled from "styled-components";
+import { sortByFirstName } from "utils";
 
 const ControlsWrapper = styled.div`
   display: flex;
@@ -58,13 +59,6 @@ const AddManagerButton = styled(ButtonBase)`
     width: 2em;
   }
 `;
-
-const sortByFirstName = (a, b) => {
-  const [aName, bName] = [a.manager_first_name, b.manager_first_name];
-  if (aName < bName) { return -1; }
-  if (aName > bName) { return 1; }
-  return 0;
-};
 
 const ManagementFilter = props => {
   const {
