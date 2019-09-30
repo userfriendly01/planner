@@ -55,6 +55,13 @@ export const reducer = (state, action) => {
         ...state,
         userContext: action.payload
       };
+    case "updateWorker":
+      return {
+        ...state,
+        workerContext: {
+          workers: [...state.workerContext.workers.filter(w => w.sid !== action.payload.sid), action.payload]
+        }
+      };
     default:
       return state;
   }

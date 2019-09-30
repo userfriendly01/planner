@@ -22,7 +22,10 @@ import React, {
   useState
 } from "react";
 import styled from "styled-components";
-import { myAxios } from "utils";
+import {
+  mapWorkerFromTwilioWorker,
+  myAxios
+} from "utils";
 
 const FlexColumn = styled.div`
   display: flex;
@@ -157,13 +160,11 @@ const AddUserModal = props => {
     myAxios
       .post(apiPaths.CREATE_WORKER, { attributes })
       .then(res => {
+        const twilioWorker = res.data;
         clearUser();
         dispatch({
           type: "addWorker",
-          payload: {
-            id: form.nNumber,
-            attributes
-          }
+          payload: mapWorkerFromTwilioWorker(twilioWorker)
         });
         updateLoading({
           ...loading,
@@ -176,7 +177,6 @@ const AddUserModal = props => {
             saveUser: false
           });
         }, 2000);
-        console.log(res);
       })
       .catch(err => {
         updateLoading({
@@ -190,7 +190,7 @@ const AddUserModal = props => {
             saveUser: false
           });
         }, 2000);
-        console.log(err);
+        console.error("AddUserModal - Failed to add create worker in twilio workspace", err);
       });
   };
   const isLookupInfoEmpty = JSON.stringify(form.lookupInfo) === JSON.stringify({});
@@ -205,9 +205,7 @@ const AddUserModal = props => {
             status={loading.saveStatus}
             message={loading.saveStatus === "success" ? "User added successfully" : "Failed to add user"}
           /> : null}
-        <ModalHeader>
-          {"Add a User"}
-        </ModalHeader>
+        <ModalHeader>Add a User</ModalHeader>
         <CustomSelect
           label={"Manager"}
           labelWidth={65}
@@ -272,12 +270,8 @@ const AddUserModal = props => {
           }
         </FlexColumn>
         <ButtonWrapper>
-          <CustomButton disabled={!formReady} onClick={saveUser}>
-            {"Add User"}
-          </CustomButton>
-          <CustomButton onClick={handleClose}>
-            {"Close"}
-          </CustomButton>
+          <CustomButton disabled={!formReady} onClick={saveUser}>Add User</CustomButton>
+          <CustomButton onClick={handleClose}>Close</CustomButton>
         </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>

@@ -10,13 +10,24 @@ import {
   render,
   waitForElement
 } from "@testing-library/react";
-// import { ThemeProvider } from "styled-components";
 export * from "@testing-library/react";
+
+let dispatchedActions = [];
+
+export const mockStore = {
+  getActions: () => [ ...dispatchedActions ],
+  reset: () => dispatchedActions = []
+};
+
+const mockReducer = (state, action) => {
+  dispatchedActions.push(action);
+  return reducer(state, action);
+};
 
 const customRender = (childElements, initial = initialState) => {
 
   const TestStateProvider = ({ children }) => {
-    const [state, dispatch] = React.useReducer(reducer, initial);
+    const [state, dispatch] = React.useReducer(mockReducer, initial);
     return (
       <StateContext.Provider value={state}>
         <DispatchContext.Provider value={dispatch}>
