@@ -18,7 +18,7 @@ import React, {
   useState
 } from "react";
 import styled from "styled-components";
-import { sortByFirstName } from "utils";
+import { sortManagersByName } from "utils";
 
 const ControlsWrapper = styled.div`
   display: flex;
@@ -67,7 +67,7 @@ const ManagementFilter = props => {
   } = props;
 
   const managers = useAdminState().managerContext.managers;
-  const sortedManagers = [ ...managers ].sort(sortByFirstName);
+  const sortedManagers = [ ...managers ].sort(sortManagersByName);
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
   const [isAddManagerModalOpen, setIsAddManagerModalOpen] = useState(false);
 
