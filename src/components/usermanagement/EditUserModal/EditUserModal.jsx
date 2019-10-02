@@ -19,7 +19,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import {
   mapWorkerFromTwilioWorker,
-  myAxios
+  myAxios,
+  sortManagersByName
 } from "utils";
 
 const FlexColumn = styled.div`
@@ -141,7 +142,7 @@ const EditUserModal = props => {
         <CustomSelect
           label={"Manager"}
           labelWidth={65}
-          optionsList={managers}
+          optionsList={managers.sort(sortManagersByName)}
           optionsDisplayFunc={option => {
             return {
               display: `${option.manager_first_name} ${option.manager_last_name}`,
