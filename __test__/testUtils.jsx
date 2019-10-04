@@ -4,6 +4,7 @@ import {
   initialState,
   reducer
 } from "context";
+import { theme }from "globals";
 import PropTypes from "prop-types";
 import React from "react";
 import {
@@ -30,9 +31,11 @@ const customRender = (childElements, initial = initialState) => {
     const [state, dispatch] = React.useReducer(mockReducer, initial);
     return (
       <StateContext.Provider value={state}>
-        <DispatchContext.Provider value={dispatch}>
-          {children}
-        </DispatchContext.Provider>
+        <ThemeProvider theme={theme}>
+          <DispatchContext.Provider value={dispatch}>
+            {children}
+          </DispatchContext.Provider>
+        </ThemeProvider>
       </StateContext.Provider>
     );
   };
