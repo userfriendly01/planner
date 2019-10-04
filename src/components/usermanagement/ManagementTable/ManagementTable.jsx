@@ -50,7 +50,7 @@ const ManagementTable = props => {
   const handleCloseEditUser = () => {
     setIsEditUserModalOpen(false);
   };
-  console.log(selectedWorkers);
+
   return (
     <TableContainer>
       <CustomTable>
