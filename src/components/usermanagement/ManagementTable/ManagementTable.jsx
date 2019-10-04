@@ -1,6 +1,5 @@
 import { Modal } from "@material-ui/core";
 import { EditUserModal } from "components";
-import { theme } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
@@ -10,20 +9,21 @@ const CustomTable = styled.table`
 `;
 
 const CustomTableData = styled.td`
-  color: ${theme.textColor};
+  color: ${props => props.theme.textColor};
   padding: 1%;
 `;
 
 const CustomTableHeader = styled.th`
-  color: ${theme.textColor};
+  color: ${props => props.theme.textColor};
   border-bottom: 2px solid #F5F5F5;
   padding: 1%;
   text-align: left;
 `;
 
 const CustomTableRow = styled.tr`
+  background-color: ${props => props.selected ? props.theme.button.backgroundColor : "inherit"};
   &:hover {
-    background-color: #E6E6E6;
+    background-color: ${props => props.selected ? props.theme.tableRow.hoverSelectedColor : props.theme.tableRow.hoverColor};
     cursor: pointer;
   }
 `;
@@ -39,12 +39,7 @@ const ManagementTable = props => {
   const { workers } = props;
 
   const [isEditUserModalOpen, setIsEditUserModalOpen] = useState(false);
-  const [userSelected, setUserSelected] = useState(null);
-
-  const handleOpenEditUser = worker => {
-    setIsEditUserModalOpen(true);
-    setUserSelected(worker);
-  };
+  const [workersSelected, setWorkersSelected] = useState([]);
 
   const handleCloseEditUser = () => {
     setIsEditUserModalOpen(false);
@@ -62,8 +57,16 @@ const ManagementTable = props => {
         </thead>
         <tbody>
           {workers.map((worker,index) => {
+            const isSelected = workersSelected.includes(worker.sid);
+            const handleWorkerOnClick = () => {
+              if (isSelected) {
+                setWorkersSelected(workersSelected.filter(selectedWorkerSid => selectedWorkerSid !== worker.sid));
+              } else {
+                setWorkersSelected([...workersSelected, worker.sid]);
+              }
+            };
             return (
-              <CustomTableRow key={index} onClick={() => handleOpenEditUser(worker)} data-testid="table-row">
+              <CustomTableRow key={index} onClick={() => handleWorkerOnClick(worker)} selected={isSelected} data-testid="table-row">
                 <CustomTableData>{worker.attributes.full_name}</CustomTableData>
                 <CustomTableData>{worker.id}</CustomTableData>
                 <CustomTableData>{worker.attributes.office_location_name}</CustomTableData>
@@ -72,7 +75,7 @@ const ManagementTable = props => {
           })}
         </tbody>
         <Modal open={isEditUserModalOpen}>
-          <EditUserModal handleClose={handleCloseEditUser} worker={userSelected}/>
+          <EditUserModal handleClose={handleCloseEditUser} worker={null}/>
         </Modal>
       </CustomTable>
     </TableContainer>
