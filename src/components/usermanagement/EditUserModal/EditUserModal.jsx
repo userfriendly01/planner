@@ -82,6 +82,11 @@ const EditUserModal = props => {
   const managers = state.managerContext.managers;
 
   const [saveUser, setSaveUser] = useState(null);
+  // TODO make this logic work in all cases
+  const [defaultSkills, setDefaultSkill] = useState(worker.attributes.default_skills || {
+    skills: [],
+    levels: {}
+  });
   const [form, setForm] = useState({
     manager: JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number)),
     managerChanged: false
@@ -169,6 +174,7 @@ EditUserModal.propTypes = {
   worker: PropTypes.shape({
     sid: PropTypes.string.isRequired,
     attributes: PropTypes.shape({
+      default_skills: PropTypes.object,
       full_name: PropTypes.string,
       manager_first_name: PropTypes.string,
       manager_last_name: PropTypes.string,
