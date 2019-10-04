@@ -1,5 +1,9 @@
 import { Modal } from "@material-ui/core";
 import { EditUserModal } from "components";
+import {
+  useAdminDispatch,
+  useAdminState
+} from "context";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
@@ -39,12 +43,14 @@ const ManagementTable = props => {
   const { workers } = props;
 
   const [isEditUserModalOpen, setIsEditUserModalOpen] = useState(false);
-  const [workersSelected, setWorkersSelected] = useState([]);
+  const state = useAdminState();
+  const selectedWorkers = state.workerContext.selectedWorkers;
+  const dispatch = useAdminDispatch();
 
   const handleCloseEditUser = () => {
     setIsEditUserModalOpen(false);
   };
-
+  console.log(selectedWorkers);
   return (
     <TableContainer>
       <CustomTable>
@@ -57,16 +63,13 @@ const ManagementTable = props => {
         </thead>
         <tbody>
           {workers.map((worker,index) => {
-            const isSelected = workersSelected.includes(worker.sid);
-            const handleWorkerOnClick = () => {
-              if (isSelected) {
-                setWorkersSelected(workersSelected.filter(selectedWorkerSid => selectedWorkerSid !== worker.sid));
-              } else {
-                setWorkersSelected([...workersSelected, worker.sid]);
-              }
-            };
+            const isSelected = selectedWorkers.includes(worker.sid);
+            const handleWorkerOnClick = () => dispatch({
+              type: "toggleWorkerSelected",
+              payload: worker.sid
+            });
             return (
-              <CustomTableRow key={index} onClick={() => handleWorkerOnClick(worker)} selected={isSelected} data-testid="table-row">
+              <CustomTableRow key={index} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">
                 <CustomTableData>{worker.attributes.full_name}</CustomTableData>
                 <CustomTableData>{worker.id}</CustomTableData>
                 <CustomTableData>{worker.attributes.office_location_name}</CustomTableData>

@@ -9,7 +9,8 @@ export const initialState = {
     pingIdentity: {}
   },
   workerContext: {
-    workers: []
+    workers: [],
+    selectedWorkers: []
   }
 };
 
@@ -19,6 +20,7 @@ export const reducer = (state, action) => {
       return {
         ...state,
         managerContext: {
+          ...state.managerContext,
           managers: [...state.managerContext.managers.slice(), action.payload.manager]
         }
       };
@@ -26,6 +28,7 @@ export const reducer = (state, action) => {
       return {
         ...state,
         workerContext: {
+          ...state.workerContext,
           workers: [...state.workerContext.workers.slice(), action.payload]
         }
       };
@@ -33,6 +36,7 @@ export const reducer = (state, action) => {
       return {
         ...state,
         managerContext: {
+          ...state.managerContext,
           managers: action.payload
         }
       };
@@ -40,6 +44,7 @@ export const reducer = (state, action) => {
       return {
         ...state,
         profileContext: {
+          ...state.profileContext,
           profiles: action.payload
         }
       };
@@ -47,6 +52,7 @@ export const reducer = (state, action) => {
       return {
         ...state,
         workerContext: {
+          ...state.workerContext,
           workers: action.payload
         }
       };
@@ -55,10 +61,22 @@ export const reducer = (state, action) => {
         ...state,
         userContext: action.payload
       };
+    case "toggleWorkerSelected":
+      return {
+        ...state,
+        workerContext: {
+          ...state.workerContext,
+          selectedWorkers:
+            state.workerContext.selectedWorkers.find(sid => sid === action.payload)
+              ? state.workerContext.selectedWorkers.filter(sid => sid !== action.payload)
+              : [...state.workerContext.selectedWorkers, action.payload]
+        }
+      };
     case "updateWorker":
       return {
         ...state,
         workerContext: {
+          ...state.workerContext,
           workers: [...state.workerContext.workers.filter(w => w.sid !== action.payload.sid), action.payload]
         }
       };
