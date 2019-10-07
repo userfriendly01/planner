@@ -85,7 +85,7 @@ const ManagementTable = props => {
                 <CustomTableData>{worker.id}</CustomTableData>
                 <CustomTableData>{worker.attributes.office_location_name}</CustomTableData>
                 <CustomTableData>
-                  <EditIconWrapper onClick={editButtonOnClick}>
+                  <EditIconWrapper onClick={editButtonOnClick} data-testid="edit-button">
                     <Edit/>
                   </EditIconWrapper>
                 </CustomTableData>
