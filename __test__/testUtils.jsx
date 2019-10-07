@@ -7,6 +7,7 @@ import {
 import { theme }from "globals";
 import PropTypes from "prop-types";
 import React from "react";
+import { ThemeProvider } from "styled-components";
 import {
   render,
   waitForElement
