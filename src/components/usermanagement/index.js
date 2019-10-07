@@ -1,5 +1,7 @@
 export { default as AddUserModal } from "./AddUserModal/AddUserModal";
 export { default as AddManagerModal } from "./AddManagerModal/AddManagerModal";
+export { default as DefaultPriorityDropDown } from "./DefaultPriorityDropDown/DefaultPriorityDropDown";
+export { default as DefaultSkillDropDown } from "./DefaultSkillDropDown/DefaultSkillDropDown";
 export { default as DefaultSkillSelector } from "./DefaultSkillSelector/DefaultSkillSelector";
 export { default as EditUserModal } from "./EditUserModal/EditUserModal";
 export { default as ManagementFilter } from "./ManagementFilter/ManagementFilter";

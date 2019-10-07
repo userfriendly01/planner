@@ -23,6 +23,7 @@ const CustomSelect = props => {
     updateValue,
     value
   } = props;
+
   return (
     <FormField variant="outlined">
       <InputLabel htmlFor={`outlined-${label}-native-simple`}>
@@ -65,10 +66,13 @@ const CustomSelect = props => {
 CustomSelect.propTypes = {
   label: PropTypes.string.isRequired,
   labelWidth: PropTypes.number,
-  optionsList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  optionsList: PropTypes.array.isRequired,
   optionsDisplayFunc: PropTypes.func.isRequired,
   updateValue: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired
+  value: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string
+  ]).isRequired
 };
 
 export default CustomSelect;

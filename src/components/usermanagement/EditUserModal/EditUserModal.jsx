@@ -2,6 +2,7 @@ import { CloseRounded } from "@material-ui/icons";
 import {
   CustomButton,
   CustomSelect,
+  DefaultSkillSelector,
   ModalHeader,
   ModalOverlay,
   PaperContainer
@@ -65,6 +66,15 @@ const ModalText = styled.div`
   line-height: 1.30357em;
   margin: 2% 2% 0% 2%;
 `;
+
+const defaultSkills = {
+  skills: ["psu-l1", "psu-l2", "466"],
+  levels: {
+    "psu-l1": 3,
+    "psu-l2": 4
+  }
+};
+
 const loadingStates = {
   fail: "fail",
   saving: "saving",
@@ -83,10 +93,10 @@ const EditUserModal = props => {
 
   const [saveUser, setSaveUser] = useState(null);
   // TODO make this logic work in all cases
-  const [defaultSkills, setDefaultSkill] = useState(worker.attributes.default_skills || {
-    skills: [],
-    levels: {}
-  });
+  // const [defaultSkills, setDefaultSkill] = useState(worker.attributes.default_skills || {
+  //   skills: [],
+  //   levels: {}
+  // });
   const [form, setForm] = useState({
     manager: JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number)),
     managerChanged: false
@@ -161,6 +171,7 @@ const EditUserModal = props => {
           })}
           value={form.manager}
         />
+        <DefaultSkillSelector defaultSkills={defaultSkills}/>
         <ButtonWrapper>
           <CustomButton disabled={!formReady} onClick={saveUserClicked}>Update</CustomButton>
         </ButtonWrapper>
