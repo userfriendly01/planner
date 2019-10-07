@@ -26,10 +26,9 @@ const mockReducer = (state, action) => {
   return reducer(state, action);
 };
 
-const customRender = (childElements, initial = initialState) => {
-
+const customRender = (childElements, initialState) => {
   const TestStateProvider = ({ children }) => {
-    const [state, dispatch] = React.useReducer(mockReducer, initial);
+    const [state, dispatch] = React.useReducer(mockReducer, initialState || getTestState());
     return (
       <StateContext.Provider value={state}>
         <ThemeProvider theme={theme}>
@@ -96,6 +95,8 @@ export const setupMockedComponents = objOfMockedComponents => {
     }
   });
 };
+
+export const getTestState = () => ({ ...initialState });
 
 export const waitForMockedComponent = (rendered, componentName, instanceCalled) => {
   return waitForElement(() => rendered.queryByTestId(getDataTestIdWithInstanceCalled(componentName, instanceCalled)) !== undefined);
