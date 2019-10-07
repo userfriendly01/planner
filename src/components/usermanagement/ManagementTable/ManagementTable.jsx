@@ -1,4 +1,5 @@
 import { Modal } from "@material-ui/core";
+import { Edit } from "@material-ui/icons";
 import { EditUserModal } from "components";
 import {
   useAdminDispatch,
@@ -32,6 +33,10 @@ const CustomTableRow = styled.tr`
   }
 `;
 
+const EditIconWrapper = styled.div`
+  cursor: pointer;
+`;
+
 const TableContainer = styled.div`
   display: flex;
   flex: 1 1 auto;
@@ -42,14 +47,15 @@ const TableContainer = styled.div`
 const ManagementTable = props => {
   const { workers } = props;
 
-  const [isEditUserModalOpen, setIsEditUserModalOpen] = useState(false);
+  const defaultEditUserModalOpts = {
+    open: false,
+    worker: null
+  };
+
+  const [editUserModalOpts, setEditUserModalOpts] = useState(defaultEditUserModalOpts);
   const state = useAdminState();
   const selectedWorkers = state.workerContext.selectedWorkers;
   const dispatch = useAdminDispatch();
-
-  const handleCloseEditUser = () => {
-    setIsEditUserModalOpen(false);
-  };
 
   return (
     <TableContainer>
@@ -59,6 +65,7 @@ const ManagementTable = props => {
             <CustomTableHeader>NAME</CustomTableHeader>
             <CustomTableHeader>N NUMBER</CustomTableHeader>
             <CustomTableHeader>OFFICE</CustomTableHeader>
+            <CustomTableHeader/>
           </tr>
         </thead>
         <tbody>
@@ -68,17 +75,26 @@ const ManagementTable = props => {
               type: "toggleWorkerSelected",
               payload: worker.sid
             });
+            const editButtonOnClick = () => setEditUserModalOpts({
+              open: true,
+              worker
+            });
             return (
               <CustomTableRow key={index} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">
                 <CustomTableData>{worker.attributes.full_name}</CustomTableData>
                 <CustomTableData>{worker.id}</CustomTableData>
                 <CustomTableData>{worker.attributes.office_location_name}</CustomTableData>
+                <CustomTableData>
+                  <EditIconWrapper onClick={editButtonOnClick}>
+                    <Edit/>
+                  </EditIconWrapper>
+                </CustomTableData>
               </CustomTableRow>
             );
           })}
         </tbody>
-        <Modal open={isEditUserModalOpen}>
-          <EditUserModal handleClose={handleCloseEditUser} worker={null}/>
+        <Modal open={editUserModalOpts.open}>
+          <EditUserModal handleClose={() => setEditUserModalOpts(defaultEditUserModalOpts)} worker={editUserModalOpts.worker}/>
         </Modal>
       </CustomTable>
     </TableContainer>
