@@ -67,6 +67,31 @@ const ModalText = styled.div`
   margin: 2% 2% 0% 2%;
 `;
 
+// TODO: get these from somewhere else
+const availableSkills = {
+  skills: ["aisg-l1", "bscCbsHelpDesk"],
+  levels: {
+    "bscCbsHelpDesk": 3
+  }
+};
+// const availableSkills = [{
+//   "minimum": null,
+//   "multivalue": false,
+//   "name": "psu-l1",
+//   "maximum": null
+// },
+// {
+//   "minimum": 0,
+//   "multivalue": true,
+//   "name": "test",
+//   "maximum": 3
+// },
+// {
+//   "minimum": 1,
+//   "multivalue": true,
+//   "name": "sbscFarm",
+//   "maximum": 3
+// }];
 const defaultSkills = {
   skills: ["psu-l1", "psu-l2", "466"],
   levels: {
@@ -74,6 +99,7 @@ const defaultSkills = {
     "psu-l2": 4
   }
 };
+//
 
 const loadingStates = {
   fail: "fail",
@@ -144,7 +170,7 @@ const EditUserModal = props => {
           /> : null}
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>
-          <ModalHeader fontSize={"2rem"}>{"Update User's Manager"}</ModalHeader>
+          <ModalHeader fontSize={"2rem"}>{"Update User"}</ModalHeader>
           <CloseRounded onClick={handleClose}/>
         </HeaderAndCloseButtonWrapper>
         <ModalText>
@@ -171,7 +197,7 @@ const EditUserModal = props => {
           })}
           value={form.manager}
         />
-        <DefaultSkillSelector defaultSkills={defaultSkills}/>
+        <DefaultSkillSelector availableSkills={availableSkills} defaultSkills={defaultSkills}/>
         <ButtonWrapper>
           <CustomButton disabled={!formReady} onClick={saveUserClicked}>Update</CustomButton>
         </ButtonWrapper>

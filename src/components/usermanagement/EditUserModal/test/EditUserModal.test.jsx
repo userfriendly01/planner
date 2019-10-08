@@ -111,7 +111,7 @@ describe("<EditUserModal />", () => {
         children: "Update",
         disabled: true
       }, 0);
-      expect(getMockedComponentProps(ModalHeader, getLastInstanceCalled(ModalHeader)).children).toBe("Update User's Manager");
+      expect(getMockedComponentProps(ModalHeader, getLastInstanceCalled(ModalHeader)).children).toBe("Update User");
     });
   });
 

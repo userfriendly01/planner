@@ -16,6 +16,7 @@ const FormField = styled(FormControl)`
 
 const CustomSelect = props => {
   const {
+    disabled,
     label,
     labelWidth,
     optionsDisplayFunc,
@@ -30,6 +31,7 @@ const CustomSelect = props => {
         {label}
       </InputLabel>
       <Select
+        disabled={disabled}
         native
         value={value}
         onChange={event => updateValue(event.target.value)}
@@ -64,6 +66,7 @@ const CustomSelect = props => {
 };
 
 CustomSelect.propTypes = {
+  disabled: PropTypes.bool,
   label: PropTypes.string.isRequired,
   labelWidth: PropTypes.number,
   optionsList: PropTypes.array.isRequired,

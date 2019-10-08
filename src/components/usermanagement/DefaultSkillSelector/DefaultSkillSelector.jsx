@@ -1,18 +1,44 @@
 import {
-  DefaultPriorityDropDown,
-  DefaultSkillDropDown
+  AddCircleOutlineRounded,
+  DeleteRounded
+} from "@material-ui/icons";
+import {
+  AddPriorityDropDown,
+  AddSkillDropDown,
+  DefaultPriorityDropDown
 } from "components";
 import { theme } from "globals";
-// import PropTypes from "prop-types";
-// import React, {
-//   useState
-// } from "react";
-import React from "react";
+import PropTypes from "prop-types";
+import React, {
+  useState
+} from "react";
 import styled from "styled-components";
 
+const AddDefaultSkill = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const EmptyDiv = styled.div`
+  width: 20%
+`;
+
+const ExistingDefaultSkills = styled.div`
+  
+`;
+
+const Priority = styled.div`
+  width: 20%;
+`;
+
+const Skill = styled.div`
+  width: 20%
+`;
 
 const SkillRowContainer = styled.div`
+  align-items: center;
   display: flex;
+  margin: 2%;
 `;
 
 const Text = styled.div`
@@ -26,97 +52,67 @@ const Text = styled.div`
   margin: 2% 2% 0% 2%;
 `;
 
-// setDefaultSkills sets default skills object to something like:
-const defaultSkills = {
-  skills: ["psu-l1", "psu-l2", "466"],
-  levels: {
-    "psu-l1": 3,
-    "psu-l2": 4
-  }
-};
 
-const DefaultSkillSelector = () => {
-  // const {
-  //   defaultSkills,
-  //   setDefaultSkills
-  // } = props;
+const DefaultSkillSelector = props => {
+  const {
+    availableSkills,
+    defaultSkills
+    // setDefaultSkills
+  } = props;
 
-  // const addSkillsRow = (
-  //   <div>
-  //     {
-  //       /**
-  //        * TODO
-  //        * Dropdown of all the skills available in availableSkills
-  //        * Dropdown of priorities per skill once selected
-  //        * ADD button to add record
-  //        *   fires setDefaultSkills
-  //        */
-  //     }
-  //   </div>
-  // );
+  const [opts, setOpts] = useState({
+    skillValue: "",
+    priorityValue: ""
+  });
 
-  // const getAvailPriorities = max => {
-  //   for (let i = 1; i <= max; i++) {
-  //   // create an entry in the drop down
-  //   }
-  // };
+  const skillChanged = skill => {
+    setOpts({
+      ...opts,
+      skillValue: skill,
+      priorityValue: ""
+    });
+  };
+
+  const priorityChanged = priority => {
+    setOpts({
+      ...opts,
+      priorityValue: priority
+    });
+  };
 
   return (
-
-    // Default Profile
-    // <AddSkill /> <AvailablePriorities /> // ?????
-    // <DefaultSkillDropDown /> <AvailablePriorities max = 3 />
     <div>
-      <Text>DefaultProfile</Text>
-      {defaultSkills.skills.map((skill, index) => {
-        const priority = defaultSkills.levels[skill];
-        return (
-          <SkillRowContainer key={`default-skill-row-${index}`}>
-            <DefaultSkillDropDown defaultSkills={defaultSkills} defaultSkillDisplay={skill} />
-            {priority ? <DefaultPriorityDropDown defaultPriorityDisplay={priority} max={priority} /> : null}
-            {/** TODO - Add a REMOVE button to remove this skill from object */}
-          </SkillRowContainer>
-        );
-      })}
+      <Text>Default Profile</Text>
+      <AddDefaultSkill>
+        <AddSkillDropDown availableSkills={availableSkills} skillValue={opts.skillValue} updateSkill={skillChanged} />
+        <AddPriorityDropDown availableSkills={availableSkills} disabled={opts.skillValue.length === 0} priorityValue={opts.priorityValue} max={10} updatePriority={priorityChanged} />
+        <AddCircleOutlineRounded />
+      </AddDefaultSkill>
+      <ExistingDefaultSkills>
+        {defaultSkills.skills.map((skill, index) => {
+          const priority = defaultSkills.levels[skill];
+          return (
+            <SkillRowContainer key={`default-skill-row-${index}`}>
+              <Skill>{skill}</Skill>
+              <Priority>
+                {priority ? <DefaultPriorityDropDown defaultPriorityDisplay={priority} max={priority} /> : <EmptyDiv />}
+              </Priority>
+              <DeleteRounded />
+            </SkillRowContainer>
+          );
+        })}
+      </ExistingDefaultSkills>
     </div>
-
-
-  // <div>
-  //   <Text>Default Profile</Text>
-  //   <CustomSelect
-  //     label={"Add Skill"}
-  //     labelWidth={30}
-  //     optionsList={availableSkills}
-  //     optionsDisplayFunc={option => {
-  //       return {
-  //         display: option.skill_num,
-  //         key: option.skill_num,
-  //         value: option.skill_num
-  //       };
-  //     }}
-  //   />
-  //   {/* <CustomSelect
-  //     label={"Priorities"}
-  //     optionsList={getAvailablePriorities(skillz)}
-  //     optionsDisplayFunc={option => {
-  //       return {
-  //         display: option.skill_num,
-  //         key: ,
-  //         value: 
-  //       };
-  //     }}
-  //   /> */}
-  //   {/* {defaultSkillRows} */}
-  // </div>
   );
 };
 
-// DefaultSkillSelector.propTypes = {
-//   defaultSkills: PropTypes.shape({
-//     levels: PropTypes.object.isRequired,
-//     skills: PropTypes.array.isRequired
-//   }),
-//   setDefaultSkills: PropTypes.func.isRequired
-// };
+DefaultSkillSelector.propTypes = {
+  availableSkills: PropTypes.array.isRequired,
+  defaultSkills: PropTypes.shape({
+    levels: PropTypes.object.isRequired,
+    skills: PropTypes.array.isRequired
+  })
+  // setDefaultSkills: PropTypes.func.isRequired
+};
 
 export default DefaultSkillSelector;
