@@ -1,3 +1,7 @@
+export const disablePriorityDropDown = (skillsArray, skillSelected) => {
+  return !getCurrentSkill(skillsArray, skillSelected).multivalue;
+};
+
 const getCurrentSkill = (skillsArray, skillSelected) => skillsArray.find(skillObj => skillObj.name === skillSelected);
 
 export const getPriorityOptionsList = (skillsArray, skillSelected) => {
@@ -9,8 +13,4 @@ export const getPriorityOptionsList = (skillsArray, skillSelected) => {
     }
   }
   return options;
-};
-
-export const disablePriorityDropDown = (skillsArray, skillSelected) => {
-  return !getCurrentSkill(skillsArray, skillSelected).multivalue;
 };
