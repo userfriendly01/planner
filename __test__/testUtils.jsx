@@ -4,8 +4,10 @@ import {
   initialState,
   reducer
 } from "context";
+import { theme }from "globals";
 import PropTypes from "prop-types";
 import React from "react";
+import { ThemeProvider } from "styled-components";
 import {
   render,
   waitForElement
@@ -24,15 +26,16 @@ const mockReducer = (state, action) => {
   return reducer(state, action);
 };
 
-const customRender = (childElements, initial = initialState) => {
-
+const customRender = (childElements, initialState) => {
   const TestStateProvider = ({ children }) => {
-    const [state, dispatch] = React.useReducer(mockReducer, initial);
+    const [state, dispatch] = React.useReducer(mockReducer, initialState || getTestState());
     return (
       <StateContext.Provider value={state}>
-        <DispatchContext.Provider value={dispatch}>
-          {children}
-        </DispatchContext.Provider>
+        <ThemeProvider theme={theme}>
+          <DispatchContext.Provider value={dispatch}>
+            {children}
+          </DispatchContext.Provider>
+        </ThemeProvider>
       </StateContext.Provider>
     );
   };
@@ -92,6 +95,8 @@ export const setupMockedComponents = objOfMockedComponents => {
     }
   });
 };
+
+export const getTestState = () => ({ ...initialState });
 
 export const waitForMockedComponent = (rendered, componentName, instanceCalled) => {
   return waitForElement(() => rendered.queryByTestId(getDataTestIdWithInstanceCalled(componentName, instanceCalled)) !== undefined);

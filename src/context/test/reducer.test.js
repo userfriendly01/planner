@@ -140,6 +140,32 @@ describe("reducer", () => {
       expect(result.userContext).toEqual(payload);
     });
   });
+  describe("toggleWorkerSelected", () => {
+    const state = { ...initialState };
+    const workers = { cool: "wow" };
+    state.workerContext.workers = workers;
+    state.workerContext.selectedWorkers = ["WK1","WK2","WK3","WK4","WK5"];
+    test("when worker is not selected they will be added to the array", () => {
+      const action = {
+        type: "toggleWorkerSelected",
+        payload: "WK6"
+      };
+      expect(reducer({ ...state }, action).workerContext).toEqual({
+        workers,
+        selectedWorkers: ["WK1","WK2","WK3","WK4","WK5","WK6"]
+      });
+    });
+    test("when worker is already selected they will be removed from the array", () => {
+      const action = {
+        type: "toggleWorkerSelected",
+        payload: "WK3"
+      };
+      expect(reducer({ ...state }, action).workerContext).toEqual({
+        workers,
+        selectedWorkers: ["WK1","WK2","WK4","WK5"]
+      });
+    });
+  });
   describe("updateWorker", () => {
     test("should update a single existing worker in the workers context", () => {
       const state = { ...initialState };

@@ -10,10 +10,7 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import {
-  apiPaths,
-  theme
-} from "globals";
+import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
@@ -58,7 +55,7 @@ const ModalContainer = styled(FlexColumn)`
 
 const ModalText = styled.div`
   align-self: center;
-  color: ${theme.textColor};
+  color: ${props => props.theme.textColor};
   font-family: 'Roboto', sans-serif;
   font-size: 1.3rem;
   font-weight: 400;
