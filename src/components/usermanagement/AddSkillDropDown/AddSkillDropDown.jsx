@@ -13,12 +13,12 @@ const AddSkillDropDown = props => {
     <CustomSelect
       label={"Add Default Skill"}
       labelWidth={120}
-      optionsList={availableSkills.skills}
+      optionsList={availableSkills}
       optionsDisplayFunc={option => {
         return {
-          display: option,
-          key: option,
-          value: option
+          display: option.name,
+          key: option.name,
+          value: option.name
         };
       }}
       updateValue={updateSkill}
@@ -28,10 +28,7 @@ const AddSkillDropDown = props => {
 };
 
 AddSkillDropDown.propTypes = {
-  availableSkills: PropTypes.shape({
-    levels: PropTypes.object.isRequired,
-    skills: PropTypes.array.isRequired
-  }),
+  availableSkills: PropTypes.array.isRequired,
   skillValue: PropTypes.string.isRequired,
   updateSkill: PropTypes.func.isRequired
 };

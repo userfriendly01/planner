@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import React, {
   useState
 } from "react";
+import { getPriorityOptionsList } from "utils";
 
 const DefaultPriorityDropDown = props => {
   const {
@@ -14,19 +15,11 @@ const DefaultPriorityDropDown = props => {
     defaultPriority: defaultPriorityDisplay
   });
 
-  const getOptionsList = max => {
-    const options = [];
-    for (let i = 1; i <= max; i++) {
-      options.push(i);
-    }
-    return options;
-  };
-
   return (
     <CustomSelect
       label={""}
       labelWidth={0}
-      optionsList={getOptionsList(max)}
+      optionsList={getPriorityOptionsList(max)}
       optionsDisplayFunc={option => {
         return {
           display: option,

@@ -67,31 +67,7 @@ const ModalText = styled.div`
   margin: 2% 2% 0% 2%;
 `;
 
-// TODO: get these from somewhere else
-const availableSkills = {
-  skills: ["aisg-l1", "bscCbsHelpDesk"],
-  levels: {
-    "bscCbsHelpDesk": 3
-  }
-};
-// const availableSkills = [{
-//   "minimum": null,
-//   "multivalue": false,
-//   "name": "psu-l1",
-//   "maximum": null
-// },
-// {
-//   "minimum": 0,
-//   "multivalue": true,
-//   "name": "test",
-//   "maximum": 3
-// },
-// {
-//   "minimum": 1,
-//   "multivalue": true,
-//   "name": "sbscFarm",
-//   "maximum": 3
-// }];
+// TODO: get this from somewhere else
 const defaultSkills = {
   skills: ["psu-l1", "psu-l2", "466"],
   levels: {
@@ -197,7 +173,7 @@ const EditUserModal = props => {
           })}
           value={form.manager}
         />
-        <DefaultSkillSelector availableSkills={availableSkills} defaultSkills={defaultSkills}/>
+        <DefaultSkillSelector defaultSkills={defaultSkills}/>
         <ButtonWrapper>
           <CustomButton disabled={!formReady} onClick={saveUserClicked}>Update</CustomButton>
         </ButtonWrapper>

@@ -7,12 +7,14 @@ import {
   AddSkillDropDown,
   DefaultPriorityDropDown
 } from "components";
+import { useAdminState } from "context";
 import { theme } from "globals";
 import PropTypes from "prop-types";
 import React, {
   useState
 } from "react";
 import styled from "styled-components";
+import { getPriorityOptionsList } from "utils";
 
 const AddDefaultSkill = styled.div`
   display: flex;
@@ -52,10 +54,8 @@ const Text = styled.div`
   margin: 2% 2% 0% 2%;
 `;
 
-
 const DefaultSkillSelector = props => {
   const {
-    availableSkills,
     defaultSkills
     // setDefaultSkills
   } = props;
@@ -64,6 +64,12 @@ const DefaultSkillSelector = props => {
     skillValue: "",
     priorityValue: ""
   });
+
+  const {
+    skillContext: {
+      skills
+    }
+  } = useAdminState();
 
   const skillChanged = skill => {
     setOpts({
@@ -84,8 +90,13 @@ const DefaultSkillSelector = props => {
     <div>
       <Text>Default Profile</Text>
       <AddDefaultSkill>
-        <AddSkillDropDown availableSkills={availableSkills} skillValue={opts.skillValue} updateSkill={skillChanged} />
-        <AddPriorityDropDown availableSkills={availableSkills} disabled={opts.skillValue.length === 0} priorityValue={opts.priorityValue} max={10} updatePriority={priorityChanged} />
+        <AddSkillDropDown availableSkills={skills} skillValue={opts.skillValue} updateSkill={skillChanged} />
+        <AddPriorityDropDown
+          availablePriorities={getPriorityOptionsList(skills, opts.skillValue)}
+          disabled={opts.skillValue.length === 0}
+          priorityValue={opts.priorityValue}
+          updatePriority={priorityChanged}
+        />
         <AddCircleOutlineRounded />
       </AddDefaultSkill>
       <ExistingDefaultSkills>
@@ -107,7 +118,6 @@ const DefaultSkillSelector = props => {
 };
 
 DefaultSkillSelector.propTypes = {
-  availableSkills: PropTypes.array.isRequired,
   defaultSkills: PropTypes.shape({
     levels: PropTypes.object.isRequired,
     skills: PropTypes.array.isRequired

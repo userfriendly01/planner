@@ -97,6 +97,13 @@ const App = () => {
           error: err
         });
       });
+    myAxios.get(apiPaths.GET_TASKROUTER_SKILLS)
+      .then(res => {
+        dispatch(({
+          type: "loadSkills",
+          payload: res.data
+        }));
+      });
   }, []);
 
   if (authorized && workersLoaded) {

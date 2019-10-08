@@ -43,6 +43,13 @@ export const reducer = (state, action) => {
           profiles: action.payload
         }
       };
+    case "loadSkills":
+      return {
+        ...state,
+        skillContext: {
+          skills: action.payload
+        }
+      };
     case "loadWorkers":
       return {
         ...state,
