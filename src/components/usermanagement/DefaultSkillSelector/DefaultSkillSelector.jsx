@@ -14,7 +14,10 @@ import React, {
   useState
 } from "react";
 import styled from "styled-components";
-import { getPriorityOptionsList } from "utils";
+import {
+  disablePriorityDropDown,
+  getPriorityOptionsList
+} from "utils";
 
 const AddDefaultSkill = styled.div`
   display: flex;
@@ -93,7 +96,7 @@ const DefaultSkillSelector = props => {
         <AddSkillDropDown availableSkills={skills} skillValue={opts.skillValue} updateSkill={skillChanged} />
         <AddPriorityDropDown
           availablePriorities={getPriorityOptionsList(skills, opts.skillValue)}
-          disabled={opts.skillValue.length === 0}
+          disabled={opts.skillValue.length === 0 || disablePriorityDropDown(skills, opts.skillValue)}
           priorityValue={opts.priorityValue}
           updatePriority={priorityChanged}
         />

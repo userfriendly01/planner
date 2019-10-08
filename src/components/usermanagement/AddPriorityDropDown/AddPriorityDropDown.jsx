@@ -4,26 +4,18 @@ import React from "react";
 
 const AddPriorityDropDown = props => {
   const {
+    availablePriorities,
     disabled,
-    max,
     priorityValue,
     updatePriority
   } = props;
-
-  const getOptionsList = max => {
-    const options = [];
-    for (let i = 1; i <= max; i++) {
-      options.push(i);
-    }
-    return options;
-  };
 
   return (
     <CustomSelect
       disabled={disabled}
       label={""}
       labelWidth={0}
-      optionsList={getOptionsList(max)}
+      optionsList={availablePriorities}
       optionsDisplayFunc={option => {
         return {
           display: option,
@@ -38,8 +30,8 @@ const AddPriorityDropDown = props => {
 };
 
 AddPriorityDropDown.propTypes = {
-  disabled: PropTypes.bool,
-  max: PropTypes.number,
+  availablePriorities: PropTypes.array.isRequired,
+  disabled: PropTypes.bool.isRequired,
   priorityValue: PropTypes.string.isRequired,
   updatePriority: PropTypes.func.isRequired
 };
