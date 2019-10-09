@@ -103,6 +103,12 @@ const App = () => {
           type: "loadSkills",
           payload: res.data
         }));
+      })
+      .catch(err => {
+        console.error("An unknown error has occurred.", err);
+        setError({
+          error: err
+        });
       });
   }, []);
 
