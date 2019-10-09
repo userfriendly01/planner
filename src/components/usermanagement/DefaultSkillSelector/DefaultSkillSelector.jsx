@@ -4,8 +4,7 @@ import {
 } from "@material-ui/icons";
 import {
   AddPriorityDropDown,
-  AddSkillDropDown,
-  DefaultPriorityDropDown
+  AddSkillDropDown
 } from "components";
 import { useAdminState } from "context";
 import { theme } from "globals";
@@ -22,10 +21,6 @@ import {
 const AddDefaultSkill = styled.div`
   display: flex;
   align-items: center;
-`;
-
-const EmptyDiv = styled.div`
-  width: 20%
 `;
 
 const ExistingDefaultSkills = styled.div`
@@ -70,7 +65,7 @@ const DefaultSkillSelector = props => {
 
   const {
     skillContext: {
-      skills
+      availableSkills
     }
   } = useAdminState();
 
@@ -89,27 +84,38 @@ const DefaultSkillSelector = props => {
     });
   };
 
+  const {
+    skills,
+    levels
+  } = defaultSkills;
+
+  console.log(defaultSkills);
+
   return (
     <div>
       <Text>Default Profile</Text>
       <AddDefaultSkill>
-        <AddSkillDropDown availableSkills={skills} skillValue={opts.skillValue} updateSkill={skillChanged} />
+        <AddSkillDropDown availableSkills={availableSkills} skillValue={opts.skillValue} updateSkill={skillChanged} />
         <AddPriorityDropDown
-          availablePriorities={getPriorityOptionsList(skills, opts.skillValue)}
-          disabled={opts.skillValue.length === 0 || disablePriorityDropDown(skills, opts.skillValue)}
+          availablePriorities={getPriorityOptionsList(availableSkills, opts.skillValue)}
+          disabled={opts.skillValue.length === 0 || disablePriorityDropDown(availableSkills, opts.skillValue)}
           priorityValue={opts.priorityValue}
           updatePriority={priorityChanged}
         />
         <AddCircleOutlineRounded />
       </AddDefaultSkill>
       <ExistingDefaultSkills>
-        {defaultSkills.skills.map((skill, index) => {
-          const priority = defaultSkills.levels[skill];
+        {skills.map((skill, index) => {
           return (
             <SkillRowContainer key={`default-skill-row-${index}`}>
               <Skill>{skill}</Skill>
               <Priority>
-                {priority ? <DefaultPriorityDropDown defaultPriorityDisplay={priority} max={priority} /> : <EmptyDiv />}
+                <AddPriorityDropDown
+                  availablePriorities={getPriorityOptionsList(skills, opts.skillValue)}
+                  disabled={opts.skillValue.length === 0 || disablePriorityDropDown(skills, opts.skillValue)}
+                  priorityValue={opts.priorityValue}
+                  updatePriority={priorityChanged}
+                />
               </Priority>
               <DeleteRounded />
             </SkillRowContainer>

@@ -65,16 +65,6 @@ const ModalText = styled.div`
   margin: 2% 2% 0% 2%;
 `;
 
-// TODO: Get skills from Twilio
-const defaultSkills = {
-  skills: ["psu-l1", "psu-l2", "466"],
-  levels: {
-    "psu-l1": 3,
-    "psu-l2": 4
-  }
-};
-//
-
 const loadingStates = {
   fail: "fail",
   saving: "saving",
@@ -90,6 +80,15 @@ const EditUserModal = props => {
   const dispatch = useAdminDispatch();
   const state = useAdminState();
   const managers = state.managerContext.managers;
+  // TODO: enforce structure like:
+  // const defaultSkills = {
+  //   skills: ["psu-l1", "psu-l2", "466"],
+  //   levels: {
+  //     "psu-l1": 3,
+  //     "psu-l2": 4
+  //   }
+  // };
+  const defaultSkills = { ...worker.attributes.default_skills };
 
   const [saveUser, setSaveUser] = useState(null);
   // TODO make this logic work in all cases
