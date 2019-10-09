@@ -18,6 +18,7 @@ import React, {
   useState
 } from "react";
 import styled from "styled-components";
+import { sortManagersByName } from "utils";
 
 const ControlsWrapper = styled.div`
   display: flex;
@@ -26,10 +27,10 @@ const ControlsWrapper = styled.div`
 
 const AddUserButton = styled(ButtonBase)`
   && {
-    background-color: #AAEDED;
+    background-color: ${props => props.theme.button.backgroundColor};
     border: none;
     border-radius: 3px;
-    color: theme.textColor;
+    color: ${props => props.theme.textColor};
     cursor: pointer;
     font-size: 1.15em;
     font-weight: 700;
@@ -47,7 +48,7 @@ const AddManagerButton = styled(ButtonBase)`
     background-color: rgba(0, 0, 0, 0.09);
     border: none;
     border-radius: 50%;
-    color: theme.textColor;
+    color: ${props => props.theme.textColor};
     cursor: pointer;
     font-size: 1.15em;
     font-weight: 700;
@@ -59,13 +60,6 @@ const AddManagerButton = styled(ButtonBase)`
   }
 `;
 
-const sortByFirstName = (a, b) => {
-  const [aName, bName] = [a.manager_first_name, b.manager_first_name];
-  if (aName < bName) { return -1; }
-  if (aName > bName) { return 1; }
-  return 0;
-};
-
 const ManagementFilter = props => {
   const {
     filterBy,
@@ -73,7 +67,7 @@ const ManagementFilter = props => {
   } = props;
 
   const managers = useAdminState().managerContext.managers;
-  const sortedManagers = [ ...managers ].sort(sortByFirstName);
+  const sortedManagers = [ ...managers ].sort(sortManagersByName);
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
   const [isAddManagerModalOpen, setIsAddManagerModalOpen] = useState(false);
 

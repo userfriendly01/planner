@@ -1,10 +1,9 @@
-import { theme } from "globals";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
 
 const Highlight = styled.span`
-  color: ${theme.textColor};
+  color: ${props => props.theme.textColor};
 `;
 
 const PageSection = styled.div`
@@ -13,8 +12,8 @@ const PageSection = styled.div`
 `;
 
 const PageButton = styled.button`
-  background-color: ${props => props.value !== props.pageSelected ? "transparent" : theme.textColor};
-  border: ${props => props.value !== props.pageSelected ? "#C0BFC0" : theme.textColor};
+  background-color: ${props => props.value !== props.pageSelected ? "transparent" : props.theme.textColor};
+  border: ${props => props.value !== props.pageSelected ? "#C0BFC0" : props => props.theme.textColor};
   border-radius: 5px;
   border-style: solid;
   border-width: 2px;

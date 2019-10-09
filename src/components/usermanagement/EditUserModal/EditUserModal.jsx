@@ -11,16 +11,14 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import {
-  apiPaths,
-  theme
-} from "globals";
+import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
 import {
   mapWorkerFromTwilioWorker,
-  myAxios
+  myAxios,
+  sortManagersByName
 } from "utils";
 
 const FlexColumn = styled.div`
@@ -58,7 +56,7 @@ const ModalContainer = styled(FlexColumn)`
 
 const ModalText = styled.div`
   align-self: center;
-  color: ${theme.textColor};
+  color: ${props => props.theme.textColor};
   font-family: 'Roboto', sans-serif;
   font-size: 1.3rem;
   font-weight: 400;
@@ -158,7 +156,7 @@ const EditUserModal = props => {
         <CustomSelect
           label={"Manager"}
           labelWidth={65}
-          optionsList={managers}
+          optionsList={managers.sort(sortManagersByName)}
           optionsDisplayFunc={option => {
             return {
               display: `${option.manager_first_name} ${option.manager_last_name}`,
