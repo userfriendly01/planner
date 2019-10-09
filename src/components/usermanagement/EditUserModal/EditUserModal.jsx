@@ -80,6 +80,9 @@ const EditUserModal = props => {
   const dispatch = useAdminDispatch();
   const state = useAdminState();
   const managers = state.managerContext.managers;
+
+  const actualWorkerDefaultSkills = worker.attributes.default_skills;
+
   // TODO: enforce structure like:
   // const defaultSkills = {
   //   skills: ["psu-l1", "psu-l2", "466"],
@@ -88,8 +91,7 @@ const EditUserModal = props => {
   //     "psu-l2": 4
   //   }
   // };
-  const defaultSkills = { ...worker.attributes.default_skills };
-
+  const [defaultSkills, setDefaultSkills] = useState({ ...actualWorkerDefaultSkills });
   const [saveUser, setSaveUser] = useState(null);
   // TODO make this logic work in all cases
   // const [defaultSkills, setDefaultSkill] = useState(worker.attributes.default_skills || {
@@ -170,7 +172,7 @@ const EditUserModal = props => {
           })}
           value={form.manager}
         />
-        <DefaultSkillSelector defaultSkills={defaultSkills}/>
+        <DefaultSkillSelector defaultSkills={defaultSkills} setDefaultSkills={setDefaultSkills}/>
         <ButtonWrapper>
           <StyledButton disabled={!formReady} onClick={saveUserClicked}>Update</StyledButton>
         </ButtonWrapper>

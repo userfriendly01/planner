@@ -1,14 +1,20 @@
-export const disablePriorityDropDown = (skillsArray, skillSelected) => {
-  return !getCurrentSkill(skillsArray, skillSelected).multivalue;
+export const disablePriorityDropDown = (taskRouterSkills, skill) => {
+  const skillObj = findSkillInTaskrouterSkills(taskRouterSkills, skill);
+  return skillObj ? !skillObj.multivalue : false;
 };
 
-const getCurrentSkill = (skillsArray, skillSelected) => skillsArray.find(skillObj => skillObj.name === skillSelected);
+const findSkillInTaskrouterSkills = (taskRouterSkills, skill) => taskRouterSkills.find(skillObj => skillObj.name === skill);
 
-export const getPriorityOptionsList = (skillsArray, skillSelected) => {
+export const getDefaultPriorityValueForSkill = (taskRouterSkills, skill) => {
+  const priorityOptions = getPriorityOptionsList(taskRouterSkills, skill);
+  priorityOptions.length === 0 ? null : priorityOptions[0];
+};
+
+export const getPriorityOptionsList = (taskRouterSkills, skill) => {
   const options = [];
-  if (skillSelected) {
-    const currentSkill = getCurrentSkill(skillsArray, skillSelected);
-    for (let i = currentSkill.minimum; i <= currentSkill.maximum; i++) {
+  const skillObj = findSkillInTaskrouterSkills(taskRouterSkills, skill);
+  if (skillObj && skillObj.multivalue) {
+    for (let i = skillObj.minimum; i <= skillObj.maximum; i++) {
       options.push(i);
     }
   }

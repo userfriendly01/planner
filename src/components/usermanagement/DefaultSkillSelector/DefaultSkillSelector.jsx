@@ -15,6 +15,7 @@ import React, {
 import styled from "styled-components";
 import {
   disablePriorityDropDown,
+  getDefaultPriorityValueForSkill,
   getPriorityOptionsList
 } from "utils";
 
@@ -54,70 +55,98 @@ const Text = styled.div`
 
 const DefaultSkillSelector = props => {
   const {
-    defaultSkills
-    // setDefaultSkills
+    defaultSkills,
+    setDefaultSkills
   } = props;
-
-  const [opts, setOpts] = useState({
-    skillValue: "",
-    priorityValue: ""
-  });
 
   const {
     skillContext: {
-      availableSkills
+      taskrouterSkills
     }
   } = useAdminState();
 
-  const skillChanged = skill => {
-    setOpts({
-      ...opts,
-      skillValue: skill,
-      priorityValue: ""
+  const taskrouterSkillsNotInDefaultSkills = taskrouterSkills.filter(skillObj => !defaultSkills.skills.includes(skillObj.name));
+
+  // TODO I think this may need to be tweaked? not sure...
+  const getDefaultNewSkillValues = () => ({
+    skill: taskrouterSkillsNotInDefaultSkills[0].name,
+    level: getDefaultPriorityValueForSkill(taskrouterSkills, taskrouterSkillsNotInDefaultSkills[0].name)
+  });
+
+  const [newSkill, setNewSkill] = useState(getDefaultNewSkillValues());
+
+  const newSkillChanged = skill => setNewSkill({
+    ...newSkill,
+    skill,
+    level: getDefaultPriorityValueForSkill(taskrouterSkills, skill)
+  });
+
+  const newSkillLevelChanged = level => {
+    setNewSkill({
+      ...newSkill,
+      level
     });
   };
 
-  const priorityChanged = priority => {
-    setOpts({
-      ...opts,
-      priorityValue: priority
-    });
+  const existingSkillLevelChanged = skill => level => {
+    const updatedDefaultSkills = { ...defaultSkills };
+    updatedDefaultSkills.levels[skill] = level;
+    setDefaultSkills(updatedDefaultSkills);
   };
 
-  const {
-    skills,
-    levels
-  } = defaultSkills;
+  const addSkillClicked = () => {
+    const {
+      level,
+      skill
+    } = newSkill;
+    const updatedDefaultSkills = { ...defaultSkills };
+    updatedDefaultSkills.skills.push(skill);
+    if (newSkill.level) {
+      updatedDefaultSkills.levels[skill] = level;
+    }
+    setDefaultSkills(updatedDefaultSkills);
+    setNewSkill(getDefaultNewSkillValues());
+  };
 
+  const removeSkillClicked = skill => () => {
+    const updatedDefaultSkills = { ...defaultSkills };
+    updatedDefaultSkills.skills = updatedDefaultSkills.skills.filter(existingSkill => existingSkill !== skill);
+    delete updatedDefaultSkills.levels[skill];
+    setDefaultSkills(updatedDefaultSkills);
+  };
+
+  // TODO remove logs before commit
   console.log(defaultSkills);
+  console.log(taskrouterSkills);
 
   return (
     <div>
       <Text>Default Profile</Text>
       <AddDefaultSkill>
-        <AddSkillDropDown availableSkills={availableSkills} skillValue={opts.skillValue} updateSkill={skillChanged} />
+        <AddSkillDropDown taskrouterSkills={taskrouterSkillsNotInDefaultSkills} skillValue={newSkill.skill} updateSkill={newSkillChanged} />
         <AddPriorityDropDown
-          availablePriorities={getPriorityOptionsList(availableSkills, opts.skillValue)}
-          disabled={opts.skillValue.length === 0 || disablePriorityDropDown(availableSkills, opts.skillValue)}
-          priorityValue={opts.priorityValue}
-          updatePriority={priorityChanged}
+          availablePriorities={getPriorityOptionsList(taskrouterSkills, newSkill.skill)}
+          disabled={disablePriorityDropDown(taskrouterSkills, newSkill.skill)}
+          priorityValue={newSkill.level}
+          updatePriority={newSkillLevelChanged}
         />
-        <AddCircleOutlineRounded />
+        {/*TODO make sure add skill button is disabled if no priority is selected when we need one!!!*/}
+        <AddCircleOutlineRounded onClick={addSkillClicked} />
       </AddDefaultSkill>
       <ExistingDefaultSkills>
-        {skills.map((skill, index) => {
+        {defaultSkills.skills.map((skill, index) => {
           return (
             <SkillRowContainer key={`default-skill-row-${index}`}>
               <Skill>{skill}</Skill>
               <Priority>
                 <AddPriorityDropDown
-                  availablePriorities={getPriorityOptionsList(skills, opts.skillValue)}
-                  disabled={opts.skillValue.length === 0 || disablePriorityDropDown(skills, opts.skillValue)}
-                  priorityValue={opts.priorityValue}
-                  updatePriority={priorityChanged}
+                  availablePriorities={getPriorityOptionsList(taskrouterSkills, skill)}
+                  disabled={disablePriorityDropDown(taskrouterSkills, skill)}
+                  priorityValue={defaultSkills.levels[skill] || "-"}
+                  updatePriority={existingSkillLevelChanged(skill)}
                 />
               </Priority>
-              <DeleteRounded />
+              <DeleteRounded onClick={removeSkillClicked(skill)}/>
             </SkillRowContainer>
           );
         })}
@@ -130,8 +159,8 @@ DefaultSkillSelector.propTypes = {
   defaultSkills: PropTypes.shape({
     levels: PropTypes.object.isRequired,
     skills: PropTypes.array.isRequired
-  })
-  // setDefaultSkills: PropTypes.func.isRequired
+  }),
+  setDefaultSkills: PropTypes.func.isRequired
 };
 
 export default DefaultSkillSelector;

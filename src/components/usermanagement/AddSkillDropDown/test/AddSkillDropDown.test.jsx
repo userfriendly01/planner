@@ -22,7 +22,7 @@ describe("<AddSkillDropDown />", () => {
     { name: "skill4" }
   ];
   const mockUpdateSkill = jest.fn();
-  const renderComponent = () => render(<AddSkillDropDown availableSkills={skills} skillValue={"skill3"} updateSkill={mockUpdateSkill} />);
+  const renderComponent = () => render(<AddSkillDropDown taskrouterSkills={skills} skillValue={"skill3"} updateSkill={mockUpdateSkill} />);
   beforeEach(() => {
     setupMockedComponents({ CustomSelect });
     mockUpdateSkill.mockClear();

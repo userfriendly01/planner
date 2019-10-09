@@ -13,7 +13,7 @@ export const initialState = {
     selectedWorkers: []
   },
   skillContext: {
-    availableSkills: []
+    taskrouterSkills: []
   }
 };
 
@@ -56,7 +56,7 @@ export const reducer = (state, action) => {
         ...state,
         skillContext: {
           ...state.skillsContext,
-          availableSkills: action.payload
+          taskrouterSkills: action.payload
         }
       };
     case "loadWorkers":
