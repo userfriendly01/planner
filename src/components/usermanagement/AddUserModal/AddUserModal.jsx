@@ -1,12 +1,12 @@
 import {
-  CustomButton,
   CustomSelect,
   ModalHeader,
   ModalHelperText,
   ModalNNumber,
   ModalOverlay,
   ModalPhoneNumber,
-  PaperContainer
+  PaperContainer,
+  StyledButton
 } from "components";
 import {
   useAdminDispatch,
@@ -271,8 +271,8 @@ const AddUserModal = props => {
           }
         </FlexColumn>
         <ButtonWrapper>
-          <CustomButton disabled={!formReady} onClick={saveUser}>Add User</CustomButton>
-          <CustomButton onClick={handleClose}>Close</CustomButton>
+          <StyledButton disabled={!formReady} onClick={saveUser}>Add User</StyledButton>
+          <StyledButton onClick={handleClose}>Close</StyledButton>
         </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>

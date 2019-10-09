@@ -1,14 +1,14 @@
 import AddUserModal from "../AddUserModal";
 import MockAdapter from "axios-mock-adapter";
 import {
-  CustomButton,
   CustomSelect,
   ModalHeader,
   ModalHelperText,
   ModalNNumber,
   ModalOverlay,
   ModalPhoneNumber,
-  PaperContainer
+  PaperContainer,
+  StyledButton
 } from "components";
 import { initialState } from "context";
 import { apiPaths } from "globals";
@@ -33,7 +33,7 @@ jest.useFakeTimers();
 
 jest.mock("components", () => ({
   __esModule: true,
-  CustomButton: jest.fn(),
+  StyledButton: jest.fn(),
   CustomSelect: jest.fn(),
   ModalHeader: jest.fn(),
   ModalHelperText: jest.fn(),
@@ -103,7 +103,7 @@ describe("<AddUserModal />", () => {
 
   beforeEach(() => {
     setupMockedComponents({
-      CustomButton,
+      StyledButton,
       CustomSelect,
       ModalHeader,
       ModalHelperText,
@@ -126,12 +126,12 @@ describe("<AddUserModal />", () => {
       expectMockedComponent(rendered, { ModalOverlay }, 0);
       expectMockedComponent(rendered, { ModalHelperText }, 0);
       expect(getMockedComponentProps(ModalHeader, getLastInstanceCalled(ModalHeader)).children).toBe("Add a User");
-      expectMockedComponent(rendered, { CustomButton }, 2);
-      expectOnlyPassedProps(CustomButton, {
+      expectMockedComponent(rendered, { StyledButton }, 2);
+      expectOnlyPassedProps(StyledButton, {
         children: "Add User",
         disabled: true
       }, 0);
-      expectOnlyPassedProps(CustomButton, {
+      expectOnlyPassedProps(StyledButton, {
         children: "Close"
       }, 1);
     });
@@ -328,20 +328,20 @@ describe("<AddUserModal />", () => {
 
     test("the initial state add should be disabled, and close should be enabled", () => {
       const rendered = renderComponent();
-      expectMockedComponent(rendered, { CustomButton }, 2);
-      expectOnlyPassedProps(CustomButton, {
+      expectMockedComponent(rendered, { StyledButton }, 2);
+      expectOnlyPassedProps(StyledButton, {
         children: "Add User",
         disabled: true
       }, 0);
-      expectOnlyPassedProps(CustomButton, {
+      expectOnlyPassedProps(StyledButton, {
         children: "Close"
       }, 1);
     });
 
     test("if we click the close button, it should fire props.handleClose", () => {
       const rendered = renderComponent();
-      expectMockedComponent(rendered, { CustomButton }, 2);
-      const closeFn = getMockedComponentProps(CustomButton, 1).onClick;
+      expectMockedComponent(rendered, { StyledButton }, 2);
+      const closeFn = getMockedComponentProps(StyledButton, 1).onClick;
       closeFn();
       expect(mockHandleClose).toHaveBeenCalledTimes(1);
     });
@@ -385,17 +385,17 @@ describe("<AddUserModal />", () => {
             updateNNum("n1234567");
             return Promise.resolve();
           }).then(() => {
-            const addUserButtonProps = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1);
+            const addUserButtonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
             expect(addUserButtonProps.disabled).toBe(false);
             act(() => {
-              const addUserButtonOnClick = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1).onClick;
+              const addUserButtonOnClick = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1).onClick;
               addUserButtonOnClick();
               return Promise.resolve();
             }).then(() => {
               expectMockedComponent(rendered, { ModalOverlay });
               const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
               const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
-              const addUserButtonProps2 = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1);
+              const addUserButtonProps2 = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
               expect(addUserButtonProps2.disabled).toBe(true);
               expect(saveStatus).toBe("success");
               expect(nNumber).toBe("n");
@@ -435,16 +435,16 @@ describe("<AddUserModal />", () => {
             updateNNum("n1234567");
             return Promise.resolve();
           }).then(() => {
-            const addUserButtonProps = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1);
+            const addUserButtonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
             expect(addUserButtonProps.disabled).toBe(false);
             act(() => {
-              const addUserButtonOnClick = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1).onClick;
+              const addUserButtonOnClick = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1).onClick;
               addUserButtonOnClick();
               return Promise.resolve();
             }).then(() => {
               const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
               const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
-              const addUserButtonProps2 = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1);
+              const addUserButtonProps2 = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
               expect(addUserButtonProps2.disabled).toBe(false);
               expect(saveStatus).toBe("fail");
               expect(nNumber).toBe("n1234567");

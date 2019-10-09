@@ -2,11 +2,11 @@ import EditUserModal from "../EditUserModal";
 import { CloseRounded } from "@material-ui/icons";
 import MockAdapter from "axios-mock-adapter";
 import {
-  CustomButton,
   CustomSelect,
   ModalHeader,
   ModalOverlay,
-  PaperContainer
+  PaperContainer,
+  StyledButton
 } from "components";
 import { initialState } from "context";
 import { apiPaths } from "globals";
@@ -37,7 +37,7 @@ jest.mock("@material-ui/icons", () => ({
 
 jest.mock("components", () => ({
   __esModule: true,
-  CustomButton: jest.fn(),
+  StyledButton: jest.fn(),
   CustomSelect: jest.fn(),
   ModalHeader: jest.fn(),
   ModalOverlay: jest.fn(),
@@ -89,7 +89,7 @@ describe("<EditUserModal />", () => {
   beforeEach(() => {
     setupMockedComponents({
       CloseRounded,
-      CustomButton,
+      StyledButton,
       CustomSelect,
       ModalHeader,
       ModalOverlay
@@ -105,9 +105,9 @@ describe("<EditUserModal />", () => {
       expectMockedComponent(rendered, { ModalHeader }, 1);
       expectMockedComponent(rendered, { CloseRounded }, 1);
       expectMockedComponent(rendered, { CustomSelect }, 1);
-      expectMockedComponent(rendered, { CustomButton }, 1);
+      expectMockedComponent(rendered, { StyledButton }, 1);
       expectMockedComponent(rendered, { ModalOverlay }, 0);
-      expectOnlyPassedProps(CustomButton, {
+      expectOnlyPassedProps(StyledButton, {
         children: "Update",
         disabled: true
       }, 0);
@@ -136,8 +136,8 @@ describe("<EditUserModal />", () => {
   describe("update Button", () => {
     test("initial state should be disabled", () => {
       const rendered = renderComponent();
-      expectMockedComponent(rendered, { CustomButton }, 1);
-      expectOnlyPassedProps(CustomButton, {
+      expectMockedComponent(rendered, { StyledButton }, 1);
+      expectOnlyPassedProps(StyledButton, {
         children: "Update",
         disabled: true
       }, 0);
@@ -178,8 +178,8 @@ describe("<EditUserModal />", () => {
         updateValue(JSON.stringify(mockManagers[0]));
         return Promise.resolve();
       }).then(() => {
-        expect(CustomButton.mock.calls.length).toBe(2);
-        expectOnlyPassedProps(CustomButton, {
+        expect(StyledButton.mock.calls.length).toBe(2);
+        expectOnlyPassedProps(StyledButton, {
           children: "Update",
           disabled: false
         }, 1);
@@ -198,11 +198,11 @@ describe("<EditUserModal />", () => {
           updateValue(JSON.stringify(mockManagers[0]));
           return Promise.resolve();
         }).then(() => {
-          expectOnlyPassedProps(CustomButton, {
+          expectOnlyPassedProps(StyledButton, {
             children: "Update",
             disabled: false
           }, 1);
-          const { onClick } = CustomButton.mock.calls[1][0];
+          const { onClick } = StyledButton.mock.calls[1][0];
           act(() => {
             onClick();
             return Promise.resolve();
@@ -234,11 +234,11 @@ describe("<EditUserModal />", () => {
           updateValue(JSON.stringify(mockManagers[0]));
           return Promise.resolve();
         }).then(() => {
-          expectOnlyPassedProps(CustomButton, {
+          expectOnlyPassedProps(StyledButton, {
             children: "Update",
             disabled: false
           }, 1);
-          const { onClick } = CustomButton.mock.calls[1][0];
+          const { onClick } = StyledButton.mock.calls[1][0];
           act(() => {
             onClick();
             return Promise.resolve();
