@@ -1,4 +1,7 @@
-import { sortManagersByName } from "../sortManagersByName";
+import {
+  sortManagersByName,
+  sortSkillsByName
+} from "../sortUtils";
 
 describe("sortManagersByName", () => {
   const managerList = [
@@ -76,6 +79,27 @@ describe("sortManagersByName", () => {
         manager_first_name: "Muhammad",
         manager_last_name: "Smith"
       }
+    ]);
+  });
+});
+
+describe("sortSkillsByName", () => {
+  const arr = [
+    { name: "bee" },
+    { name: "dee" },
+    { name: "cee" },
+    { name: "ay" },
+    { name: 42 },
+    { name: "ay" }
+  ];
+  test("should return array in alphabetical order", () => {
+    expect(arr.sort(sortSkillsByName)).toEqual([
+      { name: 42 },
+      { name: "ay" },
+      { name: "ay" },
+      { name: "bee" },
+      { name: "cee" },
+      { name: "dee" }
     ]);
   });
 });

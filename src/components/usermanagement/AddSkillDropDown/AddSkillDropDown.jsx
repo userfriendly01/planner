@@ -1,6 +1,7 @@
 import { CustomSelect } from "components";
 import PropTypes from "prop-types";
 import React from "react";
+import { sortSkillsByName } from "utils";
 
 const AddSkillDropDown = props => {
   const {
@@ -13,7 +14,7 @@ const AddSkillDropDown = props => {
     <CustomSelect
       label={"Add Default Skill"}
       labelWidth={120}
-      optionsList={availableSkills}
+      optionsList={availableSkills.sort(sortSkillsByName)}
       optionsDisplayFunc={option => {
         return {
           display: option.name,
