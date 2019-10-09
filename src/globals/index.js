@@ -14,4 +14,6 @@ export const apiPaths = {
 
 export const nNumMatcher = /[n,N]\d{7}/g;
 
+export const workersPerPage = 15;
+
 export * from "./theme";

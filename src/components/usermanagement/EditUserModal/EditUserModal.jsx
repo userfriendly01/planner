@@ -1,11 +1,11 @@
 import { CloseRounded } from "@material-ui/icons";
 import {
-  CustomButton,
   CustomSelect,
   DefaultSkillSelector,
   ModalHeader,
   ModalOverlay,
-  PaperContainer
+  PaperContainer,
+  StyledButton
 } from "components";
 import {
   useAdminDispatch,
@@ -172,7 +172,7 @@ const EditUserModal = props => {
         />
         <DefaultSkillSelector defaultSkills={defaultSkills}/>
         <ButtonWrapper>
-          <CustomButton disabled={!formReady} onClick={saveUserClicked}>Update</CustomButton>
+          <StyledButton disabled={!formReady} onClick={saveUserClicked}>Update</StyledButton>
         </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>

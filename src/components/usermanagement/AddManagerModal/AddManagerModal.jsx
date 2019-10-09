@@ -1,11 +1,11 @@
 import { CloseRounded } from "@material-ui/icons";
 import {
-  CustomButton,
   ModalHeader,
   ModalHelperText,
   ModalNNumber,
   ModalOverlay,
-  PaperContainer
+  PaperContainer,
+  StyledButton
 } from "components";
 import {
   useAdminDispatch,
@@ -152,9 +152,9 @@ const AddManagerModal = props => {
           }
         </FlexColumn>
         <ButtonWrapper>
-          <CustomButton disabled={!isManagerValid} onClick={addManagerClicked}>
+          <StyledButton disabled={!isManagerValid} onClick={addManagerClicked} data-testid={"add-manager-button"}>
             Add Manager
-          </CustomButton>
+          </StyledButton>
         </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>

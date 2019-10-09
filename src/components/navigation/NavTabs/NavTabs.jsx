@@ -21,7 +21,7 @@ const StyledTabs = styled(Tabs)`
 
 const StyledTab = styled(Tab)`
   && {
-    font-size: 1.3em;
+    font-size: 1.1em;
   }
 `;
 

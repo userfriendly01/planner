@@ -1,4 +1,5 @@
 import ManagementPagination from "../ManagementPagination";
+import { workersPerPage } from "globals";
 import React from "react";
 import {
   fireEvent,
@@ -31,14 +32,14 @@ describe("<ManagementPagination />", () => {
     expect(rendered.getByText(/workers/)).toBeInTheDocument();
     expect(setPageFunc.mock.calls.length).toBe(0);
   });
-  test("with a length of 15 we should show two buttons with the correct page numbers", () => {
-    const rendered = renderWithProps(10, 15, 1, setPageFunc, 1);
+  test("with a length of one greater than workersPerPage we should show two buttons with the correct page numbers", () => {
+    const rendered = renderWithProps(10, workersPerPage + 1, 1, setPageFunc, 1);
     expect(rendered.getByText("1", { selector: "button" })).toBeInTheDocument();
     expect(rendered.getByText("2", { selector: "button" })).toBeInTheDocument();
     expect(setPageFunc.mock.calls.length).toBe(0);
   });
   test("when we click a page button, we should fire the function sent in, sent with the correct page number", () => {
-    const rendered = renderWithProps(10, 15, 1, setPageFunc, 1);
+    const rendered = renderWithProps(10, workersPerPage + 1, 1, setPageFunc, 1);
     fireEvent.click(rendered.getByText("2", { selector: "button" }));
     expect(setPageFunc.mock.calls.length).toBe(1);
     expect(setPageFunc.mock.calls[0][0]).toBe(2);
