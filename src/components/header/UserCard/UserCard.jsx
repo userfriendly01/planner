@@ -9,7 +9,7 @@ const Card = styled.div`
   display: flex;
   flex: 1 1;
   font-family: 'Roboto', sans-serif;
-  font-size: 1.35em;
+  font-size: 1.2em;
   font-weight: 400;
   letter-spacing: 0.5px;
   line-height: 1.5rem;

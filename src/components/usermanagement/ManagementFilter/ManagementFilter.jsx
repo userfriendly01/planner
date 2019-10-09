@@ -1,5 +1,5 @@
 import {
-  ButtonBase,
+  Fab,
   FilledInput,
   FormControl,
   InputLabel,
@@ -10,7 +10,8 @@ import {
 import AddIcon from "@material-ui/icons/Add";
 import {
   AddUserModal,
-  AddManagerModal
+  AddManagerModal,
+  StyledButton
 } from "components";
 import { useAdminState } from "context";
 import PropTypes from "prop-types";
@@ -25,39 +26,17 @@ const ControlsWrapper = styled.div`
   padding 1%;
 `;
 
-const AddUserButton = styled(ButtonBase)`
-  && {
-    background-color: ${props => props.theme.button.backgroundColor};
-    border: none;
-    border-radius: 3px;
-    color: ${props => props.theme.textColor};
-    cursor: pointer;
-    font-size: 1.15em;
-    font-weight: 700;
-    justify-self: flex-end;
-    margin-left: auto;
-    margin-right: 1em;
-    outline: none;
-    padding: 5 10 5 10;
-  }
+const AddUserButtonWrapper = styled.div`
+  align-items: center;
+  display: flex;
+  justify-self: flex-end;
+  margin-left: auto;
 `;
 
-const AddManagerButton = styled(ButtonBase)`
-  && {
-    align-self: center;
-    background-color: rgba(0, 0, 0, 0.09);
-    border: none;
-    border-radius: 50%;
-    color: ${props => props.theme.textColor};
-    cursor: pointer;
-    font-size: 1.15em;
-    font-weight: 700;
-    height: 2em;
-    margin-left: .5em;
-    outline: none;
-    padding: 5 10 5 10;
-    width: 2em;
-  }
+const AddManagerButtonWrapper = styled.div`
+  align-items: center;
+  display: flex;
+  margin-left: 8px;
 `;
 
 const ManagementFilter = props => {
@@ -116,11 +95,17 @@ const ManagementFilter = props => {
         </Select>
       </FormControl>
       <Tooltip title="Add a manager" placement="right">
-        <AddManagerButton data-testid="add-manager-button" onClick={handleOpenAddManager}>
-          <AddIcon/>
-        </AddManagerButton>
+        <AddManagerButtonWrapper>
+          <Fab onClick={handleOpenAddManager} size={"small"} data-testid={"add-manager-button"}>
+            <AddIcon/>
+          </Fab>
+        </AddManagerButtonWrapper>
       </Tooltip>
-      <AddUserButton onClick={handleOpenAddUser}>Add User</AddUserButton>
+      <AddUserButtonWrapper>
+        <StyledButton onClick={handleOpenAddUser} data-testid={"add-user-button"}>
+          Add User
+        </StyledButton>
+      </AddUserButtonWrapper>
       <Modal disableBackdropClick={true} open={isAddUserModalOpen}>
         <AddUserModal handleClose={handleCloseAddUser} />
       </Modal>

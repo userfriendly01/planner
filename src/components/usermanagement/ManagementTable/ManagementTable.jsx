@@ -9,32 +9,49 @@ import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
 
+const iconFieldWidth = "30px";
+
 const CustomTable = styled.table`
-  border-spacing: 0px;
+  border-spacing: 0;
+  font-size: 14px;
+  table-layout: fixed;
+  width: 100%;
 `;
 
 const CustomTableData = styled.td`
   color: ${props => props.theme.textColor};
-  padding: 1%;
+  padding: 4px
 `;
 
 const CustomTableHeader = styled.th`
   color: ${props => props.theme.textColor};
-  border-bottom: 2px solid #F5F5F5;
-  padding: 1%;
+  border-bottom: 2px solid ${props => props.theme.tableRow.borderColor};
   text-align: left;
+  width: ${props => props.width};
 `;
 
 const CustomTableRow = styled.tr`
-  background-color: ${props => props.selected ? props.theme.button.backgroundColor : "inherit"};
+  background-color: ${props => props.selected ? props.theme.tableRow.selectedColor : "inherit"};
   &:hover {
     background-color: ${props => props.selected ? props.theme.tableRow.hoverSelectedColor : props.theme.tableRow.hoverColor};
     cursor: pointer;
   }
 `;
 
-const EditIconWrapper = styled.div`
+const IconWrapper = styled.div`
+  align-items: center;
+  border-radius: ${props => props.theme.tableRow.icon.hoverDiameter / 2}px;
   cursor: pointer;
+  display: flex;
+  font-size: ${props => props.theme.tableRow.icon.size}px;
+  height: ${props => props.theme.tableRow.icon.hoverDiameter}px;
+  justify-content: center;
+  margin: auto;
+  width: ${props => props.theme.tableRow.icon.hoverDiameter}px;
+  &:hover {
+    background-color: ${props => props.theme.tableRow.selectedColor};
+    cursor: pointer;
+  }
 `;
 
 const TableContainer = styled.div`
@@ -62,10 +79,10 @@ const ManagementTable = props => {
       <CustomTable>
         <thead>
           <tr>
-            <CustomTableHeader>NAME</CustomTableHeader>
-            <CustomTableHeader>N NUMBER</CustomTableHeader>
-            <CustomTableHeader>OFFICE</CustomTableHeader>
-            <CustomTableHeader/>
+            <CustomTableHeader width={"25%"}>NAME</CustomTableHeader>
+            <CustomTableHeader width={"25%"}>N NUMBER</CustomTableHeader>
+            <CustomTableHeader width={"50%"}>OFFICE</CustomTableHeader>
+            <CustomTableHeader width={iconFieldWidth}/>
           </tr>
         </thead>
         <tbody>
@@ -75,19 +92,22 @@ const ManagementTable = props => {
               type: "toggleWorkerSelected",
               payload: worker.sid
             });
-            const editButtonOnClick = () => setEditUserModalOpts({
-              open: true,
-              worker
-            });
+            const editButtonOnClick = event => {
+              event.stopPropagation();
+              setEditUserModalOpts({
+                open: true,
+                worker
+              });
+            };
             return (
               <CustomTableRow key={index} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">
                 <CustomTableData>{worker.attributes.full_name}</CustomTableData>
                 <CustomTableData>{worker.id}</CustomTableData>
                 <CustomTableData>{worker.attributes.office_location_name}</CustomTableData>
                 <CustomTableData>
-                  <EditIconWrapper onClick={editButtonOnClick} data-testid="edit-button">
-                    <Edit/>
-                  </EditIconWrapper>
+                  <IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
+                    <Edit fontSize={"inherit"}/>
+                  </IconWrapper>
                 </CustomTableData>
               </CustomTableRow>
             );

@@ -13,7 +13,7 @@ import {
   setupMockedComponents
 } from "testUtils";
 
-jest.mock("components", () => ({
+jest.mock("components/usermanagement", () => ({
   __esModule: true,
   AddUserModal: jest.fn(),
   AddManagerModal: jest.fn()
@@ -103,7 +103,7 @@ describe("<ManagementFilter />", () => {
   });
   test("when you click on the add user button, the user modal is rendered. When you call handleClose, the modal is no longer rendered", () => {
     const rendered = renderComponent();
-    const button = rendered.getByText("Add User", { selector: "button" });
+    const button = rendered.getByTestId("add-user-button");
     expectMockedComponent(rendered, { AddUserModal }, 0);
     act(() => {
       fireEvent.click(button);
