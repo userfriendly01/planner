@@ -52,6 +52,7 @@ export const reducer = (state, action) => {
       return {
         ...state,
         skillContext: {
+          ...state.skillsContext,
           skills: action.payload
         }
       };
