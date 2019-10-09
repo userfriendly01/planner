@@ -4,6 +4,7 @@ import MockAdapter from "axios-mock-adapter";
 import {
   CustomButton,
   CustomSelect,
+  DefaultSkillSelector,
   ModalHeader,
   ModalOverlay,
   PaperContainer
@@ -39,6 +40,7 @@ jest.mock("components", () => ({
   __esModule: true,
   CustomButton: jest.fn(),
   CustomSelect: jest.fn(),
+  DefaultSkillSelector: jest.fn(),
   ModalHeader: jest.fn(),
   ModalOverlay: jest.fn(),
   PaperContainer: jest.fn()
@@ -91,6 +93,7 @@ describe("<EditUserModal />", () => {
       CloseRounded,
       CustomButton,
       CustomSelect,
+      DefaultSkillSelector,
       ModalHeader,
       ModalOverlay
     });
@@ -106,11 +109,22 @@ describe("<EditUserModal />", () => {
       expectMockedComponent(rendered, { CloseRounded }, 1);
       expectMockedComponent(rendered, { CustomSelect }, 1);
       expectMockedComponent(rendered, { CustomButton }, 1);
+      expectMockedComponent(rendered, { DefaultSkillSelector }, 1);
       expectMockedComponent(rendered, { ModalOverlay }, 0);
       expectOnlyPassedProps(CustomButton, {
         children: "Update",
         disabled: true
       }, 0);
+      expectOnlyPassedProps(DefaultSkillSelector, {
+        // TODO: Get skills from Twilio
+        defaultSkills: {
+          skills: ["psu-l1", "psu-l2", "466"],
+          levels: {
+            "psu-l1": 3,
+            "psu-l2": 4
+          }
+        }
+      });
       expect(getMockedComponentProps(ModalHeader, getLastInstanceCalled(ModalHeader)).children).toBe("Update User");
     });
   });

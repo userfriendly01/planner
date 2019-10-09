@@ -65,7 +65,7 @@ const ModalText = styled.div`
   margin: 2% 2% 0% 2%;
 `;
 
-// TODO: get this from somewhere else
+// TODO: Get skills from Twilio
 const defaultSkills = {
   skills: ["psu-l1", "psu-l2", "466"],
   levels: {
