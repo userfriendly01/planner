@@ -14,9 +14,7 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import {
-  disablePriorityDropDown,
-  getDefaultPriorityValueForSkill,
-  getPriorityOptionsList
+  findTaskRouterSkill
 } from "utils";
 
 const AddDefaultSkill = styled.div`
@@ -65,47 +63,48 @@ const DefaultSkillSelector = props => {
     }
   } = useAdminState();
 
-  const taskrouterSkillsNotInDefaultSkills = taskrouterSkills.filter(skillObj => !defaultSkills.skills.includes(skillObj.name));
+  const taskrouterSkillsForDropDown = taskrouterSkills.filter(skillObj => !defaultSkills.skills.includes(skillObj.skill));
 
-  // TODO I think this may need to be tweaked? not sure...
-  const getDefaultNewSkillValues = () => ({
-    skill: taskrouterSkillsNotInDefaultSkills[0].name,
-    level: getDefaultPriorityValueForSkill(taskrouterSkills, taskrouterSkillsNotInDefaultSkills[0].name)
-  });
+  const defaultNewSkill = {
+    levels: [],
+    levelSelected: null,
+    skill: null
+  };
 
-  const [newSkill, setNewSkill] = useState(getDefaultNewSkillValues());
+  const [newSkill, setNewSkill] = useState(defaultNewSkill);
 
-  const newSkillChanged = skill => setNewSkill({
-    ...newSkill,
-    skill,
-    level: getDefaultPriorityValueForSkill(taskrouterSkills, skill)
-  });
-
-  const newSkillLevelChanged = level => {
+  const newSkillChanged = skill => {
+    const skillObj = findTaskRouterSkill(skill, taskrouterSkills);
     setNewSkill({
-      ...newSkill,
-      level
+      levels: skillObj.levels,
+      levelSelected: skillObj.levels.length > 0 ? skillObj.levels[0] : null,
+      skill: skillObj.skill
     });
   };
 
+  const newSkillLevelChanged = level => setNewSkill({
+    ...newSkill,
+    levelSelected: parseInt(level)
+  });
+
   const existingSkillLevelChanged = skill => level => {
     const updatedDefaultSkills = { ...defaultSkills };
-    updatedDefaultSkills.levels[skill] = level;
+    updatedDefaultSkills.levels[skill] = parseInt(level);
     setDefaultSkills(updatedDefaultSkills);
   };
 
   const addSkillClicked = () => {
     const {
-      level,
+      levelSelected,
       skill
     } = newSkill;
     const updatedDefaultSkills = { ...defaultSkills };
     updatedDefaultSkills.skills.push(skill);
-    if (newSkill.level) {
-      updatedDefaultSkills.levels[skill] = level;
+    if (newSkill.levelSelected) {
+      updatedDefaultSkills.levels[skill] = parseInt(levelSelected);
     }
     setDefaultSkills(updatedDefaultSkills);
-    setNewSkill(getDefaultNewSkillValues());
+    setNewSkill(defaultNewSkill);
   };
 
   const removeSkillClicked = skill => () => {
@@ -116,18 +115,19 @@ const DefaultSkillSelector = props => {
   };
 
   // TODO remove logs before commit
-  console.log(defaultSkills);
-  console.log(taskrouterSkills);
+  console.log("newSkill", newSkill);
+  console.log("defaultSkills", defaultSkills);
+  console.log("taskrouterSkills", taskrouterSkills);
 
   return (
     <div>
       <Text>Default Profile</Text>
       <AddDefaultSkill>
-        <AddSkillDropDown taskrouterSkills={taskrouterSkillsNotInDefaultSkills} skillValue={newSkill.skill} updateSkill={newSkillChanged} />
+        <AddSkillDropDown taskrouterSkills={taskrouterSkillsForDropDown} skillValue={newSkill.skill} updateSkill={newSkillChanged} />
         <AddPriorityDropDown
-          availablePriorities={getPriorityOptionsList(taskrouterSkills, newSkill.skill)}
-          disabled={disablePriorityDropDown(taskrouterSkills, newSkill.skill)}
-          priorityValue={newSkill.level}
+          availablePriorities={newSkill.levels}
+          disabled={newSkill.levels.length === 0}
+          priorityValue={newSkill.levelSelected}
           updatePriority={newSkillLevelChanged}
         />
         {/*TODO make sure add skill button is disabled if no priority is selected when we need one!!!*/}
@@ -135,14 +135,15 @@ const DefaultSkillSelector = props => {
       </AddDefaultSkill>
       <ExistingDefaultSkills>
         {defaultSkills.skills.map((skill, index) => {
+          const taskrouterSkill = findTaskRouterSkill(skill, taskrouterSkills);
           return (
             <SkillRowContainer key={`default-skill-row-${index}`}>
               <Skill>{skill}</Skill>
               <Priority>
                 <AddPriorityDropDown
-                  availablePriorities={getPriorityOptionsList(taskrouterSkills, skill)}
-                  disabled={disablePriorityDropDown(taskrouterSkills, skill)}
-                  priorityValue={defaultSkills.levels[skill] || "-"}
+                  availablePriorities={taskrouterSkill.levels}
+                  disabled={taskrouterSkill.levels.length === 0}
+                  priorityValue={defaultSkills.levels[skill] || null}
                   updatePriority={existingSkillLevelChanged(skill)}
                 />
               </Priority>

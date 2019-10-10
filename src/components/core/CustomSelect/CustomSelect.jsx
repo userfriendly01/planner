@@ -14,6 +14,13 @@ const FormField = styled(FormControl)`
   }
 `;
 
+
+const getOption = (key, value, display) => (
+  <option key={key} value={value}>
+    {display}
+  </option>
+);
+
 const CustomSelect = props => {
   const {
     disabled,
@@ -21,9 +28,23 @@ const CustomSelect = props => {
     labelWidth,
     optionsDisplayFunc,
     optionsList,
+    noBlankValue,
     updateValue,
     value
   } = props;
+
+  const options = [];
+  if (!noBlankValue) {
+    options.push(getOption("blank-starting-entry", null, null));
+  }
+  optionsList.forEach(option => {
+    const {
+      display,
+      key,
+      value
+    } = optionsDisplayFunc(option);
+    options.push(getOption(key, value, display));
+  });
 
   return (
     <FormField variant="outlined">
@@ -31,6 +52,7 @@ const CustomSelect = props => {
         {label}
       </InputLabel>
       <Select
+        defaultValue={null}
         disabled={disabled}
         native
         value={value}
@@ -44,22 +66,7 @@ const CustomSelect = props => {
         }
         inputProps={{ "data-testid": "customSelect" }}
       >
-        <option value="" />
-        {optionsList.map(option => {
-          const {
-            display,
-            key,
-            value
-          } = optionsDisplayFunc(option);
-          return (
-            <option
-              key={key}
-              value={value}
-            >
-              {display}
-            </option>
-          );
-        })}
+        {options}
       </Select>
     </FormField>
   );
@@ -71,6 +78,7 @@ CustomSelect.propTypes = {
   labelWidth: PropTypes.number,
   optionsList: PropTypes.array.isRequired,
   optionsDisplayFunc: PropTypes.func.isRequired,
+  noBlankValue: PropTypes.bool,
   updateValue: PropTypes.func.isRequired,
   value: PropTypes.oneOfType([
     PropTypes.number,

@@ -15,6 +15,7 @@ const AddPriorityDropDown = props => {
       disabled={disabled}
       label={""}
       labelWidth={0}
+      noBlankValue={true}
       optionsList={availablePriorities}
       optionsDisplayFunc={option => {
         return {
