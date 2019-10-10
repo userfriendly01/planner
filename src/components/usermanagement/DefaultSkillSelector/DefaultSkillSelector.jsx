@@ -68,7 +68,7 @@ const DefaultSkillSelector = props => {
   const defaultNewSkill = {
     levels: [],
     levelSelected: null,
-    skill: null
+    skill: ""
   };
 
   const [newSkill, setNewSkill] = useState(defaultNewSkill);
@@ -123,13 +123,15 @@ const DefaultSkillSelector = props => {
     <div>
       <Text>Default Profile</Text>
       <AddDefaultSkill>
-        <AddSkillDropDown taskrouterSkills={taskrouterSkillsForDropDown} skillValue={newSkill.skill} updateSkill={newSkillChanged} />
+        <AddSkillDropDown
+          skillValue={newSkill.skill}
+          taskrouterSkills={taskrouterSkillsForDropDown}
+          updateSkill={newSkillChanged} />
         <AddPriorityDropDown
           availablePriorities={newSkill.levels}
           disabled={newSkill.levels.length === 0}
           priorityValue={newSkill.levelSelected}
-          updatePriority={newSkillLevelChanged}
-        />
+          updatePriority={newSkillLevelChanged} />
         {/*TODO make sure add skill button is disabled if no priority is selected when we need one!!!*/}
         <AddCircleOutlineRounded onClick={addSkillClicked} />
       </AddDefaultSkill>
