@@ -35,15 +35,11 @@ const CustomSelect = props => {
 
   const options = [];
   if (!noBlankValue) {
-    options.push(getOption("blank-starting-entry", null, null));
+    options.push(getOption("blank-starting-entry", "", ""));
   }
   optionsList.forEach(option => {
-    const {
-      display,
-      key,
-      value
-    } = optionsDisplayFunc(option);
-    options.push(getOption(key, value, display));
+    const elementOptions = optionsDisplayFunc(option);
+    options.push(getOption(elementOptions.key, elementOptions.value, elementOptions.display));
   });
 
   return (
@@ -52,10 +48,10 @@ const CustomSelect = props => {
         {label}
       </InputLabel>
       <Select
-        defaultValue={null}
+        // defaultValue={null}
         disabled={disabled}
         native
-        value={value}
+        value={value || ""}
         onChange={event => updateValue(event.target.value)}
         input={
           <OutlinedInput
@@ -83,7 +79,7 @@ CustomSelect.propTypes = {
   value: PropTypes.oneOfType([
     PropTypes.number,
     PropTypes.string
-  ]).isRequired
+  ])
 };
 
 export default CustomSelect;
