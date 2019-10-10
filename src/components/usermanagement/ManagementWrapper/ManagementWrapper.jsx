@@ -7,6 +7,7 @@ import {
 import {
   useAdminState
 } from "context";
+import { workersPerPage } from "globals";
 import React, {
   useState
 } from "react";
@@ -15,7 +16,7 @@ import styled from "styled-components";
 const ManagementContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 2%;
+  padding: 0 1%;
 `;
 
 const StyledPaper = styled(Paper)`
@@ -45,8 +46,6 @@ const getWorkersStartAndEnd = (pageSelected, filteredWorkers) => {
     };
   }
 };
-
-const workersPerPage = 10;
 
 const ManagementWrapper = () => {
   const workers = useAdminState().workerContext.workers;

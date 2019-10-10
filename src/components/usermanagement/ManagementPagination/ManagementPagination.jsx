@@ -1,3 +1,4 @@
+import { workersPerPage } from "globals";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
@@ -19,8 +20,9 @@ const PageButton = styled.button`
   border-width: 2px;
   color: #C0BFC0;
   cursor: pointer;
-  margin: 0 2 0 2;
+  margin: 0px 2px;
   outline: none;
+  width: 30px;
 `;
 
 const PaginationWrapper = styled.div`
@@ -34,8 +36,6 @@ const ShowingSection = styled.div`
   color: #C0BFC0;
   font-size: .825em;
 `;
-
-const workersPerPage = 10;
 
 const ManagementPagination = props => {
   const {
