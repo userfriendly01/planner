@@ -6,8 +6,8 @@ export const sortManagersByName = (a, b) => {
   return 0;
 };
 
-export const sortSkillsByName = (a, b) => {
-  const [aName, bName] = [a.name.toString(), b.name.toString()];
+export const sortTaskRouterSkillByName = (a, b) => {
+  const [aName, bName] = [a.skill, b.skill];
   if (aName < bName) { return -1; }
   if (aName > bName) { return 1; }
   return 0;

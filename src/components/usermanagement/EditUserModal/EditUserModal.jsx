@@ -16,6 +16,7 @@ import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
 import {
+  getValidSkillsObject,
   mapWorkerFromTwilioWorker,
   myAxios,
   sortManagersByName
@@ -81,32 +82,19 @@ const EditUserModal = props => {
   const state = useAdminState();
   const managers = state.managerContext.managers;
 
-  const actualWorkerDefaultSkills = worker.attributes.default_skills;
-
-  // TODO: enforce structure like:
-  // const defaultSkills = {
-  //   skills: ["psu-l1", "psu-l2", "466"],
-  //   levels: {
-  //     "psu-l1": 3,
-  //     "psu-l2": 4
-  //   }
-  // };
-  const [defaultSkills, setDefaultSkills] = useState({ ...actualWorkerDefaultSkills });
   const [saveUser, setSaveUser] = useState(null);
-  // TODO make this logic work in all cases
-  // const [defaultSkills, setDefaultSkill] = useState(worker.attributes.default_skills || {
-  //   skills: [],
-  //   levels: {}
-  // });
+
   const [form, setForm] = useState({
+    defaultSkills: getValidSkillsObject(worker.attributes.default_skills),
     manager: JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number)),
-    managerChanged: false
+    formHasBeenUpdated: false
   });
 
   const saveUserClicked = () => {
     setSaveUser(loadingStates.saving);
     const parsedManager = JSON.parse(form.manager);
     const attributes = {
+      default_skills: form.defaultSkills,
       manager_first_name: parsedManager.manager_first_name,
       manager_last_name: parsedManager.manager_last_name,
       manager_n_number: parsedManager.manager_n_number
@@ -133,7 +121,15 @@ const EditUserModal = props => {
       });
   };
 
-  const formReady = form.manager !== "" && form.managerChanged === true;
+  const setDefaultSkills = updatedDefaultSkills => {
+    setForm({
+      ...form,
+      defaultSkills: updatedDefaultSkills,
+      formHasBeenUpdated: true
+    });
+  };
+
+  const formReady = form.formHasBeenUpdated === true && form.manager !== "";
 
   return (
     <ModalContainer>
@@ -168,11 +164,11 @@ const EditUserModal = props => {
           updateValue={newValue => setForm({
             ...form,
             manager: newValue,
-            managerChanged: true
+            formHasBeenUpdated: true
           })}
           value={form.manager}
         />
-        <DefaultSkillSelector defaultSkills={defaultSkills} setDefaultSkills={setDefaultSkills}/>
+        <DefaultSkillSelector defaultSkills={form.defaultSkills} setDefaultSkills={setDefaultSkills}/>
         <ButtonWrapper>
           <StyledButton disabled={!formReady} onClick={saveUserClicked}>Update</StyledButton>
         </ButtonWrapper>

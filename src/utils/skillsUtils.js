@@ -1,22 +1,38 @@
-export const disablePriorityDropDown = (taskRouterSkills, skill) => {
-  const skillObj = findSkillInTaskrouterSkills(taskRouterSkills, skill);
-  return skillObj ? !skillObj.multivalue : false;
-};
+import _ from "lodash";
 
-const findSkillInTaskrouterSkills = (taskRouterSkills, skill) => taskRouterSkills.find(skillObj => skillObj.name === skill);
-
-export const getDefaultPriorityValueForSkill = (taskRouterSkills, skill) => {
-  const priorityOptions = getPriorityOptionsList(taskRouterSkills, skill);
-  priorityOptions.length === 0 ? null : priorityOptions[0];
-};
-
-export const getPriorityOptionsList = (taskRouterSkills, skill) => {
-  const options = [];
-  const skillObj = findSkillInTaskrouterSkills(taskRouterSkills, skill);
-  if (skillObj && skillObj.multivalue) {
+export const formatTaskRouterSkills = rawTaskRouterSkills => rawTaskRouterSkills.map(skillObj => {
+  const levels = [];
+  if (skillObj.multivalue) {
     for (let i = skillObj.minimum; i <= skillObj.maximum; i++) {
-      options.push(i);
+      levels.push(i);
     }
   }
-  return options;
+  return {
+    skill: skillObj.name,
+    levels
+  };
+});
+
+export const findTaskRouterSkill = (skill, taskrouterSkills) => {
+  const defaultObj = {
+    skill,
+    levels: []
+  };
+  return taskrouterSkills.find(skillObj => skillObj.skill === skill) || defaultObj;
+};
+
+export const getValidSkillsObject = skillsObject => {
+  const validObject = {
+    skills: [],
+    levels: {}
+  };
+  if (_.isPlainObject(skillsObject)) {
+    if (_.isArray(skillsObject.skills)) {
+      skillsObject.skills.forEach(skill => validObject.skills.push(skill));
+    }
+    if (_.isPlainObject(skillsObject.levels)) {
+      Object.entries(skillsObject.levels).forEach(([key, value]) => validObject.levels[key] = value);
+    }
+  }
+  return validObject;
 };

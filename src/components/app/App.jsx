@@ -11,6 +11,7 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import {
+  formatTaskRouterSkills,
   formatWorkerResponse,
   getUniqueManagerList,
   isErrorIn400s,
@@ -101,7 +102,7 @@ const App = () => {
       .then(res => {
         dispatch(({
           type: "loadSkills",
-          payload: res.data
+          payload: formatTaskRouterSkills(res.data)
         }));
       })
       .catch(err => {
