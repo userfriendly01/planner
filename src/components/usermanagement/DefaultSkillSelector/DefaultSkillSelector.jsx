@@ -133,7 +133,8 @@ const DefaultSkillSelector = props => {
           priorityValue={newSkill.levelSelected}
           updatePriority={newSkillLevelChanged} />
         {/*TODO make sure add skill button is disabled if no priority is selected when we need one!!!*/}
-        <AddCircleOutlineRounded onClick={addSkillClicked} />
+        <AddCircleOutlineRounded disabled={disablePriorityDropDown(taskrouterSkills, newSkill.skill)/* skillSelected && priority selected (if applicable)*/} 
+          onClick={addSkillClicked} />
       </AddDefaultSkill>
       <ExistingDefaultSkills>
         {defaultSkills.skills.map((skill, index) => {

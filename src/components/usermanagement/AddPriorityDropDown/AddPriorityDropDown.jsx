@@ -10,9 +10,15 @@ const AddPriorityDropDown = props => {
     updatePriority
   } = props;
 
+  console.log(priorityValue === "");
+  console.log(typeof priorityValue);
+
+  // we want error to be true when disabledProp is false but nothing has been selected, i.e. priorityValue === ""
+
   return (
     <CustomSelect
       disabled={disabled}
+      error={!disabled && priorityValue === ""}
       label={""}
       labelWidth={0}
       noBlankValue={true}
