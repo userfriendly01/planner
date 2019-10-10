@@ -8,6 +8,7 @@ import {
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
+import { formatWorkerSkillsToHTML } from "utils";
 
 const CustomTable = styled.table`
   border-spacing: 0px;
@@ -16,6 +17,10 @@ const CustomTable = styled.table`
 const CustomTableData = styled.td`
   color: ${props => props.theme.textColor};
   padding: 1%;
+`;
+
+const CustomTableDataFlex = styled(CustomTableData)`
+  display: flex;
 `;
 
 const CustomTableHeader = styled.th`
@@ -65,6 +70,7 @@ const ManagementTable = props => {
             <CustomTableHeader>NAME</CustomTableHeader>
             <CustomTableHeader>N NUMBER</CustomTableHeader>
             <CustomTableHeader>OFFICE</CustomTableHeader>
+            <CustomTableHeader>SKILLS (Current)</CustomTableHeader>
             <CustomTableHeader/>
           </tr>
         </thead>
@@ -84,6 +90,7 @@ const ManagementTable = props => {
                 <CustomTableData>{worker.attributes.full_name}</CustomTableData>
                 <CustomTableData>{worker.id}</CustomTableData>
                 <CustomTableData>{worker.attributes.office_location_name}</CustomTableData>
+                <CustomTableDataFlex>{formatWorkerSkillsToHTML(worker.attributes.routing)}</CustomTableDataFlex>
                 <CustomTableData>
                   <EditIconWrapper onClick={editButtonOnClick} data-testid="edit-button">
                     <Edit/>
