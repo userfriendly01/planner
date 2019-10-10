@@ -30,7 +30,7 @@ const AddSkillDropDown = props => {
 
 AddSkillDropDown.propTypes = {
   taskrouterSkills: PropTypes.array.isRequired,
-  skillValue: PropTypes.string.isRequired,
+  skillValue: PropTypes.string,
   updateSkill: PropTypes.func.isRequired
 };
 
