@@ -21,11 +21,12 @@ const CustomTable = styled.table`
 
 const CustomTableData = styled.td`
   color: ${props => props.theme.textColor};
-  padding: 4px
+  padding: 4px;
 `;
 
 const CustomTableDataFlex = styled(CustomTableData)`
   display: flex;
+  flex-wrap: wrap;
 `;
 
 const CustomTableHeader = styled.th`

@@ -2,11 +2,18 @@ import React from "react";
 import styled from "styled-components";
 
 const SkillsDiv = styled.div`
-  font-size: .75em;
+  border-color: #C0BFC0;
+  border-style: solid;
+  border-radius: 5px;
+  border-width: 2px;
+  font-size: .85em;
+  font-weight: 800;
+  margin: 2;
+  padding: 1 3;
 `;
 
 const Priority = styled.span`
-  color: red;
+  color: #28A3AF;
 `;
 
 export const formatWorkerSkillsToHTML = routingObj => {
