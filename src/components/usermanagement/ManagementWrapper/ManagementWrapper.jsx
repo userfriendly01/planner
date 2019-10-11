@@ -62,7 +62,8 @@ const ManagementWrapper = () => {
     ? sortedWorkers
     : sortedWorkers.filter(worker => worker.attributes.manager_n_number === state.filterBy);
 
-  const workersByManagerSearched = state.searchBy.trim() === "" ? workersByManager : workersByManager.filter(worker => filterByNameAndSkills(worker));
+  const trimmedSearch = state.searchBy.trim();
+  const workersByManagerSearched = trimmedSearch === "" ? workersByManager : workersByManager.filter(worker => filterByNameAndSkills(worker, trimmedSearch));
 
   const {
     workersStart,
@@ -90,8 +91,8 @@ const ManagementWrapper = () => {
     <ManagementContainer>
       <ManagementFilter
         filterBy={state.filterBy}
-        setFilter={setStateFromFilterChange}
         searchBy={state.searchBy}
+        setFilter={setStateFromFilterChange}
         setSearch={setStateFromSearchChange} />
       <StyledPaper elevation={3}>
         <ManagementTable workers={workersByManagerSearched.slice(workersStart, workersEnd)} />
