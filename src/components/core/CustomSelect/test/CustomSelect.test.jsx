@@ -26,7 +26,7 @@ const updateValueFunc = jest.fn();
 
 const getOptionsElements = rendered => rendered.queryAllByTestId("select-option");
 
-const renderWithProps = (label, labelWidth, optionsList, optionsDisplayFunc, updateValue, value, noBlankValue = false) => {
+const renderWithProps = (label, labelWidth, optionsList, optionsDisplayFunc, updateValue, value, noBlankValue) => {
   return render(<CustomSelect
     label={label}
     labelWidth={labelWidth}
@@ -43,6 +43,12 @@ describe("<CustomSelect />", () => {
     updateValueFunc.mockClear();
   });
   describe("noBlankValue = false", () => {
+    test("should display each option in addition to extra blank value", () => {
+      const rendered = renderWithProps("test", 41, testList, mockDisplayFunc, updateValueFunc, "testone", false);
+      expect(getOptionsElements(rendered).length).toBe(testList.length + 1);
+    });
+  });
+  describe("noBlankValue = undefined", () => {
     test("should display each option in addition to extra blank value", () => {
       const rendered = renderWithProps("test", 41, testList, mockDisplayFunc, updateValueFunc, "testone");
       expect(getOptionsElements(rendered).length).toBe(testList.length + 1);
