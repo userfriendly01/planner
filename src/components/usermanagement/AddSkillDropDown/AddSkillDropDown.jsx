@@ -1,7 +1,6 @@
 import { CustomSelect } from "components";
 import PropTypes from "prop-types";
 import React from "react";
-import { sortTaskRouterSkillByName } from "utils";
 
 const AddSkillDropDown = props => {
   const {
@@ -14,7 +13,7 @@ const AddSkillDropDown = props => {
     <CustomSelect
       label={"Add Default Skill"}
       labelWidth={120}
-      optionsList={taskrouterSkills.sort(sortTaskRouterSkillByName)}
+      optionsList={taskrouterSkills}
       optionsDisplayFunc={skillObj => {
         return {
           display: skillObj.skill,
