@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 const TextInput = styled(TextField)`
   && {
-    margin: 2%;
+    margin: 0%;
   }
 `;
 
