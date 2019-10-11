@@ -1,4 +1,4 @@
-import AddSkillDropDown from "../AddSkillDropDown";
+import SkillDropDown from "../SkillDropDown";
 import { CustomSelect } from "components";
 import React from "react";
 import { act } from "react-dom/test-utils";
@@ -14,7 +14,7 @@ jest.mock("components", () => ({
   CustomSelect: jest.fn()
 }));
 
-describe("<AddSkillDropDown />", () => {
+describe("<SkillDropDown />", () => {
   const skills = [
     { skill: "skill3" },
     { skill: "skill2" },
@@ -22,7 +22,7 @@ describe("<AddSkillDropDown />", () => {
     { skill: "skill4" }
   ];
   const mockUpdateSkill = jest.fn();
-  const renderComponent = () => render(<AddSkillDropDown taskrouterSkills={skills} skillValue={"skill3"} updateSkill={mockUpdateSkill} />);
+  const renderComponent = () => render(<SkillDropDown taskrouterSkills={skills} skillValue={"skill3"} updateSkill={mockUpdateSkill} />);
   beforeEach(() => {
     setupMockedComponents({ CustomSelect });
     mockUpdateSkill.mockClear();

@@ -1,4 +1,4 @@
-import AddPriorityDropDown from "../AddPriorityDropDown";
+import PriorityDropDown from "../PriorityDropDown";
 import { CustomSelect } from "components";
 import React from "react";
 import {
@@ -13,11 +13,11 @@ jest.mock("components", () => ({
   CustomSelect: jest.fn()
 }));
 
-describe("<AddPriorityDropDown />", () => {
+describe("<PriorityDropDown />", () => {
   const priorities = [1, 2, 3];
   const mockUpdatePriority = jest.fn();
   const renderComponent = () => {
-    return render(<AddPriorityDropDown
+    return render(<PriorityDropDown
       availablePriorities={priorities}
       disabled={true}
       priorityValue={1}

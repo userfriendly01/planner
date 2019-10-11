@@ -3,8 +3,8 @@ import {
   DeleteRounded
 } from "@material-ui/icons";
 import {
-  AddPriorityDropDown,
-  AddSkillDropDown
+  PriorityDropDown,
+  SkillDropDown
 } from "components";
 import { useAdminState } from "context";
 import { theme } from "globals";
@@ -114,28 +114,27 @@ const DefaultSkillSelector = props => {
     setDefaultSkills(updatedDefaultSkills);
   };
 
-  // TODO remove logs before commit
-  console.log("newSkill", newSkill);
-  console.log("defaultSkills", defaultSkills);
-  console.log("taskrouterSkills", taskrouterSkills);
+  const skillHasPriorities = newSkill.levels.length > 0 ? true : false;
+  const displayAddSkillButton = newSkill.skill !== "" && ((skillHasPriorities && newSkill.levelSelected) || (!skillHasPriorities)) ? true : false;
+  const addSkillButtonColorDisabled = newSkill.skill === "" || (skillHasPriorities && !newSkill.levelSelected) ? true : false;
 
   return (
     <div>
       <Text>Default Profile</Text>
       <AddDefaultSkill>
-        <AddSkillDropDown
+        <SkillDropDown
           skillValue={newSkill.skill}
           taskrouterSkills={taskrouterSkillsForDropDown}
           updateSkill={newSkillChanged} />
-        {newSkill.levels.length > 0 ?
-          <AddPriorityDropDown
+        {skillHasPriorities ?
+          <PriorityDropDown
             availablePriorities={newSkill.levels}
             priorityValue={newSkill.levelSelected}
             updatePriority={newSkillLevelChanged}
           /> : null}
-        {/*TODO make sure add skill button is disabled if no priority is selected when we need one!!!*/}
-        <AddCircleOutlineRounded disabled={true}//skillWithoutPriorities/* skillSelected && priority selected (if applicable)*/} 
-          onClick={addSkillClicked} />
+        <AddCircleOutlineRounded
+          color={addSkillButtonColorDisabled ? "disabled" : "inherit"}
+          onClick={displayAddSkillButton ? addSkillClicked : null} />
       </AddDefaultSkill>
       <ExistingDefaultSkills>
         {defaultSkills.skills.map((skill, index) => {
@@ -145,7 +144,7 @@ const DefaultSkillSelector = props => {
               <Skill>{skill}</Skill>
               <Priority>
                 {defaultSkills.levels.hasOwnProperty(skill) === true ?
-                  <AddPriorityDropDown
+                  <PriorityDropDown
                     availablePriorities={taskrouterSkill.levels}
                     priorityValue={defaultSkills.levels[skill]}
                     updatePriority={existingSkillLevelChanged(skill)}
