@@ -1,18 +1,27 @@
 import DefaultSkillSelector from "../DefaultSkillSelector";
 import {
+  AddCircleOutlineRounded,
+  DeleteRounded
+} from "@material-ui/icons";
+import {
   PriorityDropDown,
-  SkillDropDown,
-  DefaultPriorityDropDown
+  SkillDropDown
 } from "components";
 import { initialState } from "context";
 import React from "react";
-// import { act } from "react-dom/test-utils";
+import { act } from "react-dom/test-utils";
 import {
-  // expectMockedComponent,
-  // expectOnlyPassedProps,
+  expectMockedComponent,
+  expectOnlyPassedProps,
   render,
   setupMockedComponents
 } from "testUtils";
+
+jest.mock("@material-ui/icons", () => ({
+  __esModule: true,
+  AddCircleOutlineRounded: jest.fn(),
+  DeleteRounded: jest.fn()
+}));
 
 jest.mock("components", () => ({
   __esModule: true,
@@ -21,65 +30,67 @@ jest.mock("components", () => ({
   DefaultPriorityDropDown: jest.fn()
 }));
 
+const mockSetDefaultSkills = jest.fn();
+
 const initialTestState = {
   ...initialState,
-  skillsContext: {
-    skills: [
+  skillContext: {
+    taskrouterSkills: [
       {
-        minimum: null,
-        multivalue: false,
-        name: "grscollections-l1",
-        maximum: null
+        skill: "skillA",
+        levels: []
       },
       {
-        minimum: 0,
-        multivalue: true,
-        name: "test",
-        maximum: 3
+        skill: "skillB",
+        levels: [1, 2, 3, 4]
       },
       {
-        minimum: 1,
-        multivalue: true,
-        name: "sbscFarm",
-        maximum: 3
-      },
-      {
-        minimum: 1,
-        multivalue: true,
-        name: "bscCbsHelpDesk",
-        maximum: 3
+        skill: "skillC",
+        levels: [0, 1, 2, 3, 4, 5, 6, 7]
       }
     ]
   }
 };
 
 describe("<DefaultSkillSelector />", () => {
-  const defaultSkills = {
-    skills: ["psu-l1", "psu-l2", "466"],
-    levels: {
-      "psu-l1": 3,
-      "psu-l2": 4
-    }
-  };
-
-  const renderComponent = () => render(<DefaultSkillSelector defaultSkills={defaultSkills} />, initialTestState);
+  const renderComponent = defaultSkills => render(<DefaultSkillSelector defaultSkills={defaultSkills} setDefaultSkills={mockSetDefaultSkills} />, initialTestState);
   beforeEach(() => {
     setupMockedComponents({
+      AddCircleOutlineRounded,
+      DeleteRounded,
       PriorityDropDown,
-      SkillDropDown,
-      DefaultPriorityDropDown
+      SkillDropDown
     });
+    mockSetDefaultSkills.mockClear();
   });
 
   describe("initial state", () => {
     describe("worker has no default skills", () => {
       test("should render header and correct components with correct props; should not render PriorityDropDown", () => {
-        // SkillDropDown, AddCircleOutlineRounded (disabled)
-        const rendered = renderComponent();
+        const defaultSkills = {
+          skills: [],
+          levels: {}
+        };
+        const rendered = renderComponent(defaultSkills);
         expect(rendered.container).toHaveTextContent("Default Profile");
+        expectMockedComponent(rendered, { SkillDropDown });
+        expectMockedComponent(rendered, { AddCircleOutlineRounded });
+        expectMockedComponent(rendered, { PriorityDropDown }, 0);
+        expectOnlyPassedProps(SkillDropDown, {
+          skillValue: "",
+          taskrouterSkills: initialTestState.skillContext.taskrouterSkills
+          // updateSkill: null
+        });
       });
     });
     describe("worker has default skills", () => {
+      // const defaultSkills = {
+      //   skills: ["defaultSkillA", "defaultSkillB", "defaultSkillC"],
+      //   levels: {
+      //     "defaultSkillA": 3,
+      //     "defaultSkillB": 4
+      //   }
+      // };
       describe("skill has priorities", () => {
         test("should render the skill, the priority drop down (with current priority displayed), and remove icon", () => {
           //
