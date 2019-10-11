@@ -1,6 +1,6 @@
 import {
   sortManagersByName,
-  sortSkillsByName
+  sortTaskRouterSkillByName
 } from "../sortUtils";
 
 describe("sortManagersByName", () => {
@@ -85,21 +85,19 @@ describe("sortManagersByName", () => {
 
 describe("sortSkillsByName", () => {
   const arr = [
-    { name: "bee" },
-    { name: "dee" },
-    { name: "cee" },
-    { name: "ay" },
-    { name: 42 },
-    { name: "ay" }
+    { skill: "bee" },
+    { skill: "dee" },
+    { skill: "cee" },
+    { skill: "ay" },
+    { skill: "ay" }
   ];
   test("should return array in alphabetical order", () => {
-    expect(arr.sort(sortSkillsByName)).toEqual([
-      { name: 42 },
-      { name: "ay" },
-      { name: "ay" },
-      { name: "bee" },
-      { name: "cee" },
-      { name: "dee" }
+    expect(arr.sort(sortTaskRouterSkillByName)).toEqual([
+      { skill: "ay" },
+      { skill: "ay" },
+      { skill: "bee" },
+      { skill: "cee" },
+      { skill: "dee" }
     ]);
   });
 });
