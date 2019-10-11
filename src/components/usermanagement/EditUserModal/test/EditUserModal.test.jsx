@@ -46,14 +46,15 @@ jest.mock("components", () => ({
   PaperContainer: jest.fn()
 }));
 
-const mockWorker = {
+const getWorker = defaultSkills => ({
   sid: "WK023315648120514",
   attributes: {
+    default_skills: defaultSkills,
     full_name: "Faith Cuneo",
     manager_n_number: "n0999887",
     n_number: "n0263786"
   }
-};
+});
 
 const mockManagers = [
   {
@@ -83,8 +84,8 @@ const initialTestState = {
   }
 };
 
-const renderComponent = () => {
-  return render(<EditUserModal handleClose={mockHandleClose} worker={mockWorker} />, initialTestState);
+const renderComponent = defaultSkills => {
+  return render(<EditUserModal handleClose={mockHandleClose} worker={getWorker(defaultSkills)} />, initialTestState);
 };
 
 describe("<EditUserModal />", () => {
@@ -103,6 +104,48 @@ describe("<EditUserModal />", () => {
   });
 
   describe("EditUserModal is in its initial state", () => {
+    describe("workers does not contain default_skills", () => {
+      test("should pass default object to DefaultSkillSelector", () => {
+        const defaultSkills = undefined;
+        renderComponent(defaultSkills);
+        expectOnlyPassedProps(DefaultSkillSelector, {
+          defaultSkills: {
+            skills: [],
+            levels: {}
+          }
+        });
+      });
+    });
+    describe("worker contains malformed default_skills", () => {
+      test("should pass valid default skills object to DefaultSkillSelector", () => {
+        const defaultSkills = {
+          skills: ["psu-l1", "psu-l2", "466"],
+          levels: "noooo"
+        };
+        renderComponent(defaultSkills);
+        expectOnlyPassedProps(DefaultSkillSelector, {
+          defaultSkills: {
+            skills: ["psu-l1", "psu-l2", "466"],
+            levels: {}
+          }
+        });
+      });
+    });
+    describe("worker context contains valid default_skills", () => {
+      test("should pass valid default skills object to DefaultSkillSelector", () => {
+        const defaultSkills = {
+          skills: ["psu-l1", "psu-l2", "466"],
+          levels: {
+            "psu-l1": 1,
+            "466": 3
+          }
+        };
+        renderComponent(defaultSkills);
+        expectOnlyPassedProps(DefaultSkillSelector, {
+          defaultSkills
+        });
+      });
+    });
     test("EditUserModal Renders the appropriate elements", () => {
       const rendered = renderComponent();
       expectMockedComponent(rendered, { ModalHeader }, 1);
@@ -115,16 +158,6 @@ describe("<EditUserModal />", () => {
         children: "Update",
         disabled: true
       }, 0);
-      expectOnlyPassedProps(DefaultSkillSelector, {
-        // TODO: Get skills from Twilio
-        defaultSkills: {
-          skills: ["psu-l1", "psu-l2", "466"],
-          levels: {
-            "psu-l1": 3,
-            "psu-l2": 4
-          }
-        }
-      });
       expect(getMockedComponentProps(ModalHeader, getLastInstanceCalled(ModalHeader)).children).toBe("Update User");
     });
   });
@@ -185,20 +218,32 @@ describe("<EditUserModal />", () => {
       expect(newValue).toEqual(JSON.stringify(mockManagers[0]));
     });
 
-    test("update button should be enabled", done => {
+    test("update button should be enabled", () => {
       renderComponent();
       act(() => {
         const updateValue = CustomSelect.mock.calls[0][0].updateValue;
         updateValue(JSON.stringify(mockManagers[0]));
-        return Promise.resolve();
-      }).then(() => {
-        expect(StyledButton.mock.calls.length).toBe(2);
-        expectOnlyPassedProps(StyledButton, {
-          children: "Update",
-          disabled: false
-        }, 1);
-        done();
       });
+      expect(StyledButton.mock.calls.length).toBe(2);
+      expectOnlyPassedProps(StyledButton, {
+        children: "Update",
+        disabled: false
+      }, 1);
+    });
+  });
+
+  describe("setDefaultSkills is fired", () => {
+    test("should pass new defaultSkills into DefaultSkillSelector and enable the Update button", () => {
+      renderComponent();
+      const defaultSkills = { cool: "wow" };
+      const { setDefaultSkills } = getMockedComponentProps(DefaultSkillSelector, getLastInstanceCalled(DefaultSkillSelector));
+      act(() => setDefaultSkills(defaultSkills));
+      expectOnlyPassedProps(DefaultSkillSelector, {
+        defaultSkills
+      }, getLastInstanceCalled(DefaultSkillSelector));
+      expectOnlyPassedProps(StyledButton, {
+        disabled: false
+      }, getLastInstanceCalled(StyledButton));
     });
   });
 
