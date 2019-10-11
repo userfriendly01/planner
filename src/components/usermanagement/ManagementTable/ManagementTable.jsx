@@ -8,6 +8,7 @@ import {
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
+import { formatWorkerSkillsToHTML } from "utils";
 
 const iconFieldWidth = "30px";
 
@@ -20,7 +21,12 @@ const CustomTable = styled.table`
 
 const CustomTableData = styled.td`
   color: ${props => props.theme.textColor};
-  padding: 4px
+  padding: 4px;
+`;
+
+const CustomTableDataFlex = styled(CustomTableData)`
+  display: flex;
+  flex-wrap: wrap;
 `;
 
 const CustomTableHeader = styled.th`
@@ -82,6 +88,7 @@ const ManagementTable = props => {
             <CustomTableHeader width={"25%"}>NAME</CustomTableHeader>
             <CustomTableHeader width={"25%"}>N NUMBER</CustomTableHeader>
             <CustomTableHeader width={"50%"}>OFFICE</CustomTableHeader>
+            <CustomTableHeader width={"25%"}>SKILLS (Current)</CustomTableHeader>
             <CustomTableHeader width={iconFieldWidth}/>
           </tr>
         </thead>
@@ -104,6 +111,7 @@ const ManagementTable = props => {
                 <CustomTableData>{worker.attributes.full_name}</CustomTableData>
                 <CustomTableData>{worker.id}</CustomTableData>
                 <CustomTableData>{worker.attributes.office_location_name}</CustomTableData>
+                <CustomTableDataFlex>{formatWorkerSkillsToHTML(worker.attributes.routing)}</CustomTableDataFlex>
                 <CustomTableData>
                   <IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
                     <Edit fontSize={"inherit"}/>
