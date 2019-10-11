@@ -23,7 +23,7 @@ const AddDefaultSkill = styled.div`
 `;
 
 const ExistingDefaultSkills = styled.div`
-  
+
 `;
 
 const Priority = styled.div`
@@ -31,7 +31,7 @@ const Priority = styled.div`
 `;
 
 const Skill = styled.div`
-  width: 20%
+  width: 55%
 `;
 
 const SkillRowContainer = styled.div`
@@ -127,13 +127,14 @@ const DefaultSkillSelector = props => {
           skillValue={newSkill.skill}
           taskrouterSkills={taskrouterSkillsForDropDown}
           updateSkill={newSkillChanged} />
-        <AddPriorityDropDown
-          availablePriorities={newSkill.levels}
-          disabled={newSkill.levels.length === 0}
-          priorityValue={newSkill.levelSelected}
-          updatePriority={newSkillLevelChanged} />
+        {newSkill.levels.length > 0 ?
+          <AddPriorityDropDown
+            availablePriorities={newSkill.levels}
+            priorityValue={newSkill.levelSelected}
+            updatePriority={newSkillLevelChanged}
+          /> : null}
         {/*TODO make sure add skill button is disabled if no priority is selected when we need one!!!*/}
-        <AddCircleOutlineRounded disabled={disablePriorityDropDown(taskrouterSkills, newSkill.skill)/* skillSelected && priority selected (if applicable)*/} 
+        <AddCircleOutlineRounded disabled={true}//skillWithoutPriorities/* skillSelected && priority selected (if applicable)*/} 
           onClick={addSkillClicked} />
       </AddDefaultSkill>
       <ExistingDefaultSkills>
@@ -143,12 +144,12 @@ const DefaultSkillSelector = props => {
             <SkillRowContainer key={`default-skill-row-${index}`}>
               <Skill>{skill}</Skill>
               <Priority>
-                <AddPriorityDropDown
-                  availablePriorities={taskrouterSkill.levels}
-                  disabled={taskrouterSkill.levels.length === 0}
-                  priorityValue={defaultSkills.levels[skill] || null}
-                  updatePriority={existingSkillLevelChanged(skill)}
-                />
+                {defaultSkills.levels.hasOwnProperty(skill) === true ?
+                  <AddPriorityDropDown
+                    availablePriorities={taskrouterSkill.levels}
+                    priorityValue={defaultSkills.levels[skill]}
+                    updatePriority={existingSkillLevelChanged(skill)}
+                  /> : null}
               </Priority>
               <DeleteRounded onClick={removeSkillClicked(skill)}/>
             </SkillRowContainer>
