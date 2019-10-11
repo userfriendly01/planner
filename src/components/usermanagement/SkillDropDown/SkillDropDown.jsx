@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { sortTaskRouterSkillByName } from "utils";
 
-const AddSkillDropDown = props => {
+const SkillDropDown = props => {
   const {
     taskrouterSkills,
     skillValue,
@@ -28,10 +28,10 @@ const AddSkillDropDown = props => {
   );
 };
 
-AddSkillDropDown.propTypes = {
+SkillDropDown.propTypes = {
   taskrouterSkills: PropTypes.array.isRequired,
   skillValue: PropTypes.string,
   updateSkill: PropTypes.func.isRequired
 };
 
-export default AddSkillDropDown;
+export default SkillDropDown;
