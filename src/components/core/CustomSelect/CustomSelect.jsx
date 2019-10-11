@@ -14,7 +14,6 @@ const FormField = styled(FormControl)`
   }
 `;
 
-
 const getOption = (key, value, display) => (
   <option key={key} value={value}>
     {display}
