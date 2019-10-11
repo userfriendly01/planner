@@ -270,7 +270,84 @@ describe("<EditUserModal />", () => {
         done();
       });
     });
-    
+
+    test("defaultSkills is updated, Update button clicked, should only update default_skills attribute, show success modal overlay and hide after 2s", done => {
+      const rendered = renderComponent();
+      act(() => {
+        const setDefaultSkills = getMockedComponentProps(DefaultSkillSelector).setDefaultSkills;
+        setDefaultSkills(updatedDefaultSkills);
+      });
+      expectOnlyPassedProps(StyledButton, {
+        children: "Update",
+        disabled: false
+      });
+      act(() => {
+        const { onClick } = getMockedComponentProps(StyledButton);
+        onClick();
+        return Promise.resolve();
+      }).then(() => {
+        expect(axiosMock.history.post[0].data).toEqual(JSON.stringify({
+          workerSid,
+          attributes: {
+            default_skills: updatedDefaultSkills
+          }
+        }));
+        const actions = mockStore.getActions();
+        expect(actions).toHaveLength(1);
+        expect(actions[0]).toEqual({
+          type: "updateWorker",
+          payload: mapWorkerFromTwilioWorker(mockSuccessfulResponse)
+        });
+        expectMockedComponent(rendered, { ModalOverlay }, 1);
+        expectOnlyPassedProps(ModalOverlay, {
+          message: "User updated successfully",
+          status: "success"
+        });
+        act(() => jest.runAllTimers());
+        expect(mockHandleClose).toHaveBeenCalledTimes(1);
+        done();
+      });
+    });
+
+    test("manager is updated, Update button clicked, should only update manager attribute, show success modal overlay and hide after 2s", done => {
+      const rendered = renderComponent();
+      act(() => {
+        const setManager = getMockedComponentProps(CustomSelect).updateValue;
+        setManager(JSON.stringify(updatedManager));
+      });
+      expectOnlyPassedProps(StyledButton, {
+        children: "Update",
+        disabled: false
+      });
+      act(() => {
+        const { onClick } = getMockedComponentProps(StyledButton);
+        onClick();
+        return Promise.resolve();
+      }).then(() => {
+        expect(axiosMock.history.post[0].data).toEqual(JSON.stringify({
+          workerSid,
+          attributes: {
+            manager_first_name: updatedManager.manager_first_name,
+            manager_last_name: updatedManager.manager_last_name,
+            manager_n_number: updatedManager.manager_n_number
+          }
+        }));
+        const actions = mockStore.getActions();
+        expect(actions).toHaveLength(1);
+        expect(actions[0]).toEqual({
+          type: "updateWorker",
+          payload: mapWorkerFromTwilioWorker(mockSuccessfulResponse)
+        });
+        expectMockedComponent(rendered, { ModalOverlay }, 1);
+        expectOnlyPassedProps(ModalOverlay, {
+          message: "User updated successfully",
+          status: "success"
+        });
+        act(() => jest.runAllTimers());
+        expect(mockHandleClose).toHaveBeenCalledTimes(1);
+        done();
+      });
+    });
   });
 
   describe("service call to update worker attributes fails", () => {
