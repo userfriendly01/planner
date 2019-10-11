@@ -24,7 +24,6 @@ const getOption = (key, value, display) => (
 const CustomSelect = props => {
   const {
     disabled,
-    error,
     label,
     labelWidth,
     optionsDisplayFunc,
@@ -44,7 +43,7 @@ const CustomSelect = props => {
   });
 
   return (
-    <FormField variant="outlined" error={error}>
+    <FormField variant="outlined">
       <InputLabel htmlFor={`outlined-${label}-native-simple`}>
         {label}
       </InputLabel>
@@ -71,7 +70,6 @@ const CustomSelect = props => {
 
 CustomSelect.propTypes = {
   disabled: PropTypes.bool,
-  error: PropTypes.bool,
   label: PropTypes.string.isRequired,
   labelWidth: PropTypes.number,
   optionsList: PropTypes.array.isRequired,

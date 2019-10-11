@@ -5,20 +5,12 @@ import React from "react";
 const AddPriorityDropDown = props => {
   const {
     availablePriorities,
-    disabled,
     priorityValue,
     updatePriority
   } = props;
 
-  console.log(priorityValue === "");
-  console.log(typeof priorityValue);
-
-  // we want error to be true when disabledProp is false but nothing has been selected, i.e. priorityValue === ""
-
   return (
     <CustomSelect
-      disabled={disabled}
-      error={!disabled && priorityValue === ""}
       label={""}
       labelWidth={0}
       noBlankValue={true}
@@ -38,7 +30,6 @@ const AddPriorityDropDown = props => {
 
 AddPriorityDropDown.propTypes = {
   availablePriorities: PropTypes.array.isRequired,
-  disabled: PropTypes.bool,
   priorityValue: PropTypes.number,
   updatePriority: PropTypes.func.isRequired
 };
