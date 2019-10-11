@@ -12,6 +12,7 @@ import React, {
   useState
 } from "react";
 import styled from "styled-components";
+import { filterByNameAndSkills } from "utils";
 
 const ManagementContainer = styled.div`
   display: flex;
@@ -53,40 +54,51 @@ const ManagementWrapper = () => {
 
   const [state, setState] = useState({
     pageSelected: 1,
-    filterBy: "show-all"
+    filterBy: "show-all",
+    searchBy: ""
   });
 
-  const filteredWorkers = state.filterBy === "show-all"
+  const workersByManager = state.filterBy === "show-all"
     ? sortedWorkers
     : sortedWorkers.filter(worker => worker.attributes.manager_n_number === state.filterBy);
+
+  const workersByManagerSearched = state.searchBy.trim() === "" ? workersByManager : workersByManager.filter(worker => filterByNameAndSkills(worker));
 
   const {
     workersStart,
     workersEnd
-  } = getWorkersStartAndEnd(state.pageSelected, filteredWorkers);
+  } = getWorkersStartAndEnd(state.pageSelected, workersByManagerSearched);
 
   const setStateFromFilterChange = filterBy => setState({
+    ...state,
     pageSelected: 1,
     filterBy
   });
 
   const setStateFromPageChange = pageSelected => setState({
-    pageSelected,
-    filterBy: state.filterBy
+    ...state,
+    pageSelected
+  });
+
+  const setStateFromSearchChange = searchBy => setState({
+    ...state,
+    pageSelected: 1, // For now resetting the page... we'll see if this is needed
+    searchBy
   });
 
   return (
     <ManagementContainer>
       <ManagementFilter
         filterBy={state.filterBy}
-        setFilter={setStateFromFilterChange} />
+        setFilter={setStateFromFilterChange}
+        searchBy={state.searchBy}
+        setSearch={setStateFromSearchChange} />
       <StyledPaper elevation={3}>
-        <ManagementTable
-          workers={filteredWorkers.slice(workersStart, workersEnd)} />
+        <ManagementTable workers={workersByManagerSearched.slice(workersStart, workersEnd)} />
       </StyledPaper>
       <ManagementPagination
         end={workersEnd}
-        length={filteredWorkers.length}
+        length={workersByManagerSearched.length}
         page={state.pageSelected}
         setPage={setStateFromPageChange}
         start={workersStart + 1}/>
