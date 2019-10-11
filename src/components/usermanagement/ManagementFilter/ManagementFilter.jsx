@@ -11,6 +11,7 @@ import AddIcon from "@material-ui/icons/Add";
 import {
   AddUserModal,
   AddManagerModal,
+  SearchBox,
   StyledButton
 } from "components";
 import { useAdminState } from "context";
@@ -42,7 +43,9 @@ const AddManagerButtonWrapper = styled.div`
 const ManagementFilter = props => {
   const {
     filterBy,
-    setFilter
+    searchBy,
+    setFilter,
+    setSearch
   } = props;
 
   const managers = useAdminState().managerContext.managers;
@@ -101,6 +104,7 @@ const ManagementFilter = props => {
           </Fab>
         </AddManagerButtonWrapper>
       </Tooltip>
+      <SearchBox searchBy={searchBy} setSearch={setSearch}/>
       <AddUserButtonWrapper>
         <StyledButton onClick={handleOpenAddUser} data-testid={"add-user-button"}>
           Add User
@@ -118,7 +122,9 @@ const ManagementFilter = props => {
 
 ManagementFilter.propTypes = {
   filterBy: PropTypes.string.isRequired,
-  setFilter: PropTypes.func.isRequired
+  searchBy: PropTypes.string.isRequired,
+  setFilter: PropTypes.func.isRequired,
+  setSearch: PropTypes.func.isRequired
 };
 
 export default ManagementFilter;

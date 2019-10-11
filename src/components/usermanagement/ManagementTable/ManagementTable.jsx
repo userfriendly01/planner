@@ -62,7 +62,7 @@ const TableContainer = styled.div`
   padding: 2%;
 `;
 
-const TableDataFlex = styled(CustomTableData)`
+const TableDataFlex = styled.div`
   color: ${props => props.theme.textColor};
   display: flex;
   flex-wrap: wrap;

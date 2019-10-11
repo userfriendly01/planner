@@ -1,6 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 
+const Priority = styled.span`
+  color: #28A3AF;
+`;
+
 const SkillsDiv = styled.div`
   border-color: #C0BFC0;
   border-style: solid;
@@ -10,10 +14,6 @@ const SkillsDiv = styled.div`
   font-weight: 800;
   margin: 2;
   padding: 1 3;
-`;
-
-const Priority = styled.span`
-  color: #28A3AF;
 `;
 
 export const formatWorkerSkillsToHTML = routingObj => {
