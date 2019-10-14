@@ -1,16 +1,15 @@
-// https://codeburst.io/javascript-array-distinct-5edc93501dc4 really good read.
 export const filterByNameAndSkills = (worker, searchValue) => {
-  if (!worker || !worker.attributes) {
+  if (!worker || !worker.attributes || !searchValue) {
     return false;
   }
-  const name = worker.attributes.full_name ? worker.attributes.full_name : "";
-  const appliedSkills = worker.attributes.routing ? worker.attributes.routing.skills : [];
-  const defaultSkills = worker.attributes.default_skills ? worker.attributes.default_skills.skills : [];
-  if (name.indexOf(searchValue) >= 0) {
+  const name = worker.attributes.full_name ? worker.attributes.full_name.toLowerCase() : "";
+  const appliedSkills = worker.attributes.routing ? worker.attributes.routing.skills.toString() : "";
+  const defaultSkills = worker.attributes.default_skills ? worker.attributes.default_skills.skills.toString() : "";
+  if (name.indexOf(searchValue.toLowerCase()) >= 0) {
     return true;
-  } else if (appliedSkills.toString().indexOf(searchValue) >= 0) {
+  } else if (appliedSkills.toLowerCase().indexOf(searchValue) >= 0) {
     return true;
-  } else if (defaultSkills.toString().indexOf(searchValue) >= 0) {
+  } else if (defaultSkills.toLowerCase().indexOf(searchValue) >= 0) {
     return true;
   }
   return false;
