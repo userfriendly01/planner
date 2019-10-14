@@ -5,11 +5,12 @@ export const filterByNameAndSkills = (worker, searchValue) => {
   const name = worker.attributes.full_name ? worker.attributes.full_name.toLowerCase() : "";
   const appliedSkills = worker.attributes.routing ? worker.attributes.routing.skills.toString() : "";
   const defaultSkills = worker.attributes.default_skills ? worker.attributes.default_skills.skills.toString() : "";
-  if (name.indexOf(searchValue.toLowerCase()) >= 0) {
+  const lowerCaseSearch = searchValue.toLowerCase();
+  if (name.indexOf(lowerCaseSearch) >= 0) {
     return true;
-  } else if (appliedSkills.toLowerCase().indexOf(searchValue) >= 0) {
+  } else if (appliedSkills.toLowerCase().indexOf(lowerCaseSearch) >= 0) {
     return true;
-  } else if (defaultSkills.toLowerCase().indexOf(searchValue) >= 0) {
+  } else if (defaultSkills.toLowerCase().indexOf(lowerCaseSearch) >= 0) {
     return true;
   }
   return false;
