@@ -63,6 +63,11 @@ const ModalText = styled.div`
   line-height: 1.30357em;
   margin: 2% 2% 0% 2%;
 `;
+
+const StyledCloseRounded = styled(CloseRounded)`
+  cursor: pointer;
+`;
+
 const loadingStates = {
   fail: "fail",
   saving: "saving",
@@ -128,7 +133,7 @@ const EditUserModal = props => {
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>
           <ModalHeader fontSize={"2rem"}>{"Update User's Manager"}</ModalHeader>
-          <CloseRounded onClick={handleClose}/>
+          <StyledCloseRounded onClick={handleClose}/>
         </HeaderAndCloseButtonWrapper>
         <ModalText>
           {worker.attributes.full_name}

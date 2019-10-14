@@ -1,5 +1,8 @@
 import { Modal } from "@material-ui/core";
-import { Edit } from "@material-ui/icons";
+import {
+  Edit,
+  ChangeHistoryRounded
+} from "@material-ui/icons";
 import { EditUserModal } from "components";
 import {
   useAdminDispatch,
@@ -8,7 +11,9 @@ import {
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { formatWorkerSkillsToHTML } from "utils";
+import {
+  formatWorkerSkillsToHTML
+} from "utils";
 
 const iconFieldWidth = "30px";
 
@@ -39,9 +44,14 @@ const CustomTableRow = styled.tr`
   }
 `;
 
+const DeltaNotification = styled(ChangeHistoryRounded)`
+  color: #565656;
+`;
+
 const IconWrapper = styled.div`
   align-items: center;
   border-radius: ${props => props.theme.tableRow.icon.hoverDiameter / 2}px;
+  color: #565656;
   cursor: pointer;
   display: flex;
   font-size: ${props => props.theme.tableRow.icon.size}px;
@@ -92,6 +102,7 @@ const ManagementTable = props => {
             <CustomTableHeader width={"20%"}>SKILLS (Current)</CustomTableHeader>
             <CustomTableHeader width={"20%"}>SKILLS (Default)</CustomTableHeader>
             <CustomTableHeader width={iconFieldWidth}/>
+            <CustomTableHeader width={iconFieldWidth}/>
           </tr>
         </thead>
         <tbody>
@@ -119,6 +130,11 @@ const ManagementTable = props => {
                   <IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
                     <Edit fontSize={"inherit"}/>
                   </IconWrapper>
+                </CustomTableData>
+                <CustomTableData>
+                  {
+                    worker.skillsDifferent ? <DeltaNotification data-testid="delta-icon" fontSize={"inherit"}/> : null
+                  }
                 </CustomTableData>
               </CustomTableRow>
             );

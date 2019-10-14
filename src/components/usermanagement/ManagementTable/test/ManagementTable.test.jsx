@@ -43,7 +43,8 @@ const mockWorkerData = [
       }
     },
     id: "n1234567",
-    sid: "WK0"
+    sid: "WK0",
+    skillsDifferent: false
   },
   {
     attributes: {
@@ -51,12 +52,13 @@ const mockWorkerData = [
       office_location_name: "Uranus"
     },
     id: "n0999999",
-    sid: "WK1"
+    sid: "WK1",
+    skillsDifferent: false
   },
   {
     attributes: {
       default_skills: {
-        skills: [],
+        skills: ["466"],
         levels: {}
       },
       full_name: "Test 3",
@@ -67,7 +69,8 @@ const mockWorkerData = [
       }
     },
     id: "n0498575",
-    sid: "WK2"
+    sid: "WK2",
+    skillsDifferent: true
   }
 ];
 
@@ -103,6 +106,10 @@ describe("<ManagementTable />", () => {
     const mockWorkerOneDefaultLevels = mockWorkerData[0].attributes.default_skills.levels;
     expect(rendered.container).toHaveTextContent(`${mockWorkerOneDefaultSkills[0]} - ${mockWorkerOneDefaultLevels[mockWorkerOneDefaultSkills[0]]}`);
     expect(rendered.container).toHaveTextContent(mockWorkerOneDefaultSkills[1]);
+  });
+  test("for workers with applied skills and/or priorities that differ from the default, we should show a delta icon", () => {
+    const rendered = render(<ManagementTable workers={mockWorkerData} />);
+    expect(rendered.getAllByTestId("delta-icon")).toHaveLength(1);
   });
   describe("user rows are clicked", () => {
     test("should dispatch toggleWorkerSelected actions and highlight rows of selected workers", () => {

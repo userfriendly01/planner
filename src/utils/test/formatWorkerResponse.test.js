@@ -68,7 +68,8 @@ describe("formatWorkerResponse", () => {
           unique_id: "n00000000"
         },
         id: "n0317496",
-        sid: "WK8b0da13d2eca675babceedb76d7a15eb"
+        sid: "WK8b0da13d2eca675babceedb76d7a15eb",
+        skillsDifferent: false
       }
     ];
     expect(formatWorkerResponse(unformattedResponse)).toEqual(formattedWorker);
@@ -86,7 +87,8 @@ describe("mapWorkerFromTwilioWorker", () => {
       expect(mapWorkerFromTwilioWorker(twilioWorker)).toEqual({
         id: "n0269913",
         sid: "WK123123123",
-        attributes: { whatever: 12345 }
+        attributes: { whatever: 12345 },
+        skillsDifferent: false
       });
     });
   });
@@ -99,7 +101,8 @@ describe("mapWorkerFromTwilioWorker", () => {
       expect(mapWorkerFromTwilioWorker(twilioWorker)).toEqual({
         id: "n0269913",
         sid: "WK123123123",
-        attributes: {}
+        attributes: {},
+        skillsDifferent: false
       });
     });
   });
@@ -113,7 +116,8 @@ describe("mapWorkerFromTwilioWorker", () => {
       expect(mapWorkerFromTwilioWorker(twilioWorker)).toEqual({
         id: "n0269913",
         sid: "WK123123123",
-        attributes: {}
+        attributes: {},
+        skillsDifferent: false
       });
     });
   });
@@ -121,7 +125,8 @@ describe("mapWorkerFromTwilioWorker", () => {
     const twilioWorker = {};
     test("should return object where attributes is empty object and id and sid are undefined", () => {
       expect(mapWorkerFromTwilioWorker(twilioWorker)).toEqual({
-        attributes: {}
+        attributes: {},
+        skillsDifferent: false
       });
     });
   });
