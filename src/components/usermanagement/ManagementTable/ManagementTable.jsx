@@ -6,20 +6,25 @@ import {
   Edit,
   ChangeHistoryRounded
 } from "@material-ui/icons";
-import { EditUserModal } from "components";
+import {
+  EditUserModal,
+  StyledButton
+} from "components";
 import {
   useAdminDispatch,
   useAdminState
 } from "context";
+import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
 import {
-  formatWorkerSkillsToHTML
+  formatWorkerSkillsToHTML,
+  mapWorkerFromTwilioWorker,
+  myAxios
 } from "utils";
 
-const iconFieldWidth = "30px";
-const switchFieldWidth = "58px";
+const inputHeaderWidth = "64px";
 
 const CustomTable = styled.table`
   border-spacing: 0;
@@ -46,10 +51,6 @@ const CustomTableRow = styled.tr`
     background-color: ${props => props.selected ? props.theme.tableRow.hoverSelectedColor : props.theme.tableRow.hoverColor};
     cursor: pointer;
   }
-`;
-
-const DeltaNotification = styled(ChangeHistoryRounded)`
-  color: #565656;
 `;
 
 const DeltaWrapper = styled.div`
@@ -107,6 +108,28 @@ const ManagementTable = props => {
   const selectedWorkers = state.workerContext.selectedWorkers;
   const dispatch = useAdminDispatch();
 
+  const resetWorkers = () => {
+    myAxios
+      .post(apiPaths.RESET_WORKER_SKILLS, {
+        workerSids: selectedWorkers
+      }).then(response => {
+        response.data.forEach(result => {
+          if (result.updated){
+            dispatch({
+              type: "toggleWorkerSelected",
+              payload: result.workerSid
+            });
+            dispatch({
+              type: "updateWorker",
+              payload: mapWorkerFromTwilioWorker(result.worker)
+            });
+          } else {
+            // record an array of workers that did not get udpated.
+          }
+        });
+      });
+  };
+
   return (
     <TableContainer>
       <CustomTable>
@@ -117,13 +140,14 @@ const ManagementTable = props => {
             <CustomTableHeader width={"20%"}>OFFICE</CustomTableHeader>
             <CustomTableHeader width={"20%"}>SKILLS (Current)</CustomTableHeader>
             <CustomTableHeader width={"20%"}>SKILLS (Default)</CustomTableHeader>
-            <CustomTableHeader width={switchFieldWidth}>
-              <Switch
-                checked={deltaToggle}
-                onChange={() => setDeltaToggle(!deltaToggle)}
-                inputProps={{ "aria-label": "toggle skills modified" }} />
+            <CustomTableHeader width={inputHeaderWidth}>
+              <Switch checked={deltaToggle} onChange={() => setDeltaToggle(!deltaToggle)} inputProps={{ "aria-label": "toggle skills modified" }} />
             </CustomTableHeader>
-            <CustomTableHeader width={iconFieldWidth}/>
+            <CustomTableHeader width={inputHeaderWidth}>
+              <StyledButton disabled={selectedWorkers.length === 0} onClick={() => resetWorkers()}>
+                Reset
+              </StyledButton>
+            </CustomTableHeader>
           </tr>
         </thead>
         <tbody>
@@ -149,7 +173,7 @@ const ManagementTable = props => {
                 <CustomTableData><TableDataFlex>{formatWorkerSkillsToHTML(worker.attributes.default_skills)}</TableDataFlex></CustomTableData>
                 <CustomTableData>
                   {
-                    worker.skillsDifferent ? <DeltaWrapper><DeltaNotification data-testid="delta-icon" fontSize={"inherit"}/></DeltaWrapper> : null
+                    worker.skillsDifferent ? <DeltaWrapper data-testid="delta-icon"><ChangeHistoryRounded fontSize={"inherit"}/></DeltaWrapper> : null
                   }
                 </CustomTableData>
                 <CustomTableData>
