@@ -2,7 +2,6 @@ import AddUserModal from "../AddUserModal";
 import MockAdapter from "axios-mock-adapter";
 import {
   CustomSelect,
-  ModalHeader,
   ModalHelperText,
   ModalNNumber,
   ModalOverlay,
@@ -35,7 +34,6 @@ jest.mock("components", () => ({
   __esModule: true,
   StyledButton: jest.fn(),
   CustomSelect: jest.fn(),
-  ModalHeader: jest.fn(),
   ModalHelperText: jest.fn(),
   ModalNNumber: jest.fn(),
   ModalOverlay: jest.fn(),
@@ -105,7 +103,6 @@ describe("<AddUserModal />", () => {
     setupMockedComponents({
       StyledButton,
       CustomSelect,
-      ModalHeader,
       ModalHelperText,
       ModalNNumber,
       ModalOverlay,
@@ -125,7 +122,7 @@ describe("<AddUserModal />", () => {
       expectMockedComponent(rendered, { ModalPhoneNumber }, 1);
       expectMockedComponent(rendered, { ModalOverlay }, 0);
       expectMockedComponent(rendered, { ModalHelperText }, 0);
-      expect(getMockedComponentProps(ModalHeader, getLastInstanceCalled(ModalHeader)).children).toBe("Add a User");
+      expect(rendered.container).toHaveTextContent("Add a User");
       expectMockedComponent(rendered, { StyledButton }, 2);
       expectOnlyPassedProps(StyledButton, {
         children: "Add User",

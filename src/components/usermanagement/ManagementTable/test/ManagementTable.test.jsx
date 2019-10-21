@@ -21,8 +21,26 @@ jest.mock("components", () => ({
 const mockWorkerData = [
   {
     attributes: {
+      default_skills: {
+        skills: [
+          "466",
+          "psuUm"
+        ],
+        levels: {
+          "466": 3
+        }
+      },
       full_name: "Test 1",
-      office_location_name: "Neptune"
+      office_location_name: "Neptune",
+      routing: {
+        skills: [
+          "466",
+          "psuUm"
+        ],
+        levels: {
+          "466": 3
+        }
+      }
     },
     id: "n1234567",
     sid: "WK0"
@@ -37,8 +55,16 @@ const mockWorkerData = [
   },
   {
     attributes: {
+      default_skills: {
+        skills: [],
+        levels: {}
+      },
       full_name: "Test 3",
-      office_location_name: "Jupiter"
+      office_location_name: "Jupiter",
+      routing: {
+        skills: [],
+        levels: {}
+      }
     },
     id: "n0498575",
     sid: "WK2"
@@ -52,6 +78,8 @@ describe("<ManagementTable />", () => {
     expect(rendered.getByText("NAME", { selector: "th" })).toBeInTheDocument();
     expect(rendered.getByText("N NUMBER", { selector: "th" })).toBeInTheDocument();
     expect(rendered.getByText("OFFICE", { selector: "th" })).toBeInTheDocument();
+    expect(rendered.getByText("SKILLS (Current)", { selector: "th" })).toBeInTheDocument();
+    expect(rendered.getByText("SKILLS (Default)", { selector: "th" })).toBeInTheDocument();
   });
   test("with workers, we should display full name, id & office location for each", () => {
     const rendered = render(<ManagementTable workers={mockWorkerData} />);
@@ -61,6 +89,20 @@ describe("<ManagementTable />", () => {
       expect(rendered.container).toHaveTextContent(entry.attributes.office_location_name);
       expect(rendered.container).not.toHaveTextContent(entry.sid);
     });
+  });
+  test("for workers with skills and/or priorities, we should show the correct information and format", () => {
+    const rendered = render(<ManagementTable workers={mockWorkerData} />);
+    const mockWorkerOneRoutingSkills = mockWorkerData[0].attributes.routing.skills;
+    const mockWorkerOneRoutingLevels = mockWorkerData[0].attributes.routing.levels;
+    expect(rendered.container).toHaveTextContent(`${mockWorkerOneRoutingSkills[0]} - ${mockWorkerOneRoutingLevels[mockWorkerOneRoutingSkills[0]]}`);
+    expect(rendered.container).toHaveTextContent(mockWorkerOneRoutingSkills[1]);
+  });
+  test("for workers with default skills and/or priorities, we should show the correct information and format", () => {
+    const rendered = render(<ManagementTable workers={mockWorkerData} />);
+    const mockWorkerOneDefaultSkills = mockWorkerData[0].attributes.default_skills.skills;
+    const mockWorkerOneDefaultLevels = mockWorkerData[0].attributes.default_skills.levels;
+    expect(rendered.container).toHaveTextContent(`${mockWorkerOneDefaultSkills[0]} - ${mockWorkerOneDefaultLevels[mockWorkerOneDefaultSkills[0]]}`);
+    expect(rendered.container).toHaveTextContent(mockWorkerOneDefaultSkills[1]);
   });
   describe("user rows are clicked", () => {
     test("should dispatch toggleWorkerSelected actions and highlight rows of selected workers", () => {

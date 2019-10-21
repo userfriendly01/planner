@@ -86,20 +86,23 @@ const EditUserModal = props => {
 
   const [form, setForm] = useState({
     defaultSkills: getValidSkillsObject(worker.attributes.default_skills),
+    defaultSkillsUpdated: false,
     manager: JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number)),
-    formHasBeenUpdated: false
+    managerUpdated: false
   });
 
   const saveUserClicked = () => {
     setSaveUser(loadingStates.saving);
-    const parsedManager = JSON.parse(form.manager);
-    const attributes = {
-      default_skills: form.defaultSkills,
-      manager_first_name: parsedManager.manager_first_name,
-      manager_last_name: parsedManager.manager_last_name,
-      manager_n_number: parsedManager.manager_n_number
-    };
-
+    const attributes = {};
+    if (form.defaultSkillsUpdated) {
+      attributes.default_skills = form.defaultSkills;
+    }
+    if (form.managerUpdated) {
+      const parsedManager = JSON.parse(form.manager);
+      attributes.manager_first_name = parsedManager.manager_first_name;
+      attributes.manager_last_name = parsedManager.manager_last_name;
+      attributes.manager_n_number = parsedManager.manager_n_number;
+    }
     myAxios
       .post(apiPaths.UPDATE_WORKER_ATTRIBUTES, {
         workerSid: worker.sid,
@@ -121,15 +124,21 @@ const EditUserModal = props => {
       });
   };
 
-  const setDefaultSkills = updatedDefaultSkills => {
-    setForm({
-      ...form,
-      defaultSkills: updatedDefaultSkills,
-      formHasBeenUpdated: true
-    });
-  };
+  const setDefaultSkills = updatedDefaultSkills => setForm({
+    ...form,
+    defaultSkills: updatedDefaultSkills,
+    defaultSkillsUpdated: true
+  });
 
-  const formReady = form.formHasBeenUpdated === true && form.manager !== "";
+  const setManager = newValue => setForm({
+    ...form,
+    manager: newValue,
+    managerUpdated: true
+  });
+
+  const formUpdated = (form.defaultSkillsUpdated || form.managerUpdated);
+  const formValid = form.manager !== "";
+  const formReady = formUpdated && formValid;
 
   return (
     <ModalContainer>
@@ -161,11 +170,7 @@ const EditUserModal = props => {
               value: JSON.stringify(option)
             };
           }}
-          updateValue={newValue => setForm({
-            ...form,
-            manager: newValue,
-            formHasBeenUpdated: true
-          })}
+          updateValue={setManager}
           value={form.manager}
         />
         <DefaultSkillSelector defaultSkills={form.defaultSkills} setDefaultSkills={setDefaultSkills}/>
