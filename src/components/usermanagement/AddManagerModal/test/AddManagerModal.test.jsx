@@ -2,7 +2,6 @@ import AddManagerModal from "../AddManagerModal";
 import { CloseRounded } from "@material-ui/icons";
 import MockAdapter from "axios-mock-adapter";
 import {
-  ModalHeader,
   ModalHelperText,
   ModalNNumber,
   ModalOverlay,
@@ -34,7 +33,6 @@ jest.mock("@material-ui/icons", () => ({
 jest.mock("components", () => ({
   __esModule: true,
   ModalHelperText: jest.fn(),
-  ModalHeader: jest.fn(),
   ModalNNumber: jest.fn(),
   ModalOverlay: jest.fn(),
   PaperContainer: jest.fn(),
@@ -64,7 +62,6 @@ describe("<AddManagerModal />", () => {
   beforeEach(() => {
     setupMockedComponents({
       CloseRounded,
-      ModalHeader,
       ModalHelperText,
       ModalNNumber,
       ModalOverlay,
@@ -77,11 +74,10 @@ describe("<AddManagerModal />", () => {
   });
 
   describe("initial state of the modal", () => {
-    test("should render StyledButton, CloseRounded, ModalHeader & ModalNNumber once each", () => {
+    test("should render StyledButton, CloseRounded & ModalNNumber once each", () => {
       const rendered = renderComponent();
       expectMockedComponent(rendered, { StyledButton });
       expectMockedComponent(rendered, { CloseRounded });
-      expectMockedComponent(rendered, { ModalHeader });
       expectMockedComponent(rendered, { ModalNNumber });
     });
     test("should not render ModalHelperText or ModalOverlay", () => {

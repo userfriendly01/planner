@@ -1,6 +1,5 @@
 import {
   CustomSelect,
-  ModalHeader,
   ModalHelperText,
   ModalNNumber,
   ModalOverlay,
@@ -42,6 +41,10 @@ const FlexRow = styled.div`
 const ButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
   padding: 1%;
+`;
+
+const Header = styled.h1`
+  align-self: center;
 `;
 
 const ModalContainer = styled(FlexColumn)`
@@ -206,7 +209,7 @@ const AddUserModal = props => {
             status={loading.saveStatus}
             message={loading.saveStatus === "success" ? "User added successfully" : "Failed to add user"}
           /> : null}
-        <ModalHeader>Add a User</ModalHeader>
+        <Header>Add a User</Header>
         <CustomSelect
           label={"Manager"}
           labelWidth={65}
