@@ -2,6 +2,8 @@ import ManagementTable from "../ManagementTable";
 import MockAdapter from "axios-mock-adapter";
 import {
   EditUserModal,
+  ModalOverlay,
+  ResultsModal,
   StyledButton
 } from "components";
 import {
@@ -29,6 +31,8 @@ const axiosMock = new MockAdapter(myAxios);
 jest.mock("components", () => ({
   __esModule: true,
   EditUserModal: jest.fn(),
+  ModalOverlay: jest.fn(),
+  ResultsModal: jest.fn(),
   StyledButton: jest.fn()
 }));
 
@@ -103,6 +107,8 @@ describe("<ManagementTable />", () => {
   beforeEach(() => {
     setupMockedComponents({
       EditUserModal,
+      ModalOverlay,
+      ResultsModal,
       StyledButton
     });
     mockStore.reset();
@@ -156,11 +162,17 @@ describe("<ManagementTable />", () => {
       expect(mockStore.getActions()).toEqual([
         {
           type: "toggleWorkerSelected",
-          payload: mockWorkerData[0].sid
+          payload: {
+            name: mockWorkerData[0].attributes.full_name,
+            sid: mockWorkerData[0].sid
+          }
         },
         {
           type: "toggleWorkerSelected",
-          payload: mockWorkerData[2].sid
+          payload: {
+            name: mockWorkerData[2].attributes.full_name,
+            sid: mockWorkerData[2].sid
+          }
         }
       ]);
       expect(tableRows[0]).toHaveStyleRule("background-color", theme.tableRow.selectedColor);
@@ -185,7 +197,7 @@ describe("<ManagementTable />", () => {
           }
         ]);
       });
-      test("we should dispatch the correct actions", done => {
+      test("we should dispatch the correct actions, results modal should recieve an empty array.", done => {
         const state = getTestState();
         const rendered = render(<ManagementTable deltaToggle={false} setDeltaToggle={setDeltaToggle} workers={mockWorkerData} />, state);
         const tableRows = rendered.getAllByTestId("table-row");
@@ -200,7 +212,9 @@ describe("<ManagementTable />", () => {
           expect(mockStore.getActions()).toEqual([
             {
               type: "toggleWorkerSelected",
-              payload: mockWorkerData[0].sid
+              payload: {
+                sid: mockWorkerData[0].sid
+              }
             },
             {
               type: "updateWorker",
@@ -208,13 +222,16 @@ describe("<ManagementTable />", () => {
             },
             {
               type: "toggleWorkerSelected",
-              payload: mockWorkerData[2].sid
+              payload: {
+                sid: mockWorkerData[2].sid
+              }
             },
             {
               type: "updateWorker",
               payload: mapWorkerFromTwilioWorker(mockWorkerData[2])
             }
           ]);
+          expect(ResultsModal.mock.calls[0][0].unsuccessfulWorkers).toEqual([]);
           done();
         });
       });
@@ -228,13 +245,14 @@ describe("<ManagementTable />", () => {
             worker: mockWorkerData[0]
           },
           {
+            reason: "bad stuff happened",
             updated: false,
             workerSid: mockWorkerData[2].sid,
             worker: mockWorkerData[2]
           }
         ]);
       });
-      test("we should dispatch only dispatch actions on the passed worker resets", done => {
+      test("we should dispatch only dispatch actions on the passed worker resets. Results modal should recieve the failed worker reset.", done => {
         const state = getTestState();
         const rendered = render(<ManagementTable deltaToggle={false} setDeltaToggle={setDeltaToggle} workers={mockWorkerData} />, state);
         const tableRows = rendered.getAllByTestId("table-row");
@@ -243,19 +261,33 @@ describe("<ManagementTable />", () => {
         act(() => fireEvent.click(tableRows[2]));
         mockStore.reset();
         act(() => {
-          StyledButton.mock.calls[2][0].onClick();
+          act(() => StyledButton.mock.calls[2][0].onClick());
+          // expectMockedComponent(rendered, { ModalOverlay }, 1);
+          expectMockedComponent(rendered, { ResultsModal }, 0);
           return Promise.resolve();
         }).then(() => {
+          expectMockedComponent(rendered, { ModalOverlay }, 0);
+          expectMockedComponent(rendered, { ResultsModal }, 1);
           expect(mockStore.getActions()).toEqual([
             {
               type: "toggleWorkerSelected",
-              payload: mockWorkerData[0].sid
+              payload: {
+                sid: mockWorkerData[0].sid
+              }
             },
             {
               type: "updateWorker",
               payload: mapWorkerFromTwilioWorker(mockWorkerData[0])
             }
           ]);
+          expect(ResultsModal.mock.calls[0][0].unsuccessfulWorkers).toEqual([
+            {
+              name: "Test 3",
+              reason: "bad stuff happened"
+            }
+          ]);
+          act(() => ResultsModal.mock.calls[0][0].handleClose());
+          expectMockedComponent(rendered, { ResultsModal }, 0);
           done();
         });
       });

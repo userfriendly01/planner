@@ -8,6 +8,8 @@ import {
 } from "@material-ui/icons";
 import {
   EditUserModal,
+  ModalOverlay,
+  ResultsModal,
   StyledButton
 } from "components";
 import {
@@ -83,6 +85,7 @@ const TableContainer = styled.div`
   flex: 1 1 auto;
   flex-direction: column;
   padding: 2%;
+  position: relative;
 `;
 
 const TableDataFlex = styled.div`
@@ -103,35 +106,65 @@ const ManagementTable = props => {
     worker: null
   };
 
+  const defaultResetInformation = {
+    open: false,
+    resetting: false,
+    successfulResets: [],
+    unsuccessfulResets: []
+  };
+
   const [editUserModalOpts, setEditUserModalOpts] = useState(defaultEditUserModalOpts);
+  const [resultsModalOpts, setResultsModalOpts] = useState(defaultResetInformation);
   const state = useAdminState();
   const selectedWorkers = state.workerContext.selectedWorkers;
   const dispatch = useAdminDispatch();
 
   const resetWorkers = () => {
+    setResultsModalOpts({
+      ...resultsModalOpts,
+      resetting: true
+    });
     myAxios
       .post(apiPaths.RESET_WORKER_SKILLS, {
-        workerSids: selectedWorkers
+        workerSids: selectedWorkers.map(worker => worker.sid)
       }).then(response => {
+        const failedWorkers = [];
+        const passedWorkers = [];
         response.data.forEach(result => {
           if (result.updated){
+            const updatedWorker = mapWorkerFromTwilioWorker(result.worker);
             dispatch({
               type: "toggleWorkerSelected",
-              payload: result.workerSid
+              payload: {
+                sid: result.workerSid
+              }
             });
             dispatch({
               type: "updateWorker",
-              payload: mapWorkerFromTwilioWorker(result.worker)
+              payload: updatedWorker
+            });
+            passedWorkers.push({
+              name: selectedWorkers.find(worker => result.workerSid === worker.sid).name
             });
           } else {
-            // record an array of workers that did not get udpated.
+            failedWorkers.push({
+              reason: result.reason,
+              name: selectedWorkers.find(worker => result.workerSid === worker.sid).name
+            });
           }
+        });
+        setResultsModalOpts({
+          open: true,
+          resetting: false,
+          successfulResets: passedWorkers,
+          unsuccessfulResets: failedWorkers
         });
       });
   };
 
   return (
     <TableContainer>
+      { resultsModalOpts.resetting ? <ModalOverlay message="Resetting Workers" status="saving" /> : null }
       <CustomTable>
         <thead>
           <tr>
@@ -152,10 +185,13 @@ const ManagementTable = props => {
         </thead>
         <tbody>
           {workers.map((worker,index) => {
-            const isSelected = selectedWorkers.includes(worker.sid);
+            const isSelected = selectedWorkers.some(selectedWorker => selectedWorker.sid === worker.sid);
             const handleWorkerOnClick = () => dispatch({
               type: "toggleWorkerSelected",
-              payload: worker.sid
+              payload: {
+                name: worker.attributes.full_name,
+                sid: worker.sid
+              }
             });
             const editButtonOnClick = event => {
               event.stopPropagation();
@@ -187,6 +223,12 @@ const ManagementTable = props => {
         </tbody>
         <Modal open={editUserModalOpts.open}>
           <EditUserModal handleClose={() => setEditUserModalOpts(defaultEditUserModalOpts)} worker={editUserModalOpts.worker}/>
+        </Modal>
+        <Modal open={resultsModalOpts.open}>
+          <ResultsModal
+            handleClose={() => setResultsModalOpts(defaultResetInformation)}
+            successfulWorkers={resultsModalOpts.successfulResets}
+            unsuccessfulWorkers={resultsModalOpts.unsuccessfulResets} />
         </Modal>
       </CustomTable>
     </TableContainer>

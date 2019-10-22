@@ -67,8 +67,8 @@ export const reducer = (state, action) => {
         workerContext: {
           ...state.workerContext,
           selectedWorkers:
-            state.workerContext.selectedWorkers.find(sid => sid === action.payload)
-              ? state.workerContext.selectedWorkers.filter(sid => sid !== action.payload)
+            state.workerContext.selectedWorkers.find(worker => worker.sid === action.payload.sid)
+              ? state.workerContext.selectedWorkers.filter(worker => worker.sid !== action.payload.sid)
               : [...state.workerContext.selectedWorkers, action.payload]
         }
       };
