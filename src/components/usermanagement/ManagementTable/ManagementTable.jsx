@@ -49,7 +49,7 @@ const CustomTableRow = styled.tr`
 `;
 
 const DeltaNotification = styled(ChangeHistoryRounded)`
-  color: #565656;
+  color: ${props => props.theme.libertyDarkGray};
 `;
 
 const DeltaWrapper = styled.div`
@@ -63,7 +63,7 @@ const DeltaWrapper = styled.div`
 const IconWrapper = styled.div`
   align-items: center;
   border-radius: ${props => props.theme.tableRow.icon.hoverDiameter / 2}px;
-  color: #565656;
+  color: ${props => props.theme.libertyDarkGray};
   cursor: pointer;
   display: flex;
   font-size: ${props => props.theme.tableRow.icon.size}px;
