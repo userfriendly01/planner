@@ -53,6 +53,7 @@ const ManagementWrapper = () => {
   const sortedWorkers = [ ...workers ].sort(sortByWorkerFullName);
 
   const [state, setState] = useState({
+    deltaToggle: false,
     pageSelected: 1,
     filterBy: "show-all",
     searchBy: ""
@@ -62,13 +63,21 @@ const ManagementWrapper = () => {
     ? sortedWorkers
     : sortedWorkers.filter(worker => worker.attributes.manager_n_number === state.filterBy);
 
+  const workersByDelta = !state.deltaToggle ? workersByManager : workersByManager.filter(worker => worker.skillsDifferent);
+
   const trimmedSearch = state.searchBy.trim();
-  const workersByManagerSearched = trimmedSearch === "" ? workersByManager : workersByManager.filter(worker => filterByNameAndSkills(worker, trimmedSearch));
+  const workersByManagerSearched = trimmedSearch === "" ? workersByDelta : workersByDelta.filter(worker => filterByNameAndSkills(worker, trimmedSearch));
 
   const {
     workersStart,
     workersEnd
   } = getWorkersStartAndEnd(state.pageSelected, workersByManagerSearched);
+
+  const setStateFromDeltaToggle = deltaToggle => setState({
+    ...state,
+    deltaToggle,
+    pageSelected: 1
+  });
 
   const setStateFromFilterChange = filterBy => setState({
     ...state,
@@ -83,7 +92,7 @@ const ManagementWrapper = () => {
 
   const setStateFromSearchChange = searchBy => setState({
     ...state,
-    pageSelected: 1, // For now resetting the page... we'll see if this is needed
+    pageSelected: 1,
     searchBy
   });
 
@@ -95,7 +104,10 @@ const ManagementWrapper = () => {
         setFilter={setStateFromFilterChange}
         setSearch={setStateFromSearchChange} />
       <StyledPaper elevation={3}>
-        <ManagementTable workers={workersByManagerSearched.slice(workersStart, workersEnd)} />
+        <ManagementTable
+          deltaToggle={state.deltaToggle}
+          setDeltaToggle={setStateFromDeltaToggle}
+          workers={workersByManagerSearched.slice(workersStart, workersEnd)} />
       </StyledPaper>
       <ManagementPagination
         end={workersEnd}

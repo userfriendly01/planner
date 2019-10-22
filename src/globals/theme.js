@@ -10,6 +10,7 @@ export const theme = {
     }
   },
   lineSeperatorColor: "#9E9E9E",
+  libertyDarkGray: "#565656",
   tableRow: {
     borderColor: "#F5F5F5",
     darkerBorderColor: "#E7E7E7",

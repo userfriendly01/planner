@@ -58,6 +58,10 @@ const ModalContainer = styled(FlexColumn)`
   transform: translate(-50%, -50%);
 `;
 
+const StyledCloseRounded = styled(CloseRounded)`
+  cursor: pointer;
+`;
+
 const loadingStates = {
   fail: "fail",
   saving: "saving",
@@ -143,7 +147,7 @@ const EditUserModal = props => {
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>
           <h1>Update User</h1>
-          <CloseRounded onClick={handleClose}/>
+          <StyledCloseRounded onClick={handleClose}/>
         </HeaderAndCloseButtonWrapper>
         <CenteredH2>{worker.attributes.full_name}</CenteredH2>
         <CenteredH2>{worker.attributes.n_number}</CenteredH2>
