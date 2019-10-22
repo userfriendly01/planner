@@ -164,7 +164,7 @@ const DefaultSkillSelector = props => {
         </SkillRowItem>
       </SkillRow>
       <SkillRowSeperator/>
-      {defaultSkills.skills.map((skill, index) => {
+      {defaultSkills.skills.sort().map((skill, index) => {
         const taskrouterSkill = findTaskRouterSkill(skill, taskrouterSkills);
         return (
           <SkillRow highlightOnHover={true} key={`default-skill-row-${index}`}>
