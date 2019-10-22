@@ -43,7 +43,8 @@ const mockWorkerData = [
       }
     },
     id: "n1234567",
-    sid: "WK0"
+    sid: "WK0",
+    skillsDifferent: false
   },
   {
     attributes: {
@@ -51,12 +52,13 @@ const mockWorkerData = [
       office_location_name: "Uranus"
     },
     id: "n0999999",
-    sid: "WK1"
+    sid: "WK1",
+    skillsDifferent: false
   },
   {
     attributes: {
       default_skills: {
-        skills: [],
+        skills: ["466"],
         levels: {}
       },
       full_name: "Test 3",
@@ -67,14 +69,29 @@ const mockWorkerData = [
       }
     },
     id: "n0498575",
-    sid: "WK2"
+    sid: "WK2",
+    skillsDifferent: true
   }
 ];
 
+const setDeltaToggle = jest.fn();
+
+const renderComponent = (workers, toggle = false) => {
+  return render(
+    <ManagementTable
+      deltaToggle={toggle}
+      setDeltaToggle={setDeltaToggle}
+      workers={workers}
+    />);
+};
+
 describe("<ManagementTable />", () => {
-  beforeEach(() => setupMockedComponents({ EditUserModal }));
+  beforeEach(() => {
+    setupMockedComponents({ EditUserModal });
+    setDeltaToggle.mockClear();
+  });
   test("with no workers, we should just render a header.", () => {
-    const rendered = render(<ManagementTable workers={[]} />);
+    const rendered = renderComponent([]);
     expect(rendered.getByText("NAME", { selector: "th" })).toBeInTheDocument();
     expect(rendered.getByText("N NUMBER", { selector: "th" })).toBeInTheDocument();
     expect(rendered.getByText("OFFICE", { selector: "th" })).toBeInTheDocument();
@@ -82,7 +99,7 @@ describe("<ManagementTable />", () => {
     expect(rendered.getByText("SKILLS (Default)", { selector: "th" })).toBeInTheDocument();
   });
   test("with workers, we should display full name, id & office location for each", () => {
-    const rendered = render(<ManagementTable workers={mockWorkerData} />);
+    const rendered = renderComponent(mockWorkerData);
     mockWorkerData.forEach(entry => {
       expect(rendered.container).toHaveTextContent(entry.attributes.full_name);
       expect(rendered.container).toHaveTextContent(entry.id);
@@ -91,23 +108,27 @@ describe("<ManagementTable />", () => {
     });
   });
   test("for workers with skills and/or priorities, we should show the correct information and format", () => {
-    const rendered = render(<ManagementTable workers={mockWorkerData} />);
+    const rendered = renderComponent(mockWorkerData);
     const mockWorkerOneRoutingSkills = mockWorkerData[0].attributes.routing.skills;
     const mockWorkerOneRoutingLevels = mockWorkerData[0].attributes.routing.levels;
     expect(rendered.container).toHaveTextContent(`${mockWorkerOneRoutingSkills[0]} - ${mockWorkerOneRoutingLevels[mockWorkerOneRoutingSkills[0]]}`);
     expect(rendered.container).toHaveTextContent(mockWorkerOneRoutingSkills[1]);
   });
   test("for workers with default skills and/or priorities, we should show the correct information and format", () => {
-    const rendered = render(<ManagementTable workers={mockWorkerData} />);
+    const rendered = renderComponent(mockWorkerData);
     const mockWorkerOneDefaultSkills = mockWorkerData[0].attributes.default_skills.skills;
     const mockWorkerOneDefaultLevels = mockWorkerData[0].attributes.default_skills.levels;
     expect(rendered.container).toHaveTextContent(`${mockWorkerOneDefaultSkills[0]} - ${mockWorkerOneDefaultLevels[mockWorkerOneDefaultSkills[0]]}`);
     expect(rendered.container).toHaveTextContent(mockWorkerOneDefaultSkills[1]);
   });
+  test("for workers with applied skills and/or priorities that differ from the default, we should show a delta icon", () => {
+    const rendered = renderComponent(mockWorkerData);
+    expect(rendered.getAllByTestId("delta-icon")).toHaveLength(1);
+  });
   describe("user rows are clicked", () => {
     test("should dispatch toggleWorkerSelected actions and highlight rows of selected workers", () => {
       const state = getTestState();
-      const rendered = render(<ManagementTable workers={mockWorkerData} />, state);
+      const rendered = render(<ManagementTable deltaToggle={false} setDeltaToggle={setDeltaToggle} workers={mockWorkerData} />, state);
       const tableRows = rendered.getAllByTestId("table-row");
       expect(tableRows).toHaveLength(3);
       act(() => fireEvent.click(tableRows[0]));
@@ -129,7 +150,7 @@ describe("<ManagementTable />", () => {
   });
   describe("Edit icon is clicked in row", () => {
     test("should show EditUserModal for corresponding worker, not highlight the row as selected, and close EditUserModal when handleClose is fired", () => {
-      const rendered = render(<ManagementTable workers={mockWorkerData} />);
+      const rendered = renderComponent(mockWorkerData);
       const editButtons = rendered.getAllByTestId("edit-button");
       expectMockedComponent(rendered, { EditUserModal }, 0);
       const indexClicked = 1;
@@ -144,6 +165,13 @@ describe("<ManagementTable />", () => {
       expectMockedComponent(rendered, { EditUserModal }, 0);
       const tableRows = rendered.getAllByTestId("table-row");
       expect(tableRows[indexClicked]).toHaveStyleRule("background-color", "inherit");
+    });
+  });
+  describe("Change the Delta Switch icon is clicked in row", () => {
+    test("should fire the method sent in to the component to update the filter upstream", () => {
+      const rendered = renderComponent(mockWorkerData);
+      act(() => fireEvent.click(rendered.getByLabelText("toggle skills modified")));
+      expect(setDeltaToggle.mock.calls).toHaveLength(1);
     });
   });
 });

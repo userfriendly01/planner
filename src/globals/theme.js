@@ -5,6 +5,7 @@ export const theme = {
       hoverColor: "#9EDEDE"
     }
   },
+  libertyDarkGray: "#565656",
   tableRow: {
     borderColor: "#F5F5F5",
     icon: {

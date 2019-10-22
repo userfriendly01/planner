@@ -1,5 +1,11 @@
-import { Modal } from "@material-ui/core";
-import { Edit } from "@material-ui/icons";
+import {
+  Modal,
+  Switch
+} from "@material-ui/core";
+import {
+  Edit,
+  ChangeHistoryRounded
+} from "@material-ui/icons";
 import { EditUserModal } from "components";
 import {
   useAdminDispatch,
@@ -8,9 +14,12 @@ import {
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { formatWorkerSkillsToHTML } from "utils";
+import {
+  formatWorkerSkillsToHTML
+} from "utils";
 
 const iconFieldWidth = "30px";
+const switchFieldWidth = "58px";
 
 const CustomTable = styled.table`
   border-spacing: 0;
@@ -39,9 +48,22 @@ const CustomTableRow = styled.tr`
   }
 `;
 
+const DeltaNotification = styled(ChangeHistoryRounded)`
+  color: ${props => props.theme.libertyDarkGray};
+`;
+
+const DeltaWrapper = styled.div`
+  align-items: center;
+  color: ${props => props.theme.libertyDarkGray};
+  display: flex;
+  justify-content: center;
+  margin: auto;
+`;
+
 const IconWrapper = styled.div`
   align-items: center;
   border-radius: ${props => props.theme.tableRow.icon.hoverDiameter / 2}px;
+  color: ${props => props.theme.libertyDarkGray};
   cursor: pointer;
   display: flex;
   font-size: ${props => props.theme.tableRow.icon.size}px;
@@ -69,7 +91,11 @@ const TableDataFlex = styled.div`
 `;
 
 const ManagementTable = props => {
-  const { workers } = props;
+  const {
+    deltaToggle,
+    setDeltaToggle,
+    workers
+  } = props;
 
   const defaultEditUserModalOpts = {
     open: false,
@@ -91,6 +117,12 @@ const ManagementTable = props => {
             <CustomTableHeader width={"20%"}>OFFICE</CustomTableHeader>
             <CustomTableHeader width={"20%"}>SKILLS (Current)</CustomTableHeader>
             <CustomTableHeader width={"20%"}>SKILLS (Default)</CustomTableHeader>
+            <CustomTableHeader width={switchFieldWidth}>
+              <Switch
+                checked={deltaToggle}
+                onChange={() => setDeltaToggle(!deltaToggle)}
+                inputProps={{ "aria-label": "toggle skills modified" }} />
+            </CustomTableHeader>
             <CustomTableHeader width={iconFieldWidth}/>
           </tr>
         </thead>
@@ -116,6 +148,11 @@ const ManagementTable = props => {
                 <CustomTableData><TableDataFlex>{formatWorkerSkillsToHTML(worker.attributes.routing)}</TableDataFlex></CustomTableData>
                 <CustomTableData><TableDataFlex>{formatWorkerSkillsToHTML(worker.attributes.default_skills)}</TableDataFlex></CustomTableData>
                 <CustomTableData>
+                  {
+                    worker.skillsDifferent ? <DeltaWrapper><DeltaNotification data-testid="delta-icon" fontSize={"inherit"}/></DeltaWrapper> : null
+                  }
+                </CustomTableData>
+                <CustomTableData>
                   <IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
                     <Edit fontSize={"inherit"}/>
                   </IconWrapper>
@@ -133,6 +170,8 @@ const ManagementTable = props => {
 };
 
 ManagementTable.propTypes = {
+  deltaToggle: PropTypes.bool.isRequired,
+  setDeltaToggle: PropTypes.func.isRequired,
   workers: PropTypes.arrayOf(
     PropTypes.shape({
       attributes: PropTypes.object,

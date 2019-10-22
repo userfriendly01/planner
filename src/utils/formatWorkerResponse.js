@@ -1,3 +1,5 @@
+import { areSkillsDifferent } from "utils";
+
 export const formatWorkerResponse = response => {
   if (response) {
     const formattedWorkers = response.map(mapWorkerFromTwilioWorker);
@@ -17,9 +19,11 @@ export const mapWorkerFromTwilioWorker = twilioWorker => {
       error
     });
   }
+  const skillsDifferent = areSkillsDifferent(attributes);
   return {
     attributes,
     id: twilioWorker.friendlyName,
-    sid: twilioWorker.sid
+    sid: twilioWorker.sid,
+    skillsDifferent
   };
 };

@@ -66,6 +66,13 @@ const ModalText = styled.div`
   margin: 2% 2% 0% 2%;
 `;
 
+<<<<<<< HEAD
+=======
+const StyledCloseRounded = styled(CloseRounded)`
+  cursor: pointer;
+`;
+
+>>>>>>> a7a3632548296eb5f239400e80694ffdf541da56
 const loadingStates = {
   fail: "fail",
   saving: "saving",

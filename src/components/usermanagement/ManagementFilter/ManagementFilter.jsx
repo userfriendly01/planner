@@ -10,8 +10,21 @@ import styled from "styled-components";
 const ControlsWrapper = styled.div`
   align-items: center;
   display: flex;
-  justify-content: space-between;
   padding 1%;
+`;
+
+const ControlItem = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  &:first-child {
+    justify-content: flex-start;
+    margin-right: auto;
+  }
+  &:last-child {
+    justify-content: flex-end;
+    margin-left: auto;
+  }
 `;
 
 const ManagementFilter = props => {
@@ -24,9 +37,15 @@ const ManagementFilter = props => {
 
   return (
     <ControlsWrapper>
-      <ManagerFilter filterBy={filterBy} setFilter={setFilter}/>
-      <SearchBox searchBy={searchBy} setSearch={setSearch}/>
-      <AddUser />
+      <ControlItem>
+        <ManagerFilter filterBy={filterBy} setFilter={setFilter}/>
+      </ControlItem>
+      <ControlItem>
+        <SearchBox searchBy={searchBy} setSearch={setSearch}/>
+      </ControlItem>
+      <ControlItem>
+        <AddUser />
+      </ControlItem>
     </ControlsWrapper>
   );
 };
