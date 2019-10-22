@@ -1,5 +1,5 @@
 import PriorityDropDown from "../PriorityDropDown";
-import { CustomSelect } from "components";
+import { OutlinedSelect } from "components";
 import React from "react";
 import {
   expectMockedComponent,
@@ -10,7 +10,7 @@ import {
 
 jest.mock("components", () => ({
   __esModule: true,
-  CustomSelect: jest.fn()
+  OutlinedSelect: jest.fn()
 }));
 
 describe("<PriorityDropDown />", () => {
@@ -25,21 +25,21 @@ describe("<PriorityDropDown />", () => {
     />);
   };
   beforeEach(() => {
-    setupMockedComponents({ CustomSelect });
+    setupMockedComponents({ OutlinedSelect });
     mockUpdatePriority.mockClear();
   });
   describe("initial state", () => {
-    test("should render CustomSelect with correct props", () => {
+    test("should render OutlinedSelect with correct props", () => {
       const rendered = renderComponent();
-      expect(CustomSelect.mock.calls.length).toBe(1);
-      expectMockedComponent(rendered, { CustomSelect });
-      expectOnlyPassedProps(CustomSelect, {
+      expect(OutlinedSelect.mock.calls.length).toBe(1);
+      expectMockedComponent(rendered, { OutlinedSelect });
+      expectOnlyPassedProps(OutlinedSelect, {
         label: "",
         labelWidth: 0,
         optionsList: [1, 2, 3],
         value: 1
       });
-      const optionsDisplayFunc = CustomSelect.mock.calls[0][0].optionsDisplayFunc;
+      const optionsDisplayFunc = OutlinedSelect.mock.calls[0][0].optionsDisplayFunc;
       optionsDisplayFunc("whatever");
     });
   });

@@ -1,5 +1,5 @@
 import SkillDropDown from "../SkillDropDown";
-import { CustomSelect } from "components";
+import { OutlinedSelect } from "components";
 import React from "react";
 import { act } from "react-dom/test-utils";
 import {
@@ -11,7 +11,7 @@ import {
 
 jest.mock("components", () => ({
   __esModule: true,
-  CustomSelect: jest.fn()
+  OutlinedSelect: jest.fn()
 }));
 
 describe("<SkillDropDown />", () => {
@@ -24,21 +24,21 @@ describe("<SkillDropDown />", () => {
   const mockUpdateSkill = jest.fn();
   const renderComponent = () => render(<SkillDropDown taskrouterSkills={skills} skillValue={"skill3"} updateSkill={mockUpdateSkill} />);
   beforeEach(() => {
-    setupMockedComponents({ CustomSelect });
+    setupMockedComponents({ OutlinedSelect });
     mockUpdateSkill.mockClear();
   });
   describe("initial state", () => {
-    test("should render CustomSelect with correct props", () => {
+    test("should render OutlinedSelect with correct props", () => {
       const rendered = renderComponent();
-      expect(CustomSelect.mock.calls.length).toBe(1);
-      expectMockedComponent(rendered, { CustomSelect });
-      expectOnlyPassedProps(CustomSelect, {
+      expect(OutlinedSelect.mock.calls.length).toBe(1);
+      expectMockedComponent(rendered, { OutlinedSelect });
+      expectOnlyPassedProps(OutlinedSelect, {
         label: "Add Default Skill",
         labelWidth: 120,
         optionsList: skills,
         value: "skill3"
       });
-      const optionsDisplayFunc = CustomSelect.mock.calls[0][0].optionsDisplayFunc;
+      const optionsDisplayFunc = OutlinedSelect.mock.calls[0][0].optionsDisplayFunc;
       optionsDisplayFunc({ name: "whatever" });
     });
   });
@@ -47,7 +47,7 @@ describe("<SkillDropDown />", () => {
       renderComponent();
       const selectedValue = JSON.stringify(skills[1]);
       act(() => {
-        const updateValue = CustomSelect.mock.calls[0][0].updateValue;
+        const updateValue = OutlinedSelect.mock.calls[0][0].updateValue;
         updateValue(selectedValue);
       });
       expect(mockUpdateSkill).toHaveBeenCalledWith(selectedValue);

@@ -1,4 +1,4 @@
-import { CustomSelect } from "components";
+import { SimpleSelect } from "components";
 import PropTypes from "prop-types";
 import React from "react";
 
@@ -10,9 +10,7 @@ const SkillDropDown = props => {
   } = props;
 
   return (
-    <CustomSelect
-      label={"Add Default Skill"}
-      labelWidth={120}
+    <SimpleSelect
       optionsList={taskrouterSkills}
       optionsDisplayFunc={skillObj => {
         return {
