@@ -12,7 +12,9 @@ import styled from "styled-components";
 
 const TextInput = styled(TextField)`
   && {
-    margin: 0%;
+    margin: 0 8px;
+    width: 100%;
+    max-width: 275px;
   }
 `;
 
