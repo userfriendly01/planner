@@ -30,52 +30,6 @@ const getOptions = (optionsList, optionsDisplayFunc, noBlankValue) => {
   return options;
 };
 
-const SimpleSelectInput = styled(Input)`
-  && {
-    font-size: inherit;
-  }
-`;
-
-export const SimpleSelect = props => {
-  const {
-    disabled,
-    fontSize,
-    noBlankValue,
-    optionsDisplayFunc,
-    optionsList,
-    value,
-    updateValue
-  } = props;
-
-  return (
-    <FormControl>
-      <Select
-        disabled={disabled}
-        input={<SimpleSelectInput fontSize={fontSize}/>}
-        inputProps={{ "data-testid": "simple-select-input" }}
-        native
-        onChange={event => updateValue(event.target.value)}
-        value={value}
-      >
-        {getOptions(optionsList, optionsDisplayFunc, noBlankValue)}
-      </Select>
-    </FormControl>
-  );
-};
-
-SimpleSelect.propTypes = {
-  optionsDisplayFunc: PropTypes.func.isRequired,
-  disabled: PropTypes.bool,
-  fontSize: PropTypes.string,
-  noBlankValue: PropTypes.bool,
-  optionsList: PropTypes.array.isRequired,
-  updateValue: PropTypes.func.isRequired,
-  value: PropTypes.oneOfType([
-    PropTypes.number,
-    PropTypes.string
-  ])
-};
-
 const OutlinedSelectFormControl = styled(FormControl)`
   && {
     margin: 8px;
@@ -110,7 +64,7 @@ export const OutlinedSelect = props => {
             id={`outlined-${label}-native-simple`}
           />
         }
-        inputProps={{ "data-testid": "customSelect" }}
+        inputProps={{ "data-testid": "outlined-select-input" }}
       >
         {getOptions(optionsList, optionsDisplayFunc, noBlankValue)}
       </Select>
@@ -122,6 +76,52 @@ OutlinedSelect.propTypes = {
   disabled: PropTypes.bool,
   label: PropTypes.string.isRequired,
   labelWidth: PropTypes.number,
+  noBlankValue: PropTypes.bool,
+  optionsDisplayFunc: PropTypes.func.isRequired,
+  optionsList: PropTypes.array.isRequired,
+  updateValue: PropTypes.func.isRequired,
+  value: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string
+  ])
+};
+
+const SimpleSelectInput = styled(Input)`
+  && {
+    font-size: inherit;
+  }
+`;
+
+export const SimpleSelect = props => {
+  const {
+    disabled,
+    fontSize,
+    noBlankValue,
+    optionsDisplayFunc,
+    optionsList,
+    value,
+    updateValue
+  } = props;
+
+  return (
+    <FormControl>
+      <Select
+        disabled={disabled}
+        input={<SimpleSelectInput fontSize={fontSize}/>}
+        inputProps={{ "data-testid": "simple-select-input" }}
+        native
+        onChange={event => updateValue(event.target.value)}
+        value={value}
+      >
+        {getOptions(optionsList, optionsDisplayFunc, noBlankValue)}
+      </Select>
+    </FormControl>
+  );
+};
+
+SimpleSelect.propTypes = {
+  disabled: PropTypes.bool,
+  fontSize: PropTypes.string,
   noBlankValue: PropTypes.bool,
   optionsDisplayFunc: PropTypes.func.isRequired,
   optionsList: PropTypes.array.isRequired,
