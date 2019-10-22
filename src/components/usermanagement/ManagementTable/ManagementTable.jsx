@@ -57,7 +57,7 @@ const CustomTableRow = styled.tr`
 
 const DeltaWrapper = styled.div`
   align-items: center;
-  color: #565656;
+  color: ${props => props.theme.libertyDarkGray};
   display: flex;
   justify-content: center;
   margin: auto;
@@ -66,7 +66,7 @@ const DeltaWrapper = styled.div`
 const IconWrapper = styled.div`
   align-items: center;
   border-radius: ${props => props.theme.tableRow.icon.hoverDiameter / 2}px;
-  color: #565656;
+  color: ${props => props.theme.libertyDarkGray};
   cursor: pointer;
   display: flex;
   font-size: ${props => props.theme.tableRow.icon.size}px;

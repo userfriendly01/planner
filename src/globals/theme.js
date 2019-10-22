@@ -12,6 +12,7 @@ export const theme = {
     fadedWarning: "rgba(236,172,0,.10)"
   },
   successColor: "rgb(108,149,60)",
+  libertyDarkGray: "#565656",
   tableRow: {
     borderColor: "#F5F5F5",
     icon: {
