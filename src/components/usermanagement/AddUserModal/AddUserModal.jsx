@@ -1,5 +1,5 @@
 import {
-  CustomSelect,
+  OutlinedSelect,
   ModalHelperText,
   ModalNNumber,
   ModalOverlay,
@@ -210,7 +210,7 @@ const AddUserModal = props => {
             message={loading.saveStatus === "success" ? "User added successfully" : "Failed to add user"}
           /> : null}
         <Header>Add a User</Header>
-        <CustomSelect
+        <OutlinedSelect
           label={"Manager"}
           labelWidth={65}
           optionsList={managers.sort(sortManagersByName)}
@@ -227,7 +227,7 @@ const AddUserModal = props => {
           })}
           value={form.manager}
         />
-        <CustomSelect
+        <OutlinedSelect
           label={"Team"}
           labelWidth={41}
           optionsList={profiles}

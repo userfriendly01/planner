@@ -1,5 +1,6 @@
 import {
   FormControl,
+  Input,
   InputLabel,
   OutlinedInput,
   Select
@@ -8,46 +9,96 @@ import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
 
-const FormField = styled(FormControl)`
-  && {
-    margin: 2%;
-  }
-`;
 
-const getOption = (key, value, display) => (
-  <option key={key} value={value} data-testid={"select-option"}>
-    {display}
-  </option>
-);
 
-const CustomSelect = props => {
-  const {
-    disabled,
-    label,
-    labelWidth,
-    optionsDisplayFunc,
-    optionsList,
-    noBlankValue,
-    updateValue,
-    value
-  } = props;
+const getOptions = (optionsList, optionsDisplayFunc, noBlankValue) => {
+
+  const getOption = (key, value, display) => (
+    <option key={key} value={value} data-testid={"select-option"}>
+      {display}
+    </option>
+  );
 
   const options = [];
   if (!noBlankValue) {
-    options.push(getOption("blank-starting-entry", "", ""));
+    options.push(getOption("select-blank-entry", "", ""));
   }
   optionsList.forEach(option => {
     const elementOptions = optionsDisplayFunc(option);
     options.push(getOption(elementOptions.key, elementOptions.value, elementOptions.display));
   });
+  return options;
+};
+
+const SimpleSelectInput = styled(Input)`
+  && {
+    font-size: inherit;
+  }
+`;
+
+export const SimpleSelect = props => {
+  const {
+    disabled,
+    fontSize,
+    noBlankValue,
+    optionsDisplayFunc,
+    optionsList,
+    value,
+    updateValue
+  } = props;
 
   return (
-    <FormField variant="outlined">
+    <FormControl>
+      <Select
+        disabled={disabled}
+        input={<SimpleSelectInput fontSize={fontSize}/>}
+        inputProps={{ "data-testid": "simple-select-input" }}
+        native
+        onChange={event => updateValue(event.target.value)}
+        value={value}
+      >
+        {getOptions(optionsList, optionsDisplayFunc, noBlankValue)}
+      </Select>
+    </FormControl>
+  );
+};
+
+SimpleSelect.propTypes = {
+  optionsDisplayFunc: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+  fontSize: PropTypes.string,
+  noBlankValue: PropTypes.bool,
+  optionsList: PropTypes.array.isRequired,
+  updateValue: PropTypes.func.isRequired,
+  value: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string
+  ])
+};
+
+const OutlinedSelectFormControl = styled(FormControl)`
+  && {
+    margin: 8px;
+  }
+`;
+export const OutlinedSelect = props => {
+  const {
+    disabled,
+    label,
+    labelWidth,
+    noBlankValue,
+    optionsDisplayFunc,
+    optionsList,
+    updateValue,
+    value
+  } = props;
+
+  return (
+    <OutlinedSelectFormControl variant={"outlined"}>
       <InputLabel htmlFor={`outlined-${label}-native-simple`}>
         {label}
       </InputLabel>
       <Select
-        // defaultValue={null}
         disabled={disabled}
         native
         value={value || ""}
@@ -61,24 +112,22 @@ const CustomSelect = props => {
         }
         inputProps={{ "data-testid": "customSelect" }}
       >
-        {options}
+        {getOptions(optionsList, optionsDisplayFunc, noBlankValue)}
       </Select>
-    </FormField>
+    </OutlinedSelectFormControl>
   );
 };
 
-CustomSelect.propTypes = {
+OutlinedSelect.propTypes = {
   disabled: PropTypes.bool,
   label: PropTypes.string.isRequired,
   labelWidth: PropTypes.number,
-  optionsList: PropTypes.array.isRequired,
-  optionsDisplayFunc: PropTypes.func.isRequired,
   noBlankValue: PropTypes.bool,
+  optionsDisplayFunc: PropTypes.func.isRequired,
+  optionsList: PropTypes.array.isRequired,
   updateValue: PropTypes.func.isRequired,
   value: PropTypes.oneOfType([
     PropTypes.number,
     PropTypes.string
   ])
 };
-
-export default CustomSelect;

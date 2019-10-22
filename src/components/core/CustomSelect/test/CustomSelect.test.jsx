@@ -1,4 +1,4 @@
-import CustomSelect from "../CustomSelect";
+import OutlinedSelect from "../OutlinedSelect";
 import React from "react";
 import {
   fireEvent,
@@ -27,7 +27,7 @@ const updateValueFunc = jest.fn();
 const getOptionsElements = rendered => rendered.queryAllByTestId("select-option");
 
 const renderWithProps = (label, labelWidth, optionsList, optionsDisplayFunc, updateValue, value, noBlankValue) => {
-  return render(<CustomSelect
+  return render(<OutlinedSelect
     label={label}
     labelWidth={labelWidth}
     noBlankValue={noBlankValue}
@@ -37,7 +37,7 @@ const renderWithProps = (label, labelWidth, optionsList, optionsDisplayFunc, upd
     value={value} />);
 };
 
-describe("<CustomSelect />", () => {
+describe("<OutlinedSelect />", () => {
   beforeEach(() => {
     mockDisplayFunc.mockClear();
     updateValueFunc.mockClear();
@@ -82,7 +82,7 @@ describe("<CustomSelect />", () => {
     expect(updateValueFunc.mock.calls.length).toBe(1);
   });
   test("omitting the labelWidth prop will still render Select component properly", () => {
-    const rendered = render(<CustomSelect
+    const rendered = render(<OutlinedSelect
       label={"label whatever"}
       optionsList={testList}
       optionsDisplayFunc={mockDisplayFunc}

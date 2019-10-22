@@ -1,7 +1,7 @@
 import AddUserModal from "../AddUserModal";
 import MockAdapter from "axios-mock-adapter";
 import {
-  CustomSelect,
+  OutlinedSelect,
   ModalHelperText,
   ModalNNumber,
   ModalOverlay,
@@ -33,7 +33,7 @@ jest.useFakeTimers();
 jest.mock("components", () => ({
   __esModule: true,
   StyledButton: jest.fn(),
-  CustomSelect: jest.fn(),
+  OutlinedSelect: jest.fn(),
   ModalHelperText: jest.fn(),
   ModalNNumber: jest.fn(),
   ModalOverlay: jest.fn(),
@@ -102,7 +102,7 @@ describe("<AddUserModal />", () => {
   beforeEach(() => {
     setupMockedComponents({
       StyledButton,
-      CustomSelect,
+      OutlinedSelect,
       ModalHelperText,
       ModalNNumber,
       ModalOverlay,
@@ -117,7 +117,7 @@ describe("<AddUserModal />", () => {
 
     test("we should render the header, the correct components, and read profiles defined in the context API.", () => {
       const rendered = render(<AddUserModal handleClose={mockHandleClose} managerList={[]} />, initialTestState);
-      expectMockedComponent(rendered, { CustomSelect }, 2);
+      expectMockedComponent(rendered, { OutlinedSelect }, 2);
       expectMockedComponent(rendered, { ModalNNumber }, 1);
       expectMockedComponent(rendered, { ModalPhoneNumber }, 1);
       expectMockedComponent(rendered, { ModalOverlay }, 0);
@@ -149,8 +149,8 @@ describe("<AddUserModal />", () => {
         optionsList: managerList,
         value: ""
       };
-      expectOnlyPassedProps(CustomSelect, expectedManagerProps, 0);
-      const optionsDisplayFunc = CustomSelect.mock.calls[0][0].optionsDisplayFunc;
+      expectOnlyPassedProps(OutlinedSelect, expectedManagerProps, 0);
+      const optionsDisplayFunc = OutlinedSelect.mock.calls[0][0].optionsDisplayFunc;
       const option = optionsDisplayFunc(managerList[0]);
       expect(option).toEqual({
         display: `${managerList[0].manager_first_name} ${managerList[0].manager_last_name}`,
@@ -163,11 +163,11 @@ describe("<AddUserModal />", () => {
       renderComponent();
       // Next I'll call the update function, which should update the form and cause a re-render.
       act(() => {
-        const updateValue = CustomSelect.mock.calls[0][0].updateValue;
+        const updateValue = OutlinedSelect.mock.calls[0][0].updateValue;
         updateValue(JSON.stringify(managerList[0]));
       });
-      expect(CustomSelect.mock.calls.length).toBe(4);
-      const newValue = CustomSelect.mock.calls[2][0].value;
+      expect(OutlinedSelect.mock.calls.length).toBe(4);
+      const newValue = OutlinedSelect.mock.calls[2][0].value;
       expect(newValue).toEqual(JSON.stringify(managerList[0]));
     });
 
@@ -183,8 +183,8 @@ describe("<AddUserModal />", () => {
         optionsList: profileList,
         value: ""
       };
-      expectOnlyPassedProps(CustomSelect, expectedTeamProps, 1);
-      const optionsDisplayFunc = CustomSelect.mock.calls[1][0].optionsDisplayFunc;
+      expectOnlyPassedProps(OutlinedSelect, expectedTeamProps, 1);
+      const optionsDisplayFunc = OutlinedSelect.mock.calls[1][0].optionsDisplayFunc;
       const option = optionsDisplayFunc(profileList[0]);
       expect(option).toEqual({
         display: profileList[0].profile_nme,
@@ -197,11 +197,11 @@ describe("<AddUserModal />", () => {
       renderComponent();
       // Next I'll call the update function, which should update the form and cause a re-render.
       act(() => {
-        const updateValue = CustomSelect.mock.calls[1][0].updateValue;
+        const updateValue = OutlinedSelect.mock.calls[1][0].updateValue;
         updateValue(profileList[0].profile_id);
       });
-      expect(CustomSelect.mock.calls.length).toBe(4);
-      const newValue = CustomSelect.mock.calls[3][0].value;
+      expect(OutlinedSelect.mock.calls.length).toBe(4);
+      const newValue = OutlinedSelect.mock.calls[3][0].value;
       expect(newValue).toEqual(profileList[0].profile_id);
     });
 
@@ -366,11 +366,11 @@ describe("<AddUserModal />", () => {
           axiosMock.onPost(apiPaths.CREATE_WORKER).reply(200, twilioWorker);
           const rendered = renderComponent();
           act(() => {
-            const updateManager = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect) - 1).updateValue;
+            const updateManager = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect) - 1).updateValue;
             updateManager(JSON.stringify(managerList[0]));
           });
           act(() => {
-            const updateProfile = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect)).updateValue;
+            const updateProfile = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect)).updateValue;
             updateProfile(profileList[0].profile_id);
           });
           act(() => {
@@ -416,11 +416,11 @@ describe("<AddUserModal />", () => {
         test("when save button is clicked we should not clear the user, or disable 'Add User' and not dispatch an action", done => {
           const rendered = renderComponent();
           act(() => {
-            const updateManager = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect) - 1).updateValue;
+            const updateManager = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect) - 1).updateValue;
             updateManager(JSON.stringify(managerList[0]));
           });
           act(() => {
-            const updateProfile = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect)).updateValue;
+            const updateProfile = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect)).updateValue;
             updateProfile(profileList[0].profile_id);
           });
           act(() => {
