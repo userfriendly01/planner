@@ -1,16 +1,17 @@
 import PriorityDropDown from "../PriorityDropDown";
-import { OutlinedSelect } from "components";
+import { SimpleSelect } from "components";
 import React from "react";
 import {
   expectMockedComponent,
   expectOnlyPassedProps,
+  getMockedComponentProps,
   render,
   setupMockedComponents
 } from "testUtils";
 
 jest.mock("components", () => ({
   __esModule: true,
-  OutlinedSelect: jest.fn()
+  SimpleSelect: jest.fn()
 }));
 
 describe("<PriorityDropDown />", () => {
@@ -25,22 +26,27 @@ describe("<PriorityDropDown />", () => {
     />);
   };
   beforeEach(() => {
-    setupMockedComponents({ OutlinedSelect });
+    setupMockedComponents({ SimpleSelect });
     mockUpdatePriority.mockClear();
   });
   describe("initial state", () => {
-    test("should render OutlinedSelect with correct props", () => {
+    test("should render SimpleSelect with correct props", () => {
       const rendered = renderComponent();
-      expect(OutlinedSelect.mock.calls.length).toBe(1);
-      expectMockedComponent(rendered, { OutlinedSelect });
-      expectOnlyPassedProps(OutlinedSelect, {
-        label: "",
-        labelWidth: 0,
+      expect(SimpleSelect.mock.calls.length).toBe(1);
+      expectMockedComponent(rendered, { SimpleSelect });
+      expectOnlyPassedProps(SimpleSelect, {
+        noBlankValue: true,
         optionsList: [1, 2, 3],
         value: 1
       });
-      const optionsDisplayFunc = OutlinedSelect.mock.calls[0][0].optionsDisplayFunc;
-      optionsDisplayFunc("whatever");
+      const props = getMockedComponentProps(SimpleSelect);
+      expect(props.optionsDisplayFunc("whatever")).toEqual({
+        display: "whatever",
+        key: "whatever",
+        value: "whatever"
+      });
+      props.updateValue("cool");
+      expect(mockUpdatePriority).toHaveBeenCalledWith("cool");
     });
   });
 });
