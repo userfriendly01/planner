@@ -14,9 +14,8 @@ const FormField = styled(FormControl)`
   }
 `;
 
-
 const getOption = (key, value, display) => (
-  <option key={key} value={value}>
+  <option key={key} value={value} data-testid={"select-option"}>
     {display}
   </option>
 );

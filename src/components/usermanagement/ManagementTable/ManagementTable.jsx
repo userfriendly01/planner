@@ -8,6 +8,7 @@ import {
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
+import { formatWorkerSkillsToHTML } from "utils";
 
 const iconFieldWidth = "30px";
 
@@ -20,7 +21,7 @@ const CustomTable = styled.table`
 
 const CustomTableData = styled.td`
   color: ${props => props.theme.textColor};
-  padding: 4px
+  padding: 4px;
 `;
 
 const CustomTableHeader = styled.th`
@@ -61,6 +62,12 @@ const TableContainer = styled.div`
   padding: 2%;
 `;
 
+const TableDataFlex = styled.div`
+  color: ${props => props.theme.textColor};
+  display: flex;
+  flex-wrap: wrap;
+`;
+
 const ManagementTable = props => {
   const { workers } = props;
 
@@ -79,9 +86,11 @@ const ManagementTable = props => {
       <CustomTable>
         <thead>
           <tr>
-            <CustomTableHeader width={"25%"}>NAME</CustomTableHeader>
-            <CustomTableHeader width={"25%"}>N NUMBER</CustomTableHeader>
-            <CustomTableHeader width={"50%"}>OFFICE</CustomTableHeader>
+            <CustomTableHeader width={"20%"}>NAME</CustomTableHeader>
+            <CustomTableHeader width={"20%"}>N NUMBER</CustomTableHeader>
+            <CustomTableHeader width={"20%"}>OFFICE</CustomTableHeader>
+            <CustomTableHeader width={"20%"}>SKILLS (Current)</CustomTableHeader>
+            <CustomTableHeader width={"20%"}>SKILLS (Default)</CustomTableHeader>
             <CustomTableHeader width={iconFieldWidth}/>
           </tr>
         </thead>
@@ -104,6 +113,8 @@ const ManagementTable = props => {
                 <CustomTableData>{worker.attributes.full_name}</CustomTableData>
                 <CustomTableData>{worker.id}</CustomTableData>
                 <CustomTableData>{worker.attributes.office_location_name}</CustomTableData>
+                <CustomTableData><TableDataFlex>{formatWorkerSkillsToHTML(worker.attributes.routing)}</TableDataFlex></CustomTableData>
+                <CustomTableData><TableDataFlex>{formatWorkerSkillsToHTML(worker.attributes.default_skills)}</TableDataFlex></CustomTableData>
                 <CustomTableData>
                   <IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
                     <Edit fontSize={"inherit"}/>

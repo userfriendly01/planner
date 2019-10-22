@@ -24,10 +24,13 @@ const testList = [
 
 const updateValueFunc = jest.fn();
 
-const renderWithProps = (label, labelWidth, optionsList, optionsDisplayFunc, updateValue, value) => {
+const getOptionsElements = rendered => rendered.queryAllByTestId("select-option");
+
+const renderWithProps = (label, labelWidth, optionsList, optionsDisplayFunc, updateValue, value, noBlankValue) => {
   return render(<CustomSelect
     label={label}
     labelWidth={labelWidth}
+    noBlankValue={noBlankValue}
     optionsList={optionsList}
     optionsDisplayFunc={optionsDisplayFunc}
     updateValue={updateValue}
@@ -38,6 +41,24 @@ describe("<CustomSelect />", () => {
   beforeEach(() => {
     mockDisplayFunc.mockClear();
     updateValueFunc.mockClear();
+  });
+  describe("noBlankValue = false", () => {
+    test("should display each option in addition to extra blank value", () => {
+      const rendered = renderWithProps("test", 41, testList, mockDisplayFunc, updateValueFunc, "testone", false);
+      expect(getOptionsElements(rendered).length).toBe(testList.length + 1);
+    });
+  });
+  describe("noBlankValue = undefined", () => {
+    test("should display each option in addition to extra blank value", () => {
+      const rendered = renderWithProps("test", 41, testList, mockDisplayFunc, updateValueFunc, "testone");
+      expect(getOptionsElements(rendered).length).toBe(testList.length + 1);
+    });
+  });
+  describe("noBlankValue = true", () => {
+    test("should display each option with no extra blank value", () => {
+      const rendered = renderWithProps("test", 41, testList, mockDisplayFunc, updateValueFunc, "testone", true);
+      expect(getOptionsElements(rendered).length).toBe(testList.length);
+    });
   });
   test("when we have an empty array, we should only show the option of value='', and the header.", () => {
     const rendered = renderWithProps("TestLabel", 41, [], mockDisplayFunc, updateValueFunc, "");

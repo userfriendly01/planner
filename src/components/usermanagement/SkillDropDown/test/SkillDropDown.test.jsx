@@ -16,10 +16,10 @@ jest.mock("components", () => ({
 
 describe("<SkillDropDown />", () => {
   const skills = [
-    { name: "skill3" },
-    { name: "skill2" },
-    { name: "skill1" },
-    { name: "skill4" }
+    { skill: "skill3" },
+    { skill: "skill2" },
+    { skill: "skill1" },
+    { skill: "skill4" }
   ];
   const mockUpdateSkill = jest.fn();
   const renderComponent = () => render(<SkillDropDown taskrouterSkills={skills} skillValue={"skill3"} updateSkill={mockUpdateSkill} />);
@@ -35,12 +35,7 @@ describe("<SkillDropDown />", () => {
       expectOnlyPassedProps(CustomSelect, {
         label: "Add Default Skill",
         labelWidth: 120,
-        optionsList: [
-          { name: "skill1" },
-          { name: "skill2" },
-          { name: "skill3" },
-          { name: "skill4" }
-        ],
+        optionsList: skills,
         value: "skill3"
       });
       const optionsDisplayFunc = CustomSelect.mock.calls[0][0].optionsDisplayFunc;
