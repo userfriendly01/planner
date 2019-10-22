@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { getValidSkillsObject } from "./skillsUtils";
 
 export const areSkillsDifferent = attributes => {
   const currentSkills = getValidSkillsObject(attributes.routing);
@@ -8,20 +9,4 @@ export const areSkillsDifferent = attributes => {
   } else {
     return false;
   }
-};
-
-export const getValidSkillsObject = skillsObject => {
-  const validObject = {
-    skills: [],
-    levels: {}
-  };
-  if (_.isPlainObject(skillsObject)) {
-    if (_.isArray(skillsObject.skills)) {
-      skillsObject.skills.forEach(skill => validObject.skills.push(skill));
-    }
-    if (_.isPlainObject(skillsObject.levels)) {
-      Object.entries(skillsObject.levels).forEach(([key, value]) => validObject.levels[key] = value);
-    }
-  }
-  return validObject;
 };
