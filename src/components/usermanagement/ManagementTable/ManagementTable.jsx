@@ -54,7 +54,7 @@ const DeltaNotification = styled(ChangeHistoryRounded)`
 
 const DeltaWrapper = styled.div`
   align-items: center;
-  color: #565656;
+  color: ${props => props.theme.libertyDarkGray};
   display: flex;
   justify-content: center;
   margin: auto;
