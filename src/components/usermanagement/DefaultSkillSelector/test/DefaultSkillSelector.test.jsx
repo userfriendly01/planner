@@ -51,6 +51,7 @@ const initialTestState = {
     ]
   }
 };
+const taskrouterSkills = initialTestState.skillContext.taskrouterSkills;
 
 describe("<DefaultSkillSelector />", () => {
   const renderComponent = defaultSkills => render(<DefaultSkillSelector defaultSkills={defaultSkills} setDefaultSkills={mockSetDefaultSkills} />, initialTestState);
@@ -78,37 +79,78 @@ describe("<DefaultSkillSelector />", () => {
         expectMockedComponent(rendered, { PriorityDropDown }, 0);
         expectOnlyPassedProps(SkillDropDown, {
           skillValue: "",
-          taskrouterSkills: initialTestState.skillContext.taskrouterSkills
-          // updateSkill: null
+          taskrouterSkills
         });
       });
     });
-    describe("worker has default skills", () => {
-      // const defaultSkills = {
-      //   skills: ["defaultSkillA", "defaultSkillB", "defaultSkillC"],
-      //   levels: {
-      //     "defaultSkillA": 3,
-      //     "defaultSkillB": 4
-      //   }
-      // };
+    describe("worker has a default skill with priorities", () => {
+      const defaultSkills = {
+        skills: [ "skillB" ],
+        levels: { "skillB": 3 }
+      };
       describe("skill has priorities", () => {
-        test("should render the skill, the priority drop down (with current priority displayed), and remove icon", () => {
-          //
+        test("should render the skill drop down, the priority drop down (with current priority displayed), and remove icon", () => {
+          const rendered = renderComponent(defaultSkills);
+          expect(rendered.container).toHaveTextContent("Default Profile");
+          expectMockedComponent(rendered, { SkillDropDown });
+          expectMockedComponent(rendered, { AddCircleOutlineRounded });
+          expect(rendered.container).toHaveTextContent("skillB");
+          expectMockedComponent(rendered, { PriorityDropDown });
+          expectOnlyPassedProps(PriorityDropDown, {
+            availablePriorities: [1, 2, 3, 4]
+          });
+          expectMockedComponent(rendered, { DeleteRounded });
         });
       });
       describe("skill does not have priorities", () => {
+        const defaultSkills = {
+          skills: [ "skillA" ],
+          levels: {}
+        };
         test("should render the skill and remove icon but not the priority drop down", () => {
-          //
+          const rendered = renderComponent(defaultSkills);
+          expect(rendered.container).toHaveTextContent("Default Profile");
+          expectMockedComponent(rendered, { SkillDropDown });
+          expectMockedComponent(rendered, { AddCircleOutlineRounded });
+          expect(rendered.container).toHaveTextContent("skillA");
+          expectMockedComponent(rendered, { PriorityDropDown }, 0);
+          expectMockedComponent(rendered, { DeleteRounded });
         });
       });
     });
   });
 
   describe("changes made to the add skill drop down", () => {
+    // the test below tests that we start with a skill w/ no priorities
+    // add a test where we start with priorities and expect priority drop down to render twice
+    const defaultSkills = {
+      skills: [ "skillA" ],
+      levels: {}
+    };
     describe("new skill is selected that has priorities", () => {
-      test("should render priority drop down (with correct priority options) and add button should be enabled", () => {
-        //
+      test("should render priority drop down (with correct priority options); add button should appear disabled until a priority is selected", done => {
+        const rendered = renderComponent(defaultSkills);
+        act(() => {
+          const updateSkill = SkillDropDown.mock.calls[0][0].updateSkill;
+          updateSkill("skillC");
+        });
+        expectMockedComponent(rendered, { PriorityDropDown });
+        expectOnlyPassedProps(PriorityDropDown, {
+          availablePriorities: [0, 1, 2, 3, 4, 5, 6, 7 ]
+        });
+        expectMockedComponent(rendered, { AddCircleOutlineRounded });
+        expectOnlyPassedProps(AddCircleOutlineRounded, { color: "disabled" });
+
+        act(() => {
+          const updatePriority = PriorityDropDown.mock.calls[0][0].updatePriority;
+          updatePriority(6);
+        });
+        console.log("[1][0]", PriorityDropDown.mock.calls[1][0]);
+        expectOnlyPassedProps(AddCircleOutlineRounded, { color: "inherit" });
+        done();
       });
+
+
       describe("add skill button is clicked", () => {
         test("should add a row with the skill name, priority drop down, and remove icon", () => {
           //
