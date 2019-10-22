@@ -32,6 +32,7 @@ const IconButtonWrapper = styled.button`
   all: unset;
   align-items: center;
   color: ${props => props.disabled ? props.theme.button.icon.disabledColor : "inherit"};
+  cursor: pointer;
   display: flex;
   font-size: 20px;
   height: ${iconButtonDiameter}px;
@@ -158,7 +159,7 @@ const DefaultSkillSelector = props => {
             /> : DashDiv}
         </SkillRowItem>
         <SkillRowItem>
-          <IconButtonWrapper disabled={addSkillButtonDisabled} onClick={addSkillClicked}>
+          <IconButtonWrapper disabled={addSkillButtonDisabled} onClick={addSkillClicked} data-testid="add-skill-button">
             <Add fontSize={"inherit"}/>
           </IconButtonWrapper>
         </SkillRowItem>
@@ -178,7 +179,7 @@ const DefaultSkillSelector = props => {
                 /> : DashDiv}
             </SkillRowItem>
             <SkillRowItem>
-              <IconButtonWrapper onClick={removeSkillClicked(skill)}>
+              <IconButtonWrapper onClick={removeSkillClicked(skill)} data-testid="delete-skill-button">
                 <Delete fontSize="inherit"/>
               </IconButtonWrapper>
             </SkillRowItem>

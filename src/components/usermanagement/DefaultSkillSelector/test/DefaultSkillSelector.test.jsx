@@ -1,7 +1,7 @@
 import DefaultSkillSelector from "../DefaultSkillSelector";
 import {
-  AddCircleOutlineRounded,
-  DeleteRounded
+  Add,
+  Delete
 } from "@material-ui/icons";
 import {
   PriorityDropDown,
@@ -13,14 +13,16 @@ import { act } from "react-dom/test-utils";
 import {
   expectMockedComponent,
   expectOnlyPassedProps,
+  getMockedComponentProps,
+  fireEvent,
   render,
   setupMockedComponents
 } from "testUtils";
 
 jest.mock("@material-ui/icons", () => ({
   __esModule: true,
-  AddCircleOutlineRounded: jest.fn(),
-  DeleteRounded: jest.fn()
+  Add: jest.fn(),
+  Delete: jest.fn()
 }));
 
 jest.mock("components", () => ({
@@ -56,12 +58,17 @@ const initialTestState = {
   }
 };
 
+const getAddSkillButton = rendered => rendered.getByTestId("add-skill-button");
+const getDeleteSkillButton = (rendered, instance) => rendered.getAllByTestId("delete-skill-button")[instance];
+
+const title = "Default Skills";
+
 describe("<DefaultSkillSelector />", () => {
   const renderComponent = defaultSkills => render(<DefaultSkillSelector defaultSkills={defaultSkills} setDefaultSkills={mockSetDefaultSkills} />, initialTestState);
   beforeEach(() => {
     setupMockedComponents({
-      AddCircleOutlineRounded,
-      DeleteRounded,
+      Add,
+      Delete,
       PriorityDropDown,
       SkillDropDown
     });
@@ -76,9 +83,9 @@ describe("<DefaultSkillSelector />", () => {
           levels: {}
         };
         const rendered = renderComponent(defaultSkills);
-        expect(rendered.container).toHaveTextContent("Default Profile");
+        expect(rendered.container).toHaveTextContent(title);
         expectMockedComponent(rendered, { SkillDropDown });
-        expectMockedComponent(rendered, { AddCircleOutlineRounded });
+        expectMockedComponent(rendered, { Add });
         expectMockedComponent(rendered, { PriorityDropDown }, 0);
         expectOnlyPassedProps(SkillDropDown, {
           skillValue: "",
@@ -93,9 +100,9 @@ describe("<DefaultSkillSelector />", () => {
       };
       test("should render the skill drop down, the priority drop down (with current priority displayed), and remove icon", () => {
         const rendered = renderComponent(defaultSkills);
-        expect(rendered.container).toHaveTextContent("Default Profile");
+        expect(rendered.container).toHaveTextContent(title);
         expectMockedComponent(rendered, { SkillDropDown });
-        expectMockedComponent(rendered, { AddCircleOutlineRounded });
+        expectMockedComponent(rendered, { Add });
         expect(rendered.container).toHaveTextContent("skillB");
         expect(rendered.container).not.toHaveTextContent("skillA");
         expect(rendered.container).not.toHaveTextContent("skillC");
@@ -104,7 +111,7 @@ describe("<DefaultSkillSelector />", () => {
         expectOnlyPassedProps(PriorityDropDown, {
           availablePriorities: [ 1, 2, 3, 4 ]
         });
-        expectMockedComponent(rendered, { DeleteRounded });
+        expectMockedComponent(rendered, { Delete });
       });
     });
     describe("worker has a default skill without priorities", () => {
@@ -114,15 +121,15 @@ describe("<DefaultSkillSelector />", () => {
       };
       test("should render the skill and remove icon but not the priority drop down", () => {
         const rendered = renderComponent(defaultSkills);
-        expect(rendered.container).toHaveTextContent("Default Profile");
+        expect(rendered.container).toHaveTextContent(title);
         expectMockedComponent(rendered, { SkillDropDown });
-        expectMockedComponent(rendered, { AddCircleOutlineRounded });
+        expectMockedComponent(rendered, { Add });
         expect(rendered.container).toHaveTextContent("skillA");
         expect(rendered.container).not.toHaveTextContent("skillB");
         expect(rendered.container).not.toHaveTextContent("skillC");
         expect(rendered.container).not.toHaveTextContent("skillD");
         expectMockedComponent(rendered, { PriorityDropDown }, 0);
-        expectMockedComponent(rendered, { DeleteRounded });
+        expectMockedComponent(rendered, { Delete });
       });
     });
   });
@@ -139,23 +146,24 @@ describe("<DefaultSkillSelector />", () => {
         const rendered = renderComponent(defaultSkills);
         expect(rendered.container).not.toHaveTextContent("skillC");
         act(() => {
-          const updateSkill = SkillDropDown.mock.calls[0][0].updateSkill;
+          const { updateSkill } = getMockedComponentProps(SkillDropDown);
           updateSkill("skillC");
         });
+        act(() => {
+          fireEvent.click(getAddSkillButton(rendered));
+        });
+        expect(mockSetDefaultSkills).toHaveBeenCalledTimes(0);
         expectMockedComponent(rendered, { PriorityDropDown });
         expectOnlyPassedProps(PriorityDropDown, {
           availablePriorities: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
         });
-        expectMockedComponent(rendered, { AddCircleOutlineRounded });
-        expectOnlyPassedProps(AddCircleOutlineRounded, { color: "disabled" });
+        expectMockedComponent(rendered, { Add });
         act(() => {
-          const updatePriority = PriorityDropDown.mock.calls[0][0].updatePriority;
+          const { updatePriority } = getMockedComponentProps(PriorityDropDown);
           updatePriority(6);
         });
-        expectOnlyPassedProps(AddCircleOutlineRounded, { color: "inherit" });
         act(() => {
-          const addSkill = AddCircleOutlineRounded.mock.calls[2][0].onClick;
-          addSkill();
+          fireEvent.click(getAddSkillButton(rendered));
         });
         expect(rendered.container).toHaveTextContent("skillA");
         expect(rendered.container).toHaveTextContent("skillC");
@@ -163,7 +171,7 @@ describe("<DefaultSkillSelector />", () => {
           availablePriorities: [ 0, 1, 2, 3, 4, 5, 6, 7 ],
           priorityValue: 6
         });
-        expectMockedComponent(rendered, { DeleteRounded }, 2);
+        expectMockedComponent(rendered, { Delete }, 2);
         expect(mockSetDefaultSkills).toHaveBeenCalledWith({
           skills: [ "skillA", "skillC" ],
           levels: { skillC: 6 }
@@ -184,13 +192,12 @@ describe("<DefaultSkillSelector />", () => {
           updateSkill("skillD");
         });
         act(() => {
-          const addSkill = AddCircleOutlineRounded.mock.calls[1][0].onClick;
-          addSkill();
+          fireEvent.click(getAddSkillButton(rendered));
         });
         expect(rendered.container).toHaveTextContent("skillA");
         expect(rendered.container).toHaveTextContent("skillD");
         expectMockedComponent(rendered, { PriorityDropDown }, 0);
-        expectMockedComponent(rendered, { DeleteRounded }, 2);
+        expectMockedComponent(rendered, { Delete }, 2);
         expect(mockSetDefaultSkills).toHaveBeenCalledWith({
           skills: [ "skillA", "skillD" ],
           levels: {}
@@ -206,10 +213,9 @@ describe("<DefaultSkillSelector />", () => {
         levels: { skillB: 3 }
       };
       const rendered = renderComponent(defaultSkills);
-      expectMockedComponent(rendered, { DeleteRounded }, 2);
+      expectMockedComponent(rendered, { Delete }, 2);
       act(() => {
-        const removeSkillB = DeleteRounded.mock.calls[1][0].onClick;
-        removeSkillB();
+        fireEvent.click(getDeleteSkillButton(rendered, 1));
       });
       expect(mockSetDefaultSkills).toHaveBeenCalledWith({
         skills: [ "skillA" ],
