@@ -23,7 +23,7 @@ jest.mock("components", () => ({
   ManagementTable: jest.fn()
 }));
 
-const getWorker = (number, managerNumber = 0, defaultSkills = [], skills = []) => {
+const getWorker = (number, managerNumber = 0, defaultSkills = [], skills = [], skillsDifferent = false) => {
   const numberStr = `${number}`;
   const managerNumberStr = `${managerNumber}`;
   return {
@@ -38,7 +38,8 @@ const getWorker = (number, managerNumber = 0, defaultSkills = [], skills = []) =
       routing: {
         skills
       }
-    }
+    },
+    skillsDifferent
   };
 };
 
@@ -93,7 +94,10 @@ describe("ManagementWrapper", () => {
       });
       test("ManagementTable should be passed all workers (sorted) as prop", () => {
         doRender(workers);
-        expectOnlyPassedProps(ManagementTable, { workers: sortedWorkers });
+        expectOnlyPassedProps(ManagementTable, {
+          deltaToggle: false,
+          workers: sortedWorkers
+        });
       });
       test("ManagementPagination should be passed end = 6, length = 6, page = 1, start = 1", () => {
         doRender(workers);
@@ -141,7 +145,7 @@ describe("ManagementWrapper", () => {
   describe("26 workers. more than workersPerPage", () => {
     const workers = [
       getWorker("f", 1, ["466"], ["psu-L1"]),
-      getWorker("g", 1, ["466"], ["psu-L1"]),
+      getWorker("g", 1, ["466"], ["psu-L1"], true),
       getWorker("h", 2, ["bsc"], ["test"]),
       getWorker("i", 2, ["bsc"], ["test"]),
       getWorker("c", 3),
@@ -174,7 +178,7 @@ describe("ManagementWrapper", () => {
       getWorker("d", 1),
       getWorker("e", 1),
       getWorker("f", 1, ["466"], ["psu-L1"]),
-      getWorker("g", 1, ["466"], ["psu-L1"]),
+      getWorker("g", 1, ["466"], ["psu-L1"], true),
       getWorker("h", 2, ["bsc"], ["test"]),
       getWorker("i", 2, ["bsc"], ["test"]),
       getWorker("j", 2),
@@ -408,6 +412,36 @@ describe("ManagementWrapper", () => {
         expectOnlyPassedProps(ManagementTable, {
           workers: [
             sortedWorkers[0]
+          ]
+        }, 1);
+      });
+      test("ManagementPagination should be passed end = 1, length = 1, page = 1, start = 1", () => {
+        doRender(workers);
+        doSetSearch();
+        expectOnlyPassedProps(ManagementPagination, {
+          end: 1,
+          length: 1,
+          page: 1,
+          start: 1
+        }, 1);
+      });
+    });
+    describe("testing toggling on only different skills", () => {
+      const doSetSearch = () => act(() => {
+        const setStateFromSearchChange = ManagementTable.mock.calls[0][0].setDeltaToggle;
+        setStateFromSearchChange(true);
+      });
+      test("ManagementTable should be passed deltaToggle 'true'", () => {
+        doRender(workers);
+        doSetSearch();
+        expectOnlyPassedProps(ManagementTable, { deltaToggle: true }, 1);
+      });
+      test("ManagementTable should be passed filtered workers having current skills that differ from applied skills", () => {
+        doRender(workers);
+        doSetSearch();
+        expectOnlyPassedProps(ManagementTable, {
+          workers: [
+            sortedWorkers[6]
           ]
         }, 1);
       });
