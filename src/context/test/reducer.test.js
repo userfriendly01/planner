@@ -109,6 +109,30 @@ describe("reducer", () => {
       expect(result.profileContext.profiles).toEqual(payload);
     });
   });
+  describe("loadSkills", () => {
+    test("should update skilContext.taskrouterSkills to payload", () => {
+      const payload = [
+        {
+          skill: "psu-l1",
+          levels: []
+        },
+        {
+          skill: "psu-l2",
+          levels: [1,2,3]
+        },
+        {
+          skill: "psu-l3",
+          levels: [1,2,3,4,5,6]
+        }
+      ];
+      const action = {
+        type: "loadSkills",
+        payload
+      };
+      const result = reducer(initialState, action);
+      expect(result.skillContext.taskrouterSkills).toEqual(payload);
+    });
+  });
   describe("loadWorkers", () => {
     test("should initialize or reinitialize the workers array", () => {
       const payload = [

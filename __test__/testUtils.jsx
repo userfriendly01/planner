@@ -64,11 +64,11 @@ export const expectMockedComponent = (rendered, component, numExpected = 1) => {
   expect(getNumberOfComponents(rendered, componentStr)).toBe(numExpected);
 };
 
-export const expectPassedProps = (mockedComponent, expectedProps, instanceCalled = 0) => {
+export const expectPassedProps = (mockedComponent, expectedProps, instanceCalled = getLastInstanceCalled(mockedComponent)) => {
   expect(mockedComponent.mock.calls[instanceCalled][0]).toEqual(expectedProps);
 };
 
-export const expectOnlyPassedProps = (mockedComponent, expectedProps, instanceCalled = 0) => {
+export const expectOnlyPassedProps = (mockedComponent, expectedProps, instanceCalled = getLastInstanceCalled(mockedComponent)) => {
   const actualProps = mockedComponent.mock.calls[instanceCalled][0];
   const expectedKeys = Object.keys(expectedProps);
   expectedKeys.forEach(k => {
@@ -80,7 +80,7 @@ const getDataTestIdWithInstanceCalled = (componentName, instanceCalled) => `${co
 
 export const getLastInstanceCalled = mockedComponent => mockedComponent.mock.calls.length - 1;
 
-export const getMockedComponentProps = (mockedComponent, instanceCalled = 0) => mockedComponent.mock.calls[instanceCalled][0];
+export const getMockedComponentProps = (mockedComponent, instanceCalled = getLastInstanceCalled(mockedComponent)) => mockedComponent.mock.calls[instanceCalled][0];
 
 const getNumberOfComponents = (rendered, componentString) => rendered.queryAllByText(componentString).length || 0;
 

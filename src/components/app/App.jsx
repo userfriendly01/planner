@@ -11,6 +11,7 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import {
+  formatTaskRouterSkills,
   formatWorkerResponse,
   getUniqueManagerList,
   isErrorIn400s,
@@ -89,6 +90,19 @@ const App = () => {
         dispatch(({
           type: "loadProfiles",
           payload: res.data
+        }));
+      })
+      .catch(err => {
+        console.error("An unknown error has occurred.", err);
+        setError({
+          error: err
+        });
+      });
+    myAxios.get(apiPaths.GET_TASKROUTER_SKILLS)
+      .then(res => {
+        dispatch(({
+          type: "loadSkills",
+          payload: formatTaskRouterSkills(res.data)
         }));
       })
       .catch(err => {

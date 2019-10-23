@@ -3,6 +3,11 @@ export const theme = {
     blue: {
       backgroundColor: "#AAEDED",
       hoverColor: "#9EDEDE"
+    },
+    icon: {
+      backgroundHoverColor: "#9EDEDE",
+      diameter: 24,
+      disabledColor: "#A7A7A7"
     }
   },
   errorColor: "rgb(201,40,45)",
@@ -13,8 +18,10 @@ export const theme = {
   },
   successColor: "rgb(108,149,60)",
   libertyDarkGray: "#565656",
+  lineSeperatorColor: "#9E9E9E",
   tableRow: {
     borderColor: "#F5F5F5",
+    darkerBorderColor: "#E7E7E7",
     icon: {
       size: 16,
       hoverDiameter: 20

@@ -1,6 +1,5 @@
 import { CloseRounded } from "@material-ui/icons";
 import {
-  ModalHeader,
   ModalHelperText,
   ModalNNumber,
   ModalOverlay,
@@ -37,6 +36,10 @@ const FlexRow = styled.div`
 const ButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
   padding: 1%;
+`;
+
+const Header = styled.h1`
+  align-self: center;
 `;
 
 const HeaderAndCloseButtonWrapper = styled.div`
@@ -140,7 +143,7 @@ const AddManagerModal = props => {
           /> : null}
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>
-          <ModalHeader>Add a Manager</ModalHeader>
+          <Header>Add a Manager</Header>
           <CloseRounded onClick={handleClose}/>
         </HeaderAndCloseButtonWrapper>
         <FlexColumn>

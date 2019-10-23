@@ -75,7 +75,7 @@ describe("<ResultsModal />", () => {
       const rendered = renderModal([], warningWorkersMock);
       expect(rendered.queryAllByTestId("successContainer")).toHaveLength(0);
       expect(rendered.queryAllByTestId("warningContainer")).toHaveLength(1);
-      expect(rendered.getByText(`${warningWorkersMock[0].name} was not updated: [${warningWorkersMock[0].reason}]`)).toBeTruthy();
+      expect(rendered.container).toHaveTextContent(`${warningWorkersMock[0].name} was not updated: [${warningWorkersMock[0].reason}]`);
       expect(rendered.getByTestId("warningContainer")).toHaveStyleRule("border-color", theme.warningColor);
       expect(rendered.getByTestId("warningContainer")).toHaveStyleRule("background-color", theme.resultsModal.fadedWarning);
       expect(rendered.queryAllByTestId("failureContainer")).toHaveLength(0);
@@ -87,7 +87,7 @@ describe("<ResultsModal />", () => {
       expect(rendered.queryAllByTestId("successContainer")).toHaveLength(0);
       expect(rendered.queryAllByTestId("warningContainer")).toHaveLength(0);
       expect(rendered.queryAllByTestId("failureContainer")).toHaveLength(1);
-      expect(rendered.getByText(`${failureWorkersMock[0].name} was not updated: [${failureWorkersMock[0].reason}]`)).toBeTruthy();
+      expect(rendered.container).toHaveTextContent(`${failureWorkersMock[0].name} was not updated: [${failureWorkersMock[0].reason}]`);
       expect(rendered.getByTestId("failureContainer")).toHaveStyleRule("border-color", theme.errorColor);
       expect(rendered.getByTestId("failureContainer")).toHaveStyleRule("background-color", theme.resultsModal.fadedError);
     });
