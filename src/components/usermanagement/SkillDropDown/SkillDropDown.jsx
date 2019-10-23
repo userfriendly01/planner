@@ -26,7 +26,12 @@ const SkillDropDown = props => {
 };
 
 SkillDropDown.propTypes = {
-  taskrouterSkills: PropTypes.array.isRequired,
+  taskrouterSkills: PropTypes.arrayOf(
+    PropTypes.shape({
+      skill: PropTypes.string.isRequired,
+      levels: PropTypes.arrayOf(PropTypes.number)
+    })
+  ).isRequired,
   skillValue: PropTypes.string,
   updateSkill: PropTypes.func.isRequired
 };
