@@ -27,7 +27,6 @@ const DefaultSkillsWrapper = styled.div`
   padding: 8px;
 `;
 
-const iconButtonDiameter = 24;
 const IconButtonWrapper = styled.button`
   all: unset;
   align-items: center;
@@ -35,11 +34,11 @@ const IconButtonWrapper = styled.button`
   cursor: pointer;
   display: flex;
   font-size: 20px;
-  height: ${iconButtonDiameter}px;
+  height: ${props => props.theme.button.icon.diameter}px;
   justify-content: center;
-  width: ${iconButtonDiameter}px;
+  width: ${props => props.theme.button.icon.diameter}px;
   &:hover:enabled {
-    border-radius: ${iconButtonDiameter/2}px;
+    border-radius: ${props => props.theme.button.icon.diameter/2}px;
     background-color: ${props => props.theme.button.icon.backgroundHoverColor};
   }
 `;

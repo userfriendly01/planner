@@ -6,6 +6,7 @@ export const theme = {
     },
     icon: {
       backgroundHoverColor: "#9EDEDE",
+      diameter: 24,
       disabledColor: "#A7A7A7"
     }
   },
