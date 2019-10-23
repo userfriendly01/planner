@@ -9,7 +9,7 @@ import styled from "styled-components";
 
 const StyledAppBar = styled(AppBar)`
   && {
-    background-color: #FFD000;
+    background-color: ${props => props.theme.libertyYellow};
     box-shadow: none;
   }
 `;

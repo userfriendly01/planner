@@ -3,6 +3,9 @@ export const theme = {
     blue: {
       backgroundColor: "#AAEDED",
       hoverColor: "#9EDEDE"
+    },
+    fontSize: {
+      small: "0.65rem"
     }
   },
   errorColor: "rgb(201,40,45)",
@@ -13,6 +16,8 @@ export const theme = {
   },
   successColor: "rgb(108,149,60)",
   libertyDarkGray: "#565656",
+  libertyLightYellow: "#FFE280",
+  libertyYellow: "#FFD000",
   tableRow: {
     borderColor: "#F5F5F5",
     icon: {
