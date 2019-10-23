@@ -73,7 +73,7 @@ describe("CustomSelect", () => {
       expect(rendered.getByText("testone", { selector: "option" })).toBeInTheDocument();
       expect(rendered.getByText("testtwo", { selector: "option" })).toBeInTheDocument();
     });
-    test("the value being sent in, should be preselected.", () => {
+    test("the value being sent in should be preselected.", () => {
       const rendered = renderWithProps("test", 41, testList, mockDisplayFunc, updateValueFunc, "testone");
       expect(rendered.getByDisplayValue("testone")).toBeInTheDocument();
       expect(rendered.queryAllByDisplayValue("testtwo").length).toBe(0);
@@ -83,17 +83,6 @@ describe("CustomSelect", () => {
       const value = "testtwo";
       fireEvent.change(rendered.getByTestId("outlined-select-input"),  { target: { value }});
       expect(updateValueFunc).toHaveBeenCalledWith(value);
-    });
-    test("omitting the labelWidth prop will still render Select component properly", () => {
-      const rendered = render(<OutlinedSelect
-        label={"label whatever"}
-        optionsList={testList}
-        optionsDisplayFunc={mockDisplayFunc}
-        updateValue={updateValueFunc}
-        value={"value whatever"} />);
-      expect(rendered.container).toHaveTextContent("label whatever");
-      expect(rendered.container).toHaveTextContent("testone");
-      expect(rendered.container).toHaveTextContent("testtwo");
     });
   });
 
