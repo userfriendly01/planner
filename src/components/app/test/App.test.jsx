@@ -19,6 +19,7 @@ const authEndpoint = apiPaths.AUTH;
 const axiosMock = new MockAdapter(myAxios);
 const profilesEndpoint = apiPaths.GET_PROFILES;
 const workersEndpoint = apiPaths.GET_WORKERS;
+const skillsEndpoint = apiPaths.GET_TASKROUTER_SKILLS;
 
 jest.mock("@material-ui/core", () => ({
   CircularProgress: jest.fn()
@@ -42,6 +43,7 @@ describe("<App />", () => {
     beforeEach(() => axiosMock.onGet(authEndpoint).reply(200, { stuff: "whatever" }));
     beforeEach(() => axiosMock.onGet(workersEndpoint).reply(200, []));
     beforeEach(() => axiosMock.onGet(profilesEndpoint).reply(200, { stuff: "whatever" }));
+    beforeEach(() => axiosMock.onGet(skillsEndpoint).reply(200, { congrats: "you have skillz" }));
     describe("initial state, page is loading", () => {
       test("should render LoadingMessage", () => {
         const rendered = render(<App />);
@@ -99,6 +101,19 @@ describe("<App />", () => {
     describe("workers service call returned an error", () => {
       beforeEach(() => axiosMock.onGet(workersEndpoint).reply(500, { error: "Internal Server Error" }));
       test("should return 'An error occurred while logging in.'", done => {
+        const rendered = render(<App />);
+        waitForElement(() => rendered.getByTestId("unknownError"))
+          .then(() => {
+            expect(rendered.container).toHaveTextContent("An error occurred while logging in.");
+            done();
+          });
+      });
+    });
+  });
+  describe(skillsEndpoint, () => {
+    describe("skills service call returned an error", () => {
+      beforeEach(() => axiosMock.onGet(skillsEndpoint).reply(500, { error: "Internal Server Error" }));
+      test("should return 'An error occurred while logging in.`", done => {
         const rendered = render(<App />);
         waitForElement(() => rendered.getByTestId("unknownError"))
           .then(() => {

@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { sortTaskRouterSkillByName } from "utils";
 
 export const areSkillsDifferent = attributes => {
   const currentSkills = getValidSkillsObject(attributes.routing);
@@ -9,6 +10,24 @@ export const areSkillsDifferent = attributes => {
     return false;
   }
 };
+
+export const findTaskRouterSkill = (skill, taskrouterSkills) => taskrouterSkills.find(skillObj => skillObj.skill === skill) || {
+  skill,
+  levels: []
+};
+
+export const formatTaskRouterSkills = rawTaskRouterSkills => rawTaskRouterSkills.map(skillObj => {
+  const levels = [];
+  if (skillObj.multivalue) {
+    for (let i = skillObj.minimum; i <= skillObj.maximum; i++) {
+      levels.push(i);
+    }
+  }
+  return {
+    skill: skillObj.name,
+    levels
+  };
+}).sort(sortTaskRouterSkillByName);
 
 export const getValidSkillsObject = skillsObject => {
   const validObject = {

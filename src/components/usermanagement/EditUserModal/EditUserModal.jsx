@@ -1,7 +1,7 @@
 import { CloseRounded } from "@material-ui/icons";
 import {
-  CustomSelect,
-  ModalHeader,
+  OutlinedSelect,
+  DefaultSkillSelector,
   ModalOverlay,
   PaperContainer,
   StyledButton
@@ -15,10 +15,15 @@ import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
 import {
+  getValidSkillsObject,
   mapWorkerFromTwilioWorker,
   myAxios,
   sortManagersByName
 } from "utils";
+
+const CenteredH2 = styled.h2`
+  align-self: center;
+`;
 
 const FlexColumn = styled.div`
   display: flex;
@@ -53,17 +58,6 @@ const ModalContainer = styled(FlexColumn)`
   transform: translate(-50%, -50%);
 `;
 
-const ModalText = styled.div`
-  align-self: center;
-  color: ${props => props.theme.textColor};
-  font-family: 'Roboto', sans-serif;
-  font-size: 1.3rem;
-  font-weight: 400;
-  letter-spacing: 0rem;l
-  line-height: 1.30357em;
-  margin: 2% 2% 0% 2%;
-`;
-
 const StyledCloseRounded = styled(CloseRounded)`
   cursor: pointer;
 `;
@@ -85,20 +79,26 @@ const EditUserModal = props => {
   const managers = state.managerContext.managers;
 
   const [saveUser, setSaveUser] = useState(null);
+
   const [form, setForm] = useState({
+    defaultSkills: getValidSkillsObject(worker.attributes.default_skills),
+    defaultSkillsUpdated: false,
     manager: JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number)),
-    managerChanged: false
+    managerUpdated: false
   });
 
   const saveUserClicked = () => {
     setSaveUser(loadingStates.saving);
-    const parsedManager = JSON.parse(form.manager);
-    const attributes = {
-      manager_first_name: parsedManager.manager_first_name,
-      manager_last_name: parsedManager.manager_last_name,
-      manager_n_number: parsedManager.manager_n_number
-    };
-
+    const attributes = {};
+    if (form.defaultSkillsUpdated) {
+      attributes.default_skills = form.defaultSkills;
+    }
+    if (form.managerUpdated) {
+      const parsedManager = JSON.parse(form.manager);
+      attributes.manager_first_name = parsedManager.manager_first_name;
+      attributes.manager_last_name = parsedManager.manager_last_name;
+      attributes.manager_n_number = parsedManager.manager_n_number;
+    }
     myAxios
       .post(apiPaths.UPDATE_WORKER_ATTRIBUTES, {
         workerSid: worker.sid,
@@ -120,7 +120,21 @@ const EditUserModal = props => {
       });
   };
 
-  const formReady = form.manager !== "" && form.managerChanged === true;
+  const setDefaultSkills = updatedDefaultSkills => setForm({
+    ...form,
+    defaultSkills: updatedDefaultSkills,
+    defaultSkillsUpdated: true
+  });
+
+  const setManager = newValue => setForm({
+    ...form,
+    manager: newValue,
+    managerUpdated: true
+  });
+
+  const formUpdated = (form.defaultSkillsUpdated || form.managerUpdated);
+  const formValid = form.manager !== "";
+  const formReady = formUpdated && formValid;
 
   return (
     <ModalContainer>
@@ -132,16 +146,12 @@ const EditUserModal = props => {
           /> : null}
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>
-          <ModalHeader fontSize={"2rem"}>{"Update User's Manager"}</ModalHeader>
+          <h1>Update User</h1>
           <StyledCloseRounded onClick={handleClose}/>
         </HeaderAndCloseButtonWrapper>
-        <ModalText>
-          {worker.attributes.full_name}
-        </ModalText>
-        <ModalText>
-          {worker.attributes.n_number}
-        </ModalText>
-        <CustomSelect
+        <CenteredH2>{worker.attributes.full_name}</CenteredH2>
+        <CenteredH2>{worker.attributes.n_number}</CenteredH2>
+        <OutlinedSelect
           label={"Manager"}
           labelWidth={65}
           optionsList={managers.sort(sortManagersByName)}
@@ -152,13 +162,10 @@ const EditUserModal = props => {
               value: JSON.stringify(option)
             };
           }}
-          updateValue={newValue => setForm({
-            ...form,
-            manager: newValue,
-            managerChanged: true
-          })}
+          updateValue={setManager}
           value={form.manager}
         />
+        <DefaultSkillSelector defaultSkills={form.defaultSkills} setDefaultSkills={setDefaultSkills}/>
         <ButtonWrapper>
           <StyledButton disabled={!formReady} onClick={saveUserClicked}>Update</StyledButton>
         </ButtonWrapper>
@@ -172,6 +179,7 @@ EditUserModal.propTypes = {
   worker: PropTypes.shape({
     sid: PropTypes.string.isRequired,
     attributes: PropTypes.shape({
+      default_skills: PropTypes.object,
       full_name: PropTypes.string,
       manager_first_name: PropTypes.string,
       manager_last_name: PropTypes.string,

@@ -1,6 +1,5 @@
 import {
-  CustomSelect,
-  ModalHeader,
+  OutlinedSelect,
   ModalHelperText,
   ModalNNumber,
   ModalOverlay,
@@ -42,6 +41,10 @@ const FlexRow = styled.div`
 const ButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
   padding: 1%;
+`;
+
+const Header = styled.h1`
+  align-self: center;
 `;
 
 const ModalContainer = styled(FlexColumn)`
@@ -206,8 +209,8 @@ const AddUserModal = props => {
             status={loading.saveStatus}
             message={loading.saveStatus === "success" ? "User added successfully" : "Failed to add user"}
           /> : null}
-        <ModalHeader>Add a User</ModalHeader>
-        <CustomSelect
+        <Header>Add a User</Header>
+        <OutlinedSelect
           label={"Manager"}
           labelWidth={65}
           optionsList={managers.sort(sortManagersByName)}
@@ -224,7 +227,7 @@ const AddUserModal = props => {
           })}
           value={form.manager}
         />
-        <CustomSelect
+        <OutlinedSelect
           label={"Team"}
           labelWidth={41}
           optionsList={profiles}

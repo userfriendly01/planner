@@ -5,13 +5,16 @@ export const initialState = {
   profileContext: {
     profiles: []
   },
+  skillContext: {
+    taskrouterSkills: []
+  },
   userContext: {
     pingIdentity: {}
   },
   workerContext: {
     workers: [],
     selectedWorkers: []
-  }
+  },
 };
 
 export const reducer = (state, action) => {
@@ -46,6 +49,14 @@ export const reducer = (state, action) => {
         profileContext: {
           ...state.profileContext,
           profiles: action.payload
+        }
+      };
+    case "loadSkills":
+      return {
+        ...state,
+        skillContext: {
+          ...state.skillsContext,
+          taskrouterSkills: action.payload
         }
       };
     case "loadWorkers":
