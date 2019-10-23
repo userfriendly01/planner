@@ -1,54 +1,77 @@
 import {
-  AddCircleOutlineRounded,
-  DeleteRounded
+  Add,
+  Delete
 } from "@material-ui/icons";
 import {
   PriorityDropDown,
   SkillDropDown
 } from "components";
 import { useAdminState } from "context";
-import { theme } from "globals";
 import PropTypes from "prop-types";
 import React, {
   useState
 } from "react";
 import styled from "styled-components";
-import {
-  findTaskRouterSkill
-} from "utils";
+import {  findTaskRouterSkill } from "utils";
 
-const AddDefaultSkill = styled.div`
+const CenteredH2 = styled.h2`
+  text-align: center;
+`;
+
+const DashDiv = <div>-</div>;
+
+const DefaultSkillsWrapper = styled.div`
   display: flex;
+  flex-direction: column;
+  font-size: 0.9em;
+  padding: 8px;
+`;
+
+const iconButtonDiameter = 24;
+const IconButtonWrapper = styled.button`
+  all: unset;
   align-items: center;
+  color: ${props => props.disabled ? props.theme.button.icon.disabledColor : "inherit"};
+  cursor: pointer;
+  display: flex;
+  font-size: 20px;
+  height: ${iconButtonDiameter}px;
+  justify-content: center;
+  width: ${iconButtonDiameter}px;
+  &:hover:enabled {
+    border-radius: ${iconButtonDiameter/2}px;
+    background-color: ${props => props.theme.button.icon.backgroundHoverColor};
+  }
 `;
 
-const ExistingDefaultSkills = styled.div`
-
-`;
-
-const Priority = styled.div`
-  width: 20%;
-`;
-
-const Skill = styled.div`
-  width: 55%
-`;
-
-const SkillRowContainer = styled.div`
+const SkillRow = styled.div`
   align-items: center;
   display: flex;
-  margin: 2%;
+  height: 32px;
+  &:hover {
+    background-color: ${props => props.highlightOnHover ? props.theme.tableRow.hoverColor : null}
+  }
 `;
 
-const Text = styled.div`
-  align-self: center;
-  color: ${theme.textColor};
-  font-family: 'Roboto', sans-serif;
-  font-size: 1.3rem;
-  font-weight: 400;
-  letter-spacing: 0rem;l
-  line-height: 1.30357em;
-  margin: 2% 2% 0% 2%;
+const SkillRowItem = styled.div`
+  &:nth-child(1) {
+    display: flex;
+    width: 60%;
+  }
+  &:nth-child(2) {
+    display: flex;
+    justify-content: center;
+    width: 20%;
+  }
+  &:nth-child(3) {
+    display: flex;
+    justify-content: flex-end;
+    width: 20%;
+  }
+`;
+const SkillRowSeperator = styled.div`
+  border-bottom 1px solid ${props => props.theme.lineSeperatorColor};
+  margin-top: 8px;
 `;
 
 const DefaultSkillSelector = props => {
@@ -114,48 +137,56 @@ const DefaultSkillSelector = props => {
     setDefaultSkills(updatedDefaultSkills);
   };
 
-  const skillHasPriorities = newSkill.levels.length > 0 ? true : false;
-  const displayAddSkillButton = newSkill.skill !== "" && ((skillHasPriorities && newSkill.levelSelected) || (!skillHasPriorities)) ? true : false;
-  const addSkillButtonColorDisabled = newSkill.skill === "" || (skillHasPriorities && !newSkill.levelSelected) ? true : false;
+  const skillHasPriorities = newSkill.levels.length > 0;
+  const addSkillButtonDisabled = newSkill.skill === "" || (skillHasPriorities && !newSkill.levelSelected);
 
   return (
-    <div>
-      <Text>Default Profile</Text>
-      <AddDefaultSkill>
-        <SkillDropDown
-          skillValue={newSkill.skill}
-          taskrouterSkills={taskrouterSkillsForDropDown}
-          updateSkill={newSkillChanged} />
-        {skillHasPriorities ?
-          <PriorityDropDown
-            availablePriorities={newSkill.levels}
-            priorityValue={newSkill.levelSelected}
-            updatePriority={newSkillLevelChanged}
-          /> : null}
-        <AddCircleOutlineRounded
-          color={addSkillButtonColorDisabled ? "disabled" : "inherit"}
-          onClick={displayAddSkillButton ? addSkillClicked : null} />
-      </AddDefaultSkill>
-      <ExistingDefaultSkills>
-        {defaultSkills.skills.map((skill, index) => {
-          const taskrouterSkill = findTaskRouterSkill(skill, taskrouterSkills);
-          return (
-            <SkillRowContainer key={`default-skill-row-${index}`}>
-              <Skill>{skill}</Skill>
-              <Priority>
-                {defaultSkills.levels.hasOwnProperty(skill) === true ?
-                  <PriorityDropDown
-                    availablePriorities={taskrouterSkill.levels}
-                    priorityValue={defaultSkills.levels[skill]}
-                    updatePriority={existingSkillLevelChanged(skill)}
-                  /> : null}
-              </Priority>
-              <DeleteRounded onClick={removeSkillClicked(skill)}/>
-            </SkillRowContainer>
-          );
-        })}
-      </ExistingDefaultSkills>
-    </div>
+    <DefaultSkillsWrapper>
+      <CenteredH2>Default Skills</CenteredH2>
+      <SkillRow>
+        <SkillRowItem>
+          <SkillDropDown
+            skillValue={newSkill.skill}
+            taskrouterSkills={taskrouterSkillsForDropDown}
+            updateSkill={newSkillChanged} />
+        </SkillRowItem>
+        <SkillRowItem>
+          {skillHasPriorities ?
+            <PriorityDropDown
+              availablePriorities={newSkill.levels}
+              priorityValue={newSkill.levelSelected}
+              updatePriority={newSkillLevelChanged}
+            /> : DashDiv}
+        </SkillRowItem>
+        <SkillRowItem>
+          <IconButtonWrapper disabled={addSkillButtonDisabled} onClick={addSkillClicked} data-testid="add-skill-button">
+            <Add fontSize={"inherit"}/>
+          </IconButtonWrapper>
+        </SkillRowItem>
+      </SkillRow>
+      <SkillRowSeperator/>
+      {defaultSkills.skills.sort().map((skill, index) => {
+        const taskrouterSkill = findTaskRouterSkill(skill, taskrouterSkills);
+        return (
+          <SkillRow highlightOnHover={true} key={`default-skill-row-${index}`}>
+            <SkillRowItem>{skill}</SkillRowItem>
+            <SkillRowItem>
+              {defaultSkills.levels.hasOwnProperty(skill) === true ?
+                <PriorityDropDown
+                  availablePriorities={taskrouterSkill.levels}
+                  priorityValue={defaultSkills.levels[skill]}
+                  updatePriority={existingSkillLevelChanged(skill)}
+                /> : DashDiv}
+            </SkillRowItem>
+            <SkillRowItem>
+              <IconButtonWrapper onClick={removeSkillClicked(skill)} data-testid="delete-skill-button">
+                <Delete fontSize="inherit"/>
+              </IconButtonWrapper>
+            </SkillRowItem>
+          </SkillRow>
+        );
+      })}
+    </DefaultSkillsWrapper>
   );
 };
 

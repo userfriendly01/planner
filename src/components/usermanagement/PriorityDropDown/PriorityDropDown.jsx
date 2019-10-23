@@ -1,4 +1,4 @@
-import { CustomSelect } from "components";
+import { SimpleSelect } from "components";
 import PropTypes from "prop-types";
 import React from "react";
 
@@ -10,9 +10,7 @@ const PriorityDropDown = props => {
   } = props;
 
   return (
-    <CustomSelect
-      label={""}
-      labelWidth={0}
+    <SimpleSelect
       noBlankValue={true}
       optionsList={availablePriorities}
       optionsDisplayFunc={option => {

@@ -2,9 +2,8 @@ import EditUserModal from "../EditUserModal";
 import { CloseRounded } from "@material-ui/icons";
 import MockAdapter from "axios-mock-adapter";
 import {
-  CustomSelect,
+  OutlinedSelect,
   DefaultSkillSelector,
-  ModalHeader,
   ModalOverlay,
   PaperContainer,
   StyledButton
@@ -38,9 +37,8 @@ jest.mock("@material-ui/icons", () => ({
 jest.mock("components", () => ({
   __esModule: true,
   StyledButton: jest.fn(),
-  CustomSelect: jest.fn(),
+  OutlinedSelect: jest.fn(),
   DefaultSkillSelector: jest.fn(),
-  ModalHeader: jest.fn(),
   ModalOverlay: jest.fn(),
   PaperContainer: jest.fn()
 }));
@@ -89,9 +87,8 @@ describe("<EditUserModal />", () => {
     setupMockedComponents({
       CloseRounded,
       StyledButton,
-      CustomSelect,
+      OutlinedSelect,
       DefaultSkillSelector,
-      ModalHeader,
       ModalOverlay
     });
     mockHandleClose.mockClear();
@@ -144,9 +141,9 @@ describe("<EditUserModal />", () => {
     });
     test("EditUserModal Renders the appropriate elements", () => {
       const rendered = renderComponent();
-      expectMockedComponent(rendered, { ModalHeader }, 1);
+      expect(rendered.container).toHaveTextContent("Update User");
       expectMockedComponent(rendered, { CloseRounded }, 1);
-      expectMockedComponent(rendered, { CustomSelect }, 1);
+      expectMockedComponent(rendered, { OutlinedSelect }, 1);
       expectMockedComponent(rendered, { DefaultSkillSelector }, 1);
       expectMockedComponent(rendered, { StyledButton }, 1);
       expectMockedComponent(rendered, { ModalOverlay }, 0);
@@ -154,7 +151,6 @@ describe("<EditUserModal />", () => {
         children: "Update",
         disabled: true
       }, 0);
-      expect(getMockedComponentProps(ModalHeader).children).toBe("Update User");
     });
   });
 
@@ -165,8 +161,8 @@ describe("<EditUserModal />", () => {
         label: "Manager",
         optionsList: mockManagers
       };
-      expectOnlyPassedProps(CustomSelect, expectedManagerProps, 0);
-      const optionsDisplayFunc = CustomSelect.mock.calls[0][0].optionsDisplayFunc;
+      expectOnlyPassedProps(OutlinedSelect, expectedManagerProps, 0);
+      const optionsDisplayFunc = OutlinedSelect.mock.calls[0][0].optionsDisplayFunc;
       const option = optionsDisplayFunc(mockManagers[0]);
       expect(option).toEqual({
         display: `${mockManagers[0].manager_first_name} ${mockManagers[0].manager_last_name}`,
@@ -229,7 +225,7 @@ describe("<EditUserModal />", () => {
     test("defaultSkills and manager are both updated, Update button clicked, should update default_skills and manager attributes, show success modal overlay and hide after 2s", done => {
       const rendered = renderComponent();
       act(() => {
-        const setManager = getMockedComponentProps(CustomSelect).updateValue;
+        const setManager = getMockedComponentProps(OutlinedSelect).updateValue;
         setManager(JSON.stringify(updatedManager));
       });
       act(() => {
@@ -312,7 +308,7 @@ describe("<EditUserModal />", () => {
     test("manager is updated, Update button clicked, should only update manager attribute, show success modal overlay and hide after 2s", done => {
       const rendered = renderComponent();
       act(() => {
-        const setManager = getMockedComponentProps(CustomSelect).updateValue;
+        const setManager = getMockedComponentProps(OutlinedSelect).updateValue;
         setManager(JSON.stringify(updatedManager));
       });
       expectOnlyPassedProps(StyledButton, {

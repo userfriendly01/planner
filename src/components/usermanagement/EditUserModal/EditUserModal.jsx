@@ -1,8 +1,7 @@
 import { CloseRounded } from "@material-ui/icons";
 import {
-  CustomSelect,
+  OutlinedSelect,
   DefaultSkillSelector,
-  ModalHeader,
   ModalOverlay,
   PaperContainer,
   StyledButton
@@ -21,6 +20,10 @@ import {
   myAxios,
   sortManagersByName
 } from "utils";
+
+const CenteredH2 = styled.h2`
+  align-self: center;
+`;
 
 const FlexColumn = styled.div`
   display: flex;
@@ -55,24 +58,10 @@ const ModalContainer = styled(FlexColumn)`
   transform: translate(-50%, -50%);
 `;
 
-const ModalText = styled.div`
-  align-self: center;
-  color: ${props => props.theme.textColor};
-  font-family: 'Roboto', sans-serif;
-  font-size: 1.3rem;
-  font-weight: 400;
-  letter-spacing: 0rem;l
-  line-height: 1.30357em;
-  margin: 2% 2% 0% 2%;
-`;
-
-<<<<<<< HEAD
-=======
 const StyledCloseRounded = styled(CloseRounded)`
   cursor: pointer;
 `;
 
->>>>>>> a7a3632548296eb5f239400e80694ffdf541da56
 const loadingStates = {
   fail: "fail",
   saving: "saving",
@@ -157,16 +146,12 @@ const EditUserModal = props => {
           /> : null}
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>
-          <ModalHeader fontSize={"2rem"}>{"Update User"}</ModalHeader>
-          <CloseRounded onClick={handleClose}/>
+          <h1>Update User</h1>
+          <StyledCloseRounded onClick={handleClose}/>
         </HeaderAndCloseButtonWrapper>
-        <ModalText>
-          {worker.attributes.full_name}
-        </ModalText>
-        <ModalText>
-          {worker.attributes.n_number}
-        </ModalText>
-        <CustomSelect
+        <CenteredH2>{worker.attributes.full_name}</CenteredH2>
+        <CenteredH2>{worker.attributes.n_number}</CenteredH2>
+        <OutlinedSelect
           label={"Manager"}
           labelWidth={65}
           optionsList={managers.sort(sortManagersByName)}
