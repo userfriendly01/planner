@@ -11,6 +11,7 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import {
+  formatTaskRouterSkills,
   formatWorkerResponse,
   getUniqueManagerList,
   isErrorIn400s,
@@ -82,6 +83,38 @@ const authenticate = dispatch => new Promise((resolve, reject) => myAxios.get(ap
   })
 );
 
+const getProfiles = dispatch => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_PROFILES)
+  .then(res => {
+    dispatch(({
+      type: "loadProfiles",
+      payload: res.data
+    }));
+    resolve(true);
+  })
+  .catch(error => {
+    reject({
+      msg: "Failed to fetch profiles from service",
+      error
+    });
+  })
+);
+
+const getSkills = dispatch => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_TASKROUTER_SKILLS)
+  .then(res => {
+    dispatch(({
+      type: "loadSkills",
+      payload: formatTaskRouterSkills(res.data)
+    }));
+    resolve(true);
+  })
+  .catch(error => {
+    reject({
+      msg: "Failed to fetch taskrouter skills from service",
+      error
+    });
+  })
+);
+
 const getWorkers = dispatch => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_WORKERS)
   .then(res => {
     const workers = formatWorkerResponse(res.data);
@@ -104,22 +137,6 @@ const getWorkers = dispatch => new Promise((resolve, reject) => myAxios.get(apiP
   })
 );
 
-const getProfiles = dispatch => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_PROFILES)
-  .then(res => {
-    dispatch(({
-      type: "loadProfiles",
-      payload: res.data
-    }));
-    resolve(true);
-  })
-  .catch(error => {
-    reject({
-      msg: "Failed to fetch profiles from service",
-      error
-    });
-  })
-);
-
 const App = () => {
 
   const [loadResult, setLoadResult] = useState(null);
@@ -129,6 +146,7 @@ const App = () => {
     Promise.all([
       authenticate(dispatch),
       getProfiles(dispatch),
+      getSkills(dispatch),
       getWorkers(dispatch)
     ])
       .then(() => setLoadResult(success))

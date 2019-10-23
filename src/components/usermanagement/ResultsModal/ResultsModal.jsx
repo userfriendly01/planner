@@ -1,5 +1,4 @@
 import {
-  ModalHeader,
   PaperContainer,
   StyledButton
 } from "components";
@@ -33,6 +32,10 @@ const FlexRowMax = styled(FlexRow)`
   width: max-content;
 `;
 
+const Header = styled.h1`
+  align-self: center;
+`;
+
 const ModalContainer = styled(FlexColumn)`
   font-family: 'Roboto', sans-serif;
   left: 50%;
@@ -64,7 +67,7 @@ const ResultsModal = props => {
   unsuccessfulWorkers.forEach((worker, index) => {
     const display =
       <FlexRowMax key={index}>
-        {worker.name} was not updated: [{worker.reason}]
+        <b>{worker.name}</b> &nbsp;was not updated: [{worker.reason}]
       </FlexRowMax>;
 
     if (worker.reason === resetResponses.SKILLS_WERE_EQUAL) {
@@ -77,7 +80,7 @@ const ResultsModal = props => {
   return (
     <ModalContainer>
       <PaperContainer>
-        <ModalHeader>Reset Results</ModalHeader>
+        <Header>Reset Results</Header>
         {
           successfulWorkers.length !== 0 ?
             <ResultsContainer backgroundColor={theme.resultsModal.fadedSuccess} borderColor={theme.successColor} data-testid="successContainer">

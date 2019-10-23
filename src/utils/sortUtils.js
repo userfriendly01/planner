@@ -4,3 +4,10 @@ export const sortManagersByName = (a, b) => {
   if (aName > bName) { return 1; }
   return 0;
 };
+
+export const sortTaskRouterSkillByName = (a, b) => {
+  const [aName, bName] = [a.skill, b.skill];
+  if (aName < bName) { return -1; }
+  if (aName > bName) { return 1; }
+  return 0;
+};
