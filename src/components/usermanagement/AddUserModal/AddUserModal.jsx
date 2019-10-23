@@ -200,6 +200,12 @@ const AddUserModal = props => {
   const isLookupInfoEmpty = JSON.stringify(form.lookupInfo) === JSON.stringify({});
   const formReady = !isLookupInfoEmpty && form.team !== "" && form.manager !== "" && form.outgoing !== "";
   const showModalHelperText = !isLookupInfoEmpty || form.lookupError;
+  let overlayMessage = "Saving";
+  if (loading.saveStatus === "success") {
+    overlayMessage = "User added successfully";
+  } else if (loading.saveStatus === "fail") {
+    overlayMessage = "Failed to add user";
+  }
 
   return (
     <ModalContainer>
@@ -207,7 +213,7 @@ const AddUserModal = props => {
         {loading.saveUser ?
           <ModalOverlay
             status={loading.saveStatus}
-            message={loading.saveStatus === "success" ? "User added successfully" : "Failed to add user"}
+            message={overlayMessage}
           /> : null}
         <Header>Add a User</Header>
         <OutlinedSelect

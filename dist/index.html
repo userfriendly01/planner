@@ -1,5 +1,30 @@
 <html>
   <head>
+    <script type="text/javascript" charset='UTF-8'>
+      var appKey = "";
+      if (window.location.hostname === "triton-dev.lmig.com"){
+        appKey = "AD-AAB-AAP-ZKG"
+      } else if (window.location.hostname === "triton-test.lmig.com"){
+        appKey = "AD-AAB-AAT-DZW"
+      } else if (window.location.hostname === "triton.lmig.com"){
+        appKey = "AD-AAB-AAT-EAH"
+      }
+      if (appKey !== "") {
+        window['adrum-start-time'] = new Date().getTime();
+        (function (config) {
+          config.appKey = appKey;
+          config.adrumExtUrlHttp = 'http://cdn.appdynamics.com';
+          config.adrumExtUrlHttps = 'https://cdn.appdynamics.com';
+          config.beaconUrlHttp = 'http://pdx-col.eum-appdynamics.com';
+          config.beaconUrlHttps = 'https://pdx-col.eum-appdynamics.com';
+          config.xd = {enable : false};
+          config.spa = {
+            "spa2": true
+          };
+        })(window['adrum-config'] || (window['adrum-config'] = {}));
+      }
+    </script>
+    <script src='https://cdn.appdynamics.com/adrum/adrum-4.5.13.2640.js'></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="referrer" content="no-referrer">

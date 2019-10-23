@@ -4,10 +4,10 @@ import { render } from "testUtils";
 
 describe("<ModalOverlay />", () => {
   describe("status = 'saving'", () => {
-    test("should display 'Loading'", () => {
+    test("should display 'whatever'", () => {
       const rendered = render(<ModalOverlay status="saving" message="whatever" />);
       expect(rendered).toBeTruthy();
-      expect(rendered.getByText("Loading")).toBeInTheDocument();
+      expect(rendered.getByText("whatever")).toBeInTheDocument();
     });
   });
   describe("status = 'success'", () => {
