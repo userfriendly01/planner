@@ -14,7 +14,7 @@ export const initialState = {
   workerContext: {
     workers: [],
     selectedWorkers: []
-  },
+  }
 };
 
 export const reducer = (state, action) => {
