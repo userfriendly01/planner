@@ -5,6 +5,9 @@ export const initialState = {
   profileContext: {
     profiles: []
   },
+  skillContext: {
+    taskrouterSkills: []
+  },
   userContext: {
     pingIdentity: {}
   },
@@ -12,9 +15,6 @@ export const initialState = {
     workers: [],
     selectedWorkers: []
   },
-  skillContext: {
-    taskrouterSkills: []
-  }
 };
 
 export const reducer = (state, action) => {

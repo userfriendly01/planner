@@ -70,13 +70,12 @@ describe("skillsUtils", () => {
       };
       expect(areSkillsDifferent(attributes)).toEqual(false);
     });
-  
+
     const testTrue = attributes => {
       test("should return true when default_skills differs from routing", () => {
         expect(areSkillsDifferent(attributes)).toEqual(true);
       });
     };
-  
     testTrue({
       default_skills: {
         skills: ["amazing", "wow", "socool"],
