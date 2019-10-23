@@ -9,16 +9,12 @@ import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
 
-
-
 const getOptions = (optionsList, optionsDisplayFunc, noBlankValue) => {
-
   const getOption = (key, value, display) => (
     <option key={key} value={value} data-testid={"select-option"}>
       {display}
     </option>
   );
-
   const options = [];
   if (!noBlankValue) {
     options.push(getOption("select-blank-entry", "", ""));
@@ -35,6 +31,7 @@ const OutlinedSelectFormControl = styled(FormControl)`
     margin: 8px;
   }
 `;
+
 export const OutlinedSelect = props => {
   const {
     disabled,
