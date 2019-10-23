@@ -80,6 +80,10 @@ const IconWrapper = styled.div`
   }
 `;
 
+const ResetSkillsText = styled.span`
+  font-size: ${props => props.theme.button.fontSize.small};
+`;
+
 const TableContainer = styled.div`
   display: flex;
   flex: 1 1 auto;
@@ -178,7 +182,7 @@ const ManagementTable = props => {
             </CustomTableHeader>
             <CustomTableHeader width={inputHeaderWidth}>
               <StyledButton disabled={selectedWorkers.length === 0} onClick={() => resetWorkers()}>
-                Reset
+                <ResetSkillsText>Reset Skills</ResetSkillsText>
               </StyledButton>
             </CustomTableHeader>
           </tr>
