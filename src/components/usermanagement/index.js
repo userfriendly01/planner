@@ -14,4 +14,5 @@ export { default as ModalNNumber } from "./ModalNNumber/ModalNNumber";
 export { default as ModalOverlay } from "./ModalOverlay/ModalOverlay";
 export { default as ModalPhoneNumber } from "./ModalPhoneNumber/ModalPhoneNumber";
 export { default as PaperContainer } from "./PaperContainer/PaperContainer";
+export { default as ResultsModal } from "./ResultsModal/ResultsModal";
 export { default as SearchBox } from "./SearchBox/SearchBox";

@@ -121,6 +121,12 @@ const EditUserModal = props => {
   };
 
   const formReady = form.manager !== "" && form.managerChanged === true;
+  let overlayMessage = "Saving";
+  if (saveUser === "success") {
+    overlayMessage = "User updated successfully";
+  } else if (saveUser === "fail") {
+    overlayMessage = "Failed to update user";
+  }
 
   return (
     <ModalContainer>
@@ -128,7 +134,7 @@ const EditUserModal = props => {
         {saveUser ?
           <ModalOverlay
             status={saveUser}
-            message={saveUser === "success" ? "User updated successfully" : "Failed to update user"}
+            message={overlayMessage}
           /> : null}
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>

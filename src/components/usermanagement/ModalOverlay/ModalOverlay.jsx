@@ -98,7 +98,7 @@ const ModalOverlay = props => {
   return (
     <Overlay modalBackground={modalBackground} >
       {icon}
-      {status === "saving" ? "Loading" : message}
+      {message}
     </Overlay>
   );
 };

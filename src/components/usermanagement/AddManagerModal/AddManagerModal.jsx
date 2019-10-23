@@ -77,7 +77,7 @@ const AddManagerModal = props => {
 
   const addManagerClicked = () => {
     setSaveManager(loadingStates.loading);
-    if (!state.managerContext.managers.some(mgr => mgr.manager_n_number === nNumber)) {
+    if (!state.managerContext.managers.some(mgr => mgr.manager_n_number.toLowerCase() === nNumber.toLowerCase())) {
       dispatch(({
         type: "addManager",
         payload: { manager }
@@ -123,6 +123,12 @@ const AddManagerModal = props => {
 
   const isManagerValid = manager.manager_n_number ? true : false;
   const helperTextMessage = isManagerValid ? `${manager.manager_first_name} ${manager.manager_last_name}` : "User not found";
+  let overlayMessage = "Saving";
+  if (saveManager === loadingStates.success) {
+    overlayMessage = "Manager added successfully";
+  } else if (saveManager === loadingStates.fail) {
+    overlayMessage = "Manager already exists";
+  }
 
   return (
     <ModalContainer>
@@ -130,7 +136,7 @@ const AddManagerModal = props => {
         {saveManager === loadingStates.success || saveManager === loadingStates.fail ?
           <ModalOverlay
             status={saveManager}
-            message={saveManager === "success" ? "Manager added successfully" : "Manager already exists"}
+            message={overlayMessage}
           /> : null}
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>

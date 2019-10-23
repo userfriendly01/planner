@@ -144,25 +144,70 @@ describe("reducer", () => {
     const state = { ...initialState };
     const workers = { cool: "wow" };
     state.workerContext.workers = workers;
-    state.workerContext.selectedWorkers = ["WK1","WK2","WK3","WK4","WK5"];
+    state.workerContext.selectedWorkers = [
+      {
+        name: "WK1",
+        sid: 1
+      },
+      {
+        name: "WK2",
+        sid: 2
+      },
+      {
+        name: "WK3",
+        sid: 3
+      }
+    ];
     test("when worker is not selected they will be added to the array", () => {
       const action = {
         type: "toggleWorkerSelected",
-        payload: "WK6"
+        payload: {
+          name: "WK6",
+          sid: 6
+        }
       };
       expect(reducer({ ...state }, action).workerContext).toEqual({
         workers,
-        selectedWorkers: ["WK1","WK2","WK3","WK4","WK5","WK6"]
+        selectedWorkers: [
+          {
+            name: "WK1",
+            sid: 1
+          },
+          {
+            name: "WK2",
+            sid: 2
+          },
+          {
+            name: "WK3",
+            sid: 3
+          },
+          {
+            name: "WK6",
+            sid: 6
+          }
+        ]
       });
     });
     test("when worker is already selected they will be removed from the array", () => {
       const action = {
         type: "toggleWorkerSelected",
-        payload: "WK3"
+        payload: {
+          name: "WK3",
+          sid: 3
+        }
       };
       expect(reducer({ ...state }, action).workerContext).toEqual({
         workers,
-        selectedWorkers: ["WK1","WK2","WK4","WK5"]
+        selectedWorkers: [
+          {
+            name: "WK1",
+            sid: 1
+          },
+          {
+            name: "WK2",
+            sid: 2
+          }
+        ]
       });
     });
   });
