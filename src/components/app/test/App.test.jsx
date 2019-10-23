@@ -39,9 +39,11 @@ describe("<App />", () => {
     });
   });
   describe("all service calls successful", () => {
-    beforeEach(() => axiosMock.onGet(authEndpoint).reply(200, { stuff: "whatever" }));
-    beforeEach(() => axiosMock.onGet(workersEndpoint).reply(200, []));
-    beforeEach(() => axiosMock.onGet(profilesEndpoint).reply(200, { stuff: "whatever" }));
+    beforeEach(() => {
+      axiosMock.onGet(authEndpoint).reply(200, { stuff: "whatever" });
+      axiosMock.onGet(workersEndpoint).reply(200, []);
+      axiosMock.onGet(profilesEndpoint).reply(200, { stuff: "whatever" });
+    });
     describe("initial state, page is loading", () => {
       test("should render LoadingMessage", () => {
         const rendered = render(<App />);
@@ -64,23 +66,35 @@ describe("<App />", () => {
   });
   describe(authEndpoint, () => {
     describe("authentication service call returned an error in the 400's", () => {
-      beforeEach(() => axiosMock.onGet(authEndpoint).reply(403, { error: "Forbidden" }));
+      const statusCode = 403;
+      beforeEach(() => {
+        axiosMock.onGet(authEndpoint).reply(statusCode, { stuff: "whatever" });
+        axiosMock.onGet(workersEndpoint).reply(200, []);
+        axiosMock.onGet(profilesEndpoint).reply(200, { stuff: "whatever" });
+      });
       test("should return 'You are not authorized to view this page'", done => {
         const rendered = render(<App />);
-        waitForElement(() => rendered.getByTestId("unauthorized"))
+        waitForElement(() => rendered.getByTestId("error-overlay"))
           .then(() => {
+            expect(rendered.container).toHaveTextContent(statusCode);
             expect(rendered.container).toHaveTextContent("You are not authorized to view this page");
             done();
           });
       });
     });
     describe("authentication service call returned an error not in the 400's", () => {
-      beforeEach(() => axiosMock.onGet(authEndpoint).reply(500, { error: "Internal Server Error" }));
+      const statusCode = 500;
+      beforeEach(() => {
+        axiosMock.onGet(authEndpoint).reply(statusCode, { stuff: "whatever" });
+        axiosMock.onGet(workersEndpoint).reply(200, []);
+        axiosMock.onGet(profilesEndpoint).reply(200, { stuff: "whatever" });
+      });
       test("should return 'An error occurred while logging in.'", done => {
         const rendered = render(<App />);
-        waitForElement(() => rendered.getByTestId("unknownError"))
+        waitForElement(() => rendered.getByTestId("error-overlay"))
           .then(() => {
-            expect(rendered.container).toHaveTextContent("An error occurred while logging in.");
+            expect(rendered.container).toHaveTextContent(statusCode);
+            expect(rendered.container).toHaveTextContent("An error occurred when trying to authenticate");
             done();
           });
       });
@@ -88,21 +102,37 @@ describe("<App />", () => {
   });
   describe(profilesEndpoint, () => {
     describe("profiles service call returned an error", () => {
-      beforeEach(() => axiosMock.onGet(profilesEndpoint).reply(500, { error: "Internal Server Error" }));
-      test("should return 'You are not authorized to view this page'", () => {
+      const statusCode = 500;
+      beforeEach(() => {
+        axiosMock.onGet(authEndpoint).reply(200, { stuff: "whatever" });
+        axiosMock.onGet(workersEndpoint).reply(200, []);
+        axiosMock.onGet(profilesEndpoint).reply(statusCode, { stuff: "whatever" });
+      });
+      test("should return 'An error occurred while logging in.'", done => {
         const rendered = render(<App />);
-        expect(rendered.container).toHaveTextContent("Loading...");
+        waitForElement(() => rendered.getByTestId("error-overlay"))
+          .then(() => {
+            expect(rendered.container).toHaveTextContent(statusCode);
+            expect(rendered.container).toHaveTextContent("Failed to fetch profiles from service");
+            done();
+          });
       });
     });
   });
   describe(workersEndpoint, () => {
     describe("workers service call returned an error", () => {
-      beforeEach(() => axiosMock.onGet(workersEndpoint).reply(500, { error: "Internal Server Error" }));
+      const statusCode = 500;
+      beforeEach(() => {
+        axiosMock.onGet(authEndpoint).reply(200, { stuff: "whatever" });
+        axiosMock.onGet(workersEndpoint).reply(statusCode, []);
+        axiosMock.onGet(profilesEndpoint).reply(200, { stuff: "whatever" });
+      });
       test("should return 'An error occurred while logging in.'", done => {
         const rendered = render(<App />);
-        waitForElement(() => rendered.getByTestId("unknownError"))
+        waitForElement(() => rendered.getByTestId("error-overlay"))
           .then(() => {
-            expect(rendered.container).toHaveTextContent("An error occurred while logging in.");
+            expect(rendered.container).toHaveTextContent(statusCode);
+            expect(rendered.container).toHaveTextContent("Failed to fetch workers from service");
             done();
           });
       });
