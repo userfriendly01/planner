@@ -27,7 +27,7 @@ const PriorityDropDown = props => {
 };
 
 PriorityDropDown.propTypes = {
-  availablePriorities: PropTypes.array.isRequired,
+  availablePriorities: PropTypes.arrayOf(PropTypes.number),
   priorityValue: PropTypes.number,
   updatePriority: PropTypes.func.isRequired
 };
