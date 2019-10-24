@@ -15,7 +15,7 @@ const Content = styled.div`
 `;
 
 const StyledTabs = styled(Tabs)`
-  background-color: #FFE280;
+  background-color: ${props => props.theme.libertyLightYellow};
   color: ${props => props.theme.textColor};
 `;
 
