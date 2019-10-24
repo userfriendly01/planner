@@ -16,6 +16,7 @@ import {
   expectMockedComponent,
   expectOnlyPassedProps,
   fireEvent,
+  getMockedComponentProps,
   getTestState,
   mockStore,
   render,
@@ -318,5 +319,11 @@ describe("<ManagementTable />", () => {
       act(() => fireEvent.click(rendered.getByLabelText("toggle skills modified")));
       expect(setDeltaToggle.mock.calls).toHaveLength(1);
     });
+  });
+  test("StyledButton is passed Reset Skills text", () => {
+    renderComponent([]);
+    const { children } = getMockedComponentProps(StyledButton);
+    const rendered = render(children);
+    expect(rendered.container).toHaveTextContent("Reset Skills");
   });
 });

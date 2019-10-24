@@ -10,7 +10,7 @@ export const apiPaths = {
   GET_WORKERS: `${SERVICE_BASE_URI}/workers`,
   GET_WORKERS_BY_ID: `${SERVICE_BASE_URI}/workers/id/`,
   RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
-  UPDATE_WORKER_ATTRIBUTES: `${SERVICE_BASE_URI}/updateWorkerAttributes`
+  UPDATE_WORKER_ATTRIBUTES: `${SERVICE_BASE_URI}/updateworkerattributes`
 };
 
 export const nNumMatcher = /[n,N]\d{7}/g;

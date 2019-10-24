@@ -8,18 +8,57 @@ import { apiPaths } from "globals";
 import React from "react";
 import {
   expectMockedComponent,
+  mockStore,
   render,
   setupMockedComponents,
   waitForElement
 } from "testUtils";
-import { myAxios } from "utils";
+import {
+  formatTaskRouterSkills,
+  formatWorkerResponse,
+  getUniqueManagerList,
+  myAxios
+} from "utils";
 import App from "../App";
 
 const authEndpoint = apiPaths.AUTH;
 const axiosMock = new MockAdapter(myAxios);
 const profilesEndpoint = apiPaths.GET_PROFILES;
-const workersEndpoint = apiPaths.GET_WORKERS;
 const skillsEndpoint = apiPaths.GET_TASKROUTER_SKILLS;
+const workersEndpoint = apiPaths.GET_WORKERS;
+
+const auth = { whatever: "lol" };
+
+const profiles = [
+  { cool: "neat" },
+  { wow: "amazing" }
+];
+
+const workers = [
+  {
+    sid: "WK1",
+    attributes: "wow"
+  },
+  {
+    sid: "WK2",
+    attributes: "neat"
+  }
+];
+
+const taskrouterSkills = [
+  {
+    multivale: false,
+    minimum: 0,
+    maximum: 1,
+    name: "wow"
+  },
+  {
+    multivale: true,
+    minimum: 2,
+    maximum: 99,
+    name: "neat"
+  }
+];
 
 jest.mock("@material-ui/core", () => ({
   CircularProgress: jest.fn()
@@ -40,10 +79,12 @@ describe("<App />", () => {
     });
   });
   describe("all service calls successful", () => {
-    beforeEach(() => axiosMock.onGet(authEndpoint).reply(200, { stuff: "whatever" }));
-    beforeEach(() => axiosMock.onGet(workersEndpoint).reply(200, []));
-    beforeEach(() => axiosMock.onGet(profilesEndpoint).reply(200, { stuff: "whatever" }));
-    beforeEach(() => axiosMock.onGet(skillsEndpoint).reply(200, { congrats: "you have skillz" }));
+    beforeEach(() => {
+      axiosMock.onGet(authEndpoint).reply(200, auth);
+      axiosMock.onGet(profilesEndpoint).reply(200, profiles);
+      axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+      axiosMock.onGet(workersEndpoint).reply(200, workers);
+    });
     describe("initial state, page is loading", () => {
       test("should render LoadingMessage", () => {
         const rendered = render(<App />);
@@ -51,11 +92,34 @@ describe("<App />", () => {
         expectMockedComponent(rendered, { CircularProgress });
       });
     });
-    describe("once service call is completed renders Header and NavTabs components", () => {
-      test("should render Header & NavTabs", done => {
+    describe("once service call is completed renders Header and NavTabs components and actions are dispatched", () => {
+      test("should render Header & NavTabs and dispatch appropriate actions", done => {
         const rendered = render(<App />);
         waitForElement(() => rendered.getByTestId("app-wrapper"))
           .then(() => {
+            const actions = mockStore.getActions();
+            expect(actions).toEqual([
+              {
+                type: "loadUserData",
+                payload: { pingIdentity: auth }
+              },
+              {
+                type: "loadProfiles",
+                payload: profiles
+              },
+              {
+                type: "loadSkills",
+                payload: formatTaskRouterSkills(taskrouterSkills)
+              },
+              {
+                type: "loadWorkers",
+                payload: formatWorkerResponse(workers)
+              },
+              {
+                type: "loadManagers",
+                payload: getUniqueManagerList(formatWorkerResponse(workers))
+              }
+            ]);
             expectMockedComponent(rendered, { Header });
             expectMockedComponent(rendered, { NavTabs });
             expect(rendered.container).not.toHaveTextContent("Loading...");
@@ -66,23 +130,37 @@ describe("<App />", () => {
   });
   describe(authEndpoint, () => {
     describe("authentication service call returned an error in the 400's", () => {
-      beforeEach(() => axiosMock.onGet(authEndpoint).reply(403, { error: "Forbidden" }));
+      const statusCode = 403;
+      beforeEach(() => {
+        axiosMock.onGet(authEndpoint).reply(statusCode, { ohno: "booo" });
+        axiosMock.onGet(profilesEndpoint).reply(200, profiles);
+        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(workersEndpoint).reply(200, workers);
+      });
       test("should return 'You are not authorized to view this page'", done => {
         const rendered = render(<App />);
-        waitForElement(() => rendered.getByTestId("unauthorized"))
+        waitForElement(() => rendered.getByTestId("error-overlay"))
           .then(() => {
+            expect(rendered.container).toHaveTextContent(statusCode);
             expect(rendered.container).toHaveTextContent("You are not authorized to view this page");
             done();
           });
       });
     });
     describe("authentication service call returned an error not in the 400's", () => {
-      beforeEach(() => axiosMock.onGet(authEndpoint).reply(500, { error: "Internal Server Error" }));
+      const statusCode = 500;
+      beforeEach(() => {
+        axiosMock.onGet(authEndpoint).reply(statusCode, { wahhh: "nooo" });
+        axiosMock.onGet(profilesEndpoint).reply(200, profiles);
+        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(workersEndpoint).reply(200, workers);
+      });
       test("should return 'An error occurred while logging in.'", done => {
         const rendered = render(<App />);
-        waitForElement(() => rendered.getByTestId("unknownError"))
+        waitForElement(() => rendered.getByTestId("error-overlay"))
           .then(() => {
-            expect(rendered.container).toHaveTextContent("An error occurred while logging in.");
+            expect(rendered.container).toHaveTextContent(statusCode);
+            expect(rendered.container).toHaveTextContent("An error occurred when trying to authenticate");
             done();
           });
       });
@@ -90,21 +168,39 @@ describe("<App />", () => {
   });
   describe(profilesEndpoint, () => {
     describe("profiles service call returned an error", () => {
-      beforeEach(() => axiosMock.onGet(profilesEndpoint).reply(500, { error: "Internal Server Error" }));
-      test("should return 'You are not authorized to view this page'", () => {
+      const statusCode = 500;
+      beforeEach(() => {
+        axiosMock.onGet(authEndpoint).reply(200, auth);
+        axiosMock.onGet(profilesEndpoint).reply(statusCode, { wahhhh: "oh noooo" });
+        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(workersEndpoint).reply(200, workers);
+      });
+      test("should return 'An error occurred while logging in.'", done => {
         const rendered = render(<App />);
-        expect(rendered.container).toHaveTextContent("Loading...");
+        waitForElement(() => rendered.getByTestId("error-overlay"))
+          .then(() => {
+            expect(rendered.container).toHaveTextContent(statusCode);
+            expect(rendered.container).toHaveTextContent("Failed to fetch profiles from service");
+            done();
+          });
       });
     });
   });
   describe(workersEndpoint, () => {
     describe("workers service call returned an error", () => {
-      beforeEach(() => axiosMock.onGet(workersEndpoint).reply(500, { error: "Internal Server Error" }));
+      const statusCode = 500;
+      beforeEach(() => {
+        axiosMock.onGet(authEndpoint).reply(200, auth);
+        axiosMock.onGet(profilesEndpoint).reply(200, profiles);
+        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(workersEndpoint).reply(500, { boo: "wahhh" });
+      });
       test("should return 'An error occurred while logging in.'", done => {
         const rendered = render(<App />);
-        waitForElement(() => rendered.getByTestId("unknownError"))
+        waitForElement(() => rendered.getByTestId("error-overlay"))
           .then(() => {
-            expect(rendered.container).toHaveTextContent("An error occurred while logging in.");
+            expect(rendered.container).toHaveTextContent(statusCode);
+            expect(rendered.container).toHaveTextContent("Failed to fetch workers from service");
             done();
           });
       });
@@ -112,12 +208,19 @@ describe("<App />", () => {
   });
   describe(skillsEndpoint, () => {
     describe("skills service call returned an error", () => {
-      beforeEach(() => axiosMock.onGet(skillsEndpoint).reply(500, { error: "Internal Server Error" }));
-      test("should return 'An error occurred while logging in.`", done => {
+      const statusCode = 500;
+      beforeEach(() => {
+        axiosMock.onGet(authEndpoint).reply(200, auth);
+        axiosMock.onGet(profilesEndpoint).reply(200, profiles);
+        axiosMock.onGet(skillsEndpoint).reply(500, { fail: "oh the horror" });
+        axiosMock.onGet(workersEndpoint).reply(200, workers);
+      });
+      test("should return 'An error occurred while logging in.'", done => {
         const rendered = render(<App />);
-        waitForElement(() => rendered.getByTestId("unknownError"))
+        waitForElement(() => rendered.getByTestId("error-overlay"))
           .then(() => {
-            expect(rendered.container).toHaveTextContent("An error occurred while logging in.");
+            expect(rendered.container).toHaveTextContent(statusCode);
+            expect(rendered.container).toHaveTextContent("Failed to fetch taskrouter skills from service");
             done();
           });
       });
