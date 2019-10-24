@@ -1,4 +1,7 @@
-import { sortManagersByName } from "../sortManagersByName";
+import {
+  sortManagersByName,
+  sortTaskRouterSkillByName
+} from "../sortUtils";
 
 describe("sortManagersByName", () => {
   const managerList = [
@@ -76,6 +79,25 @@ describe("sortManagersByName", () => {
         manager_first_name: "Muhammad",
         manager_last_name: "Smith"
       }
+    ]);
+  });
+});
+
+describe("sortSkillsByName", () => {
+  const arr = [
+    { skill: "bee" },
+    { skill: "dee" },
+    { skill: "cee" },
+    { skill: "ay" },
+    { skill: "ay" }
+  ];
+  test("should return array in alphabetical order", () => {
+    expect(arr.sort(sortTaskRouterSkillByName)).toEqual([
+      { skill: "ay" },
+      { skill: "ay" },
+      { skill: "bee" },
+      { skill: "cee" },
+      { skill: "dee" }
     ]);
   });
 });

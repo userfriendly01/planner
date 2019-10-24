@@ -1,14 +1,13 @@
 import AddUserModal from "../AddUserModal";
 import MockAdapter from "axios-mock-adapter";
 import {
-  CustomButton,
-  CustomSelect,
-  ModalHeader,
+  OutlinedSelect,
   ModalHelperText,
   ModalNNumber,
   ModalOverlay,
   ModalPhoneNumber,
-  PaperContainer
+  PaperContainer,
+  StyledButton
 } from "components";
 import { initialState } from "context";
 import { apiPaths } from "globals";
@@ -33,9 +32,8 @@ jest.useFakeTimers();
 
 jest.mock("components", () => ({
   __esModule: true,
-  CustomButton: jest.fn(),
-  CustomSelect: jest.fn(),
-  ModalHeader: jest.fn(),
+  StyledButton: jest.fn(),
+  OutlinedSelect: jest.fn(),
   ModalHelperText: jest.fn(),
   ModalNNumber: jest.fn(),
   ModalOverlay: jest.fn(),
@@ -103,9 +101,8 @@ describe("<AddUserModal />", () => {
 
   beforeEach(() => {
     setupMockedComponents({
-      CustomButton,
-      CustomSelect,
-      ModalHeader,
+      StyledButton,
+      OutlinedSelect,
       ModalHelperText,
       ModalNNumber,
       ModalOverlay,
@@ -120,18 +117,18 @@ describe("<AddUserModal />", () => {
 
     test("we should render the header, the correct components, and read profiles defined in the context API.", () => {
       const rendered = render(<AddUserModal handleClose={mockHandleClose} managerList={[]} />, initialTestState);
-      expectMockedComponent(rendered, { CustomSelect }, 2);
+      expectMockedComponent(rendered, { OutlinedSelect }, 2);
       expectMockedComponent(rendered, { ModalNNumber }, 1);
       expectMockedComponent(rendered, { ModalPhoneNumber }, 1);
       expectMockedComponent(rendered, { ModalOverlay }, 0);
       expectMockedComponent(rendered, { ModalHelperText }, 0);
-      expect(getMockedComponentProps(ModalHeader, getLastInstanceCalled(ModalHeader)).children).toBe("Add a User");
-      expectMockedComponent(rendered, { CustomButton }, 2);
-      expectOnlyPassedProps(CustomButton, {
+      expect(rendered.container).toHaveTextContent("Add a User");
+      expectMockedComponent(rendered, { StyledButton }, 2);
+      expectOnlyPassedProps(StyledButton, {
         children: "Add User",
         disabled: true
       }, 0);
-      expectOnlyPassedProps(CustomButton, {
+      expectOnlyPassedProps(StyledButton, {
         children: "Close"
       }, 1);
     });
@@ -152,8 +149,8 @@ describe("<AddUserModal />", () => {
         optionsList: managerList,
         value: ""
       };
-      expectOnlyPassedProps(CustomSelect, expectedManagerProps, 0);
-      const optionsDisplayFunc = CustomSelect.mock.calls[0][0].optionsDisplayFunc;
+      expectOnlyPassedProps(OutlinedSelect, expectedManagerProps, 0);
+      const optionsDisplayFunc = OutlinedSelect.mock.calls[0][0].optionsDisplayFunc;
       const option = optionsDisplayFunc(managerList[0]);
       expect(option).toEqual({
         display: `${managerList[0].manager_first_name} ${managerList[0].manager_last_name}`,
@@ -166,11 +163,11 @@ describe("<AddUserModal />", () => {
       renderComponent();
       // Next I'll call the update function, which should update the form and cause a re-render.
       act(() => {
-        const updateValue = CustomSelect.mock.calls[0][0].updateValue;
+        const updateValue = OutlinedSelect.mock.calls[0][0].updateValue;
         updateValue(JSON.stringify(managerList[0]));
       });
-      expect(CustomSelect.mock.calls.length).toBe(4);
-      const newValue = CustomSelect.mock.calls[2][0].value;
+      expect(OutlinedSelect.mock.calls.length).toBe(4);
+      const newValue = OutlinedSelect.mock.calls[2][0].value;
       expect(newValue).toEqual(JSON.stringify(managerList[0]));
     });
 
@@ -186,8 +183,8 @@ describe("<AddUserModal />", () => {
         optionsList: profileList,
         value: ""
       };
-      expectOnlyPassedProps(CustomSelect, expectedTeamProps, 1);
-      const optionsDisplayFunc = CustomSelect.mock.calls[1][0].optionsDisplayFunc;
+      expectOnlyPassedProps(OutlinedSelect, expectedTeamProps, 1);
+      const optionsDisplayFunc = OutlinedSelect.mock.calls[1][0].optionsDisplayFunc;
       const option = optionsDisplayFunc(profileList[0]);
       expect(option).toEqual({
         display: profileList[0].profile_nme,
@@ -200,11 +197,11 @@ describe("<AddUserModal />", () => {
       renderComponent();
       // Next I'll call the update function, which should update the form and cause a re-render.
       act(() => {
-        const updateValue = CustomSelect.mock.calls[1][0].updateValue;
+        const updateValue = OutlinedSelect.mock.calls[1][0].updateValue;
         updateValue(profileList[0].profile_id);
       });
-      expect(CustomSelect.mock.calls.length).toBe(4);
-      const newValue = CustomSelect.mock.calls[3][0].value;
+      expect(OutlinedSelect.mock.calls.length).toBe(4);
+      const newValue = OutlinedSelect.mock.calls[3][0].value;
       expect(newValue).toEqual(profileList[0].profile_id);
     });
 
@@ -328,20 +325,20 @@ describe("<AddUserModal />", () => {
 
     test("the initial state add should be disabled, and close should be enabled", () => {
       const rendered = renderComponent();
-      expectMockedComponent(rendered, { CustomButton }, 2);
-      expectOnlyPassedProps(CustomButton, {
+      expectMockedComponent(rendered, { StyledButton }, 2);
+      expectOnlyPassedProps(StyledButton, {
         children: "Add User",
         disabled: true
       }, 0);
-      expectOnlyPassedProps(CustomButton, {
+      expectOnlyPassedProps(StyledButton, {
         children: "Close"
       }, 1);
     });
 
     test("if we click the close button, it should fire props.handleClose", () => {
       const rendered = renderComponent();
-      expectMockedComponent(rendered, { CustomButton }, 2);
-      const closeFn = getMockedComponentProps(CustomButton, 1).onClick;
+      expectMockedComponent(rendered, { StyledButton }, 2);
+      const closeFn = getMockedComponentProps(StyledButton, 1).onClick;
       closeFn();
       expect(mockHandleClose).toHaveBeenCalledTimes(1);
     });
@@ -369,11 +366,11 @@ describe("<AddUserModal />", () => {
           axiosMock.onPost(apiPaths.CREATE_WORKER).reply(200, twilioWorker);
           const rendered = renderComponent();
           act(() => {
-            const updateManager = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect) - 1).updateValue;
+            const updateManager = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect) - 1).updateValue;
             updateManager(JSON.stringify(managerList[0]));
           });
           act(() => {
-            const updateProfile = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect)).updateValue;
+            const updateProfile = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect)).updateValue;
             updateProfile(profileList[0].profile_id);
           });
           act(() => {
@@ -385,17 +382,17 @@ describe("<AddUserModal />", () => {
             updateNNum("n1234567");
             return Promise.resolve();
           }).then(() => {
-            const addUserButtonProps = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1);
+            const addUserButtonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
             expect(addUserButtonProps.disabled).toBe(false);
             act(() => {
-              const addUserButtonOnClick = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1).onClick;
+              const addUserButtonOnClick = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1).onClick;
               addUserButtonOnClick();
               return Promise.resolve();
             }).then(() => {
               expectMockedComponent(rendered, { ModalOverlay });
               const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
               const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
-              const addUserButtonProps2 = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1);
+              const addUserButtonProps2 = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
               expect(addUserButtonProps2.disabled).toBe(true);
               expect(saveStatus).toBe("success");
               expect(nNumber).toBe("n");
@@ -419,11 +416,11 @@ describe("<AddUserModal />", () => {
         test("when save button is clicked we should not clear the user, or disable 'Add User' and not dispatch an action", done => {
           const rendered = renderComponent();
           act(() => {
-            const updateManager = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect) - 1).updateValue;
+            const updateManager = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect) - 1).updateValue;
             updateManager(JSON.stringify(managerList[0]));
           });
           act(() => {
-            const updateProfile = getMockedComponentProps(CustomSelect, getLastInstanceCalled(CustomSelect)).updateValue;
+            const updateProfile = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect)).updateValue;
             updateProfile(profileList[0].profile_id);
           });
           act(() => {
@@ -435,16 +432,16 @@ describe("<AddUserModal />", () => {
             updateNNum("n1234567");
             return Promise.resolve();
           }).then(() => {
-            const addUserButtonProps = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1);
+            const addUserButtonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
             expect(addUserButtonProps.disabled).toBe(false);
             act(() => {
-              const addUserButtonOnClick = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1).onClick;
+              const addUserButtonOnClick = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1).onClick;
               addUserButtonOnClick();
               return Promise.resolve();
             }).then(() => {
               const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
               const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
-              const addUserButtonProps2 = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton) - 1);
+              const addUserButtonProps2 = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
               expect(addUserButtonProps2.disabled).toBe(false);
               expect(saveStatus).toBe("fail");
               expect(nNumber).toBe("n1234567");

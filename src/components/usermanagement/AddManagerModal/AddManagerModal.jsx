@@ -1,11 +1,10 @@
 import { CloseRounded } from "@material-ui/icons";
 import {
-  CustomButton,
-  ModalHeader,
   ModalHelperText,
   ModalNNumber,
   ModalOverlay,
-  PaperContainer
+  PaperContainer,
+  StyledButton
 } from "components";
 import {
   useAdminDispatch,
@@ -37,6 +36,10 @@ const FlexRow = styled.div`
 const ButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
   padding: 1%;
+`;
+
+const Header = styled.h1`
+  align-self: center;
 `;
 
 const HeaderAndCloseButtonWrapper = styled.div`
@@ -77,7 +80,7 @@ const AddManagerModal = props => {
 
   const addManagerClicked = () => {
     setSaveManager(loadingStates.loading);
-    if (!state.managerContext.managers.some(mgr => mgr.manager_n_number === nNumber)) {
+    if (!state.managerContext.managers.some(mgr => mgr.manager_n_number.toLowerCase() === nNumber.toLowerCase())) {
       dispatch(({
         type: "addManager",
         payload: { manager }
@@ -123,6 +126,12 @@ const AddManagerModal = props => {
 
   const isManagerValid = manager.manager_n_number ? true : false;
   const helperTextMessage = isManagerValid ? `${manager.manager_first_name} ${manager.manager_last_name}` : "User not found";
+  let overlayMessage = "Saving";
+  if (saveManager === loadingStates.success) {
+    overlayMessage = "Manager added successfully";
+  } else if (saveManager === loadingStates.fail) {
+    overlayMessage = "Manager already exists";
+  }
 
   return (
     <ModalContainer>
@@ -130,11 +139,11 @@ const AddManagerModal = props => {
         {saveManager === loadingStates.success || saveManager === loadingStates.fail ?
           <ModalOverlay
             status={saveManager}
-            message={saveManager === "success" ? "Manager added successfully" : "Manager already exists"}
+            message={overlayMessage}
           /> : null}
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>
-          <ModalHeader>Add a Manager</ModalHeader>
+          <Header>Add a Manager</Header>
           <CloseRounded onClick={handleClose}/>
         </HeaderAndCloseButtonWrapper>
         <FlexColumn>
@@ -152,9 +161,9 @@ const AddManagerModal = props => {
           }
         </FlexColumn>
         <ButtonWrapper>
-          <CustomButton disabled={!isManagerValid} onClick={addManagerClicked}>
+          <StyledButton disabled={!isManagerValid} onClick={addManagerClicked} data-testid={"add-manager-button"}>
             Add Manager
-          </CustomButton>
+          </StyledButton>
         </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>

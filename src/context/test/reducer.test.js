@@ -109,6 +109,30 @@ describe("reducer", () => {
       expect(result.profileContext.profiles).toEqual(payload);
     });
   });
+  describe("loadSkills", () => {
+    test("should update skilContext.taskrouterSkills to payload", () => {
+      const payload = [
+        {
+          skill: "psu-l1",
+          levels: []
+        },
+        {
+          skill: "psu-l2",
+          levels: [1,2,3]
+        },
+        {
+          skill: "psu-l3",
+          levels: [1,2,3,4,5,6]
+        }
+      ];
+      const action = {
+        type: "loadSkills",
+        payload
+      };
+      const result = reducer(initialState, action);
+      expect(result.skillContext.taskrouterSkills).toEqual(payload);
+    });
+  });
   describe("loadWorkers", () => {
     test("should initialize or reinitialize the workers array", () => {
       const payload = [
@@ -138,6 +162,77 @@ describe("reducer", () => {
       };
       const result = reducer(initialState, action);
       expect(result.userContext).toEqual(payload);
+    });
+  });
+  describe("toggleWorkerSelected", () => {
+    const state = { ...initialState };
+    const workers = { cool: "wow" };
+    state.workerContext.workers = workers;
+    state.workerContext.selectedWorkers = [
+      {
+        name: "WK1",
+        sid: 1
+      },
+      {
+        name: "WK2",
+        sid: 2
+      },
+      {
+        name: "WK3",
+        sid: 3
+      }
+    ];
+    test("when worker is not selected they will be added to the array", () => {
+      const action = {
+        type: "toggleWorkerSelected",
+        payload: {
+          name: "WK6",
+          sid: 6
+        }
+      };
+      expect(reducer({ ...state }, action).workerContext).toEqual({
+        workers,
+        selectedWorkers: [
+          {
+            name: "WK1",
+            sid: 1
+          },
+          {
+            name: "WK2",
+            sid: 2
+          },
+          {
+            name: "WK3",
+            sid: 3
+          },
+          {
+            name: "WK6",
+            sid: 6
+          }
+        ]
+      });
+    });
+    test("when worker is already selected they will be removed from the array", () => {
+      const action = {
+        type: "toggleWorkerSelected",
+        payload: {
+          name: "WK3",
+          sid: 3
+        }
+      };
+      expect(reducer({ ...state }, action).workerContext).toEqual({
+        workers,
+        selectedWorkers: [
+          {
+            name: "WK1",
+            sid: 1
+          },
+          {
+            name: "WK2",
+            sid: 2
+          }
+        ]
+      });
     });
   });
   describe("updateWorker", () => {

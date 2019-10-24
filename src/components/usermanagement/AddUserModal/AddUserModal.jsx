@@ -1,12 +1,11 @@
 import {
-  CustomButton,
-  CustomSelect,
-  ModalHeader,
+  OutlinedSelect,
   ModalHelperText,
   ModalNNumber,
   ModalOverlay,
   ModalPhoneNumber,
-  PaperContainer
+  PaperContainer,
+  StyledButton
 } from "components";
 import {
   useAdminDispatch,
@@ -42,6 +41,10 @@ const FlexRow = styled.div`
 const ButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
   padding: 1%;
+`;
+
+const Header = styled.h1`
+  align-self: center;
 `;
 
 const ModalContainer = styled(FlexColumn)`
@@ -197,6 +200,12 @@ const AddUserModal = props => {
   const isLookupInfoEmpty = JSON.stringify(form.lookupInfo) === JSON.stringify({});
   const formReady = !isLookupInfoEmpty && form.team !== "" && form.manager !== "" && form.outgoing !== "";
   const showModalHelperText = !isLookupInfoEmpty || form.lookupError;
+  let overlayMessage = "Saving";
+  if (loading.saveStatus === "success") {
+    overlayMessage = "User added successfully";
+  } else if (loading.saveStatus === "fail") {
+    overlayMessage = "Failed to add user";
+  }
 
   return (
     <ModalContainer>
@@ -204,10 +213,10 @@ const AddUserModal = props => {
         {loading.saveUser ?
           <ModalOverlay
             status={loading.saveStatus}
-            message={loading.saveStatus === "success" ? "User added successfully" : "Failed to add user"}
+            message={overlayMessage}
           /> : null}
-        <ModalHeader>Add a User</ModalHeader>
-        <CustomSelect
+        <Header>Add a User</Header>
+        <OutlinedSelect
           label={"Manager"}
           labelWidth={65}
           optionsList={managers.sort(sortManagersByName)}
@@ -224,7 +233,7 @@ const AddUserModal = props => {
           })}
           value={form.manager}
         />
-        <CustomSelect
+        <OutlinedSelect
           label={"Team"}
           labelWidth={41}
           optionsList={profiles}
@@ -271,8 +280,8 @@ const AddUserModal = props => {
           }
         </FlexColumn>
         <ButtonWrapper>
-          <CustomButton disabled={!formReady} onClick={saveUser}>Add User</CustomButton>
-          <CustomButton onClick={handleClose}>Close</CustomButton>
+          <StyledButton disabled={!formReady} onClick={saveUser}>Add User</StyledButton>
+          <StyledButton onClick={handleClose}>Close</StyledButton>
         </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>

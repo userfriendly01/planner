@@ -5,7 +5,6 @@ import {
   ManagementWrapper,
   SettingsWrapper
 } from "components";
-import { theme } from "globals";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
@@ -17,12 +16,12 @@ const Content = styled.div`
 
 const StyledTabs = styled(Tabs)`
   background-color: #FFE280;
-  color: ${theme.textColor};
+  color: ${props => props.theme.textColor};
 `;
 
 const StyledTab = styled(Tab)`
   && {
-    font-size: 1.3em;
+    font-size: 1.1em;
   }
 `;
 

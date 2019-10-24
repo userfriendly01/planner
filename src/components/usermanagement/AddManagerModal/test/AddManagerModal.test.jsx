@@ -2,12 +2,11 @@ import AddManagerModal from "../AddManagerModal";
 import { CloseRounded } from "@material-ui/icons";
 import MockAdapter from "axios-mock-adapter";
 import {
-  CustomButton,
-  ModalHeader,
   ModalHelperText,
   ModalNNumber,
   ModalOverlay,
-  PaperContainer
+  PaperContainer,
+  StyledButton
 } from "components";
 import { initialState } from "context";
 import { apiPaths } from "globals";
@@ -33,12 +32,11 @@ jest.mock("@material-ui/icons", () => ({
 
 jest.mock("components", () => ({
   __esModule: true,
-  CustomButton: jest.fn(),
   ModalHelperText: jest.fn(),
-  ModalHeader: jest.fn(),
   ModalNNumber: jest.fn(),
   ModalOverlay: jest.fn(),
-  PaperContainer: jest.fn()
+  PaperContainer: jest.fn(),
+  StyledButton: jest.fn()
 }));
 
 describe("<AddManagerModal />", () => {
@@ -64,11 +62,10 @@ describe("<AddManagerModal />", () => {
   beforeEach(() => {
     setupMockedComponents({
       CloseRounded,
-      CustomButton,
-      ModalHeader,
       ModalHelperText,
       ModalNNumber,
-      ModalOverlay
+      ModalOverlay,
+      StyledButton
     });
     axiosMock.reset();
     PaperContainer.mockClear();
@@ -77,12 +74,11 @@ describe("<AddManagerModal />", () => {
   });
 
   describe("initial state of the modal", () => {
-    test("should render CustomButton, CloseRounded, ModalHeader & ModalNNumber once each", () => {
+    test("should render StyledButton, CloseRounded & ModalNNumber once each", () => {
       const rendered = renderComponent();
-      expect(rendered.getAllByText("CustomButton").length).toBe(1);
-      expect(rendered.getAllByText("CloseRounded").length).toBe(1);
-      expect(rendered.getAllByText("ModalHeader").length).toBe(1);
-      expect(rendered.getAllByText("ModalNNumber").length).toBe(1);
+      expectMockedComponent(rendered, { StyledButton });
+      expectMockedComponent(rendered, { CloseRounded });
+      expectMockedComponent(rendered, { ModalNNumber });
     });
     test("should not render ModalHelperText or ModalOverlay", () => {
       const rendered = renderComponent();
@@ -210,8 +206,8 @@ describe("<AddManagerModal />", () => {
     describe("initial state", () => {
       test("should be disabled", () => {
         const rendered = renderComponent();
-        expectMockedComponent(rendered, { CustomButton }, 1);
-        const { disabled } = getMockedComponentProps(CustomButton);
+        expectMockedComponent(rendered, { StyledButton }, 1);
+        const { disabled } = getMockedComponentProps(StyledButton);
         expect(disabled).toBe(true);
       });
     });
@@ -226,7 +222,7 @@ describe("<AddManagerModal />", () => {
           updateNNumber(nNumber);
           return Promise.resolve();
         }).then(() => {
-          const { disabled } = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton));
+          const { disabled } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
           expect(disabled).toBe(false);
           done();
         });
@@ -241,7 +237,7 @@ describe("<AddManagerModal />", () => {
             updateNNumber(nNumber);
             return Promise.resolve();
           }).then(() => {
-            const { onClick } = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton));
+            const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
             act(() => onClick());
             expectMockedComponent(rendered, { ModalOverlay });
             expectOnlyPassedProps(ModalOverlay, {
@@ -269,7 +265,7 @@ describe("<AddManagerModal />", () => {
           updateNNumber(nNumber);
           return Promise.resolve();
         }).then(() => {
-          const { onClick } = getMockedComponentProps(CustomButton, getLastInstanceCalled(CustomButton));
+          const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
           act(() => onClick());
           expectMockedComponent(rendered, { ModalOverlay });
           expectOnlyPassedProps(ModalOverlay, {

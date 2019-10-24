@@ -7,15 +7,17 @@ import {
 import {
   useAdminState
 } from "context";
+import { workersPerPage } from "globals";
 import React, {
   useState
 } from "react";
 import styled from "styled-components";
+import { filterByNameAndSkills } from "utils";
 
 const ManagementContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 2%;
+  padding: 0 1%;
 `;
 
 const StyledPaper = styled(Paper)`
@@ -46,48 +48,70 @@ const getWorkersStartAndEnd = (pageSelected, filteredWorkers) => {
   }
 };
 
-const workersPerPage = 10;
-
 const ManagementWrapper = () => {
   const workers = useAdminState().workerContext.workers;
   const sortedWorkers = [ ...workers ].sort(sortByWorkerFullName);
 
   const [state, setState] = useState({
+    deltaToggle: false,
     pageSelected: 1,
-    filterBy: "show-all"
+    filterBy: "show-all",
+    searchBy: ""
   });
 
-  const filteredWorkers = state.filterBy === "show-all"
+  const workersByManager = state.filterBy === "show-all"
     ? sortedWorkers
     : sortedWorkers.filter(worker => worker.attributes.manager_n_number === state.filterBy);
+
+  const workersByDelta = !state.deltaToggle ? workersByManager : workersByManager.filter(worker => worker.skillsDifferent);
+
+  const trimmedSearch = state.searchBy.trim();
+  const workersByManagerSearched = trimmedSearch === "" ? workersByDelta : workersByDelta.filter(worker => filterByNameAndSkills(worker, trimmedSearch));
 
   const {
     workersStart,
     workersEnd
-  } = getWorkersStartAndEnd(state.pageSelected, filteredWorkers);
+  } = getWorkersStartAndEnd(state.pageSelected, workersByManagerSearched);
+
+  const setStateFromDeltaToggle = deltaToggle => setState({
+    ...state,
+    deltaToggle,
+    pageSelected: 1
+  });
 
   const setStateFromFilterChange = filterBy => setState({
+    ...state,
     pageSelected: 1,
     filterBy
   });
 
   const setStateFromPageChange = pageSelected => setState({
-    pageSelected,
-    filterBy: state.filterBy
+    ...state,
+    pageSelected
+  });
+
+  const setStateFromSearchChange = searchBy => setState({
+    ...state,
+    pageSelected: 1,
+    searchBy
   });
 
   return (
     <ManagementContainer>
       <ManagementFilter
         filterBy={state.filterBy}
-        setFilter={setStateFromFilterChange} />
+        searchBy={state.searchBy}
+        setFilter={setStateFromFilterChange}
+        setSearch={setStateFromSearchChange} />
       <StyledPaper elevation={3}>
         <ManagementTable
-          workers={filteredWorkers.slice(workersStart, workersEnd)} />
+          deltaToggle={state.deltaToggle}
+          setDeltaToggle={setStateFromDeltaToggle}
+          workers={workersByManagerSearched.slice(workersStart, workersEnd)} />
       </StyledPaper>
       <ManagementPagination
         end={workersEnd}
-        length={filteredWorkers.length}
+        length={workersByManagerSearched.length}
         page={state.pageSelected}
         setPage={setStateFromPageChange}
         start={workersStart + 1}/>
