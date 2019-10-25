@@ -26,7 +26,7 @@ import {
   myAxios
 } from "utils";
 
-const inputHeaderWidth = "64px";
+const headerIconWidth = "60px";
 
 const CustomTable = styled.table`
   border-spacing: 0;
@@ -37,17 +37,42 @@ const CustomTable = styled.table`
 
 const CustomTableData = styled.td`
   color: ${props => props.theme.textColor};
-  padding: 4px;
+  padding: 2px 4px;
+  vertical-align: top;
+  &:nth-child(6) {
+    vertical-align: middle;
+  }
+  &:nth-child(7) {
+    vertical-align: middle;
+  }
 `;
 
 const CustomTableHeader = styled.th`
   color: ${props => props.theme.textColor};
   border-bottom: 2px solid ${props => props.theme.tableRow.borderColor};
+  padding-left: 4px;
   text-align: left;
-  width: ${props => props.width};
+  &:nth-child(1) {
+    width: 15%;
+  }
+  &:nth-child(2) {
+    width: 10%;
+  }
+  &:nth-child(3) {
+    width: 18%;
+  }
+  &:nth-child(6) {
+    width: ${headerIconWidth};
+  }
+  &:nth-child(7) {
+    width: ${headerIconWidth};
+  }
 `;
 
 const CustomTableRow = styled.tr`
+  &:nth-child(odd) {
+    background-color: #F1F1F1;
+  }
   background-color: ${props => props.selected ? props.theme.tableRow.selectedColor : "inherit"};
   &:hover {
     background-color: ${props => props.selected ? props.theme.tableRow.hoverSelectedColor : props.theme.tableRow.hoverColor};
@@ -72,7 +97,6 @@ const IconWrapper = styled.div`
   font-size: ${props => props.theme.tableRow.icon.size}px;
   height: ${props => props.theme.tableRow.icon.hoverDiameter}px;
   justify-content: center;
-  margin: auto;
   width: ${props => props.theme.tableRow.icon.hoverDiameter}px;
   &:hover {
     background-color: ${props => props.theme.tableRow.selectedColor};
@@ -96,6 +120,10 @@ const TableDataFlex = styled.div`
   color: ${props => props.theme.textColor};
   display: flex;
   flex-wrap: wrap;
+`;
+
+const TableText = styled.div`
+  margin: 2px;
 `;
 
 const ManagementTable = props => {
@@ -172,15 +200,15 @@ const ManagementTable = props => {
       <CustomTable>
         <thead>
           <tr>
-            <CustomTableHeader width={"20%"}>NAME</CustomTableHeader>
-            <CustomTableHeader width={"20%"}>N NUMBER</CustomTableHeader>
-            <CustomTableHeader width={"20%"}>OFFICE</CustomTableHeader>
-            <CustomTableHeader width={"20%"}>SKILLS (Current)</CustomTableHeader>
-            <CustomTableHeader width={"20%"}>SKILLS (Default)</CustomTableHeader>
-            <CustomTableHeader width={inputHeaderWidth}>
+            <CustomTableHeader>NAME</CustomTableHeader>
+            <CustomTableHeader>N NUMBER</CustomTableHeader>
+            <CustomTableHeader>OFFICE</CustomTableHeader>
+            <CustomTableHeader>SKILLS (Current)</CustomTableHeader>
+            <CustomTableHeader>SKILLS (Default)</CustomTableHeader>
+            <CustomTableHeader>
               <Switch checked={deltaToggle} onChange={() => setDeltaToggle(!deltaToggle)} inputProps={{ "aria-label": "toggle skills modified" }} />
             </CustomTableHeader>
-            <CustomTableHeader width={inputHeaderWidth}>
+            <CustomTableHeader>
               <StyledButton disabled={selectedWorkers.length === 0} onClick={() => resetWorkers()}>
                 <ResetSkillsText>Reset Skills</ResetSkillsText>
               </StyledButton>
@@ -206,9 +234,9 @@ const ManagementTable = props => {
             };
             return (
               <CustomTableRow key={index} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">
-                <CustomTableData>{worker.attributes.full_name}</CustomTableData>
-                <CustomTableData>{worker.id}</CustomTableData>
-                <CustomTableData>{worker.attributes.office_location_name}</CustomTableData>
+                <CustomTableData><TableText>{worker.attributes.full_name}</TableText></CustomTableData>
+                <CustomTableData><TableText>{worker.id}</TableText></CustomTableData>
+                <CustomTableData><TableText>{worker.attributes.office_location_name}</TableText></CustomTableData>
                 <CustomTableData><TableDataFlex>{formatWorkerSkillsToHTML(worker.attributes.routing)}</TableDataFlex></CustomTableData>
                 <CustomTableData><TableDataFlex>{formatWorkerSkillsToHTML(worker.attributes.default_skills)}</TableDataFlex></CustomTableData>
                 <CustomTableData>
