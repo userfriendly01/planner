@@ -23,7 +23,7 @@ jest.mock("components", () => ({
   ManagementTable: jest.fn()
 }));
 
-const getWorker = (number, managerNumber = 0, defaultSkills = [], skills = [], skillsDifferent = false) => {
+const getWorker = (number, managerNumber = 0, defaultSkills = [], skills = [], skillsDifferent = false, fullNameUndefined) => {
   const numberStr = `${number}`;
   const managerNumberStr = `${managerNumber}`;
   return {
@@ -33,7 +33,7 @@ const getWorker = (number, managerNumber = 0, defaultSkills = [], skills = [], s
       default_skills: {
         skills: defaultSkills
       },
-      full_name: numberStr,
+      full_name: fullNameUndefined ? undefined : numberStr,
       manager_n_number: `n${managerNumberStr.repeat(7)}`,
       routing: {
         skills
@@ -69,6 +69,47 @@ describe("ManagementWrapper", () => {
       expectMockedComponent(rendered, { ManagementTable });
     });
   };
+  describe("6 workers. less than workersPerPage. some with undefined full_name", () => {
+    const workers = [
+      getWorker(0, 0, null, null, null, true),
+      getWorker(5, 1),
+      getWorker(3, 0, null, null, null, true),
+      getWorker(3, 1, null, null, null, true),
+      getWorker(4, 1),
+      getWorker(1, 0)
+    ];
+    const sortedWorkers = [
+      getWorker(1, 0),
+      getWorker(4, 1),
+      getWorker(5, 1),
+      getWorker(0, 0, null, null, null, true),
+      getWorker(3, 0, null, null, null, true),
+      getWorker(3, 1, null, null, null, true)
+    ];
+    commonTests(workers);
+    describe("initial state", () => {
+      test("ManagementFilter should be passed filterBy show-all", () => {
+        doRender(workers);
+        expectOnlyPassedProps(ManagementFilter, { filterBy: "show-all" });
+      });
+      test("ManagementTable should be passed all workers (sorted with undefined full_name last) as prop", () => {
+        doRender(workers);
+        expectOnlyPassedProps(ManagementTable, {
+          deltaToggle: false,
+          workers: sortedWorkers
+        });
+      });
+      test("ManagementPagination should be passed end = 6, length = 6, page = 1, start = 1", () => {
+        doRender(workers);
+        expectOnlyPassedProps(ManagementPagination, {
+          end: 6,
+          length: 6,
+          page: 1,
+          start: 1
+        });
+      });
+    });
+  });
   describe("6 workers. less than workersPerPage", () => {
     const workers = [
       getWorker(0, 0),
