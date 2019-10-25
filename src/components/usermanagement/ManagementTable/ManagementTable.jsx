@@ -40,9 +40,11 @@ const CustomTableData = styled.td`
   padding: 2px 4px;
   vertical-align: top;
   &:nth-child(6) {
+    text-align: -webkit-center;
     vertical-align: middle;
   }
   &:nth-child(7) {
+    text-align: -webkit-center;
     vertical-align: middle;
   }
 `;
