@@ -26,7 +26,7 @@ import {
   myAxios
 } from "utils";
 
-const headerIconWidth = "60px";
+const headerIconWidth = "64px";
 
 const CustomTable = styled.table`
   border-spacing: 0;
