@@ -1,6 +1,7 @@
 import {
   AddUser,
   ManagerFilter,
+  ResetSkillsButton,
   SearchBox
 } from "components";
 import PropTypes from "prop-types";
@@ -14,6 +15,7 @@ const ControlsWrapper = styled.div`
 `;
 
 const ControlItem = styled.div`
+  align-items: center;
   display: flex;
   flex: 1;
   justify-content: center;
@@ -25,6 +27,10 @@ const ControlItem = styled.div`
     justify-content: flex-end;
     margin-left: auto;
   }
+`;
+
+const RightPadding = styled.div`
+  padding-right: 8px;
 `;
 
 const ManagementFilter = props => {
@@ -44,6 +50,9 @@ const ManagementFilter = props => {
         <SearchBox searchBy={searchBy} setSearch={setSearch}/>
       </ControlItem>
       <ControlItem>
+        <RightPadding>
+          <ResetSkillsButton />
+        </RightPadding>
         <AddUser />
       </ControlItem>
     </ControlsWrapper>

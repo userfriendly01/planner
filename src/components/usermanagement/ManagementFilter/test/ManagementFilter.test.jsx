@@ -2,6 +2,7 @@ import ManagementFilter from "../ManagementFilter";
 import {
   AddUser,
   ManagerFilter,
+  ResetSkillsButton,
   SearchBox
 } from "components";
 import React from "react";
@@ -15,6 +16,7 @@ jest.mock("components/usermanagement", () => ({
   __esModule: true,
   AddUser: jest.fn(),
   ManagerFilter: jest.fn(),
+  ResetSkillsButton: jest.fn(),
   SearchBox: jest.fn()
 }));
 
@@ -38,6 +40,7 @@ describe("<ManagementFilter />", () => {
     setupMockedComponents({
       AddUser,
       ManagerFilter,
+      ResetSkillsButton,
       SearchBox
     });
   });
@@ -46,6 +49,7 @@ describe("<ManagementFilter />", () => {
     const rendered = renderComponent();
     expectMockedComponent(rendered, { AddUser });
     expectMockedComponent(rendered, { ManagerFilter });
+    expectMockedComponent(rendered, { ResetSkillsButton });
     expectMockedComponent(rendered, { SearchBox });
   });
 });

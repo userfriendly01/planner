@@ -1,13 +1,9 @@
 import ManagementTable from "../ManagementTable";
-import MockAdapter from "axios-mock-adapter";
 import {
   EditUserModal,
-  ModalOverlay,
-  ResultsModal,
-  StyledButton
+  ModalOverlay
 } from "components";
 import {
-  apiPaths,
   theme
 } from "globals";
 import React from "react";
@@ -16,25 +12,16 @@ import {
   expectMockedComponent,
   expectOnlyPassedProps,
   fireEvent,
-  getMockedComponentProps,
   getTestState,
   mockStore,
   render,
   setupMockedComponents
 } from "testUtils";
-import {
-  mapWorkerFromTwilioWorker,
-  myAxios
-} from "utils";
-
-const axiosMock = new MockAdapter(myAxios);
 
 jest.mock("components", () => ({
   __esModule: true,
   EditUserModal: jest.fn(),
-  ModalOverlay: jest.fn(),
-  ResultsModal: jest.fn(),
-  StyledButton: jest.fn()
+  ModalOverlay: jest.fn()
 }));
 
 const mockWorkerData = [
@@ -95,22 +82,20 @@ const mockWorkerData = [
 
 const setDeltaToggle = jest.fn();
 
-const renderComponent = (workers, toggle = false) => {
+const renderComponent = (workers, toggle = false, state) => {
   return render(
     <ManagementTable
       deltaToggle={toggle}
       setDeltaToggle={setDeltaToggle}
       workers={workers}
-    />);
+    />, state);
 };
 
 describe("<ManagementTable />", () => {
   beforeEach(() => {
     setupMockedComponents({
       EditUserModal,
-      ModalOverlay,
-      ResultsModal,
-      StyledButton
+      ModalOverlay
     });
     mockStore.reset();
     setDeltaToggle.mockClear();
@@ -122,7 +107,6 @@ describe("<ManagementTable />", () => {
     expect(rendered.getByText("OFFICE", { selector: "th" })).toBeInTheDocument();
     expect(rendered.getByText("SKILLS (Current)", { selector: "th" })).toBeInTheDocument();
     expect(rendered.getByText("SKILLS (Default)", { selector: "th" })).toBeInTheDocument();
-    expect(StyledButton.mock.calls[0][0].disabled).toBe(true);
   });
   test("with workers, we should display full name, id & office location for each", () => {
     const rendered = renderComponent(mockWorkerData);
@@ -157,7 +141,6 @@ describe("<ManagementTable />", () => {
       const rendered = render(<ManagementTable deltaToggle={false} setDeltaToggle={setDeltaToggle} workers={mockWorkerData} />, state);
       const tableRows = rendered.getAllByTestId("table-row");
       expect(tableRows).toHaveLength(3);
-      expect(StyledButton.mock.calls[0][0].disabled).toBe(true);
       act(() => fireEvent.click(tableRows[0]));
       act(() => fireEvent.click(tableRows[2]));
       expect(mockStore.getActions()).toEqual([
@@ -179,121 +162,9 @@ describe("<ManagementTable />", () => {
       expect(tableRows[0]).toHaveStyleRule("background-color", theme.tableRow.selectedColor);
       expect(tableRows[1]).toHaveStyleRule("background-color", "inherit");
       expect(tableRows[2]).toHaveStyleRule("background-color", theme.tableRow.selectedColor);
-      expect(StyledButton.mock.calls[1][0].disabled).toBe(false);
     });
   });
-  describe("When the reset button is pressed, it should fire a call to reset the selected worker skills", () => {
-    describe("when all those resets are successful", () => {
-      beforeEach(() => {
-        axiosMock.onPost(apiPaths.RESET_WORKER_SKILLS).reply(200, [
-          {
-            updated: true,
-            workerSid: mockWorkerData[0].sid,
-            worker: mockWorkerData[0]
-          },
-          {
-            updated: true,
-            workerSid: mockWorkerData[2].sid,
-            worker: mockWorkerData[2]
-          }
-        ]);
-      });
-      test("we should dispatch the correct actions, results modal should recieve an empty array.", done => {
-        const state = getTestState();
-        const rendered = render(<ManagementTable deltaToggle={false} setDeltaToggle={setDeltaToggle} workers={mockWorkerData} />, state);
-        const tableRows = rendered.getAllByTestId("table-row");
-        expect(tableRows).toHaveLength(3);
-        act(() => fireEvent.click(tableRows[0]));
-        act(() => fireEvent.click(tableRows[2]));
-        mockStore.reset();
-        act(() => {
-          StyledButton.mock.calls[2][0].onClick();
-          return Promise.resolve();
-        }).then(() => {
-          expect(mockStore.getActions()).toEqual([
-            {
-              type: "toggleWorkerSelected",
-              payload: {
-                sid: mockWorkerData[0].sid
-              }
-            },
-            {
-              type: "updateWorker",
-              payload: mapWorkerFromTwilioWorker(mockWorkerData[0])
-            },
-            {
-              type: "toggleWorkerSelected",
-              payload: {
-                sid: mockWorkerData[2].sid
-              }
-            },
-            {
-              type: "updateWorker",
-              payload: mapWorkerFromTwilioWorker(mockWorkerData[2])
-            }
-          ]);
-          expect(ResultsModal.mock.calls[0][0].unsuccessfulWorkers).toEqual([]);
-          done();
-        });
-      });
-    });
-    describe("when some resets fail", () => {
-      beforeEach(() => {
-        axiosMock.onPost(apiPaths.RESET_WORKER_SKILLS).reply(200, [
-          {
-            updated: true,
-            workerSid: mockWorkerData[0].sid,
-            worker: mockWorkerData[0]
-          },
-          {
-            reason: "bad stuff happened",
-            updated: false,
-            workerSid: mockWorkerData[2].sid,
-            worker: mockWorkerData[2]
-          }
-        ]);
-      });
-      test("we should dispatch only dispatch actions on the passed worker resets. Results modal should recieve the failed worker reset.", done => {
-        const state = getTestState();
-        const rendered = render(<ManagementTable deltaToggle={false} setDeltaToggle={setDeltaToggle} workers={mockWorkerData} />, state);
-        const tableRows = rendered.getAllByTestId("table-row");
-        expect(tableRows).toHaveLength(3);
-        act(() => fireEvent.click(tableRows[0]));
-        act(() => fireEvent.click(tableRows[2]));
-        mockStore.reset();
-        act(() => {
-          act(() => StyledButton.mock.calls[2][0].onClick());
-          // expectMockedComponent(rendered, { ModalOverlay }, 1);
-          expectMockedComponent(rendered, { ResultsModal }, 0);
-          return Promise.resolve();
-        }).then(() => {
-          expectMockedComponent(rendered, { ModalOverlay }, 0);
-          expectMockedComponent(rendered, { ResultsModal }, 1);
-          expect(mockStore.getActions()).toEqual([
-            {
-              type: "toggleWorkerSelected",
-              payload: {
-                sid: mockWorkerData[0].sid
-              }
-            },
-            {
-              type: "updateWorker",
-              payload: mapWorkerFromTwilioWorker(mockWorkerData[0])
-            }
-          ]);
-          expect(ResultsModal.mock.calls[0][0].unsuccessfulWorkers).toEqual([
-            {
-              name: "Test 3",
-              reason: "bad stuff happened"
-            }
-          ]);
-          act(() => ResultsModal.mock.calls[0][0].handleClose());
-          expectMockedComponent(rendered, { ResultsModal }, 0);
-          done();
-        });
-      });
-    });
-  });
+
   describe("Edit icon is clicked in row", () => {
     test("should show EditUserModal for corresponding worker, not highlight the row as selected, and close EditUserModal when handleClose is fired", () => {
       const rendered = renderComponent(mockWorkerData);
@@ -320,10 +191,22 @@ describe("<ManagementTable />", () => {
       expect(setDeltaToggle.mock.calls).toHaveLength(1);
     });
   });
-  test("StyledButton is passed Reset Skills text", () => {
-    renderComponent([]);
-    const { children } = getMockedComponentProps(StyledButton);
-    const rendered = render(children);
-    expect(rendered.container).toHaveTextContent("Reset Skills");
+  describe("resettingSkills is true", () => {
+    const resettingSkills = true;
+    test("should render ModalOverlay", () => {
+      const state = getTestState();
+      state.resettingSkills = resettingSkills;
+      const rendered = renderComponent([], false, state);
+      expectMockedComponent(rendered, { ModalOverlay });
+    });
+  });
+  describe("resettingSkills is false", () => {
+    const resettingSkills = false;
+    test("should not render ModalOverlay", () => {
+      const state = getTestState();
+      state.resettingSkills = resettingSkills;
+      const rendered = renderComponent([], false, state);
+      expectMockedComponent(rendered, { ModalOverlay }, 0);
+    });
   });
 });

@@ -164,6 +164,17 @@ describe("reducer", () => {
       expect(result.userContext).toEqual(payload);
     });
   });
+  describe("resettingSkills", () => {
+    test("should set resettingSkills to payload", () => {
+      const payload = true;
+      const action = {
+        type: "resettingSkills",
+        payload
+      };
+      const result = reducer(initialState, action);
+      expect(result.resettingSkills).toEqual(payload);
+    });
+  });
   describe("toggleWorkerSelected", () => {
     const state = { ...initialState };
     const workers = { cool: "wow" };

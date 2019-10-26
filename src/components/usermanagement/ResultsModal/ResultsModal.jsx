@@ -57,10 +57,27 @@ const ResultsContainer = styled(FlexColumn)`
 
 const ResultsModal = props => {
   const {
+    error,
     handleClose,
     successfulWorkers,
     unsuccessfulWorkers
   } = props;
+
+  if (error) {
+    return (
+      <ModalContainer>
+        <PaperContainer>
+          <Header>Reset Results</Header>
+          <ResultsContainer backgroundColor={theme.resultsModal.fadedError} borderColor={theme.errorColor} data-testid="failureContainer">
+            {error}
+          </ResultsContainer>
+          <ButtonWrapper>
+            <StyledButton onClick={handleClose}>OK</StyledButton>
+          </ButtonWrapper>
+        </PaperContainer>
+      </ModalContainer>
+    );
+  }
 
   const warnOnWorkers = [];
   const failOnWorkers = [];
@@ -107,6 +124,7 @@ const ResultsModal = props => {
 };
 
 ResultsModal.propTypes = {
+  error: PropTypes.string,
   handleClose: PropTypes.func.isRequired,
   successfulWorkers: PropTypes.arrayOf(
     PropTypes.shape({

@@ -100,4 +100,16 @@ describe("<ResultsModal />", () => {
       expect(rendered.queryAllByTestId("failureContainer")).toHaveLength(1);
     });
   });
+  describe("modal where there was an error", () => {
+    test("should display error message", () => {
+      const error = "Oh noooooo";
+      const rendered = render(<ResultsModal error={error} handleClose={handleClose} />);
+      expect(rendered.queryAllByTestId("successContainer")).toHaveLength(0);
+      expect(rendered.queryAllByTestId("warningContainer")).toHaveLength(0);
+      expect(rendered.queryAllByTestId("failureContainer")).toHaveLength(1);
+      expect(rendered.container).toHaveTextContent(error);
+      expect(rendered.getByTestId("failureContainer")).toHaveStyleRule("border-color", theme.errorColor);
+      expect(rendered.getByTestId("failureContainer")).toHaveStyleRule("background-color", theme.resultsModal.fadedError);
+    });
+  });
 });

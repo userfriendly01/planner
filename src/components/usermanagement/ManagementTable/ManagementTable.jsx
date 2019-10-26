@@ -8,23 +8,16 @@ import {
 } from "@material-ui/icons";
 import {
   EditUserModal,
-  ModalOverlay,
-  ResultsModal,
-  StyledButton
+  ModalOverlay
 } from "components";
 import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
-import {
-  formatWorkerSkillsToHTML,
-  mapWorkerFromTwilioWorker,
-  myAxios
-} from "utils";
+import { formatWorkerSkillsToHTML } from "utils";
 
 const headerIconWidth = "64px";
 
@@ -73,7 +66,7 @@ const CustomTableHeader = styled.th`
 
 const CustomTableRow = styled.tr`
   &:nth-child(odd) {
-    background-color: #F1F1F1;
+    background-color: ${props => props.selected ? props.theme.tableRow.selectedColor : props.theme.tableRow.alternateRowColor};
   }
   background-color: ${props => props.selected ? props.theme.tableRow.selectedColor : "inherit"};
   &:hover {
@@ -106,10 +99,6 @@ const IconWrapper = styled.div`
   }
 `;
 
-const ResetSkillsText = styled.span`
-  font-size: ${props => props.theme.button.fontSize.small};
-`;
-
 const TableContainer = styled.div`
   display: flex;
   flex: 1 1 auto;
@@ -140,65 +129,14 @@ const ManagementTable = props => {
     worker: null
   };
 
-  const defaultResetInformation = {
-    open: false,
-    resetting: false,
-    successfulResets: [],
-    unsuccessfulResets: []
-  };
-
   const [editUserModalOpts, setEditUserModalOpts] = useState(defaultEditUserModalOpts);
-  const [resultsModalOpts, setResultsModalOpts] = useState(defaultResetInformation);
   const state = useAdminState();
   const selectedWorkers = state.workerContext.selectedWorkers;
   const dispatch = useAdminDispatch();
 
-  const resetWorkers = () => {
-    setResultsModalOpts({
-      ...resultsModalOpts,
-      resetting: true
-    });
-    myAxios
-      .post(apiPaths.RESET_WORKER_SKILLS, {
-        workerSids: selectedWorkers.map(worker => worker.sid)
-      }).then(response => {
-        const failedWorkers = [];
-        const passedWorkers = [];
-        response.data.forEach(result => {
-          if (result.updated){
-            const updatedWorker = mapWorkerFromTwilioWorker(result.worker);
-            dispatch({
-              type: "toggleWorkerSelected",
-              payload: {
-                sid: result.workerSid
-              }
-            });
-            dispatch({
-              type: "updateWorker",
-              payload: updatedWorker
-            });
-            passedWorkers.push({
-              name: selectedWorkers.find(worker => result.workerSid === worker.sid).name
-            });
-          } else {
-            failedWorkers.push({
-              reason: result.reason,
-              name: selectedWorkers.find(worker => result.workerSid === worker.sid).name
-            });
-          }
-        });
-        setResultsModalOpts({
-          open: true,
-          resetting: false,
-          successfulResets: passedWorkers,
-          unsuccessfulResets: failedWorkers
-        });
-      });
-  };
-
   return (
     <TableContainer>
-      { resultsModalOpts.resetting ? <ModalOverlay message="Resetting Workers" status="saving" /> : null }
+      { state.resettingSkills ? <ModalOverlay message="Resetting Worker Skills" status="saving" /> : null }
       <CustomTable>
         <thead>
           <tr>
@@ -210,11 +148,7 @@ const ManagementTable = props => {
             <CustomTableHeader>
               <Switch checked={deltaToggle} onChange={() => setDeltaToggle(!deltaToggle)} inputProps={{ "aria-label": "toggle skills modified" }} />
             </CustomTableHeader>
-            <CustomTableHeader>
-              <StyledButton disabled={selectedWorkers.length === 0} onClick={() => resetWorkers()}>
-                <ResetSkillsText>Reset Skills</ResetSkillsText>
-              </StyledButton>
-            </CustomTableHeader>
+            <CustomTableHeader/>
           </tr>
         </thead>
         <tbody>
@@ -257,12 +191,6 @@ const ManagementTable = props => {
         </tbody>
         <Modal open={editUserModalOpts.open}>
           <EditUserModal handleClose={() => setEditUserModalOpts(defaultEditUserModalOpts)} worker={editUserModalOpts.worker}/>
-        </Modal>
-        <Modal open={resultsModalOpts.open}>
-          <ResultsModal
-            handleClose={() => setResultsModalOpts(defaultResetInformation)}
-            successfulWorkers={resultsModalOpts.successfulResets}
-            unsuccessfulWorkers={resultsModalOpts.unsuccessfulResets} />
         </Modal>
       </CustomTable>
     </TableContainer>
