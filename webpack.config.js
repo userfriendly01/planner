@@ -10,7 +10,7 @@ const config = {
   entry: resolvePathInSrc("index"),
   output: {
     filename: "admin-ui.js",
-    path: path.resolve(__dirname, "dist"),
+    path: path.resolve(__dirname, "dist")
     // publicPath: "/triton-admin/"
   },
   module: {
