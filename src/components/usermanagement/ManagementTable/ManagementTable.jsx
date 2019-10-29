@@ -8,25 +8,18 @@ import {
 } from "@material-ui/icons";
 import {
   EditUserModal,
-  ModalOverlay,
-  ResultsModal,
-  StyledButton
+  ModalOverlay
 } from "components";
 import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
-import {
-  formatWorkerSkillsToHTML,
-  mapWorkerFromTwilioWorker,
-  myAxios
-} from "utils";
+import { formatWorkerSkillsToHTML } from "utils";
 
-const inputHeaderWidth = "64px";
+const headerIconWidth = "64px";
 
 const CustomTable = styled.table`
   border-spacing: 0;
@@ -37,17 +30,44 @@ const CustomTable = styled.table`
 
 const CustomTableData = styled.td`
   color: ${props => props.theme.textColor};
-  padding: 4px;
+  padding: 2px 4px;
+  vertical-align: top;
+  &:nth-child(6) {
+    text-align: -webkit-center;
+    vertical-align: middle;
+  }
+  &:nth-child(7) {
+    text-align: -webkit-center;
+    vertical-align: middle;
+  }
 `;
 
 const CustomTableHeader = styled.th`
   color: ${props => props.theme.textColor};
   border-bottom: 2px solid ${props => props.theme.tableRow.borderColor};
+  padding-left: 4px;
   text-align: left;
-  width: ${props => props.width};
+  &:nth-child(1) {
+    width: 15%;
+  }
+  &:nth-child(2) {
+    width: 10%;
+  }
+  &:nth-child(3) {
+    width: 18%;
+  }
+  &:nth-child(6) {
+    width: ${headerIconWidth};
+  }
+  &:nth-child(7) {
+    width: ${headerIconWidth};
+  }
 `;
 
 const CustomTableRow = styled.tr`
+  &:nth-child(odd) {
+    background-color: ${props => props.selected ? props.theme.tableRow.selectedColor : props.theme.tableRow.alternateRowColor};
+  }
   background-color: ${props => props.selected ? props.theme.tableRow.selectedColor : "inherit"};
   &:hover {
     background-color: ${props => props.selected ? props.theme.tableRow.hoverSelectedColor : props.theme.tableRow.hoverColor};
@@ -72,16 +92,11 @@ const IconWrapper = styled.div`
   font-size: ${props => props.theme.tableRow.icon.size}px;
   height: ${props => props.theme.tableRow.icon.hoverDiameter}px;
   justify-content: center;
-  margin: auto;
   width: ${props => props.theme.tableRow.icon.hoverDiameter}px;
   &:hover {
     background-color: ${props => props.theme.tableRow.selectedColor};
     cursor: pointer;
   }
-`;
-
-const ResetSkillsText = styled.span`
-  font-size: ${props => props.theme.button.fontSize.small};
 `;
 
 const TableContainer = styled.div`
@@ -98,6 +113,10 @@ const TableDataFlex = styled.div`
   flex-wrap: wrap;
 `;
 
+const TableText = styled.div`
+  margin: 2px;
+`;
+
 const ManagementTable = props => {
   const {
     deltaToggle,
@@ -110,81 +129,26 @@ const ManagementTable = props => {
     worker: null
   };
 
-  const defaultResetInformation = {
-    open: false,
-    resetting: false,
-    successfulResets: [],
-    unsuccessfulResets: []
-  };
-
   const [editUserModalOpts, setEditUserModalOpts] = useState(defaultEditUserModalOpts);
-  const [resultsModalOpts, setResultsModalOpts] = useState(defaultResetInformation);
   const state = useAdminState();
   const selectedWorkers = state.workerContext.selectedWorkers;
   const dispatch = useAdminDispatch();
 
-  const resetWorkers = () => {
-    setResultsModalOpts({
-      ...resultsModalOpts,
-      resetting: true
-    });
-    myAxios
-      .post(apiPaths.RESET_WORKER_SKILLS, {
-        workerSids: selectedWorkers.map(worker => worker.sid)
-      }).then(response => {
-        const failedWorkers = [];
-        const passedWorkers = [];
-        response.data.forEach(result => {
-          if (result.updated){
-            const updatedWorker = mapWorkerFromTwilioWorker(result.worker);
-            dispatch({
-              type: "toggleWorkerSelected",
-              payload: {
-                sid: result.workerSid
-              }
-            });
-            dispatch({
-              type: "updateWorker",
-              payload: updatedWorker
-            });
-            passedWorkers.push({
-              name: selectedWorkers.find(worker => result.workerSid === worker.sid).name
-            });
-          } else {
-            failedWorkers.push({
-              reason: result.reason,
-              name: selectedWorkers.find(worker => result.workerSid === worker.sid).name
-            });
-          }
-        });
-        setResultsModalOpts({
-          open: true,
-          resetting: false,
-          successfulResets: passedWorkers,
-          unsuccessfulResets: failedWorkers
-        });
-      });
-  };
-
   return (
     <TableContainer>
-      { resultsModalOpts.resetting ? <ModalOverlay message="Resetting Workers" status="saving" /> : null }
+      { state.resettingSkills ? <ModalOverlay message="Resetting Worker Skills" status="saving" /> : null }
       <CustomTable>
         <thead>
           <tr>
-            <CustomTableHeader width={"20%"}>NAME</CustomTableHeader>
-            <CustomTableHeader width={"20%"}>N NUMBER</CustomTableHeader>
-            <CustomTableHeader width={"20%"}>OFFICE</CustomTableHeader>
-            <CustomTableHeader width={"20%"}>SKILLS (Current)</CustomTableHeader>
-            <CustomTableHeader width={"20%"}>SKILLS (Default)</CustomTableHeader>
-            <CustomTableHeader width={inputHeaderWidth}>
+            <CustomTableHeader>NAME</CustomTableHeader>
+            <CustomTableHeader>N NUMBER</CustomTableHeader>
+            <CustomTableHeader>OFFICE</CustomTableHeader>
+            <CustomTableHeader>SKILLS (Current)</CustomTableHeader>
+            <CustomTableHeader>SKILLS (Default)</CustomTableHeader>
+            <CustomTableHeader>
               <Switch checked={deltaToggle} onChange={() => setDeltaToggle(!deltaToggle)} inputProps={{ "aria-label": "toggle skills modified" }} />
             </CustomTableHeader>
-            <CustomTableHeader width={inputHeaderWidth}>
-              <StyledButton disabled={selectedWorkers.length === 0} onClick={() => resetWorkers()}>
-                <ResetSkillsText>Reset Skills</ResetSkillsText>
-              </StyledButton>
-            </CustomTableHeader>
+            <CustomTableHeader/>
           </tr>
         </thead>
         <tbody>
@@ -206,9 +170,9 @@ const ManagementTable = props => {
             };
             return (
               <CustomTableRow key={index} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">
-                <CustomTableData>{worker.attributes.full_name}</CustomTableData>
-                <CustomTableData>{worker.id}</CustomTableData>
-                <CustomTableData>{worker.attributes.office_location_name}</CustomTableData>
+                <CustomTableData><TableText>{worker.attributes.full_name}</TableText></CustomTableData>
+                <CustomTableData><TableText>{worker.id}</TableText></CustomTableData>
+                <CustomTableData><TableText>{worker.attributes.office_location_name}</TableText></CustomTableData>
                 <CustomTableData><TableDataFlex>{formatWorkerSkillsToHTML(worker.attributes.routing)}</TableDataFlex></CustomTableData>
                 <CustomTableData><TableDataFlex>{formatWorkerSkillsToHTML(worker.attributes.default_skills)}</TableDataFlex></CustomTableData>
                 <CustomTableData>
@@ -227,12 +191,6 @@ const ManagementTable = props => {
         </tbody>
         <Modal open={editUserModalOpts.open}>
           <EditUserModal handleClose={() => setEditUserModalOpts(defaultEditUserModalOpts)} worker={editUserModalOpts.worker}/>
-        </Modal>
-        <Modal open={resultsModalOpts.open}>
-          <ResultsModal
-            handleClose={() => setResultsModalOpts(defaultResetInformation)}
-            successfulWorkers={resultsModalOpts.successfulResets}
-            unsuccessfulWorkers={resultsModalOpts.unsuccessfulResets} />
         </Modal>
       </CustomTable>
     </TableContainer>
