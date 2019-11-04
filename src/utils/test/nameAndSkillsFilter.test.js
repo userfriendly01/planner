@@ -17,7 +17,8 @@ describe("filterByNameAndSkills()", () => {
           "466": 3
         }
       }
-    }
+    },
+    id: "N666"
   };
 
   const noRoutingData = {
@@ -93,6 +94,18 @@ describe("filterByNameAndSkills()", () => {
 
   test("should find a skill in the default skill list", () => {
     expect(filterByNameAndSkills(goodWorkerData, "fake")).toEqual(true);
+  });
+
+  test("should find the ID", () => {
+    expect(filterByNameAndSkills(goodWorkerData, "N666")).toEqual(true);
+  });
+
+  test("should find the ID, caps should not matter", () => {
+    expect(filterByNameAndSkills(goodWorkerData, "n666")).toEqual(true);
+  });
+
+  test("should not find the ID", () => {
+    expect(filterByNameAndSkills(goodWorkerData, "N5666")).toEqual(false);
   });
 
   test("should find the name", () => {
