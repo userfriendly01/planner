@@ -27,7 +27,8 @@ const StyledPaper = styled(Paper)`
 `;
 
 const sortByWorkerFullName = (a, b) => {
-  const [aName, bName] = [a.attributes.full_name, b.attributes.full_name];
+  const sortLast = "zzzzzzzzzzz";
+  const [aName, bName] = [a.attributes.full_name || sortLast, b.attributes.full_name || sortLast];
   if (aName < bName) { return -1; }
   if (aName > bName) { return 1; }
   return 0;
@@ -49,8 +50,8 @@ const getWorkersStartAndEnd = (pageSelected, filteredWorkers) => {
 };
 
 const ManagementWrapper = () => {
-  const workers = useAdminState().workerContext.workers;
-  const sortedWorkers = [ ...workers ].sort(sortByWorkerFullName);
+  const workersFromContext = useAdminState().workerContext.workers;
+  let workers = [ ...workersFromContext ].sort(sortByWorkerFullName);
 
   const [state, setState] = useState({
     deltaToggle: false,
@@ -59,19 +60,21 @@ const ManagementWrapper = () => {
     searchBy: ""
   });
 
-  const workersByManager = state.filterBy === "show-all"
-    ? sortedWorkers
-    : sortedWorkers.filter(worker => worker.attributes.manager_n_number === state.filterBy);
-
-  const workersByDelta = !state.deltaToggle ? workersByManager : workersByManager.filter(worker => worker.skillsDifferent);
-
+  if (state.filterBy !== "show-all") {
+    workers = workers.filter(worker => worker.attributes.manager_n_number === state.filterBy);
+  }
+  if (state.deltaToggle) {
+    workers = workers.filter(worker => worker.skillsDifferent);
+  }
   const trimmedSearch = state.searchBy.trim();
-  const workersByManagerSearched = trimmedSearch === "" ? workersByDelta : workersByDelta.filter(worker => filterByNameAndSkills(worker, trimmedSearch));
+  if (trimmedSearch !== "") {
+    workers = workers.filter(worker => filterByNameAndSkills(worker, trimmedSearch));
+  }
 
   const {
     workersStart,
     workersEnd
-  } = getWorkersStartAndEnd(state.pageSelected, workersByManagerSearched);
+  } = getWorkersStartAndEnd(state.pageSelected, workers);
 
   const setStateFromDeltaToggle = deltaToggle => setState({
     ...state,
@@ -107,11 +110,11 @@ const ManagementWrapper = () => {
         <ManagementTable
           deltaToggle={state.deltaToggle}
           setDeltaToggle={setStateFromDeltaToggle}
-          workers={workersByManagerSearched.slice(workersStart, workersEnd)} />
+          workers={workers.slice(workersStart, workersEnd)} />
       </StyledPaper>
       <ManagementPagination
         end={workersEnd}
-        length={workersByManagerSearched.length}
+        length={workers.length}
         page={state.pageSelected}
         setPage={setStateFromPageChange}
         start={workersStart + 1}/>

@@ -52,6 +52,28 @@ const SkillRow = styled.div`
   }
 `;
 
+const SkillsWrapper = styled.div`
+  max-height: 50vh;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    background-color: #F5F5F5;
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: 6px;
+    background: rgba(0,0,0,0.1);
+    border: 1px solid #ccc;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+    background: #aaa;
+    border: 1px solid #aaa;
+  }
+`;
+
 const SkillRowItem = styled.div`
   &:nth-child(1) {
     display: flex;
@@ -164,27 +186,29 @@ const DefaultSkillSelector = props => {
         </SkillRowItem>
       </SkillRow>
       <SkillRowSeperator/>
-      {defaultSkills.skills.sort().map((skill, index) => {
-        const taskrouterSkill = findTaskRouterSkill(skill, taskrouterSkills);
-        return (
-          <SkillRow highlightOnHover={true} key={`default-skill-row-${index}`}>
-            <SkillRowItem>{skill}</SkillRowItem>
-            <SkillRowItem>
-              {defaultSkills.levels.hasOwnProperty(skill) === true ?
-                <PriorityDropDown
-                  availablePriorities={taskrouterSkill.levels}
-                  priorityValue={defaultSkills.levels[skill]}
-                  updatePriority={existingSkillLevelChanged(skill)}
-                /> : DashDiv}
-            </SkillRowItem>
-            <SkillRowItem>
-              <IconButtonWrapper onClick={removeSkillClicked(skill)} data-testid="delete-skill-button">
-                <Delete fontSize="inherit"/>
-              </IconButtonWrapper>
-            </SkillRowItem>
-          </SkillRow>
-        );
-      })}
+      <SkillsWrapper>
+        {defaultSkills.skills.sort().map((skill, index) => {
+          const taskrouterSkill = findTaskRouterSkill(skill, taskrouterSkills);
+          return (
+            <SkillRow highlightOnHover={true} key={`default-skill-row-${index}`}>
+              <SkillRowItem>{skill}</SkillRowItem>
+              <SkillRowItem>
+                {defaultSkills.levels.hasOwnProperty(skill) === true ?
+                  <PriorityDropDown
+                    availablePriorities={taskrouterSkill.levels}
+                    priorityValue={defaultSkills.levels[skill]}
+                    updatePriority={existingSkillLevelChanged(skill)}
+                  /> : DashDiv}
+              </SkillRowItem>
+              <SkillRowItem>
+                <IconButtonWrapper onClick={removeSkillClicked(skill)} data-testid="delete-skill-button">
+                  <Delete fontSize="inherit"/>
+                </IconButtonWrapper>
+              </SkillRowItem>
+            </SkillRow>
+          );
+        })}
+      </SkillsWrapper>
     </DefaultSkillsWrapper>
   );
 };

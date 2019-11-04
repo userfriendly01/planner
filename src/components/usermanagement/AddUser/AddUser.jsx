@@ -6,18 +6,6 @@ import {
 import React, {
   useState
 } from "react";
-import styled from "styled-components";
-
-const AddUserButtonWrapper = styled.div`
-  align-items: center;
-  display: flex;
-  justify-self: flex-end;
-  margin-left: auto;
-`;
-
-const Wrapper = styled.div`
-  display: flex;
-`;
 
 const AddUser = () => {
 
@@ -32,16 +20,14 @@ const AddUser = () => {
   };
 
   return (
-    <Wrapper>
-      <AddUserButtonWrapper>
-        <StyledButton onClick={handleOpenAddUser} data-testid={"add-user-button"}>
-          Add User
-        </StyledButton>
-      </AddUserButtonWrapper>
+    <div>
+      <StyledButton onClick={handleOpenAddUser} data-testid={"add-user-button"}>
+        Add User
+      </StyledButton>
       <Modal disableBackdropClick={true} open={isAddUserModalOpen}>
         <AddUserModal handleClose={handleCloseAddUser} />
       </Modal>
-    </Wrapper>
+    </div>
   );
 };
 

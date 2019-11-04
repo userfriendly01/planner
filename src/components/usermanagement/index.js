@@ -15,6 +15,7 @@ export { default as ModalOverlay } from "./ModalOverlay/ModalOverlay";
 export { default as ModalPhoneNumber } from "./ModalPhoneNumber/ModalPhoneNumber";
 export { default as PaperContainer } from "./PaperContainer/PaperContainer";
 export { default as PriorityDropDown } from "./PriorityDropDown/PriorityDropDown";
+export { default as ResetSkillsButton } from "./ResetSkillsButton/ResetSkillsButton";
 export { default as ResultsModal } from "./ResultsModal/ResultsModal";
 export { default as SearchBox } from "./SearchBox/SearchBox";
 export { default as SkillDropDown } from "./SkillDropDown/SkillDropDown";

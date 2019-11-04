@@ -14,7 +14,8 @@ export const initialState = {
   workerContext: {
     workers: [],
     selectedWorkers: []
-  }
+  },
+  resettingSkills: false
 };
 
 export const reducer = (state, action) => {
@@ -71,6 +72,11 @@ export const reducer = (state, action) => {
       return {
         ...state,
         userContext: action.payload
+      };
+    case "resettingSkills":
+      return {
+        ...state,
+        resettingSkills: action.payload
       };
     case "toggleWorkerSelected":
       return {
