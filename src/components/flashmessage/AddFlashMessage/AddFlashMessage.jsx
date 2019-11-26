@@ -13,11 +13,13 @@ const AddMessageInput = styled.input`
 const AddFlashMessage = () => {
 
   const [flashMessage, setFlashMessage] = useState("");
+  const [charCount, setCharCount] = useState(0);
 
   const nNumber = "n0274027";
 
   const handleChange = event => {
     setFlashMessage(event.target.value);
+    setCharCount(event.target.value.length);
   };
 
   const handleSubmit = event => {
@@ -33,7 +35,9 @@ const AddFlashMessage = () => {
         <AddMessageInput type="text" placeholder="Enter flash message here..." value={flashMessage} onChange={handleChange} maxLength="1024"/>
         <input type="submit" value="Flash!" />
       </form>
-
+      <div>
+        Characters: {charCount}/1024
+      </div>
     </div>
   );
 };
