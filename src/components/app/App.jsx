@@ -1,6 +1,6 @@
 import { CircularProgress } from "@material-ui/core";
 import {
-  AddMessage,
+  FlashMessageContainer,
   Header,
   NavTabs
 } from "components";
@@ -170,10 +170,8 @@ const App = () => {
             <Header/>
             <Switch>
               <Route exact path="/" component={NavTabs}>
-                {/* <NavTabs/> */}
               </Route>
-              <Route path="/flashmessage" component={AddMessage}>
-                {/* <AddMessage/> */}
+              <Route path="/flashmessage" component={FlashMessageContainer}>
               </Route>
             </Switch>
           </Router>

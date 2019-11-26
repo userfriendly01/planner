@@ -1,1 +1,2 @@
-export { default as AddMessage } from "./AddMessage/AddMessage";
+export { default as AddFlashMessage } from "./AddFlashMessage/AddFlashMessage";
+export { default as FlashMessageContainer } from "./FlashMessageContainer/FlashMessageContainer";
