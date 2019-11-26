@@ -1,13 +1,20 @@
 import {
-  AddFlashMessage
+  AddFlashMessage,
+  EditFlashMessage
 } from "components";
-import React from "react";
+import React, { useState } from "react";
 
-const FlashMessageContainer = () => (
-  <div>
-    <AddFlashMessage />
-    {/* <EditFlashMessage /> */}
-  </div>
-);
+const FlashMessageContainer = () => {
+
+  const [displayEdit, setDisplayEdit] = useState(false);
+
+  const toggleEdit = () => setDisplayEdit(!displayEdit);
+
+  return (
+    <div>
+      {displayEdit ? <EditFlashMessage /> : <AddFlashMessage toggleEdit={toggleEdit}/>}
+    </div>
+  );
+};
 
 export default FlashMessageContainer;

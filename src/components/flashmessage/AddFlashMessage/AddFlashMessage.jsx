@@ -1,7 +1,8 @@
-import { apiPaths } from "globals";
+// import { apiPaths } from "globals";
+import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { myAxios } from "utils";
+// import { myAxios } from "utils";
 
 const AddMessageInput = styled.input`
   height: 200px;
@@ -10,12 +11,14 @@ const AddMessageInput = styled.input`
   width: 800px;
 `;
 
-const AddFlashMessage = () => {
+const AddFlashMessage = props => {
+
+  const { toggleEdit } = props;
 
   const [flashMessage, setFlashMessage] = useState("");
   const [charCount, setCharCount] = useState(0);
 
-  const nNumber = "n0274027";
+  // const nNumber = "n0274027";
 
   const handleChange = event => {
     setFlashMessage(event.target.value);
@@ -25,8 +28,13 @@ const AddFlashMessage = () => {
   const handleSubmit = event => {
     event.preventDefault();
     console.log("flashMessage:", flashMessage);
-    myAxios.put(apiPaths.UPDATE_FLASH_MESSAGE, flashMessage, nNumber)
-      .then(res => console.log("response:", res));
+    // myAxios.put(apiPaths.UPDATE_FLASH_MESSAGE, flashMessage, nNumber)
+    //   .then(res => console.log("response:", res));
+    const popUp = confirm("Are you sure you want to create this flash message?");
+    if (popUp === true) {
+      console.log("confirmed");
+      toggleEdit(true);
+    }
   };
 
   return (
@@ -36,10 +44,14 @@ const AddFlashMessage = () => {
         <input type="submit" value="Flash!" />
       </form>
       <div>
-        Characters: {charCount}/1024
+        Characters: {charCount} / 1024
       </div>
     </div>
   );
+};
+
+AddFlashMessage.propTypes = {
+  toggleEdit: PropTypes.func.isRequire
 };
 
 export default AddFlashMessage;
