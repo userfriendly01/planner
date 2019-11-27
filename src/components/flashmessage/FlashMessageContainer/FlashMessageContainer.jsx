@@ -13,8 +13,8 @@ const FlashMessageContainer = () => {
   return (
     <div>
       {readOnly ?
-        <ViewFlashMessage toggleReadOnly={toggleReadOnly}/> :
-        <AddFlashMessage toggleReadOnly={toggleReadOnly}/>}
+        <ViewFlashMessage toggleReadOnly={toggleReadOnly} /> :
+        <AddFlashMessage toggleReadOnly={toggleReadOnly} />}
     </div>
   );
 };

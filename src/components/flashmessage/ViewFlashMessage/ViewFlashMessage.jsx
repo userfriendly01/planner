@@ -49,12 +49,15 @@ export const ViewFlashMessage = props => {
 
   const deleteButtonOnClick = event => {
     event.stopPropagation(); // do we need this?
-    // TODO: delete from DB
-    dispatch({
-      type: "updateFlashMessage",
-      payload: ""
-    });
-    toggleReadOnly(false);
+    const popUp = confirm("Are you sure you want to delete this flash message?");
+    if (popUp === true) {
+      // TODO: delete from DB
+      dispatch({
+        type: "updateFlashMessage",
+        payload: ""
+      });
+      toggleReadOnly(false);
+    }
   };
 
   return (
@@ -71,7 +74,7 @@ export const ViewFlashMessage = props => {
 };
 
 ViewFlashMessage.propTypes = {
-  toggleReadOnly: PropTypes.func.isRequire
+  toggleReadOnly: PropTypes.func.isRequired
 };
 
 export default ViewFlashMessage;

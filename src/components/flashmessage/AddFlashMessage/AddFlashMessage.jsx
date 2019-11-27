@@ -63,7 +63,7 @@ const AddFlashMessage = props => {
 };
 
 AddFlashMessage.propTypes = {
-  toggleReadOnly: PropTypes.func.isRequire
+  toggleReadOnly: PropTypes.func.isRequired
 };
 
 export default AddFlashMessage;
