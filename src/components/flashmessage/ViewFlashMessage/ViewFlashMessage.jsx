@@ -1,8 +1,11 @@
 import {
-  Edit
-  // Delete
+  Edit,
+  Delete
 } from "@material-ui/icons";
-import { useAdminState } from "context";
+import {
+  useAdminDispatch,
+  useAdminState
+} from "context";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
@@ -36,10 +39,21 @@ export const ViewFlashMessage = props => {
   const { toggleReadOnly } = props;
 
   const state = useAdminState();
+  const dispatch = useAdminDispatch();
   const flashMessage = state.flashMessage;
 
   const editButtonOnClick = event => {
-    event.stopPropagation();
+    event.stopPropagation(); // do we need this?
+    toggleReadOnly(false);
+  };
+
+  const deleteButtonOnClick = event => {
+    event.stopPropagation(); // do we need this?
+    // TODO: delete from DB
+    dispatch({
+      type: "updateFlashMessage",
+      payload: ""
+    });
     toggleReadOnly(false);
   };
 
@@ -47,7 +61,10 @@ export const ViewFlashMessage = props => {
     <div>
       <MessageDiv>{flashMessage}</MessageDiv>
       <IconWrapper onClick={editButtonOnClick}>
-        <Edit fontSize={"inherit"}/>
+        <Edit />
+      </IconWrapper>
+      <IconWrapper onClick={deleteButtonOnClick}>
+        <Delete/>
       </IconWrapper>
     </div>
   );

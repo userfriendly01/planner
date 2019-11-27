@@ -2,11 +2,11 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import { apiPaths } from "globals";
+// import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { myAxios } from "utils";
+// import { myAxios } from "utils";
 
 const AddMessageInput = styled.input`
   height: 200px;
@@ -24,7 +24,7 @@ const AddFlashMessage = props => {
   const flashMessage = state.flashMessage;
   const [charCount, setCharCount] = useState(0);
 
-  const nNumber = "n0274027";
+  // const nNumber = "n0274027";
 
   const handleChange = event => {
     dispatch({
@@ -43,8 +43,8 @@ const AddFlashMessage = props => {
       //   flashMessage: "flash!",
       //   updatedBy: "n0132412"
       // };
-      myAxios.put(apiPaths.UPDATE_FLASH_MESSAGE, flashMessage, nNumber) // this might have to change
-        .then(res => console.log("response:", res));
+      // myAxios.put(apiPaths.UPDATE_FLASH_MESSAGE, flashMessage, nNumber) // this might have to change
+      //   .then(res => console.log("response:", res));
       toggleReadOnly(true);
     }
   };
