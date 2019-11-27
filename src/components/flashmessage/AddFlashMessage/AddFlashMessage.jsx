@@ -1,3 +1,7 @@
+import {
+  useAdminDispatch,
+  useAdminState
+} from "context";
 // import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
@@ -15,19 +19,23 @@ const AddFlashMessage = props => {
 
   const { toggleEdit } = props;
 
-  const [flashMessage, setFlashMessage] = useState("");
+  const dispatch = useAdminDispatch();
+  const state = useAdminState();
+  const flashMessage = state.flashMessage;
   const [charCount, setCharCount] = useState(0);
 
   // const nNumber = "n0274027";
 
   const handleChange = event => {
-    setFlashMessage(event.target.value);
+    dispatch({
+      type: "updateFlashMessage",
+      payload: event.target.value
+    });
     setCharCount(event.target.value.length);
   };
 
   const handleSubmit = event => {
     event.preventDefault();
-    console.log("flashMessage:", flashMessage);
     // myAxios.put(apiPaths.UPDATE_FLASH_MESSAGE, flashMessage, nNumber)
     //   .then(res => console.log("response:", res));
     const popUp = confirm("Are you sure you want to create this flash message?");
