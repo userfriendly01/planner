@@ -17,7 +17,7 @@ const AddMessageInput = styled.input`
 
 const AddFlashMessage = props => {
 
-  const { toggleEdit } = props;
+  const { toggleReadOnly } = props;
 
   const dispatch = useAdminDispatch();
   const state = useAdminState();
@@ -36,12 +36,11 @@ const AddFlashMessage = props => {
 
   const handleSubmit = event => {
     event.preventDefault();
-    // myAxios.put(apiPaths.UPDATE_FLASH_MESSAGE, flashMessage, nNumber)
-    //   .then(res => console.log("response:", res));
     const popUp = confirm("Are you sure you want to create this flash message?");
     if (popUp === true) {
-      console.log("confirmed");
-      toggleEdit(true);
+      // myAxios.put(apiPaths.UPDATE_FLASH_MESSAGE, flashMessage, nNumber)
+      //   .then(res => console.log("response:", res));
+      toggleReadOnly(true);
     }
   };
 
@@ -59,7 +58,7 @@ const AddFlashMessage = props => {
 };
 
 AddFlashMessage.propTypes = {
-  toggleEdit: PropTypes.func.isRequire
+  toggleReadOnly: PropTypes.func.isRequire
 };
 
 export default AddFlashMessage;

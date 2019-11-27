@@ -1,18 +1,20 @@
 import {
   AddFlashMessage,
-  EditFlashMessage
+  ViewFlashMessage
 } from "components";
 import React, { useState } from "react";
 
 const FlashMessageContainer = () => {
 
-  const [displayEdit, setDisplayEdit] = useState(false);
+  const [readOnly, setReadOnly] = useState(false);
 
-  const toggleEdit = () => setDisplayEdit(!displayEdit);
+  const toggleReadOnly = () => setReadOnly(!readOnly);
 
   return (
     <div>
-      {displayEdit ? <EditFlashMessage /> : <AddFlashMessage toggleEdit={toggleEdit}/>}
+      {readOnly ?
+        <ViewFlashMessage toggleReadOnly={toggleReadOnly}/> :
+        <AddFlashMessage toggleReadOnly={toggleReadOnly}/>}
     </div>
   );
 };
