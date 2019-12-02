@@ -10,6 +10,12 @@ import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
 
+const ButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+`;
+
 const IconWrapper = styled.div`
   align-items: center;
   border-radius: ${props => props.theme.tableRow.icon.hoverDiameter / 2}px;
@@ -26,12 +32,23 @@ const IconWrapper = styled.div`
   }
 `;
 
-const MessageDiv = styled.div`
+// const MessageDiv = styled.div`
+//   border: 3px solid black;
+//   height: 200px;
+//   margin: 30px;
+//   padding: 10px;
+//   width: 800px;
+// `;
+
+const EditMessageInput = styled.div`
   border: 3px solid black;
-  height: 200px;
-  margin: 30px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  min-height: 10vh;
+  margin: 2vw;
   padding: 10px;
-  width: 800px;
+  width: -webkit-fill-available;
 `;
 
 export const ViewFlashMessage = props => {
@@ -51,7 +68,7 @@ export const ViewFlashMessage = props => {
     event.stopPropagation(); // do we need this?
     const popUp = confirm("Are you sure you want to delete this flash message?");
     if (popUp === true) {
-      // TODO: delete from DB
+      // TODO: delete from DB (send as "")
       dispatch({
         type: "updateFlashMessage",
         payload: ""
@@ -61,15 +78,19 @@ export const ViewFlashMessage = props => {
   };
 
   return (
-    <div>
-      <MessageDiv>{flashMessage}</MessageDiv>
-      <IconWrapper onClick={editButtonOnClick}>
-        <Edit />
-      </IconWrapper>
-      <IconWrapper onClick={deleteButtonOnClick}>
-        <Delete/>
-      </IconWrapper>
-    </div>
+    // <div>
+    <EditMessageInput>
+      <div>{flashMessage}</div>
+      <ButtonWrapper>
+        <IconWrapper onClick={editButtonOnClick}>
+          <Edit />
+        </IconWrapper>
+        <IconWrapper onClick={deleteButtonOnClick}>
+          <Delete/>
+        </IconWrapper>
+      </ButtonWrapper>
+    </EditMessageInput>
+    // </div>
   );
 };
 
