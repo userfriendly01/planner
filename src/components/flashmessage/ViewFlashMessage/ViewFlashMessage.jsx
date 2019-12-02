@@ -1,11 +1,20 @@
 import {
-  Edit
-  // Delete
+  Edit,
+  Delete
 } from "@material-ui/icons";
-import { useAdminState } from "context";
+import {
+  useAdminDispatch,
+  useAdminState
+} from "context";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+`;
 
 const IconWrapper = styled.div`
   align-items: center;
@@ -23,12 +32,23 @@ const IconWrapper = styled.div`
   }
 `;
 
-const MessageDiv = styled.div`
+// const MessageDiv = styled.div`
+//   border: 3px solid black;
+//   height: 200px;
+//   margin: 30px;
+//   padding: 10px;
+//   width: 800px;
+// `;
+
+const EditMessageInput = styled.div`
   border: 3px solid black;
-  height: 200px;
-  margin: 30px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  min-height: 10vh;
+  margin: 2vw;
   padding: 10px;
-  width: 800px;
+  width: -webkit-fill-available;
 `;
 
 export const ViewFlashMessage = props => {
@@ -36,25 +56,46 @@ export const ViewFlashMessage = props => {
   const { toggleReadOnly } = props;
 
   const state = useAdminState();
+  const dispatch = useAdminDispatch();
   const flashMessage = state.flashMessage;
 
   const editButtonOnClick = event => {
-    event.stopPropagation();
+    event.stopPropagation(); // do we need this?
     toggleReadOnly(false);
   };
 
+  const deleteButtonOnClick = event => {
+    event.stopPropagation(); // do we need this?
+    const popUp = confirm("Are you sure you want to delete this flash message?");
+    if (popUp === true) {
+      // TODO: delete from DB (send as "")
+      dispatch({
+        type: "updateFlashMessage",
+        payload: ""
+      });
+      toggleReadOnly(false);
+    }
+  };
+
   return (
-    <div>
-      <MessageDiv>{flashMessage}</MessageDiv>
-      <IconWrapper onClick={editButtonOnClick}>
-        <Edit fontSize={"inherit"}/>
-      </IconWrapper>
-    </div>
+    // <div>
+    <EditMessageInput>
+      <div>{flashMessage}</div>
+      <ButtonWrapper>
+        <IconWrapper onClick={editButtonOnClick}>
+          <Edit />
+        </IconWrapper>
+        <IconWrapper onClick={deleteButtonOnClick}>
+          <Delete/>
+        </IconWrapper>
+      </ButtonWrapper>
+    </EditMessageInput>
+    // </div>
   );
 };
 
 ViewFlashMessage.propTypes = {
-  toggleReadOnly: PropTypes.func.isRequire
+  toggleReadOnly: PropTypes.func.isRequired
 };
 
 export default ViewFlashMessage;

@@ -1,18 +1,62 @@
 import {
+  // SpecialCharacterWarning,
+  StyledButton
+} from "components";
+import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import { apiPaths } from "globals";
+// import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { myAxios } from "utils";
+// import { myAxios } from "utils";
 
-const AddMessageInput = styled.input`
-  height: 200px;
-  margin: 30px;
+const AddMessageInput = styled.textarea`
+  border: 3px solid ${props => props.validMessage ? "black" : "red"};
+  border-radius: 10px;
+  min-height: 10vh;
+  margin-bottom: 10px;
   padding: 10px;
-  width: 800px;
+  width: -webkit-fill-available;
+`;
+
+const AddMessageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const CharCount = styled.div`
+  font-size: .875rem;
+  font-weight: 800;
+  letter-spacing: 0.007142857143rem;
+  padding-right: 10px;
+`;
+
+const Helpers = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+const SpecialCharacterWarning = styled.div`
+  color: red;
+  font-size: .875rem;
+  font-weight: 800;
+  letter-spacing: 0.007142857143rem;
+  padding-left: 10px;
+`;
+
+const StyledForm = styled.form`
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  margin: 2vw;
+`;
+
+const AddMessageButton = styled(StyledButton)`
+  align-self: center;
+  width: min-content;
 `;
 
 const AddFlashMessage = props => {
@@ -23,15 +67,36 @@ const AddFlashMessage = props => {
   const state = useAdminState();
   const flashMessage = state.flashMessage;
   const [charCount, setCharCount] = useState(0);
+  const [validMessage, setValidMessage] = useState(true);
 
-  const nNumber = "n0274027";
+  // const nNumber = "n0274027";
+
+  // console.log("validMessage = ", validMessage);
 
   const handleChange = event => {
+    const message = event.target.value;
+    // console.log("message:", message);
     dispatch({
       type: "updateFlashMessage",
-      payload: event.target.value
+      payload: message
     });
-    setCharCount(event.target.value.length);
+    setCharCount(message.length);
+    isMessageValid(message) ? setValidMessage(true) : setValidMessage(false);
+  };
+
+  // const containsSpecialCharacters = message => {
+  //   const specialCharacters = RegExp(/<|>|&|"|'/);
+  //   return specialCharacters.test(message) === true;
+  // };
+
+  const isMessageValid = message => {
+    // XML "special characters" - https://docs.oracle.com/cd/A97335_02/apps.102/bc4j/developing_bc_projects/obcCustomXml.htm
+    const specialCharacters = RegExp(/<|>|&|"|'/);
+    if (specialCharacters.test(message) === true) {
+      return false;
+    } else {
+      return true;
+    }
   };
 
   const handleSubmit = event => {
@@ -43,27 +108,28 @@ const AddFlashMessage = props => {
       //   flashMessage: "flash!",
       //   updatedBy: "n0132412"
       // };
-      myAxios.put(apiPaths.UPDATE_FLASH_MESSAGE, flashMessage, nNumber) // this might have to change
-        .then(res => console.log("response:", res));
+      // myAxios.put(apiPaths.UPDATE_FLASH_MESSAGE, flashMessage, nNumber) // this might have to change
+      //   .then(res => console.log("response:", res));
       toggleReadOnly(true);
     }
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <AddMessageInput type="text" placeholder="Enter flash message here..." value={flashMessage} onChange={handleChange} maxLength="1024"/>
-        <input type="submit" value="Flash!" />
-      </form>
-      <div>
-        Characters: {charCount} / 1024
-      </div>
-    </div>
+    <AddMessageWrapper>
+      <StyledForm onSubmit={handleSubmit}>
+        <AddMessageInput type="text" placeholder="Enter flash message here..." value={flashMessage} onChange={handleChange} maxLength="1024" validMessage={validMessage}/>
+        <Helpers>
+          {!validMessage ? <SpecialCharacterWarning>Special characters are not allowed</SpecialCharacterWarning> : <div></div>}
+          <CharCount>Characters: {charCount} / 1024</CharCount>
+        </Helpers>
+        <AddMessageButton disabled={flashMessage.length === 0 || !validMessage} onClick={handleSubmit}>Submit</AddMessageButton>
+      </StyledForm>
+    </AddMessageWrapper>
   );
 };
 
 AddFlashMessage.propTypes = {
-  toggleReadOnly: PropTypes.func.isRequire
+  toggleReadOnly: PropTypes.func.isRequired
 };
 
 export default AddFlashMessage;
