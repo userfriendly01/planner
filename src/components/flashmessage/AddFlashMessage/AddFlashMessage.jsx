@@ -1,7 +1,4 @@
-import {
-  // SpecialCharacterWarning,
-  StyledButton
-} from "components";
+import { StyledButton } from "components";
 import {
   useAdminDispatch,
   useAdminState
@@ -12,11 +9,17 @@ import React, { useState } from "react";
 import styled from "styled-components";
 // import { myAxios } from "utils";
 
+const AddMessageButton = styled(StyledButton)`
+  align-self: center;
+  width: min-content;
+`;
+
 const AddMessageInput = styled.textarea`
-  border: 3px solid ${props => props.validMessage ? "black" : "red"};
+  border: 2px solid ${props => props.validMessage ? props.theme.libertyDarkTeal : "red"};
   border-radius: 10px;
   min-height: 10vh;
   margin-bottom: 10px;
+  outline: none;
   padding: 10px;
   width: -webkit-fill-available;
 `;
@@ -54,11 +57,6 @@ const StyledForm = styled.form`
   margin: 2vw;
 `;
 
-const AddMessageButton = styled(StyledButton)`
-  align-self: center;
-  width: min-content;
-`;
-
 const AddFlashMessage = props => {
 
   const { toggleReadOnly } = props;
@@ -83,11 +81,6 @@ const AddFlashMessage = props => {
     setCharCount(message.length);
     isMessageValid(message) ? setValidMessage(true) : setValidMessage(false);
   };
-
-  // const containsSpecialCharacters = message => {
-  //   const specialCharacters = RegExp(/<|>|&|"|'/);
-  //   return specialCharacters.test(message) === true;
-  // };
 
   const isMessageValid = message => {
     // XML "special characters" - https://docs.oracle.com/cd/A97335_02/apps.102/bc4j/developing_bc_projects/obcCustomXml.htm
