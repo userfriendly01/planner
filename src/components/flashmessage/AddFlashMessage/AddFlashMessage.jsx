@@ -11,7 +11,7 @@ import styled from "styled-components";
 
 const AddMessageButton = styled(StyledButton)`
   align-self: center;
-  width: min-content;
+  min-width: 20%
 `;
 
 const AddMessageInput = styled.textarea`
