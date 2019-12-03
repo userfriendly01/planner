@@ -27,6 +27,7 @@ const AddMessageInput = styled.textarea`
 const AddMessageWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  width: -webkit-fill-available;
 `;
 
 const CharCount = styled.div`
