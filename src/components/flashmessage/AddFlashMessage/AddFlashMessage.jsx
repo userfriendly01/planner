@@ -115,7 +115,7 @@ const AddFlashMessage = props => {
           {!validMessage ? <SpecialCharacterWarning>Special characters are not allowed</SpecialCharacterWarning> : <div></div>}
           <CharCount>Characters: {charCount} / 1024</CharCount>
         </Helpers>
-        <AddMessageButton disabled={flashMessage.length === 0 || !validMessage} onClick={handleSubmit}>Submit</AddMessageButton>
+        <AddMessageButton disabled={flashMessage.length === 0 || !validMessage} onClick={handleSubmit}>Add Message</AddMessageButton>
       </StyledForm>
     </AddMessageWrapper>
   );

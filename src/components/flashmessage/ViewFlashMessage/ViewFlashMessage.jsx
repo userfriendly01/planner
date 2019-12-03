@@ -76,12 +76,12 @@ export const ViewFlashMessage = props => {
       <EditMessageInput>
         <div>{flashMessage}</div>
         <ButtonWrapper>
-          <Tooltip title="Edit" placement="left">
+          <Tooltip title="Edit Flash Message" placement="left">
             <IconWrapper onClick={editButtonOnClick}>
               <Edit />
             </IconWrapper>
           </Tooltip>
-          <Tooltip title="Delete" placement="left">
+          <Tooltip title="Delete Flash Message" placement="left">
             <IconWrapper onClick={deleteButtonOnClick}>
               <Delete/>
             </IconWrapper>
