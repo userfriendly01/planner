@@ -17,8 +17,10 @@ export const theme = {
     fadedWarning: "rgba(236,172,0,.10)"
   },
   successColor: "rgb(108,149,60)",
-  libertyDarkGray: "#565656",
+  libertyDarkGray: "#343741",
+  libertyDarkTeal: "#06748C",
   libertyLightYellow: "#FFE280",
+  libertyMediumTeal: "#28A3AF",
   libertyYellow: "#FFD000",
   lineSeperatorColor: "#9E9E9E",
   tableRow: {

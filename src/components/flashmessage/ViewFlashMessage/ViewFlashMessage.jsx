@@ -2,6 +2,7 @@ import {
   Edit,
   Delete
 } from "@material-ui/icons";
+import { Tooltip } from "@material-ui/core";
 import {
   useAdminDispatch,
   useAdminState
@@ -16,10 +17,22 @@ const ButtonWrapper = styled.div`
   justify-content: space-around;
 `;
 
+const EditMessageInput = styled.div`
+  background-color: white;
+  border: 2px solid ${props => props.theme.libertyMediumTeal};
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  min-height: 10vh;
+  margin: 2vw;
+  padding: 10px;
+  width: -webkit-fill-available;
+`;
+
 const IconWrapper = styled.div`
   align-items: center;
   border-radius: ${props => props.theme.tableRow.icon.hoverDiameter / 2}px;
-  color: ${props => props.theme.libertyDarkGray};
+  color: ${props => props.theme.textColor};
   cursor: pointer;
   display: flex;
   font-size: ${props => props.theme.tableRow.icon.size}px;
@@ -30,25 +43,6 @@ const IconWrapper = styled.div`
     background-color: ${props => props.theme.tableRow.selectedColor};
     cursor: pointer;
   }
-`;
-
-// const MessageDiv = styled.div`
-//   border: 3px solid black;
-//   height: 200px;
-//   margin: 30px;
-//   padding: 10px;
-//   width: 800px;
-// `;
-
-const EditMessageInput = styled.div`
-  border: 3px solid black;
-  border-radius: 10px;
-  display: flex;
-  justify-content: space-between;
-  min-height: 10vh;
-  margin: 2vw;
-  padding: 10px;
-  width: -webkit-fill-available;
 `;
 
 export const ViewFlashMessage = props => {
@@ -78,19 +72,23 @@ export const ViewFlashMessage = props => {
   };
 
   return (
-    // <div>
-    <EditMessageInput>
-      <div>{flashMessage}</div>
-      <ButtonWrapper>
-        <IconWrapper onClick={editButtonOnClick}>
-          <Edit />
-        </IconWrapper>
-        <IconWrapper onClick={deleteButtonOnClick}>
-          <Delete/>
-        </IconWrapper>
-      </ButtonWrapper>
-    </EditMessageInput>
-    // </div>
+    <div>
+      <EditMessageInput>
+        <div>{flashMessage}</div>
+        <ButtonWrapper>
+          <Tooltip title="Edit" placement="left">
+            <IconWrapper onClick={editButtonOnClick}>
+              <Edit />
+            </IconWrapper>
+          </Tooltip>
+          <Tooltip title="Delete" placement="left">
+            <IconWrapper onClick={deleteButtonOnClick}>
+              <Delete/>
+            </IconWrapper>
+          </Tooltip>
+        </ButtonWrapper>
+      </EditMessageInput>
+    </div>
   );
 };
 
