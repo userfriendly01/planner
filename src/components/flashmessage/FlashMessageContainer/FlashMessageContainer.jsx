@@ -1,5 +1,6 @@
 import {
   AddFlashMessage,
+  FlashMessageSidebar,
   ViewFlashMessage
 } from "components";
 import React, { useState } from "react";
@@ -7,7 +8,8 @@ import styled from "styled-components";
 
 const FlashMessageContainerWrapper = styled.div`
   background-color: ${props => props.theme.tableRow.borderColor};
-  height: 100vh;
+  display: flex;
+  height: calc(100vh - 48px);
 `;
 
 const FlashMessageContainer = () => {
@@ -15,6 +17,7 @@ const FlashMessageContainer = () => {
   const toggleReadOnly = () => setReadOnly(!readOnly);
   return (
     <FlashMessageContainerWrapper>
+      <FlashMessageSidebar />
       {readOnly ?
         <ViewFlashMessage toggleReadOnly={toggleReadOnly} /> :
         <AddFlashMessage toggleReadOnly={toggleReadOnly} />}
