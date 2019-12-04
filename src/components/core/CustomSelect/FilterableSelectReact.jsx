@@ -14,32 +14,25 @@ const FilterableSelectReact = props => {
     updateSkill
   } = props;
 
-  console.log(optionsList);
-  const test = [
-    {
-      value: "chocolate",
-      label: "Chocolate"
-    },
-    {
-      value: "strawberry",
-      label: "Strawberry"
-    },
-    {
-      value: "vanilla",
-      label: "Vanilla"
-    }
-  ];
+  const getOptions = optionsList => {
+    const optionsArray = [];
+    optionsList.map(option => {
+      const optionObject = {
+        value: option.skill,
+        label: option.skill
+      };
+      optionsArray.push(optionObject);
+    });
+    return optionsArray;
+  };
 
   return (
     <Wrapper>
       <Select
         clearable={true}
-        disabled={false}
-        noResultsText="" // do not show "no results found"... allow users to enter own number
         onChange={updateSkill}
         onSelectResetsInput={true}
-        options={test}
-        placeholder={"wait here"}
+        options={getOptions(optionsList)}
         searchable={true}
         value={skillValue}
       />

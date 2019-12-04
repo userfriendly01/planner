@@ -12,13 +12,6 @@ const SkillDropDown = props => {
   return (
     <FilterableSelectReact
       optionsList={taskrouterSkills}
-      // optionsDisplayFunc={skillObj => {
-      //   return {
-      //     display: skillObj.skill,
-      //     key: skillObj.skill,
-      //     value: skillObj.skill
-      //   };
-      // }}
       updateValue={updateSkill}
       value={skillValue}
     />
