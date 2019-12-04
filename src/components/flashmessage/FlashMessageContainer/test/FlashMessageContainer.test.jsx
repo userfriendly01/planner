@@ -8,7 +8,6 @@ import React from "react";
 import {
   act,
   expectMockedComponent,
-  expectOnlyPassedProps,
   getTestState,
   render,
   setupMockedComponents
