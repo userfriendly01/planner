@@ -1,4 +1,4 @@
-import { FilterableSelect } from "components";
+import { FilterableSelectReact } from "components";
 import PropTypes from "prop-types";
 import React from "react";
 
@@ -10,15 +10,15 @@ const SkillDropDown = props => {
   } = props;
 
   return (
-    <FilterableSelect
+    <FilterableSelectReact
       optionsList={taskrouterSkills}
-      optionsDisplayFunc={skillObj => {
-        return {
-          display: skillObj.skill,
-          key: skillObj.skill,
-          value: skillObj.skill
-        };
-      }}
+      // optionsDisplayFunc={skillObj => {
+      //   return {
+      //     display: skillObj.skill,
+      //     key: skillObj.skill,
+      //     value: skillObj.skill
+      //   };
+      // }}
       updateValue={updateSkill}
       value={skillValue}
     />
