@@ -22,9 +22,10 @@ const EditMessageInput = styled.div`
   border: 2px solid ${props => props.theme.libertyMediumTeal};
   border-radius: 10px;
   display: flex;
+  height: fit-content;
   justify-content: space-between;
-  min-height: 10vh;
   margin: 2vw;
+  min-height: 10vh;
   padding: 10px;
   width: -webkit-fill-available;
 `;
@@ -72,23 +73,21 @@ export const ViewFlashMessage = props => {
   };
 
   return (
-    <div>
-      <EditMessageInput>
-        <div>{flashMessage}</div>
-        <ButtonWrapper>
-          <Tooltip title="Edit Flash Message" placement="left">
-            <IconWrapper onClick={editButtonOnClick}>
-              <Edit />
-            </IconWrapper>
-          </Tooltip>
-          <Tooltip title="Delete Flash Message" placement="left">
-            <IconWrapper onClick={deleteButtonOnClick}>
-              <Delete/>
-            </IconWrapper>
-          </Tooltip>
-        </ButtonWrapper>
-      </EditMessageInput>
-    </div>
+    <EditMessageInput>
+      <div>{flashMessage}</div>
+      <ButtonWrapper>
+        <Tooltip title="Edit" placement="left">
+          <IconWrapper onClick={editButtonOnClick}>
+            <Edit />
+          </IconWrapper>
+        </Tooltip>
+        <Tooltip title="Delete" placement="left">
+          <IconWrapper onClick={deleteButtonOnClick}>
+            <Delete/>
+          </IconWrapper>
+        </Tooltip>
+      </ButtonWrapper>
+    </EditMessageInput>
   );
 };
 
