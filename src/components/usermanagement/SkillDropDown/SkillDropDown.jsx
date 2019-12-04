@@ -1,4 +1,4 @@
-import { SimpleSelect } from "components";
+import { FilterableSelect } from "components";
 import PropTypes from "prop-types";
 import React from "react";
 
@@ -10,7 +10,7 @@ const SkillDropDown = props => {
   } = props;
 
   return (
-    <SimpleSelect
+    <FilterableSelect
       optionsList={taskrouterSkills}
       optionsDisplayFunc={skillObj => {
         return {
