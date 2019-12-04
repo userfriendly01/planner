@@ -1,7 +1,7 @@
 import NavTabs from "../NavTabs";
 import {
-  ManagementWrapper,
-  SettingsWrapper
+  FlashMessageContainer,
+  ManagementWrapper
 } from "components";
 import React from "react";
 import {
@@ -13,16 +13,16 @@ import {
 
 jest.mock("components", () => ({
   __esModule: true,
-  ManagementWrapper: jest.fn(),
-  SettingsWrapper: jest.fn()
+  FlashMessageContainer: jest.fn(),
+  ManagementWrapper: jest.fn()
 }));
 
 describe("<NavTabs />", () => {
 
   beforeEach(() => {
     setupMockedComponents({
-      ManagementWrapper,
-      SettingsWrapper
+      FlashMessageContainer,
+      ManagementWrapper
     });
   });
 
@@ -31,22 +31,22 @@ describe("<NavTabs />", () => {
     expect(rendered.getByText("User Management", { selector: "span" })).toBeInTheDocument();
     // expect(rendered.getByText("Settings", { selector: "span" })).toBeInTheDocument();
     expectMockedComponent(rendered, { ManagementWrapper });
-    expectMockedComponent(rendered, { SettingsWrapper });
+    expectMockedComponent(rendered, { FlashMessageContainer });
     expect(rendered.getByText("ManagementWrapper")).toBeVisible();
-    expect(rendered.getByText("SettingsWrapper")).not.toBeVisible();
+    expect(rendered.getByText("FlashMessageContainer")).not.toBeVisible();
   });
 
-  // test("when we click on the 'Settings' link, Settings should be visible, not management", () => {
-  //   const rendered = render(<NavTabs />);
-  //   fireEvent.click(rendered.getByText("Settings", { selector: "span" }));
-  //   expect(rendered.getByText("ManagementWrapper")).not.toBeVisible();
-  //   expect(rendered.getByText("SettingsWrapper")).toBeVisible();
-  // });
+  test("when we click on the 'Flash Message' link, FlashMessageContainer should be visible, not management", () => {
+    const rendered = render(<NavTabs />);
+    fireEvent.click(rendered.getByText("Flash Message", { selector: "span" }));
+    expect(rendered.getByText("ManagementWrapper")).not.toBeVisible();
+    expect(rendered.getByText("FlashMessageContainer")).toBeVisible();
+  });
 
   test("when we click on the already clicked link, nothing should change", () => {
     const rendered = render(<NavTabs />);
     fireEvent.click(rendered.getByText("User Management", { selector: "span" }));
     expect(rendered.getByText("ManagementWrapper")).toBeVisible();
-    expect(rendered.getByText("SettingsWrapper")).not.toBeVisible();
+    expect(rendered.getByText("FlashMessageContainer")).not.toBeVisible();
   });
 });

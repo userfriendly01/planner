@@ -1,9 +1,11 @@
-import Tab from "@material-ui/core/Tab";
-import Tabs from "@material-ui/core/Tabs";
-import Typography from "@material-ui/core/Typography";
 import {
-  ManagementWrapper,
-  SettingsWrapper
+  Tab,
+  Tabs,
+  Typography
+} from "@material-ui/core";
+import {
+  FlashMessageContainer,
+  ManagementWrapper
 } from "components";
 import PropTypes from "prop-types";
 import React from "react";
@@ -66,13 +68,13 @@ const NavTabs = () => {
     <Content >
       <StyledTabs variant="fullWidth" value={value} onChange={handleChange}>
         <StyledTab label="User Management" href="/userManagement" id="nav-tab-userManagement" aria-controls="nav-tabpanel-userManagement" onClick={event => event.preventDefault()}/>
-        {/* <StyledTab disabled label="Settings" href="/settings" id="nav-tab-settings" aria-controls="nav-tabpanel-settings" onClick={event => event.preventDefault()}/> */}
+        <StyledTab label="Flash Message" href="/flashMessage" id="nav-tab-flashMessage" aria-controls="nav-tabpanel-flashMessage" onClick={event => event.preventDefault()}/>
       </StyledTabs>
       <TabPanel value={value} tabName="userManagement" index={0}>
         <ManagementWrapper  />
       </TabPanel>
-      <TabPanel value={value} tabName="settings" index={1}>
-        <SettingsWrapper />
+      <TabPanel value={value} tabName="flashMessage" index={1}>
+        <FlashMessageContainer />
       </TabPanel>
     </Content>
   );

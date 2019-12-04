@@ -9,7 +9,7 @@ import styled from "styled-components";
 const FlashMessageContainerWrapper = styled.div`
   background-color: ${props => props.theme.tableRow.borderColor};
   display: flex;
-  height: calc(100vh - 48px);
+  height: calc(100vh - 96px);
 `;
 
 const FlashMessageContainer = () => {

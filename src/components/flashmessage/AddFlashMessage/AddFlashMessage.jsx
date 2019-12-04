@@ -21,6 +21,7 @@ const AddMessageInput = styled.textarea`
   margin-bottom: 10px;
   outline: none;
   padding: 10px;
+  resize: none;
   width: -webkit-fill-available;
 `;
 

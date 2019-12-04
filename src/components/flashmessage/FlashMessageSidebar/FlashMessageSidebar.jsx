@@ -7,7 +7,7 @@ import styled from "styled-components";
 
 const SidebarWrapper = styled.div`
   background-color: white;
-  box-shadow: 0px -3px 4px 0px #C0BFC0;
+  box-shadow: 2px 0px 5px -2px #C0BFC0;
   display: flex;
   flex-direction: column;
 `;
