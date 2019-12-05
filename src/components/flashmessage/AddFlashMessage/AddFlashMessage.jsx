@@ -11,7 +11,7 @@ import styled from "styled-components";
 
 const AddMessageButton = styled(StyledButton)`
   align-self: center;
-  width: min-content;
+  min-width: 20%
 `;
 
 const AddMessageInput = styled.textarea`
@@ -112,12 +112,12 @@ const AddFlashMessage = props => {
   return (
     <AddMessageWrapper>
       <StyledForm onSubmit={handleSubmit}>
-        <AddMessageInput type="text" placeholder="Enter flash message here..." value={flashMessage} onChange={handleChange} maxLength="1024" validMessage={validMessage}/>
+        <AddMessageInput data-testid="add-message-input" type="text" placeholder="Enter flash message here..." value={flashMessage} onChange={handleChange} maxLength="1024" validMessage={validMessage}/>
         <Helpers>
           {!validMessage ? <SpecialCharacterWarning>Special characters are not allowed</SpecialCharacterWarning> : <div></div>}
           <CharCount>Characters: {charCount} / 1024</CharCount>
         </Helpers>
-        <AddMessageButton disabled={flashMessage.length === 0 || !validMessage} onClick={handleSubmit}>Submit</AddMessageButton>
+        <AddMessageButton disabled={flashMessage.length === 0 || !validMessage} onClick={handleSubmit}>Add Message</AddMessageButton>
       </StyledForm>
     </AddMessageWrapper>
   );
