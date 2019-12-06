@@ -3,15 +3,15 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context";
-// import { apiPaths } from "globals";
+import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
-// import { myAxios } from "utils";
+import { myAxios } from "utils";
 
 const AddMessageButton = styled(StyledButton)`
   align-self: center;
-  min-width: 20%
+  width: min-content;
 `;
 
 const AddMessageInput = styled.textarea`
@@ -69,9 +69,9 @@ const AddFlashMessage = props => {
   const [charCount, setCharCount] = useState(0);
   const [validMessage, setValidMessage] = useState(true);
 
-  // const nNumber = "n0274027";
+  const nNumber = state.userContext.pingIdentity.sub;
 
-  // console.log("validMessage = ", validMessage);
+  console.log("nNumber = ", nNumber);
 
   const handleChange = event => {
     const message = event.target.value;
@@ -94,25 +94,33 @@ const AddFlashMessage = props => {
     }
   };
 
-  const handleSubmit = event => {
-    event.preventDefault();
+  const handleSubmit = () => {
     const popUp = confirm("Are you sure you want to create this flash message?");
     if (popUp === true) {
-      // const req = {
-      //   callflowId: "whatever",
-      //   flashMessage: "flash!",
-      //   updatedBy: "n0132412"
-      // };
-      // myAxios.put(apiPaths.UPDATE_FLASH_MESSAGE, flashMessage, nNumber) // this might have to change
-      //   .then(res => console.log("response:", res));
-      toggleReadOnly(true);
+      const req = {
+        callflowId: 5,
+        flashMessage,
+        updatedBy: nNumber
+      };
+      myAxios.post(apiPaths.UPDATE_FLASH_MESSAGE, req)
+        .then(res => {
+          toggleReadOnly(true);
+          console.log("response:", res); // ???
+        })
+        .catch(err => console.error("Failed to upload flash message", err));
     }
   };
 
   return (
     <AddMessageWrapper>
       <StyledForm onSubmit={handleSubmit}>
-        <AddMessageInput data-testid="add-message-input" type="text" placeholder="Enter flash message here..." value={flashMessage} onChange={handleChange} maxLength="1024" validMessage={validMessage}/>
+        <AddMessageInput
+          data-testid="add-message-input"
+          maxLength="1024"
+          onChange={handleChange}
+          placeholder="Enter flash message here..."
+          type="text"  value={flashMessage}
+          validMessage={validMessage} />
         <Helpers>
           {!validMessage ? <SpecialCharacterWarning>Special characters are not allowed</SpecialCharacterWarning> : <div></div>}
           <CharCount>Characters: {charCount} / 1024</CharCount>
