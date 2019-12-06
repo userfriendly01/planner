@@ -7,9 +7,11 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context";
+import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
+import { myAxios } from "utils";
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -53,6 +55,7 @@ export const ViewFlashMessage = props => {
   const state = useAdminState();
   const dispatch = useAdminDispatch();
   const flashMessage = state.flashMessage;
+  const nNumber = state.userContext.pingIdentity.sub;
 
   const editButtonOnClick = event => {
     event.stopPropagation(); // do we need this?
@@ -63,7 +66,14 @@ export const ViewFlashMessage = props => {
     event.stopPropagation(); // do we need this?
     const popUp = confirm("Are you sure you want to delete this flash message?");
     if (popUp === true) {
-      // TODO: delete from DB (send as "")
+      const req = {
+        callflowId: 5,
+        flashMessage: "",
+        updatedBy: nNumber
+      };
+      myAxios.post(apiPaths.UPDATE_FLASH_MESSAGE, req)
+        .then(res => console.log("response:", res)) // ???
+        .catch(err => console.error("Failed to delete flash message", err));
       dispatch({
         type: "updateFlashMessage",
         payload: ""
