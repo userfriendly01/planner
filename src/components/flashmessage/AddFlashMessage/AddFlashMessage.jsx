@@ -71,11 +71,8 @@ const AddFlashMessage = props => {
 
   const nNumber = state.userContext.pingIdentity.sub;
 
-  console.log("nNumber = ", nNumber);
-
   const handleChange = event => {
     const message = event.target.value;
-    // console.log("message:", message);
     dispatch({
       type: "updateFlashMessage",
       payload: message
