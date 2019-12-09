@@ -35,8 +35,8 @@ describe("<AddFlashMessage />", () => {
     const state = initialTestState;
     test("Should render input with value of empty string & charCount of 0; should NOT render special character warning; button should be disabled", () => {
       const rendered = render(<AddFlashMessage />, state);
-      const button = rendered.getByText(/Add Message/);
       const input = rendered.getByTestId("add-message-input");
+      const button = rendered.getByText(/Add Message/);
       expect(input.value).toBe("");
       expect(rendered.container).toHaveTextContent("Characters: 0 / 1024");
       expect(rendered.container).not.toHaveTextContent("Special characters are not allowed");
@@ -48,10 +48,10 @@ describe("<AddFlashMessage />", () => {
     test("should display special character warning and button should be disabled", () => {
       const rendered = render(<AddFlashMessage />, initialTestState);
       const input = rendered.getByTestId("add-message-input");
-      const button = rendered.getByText(/Add Message/);
       act(() => fireEvent.change(input, { target: { value: "I contain special characters such as < ' > &" }}));
       expect(rendered.container).toHaveTextContent("Characters: 44 / 1024");
       expect(rendered.container).toHaveTextContent("Special characters are not allowed");
+      const button = rendered.getByText(/Add Message/);
       expect(button).toBeDisabled();
     });
   });
@@ -62,34 +62,26 @@ describe("<AddFlashMessage />", () => {
       window.confirm = jest.fn();
       const rendered = render(<AddFlashMessage />, initialTestState);
       const input = rendered.getByTestId("add-message-input");
-      const button = rendered.getByText(/Add Message/);
-      fireEvent.change(input, { target: { value: validMessage }});
+      act(() => fireEvent.change(input, { target: { value: validMessage }}));
       expect(rendered.container).not.toHaveTextContent("Special characters are not allowed");
+      const button = rendered.getByText(/Add Message/);
       expect(button).not.toBeDisabled();
-      fireEvent.click(button);
+      act(() => fireEvent.click(button));
       expect(window.confirm).toHaveBeenCalledTimes(1);
       expect(window.confirm).toHaveBeenCalledWith("Are you sure you want to create this flash message?");
     });
 
     describe("when add message is confirmed", () => {
-      // const req = {
-      //   callflowId: 42,
-      //   flashMessage: "Hi. My name is Valid Flashmessage",
-      //   updatedBy: "n0345678"
-      // };
+      beforeEach(() => window.confirm = () => true);
+
       describe("post to updateflashmessage is successful", () => {
-        beforeEach(() => {
-          axiosMock.onPost(apiPaths.UPDATE_FLASH_MESSAGE).reply(200, { horaay: "it worked" });
-          window.confirm = (() => true);
-        })
+        beforeEach(() => axiosMock.onPost(apiPaths.UPDATE_FLASH_MESSAGE).reply(200, { horaay: "it worked" }));
         test("should return ... and toggle read only to true", done => {
           const rendered = render(<AddFlashMessage toggleReadOnly={mockToggleReadOnly} />, initialTestState);
           const input = rendered.getByTestId("add-message-input");
-          act(() => {
-            fireEvent.change(input, { target: { value: validMessage }});
-          });
+          act(() => fireEvent.change(input, { target: { value: validMessage }}));
           const button = rendered.getByText(/Add Message/);
-          act(() => {            
+          act(() => {
             fireEvent.click(button);
             return Promise.resolve();
           })
@@ -97,36 +89,35 @@ describe("<AddFlashMessage />", () => {
               expect(mockToggleReadOnly).toHaveBeenCalledTimes(1);
               expect(mockToggleReadOnly).toHaveBeenCalledWith(true);
               // expect axios stuff
-            done();
+              done();
             });
         });
       });
 
-      // describe("post to updateflashmessage fails", () => {
-      //   // axiosMock.onPost(apiPaths.UPDATE_FLASH_MESSAGE).reply(500, { ohNo: "it failed" });
-      //   test("should return ... and toggle read only should remain false", () => {
-      //     window.confirm = jest.fn(() => true);
-      //     const rendered = render(<AddFlashMessage toggleReadOnly={mockToggleReadOnly} />, initialTestState);
-      //     const input = rendered.getByTestId("add-message-input");
-      //     const button = rendered.getByText(/Add Message/);
-      //     fireEvent.change(input, { target: { value: validMessage }});
-      //     fireEvent.click(button);
-      //     expect(mockToggleReadOnly).not.toHaveBeenCalled();
-      //     // expect axios stuff
-      //   });
-      // });
+      describe("post to updateflashmessage fails", () => {
+        beforeEach(() => axiosMock.onPost(apiPaths.UPDATE_FLASH_MESSAGE).reply(500, { ohNo: "it failed" }));
+        test("should return ... and toggle read only should remain false", () => {
+          const rendered = render(<AddFlashMessage toggleReadOnly={mockToggleReadOnly} />, initialTestState);
+          const input = rendered.getByTestId("add-message-input");
+          act(() => fireEvent.change(input, { target: { value: validMessage }}));
+          const button = rendered.getByText(/Add Message/);
+          act(() => fireEvent.click(button));
+          expect(mockToggleReadOnly).not.toHaveBeenCalled();
+          // expect axios stuff
+        });
+      });
 
     });
-  //   describe("when add message is not confirmed", () => {
-  //     test("should not toggle read only", () => {
-  //       window.confirm = jest.fn(() => false);
-  //       const rendered = render(<AddFlashMessage toggleReadOnly={mockToggleReadOnly} />, initialTestState);
-  //       const input = rendered.getByTestId("add-message-input");
-  //       const button = rendered.getByText(/Add Message/);
-  //       fireEvent.change(input, { target: { value: validMessage }});
-  //       fireEvent.click(button);
-  //       expect(mockToggleReadOnly).not.toHaveBeenCalled();
-  //     });
-  //   });
-  // });
+    describe("when add message is not confirmed", () => {
+      beforeEach(() => window.confirm = () => false);
+      test("should not toggle read only", () => {
+        const rendered = render(<AddFlashMessage toggleReadOnly={mockToggleReadOnly} />, initialTestState);
+        const input = rendered.getByTestId("add-message-input");
+        act(() => fireEvent.change(input, { target: { value: validMessage }}));
+        const button = rendered.getByText(/Add Message/);
+        act(() => fireEvent.click(button));
+        expect(mockToggleReadOnly).not.toHaveBeenCalled();
+      });
+    });
+  });
 });

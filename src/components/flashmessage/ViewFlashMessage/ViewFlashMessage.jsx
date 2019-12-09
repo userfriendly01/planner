@@ -57,13 +57,11 @@ export const ViewFlashMessage = props => {
   const flashMessage = state.flashMessage;
   const nNumber = state.userContext.pingIdentity.sub;
 
-  const editButtonOnClick = event => {
-    event.stopPropagation(); // do we need this?
+  const editButtonOnClick = () => {
     toggleReadOnly(false);
   };
 
-  const deleteButtonOnClick = event => {
-    event.stopPropagation(); // do we need this?
+  const deleteButtonOnClick = () => {
     const popUp = confirm("Are you sure you want to delete this flash message?");
     if (popUp === true) {
       const req = {
@@ -72,13 +70,15 @@ export const ViewFlashMessage = props => {
         updatedBy: nNumber
       };
       myAxios.post(apiPaths.UPDATE_FLASH_MESSAGE, req)
-        .then(res => console.log("response:", res)) // ???
+        .then(res => {
+          console.log("response:", res); // TODO: handle the response
+          toggleReadOnly(false);
+          dispatch({
+            type: "updateFlashMessage",
+            payload: ""
+          });
+        })
         .catch(err => console.error("Failed to delete flash message", err));
-      dispatch({
-        type: "updateFlashMessage",
-        payload: ""
-      });
-      toggleReadOnly(false);
     }
   };
 
@@ -93,7 +93,7 @@ export const ViewFlashMessage = props => {
         </Tooltip>
         <Tooltip title="Delete" placement="left">
           <IconWrapper onClick={deleteButtonOnClick}>
-            <Delete/>
+            <Delete />
           </IconWrapper>
         </Tooltip>
       </ButtonWrapper>

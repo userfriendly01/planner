@@ -104,8 +104,8 @@ const AddFlashMessage = props => {
       };
       myAxios.post(apiPaths.UPDATE_FLASH_MESSAGE, req)
         .then(res => {
+          console.log("response:", res); // TODO: handle the response
           toggleReadOnly(true);
-          console.log("response:", res); // ???
         })
         .catch(err => console.error("Failed to upload flash message", err));
     }
