@@ -61,7 +61,10 @@ const StyledForm = styled.form`
 
 const AddFlashMessage = props => {
 
-  const { toggleReadOnly } = props;
+  const {
+    toggleFetching,
+    toggleReadOnly
+  } = props;
 
   const dispatch = useAdminDispatch();
   const state = useAdminState();
@@ -94,6 +97,7 @@ const AddFlashMessage = props => {
   const handleSubmit = () => {
     const popUp = confirm("Are you sure you want to create this flash message?");
     if (popUp === true) {
+      toggleFetching(true);
       const req = {
         callflowId: 5,
         flashMessage,
@@ -102,9 +106,13 @@ const AddFlashMessage = props => {
       myAxios.post(apiPaths.UPDATE_FLASH_MESSAGE, req)
         .then(res => {
           console.log("response:", res); // TODO: handle the response
-          toggleReadOnly(true);
+          toggleFetching(false);
+          toggleReadOnly();
         })
-        .catch(err => console.error("Failed to upload flash message", err));
+        .catch(err => {
+          toggleFetching(false);
+          console.error("Failed to upload flash message", err);
+        });
     }
   };
 
@@ -129,6 +137,7 @@ const AddFlashMessage = props => {
 };
 
 AddFlashMessage.propTypes = {
+  toggleFetching: PropTypes.func.isRequired,
   toggleReadOnly: PropTypes.func.isRequired
 };
 

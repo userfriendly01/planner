@@ -50,20 +50,22 @@ const IconWrapper = styled.div`
 
 export const ViewFlashMessage = props => {
 
-  const { toggleReadOnly } = props;
+  const {
+    toggleFetching,
+    toggleReadOnly
+  } = props;
 
   const state = useAdminState();
   const dispatch = useAdminDispatch();
   const flashMessage = state.flashMessage;
   const nNumber = state.userContext.pingIdentity.sub;
 
-  const editButtonOnClick = () => {
-    toggleReadOnly(false);
-  };
+  const editButtonOnClick = () => toggleReadOnly();
 
   const deleteButtonOnClick = () => {
     const popUp = confirm("Are you sure you want to delete this flash message?");
     if (popUp === true) {
+      toggleFetching(true);
       const req = {
         callflowId: 5,
         flashMessage: "",
@@ -72,13 +74,17 @@ export const ViewFlashMessage = props => {
       myAxios.post(apiPaths.UPDATE_FLASH_MESSAGE, req)
         .then(res => {
           console.log("response:", res); // TODO: handle the response
-          toggleReadOnly(false);
+          toggleFetching(false);
+          toggleReadOnly();
           dispatch({
             type: "updateFlashMessage",
             payload: ""
           });
         })
-        .catch(err => console.error("Failed to delete flash message", err));
+        .catch(err => {
+          toggleFetching(false);
+          console.error("Failed to delete flash message", err);
+        });
     }
   };
 
@@ -102,6 +108,7 @@ export const ViewFlashMessage = props => {
 };
 
 ViewFlashMessage.propTypes = {
+  toggleFetching: PropTypes.func.isRequired,
   toggleReadOnly: PropTypes.func.isRequired
 };
 
