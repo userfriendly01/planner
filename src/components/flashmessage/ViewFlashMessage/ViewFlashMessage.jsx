@@ -1,8 +1,8 @@
+import { Tooltip } from "@material-ui/core";
 import {
   Edit,
   Delete
 } from "@material-ui/icons";
-import { Tooltip } from "@material-ui/core";
 import { useAdminState } from "context";
 import { apiPaths } from "globals";
 import PropTypes from "prop-types";
@@ -70,11 +70,11 @@ export const ViewFlashMessage = props => {
         serviceCallError: null
       });
       const req = {
-        callflowId: 5,
+        callFlowId: 5,
         flashMessage: "",
         updatedBy: nNumber
       };
-      myAxios.post(apiPaths.UPDATE_FLASH_MESSAGE, req)
+      myAxios.post(apiPaths.FLASH_MESSAGE, req)
         .then(() => {
           setFlashMessageState({
             ...flashMessageState,

@@ -14,8 +14,8 @@ const AddMessageButton = styled(StyledButton)`
 const AddMessageInput = styled.textarea`
   border: 2px solid ${props => props.validMessage ? props.theme.libertyDarkTeal : props.theme.errorColor};
   border-radius: 10px;
-  min-height: 10vh;
   margin-bottom: 10px;
+  min-height: 10vh;
   outline: none;
   padding: 10px;
   resize: none;
@@ -96,11 +96,11 @@ const AddFlashMessage = props => {
         fetching: true
       });
       const req = {
-        callflowId: 5,
+        callFlowId: 5,
         flashMessage: flashMessageState.flashMessage,
         updatedBy: nNumber
       };
-      myAxios.post(apiPaths.UPDATE_FLASH_MESSAGE, req)
+      myAxios.post(apiPaths.FLASH_MESSAGE, req)
         .then(() => {
           setFlashMessageState({
             ...flashMessageState,
@@ -129,8 +129,8 @@ const AddFlashMessage = props => {
           onChange={handleChange}
           placeholder="Enter flash message here..."
           type="text"
-          value={flashMessageState.flashMessage}
-          validMessage={validMessage} />
+          validMessage={validMessage}
+          value={flashMessageState.flashMessage} />
         <Helpers>
           {!validMessage ? <SpecialCharacterWarning>Special characters are not allowed</SpecialCharacterWarning> : <div></div>}
           <CharCount>Characters: {charCount} / 1024</CharCount>
