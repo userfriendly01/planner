@@ -67,10 +67,10 @@ const FlashMessageContainer = () => {
   });
 
   useEffect(() => {
-    const req = { callflowId: 5 };
-    myAxios.post(apiPaths.GET_FLASH_MESSAGE, req)
+    const callFlowId = 5;
+    myAxios.get(apiPaths.FLASH_MESSAGE + `/${callFlowId}`)
       .then(res => {
-        const flashMessage = res.data;
+        const flashMessage = res.data.flashMessage;
         let readOnly = false;
         if (flashMessage.length > 0) {
           readOnly = true;

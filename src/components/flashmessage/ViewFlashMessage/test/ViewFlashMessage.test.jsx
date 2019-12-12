@@ -65,7 +65,7 @@ describe("<ViewFlashMessage />", () => {
     describe("view message is confirmed", () => {
       beforeEach(() => window.confirm = () => true);
       describe("post to updateflashmessage is successful", () => {
-        beforeEach(() => axiosMock.onPost(apiPaths.UPDATE_FLASH_MESSAGE).reply(200, "delete successful"));
+        beforeEach(() => axiosMock.onPost(apiPaths.FLASH_MESSAGE).reply(200, "delete successful"));
         test("should set flash message to empty string and toggl read only to false", done => {
           const rendered = renderComponent(validMessageState);
           const button = rendered.getByTitle("Delete");
@@ -85,7 +85,7 @@ describe("<ViewFlashMessage />", () => {
         });
       });
       describe("post to updateflashmessage fails", () => {
-        beforeEach(() => axiosMock.onPost(apiPaths.UPDATE_FLASH_MESSAGE).reply(500, "awww, delete failed"));
+        beforeEach(() => axiosMock.onPost(apiPaths.FLASH_MESSAGE).reply(500, "awww, delete failed"));
         test("should display error", done => {
           const rendered = renderComponent(validMessageState);
           const button = rendered.getByTitle("Delete");

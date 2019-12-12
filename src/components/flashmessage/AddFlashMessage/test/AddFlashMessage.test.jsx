@@ -91,8 +91,8 @@ describe("<AddFlashMessage />", () => {
 
     describe("when add message is confirmed", () => {
       beforeEach(() => window.confirm = () => true);
-      describe("post to updateflashmessage is successful", () => {
-        beforeEach(() => axiosMock.onPost(apiPaths.UPDATE_FLASH_MESSAGE).reply(200, "it worked"));
+      describe("post to flashmessage is successful", () => {
+        beforeEach(() => axiosMock.onPost(apiPaths.FLASH_MESSAGE).reply(200, "it worked"));
         test("should call mockSetFMState with fetching = false and readOnly = true", done => {
           const rendered = renderComponent(validMessageState);
           const button = rendered.getByText(/Add Message/);
@@ -111,8 +111,8 @@ describe("<AddFlashMessage />", () => {
             });
         });
       });
-      describe("post to updateflashmessage fails", () => {
-        beforeEach(() => axiosMock.onPost(apiPaths.UPDATE_FLASH_MESSAGE).reply(500, "oh no! it failed"));
+      describe("post to flashmessage fails", () => {
+        beforeEach(() => axiosMock.onPost(apiPaths.FLASH_MESSAGE).reply(500, "oh no! it failed"));
         test("should call mockSetFMState with fetching = false and service call error", done => {
           const rendered = renderComponent(validMessageState);
           const button = rendered.getByText(/Add Message/);

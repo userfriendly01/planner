@@ -96,11 +96,11 @@ const AddFlashMessage = props => {
         fetching: true
       });
       const req = {
-        callflowId: 5,
+        callFlowId: 5,
         flashMessage: flashMessageState.flashMessage,
         updatedBy: nNumber
       };
-      myAxios.post(apiPaths.UPDATE_FLASH_MESSAGE, req)
+      myAxios.post(apiPaths.FLASH_MESSAGE, req)
         .then(() => {
           setFlashMessageState({
             ...flashMessageState,
