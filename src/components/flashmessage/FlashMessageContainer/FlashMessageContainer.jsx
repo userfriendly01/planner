@@ -4,10 +4,7 @@ import {
   FlashMessageSidebar,
   ViewFlashMessage
 } from "components";
-import {
-  useAdminDispatch,
-  useAdminState
-} from "context";
+import { useAdminState } from "context";
 import {
   apiPaths,
   theme
@@ -39,51 +36,79 @@ const LoadingMessage = styled.div`
   padding-bottom: 32px;
 `;
 
+const ServiceCallError = styled.div`
+  background-color: white;
+  border: 2px solid ${props => props.theme.errorColor};
+  border-radius: 10px;
+  display: flex;
+  height: fit-content;
+  margin: 2vw;
+  min-height: 10vh;
+  padding: 10px;
+  width: -webkit-fill-available;
+`;
+
+const StyledAnchor = styled.a`
+  padding-left: 5px;
+`;
+
 const ViewAddWrapper = styled.div`
   width: 100%;
 `;
 
 const FlashMessageContainer = () => {
 
-  const dispatch = useAdminDispatch();
   const state = useAdminState();
-  const [fetching, setFetching] = useState(true);
-  const [readOnly, setReadOnly] = useState(false);
-  const toggleFetching = value => setFetching(value);
-  const toggleReadOnly = () => setReadOnly(!readOnly);
+  const [flashMessageState, setFlashMessageState] = useState({
+    fetching: true,
+    flashMessage: "",
+    readOnly: false,
+    serviceCallError: null
+  });
 
   useEffect(() => {
     const req = { callflowId: 5 };
     myAxios.post(apiPaths.GET_FLASH_MESSAGE, req)
       .then(res => {
         const flashMessage = res.data;
-        dispatch({
-          type: "updateFlashMessage",
-          payload: flashMessage
-        });
+        let readOnly = false;
         if (flashMessage.length > 0) {
-          setReadOnly(true);
+          readOnly = true;
         }
-        setFetching(false);
+        setFlashMessageState({
+          ...flashMessageState,
+          flashMessage,
+          fetching: false,
+          readOnly
+        });
       })
       .catch(err => {
-        console.error("Failed to fetch flash message from DB", err);
-        setFetching(false);
+        const fetchError = "Failed to fetch flash message. Please refresh this page or submit a request via";
+        setFlashMessageState({
+          ...flashMessageState,
+          fetching: false,
+          readOnly: true,
+          serviceCallError: fetchError
+        });
+        console.error(fetchError, err);
       });
   }, []);
 
   return (
     <FlashMessageContainerWrapper>
       <FlashMessageSidebar />
-      {fetching ?
+      {flashMessageState.fetching ?
         <LoadingContainer>
           <LoadingMessage>Loading...</LoadingMessage>
           <CircularProgress size={theme.circularProgressSize} />
         </LoadingContainer>
-        : <ViewAddWrapper>
-          {readOnly ?
-            <ViewFlashMessage currentMessage={state.flashMessage} toggleFetching={toggleFetching} toggleReadOnly={toggleReadOnly} /> :
-            <AddFlashMessage toggleFetching={toggleFetching} toggleReadOnly={toggleReadOnly} />}
+        :
+        <ViewAddWrapper>
+          {flashMessageState.serviceCallError ?
+            <ServiceCallError data-testid="service-call-error">{flashMessageState.serviceCallError}<StyledAnchor href="https://forge.lmig.com/issues/servicedesk/customer/portal/570/create/10636">Jira Service Desk</StyledAnchor></ServiceCallError> : null}
+          {flashMessageState.readOnly ?
+            <ViewFlashMessage currentMessage={state.flashMessage} flashMessageState={flashMessageState} setFlashMessageState={setFlashMessageState} /> :
+            <AddFlashMessage flashMessageState={flashMessageState} setFlashMessageState={setFlashMessageState} />}
         </ViewAddWrapper>}
     </FlashMessageContainerWrapper>
   );

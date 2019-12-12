@@ -1,5 +1,4 @@
 export const initialState = {
-  flashMessage: "",
   managerContext: {
     managers: []
   },
@@ -89,11 +88,6 @@ export const reducer = (state, action) => {
               ? state.workerContext.selectedWorkers.filter(worker => worker.sid !== action.payload.sid)
               : [...state.workerContext.selectedWorkers, action.payload]
         }
-      };
-    case "updateFlashMessage":
-      return {
-        ...state,
-        flashMessage: action.payload
       };
     case "updateWorker":
       return {

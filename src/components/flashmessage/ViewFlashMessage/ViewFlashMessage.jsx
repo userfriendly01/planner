@@ -3,10 +3,7 @@ import {
   Delete
 } from "@material-ui/icons";
 import { Tooltip } from "@material-ui/core";
-import {
-  useAdminDispatch,
-  useAdminState
-} from "context";
+import { useAdminState } from "context";
 import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React from "react";
@@ -51,39 +48,49 @@ const IconWrapper = styled.div`
 export const ViewFlashMessage = props => {
 
   const {
-    toggleFetching,
-    toggleReadOnly
+    flashMessageState,
+    setFlashMessageState
   } = props;
 
-  const state = useAdminState();
-  const dispatch = useAdminDispatch();
-  const flashMessage = state.flashMessage;
-  const nNumber = state.userContext.pingIdentity.sub;
+  const flashMessage = flashMessageState.flashMessage;
+  const adminState = useAdminState();
+  const nNumber = adminState.userContext.pingIdentity.sub;
 
-  const editButtonOnClick = () => toggleReadOnly();
+  const editButtonOnClick = () => setFlashMessageState({
+    ...flashMessageState,
+    readOnly: false
+  });
 
   const deleteButtonOnClick = () => {
     const popUp = confirm("Are you sure you want to delete this flash message?");
     if (popUp === true) {
-      toggleFetching(true);
+      setFlashMessageState({
+        ...flashMessageState,
+        fetching: true,
+        serviceCallError: null
+      });
       const req = {
         callflowId: 5,
         flashMessage: "",
         updatedBy: nNumber
       };
       myAxios.post(apiPaths.UPDATE_FLASH_MESSAGE, req)
-        .then(res => {
-          console.log("response:", res); // TODO: handle the response
-          toggleFetching(false);
-          toggleReadOnly();
-          dispatch({
-            type: "updateFlashMessage",
-            payload: ""
+        .then(() => {
+          setFlashMessageState({
+            ...flashMessageState,
+            fetching: false,
+            flashMessage: "",
+            readOnly: false
           });
         })
         .catch(err => {
-          toggleFetching(false);
-          console.error("Failed to delete flash message", err);
+          const deleteError = "Failed to delete flash message. Please try again or submit a request via";
+          setFlashMessageState({
+            ...flashMessageState,
+            fetching: false,
+            serviceCallError: deleteError
+          });
+          console.error(deleteError, err);
         });
     }
   };
@@ -108,8 +115,8 @@ export const ViewFlashMessage = props => {
 };
 
 ViewFlashMessage.propTypes = {
-  toggleFetching: PropTypes.func.isRequired,
-  toggleReadOnly: PropTypes.func.isRequired
+  flashMessageState: PropTypes.object.isRequired,
+  setFlashMessageState: PropTypes.func.isRequired
 };
 
 export default ViewFlashMessage;
