@@ -1,8 +1,5 @@
 import { StyledButton } from "components";
-import {
-  useAdminDispatch,
-  useAdminState
-} from "context";
+import { useAdminState } from "context";
 import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
@@ -15,10 +12,10 @@ const AddMessageButton = styled(StyledButton)`
 `;
 
 const AddMessageInput = styled.textarea`
-  border: 2px solid ${props => props.validMessage ? props.theme.libertyDarkTeal : "red"};
+  border: 2px solid ${props => props.validMessage ? props.theme.libertyDarkTeal : props.theme.errorColor};
   border-radius: 10px;
-  min-height: 10vh;
   margin-bottom: 10px;
+  min-height: 10vh;
   outline: none;
   padding: 10px;
   resize: none;
@@ -45,7 +42,7 @@ const Helpers = styled.div`
 `;
 
 const SpecialCharacterWarning = styled.div`
-  color: red;
+  color: ${props => props.theme.errorColor};
   font-size: .875rem;
   font-weight: 800;
   letter-spacing: 0.007142857143rem;
@@ -61,27 +58,24 @@ const StyledForm = styled.form`
 
 const AddFlashMessage = props => {
 
-  const { toggleReadOnly } = props;
+  const {
+    flashMessageState,
+    setFlashMessageState
+  } = props;
 
-  const dispatch = useAdminDispatch();
-  const state = useAdminState();
-  const flashMessage = state.flashMessage;
-  const [charCount, setCharCount] = useState(0);
+  const [charCount, setCharCount] = useState(flashMessageState.flashMessage.length);
   const [validMessage, setValidMessage] = useState(true);
-
-  const nNumber = state.userContext.pingIdentity.sub;
-
-  console.log("nNumber = ", nNumber);
+  const adminState = useAdminState();
+  const nNumber = adminState.userContext.pingIdentity.sub;
 
   const handleChange = event => {
-    const message = event.target.value;
-    // console.log("message:", message);
-    dispatch({
-      type: "updateFlashMessage",
-      payload: message
+    const flashMessage = event.target.value;
+    setFlashMessageState({
+      ...flashMessageState,
+      flashMessage
     });
-    setCharCount(message.length);
-    isMessageValid(message) ? setValidMessage(true) : setValidMessage(false);
+    setCharCount(flashMessage.length);
+    isMessageValid(flashMessage) ? setValidMessage(true) : setValidMessage(false);
   };
 
   const isMessageValid = message => {
@@ -97,17 +91,32 @@ const AddFlashMessage = props => {
   const handleSubmit = () => {
     const popUp = confirm("Are you sure you want to create this flash message?");
     if (popUp === true) {
+      setFlashMessageState({
+        ...flashMessageState,
+        fetching: true
+      });
       const req = {
-        callflowId: 5,
-        flashMessage,
+        callFlowId: 5,
+        flashMessage: flashMessageState.flashMessage,
         updatedBy: nNumber
       };
-      myAxios.post(apiPaths.UPDATE_FLASH_MESSAGE, req)
-        .then(res => {
-          toggleReadOnly(true);
-          console.log("response:", res); // ???
+      myAxios.post(apiPaths.FLASH_MESSAGE, req)
+        .then(() => {
+          setFlashMessageState({
+            ...flashMessageState,
+            fetching: false,
+            readOnly: true
+          });
         })
-        .catch(err => console.error("Failed to upload flash message", err));
+        .catch(err => {
+          const uploadError = "Failed to upload flash message. Please try again or submit a request via";
+          setFlashMessageState({
+            ...flashMessageState,
+            fetching: false,
+            serviceCallError: uploadError
+          });
+          console.error(uploadError, err);
+        });
     }
   };
 
@@ -119,20 +128,22 @@ const AddFlashMessage = props => {
           maxLength="1024"
           onChange={handleChange}
           placeholder="Enter flash message here..."
-          type="text"  value={flashMessage}
-          validMessage={validMessage} />
+          type="text"
+          validMessage={validMessage}
+          value={flashMessageState.flashMessage} />
         <Helpers>
           {!validMessage ? <SpecialCharacterWarning>Special characters are not allowed</SpecialCharacterWarning> : <div></div>}
           <CharCount>Characters: {charCount} / 1024</CharCount>
         </Helpers>
-        <AddMessageButton disabled={flashMessage.length === 0 || !validMessage} onClick={handleSubmit}>Add Message</AddMessageButton>
+        <AddMessageButton disabled={flashMessageState.flashMessage.length === 0 || !validMessage} onClick={handleSubmit}>Add Message</AddMessageButton>
       </StyledForm>
     </AddMessageWrapper>
   );
 };
 
 AddFlashMessage.propTypes = {
-  toggleReadOnly: PropTypes.func.isRequired
+  flashMessageState: PropTypes.object.isRequired,
+  setFlashMessageState: PropTypes.func.isRequired
 };
 
 export default AddFlashMessage;

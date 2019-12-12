@@ -4,7 +4,10 @@ import {
   NavTabs
 } from "components";
 import { useAdminDispatch } from "context";
-import { apiPaths } from "globals";
+import {
+  apiPaths,
+  theme
+} from "globals";
 import React, {
   useEffect,
   useState
@@ -179,7 +182,7 @@ const App = () => {
     return (
       <Overlay>
         <LoadingMessage>Loading...</LoadingMessage>
-        <CircularProgress size={60} />
+        <CircularProgress size={theme.circularProgressSize} />
       </Overlay>
     );
   }
