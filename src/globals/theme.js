@@ -10,17 +10,20 @@ export const theme = {
       disabledColor: "#A7A7A7"
     }
   },
+  circularProgressSize: 60,
   errorColor: "rgb(201,40,45)",
+  libertyDarkGray: "#343741",
+  libertyDarkTeal: "#06748C",
+  libertyLightYellow: "#FFE280",
+  libertyMediumTeal: "#28A3AF",
+  libertyYellow: "#FFD000",
+  lineSeperatorColor: "#9E9E9E",
   resultsModal: {
     fadedError: "rgba(201,40,45,.10)",
     fadedSuccess: "rgba(108,149,60,.10)",
     fadedWarning: "rgba(236,172,0,.10)"
   },
   successColor: "rgb(108,149,60)",
-  libertyDarkGray: "#565656",
-  libertyLightYellow: "#FFE280",
-  libertyYellow: "#FFD000",
-  lineSeperatorColor: "#9E9E9E",
   tableRow: {
     alternateRowColor: "rgba(0,0,0,0.04)",
     borderColor: "#F5F5F5",
