@@ -72,13 +72,12 @@ describe("<AddFlashMessage />", () => {
       ...initialMockedFMState,
       flashMessage: validMessage
     };
-    test("should call mockSetFMState with valid flash message", () => {
+    test("should not display special character warning", () => {
       window.confirm = jest.fn();
       const rendered = renderComponent(initialMockedFMState);
       const input = rendered.getByTestId("add-message-input");
       act(() => fireEvent.change(input, { target: { value: validMessage }}));
       expect(rendered.container).not.toHaveTextContent("Special characters are not allowed");
-      expect(mockSetFMState).toHaveBeenCalledWith(validMessageState);
     });
     test("button should be enabled; when submit button is clicked should display confirmation alert", () => {
       const rendered = renderComponent(validMessageState);

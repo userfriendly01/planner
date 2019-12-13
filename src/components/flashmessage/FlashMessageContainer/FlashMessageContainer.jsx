@@ -4,7 +4,6 @@ import {
   FlashMessageSidebar,
   ViewFlashMessage
 } from "components";
-import { useAdminState } from "context";
 import {
   apiPaths,
   theme
@@ -58,7 +57,6 @@ const ViewAddWrapper = styled.div`
 
 const FlashMessageContainer = () => {
 
-  const state = useAdminState();
   const [flashMessageState, setFlashMessageState] = useState({
     fetching: true,
     flashMessage: "",
@@ -107,7 +105,7 @@ const FlashMessageContainer = () => {
           {flashMessageState.serviceCallError ?
             <ServiceCallError data-testid="service-call-error">{flashMessageState.serviceCallError}<StyledAnchor href="https://forge.lmig.com/issues/servicedesk/customer/portal/570/create/10636">Jira Service Desk</StyledAnchor></ServiceCallError> : null}
           {flashMessageState.readOnly ?
-            <ViewFlashMessage currentMessage={state.flashMessage} flashMessageState={flashMessageState} setFlashMessageState={setFlashMessageState} /> :
+            <ViewFlashMessage flashMessageState={flashMessageState} setFlashMessageState={setFlashMessageState} /> :
             <AddFlashMessage flashMessageState={flashMessageState} setFlashMessageState={setFlashMessageState} />}
         </ViewAddWrapper>}
     </FlashMessageContainerWrapper>

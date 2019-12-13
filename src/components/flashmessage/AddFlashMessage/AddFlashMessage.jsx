@@ -63,21 +63,6 @@ const AddFlashMessage = props => {
     setFlashMessageState
   } = props;
 
-  const [charCount, setCharCount] = useState(flashMessageState.flashMessage.length);
-  const [validMessage, setValidMessage] = useState(true);
-  const adminState = useAdminState();
-  const nNumber = adminState.userContext.pingIdentity.sub;
-
-  const handleChange = event => {
-    const flashMessage = event.target.value;
-    setFlashMessageState({
-      ...flashMessageState,
-      flashMessage
-    });
-    setCharCount(flashMessage.length);
-    isMessageValid(flashMessage) ? setValidMessage(true) : setValidMessage(false);
-  };
-
   const isMessageValid = message => {
     // XML "special characters" - https://docs.oracle.com/cd/A97335_02/apps.102/bc4j/developing_bc_projects/obcCustomXml.htm
     const specialCharacters = RegExp(/<|>|&|"|'/);
@@ -88,6 +73,16 @@ const AddFlashMessage = props => {
     }
   };
 
+  const adminState = useAdminState();
+  const nNumber = adminState.userContext.pingIdentity.sub;
+
+  const [tempFlashMessage, setTempFlashMessage] = useState(flashMessageState.flashMessage);
+
+  const charCount = tempFlashMessage.length;
+  const validMessage = isMessageValid(tempFlashMessage);
+
+  const handleChange = event => setTempFlashMessage(event.target.value);
+
   const handleSubmit = () => {
     const popUp = confirm("Are you sure you want to create this flash message?");
     if (popUp === true) {
@@ -97,14 +92,15 @@ const AddFlashMessage = props => {
       });
       const req = {
         callFlowId: 5,
-        flashMessage: flashMessageState.flashMessage,
+        flashMessage: tempFlashMessage,
         updatedBy: nNumber
       };
       myAxios.post(apiPaths.FLASH_MESSAGE, req)
-        .then(() => {
+        .then(res => {
           setFlashMessageState({
             ...flashMessageState,
             fetching: false,
+            flashMessage: JSON.parse(res.config.data).flashMessage,
             readOnly: true
           });
         })
@@ -130,12 +126,12 @@ const AddFlashMessage = props => {
           placeholder="Enter flash message here..."
           type="text"
           validMessage={validMessage}
-          value={flashMessageState.flashMessage} />
+          value={tempFlashMessage} />
         <Helpers>
           {!validMessage ? <SpecialCharacterWarning>Special characters are not allowed</SpecialCharacterWarning> : <div></div>}
           <CharCount>Characters: {charCount} / 1024</CharCount>
         </Helpers>
-        <AddMessageButton disabled={flashMessageState.flashMessage.length === 0 || !validMessage} onClick={handleSubmit}>Add Message</AddMessageButton>
+        <AddMessageButton disabled={tempFlashMessage.length === 0 || !validMessage} onClick={handleSubmit}>Add Message</AddMessageButton>
       </StyledForm>
     </AddMessageWrapper>
   );
