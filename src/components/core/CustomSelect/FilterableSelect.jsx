@@ -26,11 +26,15 @@ const FilterableSelect = props => {
     return optionsArray;
   };
 
+  const handleChange = skillObj => {
+    updateSkill(skillObj.value);
+  };
+
   return (
     <Wrapper>
       <Select
         clearable={true}
-        onChange={() => updateSkill(event.target.innerText)}
+        onChange={handleChange}
         onSelectResetsInput={true}
         options={getOptions(optionsList)}
         searchable={true}
