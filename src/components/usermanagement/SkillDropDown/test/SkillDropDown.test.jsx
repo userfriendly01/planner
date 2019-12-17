@@ -36,13 +36,6 @@ describe("<SkillDropDown />", () => {
         optionsList: skills,
         value: "skill3"
       });
-      console.log(FilterableSelect.mock.calls[0][0]);
-      const optionsDisplayFunc = FilterableSelect.mock.calls[0][0].optionsDisplayFunc;
-      expect(optionsDisplayFunc({ skill: "whatever" })).toEqual({
-        display: "whatever",
-        key: "whatever",
-        value: "whatever"
-      });
     });
   });
   describe("changes made to the add skills drop down", () => {
@@ -50,8 +43,8 @@ describe("<SkillDropDown />", () => {
       renderComponent();
       const selectedValue = JSON.stringify(skills[1]);
       act(() => {
-        const updateValue = FilterableSelect.mock.calls[0][0].updateValue;
-        updateValue(selectedValue);
+        const updateSkill = FilterableSelect.mock.calls[0][0].updateSkill;
+        updateSkill(selectedValue);
       });
       expect(mockUpdateSkill).toHaveBeenCalledWith(selectedValue);
     });
