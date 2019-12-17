@@ -1,5 +1,5 @@
 import SkillDropDown from "../SkillDropDown";
-import { SimpleSelect } from "components";
+import { FilterableSelect } from "components";
 import React from "react";
 import { act } from "react-dom/test-utils";
 import {
@@ -11,7 +11,7 @@ import {
 
 jest.mock("components", () => ({
   __esModule: true,
-  SimpleSelect: jest.fn()
+  FilterableSelect: jest.fn()
 }));
 
 describe("<SkillDropDown />", () => {
@@ -24,19 +24,20 @@ describe("<SkillDropDown />", () => {
   const mockUpdateSkill = jest.fn();
   const renderComponent = () => render(<SkillDropDown taskrouterSkills={skills} skillValue={"skill3"} updateSkill={mockUpdateSkill} />);
   beforeEach(() => {
-    setupMockedComponents({ SimpleSelect });
+    setupMockedComponents({ FilterableSelect });
     mockUpdateSkill.mockClear();
   });
   describe("initial state", () => {
-    test("should render SimpleSelect with correct props", () => {
+    test("should render FilterableSelect with correct props", () => {
       const rendered = renderComponent();
-      expect(SimpleSelect.mock.calls.length).toBe(1);
-      expectMockedComponent(rendered, { SimpleSelect });
-      expectOnlyPassedProps(SimpleSelect, {
+      expect(FilterableSelect.mock.calls.length).toBe(1);
+      expectMockedComponent(rendered, { FilterableSelect });
+      expectOnlyPassedProps(FilterableSelect, {
         optionsList: skills,
         value: "skill3"
       });
-      const optionsDisplayFunc = SimpleSelect.mock.calls[0][0].optionsDisplayFunc;
+      console.log(FilterableSelect.mock.calls[0][0]);
+      const optionsDisplayFunc = FilterableSelect.mock.calls[0][0].optionsDisplayFunc;
       expect(optionsDisplayFunc({ skill: "whatever" })).toEqual({
         display: "whatever",
         key: "whatever",
@@ -49,7 +50,7 @@ describe("<SkillDropDown />", () => {
       renderComponent();
       const selectedValue = JSON.stringify(skills[1]);
       act(() => {
-        const updateValue = SimpleSelect.mock.calls[0][0].updateValue;
+        const updateValue = FilterableSelect.mock.calls[0][0].updateValue;
         updateValue(selectedValue);
       });
       expect(mockUpdateSkill).toHaveBeenCalledWith(selectedValue);

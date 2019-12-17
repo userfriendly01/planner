@@ -7,7 +7,7 @@ const Wrapper = styled.div`
   width: 200px;
   height: ${props => props.theme.inputHeight}px;
 `;
-const FilterableSelectReact = props => {
+const FilterableSelect = props => {
   const {
     optionsList,
     skillValue,
@@ -30,7 +30,7 @@ const FilterableSelectReact = props => {
     <Wrapper>
       <Select
         clearable={true}
-        onChange={updateSkill}
+        onChange={() => updateSkill(event.target.innerText)}
         onSelectResetsInput={true}
         options={getOptions(optionsList)}
         searchable={true}
@@ -40,11 +40,11 @@ const FilterableSelectReact = props => {
   );
 };
 
-FilterableSelectReact.propTypes = {
+FilterableSelect.propTypes = {
   optionsList: PropTypes.array.isRequired,
   skillValue: PropTypes.object,
   updateSkill: PropTypes.func.isRequired
 };
 
 
-export default FilterableSelectReact;
+export default FilterableSelect;
