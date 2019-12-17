@@ -67,6 +67,6 @@ describe("<FilterableSelect />", () => {
     const onChange = Select.mock.calls[0][0].onChange;
     const changeTo = options[1];
     onChange(changeTo);
-    expect(updateSkillFunc).toHaveBeenCalledWith(changeTo.value);
+    expect(updateSkillFunc).toHaveBeenCalledWith(changeTo);
   });
 });

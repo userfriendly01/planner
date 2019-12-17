@@ -14,26 +14,17 @@ const FilterableSelect = props => {
   } = props;
 
   const getOptions = optionsList => {
-    const optionsArray = [];
-    optionsList.map(option => {
-      const optionObject = {
-        value: option.skill,
-        label: option.skill
-      };
-      optionsArray.push(optionObject);
-    });
-    return optionsArray;
-  };
-
-  const handleChange = skillObj => {
-    updateSkill(skillObj.value);
+    return optionsList.map(option => ({
+      value: option.skill,
+      label: option.skill
+    }));
   };
 
   return (
     <Wrapper>
       <Select
         clearable={true}
-        onChange={handleChange}
+        onChange={updateSkill}
         onSelectResetsInput={true}
         options={getOptions(optionsList)}
         searchable={true}
