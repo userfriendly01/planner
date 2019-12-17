@@ -59,8 +59,7 @@ describe("<FilterableSelect />", () => {
       clearable: true,
       onSelectResetsInput: true,
       options: options,
-      searchable: true,
-      value: ""
+      searchable: true
     });
   });
 

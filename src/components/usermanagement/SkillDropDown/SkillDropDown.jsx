@@ -4,7 +4,6 @@ import React from "react";
 
 const SkillDropDown = props => {
   const {
-    skillValue,
     taskrouterSkills,
     updateSkill
   } = props;
@@ -13,7 +12,6 @@ const SkillDropDown = props => {
     <FilterableSelect
       optionsList={taskrouterSkills}
       updateSkill={updateSkill}
-      value={skillValue}
     />
   );
 };
@@ -25,7 +23,6 @@ SkillDropDown.propTypes = {
       levels: PropTypes.arrayOf(PropTypes.number)
     })
   ).isRequired,
-  skillValue: PropTypes.string,
   updateSkill: PropTypes.func.isRequired
 };
 

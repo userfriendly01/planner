@@ -33,8 +33,7 @@ describe("<SkillDropDown />", () => {
       expect(FilterableSelect.mock.calls.length).toBe(1);
       expectMockedComponent(rendered, { FilterableSelect });
       expectOnlyPassedProps(FilterableSelect, {
-        optionsList: skills,
-        value: "skill3"
+        optionsList: skills
       });
     });
   });

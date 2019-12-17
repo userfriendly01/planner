@@ -10,7 +10,6 @@ const Wrapper = styled.div`
 const FilterableSelect = props => {
   const {
     optionsList,
-    skillValue,
     updateSkill
   } = props;
 
@@ -38,7 +37,6 @@ const FilterableSelect = props => {
         onSelectResetsInput={true}
         options={getOptions(optionsList)}
         searchable={true}
-        value={skillValue}
       />
     </Wrapper>
   );
@@ -46,7 +44,6 @@ const FilterableSelect = props => {
 
 FilterableSelect.propTypes = {
   optionsList: PropTypes.array.isRequired,
-  skillValue: PropTypes.object,
   updateSkill: PropTypes.func.isRequired
 };
 
