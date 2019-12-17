@@ -1,7 +1,6 @@
-//imports
+import FilterableSelect from "../FilterableSelect";
 import React from "react";
 import Select from "react-select";
-import FilterableSelect from "../FilterableSelect";
 import {
   expectMockedComponent,
   expectOnlyPassedProps,
