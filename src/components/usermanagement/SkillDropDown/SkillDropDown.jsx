@@ -1,26 +1,24 @@
-import { SimpleSelect } from "components";
+import { FilterableSelect } from "components";
 import PropTypes from "prop-types";
 import React from "react";
 
 const SkillDropDown = props => {
   const {
-    skillValue,
     taskrouterSkills,
     updateSkill
   } = props;
 
+  const getSkillOptions = optionsList => {
+    return optionsList.map(option => ({
+      value: option.skill,
+      label: option.skill
+    }));
+  };
+
   return (
-    <SimpleSelect
-      optionsList={taskrouterSkills}
-      optionsDisplayFunc={skillObj => {
-        return {
-          display: skillObj.skill,
-          key: skillObj.skill,
-          value: skillObj.skill
-        };
-      }}
+    <FilterableSelect
+      optionsList={getSkillOptions(taskrouterSkills)}
       updateValue={updateSkill}
-      value={skillValue}
     />
   );
 };
@@ -32,7 +30,6 @@ SkillDropDown.propTypes = {
       levels: PropTypes.arrayOf(PropTypes.number)
     })
   ).isRequired,
-  skillValue: PropTypes.string,
   updateSkill: PropTypes.func.isRequired
 };
 

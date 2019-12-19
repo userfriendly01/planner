@@ -147,7 +147,7 @@ describe("<DefaultSkillSelector />", () => {
         expect(rendered.container).not.toHaveTextContent("skillC");
         act(() => {
           const { updateSkill } = getMockedComponentProps(SkillDropDown);
-          updateSkill("skillC");
+          updateSkill({ value: "skillC" } );
         });
         act(() => {
           fireEvent.click(getAddSkillButton(rendered));
@@ -189,7 +189,7 @@ describe("<DefaultSkillSelector />", () => {
         const rendered = renderComponent(defaultSkills);
         act(() => {
           const updateSkill = SkillDropDown.mock.calls[0][0].updateSkill;
-          updateSkill("skillD");
+          updateSkill({ value: "skillD" });
         });
         act(() => {
           fireEvent.click(getAddSkillButton(rendered));

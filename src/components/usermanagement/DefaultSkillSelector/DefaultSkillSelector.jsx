@@ -118,7 +118,7 @@ const DefaultSkillSelector = props => {
   const [newSkill, setNewSkill] = useState(defaultNewSkill);
 
   const newSkillChanged = skill => {
-    const skillObj = findTaskRouterSkill(skill, taskrouterSkills);
+    const skillObj = findTaskRouterSkill(skill.value, taskrouterSkills);
     setNewSkill({
       levels: skillObj.levels,
       levelSelected: skillObj.levels.length > 0 ? skillObj.levels[0] : null,
