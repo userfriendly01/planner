@@ -10,23 +10,16 @@ const Wrapper = styled.div`
 const FilterableSelect = props => {
   const {
     optionsList,
-    updateSkill
+    updateValue
   } = props;
-
-  const getOptions = optionsList => {
-    return optionsList.map(option => ({
-      value: option.skill,
-      label: option.skill
-    }));
-  };
 
   return (
     <Wrapper>
       <Select
         clearable={true}
-        onChange={updateSkill}
+        onChange={updateValue}
         onSelectResetsInput={true}
-        options={getOptions(optionsList)}
+        options={optionsList}
         searchable={true}
       />
     </Wrapper>
@@ -35,7 +28,7 @@ const FilterableSelect = props => {
 
 FilterableSelect.propTypes = {
   optionsList: PropTypes.array.isRequired,
-  updateSkill: PropTypes.func.isRequired
+  updateValue: PropTypes.func.isRequired
 };
 
 

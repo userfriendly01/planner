@@ -21,6 +21,26 @@ describe("<SkillDropDown />", () => {
     { skill: "skill1" },
     { skill: "skill4" }
   ];
+
+  const options = [
+    {
+      label: "skill3",
+      value: "skill3"
+    },
+    {
+      label: "skill2",
+      value: "skill2"
+    },
+    {
+      label: "skill1",
+      value: "skill1"
+    },
+    {
+      label: "skill4",
+      value: "skill4"
+    }
+  ];
+
   const mockUpdateSkill = jest.fn();
   const renderComponent = () => render(<SkillDropDown taskrouterSkills={skills} skillValue={"skill3"} updateSkill={mockUpdateSkill} />);
   beforeEach(() => {
@@ -33,17 +53,17 @@ describe("<SkillDropDown />", () => {
       expect(FilterableSelect.mock.calls.length).toBe(1);
       expectMockedComponent(rendered, { FilterableSelect });
       expectOnlyPassedProps(FilterableSelect, {
-        optionsList: skills
+        optionsList: options
       });
     });
   });
   describe("changes made to the add skills drop down", () => {
-    test("should call updateSkill function with selected value", () => {
+    test("should call updateValue function with selected value", () => {
       renderComponent();
       const selectedValue = JSON.stringify(skills[1]);
       act(() => {
-        const updateSkill = FilterableSelect.mock.calls[0][0].updateSkill;
-        updateSkill(selectedValue);
+        const updateValue = FilterableSelect.mock.calls[0][0].updateValue;
+        updateValue(selectedValue);
       });
       expect(mockUpdateSkill).toHaveBeenCalledWith(selectedValue);
     });

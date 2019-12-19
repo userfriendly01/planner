@@ -8,10 +8,17 @@ const SkillDropDown = props => {
     updateSkill
   } = props;
 
+  const getSkillOptions = optionsList => {
+    return optionsList.map(option => ({
+      value: option.skill,
+      label: option.skill
+    }));
+  };
+
   return (
     <FilterableSelect
-      optionsList={taskrouterSkills}
-      updateSkill={updateSkill}
+      optionsList={getSkillOptions(taskrouterSkills)}
+      updateValue={updateSkill}
     />
   );
 };

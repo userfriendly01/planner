@@ -15,21 +15,6 @@ jest.mock("react-select", () => ({
 
 const updateSkillFunc = jest.fn();
 
-const skills = [
-  {
-    skill: "bscCbs",
-    level: [1,2,3]
-  },
-  {
-    skill: "aisg-l1",
-    level: [1,2,3]
-  },
-  {
-    skill: "FARM",
-    level: [1,2,3]
-  }
-];
-
 const options = [
   {
     value: "bscCbs",
@@ -52,7 +37,7 @@ describe("<FilterableSelect />", () => {
   });
 
   test("Test the FilterableSelect renders with the correct props", () => {
-    const rendered = render(<FilterableSelect optionsList={skills} skillValue="" updateSkill={updateSkillFunc}/>);
+    const rendered = render(<FilterableSelect optionsList={options} updateValue={updateSkillFunc}/>);
     expectMockedComponent(rendered, { Select }, 1);
     expectOnlyPassedProps(Select, {
       clearable: true,
@@ -63,7 +48,7 @@ describe("<FilterableSelect />", () => {
   });
 
   test("Test the FilterableSelect value should change on selection of a skill", () => {
-    render(<FilterableSelect optionsList={skills} skillValue="" updateSkill={updateSkillFunc}/>);
+    render(<FilterableSelect optionsList={options} updateValue={updateSkillFunc}/>);
     const onChange = Select.mock.calls[0][0].onChange;
     const changeTo = options[1];
     onChange(changeTo);
