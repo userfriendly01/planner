@@ -139,7 +139,7 @@ describe("filterByNameSkillsAndOffice()", () => {
     expect(filterByNameAndSkills(goodWorkerData, "Apache")).toEqual(true);
   });
 
-  test("should find the name", () => {
+  test("should find the office", () => {
     expect(filterByNameAndSkills(goodWorkerData, "Office")).toEqual(true);
   });
 });
