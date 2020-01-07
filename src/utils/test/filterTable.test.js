@@ -1,6 +1,6 @@
 import { filterByNameAndSkills } from "utils";
 
-describe("filterByNameAndSkills()", () => {
+describe("filterByNameSkillsAndOffice()", () => {
 
   const goodWorkerData = {
     attributes: {
@@ -16,7 +16,8 @@ describe("filterByNameAndSkills()", () => {
         levels: {
           "466": 3
         }
-      }
+      },
+      office_location_name: "Office 4"
     },
     id: "N666"
   };
@@ -29,7 +30,8 @@ describe("filterByNameAndSkills()", () => {
           "466": 3
         }
       },
-      full_name: "Aldo the Apache"
+      full_name: "Aldo the Apache",
+      office_location_name: "Office 4"
     }
   };
 
@@ -41,7 +43,8 @@ describe("filterByNameAndSkills()", () => {
         levels: {
           "466": 3
         }
-      }
+      },
+      office_location_name: "Office 4"
     }
   };
 
@@ -58,8 +61,28 @@ describe("filterByNameAndSkills()", () => {
         levels: {
           "466": 3
         }
-      }
+      },
+      office_location_name: "Office 4"
     }
+  };
+
+  const noOfficeData = {
+    attributes: {
+      default_skills: {
+        skills: ["466", "psuUm"],
+        levels: {
+          "466": 3
+        }
+      },
+      full_name: "Aldo the Apache",
+      routing: {
+        skills: ["test", "fake"],
+        levels: {
+          "466": 3
+        }
+      }
+    },
+    id: "N666"
   };
 
   const noAttributesData = {};
@@ -88,6 +111,10 @@ describe("filterByNameAndSkills()", () => {
     expect(filterByNameAndSkills(noNameData, "466")).toEqual(true);
   });
 
+  test("if there is no office data, but the value is found elsewhere, we should return true", () => {
+    expect(filterByNameAndSkills(noOfficeData, "466")).toEqual(true);
+  });
+
   test("should find a skill in the routing skill list", () => {
     expect(filterByNameAndSkills(goodWorkerData, "466")).toEqual(true);
   });
@@ -110,5 +137,9 @@ describe("filterByNameAndSkills()", () => {
 
   test("should find the name", () => {
     expect(filterByNameAndSkills(goodWorkerData, "Apache")).toEqual(true);
+  });
+
+  test("should find the office", () => {
+    expect(filterByNameAndSkills(goodWorkerData, "Office")).toEqual(true);
   });
 });
