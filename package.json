@@ -59,5 +59,9 @@
   "dependencies": {
     "express": "^4.16.4",
     "express-healthcheck": "^0.1.0"
+  },
+  "engines": {
+    "node": "10.15.3",
+    "npm": "6.4.1"
   }
 }
