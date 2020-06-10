@@ -147,9 +147,14 @@ const AddUserModal = props => {
       saveUser: true
     });
     const parsedManager = JSON.parse(form.manager);
+    // see this wiki page for attributes that will be automatically updated through SSO
+    // https://forge.lmig.com/wiki/display/CICCT/Twilio+Flex+SSO+Saml2+Integration
     const attributes = {
       did: `+1${form.outgoing.replace(/[\D]/g, "")}`,
       email: form.lookupInfo.email,
+      email_address: form.lookupInfo.email,
+      emp_first_name: form.lookupInfo.firstName,
+      emp_last_name: form.lookupInfo.lastName,
       full_name: `${form.lookupInfo.firstName} ${form.lookupInfo.lastName}`,
       manager_first_name: parsedManager.manager_first_name,
       manager_last_name: parsedManager.manager_last_name,

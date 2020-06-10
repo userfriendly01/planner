@@ -75,7 +75,7 @@ const initialTestState = {
   }
 };
 
-const mockSuccessfulResponse = [
+const employeeLookupResponse = [
   {
     person: {
       data: {
@@ -91,6 +91,13 @@ const mockSuccessfulResponse = [
   }
 ];
 
+const formOptions = {
+  did: "6034567890",
+  manager: managerList[0],
+  nNumber: "n1234567",
+  profileId: profileList[0].profile_id
+};
+
 const mockHandleClose = jest.fn();
 
 const renderComponent = () => {
@@ -100,6 +107,8 @@ const renderComponent = () => {
 describe("<AddUserModal />", () => {
 
   beforeEach(() => {
+    axiosMock.reset();
+    jest.clearAllMocks();
     setupMockedComponents({
       StyledButton,
       OutlinedSelect,
@@ -108,8 +117,6 @@ describe("<AddUserModal />", () => {
       ModalOverlay,
       ModalPhoneNumber
     });
-    mockHandleClose.mockClear();
-    PaperContainer.mockClear();
     PaperContainer.mockImplementation(props => <div>{props.children}</div>);
   });
 
@@ -254,69 +261,82 @@ describe("<AddUserModal />", () => {
       expect(newValue).toEqual("12345678");
     });
 
-    test("changes made to the n number field - valid n number - good response and when click ModalHelperText close button", done => {
-      axiosMock.onGet(apiPaths.EMPLOYEE_LOOKUP("1234567")).reply(200, mockSuccessfulResponse);
-      renderComponent();
-      // Next I'll call the update function, which should update the form and cause a re-render.
-      act(() => {
-        const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
-        updateValue("n1234567");
-        return Promise.resolve();
-      }).then(() => {
-        expect(ModalNNumber.mock.calls.length).toBe(5);
-        expect(ModalNNumber.mock.calls[1][0].nNumber).toEqual("n1234567");
-        expect(ModalNNumber.mock.calls[2][0].loading).toEqual(true);
-        expect(ModalNNumber.mock.calls[3][0].disabled).toEqual(true);
-        const modalHelperTextProps = getMockedComponentProps(ModalHelperText, getLastInstanceCalled(ModalHelperText));
-        expect(modalHelperTextProps.error).toBe(false);
-        expect(modalHelperTextProps.message).toBe("Frank Rizzo");
-        expect(ModalNNumber.mock.calls[getLastInstanceCalled(ModalNNumber)][0].loading).toEqual(false);
-        act(() => modalHelperTextProps.clearUser());
-        const modalNNumberProps = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber));
-        expect(modalNNumberProps.nNumber).toBe("n");
-        done();
-      });
-    });
+    describe("nNumber is valid", () => {
+      const nNumber = "n1234567";
 
-    test("changes made to the n number field - valid n number - user not found", done => {
-      axiosMock.onGet(apiPaths.EMPLOYEE_LOOKUP("1234567")).reply(200, []);
-      renderComponent();
-      // Next I'll call the update function, which should update the form and cause a re-render.
-      act(() => {
-        const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
-        updateValue("n1234567");
-        return Promise.resolve();
-      }).then(() => {
-        expect(ModalNNumber.mock.calls.length).toBe(5);
-        expect(ModalNNumber.mock.calls[1][0].nNumber).toEqual("n1234567");
-        expect(ModalNNumber.mock.calls[2][0].loading).toEqual(true);
-        expect(ModalNNumber.mock.calls[3][0].disabled).toEqual(false);
-        expect(ModalNNumber.mock.calls[4][0].loading).toEqual(false);
-        const modalHelperTextProps = getMockedComponentProps(ModalHelperText, getLastInstanceCalled(ModalHelperText));
-        expect(modalHelperTextProps.error).toBe(true);
-        expect(modalHelperTextProps.message).toBe("User not found");
-        done();
-      });
-    });
+      describe("service call for employeeLookup succeeds", () => {
+        beforeEach(() => axiosMock.onGet(apiPaths.EMPLOYEE_LOOKUP(nNumber.substring(1))).reply(200, employeeLookupResponse));
 
-    test("changes made to the n number field - valid n number - service error", done => {
-      axiosMock.onGet(apiPaths.EMPLOYEE_LOOKUP("1234567")).networkError();
-      renderComponent();
-      // Next I'll call the update function, which should update the form and cause a re-render.
-      act(() => {
-        const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
-        updateValue("n1234567");
-        return Promise.resolve();
-      }).then(() => {
-        expect(ModalNNumber.mock.calls.length).toBe(5);
-        expect(ModalNNumber.mock.calls[1][0].nNumber).toEqual("n1234567");
-        expect(ModalNNumber.mock.calls[2][0].loading).toEqual(true);
-        expect(ModalNNumber.mock.calls[3][0].disabled).toEqual(false);
-        expect(ModalNNumber.mock.calls[4][0].loading).toEqual(false);
-        const modalHelperTextProps = getMockedComponentProps(ModalHelperText, getLastInstanceCalled(ModalHelperText));
-        expect(modalHelperTextProps.error).toBe(true);
-        expect(modalHelperTextProps.message).toBe("Error calling lookup service: Network Error");
-        done();
+        test("changes made to the n number field - valid n number - good response and when click ModalHelperText close button", done => {
+          renderComponent();
+          // Next I'll call the update function, which should update the form and cause a re-render.
+          act(() => {
+            const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
+            updateValue(nNumber);
+            return Promise.resolve();
+          }).then(() => {
+            expect(ModalNNumber.mock.calls.length).toBe(5);
+            expect(ModalNNumber.mock.calls[1][0].nNumber).toEqual(nNumber);
+            expect(ModalNNumber.mock.calls[2][0].loading).toEqual(true);
+            expect(ModalNNumber.mock.calls[3][0].disabled).toEqual(true);
+            const modalHelperTextProps = getMockedComponentProps(ModalHelperText, getLastInstanceCalled(ModalHelperText));
+            expect(modalHelperTextProps.error).toBe(false);
+            expect(modalHelperTextProps.message).toBe("Frank Rizzo");
+            expect(ModalNNumber.mock.calls[getLastInstanceCalled(ModalNNumber)][0].loading).toEqual(false);
+            act(() => modalHelperTextProps.clearUser());
+            const modalNNumberProps = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber));
+            expect(modalNNumberProps.nNumber).toBe("n");
+            done();
+          });
+        });
+      });
+
+      describe("service call for employeeLookup succeeds but user not found", () => {
+        beforeEach(() => axiosMock.onGet(apiPaths.EMPLOYEE_LOOKUP(nNumber.substring(1))).reply(200, []));
+
+        test("changes made to the n number field - user not found", done => {
+          renderComponent();
+          // Next I'll call the update function, which should update the form and cause a re-render.
+          act(() => {
+            const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
+            updateValue(nNumber);
+            return Promise.resolve();
+          }).then(() => {
+            expect(ModalNNumber.mock.calls.length).toBe(5);
+            expect(ModalNNumber.mock.calls[1][0].nNumber).toEqual(nNumber);
+            expect(ModalNNumber.mock.calls[2][0].loading).toEqual(true);
+            expect(ModalNNumber.mock.calls[3][0].disabled).toEqual(false);
+            expect(ModalNNumber.mock.calls[4][0].loading).toEqual(false);
+            const modalHelperTextProps = getMockedComponentProps(ModalHelperText, getLastInstanceCalled(ModalHelperText));
+            expect(modalHelperTextProps.error).toBe(true);
+            expect(modalHelperTextProps.message).toBe("User not found");
+            done();
+          });
+        });
+      });
+
+      describe("service call for employeeLookup fails", () => {
+        beforeEach(() => axiosMock.onGet(apiPaths.EMPLOYEE_LOOKUP(nNumber.substring(1))).networkError());
+
+        test("changes made to the n number field - valid n number - service error", done => {
+          renderComponent();
+          // Next I'll call the update function, which should update the form and cause a re-render.
+          act(() => {
+            const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
+            updateValue(nNumber);
+            return Promise.resolve();
+          }).then(() => {
+            expect(ModalNNumber.mock.calls.length).toBe(5);
+            expect(ModalNNumber.mock.calls[1][0].nNumber).toEqual(nNumber);
+            expect(ModalNNumber.mock.calls[2][0].loading).toEqual(true);
+            expect(ModalNNumber.mock.calls[3][0].disabled).toEqual(false);
+            expect(ModalNNumber.mock.calls[4][0].loading).toEqual(false);
+            const modalHelperTextProps = getMockedComponentProps(ModalHelperText, getLastInstanceCalled(ModalHelperText));
+            expect(modalHelperTextProps.error).toBe(true);
+            expect(modalHelperTextProps.message).toBe("Error calling lookup service: Network Error");
+            done();
+          });
+        });
       });
     });
   });
@@ -345,41 +365,48 @@ describe("<AddUserModal />", () => {
 
     describe("if the form becomes valid", () => {
 
+      beforeEach(() => {
+        axiosMock.onGet(apiPaths.EMPLOYEE_LOOKUP(formOptions.nNumber.substring(1))).reply(200, employeeLookupResponse);
+      });
+
       describe("service call to add worker succeeds", () => {
-        beforeEach(() => axiosMock.onGet(apiPaths.EMPLOYEE_LOOKUP("1234567")).reply(200, mockSuccessfulResponse));
+
+        const twilioWorkerResponse = {
+          "accountSid": "AC240dd0bc4d65ef2ab1c390f0fb9146da",
+          "activityName": "Offline",
+          "activitySid": "WA98fb57313627153d707a17f549566046",
+          "attributes": "{\"did\":\"+16039998888\",\"email\":\"Chris.Plankey@libertymutual.com\",\"full_name\":\"Chris Plankey\",\"manager_first_name\":\"Joanna\",\"manager_last_name\":\"Makowiecka\",\"manager_n_number\":\"n0360870\",\"n_number\":\"n0287898\",\"office_location_name\":\"Dover, NH-150 Liberty Way\",\"office_location_number\":\"016C\",\"primary_dept_name\":\"016C-12160 GRM US PL - Agent & Partners\",\"primary_dept_number\":\"12160\",\"profile_id\":\"0\"}",
+          "available": false,
+          "dateCreated": "2019-09-25T20:58:26.000Z",
+          "dateStatusChanged": "2019-09-25T20:58:26.000Z",
+          "dateUpdated": "2019-09-26T16:33:44.000Z",
+          "friendlyName": "n0287898",
+          "sid": "WK2a1bf01df1bb7a50aac8429e5467e0ee",
+          "workspaceSid": "WSde21cfcdde7bcb69cd82f1c060e5dba0",
+          "url": "https://taskrouter.twilio.com/v1/Workspaces/WSde21cfcdde7bcb69cd82f1c060e5dba0/Workers/WK2a1bf01df1bb7a50aac8429e5467e0ee"
+        };
+
+        beforeEach(() => {
+          axiosMock.onPost(apiPaths.CREATE_WORKER).reply(200, twilioWorkerResponse);
+        });
 
         test("when save button is clicked we should clear the user, which should disable 'Add User', and dispatch addWorker", done => {
-          const twilioWorker = {
-            "accountSid": "AC240dd0bc4d65ef2ab1c390f0fb9146da",
-            "activityName": "Offline",
-            "activitySid": "WA98fb57313627153d707a17f549566046",
-            "attributes": "{\"did\":\"+16039998888\",\"email\":\"Chris.Plankey@libertymutual.com\",\"full_name\":\"Chris Plankey\",\"manager_first_name\":\"Joanna\",\"manager_last_name\":\"Makowiecka\",\"manager_n_number\":\"n0360870\",\"n_number\":\"n0287898\",\"office_location_name\":\"Dover, NH-150 Liberty Way\",\"office_location_number\":\"016C\",\"primary_dept_name\":\"016C-12160 GRM US PL - Agent & Partners\",\"primary_dept_number\":\"12160\",\"profile_id\":\"0\"}",
-            "available": false,
-            "dateCreated": "2019-09-25T20:58:26.000Z",
-            "dateStatusChanged": "2019-09-25T20:58:26.000Z",
-            "dateUpdated": "2019-09-26T16:33:44.000Z",
-            "friendlyName": "n0287898",
-            "sid": "WK2a1bf01df1bb7a50aac8429e5467e0ee",
-            "workspaceSid": "WSde21cfcdde7bcb69cd82f1c060e5dba0",
-            "url": "https://taskrouter.twilio.com/v1/Workspaces/WSde21cfcdde7bcb69cd82f1c060e5dba0/Workers/WK2a1bf01df1bb7a50aac8429e5467e0ee"
-          };
-          axiosMock.onPost(apiPaths.CREATE_WORKER).reply(200, twilioWorker);
           const rendered = renderComponent();
           act(() => {
             const updateManager = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect) - 1).updateValue;
-            updateManager(JSON.stringify(managerList[0]));
+            updateManager(JSON.stringify(formOptions.manager));
           });
           act(() => {
             const updateProfile = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect)).updateValue;
-            updateProfile(profileList[0].profile_id);
+            updateProfile(formOptions.profileId);
           });
           act(() => {
             const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).updateValue;
-            updatePhone("6034567890");
+            updatePhone(formOptions.did);
           });
           act(() => {
             const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).updateValue;
-            updateNNum("n1234567");
+            updateNNum(formOptions.nNumber);
             return Promise.resolve();
           }).then(() => {
             const addUserButtonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
@@ -389,6 +416,24 @@ describe("<AddUserModal />", () => {
               addUserButtonOnClick();
               return Promise.resolve();
             }).then(() => {
+              const expectedTwilioWorkerAttributesPosted = {
+                did: `+1${formOptions.did}`,
+                email: employeeLookupResponse[0].person.data.Email,
+                email_address: employeeLookupResponse[0].person.data.Email,
+                emp_first_name: employeeLookupResponse[0].person.data.FirstName,
+                emp_last_name: employeeLookupResponse[0].person.data.LastName,
+                full_name: `${employeeLookupResponse[0].person.data.FirstName} ${employeeLookupResponse[0].person.data.LastName}`,
+                manager_first_name: formOptions.manager.manager_first_name,
+                manager_last_name: formOptions.manager.manager_last_name,
+                manager_n_number: formOptions.manager.manager_n_number,
+                n_number: formOptions.nNumber,
+                office_location_name: employeeLookupResponse[0].person.data.OfficeName,
+                office_location_number: employeeLookupResponse[0].person.data.OfficeNumber,
+                primary_dept_name: employeeLookupResponse[0].person.data.DepartmentName,
+                primary_dept_number: employeeLookupResponse[0].person.data.DepartmentNumber,
+                profile_id: formOptions.profileId
+              };
+              expect(axiosMock.history.post[0].data).toEqual(JSON.stringify({ attributes: expectedTwilioWorkerAttributesPosted }));
               expectMockedComponent(rendered, { ModalOverlay });
               const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
               const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
@@ -402,7 +447,7 @@ describe("<AddUserModal />", () => {
               expect(actions).toHaveLength(1);
               expect(actions[0]).toEqual({
                 type: "addWorker",
-                payload: mapWorkerFromTwilioWorker(twilioWorker)
+                payload: mapWorkerFromTwilioWorker(twilioWorkerResponse)
               });
               done();
             });
@@ -417,19 +462,19 @@ describe("<AddUserModal />", () => {
           const rendered = renderComponent();
           act(() => {
             const updateManager = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect) - 1).updateValue;
-            updateManager(JSON.stringify(managerList[0]));
+            updateManager(JSON.stringify(formOptions.manager));
           });
           act(() => {
             const updateProfile = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect)).updateValue;
-            updateProfile(profileList[0].profile_id);
+            updateProfile(formOptions.profileId);
           });
           act(() => {
             const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).updateValue;
-            updatePhone("6034567890");
+            updatePhone(formOptions.did);
           });
           act(() => {
             const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).updateValue;
-            updateNNum("n1234567");
+            updateNNum(formOptions.nNumber);
             return Promise.resolve();
           }).then(() => {
             const addUserButtonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
@@ -442,6 +487,24 @@ describe("<AddUserModal />", () => {
               const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
               const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
               const addUserButtonProps2 = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
+              const expectedTwilioWorkerAttributesPosted = {
+                did: `+1${formOptions.did}`,
+                email: employeeLookupResponse[0].person.data.Email,
+                email_address: employeeLookupResponse[0].person.data.Email,
+                emp_first_name: employeeLookupResponse[0].person.data.FirstName,
+                emp_last_name: employeeLookupResponse[0].person.data.LastName,
+                full_name: `${employeeLookupResponse[0].person.data.FirstName} ${employeeLookupResponse[0].person.data.LastName}`,
+                manager_first_name: formOptions.manager.manager_first_name,
+                manager_last_name: formOptions.manager.manager_last_name,
+                manager_n_number: formOptions.manager.manager_n_number,
+                n_number: formOptions.nNumber,
+                office_location_name: employeeLookupResponse[0].person.data.OfficeName,
+                office_location_number: employeeLookupResponse[0].person.data.OfficeNumber,
+                primary_dept_name: employeeLookupResponse[0].person.data.DepartmentName,
+                primary_dept_number: employeeLookupResponse[0].person.data.DepartmentNumber,
+                profile_id: formOptions.profileId
+              };
+              expect(axiosMock.history.post[0].data).toEqual(JSON.stringify({ attributes: expectedTwilioWorkerAttributesPosted }));
               expect(addUserButtonProps2.disabled).toBe(false);
               expect(saveStatus).toBe("fail");
               expect(nNumber).toBe("n1234567");
