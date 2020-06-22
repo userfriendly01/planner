@@ -142,6 +142,7 @@ const ManagementTable = props => {
           <tr>
             <CustomTableHeader>NAME</CustomTableHeader>
             <CustomTableHeader>N NUMBER</CustomTableHeader>
+            <CustomTableHeader>EXTENSION</CustomTableHeader>
             <CustomTableHeader>OFFICE</CustomTableHeader>
             <CustomTableHeader>SKILLS (Current)</CustomTableHeader>
             <CustomTableHeader>SKILLS (Default)</CustomTableHeader>
@@ -172,6 +173,7 @@ const ManagementTable = props => {
               <CustomTableRow key={index} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">
                 <CustomTableData><TableText>{worker.attributes.full_name}</TableText></CustomTableData>
                 <CustomTableData><TableText>{worker.id}</TableText></CustomTableData>
+                <CustomTableData><TableText>{worker.attributes.extension}</TableText></CustomTableData>
                 <CustomTableData><TableText>{worker.attributes.office_location_name}</TableText></CustomTableData>
                 <CustomTableData><TableDataFlex>{formatWorkerSkillsToHTML(worker.attributes.routing)}</TableDataFlex></CustomTableData>
                 <CustomTableData><TableDataFlex>{formatWorkerSkillsToHTML(worker.attributes.default_skills)}</TableDataFlex></CustomTableData>
