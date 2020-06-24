@@ -1,7 +1,8 @@
 import {
+  CustomInput,
   OutlinedSelect,
   ModalHelperText,
-  ModalNNumber,
+  // ModalNNumber,
   ModalOverlay,
   ModalPhoneNumber,
   PaperContainer,
@@ -20,10 +21,13 @@ import React, {
   useEffect,
   useState
 } from "react";
+import {
+  fetchUser,
+  myAxios
+} from "services";
 import styled from "styled-components";
 import {
   mapWorkerFromTwilioWorker,
-  myAxios,
   sortManagersByName
 } from "utils";
 
@@ -90,22 +94,13 @@ const AddUserModal = props => {
         ...loading,
         lookupUser: true
       });
-      myAxios
-        .get(apiPaths.EMPLOYEE_LOOKUP(form.nNumber.substring(1)))
+      fetchUser(form.nNumber)
         .then(res => {
-          if (res.data.length !== 0) {
+          if (res) {
             setForm({
               ...form,
               lookupError: null,
-              lookupInfo: {
-                email: res.data[0].person.data.Email,
-                firstName: res.data[0].person.data.FirstName,
-                lastName: res.data[0].person.data.LastName,
-                officeName: res.data[0].person.data.OfficeName,
-                officeNumber: res.data[0].person.data.OfficeNumber,
-                departmentName: res.data[0].person.data.DepartmentName,
-                departmentNumber: res.data[0].person.data.DepartmentNumber
-              }
+              lookupInfo: res
             });
           } else {
             setForm({
@@ -263,16 +258,16 @@ const AddUserModal = props => {
           })}
         />
         <FlexColumn>
-          <ModalNNumber
+          <CustomInput
             disabled={JSON.stringify(form.lookupInfo) !== "{}"}
             label="N Number"
             loading={loading.lookupUser}
             name="N Number"
-            nNumber={form.nNumber}
             updateValue={newValue => setForm({
               ...form,
               nNumber: newValue
             })}
+            value={form.nNumber}
           />
           {
             showModalHelperText
