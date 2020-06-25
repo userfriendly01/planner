@@ -5,7 +5,8 @@ import {
 } from "@material-ui/core";
 import {
   FlashMessageContainer,
-  ManagementWrapper
+  ManagementWrapper,
+  ProfileSettingsContainer
 } from "components";
 import PropTypes from "prop-types";
 import React from "react";
@@ -68,12 +69,16 @@ const NavTabs = () => {
     <Content >
       <StyledTabs variant="fullWidth" value={value} onChange={handleChange}>
         <StyledTab label="User Management" href="/userManagement" id="nav-tab-userManagement" aria-controls="nav-tabpanel-userManagement" onClick={event => event.preventDefault()}/>
+        <StyledTab label="Profile Settings" href="/profileSettings" id="nav-tab-profileSettings" aria-controls="nav-tabpanel-profileSettings" onClick={event => event.preventDefault()}/>
         <StyledTab label="Flash Message" href="/flashMessage" id="nav-tab-flashMessage" aria-controls="nav-tabpanel-flashMessage" onClick={event => event.preventDefault()}/>
       </StyledTabs>
       <TabPanel value={value} tabName="userManagement" index={0}>
         <ManagementWrapper  />
       </TabPanel>
-      <TabPanel value={value} tabName="flashMessage" index={1}>
+      <TabPanel value={value} tabName="profileSettings" index={1}>
+        <ProfileSettingsContainer  />
+      </TabPanel>
+      <TabPanel value={value} tabName="flashMessage" index={2}>
         <FlashMessageContainer />
       </TabPanel>
     </Content>
