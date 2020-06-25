@@ -1,6 +1,7 @@
 import {
   OutlinedSelect,
   ModalHelperText,
+  ModalExtension,
   ModalNNumber,
   ModalOverlay,
   ModalPhoneNumber,
@@ -159,6 +160,7 @@ const AddUserModal = props => {
       manager_first_name: parsedManager.manager_first_name,
       manager_last_name: parsedManager.manager_last_name,
       manager_n_number: parsedManager.manager_n_number,
+      extension: form.extension.toLowerCase(),
       n_number: form.nNumber.toLowerCase(),
       office_location_name: form.lookupInfo.officeName,
       office_location_number: form.lookupInfo.officeNumber,
@@ -283,6 +285,28 @@ const AddUserModal = props => {
               />
               : null
           }
+        </FlexColumn>
+        <FlexColumn>
+          <ModalExtension
+            // disabled={JSON.stringify(form.lookupInfo) !== "{}"}
+            label="Extension"
+            loading={loading.lookupUser}
+            name="Extension"
+            extension={form.extension}
+            updateValue={newValue => setForm({
+              ...form,
+              extension: newValue
+            })}
+          />
+          {/* {
+            showModalHelperText
+              ? <ModalHelperText
+                clearUser={clearUser}
+                error={form.lookupError ? true : false}
+                message={form.lookupError || `${form.lookupInfo.firstName} ${form.lookupInfo.lastName}`}
+              />
+              : null
+          } */}
         </FlexColumn>
         <ButtonWrapper>
           <StyledButton disabled={!formReady} onClick={saveUser}>Add User</StyledButton>
