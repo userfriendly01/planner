@@ -263,6 +263,7 @@ const AddUserModal = props => {
             label="N Number"
             loading={loading.lookupUser}
             name="N Number"
+            maxLength="8"
             updateValue={newValue => setForm({
               ...form,
               nNumber: newValue

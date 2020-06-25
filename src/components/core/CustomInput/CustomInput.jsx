@@ -22,7 +22,7 @@ export const CustomInput = props => {
     disabled,
     label,
     loading,
-    // maxLength,
+    maxLength,
     name,
     updateValue,
     value
@@ -33,7 +33,7 @@ export const CustomInput = props => {
       <TextInput
         disabled={disabled || loading}
         id={name ? `outlined-${name}-input` : null}
-        // inputProps={maxLength ? { maxLength } : null}
+        inputProps={maxLength ? { maxLength } : {}}
         label={label}
         margin="normal"
         name={name}
@@ -53,5 +53,6 @@ CustomInput.propTypes = {
   maxLength: PropTypes.string,
   name: PropTypes.string,
   updateValue: PropTypes.func.isRequired,
+  validator: PropTypes.func,
   value: PropTypes.string.isRequired
 };
