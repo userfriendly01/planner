@@ -1,55 +1,90 @@
-import { TextField } from "@material-ui/core";
-import { ModalFetchingRing } from "components";
+import {
+  CustomInput,
+  ModalHelperText
+} from "components";
+import { nNumMatcher } from "globals";
 import PropTypes from "prop-types";
 import React from "react";
+import { fetchUser } from "services";
 import styled from "styled-components";
 
-const FlexRow = styled.div`
+const FlexColumn = styled.div`
   display: flex;
   flex: 1 1 auto;
-`;
-
-const TextInput = styled(TextField)`
-  flex-grow: 1;
-  && {
-    margin: 2%;
-  }
+  flex-direction: column;
 `;
 
 const ModalNNumber = props => {
   const {
+    clearUser,
     disabled,
-    label,
-    loading,
-    name,
+    form,
     nNumber,
+    setForm,
     updateValue
   } = props;
 
+  const validator = nNumber => nNumber.match(nNumMatcher);
+
+  const inputServiceCall = nNumber => {
+    return fetchUser(nNumber)
+      .then(res => {
+        if (res) {
+          setForm({
+            ...form,
+            lookupError: null,
+            lookupInfo: res
+          });
+        } else {
+          setForm({
+            ...form,
+            lookupInfo: {},
+            lookupError: "User not found"
+          });
+        }
+      })
+      .catch(err => {
+        setForm({
+          ...form,
+          lookupInfo: {},
+          lookupError: `Error calling lookup service: ${err.message}`
+        });
+      });
+  };
+
+  const showModalHelperText = JSON.stringify(form.lookupInfo) !== JSON.stringify({}) || form.lookupError;
+
   return (
-    <FlexRow>
-      <TextInput
+    <FlexColumn>
+      <CustomInput
         disabled={disabled}
-        id="outlined-nNumber-input"
-        inputProps={{ maxLength: "8" }}
-        label={label}
-        margin="normal"
-        name={name}
-        onChange={event => updateValue(event.target.value)}
-        variant="outlined"
+        label="N Number"
+        name="N Number"
+        maxLength="8"
+        updateValue={updateValue}
+        validator={validator}
+        validatedServiceCall={inputServiceCall}
         value={nNumber}
       />
-      {loading ? <ModalFetchingRing data-testid="loading" /> : null}
-    </FlexRow>
+      {
+        showModalHelperText
+          ? <ModalHelperText
+            clearUser={clearUser}
+            error={form.lookupError ? true : false}
+            message={form.lookupError || `${form.lookupInfo.firstName} ${form.lookupInfo.lastName}`}
+          />
+          : null
+      }
+    </FlexColumn>
   );
 };
 
 ModalNNumber.propTypes = {
+  clearUser: PropTypes.func.isRequired,
   disabled: PropTypes.bool.isRequired,
-  label: PropTypes.string.isRequired,
-  loading: PropTypes.bool.isRequired,
-  name: PropTypes.string.isRequired,
+  form: PropTypes.object.isRequired,
   nNumber: PropTypes.string.isRequired,
+  setForm: PropTypes.func.isRequired,
   updateValue: PropTypes.func.isRequired
 };
 

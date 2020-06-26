@@ -1,7 +1,5 @@
 import {
   OutlinedSelect,
-  ModalHelperText,
-  ModalExtension,
   ModalNNumber,
   ModalOverlay,
   ModalPhoneNumber,
@@ -12,27 +10,17 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import {
-  apiPaths,
-  nNumMatcher
-} from "globals";
+import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, {
-  useEffect,
   useState
 } from "react";
+import { myAxios } from "services";
 import styled from "styled-components";
 import {
   mapWorkerFromTwilioWorker,
-  myAxios,
   sortManagersByName
 } from "utils";
-
-const FlexColumn = styled.div`
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-`;
 
 const FlexRow = styled.div`
   display: flex;
@@ -48,7 +36,10 @@ const Header = styled.h1`
   align-self: center;
 `;
 
-const ModalContainer = styled(FlexColumn)`
+const ModalContainer = styled.div`
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
   left: 50%;
   padding: 2%;
   position: absolute;
@@ -74,71 +65,24 @@ const AddUserModal = props => {
   } = useAdminState();
   const [form, setForm] = useState({
     lookupInfo: {},
-    nNumber: defaultNNumber,
     manager: "",
     outgoing: "",
     team: ""
   });
+  const [nNumber, setNNumber] = useState(defaultNNumber);
   const [loading, updateLoading] = useState({
     lookupUser: false,
     saveStatus: "saving",
     saveUser: false
   });
 
-  useEffect(() => {
-    if (form.nNumber.match(nNumMatcher)) {
-      updateLoading({
-        ...loading,
-        lookupUser: true
-      });
-      myAxios
-        .get(apiPaths.EMPLOYEE_LOOKUP(form.nNumber.substring(1)))
-        .then(res => {
-          if (res.data.length !== 0) {
-            setForm({
-              ...form,
-              lookupError: null,
-              lookupInfo: {
-                email: res.data[0].person.data.Email,
-                firstName: res.data[0].person.data.FirstName,
-                lastName: res.data[0].person.data.LastName,
-                officeName: res.data[0].person.data.OfficeName,
-                officeNumber: res.data[0].person.data.OfficeNumber,
-                departmentName: res.data[0].person.data.DepartmentName,
-                departmentNumber: res.data[0].person.data.DepartmentNumber
-              }
-            });
-          } else {
-            setForm({
-              ...form,
-              lookupInfo: {},
-              lookupError: "User not found"
-            });
-          }
-        })
-        .catch(err => {
-          setForm({
-            ...form,
-            lookupInfo: {},
-            lookupError: `Error calling lookup service: ${err.message}`
-          });
-        })
-        .finally(() => {
-          updateLoading({
-            ...loading,
-            lookupUser: false
-          });
-        });
-    }
-  }, [form.nNumber]);
-
   const clearUser = () => {
     setForm({
       ...form,
       lookupError: null,
-      lookupInfo: {},
-      nNumber: defaultNNumber
+      lookupInfo: {}
     });
+    setNNumber(defaultNNumber);
   };
 
   const saveUser = () => {
@@ -160,8 +104,7 @@ const AddUserModal = props => {
       manager_first_name: parsedManager.manager_first_name,
       manager_last_name: parsedManager.manager_last_name,
       manager_n_number: parsedManager.manager_n_number,
-      extension: form.extension.toLowerCase(),
-      n_number: form.nNumber.toLowerCase(),
+      n_number: nNumber.toLowerCase(),
       office_location_name: form.lookupInfo.officeName,
       office_location_number: form.lookupInfo.officeNumber,
       primary_dept_name: form.lookupInfo.departmentName,
@@ -206,7 +149,7 @@ const AddUserModal = props => {
   };
   const isLookupInfoEmpty = JSON.stringify(form.lookupInfo) === JSON.stringify({});
   const formReady = !isLookupInfoEmpty && form.team !== "" && form.manager !== "" && form.outgoing !== "";
-  const showModalHelperText = !isLookupInfoEmpty || form.lookupError;
+
   let overlayMessage = "Saving";
   if (loading.saveStatus === "success") {
     overlayMessage = "User added successfully";
@@ -264,50 +207,14 @@ const AddUserModal = props => {
             outgoing: newValue
           })}
         />
-        <FlexColumn>
-          <ModalNNumber
-            disabled={JSON.stringify(form.lookupInfo) !== "{}"}
-            label="N Number"
-            loading={loading.lookupUser}
-            name="N Number"
-            nNumber={form.nNumber}
-            updateValue={newValue => setForm({
-              ...form,
-              nNumber: newValue
-            })}
-          />
-          {
-            showModalHelperText
-              ? <ModalHelperText
-                clearUser={clearUser}
-                error={form.lookupError ? true : false}
-                message={form.lookupError || `${form.lookupInfo.firstName} ${form.lookupInfo.lastName}`}
-              />
-              : null
-          }
-        </FlexColumn>
-        <FlexColumn>
-          <ModalExtension
-            // disabled={JSON.stringify(form.lookupInfo) !== "{}"}
-            label="Extension"
-            loading={loading.lookupUser}
-            name="Extension"
-            extension={form.extension}
-            updateValue={newValue => setForm({
-              ...form,
-              extension: newValue
-            })}
-          />
-          {/* {
-            showModalHelperText
-              ? <ModalHelperText
-                clearUser={clearUser}
-                error={form.lookupError ? true : false}
-                message={form.lookupError || `${form.lookupInfo.firstName} ${form.lookupInfo.lastName}`}
-              />
-              : null
-          } */}
-        </FlexColumn>
+        <ModalNNumber
+          clearUser={clearUser}
+          disabled={JSON.stringify(form.lookupInfo) !== "{}"}
+          form={form}
+          nNumber={nNumber}
+          setForm={setForm}
+          updateValue={newValue => setNNumber(newValue)}
+        />
         <ButtonWrapper>
           <StyledButton disabled={!formReady} onClick={saveUser}>Add User</StyledButton>
           <StyledButton onClick={handleClose}>Close</StyledButton>
