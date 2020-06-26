@@ -1,6 +1,7 @@
 import {
   OutlinedSelect,
   ModalNNumber,
+  ModalExtension,
   ModalOverlay,
   ModalPhoneNumber,
   PaperContainer,
@@ -70,6 +71,7 @@ const AddUserModal = props => {
     team: ""
   });
   const [nNumber, setNNumber] = useState(defaultNNumber);
+  const [extension, setExtension] = useState("");
   const [loading, updateLoading] = useState({
     lookupUser: false,
     saveStatus: "saving",
@@ -105,6 +107,7 @@ const AddUserModal = props => {
       manager_last_name: parsedManager.manager_last_name,
       manager_n_number: parsedManager.manager_n_number,
       n_number: nNumber.toLowerCase(),
+      extension,
       office_location_name: form.lookupInfo.officeName,
       office_location_number: form.lookupInfo.officeNumber,
       primary_dept_name: form.lookupInfo.departmentName,
@@ -214,6 +217,10 @@ const AddUserModal = props => {
           nNumber={nNumber}
           setForm={setForm}
           updateValue={newValue => setNNumber(newValue)}
+        />
+        <ModalExtension
+          extension={extension}
+          updateValue={newValue => setExtension(newValue)}
         />
         <ButtonWrapper>
           <StyledButton disabled={!formReady} onClick={saveUser}>Add User</StyledButton>
