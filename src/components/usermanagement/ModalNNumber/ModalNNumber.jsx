@@ -1,4 +1,7 @@
-import { CustomInput } from "components";
+import {
+  CustomInput,
+  ModalHelperText
+} from "components";
 import { nNumMatcher } from "globals";
 import PropTypes from "prop-types";
 import React from "react";
@@ -13,6 +16,7 @@ const FlexColumn = styled.div`
 
 const ModalNNumber = props => {
   const {
+    clearUser,
     disabled,
     form,
     nNumber,
@@ -48,6 +52,8 @@ const ModalNNumber = props => {
       });
   };
 
+  const showModalHelperText = JSON.stringify(form.lookupInfo) !== JSON.stringify({}) || form.lookupError;
+
   return (
     <FlexColumn>
       <CustomInput
@@ -60,11 +66,21 @@ const ModalNNumber = props => {
         validatedServiceCall={inputServiceCall}
         value={nNumber}
       />
+      {
+        showModalHelperText
+          ? <ModalHelperText
+            clearUser={clearUser}
+            error={form.lookupError ? true : false}
+            message={form.lookupError || `${form.lookupInfo.firstName} ${form.lookupInfo.lastName}`}
+          />
+          : null
+      }
     </FlexColumn>
   );
 };
 
 ModalNNumber.propTypes = {
+  clearUser: PropTypes.func.isRequired,
   disabled: PropTypes.bool.isRequired,
   form: PropTypes.object.isRequired,
   nNumber: PropTypes.string.isRequired,

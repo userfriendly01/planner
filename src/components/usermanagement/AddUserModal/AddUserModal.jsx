@@ -1,6 +1,5 @@
 import {
   OutlinedSelect,
-  ModalHelperText,
   ModalNNumber,
   ModalOverlay,
   ModalPhoneNumber,
@@ -23,12 +22,6 @@ import {
   sortManagersByName
 } from "utils";
 
-const FlexColumn = styled.div`
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-`;
-
 const FlexRow = styled.div`
   display: flex;
   flex: 1 1 auto;
@@ -43,7 +36,10 @@ const Header = styled.h1`
   align-self: center;
 `;
 
-const ModalContainer = styled(FlexColumn)`
+const ModalContainer = styled.div`
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
   left: 50%;
   padding: 2%;
   position: absolute;
@@ -153,7 +149,7 @@ const AddUserModal = props => {
   };
   const isLookupInfoEmpty = JSON.stringify(form.lookupInfo) === JSON.stringify({});
   const formReady = !isLookupInfoEmpty && form.team !== "" && form.manager !== "" && form.outgoing !== "";
-  const showModalHelperText = !isLookupInfoEmpty || form.lookupError;
+
   let overlayMessage = "Saving";
   if (loading.saveStatus === "success") {
     overlayMessage = "User added successfully";
@@ -211,24 +207,14 @@ const AddUserModal = props => {
             outgoing: newValue
           })}
         />
-        <FlexColumn>
-          <ModalNNumber
-            disabled={JSON.stringify(form.lookupInfo) !== "{}"}
-            form={form}
-            nNumber={nNumber}
-            setForm={setForm}
-            updateValue={newValue => setNNumber(newValue)}
-          />
-          {
-            showModalHelperText
-              ? <ModalHelperText
-                clearUser={clearUser}
-                error={form.lookupError ? true : false}
-                message={form.lookupError || `${form.lookupInfo.firstName} ${form.lookupInfo.lastName}`}
-              />
-              : null
-          }
-        </FlexColumn>
+        <ModalNNumber
+          clearUser={clearUser}
+          disabled={JSON.stringify(form.lookupInfo) !== "{}"}
+          form={form}
+          nNumber={nNumber}
+          setForm={setForm}
+          updateValue={newValue => setNNumber(newValue)}
+        />
         <ButtonWrapper>
           <StyledButton disabled={!formReady} onClick={saveUser}>Add User</StyledButton>
           <StyledButton onClick={handleClose}>Close</StyledButton>
