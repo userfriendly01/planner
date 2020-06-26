@@ -1,8 +1,7 @@
 import {
-  CustomInput,
   OutlinedSelect,
   ModalHelperText,
-  // ModalNNumber,
+  ModalNNumber,
   ModalOverlay,
   ModalPhoneNumber,
   PaperContainer,
@@ -12,19 +11,12 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import {
-  apiPaths,
-  nNumMatcher
-} from "globals";
+import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, {
-  useEffect,
   useState
 } from "react";
-import {
-  fetchUser,
-  myAxios
-} from "services";
+import { myAxios } from "services";
 import styled from "styled-components";
 import {
   mapWorkerFromTwilioWorker,
@@ -77,62 +69,24 @@ const AddUserModal = props => {
   } = useAdminState();
   const [form, setForm] = useState({
     lookupInfo: {},
-    nNumber: defaultNNumber,
     manager: "",
     outgoing: "",
     team: ""
   });
+  const [nNumber, setNNumber] = useState(defaultNNumber);
   const [loading, updateLoading] = useState({
     lookupUser: false,
     saveStatus: "saving",
     saveUser: false
   });
 
-  useEffect(() => {
-    if (form.nNumber.match(nNumMatcher)) {
-      updateLoading({
-        ...loading,
-        lookupUser: true
-      });
-      fetchUser(form.nNumber)
-        .then(res => {
-          if (res) {
-            setForm({
-              ...form,
-              lookupError: null,
-              lookupInfo: res
-            });
-          } else {
-            setForm({
-              ...form,
-              lookupInfo: {},
-              lookupError: "User not found"
-            });
-          }
-        })
-        .catch(err => {
-          setForm({
-            ...form,
-            lookupInfo: {},
-            lookupError: `Error calling lookup service: ${err.message}`
-          });
-        })
-        .finally(() => {
-          updateLoading({
-            ...loading,
-            lookupUser: false
-          });
-        });
-    }
-  }, [form.nNumber]);
-
   const clearUser = () => {
     setForm({
       ...form,
       lookupError: null,
-      lookupInfo: {},
-      nNumber: defaultNNumber
+      lookupInfo: {}
     });
+    setNNumber(defaultNNumber);
   };
 
   const saveUser = () => {
@@ -154,7 +108,7 @@ const AddUserModal = props => {
       manager_first_name: parsedManager.manager_first_name,
       manager_last_name: parsedManager.manager_last_name,
       manager_n_number: parsedManager.manager_n_number,
-      n_number: form.nNumber.toLowerCase(),
+      n_number: nNumber.toLowerCase(),
       office_location_name: form.lookupInfo.officeName,
       office_location_number: form.lookupInfo.officeNumber,
       primary_dept_name: form.lookupInfo.departmentName,
@@ -258,17 +212,12 @@ const AddUserModal = props => {
           })}
         />
         <FlexColumn>
-          <CustomInput
+          <ModalNNumber
             disabled={JSON.stringify(form.lookupInfo) !== "{}"}
-            label="N Number"
-            loading={loading.lookupUser}
-            name="N Number"
-            maxLength="8"
-            updateValue={newValue => setForm({
-              ...form,
-              nNumber: newValue
-            })}
-            value={form.nNumber}
+            form={form}
+            nNumber={nNumber}
+            setForm={setForm}
+            updateValue={newValue => setNNumber(newValue)}
           />
           {
             showModalHelperText
