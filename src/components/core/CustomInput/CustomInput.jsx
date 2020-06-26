@@ -6,7 +6,6 @@ import React, {
 } from "react";
 import styled from "styled-components";
 
-
 const FlexRow = styled.div`
   align-items: center;
   display: flex;
@@ -35,13 +34,12 @@ export const CustomInput = props => {
   const [loading, setLoading] = useState(false);
 
   const changeValidator = newValue => {
-    console.log("I'm rerendered?");
     updateValue(newValue);
     if (validator) {
       if (validator(newValue)) {
         if (validatedServiceCall) {
           setLoading(true);
-          validatedServiceCall(newValue).finally(setLoading(false));
+          validatedServiceCall(newValue).finally(() => setLoading(false));
         }
       }
     }
