@@ -68,7 +68,8 @@ const AddUserModal = props => {
     lookupInfo: {},
     manager: "",
     outgoing: "",
-    team: ""
+    team: "",
+    extensionValid: true
   });
   const [nNumber, setNNumber] = useState(defaultNNumber);
   const [extension, setExtension] = useState("");
@@ -151,7 +152,7 @@ const AddUserModal = props => {
       });
   };
   const isLookupInfoEmpty = JSON.stringify(form.lookupInfo) === JSON.stringify({});
-  const formReady = !isLookupInfoEmpty && form.team !== "" && form.manager !== "" && form.outgoing !== "";
+  const formReady = !isLookupInfoEmpty && form.team !== "" && form.manager !== "" && form.outgoing !== "" && form.extensionValid;
 
   let overlayMessage = "Saving";
   if (loading.saveStatus === "success") {
@@ -221,6 +222,8 @@ const AddUserModal = props => {
         <ModalExtension
           extension={extension}
           updateValue={newValue => setExtension(newValue)}
+          form={form}
+          setForm={setForm}
         />
         <ButtonWrapper>
           <StyledButton disabled={!formReady} onClick={saveUser}>Add User</StyledButton>
