@@ -9,8 +9,6 @@ const ProfileDropDown = props => {
     updateProfile
   } = props;
 
-  // console.log("ProfileDropDown rendered profile:", profile);
-
   return (
     <OutlinedSelect
       label={"Profile"}

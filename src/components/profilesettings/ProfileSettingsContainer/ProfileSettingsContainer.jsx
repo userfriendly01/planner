@@ -1,6 +1,8 @@
 import { ProfileDropDown } from "components";
 import { useAdminState } from "context";
+import { apiPaths } from "globals";
 import React, { useState } from "react";
+import { myAxios } from "utils";
 
 const ProfileSettingsContainer = () => {
 
@@ -13,25 +15,14 @@ const ProfileSettingsContainer = () => {
 
   const profilesFromContextMinusGoP = useAdminState().profileContext.profiles.slice(1);
 
-  // loop thru profilesFromContextMinusGoP & get contacts for each one; add this to the state??
-
   const updateProfile = newProfileId => {
-    const newProfile = profilesFromContextMinusGoP.find(p => p.profile_id === +newProfileId);
-    setProfile({
-      profileId: newProfileId,
-      dialList: [
-        {
-          contact_id: 16,
-          contact_nme: "Bo Jackson",
-          contact_num: "800-123-4567"
-        },
-        {
-          contact_id: 18,
-          contact_nme: "Daryl Strawberry",
-          contact_num: "800-123-4567"
-        }
-      ]
-    });
+    myAxios.get(apiPaths.GET_PROFILE_DATA(newProfileId))
+      .then(res => {
+        setProfile({
+          profileId: newProfileId,
+          dialList: res.data.contacts
+        });
+      });
     return profile;
   };
 
