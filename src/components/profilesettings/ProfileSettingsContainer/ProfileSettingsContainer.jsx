@@ -6,36 +6,50 @@ import { myAxios } from "utils";
 
 const ProfileSettingsContainer = () => {
 
-  const [profile, setProfile] = useState({
+  const initialProfileState = {
     profileId: null,
     dialList: []
+  };
+  const [state, setState] = useState({
+    profile: initialProfileState,
+    message: "Please select a profile"
   });
 
-  console.log("profile in state:", profile);
-
   const profilesFromContextMinusGoP = useAdminState().profileContext.profiles.slice(1);
+  const listContacts = state.profile.dialList.map(contact => <li key={contact.contact_id}>{contact.contact_nme}: {contact.contact_num}</li>);
 
   const updateProfile = newProfileId => {
     myAxios.get(apiPaths.GET_PROFILE_DATA(newProfileId))
       .then(res => {
-        setProfile({
-          profileId: newProfileId,
-          dialList: res.data.contacts
+        setState({
+          profile: {
+            profileId: newProfileId,
+            dialList: res.data.contacts
+          },
+          message: null
+        });
+      })
+      .catch(err => {
+        console.error("ProfileSettingsContainer - Failed to get profile data", {
+          err,
+          newProfileId
+        });
+        setState({
+          profile: initialProfileState,
+          message: `Failed to get data for profile ${newProfileId}.`
         });
       });
-    return profile;
   };
-
-  const listContacts = profile.dialList.map(contact => <li key={contact.contact_id}>{contact.contact_nme}: {contact.contact_num}</li>);
 
   return(
     <div>
       <ProfileDropDown
         availableProfiles={profilesFromContextMinusGoP}
-        profile={profile}
+        profile={state.profile}
         updateProfile={updateProfile}
       />
-      {profile.profileId === null ? <h1>Please select a profile</h1> : <ul>{listContacts}</ul>}
+      {state.profile.profileId !== null ? <ul>{listContacts}</ul> : null}
+      <h1 data-testid="message">{state.message}</h1>
     </div>
   );
 };
