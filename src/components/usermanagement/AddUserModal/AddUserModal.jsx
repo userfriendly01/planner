@@ -69,7 +69,7 @@ const AddUserModal = props => {
     manager: "",
     outgoing: "",
     team: "",
-    extensionValid: true
+    extensionValid: false
   });
   const [nNumber, setNNumber] = useState(defaultNNumber);
   const [extension, setExtension] = useState("");
@@ -78,6 +78,14 @@ const AddUserModal = props => {
     saveStatus: "saving",
     saveUser: false
   });
+
+  const clearExtension = () => {
+    setForm({
+      ...form,
+      extensionValid: false
+    });
+    setExtension("");
+  };
 
   const clearUser = () => {
     setForm({
@@ -119,6 +127,7 @@ const AddUserModal = props => {
       .post(apiPaths.CREATE_WORKER, { attributes })
       .then(res => {
         const twilioWorker = res.data;
+        clearExtension();
         clearUser();
         dispatch({
           type: "addWorker",
@@ -220,6 +229,8 @@ const AddUserModal = props => {
           updateValue={newValue => setNNumber(newValue)}
         />
         <ModalExtension
+          clearExtension={clearExtension}
+          disabled={form.extensionValid && /\d{4}/g.test(extension)}
           extension={extension}
           updateValue={newValue => setExtension(newValue)}
           form={form}

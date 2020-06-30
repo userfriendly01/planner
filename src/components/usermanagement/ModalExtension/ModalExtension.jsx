@@ -16,10 +16,12 @@ const FlexColumn = styled.div`
 
 const ModalExtension = props => {
   const {
+    clearExtension,
+    disabled,
     extension,
-    updateValue,
     form,
-    setForm
+    setForm,
+    updateValue
   } = props;
 
   const validator = extension => extension.match(extensionMatcher);
@@ -27,7 +29,7 @@ const ModalExtension = props => {
   const inputServiceCall = extension => {
     return checkExtension(extension)
       .then(res => {
-        if (res.isValid) {
+        if (res) {
           setForm({
             ...form,
             extensionValid: true
@@ -48,13 +50,14 @@ const ModalExtension = props => {
       });
   };
 
-  const showModalHelperText = !form.extensionValid && form.extension !== "";
+  const showModalHelperText = /\d{4}/g.test(extension);
 
   return (
     <FlexColumn>
       <CustomInput
-        maxLength="4"
+        disabled={disabled}
         label="Extension"
+        maxLength="4"
         name="Extension"
         updateValue={updateValue}
         value={extension}
@@ -64,8 +67,9 @@ const ModalExtension = props => {
       {
         showModalHelperText
           ? <ModalHelperText
-            error={form.extensionValid ? true : false}
-            message={"Extension already in use"}
+            clearUser = {clearExtension}
+            error={form.extensionValid ? false : true}
+            message={form.extensionValid ? "Extension is valid" : "Extension already in use"}
           />
           : null
       }
@@ -74,10 +78,12 @@ const ModalExtension = props => {
 };
 
 ModalExtension.propTypes = {
+  clearExtension: PropTypes.func.isRequired,
+  disabled: PropTypes.bool.isRequired,
   extension: PropTypes.string.isRequired,
-  updateValue: PropTypes.func.isRequired,
+  form: PropTypes.object.isRequired,
   setForm: PropTypes.func.isRequired,
-  form: PropTypes.object.isRequired
+  updateValue: PropTypes.func.isRequired
 };
 
 export default ModalExtension;
