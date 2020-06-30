@@ -86,8 +86,8 @@ const EditUserModal = props => {
     defaultSkillsUpdated: false,
     manager: JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number)),
     managerUpdated: false,
-    extension: worker.attributes.extension,
-    extensionUpdated: false
+    extensionUpdated: false,
+    extensionValid: true
   });
 
   const saveUserClicked = () => {
@@ -103,7 +103,7 @@ const EditUserModal = props => {
       attributes.manager_n_number = parsedManager.manager_n_number;
     }
     if (form.extensionUpdated) {
-      attributes.extension = form.extension;
+      attributes.extension = extension;
     }
     myAxios
       .post(apiPaths.UPDATE_WORKER_ATTRIBUTES, {
@@ -138,11 +138,20 @@ const EditUserModal = props => {
     managerUpdated: true
   });
 
-  const setExtension = newValue => setForm({
-    ...form,
-    extension: newValue,
-    extensionUpdated: true
-  });
+  const [extension, setExtension] = useState(worker.attributes.extension);
+  const clearExtension = () => {
+    setForm({
+      ...form,
+      extensionValid: false
+    });
+    setExtension("");
+  };
+
+  // const setExtension = newValue => setForm({
+  //   ...form,
+  //   extension: newValue,
+  //   extensionUpdated: true
+  // });
 
   const formUpdated = (form.defaultSkillsUpdated || form.managerUpdated || form.extensionUpdated);
   const formValid = form.manager !== "";
@@ -185,11 +194,14 @@ const EditUserModal = props => {
           value={form.manager}
         />
         <ModalExtension
-          label="Extension"
-          name="Extension"
-          extension={form.extension}
-          updateValue={setExtension}
-          value={form.extension}
+          clearExtension={clearExtension}
+          disabled={form.extensionValid && /\d{4}/g.test(extension)}
+          extension={extension}
+          form={form}
+          originalValue={worker.attributes.extension}
+          originalValueReq={/\d{4}/g.test(worker.attributes.extension)}
+          setForm={setForm}
+          updateValue={newValue => setExtension(newValue)}
         />
         <DefaultSkillSelector defaultSkills={form.defaultSkills} setDefaultSkills={setDefaultSkills}/>
         <ButtonWrapper>

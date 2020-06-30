@@ -20,6 +20,8 @@ const ModalExtension = props => {
     disabled,
     extension,
     form,
+    originalValue,
+    originalValueReq,
     setForm,
     updateValue
   } = props;
@@ -27,17 +29,20 @@ const ModalExtension = props => {
   const validator = extension => extension.match(extensionMatcher);
 
   const inputServiceCall = extension => {
+    const isOriginal = originalValueReq ? extension === originalValue : false;
     return checkExtension(extension)
       .then(res => {
-        if (res) {
+        if (res || isOriginal) {
           setForm({
             ...form,
-            extensionValid: true
+            extensionValid: true,
+            extensionUpdated: !isOriginal
           });
         } else {
           setForm({
             ...form,
-            extensionValid: false
+            extensionValid: false,
+            extensionUpdated: false
           });
         }
       })
@@ -45,7 +50,8 @@ const ModalExtension = props => {
         console.log(err);
         setForm({
           ...form,
-          extensionValid: false
+          extensionValid: false,
+          extensionUpdated: false
         });
       });
   };
@@ -82,6 +88,8 @@ ModalExtension.propTypes = {
   disabled: PropTypes.bool.isRequired,
   extension: PropTypes.string.isRequired,
   form: PropTypes.object.isRequired,
+  originalValue: PropTypes.string,
+  originalValueReq: PropTypes.bool,
   setForm: PropTypes.func.isRequired,
   updateValue: PropTypes.func.isRequired
 };
