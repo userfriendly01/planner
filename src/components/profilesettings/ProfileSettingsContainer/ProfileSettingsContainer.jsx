@@ -1,4 +1,7 @@
-import { ProfileDropDown } from "components";
+import {
+  DialListTable,
+  ProfileDropDown
+} from "components";
 import { useAdminState } from "context";
 import { apiPaths } from "globals";
 import React, { useState } from "react";
@@ -16,7 +19,6 @@ const ProfileSettingsContainer = () => {
   });
 
   const profilesFromContextMinusGoP = useAdminState().profileContext.profiles.slice(1);
-  const listContacts = state.profile.dialList.map(contact => <li key={contact.contact_id}>{contact.contact_nme}: {contact.contact_num}</li>);
 
   const updateProfile = newProfileId => {
     myAxios.get(apiPaths.GET_PROFILE_DATA(newProfileId))
@@ -48,7 +50,7 @@ const ProfileSettingsContainer = () => {
         profile={state.profile}
         updateProfile={updateProfile}
       />
-      {state.profile.profileId !== null ? <ul>{listContacts}</ul> : null}
+      {state.profile.profileId !== null ? <DialListTable dialList={state.profile.dialList} /> : null}
       <h1 data-testid="message">{state.message}</h1>
     </div>
   );
