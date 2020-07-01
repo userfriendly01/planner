@@ -95,6 +95,7 @@ const employeeLookupResponse = [
 
 const formOptions = {
   did: "6034567890",
+  extension: "1234",
   manager: managerList[0],
   nNumber: "n1234567",
   profileId: profileList[0].profile_id
@@ -128,6 +129,7 @@ describe("<AddUserModal />", () => {
     test("we should render the header, the correct components, and read profiles defined in the context API.", () => {
       const rendered = render(<AddUserModal handleClose={mockHandleClose} managerList={[]} />, initialTestState);
       expectMockedComponent(rendered, { OutlinedSelect }, 2);
+      expectMockedComponent(rendered, { ModalExtension }, 1);
       expectMockedComponent(rendered, { ModalNNumber }, 1);
       expectMockedComponent(rendered, { ModalPhoneNumber }, 1);
       expectMockedComponent(rendered, { ModalOverlay }, 0);
@@ -303,6 +305,69 @@ describe("<AddUserModal />", () => {
     });
   });
 
+  describe("ModalExtension", () => {
+    test("the initial state", () => {
+      renderComponent();
+      const expectedExtensionProps = {
+        disabled: false,
+        extension: "",
+        form: {
+          extensionValid: false,
+          lookupInfo: {},
+          manager: "",
+          outgoing: "",
+          team: ""
+        }
+      };
+      expectOnlyPassedProps(ModalExtension, expectedExtensionProps, 0);
+    });
+    test("changes made to the extension field - invalid extension", () => {
+      renderComponent();
+      act(() => {
+        const updateValue = ModalExtension.mock.calls[0][0].updateValue;
+        updateValue("1234");
+      });
+      expect(ModalExtension.mock.calls.length).toBe(2);
+      const newValue = ModalExtension.mock.calls[1][0].extension;
+      expect(newValue).toEqual("1234");
+    });
+    test("clear extension called should reset the field", () => {
+      renderComponent();
+      act(() => {
+        const updateValue = ModalExtension.mock.calls[0][0].updateValue;
+        updateValue("1234");
+      });
+      let newValue = ModalExtension.mock.calls[1][0].extension;
+      expect(newValue).toEqual("1234");
+      act(() => {
+        const clearExtension = ModalExtension.mock.calls[1][0].clearExtension;
+        clearExtension("1234");
+      });
+      newValue = ModalExtension.mock.calls[2][0].extension;
+      expect(newValue).toEqual("");
+    });
+    test("when we update the form in ModalExtension we should see those changes in a rerender", () => {
+      renderComponent();
+      const newForm = {
+        lookupInfo: {
+          disabled: "not anymore"
+        },
+        manager: "",
+        outgoing: "",
+        team: "",
+        extensionValid: true
+      };
+      expect(ModalExtension.mock.calls[0][0].disabled).toEqual(false);
+      act(() => {
+        const setForm = ModalExtension.mock.calls[0][0].setForm;
+        setForm(newForm);
+      });
+      const form = ModalExtension.mock.calls[1][0].form;
+      expect(form).toEqual(newForm);
+      expect(ModalExtension.mock.calls[1][0].disabled).toEqual(false);
+    });
+  });
+
   describe("Add User and Close buttons", () => {
 
     test("the initial state add should be disabled, and close should be enabled", () => {
@@ -365,6 +430,11 @@ describe("<AddUserModal />", () => {
           act(() => {
             const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).updateValue;
             updatePhone(formOptions.did);
+          });
+          act(() => {
+            const updateExtension = getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension)).updateValue;
+            updateExtension(formOptions.extension);
+            return Promise.resolve();
           });
           act(() => {
             const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).updateValue;
@@ -433,6 +503,10 @@ describe("<AddUserModal />", () => {
           act(() => {
             const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).updateValue;
             updatePhone(formOptions.did);
+          });
+          act(() => {
+            const updateExtension = getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension)).updateValue;
+            updateExtension(formOptions.extension);
           });
           act(() => {
             const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).updateValue;

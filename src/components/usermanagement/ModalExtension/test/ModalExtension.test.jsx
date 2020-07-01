@@ -1,50 +1,162 @@
 import ModalExtension from "../ModalExtension";
-import React from "react";
 import {
-  fireEvent,
-  render
+  CustomInput,
+  ModalHelperText
+} from "components";
+import React from "react";
+import { checkExtension } from "services";
+import {
+  getMockedComponentProps,
+  render,
+  setupMockedComponents
 } from "testUtils";
 
-const mockFunction = jest.fn();
+jest.mock("components", () => ({
+  __esModule: true,
+  CustomInput: jest.fn(),
+  ModalHelperText: jest.fn()
+}));
 
-const renderComponent = (disabled, loading, extension) => {
+jest.mock("services", () => ({
+  __esModule: true,
+  checkExtension: jest.fn()
+}));
+
+const mockClearExtension = jest.fn();
+const mockSetForm = jest.fn();
+const mockUpdateValue = jest.fn();
+
+const renderComponent = (disabled, form, extension) => {
   return render(<ModalExtension
+    clearExtension={mockClearExtension}
     disabled={disabled}
-    label="Extension"
-    loading={loading}
-    name="Extension"
     extension={extension}
-    updateValue={mockFunction} />);
+    form={form}
+    originalValue={"1234"}
+    originalValueReq={true}
+    setForm={mockSetForm}
+    updateValue={mockUpdateValue} />);
 };
 
 describe("<ModalExtension />", () => {
   beforeEach(() => {
-    mockFunction.mockClear();
+    setupMockedComponents({
+      CustomInput,
+      ModalHelperText
+    });
+    jest.clearAllMocks();
   });
-  test("the initial state should be just an empty text field, with the correct label", () => {
-    const rendered = renderComponent(false, false, "");
-    expect(rendered.getByDisplayValue("")).toBeTruthy();
-    expect(rendered.getByLabelText("Extension")).toBeTruthy();
-    expect(rendered.queryAllByTestId("loading")).toHaveLength(0);
-    expect(rendered.getByLabelText("Extension")).not.toHaveClass("Mui-disabled");
-    expect(mockFunction.mock.calls.length).toBe(0);
-  });
-  test("when we update the value, we should fire the event being sent to the component", () => {
-    const rendered = renderComponent(false, false, "N");
-    expect(rendered.getByDisplayValue("N")).toBeTruthy();
-    expect(rendered.getByLabelText("Extension")).toBeTruthy();
-    fireEvent.change(rendered.getByLabelText("Extension"), { target: { value: "N1" }});
-    expect(mockFunction.mock.calls.length).toBe(1);
-    expect(mockFunction.mock.calls[0][0]).toBe("N1");
-  });
-
-  test("when we are doing a lookup on the field, we should validate that the spinner is showing", () => {
-    const rendered = renderComponent(false, true, "1234");
-    expect(rendered.queryAllByTestId("loading")).toHaveLength(1);
-  });
-
-  test("when disabled is true, the input should be disabled", () => {
-    const rendered = renderComponent(true, false, "1234");
-    expect(rendered.getByLabelText("Extension")).toHaveClass("Mui-disabled");
+  describe("testing the CustomInput props", () => {
+    const form = {};
+    test("the initial state should be just an empty text field, with the correct label, and no helper text", () => {
+      const disabled = false;
+      const extension = "";
+      renderComponent(disabled, form, extension);
+      const props = getMockedComponentProps(CustomInput);
+      expect(props.disabled).toBe(disabled);
+      expect(props.label).toBe("Extension");
+      expect(props.maxLength).toEqual("4");
+      expect(props.name).toBe("Extension");
+      expect(props.updateValue).toBe(mockUpdateValue);
+      expect(props.value).toBe(extension);
+      expect(ModalHelperText.mock.calls.length).toBe(0);
+    });
+    test("the validator sent in should enforce a strict Extension rule", () => {
+      renderComponent(false, form, "");
+      const props = getMockedComponentProps(CustomInput);
+      const validator = props.validator;
+      expect(validator("")).toBe(null);
+      expect(validator("1")).toBe(null);
+      expect(validator("ab45")).toBe(null);
+      expect(validator("12")).toBe(null);
+      expect(validator("34745")).toBe(["3474"]);
+      expect(validator("1234")).toBe(["1234"]);
+    });
+    describe("the validated service call", () => {
+      test("should set the form on success with original extension", done => {
+        checkExtension.mockResolvedValue(true);
+        renderComponent(false, form, "");
+        const props = getMockedComponentProps(CustomInput);
+        const validatedServiceCall = props.validatedServiceCall;
+        validatedServiceCall("1234")
+          .then(() => {
+            expect(checkExtension).toHaveBeenCalledWith("1234");
+            expect(mockSetForm).toHaveBeenCalledWith({
+              extensionValid: true,
+              extensionUpdated: false
+            });
+            done();
+          });
+      });
+      test("should set the form on success with non-original valid extension", done => {
+        checkExtension.mockResolvedValue(true);
+        renderComponent(false, form, "");
+        const props = getMockedComponentProps(CustomInput);
+        const validatedServiceCall = props.validatedServiceCall;
+        validatedServiceCall("5678")
+          .then(() => {
+            expect(checkExtension).toHaveBeenCalledWith("5678");
+            expect(mockSetForm).toHaveBeenCalledWith({
+              extensionValid: true,
+              extensionUpdated: true
+            });
+            done();
+          });
+      });
+      test("should say invalid if null is returned", done => {
+        checkExtension.mockResolvedValue(null);
+        renderComponent(false, form, "");
+        const props = getMockedComponentProps(CustomInput);
+        const validatedServiceCall = props.validatedServiceCall;
+        validatedServiceCall("2222")
+          .then(() => {
+            expect(checkExtension).toHaveBeenCalledWith("2222");
+            expect(mockSetForm).toHaveBeenCalledWith({
+              extensionValid: false,
+              extensionUpdated: false
+            });
+            done();
+          });
+      });
+      test("should notify the user of an error on failure", done => {
+        checkExtension.mockRejectedValue(false);
+        renderComponent(false, form, "");
+        const props = getMockedComponentProps(CustomInput);
+        const validatedServiceCall = props.validatedServiceCall;
+        validatedServiceCall("2222")
+          .then(() => {
+            expect(checkExtension).toHaveBeenCalledWith("2222");
+            expect(mockSetForm).toHaveBeenCalledWith({
+              extensionValid: false,
+              extensionUpdated: false
+            });
+            done();
+          });
+      });
+    });
+    describe("the modal helper", () => {
+      test("should show when extension is valid", () => {
+        checkExtension.mockResolvedValue(true);
+        renderComponent(false, {
+          extensionValid: true,
+          extensionUpdated: true
+        }, "2222");
+        const props = getMockedComponentProps(ModalHelperText);
+        expect(props.error).toBe(false);
+        expect(props.clearUser).toBe(mockClearExtension);
+        expect(props.message).toEqual("Extension is valid");
+      });
+      test("should show when extension is not valid", () => {
+        checkExtension.mockResolvedValue(true);
+        renderComponent(false, {
+          extensionValid: false,
+          extensionUpdated: false
+        }, "2222");
+        const props = getMockedComponentProps(ModalHelperText);
+        expect(props.error).toBe(true);
+        expect(props.clearUser).toBe(mockClearExtension);
+        expect(props.message).toEqual("Extension already in use");
+      });
+    });
   });
 });

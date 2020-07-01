@@ -4,6 +4,7 @@ import MockAdapter from "axios-mock-adapter";
 import {
   OutlinedSelect,
   DefaultSkillSelector,
+  ModalExtension,
   ModalOverlay,
   PaperContainer,
   StyledButton
@@ -39,6 +40,7 @@ jest.mock("components", () => ({
   StyledButton: jest.fn(),
   OutlinedSelect: jest.fn(),
   DefaultSkillSelector: jest.fn(),
+  ModalExtension: jest.fn(),
   ModalOverlay: jest.fn(),
   PaperContainer: jest.fn()
 }));
@@ -49,6 +51,7 @@ const getWorker = defaultSkills => ({
   sid: workerSid,
   attributes: {
     default_skills: defaultSkills,
+    extension: "1234",
     full_name: "Faith Cuneo",
     manager_n_number: "n0999887",
     n_number: "n0263786"
@@ -89,6 +92,7 @@ describe("<EditUserModal />", () => {
       StyledButton,
       OutlinedSelect,
       DefaultSkillSelector,
+      ModalExtension,
       ModalOverlay
     });
     mockHandleClose.mockClear();
@@ -146,6 +150,7 @@ describe("<EditUserModal />", () => {
       expectMockedComponent(rendered, { OutlinedSelect }, 1);
       expectMockedComponent(rendered, { DefaultSkillSelector }, 1);
       expectMockedComponent(rendered, { StyledButton }, 1);
+      expectMockedComponent(rendered, { ModalExtension }, 1);
       expectMockedComponent(rendered, { ModalOverlay }, 0);
       expectOnlyPassedProps(StyledButton, {
         children: "Update",
@@ -169,6 +174,16 @@ describe("<EditUserModal />", () => {
         key: mockManagers[0].manager_n_number,
         value: JSON.stringify(mockManagers[0])
       });
+    });
+  });
+
+  describe("ModalExtension in its initial state", () => {
+    test("ModalExtension shows the correct extension list is in its initial state", () => {
+      renderComponent();
+      const expectedExtensionProps = {
+        extension: "1234",
+      };
+      expectOnlyPassedProps(ModalExtension, expectedExtensionProps, 0);
     });
   });
 
