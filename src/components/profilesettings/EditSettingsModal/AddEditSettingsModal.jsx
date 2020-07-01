@@ -8,6 +8,16 @@ import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
 
+const Header = styled.h1`
+  align-self: center;
+`;
+
+const TextInput = styled(TextField)`
+  flex-grow: 1;
+  && {
+    margin: 2%;
+  }
+`;
 
 const ModalContainer = styled.div`
   display: flex;
@@ -20,7 +30,7 @@ const ModalContainer = styled.div`
   transform: translate(-50%, -50%);
 `;
 
-const EditSettingsModal = props => {
+const AddEditSettingsModal = props => {
   const {
     transferNumber,
     friendlyName,
@@ -40,6 +50,7 @@ const EditSettingsModal = props => {
   return (
     <ModalContainer>
       <PaperContainer>
+        <Header>Profile Settings</Header>
         <ModalPhoneNumber
           number={form.transferNumber}
           label="Transfer Number"
@@ -48,7 +59,7 @@ const EditSettingsModal = props => {
             transferNumber: newValue
           })}
         />
-        <TextField
+        <TextInput
           id="friendly-name-input"
           // InputProps={{ inputComponent: TextMaskCustom }}
           label="Friendly Name"
@@ -75,10 +86,10 @@ const EditSettingsModal = props => {
   );
 };
 
-EditSettingsModal.propTypes = {
+AddEditSettingsModal.propTypes = {
   transferNumber: PropTypes.string,
   friendlyName: PropTypes.string,
   externalNumber: PropTypes.number
 };
 
-export default EditSettingsModal;
+export default AddEditSettingsModal;
