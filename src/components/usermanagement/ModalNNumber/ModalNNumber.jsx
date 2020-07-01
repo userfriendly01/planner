@@ -24,7 +24,7 @@ const ModalNNumber = props => {
     updateValue
   } = props;
 
-  const validator = nNumber => nNumber.match(nNumMatcher);
+  const validator = nNumber => nNumber.match(nNumMatcher) !== null;
 
   const inputServiceCall = nNumber => {
     return fetchUser(nNumber)
