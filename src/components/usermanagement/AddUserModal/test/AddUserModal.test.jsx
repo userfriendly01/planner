@@ -2,6 +2,7 @@ import AddUserModal from "../AddUserModal";
 import MockAdapter from "axios-mock-adapter";
 import {
   OutlinedSelect,
+  ModalExtension,
   ModalHelperText,
   ModalNNumber,
   ModalOverlay,
@@ -34,6 +35,7 @@ jest.mock("components", () => ({
   __esModule: true,
   StyledButton: jest.fn(),
   OutlinedSelect: jest.fn(),
+  ModalExtension: jest.fn(),
   ModalHelperText: jest.fn(),
   ModalNNumber: jest.fn(),
   ModalOverlay: jest.fn(),
@@ -112,6 +114,7 @@ describe("<AddUserModal />", () => {
     setupMockedComponents({
       StyledButton,
       OutlinedSelect,
+      ModalExtension,
       ModalHelperText,
       ModalNNumber,
       ModalOverlay,
@@ -237,21 +240,24 @@ describe("<AddUserModal />", () => {
     });
   });
 
-  describe("the N Number field", () => {
-
+  describe("ModalNNumber", () => {
     test("the initial state", () => {
       renderComponent();
       const expectedNNumProps = {
         disabled: false,
-        loading: false,
+        form: {
+          lookupInfo: {},
+          manager: "",
+          outgoing: "",
+          team: "",
+          extensionValid: false
+        },
         nNumber: "n"
       };
       expectOnlyPassedProps(ModalNNumber, expectedNNumProps, 0);
     });
-
     test("changes made to the n number field - invalid n number", () => {
       renderComponent();
-      // Next I'll call the update function, which should update the form and cause a re-render.
       act(() => {
         const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
         updateValue("12345678");
@@ -260,84 +266,40 @@ describe("<AddUserModal />", () => {
       const newValue = ModalNNumber.mock.calls[1][0].nNumber;
       expect(newValue).toEqual("12345678");
     });
-
-    describe("nNumber is valid", () => {
-      const nNumber = "n1234567";
-
-      describe("service call for employeeLookup succeeds", () => {
-        beforeEach(() => axiosMock.onGet(apiPaths.EMPLOYEE_LOOKUP(nNumber.substring(1))).reply(200, employeeLookupResponse));
-
-        test("changes made to the n number field - valid n number - good response and when click ModalHelperText close button", done => {
-          renderComponent();
-          // Next I'll call the update function, which should update the form and cause a re-render.
-          act(() => {
-            const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
-            updateValue(nNumber);
-            return Promise.resolve();
-          }).then(() => {
-            expect(ModalNNumber.mock.calls.length).toBe(5);
-            expect(ModalNNumber.mock.calls[1][0].nNumber).toEqual(nNumber);
-            expect(ModalNNumber.mock.calls[2][0].loading).toEqual(true);
-            expect(ModalNNumber.mock.calls[3][0].disabled).toEqual(true);
-            const modalHelperTextProps = getMockedComponentProps(ModalHelperText, getLastInstanceCalled(ModalHelperText));
-            expect(modalHelperTextProps.error).toBe(false);
-            expect(modalHelperTextProps.message).toBe("Frank Rizzo");
-            expect(ModalNNumber.mock.calls[getLastInstanceCalled(ModalNNumber)][0].loading).toEqual(false);
-            act(() => modalHelperTextProps.clearUser());
-            const modalNNumberProps = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber));
-            expect(modalNNumberProps.nNumber).toBe("n");
-            done();
-          });
-        });
+    test("clear user called should reset the field", () => {
+      renderComponent();
+      act(() => {
+        const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
+        updateValue("12345678");
       });
-
-      describe("service call for employeeLookup succeeds but user not found", () => {
-        beforeEach(() => axiosMock.onGet(apiPaths.EMPLOYEE_LOOKUP(nNumber.substring(1))).reply(200, []));
-
-        test("changes made to the n number field - user not found", done => {
-          renderComponent();
-          // Next I'll call the update function, which should update the form and cause a re-render.
-          act(() => {
-            const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
-            updateValue(nNumber);
-            return Promise.resolve();
-          }).then(() => {
-            expect(ModalNNumber.mock.calls.length).toBe(5);
-            expect(ModalNNumber.mock.calls[1][0].nNumber).toEqual(nNumber);
-            expect(ModalNNumber.mock.calls[2][0].loading).toEqual(true);
-            expect(ModalNNumber.mock.calls[3][0].disabled).toEqual(false);
-            expect(ModalNNumber.mock.calls[4][0].loading).toEqual(false);
-            const modalHelperTextProps = getMockedComponentProps(ModalHelperText, getLastInstanceCalled(ModalHelperText));
-            expect(modalHelperTextProps.error).toBe(true);
-            expect(modalHelperTextProps.message).toBe("User not found");
-            done();
-          });
-        });
+      let newValue = ModalNNumber.mock.calls[1][0].nNumber;
+      expect(newValue).toEqual("12345678");
+      act(() => {
+        const clearUser = ModalNNumber.mock.calls[1][0].clearUser;
+        clearUser("12345678");
       });
-
-      describe("service call for employeeLookup fails", () => {
-        beforeEach(() => axiosMock.onGet(apiPaths.EMPLOYEE_LOOKUP(nNumber.substring(1))).networkError());
-
-        test("changes made to the n number field - valid n number - service error", done => {
-          renderComponent();
-          // Next I'll call the update function, which should update the form and cause a re-render.
-          act(() => {
-            const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
-            updateValue(nNumber);
-            return Promise.resolve();
-          }).then(() => {
-            expect(ModalNNumber.mock.calls.length).toBe(5);
-            expect(ModalNNumber.mock.calls[1][0].nNumber).toEqual(nNumber);
-            expect(ModalNNumber.mock.calls[2][0].loading).toEqual(true);
-            expect(ModalNNumber.mock.calls[3][0].disabled).toEqual(false);
-            expect(ModalNNumber.mock.calls[4][0].loading).toEqual(false);
-            const modalHelperTextProps = getMockedComponentProps(ModalHelperText, getLastInstanceCalled(ModalHelperText));
-            expect(modalHelperTextProps.error).toBe(true);
-            expect(modalHelperTextProps.message).toBe("Error calling lookup service: Network Error");
-            done();
-          });
-        });
+      newValue = ModalNNumber.mock.calls[2][0].nNumber;
+      expect(newValue).toEqual("n");
+    });
+    test("when we update the form in modalNNumber we should see those changes in a rerender", () => {
+      renderComponent();
+      const newForm = {
+        lookupInfo: {
+          disabled: "not anymore"
+        },
+        manager: "",
+        outgoing: "",
+        team: "",
+        extensionValid: true
+      };
+      expect(ModalNNumber.mock.calls[0][0].disabled).toEqual(false);
+      act(() => {
+        const setForm = ModalNNumber.mock.calls[0][0].setForm;
+        setForm(newForm);
       });
+      const form = ModalNNumber.mock.calls[1][0].form;
+      expect(form).toEqual(newForm);
+      expect(ModalNNumber.mock.calls[1][0].disabled).toEqual(true);
     });
   });
 
