@@ -1,9 +1,11 @@
 import {
-  // Delete,
+  Delete,
   Edit
 } from "@material-ui/icons";
 import PropTypes from "prop-types";
+// import { apiPaths } from "globals";
 import React from "react";
+// import { myAxios } from "utils";
 import styled from "styled-components";
 
 const headerIconWidth = "64px";
@@ -96,14 +98,6 @@ const DialListTable = props => {
     dialList
   } = props;
 
-  // const defaultEditDialListModalOpts = {
-  //   open: false,
-  //   worker: null
-  // };
-
-  // const state = useAdminState();
-  // const dispatch = useAdminDispatch();
-
   return(
     <TableContainer>
       <CustomTable>
@@ -119,14 +113,31 @@ const DialListTable = props => {
               event.stopPropagation();
               console.log("you clicked the edit button");
             };
+            const deleteButtonOnClick = () => {
+              // const popUp = confirm("Are you sure you want to delete this dial list entry?");
+              // if (popUp === true) {
+
+              // deleteContactFromProfile(index);
+              // myAxios.delete(apiPaths.DELETE_CONTACT_FROM_PROFILE)()
+
+              console.log("entry:", entry);
+
+              // console.log("dialList before:", dialList);
+              // dialList.splice(index, 1);
+              // console.log("dialList after:", dialList);
+
+              // }
+            };
             return(
               <CustomTableRow key={index} data-testid="table-row">
                 <CustomTableData><TableText>{entry.contact_nme}</TableText></CustomTableData>
                 <CustomTableData><TableText>{entry.contact_num}</TableText></CustomTableData>
                 <CustomTableData><IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
                   <Edit fontSize={"inherit"} />
-                </IconWrapper>
-                </CustomTableData>
+                </IconWrapper></CustomTableData>
+                <CustomTableData><IconWrapper onClick={deleteButtonOnClick} data-testid="delete-button">
+                  <Delete fontSize={"inherit"} />
+                </IconWrapper></CustomTableData>
               </CustomTableRow>
             );
           })}

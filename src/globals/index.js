@@ -4,6 +4,7 @@ const SERVICE_BASE_URI = "/service";
 export const apiPaths = {
   AUTH: `${SERVICE_BASE_URI}/admin-login`,
   CREATE_WORKER: `${SERVICE_BASE_URI}/createworker`,
+  DELETE_CONTACT_FROM_PROFILE: profileId => `${CONTACT_MANAGER_BASE_URI}/profiles/${profileId}`,
   EMPLOYEE_LOOKUP: nNum => `${SERVICE_BASE_URI}/employeelookup/${nNum}`,
   FLASH_MESSAGE: `${SERVICE_BASE_URI}/flashmessage`,
   GET_PROFILE_DATA: profileId => `${CONTACT_MANAGER_BASE_URI}/triton/${profileId}`,
