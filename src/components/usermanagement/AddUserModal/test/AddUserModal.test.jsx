@@ -219,7 +219,8 @@ describe("<AddUserModal />", () => {
     test("the initial state", () => {
       renderComponent();
       const expectedOutgoingProps = {
-        outgoingNumber: ""
+        number: "",
+        label: "Outgoing Number"
       };
       expectOnlyPassedProps(ModalPhoneNumber, expectedOutgoingProps, 0);
     });
@@ -232,7 +233,7 @@ describe("<AddUserModal />", () => {
         updateValue("12345678");
       });
       expect(ModalPhoneNumber.mock.calls.length).toBe(2);
-      const newValue = ModalPhoneNumber.mock.calls[1][0].outgoingNumber;
+      const newValue = ModalPhoneNumber.mock.calls[1][0].number;
       expect(newValue).toEqual("12345678");
     });
   });
