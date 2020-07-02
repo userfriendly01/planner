@@ -69,8 +69,8 @@ describe("<ModalExtension />", () => {
       expect(validator("1")).toBe(null);
       expect(validator("ab45")).toBe(null);
       expect(validator("12")).toBe(null);
-      expect(validator("34745")).toBe(["3474"]);
-      expect(validator("1234")).toBe(["1234"]);
+      expect(validator("34745")).toEqual(["3474"]);
+      expect(validator("1234")).toEqual(["1234"]);
     });
     describe("the validated service call", () => {
       test("should set the form on success with original extension", done => {
