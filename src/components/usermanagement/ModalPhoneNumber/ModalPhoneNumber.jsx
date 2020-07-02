@@ -31,26 +31,28 @@ function TextMaskCustom(inputProps) {
 
 const ModalPhoneNumber = props => {
   const {
-    outgoingNumber,
+    number,
+    label,
     updateValue
   } = props;
 
   return (
     <TextInput
-      id="outlined-outgoing-input"
+      id="outlined-number-input"
       InputProps={{ inputComponent: TextMaskCustom }}
-      label="Outgoing Number"
-      name="Outgoing Number"
+      label={label}
+      name={label}
       onChange={event => updateValue(event.target.value)}
       margin="normal"
       variant="outlined"
-      value={outgoingNumber}
+      value={number}
     />
   );
 };
 
 ModalPhoneNumber.propTypes = {
-  outgoingNumber: PropTypes.string.isRequired,
+  number: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
   updateValue: PropTypes.func.isRequired
 };
 
