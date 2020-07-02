@@ -361,6 +361,62 @@ describe("<EditUserModal />", () => {
     });
   });
 
+  test("clear extension called should reset the field", () => {
+    renderComponent();
+    act(() => {
+      const updateValue = ModalExtension.mock.calls[0][0].updateValue;
+      updateValue("1234");
+    });
+    let newValue = ModalExtension.mock.calls[1][0].extension;
+    expect(newValue).toEqual("1234");
+    act(() => {
+      const clearExtension = ModalExtension.mock.calls[1][0].clearExtension;
+      clearExtension("1234");
+    });
+    newValue = ModalExtension.mock.calls[2][0].extension;
+    expect(newValue).toEqual("");
+  });
+
+  test("extension is updated, Update button clicked, should only update extension attribute, show success modal overlay and hide after 2s", done => {
+    const rendered = renderComponent();
+    const updatedExtension = "4567";
+    act(() => {
+      const setExtension = getMockedComponentProps(ModalExtension).updateValue;
+      setExtension(JSON.stringify(updatedExtension));
+    });
+    //I think this is returning button disabled because needs to see extensionUpdated as true? Where can I set extensionUpdated?
+    expectOnlyPassedProps(StyledButton, {
+      children: "Update",
+      disabled: false
+    });
+    act(() => {
+      const { onClick } = getMockedComponentProps(StyledButton);
+      onClick();
+      return Promise.resolve();
+    }).then(() => {
+      expect(axiosMock.history.post[0].data).toEqual(JSON.stringify({
+        workerSid,
+        attributes: {
+          extension: updatedExtension,
+        }
+      }));
+      const actions = mockStore.getActions();
+      expect(actions).toHaveLength(1);
+      expect(actions[0]).toEqual({
+        type: "updateWorker",
+        payload: mapWorkerFromTwilioWorker(mockSuccessfulResponse)
+      });
+      expectMockedComponent(rendered, { ModalOverlay }, 1);
+      expectOnlyPassedProps(ModalOverlay, {
+        message: "User updated successfully",
+        status: "success"
+      });
+      act(() => jest.runAllTimers());
+      expect(mockHandleClose).toHaveBeenCalledTimes(1);
+      done();
+    });
+  });
+
   describe("service call to update worker attributes fails", () => {
     const error = { nah: "boooo" };
     beforeEach(() => axiosMock.onPost(apiPaths.EDIT_WORKER).reply(500, error));

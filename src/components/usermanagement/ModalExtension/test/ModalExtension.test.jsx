@@ -103,6 +103,25 @@ describe("<ModalExtension />", () => {
             done();
           });
       });
+      test("should set the form on success with no original and valid extension", done => {
+        checkExtension.mockResolvedValue(true);
+        renderComponent(false, {
+          ...form,
+          originalValueReq: false
+        }, "");
+        const props = getMockedComponentProps(CustomInput);
+        const validatedServiceCall = props.validatedServiceCall;
+        validatedServiceCall("5678")
+          .then(() => {
+            expect(checkExtension).toHaveBeenCalledWith("5678");
+            expect(mockSetForm).toHaveBeenCalledWith({
+              extensionValid: true,
+              extensionUpdated: true,
+              originalValueReq: false
+            });
+            done();
+          });
+      });
       test("should say invalid if null is returned", done => {
         checkExtension.mockResolvedValue(null);
         renderComponent(false, form, "");
