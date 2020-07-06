@@ -26,14 +26,14 @@ const mockClearExtension = jest.fn();
 const mockSetForm = jest.fn();
 const mockUpdateValue = jest.fn();
 
-const renderComponent = (disabled, form, extension) => {
+const renderComponent = (disabled, form, extension, originalValueReq = true) => {
   return render(<ModalExtension
     clearExtension={mockClearExtension}
     disabled={disabled}
     extension={extension}
     form={form}
     originalValue={"1234"}
-    originalValueReq={true}
+    originalValueReq={originalValueReq}
     setForm={mockSetForm}
     updateValue={mockUpdateValue} />);
 };
@@ -105,10 +105,7 @@ describe("<ModalExtension />", () => {
       });
       test("should set the form on success with no original and valid extension", done => {
         checkExtension.mockResolvedValue(true);
-        renderComponent(false, {
-          ...form,
-          originalValueReq: false
-        }, "");
+        renderComponent(false, form, "", false);
         const props = getMockedComponentProps(CustomInput);
         const validatedServiceCall = props.validatedServiceCall;
         validatedServiceCall("5678")
@@ -116,8 +113,7 @@ describe("<ModalExtension />", () => {
             expect(checkExtension).toHaveBeenCalledWith("5678");
             expect(mockSetForm).toHaveBeenCalledWith({
               extensionValid: true,
-              extensionUpdated: true,
-              originalValueReq: false
+              extensionUpdated: true
             });
             done();
           });
