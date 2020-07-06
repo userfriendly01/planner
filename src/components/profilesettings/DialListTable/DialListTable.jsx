@@ -3,9 +3,9 @@ import {
   Edit
 } from "@material-ui/icons";
 import PropTypes from "prop-types";
-// import { apiPaths } from "globals";
+import { apiPaths } from "globals";
 import React from "react";
-// import { myAxios } from "utils";
+import { myAxios } from "utils";
 import styled from "styled-components";
 
 const headerIconWidth = "64px";
@@ -95,7 +95,8 @@ const TableText = styled.div`
 const DialListTable = props => {
 
   const {
-    dialList
+    profileSettingsState,
+    setProfileSettingsState
   } = props;
 
   return(
@@ -108,25 +109,24 @@ const DialListTable = props => {
           </tr>
         </thead>
         <tbody>
-          {dialList.map((entry, index) => {
+          {profileSettingsState.profile.dialList.map((entry, index) => {
             const editButtonOnClick = event => {
               event.stopPropagation();
-              console.log("you clicked the edit button");
+              console.log("you clicked the edit button"); //
             };
             const deleteButtonOnClick = () => {
-              // const popUp = confirm("Are you sure you want to delete this dial list entry?");
-              // if (popUp === true) {
 
-              // deleteContactFromProfile(index);
-              // myAxios.delete(apiPaths.DELETE_CONTACT_FROM_PROFILE)()
-
-              console.log("entry:", entry);
-
-              // console.log("dialList before:", dialList);
-              // dialList.splice(index, 1);
-              // console.log("dialList after:", dialList);
-
-              // }
+              const popUp = confirm("Are you sure you want to delete this dial list entry?");
+              if (popUp === true) {
+                myAxios.delete(apiPaths.DELETE_CONTACT_FROM_PROFILE(profileSettingsState.profile.profileId, entry.contact_id))
+                  .then(() => {
+                    delete profileSettingsState.profile.dialList[index];
+                    setProfileSettingsState({
+                      ...profileSettingsState,
+                      dialList: profileSettingsState.profile.dialList
+                    });
+                  });
+              }
             };
             return(
               <CustomTableRow key={index} data-testid="table-row">
@@ -148,7 +148,8 @@ const DialListTable = props => {
 };
 
 DialListTable.propTypes = {
-  dialList: PropTypes.array.isRequired
+  profileSettingsState: PropTypes.object.isRequired,
+  setProfileSettingsState: PropTypes.func.isRequired
 };
 
 export default DialListTable;
