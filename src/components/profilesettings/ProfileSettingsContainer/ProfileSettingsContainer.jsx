@@ -22,33 +22,26 @@ const ProfileSettingsContainer = () => {
   const profilesFromContextMinusGoP = useAdminState().profileContext.profiles.slice(1);
 
   const updateProfile = newProfileId => {
-    if (newProfileId === "") {
-      setProfileSettingsState({
-        profile: initialProfileState,
-        message: initialMessage
-      });
-    } else {
-      myAxios.get(apiPaths.GET_PROFILE_DATA(newProfileId))
-        .then(res => {
-          setProfileSettingsState({
-            profile: {
-              profileId: newProfileId,
-              dialList: res.data.contacts
-            },
-            message: null
-          });
-        })
-        .catch(err => {
-          console.error("ProfileSettingsContainer - Failed to get profile data", {
-            err,
-            newProfileId
-          });
-          setProfileSettingsState({
-            profile: initialProfileState,
-            message: `Failed to get data for profile ${newProfileId}.`
-          });
+    myAxios.get(apiPaths.GET_PROFILE_DATA(newProfileId))
+      .then(res => {
+        setProfileSettingsState({
+          profile: {
+            profileId: newProfileId,
+            dialList: res.data.contacts
+          },
+          message: null
         });
-    }
+      })
+      .catch(err => {
+        console.error("ProfileSettingsContainer - Failed to get profile data", {
+          err,
+          newProfileId
+        });
+        setProfileSettingsState({
+          profile: initialProfileState,
+          message: `Failed to get data for profile ${newProfileId}.`
+        });
+      });
   };
 
   return(
@@ -58,7 +51,7 @@ const ProfileSettingsContainer = () => {
         profile={profileSettingsState.profile}
         updateProfile={updateProfile}
       />
-      {profileSettingsState.profile.profileId !== null ?
+      {profileSettingsState.profile.profileId !== null && profileSettingsState.profile.profileId !== "" ?
         <DialListTable
           profile={profileSettingsState.profile}
           setProfileSettingsState={setProfileSettingsState}

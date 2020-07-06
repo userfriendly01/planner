@@ -13,6 +13,7 @@ const ProfileDropDown = props => {
     <OutlinedSelect
       label={"Profile"}
       labelWidth={65}
+      noBlankValue={profile.profileId === null ? false : true}
       optionsList={availableProfiles}
       optionsDisplayFunc={option => {
         return {
