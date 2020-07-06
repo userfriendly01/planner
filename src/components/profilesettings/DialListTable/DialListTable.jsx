@@ -95,60 +95,70 @@ const TableText = styled.div`
 const DialListTable = props => {
 
   const {
-    profileSettingsState,
+    profile,
     setProfileSettingsState
   } = props;
+  const {
+    dialList,
+    profileId
+  } = profile;
 
-  return(
-    <TableContainer>
-      <CustomTable>
-        <thead>
-          <tr>
-            <CustomTableHeader>NAME</CustomTableHeader>
-            <CustomTableHeader>NUMBER</CustomTableHeader>
-          </tr>
-        </thead>
-        <tbody>
-          {profileSettingsState.profile.dialList.map((entry, index) => {
-            const editButtonOnClick = event => {
-              event.stopPropagation();
-              console.log("you clicked the edit button"); //
-            };
-            const deleteButtonOnClick = () => {
+  if (dialList.length === 0) {
+    return(<h1>No dial list entries exist for this profile</h1>);
+  } else {
+    return(
+      <TableContainer>
+        <CustomTable>
+          <thead>
+            <tr>
+              <CustomTableHeader>NAME</CustomTableHeader>
+              <CustomTableHeader>NUMBER</CustomTableHeader>
+            </tr>
+          </thead>
+          <tbody>
+            {dialList.map((entry, index) => {
+              const editButtonOnClick = event => {
+                event.stopPropagation();
+                console.log("you clicked the edit button"); //
+              };
+              const deleteButtonOnClick = () => {
 
-              const popUp = confirm("Are you sure you want to delete this dial list entry?");
-              if (popUp === true) {
-                myAxios.delete(apiPaths.DELETE_CONTACT_FROM_PROFILE(profileSettingsState.profile.profileId, entry.contact_id))
-                  .then(() => {
-                    delete profileSettingsState.profile.dialList[index];
-                    setProfileSettingsState({
-                      ...profileSettingsState,
-                      dialList: profileSettingsState.profile.dialList
+                const popUp = confirm("Are you sure you want to delete this dial list entry?");
+                if (popUp === true) {
+                  myAxios.delete(apiPaths.DELETE_CONTACT_FROM_PROFILE(profileId, entry.contact_id))
+                    .then(() => {
+                      delete dialList[index];
+                      setProfileSettingsState({
+                        profile: {
+                          ...profile,
+                          dialList
+                        }
+                      });
                     });
-                  });
-              }
-            };
-            return(
-              <CustomTableRow key={index} data-testid="table-row">
-                <CustomTableData><TableText>{entry.contact_nme}</TableText></CustomTableData>
-                <CustomTableData><TableText>{entry.contact_num}</TableText></CustomTableData>
-                <CustomTableData><IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
-                  <Edit fontSize={"inherit"} />
-                </IconWrapper></CustomTableData>
-                <CustomTableData><IconWrapper onClick={deleteButtonOnClick} data-testid="delete-button">
-                  <Delete fontSize={"inherit"} />
-                </IconWrapper></CustomTableData>
-              </CustomTableRow>
-            );
-          })}
-        </tbody>
-      </CustomTable>
-    </TableContainer>
-  );
+                }
+              };
+              return(
+                <CustomTableRow key={index} data-testid="table-row">
+                  <CustomTableData><TableText>{entry.contact_nme}</TableText></CustomTableData>
+                  <CustomTableData><TableText>{entry.contact_num}</TableText></CustomTableData>
+                  <CustomTableData><IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
+                    <Edit fontSize={"inherit"} />
+                  </IconWrapper></CustomTableData>
+                  <CustomTableData><IconWrapper onClick={deleteButtonOnClick} data-testid="delete-button">
+                    <Delete fontSize={"inherit"} />
+                  </IconWrapper></CustomTableData>
+                </CustomTableRow>
+              );
+            })}
+          </tbody>
+        </CustomTable>
+      </TableContainer>
+    );
+  }
 };
 
 DialListTable.propTypes = {
-  profileSettingsState: PropTypes.object.isRequired,
+  profile: PropTypes.object.isRequired,
   setProfileSettingsState: PropTypes.func.isRequired
 };
 
