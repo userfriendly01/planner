@@ -180,7 +180,7 @@ describe("<EditUserModal />", () => {
     test("ModalExtension shows the correct extension list is in its initial state", () => {
       renderComponent();
       const expectedExtensionProps = {
-        extension: "1234",
+        extension: "1234"
       };
       expectOnlyPassedProps(ModalExtension, expectedExtensionProps, 0);
     });
@@ -236,6 +236,7 @@ describe("<EditUserModal />", () => {
       levels: {}
     };
     beforeEach(() => axiosMock.onPost(apiPaths.EDIT_WORKER).reply(200, mockSuccessfulResponse));
+
     test("defaultSkills and manager are both updated, Update button clicked, should update default_skills and manager attributes, show success modal overlay and hide after 2s", done => {
       const rendered = renderComponent();
       act(() => {
@@ -358,6 +359,51 @@ describe("<EditUserModal />", () => {
         done();
       });
     });
+
+    test("extension is updated, Update button clicked, should only update extension attribute, show success modal overlay and hide after 2s", done => {
+      const rendered = renderComponent();
+      const updatedExtension = "4567";
+      act(() => {
+        const props = getMockedComponentProps(ModalExtension);
+        const form = props.form;
+        props.updateValue(updatedExtension);
+        props.setForm({
+          ...form,
+          extensionValid: true,
+          extensionUpdated: true
+        });
+      });
+      expectOnlyPassedProps(StyledButton, {
+        children: "Update",
+        disabled: false
+      });
+      act(() => {
+        const { onClick } = getMockedComponentProps(StyledButton);
+        onClick();
+        return Promise.resolve();
+      }).then(() => {
+        expect(axiosMock.history.post[0].data).toEqual(JSON.stringify({
+          workerSid,
+          attributes: {
+            extension: updatedExtension
+          }
+        }));
+        const actions = mockStore.getActions();
+        expect(actions).toHaveLength(1);
+        expect(actions[0]).toEqual({
+          type: "updateWorker",
+          payload: mapWorkerFromTwilioWorker(mockSuccessfulResponse)
+        });
+        expectMockedComponent(rendered, { ModalOverlay }, 1);
+        expectOnlyPassedProps(ModalOverlay, {
+          message: "User updated successfully",
+          status: "success"
+        });
+        act(() => jest.runAllTimers());
+        expect(mockHandleClose).toHaveBeenCalledTimes(1);
+        done();
+      });
+    });
   });
 
   test("clear extension called should reset the field", () => {
@@ -374,51 +420,6 @@ describe("<EditUserModal />", () => {
     });
     newValue = ModalExtension.mock.calls[2][0].extension;
     expect(newValue).toEqual("");
-  });
-
-  test("extension is updated, Update button clicked, should only update extension attribute, show success modal overlay and hide after 2s", done => {
-    const rendered = renderComponent();
-    const updatedExtension = "4567";
-    act(() => {
-      const props = getMockedComponentProps(ModalExtension);
-      const form = props.form;
-      props.updateValue(updatedExtension);
-      props.setForm({
-        ...form,
-        extensionValid: true,
-        extensionUpdated: true
-      });      
-    });
-    expectOnlyPassedProps(StyledButton, {
-      children: "Update",
-      disabled: false
-    });
-    act(() => {
-      const { onClick } = getMockedComponentProps(StyledButton);
-      onClick();
-      return Promise.resolve();
-    }).then(() => {
-      expect(axiosMock.history.post[0].data).toEqual(JSON.stringify({
-        workerSid,
-        attributes: {
-          extension: updatedExtension,
-        }
-      }));
-      const actions = mockStore.getActions();
-      expect(actions).toHaveLength(1);
-      expect(actions[0]).toEqual({
-        type: "updateWorker",
-        payload: mapWorkerFromTwilioWorker(mockSuccessfulResponse)
-      });
-      expectMockedComponent(rendered, { ModalOverlay }, 1);
-      expectOnlyPassedProps(ModalOverlay, {
-        message: "User updated successfully",
-        status: "success"
-      });
-      act(() => jest.runAllTimers());
-      expect(mockHandleClose).toHaveBeenCalledTimes(1);
-      done();
-    });
   });
 
   describe("service call to update worker attributes fails", () => {
