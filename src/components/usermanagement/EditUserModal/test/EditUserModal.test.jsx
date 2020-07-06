@@ -364,15 +364,15 @@ describe("<EditUserModal />", () => {
     renderComponent();
     act(() => {
       const updateValue = ModalExtension.mock.calls[0][0].updateValue;
-      updateValue("1234");
+      updateValue("2345");
     });
     let newValue = ModalExtension.mock.calls[1][0].extension;
-    expect(newValue).toEqual("1234");
+    expect(newValue).toEqual("2345");
     act(() => {
-      const clearExtension = ModalExtension.mock.calls[0][0].clearExtension;
+      const clearExtension = ModalExtension.mock.calls[1][0].clearExtension;
       clearExtension();
     });
-    newValue = ModalExtension.mock.calls[0][0].extension;
+    newValue = ModalExtension.mock.calls[2][0].extension;
     expect(newValue).toEqual("");
   });
 
@@ -380,10 +380,15 @@ describe("<EditUserModal />", () => {
     const rendered = renderComponent();
     const updatedExtension = "4567";
     act(() => {
-      const setExtension = getMockedComponentProps(ModalExtension).updateValue;
-      setExtension(JSON.stringify(updatedExtension));
+      const props = getMockedComponentProps(ModalExtension);
+      const form = props.form;
+      props.updateValue(updatedExtension);
+      props.setForm({
+        ...form,
+        extensionValid: true,
+        extensionUpdated: true
+      });      
     });
-    //I think this is returning button disabled because needs to see extensionUpdated as true? Where can I set extensionUpdated?
     expectOnlyPassedProps(StyledButton, {
       children: "Update",
       disabled: false
