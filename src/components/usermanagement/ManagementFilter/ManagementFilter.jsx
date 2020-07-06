@@ -11,7 +11,7 @@ import styled from "styled-components";
 const ControlsWrapper = styled.div`
   align-items: center;
   display: flex;
-  padding 1%;
+  padding: 1%;
 `;
 
 const ControlItem = styled.div`
