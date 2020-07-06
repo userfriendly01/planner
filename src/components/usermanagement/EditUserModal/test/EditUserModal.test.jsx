@@ -87,6 +87,7 @@ const renderComponent = defaultSkills => {
 describe("<EditUserModal />", () => {
   beforeEach(() => {
     axiosMock.reset();
+    jest.clearAllMocks();
     setupMockedComponents({
       CloseRounded,
       StyledButton,
@@ -95,8 +96,6 @@ describe("<EditUserModal />", () => {
       ModalExtension,
       ModalOverlay
     });
-    mockHandleClose.mockClear();
-    PaperContainer.mockClear();
     PaperContainer.mockImplementation(props => <div>{props.children}</div>);
   });
 
@@ -370,10 +369,10 @@ describe("<EditUserModal />", () => {
     let newValue = ModalExtension.mock.calls[1][0].extension;
     expect(newValue).toEqual("1234");
     act(() => {
-      const clearExtension = ModalExtension.mock.calls[1][0].clearExtension;
-      clearExtension("1234");
+      const clearExtension = ModalExtension.mock.calls[0][0].clearExtension;
+      clearExtension();
     });
-    newValue = ModalExtension.mock.calls[2][0].extension;
+    newValue = ModalExtension.mock.calls[0][0].extension;
     expect(newValue).toEqual("");
   });
 
