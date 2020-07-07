@@ -5,7 +5,17 @@ import {
 import { useAdminState } from "context";
 import { apiPaths } from "globals";
 import React, { useState } from "react";
+import styled from "styled-components";
 import { myAxios } from "utils";
+
+const ProfileSettingsContainerDiv = styled.div`
+  padding: 1%;
+`;
+
+const ProfileSettingsMessage = styled.div`
+  margin-top: 25vh;
+  text-align: center;
+`;
 
 const ProfileSettingsContainer = () => {
 
@@ -45,7 +55,7 @@ const ProfileSettingsContainer = () => {
   };
 
   return(
-    <div>
+    <ProfileSettingsContainerDiv>
       <ProfileDropDown
         availableProfiles={profilesFromContextMinusGoP}
         profile={profileSettingsState.profile}
@@ -55,9 +65,11 @@ const ProfileSettingsContainer = () => {
         <DialListTable
           profile={profileSettingsState.profile}
           setProfileSettingsState={setProfileSettingsState}
-        /> : null}
-      <h1 data-testid="message">{profileSettingsState.message}</h1>
-    </div>
+        />: null}
+      <ProfileSettingsMessage data-testid="message">
+        <h1>{profileSettingsState.message}</h1>
+      </ProfileSettingsMessage>
+    </ProfileSettingsContainerDiv>
   );
 };
 
