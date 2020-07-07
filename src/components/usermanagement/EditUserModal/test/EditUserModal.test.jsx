@@ -420,6 +420,9 @@ describe("<EditUserModal />", () => {
     });
     newValue = ModalExtension.mock.calls[2][0].extension;
     expect(newValue).toEqual("");
+    const props = getMockedComponentProps(ModalExtension);
+    expect(props.form.extensionValid).toEqual(false);
+    expect(props.form.extensionUpdated).toEqual(false);
   });
 
   describe("service call to update worker attributes fails", () => {
