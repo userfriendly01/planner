@@ -142,7 +142,8 @@ const EditUserModal = props => {
   const clearExtension = () => {
     setForm({
       ...form,
-      extensionValid: false
+      extensionValid: false,
+      extensionUpdated: false
     });
     setExtension("");
   };
