@@ -50,22 +50,4 @@ describe("checkExtension", () => {
       });
     });
   });
-
-  // describe("postToTransferApi fails", () => {
-  //   const badResponse = { wahh: "Failed transfer to VDN" };
-  //   const status = 500;
-  //   beforeEach(() => ( axiosMock.onPost(postToTransferApiUrl).reply(status, badResponse)));
-  //   test("should reject with error", done => {
-  //     postToTransferApi(vdn, fromNumber).catch(rejectedVal => {
-  //       expect(axiosMock.history.post[0].url).toBe(postToTransferApiUrl);
-  //       expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(postToTransferApiRequest);
-  //       expect(rejectedVal).toEqual({
-  //         data: badResponse,
-  //         status
-  //       });
-  //       expect(getElevenDigitNumber).toHaveBeenCalledWith(fromNumber);
-  //       done();
-  //     });
-  //   });
-  // });
 });

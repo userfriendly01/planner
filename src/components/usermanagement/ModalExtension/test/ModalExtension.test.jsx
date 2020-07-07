@@ -26,14 +26,14 @@ const mockClearExtension = jest.fn();
 const mockSetForm = jest.fn();
 const mockUpdateValue = jest.fn();
 
-const renderComponent = (disabled, form, extension, originalValueReq = true) => {
+const renderComponent = (disabled, form, extension, isEditExisting = true) => {
   return render(<ModalExtension
     clearExtension={mockClearExtension}
     disabled={disabled}
     extension={extension}
     form={form}
     originalValue={"1234"}
-    originalValueReq={originalValueReq}
+    isEditExisting={isEditExisting}
     setForm={mockSetForm}
     updateValue={mockUpdateValue} />);
 };

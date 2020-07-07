@@ -147,12 +147,6 @@ const EditUserModal = props => {
     setExtension("");
   };
 
-  // const setExtension = newValue => setForm({
-  //   ...form,
-  //   extension: newValue,
-  //   extensionUpdated: true
-  // });
-
   const formUpdated = (form.defaultSkillsUpdated || form.managerUpdated || form.extensionUpdated);
   const formValid = form.manager !== "";
   const formReady = formUpdated && formValid;
@@ -198,8 +192,8 @@ const EditUserModal = props => {
           disabled={form.extensionValid && /\d{4}/g.test(extension)}
           extension={extension}
           form={form}
+          isEditExisting={/\d{4}/g.test(worker.attributes.extension)}
           originalValue={worker.attributes.extension}
-          originalValueReq={/\d{4}/g.test(worker.attributes.extension)}
           setForm={setForm}
           updateValue={newValue => setExtension(newValue)}
         />
