@@ -119,22 +119,31 @@ const DialListTable = props => {
             {dialList.map((entry, index) => {
               const editButtonOnClick = event => {
                 event.stopPropagation();
-                console.log("you clicked the edit button"); //
+                // TODO: Launch add/edit modal here
+                console.log("you clicked the edit button");
               };
               const deleteButtonOnClick = () => {
-
                 const popUp = confirm("Are you sure you want to delete this dial list entry?");
                 if (popUp === true) {
                   myAxios.delete(apiPaths.DELETE_CONTACT_FROM_PROFILE(profileId, entry.contact_id))
                     .then(() => {
-                      delete dialList[index];
+                      dialList.splice(index, 1);
                       setProfileSettingsState({
                         profile: {
                           ...profile,
                           dialList
                         }
                       });
+                    })
+                    .catch(err => {
+                      console.error(`DialListTable - Failed to delete dial list entry for contact_id ${entry.contact_id}`, {
+                        err,
+                        entry
+                      });
+                      // TODO: What to display to user?
                     });
+                } else {
+                  console.log("popUp === false");
                 }
               };
               return(
