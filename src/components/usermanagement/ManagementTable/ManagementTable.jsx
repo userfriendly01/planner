@@ -32,11 +32,11 @@ const CustomTableData = styled.td`
   color: ${props => props.theme.textColor};
   padding: 2px 4px;
   vertical-align: top;
-  &:nth-child(6) {
+  &:nth-child(7) {
     text-align: -webkit-center;
     vertical-align: middle;
   }
-  &:nth-child(7) {
+  &:nth-child(8) {
     text-align: -webkit-center;
     vertical-align: middle;
   }
@@ -53,13 +53,13 @@ const CustomTableHeader = styled.th`
   &:nth-child(2) {
     width: 10%;
   }
-  &:nth-child(3) {
+  &:nth-child(4) {
     width: 18%;
   }
-  &:nth-child(6) {
+  &:nth-child(7) {
     width: ${headerIconWidth};
   }
-  &:nth-child(7) {
+  &:nth-child(8) {
     width: ${headerIconWidth};
   }
 `;
