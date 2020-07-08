@@ -68,6 +68,7 @@ const AddEditSettingsModal = props => {
       <PaperContainer>
         <Header>Profile Settings</Header>
         <ModalPhoneNumber
+          id="transfer-number"
           number={form.transferNumber}
           label="Transfer Number"
           updateValue={newValue => setForm({
@@ -89,6 +90,7 @@ const AddEditSettingsModal = props => {
           value={form.friendlyName}
         />
         <ModalPhoneNumber
+          id="external-number"
           number={form.externalNumber}
           label="External Number"
           updateValue={newValue => setForm({

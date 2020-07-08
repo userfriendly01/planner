@@ -31,14 +31,15 @@ function TextMaskCustom(inputProps) {
 
 const ModalPhoneNumber = props => {
   const {
-    number,
+    id,
     label,
+    number,
     updateValue
   } = props;
 
   return (
     <TextInput
-      id="outlined-number-input"
+      id={`${id}-outlined-number-input` || "outlined-number-input"}
       InputProps={{ inputComponent: TextMaskCustom }}
       label={label}
       name={label}
@@ -51,8 +52,9 @@ const ModalPhoneNumber = props => {
 };
 
 ModalPhoneNumber.propTypes = {
-  number: PropTypes.string.isRequired,
+  id: PropTypes.string,
   label: PropTypes.string.isRequired,
+  number: PropTypes.string.isRequired,
   updateValue: PropTypes.func.isRequired
 };
 
