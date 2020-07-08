@@ -9,6 +9,8 @@ import styled from "styled-components";
 import { myAxios } from "utils";
 
 const ProfileSettingsContainerDiv = styled.div`
+  background-color: ${props => props.theme.tableRow.borderColor};
+  height: calc(100vh - 96px);
   padding: 1%;
 `;
 
