@@ -3,6 +3,7 @@ import {
   Delete,
   Edit
 } from "@material-ui/icons";
+import { AddContact } from "components";
 import PropTypes from "prop-types";
 import { apiPaths } from "globals";
 import React from "react";
@@ -120,6 +121,7 @@ const DialListTable = props => {
   } else {
     return(
       <TableContainer>
+        <AddContact />
         <StyledPaper elevation={3}>
           <CustomTable>
             <thead>
