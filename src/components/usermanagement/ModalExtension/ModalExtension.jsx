@@ -5,7 +5,9 @@ import {
 import { extensionMatcher } from "globals";
 import { checkExtension } from "services";
 import PropTypes from "prop-types";
-import React from "react";
+import React, {
+  useState
+} from "react";
 import styled from "styled-components";
 
 const FlexColumn = styled.div`
@@ -26,9 +28,11 @@ const ModalExtension = props => {
     updateValue
   } = props;
 
+  const [loading, setLoading] = useState(false);
   const validator = extension => extension.match(extensionMatcher);
 
   const inputServiceCall = extension => {
+    setLoading(true);
     const isOriginal = isEditExisting ? extension === originalValue : false;
     return checkExtension(extension)
       .then(isValid => {
@@ -45,6 +49,7 @@ const ModalExtension = props => {
             extensionUpdated: false
           });
         }
+        setLoading(false);
       })
       .catch(err => {
         console.log(err);
@@ -53,6 +58,7 @@ const ModalExtension = props => {
           extensionValid: false,
           extensionUpdated: false
         });
+        setLoading(false);
       });
   };
 
@@ -74,8 +80,8 @@ const ModalExtension = props => {
         showModalHelperText
           ? <ModalHelperText
             clearUser = {clearExtension}
-            error={form.extensionValid ? false : true}
-            message={form.extensionValid ? "Extension is valid" : "Extension already in use"}
+            error={!(form.extensionValid || loading)}
+            message={loading? "Validating..." : (form.extensionValid ? "Extension is valid" : "Extension already in use")}
           />
           : null
       }

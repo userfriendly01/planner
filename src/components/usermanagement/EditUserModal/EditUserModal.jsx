@@ -87,7 +87,7 @@ const EditUserModal = props => {
     manager: JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number)),
     managerUpdated: false,
     extensionUpdated: false,
-    extensionValid: true
+    extensionValid: extension !== ""
   });
 
   const saveUserClicked = () => {

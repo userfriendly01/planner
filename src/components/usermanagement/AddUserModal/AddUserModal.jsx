@@ -65,11 +65,11 @@ const AddUserModal = props => {
     }
   } = useAdminState();
   const [form, setForm] = useState({
+    extensionValid: false,
     lookupInfo: {},
     manager: "",
     outgoing: "",
-    team: "",
-    extensionValid: false
+    team: ""
   });
   const [nNumber, setNNumber] = useState(defaultNNumber);
   const [extension, setExtension] = useState("");
@@ -161,7 +161,7 @@ const AddUserModal = props => {
       });
   };
   const isLookupInfoEmpty = JSON.stringify(form.lookupInfo) === JSON.stringify({});
-  const formReady = !isLookupInfoEmpty && form.team !== "" && form.manager !== "" && form.outgoing !== "" && form.extensionValid;
+  const formReady = !isLookupInfoEmpty && form.team !== "" && form.manager !== "" && form.outgoing !== "" && (form.extensionValid || extension === "");
 
   let overlayMessage = "Saving";
   if (loading.saveStatus === "success") {
@@ -180,7 +180,7 @@ const AddUserModal = props => {
           /> : null}
         <Header>Add a User</Header>
         <OutlinedSelect
-          label={"Manager"}
+          label={"Manager*"}
           labelWidth={65}
           optionsList={managers.sort(sortManagersByName)}
           optionsDisplayFunc={option => {
@@ -197,7 +197,7 @@ const AddUserModal = props => {
           value={form.manager}
         />
         <OutlinedSelect
-          label={"Team"}
+          label={"Team*"}
           labelWidth={41}
           optionsList={profiles}
           optionsDisplayFunc={option => {
@@ -236,6 +236,7 @@ const AddUserModal = props => {
           form={form}
           setForm={setForm}
         />
+        <p>* required field</p>
         <ButtonWrapper>
           <StyledButton disabled={!formReady} onClick={saveUser}>Add User</StyledButton>
           <StyledButton onClick={handleClose}>Close</StyledButton>

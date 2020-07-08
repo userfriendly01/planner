@@ -154,7 +154,7 @@ describe("<AddUserModal />", () => {
         initialTestState
       );
       const expectedManagerProps = {
-        label: "Manager",
+        label: "Manager*",
         labelWidth: 65,
         optionsList: managerList,
         value: ""
@@ -188,7 +188,7 @@ describe("<AddUserModal />", () => {
     test("the initial state driven from the Context API as well as the functionality of the display function", () => {
       renderComponent();
       const expectedTeamProps = {
-        label: "Team",
+        label: "Team*",
         labelWidth: 41,
         optionsList: profileList,
         value: ""

@@ -39,7 +39,7 @@ const ModalPhoneNumber = props => {
     <TextInput
       id="outlined-outgoing-input"
       InputProps={{ inputComponent: TextMaskCustom }}
-      label="Outgoing Number"
+      label="Outgoing Number*"
       name="Outgoing Number"
       onChange={event => updateValue(event.target.value)}
       margin="normal"
