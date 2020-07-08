@@ -1,18 +1,26 @@
 import DialListTable from "../DialListTable";
 import { within } from "@testing-library/react";
 import MockAdapter from "axios-mock-adapter";
+import { AddContact } from "components";
 import { apiPaths } from "globals";
 import React from "react";
 import {
   act,
+  expectMockedComponent,
   fireEvent,
-  render
+  render,
+  setupMockedComponents
 } from "testUtils";
 import { myAxios } from "utils";
 
 const axiosMock = new MockAdapter(myAxios);
 
 const mockSetProfileSettingsState = jest.fn();
+
+jest.mock("components", () => ({
+  __esModule: true,
+  AddContact: jest.fn()
+}));
 
 const renderComponent = profile => render(<DialListTable profile={profile} setProfileSettingsState={mockSetProfileSettingsState} />);
 
@@ -21,6 +29,7 @@ describe("<DialListTable />", () => {
   beforeEach(() => {
     axiosMock.reset();
     jest.clearAllMocks();
+    setupMockedComponents({ AddContact });
   });
 
   describe("profile does not have entries in its dial list", () => {
@@ -56,8 +65,9 @@ describe("<DialListTable />", () => {
       profileId: 7,
       dialList
     };
-    test("should render header and correct info for each dial list entry", () => {
+    test("should render add button, header and correct info for each dial list entry", () => {
       const rendered = renderComponent(profile);
+      expectMockedComponent(rendered, { AddContact });
       expect(rendered.getByText("NAME", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("NUMBER", { selector: "th" })).toBeInTheDocument();
       dialList.forEach(entry => {
