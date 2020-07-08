@@ -1,12 +1,18 @@
+import { Modal } from "@material-ui/core";
 import { Paper } from "@material-ui/core";
 import {
   Delete,
   Edit
 } from "@material-ui/icons";
-import { AddContact } from "components";
+import {
+  AddContact,
+  AddEditSettingsModal
+} from "components";
 import PropTypes from "prop-types";
 import { apiPaths } from "globals";
-import React from "react";
+import React, {
+  useState
+} from "react";
 import { myAxios } from "utils";
 import styled from "styled-components";
 
@@ -102,7 +108,6 @@ const NoDialListDiv = styled.div`
 `;
 
 const DialListTable = props => {
-
   const {
     profile,
     setProfileSettingsState
@@ -111,6 +116,12 @@ const DialListTable = props => {
     dialList,
     profileId
   } = profile;
+
+  const [isAddEditSettingsModalOpen, setIsAddEditSettingsModalOpen] = useState(false);
+
+  const handleCloseAddEditSettings = () => {
+    setIsAddEditSettingsModalOpen(false);
+  };
 
   if (dialList.length === 0) {
     return(
@@ -134,7 +145,7 @@ const DialListTable = props => {
               {dialList.map((entry, index) => {
                 const editButtonOnClick = event => {
                   event.stopPropagation();
-                  // TODO: Launch add/edit modal here
+                  setIsAddEditSettingsModalOpen(true);
                   console.log("you clicked the edit button");
                 };
                 const deleteButtonOnClick = () => {
@@ -175,6 +186,9 @@ const DialListTable = props => {
                 );
               })}
             </tbody>
+            <Modal disableBackdropClick={true} open={isAddEditSettingsModalOpen}>
+              <AddEditSettingsModal handleClose={handleCloseAddEditSettings} />
+            </Modal>
           </CustomTable>
         </StyledPaper>
       </TableContainer>

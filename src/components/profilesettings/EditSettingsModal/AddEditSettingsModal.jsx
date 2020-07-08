@@ -102,9 +102,9 @@ const AddEditSettingsModal = props => {
 
 AddEditSettingsModal.propTypes = {
   externalNumber: PropTypes.number,
-  friendlyName: PropTypes.string.isRequired,
-  handleClose: PropTypes.func.isRequired,
-  transferNumber: PropTypes.string.isRequired
+  friendlyName: PropTypes.string,
+  handleClose: PropTypes.func,
+  transferNumber: PropTypes.string
 };
 
 export default AddEditSettingsModal;
