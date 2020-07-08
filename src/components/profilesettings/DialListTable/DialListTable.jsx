@@ -1,5 +1,7 @@
-import { Modal } from "@material-ui/core";
-import { Paper } from "@material-ui/core";
+import {
+  Modal,
+  Paper
+} from "@material-ui/core";
 import {
   Delete,
   Edit
@@ -8,11 +10,9 @@ import {
   AddContact,
   AddEditSettingsModal
 } from "components";
-import PropTypes from "prop-types";
 import { apiPaths } from "globals";
-import React, {
-  useState
-} from "react";
+import PropTypes from "prop-types";
+import React, { useState } from "react";
 import { myAxios } from "utils";
 import styled from "styled-components";
 
@@ -117,10 +117,16 @@ const DialListTable = props => {
     profileId
   } = profile;
 
-  const [isAddEditSettingsModalOpen, setIsAddEditSettingsModalOpen] = useState(false);
+  const [dialListTableState, setDialListTableState] = useState({
+    isAddEditSettingsModalOpen: false,
+    contactInfo: {}
+  });
 
   const handleCloseAddEditSettings = () => {
-    setIsAddEditSettingsModalOpen(false);
+    setDialListTableState({
+      ...dialListTableState,
+      isAddEditSettingsModalOpen: false
+    });
   };
 
   if (dialList.length === 0) {
@@ -143,10 +149,11 @@ const DialListTable = props => {
             </thead>
             <tbody>
               {dialList.map((entry, index) => {
-                const editButtonOnClick = event => {
-                  event.stopPropagation();
-                  setIsAddEditSettingsModalOpen(true);
-                  console.log("you clicked the edit button");
+                const editButtonOnClick = () => {
+                  setDialListTableState({
+                    isAddEditSettingsModalOpen: true,
+                    contactInfo: entry
+                  });
                 };
                 const deleteButtonOnClick = () => {
                   const popUp = confirm("Are you sure you want to delete this dial list entry?");
@@ -186,8 +193,8 @@ const DialListTable = props => {
                 );
               })}
             </tbody>
-            <Modal disableBackdropClick={true} open={isAddEditSettingsModalOpen}>
-              <AddEditSettingsModal handleClose={handleCloseAddEditSettings} />
+            <Modal disableBackdropClick={true} open={dialListTableState.isAddEditSettingsModalOpen}>
+              <AddEditSettingsModal contactInfo={dialListTableState.contactInfo} handleClose={handleCloseAddEditSettings} />
             </Modal>
           </CustomTable>
         </StyledPaper>

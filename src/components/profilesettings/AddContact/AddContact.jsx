@@ -3,9 +3,7 @@ import {
   AddEditSettingsModal,
   StyledButton
 } from "components";
-import React, {
-  useState
-} from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 const AddContactButtonContainer = styled.div`
@@ -30,7 +28,7 @@ const AddContact = () => {
         Add Contact
       </StyledButton>
       <Modal disableBackdropClick={true} open={isAddEditSettingsModalOpen}>
-        <AddEditSettingsModal handleClose={handleCloseAddEditSettings} />
+        <AddEditSettingsModal contactInfo={{}} handleClose={handleCloseAddEditSettings} />
       </Modal>
     </AddContactButtonContainer>
   );

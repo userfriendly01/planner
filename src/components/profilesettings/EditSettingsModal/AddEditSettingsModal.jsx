@@ -42,17 +42,22 @@ const ModalContainer = styled.div`
 
 const AddEditSettingsModal = props => {
   const {
-    externalNumber,
-    friendlyName,
-    handleClose,
-    transferNumber
+    contactInfo,
+    handleClose
   } = props;
+  const {
+    contact_num,
+    contact_nme,
+    external_num
+  } = contactInfo;
 
   const [form, setForm] = useState({
-    transferNumber: transferNumber ? transferNumber : null,
-    friendlyName: friendlyName ? friendlyName : null,
-    externalNumber: externalNumber ? externalNumber : null
+    transferNumber: contact_num ? contact_num : "",
+    friendlyName: contact_nme ? contact_nme : "",
+    externalNumber: external_num ? external_num : ""
   });
+
+  console.log("form:", form);
 
   const saveDialListEntry = () => {
     //Add functionality to save the dial list entry
@@ -101,10 +106,8 @@ const AddEditSettingsModal = props => {
 };
 
 AddEditSettingsModal.propTypes = {
-  externalNumber: PropTypes.number,
-  friendlyName: PropTypes.string,
-  handleClose: PropTypes.func,
-  transferNumber: PropTypes.string
+  contactInfo: PropTypes.object.isRequired,
+  handleClose: PropTypes.func.isRequired
 };
 
 export default AddEditSettingsModal;
