@@ -8,6 +8,16 @@ import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
 
+const FlexRow = styled.div`
+  display: flex;
+  flex: 1 1 auto;
+`;
+
+const ButtonWrapper = styled(FlexRow)`
+  justify-content: space-around;
+  padding: 1%;
+`;
+
 const Header = styled.h1`
   align-self: center;
 `;
@@ -32,9 +42,10 @@ const ModalContainer = styled.div`
 
 const AddEditSettingsModal = props => {
   const {
-    transferNumber,
+    externalNumber,
     friendlyName,
-    externalNumber
+    handleClose,
+    transferNumber
   } = props;
 
   const [form, setForm] = useState({
@@ -74,22 +85,26 @@ const AddEditSettingsModal = props => {
         />
         <ModalPhoneNumber
           number={form.externalNumber}
-          label="Transfer Number"
+          label="External Number"
           updateValue={newValue => setForm({
             ...form,
             externalNumber: newValue
           })}
         />
-        <StyledButton onClick={saveDialListEntry}>Save</StyledButton>
+        <ButtonWrapper>
+          <StyledButton onClick={saveDialListEntry}>Save</StyledButton>
+          <StyledButton onClick={handleClose}>Close</StyledButton>
+        </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>
   );
 };
 
 AddEditSettingsModal.propTypes = {
-  transferNumber: PropTypes.string,
-  friendlyName: PropTypes.string,
-  externalNumber: PropTypes.number
+  externalNumber: PropTypes.number,
+  friendlyName: PropTypes.string.isRequired,
+  handleClose: PropTypes.func.isRequired,
+  transferNumber: PropTypes.string.isRequired
 };
 
 export default AddEditSettingsModal;
