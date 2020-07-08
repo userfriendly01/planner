@@ -1,10 +1,11 @@
-// import { Modal } from "@material-ui/core";
+import { Modal } from "@material-ui/core";
 import {
+  AddEditSettingsModal,
   StyledButton
 } from "components";
-import React/*, {
+import React, {
   useState
-}*/ from "react";
+} from "react";
 import styled from "styled-components";
 
 const AddContactButtonContainer = styled.div`
@@ -13,25 +14,24 @@ const AddContactButtonContainer = styled.div`
 
 const AddContact = () => {
 
-  // const [isAddContactModalOpen, setIsAddContactModalOpen] = useState(false);
+  const [isAddEditSettingsModalOpen, setIsAddEditSettingsModalOpen] = useState(false);
 
-  const handleOpenAddContact = () => {
-    // setIsAddContactModalOpen(true);
-    console.log("you clicked the 'add contact' button");
+  const handleOpenAddEditSettings = () => {
+    setIsAddEditSettingsModalOpen(true);
   };
 
-  // const handleCloseAddContact = () => {
-  //   setIsAddContactModalOpen(false);
-  // };
+  const handleCloseAddEditSettings = () => {
+    setIsAddEditSettingsModalOpen(false);
+  };
 
   return (
     <AddContactButtonContainer>
-      <StyledButton /*margin={8}*/ onClick={handleOpenAddContact} data-testid={"add-contact-button"}>
+      <StyledButton onClick={handleOpenAddEditSettings} data-testid={"add-contact-button"}>
         Add Contact
       </StyledButton>
-      {/* <Modal disableBackdropClick={true} open={isAddContactModalOpen}>
-        <AddContactModal handleClose={handleCloseAddContact} />
-      </Modal> */}
+      <Modal disableBackdropClick={true} open={isAddEditSettingsModalOpen}>
+        <AddEditSettingsModal handleClose={handleCloseAddEditSettings} />
+      </Modal>
     </AddContactButtonContainer>
   );
 };
