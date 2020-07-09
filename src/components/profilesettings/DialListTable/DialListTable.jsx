@@ -64,11 +64,11 @@ const CustomTableHeader = styled.th`
 
 const CustomTableRow = styled.tr`
   &:nth-child(odd) {
-    background-color: ${props => props.selected ? props.theme.tableRow.selectedColor : props.theme.tableRow.alternateRowColor};
+    background-color: ${props => props.theme.tableRow.alternateRowColor};
   }
-  background-color: ${props => props.selected ? props.theme.tableRow.selectedColor : "inherit"};
+  background-color: "inherit";
   &:hover {
-    background-color: ${props => props.selected ? props.theme.tableRow.hoverSelectedColor : props.theme.tableRow.hoverColor};
+    background-color: ${props => props.theme.tableRow.hoverColor};
     cursor: pointer;
   }
 `;
@@ -175,8 +175,8 @@ const DialListTable = props => {
                         });
                       // TODO: What to display to user?
                       });
-                  } else {
-                    console.log("popUp === false");
+                  // } else {
+                  //   console.log("popUp === false");
                   }
                 };
                 return(

@@ -256,6 +256,7 @@ const AddUserModal = props => {
           value={form.team}
         />
         <ModalPhoneNumber
+          id="outgoing-number"
           number={form.outgoing}
           label="Outgoing Number"
           updateValue={newValue => setForm({

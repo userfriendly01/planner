@@ -39,7 +39,7 @@ const ModalPhoneNumber = props => {
 
   return (
     <TextInput
-      id={`${id}-outlined-number-input` || "outlined-number-input"}
+      id={`${id}-outlined-number-input`}
       InputProps={{ inputComponent: TextMaskCustom }}
       label={label}
       name={label}

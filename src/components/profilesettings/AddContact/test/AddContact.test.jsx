@@ -1,41 +1,47 @@
 import AddContact from "../AddContact";
-// import { AddUserModal } from "components";
+import { AddEditSettingsModal } from "components";
 import React from "react";
 import {
   act,
-  // expectMockedComponent,
+  expectMockedComponent,
   fireEvent,
-  render
-  // setupMockedComponents
+  render,
+  setupMockedComponents
 } from "testUtils";
+
+jest.mock("components/profilesettings", () => ({
+  __esModule: true,
+  AddEditSettingsModal: jest.fn()
+}));
 
 describe("<AddContact />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    setupMockedComponents({ AddEditSettingsModal });
   });
 
   describe("initial render", () => {
-    test("should display correct text", () => {
+    test("should display add contact button, not modal", () => {
       const rendered = render(<AddContact />);
       expect(rendered.getByTestId("add-contact-button", { selector: "button" })).toBeInTheDocument();
       expect(rendered.container).toHaveTextContent("Add Contact");
+      expectMockedComponent(rendered, { AddEditSettingsModal }, 0);
     });
   });
 
   describe("button is clicked", () => {
-    console.log = jest.fn();
-    test("should render add/edit modal", done => {
+    test("should render add/edit modal; when handleClose is called, modal should close", done => {
       const rendered = render(<AddContact />);
       const addButton = rendered.getByTestId("add-contact-button", { selector: "button" });
       act(() => {
         fireEvent.click(addButton);
-        return Promise.resolve();
-      })
-        .then(() => {
-          expect(console.log).toHaveBeenCalledWith("you clicked the 'add contact' button");
-          done();
-        });
+      });
+      expectMockedComponent(rendered, { AddEditSettingsModal });
+      const handleClose = AddEditSettingsModal.mock.calls[0][0].handleClose;
+      act(() => handleClose());
+      expectMockedComponent(rendered, { AddEditSettingsModal }, 0);
+      done();
     });
   });
 });

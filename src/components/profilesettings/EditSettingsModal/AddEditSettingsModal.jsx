@@ -57,7 +57,7 @@ const AddEditSettingsModal = props => {
     externalNumber: external_num ? external_num : ""
   });
 
-  console.log("form:", form);
+  // console.log("form:", form);
 
   const saveDialListEntry = () => {
     //Add functionality to save the dial list entry
