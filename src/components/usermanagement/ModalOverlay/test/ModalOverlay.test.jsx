@@ -26,13 +26,4 @@ describe("<ModalOverlay />", () => {
       expect(rendered.getByText(failMessage)).toBeInTheDocument();
     });
   });
-  describe("status other than 'saving', 'success', or 'fail' is sent", () => {
-    test("should log error message", () => {
-      console.error = jest.fn();
-      render(<ModalOverlay status="test" message="whatever" />);
-      expect(console.error.mock.calls.length).toBe(1);
-      expect(console.error.mock.calls[0][0]).
-        toContain("Warning: Failed prop type: Invalid prop `status` of value `test` supplied to `ModalOverlay`, expected one of [\"saving\",\"success\",\"fail\"].");
-    });
-  });
 });

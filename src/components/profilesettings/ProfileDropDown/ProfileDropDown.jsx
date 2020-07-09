@@ -10,20 +10,23 @@ const ProfileDropDown = props => {
   } = props;
 
   return (
-    <OutlinedSelect
-      label={"Profile"}
-      labelWidth={65}
-      optionsList={availableProfiles}
-      optionsDisplayFunc={option => {
-        return {
-          display: `${option.profile_id} - ${option.profile_nme}`,
-          key: option.profile_id,
-          value: option.profile_id
-        };
-      }}
-      updateValue={updateProfile}
-      value={profile.profileId}
-    />
+    <div>
+      <OutlinedSelect
+        label={"Profile"}
+        labelWidth={65}
+        noBlankValue={profile.profileId === null ? false : true}
+        optionsList={availableProfiles}
+        optionsDisplayFunc={option => {
+          return {
+            display: `${option.profile_id} - ${option.profile_nme}`,
+            key: option.profile_id,
+            value: option.profile_id
+          };
+        }}
+        updateValue={updateProfile}
+        value={profile.profileId}
+      />
+    </div>
   );
 };
 

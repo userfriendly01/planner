@@ -5,7 +5,18 @@ import {
 import { useAdminState } from "context";
 import { apiPaths } from "globals";
 import React, { useState } from "react";
+import styled from "styled-components";
 import { myAxios } from "utils";
+
+const ProfileSettingsContainerDiv = styled.div`
+  height: calc(100vh - 96px);
+  padding: 1%;
+`;
+
+const ProfileSettingsMessage = styled.div`
+  margin-top: 25vh;
+  text-align: center;
+`;
 
 const ProfileSettingsContainer = () => {
 
@@ -13,9 +24,10 @@ const ProfileSettingsContainer = () => {
     profileId: null,
     dialList: []
   };
-  const [state, setState] = useState({
+  const initialMessage = "Please select a profile";
+  const [profileSettingsState, setProfileSettingsState] = useState({
     profile: initialProfileState,
-    message: "Please select a profile"
+    message: initialMessage
   });
 
   const profilesFromContextMinusGoP = useAdminState().profileContext.profiles.slice(1);
@@ -23,7 +35,7 @@ const ProfileSettingsContainer = () => {
   const updateProfile = newProfileId => {
     myAxios.get(apiPaths.GET_PROFILE_DATA(newProfileId))
       .then(res => {
-        setState({
+        setProfileSettingsState({
           profile: {
             profileId: newProfileId,
             dialList: res.data.contacts
@@ -36,7 +48,7 @@ const ProfileSettingsContainer = () => {
           err,
           newProfileId
         });
-        setState({
+        setProfileSettingsState({
           profile: initialProfileState,
           message: `Failed to get data for profile ${newProfileId}.`
         });
@@ -44,15 +56,21 @@ const ProfileSettingsContainer = () => {
   };
 
   return(
-    <div>
+    <ProfileSettingsContainerDiv>
       <ProfileDropDown
         availableProfiles={profilesFromContextMinusGoP}
-        profile={state.profile}
+        profile={profileSettingsState.profile}
         updateProfile={updateProfile}
       />
-      {state.profile.profileId !== null ? <DialListTable dialList={state.profile.dialList} /> : null}
-      <h1 data-testid="message">{state.message}</h1>
-    </div>
+      {profileSettingsState.profile.profileId !== null && profileSettingsState.profile.profileId !== "" ?
+        <DialListTable
+          profile={profileSettingsState.profile}
+          setProfileSettingsState={setProfileSettingsState}
+        />: null}
+      <ProfileSettingsMessage data-testid="message">
+        <h1>{profileSettingsState.message}</h1>
+      </ProfileSettingsMessage>
+    </ProfileSettingsContainerDiv>
   );
 };
 
