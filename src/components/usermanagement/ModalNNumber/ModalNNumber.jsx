@@ -58,7 +58,7 @@ const ModalNNumber = props => {
     <FlexColumn>
       <CustomInput
         disabled={disabled}
-        label="N Number*"
+        label="N Number *"
         name="N Number"
         maxLength="8"
         updateValue={updateValue}

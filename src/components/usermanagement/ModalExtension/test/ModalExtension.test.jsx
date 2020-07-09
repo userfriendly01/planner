@@ -150,19 +150,20 @@ describe("<ModalExtension />", () => {
       });
     });
     describe("the modal helper", () => {
-      // test("should show when extension is validating", () => {
-      //   checkExtension.mockResolvedValue(true);
-      //   renderComponent(false, {
-      //     extensionValid: true,
-      //     extensionUpdated: true
-      //   }, "2222");
-      //   const modalProps = getMockedComponentProps(CustomInput);
-      //   modalProps.setLoading(true);
-      //   const props = getMockedComponentProps(ModalHelperText);
-      //   expect(props.error).toBe(false);
-      //   expect(props.clearUser).toBe(mockClearExtension);
-      //   expect(props.message).toEqual("Validating...");
-      // });
+      test("should show when extension is validating", () => {
+        checkExtension.mockResolvedValue(true);
+        renderComponent(false, {
+          extensionValid: true,
+          extensionUpdated: true
+        }, "2222");
+        const props = getMockedComponentProps(CustomInput);
+        const validatedServiceCall = props.validatedServiceCall;
+        validatedServiceCall("1234");
+        const helperProps = getMockedComponentProps(ModalHelperText);
+        expect(helperProps.error).toBe(false);
+        expect(helperProps.clearUser).toBe(mockClearExtension);
+        expect(helperProps.message).toEqual("Validating...");
+      });
       test("should show when extension is valid", () => {
         checkExtension.mockResolvedValue(true);
         renderComponent(false, {

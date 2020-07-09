@@ -54,7 +54,7 @@ describe("<ModalNNumber />", () => {
       renderComponent(disabled, form, nNumber);
       const props = getMockedComponentProps(CustomInput);
       expect(props.disabled).toBe(disabled);
-      expect(props.label).toBe("N Number*");
+      expect(props.label).toBe("N Number *");
       expect(props.maxLength).toEqual("8");
       expect(props.name).toBe("N Number");
       expect(props.updateValue).toBe(mockUpdateValue);

@@ -48,6 +48,11 @@ const ModalContainer = styled.div`
   transform: translate(-50%, -50%);
 `;
 
+const RequiredText = styled(FlexRow)`
+  justify-content: center;
+  padding: 1%;
+`;
+
 const defaultNNumber = "n";
 
 const AddUserModal = props => {
@@ -180,8 +185,8 @@ const AddUserModal = props => {
           /> : null}
         <Header>Add a User</Header>
         <OutlinedSelect
-          label={"Manager*"}
-          labelWidth={65}
+          label={"Manager *"}
+          labelWidth={75}
           optionsList={managers.sort(sortManagersByName)}
           optionsDisplayFunc={option => {
             return {
@@ -197,8 +202,8 @@ const AddUserModal = props => {
           value={form.manager}
         />
         <OutlinedSelect
-          label={"Team*"}
-          labelWidth={41}
+          label={"Team *"}
+          labelWidth={52}
           optionsList={profiles}
           optionsDisplayFunc={option => {
             return {
@@ -236,7 +241,9 @@ const AddUserModal = props => {
           form={form}
           setForm={setForm}
         />
-        <p>* required field</p>
+        <RequiredText>
+          * required field
+        </RequiredText>
         <ButtonWrapper>
           <StyledButton disabled={!formReady} onClick={saveUser}>Add User</StyledButton>
           <StyledButton onClick={handleClose}>Close</StyledButton>
