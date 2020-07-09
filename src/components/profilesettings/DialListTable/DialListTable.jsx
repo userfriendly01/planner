@@ -13,7 +13,10 @@ import {
 import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
-import { myAxios } from "utils";
+import {
+  myAxios,
+  sortDialListEntriesByName
+} from "utils";
 import styled from "styled-components";
 
 const StyledPaper = styled(Paper)`
@@ -112,10 +115,13 @@ const DialListTable = props => {
     profile,
     setProfileSettingsState
   } = props;
+
   const {
     dialList,
     profileId
   } = profile;
+
+  dialList.sort(sortDialListEntriesByName);
 
   const [dialListTableState, setDialListTableState] = useState({
     isDialListEntryFormOpen: false,
@@ -182,7 +188,7 @@ const DialListTable = props => {
                   }
                 };
                 return(
-                  <CustomTableRow key={index} data-testid="table-row">
+                  <CustomTableRow key={entry.contact_id} data-testid="table-row">
                     <CustomTableData><TableText>{entry.contact_nme}</TableText></CustomTableData>
                     <CustomTableData><TableText>{entry.contact_num}</TableText></CustomTableData>
                     <CustomTableData><IconWrapper onClick={editButtonOnClick} data-testid="edit-button">

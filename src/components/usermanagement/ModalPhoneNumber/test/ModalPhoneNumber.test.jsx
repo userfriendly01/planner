@@ -8,7 +8,7 @@ import {
 const mockFunction = jest.fn();
 
 const renderComponent = outgoing => {
-  return render(<ModalPhoneNumber number={outgoing} label="Outgoing Number" updateValue={mockFunction} />);
+  return render(<ModalPhoneNumber id={"outgoing-id"} number={outgoing} label="Outgoing Number" updateValue={mockFunction} />);
 };
 
 describe("<ModalPhoneNumber />", () => {
