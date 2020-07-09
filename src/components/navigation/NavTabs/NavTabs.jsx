@@ -73,10 +73,10 @@ const NavTabs = () => {
         <StyledTab label="Flash Message" href="/flashMessage" id="nav-tab-flashMessage" aria-controls="nav-tabpanel-flashMessage" onClick={event => event.preventDefault()}/>
       </StyledTabs>
       <TabPanel value={value} tabName="userManagement" index={0}>
-        <ManagementWrapper  />
+        <ManagementWrapper />
       </TabPanel>
       <TabPanel value={value} tabName="profileSettings" index={1}>
-        <ProfileSettingsContainer  />
+        <ProfileSettingsContainer />
       </TabPanel>
       <TabPanel value={value} tabName="flashMessage" index={2}>
         <FlashMessageContainer />
