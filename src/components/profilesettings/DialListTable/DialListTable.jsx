@@ -1,14 +1,20 @@
+import { Paper } from "@material-ui/core";
 import {
   Delete,
   Edit
 } from "@material-ui/icons";
+import { AddContact } from "components";
 import PropTypes from "prop-types";
-// import { apiPaths } from "globals";
+import { apiPaths } from "globals";
 import React from "react";
-// import { myAxios } from "utils";
+import { myAxios } from "utils";
 import styled from "styled-components";
 
-const headerIconWidth = "64px";
+const StyledPaper = styled(Paper)`
+  align-items: center;
+  display: flex;
+  justify-content: center;
+`;
 
 const CustomTable = styled.table`
   border-spacing: 0;
@@ -21,11 +27,11 @@ const CustomTableData = styled.td`
   color: ${props => props.theme.textColor};
   padding: 2px 4px;
   vertical-align: top;
-  &:nth-child(6) {
+  &:nth-child(3) {
     text-align: -webkit-center;
     vertical-align: middle;
   }
-  &:nth-child(7) {
+  &:nth-child(4) {
     text-align: -webkit-center;
     vertical-align: middle;
   }
@@ -34,22 +40,19 @@ const CustomTableData = styled.td`
 const CustomTableHeader = styled.th`
   color: ${props => props.theme.textColor};
   border-bottom: 2px solid ${props => props.theme.tableRow.borderColor};
-  padding-left: 4px;
+  padding: 10px 4px;
   text-align: left;
   &:nth-child(1) {
-    width: 15%;
+    width: 50%;
   }
   &:nth-child(2) {
-    width: 10%;
+    width: 30%;
   }
   &:nth-child(3) {
-    width: 18%;
+    width: 10%;
   }
-  &:nth-child(6) {
-    width: ${headerIconWidth};
-  }
-  &:nth-child(7) {
-    width: ${headerIconWidth};
+  &:nth-child(4) {
+    width: 10%;
   }
 `;
 
@@ -81,6 +84,7 @@ const IconWrapper = styled.div`
 `;
 
 const TableContainer = styled.div`
+  align-items: center;
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
@@ -92,63 +96,95 @@ const TableText = styled.div`
   margin: 2px;
 `;
 
+const NoDialListDiv = styled.div`
+  margin-top: 25vh;
+  text-align: center;
+`;
+
 const DialListTable = props => {
 
   const {
-    dialList
+    profile,
+    setProfileSettingsState
   } = props;
+  const {
+    dialList,
+    profileId
+  } = profile;
 
-  return(
-    <TableContainer>
-      <CustomTable>
-        <thead>
-          <tr>
-            <CustomTableHeader>NAME</CustomTableHeader>
-            <CustomTableHeader>NUMBER</CustomTableHeader>
-          </tr>
-        </thead>
-        <tbody>
-          {dialList.map((entry, index) => {
-            const editButtonOnClick = event => {
-              event.stopPropagation();
-              console.log("you clicked the edit button");
-            };
-            const deleteButtonOnClick = () => {
-              // const popUp = confirm("Are you sure you want to delete this dial list entry?");
-              // if (popUp === true) {
-
-              // deleteContactFromProfile(index);
-              // myAxios.delete(apiPaths.DELETE_CONTACT_FROM_PROFILE)()
-
-              console.log("entry:", entry);
-
-              // console.log("dialList before:", dialList);
-              // dialList.splice(index, 1);
-              // console.log("dialList after:", dialList);
-
-              // }
-            };
-            return(
-              <CustomTableRow key={index} data-testid="table-row">
-                <CustomTableData><TableText>{entry.contact_nme}</TableText></CustomTableData>
-                <CustomTableData><TableText>{entry.contact_num}</TableText></CustomTableData>
-                <CustomTableData><IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
-                  <Edit fontSize={"inherit"} />
-                </IconWrapper></CustomTableData>
-                <CustomTableData><IconWrapper onClick={deleteButtonOnClick} data-testid="delete-button">
-                  <Delete fontSize={"inherit"} />
-                </IconWrapper></CustomTableData>
-              </CustomTableRow>
-            );
-          })}
-        </tbody>
-      </CustomTable>
-    </TableContainer>
-  );
+  if (dialList.length === 0) {
+    return(
+      <NoDialListDiv>
+        <h1>No dial list entries exist for this profile</h1>
+      </NoDialListDiv>
+    );
+  } else {
+    return(
+      <TableContainer>
+        <AddContact />
+        <StyledPaper elevation={3}>
+          <CustomTable>
+            <thead>
+              <tr>
+                <CustomTableHeader>NAME</CustomTableHeader>
+                <CustomTableHeader>NUMBER</CustomTableHeader>
+              </tr>
+            </thead>
+            <tbody>
+              {dialList.map((entry, index) => {
+                const editButtonOnClick = event => {
+                  event.stopPropagation();
+                  // TODO: Launch add/edit modal here
+                  console.log("you clicked the edit button");
+                };
+                const deleteButtonOnClick = () => {
+                  const popUp = confirm("Are you sure you want to delete this dial list entry?");
+                  if (popUp === true) {
+                    myAxios.delete(apiPaths.DELETE_CONTACT_FROM_PROFILE(profileId, entry.contact_id))
+                      .then(() => {
+                        dialList.splice(index, 1);
+                        setProfileSettingsState({
+                          profile: {
+                            ...profile,
+                            dialList
+                          }
+                        });
+                      })
+                      .catch(err => {
+                        console.error(`DialListTable - Failed to delete dial list entry for contact_id ${entry.contact_id}`, {
+                          err,
+                          entry
+                        });
+                      // TODO: What to display to user?
+                      });
+                  } else {
+                    console.log("popUp === false");
+                  }
+                };
+                return(
+                  <CustomTableRow key={index} data-testid="table-row">
+                    <CustomTableData><TableText>{entry.contact_nme}</TableText></CustomTableData>
+                    <CustomTableData><TableText>{entry.contact_num}</TableText></CustomTableData>
+                    <CustomTableData><IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
+                      <Edit fontSize={"inherit"} />
+                    </IconWrapper></CustomTableData>
+                    <CustomTableData><IconWrapper onClick={deleteButtonOnClick} data-testid="delete-button">
+                      <Delete fontSize={"inherit"} />
+                    </IconWrapper></CustomTableData>
+                  </CustomTableRow>
+                );
+              })}
+            </tbody>
+          </CustomTable>
+        </StyledPaper>
+      </TableContainer>
+    );
+  }
 };
 
 DialListTable.propTypes = {
-  dialList: PropTypes.array.isRequired
+  profile: PropTypes.object.isRequired,
+  setProfileSettingsState: PropTypes.func.isRequired
 };
 
 export default DialListTable;
