@@ -74,7 +74,7 @@ const authenticate = dispatch => new Promise((resolve, reject) => myAxios.get(ap
     }));
     resolve(true);
   })
-  .catch(error=> {
+  .catch(error => {
     let msg = "An error occurred when trying to authenticate";
     if(error.response && isErrorIn400s(error.response.status)) {
       msg = "You are not authorized to view this page";

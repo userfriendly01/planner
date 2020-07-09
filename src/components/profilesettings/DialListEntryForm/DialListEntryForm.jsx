@@ -22,13 +22,6 @@ const Header = styled.h1`
   align-self: center;
 `;
 
-const TextInput = styled(TextField)`
-  flex-grow: 1;
-  && {
-    margin: 2%;
-  }
-`;
-
 const ModalContainer = styled.div`
   display: flex;
   flex: 1 1 auto;
@@ -40,10 +33,13 @@ const ModalContainer = styled.div`
   transform: translate(-50%, -50%);
 `;
 
-const AddEditSettingsModal = props => {
+const DialListEntryForm = props => {
   const {
     contactInfo,
-    handleClose
+    handleClose,
+    headerText,
+    onSubmit,
+    submitButtonText
   } = props;
   const {
     contact_num,
@@ -57,16 +53,12 @@ const AddEditSettingsModal = props => {
     externalNumber: external_num ? external_num : ""
   });
 
-  // console.log("form:", form);
-
-  const saveDialListEntry = () => {
-    //Add functionality to save the dial list entry
-  };
+  console.log("FORM UPDATED", form);
 
   return (
     <ModalContainer>
       <PaperContainer>
-        <Header>Profile Settings</Header>
+        <Header>{headerText}</Header>
         <ModalPhoneNumber
           id="transfer-number"
           number={form.transferNumber}
@@ -76,9 +68,9 @@ const AddEditSettingsModal = props => {
             transferNumber: newValue
           })}
         />
-        <TextInput
+        <TextField
           id="friendly-name-input"
-          // InputProps={{ inputComponent: TextMaskCustom }}
+          inputProps={{ maxLength: 80 }}
           label="Friendly Name"
           name="Friendly Name"
           onChange={event => setForm({
@@ -89,17 +81,22 @@ const AddEditSettingsModal = props => {
           variant="outlined"
           value={form.friendlyName}
         />
-        <ModalPhoneNumber
-          id="external-number"
-          number={form.externalNumber}
+        <TextField
+          id="external-number-input"
+          inputProps={{ maxLength: 80 }}
           label="External Number"
-          updateValue={newValue => setForm({
+          name="External Number"
+          onChange={event => setForm({
             ...form,
-            externalNumber: newValue
+            externalNumber: event.target.value
           })}
+          margin="normal"
+          variant="outlined"
+          value={form.externalNumber}
         />
         <ButtonWrapper>
-          <StyledButton onClick={saveDialListEntry}>Save</StyledButton>
+          {/* <StyledButton onClick={saveDialListEntry}>Save</StyledButton> */}
+          <StyledButton onClick={onSubmit}>{submitButtonText}</StyledButton>
           <StyledButton onClick={handleClose}>Close</StyledButton>
         </ButtonWrapper>
       </PaperContainer>
@@ -107,9 +104,12 @@ const AddEditSettingsModal = props => {
   );
 };
 
-AddEditSettingsModal.propTypes = {
+DialListEntryForm.propTypes = {
   contactInfo: PropTypes.object.isRequired,
-  handleClose: PropTypes.func.isRequired
+  handleClose: PropTypes.func.isRequired,
+  headerText: PropTypes.string.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  submitButtonText: PropTypes.string.isRequired
 };
 
-export default AddEditSettingsModal;
+export default DialListEntryForm;
