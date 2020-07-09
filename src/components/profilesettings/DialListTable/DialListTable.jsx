@@ -8,7 +8,7 @@ import {
 } from "@material-ui/icons";
 import {
   AddContact,
-  AddEditSettingsModal
+  DialListEntryForm
 } from "components";
 import { apiPaths } from "globals";
 import PropTypes from "prop-types";
@@ -118,15 +118,19 @@ const DialListTable = props => {
   } = profile;
 
   const [dialListTableState, setDialListTableState] = useState({
-    isAddEditSettingsModalOpen: false,
+    isDialListEntryFormOpen: false,
     contactInfo: {}
   });
 
   const handleCloseAddEditSettings = () => {
     setDialListTableState({
       ...dialListTableState,
-      isAddEditSettingsModalOpen: false
+      isDialListEntryFormOpen: false
     });
+  };
+
+  const handleSubmitUpdate = () => {
+    console.log("update dial list entry");
   };
 
   if (dialList.length === 0) {
@@ -151,7 +155,7 @@ const DialListTable = props => {
               {dialList.map((entry, index) => {
                 const editButtonOnClick = () => {
                   setDialListTableState({
-                    isAddEditSettingsModalOpen: true,
+                    isDialListEntryFormOpen: true,
                     contactInfo: entry
                   });
                 };
@@ -175,8 +179,6 @@ const DialListTable = props => {
                         });
                       // TODO: What to display to user?
                       });
-                  // } else {
-                  //   console.log("popUp === false");
                   }
                 };
                 return(
@@ -193,8 +195,13 @@ const DialListTable = props => {
                 );
               })}
             </tbody>
-            <Modal disableBackdropClick={true} open={dialListTableState.isAddEditSettingsModalOpen}>
-              <AddEditSettingsModal contactInfo={dialListTableState.contactInfo} handleClose={handleCloseAddEditSettings} />
+            <Modal disableBackdropClick={true} open={dialListTableState.isDialListEntryFormOpen}>
+              <DialListEntryForm
+                contactInfo={dialListTableState.contactInfo}
+                handleClose={handleCloseAddEditSettings}
+                headerText={"Edit Contact"}
+                onSubmit={handleSubmitUpdate}
+                submitButtonText={"Update"} />
             </Modal>
           </CustomTable>
         </StyledPaper>

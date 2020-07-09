@@ -60,7 +60,7 @@ const DialListEntryForm = props => {
       <PaperContainer>
         <Header>{headerText}</Header>
         <ModalPhoneNumber
-          id="transfer-number"
+          id="transfer-number-input"
           number={form.transferNumber}
           label="Transfer Number"
           updateValue={newValue => setForm({
@@ -95,7 +95,6 @@ const DialListEntryForm = props => {
           value={form.externalNumber}
         />
         <ButtonWrapper>
-          {/* <StyledButton onClick={saveDialListEntry}>Save</StyledButton> */}
           <StyledButton onClick={onSubmit}>{submitButtonText}</StyledButton>
           <StyledButton onClick={handleClose}>Close</StyledButton>
         </ButtonWrapper>

@@ -1,4 +1,4 @@
-import AddEditSettingsModal from "../AddEditSettingsModal";
+import DialListEntryForm from "../DialListEntryForm";
 import { TextField } from "@material-ui/core";
 import {
   PaperContainer,
@@ -27,9 +27,9 @@ jest.mock("components", () => ({
 }));
 
 
-const renderComponent = contactInfo => render(<AddEditSettingsModal contactInfo={contactInfo} handleClose={jest.fn()} />);
+const renderComponent = contactInfo => render(<DialListEntryForm contactInfo={contactInfo} handleClose={jest.fn()} />);
 
-describe("<AddEditSettingsModal />", () => {
+describe("<DialListEntryForm />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();

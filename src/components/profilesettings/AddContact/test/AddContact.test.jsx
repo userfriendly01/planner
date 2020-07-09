@@ -1,5 +1,5 @@
 import AddContact from "../AddContact";
-import { AddEditSettingsModal } from "components";
+import { DialListEntryForm } from "components";
 import React from "react";
 import {
   act,
@@ -11,14 +11,14 @@ import {
 
 jest.mock("components/profilesettings", () => ({
   __esModule: true,
-  AddEditSettingsModal: jest.fn()
+  DialListEntryForm: jest.fn()
 }));
 
 describe("<AddContact />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    setupMockedComponents({ AddEditSettingsModal });
+    setupMockedComponents({ DialListEntryForm });
   });
 
   describe("initial render", () => {
@@ -26,7 +26,7 @@ describe("<AddContact />", () => {
       const rendered = render(<AddContact />);
       expect(rendered.getByTestId("add-contact-button", { selector: "button" })).toBeInTheDocument();
       expect(rendered.container).toHaveTextContent("Add Contact");
-      expectMockedComponent(rendered, { AddEditSettingsModal }, 0);
+      expectMockedComponent(rendered, { DialListEntryForm }, 0);
     });
   });
 
@@ -37,10 +37,10 @@ describe("<AddContact />", () => {
       act(() => {
         fireEvent.click(addButton);
       });
-      expectMockedComponent(rendered, { AddEditSettingsModal });
-      const handleClose = AddEditSettingsModal.mock.calls[0][0].handleClose;
+      expectMockedComponent(rendered, { DialListEntryForm });
+      const handleClose = DialListEntryForm.mock.calls[0][0].handleClose;
       act(() => handleClose());
-      expectMockedComponent(rendered, { AddEditSettingsModal }, 0);
+      expectMockedComponent(rendered, { DialListEntryForm }, 0);
       done();
     });
   });

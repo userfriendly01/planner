@@ -3,7 +3,7 @@ import { within } from "@testing-library/react";
 import MockAdapter from "axios-mock-adapter";
 import {
   AddContact,
-  AddEditSettingsModal
+  DialListEntryForm
 } from "components";
 import { apiPaths } from "globals";
 import React from "react";
@@ -23,7 +23,7 @@ const mockSetProfileSettingsState = jest.fn();
 jest.mock("components", () => ({
   __esModule: true,
   AddContact: jest.fn(),
-  AddEditSettingsModal: jest.fn()
+  DialListEntryForm: jest.fn()
 }));
 
 const renderComponent = profile => render(<DialListTable profile={profile} setProfileSettingsState={mockSetProfileSettingsState} />);
@@ -35,7 +35,7 @@ describe("<DialListTable />", () => {
     jest.clearAllMocks();
     setupMockedComponents({
       AddContact,
-      AddEditSettingsModal
+      DialListEntryForm
     });
   });
 
@@ -95,10 +95,10 @@ describe("<DialListTable />", () => {
         const rendered = renderComponent(profile);
         const editButtons = rendered.getAllByTestId("edit-button");
         act(() => fireEvent.click(editButtons[1]));
-        expectMockedComponent(rendered, { AddEditSettingsModal });
-        const handleClose = AddEditSettingsModal.mock.calls[0][0].handleClose;
+        expectMockedComponent(rendered, { DialListEntryForm });
+        const handleClose = DialListEntryForm.mock.calls[0][0].handleClose;
         act(() => handleClose());
-        expectMockedComponent(rendered, { AddEditSettingsModal }, 0);
+        expectMockedComponent(rendered, { DialListEntryForm }, 0);
       });
     });
 
