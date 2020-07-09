@@ -14,6 +14,7 @@ import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import {
+  formatTenDigitNumber,
   myAxios,
   sortDialListEntriesByName
 } from "utils";
@@ -190,7 +191,7 @@ const DialListTable = props => {
                 return(
                   <CustomTableRow key={entry.contact_id} data-testid="table-row">
                     <CustomTableData><TableText>{entry.contact_nme}</TableText></CustomTableData>
-                    <CustomTableData><TableText>{entry.contact_num}</TableText></CustomTableData>
+                    <CustomTableData><TableText>{formatTenDigitNumber(entry.contact_num)}</TableText></CustomTableData>
                     <CustomTableData><IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
                       <Edit fontSize={"inherit"} />
                     </IconWrapper></CustomTableData>
