@@ -1,14 +1,14 @@
 import { checkExtension } from "../checkExtension";
 import { myAxios } from "../myAxios";
 import MockAdapter from "axios-mock-adapter";
-import { apiPaths } from "globals";
+// import { apiPaths } from "globals";
 
-jest.mock("globals", () => ({
-  __esModule: true,
-  apiPaths: {
-    CHECK_EXTENSION: jest.fn()
-  }
-}));
+// jest.mock("globals", () => ({
+//   __esModule: true,
+//   apiPaths: {
+//     CHECK_EXTENSION: jest.fn()
+//   }
+// }));
 
 const axiosMock = new MockAdapter(myAxios);
 
@@ -22,13 +22,13 @@ describe("checkExtension", () => {
   describe("service call to CHECK_EXTENSION succeeds", () => {
     const checkExtensionRes = { isValid: true };
     beforeEach(() => {
-      axiosMock.onGet("/service/checkextension/1234").reply(200, checkExtensionRes);
-      apiPaths.CHECK_EXTENSION.mockReturnValue("/service/checkextension/1234");
+      axiosMock.onPost("/service/checkextension").reply(200, checkExtensionRes);
+      // apiPaths.CHECK_EXTENSION.mockReturnValue("/service/checkextension");
     });
     test("should resolve with formatted data", done => {
       const extension = "1234";
       checkExtension(extension).then(resolvedVal => {
-        expect(axiosMock.history.get[0].url).toBe("/service/checkextension/1234");
+        expect(axiosMock.history.post[0].url).toBe("/service/checkextension");
         expect(resolvedVal).toEqual(true);
         done();
       });
@@ -38,13 +38,13 @@ describe("checkExtension", () => {
   describe("service call to CHECK_EXTENSION returns noting", () => {
     const checkExtensionRes = [];
     beforeEach(() => {
-      axiosMock.onGet("/service/checkextension/1234").reply(200, checkExtensionRes);
-      apiPaths.CHECK_EXTENSION.mockReturnValue("/service/checkextension/1234");
+      axiosMock.onPost("/service/checkextension").reply(200, checkExtensionRes);
+      // apiPaths.CHECK_EXTENSION.mockReturnValue("/service/checkextension");
     });
     test("should resolve with null", done => {
       const extension = "1234";
       checkExtension(extension).then(resolvedVal => {
-        expect(axiosMock.history.get[0].url).toBe("/service/checkextension/1234");
+        expect(axiosMock.history.post[0].url).toBe("/service/checkextension");
         expect(resolvedVal).toEqual(false);
         done();
       });

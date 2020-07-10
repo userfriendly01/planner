@@ -5,7 +5,7 @@ export const apiPaths = {
   AUTH: `${SERVICE_BASE_URI}/admin-login`,
   CREATE_WORKER: `${SERVICE_BASE_URI}/createworker`,
   EMPLOYEE_LOOKUP: nNum => `${SERVICE_BASE_URI}/employeelookup/${nNum}`,
-  CHECK_EXTENSION: extension => `${SERVICE_BASE_URI}/checkextension/${extension}`,
+  CHECK_EXTENSION: `${SERVICE_BASE_URI}/checkextension`,
   FLASH_MESSAGE: `${SERVICE_BASE_URI}/flashmessage`,
   GET_PROFILES: `${CONTACT_MANAGER_BASE_URI}/profiles`,
   GET_TASKROUTER_SKILLS: `${SERVICE_BASE_URI}/taskrouterskills`,
