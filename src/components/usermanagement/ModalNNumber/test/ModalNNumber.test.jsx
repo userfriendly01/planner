@@ -22,13 +22,13 @@ jest.mock("services", () => ({
   fetchUser: jest.fn()
 }));
 
-const mockClearUser = jest.fn();
+const mockClearFunction = jest.fn();
 const mockSetForm = jest.fn();
 const mockUpdateValue = jest.fn();
 
 const renderComponent = (disabled, form, nNumber) => {
   return render(<ModalNNumber
-    clearUser={mockClearUser}
+    clearUser={mockClearFunction}
     disabled={disabled}
     form={form}
     nNumber={nNumber}
@@ -127,7 +127,7 @@ describe("<ModalNNumber />", () => {
         }, "");
         const props = getMockedComponentProps(ModalHelperText);
         expect(props.error).toBe(true);
-        expect(props.clearUser).toBe(mockClearUser);
+        expect(props.clearFunction).toBe(mockClearFunction);
         expect(props.message).toEqual("There is an error");
       });
       test("should show when there is good lookup info", () => {
@@ -140,7 +140,7 @@ describe("<ModalNNumber />", () => {
         }, "");
         const props = getMockedComponentProps(ModalHelperText);
         expect(props.error).toBe(false);
-        expect(props.clearUser).toBe(mockClearUser);
+        expect(props.clearFunction).toBe(mockClearFunction);
         expect(props.message).toEqual("Eleanor Rigby");
       });
     });

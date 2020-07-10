@@ -161,7 +161,7 @@ describe("<ModalExtension />", () => {
         validatedServiceCall("1234");
         const helperProps = getMockedComponentProps(ModalHelperText);
         expect(helperProps.error).toBe(false);
-        expect(helperProps.clearUser).toBe(mockClearExtension);
+        expect(helperProps.clearFunction).toBe(mockClearExtension);
         expect(helperProps.message).toEqual("Validating...");
       });
       test("should show when extension is valid", () => {
@@ -172,7 +172,7 @@ describe("<ModalExtension />", () => {
         }, "2222");
         const props = getMockedComponentProps(ModalHelperText);
         expect(props.error).toBe(false);
-        expect(props.clearUser).toBe(mockClearExtension);
+        expect(props.clearFunction).toBe(mockClearExtension);
         expect(props.message).toEqual("Extension is valid");
       });
       test("should show when extension is not valid", () => {
@@ -183,7 +183,7 @@ describe("<ModalExtension />", () => {
         }, "2222");
         const props = getMockedComponentProps(ModalHelperText);
         expect(props.error).toBe(true);
-        expect(props.clearUser).toBe(mockClearExtension);
+        expect(props.clearFunction).toBe(mockClearExtension);
         expect(props.message).toEqual("Extension already in use");
       });
     });

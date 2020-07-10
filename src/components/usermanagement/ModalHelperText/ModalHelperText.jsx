@@ -28,7 +28,7 @@ const HelperTextSection = styled(FlexRow)`
 
 const ModalHelperText = props => {
   const {
-    clearUser,
+    clearFunction,
     message,
     error
   } = props;
@@ -36,13 +36,13 @@ const ModalHelperText = props => {
   return (
     <HelperTextSection data-testid="helper-text-section" error={error}>
       <div>{message}</div>
-      <ClearButton onClick={clearUser}>X</ClearButton>
+      <ClearButton onClick={clearFunction}>X</ClearButton>
     </HelperTextSection>
   );
 };
 
 ModalHelperText.propTypes = {
-  clearUser: PropTypes.func,
+  clearFunction: PropTypes.func,
   error: PropTypes.bool,
   message: PropTypes.string
 };

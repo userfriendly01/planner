@@ -1,14 +1,6 @@
 import { checkExtension } from "../checkExtension";
 import { myAxios } from "../myAxios";
 import MockAdapter from "axios-mock-adapter";
-// import { apiPaths } from "globals";
-
-// jest.mock("globals", () => ({
-//   __esModule: true,
-//   apiPaths: {
-//     CHECK_EXTENSION: jest.fn()
-//   }
-// }));
 
 const axiosMock = new MockAdapter(myAxios);
 
@@ -23,7 +15,6 @@ describe("checkExtension", () => {
     const checkExtensionRes = { isValid: true };
     beforeEach(() => {
       axiosMock.onPost("/service/checkextension").reply(200, checkExtensionRes);
-      // apiPaths.CHECK_EXTENSION.mockReturnValue("/service/checkextension");
     });
     test("should resolve with formatted data", done => {
       const extension = "1234";
@@ -39,7 +30,6 @@ describe("checkExtension", () => {
     const checkExtensionRes = [];
     beforeEach(() => {
       axiosMock.onPost("/service/checkextension").reply(200, checkExtensionRes);
-      // apiPaths.CHECK_EXTENSION.mockReturnValue("/service/checkextension");
     });
     test("should resolve with null", done => {
       const extension = "1234";

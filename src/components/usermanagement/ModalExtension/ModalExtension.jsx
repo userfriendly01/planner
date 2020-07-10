@@ -62,7 +62,7 @@ const ModalExtension = props => {
       });
   };
 
-  const showModalHelperText = /\d{4}/g.test(extension);
+  const showModalHelperText = extension.match(extensionMatcher);
 
   return (
     <FlexColumn>
@@ -79,7 +79,7 @@ const ModalExtension = props => {
       {
         showModalHelperText
           ? <ModalHelperText
-            clearUser = {clearExtension}
+            clearFunction = {clearExtension}
             error={!(form.extensionValid || loading)}
             message={loading? "Validating..." : (form.extensionValid ? "Extension is valid" : "Extension already in use")}
           />

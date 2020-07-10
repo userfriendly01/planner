@@ -69,7 +69,7 @@ const ModalNNumber = props => {
       {
         showModalHelperText
           ? <ModalHelperText
-            clearUser={clearUser}
+            clearFunction={clearUser}
             error={form.lookupError ? true : false}
             message={form.lookupError || `${form.lookupInfo.firstName} ${form.lookupInfo.lastName}`}
           />
