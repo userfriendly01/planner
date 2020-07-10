@@ -65,12 +65,12 @@ describe("<ModalExtension />", () => {
       renderComponent(false, form, "");
       const props = getMockedComponentProps(CustomInput);
       const validator = props.validator;
-      expect(validator("")).toBe(null);
-      expect(validator("1")).toBe(null);
-      expect(validator("ab45")).toBe(null);
-      expect(validator("12")).toBe(null);
-      expect(validator("34745")).toEqual(["3474"]);
-      expect(validator("1234")).toEqual(["1234"]);
+      expect(validator("")).toBe(false);
+      expect(validator("1")).toBe(false);
+      expect(validator("ab45")).toBe(false);
+      expect(validator("12")).toBe(false);
+      expect(validator("34745")).toEqual(false);
+      expect(validator("1234")).toEqual(true);
     });
     describe("the validated service call", () => {
       test("should set the form on success with original extension", done => {

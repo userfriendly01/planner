@@ -2,7 +2,6 @@ import {
   CustomInput,
   ModalHelperText
 } from "components";
-import { extensionMatcher } from "globals";
 import { checkExtension } from "services";
 import PropTypes from "prop-types";
 import React, {
@@ -29,7 +28,7 @@ const ModalExtension = props => {
   } = props;
 
   const [loading, setLoading] = useState(false);
-  const validator = extension => extension.match(extensionMatcher);
+  const validator = extension => /^\d{4}$/.test(extension);
 
   const inputServiceCall = extension => {
     setLoading(true);
@@ -62,7 +61,7 @@ const ModalExtension = props => {
       });
   };
 
-  const showModalHelperText = extension.match(extensionMatcher);
+  const showModalHelperText = /^\d{4}$/.test(extension);
 
   return (
     <FlexColumn>

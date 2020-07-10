@@ -235,7 +235,7 @@ const AddUserModal = props => {
         />
         <ModalExtension
           clearExtension={clearExtension}
-          disabled={form.extensionValid && /\d{4}/g.test(extension)}
+          disabled={form.extensionValid && /^\d{4}$/.test(extension)}
           extension={extension}
           updateValue={newValue => setExtension(newValue)}
           form={form}

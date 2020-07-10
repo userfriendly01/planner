@@ -16,7 +16,7 @@ export const apiPaths = {
 };
 
 export const nNumMatcher = /[n,N]\d{7}/g;
-export const extensionMatcher = /\d{4}/g;
+export const extensionMatcher = /^\d{4}$/;
 
 export const resetResponses = {
   SKILLS_WERE_EQUAL: "Worker default_skills is equal to currently assigned skills"

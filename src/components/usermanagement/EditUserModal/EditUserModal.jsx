@@ -87,7 +87,7 @@ const EditUserModal = props => {
     manager: JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number)),
     managerUpdated: false,
     extensionUpdated: false,
-    extensionValid: extension !== ""
+    extensionValid: /^\d{4}$/.test(worker.attributes.extension)
   });
 
   const saveUserClicked = () => {
@@ -190,10 +190,10 @@ const EditUserModal = props => {
         />
         <ModalExtension
           clearExtension={clearExtension}
-          disabled={form.extensionValid && /\d{4}/g.test(extension)}
+          disabled={form.extensionValid && /^\d{4}$/.test(extension)}
           extension={extension}
           form={form}
-          isEditExisting={/\d{4}/g.test(worker.attributes.extension)}
+          isEditExisting={/^\d{4}$/.test(worker.attributes.extension)}
           originalValue={worker.attributes.extension}
           setForm={setForm}
           updateValue={newValue => setExtension(newValue)}
