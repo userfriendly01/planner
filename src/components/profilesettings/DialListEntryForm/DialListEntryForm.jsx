@@ -8,6 +8,16 @@ import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
 
+const FlexRow = styled.div`
+  display: flex;
+  flex: 1 1 auto;
+`;
+
+const ButtonWrapper = styled(FlexRow)`
+  justify-content: space-around;
+  padding: 1%;
+`;
+
 const Header = styled.h1`
   align-self: center;
 `;
@@ -25,18 +35,22 @@ const ModalContainer = styled.div`
 
 const DialListEntryForm = props => {
   const {
-    externalNumber,
-    friendlyName,
+    contactInfo,
+    handleClose,
     headerText,
     onSubmit,
-    submitButtonText,
-    transferNumber
+    submitButtonText
   } = props;
+  const {
+    contact_num,
+    contact_nme,
+    external_num
+  } = contactInfo;
 
   const [form, setForm] = useState({
-    transferNumber: transferNumber ? transferNumber : null,
-    friendlyName: friendlyName ? friendlyName : null,
-    externalNumber: externalNumber ? externalNumber : null
+    transferNumber: contact_num ? contact_num : "",
+    friendlyName: contact_nme ? contact_nme : "",
+    externalNumber: external_num ? external_num : ""
   });
 
   console.log("FORM UPDATED", form);
@@ -46,6 +60,7 @@ const DialListEntryForm = props => {
       <PaperContainer>
         <Header>{headerText}</Header>
         <ModalPhoneNumber
+          id="transfer-number-input"
           number={form.transferNumber}
           label="Transfer Number"
           updateValue={newValue => setForm({
@@ -67,7 +82,7 @@ const DialListEntryForm = props => {
           value={form.friendlyName}
         />
         <TextField
-          id="friendly-name-input"
+          id="external-number-input"
           inputProps={{ maxLength: 80 }}
           label="External Number"
           name="External Number"
@@ -79,19 +94,21 @@ const DialListEntryForm = props => {
           variant="outlined"
           value={form.externalNumber}
         />
-        <StyledButton onClick={onSubmit}>{submitButtonText}</StyledButton>
+        <ButtonWrapper>
+          <StyledButton onClick={onSubmit}>{submitButtonText}</StyledButton>
+          <StyledButton onClick={handleClose}>Close</StyledButton>
+        </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>
   );
 };
 
 DialListEntryForm.propTypes = {
-  externalNumber: PropTypes.number,
-  friendlyName: PropTypes.string,
+  contactInfo: PropTypes.object.isRequired,
+  handleClose: PropTypes.func.isRequired,
   headerText: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  submitButtonText: PropTypes.string.isRequired,
-  transferNumber: PropTypes.string
+  submitButtonText: PropTypes.string.isRequired
 };
 
 export default DialListEntryForm;

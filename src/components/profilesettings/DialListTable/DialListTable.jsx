@@ -1,13 +1,23 @@
-import { Paper } from "@material-ui/core";
+import {
+  Modal,
+  Paper
+} from "@material-ui/core";
 import {
   Delete,
   Edit
 } from "@material-ui/icons";
-import { AddContact } from "components";
-import PropTypes from "prop-types";
+import {
+  AddContact,
+  DialListEntryForm
+} from "components";
 import { apiPaths } from "globals";
-import React from "react";
-import { myAxios } from "utils";
+import PropTypes from "prop-types";
+import React, { useState } from "react";
+import {
+  formatTenDigitNumber,
+  myAxios,
+  sortDialListEntriesByName
+} from "utils";
 import styled from "styled-components";
 
 const StyledPaper = styled(Paper)`
@@ -58,11 +68,11 @@ const CustomTableHeader = styled.th`
 
 const CustomTableRow = styled.tr`
   &:nth-child(odd) {
-    background-color: ${props => props.selected ? props.theme.tableRow.selectedColor : props.theme.tableRow.alternateRowColor};
+    background-color: ${props => props.theme.tableRow.alternateRowColor};
   }
-  background-color: ${props => props.selected ? props.theme.tableRow.selectedColor : "inherit"};
+  background-color: "inherit";
   &:hover {
-    background-color: ${props => props.selected ? props.theme.tableRow.hoverSelectedColor : props.theme.tableRow.hoverColor};
+    background-color: ${props => props.theme.tableRow.hoverColor};
     cursor: pointer;
   }
 `;
@@ -102,15 +112,33 @@ const NoDialListDiv = styled.div`
 `;
 
 const DialListTable = props => {
-
   const {
     profile,
     setProfileSettingsState
   } = props;
+
   const {
     dialList,
     profileId
   } = profile;
+
+  dialList.sort(sortDialListEntriesByName);
+
+  const [dialListTableState, setDialListTableState] = useState({
+    isDialListEntryFormOpen: false,
+    contactInfo: {}
+  });
+
+  const handleCloseAddEditSettings = () => {
+    setDialListTableState({
+      ...dialListTableState,
+      isDialListEntryFormOpen: false
+    });
+  };
+
+  const handleSubmitUpdate = () => {
+    console.log("update dial list entry");
+  };
 
   if (dialList.length === 0) {
     return(
@@ -132,10 +160,11 @@ const DialListTable = props => {
             </thead>
             <tbody>
               {dialList.map((entry, index) => {
-                const editButtonOnClick = event => {
-                  event.stopPropagation();
-                  // TODO: Launch add/edit modal here
-                  console.log("you clicked the edit button");
+                const editButtonOnClick = () => {
+                  setDialListTableState({
+                    isDialListEntryFormOpen: true,
+                    contactInfo: entry
+                  });
                 };
                 const deleteButtonOnClick = () => {
                   const popUp = confirm("Are you sure you want to delete this dial list entry?");
@@ -157,14 +186,12 @@ const DialListTable = props => {
                         });
                       // TODO: What to display to user?
                       });
-                  } else {
-                    console.log("popUp === false");
                   }
                 };
                 return(
-                  <CustomTableRow key={index} data-testid="table-row">
+                  <CustomTableRow key={entry.contact_id} data-testid="table-row">
                     <CustomTableData><TableText>{entry.contact_nme}</TableText></CustomTableData>
-                    <CustomTableData><TableText>{entry.contact_num}</TableText></CustomTableData>
+                    <CustomTableData><TableText>{formatTenDigitNumber(entry.contact_num)}</TableText></CustomTableData>
                     <CustomTableData><IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
                       <Edit fontSize={"inherit"} />
                     </IconWrapper></CustomTableData>
@@ -175,6 +202,14 @@ const DialListTable = props => {
                 );
               })}
             </tbody>
+            <Modal disableBackdropClick={true} open={dialListTableState.isDialListEntryFormOpen}>
+              <DialListEntryForm
+                contactInfo={dialListTableState.contactInfo}
+                handleClose={handleCloseAddEditSettings}
+                headerText={"Edit Contact"}
+                onSubmit={handleSubmitUpdate}
+                submitButtonText={"Update"} />
+            </Modal>
           </CustomTable>
         </StyledPaper>
       </TableContainer>

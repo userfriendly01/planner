@@ -1,7 +1,10 @@
 import DialListTable from "../DialListTable";
 import { within } from "@testing-library/react";
 import MockAdapter from "axios-mock-adapter";
-import { AddContact } from "components";
+import {
+  AddContact,
+  DialListEntryForm
+} from "components";
 import { apiPaths } from "globals";
 import React from "react";
 import {
@@ -19,7 +22,8 @@ const mockSetProfileSettingsState = jest.fn();
 
 jest.mock("components", () => ({
   __esModule: true,
-  AddContact: jest.fn()
+  AddContact: jest.fn(),
+  DialListEntryForm: jest.fn()
 }));
 
 const renderComponent = profile => render(<DialListTable profile={profile} setProfileSettingsState={mockSetProfileSettingsState} />);
@@ -29,7 +33,10 @@ describe("<DialListTable />", () => {
   beforeEach(() => {
     axiosMock.reset();
     jest.clearAllMocks();
-    setupMockedComponents({ AddContact });
+    setupMockedComponents({
+      AddContact,
+      DialListEntryForm
+    });
   });
 
   describe("profile does not have entries in its dial list", () => {
@@ -37,7 +44,7 @@ describe("<DialListTable />", () => {
       profileId: 2,
       dialList: []
     };
-    test("should render 'no dial list...' message", () => {
+    test("should render 'no entries exist' message", () => {
       const rendered = renderComponent(profile);
       expect(rendered.container).toHaveTextContent("No dial list entries exist for this profile");
     });
@@ -53,7 +60,8 @@ describe("<DialListTable />", () => {
       {
         contact_id: 18,
         contact_nme: "Daryl Strawberry",
-        contact_num: "800-123-4568"
+        contact_num: "800-123-4568",
+        external_num: "900-555-1212"
       },
       {
         contact_id: 20,
@@ -70,6 +78,8 @@ describe("<DialListTable />", () => {
       expectMockedComponent(rendered, { AddContact });
       expect(rendered.getByText("NAME", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("NUMBER", { selector: "th" })).toBeInTheDocument();
+      const tableRows = rendered.getAllByTestId("table-row");
+      expect(tableRows.length).toBe(3);
       dialList.forEach(entry => {
         expect(rendered.container).toHaveTextContent(entry.contact_nme);
         expect(rendered.container).toHaveTextContent(entry.contact_num);
@@ -80,15 +90,17 @@ describe("<DialListTable />", () => {
       });
     });
 
-    // describe("edit button clicked", () => {
-    //   console.log = jest.fn();
-    //   test("should log something", () => {
-    //     const rendered = renderComponent(profile);
-    //     const editButtons = rendered.getAllByTestId("edit-button");
-    //     act(() => fireEvent.click(editButtons[1]));
-    //     expect(console.log).toHaveBeenCalledWith("you clicked the edit button");
-    //   });
-    // });
+    describe("edit button clicked", () => {
+      test("should open add/edit modal; when handleClose is called, modal should close", () => {
+        const rendered = renderComponent(profile);
+        const editButtons = rendered.getAllByTestId("edit-button");
+        act(() => fireEvent.click(editButtons[1]));
+        expectMockedComponent(rendered, { DialListEntryForm });
+        const handleClose = DialListEntryForm.mock.calls[0][0].handleClose;
+        act(() => handleClose());
+        expectMockedComponent(rendered, { DialListEntryForm }, 0);
+      });
+    });
 
     describe("delete button clicked", () => {
       describe("delete is confirmed", () => {

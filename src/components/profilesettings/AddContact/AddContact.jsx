@@ -1,10 +1,9 @@
-// import { Modal } from "@material-ui/core";
+import { Modal } from "@material-ui/core";
 import {
+  DialListEntryForm,
   StyledButton
 } from "components";
-import React/*, {
-  useState
-}*/ from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 const AddContactButtonContainer = styled.div`
@@ -13,25 +12,33 @@ const AddContactButtonContainer = styled.div`
 
 const AddContact = () => {
 
-  // const [isAddContactModalOpen, setIsAddContactModalOpen] = useState(false);
+  const [isDialListEntryFormOpen, setIsDialListEntryFormOpen] = useState(false);
 
-  const handleOpenAddContact = () => {
-    // setIsAddContactModalOpen(true);
-    console.log("you clicked the 'add contact' button");
+  const handleOpenAddEditSettings = () => {
+    setIsDialListEntryFormOpen(true);
   };
 
-  // const handleCloseAddContact = () => {
-  //   setIsAddContactModalOpen(false);
-  // };
+  const handleCloseAddEditSettings = () => {
+    setIsDialListEntryFormOpen(false);
+  };
+
+  const handleSubmitCreate = () => {
+    console.log("create new dial list entry");
+  };
 
   return (
     <AddContactButtonContainer>
-      <StyledButton /*margin={8}*/ onClick={handleOpenAddContact} data-testid={"add-contact-button"}>
+      <StyledButton onClick={handleOpenAddEditSettings} data-testid={"add-contact-button"}>
         Add Contact
       </StyledButton>
-      {/* <Modal disableBackdropClick={true} open={isAddContactModalOpen}>
-        <AddContactModal handleClose={handleCloseAddContact} />
-      </Modal> */}
+      <Modal disableBackdropClick={true} open={isDialListEntryFormOpen}>
+        <DialListEntryForm
+          contactInfo={{}}
+          handleClose={handleCloseAddEditSettings}
+          headerText={"Add Contact"}
+          onSubmit={handleSubmitCreate}
+          submitButtonText={"Save"} />
+      </Modal>
     </AddContactButtonContainer>
   );
 };
