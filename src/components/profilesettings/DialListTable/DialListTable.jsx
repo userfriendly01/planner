@@ -129,7 +129,7 @@ const DialListTable = props => {
     contactInfo: {}
   });
 
-  const handleCloseAddEditSettings = () => {
+  const handleCloseDialListEntryForm = () => {
     setDialListTableState({
       ...dialListTableState,
       isDialListEntryFormOpen: false
@@ -205,7 +205,7 @@ const DialListTable = props => {
             <Modal disableBackdropClick={true} open={dialListTableState.isDialListEntryFormOpen}>
               <DialListEntryForm
                 contactInfo={dialListTableState.contactInfo}
-                handleClose={handleCloseAddEditSettings}
+                handleClose={handleCloseDialListEntryForm}
                 headerText={"Edit Contact"}
                 onSubmit={handleSubmitUpdate}
                 submitButtonText={"Update"} />
