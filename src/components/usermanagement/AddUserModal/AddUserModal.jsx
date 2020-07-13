@@ -11,7 +11,10 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import { apiPaths } from "globals";
+import {
+  apiPaths,
+  extensionMatcher
+} from "globals";
 import PropTypes from "prop-types";
 import React, {
   useState
@@ -235,7 +238,7 @@ const AddUserModal = props => {
         />
         <ModalExtension
           clearExtension={clearExtension}
-          disabled={form.extensionValid && /^\d{4}$/.test(extension)}
+          disabled={form.extensionValid && extensionMatcher.test(extension)}
           extension={extension}
           updateValue={newValue => setExtension(newValue)}
           form={form}

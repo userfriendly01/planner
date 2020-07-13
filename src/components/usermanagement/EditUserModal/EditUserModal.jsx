@@ -11,7 +11,10 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import { apiPaths } from "globals";
+import {
+  apiPaths,
+  extensionMatcher
+} from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
@@ -87,7 +90,7 @@ const EditUserModal = props => {
     manager: JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number)),
     managerUpdated: false,
     extensionUpdated: false,
-    extensionValid: /^\d{4}$/.test(worker.attributes.extension)
+    extensionValid: extensionMatcher.test(worker.attributes.extension)
   });
 
   const saveUserClicked = () => {
@@ -190,10 +193,10 @@ const EditUserModal = props => {
         />
         <ModalExtension
           clearExtension={clearExtension}
-          disabled={form.extensionValid && /^\d{4}$/.test(extension)}
+          disabled={form.extensionValid && extensionMatcher.test(extension)}
           extension={extension}
           form={form}
-          isEditExisting={/^\d{4}$/.test(worker.attributes.extension)}
+          isEditExisting={extensionMatcher.test(worker.attributes.extension)}
           originalValue={worker.attributes.extension}
           setForm={setForm}
           updateValue={newValue => setExtension(newValue)}
