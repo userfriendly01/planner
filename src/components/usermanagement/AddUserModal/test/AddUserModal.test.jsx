@@ -14,7 +14,6 @@ import { initialState } from "context";
 import { apiPaths } from "globals";
 import React from "react";
 import { act } from "react-dom/test-utils";
-import { myAxios } from "services";
 import {
   expectMockedComponent,
   expectOnlyPassedProps,
@@ -24,7 +23,10 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import { mapWorkerFromTwilioWorker } from "utils";
+import {
+  myAxios,
+  mapWorkerFromTwilioWorker
+} from "utils";
 
 const axiosMock = new MockAdapter(myAxios);
 jest.useFakeTimers();

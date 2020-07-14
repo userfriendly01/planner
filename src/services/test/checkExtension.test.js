@@ -1,6 +1,6 @@
 import { checkExtension } from "../checkExtension";
-import { myAxios } from "../myAxios";
 import MockAdapter from "axios-mock-adapter";
+import { myAxios } from "utils";
 
 const axiosMock = new MockAdapter(myAxios);
 

@@ -1,7 +1,7 @@
 import { fetchUser } from "../fetchUser";
-import { myAxios } from "../myAxios";
 import MockAdapter from "axios-mock-adapter";
 import { apiPaths } from "globals";
+import { myAxios } from "utils";
 
 jest.mock("globals", () => ({
   __esModule: true,

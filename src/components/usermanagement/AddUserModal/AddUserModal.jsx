@@ -19,10 +19,10 @@ import PropTypes from "prop-types";
 import React, {
   useState
 } from "react";
-import { myAxios } from "services";
 import styled from "styled-components";
 import {
   mapWorkerFromTwilioWorker,
+  myAxios,
   sortManagersByName
 } from "utils";
 

@@ -1,5 +1,5 @@
-import { myAxios } from "./myAxios";
 import { apiPaths } from "globals";
+import { myAxios } from "utils";
 
 export const fetchUser = nNumber => myAxios.get(apiPaths.EMPLOYEE_LOOKUP(nNumber.substring(1)))
   .then(res => {
