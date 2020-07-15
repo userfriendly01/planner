@@ -32,11 +32,11 @@ const CustomTableData = styled.td`
   color: ${props => props.theme.textColor};
   padding: 2px 4px;
   vertical-align: top;
-  &:nth-child(6) {
+  &:nth-child(7) {
     text-align: -webkit-center;
     vertical-align: middle;
   }
-  &:nth-child(7) {
+  &:nth-child(8) {
     text-align: -webkit-center;
     vertical-align: middle;
   }
@@ -53,13 +53,13 @@ const CustomTableHeader = styled.th`
   &:nth-child(2) {
     width: 10%;
   }
-  &:nth-child(3) {
+  &:nth-child(4) {
     width: 18%;
   }
-  &:nth-child(6) {
+  &:nth-child(7) {
     width: ${headerIconWidth};
   }
-  &:nth-child(7) {
+  &:nth-child(8) {
     width: ${headerIconWidth};
   }
 `;
@@ -142,6 +142,7 @@ const ManagementTable = props => {
           <tr>
             <CustomTableHeader>NAME</CustomTableHeader>
             <CustomTableHeader>N NUMBER</CustomTableHeader>
+            <CustomTableHeader>EXTENSION</CustomTableHeader>
             <CustomTableHeader>OFFICE</CustomTableHeader>
             <CustomTableHeader>SKILLS (Current)</CustomTableHeader>
             <CustomTableHeader>SKILLS (Default)</CustomTableHeader>
@@ -172,6 +173,7 @@ const ManagementTable = props => {
               <CustomTableRow key={index} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">
                 <CustomTableData><TableText>{worker.attributes.full_name}</TableText></CustomTableData>
                 <CustomTableData><TableText>{worker.id}</TableText></CustomTableData>
+                <CustomTableData><TableText>{worker.attributes.extension}</TableText></CustomTableData>
                 <CustomTableData><TableText>{worker.attributes.office_location_name}</TableText></CustomTableData>
                 <CustomTableData><TableDataFlex>{formatWorkerSkillsToHTML(worker.attributes.routing)}</TableDataFlex></CustomTableData>
                 <CustomTableData><TableDataFlex>{formatWorkerSkillsToHTML(worker.attributes.default_skills)}</TableDataFlex></CustomTableData>

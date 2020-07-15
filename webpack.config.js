@@ -48,6 +48,7 @@ const config = {
       context: resolvePathInSrc("context"),
       globals: resolvePathInSrc("globals"),
       icons: resolvePathInSrc("assets/icons"),
+      services: resolvePathInSrc("services"),
       utils: resolvePathInSrc("utils")
     },
     extensions: [ ".js", ".jsx" ],
