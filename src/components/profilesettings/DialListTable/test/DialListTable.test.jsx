@@ -53,18 +53,18 @@ describe("<DialListTable />", () => {
   describe("profile has entries in its dial list", () => {
     const dialList = [
       {
-        contact_id: 16,
+        diallist_id: 16,
         contact_nme: "Bo Jackson",
         contact_num: "800-123-4567"
       },
       {
-        contact_id: 18,
+        diallist_id: 18,
         contact_nme: "Daryl Strawberry",
         contact_num: "800-123-4568",
         external_num: "900-555-1212"
       },
       {
-        contact_id: 20,
+        diallist_id: 20,
         contact_nme: "Michael Jack Schmidt",
         contact_num: "800-123-4569"
       }
@@ -105,11 +105,11 @@ describe("<DialListTable />", () => {
     describe("delete button clicked", () => {
       describe("delete is confirmed", () => {
         beforeEach(() => window.confirm = () => true);
-        describe("call to delete contact succeeds", () => {
+        describe("call to delete dial list entry succeeds", () => {
           const indexToDelete = 2;
           const deleteResponse = { hooray: "it worked" };
           beforeEach(() => {
-            axiosMock.onDelete(apiPaths.DELETE_CONTACT_FROM_PROFILE(profile.profileId, dialList[indexToDelete].contact_id))
+            axiosMock.onDelete(apiPaths.DELETE_DIAL_LIST_ENTRY(dialList[indexToDelete].diallist_id))
               .reply(200, deleteResponse);
           });
           test("should call setProfileSettingsState with updated dial list", done => {
@@ -131,11 +131,11 @@ describe("<DialListTable />", () => {
               });
           });
         });
-        describe("call to delete contact fails", () => {
+        describe("call to delete dial list entry fails", () => {
           const indexToDelete = 0;
           const errorMessage = { ohNo: "waaaaaah" };
           beforeEach(() => {
-            axiosMock.onDelete(apiPaths.DELETE_CONTACT_FROM_PROFILE(profile.profileId, dialList[indexToDelete].contact_id))
+            axiosMock.onDelete(apiPaths.DELETE_DIAL_LIST_ENTRY(dialList[indexToDelete].diallist_id))
               .reply(500, errorMessage);
           });
           test("should not call setProfileSettingsState", done => {
