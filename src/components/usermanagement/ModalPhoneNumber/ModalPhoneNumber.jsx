@@ -15,12 +15,15 @@ const InputAndToggleContainer = styled.div`
   display: flex;
 `;
 
-const StyledSwitch = styled(Switch)`
-  margin-left: 8px;
-`;
-
 const StyledTextField = styled(TextField)`
   flex-grow: 1
+`;
+
+const SwitchContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  margin-left: 8px;
 `;
 
 const SevenDigitInputMask = inputProps => {
@@ -94,7 +97,10 @@ const ModalPhoneNumber = props => {
     return (
       <InputAndToggleContainer>
         {textField}
-        <StyledSwitch checked={useSevenDigitMask} onChange={toggleSwitch} inputProps={{ "aria-label": "toggle skills modified" }} />
+        <SwitchContainer>
+          <div>7 Digit VDN</div>
+          <Switch checked={useSevenDigitMask} onChange={toggleSwitch} inputProps={{ "aria-label": "toggle skills modified" }} />
+        </SwitchContainer>
       </InputAndToggleContainer>
     );
   } else {
