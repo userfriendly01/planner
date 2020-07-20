@@ -41,16 +41,11 @@ const DialListEntryForm = props => {
     onSubmit,
     submitButtonText
   } = props;
-  const {
-    contact_num,
-    contact_nme,
-    external_num
-  } = contactInfo;
 
   const [form, setForm] = useState({
-    transferNumber: contact_num ? contact_num : "",
-    friendlyName: contact_nme ? contact_nme : "",
-    externalNumber: external_num ? external_num : ""
+    contact_num: contactInfo.contact_num ? contactInfo.contact_num : "",
+    contact_nme: contactInfo.contact_nme ? contactInfo.contact_nme : "",
+    external_num: contactInfo.external_num ? contactInfo.external_num : ""
   });
 
   console.log("FORM UPDATED", form);
@@ -60,12 +55,13 @@ const DialListEntryForm = props => {
       <PaperContainer>
         <Header>{headerText}</Header>
         <ModalPhoneNumber
+          allowSevenDigitVdn={true}
           id="transfer-number-input"
-          number={form.transferNumber}
+          number={form.contact_num}
           label="Transfer Number"
           updateValue={newValue => setForm({
             ...form,
-            transferNumber: newValue
+            contact_num: newValue
           })}
         />
         <TextField
@@ -75,11 +71,11 @@ const DialListEntryForm = props => {
           name="Friendly Name"
           onChange={event => setForm({
             ...form,
-            friendlyName: event.target.value
+            contact_nme: event.target.value
           })}
           margin="normal"
           variant="outlined"
-          value={form.friendlyName}
+          value={form.contact_nme}
         />
         <TextField
           id="external-number-input"
@@ -88,14 +84,14 @@ const DialListEntryForm = props => {
           name="External Number"
           onChange={event => setForm({
             ...form,
-            externalNumber: event.target.value
+            external_num: event.target.value
           })}
           margin="normal"
           variant="outlined"
-          value={form.externalNumber}
+          value={form.external_num}
         />
         <ButtonWrapper>
-          <StyledButton onClick={onSubmit}>{submitButtonText}</StyledButton>
+          <StyledButton onClick={() => onSubmit(form)}>{submitButtonText}</StyledButton>
           <StyledButton onClick={handleClose}>Close</StyledButton>
         </ButtonWrapper>
       </PaperContainer>
