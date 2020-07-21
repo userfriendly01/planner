@@ -14,11 +14,11 @@ const AddContact = () => {
 
   const [isDialListEntryFormOpen, setIsDialListEntryFormOpen] = useState(false);
 
-  const handleOpenAddEditSettings = () => {
+  const handleOpenDialListEntryForm = () => {
     setIsDialListEntryFormOpen(true);
   };
 
-  const handleCloseAddEditSettings = () => {
+  const handleCloseDialListEntryForm = () => {
     setIsDialListEntryFormOpen(false);
   };
 
@@ -28,13 +28,13 @@ const AddContact = () => {
 
   return (
     <AddContactButtonContainer>
-      <StyledButton onClick={handleOpenAddEditSettings} data-testid={"add-contact-button"}>
+      <StyledButton onClick={handleOpenDialListEntryForm} data-testid={"add-contact-button"}>
         Add Contact
       </StyledButton>
       <Modal disableBackdropClick={true} open={isDialListEntryFormOpen}>
         <DialListEntryForm
           contactInfo={{}}
-          handleClose={handleCloseAddEditSettings}
+          handleClose={handleCloseDialListEntryForm}
           headerText={"Add Contact"}
           onSubmit={handleSubmitCreate}
           submitButtonText={"Save"} />

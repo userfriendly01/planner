@@ -117,10 +117,7 @@ const DialListTable = props => {
     setProfileSettingsState
   } = props;
 
-  const {
-    dialList,
-    profileId
-  } = profile;
+  const { dialList } = profile;
 
   dialList.sort(sortDialListEntriesByName);
 
@@ -129,7 +126,7 @@ const DialListTable = props => {
     contactInfo: {}
   });
 
-  const handleCloseAddEditSettings = () => {
+  const handleCloseDialListEntryForm = () => {
     setDialListTableState({
       ...dialListTableState,
       isDialListEntryFormOpen: false
@@ -169,7 +166,7 @@ const DialListTable = props => {
                 const deleteButtonOnClick = () => {
                   const popUp = confirm("Are you sure you want to delete this dial list entry?");
                   if (popUp === true) {
-                    myAxios.delete(apiPaths.DELETE_CONTACT_FROM_PROFILE(profileId, entry.contact_id))
+                    myAxios.delete(apiPaths.DELETE_DIAL_LIST_ENTRY(entry.diallist_id))
                       .then(() => {
                         dialList.splice(index, 1);
                         setProfileSettingsState({
@@ -180,7 +177,7 @@ const DialListTable = props => {
                         });
                       })
                       .catch(err => {
-                        console.error(`DialListTable - Failed to delete dial list entry for contact_id ${entry.contact_id}`, {
+                        console.error(`DialListTable - Failed to delete dial list entry for diallist_id ${entry.diallist_id}`, {
                           err,
                           entry
                         });
@@ -189,7 +186,7 @@ const DialListTable = props => {
                   }
                 };
                 return(
-                  <CustomTableRow key={entry.contact_id} data-testid="table-row">
+                  <CustomTableRow key={entry.diallist_id} data-testid="table-row">
                     <CustomTableData><TableText>{entry.contact_nme}</TableText></CustomTableData>
                     <CustomTableData><TableText>{formatTenDigitNumber(entry.contact_num)}</TableText></CustomTableData>
                     <CustomTableData><IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
@@ -205,7 +202,7 @@ const DialListTable = props => {
             <Modal disableBackdropClick={true} open={dialListTableState.isDialListEntryFormOpen}>
               <DialListEntryForm
                 contactInfo={dialListTableState.contactInfo}
-                handleClose={handleCloseAddEditSettings}
+                handleClose={handleCloseDialListEntryForm}
                 headerText={"Edit Contact"}
                 onSubmit={handleSubmitUpdate}
                 submitButtonText={"Update"} />

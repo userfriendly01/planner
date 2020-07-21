@@ -1,5 +1,9 @@
 import DialListEntryForm from "../DialListEntryForm";
-import { TextField } from "@material-ui/core";
+import {
+  TextField,
+  Tooltip
+} from "@material-ui/core";
+import { InfoOutlined } from "@material-ui/icons";
 import {
   PaperContainer,
   ModalPhoneNumber,
@@ -16,7 +20,13 @@ import {
 
 jest.mock("@material-ui/core", () => ({
   __esModule: true,
-  TextField: jest.fn()
+  TextField: jest.fn(),
+  Tooltip: jest.fn()
+}));
+
+jest.mock("@material-ui/icons", () => ({
+  __esModule: true,
+  InfoOutlined: jest.fn()
 }));
 
 jest.mock("components", () => ({
@@ -33,9 +43,11 @@ describe("<DialListEntryForm />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     setupMockedComponents({
+      InfoOutlined,
       ModalPhoneNumber,
       StyledButton,
-      TextField
+      TextField,
+      Tooltip
     });
     PaperContainer.mockImplementation(props => <div>{props.children}</div>);
   });
@@ -48,10 +60,11 @@ describe("<DialListEntryForm />", () => {
       external_num: "900-555-1212"
     };
     describe("initial render", () => {
-      test("should render 1 ModalPhoneNumber component, 2 Text Field components, and 2 buttons", () => {
+      test("should render 1 ModalPhoneNumber component, 2 Text Field components, tooltip, save & close buttons", () => {
         const rendered = renderComponent(contactInfo);
         expectMockedComponent(rendered, { ModalPhoneNumber }, 1);
         expectMockedComponent(rendered, { TextField }, 2);
+        expectMockedComponent(rendered, { Tooltip });
         expectMockedComponent(rendered, { StyledButton }, 2);
       });
     });
@@ -135,6 +148,15 @@ describe("<DialListEntryForm />", () => {
         expect(updatedExternalNumber).toEqual(newValue);
       });
     });
+
+    describe("tooltip", () => {
+      test("should display correct text", () => {
+        renderComponent(contactInfo);
+        expectOnlyPassedProps(Tooltip, {
+          title: "Number to share with customer"
+        });
+      });
+    });
   });
 
   describe("required contact info is missing", () => {
@@ -144,10 +166,11 @@ describe("<DialListEntryForm />", () => {
       not_contact_num: "800-123-4567",
       contact_id: 2000
     };
-    test("should render all 3 fields with empty strings", () => {
+    test("should render all 3 fields with empty strings, tooltip, save & close buttons", () => {
       const rendered = renderComponent(contactInfo);
       expectMockedComponent(rendered, { ModalPhoneNumber }, 1);
       expectMockedComponent(rendered, { TextField }, 2);
+      expectMockedComponent(rendered, { Tooltip }, 1);
       expectMockedComponent(rendered, { StyledButton }, 2);
       const transferNumberOutgoingProps = {
         id: "transfer-number-input",

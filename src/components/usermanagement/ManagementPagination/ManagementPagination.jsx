@@ -26,10 +26,13 @@ const PageButton = styled.button`
 `;
 
 const PaginationWrapper = styled.div`
+  background-color: white;
+  bottom: 0;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   padding: 1% 2% 1% 2%;
+  position: sticky;
 `;
 
 const ShowingSection = styled.div`

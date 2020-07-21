@@ -38,7 +38,7 @@ const ProfileSettingsContainer = () => {
         setProfileSettingsState({
           profile: {
             profileId: newProfileId,
-            dialList: res.data.contacts
+            dialList: res.data.diallist
           },
           message: null
         });
