@@ -123,7 +123,7 @@ const DialListEntryForm = props => {
           </Tooltip>
         </ExternalNumberContainer>
         <ButtonWrapper>
-          <StyledButton onClick={onSubmit}>{submitButtonText}</StyledButton>
+          <StyledButton onClick={onSubmit(form)}>{submitButtonText}</StyledButton>
           <StyledButton onClick={handleClose}>Close</StyledButton>
         </ButtonWrapper>
       </PaperContainer>
