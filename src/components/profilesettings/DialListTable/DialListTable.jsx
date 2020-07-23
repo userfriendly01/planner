@@ -16,6 +16,7 @@ import React, { useState } from "react";
 import {
   formatTenDigitNumber,
   myAxios,
+  removeNonNumericCharacters,
   sortDialListEntriesByName
 } from "utils";
 import styled from "styled-components";
@@ -117,6 +118,8 @@ const DialListTable = props => {
     setProfileSettingsState
   } = props;
 
+  console.log("profile in DialListTable:", profile);
+
   const { dialList } = profile;
 
   dialList.sort(sortDialListEntriesByName);
@@ -133,8 +136,25 @@ const DialListTable = props => {
     });
   };
 
-  const handleSubmitUpdate = () => {
-    console.log("update dial list entry");
+  const handleSubmitUpdate = form => () => {
+    console.log("UPDATE dial list entry");
+    const req = {
+      contact_nme: form.friendlyName,
+      contact_num: removeNonNumericCharacters(form.transferNumber),
+      external_num: removeNonNumericCharacters(form.externalNumber)
+    };
+    // TODO: find the diallist_id of the entry to edit (don't hard-code 522 in the request)
+    myAxios.post(apiPaths.DIAL_LIST_ENTRY(522), req)
+      .then(res => {
+        console.log("post response:", res);
+        // TODO: success overlay
+      });
+    // .catch(err => {
+    //   console.error(`DialListTable - Failed to delete dial list entry for diallist_id ${entry.diallist_id}`, {
+    //     err
+    //   });
+    //   // TODO: fail overlay
+    // });
   };
 
   if (dialList.length === 0) {
@@ -146,7 +166,7 @@ const DialListTable = props => {
   } else {
     return(
       <TableContainer>
-        <AddContact />
+        <AddContact profile={profile} />
         <StyledPaper elevation={3}>
           <CustomTable>
             <thead>
@@ -166,7 +186,7 @@ const DialListTable = props => {
                 const deleteButtonOnClick = () => {
                   const popUp = confirm("Are you sure you want to delete this dial list entry?");
                   if (popUp === true) {
-                    myAxios.delete(apiPaths.DELETE_DIAL_LIST_ENTRY(entry.diallist_id))
+                    myAxios.delete(apiPaths.DIAL_LIST_ENTRY(entry.diallist_id))
                       .then(() => {
                         dialList.splice(index, 1);
                         setProfileSettingsState({

@@ -9,3 +9,5 @@ export const formatTenDigitNumber = rawNumber => {
     return num;
   }
 };
+
+export const removeNonNumericCharacters = str => str.replace(/\D/g,"");

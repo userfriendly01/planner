@@ -109,7 +109,7 @@ describe("<DialListTable />", () => {
           const indexToDelete = 2;
           const deleteResponse = { hooray: "it worked" };
           beforeEach(() => {
-            axiosMock.onDelete(apiPaths.DELETE_DIAL_LIST_ENTRY(dialList[indexToDelete].diallist_id))
+            axiosMock.onDelete(apiPaths.DIAL_LIST_ENTRY(dialList[indexToDelete].diallist_id))
               .reply(200, deleteResponse);
           });
           test("should call setProfileSettingsState with updated dial list", done => {
@@ -135,7 +135,7 @@ describe("<DialListTable />", () => {
           const indexToDelete = 0;
           const errorMessage = { ohNo: "waaaaaah" };
           beforeEach(() => {
-            axiosMock.onDelete(apiPaths.DELETE_DIAL_LIST_ENTRY(dialList[indexToDelete].diallist_id))
+            axiosMock.onDelete(apiPaths.DIAL_LIST_ENTRY(dialList[indexToDelete].diallist_id))
               .reply(500, errorMessage);
           });
           test("should not call setProfileSettingsState", done => {

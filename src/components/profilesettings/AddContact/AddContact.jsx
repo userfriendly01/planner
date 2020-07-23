@@ -7,7 +7,10 @@ import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { myAxios } from "utils";
+import {
+  myAxios,
+  removeNonNumericCharacters
+} from "utils";
 
 const AddContactButtonContainer = styled.div`
   margin-bottom: 1em;
@@ -26,8 +29,6 @@ const AddContact = props => {
   const handleCloseDialListEntryForm = () => {
     setIsDialListEntryFormOpen(false);
   };
-
-  const removeNonNumericCharacters = str => str.replace(/\D/g,"");
 
   const handleSubmitAddContact = form => () => {
     const req = {
