@@ -4,7 +4,8 @@ const SERVICE_BASE_URI = "/service";
 export const apiPaths = {
   AUTH: `${SERVICE_BASE_URI}/admin-login`,
   CREATE_WORKER: `${SERVICE_BASE_URI}/createworker`,
-  DELETE_DIAL_LIST_ENTRY: dialListId => `${CONTACT_MANAGER_BASE_URI}/diallist/${dialListId}`,
+  DIAL_LIST: `${CONTACT_MANAGER_BASE_URI}/diallist`,
+  DIAL_LIST_ENTRY: dialListId => `${CONTACT_MANAGER_BASE_URI}/diallist/${dialListId}`,
   EMPLOYEE_LOOKUP: nNum => `${SERVICE_BASE_URI}/employeelookup/${nNum}`,
   FLASH_MESSAGE: `${SERVICE_BASE_URI}/flashmessage`,
   GET_PROFILE_DATA: profileId => `${CONTACT_MANAGER_BASE_URI}/triton/${profileId}`,
