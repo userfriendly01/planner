@@ -82,7 +82,7 @@ describe("<ProfileSettingsContainer />", () => {
     const profileId = 3;
     describe("call to GET_PROFILE_DATA succeeds", () => {
       const getProfileDataResponse = {
-        contacts: [
+        diallist: [
           {
             contact_id: 16,
             contact_nme: "Bo Jackson",
@@ -109,7 +109,7 @@ describe("<ProfileSettingsContainer />", () => {
             expectOnlyPassedProps(DialListTable, {
               profile: {
                 profileId,
-                dialList: getProfileDataResponse.contacts
+                dialList: getProfileDataResponse.diallist
               }
             });
             expect(rendered.container).not.toHaveTextContent(axiosErrorMessage);

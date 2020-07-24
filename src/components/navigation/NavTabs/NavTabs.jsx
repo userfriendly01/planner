@@ -28,6 +28,12 @@ const StyledTab = styled(Tab)`
   }
 `;
 
+const StyledTabContainer = styled.div`
+  position: sticky;
+  top: 48px;
+  z-index: 99;
+`;
+
 function TabPanel(props) {
   const {
     children,
@@ -63,15 +69,18 @@ const NavTabs = () => {
 
   function handleChange(event, newValue) {
     setValue(newValue);
+    window.scrollTo(0, 0);
   }
 
   return (
     <Content >
-      <StyledTabs variant="fullWidth" value={value} onChange={handleChange}>
-        <StyledTab label="User Management" href="/userManagement" id="nav-tab-userManagement" aria-controls="nav-tabpanel-userManagement" onClick={event => event.preventDefault()}/>
-        <StyledTab label="Profile Settings" href="/profileSettings" id="nav-tab-profileSettings" aria-controls="nav-tabpanel-profileSettings" onClick={event => event.preventDefault()}/>
-        <StyledTab label="Flash Message" href="/flashMessage" id="nav-tab-flashMessage" aria-controls="nav-tabpanel-flashMessage" onClick={event => event.preventDefault()}/>
-      </StyledTabs>
+      <StyledTabContainer>
+        <StyledTabs variant="fullWidth" value={value} onChange={handleChange}>
+          <StyledTab label="User Management" href="/userManagement" id="nav-tab-userManagement" aria-controls="nav-tabpanel-userManagement" onClick={event => event.preventDefault()}/>
+          <StyledTab label="Profile Settings" href="/profileSettings" id="nav-tab-profileSettings" aria-controls="nav-tabpanel-profileSettings" onClick={event => event.preventDefault()}/>
+          <StyledTab label="Flash Message" href="/flashMessage" id="nav-tab-flashMessage" aria-controls="nav-tabpanel-flashMessage" onClick={event => event.preventDefault()}/>
+        </StyledTabs>
+      </StyledTabContainer>
       <TabPanel value={value} tabName="userManagement" index={0}>
         <ManagementWrapper />
       </TabPanel>

@@ -1,4 +1,8 @@
-import { TextField } from "@material-ui/core";
+import {
+  TextField,
+  Tooltip
+} from "@material-ui/core";
+import { InfoOutlined } from "@material-ui/icons";
 import {
   PaperContainer,
   ModalPhoneNumber,
@@ -18,8 +22,20 @@ const ButtonWrapper = styled(FlexRow)`
   padding: 1%;
 `;
 
+const ExternalNumberContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
 const Header = styled.h1`
   align-self: center;
+`;
+
+const InfoOutlinedStyled = styled(InfoOutlined)`
+  && {
+    font-size: 30px;
+  }
 `;
 
 const ModalContainer = styled.div`
@@ -31,6 +47,10 @@ const ModalContainer = styled.div`
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
+`;
+
+const TextFieldContainer = styled.div`
+  width: 90%;
 `;
 
 const DialListEntryForm = props => {
@@ -77,21 +97,29 @@ const DialListEntryForm = props => {
           variant="outlined"
           value={form.contact_nme}
         />
-        <TextField
-          id="external-number-input"
-          inputProps={{ maxLength: 80 }}
-          label="External Number"
-          name="External Number"
-          onChange={event => setForm({
-            ...form,
-            external_num: event.target.value
-          })}
-          margin="normal"
-          variant="outlined"
-          value={form.external_num}
-        />
+        <ExternalNumberContainer>
+          <TextFieldContainer>
+            <TextField
+              fullWidth={true}
+              id="external-number-input"
+              inputProps={{ maxLength: 80 }}
+              label="External Number"
+              name="External Number"
+              onChange={event => setForm({
+                ...form,
+                external_num: event.target.value
+              })}
+              margin="normal"
+              variant="outlined"
+              value={form.external_num}
+            />
+          </TextFieldContainer>
+          <Tooltip title={"Number to share with customer"}>
+            <InfoOutlinedStyled />
+          </Tooltip>
+        </ExternalNumberContainer>
         <ButtonWrapper>
-          <StyledButton onClick={() => onSubmit(form)}>{submitButtonText}</StyledButton>
+          <StyledButton onClick={onSubmit(form)}>{submitButtonText}</StyledButton>
           <StyledButton onClick={handleClose}>Close</StyledButton>
         </ButtonWrapper>
       </PaperContainer>
