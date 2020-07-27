@@ -2,6 +2,7 @@ import { CloseRounded } from "@material-ui/icons";
 import {
   OutlinedSelect,
   DefaultSkillSelector,
+  ModalExtension,
   ModalOverlay,
   PaperContainer,
   StyledButton
@@ -10,7 +11,10 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import { apiPaths } from "globals";
+import {
+  apiPaths,
+  extensionMatcher
+} from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
@@ -84,7 +88,9 @@ const EditUserModal = props => {
     defaultSkills: getValidSkillsObject(worker.attributes.default_skills),
     defaultSkillsUpdated: false,
     manager: JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number)),
-    managerUpdated: false
+    managerUpdated: false,
+    extensionUpdated: false,
+    extensionValid: extensionMatcher.test(worker.attributes.extension)
   });
 
   const saveUserClicked = () => {
@@ -98,6 +104,9 @@ const EditUserModal = props => {
       attributes.manager_first_name = parsedManager.manager_first_name;
       attributes.manager_last_name = parsedManager.manager_last_name;
       attributes.manager_n_number = parsedManager.manager_n_number;
+    }
+    if (form.extensionUpdated) {
+      attributes.extension = extension;
     }
     myAxios
       .post(apiPaths.UPDATE_WORKER_ATTRIBUTES, {
@@ -132,7 +141,17 @@ const EditUserModal = props => {
     managerUpdated: true
   });
 
-  const formUpdated = (form.defaultSkillsUpdated || form.managerUpdated);
+  const [extension, setExtension] = useState(worker.attributes.extension);
+  const clearExtension = () => {
+    setForm({
+      ...form,
+      extensionValid: false,
+      extensionUpdated: false
+    });
+    setExtension("");
+  };
+
+  const formUpdated = (form.defaultSkillsUpdated || form.managerUpdated || form.extensionUpdated);
   const formValid = form.manager !== "";
   const formReady = formUpdated && formValid;
 
@@ -172,6 +191,16 @@ const EditUserModal = props => {
           updateValue={setManager}
           value={form.manager}
         />
+        <ModalExtension
+          clearExtension={clearExtension}
+          disabled={form.extensionValid && extensionMatcher.test(extension)}
+          extension={extension}
+          form={form}
+          isEditExisting={extensionMatcher.test(worker.attributes.extension)}
+          originalValue={worker.attributes.extension}
+          setForm={setForm}
+          updateValue={newValue => setExtension(newValue)}
+        />
         <DefaultSkillSelector defaultSkills={form.defaultSkills} setDefaultSkills={setDefaultSkills}/>
         <ButtonWrapper>
           <StyledButton disabled={!formReady} onClick={saveUserClicked}>Update</StyledButton>
@@ -191,7 +220,8 @@ EditUserModal.propTypes = {
       manager_first_name: PropTypes.string,
       manager_last_name: PropTypes.string,
       manager_n_number: PropTypes.string,
-      n_number: PropTypes.string
+      n_number: PropTypes.string,
+      extension: PropTypes.string
     }).isRequired
   })
 };

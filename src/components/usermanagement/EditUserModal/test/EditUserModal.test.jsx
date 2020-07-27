@@ -4,6 +4,7 @@ import MockAdapter from "axios-mock-adapter";
 import {
   OutlinedSelect,
   DefaultSkillSelector,
+  ModalExtension,
   ModalOverlay,
   PaperContainer,
   StyledButton
@@ -39,6 +40,7 @@ jest.mock("components", () => ({
   StyledButton: jest.fn(),
   OutlinedSelect: jest.fn(),
   DefaultSkillSelector: jest.fn(),
+  ModalExtension: jest.fn(),
   ModalOverlay: jest.fn(),
   PaperContainer: jest.fn()
 }));
@@ -49,6 +51,7 @@ const getWorker = defaultSkills => ({
   sid: workerSid,
   attributes: {
     default_skills: defaultSkills,
+    extension: "1234",
     full_name: "Faith Cuneo",
     manager_n_number: "n0999887",
     n_number: "n0263786"
@@ -84,15 +87,15 @@ const renderComponent = defaultSkills => {
 describe("<EditUserModal />", () => {
   beforeEach(() => {
     axiosMock.reset();
+    jest.clearAllMocks();
     setupMockedComponents({
       CloseRounded,
       StyledButton,
       OutlinedSelect,
       DefaultSkillSelector,
+      ModalExtension,
       ModalOverlay
     });
-    mockHandleClose.mockClear();
-    PaperContainer.mockClear();
     PaperContainer.mockImplementation(props => <div>{props.children}</div>);
   });
 
@@ -146,6 +149,7 @@ describe("<EditUserModal />", () => {
       expectMockedComponent(rendered, { OutlinedSelect }, 1);
       expectMockedComponent(rendered, { DefaultSkillSelector }, 1);
       expectMockedComponent(rendered, { StyledButton }, 1);
+      expectMockedComponent(rendered, { ModalExtension }, 1);
       expectMockedComponent(rendered, { ModalOverlay }, 0);
       expectOnlyPassedProps(StyledButton, {
         children: "Update",
@@ -169,6 +173,16 @@ describe("<EditUserModal />", () => {
         key: mockManagers[0].manager_n_number,
         value: JSON.stringify(mockManagers[0])
       });
+    });
+  });
+
+  describe("ModalExtension in its initial state", () => {
+    test("ModalExtension shows the correct extension list is in its initial state", () => {
+      renderComponent();
+      const expectedExtensionProps = {
+        extension: "1234"
+      };
+      expectOnlyPassedProps(ModalExtension, expectedExtensionProps, 0);
     });
   });
 
@@ -222,6 +236,7 @@ describe("<EditUserModal />", () => {
       levels: {}
     };
     beforeEach(() => axiosMock.onPost(apiPaths.EDIT_WORKER).reply(200, mockSuccessfulResponse));
+
     test("defaultSkills and manager are both updated, Update button clicked, should update default_skills and manager attributes, show success modal overlay and hide after 2s", done => {
       const rendered = renderComponent();
       act(() => {
@@ -344,6 +359,70 @@ describe("<EditUserModal />", () => {
         done();
       });
     });
+
+    test("extension is updated, Update button clicked, should only update extension attribute, show success modal overlay and hide after 2s", done => {
+      const rendered = renderComponent();
+      const updatedExtension = "4567";
+      act(() => {
+        const props = getMockedComponentProps(ModalExtension);
+        const form = props.form;
+        props.updateValue(updatedExtension);
+        props.setForm({
+          ...form,
+          extensionValid: true,
+          extensionUpdated: true
+        });
+      });
+      expectOnlyPassedProps(StyledButton, {
+        children: "Update",
+        disabled: false
+      });
+      act(() => {
+        const { onClick } = getMockedComponentProps(StyledButton);
+        onClick();
+        return Promise.resolve();
+      }).then(() => {
+        expect(axiosMock.history.post[0].data).toEqual(JSON.stringify({
+          workerSid,
+          attributes: {
+            extension: updatedExtension
+          }
+        }));
+        const actions = mockStore.getActions();
+        expect(actions).toHaveLength(1);
+        expect(actions[0]).toEqual({
+          type: "updateWorker",
+          payload: mapWorkerFromTwilioWorker(mockSuccessfulResponse)
+        });
+        expectMockedComponent(rendered, { ModalOverlay }, 1);
+        expectOnlyPassedProps(ModalOverlay, {
+          message: "User updated successfully",
+          status: "success"
+        });
+        act(() => jest.runAllTimers());
+        expect(mockHandleClose).toHaveBeenCalledTimes(1);
+        done();
+      });
+    });
+  });
+
+  test("clear extension called should reset the field", () => {
+    renderComponent();
+    act(() => {
+      const updateValue = ModalExtension.mock.calls[0][0].updateValue;
+      updateValue("2345");
+    });
+    let newValue = ModalExtension.mock.calls[1][0].extension;
+    expect(newValue).toEqual("2345");
+    act(() => {
+      const clearExtension = ModalExtension.mock.calls[1][0].clearExtension;
+      clearExtension();
+    });
+    newValue = ModalExtension.mock.calls[2][0].extension;
+    expect(newValue).toEqual("");
+    const props = getMockedComponentProps(ModalExtension);
+    expect(props.form.extensionValid).toEqual(false);
+    expect(props.form.extensionUpdated).toEqual(false);
   });
 
   describe("service call to update worker attributes fails", () => {
