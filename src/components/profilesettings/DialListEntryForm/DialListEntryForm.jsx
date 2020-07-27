@@ -85,9 +85,6 @@ const DialListEntryForm = props => {
 
   const formValid = form.contact_nme_valid && form.contact_num_valid;
 
-  // TODO get rid of this
-  console.log("FORM UPDATED", form);
-
   return (
     <ModalContainer>
       <PaperContainer>
