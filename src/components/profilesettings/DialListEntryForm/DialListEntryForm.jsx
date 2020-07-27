@@ -60,19 +60,24 @@ const TextFieldContainer = styled.div`
 const DialListEntryForm = props => {
   const {
     contactInfo,
-    handleClose,
     headerText,
+    onClose,
     onSubmit,
     submitButtonText
   } = props;
 
-  const [form, setForm] = useState({
-    contact_nme: contactInfo.contact_nme ? contactInfo.contact_nme : "",
-    contact_num: contactInfo.contact_num ? contactInfo.contact_num : "",
-    contact_num_valid: false, // unmasked phone number value ex: `8005554444`
-    external_num: contactInfo.external_num ? contactInfo.external_num : "",
-    maskedPhoneNumber: contactInfo.contact_num ? contactInfo.contact_num : "" // raw masked phone number value to properly update ModalPhoneNumber with ex: `(800) 555-4444`
-  });
+  const getInitialFormState = () => {
+    const contact_num = contactInfo.contact_num || "";
+    return {
+      contact_nme: contactInfo.contact_nme || "",
+      contact_num,
+      contact_num_valid: isNumberValid(unMaskPhoneNumber(contact_num)), // unmasked phone number value ex: `8005554444`
+      external_num: contactInfo.external_num || "",
+      maskedPhoneNumber: contact_num // raw masked phone number value to properly update ModalPhoneNumber with ex: `(800) 555-4444`
+    };
+  };
+
+  const [form, setForm] = useState(getInitialFormState());
 
   console.log("FORM UPDATED", form);
 
@@ -83,14 +88,16 @@ const DialListEntryForm = props => {
         <ModalPhoneNumber
           allowSevenDigitVdn={true}
           id="transfer-number-input"
-          number={form.maskedPhoneNumber}
           label="Transfer Number"
-          updateValue={(newValue, isValid) => setForm({
-            ...form,
-            maskedPhoneNumber: newValue,
-            contact_num: unMaskPhoneNumber(newValue),
-            contact_num_valid: isValid
-          })}
+          number={form.maskedPhoneNumber}
+          updateValue={(maskedValue, unmaskedValue, isValid) => {
+            setForm({
+              ...form,
+              contact_num: unmaskedValue,
+              contact_num_valid: isValid,
+              maskedPhoneNumber: maskedValue
+            });
+          }}
         />
         <TextField
           id="friendly-name-input"
@@ -127,8 +134,8 @@ const DialListEntryForm = props => {
           </Tooltip>
         </ExternalNumberContainer>
         <ButtonWrapper>
-          <StyledButton onClick={onSubmit(form)}>{submitButtonText}</StyledButton>
-          <StyledButton onClick={handleClose}>Close</StyledButton>
+          <StyledButton onClick={() => onSubmit(form)}>{submitButtonText}</StyledButton>
+          <StyledButton onClick={() => onClose()}>Close</StyledButton>
         </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>
@@ -137,8 +144,8 @@ const DialListEntryForm = props => {
 
 DialListEntryForm.propTypes = {
   contactInfo: PropTypes.object.isRequired,
-  handleClose: PropTypes.func.isRequired,
   headerText: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   submitButtonText: PropTypes.string.isRequired
 };

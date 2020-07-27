@@ -20,7 +20,7 @@ const InputAndToggleContainer = styled.div`
 `;
 
 const StyledTextField = styled(TextField)`
-  flex-grow: 1
+  flex-grow: 1;
 `;
 
 const SwitchContainer = styled.div`
@@ -78,7 +78,12 @@ const ModalPhoneNumber = props => {
 
   const [useSevenDigitMask, setUseSevenDigitMask] = useState(sevenDigitToggleDefault ? true : false);
 
+  const error = !isNumberValid(unMaskPhoneNumber(number), useSevenDigitMask);
+  const helperText = error ? (useSevenDigitMask ? "Enter a seven digit VDN" : "Enter a valid ten digit phone number") : undefined;
+
   const textField = <StyledTextField
+    error={error}
+    helperText={helperText}
     id={id}
     InputProps={{
       inputComponent: useSevenDigitMask ? SevenDigitInputMask : TenDigitInputMask,
@@ -90,11 +95,11 @@ const ModalPhoneNumber = props => {
     name={label}
     onChange={({
       target: {
-        value
+        value: maskedValue
       }
     }) => {
-      const unmaskedNumber = unMaskPhoneNumber(value);
-      updateValue(value, isNumberValid(unmaskedNumber));
+      const unmaskedValue = unMaskPhoneNumber(maskedValue);
+      updateValue(maskedValue, unmaskedValue, isNumberValid(unmaskedValue, useSevenDigitMask));
     }}
     margin="normal"
     variant="outlined"
