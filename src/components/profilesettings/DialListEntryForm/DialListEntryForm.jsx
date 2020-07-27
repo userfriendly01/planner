@@ -85,6 +85,7 @@ const DialListEntryForm = props => {
 
   const formValid = form.contact_nme_valid && form.contact_num_valid;
 
+  // TODO get rid of this
   console.log("FORM UPDATED", form);
 
   return (
@@ -145,7 +146,7 @@ const DialListEntryForm = props => {
           </Tooltip>
         </ExternalNumberContainer>
         <ButtonWrapper>
-          <StyledButton disabled={formValid} onClick={() => onSubmit(form)}>
+          <StyledButton disabled={!formValid} onClick={() => onSubmit(form)}>
             {submitButtonText}
           </StyledButton>
           <StyledButton onClick={() => onClose()}>
