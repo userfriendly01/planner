@@ -57,6 +57,8 @@ const TextFieldContainer = styled.div`
   width: 90%;
 `;
 
+const validateContactNme = value => value.length > 0;
+
 const DialListEntryForm = props => {
   const {
     contactInfo,
@@ -67,9 +69,11 @@ const DialListEntryForm = props => {
   } = props;
 
   const getInitialFormState = () => {
+    const contact_nme = contactInfo.contact_nme || "";
     const contact_num = contactInfo.contact_num || "";
     return {
-      contact_nme: contactInfo.contact_nme || "",
+      contact_nme,
+      contact_nme_valid: validateContactNme(contact_nme),
       contact_num,
       contact_num_valid: isNumberValid(unMaskPhoneNumber(contact_num)), // unmasked phone number value ex: `8005554444`
       external_num: contactInfo.external_num || "",
@@ -78,6 +82,8 @@ const DialListEntryForm = props => {
   };
 
   const [form, setForm] = useState(getInitialFormState());
+
+  const formValid = form.contact_nme_valid && form.contact_num_valid;
 
   console.log("FORM UPDATED", form);
 
@@ -100,13 +106,18 @@ const DialListEntryForm = props => {
           }}
         />
         <TextField
+          error={!form.contact_nme_valid}
+          helperText={form.contact_nme_valid ? undefined : "Please enter a friendly name"}
           id="friendly-name-input"
           inputProps={{ maxLength: 80 }}
           label="Friendly Name"
           name="Friendly Name"
-          onChange={event => setForm({
+          onChange={({
+            target: { value }
+          }) => setForm({
             ...form,
-            contact_nme: event.target.value
+            contact_nme: value,
+            contact_nme_valid: validateContactNme(value)
           })}
           margin="normal"
           variant="outlined"
@@ -134,8 +145,12 @@ const DialListEntryForm = props => {
           </Tooltip>
         </ExternalNumberContainer>
         <ButtonWrapper>
-          <StyledButton onClick={() => onSubmit(form)}>{submitButtonText}</StyledButton>
-          <StyledButton onClick={() => onClose()}>Close</StyledButton>
+          <StyledButton disabled={formValid} onClick={() => onSubmit(form)}>
+            {submitButtonText}
+          </StyledButton>
+          <StyledButton onClick={() => onClose()}>
+            Close
+          </StyledButton>
         </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>
