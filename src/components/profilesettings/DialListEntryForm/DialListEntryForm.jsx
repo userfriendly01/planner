@@ -1,4 +1,8 @@
 import {
+  isNumberValid,
+  unMaskPhoneNumber
+} from "@lmig/phone-number-utils";
+import {
   TextField,
   Tooltip
 } from "@material-ui/core";
@@ -63,9 +67,11 @@ const DialListEntryForm = props => {
   } = props;
 
   const [form, setForm] = useState({
-    contact_num: contactInfo.contact_num ? contactInfo.contact_num : "",
     contact_nme: contactInfo.contact_nme ? contactInfo.contact_nme : "",
-    external_num: contactInfo.external_num ? contactInfo.external_num : ""
+    contact_num: contactInfo.contact_num ? contactInfo.contact_num : "",
+    contact_num_valid: false, // unmasked phone number value ex: `8005554444`
+    external_num: contactInfo.external_num ? contactInfo.external_num : "",
+    maskedPhoneNumber: contactInfo.contact_num ? contactInfo.contact_num : "" // raw masked phone number value to properly update ModalPhoneNumber with ex: `(800) 555-4444`
   });
 
   console.log("FORM UPDATED", form);
@@ -77,11 +83,13 @@ const DialListEntryForm = props => {
         <ModalPhoneNumber
           allowSevenDigitVdn={true}
           id="transfer-number-input"
-          number={form.contact_num}
+          number={form.maskedPhoneNumber}
           label="Transfer Number"
-          updateValue={newValue => setForm({
+          updateValue={(newValue, isValid) => setForm({
             ...form,
-            contact_num: newValue
+            maskedPhoneNumber: newValue,
+            contact_num: unMaskPhoneNumber(newValue),
+            contact_num_valid: isValid
           })}
         />
         <TextField

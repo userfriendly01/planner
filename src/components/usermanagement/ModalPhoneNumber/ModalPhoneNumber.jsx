@@ -1,4 +1,8 @@
 import {
+  isNumberValid,
+  unMaskPhoneNumber
+} from "@lmig/phone-number-utils";
+import {
   Switch,
   TextField
 } from "@material-ui/core";
@@ -68,10 +72,11 @@ const ModalPhoneNumber = props => {
     id,
     label,
     number,
+    sevenDigitToggleDefault,
     updateValue
   } = props;
 
-  const [useSevenDigitMask, setUseSevenDigitMask] = useState(false);
+  const [useSevenDigitMask, setUseSevenDigitMask] = useState(sevenDigitToggleDefault ? true : false);
 
   const textField = <StyledTextField
     id={id}
@@ -83,7 +88,14 @@ const ModalPhoneNumber = props => {
     }}
     label={label}
     name={label}
-    onChange={event => updateValue(event.target.value)}
+    onChange={({
+      target: {
+        value
+      }
+    }) => {
+      const unmaskedNumber = unMaskPhoneNumber(value);
+      updateValue(value, isNumberValid(unmaskedNumber));
+    }}
     margin="normal"
     variant="outlined"
     value={number}
@@ -113,6 +125,7 @@ ModalPhoneNumber.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   number: PropTypes.string.isRequired,
+  sevenDigitToggleDefault: PropTypes.bool,
   updateValue: PropTypes.func.isRequired
 };
 
