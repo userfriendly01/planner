@@ -20,10 +20,10 @@ import {
 } from "utils";
 import styled from "styled-components";
 
-const StyledPaper = styled(Paper)`
-  align-items: center;
+const AddContactButtonContainer = styled.div`
   display: flex;
-  justify-content: center;
+  padding: 8px;
+  width: 100%;
 `;
 
 const CustomTable = styled.table`
@@ -93,6 +93,17 @@ const IconWrapper = styled.div`
   }
 `;
 
+const NoDialListDiv = styled.div`
+  margin-top: 25vh;
+  text-align: center;
+`;
+
+const StyledPaper = styled(Paper)`
+  align-items: center;
+  display: flex;
+  justify-content: center;
+`;
+
 const TableContainer = styled.div`
   align-items: center;
   display: flex;
@@ -106,15 +117,11 @@ const TableText = styled.div`
   margin: 2px;
 `;
 
-const NoDialListDiv = styled.div`
-  margin-top: 25vh;
-  text-align: center;
-`;
 
 const DialListTable = props => {
   const {
     profile,
-    setProfileSettingsState
+    refreshProfileData
   } = props;
 
   // TODO remove this log
@@ -147,12 +154,7 @@ const DialListTable = props => {
           console.log(`Successfully deleted dial list entry with diallist_id ${diallistId}`, {
             responseData: res.data
           });
-          setProfileSettingsState({
-            profile: {
-              ...profile,
-              dialList: dialList.filter(entry => entry.diallist_id !== diallistId)
-            }
-          });
+          refreshProfileData();
         })
         .catch(err => {
           console.error(`Failed to delete dial list entry with diallist_id ${diallistId}`, {
@@ -176,20 +178,7 @@ const DialListTable = props => {
           responseData: res.data,
           requestBody
         });
-        setProfileSettingsState({
-          profile: {
-            ...profile,
-            dialList: [
-              ...dialList,
-              {
-                contact_nme: form.contact_nme,
-                contact_num: form.contact_num,
-                diallist_id: 10000, // TODO
-                external_num: form.external_num
-              }
-            ]
-          }
-        });
+        refreshProfileData();
         setDialListTableState({
           ...dialListTableState,
           isDialListEntryFormOpen: false
@@ -217,21 +206,7 @@ const DialListTable = props => {
           responseData: res.data,
           requestBody
         });
-        const updatedEntry = {
-          ...dialList.find(entry => entry.diallist_id === diallistId),
-          contact_nme: form.contact_nme,
-          contact_num: form.contact_num,
-          external_num: form.external_num
-        };
-        setProfileSettingsState({
-          profile: {
-            ...profile,
-            dialList: [
-              ...dialList.filter(entry => entry.diallist_id !== diallistId),
-              updatedEntry
-            ]
-          }
-        });
+        refreshProfileData();
         setDialListTableState({
           ...dialListTableState,
           isDialListEntryFormOpen: false
@@ -269,9 +244,11 @@ const DialListTable = props => {
   } else {
     return(
       <TableContainer>
-        <StyledButton onClick={addContactButtonClicked}>
-          Add Contact
-        </StyledButton>
+        <AddContactButtonContainer>
+          <StyledButton onClick={addContactButtonClicked}>
+            Add Contact
+          </StyledButton>
+        </AddContactButtonContainer>
         <StyledPaper elevation={3}>
           <CustomTable>
             <thead>
@@ -333,7 +310,7 @@ const DialListTable = props => {
 
 DialListTable.propTypes = {
   profile: PropTypes.object.isRequired,
-  setProfileSettingsState: PropTypes.func.isRequired
+  refreshProfileData: PropTypes.func.isRequired
 };
 
 export default DialListTable;

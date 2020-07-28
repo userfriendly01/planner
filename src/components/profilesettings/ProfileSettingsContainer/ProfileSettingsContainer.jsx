@@ -32,7 +32,7 @@ const ProfileSettingsContainer = () => {
 
   const profilesFromContextMinusGoP = useAdminState().profileContext.profiles.slice(1);
 
-  const updateProfile = newProfileId => {
+  const fetchProfileDataFromDatabase = newProfileId => {
     myAxios.get(apiPaths.GET_PROFILE_DATA(newProfileId))
       .then(res => {
         setProfileSettingsState({
@@ -60,12 +60,12 @@ const ProfileSettingsContainer = () => {
       <ProfileDropDown
         availableProfiles={profilesFromContextMinusGoP}
         profile={profileSettingsState.profile}
-        updateProfile={updateProfile}
+        updateProfile={fetchProfileDataFromDatabase}
       />
       {profileSettingsState.profile.profileId !== null && profileSettingsState.profile.profileId !== "" ?
         <DialListTable
+          refreshProfileData={() => fetchProfileDataFromDatabase(profileSettingsState.profile.profileId)}
           profile={profileSettingsState.profile}
-          setProfileSettingsState={setProfileSettingsState}
         />: null}
       <ProfileSettingsMessage data-testid="message">
         <h1>{profileSettingsState.message}</h1>
