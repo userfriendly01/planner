@@ -260,7 +260,6 @@ const DialListTable = props => {
             <tbody>
               {dialList.map(entry => {
                 const editButtonOnClick = () => {
-                  console.log("ENTRY", entry);
                   setDialListTableState({
                     dialListEntryFormHeaderText: "Edit Dial List Entry",
                     dialListEntryFormInitialValues: {
