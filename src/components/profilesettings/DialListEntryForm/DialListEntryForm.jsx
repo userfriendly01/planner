@@ -61,22 +61,22 @@ const validateContactNme = value => value.length > 0;
 
 const DialListEntryForm = props => {
   const {
-    contactInfo,
     headerText,
+    initialValues,
     onClose,
-    onSubmit,
-    submitButtonText
+    onSubmit
   } = props;
 
   const getInitialFormState = () => {
-    const contact_nme = contactInfo.contact_nme || "";
-    const contact_num = contactInfo.contact_num || "";
+    const contact_nme = initialValues.contact_nme || "";
+    const contact_num = initialValues.contact_num || "";
+    const external_num = initialValues.external_num || "";
     return {
       contact_nme,
       contact_nme_valid: validateContactNme(contact_nme),
       contact_num,
       contact_num_valid: isNumberValid(unMaskPhoneNumber(contact_num)), // unmasked phone number value ex: `8005554444`
-      external_num: contactInfo.external_num || "",
+      external_num,
       maskedPhoneNumber: contact_num // raw masked phone number value to properly update ModalPhoneNumber with ex: `(800) 555-4444`
     };
   };
@@ -144,7 +144,7 @@ const DialListEntryForm = props => {
         </ExternalNumberContainer>
         <ButtonWrapper>
           <StyledButton disabled={!formValid} onClick={() => onSubmit(form)}>
-            {submitButtonText}
+            Save
           </StyledButton>
           <StyledButton onClick={() => onClose()}>
             Close
@@ -156,11 +156,14 @@ const DialListEntryForm = props => {
 };
 
 DialListEntryForm.propTypes = {
-  contactInfo: PropTypes.object.isRequired,
   headerText: PropTypes.string.isRequired,
+  initialValues: PropTypes.shape({
+    contact_nme: PropTypes.string,
+    contact_num: PropTypes.string,
+    external_num: PropTypes.string
+  }).isRequired,
   onClose: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  submitButtonText: PropTypes.string.isRequired
+  onSubmit: PropTypes.func.isRequired
 };
 
 export default DialListEntryForm;

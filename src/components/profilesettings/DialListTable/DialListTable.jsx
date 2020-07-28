@@ -7,8 +7,8 @@ import {
   Edit
 } from "@material-ui/icons";
 import {
-  AddContact,
-  DialListEntryForm
+  DialListEntryForm,
+  StyledButton
 } from "components";
 import { apiPaths } from "globals";
 import PropTypes from "prop-types";
@@ -16,7 +16,6 @@ import React, { useState } from "react";
 import {
   formatTenDigitNumber,
   myAxios,
-  removeNonNumericCharacters,
   sortDialListEntriesByName
 } from "utils";
 import styled from "styled-components";
@@ -118,43 +117,147 @@ const DialListTable = props => {
     setProfileSettingsState
   } = props;
 
+  // TODO remove this log
   console.log("profile in DialListTable:", profile);
 
-  const { dialList } = profile;
+  const {
+    dialList,
+    profileId
+  } = profile;
 
   dialList.sort(sortDialListEntriesByName);
 
   const [dialListTableState, setDialListTableState] = useState({
-    isDialListEntryFormOpen: false,
-    contactInfo: {}
+    dialListEntryFormHeaderText: "",
+    dialListEntryFormInitialValues: {},
+    dialListEntryFormSubmitFn: () => console.error("dialListEntryFormSubmitFn not set"),
+    isDialListEntryFormOpen: false
   });
 
-  const handleCloseDialListEntryForm = () => {
-    setDialListTableState({
-      ...dialListTableState,
-      isDialListEntryFormOpen: false
-    });
+  const dialListEntryFormOnClose = () => setDialListTableState({
+    ...dialListTableState,
+    isDialListEntryFormOpen: false
+  });
+
+  const getDeleteButtonOnClick = diallistId => () => {
+    const popUp = confirm("Are you sure you want to delete this dial list entry?");
+    if (popUp === true) {
+      myAxios.delete(apiPaths.DIAL_LIST_ENTRY(diallistId))
+        .then(res => {
+          console.log(`Successfully deleted dial list entry with diallist_id ${diallistId}`, {
+            responseData: res.data
+          });
+          setProfileSettingsState({
+            profile: {
+              ...profile,
+              dialList: dialList.filter(entry => entry.diallist_id !== diallistId)
+            }
+          });
+        })
+        .catch(err => {
+          console.error(`Failed to delete dial list entry with diallist_id ${diallistId}`, {
+            err
+          });
+        // TODO: Alter UI to display something to the user
+        });
+    }
   };
 
-  const handleSubmitUpdate = form => () => {
-    console.log("UPDATE dial list entry");
-    const req = {
-      contact_nme: form.friendlyName,
-      contact_num: removeNonNumericCharacters(form.transferNumber),
-      external_num: removeNonNumericCharacters(form.externalNumber)
+  const submitButtonOnClickForInsert = form => {
+    const requestBody = {
+      contact_nme: form.contact_nme,
+      contact_num: form.contact_num,
+      external_num: form.external_num,
+      profile_id: profileId
     };
-    // TODO: find the diallist_id of the entry to edit (don't hard-code 522 in the request)
-    myAxios.post(apiPaths.DIAL_LIST_ENTRY(522), req)
+    myAxios.post(apiPaths.DIAL_LIST, requestBody)
       .then(res => {
-        console.log("post response:", res);
+        console.log("Successfully inserted dial list entry", {
+          responseData: res.data,
+          requestBody
+        });
+        setProfileSettingsState({
+          profile: {
+            ...profile,
+            dialList: [
+              ...dialList,
+              {
+                contact_nme: form.contact_nme,
+                contact_num: form.contact_num,
+                diallist_id: 10000, // TODO
+                external_num: form.external_num
+              }
+            ]
+          }
+        });
+        setDialListTableState({
+          ...dialListTableState,
+          isDialListEntryFormOpen: false
+        });
         // TODO: success overlay
+      })
+      .catch(err => {
+        console.error("Failed to insert dial list entry", {
+          err,
+          requestBody
+        });
+        // TODO: fail overlay
       });
-    // .catch(err => {
-    //   console.error(`DialListTable - Failed to delete dial list entry for diallist_id ${entry.diallist_id}`, {
-    //     err
-    //   });
-    //   // TODO: fail overlay
-    // });
+  };
+
+  const getSubmitButtonOnClickForUpdate = diallistId => form => {
+    const requestBody = {
+      contact_nme: form.contact_nme,
+      contact_num: form.contact_num,
+      external_num: form.external_num
+    };
+    myAxios.put(apiPaths.DIAL_LIST_ENTRY(diallistId), requestBody)
+      .then(res => {
+        console.log(`Successfully updated dial list entry with diallist_id ${diallistId}`, {
+          responseData: res.data,
+          requestBody
+        });
+        const updatedEntry = {
+          ...dialList.find(entry => entry.diallist_id === diallistId),
+          contact_nme: form.contact_nme,
+          contact_num: form.contact_num,
+          external_num: form.external_num
+        };
+        setProfileSettingsState({
+          profile: {
+            ...profile,
+            dialList: [
+              ...dialList.filter(entry => entry.diallist_id !== diallistId),
+              updatedEntry
+            ]
+          }
+        });
+        setDialListTableState({
+          ...dialListTableState,
+          isDialListEntryFormOpen: false
+        });
+        // TODO: success overlay
+      })
+      .catch(err => {
+        console.error(`Failed to update dial list entry with diallist_id ${diallistId}`, {
+          err,
+          requestBody
+        });
+        // TODO: fail overlay
+      });
+  };
+
+  const addContactButtonClicked = () => {
+    setDialListTableState({
+      dialListEntryFormHeaderText: "Add Dial List Entry",
+      dialListEntryFormInitialValues: {
+        contact_nme: "",
+        contact_num: "",
+        external_num: ""
+      },
+      dialListEntryFormSubmitFn: submitButtonOnClickForInsert,
+      isDialListEntryFormOpen: true
+    });
   };
 
   if (dialList.length === 0) {
@@ -166,7 +269,9 @@ const DialListTable = props => {
   } else {
     return(
       <TableContainer>
-        <AddContact profile={profile} />
+        <StyledButton onClick={addContactButtonClicked}>
+          Add Contact
+        </StyledButton>
         <StyledPaper elevation={3}>
           <CustomTable>
             <thead>
@@ -176,56 +281,48 @@ const DialListTable = props => {
               </tr>
             </thead>
             <tbody>
-              {dialList.map((entry, index) => {
+              {dialList.map(entry => {
                 const editButtonOnClick = () => {
+                  console.log("ENTRY", entry);
                   setDialListTableState({
-                    isDialListEntryFormOpen: true,
-                    contactInfo: entry
+                    dialListEntryFormHeaderText: "Edit Dial List Entry",
+                    dialListEntryFormInitialValues: {
+                      contact_nme: entry.contact_nme,
+                      contact_num: entry.contact_num,
+                      external_num: entry.external_num
+                    },
+                    dialListEntryFormSubmitFn: getSubmitButtonOnClickForUpdate(entry.diallist_id),
+                    isDialListEntryFormOpen: true
                   });
-                };
-                const deleteButtonOnClick = () => {
-                  const popUp = confirm("Are you sure you want to delete this dial list entry?");
-                  if (popUp === true) {
-                    myAxios.delete(apiPaths.DIAL_LIST_ENTRY(entry.diallist_id))
-                      .then(() => {
-                        dialList.splice(index, 1);
-                        setProfileSettingsState({
-                          profile: {
-                            ...profile,
-                            dialList
-                          }
-                        });
-                      })
-                      .catch(err => {
-                        console.error(`DialListTable - Failed to delete dial list entry for diallist_id ${entry.diallist_id}`, {
-                          err,
-                          entry
-                        });
-                      // TODO: What to display to user?
-                      });
-                  }
                 };
                 return(
                   <CustomTableRow key={entry.diallist_id} data-testid="table-row">
-                    <CustomTableData><TableText>{entry.contact_nme}</TableText></CustomTableData>
-                    <CustomTableData><TableText>{formatTenDigitNumber(entry.contact_num)}</TableText></CustomTableData>
-                    <CustomTableData><IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
-                      <Edit fontSize={"inherit"} />
-                    </IconWrapper></CustomTableData>
-                    <CustomTableData><IconWrapper onClick={deleteButtonOnClick} data-testid="delete-button">
-                      <Delete fontSize={"inherit"} />
-                    </IconWrapper></CustomTableData>
+                    <CustomTableData>
+                      <TableText>{entry.contact_nme}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
+                      <TableText>{formatTenDigitNumber(entry.contact_num)}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
+                      <IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
+                        <Edit fontSize={"inherit"} />
+                      </IconWrapper>
+                    </CustomTableData>
+                    <CustomTableData>
+                      <IconWrapper onClick={getDeleteButtonOnClick(entry.diallist_id)} data-testid="delete-button">
+                        <Delete fontSize={"inherit"} />
+                      </IconWrapper>
+                    </CustomTableData>
                   </CustomTableRow>
                 );
               })}
             </tbody>
             <Modal disableBackdropClick={true} open={dialListTableState.isDialListEntryFormOpen}>
               <DialListEntryForm
-                contactInfo={dialListTableState.contactInfo}
-                handleClose={handleCloseDialListEntryForm}
-                headerText={"Edit Contact"}
-                onSubmit={handleSubmitUpdate}
-                submitButtonText={"Update"} />
+                headerText={dialListTableState.dialListEntryFormHeaderText}
+                initialValues={dialListTableState.dialListEntryFormInitialValues}
+                onClose={dialListEntryFormOnClose}
+                onSubmit={dialListTableState.dialListEntryFormSubmitFn} />
             </Modal>
           </CustomTable>
         </StyledPaper>
