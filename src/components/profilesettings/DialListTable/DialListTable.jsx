@@ -15,8 +15,7 @@ import PropTypes from "prop-types";
 import React, { useState } from "react";
 import {
   formatTenDigitNumber,
-  myAxios,
-  sortDialListEntriesByName
+  myAxios
 } from "utils";
 import styled from "styled-components";
 
@@ -120,19 +119,10 @@ const TableText = styled.div`
 
 const DialListTable = props => {
   const {
-    profile,
+    dialList,
+    profileId,
     refreshProfileData
   } = props;
-
-  // TODO remove this log
-  console.log("profile in DialListTable:", profile);
-
-  const {
-    dialList,
-    profileId
-  } = profile;
-
-  dialList.sort(sortDialListEntriesByName);
 
   const [dialListTableState, setDialListTableState] = useState({
     dialListEntryFormHeaderText: "",
@@ -308,7 +298,8 @@ const DialListTable = props => {
 };
 
 DialListTable.propTypes = {
-  profile: PropTypes.object.isRequired,
+  dialList: PropTypes.array.isRequired,
+  profileId: PropTypes.number,
   refreshProfileData: PropTypes.func.isRequired
 };
 

@@ -6,7 +6,10 @@ import { useAdminState } from "context";
 import { apiPaths } from "globals";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { myAxios } from "utils";
+import {
+  myAxios,
+  sortDialListEntriesByName
+} from "utils";
 
 const ProfileSettingsContainerDiv = styled.div`
   height: calc(100vh - 96px);
@@ -21,54 +24,61 @@ const ProfileSettingsMessage = styled.div`
 const ProfileSettingsContainer = () => {
 
   const initialProfileState = {
-    profileId: null,
-    dialList: []
+    dialList: [],
+    message: "Please select a profile",
+    profileId: null
   };
-  const initialMessage = "Please select a profile";
-  const [profileSettingsState, setProfileSettingsState] = useState({
-    profile: initialProfileState,
-    message: initialMessage
-  });
+  const [profileSettingsState, setProfileSettingsState] = useState(initialProfileState);
 
   const profilesFromContextMinusGoP = useAdminState().profileContext.profiles.slice(1);
 
-  const fetchProfileDataFromDatabase = newProfileId => {
-    myAxios.get(apiPaths.GET_PROFILE_DATA(newProfileId))
+  const fetchDialListForProfile = profileId => {
+    myAxios.get(apiPaths.GET_PROFILE_DATA(profileId))
       .then(res => {
+        const dialList = [...res.data.diallist].sort(sortDialListEntriesByName);
         setProfileSettingsState({
-          profile: {
-            profileId: newProfileId,
-            dialList: res.data.diallist
-          },
-          message: null
+          dialList,
+          message: null,
+          profileId
+        });
+        console.log("Fetched dial list for profile", {
+          dialList,
+          profileId
         });
       })
       .catch(err => {
-        console.error("ProfileSettingsContainer - Failed to get profile data", {
+        console.error("Failed to fetch dial list for profile", {
           err,
-          newProfileId
+          profileId
         });
         setProfileSettingsState({
-          profile: initialProfileState,
-          message: `Failed to get data for profile ${newProfileId}.`
+          ...initialProfileState,
+          message: `Failed to fetch data for selected profile with ID: ${profileId}`
         });
       });
   };
+
+  const {
+    dialList,
+    message,
+    profileId
+  } = profileSettingsState;
 
   return(
     <ProfileSettingsContainerDiv>
       <ProfileDropDown
         availableProfiles={profilesFromContextMinusGoP}
-        profile={profileSettingsState.profile}
-        updateProfile={fetchProfileDataFromDatabase}
+        profileId={profileId}
+        updateProfile={fetchDialListForProfile}
       />
-      {profileSettingsState.profile.profileId !== null && profileSettingsState.profile.profileId !== "" ?
+      {profileId !== null && profileId !== "" ?
         <DialListTable
-          refreshProfileData={() => fetchProfileDataFromDatabase(profileSettingsState.profile.profileId)}
-          profile={profileSettingsState.profile}
+          refreshProfileData={() => fetchDialListForProfile(profileId)}
+          dialList={dialList}
+          profileId={profileId}
         />: null}
       <ProfileSettingsMessage data-testid="message">
-        <h1>{profileSettingsState.message}</h1>
+        <h1>{message}</h1>
       </ProfileSettingsMessage>
     </ProfileSettingsContainerDiv>
   );
