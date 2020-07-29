@@ -22,7 +22,7 @@ import styled from "styled-components";
 
 const AddContactButtonContainer = styled.div`
   display: flex;
-  padding: 8px;
+  margin-bottom: 16px;
   width: 100%;
 `;
 
