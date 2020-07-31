@@ -68,7 +68,9 @@ const TenDigitInputMask = inputProps => {
 
 const ModalPhoneNumber = props => {
   const {
-    allowSevenDigitVdn, // if true, show toggle button to switch between input masks
+    allowSevenDigitVdn, // if true, show toggle button to switch between input masks,
+    error,
+    helperText,
     id,
     label,
     number,
@@ -78,12 +80,12 @@ const ModalPhoneNumber = props => {
 
   const [useSevenDigitMask, setUseSevenDigitMask] = useState(sevenDigitToggleDefault ? true : false);
 
-  const error = !isNumberValid(unMaskPhoneNumber(number), useSevenDigitMask);
-  const helperText = error ? (useSevenDigitMask ? "Enter a seven digit VDN" : "Enter a valid ten digit phone number") : undefined;
+  const validationError = !isNumberValid(unMaskPhoneNumber(number), useSevenDigitMask);
+  const validationHelperText = validationError ? (useSevenDigitMask ? "Enter a seven digit VDN" : "Enter a valid ten digit phone number") : undefined;
 
   const textField = <StyledTextField
-    error={error}
-    helperText={helperText}
+    error={error || validationError}
+    helperText={helperText || validationHelperText}
     id={id}
     InputProps={{
       inputComponent: useSevenDigitMask ? SevenDigitInputMask : TenDigitInputMask,
@@ -127,6 +129,8 @@ const ModalPhoneNumber = props => {
 
 ModalPhoneNumber.propTypes = {
   allowSevenDigitVdn: PropTypes.bool,
+  error: PropTypes.bool,
+  helperText: PropTypes.string,
   id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   number: PropTypes.string.isRequired,
