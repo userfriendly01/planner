@@ -10,7 +10,10 @@ import {
   DialListEntryForm,
   StyledButton
 } from "components";
-import { apiPaths } from "globals";
+import {
+  apiPaths,
+  formModes
+} from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import {
@@ -116,7 +119,6 @@ const TableText = styled.div`
   margin: 2px;
 `;
 
-
 const DialListTable = props => {
   const {
     dialList,
@@ -125,15 +127,10 @@ const DialListTable = props => {
   } = props;
 
   const [dialListTableState, setDialListTableState] = useState({
-    dialListEntryFormHeaderText: "",
-    dialListEntryFormInitialValues: {},
-    dialListEntryFormSubmitFn: () => console.error("dialListEntryFormSubmitFn not set"),
-    isDialListEntryFormOpen: false
-  });
-
-  const dialListEntryFormOnClose = () => setDialListTableState({
-    ...dialListTableState,
-    isDialListEntryFormOpen: false
+    dialListId: null,
+    dialListEntryFormInitialValues: {}, // populated with diallist entry data and passed to DialListEntryForm
+    dialListEntryFormMode: "",
+    isDialListEntryFormOpen: false // show DialListEntryForm
   });
 
   const getDeleteButtonOnClick = diallistId => () => {
@@ -155,72 +152,14 @@ const DialListTable = props => {
     }
   };
 
-  const submitButtonOnClickForInsert = form => {
-    const requestBody = {
-      contact_nme: form.contact_nme,
-      contact_num: form.contact_num,
-      external_num: form.external_num,
-      profile_id: profileId
-    };
-    myAxios.post(apiPaths.DIAL_LIST, requestBody)
-      .then(res => {
-        console.log("Successfully inserted dial list entry", {
-          responseData: res.data,
-          requestBody
-        });
-        refreshProfileData();
-        setDialListTableState({
-          ...dialListTableState,
-          isDialListEntryFormOpen: false
-        });
-        // TODO: success overlay
-      })
-      .catch(err => {
-        console.error("Failed to insert dial list entry", {
-          err,
-          requestBody
-        });
-        // TODO: fail overlay
-      });
-  };
-
-  const getSubmitButtonOnClickForUpdate = diallistId => form => {
-    const requestBody = {
-      contact_nme: form.contact_nme,
-      contact_num: form.contact_num,
-      external_num: form.external_num
-    };
-    myAxios.put(apiPaths.DIAL_LIST_ENTRY(diallistId), requestBody)
-      .then(res => {
-        console.log(`Successfully updated dial list entry with diallist_id ${diallistId}`, {
-          responseData: res.data,
-          requestBody
-        });
-        refreshProfileData();
-        setDialListTableState({
-          ...dialListTableState,
-          isDialListEntryFormOpen: false
-        });
-        // TODO: success overlay
-      })
-      .catch(err => {
-        console.error(`Failed to update dial list entry with diallist_id ${diallistId}`, {
-          err,
-          requestBody
-        });
-        // TODO: fail overlay
-      });
-  };
-
   const addContactButtonClicked = () => {
     setDialListTableState({
-      dialListEntryFormHeaderText: "Add Dial List Entry",
       dialListEntryFormInitialValues: {
         contact_nme: "",
         contact_num: "",
         external_num: ""
       },
-      dialListEntryFormSubmitFn: submitButtonOnClickForInsert,
+      dialListEntryFormMode: formModes.INSERT,
       isDialListEntryFormOpen: true
     });
   };
@@ -251,13 +190,13 @@ const DialListTable = props => {
               {dialList.map(entry => {
                 const editButtonOnClick = () => {
                   setDialListTableState({
-                    dialListEntryFormHeaderText: "Edit Dial List Entry",
+                    dialListId: entry.diallist_id,
                     dialListEntryFormInitialValues: {
                       contact_nme: entry.contact_nme,
                       contact_num: entry.contact_num,
                       external_num: entry.external_num
                     },
-                    dialListEntryFormSubmitFn: getSubmitButtonOnClickForUpdate(entry.diallist_id),
+                    dialListEntryFormMode: formModes.UPDATE,
                     isDialListEntryFormOpen: true
                   });
                 };
@@ -285,10 +224,11 @@ const DialListTable = props => {
             </tbody>
             <Modal disableBackdropClick={true} open={dialListTableState.isDialListEntryFormOpen}>
               <DialListEntryForm
-                headerText={dialListTableState.dialListEntryFormHeaderText}
-                initialValues={dialListTableState.dialListEntryFormInitialValues}
-                onClose={dialListEntryFormOnClose}
-                onSubmit={dialListTableState.dialListEntryFormSubmitFn} />
+                dialListTableState={dialListTableState}
+                profileId={profileId}
+                refreshProfileData={refreshProfileData}
+                setDialListTableState={setDialListTableState}
+              />
             </Modal>
           </CustomTable>
         </StyledPaper>
@@ -299,7 +239,7 @@ const DialListTable = props => {
 
 DialListTable.propTypes = {
   dialList: PropTypes.array.isRequired,
-  profileId: PropTypes.number,
+  profileId: PropTypes.string.isRequired,
   refreshProfileData: PropTypes.func.isRequired
 };
 

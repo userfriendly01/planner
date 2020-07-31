@@ -35,7 +35,7 @@ const ProfileSettingsContainer = () => {
   const fetchDialListForProfile = profileId => {
     myAxios.get(apiPaths.GET_PROFILE_DATA(profileId))
       .then(res => {
-        const dialList = [...res.data.diallist].sort(sortDialListEntriesByName);
+        const dialList = res.data.diallist.sort(sortDialListEntriesByName);
         setProfileSettingsState({
           dialList,
           message: null,

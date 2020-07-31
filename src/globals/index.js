@@ -18,6 +18,19 @@ export const apiPaths = {
   UPDATE_WORKER_ATTRIBUTES: `${SERVICE_BASE_URI}/updateworkerattributes`
 };
 
+export const formModes = {
+  INSERT: "insert",
+  UPDATE: "update"
+};
+
+export const modalOverlayStatuses = {
+  FAIL: "fail",
+  SAVING: "saving",
+  SUCCESS: "success"
+};
+
+export const modalOverlayTimeout = 2000;
+
 export const nNumMatcher = /[n,N]\d{7}/g;
 export const extensionMatcher = /^\d{4}$/;
 

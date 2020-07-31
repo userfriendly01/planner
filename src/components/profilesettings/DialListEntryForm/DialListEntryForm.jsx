@@ -10,11 +10,19 @@ import { InfoOutlined } from "@material-ui/icons";
 import {
   PaperContainer,
   ModalPhoneNumber,
+  ModalOverlay,
   StyledButton
 } from "components";
+import {
+  apiPaths,
+  formModes,
+  modalOverlayStatuses,
+  modalOverlayTimeout
+} from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
+import { myAxios } from "utils";
 
 const FlexRow = styled.div`
   display: flex;
@@ -61,23 +69,25 @@ const validateContactNme = value => value.length > 0;
 
 const DialListEntryForm = props => {
   const {
-    headerText,
-    initialValues,
-    onClose,
-    onSubmit
+    dialListTableState,
+    profileId,
+    refreshProfileData,
+    setDialListTableState
   } = props;
 
   const getInitialFormState = () => {
-    const contact_nme = initialValues.contact_nme || "";
-    const contact_num = initialValues.contact_num || "";
-    const external_num = initialValues.external_num || "";
+    const contact_nme = dialListTableState.dialListEntryFormInitialValues.contact_nme || "";
+    const contact_num = dialListTableState.dialListEntryFormInitialValues.contact_num || "";
+    const external_num = dialListTableState.dialListEntryFormInitialValues.external_num || "";
     return {
       contact_nme,
       contact_nme_valid: validateContactNme(contact_nme),
       contact_num,
       contact_num_valid: isNumberValid(unMaskPhoneNumber(contact_num)), // unmasked phone number value ex: `8005554444`
       external_num,
-      maskedPhoneNumber: contact_num // raw masked phone number value to properly update ModalPhoneNumber with ex: `(800) 555-4444`
+      maskedPhoneNumber: contact_num, // raw masked phone number value to properly update ModalPhoneNumber with ex: `(800) 555-4444`,
+      overlayMessage: "",
+      saveStatus: null
     };
   };
 
@@ -85,10 +95,115 @@ const DialListEntryForm = props => {
 
   const formValid = form.contact_nme_valid && form.contact_num_valid;
 
+  const onClose = () => setDialListTableState({
+    ...dialListTableState,
+    isDialListEntryFormOpen: false
+  });
+
+  const waitAndHideOverlay = closeDialListEntryForm => setTimeout(() => {
+    if (closeDialListEntryForm) {
+      onClose();
+    } else {
+      setForm({
+        ...form,
+        overlayMessage: "",
+        saveStatus: null
+      });
+    }
+  }, modalOverlayTimeout);
+
+  const insertDialListEntry = () => {
+    const requestBody = {
+      contact_nme: form.contact_nme,
+      contact_num: form.contact_num,
+      external_num: form.external_num,
+      profile_id: profileId
+    };
+    setForm({
+      ...form,
+      overlayMessage: "Adding dial list entry...",
+      saveStatus: modalOverlayStatuses.SAVING
+    });
+    myAxios.post(apiPaths.DIAL_LIST, requestBody)
+      .then(res => {
+        console.log("Successfully inserted dial list entry", {
+          responseData: res.data,
+          requestBody
+        });
+        refreshProfileData();
+        setForm({
+          ...form,
+          overlayMessage: "Successfully added dial list entry",
+          saveStatus: modalOverlayStatuses.SUCCESS
+        });
+        waitAndHideOverlay(true);
+      })
+      .catch(err => {
+        // TODO err.response.data.code = "ER_DUP_ENTRY" the record already exists
+        // TODO or we could prevent entering a duplicate value in the first place???
+        console.error("Failed to insert dial list entry", {
+          err,
+          requestBody
+        });
+        setForm({
+          ...form,
+          overlayMessage: "Failed to add dial list entry",
+          saveStatus: modalOverlayStatuses.FAIL
+        });
+        waitAndHideOverlay();
+      });
+  };
+
+  const updateDialListEntry = () => {
+    const requestBody = {
+      contact_nme: form.contact_nme,
+      contact_num: form.contact_num,
+      external_num: form.external_num
+    };
+    setForm({
+      ...form,
+      overlayMessage: "Updating dial list entry...",
+      saveStatus: modalOverlayStatuses.SAVING
+    });
+    myAxios.put(apiPaths.DIAL_LIST_ENTRY(dialListTableState.dialListId), requestBody)
+      .then(res => {
+        console.log(`Successfully updated dial list entry with diallist_id ${dialListTableState.dialListId}`, {
+          responseData: res.data,
+          requestBody
+        });
+        refreshProfileData();
+        setForm({
+          ...form,
+          overlayMessage: "Successfully updated dial list entry",
+          saveStatus: modalOverlayStatuses.SUCCESS
+        });
+        waitAndHideOverlay(true);
+      })
+      .catch(err => {
+        // TODO err.response.data.code = "ER_DUP_ENTRY" the record already exists
+        // TODO or we could prevent entering a duplicate value in the first place???
+        console.error(`Failed to update dial list entry with diallist_id ${dialListTableState.dialListId}`, {
+          err,
+          requestBody
+        });
+        setForm({
+          ...form,
+          overlayMessage: "Failed to update dial list entry",
+          saveStatus: modalOverlayStatuses.FAIL
+        });
+        waitAndHideOverlay();
+      });
+  };
+
   return (
     <ModalContainer>
+      {form.saveStatus ?
+        <ModalOverlay
+          message={form.overlayMessage}
+          status={form.saveStatus}
+        /> : null}
       <PaperContainer>
-        <Header>{headerText}</Header>
+        <Header>{dialListTableState.dialListEntryFormMode === formModes.INSERT ? "Add Dial List Entry" : "Edit Dial List Entry"}</Header>
         <ModalPhoneNumber
           allowSevenDigitVdn={true}
           id="transfer-number-input"
@@ -143,10 +258,10 @@ const DialListEntryForm = props => {
           </Tooltip>
         </ExternalNumberContainer>
         <ButtonWrapper>
-          <StyledButton disabled={!formValid} onClick={() => onSubmit(form)}>
+          <StyledButton disabled={!formValid} onClick={dialListTableState.dialListEntryFormMode === formModes.INSERT ? insertDialListEntry : updateDialListEntry}>
             Save
           </StyledButton>
-          <StyledButton onClick={() => onClose()}>
+          <StyledButton onClick={onClose}>
             Close
           </StyledButton>
         </ButtonWrapper>
@@ -156,14 +271,18 @@ const DialListEntryForm = props => {
 };
 
 DialListEntryForm.propTypes = {
-  headerText: PropTypes.string.isRequired,
-  initialValues: PropTypes.shape({
-    contact_nme: PropTypes.string,
-    contact_num: PropTypes.string,
-    external_num: PropTypes.string
+  dialListTableState: PropTypes.shape({
+    dialListId: PropTypes.number,
+    dialListEntryFormInitialValues: PropTypes.shape({
+      contact_nme: PropTypes.string,
+      contact_num: PropTypes.string,
+      external_num: PropTypes.string
+    }).isRequired,
+    dialListEntryFormMode: PropTypes.string
   }).isRequired,
-  onClose: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired
+  profileId: PropTypes.string.isRequired,
+  refreshProfileData: PropTypes.func.isRequired,
+  setDialListTableState: PropTypes.func.isRequired
 };
 
 export default DialListEntryForm;
