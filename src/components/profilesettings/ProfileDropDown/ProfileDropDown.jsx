@@ -32,7 +32,7 @@ const ProfileDropDown = props => {
 
 ProfileDropDown.propTypes = {
   availableProfiles: PropTypes.arrayOf(PropTypes.object),
-  profileId: PropTypes.number,
+  profileId: PropTypes.string,
   updateProfile: PropTypes.func.isRequired
 };
 
