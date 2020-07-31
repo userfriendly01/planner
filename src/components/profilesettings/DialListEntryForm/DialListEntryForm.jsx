@@ -46,7 +46,7 @@ const Header = styled.h1`
 
 const InfoOutlinedStyled = styled(InfoOutlined)`
   && {
-    font-size: 24px;
+    font-size: 1.5em;
   }
 `;
 
@@ -61,8 +61,12 @@ const ModalContainer = styled.div`
   transform: translate(-50%, -50%);
 `;
 
+const InfoIconContainer = styled.div`
+  padding: 0 .5em;
+`;
+
 const TextFieldContainer = styled.div`
-  width: 90%;
+  width: 100%;
 `;
 
 const validateContactNme = value => value.length > 0;
@@ -253,9 +257,11 @@ const DialListEntryForm = props => {
               value={form.external_num}
             />
           </TextFieldContainer>
-          <Tooltip title={"External number to share with customer"}>
-            <InfoOutlinedStyled />
-          </Tooltip>
+          <InfoIconContainer>
+            <Tooltip title={"External number to share with customer"}>
+              <InfoOutlinedStyled />
+            </Tooltip>
+          </InfoIconContainer>
         </ExternalNumberContainer>
         <ButtonWrapper>
           <StyledButton disabled={!formValid} onClick={dialListTableState.dialListEntryFormMode === formModes.INSERT ? insertDialListEntry : updateDialListEntry}>
