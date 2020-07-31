@@ -8,11 +8,14 @@ import {
 } from "@material-ui/icons";
 import {
   DialListEntryForm,
+  ModalOverlay,
   StyledButton
 } from "components";
 import {
   apiPaths,
-  formModes
+  formModes,
+  modalOverlayStatuses,
+  modalOverlayTimeout
 } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
@@ -24,7 +27,7 @@ import styled from "styled-components";
 
 const AddContactButtonContainer = styled.div`
   display: flex;
-  margin-bottom: 16px;
+  margin-bottom: 1em;
   width: 100%;
 `;
 
@@ -130,24 +133,50 @@ const DialListTable = props => {
     dialListId: null,
     dialListEntryFormInitialValues: {}, // populated with diallist entry data and passed to DialListEntryForm
     dialListEntryFormMode: "",
-    isDialListEntryFormOpen: false // show DialListEntryForm
+    isDialListEntryFormOpen: false, // show DialListEntryForm
+    overlayMessage: "",
+    saveStatus: null
   });
+
+  const waitAndHideOverlay = () => setTimeout(() => {
+    setDialListTableState({
+      ...dialListTableState,
+      overlayMessage: "",
+      saveStatus: null
+    });
+  }, modalOverlayTimeout);
 
   const getDeleteButtonOnClick = diallistId => () => {
     const popUp = confirm("Are you sure you want to delete this dial list entry?");
     if (popUp === true) {
+      setDialListTableState({
+        ...dialListTableState,
+        overlayMessage: "Deleting dial list entry...",
+        saveStatus: modalOverlayStatuses.SAVING
+      });
       myAxios.delete(apiPaths.DIAL_LIST_ENTRY(diallistId))
         .then(res => {
           console.log(`Successfully deleted dial list entry with diallist_id ${diallistId}`, {
             responseData: res.data
           });
           refreshProfileData();
+          setDialListTableState({
+            ...dialListTableState,
+            overlayMessage: "Successfully deleted dial list entry",
+            saveStatus: modalOverlayStatuses.SUCCESS
+          });
+          waitAndHideOverlay();
         })
         .catch(err => {
           console.error(`Failed to delete dial list entry with diallist_id ${diallistId}`, {
             err
           });
-        // TODO: Alter UI to display something to the user
+          setDialListTableState({
+            ...dialListTableState,
+            overlayMessage: "Failed to delete dial list entry",
+            saveStatus: modalOverlayStatuses.FAIL
+          });
+          waitAndHideOverlay();
         });
     }
   };
@@ -179,6 +208,11 @@ const DialListTable = props => {
           </StyledButton>
         </AddContactButtonContainer>
         <StyledPaper elevation={3}>
+          {dialListTableState.saveStatus ?
+            <ModalOverlay
+              message={dialListTableState.overlayMessage}
+              status={dialListTableState.saveStatus}
+            /> : null}
           <CustomTable>
             <thead>
               <tr>
