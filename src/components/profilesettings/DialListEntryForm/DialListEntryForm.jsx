@@ -46,7 +46,7 @@ const Header = styled.h1`
 
 const InfoOutlinedStyled = styled(InfoOutlined)`
   && {
-    font-size: 30px;
+    font-size: 24px;
   }
 `;
 
@@ -197,12 +197,12 @@ const DialListEntryForm = props => {
 
   return (
     <ModalContainer>
-      {form.saveStatus ?
-        <ModalOverlay
-          message={form.overlayMessage}
-          status={form.saveStatus}
-        /> : null}
       <PaperContainer>
+        {form.saveStatus ?
+          <ModalOverlay
+            message={form.overlayMessage}
+            status={form.saveStatus}
+          /> : null}
         <Header>{dialListTableState.dialListEntryFormMode === formModes.INSERT ? "Add Dial List Entry" : "Edit Dial List Entry"}</Header>
         <ModalPhoneNumber
           allowSevenDigitVdn={true}
@@ -253,7 +253,7 @@ const DialListEntryForm = props => {
               value={form.external_num}
             />
           </TextFieldContainer>
-          <Tooltip title={"Number to share with customer"}>
+          <Tooltip title={"External number to share with customer"}>
             <InfoOutlinedStyled />
           </Tooltip>
         </ExternalNumberContainer>
