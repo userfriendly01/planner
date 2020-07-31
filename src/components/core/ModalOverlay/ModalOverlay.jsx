@@ -53,11 +53,11 @@ const Overlay = styled(FlexRow)`
   border-radius: 4px;
   color: white;
   font-family: 'Roboto', sans-serif;
-  font-size: 2em;
+  font-size: 1.8em;
   height: 100%;
   justify-content: center;
   left: 0;
-  opacity: .5;
+  opacity: .75;
   position: absolute;
   top: 0;
   width: 100%;
@@ -65,7 +65,21 @@ const Overlay = styled(FlexRow)`
 `;
 
 const Icon = styled.svg`
-  width: 50%;
+  stroke-width: .2em;
+  width: 4em;
+`;
+
+const InnerContainer = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5%;
+`;
+
+const TextWrapper = styled.div`
+  margin-top: 5%;
+  text-align: center;
 `;
 
 const ModalOverlay = props => {
@@ -109,8 +123,12 @@ const ModalOverlay = props => {
 
   return (
     <Overlay modalBackground={background} >
-      {icon}
-      {message}
+      <InnerContainer>
+        {icon}
+        <TextWrapper>
+          {message}
+        </TextWrapper>
+      </InnerContainer>
     </Overlay>
   );
 };
