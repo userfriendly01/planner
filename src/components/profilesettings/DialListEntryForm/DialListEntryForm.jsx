@@ -87,6 +87,7 @@ const DialListEntryForm = props => {
       contact_nme,
       contact_nme_valid: validateContactNme(contact_nme),
       contact_num,
+      contact_num_is_duplicate: false,
       contact_num_valid: isNumberValid(unMaskPhoneNumber(contact_num)), // unmasked phone number value ex: `8005554444`
       external_num,
       maskedPhoneNumber: contact_num, // raw masked phone number value to properly update ModalPhoneNumber with ex: `(800) 555-4444`,
@@ -97,7 +98,7 @@ const DialListEntryForm = props => {
 
   const [form, setForm] = useState(getInitialFormState());
 
-  const formValid = form.contact_nme_valid && form.contact_num_valid;
+  const formValid = form.contact_nme_valid && form.contact_num_valid && !form.contact_num_is_duplicate;
 
   const onClose = () => setDialListTableState({
     ...dialListTableState,
@@ -143,8 +144,6 @@ const DialListEntryForm = props => {
         waitAndHideOverlay(true);
       })
       .catch(err => {
-        // TODO err.response.data.code = "ER_DUP_ENTRY" the record already exists
-        // TODO or we could prevent entering a duplicate value in the first place???
         console.error("Failed to insert dial list entry", {
           err,
           requestBody
@@ -184,8 +183,6 @@ const DialListEntryForm = props => {
         waitAndHideOverlay(true);
       })
       .catch(err => {
-        // TODO err.response.data.code = "ER_DUP_ENTRY" the record already exists
-        // TODO or we could prevent entering a duplicate value in the first place???
         console.error(`Failed to update dial list entry with diallist_id ${dialListTableState.dialListId}`, {
           err,
           requestBody
@@ -210,6 +207,8 @@ const DialListEntryForm = props => {
         <Header>{dialListTableState.dialListEntryFormMode === formModes.INSERT ? "Add Dial List Entry" : "Edit Dial List Entry"}</Header>
         <ModalPhoneNumber
           allowSevenDigitVdn={true}
+          error={form.contact_num_is_duplicate}
+          helperText={form.contact_num_is_duplicate ? "Number already exists in dial list" : null}
           id="transfer-number-input"
           label="Transfer Number"
           number={form.maskedPhoneNumber}
@@ -218,6 +217,7 @@ const DialListEntryForm = props => {
               ...form,
               contact_num: unmaskedValue,
               contact_num_valid: isValid,
+              contact_num_is_duplicate: dialListTableState.otherContactNums.includes(unmaskedValue),
               maskedPhoneNumber: maskedValue
             });
           }}
@@ -284,7 +284,8 @@ DialListEntryForm.propTypes = {
       contact_num: PropTypes.string,
       external_num: PropTypes.string
     }).isRequired,
-    dialListEntryFormMode: PropTypes.string
+    dialListEntryFormMode: PropTypes.string,
+    otherContactNums: PropTypes.array.isRequired
   }).isRequired,
   profileId: PropTypes.string.isRequired,
   refreshProfileData: PropTypes.func.isRequired,

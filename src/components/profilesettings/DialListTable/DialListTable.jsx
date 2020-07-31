@@ -134,6 +134,7 @@ const DialListTable = props => {
     dialListEntryFormInitialValues: {}, // populated with diallist entry data and passed to DialListEntryForm
     dialListEntryFormMode: "",
     isDialListEntryFormOpen: false, // show DialListEntryForm
+    otherContactNums: [],
     overlayMessage: "",
     saveStatus: null
   });
@@ -189,7 +190,8 @@ const DialListTable = props => {
         external_num: ""
       },
       dialListEntryFormMode: formModes.INSERT,
-      isDialListEntryFormOpen: true
+      isDialListEntryFormOpen: true,
+      otherContactNums: dialList.map(entry => entry.contact_num)
     });
   };
 
@@ -231,7 +233,8 @@ const DialListTable = props => {
                       external_num: entry.external_num
                     },
                     dialListEntryFormMode: formModes.UPDATE,
-                    isDialListEntryFormOpen: true
+                    isDialListEntryFormOpen: true,
+                    otherContactNums: dialList.filter(e => e.diallist_id !== entry.diallist_id).map(e => e.contact_num)
                   });
                 };
                 return(
