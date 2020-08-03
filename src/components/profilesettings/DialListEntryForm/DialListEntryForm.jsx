@@ -90,13 +90,15 @@ const DialListEntryForm = props => {
       contact_num_is_duplicate: false,
       contact_num_valid: isNumberValid(unMaskPhoneNumber(contact_num)), // unmasked phone number value ex: `8005554444`
       external_num,
-      maskedPhoneNumber: contact_num, // raw masked phone number value to properly update ModalPhoneNumber with ex: `(800) 555-4444`,
-      overlayMessage: "",
-      saveStatus: null
+      maskedPhoneNumber: contact_num // raw masked phone number value to properly update ModalPhoneNumber with ex: `(800) 555-4444`,
     };
   };
 
   const [form, setForm] = useState(getInitialFormState());
+  const [loading, setLoading] = useState({
+    overlayMessage: "",
+    saveStatus: null
+  });
 
   const formValid = form.contact_nme_valid && form.contact_num_valid && !form.contact_num_is_duplicate;
 
@@ -109,8 +111,7 @@ const DialListEntryForm = props => {
     if (closeDialListEntryForm) {
       onClose();
     } else {
-      setForm({
-        ...form,
+      setLoading({
         overlayMessage: "",
         saveStatus: null
       });
@@ -124,8 +125,7 @@ const DialListEntryForm = props => {
       external_num: form.external_num,
       profile_id: profileId
     };
-    setForm({
-      ...form,
+    setLoading({
       overlayMessage: "Adding dial list entry...",
       saveStatus: modalOverlayStatuses.SAVING
     });
@@ -136,8 +136,7 @@ const DialListEntryForm = props => {
           requestBody
         });
         refreshProfileData();
-        setForm({
-          ...form,
+        setLoading({
           overlayMessage: "Successfully added dial list entry",
           saveStatus: modalOverlayStatuses.SUCCESS
         });
@@ -148,8 +147,7 @@ const DialListEntryForm = props => {
           err,
           requestBody
         });
-        setForm({
-          ...form,
+        setLoading({
           overlayMessage: "Failed to add dial list entry",
           saveStatus: modalOverlayStatuses.FAIL
         });
@@ -163,8 +161,7 @@ const DialListEntryForm = props => {
       contact_num: form.contact_num,
       external_num: form.external_num
     };
-    setForm({
-      ...form,
+    setLoading({
       overlayMessage: "Updating dial list entry...",
       saveStatus: modalOverlayStatuses.SAVING
     });
@@ -175,8 +172,7 @@ const DialListEntryForm = props => {
           requestBody
         });
         refreshProfileData();
-        setForm({
-          ...form,
+        setLoading({
           overlayMessage: "Successfully updated dial list entry",
           saveStatus: modalOverlayStatuses.SUCCESS
         });
@@ -187,8 +183,7 @@ const DialListEntryForm = props => {
           err,
           requestBody
         });
-        setForm({
-          ...form,
+        setLoading({
           overlayMessage: "Failed to update dial list entry",
           saveStatus: modalOverlayStatuses.FAIL
         });
@@ -199,10 +194,10 @@ const DialListEntryForm = props => {
   return (
     <ModalContainer>
       <PaperContainer>
-        {form.saveStatus ?
+        {loading.saveStatus ?
           <ModalOverlay
-            message={form.overlayMessage}
-            status={form.saveStatus}
+            message={loading.overlayMessage}
+            status={loading.saveStatus}
           /> : null}
         <Header>{dialListTableState.dialListEntryFormMode === formModes.INSERT ? "Add Dial List Entry" : "Edit Dial List Entry"}</Header>
         <ModalPhoneNumber
