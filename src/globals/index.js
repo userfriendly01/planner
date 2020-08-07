@@ -4,6 +4,7 @@ const SERVICE_BASE_URI = "/service";
 export const apiPaths = {
   AUTH: `${SERVICE_BASE_URI}/admin-login`,
   CREATE_WORKER: `${SERVICE_BASE_URI}/createworker`,
+  DELETE_WORKER: workerSid => `${SERVICE_BASE_URI}/deleteworker/${workerSid}`,
   EMPLOYEE_LOOKUP: nNum => `${SERVICE_BASE_URI}/employeelookup/${nNum}`,
   CHECK_EXTENSION: `${SERVICE_BASE_URI}/checkextension`,
   FLASH_MESSAGE: `${SERVICE_BASE_URI}/flashmessage`,

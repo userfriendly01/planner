@@ -76,6 +76,38 @@ describe("reducer", () => {
       expect(result.workerContext.workers).toEqual([...initialWorkers, payload]);
     });
   });
+  describe("deleteWorker", () => {
+    test("should delete worker from the array", () => {
+      const workerToDelete = {
+        attributes: { delete: "this guy" },
+        sid: "WK001"
+      };
+      const workerToKeep = {
+        attributes: { keep: "this one" },
+        sid: "WK000"
+      };
+      const someOtherWorker = {
+        attributes: { also: "keep" },
+        sid: "WK002"
+      };
+      const action = {
+        type: "deleteWorker",
+        payload: workerToDelete
+      };
+      const testState = {
+        ...initialState,
+        workerContext: {
+          workers: [
+            workerToKeep,
+            workerToDelete,
+            someOtherWorker
+          ]
+        }
+      };
+      const result = reducer(testState, action);
+      expect(result.workerContext.workers).toEqual([workerToKeep, someOtherWorker]);
+    });
+  });
   describe("loadManager", () => {
     test("should initialize or reinitialize the managers array", () => {
       const payload = [

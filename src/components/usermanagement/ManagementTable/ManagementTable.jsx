@@ -3,6 +3,7 @@ import {
   Switch
 } from "@material-ui/core";
 import {
+  Delete,
   Edit,
   ChangeHistoryRounded
 } from "@material-ui/icons";
@@ -14,10 +15,14 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context";
+import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { formatWorkerSkillsToHTML } from "utils";
+import {
+  formatWorkerSkillsToHTML,
+  myAxios
+} from "utils";
 
 const headerIconWidth = "64px";
 
@@ -169,6 +174,24 @@ const ManagementTable = props => {
                 worker
               });
             };
+            const deleteButtonOnClick = () => {
+              const popUp = confirm("Are you sure you want to delete this Triton  worker?");
+              if (popUp === true) {
+                myAxios.delete(apiPaths.DELETE_WORKER(worker.sid))
+                  .then(() => {
+                    dispatch({
+                      type: "deleteWorker",
+                      payload: { worker }
+                    });
+                  })
+                  .catch(err => {
+                    console.error(`ManagementTable - Failed to delete worker ${worker.sid}`, {
+                      error: err
+                    });
+                  // TODO: What to display to user?
+                  });
+              }
+            };
             return (
               <CustomTableRow key={index} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">
                 <CustomTableData><TableText>{worker.attributes.full_name}</TableText></CustomTableData>
@@ -185,6 +208,9 @@ const ManagementTable = props => {
                 <CustomTableData>
                   <IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
                     <Edit fontSize={"inherit"}/>
+                  </IconWrapper>
+                  <IconWrapper onClick={deleteButtonOnClick} data-testid="delete-button">
+                    <Delete fontSize={"inherit"}/>
                   </IconWrapper>
                 </CustomTableData>
               </CustomTableRow>

@@ -36,6 +36,14 @@ export const reducer = (state, action) => {
           workers: [...state.workerContext.workers.slice(), action.payload]
         }
       };
+    case "deleteWorker":
+      return {
+        ...state,
+        workerContext: {
+          ...state.workerContext,
+          workers: state.workerContext.workers.filter(worker => worker.sid !== action.payload.worker.sid)
+        }
+      };
     case "loadManagers":
       return {
         ...state,
