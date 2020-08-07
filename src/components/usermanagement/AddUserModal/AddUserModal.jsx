@@ -1,7 +1,4 @@
 import {
-  getE164Number
-} from "@lmig/phone-number-utils";
-import {
   OutlinedSelect,
   ModalNNumber,
   ModalExtension,
@@ -16,9 +13,7 @@ import {
 } from "context";
 import {
   apiPaths,
-  extensionMatcher,
-  modalOverlayStatuses,
-  modalOverlayTimeout
+  extensionMatcher
 } from "globals";
 import PropTypes from "prop-types";
 import React, {
@@ -56,10 +51,10 @@ const ModalContainer = styled.div`
   transform: translate(-50%, -50%);
 `;
 
-// const RequiredText = styled(FlexRow)`
-//   justify-content: center;
-//   padding: 1%;
-// `;
+const RequiredText = styled(FlexRow)`
+  justify-content: center;
+  padding: 1%;
+`;
 
 const defaultNNumber = "n";
 
@@ -77,85 +72,59 @@ const AddUserModal = props => {
       managers
     }
   } = useAdminState();
-
   const [form, setForm] = useState({
-    extension: "",
     extensionValid: false,
     lookupInfo: {},
     manager: "",
-    nNumber: defaultNNumber,
     outgoing: "",
-    outgoingValid: false,
     team: ""
   });
+  const [nNumber, setNNumber] = useState(defaultNNumber);
+  const [extension, setExtension] = useState("");
   const [loading, updateLoading] = useState({
     lookupUser: false,
-    overlayMessage: "",
-    saveStatus: "",
+    saveStatus: "saving",
     saveUser: false
   });
 
   const clearExtension = () => {
     setForm({
       ...form,
-      extension: "",
       extensionValid: false
     });
+    setExtension("");
   };
 
   const clearUser = () => {
     setForm({
       ...form,
       lookupError: null,
-      lookupInfo: {},
-      nNumber: defaultNNumber
+      lookupInfo: {}
     });
+    setNNumber(defaultNNumber);
   };
 
   const saveUser = () => {
     updateLoading({
       ...loading,
-      overlayMessage: "Adding new user...",
-      saveStatus: modalOverlayStatuses.SAVING,
+      saveStatus: "saving",
       saveUser: true
     });
     const parsedManager = JSON.parse(form.manager);
-    let outgoingE164;
-    try {
-      outgoingE164 = getE164Number(form.outgoing);
-    } catch (err) {
-      updateLoading({
-        ...loading,
-        overlayMessage: "Failed to add new user. Could not convert outgoing number to E164 format.",
-        saveStatus: modalOverlayStatuses.FAIL,
-        saveUser: true
-      });
-      setTimeout(() => {
-        updateLoading({
-          ...loading,
-          saveUser: false
-        });
-      }, modalOverlayTimeout);
-      console.error("AddUserModal - Failed to convert outgoing number to E164", {
-        err,
-        outgoingNumber: form.outgoing
-      });
-      return;
-    }
     // see this wiki page for attributes that will be automatically updated through SSO
     // https://forge.lmig.com/wiki/display/CICCT/Twilio+Flex+SSO+Saml2+Integration
     const attributes = {
-      did: outgoingE164,
+      did: `+1${form.outgoing.replace(/[\D]/g, "")}`,
       email: form.lookupInfo.email,
       email_address: form.lookupInfo.email,
       emp_first_name: form.lookupInfo.firstName,
       emp_last_name: form.lookupInfo.lastName,
-      extension: form.extension,
+      extension,
       full_name: `${form.lookupInfo.firstName} ${form.lookupInfo.lastName}`,
       manager_first_name: parsedManager.manager_first_name,
       manager_last_name: parsedManager.manager_last_name,
       manager_n_number: parsedManager.manager_n_number,
-      n_number: form.nNumber.toLowerCase(),
+      n_number: nNumber.toLowerCase(),
       office_location_name: form.lookupInfo.officeName,
       office_location_number: form.lookupInfo.officeNumber,
       primary_dept_name: form.lookupInfo.departmentName,
@@ -174,8 +143,7 @@ const AddUserModal = props => {
         });
         updateLoading({
           ...loading,
-          overlayMessage: "Successfully added new user",
-          saveStatus: modalOverlayStatuses.SUCCESS,
+          saveStatus: "success",
           saveUser: true
         });
         setTimeout(() => {
@@ -183,13 +151,12 @@ const AddUserModal = props => {
             ...loading,
             saveUser: false
           });
-        }, modalOverlayTimeout);
+        }, 2000);
       })
       .catch(err => {
         updateLoading({
           ...loading,
-          overlayMessage: "Failed to add new user",
-          saveStatus: modalOverlayStatuses.FAIL,
+          saveStatus: "fail",
           saveUser: true
         });
         setTimeout(() => {
@@ -197,20 +164,19 @@ const AddUserModal = props => {
             ...loading,
             saveUser: false
           });
-        }, modalOverlayTimeout);
+        }, 2000);
         console.error("AddUserModal - Failed to add create worker in twilio workspace", err);
       });
   };
-  const nNumberInputValid = JSON.stringify(form.lookupInfo) !== JSON.stringify({});
-  const extensionInputValid = (form.extensionValid || form.extension === "");
-  const managerValid = form.manager !== "";
-  const teamValid = form.team !== "";
-  const formReady = nNumberInputValid && teamValid && managerValid && form.outgoingValid && extensionInputValid;
+  const isLookupInfoEmpty = JSON.stringify(form.lookupInfo) === JSON.stringify({});
+  const formReady = !isLookupInfoEmpty && form.team !== "" && form.manager !== "" && form.outgoing !== "" && (form.extensionValid || extension === "");
 
-  console.log({
-    form,
-    loading
-  });
+  let overlayMessage = "Saving";
+  if (loading.saveStatus === "success") {
+    overlayMessage = "User added successfully";
+  } else if (loading.saveStatus === "fail") {
+    overlayMessage = "Failed to add user";
+  }
 
   return (
     <ModalContainer>
@@ -218,14 +184,12 @@ const AddUserModal = props => {
         {loading.saveUser ?
           <ModalOverlay
             status={loading.saveStatus}
-            message={loading.overlayMessage}
+            message={overlayMessage}
           /> : null}
         <Header>Add a User</Header>
         <OutlinedSelect
-          error={!managerValid}
-          helperText={managerValid ? null : "Please select a manager"}
-          label={"Manager"}
-          labelWidth={67}
+          label={"Manager *"}
+          labelWidth={75}
           optionsList={managers.sort(sortManagersByName)}
           optionsDisplayFunc={option => {
             return {
@@ -241,10 +205,8 @@ const AddUserModal = props => {
           value={form.manager}
         />
         <OutlinedSelect
-          error={!teamValid}
-          helperText={teamValid ? null : "Please select a team"}
-          label={"Team"}
-          labelWidth={44}
+          label={"Team *"}
+          labelWidth={52}
           optionsList={profiles}
           optionsDisplayFunc={option => {
             return {
@@ -260,42 +222,33 @@ const AddUserModal = props => {
           value={form.team}
         />
         <ModalPhoneNumber
-          allowSevenDigitVdn={false}
           id="outgoing-number"
           number={form.outgoing}
           label="Outgoing Number"
-          updateValue={(maskedValue, unmaskedValue, isValid) => {
-            setForm({
-              ...form,
-              outgoing: maskedValue,
-              outgoingValid: isValid
-            });
-          }}
+          updateValue={newValue => setForm({
+            ...form,
+            outgoing: newValue
+          })}
         />
         <ModalNNumber
           clearUser={clearUser}
           disabled={JSON.stringify(form.lookupInfo) !== "{}"}
-          error={!nNumberInputValid}
           form={form}
-          nNumber={form.nNumber}
+          nNumber={nNumber}
           setForm={setForm}
-          updateValue={newValue => setForm({
-            ...form,
-            nNumber: newValue
-          })}
+          updateValue={newValue => setNNumber(newValue)}
         />
         <ModalExtension
           clearExtension={clearExtension}
-          disabled={form.extensionValid && extensionMatcher.test(form.extension)}
-          error={!extensionInputValid}
-          extension={form.extension}
-          updateValue={newValue => setForm({
-            ...form,
-            extension: newValue
-          })}
+          disabled={form.extensionValid && extensionMatcher.test(extension)}
+          extension={extension}
+          updateValue={newValue => setExtension(newValue)}
           form={form}
           setForm={setForm}
         />
+        <RequiredText>
+          * required field
+        </RequiredText>
         <ButtonWrapper>
           <StyledButton disabled={!formReady} onClick={saveUser}>Add User</StyledButton>
           <StyledButton onClick={handleClose}>Close</StyledButton>
