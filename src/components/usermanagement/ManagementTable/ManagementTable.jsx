@@ -80,6 +80,7 @@ const CustomTableRow = styled.tr`
   }
 `;
 
+// didn't copy this
 const DeltaWrapper = styled.div`
   align-items: center;
   color: ${props => props.theme.libertyDarkGray};
@@ -112,6 +113,7 @@ const TableContainer = styled.div`
   position: relative;
 `;
 
+// didn't use
 const TableDataFlex = styled.div`
   color: ${props => props.theme.textColor};
   display: flex;

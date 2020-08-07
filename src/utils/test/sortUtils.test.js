@@ -1,7 +1,33 @@
 import {
+  sortDialListEntriesByName,
   sortManagersByName,
   sortTaskRouterSkillByName
 } from "../sortUtils";
+
+describe("sortDialListEntriesByName", () => {
+  const arr = [
+    { contact_nme: "cee" },
+    { contact_nme: "bee" },
+    { contact_nme: "ay" },
+    { contact_nme: "dee" },
+    { contact_nme: "ay" },
+    { contact_nme: "Cee again" },
+    { contact_nme: "B again" },
+    { contact_nme: "A caps" }
+  ];
+  test("should return array in alphabetical order", () => {
+    expect(arr.sort(sortDialListEntriesByName)).toEqual([
+      { contact_nme: "A caps" },
+      { contact_nme: "ay" },
+      { contact_nme: "ay" },
+      { contact_nme: "B again" },
+      { contact_nme: "bee" },
+      { contact_nme: "cee" },
+      { contact_nme: "Cee again" },
+      { contact_nme: "dee" }
+    ]);
+  });
+});
 
 describe("sortManagersByName", () => {
   const managerList = [

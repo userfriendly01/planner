@@ -5,7 +5,8 @@ import {
 } from "@material-ui/core";
 import {
   FlashMessageContainer,
-  ManagementWrapper
+  ManagementWrapper,
+  ProfileSettingsContainer
 } from "components";
 import PropTypes from "prop-types";
 import React from "react";
@@ -25,6 +26,12 @@ const StyledTab = styled(Tab)`
   && {
     font-size: 1.1em;
   }
+`;
+
+const StyledTabContainer = styled.div`
+  position: sticky;
+  top: 48px;
+  z-index: 99;
 `;
 
 function TabPanel(props) {
@@ -62,18 +69,25 @@ const NavTabs = () => {
 
   function handleChange(event, newValue) {
     setValue(newValue);
+    window.scrollTo(0, 0);
   }
 
   return (
     <Content >
-      <StyledTabs variant="fullWidth" value={value} onChange={handleChange}>
-        <StyledTab label="User Management" href="/userManagement" id="nav-tab-userManagement" aria-controls="nav-tabpanel-userManagement" onClick={event => event.preventDefault()}/>
-        <StyledTab label="Flash Message" href="/flashMessage" id="nav-tab-flashMessage" aria-controls="nav-tabpanel-flashMessage" onClick={event => event.preventDefault()}/>
-      </StyledTabs>
+      <StyledTabContainer>
+        <StyledTabs variant="fullWidth" value={value} onChange={handleChange}>
+          <StyledTab label="User Management" href="/userManagement" id="nav-tab-userManagement" aria-controls="nav-tabpanel-userManagement" onClick={event => event.preventDefault()}/>
+          <StyledTab label="Profile Settings" href="/profileSettings" id="nav-tab-profileSettings" aria-controls="nav-tabpanel-profileSettings" onClick={event => event.preventDefault()}/>
+          <StyledTab label="Flash Message" href="/flashMessage" id="nav-tab-flashMessage" aria-controls="nav-tabpanel-flashMessage" onClick={event => event.preventDefault()}/>
+        </StyledTabs>
+      </StyledTabContainer>
       <TabPanel value={value} tabName="userManagement" index={0}>
-        <ManagementWrapper  />
+        <ManagementWrapper />
       </TabPanel>
-      <TabPanel value={value} tabName="flashMessage" index={1}>
+      <TabPanel value={value} tabName="profileSettings" index={1}>
+        <ProfileSettingsContainer />
+      </TabPanel>
+      <TabPanel value={value} tabName="flashMessage" index={2}>
         <FlashMessageContainer />
       </TabPanel>
     </Content>
