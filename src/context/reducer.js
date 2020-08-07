@@ -41,7 +41,7 @@ export const reducer = (state, action) => {
         ...state,
         workerContext: {
           ...state.workerContext,
-          workers: state.workerContext.workers.filter(worker => worker.sid !== action.payload.worker.sid)
+          workers: state.workerContext.workers.filter(worker => worker.sid !== action.payload)
         }
       };
     case "loadManagers":

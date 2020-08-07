@@ -1,9 +1,11 @@
 import ManagementTable from "../ManagementTable";
+import MockAdapter from "axios-mock-adapter";
 import {
   EditUserModal,
   ModalOverlay
 } from "components";
 import {
+  apiPaths,
   theme
 } from "globals";
 import React from "react";
@@ -17,6 +19,9 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
+import { myAxios } from "utils";
+
+const axiosMock = new MockAdapter(myAxios);
 
 jest.mock("components", () => ({
   __esModule: true,
@@ -97,6 +102,7 @@ describe("<ManagementTable />", () => {
       EditUserModal,
       ModalOverlay
     });
+    axiosMock.reset();
     mockStore.reset();
     setDeltaToggle.mockClear();
   });
@@ -162,6 +168,78 @@ describe("<ManagementTable />", () => {
       expect(tableRows[0]).toHaveStyleRule("background-color", theme.tableRow.selectedColor);
       expect(tableRows[1]).toHaveStyleRule("background-color", "inherit");
       expect(tableRows[2]).toHaveStyleRule("background-color", theme.tableRow.selectedColor);
+    });
+  });
+
+  describe("Delete icon is clicked in row", () => {
+    const indexClicked = 1;
+    window.confirm = jest.fn();
+    test("should display confirmation alert", () => {
+      const rendered = renderComponent(mockWorkerData);
+      const deleteButtons = rendered.getAllByTestId("delete-button");
+      act(() => fireEvent.click(deleteButtons[indexClicked]));
+      expect(window.confirm).toHaveBeenCalledTimes(1);
+      expect(window.confirm).toHaveBeenCalledWith("Are you sure you want to delete this Triton worker?");
+    });
+
+    describe("delete message is confirmed", () => {
+      beforeEach(() => window.confirm = () => true);
+
+      describe("delete call to service succeeds", () => {
+        const selectedWorkerSid = mockWorkerData[indexClicked].sid;
+        beforeEach(() => axiosMock.onDelete(apiPaths.DELETE_WORKER(selectedWorkerSid)).reply(200, "hooray!"));
+        test.only("should dispatch deleteWorker", done => {
+          const rendered = renderComponent(mockWorkerData);
+          const deleteButtons = rendered.getAllByTestId("delete-button");
+          console.log("deleteButtons:", deleteButtons); //
+          act(() => {
+            fireEvent.click(deleteButtons[indexClicked]);
+            // return Promise.resolve(); // adds an action
+          })
+            .then(() => {
+              expect(mockStore.getActions()).toEqual([
+                {
+                  type: "deleteWorker",
+                  payload: selectedWorkerSid
+                }
+              ]);
+              done();
+            });
+        });
+      });
+
+      describe("delete call to service fails", () => {
+        test("should...", done => {
+          const rendered = renderComponent(mockWorkerData);
+          const deleteButtons = rendered.getAllByTestId("delete-button");
+          const indexClicked = 1;
+          act(() => {
+            fireEvent.click(deleteButtons[indexClicked]);
+            // return Promise.resolve();
+          })
+            .then(() => {
+              // TODO
+              done();
+            });
+        });
+      });
+
+    });
+    describe("delete message is denied (BLOCKED!)", () => {
+      beforeEach(() => window.confirm = () => false);
+      test("alert should close and we should remain on ManagementTable", done => {
+        const rendered = renderComponent(mockWorkerData);
+        const deleteButtons = rendered.getAllByTestId("delete-button");
+        const indexClicked = 1;
+        act(() => {
+          fireEvent.click(deleteButtons[indexClicked]);
+          return Promise.resolve();
+        })
+          .then(() => {
+            // TODO
+            done();
+          });
+      });
     });
   });
 

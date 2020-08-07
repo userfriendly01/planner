@@ -175,20 +175,21 @@ const ManagementTable = props => {
               });
             };
             const deleteButtonOnClick = () => {
-              const popUp = confirm("Are you sure you want to delete this Triton  worker?");
+              const popUp = confirm("Are you sure you want to delete this Triton worker?");
               if (popUp === true) {
                 myAxios.delete(apiPaths.DELETE_WORKER(worker.sid))
-                  .then(() => {
+                  .then(res => {
+                    console.log(res.data);
                     dispatch({
                       type: "deleteWorker",
-                      payload: { worker }
+                      payload: worker.sid
                     });
                   })
                   .catch(err => {
                     console.error(`ManagementTable - Failed to delete worker ${worker.sid}`, {
                       error: err
                     });
-                  // TODO: What to display to user?
+                  // TODO: fail overlay
                   });
               }
             };
