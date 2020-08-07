@@ -5,7 +5,7 @@ import React from "react";
 const ProfileDropDown = props => {
   const {
     availableProfiles,
-    profile,
+    profileId,
     updateProfile
   } = props;
 
@@ -14,7 +14,7 @@ const ProfileDropDown = props => {
       <OutlinedSelect
         label={"Profile"}
         labelWidth={65}
-        noBlankValue={profile.profileId === null ? false : true}
+        noBlankValue={profileId === null ? false : true}
         optionsList={availableProfiles}
         optionsDisplayFunc={option => {
           return {
@@ -24,7 +24,7 @@ const ProfileDropDown = props => {
           };
         }}
         updateValue={updateProfile}
-        value={profile.profileId}
+        value={profileId}
       />
     </div>
   );
@@ -32,7 +32,7 @@ const ProfileDropDown = props => {
 
 ProfileDropDown.propTypes = {
   availableProfiles: PropTypes.arrayOf(PropTypes.object),
-  profile: PropTypes.object,
+  profileId: PropTypes.string,
   updateProfile: PropTypes.func.isRequired
 };
 

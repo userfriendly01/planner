@@ -7,24 +7,28 @@ import {
   Edit
 } from "@material-ui/icons";
 import {
-  AddContact,
-  DialListEntryForm
+  DialListEntryForm,
+  ModalOverlay,
+  StyledButton
 } from "components";
-import { apiPaths } from "globals";
+import {
+  apiPaths,
+  formModes,
+  modalOverlayStatuses,
+  modalOverlayTimeout
+} from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import {
   formatTenDigitNumber,
-  myAxios,
-  removeNonNumericCharacters,
-  sortDialListEntriesByName
+  myAxios
 } from "utils";
 import styled from "styled-components";
 
-const StyledPaper = styled(Paper)`
-  align-items: center;
+const AddContactButtonContainer = styled.div`
   display: flex;
-  justify-content: center;
+  margin-bottom: 1em;
+  width: 100%;
 `;
 
 const CustomTable = styled.table`
@@ -94,6 +98,17 @@ const IconWrapper = styled.div`
   }
 `;
 
+const NoDialListDiv = styled.div`
+  margin-top: 25vh;
+  text-align: center;
+`;
+
+const StyledPaper = styled(Paper)`
+  align-items: center;
+  display: flex;
+  justify-content: center;
+`;
+
 const TableContainer = styled.div`
   align-items: center;
   display: flex;
@@ -107,54 +122,77 @@ const TableText = styled.div`
   margin: 2px;
 `;
 
-const NoDialListDiv = styled.div`
-  margin-top: 25vh;
-  text-align: center;
-`;
-
 const DialListTable = props => {
   const {
-    profile,
-    setProfileSettingsState
+    dialList,
+    profileId,
+    refreshProfileData
   } = props;
 
-  console.log("profile in DialListTable:", profile);
-
-  const { dialList } = profile;
-
-  dialList.sort(sortDialListEntriesByName);
-
   const [dialListTableState, setDialListTableState] = useState({
-    isDialListEntryFormOpen: false,
-    contactInfo: {}
+    dialListId: null,
+    dialListEntryFormInitialValues: {}, // populated with diallist entry data and passed to DialListEntryForm
+    dialListEntryFormMode: "",
+    isDialListEntryFormOpen: false, // show DialListEntryForm
+    otherContactNums: [],
+    overlayMessage: "",
+    saveStatus: null
   });
 
-  const handleCloseDialListEntryForm = () => {
+  const waitAndHideOverlay = () => setTimeout(() => {
     setDialListTableState({
       ...dialListTableState,
-      isDialListEntryFormOpen: false
+      overlayMessage: "",
+      saveStatus: null
     });
+  }, modalOverlayTimeout);
+
+  const getDeleteButtonOnClick = diallistId => () => {
+    const popUp = confirm("Are you sure you want to delete this dial list entry?");
+    if (popUp === true) {
+      setDialListTableState({
+        ...dialListTableState,
+        overlayMessage: "Deleting dial list entry...",
+        saveStatus: modalOverlayStatuses.SAVING
+      });
+      myAxios.delete(apiPaths.DIAL_LIST_ENTRY(diallistId))
+        .then(res => {
+          console.log(`Successfully deleted dial list entry with diallist_id ${diallistId}`, {
+            responseData: res.data
+          });
+          refreshProfileData();
+          setDialListTableState({
+            ...dialListTableState,
+            overlayMessage: "Successfully deleted dial list entry",
+            saveStatus: modalOverlayStatuses.SUCCESS
+          });
+          waitAndHideOverlay();
+        })
+        .catch(err => {
+          console.error(`Failed to delete dial list entry with diallist_id ${diallistId}`, {
+            err
+          });
+          setDialListTableState({
+            ...dialListTableState,
+            overlayMessage: "Failed to delete dial list entry",
+            saveStatus: modalOverlayStatuses.FAIL
+          });
+          waitAndHideOverlay();
+        });
+    }
   };
 
-  const handleSubmitUpdate = form => () => {
-    console.log("UPDATE dial list entry");
-    const req = {
-      contact_nme: form.friendlyName,
-      contact_num: removeNonNumericCharacters(form.transferNumber),
-      external_num: removeNonNumericCharacters(form.externalNumber)
-    };
-    // TODO: find the diallist_id of the entry to edit (don't hard-code 522 in the request)
-    myAxios.post(apiPaths.DIAL_LIST_ENTRY(522), req)
-      .then(res => {
-        console.log("post response:", res);
-        // TODO: success overlay
-      });
-    // .catch(err => {
-    //   console.error(`DialListTable - Failed to delete dial list entry for diallist_id ${entry.diallist_id}`, {
-    //     err
-    //   });
-    //   // TODO: fail overlay
-    // });
+  const addContactButtonClicked = () => {
+    setDialListTableState({
+      dialListEntryFormInitialValues: {
+        contact_nme: "",
+        contact_num: "",
+        external_num: ""
+      },
+      dialListEntryFormMode: formModes.INSERT,
+      isDialListEntryFormOpen: true,
+      otherContactNums: dialList.map(entry => entry.contact_num)
+    });
   };
 
   if (dialList.length === 0) {
@@ -166,8 +204,17 @@ const DialListTable = props => {
   } else {
     return(
       <TableContainer>
-        <AddContact profile={profile} />
+        <AddContactButtonContainer>
+          <StyledButton onClick={addContactButtonClicked}>
+            Add Contact
+          </StyledButton>
+        </AddContactButtonContainer>
         <StyledPaper elevation={3}>
+          {dialListTableState.saveStatus ?
+            <ModalOverlay
+              message={dialListTableState.overlayMessage}
+              status={dialListTableState.saveStatus}
+            /> : null}
           <CustomTable>
             <thead>
               <tr>
@@ -176,56 +223,49 @@ const DialListTable = props => {
               </tr>
             </thead>
             <tbody>
-              {dialList.map((entry, index) => {
+              {dialList.map(entry => {
                 const editButtonOnClick = () => {
                   setDialListTableState({
+                    dialListId: entry.diallist_id,
+                    dialListEntryFormInitialValues: {
+                      contact_nme: entry.contact_nme,
+                      contact_num: entry.contact_num,
+                      external_num: entry.external_num
+                    },
+                    dialListEntryFormMode: formModes.UPDATE,
                     isDialListEntryFormOpen: true,
-                    contactInfo: entry
+                    otherContactNums: dialList.filter(e => e.diallist_id !== entry.diallist_id).map(e => e.contact_num)
                   });
-                };
-                const deleteButtonOnClick = () => {
-                  const popUp = confirm("Are you sure you want to delete this dial list entry?");
-                  if (popUp === true) {
-                    myAxios.delete(apiPaths.DIAL_LIST_ENTRY(entry.diallist_id))
-                      .then(() => {
-                        dialList.splice(index, 1);
-                        setProfileSettingsState({
-                          profile: {
-                            ...profile,
-                            dialList
-                          }
-                        });
-                      })
-                      .catch(err => {
-                        console.error(`DialListTable - Failed to delete dial list entry for diallist_id ${entry.diallist_id}`, {
-                          err,
-                          entry
-                        });
-                      // TODO: What to display to user?
-                      });
-                  }
                 };
                 return(
                   <CustomTableRow key={entry.diallist_id} data-testid="table-row">
-                    <CustomTableData><TableText>{entry.contact_nme}</TableText></CustomTableData>
-                    <CustomTableData><TableText>{formatTenDigitNumber(entry.contact_num)}</TableText></CustomTableData>
-                    <CustomTableData><IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
-                      <Edit fontSize={"inherit"} />
-                    </IconWrapper></CustomTableData>
-                    <CustomTableData><IconWrapper onClick={deleteButtonOnClick} data-testid="delete-button">
-                      <Delete fontSize={"inherit"} />
-                    </IconWrapper></CustomTableData>
+                    <CustomTableData>
+                      <TableText>{entry.contact_nme}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
+                      <TableText>{formatTenDigitNumber(entry.contact_num)}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
+                      <IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
+                        <Edit fontSize={"inherit"} />
+                      </IconWrapper>
+                    </CustomTableData>
+                    <CustomTableData>
+                      <IconWrapper onClick={getDeleteButtonOnClick(entry.diallist_id)} data-testid="delete-button">
+                        <Delete fontSize={"inherit"} />
+                      </IconWrapper>
+                    </CustomTableData>
                   </CustomTableRow>
                 );
               })}
             </tbody>
             <Modal disableBackdropClick={true} open={dialListTableState.isDialListEntryFormOpen}>
               <DialListEntryForm
-                contactInfo={dialListTableState.contactInfo}
-                handleClose={handleCloseDialListEntryForm}
-                headerText={"Edit Contact"}
-                onSubmit={handleSubmitUpdate}
-                submitButtonText={"Update"} />
+                dialListTableState={dialListTableState}
+                profileId={profileId}
+                refreshProfileData={refreshProfileData}
+                setDialListTableState={setDialListTableState}
+              />
             </Modal>
           </CustomTable>
         </StyledPaper>
@@ -235,8 +275,9 @@ const DialListTable = props => {
 };
 
 DialListTable.propTypes = {
-  profile: PropTypes.object.isRequired,
-  setProfileSettingsState: PropTypes.func.isRequired
+  dialList: PropTypes.array.isRequired,
+  profileId: PropTypes.string.isRequired,
+  refreshProfileData: PropTypes.func.isRequired
 };
 
 export default DialListTable;

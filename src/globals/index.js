@@ -7,6 +7,7 @@ export const apiPaths = {
   DIAL_LIST: `${CONTACT_MANAGER_BASE_URI}/diallist`,
   DIAL_LIST_ENTRY: dialListId => `${CONTACT_MANAGER_BASE_URI}/diallist/${dialListId}`,
   EMPLOYEE_LOOKUP: nNum => `${SERVICE_BASE_URI}/employeelookup/${nNum}`,
+  CHECK_EXTENSION: `${SERVICE_BASE_URI}/checkextension`,
   FLASH_MESSAGE: `${SERVICE_BASE_URI}/flashmessage`,
   GET_PROFILE_DATA: profileId => `${CONTACT_MANAGER_BASE_URI}/triton/${profileId}`,
   GET_PROFILES: `${CONTACT_MANAGER_BASE_URI}/profiles`,
@@ -17,7 +18,21 @@ export const apiPaths = {
   UPDATE_WORKER_ATTRIBUTES: `${SERVICE_BASE_URI}/updateworkerattributes`
 };
 
+export const formModes = {
+  INSERT: "insert",
+  UPDATE: "update"
+};
+
+export const modalOverlayStatuses = {
+  FAIL: "fail",
+  SAVING: "saving",
+  SUCCESS: "success"
+};
+
+export const modalOverlayTimeout = 2000;
+
 export const nNumMatcher = /[n,N]\d{7}/g;
+export const extensionMatcher = /^\d{4}$/;
 
 export const resetResponses = {
   SKILLS_WERE_EQUAL: "Worker default_skills is equal to currently assigned skills"

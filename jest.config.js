@@ -29,6 +29,8 @@ const jestConfig = {
     "^globals$": "<rootDir>/src/globals",
     "^globals/(.*)": "<rootDir>/src/globals/$1",
     "^icons/(.*)": "<rootDir>/src/assets/icons/$1",
+    "^services$": "<rootDir>/src/services",
+    "^services/(.*)": "<rootDir>/src/services/$1",
     "^testUtils$": "<rootDir>/__test__/index",
     "^utils$": "<rootDir>/src/utils",
     "^utils/(.*)": "<rootDir>/src/utils/$1"

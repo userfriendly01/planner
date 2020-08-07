@@ -1,4 +1,8 @@
 import {
+  isNumberValid,
+  unMaskPhoneNumber
+} from "@lmig/phone-number-utils";
+import {
   TextField,
   Tooltip
 } from "@material-ui/core";
@@ -6,11 +10,19 @@ import { InfoOutlined } from "@material-ui/icons";
 import {
   PaperContainer,
   ModalPhoneNumber,
+  ModalOverlay,
   StyledButton
 } from "components";
+import {
+  apiPaths,
+  formModes,
+  modalOverlayStatuses,
+  modalOverlayTimeout
+} from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
+import { myAxios } from "utils";
 
 const FlexRow = styled.div`
   display: flex;
@@ -34,7 +46,7 @@ const Header = styled.h1`
 
 const InfoOutlinedStyled = styled(InfoOutlined)`
   && {
-    font-size: 30px;
+    font-size: 1.5em;
   }
 `;
 
@@ -49,57 +61,179 @@ const ModalContainer = styled.div`
   transform: translate(-50%, -50%);
 `;
 
-const TextFieldContainer = styled.div`
-  width: 90%;
+const InfoIconContainer = styled.div`
+  padding: 0 .5em;
 `;
+
+const TextFieldContainer = styled.div`
+  width: 100%;
+`;
+
+const validateContactNme = value => value.length > 0;
 
 const DialListEntryForm = props => {
   const {
-    contactInfo,
-    handleClose,
-    headerText,
-    onSubmit,
-    submitButtonText
+    dialListTableState,
+    profileId,
+    refreshProfileData,
+    setDialListTableState
   } = props;
-  const {
-    contact_num,
-    contact_nme,
-    external_num
-  } = contactInfo;
 
-  const [form, setForm] = useState({
-    transferNumber: contact_num ? contact_num : "",
-    friendlyName: contact_nme ? contact_nme : "",
-    externalNumber: external_num ? external_num : ""
+  const getInitialFormState = () => {
+    const contact_nme = dialListTableState.dialListEntryFormInitialValues.contact_nme || "";
+    const contact_num = dialListTableState.dialListEntryFormInitialValues.contact_num || "";
+    const external_num = dialListTableState.dialListEntryFormInitialValues.external_num || "";
+    return {
+      contact_nme,
+      contact_nme_valid: validateContactNme(contact_nme),
+      contact_num,
+      contact_num_is_duplicate: false,
+      contact_num_valid: isNumberValid(unMaskPhoneNumber(contact_num)), // unmasked phone number value ex: `8005554444`
+      external_num,
+      maskedPhoneNumber: contact_num // raw masked phone number value to properly update ModalPhoneNumber with ex: `(800) 555-4444`,
+    };
+  };
+
+  const [form, setForm] = useState(getInitialFormState());
+  const [loading, setLoading] = useState({
+    overlayMessage: "",
+    saveStatus: null
   });
 
-  console.log("FORM UPDATED", form);
+  const formValid = form.contact_nme_valid && form.contact_num_valid && !form.contact_num_is_duplicate;
+
+  const onClose = () => setDialListTableState({
+    ...dialListTableState,
+    isDialListEntryFormOpen: false
+  });
+
+  const waitAndHideOverlay = closeDialListEntryForm => setTimeout(() => {
+    if (closeDialListEntryForm) {
+      onClose();
+    } else {
+      setLoading({
+        overlayMessage: "",
+        saveStatus: null
+      });
+    }
+  }, modalOverlayTimeout);
+
+  const insertDialListEntry = () => {
+    const requestBody = {
+      contact_nme: form.contact_nme,
+      contact_num: form.contact_num,
+      external_num: form.external_num,
+      profile_id: profileId
+    };
+    setLoading({
+      overlayMessage: "Adding dial list entry...",
+      saveStatus: modalOverlayStatuses.SAVING
+    });
+    myAxios.post(apiPaths.DIAL_LIST, requestBody)
+      .then(res => {
+        console.log("Successfully inserted dial list entry", {
+          responseData: res.data,
+          requestBody
+        });
+        refreshProfileData();
+        setLoading({
+          overlayMessage: "Successfully added dial list entry",
+          saveStatus: modalOverlayStatuses.SUCCESS
+        });
+        waitAndHideOverlay(true);
+      })
+      .catch(err => {
+        console.error("Failed to insert dial list entry", {
+          err,
+          requestBody
+        });
+        setLoading({
+          overlayMessage: "Failed to add dial list entry",
+          saveStatus: modalOverlayStatuses.FAIL
+        });
+        waitAndHideOverlay();
+      });
+  };
+
+  const updateDialListEntry = () => {
+    const requestBody = {
+      contact_nme: form.contact_nme,
+      contact_num: form.contact_num,
+      external_num: form.external_num
+    };
+    setLoading({
+      overlayMessage: "Updating dial list entry...",
+      saveStatus: modalOverlayStatuses.SAVING
+    });
+    myAxios.put(apiPaths.DIAL_LIST_ENTRY(dialListTableState.dialListId), requestBody)
+      .then(res => {
+        console.log(`Successfully updated dial list entry with diallist_id ${dialListTableState.dialListId}`, {
+          responseData: res.data,
+          requestBody
+        });
+        refreshProfileData();
+        setLoading({
+          overlayMessage: "Successfully updated dial list entry",
+          saveStatus: modalOverlayStatuses.SUCCESS
+        });
+        waitAndHideOverlay(true);
+      })
+      .catch(err => {
+        console.error(`Failed to update dial list entry with diallist_id ${dialListTableState.dialListId}`, {
+          err,
+          requestBody
+        });
+        setLoading({
+          overlayMessage: "Failed to update dial list entry",
+          saveStatus: modalOverlayStatuses.FAIL
+        });
+        waitAndHideOverlay();
+      });
+  };
 
   return (
     <ModalContainer>
       <PaperContainer>
-        <Header>{headerText}</Header>
+        {loading.saveStatus ?
+          <ModalOverlay
+            message={loading.overlayMessage}
+            status={loading.saveStatus}
+          /> : null}
+        <Header>{dialListTableState.dialListEntryFormMode === formModes.INSERT ? "Add Dial List Entry" : "Edit Dial List Entry"}</Header>
         <ModalPhoneNumber
+          allowSevenDigitVdn={true}
+          error={form.contact_num_is_duplicate}
+          helperText={form.contact_num_is_duplicate ? "Number already exists in dial list" : null}
           id="transfer-number-input"
-          number={form.transferNumber}
           label="Transfer Number"
-          updateValue={newValue => setForm({
-            ...form,
-            transferNumber: newValue
-          })}
+          number={form.maskedPhoneNumber}
+          updateValue={(maskedValue, unmaskedValue, isValid) => {
+            setForm({
+              ...form,
+              contact_num: unmaskedValue,
+              contact_num_valid: isValid,
+              contact_num_is_duplicate: dialListTableState.otherContactNums.includes(unmaskedValue),
+              maskedPhoneNumber: maskedValue
+            });
+          }}
         />
         <TextField
+          error={!form.contact_nme_valid}
+          helperText={form.contact_nme_valid ? undefined : "Please enter a friendly name"}
           id="friendly-name-input"
           inputProps={{ maxLength: 80 }}
           label="Friendly Name"
           name="Friendly Name"
-          onChange={event => setForm({
+          onChange={({
+            target: { value }
+          }) => setForm({
             ...form,
-            friendlyName: event.target.value
+            contact_nme: value,
+            contact_nme_valid: validateContactNme(value)
           })}
           margin="normal"
           variant="outlined"
-          value={form.friendlyName}
+          value={form.contact_nme}
         />
         <ExternalNumberContainer>
           <TextFieldContainer>
@@ -111,20 +245,26 @@ const DialListEntryForm = props => {
               name="External Number"
               onChange={event => setForm({
                 ...form,
-                externalNumber: event.target.value
+                external_num: event.target.value
               })}
               margin="normal"
               variant="outlined"
-              value={form.externalNumber}
+              value={form.external_num}
             />
           </TextFieldContainer>
-          <Tooltip title={"Number to share with customer"}>
-            <InfoOutlinedStyled />
-          </Tooltip>
+          <InfoIconContainer>
+            <Tooltip title={"External number to share with customer"}>
+              <InfoOutlinedStyled />
+            </Tooltip>
+          </InfoIconContainer>
         </ExternalNumberContainer>
         <ButtonWrapper>
-          <StyledButton onClick={onSubmit(form)}>{submitButtonText}</StyledButton>
-          <StyledButton onClick={handleClose}>Close</StyledButton>
+          <StyledButton disabled={!formValid} onClick={dialListTableState.dialListEntryFormMode === formModes.INSERT ? insertDialListEntry : updateDialListEntry}>
+            Save
+          </StyledButton>
+          <StyledButton onClick={onClose}>
+            Close
+          </StyledButton>
         </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>
@@ -132,11 +272,19 @@ const DialListEntryForm = props => {
 };
 
 DialListEntryForm.propTypes = {
-  contactInfo: PropTypes.object.isRequired,
-  handleClose: PropTypes.func.isRequired,
-  headerText: PropTypes.string.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  submitButtonText: PropTypes.string.isRequired
+  dialListTableState: PropTypes.shape({
+    dialListId: PropTypes.number,
+    dialListEntryFormInitialValues: PropTypes.shape({
+      contact_nme: PropTypes.string,
+      contact_num: PropTypes.string,
+      external_num: PropTypes.string
+    }).isRequired,
+    dialListEntryFormMode: PropTypes.string,
+    otherContactNums: PropTypes.array.isRequired
+  }).isRequired,
+  profileId: PropTypes.string.isRequired,
+  refreshProfileData: PropTypes.func.isRequired,
+  setDialListTableState: PropTypes.func.isRequired
 };
 
 export default DialListEntryForm;

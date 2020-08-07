@@ -10,9 +10,8 @@ export { default as ManagementWrapper } from "./ManagementWrapper/ManagementWrap
 export { default as ManagerFilter } from "./ManagerFilter/ManagerFilter";
 export { default as ModalFetchingRing } from "./ModalFetchingRing/ModalFetchingRing";
 export { default as ModalHelperText } from "./ModalHelperText/ModalHelperText";
+export { default as ModalExtension } from "./ModalExtension/ModalExtension";
 export { default as ModalNNumber } from "./ModalNNumber/ModalNNumber";
-export { default as ModalOverlay } from "./ModalOverlay/ModalOverlay";
-export { default as ModalPhoneNumber } from "./ModalPhoneNumber/ModalPhoneNumber";
 export { default as PaperContainer } from "./PaperContainer/PaperContainer";
 export { default as PriorityDropDown } from "./PriorityDropDown/PriorityDropDown";
 export { default as ResetSkillsButton } from "./ResetSkillsButton/ResetSkillsButton";
