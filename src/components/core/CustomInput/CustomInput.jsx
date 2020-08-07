@@ -12,16 +12,17 @@ const FlexRow = styled.div`
   flex: 1 1 auto;
 `;
 
-const TextInput = styled(TextField)`
+const StyledTextField = styled(TextField)`
   flex-grow: 1;
   && {
-    margin: 2%;
+    margin: 8px 0;
   }
 `;
 
 export const CustomInput = props => {
   const {
     disabled,
+    error,
     label,
     maxLength,
     name,
@@ -47,8 +48,9 @@ export const CustomInput = props => {
 
   return (
     <FlexRow>
-      <TextInput
+      <StyledTextField
         disabled={disabled || loading}
+        error={error}
         id={name ? `outlined-${name}-input` : null}
         inputProps={maxLength ? { maxLength } : {}}
         label={label}
@@ -65,6 +67,7 @@ export const CustomInput = props => {
 
 CustomInput.propTypes = {
   disabled: PropTypes.bool,
+  error: PropTypes.bool,
   label: PropTypes.string.isRequired,
   maxLength: PropTypes.string,
   name: PropTypes.string,

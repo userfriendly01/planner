@@ -20,6 +20,7 @@ const ModalExtension = props => {
   const {
     clearExtension,
     disabled,
+    error,
     extension,
     form,
     isEditExisting,
@@ -39,12 +40,14 @@ const ModalExtension = props => {
         if (isValid || isOriginal) {
           setForm({
             ...form,
+            extension,
             extensionValid: true,
             extensionUpdated: !isOriginal
           });
         } else {
           setForm({
             ...form,
+            extension,
             extensionValid: false,
             extensionUpdated: false
           });
@@ -55,6 +58,7 @@ const ModalExtension = props => {
         console.log(err);
         setForm({
           ...form,
+          extension,
           extensionValid: false,
           extensionUpdated: false
         });
@@ -68,6 +72,7 @@ const ModalExtension = props => {
     <FlexColumn>
       <CustomInput
         disabled={disabled}
+        error={error}
         label="Extension"
         maxLength="4"
         name="Extension"
@@ -92,6 +97,7 @@ const ModalExtension = props => {
 ModalExtension.propTypes = {
   clearExtension: PropTypes.func.isRequired,
   disabled: PropTypes.bool.isRequired,
+  error: PropTypes.bool,
   extension: PropTypes.string.isRequired,
   form: PropTypes.object.isRequired,
   isEditExisting: PropTypes.bool,
