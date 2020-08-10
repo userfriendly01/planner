@@ -3,7 +3,7 @@ import {
   OutlinedSelect,
   DefaultSkillSelector,
   ModalExtension,
-  ModalOverlay,
+  StatusOverlay,
   PaperContainer,
   StyledButton
 } from "components";
@@ -166,7 +166,7 @@ const EditUserModal = props => {
     <ModalContainer>
       <PaperContainer>
         {saveUser ?
-          <ModalOverlay
+          <StatusOverlay
             message={overlayMessage}
             modal={true}
             status={saveUser}

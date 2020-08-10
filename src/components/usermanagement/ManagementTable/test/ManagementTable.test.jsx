@@ -2,7 +2,7 @@ import ManagementTable from "../ManagementTable";
 import MockAdapter from "axios-mock-adapter";
 import {
   EditUserModal,
-  ModalOverlay
+  StatusOverlay
 } from "components";
 import {
   apiPaths,
@@ -26,7 +26,7 @@ const axiosMock = new MockAdapter(myAxios);
 jest.mock("components", () => ({
   __esModule: true,
   EditUserModal: jest.fn(),
-  ModalOverlay: jest.fn()
+  StatusOverlay: jest.fn()
 }));
 
 const mockWorkerData = [
@@ -100,7 +100,7 @@ describe("<ManagementTable />", () => {
   beforeEach(() => {
     setupMockedComponents({
       EditUserModal,
-      ModalOverlay
+      StatusOverlay
     });
     axiosMock.reset();
     mockStore.reset();
@@ -271,20 +271,20 @@ describe("<ManagementTable />", () => {
   });
   describe("resettingSkills is true", () => {
     const resettingSkills = true;
-    test("should render ModalOverlay", () => {
+    test("should render StatusOverlay", () => {
       const state = getTestState();
       state.resettingSkills = resettingSkills;
       const rendered = renderComponent([], false, state);
-      expectMockedComponent(rendered, { ModalOverlay });
+      expectMockedComponent(rendered, { StatusOverlay });
     });
   });
   describe("resettingSkills is false", () => {
     const resettingSkills = false;
-    test("should not render ModalOverlay", () => {
+    test("should not render StatusOverlay", () => {
       const state = getTestState();
       state.resettingSkills = resettingSkills;
       const rendered = renderComponent([], false, state);
-      expectMockedComponent(rendered, { ModalOverlay }, 0);
+      expectMockedComponent(rendered, { StatusOverlay }, 0);
     });
   });
 });

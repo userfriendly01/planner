@@ -84,7 +84,7 @@ const TextWrapper = styled.div`
   text-align: center;
 `;
 
-const ModalOverlay = props => {
+const StatusOverlay = props => {
   const {
     message,
     modal,
@@ -139,10 +139,10 @@ const ModalOverlay = props => {
   );
 };
 
-ModalOverlay.propTypes = {
+StatusOverlay.propTypes = {
   message: PropTypes.string.isRequired,
   modal: PropTypes.bool.isRequired,
   status: PropTypes.oneOf(Object.values(modalOverlayStatuses)).isRequired
 };
 
-export default ModalOverlay;
+export default StatusOverlay;

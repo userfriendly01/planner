@@ -5,7 +5,7 @@ import {
   OutlinedSelect,
   DefaultSkillSelector,
   ModalExtension,
-  ModalOverlay,
+  StatusOverlay,
   PaperContainer,
   StyledButton
 } from "components";
@@ -41,7 +41,7 @@ jest.mock("components", () => ({
   OutlinedSelect: jest.fn(),
   DefaultSkillSelector: jest.fn(),
   ModalExtension: jest.fn(),
-  ModalOverlay: jest.fn(),
+  StatusOverlay: jest.fn(),
   PaperContainer: jest.fn()
 }));
 
@@ -94,7 +94,7 @@ describe("<EditUserModal />", () => {
       OutlinedSelect,
       DefaultSkillSelector,
       ModalExtension,
-      ModalOverlay
+      StatusOverlay
     });
     PaperContainer.mockImplementation(props => <div>{props.children}</div>);
   });
@@ -150,7 +150,7 @@ describe("<EditUserModal />", () => {
       expectMockedComponent(rendered, { DefaultSkillSelector }, 1);
       expectMockedComponent(rendered, { StyledButton }, 1);
       expectMockedComponent(rendered, { ModalExtension }, 1);
-      expectMockedComponent(rendered, { ModalOverlay }, 0);
+      expectMockedComponent(rendered, { StatusOverlay }, 0);
       expectOnlyPassedProps(StyledButton, {
         children: "Update",
         disabled: true
@@ -271,8 +271,8 @@ describe("<EditUserModal />", () => {
           type: "updateWorker",
           payload: mapWorkerFromTwilioWorker(mockSuccessfulResponse)
         });
-        expectMockedComponent(rendered, { ModalOverlay }, 1);
-        expectOnlyPassedProps(ModalOverlay, {
+        expectMockedComponent(rendered, { StatusOverlay }, 1);
+        expectOnlyPassedProps(StatusOverlay, {
           message: "User updated successfully",
           status: "success"
         });
@@ -309,8 +309,8 @@ describe("<EditUserModal />", () => {
           type: "updateWorker",
           payload: mapWorkerFromTwilioWorker(mockSuccessfulResponse)
         });
-        expectMockedComponent(rendered, { ModalOverlay }, 1);
-        expectOnlyPassedProps(ModalOverlay, {
+        expectMockedComponent(rendered, { StatusOverlay }, 1);
+        expectOnlyPassedProps(StatusOverlay, {
           message: "User updated successfully",
           status: "success"
         });
@@ -349,8 +349,8 @@ describe("<EditUserModal />", () => {
           type: "updateWorker",
           payload: mapWorkerFromTwilioWorker(mockSuccessfulResponse)
         });
-        expectMockedComponent(rendered, { ModalOverlay }, 1);
-        expectOnlyPassedProps(ModalOverlay, {
+        expectMockedComponent(rendered, { StatusOverlay }, 1);
+        expectOnlyPassedProps(StatusOverlay, {
           message: "User updated successfully",
           status: "success"
         });
@@ -394,8 +394,8 @@ describe("<EditUserModal />", () => {
           type: "updateWorker",
           payload: mapWorkerFromTwilioWorker(mockSuccessfulResponse)
         });
-        expectMockedComponent(rendered, { ModalOverlay }, 1);
-        expectOnlyPassedProps(ModalOverlay, {
+        expectMockedComponent(rendered, { StatusOverlay }, 1);
+        expectOnlyPassedProps(StatusOverlay, {
           message: "User updated successfully",
           status: "success"
         });
@@ -428,20 +428,20 @@ describe("<EditUserModal />", () => {
   describe("service call to update worker attributes fails", () => {
     const error = { nah: "boooo" };
     beforeEach(() => axiosMock.onPost(apiPaths.EDIT_WORKER).reply(500, error));
-    test("ModalOverlay should render with 'User update failed' & modal should close overlay after 2 seconds", done => {
+    test("StatusOverlay should render with 'User update failed' & modal should close overlay after 2 seconds", done => {
       const rendered = renderComponent();
       const { onClick } = getMockedComponentProps(StyledButton);
       act(() => {
         onClick();
         return Promise.resolve();
       }).then(() => {
-        expectMockedComponent(rendered, { ModalOverlay }, 1);
-        const saveStatus = getMockedComponentProps(ModalOverlay).status;
+        expectMockedComponent(rendered, { StatusOverlay }, 1);
+        const saveStatus = getMockedComponentProps(StatusOverlay).status;
         expect(saveStatus).toBe("fail");
-        const message = getMockedComponentProps(ModalOverlay).message;
+        const message = getMockedComponentProps(StatusOverlay).message;
         expect(message).toBe("Failed to update user");
         act(() => jest.runAllTimers());
-        expectMockedComponent(rendered, { ModalOverlay }, 0);
+        expectMockedComponent(rendered, { StatusOverlay }, 0);
         done();
       });
     });

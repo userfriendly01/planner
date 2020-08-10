@@ -2,7 +2,7 @@ import { CloseRounded } from "@material-ui/icons";
 import {
   ModalHelperText,
   ModalNNumber,
-  ModalOverlay,
+  StatusOverlay,
   PaperContainer,
   StyledButton
 } from "components";
@@ -137,7 +137,7 @@ const AddManagerModal = props => {
     <ModalContainer>
       <PaperContainer>
         {saveManager === loadingStates.success || saveManager === loadingStates.fail ?
-          <ModalOverlay
+          <StatusOverlay
             message={overlayMessage}
             modal={true}
             status={saveManager}

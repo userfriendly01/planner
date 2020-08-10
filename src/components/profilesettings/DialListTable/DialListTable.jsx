@@ -8,7 +8,7 @@ import {
 } from "@material-ui/icons";
 import {
   DialListEntryForm,
-  ModalOverlay,
+  StatusOverlay,
   StyledButton
 } from "components";
 import {
@@ -211,7 +211,7 @@ const DialListTable = props => {
         </AddContactButtonContainer>
         <StyledPaper elevation={3}>
           {dialListTableState.saveStatus ?
-            <ModalOverlay
+            <StatusOverlay
               message={dialListTableState.overlayMessage}
               modal={false}
               status={dialListTableState.saveStatus}

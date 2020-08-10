@@ -9,7 +9,7 @@ import {
 } from "@material-ui/icons";
 import {
   EditUserModal,
-  ModalOverlay
+  StatusOverlay
 } from "components";
 import {
   useAdminDispatch,
@@ -156,7 +156,7 @@ const ManagementTable = props => {
 
   return (
     <TableContainer>
-      { state.resettingSkills ? <ModalOverlay message="Resetting Worker Skills" status="saving" /> : null }
+      { state.resettingSkills ? <StatusOverlay message="Resetting Worker Skills" status="saving" /> : null }
       <CustomTable>
         <thead>
           <tr>
@@ -247,7 +247,7 @@ const ManagementTable = props => {
           <EditUserModal handleClose={() => setEditUserModalOpts(defaultEditUserModalOpts)} worker={editUserModalOpts.worker}/>
         </Modal>
       </CustomTable>
-      {managementTableState.saveStatus ? <ModalOverlay
+      {managementTableState.saveStatus ? <StatusOverlay
         message={managementTableState.overlayMessage}
         modal={false}
         status={managementTableState.saveStatus}
