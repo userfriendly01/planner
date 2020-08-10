@@ -54,14 +54,16 @@ const Overlay = styled(FlexRow)`
   color: white;
   font-family: 'Roboto', sans-serif;
   font-size: 1.8em;
-  height: 100%;
+  height: ${props => props.modal ? "100%" : "60vh"};
   justify-content: center;
-  left: 0;
   opacity: .75;
-  position: absolute;
-  top: 0;
-  width: 100%;
+  width: ${props => props.modal ? "100%" : "50vh"};
   z-index: 100;
+  left: ${props => props.modal ? 0 : "50%"};
+  margin-left: ${props => props.modal ? 0 : "-25vh"};
+  top: ${props => props.modal ? 0 : "50%"};
+  margin-top: ${props => props.modal ? 0 : "-30vh"};
+  position: ${props => props.modal ? "absolute" : "fixed"};
 `;
 
 const Icon = styled.svg`
@@ -84,8 +86,9 @@ const TextWrapper = styled.div`
 
 const ModalOverlay = props => {
   const {
-    status,
-    message
+    message,
+    modal,
+    status
   } = props;
 
   const getIconAndBackground = status => {
@@ -122,7 +125,10 @@ const ModalOverlay = props => {
   } = getIconAndBackground(status);
 
   return (
-    <Overlay modalBackground={background} >
+    <Overlay
+      modal={modal}
+      modalBackground={background}
+    >
       <InnerContainer>
         {icon}
         <TextWrapper>
@@ -135,6 +141,7 @@ const ModalOverlay = props => {
 
 ModalOverlay.propTypes = {
   message: PropTypes.string.isRequired,
+  modal: PropTypes.bool.isRequired,
   status: PropTypes.oneOf(Object.values(modalOverlayStatuses)).isRequired
 };
 

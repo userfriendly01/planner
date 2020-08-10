@@ -138,8 +138,9 @@ const AddManagerModal = props => {
       <PaperContainer>
         {saveManager === loadingStates.success || saveManager === loadingStates.fail ?
           <ModalOverlay
-            status={saveManager}
             message={overlayMessage}
+            modal={true}
+            status={saveManager}
           /> : null}
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>

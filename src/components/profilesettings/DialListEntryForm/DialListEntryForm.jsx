@@ -197,6 +197,7 @@ const DialListEntryForm = props => {
         {loading.saveStatus ?
           <ModalOverlay
             message={loading.overlayMessage}
+            modal={true}
             status={loading.saveStatus}
           /> : null}
         <Header>{dialListTableState.dialListEntryFormMode === formModes.INSERT ? "Add Dial List Entry" : "Edit Dial List Entry"}</Header>

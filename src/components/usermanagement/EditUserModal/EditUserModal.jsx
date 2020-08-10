@@ -167,8 +167,9 @@ const EditUserModal = props => {
       <PaperContainer>
         {saveUser ?
           <ModalOverlay
-            status={saveUser}
             message={overlayMessage}
+            modal={true}
+            status={saveUser}
           /> : null}
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>

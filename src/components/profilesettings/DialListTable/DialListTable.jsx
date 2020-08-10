@@ -213,6 +213,7 @@ const DialListTable = props => {
           {dialListTableState.saveStatus ?
             <ModalOverlay
               message={dialListTableState.overlayMessage}
+              modal={false}
               status={dialListTableState.saveStatus}
             /> : null}
           <CustomTable>

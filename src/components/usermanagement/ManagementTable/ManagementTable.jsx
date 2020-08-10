@@ -15,7 +15,11 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import { apiPaths } from "globals";
+import {
+  apiPaths,
+  modalOverlayStatuses,
+  modalOverlayTimeout
+} from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
@@ -140,6 +144,15 @@ const ManagementTable = props => {
   const state = useAdminState();
   const selectedWorkers = state.workerContext.selectedWorkers;
   const dispatch = useAdminDispatch();
+  const initialState = {
+    overlayMessage: "",
+    saveStatus: null
+  };
+  const [managementTableState, setManagementTableState] = useState(initialState);
+
+  const waitAndHideOverlay = () => setTimeout(() => {
+    setManagementTableState(initialState);
+  }, modalOverlayTimeout);
 
   return (
     <TableContainer>
@@ -179,13 +192,23 @@ const ManagementTable = props => {
             const deleteButtonOnClick = () => {
               const popUp = confirm("Are you sure you want to delete this Triton worker?");
               if (popUp === true) {
+                setManagementTableState({
+                  overlayMessage: "Deleting Triton worker...",
+                  saveStatus: modalOverlayStatuses.SAVING
+                });
                 myAxios.delete(apiPaths.DELETE_WORKER(worker.sid))
                   .then(res => {
-                    console.log(res.data);
+                    console.log(`Successfully deleted Triton worker with sid ${worker.sid}`,
+                      { responseData: res.data });
                     dispatch({
                       type: "deleteWorker",
                       payload: worker.sid
                     });
+                    setManagementTableState({
+                      overlayMessage: "Successfully deleted Triton worker",
+                      saveStatus: modalOverlayStatuses.SUCCESS
+                    });
+                    waitAndHideOverlay();
                   })
                   .catch(err => {
                     console.error(`ManagementTable - Failed to delete worker ${worker.sid}`, {
@@ -224,6 +247,11 @@ const ManagementTable = props => {
           <EditUserModal handleClose={() => setEditUserModalOpts(defaultEditUserModalOpts)} worker={editUserModalOpts.worker}/>
         </Modal>
       </CustomTable>
+      {managementTableState.saveStatus ? <ModalOverlay
+        message={managementTableState.overlayMessage}
+        modal={false}
+        status={managementTableState.saveStatus}
+      /> : null}
     </TableContainer>
   );
 };

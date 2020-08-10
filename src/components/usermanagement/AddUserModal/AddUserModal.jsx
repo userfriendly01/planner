@@ -217,8 +217,9 @@ const AddUserModal = props => {
       <PaperContainer>
         {loading.saveUser ?
           <ModalOverlay
-            status={loading.saveStatus}
             message={loading.overlayMessage}
+            modal={true}
+            status={loading.saveStatus}
           /> : null}
         <Header>Add a User</Header>
         <OutlinedSelect
