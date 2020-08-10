@@ -49,6 +49,10 @@ const CustomTableData = styled.td`
     text-align: -webkit-center;
     vertical-align: middle;
   }
+  &:nth-child(9) {
+    text-align: -webkit-center;
+    vertical-align: middle;
+  }
 `;
 
 const CustomTableHeader = styled.th`
@@ -62,6 +66,9 @@ const CustomTableHeader = styled.th`
   &:nth-child(2) {
     width: 10%;
   }
+  &:nth-child(3) {
+    width: 10%;
+  }
   &:nth-child(4) {
     width: 18%;
   }
@@ -69,6 +76,9 @@ const CustomTableHeader = styled.th`
     width: ${headerIconWidth};
   }
   &:nth-child(8) {
+    width: ${headerIconWidth};
+  }
+  &:nth-child(9) {
     width: ${headerIconWidth};
   }
 `;
@@ -84,7 +94,6 @@ const CustomTableRow = styled.tr`
   }
 `;
 
-// didn't copy this
 const DeltaWrapper = styled.div`
   align-items: center;
   color: ${props => props.theme.libertyDarkGray};
@@ -117,7 +126,6 @@ const TableContainer = styled.div`
   position: relative;
 `;
 
-// didn't use
 const TableDataFlex = styled.div`
   color: ${props => props.theme.textColor};
   display: flex;
@@ -169,6 +177,7 @@ const ManagementTable = props => {
             <CustomTableHeader>
               <Switch checked={deltaToggle} onChange={() => setDeltaToggle(!deltaToggle)} inputProps={{ "aria-label": "toggle skills modified" }} />
             </CustomTableHeader>
+            <CustomTableHeader/>
             <CustomTableHeader/>
           </tr>
         </thead>
@@ -235,6 +244,8 @@ const ManagementTable = props => {
                   <IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
                     <Edit fontSize={"inherit"}/>
                   </IconWrapper>
+                </CustomTableData>
+                <CustomTableData>
                   <IconWrapper onClick={deleteButtonOnClick} data-testid="delete-button">
                     <Delete fontSize={"inherit"}/>
                   </IconWrapper>
