@@ -92,7 +92,7 @@ describe("reducer", () => {
       };
       const action = {
         type: "deleteWorker",
-        payload: workerToDelete
+        payload: workerToDelete.sid
       };
       const testState = {
         ...initialState,

@@ -13,8 +13,8 @@ import {
 import { initialState } from "context";
 import {
   apiPaths,
-  modalOverlayStatuses,
-  modalOverlayTimeout
+  statusOverlayStatuses,
+  statusOverlayTimeout
 } from "globals";
 import React from "react";
 import { act } from "react-dom/test-utils";
@@ -511,7 +511,7 @@ describe("<AddUserModal />", () => {
             // const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
             // const addUserButtonProps2 = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
             // expect(addUserButtonProps2.disabled).toBe(true);
-            // expect(saveStatus).toBe(modalOverlayStatuses.SUCCESS);
+            // expect(saveStatus).toBe(statusOverlayStatuses.SUCCESS);
             // expect(nNumber).toBe("n");
             // act(() => jest.runAllTimers());
             // expectMockedComponent(rendered, { StatusOverlay }, 0);

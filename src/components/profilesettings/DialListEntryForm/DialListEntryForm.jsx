@@ -16,8 +16,8 @@ import {
 import {
   apiPaths,
   formModes,
-  modalOverlayStatuses,
-  modalOverlayTimeout
+  statusOverlayStatuses,
+  statusOverlayTimeout
 } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
@@ -116,7 +116,7 @@ const DialListEntryForm = props => {
         saveStatus: null
       });
     }
-  }, modalOverlayTimeout);
+  }, statusOverlayTimeout);
 
   const insertDialListEntry = () => {
     const requestBody = {
@@ -127,7 +127,7 @@ const DialListEntryForm = props => {
     };
     setLoading({
       overlayMessage: "Adding dial list entry...",
-      saveStatus: modalOverlayStatuses.SAVING
+      saveStatus: statusOverlayStatuses.SAVING
     });
     myAxios.post(apiPaths.DIAL_LIST, requestBody)
       .then(res => {
@@ -138,7 +138,7 @@ const DialListEntryForm = props => {
         refreshProfileData();
         setLoading({
           overlayMessage: "Successfully added dial list entry",
-          saveStatus: modalOverlayStatuses.SUCCESS
+          saveStatus: statusOverlayStatuses.SUCCESS
         });
         waitAndHideOverlay(true);
       })
@@ -149,7 +149,7 @@ const DialListEntryForm = props => {
         });
         setLoading({
           overlayMessage: "Failed to add dial list entry",
-          saveStatus: modalOverlayStatuses.FAIL
+          saveStatus: statusOverlayStatuses.FAIL
         });
         waitAndHideOverlay();
       });
@@ -163,7 +163,7 @@ const DialListEntryForm = props => {
     };
     setLoading({
       overlayMessage: "Updating dial list entry...",
-      saveStatus: modalOverlayStatuses.SAVING
+      saveStatus: statusOverlayStatuses.SAVING
     });
     myAxios.put(apiPaths.DIAL_LIST_ENTRY(dialListTableState.dialListId), requestBody)
       .then(res => {
@@ -174,7 +174,7 @@ const DialListEntryForm = props => {
         refreshProfileData();
         setLoading({
           overlayMessage: "Successfully updated dial list entry",
-          saveStatus: modalOverlayStatuses.SUCCESS
+          saveStatus: statusOverlayStatuses.SUCCESS
         });
         waitAndHideOverlay(true);
       })
@@ -185,7 +185,7 @@ const DialListEntryForm = props => {
         });
         setLoading({
           overlayMessage: "Failed to update dial list entry",
-          saveStatus: modalOverlayStatuses.FAIL
+          saveStatus: statusOverlayStatuses.FAIL
         });
         waitAndHideOverlay();
       });

@@ -1,6 +1,6 @@
 import {
   StatusOverlay,
-  modalOverlayStatuses
+  statusOverlayStatuses
 } from "../StatusOverlay";
 import React from "react";
 import { render } from "testUtils";
@@ -8,7 +8,7 @@ import { render } from "testUtils";
 describe("<StatusOverlay />", () => {
   describe("status = 'saving'", () => {
     test("should display 'whatever'", () => {
-      const rendered = render(<StatusOverlay status={modalOverlayStatuses.SAVING} message="whatever" />);
+      const rendered = render(<StatusOverlay status={statusOverlayStatuses.SAVING} message="whatever" />);
       expect(rendered).toBeTruthy();
       expect(rendered.getByText("whatever")).toBeInTheDocument();
     });
@@ -16,7 +16,7 @@ describe("<StatusOverlay />", () => {
   describe("status = 'success'", () => {
     const successMessage = "something good";
     test("should display success message", () => {
-      const rendered = render(<StatusOverlay status={modalOverlayStatuses.SUCCESS} message={successMessage} />);
+      const rendered = render(<StatusOverlay status={statusOverlayStatuses.SUCCESS} message={successMessage} />);
       expect(rendered).toBeTruthy();
       expect(rendered.getByText(successMessage)).toBeInTheDocument();
     });
@@ -24,7 +24,7 @@ describe("<StatusOverlay />", () => {
   describe("status = 'fail'", () => {
     const failMessage = "oh nooooo";
     test("should display fail message", () => {
-      const rendered = render(<StatusOverlay status={modalOverlayStatuses.FAIL} message={failMessage} />);
+      const rendered = render(<StatusOverlay status={statusOverlayStatuses.FAIL} message={failMessage} />);
       expect(rendered).toBeTruthy();
       expect(rendered.getByText(failMessage)).toBeInTheDocument();
     });

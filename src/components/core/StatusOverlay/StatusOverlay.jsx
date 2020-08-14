@@ -1,5 +1,5 @@
 import { ModalFetchingRing } from "components";
-import { modalOverlayStatuses } from "globals";
+import { statusOverlayStatuses } from "globals";
 import PropTypes from "prop-types";
 import React from "react";
 import styled, { keyframes } from "styled-components";
@@ -54,13 +54,13 @@ const Overlay = styled(FlexRow)`
   color: white;
   font-family: 'Roboto', sans-serif;
   font-size: 1.8em;
-  height: ${props => props.modal ? "100%" : "60vh"};
+  height: ${props => props.modal ? "100%" : "50vh"};
   justify-content: center;
   opacity: .75;
-  width: ${props => props.modal ? "100%" : "50vh"};
+  width: ${props => props.modal ? "100%" : "40vw"};
   z-index: 100;
   left: ${props => props.modal ? 0 : "50%"};
-  margin-left: ${props => props.modal ? 0 : "-25vh"};
+  margin-left: ${props => props.modal ? 0 : "-25vw"};
   top: ${props => props.modal ? 0 : "50%"};
   margin-top: ${props => props.modal ? 0 : "-30vh"};
   position: ${props => props.modal ? "absolute" : "fixed"};
@@ -92,7 +92,7 @@ const StatusOverlay = props => {
   } = props;
 
   const getIconAndBackground = status => {
-    if (status === modalOverlayStatuses.SUCCESS) {
+    if (status === statusOverlayStatuses.SUCCESS) {
       return {
         background: "green",
         icon:
@@ -101,7 +101,7 @@ const StatusOverlay = props => {
             <Check fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
           </Icon>
       };
-    } else if (status === modalOverlayStatuses.FAIL) {
+    } else if (status === statusOverlayStatuses.FAIL) {
       return {
         background: "red",
         icon:
@@ -142,7 +142,7 @@ const StatusOverlay = props => {
 StatusOverlay.propTypes = {
   message: PropTypes.string.isRequired,
   modal: PropTypes.bool.isRequired,
-  status: PropTypes.oneOf(Object.values(modalOverlayStatuses)).isRequired
+  status: PropTypes.oneOf(Object.values(statusOverlayStatuses)).isRequired
 };
 
 export default StatusOverlay;

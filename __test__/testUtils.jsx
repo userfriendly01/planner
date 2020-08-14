@@ -71,7 +71,11 @@ export const expectPassedProps = (mockedComponent, expectedProps, instanceCalled
 export const expectOnlyPassedProps = (mockedComponent, expectedProps, instanceCalled = getLastInstanceCalled(mockedComponent)) => {
   const actualProps = mockedComponent.mock.calls[instanceCalled][0];
   const expectedKeys = Object.keys(expectedProps);
+  console.log("actualProps:", actualProps);
+  console.log("expectedProps:", expectedProps);
+  console.log("expectedKeys:", expectedKeys);
   expectedKeys.forEach(k => {
+    console.log("key:", k);
     expect(actualProps[k]).toEqual(expectedProps[k]);
   });
 };

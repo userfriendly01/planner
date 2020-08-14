@@ -186,26 +186,34 @@ describe("<ManagementTable />", () => {
       beforeEach(() => window.confirm = () => true);
 
       describe("delete call to service succeeds", () => {
-        const selectedWorkerSid = mockWorkerData[indexClicked].sid;
-        beforeEach(() => axiosMock.onDelete(apiPaths.DELETE_WORKER(selectedWorkerSid)).reply(200, "hooray!"));
-        test.only("should dispatch deleteWorker", done => {
-          const rendered = renderComponent(mockWorkerData);
-          const deleteButtons = rendered.getAllByTestId("delete-button");
-          console.log("deleteButtons:", deleteButtons); //
-          act(() => {
-            fireEvent.click(deleteButtons[indexClicked]);
-            // return Promise.resolve(); // adds an action
-          })
-            .then(() => {
-              expect(mockStore.getActions()).toEqual([
-                {
-                  type: "deleteWorker",
-                  payload: selectedWorkerSid
-                }
-              ]);
-              done();
-            });
+        describe("service returns 'delete successful'", () => {
+          const selectedWorkerSid = mockWorkerData[indexClicked].sid;
+          beforeEach(() => axiosMock.onDelete(apiPaths.DELETE_WORKER(selectedWorkerSid)).reply(200, "hooray!"));
+          test("should dispatch deleteWorker", done => {
+            const rendered = renderComponent(mockWorkerData);
+            const deleteButtons = rendered.getAllByTestId("delete-button");
+            console.log("deleteButtons:", deleteButtons); //
+            act(() => {
+              fireEvent.click(deleteButtons[indexClicked]);
+              // return Promise.resolve(); // adds an action
+            })
+              .then(() => {
+                expect(mockStore.getActions()).toEqual([
+                  {
+                    type: "deleteWorker",
+                    payload: selectedWorkerSid
+                  }
+                ]);
+                done();
+              });
+          });
         });
+        describe("service returns 'delete from Twilio unsuccessful'", () => {
+          test("should display error modal and not dispatch any actions", () => {
+            // TODO
+          });
+        });
+
       });
 
       describe("delete call to service fails", () => {

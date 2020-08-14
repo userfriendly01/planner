@@ -17,8 +17,8 @@ import {
 } from "context";
 import {
   apiPaths,
-  modalOverlayStatuses,
-  modalOverlayTimeout
+  statusOverlayStatuses,
+  statusOverlayTimeout
 } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
@@ -160,7 +160,8 @@ const ManagementTable = props => {
 
   const waitAndHideOverlay = () => setTimeout(() => {
     setManagementTableState(initialState);
-  }, modalOverlayTimeout);
+  // }, statusOverlayTimeout);
+  }, 10000);
 
   return (
     <TableContainer>
@@ -203,7 +204,7 @@ const ManagementTable = props => {
               if (popUp === true) {
                 setManagementTableState({
                   overlayMessage: "Deleting Triton worker...",
-                  saveStatus: modalOverlayStatuses.SAVING
+                  saveStatus: statusOverlayStatuses.SAVING
                 });
                 myAxios.delete(apiPaths.DELETE_WORKER(worker.sid))
                   .then(res => {
@@ -215,7 +216,7 @@ const ManagementTable = props => {
                     });
                     setManagementTableState({
                       overlayMessage: "Successfully deleted Triton worker",
-                      saveStatus: modalOverlayStatuses.SUCCESS
+                      saveStatus: statusOverlayStatuses.SUCCESS
                     });
                     waitAndHideOverlay();
                   })
@@ -223,7 +224,11 @@ const ManagementTable = props => {
                     console.error(`ManagementTable - Failed to delete worker ${worker.sid}`, {
                       error: err
                     });
-                  // TODO: fail overlay
+                    setManagementTableState({
+                      overlayMessage: err.response.data.error,
+                      saveStatus: statusOverlayStatuses.FAIL
+                    });
+                    waitAndHideOverlay();
                   });
               }
             };
