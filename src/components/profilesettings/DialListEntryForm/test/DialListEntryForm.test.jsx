@@ -4,19 +4,33 @@ import {
   Tooltip
 } from "@material-ui/core";
 import { InfoOutlined } from "@material-ui/icons";
+import MockAdapter from "axios-mock-adapter";
 import {
   PaperContainer,
   ModalPhoneNumber,
+  ModalOverlay,
   StyledButton
 } from "components";
-import React from "react";
-import { act } from "react-dom/test-utils";
 import {
+  apiPaths,
+  formModes,
+  modalOverlayStatuses,
+  modalOverlayTimeout
+} from "globals";
+import React from "react";
+import {
+  act,
   expectMockedComponent,
   expectOnlyPassedProps,
+  getLastInstanceCalled,
+  getMockedComponentProps,
   render,
-  setupMockedComponents
+  setupMockedComponents,
+  waitFor
 } from "testUtils";
+import { myAxios } from "utils";
+
+jest.useFakeTimers();
 
 jest.mock("@material-ui/core", () => ({
   __esModule: true,
@@ -33,10 +47,26 @@ jest.mock("components", () => ({
   __esModule: true,
   PaperContainer: jest.fn(),
   ModalPhoneNumber: jest.fn(),
+  ModalOverlay: jest.fn(),
   StyledButton: jest.fn()
 }));
 
-const renderComponent = contactInfo => render(<DialListEntryForm contactInfo={contactInfo} handleClose={jest.fn()} />);
+const axiosMock = new MockAdapter(myAxios);
+
+const dialListId = 892;
+const otherContactNums = ["6038886666", "8009994444"];
+const profileId = "99";
+const refreshProfileData = jest.fn();
+const setDialListTableState = jest.fn();
+
+const renderComponent = dialListTableState => render(
+  <DialListEntryForm
+    dialListTableState={dialListTableState}
+    profileId={profileId}
+    refreshProfileData={refreshProfileData}
+    setDialListTableState={setDialListTableState}
+  />
+);
 
 describe("<DialListEntryForm />", () => {
 
@@ -45,6 +75,7 @@ describe("<DialListEntryForm />", () => {
     setupMockedComponents({
       InfoOutlined,
       ModalPhoneNumber,
+      ModalOverlay,
       StyledButton,
       TextField,
       Tooltip
@@ -52,145 +83,221 @@ describe("<DialListEntryForm />", () => {
     PaperContainer.mockImplementation(props => <div>{props.children}</div>);
   });
 
-  describe("contactInfo contains transfer number, friendly name, and external number", () => {
-    const contactInfo = {
-      contact_id: 18,
-      contact_nme: "Daryl Strawberry",
-      contact_num: "800-123-4568",
-      external_num: "900-555-1212"
-    };
-    describe("initial render", () => {
-      test("should render 1 ModalPhoneNumber component, 2 Text Field components, tooltip, save & close buttons", () => {
-        const rendered = renderComponent(contactInfo);
-        expectMockedComponent(rendered, { ModalPhoneNumber }, 1);
-        expectMockedComponent(rendered, { TextField }, 2);
-        expectMockedComponent(rendered, { Tooltip });
-        expectMockedComponent(rendered, { StyledButton }, 2);
-      });
-    });
+  describe("form is in UPDATE mode", () => {
+    const dialListEntryFormMode = formModes.UPDATE;
 
-    describe("the Transfer Number field", () => {
-      test("initial state", () => {
-        renderComponent(contactInfo);
-        const expectedOutgoingProps = {
-          id: "transfer-number-input",
-          number: contactInfo.contact_num,
-          label: "Transfer Number"
-        };
-        expectOnlyPassedProps(ModalPhoneNumber, expectedOutgoingProps);
-      });
-
-      test("changes made to the Transfer Number field", () => {
-        const newValue = "12345678";
-        renderComponent(contactInfo);
-        act(() => {
-          const updateValue = ModalPhoneNumber.mock.calls[0][0].updateValue;
-          updateValue(newValue);
-        });
-        expect(ModalPhoneNumber.mock.calls.length).toBe(2);
-        const updatedTransferNumber = ModalPhoneNumber.mock.calls[1][0].number;
-        expect(updatedTransferNumber).toEqual(newValue);
-      });
-    });
-
-    describe("the Friendly Name field", () => {
-      test("initial state", () => {
-        renderComponent(contactInfo);
-        const expectedOutgoingProps = {
-          id: "friendly-name-input",
-          value: contactInfo.contact_nme,
-          label: "Friendly Name"
-        };
-        expect(TextField.mock.calls.length).toBe(2);
-        expectOnlyPassedProps(TextField, expectedOutgoingProps, 0);
-      });
-      test("changes made to the Friendly Name field", () => {
-        const newValue = "Hubie Brooks";
-        renderComponent(contactInfo);
-        act(() => {
-          const event = {
-            preventDefault() {},
-            target: { value: newValue }
-          };
-          const onChange = TextField.mock.calls[0][0].onChange;
-          onChange(event);
-        });
-        expect(TextField.mock.calls.length).toBe(4);
-        const updatedFriendlyName = TextField.mock.calls[2][0].value;
-        expect(updatedFriendlyName).toEqual(newValue);
-      });
-    });
-
-    describe("the External Number field", () => {
-      test("initial state", () => {
-        renderComponent(contactInfo);
-        const expectedOutgoingProps = {
-          id: "external-number-input",
-          value: contactInfo.external_num,
-          label: "External Number"
-        };
-        expect(TextField.mock.calls.length).toBe(2);
-        expectOnlyPassedProps(TextField, expectedOutgoingProps, 1);
-      });
-      test("changes made to the External Number field", () => {
-        const newValue = "1-800-867-5309";
-        renderComponent(contactInfo);
-        act(() => {
-          const event = {
-            preventDefault() {},
-            target: { value: newValue }
-          };
-          const onChange = TextField.mock.calls[1][0].onChange;
-          onChange(event);
-        });
-        expect(TextField.mock.calls.length).toBe(4);
-        const updatedExternalNumber = TextField.mock.calls[3][0].value;
-        expect(updatedExternalNumber).toEqual(newValue);
-      });
-    });
-
-    describe("tooltip", () => {
-      test("should display correct text", () => {
-        renderComponent(contactInfo);
-        expectOnlyPassedProps(Tooltip, {
-          title: "Number to share with customer"
-        });
-      });
-    });
-  });
-
-  describe("required contact info is missing", () => {
-    const contactInfo = {
-      whatever: "not contact_id",
-      somethingElse: "not contact_nme",
-      not_contact_num: "800-123-4567",
-      contact_id: 2000
-    };
-    test("should render all 3 fields with empty strings, tooltip, save & close buttons", () => {
-      const rendered = renderComponent(contactInfo);
-      expectMockedComponent(rendered, { ModalPhoneNumber }, 1);
-      expectMockedComponent(rendered, { TextField }, 2);
-      expectMockedComponent(rendered, { Tooltip }, 1);
-      expectMockedComponent(rendered, { StyledButton }, 2);
-      const transferNumberOutgoingProps = {
-        id: "transfer-number-input",
-        number: "",
-        label: "Transfer Number"
+    describe("dialListTableState.dialListEntryFormInitialValues includes initial values for all fields", () => {
+      const contact_nme = "Some Contact";
+      const contact_num = "8006665555";
+      const external_num = "1-800-whatever";
+      const dialListTableState = {
+        dialListId,
+        dialListEntryFormInitialValues: {
+          contact_nme,
+          contact_num,
+          external_num
+        },
+        dialListEntryFormMode,
+        otherContactNums
       };
-      expectOnlyPassedProps(ModalPhoneNumber, transferNumberOutgoingProps);
-      const friendlyNameOutgoingProps = {
-        id: "friendly-name-input",
-        value: "",
-        label: "Friendly Name"
+
+      test("header text has edit verbiage", done => {
+        const rendered = renderComponent(dialListTableState);
+        expect(rendered.container).toHaveTextContent("Edit Dial List Entry");
+        done();
+      });
+
+      test("should render input components with initial values and no error flags on inputs and save button enabled", done => {
+        renderComponent(dialListTableState);
+        // Transfer Number input for contact_num
+        expectOnlyPassedProps(ModalPhoneNumber, {
+          error: false,
+          helperText: null,
+          number: contact_num,
+          showError: false
+        }, getLastInstanceCalled(ModalPhoneNumber));
+        // Friendly Name input for contact_nme
+        expectOnlyPassedProps(TextField, {
+          error: false,
+          helperText: null,
+          value: contact_nme
+        }, getLastInstanceCalled(TextField) - 1);
+        // External Number input for external_num
+        expectOnlyPassedProps(TextField, {
+          value: external_num
+        }, getLastInstanceCalled(TextField));
+        // Check that Save button is enabled
+        expectOnlyPassedProps(StyledButton, {
+          disabled: false
+        }, getLastInstanceCalled(StyledButton) - 1);
+        done();
+      });
+
+      test("calling onBlur for text fields should not trigger the error logic", done => {
+        renderComponent(dialListTableState);
+        act(() => {
+          // Transfer Number input
+          getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).onBlur();
+        });
+        act(() => {
+          // Friendly Name input
+          getMockedComponentProps(TextField, getLastInstanceCalled(TextField) - 1).onBlur();
+        });
+        // Transfer Number input for contact_num
+        expectOnlyPassedProps(ModalPhoneNumber, {
+          error: false,
+          helperText: null,
+          number: contact_num,
+          showError: true
+        }, getLastInstanceCalled(ModalPhoneNumber));
+        // Friendly Name input for contact_nme
+        expectOnlyPassedProps(TextField, {
+          error: false,
+          helperText: null,
+          value: contact_nme
+        }, getLastInstanceCalled(TextField) - 1);
+        done();
+      });
+    });
+
+    describe("dialListTableState.dialListEntryFormInitialValues does not include intial values", () => {
+      const dialListTableState = {
+        dialListId,
+        dialListEntryFormInitialValues: {},
+        dialListEntryFormMode,
+        otherContactNums
       };
-      expectOnlyPassedProps(TextField, friendlyNameOutgoingProps, 0);
-      const externalNumberOutgoingProps = {
-        id: "external-number-input",
-        value: "",
-        label: "External Number"
-      };
-      expect(TextField.mock.calls.length).toBe(2);
-      expectOnlyPassedProps(TextField, externalNumberOutgoingProps, 1);
+
+      describe("service call to update dial list entry succeeds", () => {
+
+        beforeEach(() => {
+          axiosMock.onPut(apiPaths.DIAL_LIST_ENTRY(dialListId)).reply(200, { who: "cares?" });
+        });
+
+        test("submit button should be disabled then entering valid values in all the required fields should enable the submit button and show success overlay on click", async () => {
+          const rendered = renderComponent(dialListTableState);
+          // Check that Save button is disabled
+          expectOnlyPassedProps(StyledButton, {
+            disabled: true
+          }, getLastInstanceCalled(StyledButton) - 1);
+
+          const updatedMaskedNumber = "(603) 888 1234";
+          const updatedUnmaskedNumber = "6038881234";
+          const updatedContactNme = "New Name!!!";
+
+          act(() => {
+            // Transfer Number input update
+            getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber))
+              .updateValue(updatedMaskedNumber, updatedUnmaskedNumber, true);
+          });
+          act(() => {
+            // Friendly Name input update
+            getMockedComponentProps(TextField, getLastInstanceCalled(TextField) - 1).onChange({
+              target: {
+                value: updatedContactNme
+              }
+            });
+          });
+          // Check that Save button is enabled
+          expectOnlyPassedProps(StyledButton, {
+            disabled: false
+          }, getLastInstanceCalled(StyledButton) - 1);
+          // Save button click
+          act(() => {
+            getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1)
+              .onClick();
+          });
+          await waitFor(() => {
+            expectMockedComponent(rendered, { ModalOverlay });
+            // First call of ModalOverlay displays pending status
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Updating dial list entry...",
+              status: modalOverlayStatuses.SAVING
+            }, getLastInstanceCalled(ModalOverlay) - 1);
+            // Second call of ModalOverlay displays success message
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Successfully updated dial list entry",
+              status: modalOverlayStatuses.SUCCESS
+            }, getLastInstanceCalled(ModalOverlay));
+            expect(refreshProfileData).toHaveBeenCalledTimes(1);
+          });
+          // Run timers so get rid of ModalOverlay
+          act(() => {
+            jest.advanceTimersByTime(modalOverlayTimeout);
+          });
+          await waitFor(() => {
+            // Form is closed
+            expect(setDialListTableState).toHaveBeenCalledWith({
+              ...dialListTableState,
+              isDialListEntryFormOpen: false
+            });
+          });
+        });
+      });
+
+      describe("service call to update dial list entry fails", () => {
+
+        beforeEach(() => {
+          axiosMock.onPut(apiPaths.DIAL_LIST_ENTRY(dialListId)).reply(500, { who: "cares? but this is bad wahhhh" });
+        });
+
+        test("submit button should be disabled then entering valid values in all the required fields should enable the submit button and show failure overlay on click", async () => {
+          const rendered = renderComponent(dialListTableState);
+          // Check that Save button is disabled
+          expectOnlyPassedProps(StyledButton, {
+            disabled: true
+          }, getLastInstanceCalled(StyledButton) - 1);
+
+          const updatedMaskedNumber = "(603) 888 1234";
+          const updatedUnmaskedNumber = "6038881234";
+          const updatedContactNme = "New Name!!!";
+
+          act(() => {
+            // Transfer Number input update
+            getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber))
+              .updateValue(updatedMaskedNumber, updatedUnmaskedNumber, true);
+          });
+          act(() => {
+            // Friendly Name input update
+            getMockedComponentProps(TextField, getLastInstanceCalled(TextField) - 1).onChange({
+              target: {
+                value: updatedContactNme
+              }
+            });
+          });
+          // Check that Save button is enabled
+          expectOnlyPassedProps(StyledButton, {
+            disabled: false
+          }, getLastInstanceCalled(StyledButton) - 1);
+          // Save button click
+          act(() => {
+            getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1)
+              .onClick();
+          });
+          await waitFor(() => {
+            expectMockedComponent(rendered, { ModalOverlay });
+            // First call of ModalOverlay displays pending status
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Updating dial list entry...",
+              status: modalOverlayStatuses.SAVING
+            }, getLastInstanceCalled(ModalOverlay) - 1);
+            // Second call of ModalOverlay displays failure message
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Failed to update dial list entry",
+              status: modalOverlayStatuses.FAIL
+            }, getLastInstanceCalled(ModalOverlay));
+            expect(refreshProfileData).toHaveBeenCalledTimes(0);
+          });
+          // Run timers so get rid of ModalOverlay
+          act(() => {
+            jest.advanceTimersByTime(modalOverlayTimeout);
+          });
+          await waitFor(() => {
+            // Overlay is hidden
+            expectMockedComponent(rendered, { ModalOverlay }, 0);
+          });
+        });
+      });
     });
   });
 });
