@@ -102,6 +102,7 @@ const DialListEntryForm = props => {
     saveStatus: null
   });
 
+  const contactNmeError = form.contact_nme_updated && !form.contact_nme_valid;
   const formValid = form.contact_nme_valid && form.contact_num_valid && !form.contact_num_is_duplicate;
 
   const onClose = () => setDialListTableState({
@@ -225,8 +226,8 @@ const DialListEntryForm = props => {
           }}
         />
         <TextField
-          error={form.contact_nme_updated && !form.contact_nme_valid}
-          helperText={form.contact_nme_valid ? null : "Please enter a friendly name"}
+          error={contactNmeError}
+          helperText={contactNmeError ? "Please enter a friendly name" : null}
           id="friendly-name-input"
           inputProps={{ maxLength: 80 }}
           label="Friendly Name"
