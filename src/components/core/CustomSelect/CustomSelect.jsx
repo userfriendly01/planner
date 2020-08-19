@@ -1,5 +1,6 @@
 import {
   FormControl,
+  FormHelperText,
   Input,
   InputLabel,
   OutlinedInput,
@@ -28,16 +29,19 @@ const getOptions = (optionsList, optionsDisplayFunc, noBlankValue) => {
 
 const OutlinedSelectFormControl = styled(FormControl)`
   && {
-    margin: 8px;
+    margin: 8px 0;
   }
 `;
 
 export const OutlinedSelect = props => {
   const {
     disabled,
+    error,
+    helperText,
     label,
     labelWidth,
     noBlankValue,
+    onBlur,
     optionsDisplayFunc,
     optionsList,
     updateValue,
@@ -45,7 +49,7 @@ export const OutlinedSelect = props => {
   } = props;
 
   return (
-    <OutlinedSelectFormControl variant={"outlined"}>
+    <OutlinedSelectFormControl variant={"outlined"} error={error}>
       <InputLabel htmlFor={`outlined-${label}-native-simple`}>
         {label}
       </InputLabel>
@@ -53,6 +57,7 @@ export const OutlinedSelect = props => {
         disabled={disabled}
         native
         value={value || ""}
+        onBlur={onBlur}
         onChange={event => updateValue(event.target.value)}
         input={
           <OutlinedInput
@@ -65,15 +70,19 @@ export const OutlinedSelect = props => {
       >
         {getOptions(optionsList, optionsDisplayFunc, noBlankValue)}
       </Select>
+      {helperText ? <FormHelperText>{helperText}</FormHelperText> : null}
     </OutlinedSelectFormControl>
   );
 };
 
 OutlinedSelect.propTypes = {
   disabled: PropTypes.bool,
+  error: PropTypes.bool,
+  helperText: PropTypes.string,
   label: PropTypes.string.isRequired,
   labelWidth: PropTypes.number.isRequired,
   noBlankValue: PropTypes.bool,
+  onBlur: PropTypes.func,
   optionsDisplayFunc: PropTypes.func.isRequired,
   optionsList: PropTypes.array.isRequired,
   updateValue: PropTypes.func.isRequired,

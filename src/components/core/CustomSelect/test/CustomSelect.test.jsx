@@ -28,8 +28,12 @@ describe("CustomSelect", () => {
 
   describe("<OutlinedSelect />", () => {
 
-    const renderWithProps = (label, labelWidth, optionsList, optionsDisplayFunc, updateValue, value, noBlankValue) => {
+    const renderWithProps = ({
+      error, helperText, label, labelWidth, optionsList, optionsDisplayFunc, updateValue, value, noBlankValue
+    }) => {
       return render(<OutlinedSelect
+        error={error}
+        helperText={helperText}
         label={label}
         labelWidth={labelWidth}
         noBlankValue={noBlankValue}
@@ -46,40 +50,140 @@ describe("CustomSelect", () => {
 
     describe("noBlankValue = false", () => {
       test("should display each option in addition to extra blank value", () => {
-        const rendered = renderWithProps("test", 41, testList, mockDisplayFunc, updateValueFunc, "testone", false);
+        const rendered = renderWithProps({
+          label: "test",
+          labelWidth: 41,
+          optionsList: testList,
+          optionsDisplayFunc: mockDisplayFunc,
+          updateValue: updateValueFunc,
+          value: "testone",
+          noBlankValue: false
+        });
         expect(getOptionsElements(rendered).length).toBe(testList.length + 1);
       });
     });
     describe("noBlankValue = undefined", () => {
       test("should display each option in addition to extra blank value", () => {
-        const rendered = renderWithProps("test", 41, testList, mockDisplayFunc, updateValueFunc, "testone");
+        const rendered = renderWithProps({
+          label: "test",
+          labelWidth: 41,
+          optionsList: testList,
+          optionsDisplayFunc: mockDisplayFunc,
+          updateValue: updateValueFunc,
+          value: "testone"
+        });
         expect(getOptionsElements(rendered).length).toBe(testList.length + 1);
+      });
+    });
+    describe("error is passed", () => {
+      test("should render with style error", () => {
+        const rendered = renderWithProps({
+          error: true,
+          label: "test",
+          labelWidth: 41,
+          optionsList: testList,
+          optionsDisplayFunc: mockDisplayFunc,
+          updateValue: updateValueFunc,
+          value: "testone",
+          noBlankValue: true
+        });
+        const { className } = rendered.queryByText("test");
+        const errorClassRegex = /Mui-error/;
+        expect(errorClassRegex.test(className)).toBeTruthy();
+      });
+    });
+    describe("error is not passed", () => {
+      test("should render with style error", () => {
+        const rendered = renderWithProps({
+          label: "test",
+          labelWidth: 41,
+          optionsList: testList,
+          optionsDisplayFunc: mockDisplayFunc,
+          updateValue: updateValueFunc,
+          value: "testone",
+          noBlankValue: true
+        });
+        const { className } = rendered.queryByText("test");
+        const errorClassRegex = /Mui-error/;
+        expect(errorClassRegex.test(className)).toBeFalsy();
+      });
+    });
+    describe("helperText is passed", () => {
+      test("should not display helper text", () => {
+        const helperText = "Do some stuff";
+        const rendered = renderWithProps({
+          helperText,
+          label: "test",
+          labelWidth: 41,
+          optionsList: testList,
+          optionsDisplayFunc: mockDisplayFunc,
+          updateValue: updateValueFunc,
+          value: "testone",
+          noBlankValue: true
+        });
+        expect(rendered.queryByText(helperText)).toBeInTheDocument();
       });
     });
     describe("noBlankValue = true", () => {
       test("should display each option with no extra blank value", () => {
-        const rendered = renderWithProps("test", 41, testList, mockDisplayFunc, updateValueFunc, "testone", true);
+        const rendered = renderWithProps({
+          label: "test",
+          labelWidth: 41,
+          optionsList: testList,
+          optionsDisplayFunc: mockDisplayFunc,
+          updateValue: updateValueFunc,
+          value: "testone",
+          noBlankValue: true
+        });
         expect(getOptionsElements(rendered).length).toBe(testList.length);
       });
     });
     test("when we have an empty array, we should only show the option of value='', and the header.", () => {
-      const rendered = renderWithProps("TestLabel", 41, [], mockDisplayFunc, updateValueFunc, "");
+      const rendered = renderWithProps({
+        label: "TestLabel",
+        labelWidth: 41,
+        optionsList: [],
+        optionsDisplayFunc: mockDisplayFunc,
+        updateValue: updateValueFunc,
+        value: ""
+      });
       expect(rendered.queryByDisplayValue("").length).toBe(1);
-      expect(rendered.queryByLabelText("TestLabel").length).toBe(1);
+      expect(rendered.queryByText("TestLabel")).toBeInTheDocument();
       expect(updateValueFunc.mock.calls.length).toBe(0);
     });
     test("when we send in an array, we should properly set the options list based on the optionsDisplayFunc.", () => {
-      const rendered = renderWithProps("test", 41, testList, mockDisplayFunc, updateValueFunc, "testone");
+      const rendered = renderWithProps({
+        label: "test",
+        labelWidth: 41,
+        optionsList: testList,
+        optionsDisplayFunc: mockDisplayFunc,
+        updateValue: updateValueFunc,
+        value: "testone"
+      });
       expect(rendered.getByText("testone", { selector: "option" })).toBeInTheDocument();
       expect(rendered.getByText("testtwo", { selector: "option" })).toBeInTheDocument();
     });
     test("the value being sent in should be preselected.", () => {
-      const rendered = renderWithProps("test", 41, testList, mockDisplayFunc, updateValueFunc, "testone");
+      const rendered = renderWithProps({
+        label: "test",
+        labelWidth: 41,
+        optionsList: testList,
+        optionsDisplayFunc: mockDisplayFunc,
+        updateValue: updateValueFunc,
+        value: "testone"
+      });
       expect(rendered.getByDisplayValue("testone")).toBeInTheDocument();
       expect(rendered.queryAllByDisplayValue("testtwo").length).toBe(0);
     });
     test("selecting an option should fire the change event function.", () => {
-      const rendered = renderWithProps("test", 41, testList, mockDisplayFunc, updateValueFunc, "testone");
+      const rendered = renderWithProps({
+        label: "test",
+        labelWidth: 41,
+        optionsList: testList,
+        optionsDisplayFunc: mockDisplayFunc,
+        updateValue: updateValueFunc,
+        value: "testone"
+      });
       const value = "testtwo";
       fireEvent.change(rendered.getByTestId("outlined-select-input"),  { target: { value }});
       expect(updateValueFunc).toHaveBeenCalledWith(value);
