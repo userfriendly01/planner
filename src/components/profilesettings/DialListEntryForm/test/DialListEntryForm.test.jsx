@@ -74,6 +74,7 @@ const renderComponent = dialListTableState => render(
 describe("<DialListEntryForm />", () => {
 
   beforeEach(() => {
+    axiosMock.reset();
     jest.clearAllMocks();
     setupMockedComponents({
       InfoOutlined,
@@ -168,136 +169,159 @@ describe("<DialListEntryForm />", () => {
         done();
       });
 
-      // describe("service call to update dial list entry succeeds", () => {
+      describe("service call to insert dial list entry succeeds", () => {
 
-      //   beforeEach(() => {
-      //     axiosMock.onPut(apiPaths.DIAL_LIST_ENTRY(dialListId)).reply(200, { who: "cares?" });
-      //   });
+        beforeEach(() => {
+          axiosMock.onPost(apiPaths.DIAL_LIST).reply(200, { who: "cares?" });
+        });
 
-      //   test("submit button should be disabled then entering valid values in all the required fields should enable the submit button and show success overlay on click", async () => {
-      //     const rendered = renderComponent(dialListTableState);
-      //     // Check that Save button is disabled
-      //     expectOnlyPassedProps(StyledButton, {
-      //       disabled: true
-      //     }, getLastInstanceCalled(StyledButton) - 1);
+        test("submit button should be disabled then entering valid values in all the required fields should enable the submit button and show success overlay on click", async () => {
+          const rendered = renderComponent(dialListTableState);
+          // Check that Save button is disabled
+          expectOnlyPassedProps(StyledButton, {
+            disabled: true
+          }, getLastInstanceCalled(StyledButton) - 1);
 
-      //     const updatedMaskedNumber = "(603) 888 1234";
-      //     const updatedUnmaskedNumber = "6038881234";
-      //     const updatedContactNme = "New Name!!!";
+          const updatedMaskedNumber = "(603) 888 1234";
+          const updatedUnmaskedNumber = "6038881234";
+          const updatedContactNme = "New Name!!!";
 
-      //     act(() => {
-      //       // Transfer Number input update
-      //       getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber))
-      //         .updateValue(updatedMaskedNumber, updatedUnmaskedNumber, true);
-      //     });
-      //     act(() => {
-      //       // Friendly Name input update
-      //       getMockedComponentProps(TextField, getLastInstanceCalled(TextField) - 1).onChange({
-      //         target: {
-      //           value: updatedContactNme
-      //         }
-      //       });
-      //     });
-      //     // Check that Save button is enabled
-      //     expectOnlyPassedProps(StyledButton, {
-      //       disabled: false
-      //     }, getLastInstanceCalled(StyledButton) - 1);
-      //     // Save button click
-      //     act(() => {
-      //       getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1)
-      //         .onClick();
-      //     });
-      //     await waitFor(() => {
-      //       expectMockedComponent(rendered, { ModalOverlay });
-      //       // First call of ModalOverlay displays pending status
-      //       expectOnlyPassedProps(ModalOverlay, {
-      //         message: "Updating dial list entry...",
-      //         status: modalOverlayStatuses.SAVING
-      //       }, getLastInstanceCalled(ModalOverlay) - 1);
-      //       // Second call of ModalOverlay displays success message
-      //       expectOnlyPassedProps(ModalOverlay, {
-      //         message: "Successfully updated dial list entry",
-      //         status: modalOverlayStatuses.SUCCESS
-      //       }, getLastInstanceCalled(ModalOverlay));
-      //       expect(refreshProfileData).toHaveBeenCalledTimes(1);
-      //     });
-      //     // Run timers so get rid of ModalOverlay
-      //     act(() => {
-      //       jest.advanceTimersByTime(modalOverlayTimeout);
-      //     });
-      //     await waitFor(() => {
-      //       // Form is closed
-      //       expect(setDialListTableState).toHaveBeenCalledWith({
-      //         ...dialListTableState,
-      //         isDialListEntryFormOpen: false
-      //       });
-      //     });
-      //   });
-      // });
+          act(() => {
+            // Transfer Number input update
+            getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber))
+              .updateValue(updatedMaskedNumber, updatedUnmaskedNumber, true);
+          });
+          act(() => {
+            // Friendly Name input update
+            getMockedComponentProps(TextField, getLastInstanceCalled(TextField) - 1).onChange({
+              target: {
+                value: updatedContactNme
+              }
+            });
+          });
+          // Check that Save button is enabled
+          expectOnlyPassedProps(StyledButton, {
+            disabled: false
+          }, getLastInstanceCalled(StyledButton) - 1);
+          // Save button click
+          act(() => {
+            getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1)
+              .onClick();
+          });
+          await waitFor(() => {
+            // Validate requst body sent
+            expect(axiosMock.history.post[0].data).toBe(JSON.stringify({
+              contact_nme: updatedContactNme,
+              contact_num: updatedUnmaskedNumber,
+              external_num: "",
+              profile_id: profileId
+            }));
+            expectMockedComponent(rendered, { ModalOverlay });
+            // First call of ModalOverlay displays pending status
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Adding dial list entry...",
+              status: modalOverlayStatuses.SAVING
+            }, getLastInstanceCalled(ModalOverlay) - 1);
+            // Second call of ModalOverlay displays success message
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Successfully added dial list entry",
+              status: modalOverlayStatuses.SUCCESS
+            }, getLastInstanceCalled(ModalOverlay));
+            expect(refreshProfileData).toHaveBeenCalledTimes(1);
+          });
+          // Run timers so get rid of ModalOverlay
+          act(() => {
+            jest.advanceTimersByTime(modalOverlayTimeout);
+          });
+          await waitFor(() => {
+            // Form is closed
+            expect(setDialListTableState).toHaveBeenCalledWith({
+              ...dialListTableState,
+              isDialListEntryFormOpen: false
+            });
+          });
+        });
+      });
 
-      // describe("service call to update dial list entry fails", () => {
+      describe("service call to insert dial list entry fails", () => {
 
-      //   beforeEach(() => {
-      //     axiosMock.onPut(apiPaths.DIAL_LIST_ENTRY(dialListId)).reply(500, { who: "cares? but this is bad wahhhh" });
-      //   });
+        beforeEach(() => {
+          axiosMock.onPost(apiPaths.DIAL_LIST).reply(500, { who: "cares? but this is bad wahhhh" });
+        });
 
-      //   test("submit button should be disabled then entering valid values in all the required fields should enable the submit button and show failure overlay on click", async () => {
-      //     const rendered = renderComponent(dialListTableState);
-      //     // Check that Save button is disabled
-      //     expectOnlyPassedProps(StyledButton, {
-      //       disabled: true
-      //     }, getLastInstanceCalled(StyledButton) - 1);
+        test("submit button should be disabled then entering valid values in all the required fields should enable the submit button and show failure overlay on click", async () => {
+          const rendered = renderComponent(dialListTableState);
+          // Check that Save button is disabled
+          expectOnlyPassedProps(StyledButton, {
+            disabled: true
+          }, getLastInstanceCalled(StyledButton) - 1);
 
-      //     const updatedMaskedNumber = "(603) 888 1234";
-      //     const updatedUnmaskedNumber = "6038881234";
-      //     const updatedContactNme = "New Name!!!";
+          const updatedMaskedNumber = "(603) 888 1234";
+          const updatedUnmaskedNumber = "6038881234";
+          const updatedContactNme = "New Name!!!";
+          const updatedExternalNum = "1-800-whatever lol";
 
-      //     act(() => {
-      //       // Transfer Number input update
-      //       getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber))
-      //         .updateValue(updatedMaskedNumber, updatedUnmaskedNumber, true);
-      //     });
-      //     act(() => {
-      //       // Friendly Name input update
-      //       getMockedComponentProps(TextField, getLastInstanceCalled(TextField) - 1).onChange({
-      //         target: {
-      //           value: updatedContactNme
-      //         }
-      //       });
-      //     });
-      //     // Check that Save button is enabled
-      //     expectOnlyPassedProps(StyledButton, {
-      //       disabled: false
-      //     }, getLastInstanceCalled(StyledButton) - 1);
-      //     // Save button click
-      //     act(() => {
-      //       getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1)
-      //         .onClick();
-      //     });
-      //     await waitFor(() => {
-      //       expectMockedComponent(rendered, { ModalOverlay });
-      //       // First call of ModalOverlay displays pending status
-      //       expectOnlyPassedProps(ModalOverlay, {
-      //         message: "Updating dial list entry...",
-      //         status: modalOverlayStatuses.SAVING
-      //       }, getLastInstanceCalled(ModalOverlay) - 1);
-      //       // Second call of ModalOverlay displays failure message
-      //       expectOnlyPassedProps(ModalOverlay, {
-      //         message: "Failed to update dial list entry",
-      //         status: modalOverlayStatuses.FAIL
-      //       }, getLastInstanceCalled(ModalOverlay));
-      //       expect(refreshProfileData).toHaveBeenCalledTimes(0);
-      //     });
-      //     // Run timers so get rid of ModalOverlay
-      //     act(() => {
-      //       jest.advanceTimersByTime(modalOverlayTimeout);
-      //     });
-      //     await waitFor(() => {
-      //       // Overlay is hidden
-      //       expectMockedComponent(rendered, { ModalOverlay }, 0);
-      //     });
-      //   });
-      // });
+          act(() => {
+            // Transfer Number input update
+            getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber))
+              .updateValue(updatedMaskedNumber, updatedUnmaskedNumber, true);
+          });
+          act(() => {
+            // Friendly Name input update
+            getMockedComponentProps(TextField, getLastInstanceCalled(TextField) - 1).onChange({
+              target: {
+                value: updatedContactNme
+              }
+            });
+          });
+          act(() => {
+            // External num field update
+            getMockedComponentProps(TextField, getLastInstanceCalled(TextField)).onChange({
+              target: {
+                value: updatedExternalNum
+              }
+            });
+          });
+          // Check that Save button is enabled
+          expectOnlyPassedProps(StyledButton, {
+            disabled: false
+          }, getLastInstanceCalled(StyledButton) - 1);
+          // Save button click
+          act(() => {
+            getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1)
+              .onClick();
+          });
+          await waitFor(() => {
+            // Validate requst body sent
+            expect(axiosMock.history.post[0].data).toBe(JSON.stringify({
+              contact_nme: updatedContactNme,
+              contact_num: updatedUnmaskedNumber,
+              external_num: updatedExternalNum,
+              profile_id: profileId
+            }));
+            expectMockedComponent(rendered, { ModalOverlay });
+            // First call of ModalOverlay displays pending status
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Adding dial list entry...",
+              status: modalOverlayStatuses.SAVING
+            }, getLastInstanceCalled(ModalOverlay) - 1);
+            // Second call of ModalOverlay displays failure message
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Failed to add dial list entry",
+              status: modalOverlayStatuses.FAIL
+            }, getLastInstanceCalled(ModalOverlay));
+            expect(refreshProfileData).toHaveBeenCalledTimes(0);
+          });
+          // Run timers so get rid of ModalOverlay
+          act(() => {
+            jest.advanceTimersByTime(modalOverlayTimeout);
+          });
+          await waitFor(() => {
+            // Overlay is hidden
+            expectMockedComponent(rendered, { ModalOverlay }, 0);
+          });
+        });
+      });
     });
   });
 
@@ -399,6 +423,7 @@ describe("<DialListEntryForm />", () => {
           const updatedMaskedNumber = "(603) 888 1234";
           const updatedUnmaskedNumber = "6038881234";
           const updatedContactNme = "New Name!!!";
+          const updatedExternalNum = "1-800-again nobody cares";
 
           act(() => {
             // Transfer Number input update
@@ -413,6 +438,14 @@ describe("<DialListEntryForm />", () => {
               }
             });
           });
+          act(() => {
+            // External Num input update
+            getMockedComponentProps(TextField, getLastInstanceCalled(TextField)).onChange({
+              target: {
+                value: updatedExternalNum
+              }
+            });
+          });
           // Check that Save button is enabled
           expectOnlyPassedProps(StyledButton, {
             disabled: false
@@ -423,6 +456,12 @@ describe("<DialListEntryForm />", () => {
               .onClick();
           });
           await waitFor(() => {
+            // Validate requst body sent
+            expect(axiosMock.history.put[0].data).toBe(JSON.stringify({
+              contact_nme: updatedContactNme,
+              contact_num: updatedUnmaskedNumber,
+              external_num: updatedExternalNum
+            }));
             expectMockedComponent(rendered, { ModalOverlay });
             // First call of ModalOverlay displays pending status
             expectOnlyPassedProps(ModalOverlay, {

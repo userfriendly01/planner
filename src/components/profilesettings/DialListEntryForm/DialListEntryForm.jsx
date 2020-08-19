@@ -134,7 +134,7 @@ const DialListEntryForm = props => {
     });
     myAxios.post(apiPaths.DIAL_LIST, requestBody)
       .then(res => {
-        console.log("Successfully inserted dial list entry", {
+        console.log("Successfully added dial list entry", {
           responseData: res.data,
           requestBody
         });
