@@ -84,7 +84,7 @@ const ModalPhoneNumber = props => {
   const validationError = !isNumberValid(unMaskPhoneNumber(number), useSevenDigitMask);
   const validationHelperText = validationError ? (useSevenDigitMask ? "Enter a seven digit VDN" : "Enter a valid ten digit phone number") : undefined;
 
-  const textField =
+  const textField = (
     <StyledTextField
       error={error || (showError && validationError)}
       helperText={helperText || (showError ? validationHelperText : null)}
@@ -109,7 +109,8 @@ const ModalPhoneNumber = props => {
       margin="normal"
       variant="outlined"
       value={number}
-    />;
+    />
+  );
 
   if (allowSevenDigitVdn) {
     const toggleSwitch = () => {
