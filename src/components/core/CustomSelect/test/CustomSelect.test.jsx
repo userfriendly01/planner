@@ -5,11 +5,11 @@ import {
 import React from "react";
 import {
   fireEvent,
+  muiErrorClassRegex,
   render
 } from "testUtils";
 
 const mockDisplayFunc = jest.fn();
-
 const updateValueFunc = jest.fn();
 
 const getOptionsElements = rendered => rendered.queryAllByTestId("select-option");
@@ -88,8 +88,7 @@ describe("CustomSelect", () => {
           noBlankValue: true
         });
         const { className } = rendered.queryByText("test");
-        const errorClassRegex = /Mui-error/;
-        expect(errorClassRegex.test(className)).toBeTruthy();
+        expect(muiErrorClassRegex.test(className)).toBeTruthy();
       });
     });
     describe("error is not passed", () => {
@@ -104,8 +103,7 @@ describe("CustomSelect", () => {
           noBlankValue: true
         });
         const { className } = rendered.queryByText("test");
-        const errorClassRegex = /Mui-error/;
-        expect(errorClassRegex.test(className)).toBeFalsy();
+        expect(muiErrorClassRegex.test(className)).toBeFalsy();
       });
     });
     describe("helperText is passed", () => {
