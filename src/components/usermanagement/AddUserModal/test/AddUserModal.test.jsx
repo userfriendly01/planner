@@ -11,21 +11,26 @@ import {
   StyledButton
 } from "components";
 import { initialState } from "context";
-import { apiPaths } from "globals";
-import React from "react";
-import { act } from "react-dom/test-utils";
 import {
+  apiPaths,
+  modalOverlayStatuses,
+  modalOverlayTimeout
+} from "globals";
+import React from "react";
+import {
+  act,
   expectMockedComponent,
   expectOnlyPassedProps,
   getLastInstanceCalled,
   getMockedComponentProps,
   mockStore,
   render,
-  setupMockedComponents
+  setupMockedComponents,
+  waitFor
 } from "testUtils";
 import {
-  myAxios,
-  mapWorkerFromTwilioWorker
+  mapWorkerFromTwilioWorker,
+  myAxios
 } from "utils";
 
 const axiosMock = new MockAdapter(myAxios);
@@ -156,8 +161,8 @@ describe("<AddUserModal />", () => {
         initialTestState
       );
       const expectedManagerProps = {
-        label: "Manager *",
-        labelWidth: 75,
+        label: "Manager",
+        labelWidth: 67,
         optionsList: managerList,
         value: ""
       };
@@ -190,8 +195,8 @@ describe("<AddUserModal />", () => {
     test("the initial state driven from the Context API as well as the functionality of the display function", () => {
       renderComponent();
       const expectedTeamProps = {
-        label: "Team *",
-        labelWidth: 52,
+        label: "Team",
+        labelWidth: 44,
         optionsList: profileList,
         value: ""
       };
@@ -249,11 +254,14 @@ describe("<AddUserModal />", () => {
       const expectedNNumProps = {
         disabled: false,
         form: {
+          extension: "",
+          extensionValid: false,
           lookupInfo: {},
           manager: "",
+          nNumber: "n",
           outgoing: "",
-          team: "",
-          extensionValid: false
+          outgoingValid: false,
+          team: ""
         },
         nNumber: "n"
       };
@@ -313,10 +321,13 @@ describe("<AddUserModal />", () => {
         disabled: false,
         extension: "",
         form: {
+          extension: "",
           extensionValid: false,
           lookupInfo: {},
           manager: "",
+          nNumber: "n",
           outgoing: "",
+          outgoingValid: false,
           team: ""
         }
       };
@@ -371,6 +382,59 @@ describe("<AddUserModal />", () => {
 
   describe("Add User and Close buttons", () => {
 
+    const updateformSoItIsValid = () => {
+      act(() => {
+        const updateManager = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect) - 1).updateValue;
+        updateManager(JSON.stringify(formOptions.manager));
+      });
+      act(() => {
+        const updateProfile = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect)).updateValue;
+        updateProfile(formOptions.profileId);
+      });
+      act(() => {
+        const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).updateValue;
+        updatePhone("(603)456-7890", formOptions.did, true);
+      });
+      act(() => {
+        const updateExtension = getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension)).updateValue;
+        updateExtension(formOptions.extension);
+      });
+      act(() => {
+        const {
+          form,
+          setForm
+        } = getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension));
+        setForm({
+          ...form,
+          extensionValid: true
+        });
+      });
+      act(() => {
+        const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).updateValue;
+        updateNNum(formOptions.nNumber);
+      });
+      act(() => {
+        // nNumber has internal functionality to add `lookupInfo` to form that we need to mimic
+        const props = getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalNNumber));
+        const setForm = props.setForm;
+        const form = props.form;
+        setForm({
+          ...form,
+          lookupInfo: {
+            email: "test@abc.com",
+            firstName: "Frank",
+            lastName: "Rizzo",
+            officeName: "Springfield 012B",
+            officeNumber: "ABC123",
+            departmentName: "Computers",
+            departmentNumber: "4848"
+          }
+        });
+      });
+      const addUserButtonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
+      expect(addUserButtonProps.disabled).toBe(false);
+    };
+
     test("the initial state add should be disabled, and close should be enabled", () => {
       const rendered = renderComponent();
       expectMockedComponent(rendered, { StyledButton }, 2);
@@ -414,86 +478,40 @@ describe("<AddUserModal />", () => {
           axiosMock.onPost(apiPaths.CREATE_WORKER).reply(200, twilioWorkerResponse);
         });
 
-        test("when save button is clicked we should clear the user, which should disable 'Add User', and dispatch addWorker", done => {
+        test.only("when save button is clicked we should clear the user, which should disable 'Add User', and dispatch addWorker", async () => {
           const rendered = renderComponent();
+          updateformSoItIsValid();
           act(() => {
-            const updateManager = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect) - 1).updateValue;
-            updateManager(JSON.stringify(formOptions.manager));
-          });
-          act(() => {
-            const updateProfile = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect)).updateValue;
-            updateProfile(formOptions.profileId);
-          });
-          act(() => {
-            const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).updateValue;
-            updatePhone(formOptions.did);
-          });
-          act(() => {
-            const updateExtension = getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension)).updateValue;
-            updateExtension(formOptions.extension);
-          });
-          act(() => {
-            const props = getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension));
-            const setForm = props.setForm;
-            const form = props.form;
-            setForm({
-              ...form,
-              extensionValid: true
-            });
-          });
-          act(() => {
-            const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).updateValue;
-            updateNNum(formOptions.nNumber);
-          });
-          act(() => {
-            const props = getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalNNumber));
-            const setForm = props.setForm;
-            const form = props.form;
-            setForm({
-              ...form,
-              lookupInfo: {
-                email: "test@abc.com",
-                firstName: "Frank",
-                lastName: "Rizzo",
-                officeName: "Springfield 012B",
-                officeNumber: "ABC123",
-                departmentName: "Computers",
-                departmentNumber: "4848"
-              }
-            });
-          });
-          const addUserButtonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
-          expect(addUserButtonProps.disabled).toBe(false);
-          act(() => {
+            // instanceCalled - 1 because the Close button is the last instance called
             const addUserButtonOnClick = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1).onClick;
             addUserButtonOnClick();
-            return Promise.resolve();
-          }).then(() => {
-            const expectedTwilioWorkerAttributesPosted = {
-              did: `+1${formOptions.did}`,
-              email: employeeLookupResponse[0].person.data.Email,
-              email_address: employeeLookupResponse[0].person.data.Email,
-              emp_first_name: employeeLookupResponse[0].person.data.FirstName,
-              emp_last_name: employeeLookupResponse[0].person.data.LastName,
-              extension: formOptions.extension,
-              full_name: `${employeeLookupResponse[0].person.data.FirstName} ${employeeLookupResponse[0].person.data.LastName}`,
-              manager_first_name: formOptions.manager.manager_first_name,
-              manager_last_name: formOptions.manager.manager_last_name,
-              manager_n_number: formOptions.manager.manager_n_number,
-              n_number: formOptions.nNumber,
-              office_location_name: employeeLookupResponse[0].person.data.OfficeName,
-              office_location_number: employeeLookupResponse[0].person.data.OfficeNumber,
-              primary_dept_name: employeeLookupResponse[0].person.data.DepartmentName,
-              primary_dept_number: employeeLookupResponse[0].person.data.DepartmentNumber,
-              profile_id: formOptions.profileId
-            };
+          });
+          const expectedTwilioWorkerAttributesPosted = {
+            did: `+1${formOptions.did}`,
+            email: employeeLookupResponse[0].person.data.Email,
+            email_address: employeeLookupResponse[0].person.data.Email,
+            emp_first_name: employeeLookupResponse[0].person.data.FirstName,
+            emp_last_name: employeeLookupResponse[0].person.data.LastName,
+            extension: formOptions.extension,
+            full_name: `${employeeLookupResponse[0].person.data.FirstName} ${employeeLookupResponse[0].person.data.LastName}`,
+            manager_first_name: formOptions.manager.manager_first_name,
+            manager_last_name: formOptions.manager.manager_last_name,
+            manager_n_number: formOptions.manager.manager_n_number,
+            n_number: formOptions.nNumber,
+            office_location_name: employeeLookupResponse[0].person.data.OfficeName,
+            office_location_number: employeeLookupResponse[0].person.data.OfficeNumber,
+            primary_dept_name: employeeLookupResponse[0].person.data.DepartmentName,
+            primary_dept_number: employeeLookupResponse[0].person.data.DepartmentNumber,
+            profile_id: formOptions.profileId
+          };
+          await waitFor(() => {
             expect(axiosMock.history.post[0].data).toEqual(JSON.stringify({ attributes: expectedTwilioWorkerAttributesPosted }));
             expectMockedComponent(rendered, { ModalOverlay });
             const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
             const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
             const addUserButtonProps2 = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
             expect(addUserButtonProps2.disabled).toBe(true);
-            expect(saveStatus).toBe("success");
+            expect(saveStatus).toBe(modalOverlayStatuses.SUCCESS);
             expect(nNumber).toBe("n");
             act(() => jest.runAllTimers());
             expectMockedComponent(rendered, { ModalOverlay }, 0);
@@ -503,7 +521,6 @@ describe("<AddUserModal />", () => {
               type: "addWorker",
               payload: mapWorkerFromTwilioWorker(twilioWorkerResponse)
             });
-            done();
           });
         });
       });
@@ -513,52 +530,7 @@ describe("<AddUserModal />", () => {
 
         test("when save button is clicked we should not clear the user, or disable 'Add User' and not dispatch an action", done => {
           const rendered = renderComponent();
-          act(() => {
-            const updateManager = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect) - 1).updateValue;
-            updateManager(JSON.stringify(formOptions.manager));
-          });
-          act(() => {
-            const updateProfile = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect)).updateValue;
-            updateProfile(formOptions.profileId);
-          });
-          act(() => {
-            const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).updateValue;
-            updatePhone(formOptions.did);
-          });
-          act(() => {
-            const updateExtension = getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension)).updateValue;
-            updateExtension(formOptions.extension);
-          });
-          act(() => {
-            const props = getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension));
-            const setForm = props.setForm;
-            const form = props.form;
-            setForm({
-              ...form,
-              extensionValid: true
-            });
-          });
-          act(() => {
-            const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).updateValue;
-            updateNNum(formOptions.nNumber);
-          });
-          act(() => {
-            const props = getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalNNumber));
-            const setForm = props.setForm;
-            const form = props.form;
-            setForm({
-              ...form,
-              lookupInfo: {
-                email: "test@abc.com",
-                firstName: "Frank",
-                lastName: "Rizzo",
-                officeName: "Springfield 012B",
-                officeNumber: "ABC123",
-                departmentName: "Computers",
-                departmentNumber: "4848"
-              }
-            });
-          });
+          updateformSoItIsValid();
           const addUserButtonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
           expect(addUserButtonProps.disabled).toBe(false);
           act(() => {
