@@ -7,7 +7,9 @@ import {
 } from "components";
 import {
   apiPaths,
-  formModes
+  formModes,
+  modalOverlayStatuses,
+  modalOverlayTimeout
 } from "globals";
 import React from "react";
 import {
@@ -19,15 +21,12 @@ import {
   getMockedComponentProps,
   render,
   setupMockedComponents,
+  waitFor,
   within
 } from "testUtils";
 import { myAxios } from "utils";
 
-const axiosMock = new MockAdapter(myAxios);
-
-const mockSetProfileSettingsState = jest.fn();
-const profileId = "89";
-const refreshProfileData = jest.fn();
+jest.useFakeTimers();
 
 jest.mock("components", () => ({
   __esModule: true,
@@ -36,11 +35,23 @@ jest.mock("components", () => ({
   StyledButton: jest.fn()
 }));
 
+const axiosMock = new MockAdapter(myAxios);
+
+const profileId = "89";
+const refreshProfileData = jest.fn();
+
 const renderComponent = ({
   dialList
 }) => render(<DialListTable dialList={dialList} profileId={profileId} refreshProfileData={refreshProfileData} />);
 
 describe("<DialListTable />", () => {
+
+  let confirmSpy;
+  beforeAll(() => {
+    confirmSpy = jest.spyOn(window, "confirm");
+    confirmSpy.mockImplementation(jest.fn(() => true)); // confirm popup always true
+  });
+  afterAll(() => confirmSpy.mockRestore());
 
   beforeEach(() => {
     axiosMock.reset();
@@ -137,32 +148,74 @@ describe("<DialListTable />", () => {
       });
     });
 
-    test("each edit button clicked should render dialListEntryForm with correct props", () => {
-      const rendered = renderComponent({
-        dialList
-      });
+
+    describe("dial list entry buttons for dialListId = 18", () => {
       const entry = dialList[1]; // second entry
-      expect(rendered.container).toHaveTextContent(entry.contact_nme);
-      expect(rendered.container).toHaveTextContent(entry.contact_num);
-      const row = rendered.getByText(entry.contact_nme).closest("tr");
-      const utils = within(row);
-      const editButtonElement = utils.getByTestId("edit-button");
-      act(() => {
-        fireEvent.click(editButtonElement);
+
+      test("edit button clicked should render dialListEntryForm with correct props", () => {
+        const rendered = renderComponent({
+          dialList
+        });
+        expect(rendered.container).toHaveTextContent(entry.contact_nme);
+        expect(rendered.container).toHaveTextContent(entry.contact_num);
+        const row = rendered.getByText(entry.contact_nme).closest("tr");
+        const utils = within(row);
+        const editButtonElement = utils.getByTestId("edit-button");
+        act(() => {
+          fireEvent.click(editButtonElement);
+        });
+        expectOnlyPassedProps(DialListEntryForm, {
+          dialListTableState: {
+            dialListEntryFormInitialValues: {
+              contact_nme: entry.contact_nme,
+              contact_num: entry.contact_num,
+              external_num: entry.external_num
+            },
+            dialListEntryFormMode: formModes.UPDATE,
+            dialListId: entry.diallist_id,
+            isDialListEntryFormOpen: true,
+            otherContactNums: [dialList[0].contact_num, dialList[2].contact_num]
+          }
+        }, getLastInstanceCalled(DialListEntryForm));
       });
-      expectOnlyPassedProps(DialListEntryForm, {
-        dialListTableState: {
-          dialListEntryFormInitialValues: {
-            contact_nme: entry.contact_nme,
-            contact_num: entry.contact_num,
-            external_num: entry.external_num
-          },
-          dialListEntryFormMode: formModes.UPDATE,
-          dialListId: entry.diallist_id,
-          isDialListEntryFormOpen: true,
-          otherContactNums: [dialList[0].contact_num, dialList[2].contact_num]
-        }
-      }, getLastInstanceCalled(DialListEntryForm));
+
+      describe("delete service call succeeds", () => {
+        beforeEach(() => {
+          axiosMock.onDelete(apiPaths.DIAL_LIST_ENTRY(entry.diallist_id)).reply(200, { whatever: "lol" });
+        });
+
+        test("delete button clicked should render dialListEntryForm with correct props", async () => {
+          const rendered = renderComponent({
+            dialList
+          });
+          expect(rendered.container).toHaveTextContent(entry.contact_nme);
+          expect(rendered.container).toHaveTextContent(entry.contact_num);
+          const row = rendered.getByText(entry.contact_nme).closest("tr");
+          const utils = within(row);
+          const deleteButtonElement = utils.getByTestId("delete-button");
+          await act(() => {
+            fireEvent.click(deleteButtonElement);
+          });
+          // advance timers so overlay times out
+          // jest.advanceTimersByTime(modalOverlayTimeout);
+          await waitFor(() => {
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Deleting dial list entry...",
+              status: modalOverlayStatuses.SAVING
+            }, getLastInstanceCalled(ModalOverlay) - 1);
+            expect(refreshProfileData).toHaveBeenCalledTimes(1);
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Successfully deleted dial list entry",
+              status: modalOverlayStatuses.SUCCESS
+            }, getLastInstanceCalled(ModalOverlay) - 0);
+            // TODO make sure timer works and overlay is de-rendered
+            // expectOnlyPassedProps(ModalOverlay, {
+            //   message: "",
+            //   status: null
+            // }, getLastInstanceCalled(ModalOverlay));
+          });
+        });
+      });
     });
   });
 });
