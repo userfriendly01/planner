@@ -1,8 +1,12 @@
-import { Paper } from "@material-ui/core";
 import {
-  ManagementFilter,
+  Modal,
+  Paper
+} from "@material-ui/core";
+import {
+  ManagementHeader,
   ManagementPagination,
-  ManagementTable
+  ManagementTable,
+  UserEntryForm
 } from "components";
 import {
   useAdminState
@@ -59,6 +63,11 @@ const ManagementWrapper = () => {
     filterBy: "show-all",
     searchBy: ""
   });
+  const [userEntryFormState, setUserEntryFormState] = useState({
+    formMode: "",
+    open: false,
+    worker: null
+  });
 
   if (state.filterBy !== "show-all") {
     workers = workers.filter(worker => worker.attributes.manager_n_number === state.filterBy);
@@ -101,15 +110,24 @@ const ManagementWrapper = () => {
 
   return (
     <ManagementContainer>
-      <ManagementFilter
+      <Modal disableBackdropClick={true} open={userEntryFormState.open}>
+        <UserEntryForm handleClose={() => setUserEntryFormState({
+          formMode: "",
+          open: false,
+          worker: null
+        })} />
+      </Modal>
+      <ManagementHeader
         filterBy={state.filterBy}
         searchBy={state.searchBy}
         setFilter={setStateFromFilterChange}
-        setSearch={setStateFromSearchChange} />
+        setSearch={setStateFromSearchChange}
+        setUserEntryFormState={setUserEntryFormState} />
       <StyledPaper elevation={3}>
         <ManagementTable
           deltaToggle={state.deltaToggle}
           setDeltaToggle={setStateFromDeltaToggle}
+          setUserEntryFormState={setUserEntryFormState}
           workers={workers.slice(workersStart, workersEnd)} />
       </StyledPaper>
       <ManagementPagination

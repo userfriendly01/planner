@@ -1,9 +1,10 @@
 import {
-  AddUser,
   ManagerFilter,
   ResetSkillsButton,
-  SearchBox
+  SearchBox,
+  StyledButton
 } from "components";
+import { formModes } from "globals";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
@@ -33,13 +34,20 @@ const RightPadding = styled.div`
   padding-right: 8px;
 `;
 
-const ManagementFilter = props => {
+const ManagementHeader = props => {
   const {
     filterBy,
     searchBy,
     setFilter,
-    setSearch
+    setSearch,
+    setUserEntryFormState
   } = props;
+
+  const addUserOnClick = () => setUserEntryFormState({
+    formMode: formModes.INSERT,
+    open: true,
+    worker: null
+  });
 
   return (
     <ControlsWrapper>
@@ -53,17 +61,20 @@ const ManagementFilter = props => {
         <RightPadding>
           <ResetSkillsButton />
         </RightPadding>
-        <AddUser />
+        <StyledButton onClick={addUserOnClick} data-testid={"add-user-button"}>
+          Add User
+        </StyledButton>
       </ControlItem>
     </ControlsWrapper>
   );
 };
 
-ManagementFilter.propTypes = {
+ManagementHeader.propTypes = {
   filterBy: PropTypes.string.isRequired,
   searchBy: PropTypes.string.isRequired,
   setFilter: PropTypes.func.isRequired,
-  setSearch: PropTypes.func.isRequired
+  setSearch: PropTypes.func.isRequired,
+  setUserEntryFormState: PropTypes.func.isRequired
 };
 
-export default ManagementFilter;
+export default ManagementHeader;

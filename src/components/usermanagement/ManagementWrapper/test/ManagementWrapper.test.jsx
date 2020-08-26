@@ -1,6 +1,6 @@
 import ManagementWrapper from "../ManagementWrapper";
 import {
-  ManagementFilter,
+  ManagementHeader,
   ManagementPagination,
   ManagementTable
 } from "components";
@@ -18,7 +18,7 @@ import {
 } from "testUtils";
 
 jest.mock("components", () => ({
-  ManagementFilter: jest.fn(),
+  ManagementHeader: jest.fn(),
   ManagementPagination: jest.fn(),
   ManagementTable: jest.fn()
 }));
@@ -55,16 +55,16 @@ describe("ManagementWrapper", () => {
 
   beforeEach(() => {
     setupMockedComponents({
-      ManagementFilter,
+      ManagementHeader,
       ManagementPagination,
       ManagementTable
     });
   });
 
   const commonTests = workers => {
-    test("should render ManagementFilter, ManagementPagination, ManagementTable", () => {
+    test("should render ManagementHeader, ManagementPagination, ManagementTable", () => {
       const rendered = doRender(workers);
-      expectMockedComponent(rendered, { ManagementFilter });
+      expectMockedComponent(rendered, { ManagementHeader });
       expectMockedComponent(rendered, { ManagementPagination });
       expectMockedComponent(rendered, { ManagementTable });
     });
@@ -88,9 +88,9 @@ describe("ManagementWrapper", () => {
     ];
     commonTests(workers);
     describe("initial state", () => {
-      test("ManagementFilter should be passed filterBy show-all", () => {
+      test("ManagementHeader should be passed filterBy show-all", () => {
         doRender(workers);
-        expectOnlyPassedProps(ManagementFilter, { filterBy: "show-all" });
+        expectOnlyPassedProps(ManagementHeader, { filterBy: "show-all" });
       });
       test("ManagementTable should be passed all workers (sorted with undefined full_name last) as prop", () => {
         doRender(workers);
@@ -129,9 +129,9 @@ describe("ManagementWrapper", () => {
     ];
     commonTests(workers);
     describe("initial state", () => {
-      test("ManagementFilter should be passed filterBy show-all", () => {
+      test("ManagementHeader should be passed filterBy show-all", () => {
         doRender(workers);
-        expectOnlyPassedProps(ManagementFilter, { filterBy: "show-all" });
+        expectOnlyPassedProps(ManagementHeader, { filterBy: "show-all" });
       });
       test("ManagementTable should be passed all workers (sorted) as prop", () => {
         doRender(workers);
@@ -152,13 +152,13 @@ describe("ManagementWrapper", () => {
     });
     describe("when set filter to manager n0000000", () => {
       const doSetFilter = () => act(() => {
-        const setStateFromFilterChange = ManagementFilter.mock.calls[0][0].setFilter;
+        const setStateFromFilterChange = ManagementHeader.mock.calls[0][0].setFilter;
         setStateFromFilterChange("n0000000");
       });
-      test("ManagementFilter should be passed filterBy n0000000", () => {
+      test("ManagementHeader should be passed filterBy n0000000", () => {
         doRender(workers);
         doSetFilter();
-        expectOnlyPassedProps(ManagementFilter, { filterBy: "n0000000" }, 1);
+        expectOnlyPassedProps(ManagementHeader, { filterBy: "n0000000" }, 1);
       });
       test("ManagementTable should be passed filtered workers having manager n0000000", () => {
         doRender(workers);
@@ -242,9 +242,9 @@ describe("ManagementWrapper", () => {
     ];
     commonTests(workers);
     describe("initial state", () => {
-      test("ManagementFilter should be passed filterBy show-all", () => {
+      test("ManagementHeader should be passed filterBy show-all", () => {
         doRender(workers);
-        expectOnlyPassedProps(ManagementFilter, { filterBy: "show-all" });
+        expectOnlyPassedProps(ManagementHeader, { filterBy: "show-all" });
       });
       test(`ManagementTable should be passed first ${workersPerPage} workers (sorted) as prop`, () => {
         doRender(workers);
@@ -262,13 +262,13 @@ describe("ManagementWrapper", () => {
     });
     describe("when set filter to manager n3333333", () => {
       const doSetFilter = () => act(() => {
-        const setStateFromFilterChange = ManagementFilter.mock.calls[0][0].setFilter;
+        const setStateFromFilterChange = ManagementHeader.mock.calls[0][0].setFilter;
         setStateFromFilterChange("n3333333");
       });
-      test("ManagementFilter should be passed filterBy n3333333", () => {
+      test("ManagementHeader should be passed filterBy n3333333", () => {
         doRender(workers);
         doSetFilter();
-        expectOnlyPassedProps(ManagementFilter, { filterBy: "n3333333" }, 1);
+        expectOnlyPassedProps(ManagementHeader, { filterBy: "n3333333" }, 1);
       });
       test("ManagementTable should be passed filtered workers having manager n3333333", () => {
         doRender(workers);
@@ -294,13 +294,13 @@ describe("ManagementWrapper", () => {
     });
     describe("when set filter to manager n2222222", () => {
       const doSetFilter = () => act(() => {
-        const setStateFromFilterChange = getMockedComponentProps(ManagementFilter, getLastInstanceCalled(ManagementFilter)).setFilter;
+        const setStateFromFilterChange = getMockedComponentProps(ManagementHeader, getLastInstanceCalled(ManagementHeader)).setFilter;
         setStateFromFilterChange("n2222222");
       });
-      test("ManagementFilter should be passed filterBy n2222222", () => {
+      test("ManagementHeader should be passed filterBy n2222222", () => {
         doRender(workers);
         doSetFilter();
-        expectOnlyPassedProps(ManagementFilter, { filterBy: "n2222222" }, 1);
+        expectOnlyPassedProps(ManagementHeader, { filterBy: "n2222222" }, 1);
       });
       test("ManagementTable should be passed filtered workers h -> v", () => {
         doRender(workers);
@@ -339,7 +339,7 @@ describe("ManagementWrapper", () => {
     describe("when set filter to manager 2 and then change page to 2", () => {
       const doSetFilterAndChangePage = () => {
         act(() => {
-          const setStateFromFilterChange = getMockedComponentProps(ManagementFilter, getLastInstanceCalled(ManagementFilter)).setFilter;
+          const setStateFromFilterChange = getMockedComponentProps(ManagementHeader, getLastInstanceCalled(ManagementHeader)).setFilter;
           setStateFromFilterChange("n2222222");
         });
         act(() => {
@@ -347,10 +347,10 @@ describe("ManagementWrapper", () => {
           setStateFromPageChange(2);
         });
       };
-      test("ManagementFilter should be passed filterBy n2222222", () => {
+      test("ManagementHeader should be passed filterBy n2222222", () => {
         doRender(workers);
         doSetFilterAndChangePage();
-        expectOnlyPassedProps(ManagementFilter, { filterBy: "n2222222" }, getLastInstanceCalled(ManagementFilter));
+        expectOnlyPassedProps(ManagementHeader, { filterBy: "n2222222" }, getLastInstanceCalled(ManagementHeader));
       });
       test("ManagementTable should be passed filtered workers w -> z", () => {
         doRender(workers);
@@ -377,13 +377,13 @@ describe("ManagementWrapper", () => {
     });
     describe("testing seraching on default skills", () => {
       const doSetSearch = () => act(() => {
-        const setStateFromSearchChange = ManagementFilter.mock.calls[0][0].setSearch;
+        const setStateFromSearchChange = ManagementHeader.mock.calls[0][0].setSearch;
         setStateFromSearchChange("466");
       });
-      test("ManagementFilter should be passed searchBy '466'", () => {
+      test("ManagementHeader should be passed searchBy '466'", () => {
         doRender(workers);
         doSetSearch();
-        expectOnlyPassedProps(ManagementFilter, { searchBy: "466" }, 1);
+        expectOnlyPassedProps(ManagementHeader, { searchBy: "466" }, 1);
       });
       test("ManagementTable should be passed filtered workers having the default skill 466", () => {
         doRender(workers);
@@ -408,13 +408,13 @@ describe("ManagementWrapper", () => {
     });
     describe("testing seraching on applied skills", () => {
       const doSetSearch = () => act(() => {
-        const setStateFromSearchChange = ManagementFilter.mock.calls[0][0].setSearch;
+        const setStateFromSearchChange = ManagementHeader.mock.calls[0][0].setSearch;
         setStateFromSearchChange("test");
       });
-      test("ManagementFilter should be passed searchBy 'test'", () => {
+      test("ManagementHeader should be passed searchBy 'test'", () => {
         doRender(workers);
         doSetSearch();
-        expectOnlyPassedProps(ManagementFilter, { searchBy: "test" }, 1);
+        expectOnlyPassedProps(ManagementHeader, { searchBy: "test" }, 1);
       });
       test("ManagementTable should be passed filtered workers having the applied skill 'test'", () => {
         doRender(workers);
@@ -439,13 +439,13 @@ describe("ManagementWrapper", () => {
     });
     describe("testing seraching on name", () => {
       const doSetSearch = () => act(() => {
-        const setStateFromSearchChange = ManagementFilter.mock.calls[0][0].setSearch;
+        const setStateFromSearchChange = ManagementHeader.mock.calls[0][0].setSearch;
         setStateFromSearchChange("aldo");
       });
-      test("ManagementFilter should be passed searchBy 'aldo'", () => {
+      test("ManagementHeader should be passed searchBy 'aldo'", () => {
         doRender(workers);
         doSetSearch();
-        expectOnlyPassedProps(ManagementFilter, { searchBy: "aldo" }, 1);
+        expectOnlyPassedProps(ManagementHeader, { searchBy: "aldo" }, 1);
       });
       test("ManagementTable should be passed filtered workers having the name 'aldo'", () => {
         doRender(workers);

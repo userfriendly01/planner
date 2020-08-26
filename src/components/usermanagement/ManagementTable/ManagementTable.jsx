@@ -1,21 +1,16 @@
-import {
-  Modal,
-  Switch
-} from "@material-ui/core";
+import { Switch } from "@material-ui/core";
 import {
   Edit,
   ChangeHistoryRounded
 } from "@material-ui/icons";
-import {
-  EditUserModal,
-  ModalOverlay
-} from "components";
+import { ModalOverlay } from "components";
 import {
   useAdminDispatch,
   useAdminState
 } from "context";
+import { formModes } from "globals";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { formatWorkerSkillsToHTML } from "utils";
 
@@ -75,7 +70,6 @@ const CustomTableRow = styled.tr`
   }
 `;
 
-// didn't copy this
 const DeltaWrapper = styled.div`
   align-items: center;
   color: ${props => props.theme.libertyDarkGray};
@@ -108,7 +102,6 @@ const TableContainer = styled.div`
   position: relative;
 `;
 
-// didn't use
 const TableDataFlex = styled.div`
   color: ${props => props.theme.textColor};
   display: flex;
@@ -123,15 +116,10 @@ const ManagementTable = props => {
   const {
     deltaToggle,
     setDeltaToggle,
+    setUserEntryFormState,
     workers
   } = props;
 
-  const defaultEditUserModalOpts = {
-    open: false,
-    worker: null
-  };
-
-  const [editUserModalOpts, setEditUserModalOpts] = useState(defaultEditUserModalOpts);
   const state = useAdminState();
   const selectedWorkers = state.workerContext.selectedWorkers;
   const dispatch = useAdminDispatch();
@@ -155,7 +143,7 @@ const ManagementTable = props => {
           </tr>
         </thead>
         <tbody>
-          {workers.map((worker,index) => {
+          {workers.map((worker, index) => {
             const isSelected = selectedWorkers.some(selectedWorker => selectedWorker.sid === worker.sid);
             const handleWorkerOnClick = () => dispatch({
               type: "toggleWorkerSelected",
@@ -166,7 +154,8 @@ const ManagementTable = props => {
             });
             const editButtonOnClick = event => {
               event.stopPropagation();
-              setEditUserModalOpts({
+              setUserEntryFormState({
+                formMode: formModes.UPDATE,
                 open: true,
                 worker
               });
@@ -193,9 +182,6 @@ const ManagementTable = props => {
             );
           })}
         </tbody>
-        <Modal open={editUserModalOpts.open}>
-          <EditUserModal handleClose={() => setEditUserModalOpts(defaultEditUserModalOpts)} worker={editUserModalOpts.worker}/>
-        </Modal>
       </CustomTable>
     </TableContainer>
   );
@@ -204,6 +190,7 @@ const ManagementTable = props => {
 ManagementTable.propTypes = {
   deltaToggle: PropTypes.bool.isRequired,
   setDeltaToggle: PropTypes.func.isRequired,
+  setUserEntryFormState: PropTypes.func.isRequired,
   workers: PropTypes.arrayOf(
     PropTypes.shape({
       attributes: PropTypes.object,

@@ -62,7 +62,7 @@ const renderComponent = () => {
     />, initialTestState);
 };
 
-describe("<ManagementFilter />", () => {
+describe("<ManagementHeader />", () => {
   beforeEach(() => {
     setupMockedComponents({
       AddManagerModal

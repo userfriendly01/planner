@@ -1,4 +1,4 @@
-import ManagementFilter from "../ManagementFilter";
+import ManagementHeader from "../ManagementHeader";
 import {
   AddUser,
   ManagerFilter,
@@ -27,7 +27,7 @@ const setSearch = jest.fn();
 
 const renderComponent = () => {
   return render(
-    <ManagementFilter
+    <ManagementHeader
       filterBy={filterBy}
       searchBy={searchBy}
       setFilter={setFilter}
@@ -35,7 +35,7 @@ const renderComponent = () => {
     />);
 };
 
-describe("<ManagementFilter />", () => {
+describe("<ManagementHeader />", () => {
   beforeEach(() => {
     setupMockedComponents({
       AddUser,

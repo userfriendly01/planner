@@ -58,7 +58,7 @@ const ModalContainer = styled.div`
 
 const defaultNNumber = "n";
 
-const AddUserModal = props => {
+const UserEntryForm = props => {
 
   const {
     handleClose
@@ -318,7 +318,7 @@ const AddUserModal = props => {
   );
 };
 
-AddUserModal.propTypes = {
+UserEntryForm.propTypes = {
   handleClose: PropTypes.func,
   managerList: PropTypes.arrayOf(
     PropTypes.shape({
@@ -329,4 +329,4 @@ AddUserModal.propTypes = {
   )
 };
 
-export default AddUserModal;
+export default UserEntryForm;
