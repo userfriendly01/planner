@@ -4,6 +4,7 @@ import React from "react";
 import {
   expectMockedComponent,
   expectOnlyPassedProps,
+  getMockedComponentProps,
   render,
   setupMockedComponents
 } from "testUtils";
@@ -13,7 +14,14 @@ jest.mock("components", () => ({
   OutlinedSelect: jest.fn()
 }));
 
+const updateProfile = jest.fn();
+
 describe("<ProfileDropDown />", () => {
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   const availableProfiles = [
     {
       profile_id: 1,
@@ -28,10 +36,8 @@ describe("<ProfileDropDown />", () => {
       profile_nme: "Third Profile"
     }
   ];
-  const profileFromParent = {
-    profileId: 2,
-    dialList: []
-  };
+  const profileId = "2";
+
   beforeEach(() => {
     jest.clearAllMocks();
     setupMockedComponents({ OutlinedSelect });
@@ -40,7 +46,8 @@ describe("<ProfileDropDown />", () => {
     test("should render OutlinedSelect with correct props", () => {
       const rendered = render(<ProfileDropDown
         availableProfiles={availableProfiles}
-        profile={profileFromParent}
+        profileId={profileId}
+        updateProfile={updateProfile}
       />);
       expectMockedComponent(rendered, { OutlinedSelect }, 1);
       const optionsDisplayFunc = OutlinedSelect.mock.calls[0][0].optionsDisplayFunc;
@@ -50,17 +57,17 @@ describe("<ProfileDropDown />", () => {
         key: 2,
         value: 2
       });
+      const { updateValue } = getMockedComponentProps(OutlinedSelect);
+      updateValue(profileId);
+      expect(updateProfile).toHaveBeenCalledWith(profileId);
     });
   });
   describe("no profile is selected (profileID is null)", () => {
-    const profile = {
-      profileId: null,
-      dialList: []
-    };
     test("should render OutlinedSelect with correct props", () => {
       const rendered = render(<ProfileDropDown
         availableProfiles={availableProfiles}
-        profile={profile}
+        profileId={null}
+        updateProfile={updateProfile}
       />);
       expectMockedComponent(rendered, { OutlinedSelect }, 1);
       expectOnlyPassedProps(OutlinedSelect, {

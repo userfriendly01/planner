@@ -41,6 +41,7 @@ export const OutlinedSelect = props => {
     label,
     labelWidth,
     noBlankValue,
+    onBlur,
     optionsDisplayFunc,
     optionsList,
     updateValue,
@@ -56,6 +57,7 @@ export const OutlinedSelect = props => {
         disabled={disabled}
         native
         value={value || ""}
+        onBlur={onBlur}
         onChange={event => updateValue(event.target.value)}
         input={
           <OutlinedInput
@@ -80,6 +82,7 @@ OutlinedSelect.propTypes = {
   label: PropTypes.string.isRequired,
   labelWidth: PropTypes.number.isRequired,
   noBlankValue: PropTypes.bool,
+  onBlur: PropTypes.func,
   optionsDisplayFunc: PropTypes.func.isRequired,
   optionsList: PropTypes.array.isRequired,
   updateValue: PropTypes.func.isRequired,

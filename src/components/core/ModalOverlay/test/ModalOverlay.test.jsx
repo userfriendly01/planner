@@ -1,7 +1,5 @@
-import {
-  ModalOverlay,
-  modalOverlayStatuses
-} from "../ModalOverlay";
+import ModalOverlay from "../ModalOverlay";
+import { modalOverlayStatuses } from "globals";
 import React from "react";
 import { render } from "testUtils";
 

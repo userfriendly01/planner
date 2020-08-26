@@ -86,7 +86,7 @@ const ModalExtension = props => {
           ? <ModalHelperText
             clearFunction = {clearExtension}
             error={!(form.extensionValid || loading)}
-            message={loading? "Validating..." : (form.extensionValid ? "Extension is valid" : "Extension already in use")}
+            message={loading ? "Validating..." : (form.extensionValid ? "Extension is valid" : "Extension already in use")}
           />
           : null
       }
