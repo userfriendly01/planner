@@ -124,8 +124,8 @@ const AddUserModal = props => {
       }, modalOverlayTimeout);
       return;
     }
-    // // see this wiki page for attributes that will be automatically updated through SSO
-    // // https://forge.lmig.com/wiki/display/CICCT/Twilio+Flex+SSO+Saml2+Integration
+    // see this wiki page for attributes that will be automatically updated through SSO
+    // https://forge.lmig.com/wiki/display/CICCT/Twilio+Flex+SSO+Saml2+Integration
     const attributes = {
       did: outgoingE164,
       email: form.lookupInfo.email,
