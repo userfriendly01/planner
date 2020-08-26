@@ -94,23 +94,6 @@ const AddUserModal = props => {
     saveUser: false
   });
 
-  const clearExtension = () => {
-    setForm({
-      ...form,
-      extension: "",
-      extensionValid: false
-    });
-  };
-
-  const clearUser = () => {
-    setForm({
-      ...form,
-      lookupError: null,
-      lookupInfo: {},
-      nNumber: defaultNNumber
-    });
-  };
-
   const saveUser = () => {
     updateLoading({
       ...loading,
@@ -141,8 +124,8 @@ const AddUserModal = props => {
       }, modalOverlayTimeout);
       return;
     }
-    // see this wiki page for attributes that will be automatically updated through SSO
-    // https://forge.lmig.com/wiki/display/CICCT/Twilio+Flex+SSO+Saml2+Integration
+    // // see this wiki page for attributes that will be automatically updated through SSO
+    // // https://forge.lmig.com/wiki/display/CICCT/Twilio+Flex+SSO+Saml2+Integration
     const attributes = {
       did: outgoingE164,
       email: form.lookupInfo.email,
@@ -161,14 +144,17 @@ const AddUserModal = props => {
       primary_dept_number: form.lookupInfo.departmentNumber,
       profile_id: form.team
     };
-    myAxios
-      .post(apiPaths.CREATE_WORKER, { attributes })
+    myAxios.post(apiPaths.CREATE_WORKER, { attributes })
       .then(res => {
-        console.log("SERVICE CALL SUCCESS BLOCK");
         const twilioWorker = res.data;
-        clearExtension();
-        // TODO uncomment this
-        clearUser();
+        setForm({
+          ...form,
+          extension: "", // clear out extension values
+          extensionValid: false,
+          lookupError: null, // clear out user lookup values
+          lookupInfo: {},
+          nNumber: defaultNNumber
+        });
         dispatch({
           type: "addWorker",
           payload: mapWorkerFromTwilioWorker(twilioWorker)
@@ -208,11 +194,6 @@ const AddUserModal = props => {
   const managerValid = form.manager !== "";
   const teamValid = form.team !== "";
   const formReady = nNumberInputValid && teamValid && managerValid && form.outgoingValid && extensionInputValid;
-
-  console.log({
-    form,
-    loading
-  });
 
   return (
     <ModalContainer>
@@ -288,7 +269,14 @@ const AddUserModal = props => {
           }}
         />
         <ModalNNumber
-          clearUser={clearUser}
+          clearUser={() => {
+            setForm({
+              ...form,
+              lookupError: null,
+              lookupInfo: {},
+              nNumber: defaultNNumber
+            });
+          }}
           disabled={JSON.stringify(form.lookupInfo) !== "{}"}
           error={form.nNumberUpdated && !nNumberInputValid}
           form={form}
@@ -304,7 +292,13 @@ const AddUserModal = props => {
           })}
         />
         <ModalExtension
-          clearExtension={clearExtension}
+          clearExtension={() => {
+            setForm({
+              ...form,
+              extension: "",
+              extensionValid: false
+            });
+          }}
           disabled={form.extensionValid && extensionMatcher.test(form.extension)}
           error={!extensionInputValid}
           extension={form.extension}
