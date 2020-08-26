@@ -46,6 +46,7 @@ const jestConfig = {
   ],
   transform: {
     "^.+\\.jsx?$": "babel-jest",
+    "^.+\\.tsx?$": "babel-jest",
     "^.+\\.png$": "jest-raw-loader",
     "^.+\\.svg$": "jest-raw-loader"
   },

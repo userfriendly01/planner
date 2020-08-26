@@ -16,21 +16,18 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/, // js and jsx
-        exclude: /node_modules/,
-        query: {
-          presets: ["@babel/react"]
-        },
-        loader: "babel-loader"
+        test: /\.(js|jsx|ts|tsx)?$/,
+        use: "ts-loader",
+        exclude: /node_modules/
       },
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        loader: "eslint-loader",
-        options: {
-          failOnWarning: true
-        }
-      },
+      // {
+      //   test: /\.jsx?$/,
+      //   exclude: /node_modules/,
+      //   loader: "eslint-loader",
+      //   options: {
+      //     failOnWarning: true
+      //   }
+      // },
       {
         test: /\.png?$/,
         loader: "file-loader",

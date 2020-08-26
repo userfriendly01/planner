@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "baseUrl": "./src",
+    "esModuleInterop": true,
+    "jsx": "react",
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "outDir": "./dist/",
+    "paths": {
+      "components": ["./components/index.js"],
+      "context": ["./context/index.js"],
+      "globals": ["./globals/index.js"],
+      "icons/*": ["./assets/icons/*"],
+      "testUtils": ["../__test__/index.js"],
+      "utils": ["./utils/index.js"]
+    },
+    "sourceMap": true,
+    "target": "es5"
+  }
+}
