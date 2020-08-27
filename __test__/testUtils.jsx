@@ -84,6 +84,8 @@ export const getMockedComponentProps = (mockedComponent, instanceCalled = getLas
 
 const getNumberOfComponents = (rendered, componentString) => rendered.queryAllByText(componentString).length || 0;
 
+export const muiErrorClassRegex = /Mui-error/;
+
 export const setupMockedComponents = objOfMockedComponents => {
   const keys = Object.keys(objOfMockedComponents);
   keys.forEach(componentName => {

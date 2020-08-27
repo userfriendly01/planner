@@ -18,8 +18,10 @@ const ModalNNumber = props => {
   const {
     clearUser,
     disabled,
+    error,
     form,
     nNumber,
+    onBlur,
     setForm,
     updateValue
   } = props;
@@ -33,13 +35,15 @@ const ModalNNumber = props => {
           setForm({
             ...form,
             lookupError: null,
-            lookupInfo: res
+            lookupInfo: res,
+            nNumber
           });
         } else {
           setForm({
             ...form,
             lookupInfo: {},
-            lookupError: "User not found"
+            lookupError: "User not found",
+            nNumber
           });
         }
       })
@@ -47,7 +51,8 @@ const ModalNNumber = props => {
         setForm({
           ...form,
           lookupInfo: {},
-          lookupError: `Error calling lookup service: ${err.message}`
+          lookupError: `Error calling lookup service: ${err.message}`,
+          nNumber
         });
       });
   };
@@ -58,8 +63,10 @@ const ModalNNumber = props => {
     <FlexColumn>
       <CustomInput
         disabled={disabled}
-        label="N Number *"
+        error={error}
+        label="N Number"
         name="N Number"
+        onBlur={onBlur}
         maxLength="8"
         updateValue={updateValue}
         validator={validator}
@@ -82,8 +89,10 @@ const ModalNNumber = props => {
 ModalNNumber.propTypes = {
   clearUser: PropTypes.func.isRequired,
   disabled: PropTypes.bool.isRequired,
+  error: PropTypes.bool,
   form: PropTypes.object.isRequired,
   nNumber: PropTypes.string.isRequired,
+  onBlur: PropTypes.func,
   setForm: PropTypes.func.isRequired,
   updateValue: PropTypes.func.isRequired
 };

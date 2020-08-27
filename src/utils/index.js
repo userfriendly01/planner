@@ -1,3 +1,4 @@
+export * from "./formatNumberUtils";
 export * from "./formatWorkerResponse";
 export * from "./formatWorkerSkillsToHTML";
 export * from "./getUniqueManagerList";
