@@ -160,8 +160,7 @@ const ManagementTable = props => {
 
   const waitAndHideOverlay = () => setTimeout(() => {
     setManagementTableState(initialState);
-  // }, statusOverlayTimeout);
-  }, 10000);
+  }, statusOverlayTimeout);
 
   return (
     <TableContainer>
@@ -228,7 +227,6 @@ const ManagementTable = props => {
                       overlayMessage: err.response.data.error,
                       saveStatus: statusOverlayStatuses.FAIL
                     });
-                    waitAndHideOverlay();
                   });
               }
             };
@@ -266,6 +264,7 @@ const ManagementTable = props => {
       {managementTableState.saveStatus ? <StatusOverlay
         message={managementTableState.overlayMessage}
         modal={false}
+        setManagementTableState={setManagementTableState}
         status={managementTableState.saveStatus}
       /> : null}
     </TableContainer>

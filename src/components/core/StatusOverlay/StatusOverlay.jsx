@@ -1,3 +1,4 @@
+import { CloseRounded } from "@material-ui/icons";
 import { ModalFetchingRing } from "components";
 import { statusOverlayStatuses } from "globals";
 import PropTypes from "prop-types";
@@ -35,10 +36,33 @@ const Circle = styled.circle`
   animation: ${Dash} .9s ease-in-out;
 `;
 
+const BottomDiv = styled.div`
+  height: 1vh;
+`;
+
+const CloseButtonDiv = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+`;
+
 const FlexRow = styled.div`
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
+`;
+
+const Icon = styled.svg`
+  stroke-width: .2em;
+  width: 4em;
+`;
+
+const InnerContainer = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5%;
 `;
 
 const Line = styled.line`
@@ -55,7 +79,7 @@ const Overlay = styled(FlexRow)`
   font-family: 'Roboto', sans-serif;
   font-size: 1.8em;
   height: ${props => props.modal ? "100%" : "50vh"};
-  justify-content: center;
+  justify-content: ${props => props.status === statusOverlayStatuses.FAIL ? "space-between" : "center"};
   opacity: .75;
   width: ${props => props.modal ? "100%" : "40vw"};
   z-index: 100;
@@ -66,20 +90,17 @@ const Overlay = styled(FlexRow)`
   position: ${props => props.modal ? "absolute" : "fixed"};
 `;
 
-const Icon = styled.svg`
-  stroke-width: .2em;
-  width: 4em;
+const StyledCloseRounded = styled(CloseRounded)`
+  cursor: pointer;
+  && {
+    font-size: 2rem;
+    margin: .5rem;
+  }
 `;
 
-const InnerContainer = styled.div`
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 5%;
-`;
-
+// TODO: make font-size look good for each status
 const TextWrapper = styled.div`
+  font-size: 2vw;
   margin-top: 5%;
   text-align: center;
 `;
@@ -88,8 +109,16 @@ const StatusOverlay = props => {
   const {
     message,
     modal,
+    setManagementTableState,
     status
   } = props;
+
+  const handleClose = () => {
+    setManagementTableState({
+      overlayMessage: "",
+      saveStatus: null
+    });
+  };
 
   const getIconAndBackground = status => {
     if (status === statusOverlayStatuses.SUCCESS) {
@@ -128,13 +157,20 @@ const StatusOverlay = props => {
     <Overlay
       modal={modal}
       modalBackground={background}
+      status={status}
     >
+      {status === statusOverlayStatuses.FAIL ?
+        <CloseButtonDiv>
+          <StyledCloseRounded onClick={handleClose} />
+        </CloseButtonDiv>
+        : null}
       <InnerContainer>
         {icon}
         <TextWrapper>
           {message}
         </TextWrapper>
       </InnerContainer>
+      <BottomDiv />
     </Overlay>
   );
 };
@@ -142,6 +178,7 @@ const StatusOverlay = props => {
 StatusOverlay.propTypes = {
   message: PropTypes.string.isRequired,
   modal: PropTypes.bool.isRequired,
+  setManagementTableState: PropTypes.func.isRequired,
   status: PropTypes.oneOf(Object.values(statusOverlayStatuses)).isRequired
 };
 

@@ -172,7 +172,7 @@ const EditUserModal = props => {
             status={saveUser}
           /> : null}
         <HeaderAndCloseButtonWrapper>
-          <LeftDiv></LeftDiv>
+          <LeftDiv />
           <h1>Update User</h1>
           <StyledCloseRounded onClick={handleClose}/>
         </HeaderAndCloseButtonWrapper>
