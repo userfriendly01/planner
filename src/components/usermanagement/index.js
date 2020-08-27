@@ -4,7 +4,7 @@ export { default as EditUserModal } from "./EditUserModal/EditUserModal";
 export { default as ManagementHeader } from "./ManagementHeader/ManagementHeader";
 export { default as ManagementPagination } from "./ManagementPagination/ManagementPagination";
 export { default as ManagementTable } from "./ManagementTable/ManagementTable";
-export { default as ManagementWrapper } from "./ManagementWrapper/ManagementWrapper";
+export * from "./ManagementWrapper/ManagementWrapper";
 export { default as ManagerFilter } from "./ManagerFilter/ManagerFilter";
 export { default as ModalFetchingRing } from "./ModalFetchingRing/ModalFetchingRing";
 export { default as ModalHelperText } from "./ModalHelperText/ModalHelperText";

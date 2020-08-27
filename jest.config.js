@@ -11,11 +11,13 @@ const jestConfig = {
     "/index.js"
   ],
   collectCoverageFrom: [
-    "src/**/*.{js,jsx}"
+    "src/**/*.{js,jsx,ts,tsx}"
   ],
   moduleFileExtensions: [
     "js",
     "jsx",
+    "ts",
+    "tsx",
     "json"
   ],
   moduleNameMapper: {
@@ -37,7 +39,8 @@ const jestConfig = {
   },
   setupFilesAfterEnv: ["<rootDir>/jestSetup.js"],
   testMatch: [
-    "<rootDir>/src/**/test/**/*.test.js?(x)"
+    "<rootDir>/src/**/test/**/*.test.js?(x)",
+    "<rootDir>/src/**/test/**/*.test.ts?(x)"
   ],
   testPathIgnorePatterns: [
     "<rootDir>/node_modules/",

@@ -20,14 +20,14 @@ const config = {
         use: "ts-loader",
         exclude: /node_modules/
       },
-      // {
-      //   test: /\.jsx?$/,
-      //   exclude: /node_modules/,
-      //   loader: "eslint-loader",
-      //   options: {
-      //     failOnWarning: true
-      //   }
-      // },
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        loader: "eslint-loader",
+        options: {
+          failOnWarning: true
+        }
+      },
       {
         test: /\.png?$/,
         loader: "file-loader",
@@ -48,7 +48,7 @@ const config = {
       services: resolvePathInSrc("services"),
       utils: resolvePathInSrc("utils")
     },
-    extensions: [ ".js", ".jsx" ],
+    extensions: [ ".js", ".jsx", ".ts", ".tsx" ],
     mainFiles: [ "index" ]
   }
 };
