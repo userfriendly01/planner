@@ -4,9 +4,12 @@ const SERVICE_BASE_URI = "/service";
 export const apiPaths = {
   AUTH: `${SERVICE_BASE_URI}/admin-login`,
   CREATE_WORKER: `${SERVICE_BASE_URI}/createworker`,
+  DIAL_LIST: `${CONTACT_MANAGER_BASE_URI}/diallist`,
+  DIAL_LIST_ENTRY: dialListId => `${CONTACT_MANAGER_BASE_URI}/diallist/${dialListId}`,
   EMPLOYEE_LOOKUP: nNum => `${SERVICE_BASE_URI}/employeelookup/${nNum}`,
   CHECK_EXTENSION: `${SERVICE_BASE_URI}/checkextension`,
   FLASH_MESSAGE: `${SERVICE_BASE_URI}/flashmessage`,
+  GET_PROFILE_DATA: profileId => `${CONTACT_MANAGER_BASE_URI}/triton/${profileId}`,
   GET_PROFILES: `${CONTACT_MANAGER_BASE_URI}/profiles`,
   GET_TASKROUTER_SKILLS: `${SERVICE_BASE_URI}/taskrouterskills`,
   GET_WORKERS: `${SERVICE_BASE_URI}/workers`,
@@ -14,6 +17,19 @@ export const apiPaths = {
   RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
   UPDATE_WORKER_ATTRIBUTES: `${SERVICE_BASE_URI}/updateworkerattributes`
 };
+
+export const formModes = {
+  INSERT: "insert",
+  UPDATE: "update"
+};
+
+export const modalOverlayStatuses = {
+  FAIL: "fail",
+  SAVING: "saving",
+  SUCCESS: "success"
+};
+
+export const modalOverlayTimeout = 2000;
 
 export const nNumMatcher = /[n,N]\d{7}/g;
 export const extensionMatcher = /^\d{4}$/;

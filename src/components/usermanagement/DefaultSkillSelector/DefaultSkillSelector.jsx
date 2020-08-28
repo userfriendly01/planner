@@ -91,7 +91,7 @@ const SkillRowItem = styled.div`
   }
 `;
 const SkillRowSeperator = styled.div`
-  border-bottom 1px solid ${props => props.theme.lineSeperatorColor};
+  border-bottom: 1px solid ${props => props.theme.lineSeperatorColor};
   margin-top: 8px;
 `;
 

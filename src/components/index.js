@@ -3,5 +3,6 @@ export * from "./core";
 export * from "./flashmessage";
 export * from "./header";
 export * from "./navigation";
+export * from "./profilesettings";
 export * from "./usermanagement";
 export * from "./teamsettings";

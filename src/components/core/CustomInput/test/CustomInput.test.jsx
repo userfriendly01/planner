@@ -34,38 +34,47 @@ describe("CustomInput", () => {
   });
 
   const renderWithProps = ({
-    disabled, label, maxLength, name, value, validator, validatedService
+    disabled, error, label, maxLength, name, onBlur, value, validator, validatedService
   }) => {
     return render(<CustomInput
+      error={error}
       disabled={disabled}
       label={label}
       maxLength={maxLength}
       name={name}
+      onBlur={onBlur}
       updateValue={updateValueFunc}
       validator={validator}
       validatedServiceCall={validatedService}
       value={value} />);
   };
 
-  test("we should pass the correct props to the TextField = false", () => {
+  test("we should pass the correct props to the TextField", () => {
     const disabled = false;
+    const error = true;
     const label = "test";
     const maxLength = "5";
     const name = test;
+    const onBlur = jest.fn();
     const value = "";
     renderWithProps({
       disabled,
+      error,
       label,
       maxLength,
       name,
+      onBlur,
       value
     });
     const props = getMockedComponentProps(TextField);
     expect(props.disabled).toBe(disabled);
+    expect(props.error).toBe(error);
     expect(props.label).toBe(label);
     expect(props.id).toBe(`outlined-${name}-input`);
     expect(props.inputProps).toEqual({ maxLength });
     expect(props.name).toBe(name);
+    props.onBlur();
+    expect(onBlur).toHaveBeenCalledTimes(1);
     expect(props.value).toBe(value);
   });
 
@@ -73,10 +82,7 @@ describe("CustomInput", () => {
     const label = "test";
     const value = "";
     renderWithProps({
-      disabled: null,
       label,
-      maxLength: null,
-      name: null,
       value
     });
     const props = getMockedComponentProps(TextField);
@@ -84,7 +90,8 @@ describe("CustomInput", () => {
     expect(props.label).toBe(label);
     expect(props.id).toBe(null);
     expect(props.inputProps).toEqual({});
-    expect(props.name).toBe(null);
+    expect(props.name).toBe(undefined);
+    expect(props.onBlur).toBe(undefined);
     expect(props.value).toBe(value);
   });
 
