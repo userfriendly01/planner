@@ -1,19 +1,11 @@
 import ManagerFilter from "../ManagerFilter";
-import { AddManagerModal } from "components";
 import { initialState } from "context";
 import React from "react";
 import {
   act,
-  expectMockedComponent,
   fireEvent,
-  render,
-  setupMockedComponents
+  render
 } from "testUtils";
-
-jest.mock("components/usermanagement", () => ({
-  __esModule: true,
-  AddManagerModal: jest.fn()
-}));
 
 const filterBy = "";
 const setFilter = jest.fn();
@@ -47,29 +39,16 @@ const mockManagerData = [
 
 const initialTestState  = {
   ...initialState,
-  managerContext: {
-    managers: mockManagerData
-  },
-  isAddUserModalOpen: false,
-  isAddManagerModalOpen: false
+  managerContext: { managers: mockManagerData }
 };
 
-const renderComponent = () => {
-  return render(
-    <ManagerFilter
-      filterBy={filterBy}
-      setFilter={setFilter}
-    />, initialTestState);
-};
+const renderComponent = () => render(
+  <ManagerFilter filterBy={filterBy} setFilter={setFilter} />, initialTestState
+);
 
 describe("<ManagementFilter />", () => {
-  beforeEach(() => {
-    setupMockedComponents({
-      AddManagerModal
-    });
-  });
 
-  test("upon initial render, should display Manager Filter, add manager & add user buttons, and all managers should be listed in the dropdown sorted by first name", () => {
+  test("upon initial render, should display Manager Filter,  add user button, and all managers should be listed in the dropdown sorted by first name", () => {
     const rendered = renderComponent();
     expect(rendered.container).toHaveTextContent("Manager Filter");
     expect(rendered.queryAllByTestId("manager-list")[0]).toHaveTextContent("Show All");
@@ -80,20 +59,6 @@ describe("<ManagementFilter />", () => {
     expect(rendered.queryAllByTestId("manager-list")[5]).toHaveTextContent("Michael Nieman");
   });
 
-  test("when you click on the add manager button, the manager modal is rendered. When you call handleClose, the modal is no longer rendered", () => {
-    const rendered = renderComponent();
-    const button = rendered.getByTestId("add-manager-button", { selector: "button" });
-    expectMockedComponent(rendered, { AddManagerModal }, 0);
-    act(() => {
-      fireEvent.click(button);
-    });
-    expectMockedComponent(rendered, { AddManagerModal }, 1);
-    const handleClose = AddManagerModal.mock.calls[0][0].handleClose;
-    act(() => {
-      handleClose();
-    });
-    expectMockedComponent(rendered, { AddManagerModal }, 0);
-  });
   test("When an option is clicked in the filter, the setFilter method is fired with the correct parameters", () => {
     const rendered = renderComponent();
     const select = rendered.getByTestId("select");
