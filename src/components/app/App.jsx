@@ -42,7 +42,7 @@ const ErrorStatus = styled.div`
 `;
 
 const ErrorWrapper = styled.div`
-  padding: 10%
+  padding: 10%;
 `;
 
 const Overlay = styled.div`
@@ -118,9 +118,43 @@ const getSkills = dispatch => new Promise((resolve, reject) => myAxios.get(apiPa
   })
 );
 
-const getWorkers = dispatch => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_WORKERS)
+const getWorkers = async dispatch => {
+  let pageToken = "";
+  let nextPageUrlExists;
+  const workers = [];
+  do {
+    try {
+      const res = await myAxios.post(apiPaths.GET_WORKERS, { pageToken });
+      if (res.data.nextPageUrl) {
+        nextPageUrlExists = true;
+        const url = new URL(res.data.nextPageUrl);
+        pageToken = url.searchParams.get("PageToken");
+      } else {
+        nextPageUrlExists = false;
+      }
+      const currentPageOfWorkers = formatWorkerResponse(res.data.instances);
+      currentPageOfWorkers.forEach(worker => workers.push(worker));
+      console.log("workers:", workers); //
+    } catch (error) {
+      console.error("Failed to fetch workers from service", { error });
+    }
+  } while (nextPageUrlExists === true);
+
+  dispatch(({
+    type: "loadWorkers",
+    payload: workers
+  }));
+  const managerList = getUniqueManagerList(workers);
+  dispatch({
+    type: "loadManagers",
+    payload: managerList
+  });
+};
+
+/* const getWorkers = dispatch => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_WORKERS, token)
   .then(res => {
-    const workers = formatWorkerResponse(res.data);
+    console.log("getWorkers response:", res);
+    const workers = formatWorkerResponse(res.data.instances);
     dispatch(({
       type: "loadWorkers",
       payload: workers
@@ -138,7 +172,7 @@ const getWorkers = dispatch => new Promise((resolve, reject) => myAxios.get(apiP
       error
     });
   })
-);
+); */
 
 const App = () => {
 
