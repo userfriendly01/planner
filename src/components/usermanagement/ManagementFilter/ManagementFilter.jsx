@@ -29,6 +29,12 @@ const ControlItem = styled.div`
   }
 `;
 
+const UserOptions = styled.div`
+  align-items: center;
+  display: flex;
+  flex: 1;
+  justify-content: space-evenly;
+`;
 const RightPadding = styled.div`
   padding-right: 8px;
 `;
@@ -45,6 +51,10 @@ const ManagementFilter = props => {
     <ControlsWrapper>
       <ControlItem>
         <ManagerFilter filterBy={filterBy} setFilter={setFilter}/>
+        <UserOptions>
+          <AddUser />
+          <AddUser />
+        </UserOptions>
       </ControlItem>
       <ControlItem>
         <SearchBox searchBy={searchBy} setSearch={setSearch}/>
@@ -53,7 +63,6 @@ const ManagementFilter = props => {
         <RightPadding>
           <ResetSkillsButton />
         </RightPadding>
-        <AddUser />
       </ControlItem>
     </ControlsWrapper>
   );

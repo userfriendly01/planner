@@ -28,7 +28,7 @@ const ModalNNumber = props => {
   const validator = nNumber => nNumber.match(nNumMatcher) !== null;
 
   const inputServiceCall = nNumber => {
-    return fetchUser(nNumber)
+    fetchUser(nNumber)
       .then(res => {
         if (res) {
           setForm({
