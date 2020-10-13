@@ -56,11 +56,6 @@ const ModalContainer = styled.div`
   transform: translate(-50%, -50%);
 `;
 
-// const RequiredText = styled(FlexRow)`
-//   justify-content: center;
-//   padding: 1%;
-// `;
-
 const defaultNNumber = "n";
 
 const AddUserModal = props => {

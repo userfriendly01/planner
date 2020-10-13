@@ -8,6 +8,7 @@ import {
   ChangeHistoryRounded
 } from "@material-ui/icons";
 import {
+  ConfirmationModal,
   EditUserModal,
   StatusOverlay
 } from "components";
@@ -16,9 +17,9 @@ import {
   useAdminState
 } from "context";
 import {
-  apiPaths,
-  statusOverlayStatuses,
-  statusOverlayTimeout
+  apiPaths
+  // statusOverlayStatuses,
+  // statusOverlayTimeout
 } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
@@ -143,24 +144,39 @@ const ManagementTable = props => {
     workers
   } = props;
 
-  const defaultEditUserModalOpts = {
+  const defaultModalOpts = {
     open: false,
     worker: null
   };
 
-  const [editUserModalOpts, setEditUserModalOpts] = useState(defaultEditUserModalOpts);
+  const [editUserModalOpts, setEditUserModalOpts] = useState(defaultModalOpts);
+  const [confirmationModalOpts, setConfirmationModalOpts] = useState(defaultModalOpts);
   const state = useAdminState();
   const selectedWorkers = state.workerContext.selectedWorkers;
   const dispatch = useAdminDispatch();
-  const initialState = {
-    overlayMessage: "",
-    saveStatus: null
-  };
-  const [managementTableState, setManagementTableState] = useState(initialState);
+  // const initialState = {
+  //   overlayMessage: "",
+  //   saveStatus: null
+  // };
 
-  const waitAndHideOverlay = () => setTimeout(() => {
-    setManagementTableState(initialState);
-  }, statusOverlayTimeout);
+  const deleteUser = () => {
+    const deletedWorker = confirmationModalOpts.worker;
+    return myAxios.delete(apiPaths.DELETE_WORKER(deletedWorker.sid))
+      .then(res => {
+        console.log(`Successfully deleted Triton worker with sid ${deletedWorker.sid}`,
+          { responseData: res.data });
+        dispatch({
+          type: "deleteWorker",
+          payload: deletedWorker.sid
+        });
+      })
+      .catch(err => {
+        console.error(`ManagementTable - Failed to delete worker ${deletedWorker.sid}`, {
+          error: err
+        });
+        return Promise.reject();
+      });
+  };
 
   return (
     <TableContainer>
@@ -198,37 +214,12 @@ const ManagementTable = props => {
                 worker
               });
             };
-            const deleteButtonOnClick = () => {
-              const popUp = confirm("Are you sure you want to delete this Triton worker?");
-              if (popUp === true) {
-                setManagementTableState({
-                  overlayMessage: "Deleting Triton worker...",
-                  saveStatus: statusOverlayStatuses.SAVING
-                });
-                myAxios.delete(apiPaths.DELETE_WORKER(worker.sid))
-                  .then(res => {
-                    console.log(`Successfully deleted Triton worker with sid ${worker.sid}`,
-                      { responseData: res.data });
-                    dispatch({
-                      type: "deleteWorker",
-                      payload: worker.sid
-                    });
-                    setManagementTableState({
-                      overlayMessage: "Successfully deleted Triton worker",
-                      saveStatus: statusOverlayStatuses.SUCCESS
-                    });
-                    waitAndHideOverlay();
-                  })
-                  .catch(err => {
-                    console.error(`ManagementTable - Failed to delete worker ${worker.sid}`, {
-                      error: err
-                    });
-                    setManagementTableState({
-                      overlayMessage: err.response.data.error,
-                      saveStatus: statusOverlayStatuses.FAIL
-                    });
-                  });
-              }
+            const deleteButtonOnClick = event => {
+              event.stopPropagation();
+              setConfirmationModalOpts({
+                open: true,
+                worker
+              });
             };
             return (
               <CustomTableRow key={index} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">
@@ -258,15 +249,19 @@ const ManagementTable = props => {
           })}
         </tbody>
         <Modal open={editUserModalOpts.open}>
-          <EditUserModal handleClose={() => setEditUserModalOpts(defaultEditUserModalOpts)} worker={editUserModalOpts.worker}/>
+          <EditUserModal handleClose={() => setEditUserModalOpts(defaultModalOpts)} worker={editUserModalOpts.worker}/>
+        </Modal>
+        <Modal open={confirmationModalOpts.open}>
+          { confirmationModalOpts.worker ?
+            <ConfirmationModal
+              confirmFunction={deleteUser}
+              handleClose={() => setConfirmationModalOpts(defaultModalOpts)}
+              confirmationText= {"Are you sure you want to delete the following worker? " + confirmationModalOpts.worker.attributes.full_name}
+            />
+            : null
+          }
         </Modal>
       </CustomTable>
-      {managementTableState.saveStatus ? <StatusOverlay
-        message={managementTableState.overlayMessage}
-        modal={false}
-        setManagementTableState={setManagementTableState}
-        status={managementTableState.saveStatus}
-      /> : null}
     </TableContainer>
   );
 };

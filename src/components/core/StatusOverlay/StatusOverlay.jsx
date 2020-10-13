@@ -178,7 +178,7 @@ const StatusOverlay = props => {
 StatusOverlay.propTypes = {
   message: PropTypes.string.isRequired,
   modal: PropTypes.bool.isRequired,
-  setManagementTableState: PropTypes.func.isRequired,
+  setManagementTableState: PropTypes.func,
   status: PropTypes.oneOf(Object.values(statusOverlayStatuses)).isRequired
 };
 

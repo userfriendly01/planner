@@ -157,7 +157,7 @@ const AddManagerModal = props => {
             updateValue={setNNumber}
           />
           {isValidNNumber && manager !== loadingStates.loading
-            ? <ModalHelperText clearUser={clearManager} message={helperTextMessage} error={!isManagerValid} />
+            ? <ModalHelperText clearFunction={clearManager} message={helperTextMessage} error={!isManagerValid} />
             : null
           }
         </FlexColumn>
