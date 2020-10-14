@@ -28,12 +28,12 @@ export const reducer = (state, action) => {
           managers: [...state.managerContext.managers.slice(), action.payload.manager]
         }
       };
-    case "addWorker":
+    case "addWorkers":
       return {
         ...state,
         workerContext: {
           ...state.workerContext,
-          workers: [...state.workerContext.workers.slice(), action.payload]
+          workers: state.workerContext.workers.concat(action.payload)
         }
       };
     case "loadManagers":
@@ -58,14 +58,6 @@ export const reducer = (state, action) => {
         skillContext: {
           ...state.skillsContext,
           taskrouterSkills: action.payload
-        }
-      };
-    case "loadWorkers":
-      return {
-        ...state,
-        workerContext: {
-          ...state.workerContext,
-          workers: action.payload
         }
       };
     case "loadUserData":
