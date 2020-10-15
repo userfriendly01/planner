@@ -1,7 +1,5 @@
-import {
-  StatusOverlay,
-  statusOverlayStatuses
-} from "../StatusOverlay";
+import StatusOverlay from "../StatusOverlay";
+import { statusOverlayStatuses } from "globals";
 import React from "react";
 import { render } from "testUtils";
 
