@@ -219,7 +219,7 @@ const DialListTable = props => {
           :
           <StyledPaper elevation={3}>
             {dialListTableState.saveStatus ?
-              <ModalOverlay
+              <StatusOverlay
                 message={dialListTableState.overlayMessage}
                 status={dialListTableState.saveStatus}
               /> : null}
