@@ -10,7 +10,7 @@ import { InfoOutlined } from "@material-ui/icons";
 import {
   PaperContainer,
   ModalPhoneNumber,
-  StatusOverlay,
+  ModalOverlay,
   StyledButton
 } from "components";
 import {
@@ -198,9 +198,8 @@ const DialListEntryForm = props => {
     <ModalContainer>
       <PaperContainer>
         {loading.saveStatus ?
-          <StatusOverlay
+          <ModalOverlay
             message={loading.overlayMessage}
-            modal={true}
             status={loading.saveStatus}
           /> : null}
         <Header>{dialListTableState.dialListEntryFormMode === formModes.INSERT ? "Add Dial List Entry" : "Edit Dial List Entry"}</Header>

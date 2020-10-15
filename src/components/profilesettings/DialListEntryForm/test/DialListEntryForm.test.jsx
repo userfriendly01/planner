@@ -14,8 +14,8 @@ import {
 import {
   apiPaths,
   formModes,
-  modalOverlayStatuses,
-  modalOverlayTimeout
+  statusOverlayStatuses,
+  statusOverlayTimeout
 } from "globals";
 import React from "react";
 import {
@@ -220,18 +220,18 @@ describe("<DialListEntryForm />", () => {
             // First call of ModalOverlay displays pending status
             expectOnlyPassedProps(ModalOverlay, {
               message: "Adding dial list entry...",
-              status: modalOverlayStatuses.SAVING
+              status: statusOverlayStatuses.SAVING
             }, getLastInstanceCalled(ModalOverlay) - 1);
             // Second call of ModalOverlay displays success message
             expectOnlyPassedProps(ModalOverlay, {
               message: "Successfully added dial list entry",
-              status: modalOverlayStatuses.SUCCESS
+              status: statusOverlayStatuses.SUCCESS
             }, getLastInstanceCalled(ModalOverlay));
             expect(refreshProfileData).toHaveBeenCalledTimes(1);
           });
           // Run timers so get rid of ModalOverlay
           act(() => {
-            jest.advanceTimersByTime(modalOverlayTimeout);
+            jest.advanceTimersByTime(statusOverlayTimeout);
           });
           await waitFor(() => {
             // Form is closed
@@ -303,18 +303,18 @@ describe("<DialListEntryForm />", () => {
             // First call of ModalOverlay displays pending status
             expectOnlyPassedProps(ModalOverlay, {
               message: "Adding dial list entry...",
-              status: modalOverlayStatuses.SAVING
+              status: statusOverlayStatuses.SAVING
             }, getLastInstanceCalled(ModalOverlay) - 1);
             // Second call of ModalOverlay displays failure message
             expectOnlyPassedProps(ModalOverlay, {
               message: "Failed to add dial list entry",
-              status: modalOverlayStatuses.FAIL
+              status: statusOverlayStatuses.FAIL
             }, getLastInstanceCalled(ModalOverlay));
             expect(refreshProfileData).toHaveBeenCalledTimes(0);
           });
           // Run timers so get rid of ModalOverlay
           act(() => {
-            jest.advanceTimersByTime(modalOverlayTimeout);
+            jest.advanceTimersByTime(statusOverlayTimeout);
           });
           await waitFor(() => {
             // Overlay is hidden
@@ -466,18 +466,18 @@ describe("<DialListEntryForm />", () => {
             // First call of ModalOverlay displays pending status
             expectOnlyPassedProps(ModalOverlay, {
               message: "Updating dial list entry...",
-              status: modalOverlayStatuses.SAVING
+              status: statusOverlayStatuses.SAVING
             }, getLastInstanceCalled(ModalOverlay) - 1);
             // Second call of ModalOverlay displays success message
             expectOnlyPassedProps(ModalOverlay, {
               message: "Successfully updated dial list entry",
-              status: modalOverlayStatuses.SUCCESS
+              status: statusOverlayStatuses.SUCCESS
             }, getLastInstanceCalled(ModalOverlay));
             expect(refreshProfileData).toHaveBeenCalledTimes(1);
           });
           // Run timers so get rid of ModalOverlay
           act(() => {
-            jest.advanceTimersByTime(modalOverlayTimeout);
+            jest.advanceTimersByTime(statusOverlayTimeout);
           });
           await waitFor(() => {
             // Form is closed
@@ -533,18 +533,18 @@ describe("<DialListEntryForm />", () => {
             // First call of ModalOverlay displays pending status
             expectOnlyPassedProps(ModalOverlay, {
               message: "Updating dial list entry...",
-              status: modalOverlayStatuses.SAVING
+              status: statusOverlayStatuses.SAVING
             }, getLastInstanceCalled(ModalOverlay) - 1);
             // Second call of ModalOverlay displays failure message
             expectOnlyPassedProps(ModalOverlay, {
               message: "Failed to update dial list entry",
-              status: modalOverlayStatuses.FAIL
+              status: statusOverlayStatuses.FAIL
             }, getLastInstanceCalled(ModalOverlay));
             expect(refreshProfileData).toHaveBeenCalledTimes(0);
           });
           // Run timers so get rid of ModalOverlay
           act(() => {
-            jest.advanceTimersByTime(modalOverlayTimeout);
+            jest.advanceTimersByTime(statusOverlayTimeout);
           });
           await waitFor(() => {
             // Overlay is hidden

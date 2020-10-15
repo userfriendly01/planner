@@ -5,7 +5,7 @@ import {
   OutlinedSelect,
   ModalNNumber,
   ModalExtension,
-  StatusOverlay,
+  ModalOverlay,
   ModalPhoneNumber,
   PaperContainer,
   StyledButton
@@ -122,10 +122,6 @@ const AddUserModal = props => {
           saveUser: false
         });
       }, statusOverlayTimeout);
-      console.error("AddUserModal - Failed to convert outgoing number to E164", {
-        err,
-        outgoingNumber: form.outgoing
-      });
       return;
     }
     // see this wiki page for attributes that will be automatically updated through SSO
@@ -189,7 +185,7 @@ const AddUserModal = props => {
             saveUser: false
           });
         }, statusOverlayTimeout);
-        console.error("AddUserModal - Failed to add create worker in twilio workspace", err);
+        console.error("AddUserModal - Failed to create worker in twilio workspace", err);
       });
   };
 
@@ -203,10 +199,9 @@ const AddUserModal = props => {
     <ModalContainer>
       <PaperContainer>
         {loading.saveUser ?
-          <StatusOverlay
-            message={loading.overlayMessage}
-            modal={true}
+          <ModalOverlay
             status={loading.saveStatus}
+            message={loading.overlayMessage}
           /> : null}
         <Header>Add a User</Header>
         <OutlinedSelect
