@@ -53,7 +53,7 @@ const ManagementFilter = props => {
         <ManagerFilter filterBy={filterBy} setFilter={setFilter}/>
         <UserOptions>
           <AddUser />
-          <AddUser />
+          {/* Add Bulk Delete Button Here */}
         </UserOptions>
       </ControlItem>
       <ControlItem>
