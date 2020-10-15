@@ -156,8 +156,8 @@ const AddUserModal = props => {
           nNumber: defaultNNumber
         });
         dispatch({
-          type: "addWorker",
-          payload: mapWorkerFromTwilioWorker(twilioWorker)
+          type: "addWorkers",
+          payload: [mapWorkerFromTwilioWorker(twilioWorker)]
         });
         updateLoading({
           ...loading,
