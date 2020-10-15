@@ -17,7 +17,7 @@ const SkillsDiv = styled.div`
 `;
 
 export const formatWorkerSkillsToHTML = routingObj => {
-  if (routingObj && routingObj.skills.length !== 0) {
+  if (routingObj && Array.isArray(routingObj.skills) && routingObj.skills.length > 0) {
     return routingObj.skills.map((skill, index) => {
       if (routingObj.levels && routingObj.levels[skill]) {
         return <SkillsDiv key={index}>{`${skill} - `}<Priority>{`${routingObj.levels[skill]}`}</Priority></SkillsDiv>;

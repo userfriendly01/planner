@@ -30,7 +30,7 @@ const ProfileSettingsContainer = () => {
   };
   const [profileSettingsState, setProfileSettingsState] = useState(initialProfileState);
 
-  const profilesFromContextMinusGoP = useAdminState().profileContext.profiles.slice(1);
+  const profilesFromContextMinusGoP = useAdminState().profileContext.profiles.filter(({ profile_id }) => profile_id !== 0);
 
   const fetchDialListForProfile = profileId => {
     myAxios.get(apiPaths.GET_PROFILE_DATA(profileId))
@@ -49,7 +49,7 @@ const ProfileSettingsContainer = () => {
         });
         setProfileSettingsState({
           ...initialProfileState,
-          message: `Failed to fetch data for selected profile with ID: ${profileId}`
+          message: "Failed to fetch data for selected profile"
         });
       });
   };
@@ -67,15 +67,26 @@ const ProfileSettingsContainer = () => {
         profileId={profileId}
         updateProfile={fetchDialListForProfile}
       />
-      {profileId !== null && profileId !== "" ?
-        <DialListTable
-          refreshProfileData={() => fetchDialListForProfile(profileId)}
-          dialList={dialList}
-          profileId={profileId}
-        />: null}
-      <ProfileSettingsMessage data-testid="message">
-        <h1>{message}</h1>
-      </ProfileSettingsMessage>
+      {
+        profileId !== null && profileId !== ""
+          ?
+          <DialListTable
+            dialList={dialList}
+            profileId={profileId}
+            refreshProfileData={() => fetchDialListForProfile(profileId)}
+          />
+          :
+          null
+      }
+      {
+        message
+          ?
+          <ProfileSettingsMessage data-testid="message">
+            <h1>{message}</h1>
+          </ProfileSettingsMessage>
+          :
+          null
+      }
     </ProfileSettingsContainerDiv>
   );
 };

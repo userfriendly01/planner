@@ -6,9 +6,12 @@ import {
 import React from "react";
 import { checkExtension } from "services";
 import {
+  act,
+  getLastInstanceCalled,
   getMockedComponentProps,
   render,
-  setupMockedComponents
+  setupMockedComponents,
+  waitFor
 } from "testUtils";
 
 jest.mock("components", () => ({
@@ -26,10 +29,11 @@ const mockClearExtension = jest.fn();
 const mockSetForm = jest.fn();
 const mockUpdateValue = jest.fn();
 
-const renderComponent = (disabled, form, extension, isEditExisting = true) => {
+const renderComponent = (disabled, form, extension, isEditExisting = true, error) => {
   return render(<ModalExtension
     clearExtension={mockClearExtension}
     disabled={disabled}
+    error={error}
     extension={extension}
     form={form}
     originalValue={"1234"}
@@ -73,100 +77,110 @@ describe("<ModalExtension />", () => {
       expect(validator("1234")).toEqual(true);
     });
     describe("the validated service call", () => {
-      test("should set the form on success with original extension", done => {
+      test("should set the form on success with original extension", async () => {
         checkExtension.mockResolvedValue(true);
         renderComponent(false, form, "");
+        const extension = "1234";
         const props = getMockedComponentProps(CustomInput);
         const validatedServiceCall = props.validatedServiceCall;
-        validatedServiceCall("1234")
-          .then(() => {
-            expect(checkExtension).toHaveBeenCalledWith("1234");
-            expect(mockSetForm).toHaveBeenCalledWith({
-              extensionValid: true,
-              extensionUpdated: false
-            });
-            done();
+        await act(() => validatedServiceCall(extension));
+        await waitFor(() => {
+          expect(checkExtension).toHaveBeenCalledWith(extension);
+          expect(mockSetForm).toHaveBeenCalledWith({
+            extension,
+            extensionValid: true,
+            extensionUpdated: false
           });
+        });
       });
-      test("should set the form on success with non-original valid extension", done => {
+      test("should set the form on success with non-original valid extension", async () => {
         checkExtension.mockResolvedValue(true);
-        renderComponent(false, form, "");
+        renderComponent(false, form, "1111");
+        const extension = "5678";
         const props = getMockedComponentProps(CustomInput);
         const validatedServiceCall = props.validatedServiceCall;
-        validatedServiceCall("5678")
-          .then(() => {
-            expect(checkExtension).toHaveBeenCalledWith("5678");
-            expect(mockSetForm).toHaveBeenCalledWith({
-              extensionValid: true,
-              extensionUpdated: true
-            });
-            done();
+        await act(() => validatedServiceCall(extension));
+        await waitFor(() => {
+          expect(checkExtension).toHaveBeenCalledWith(extension);
+          expect(mockSetForm).toHaveBeenCalledWith({
+            extension,
+            extensionValid: true,
+            extensionUpdated: true
           });
+        });
       });
-      test("should set the form on success with no original and valid extension", done => {
+      test("should set the form on success with no original and valid extension", async () => {
         checkExtension.mockResolvedValue(true);
         renderComponent(false, form, "", false);
+        const extension = "5678";
         const props = getMockedComponentProps(CustomInput);
         const validatedServiceCall = props.validatedServiceCall;
-        validatedServiceCall("5678")
-          .then(() => {
-            expect(checkExtension).toHaveBeenCalledWith("5678");
-            expect(mockSetForm).toHaveBeenCalledWith({
-              extensionValid: true,
-              extensionUpdated: true
-            });
-            done();
+        await act(() => validatedServiceCall(extension));
+        await waitFor(() => {
+          expect(checkExtension).toHaveBeenCalledWith(extension);
+          expect(mockSetForm).toHaveBeenCalledWith({
+            extension,
+            extensionValid: true,
+            extensionUpdated: true
           });
+        });
       });
-      test("should say invalid if null is returned", done => {
+      test("should say invalid if null is returned", async () => {
         checkExtension.mockResolvedValue(null);
         renderComponent(false, form, "");
+        const extension = "2222";
         const props = getMockedComponentProps(CustomInput);
         const validatedServiceCall = props.validatedServiceCall;
-        validatedServiceCall("2222")
-          .then(() => {
-            expect(checkExtension).toHaveBeenCalledWith("2222");
-            expect(mockSetForm).toHaveBeenCalledWith({
-              extensionValid: false,
-              extensionUpdated: false
-            });
-            done();
+        await act(() => validatedServiceCall(extension));
+        await waitFor(() => {
+          expect(checkExtension).toHaveBeenCalledWith(extension);
+          expect(mockSetForm).toHaveBeenCalledWith({
+            extension,
+            extensionValid: false,
+            extensionUpdated: false
           });
+        });
       });
-      test("should notify the user of an error on failure", done => {
+      test("should notify the user of an error on failure", async () => {
         checkExtension.mockRejectedValue(false);
         renderComponent(false, form, "");
+        const extension = "2222";
         const props = getMockedComponentProps(CustomInput);
         const validatedServiceCall = props.validatedServiceCall;
-        validatedServiceCall("2222")
-          .then(() => {
-            expect(checkExtension).toHaveBeenCalledWith("2222");
-            expect(mockSetForm).toHaveBeenCalledWith({
-              extensionValid: false,
-              extensionUpdated: false
-            });
-            done();
+        await act(() => validatedServiceCall(extension));
+        await waitFor(() => {
+          expect(checkExtension).toHaveBeenCalledWith(extension);
+          expect(mockSetForm).toHaveBeenCalledWith({
+            extension,
+            extensionValid: false,
+            extensionUpdated: false
           });
+        });
       });
     });
     describe("the modal helper", () => {
-      test("should show when extension is validating", () => {
+      test("should show when extension is validating", async () => {
         checkExtension.mockResolvedValue(true);
         renderComponent(false, {
+          extension: "1111",
           extensionValid: true,
           extensionUpdated: true
         }, "2222");
         const props = getMockedComponentProps(CustomInput);
         const validatedServiceCall = props.validatedServiceCall;
-        validatedServiceCall("1234");
-        const helperProps = getMockedComponentProps(ModalHelperText);
-        expect(helperProps.error).toBe(false);
-        expect(helperProps.clearFunction).toBe(mockClearExtension);
-        expect(helperProps.message).toEqual("Validating...");
+        await act(() => validatedServiceCall("1234"));
+        await waitFor(() => {
+          // get the render BEFORE the last because this will render once again due to this promise being called
+          const helperProps = getMockedComponentProps(ModalHelperText, getLastInstanceCalled(ModalHelperText) - 1);
+          expect(helperProps.error).toBe(false);
+          expect(helperProps.clearFunction).toBe(mockClearExtension);
+          expect(helperProps.message).toEqual("Validating...");
+        });
       });
       test("should show when extension is valid", () => {
         checkExtension.mockResolvedValue(true);
         renderComponent(false, {
+          extension: "1111",
           extensionValid: true,
           extensionUpdated: true
         }, "2222");
@@ -178,6 +192,7 @@ describe("<ModalExtension />", () => {
       test("should show when extension is not valid", () => {
         checkExtension.mockResolvedValue(true);
         renderComponent(false, {
+          extension: "1111",
           extensionValid: false,
           extensionUpdated: false
         }, "2222");
@@ -185,6 +200,32 @@ describe("<ModalExtension />", () => {
         expect(props.error).toBe(true);
         expect(props.clearFunction).toBe(mockClearExtension);
         expect(props.message).toEqual("Extension already in use");
+      });
+    });
+
+    describe("error prop is passed", () => {
+      const error = true;
+
+      test("should render CustomInput with error flag", () => {
+        renderComponent(false, {
+          extension: "1111",
+          extensionValid: false,
+          extensionUpdated: false
+        }, "2222", true, error);
+        expect(getMockedComponentProps(CustomInput).error).toBe(error);
+      });
+    });
+
+    describe("error prop is not passed", () => {
+      const error = undefined;
+
+      test("should render CustomInput with error flag", () => {
+        renderComponent(false, {
+          extension: "1111",
+          extensionValid: false,
+          extensionUpdated: false
+        }, "2222", true, error);
+        expect(getMockedComponentProps(CustomInput).error).toBe(undefined);
       });
     });
   });

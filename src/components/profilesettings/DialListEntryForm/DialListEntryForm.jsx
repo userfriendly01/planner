@@ -85,9 +85,11 @@ const DialListEntryForm = props => {
     const external_num = dialListTableState.dialListEntryFormInitialValues.external_num || "";
     return {
       contact_nme,
+      contact_nme_updated: false,
       contact_nme_valid: validateContactNme(contact_nme),
       contact_num,
       contact_num_is_duplicate: false,
+      contact_num_updated: false,
       contact_num_valid: isNumberValid(unMaskPhoneNumber(contact_num)), // unmasked phone number value ex: `8005554444`
       external_num,
       maskedPhoneNumber: contact_num // raw masked phone number value to properly update ModalPhoneNumber with ex: `(800) 555-4444`,
@@ -100,6 +102,7 @@ const DialListEntryForm = props => {
     saveStatus: null
   });
 
+  const contactNmeError = form.contact_nme_updated && !form.contact_nme_valid;
   const formValid = form.contact_nme_valid && form.contact_num_valid && !form.contact_num_is_duplicate;
 
   const onClose = () => setDialListTableState({
@@ -131,7 +134,7 @@ const DialListEntryForm = props => {
     });
     myAxios.post(apiPaths.DIAL_LIST, requestBody)
       .then(res => {
-        console.log("Successfully inserted dial list entry", {
+        console.log("Successfully added dial list entry", {
           responseData: res.data,
           requestBody
         });
@@ -208,23 +211,32 @@ const DialListEntryForm = props => {
           id="transfer-number-input"
           label="Transfer Number"
           number={form.maskedPhoneNumber}
+          onBlur={() => setForm({
+            ...form,
+            contact_num_updated: true
+          })}
+          showError={form.contact_num_updated}
           updateValue={(maskedValue, unmaskedValue, isValid) => {
             setForm({
               ...form,
               contact_num: unmaskedValue,
-              contact_num_valid: isValid,
               contact_num_is_duplicate: dialListTableState.otherContactNums.includes(unmaskedValue),
+              contact_num_valid: isValid,
               maskedPhoneNumber: maskedValue
             });
           }}
         />
         <TextField
-          error={!form.contact_nme_valid}
-          helperText={form.contact_nme_valid ? undefined : "Please enter a friendly name"}
+          error={contactNmeError}
+          helperText={contactNmeError ? "Please enter a friendly name" : null}
           id="friendly-name-input"
           inputProps={{ maxLength: 80 }}
           label="Friendly Name"
           name="Friendly Name"
+          onBlur={() => setForm({
+            ...form,
+            contact_nme_updated: true
+          })}
           onChange={({
             target: { value }
           }) => setForm({
@@ -280,10 +292,10 @@ DialListEntryForm.propTypes = {
       contact_num: PropTypes.string,
       external_num: PropTypes.string
     }).isRequired,
-    dialListEntryFormMode: PropTypes.string,
+    dialListEntryFormMode: PropTypes.string.isRequired,
     otherContactNums: PropTypes.array.isRequired
   }).isRequired,
-  profileId: PropTypes.string.isRequired,
+  profileId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   refreshProfileData: PropTypes.func.isRequired,
   setDialListTableState: PropTypes.func.isRequired
 };

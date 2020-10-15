@@ -11,9 +11,11 @@ import { act } from "react-dom/test-utils";
 import {
   expectMockedComponent,
   expectOnlyPassedProps,
+  getLastInstanceCalled,
   getMockedComponentProps,
   render,
-  setupMockedComponents
+  setupMockedComponents,
+  waitFor
 } from "testUtils";
 import { myAxios } from "utils";
 
@@ -47,12 +49,7 @@ const initialTestState = {
   }
 };
 
-const initialProfileState = {
-  profileId: null,
-  dialList: []
-};
-
-const axiosErrorMessage = "Failed to get data for profile";
+const errorMessage = "Failed to fetch data for selected profile";
 
 describe("<ProfileSettingsContainer />", () => {
 
@@ -71,10 +68,12 @@ describe("<ProfileSettingsContainer />", () => {
       expectMockedComponent(rendered, { DialListTable }, 0);
       expectMockedComponent(rendered, { ProfileDropDown }, 1);
       expect(rendered.container).toHaveTextContent("Please select a profile");
-      expect(rendered.container).not.toHaveTextContent(axiosErrorMessage);
-      const profileDropDownProps = getMockedComponentProps(ProfileDropDown);
-      expect(profileDropDownProps.availableProfiles).toEqual(profileList.slice(1));
-      expect(profileDropDownProps.profile).toEqual(initialProfileState);
+      expect(rendered.container).not.toHaveTextContent(errorMessage);
+      expectOnlyPassedProps(ProfileDropDown, {
+        availableProfiles: profileList,
+        profileId: null
+      });
+      expectMockedComponent(rendered, DialListTable, 0);
     });
   });
 
@@ -84,56 +83,75 @@ describe("<ProfileSettingsContainer />", () => {
       const getProfileDataResponse = {
         diallist: [
           {
-            contact_id: 16,
-            contact_nme: "Bo Jackson",
-            contact_num: "800-123-4567"
-          },
-          {
             contact_id: 18,
             contact_nme: "Daryl Strawberry",
             contact_num: "800-123-4568"
+          },
+          {
+            contact_id: 16,
+            contact_nme: "bo Jackson",
+            contact_num: "800-123-4567"
           }
         ]
       };
       beforeEach(() => axiosMock.onGet(apiPaths.GET_PROFILE_DATA(profileId)).reply(200, getProfileDataResponse));
-      test("should render ProfileDropDown and DialListTable with correct props", done => {
+      test("should render ProfileDropDown and DialListTable with correct props", async () => {
         const rendered = render(<ProfileSettingsContainer />, initialTestState);
-        const dropDownProps = getMockedComponentProps(ProfileDropDown);
+        const { updateProfile } = getMockedComponentProps(ProfileDropDown);
         act(() => {
-          dropDownProps.updateProfile(profileId);
-          return Promise.resolve();
-        })
-          .then(() => {
-            expectMockedComponent(rendered, { ProfileDropDown }, 1);
-            expectMockedComponent(rendered, { DialListTable }, 1);
-            expectOnlyPassedProps(DialListTable, {
-              profile: {
-                profileId,
-                dialList: getProfileDataResponse.diallist
+          updateProfile(profileId);
+        });
+
+        const expectsAfterGettingProfileData = () => {
+          expectMockedComponent(rendered, { ProfileDropDown }, 1);
+          expectMockedComponent(rendered, { DialListTable }, 1);
+          expectOnlyPassedProps(DialListTable, {
+            // sorted dialList
+            dialList: [
+              {
+                contact_id: 16,
+                contact_nme: "bo Jackson",
+                contact_num: "800-123-4567"
+              },
+              {
+                contact_id: 18,
+                contact_nme: "Daryl Strawberry",
+                contact_num: "800-123-4568"
               }
-            });
-            expect(rendered.container).not.toHaveTextContent(axiosErrorMessage);
-            done();
-          });
+            ],
+            profileId
+          }, getLastInstanceCalled(DialListTable));
+          expect(rendered.container).not.toHaveTextContent(errorMessage);
+        };
+
+        await waitFor(() => {
+          expectsAfterGettingProfileData();
+        });
+        // also test refreshProfileData passed to DialListTable
+        const { refreshProfileData } = getMockedComponentProps(DialListTable, getLastInstanceCalled(DialListTable));
+        act(() => {
+          refreshProfileData();
+        });
+        await waitFor(() => {
+          expectsAfterGettingProfileData();
+        });
       });
     });
 
     describe("call to GET_PROFILE_DATA fails", () => {
       const error = { badNews: "boooo" };
       beforeEach(() => axiosMock.onGet(apiPaths.GET_PROFILE_DATA(profileId)).reply(500, error));
-      test("should display drop down & error message", done => {
+      test("should display drop down & error message", async () => {
         const rendered = render(<ProfileSettingsContainer />, initialTestState);
-        const dropDownProps = getMockedComponentProps(ProfileDropDown);
+        const { updateProfile } = getMockedComponentProps(ProfileDropDown);
         act(() => {
-          dropDownProps.updateProfile(profileId);
-          return Promise.resolve();
-        })
-          .then(() => {
-            expectMockedComponent(rendered, { ProfileDropDown }, 1);
-            expectMockedComponent(rendered, { DialListTable }, 0);
-            expect(rendered.container).toHaveTextContent(`${axiosErrorMessage} ${profileId}`);
-            done();
-          });
+          updateProfile(profileId);
+        });
+        await waitFor(() => {
+          expectMockedComponent(rendered, { ProfileDropDown }, 1);
+          expectMockedComponent(rendered, { DialListTable }, 0);
+          expect(rendered.container).toHaveTextContent(errorMessage);
+        });
       });
     });
   });

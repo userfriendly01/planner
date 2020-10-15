@@ -21,6 +21,7 @@ const ModalNNumber = props => {
     error,
     form,
     nNumber,
+    onBlur,
     setForm,
     updateValue
   } = props;
@@ -65,6 +66,7 @@ const ModalNNumber = props => {
         error={error}
         label="N Number"
         name="N Number"
+        onBlur={onBlur}
         maxLength="8"
         updateValue={updateValue}
         validator={validator}
@@ -90,6 +92,7 @@ ModalNNumber.propTypes = {
   error: PropTypes.bool,
   form: PropTypes.object.isRequired,
   nNumber: PropTypes.string.isRequired,
+  onBlur: PropTypes.func,
   setForm: PropTypes.func.isRequired,
   updateValue: PropTypes.func.isRequired
 };

@@ -78,10 +78,14 @@ const AddUserModal = props => {
     extensionValid: false,
     lookupInfo: {},
     manager: "",
+    managerUpdated: false,
     nNumber: defaultNNumber,
+    nNumberUpdated: false,
     outgoing: "",
     outgoingValid: false,
-    team: ""
+    outgoingUpdated: false,
+    team: "",
+    teamUpdated: false
   });
   const [loading, updateLoading] = useState({
     lookupUser: false,
@@ -89,23 +93,6 @@ const AddUserModal = props => {
     saveStatus: "",
     saveUser: false
   });
-
-  const clearExtension = () => {
-    setForm({
-      ...form,
-      extension: "",
-      extensionValid: false
-    });
-  };
-
-  const clearUser = () => {
-    setForm({
-      ...form,
-      lookupError: null,
-      lookupInfo: {},
-      nNumber: defaultNNumber
-    });
-  };
 
   const saveUser = () => {
     updateLoading({
@@ -119,6 +106,10 @@ const AddUserModal = props => {
     try {
       outgoingE164 = getE164Number(form.outgoing);
     } catch (err) {
+      console.error("AddUserModal - Failed to convert outgoing number to E164", {
+        err,
+        outgoingNumber: form.outgoing
+      });
       updateLoading({
         ...loading,
         overlayMessage: "Failed to add new user. Could not convert outgoing number to E164 format.",
@@ -157,12 +148,17 @@ const AddUserModal = props => {
       primary_dept_number: form.lookupInfo.departmentNumber,
       profile_id: form.team
     };
-    myAxios
-      .post(apiPaths.CREATE_WORKER, { attributes })
+    myAxios.post(apiPaths.CREATE_WORKER, { attributes })
       .then(res => {
         const twilioWorker = res.data;
-        clearExtension();
-        clearUser();
+        setForm({
+          ...form,
+          extension: "", // clear out extension values
+          extensionValid: false,
+          lookupError: null, // clear out user lookup values
+          lookupInfo: {},
+          nNumber: defaultNNumber
+        });
         dispatch({
           type: "addWorker",
           payload: mapWorkerFromTwilioWorker(twilioWorker)
@@ -196,16 +192,12 @@ const AddUserModal = props => {
         console.error("AddUserModal - Failed to add create worker in twilio workspace", err);
       });
   };
+
   const nNumberInputValid = JSON.stringify(form.lookupInfo) !== JSON.stringify({});
   const extensionInputValid = (form.extensionValid || form.extension === "");
   const managerValid = form.manager !== "";
   const teamValid = form.team !== "";
   const formReady = nNumberInputValid && teamValid && managerValid && form.outgoingValid && extensionInputValid;
-
-  console.log({
-    form,
-    loading
-  });
 
   return (
     <ModalContainer>
@@ -218,10 +210,14 @@ const AddUserModal = props => {
           /> : null}
         <Header>Add a User</Header>
         <OutlinedSelect
-          error={!managerValid}
+          error={form.managerUpdated && !managerValid}
           helperText={managerValid ? null : "Please select a manager"}
           label={"Manager"}
           labelWidth={67}
+          onBlur={() => setForm({
+            ...form,
+            managerUpdated: true
+          })}
           optionsList={managers.sort(sortManagersByName)}
           optionsDisplayFunc={option => {
             return {
@@ -237,10 +233,14 @@ const AddUserModal = props => {
           value={form.manager}
         />
         <OutlinedSelect
-          error={!teamValid}
+          error={form.teamUpdated && !teamValid}
           helperText={teamValid ? null : "Please select a team"}
           label={"Team"}
           labelWidth={44}
+          onBlur={() => setForm({
+            ...form,
+            teamUpdated: true
+          })}
           optionsList={profiles}
           optionsDisplayFunc={option => {
             return {
@@ -259,7 +259,12 @@ const AddUserModal = props => {
           allowSevenDigitVdn={false}
           id="outgoing-number"
           number={form.outgoing}
+          onBlur={() => setForm({
+            ...form,
+            outgoingUpdated: true
+          })}
           label="Outgoing Number"
+          showError={form.outgoingUpdated}
           updateValue={(maskedValue, unmaskedValue, isValid) => {
             setForm({
               ...form,
@@ -269,11 +274,22 @@ const AddUserModal = props => {
           }}
         />
         <ModalNNumber
-          clearUser={clearUser}
+          clearUser={() => {
+            setForm({
+              ...form,
+              lookupError: null,
+              lookupInfo: {},
+              nNumber: defaultNNumber
+            });
+          }}
           disabled={JSON.stringify(form.lookupInfo) !== "{}"}
-          error={!nNumberInputValid}
+          error={form.nNumberUpdated && !nNumberInputValid}
           form={form}
           nNumber={form.nNumber}
+          onBlur={() => setForm({
+            ...form,
+            nNumberUpdated: true
+          })}
           setForm={setForm}
           updateValue={newValue => setForm({
             ...form,
@@ -281,7 +297,13 @@ const AddUserModal = props => {
           })}
         />
         <ModalExtension
-          clearExtension={clearExtension}
+          clearExtension={() => {
+            setForm({
+              ...form,
+              extension: "",
+              extensionValid: false
+            });
+          }}
           disabled={form.extensionValid && extensionMatcher.test(form.extension)}
           error={!extensionInputValid}
           extension={form.extension}

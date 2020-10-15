@@ -195,84 +195,83 @@ const DialListTable = props => {
     });
   };
 
-  if (dialList.length === 0) {
-    return(
-      <NoDialListDiv>
-        <h1>No dial list entries exist for this profile</h1>
-      </NoDialListDiv>
-    );
-  } else {
-    return(
-      <TableContainer>
-        <AddContactButtonContainer>
-          <StyledButton onClick={addContactButtonClicked}>
-            Add Contact
-          </StyledButton>
-        </AddContactButtonContainer>
-        <StyledPaper elevation={3}>
-          {dialListTableState.saveStatus ?
-            <StatusOverlay
-              message={dialListTableState.overlayMessage}
-              modal={false}
-              status={dialListTableState.saveStatus}
-            /> : null}
-          <CustomTable>
-            <thead>
-              <tr>
-                <CustomTableHeader>NAME</CustomTableHeader>
-                <CustomTableHeader>NUMBER</CustomTableHeader>
-              </tr>
-            </thead>
-            <tbody>
-              {dialList.map(entry => {
-                const editButtonOnClick = () => {
-                  setDialListTableState({
-                    dialListId: entry.diallist_id,
-                    dialListEntryFormInitialValues: {
-                      contact_nme: entry.contact_nme,
-                      contact_num: entry.contact_num,
-                      external_num: entry.external_num
-                    },
-                    dialListEntryFormMode: formModes.UPDATE,
-                    isDialListEntryFormOpen: true,
-                    otherContactNums: dialList.filter(e => e.diallist_id !== entry.diallist_id).map(e => e.contact_num)
-                  });
-                };
-                return(
-                  <CustomTableRow key={entry.diallist_id} data-testid="table-row">
-                    <CustomTableData>
-                      <TableText>{entry.contact_nme}</TableText>
-                    </CustomTableData>
-                    <CustomTableData>
-                      <TableText>{formatTenDigitNumber(entry.contact_num)}</TableText>
-                    </CustomTableData>
-                    <CustomTableData>
-                      <IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
-                        <Edit fontSize={"inherit"} />
-                      </IconWrapper>
-                    </CustomTableData>
-                    <CustomTableData>
-                      <IconWrapper onClick={getDeleteButtonOnClick(entry.diallist_id)} data-testid="delete-button">
-                        <Delete fontSize={"inherit"} />
-                      </IconWrapper>
-                    </CustomTableData>
-                  </CustomTableRow>
-                );
-              })}
-            </tbody>
-            <Modal disableBackdropClick={true} open={dialListTableState.isDialListEntryFormOpen}>
-              <DialListEntryForm
-                dialListTableState={dialListTableState}
-                profileId={profileId}
-                refreshProfileData={refreshProfileData}
-                setDialListTableState={setDialListTableState}
-              />
-            </Modal>
-          </CustomTable>
-        </StyledPaper>
-      </TableContainer>
-    );
-  }
+  return(
+    <TableContainer>
+      <AddContactButtonContainer>
+        <StyledButton onClick={addContactButtonClicked}>
+          Add Contact
+        </StyledButton>
+      </AddContactButtonContainer>
+      <Modal disableBackdropClick={true} open={dialListTableState.isDialListEntryFormOpen}>
+        <DialListEntryForm
+          dialListTableState={dialListTableState}
+          profileId={profileId}
+          refreshProfileData={refreshProfileData}
+          setDialListTableState={setDialListTableState}
+        />
+      </Modal>
+      {
+        dialList.length === 0
+          ?
+          <NoDialListDiv>
+            <h1>No dial list entries exist for this profile</h1>
+          </NoDialListDiv>
+          :
+          <StyledPaper elevation={3}>
+            {dialListTableState.saveStatus ?
+              <ModalOverlay
+                message={dialListTableState.overlayMessage}
+                status={dialListTableState.saveStatus}
+              /> : null}
+            <CustomTable>
+              <thead>
+                <tr>
+                  <CustomTableHeader>NAME</CustomTableHeader>
+                  <CustomTableHeader>NUMBER</CustomTableHeader>
+                </tr>
+              </thead>
+              <tbody>
+                {dialList.map(entry => {
+                  const editButtonOnClick = () => {
+                    setDialListTableState({
+                      dialListId: entry.diallist_id,
+                      dialListEntryFormInitialValues: {
+                        contact_nme: entry.contact_nme,
+                        contact_num: entry.contact_num,
+                        external_num: entry.external_num
+                      },
+                      dialListEntryFormMode: formModes.UPDATE,
+                      isDialListEntryFormOpen: true,
+                      otherContactNums: dialList.filter(e => e.diallist_id !== entry.diallist_id).map(e => e.contact_num)
+                    });
+                  };
+                  return(
+                    <CustomTableRow key={entry.diallist_id} data-testid="table-row">
+                      <CustomTableData>
+                        <TableText>{entry.contact_nme}</TableText>
+                      </CustomTableData>
+                      <CustomTableData>
+                        <TableText>{formatTenDigitNumber(entry.contact_num)}</TableText>
+                      </CustomTableData>
+                      <CustomTableData>
+                        <IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
+                          <Edit fontSize={"inherit"} />
+                        </IconWrapper>
+                      </CustomTableData>
+                      <CustomTableData>
+                        <IconWrapper onClick={getDeleteButtonOnClick(entry.diallist_id)} data-testid="delete-button">
+                          <Delete fontSize={"inherit"} />
+                        </IconWrapper>
+                      </CustomTableData>
+                    </CustomTableRow>
+                  );
+                })}
+              </tbody>
+            </CustomTable>
+          </StyledPaper>
+      }
+    </TableContainer>
+  );
 };
 
 DialListTable.propTypes = {

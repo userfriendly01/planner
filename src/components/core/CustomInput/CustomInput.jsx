@@ -26,6 +26,7 @@ export const CustomInput = props => {
     label,
     maxLength,
     name,
+    onBlur,
     updateValue,
     validator,
     validatedServiceCall,
@@ -56,6 +57,7 @@ export const CustomInput = props => {
         label={label}
         margin="normal"
         name={name}
+        onBlur={onBlur}
         onChange={event => changeValidator(event.target.value)}
         variant="outlined"
         value={value}
@@ -71,6 +73,7 @@ CustomInput.propTypes = {
   label: PropTypes.string.isRequired,
   maxLength: PropTypes.string,
   name: PropTypes.string,
+  onBlur: PropTypes.func,
   updateValue: PropTypes.func.isRequired,
   validator: PropTypes.func,
   validatedServiceCall: PropTypes.func,
