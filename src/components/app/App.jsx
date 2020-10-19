@@ -143,6 +143,7 @@ const getWorkers = async dispatch => {
     } while (pageToken);
 
     const managerList = getUniqueManagerList(workers);
+    console.log("workers:", workers); //
     dispatch({
       type: "loadManagers",
       payload: managerList
@@ -159,21 +160,27 @@ const App = () => {
 
   const [loadResult, setLoadResult] = useState(null);
   const [authExpired, setAuthExpired] = useState(false);
+  const [reloadButtonSelected, setReloadButtonSelected] = useState(false);
   const dispatch = useAdminDispatch();
 
-  const currentTime = Date.now();
-  const authExpiration = currentTime + 3600 * 1000; // one hour from now
-  document.cookie=`authExpiration=${authExpiration}`;
+  // const authExpiration = currentTime + 3600 * 1000; // one hour from now
+  const authExpiration = Date.now() + 30 * 1000;
 
-  console.log("current time:", new Date(currentTime));
-  console.log("authExpiration is", new Date(authExpiration));
-  console.log("ms until expiration = ", authExpiration - currentTime);
-
-  const checkAuthExpired = () => {
-    // if (authExpiration - currentTime <= 0) {
-    if (currentTime - authExpiration <= 0) { // TODO: reverse
+  const checkAuthExpiration = () => {
+    const currentTime = Date.now();
+    console.log("current time:", new Date(currentTime)); //
+    console.log("authExpiration:", new Date(authExpiration)); //
+    console.log("ms until expiration: ", authExpiration - currentTime); //
+    if (authExpiration - currentTime <= 0) {
       setAuthExpired(true);
+    } else {
+      setTimeout(checkAuthExpiration, 5 * 1000);
     }
+  };
+
+  const reloadApp = () => {
+    setAuthExpired(false);
+    setReloadButtonSelected(true);
   };
 
   useEffect(() => {
@@ -185,13 +192,13 @@ const App = () => {
     ])
       .then(() => {
         setLoadResult(success);
-        setTimeout(checkAuthExpired, 5 * 1000);
+        checkAuthExpiration();
       })
       .catch(err => {
         console.error(err.msg, { error: err.error });
         setLoadResult(err);
       });
-  }, []);
+  }, [reloadButtonSelected]);
 
   if (loadResult) {
     if (loadResult === success) {
@@ -201,7 +208,7 @@ const App = () => {
           <NavTabs/>
           {/* {authExpired ? */}
           <Modal open={authExpired === true}>
-            <NotificationModal reloadApp={() => setAuthExpired(false)} />
+            <NotificationModal reloadApp={reloadApp} />
           </Modal>
           {/* : null
           } */}
