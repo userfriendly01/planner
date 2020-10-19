@@ -8,7 +8,7 @@ import MockAdapter from "axios-mock-adapter";
 import {
   PaperContainer,
   ModalPhoneNumber,
-  ModalOverlay,
+  StatusOverlay,
   StyledButton
 } from "components";
 import {
@@ -47,7 +47,7 @@ jest.mock("components", () => ({
   __esModule: true,
   PaperContainer: jest.fn(),
   ModalPhoneNumber: jest.fn(),
-  ModalOverlay: jest.fn(),
+  StatusOverlay: jest.fn(),
   StyledButton: jest.fn()
 }));
 
@@ -79,7 +79,7 @@ describe("<DialListEntryForm />", () => {
     setupMockedComponents({
       InfoOutlined,
       ModalPhoneNumber,
-      ModalOverlay,
+      StatusOverlay,
       StyledButton,
       TextField,
       Tooltip
@@ -216,20 +216,20 @@ describe("<DialListEntryForm />", () => {
               external_num: "",
               profile_id: profileId
             }));
-            expectMockedComponent(rendered, { ModalOverlay });
-            // First call of ModalOverlay displays pending status
-            expectOnlyPassedProps(ModalOverlay, {
+            expectMockedComponent(rendered, { StatusOverlay });
+            // First call of StatusOverlay displays pending status
+            expectOnlyPassedProps(StatusOverlay, {
               message: "Adding dial list entry...",
               status: statusOverlayStatuses.SAVING
-            }, getLastInstanceCalled(ModalOverlay) - 1);
-            // Second call of ModalOverlay displays success message
-            expectOnlyPassedProps(ModalOverlay, {
+            }, getLastInstanceCalled(StatusOverlay) - 1);
+            // Second call of StatusOverlay displays success message
+            expectOnlyPassedProps(StatusOverlay, {
               message: "Successfully added dial list entry",
               status: statusOverlayStatuses.SUCCESS
-            }, getLastInstanceCalled(ModalOverlay));
+            }, getLastInstanceCalled(StatusOverlay));
             expect(refreshProfileData).toHaveBeenCalledTimes(1);
           });
-          // Run timers so get rid of ModalOverlay
+          // Run timers so get rid of StatusOverlay
           act(() => {
             jest.advanceTimersByTime(statusOverlayTimeout);
           });
@@ -299,26 +299,26 @@ describe("<DialListEntryForm />", () => {
               external_num: updatedExternalNum,
               profile_id: profileId
             }));
-            expectMockedComponent(rendered, { ModalOverlay });
-            // First call of ModalOverlay displays pending status
-            expectOnlyPassedProps(ModalOverlay, {
+            expectMockedComponent(rendered, { StatusOverlay });
+            // First call of StatusOverlay displays pending status
+            expectOnlyPassedProps(StatusOverlay, {
               message: "Adding dial list entry...",
               status: statusOverlayStatuses.SAVING
-            }, getLastInstanceCalled(ModalOverlay) - 1);
-            // Second call of ModalOverlay displays failure message
-            expectOnlyPassedProps(ModalOverlay, {
+            }, getLastInstanceCalled(StatusOverlay) - 1);
+            // Second call of StatusOverlay displays failure message
+            expectOnlyPassedProps(StatusOverlay, {
               message: "Failed to add dial list entry",
               status: statusOverlayStatuses.FAIL
-            }, getLastInstanceCalled(ModalOverlay));
+            }, getLastInstanceCalled(StatusOverlay));
             expect(refreshProfileData).toHaveBeenCalledTimes(0);
           });
-          // Run timers so get rid of ModalOverlay
+          // Run timers so get rid of StatusOverlay
           act(() => {
             jest.advanceTimersByTime(statusOverlayTimeout);
           });
           await waitFor(() => {
             // Overlay is hidden
-            expectMockedComponent(rendered, { ModalOverlay }, 0);
+            expectMockedComponent(rendered, { StatusOverlay }, 0);
           });
         });
       });
@@ -462,20 +462,20 @@ describe("<DialListEntryForm />", () => {
               contact_num: updatedUnmaskedNumber,
               external_num: updatedExternalNum
             }));
-            expectMockedComponent(rendered, { ModalOverlay });
-            // First call of ModalOverlay displays pending status
-            expectOnlyPassedProps(ModalOverlay, {
+            expectMockedComponent(rendered, { StatusOverlay });
+            // First call of StatusOverlay displays pending status
+            expectOnlyPassedProps(StatusOverlay, {
               message: "Updating dial list entry...",
               status: statusOverlayStatuses.SAVING
-            }, getLastInstanceCalled(ModalOverlay) - 1);
-            // Second call of ModalOverlay displays success message
-            expectOnlyPassedProps(ModalOverlay, {
+            }, getLastInstanceCalled(StatusOverlay) - 1);
+            // Second call of StatusOverlay displays success message
+            expectOnlyPassedProps(StatusOverlay, {
               message: "Successfully updated dial list entry",
               status: statusOverlayStatuses.SUCCESS
-            }, getLastInstanceCalled(ModalOverlay));
+            }, getLastInstanceCalled(StatusOverlay));
             expect(refreshProfileData).toHaveBeenCalledTimes(1);
           });
-          // Run timers so get rid of ModalOverlay
+          // Run timers so get rid of StatusOverlay
           act(() => {
             jest.advanceTimersByTime(statusOverlayTimeout);
           });
@@ -529,26 +529,26 @@ describe("<DialListEntryForm />", () => {
               .onClick();
           });
           await waitFor(() => {
-            expectMockedComponent(rendered, { ModalOverlay });
-            // First call of ModalOverlay displays pending status
-            expectOnlyPassedProps(ModalOverlay, {
+            expectMockedComponent(rendered, { StatusOverlay });
+            // First call of StatusOverlay displays pending status
+            expectOnlyPassedProps(StatusOverlay, {
               message: "Updating dial list entry...",
               status: statusOverlayStatuses.SAVING
-            }, getLastInstanceCalled(ModalOverlay) - 1);
-            // Second call of ModalOverlay displays failure message
-            expectOnlyPassedProps(ModalOverlay, {
+            }, getLastInstanceCalled(StatusOverlay) - 1);
+            // Second call of StatusOverlay displays failure message
+            expectOnlyPassedProps(StatusOverlay, {
               message: "Failed to update dial list entry",
               status: statusOverlayStatuses.FAIL
-            }, getLastInstanceCalled(ModalOverlay));
+            }, getLastInstanceCalled(StatusOverlay));
             expect(refreshProfileData).toHaveBeenCalledTimes(0);
           });
-          // Run timers so get rid of ModalOverlay
+          // Run timers so get rid of StatusOverlay
           act(() => {
             jest.advanceTimersByTime(statusOverlayTimeout);
           });
           await waitFor(() => {
             // Overlay is hidden
-            expectMockedComponent(rendered, { ModalOverlay }, 0);
+            expectMockedComponent(rendered, { StatusOverlay }, 0);
           });
         });
       });

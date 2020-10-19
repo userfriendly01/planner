@@ -5,7 +5,7 @@ import {
   OutlinedSelect,
   ModalNNumber,
   ModalExtension,
-  ModalOverlay,
+  StatusOverlay,
   ModalPhoneNumber,
   PaperContainer,
   StyledButton
@@ -199,7 +199,7 @@ const AddUserModal = props => {
     <ModalContainer>
       <PaperContainer>
         {loading.saveUser ?
-          <ModalOverlay
+          <StatusOverlay
             status={loading.saveStatus}
             message={loading.overlayMessage}
           /> : null}

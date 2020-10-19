@@ -40,9 +40,7 @@ const ManagerFilter = props => {
   };
 
   useEffect(() => {
-    console.log("Use effect is going");
     if(filterBy === "add-manager"){
-      console.log("Use effect is in the if");
       handleOpenAddManager();
     }
   });
@@ -78,7 +76,7 @@ const ManagerFilter = props => {
         </Select>
       </FormControl>
       <Modal disableBackdropClick={true} open={isAddManagerModalOpen}>
-        <AddManagerModal handleClose={handleCloseAddManager} />
+        <AddManagerModal data-testid="add-manager-modal" handleClose={handleCloseAddManager} />
       </Modal>
     </Wrapper>
   );

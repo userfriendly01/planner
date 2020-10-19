@@ -145,7 +145,7 @@ const AddManagerModal = props => {
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>
           <Header>Add a Manager</Header>
-          <CloseRounded onClick={handleClose}/>
+          <CloseRounded data-testid={"close-button"} onClick={handleClose}/>
         </HeaderAndCloseButtonWrapper>
         <FlexColumn>
           <CustomInput

@@ -10,7 +10,7 @@ import { InfoOutlined } from "@material-ui/icons";
 import {
   PaperContainer,
   ModalPhoneNumber,
-  ModalOverlay,
+  StatusOverlay,
   StyledButton
 } from "components";
 import {
@@ -198,7 +198,7 @@ const DialListEntryForm = props => {
     <ModalContainer>
       <PaperContainer>
         {loading.saveStatus ?
-          <ModalOverlay
+          <StatusOverlay
             message={loading.overlayMessage}
             status={loading.saveStatus}
           /> : null}

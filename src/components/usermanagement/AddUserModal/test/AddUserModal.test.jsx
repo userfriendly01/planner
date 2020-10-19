@@ -4,7 +4,7 @@ import {
   ModalExtension,
   ModalHelperText,
   ModalNNumber,
-  ModalOverlay,
+  StatusOverlay,
   ModalPhoneNumber,
   OutlinedSelect,
   PaperContainer,
@@ -41,7 +41,7 @@ jest.mock("components", () => ({
   ModalExtension: jest.fn(),
   ModalHelperText: jest.fn(),
   ModalNNumber: jest.fn(),
-  ModalOverlay: jest.fn(),
+  StatusOverlay: jest.fn(),
   ModalPhoneNumber: jest.fn(),
   OutlinedSelect: jest.fn(),
   PaperContainer: jest.fn(),
@@ -121,7 +121,7 @@ describe("<AddUserModal />", () => {
       ModalExtension,
       ModalHelperText,
       ModalNNumber,
-      ModalOverlay,
+      StatusOverlay,
       ModalPhoneNumber,
       OutlinedSelect,
       StyledButton
@@ -137,7 +137,7 @@ describe("<AddUserModal />", () => {
       expectMockedComponent(rendered, { ModalExtension }, 1);
       expectMockedComponent(rendered, { ModalNNumber }, 1);
       expectMockedComponent(rendered, { ModalPhoneNumber }, 1);
-      expectMockedComponent(rendered, { ModalOverlay }, 0);
+      expectMockedComponent(rendered, { StatusOverlay }, 0);
       expectMockedComponent(rendered, { ModalHelperText }, 0);
       expect(rendered.container).toHaveTextContent("Add a User");
       expectMockedComponent(rendered, { StyledButton }, 2);
@@ -506,15 +506,15 @@ describe("<AddUserModal />", () => {
           };
           // await waitFor(() => {
           //   expect(axiosMock.history.post[0].data).toEqual(JSON.stringify({ attributes: expectedTwilioWorkerAttributesPosted }));
-          //   expectMockedComponent(rendered, { ModalOverlay });
-          //   const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
+          //   expectMockedComponent(rendered, { StatusOverlay });
+          //   const saveStatus = getMockedComponentProps(StatusOverlay, getLastInstanceCalled(StatusOverlay)).status;
           //   const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
           //   const addUserButtonProps2 = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
           //   expect(addUserButtonProps2.disabled).toBe(true);
-          //   expect(saveStatus).toBe(modalOverlayStatuses.SUCCESS);
+          //   expect(saveStatus).toBe(StatusOverlayStatuses.SUCCESS);
           //   expect(nNumber).toBe("n");
           //   act(() => jest.runAllTimers());
-          //   expectMockedComponent(rendered, { ModalOverlay }, 0);
+          //   expectMockedComponent(rendered, { StatusOverlay }, 0);
           //   const actions = mockStore.getActions();
           //   expect(actions).toHaveLength(1);
           //   expect(actions[0]).toEqual({
@@ -538,7 +538,7 @@ describe("<AddUserModal />", () => {
             addUserButtonOnClick();
             return Promise.resolve();
           }).then(() => {
-            const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
+            const saveStatus = getMockedComponentProps(StatusOverlay, getLastInstanceCalled(StatusOverlay)).status;
             const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
             const addUserButtonProps2 = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
             const expectedTwilioWorkerAttributesPosted = {
@@ -564,7 +564,7 @@ describe("<AddUserModal />", () => {
             expect(saveStatus).toBe("fail");
             expect(nNumber).toBe("n1234567");
             act(() => jest.runAllTimers());
-            expectMockedComponent(rendered, { ModalOverlay }, 0);
+            expectMockedComponent(rendered, { StatusOverlay }, 0);
             const actions = mockStore.getActions();
             expect(actions).toHaveLength(0);
             done();
