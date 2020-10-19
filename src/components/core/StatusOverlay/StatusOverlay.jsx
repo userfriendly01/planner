@@ -161,7 +161,7 @@ const StatusOverlay = props => {
     >
       {status === statusOverlayStatuses.FAIL ?
         <CloseButtonDiv>
-          <StyledCloseRounded onClick={handleClose} />
+          <StyledCloseRounded data-testid="close-button" onClick={handleClose} />
         </CloseButtonDiv>
         : null}
       <InnerContainer>
