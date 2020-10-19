@@ -70,12 +70,12 @@ const success = "success";
 
 const authenticate = dispatch => new Promise((resolve, reject) => myAxios.get(apiPaths.AUTH)
   .then(res => {
-    dispatch(({
+    dispatch({
       type: "loadUserData",
       payload: {
         pingIdentity: res.data
       }
-    }));
+    });
     resolve(true);
   })
   .catch(error => {
@@ -92,10 +92,10 @@ const authenticate = dispatch => new Promise((resolve, reject) => myAxios.get(ap
 
 const getProfiles = dispatch => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_PROFILES)
   .then(res => {
-    dispatch(({
+    dispatch({
       type: "loadProfiles",
       payload: res.data
-    }));
+    });
     resolve(true);
   })
   .catch(error => {
@@ -108,10 +108,10 @@ const getProfiles = dispatch => new Promise((resolve, reject) => myAxios.get(api
 
 const getSkills = dispatch => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_TASKROUTER_SKILLS)
   .then(res => {
-    dispatch(({
+    dispatch({
       type: "loadSkills",
       payload: formatTaskRouterSkills(res.data)
-    }));
+    });
     resolve(true);
   })
   .catch(error => {
@@ -122,27 +122,38 @@ const getSkills = dispatch => new Promise((resolve, reject) => myAxios.get(apiPa
   })
 );
 
-const getWorkers = dispatch => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_WORKERS)
-  .then(res => {
-    const workers = formatWorkerResponse(res.data);
-    dispatch(({
-      type: "loadWorkers",
-      payload: workers
-    }));
+const getWorkers = async dispatch => {
+  let pageToken = "";
+  const workers = [];
+  try {
+    do {
+      const response = await myAxios.post(apiPaths.GET_WORKERS, { pageToken });
+      const currentPageOfWorkers = formatWorkerResponse(response.data.instances);
+      dispatch(({
+        type: "addWorkers",
+        payload: currentPageOfWorkers
+      }));
+      currentPageOfWorkers.forEach(worker => workers.push(worker));
+      if (response.data.nextPageUrl) {
+        const url = new URL(response.data.nextPageUrl);
+        pageToken = url.searchParams.get("PageToken");
+      } else {
+        pageToken = null;
+      }
+    } while (pageToken);
+
     const managerList = getUniqueManagerList(workers);
     dispatch({
       type: "loadManagers",
       payload: managerList
     });
-    resolve(true);
-  })
-  .catch(error => {
-    reject({
+  } catch (error) {
+    throw ({
       msg: "Failed to fetch workers from service",
       error
     });
-  })
-);
+  }
+};
 
 const App = () => {
 
