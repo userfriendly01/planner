@@ -1,7 +1,11 @@
-import { CircularProgress } from "@material-ui/core";
+import {
+  CircularProgress,
+  Modal
+} from "@material-ui/core";
 import {
   Header,
-  NavTabs
+  NavTabs,
+  NotificationModal
 } from "components";
 import { useAdminDispatch } from "context";
 import {
@@ -42,7 +46,7 @@ const ErrorStatus = styled.div`
 `;
 
 const ErrorWrapper = styled.div`
-  padding: 10%
+  padding: 10%;
 `;
 
 const Overlay = styled.div`
@@ -143,7 +147,23 @@ const getWorkers = dispatch => new Promise((resolve, reject) => myAxios.get(apiP
 const App = () => {
 
   const [loadResult, setLoadResult] = useState(null);
+  const [authExpired, setAuthExpired] = useState(false);
   const dispatch = useAdminDispatch();
+
+  const currentTime = Date.now();
+  const authExpiration = currentTime + 3600 * 1000; // one hour from now
+  document.cookie=`authExpiration=${authExpiration}`;
+
+  console.log("current time:", new Date(currentTime));
+  console.log("authExpiration is", new Date(authExpiration));
+  console.log("ms until expiration = ", authExpiration - currentTime);
+
+  const checkAuthExpired = () => {
+    // if (authExpiration - currentTime <= 0) {
+    if (currentTime - authExpiration <= 0) { // TODO: reverse
+      setAuthExpired(true);
+    }
+  };
 
   useEffect(() => {
     Promise.all([
@@ -152,7 +172,10 @@ const App = () => {
       getSkills(dispatch),
       getWorkers(dispatch)
     ])
-      .then(() => setLoadResult(success))
+      .then(() => {
+        setLoadResult(success);
+        setTimeout(checkAuthExpired, 5 * 1000);
+      })
       .catch(err => {
         console.error(err.msg, { error: err.error });
         setLoadResult(err);
@@ -165,6 +188,12 @@ const App = () => {
         <AppWrapper data-testid="app-wrapper">
           <Header/>
           <NavTabs/>
+          {/* {authExpired ? */}
+          <Modal open={authExpired === true}>
+            <NotificationModal reloadApp={() => setAuthExpired(false)} />
+          </Modal>
+          {/* : null
+          } */}
         </AppWrapper>
       );
     } else {
