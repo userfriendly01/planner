@@ -1,6 +1,7 @@
 import ManagementTable from "../ManagementTable";
 import MockAdapter from "axios-mock-adapter";
 import {
+  ConfirmationModal,
   EditUserModal,
   StatusOverlay
 } from "components";
@@ -25,6 +26,7 @@ const axiosMock = new MockAdapter(myAxios);
 
 jest.mock("components", () => ({
   __esModule: true,
+  ConfirmationModal: jest.fn(),
   EditUserModal: jest.fn(),
   StatusOverlay: jest.fn()
 }));
@@ -99,6 +101,7 @@ const renderComponent = (workers, toggle = false, state) => {
 describe("<ManagementTable />", () => {
   beforeEach(() => {
     setupMockedComponents({
+      ConfirmationModal,
       EditUserModal,
       StatusOverlay
     });
@@ -173,7 +176,41 @@ describe("<ManagementTable />", () => {
 
   describe("Delete icon is clicked in row", () => {
     test("should display ConfirmationModal", () => {
+      const rendered = renderComponent(mockWorkerData);
+    const deleteButtons = rendered.getAllByTestId("delete-button");
+    expectMockedComponent(rendered, { ConfirmationModal }, 0);
+    const indexClicked = 1;
+      act(() => fireEvent.click(deleteButtons[indexClicked]));
+      const confirmationText = ConfirmationModal.mock.calls[0][0].confirmationText;
+      expectMockedComponent(rendered, { ConfirmationModal }, 1);
+      expect(confirmationText).toBe("Are you sure you want to delete the following worker? Test 2");
     });
+    test("when the ConfirmationModal is cancelled, handleClose is called", () => {
+      const rendered = renderComponent(mockWorkerData);
+      const deleteButtons = rendered.getAllByTestId("delete-button");
+      expectMockedComponent(rendered, { ConfirmationModal }, 0);
+      const indexClicked = 1;
+      act(() => fireEvent.click(deleteButtons[indexClicked]));
+      expectMockedComponent(rendered, { ConfirmationModal }, 1);
+      const handleClose = ConfirmationModal.mock.calls[0][0].handleClose;
+      act(() => handleClose());
+      expectMockedComponent(rendered, { ConfirmationModal }, 0);
+    });
+    describe("When the confirmFunction is run, deleteUser is initiated", () => {
+      test("when the ConfirmationModal is confirmed, deleteUser is successful", () => {
+        
+        axiosMock.onDelete(apiPaths.DELETE_WORKER("")).reply(200, { });
+        const rendered = renderComponent(mockWorkerData);
+        const deleteButtons = rendered.getAllByTestId("delete-button");
+        expectMockedComponent(rendered, { ConfirmationModal }, 0);
+        const indexClicked = 1;
+        act(() => fireEvent.click(deleteButtons[indexClicked]));
+        expectMockedComponent(rendered, { ConfirmationModal }, 1);
+        const confirmFunction = ConfirmationModal.mock.calls[0][0].confirmFunction;
+        act(() => confirmFunction());
+        // expectMockedComponent(rendered, { ConfirmationModal }, 0);
+      });
+    })
   });
 
   describe("Edit icon is clicked in row", () => {
