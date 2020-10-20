@@ -1,10 +1,9 @@
 import ModalOverlay from "../ModalOverlay";
 import { modalOverlayStatuses } from "globals";
 import React from "react";
-import { act } from "react-dom/test-utils";
 import { fireEvent, render } from "testUtils";
 
-const mockSetManagementTableState = jest.fn();
+const mockHandleClose = jest.fn();
 
 describe("<ModalOverlay />", () => {
   describe("status = 'saving'", () => {
@@ -36,11 +35,11 @@ describe("<ModalOverlay />", () => {
       const rendered = render(<ModalOverlay
         status={modalOverlayStatuses.FAIL}
         message={failMessage}
-        setManagementTableState={mockSetManagementTableState}
+        handleClose={mockHandleClose}
         modal={true}/>);
       const closeButton = rendered.getByTestId("close-button");
       fireEvent.click(closeButton);
-      expect(mockSetManagementTableState).toHaveBeenCalledTimes(1);
+      expect(mockHandleClose).toHaveBeenCalledTimes(1);
     });
   });
 });
