@@ -24,6 +24,8 @@ import { myAxios } from "utils";
 
 const axiosMock = new MockAdapter(myAxios);
 
+jest.useFakeTimers();
+
 jest.mock("components", () => ({
   __esModule: true,
   ConfirmationModal: jest.fn(),
@@ -106,6 +108,7 @@ describe("<ManagementTable />", () => {
       ModalOverlay
     });
     axiosMock.reset();
+    jest.clearAllMocks();
     mockStore.reset();
     setDeltaToggle.mockClear();
   });
@@ -183,7 +186,7 @@ describe("<ManagementTable />", () => {
       act(() => fireEvent.click(deleteButtons[indexClicked]));
       const confirmationText = ConfirmationModal.mock.calls[0][0].confirmationText;
       expectMockedComponent(rendered, { ConfirmationModal }, 1);
-      expect(confirmationText).toBe("Are you sure you want to delete the following worker? Test 2");
+      expect(confirmationText).toBe("Are you sure you want to delete Test 2?");
     });
     test("when the ConfirmationModal is cancelled, handleClose is called", () => {
       const rendered = renderComponent(mockWorkerData);
@@ -210,16 +213,17 @@ describe("<ManagementTable />", () => {
         act(() => {
           confirmFunction().then(() => {
             const actions = mockStore.getActions();
+            jest.advanceTimersByTime(2000);
             expect(actions).toHaveLength(1);
             expect(actions[0]).toEqual({
               type: "deleteWorker",
               payload: workerSid
             });
-            done();
           });
+          done();
         });
       });
-      test("DeleteUser is successful", done => {
+      test("DeleteUser fails", done => {
         const workerSid = mockWorkerData[1].sid;
         axiosMock.onDelete(apiPaths.DELETE_WORKER(workerSid)).reply(500, { error: "meh" });
         const rendered = renderComponent(mockWorkerData);
@@ -230,7 +234,7 @@ describe("<ManagementTable />", () => {
         expectMockedComponent(rendered, { ConfirmationModal }, 1);
         const confirmFunction = ConfirmationModal.mock.calls[0][0].confirmFunction;
         act(() => {
-          confirmFunction().catch(() => {
+          confirmFunction().then(() => {
             const actions = mockStore.getActions();
             expect(actions).toHaveLength(0);
             done();
