@@ -4,7 +4,7 @@ import MockAdapter from "axios-mock-adapter";
 import {
   ModalHelperText,
   CustomInput,
-  StatusOverlay,
+  ModalOverlay,
   PaperContainer,
   StyledButton
 } from "components";
@@ -34,7 +34,7 @@ jest.mock("components", () => ({
   __esModule: true,
   ModalHelperText: jest.fn(),
   CustomInput: jest.fn(),
-  StatusOverlay: jest.fn(),
+  ModalOverlay: jest.fn(),
   PaperContainer: jest.fn(),
   StyledButton: jest.fn()
 }));
@@ -64,7 +64,7 @@ describe("<AddManagerModal />", () => {
       CloseRounded,
       ModalHelperText,
       CustomInput,
-      StatusOverlay,
+      ModalOverlay,
       StyledButton
     });
     axiosMock.reset();
@@ -80,10 +80,10 @@ describe("<AddManagerModal />", () => {
       expectMockedComponent(rendered, { CloseRounded });
       expectMockedComponent(rendered, { CustomInput });
     });
-    test("should not render ModalHelperText or StatusOverlay", () => {
+    test("should not render ModalHelperText or ModalOverlay", () => {
       const rendered = renderComponent();
       expect(rendered.queryAllByText("ModalHelperText").length).toBe(0);
-      expect(rendered.queryAllByText("StatusOverlay").length).toBe(0);
+      expect(rendered.queryAllByText("ModalOverlay").length).toBe(0);
     });
   });
 
@@ -230,7 +230,7 @@ describe("<AddManagerModal />", () => {
     });
     describe("Add Manager button is clicked", () => {
       describe("manager is not in list of managers", () => {
-        test("StatusOverlay should render with 'Manager added successfully' & modal should close after 2 seconds (handleClose should be called)", done => {
+        test("ModalOverlay should render with 'Manager added successfully' & modal should close after 2 seconds (handleClose should be called)", done => {
           const rendered = renderComponent();
           act(() => {
             const updateNNumber = CustomInput.mock.calls[0][0].updateValue;
@@ -239,8 +239,8 @@ describe("<AddManagerModal />", () => {
           }).then(() => {
             const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
             act(() => onClick());
-            expectMockedComponent(rendered, { StatusOverlay });
-            expectOnlyPassedProps(StatusOverlay, {
+            expectMockedComponent(rendered, { ModalOverlay });
+            expectOnlyPassedProps(ModalOverlay, {
               status: "success",
               message: "Manager added successfully"
             });
@@ -258,7 +258,7 @@ describe("<AddManagerModal />", () => {
           managers: [{ manager_n_number: nNumber }]
         }
       };
-      test("StatusOverlay should render 'Manager already exists' & modal should remain open (handleClose should not be called)", done => {
+      test("ModalOverlay should render 'Manager already exists' & modal should remain open (handleClose should not be called)", done => {
         const rendered = render(<AddManagerModal handleClose={mockHandleClose}/>, testState);
         act(() => {
           const updateNNumber = CustomInput.mock.calls[0][0].updateValue;
@@ -267,8 +267,8 @@ describe("<AddManagerModal />", () => {
         }).then(() => {
           const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
           act(() => onClick());
-          expectMockedComponent(rendered, { StatusOverlay });
-          expectOnlyPassedProps(StatusOverlay, {
+          expectMockedComponent(rendered, { ModalOverlay });
+          expectOnlyPassedProps(ModalOverlay, {
             status: "fail",
             message: "Manager already exists"
           });

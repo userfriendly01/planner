@@ -1,6 +1,6 @@
 import {
   PaperContainer,
-  StatusOverlay,
+  ModalOverlay,
   StyledButton
 } from "components";
 import PropTypes from "prop-types";
@@ -78,7 +78,7 @@ const ConfirmationModal = props => {
     <ModalContainer>
       <PaperContainer>
         {saveResult === loadingStates.success || saveResult === loadingStates.fail ?
-          <StatusOverlay
+          <ModalOverlay
             message={overlayMessage}
             modal={true}
             status={saveResult}

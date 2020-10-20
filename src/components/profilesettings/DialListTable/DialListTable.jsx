@@ -8,14 +8,14 @@ import {
 } from "@material-ui/icons";
 import {
   DialListEntryForm,
-  StatusOverlay,
+  ModalOverlay,
   StyledButton
 } from "components";
 import {
   apiPaths,
   formModes,
-  statusOverlayStatuses,
-  statusOverlayTimeout
+  modalOverlayStatuses,
+  modalOverlayTimeout
 } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
@@ -145,7 +145,7 @@ const DialListTable = props => {
       overlayMessage: "",
       saveStatus: null
     });
-  }, statusOverlayTimeout);
+  }, modalOverlayTimeout);
 
   const getDeleteButtonOnClick = diallistId => () => {
     const popUp = confirm("Are you sure you want to delete this dial list entry?");
@@ -153,7 +153,7 @@ const DialListTable = props => {
       setDialListTableState({
         ...dialListTableState,
         overlayMessage: "Deleting dial list entry...",
-        saveStatus: statusOverlayStatuses.SAVING
+        saveStatus: modalOverlayStatuses.SAVING
       });
       myAxios.delete(apiPaths.DIAL_LIST_ENTRY(diallistId))
         .then(res => {
@@ -164,7 +164,7 @@ const DialListTable = props => {
           setDialListTableState({
             ...dialListTableState,
             overlayMessage: "Successfully deleted dial list entry",
-            saveStatus: statusOverlayStatuses.SUCCESS
+            saveStatus: modalOverlayStatuses.SUCCESS
           });
           waitAndHideOverlay();
         })
@@ -175,7 +175,7 @@ const DialListTable = props => {
           setDialListTableState({
             ...dialListTableState,
             overlayMessage: "Failed to delete dial list entry",
-            saveStatus: statusOverlayStatuses.FAIL
+            saveStatus: modalOverlayStatuses.FAIL
           });
           waitAndHideOverlay();
         });
@@ -219,7 +219,7 @@ const DialListTable = props => {
           :
           <StyledPaper elevation={3}>
             {dialListTableState.saveStatus ?
-              <StatusOverlay
+              <ModalOverlay
                 message={dialListTableState.overlayMessage}
                 status={dialListTableState.saveStatus}
               /> : null}

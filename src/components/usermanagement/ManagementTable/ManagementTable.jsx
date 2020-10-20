@@ -10,7 +10,7 @@ import {
 import {
   ConfirmationModal,
   EditUserModal,
-  StatusOverlay
+  ModalOverlay
 } from "components";
 import {
   useAdminDispatch,
@@ -172,7 +172,7 @@ const ManagementTable = props => {
 
   return (
     <TableContainer>
-      { state.resettingSkills ? <StatusOverlay message="Resetting Worker Skills" status="saving" /> : null }
+      { state.resettingSkills ? <ModalOverlay message="Resetting Worker Skills" status="saving" /> : null }
       <CustomTable>
         <thead>
           <tr>

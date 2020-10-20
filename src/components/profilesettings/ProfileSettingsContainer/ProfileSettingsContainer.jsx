@@ -41,6 +41,10 @@ const ProfileSettingsContainer = () => {
           message: null,
           profileId
         });
+        console.log("Fetched dial list for profile", {
+          dialList,
+          profileId
+        });
       })
       .catch(err => {
         console.error("Failed to fetch dial list for profile", {

@@ -24,13 +24,13 @@ export const formModes = {
   UPDATE: "update"
 };
 
-export const statusOverlayStatuses = {
+export const modalOverlayStatuses = {
   FAIL: "fail",
   SAVING: "saving",
   SUCCESS: "success"
 };
 
-export const statusOverlayTimeout = 2000;
+export const modalOverlayTimeout = 2000;
 
 export const nNumMatcher = /[n,N]\d{7}/g;
 export const extensionMatcher = /^\d{4}$/;

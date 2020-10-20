@@ -2,14 +2,14 @@ import DialListTable from "../DialListTable";
 import MockAdapter from "axios-mock-adapter";
 import {
   DialListEntryForm,
-  StatusOverlay,
+  ModalOverlay,
   StyledButton
 } from "components";
 import {
   apiPaths,
   formModes,
-  statusOverlayStatuses,
-  statusOverlayTimeout
+  modalOverlayStatuses,
+  modalOverlayTimeout
 } from "globals";
 import React from "react";
 import {
@@ -31,7 +31,7 @@ jest.useFakeTimers();
 jest.mock("components", () => ({
   __esModule: true,
   DialListEntryForm: jest.fn(),
-  StatusOverlay: jest.fn(),
+  ModalOverlay: jest.fn(),
   StyledButton: jest.fn()
 }));
 
@@ -57,7 +57,7 @@ describe("<DialListTable />", () => {
     jest.clearAllMocks();
     setupMockedComponents({
       DialListEntryForm,
-      StatusOverlay,
+      ModalOverlay,
       StyledButton
     });
   });
@@ -224,22 +224,22 @@ describe("<DialListTable />", () => {
             });
             await act(() => {
               // advance timers so overlay times out
-              jest.advanceTimersByTime(statusOverlayTimeout);
+              jest.advanceTimersByTime(modalOverlayTimeout);
             });
             await waitFor(() => {
               // expect saving message
-              expectOnlyPassedProps(StatusOverlay, {
+              expectOnlyPassedProps(ModalOverlay, {
                 message: "Deleting dial list entry...",
-                status: statusOverlayStatuses.SAVING
-              }, getLastInstanceCalled(StatusOverlay) - 1);
+                status: modalOverlayStatuses.SAVING
+              }, getLastInstanceCalled(ModalOverlay) - 1);
               expect(refreshProfileData).toHaveBeenCalledTimes(1);
               // expect success message
-              expectOnlyPassedProps(StatusOverlay, {
+              expectOnlyPassedProps(ModalOverlay, {
                 message: "Successfully deleted dial list entry",
-                status: statusOverlayStatuses.SUCCESS
-              }, getLastInstanceCalled(StatusOverlay));
+                status: modalOverlayStatuses.SUCCESS
+              }, getLastInstanceCalled(ModalOverlay));
               // expect overlay disappears
-              expectMockedComponent(rendered, { StatusOverlay }, 0);
+              expectMockedComponent(rendered, { ModalOverlay }, 0);
             });
           });
         });
@@ -263,22 +263,22 @@ describe("<DialListTable />", () => {
             });
             await act(() => {
               // advance timers so overlay times out
-              jest.advanceTimersByTime(statusOverlayTimeout);
+              jest.advanceTimersByTime(modalOverlayTimeout);
             });
             await waitFor(() => {
               // expect saving message
-              expectOnlyPassedProps(StatusOverlay, {
+              expectOnlyPassedProps(ModalOverlay, {
                 message: "Deleting dial list entry...",
-                status: statusOverlayStatuses.SAVING
-              }, getLastInstanceCalled(StatusOverlay) - 1);
+                status: modalOverlayStatuses.SAVING
+              }, getLastInstanceCalled(ModalOverlay) - 1);
               expect(refreshProfileData).toHaveBeenCalledTimes(0);
               // expect success message
-              expectOnlyPassedProps(StatusOverlay, {
+              expectOnlyPassedProps(ModalOverlay, {
                 message: "Failed to delete dial list entry",
-                status: statusOverlayStatuses.FAIL
-              }, getLastInstanceCalled(StatusOverlay));
+                status: modalOverlayStatuses.FAIL
+              }, getLastInstanceCalled(ModalOverlay));
               // expect overlay disappears
-              expectMockedComponent(rendered, { StatusOverlay }, 0);
+              expectMockedComponent(rendered, { ModalOverlay }, 0);
             });
           });
         });

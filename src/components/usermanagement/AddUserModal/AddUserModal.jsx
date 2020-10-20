@@ -5,7 +5,7 @@ import {
   OutlinedSelect,
   ModalNNumber,
   ModalExtension,
-  StatusOverlay,
+  ModalOverlay,
   ModalPhoneNumber,
   PaperContainer,
   StyledButton
@@ -17,8 +17,8 @@ import {
 import {
   apiPaths,
   extensionMatcher,
-  statusOverlayStatuses,
-  statusOverlayTimeout
+  modalOverlayStatuses,
+  modalOverlayTimeout
 } from "globals";
 import PropTypes from "prop-types";
 import React, {
@@ -98,7 +98,7 @@ const AddUserModal = props => {
     updateLoading({
       ...loading,
       overlayMessage: "Adding new user...",
-      saveStatus: statusOverlayStatuses.SAVING,
+      saveStatus: modalOverlayStatuses.SAVING,
       saveUser: true
     });
     const parsedManager = JSON.parse(form.manager);
@@ -113,7 +113,7 @@ const AddUserModal = props => {
       updateLoading({
         ...loading,
         overlayMessage: "Failed to add new user. Could not convert outgoing number to E164 format.",
-        saveStatus: statusOverlayStatuses.FAIL,
+        saveStatus: modalOverlayStatuses.FAIL,
         saveUser: true
       });
       setTimeout(() => {
@@ -121,7 +121,7 @@ const AddUserModal = props => {
           ...loading,
           saveUser: false
         });
-      }, statusOverlayTimeout);
+      }, modalOverlayTimeout);
       return;
     }
     // see this wiki page for attributes that will be automatically updated through SSO
@@ -162,7 +162,7 @@ const AddUserModal = props => {
         updateLoading({
           ...loading,
           overlayMessage: "Successfully added new user",
-          saveStatus: statusOverlayStatuses.SUCCESS,
+          saveStatus: modalOverlayStatuses.SUCCESS,
           saveUser: true
         });
         setTimeout(() => {
@@ -170,13 +170,13 @@ const AddUserModal = props => {
             ...loading,
             saveUser: false
           });
-        }, statusOverlayTimeout);
+        }, modalOverlayTimeout);
       })
       .catch(err => {
         updateLoading({
           ...loading,
           overlayMessage: "Failed to add new user",
-          saveStatus: statusOverlayStatuses.FAIL,
+          saveStatus: modalOverlayStatuses.FAIL,
           saveUser: true
         });
         setTimeout(() => {
@@ -184,7 +184,7 @@ const AddUserModal = props => {
             ...loading,
             saveUser: false
           });
-        }, statusOverlayTimeout);
+        }, modalOverlayTimeout);
         console.error("AddUserModal - Failed to create worker in twilio workspace", err);
       });
   };
@@ -199,7 +199,7 @@ const AddUserModal = props => {
     <ModalContainer>
       <PaperContainer>
         {loading.saveUser ?
-          <StatusOverlay
+          <ModalOverlay
             status={loading.saveStatus}
             message={loading.overlayMessage}
           /> : null}

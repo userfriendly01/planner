@@ -3,7 +3,7 @@ import {
   CustomInput,
   ModalHelperText,
   PaperContainer,
-  StatusOverlay,
+  ModalOverlay,
   StyledButton
 } from "components";
 import {
@@ -137,7 +137,7 @@ const AddManagerModal = props => {
     <ModalContainer>
       <PaperContainer>
         {saveManager === loadingStates.success || saveManager === loadingStates.fail ?
-          <StatusOverlay
+          <ModalOverlay
             message={overlayMessage}
             modal={true}
             status={saveManager}

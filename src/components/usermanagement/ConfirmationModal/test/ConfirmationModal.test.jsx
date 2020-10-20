@@ -1,6 +1,6 @@
 import ConfirmationModal from "../ConfirmationModal";
 import {
-  StatusOverlay,
+  ModalOverlay,
   PaperContainer,
   StyledButton
 } from "components";
@@ -18,7 +18,7 @@ jest.useFakeTimers();
 jest.mock("components", () => ({
   __esModule: true,
   StyledButton: jest.fn(),
-  StatusOverlay: jest.fn(),
+  ModalOverlay: jest.fn(),
   PaperContainer: jest.fn()
 }));
 
@@ -37,7 +37,7 @@ describe("<ConfirmationModal />", () => {
     jest.clearAllMocks();
     setupMockedComponents({
       StyledButton,
-      StatusOverlay
+      ModalOverlay
     });
     PaperContainer.mockImplementation(props => <div>{props.children}</div>);
   });
@@ -47,7 +47,7 @@ describe("<ConfirmationModal />", () => {
       const rendered = renderComponent();
       expect(rendered.container).toHaveTextContent("Are you sure?");
       expectMockedComponent(rendered, { StyledButton }, 2);
-      expectMockedComponent(rendered, { StatusOverlay }, 0);
+      expectMockedComponent(rendered, { ModalOverlay }, 0);
     });
   });
 
@@ -60,8 +60,8 @@ describe("<ConfirmationModal />", () => {
         confirm();
         return Promise.resolve();
       }).then(() => {
-        expectMockedComponent(rendered, { StatusOverlay }, 1);
-        expectOnlyPassedProps(StatusOverlay, {
+        expectMockedComponent(rendered, { ModalOverlay }, 1);
+        expectOnlyPassedProps(ModalOverlay, {
           message: "Operation Was Successful!",
           status: "success"
         });
@@ -69,7 +69,7 @@ describe("<ConfirmationModal />", () => {
         expect(mockHandleClose).toHaveBeenCalledTimes(1);
         done();
       });
-      expectMockedComponent(rendered, { StatusOverlay }, 0);
+      expectMockedComponent(rendered, { ModalOverlay }, 0);
     });
     test("When the Confirm Button is clicked, handleConfirm fails", done => {
       mockHandleConfirm.mockImplementation(() => { return Promise.reject("Aww"); });
@@ -79,8 +79,8 @@ describe("<ConfirmationModal />", () => {
         confirm();
         return Promise.resolve();
       }).then(() => {
-        expectMockedComponent(rendered, { StatusOverlay }, 1);
-        expectOnlyPassedProps(StatusOverlay, {
+        expectMockedComponent(rendered, { ModalOverlay }, 1);
+        expectOnlyPassedProps(ModalOverlay, {
           message: "Operation Failed.",
           status: "fail"
         });
@@ -88,7 +88,7 @@ describe("<ConfirmationModal />", () => {
         expect(mockHandleClose).toHaveBeenCalledTimes(1);
         done();
       });
-      expectMockedComponent(rendered, { StatusOverlay }, 0);
+      expectMockedComponent(rendered, { ModalOverlay }, 0);
     });
   });
 
