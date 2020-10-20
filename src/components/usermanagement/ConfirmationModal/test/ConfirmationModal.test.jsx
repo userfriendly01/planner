@@ -24,12 +24,17 @@ jest.mock("components", () => ({
 
 const mockHandleClose = jest.fn();
 const mockHandleConfirm = jest.fn();
+const initialSaveResult = {
+  status: null,
+  message: null
+}
 
 const renderComponent = () => {
   return render(<ConfirmationModal
     handleClose={mockHandleClose}
     confirmFunction={mockHandleConfirm} 
-    confirmationText={"Are you sure?"} />);
+    confirmationText={"Are you sure?"}
+    saveResult={initialSaveResult} />);
 };
 
 describe("<ConfirmationModal />", () => {
@@ -43,55 +48,24 @@ describe("<ConfirmationModal />", () => {
   });
 
   describe("ConfirmationModal is in its initial state", () => {
-    test("should pass confirmationText and confirm/functions", () => {
+    test("should pass confirmationText and confirm/cancel functions, and the save result", () => {
       const rendered = renderComponent();
       expect(rendered.container).toHaveTextContent("Are you sure?");
       expectMockedComponent(rendered, { StyledButton }, 2);
       expectMockedComponent(rendered, { ModalOverlay }, 0);
     });
   });
-
   describe("Confirm Button", () => {
-    test("When the Confirm Button is clicked, handleConfirm is successful", done => {
-      mockHandleConfirm.mockImplementation(() => { return Promise.resolve("Yay"); });
-      const rendered = renderComponent();
+    test("When the Confirm Button is clicked, handleConfirm fails", () => {
+      renderComponent();
+      expectOnlyPassedProps(StyledButton, {
+        onClick: mockHandleConfirm
+      }, 0);
       const confirm = StyledButton.mock.calls[0][0].onClick;
-      act(() => {
-        confirm();
-        return Promise.resolve();
-      }).then(() => {
-        expectMockedComponent(rendered, { ModalOverlay }, 1);
-        expectOnlyPassedProps(ModalOverlay, {
-          message: "Operation Was Successful!",
-          status: "success"
-        });
-        act(() => jest.runAllTimers());
-        expect(mockHandleClose).toHaveBeenCalledTimes(1);
-        done();
-      });
-      expectMockedComponent(rendered, { ModalOverlay }, 0);
-    });
-    test("When the Confirm Button is clicked, handleConfirm fails", done => {
-      mockHandleConfirm.mockImplementation(() => { return Promise.reject("Aww"); });
-      const rendered = renderComponent();
-      const confirm = StyledButton.mock.calls[0][0].onClick;
-      act(() => {
-        confirm();
-        return Promise.resolve();
-      }).then(() => {
-        expectMockedComponent(rendered, { ModalOverlay }, 1);
-        expectOnlyPassedProps(ModalOverlay, {
-          message: "Operation Failed.",
-          status: "fail"
-        });
-        act(() => jest.runAllTimers());
-        expect(mockHandleClose).toHaveBeenCalledTimes(1);
-        done();
-      });
-      expectMockedComponent(rendered, { ModalOverlay }, 0);
+      act(() => confirm())
+      expect(mockHandleConfirm).toHaveBeenCalledTimes(1);
     });
   });
-
   describe("Cancel Button", () => {
     test("When the Cancel Button is clicked, handleClose is run", () => {
       renderComponent();
@@ -101,6 +75,27 @@ describe("<ConfirmationModal />", () => {
       const cancel = StyledButton.mock.calls[1][0].onClick;
       act(() => cancel())
       expect(mockHandleClose).toHaveBeenCalledTimes(1);
+    });
+  });
+  describe("When the Save Result is not null, ModalOverlay is present", () => {
+    const renderComponent = saveResult => {
+      return render(<ConfirmationModal
+        handleClose={mockHandleClose}
+        confirmFunction={mockHandleConfirm} 
+        confirmationText={"Are you sure?"}
+        saveResult={saveResult} />);
+    }
+    test("When the Save Result is successful, the ModalOverlay is passed the correct props, handleClose is run", () => {
+      const rendered = renderComponent({
+        status: "success",
+        message: "yay!"
+      });
+      expectMockedComponent(rendered, { ModalOverlay }, 1);
+      expectOnlyPassedProps(ModalOverlay, {
+        handleClose: mockHandleClose,
+        status: "success",
+        message: "yay!"
+      }, 0);
     });
   });
 });
