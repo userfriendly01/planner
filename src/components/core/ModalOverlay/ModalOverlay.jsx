@@ -78,16 +78,16 @@ const Overlay = styled(FlexRow)`
   color: white;
   font-family: 'Roboto', sans-serif;
   font-size: 1.8em;
-  height: ${props => props.modal ? "100%" : "50vh"};
+  height: 100%;
   justify-content: ${props => props.status === modalOverlayStatuses.FAIL ? "space-between" : "center"};
   opacity: .75;
-  width: ${props => props.modal ? "100%" : "40vw"};
+  width: 100%;
   z-index: 100;
-  left: ${props => props.modal ? 0 : "50%"};
-  margin-left: ${props => props.modal ? 0 : "-25vw"};
-  top: ${props => props.modal ? 0 : "50%"};
-  margin-top: ${props => props.modal ? 0 : "-30vh"};
-  position: ${props => props.modal ? "absolute" : "fixed"};
+  left: 0;
+  margin-left: 0;
+  top: 0;
+  margin-top: 0;
+  position: absolute;
 `;
 
 const StyledCloseRounded = styled(CloseRounded)`
@@ -107,7 +107,6 @@ const TextWrapper = styled.div`
 const ModalOverlay = props => {
   const {
     message,
-    modal,
     setManagementTableState,
     status
   } = props;
@@ -154,7 +153,6 @@ const ModalOverlay = props => {
 
   return (
     <Overlay
-      modal={modal}
       modalBackground={background}
       status={status}
     >
@@ -176,7 +174,6 @@ const ModalOverlay = props => {
 
 ModalOverlay.propTypes = {
   message: PropTypes.string.isRequired,
-  modal: PropTypes.bool.isRequired,
   setManagementTableState: PropTypes.func,
   status: PropTypes.oneOf(Object.values(modalOverlayStatuses)).isRequired
 };
