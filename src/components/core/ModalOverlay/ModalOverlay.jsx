@@ -54,7 +54,7 @@ const FlexRow = styled.div`
 
 const Icon = styled.svg`
   stroke-width: .2em;
-  width: 4em;
+  width: 3em;
 `;
 
 const InnerContainer = styled.div`
@@ -62,7 +62,6 @@ const InnerContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 5%;
 `;
 
 const Line = styled.line`
@@ -99,7 +98,7 @@ const StyledCloseRounded = styled(CloseRounded)`
 `;
 
 const TextWrapper = styled.div`
-  font-size: 2vw;
+  font-size: initial;
   margin-top: 5%;
   text-align: center;
 `;

@@ -49,14 +49,6 @@ const ConfirmationModal = props => {
   } = props;
 
 
-  const handleConfirm = () => {
-    confirmFunction().then(() => {
-      setTimeout(() => handleClose(), 2000);
-    }).catch(() => {
-      // setTimeout(() => handleClose(), 2000);
-    });
-  };
-
   return (
     <ModalContainer>
       <PaperContainer>
@@ -68,7 +60,7 @@ const ConfirmationModal = props => {
           /> : null}
         <Text>{confirmationText}</Text>
         <ButtonWrapper>
-          <StyledButton onClick={handleConfirm} data-testid={"confirm-button"}>
+          <StyledButton onClick={confirmFunction} data-testid={"confirm-button"}>
             Confirm
           </StyledButton>
           <StyledButton onClick={handleClose} data-testid={"cancel-button"}>

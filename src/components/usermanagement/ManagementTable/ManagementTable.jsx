@@ -166,10 +166,9 @@ const ManagementTable = props => {
       status: modalOverlayStatuses.SAVING,
       message: "Saving"
     });
-    let resultMessage;
     return myAxios.delete(apiPaths.DELETE_WORKER(deletedWorker.sid))
       .then(res => {
-        resultMessage = `Successfully deleted Triton worker with sid ${deletedWorker.sid}`;
+        const resultMessage = `Successfully deleted Triton worker with sid ${deletedWorker.sid}`;
         console.log(resultMessage,
           { responseData: res.data });
         dispatch({
@@ -180,17 +179,19 @@ const ManagementTable = props => {
           status: modalOverlayStatuses.SUCCESS,
           message: resultMessage
         });
+        setTimeout(() => {
+          setConfirmationModalOpts(defaultModalOpts);
+          setSaveResult(defaultSaveResult);
+        }, 2000);
       })
       .catch(err => {
-        resultMessage = `ManagementTable - Failed to delete worker ${deletedWorker.sid}`;
-        console.error(resultMessage, {
+        console.error(`Failed to delete worker ${deletedWorker.sid}`, {
           error: err
         });
         setSaveResult({
           status: modalOverlayStatuses.FAIL,
-          message: resultMessage
+          message: err.message
         });
-        return Promise.reject(err);
       });
   };
 
@@ -275,7 +276,7 @@ const ManagementTable = props => {
                 setConfirmationModalOpts(defaultModalOpts);
                 setSaveResult(defaultSaveResult);
               }}
-              confirmationText= {"Are you sure you want to delete the following worker? " + confirmationModalOpts.worker.attributes.full_name}
+              confirmationText= {"Are you sure you want to delete " + confirmationModalOpts.worker.attributes.full_name + "?"}
               saveResult={saveResult}
             />
             : null

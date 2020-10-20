@@ -153,7 +153,7 @@ const AddManagerModal = props => {
             label="Manager N Number"
             name="Manager N Number"
             loading={manager === loadingStates.loading}
-            nNumber={nNumber}
+            value={nNumber}
             updateValue={setNNumber}
           />
           {isValidNNumber && manager !== loadingStates.loading
