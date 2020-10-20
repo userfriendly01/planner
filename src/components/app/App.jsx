@@ -206,12 +206,9 @@ const App = () => {
         <AppWrapper data-testid="app-wrapper">
           <Header/>
           <NavTabs/>
-          {/* {authExpired ? */}
-          <Modal open={authExpired === true}>
+          <Modal disableBackdropClick={true}/*??*/ open={authExpired === true}>
             <NotificationModal reloadApp={reloadApp} />
           </Modal>
-          {/* : null
-          } */}
         </AppWrapper>
       );
     } else {
