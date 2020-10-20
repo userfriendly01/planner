@@ -197,9 +197,9 @@ describe("<ManagementTable />", () => {
       expectMockedComponent(rendered, { ConfirmationModal }, 0);
     });
     describe("When the confirmFunction is run, deleteUser is initiated", () => {
-      test("when the ConfirmationModal is confirmed, deleteUser is successful", () => {
-        
-        axiosMock.onDelete(apiPaths.DELETE_WORKER("")).reply(200, { });
+      test("DeleteUser is successful", done => {
+        const workerSid = mockWorkerData[1].sid;
+        axiosMock.onDelete(apiPaths.DELETE_WORKER(workerSid)).reply(200, { whatever: "lol" });
         const rendered = renderComponent(mockWorkerData);
         const deleteButtons = rendered.getAllByTestId("delete-button");
         expectMockedComponent(rendered, { ConfirmationModal }, 0);
@@ -207,8 +207,35 @@ describe("<ManagementTable />", () => {
         act(() => fireEvent.click(deleteButtons[indexClicked]));
         expectMockedComponent(rendered, { ConfirmationModal }, 1);
         const confirmFunction = ConfirmationModal.mock.calls[0][0].confirmFunction;
-        act(() => confirmFunction());
-        // expectMockedComponent(rendered, { ConfirmationModal }, 0);
+        act(() => {
+          confirmFunction().then(() => {
+            const actions = mockStore.getActions();
+            expect(actions).toHaveLength(1);
+            expect(actions[0]).toEqual({
+              type: "deleteWorker",
+              payload: workerSid
+            });
+            done();
+          });
+        });
+      });
+      test("DeleteUser is successful", done => {
+        const workerSid = mockWorkerData[1].sid;
+        axiosMock.onDelete(apiPaths.DELETE_WORKER(workerSid)).reply(500, { error: "meh" });
+        const rendered = renderComponent(mockWorkerData);
+        const deleteButtons = rendered.getAllByTestId("delete-button");
+        expectMockedComponent(rendered, { ConfirmationModal }, 0);
+        const indexClicked = 1;
+        act(() => fireEvent.click(deleteButtons[indexClicked]));
+        expectMockedComponent(rendered, { ConfirmationModal }, 1);
+        const confirmFunction = ConfirmationModal.mock.calls[0][0].confirmFunction;
+        act(() => {
+          confirmFunction().catch(() => {
+            const actions = mockStore.getActions();
+            expect(actions).toHaveLength(0);
+            done();
+          });
+        });
       });
     })
   });

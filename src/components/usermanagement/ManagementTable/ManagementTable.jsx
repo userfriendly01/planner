@@ -16,11 +16,7 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import {
-  apiPaths
-  // statusOverlayStatuses,
-  // statusOverlayTimeout
-} from "globals";
+import { apiPaths } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
@@ -154,10 +150,6 @@ const ManagementTable = props => {
   const state = useAdminState();
   const selectedWorkers = state.workerContext.selectedWorkers;
   const dispatch = useAdminDispatch();
-  // const initialState = {
-  //   overlayMessage: "",
-  //   saveStatus: null
-  // };
 
   const deleteUser = () => {
     const deletedWorker = confirmationModalOpts.worker;
@@ -174,7 +166,7 @@ const ManagementTable = props => {
         console.error(`ManagementTable - Failed to delete worker ${deletedWorker.sid}`, {
           error: err
         });
-        return Promise.reject();
+        return Promise.reject(err);
       });
   };
 
