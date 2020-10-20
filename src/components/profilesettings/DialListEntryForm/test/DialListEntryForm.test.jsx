@@ -414,7 +414,6 @@ describe("<DialListEntryForm />", () => {
         });
 
         test("submit button should be disabled then entering valid values in all the required fields should enable the submit button and show success overlay on click", async () => {
-          expect(apiPaths.DIAL_LIST_ENTRY(dialListId)).toBe("butts");
           const rendered = renderComponent(dialListTableState);
           // Check that Save button is disabled
           expectOnlyPassedProps(StyledButton, {
