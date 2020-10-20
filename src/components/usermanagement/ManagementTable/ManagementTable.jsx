@@ -16,7 +16,10 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import { apiPaths } from "globals";
+import {
+  apiPaths,
+  modalOverlayStatuses
+} from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
@@ -145,26 +148,47 @@ const ManagementTable = props => {
     worker: null
   };
 
+  const defaultSaveResult = {
+    status: null,
+    message: null
+  };
+
   const [editUserModalOpts, setEditUserModalOpts] = useState(defaultModalOpts);
   const [confirmationModalOpts, setConfirmationModalOpts] = useState(defaultModalOpts);
+  const [saveResult, setSaveResult] = useState(defaultSaveResult);
   const state = useAdminState();
   const selectedWorkers = state.workerContext.selectedWorkers;
   const dispatch = useAdminDispatch();
 
   const deleteUser = () => {
     const deletedWorker = confirmationModalOpts.worker;
+    setSaveResult({
+      status: modalOverlayStatuses.SAVING,
+      message: "Saving"
+    });
+    let resultMessage;
     return myAxios.delete(apiPaths.DELETE_WORKER(deletedWorker.sid))
       .then(res => {
-        console.log(`Successfully deleted Triton worker with sid ${deletedWorker.sid}`,
+        resultMessage = `Successfully deleted Triton worker with sid ${deletedWorker.sid}`;
+        console.log(resultMessage,
           { responseData: res.data });
         dispatch({
           type: "deleteWorker",
           payload: deletedWorker.sid
         });
+        setSaveResult({
+          status: modalOverlayStatuses.SUCCESS,
+          message: resultMessage
+        });
       })
       .catch(err => {
-        console.error(`ManagementTable - Failed to delete worker ${deletedWorker.sid}`, {
+        resultMessage = `ManagementTable - Failed to delete worker ${deletedWorker.sid}`;
+        console.error(resultMessage, {
           error: err
+        });
+        setSaveResult({
+          status: modalOverlayStatuses.FAIL,
+          message: resultMessage
         });
         return Promise.reject(err);
       });
@@ -247,8 +271,12 @@ const ManagementTable = props => {
           { confirmationModalOpts.worker ?
             <ConfirmationModal
               confirmFunction={deleteUser}
-              handleClose={() => setConfirmationModalOpts(defaultModalOpts)}
+              handleClose={() => {
+                setConfirmationModalOpts(defaultModalOpts);
+                setSaveResult(defaultSaveResult);
+              }}
               confirmationText= {"Are you sure you want to delete the following worker? " + confirmationModalOpts.worker.attributes.full_name}
+              saveResult={saveResult}
             />
             : null
           }

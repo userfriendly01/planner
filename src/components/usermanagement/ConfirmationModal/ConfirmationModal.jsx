@@ -4,7 +4,7 @@ import {
   StyledButton
 } from "components";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 
 const FlexColumn = styled.div`
@@ -40,48 +40,31 @@ const ModalContainer = styled(FlexColumn)`
   transform: translate(-50%, -50%);
 `;
 
-const loadingStates = {
-  success: "success",
-  fail: "fail",
-  loading: "loading",
-  userNotFound: "user-not-found"
-};
-
 const ConfirmationModal = props => {
   const {
     confirmFunction,
     confirmationText,
-    handleClose
+    handleClose,
+    saveResult
   } = props;
 
-  const [saveResult, setSaveResult] = useState(null);
 
   const handleConfirm = () => {
-    setSaveResult(loadingStates.saving);
     confirmFunction().then(() => {
-      setSaveResult(loadingStates.success);
       setTimeout(() => handleClose(), 2000);
     }).catch(() => {
-      setSaveResult(loadingStates.fail);
-      setTimeout(() => handleClose(), 2000);
+      // setTimeout(() => handleClose(), 2000);
     });
   };
-
-  let overlayMessage = "Saving";
-  if (saveResult === loadingStates.success) {
-    overlayMessage = "Operation Was Successful!";
-  } else if (saveResult === loadingStates.fail) {
-    overlayMessage = "Operation Failed.";
-  }
 
   return (
     <ModalContainer>
       <PaperContainer>
-        {saveResult === loadingStates.success || saveResult === loadingStates.fail ?
+        {saveResult.status !== null ?
           <ModalOverlay
-            message={overlayMessage}
-            modal={true}
-            status={saveResult}
+            message={saveResult.message}
+            status={saveResult.status}
+            handleClose={handleClose}
           /> : null}
         <Text>{confirmationText}</Text>
         <ButtonWrapper>
@@ -100,7 +83,11 @@ const ConfirmationModal = props => {
 ConfirmationModal.propTypes = {
   handleClose: PropTypes.func.isRequired,
   confirmFunction: PropTypes.func.isRequired,
-  confirmationText: PropTypes.string.isRequired
+  confirmationText: PropTypes.string.isRequired,
+  saveResult: PropTypes.shape({
+    status: PropTypes.string,
+    message: PropTypes.string
+  }).isRequired
 };
 
 export default ConfirmationModal;

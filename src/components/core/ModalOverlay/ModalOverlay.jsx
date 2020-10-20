@@ -107,16 +107,9 @@ const TextWrapper = styled.div`
 const ModalOverlay = props => {
   const {
     message,
-    setManagementTableState,
+    handleClose,
     status
   } = props;
-
-  const handleClose = () => {
-    setManagementTableState({
-      overlayMessage: "",
-      saveStatus: null
-    });
-  };
 
   const getIconAndBackground = status => {
     if (status === modalOverlayStatuses.SUCCESS) {
@@ -174,7 +167,7 @@ const ModalOverlay = props => {
 
 ModalOverlay.propTypes = {
   message: PropTypes.string.isRequired,
-  setManagementTableState: PropTypes.func,
+  handleClose: PropTypes.func,
   status: PropTypes.oneOf(Object.values(modalOverlayStatuses)).isRequired
 };
 
