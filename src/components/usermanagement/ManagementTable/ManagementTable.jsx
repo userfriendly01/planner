@@ -190,7 +190,7 @@ const ManagementTable = props => {
         });
         setSaveResult({
           status: modalOverlayStatuses.FAIL,
-          message: err.message
+          message: err.response.data.message
         });
       });
   };
