@@ -97,5 +97,17 @@ describe("<ConfirmationModal />", () => {
         message: "yay!"
       }, 0);
     });
+    test("When the Save Result is fail, the ModalOverlay is passed the correct props, handleClose is run", () => {
+      const rendered = renderComponent({
+        status: "fail",
+        message: "boo!"
+      });
+      expectMockedComponent(rendered, { ModalOverlay }, 1);
+      expectOnlyPassedProps(ModalOverlay, {
+        handleClose: mockHandleClose,
+        status: "fail",
+        message: "boo!"
+      }, 0);
+    });
   });
 });
