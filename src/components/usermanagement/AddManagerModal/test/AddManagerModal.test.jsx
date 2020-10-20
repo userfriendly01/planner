@@ -95,7 +95,7 @@ describe("<AddManagerModal />", () => {
         expectOnlyPassedProps(CustomInput, {
           disabled: false,
           loading: false,
-          nNumber: "n"
+          value: "n"
         });
         expect(rendered.queryAllByText("ModalHelperText").length).toBe(0);
       });
@@ -112,7 +112,7 @@ describe("<AddManagerModal />", () => {
             return Promise.resolve();
           }).then(() => {
             expect(CustomInput.mock.calls.length).toBe(4);
-            expect(CustomInput.mock.calls[1][0].nNumber).toBe(nNumber);
+            expect(CustomInput.mock.calls[1][0].value).toBe(nNumber);
             expect(CustomInput.mock.calls[2][0].loading).toBe(true);
             expect(CustomInput.mock.calls[3][0].disabled).toBe(true);
             expect(ModalHelperText.mock.calls.length).toBe(2);
@@ -138,9 +138,9 @@ describe("<AddManagerModal />", () => {
             const { clearFunction } = getMockedComponentProps(ModalHelperText, getLastInstanceCalled(ModalHelperText));
             act(() => clearFunction());
             const {
-              nNumber
+              value
             } = getMockedComponentProps(CustomInput, getLastInstanceCalled(CustomInput));
-            expect(nNumber).toBe("n");
+            expect(value).toBe("n");
             done();
           });
         });
@@ -155,7 +155,7 @@ describe("<AddManagerModal />", () => {
             return Promise.resolve();
           }).then(() => {
             expect(CustomInput.mock.calls.length).toBe(4);
-            expect(CustomInput.mock.calls[1][0].nNumber).toBe(nNumber);
+            expect(CustomInput.mock.calls[1][0].value).toBe(nNumber);
             expect(CustomInput.mock.calls[2][0].loading).toBe(true);
             expect(CustomInput.mock.calls[3][0].disabled).toBe(false);
             expect(ModalHelperText.mock.calls.length).toBe(2);
@@ -175,7 +175,7 @@ describe("<AddManagerModal />", () => {
             return Promise.resolve();
           }).then(() => {
             expect(CustomInput.mock.calls.length).toBe(4);
-            expect(CustomInput.mock.calls[1][0].nNumber).toBe(nNumber);
+            expect(CustomInput.mock.calls[1][0].value).toBe(nNumber);
             expect(CustomInput.mock.calls[2][0].loading).toBe(true);
             expect(CustomInput.mock.calls[3][0].disabled).toBe(false);
             expect(ModalHelperText.mock.calls[1][0].error).toBe(true);
@@ -193,7 +193,7 @@ describe("<AddManagerModal />", () => {
           updateValue("12345678");
         });
         expect(CustomInput.mock.calls.length).toBe(2);
-        const newValue = CustomInput.mock.calls[1][0].nNumber;
+        const newValue = CustomInput.mock.calls[1][0].value;
         expect(newValue).toEqual("12345678");
         expect(CustomInput.mock.calls[0][0].disabled).toEqual(false);
         expect(CustomInput.mock.calls[1][0].disabled).toEqual(false);
