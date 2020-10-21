@@ -3,6 +3,11 @@ export const sortDialListEntriesByName = (a, b) => {
   return sortStrings(aName, bName);
 };
 
+export const sortDirectoryListEntriesByName = (a, b) => {
+  const [aName, bName] = [`${a.last_nme}, ${a.first_nme}`, `${b.last_nme}, ${b.first_nme}`];
+  return sortStrings(aName, bName);
+};
+
 export const sortManagersByName = (a, b) => {
   const [aName, bName] = [a.manager_first_name + " " + a.manager_last_name, b.manager_first_name + " " + b.manager_last_name];
   return sortStrings(aName, bName);
