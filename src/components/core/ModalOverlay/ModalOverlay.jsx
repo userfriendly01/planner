@@ -36,10 +36,6 @@ const Circle = styled.circle`
   animation: ${Dash} .9s ease-in-out;
 `;
 
-const BottomDiv = styled.div`
-  height: 1vh;
-`;
-
 const CloseButtonDiv = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -83,9 +79,7 @@ const Overlay = styled(FlexRow)`
   width: 100%;
   z-index: 100;
   left: 0;
-  margin-left: 0;
   top: 0;
-  margin-top: 0;
   position: absolute;
 `;
 
@@ -148,18 +142,17 @@ const ModalOverlay = props => {
       modalBackground={background}
       status={status}
     >
-      {status === modalOverlayStatuses.FAIL ?
-        <CloseButtonDiv>
-          <StyledCloseRounded data-testid="close-button" onClick={handleClose} />
-        </CloseButtonDiv>
-        : null}
       <InnerContainer>
+        {status === modalOverlayStatuses.FAIL ?
+          <CloseButtonDiv>
+            <StyledCloseRounded data-testid="close-button" onClick={handleClose} />
+          </CloseButtonDiv>
+          : null}
         {icon}
         <TextWrapper>
           {message}
         </TextWrapper>
       </InnerContainer>
-      <BottomDiv />
     </Overlay>
   );
 };

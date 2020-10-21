@@ -35,8 +35,7 @@ describe("<ModalOverlay />", () => {
       const rendered = render(<ModalOverlay
         status={modalOverlayStatuses.FAIL}
         message={failMessage}
-        handleClose={mockHandleClose}
-        modal={true}/>);
+        handleClose={mockHandleClose}/>);
       const closeButton = rendered.getByTestId("close-button");
       fireEvent.click(closeButton);
       expect(mockHandleClose).toHaveBeenCalledTimes(1);

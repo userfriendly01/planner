@@ -136,6 +136,7 @@ const TableText = styled.div`
   margin: 2px;
 `;
 
+
 const ManagementTable = props => {
   const {
     deltaToggle,
@@ -166,9 +167,10 @@ const ManagementTable = props => {
       status: modalOverlayStatuses.SAVING,
       message: "Saving"
     });
+    let resultMessage;
     return myAxios.delete(apiPaths.DELETE_WORKER(deletedWorker.sid))
       .then(res => {
-        const resultMessage = `Successfully deleted Triton worker with sid ${deletedWorker.sid}`;
+        resultMessage = `Successfully deleted Triton worker with sid ${deletedWorker.sid}`;
         console.log(resultMessage,
           { responseData: res.data });
         dispatch({
@@ -185,12 +187,17 @@ const ManagementTable = props => {
         }, 2000);
       })
       .catch(err => {
-        console.error(`Failed to delete worker ${deletedWorker.sid}`, {
+        if (typeof err.response.data.error === "object" ){
+          resultMessage = `Failed to delete worker ${deletedWorker.sid}`;
+        } else {
+          resultMessage = err.response.data.error;
+        }
+        console.error(resultMessage, {
           error: err
         });
         setSaveResult({
           status: modalOverlayStatuses.FAIL,
-          message: err.response.data.error
+          message: resultMessage
         });
       });
   };
@@ -271,12 +278,15 @@ const ManagementTable = props => {
         <Modal open={confirmationModalOpts.open}>
           { confirmationModalOpts.worker ?
             <ConfirmationModal
-              confirmFunction={deleteUser}
+              onConfirm={deleteUser}
               handleClose={() => {
                 setConfirmationModalOpts(defaultModalOpts);
                 setSaveResult(defaultSaveResult);
               }}
-              confirmationText= {"Are you sure you want to delete " + confirmationModalOpts.worker.attributes.full_name + "?"}
+              body={{
+                confirmationText: "Are you sure you want to delete this worker? ",
+                data: confirmationModalOpts.worker.attributes.full_name
+              }}
               saveResult={saveResult}
             />
             : null

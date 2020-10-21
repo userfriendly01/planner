@@ -21,15 +21,30 @@ const FlexRow = styled.div`
 const ButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
   padding: 1%;
+  height: 50px;
 `;
 
-const Text = styled.h2`
+const Button = styled(StyledButton)`
+  height: 40;
+  width: 100;
+`;
+
+const ConfirmationText = styled.h2`
   display: flex;
-  text-align: center;
-  line-height: 3;
-  font-size: 20px;
-  padding: 10px;
-  height: 140px;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  padding: 0px 10px 0px 10px ;
+  height: 60px;
+`;
+
+const Data = styled.h2`
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  font-size: 23px;
+  padding: 0px 10px 0px 10px ;
+  height: 60px;
 `;
 
 const ModalContainer = styled(FlexColumn)`
@@ -42,8 +57,8 @@ const ModalContainer = styled(FlexColumn)`
 
 const ConfirmationModal = props => {
   const {
-    confirmFunction,
-    confirmationText,
+    onConfirm,
+    body,
     handleClose,
     saveResult
   } = props;
@@ -58,14 +73,15 @@ const ConfirmationModal = props => {
             status={saveResult.status}
             handleClose={handleClose}
           /> : null}
-        <Text>{confirmationText}</Text>
+        <ConfirmationText>{body.confirmationText}</ConfirmationText>
+        <Data>{body.data}</Data>
         <ButtonWrapper>
-          <StyledButton onClick={confirmFunction} data-testid={"confirm-button"}>
+          <Button onClick={onConfirm} data-testid={"confirm-button"}>
             Confirm
-          </StyledButton>
-          <StyledButton onClick={handleClose} data-testid={"cancel-button"}>
+          </Button>
+          <Button onClick={handleClose} data-testid={"cancel-button"}>
             Cancel
-          </StyledButton>
+          </Button>
         </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>
@@ -74,8 +90,11 @@ const ConfirmationModal = props => {
 
 ConfirmationModal.propTypes = {
   handleClose: PropTypes.func.isRequired,
-  confirmFunction: PropTypes.func.isRequired,
-  confirmationText: PropTypes.string.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+  body: PropTypes.shape({
+    confirmationText: PropTypes.string,
+    data: PropTypes.string
+  }).isRequired,
   saveResult: PropTypes.shape({
     status: PropTypes.string,
     message: PropTypes.string

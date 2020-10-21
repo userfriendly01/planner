@@ -184,9 +184,11 @@ describe("<ManagementTable />", () => {
     expectMockedComponent(rendered, { ConfirmationModal }, 0);
     const indexClicked = 1;
       act(() => fireEvent.click(deleteButtons[indexClicked]));
-      const confirmationText = ConfirmationModal.mock.calls[0][0].confirmationText;
+      const confirmationText = ConfirmationModal.mock.calls[0][0].body.confirmationText;
+      const data = ConfirmationModal.mock.calls[0][0].body.data;
       expectMockedComponent(rendered, { ConfirmationModal }, 1);
-      expect(confirmationText).toBe("Are you sure you want to delete Test 2?");
+      expect(confirmationText).toBe("Are you sure you want to delete this worker? ");
+      expect(data).toBe("Test 2");
     });
     test("when the ConfirmationModal is cancelled, handleClose is called", () => {
       const rendered = renderComponent(mockWorkerData);
@@ -209,9 +211,9 @@ describe("<ManagementTable />", () => {
         const indexClicked = 1;
         act(() => fireEvent.click(deleteButtons[indexClicked]));
         expectMockedComponent(rendered, { ConfirmationModal }, 1);
-        const confirmFunction = ConfirmationModal.mock.calls[0][0].confirmFunction;
+        const onConfirm = ConfirmationModal.mock.calls[0][0].onConfirm;
         act(() => {
-          confirmFunction().then(() => {
+          onConfirm().then(() => {
             const actions = mockStore.getActions();
             jest.advanceTimersByTime(2000);
             expect(actions).toHaveLength(1);
@@ -223,7 +225,7 @@ describe("<ManagementTable />", () => {
           done();
         });
       });
-      test("DeleteUser fails", done => {
+      test("DeleteUser fails with String Error", done => {
         const workerSid = mockWorkerData[1].sid;
         axiosMock.onDelete(apiPaths.DELETE_WORKER(workerSid)).reply(500, { error: "meh" });
         const rendered = renderComponent(mockWorkerData);
@@ -232,9 +234,35 @@ describe("<ManagementTable />", () => {
         const indexClicked = 1;
         act(() => fireEvent.click(deleteButtons[indexClicked]));
         expectMockedComponent(rendered, { ConfirmationModal }, 1);
-        const confirmFunction = ConfirmationModal.mock.calls[0][0].confirmFunction;
+        const onConfirm = ConfirmationModal.mock.calls[0][0].onConfirm;
         act(() => {
-          confirmFunction().then(() => {
+          onConfirm().then(() => {
+            const actions = mockStore.getActions();
+            expect(actions).toHaveLength(0);
+            done();
+          });
+        });
+      });
+      test("DeleteUser fails with Object Error", done => {
+        const workerSid = mockWorkerData[1].sid;
+        axiosMock.onDelete(apiPaths.DELETE_WORKER(workerSid)).reply(500, { 
+          error: {
+            response: {
+              data: {
+                error: {}
+              }
+            }
+          }
+        });
+        const rendered = renderComponent(mockWorkerData);
+        const deleteButtons = rendered.getAllByTestId("delete-button");
+        expectMockedComponent(rendered, { ConfirmationModal }, 0);
+        const indexClicked = 1;
+        act(() => fireEvent.click(deleteButtons[indexClicked]));
+        expectMockedComponent(rendered, { ConfirmationModal }, 1);
+        const onConfirm = ConfirmationModal.mock.calls[0][0].onConfirm;
+        act(() => {
+          onConfirm().then(() => {
             const actions = mockStore.getActions();
             expect(actions).toHaveLength(0);
             done();

@@ -28,12 +28,16 @@ const initialSaveResult = {
   status: null,
   message: null
 }
+const body = {
+  confirmationText: "Are you sure?",
+  data: "Peter Griffin"
+}
 
 const renderComponent = () => {
   return render(<ConfirmationModal
     handleClose={mockHandleClose}
-    confirmFunction={mockHandleConfirm} 
-    confirmationText={"Are you sure?"}
+    onConfirm={mockHandleConfirm} 
+    body={body}
     saveResult={initialSaveResult} />);
 };
 
@@ -51,6 +55,7 @@ describe("<ConfirmationModal />", () => {
     test("should pass confirmationText and confirm/cancel functions, and the save result", () => {
       const rendered = renderComponent();
       expect(rendered.container).toHaveTextContent("Are you sure?");
+      expect(rendered.container).toHaveTextContent("Peter Griffin");
       expectMockedComponent(rendered, { StyledButton }, 2);
       expectMockedComponent(rendered, { ModalOverlay }, 0);
     });
@@ -81,8 +86,8 @@ describe("<ConfirmationModal />", () => {
     const renderComponent = saveResult => {
       return render(<ConfirmationModal
         handleClose={mockHandleClose}
-        confirmFunction={mockHandleConfirm} 
-        confirmationText={"Are you sure?"}
+        onConfirm={mockHandleConfirm} 
+        body={body}
         saveResult={saveResult} />);
     }
     test("When the Save Result is successful, the ModalOverlay is passed the correct props, handleClose is run", () => {
