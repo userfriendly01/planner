@@ -33,7 +33,7 @@ describe("deleteUser", () => {
     });
   });
   describe("service call to DELETE_WORKER fails", () => {
-    const badResponse = { wahh: "Failed transfer to VDN" };
+    const badResponse = { wahh: "boo" };
     const status = 500;
     const workerSid = "WK01234567";
     beforeEach(() => {
