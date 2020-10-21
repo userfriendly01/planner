@@ -16,17 +16,12 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import {
-  apiPaths,
-  modalOverlayStatuses
-} from "globals";
+import { modalOverlayStatuses } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
+import { deleteUser } from "services";
 import styled from "styled-components";
-import {
-  formatWorkerSkillsToHTML,
-  myAxios
-} from "utils";
+import { formatWorkerSkillsToHTML } from "utils";
 
 const headerIconWidth = "64px";
 
@@ -161,14 +156,14 @@ const ManagementTable = props => {
   const selectedWorkers = state.workerContext.selectedWorkers;
   const dispatch = useAdminDispatch();
 
-  const deleteUser = () => {
+  const handleDeleteUser = () => {
     const deletedWorker = confirmationModalOpts.worker;
     setSaveResult({
       status: modalOverlayStatuses.SAVING,
       message: "Saving"
     });
     let resultMessage;
-    return myAxios.delete(apiPaths.DELETE_WORKER(deletedWorker.sid))
+    return deleteUser(deletedWorker.sid)
       .then(res => {
         resultMessage = `Successfully deleted Triton worker with sid ${deletedWorker.sid}`;
         console.log(resultMessage,
@@ -278,7 +273,7 @@ const ManagementTable = props => {
         <Modal open={confirmationModalOpts.open}>
           { confirmationModalOpts.worker ?
             <ConfirmationModal
-              onConfirm={deleteUser}
+              onConfirm={handleDeleteUser}
               handleClose={() => {
                 setConfirmationModalOpts(defaultModalOpts);
                 setSaveResult(defaultSaveResult);

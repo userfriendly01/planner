@@ -1,15 +1,12 @@
 import ManagementTable from "../ManagementTable";
-import MockAdapter from "axios-mock-adapter";
 import {
   ConfirmationModal,
   EditUserModal,
   ModalOverlay
 } from "components";
-import {
-  apiPaths,
-  theme
-} from "globals";
+import { theme } from "globals";
 import React from "react";
+import { deleteUser } from "services";
 import {
   act,
   expectMockedComponent,
@@ -20,9 +17,6 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import { myAxios } from "utils";
-
-const axiosMock = new MockAdapter(myAxios);
 
 jest.useFakeTimers();
 
@@ -31,6 +25,11 @@ jest.mock("components", () => ({
   ConfirmationModal: jest.fn(),
   EditUserModal: jest.fn(),
   ModalOverlay: jest.fn()
+}));
+
+jest.mock("services", () => ({
+  __esModule: true,
+  deleteUser: jest.fn()
 }));
 
 const mockWorkerData = [
@@ -107,7 +106,6 @@ describe("<ManagementTable />", () => {
       EditUserModal,
       ModalOverlay
     });
-    axiosMock.reset();
     jest.clearAllMocks();
     mockStore.reset();
     setDeltaToggle.mockClear();
@@ -204,7 +202,7 @@ describe("<ManagementTable />", () => {
     describe("When the confirmFunction is run, deleteUser is initiated", () => {
       test("DeleteUser is successful", done => {
         const workerSid = mockWorkerData[1].sid;
-        axiosMock.onDelete(apiPaths.DELETE_WORKER(workerSid)).reply(200, { whatever: "lol" });
+        deleteUser.mockImplementation(() => { return Promise.resolve(200, { whatever: "lol" } )});
         const rendered = renderComponent(mockWorkerData);
         const deleteButtons = rendered.getAllByTestId("delete-button");
         expectMockedComponent(rendered, { ConfirmationModal }, 0);
@@ -226,8 +224,14 @@ describe("<ManagementTable />", () => {
         });
       });
       test("DeleteUser fails with String Error", done => {
-        const workerSid = mockWorkerData[1].sid;
-        axiosMock.onDelete(apiPaths.DELETE_WORKER(workerSid)).reply(500, { error: "meh" });
+        const errorRes = {
+          response: {
+            data: {
+              error: "I'm a String Error!"
+            }
+          }
+        }
+        deleteUser.mockRejectedValue(errorRes);
         const rendered = renderComponent(mockWorkerData);
         const deleteButtons = rendered.getAllByTestId("delete-button");
         expectMockedComponent(rendered, { ConfirmationModal }, 0);
@@ -244,16 +248,14 @@ describe("<ManagementTable />", () => {
         });
       });
       test("DeleteUser fails with Object Error", done => {
-        const workerSid = mockWorkerData[1].sid;
-        axiosMock.onDelete(apiPaths.DELETE_WORKER(workerSid)).reply(500, { 
-          error: {
-            response: {
-              data: {
-                error: {}
-              }
+        const errorRes = {
+          response: {
+            data: {
+              error: {}
             }
           }
-        });
+        }
+        deleteUser.mockRejectedValue(errorRes);
         const rendered = renderComponent(mockWorkerData);
         const deleteButtons = rendered.getAllByTestId("delete-button");
         expectMockedComponent(rendered, { ConfirmationModal }, 0);
