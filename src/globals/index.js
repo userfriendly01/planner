@@ -29,13 +29,17 @@ export const modalOverlayStatuses = {
   SUCCESS: "success"
 };
 
-export const modalOverlayTimeout = 2000;
-
 export const nNumMatcher = /[n,N]\d{7}/g;
 export const extensionMatcher = /^\d{4}$/;
 
 export const resetResponses = {
   SKILLS_WERE_EQUAL: "Worker default_skills is equal to currently assigned skills"
+};
+
+export const timeouts = {
+  AUTH: 3600 * 1000,
+  CHECK_AUTH: 5000,
+  MODAL_OVERLAY: 2000
 };
 
 export const workersPerPage = 15;

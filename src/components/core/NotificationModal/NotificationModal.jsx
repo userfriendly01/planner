@@ -22,15 +22,6 @@ const ButtonWrapper = styled(FlexRow)`
   padding: 1%;
 `;
 
-const HeaderAndCloseButtonWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-
-const LeftDiv = styled.div`
-  width: 1em;
-`;
-
 const ModalContainer = styled(FlexColumn)`
   left: 50%;
   padding: 2%;
@@ -39,18 +30,21 @@ const ModalContainer = styled(FlexColumn)`
   transform: translate(-50%, -50%);
 `;
 
+const TextWrapper = styled.div`
+  align-self: center;
+`;
+
 const NotificationModal = props => {
-  const { reloadApp } = props;
+  const { reloadFn } = props;
 
   return (
     <ModalContainer>
       <PaperContainer>
-        <HeaderAndCloseButtonWrapper>
-          <LeftDiv></LeftDiv>
-        </HeaderAndCloseButtonWrapper>
-        <p>Your session has expired. Please reload the page</p>
+        <TextWrapper>
+          <p>Your session has expired. Please reload the page.</p>
+        </TextWrapper>
         <ButtonWrapper>
-          <StyledButton disabled={false} onClick={reloadApp}>Reload</StyledButton>
+          <StyledButton disabled={false} onClick={reloadFn}>Reload</StyledButton>
         </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>
@@ -58,7 +52,7 @@ const NotificationModal = props => {
 };
 
 NotificationModal.propTypes = {
-  reloadApp: PropTypes.func.isRequired
+  reloadFn: PropTypes.func.isRequired
 };
 
 export default NotificationModal;

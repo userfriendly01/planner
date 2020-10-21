@@ -18,7 +18,7 @@ import {
   apiPaths,
   extensionMatcher,
   modalOverlayStatuses,
-  modalOverlayTimeout
+  timeouts
 } from "globals";
 import PropTypes from "prop-types";
 import React, {
@@ -121,7 +121,7 @@ const AddUserModal = props => {
           ...loading,
           saveUser: false
         });
-      }, modalOverlayTimeout);
+      }, timeouts.MODAL_OVERLAY);
       return;
     }
     // see this wiki page for attributes that will be automatically updated through SSO
@@ -170,7 +170,7 @@ const AddUserModal = props => {
             ...loading,
             saveUser: false
           });
-        }, modalOverlayTimeout);
+        }, timeouts.MODAL_OVERLAY);
       })
       .catch(err => {
         updateLoading({
@@ -184,7 +184,7 @@ const AddUserModal = props => {
             ...loading,
             saveUser: false
           });
-        }, modalOverlayTimeout);
+        }, timeouts.MODAL_OVERLAY);
         console.error("AddUserModal - Failed to create worker in twilio workspace", err);
       });
   };
