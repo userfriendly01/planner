@@ -1,18 +1,28 @@
-import { CircularProgress } from "@material-ui/core";
+import App from "../App";
+import {
+  CircularProgress,
+  Modal
+} from "@material-ui/core";
 import MockAdapter from "axios-mock-adapter";
 import {
   Header,
   NavTabs,
   NotificationModal
 } from "components";
-import { apiPaths } from "globals";
+import {
+  apiPaths,
+  timeouts
+} from "globals";
+import MockDate from "mockdate";
 import React from "react";
 import {
+  act,
   expectMockedComponent,
+  expectOnlyPassedProps,
   mockStore,
   render,
   setupMockedComponents,
-  waitForElement
+  waitFor
 } from "testUtils";
 import {
   formatTaskRouterSkills,
@@ -20,9 +30,6 @@ import {
   getUniqueManagerList,
   myAxios
 } from "utils";
-import App from "../App";
-
-jest.useFakeTimers();
 
 const authEndpoint = apiPaths.AUTH;
 const axiosMock = new MockAdapter(myAxios);
@@ -31,6 +38,8 @@ const skillsEndpoint = apiPaths.GET_TASKROUTER_SKILLS;
 const workersEndpoint = apiPaths.GET_WORKERS;
 
 const auth = { whatever: "lol" };
+const timeAppFirstLoads = "July 18, 2020 00:42:30 GMT+00:00";
+const oneHourLater = "July 18, 2020 01:42:30 GMT+00:00";
 
 const profiles = [
   { cool: "neat" },
@@ -70,8 +79,15 @@ const taskrouterSkills = [
   }
 ];
 
+delete window.location;
+window.location = { reload: jest.fn() };
+
+jest.useFakeTimers();
+
 jest.mock("@material-ui/core", () => ({
-  CircularProgress: jest.fn()
+  __esModule: true,
+  CircularProgress: jest.fn(),
+  Modal: jest.fn()
 }));
 
 jest.mock("components", () => ({
@@ -82,16 +98,20 @@ jest.mock("components", () => ({
 }));
 
 describe("<App />", () => {
+
   beforeEach(() => {
     mockStore.reset();
     jest.clearAllMocks();
+    MockDate.set(timeAppFirstLoads);
     setupMockedComponents({
       CircularProgress,
       Header,
+      Modal,
       NavTabs,
       NotificationModal
     });
   });
+
   describe("all service calls successful", () => {
     beforeEach(() => {
       axiosMock.onGet(authEndpoint).reply(200, auth);
@@ -106,49 +126,70 @@ describe("<App />", () => {
         expectMockedComponent(rendered, { CircularProgress });
       });
     });
-    describe("once service call is completed", () => {
+    describe("service calls are complete", () => {
       describe("auth token is good", () => {
-        test("should render Header & NavTabs and dispatch appropriate actions", done => {
-          const rendered = render(<App />);
-          waitForElement(() => rendered.getByTestId("app-wrapper"))
-            .then(() => {
-              const actions = mockStore.getActions();
-              expect(actions.length).toBe(5);
-              expect(actions).toEqual([
-                {
-                  type: "loadUserData",
-                  payload: { pingIdentity: auth }
-                },
-                {
-                  type: "loadProfiles",
-                  payload: profiles
-                },
-                {
-                  type: "loadSkills",
-                  payload: formatTaskRouterSkills(taskrouterSkills)
-                },
-                {
-                  type: "addWorkers",
-                  payload: formatWorkerResponse(workers)
-                },
-                {
-                  type: "loadManagers",
-                  payload: getUniqueManagerList(formatWorkerResponse(workers))
-                }
-              ]);
-              expectMockedComponent(rendered, { Header });
-              expectMockedComponent(rendered, { NavTabs });
-              expectMockedComponent(rendered, { NotificationModal }, 0);
-              expect(rendered.container).not.toHaveTextContent("Loading...");
-              done();
+        test(
+          "should render Header & NavTabs, should dispatch appropriate actions, Modal should not be open",
+          async () => {
+            const rendered = render(<App />);
+            await waitFor(() => rendered.getByTestId("app-wrapper"));
+            const actions = mockStore.getActions();
+            expect(actions.length).toBe(5);
+            expect(actions).toEqual([
+              {
+                type: "loadUserData",
+                payload: { pingIdentity: auth }
+              },
+              {
+                type: "loadProfiles",
+                payload: profiles
+              },
+              {
+                type: "loadSkills",
+                payload: formatTaskRouterSkills(taskrouterSkills)
+              },
+              {
+                type: "addWorkers",
+                payload: formatWorkerResponse(workers)
+              },
+              {
+                type: "loadManagers",
+                payload: getUniqueManagerList(formatWorkerResponse(workers))
+              }
+            ]);
+            expectMockedComponent(rendered, { Header });
+            expectMockedComponent(rendered, { NavTabs });
+            expectMockedComponent(rendered, { Modal });
+            expectOnlyPassedProps(Modal, {
+              disableBackdropClick: true,
+              open: false
             });
+            expectMockedComponent(rendered, { CircularProgress }, 0);
+            expect(rendered.container).not.toHaveTextContent("Loading...");
+          });
+      });
+      describe("auth token has expired", () => {
+        test("should render NotificationModal", async () => {
+          const rendered = render(<App />);
+          await waitFor(() => rendered.getByTestId("app-wrapper"));
+          const modalChildren = Modal.mock.calls[0][0].children;
+          const modalChildrenRendered = render(<div>{modalChildren}</div>);
+          MockDate.set(oneHourLater);
+          await act(() => jest.advanceTimersByTime(timeouts.CHECK_AUTH));
+          expectOnlyPassedProps(Modal, {
+            disableBackdropClick: true,
+            open: true
+          });
+          expectMockedComponent(modalChildrenRendered, { NotificationModal });
+          // testing reloadFn for code coverage
+          const reloadFn = NotificationModal.mock.calls[0][0].reloadFn;
+          act(() => reloadFn());
+          expect(window.location.reload).toHaveBeenCalledTimes(1);
         });
       });
-      // describe("auth token has expired", () => {
-      //   act(() => jest.runAllTimers());
-      // });
     });
   });
+
   describe(authEndpoint, () => {
     describe("authentication service call returned an error in the 400's", () => {
       const statusCode = 403;
@@ -160,7 +201,7 @@ describe("<App />", () => {
       });
       test("should return 'You are not authorized to view this page'", done => {
         const rendered = render(<App />);
-        waitForElement(() => rendered.getByTestId("error-overlay"))
+        waitFor(() => rendered.getByTestId("error-overlay"))
           .then(() => {
             expect(rendered.container).toHaveTextContent(statusCode);
             expect(rendered.container).toHaveTextContent("You are not authorized to view this page");
@@ -178,7 +219,7 @@ describe("<App />", () => {
       });
       test("should return 'An error occurred while logging in.'", done => {
         const rendered = render(<App />);
-        waitForElement(() => rendered.getByTestId("error-overlay"))
+        waitFor(() => rendered.getByTestId("error-overlay"))
           .then(() => {
             expect(rendered.container).toHaveTextContent(statusCode);
             expect(rendered.container).toHaveTextContent("An error occurred when trying to authenticate");
@@ -187,6 +228,7 @@ describe("<App />", () => {
       });
     });
   });
+
   describe(profilesEndpoint, () => {
     describe("profiles service call returned an error", () => {
       const statusCode = 500;
@@ -198,7 +240,7 @@ describe("<App />", () => {
       });
       test("should render error message 'Failed to fetch profiles from service'", done => {
         const rendered = render(<App />);
-        waitForElement(() => rendered.getByTestId("error-overlay"))
+        waitFor(() => rendered.getByTestId("error-overlay"))
           .then(() => {
             expect(rendered.container).toHaveTextContent(statusCode);
             expect(rendered.container).toHaveTextContent("Failed to fetch profiles from service");
@@ -226,7 +268,7 @@ describe("<App />", () => {
       });
       test("should dispatch addWorkers twice, all other actions once", done => {
         const rendered = render(<App />);
-        waitForElement(() => rendered.getByTestId("app-wrapper"))
+        waitFor(() => rendered.getByTestId("app-wrapper"))
           .then(() => {
             const actions = mockStore.getActions();
             expect(actions.length).toBe(6);
@@ -273,7 +315,7 @@ describe("<App />", () => {
       });
       test("should return 'An error occurred while logging in.'", done => {
         const rendered = render(<App />);
-        waitForElement(() => rendered.getByTestId("error-overlay"))
+        waitFor(() => rendered.getByTestId("error-overlay"))
           .then(() => {
             expect(rendered.container).toHaveTextContent(statusCode);
             expect(rendered.container).toHaveTextContent("Failed to fetch workers from service");
@@ -294,7 +336,7 @@ describe("<App />", () => {
       });
       test("should return 'An error occurred while logging in.'", done => {
         const rendered = render(<App />);
-        waitForElement(() => rendered.getByTestId("error-overlay"))
+        waitFor(() => rendered.getByTestId("error-overlay"))
           .then(() => {
             expect(rendered.container).toHaveTextContent(statusCode);
             expect(rendered.container).toHaveTextContent("Failed to fetch taskrouter skills from service");

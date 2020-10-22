@@ -10,7 +10,8 @@ import {
 import { useAdminDispatch } from "context";
 import {
   apiPaths,
-  theme
+  theme,
+  timeouts
 } from "globals";
 import React, {
   useEffect,
@@ -143,7 +144,6 @@ const getWorkers = async dispatch => {
     } while (pageToken);
 
     const managerList = getUniqueManagerList(workers);
-    console.log("workers:", workers); //
     dispatch({
       type: "loadManagers",
       payload: managerList
@@ -160,27 +160,18 @@ const App = () => {
 
   const [loadResult, setLoadResult] = useState(null);
   const [authExpired, setAuthExpired] = useState(false);
-  const [reloadButtonSelected, setReloadButtonSelected] = useState(false);
   const dispatch = useAdminDispatch();
 
-  // const authExpiration = currentTime + 3600 * 1000; // one hour from now
-  const authExpiration = Date.now() + 30 * 1000;
+  let currentTime = Date.now();
+  const authExpirationTime = currentTime + timeouts.AUTH;
 
   const checkAuthExpiration = () => {
-    const currentTime = Date.now();
-    console.log("current time:", new Date(currentTime)); //
-    console.log("authExpiration:", new Date(authExpiration)); //
-    console.log("ms until expiration: ", authExpiration - currentTime); //
-    if (authExpiration - currentTime <= 0) {
+    currentTime = Date.now();
+    if (authExpirationTime - currentTime <= 0) {
       setAuthExpired(true);
     } else {
-      setTimeout(checkAuthExpiration, 5 * 1000);
+      setTimeout(checkAuthExpiration, timeouts.CHECK_AUTH);
     }
-  };
-
-  const reloadApp = () => {
-    setAuthExpired(false);
-    setReloadButtonSelected(true);
   };
 
   useEffect(() => {
@@ -198,7 +189,7 @@ const App = () => {
         console.error(err.msg, { error: err.error });
         setLoadResult(err);
       });
-  }, [reloadButtonSelected]);
+  }, []);
 
   if (loadResult) {
     if (loadResult === success) {
@@ -206,8 +197,8 @@ const App = () => {
         <AppWrapper data-testid="app-wrapper">
           <Header/>
           <NavTabs/>
-          <Modal disableBackdropClick={true}/*??*/ open={authExpired === true}>
-            <NotificationModal reloadApp={reloadApp} />
+          <Modal disableBackdropClick={true} open={authExpired === true}>
+            <NotificationModal reloadFn={() => window.location.reload()} />
           </Modal>
         </AppWrapper>
       );
