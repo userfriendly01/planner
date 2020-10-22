@@ -1,3 +1,4 @@
+import { CloseRounded } from "@material-ui/icons";
 import { ModalFetchingRing } from "components";
 import { modalOverlayStatuses } from "globals";
 import PropTypes from "prop-types";
@@ -35,10 +36,28 @@ const Circle = styled.circle`
   animation: ${Dash} .9s ease-in-out;
 `;
 
+const CloseButtonDiv = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+`;
+
 const FlexRow = styled.div`
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
+`;
+
+const Icon = styled.svg`
+  stroke-width: .2em;
+  width: 3em;
+`;
+
+const InnerContainer = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 const Line = styled.line`
@@ -55,37 +74,34 @@ const Overlay = styled(FlexRow)`
   font-family: 'Roboto', sans-serif;
   font-size: 1.8em;
   height: 100%;
-  justify-content: center;
-  left: 0;
+  justify-content: ${props => props.status === modalOverlayStatuses.FAIL ? "space-between" : "center"};
   opacity: .75;
-  position: absolute;
-  top: 0;
   width: 100%;
   z-index: 100;
+  left: 0;
+  top: 0;
+  position: absolute;
 `;
 
-const Icon = styled.svg`
-  stroke-width: .2em;
-  width: 4em;
-`;
-
-const InnerContainer = styled.div`
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 5%;
+const StyledCloseRounded = styled(CloseRounded)`
+  cursor: pointer;
+  && {
+    font-size: 2rem;
+    margin: .5rem;
+  }
 `;
 
 const TextWrapper = styled.div`
+  font-size: initial;
   margin-top: 5%;
   text-align: center;
 `;
 
 const ModalOverlay = props => {
   const {
-    status,
-    message
+    message,
+    handleClose,
+    status
   } = props;
 
   const getIconAndBackground = status => {
@@ -122,8 +138,16 @@ const ModalOverlay = props => {
   } = getIconAndBackground(status);
 
   return (
-    <Overlay modalBackground={background} >
+    <Overlay
+      modalBackground={background}
+      status={status}
+    >
       <InnerContainer>
+        {status === modalOverlayStatuses.FAIL ?
+          <CloseButtonDiv>
+            <StyledCloseRounded data-testid="close-button" onClick={handleClose} />
+          </CloseButtonDiv>
+          : null}
         {icon}
         <TextWrapper>
           {message}
@@ -135,6 +159,7 @@ const ModalOverlay = props => {
 
 ModalOverlay.propTypes = {
   message: PropTypes.string.isRequired,
+  handleClose: PropTypes.func,
   status: PropTypes.oneOf(Object.values(modalOverlayStatuses)).isRequired
 };
 
