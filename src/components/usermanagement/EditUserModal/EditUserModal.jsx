@@ -168,7 +168,6 @@ const EditUserModal = props => {
         {saveUser ?
           <ModalOverlay
             message={overlayMessage}
-            modal={true}
             status={saveUser}
           /> : null}
         <HeaderAndCloseButtonWrapper>
