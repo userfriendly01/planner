@@ -3,10 +3,12 @@ import {
   Switch
 } from "@material-ui/core";
 import {
+  Delete,
   Edit,
   ChangeHistoryRounded
 } from "@material-ui/icons";
 import {
+  ConfirmationModal,
   EditUserModal,
   ModalOverlay
 } from "components";
@@ -14,8 +16,10 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context";
+import { modalOverlayStatuses } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
+import { deleteUser } from "services";
 import styled from "styled-components";
 import { formatWorkerSkillsToHTML } from "utils";
 
@@ -40,6 +44,10 @@ const CustomTableData = styled.td`
     text-align: -webkit-center;
     vertical-align: middle;
   }
+  &:nth-child(9) {
+    text-align: -webkit-center;
+    vertical-align: middle;
+  }
 `;
 
 const CustomTableHeader = styled.th`
@@ -53,6 +61,9 @@ const CustomTableHeader = styled.th`
   &:nth-child(2) {
     width: 10%;
   }
+  &:nth-child(3) {
+    width: 10%;
+  }
   &:nth-child(4) {
     width: 18%;
   }
@@ -60,6 +71,9 @@ const CustomTableHeader = styled.th`
     width: ${headerIconWidth};
   }
   &:nth-child(8) {
+    width: ${headerIconWidth};
+  }
+  &:nth-child(9) {
     width: ${headerIconWidth};
   }
 `;
@@ -75,7 +89,6 @@ const CustomTableRow = styled.tr`
   }
 `;
 
-// didn't copy this
 const DeltaWrapper = styled.div`
   align-items: center;
   color: ${props => props.theme.libertyDarkGray};
@@ -108,7 +121,6 @@ const TableContainer = styled.div`
   position: relative;
 `;
 
-// didn't use
 const TableDataFlex = styled.div`
   color: ${props => props.theme.textColor};
   display: flex;
@@ -119,6 +131,7 @@ const TableText = styled.div`
   margin: 2px;
 `;
 
+
 const ManagementTable = props => {
   const {
     deltaToggle,
@@ -126,15 +139,63 @@ const ManagementTable = props => {
     workers
   } = props;
 
-  const defaultEditUserModalOpts = {
+  const defaultModalOpts = {
     open: false,
     worker: null
   };
 
-  const [editUserModalOpts, setEditUserModalOpts] = useState(defaultEditUserModalOpts);
+  const defaultSaveResult = {
+    status: null,
+    message: null
+  };
+
+  const [editUserModalOpts, setEditUserModalOpts] = useState(defaultModalOpts);
+  const [confirmationModalOpts, setConfirmationModalOpts] = useState(defaultModalOpts);
+  const [saveResult, setSaveResult] = useState(defaultSaveResult);
   const state = useAdminState();
   const selectedWorkers = state.workerContext.selectedWorkers;
   const dispatch = useAdminDispatch();
+
+  const handleDeleteUser = () => {
+    const deletedWorker = confirmationModalOpts.worker;
+    setSaveResult({
+      status: modalOverlayStatuses.SAVING,
+      message: "Saving"
+    });
+    let resultMessage;
+    return deleteUser(deletedWorker.sid)
+      .then(res => {
+        resultMessage = `Successfully deleted Triton worker with sid ${deletedWorker.sid}`;
+        console.log(resultMessage,
+          { responseData: res.data });
+        dispatch({
+          type: "deleteWorker",
+          payload: deletedWorker.sid
+        });
+        setSaveResult({
+          status: modalOverlayStatuses.SUCCESS,
+          message: resultMessage
+        });
+        setTimeout(() => {
+          setConfirmationModalOpts(defaultModalOpts);
+          setSaveResult(defaultSaveResult);
+        }, 2000);
+      })
+      .catch(err => {
+        if (typeof err.response.data.error === "object" ){
+          resultMessage = `Failed to delete worker ${deletedWorker.sid}`;
+        } else {
+          resultMessage = err.response.data.error;
+        }
+        console.error(resultMessage, {
+          error: err
+        });
+        setSaveResult({
+          status: modalOverlayStatuses.FAIL,
+          message: resultMessage
+        });
+      });
+  };
 
   return (
     <TableContainer>
@@ -152,6 +213,7 @@ const ManagementTable = props => {
               <Switch checked={deltaToggle} onChange={() => setDeltaToggle(!deltaToggle)} inputProps={{ "aria-label": "toggle skills modified" }} />
             </CustomTableHeader>
             <CustomTableHeader/>
+            <CustomTableHeader/>
           </tr>
         </thead>
         <tbody>
@@ -167,6 +229,13 @@ const ManagementTable = props => {
             const editButtonOnClick = event => {
               event.stopPropagation();
               setEditUserModalOpts({
+                open: true,
+                worker
+              });
+            };
+            const deleteButtonOnClick = event => {
+              event.stopPropagation();
+              setConfirmationModalOpts({
                 open: true,
                 worker
               });
@@ -189,12 +258,34 @@ const ManagementTable = props => {
                     <Edit fontSize={"inherit"}/>
                   </IconWrapper>
                 </CustomTableData>
+                <CustomTableData>
+                  <IconWrapper onClick={deleteButtonOnClick} data-testid="delete-button">
+                    <Delete fontSize={"inherit"}/>
+                  </IconWrapper>
+                </CustomTableData>
               </CustomTableRow>
             );
           })}
         </tbody>
         <Modal open={editUserModalOpts.open}>
-          <EditUserModal handleClose={() => setEditUserModalOpts(defaultEditUserModalOpts)} worker={editUserModalOpts.worker}/>
+          <EditUserModal handleClose={() => setEditUserModalOpts(defaultModalOpts)} worker={editUserModalOpts.worker}/>
+        </Modal>
+        <Modal open={confirmationModalOpts.open}>
+          { confirmationModalOpts.worker ?
+            <ConfirmationModal
+              onConfirm={handleDeleteUser}
+              handleClose={() => {
+                setConfirmationModalOpts(defaultModalOpts);
+                setSaveResult(defaultSaveResult);
+              }}
+              body={{
+                confirmationText: "Are you sure you want to delete this worker? ",
+                data: confirmationModalOpts.worker.attributes.full_name
+              }}
+              saveResult={saveResult}
+            />
+            : null
+          }
         </Modal>
       </CustomTable>
     </TableContainer>

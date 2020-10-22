@@ -1,9 +1,9 @@
 import { CloseRounded } from "@material-ui/icons";
 import {
+  CustomInput,
   ModalHelperText,
-  ModalNNumber,
-  ModalOverlay,
   PaperContainer,
+  ModalOverlay,
   StyledButton
 } from "components";
 import {
@@ -138,25 +138,25 @@ const AddManagerModal = props => {
       <PaperContainer>
         {saveManager === loadingStates.success || saveManager === loadingStates.fail ?
           <ModalOverlay
-            status={saveManager}
             message={overlayMessage}
+            status={saveManager}
           /> : null}
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>
           <Header>Add a Manager</Header>
-          <CloseRounded onClick={handleClose}/>
+          <CloseRounded data-testid={"close-button"} onClick={handleClose}/>
         </HeaderAndCloseButtonWrapper>
         <FlexColumn>
-          <ModalNNumber
+          <CustomInput
             disabled={saveManager === loadingStates.loading || manager === loadingStates.loading || isManagerValid}
             label="Manager N Number"
             name="Manager N Number"
             loading={manager === loadingStates.loading}
-            nNumber={nNumber}
+            value={nNumber}
             updateValue={setNNumber}
           />
           {isValidNNumber && manager !== loadingStates.loading
-            ? <ModalHelperText clearUser={clearManager} message={helperTextMessage} error={!isManagerValid} />
+            ? <ModalHelperText clearFunction={clearManager} message={helperTextMessage} error={!isManagerValid} />
             : null
           }
         </FlexColumn>

@@ -167,11 +167,11 @@ const EditUserModal = props => {
       <PaperContainer>
         {saveUser ?
           <ModalOverlay
-            status={saveUser}
             message={overlayMessage}
+            status={saveUser}
           /> : null}
         <HeaderAndCloseButtonWrapper>
-          <LeftDiv></LeftDiv>
+          <LeftDiv />
           <h1>Update User</h1>
           <StyledCloseRounded onClick={handleClose}/>
         </HeaderAndCloseButtonWrapper>
