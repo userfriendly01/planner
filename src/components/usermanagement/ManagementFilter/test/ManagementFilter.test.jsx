@@ -45,7 +45,7 @@ describe("<ManagementFilter />", () => {
     });
   });
 
-  test("upon initial render, should display Manager Filter, add manager & add user buttons, and all managers should be listed in the dropdown sorted by first name", () => {
+  test("upon initial render, should display Manager Filter & add user buttons, and all managers should be listed in the dropdown sorted by first name", () => {
     const rendered = renderComponent();
     expectMockedComponent(rendered, { AddUser });
     expectMockedComponent(rendered, { ManagerFilter });
