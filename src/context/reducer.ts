@@ -87,7 +87,6 @@ export const initialState: AppState = {
 };
 
 export const reducer = (state: AppState, action: Action): AppState => {
-  console.log("WORKER CONTEXT", state.workerContext)
   switch (action.type) {
     case "addManager":
       return {
