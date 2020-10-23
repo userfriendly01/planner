@@ -12,13 +12,13 @@ import {
   UserEntryFormState
 } from "components";
 import {
-  Manager,
   useAdminDispatch,
   useAdminState
 } from "context";
 import {
   apiPaths,
   extensionMatcher,
+  formModes,
   modalOverlayStatuses,
   modalOverlayTimeout
 } from "globals";
@@ -64,7 +64,7 @@ interface UserEntryFormProps {
   handleClose: VoidFunction,
 }
 
-interface FormState {
+interface UserEntryForm_FormState {
   extension: string,
   extensionValid: boolean,
   lookupInfo: {
@@ -92,7 +92,11 @@ const UserEntryForm = (props: UserEntryFormProps) => {
 
   const {
     handleClose,
-    userEntryFormState
+    userEntryFormState: {
+      formMode,
+      open,
+      worker
+    }
   } = props;
 
   const dispatch = useAdminDispatch();
@@ -105,21 +109,36 @@ const UserEntryForm = (props: UserEntryFormProps) => {
     }
   } = useAdminState();
 
-  const [form, setForm] = useState<FormState>({
-    extension: "",
-    extensionValid: false,
-    lookupInfo: {},
-    lookupError: null,
-    manager: "",
-    managerUpdated: false,
-    nNumber: defaultNNumber,
-    nNumberUpdated: false,
-    outgoing: "",
-    outgoingValid: false,
-    outgoingUpdated: false,
-    team: "",
-    teamUpdated: false
-  });
+  const getInitialFormState = (): UserEntryForm_FormState => {
+    const initialForm: UserEntryForm_FormState = {
+      extension: "",
+      extensionValid: false,
+      lookupError: null,
+      lookupInfo: null,
+      manager: "",
+      managerUpdated: false,
+      nNumber: defaultNNumber,
+      nNumberUpdated: false,
+      outgoing: "",
+      outgoingUpdated: false,
+      outgoingValid: false,
+      team: "",
+      teamUpdated: false
+    };
+    if (formMode === formModes.UPDATE) {
+      // TODO derive these from existing worker attributes
+      form.extension = "";
+      form.extensionValid = false;
+      form.manager = "";
+      form.nNumber = defaultNNumber;
+      form.outgoing = "";
+      form.outgoingValid = false;
+      form.team = "";
+    }
+    return initialForm;
+  }
+
+  const [form, setForm] = useState<UserEntryForm_FormState>(getInitialFormState());
   const [loading, updateLoading] = useState({
     lookupUser: false,
     overlayMessage: "",
@@ -346,7 +365,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
             setForm({
               ...form,
               lookupError: null,
-              lookupInfo: {},
+              lookupInfo: null,
               nNumber: defaultNNumber
             });
           }}
