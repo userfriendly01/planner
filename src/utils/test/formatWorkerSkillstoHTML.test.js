@@ -15,6 +15,16 @@ describe("formatWorkerSkillsToHTML()", () => {
     expect(formatWorkerSkillsToHTML(testData)).toEqual(null);
   });
 
+  test("if routing skills is a string we should return null", () => {
+    const testData = {
+      skills: "oopsThisIsntGood",
+      levels: {
+        "466": 3
+      }
+    };
+    expect(formatWorkerSkillsToHTML(testData)).toEqual(null);
+  });
+
   test("if routing skills exist, we should return the correct formatting, with or without a priority.", () => {
     const testData = {
       skills: ["466", "psuUm"],

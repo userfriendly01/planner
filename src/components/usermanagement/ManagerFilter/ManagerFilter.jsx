@@ -1,27 +1,20 @@
 import {
-  Fab,
+  Divider,
   FilledInput,
   FormControl,
   InputLabel,
   Modal,
-  Select,
-  Tooltip
+  Select
 } from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
 import { AddManagerModal } from "components";
 import { useAdminState } from "context";
 import PropTypes from "prop-types";
 import React, {
+  useEffect,
   useState
 } from "react";
 import styled from "styled-components";
 import { sortManagersByName } from "utils";
-
-const AddManagerButtonWrapper = styled.div`
-  align-items: center;
-  display: flex;
-  margin-left: 8px;
-`;
 
 const Wrapper = styled.div`
   display: flex;
@@ -42,8 +35,15 @@ const ManagerFilter = props => {
   };
 
   const handleCloseAddManager = () => {
+    setFilter("show-all");
     setIsAddManagerModalOpen(false);
   };
+
+  useEffect(() => {
+    if(filterBy === "add-manager"){
+      handleOpenAddManager();
+    }
+  });
 
   return (
     <Wrapper>
@@ -62,6 +62,8 @@ const ManagerFilter = props => {
         >
           {[
             <option data-testid="manager-list" key={"show-all"} value={"show-all"}>Show All</option>,
+            <option data-testid="add-manager" key={"add-manager"} value={"add-manager"}>Add New Manager</option>,
+            <Divider light key={"divider"}/>,
             ...sortedManagers.map(manager => (
               <option data-testid="manager-list"
                 key={manager.manager_n_number}
@@ -73,15 +75,8 @@ const ManagerFilter = props => {
           ]}
         </Select>
       </FormControl>
-      <Tooltip title="Add a manager" placement="right">
-        <AddManagerButtonWrapper>
-          <Fab onClick={handleOpenAddManager} size={"small"} data-testid={"add-manager-button"}>
-            <AddIcon/>
-          </Fab>
-        </AddManagerButtonWrapper>
-      </Tooltip>
       <Modal disableBackdropClick={true} open={isAddManagerModalOpen}>
-        <AddManagerModal handleClose={handleCloseAddManager} />
+        <AddManagerModal data-testid="add-manager-modal" handleClose={handleCloseAddManager} />
       </Modal>
     </Wrapper>
   );
