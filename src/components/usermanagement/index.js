@@ -1,6 +1,4 @@
 export { default as AddManagerModal } from "./AddManagerModal/AddManagerModal";
-export { default as AddUser } from "./AddUser/AddUser";
-export { default as AddUserModal } from "./AddUserModal/AddUserModal";
 export { default as ConfirmationModal } from "./ConfirmationModal/ConfirmationModal";
 export { default as DefaultSkillSelector } from "./DefaultSkillSelector/DefaultSkillSelector";
 export { default as EditUserModal } from "./EditUserModal/EditUserModal";
