@@ -1,4 +1,65 @@
-export const initialState = {
+export interface Action {
+  type: string,
+  [key: string]: any
+}
+
+export interface AppState {
+  managerContext: {
+    managers: any[]
+  },
+  profileContext: {
+    profiles: any[]
+  },
+  skillContext: {
+    taskrouterSkills: any[]
+  },
+  userContext: {
+    pingIdentity: any
+  },
+  workerContext: {
+    workers: Worker[],
+    selectedWorkers: Worker[]
+  },
+  resettingSkills: false
+}
+
+export interface WorkerSkills {
+  levels: {
+    [key: string]: number
+  },
+  skills: string[]
+}
+
+export interface Worker {
+  attributes: {
+    contact_uri: string,
+    default_skills?: WorkerSkills,
+    did?: string,
+    disabled_skills?: WorkerSkills,
+    email?: string,
+    email_address?: string,
+    emp_first_name?: string,
+    emp_last_name?: string,
+    extension?: string,
+    manager_first_name?: string,
+    manager_last_name?: string,
+    manager_n_number?: string,
+    n_number?: string,
+    office_location_name?: string,
+    office_location_number?: string,
+    primary_dept_name?: string,
+    primary_dept_number?: string,
+    profile_id?: string | number,
+    roles: string[],
+    routing?: WorkerSkills,
+    unique_id?: string
+  },
+  id: string,
+  sid: string,
+  skillsDifferent: boolean
+}
+
+export const initialState: AppState = {
   managerContext: {
     managers: []
   },
@@ -18,7 +79,8 @@ export const initialState = {
   resettingSkills: false
 };
 
-export const reducer = (state, action) => {
+export const reducer = (state: AppState, action: Action): AppState => {
+  console.log("WORKER CONTEXT", state.workerContext)
   switch (action.type) {
     case "addManager":
       return {
@@ -64,7 +126,7 @@ export const reducer = (state, action) => {
       return {
         ...state,
         skillContext: {
-          ...state.skillsContext,
+          ...state.skillContext,
           taskrouterSkills: action.payload
         }
       };
