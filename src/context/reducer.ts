@@ -5,7 +5,7 @@ export interface Action {
 
 export interface AppState {
   managerContext: {
-    managers: any[]
+    managers: Manager[]
   },
   profileContext: {
     profiles: any[]
@@ -17,30 +17,37 @@ export interface AppState {
     pingIdentity: any
   },
   workerContext: {
-    workers: Worker[],
-    selectedWorkers: Worker[]
+    workers: TwilioWorker[],
+    selectedWorkers: TwilioWorker[]
   },
   resettingSkills: false
 }
 
-export interface WorkerSkills {
+export interface Manager {
+  manager_first_name: string,
+  manager_last_name: string,
+  manager_n_number: string
+}
+
+export interface TwilioWorkerSkills {
   levels: {
     [key: string]: number
   },
   skills: string[]
 }
 
-export interface Worker {
+export interface TwilioWorker {
   attributes: {
     contact_uri: string,
-    default_skills?: WorkerSkills,
+    default_skills?: TwilioWorkerSkills,
     did?: string,
-    disabled_skills?: WorkerSkills,
+    disabled_skills?: TwilioWorkerSkills,
     email?: string,
     email_address?: string,
     emp_first_name?: string,
     emp_last_name?: string,
     extension?: string,
+    full_name?: string,
     manager_first_name?: string,
     manager_last_name?: string,
     manager_n_number?: string,
@@ -51,7 +58,7 @@ export interface Worker {
     primary_dept_number?: string,
     profile_id?: string | number,
     roles: string[],
-    routing?: WorkerSkills,
+    routing?: TwilioWorkerSkills,
     unique_id?: string
   },
   id: string,

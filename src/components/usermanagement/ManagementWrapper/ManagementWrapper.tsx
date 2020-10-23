@@ -9,14 +9,18 @@ import {
   UserEntryForm
 } from "components";
 import {
-  useAdminState
+  useAdminState,
+  TwilioWorker
 } from "context";
 import { workersPerPage } from "globals";
 import React, {
   useState
 } from "react";
 import styled from "styled-components";
-import { filterByNameAndSkills } from "utils";
+import {
+  filterByNameAndSkills,
+  sortWorkersByFullName
+} from "utils";
 
 // @ts-ignore
 const ManagementContainer = styled.div`
@@ -31,30 +35,6 @@ const StyledPaper = styled(Paper)`
   justify-content: center;
 `;
 
-// TODO worker object args???
-const sortByWorkerFullName = (a: any, b: any) => {
-  const sortLast = "zzzzzzzzzzz";
-  const [aName, bName] = [a.attributes.full_name || sortLast, b.attributes.full_name || sortLast];
-  if (aName < bName) { return -1; }
-  if (aName > bName) { return 1; }
-  return 0;
-};
-// TODO type out worker object?
-const getWorkersStartAndEnd = (pageSelected: number, filteredWorkers: any) => {
-  const workersStart = ((pageSelected - 1) * workersPerPage);
-  if (pageSelected * workersPerPage > filteredWorkers.length) {
-    return {
-      workersStart,
-      workersEnd: (((pageSelected - 1) * workersPerPage) + (filteredWorkers.length % workersPerPage))
-    };
-  } else {
-    return {
-      workersStart,
-      workersEnd: pageSelected * workersPerPage
-    };
-  }
-};
-
 interface ManagementWrapperState {
   deltaToggle: boolean,
   pageSelected: number,
@@ -65,7 +45,7 @@ interface ManagementWrapperState {
 interface UserEntryFormState {
   formMode: string,
   open: boolean,
-  worker: any // TODO type out worker object???
+  worker: Worker
 };
 
 const initialManagementWrapperState: ManagementWrapperState = {
@@ -81,9 +61,24 @@ const initialUserEntryFormState: UserEntryFormState = {
   worker: null
 };
 
+const getWorkersStartAndEnd = (pageSelected: number, filteredWorkers: TwilioWorker[]) => {
+  const workersStart = ((pageSelected - 1) * workersPerPage);
+  if (pageSelected * workersPerPage > filteredWorkers.length) {
+    return {
+      workersStart,
+      workersEnd: (((pageSelected - 1) * workersPerPage) + (filteredWorkers.length % workersPerPage))
+    };
+  } else {
+    return {
+      workersStart,
+      workersEnd: pageSelected * workersPerPage
+    };
+  }
+};
+
 export const ManagementWrapper = () => {
   const workersFromContext = useAdminState().workerContext.workers;
-  let workers = [ ...workersFromContext ].sort(sortByWorkerFullName); // TODO type out workers?
+  let workers = [ ...workersFromContext ].sort(sortWorkersByFullName);
 
   const [state, setState] = useState(initialManagementWrapperState);
 

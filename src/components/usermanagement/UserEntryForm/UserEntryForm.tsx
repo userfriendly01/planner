@@ -11,6 +11,7 @@ import {
   StyledButton
 } from "components";
 import {
+  Manager,
   useAdminDispatch,
   useAdminState
 } from "context";
@@ -20,7 +21,6 @@ import {
   modalOverlayStatuses,
   modalOverlayTimeout
 } from "globals";
-import PropTypes from "prop-types";
 import React, {
   useState
 } from "react";
@@ -58,7 +58,35 @@ const ModalContainer = styled.div`
 
 const defaultNNumber = "n";
 
-const UserEntryForm = props => {
+interface UserEntryFormProps {
+  handleClose: VoidFunction,
+}
+
+interface FormState {
+  extension: string,
+  extensionValid: boolean,
+  lookupInfo: {
+    departmentName?: string,
+    departmentNumber?: string,
+    email?: string,
+    firstName?: string,
+    lastName?: string,
+    officeName?: string,
+    officeNumber?: string
+  },
+  lookupError: any,
+  manager: string,
+  managerUpdated: boolean,
+  nNumber: string,
+  nNumberUpdated: boolean,
+  outgoing: string,
+  outgoingValid: boolean,
+  outgoingUpdated: boolean,
+  team: string,
+  teamUpdated: boolean
+}
+
+const UserEntryForm = (props: UserEntryFormProps) => {
 
   const {
     handleClose
@@ -73,10 +101,11 @@ const UserEntryForm = props => {
     }
   } = useAdminState();
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormState>({
     extension: "",
     extensionValid: false,
     lookupInfo: {},
+    lookupError: null,
     manager: "",
     managerUpdated: false,
     nNumber: defaultNNumber,
@@ -124,6 +153,7 @@ const UserEntryForm = props => {
       }, modalOverlayTimeout);
       return;
     }
+
     // see this wiki page for attributes that will be automatically updated through SSO
     // https://forge.lmig.com/wiki/display/CICCT/Twilio+Flex+SSO+Saml2+Integration
     const attributes = {
@@ -316,17 +346,6 @@ const UserEntryForm = props => {
       </PaperContainer>
     </ModalContainer>
   );
-};
-
-UserEntryForm.propTypes = {
-  handleClose: PropTypes.func,
-  managerList: PropTypes.arrayOf(
-    PropTypes.shape({
-      manager_first_name: PropTypes.string,
-      manager_last_name: PropTypes.string,
-      manager_n_number: PropTypes.string
-    })
-  )
 };
 
 export default UserEntryForm;
