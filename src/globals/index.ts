@@ -4,13 +4,13 @@ const SERVICE_BASE_URI = "/service";
 export const apiPaths = {
   AUTH: `${SERVICE_BASE_URI}/admin-login`,
   CREATE_WORKER: `${SERVICE_BASE_URI}/createworker`,
-  DELETE_WORKER: workerSid => `${SERVICE_BASE_URI}/deleteworker/${workerSid}`,
+  DELETE_WORKER: (workerSid: string) => `${SERVICE_BASE_URI}/deleteworker/${workerSid}`,
   DIAL_LIST: `${CONTACT_MANAGER_BASE_URI}/diallist`,
-  DIAL_LIST_ENTRY: dialListId => `${CONTACT_MANAGER_BASE_URI}/diallist/${dialListId}`,
-  EMPLOYEE_LOOKUP: nNum => `${SERVICE_BASE_URI}/employeelookup/${nNum}`,
+  DIAL_LIST_ENTRY: (dialListId: number) => `${CONTACT_MANAGER_BASE_URI}/diallist/${dialListId}`,
+  EMPLOYEE_LOOKUP: (nNumber: string) => `${SERVICE_BASE_URI}/employeelookup/${nNumber}`,
   CHECK_EXTENSION: `${SERVICE_BASE_URI}/checkextension`,
   FLASH_MESSAGE: `${SERVICE_BASE_URI}/flashmessage`,
-  GET_PROFILE_DATA: profileId => `${CONTACT_MANAGER_BASE_URI}/triton/${profileId}`,
+  GET_PROFILE_DATA: (profileId: string | number) => `${CONTACT_MANAGER_BASE_URI}/triton/${profileId}`,
   GET_PROFILES: `${CONTACT_MANAGER_BASE_URI}/profiles`,
   GET_TASKROUTER_SKILLS: `${SERVICE_BASE_URI}/taskrouterskills`,
   GET_WORKERS: `${SERVICE_BASE_URI}/workers`,
@@ -19,12 +19,24 @@ export const apiPaths = {
   UPDATE_WORKER_ATTRIBUTES: `${SERVICE_BASE_URI}/updateworkerattributes`
 };
 
-export const formModes = {
+export type FormMode = "insert" | "update";
+
+export interface FormModes {
+  [key: string]: FormMode
+}
+
+export const formModes: FormModes = {
   INSERT: "insert",
   UPDATE: "update"
 };
 
-export const modalOverlayStatuses = {
+export type ModalOverlayStatus = "fail" | "saving" | "success";
+
+export interface ModalOverlayStatuses {
+  [key: string]: ModalOverlayStatus
+}
+
+export const modalOverlayStatuses: ModalOverlayStatuses = {
   FAIL: "fail",
   SAVING: "saving",
   SUCCESS: "success"

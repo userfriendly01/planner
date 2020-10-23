@@ -8,7 +8,8 @@ import {
   ModalOverlay,
   ModalPhoneNumber,
   PaperContainer,
-  StyledButton
+  StyledButton,
+  UserEntryFormState
 } from "components";
 import {
   Manager,
@@ -59,6 +60,7 @@ const ModalContainer = styled.div`
 const defaultNNumber = "n";
 
 interface UserEntryFormProps {
+  userEntryFormState: UserEntryFormState,
   handleClose: VoidFunction,
 }
 
@@ -89,8 +91,10 @@ interface FormState {
 const UserEntryForm = (props: UserEntryFormProps) => {
 
   const {
-    handleClose
+    handleClose,
+    userEntryFormState
   } = props;
+
   const dispatch = useAdminDispatch();
   const {
     profileContext: {
@@ -119,11 +123,50 @@ const UserEntryForm = (props: UserEntryFormProps) => {
   const [loading, updateLoading] = useState({
     lookupUser: false,
     overlayMessage: "",
-    saveStatus: "",
+    saveStatus: null,
     saveUser: false
   });
 
-  const saveUser = () => {
+  const updateUser = () => {
+    // COPIED FROM EDIT USER MODAL
+
+
+    // setSaveUser(loadingStates.saving);
+    // const attributes = {};
+    // if (form.defaultSkillsUpdated) {
+    //   attributes.default_skills = form.defaultSkills;
+    // }
+    // if (form.managerUpdated) {
+    //   const parsedManager = JSON.parse(form.manager);
+    //   attributes.manager_first_name = parsedManager.manager_first_name;
+    //   attributes.manager_last_name = parsedManager.manager_last_name;
+    //   attributes.manager_n_number = parsedManager.manager_n_number;
+    // }
+    // if (form.extensionUpdated) {
+    //   attributes.extension = extension;
+    // }
+    // myAxios
+    //   .post(apiPaths.UPDATE_WORKER_ATTRIBUTES, {
+    //     workerSid: worker.sid,
+    //     attributes
+    //   })
+    //   .then(res => {
+    //     const updatedWorker = res.data;
+    //     dispatch(({
+    //       type: "updateWorker",
+    //       payload: mapWorkerFromTwilioWorker(updatedWorker)
+    //     }));
+    //     setSaveUser(loadingStates.success);
+    //     setTimeout(() => handleClose(), 2000);
+    //   })
+    //   .catch(err => {
+    //     setSaveUser(loadingStates.fail);
+    //     setTimeout(() => setSaveUser(null), 2000);
+    //     console.error("EditUserModal - Failed to update twilio worker", err);
+    //   });
+  };
+
+  const addUser = () => {
     updateLoading({
       ...loading,
       overlayMessage: "Adding new user...",
@@ -340,7 +383,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
           setForm={setForm}
         />
         <ButtonWrapper>
-          <StyledButton disabled={!formReady} onClick={saveUser}>Add User</StyledButton>
+          <StyledButton disabled={!formReady} onClick={addUser}>{} User</StyledButton>
           <StyledButton onClick={handleClose}>Close</StyledButton>
         </ButtonWrapper>
       </PaperContainer>

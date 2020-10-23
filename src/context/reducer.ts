@@ -8,13 +8,13 @@ export interface AppState {
     managers: Manager[]
   },
   profileContext: {
-    profiles: any[]
+    profiles: TritonProfile[]
   },
   skillContext: {
-    taskrouterSkills: any[]
+    taskrouterSkills: any[] // TODO type me!
   },
   userContext: {
-    pingIdentity: any
+    pingIdentity: any // TODO type me!
   },
   workerContext: {
     workers: TwilioWorker[],
@@ -29,11 +29,25 @@ export interface Manager {
   manager_n_number: string
 }
 
-export interface TwilioWorkerSkills {
-  levels: {
-    [key: string]: number
-  },
-  skills: string[]
+export interface MySqlBoolean {
+  data: [0 | 1]
+  type: "Buffer"
+}
+
+export interface TritonProfile {
+  acw_data_entry_i: MySqlBoolean,
+  acw_option_i: MySqlBoolean,
+  agent_assisted_pay_i: MySqlBoolean,
+  auto_answd_i: MySqlBoolean,
+  manual_record_inbound_i: MySqlBoolean,
+  manual_recorded_i: MySqlBoolean,
+  otbnd_recorded_i: MySqlBoolean,
+  pmt_prcsg_i: MySqlBoolean,
+  profile_id: number,
+  profile_nme: string,
+  recorded_i: MySqlBoolean,
+  row_crtn_dtm: string,
+  row_updt_dtm: string
 }
 
 export interface TwilioWorker {
@@ -64,6 +78,13 @@ export interface TwilioWorker {
   id: string,
   sid: string,
   skillsDifferent: boolean
+}
+
+export interface TwilioWorkerSkills {
+  levels: {
+    [key: string]: number
+  },
+  skills: string[]
 }
 
 export const initialState: AppState = {

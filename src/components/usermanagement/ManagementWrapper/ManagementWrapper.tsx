@@ -12,7 +12,11 @@ import {
   useAdminState,
   TwilioWorker
 } from "context";
-import { workersPerPage } from "globals";
+import {
+  FormMode,
+  formModes,
+  workersPerPage
+} from "globals";
 import React, {
   useState
 } from "react";
@@ -42,8 +46,8 @@ interface ManagementWrapperState {
   searchBy: string
 };
 
-interface UserEntryFormState {
-  formMode: string,
+export interface UserEntryFormState {
+  formMode: FormMode,
   open: boolean,
   worker: Worker
 };
@@ -56,7 +60,7 @@ const initialManagementWrapperState: ManagementWrapperState = {
 };
 
 const initialUserEntryFormState: UserEntryFormState = {
-  formMode: "",
+  formMode: formModes.INSERT,
   open: false,
   worker: null
 };
@@ -126,11 +130,10 @@ export const ManagementWrapper = () => {
   return (
     <ManagementContainer>
       <Modal disableBackdropClick={true} open={userEntryFormState.open}>
-        <UserEntryForm handleClose={() => setUserEntryFormState({
-          formMode: "",
-          open: false,
-          worker: null
-        })} />
+        <UserEntryForm
+          handleClose={() => setUserEntryFormState(initialUserEntryFormState)}
+          userEntryFormState={userEntryFormState}
+        />
       </Modal>
       <ManagementHeader
         filterBy={state.filterBy}
