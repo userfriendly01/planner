@@ -11,7 +11,7 @@ export interface AppState {
     profiles: TritonProfile[]
   },
   skillContext: {
-    taskrouterSkills: any[] // TODO type me!
+    taskrouterSkills: TaskRouterSkill[]
   },
   userContext: {
     pingIdentity: any // TODO type me!
@@ -32,6 +32,11 @@ export interface Manager {
 export interface MySqlBoolean {
   data: [0 | 1]
   type: "Buffer"
+}
+
+export interface TaskRouterSkill {
+  skill: string,
+  levels: number[]
 }
 
 export interface TritonProfile {
