@@ -168,8 +168,10 @@ const App = () => {
   const checkAuthExpiration = () => {
     currentTime = Date.now();
     if (authExpirationTime - currentTime <= 0) {
+      console.log("Auth has expired");
       setAuthExpired(true);
     } else {
+      console.log("checking auth");
       setTimeout(checkAuthExpiration, timeouts.CHECK_AUTH);
     }
   };
