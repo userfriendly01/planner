@@ -12,6 +12,7 @@ import {
   UserEntryFormState
 } from "components";
 import {
+  TwilioWorker,
   TwilioWorkerSkills,
   useAdminDispatch,
   useAdminState
@@ -91,6 +92,7 @@ interface UserEntryForm_FormState {
   defaultSkills: TwilioWorkerSkills,
   defaultSkillsUpdated: boolean,
   extension: string,
+  extensionUpdated: boolean,
   extensionValid: boolean,
   lookupInfo: {
     departmentName?: string,
@@ -138,6 +140,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       defaultSkills: getValidSkillsObject(),
       defaultSkillsUpdated: false,
       extension: "",
+      extensionUpdated: false,
       extensionValid: false,
       lookupError: null,
       lookupInfo: {},
@@ -154,7 +157,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
     if (formMode === formModes.UPDATE) {
       initialForm.defaultSkills = getValidSkillsObject(worker.attributes.default_skills);
       initialForm.extension = worker.attributes.extension || "";
-      initialForm.extensionValid = true; // TODO validate existing extension???
+      initialForm.extensionValid = true;
       initialForm.manager = JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number));
       initialForm.nNumber = worker.attributes.n_number || defaultNNumber;
       initialForm.outgoing = worker.attributes.did || "";
@@ -173,41 +176,77 @@ const UserEntryForm = (props: UserEntryFormProps) => {
   });
 
   const updateUser = () => {
-    // COPIED FROM EDIT USER MODAL
-
-    // setSaveUser(loadingStates.saving);
-    // const attributes = {};
-    // if (form.defaultSkillsUpdated) {
-    //   attributes.default_skills = form.defaultSkills;
-    // }
-    // if (form.managerUpdated) {
-    //   const parsedManager = JSON.parse(form.manager);
-    //   attributes.manager_first_name = parsedManager.manager_first_name;
-    //   attributes.manager_last_name = parsedManager.manager_last_name;
-    //   attributes.manager_n_number = parsedManager.manager_n_number;
-    // }
-    // if (form.extensionUpdated) {
-    //   attributes.extension = extension;
-    // }
-    // myAxios
-    //   .post(apiPaths.UPDATE_WORKER_ATTRIBUTES, {
-    //     workerSid: worker.sid,
-    //     attributes
-    //   })
-    //   .then(res => {
-    //     const updatedWorker = res.data;
-    //     dispatch(({
-    //       type: "updateWorker",
-    //       payload: mapWorkerFromTwilioWorker(updatedWorker)
-    //     }));
-    //     setSaveUser(loadingStates.success);
-    //     setTimeout(() => handleClose(), 2000);
-    //   })
-    //   .catch(err => {
-    //     setSaveUser(loadingStates.fail);
-    //     setTimeout(() => setSaveUser(null), 2000);
-    //     console.error("EditUserModal - Failed to update twilio worker", err);
-    //   });
+    updateLoading({
+      ...loading,
+      overlayMessage: "Updating user...",
+      saveStatus: modalOverlayStatuses.SAVING,
+      saveUser: true
+    });
+    const attributes: Partial<TwilioWorker["attributes"]> = {};
+    if (form.managerUpdated) {
+      const parsedManager = JSON.parse(form.manager);
+      attributes.manager_first_name = parsedManager.manager_first_name;
+      attributes.manager_last_name = parsedManager.manager_last_name;
+      attributes.manager_n_number = parsedManager.manager_n_number;
+    }
+    if (form.profileIdUpdated) {
+      attributes.profile_id = form.profileId;
+    }
+    if (form.outgoingUpdated) {
+      try {
+        attributes.did = getE164Number(form.outgoing);
+      } catch (err) {
+        console.error("UserEntryForm - Failed to convert outgoing number to E164", {
+          err,
+          outgoingNumber: form.outgoing
+        });
+        updateLoading({
+          ...loading,
+          overlayMessage: "Failed to edit user. Could not convert outgoing number to E164 format.",
+          saveStatus: modalOverlayStatuses.FAIL,
+          saveUser: true
+        });
+        setTimeout(() => {
+          updateLoading({
+            ...loading,
+            saveUser: false
+          });
+        }, modalOverlayTimeout);
+        return;
+      }
+    }
+    if (form.extensionUpdated) {
+      attributes.extension = form.extension;
+    }
+    if (form.defaultSkillsUpdated) {
+      attributes.default_skills = form.defaultSkills;
+    }
+    myAxios
+      .post(apiPaths.UPDATE_WORKER_ATTRIBUTES, {
+        workerSid: worker.sid,
+        attributes
+      })
+      .then(res => {
+        const updatedWorker = res.data;
+        dispatch(({
+          type: "updateWorker",
+          payload: mapWorkerFromTwilioWorker(updatedWorker)
+        }));
+        setTimeout(() => handleClose(), modalOverlayTimeout);
+      })
+      .catch(err => {
+        updateLoading({
+          ...loading,
+          overlayMessage: "Failed to update user",
+          saveStatus: modalOverlayStatuses.FAIL,
+          saveUser: true
+        });
+        setTimeout(() => updateLoading({
+          ...loading,
+          saveUser: false
+        }), 2000);
+        console.error("UserEntryForm - Failed to update twilio worker", err);
+      });
   };
 
   const addUser = () => {
@@ -222,7 +261,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
     try {
       outgoingE164 = getE164Number(form.outgoing);
     } catch (err) {
-      console.error("AddUserModal - Failed to convert outgoing number to E164", {
+      console.error("UserEntryForm - Failed to convert outgoing number to E164", {
         err,
         outgoingNumber: form.outgoing
       });
@@ -243,7 +282,8 @@ const UserEntryForm = (props: UserEntryFormProps) => {
 
     // see this wiki page for attributes that will be automatically updated through SSO
     // https://forge.lmig.com/wiki/display/CICCT/Twilio+Flex+SSO+Saml2+Integration
-    const attributes = {
+    const attributes: Partial<TwilioWorker["attributes"]> = {
+      default_skills: form.defaultSkills,
       did: outgoingE164,
       email: form.lookupInfo.email,
       email_address: form.lookupInfo.email,
@@ -284,7 +324,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
         });
         setTimeout(() => {
           updateLoading({
-            ...loading,
+            ...loading, 
             saveUser: false
           });
         }, modalOverlayTimeout);
@@ -302,7 +342,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
             saveUser: false
           });
         }, modalOverlayTimeout);
-        console.error("AddUserModal - Failed to create worker in twilio workspace", err);
+        console.error("UserEntryForm - Failed to create worker in twilio workspace", err);
       });
   };
 
@@ -395,7 +435,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
                 nNumber: defaultNNumber
               });
             }}
-            disabled={JSON.stringify(form.lookupInfo) !== "{}"}
+            disabled={formMode === formModes.UPDATE || JSON.stringify(form.lookupInfo) !== "{}"}
             error={form.nNumberUpdated && !nNumberInputValid}
             form={form}
             nNumber={form.nNumber}
@@ -414,6 +454,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
               setForm({
                 ...form,
                 extension: "",
+                extensionUpdated: true,
                 extensionValid: false
               });
             }}
@@ -422,7 +463,8 @@ const UserEntryForm = (props: UserEntryFormProps) => {
             extension={form.extension}
             updateValue={newValue => setForm({
               ...form,
-              extension: newValue
+              extension: newValue,
+              extensionUpdated: true
             })}
             form={form}
             setForm={setForm}
@@ -434,6 +476,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
             setDefaultSkills={defaultSkills => {
               setForm({
                 ...form,
+                defaultSkillsUpdated: true,
                 defaultSkills
               })
             }}
@@ -441,7 +484,8 @@ const UserEntryForm = (props: UserEntryFormProps) => {
         </FormControlsPane>
       </FormControlsContainer>
       <ButtonWrapper>
-        <StyledButton disabled={!formReady} onClick={addUser}>{formMode === formModes.INSERT ? "Add User" : "Save"} User</StyledButton>
+        { /** TODO more validation logic for edit form? Bring back asterisks? */}
+        <StyledButton disabled={!formReady} onClick={formMode === formModes.INSERT ? addUser : updateUser}>{formMode === formModes.INSERT ? "Add User" : "Save"} User</StyledButton>
         <StyledButton onClick={handleClose}>Close</StyledButton>
       </ButtonWrapper>
     </ModalContainer>
