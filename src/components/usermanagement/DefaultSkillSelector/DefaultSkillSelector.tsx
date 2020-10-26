@@ -6,7 +6,10 @@ import {
   PriorityDropDown,
   SkillDropDown
 } from "components";
-import { useAdminState } from "context";
+import {
+  TwilioWorkerSkills,
+  useAdminState
+} from "context";
 import PropTypes from "prop-types";
 import React, {
   useState
@@ -47,7 +50,7 @@ const SkillRow = styled.div`
   align-items: center;
   display: flex;
   height: 32px;
-  &:hover {
+  &:hover { ${/* @ts-ignore */""}
     background-color: ${props => props.highlightOnHover ? props.theme.tableRow.hoverColor : null}
   }
 `;
@@ -95,7 +98,18 @@ const SkillRowSeperator = styled.div`
   margin-top: 8px;
 `;
 
-const DefaultSkillSelector = props => {
+interface DefaultSkillSelectorProps {
+  defaultSkills: TwilioWorkerSkills,
+  setDefaultSkills: (defaultSkills: TwilioWorkerSkills) => void;
+}
+
+interface NewTwilioWorkerSkill {
+  levels: number[],
+  levelSelected: number,
+  skill: string
+}
+
+const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
   const {
     defaultSkills,
     setDefaultSkills
@@ -109,15 +123,15 @@ const DefaultSkillSelector = props => {
 
   const taskrouterSkillsForDropDown = taskrouterSkills.filter(skillObj => !defaultSkills.skills.includes(skillObj.skill));
 
-  const defaultNewSkill = {
+  const defaultNewSkill: NewTwilioWorkerSkill = {
     levels: [],
     levelSelected: null,
     skill: ""
   };
 
-  const [newSkill, setNewSkill] = useState(defaultNewSkill);
+  const [newSkill, setNewSkill] = useState<NewTwilioWorkerSkill>(defaultNewSkill);
 
-  const newSkillChanged = skill => {
+  const newSkillChanged = (skill: any) => {
     const skillObj = findTaskRouterSkill(skill.value, taskrouterSkills);
     setNewSkill({
       levels: skillObj.levels,
@@ -126,12 +140,12 @@ const DefaultSkillSelector = props => {
     });
   };
 
-  const newSkillLevelChanged = level => setNewSkill({
+  const newSkillLevelChanged = (level: string) => setNewSkill({
     ...newSkill,
     levelSelected: parseInt(level)
   });
 
-  const existingSkillLevelChanged = skill => level => {
+  const existingSkillLevelChanged = (skill: string) => (level: string) => {
     const updatedDefaultSkills = { ...defaultSkills };
     updatedDefaultSkills.levels[skill] = parseInt(level);
     setDefaultSkills(updatedDefaultSkills);
@@ -145,13 +159,13 @@ const DefaultSkillSelector = props => {
     const updatedDefaultSkills = { ...defaultSkills };
     updatedDefaultSkills.skills.push(skill);
     if (newSkill.levelSelected) {
-      updatedDefaultSkills.levels[skill] = parseInt(levelSelected);
+      updatedDefaultSkills.levels[skill] = levelSelected;
     }
     setDefaultSkills(updatedDefaultSkills);
     setNewSkill(defaultNewSkill);
   };
 
-  const removeSkillClicked = skill => () => {
+  const removeSkillClicked = (skill: string) => () => {
     const updatedDefaultSkills = { ...defaultSkills };
     updatedDefaultSkills.skills = updatedDefaultSkills.skills.filter(existingSkill => existingSkill !== skill);
     delete updatedDefaultSkills.levels[skill];
@@ -167,7 +181,8 @@ const DefaultSkillSelector = props => {
       <SkillRow>
         <SkillRowItem>
           <SkillDropDown
-            skillValue={newSkill.skill}
+            // TODO delete this line??? unused prop
+            // skillValue={newSkill.skill}
             taskrouterSkills={taskrouterSkillsForDropDown}
             updateSkill={newSkillChanged} />
         </SkillRowItem>
@@ -190,6 +205,7 @@ const DefaultSkillSelector = props => {
         {defaultSkills.skills.sort().map((skill, index) => {
           const taskrouterSkill = findTaskRouterSkill(skill, taskrouterSkills);
           return (
+            // @ts-ignore
             <SkillRow highlightOnHover={true} key={`default-skill-row-${index}`}>
               <SkillRowItem>{skill}</SkillRowItem>
               <SkillRowItem>
