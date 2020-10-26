@@ -18,6 +18,7 @@ import styled from "styled-components";
 import {  findTaskRouterSkill } from "utils";
 
 const CenteredH2 = styled.h2`
+  margin: 8px 0;
   text-align: center;
 `;
 
