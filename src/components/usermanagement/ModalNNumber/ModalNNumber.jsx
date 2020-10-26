@@ -4,7 +4,7 @@ import {
 } from "components";
 import { nNumMatcher } from "globals";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useState } from "react";
 import { fetchUser } from "services";
 import styled from "styled-components";
 
@@ -16,48 +16,45 @@ const FlexColumn = styled.div`
 
 const ModalNNumber = props => {
   const {
-    clearUser,
     disabled,
-    error,
-    form,
     nNumber,
-    onBlur,
-    setForm,
-    updateValue
+    updateNNumber,
+    resetParentState,
+    setIsValid
   } = props;
 
   const validator = nNumber => nNumber.match(nNumMatcher) !== null;
+  const [ lookupResults, setLookupResults ] = useState(null);
+  const [ error, setError ] = useState(false);
 
-  const inputServiceCall = nNumber => {
+  const lookupNNumber = nNumber => {
     return fetchUser(nNumber)
       .then(res => {
         if (res) {
-          setForm({
-            ...form,
+          console.log("Response: ", res);
+          setError(false);
+          setIsValid(true);
+          setLookupResults({
             lookupError: null,
-            lookupInfo: res,
+            lookupInfo: `${res.firstName} ${res.lastName}`,
             nNumber
           });
         } else {
-          setForm({
-            ...form,
-            lookupInfo: {},
+          setLookupResults({
+            lookupInfo: null,
             lookupError: "User not found",
             nNumber
           });
         }
       })
       .catch(err => {
-        setForm({
-          ...form,
-          lookupInfo: {},
+        setLookupResults({
+          lookupInfo: null,
           lookupError: `Error calling lookup service: ${err.message}`,
           nNumber
         });
       });
   };
-
-  const showModalHelperText = JSON.stringify(form.lookupInfo) !== JSON.stringify({}) || form.lookupError;
 
   return (
     <FlexColumn>
@@ -66,19 +63,26 @@ const ModalNNumber = props => {
         error={error}
         label="N Number"
         name="N Number"
-        onBlur={onBlur}
+        onBlur= {lookupResults === null ? () => {
+          setError(true);
+        }: null}
         maxLength="8"
-        updateValue={updateValue}
-        validator={validator}
-        validatedServiceCall={inputServiceCall}
+        updateValue={updateNNumber}
         value={nNumber}
+        validator={validator}
+        validatedServiceCall={lookupNNumber}
       />
       {
-        showModalHelperText
+        lookupResults
           ? <ModalHelperText
-            clearFunction={clearUser}
-            error={form.lookupError ? true : false}
-            message={form.lookupError || `${form.lookupInfo.firstName} ${form.lookupInfo.lastName}`}
+            clearFunction={() => {
+              resetParentState();
+              setLookupResults(null);
+              setError(false);
+              setIsValid(false);
+            }}
+            error={lookupResults.lookupError ? true: false }
+            message={lookupResults.lookupError || lookupResults.lookupInfo}
           />
           : null
       }
@@ -87,14 +91,11 @@ const ModalNNumber = props => {
 };
 
 ModalNNumber.propTypes = {
-  clearUser: PropTypes.func.isRequired,
   disabled: PropTypes.bool.isRequired,
-  error: PropTypes.bool,
-  form: PropTypes.object.isRequired,
   nNumber: PropTypes.string.isRequired,
-  onBlur: PropTypes.func,
-  setForm: PropTypes.func.isRequired,
-  updateValue: PropTypes.func.isRequired
+  updateNNumber: PropTypes.func.isRequired,
+  resetParentState: PropTypes.func.isRequired,
+  setIsValid: PropTypes.func.isRequired
 };
 
 export default ModalNNumber;

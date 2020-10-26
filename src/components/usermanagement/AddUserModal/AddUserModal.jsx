@@ -80,7 +80,6 @@ const AddUserModal = props => {
     manager: "",
     managerUpdated: false,
     nNumber: defaultNNumber,
-    nNumberUpdated: false,
     outgoing: "",
     outgoingValid: false,
     outgoingUpdated: false,
@@ -189,11 +188,11 @@ const AddUserModal = props => {
       });
   };
 
-  const nNumberInputValid = JSON.stringify(form.lookupInfo) !== JSON.stringify({});
+  const [ nNumberValid, setNNumberValid ] = useState(false);
   const extensionInputValid = (form.extensionValid || form.extension === "");
   const managerValid = form.manager !== "";
   const teamValid = form.team !== "";
-  const formReady = nNumberInputValid && teamValid && managerValid && form.outgoingValid && extensionInputValid;
+  const formReady = nNumberValid && teamValid && managerValid && form.outgoingValid && extensionInputValid;
 
   return (
     <ModalContainer>
@@ -269,26 +268,17 @@ const AddUserModal = props => {
           }}
         />
         <ModalNNumber
-          clearUser={() => {
-            setForm({
-              ...form,
-              lookupError: null,
-              lookupInfo: {},
-              nNumber: defaultNNumber
-            });
-          }}
-          disabled={JSON.stringify(form.lookupInfo) !== "{}"}
-          error={form.nNumberUpdated && !nNumberInputValid}
-          form={form}
+          disabled={nNumberValid || loading.saveStatus === modalOverlayStatuses.SAVING}
           nNumber={form.nNumber}
-          onBlur={() => setForm({
-            ...form,
-            nNumberUpdated: true
-          })}
-          setForm={setForm}
-          updateValue={newValue => setForm({
+          setIsValid={setNNumberValid}
+          updateNNumber={newValue => setForm({
             ...form,
             nNumber: newValue
+          })}
+          resetParentState={() => setForm({
+            ...form,
+            lookupInfo: {},
+            nNumber: defaultNNumber
           })}
         />
         <ModalExtension
