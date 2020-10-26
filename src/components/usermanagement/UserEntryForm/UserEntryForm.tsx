@@ -350,7 +350,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
   const extensionInputValid = (form.extensionValid || form.extension === "");
   const managerValid = form.manager !== "";
   const profileIdValid = form.profileId !== "";
-  const formReady = nNumberInputValid && profileIdValid && managerValid && form.outgoingValid && extensionInputValid;
+  const formReady = (formMode === formModes.INSERT ? nNumberInputValid : true) && profileIdValid && managerValid && form.outgoingValid && extensionInputValid;
 
   return (
     <ModalContainer>
