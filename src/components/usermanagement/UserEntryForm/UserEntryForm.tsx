@@ -2,6 +2,7 @@ import {
   getE164Number
 } from "@lmig/phone-number-utils";
 import {
+  DefaultSkillSelector,
   OutlinedSelect,
   ModalNNumber,
   ModalExtension,
@@ -12,6 +13,7 @@ import {
   UserEntryFormState
 } from "components";
 import {
+  TwilioWorkerSkills,
   useAdminDispatch,
   useAdminState
 } from "context";
@@ -27,6 +29,7 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import {
+  getValidSkillsObject,
   mapWorkerFromTwilioWorker,
   myAxios,
   sortManagersByName
@@ -61,10 +64,12 @@ const defaultNNumber = "n";
 
 interface UserEntryFormProps {
   userEntryFormState: UserEntryFormState,
-  handleClose: VoidFunction,
+  handleClose: VoidFunction
 }
 
 interface UserEntryForm_FormState {
+  defaultSkills: TwilioWorkerSkills,
+  defaultSkillsUpdated: boolean,
   extension: string,
   extensionValid: boolean,
   lookupInfo: {
@@ -84,8 +89,8 @@ interface UserEntryForm_FormState {
   outgoing: string,
   outgoingValid: boolean,
   outgoingUpdated: boolean,
-  team: string,
-  teamUpdated: boolean
+  profileId: string,
+  profileIdUpdated: boolean
 }
 
 const UserEntryForm = (props: UserEntryFormProps) => {
@@ -94,7 +99,6 @@ const UserEntryForm = (props: UserEntryFormProps) => {
     handleClose,
     userEntryFormState: {
       formMode,
-      open,
       worker
     }
   } = props;
@@ -111,6 +115,8 @@ const UserEntryForm = (props: UserEntryFormProps) => {
 
   const getInitialFormState = (): UserEntryForm_FormState => {
     const initialForm: UserEntryForm_FormState = {
+      defaultSkills: getValidSkillsObject(),
+      defaultSkillsUpdated: false,
       extension: "",
       extensionValid: false,
       lookupError: null,
@@ -122,18 +128,18 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       outgoing: "",
       outgoingUpdated: false,
       outgoingValid: false,
-      team: "",
-      teamUpdated: false
+      profileId: "",
+      profileIdUpdated: false
     };
     if (formMode === formModes.UPDATE) {
-      // TODO derive these from existing worker attributes
-      form.extension = "";
-      form.extensionValid = false;
-      form.manager = "";
-      form.nNumber = defaultNNumber;
-      form.outgoing = "";
-      form.outgoingValid = false;
-      form.team = "";
+      form.defaultSkills = getValidSkillsObject(worker.attributes.default_skills);
+      form.extension = worker.attributes.extension || "";
+      form.extensionValid = true; // TODO validate existing extension???
+      form.manager = JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number));
+      form.nNumber = worker.attributes.n_number || defaultNNumber;
+      form.outgoing = worker.attributes.did || "";
+      form.outgoingValid = worker.attributes.did ? true : false;
+      form.profileId = `${worker.attributes.profile_id}`;
     }
     return initialForm;
   }
@@ -148,7 +154,6 @@ const UserEntryForm = (props: UserEntryFormProps) => {
 
   const updateUser = () => {
     // COPIED FROM EDIT USER MODAL
-
 
     // setSaveUser(loadingStates.saving);
     // const attributes = {};
@@ -234,7 +239,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       office_location_number: form.lookupInfo.officeNumber,
       primary_dept_name: form.lookupInfo.departmentName,
       primary_dept_number: form.lookupInfo.departmentNumber,
-      profile_id: form.team
+      profile_id: form.profileId
     };
     myAxios.post(apiPaths.CREATE_WORKER, { attributes })
       .then(res => {
@@ -284,8 +289,8 @@ const UserEntryForm = (props: UserEntryFormProps) => {
   const nNumberInputValid = JSON.stringify(form.lookupInfo) !== JSON.stringify({});
   const extensionInputValid = (form.extensionValid || form.extension === "");
   const managerValid = form.manager !== "";
-  const teamValid = form.team !== "";
-  const formReady = nNumberInputValid && teamValid && managerValid && form.outgoingValid && extensionInputValid;
+  const profileIdValid = form.profileId !== "";
+  const formReady = nNumberInputValid && profileIdValid && managerValid && form.outgoingValid && extensionInputValid;
 
   return (
     <ModalContainer>
@@ -320,13 +325,13 @@ const UserEntryForm = (props: UserEntryFormProps) => {
           value={form.manager}
         />
         <OutlinedSelect
-          error={form.teamUpdated && !teamValid}
-          helperText={teamValid ? null : "Please select a team"}
+          error={form.profileIdUpdated && !profileIdValid}
+          helperText={profileIdValid ? null : "Please select a team"}
           label={"Team"}
           labelWidth={44}
           onBlur={() => setForm({
             ...form,
-            teamUpdated: true
+            profileIdUpdated: true
           })}
           optionsList={profiles}
           optionsDisplayFunc={option => {
@@ -338,9 +343,9 @@ const UserEntryForm = (props: UserEntryFormProps) => {
           }}
           updateValue={newValue => setForm({
             ...form,
-            team: newValue
+            profileId: newValue
           })}
-          value={form.team}
+          value={form.profileId}
         />
         <ModalPhoneNumber
           allowSevenDigitVdn={false}
@@ -401,6 +406,9 @@ const UserEntryForm = (props: UserEntryFormProps) => {
           form={form}
           setForm={setForm}
         />
+        <DefaultSkillSelector defaultSkills={form.defaultSkills} setDefaultSkills={updatedDefaultSkills => {
+          // TODO
+        }}/>
         <ButtonWrapper>
           <StyledButton disabled={!formReady} onClick={addUser}>{} User</StyledButton>
           <StyledButton onClick={handleClose}>Close</StyledButton>

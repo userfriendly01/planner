@@ -49,7 +49,7 @@ interface ManagementWrapperState {
 export interface UserEntryFormState {
   formMode: FormMode,
   open: boolean,
-  worker: Worker
+  worker: TwilioWorker
 };
 
 const initialManagementWrapperState: ManagementWrapperState = {
