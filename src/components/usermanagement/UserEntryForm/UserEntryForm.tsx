@@ -406,9 +406,15 @@ const UserEntryForm = (props: UserEntryFormProps) => {
           form={form}
           setForm={setForm}
         />
-        <DefaultSkillSelector defaultSkills={form.defaultSkills} setDefaultSkills={updatedDefaultSkills => {
-          // TODO
-        }}/>
+        <DefaultSkillSelector
+          defaultSkills={form.defaultSkills}
+          setDefaultSkills={defaultSkills => {
+            setForm({
+              ...form,
+              defaultSkills
+            })
+          }}
+        />
         <ButtonWrapper>
           <StyledButton disabled={!formReady} onClick={addUser}>{} User</StyledButton>
           <StyledButton onClick={handleClose}>Close</StyledButton>
