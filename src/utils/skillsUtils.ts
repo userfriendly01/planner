@@ -41,7 +41,7 @@ export const formatTaskRouterSkills = (rawTaskRouterSkills: RawTaskRotuterSkill[
   };
 }).sort(sortTaskRouterSkillByName);
 
-export const getValidSkillsObject = (skillsObject: TwilioWorkerSkills): TwilioWorkerSkills => {
+export const getValidSkillsObject = (skillsObject?: TwilioWorkerSkills): TwilioWorkerSkills => {
   const validObject: TwilioWorkerSkills = {
     skills: [],
     levels: {}
