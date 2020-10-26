@@ -80,6 +80,7 @@ const SkillsWrapper = styled.div`
 const SkillRowItem = styled.div`
   &:nth-child(1) {
     display: flex;
+    padding-right: 8px;
     width: 60%;
   }
   &:nth-child(2) {
