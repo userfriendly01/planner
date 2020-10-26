@@ -8,7 +8,6 @@ import {
   ModalExtension,
   ModalOverlay,
   ModalPhoneNumber,
-  PaperContainer,
   StyledButton,
   UserEntryFormState
 } from "components";
@@ -45,19 +44,40 @@ const ButtonWrapper = styled(FlexRow)`
   padding: 1%;
 `;
 
+const FormControlsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  max-height: 90vh;
+  overflow-y: auto;
+  width: 100%;
+`;
+
+const FormControlsPane = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-width: 320px;
+  overflow-y: auto;
+  padding: 0 2%;
+  width: 100%
+`;
+
 const Header = styled.h1`
   align-self: center;
 `;
 
 const ModalContainer = styled.div`
+  background-color: ${props => props.theme.backgroundColor}
+  border-radius: 4px;
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
   left: 50%;
+  max-width: 700px;
   padding: 2%;
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
+  width: 100%;
 `;
 
 const defaultNNumber = "n";
@@ -120,7 +140,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       extension: "",
       extensionValid: false,
       lookupError: null,
-      lookupInfo: null,
+      lookupInfo: {},
       manager: "",
       managerUpdated: false,
       nNumber: defaultNNumber,
@@ -132,14 +152,14 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       profileIdUpdated: false
     };
     if (formMode === formModes.UPDATE) {
-      form.defaultSkills = getValidSkillsObject(worker.attributes.default_skills);
-      form.extension = worker.attributes.extension || "";
-      form.extensionValid = true; // TODO validate existing extension???
-      form.manager = JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number));
-      form.nNumber = worker.attributes.n_number || defaultNNumber;
-      form.outgoing = worker.attributes.did || "";
-      form.outgoingValid = worker.attributes.did ? true : false;
-      form.profileId = `${worker.attributes.profile_id}`;
+      initialForm.defaultSkills = getValidSkillsObject(worker.attributes.default_skills);
+      initialForm.extension = worker.attributes.extension || "";
+      initialForm.extensionValid = true; // TODO validate existing extension???
+      initialForm.manager = JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number));
+      initialForm.nNumber = worker.attributes.n_number || defaultNNumber;
+      initialForm.outgoing = worker.attributes.did || "";
+      initialForm.outgoingValid = worker.attributes.did ? true : false;
+      initialForm.profileId = `${worker.attributes.profile_id}`;
     }
     return initialForm;
   }
@@ -294,132 +314,136 @@ const UserEntryForm = (props: UserEntryFormProps) => {
 
   return (
     <ModalContainer>
-      <PaperContainer>
-        {loading.saveUser ?
-          <ModalOverlay
-            status={loading.saveStatus}
-            message={loading.overlayMessage}
-          /> : null}
-        <Header>Add a User</Header>
-        <OutlinedSelect
-          error={form.managerUpdated && !managerValid}
-          helperText={managerValid ? null : "Please select a manager"}
-          label={"Manager"}
-          labelWidth={67}
-          onBlur={() => setForm({
-            ...form,
-            managerUpdated: true
-          })}
-          optionsList={managers.sort(sortManagersByName)}
-          optionsDisplayFunc={option => {
-            return {
-              display: `${option.manager_first_name} ${option.manager_last_name}`,
-              key: option.manager_n_number,
-              value: JSON.stringify(option)
-            };
-          }}
-          updateValue={newValue => setForm({
-            ...form,
-            manager: newValue
-          })}
-          value={form.manager}
-        />
-        <OutlinedSelect
-          error={form.profileIdUpdated && !profileIdValid}
-          helperText={profileIdValid ? null : "Please select a team"}
-          label={"Team"}
-          labelWidth={44}
-          onBlur={() => setForm({
-            ...form,
-            profileIdUpdated: true
-          })}
-          optionsList={profiles}
-          optionsDisplayFunc={option => {
-            return {
-              display: option.profile_nme,
-              key: option.profile_id,
-              value: option.profile_id
-            };
-          }}
-          updateValue={newValue => setForm({
-            ...form,
-            profileId: newValue
-          })}
-          value={form.profileId}
-        />
-        <ModalPhoneNumber
-          allowSevenDigitVdn={false}
-          id="outgoing-number"
-          number={form.outgoing}
-          onBlur={() => setForm({
-            ...form,
-            outgoingUpdated: true
-          })}
-          label="Outgoing Number"
-          showError={form.outgoingUpdated}
-          updateValue={(maskedValue, unmaskedValue, isValid) => {
-            setForm({
+      {loading.saveUser ?
+        <ModalOverlay
+          status={loading.saveStatus}
+          message={loading.overlayMessage}
+        /> : null}
+      <Header>{formMode === formModes.INSERT ? "Add a User" : "Edit User"}</Header>
+      <FormControlsContainer>
+        <FormControlsPane>
+          <OutlinedSelect
+            error={form.managerUpdated && !managerValid}
+            helperText={managerValid ? null : "Please select a manager"}
+            label={"Manager"}
+            labelWidth={67}
+            onBlur={() => setForm({
               ...form,
-              outgoing: maskedValue,
-              outgoingValid: isValid
-            });
-          }}
-        />
-        <ModalNNumber
-          clearUser={() => {
-            setForm({
+              managerUpdated: true
+            })}
+            optionsList={managers.sort(sortManagersByName)}
+            optionsDisplayFunc={option => {
+              return {
+                display: `${option.manager_first_name} ${option.manager_last_name}`,
+                key: option.manager_n_number,
+                value: JSON.stringify(option)
+              };
+            }}
+            updateValue={newValue => setForm({
               ...form,
-              lookupError: null,
-              lookupInfo: null,
-              nNumber: defaultNNumber
-            });
-          }}
-          disabled={JSON.stringify(form.lookupInfo) !== "{}"}
-          error={form.nNumberUpdated && !nNumberInputValid}
-          form={form}
-          nNumber={form.nNumber}
-          onBlur={() => setForm({
-            ...form,
-            nNumberUpdated: true
-          })}
-          setForm={setForm}
-          updateValue={newValue => setForm({
-            ...form,
-            nNumber: newValue
-          })}
-        />
-        <ModalExtension
-          clearExtension={() => {
-            setForm({
+              manager: newValue
+            })}
+            value={form.manager}
+          />
+          <OutlinedSelect
+            error={form.profileIdUpdated && !profileIdValid}
+            helperText={profileIdValid ? null : "Please select a team"}
+            label={"Team"}
+            labelWidth={44}
+            onBlur={() => setForm({
               ...form,
-              extension: "",
-              extensionValid: false
-            });
-          }}
-          disabled={form.extensionValid && extensionMatcher.test(form.extension)}
-          error={!extensionInputValid}
-          extension={form.extension}
-          updateValue={newValue => setForm({
-            ...form,
-            extension: newValue
-          })}
-          form={form}
-          setForm={setForm}
-        />
-        <DefaultSkillSelector
-          defaultSkills={form.defaultSkills}
-          setDefaultSkills={defaultSkills => {
-            setForm({
+              profileIdUpdated: true
+            })}
+            optionsList={profiles}
+            optionsDisplayFunc={option => {
+              return {
+                display: option.profile_nme,
+                key: option.profile_id,
+                value: option.profile_id
+              };
+            }}
+            updateValue={newValue => setForm({
               ...form,
-              defaultSkills
-            })
-          }}
-        />
-        <ButtonWrapper>
-          <StyledButton disabled={!formReady} onClick={addUser}>{} User</StyledButton>
-          <StyledButton onClick={handleClose}>Close</StyledButton>
-        </ButtonWrapper>
-      </PaperContainer>
+              profileId: newValue
+            })}
+            value={form.profileId}
+          />
+          <ModalPhoneNumber
+            allowSevenDigitVdn={false}
+            id="outgoing-number"
+            number={form.outgoing}
+            onBlur={() => setForm({
+              ...form,
+              outgoingUpdated: true
+            })}
+            label="Outgoing Number"
+            showError={form.outgoingUpdated}
+            updateValue={(maskedValue, unmaskedValue, isValid) => {
+              setForm({
+                ...form,
+                outgoing: maskedValue,
+                outgoingValid: isValid
+              });
+            }}
+          />
+          <ModalNNumber
+            clearUser={() => {
+              setForm({
+                ...form,
+                lookupError: null,
+                lookupInfo: null,
+                nNumber: defaultNNumber
+              });
+            }}
+            disabled={JSON.stringify(form.lookupInfo) !== "{}"}
+            error={form.nNumberUpdated && !nNumberInputValid}
+            form={form}
+            nNumber={form.nNumber}
+            onBlur={() => setForm({
+              ...form,
+              nNumberUpdated: true
+            })}
+            setForm={setForm}
+            updateValue={newValue => setForm({
+              ...form,
+              nNumber: newValue
+            })}
+          />
+          <ModalExtension
+            clearExtension={() => {
+              setForm({
+                ...form,
+                extension: "",
+                extensionValid: false
+              });
+            }}
+            disabled={form.extensionValid && extensionMatcher.test(form.extension)}
+            error={!extensionInputValid}
+            extension={form.extension}
+            updateValue={newValue => setForm({
+              ...form,
+              extension: newValue
+            })}
+            form={form}
+            setForm={setForm}
+          />
+        </FormControlsPane>
+        <FormControlsPane>
+          <DefaultSkillSelector
+            defaultSkills={form.defaultSkills}
+            setDefaultSkills={defaultSkills => {
+              setForm({
+                ...form,
+                defaultSkills
+              })
+            }}
+          />
+        </FormControlsPane>
+      </FormControlsContainer>
+      <ButtonWrapper>
+        <StyledButton disabled={!formReady} onClick={addUser}>{formMode === formModes.INSERT ? "Add User" : "Save"} User</StyledButton>
+        <StyledButton onClick={handleClose}>Close</StyledButton>
+      </ButtonWrapper>
     </ModalContainer>
   );
 };
