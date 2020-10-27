@@ -38,8 +38,6 @@ const skillsEndpoint = apiPaths.GET_TASKROUTER_SKILLS;
 const workersEndpoint = apiPaths.GET_WORKERS;
 
 const auth = { whatever: "lol" };
-const timeAppFirstLoads = "July 18, 2020 00:42:30 GMT+00:00";
-const oneHourLater = "July 18, 2020 01:42:30 GMT+00:00";
 
 const profiles = [
   { cool: "neat" },
@@ -102,7 +100,6 @@ describe("<App />", () => {
   beforeEach(() => {
     mockStore.reset();
     jest.clearAllMocks();
-    MockDate.set(timeAppFirstLoads);
     setupMockedComponents({
       CircularProgress,
       Header,
@@ -127,7 +124,7 @@ describe("<App />", () => {
       });
     });
     describe("service calls are complete", () => {
-      describe("auth token is good", () => {
+      describe("auth token is good (page loaded less than one hour ago)", () => {
         test(
           "should render Header & NavTabs, should dispatch appropriate actions, Modal should not be open",
           async () => {
@@ -168,14 +165,13 @@ describe("<App />", () => {
             expect(rendered.container).not.toHaveTextContent("Loading...");
           });
       });
-      describe("auth token has expired", () => {
+      describe("auth token has expired (page loaded more than one hour ago", () => {
         test("should render NotificationModal", async () => {
           const rendered = render(<App />);
           await waitFor(() => rendered.getByTestId("app-wrapper"));
           const modalChildren = Modal.mock.calls[0][0].children;
           const modalChildrenRendered = render(<div>{modalChildren}</div>);
-          MockDate.set(oneHourLater);
-          await act(() => jest.advanceTimersByTime(timeouts.CHECK_AUTH));
+          await act(() => jest.advanceTimersByTime(timeouts.AUTH));
           expectOnlyPassedProps(Modal, {
             disableBackdropClick: true,
             open: true

@@ -19,6 +19,7 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import {
+  wait,
   formatTaskRouterSkills,
   formatWorkerResponse,
   getUniqueManagerList,
@@ -159,26 +160,8 @@ const getWorkers = async dispatch => {
 const App = () => {
 
   const [loadResult, setLoadResult] = useState(null);
-  const [authExpired, setAuthExpired] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const dispatch = useAdminDispatch();
-
-  // let currentTime = Date.now();
-  // const authExpirationTime = currentTime + timeouts.AUTH;
-
-  const getAuthExpirationTime = () => Date.now() + timeouts.AUTH;
-
-  const checkAuthExpiration = authExpirationTime => {
-    const currentTime = Date.now();
-    if (authExpirationTime - currentTime <= 0) {
-      console.log("Auth has expired");
-      setAuthExpired(true);
-    } else {
-      console.log("checking auth");
-      console.log("currentTime", currentTime);
-      console.log("authExpirationTime", authExpirationTime);
-      setTimeout(() => checkAuthExpiration(authExpirationTime), timeouts.CHECK_AUTH);
-    }
-  };
 
   useEffect(() => {
     Promise.all([
@@ -189,13 +172,15 @@ const App = () => {
     ])
       .then(() => {
         setLoadResult(success);
-        // const authExpirationTime = getAuthExpirationTime();
-        checkAuthExpiration(getAuthExpirationTime());
       })
       .catch(err => {
         console.error(err.msg, { error: err.error });
         setLoadResult(err);
       });
+  }, []);
+
+  useEffect(() => {
+    wait(() => setShowModal(true), timeouts.AUTH);
   }, []);
 
   if (loadResult) {
@@ -204,7 +189,7 @@ const App = () => {
         <AppWrapper data-testid="app-wrapper">
           <Header/>
           <NavTabs/>
-          <Modal disableBackdropClick={true} open={authExpired === true}>
+          <Modal disableBackdropClick={true} open={showModal === true}>
             <NotificationModal reloadFn={() => window.location.reload()} />
           </Modal>
         </AppWrapper>
