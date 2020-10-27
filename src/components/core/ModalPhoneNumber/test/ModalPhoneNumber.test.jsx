@@ -16,6 +16,7 @@ const renderComponent = ({
   allowSevenDigitVdn,
   error,
   helperText,
+  number,
   onBlur,
   showError
 }) => {
@@ -25,7 +26,7 @@ const renderComponent = ({
       error={error}
       helperText={helperText}
       id={id}
-      number={""}
+      number={number || ""}
       onBlur={onBlur}
       label={label}
       showError={showError}
@@ -185,6 +186,36 @@ describe("<ModalPhoneNumber />", () => {
         // invalid partial number
         changeNumberInput(rendered, "603");
         expect(updateValue.mock.calls[0]).toEqual(["(603) ", "603", false]);
+        // label element className
+        const { className } = rendered.queryAllByText(label)[0];
+        expect(muiErrorClassRegex.test(className)).toBeFalsy();
+        // helper text
+        expect(rendered.container).not.toHaveTextContent("Enter a valid ten digit phone number");
+      });
+    });
+
+    describe("showError is true and and number is invalid", () => {
+
+      test("should render with error styling and helper text", () => {
+        const rendered = renderComponent({
+          showError: true,
+          number: "(603)"
+        });
+        // label element className
+        const { className } = rendered.queryAllByText(label)[0];
+        expect(muiErrorClassRegex.test(className)).toBeTruthy();
+        // helper text
+        expect(rendered.container).toHaveTextContent("Enter a valid ten digit phone number");
+      });
+    });
+
+    describe("showError is true and and number is valid", () => {
+
+      test("should render with no error styling and no helper text", () => {
+        const rendered = renderComponent({
+          showError: true,
+          number: "(603) 812-6666"
+        });
         // label element className
         const { className } = rendered.queryAllByText(label)[0];
         expect(muiErrorClassRegex.test(className)).toBeFalsy();

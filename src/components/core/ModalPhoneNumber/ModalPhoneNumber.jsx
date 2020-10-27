@@ -83,7 +83,7 @@ const ModalPhoneNumber = props => {
   const textField = (
     <TextField
       error={error || (showError && validationError)}
-      helperText={helperText || (showError ? validationHelperText : null)}
+      helperText={helperText || (showError && validationError ? validationHelperText : null)}
       id={id}
       InputProps={{
         inputComponent: useSevenDigitMask ? SevenDigitInputMask : TenDigitInputMask,
