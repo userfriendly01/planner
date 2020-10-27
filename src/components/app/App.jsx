@@ -162,12 +162,13 @@ const App = () => {
   const [authExpired, setAuthExpired] = useState(false);
   const dispatch = useAdminDispatch();
 
-  let currentTime = Date.now();
-  const authExpirationTime = currentTime + timeouts.AUTH;
+  // let currentTime = Date.now();
+  // const authExpirationTime = currentTime + timeouts.AUTH;
 
-  const checkAuthExpiration = () => {
-    console.log("checkAuthExpiration");
-    currentTime = Date.now();
+  const getAuthExpirationTime = () => Date.now() + timeouts.AUTH;
+
+  const checkAuthExpiration = authExpirationTime => {
+    const currentTime = Date.now();
     if (authExpirationTime - currentTime <= 0) {
       console.log("Auth has expired");
       setAuthExpired(true);
@@ -175,7 +176,7 @@ const App = () => {
       console.log("checking auth");
       console.log("currentTime", currentTime);
       console.log("authExpirationTime", authExpirationTime);
-      setTimeout(checkAuthExpiration, timeouts.CHECK_AUTH);
+      setTimeout(() => checkAuthExpiration(authExpirationTime), timeouts.CHECK_AUTH);
     }
   };
 
@@ -188,7 +189,8 @@ const App = () => {
     ])
       .then(() => {
         setLoadResult(success);
-        checkAuthExpiration();
+        // const authExpirationTime = getAuthExpirationTime();
+        checkAuthExpiration(getAuthExpirationTime());
       })
       .catch(err => {
         console.error(err.msg, { error: err.error });
