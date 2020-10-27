@@ -9,7 +9,6 @@ import {
 } from "@material-ui/icons";
 import {
   ConfirmationModal,
-  EditUserModal,
   ModalOverlay
 } from "components";
 import {
@@ -153,7 +152,6 @@ const ManagementTable = props => {
     message: null
   };
 
-  const [editUserModalOpts, setEditUserModalOpts] = useState(defaultModalOpts);
   const [confirmationModalOpts, setConfirmationModalOpts] = useState(defaultModalOpts);
   const [saveResult, setSaveResult] = useState(defaultSaveResult);
   const state = useAdminState();
@@ -272,9 +270,6 @@ const ManagementTable = props => {
             );
           })}
         </tbody>
-        <Modal open={editUserModalOpts.open}>
-          <EditUserModal handleClose={() => setEditUserModalOpts(defaultModalOpts)} worker={editUserModalOpts.worker}/>
-        </Modal>
         <Modal open={confirmationModalOpts.open}>
           { confirmationModalOpts.worker ?
             <ConfirmationModal
