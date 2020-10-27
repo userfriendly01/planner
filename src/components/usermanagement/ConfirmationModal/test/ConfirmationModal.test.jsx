@@ -27,16 +27,17 @@ const mockHandleConfirm = jest.fn();
 const initialSaveResult = {
   status: null,
   message: null
-}
+};
+
 const body = {
   confirmationText: "Are you sure?",
   data: "Peter Griffin"
-}
+};
 
 const renderComponent = () => {
   return render(<ConfirmationModal
     handleClose={mockHandleClose}
-    onConfirm={mockHandleConfirm} 
+    onConfirm={mockHandleConfirm}
     body={body}
     saveResult={initialSaveResult} />);
 };
@@ -67,7 +68,7 @@ describe("<ConfirmationModal />", () => {
         onClick: mockHandleConfirm
       }, 0);
       const confirm = StyledButton.mock.calls[0][0].onClick;
-      act(() => confirm())
+      act(() => confirm());
       expect(mockHandleConfirm).toHaveBeenCalledTimes(1);
     });
   });
@@ -78,7 +79,7 @@ describe("<ConfirmationModal />", () => {
         onClick: mockHandleClose
       }, 1);
       const cancel = StyledButton.mock.calls[1][0].onClick;
-      act(() => cancel())
+      act(() => cancel());
       expect(mockHandleClose).toHaveBeenCalledTimes(1);
     });
   });
@@ -86,10 +87,10 @@ describe("<ConfirmationModal />", () => {
     const renderComponent = saveResult => {
       return render(<ConfirmationModal
         handleClose={mockHandleClose}
-        onConfirm={mockHandleConfirm} 
+        onConfirm={mockHandleConfirm}
         body={body}
         saveResult={saveResult} />);
-    }
+    };
     test("When the Save Result is successful, the ModalOverlay is passed the correct props, handleClose is run", () => {
       const rendered = renderComponent({
         status: "success",

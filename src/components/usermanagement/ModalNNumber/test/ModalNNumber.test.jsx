@@ -48,9 +48,6 @@ describe("<ModalNNumber />", () => {
     jest.clearAllMocks();
   });
   describe("testing the CustomInput props", () => {
-    const form = {
-      lookupInfo: {}
-    };
     const disabled = false;
     const nNumber = "";
     test("the initial state should be just an empty text field, with the correct label, and no helper text", () => {
