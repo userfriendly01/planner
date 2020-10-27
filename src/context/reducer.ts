@@ -57,7 +57,7 @@ export interface TritonProfile {
 
 export interface TwilioWorker {
   attributes: {
-    contact_uri: string,
+    contact_uri?: string,
     default_skills?: TwilioWorkerSkills,
     did?: string,
     disabled_skills?: TwilioWorkerSkills,
@@ -76,7 +76,7 @@ export interface TwilioWorker {
     primary_dept_name?: string,
     primary_dept_number?: string,
     profile_id?: string | number,
-    roles: string[],
+    roles?: string[],
     routing?: TwilioWorkerSkills,
     unique_id?: string
   },
