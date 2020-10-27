@@ -220,6 +220,8 @@ const UserEntryForm = (props: UserEntryFormProps) => {
     if (form.defaultSkillsUpdated) {
       attributes.default_skills = form.defaultSkills;
     }
+    // TODO delete me
+    console.log("UPDATED ATTRIBUTES", attributes)
     myAxios
       .post(apiPaths.UPDATE_WORKER_ATTRIBUTES, {
         workerSid: worker.sid,
@@ -227,6 +229,8 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       })
       .then(res => {
         const updatedWorker = res.data;
+        // TODO delete me
+        console.log("UPDATED WORKER", res.data)
         dispatch(({
           type: "updateWorker",
           payload: mapWorkerFromTwilioWorker(updatedWorker)
@@ -363,8 +367,8 @@ const UserEntryForm = (props: UserEntryFormProps) => {
         <FormControlsPane>
           <OutlinedSelect
             error={form.managerUpdated && !managerValid}
-            helperText={managerValid ? null : "Please select a manager"}
-            label={"Manager"}
+            helperText={managerValid || !form.managerUpdated ? null : "Please select a manager"}
+            label={"Manager *"}
             labelWidth={67}
             onBlur={() => setForm({
               ...form,
@@ -386,8 +390,8 @@ const UserEntryForm = (props: UserEntryFormProps) => {
           />
           <OutlinedSelect
             error={form.profileIdUpdated && !profileIdValid}
-            helperText={profileIdValid ? null : "Please select a team"}
-            label={"Team"}
+            helperText={profileIdValid || !form.profileIdUpdated ? null : "Please select a team"}
+            label={"Team *"}
             labelWidth={44}
             onBlur={() => setForm({
               ...form,
@@ -415,7 +419,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
               ...form,
               outgoingUpdated: true
             })}
-            label="Outgoing Number"
+            label="Outgoing Number *"
             showError={form.outgoingUpdated}
             updateValue={(maskedValue, unmaskedValue, isValid) => {
               setForm({
@@ -437,6 +441,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
             disabled={formMode === formModes.UPDATE || JSON.stringify(form.lookupInfo) !== "{}"}
             error={form.nNumberUpdated && !nNumberInputValid}
             form={form}
+            label="N Number *"
             nNumber={form.nNumber}
             onBlur={() => setForm({
               ...form,
@@ -484,8 +489,17 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       </FormControlsContainer>
       <ButtonWrapper>
         { /** TODO more validation logic for edit form? Bring back asterisks? */}
-        <StyledButton disabled={!formReady} onClick={formMode === formModes.INSERT ? addUser : updateUser}>{formMode === formModes.INSERT ? "Add User" : "Save"} User</StyledButton>
-        <StyledButton onClick={handleClose}>Close</StyledButton>
+        <StyledButton
+          disabled={!formReady}
+          onClick={formMode === formModes.INSERT ? addUser : updateUser}
+        >
+          {formMode === formModes.INSERT ? "Add User" : "Save User"}
+        </StyledButton>
+        <StyledButton
+          onClick={handleClose}
+        >
+          Close
+        </StyledButton>
       </ButtonWrapper>
     </ModalContainer>
   );
