@@ -38,7 +38,8 @@ export const resetResponses = {
 };
 
 export const timeouts = {
-  AUTH: 3600 * 1000,
+  AUTH: 10 * 1000,
+  // AUTH: 3600 * 1000,
   CHECK_AUTH: 5000,
   MODAL_OVERLAY: 2000
 };
