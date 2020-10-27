@@ -88,7 +88,6 @@ describe("<DefaultSkillSelector />", () => {
         expectMockedComponent(rendered, { Add });
         expectMockedComponent(rendered, { PriorityDropDown }, 0);
         expectOnlyPassedProps(SkillDropDown, {
-          skillValue: "",
           taskrouterSkills: initialTestState.skillContext.taskrouterSkills
         });
       });

@@ -183,8 +183,6 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
       <SkillRow>
         <SkillRowItem>
           <SkillDropDown
-            // TODO delete this line??? unused prop
-            // skillValue={newSkill.skill}
             taskrouterSkills={taskrouterSkillsForDropDown}
             updateSkill={newSkillChanged} />
         </SkillRowItem>
