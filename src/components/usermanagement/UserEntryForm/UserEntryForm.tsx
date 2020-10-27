@@ -42,7 +42,7 @@ const FlexRow = styled.div`
 
 const ButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
-  padding: 1%;
+  padding: 8px;
 `;
 
 const FormControlsContainer = styled.div`
@@ -58,7 +58,7 @@ const FormControlsPane = styled.div`
   flex-direction: column;
   min-width: 320px;
   overflow-y: auto;
-  padding: 0 2%;
+  padding: 0 8px;
   width: 100%
 `;
 
@@ -74,7 +74,6 @@ const ModalContainer = styled.div`
   flex-direction: column;
   left: 50%;
   max-width: 700px;
-  padding: 2%;
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
