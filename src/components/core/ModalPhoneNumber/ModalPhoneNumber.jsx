@@ -19,10 +19,6 @@ const InputAndToggleContainer = styled.div`
   display: flex;
 `;
 
-const StyledTextField = styled(TextField)`
-  flex-grow: 1;
-`;
-
 const SwitchContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -85,7 +81,7 @@ const ModalPhoneNumber = props => {
   const validationHelperText = useSevenDigitMask ? "Enter a seven digit VDN" : "Enter a valid ten digit phone number";
 
   const textField = (
-    <StyledTextField
+    <TextField
       error={error || (showError && validationError)}
       helperText={helperText || (showError ? validationHelperText : null)}
       id={id}
