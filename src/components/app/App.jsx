@@ -165,7 +165,11 @@ const App = () => {
   let currentTime = Date.now();
   const authExpirationTime = currentTime + timeouts.AUTH;
 
+  console.log("currentTime", currentTime);
+  console.log("authExpirationTime", authExpirationTime);
+
   const checkAuthExpiration = () => {
+    console.log("checkAuthExpiration");
     currentTime = Date.now();
     if (authExpirationTime - currentTime <= 0) {
       console.log("Auth has expired");
@@ -177,6 +181,7 @@ const App = () => {
   };
 
   useEffect(() => {
+    console.log("useEffect");
     Promise.all([
       authenticate(dispatch),
       getProfiles(dispatch),
