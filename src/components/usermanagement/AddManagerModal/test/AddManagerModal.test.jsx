@@ -79,9 +79,11 @@ describe("<AddManagerModal />", () => {
         test("should render ModalNNumber with correct props", done => {
           renderComponent();
           act(() => {
-            const updateNNumber = ModalNNumber.mock.calls[0][0].updateNNumber;
+            const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
             const setIsValid = ModalNNumber.mock.calls[0][0].setIsValid;
-            updateNNumber(nNumber);
+            updateValue({
+              nNumber
+            });
             setIsValid(true);
             return Promise.resolve();
           }).then(() => {
@@ -96,8 +98,10 @@ describe("<AddManagerModal />", () => {
         test("should reset nNumber field to 'n'", done => {
           renderComponent();
           act(() => {
-            const updateNNumber = ModalNNumber.mock.calls[0][0].updateNNumber;
-            updateNNumber(nNumber);
+            const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
+            updateValue({
+              nNumber
+            });
             return Promise.resolve();
           }).then(() => {
             const { resetParentState } = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber));
@@ -126,9 +130,11 @@ describe("<AddManagerModal />", () => {
       test("should be enabled", done => {
         renderComponent();
         act(() => {
-          const updateNNumber = ModalNNumber.mock.calls[0][0].updateNNumber;
+          const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
           const setIsValid = ModalNNumber.mock.calls[0][0].setIsValid;
-          updateNNumber(nNumber);
+          updateValue({
+            nNumber
+          });
           setIsValid(true);
           return Promise.resolve();
         }).then(() => {
@@ -143,8 +149,10 @@ describe("<AddManagerModal />", () => {
         test("ModalOverlay should render with 'Manager added successfully' & modal should close after 2 seconds (handleClose should be called)", done => {
           const rendered = renderComponent();
           act(() => {
-            const updateNNumber = ModalNNumber.mock.calls[0][0].updateNNumber;
-            updateNNumber(nNumber);
+            const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
+            updateValue({
+              nNumber
+            });
             return Promise.resolve();
           }).then(() => {
             const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
@@ -171,8 +179,10 @@ describe("<AddManagerModal />", () => {
       test("ModalOverlay should render 'Manager already exists' & modal should remain open (handleClose should not be called)", done => {
         const rendered = render(<AddManagerModal handleClose={mockHandleClose}/>, testState);
         act(() => {
-          const updateNNumber = ModalNNumber.mock.calls[0][0].updateNNumber;
-          updateNNumber(nNumber);
+          const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
+          updateValue({
+            nNumber
+          });
           return Promise.resolve();
         }).then(() => {
           const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));

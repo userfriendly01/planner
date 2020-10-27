@@ -33,7 +33,7 @@ const renderComponent = (disabled, nNumber) => {
   return render(<ModalNNumber
     disabled={disabled}
     nNumber={nNumber}
-    updateNNumber={mockUpdateValue}
+    updateValue={mockUpdateValue}
     resetParentState={mockResetParentState}
     setIsValid={mockSetIsValid}
   />);
@@ -57,7 +57,6 @@ describe("<ModalNNumber />", () => {
       expect(props.label).toBe("N Number");
       expect(props.maxLength).toEqual("8");
       expect(props.name).toBe("N Number");
-      expect(props.updateValue).toBe(mockUpdateValue);
       expect(props.value).toBe(nNumber);
       expect(ModalHelperText.mock.calls.length).toBe(0);
     });
@@ -79,6 +78,13 @@ describe("<ModalNNumber />", () => {
       expect(CustomInput.mock.calls[0][0].error).toBe(false);
       await act(() => onBlur());
       expect(CustomInput.mock.calls[1][0].error).toBe(true);
+    });
+    test("when the updateValue function is called, updateValue prop is called", async () => {
+      renderComponent(disabled, nNumber);
+      const props = getMockedComponentProps(CustomInput);
+      const updateValue = props.updateValue;
+      await act(() => updateValue());
+      expect(mockUpdateValue).toBeCalledTimes(1);
     });
     describe("fetchUser returns a successful response", () => {
       const nNumber = "n0269913";

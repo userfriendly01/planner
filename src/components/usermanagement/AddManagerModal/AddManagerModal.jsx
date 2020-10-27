@@ -84,8 +84,6 @@ const AddManagerModal = props => {
     }
   };
 
-  // const isValidNNumber = nNumber.match(nNumMatcher);
-
   const [ isNNumberValid, setNNumberValid ] = useState(false);
 
   let overlayMessage = "Saving";
@@ -112,7 +110,7 @@ const AddManagerModal = props => {
           <ModalNNumber
             disabled={saveManager === loadingStates.loading || manager === loadingStates.loading || isNNumberValid}
             nNumber={nNumber}
-            updateNNumber={setNNumber}
+            updateValue={res => setNNumber(res.nNumber)}
             resetParentState={() => {
               setNNumber(defaultNNumber);
               setManager(defaultManager);

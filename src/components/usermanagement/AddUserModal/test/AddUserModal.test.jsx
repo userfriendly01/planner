@@ -2,7 +2,6 @@ import AddUserModal from "../AddUserModal";
 import MockAdapter from "axios-mock-adapter";
 import {
   ModalExtension,
-  ModalHelperText,
   ModalNNumber,
   ModalOverlay,
   ModalPhoneNumber,
@@ -12,9 +11,7 @@ import {
 } from "components";
 import { initialState } from "context";
 import {
-  apiPaths,
-  modalOverlayStatuses,
-  modalOverlayTimeout
+  apiPaths
 } from "globals";
 import React from "react";
 import {
@@ -25,11 +22,9 @@ import {
   getMockedComponentProps,
   mockStore,
   render,
-  setupMockedComponents,
-  waitFor
+  setupMockedComponents
 } from "testUtils";
 import {
-  mapWorkerFromTwilioWorker,
   myAxios
 } from "utils";
 
@@ -39,7 +34,6 @@ jest.useFakeTimers();
 jest.mock("components", () => ({
   __esModule: true,
   ModalExtension: jest.fn(),
-  ModalHelperText: jest.fn(),
   ModalNNumber: jest.fn(),
   ModalOverlay: jest.fn(),
   ModalPhoneNumber: jest.fn(),
@@ -119,7 +113,6 @@ describe("<AddUserModal />", () => {
     jest.clearAllMocks();
     setupMockedComponents({
       ModalExtension,
-      ModalHelperText,
       ModalNNumber,
       ModalOverlay,
       ModalPhoneNumber,
@@ -138,7 +131,6 @@ describe("<AddUserModal />", () => {
       expectMockedComponent(rendered, { ModalNNumber }, 1);
       expectMockedComponent(rendered, { ModalPhoneNumber }, 1);
       expectMockedComponent(rendered, { ModalOverlay }, 0);
-      expectMockedComponent(rendered, { ModalHelperText }, 0);
       expect(rendered.container).toHaveTextContent("Add a User");
       expectMockedComponent(rendered, { StyledButton }, 2);
       expectOnlyPassedProps(StyledButton, {
@@ -152,7 +144,6 @@ describe("<AddUserModal />", () => {
   });
 
   describe("the Manager dropdown", () => {
-
     test("the initial state as well as the functionality of the display function", () => {
       render(
         <AddUserModal
@@ -253,20 +244,6 @@ describe("<AddUserModal />", () => {
       renderComponent();
       const expectedNNumProps = {
         disabled: false,
-        form: {
-          extension: "",
-          extensionValid: false,
-          lookupInfo: {},
-          manager: "",
-          managerUpdated: false,
-          nNumber: "n",
-          nNumberUpdated: false,
-          outgoing: "",
-          outgoingValid: false,
-          outgoingUpdated: false,
-          team: "",
-          teamUpdated: false
-        },
         nNumber: "n"
       };
       expectOnlyPassedProps(ModalNNumber, expectedNNumProps, 0);
@@ -275,7 +252,9 @@ describe("<AddUserModal />", () => {
       renderComponent();
       act(() => {
         const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
-        updateValue("12345678");
+        updateValue({
+          nNumber: "12345678"
+        });
       });
       expect(ModalNNumber.mock.calls.length).toBe(2);
       const newValue = ModalNNumber.mock.calls[1][0].nNumber;
@@ -285,35 +264,28 @@ describe("<AddUserModal />", () => {
       renderComponent();
       act(() => {
         const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
-        updateValue("12345678");
+        updateValue({
+          nNumber: "12345678"
+        });
       });
       let newValue = ModalNNumber.mock.calls[1][0].nNumber;
       expect(newValue).toEqual("12345678");
       act(() => {
-        const clearUser = ModalNNumber.mock.calls[1][0].clearUser;
-        clearUser("12345678");
+        const resetParentState = ModalNNumber.mock.calls[1][0].resetParentState;
+        resetParentState("12345678");
       });
       newValue = ModalNNumber.mock.calls[2][0].nNumber;
       expect(newValue).toEqual("n");
     });
-    test("when we update the form in modalNNumber we should see those changes in a rerender", () => {
+    test("when we update the to a valid nNumber in modalNNumber we should see that update in rerender", () => {
       renderComponent();
-      const newForm = {
-        lookupInfo: {
-          disabled: "not anymore"
-        },
-        manager: "",
-        outgoing: "",
-        team: "",
-        extensionValid: true
-      };
       expect(ModalNNumber.mock.calls[0][0].disabled).toEqual(false);
       act(() => {
-        const setForm = ModalNNumber.mock.calls[0][0].setForm;
-        setForm(newForm);
+        const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
+        const setIsValid = ModalNNumber.mock.calls[0][0].setIsValid;
+        updateValue("12345678");
+        setIsValid(true);
       });
-      const form = ModalNNumber.mock.calls[1][0].form;
-      expect(form).toEqual(newForm);
       expect(ModalNNumber.mock.calls[1][0].disabled).toEqual(true);
     });
   });
@@ -331,7 +303,6 @@ describe("<AddUserModal />", () => {
           manager: "",
           managerUpdated: false,
           nNumber: "n",
-          nNumberUpdated: false,
           outgoing: "",
           outgoingValid: false,
           outgoingUpdated: false,
@@ -424,20 +395,20 @@ describe("<AddUserModal />", () => {
       act(() => {
         // nNumber has internal functionality to add `lookupInfo` to form that we need to mimic
         const props = getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalNNumber));
-        const setForm = props.setForm;
-        const form = props.form;
-        setForm({
-          ...form,
-          lookupInfo: {
-            email: "test@abc.com",
-            firstName: "Frank",
-            lastName: "Rizzo",
-            officeName: "Springfield 012B",
-            officeNumber: "ABC123",
-            departmentName: "Computers",
-            departmentNumber: "4848"
-          }
-        });
+        // const setForm = props.setForm;
+        // const form = props.form;
+        // setForm({
+        //   ...form,
+        //   lookupInfo: {
+        //     email: "test@abc.com",
+        //     firstName: "Frank",
+        //     lastName: "Rizzo",
+        //     officeName: "Springfield 012B",
+        //     officeNumber: "ABC123",
+        //     departmentName: "Computers",
+        //     departmentNumber: "4848"
+        //   }
+        // });
       });
       const addUserButtonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
       expect(addUserButtonProps.disabled).toBe(false);
@@ -463,122 +434,121 @@ describe("<AddUserModal />", () => {
       expect(mockHandleClose).toHaveBeenCalledTimes(1);
     });
 
-    describe("if the form becomes valid", () => {
+    // describe("if the form becomes valid", () => {
 
-      describe("service call to add worker succeeds", () => {
+    //   describe("service call to add worker succeeds", () => {
 
-        const twilioWorkerResponse = {
-          "accountSid": "AC240dd0bc4d65ef2ab1c390f0fb9146da",
-          "activityName": "Offline",
-          "activitySid": "WA98fb57313627153d707a17f549566046",
-          "attributes": "{\"did\":\"+16039998888\",\"email\":\"Chris.Plankey@libertymutual.com\",\"full_name\":\"Chris Plankey\",\"manager_first_name\":\"Joanna\",\"manager_last_name\":\"Makowiecka\",\"manager_n_number\":\"n0360870\",\"n_number\":\"n0287898\",\"office_location_name\":\"Dover, NH-150 Liberty Way\",\"office_location_number\":\"016C\",\"primary_dept_name\":\"016C-12160 GRM US PL - Agent & Partners\",\"primary_dept_number\":\"12160\",\"profile_id\":\"0\"}",
-          "available": false,
-          "dateCreated": "2019-09-25T20:58:26.000Z",
-          "dateStatusChanged": "2019-09-25T20:58:26.000Z",
-          "dateUpdated": "2019-09-26T16:33:44.000Z",
-          "friendlyName": "n0287898",
-          "sid": "WK2a1bf01df1bb7a50aac8429e5467e0ee",
-          "workspaceSid": "WSde21cfcdde7bcb69cd82f1c060e5dba0",
-          "url": "https://taskrouter.twilio.com/v1/Workspaces/WSde21cfcdde7bcb69cd82f1c060e5dba0/Workers/WK2a1bf01df1bb7a50aac8429e5467e0ee"
-        };
+    //     const twilioWorkerResponse = {
+    //       "accountSid": "AC240dd0bc4d65ef2ab1c390f0fb9146da",
+    //       "activityName": "Offline",
+    //       "activitySid": "WA98fb57313627153d707a17f549566046",
+    //       "attributes": "{\"did\":\"+16039998888\",\"email\":\"Chris.Plankey@libertymutual.com\",\"full_name\":\"Chris Plankey\",\"manager_first_name\":\"Joanna\",\"manager_last_name\":\"Makowiecka\",\"manager_n_number\":\"n0360870\",\"n_number\":\"n0287898\",\"office_location_name\":\"Dover, NH-150 Liberty Way\",\"office_location_number\":\"016C\",\"primary_dept_name\":\"016C-12160 GRM US PL - Agent & Partners\",\"primary_dept_number\":\"12160\",\"profile_id\":\"0\"}",
+    //       "available": false,
+    //       "dateCreated": "2019-09-25T20:58:26.000Z",
+    //       "dateStatusChanged": "2019-09-25T20:58:26.000Z",
+    //       "dateUpdated": "2019-09-26T16:33:44.000Z",
+    //       "friendlyName": "n0287898",
+    //       "sid": "WK2a1bf01df1bb7a50aac8429e5467e0ee",
+    //       "workspaceSid": "WSde21cfcdde7bcb69cd82f1c060e5dba0",
+    //       "url": "https://taskrouter.twilio.com/v1/Workspaces/WSde21cfcdde7bcb69cd82f1c060e5dba0/Workers/WK2a1bf01df1bb7a50aac8429e5467e0ee"
+    //     };
 
-        beforeEach(() => {
-          axiosMock.onPost(apiPaths.CREATE_WORKER).reply(200, twilioWorkerResponse);
-        });
+    //     beforeEach(() => {
+    //       axiosMock.onPost(apiPaths.CREATE_WORKER).reply(200, twilioWorkerResponse);
+    //     });
 
-        test("when save button is clicked we should clear the user, which should disable 'Add User', and dispatch addWorkers", async () => {
-          const rendered = renderComponent();
-          updateformSoItIsValid();
-          // instanceCalled - 1 because the Close button is the last instance called
-          await act(() => {
-            const addUserButtonOnClick = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1).onClick;
-            addUserButtonOnClick();
-          });
-          const expectedTwilioWorkerAttributesPosted = {
-            did: `+1${formOptions.did}`,
-            email: employeeLookupResponse[0].person.data.Email,
-            email_address: employeeLookupResponse[0].person.data.Email,
-            emp_first_name: employeeLookupResponse[0].person.data.FirstName,
-            emp_last_name: employeeLookupResponse[0].person.data.LastName,
-            extension: formOptions.extension,
-            full_name: `${employeeLookupResponse[0].person.data.FirstName} ${employeeLookupResponse[0].person.data.LastName}`,
-            manager_first_name: formOptions.manager.manager_first_name,
-            manager_last_name: formOptions.manager.manager_last_name,
-            manager_n_number: formOptions.manager.manager_n_number,
-            n_number: formOptions.nNumber,
-            office_location_name: employeeLookupResponse[0].person.data.OfficeName,
-            office_location_number: employeeLookupResponse[0].person.data.OfficeNumber,
-            primary_dept_name: employeeLookupResponse[0].person.data.DepartmentName,
-            primary_dept_number: employeeLookupResponse[0].person.data.DepartmentNumber,
-            profile_id: formOptions.profileId
-          };
-          // await waitFor(() => {
-          //   expect(axiosMock.history.post[0].data).toEqual(JSON.stringify({ attributes: expectedTwilioWorkerAttributesPosted }));
-          //   expectMockedComponent(rendered, { ModalOverlay });
-          //   const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
-          //   const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
-          //   const addUserButtonProps2 = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
-          //   expect(addUserButtonProps2.disabled).toBe(true);
-          //   expect(saveStatus).toBe(modalOverlayStatuses.SUCCESS);
-          //   expect(nNumber).toBe("n");
-          //   act(() => jest.runAllTimers());
-          //   expectMockedComponent(rendered, { ModalOverlay }, 0);
-          //   const actions = mockStore.getActions();
-          //   expect(actions).toHaveLength(1);
-          //   expect(actions[0]).toEqual({
-          //     type: "addWorkers",
-          //     payload: [mapWorkerFromTwilioWorker(twilioWorkerResponse)]
-          //   });
-          // });
-        });
-      });
+    //     test("when save button is clicked we should clear the user, which should disable 'Add User', and dispatch addWorkers", async () => {
+    //       const rendered = renderComponent();
+    //       updateformSoItIsValid();
+    //       // instanceCalled - 1 because the Close button is the last instance called
+    //       await act(() => {
+    //         const addUserButtonOnClick = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1).onClick;
+    //         addUserButtonOnClick();
+    //       });
+    //       const expectedTwilioWorkerAttributesPosted = {
+    //         did: `+1${formOptions.did}`,
+    //         email: employeeLookupResponse[0].person.data.Email,
+    //         email_address: employeeLookupResponse[0].person.data.Email,
+    //         emp_first_name: employeeLookupResponse[0].person.data.FirstName,
+    //         emp_last_name: employeeLookupResponse[0].person.data.LastName,
+    //         extension: formOptions.extension,
+    //         full_name: `${employeeLookupResponse[0].person.data.FirstName} ${employeeLookupResponse[0].person.data.LastName}`,
+    //         manager_first_name: formOptions.manager.manager_first_name,
+    //         manager_last_name: formOptions.manager.manager_last_name,
+    //         manager_n_number: formOptions.manager.manager_n_number,
+    //         n_number: formOptions.nNumber,
+    //         office_location_name: employeeLookupResponse[0].person.data.OfficeName,
+    //         office_location_number: employeeLookupResponse[0].person.data.OfficeNumber,
+    //         primary_dept_name: employeeLookupResponse[0].person.data.DepartmentName,
+    //         primary_dept_number: employeeLookupResponse[0].person.data.DepartmentNumber,
+    //         profile_id: formOptions.profileId
+    //       };
+    //       // await waitFor(() => {
+    //       //   expect(axiosMock.history.post[0].data).toEqual(JSON.stringify({ attributes: expectedTwilioWorkerAttributesPosted }));
+    //       //   expectMockedComponent(rendered, { ModalOverlay });
+    //       //   const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
+    //       //   const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
+    //       //   const addUserButtonProps2 = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
+    //       //   expect(addUserButtonProps2.disabled).toBe(true);
+    //       //   expect(saveStatus).toBe(modalOverlayStatuses.SUCCESS);
+    //       //   expect(nNumber).toBe("n");
+    //       //   act(() => jest.runAllTimers());
+    //       //   expectMockedComponent(rendered, { ModalOverlay }, 0);
+    //       //   const actions = mockStore.getActions();
+    //       //   expect(actions).toHaveLength(1);
+    //       //   expect(actions[0]).toEqual({
+    //       //     type: "addWorkers",
+    //       //     payload: [mapWorkerFromTwilioWorker(twilioWorkerResponse)]
+    //       //   });
+    //       // });
+    //     });
+    //   });
 
-      describe("service call to add worker fails", () => {
-        beforeEach(() => axiosMock.onPost(apiPaths.CREATE_WORKER).networkError());
-
-        test("when save button is clicked we should not clear the user, or disable 'Add User' and not dispatch an action", done => {
-          const rendered = renderComponent();
-          updateformSoItIsValid();
-          const addUserButtonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
-          expect(addUserButtonProps.disabled).toBe(false);
-          act(() => {
-            const addUserButtonOnClick = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1).onClick;
-            addUserButtonOnClick();
-            return Promise.resolve();
-          }).then(() => {
-            const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
-            const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
-            const addUserButtonProps2 = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
-            const expectedTwilioWorkerAttributesPosted = {
-              did: `+1${formOptions.did}`,
-              email: employeeLookupResponse[0].person.data.Email,
-              email_address: employeeLookupResponse[0].person.data.Email,
-              emp_first_name: employeeLookupResponse[0].person.data.FirstName,
-              emp_last_name: employeeLookupResponse[0].person.data.LastName,
-              extension: formOptions.extension,
-              full_name: `${employeeLookupResponse[0].person.data.FirstName} ${employeeLookupResponse[0].person.data.LastName}`,
-              manager_first_name: formOptions.manager.manager_first_name,
-              manager_last_name: formOptions.manager.manager_last_name,
-              manager_n_number: formOptions.manager.manager_n_number,
-              n_number: formOptions.nNumber,
-              office_location_name: employeeLookupResponse[0].person.data.OfficeName,
-              office_location_number: employeeLookupResponse[0].person.data.OfficeNumber,
-              primary_dept_name: employeeLookupResponse[0].person.data.DepartmentName,
-              primary_dept_number: employeeLookupResponse[0].person.data.DepartmentNumber,
-              profile_id: formOptions.profileId
-            };
-            expect(axiosMock.history.post[0].data).toEqual(JSON.stringify({ attributes: expectedTwilioWorkerAttributesPosted }));
-            expect(addUserButtonProps2.disabled).toBe(false);
-            expect(saveStatus).toBe("fail");
-            expect(nNumber).toBe("n1234567");
-            act(() => jest.runAllTimers());
-            expectMockedComponent(rendered, { ModalOverlay }, 0);
-            const actions = mockStore.getActions();
-            expect(actions).toHaveLength(0);
-            done();
-          });
-        });
-      });
-    });
+    //   describe("service call to add worker fails", () => {
+    //     beforeEach(() => axiosMock.onPost(apiPaths.CREATE_WORKER).networkError());
+    //     test("when save button is clicked we should not clear the user, or disable 'Add User' and not dispatch an action", done => {
+    //       const rendered = renderComponent();
+    //       updateformSoItIsValid();
+    //       const addUserButtonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
+    //       // expect(addUserButtonProps.disabled).toBe(false);
+    //       act(() => {
+    //         const addUserButtonOnClick = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1).onClick;
+    //         addUserButtonOnClick();
+    //         return Promise.resolve();
+    //       }).then(() => {
+    //         const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
+    //         const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
+    //         const addUserButtonProps2 = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
+    //         const expectedTwilioWorkerAttributesPosted = {
+    //           did: `+1${formOptions.did}`,
+    //           email: employeeLookupResponse[0].person.data.Email,
+    //           email_address: employeeLookupResponse[0].person.data.Email,
+    //           emp_first_name: employeeLookupResponse[0].person.data.FirstName,
+    //           emp_last_name: employeeLookupResponse[0].person.data.LastName,
+    //           extension: formOptions.extension,
+    //           full_name: `${employeeLookupResponse[0].person.data.FirstName} ${employeeLookupResponse[0].person.data.LastName}`,
+    //           manager_first_name: formOptions.manager.manager_first_name,
+    //           manager_last_name: formOptions.manager.manager_last_name,
+    //           manager_n_number: formOptions.manager.manager_n_number,
+    //           n_number: formOptions.nNumber,
+    //           office_location_name: employeeLookupResponse[0].person.data.OfficeName,
+    //           office_location_number: employeeLookupResponse[0].person.data.OfficeNumber,
+    //           primary_dept_name: employeeLookupResponse[0].person.data.DepartmentName,
+    //           primary_dept_number: employeeLookupResponse[0].person.data.DepartmentNumber,
+    //           profile_id: formOptions.profileId
+    //         };
+    //         expect(axiosMock.history.post[0].data).toEqual(JSON.stringify({ attributes: expectedTwilioWorkerAttributesPosted }));
+    //         expect(addUserButtonProps2.disabled).toBe(false);
+    //         expect(saveStatus).toBe("fail");
+    //         expect(nNumber).toBe("n1234567");
+    //         act(() => jest.runAllTimers());
+    //         expectMockedComponent(rendered, { ModalOverlay }, 0);
+    //         const actions = mockStore.getActions();
+    //         expect(actions).toHaveLength(0);
+    //         done();
+    //       });
+    //     });
+    //   });
+    // });
   });
 });

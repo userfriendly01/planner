@@ -93,6 +93,8 @@ const AddUserModal = props => {
     saveUser: false
   });
 
+  console.log("Form: ", form);
+
   const saveUser = () => {
     updateLoading({
       ...loading,
@@ -271,9 +273,10 @@ const AddUserModal = props => {
           disabled={nNumberValid || loading.saveStatus === modalOverlayStatuses.SAVING}
           nNumber={form.nNumber}
           setIsValid={setNNumberValid}
-          updateNNumber={newValue => setForm({
+          updateValue={res => setForm({
             ...form,
-            nNumber: newValue
+            lookupInfo: res.lookupInfo,
+            nNumber: res.nNumber
           })}
           resetParentState={() => setForm({
             ...form,

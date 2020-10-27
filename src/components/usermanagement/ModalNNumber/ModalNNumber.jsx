@@ -18,7 +18,7 @@ const ModalNNumber = props => {
   const {
     disabled,
     nNumber,
-    updateNNumber,
+    updateValue,
     resetParentState,
     setIsValid
   } = props;
@@ -37,6 +37,10 @@ const ModalNNumber = props => {
           setLookupResults({
             lookupError: null,
             lookupInfo: `${res.firstName} ${res.lastName}`,
+            nNumber
+          });
+          updateValue({
+            lookupInfo: res,
             nNumber
           });
         } else {
@@ -67,7 +71,9 @@ const ModalNNumber = props => {
           setError(true);
         }: null}
         maxLength="8"
-        updateValue={updateNNumber}
+        updateValue={nNum => updateValue({
+          nNumber: nNum
+        })}
         value={nNumber}
         validator={validator}
         validatedServiceCall={lookupNNumber}
@@ -93,7 +99,7 @@ const ModalNNumber = props => {
 ModalNNumber.propTypes = {
   disabled: PropTypes.bool.isRequired,
   nNumber: PropTypes.string.isRequired,
-  updateNNumber: PropTypes.func.isRequired,
+  updateValue: PropTypes.func.isRequired,
   resetParentState: PropTypes.func.isRequired,
   setIsValid: PropTypes.func.isRequired
 };
