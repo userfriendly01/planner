@@ -11,7 +11,7 @@ import {
   setupMockedComponents
 } from "testUtils";
 
-const mockReloadFn = jest.fn();
+const mockHandleClick = jest.fn();
 
 jest.mock("components", () => ({
   __esModule: true,
@@ -25,11 +25,11 @@ describe("<NotificationModal />", () => {
     PaperContainer.mockImplementation(props => <div>{props.children}</div>);
   });
   test("should render reload button & correct text", () => {
-    const rendered = render(<NotificationModal reloadFn={mockReloadFn} />);
+    const rendered = render(<NotificationModal handleClick={mockHandleClick} />);
     expectMockedComponent(rendered, { StyledButton });
     expectOnlyPassedProps(StyledButton, {
       disabled: false,
-      onClick: mockReloadFn
+      onClick: mockHandleClick
     });
     expect(rendered.container).toHaveTextContent("Your session has expired. Please reload the page.");
   });

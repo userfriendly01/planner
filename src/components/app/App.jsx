@@ -190,7 +190,7 @@ const App = () => {
           <Header/>
           <NavTabs/>
           <Modal disableBackdropClick={true} open={showModal === true}>
-            <NotificationModal reloadFn={() => window.location.reload()} />
+            <NotificationModal handleClick={() => window.location.reload()} />
           </Modal>
         </AppWrapper>
       );

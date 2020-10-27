@@ -35,7 +35,7 @@ const TextWrapper = styled.div`
 `;
 
 const NotificationModal = props => {
-  const { reloadFn } = props;
+  const { handleClick } = props;
 
   return (
     <ModalContainer>
@@ -44,7 +44,7 @@ const NotificationModal = props => {
           <p>Your session has expired. Please reload the page.</p>
         </TextWrapper>
         <ButtonWrapper>
-          <StyledButton disabled={false} onClick={reloadFn}>Reload</StyledButton>
+          <StyledButton disabled={false} onClick={handleClick}>Reload</StyledButton>
         </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>
@@ -52,7 +52,7 @@ const NotificationModal = props => {
 };
 
 NotificationModal.propTypes = {
-  reloadFn: PropTypes.func.isRequired
+  handleClick: PropTypes.func.isRequired
 };
 
 export default NotificationModal;

@@ -13,7 +13,6 @@ import {
   apiPaths,
   timeouts
 } from "globals";
-import MockDate from "mockdate";
 import React from "react";
 import {
   act,
@@ -83,13 +82,11 @@ window.location = { reload: jest.fn() };
 jest.useFakeTimers();
 
 jest.mock("@material-ui/core", () => ({
-  __esModule: true,
   CircularProgress: jest.fn(),
   Modal: jest.fn()
 }));
 
 jest.mock("components", () => ({
-  __esModule: true,
   Header: jest.fn(),
   NavTabs: jest.fn(),
   NotificationModal: jest.fn()
@@ -177,9 +174,9 @@ describe("<App />", () => {
             open: true
           });
           expectMockedComponent(modalChildrenRendered, { NotificationModal });
-          // testing reloadFn for code coverage
-          const reloadFn = NotificationModal.mock.calls[0][0].reloadFn;
-          act(() => reloadFn());
+          // testing handleClick for code coverage
+          const handleClick = NotificationModal.mock.calls[0][0].handleClick;
+          act(() => handleClick());
           expect(window.location.reload).toHaveBeenCalledTimes(1);
         });
       });

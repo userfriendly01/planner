@@ -60,8 +60,7 @@
   },
   "dependencies": {
     "express": "^4.16.4",
-    "express-healthcheck": "^0.1.0",
-    "mockdate": "^3.0.2"
+    "express-healthcheck": "^0.1.0"
   },
   "engines": {
     "node": "^12.16.x"
