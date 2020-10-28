@@ -24,6 +24,7 @@ import {
 import React, {
   useState
 } from "react";
+import { FetchUserResponse } from "services";
 import styled from "styled-components";
 import {
   getValidSkillsObject,
@@ -90,19 +91,10 @@ interface UserEntryForm_FormState {
   extension: string,
   extensionUpdated: boolean,
   extensionValid: boolean,
-  lookupInfo: {
-    departmentName?: string,
-    departmentNumber?: string,
-    email?: string,
-    firstName?: string,
-    lastName?: string,
-    officeName?: string,
-    officeNumber?: string
-  },
-  lookupError: any,
   manager: string,
   managerUpdated: boolean,
   nNumber: string,
+  nNumberLookupInfo: FetchUserResponse,
   nNumberUpdated: boolean,
   outgoing: string,
   outgoingE164: string,
@@ -139,11 +131,10 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       extension: "",
       extensionUpdated: false,
       extensionValid: false,
-      lookupError: null,
-      lookupInfo: {},
       manager: "",
       managerUpdated: false,
       nNumber: defaultNNumber,
+      nNumberLookupInfo: null,
       nNumberUpdated: false,
       outgoing: "",
       outgoingE164: undefined,
@@ -245,20 +236,20 @@ const UserEntryForm = (props: UserEntryFormProps) => {
     const attributes: Partial<TwilioWorker["attributes"]> = {
       default_skills: form.defaultSkills,
       did: form.outgoingE164,
-      email: form.lookupInfo.email,
-      email_address: form.lookupInfo.email,
-      emp_first_name: form.lookupInfo.firstName,
-      emp_last_name: form.lookupInfo.lastName,
+      email: form.nNumberLookupInfo.email,
+      email_address: form.nNumberLookupInfo.email,
+      emp_first_name: form.nNumberLookupInfo.firstName,
+      emp_last_name: form.nNumberLookupInfo.lastName,
       extension: form.extension,
-      full_name: `${form.lookupInfo.firstName} ${form.lookupInfo.lastName}`,
+      full_name: `${form.nNumberLookupInfo.firstName} ${form.nNumberLookupInfo.lastName}`,
       manager_first_name: parsedManager.manager_first_name,
       manager_last_name: parsedManager.manager_last_name,
       manager_n_number: parsedManager.manager_n_number,
       n_number: form.nNumber.toLowerCase(),
-      office_location_name: form.lookupInfo.officeName,
-      office_location_number: form.lookupInfo.officeNumber,
-      primary_dept_name: form.lookupInfo.departmentName,
-      primary_dept_number: form.lookupInfo.departmentNumber,
+      office_location_name: form.nNumberLookupInfo.officeName,
+      office_location_number: form.nNumberLookupInfo.officeNumber,
+      primary_dept_name: form.nNumberLookupInfo.departmentName,
+      primary_dept_number: form.nNumberLookupInfo.departmentNumber,
       profile_id: form.profileId
     };
     myAxios.post(apiPaths.CREATE_WORKER, { attributes })
@@ -268,9 +259,10 @@ const UserEntryForm = (props: UserEntryFormProps) => {
           ...form,
           extension: "", // clear out extension values
           extensionValid: false,
-          lookupError: null, // clear out user lookup values
-          lookupInfo: {},
+          nNumberLookupInfo: null,
           nNumber: defaultNNumber
+          // TODO reset default skills???
+          // TODO reset other fields?
         });
         dispatch({
           type: "addWorkers",
@@ -306,7 +298,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       });
   };
 
-  const nNumberInputValid = JSON.stringify(form.lookupInfo) !== JSON.stringify({});
+  const nNumberInputValid = form.nNumberLookupInfo ? true : false;
   const extensionInputValid = (form.extensionValid || form.extension === "");
   const managerValid = form.manager !== "";
   const profileIdValid = form.profileId !== "";
@@ -394,28 +386,31 @@ const UserEntryForm = (props: UserEntryFormProps) => {
             }}
           />
           <ModalNNumber
-            clearUser={() => {
-              setForm({
-                ...form,
-                lookupError: null,
-                lookupInfo: null,
-                nNumber: defaultNNumber
-              });
-            }}
-            disabled={formMode === formModes.UPDATE || JSON.stringify(form.lookupInfo) !== "{}"}
-            error={form.nNumberUpdated && !nNumberInputValid}
-            form={form}
+            disabled={(formMode === formModes.UPDATE) || (form.nNumberLookupInfo ? true : false)}
             label="N Number *"
-            nNumber={form.nNumber}
             onBlur={() => setForm({
               ...form,
               nNumberUpdated: true
             })}
-            setForm={setForm}
-            updateValue={newValue => setForm({
+            onClear={() => {
+              setForm({
+                ...form,
+                nNumber: defaultNNumber,
+                nNumberLookupInfo: null
+              });
+            }}
+            onComplete={(fetchedUser, nNumber) => setForm({
               ...form,
-              nNumber: newValue
+              nNumber,
+              nNumberLookupInfo: fetchedUser
             })}
+            onUpdate={nNumber => {
+              setForm({
+                ...form,
+                nNumber
+              });
+            }}
+            value={form.nNumber}
           />
           <ModalExtension
             clearExtension={() => {

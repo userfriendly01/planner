@@ -99,7 +99,30 @@ const employeeLookupResponse = [
   }
 ];
 
-const formOptions = {
+const initialForm = {
+  defaultSkills: {
+    levels: {},
+    skills: []
+  },
+  defaultSkillsUpdated: false,
+  extension: "",
+  extensionUpdated: false,
+  extensionValid: false,
+  lookupError: null,
+  lookupInfo: {},
+  manager: "",
+  managerUpdated: false,
+  nNumber: "n",
+  nNumberUpdated: false,
+  outgoing: "",
+  outgoingE164: undefined,
+  outgoingUpdated: false,
+  outgoingValid: false,
+  profileId: "",
+  profileIdUpdated: false
+};
+
+const validFormOptions = {
   did: "6034567890",
   extension: "1234",
   manager: managerList[0],
@@ -125,6 +148,59 @@ describe("<UserEntryForm />", () => {
     });
     PaperContainer.mockImplementation(props => <div>{props.children}</div>);
   });
+
+  const updateformSoItIsValid = () => {
+    act(() => {
+      const updateManager = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect) - 1).updateValue;
+      updateManager(JSON.stringify(validFormOptions.manager));
+    });
+    act(() => {
+      const updateProfile = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect)).updateValue;
+      updateProfile(validFormOptions.profileId);
+    });
+    act(() => {
+      const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).updateValue;
+      updatePhone("(603)456-7890", validFormOptions.did, true);
+    });
+    act(() => {
+      const updateExtension = getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension)).updateValue;
+      updateExtension(validFormOptions.extension);
+    });
+    act(() => {
+      const {
+        form,
+        setForm
+      } = getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension));
+      setForm({
+        ...form,
+        extensionValid: true
+      });
+    });
+    act(() => {
+      const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).updateValue;
+      updateNNum(validFormOptions.nNumber);
+    });
+    act(() => {
+      // nNumber has internal functionality to add `lookupInfo` to form that we need to mimic
+      const props = getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalNNumber));
+      const setForm = props.setForm;
+      const form = props.form;
+      setForm({
+        ...form,
+        lookupInfo: {
+          email: "test@abc.com",
+          firstName: "Frank",
+          lastName: "Rizzo",
+          officeName: "Springfield 012B",
+          officeNumber: "ABC123",
+          departmentName: "Computers",
+          departmentNumber: "4848"
+        }
+      });
+    });
+    const addUserButtonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
+    expect(addUserButtonProps.disabled).toBe(false);
+  };
 
   describe("ADD / INSERT mode", () => {
     const userEntryFormState = {
@@ -191,33 +267,13 @@ describe("<UserEntryForm />", () => {
         expectOnlyPassedProps(ModalPhoneNumber, expectedOutgoingProps, 0);
 
         // n number
+        // TODO
 
         // extension
         const expectedExtensionProps = {
           disabled: false,
           extension: "",
-          form: {
-            defaultSkills: {
-              levels: {},
-              skills: []
-            },
-            defaultSkillsUpdated: false,
-            extension: "",
-            extensionUpdated: false,
-            extensionValid: false,
-            lookupError: null,
-            lookupInfo: {},
-            manager: "",
-            managerUpdated: false,
-            nNumber: "n",
-            nNumberUpdated: false,
-            outgoing: "",
-            outgoingE164: undefined,
-            outgoingUpdated: false,
-            outgoingValid: false,
-            profileId: "",
-            profileIdUpdated: false
-          }
+          form: initialForm
         };
         expectOnlyPassedProps(ModalExtension, expectedExtensionProps, 0);
 
@@ -402,58 +458,6 @@ describe("<UserEntryForm />", () => {
 
   // describe("Add User and Close buttons", () => {
 
-  //   const updateformSoItIsValid = () => {
-  //     act(() => {
-  //       const updateManager = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect) - 1).updateValue;
-  //       updateManager(JSON.stringify(formOptions.manager));
-  //     });
-  //     act(() => {
-  //       const updateProfile = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect)).updateValue;
-  //       updateProfile(formOptions.profileId);
-  //     });
-  //     act(() => {
-  //       const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).updateValue;
-  //       updatePhone("(603)456-7890", formOptions.did, true);
-  //     });
-  //     act(() => {
-  //       const updateExtension = getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension)).updateValue;
-  //       updateExtension(formOptions.extension);
-  //     });
-  //     act(() => {
-  //       const {
-  //         form,
-  //         setForm
-  //       } = getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension));
-  //       setForm({
-  //         ...form,
-  //         extensionValid: true
-  //       });
-  //     });
-  //     act(() => {
-  //       const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).updateValue;
-  //       updateNNum(formOptions.nNumber);
-  //     });
-  //     act(() => {
-  //       // nNumber has internal functionality to add `lookupInfo` to form that we need to mimic
-  //       const props = getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalNNumber));
-  //       const setForm = props.setForm;
-  //       const form = props.form;
-  //       setForm({
-  //         ...form,
-  //         lookupInfo: {
-  //           email: "test@abc.com",
-  //           firstName: "Frank",
-  //           lastName: "Rizzo",
-  //           officeName: "Springfield 012B",
-  //           officeNumber: "ABC123",
-  //           departmentName: "Computers",
-  //           departmentNumber: "4848"
-  //         }
-  //       });
-  //     });
-  //     const addUserButtonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
-  //     expect(addUserButtonProps.disabled).toBe(false);
-  //   };
 
   //   test("the initial state add should be disabled, and close should be enabled", () => {
   //     const rendered = renderComponent();
