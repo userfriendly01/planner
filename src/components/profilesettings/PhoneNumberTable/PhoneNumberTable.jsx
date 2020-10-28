@@ -4,6 +4,7 @@ import {
   Edit
 } from "@material-ui/icons";
 import { ModalOverlay } from "components";
+import { modalOverlayStatuses } from "globals";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
@@ -95,6 +96,7 @@ const PhoneNumberTable = props => {
   const {
     deleteFunction,
     editFunction,
+    emptyListMsg,
     phoneNumberList,
     saveState
   } = props;
@@ -104,7 +106,7 @@ const PhoneNumberTable = props => {
       {
         phoneNumberList.length === 0 ? (
           <NoDialListDiv>
-            <h1>No dial list entries exist for this profile</h1>
+            <h1>{emptyListMsg}</h1>
           </NoDialListDiv>
         ) : (
           <StyledPaper elevation={3}>
@@ -132,7 +134,7 @@ const PhoneNumberTable = props => {
                           <TableText>{formatTenDigitNumber(entry.phone_num)}</TableText>
                         </CustomTableData>
                         <CustomTableData>
-                          <IconWrapper onClick={() => editFunction(entry)} data-testid="edit-button">
+                          <IconWrapper onClick={editFunction(entry)} data-testid="edit-button">
                             <Edit fontSize={"inherit"} />
                           </IconWrapper>
                         </CustomTableData>
@@ -157,8 +159,12 @@ const PhoneNumberTable = props => {
 PhoneNumberTable.propTypes = {
   deleteFunction: PropTypes.func.isRequired,
   editFunction: PropTypes.func.isRequired,
+  emptyListMsg: PropTypes.string.isRequired,
   phoneNumberList: PropTypes.array.isRequired,
-  saveState: PropTypes.object.isRequired
+  saveState: PropTypes.shape({
+    status: PropTypes.oneOf(Object.values(modalOverlayStatuses)),
+    overlayMessage: PropTypes.string
+  }).isRequired
 };
 
 export default PhoneNumberTable;
