@@ -10,7 +10,7 @@ import React from "react";
 import { ThemeProvider } from "styled-components";
 import {
   render,
-  waitForElement
+  waitFor
 } from "@testing-library/react";
 export * from "@testing-library/react";
 
@@ -101,5 +101,5 @@ export const setupMockedComponents = objOfMockedComponents => {
 export const getTestState = () => ({ ...initialState });
 
 export const waitForMockedComponent = (rendered, componentName, instanceCalled) => {
-  return waitForElement(() => rendered.queryByTestId(getDataTestIdWithInstanceCalled(componentName, instanceCalled)) !== undefined);
+  return waitFor(() => rendered.queryByTestId(getDataTestIdWithInstanceCalled(componentName, instanceCalled)) !== undefined);
 };

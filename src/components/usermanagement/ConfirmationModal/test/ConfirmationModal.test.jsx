@@ -28,7 +28,6 @@ const initialSaveResult = {
   status: null,
   message: null
 };
-
 const body = {
   confirmationText: "Are you sure?",
   data: "Peter Griffin"
@@ -62,7 +61,7 @@ describe("<ConfirmationModal />", () => {
     });
   });
   describe("Confirm Button", () => {
-    test("When the Confirm Button is clicked, handleConfirm fails", () => {
+    test("When the Confirm Button is clicked, handleConfirm is called", () => {
       renderComponent();
       expectOnlyPassedProps(StyledButton, {
         onClick: mockHandleConfirm
@@ -73,7 +72,7 @@ describe("<ConfirmationModal />", () => {
     });
   });
   describe("Cancel Button", () => {
-    test("When the Cancel Button is clicked, handleClose is run", () => {
+    test("When the Cancel Button is clicked, handleClose is called", () => {
       renderComponent();
       expectOnlyPassedProps(StyledButton, {
         onClick: mockHandleClose
