@@ -93,8 +93,6 @@ const AddUserModal = props => {
     saveUser: false
   });
 
-  console.log("Form: ", form);
-
   const saveUser = () => {
     updateLoading({
       ...loading,
@@ -190,7 +188,9 @@ const AddUserModal = props => {
       });
   };
 
-  const [ nNumberValid, setNNumberValid ] = useState(false);
+  const nNumberValid = form.nNumber === "n" ? false : true;
+  console.log("NNumber Valid?: ", nNumberValid);
+  console.log("Form: ", form);
   const extensionInputValid = (form.extensionValid || form.extension === "");
   const managerValid = form.manager !== "";
   const teamValid = form.team !== "";
@@ -271,14 +271,12 @@ const AddUserModal = props => {
         />
         <ModalNNumber
           disabled={nNumberValid || loading.saveStatus === modalOverlayStatuses.SAVING}
-          nNumber={form.nNumber}
-          setIsValid={setNNumberValid}
-          updateValue={res => setForm({
+          onComplete={res => setForm({
             ...form,
             lookupInfo: res.lookupInfo,
             nNumber: res.nNumber
           })}
-          resetParentState={() => setForm({
+          onClear={() => setForm({
             ...form,
             lookupInfo: {},
             nNumber: defaultNNumber

@@ -84,7 +84,7 @@ const AddManagerModal = props => {
     }
   };
 
-  const [ isNNumberValid, setNNumberValid ] = useState(false);
+  const isNNumberValid = nNumber === "n" ? false : true;
 
   let overlayMessage = "Saving";
   if (saveManager === loadingStates.success) {
@@ -109,13 +109,18 @@ const AddManagerModal = props => {
         <FlexColumn>
           <ModalNNumber
             disabled={saveManager === loadingStates.loading || manager === loadingStates.loading || isNNumberValid}
-            nNumber={nNumber}
-            updateValue={res => setNNumber(res.nNumber)}
-            resetParentState={() => {
+            onComplete={res => {
+              setNNumber(res.nNumber);
+              setManager({
+                manager_n_number: res.nNumber,
+                manager_first_name: res.lookupInfo.firstName,
+                manager_last_name: res.lookupInfo.lastName
+              });
+            }}
+            onClear={() => {
               setNNumber(defaultNNumber);
               setManager(defaultManager);
             }}
-            setIsValid={setNNumberValid}
           />
         </FlexColumn>
         <ButtonWrapper>
