@@ -15,9 +15,13 @@ import {
   apiPaths,
   formModes,
   modalOverlayStatuses,
-  modalOverlayTimeout
+  timeouts
 } from "globals";
 import React from "react";
+import {
+  createUser,
+  updateUser
+} from "services";
 import {
   act,
   expectMockedComponent,
@@ -47,6 +51,11 @@ jest.mock("components", () => ({
   OutlinedSelect: jest.fn(),
   PaperContainer: jest.fn(),
   StyledButton: jest.fn()
+}));
+
+jest.mock("services", () => ({
+  createUser: jest.fn(),
+  updateUser: jest.fn()
 }));
 
 const managerList = [
@@ -83,21 +92,15 @@ const initialTestState = {
   }
 };
 
-const employeeLookupResponse = [
-  {
-    person: {
-      data: {
-        Email: "test@abc.com",
-        FirstName: "Frank",
-        LastName: "Rizzo",
-        OfficeName: "Springfield 012B",
-        OfficeNumber: "ABC123",
-        DepartmentName: "Computers",
-        DepartmentNumber: "4848"
-      }
-    }
-  }
-];
+const fetchedUser ={
+  email: "test@abc.com",
+  firstName: "Frank",
+  lastName: "Rizzo",
+  officeName: "Springfield 012B",
+  officeNumber: "ABC123",
+  departmentName: "Computers",
+  departmentNumber: "4848"
+};
 
 const initialForm = {
   defaultSkills: {
@@ -108,11 +111,10 @@ const initialForm = {
   extension: "",
   extensionUpdated: false,
   extensionValid: false,
-  lookupError: null,
-  lookupInfo: {},
   manager: "",
   managerUpdated: false,
   nNumber: "n",
+  nNumberLookupInfo: null,
   nNumberUpdated: false,
   outgoing: "",
   outgoingE164: undefined,
@@ -124,6 +126,7 @@ const initialForm = {
 
 const validFormOptions = {
   did: "6034567890",
+  didE164: "+16034567890",
   extension: "1234",
   manager: managerList[0],
   nNumber: "n1234567",
@@ -150,18 +153,22 @@ describe("<UserEntryForm />", () => {
   });
 
   const updateformSoItIsValid = () => {
+    // manager
     act(() => {
       const updateManager = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect) - 1).updateValue;
       updateManager(JSON.stringify(validFormOptions.manager));
     });
+    // team / profile id
     act(() => {
       const updateProfile = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect)).updateValue;
       updateProfile(validFormOptions.profileId);
     });
+    // outgoing number
     act(() => {
       const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).updateValue;
-      updatePhone("(603)456-7890", validFormOptions.did, true);
+      updatePhone("(603)456-7890", validFormOptions.did, true, validFormOptions.didE164);
     });
+    // extension
     act(() => {
       const updateExtension = getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension)).updateValue;
       updateExtension(validFormOptions.extension);
@@ -176,28 +183,16 @@ describe("<UserEntryForm />", () => {
         extensionValid: true
       });
     });
+    // n number
     act(() => {
-      const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).updateValue;
+      const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).onUpdate;
       updateNNum(validFormOptions.nNumber);
     });
     act(() => {
-      // nNumber has internal functionality to add `lookupInfo` to form that we need to mimic
-      const props = getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalNNumber));
-      const setForm = props.setForm;
-      const form = props.form;
-      setForm({
-        ...form,
-        lookupInfo: {
-          email: "test@abc.com",
-          firstName: "Frank",
-          lastName: "Rizzo",
-          officeName: "Springfield 012B",
-          officeNumber: "ABC123",
-          departmentName: "Computers",
-          departmentNumber: "4848"
-        }
-      });
+      const completeNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).onComplete;
+      completeNNum(fetchedUser, validFormOptions.nNumber);
     });
+    // check button enabled
     const addUserButtonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
     expect(addUserButtonProps.disabled).toBe(false);
   };
@@ -205,7 +200,8 @@ describe("<UserEntryForm />", () => {
   describe("ADD / INSERT mode", () => {
     const userEntryFormState = {
       formMode: formModes.INSERT,
-      worker: null
+      worker: null,
+      open: true
     };
 
     const renderComponent = () => {
@@ -267,7 +263,12 @@ describe("<UserEntryForm />", () => {
         expectOnlyPassedProps(ModalPhoneNumber, expectedOutgoingProps, 0);
 
         // n number
-        // TODO
+        const expectedNNumberProps = {
+          disabled: false,
+          label: "N Number *",
+          value: "n"
+        };
+        expectOnlyPassedProps(ModalNNumber, expectedNNumberProps, 0);
 
         // extension
         const expectedExtensionProps = {
@@ -381,80 +382,28 @@ describe("<UserEntryForm />", () => {
         expect(ModalExtension.mock.calls[1][0].disabled).toEqual(false);
       });
     });
+
+    describe("fill out form so it is valid", () => {
+
+      describe("createUser service call succeeds", () => {
+
+        const rawTwilioWorker = {};
+        beforeEach(() => createUser.mockResolvedValue(rawTwilioWorker));
+        // TODO
+        test.only("should enable Add User button and save user when clicked", () => {
+          const rendered = renderComponent();
+          updateformSoItIsValid();
+        });
+      });
+
+      describe("createUser service call cails", () => {
+
+        const serviceError = {};
+        beforeEach(() => createUser.mockRejectedValue(serviceError));
+        // TODO
+      });
+    });
   });
-
-
-
-
-  // describe("ModalNNumber", () => {
-  //   test("the initial state", () => {
-  //     renderComponent();
-  //     const expectedNNumProps = {
-  //       disabled: false,
-  //       form: {
-  //         extension: "",
-  //         extensionValid: false,
-  //         lookupInfo: {},
-  //         manager: "",
-  //         managerUpdated: false,
-  //         nNumber: "n",
-  //         nNumberUpdated: false,
-  //         outgoing: "",
-  //         outgoingValid: false,
-  //         outgoingUpdated: false,
-  //         team: "",
-  //         teamUpdated: false
-  //       },
-  //       nNumber: "n"
-  //     };
-  //     expectOnlyPassedProps(ModalNNumber, expectedNNumProps, 0);
-  //   });
-  //   test("changes made to the n number field - invalid n number", () => {
-  //     renderComponent();
-  //     act(() => {
-  //       const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
-  //       updateValue("12345678");
-  //     });
-  //     expect(ModalNNumber.mock.calls.length).toBe(2);
-  //     const newValue = ModalNNumber.mock.calls[1][0].nNumber;
-  //     expect(newValue).toEqual("12345678");
-  //   });
-  //   test("clear user called should reset the field", () => {
-  //     renderComponent();
-  //     act(() => {
-  //       const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
-  //       updateValue("12345678");
-  //     });
-  //     let newValue = ModalNNumber.mock.calls[1][0].nNumber;
-  //     expect(newValue).toEqual("12345678");
-  //     act(() => {
-  //       const clearUser = ModalNNumber.mock.calls[1][0].clearUser;
-  //       clearUser("12345678");
-  //     });
-  //     newValue = ModalNNumber.mock.calls[2][0].nNumber;
-  //     expect(newValue).toEqual("n");
-  //   });
-  //   test("when we update the form in modalNNumber we should see those changes in a rerender", () => {
-  //     renderComponent();
-  //     const newForm = {
-  //       lookupInfo: {
-  //         disabled: "not anymore"
-  //       },
-  //       manager: "",
-  //       outgoing: "",
-  //       team: "",
-  //       extensionValid: true
-  //     };
-  //     expect(ModalNNumber.mock.calls[0][0].disabled).toEqual(false);
-  //     act(() => {
-  //       const setForm = ModalNNumber.mock.calls[0][0].setForm;
-  //       setForm(newForm);
-  //     });
-  //     const form = ModalNNumber.mock.calls[1][0].form;
-  //     expect(form).toEqual(newForm);
-  //     expect(ModalNNumber.mock.calls[1][0].disabled).toEqual(true);
-  //   });
-  // });
 
   // describe("Add User and Close buttons", () => {
 

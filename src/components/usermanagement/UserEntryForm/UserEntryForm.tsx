@@ -15,7 +15,6 @@ import {
   useAdminState
 } from "context";
 import {
-  apiPaths,
   extensionMatcher,
   formModes,
   modalOverlayStatuses,
@@ -24,12 +23,15 @@ import {
 import React, {
   useState
 } from "react";
-import { FetchUserResponse } from "services";
+import {
+  createUser,
+  FetchUserResponse,
+  updateUser
+} from "services";
 import styled from "styled-components";
 import {
   getValidSkillsObject,
   mapWorkerFromTwilioWorker,
-  myAxios,
   sortManagersByName
 } from "utils";
 
@@ -80,12 +82,12 @@ const ModalContainer = styled.div`
 
 const defaultNNumber = "n";
 
-interface UserEntryFormProps {
+export interface UserEntryFormProps {
   userEntryFormState: UserEntryFormState,
   handleClose: VoidFunction
 }
 
-interface UserEntryForm_FormState {
+export interface UserEntryForm_FormState {
   defaultSkills: TwilioWorkerSkills,
   defaultSkillsUpdated: boolean,
   extension: string,
@@ -164,7 +166,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
     saveUser: false
   });
 
-  const updateUser = () => {
+  const doUpdateUser = () => {
     updateLoading({
       ...loading,
       overlayMessage: "Updating user...",
@@ -192,18 +194,13 @@ const UserEntryForm = (props: UserEntryFormProps) => {
     }
     // TODO delete me
     console.log("UPDATED ATTRIBUTES", attributes)
-    myAxios
-      .post(apiPaths.UPDATE_WORKER_ATTRIBUTES, {
-        workerSid: worker.sid,
-        attributes
-      })
-      .then(res => {
-        const updatedWorker = res.data;
+    updateUser(worker.sid, attributes)
+      .then(twilioWorker => {
         // TODO delete me
-        console.log("UPDATED WORKER", res.data)
+        console.log("UPDATED WORKER", twilioWorker)
         dispatch(({
           type: "updateWorker",
-          payload: mapWorkerFromTwilioWorker(updatedWorker)
+          payload: mapWorkerFromTwilioWorker(twilioWorker)
         }));
         setTimeout(() => handleClose(), timeouts.MODAL_OVERLAY);
       })
@@ -222,7 +219,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       });
   };
 
-  const addUser = () => {
+  const doCreateUser = () => {
     updateLoading({
       ...loading,
       overlayMessage: "Adding new user...",
@@ -252,9 +249,8 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       primary_dept_number: form.nNumberLookupInfo.departmentNumber,
       profile_id: form.profileId
     };
-    myAxios.post(apiPaths.CREATE_WORKER, { attributes })
-      .then(res => {
-        const twilioWorker = res.data;
+    createUser(attributes)
+      .then(twilioWorker => {
         setForm({
           ...form,
           extension: "", // clear out extension values
@@ -303,6 +299,11 @@ const UserEntryForm = (props: UserEntryFormProps) => {
   const managerValid = form.manager !== "";
   const profileIdValid = form.profileId !== "";
   const formReady = (formMode === formModes.INSERT ? nNumberInputValid : true) && profileIdValid && managerValid && form.outgoingValid && extensionInputValid;
+
+  console.log("FORM STUFF", {
+    form,
+    formMode
+  })
 
   return (
     <ModalContainer>
@@ -380,8 +381,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
                 ...form,
                 outgoing: maskedValue,
                 outgoingE164: e164Number,
-                // @ts-ignore checking if string is truthy is fine here
-                outgoingValid: isValid && e164Number
+                outgoingValid: isValid && (e164Number ? true : false)
               });
             }}
           />
@@ -450,7 +450,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
         { /** TODO more validation logic for edit form? Bring back asterisks? */}
         <StyledButton
           disabled={!formReady}
-          onClick={formMode === formModes.INSERT ? addUser : updateUser}
+          onClick={formMode === formModes.INSERT ? doCreateUser : doUpdateUser}
         >
           {formMode === formModes.INSERT ? "Add User" : "Save User"}
         </StyledButton>
