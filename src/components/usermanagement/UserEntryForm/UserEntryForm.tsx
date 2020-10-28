@@ -19,7 +19,7 @@ import {
   extensionMatcher,
   formModes,
   modalOverlayStatuses,
-  modalOverlayTimeout
+  timeouts
 } from "globals";
 import React, {
   useState
@@ -205,7 +205,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
           type: "updateWorker",
           payload: mapWorkerFromTwilioWorker(updatedWorker)
         }));
-        setTimeout(() => handleClose(), modalOverlayTimeout);
+        setTimeout(() => handleClose(), timeouts.MODAL_OVERLAY);
       })
       .catch(err => {
         updateLoading({
@@ -279,7 +279,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
             ...loading, 
             saveUser: false
           });
-        }, modalOverlayTimeout);
+        }, timeouts.MODAL_OVERLAY);
       })
       .catch(err => {
         updateLoading({
@@ -293,7 +293,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
             ...loading,
             saveUser: false
           });
-        }, modalOverlayTimeout);
+        }, timeouts.MODAL_OVERLAY);
         console.error("UserEntryForm - Failed to create worker in twilio workspace", err);
       });
   };
