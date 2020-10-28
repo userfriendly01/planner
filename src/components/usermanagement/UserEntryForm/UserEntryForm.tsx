@@ -108,6 +108,7 @@ interface UserEntryForm_FormState {
   nNumber: string,
   nNumberUpdated: boolean,
   outgoing: string,
+  outgoingE164: string,
   outgoingValid: boolean,
   outgoingUpdated: boolean,
   profileId: string,
@@ -148,6 +149,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       nNumber: defaultNNumber,
       nNumberUpdated: false,
       outgoing: "",
+      outgoingE164: undefined,
       outgoingUpdated: false,
       outgoingValid: false,
       profileId: "",
@@ -192,27 +194,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       attributes.profile_id = form.profileId;
     }
     if (form.outgoingUpdated) {
-      try {
-        attributes.did = getE164Number(form.outgoing);
-      } catch (err) {
-        console.error("UserEntryForm - Failed to convert outgoing number to E164", {
-          err,
-          outgoingNumber: form.outgoing
-        });
-        updateLoading({
-          ...loading,
-          overlayMessage: "Failed to edit user. Could not convert outgoing number to E164 format.",
-          saveStatus: modalOverlayStatuses.FAIL,
-          saveUser: true
-        });
-        setTimeout(() => {
-          updateLoading({
-            ...loading,
-            saveUser: false
-          });
-        }, modalOverlayTimeout);
-        return;
-      }
+      attributes.did = form.outgoingE164;
     }
     if (form.extensionUpdated) {
       attributes.extension = form.extension;
@@ -260,34 +242,12 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       saveUser: true
     });
     const parsedManager = JSON.parse(form.manager);
-    let outgoingE164;
-    try {
-      outgoingE164 = getE164Number(form.outgoing);
-    } catch (err) {
-      console.error("UserEntryForm - Failed to convert outgoing number to E164", {
-        err,
-        outgoingNumber: form.outgoing
-      });
-      updateLoading({
-        ...loading,
-        overlayMessage: "Failed to add new user. Could not convert outgoing number to E164 format.",
-        saveStatus: modalOverlayStatuses.FAIL,
-        saveUser: true
-      });
-      setTimeout(() => {
-        updateLoading({
-          ...loading,
-          saveUser: false
-        });
-      }, modalOverlayTimeout);
-      return;
-    }
 
     // see this wiki page for attributes that will be automatically updated through SSO
     // https://forge.lmig.com/wiki/display/CICCT/Twilio+Flex+SSO+Saml2+Integration
     const attributes: Partial<TwilioWorker["attributes"]> = {
       default_skills: form.defaultSkills,
-      did: outgoingE164,
+      did: form.outgoingE164,
       email: form.lookupInfo.email,
       email_address: form.lookupInfo.email,
       emp_first_name: form.lookupInfo.firstName,
@@ -421,11 +381,13 @@ const UserEntryForm = (props: UserEntryFormProps) => {
             })}
             label="Outgoing Number *"
             showError={form.outgoingUpdated}
-            updateValue={(maskedValue, unmaskedValue, isValid) => {
+            updateValue={(maskedValue, unmaskedValue, isValid, e164Number) => {
               setForm({
                 ...form,
                 outgoing: maskedValue,
-                outgoingValid: isValid
+                outgoingE164: e164Number,
+                // @ts-ignore checking if string is truthy is fine here
+                outgoingValid: isValid && e164Number
               });
             }}
           />
