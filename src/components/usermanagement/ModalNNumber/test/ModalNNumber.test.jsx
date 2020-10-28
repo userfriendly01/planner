@@ -7,6 +7,7 @@ import React from "react";
 import { fetchUser } from "services";
 import {
   act,
+  expectPassedProps,
   getMockedComponentProps,
   render,
   setupMockedComponents,

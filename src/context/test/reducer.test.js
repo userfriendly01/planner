@@ -5,7 +5,7 @@ import {
 
 describe("reducer", () => {
   describe("invalid action", () => {
-    test("should no do nothing", () => {
+    test("should do nothing", () => {
       const action = {
         type: "bad",
         payload: "irrelevant"
@@ -44,20 +44,9 @@ describe("reducer", () => {
       expect(result.managerContext.managers).toEqual([...initialManager, [payload]]);
     });
   });
-  describe("addWorker", () => {
-    test("should add to the workers array", () => {
-      const payload = {
-        attributes: {
-          manager_first_name: "test",
-          manager_last_name: "fun"
-        },
-        id: "n1234556"
-      };
-      const action = {
-        type: "addWorker",
-        payload
-      };
-      const initialWorkers = [
+  describe("addWorkers", () => {
+    test("should update the workers array", () => {
+      const initialWorkersList = [
         {
           attributes: {
             manager_first_name: "frank",
@@ -69,11 +58,63 @@ describe("reducer", () => {
       const testState = {
         ...initialState,
         workerContext: {
-          workers: initialWorkers
+          workers: initialWorkersList
+        }
+      };
+      const payload = [
+        {
+          attributes: {
+            manager_first_name: "test",
+            manager_last_name: "fun"
+          },
+          id: "n1234556"
+        },
+        {
+          attributes: {
+            manager_first_name: "Jason",
+            manager_last_name: "Kidd"
+          },
+          id: "3456789"
+        }
+      ];
+      const action = {
+        type: "addWorkers",
+        payload
+      };
+      const result = reducer(testState, action);
+      expect(result.workerContext.workers).toEqual(initialWorkersList.concat(payload));
+    });
+  });
+  describe("deleteWorker", () => {
+    test("should delete worker from the array", () => {
+      const workerToDelete = {
+        attributes: { delete: "this guy" },
+        sid: "WK001"
+      };
+      const workerToKeep = {
+        attributes: { keep: "this one" },
+        sid: "WK000"
+      };
+      const someOtherWorker = {
+        attributes: { also: "keep" },
+        sid: "WK002"
+      };
+      const action = {
+        type: "deleteWorker",
+        payload: workerToDelete.sid
+      };
+      const testState = {
+        ...initialState,
+        workerContext: {
+          workers: [
+            workerToKeep,
+            workerToDelete,
+            someOtherWorker
+          ]
         }
       };
       const result = reducer(testState, action);
-      expect(result.workerContext.workers).toEqual([...initialWorkers, payload]);
+      expect(result.workerContext.workers).toEqual([workerToKeep, someOtherWorker]);
     });
   });
   describe("loadManager", () => {
@@ -131,22 +172,6 @@ describe("reducer", () => {
       };
       const result = reducer(initialState, action);
       expect(result.skillContext.taskrouterSkills).toEqual(payload);
-    });
-  });
-  describe("loadWorkers", () => {
-    test("should initialize or reinitialize the workers array", () => {
-      const payload = [
-        {
-          workerName: "joe smith",
-          workerNNum: "n1234657"
-        }
-      ];
-      const action = {
-        type: "loadWorkers",
-        payload
-      };
-      const result = reducer(initialState, action);
-      expect(result.workerContext.workers).toEqual(payload);
     });
   });
   describe("loadUserData", () => {

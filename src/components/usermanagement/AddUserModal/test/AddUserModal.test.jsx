@@ -258,10 +258,14 @@ describe("<AddUserModal />", () => {
           extensionValid: false,
           lookupInfo: {},
           manager: "",
+          managerUpdated: false,
           nNumber: "n",
+          nNumberUpdated: false,
           outgoing: "",
           outgoingValid: false,
-          team: ""
+          outgoingUpdated: false,
+          team: "",
+          teamUpdated: false
         },
         nNumber: "n"
       };
@@ -325,10 +329,14 @@ describe("<AddUserModal />", () => {
           extensionValid: false,
           lookupInfo: {},
           manager: "",
+          managerUpdated: false,
           nNumber: "n",
+          nNumberUpdated: false,
           outgoing: "",
           outgoingValid: false,
-          team: ""
+          outgoingUpdated: false,
+          team: "",
+          teamUpdated: false
         }
       };
       expectOnlyPassedProps(ModalExtension, expectedExtensionProps, 0);
@@ -478,7 +486,7 @@ describe("<AddUserModal />", () => {
           axiosMock.onPost(apiPaths.CREATE_WORKER).reply(200, twilioWorkerResponse);
         });
 
-        test.only("when save button is clicked we should clear the user, which should disable 'Add User', and dispatch addWorker", async () => {
+        test("when save button is clicked we should clear the user, which should disable 'Add User', and dispatch addWorkers", async () => {
           const rendered = renderComponent();
           updateformSoItIsValid();
           // instanceCalled - 1 because the Close button is the last instance called
@@ -518,8 +526,8 @@ describe("<AddUserModal />", () => {
           //   const actions = mockStore.getActions();
           //   expect(actions).toHaveLength(1);
           //   expect(actions[0]).toEqual({
-          //     type: "addWorker",
-          //     payload: mapWorkerFromTwilioWorker(twilioWorkerResponse)
+          //     type: "addWorkers",
+          //     payload: [mapWorkerFromTwilioWorker(twilioWorkerResponse)]
           //   });
           // });
         });

@@ -1,12 +1,18 @@
 import {
+  Divider,
   FilledInput,
   FormControl,
   InputLabel,
+  Modal,
   Select
 } from "@material-ui/core";
+import { AddManagerModal } from "components";
 import { useAdminState } from "context";
 import PropTypes from "prop-types";
-import React from "react";
+import React, {
+  useEffect,
+  useState
+} from "react";
 import styled from "styled-components";
 import { sortManagersByName } from "utils";
 
@@ -22,6 +28,22 @@ const ManagerFilter = props => {
 
   const managers = useAdminState().managerContext.managers;
   const sortedManagers = [ ...managers ].sort(sortManagersByName);
+  const [isAddManagerModalOpen, setIsAddManagerModalOpen] = useState(false);
+
+  const handleOpenAddManager = () => {
+    setIsAddManagerModalOpen(true);
+  };
+
+  const handleCloseAddManager = () => {
+    setFilter("show-all");
+    setIsAddManagerModalOpen(false);
+  };
+
+  useEffect(() => {
+    if(filterBy === "add-manager"){
+      handleOpenAddManager();
+    }
+  });
 
   return (
     <Wrapper>
@@ -40,6 +62,8 @@ const ManagerFilter = props => {
         >
           {[
             <option data-testid="manager-list" key={"show-all"} value={"show-all"}>Show All</option>,
+            <option data-testid="add-manager" key={"add-manager"} value={"add-manager"}>Add New Manager</option>,
+            <Divider light key={"divider"}/>,
             ...sortedManagers.map(manager => (
               <option data-testid="manager-list"
                 key={manager.manager_n_number}
@@ -51,6 +75,9 @@ const ManagerFilter = props => {
           ]}
         </Select>
       </FormControl>
+      <Modal disableBackdropClick={true} open={isAddManagerModalOpen}>
+        <AddManagerModal data-testid="add-manager-modal" handleClose={handleCloseAddManager} />
+      </Modal>
     </Wrapper>
   );
 };

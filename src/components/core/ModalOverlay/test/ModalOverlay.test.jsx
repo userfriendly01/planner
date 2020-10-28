@@ -1,7 +1,9 @@
 import ModalOverlay from "../ModalOverlay";
 import { modalOverlayStatuses } from "globals";
 import React from "react";
-import { render } from "testUtils";
+import { fireEvent, render } from "testUtils";
+
+const mockHandleClose = jest.fn();
 
 describe("<ModalOverlay />", () => {
   describe("status = 'saving'", () => {
@@ -25,6 +27,18 @@ describe("<ModalOverlay />", () => {
       const rendered = render(<ModalOverlay status={modalOverlayStatuses.FAIL} message={failMessage} />);
       expect(rendered).toBeTruthy();
       expect(rendered.getByText(failMessage)).toBeInTheDocument();
+    });
+  });
+  describe("ModalOverlay is closed which close button is clicked", () => {
+    const failMessage = "oh nooooo";
+    test("should display fail message", () => {
+      const rendered = render(<ModalOverlay
+        status={modalOverlayStatuses.FAIL}
+        message={failMessage}
+        handleClose={mockHandleClose}/>);
+      const closeButton = rendered.getByTestId("close-button");
+      fireEvent.click(closeButton);
+      expect(mockHandleClose).toHaveBeenCalledTimes(1);
     });
   });
 });

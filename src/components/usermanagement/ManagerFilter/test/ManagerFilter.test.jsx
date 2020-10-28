@@ -47,7 +47,6 @@ const renderComponent = () => render(
 );
 
 describe("<ManagementFilter />", () => {
-
   test("upon initial render, should display Manager Filter,  add user button, and all managers should be listed in the dropdown sorted by first name", () => {
     const rendered = renderComponent();
     expect(rendered.container).toHaveTextContent("Manager Filter");
@@ -67,5 +66,34 @@ describe("<ManagementFilter />", () => {
       fireEvent.change(select, { target: { value: expectedTarget }});
     });
     expect(setFilter).toHaveBeenCalledWith(expectedTarget);
+  });
+
+  test("When filterBy is add-manager, the Add Manager Modal is set to open", () => {
+    const expectedTarget = "add-manager";
+    const rendered = render(
+      <ManagerFilter filterBy={expectedTarget} setFilter={setFilter} />, initialTestState
+    );
+    const select = rendered.getByTestId("select");
+    act(() => {
+      fireEvent.change(select, { target: { value: expectedTarget }});
+    });
+    expect(setFilter).toHaveBeenCalledWith(expectedTarget);
+  });
+
+  test("When the Modal is closed, the handle close function is called", () => {
+    const expectedTarget = "add-manager";
+    const rendered = render(
+      <ManagerFilter filterBy={expectedTarget} setFilter={setFilter} />, initialTestState
+    );
+    const select = rendered.getByTestId("select");
+    act(() => {
+      fireEvent.change(select, { target: { value: expectedTarget }});
+    });
+    expect(setFilter).toHaveBeenCalledWith(expectedTarget);
+    const closeButton = rendered.getByTestId("close-button");
+    act(() => {
+      fireEvent.click(closeButton);
+    });
+    expect(setFilter).toHaveBeenCalledWith("show-all");
   });
 });
