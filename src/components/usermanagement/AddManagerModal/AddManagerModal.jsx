@@ -1,7 +1,6 @@
 import { CloseRounded } from "@material-ui/icons";
 import {
-  CustomInput,
-  ModalHelperText,
+  ModalNNumber,
   PaperContainer,
   ModalOverlay,
   StyledButton
@@ -10,17 +9,9 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import {
-  apiPaths,
-  nNumMatcher
-} from "globals";
 import PropTypes from "prop-types";
-import React, {
-  useEffect,
-  useState
-} from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { myAxios } from "utils";
 
 const FlexColumn = styled.div`
   display: flex;
@@ -93,39 +84,8 @@ const AddManagerModal = props => {
     }
   };
 
-  const clearManager = () => {
-    setManager(defaultManager);
-    setNNumber(defaultNNumber);
-  };
+  const isNNumberValid = nNumber === "n" ? false : true;
 
-  const isValidNNumber = nNumber.match(nNumMatcher);
-
-  useEffect(() => {
-    if (isValidNNumber) {
-      setManager(loadingStates.loading);
-      myAxios
-        .get(apiPaths.EMPLOYEE_LOOKUP(nNumber.substring(1)))
-        .then(res => {
-          if (res.data.length !== 0) {
-            const rawManager = res.data[0];
-            setManager({
-              manager_first_name: rawManager.person.data.FirstName,
-              manager_last_name: rawManager.person.data.LastName,
-              manager_n_number: nNumber
-            });
-          } else {
-            setManager(loadingStates.userNotFound);
-          }
-        })
-        .catch(err => {
-          setManager(loadingStates.fail);
-          console.error("Failed to lookup manager by nNumber", err);
-        });
-    }
-  }, [nNumber]);
-
-  const isManagerValid = manager.manager_n_number ? true : false;
-  const helperTextMessage = isManagerValid ? `${manager.manager_first_name} ${manager.manager_last_name}` : "User not found";
   let overlayMessage = "Saving";
   if (saveManager === loadingStates.success) {
     overlayMessage = "Manager added successfully";
@@ -147,21 +107,24 @@ const AddManagerModal = props => {
           <CloseRounded data-testid={"close-button"} onClick={handleClose}/>
         </HeaderAndCloseButtonWrapper>
         <FlexColumn>
-          <CustomInput
-            disabled={saveManager === loadingStates.loading || manager === loadingStates.loading || isManagerValid}
-            label="Manager N Number"
-            name="Manager N Number"
-            loading={manager === loadingStates.loading}
-            value={nNumber}
-            updateValue={setNNumber}
+          <ModalNNumber
+            disabled={saveManager === loadingStates.loading || manager === loadingStates.loading || isNNumberValid}
+            onComplete={res => {
+              setNNumber(res.nNumber);
+              setManager({
+                manager_n_number: res.nNumber,
+                manager_first_name: res.lookupInfo.firstName,
+                manager_last_name: res.lookupInfo.lastName
+              });
+            }}
+            onClear={() => {
+              setNNumber(defaultNNumber);
+              setManager(defaultManager);
+            }}
           />
-          {isValidNNumber && manager !== loadingStates.loading
-            ? <ModalHelperText clearFunction={clearManager} message={helperTextMessage} error={!isManagerValid} />
-            : null
-          }
         </FlexColumn>
         <ButtonWrapper>
-          <StyledButton disabled={!isManagerValid} onClick={addManagerClicked} data-testid={"add-manager-button"}>
+          <StyledButton disabled={!isNNumberValid} onClick={addManagerClicked} data-testid={"add-manager-button"}>
             Add Manager
           </StyledButton>
         </ButtonWrapper>

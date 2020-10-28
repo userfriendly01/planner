@@ -4,7 +4,7 @@ import {
 } from "components";
 import { nNumMatcher } from "globals";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useState } from "react";
 import { fetchUser } from "services";
 import styled from "styled-components";
 
@@ -16,69 +16,87 @@ const FlexColumn = styled.div`
 
 const ModalNNumber = props => {
   const {
-    clearUser,
     disabled,
-    error,
-    form,
-    nNumber,
+    label,
     onBlur,
-    setForm,
-    updateValue
+    onComplete,
+    onClear
   } = props;
+
+  const defaultNNumber = "n";
+  const [ lookupResults, setLookupResults ] = useState(null);
+  const [ nNumber, setNNumber ] = useState(defaultNNumber);
 
   const validator = nNumber => nNumber.match(nNumMatcher) !== null;
 
-  const inputServiceCall = nNumber => {
+  const handleBlur = () => {
+    if(onBlur){
+      onBlur();
+    }
+    if (!lookupResults) {
+      setLookupResults({
+        lookupError: "Incomplete Entry"
+      });
+    }
+  };
+
+  const handleOnClear = () => {
+    setLookupResults(null);
+    setNNumber(defaultNNumber);
+    onClear();
+  };
+
+  const lookupNNumber = nNumber => {
     return fetchUser(nNumber)
       .then(res => {
+        console.log("RESPONSE: ", res);
         if (res) {
-          setForm({
-            ...form,
+          setLookupResults({
             lookupError: null,
+            lookupInfo: `${res.firstName} ${res.lastName}`,
+            nNumber
+          });
+          onComplete({
             lookupInfo: res,
             nNumber
           });
         } else {
-          setForm({
-            ...form,
-            lookupInfo: {},
+          setLookupResults({
+            lookupInfo: null,
             lookupError: "User not found",
             nNumber
           });
         }
       })
       .catch(err => {
-        setForm({
-          ...form,
-          lookupInfo: {},
+        setLookupResults({
+          lookupInfo: null,
           lookupError: `Error calling lookup service: ${err.message}`,
           nNumber
         });
       });
   };
 
-  const showModalHelperText = JSON.stringify(form.lookupInfo) !== JSON.stringify({}) || form.lookupError;
-
   return (
     <FlexColumn>
       <CustomInput
         disabled={disabled}
-        error={error}
-        label="N Number"
+        error={lookupResults ? lookupResults.lookupError : false}
+        label= {label ? label : "N Number"}
         name="N Number"
-        onBlur={onBlur}
+        onBlur={handleBlur}
         maxLength="8"
-        updateValue={updateValue}
-        validator={validator}
-        validatedServiceCall={inputServiceCall}
+        updateValue={setNNumber}
         value={nNumber}
+        validator={validator}
+        validatedServiceCall={lookupNNumber}
       />
       {
-        showModalHelperText
+        lookupResults
           ? <ModalHelperText
-            clearFunction={clearUser}
-            error={form.lookupError ? true : false}
-            message={form.lookupError || `${form.lookupInfo.firstName} ${form.lookupInfo.lastName}`}
+            clearFunction={handleOnClear}
+            error={lookupResults.lookupError ? true: false }
+            message={lookupResults.lookupError || lookupResults.lookupInfo}
           />
           : null
       }
@@ -87,14 +105,11 @@ const ModalNNumber = props => {
 };
 
 ModalNNumber.propTypes = {
-  clearUser: PropTypes.func.isRequired,
+  label: PropTypes.string,
   disabled: PropTypes.bool.isRequired,
-  error: PropTypes.bool,
-  form: PropTypes.object.isRequired,
-  nNumber: PropTypes.string.isRequired,
   onBlur: PropTypes.func,
-  setForm: PropTypes.func.isRequired,
-  updateValue: PropTypes.func.isRequired
+  onComplete: PropTypes.func.isRequired,
+  onClear: PropTypes.func.isRequired
 };
 
 export default ModalNNumber;
