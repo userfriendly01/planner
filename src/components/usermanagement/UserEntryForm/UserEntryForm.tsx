@@ -1,13 +1,10 @@
 import {
-  getE164Number
-} from "@lmig/phone-number-utils";
-import {
   DefaultSkillSelector,
-  OutlinedSelect,
-  ModalNNumber,
   ModalExtension,
+  ModalNNumber,
   ModalOverlay,
   ModalPhoneNumber,
+  OutlinedSelect,
   StyledButton,
   UserEntryFormState
 } from "components";
@@ -323,6 +320,11 @@ const UserEntryForm = (props: UserEntryFormProps) => {
           message={loading.overlayMessage}
         /> : null}
       <Header>{formMode === formModes.INSERT ? "Add a User" : "Edit User"}</Header>
+      {
+        formMode === formModes.UPDATE
+        ? <Header>{worker.attributes.full_name}</Header>
+        : null
+      }
       <FormControlsContainer>
         <FormControlsPane>
           <OutlinedSelect
