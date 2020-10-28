@@ -174,6 +174,10 @@ describe("<App />", () => {
             open: true
           });
           expectMockedComponent(modalChildrenRendered, { NotificationModal });
+          expectOnlyPassedProps(NotificationModal, {
+            buttonText: "Reload",
+            text: "Your session has expired. Please reload the page."
+          });
           // testing handleClick for code coverage
           const handleClick = NotificationModal.mock.calls[0][0].handleClick;
           act(() => handleClick());

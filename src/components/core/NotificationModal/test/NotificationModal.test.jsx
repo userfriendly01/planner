@@ -12,6 +12,8 @@ import {
 } from "testUtils";
 
 const mockHandleClick = jest.fn();
+const buttonText = "Button";
+const text = "I will display in the modal but not in the button";
 
 jest.mock("components", () => ({
   __esModule: true,
@@ -25,12 +27,17 @@ describe("<NotificationModal />", () => {
     PaperContainer.mockImplementation(props => <div>{props.children}</div>);
   });
   test("should render reload button & correct text", () => {
-    const rendered = render(<NotificationModal handleClick={mockHandleClick} />);
+    const rendered = render(<NotificationModal
+      buttonText={buttonText}
+      handleClick={mockHandleClick}
+      text={text}
+    />);
     expectMockedComponent(rendered, { StyledButton });
     expectOnlyPassedProps(StyledButton, {
       disabled: false,
       onClick: mockHandleClick
     });
-    expect(rendered.container).toHaveTextContent("Your session has expired. Please reload the page.");
+    expect(rendered.container).toHaveTextContent(text);
+    expect(rendered.container).toHaveTextContent(buttonText);
   });
 });

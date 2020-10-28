@@ -190,7 +190,11 @@ const App = () => {
           <Header/>
           <NavTabs/>
           <Modal disableBackdropClick={true} open={showModal === true}>
-            <NotificationModal handleClick={() => window.location.reload()} />
+            <NotificationModal
+              buttonText={"Reload"}
+              handleClick={() => window.location.reload()}
+              text={"Your session has expired. Please reload the page."}
+            />
           </Modal>
         </AppWrapper>
       );
