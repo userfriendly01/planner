@@ -19,7 +19,20 @@ const StyledTextField = styled(TextField)`
   }
 `;
 
-export const CustomInput = props => {
+export interface CustomInputProps {
+  disabled?: boolean,
+  error?: boolean,
+  label: string,
+  maxLength: string,
+  name: string,
+  onBlur?: () => void,
+  updateValue: (value: string) => void,
+  validator?: (value: string) => boolean,
+  validatedServiceCall?: (value: string) => Promise<any>,
+  value: string
+};
+
+export const CustomInput = (props: CustomInputProps) => {
   const {
     disabled,
     error,
@@ -35,7 +48,7 @@ export const CustomInput = props => {
 
   const [loading, setLoading] = useState(false);
 
-  const changeValidator = newValue => {
+  const changeValidator = (newValue: string) => {
     updateValue(newValue);
     if (validator) {
       if (validator(newValue)) {
@@ -65,17 +78,4 @@ export const CustomInput = props => {
       {loading ? <ModalFetchingRing data-testid="loading" /> : null}
     </FlexRow>
   );
-};
-
-CustomInput.propTypes = {
-  disabled: PropTypes.bool,
-  error: PropTypes.bool,
-  label: PropTypes.string.isRequired,
-  maxLength: PropTypes.string,
-  name: PropTypes.string,
-  onBlur: PropTypes.func,
-  updateValue: PropTypes.func.isRequired,
-  validator: PropTypes.func,
-  validatedServiceCall: PropTypes.func,
-  value: PropTypes.string.isRequired
 };
