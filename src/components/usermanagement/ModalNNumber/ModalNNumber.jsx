@@ -81,7 +81,7 @@ const ModalNNumber = props => {
     <FlexColumn>
       <CustomInput
         disabled={disabled}
-        error={lookupResults ? lookupResults.lookupError : null}
+        error={lookupResults ? lookupResults.lookupError : false}
         label= {label ? label : "N Number"}
         name="N Number"
         onBlur={handleBlur}
