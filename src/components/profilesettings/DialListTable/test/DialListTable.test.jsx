@@ -9,7 +9,7 @@ import {
   apiPaths,
   formModes,
   modalOverlayStatuses,
-  modalOverlayTimeout
+  timeouts
 } from "globals";
 import React from "react";
 import {
@@ -224,7 +224,7 @@ describe("<DialListTable />", () => {
             });
             await act(() => {
               // advance timers so overlay times out
-              jest.advanceTimersByTime(modalOverlayTimeout);
+              jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
             });
             await waitFor(() => {
               // expect saving message
@@ -263,7 +263,7 @@ describe("<DialListTable />", () => {
             });
             await act(() => {
               // advance timers so overlay times out
-              jest.advanceTimersByTime(modalOverlayTimeout);
+              jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
             });
             await waitFor(() => {
               // expect saving message

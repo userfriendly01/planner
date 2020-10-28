@@ -15,7 +15,7 @@ import {
   apiPaths,
   formModes,
   modalOverlayStatuses,
-  modalOverlayTimeout
+  timeouts
 } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
@@ -145,7 +145,7 @@ const DialListTable = props => {
       overlayMessage: "",
       saveStatus: null
     });
-  }, modalOverlayTimeout);
+  }, timeouts.MODAL_OVERLAY);
 
   const getDeleteButtonOnClick = diallistId => () => {
     const popUp = confirm("Are you sure you want to delete this dial list entry?");

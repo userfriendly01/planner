@@ -15,7 +15,7 @@ import {
   apiPaths,
   formModes,
   modalOverlayStatuses,
-  modalOverlayTimeout
+  timeouts
 } from "globals";
 import React from "react";
 import {
@@ -231,7 +231,7 @@ describe("<DialListEntryForm />", () => {
           });
           // Run timers so get rid of ModalOverlay
           act(() => {
-            jest.advanceTimersByTime(modalOverlayTimeout);
+            jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
           });
           await waitFor(() => {
             // Form is closed
@@ -314,7 +314,7 @@ describe("<DialListEntryForm />", () => {
           });
           // Run timers so get rid of ModalOverlay
           act(() => {
-            jest.advanceTimersByTime(modalOverlayTimeout);
+            jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
           });
           await waitFor(() => {
             // Overlay is hidden
@@ -477,7 +477,7 @@ describe("<DialListEntryForm />", () => {
           });
           // Run timers so get rid of ModalOverlay
           act(() => {
-            jest.advanceTimersByTime(modalOverlayTimeout);
+            jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
           });
           await waitFor(() => {
             // Form is closed
@@ -544,7 +544,7 @@ describe("<DialListEntryForm />", () => {
           });
           // Run timers so get rid of ModalOverlay
           act(() => {
-            jest.advanceTimersByTime(modalOverlayTimeout);
+            jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
           });
           await waitFor(() => {
             // Overlay is hidden

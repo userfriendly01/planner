@@ -17,7 +17,7 @@ import {
   apiPaths,
   formModes,
   modalOverlayStatuses,
-  modalOverlayTimeout
+  timeouts
 } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
@@ -119,7 +119,7 @@ const DialListEntryForm = props => {
         saveStatus: null
       });
     }
-  }, modalOverlayTimeout);
+  }, timeouts.MODAL_OVERLAY);
 
   const insertDialListEntry = () => {
     const requestBody = {
