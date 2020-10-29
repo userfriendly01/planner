@@ -1,12 +1,17 @@
-import { CircularProgress } from "@material-ui/core";
+import {
+  CircularProgress,
+  Modal
+} from "@material-ui/core";
 import {
   Header,
-  NavTabs
+  NavTabs,
+  NotificationModal
 } from "components";
 import { useAdminDispatch } from "context";
 import {
   apiPaths,
-  theme
+  theme,
+  timeouts
 } from "globals";
 import React, {
   useEffect,
@@ -14,6 +19,7 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import {
+  wait,
   formatTaskRouterSkills,
   formatWorkerResponse,
   getUniqueManagerList,
@@ -154,6 +160,7 @@ const getWorkers = async dispatch => {
 const App = () => {
 
   const [loadResult, setLoadResult] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const dispatch = useAdminDispatch();
 
   useEffect(() => {
@@ -163,11 +170,17 @@ const App = () => {
       getSkills(dispatch),
       getWorkers(dispatch)
     ])
-      .then(() => setLoadResult(success))
+      .then(() => {
+        setLoadResult(success);
+      })
       .catch(err => {
         console.error(err.msg, { error: err.error });
         setLoadResult(err);
       });
+  }, []);
+
+  useEffect(() => {
+    wait(() => setShowModal(true), timeouts.AUTH);
   }, []);
 
   if (loadResult) {
@@ -176,6 +189,13 @@ const App = () => {
         <AppWrapper data-testid="app-wrapper">
           <Header/>
           <NavTabs/>
+          <Modal disableBackdropClick={true} open={showModal === true}>
+            <NotificationModal
+              buttonText={"Reload"}
+              handleClick={() => window.location.reload()}
+              text={"Your session has expired. Please reload the page."}
+            />
+          </Modal>
         </AppWrapper>
       );
     } else {

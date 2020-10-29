@@ -13,8 +13,7 @@ import {
 import { initialState } from "context";
 import {
   apiPaths,
-  modalOverlayStatuses,
-  modalOverlayTimeout
+  modalOverlayStatuses
 } from "globals";
 import React from "react";
 import {
