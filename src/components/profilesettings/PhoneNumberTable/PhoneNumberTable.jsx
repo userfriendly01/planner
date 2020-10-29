@@ -77,8 +77,7 @@ const IconWrapper = styled.div`
   }
 `;
 
-const NoDialListDiv = styled.div`
-  margin-top: 25vh;
+const NoListDiv = styled.div`
   text-align: center;
 `;
 
@@ -107,9 +106,9 @@ const PhoneNumberTable = props => {
     <div>
       {
         phoneNumberList.length === 0 ? (
-          <NoDialListDiv>
+          <NoListDiv>
             <h1>{emptyListMsg}</h1>
-          </NoDialListDiv>
+          </NoListDiv>
         ) : (
           <StyledPaper elevation={3}>
             {saveState.status ?

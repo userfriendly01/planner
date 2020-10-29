@@ -85,9 +85,7 @@ describe("<Directory />", () => {
   test("when the add button is clicked, we should render the modal with the proper state", () => {
     renderComponent();
     const addButtonOnClick = getMockedComponentProps(StyledButton, 0).onClick;
-    act(() => {
-      addButtonOnClick();
-    });
+    act(() => addButtonOnClick());
     expectOnlyPassedProps(DirectoryEntryForm, {
       directoryState: {
         directoryEntryFormInitialValues: {
@@ -110,9 +108,7 @@ describe("<Directory />", () => {
   test("when an edit button is clicked, we should render the modal with the proper state", () => {
     renderComponent();
     const editFunction = getMockedComponentProps(PhoneNumberTable, 0).editFunction;
-    act(() => {
-      editFunction(directory[1])();
-    });
+    act(() => editFunction(directory[1])());
     expectOnlyPassedProps(DirectoryEntryForm, {
       directoryState: {
         directoryEntryFormInitialValues: {
@@ -129,7 +125,6 @@ describe("<Directory />", () => {
         },
         takenPhoneNums: [directory[0].phone_num, directory[2].phone_num]
       },
-      emptyListMsg: "No directory entries exist for this profile",
       profileId
     }, getLastInstanceCalled(DirectoryEntryForm));
   });
@@ -137,29 +132,21 @@ describe("<Directory />", () => {
   test("when the close modal function is called, the modal should be hidden", () => {
     const rendered = renderComponent();
     const editFunction = getMockedComponentProps(PhoneNumberTable, 0).editFunction;
-    act(() => {
-      editFunction(directory[1])();
-    });
+    act(() => editFunction(directory[1])());
     expectMockedComponent(rendered, { DirectoryEntryForm }, 1);
     const closeModal = getMockedComponentProps(DirectoryEntryForm, 0).closeModal;
-    act(() => {
-      closeModal();
-    });
+    act(() => closeModal());
     expectMockedComponent(rendered, { DirectoryEntryForm }, 0);
   });
 
   describe("deleting", () => {
     describe("the user confirms the deletion", () => {
-      beforeEach(() => {
-        confirmSpy.mockImplementation(jest.fn(() => true));
-      });
+      beforeEach(() => confirmSpy.mockImplementation(jest.fn(() => true)));
       test("if the delete is successful, we should show the processing modal, then show the success response, and refresh the profile", async () => {
         deleteDirectory.mockResolvedValue("GOOOOOOD");
         renderComponent();
         const deleteFunction = getMockedComponentProps(PhoneNumberTable, 0).deleteFunction;
-        await waitFor(() => {
-          deleteFunction(directory[1].directory_id)();
-        });
+        await waitFor(() => deleteFunction(directory[1].directory_id)());
         act(() => {
           // advance timers so overlay times out
           jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
@@ -180,9 +167,7 @@ describe("<Directory />", () => {
         deleteDirectory.mockRejectedValue("BAAAAD");
         renderComponent();
         const deleteFunction = getMockedComponentProps(PhoneNumberTable, 0).deleteFunction;
-        await waitFor(() => {
-          deleteFunction(directory[1].directory_id)();
-        });
+        await waitFor(() => deleteFunction(directory[1].directory_id)());
         act(() => {
           // advance timers so overlay times out
           jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
@@ -201,15 +186,11 @@ describe("<Directory />", () => {
       });
     });
     describe("the user cancels the deletion", () => {
-      beforeEach(() => {
-        confirmSpy.mockImplementation(jest.fn(() => false));
-      });
+      beforeEach(() => confirmSpy.mockImplementation(jest.fn(() => false)));
       test("we should not do anything", async () => {
         renderComponent();
         const deleteFunction = getMockedComponentProps(PhoneNumberTable, 0).deleteFunction;
-        await waitFor(() => {
-          deleteFunction(directory[1].directory_id)();
-        });
+        await waitFor(() => deleteFunction(directory[1].directory_id)());
         expect(deleteDirectory.mock.calls.length).toBe(0);
         expect(refreshProfileData.mock.calls.length).toBe(0);
         expect(PhoneNumberTable.mock.calls.length).toBe(1);

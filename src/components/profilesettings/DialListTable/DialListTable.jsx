@@ -99,7 +99,6 @@ const IconWrapper = styled.div`
 `;
 
 const NoDialListDiv = styled.div`
-  margin-top: 25vh;
   text-align: center;
 `;
 
