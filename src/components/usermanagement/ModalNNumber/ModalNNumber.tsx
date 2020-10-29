@@ -1,3 +1,4 @@
+import { ThreeDRotation } from "@material-ui/icons";
 import {
   CustomInput,
   ModalHelperText
@@ -17,9 +18,9 @@ const FlexColumn = styled.div`
 `;
 
 export interface NNumberLookupResults {
-  error: string,
-  name: string,
-  nNumber: string
+  error: boolean,
+  message: string,
+  show: boolean
 }
 
 export interface ModalNNumberProps {
@@ -44,42 +45,20 @@ const ModalNNumber = (props: ModalNNumberProps) => {
   } = props;
 
   const [ lookupResults, setLookupResults ] = useState<NNumberLookupResults>({
-    error: null,
-    name: null,
-    nNumber: null
+    error: false,
+    message: null,
+    show: false
   });
 
   const validator = (nNumber: string) => nNumber.match(nNumMatcher) !== null;
-
-  const handleBlur = () => {
-    if(onBlur){
-      onBlur();
-    }
-    if (!lookupResults) {
-      setLookupResults({
-        error: "Incomplete Entry",
-        name: null,
-        nNumber: null
-      });
-    }
-  };
-
-  const handleOnClear = () => {
-    setLookupResults({
-      error: null,
-      name: null,
-      nNumber: null
-    });
-    onClear();
-  };
 
   const lookupNNumber = (nNumber: string) => {
     return fetchUser(nNumber)
       .then(fetchedUser => {
         setLookupResults({
-          error: null,
-          name: `${fetchedUser.firstName} ${fetchedUser.lastName}`,
-          nNumber
+          error: false,
+          message: `${fetchedUser.firstName} ${fetchedUser.lastName}`,
+          show: true
         });
         onComplete(fetchedUser, nNumber);
       })
@@ -89,9 +68,9 @@ const ModalNNumber = (props: ModalNNumberProps) => {
           nNumber
         });
         setLookupResults({
-          error: `Error calling lookup service: ${err.message}`,
-          name: null,
-          nNumber
+          error: true,
+          message: "Error calling employee lookup service",
+          show: true
         });
       });
   };
@@ -103,7 +82,7 @@ const ModalNNumber = (props: ModalNNumberProps) => {
         error={lookupResults.error ? true : false}
         label= {label}
         name="N Number"
-        onBlur={handleBlur}
+        onBlur={onBlur}
         maxLength="8"
         updateValue={onUpdate}
         value={value}
@@ -111,12 +90,19 @@ const ModalNNumber = (props: ModalNNumberProps) => {
         validatedServiceCall={lookupNNumber}
       />
       {
-        lookupResults
+        lookupResults.show
           ? <ModalHelperText
-            clearFunction={handleOnClear}
-            error={lookupResults.error ? true: false }
-            message={lookupResults.error || lookupResults.name}
-          />
+              clearFunction={() => {
+                setLookupResults({
+                  error: false,
+                  message: null,
+                  show: false
+                });
+                onClear();
+              }}
+              error={lookupResults.error}
+              message={lookupResults.message}
+            />
           : null
       }
     </FlexColumn>
