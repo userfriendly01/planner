@@ -101,6 +101,8 @@ const PhoneNumberTable = props => {
     saveState
   } = props;
 
+  console.log("emptyListMsg:", emptyListMsg);
+
   return(
     <div>
       {

@@ -7,7 +7,7 @@ import {
 import {
   formModes,
   modalOverlayStatuses,
-  modalOverlayTimeout
+  timeouts
 } from "globals";
 import React from "react";
 import { deleteDirectory } from "services";
@@ -162,7 +162,7 @@ describe("<Directory />", () => {
         });
         act(() => {
           // advance timers so overlay times out
-          jest.advanceTimersByTime(modalOverlayTimeout);
+          jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
         });
         expect(refreshProfileData.mock.calls.length).toBe(1);
         expect(PhoneNumberTable.mock.calls[0][0].saveState).toEqual({ status: null });
@@ -185,7 +185,7 @@ describe("<Directory />", () => {
         });
         act(() => {
           // advance timers so overlay times out
-          jest.advanceTimersByTime(modalOverlayTimeout);
+          jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
         });
         expect(refreshProfileData.mock.calls.length).toBe(0);
         expect(PhoneNumberTable.mock.calls[0][0].saveState).toEqual({ status: null });

@@ -7,7 +7,7 @@ import {
 import {
   formModes,
   modalOverlayStatuses,
-  modalOverlayTimeout
+  timeouts
 } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
@@ -56,7 +56,7 @@ const Directory = props => {
         status: null
       }
     });
-  }, modalOverlayTimeout);
+  }, timeouts.MODAL_OVERLAY);
 
   const deleteButtonOnClick = directoryId => () => {
     const popUp = confirm("Are you sure you want to delete this directory entry?");
@@ -142,7 +142,6 @@ const Directory = props => {
             isDirectoryEntryFormOpen: false
           })}
           directoryState={directoryState}
-          emptyListMsg={"No directory entries exist for this profile"}
           profileId={profileId}
           refreshProfileData={refreshProfileData}
         />
@@ -150,6 +149,7 @@ const Directory = props => {
       <PhoneNumberTable
         editFunction={editButtonOnClick}
         deleteFunction={deleteButtonOnClick}
+        emptyListMsg={"No directory entries exist for this profile"}
         phoneNumberList={directory}
         saveState={directoryState.saveState}
       />

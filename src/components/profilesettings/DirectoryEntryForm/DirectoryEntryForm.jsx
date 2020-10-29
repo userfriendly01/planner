@@ -12,7 +12,7 @@ import {
 import {
   formModes,
   modalOverlayStatuses,
-  modalOverlayTimeout
+  timeouts
 } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
@@ -112,7 +112,7 @@ const DirectoryEntryForm = props => {
         saveStatus: null
       });
     }
-  }, modalOverlayTimeout);
+  }, timeouts.MODAL_OVERLAY);
 
   const insertDirectoryEntry = () => {
     setLoading({
