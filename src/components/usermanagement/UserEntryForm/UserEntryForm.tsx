@@ -32,7 +32,8 @@ import styled from "styled-components";
 import {
   getValidSkillsObject,
   mapWorkerFromTwilioWorker,
-  sortManagersByName
+  sortManagersByName,
+  wait
 } from "utils";
 
 const FlexRow = styled.div`
@@ -192,17 +193,13 @@ const UserEntryForm = (props: UserEntryFormProps) => {
     if (form.defaultSkillsUpdated) {
       attributes.default_skills = form.defaultSkills;
     }
-    // TODO delete me
-    console.log("UPDATED ATTRIBUTES", attributes)
     updateUser(worker.sid, attributes)
       .then(twilioWorker => {
-        // TODO delete me
-        console.log("UPDATED WORKER", twilioWorker)
         dispatch(({
           type: "updateWorker",
           payload: mapWorkerFromTwilioWorker(twilioWorker)
         }));
-        setTimeout(() => handleClose(), timeouts.MODAL_OVERLAY);
+        wait(handleClose, timeouts.MODAL_OVERLAY);
       })
       .catch(err => {
         updateLoading({
@@ -211,7 +208,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
           saveStatus: modalOverlayStatuses.FAIL,
           saveUser: true
         });
-        setTimeout(() => updateLoading({
+        wait(() => updateLoading({
           ...loading,
           saveUser: false
         }), 2000);
@@ -248,6 +245,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       primary_dept_name: form.nNumberLookupInfo.departmentName,
       primary_dept_number: form.nNumberLookupInfo.departmentNumber,
       profile_id: form.profileId
+      // TODO add default skills to actual skills object???
     };
     createUser(attributes)
       .then(twilioWorker => {
@@ -270,7 +268,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
           saveStatus: modalOverlayStatuses.SUCCESS,
           saveUser: true
         });
-        setTimeout(() => {
+        wait(() => {
           updateLoading({
             ...loading, 
             saveUser: false
@@ -284,7 +282,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
           saveStatus: modalOverlayStatuses.FAIL,
           saveUser: true
         });
-        setTimeout(() => {
+        wait(() => {
           updateLoading({
             ...loading,
             saveUser: false
@@ -300,10 +298,11 @@ const UserEntryForm = (props: UserEntryFormProps) => {
   const profileIdValid = form.profileId !== "";
   const formReady = (formMode === formModes.INSERT ? nNumberInputValid : true) && profileIdValid && managerValid && form.outgoingValid && extensionInputValid;
 
-  console.log("FORM STUFF", {
-    form,
-    formMode
-  })
+  // TODO delete me
+  // console.log("FORM STUFF", {
+  //   form,
+  //   formMode
+  // })
 
   return (
     <ModalContainer>
