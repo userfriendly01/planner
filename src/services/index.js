@@ -1,4 +1,4 @@
-export * from "./fetchUser";
-export * from "./deleteUser";
 export * from "./checkExtension";
+export * from "./deleteUser";
 export * from "./directory";
+export * from "./fetchUser";

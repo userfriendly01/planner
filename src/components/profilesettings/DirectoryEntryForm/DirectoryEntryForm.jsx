@@ -4,9 +4,9 @@ import {
 } from "@lmig/phone-number-utils";
 import { TextField } from "@material-ui/core";
 import {
-  PaperContainer,
-  ModalPhoneNumber,
   ModalOverlay,
+  ModalPhoneNumber,
+  PaperContainer,
   StyledButton
 } from "components";
 import {

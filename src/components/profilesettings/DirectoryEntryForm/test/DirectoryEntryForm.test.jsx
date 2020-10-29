@@ -5,9 +5,9 @@ import {
 } from "@material-ui/core";
 import { InfoOutlined } from "@material-ui/icons";
 import {
-  PaperContainer,
-  ModalPhoneNumber,
   ModalOverlay,
+  ModalPhoneNumber,
+  PaperContainer,
   StyledButton
 } from "components";
 import {
