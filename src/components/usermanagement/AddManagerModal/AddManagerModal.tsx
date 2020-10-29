@@ -6,10 +6,11 @@ import {
   StyledButton
 } from "components";
 import {
+  Manager,
   useAdminDispatch,
   useAdminState
 } from "context";
-import PropTypes from "prop-types";
+import { timeouts } from "globals";
 import React, { useState } from "react";
 import styled from "styled-components";
 
@@ -50,7 +51,6 @@ const ModalContainer = styled(FlexColumn)`
   transform: translate(-50%, -50%);
 `;
 
-const defaultManager = {};
 const defaultNNumber = "n";
 const loadingStates = {
   success: "success",
@@ -59,47 +59,50 @@ const loadingStates = {
   userNotFound: "user-not-found"
 };
 
-const AddManagerModal = props => {
+export interface AddManagerModalProps {
+  handleClose: () => void
+}
+
+const AddManagerModal = (props: AddManagerModalProps) => {
   const { handleClose } = props;
 
-  const [manager, setManager] = useState(defaultManager);
-  const [saveManager, setSaveManager] = useState(null);
-  const [nNumber, setNNumber] = useState(defaultNNumber);
+  const [manager, setManager] = useState<Manager>(null);
+  const [saveStatus, setSaveStatus] = useState<string>(null);
+  const [nNumber, setNNumber] = useState<string>(defaultNNumber);
 
   const dispatch = useAdminDispatch();
   const state = useAdminState();
 
   const addManagerClicked = () => {
-    setSaveManager(loadingStates.loading);
+    setSaveStatus(loadingStates.loading);
     if (!state.managerContext.managers.some(mgr => mgr.manager_n_number.toLowerCase() === nNumber.toLowerCase())) {
       dispatch(({
         type: "addManager",
         payload: { manager }
       }));
-      setSaveManager(loadingStates.success);
-      setTimeout(() => handleClose(), 2000);
+      setSaveStatus(loadingStates.success);
+      setTimeout(handleClose, 2000);
     } else {
-      setSaveManager(loadingStates.fail);
-      setTimeout(() => setSaveManager(null), 2000);
+      console.log("IN DA ELSE BLOCK")
+      setSaveStatus(loadingStates.fail);
+      setTimeout(() => setSaveStatus(null), 2000);
     }
   };
 
-  const isNNumberValid = nNumber === "n" ? false : true;
-
   let overlayMessage = "Saving";
-  if (saveManager === loadingStates.success) {
+  if (saveStatus === loadingStates.success) {
     overlayMessage = "Manager added successfully";
-  } else if (saveManager === loadingStates.fail) {
+  } else if (saveStatus === loadingStates.fail) {
     overlayMessage = "Manager already exists";
   }
 
   return (
     <ModalContainer>
       <PaperContainer>
-        {saveManager === loadingStates.success || saveManager === loadingStates.fail ?
+        {saveStatus ?
           <ModalOverlay
             message={overlayMessage}
-            status={saveManager}
+            status={saveStatus}
           /> : null}
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>
@@ -108,33 +111,34 @@ const AddManagerModal = props => {
         </HeaderAndCloseButtonWrapper>
         <FlexColumn>
           <ModalNNumber
-            disabled={saveManager === loadingStates.loading || manager === loadingStates.loading || isNNumberValid}
-            onComplete={res => {
-              setNNumber(res.nNumber);
+            disabled={saveStatus ? true : false}
+            label="N Number"
+            onComplete={(fetchedUser, nNumber) => {
+              setNNumber(nNumber);
               setManager({
-                manager_n_number: res.nNumber,
-                manager_first_name: res.lookupInfo.firstName,
-                manager_last_name: res.lookupInfo.lastName
+                manager_n_number: nNumber,
+                manager_first_name: fetchedUser.firstName,
+                manager_last_name: fetchedUser.lastName
               });
             }}
             onClear={() => {
               setNNumber(defaultNNumber);
-              setManager(defaultManager);
+              setManager(null);
             }}
+            onUpdate={nNumber => {
+              setNNumber(nNumber)
+            }}
+            value={nNumber}
           />
         </FlexColumn>
         <ButtonWrapper>
-          <StyledButton disabled={!isNNumberValid} onClick={addManagerClicked} data-testid={"add-manager-button"}>
+          <StyledButton disabled={!manager} onClick={addManagerClicked} data-testid={"add-manager-button"}>
             Add Manager
           </StyledButton>
         </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>
   );
-};
-
-AddManagerModal.propTypes = {
-  handleClose: PropTypes.func.isRequired
 };
 
 export default AddManagerModal;

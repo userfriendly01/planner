@@ -15,7 +15,8 @@ import {
   getLastInstanceCalled,
   getMockedComponentProps,
   render,
-  setupMockedComponents
+  setupMockedComponents,
+  waitFor
 } from "testUtils";
 
 jest.useFakeTimers();
@@ -35,7 +36,6 @@ jest.mock("components", () => ({
 
 describe("<AddManagerModal />", () => {
   const mockHandleClose = jest.fn();
-  const nNumber = "n1234567";
   const renderComponent = () => render(<AddManagerModal handleClose={mockHandleClose} />);
   beforeEach(() => {
     setupMockedComponents({
@@ -62,60 +62,19 @@ describe("<AddManagerModal />", () => {
     });
   });
 
-  describe("manager N number field", () => {
-    describe("initial state", () => {
-      test("should render ModalNNumber with expected props", () => {
-        const rendered = renderComponent();
-        expectMockedComponent(rendered, { ModalNNumber });
-        expectOnlyPassedProps(ModalNNumber, {
-          disabled: false,
-          nNumber: "n"
-        });
-      });
+  const updateFormSoValid = (fetchedManager, nNumber) => {
+    act(() => {
+      getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).onUpdate("n02");
     });
-
-    describe("valid N number entered", () => {
-      describe("good response", () => {
-        test("should render ModalNNumber with correct props", done => {
-          renderComponent();
-          act(() => {
-            const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
-            const setIsValid = ModalNNumber.mock.calls[0][0].setIsValid;
-            updateValue({
-              nNumber
-            });
-            setIsValid(true);
-            return Promise.resolve();
-          }).then(() => {
-            expect(ModalNNumber.mock.calls.length).toBe(2);
-            expect(ModalNNumber.mock.calls[0][0].nNumber).toBe("n");
-            expect(ModalNNumber.mock.calls[1][0].nNumber).toBe(nNumber);
-            expect(ModalNNumber.mock.calls[0][0].disabled).toBe(false);
-            expect(ModalNNumber.mock.calls[1][0].disabled).toBe(true);
-            done();
-          });
-        });
-        test("should reset nNumber field to 'n'", done => {
-          renderComponent();
-          act(() => {
-            const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
-            updateValue({
-              nNumber
-            });
-            return Promise.resolve();
-          }).then(() => {
-            const { resetParentState } = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber));
-            act(() => resetParentState());
-            const {
-              nNumber
-            } = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber));
-            expect(nNumber).toBe("n");
-            done();
-          });
-        });
-      });
+    act(() => {
+      getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).onClear();
     });
-  });
+    act(() => {
+      getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).onComplete(fetchedManager, nNumber);
+    });
+    // button should be enabled
+    expect(getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton)).disabled).toBe(false);
+  };
 
   describe("Add Manager button", () => {
     describe("initial state", () => {
@@ -126,75 +85,58 @@ describe("<AddManagerModal />", () => {
         expect(disabled).toBe(true);
       });
     });
-    describe("valid nNumber is entered", () => {
-      test("should be enabled", done => {
-        renderComponent();
-        act(() => {
-          const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
-          const setIsValid = ModalNNumber.mock.calls[0][0].setIsValid;
-          updateValue({
-            nNumber
-          });
-          setIsValid(true);
-          return Promise.resolve();
-        }).then(() => {
-          const { disabled } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
-          expect(disabled).toBe(false);
-          done();
-        });
-      });
-    });
     describe("Add Manager button is clicked", () => {
       describe("manager is not in list of managers", () => {
-        test("ModalOverlay should render with 'Manager added successfully' & modal should close after 2 seconds (handleClose should be called)", done => {
+        test("ModalOverlay should render with 'Manager added successfully' & modal should close after 2 seconds (handleClose should be called)", async () => {
           const rendered = renderComponent();
-          act(() => {
-            const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
-            updateValue({
-              nNumber
-            });
-            return Promise.resolve();
-          }).then(() => {
-            const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
-            act(() => onClick());
+          const fetchedManager = {
+            firstName: "Bob",
+            lastName: "Bobson"
+          };
+          updateFormSoValid(fetchedManager, "n0000000");
+          const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
+          act(() => onClick());
+          act(() => jest.runAllTimers());
+          await waitFor(() => {
             expectMockedComponent(rendered, { ModalOverlay });
             expectOnlyPassedProps(ModalOverlay, {
               status: "success",
               message: "Manager added successfully"
             });
-            act(() => jest.runAllTimers());
-            expect(mockHandleClose).toBeCalled();
-            done();
+            expect(mockHandleClose).toHaveBeenCalledTimes(1);
           });
         });
       });
     });
     describe("manager is already in the list of managers", () => {
+      const managerNNumber = "n1234567";
+      const fetchedManager = {
+        firstName: "Bob",
+        lastName: "Bobson"
+      };
       const testState = {
         ...initialState,
         managerContext: {
-          managers: [{ manager_n_number: nNumber }]
+          managers: [{
+            manager_first_name: "Ialready",
+            manager_last_name: "Exist",
+            manager_n_number: managerNNumber
+          }]
         }
       };
-      test("ModalOverlay should render 'Manager already exists' & modal should remain open (handleClose should not be called)", done => {
+      test("ModalOverlay should render 'Manager already exists' & modal should remain open (handleClose should not be called)", async () => {
         const rendered = render(<AddManagerModal handleClose={mockHandleClose}/>, testState);
-        act(() => {
-          const updateValue = ModalNNumber.mock.calls[0][0].updateValue;
-          updateValue({
-            nNumber
-          });
-          return Promise.resolve();
-        }).then(() => {
-          const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
-          act(() => onClick());
-          expectMockedComponent(rendered, { ModalOverlay });
+        updateFormSoValid(fetchedManager, managerNNumber);
+        const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
+        act(() => onClick());
+        act(() => jest.runAllTimers());
+        await waitFor(() => {
           expectOnlyPassedProps(ModalOverlay, {
             status: "fail",
             message: "Manager already exists"
           });
-          act(() => jest.runAllTimers());
-          expect(mockHandleClose).not.toBeCalled();
-          done();
+          expect(mockHandleClose).toHaveBeenCalledTimes(0);
+          expectMockedComponent(rendered, { ModalOverlay }, 0);
         });
       });
     });
