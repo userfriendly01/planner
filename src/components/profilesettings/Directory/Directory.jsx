@@ -58,7 +58,7 @@ const Directory = props => {
     });
   }, modalOverlayTimeout);
 
-  const getDeleteButtonOnClick = directoryId => {
+  const deleteButtonOnClick = directoryId => () => {
     const popUp = confirm("Are you sure you want to delete this directory entry?");
     if (popUp === true) {
       setDirectoryState({
@@ -96,7 +96,7 @@ const Directory = props => {
     }
   };
 
-  const editButtonOnClick = entry => {
+  const editButtonOnClick = entry => () => {
     setDirectoryState({
       ...directoryState,
       directoryId: entry.directory_id,
@@ -142,13 +142,14 @@ const Directory = props => {
             isDirectoryEntryFormOpen: false
           })}
           directoryState={directoryState}
+          emptyListMsg={"No directory entries exist for this profile"}
           profileId={profileId}
           refreshProfileData={refreshProfileData}
         />
       </Modal>
       <PhoneNumberTable
         editFunction={editButtonOnClick}
-        deleteFunction={getDeleteButtonOnClick}
+        deleteFunction={deleteButtonOnClick}
         phoneNumberList={directory}
         saveState={directoryState.saveState}
       />

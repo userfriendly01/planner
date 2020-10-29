@@ -40,9 +40,9 @@ const axiosMock = new MockAdapter(myAxios);
 const profileId = "89";
 const refreshProfileData = jest.fn();
 
-const renderComponent = ({
-  dialList
-}) => render(<DialListTable dialList={dialList} profileId={profileId} refreshProfileData={refreshProfileData} />);
+const renderComponent = ({ dialList }) => render(
+  <DialListTable dialList={dialList} profileId={profileId} refreshProfileData={refreshProfileData} />
+);
 
 describe("<DialListTable />", () => {
 
@@ -64,25 +64,16 @@ describe("<DialListTable />", () => {
 
   describe("profile does not have entries in its dial list", () => {
     const dialList = [];
-
     test("should render 'no entries exist' message", () => {
-      const rendered = renderComponent({
-        dialList
-      });
+      const rendered = renderComponent({ dialList });
       expect(rendered.container).toHaveTextContent("No dial list entries exist for this profile");
     });
-
     test("should render add button", () => {
-      const rendered = renderComponent({
-        dialList
-      });
+      const rendered = renderComponent({ dialList });
       expectMockedComponent(rendered, { StyledButton });
     });
-
     test("add button clicked should render dialListEntryForm with correct props", () => {
-      renderComponent({
-        dialList
-      });
+      renderComponent({ dialList });
       const addButtonOnClick = getMockedComponentProps(StyledButton, 0).onClick;
       act(() => {
         addButtonOnClick();
@@ -106,33 +97,24 @@ describe("<DialListTable />", () => {
     const dialList = [
       {
         diallist_id: 16,
-        contact_nme: "Bo Jackson",
+        contact_nme: "Department of Redundancy Dept.",
         contact_num: "800-123-4567"
       },
       {
         diallist_id: 18,
-        contact_nme: "Daryl Strawberry",
+        contact_nme: "I Got Worms",
         contact_num: "800-123-4568",
         external_num: "900-555-1212"
       },
       {
         diallist_id: 20,
-        contact_nme: "Michael Jack Schmidt",
+        contact_nme: "Mutt Cutts",
         contact_num: "800-123-4569"
       }
     ];
-
-    test("should render add button", () => {
-      const rendered = renderComponent({
-        dialList
-      });
-      expectMockedComponent(rendered, { StyledButton });
-    });
-
     test("should render add button, header and correct info for each dial list entry", () => {
-      const rendered = renderComponent({
-        dialList
-      });
+      const rendered = renderComponent({ dialList });
+      expectMockedComponent(rendered, { StyledButton });
       expect(rendered.getByText("NAME", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("NUMBER", { selector: "th" })).toBeInTheDocument();
       const tableRows = rendered.getAllByTestId("table-row");
@@ -146,37 +128,29 @@ describe("<DialListTable />", () => {
         expect(utils.getByTestId("delete-button")).toBeInTheDocument();
       });
     });
-
-
-    describe("dial list entry buttons for dialListId = 18", () => {
-      const entry = dialList[1]; // second entry
-
-      test("add button clicked should render dialListEntryForm with correct props", () => {
-        renderComponent({
-          dialList
-        });
-        const addButtonOnClick = getMockedComponentProps(StyledButton, 0).onClick;
-        act(() => {
-          addButtonOnClick();
-        });
-        expectOnlyPassedProps(DialListEntryForm, {
-          dialListTableState: {
-            dialListEntryFormInitialValues: {
-              contact_nme: "",
-              contact_num: "",
-              external_num: ""
-            },
-            dialListEntryFormMode: formModes.INSERT,
-            isDialListEntryFormOpen: true,
-            otherContactNums: [dialList[0].contact_num, dialList[1].contact_num, dialList[2].contact_num]
-          }
-        }, getLastInstanceCalled(DialListEntryForm));
+    test("add button clicked should render dialListEntryForm with correct props", () => {
+      renderComponent({ dialList });
+      const addButtonOnClick = getMockedComponentProps(StyledButton, 0).onClick;
+      act(() => {
+        addButtonOnClick();
       });
-
+      expectOnlyPassedProps(DialListEntryForm, {
+        dialListTableState: {
+          dialListEntryFormInitialValues: {
+            contact_nme: "",
+            contact_num: "",
+            external_num: ""
+          },
+          dialListEntryFormMode: formModes.INSERT,
+          isDialListEntryFormOpen: true,
+          otherContactNums: [dialList[0].contact_num, dialList[1].contact_num, dialList[2].contact_num]
+        }
+      }, getLastInstanceCalled(DialListEntryForm));
+    });
+    describe("dial list entry buttons for dialListId = 18", () => {
+      const entry = dialList[1];
       test("edit button clicked should render dialListEntryForm with correct props", () => {
-        const rendered = renderComponent({
-          dialList
-        });
+        const rendered = renderComponent({ dialList });
         expect(rendered.container).toHaveTextContent(entry.contact_nme);
         expect(rendered.container).toHaveTextContent(entry.contact_num);
         const row = rendered.getByText(entry.contact_nme).closest("tr");
@@ -199,21 +173,16 @@ describe("<DialListTable />", () => {
           }
         }, getLastInstanceCalled(DialListEntryForm));
       });
-
       describe("delete button popup returns true", () => {
         beforeEach(() => {
           confirmSpy.mockImplementation(jest.fn(() => true));
         });
-
         describe("delete service call succeeds", () => {
           beforeEach(() => {
             axiosMock.onDelete(apiPaths.DIAL_LIST_ENTRY(entry.diallist_id)).reply(200, { whatever: "lol" });
           });
-
           test("delete button clicked should render dialListEntryForm with correct props", async () => {
-            const rendered = renderComponent({
-              dialList
-            });
+            const rendered = renderComponent({ dialList });
             expect(rendered.container).toHaveTextContent(entry.contact_nme);
             expect(rendered.container).toHaveTextContent(entry.contact_num);
             const row = rendered.getByText(entry.contact_nme).closest("tr");
@@ -243,16 +212,12 @@ describe("<DialListTable />", () => {
             });
           });
         });
-
         describe("delete service call fails", () => {
           beforeEach(() => {
             axiosMock.onDelete(apiPaths.DIAL_LIST_ENTRY(entry.diallist_id)).reply(500, { whatever: "lol failed" });
           });
-
           test("delete button clicked should render dialListEntryForm with correct props", async () => {
-            const rendered = renderComponent({
-              dialList
-            });
+            const rendered = renderComponent({ dialList });
             expect(rendered.container).toHaveTextContent(entry.contact_nme);
             expect(rendered.container).toHaveTextContent(entry.contact_num);
             const row = rendered.getByText(entry.contact_nme).closest("tr");
@@ -283,16 +248,12 @@ describe("<DialListTable />", () => {
           });
         });
       });
-
       describe("delete button popup returns false", () => {
         beforeEach(() => {
           confirmSpy.mockImplementation(jest.fn(() => false));
         });
-
         test("delete button clicked should do nothing", () => {
-          const rendered = renderComponent({
-            dialList
-          });
+          const rendered = renderComponent({ dialList });
           expect(rendered.container).toHaveTextContent(entry.contact_nme);
           expect(rendered.container).toHaveTextContent(entry.contact_num);
           const row = rendered.getByText(entry.contact_nme).closest("tr");

@@ -92,7 +92,7 @@ describe("<ProfileSettingsContainer />", () => {
           },
           {
             contact_id: 16,
-            contact_nme: "bo Jackson",
+            contact_nme: "Bo Jackson",
             contact_num: "800-123-4567"
           }
         ],
@@ -128,7 +128,7 @@ describe("<ProfileSettingsContainer />", () => {
             dialList: [
               {
                 contact_id: 16,
-                contact_nme: "bo Jackson",
+                contact_nme: "Bo Jackson",
                 contact_num: "800-123-4567"
               },
               {

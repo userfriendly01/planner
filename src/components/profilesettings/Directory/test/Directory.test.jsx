@@ -25,48 +25,46 @@ import {
 jest.useFakeTimers();
 
 jest.mock("components", () => ({
-  __esModule: true,
   DirectoryEntryForm: jest.fn(),
   PhoneNumberTable: jest.fn(),
   StyledButton: jest.fn()
 }));
 
 jest.mock("services", () => ({
-  __esModule: true,
   deleteDirectory: jest.fn()
 }));
 
 const profileId = "89";
 const refreshProfileData = jest.fn();
+const directory = [
+  {
+    directory_id: 16,
+    first_nme: "Bo",
+    last_nme: "Jackson",
+    phone_num: "800-123-4567"
+  },
+  {
+    directory_id: 18,
+    first_nme: "Daryl",
+    last_nme: "Strawberry",
+    phone_num: "900-555-1212"
+  },
+  {
+    directory_id: 20,
+    first_nme: "Michael Jack",
+    last_nme: "Schmidt",
+    phone_num: "800-123-4569"
+  }
+];
 
-const renderComponent = dialList => render(<Directory directory={dialList} profileId={profileId} refreshProfileData={refreshProfileData} />);
+const renderComponent = () => render(
+  <Directory directory={directory} profileId={profileId} refreshProfileData={refreshProfileData} />
+);
 
 describe("<Directory />", () => {
-  const directory = [
-    {
-      directory_id: 16,
-      first_nme: "Bo",
-      last_nme: "Jackson",
-      phone_num: "800-123-4567"
-    },
-    {
-      directory_id: 18,
-      first_nme: "Daryl",
-      last_nme: "Strawberry",
-      phone_num: "900-555-1212"
-    },
-    {
-      directory_id: 20,
-      first_nme: "Michael Jack",
-      last_nme: "Schmidt",
-      phone_num: "800-123-4569"
-    }
-  ];
 
   let confirmSpy;
-  beforeAll(() => {
-    confirmSpy = jest.spyOn(window, "confirm");
-  });
+  beforeAll(() => confirmSpy = jest.spyOn(window, "confirm"));
   afterAll(() => confirmSpy.mockRestore());
 
   beforeEach(() => {
@@ -79,13 +77,13 @@ describe("<Directory />", () => {
   });
 
   test("initial render should just be the button and the table", () => {
-    const rendered = renderComponent([]);
-    expectMockedComponent(rendered, { PhoneNumberTable });
+    const rendered = renderComponent();
     expectMockedComponent(rendered, { StyledButton });
+    expectMockedComponent(rendered, { PhoneNumberTable });
   });
 
-  test("when the add button is clicked, we should render the modal, with the proper state", () => {
-    renderComponent(directory);
+  test("when the add button is clicked, we should render the modal with the proper state", () => {
+    renderComponent();
     const addButtonOnClick = getMockedComponentProps(StyledButton, 0).onClick;
     act(() => {
       addButtonOnClick();
@@ -109,11 +107,11 @@ describe("<Directory />", () => {
     }, getLastInstanceCalled(DirectoryEntryForm));
   });
 
-  test("when an edit button is clicked, we should render the modal, with the proper state", () => {
-    renderComponent(directory);
+  test("when an edit button is clicked, we should render the modal with the proper state", () => {
+    renderComponent();
     const editFunction = getMockedComponentProps(PhoneNumberTable, 0).editFunction;
     act(() => {
-      editFunction(directory[1]);
+      editFunction(directory[1])();
     });
     expectOnlyPassedProps(DirectoryEntryForm, {
       directoryState: {
@@ -130,15 +128,17 @@ describe("<Directory />", () => {
           status: null
         },
         takenPhoneNums: [directory[0].phone_num, directory[2].phone_num]
-      }
+      },
+      emptyListMsg: "No directory entries exist for this profile",
+      profileId
     }, getLastInstanceCalled(DirectoryEntryForm));
   });
 
   test("when the close modal function is called, the modal should be hidden", () => {
-    const rendered = renderComponent(directory);
+    const rendered = renderComponent();
     const editFunction = getMockedComponentProps(PhoneNumberTable, 0).editFunction;
     act(() => {
-      editFunction(directory[1]);
+      editFunction(directory[1])();
     });
     expectMockedComponent(rendered, { DirectoryEntryForm }, 1);
     const closeModal = getMockedComponentProps(DirectoryEntryForm, 0).closeModal;
@@ -155,10 +155,10 @@ describe("<Directory />", () => {
       });
       test("if the delete is successful, we should show the processing modal, then show the success response, and refresh the profile", async () => {
         deleteDirectory.mockResolvedValue("GOOOOOOD");
-        renderComponent(directory);
+        renderComponent();
         const deleteFunction = getMockedComponentProps(PhoneNumberTable, 0).deleteFunction;
         await waitFor(() => {
-          deleteFunction(directory[1].directory_id);
+          deleteFunction(directory[1].directory_id)();
         });
         act(() => {
           // advance timers so overlay times out
@@ -178,10 +178,10 @@ describe("<Directory />", () => {
       });
       test("if the delete fails, we should show the processing modal, then show the failure response, and not refresh the profile", async () => {
         deleteDirectory.mockRejectedValue("BAAAAD");
-        renderComponent(directory);
+        renderComponent();
         const deleteFunction = getMockedComponentProps(PhoneNumberTable, 0).deleteFunction;
         await waitFor(() => {
-          deleteFunction(directory[1].directory_id);
+          deleteFunction(directory[1].directory_id)();
         });
         act(() => {
           // advance timers so overlay times out
@@ -205,10 +205,10 @@ describe("<Directory />", () => {
         confirmSpy.mockImplementation(jest.fn(() => false));
       });
       test("we should not do anything", async () => {
-        renderComponent(directory);
+        renderComponent();
         const deleteFunction = getMockedComponentProps(PhoneNumberTable, 0).deleteFunction;
         await waitFor(() => {
-          deleteFunction(directory[1].directory_id);
+          deleteFunction(directory[1].directory_id)();
         });
         expect(deleteDirectory.mock.calls.length).toBe(0);
         expect(refreshProfileData.mock.calls.length).toBe(0);
