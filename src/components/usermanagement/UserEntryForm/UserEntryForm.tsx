@@ -63,7 +63,11 @@ const FormControlsPane = styled.div`
   width: 100%
 `;
 
-const Header = styled.h1`
+const Header1 = styled.h1`
+  align-self: center;
+`;
+
+const Header2 = styled.h2`
   align-self: center;
 `;
 
@@ -199,6 +203,12 @@ const UserEntryForm = (props: UserEntryFormProps) => {
           type: "updateWorker",
           payload: mapWorkerFromTwilioWorker(twilioWorker)
         }));
+        updateLoading({
+          ...loading,
+          overlayMessage: `Successfully updated user: ${worker.attributes.full_name}`,
+          saveStatus: modalOverlayStatuses.SUCCESS,
+          saveUser: true
+        });
         wait(handleClose, timeouts.MODAL_OVERLAY);
       })
       .catch(err => {
@@ -296,13 +306,8 @@ const UserEntryForm = (props: UserEntryFormProps) => {
   const extensionInputValid = (form.extensionValid || form.extension === "");
   const managerValid = form.manager !== "";
   const profileIdValid = form.profileId !== "";
-  const formReady = (formMode === formModes.INSERT ? nNumberInputValid : true) && profileIdValid && managerValid && form.outgoingValid && extensionInputValid;
-
-  // TODO delete me
-  // console.log("FORM STUFF", {
-  //   form,
-  //   formMode
-  // })
+  const formValid = (formMode === formModes.INSERT ? nNumberInputValid : true) && profileIdValid && managerValid && form.outgoingValid && extensionInputValid;
+  const formUpdated = (form.defaultSkillsUpdated || form.managerUpdated || form.profileIdUpdated || form.outgoingUpdated || form.nNumberUpdated || form.extensionUpdated)
 
   return (
     <ModalContainer>
@@ -311,10 +316,10 @@ const UserEntryForm = (props: UserEntryFormProps) => {
           status={loading.saveStatus}
           message={loading.overlayMessage}
         /> : null}
-      <Header>{formMode === formModes.INSERT ? "Add a User" : "Edit User"}</Header>
+      <Header1>{formMode === formModes.INSERT ? "Add a User" : "Edit User"}</Header1>
       {
         formMode === formModes.UPDATE
-        ? <Header>{worker.attributes.full_name}</Header>
+        ? <Header2>{worker.attributes.full_name}</Header2>
         : null
       }
       <FormControlsContainer>
@@ -412,24 +417,26 @@ const UserEntryForm = (props: UserEntryFormProps) => {
             value={form.nNumber}
           />
           <ModalExtension
-            clearExtension={() => {
+            disabled={form.extensionValid && extensionMatcher.test(form.extension)}
+            error={form.extensionUpdated && !extensionInputValid}
+            extension={form.extension}
+            originalValue={(worker && worker.attributes) ? worker.attributes.extension : undefined}
+            onBlur={() => setForm({
+              ...form,
+              extensionUpdated: true
+            })}
+            onClear={() => {
               setForm({
                 ...form,
                 extension: "",
-                extensionUpdated: true,
                 extensionValid: false
               });
             }}
-            disabled={form.extensionValid && extensionMatcher.test(form.extension)}
-            error={!extensionInputValid}
-            extension={form.extension}
-            updateValue={newValue => setForm({
+            onUpdate={(extension, extensionValid) => setForm({
               ...form,
-              extension: newValue,
-              extensionUpdated: true
+              extension,
+              extensionValid
             })}
-            form={form}
-            setForm={setForm}
           />
         </FormControlsPane>
         <FormControlsPane>
@@ -448,7 +455,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       <ButtonWrapper>
         { /** TODO more validation logic for edit form? Bring back asterisks? */}
         <StyledButton
-          disabled={!formReady}
+          disabled={formMode === formModes.INSERT ? !formValid : (!formUpdated || !formValid)}
           onClick={formMode === formModes.INSERT ? doCreateUser : doUpdateUser}
         >
           {formMode === formModes.INSERT ? "Add User" : "Save User"}

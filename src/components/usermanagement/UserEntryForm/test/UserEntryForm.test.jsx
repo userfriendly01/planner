@@ -1,5 +1,4 @@
 import UserEntryForm from "../UserEntryForm";
-import MockAdapter from "axios-mock-adapter";
 import {
   DefaultSkillSelector,
   ModalExtension,
@@ -7,15 +6,12 @@ import {
   ModalOverlay,
   ModalPhoneNumber,
   OutlinedSelect,
-  // PaperContainer,
   StyledButton
 } from "components";
 import { initialState } from "context";
 import {
-  apiPaths,
   formModes,
-  modalOverlayStatuses,
-  timeouts
+  modalOverlayStatuses
 } from "globals";
 import React from "react";
 import {
@@ -33,12 +29,7 @@ import {
   setupMockedComponents,
   waitFor
 } from "testUtils";
-import {
-  mapWorkerFromTwilioWorker,
-  myAxios
-} from "utils";
 
-const axiosMock = new MockAdapter(myAxios);
 jest.useFakeTimers();
 
 jest.mock("components", () => ({
@@ -145,7 +136,6 @@ const mockHandleClose = jest.fn();
 describe("<UserEntryForm />", () => {
 
   beforeEach(() => {
-    axiosMock.reset();
     jest.clearAllMocks();
     mockStore.reset();
     setupMockedComponents({
@@ -166,15 +156,24 @@ describe("<UserEntryForm />", () => {
       const updateManager = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect) - 1).updateValue;
       updateManager(JSON.stringify(validFormOptions.manager));
     });
+    act(() => {
+      getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect) - 1).onBlur();
+    });
     // team / profile id
     act(() => {
       const updateProfile = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect)).updateValue;
       updateProfile(validFormOptions.profileId);
     });
+    act(() => {
+      getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect)).onBlur();
+    });
     // outgoing number
     act(() => {
       const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).updateValue;
       updatePhone("(603)456-7890", validFormOptions.did, true, validFormOptions.didE164);
+    });
+    act(() => {
+      getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).onBlur();
     });
     // n number
     act(() => {
@@ -185,20 +184,15 @@ describe("<UserEntryForm />", () => {
       const completeNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).onComplete;
       completeNNum(fetchedUser, validFormOptions.nNumber);
     });
+    act(() => {
+      getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).onBlur();
+    });
     // extension
     act(() => {
-      const updateExtension = getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension)).updateValue;
-      updateExtension(validFormOptions.extension);
+      getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension)).onUpdate(validFormOptions.extension, true);
     });
     act(() => {
-      const {
-        form,
-        setForm
-      } = getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension));
-      setForm({
-        ...form,
-        extensionValid: true
-      });
+      getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension)).onBlur();
     });
     // default skills
     act(() => {
@@ -289,7 +283,8 @@ describe("<UserEntryForm />", () => {
         const expectedExtensionProps = {
           disabled: false,
           extension: "",
-          form: initialForm
+          error: false,
+          originalValue: undefined
         };
         expectOnlyPassedProps(ModalExtension, expectedExtensionProps, 0);
 
@@ -355,13 +350,36 @@ describe("<UserEntryForm />", () => {
       });
     });
 
+    describe("update n number field", () => {
+
+      test("onClear onBlur onComplete onUpdate should manipulate form properly", () => {
+        const getLatestProps = () => getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber))
+        renderComponent();
+        act(() => {
+          getLatestProps().onBlur();
+        });
+        act(() => {
+          getLatestProps().onUpdate("n0000000");
+        });
+        expect(getLatestProps().value).toEqual("n0000000");
+        act(() => {
+          getLatestProps().onClear();
+        });
+        expect(getLatestProps().value).toEqual("n");
+        act(() => {
+          getLatestProps().onComplete({ whatever: "wow" }, "n1111111");
+        });
+        expect(getLatestProps().value).toEqual("n1111111");
+      });
+    });
+
     describe("update extension", () => {
 
       test("changes made to the extension field - invalid extension", () => {
         renderComponent();
         act(() => {
-          const updateValue = ModalExtension.mock.calls[0][0].updateValue;
-          updateValue("1234");
+          const updateValue = ModalExtension.mock.calls[0][0].onUpdate;
+          updateValue("1234", false);
         });
         expect(ModalExtension.mock.calls.length).toBe(2);
         const newValue = ModalExtension.mock.calls[1][0].extension;
@@ -370,43 +388,23 @@ describe("<UserEntryForm />", () => {
       test("clear extension called should reset the field", () => {
         renderComponent();
         act(() => {
-          const updateValue = ModalExtension.mock.calls[0][0].updateValue;
-          updateValue("1234");
+          const updateValue = ModalExtension.mock.calls[0][0].onUpdate;
+          updateValue("1234", true);
         });
         let newValue = ModalExtension.mock.calls[1][0].extension;
         expect(newValue).toEqual("1234");
         act(() => {
-          const clearExtension = ModalExtension.mock.calls[1][0].clearExtension;
-          clearExtension("1234");
+          const clearExtension = ModalExtension.mock.calls[1][0].onClear;
+          clearExtension();
         });
         newValue = ModalExtension.mock.calls[2][0].extension;
         expect(newValue).toEqual("");
-      });
-      test("when we update the form in ModalExtension we should see those changes in a rerender", () => {
-        renderComponent();
-        const newForm = {
-          lookupInfo: {
-            disabled: "not anymore"
-          },
-          manager: "",
-          outgoing: "",
-          team: "",
-          extensionValid: true
-        };
-        expect(ModalExtension.mock.calls[0][0].disabled).toEqual(false);
-        act(() => {
-          const setForm = ModalExtension.mock.calls[0][0].setForm;
-          setForm(newForm);
-        });
-        const form = ModalExtension.mock.calls[1][0].form;
-        expect(form).toEqual(newForm);
-        expect(ModalExtension.mock.calls[1][0].disabled).toEqual(false);
       });
     });
 
     describe("fill out form so it is valid", () => {
 
-      const workerAttributes = {
+      const workerAttributesAfterFormValid = {
         default_skills: validFormOptions.defaultSkills,
         did: validFormOptions.didE164,
         email: fetchedUser.email,
@@ -429,7 +427,7 @@ describe("<UserEntryForm />", () => {
       describe("createUser service call succeeds", () => {
 
         const rawTwilioWorker = {
-          attributes: JSON.stringify(workerAttributes),
+          attributes: JSON.stringify(workerAttributesAfterFormValid),
           friendlyName: validFormOptions.nNumber,
           sid: "WK123"
         };
@@ -444,11 +442,11 @@ describe("<UserEntryForm />", () => {
             buttonProps.onClick();
           });
           await waitFor(() => {
-            expect(createUser).toHaveBeenCalledWith(workerAttributes);
+            expect(createUser).toHaveBeenCalledWith(workerAttributesAfterFormValid);
             const actions = mockStore.getActions();
             const expectedTwilioWorkerAdded = {
               ...rawTwilioWorker,
-              attributes: workerAttributes,
+              attributes: workerAttributesAfterFormValid,
               id: validFormOptions.nNumber,
               skillsDifferent: true
             };
@@ -476,7 +474,7 @@ describe("<UserEntryForm />", () => {
         const serviceError = {};
         beforeEach(() => createUser.mockRejectedValue(serviceError));
 
-        test.only("should enable Add User button and save user when clicked", async () => {
+        test("should enable Add User button and save user when clicked", async () => {
           const rendered = renderComponent();
           updateFormSoItIsValid();
           // click button
@@ -485,7 +483,7 @@ describe("<UserEntryForm />", () => {
             buttonProps.onClick();
           });
           await waitFor(() => {
-            expect(createUser).toHaveBeenCalledWith(workerAttributes);
+            expect(createUser).toHaveBeenCalledWith(workerAttributesAfterFormValid);
             const actions = mockStore.getActions();
             expect(actions).toHaveLength(0);
             jest.runAllTimers();
@@ -504,145 +502,216 @@ describe("<UserEntryForm />", () => {
     });
   });
 
-  // describe("Add User and Close buttons", () => {
+  describe("EDIT / UPDATE mode", () => {
+    const initialWorkerManager = managerList[1];
+    const initialWorker = {
+      attributes: {
+        default_skills: {
+          levels: {
+            "e": 11,
+            "f": 3
+          },
+          skills: ["e", "f", "g"]
+        },
+        did: "+18008884444",
+        extension: "7777",
+        emp_first_name: "Frank",
+        emp_last_name: "Rizzo",
+        full_name: "Frank Rizzo",
+        manager_first_name: initialWorkerManager.manager_first_name,
+        manager_last_name: initialWorkerManager.manager_last_name,
+        manager_n_number: initialWorkerManager.manager_n_number,
+        n_number: validFormOptions.nNumber,
+        profile_id: profileList[1].profile_id
+      },
+      sid: "WK111111"
+    };
+    const userEntryFormState = {
+      formMode: formModes.UPDATE,
+      worker: initialWorker,
+      open: true
+    };
 
+    const renderComponent = () => {
+      return render(<UserEntryForm handleClose={mockHandleClose} userEntryFormState={userEntryFormState} />, initialTestState);
+    };
 
-  //   test("the initial state add should be disabled, and close should be enabled", () => {
-  //     const rendered = renderComponent();
-  //     expectMockedComponent(rendered, { StyledButton }, 2);
-  //     expectOnlyPassedProps(StyledButton, {
-  //       children: "Add User",
-  //       disabled: true
-  //     }, 0);
-  //     expectOnlyPassedProps(StyledButton, {
-  //       children: "Close"
-  //     }, 1);
-  //   });
+    describe("initial values", () => {
 
-  //   test("if we click the close button, it should fire props.handleClose", () => {
-  //     const rendered = renderComponent();
-  //     expectMockedComponent(rendered, { StyledButton }, 2);
-  //     const closeFn = getMockedComponentProps(StyledButton, 1).onClick;
-  //     closeFn();
-  //     expect(mockHandleClose).toHaveBeenCalledTimes(1);
-  //   });
+      test("we should render the header, the correct components, and read profiles defined in the context API.", () => {
+        const rendered = renderComponent();
 
-  //   describe("if the form becomes valid", () => {
+        expect(rendered.container).toHaveTextContent(initialWorker.attributes.full_name);
 
-  //     describe("service call to add worker succeeds", () => {
+        // expect rendered components
+        expectMockedComponent(rendered, { OutlinedSelect }, 2);
+        expectMockedComponent(rendered, { ModalExtension }, 1);
+        expectMockedComponent(rendered, { ModalNNumber }, 1);
+        expectMockedComponent(rendered, { ModalPhoneNumber }, 1);
+        expectMockedComponent(rendered, { ModalOverlay }, 0);
+        expectMockedComponent(rendered, { StyledButton }, 2);
+        expectMockedComponent(rendered, { DefaultSkillSelector }, 1);
 
-  //       const twilioWorkerResponse = {
-  //         "accountSid": "AC240dd0bc4d65ef2ab1c390f0fb9146da",
-  //         "activityName": "Offline",
-  //         "activitySid": "WA98fb57313627153d707a17f549566046",
-  //         "attributes": "{\"did\":\"+16039998888\",\"email\":\"Chris.Plankey@libertymutual.com\",\"full_name\":\"Chris Plankey\",\"manager_first_name\":\"Joanna\",\"manager_last_name\":\"Makowiecka\",\"manager_n_number\":\"n0360870\",\"n_number\":\"n0287898\",\"office_location_name\":\"Dover, NH-150 Liberty Way\",\"office_location_number\":\"016C\",\"primary_dept_name\":\"016C-12160 GRM US PL - Agent & Partners\",\"primary_dept_number\":\"12160\",\"profile_id\":\"0\"}",
-  //         "available": false,
-  //         "dateCreated": "2019-09-25T20:58:26.000Z",
-  //         "dateStatusChanged": "2019-09-25T20:58:26.000Z",
-  //         "dateUpdated": "2019-09-26T16:33:44.000Z",
-  //         "friendlyName": "n0287898",
-  //         "sid": "WK2a1bf01df1bb7a50aac8429e5467e0ee",
-  //         "workspaceSid": "WSde21cfcdde7bcb69cd82f1c060e5dba0",
-  //         "url": "https://taskrouter.twilio.com/v1/Workspaces/WSde21cfcdde7bcb69cd82f1c060e5dba0/Workers/WK2a1bf01df1bb7a50aac8429e5467e0ee"
-  //       };
+        // manager select
+        const expectedManagerProps = {
+          label: "Manager *",
+          labelWidth: 67,
+          optionsList: managerList,
+          value: JSON.stringify(initialWorkerManager)
+        };
+        expectOnlyPassedProps(OutlinedSelect, expectedManagerProps, 0);
+        const managerOptionsDisplayFunc = OutlinedSelect.mock.calls[0][0].optionsDisplayFunc;
+        const managerOption = managerOptionsDisplayFunc(managerList[0]);
+        expect(managerOption).toEqual({
+          display: `${managerList[0].manager_first_name} ${managerList[0].manager_last_name}`,
+          key: managerList[0].manager_n_number,
+          value: JSON.stringify(managerList[0])
+        });
 
-  //       beforeEach(() => {
-  //         axiosMock.onPost(apiPaths.CREATE_WORKER).reply(200, twilioWorkerResponse);
-  //       });
+        // team / profile id select
+        const expectedTeamProps = {
+          label: "Team *",
+          labelWidth: 44,
+          optionsList: profileList,
+          value: `${initialWorker.attributes.profile_id}`
+        };
+        expectOnlyPassedProps(OutlinedSelect, expectedTeamProps, 1);
+        const teamOptionsDisplayFunc = OutlinedSelect.mock.calls[1][0].optionsDisplayFunc;
+        const teamOption = teamOptionsDisplayFunc(profileList[0]);
+        expect(teamOption).toEqual({
+          display: profileList[0].profile_nme,
+          key: profileList[0].profile_id,
+          value: profileList[0].profile_id
+        });
 
-  //       test("when save button is clicked we should clear the user, which should disable 'Add User', and dispatch addWorkers", async () => {
-  //         const rendered = renderComponent();
-  //         updateformSoItIsValid();
-  //         // instanceCalled - 1 because the Close button is the last instance called
-  //         await act(() => {
-  //           const addUserButtonOnClick = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1).onClick;
-  //           addUserButtonOnClick();
-  //         });
-  //         const expectedTwilioWorkerAttributesPosted = {
-  //           did: `+1${formOptions.did}`,
-  //           email: employeeLookupResponse[0].person.data.Email,
-  //           email_address: employeeLookupResponse[0].person.data.Email,
-  //           emp_first_name: employeeLookupResponse[0].person.data.FirstName,
-  //           emp_last_name: employeeLookupResponse[0].person.data.LastName,
-  //           extension: formOptions.extension,
-  //           full_name: `${employeeLookupResponse[0].person.data.FirstName} ${employeeLookupResponse[0].person.data.LastName}`,
-  //           manager_first_name: formOptions.manager.manager_first_name,
-  //           manager_last_name: formOptions.manager.manager_last_name,
-  //           manager_n_number: formOptions.manager.manager_n_number,
-  //           n_number: formOptions.nNumber,
-  //           office_location_name: employeeLookupResponse[0].person.data.OfficeName,
-  //           office_location_number: employeeLookupResponse[0].person.data.OfficeNumber,
-  //           primary_dept_name: employeeLookupResponse[0].person.data.DepartmentName,
-  //           primary_dept_number: employeeLookupResponse[0].person.data.DepartmentNumber,
-  //           profile_id: formOptions.profileId
-  //         };
-  //         // await waitFor(() => {
-  //         //   expect(axiosMock.history.post[0].data).toEqual(JSON.stringify({ attributes: expectedTwilioWorkerAttributesPosted }));
-  //         //   expectMockedComponent(rendered, { ModalOverlay });
-  //         //   const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
-  //         //   const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
-  //         //   const addUserButtonProps2 = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
-  //         //   expect(addUserButtonProps2.disabled).toBe(true);
-  //         //   expect(saveStatus).toBe(modalOverlayStatuses.SUCCESS);
-  //         //   expect(nNumber).toBe("n");
-  //         //   act(() => jest.runAllTimers());
-  //         //   expectMockedComponent(rendered, { ModalOverlay }, 0);
-  //         //   const actions = mockStore.getActions();
-  //         //   expect(actions).toHaveLength(1);
-  //         //   expect(actions[0]).toEqual({
-  //         //     type: "addWorkers",
-  //         //     payload: [mapWorkerFromTwilioWorker(twilioWorkerResponse)]
-  //         //   });
-  //         // });
-  //       });
-  //     });
+        // outgoing number
+        const expectedOutgoingProps = {
+          label: "Outgoing Number *",
+          number: initialWorker.attributes.did
+        };
+        expectOnlyPassedProps(ModalPhoneNumber, expectedOutgoingProps, 0);
 
-  //     describe("service call to add worker fails", () => {
-  //       beforeEach(() => axiosMock.onPost(apiPaths.CREATE_WORKER).networkError());
+        // n number
+        const expectedNNumberProps = {
+          disabled: true,
+          label: "N Number *",
+          value: initialWorker.attributes.n_number
+        };
+        expectOnlyPassedProps(ModalNNumber, expectedNNumberProps, 0);
 
-  //       test("when save button is clicked we should not clear the user, or disable 'Add User' and not dispatch an action", done => {
-  //         const rendered = renderComponent();
-  //         updateformSoItIsValid();
-  //         const addUserButtonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
-  //         expect(addUserButtonProps.disabled).toBe(false);
-  //         act(() => {
-  //           const addUserButtonOnClick = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1).onClick;
-  //           addUserButtonOnClick();
-  //           return Promise.resolve();
-  //         }).then(() => {
-  //           const saveStatus = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay)).status;
-  //           const nNumber = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).nNumber;
-  //           const addUserButtonProps2 = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
-  //           const expectedTwilioWorkerAttributesPosted = {
-  //             did: `+1${formOptions.did}`,
-  //             email: employeeLookupResponse[0].person.data.Email,
-  //             email_address: employeeLookupResponse[0].person.data.Email,
-  //             emp_first_name: employeeLookupResponse[0].person.data.FirstName,
-  //             emp_last_name: employeeLookupResponse[0].person.data.LastName,
-  //             extension: formOptions.extension,
-  //             full_name: `${employeeLookupResponse[0].person.data.FirstName} ${employeeLookupResponse[0].person.data.LastName}`,
-  //             manager_first_name: formOptions.manager.manager_first_name,
-  //             manager_last_name: formOptions.manager.manager_last_name,
-  //             manager_n_number: formOptions.manager.manager_n_number,
-  //             n_number: formOptions.nNumber,
-  //             office_location_name: employeeLookupResponse[0].person.data.OfficeName,
-  //             office_location_number: employeeLookupResponse[0].person.data.OfficeNumber,
-  //             primary_dept_name: employeeLookupResponse[0].person.data.DepartmentName,
-  //             primary_dept_number: employeeLookupResponse[0].person.data.DepartmentNumber,
-  //             profile_id: formOptions.profileId
-  //           };
-  //           expect(axiosMock.history.post[0].data).toEqual(JSON.stringify({ attributes: expectedTwilioWorkerAttributesPosted }));
-  //           expect(addUserButtonProps2.disabled).toBe(false);
-  //           expect(saveStatus).toBe("fail");
-  //           expect(nNumber).toBe("n1234567");
-  //           act(() => jest.runAllTimers());
-  //           expectMockedComponent(rendered, { ModalOverlay }, 0);
-  //           const actions = mockStore.getActions();
-  //           expect(actions).toHaveLength(0);
-  //           done();
-  //         });
-  //       });
-  //     });
-  //   });
-  // });
+        // extension
+        const expectedExtensionProps = {
+          disabled: true,
+          error: false,
+          extension: initialWorker.attributes.extension,
+          originalValue: initialWorker.attributes.extension
+        };
+        expectOnlyPassedProps(ModalExtension, expectedExtensionProps, 0);
+
+        // default skills
+        const expectedDefaultSkillsProps = {
+          defaultSkills: initialWorker.attributes.default_skills
+        };
+        expectOnlyPassedProps(DefaultSkillSelector, expectedDefaultSkillsProps, 0);
+
+        // buttons
+        expectOnlyPassedProps(StyledButton, {
+          children: "Save User",
+          disabled: true
+        }, 0);
+        expectOnlyPassedProps(StyledButton, {
+          children: "Close"
+        }, 1);
+      });
+    });
+
+    describe("fill out form so it is valid", () => {
+
+      const workerAttributes = {
+        default_skills: validFormOptions.defaultSkills,
+        did: validFormOptions.didE164,
+        extension: validFormOptions.extension,
+        manager_first_name: validFormOptions.manager.manager_first_name,
+        manager_last_name: validFormOptions.manager.manager_last_name,
+        manager_n_number: validFormOptions.manager.manager_n_number,
+        profile_id: validFormOptions.profileId
+      };
+
+      describe("updateUser service call succeeds", () => {
+
+        const rawTwilioWorker = {
+          attributes: JSON.stringify(workerAttributes),
+          friendlyName: validFormOptions.nNumber,
+          sid: "WK123"
+        };
+        beforeEach(() => updateUser.mockResolvedValue(rawTwilioWorker));
+
+        test("should enable Save User button and save user when clicked", async () => {
+          renderComponent();
+          updateFormSoItIsValid();
+          // click button
+          act(() => {
+            const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
+            buttonProps.onClick();
+          });
+          await waitFor(() => {
+            expect(updateUser).toHaveBeenCalledWith(initialWorker.sid, workerAttributes);
+            const actions = mockStore.getActions();
+            const expectedTwilioWorkerUpdated = {
+              ...rawTwilioWorker,
+              attributes: workerAttributes,
+              id: validFormOptions.nNumber,
+              skillsDifferent: true
+            };
+            delete expectedTwilioWorkerUpdated.friendlyName;
+            expect(actions).toEqual([{
+              type: "updateWorker",
+              payload: expectedTwilioWorkerUpdated
+            }]);
+            jest.runAllTimers();
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Updating user...",
+              status: modalOverlayStatuses.SAVING
+            }, getLastInstanceCalled(ModalOverlay) - 1);
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Successfully updated user: " + initialWorker.attributes.full_name,
+              status: modalOverlayStatuses.SUCCESS
+            }, getLastInstanceCalled(ModalOverlay));
+            expect(mockHandleClose).toHaveBeenCalledTimes(1);
+          });
+        });
+      });
+
+      describe("updateUser service call fails", () => {
+
+        const serviceError = {};
+        beforeEach(() => updateUser.mockRejectedValue(serviceError));
+
+        test("should enable Add User button and save user when clicked", async () => {
+          const rendered = renderComponent();
+          updateFormSoItIsValid();
+          // click button
+          act(() => {
+            const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
+            buttonProps.onClick();
+          });
+          await waitFor(() => {
+            expect(updateUser).toHaveBeenCalledWith(initialWorker.sid, workerAttributes);
+            const actions = mockStore.getActions();
+            expect(actions).toHaveLength(0);
+            jest.runAllTimers();
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Updating user...",
+              status: modalOverlayStatuses.SAVING
+            }, getLastInstanceCalled(ModalOverlay) - 1);
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Failed to update user",
+              status: modalOverlayStatuses.FAIL
+            }, getLastInstanceCalled(ModalOverlay));
+            expectMockedComponent(rendered, { ModalOverlay }, 0);
+          });
+        });
+      });
+    });
+  });
 });
