@@ -86,15 +86,16 @@ const getNumberOfComponents = (rendered, componentString) => rendered.queryAllBy
 
 export const muiErrorClassRegex = /Mui-error/;
 
-export const setupMockedComponents = objOfMockedComponents => {
+export const setupMockedComponents = (objOfMockedComponents, maxCalls = 20) => {
   const keys = Object.keys(objOfMockedComponents);
   keys.forEach(componentName => {
     const jestFn = objOfMockedComponents[componentName];
     jestFn.mockClear();
-    const maxCalls = 20;
     for (let i = 0; i < maxCalls - 1; i++) {
       jestFn.mockReturnValueOnce(<div data-testid={getDataTestIdWithInstanceCalled(componentName, i)}>{componentName}</div>);
     }
+    // after maxCalls make sure component at least still renders to avoid unexpected errors
+    jestFn.mockReturnValue(<div>{componentName}</div>);
   });
 };
 
