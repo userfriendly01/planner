@@ -406,27 +406,28 @@ describe("<UserEntryForm />", () => {
 
     describe("fill out form so it is valid", () => {
 
+      const workerAttributes = {
+        default_skills: validFormOptions.defaultSkills,
+        did: validFormOptions.didE164,
+        email: fetchedUser.email,
+        email_address: fetchedUser.email,
+        emp_first_name: fetchedUser.firstName,
+        emp_last_name: fetchedUser.lastName,
+        extension: validFormOptions.extension,
+        full_name: `${fetchedUser.firstName} ${fetchedUser.lastName}`,
+        manager_first_name: validFormOptions.manager.manager_first_name,
+        manager_last_name: validFormOptions.manager.manager_last_name,
+        manager_n_number: validFormOptions.manager.manager_n_number,
+        n_number: validFormOptions.nNumber,
+        office_location_name: fetchedUser.officeName,
+        office_location_number: fetchedUser.officeNumber,
+        primary_dept_name: fetchedUser.departmentName,
+        primary_dept_number: fetchedUser.departmentNumber,
+        profile_id: validFormOptions.profileId
+      };
+
       describe("createUser service call succeeds", () => {
 
-        const workerAttributes = {
-          default_skills: validFormOptions.defaultSkills,
-          did: validFormOptions.didE164,
-          email: fetchedUser.email,
-          email_address: fetchedUser.email,
-          emp_first_name: fetchedUser.firstName,
-          emp_last_name: fetchedUser.lastName,
-          extension: validFormOptions.extension,
-          full_name: `${fetchedUser.firstName} ${fetchedUser.lastName}`,
-          manager_first_name: validFormOptions.manager.manager_first_name,
-          manager_last_name: validFormOptions.manager.manager_last_name,
-          manager_n_number: validFormOptions.manager.manager_n_number,
-          n_number: validFormOptions.nNumber,
-          office_location_name: fetchedUser.officeName,
-          office_location_number: fetchedUser.officeNumber,
-          primary_dept_name: fetchedUser.departmentName,
-          primary_dept_number: fetchedUser.departmentNumber,
-          profile_id: validFormOptions.profileId
-        };
         const rawTwilioWorker = {
           attributes: JSON.stringify(workerAttributes),
           friendlyName: validFormOptions.nNumber,
@@ -470,11 +471,35 @@ describe("<UserEntryForm />", () => {
         });
       });
 
-      describe("createUser service call cails", () => {
+      describe("createUser service call fails", () => {
 
         const serviceError = {};
         beforeEach(() => createUser.mockRejectedValue(serviceError));
-        // TODO
+
+        test.only("should enable Add User button and save user when clicked", async () => {
+          const rendered = renderComponent();
+          updateFormSoItIsValid();
+          // click button
+          act(() => {
+            const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
+            buttonProps.onClick();
+          });
+          await waitFor(() => {
+            expect(createUser).toHaveBeenCalledWith(workerAttributes);
+            const actions = mockStore.getActions();
+            expect(actions).toHaveLength(0);
+            jest.runAllTimers();
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Adding new user...",
+              status: modalOverlayStatuses.SAVING
+            }, getLastInstanceCalled(ModalOverlay) - 1);
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Failed to add new user",
+              status: modalOverlayStatuses.FAIL
+            }, getLastInstanceCalled(ModalOverlay));
+            expectMockedComponent(rendered, { ModalOverlay }, 0);
+          });
+        });
       });
     });
   });
