@@ -30,8 +30,6 @@ const ManagerFilter = props => {
   const sortedManagers = [ ...managers ].sort(sortManagersByName);
   const [isAddManagerModalOpen, setIsAddManagerModalOpen] = useState(false);
 
-  console.log("MANAGERS: ", managers);
-
   const handleOpenAddManager = () => {
     setIsAddManagerModalOpen(true);
   };

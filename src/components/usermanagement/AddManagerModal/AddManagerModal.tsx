@@ -83,7 +83,6 @@ const AddManagerModal = (props: AddManagerModalProps) => {
       setSaveStatus(loadingStates.success);
       setTimeout(handleClose, 2000);
     } else {
-      console.log("IN DA ELSE BLOCK")
       setSaveStatus(loadingStates.fail);
       setTimeout(() => setSaveStatus(null), 2000);
     }

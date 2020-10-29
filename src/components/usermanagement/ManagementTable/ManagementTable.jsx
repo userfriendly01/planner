@@ -166,10 +166,8 @@ const ManagementTable = props => {
     });
     let resultMessage;
     return deleteUser(deletedWorker.sid)
-      .then(res => {
+      .then(() => {
         resultMessage = `Successfully deleted Triton worker with sid ${deletedWorker.sid}`;
-        console.log(resultMessage,
-          { responseData: res.data });
         dispatch({
           type: "deleteWorker",
           payload: deletedWorker.sid
