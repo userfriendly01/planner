@@ -7,34 +7,91 @@ import MockAdapter from "axios-mock-adapter";
 import { apiPaths } from "globals";
 import { myAxios } from "utils";
 
-jest.mock("globals", () => ({
-  __esModule: true,
-  apiPaths: {
-    DIRECTORY: jest.fn(),
-    DIRECTORY_ENTRY: jest.fn()
-  }
-}));
-
 const axiosMock = new MockAdapter(myAxios);
+
+const directoryId = 48;
+const firstName = "Slim";
+const lastName = "Pickens";
+const phoneNumber = "18001235667";
+const profileId = 7;
+const successRes = { hooray: "it worked" };
+const failRes = { boo: "waaaaah" };
 
 describe("directory", () => {
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-    axiosMock.reset();
-  });
+  beforeEach(() => axiosMock.reset());
 
   describe("deleteDirectory", () => {
-    const directoryId = 48;
-    const deleteRes = { result: "bye bye" };
-    beforeEach(() => {
-      axiosMock.onDelete("/service/directory/48").reply(200, deleteRes);
-      apiPaths.DIRECTORY_ENTRY("/service/directory/48");
+    describe("service call succeeds", () => {
+      beforeEach(() => {
+        axiosMock.onDelete(apiPaths.DIRECTORY_ENTRY(directoryId)).reply(200, successRes);
+      });
+      test("should resolve with success response", done => {
+        deleteDirectory(directoryId).then(res => {
+          expect(res.status).toEqual(200);
+          expect(res.data).toEqual(successRes);
+          done();
+        });
+      });
     });
-    test("should resolve with formatted data", done => {
-      deleteDirectory(directoryId).then(resolvedVal => {
-        expect(axiosMock.history.delete[0].url).toBe("/service/directory/48");
-        expect(resolvedVal).toEqual(deleteRes);
+    describe("service call fails", () => {
+      beforeEach(() => axiosMock.onDelete(apiPaths.DIRECTORY_ENTRY(directoryId)).reply(500, failRes));
+      test("should resolve with failed response", done => {
+        deleteDirectory(directoryId).catch(err => {
+          expect(err.status).toEqual(500);
+          expect(err.data).toEqual(failRes);
+        });
+        done();
+      });
+    });
+  });
+
+  describe("insertDirectory", () => {
+    describe("service call succeeds", () => {
+      beforeEach(() => axiosMock.onPost(apiPaths.DIRECTORY).reply(200, successRes));
+      test("should resolve with success response", done => {
+        insertDirectory(firstName, lastName, phoneNumber, profileId).then(res => {
+          expect(res.status).toEqual(200);
+          expect(res.data).toEqual(successRes);
+          done();
+        });
+      });
+    });
+    describe("service call fails", () => {
+      beforeEach(() => axiosMock.onPost(apiPaths.DIRECTORY).reply(500, failRes));
+      test("should resolve with failed response", done => {
+        insertDirectory(firstName, lastName, phoneNumber, profileId).catch(err => {
+          expect(err.status).toEqual(500);
+          expect(err.data).toEqual(failRes);
+        });
+        done();
+      });
+    });
+  });
+
+  describe("updateDirectory", () => {
+    const requestBody = {
+      first_nme: firstName,
+      last_nme: lastName,
+      phone_num: phoneNumber
+    };
+    describe("service call succeeds", () => {
+      beforeEach(() => axiosMock.onPut(apiPaths.DIRECTORY_ENTRY(directoryId, requestBody)).reply(200, successRes));
+      test("should resolve with success response", done => {
+        updateDirectory(directoryId, firstName, lastName, phoneNumber).then(res => {
+          expect(res.status).toEqual(200);
+          expect(res.data).toEqual(successRes);
+          done();
+        });
+      });
+    });
+    describe("service call fails", () => {
+      beforeEach(() => axiosMock.onPut(apiPaths.DIAL_LIST_ENTRY(directoryId, requestBody)).reply(500, failRes));
+      test("should resolve with failed response", done => {
+        updateDirectory(directoryId, firstName, lastName, phoneNumber).catch(err => {
+          expect(err.status).toEqual(500);
+          expect(err.data).toEqual(failRes);
+        });
         done();
       });
     });
