@@ -63,11 +63,11 @@ describe("fetchUser", () => {
       axiosMock.onGet("/service/employeelookup/01234567").reply(200, fetchUserRes);
       apiPaths.EMPLOYEE_LOOKUP.mockReturnValue("/service/employeelookup/01234567");
     });
-    test("should resolve with null", done => {
+    test("should reject", done => {
       const nNum = "n01234567";
-      fetchUser(nNum).then(resolvedVal => {
+      fetchUser(nNum).catch(rejectedVal => {
         expect(axiosMock.history.get[0].url).toBe("/service/employeelookup/01234567");
-        expect(resolvedVal).toEqual(null);
+        expect(rejectedVal).toEqual("fetchUser employee lookup did not return any data");
         done();
       });
     });
