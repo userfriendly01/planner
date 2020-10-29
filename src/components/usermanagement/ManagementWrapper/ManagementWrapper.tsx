@@ -13,7 +13,6 @@ import {
   TwilioWorker
 } from "context";
 import {
-  FormMode,
   formModes,
   workersPerPage
 } from "globals";
@@ -47,7 +46,7 @@ interface ManagementWrapperState {
 };
 
 export interface UserEntryFormState {
-  formMode: FormMode,
+  formMode: string,
   open: boolean,
   worker: TwilioWorker
 };

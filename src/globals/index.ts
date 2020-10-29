@@ -19,10 +19,9 @@ export const apiPaths = {
   UPDATE_WORKER_ATTRIBUTES: `${SERVICE_BASE_URI}/updateworkerattributes`
 };
 
-export type FormMode = "insert" | "update";
-
 export interface FormModes {
-  [key: string]: FormMode
+  INSERT: string,
+  UPDATE: string
 }
 
 export const formModes: FormModes = {
@@ -30,10 +29,10 @@ export const formModes: FormModes = {
   UPDATE: "update"
 };
 
-export type ModalOverlayStatus = "fail" | "saving" | "success";
-
 export interface ModalOverlayStatuses {
-  [key: string]: ModalOverlayStatus
+  FAIL: string,
+  SAVING: string,
+  SUCCESS: string
 }
 
 export const modalOverlayStatuses: ModalOverlayStatuses = {
