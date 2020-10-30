@@ -136,9 +136,10 @@ const UserEntryForm = (props: UserEntryFormProps) => {
     }
   } = useAdminState();
 
+  const initialDefaultSkills = getValidSkillsObject()
   const getInitialFormState = (): UserEntryForm_FormState => {
     const initialForm: UserEntryForm_FormState = {
-      defaultSkills: getValidSkillsObject(),
+      defaultSkills: initialDefaultSkills,
       defaultSkillsUpdated: false,
       extension: "",
       extensionBlurred: false,
@@ -216,12 +217,22 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       .then(twilioWorker => {
         setForm({
           ...form,
-          extension: "", // clear out extension values
+          // reset default skills
+          defaultSkills: initialDefaultSkills,
+          defaultSkillsUpdated: false,
+          // reset extension
+          extension: "",
+          extensionBlurred: false,
+          extensionUpdated: false,
           extensionValid: false,
+          // reset n number
+          nNumber: defaultNNumber,
+          nNumberBlurred: false,
           nNumberLookupInfo: null,
-          nNumber: defaultNNumber
-          // TODO reset default skills???
-          // TODO reset other fields?
+          // reset blurs for everything else
+          managerBlurred: false,
+          profileIdBlurred: false,
+          outgoingBlurred: false
         });
         dispatch({
           type: "addWorkers",
