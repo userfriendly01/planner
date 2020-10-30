@@ -36,12 +36,11 @@ describe("directory", () => {
     });
     describe("service call fails", () => {
       beforeEach(() => axiosMock.onDelete(apiPaths.DIRECTORY_ENTRY(directoryId)).reply(500, failRes));
-      test("should resolve with failed response", done => {
-        deleteDirectory(directoryId).catch(err => {
-          expect(err.status).toEqual(500);
-          expect(err.data).toEqual(failRes);
+      test("should reject with error", done => {
+        deleteDirectory(directoryId).catch(rejectedVal => {
+          expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
+          done();
         });
-        done();
       });
     });
   });
@@ -59,12 +58,11 @@ describe("directory", () => {
     });
     describe("service call fails", () => {
       beforeEach(() => axiosMock.onPost(apiPaths.DIRECTORY).reply(500, failRes));
-      test("should resolve with failed response", done => {
-        insertDirectory(firstName, lastName, phoneNumber, profileId).catch(err => {
-          expect(err.status).toEqual(500);
-          expect(err.data).toEqual(failRes);
+      test("should reject with error", done => {
+        insertDirectory(firstName, lastName, phoneNumber, profileId).catch(rejectedVal => {
+          expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
+          done();
         });
-        done();
       });
     });
   });
@@ -86,13 +84,12 @@ describe("directory", () => {
       });
     });
     describe("service call fails", () => {
-      beforeEach(() => axiosMock.onPut(apiPaths.DIAL_LIST_ENTRY(directoryId, requestBody)).reply(500, failRes));
-      test("should resolve with failed response", done => {
-        updateDirectory(directoryId, firstName, lastName, phoneNumber).catch(err => {
-          expect(err.status).toEqual(500);
-          expect(err.data).toEqual(failRes);
+      beforeEach(() => axiosMock.onPut(apiPaths.DIRECTORY_ENTRY(directoryId, requestBody)).reply(500, failRes));
+      test("should reject with error", done => {
+        updateDirectory(directoryId, firstName, lastName, phoneNumber).catch(rejectedVal => {
+          expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
+          done();
         });
-        done();
       });
     });
   });

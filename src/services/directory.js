@@ -10,12 +10,6 @@ export const deleteDirectory = directoryId => {
       }
     );
     return res;
-  }).catch(err => {
-    console.error("Failed to delete directory entry", {
-      err,
-      directoryId
-    });
-    return err;
   });
 };
 
@@ -33,12 +27,6 @@ export const insertDirectory = (firstName, lastName, phoneNumber, profileId) => 
         requestBody
       });
       return res;
-    }).catch(err => {
-      console.error("Failed to insert directory entry", {
-        err,
-        requestBody
-      });
-      return err;
     });
 };
 
@@ -55,11 +43,5 @@ export const updateDirectory = (directoryId, firstName, lastName, phoneNumber) =
         requestBody
       });
       return res;
-    }).catch(err => {
-      console.error(`Failed to update directory entry with directoryId ${directoryId}`, {
-        err,
-        requestBody
-      });
-      return err;
     });
 };
