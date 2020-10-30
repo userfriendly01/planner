@@ -211,7 +211,6 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       primary_dept_name: form.nNumberLookupInfo.departmentName,
       primary_dept_number: form.nNumberLookupInfo.departmentNumber,
       profile_id: form.profileId
-      // TODO add default skills to actual skills object???
     };
     createUser(attributes)
       .then(twilioWorker => {
