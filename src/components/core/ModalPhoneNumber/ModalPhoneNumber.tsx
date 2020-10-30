@@ -112,7 +112,7 @@ const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
         }
       }) => {
         const unmaskedValue = unMaskPhoneNumber(maskedValue);
-        let e164Number;
+        let e164Number = "";
         try {
           e164Number = getE164Number(unmaskedValue);
         } catch (e) {}
@@ -126,7 +126,7 @@ const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
 
   if (allowSevenDigitVdn) {
     const toggleSwitch = () => {
-      updateValue("", "", false, undefined);
+      updateValue("", "", false, "");
       setUseSevenDigitMask(!useSevenDigitMask);
     };
     return (
