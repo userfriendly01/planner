@@ -99,7 +99,6 @@ const IconWrapper = styled.div`
 `;
 
 const NoDialListDiv = styled.div`
-  margin-top: 25vh;
   text-align: center;
 `;
 
@@ -147,7 +146,7 @@ const DialListTable = props => {
     });
   }, timeouts.MODAL_OVERLAY);
 
-  const getDeleteButtonOnClick = diallistId => () => {
+  const deleteButtonOnClick = diallistId => () => {
     const popUp = confirm("Are you sure you want to delete this dial list entry?");
     if (popUp === true) {
       setDialListTableState({
@@ -259,7 +258,7 @@ const DialListTable = props => {
                         </IconWrapper>
                       </CustomTableData>
                       <CustomTableData>
-                        <IconWrapper onClick={getDeleteButtonOnClick(entry.diallist_id)} data-testid="delete-button">
+                        <IconWrapper onClick={deleteButtonOnClick(entry.diallist_id)} data-testid="delete-button">
                           <Delete fontSize={"inherit"} />
                         </IconWrapper>
                       </CustomTableData>

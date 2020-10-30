@@ -1,5 +1,6 @@
 import {
   sortDialListEntriesByName,
+  sortDirectoryListEntriesByName,
   sortManagersByName,
   sortTaskRouterSkillByName
 } from "../sortUtils";
@@ -25,6 +26,55 @@ describe("sortDialListEntriesByName", () => {
       { contact_nme: "cee" },
       { contact_nme: "Cee again" },
       { contact_nme: "dee" }
+    ]);
+  });
+});
+
+describe("sortDirectoryListEntriesByName", () => {
+  const arr = [
+    {
+      first_nme: "fred",
+      last_nme: "savage"
+    },
+    {
+      first_nme: "cee",
+      last_nme: "bee"
+    },
+    {
+      first_nme: "zee",
+      last_nme: "fee"
+    },
+    {
+      first_nme: "fee",
+      last_nme: "fee"
+    },
+    {
+      first_nme: "tom",
+      last_nme: "tom"
+    }
+  ];
+  test("should return array in alphabetical order, last name then first name", () => {
+    expect(arr.sort(sortDirectoryListEntriesByName)).toEqual([
+      {
+        first_nme: "cee",
+        last_nme: "bee"
+      },
+      {
+        first_nme: "fee",
+        last_nme: "fee"
+      },
+      {
+        first_nme: "zee",
+        last_nme: "fee"
+      },
+      {
+        first_nme: "fred",
+        last_nme: "savage"
+      },
+      {
+        first_nme: "tom",
+        last_nme: "tom"
+      }
     ]);
   });
 });

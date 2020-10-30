@@ -1,5 +1,6 @@
 import {
   DialListTable,
+  Directory,
   ProfileDropDown
 } from "components";
 import { useAdminState } from "context";
@@ -8,7 +9,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import {
   myAxios,
-  sortDialListEntriesByName
+  sortDialListEntriesByName,
+  sortDirectoryListEntriesByName
 } from "utils";
 
 const ProfileSettingsContainerDiv = styled.div`
@@ -25,6 +27,7 @@ const ProfileSettingsContainer = () => {
 
   const initialProfileState = {
     dialList: [],
+    directoryList: [],
     message: "Please select a profile",
     profileId: null
   };
@@ -32,17 +35,15 @@ const ProfileSettingsContainer = () => {
 
   const profilesFromContextMinusGoP = useAdminState().profileContext.profiles.filter(({ profile_id }) => profile_id !== 0);
 
-  const fetchDialListForProfile = profileId => {
+  const fetchProfileInformation = profileId => {
     myAxios.get(apiPaths.GET_PROFILE_DATA(profileId))
       .then(res => {
         const dialList = res.data.diallist.sort(sortDialListEntriesByName);
+        const directoryList = res.data.directories.sort(sortDirectoryListEntriesByName);
         setProfileSettingsState({
           dialList,
+          directoryList,
           message: null,
-          profileId
-        });
-        console.log("Fetched dial list for profile", {
-          dialList,
           profileId
         });
       })
@@ -60,6 +61,7 @@ const ProfileSettingsContainer = () => {
 
   const {
     dialList,
+    directoryList,
     message,
     profileId
   } = profileSettingsState;
@@ -69,16 +71,23 @@ const ProfileSettingsContainer = () => {
       <ProfileDropDown
         availableProfiles={profilesFromContextMinusGoP}
         profileId={profileId}
-        updateProfile={fetchDialListForProfile}
+        updateProfile={fetchProfileInformation}
       />
       {
         profileId !== null && profileId !== ""
           ?
-          <DialListTable
-            dialList={dialList}
-            profileId={profileId}
-            refreshProfileData={() => fetchDialListForProfile(profileId)}
-          />
+          <div>
+            <DialListTable
+              dialList={dialList}
+              profileId={profileId}
+              refreshProfileData={() => fetchProfileInformation(profileId)}
+            />
+            <Directory
+              directory={directoryList}
+              profileId={profileId}
+              refreshProfileData={() => fetchProfileInformation(profileId)}
+            />
+          </div>
           :
           null
       }

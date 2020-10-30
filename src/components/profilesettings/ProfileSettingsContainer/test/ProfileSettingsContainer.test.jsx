@@ -2,6 +2,7 @@ import ProfileSettingsContainer from "../ProfileSettingsContainer";
 import MockAdapter from "axios-mock-adapter";
 import {
   DialListTable,
+  Directory,
   ProfileDropDown
 } from "components";
 import { initialState } from "context";
@@ -24,6 +25,7 @@ const axiosMock = new MockAdapter(myAxios);
 jest.mock("components", () => ({
   __esModule: true,
   DialListTable: jest.fn(),
+  Directory: jest.fn(),
   ProfileDropDown: jest.fn()
 }));
 
@@ -58,6 +60,7 @@ describe("<ProfileSettingsContainer />", () => {
     jest.clearAllMocks();
     setupMockedComponents({
       DialListTable,
+      Directory,
       ProfileDropDown
     });
   });
@@ -66,6 +69,7 @@ describe("<ProfileSettingsContainer />", () => {
     test("should render ProfileDropDown with correct props and 'Please select a profile'", () => {
       const rendered = render(<ProfileSettingsContainer />, initialTestState);
       expectMockedComponent(rendered, { DialListTable }, 0);
+      expectMockedComponent(rendered, { Directory }, 0);
       expectMockedComponent(rendered, { ProfileDropDown }, 1);
       expect(rendered.container).toHaveTextContent("Please select a profile");
       expect(rendered.container).not.toHaveTextContent(errorMessage);
@@ -73,7 +77,6 @@ describe("<ProfileSettingsContainer />", () => {
         availableProfiles: profileList,
         profileId: null
       });
-      expectMockedComponent(rendered, DialListTable, 0);
     });
   });
 
@@ -89,8 +92,22 @@ describe("<ProfileSettingsContainer />", () => {
           },
           {
             contact_id: 16,
-            contact_nme: "bo Jackson",
+            contact_nme: "Bo Jackson",
             contact_num: "800-123-4567"
+          }
+        ],
+        directories: [
+          {
+            directory_id: 42,
+            first_nme: "Mo",
+            last_nme: "Vaugh",
+            phone_num: "800-123-4568"
+          },
+          {
+            directory_id: 6,
+            first_nme: "Johnny",
+            last_nme: "Pesky",
+            phone_num: "800-123-4568"
           }
         ]
       };
@@ -105,12 +122,13 @@ describe("<ProfileSettingsContainer />", () => {
         const expectsAfterGettingProfileData = () => {
           expectMockedComponent(rendered, { ProfileDropDown }, 1);
           expectMockedComponent(rendered, { DialListTable }, 1);
+          expectMockedComponent(rendered, { Directory }, 1);
           expectOnlyPassedProps(DialListTable, {
             // sorted dialList
             dialList: [
               {
                 contact_id: 16,
-                contact_nme: "bo Jackson",
+                contact_nme: "Bo Jackson",
                 contact_num: "800-123-4567"
               },
               {
@@ -121,6 +139,24 @@ describe("<ProfileSettingsContainer />", () => {
             ],
             profileId
           }, getLastInstanceCalled(DialListTable));
+          expectOnlyPassedProps(Directory, {
+            // sorted directory
+            directory: [
+              {
+                directory_id: 6,
+                first_nme: "Johnny",
+                last_nme: "Pesky",
+                phone_num: "800-123-4568"
+              },
+              {
+                directory_id: 42,
+                first_nme: "Mo",
+                last_nme: "Vaugh",
+                phone_num: "800-123-4568"
+              }
+            ],
+            profileId
+          }, getLastInstanceCalled(Directory));
           expect(rendered.container).not.toHaveTextContent(errorMessage);
         };
 
@@ -131,6 +167,14 @@ describe("<ProfileSettingsContainer />", () => {
         const { refreshProfileData } = getMockedComponentProps(DialListTable, getLastInstanceCalled(DialListTable));
         act(() => {
           refreshProfileData();
+        });
+        await waitFor(() => {
+          expectsAfterGettingProfileData();
+        });
+        // also test refreshProfileData passed to Directory
+        const refreshAgain = getMockedComponentProps(Directory, getLastInstanceCalled(Directory)).refreshProfileData;
+        act(() => {
+          refreshAgain();
         });
         await waitFor(() => {
           expectsAfterGettingProfileData();
@@ -150,6 +194,7 @@ describe("<ProfileSettingsContainer />", () => {
         await waitFor(() => {
           expectMockedComponent(rendered, { ProfileDropDown }, 1);
           expectMockedComponent(rendered, { DialListTable }, 0);
+          expectMockedComponent(rendered, { Directory }, 0);
           expect(rendered.container).toHaveTextContent(errorMessage);
         });
       });

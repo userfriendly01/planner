@@ -20,14 +20,14 @@ describe("deleteUser", () => {
 
   describe("service call to DELETE_WORKER succeeds", () => {
     beforeEach(() => {
-      axiosMock.onDelete("/service/deleteworker/WK01234567").reply(200, { wow: "Yay!"});
+      axiosMock.onDelete("/service/deleteworker/WK01234567").reply(200, { wow: "Yay!" });
       apiPaths.DELETE_WORKER.mockReturnValue("/service/deleteworker/WK01234567");
     });
     test("should resolve with string", done => {
       const workerSid = "WK01234567";
       deleteUser(workerSid).then(resolvedVal => {
         expect(axiosMock.history.delete[0].url).toBe("/service/deleteworker/WK01234567");
-        expect(resolvedVal.data).toEqual({ wow: "Yay!"});
+        expect(resolvedVal.data).toEqual({ wow: "Yay!" });
         done();
       });
     });
