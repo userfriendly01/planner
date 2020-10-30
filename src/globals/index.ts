@@ -8,6 +8,8 @@ export const apiPaths = {
   DIAL_LIST: `${CONTACT_MANAGER_BASE_URI}/diallist`,
   DIAL_LIST_ENTRY: (dialListId: number) => `${CONTACT_MANAGER_BASE_URI}/diallist/${dialListId}`,
   EMPLOYEE_LOOKUP: (nNumber: string) => `${SERVICE_BASE_URI}/employeelookup/${nNumber}`,
+  DIRECTORY: `${CONTACT_MANAGER_BASE_URI}/directory`,
+  DIRECTORY_ENTRY: (directoryId: string | number) => `${CONTACT_MANAGER_BASE_URI}/directory/${directoryId}`,
   CHECK_EXTENSION: `${SERVICE_BASE_URI}/checkextension`,
   FLASH_MESSAGE: `${SERVICE_BASE_URI}/flashmessage`,
   GET_PROFILE_DATA: (profileId: string | number) => `${CONTACT_MANAGER_BASE_URI}/triton/${profileId}`,
