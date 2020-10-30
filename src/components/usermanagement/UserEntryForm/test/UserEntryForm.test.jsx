@@ -692,7 +692,7 @@ describe("<UserEntryForm />", () => {
             }]);
             jest.runAllTimers();
             expectOnlyPassedProps(ModalOverlay, {
-              message: "Updating user...",
+              message: "Updating user: " + initialWorker.attributes.full_name,
               status: modalOverlayStatuses.SAVING
             }, getLastInstanceCalled(ModalOverlay) - 1);
             expectOnlyPassedProps(ModalOverlay, {
@@ -723,11 +723,11 @@ describe("<UserEntryForm />", () => {
             expect(actions).toHaveLength(0);
             jest.runAllTimers();
             expectOnlyPassedProps(ModalOverlay, {
-              message: "Updating user...",
+              message: "Updating user: " + initialWorker.attributes.full_name,
               status: modalOverlayStatuses.SAVING
             }, getLastInstanceCalled(ModalOverlay) - 1);
             expectOnlyPassedProps(ModalOverlay, {
-              message: "Failed to update user",
+              message: "Failed to update user: " + initialWorker.attributes.full_name,
               status: modalOverlayStatuses.FAIL
             }, getLastInstanceCalled(ModalOverlay));
             expectMockedComponent(rendered, { ModalOverlay }, 0);

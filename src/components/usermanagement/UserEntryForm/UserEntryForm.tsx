@@ -271,7 +271,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
   const doUpdateUser = () => {
     updateLoading({
       ...loading,
-      overlayMessage: "Updating user...",
+      overlayMessage: `Updating user: ${worker.attributes.full_name}`,
       saveStatus: modalOverlayStatuses.SAVING,
       saveUser: true
     });
@@ -311,7 +311,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       .catch(err => {
         updateLoading({
           ...loading,
-          overlayMessage: "Failed to update user",
+          overlayMessage: `Failed to update user: ${worker.attributes.full_name}`,
           saveStatus: modalOverlayStatuses.FAIL,
           saveUser: true
         });
