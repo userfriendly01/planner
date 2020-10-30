@@ -96,18 +96,23 @@ export interface UserEntryForm_FormState {
   defaultSkills: TwilioWorkerSkills,
   defaultSkillsUpdated: boolean,
   extension: string,
+  extensionBlurred: boolean,
   extensionUpdated: boolean,
   extensionValid: boolean,
   manager: string,
+  managerBlurred: boolean,
   managerUpdated: boolean,
   nNumber: string,
+  nNumberBlurred: boolean,
   nNumberLookupInfo: FetchUserResponse,
   nNumberUpdated: boolean,
   outgoing: string,
+  outgoingBlurred: boolean,
   outgoingE164: string,
   outgoingValid: boolean,
   outgoingUpdated: boolean,
   profileId: string,
+  profileIdBlurred: boolean,
   profileIdUpdated: boolean
 }
 
@@ -136,18 +141,23 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       defaultSkills: getValidSkillsObject(),
       defaultSkillsUpdated: false,
       extension: "",
+      extensionBlurred: false,
       extensionUpdated: false,
       extensionValid: false,
       manager: "",
+      managerBlurred: false,
       managerUpdated: false,
       nNumber: defaultNNumber,
+      nNumberBlurred: false,
       nNumberLookupInfo: null,
       nNumberUpdated: false,
       outgoing: "",
+      outgoingBlurred: false,
       outgoingE164: undefined,
       outgoingUpdated: false,
       outgoingValid: false,
       profileId: "",
+      profileIdBlurred: false,
       profileIdUpdated: false
     };
     if (formMode === formModes.UPDATE) {
@@ -156,7 +166,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       initialForm.extensionValid = true;
       initialForm.manager = JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number));
       initialForm.nNumber = worker.attributes.n_number || defaultNNumber;
-      initialForm.outgoing = worker.attributes.did || "";
+      initialForm.outgoing = worker.attributes.did ? worker.attributes.did.replace(/^\+1/, "") : ""; // remove +1 from start of e164
       initialForm.outgoingValid = worker.attributes.did ? true : false;
       initialForm.profileId = `${worker.attributes.profile_id}`;
     }
@@ -170,61 +180,6 @@ const UserEntryForm = (props: UserEntryFormProps) => {
     saveStatus: null,
     saveUser: false
   });
-
-  const doUpdateUser = () => {
-    updateLoading({
-      ...loading,
-      overlayMessage: "Updating user...",
-      saveStatus: modalOverlayStatuses.SAVING,
-      saveUser: true
-    });
-    const attributes: Partial<TwilioWorker["attributes"]> = {};
-    if (form.managerUpdated) {
-      const parsedManager = JSON.parse(form.manager);
-      attributes.manager_first_name = parsedManager.manager_first_name;
-      attributes.manager_last_name = parsedManager.manager_last_name;
-      attributes.manager_n_number = parsedManager.manager_n_number;
-    }
-    if (form.profileIdUpdated) {
-      attributes.profile_id = form.profileId;
-    }
-    if (form.outgoingUpdated) {
-      attributes.did = form.outgoingE164;
-    }
-    if (form.extensionUpdated) {
-      attributes.extension = form.extension;
-    }
-    if (form.defaultSkillsUpdated) {
-      attributes.default_skills = form.defaultSkills;
-    }
-    updateUser(worker.sid, attributes)
-      .then(twilioWorker => {
-        dispatch(({
-          type: "updateWorker",
-          payload: mapWorkerFromTwilioWorker(twilioWorker)
-        }));
-        updateLoading({
-          ...loading,
-          overlayMessage: `Successfully updated user: ${worker.attributes.full_name}`,
-          saveStatus: modalOverlayStatuses.SUCCESS,
-          saveUser: true
-        });
-        wait(handleClose, timeouts.MODAL_OVERLAY);
-      })
-      .catch(err => {
-        updateLoading({
-          ...loading,
-          overlayMessage: "Failed to update user",
-          saveStatus: modalOverlayStatuses.FAIL,
-          saveUser: true
-        });
-        wait(() => updateLoading({
-          ...loading,
-          saveUser: false
-        }), 2000);
-        console.error("UserEntryForm - Failed to update twilio worker", err);
-      });
-  };
 
   const doCreateUser = () => {
     updateLoading({
@@ -302,6 +257,61 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       });
   };
 
+  const doUpdateUser = () => {
+    updateLoading({
+      ...loading,
+      overlayMessage: "Updating user...",
+      saveStatus: modalOverlayStatuses.SAVING,
+      saveUser: true
+    });
+    const attributes: Partial<TwilioWorker["attributes"]> = {};
+    if (form.managerUpdated) {
+      const parsedManager = JSON.parse(form.manager);
+      attributes.manager_first_name = parsedManager.manager_first_name;
+      attributes.manager_last_name = parsedManager.manager_last_name;
+      attributes.manager_n_number = parsedManager.manager_n_number;
+    }
+    if (form.profileIdUpdated) {
+      attributes.profile_id = form.profileId;
+    }
+    if (form.outgoingUpdated) {
+      attributes.did = form.outgoingE164;
+    }
+    if (form.extensionUpdated) {
+      attributes.extension = form.extension;
+    }
+    if (form.defaultSkillsUpdated) {
+      attributes.default_skills = form.defaultSkills;
+    }
+    updateUser(worker.sid, attributes)
+      .then(twilioWorker => {
+        dispatch(({
+          type: "updateWorker",
+          payload: mapWorkerFromTwilioWorker(twilioWorker)
+        }));
+        updateLoading({
+          ...loading,
+          overlayMessage: `Successfully updated user: ${worker.attributes.full_name}`,
+          saveStatus: modalOverlayStatuses.SUCCESS,
+          saveUser: true
+        });
+        wait(handleClose, timeouts.MODAL_OVERLAY);
+      })
+      .catch(err => {
+        updateLoading({
+          ...loading,
+          overlayMessage: "Failed to update user",
+          saveStatus: modalOverlayStatuses.FAIL,
+          saveUser: true
+        });
+        wait(() => updateLoading({
+          ...loading,
+          saveUser: false
+        }), 2000);
+        console.error("UserEntryForm - Failed to update twilio worker", err);
+      });
+  };
+
   const nNumberInputValid = form.nNumberLookupInfo ? true : false;
   const extensionInputValid = (form.extensionValid || form.extension === "");
   const managerValid = form.manager !== "";
@@ -325,13 +335,13 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       <FormControlsContainer>
         <FormControlsPane>
           <OutlinedSelect
-            error={form.managerUpdated && !managerValid}
+            error={form.managerBlurred && !managerValid}
             helperText={managerValid || !form.managerUpdated ? null : "Please select a manager"}
             label={"Manager *"}
             labelWidth={67}
             onBlur={() => setForm({
               ...form,
-              managerUpdated: true
+              managerBlurred: true
             })}
             optionsList={managers.sort(sortManagersByName)}
             optionsDisplayFunc={option => {
@@ -343,18 +353,19 @@ const UserEntryForm = (props: UserEntryFormProps) => {
             }}
             updateValue={newValue => setForm({
               ...form,
-              manager: newValue
+              manager: newValue,
+              managerUpdated: true
             })}
             value={form.manager}
           />
           <OutlinedSelect
-            error={form.profileIdUpdated && !profileIdValid}
+            error={form.profileIdBlurred && !profileIdValid}
             helperText={profileIdValid || !form.profileIdUpdated ? null : "Please select a team"}
             label={"Team *"}
             labelWidth={44}
             onBlur={() => setForm({
               ...form,
-              profileIdUpdated: true
+              profileIdBlurred: true
             })}
             optionsList={profiles}
             optionsDisplayFunc={option => {
@@ -366,7 +377,8 @@ const UserEntryForm = (props: UserEntryFormProps) => {
             }}
             updateValue={newValue => setForm({
               ...form,
-              profileId: newValue
+              profileId: newValue,
+              profileIdUpdated: true
             })}
             value={form.profileId}
           />
@@ -376,15 +388,16 @@ const UserEntryForm = (props: UserEntryFormProps) => {
             number={form.outgoing}
             onBlur={() => setForm({
               ...form,
-              outgoingUpdated: true
+              outgoingBlurred: true
             })}
             label="Outgoing Number *"
-            showError={form.outgoingUpdated}
+            showError={form.outgoingBlurred}
             updateValue={(maskedValue, unmaskedValue, isValid, e164Number) => {
               setForm({
                 ...form,
                 outgoing: maskedValue,
                 outgoingE164: e164Number,
+                outgoingUpdated: true,
                 outgoingValid: isValid && (e164Number ? true : false)
               });
             }}
@@ -394,13 +407,14 @@ const UserEntryForm = (props: UserEntryFormProps) => {
             label="N Number *"
             onBlur={() => setForm({
               ...form,
-              nNumberUpdated: true
+              nNumberBlurred: true
             })}
             onClear={() => {
               setForm({
                 ...form,
                 nNumber: defaultNNumber,
-                nNumberLookupInfo: null
+                nNumberLookupInfo: null,
+                nNumberUpdated: true
               });
             }}
             onComplete={(fetchedUser, nNumber) => setForm({
@@ -411,30 +425,34 @@ const UserEntryForm = (props: UserEntryFormProps) => {
             onUpdate={nNumber => {
               setForm({
                 ...form,
-                nNumber
+                nNumber,
+                nNumberUpdated: true
               });
             }}
             value={form.nNumber}
           />
           <ModalExtension
             disabled={form.extensionValid && extensionMatcher.test(form.extension)}
-            error={form.extensionUpdated && !extensionInputValid}
+            error={form.extensionBlurred && !extensionInputValid}
             extension={form.extension}
             originalValue={(worker && worker.attributes) ? worker.attributes.extension : undefined}
             onBlur={() => setForm({
               ...form,
-              extensionUpdated: true
+              extensionBlurred: true
             })}
             onClear={() => {
               setForm({
                 ...form,
                 extension: "",
+                extensionUpdated: true,
                 extensionValid: false
               });
             }}
             onUpdate={(extension, extensionValid) => setForm({
               ...form,
               extension,
+              extensionBlurred: extensionValid, // blur if valid because we are going to disable this control
+              extensionUpdated: true,
               extensionValid
             })}
           />
@@ -453,7 +471,6 @@ const UserEntryForm = (props: UserEntryFormProps) => {
         </FormControlsPane>
       </FormControlsContainer>
       <ButtonWrapper>
-        { /** TODO more validation logic for edit form? Bring back asterisks? */}
         <StyledButton
           disabled={formMode === formModes.INSERT ? !formValid : (!formUpdated || !formValid)}
           onClick={formMode === formModes.INSERT ? doCreateUser : doUpdateUser}

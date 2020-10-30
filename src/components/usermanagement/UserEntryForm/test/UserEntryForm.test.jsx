@@ -504,6 +504,7 @@ describe("<UserEntryForm />", () => {
 
   describe("EDIT / UPDATE mode", () => {
     const initialWorkerManager = managerList[1];
+    const nonE164Did = "8008884444";
     const initialWorker = {
       attributes: {
         default_skills: {
@@ -587,7 +588,7 @@ describe("<UserEntryForm />", () => {
         // outgoing number
         const expectedOutgoingProps = {
           label: "Outgoing Number *",
-          number: initialWorker.attributes.did
+          number: nonE164Did
         };
         expectOnlyPassedProps(ModalPhoneNumber, expectedOutgoingProps, 0);
 
