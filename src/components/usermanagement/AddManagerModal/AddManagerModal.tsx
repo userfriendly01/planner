@@ -55,8 +55,7 @@ const defaultNNumber = "n";
 const loadingStates = {
   success: "success",
   fail: "fail",
-  loading: "loading",
-  userNotFound: "user-not-found"
+  loading: "loading"
 };
 
 export interface AddManagerModalProps {
