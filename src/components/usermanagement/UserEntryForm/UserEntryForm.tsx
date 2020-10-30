@@ -104,7 +104,7 @@ export interface UserEntryForm_FormState {
   managerUpdated: boolean,
   nNumber: string,
   nNumberBlurred: boolean,
-  nNumberLookupInfo: FetchUserResponse,
+  nNumberFetchedUser: FetchUserResponse,
   nNumberUpdated: boolean,
   outgoing: string,
   outgoingBlurred: boolean,
@@ -150,7 +150,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       managerUpdated: false,
       nNumber: defaultNNumber,
       nNumberBlurred: false,
-      nNumberLookupInfo: null,
+      nNumberFetchedUser: null,
       nNumberUpdated: false,
       outgoing: "",
       outgoingBlurred: false,
@@ -196,20 +196,20 @@ const UserEntryForm = (props: UserEntryFormProps) => {
     const attributes: Partial<TwilioWorker["attributes"]> = {
       default_skills: form.defaultSkills,
       did: form.outgoingE164,
-      email: form.nNumberLookupInfo.email,
-      email_address: form.nNumberLookupInfo.email,
-      emp_first_name: form.nNumberLookupInfo.firstName,
-      emp_last_name: form.nNumberLookupInfo.lastName,
+      email: form.nNumberFetchedUser.email,
+      email_address: form.nNumberFetchedUser.email,
+      emp_first_name: form.nNumberFetchedUser.firstName,
+      emp_last_name: form.nNumberFetchedUser.lastName,
       extension: form.extension,
-      full_name: `${form.nNumberLookupInfo.firstName} ${form.nNumberLookupInfo.lastName}`,
+      full_name: `${form.nNumberFetchedUser.firstName} ${form.nNumberFetchedUser.lastName}`,
       manager_first_name: parsedManager.manager_first_name,
       manager_last_name: parsedManager.manager_last_name,
       manager_n_number: parsedManager.manager_n_number,
       n_number: form.nNumber.toLowerCase(),
-      office_location_name: form.nNumberLookupInfo.officeName,
-      office_location_number: form.nNumberLookupInfo.officeNumber,
-      primary_dept_name: form.nNumberLookupInfo.departmentName,
-      primary_dept_number: form.nNumberLookupInfo.departmentNumber,
+      office_location_name: form.nNumberFetchedUser.officeName,
+      office_location_number: form.nNumberFetchedUser.officeNumber,
+      primary_dept_name: form.nNumberFetchedUser.departmentName,
+      primary_dept_number: form.nNumberFetchedUser.departmentNumber,
       profile_id: form.profileId
     };
     createUser(attributes)
@@ -227,7 +227,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
           // reset n number
           nNumber: defaultNNumber,
           nNumberBlurred: false,
-          nNumberLookupInfo: null,
+          nNumberFetchedUser: null,
           // reset blurs for everything else
           managerBlurred: false,
           profileIdBlurred: false,
@@ -322,7 +322,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       });
   };
 
-  const nNumberInputValid = form.nNumberLookupInfo ? true : false;
+  const nNumberInputValid = form.nNumberFetchedUser ? true : false;
   const extensionInputValid = (form.extensionValid || form.extension === "");
   const managerValid = form.manager !== "";
   const profileIdValid = form.profileId !== "";
@@ -413,7 +413,8 @@ const UserEntryForm = (props: UserEntryFormProps) => {
             }}
           />
           <ModalNNumber
-            disabled={(formMode === formModes.UPDATE) || (form.nNumberLookupInfo ? true : false)}
+            disabled={(formMode === formModes.UPDATE) || (form.nNumberFetchedUser ? true : false)}
+            fetchedUser={form.nNumberFetchedUser}
             label="N Number *"
             onBlur={() => setForm({
               ...form,
@@ -423,14 +424,14 @@ const UserEntryForm = (props: UserEntryFormProps) => {
               setForm({
                 ...form,
                 nNumber: defaultNNumber,
-                nNumberLookupInfo: null,
+                nNumberFetchedUser: null,
                 nNumberUpdated: true
               });
             }}
             onComplete={(fetchedUser, nNumber) => setForm({
               ...form,
               nNumber,
-              nNumberLookupInfo: fetchedUser
+              nNumberFetchedUser: fetchedUser
             })}
             onUpdate={nNumber => {
               setForm({

@@ -10,8 +10,8 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import { timeouts } from "globals";
 import React, { useState } from "react";
+import { FetchUserResponse } from "services";
 import styled from "styled-components";
 
 const FlexColumn = styled.div`
@@ -68,6 +68,7 @@ const AddManagerModal = (props: AddManagerModalProps) => {
   const [manager, setManager] = useState<Manager>(null);
   const [saveStatus, setSaveStatus] = useState<string>(null);
   const [nNumber, setNNumber] = useState<string>(defaultNNumber);
+  const [fetchedUser, setFetchedUser] = useState<FetchUserResponse>(null);
 
   const dispatch = useAdminDispatch();
   const state = useAdminState();
@@ -110,6 +111,7 @@ const AddManagerModal = (props: AddManagerModalProps) => {
         <FlexColumn>
           <ModalNNumber
             disabled={saveStatus ? true : false}
+            fetchedUser={fetchedUser}
             label="N Number"
             onComplete={(fetchedUser, nNumber) => {
               setNNumber(nNumber);
@@ -118,6 +120,7 @@ const AddManagerModal = (props: AddManagerModalProps) => {
                 manager_first_name: fetchedUser.firstName,
                 manager_last_name: fetchedUser.lastName
               });
+              setFetchedUser(fetchedUser)
             }}
             onClear={() => {
               setNNumber(defaultNNumber);

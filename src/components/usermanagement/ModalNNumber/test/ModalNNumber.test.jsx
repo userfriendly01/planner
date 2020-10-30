@@ -33,9 +33,10 @@ const mockOnUpdate = jest.fn();
 
 const label = "N Number Thing";
 
-const renderComponent = (value, disabled) => {
+const renderComponent = (value, disabled, fetchedUser) => {
   return render(<ModalNNumber
     disabled={disabled}
+    fetchedUser={fetchedUser}
     label={label}
     onBlur={mockOnBlur}
     onClear={mockOnClear}
@@ -75,6 +76,18 @@ describe("<ModalNNumber />", () => {
     expect(mockOnUpdate).toHaveBeenCalledWith(newValue);
   });
 
+  test("fetchedUser prop should cause helper text to display their name", () => {
+    const rendered = renderComponent("n", false, {
+      firstName: "Bobby",
+      lastName: "Orr"
+    });
+    expectMockedComponent(rendered, { ModalHelperText });
+    expectOnlyPassedProps(ModalHelperText, {
+      error: false,
+      message: "Bobby Orr"
+    });
+  });
+
   describe("CustomInput validatedServiceCall", () => {
 
     describe("fetchUser succeeds", () => {
@@ -86,16 +99,12 @@ describe("<ModalNNumber />", () => {
       };
       beforeEach(() => fetchUser.mockResolvedValue(fetchedUser));
 
-      test("should fire onComplete and render helper text", async () => {
+      test("should fire onComplete", async () => {
         const rendered = renderComponent();
         act(() => getMockedComponentProps(CustomInput).validatedServiceCall(newNNumber));
         await waitFor(() => {
           expect(mockOnComplete).toHaveBeenCalledWith(fetchedUser, newNNumber);
-          expectMockedComponent(rendered, { ModalHelperText });
-          expectOnlyPassedProps(ModalHelperText, {
-            error: false,
-            message: "Bobby Orr"
-          });
+          expectMockedComponent(rendered, { ModalHelperText }, 0);
         });
       });
     });

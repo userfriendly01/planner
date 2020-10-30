@@ -17,14 +17,9 @@ const FlexColumn = styled.div`
   flex-direction: column;
 `;
 
-export interface NNumberLookupResults {
-  error: boolean,
-  message: string,
-  show: boolean
-}
-
 export interface ModalNNumberProps {
   disabled: boolean,
+  fetchedUser: FetchUserResponse,
   label: string,
   onBlur?: () => void,
   onClear: () => void,
@@ -36,6 +31,7 @@ export interface ModalNNumberProps {
 const ModalNNumber = (props: ModalNNumberProps) => {
   const {
     disabled,
+    fetchedUser,
     label,
     onBlur,
     onClear,
@@ -44,34 +40,21 @@ const ModalNNumber = (props: ModalNNumberProps) => {
     value
   } = props;
 
-  const [ lookupResults, setLookupResults ] = useState<NNumberLookupResults>({
-    error: false,
-    message: null,
-    show: false
-  });
+  const [ lookupError, setLookupError ] = useState<string>("");
 
   const validator = (nNumber: string) => nNumber.match(nNumMatcher) !== null;
 
   const lookupNNumber = (nNumber: string) => {
     return fetchUser(nNumber)
-      .then(fetchedUser => {
-        setLookupResults({
-          error: false,
-          message: `${fetchedUser.firstName} ${fetchedUser.lastName}`,
-          show: true
-        });
-        onComplete(fetchedUser, nNumber);
+      .then(newlyFetchedUser => {
+        onComplete(newlyFetchedUser, nNumber);
       })
       .catch(err => {
         console.error("Failed to fetch user from employee lookup service", {
           error: err,
           nNumber
         });
-        setLookupResults({
-          error: true,
-          message: "Error calling employee lookup service",
-          show: true
-        });
+        setLookupError("Error calling employee lookup service");
       });
   };
 
@@ -79,7 +62,7 @@ const ModalNNumber = (props: ModalNNumberProps) => {
     <FlexColumn>
       <CustomInput
         disabled={disabled}
-        error={lookupResults.error ? true : false}
+        error={lookupError ? true : false}
         label= {label}
         name="N Number"
         onBlur={onBlur}
@@ -90,18 +73,14 @@ const ModalNNumber = (props: ModalNNumberProps) => {
         validatedServiceCall={lookupNNumber}
       />
       {
-        lookupResults.show
+        (fetchedUser || lookupError)
           ? <ModalHelperText
               clearFunction={() => {
-                setLookupResults({
-                  error: false,
-                  message: null,
-                  show: false
-                });
+                setLookupError("");
                 onClear();
               }}
-              error={lookupResults.error}
-              message={lookupResults.message}
+              error={lookupError ? true : false}
+              message={fetchedUser ? `${fetchedUser.firstName} ${fetchedUser.lastName}` : lookupError}
             />
           : null
       }
