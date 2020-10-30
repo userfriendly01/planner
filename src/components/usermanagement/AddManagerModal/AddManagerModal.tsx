@@ -1,8 +1,8 @@
 import { CloseRounded } from "@material-ui/icons";
 import {
   ModalNNumber,
-  PaperContainer,
   ModalOverlay,
+  PaperContainer,
   StyledButton
 } from "components";
 import {
