@@ -159,6 +159,9 @@ describe("<UserEntryForm />", () => {
     act(() => {
       getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect) - 1).onBlur();
     });
+    expectOnlyPassedProps(OutlinedSelect, {
+      value: JSON.stringify(validFormOptions.manager)
+    }, getLastInstanceCalled(OutlinedSelect) - 1);
     // team / profile id
     act(() => {
       const updateProfile = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect)).updateValue;
@@ -167,6 +170,9 @@ describe("<UserEntryForm />", () => {
     act(() => {
       getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect)).onBlur();
     });
+    expectOnlyPassedProps(OutlinedSelect, {
+      value: validFormOptions.profileId
+    }, getLastInstanceCalled(OutlinedSelect));
     // outgoing number
     act(() => {
       const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).updateValue;
@@ -175,6 +181,9 @@ describe("<UserEntryForm />", () => {
     act(() => {
       getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).onBlur();
     });
+    expectOnlyPassedProps(ModalPhoneNumber, {
+      number: "(603)456-7890"
+    }, getLastInstanceCalled(ModalPhoneNumber));
     // n number
     act(() => {
       const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).onUpdate;
@@ -187,6 +196,10 @@ describe("<UserEntryForm />", () => {
     act(() => {
       getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).onBlur();
     });
+    expectOnlyPassedProps(ModalNNumber, {
+      fetchedUser,
+      value: validFormOptions.nNumber
+    }, getLastInstanceCalled(ModalNNumber));
     // extension
     act(() => {
       getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension)).onUpdate(validFormOptions.extension, true);
@@ -194,11 +207,18 @@ describe("<UserEntryForm />", () => {
     act(() => {
       getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension)).onBlur();
     });
+    expectOnlyPassedProps(ModalExtension, {
+      disabled: true,
+      extension: validFormOptions.extension
+    }, getLastInstanceCalled(ModalExtension));
     // default skills
     act(() => {
       const updateDefaultSkills = getMockedComponentProps(DefaultSkillSelector, getLastInstanceCalled(DefaultSkillSelector)).setDefaultSkills;
       updateDefaultSkills(validFormOptions.defaultSkills);
     });
+    expectOnlyPassedProps(DefaultSkillSelector, {
+      defaultSkills: validFormOptions.defaultSkills
+    }, getLastInstanceCalled(DefaultSkillSelector));
 
     // check button enabled
     const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
@@ -274,6 +294,7 @@ describe("<UserEntryForm />", () => {
         // n number
         const expectedNNumberProps = {
           disabled: false,
+          fetchedUser: null,
           label: "N Number *",
           value: "n"
         };
@@ -353,7 +374,7 @@ describe("<UserEntryForm />", () => {
     describe("update n number field", () => {
 
       test("onClear onBlur onComplete onUpdate should manipulate form properly", () => {
-        const getLatestProps = () => getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber))
+        const getLatestProps = () => getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber));
         renderComponent();
         act(() => {
           getLatestProps().onBlur();
