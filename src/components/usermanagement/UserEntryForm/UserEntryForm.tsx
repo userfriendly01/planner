@@ -33,6 +33,7 @@ import {
   getValidSkillsObject,
   mapWorkerFromTwilioWorker,
   sortManagersByName,
+  sortProfilesByName,
   wait
 } from "utils";
 
@@ -378,7 +379,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
               ...form,
               profileIdBlurred: true
             })}
-            optionsList={profiles}
+            optionsList={profiles.sort(sortProfilesByName)}
             optionsDisplayFunc={option => {
               return {
                 display: option.profile_nme,

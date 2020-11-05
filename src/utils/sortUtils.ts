@@ -1,4 +1,8 @@
-import { TwilioWorker } from "context";
+import {
+  Manager,
+  TritonProfile,
+  TwilioWorker
+} from "context";
 
 const sortLast = "zzzzzzzzzzz";
 
@@ -12,10 +16,12 @@ export const sortDirectoryListEntriesByName = (a: any, b: any) => {
   return sortStrings(aName, bName);
 };
 
-export const sortManagersByName = (a: any, b: any) => {
+export const sortManagersByName = (a: Manager, b: Manager) => {
   const [aName, bName] = [a.manager_first_name + " " + a.manager_last_name, b.manager_first_name + " " + b.manager_last_name];
   return sortStrings(aName, bName);
 };
+
+export const sortProfilesByName = (a: TritonProfile, b: TritonProfile) => sortStrings(a.profile_nme, b.profile_nme);
 
 export const sortStrings = (a: string, b: string) => {
   const _a = a.toLowerCase();
