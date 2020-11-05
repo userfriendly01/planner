@@ -168,7 +168,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       initialForm.extensionValid = true;
       initialForm.manager = JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number));
       initialForm.nNumber = worker.attributes.n_number || defaultNNumber;
-      initialForm.outgoing = worker.attributes.did ? worker.attributes.did.replace(/^\+1/, "") : ""; // remove +1 from start of e164
+      initialForm.outgoing = worker.attributes.did ? worker.attributes.did.replace(/^\+1/, "").replace(/^1/, "") : ""; // remove +1 or 1 from start of e164
       initialForm.outgoingValid = worker.attributes.did ? true : false;
       initialForm.profileId = `${worker.attributes.profile_id}`;
     }
