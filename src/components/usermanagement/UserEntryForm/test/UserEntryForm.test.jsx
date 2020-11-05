@@ -147,7 +147,6 @@ describe("<UserEntryForm />", () => {
       OutlinedSelect,
       StyledButton
     });
-    // PaperContainer.mockImplementation(props => <div>{props.children}</div>);
   });
 
   const updateFormSoItIsValid = () => {

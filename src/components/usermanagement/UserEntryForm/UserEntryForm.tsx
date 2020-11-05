@@ -73,7 +73,7 @@ const Header2 = styled.h2`
 `;
 
 const ModalContainer = styled.div`
-  background-color: ${props => props.theme.backgroundColor}
+  background-color: ${props => props.theme.backgroundColor};
   border-radius: 4px;
   display: flex;
   flex: 1 1 auto;
