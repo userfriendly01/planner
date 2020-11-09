@@ -1,6 +1,5 @@
 import { TextField } from "@material-ui/core";
 import { ModalFetchingRing } from "components";
-import PropTypes from "prop-types";
 import React, {
   useState
 } from "react";
