@@ -1,4 +1,5 @@
 import {
+  getE164Number,
   isNumberValid,
   unMaskPhoneNumber
 } from "@lmig/phone-number-utils";
@@ -6,7 +7,6 @@ import {
   Switch,
   TextField
 } from "@material-ui/core";
-import PropTypes from "prop-types";
 import React, { useState } from "react";
 import MaskedInput from "react-text-mask";
 import styled from "styled-components";
@@ -19,10 +19,6 @@ const InputAndToggleContainer = styled.div`
   display: flex;
 `;
 
-const StyledTextField = styled(TextField)`
-  flex-grow: 1;
-`;
-
 const SwitchContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -30,7 +26,7 @@ const SwitchContainer = styled.div`
   margin-left: 8px;
 `;
 
-const SevenDigitInputMask = inputProps => {
+const SevenDigitInputMask = (inputProps: any) => {
   const {
     inputRef,
     ...other
@@ -48,7 +44,7 @@ const SevenDigitInputMask = inputProps => {
   );
 };
 
-const TenDigitInputMask = inputProps => {
+const TenDigitInputMask = (inputProps: any) => {
   const {
     inputRef,
     ...other
@@ -66,7 +62,19 @@ const TenDigitInputMask = inputProps => {
   );
 };
 
-const ModalPhoneNumber = props => {
+export interface ModalPhoneNumberProps {
+  allowSevenDigitVdn?: boolean,
+  error?: boolean,
+  helperText?: string,
+  id: string,
+  label: string,
+  number: string,
+  onBlur: () => void,
+  showError?: boolean,
+  updateValue: (maskedValue: string, unmaskedValue: string, isNumberValid: boolean, e164Number: string) => void
+}
+
+const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
   const {
     allowSevenDigitVdn, // if true, show toggle button to switch between input masks,
     error,
@@ -85,9 +93,9 @@ const ModalPhoneNumber = props => {
   const validationHelperText = useSevenDigitMask ? "Enter a seven digit VDN" : "Enter a valid ten digit phone number";
 
   const textField = (
-    <StyledTextField
+    <TextField
       error={error || (showError && validationError)}
-      helperText={helperText || (showError ? validationHelperText : null)}
+      helperText={helperText || (showError && validationError ? validationHelperText : null)}
       id={id}
       InputProps={{
         inputComponent: useSevenDigitMask ? SevenDigitInputMask : TenDigitInputMask,
@@ -104,7 +112,11 @@ const ModalPhoneNumber = props => {
         }
       }) => {
         const unmaskedValue = unMaskPhoneNumber(maskedValue);
-        updateValue(maskedValue, unmaskedValue, isNumberValid(unmaskedValue, useSevenDigitMask));
+        let e164Number = "";
+        try {
+          e164Number = getE164Number(unmaskedValue);
+        } catch (e) {}
+        updateValue(maskedValue, unmaskedValue, isNumberValid(unmaskedValue, useSevenDigitMask), e164Number);
       }}
       margin="normal"
       variant="outlined"
@@ -114,7 +126,7 @@ const ModalPhoneNumber = props => {
 
   if (allowSevenDigitVdn) {
     const toggleSwitch = () => {
-      updateValue("", "", false);
+      updateValue("", "", false, "");
       setUseSevenDigitMask(!useSevenDigitMask);
     };
     return (
@@ -134,18 +146,6 @@ const ModalPhoneNumber = props => {
   } else {
     return textField;
   }
-};
-
-ModalPhoneNumber.propTypes = {
-  allowSevenDigitVdn: PropTypes.bool,
-  error: PropTypes.bool,
-  helperText: PropTypes.string,
-  id: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
-  number: PropTypes.string.isRequired,
-  onBlur: PropTypes.func,
-  showError: PropTypes.bool,
-  updateValue: PropTypes.func.isRequired
 };
 
 export default ModalPhoneNumber;

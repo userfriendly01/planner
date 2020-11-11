@@ -1,9 +1,14 @@
+import {
+  TaskRouterSkill,
+  TwilioWorker,
+  TwilioWorkerSkills
+} from "context";
 import _ from "lodash";
 import { sortTaskRouterSkillByName } from "utils";
 
-export const areSkillsDifferent = attributes => {
-  const currentSkills = getValidSkillsObject(attributes.routing);
-  const defaultSkills = getValidSkillsObject(attributes.default_skills);
+export const areSkillsDifferent = (workerAttributes: TwilioWorker["attributes"]): boolean => {
+  const currentSkills = getValidSkillsObject(workerAttributes.routing);
+  const defaultSkills = getValidSkillsObject(workerAttributes.default_skills);
   if (defaultSkills.skills.length > 0) {
     return !(_.isEqual(currentSkills.skills.sort(), defaultSkills.skills.sort()) && _.isEqual(currentSkills.levels, defaultSkills.levels));
   } else {
@@ -11,12 +16,19 @@ export const areSkillsDifferent = attributes => {
   }
 };
 
-export const findTaskRouterSkill = (skill, taskrouterSkills) => taskrouterSkills.find(skillObj => skillObj.skill === skill) || {
+export const findTaskRouterSkill = (skill: string, taskrouterSkills: TaskRouterSkill[]): TaskRouterSkill => taskrouterSkills.find(skillObj => skillObj.skill === skill) || {
   skill,
   levels: []
 };
 
-export const formatTaskRouterSkills = rawTaskRouterSkills => rawTaskRouterSkills.map(skillObj => {
+export interface RawTaskRotuterSkill {
+  multivalue: boolean,
+  minimum: number,
+  maximum: number,
+  name: string
+}
+
+export const formatTaskRouterSkills = (rawTaskRouterSkills: RawTaskRotuterSkill[]): TaskRouterSkill[] => rawTaskRouterSkills.map(skillObj => {
   const levels = [];
   if (skillObj.multivalue) {
     for (let i = skillObj.minimum; i <= skillObj.maximum; i++) {
@@ -29,8 +41,8 @@ export const formatTaskRouterSkills = rawTaskRouterSkills => rawTaskRouterSkills
   };
 }).sort(sortTaskRouterSkillByName);
 
-export const getValidSkillsObject = skillsObject => {
-  const validObject = {
+export const getValidSkillsObject = (skillsObject?: TwilioWorkerSkills): TwilioWorkerSkills => {
+  const validObject: TwilioWorkerSkills = {
     skills: [],
     levels: {}
   };

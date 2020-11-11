@@ -16,6 +16,7 @@ const renderComponent = ({
   allowSevenDigitVdn,
   error,
   helperText,
+  number,
   onBlur,
   showError
 }) => {
@@ -25,7 +26,7 @@ const renderComponent = ({
       error={error}
       helperText={helperText}
       id={id}
-      number={""}
+      number={number || ""}
       onBlur={onBlur}
       label={label}
       showError={showError}
@@ -77,19 +78,19 @@ describe("<ModalPhoneNumber />", () => {
           // toggle to use 7 digit mask and validation logic
           clickToggle(rendered);
           // initially updateValue and reset the value to empty string (happens when toggle is switched)
-          expect(updateValue.mock.calls[0]).toEqual(["", "", false]);
+          expect(updateValue.mock.calls[0]).toEqual(["", "", false, ""]);
           // invalid partial number
           changeNumberInput(rendered, "603");
-          expect(updateValue.mock.calls[1]).toEqual(["603 ", "603", false]);
+          expect(updateValue.mock.calls[1]).toEqual(["603 ", "603", false, ""]);
           // invalid partial number
           changeNumberInput(rendered, "603456");
-          expect(updateValue.mock.calls[2]).toEqual(["603 456", "603456", false]);
+          expect(updateValue.mock.calls[2]).toEqual(["603 456", "603456", false, ""]);
           // valid number (VDN)
           changeNumberInput(rendered, "6034567");
-          expect(updateValue.mock.calls[3]).toEqual(["603 4567", "6034567", true]);
+          expect(updateValue.mock.calls[3]).toEqual(["603 4567", "6034567", true, ""]);
           // extra numbers omitted
           changeNumberInput(rendered, "6034567890123123123");
-          expect(updateValue.mock.calls[4]).toEqual(["603 4567", "6034567", true]);
+          expect(updateValue.mock.calls[4]).toEqual(["603 4567", "6034567", true, ""]);
         });
       });
 
@@ -104,10 +105,10 @@ describe("<ModalPhoneNumber />", () => {
           // toggle to use 7 digit mask and validation logic
           clickToggle(rendered);
           // initially updateValue and reset the value to empty string (happens when toggle is switched)
-          expect(updateValue.mock.calls[0]).toEqual(["", "", false]);
+          expect(updateValue.mock.calls[0]).toEqual(["", "", false, ""]);
           // invalid partial number
           changeNumberInput(rendered, "603");
-          expect(updateValue.mock.calls[1]).toEqual(["603 ", "603", false]);
+          expect(updateValue.mock.calls[1]).toEqual(["603 ", "603", false, ""]);
           // label element className
           const { className } = rendered.queryAllByText(label)[0];
           expect(muiErrorClassRegex.test(className)).toBeTruthy();
@@ -125,10 +126,10 @@ describe("<ModalPhoneNumber />", () => {
           // toggle to use 7 digit mask and validation logic
           clickToggle(rendered);
           // initially updateValue and reset the value to empty string (happens when toggle is switched)
-          expect(updateValue.mock.calls[0]).toEqual(["", "", false]);
+          expect(updateValue.mock.calls[0]).toEqual(["", "", false, ""]);
           // invalid partial number
           changeNumberInput(rendered, "603");
-          expect(updateValue.mock.calls[1]).toEqual(["603 ", "603", false]);
+          expect(updateValue.mock.calls[1]).toEqual(["603 ", "603", false, ""]);
           // label element className
           const { className } = rendered.queryAllByText(label)[0];
           expect(muiErrorClassRegex.test(className)).toBeFalsy();
@@ -147,16 +148,16 @@ describe("<ModalPhoneNumber />", () => {
         const rendered = renderComponent({});
         // invalid partial number
         changeNumberInput(rendered, "603");
-        expect(updateValue.mock.calls[0]).toEqual(["(603) ", "603", false]);
+        expect(updateValue.mock.calls[0]).toEqual(["(603) ", "603", false, ""]);
         // invalid partial number
         changeNumberInput(rendered, "603456");
-        expect(updateValue.mock.calls[1]).toEqual(["(603) 456", "603456", false]);
+        expect(updateValue.mock.calls[1]).toEqual(["(603) 456", "603456", false, ""]);
         // valid number
         changeNumberInput(rendered, "6034567890");
-        expect(updateValue.mock.calls[2]).toEqual(["(603) 456-7890", "6034567890", true]);
+        expect(updateValue.mock.calls[2]).toEqual(["(603) 456-7890", "6034567890", true, "+16034567890"]);
         // extra numbers omitted
         changeNumberInput(rendered, "6034567890123123123");
-        expect(updateValue.mock.calls[3]).toEqual(["(603) 456-7890", "6034567890", true]);
+        expect(updateValue.mock.calls[3]).toEqual(["(603) 456-7890", "6034567890", true, "+16034567890"]);
       });
     });
 
@@ -169,7 +170,7 @@ describe("<ModalPhoneNumber />", () => {
         });
         // invalid partial number
         changeNumberInput(rendered, "603");
-        expect(updateValue.mock.calls[0]).toEqual(["(603) ", "603", false]);
+        expect(updateValue.mock.calls[0]).toEqual(["(603) ", "603", false, ""]);
         // label element className
         const { className } = rendered.queryAllByText(label)[0];
         expect(muiErrorClassRegex.test(className)).toBeTruthy();
@@ -184,7 +185,37 @@ describe("<ModalPhoneNumber />", () => {
         const rendered = renderComponent({});
         // invalid partial number
         changeNumberInput(rendered, "603");
-        expect(updateValue.mock.calls[0]).toEqual(["(603) ", "603", false]);
+        expect(updateValue.mock.calls[0]).toEqual(["(603) ", "603", false, ""]);
+        // label element className
+        const { className } = rendered.queryAllByText(label)[0];
+        expect(muiErrorClassRegex.test(className)).toBeFalsy();
+        // helper text
+        expect(rendered.container).not.toHaveTextContent("Enter a valid ten digit phone number");
+      });
+    });
+
+    describe("showError is true and and number is invalid", () => {
+
+      test("should render with error styling and helper text", () => {
+        const rendered = renderComponent({
+          showError: true,
+          number: "(603)"
+        });
+        // label element className
+        const { className } = rendered.queryAllByText(label)[0];
+        expect(muiErrorClassRegex.test(className)).toBeTruthy();
+        // helper text
+        expect(rendered.container).toHaveTextContent("Enter a valid ten digit phone number");
+      });
+    });
+
+    describe("showError is true and and number is valid", () => {
+
+      test("should render with no error styling and no helper text", () => {
+        const rendered = renderComponent({
+          showError: true,
+          number: "(603) 812-6666"
+        });
         // label element className
         const { className } = rendered.queryAllByText(label)[0];
         expect(muiErrorClassRegex.test(className)).toBeFalsy();
@@ -204,7 +235,7 @@ describe("<ModalPhoneNumber />", () => {
         });
         // invalid partial number
         changeNumberInput(rendered, "603");
-        expect(updateValue.mock.calls[0]).toEqual(["(603) ", "603", false]);
+        expect(updateValue.mock.calls[0]).toEqual(["(603) ", "603", false, ""]);
         // label element className
         const { className } = rendered.queryAllByText(label)[0];
         expect(muiErrorClassRegex.test(className)).toBeTruthy();
@@ -224,7 +255,7 @@ describe("<ModalPhoneNumber />", () => {
         });
         // invalid partial number
         changeNumberInput(rendered, "6038126666");
-        expect(updateValue.mock.calls[0]).toEqual(["(603) 812-6666", "6038126666", true]);
+        expect(updateValue.mock.calls[0]).toEqual(["(603) 812-6666", "6038126666", true, "+16038126666"]);
         // label element className
         const { className } = rendered.queryAllByText(label)[0];
         expect(muiErrorClassRegex.test(className)).toBeTruthy();

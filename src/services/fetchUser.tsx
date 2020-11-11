@@ -1,7 +1,17 @@
 import { apiPaths } from "globals";
 import { myAxios } from "utils";
 
-export const fetchUser = nNumber => myAxios.get(apiPaths.EMPLOYEE_LOOKUP(nNumber.substring(1)))
+export interface FetchUserResponse {
+  email: string,
+  firstName: string,
+  lastName: string,
+  officeName: string,
+  officeNumber: string,
+  departmentName: string,
+  departmentNumber: string
+};
+
+export const fetchUser = (nNumber: string): Promise<FetchUserResponse> => myAxios.get(apiPaths.EMPLOYEE_LOOKUP(nNumber.substring(1)))
   .then(res => {
     if (res.data.length !== 0) {
       return {
@@ -14,6 +24,6 @@ export const fetchUser = nNumber => myAxios.get(apiPaths.EMPLOYEE_LOOKUP(nNumber
         departmentNumber: res.data[0].person.data.DepartmentNumber
       };
     } else {
-      return null;
+      throw "fetchUser employee lookup did not return any data";
     }
   });

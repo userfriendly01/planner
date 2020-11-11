@@ -1,4 +1,5 @@
 export const theme = {
+  backgroundColor: "#FFF",
   button: {
     blue: {
       backgroundColor: "#AAEDED",

@@ -4,15 +4,15 @@ const SERVICE_BASE_URI = "/service";
 export const apiPaths = {
   AUTH: `${SERVICE_BASE_URI}/admin-login`,
   CREATE_WORKER: `${SERVICE_BASE_URI}/createworker`,
-  DELETE_WORKER: workerSid => `${SERVICE_BASE_URI}/deleteworker/${workerSid}`,
+  DELETE_WORKER: (workerSid: string) => `${SERVICE_BASE_URI}/deleteworker/${workerSid}`,
   DIAL_LIST: `${CONTACT_MANAGER_BASE_URI}/diallist`,
-  DIAL_LIST_ENTRY: dialListId => `${CONTACT_MANAGER_BASE_URI}/diallist/${dialListId}`,
+  DIAL_LIST_ENTRY: (dialListId: number) => `${CONTACT_MANAGER_BASE_URI}/diallist/${dialListId}`,
+  EMPLOYEE_LOOKUP: (nNumber: string) => `${SERVICE_BASE_URI}/employeelookup/${nNumber}`,
   DIRECTORY: `${CONTACT_MANAGER_BASE_URI}/directory`,
-  DIRECTORY_ENTRY: directoryId => `${CONTACT_MANAGER_BASE_URI}/directory/${directoryId}`,
-  EMPLOYEE_LOOKUP: nNum => `${SERVICE_BASE_URI}/employeelookup/${nNum}`,
+  DIRECTORY_ENTRY: (directoryId: string | number) => `${CONTACT_MANAGER_BASE_URI}/directory/${directoryId}`,
   CHECK_EXTENSION: `${SERVICE_BASE_URI}/checkextension`,
   FLASH_MESSAGE: `${SERVICE_BASE_URI}/flashmessage`,
-  GET_PROFILE_DATA: profileId => `${CONTACT_MANAGER_BASE_URI}/triton/${profileId}`,
+  GET_PROFILE_DATA: (profileId: string | number) => `${CONTACT_MANAGER_BASE_URI}/triton/${profileId}`,
   GET_PROFILES: `${CONTACT_MANAGER_BASE_URI}/profiles`,
   GET_TASKROUTER_SKILLS: `${SERVICE_BASE_URI}/taskrouterskills`,
   GET_WORKERS: `${SERVICE_BASE_URI}/workers`,
@@ -21,12 +21,23 @@ export const apiPaths = {
   UPDATE_WORKER_ATTRIBUTES: `${SERVICE_BASE_URI}/updateworkerattributes`
 };
 
-export const formModes = {
+export interface FormModes {
+  INSERT: string,
+  UPDATE: string
+}
+
+export const formModes: FormModes = {
   INSERT: "insert",
   UPDATE: "update"
 };
 
-export const modalOverlayStatuses = {
+export interface ModalOverlayStatuses {
+  FAIL: string,
+  SAVING: string,
+  SUCCESS: string
+}
+
+export const modalOverlayStatuses: ModalOverlayStatuses = {
   FAIL: "fail",
   SAVING: "saving",
   SUCCESS: "success"

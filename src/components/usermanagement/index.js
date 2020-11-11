@@ -1,13 +1,10 @@
 export { default as AddManagerModal } from "./AddManagerModal/AddManagerModal";
-export { default as AddUser } from "./AddUser/AddUser";
-export { default as AddUserModal } from "./AddUserModal/AddUserModal";
 export { default as ConfirmationModal } from "./ConfirmationModal/ConfirmationModal";
 export { default as DefaultSkillSelector } from "./DefaultSkillSelector/DefaultSkillSelector";
-export { default as EditUserModal } from "./EditUserModal/EditUserModal";
-export { default as ManagementFilter } from "./ManagementFilter/ManagementFilter";
+export { default as ManagementHeader } from "./ManagementHeader/ManagementHeader";
 export { default as ManagementPagination } from "./ManagementPagination/ManagementPagination";
 export { default as ManagementTable } from "./ManagementTable/ManagementTable";
-export { default as ManagementWrapper } from "./ManagementWrapper/ManagementWrapper";
+export * from "./ManagementWrapper/ManagementWrapper";
 export { default as ManagerFilter } from "./ManagerFilter/ManagerFilter";
 export { default as ModalFetchingRing } from "./ModalFetchingRing/ModalFetchingRing";
 export { default as ModalHelperText } from "./ModalHelperText/ModalHelperText";
@@ -19,3 +16,4 @@ export { default as ResetSkillsButton } from "./ResetSkillsButton/ResetSkillsBut
 export { default as ResultsModal } from "./ResultsModal/ResultsModal";
 export { default as SearchBox } from "./SearchBox/SearchBox";
 export { default as SkillDropDown } from "./SkillDropDown/SkillDropDown";
+export { default as UserEntryForm } from "./UserEntryForm/UserEntryForm";
