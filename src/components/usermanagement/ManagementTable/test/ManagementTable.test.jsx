@@ -1,16 +1,18 @@
 import ManagementTable from "../ManagementTable";
 import {
   ConfirmationModal,
-  EditUserModal,
-  ModalOverlay
+  ModalOverlay,
+  UserEntryForm
 } from "components";
-import { theme } from "globals";
+import {
+  formModes,
+  theme
+} from "globals";
 import React from "react";
 import { deleteUser } from "services";
 import {
   act,
   expectMockedComponent,
-  expectOnlyPassedProps,
   fireEvent,
   getTestState,
   mockStore,
@@ -23,8 +25,8 @@ jest.useFakeTimers();
 jest.mock("components", () => ({
   __esModule: true,
   ConfirmationModal: jest.fn(),
-  EditUserModal: jest.fn(),
-  ModalOverlay: jest.fn()
+  ModalOverlay: jest.fn(),
+  UserEntryForm: jest.fn()
 }));
 
 jest.mock("services", () => ({
@@ -89,12 +91,14 @@ const mockWorkerData = [
 ];
 
 const setDeltaToggle = jest.fn();
+const setUserEntryFormState = jest.fn();
 
 const renderComponent = (workers, toggle = false, state) => {
   return render(
     <ManagementTable
       deltaToggle={toggle}
       setDeltaToggle={setDeltaToggle}
+      setUserEntryFormState={setUserEntryFormState}
       workers={workers}
     />, state);
 };
@@ -103,8 +107,8 @@ describe("<ManagementTable />", () => {
   beforeEach(() => {
     setupMockedComponents({
       ConfirmationModal,
-      EditUserModal,
-      ModalOverlay
+      ModalOverlay,
+      UserEntryForm
     });
     jest.clearAllMocks();
     mockStore.reset();
@@ -178,9 +182,9 @@ describe("<ManagementTable />", () => {
   describe("Delete icon is clicked in row", () => {
     test("should display ConfirmationModal", () => {
       const rendered = renderComponent(mockWorkerData);
-    const deleteButtons = rendered.getAllByTestId("delete-button");
-    expectMockedComponent(rendered, { ConfirmationModal }, 0);
-    const indexClicked = 1;
+      const deleteButtons = rendered.getAllByTestId("delete-button");
+      expectMockedComponent(rendered, { ConfirmationModal }, 0);
+      const indexClicked = 1;
       act(() => fireEvent.click(deleteButtons[indexClicked]));
       const confirmationText = ConfirmationModal.mock.calls[0][0].body.confirmationText;
       const data = ConfirmationModal.mock.calls[0][0].body.data;
@@ -202,7 +206,7 @@ describe("<ManagementTable />", () => {
     describe("When the confirmFunction is run, deleteUser is initiated", () => {
       test("DeleteUser is successful", done => {
         const workerSid = mockWorkerData[1].sid;
-        deleteUser.mockImplementation(() => { return Promise.resolve(200, { whatever: "lol" } )});
+        deleteUser.mockImplementation(() => { return Promise.resolve(200, { whatever: "lol" } ); });
         const rendered = renderComponent(mockWorkerData);
         const deleteButtons = rendered.getAllByTestId("delete-button");
         expectMockedComponent(rendered, { ConfirmationModal }, 0);
@@ -230,7 +234,7 @@ describe("<ManagementTable />", () => {
               error: "I'm a String Error!"
             }
           }
-        }
+        };
         deleteUser.mockRejectedValue(errorRes);
         const rendered = renderComponent(mockWorkerData);
         const deleteButtons = rendered.getAllByTestId("delete-button");
@@ -254,7 +258,7 @@ describe("<ManagementTable />", () => {
               error: {}
             }
           }
-        }
+        };
         deleteUser.mockRejectedValue(errorRes);
         const rendered = renderComponent(mockWorkerData);
         const deleteButtons = rendered.getAllByTestId("delete-button");
@@ -271,24 +275,21 @@ describe("<ManagementTable />", () => {
           });
         });
       });
-    })
+    });
   });
 
   describe("Edit icon is clicked in row", () => {
-    test("should show EditUserModal for corresponding worker, not highlight the row as selected, and close EditUserModal when handleClose is fired", () => {
+    test("should show UserEntryForm for corresponding worker, not highlight the row as selected, and close UserEntryForm when handleClose is fired", () => {
       const rendered = renderComponent(mockWorkerData);
       const editButtons = rendered.getAllByTestId("edit-button");
-      expectMockedComponent(rendered, { EditUserModal }, 0);
+      expectMockedComponent(rendered, { UserEntryForm }, 0);
       const indexClicked = 1;
       act(() => fireEvent.click(editButtons[indexClicked]));
-      expectMockedComponent(rendered, { EditUserModal }, 1);
-      const handleClose = EditUserModal.mock.calls[0][0].handleClose;
-      expectOnlyPassedProps(EditUserModal, {
-        handleClose,
+      expect(setUserEntryFormState).toHaveBeenCalledWith({
+        formMode: formModes.UPDATE,
+        open: true,
         worker: mockWorkerData[indexClicked]
       });
-      act(() => handleClose());
-      expectMockedComponent(rendered, { EditUserModal }, 0);
       const tableRows = rendered.getAllByTestId("table-row");
       expect(tableRows[indexClicked]).toHaveStyleRule("background-color", "inherit");
     });

@@ -37,9 +37,7 @@ const Circle = styled.circle`
 `;
 
 const CloseButtonDiv = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
+  align-self: flex-end;
 `;
 
 const FlexRow = styled.div`
@@ -53,11 +51,22 @@ const Icon = styled.svg`
   width: 3em;
 `;
 
+const IconAndMessageWrapper = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: center;
+  padding: 16px;
+`;
+
 const InnerContainer = styled.div`
   align-items: center;
   display: flex;
   flex-direction: column;
+  height: 100%;
   justify-content: center;
+  width: 100%;
 `;
 
 const Line = styled.line`
@@ -143,15 +152,19 @@ const ModalOverlay = props => {
       status={status}
     >
       <InnerContainer>
-        {status === modalOverlayStatuses.FAIL ?
-          <CloseButtonDiv>
-            <StyledCloseRounded data-testid="close-button" onClick={handleClose} />
-          </CloseButtonDiv>
-          : null}
-        {icon}
-        <TextWrapper>
-          {message}
-        </TextWrapper>
+        {
+          status === modalOverlayStatuses.FAIL && handleClose
+            ? <CloseButtonDiv>
+              <StyledCloseRounded data-testid="close-button" onClick={handleClose} />
+            </CloseButtonDiv>
+            : null
+        }
+        <IconAndMessageWrapper>
+          {icon}
+          <TextWrapper>
+            {message}
+          </TextWrapper>
+        </IconAndMessageWrapper>
       </InnerContainer>
     </Overlay>
   );

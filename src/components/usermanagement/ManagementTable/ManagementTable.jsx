@@ -9,14 +9,16 @@ import {
 } from "@material-ui/icons";
 import {
   ConfirmationModal,
-  EditUserModal,
   ModalOverlay
 } from "components";
 import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import { modalOverlayStatuses } from "globals";
+import {
+  formModes,
+  modalOverlayStatuses
+} from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { deleteUser } from "services";
@@ -136,6 +138,7 @@ const ManagementTable = props => {
   const {
     deltaToggle,
     setDeltaToggle,
+    setUserEntryFormState,
     workers
   } = props;
 
@@ -149,7 +152,6 @@ const ManagementTable = props => {
     message: null
   };
 
-  const [editUserModalOpts, setEditUserModalOpts] = useState(defaultModalOpts);
   const [confirmationModalOpts, setConfirmationModalOpts] = useState(defaultModalOpts);
   const [saveResult, setSaveResult] = useState(defaultSaveResult);
   const state = useAdminState();
@@ -164,10 +166,8 @@ const ManagementTable = props => {
     });
     let resultMessage;
     return deleteUser(deletedWorker.sid)
-      .then(res => {
+      .then(() => {
         resultMessage = `Successfully deleted Triton worker with sid ${deletedWorker.sid}`;
-        console.log(resultMessage,
-          { responseData: res.data });
         dispatch({
           type: "deleteWorker",
           payload: deletedWorker.sid
@@ -217,7 +217,7 @@ const ManagementTable = props => {
           </tr>
         </thead>
         <tbody>
-          {workers.map((worker,index) => {
+          {workers.map((worker, index) => {
             const isSelected = selectedWorkers.some(selectedWorker => selectedWorker.sid === worker.sid);
             const handleWorkerOnClick = () => dispatch({
               type: "toggleWorkerSelected",
@@ -228,7 +228,8 @@ const ManagementTable = props => {
             });
             const editButtonOnClick = event => {
               event.stopPropagation();
-              setEditUserModalOpts({
+              setUserEntryFormState({
+                formMode: formModes.UPDATE,
                 open: true,
                 worker
               });
@@ -267,9 +268,6 @@ const ManagementTable = props => {
             );
           })}
         </tbody>
-        <Modal open={editUserModalOpts.open}>
-          <EditUserModal handleClose={() => setEditUserModalOpts(defaultModalOpts)} worker={editUserModalOpts.worker}/>
-        </Modal>
         <Modal open={confirmationModalOpts.open}>
           { confirmationModalOpts.worker ?
             <ConfirmationModal
@@ -295,6 +293,7 @@ const ManagementTable = props => {
 ManagementTable.propTypes = {
   deltaToggle: PropTypes.bool.isRequired,
   setDeltaToggle: PropTypes.func.isRequired,
+  setUserEntryFormState: PropTypes.func.isRequired,
   workers: PropTypes.arrayOf(
     PropTypes.shape({
       attributes: PropTypes.object,
