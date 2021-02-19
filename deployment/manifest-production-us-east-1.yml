@@ -9,6 +9,5 @@ applications:
   timeout: 180
   env:
     NODE_ENV: production
-    NEW_RELIC_APP_NAME: cicct-softphone-admin-ui
   blue-green:
     health-check-endpoint: /health
