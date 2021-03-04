@@ -441,7 +441,9 @@ describe("<UserEntryForm />", () => {
         office_location_number: fetchedUser.officeNumber,
         primary_dept_name: fetchedUser.departmentName,
         primary_dept_number: fetchedUser.departmentNumber,
-        profile_id: validFormOptions.profileId
+        profile_id: validFormOptions.profileId,
+        contact_uri: `client:${validFormOptions.nNumber.toLowerCase()}`,
+        unique_id: validFormOptions.nNumber.toLowerCase()
       };
 
       describe("createUser service call succeeds", () => {

@@ -212,7 +212,9 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       office_location_number: form.nNumberFetchedUser.officeNumber,
       primary_dept_name: form.nNumberFetchedUser.departmentName,
       primary_dept_number: form.nNumberFetchedUser.departmentNumber,
-      profile_id: form.profileId
+      profile_id: form.profileId,
+      contact_uri: `client:${form.nNumber.toLowerCase()}`,
+      unique_id: form.nNumber.toLowerCase()
     };
     createUser(attributes)
       .then(twilioWorker => {
