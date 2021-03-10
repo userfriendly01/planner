@@ -79,7 +79,7 @@ const getWorkersStartAndEnd = (pageSelected: number, filteredWorkers: TwilioWork
   }
 };
 
-export const ManagementWrapper = () => {
+export const ManagementWrapper: React.FC = () => {
   const workersFromContext = useAdminState().workerContext.workers;
   let workers = [ ...workersFromContext ].sort(sortWorkersByFullName);
 
