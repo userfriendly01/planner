@@ -366,7 +366,9 @@ const UserEntryForm = (props: UserEntryFormProps) => {
   const extensionInputValid = (form.extensionValid || form.extension === "");
   const managerValid = form.manager !== "";
   const profileIdValid = form.profileId !== "";
-  const formValid = (formMode === formModes.INSERT ? nNumberInputValid : true) && profileIdValid && managerValid && form.outgoing.valid && extensionInputValid;
+  const formValid = (formMode === formModes.INSERT ? nNumberInputValid : true)
+    && profileIdValid && managerValid && form.outgoing.valid && extensionInputValid
+    && (form.didUser === true ? form.twilioDid.valid && form.skypeTeamsDid.valid : true);
   const formUpdated = (form.defaultSkillsUpdated || form.managerUpdated || form.profileIdUpdated || form.outgoing.updated || form.nNumberUpdated || form.extensionUpdated)
 
   return (
@@ -392,6 +394,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
                 ...form,
                 didUser: !form.didUser
               })}
+              inputProps={{ "aria-label": "toggle did user" }}
             />
           </ToggleContainer>
           <OutlinedSelect
@@ -529,10 +532,12 @@ const UserEntryForm = (props: UserEntryFormProps) => {
                 <h3>Overflow Skill</h3>
                 <Switch
                   checked={form.overflowSkill}
+                  value={form.overflowSkill}
                   onChange={() => setForm({
                     ...form,
                     overflowSkill: !form.overflowSkill
                   })}
+                  inputProps={{ "aria-label": "toggle overflow skill" }}
                 />
               </ToggleContainer>
               <ModalPhoneNumber

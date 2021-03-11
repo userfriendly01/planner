@@ -22,6 +22,7 @@ import {
   act,
   expectMockedComponent,
   expectOnlyPassedProps,
+  fireEvent,
   getLastInstanceCalled,
   getMockedComponentProps,
   mockStore,
@@ -183,6 +184,28 @@ describe("<UserEntryForm />", () => {
     expectOnlyPassedProps(ModalPhoneNumber, {
       number: "(603)456-7890"
     }, getLastInstanceCalled(ModalPhoneNumber));
+    // twilio did number
+    act(() => {
+      const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber) - 2).updateValue;
+      updatePhone("(603)456-7890", validFormOptions.did, true, validFormOptions.didE164);
+    });
+    act(() => {
+      getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber) - 2).onBlur();
+    });
+    expectOnlyPassedProps(ModalPhoneNumber, {
+      number: "(603)456-7890"
+    }, getLastInstanceCalled(ModalPhoneNumber) - 2);
+    // skype teams did number
+    act(() => {
+      const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber) - 1).updateValue;
+      updatePhone("(603)456-7890", validFormOptions.did, true, validFormOptions.didE164);
+    });
+    act(() => {
+      getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber) - 1).onBlur();
+    });
+    expectOnlyPassedProps(ModalPhoneNumber, {
+      number: "(603)456-7890"
+    }, getLastInstanceCalled(ModalPhoneNumber) - 1);
     // n number
     act(() => {
       const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).onUpdate;
@@ -223,6 +246,12 @@ describe("<UserEntryForm />", () => {
     const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
     expect(buttonProps.disabled).toBe(false);
   };
+
+  // const updateFormSoItIsValidDid = () => {
+  //   updateFormSoItIsValid();
+
+    
+  // };
 
   describe("ADD / INSERT mode", () => {
     const userEntryFormState = {
@@ -729,6 +758,193 @@ describe("<UserEntryForm />", () => {
             }, getLastInstanceCalled(ModalOverlay) - 1);
             expectOnlyPassedProps(ModalOverlay, {
               message: "Failed to update user: " + initialWorker.attributes.full_name,
+              status: modalOverlayStatuses.FAIL
+            }, getLastInstanceCalled(ModalOverlay));
+            expectMockedComponent(rendered, { ModalOverlay }, 0);
+          });
+        });
+      });
+    });
+  });
+  describe("ADD / INSERT mode with DID User", () => {
+    const userEntryFormState = {
+      formMode: formModes.INSERT,
+      worker: null,
+      open: true
+    };
+
+    const renderComponent = () => {
+      return render(<UserEntryForm handleClose={mockHandleClose} userEntryFormState={userEntryFormState} />, initialTestState);
+    };
+
+    describe("initial values", () => {
+
+      test("we should render the header, the correct components, and read profiles defined in the context API.", () => {
+        const rendered = renderComponent();
+
+        expect(rendered.container).toHaveTextContent("Add a User");
+        act(() => fireEvent.click(rendered.getByLabelText("toggle did user")));
+        // expect rendered components
+        expectMockedComponent(rendered, { OutlinedSelect }, 2);
+        expectMockedComponent(rendered, { ModalExtension }, 1);
+        expectMockedComponent(rendered, { ModalNNumber }, 1);
+        expectMockedComponent(rendered, { ModalPhoneNumber }, 3);
+        expectMockedComponent(rendered, { ModalOverlay }, 0);
+        expectMockedComponent(rendered, { StyledButton }, 2);
+        expectMockedComponent(rendered, { DefaultSkillSelector }, 1);
+        
+        // twilio did number
+        const expectedTwilioDidProps = {
+          number: "",
+          label: "Twilio DID *"
+        };
+        expectOnlyPassedProps(ModalPhoneNumber, expectedTwilioDidProps, 2);
+        // skype teams number
+        const expectedSkypeTeamsDidProps = {
+          number: "",
+          label: "Skype/Teams DID *"
+        };
+        expectOnlyPassedProps(ModalPhoneNumber, expectedSkypeTeamsDidProps, 3);
+      });
+    });
+    
+    describe("update Overflow Skill", () => {
+      
+      test("should set Overflow Skill to correct value", () => {
+        const rendered = renderComponent();
+        act(() => fireEvent.click(rendered.getByLabelText("toggle did user")));
+        act(() => fireEvent.click(rendered.getByLabelText("toggle overflow skill")));
+        // true
+      });
+    });
+
+    describe("update twilio number field", () => {
+      
+      test("should set twilio number to correct value", () => {
+        const rendered = renderComponent();
+        act(() => fireEvent.click(rendered.getByLabelText("toggle did user")));
+        // Next I'll call the update function, which should update the form and cause a re-render.
+        act(() => {
+          const updateValue = ModalPhoneNumber.mock.calls[2][0].updateValue;
+          updateValue("12345678");
+        });
+        expect(ModalPhoneNumber.mock.calls.length).toBe(7);
+        const newValue = ModalPhoneNumber.mock.calls[5][0].number;
+        expect(newValue).toEqual("12345678");
+      });
+    });
+
+    describe("update skype teams number field", () => {
+      
+      test("should set skype teams number to correct value", () => {
+        const rendered = renderComponent();
+        act(() => fireEvent.click(rendered.getByLabelText("toggle did user")));
+        // Next I'll call the update function, which should update the form and cause a re-render.
+        act(() => {
+          const updateValue = ModalPhoneNumber.mock.calls[3][0].updateValue;
+          updateValue("12345678");
+        });
+        expect(ModalPhoneNumber.mock.calls.length).toBe(7);
+        // const newValue = ModalPhoneNumber.mock.calls[1][0].number;
+        const newValue = ModalPhoneNumber.mock.calls[6][0].number;
+        expect(newValue).toEqual("12345678");
+      });
+    });
+
+    describe("fill out form so it is valid", () => {
+
+      const workerAttributesAfterFormValid = {
+        default_skills: validFormOptions.defaultSkills,
+        did: validFormOptions.didE164,
+        email: fetchedUser.email,
+        email_address: fetchedUser.email,
+        emp_first_name: fetchedUser.firstName,
+        emp_last_name: fetchedUser.lastName,
+        extension: validFormOptions.extension,
+        full_name: `${fetchedUser.firstName} ${fetchedUser.lastName}`,
+        manager_first_name: validFormOptions.manager.manager_first_name,
+        manager_last_name: validFormOptions.manager.manager_last_name,
+        manager_n_number: validFormOptions.manager.manager_n_number,
+        n_number: validFormOptions.nNumber,
+        office_location_name: fetchedUser.officeName,
+        office_location_number: fetchedUser.officeNumber,
+        primary_dept_name: fetchedUser.departmentName,
+        primary_dept_number: fetchedUser.departmentNumber,
+        profile_id: validFormOptions.profileId,
+        contact_uri: `client:${validFormOptions.nNumber.toLowerCase()}`,
+        unique_id: validFormOptions.nNumber.toLowerCase()
+      };
+
+      describe("createUser service call succeeds", () => {
+
+        const rawTwilioWorker = {
+          attributes: JSON.stringify(workerAttributesAfterFormValid),
+          friendlyName: validFormOptions.nNumber,
+          sid: "WK123"
+        };
+        beforeEach(() => createUser.mockResolvedValue(rawTwilioWorker));
+
+        test("should enable Add User button and save user when clicked", async () => {
+          const rendered = renderComponent();
+          act(() => fireEvent.click(rendered.getByLabelText("toggle did user")));
+          updateFormSoItIsValid();
+          // click button
+          act(() => {
+            const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
+            buttonProps.onClick();
+          });
+          await waitFor(() => {
+            expect(createUser).toHaveBeenCalledWith(workerAttributesAfterFormValid);
+            const actions = mockStore.getActions();
+            const expectedTwilioWorkerAdded = {
+              ...rawTwilioWorker,
+              attributes: workerAttributesAfterFormValid,
+              id: validFormOptions.nNumber,
+              skillsDifferent: true
+            };
+            delete expectedTwilioWorkerAdded.friendlyName;
+            expect(actions).toEqual([{
+              type: "addWorkers",
+              payload: [expectedTwilioWorkerAdded]
+            }]);
+            jest.runAllTimers();
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Adding new user...",
+              status: modalOverlayStatuses.SAVING
+            }, getLastInstanceCalled(ModalOverlay) - 1);
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Successfully added new user",
+              status: modalOverlayStatuses.SUCCESS
+            }, getLastInstanceCalled(ModalOverlay));
+            expectMockedComponent(rendered, { ModalOverlay }, 0);
+          });
+        });
+      });
+
+      describe("createUser service call fails", () => {
+
+        const serviceError = {};
+        beforeEach(() => createUser.mockRejectedValue(serviceError));
+
+        test("should enable Add User button and save user when clicked", async () => {
+          const rendered = renderComponent();
+          updateFormSoItIsValid();
+          // click button
+          act(() => {
+            const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
+            buttonProps.onClick();
+          });
+          await waitFor(() => {
+            expect(createUser).toHaveBeenCalledWith(workerAttributesAfterFormValid);
+            const actions = mockStore.getActions();
+            expect(actions).toHaveLength(0);
+            jest.runAllTimers();
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Adding new user...",
+              status: modalOverlayStatuses.SAVING
+            }, getLastInstanceCalled(ModalOverlay) - 1);
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Failed to add new user",
               status: modalOverlayStatuses.FAIL
             }, getLastInstanceCalled(ModalOverlay));
             expectMockedComponent(rendered, { ModalOverlay }, 0);
