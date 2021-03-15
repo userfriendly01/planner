@@ -182,7 +182,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
         updated: false,
         valid: false,
       },
-      overflowSkill: false, //
+      overflowSkill: false,
       profileId: "",
       profileIdBlurred: false,
       profileIdUpdated: false,
@@ -407,17 +407,6 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       }
       <FormControlsContainer>
         <FormControlsPane>
-          {/* <ToggleContainer>
-            <h3>DID User</h3>
-            <Switch
-              checked={form.didUser}
-              onChange={() => setForm({
-                ...form,
-                didUser: !form.didUser
-              })}
-              inputProps={{ "aria-label": "toggle did user" }}
-            />
-          </ToggleContainer> */}
           <OutlinedSelect
             error={form.managerBlurred && !managerValid}
             helperText={managerValid || !form.managerUpdated ? null : "Please select a manager"}
