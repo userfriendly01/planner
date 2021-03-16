@@ -125,6 +125,7 @@ const validFormOptions = {
   },
   did: "6034567890",
   didE164: "+16034567890",
+  directDialNum: "+18005556666",
   extension: "1234",
   manager: managerList[0],
   nNumber: "n1234567",
@@ -448,12 +449,13 @@ describe("<UserEntryForm />", () => {
 
       describe("createUser service call succeeds", () => {
 
-        const rawTwilioWorker = {
-          attributes: JSON.stringify(workerAttributesAfterFormValid),
-          friendlyName: validFormOptions.nNumber,
-          sid: "WK123"
+        const rawDbWorker = {
+          attributes: workerAttributesAfterFormValid,
+          directDialNum: validFormOptions.directDialNum,
+          workerSid: "WK1234"
         };
-        beforeEach(() => createUser.mockResolvedValue(rawTwilioWorker));
+
+        beforeEach(() => createUser.mockResolvedValue(rawDbWorker));
 
         test("should enable Add User button and save user when clicked", async () => {
           const rendered = renderComponent();
@@ -464,18 +466,11 @@ describe("<UserEntryForm />", () => {
             buttonProps.onClick();
           });
           await waitFor(() => {
-            expect(createUser).toHaveBeenCalledWith(workerAttributesAfterFormValid);
+            expect(createUser).toHaveBeenCalledWith({ attributes: workerAttributesAfterFormValid });
             const actions = mockStore.getActions();
-            const expectedTwilioWorkerAdded = {
-              ...rawTwilioWorker,
-              attributes: workerAttributesAfterFormValid,
-              id: validFormOptions.nNumber,
-              skillsDifferent: true
-            };
-            delete expectedTwilioWorkerAdded.friendlyName;
             expect(actions).toEqual([{
               type: "addWorkers",
-              payload: [expectedTwilioWorkerAdded]
+              payload: [rawDbWorker]
             }]);
             jest.runAllTimers();
             expectOnlyPassedProps(ModalOverlay, {
@@ -493,10 +488,13 @@ describe("<UserEntryForm />", () => {
 
       describe("createUser service call fails", () => {
 
-        const serviceError = {};
+        const serviceError = {
+          message: "something went wrong",
+          response: { data: "booooo" }
+        };
         beforeEach(() => createUser.mockRejectedValue(serviceError));
 
-        test("should enable Add User button and save user when clicked", async () => {
+        test("should display failure modal", async () => {
           const rendered = renderComponent();
           updateFormSoItIsValid();
           // click button
@@ -505,7 +503,7 @@ describe("<UserEntryForm />", () => {
             buttonProps.onClick();
           });
           await waitFor(() => {
-            expect(createUser).toHaveBeenCalledWith(workerAttributesAfterFormValid);
+            expect(createUser).toHaveBeenCalledWith({ attributes: workerAttributesAfterFormValid });
             const actions = mockStore.getActions();
             expect(actions).toHaveLength(0);
             jest.runAllTimers();
@@ -683,7 +681,6 @@ describe("<UserEntryForm />", () => {
             const expectedTwilioWorkerUpdated = {
               ...rawTwilioWorker,
               attributes: workerAttributes,
-              id: validFormOptions.nNumber,
               skillsDifferent: true
             };
             delete expectedTwilioWorkerUpdated.friendlyName;

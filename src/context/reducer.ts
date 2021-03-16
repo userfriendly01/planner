@@ -80,7 +80,6 @@ export interface TwilioWorker {
     routing?: TwilioWorkerSkills,
     unique_id?: string
   },
-  id: string,
   sid: string,
   skillsDifferent: boolean,
   twilioDid?: string

@@ -31,7 +31,6 @@ export const mapWorkerFromTwilioWorker = (rawTwilioWorker: RawTwilioWorker): Twi
   const skillsDifferent = areSkillsDifferent(attributes);
   return {
     attributes,
-    id: rawTwilioWorker.friendlyName,
     sid: rawTwilioWorker.sid,
     skillsDifferent
   };

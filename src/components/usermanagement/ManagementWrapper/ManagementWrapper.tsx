@@ -25,7 +25,6 @@ import {
   sortWorkersByFullName
 } from "utils";
 
-// @ts-ignore
 const ManagementContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -43,13 +42,13 @@ interface ManagementWrapperState {
   pageSelected: number,
   filterBy: string,
   searchBy: string
-};
+}
 
 export interface UserEntryFormState {
   formMode: string,
   open: boolean,
   worker: TwilioWorker
-};
+}
 
 const initialManagementWrapperState: ManagementWrapperState = {
   deltaToggle: false,
