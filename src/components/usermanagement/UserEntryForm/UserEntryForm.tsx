@@ -93,6 +93,12 @@ const ToggleContainer = styled.div`
   margin-left: 4px;
 `;
 
+const ToggleLabel = styled.div`
+  align-self: center;
+  font-weight: 400;
+  font-size: 1rem;
+`;
+
 const defaultNNumber = "n";
 
 export interface UserEntryFormProps {
@@ -111,7 +117,7 @@ export interface PhoneNumberState {
 export interface UserEntryForm_FormState {
   defaultSkills: TwilioWorkerSkills,
   defaultSkillsUpdated: boolean,
-  didUser: boolean, //
+  didUser: boolean,
   extension: string,
   extensionBlurred: boolean,
   extensionUpdated: boolean,
@@ -124,13 +130,13 @@ export interface UserEntryForm_FormState {
   nNumberFetchedUser: FetchUserResponse,
   nNumberUpdated: boolean,
   outgoing: PhoneNumberState,
-  overflowSkill: boolean, //
+  overflowSkill: boolean,
   profileId: string,
   profileIdBlurred: boolean,
   profileIdUpdated: boolean,
-  skypeTeamsDid: PhoneNumberState, //
-  twilioDid: PhoneNumberState //
-}
+  skypeTeamsDid: PhoneNumberState,
+  twilioDid: PhoneNumberState
+};
 
 const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
 
@@ -176,7 +182,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
         updated: false,
         valid: false
       },
-      overflowSkill: false, //
+      overflowSkill: false,
       profileId: "",
       profileIdBlurred: false,
       profileIdUpdated: false,
@@ -276,13 +282,20 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
             ...form.outgoing,
             blurred: false
           },
-          twilioDid: {
-            ...form.twilioDid,
-            blurred: false
-          },
+          // reset skype teams did and twilio did
           skypeTeamsDid: {
-            ...form.skypeTeamsDid,
-            blurred: false
+            value: "",
+            blurred: false,
+            e164: undefined,
+            updated: false,
+            valid: false,
+          },
+          twilioDid: {
+            value: "",
+            blurred: false,
+            e164: undefined,
+            updated: false,
+            valid: false,
           }
         });
         dispatch({
@@ -378,88 +391,89 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
   const extensionInputValid = (form.extensionValid || form.extension === "");
   const managerValid = form.manager !== "";
   const profileIdValid = form.profileId !== "";
-  const formValid = (formMode === formModes.INSERT ? nNumberInputValid : true) && profileIdValid && managerValid && form.outgoing.valid && extensionInputValid;
-  const formUpdated = (form.defaultSkillsUpdated || form.managerUpdated || form.profileIdUpdated || form.outgoing.updated || form.nNumberUpdated || form.extensionUpdated);
+  const formValid = (formMode === formModes.INSERT ? nNumberInputValid : true)
+    && profileIdValid && managerValid && form.outgoing.valid && extensionInputValid
+    && (form.didUser === true ? form.twilioDid.valid && form.skypeTeamsDid.valid : true);
+  const formUpdated = (form.defaultSkillsUpdated || form.managerUpdated || form.profileIdUpdated || form.outgoing.updated || form.nNumberUpdated || form.extensionUpdated)
 
   return (
-    <>
-      <ModalContainer>
-        {loading.saveUser ?
-          <ModalOverlay
-            status={loading.saveStatus}
-            message={loading.overlayMessage}
-          /> : null}
-        <Header1>{formMode === formModes.INSERT ? "Add a User" : "Edit User"}</Header1>
-        {
-          formMode === formModes.UPDATE
-            ? <Header2>{worker.attributes.full_name}</Header2>
-            : null
-        }
-        <FormControlsContainer>
-          <FormControlsPane>
-            <ToggleContainer>
-              <h3>DID User</h3>
-              <Switch
-                checked={form.didUser}
-                onChange={() => setForm({
-                  ...form,
-                  didUser: !form.didUser
-                })}
-              />
-            </ToggleContainer>
-            <OutlinedSelect
-              error={form.managerBlurred && !managerValid}
-              helperText={managerValid || !form.managerUpdated ? null : "Please select a manager"}
-              label={"Manager *"}
-              labelWidth={67}
-              onBlur={() => setForm({
-                ...form,
-                managerBlurred: true
-              })}
-              optionsList={managers.sort(sortManagersByName)}
-              optionsDisplayFunc={option => {
-                return {
-                  display: `${option.manager_first_name} ${option.manager_last_name}`,
-                  key: option.manager_n_number,
-                  value: JSON.stringify(option)
-                };
-              }}
-              updateValue={newValue => setForm({
-                ...form,
-                manager: newValue,
-                managerUpdated: true
-              })}
-              value={form.manager}
-            />
-            <OutlinedSelect
-              error={form.profileIdBlurred && !profileIdValid}
-              helperText={profileIdValid || !form.profileIdUpdated ? null : "Please select a team"}
-              label={"Team *"}
-              labelWidth={44}
-              onBlur={() => setForm({
-                ...form,
-                profileIdBlurred: true
-              })}
-              optionsList={profiles.sort(sortProfilesByName)}
-              optionsDisplayFunc={option => {
-                return {
-                  display: option.profile_nme,
-                  key: option.profile_id,
-                  value: option.profile_id
-                };
-              }}
-              updateValue={newValue => setForm({
-                ...form,
-                profileId: newValue,
-                profileIdUpdated: true
-              })}
-              value={form.profileId}
-            />
-            <ModalPhoneNumber
-              allowSevenDigitVdn={false}
-              id="outgoing-number"
-              number={form.outgoing.value}
-              onBlur={() => setForm({
+    <ModalContainer>
+      {loading.saveUser ?
+        <ModalOverlay
+          status={loading.saveStatus}
+          message={loading.overlayMessage}
+        /> : null}
+      <Header1>{formMode === formModes.INSERT ? "Add a User" : "Edit User"}</Header1>
+      {
+        formMode === formModes.UPDATE
+          ? <Header2>{worker.attributes.full_name}</Header2>
+          : null
+      }
+      <FormControlsContainer>
+        <FormControlsPane>
+          <OutlinedSelect
+            error={form.managerBlurred && !managerValid}
+            helperText={managerValid || !form.managerUpdated ? null : "Please select a manager"}
+            label={"Manager *"}
+            labelWidth={67}
+            onBlur={() => setForm({
+              ...form,
+              managerBlurred: true
+            })}
+            optionsList={managers.sort(sortManagersByName)}
+            optionsDisplayFunc={option => {
+              return {
+                display: `${option.manager_first_name} ${option.manager_last_name}`,
+                key: option.manager_n_number,
+                value: JSON.stringify(option)
+              };
+            }}
+            updateValue={newValue => setForm({
+              ...form,
+              manager: newValue,
+              managerUpdated: true
+            })}
+            value={form.manager}
+          />
+          <OutlinedSelect
+            error={form.profileIdBlurred && !profileIdValid}
+            helperText={profileIdValid || !form.profileIdUpdated ? null : "Please select a team"}
+            label={"Team *"}
+            labelWidth={44}
+            onBlur={() => setForm({
+              ...form,
+              profileIdBlurred: true
+            })}
+            optionsList={profiles.sort(sortProfilesByName)}
+            optionsDisplayFunc={option => {
+              return {
+                display: option.profile_nme,
+                key: option.profile_id,
+                value: option.profile_id
+              };
+            }}
+            updateValue={newValue => setForm({
+              ...form,
+              profileId: newValue,
+              profileIdUpdated: true
+            })}
+            value={form.profileId}
+          />
+          <ModalPhoneNumber
+            allowSevenDigitVdn={false}
+            id="outgoing-number"
+            number={form.outgoing.value}
+            onBlur={() => setForm({
+              ...form,
+              outgoing: {
+                ...form.outgoing,
+                blurred: true
+              }
+            })}
+            label="Outgoing Number *"
+            showError={form.outgoing.blurred}
+            updateValue={(maskedValue, unmaskedValue, isValid, e164Number) => {
+              setForm({
                 ...form,
                 outgoing: {
                   ...form.outgoing,
@@ -518,24 +532,30 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
               originalValue={(worker && worker.attributes) ? worker.attributes.extension : undefined}
               onBlur={() => setForm({
                 ...form,
-                extensionBlurred: true
-              })}
-              onClear={() => {
-                setForm({
-                  ...form,
-                  extension: "",
-                  extensionUpdated: true,
-                  extensionValid: false
-                });
-              }}
-              onUpdate={(extension, extensionValid) => setForm({
-                ...form,
-                extension,
-                extensionBlurred: extensionValid, // blur if valid because we are going to disable this control
+                extension: "",
                 extensionUpdated: true,
-                extensionValid
+                extensionValid: false
               })}
+            // }}
+            onUpdate={(extension, extensionValid) => setForm({
+              ...form,
+              extension,
+              extensionBlurred: extensionValid, // blur if valid because we are going to disable this control
+              extensionUpdated: true,
+              extensionValid
+            })}
+          />
+          <ToggleContainer>
+            <Switch
+              checked={form.didUser}
+              onChange={() => setForm({
+                ...form,
+                didUser: !form.didUser
+              })}
+              inputProps={{ "aria-label": "toggle did user" }}
             />
+            <ToggleLabel>DID User</ToggleLabel>
+          </ToggleContainer>
             {form.didUser ? (
               <>
                 <ToggleContainer>
