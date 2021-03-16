@@ -136,7 +136,7 @@ export interface UserEntryForm_FormState {
   profileIdUpdated: boolean,
   skypeTeamsDid: PhoneNumberState,
   twilioDid: PhoneNumberState
-};
+}
 
 const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
 
@@ -288,14 +288,14 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
             blurred: false,
             e164: undefined,
             updated: false,
-            valid: false,
+            valid: false
           },
           twilioDid: {
             value: "",
             blurred: false,
             e164: undefined,
             updated: false,
-            valid: false,
+            valid: false
           }
         });
         dispatch({
@@ -394,7 +394,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
   const formValid = (formMode === formModes.INSERT ? nNumberInputValid : true)
     && profileIdValid && managerValid && form.outgoing.valid && extensionInputValid
     && (form.didUser === true ? form.twilioDid.valid && form.skypeTeamsDid.valid : true);
-  const formUpdated = (form.defaultSkillsUpdated || form.managerUpdated || form.profileIdUpdated || form.outgoing.updated || form.nNumberUpdated || form.extensionUpdated)
+  const formUpdated = (form.defaultSkillsUpdated || form.managerUpdated || form.profileIdUpdated || form.outgoing.updated || form.nNumberUpdated || form.extensionUpdated);
 
   return (
     <ModalContainer>
@@ -477,66 +477,63 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
                 ...form,
                 outgoing: {
                   ...form.outgoing,
-                  blurred: true
+                  value: maskedValue,
+                  e164: e164Number,
+                  updated: true,
+                  valid: isValid && (e164Number ? true : false)
                 }
-              })}
-              label="Outgoing Number *"
-              showError={form.outgoing.blurred}
-              updateValue={(maskedValue, unmaskedValue, isValid, e164Number) => {
-                setForm({
-                  ...form,
-                  outgoing: {
-                    ...form.outgoing,
-                    value: maskedValue,
-                    e164: e164Number,
-                    updated: true,
-                    valid: isValid && (e164Number ? true : false)
-                  }
-                });
-              }}
-            />
-            <ModalNNumber
-              disabled={(formMode === formModes.UPDATE) || (form.nNumberFetchedUser ? true : false)}
-              fetchedUser={form.nNumberFetchedUser}
-              label="N Number *"
-              onBlur={() => setForm({
+              });
+            }}
+          />
+          <ModalNNumber
+            disabled={(formMode === formModes.UPDATE) || (form.nNumberFetchedUser ? true : false)}
+            fetchedUser={form.nNumberFetchedUser}
+            label="N Number *"
+            onBlur={() => setForm({
+              ...form,
+              nNumberBlurred: true
+            })}
+            onClear={() => {
+              setForm({
                 ...form,
-                nNumberBlurred: true
-              })}
-              onClear={() => {
-                setForm({
-                  ...form,
-                  nNumber: defaultNNumber,
-                  nNumberFetchedUser: null,
-                  nNumberUpdated: true
-                });
-              }}
-              onComplete={(fetchedUser, nNumber) => setForm({
+                nNumber: defaultNNumber,
+                nNumberFetchedUser: null,
+                nNumberUpdated: true
+              });
+            }}
+            onComplete={(fetchedUser, nNumber) => setForm({
+              ...form,
+              nNumber,
+              nNumberFetchedUser: fetchedUser
+            })}
+            onUpdate={nNumber => {
+              setForm({
                 ...form,
                 nNumber,
-                nNumberFetchedUser: fetchedUser
-              })}
-              onUpdate={nNumber => {
-                setForm({
-                  ...form,
-                  nNumber,
-                  nNumberUpdated: true
-                });
-              }}
-              value={form.nNumber}
-            />
-            <ModalExtension
-              disabled={form.extensionValid && extensionMatcher.test(form.extension)}
-              error={form.extensionBlurred && !extensionInputValid}
-              extension={form.extension}
-              originalValue={(worker && worker.attributes) ? worker.attributes.extension : undefined}
-              onBlur={() => setForm({
+                nNumberUpdated: true
+              });
+            }}
+            value={form.nNumber}
+          />
+          <ModalExtension
+            disabled={form.extensionValid && extensionMatcher.test(form.extension)}
+            error={form.extensionBlurred && !extensionInputValid}
+            extension={form.extension}
+            originalValue={(worker && worker.attributes) ? worker.attributes.extension : undefined}
+            onBlur={() => setForm({
+              ...form,
+              extension: "",
+              extensionUpdated: true,
+              extensionValid: false
+            })}
+            onClear={() => {
+              setForm({
                 ...form,
                 extension: "",
                 extensionUpdated: true,
                 extensionValid: false
-              })}
-            // }}
+              });
+            }}
             onUpdate={(extension, extensionValid) => setForm({
               ...form,
               extension,
@@ -556,101 +553,100 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
             />
             <ToggleLabel>DID User</ToggleLabel>
           </ToggleContainer>
-            {form.didUser ? (
-              <>
-                <ToggleContainer>
-                  <h3>Overflow Skill</h3>
-                  <Switch
-                    checked={form.overflowSkill}
-                    onChange={() => setForm({
-                      ...form,
-                      overflowSkill: !form.overflowSkill
-                    })}
-                  />
-                </ToggleContainer>
-                <ModalPhoneNumber
-                  allowSevenDigitVdn={false}
-                  id="twilio-did"
-                  number={form.twilioDid.value}
-                  onBlur={() => setForm({
+          {form.didUser ? (
+            <>
+              <ToggleContainer>
+                <h3>Overflow Skill</h3>
+                <Switch
+                  checked={form.overflowSkill}
+                  onChange={() => setForm({
+                    ...form,
+                    overflowSkill: !form.overflowSkill
+                  })}
+                />
+              </ToggleContainer>
+              <ModalPhoneNumber
+                allowSevenDigitVdn={false}
+                id="twilio-did"
+                number={form.twilioDid.value}
+                onBlur={() => setForm({
+                  ...form,
+                  twilioDid: {
+                    ...form.twilioDid,
+                    blurred: true
+                  }
+                })}
+                label="Twilio DID *"
+                showError={form.twilioDid.blurred}
+                updateValue={(maskedValue, unmaskedValue, isValid, e164Number) => {
+                  setForm({
                     ...form,
                     twilioDid: {
                       ...form.twilioDid,
-                      blurred: true
+                      value: maskedValue,
+                      e164: e164Number,
+                      updated: true,
+                      valid: isValid && (e164Number ? true : false)
                     }
-                  })}
-                  label="Twilio DID *"
-                  showError={form.twilioDid.blurred}
-                  updateValue={(maskedValue, unmaskedValue, isValid, e164Number) => {
-                    setForm({
-                      ...form,
-                      twilioDid: {
-                        ...form.twilioDid,
-                        value: maskedValue,
-                        e164: e164Number,
-                        updated: true,
-                        valid: isValid && (e164Number ? true : false)
-                      }
-                    });
-                  }}
-                />
-                <ModalPhoneNumber
-                  allowSevenDigitVdn={false}
-                  id="skype-teams-did"
-                  number={form.skypeTeamsDid.value}
-                  onBlur={() => setForm({
+                  });
+                }}
+              />
+              <ModalPhoneNumber
+                allowSevenDigitVdn={false}
+                id="skype-teams-did"
+                number={form.skypeTeamsDid.value}
+                onBlur={() => setForm({
+                  ...form,
+                  skypeTeamsDid: {
+                    ...form.skypeTeamsDid,
+                    blurred: true
+                  }
+                })}
+                label="Skype/Teams DID *"
+                showError={form.skypeTeamsDid.blurred}
+                updateValue={(maskedValue, unmaskedValue, isValid, e164Number) => {
+                  setForm({
                     ...form,
                     skypeTeamsDid: {
                       ...form.skypeTeamsDid,
-                      blurred: true
+                      value: maskedValue,
+                      e164: e164Number,
+                      updated: true,
+                      valid: isValid && (e164Number ? true : false)
                     }
-                  })}
-                  label="Skype/Teams DID *"
-                  showError={form.skypeTeamsDid.blurred}
-                  updateValue={(maskedValue, unmaskedValue, isValid, e164Number) => {
-                    setForm({
-                      ...form,
-                      skypeTeamsDid: {
-                        ...form.skypeTeamsDid,
-                        value: maskedValue,
-                        e164: e164Number,
-                        updated: true,
-                        valid: isValid && (e164Number ? true : false)
-                      }
-                    });
-                  }}
-                />
-              </>
-            ) : null}
-          </FormControlsPane>
-          <FormControlsPane>
-            <DefaultSkillSelector
-              defaultSkills={form.defaultSkills}
-              setDefaultSkills={defaultSkills => {
-                setForm({
-                  ...form,
-                  defaultSkillsUpdated: true,
-                  defaultSkills
-                });
-              }}
-            />
-          </FormControlsPane>
-        </FormControlsContainer>
-        <ButtonWrapper>
-          <StyledButton
-            disabled={formMode === formModes.INSERT ? !formValid : (!formUpdated || !formValid)}
-            onClick={formMode === formModes.INSERT ? doCreateUser : doUpdateUser}
-          >
-            {formMode === formModes.INSERT ? "Add User" : "Save User"}
-          </StyledButton>
-          <StyledButton
-            onClick={handleClose}
-          >
+                  });
+                }}
+              />
+            </>
+          ) : null}
+        </FormControlsPane>
+        <FormControlsPane>
+          <DefaultSkillSelector
+            defaultSkills={form.defaultSkills}
+            setDefaultSkills={defaultSkills => {
+              setForm({
+                ...form,
+                defaultSkillsUpdated: true,
+                defaultSkills
+              });
+            }}
+          />
+        </FormControlsPane>
+      </FormControlsContainer>
+      <ButtonWrapper>
+        <StyledButton
+          disabled={formMode === formModes.INSERT ? !formValid : (!formUpdated || !formValid)}
+          onClick={formMode === formModes.INSERT ? doCreateUser : doUpdateUser}
+        >
+          {formMode === formModes.INSERT ? "Add User" : "Save User"}
+        </StyledButton>
+        <StyledButton
+          onClick={handleClose}
+        >
           Close
-          </StyledButton>
-        </ButtonWrapper>
-      </ModalContainer>
-    </>
+        </StyledButton>
+      </ButtonWrapper>
+    </ModalContainer>
   );
 };
 
