@@ -247,13 +247,7 @@ describe("<UserEntryForm />", () => {
     expect(buttonProps.disabled).toBe(false);
   };
 
-  // const updateFormSoItIsValidDid = () => {
-  //   updateFormSoItIsValid();
-
-    
-  // };
-
-  describe("ADD / INSERT mode", () => {
+  describe("ADD / INSERT mode non-DID user", () => {
     const userEntryFormState = {
       formMode: formModes.INSERT,
       worker: null,
@@ -783,7 +777,7 @@ describe("<UserEntryForm />", () => {
         const rendered = renderComponent();
 
         expect(rendered.container).toHaveTextContent("Add a User");
-        act(() => fireEvent.click(rendered.getByLabelText("toggle did user")));
+        fireEvent.click(rendered.getByLabelText("toggle did user"));
         // expect rendered components
         expectMockedComponent(rendered, { OutlinedSelect }, 2);
         expectMockedComponent(rendered, { ModalExtension }, 1);
@@ -812,7 +806,7 @@ describe("<UserEntryForm />", () => {
       
       test("should set Overflow Skill to correct value", () => {
         const rendered = renderComponent();
-        act(() => fireEvent.click(rendered.getByLabelText("toggle did user")));
+        fireEvent.click(rendered.getByLabelText("toggle did user"));
         act(() => fireEvent.click(rendered.getByLabelText("toggle overflow skill")));
         // true
       });
@@ -822,7 +816,7 @@ describe("<UserEntryForm />", () => {
       
       test("should set twilio number to correct value", () => {
         const rendered = renderComponent();
-        act(() => fireEvent.click(rendered.getByLabelText("toggle did user")));
+        fireEvent.click(rendered.getByLabelText("toggle did user"));
         // Next I'll call the update function, which should update the form and cause a re-render.
         act(() => {
           const updateValue = ModalPhoneNumber.mock.calls[2][0].updateValue;
@@ -838,14 +832,13 @@ describe("<UserEntryForm />", () => {
       
       test("should set skype teams number to correct value", () => {
         const rendered = renderComponent();
-        act(() => fireEvent.click(rendered.getByLabelText("toggle did user")));
+        fireEvent.click(rendered.getByLabelText("toggle did user"));
         // Next I'll call the update function, which should update the form and cause a re-render.
         act(() => {
           const updateValue = ModalPhoneNumber.mock.calls[3][0].updateValue;
           updateValue("12345678");
         });
         expect(ModalPhoneNumber.mock.calls.length).toBe(7);
-        // const newValue = ModalPhoneNumber.mock.calls[1][0].number;
         const newValue = ModalPhoneNumber.mock.calls[6][0].number;
         expect(newValue).toEqual("12345678");
       });
@@ -886,7 +879,7 @@ describe("<UserEntryForm />", () => {
 
         test("should enable Add User button and save user when clicked", async () => {
           const rendered = renderComponent();
-          act(() => fireEvent.click(rendered.getByLabelText("toggle did user")));
+          fireEvent.click(rendered.getByLabelText("toggle did user"));
           updateFormSoItIsValid();
           // click button
           act(() => {

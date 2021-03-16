@@ -537,7 +537,6 @@ const UserEntryForm = (props: UserEntryFormProps) => {
             })}
           />
           <ToggleContainer>
-            {/* <h3>DID User</h3> */}
             <Switch
               checked={form.didUser}
               onChange={() => setForm({
