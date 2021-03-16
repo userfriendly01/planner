@@ -226,16 +226,9 @@ describe("<UserEntryForm />", () => {
     act(() => {
       getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension)).onUpdate(validFormOptions.extension, true);
     });
-    /* Mike: onBlur sets
-      {
-        extension: "",
-        extensionValid: false
-      }
-      which causes this test to fail.  It passes on other branches. I don't get it
-    */
-    // act(() => {
-    //   getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension)).onBlur();
-    // });
+    act(() => {
+      getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension)).onBlur();
+    });
     expectOnlyPassedProps(ModalExtension, {
       disabled: true,
       extension: validFormOptions.extension
