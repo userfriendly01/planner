@@ -84,7 +84,7 @@ const initialTestState = {
   }
 };
 
-const fetchedUser ={
+const fetchedUser = {
   email: "test@abc.com",
   firstName: "Frank",
   lastName: "Rizzo",
@@ -224,10 +224,14 @@ describe("<UserEntryForm />", () => {
     }, getLastInstanceCalled(ModalNNumber));
     // extension
     act(() => {
-      getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension)).onUpdate(validFormOptions.extension, true);
-    });
-    act(() => {
       getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension)).onBlur();
+    });
+    expectOnlyPassedProps(ModalExtension, {
+      disabled: false,
+      extension: ""
+    }, getLastInstanceCalled(ModalExtension));
+    act(() => {
+      getMockedComponentProps(ModalExtension, getLastInstanceCalled(ModalExtension)).onUpdate(validFormOptions.extension, true);
     });
     expectOnlyPassedProps(ModalExtension, {
       disabled: true,
@@ -416,7 +420,7 @@ describe("<UserEntryForm />", () => {
       });
     });
 
-    describe("update extension", () => {
+    describe("update extension and check onBlur", () => {
 
       test("changes made to the extension field - invalid extension", () => {
         renderComponent();
