@@ -822,6 +822,9 @@ describe("<UserEntryForm />", () => {
           const updateValue = ModalPhoneNumber.mock.calls[2][0].updateValue;
           updateValue("12345678");
         });
+        // First render: 1 ModalPhoneNumber -> Outgoing number
+        // Second render: 3 ModalPhoneNumbers -> Outgoing number, Twilio DID, Skype/Teams DID
+        // Third render (after fields are updated): same 3 ModalPhoneNumbers -> Outgoing number, Twilio DID, Skype/Teams DID
         expect(ModalPhoneNumber.mock.calls.length).toBe(7);
         const newValue = ModalPhoneNumber.mock.calls[5][0].number;
         expect(newValue).toEqual("12345678");
