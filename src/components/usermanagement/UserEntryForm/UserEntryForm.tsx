@@ -556,14 +556,16 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
           {form.didUser ? (
             <>
               <ToggleContainer>
-                <h3>Overflow Skill</h3>
                 <Switch
                   checked={form.overflowSkill}
+                  value={form.overflowSkill}
                   onChange={() => setForm({
                     ...form,
                     overflowSkill: !form.overflowSkill
                   })}
+                  inputProps={{ "aria-label": "toggle overflow skill" }}
                 />
+                <ToggleLabel>Overflow Skill</ToggleLabel>
               </ToggleContainer>
               <ModalPhoneNumber
                 allowSevenDigitVdn={false}
