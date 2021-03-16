@@ -93,6 +93,12 @@ const ToggleContainer = styled.div`
   margin-left: 4px;
 `;
 
+const ToggleLabel = styled.div`
+  align-self: center;
+  font-weight: 400;
+  font-size: 1rem;
+`;
+
 const defaultNNumber = "n";
 
 export interface UserEntryFormProps {
@@ -111,7 +117,7 @@ export interface PhoneNumberState {
 export interface UserEntryForm_FormState {
   defaultSkills: TwilioWorkerSkills,
   defaultSkillsUpdated: boolean,
-  didUser: boolean, //
+  didUser: boolean,
   extension: string,
   extensionBlurred: boolean,
   extensionUpdated: boolean,
@@ -124,12 +130,12 @@ export interface UserEntryForm_FormState {
   nNumberFetchedUser: FetchUserResponse,
   nNumberUpdated: boolean,
   outgoing: PhoneNumberState,
-  overflowSkill: boolean, //
+  overflowSkill: boolean,
   profileId: string,
   profileIdBlurred: boolean,
   profileIdUpdated: boolean,
-  skypeTeamsDid: PhoneNumberState, //
-  twilioDid: PhoneNumberState //
+  skypeTeamsDid: PhoneNumberState,
+  twilioDid: PhoneNumberState
 };
 
 const UserEntryForm = (props: UserEntryFormProps) => {
@@ -176,7 +182,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
         updated: false,
         valid: false,
       },
-      overflowSkill: false, //
+      overflowSkill: false,
       profileId: "",
       profileIdBlurred: false,
       profileIdUpdated: false,
@@ -271,6 +277,21 @@ const UserEntryForm = (props: UserEntryFormProps) => {
           outgoing: {
             ...form.outgoing,
             blurred: false
+          },
+          // reset skype teams did and twilio did
+          skypeTeamsDid: {
+            value: "",
+            blurred: false,
+            e164: undefined,
+            updated: false,
+            valid: false,
+          },
+          twilioDid: {
+            value: "",
+            blurred: false,
+            e164: undefined,
+            updated: false,
+            valid: false,
           }
         });
         dispatch({
@@ -366,7 +387,9 @@ const UserEntryForm = (props: UserEntryFormProps) => {
   const extensionInputValid = (form.extensionValid || form.extension === "");
   const managerValid = form.manager !== "";
   const profileIdValid = form.profileId !== "";
-  const formValid = (formMode === formModes.INSERT ? nNumberInputValid : true) && profileIdValid && managerValid && form.outgoing.valid && extensionInputValid;
+  const formValid = (formMode === formModes.INSERT ? nNumberInputValid : true)
+    && profileIdValid && managerValid && form.outgoing.valid && extensionInputValid
+    && (form.didUser === true ? form.twilioDid.valid && form.skypeTeamsDid.valid : true);
   const formUpdated = (form.defaultSkillsUpdated || form.managerUpdated || form.profileIdUpdated || form.outgoing.updated || form.nNumberUpdated || form.extensionUpdated)
 
   return (
@@ -384,16 +407,6 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       }
       <FormControlsContainer>
         <FormControlsPane>
-          <ToggleContainer>
-            <h3>DID User</h3>
-            <Switch
-              checked={form.didUser}
-              onChange={() => setForm({
-                ...form,
-                didUser: !form.didUser
-              })}
-            />
-          </ToggleContainer>
           <OutlinedSelect
             error={form.managerBlurred && !managerValid}
             helperText={managerValid || !form.managerUpdated ? null : "Please select a manager"}
@@ -523,17 +536,30 @@ const UserEntryForm = (props: UserEntryFormProps) => {
               extensionValid
             })}
           />
+          <ToggleContainer>
+            <Switch
+              checked={form.didUser}
+              onChange={() => setForm({
+                ...form,
+                didUser: !form.didUser
+              })}
+              inputProps={{ "aria-label": "toggle did user" }}
+            />
+            <ToggleLabel>DID User</ToggleLabel>
+          </ToggleContainer>
           {form.didUser ? (
             <>
               <ToggleContainer>
-                <h3>Overflow Skill</h3>
                 <Switch
                   checked={form.overflowSkill}
+                  value={form.overflowSkill}
                   onChange={() => setForm({
                     ...form,
                     overflowSkill: !form.overflowSkill
                   })}
+                  inputProps={{ "aria-label": "toggle overflow skill" }}
                 />
+                <ToggleLabel>Overflow Skill</ToggleLabel>
               </ToggleContainer>
               <ModalPhoneNumber
                 allowSevenDigitVdn={false}
