@@ -30,7 +30,7 @@ export interface Manager {
 }
 
 export interface MySqlBoolean {
-  data: [0 | 1]
+  data: [0 | 1],
   type: "Buffer"
 }
 
@@ -80,9 +80,9 @@ export interface TwilioWorker {
     routing?: TwilioWorkerSkills,
     unique_id?: string
   },
-  id: string,
   sid: string,
-  skillsDifferent: boolean
+  skillsDifferent: boolean,
+  twilioDid?: string
 }
 
 export interface TwilioWorkerSkills {

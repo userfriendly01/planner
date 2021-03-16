@@ -25,7 +25,6 @@ import {
   sortWorkersByFullName
 } from "utils";
 
-// @ts-ignore
 const ManagementContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -43,13 +42,13 @@ interface ManagementWrapperState {
   pageSelected: number,
   filterBy: string,
   searchBy: string
-};
+}
 
 export interface UserEntryFormState {
   formMode: string,
   open: boolean,
   worker: TwilioWorker
-};
+}
 
 const initialManagementWrapperState: ManagementWrapperState = {
   deltaToggle: false,
@@ -79,7 +78,7 @@ const getWorkersStartAndEnd = (pageSelected: number, filteredWorkers: TwilioWork
   }
 };
 
-export const ManagementWrapper = () => {
+export const ManagementWrapper: React.FC = () => {
   const workersFromContext = useAdminState().workerContext.workers;
   let workers = [ ...workersFromContext ].sort(sortWorkersByFullName);
 
