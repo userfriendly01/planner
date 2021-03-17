@@ -3,6 +3,7 @@ import {
   ModalOverlay,
   StyledButton
 } from "components";
+import ForwardToEntryForm from "./ForwardToEntryForm";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
@@ -60,7 +61,8 @@ const ConfirmationModal = props => {
     onConfirm,
     body,
     handleClose,
-    saveResult
+    saveResult,
+    workers
   } = props;
 
 
@@ -75,8 +77,12 @@ const ConfirmationModal = props => {
           /> : null}
         <ConfirmationText>{body.confirmationText}</ConfirmationText>
         <Data>{body.data}</Data>
+        <ForwardToEntryForm
+          workers={workers}
+          updateForwardTo={() => console.log("Updated!")}
+        />
         <ButtonWrapper>
-          <Button onClick={onConfirm} data-testid={"confirm-button"}>
+          <Button disabled={true} onClick={onConfirm} data-testid={"confirm-button"}>
             Confirm
           </Button>
           <Button onClick={handleClose} data-testid={"cancel-button"}>
@@ -98,7 +104,14 @@ ConfirmationModal.propTypes = {
   saveResult: PropTypes.shape({
     status: PropTypes.string,
     message: PropTypes.string
-  }).isRequired
+  }).isRequired,
+  workers: PropTypes.arrayOf(
+    PropTypes.shape({
+      attributes: PropTypes.object,
+      id: PropTypes.string,
+      sid: PropTypes.string
+    })
+  )
 };
 
 export default ConfirmationModal;

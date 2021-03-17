@@ -271,6 +271,7 @@ const ManagementTable = props => {
         <Modal open={confirmationModalOpts.open}>
           { confirmationModalOpts.worker ?
             <ConfirmationModal
+              workers={workers}
               onConfirm={handleDeleteUser}
               handleClose={() => {
                 setConfirmationModalOpts(defaultModalOpts);

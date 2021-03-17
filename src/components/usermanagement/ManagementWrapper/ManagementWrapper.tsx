@@ -43,13 +43,13 @@ interface ManagementWrapperState {
   pageSelected: number,
   filterBy: string,
   searchBy: string
-};
+}
 
 export interface UserEntryFormState {
   formMode: string,
   open: boolean,
   worker: TwilioWorker
-};
+}
 
 const initialManagementWrapperState: ManagementWrapperState = {
   deltaToggle: false,
@@ -81,7 +81,12 @@ const getWorkersStartAndEnd = (pageSelected: number, filteredWorkers: TwilioWork
 
 export const ManagementWrapper = () => {
   const workersFromContext = useAdminState().workerContext.workers;
+  const skillsFromContext = useAdminState().skillContext.taskrouterSkills;
+
+  // const taskrouterSkillsForDropDown = skillsFromContext.filter(skillObj => !defaultSkills.skills.includes(skillObj.skill));
+
   let workers = [ ...workersFromContext ].sort(sortWorkersByFullName);
+  let skills = [ ...skillsFromContext ];
 
   const [state, setState] = useState(initialManagementWrapperState);
 
@@ -145,7 +150,9 @@ export const ManagementWrapper = () => {
           deltaToggle={state.deltaToggle}
           setDeltaToggle={setStateFromDeltaToggle}
           setUserEntryFormState={setUserEntryFormState}
-          workers={workers.slice(workersStart, workersEnd)} />
+          skills={skills}
+          workers={workers.slice(workersStart, workersEnd)}
+        />
       </StyledPaper>
       <ManagementPagination
         end={workersEnd}
