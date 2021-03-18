@@ -77,14 +77,16 @@ const ModalContainer = styled.div`
   background-color: ${props => props.theme.backgroundColor};
   border-radius: 4px;
   display: flex;
-  flex: 1 1 auto;
   flex-direction: column;
-  left: 50%;
+  left: 0;
+  margin: 0 auto;
+  max-height: 80vh;
   max-width: 700px;
+  overflow-y: auto;
   padding: 0 8px;
   position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  right: 0;
+  top: 10vh;
   width: 100%;
 `;
 
@@ -546,33 +548,37 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
               extensionValid
             })}
           />
-          <ToggleContainer>
-            <Switch
-              checked={form.didUser}
-              onChange={() => {
-                setForm({
-                  ...form,
-                  didUser: !form.didUser,
-                  skypeTeamsDid: {
-                    value: "",
-                    blurred: false,
-                    e164: undefined,
-                    updated: false,
-                    valid: false
-                  },
-                  twilioDid: {
-                    value: "",
-                    blurred: false,
-                    e164: undefined,
-                    updated: false,
-                    valid: false
-                  }
-                })
-              }}
-              inputProps={{ "aria-label": "toggle did user" }}
-            />
-            <ToggleLabel>DID User</ToggleLabel>
-          </ToggleContainer>
+          {/* TODO: remove 'insert only' logic once editUser can handle DID users */}
+          {formMode === formModes.INSERT
+            ? <ToggleContainer>
+              <Switch
+                checked={form.didUser}
+                onChange={() => {
+                  setForm({
+                    ...form,
+                    didUser: !form.didUser,
+                    skypeTeamsDid: {
+                      value: "",
+                      blurred: false,
+                      e164: undefined,
+                      updated: false,
+                      valid: false
+                    },
+                    twilioDid: {
+                      value: "",
+                      blurred: false,
+                      e164: undefined,
+                      updated: false,
+                      valid: false
+                    }
+                  })
+                }}
+                inputProps={{ "aria-label": "toggle did user" }}
+              />
+              <ToggleLabel>DID User</ToggleLabel>
+            </ToggleContainer>
+            : null
+          }
           {form.didUser ? (
             <>
               <ToggleContainer>
