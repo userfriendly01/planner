@@ -544,17 +544,21 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
               extensionValid
             })}
           />
-          <ToggleContainer>
-            <Switch
-              checked={form.didUser}
-              onChange={() => setForm({
-                ...form,
-                didUser: !form.didUser
-              })}
-              inputProps={{ "aria-label": "toggle did user" }}
-            />
-            <ToggleLabel>DID User</ToggleLabel>
-          </ToggleContainer>
+          {/* TODO: remove 'insert only' logic once editUser can handle DID users */}
+          {formMode === formModes.INSERT
+            ? <ToggleContainer>
+              <Switch
+                checked={form.didUser}
+                onChange={() => setForm({
+                  ...form,
+                  didUser: !form.didUser
+                })}
+                inputProps={{ "aria-label": "toggle did user" }}
+              />
+              <ToggleLabel>DID User</ToggleLabel>
+            </ToggleContainer>
+            : null
+          }
           {form.didUser ? (
             <>
               <ToggleContainer>
