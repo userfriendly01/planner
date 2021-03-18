@@ -132,12 +132,12 @@ export interface UserEntryForm_FormState {
   nNumberFetchedUser: FetchUserResponse,
   nNumberUpdated: boolean,
   outgoing: PhoneNumberState,
-  overflowSkill: boolean,
   profileId: string,
   profileIdBlurred: boolean,
   profileIdUpdated: boolean,
   skypeTeamsDid: PhoneNumberState,
-  twilioDid: PhoneNumberState
+  twilioDid: PhoneNumberState,
+  zeroOutEnabled: boolean
 }
 
 const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
@@ -184,7 +184,6 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
         updated: false,
         valid: false
       },
-      overflowSkill: false,
       profileId: "",
       profileIdBlurred: false,
       profileIdUpdated: false,
@@ -201,7 +200,8 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
         e164: undefined,
         updated: false,
         valid: false
-      }
+      },
+      zeroOutEnabled: false
     };
     if (formMode === formModes.UPDATE) {
       // did user fields need to be updated if they exist
@@ -266,7 +266,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
       attributes,
       // directDialNum & zeroOutEnabled are used by twilio-worker-api, they do not map to Twilio worker attributes
       directDialNum: form.twilioDid.e164,
-      zeroOutEnabled: form.overflowSkill
+      zeroOutEnabled: form.zeroOutEnabled
     })
       .then(dbWorker => {
         setForm({
@@ -464,7 +464,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
               ...form,
               profileId: newValue,
               profileIdUpdated: true,
-              overflowSkill: getZeroOutEnabledFromProfile(newValue)
+              zeroOutEnabled: getZeroOutEnabledFromProfile(newValue)
             })}
             value={form.profileId}
           />
@@ -570,11 +570,11 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
             <>
               <ToggleContainer>
                 <Switch
-                  checked={form.overflowSkill}
-                  value={form.overflowSkill}
+                  checked={form.zeroOutEnabled}
+                  value={form.zeroOutEnabled}
                   onChange={() => setForm({
                     ...form,
-                    overflowSkill: !form.overflowSkill
+                    zeroOutEnabled: !form.zeroOutEnabled // toggle
                   })}
                   inputProps={{ "aria-label": "toggle overflow skill" }}
                 />

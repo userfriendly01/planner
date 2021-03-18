@@ -66,11 +66,17 @@ const managerList = [
 const profileList = [
   {
     profile_nme: "test",
-    profile_id: 1
+    profile_id: 1,
+    zero_out_enabled: {
+      data: [1] // true
+    }
   },
   {
     profile_nme: "test2",
-    profile_id: 2
+    profile_id: 2,
+    zero_out_enabled: {
+      data: [0] // false
+    }
   }
 ];
 
@@ -492,7 +498,10 @@ describe("<UserEntryForm />", () => {
             buttonProps.onClick();
           });
           await waitFor(() => {
-            expect(createUser).toHaveBeenCalledWith({ attributes: workerAttributesAfterFormValid });
+            expect(createUser).toHaveBeenCalledWith({
+              attributes: workerAttributesAfterFormValid,
+              zeroOutEnabled: true // profileId used in this test has this set to true
+            });
             const actions = mockStore.getActions();
             expect(actions).toEqual([{
               type: "addWorkers",
@@ -529,7 +538,10 @@ describe("<UserEntryForm />", () => {
             buttonProps.onClick();
           });
           await waitFor(() => {
-            expect(createUser).toHaveBeenCalledWith({ attributes: workerAttributesAfterFormValid });
+            expect(createUser).toHaveBeenCalledWith({
+              attributes: workerAttributesAfterFormValid,
+              zeroOutEnabled: true // profileId used in this test has this set to true
+            });
             const actions = mockStore.getActions();
             expect(actions).toHaveLength(0);
             jest.runAllTimers();
@@ -893,7 +905,10 @@ describe("<UserEntryForm />", () => {
             buttonProps.onClick();
           });
           await waitFor(() => {
-            expect(createUser).toHaveBeenCalledWith(workerWithoutSid);
+            expect(createUser).toHaveBeenCalledWith({
+              ...workerWithoutSid,
+              zeroOutEnabled: true // profileId used in this test has this set to true
+            });
             const actions = mockStore.getActions();
             expect(actions).toEqual([{
               type: "addWorkers",
@@ -929,7 +944,10 @@ describe("<UserEntryForm />", () => {
             buttonProps.onClick();
           });
           await waitFor(() => {
-            expect(createUser).toHaveBeenCalledWith(workerWithoutSid);
+            expect(createUser).toHaveBeenCalledWith({
+              ...workerWithoutSid,
+              zeroOutEnabled: true // profileId used in this test has this set to true
+            });
             const actions = mockStore.getActions();
             expect(actions).toHaveLength(0);
             jest.runAllTimers();
