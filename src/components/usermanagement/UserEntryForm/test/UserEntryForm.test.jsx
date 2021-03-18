@@ -516,7 +516,11 @@ describe("<UserEntryForm />", () => {
 
         const serviceError = {
           message: "something went wrong",
-          response: { data: "booooo" }
+          response: {
+            data: {
+              message: "boooo"
+            }
+          }
         };
         beforeEach(() => createUser.mockRejectedValue(serviceError));
 
@@ -541,7 +545,7 @@ describe("<UserEntryForm />", () => {
               message: "Failed to add new user",
               status: modalOverlayStatuses.FAIL
             }, getLastInstanceCalled(ModalOverlay));
-            expectMockedComponent(rendered, { ModalOverlay }, 0);
+            expectMockedComponent(rendered, { ModalOverlay }, 1);
           });
         });
       });
@@ -916,7 +920,11 @@ describe("<UserEntryForm />", () => {
       describe("createUser service call fails", () => {
         beforeEach(() => createUser.mockRejectedValue({
           message: "oh no!",
-          response: { data: "this thing didn't work" }
+          response: {
+            data: {
+              message: "nooooooooo"
+            }
+          }
         }));
 
         test("should enable Add User button and save user when clicked", async () => {
@@ -941,10 +949,52 @@ describe("<UserEntryForm />", () => {
               message: "Failed to add new user",
               status: modalOverlayStatuses.FAIL
             }, getLastInstanceCalled(ModalOverlay));
-            expectMockedComponent(rendered, { ModalOverlay }, 0);
+            expectMockedComponent(rendered, { ModalOverlay }, 1);
+            // close the error modal
+            act(() => {
+              const modalProps = getMockedComponentProps(ModalOverlay, getLastInstanceCalled(ModalOverlay));
+              modalProps.handleClose();
+            });
           });
         });
       });
+
+      describe("createUser service call fails when twilio did is already assigned", () => {
+        beforeEach(() => createUser.mockRejectedValue({
+          message: "oh no!",
+          response: {
+            data: {
+              message: "The following errors exist in the request body [Direct Dial number has already been assigned to another Worker]"
+            }
+          }
+        }));
+
+        test("should enable Add User button and save user when clicked and show the correct error message", async () => {
+          const rendered = renderComponent();
+          fireEvent.click(rendered.getByLabelText("toggle did user"));
+          updateFormSoItIsValid();
+          act(() => {
+            const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
+            buttonProps.onClick();
+          });
+          await waitFor(() => {
+            expect(createUser).toHaveBeenCalledWith(workerWithoutSid);
+            const actions = mockStore.getActions();
+            expect(actions).toHaveLength(0);
+            jest.runAllTimers();
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Adding new user...",
+              status: modalOverlayStatuses.SAVING
+            }, getLastInstanceCalled(ModalOverlay) - 1);
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Direct Dial number has already been assigned to another Worker",
+              status: modalOverlayStatuses.FAIL
+            }, getLastInstanceCalled(ModalOverlay));
+            expectMockedComponent(rendered, { ModalOverlay }, 1);
+          });
+        });
+      });
+
     });
   });
 });
