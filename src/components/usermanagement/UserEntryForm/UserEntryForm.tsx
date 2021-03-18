@@ -324,18 +324,16 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
         }, timeouts.MODAL_OVERLAY);
       })
       .catch(err => {
+        const subMessage = err.response.data.message.substring(48, err.response.data.message.length - 1)
+        const message =
+          subMessage === "Direct Dial number has already been assigned to another Worker" ?
+            subMessage : "Failed to add new user";
         updateLoading({
           ...loading,
-          overlayMessage: "Failed to add new user",
+          overlayMessage: message,
           saveStatus: modalOverlayStatuses.FAIL,
           saveUser: true
         });
-        wait(() => {
-          updateLoading({
-            ...loading,
-            saveUser: false
-          });
-        }, timeouts.MODAL_OVERLAY);
         console.error(err.message, err.response.data);
       });
   };
@@ -410,6 +408,12 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
         <ModalOverlay
           status={loading.saveStatus}
           message={loading.overlayMessage}
+          handleClose={() => {
+            updateLoading({
+              ...loading,
+              saveUser: false
+            })
+          }}
         /> : null}
       <Header1>{formMode === formModes.INSERT ? "Add a User" : "Edit User"}</Header1>
       {
@@ -556,10 +560,26 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
             ? <ToggleContainer>
               <Switch
                 checked={form.didUser}
-                onChange={() => setForm({
-                  ...form,
-                  didUser: !form.didUser
-                })}
+                onChange={() => {
+                  setForm({
+                    ...form,
+                    didUser: !form.didUser,
+                    skypeTeamsDid: {
+                      value: "",
+                      blurred: false,
+                      e164: undefined,
+                      updated: false,
+                      valid: false
+                    },
+                    twilioDid: {
+                      value: "",
+                      blurred: false,
+                      e164: undefined,
+                      updated: false,
+                      valid: false
+                    }
+                  })
+                }}
                 inputProps={{ "aria-label": "toggle did user" }}
               />
               <ToggleLabel>DID User</ToggleLabel>
