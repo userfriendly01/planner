@@ -290,7 +290,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
             ...form.outgoing,
             blurred: false
           },
-          // reset skype teams did and twilio did
+          // reset Skype/Teams did and twilio did
           skypeTeamsDid: {
             value: "",
             blurred: false,
