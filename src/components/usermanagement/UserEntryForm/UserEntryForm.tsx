@@ -225,6 +225,11 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
     saveUser: false
   });
 
+  const getZeroOutEnabledFromProfile = (newProfileValue: string): boolean => {
+    const targetProfile = profiles.find(profile => profile.profile_id === +newProfileValue);
+    return !!targetProfile.zero_out_enabled.data[0];
+  };
+
   const doCreateUser = () => {
     updateLoading({
       ...loading,
@@ -259,8 +264,9 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
     };
     createUser({
       attributes,
-      // directDialNum is used by twilio-worker-api for routing direct-dial calls, it does not map to Twilio worker attributes
-      directDialNum: form.twilioDid.e164
+      // directDialNum & zeroOutEnabled are used by twilio-worker-api, they do not map to Twilio worker attributes
+      directDialNum: form.twilioDid.e164,
+      zeroOutEnabled: form.overflowSkill
     })
       .then(dbWorker => {
         setForm({
@@ -457,7 +463,8 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
             updateValue={newValue => setForm({
               ...form,
               profileId: newValue,
-              profileIdUpdated: true
+              profileIdUpdated: true,
+              overflowSkill: getZeroOutEnabledFromProfile(newValue)
             })}
             value={form.profileId}
           />

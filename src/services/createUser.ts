@@ -7,7 +7,8 @@ export interface DbWorker {
     [key: string]: any,
   },
   directDialNum: string,
-  workerSid: string
+  workerSid: string,
+  zeroOutEnabled: boolean
 }
 
 export const createUser = (worker: Partial<DbWorker>): Promise<DbWorker> =>

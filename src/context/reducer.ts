@@ -52,7 +52,8 @@ export interface TritonProfile {
   profile_nme: string,
   recorded_i: MySqlBoolean,
   row_crtn_dtm: string,
-  row_updt_dtm: string
+  row_updt_dtm: string,
+  zero_out_enabled: MySqlBoolean
 }
 
 export interface TwilioWorker {
