@@ -77,14 +77,16 @@ const ModalContainer = styled.div`
   background-color: ${props => props.theme.backgroundColor};
   border-radius: 4px;
   display: flex;
-  flex: 1 1 auto;
   flex-direction: column;
-  left: 50%;
+  left: 0;
+  margin: 0 auto;
+  max-height: 80vh;
   max-width: 700px;
+  overflow-y: auto;
   padding: 0 8px;
   position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  right: 0;
+  top: 10vh;
   width: 100%;
 `;
 
