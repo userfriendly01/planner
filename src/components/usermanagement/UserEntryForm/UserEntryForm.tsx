@@ -324,17 +324,13 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
         }, timeouts.MODAL_OVERLAY);
       })
       .catch(err => {
-        const subMessage = err.response.data.message.substring(48, err.response.data.message.length - 1)
-        const message =
-          subMessage === "Direct Dial number has already been assigned to another Worker" ?
-            subMessage : "Failed to add new user";
+        console.error(err.message, err.response.data);
         updateLoading({
           ...loading,
-          overlayMessage: message,
+          overlayMessage: err.response.data.message || "Failed to add new user.",
           saveStatus: modalOverlayStatuses.FAIL,
           saveUser: true
         });
-        console.error(err.message, err.response.data);
       });
   };
 
@@ -412,7 +408,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
             updateLoading({
               ...loading,
               saveUser: false
-            })
+            });
           }}
         /> : null}
       <Header1>{formMode === formModes.INSERT ? "Add a User" : "Edit User"}</Header1>
@@ -578,9 +574,9 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
                       updated: false,
                       valid: false
                     }
-                  })
+                  });
                 }}
-                inputProps={{ "aria-label": "toggle did user" }}
+                inputProps={{ "aria-label": "toggle-did-user" }}
               />
               <ToggleLabel>DID User</ToggleLabel>
             </ToggleContainer>
