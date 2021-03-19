@@ -30,7 +30,7 @@ export interface Manager {
 }
 
 export interface MySqlBoolean {
-  data: [0 | 1]
+  data: [0 | 1],
   type: "Buffer"
 }
 
@@ -52,7 +52,8 @@ export interface TritonProfile {
   profile_nme: string,
   recorded_i: MySqlBoolean,
   row_crtn_dtm: string,
-  row_updt_dtm: string
+  row_updt_dtm: string,
+  zero_out_enabled: MySqlBoolean
 }
 
 export interface TwilioWorker {
@@ -80,9 +81,9 @@ export interface TwilioWorker {
     routing?: TwilioWorkerSkills,
     unique_id?: string
   },
-  id: string,
   sid: string,
-  skillsDifferent: boolean
+  skillsDifferent: boolean,
+  twilioDid?: string
 }
 
 export interface TwilioWorkerSkills {

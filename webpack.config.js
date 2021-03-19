@@ -1,3 +1,4 @@
+const ESLintPlugin = require("eslint-webpack-plugin");
 const path = require("path");
 
 const resolvePathInSrc = resourceInSrc => {
@@ -13,20 +14,13 @@ const config = {
     path: path.resolve(__dirname, "dist")
     // publicPath: "/triton-admin/"
   },
+  plugins: [new ESLintPlugin({ failOnWarning: true })],
   module: {
     rules: [
       {
         test: /\.(js|jsx|ts|tsx)?$/,
         use: "ts-loader",
         exclude: /node_modules/
-      },
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        loader: "eslint-loader",
-        options: {
-          failOnWarning: true
-        }
       },
       {
         test: /\.png?$/,

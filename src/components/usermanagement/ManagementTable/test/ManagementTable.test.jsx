@@ -58,7 +58,6 @@ const mockWorkerData = [
         }
       }
     },
-    id: "n1234567",
     sid: "WK0",
     skillsDifferent: false
   },
@@ -67,7 +66,6 @@ const mockWorkerData = [
       full_name: "Test 2",
       office_location_name: "Uranus"
     },
-    id: "n0999999",
     sid: "WK1",
     skillsDifferent: false
   },
@@ -84,7 +82,6 @@ const mockWorkerData = [
         levels: {}
       }
     },
-    id: "n0498575",
     sid: "WK2",
     skillsDifferent: true
   }
@@ -126,7 +123,6 @@ describe("<ManagementTable />", () => {
     const rendered = renderComponent(mockWorkerData);
     mockWorkerData.forEach(entry => {
       expect(rendered.container).toHaveTextContent(entry.attributes.full_name);
-      expect(rendered.container).toHaveTextContent(entry.id);
       expect(rendered.container).toHaveTextContent(entry.attributes.office_location_name);
       expect(rendered.container).not.toHaveTextContent(entry.sid);
     });
