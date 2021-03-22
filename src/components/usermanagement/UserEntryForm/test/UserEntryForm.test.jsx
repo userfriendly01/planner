@@ -488,6 +488,12 @@ describe("<UserEntryForm />", () => {
             directDialNum: validFormOptions.didE164,
             workerSid: "WK1234"
           };
+          const formattedTwilioWorker = {
+            attributes: workerAttributesAfterFormValid,
+            directDialNum: validFormOptions.didE164,
+            sid: rawDbWorker.workerSid,
+            skillsDifferent: true
+          };
 
           beforeEach(() => createUser.mockResolvedValue(rawDbWorker));
 
@@ -507,7 +513,7 @@ describe("<UserEntryForm />", () => {
               const actions = mockStore.getActions();
               expect(actions).toEqual([{
                 type: "addWorkers",
-                payload: [rawDbWorker]
+                payload: [formattedTwilioWorker]
               }]);
               jest.runAllTimers();
               expectOnlyPassedProps(ModalOverlay, {
@@ -699,6 +705,13 @@ describe("<UserEntryForm />", () => {
           ...workerWithoutSid,
           workerSid: "WK1234"
         };
+        const formattedTwilioWorker = {
+          attributes: rawDbWorker.attributes,
+          directDialNum: rawDbWorker.directDialNum,
+          zeroOutEnabled: rawDbWorker.zeroOutEnabled,
+          sid: rawDbWorker.workerSid,
+          skillsDifferent: true
+        };
 
         describe("createUser service call succeeds", () => {
 
@@ -718,7 +731,7 @@ describe("<UserEntryForm />", () => {
               const actions = mockStore.getActions();
               expect(actions).toEqual([{
                 type: "addWorkers",
-                payload: [rawDbWorker]
+                payload: [formattedTwilioWorker]
               }]);
               jest.runAllTimers();
               expectOnlyPassedProps(ModalOverlay, {
