@@ -33,6 +33,7 @@ import styled from "styled-components";
 import {
   getValidSkillsObject,
   mapWorkerFromTwilioWorker,
+  mapTwilioWorkerFromDbWorker,
   sortManagersByName,
   sortProfilesByName,
   wait
@@ -269,6 +270,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
       zeroOutEnabled: form.zeroOutEnabled
     })
       .then(dbWorker => {
+        const twilioWorker = mapTwilioWorkerFromDbWorker(dbWorker);
         setForm({
           ...form,
           // reset default skills
@@ -308,7 +310,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
         });
         dispatch({
           type: "addWorkers",
-          payload: [dbWorker]
+          payload: [twilioWorker]
         });
         updateLoading({
           ...loading,
