@@ -36,7 +36,6 @@ export const mapTwilioWorkerFromDbWorker = (dbWorker: DbWorker): TwilioWorker =>
   };
   delete twilioWorker.workerSid;
   return twilioWorker;
-
 };
 
 export const mapWorkerFromTwilioWorker = (rawTwilioWorker: RawTwilioWorker): TwilioWorker => {
