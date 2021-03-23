@@ -159,6 +159,8 @@ const ManagementTable = props => {
   const selectedWorkers = state.workerContext.selectedWorkers;
   const dispatch = useAdminDispatch();
 
+  console.log("FINAL LOOK: ", confirmationModalOpts);
+
   const handleDeleteUser = () => {
     const deletedWorker = confirmationModalOpts.worker;
     setSaveResult({
@@ -166,7 +168,7 @@ const ManagementTable = props => {
       message: "Saving"
     });
     let resultMessage;
-    return deleteUser(deletedWorker.sid)
+    return deleteUser(deletedWorker)
       .then(() => {
         resultMessage = `Successfully deleted Triton worker with sid ${deletedWorker.sid}`;
         dispatch({
@@ -272,24 +274,27 @@ const ManagementTable = props => {
         <Modal open={confirmationModalOpts.open}>
           { confirmationModalOpts.worker ?
             <ConfirmationModal
-              workers={workers}
-              skills={skills}
-              onConfirm={handleDeleteUser}
-              handleClose={() => {
-                setConfirmationModalOpts(defaultModalOpts);
-                setSaveResult(defaultSaveResult);
+              callbackMethods={{
+                onConfirm: handleDeleteUser,
+                handleClose: () => {
+                  setConfirmationModalOpts(defaultModalOpts);
+                  setSaveResult(defaultSaveResult);
+                },
+                setForwardTo: inactiveForwardTo => setConfirmationModalOpts({
+                  ...confirmationModalOpts,
+                  worker: {
+                    ...confirmationModalOpts.worker,
+                    inactiveForwardTo
+                  }
+                })
               }}
-              body={{
+              data={{
                 confirmationText: "Are you sure you want to delete this worker? ",
-                data: confirmationModalOpts.worker.attributes.full_name
+                displayData: confirmationModalOpts.worker.attributes.full_name,
+                selectedWorker: confirmationModalOpts.worker,
+                skills,
+                workers
               }}
-              setForwardTo={inactiveForwardTo => setConfirmationModalOpts({
-                ...confirmationModalOpts,
-                worker: {
-                  ...confirmationModalOpts.worker,
-                  inactiveForwardTo
-                }
-              })}
               saveResult={saveResult}
             />
             : null

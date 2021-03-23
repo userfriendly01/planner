@@ -58,13 +58,17 @@ const ModalContainer = styled(FlexColumn)`
 
 const ConfirmationModal = props => {
   const {
-    onConfirm,
-    body,
-    handleClose,
-    saveResult,
-    workers,
-    skills
+    callbackMethods,
+    data,
+    saveResult
   } = props;
+
+  console.log("Data", data);
+  const isWorkerDid = data.selectedWorker.attributes.did;
+  const isForwardToSet = data.selectedWorker.inactiveForwardTo ? true : false;
+
+  console.log("Did present?", data.selectedWorker.attributes.did);
+  console.log("IsForwardToSet? ", isForwardToSet);
 
   return (
     <ModalContainer>
@@ -73,20 +77,29 @@ const ConfirmationModal = props => {
           <ModalOverlay
             message={saveResult.message}
             status={saveResult.status}
-            handleClose={handleClose}
+            handleClose={callbackMethods.handleClose}
           /> : null}
-        <ConfirmationText>{body.confirmationText}</ConfirmationText>
-        <Data>{body.data}</Data>
-        <ForwardToEntryForm
-          workers={workers}
-          skills={skills}
-          updateForwardTo={() => console.log("Updated!")}
-        />
+        <ConfirmationText>{data.confirmationText}</ConfirmationText>
+        <Data>{data.displayData}</Data>
+        { isWorkerDid ?
+          <ForwardToEntryForm
+            workers={data.workers}
+            skills={data.skills}
+            updateForwardTo={forwardTo => callbackMethods.setForwardTo(forwardTo)}
+          />
+          : null
+        }
         <ButtonWrapper>
-          <Button disabled={true} onClick={onConfirm} data-testid={"confirm-button"}>
-            Confirm
-          </Button>
-          <Button onClick={handleClose} data-testid={"cancel-button"}>
+          { isWorkerDid && !isForwardToSet ?
+            <Button disabled={true} onClick={callbackMethods.onConfirm} data-testid={"disabled-confirm-button"}>
+              Confirm
+            </Button>
+            :
+            <Button onClick={callbackMethods.onConfirm} data-testid={"confirm-button"}>
+              Confirm
+            </Button>
+          }
+          <Button onClick={callbackMethods.handleClose} data-testid={"cancel-button"}>
             Cancel
           </Button>
         </ButtonWrapper>
@@ -96,24 +109,22 @@ const ConfirmationModal = props => {
 };
 
 ConfirmationModal.propTypes = {
-  handleClose: PropTypes.func.isRequired,
-  onConfirm: PropTypes.func.isRequired,
-  body: PropTypes.shape({
-    confirmationText: PropTypes.string,
-    data: PropTypes.string
+  callbackMethods: PropTypes.shape({
+    handleClose: PropTypes.func.isRequired,
+    onConfirm: PropTypes.func.isRequired,
+    setForwardTo: PropTypes.func.isRequired
+  }).isRequired,
+  data: PropTypes.shape({
+    confirmationText: PropTypes.string.isRequired,
+    displayData: PropTypes.string.isRequired,
+    selectedWorker: PropTypes.object.isRequired,
+    skills: PropTypes.string,
+    workers: PropTypes.string
   }).isRequired,
   saveResult: PropTypes.shape({
     status: PropTypes.string,
     message: PropTypes.string
-  }).isRequired,
-  skills: PropTypes.array.isRequired,
-  workers: PropTypes.arrayOf(
-    PropTypes.shape({
-      attributes: PropTypes.object,
-      id: PropTypes.string,
-      sid: PropTypes.string
-    })
-  )
+  }).isRequired
 };
 
 export default ConfirmationModal;

@@ -64,59 +64,22 @@ const ForwardToEntryForm = props => {
     showError: false
   });
 
-  const [ forwardToType, updateForwardToType ] = React.useState({
-    option: "worker",
-    display: <FilterableSelect
-      optionsList={getWorkerOptions()}
-      updateValue={worker => updateForwardTo(worker.value)}
-    />
-  }
-  );
+  const [ forwardToType, updateForwardToType ] = React.useState("worker");
 
   const handleChange = selection => {
+    updateForwardTo(null);
     switch(selection) {
       case "skill":
-        updateForwardToType({
-          option: "skill",
-          display: <FilterableSelect
-            optionsList={getSkillOptions()}
-            updateValue={skill => updateForwardTo(skill.value)}
-          />
-        });
+        updateForwardToType("skill");
         break;
       case "number":
-        updateForwardToType({
-          option: "number",
-          display: <ModalPhoneNumber
-            allowSevenDigitVdn={false}
-            id="forward-number-input"
-            label="Forward To Number"
-            number={phoneNumber.value}
-            onBlur={() => setPhoneNumber({
-              ...phoneNumber,
-              showError: true
-            })}
-            showError={phoneNumber.showError}
-            updateValue={(maskedValue, unmaskedValue, isValid) => {
-              setPhoneNumber({
-                ...phoneNumber,
-                isValid,
-                value: maskedValue
-              });
-            }}
-          />
-        });
+        updateForwardToType("number");
         break;
       default:
-        updateForwardToType({
-          option: "worker",
-          display: <FilterableSelect
-            optionsList={getWorkerOptions()}
-            updateValue={updateForwardTo}
-          />
-        });
+        updateForwardToType("worker");
     }
   };
+
   return (
     <EntryFormContainer>
       <LabelContainer>This user has a direct dial number. <br/> Please choose a forward to option before confirming.</LabelContainer>
@@ -124,7 +87,7 @@ const ForwardToEntryForm = props => {
         <FormControlLabel
           control={
             <Radio
-              checked={forwardToType.option === "worker"}
+              checked={forwardToType === "worker"}
               onChange={event => handleChange(event.target.value)}
               value="worker"
             />}
@@ -134,7 +97,7 @@ const ForwardToEntryForm = props => {
         <FormControlLabel
           control={
             <Radio
-              checked={forwardToType.option === "skill"}
+              checked={forwardToType === "skill"}
               onChange={event => handleChange(event.target.value)}
               value="skill"
             />}
@@ -144,7 +107,7 @@ const ForwardToEntryForm = props => {
         <FormControlLabel
           control={
             <Radio
-              checked={forwardToType.option === "number"}
+              checked={forwardToType === "number"}
               onChange={event => handleChange(event.target.value)}
               value="number"
             />}
@@ -152,7 +115,45 @@ const ForwardToEntryForm = props => {
           labelPlacement="bottom"
         />
       </RadioContainer>
-      {forwardToType.display}
+      {forwardToType === "worker" &&
+        <FilterableSelect
+          optionsList={getWorkerOptions()}
+          updateValue={worker => updateForwardTo(worker.value)}
+        />
+      }
+      {forwardToType === "skill" &&
+        <FilterableSelect
+          optionsList={getSkillOptions()}
+          updateValue={skill => updateForwardTo(skill.value)}
+        />
+      }
+      {forwardToType === "number" &&
+        <ModalPhoneNumber
+          allowSevenDigitVdn={false}
+          id="forward-number-input"
+          label="Forward To Number"
+          number={phoneNumber.value}
+          onBlur={() => {
+            setPhoneNumber({
+              ...phoneNumber,
+              showError: true
+            });
+          }}
+          showError={phoneNumber.showError}
+          updateValue={(maskedValue, unmaskedValue, isValid) => {
+            setPhoneNumber({
+              ...phoneNumber,
+              isValid,
+              value: maskedValue
+            });
+            if(isValid) {
+              updateForwardTo("+1" + unmaskedValue);
+            } else {
+              updateForwardTo(null);
+            }
+          }}
+        />
+      }
     </EntryFormContainer>
   );
 };
