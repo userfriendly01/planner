@@ -1,6 +1,17 @@
 import { TwilioWorker } from "context";
 import { areSkillsDifferent } from "utils";
 
+// Worker object directly from cicct-twilio-worker-api response
+export interface DbWorker {
+  attributes: {
+    [key: string]: any,
+  },
+  alternateDid: string,
+  directDialNum: string,
+  workerSid: string,
+  zeroOutEnabled: boolean
+}
+
 // Worker object directly from twilio API response
 export interface RawTwilioWorker {
   // more attributes here that we don't care about
@@ -18,6 +29,16 @@ export const formatWorkerResponse = (response: RawTwilioWorker[]): TwilioWorker[
   }
 };
 
+export const mapTwilioWorkerFromDbWorker = (dbWorker: DbWorker): TwilioWorker => {
+  const twilioWorker = {
+    ...dbWorker,
+    sid: dbWorker.workerSid,
+    skillsDifferent: areSkillsDifferent(dbWorker.attributes)
+  };
+  delete twilioWorker.workerSid;
+  return twilioWorker;
+};
+
 export const mapWorkerFromTwilioWorker = (rawTwilioWorker: RawTwilioWorker): TwilioWorker => {
   let attributes = {};
   try {
@@ -31,7 +52,6 @@ export const mapWorkerFromTwilioWorker = (rawTwilioWorker: RawTwilioWorker): Twi
   const skillsDifferent = areSkillsDifferent(attributes);
   return {
     attributes,
-    id: rawTwilioWorker.friendlyName,
     sid: rawTwilioWorker.sid,
     skillsDifferent
   };

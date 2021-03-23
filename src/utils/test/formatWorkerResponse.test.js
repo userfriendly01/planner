@@ -1,5 +1,6 @@
 import {
   formatWorkerResponse,
+  mapTwilioWorkerFromDbWorker,
   mapWorkerFromTwilioWorker
 } from "utils";
 
@@ -11,7 +12,7 @@ describe("formatWorkerResponse", () => {
       activityName: "Offline",
       activitySid: "WA98fb57313627153d707a17f549566046",
       attributes:
-        "{\"unique_id\":\"n00000000\",\"manager_n_number\":\"n1111111\",\"roles\":[\"supervisor\",\"agent\"],\"manager_last_name\":\"Doe\",\"n_number\":\"n1111111\",\"skills\":[\"466\"],\"primary_dept_name\":\"CI TECH APP SERVICES\",\"email_address\":\"Noone@libertymutual.com\",\"full_name\":\"Lemming\",\"profile_id\":1}",
+        "{\"unique_id\":\"n0123456\",\"manager_n_number\":\"n1111111\",\"roles\":[\"supervisor\",\"agent\"],\"manager_last_name\":\"Doe\",\"n_number\":\"n1111111\",\"skills\":[\"466\"],\"primary_dept_name\":\"CI TECH APP SERVICES\",\"email_address\":\"Noone@libertymutual.com\",\"full_name\":\"Lemming\",\"profile_id\":1}",
       available: false,
       dateCreated: "2018-05-16T17:19:24.000Z",
       dateStatusChanged: "2019-06-03T21:46:19.000Z",
@@ -65,14 +66,33 @@ describe("formatWorkerResponse", () => {
           profile_id: 1,
           roles: ["supervisor", "agent"],
           skills: ["466"],
-          unique_id: "n00000000"
+          unique_id: "n0123456"
         },
-        id: "n0317496",
         sid: "WK8b0da13d2eca675babceedb76d7a15eb",
         skillsDifferent: false
       }
     ];
     expect(formatWorkerResponse(unformattedResponse)).toEqual(formattedWorker);
+  });
+});
+
+const workerSid = "WK123123123";
+
+describe("mapTwilioWorkerFromDbWorker", () => {
+  const attributes = {
+    attr1: "whatever",
+    attr2: { hi: "I'm an object" }
+  };
+  const dbWorker = {
+    attributes,
+    workerSid
+  };
+  test("should return TwilioWorker object with attributes, sid & skillsDifferent; NOT workerSid", () => {
+    expect(mapTwilioWorkerFromDbWorker(dbWorker)).toEqual({
+      attributes,
+      sid: workerSid,
+      skillsDifferent: false
+    });
   });
 });
 
@@ -83,9 +103,8 @@ describe("mapWorkerFromTwilioWorker", () => {
       sid: "WK123123123",
       attributes: "{\"whatever\":12345}"
     };
-    test("should return object with parsed attributes object, sid, id", () => {
+    test("should return object with parsed attributes object and sid", () => {
       expect(mapWorkerFromTwilioWorker(twilioWorker)).toEqual({
-        id: "n0269913",
         sid: "WK123123123",
         attributes: { whatever: 12345 },
         skillsDifferent: false
@@ -99,7 +118,6 @@ describe("mapWorkerFromTwilioWorker", () => {
     };
     test("should return object where attributes is empty object", () => {
       expect(mapWorkerFromTwilioWorker(twilioWorker)).toEqual({
-        id: "n0269913",
         sid: "WK123123123",
         attributes: {},
         skillsDifferent: false
@@ -114,7 +132,6 @@ describe("mapWorkerFromTwilioWorker", () => {
     };
     test("should return object where attributes is empty object", () => {
       expect(mapWorkerFromTwilioWorker(twilioWorker)).toEqual({
-        id: "n0269913",
         sid: "WK123123123",
         attributes: {},
         skillsDifferent: false
@@ -123,7 +140,7 @@ describe("mapWorkerFromTwilioWorker", () => {
   });
   describe("twilio worker is empty object", () => {
     const twilioWorker = {};
-    test("should return object where attributes is empty object and id and sid are undefined", () => {
+    test("should return object where attributes is empty object and sid is undefined", () => {
       expect(mapWorkerFromTwilioWorker(twilioWorker)).toEqual({
         attributes: {},
         skillsDifferent: false
