@@ -81,9 +81,10 @@ export interface TwilioWorker {
     routing?: TwilioWorkerSkills,
     unique_id?: string
   },
+  alternateDid?: string,
+  directDialNum?: string,
   sid: string,
   skillsDifferent: boolean,
-  twilioDid?: string
 }
 
 export interface TwilioWorkerSkills {

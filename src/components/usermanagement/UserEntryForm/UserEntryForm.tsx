@@ -136,7 +136,7 @@ export interface UserEntryForm_FormState {
   profileId: string,
   profileIdBlurred: boolean,
   profileIdUpdated: boolean,
-  skypeTeamsDid: PhoneNumberState,
+  alternateDid: PhoneNumberState,
   twilioDid: PhoneNumberState,
   zeroOutEnabled: boolean
 }
@@ -188,7 +188,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
       profileId: "",
       profileIdBlurred: false,
       profileIdUpdated: false,
-      skypeTeamsDid: {
+      alternateDid: {
         value: "",
         blurred: false,
         e164: undefined,
@@ -265,7 +265,8 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
     };
     createUser({
       attributes,
-      // directDialNum & zeroOutEnabled are used by twilio-worker-api, they do not map to Twilio worker attributes
+      // values below are used by twilio-worker-api, they do not map to Twilio worker attributes
+      alternateDid: form.alternateDid.e164,
       directDialNum: form.twilioDid.e164,
       zeroOutEnabled: form.zeroOutEnabled
     })
@@ -293,7 +294,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
             blurred: false
           },
           // reset Skype/Teams did and twilio did
-          skypeTeamsDid: {
+          alternateDid: {
             value: "",
             blurred: false,
             e164: undefined,
@@ -397,7 +398,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
   const profileIdValid = form.profileId !== "";
   const formValid = (formMode === formModes.INSERT ? nNumberInputValid : true)
     && profileIdValid && managerValid && form.outgoing.valid && extensionInputValid
-    && (form.didUser === true ? form.twilioDid.valid && form.skypeTeamsDid.valid : true);
+    && (form.didUser === true ? form.twilioDid.valid && form.alternateDid.valid : true);
   const formUpdated = (form.defaultSkillsUpdated || form.managerUpdated || form.profileIdUpdated || form.outgoing.updated || form.nNumberUpdated || form.extensionUpdated);
 
   return (
@@ -562,7 +563,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
                   setForm({
                     ...form,
                     didUser: !form.didUser,
-                    skypeTeamsDid: {
+                    alternateDid: {
                       value: "",
                       blurred: false,
                       e164: undefined,
@@ -627,21 +628,21 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
               <ModalPhoneNumber
                 allowSevenDigitVdn={false}
                 id="skype-teams-did"
-                number={form.skypeTeamsDid.value}
+                number={form.alternateDid.value}
                 onBlur={() => setForm({
                   ...form,
-                  skypeTeamsDid: {
-                    ...form.skypeTeamsDid,
+                  alternateDid: {
+                    ...form.alternateDid,
                     blurred: true
                   }
                 })}
                 label="Skype/Teams DID *"
-                showError={form.skypeTeamsDid.blurred}
+                showError={form.alternateDid.blurred}
                 updateValue={(maskedValue, unmaskedValue, isValid, e164Number) => {
                   setForm({
                     ...form,
-                    skypeTeamsDid: {
-                      ...form.skypeTeamsDid,
+                    alternateDid: {
+                      ...form.alternateDid,
                       value: maskedValue,
                       e164: e164Number,
                       updated: true,

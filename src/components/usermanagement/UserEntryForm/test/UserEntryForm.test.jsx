@@ -123,6 +123,11 @@ const initialForm = {
 };
 
 const validFormOptions = {
+  alternateDid: {
+    e164: "+18001234567",
+    masked: "(800)123-4567",
+    tenDig: "8001234567"
+  },
   defaultSkills: {
     levels: {
       "a": 1,
@@ -132,6 +137,11 @@ const validFormOptions = {
   },
   did: "6034567890",
   didE164: "+16034567890",
+  directDialNum: {
+    e164: "+18002345678",
+    masked: "(800)234-5678",
+    tenDig: "8002345678"
+  },
   extension: "1234",
   manager: managerList[0],
   nNumber: "n1234567",
@@ -184,7 +194,7 @@ describe("<UserEntryForm />", () => {
     return render(<UserEntryForm handleClose={mockHandleClose} userEntryFormState={userEntryFormState} />, initialTestState);
   };
 
-  const updateFormSoItIsValid = () => {
+  const updateFormSoItIsValid = didWorker => {
     // manager
     act(() => {
       const updateManager = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect) - 1).updateValue;
@@ -207,39 +217,53 @@ describe("<UserEntryForm />", () => {
     expectOnlyPassedProps(OutlinedSelect, {
       value: validFormOptions.profileId
     }, getLastInstanceCalled(OutlinedSelect));
-    // outgoing number
-    act(() => {
-      const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).updateValue;
-      updatePhone("(603)456-7890", validFormOptions.did, true, validFormOptions.didE164);
-    });
-    act(() => {
-      getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).onBlur();
-    });
-    expectOnlyPassedProps(ModalPhoneNumber, {
-      number: "(603)456-7890"
-    }, getLastInstanceCalled(ModalPhoneNumber));
-    // Twilio DID
-    act(() => {
-      const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber) - 2).updateValue;
-      updatePhone("(603)456-7890", validFormOptions.did, true, validFormOptions.didE164);
-    });
-    act(() => {
-      getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber) - 2).onBlur();
-    });
-    expectOnlyPassedProps(ModalPhoneNumber, {
-      number: "(603)456-7890"
-    }, getLastInstanceCalled(ModalPhoneNumber) - 2);
-    // Skype/Teams DID
-    act(() => {
-      const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber) - 1).updateValue;
-      updatePhone("(603)456-7890", validFormOptions.did, true, validFormOptions.didE164);
-    });
-    act(() => {
-      getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber) - 1).onBlur();
-    });
-    expectOnlyPassedProps(ModalPhoneNumber, {
-      number: "(603)456-7890"
-    }, getLastInstanceCalled(ModalPhoneNumber) - 1);
+    if (didWorker === true) {
+      // outgoing number is first of 3 ModalPhoneNumber components
+      act(() => {
+        const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber) - 2).updateValue;
+        updatePhone("(603)456-7890", validFormOptions.did, true, validFormOptions.didE164);
+      });
+      act(() => {
+        getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber) - 2).onBlur();
+      });
+      expectOnlyPassedProps(ModalPhoneNumber, {
+        number: "(603)456-7890"
+      }, getLastInstanceCalled(ModalPhoneNumber) - 2);
+      // Twilio DID is 2nd of 3 ModalPhoneNumber components
+      act(() => {
+        const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber) - 1).updateValue;
+        updatePhone(validFormOptions.directDialNum.masked, validFormOptions.directDialNum.tenDig, true, validFormOptions.directDialNum.e164);
+      });
+      act(() => {
+        getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber) - 1).onBlur();
+      });
+      expectOnlyPassedProps(ModalPhoneNumber, {
+        number: validFormOptions.directDialNum.masked
+      }, getLastInstanceCalled(ModalPhoneNumber) - 1);
+      // Skype/Teams DID is 3rd of 3 ModalPhoneNumber components
+      act(() => {
+        const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).updateValue;
+        updatePhone(validFormOptions.alternateDid.masked, validFormOptions.alternateDid.tenDig, true, validFormOptions.alternateDid.e164);
+      });
+      act(() => {
+        getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).onBlur();
+      });
+      expectOnlyPassedProps(ModalPhoneNumber, {
+        number: validFormOptions.alternateDid.masked
+      }, getLastInstanceCalled(ModalPhoneNumber));
+    } else {
+      // outgoing number is the only ModalPhoneNumber component
+      act(() => {
+        const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).updateValue;
+        updatePhone("(603)456-7890", validFormOptions.did, true, validFormOptions.didE164);
+      });
+      act(() => {
+        getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).onBlur();
+      });
+      expectOnlyPassedProps(ModalPhoneNumber, {
+        number: "(603)456-7890"
+      }, getLastInstanceCalled(ModalPhoneNumber));
+    }
     // n number
     act(() => {
       const updateNNum = getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).onUpdate;
@@ -485,12 +509,10 @@ describe("<UserEntryForm />", () => {
         describe("createUser service call succeeds", () => {
           const rawDbWorker = {
             attributes: workerAttributesAfterFormValid,
-            directDialNum: validFormOptions.didE164,
             workerSid: "WK1234"
           };
           const formattedTwilioWorker = {
             attributes: workerAttributesAfterFormValid,
-            directDialNum: validFormOptions.didE164,
             sid: rawDbWorker.workerSid,
             skillsDifferent: true
           };
@@ -499,7 +521,7 @@ describe("<UserEntryForm />", () => {
 
           test("should enable Add User button and save user when clicked", async () => {
             const rendered = renderComponent(userEntryFormState);
-            updateFormSoItIsValid();
+            updateFormSoItIsValid(false);
             // click button
             act(() => {
               const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
@@ -542,7 +564,7 @@ describe("<UserEntryForm />", () => {
             }));
             test("should display message passed from service in failure modal", async () => {
               const rendered = renderComponent(userEntryFormState);
-              updateFormSoItIsValid();
+              updateFormSoItIsValid(false);
               // click button
               act(() => {
                 const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
@@ -585,7 +607,7 @@ describe("<UserEntryForm />", () => {
             }));
             test("should display 'Failed to add new user.' in failure modal", async () => {
               const rendered = renderComponent(userEntryFormState);
-              updateFormSoItIsValid();
+              updateFormSoItIsValid(false);
               // click button
               act(() => {
                 const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
@@ -645,11 +667,11 @@ describe("<UserEntryForm />", () => {
           };
           expectOnlyPassedProps(ModalPhoneNumber, expectedTwilioDidProps, 2);
           // Skype/Teams DID
-          const expectedSkypeTeamsDidProps = {
+          const expectedalternateDidProps = {
             number: "",
             label: "Skype/Teams DID *"
           };
-          expectOnlyPassedProps(ModalPhoneNumber, expectedSkypeTeamsDidProps, 3);
+          expectOnlyPassedProps(ModalPhoneNumber, expectedalternateDidProps, 3);
         });
       });
 
@@ -698,7 +720,8 @@ describe("<UserEntryForm />", () => {
       describe("fill out form so it is valid", () => {
         const workerWithoutSid = {
           attributes: workerAttributesAfterFormValid,
-          directDialNum: validFormOptions.didE164,
+          alternateDid: validFormOptions.alternateDid.e164,
+          directDialNum: validFormOptions.directDialNum.e164,
           zeroOutEnabled: true
         };
         const rawDbWorker = {
@@ -707,6 +730,7 @@ describe("<UserEntryForm />", () => {
         };
         const formattedTwilioWorker = {
           attributes: rawDbWorker.attributes,
+          alternateDid: rawDbWorker.alternateDid,
           directDialNum: rawDbWorker.directDialNum,
           zeroOutEnabled: rawDbWorker.zeroOutEnabled,
           sid: rawDbWorker.workerSid,
@@ -720,7 +744,7 @@ describe("<UserEntryForm />", () => {
           test("should enable Add User button and save user when clicked", async () => {
             const rendered = renderComponent(userEntryFormState);
             fireEvent.click(rendered.getByLabelText("toggle-did-user"));
-            updateFormSoItIsValid();
+            updateFormSoItIsValid(true);
             // click button
             act(() => {
               const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
@@ -893,7 +917,7 @@ describe("<UserEntryForm />", () => {
 
         test("should enable Save User button and save user when clicked", async () => {
           renderComponent(userEntryFormState);
-          updateFormSoItIsValid();
+          updateFormSoItIsValid(false);
           // click button
           act(() => {
             const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
@@ -933,7 +957,7 @@ describe("<UserEntryForm />", () => {
 
         test("should enable Add User button and save user when clicked", async () => {
           const rendered = renderComponent(userEntryFormState);
-          updateFormSoItIsValid();
+          updateFormSoItIsValid(false);
           // click button
           act(() => {
             const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);

@@ -6,6 +6,7 @@ export interface DbWorker {
   attributes: {
     [key: string]: any,
   },
+  alternateDid: string,
   directDialNum: string,
   workerSid: string,
   zeroOutEnabled: boolean
