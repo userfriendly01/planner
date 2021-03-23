@@ -62,9 +62,9 @@ const ConfirmationModal = props => {
     body,
     handleClose,
     saveResult,
-    workers
+    workers,
+    skills
   } = props;
-
 
   return (
     <ModalContainer>
@@ -79,6 +79,7 @@ const ConfirmationModal = props => {
         <Data>{body.data}</Data>
         <ForwardToEntryForm
           workers={workers}
+          skills={skills}
           updateForwardTo={() => console.log("Updated!")}
         />
         <ButtonWrapper>
@@ -105,6 +106,7 @@ ConfirmationModal.propTypes = {
     status: PropTypes.string,
     message: PropTypes.string
   }).isRequired,
+  skills: PropTypes.array.isRequired,
   workers: PropTypes.arrayOf(
     PropTypes.shape({
       attributes: PropTypes.object,

@@ -139,6 +139,7 @@ const ManagementTable = props => {
     deltaToggle,
     setDeltaToggle,
     setUserEntryFormState,
+    skills,
     workers
   } = props;
 
@@ -272,6 +273,7 @@ const ManagementTable = props => {
           { confirmationModalOpts.worker ?
             <ConfirmationModal
               workers={workers}
+              skills={skills}
               onConfirm={handleDeleteUser}
               handleClose={() => {
                 setConfirmationModalOpts(defaultModalOpts);
@@ -281,6 +283,13 @@ const ManagementTable = props => {
                 confirmationText: "Are you sure you want to delete this worker? ",
                 data: confirmationModalOpts.worker.attributes.full_name
               }}
+              setForwardTo={inactiveForwardTo => setConfirmationModalOpts({
+                ...confirmationModalOpts,
+                worker: {
+                  ...confirmationModalOpts.worker,
+                  inactiveForwardTo
+                }
+              })}
               saveResult={saveResult}
             />
             : null
@@ -295,6 +304,7 @@ ManagementTable.propTypes = {
   deltaToggle: PropTypes.bool.isRequired,
   setDeltaToggle: PropTypes.func.isRequired,
   setUserEntryFormState: PropTypes.func.isRequired,
+  skills: PropTypes.array.isRequired,
   workers: PropTypes.arrayOf(
     PropTypes.shape({
       attributes: PropTypes.object,

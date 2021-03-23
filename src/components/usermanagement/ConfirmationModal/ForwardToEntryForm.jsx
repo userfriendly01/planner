@@ -1,4 +1,7 @@
-import { FilterableSelect } from "components";
+import {
+  FilterableSelect,
+  ModalPhoneNumber
+} from "components";
 import {
   FormControlLabel,
   Radio
@@ -28,7 +31,7 @@ const LabelContainer = styled.div`
 
 const ForwardToEntryForm = props => {
   const {
-    // forwardTo,
+    skills,
     workers,
     updateForwardTo
   } = props;
@@ -41,15 +44,31 @@ const ForwardToEntryForm = props => {
         value: worker.sid
       });
     });
-    console.log("Worker Options: ", workerOptions);
     return workerOptions;
   };
+
+  const getSkillOptions = () => {
+    const skillOptions = [];
+    skills.map(skill => {
+      skillOptions.push({
+        label: skill.skill,
+        value: skill.skill
+      });
+    });
+    return skillOptions;
+  };
+
+  const [ phoneNumber, setPhoneNumber ] = React.useState({
+    isValid: false,
+    value: "",
+    showError: false
+  });
 
   const [ forwardToType, updateForwardToType ] = React.useState({
     option: "worker",
     display: <FilterableSelect
       optionsList={getWorkerOptions()}
-      updateValue={updateForwardTo}
+      updateValue={worker => updateForwardTo(worker.value)}
     />
   }
   );
@@ -60,18 +79,32 @@ const ForwardToEntryForm = props => {
         updateForwardToType({
           option: "skill",
           display: <FilterableSelect
-            optionsList={{
-              label: "option 1",
-              value: "Option 1"
-            }}
-            updateValue={updateForwardTo}
+            optionsList={getSkillOptions()}
+            updateValue={skill => updateForwardTo(skill.value)}
           />
         });
         break;
       case "number":
         updateForwardToType({
           option: "number",
-          display: "Number"
+          display: <ModalPhoneNumber
+            allowSevenDigitVdn={false}
+            id="forward-number-input"
+            label="Forward To Number"
+            number={phoneNumber.value}
+            onBlur={() => setPhoneNumber({
+              ...phoneNumber,
+              showError: true
+            })}
+            showError={phoneNumber.showError}
+            updateValue={(maskedValue, unmaskedValue, isValid) => {
+              setPhoneNumber({
+                ...phoneNumber,
+                isValid,
+                value: maskedValue
+              });
+            }}
+          />
         });
         break;
       default:
@@ -127,6 +160,7 @@ const ForwardToEntryForm = props => {
 ForwardToEntryForm.propTypes = {
   // forwardTo: PropTypes.string,
   updateForwardTo: PropTypes.func.isRequired,
+  skills: PropTypes.array.isRequired,
   workers: PropTypes.arrayOf(
     PropTypes.shape({
       attributes: PropTypes.object,
