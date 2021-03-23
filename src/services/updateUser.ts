@@ -1,13 +1,9 @@
-import { TwilioWorker } from "context";
 import { apiPaths }from "globals";
 import {
+  DbWorker,
   myAxios,
-  RawTwilioWorker
 } from "utils";
 
-export const updateUser = (workerSid: string, attributes: Partial<TwilioWorker["attributes"]>): Promise<RawTwilioWorker> =>
-  myAxios.post(apiPaths.UPDATE_WORKER_ATTRIBUTES, {
-    workerSid,
-    attributes
-  })
+export const updateUser = (worker: Partial<DbWorker>): Promise<DbWorker> =>
+  myAxios.post(apiPaths.UPDATE_WORKER, worker)
     .then(response => response.data);

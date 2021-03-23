@@ -32,7 +32,6 @@ import {
 import styled from "styled-components";
 import {
   getValidSkillsObject,
-  mapWorkerFromTwilioWorker,
   mapTwilioWorkerFromDbWorker,
   sortManagersByName,
   sortProfilesByName,
@@ -137,7 +136,7 @@ export interface UserEntryForm_FormState {
   profileIdBlurred: boolean,
   profileIdUpdated: boolean,
   alternateDid: PhoneNumberState,
-  twilioDid: PhoneNumberState,
+  directDialNum: PhoneNumberState,
   zeroOutEnabled: boolean
 }
 
@@ -195,7 +194,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
         updated: false,
         valid: false
       },
-      twilioDid: {
+      directDialNum: {
         value: "",
         blurred: false,
         e164: undefined,
@@ -214,6 +213,15 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
       initialForm.outgoing.value = worker.attributes.did ? worker.attributes.did.replace(/^\+1/, "").replace(/^1/, "") : ""; // remove +1 or 1 from start of e164
       initialForm.outgoing.valid = worker.attributes.did ? true : false;
       initialForm.profileId = `${worker.attributes.profile_id}`;
+      console.log("alternateDid", worker.alternateDid);
+      console.log("directDialNum", worker.directDialNum);
+      initialForm.alternateDid.value = worker.alternateDid ? worker.alternateDid.replace(/^\+1/, "").replace(/^1/, "") : ""; // remove +1 or 1 from start of e164
+      initialForm.alternateDid.valid = worker.alternateDid ? true : false;
+      initialForm.directDialNum.value = worker.directDialNum ? worker.directDialNum.replace(/^\+1/, "").replace(/^1/, "") : ""; // remove +1 or 1 from start of e164
+      initialForm.directDialNum.valid = worker.directDialNum ? true : false;
+      initialForm.didUser = true
+      // initialForm.didUser = worker.directDialNum ? true : false;
+      initialForm.zeroOutEnabled = worker.zeroOutEnabled;
     }
     return initialForm;
   };
@@ -267,11 +275,10 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
       attributes,
       // values below are used by twilio-worker-api, they do not map to Twilio worker attributes
       alternateDid: form.alternateDid.e164,
-      directDialNum: form.twilioDid.e164,
+      directDialNum: form.directDialNum.e164,
       zeroOutEnabled: form.zeroOutEnabled
     })
       .then(dbWorker => {
-        const twilioWorker = mapTwilioWorkerFromDbWorker(dbWorker);
         setForm({
           ...form,
           // reset default skills
@@ -301,7 +308,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
             updated: false,
             valid: false
           },
-          twilioDid: {
+          directDialNum: {
             value: "",
             blurred: false,
             e164: undefined,
@@ -311,7 +318,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
         });
         dispatch({
           type: "addWorkers",
-          payload: [twilioWorker]
+          payload: [mapTwilioWorkerFromDbWorker(dbWorker)]
         });
         updateLoading({
           ...loading,
@@ -363,11 +370,18 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
     if (form.defaultSkillsUpdated) {
       attributes.default_skills = form.defaultSkills;
     }
-    updateUser(worker.sid, attributes)
-      .then(twilioWorker => {
+    updateUser({
+      workerSid: worker.sid,
+      attributes,
+      // values below are used by twilio-worker-api, they do not map to Twilio worker attributes
+      alternateDid: form.alternateDid.e164,
+      directDialNum: form.directDialNum.e164,
+      zeroOutEnabled: form.zeroOutEnabled
+    })
+      .then(dbWorker => {
         dispatch(({
           type: "updateWorker",
-          payload: mapWorkerFromTwilioWorker(twilioWorker)
+          payload: mapTwilioWorkerFromDbWorker(dbWorker)
         }));
         updateLoading({
           ...loading,
@@ -398,7 +412,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
   const profileIdValid = form.profileId !== "";
   const formValid = (formMode === formModes.INSERT ? nNumberInputValid : true)
     && profileIdValid && managerValid && form.outgoing.valid && extensionInputValid
-    && (form.didUser === true ? form.twilioDid.valid && form.alternateDid.valid : true);
+    && (form.didUser === true ? form.directDialNum.valid && form.alternateDid.valid : true);
   const formUpdated = (form.defaultSkillsUpdated || form.managerUpdated || form.profileIdUpdated || form.outgoing.updated || form.nNumberUpdated || form.extensionUpdated);
 
   return (
@@ -554,37 +568,33 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
               extensionValid
             })}
           />
-          {/* TODO: remove 'insert only' logic once editUser can handle DID users */}
-          {formMode === formModes.INSERT
-            ? <ToggleContainer>
-              <Switch
-                checked={form.didUser}
-                onChange={() => {
-                  setForm({
-                    ...form,
-                    didUser: !form.didUser,
-                    alternateDid: {
-                      value: "",
-                      blurred: false,
-                      e164: undefined,
-                      updated: false,
-                      valid: false
-                    },
-                    twilioDid: {
-                      value: "",
-                      blurred: false,
-                      e164: undefined,
-                      updated: false,
-                      valid: false
-                    }
-                  });
-                }}
-                inputProps={{ "aria-label": "toggle-did-user" }}
-              />
-              <ToggleLabel>DID User</ToggleLabel>
-            </ToggleContainer>
-            : null
-          }
+          <ToggleContainer>
+            <Switch
+              checked={form.didUser}
+              onChange={() => {
+                setForm({
+                  ...form,
+                  didUser: !form.didUser,
+                  alternateDid: {
+                    value: "",
+                    blurred: false,
+                    e164: undefined,
+                    updated: false,
+                    valid: false
+                  },
+                  directDialNum: {
+                    value: "",
+                    blurred: false,
+                    e164: undefined,
+                    updated: false,
+                    valid: false
+                  }
+                });
+              }}
+              inputProps={{ "aria-label": "toggle-did-user" }}
+            />
+            <ToggleLabel>DID User</ToggleLabel>
+          </ToggleContainer>
           {form.didUser ? (
             <>
               <ToggleContainer>
@@ -602,21 +612,21 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
               <ModalPhoneNumber
                 allowSevenDigitVdn={false}
                 id="twilio-did"
-                number={form.twilioDid.value}
+                number={form.directDialNum.value}
                 onBlur={() => setForm({
                   ...form,
-                  twilioDid: {
-                    ...form.twilioDid,
+                  directDialNum: {
+                    ...form.directDialNum,
                     blurred: true
                   }
                 })}
                 label="Twilio DID *"
-                showError={form.twilioDid.blurred}
+                showError={form.directDialNum.blurred}
                 updateValue={(maskedValue, unmaskedValue, isValid, e164Number) => {
                   setForm({
                     ...form,
-                    twilioDid: {
-                      ...form.twilioDid,
+                    directDialNum: {
+                      ...form.directDialNum,
                       value: maskedValue,
                       e164: e164Number,
                       updated: true,

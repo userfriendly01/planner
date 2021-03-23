@@ -85,6 +85,7 @@ export interface TwilioWorker {
   directDialNum?: string,
   sid: string,
   skillsDifferent: boolean,
+  zeroOutEnabled?: boolean
 }
 
 export interface TwilioWorkerSkills {
