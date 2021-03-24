@@ -159,7 +159,6 @@ const ForwardToEntryForm = props => {
 };
 
 ForwardToEntryForm.propTypes = {
-  // forwardTo: PropTypes.string,
   updateForwardTo: PropTypes.func.isRequired,
   skills: PropTypes.array.isRequired,
   workers: PropTypes.arrayOf(
