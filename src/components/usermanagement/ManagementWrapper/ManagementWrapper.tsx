@@ -83,10 +83,7 @@ export const ManagementWrapper = () => {
   const workersFromContext = useAdminState().workerContext.workers;
   const skillsFromContext = useAdminState().skillContext.taskrouterSkills;
 
-  // const taskrouterSkillsForDropDown = skillsFromContext.filter(skillObj => !defaultSkills.skills.includes(skillObj.skill));
-
   let workers = [ ...workersFromContext ].sort(sortWorkersByFullName);
-  let skills = [ ...skillsFromContext ];
 
   const [state, setState] = useState(initialManagementWrapperState);
 
@@ -150,9 +147,9 @@ export const ManagementWrapper = () => {
           deltaToggle={state.deltaToggle}
           setDeltaToggle={setStateFromDeltaToggle}
           setUserEntryFormState={setUserEntryFormState}
-          skills={skills}
+          skills={skillsFromContext}
           paginatedWorkers={workers.slice(workersStart, workersEnd)}
-          workers={workers}
+          workers={workersFromContext.sort(sortWorkersByFullName)}
         />
       </StyledPaper>
       <ManagementPagination
