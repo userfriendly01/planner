@@ -1,9 +1,9 @@
 import {
+  ForwardToEntryForm,
   PaperContainer,
   ModalOverlay,
   StyledButton
 } from "components";
-import ForwardToEntryForm from "./ForwardToEntryForm";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
@@ -63,12 +63,8 @@ const ConfirmationModal = props => {
     saveResult
   } = props;
 
-  console.log("Data", data);
   const isWorkerDid = data.selectedWorker.attributes.did;
   const isForwardToSet = data.selectedWorker.inactiveForwardTo ? true : false;
-
-  console.log("Did present?", data.selectedWorker.attributes.did);
-  console.log("IsForwardToSet? ", isForwardToSet);
 
   return (
     <ModalContainer>

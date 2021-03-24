@@ -140,6 +140,7 @@ const ManagementTable = props => {
     setDeltaToggle,
     setUserEntryFormState,
     skills,
+    paginatedWorkers,
     workers
   } = props;
 
@@ -220,7 +221,7 @@ const ManagementTable = props => {
           </tr>
         </thead>
         <tbody>
-          {workers.map((worker, index) => {
+          {paginatedWorkers.map((worker, index) => {
             const isSelected = selectedWorkers.some(selectedWorker => selectedWorker.sid === worker.sid);
             const handleWorkerOnClick = () => dispatch({
               type: "toggleWorkerSelected",
@@ -311,6 +312,13 @@ ManagementTable.propTypes = {
   setUserEntryFormState: PropTypes.func.isRequired,
   skills: PropTypes.array.isRequired,
   workers: PropTypes.arrayOf(
+    PropTypes.shape({
+      attributes: PropTypes.object,
+      id: PropTypes.string,
+      sid: PropTypes.string
+    })
+  ),
+  paginatedWorkers: PropTypes.arrayOf(
     PropTypes.shape({
       attributes: PropTypes.object,
       id: PropTypes.string,

@@ -151,7 +151,8 @@ export const ManagementWrapper = () => {
           setDeltaToggle={setStateFromDeltaToggle}
           setUserEntryFormState={setUserEntryFormState}
           skills={skills}
-          workers={workers.slice(workersStart, workersEnd)}
+          paginatedWorkers={workers.slice(workersStart, workersEnd)}
+          workers={workers}
         />
       </StyledPaper>
       <ManagementPagination
