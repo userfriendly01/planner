@@ -89,6 +89,11 @@ const mockWorkerData = [
     skillsDifferent: true
   }
 ];
+const skills = [
+  {
+    skill: "aisgl1"
+  }
+];
 
 const setDeltaToggle = jest.fn();
 const setUserEntryFormState = jest.fn();
@@ -99,6 +104,8 @@ const renderComponent = (workers, toggle = false, state) => {
       deltaToggle={toggle}
       setDeltaToggle={setDeltaToggle}
       setUserEntryFormState={setUserEntryFormState}
+      skills={skills}
+      paginatedWorkers={workers}
       workers={workers}
     />, state);
 };
@@ -152,7 +159,7 @@ describe("<ManagementTable />", () => {
   describe("user rows are clicked", () => {
     test("should dispatch toggleWorkerSelected actions and highlight rows of selected workers, reset button should enable", () => {
       const state = getTestState();
-      const rendered = render(<ManagementTable deltaToggle={false} setDeltaToggle={setDeltaToggle} workers={mockWorkerData} />, state);
+      const rendered = render(<ManagementTable deltaToggle={false} setDeltaToggle={setDeltaToggle} paginatedWorkers={mockWorkerData} />, state);
       const tableRows = rendered.getAllByTestId("table-row");
       expect(tableRows).toHaveLength(3);
       act(() => fireEvent.click(tableRows[0]));
@@ -178,7 +185,6 @@ describe("<ManagementTable />", () => {
       expect(tableRows[2]).toHaveStyleRule("background-color", theme.tableRow.selectedColor);
     });
   });
-
   describe("Delete icon is clicked in row", () => {
     test("should display ConfirmationModal", () => {
       const rendered = renderComponent(mockWorkerData);
@@ -186,8 +192,8 @@ describe("<ManagementTable />", () => {
       expectMockedComponent(rendered, { ConfirmationModal }, 0);
       const indexClicked = 1;
       act(() => fireEvent.click(deleteButtons[indexClicked]));
-      const confirmationText = ConfirmationModal.mock.calls[0][0].body.confirmationText;
-      const data = ConfirmationModal.mock.calls[0][0].body.data;
+      const confirmationText = ConfirmationModal.mock.calls[0][0].data.confirmationText;
+      const data = ConfirmationModal.mock.calls[0][0].data.displayData;
       expectMockedComponent(rendered, { ConfirmationModal }, 1);
       expect(confirmationText).toBe("Are you sure you want to delete this worker? ");
       expect(data).toBe("Test 2");
@@ -199,9 +205,19 @@ describe("<ManagementTable />", () => {
       const indexClicked = 1;
       act(() => fireEvent.click(deleteButtons[indexClicked]));
       expectMockedComponent(rendered, { ConfirmationModal }, 1);
-      const handleClose = ConfirmationModal.mock.calls[0][0].handleClose;
+      const handleClose = ConfirmationModal.mock.calls[0][0].callbackMethods.handleClose;
       act(() => handleClose());
       expectMockedComponent(rendered, { ConfirmationModal }, 0);
+    });
+    test("when setForwardTo is called, setConfirmationModalOps is called", () => {
+      const rendered = renderComponent(mockWorkerData);
+      const deleteButtons = rendered.getAllByTestId("delete-button");
+      expectMockedComponent(rendered, { ConfirmationModal }, 0);
+      const indexClicked = 1;
+      act(() => fireEvent.click(deleteButtons[indexClicked]));
+      expectMockedComponent(rendered, { ConfirmationModal }, 1);
+      const setForwardTo = ConfirmationModal.mock.calls[0][0].callbackMethods.setForwardTo;
+      act(() => setForwardTo("aissgg"));
     });
     describe("When the confirmFunction is run, deleteUser is initiated", () => {
       test("DeleteUser is successful", done => {
@@ -213,7 +229,7 @@ describe("<ManagementTable />", () => {
         const indexClicked = 1;
         act(() => fireEvent.click(deleteButtons[indexClicked]));
         expectMockedComponent(rendered, { ConfirmationModal }, 1);
-        const onConfirm = ConfirmationModal.mock.calls[0][0].onConfirm;
+        const onConfirm = ConfirmationModal.mock.calls[0][0].callbackMethods.onConfirm;
         act(() => {
           onConfirm().then(() => {
             const actions = mockStore.getActions();
@@ -242,7 +258,7 @@ describe("<ManagementTable />", () => {
         const indexClicked = 1;
         act(() => fireEvent.click(deleteButtons[indexClicked]));
         expectMockedComponent(rendered, { ConfirmationModal }, 1);
-        const onConfirm = ConfirmationModal.mock.calls[0][0].onConfirm;
+        const onConfirm = ConfirmationModal.mock.calls[0][0].callbackMethods.onConfirm;
         act(() => {
           onConfirm().then(() => {
             const actions = mockStore.getActions();
@@ -266,7 +282,7 @@ describe("<ManagementTable />", () => {
         const indexClicked = 1;
         act(() => fireEvent.click(deleteButtons[indexClicked]));
         expectMockedComponent(rendered, { ConfirmationModal }, 1);
-        const onConfirm = ConfirmationModal.mock.calls[0][0].onConfirm;
+        const onConfirm = ConfirmationModal.mock.calls[0][0].callbackMethods.onConfirm;
         act(() => {
           onConfirm().then(() => {
             const actions = mockStore.getActions();
@@ -277,7 +293,6 @@ describe("<ManagementTable />", () => {
       });
     });
   });
-
   describe("Edit icon is clicked in row", () => {
     test("should show UserEntryForm for corresponding worker, not highlight the row as selected, and close UserEntryForm when handleClose is fired", () => {
       const rendered = renderComponent(mockWorkerData);

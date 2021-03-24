@@ -160,8 +160,6 @@ const ManagementTable = props => {
   const selectedWorkers = state.workerContext.selectedWorkers;
   const dispatch = useAdminDispatch();
 
-  console.log("FINAL LOOK: ", confirmationModalOpts);
-
   const handleDeleteUser = () => {
     const deletedWorker = confirmationModalOpts.worker;
     setSaveResult({
