@@ -529,6 +529,7 @@ describe("<UserEntryForm />", () => {
             });
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
+                activateEp: false, // false for non-DID workers
                 attributes: workerAttributesAfterFormValid,
                 zeroOutEnabled: true // profileId used in this test has this set to true
               });
@@ -572,6 +573,7 @@ describe("<UserEntryForm />", () => {
               });
               await waitFor(() => {
                 expect(createUser).toHaveBeenCalledWith({
+                  activateEp: false, // false for non-DID workers
                   attributes: workerAttributesAfterFormValid,
                   zeroOutEnabled: true // profileId used in this test has this set to true
                 });
@@ -615,6 +617,7 @@ describe("<UserEntryForm />", () => {
               });
               await waitFor(() => {
                 expect(createUser).toHaveBeenCalledWith({
+                  activateEp: false, // false for non-DID workers
                   attributes: workerAttributesAfterFormValid,
                   zeroOutEnabled: true // profileId used in this test has this set to true
                 });
@@ -661,11 +664,11 @@ describe("<UserEntryForm />", () => {
           expectMockedComponent(rendered, { DefaultSkillSelector }, 1);
 
           // Twilio DID
-          const expectedTwilioDidProps = {
+          const expectedDirectDialNumProps = {
             number: "",
             label: "Twilio DID *"
           };
-          expectOnlyPassedProps(ModalPhoneNumber, expectedTwilioDidProps, 2);
+          expectOnlyPassedProps(ModalPhoneNumber, expectedDirectDialNumProps, 2);
           // Skype/Teams DID
           const expectedalternateDidProps = {
             number: "",
@@ -751,7 +754,10 @@ describe("<UserEntryForm />", () => {
               buttonProps.onClick();
             });
             await waitFor(() => {
-              expect(createUser).toHaveBeenCalledWith(workerWithoutSid);
+              expect(createUser).toHaveBeenCalledWith({
+                ...workerWithoutSid,
+                activateEp: true // true for DID workers
+              });
               const actions = mockStore.getActions();
               expect(actions).toEqual([{
                 type: "addWorkers",
