@@ -246,7 +246,7 @@ const ManagementTable = props => {
             return (
               <CustomTableRow key={index} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">
                 <CustomTableData><TableText>{worker.attributes.full_name}</TableText></CustomTableData>
-                <CustomTableData><TableText>{worker.id}</TableText></CustomTableData>
+                <CustomTableData><TableText>{worker.attributes.unique_id}</TableText></CustomTableData>
                 <CustomTableData><TableText>{worker.attributes.extension}</TableText></CustomTableData>
                 <CustomTableData><TableText>{worker.attributes.office_location_name}</TableText></CustomTableData>
                 <CustomTableData><TableDataFlex>{formatWorkerSkillsToHTML(worker.attributes.routing)}</TableDataFlex></CustomTableData>
@@ -312,7 +312,6 @@ ManagementTable.propTypes = {
   workers: PropTypes.arrayOf(
     PropTypes.shape({
       attributes: PropTypes.object,
-      id: PropTypes.string,
       sid: PropTypes.string
     })
   ),

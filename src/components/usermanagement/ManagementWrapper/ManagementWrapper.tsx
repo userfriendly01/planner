@@ -25,7 +25,6 @@ import {
   sortWorkersByFullName
 } from "utils";
 
-// @ts-ignore
 const ManagementContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -79,7 +78,7 @@ const getWorkersStartAndEnd = (pageSelected: number, filteredWorkers: TwilioWork
   }
 };
 
-export const ManagementWrapper = () => {
+export const ManagementWrapper: React.FC = () => {
   const workersFromContext = useAdminState().workerContext.workers;
   const skillsFromContext = useAdminState().skillContext.taskrouterSkills;
 

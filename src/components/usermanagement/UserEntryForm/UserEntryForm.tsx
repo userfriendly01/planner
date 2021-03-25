@@ -33,6 +33,7 @@ import styled from "styled-components";
 import {
   getValidSkillsObject,
   mapWorkerFromTwilioWorker,
+  mapTwilioWorkerFromDbWorker,
   sortManagersByName,
   sortProfilesByName,
   wait
@@ -62,7 +63,7 @@ const FormControlsPane = styled.div`
   min-width: 320px;
   overflow-y: auto;
   padding: 0 8px;
-  width: 100%
+  width: 100%;
 `;
 
 const Header1 = styled.h1`
@@ -77,14 +78,16 @@ const ModalContainer = styled.div`
   background-color: ${props => props.theme.backgroundColor};
   border-radius: 4px;
   display: flex;
-  flex: 1 1 auto;
   flex-direction: column;
-  left: 50%;
+  left: 0;
+  margin: 0 auto;
+  max-height: 80vh;
   max-width: 700px;
+  overflow-y: auto;
   padding: 0 8px;
   position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  right: 0;
+  top: 10vh;
   width: 100%;
 `;
 
@@ -93,12 +96,18 @@ const ToggleContainer = styled.div`
   margin-left: 4px;
 `;
 
+const ToggleLabel = styled.div`
+  align-self: center;
+  font-weight: 400;
+  font-size: 1rem;
+`;
+
 const defaultNNumber = "n";
 
 export interface UserEntryFormProps {
   userEntryFormState: UserEntryFormState,
   handleClose: VoidFunction
-};
+}
 
 export interface PhoneNumberState {
   value: string,
@@ -106,12 +115,12 @@ export interface PhoneNumberState {
   e164: string,
   updated: boolean,
   valid: boolean,
-};
+}
 
 export interface UserEntryForm_FormState {
   defaultSkills: TwilioWorkerSkills,
   defaultSkillsUpdated: boolean,
-  didUser: boolean, //
+  didUser: boolean,
   extension: string,
   extensionBlurred: boolean,
   extensionUpdated: boolean,
@@ -124,15 +133,15 @@ export interface UserEntryForm_FormState {
   nNumberFetchedUser: FetchUserResponse,
   nNumberUpdated: boolean,
   outgoing: PhoneNumberState,
-  overflowSkill: boolean, //
   profileId: string,
   profileIdBlurred: boolean,
   profileIdUpdated: boolean,
-  skypeTeamsDid: PhoneNumberState, //
-  twilioDid: PhoneNumberState //
-};
+  alternateDid: PhoneNumberState,
+  twilioDid: PhoneNumberState,
+  zeroOutEnabled: boolean
+}
 
-const UserEntryForm = (props: UserEntryFormProps) => {
+const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
 
   const {
     handleClose,
@@ -152,7 +161,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
     }
   } = useAdminState();
 
-  const initialDefaultSkills = getValidSkillsObject()
+  const initialDefaultSkills = getValidSkillsObject();
   const getInitialFormState = (): UserEntryForm_FormState => {
     const initialForm: UserEntryForm_FormState = {
       defaultSkills: initialDefaultSkills,
@@ -174,26 +183,26 @@ const UserEntryForm = (props: UserEntryFormProps) => {
         blurred: false,
         e164: undefined,
         updated: false,
-        valid: false,
+        valid: false
       },
-      overflowSkill: false, //
       profileId: "",
       profileIdBlurred: false,
       profileIdUpdated: false,
-      skypeTeamsDid: {
+      alternateDid: {
         value: "",
         blurred: false,
         e164: undefined,
         updated: false,
-        valid: false,
+        valid: false
       },
       twilioDid: {
         value: "",
         blurred: false,
         e164: undefined,
         updated: false,
-        valid: false,
-      }
+        valid: false
+      },
+      zeroOutEnabled: false
     };
     if (formMode === formModes.UPDATE) {
       // did user fields need to be updated if they exist
@@ -207,7 +216,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       initialForm.profileId = `${worker.attributes.profile_id}`;
     }
     return initialForm;
-  }
+  };
 
   const [form, setForm] = useState<UserEntryForm_FormState>(getInitialFormState());
   const [loading, updateLoading] = useState({
@@ -216,6 +225,11 @@ const UserEntryForm = (props: UserEntryFormProps) => {
     saveStatus: null,
     saveUser: false
   });
+
+  const getZeroOutEnabledFromProfile = (newProfileValue: string): boolean => {
+    const targetProfile = profiles.find(profile => profile.profile_id === +newProfileValue);
+    return !!targetProfile.zero_out_enabled.data[0];
+  };
 
   const doCreateUser = () => {
     updateLoading({
@@ -249,8 +263,15 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       contact_uri: `client:${form.nNumber.toLowerCase()}`,
       unique_id: form.nNumber.toLowerCase()
     };
-    createUser(attributes)
-      .then(twilioWorker => {
+    createUser({
+      attributes,
+      // values below are used by twilio-worker-api, they do not map to Twilio worker attributes
+      alternateDid: form.alternateDid.e164,
+      directDialNum: form.twilioDid.e164,
+      zeroOutEnabled: form.zeroOutEnabled
+    })
+      .then(dbWorker => {
+        const twilioWorker = mapTwilioWorkerFromDbWorker(dbWorker);
         setForm({
           ...form,
           // reset default skills
@@ -271,11 +292,26 @@ const UserEntryForm = (props: UserEntryFormProps) => {
           outgoing: {
             ...form.outgoing,
             blurred: false
+          },
+          // reset Skype/Teams did and twilio did
+          alternateDid: {
+            value: "",
+            blurred: false,
+            e164: undefined,
+            updated: false,
+            valid: false
+          },
+          twilioDid: {
+            value: "",
+            blurred: false,
+            e164: undefined,
+            updated: false,
+            valid: false
           }
         });
         dispatch({
           type: "addWorkers",
-          payload: [mapWorkerFromTwilioWorker(twilioWorker)]
+          payload: [twilioWorker]
         });
         updateLoading({
           ...loading,
@@ -291,19 +327,13 @@ const UserEntryForm = (props: UserEntryFormProps) => {
         }, timeouts.MODAL_OVERLAY);
       })
       .catch(err => {
+        console.error(err.message, err.response.data);
         updateLoading({
           ...loading,
-          overlayMessage: "Failed to add new user",
+          overlayMessage: err.response.data.message || "Failed to add new user.",
           saveStatus: modalOverlayStatuses.FAIL,
           saveUser: true
         });
-        wait(() => {
-          updateLoading({
-            ...loading,
-            saveUser: false
-          });
-        }, timeouts.MODAL_OVERLAY);
-        console.error("UserEntryForm - Failed to create worker in twilio workspace", err);
       });
   };
 
@@ -366,8 +396,10 @@ const UserEntryForm = (props: UserEntryFormProps) => {
   const extensionInputValid = (form.extensionValid || form.extension === "");
   const managerValid = form.manager !== "";
   const profileIdValid = form.profileId !== "";
-  const formValid = (formMode === formModes.INSERT ? nNumberInputValid : true) && profileIdValid && managerValid && form.outgoing.valid && extensionInputValid;
-  const formUpdated = (form.defaultSkillsUpdated || form.managerUpdated || form.profileIdUpdated || form.outgoing.updated || form.nNumberUpdated || form.extensionUpdated)
+  const formValid = (formMode === formModes.INSERT ? nNumberInputValid : true)
+    && profileIdValid && managerValid && form.outgoing.valid && extensionInputValid
+    && (form.didUser === true ? form.twilioDid.valid && form.alternateDid.valid : true);
+  const formUpdated = (form.defaultSkillsUpdated || form.managerUpdated || form.profileIdUpdated || form.outgoing.updated || form.nNumberUpdated || form.extensionUpdated);
 
   return (
     <ModalContainer>
@@ -375,6 +407,12 @@ const UserEntryForm = (props: UserEntryFormProps) => {
         <ModalOverlay
           status={loading.saveStatus}
           message={loading.overlayMessage}
+          handleClose={() => {
+            updateLoading({
+              ...loading,
+              saveUser: false
+            });
+          }}
         /> : null}
       <Header1>{formMode === formModes.INSERT ? "Add a User" : "Edit User"}</Header1>
       {
@@ -384,16 +422,6 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       }
       <FormControlsContainer>
         <FormControlsPane>
-          <ToggleContainer>
-            <h3>DID User</h3>
-            <Switch
-              checked={form.didUser}
-              onChange={() => setForm({
-                ...form,
-                didUser: !form.didUser
-              })}
-            />
-          </ToggleContainer>
           <OutlinedSelect
             error={form.managerBlurred && !managerValid}
             helperText={managerValid || !form.managerUpdated ? null : "Please select a manager"}
@@ -438,7 +466,8 @@ const UserEntryForm = (props: UserEntryFormProps) => {
             updateValue={newValue => setForm({
               ...form,
               profileId: newValue,
-              profileIdUpdated: true
+              profileIdUpdated: true,
+              zeroOutEnabled: getZeroOutEnabledFromProfile(newValue)
             })}
             value={form.profileId}
           />
@@ -464,7 +493,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
                   e164: e164Number,
                   updated: true,
                   valid: isValid && (e164Number ? true : false)
-                },
+                }
               });
             }}
           />
@@ -505,7 +534,9 @@ const UserEntryForm = (props: UserEntryFormProps) => {
             originalValue={(worker && worker.attributes) ? worker.attributes.extension : undefined}
             onBlur={() => setForm({
               ...form,
-              extensionBlurred: true
+              extension: "",
+              extensionUpdated: true,
+              extensionValid: false
             })}
             onClear={() => {
               setForm({
@@ -523,17 +554,50 @@ const UserEntryForm = (props: UserEntryFormProps) => {
               extensionValid
             })}
           />
+          {/* TODO: remove 'insert only' logic once editUser can handle DID users */}
+          {formMode === formModes.INSERT
+            ? <ToggleContainer>
+              <Switch
+                checked={form.didUser}
+                onChange={() => {
+                  setForm({
+                    ...form,
+                    didUser: !form.didUser,
+                    alternateDid: {
+                      value: "",
+                      blurred: false,
+                      e164: undefined,
+                      updated: false,
+                      valid: false
+                    },
+                    twilioDid: {
+                      value: "",
+                      blurred: false,
+                      e164: undefined,
+                      updated: false,
+                      valid: false
+                    }
+                  });
+                }}
+                inputProps={{ "aria-label": "toggle-did-user" }}
+              />
+              <ToggleLabel>DID User</ToggleLabel>
+            </ToggleContainer>
+            : null
+          }
           {form.didUser ? (
             <>
               <ToggleContainer>
-                <h3>Overflow Skill</h3>
                 <Switch
-                  checked={form.overflowSkill}
+                  checked={form.zeroOutEnabled}
+                  value={form.zeroOutEnabled}
                   onChange={() => setForm({
                     ...form,
-                    overflowSkill: !form.overflowSkill
+                    zeroOutEnabled: !form.zeroOutEnabled // toggle
                   })}
+                  inputProps={{ "aria-label": "toggle overflow skill" }}
                 />
+                <ToggleLabel>Overflow Skill</ToggleLabel>
               </ToggleContainer>
               <ModalPhoneNumber
                 allowSevenDigitVdn={false}
@@ -564,21 +628,21 @@ const UserEntryForm = (props: UserEntryFormProps) => {
               <ModalPhoneNumber
                 allowSevenDigitVdn={false}
                 id="skype-teams-did"
-                number={form.skypeTeamsDid.value}
+                number={form.alternateDid.value}
                 onBlur={() => setForm({
                   ...form,
-                  skypeTeamsDid: {
-                    ...form.skypeTeamsDid,
+                  alternateDid: {
+                    ...form.alternateDid,
                     blurred: true
                   }
                 })}
                 label="Skype/Teams DID *"
-                showError={form.skypeTeamsDid.blurred}
+                showError={form.alternateDid.blurred}
                 updateValue={(maskedValue, unmaskedValue, isValid, e164Number) => {
                   setForm({
                     ...form,
-                    skypeTeamsDid: {
-                      ...form.skypeTeamsDid,
+                    alternateDid: {
+                      ...form.alternateDid,
                       value: maskedValue,
                       e164: e164Number,
                       updated: true,
@@ -598,7 +662,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
                 ...form,
                 defaultSkillsUpdated: true,
                 defaultSkills
-              })
+              });
             }}
           />
         </FormControlsPane>
