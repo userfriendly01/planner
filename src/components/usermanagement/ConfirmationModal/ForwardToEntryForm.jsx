@@ -1,11 +1,11 @@
 import {
-  FilterableSelect,
-  ModalPhoneNumber
-} from "components";
-import {
   FormControlLabel,
   Radio
 } from "@material-ui/core";
+import {
+  FilterableSelect,
+  ModalPhoneNumber
+} from "components";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";

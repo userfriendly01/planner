@@ -1,7 +1,7 @@
 import {
   ForwardToEntryForm,
-  PaperContainer,
   ModalOverlay,
+  PaperContainer,
   StyledButton
 } from "components";
 import PropTypes from "prop-types";

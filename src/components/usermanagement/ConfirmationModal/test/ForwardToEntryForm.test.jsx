@@ -1,12 +1,12 @@
 import ForwardToEntryForm from "../ForwardToEntryForm";
 import {
-  FilterableSelect,
-  ModalPhoneNumber
-} from "components";
-import {
   FormControlLabel,
   Radio
 } from "@material-ui/core";
+import {
+  FilterableSelect,
+  ModalPhoneNumber
+} from "components";
 import React from "react";
 import {
   act,
