@@ -24,9 +24,13 @@ describe("deleteUser", () => {
       apiPaths.DELETE_WORKER.mockReturnValue("/service/deleteworker/WK01234567");
     });
     test("should resolve with string", done => {
-      const workerSid = "WK01234567";
-      deleteUser(workerSid).then(resolvedVal => {
+      const worker = {
+        sid: "WK01234567",
+        inactiveForwardTo: "+1603882224"
+      };
+      deleteUser(worker).then(resolvedVal => {
         expect(axiosMock.history.delete[0].url).toBe("/service/deleteworker/WK01234567");
+        expect(JSON.parse(axiosMock.history.delete[0].data)).toEqual(worker);
         expect(resolvedVal.data).toEqual({ wow: "Yay!" });
         done();
       });
@@ -35,14 +39,18 @@ describe("deleteUser", () => {
   describe("service call to DELETE_WORKER fails", () => {
     const badResponse = { wahh: "boo" };
     const status = 500;
-    const workerSid = "WK01234567";
+    const worker = {
+      sid: "WK01234567",
+      inactiveForwardTo: "+1603882224"
+    };
     beforeEach(() => {
       axiosMock.onDelete("/service/deleteworker/WK01234567").reply(status, badResponse);
       apiPaths.DELETE_WORKER.mockReturnValue("/service/deleteworker/WK01234567");
     });
     test("should reject with error", done => {
-      deleteUser(workerSid).catch(rejectedVal => {
+      deleteUser(worker).catch(rejectedVal => {
         expect(axiosMock.history.delete[0].url).toBe("/service/deleteworker/WK01234567");
+        expect(JSON.parse(axiosMock.history.delete[0].data)).toEqual(worker);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();
       });

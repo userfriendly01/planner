@@ -80,6 +80,8 @@ const getWorkersStartAndEnd = (pageSelected: number, filteredWorkers: TwilioWork
 
 export const ManagementWrapper: React.FC = () => {
   const workersFromContext = useAdminState().workerContext.workers;
+  const skillsFromContext = useAdminState().skillContext.taskrouterSkills;
+
   let workers = [ ...workersFromContext ].sort(sortWorkersByFullName);
 
   const [state, setState] = useState(initialManagementWrapperState);
@@ -144,7 +146,10 @@ export const ManagementWrapper: React.FC = () => {
           deltaToggle={state.deltaToggle}
           setDeltaToggle={setStateFromDeltaToggle}
           setUserEntryFormState={setUserEntryFormState}
-          workers={workers.slice(workersStart, workersEnd)} />
+          skills={skillsFromContext}
+          paginatedWorkers={workers.slice(workersStart, workersEnd)}
+          workers={workersFromContext.sort(sortWorkersByFullName)}
+        />
       </StyledPaper>
       <ManagementPagination
         end={workersEnd}

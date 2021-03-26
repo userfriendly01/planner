@@ -1,5 +1,6 @@
 export { default as AddManagerModal } from "./AddManagerModal/AddManagerModal";
 export { default as ConfirmationModal } from "./ConfirmationModal/ConfirmationModal";
+export { default as ForwardToEntryForm } from "./ConfirmationModal/ForwardToEntryForm";
 export { default as DefaultSkillSelector } from "./DefaultSkillSelector/DefaultSkillSelector";
 export { default as ManagementHeader } from "./ManagementHeader/ManagementHeader";
 export { default as ManagementPagination } from "./ManagementPagination/ManagementPagination";
