@@ -87,15 +87,15 @@ const ConfirmationModal = props => {
         }
         <ButtonWrapper>
           { isWorkerDid && !isForwardToSet ?
-            <Button disabled={true} onClick={callbackMethods.onConfirm} data-testid={"disabled-confirm-button"}>
+            <Button disabled={true} onClick={callbackMethods.onConfirm}>
               Confirm
             </Button>
             :
-            <Button onClick={callbackMethods.onConfirm} data-testid={"confirm-button"}>
+            <Button onClick={callbackMethods.onConfirm}>
               Confirm
             </Button>
           }
-          <Button onClick={callbackMethods.handleClose} data-testid={"cancel-button"}>
+          <Button onClick={callbackMethods.handleClose}>
             Cancel
           </Button>
         </ButtonWrapper>

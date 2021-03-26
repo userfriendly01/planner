@@ -308,7 +308,13 @@ ManagementTable.propTypes = {
   deltaToggle: PropTypes.bool.isRequired,
   setDeltaToggle: PropTypes.func.isRequired,
   setUserEntryFormState: PropTypes.func.isRequired,
-  skills: PropTypes.array.isRequired,
+  skills: PropTypes.arrayOf(
+    PropTypes.shape({
+      levels: PropTypes.array,
+      levelSelected: PropTypes.number,
+      skill: PropTypes.string
+    })
+  ).isRequired,
   workers: PropTypes.arrayOf(
     PropTypes.shape({
       attributes: PropTypes.object,

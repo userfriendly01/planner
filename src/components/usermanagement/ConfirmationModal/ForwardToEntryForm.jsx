@@ -25,7 +25,6 @@ const RadioContainer = styled.div`
 `;
 
 const LabelContainer = styled.div`
-  display: flex;
   text-align: center;
 `;
 
@@ -37,25 +36,21 @@ const ForwardToEntryForm = props => {
   } = props;
 
   const getWorkerOptions = () => {
-    const workerOptions = [];
-    workers.map(worker => {
-      workerOptions.push({
+    return workers.map(worker => {
+      return {
         label: worker.attributes.full_name,
         value: worker.sid
-      });
+      }
     });
-    return workerOptions;
   };
 
   const getSkillOptions = () => {
-    const skillOptions = [];
-    skills.map(skill => {
-      skillOptions.push({
+    return skills.map(skill => {
+      return {
         label: skill.skill,
         value: skill.skill
-      });
+      };
     });
-    return skillOptions;
   };
 
   const [ phoneNumber, setPhoneNumber ] = React.useState({
@@ -64,9 +59,22 @@ const ForwardToEntryForm = props => {
     showError: false
   });
 
+  const handleUpdatePhoneNumber = (maskedValue, unmaskedValue, isValid) => {
+    setPhoneNumber({
+      ...phoneNumber,
+      isValid,
+      value: maskedValue
+    });
+    if(isValid) {
+      updateForwardTo("+1" + unmaskedValue);
+    } else {
+      updateForwardTo(null);
+    }
+  }
+
   const [ forwardToType, updateForwardToType ] = React.useState("worker");
 
-  const handleChange = selection => {
+  const handleRadioChange = selection => {
     updateForwardTo(null);
     switch(selection) {
       case "skill":
@@ -88,7 +96,7 @@ const ForwardToEntryForm = props => {
           control={
             <Radio
               checked={forwardToType === "worker"}
-              onChange={event => handleChange(event.target.value)}
+              onChange={event => handleRadioChange(event.target.value)}
               value="worker"
             />}
           label="Person"
@@ -98,7 +106,7 @@ const ForwardToEntryForm = props => {
           control={
             <Radio
               checked={forwardToType === "skill"}
-              onChange={event => handleChange(event.target.value)}
+              onChange={event => handleRadioChange(event.target.value)}
               value="skill"
             />}
           label="Skill"
@@ -108,7 +116,7 @@ const ForwardToEntryForm = props => {
           control={
             <Radio
               checked={forwardToType === "number"}
-              onChange={event => handleChange(event.target.value)}
+              onChange={event => handleRadioChange(event.target.value)}
               value="number"
             />}
           label={<LabelContainer>External<br/>Number</LabelContainer>}
@@ -140,18 +148,7 @@ const ForwardToEntryForm = props => {
             });
           }}
           showError={phoneNumber.showError}
-          updateValue={(maskedValue, unmaskedValue, isValid) => {
-            setPhoneNumber({
-              ...phoneNumber,
-              isValid,
-              value: maskedValue
-            });
-            if(isValid) {
-              updateForwardTo("+1" + unmaskedValue);
-            } else {
-              updateForwardTo(null);
-            }
-          }}
+          updateValue={handleUpdatePhoneNumber}
         />
       }
     </EntryFormContainer>
@@ -160,7 +157,13 @@ const ForwardToEntryForm = props => {
 
 ForwardToEntryForm.propTypes = {
   updateForwardTo: PropTypes.func.isRequired,
-  skills: PropTypes.array.isRequired,
+  skills: PropTypes.arrayOf(
+    PropTypes.shape({
+      levels: PropTypes.array,
+      levelSelected: PropTypes.number,
+      skill: PropTypes.string
+    })
+  ).isRequired,
   workers: PropTypes.arrayOf(
     PropTypes.shape({
       attributes: PropTypes.object,
