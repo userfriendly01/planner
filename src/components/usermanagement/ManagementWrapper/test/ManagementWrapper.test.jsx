@@ -23,6 +23,15 @@ jest.mock("components", () => ({
   ManagementTable: jest.fn()
 }));
 
+const mockSkills=[
+  {
+    skill: "aisg145"
+  },
+  {
+    skill: "Farm15"
+  }
+];
+
 const getWorker = (number, managerNumber = 0, defaultSkills = [], skills = [], skillsDifferent = false, fullNameUndefined) => {
   const numberStr = `${number}`;
   const managerNumberStr = `${managerNumber}`;
@@ -50,6 +59,7 @@ describe("ManagementWrapper", () => {
   const doRender = (workers = []) => {
     const state = { ...initialState };
     state.workerContext.workers = workers;
+    state.skillContext.taskrouterSkills = mockSkills;
     return render(component, state);
   };
 
@@ -164,11 +174,13 @@ describe("ManagementWrapper", () => {
         doRender(workers);
         doSetFilter();
         expectOnlyPassedProps(ManagementTable, {
-          workers: [
+          paginatedWorkers: [
             sortedWorkers[0],
             sortedWorkers[1],
             sortedWorkers[2]
-          ]
+          ],
+          workers: sortedWorkers,
+          skills: mockSkills
         }, 1);
       });
       test("ManagementPagination should be passed end = 3, length = 3, page = 1, start = 1", () => {
@@ -248,7 +260,11 @@ describe("ManagementWrapper", () => {
       });
       test(`ManagementTable should be passed first ${workersPerPage} workers (sorted) as prop`, () => {
         doRender(workers);
-        expectOnlyPassedProps(ManagementTable, { workers: sortedWorkers.slice(0, workersPerPage) });
+        expectOnlyPassedProps(ManagementTable, {
+          paginatedWorkers: sortedWorkers.slice(0, workersPerPage),
+          workers: sortedWorkers,
+          skills: mockSkills
+        });
       });
       test(`ManagementPagination should be passed end = ${workersPerPage}, length = 26, page = 1, start = 1`, () => {
         doRender(workers);
@@ -274,11 +290,13 @@ describe("ManagementWrapper", () => {
         doRender(workers);
         doSetFilter();
         expectOnlyPassedProps(ManagementTable, {
-          workers: [
+          paginatedWorkers: [
             sortedWorkers[0],
             sortedWorkers[1],
             sortedWorkers[2]
-          ]
+          ],
+          workers: sortedWorkers,
+          skills: mockSkills
         }, 1);
       });
       test("ManagementPagination should be passed end = 3, length = 3, page = 1, start = 1", () => {
@@ -306,7 +324,7 @@ describe("ManagementWrapper", () => {
         doRender(workers);
         doSetFilter();
         expectOnlyPassedProps(ManagementTable, {
-          workers: [
+          paginatedWorkers: [
             sortedWorkers[7],
             sortedWorkers[8],
             sortedWorkers[9],
@@ -322,7 +340,9 @@ describe("ManagementWrapper", () => {
             sortedWorkers[19],
             sortedWorkers[20],
             sortedWorkers[21]
-          ]
+          ],
+          workers: sortedWorkers,
+          skills: mockSkills
         }, 1);
       });
       test(`ManagementPagination should be passed end = ${workersPerPage}, length = 19, page = 1, start = 1`, () => {
@@ -356,12 +376,14 @@ describe("ManagementWrapper", () => {
         doRender(workers);
         doSetFilterAndChangePage();
         expectOnlyPassedProps(ManagementTable, {
-          workers: [
+          paginatedWorkers: [
             sortedWorkers[22],
             sortedWorkers[23],
             sortedWorkers[24],
             sortedWorkers[25]
-          ]
+          ],
+          workers: sortedWorkers,
+          skills: mockSkills
         }, getLastInstanceCalled(ManagementTable));
       });
       test(`ManagementPagination should be passed end = 19, length = 19, page = 2, start = ${workersPerPage + 1}`, () => {
@@ -375,7 +397,7 @@ describe("ManagementWrapper", () => {
         }, getLastInstanceCalled(ManagementPagination));
       });
     });
-    describe("testing seraching on default skills", () => {
+    describe("testing searching on default skills", () => {
       const doSetSearch = () => act(() => {
         const setStateFromSearchChange = ManagementHeader.mock.calls[0][0].setSearch;
         setStateFromSearchChange("466");
@@ -389,10 +411,12 @@ describe("ManagementWrapper", () => {
         doRender(workers);
         doSetSearch();
         expectOnlyPassedProps(ManagementTable, {
-          workers: [
+          paginatedWorkers: [
             sortedWorkers[5],
             sortedWorkers[6]
-          ]
+          ],
+          workers: sortedWorkers,
+          skills: mockSkills
         }, 1);
       });
       test("ManagementPagination should be passed end = 2, length = 2, page = 1, start = 1", () => {
@@ -406,7 +430,7 @@ describe("ManagementWrapper", () => {
         }, 1);
       });
     });
-    describe("testing seraching on applied skills", () => {
+    describe("testing searching on applied skills", () => {
       const doSetSearch = () => act(() => {
         const setStateFromSearchChange = ManagementHeader.mock.calls[0][0].setSearch;
         setStateFromSearchChange("test");
@@ -420,10 +444,12 @@ describe("ManagementWrapper", () => {
         doRender(workers);
         doSetSearch();
         expectOnlyPassedProps(ManagementTable, {
-          workers: [
+          paginatedWorkers: [
             sortedWorkers[7],
             sortedWorkers[8]
-          ]
+          ],
+          workers: sortedWorkers,
+          skills: mockSkills
         }, 1);
       });
       test("ManagementPagination should be passed end = 2, length = 2, page = 1, start = 1", () => {
@@ -437,7 +463,7 @@ describe("ManagementWrapper", () => {
         }, 1);
       });
     });
-    describe("testing seraching on name", () => {
+    describe("testing searching on name", () => {
       const doSetSearch = () => act(() => {
         const setStateFromSearchChange = ManagementHeader.mock.calls[0][0].setSearch;
         setStateFromSearchChange("aldo");
@@ -451,9 +477,11 @@ describe("ManagementWrapper", () => {
         doRender(workers);
         doSetSearch();
         expectOnlyPassedProps(ManagementTable, {
-          workers: [
+          paginatedWorkers: [
             sortedWorkers[0]
-          ]
+          ],
+          workers: sortedWorkers,
+          skills: mockSkills
         }, 1);
       });
       test("ManagementPagination should be passed end = 1, length = 1, page = 1, start = 1", () => {
@@ -481,9 +509,11 @@ describe("ManagementWrapper", () => {
         doRender(workers);
         doSetSearch();
         expectOnlyPassedProps(ManagementTable, {
-          workers: [
+          paginatedWorkers: [
             sortedWorkers[6]
-          ]
+          ],
+          workers: sortedWorkers,
+          skills: mockSkills
         }, 1);
       });
       test("ManagementPagination should be passed end = 1, length = 1, page = 1, start = 1", () => {
