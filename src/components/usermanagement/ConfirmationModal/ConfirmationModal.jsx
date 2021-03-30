@@ -1,6 +1,7 @@
 import {
-  PaperContainer,
+  ForwardToEntryForm,
   ModalOverlay,
+  PaperContainer,
   StyledButton
 } from "components";
 import PropTypes from "prop-types";
@@ -57,12 +58,13 @@ const ModalContainer = styled(FlexColumn)`
 
 const ConfirmationModal = props => {
   const {
-    onConfirm,
-    body,
-    handleClose,
+    callbackMethods,
+    data,
     saveResult
   } = props;
 
+  const isWorkerDid = data.selectedWorker.attributes.did;
+  const isForwardToSet = data.selectedWorker.inactiveForwardTo ? true : false;
 
   return (
     <ModalContainer>
@@ -71,15 +73,29 @@ const ConfirmationModal = props => {
           <ModalOverlay
             message={saveResult.message}
             status={saveResult.status}
-            handleClose={handleClose}
+            handleClose={callbackMethods.handleClose}
           /> : null}
-        <ConfirmationText>{body.confirmationText}</ConfirmationText>
-        <Data>{body.data}</Data>
+        <ConfirmationText>{data.confirmationText}</ConfirmationText>
+        <Data>{data.displayData}</Data>
+        { isWorkerDid ?
+          <ForwardToEntryForm
+            workers={data.workers}
+            skills={data.skills}
+            updateForwardTo={forwardTo => callbackMethods.setForwardTo(forwardTo)}
+          />
+          : null
+        }
         <ButtonWrapper>
-          <Button onClick={onConfirm} data-testid={"confirm-button"}>
-            Confirm
-          </Button>
-          <Button onClick={handleClose} data-testid={"cancel-button"}>
+          { isWorkerDid && !isForwardToSet ?
+            <Button disabled={true} onClick={callbackMethods.onConfirm}>
+              Confirm
+            </Button>
+            :
+            <Button onClick={callbackMethods.onConfirm}>
+              Confirm
+            </Button>
+          }
+          <Button onClick={callbackMethods.handleClose}>
             Cancel
           </Button>
         </ButtonWrapper>
@@ -89,11 +105,17 @@ const ConfirmationModal = props => {
 };
 
 ConfirmationModal.propTypes = {
-  handleClose: PropTypes.func.isRequired,
-  onConfirm: PropTypes.func.isRequired,
-  body: PropTypes.shape({
-    confirmationText: PropTypes.string,
-    data: PropTypes.string
+  callbackMethods: PropTypes.shape({
+    handleClose: PropTypes.func.isRequired,
+    onConfirm: PropTypes.func.isRequired,
+    setForwardTo: PropTypes.func.isRequired
+  }).isRequired,
+  data: PropTypes.shape({
+    confirmationText: PropTypes.string.isRequired,
+    displayData: PropTypes.string.isRequired,
+    selectedWorker: PropTypes.object.isRequired,
+    skills: PropTypes.string,
+    workers: PropTypes.string
   }).isRequired,
   saveResult: PropTypes.shape({
     status: PropTypes.string,

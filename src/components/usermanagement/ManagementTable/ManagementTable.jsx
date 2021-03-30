@@ -139,6 +139,8 @@ const ManagementTable = props => {
     deltaToggle,
     setDeltaToggle,
     setUserEntryFormState,
+    skills,
+    paginatedWorkers,
     workers
   } = props;
 
@@ -165,7 +167,7 @@ const ManagementTable = props => {
       message: "Saving"
     });
     let resultMessage;
-    return deleteUser(deletedWorker.sid)
+    return deleteUser(deletedWorker)
       .then(() => {
         resultMessage = `Successfully deleted Triton worker with sid ${deletedWorker.sid}`;
         dispatch({
@@ -217,7 +219,7 @@ const ManagementTable = props => {
           </tr>
         </thead>
         <tbody>
-          {workers.map((worker, index) => {
+          {paginatedWorkers.map((worker, index) => {
             const isSelected = selectedWorkers.some(selectedWorker => selectedWorker.sid === worker.sid);
             const handleWorkerOnClick = () => dispatch({
               type: "toggleWorkerSelected",
@@ -271,14 +273,26 @@ const ManagementTable = props => {
         <Modal open={confirmationModalOpts.open}>
           { confirmationModalOpts.worker ?
             <ConfirmationModal
-              onConfirm={handleDeleteUser}
-              handleClose={() => {
-                setConfirmationModalOpts(defaultModalOpts);
-                setSaveResult(defaultSaveResult);
+              callbackMethods={{
+                onConfirm: handleDeleteUser,
+                handleClose: () => {
+                  setConfirmationModalOpts(defaultModalOpts);
+                  setSaveResult(defaultSaveResult);
+                },
+                setForwardTo: inactiveForwardTo => setConfirmationModalOpts({
+                  ...confirmationModalOpts,
+                  worker: {
+                    ...confirmationModalOpts.worker,
+                    inactiveForwardTo
+                  }
+                })
               }}
-              body={{
+              data={{
                 confirmationText: "Are you sure you want to delete this worker? ",
-                data: confirmationModalOpts.worker.attributes.full_name
+                displayData: confirmationModalOpts.worker.attributes.full_name,
+                selectedWorker: confirmationModalOpts.worker,
+                skills,
+                workers
               }}
               saveResult={saveResult}
             />
@@ -294,9 +308,23 @@ ManagementTable.propTypes = {
   deltaToggle: PropTypes.bool.isRequired,
   setDeltaToggle: PropTypes.func.isRequired,
   setUserEntryFormState: PropTypes.func.isRequired,
+  skills: PropTypes.arrayOf(
+    PropTypes.shape({
+      levels: PropTypes.array,
+      levelSelected: PropTypes.number,
+      skill: PropTypes.string
+    })
+  ).isRequired,
   workers: PropTypes.arrayOf(
     PropTypes.shape({
       attributes: PropTypes.object,
+      sid: PropTypes.string
+    })
+  ),
+  paginatedWorkers: PropTypes.arrayOf(
+    PropTypes.shape({
+      attributes: PropTypes.object,
+      id: PropTypes.string,
       sid: PropTypes.string
     })
   )
