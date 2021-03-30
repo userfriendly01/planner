@@ -21,7 +21,6 @@ import styled from "styled-components";
 import {
   wait,
   formatTaskRouterSkills,
-  formatWorkerResponse,
   getUniqueManagerList,
   isErrorIn400s,
   myAxios
@@ -126,16 +125,23 @@ const getSkills = dispatch => new Promise((resolve, reject) => myAxios.get(apiPa
 
 const getWorkers = async dispatch => {
   let pageToken = "";
-  const workers = [];
+  const filteredWorkers = [];
   try {
     do {
-      const response = await myAxios.post(apiPaths.GET_WORKERS, { pageToken });
-      const currentPageOfWorkers = formatWorkerResponse(response.data.instances);
+      const response = await myAxios.get(apiPaths.GET_WORKERS);
+
+      // filter out workers with "inactiveInd": true
+      for (const worker of response.data) {
+        if (!worker.inactiveInd) {
+          filteredWorkers.push(worker);
+        }
+      }
+
       dispatch(({
         type: "addWorkers",
-        payload: currentPageOfWorkers
+        payload: filteredWorkers
       }));
-      currentPageOfWorkers.forEach(worker => workers.push(worker));
+
       if (response.data.nextPageUrl) {
         const url = new URL(response.data.nextPageUrl);
         pageToken = url.searchParams.get("PageToken");
@@ -144,7 +150,7 @@ const getWorkers = async dispatch => {
       }
     } while (pageToken);
 
-    const managerList = getUniqueManagerList(workers);
+    const managerList = getUniqueManagerList(filteredWorkers);
     dispatch({
       type: "loadManagers",
       payload: managerList

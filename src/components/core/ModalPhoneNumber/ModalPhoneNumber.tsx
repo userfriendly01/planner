@@ -64,6 +64,7 @@ const TenDigitInputMask = (inputProps: any) => {
 
 export interface ModalPhoneNumberProps {
   allowSevenDigitVdn?: boolean,
+  disabled?: boolean,
   error?: boolean,
   helperText?: string,
   id: string,
@@ -77,6 +78,7 @@ export interface ModalPhoneNumberProps {
 const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
   const {
     allowSevenDigitVdn, // if true, show toggle button to switch between input masks,
+    disabled = false,
     error,
     helperText,
     id,
@@ -94,6 +96,7 @@ const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
 
   const textField = (
     <TextField
+      disabled={disabled}
       error={error || (showError && validationError)}
       helperText={helperText || (showError && validationError ? validationHelperText : null)}
       id={id}

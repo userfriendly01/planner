@@ -1,7 +1,7 @@
 import { apiPaths }from "globals";
 import {
   DbWorker,
-  myAxios,
+  myAxios
 } from "utils";
 
 export const updateUser = (worker: Partial<DbWorker>): Promise<DbWorker> =>

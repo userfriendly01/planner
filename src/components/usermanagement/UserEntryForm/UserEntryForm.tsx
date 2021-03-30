@@ -11,7 +11,6 @@ import {
 } from "components";
 import {
   TwilioWorker,
-  TwilioWorkerSkills,
   useAdminDispatch,
   useAdminState
 } from "context";
@@ -21,22 +20,19 @@ import {
   modalOverlayStatuses,
   timeouts
 } from "globals";
-import React, {
-  useState
-} from "react";
+import React from "react";
 import {
   createUser,
-  FetchUserResponse,
   updateUser
 } from "services";
 import styled from "styled-components";
 import {
-  getValidSkillsObject,
   mapTwilioWorkerFromDbWorker,
   sortManagersByName,
   sortProfilesByName,
   wait
 } from "utils";
+import useUserEntryForm from "./useUserEntryForm";
 
 const FlexRow = styled.div`
   display: flex;
@@ -103,41 +99,9 @@ const ToggleLabel = styled.div`
 
 const defaultNNumber = "n";
 
-export interface UserEntryFormProps {
+interface UserEntryFormProps {
   userEntryFormState: UserEntryFormState,
   handleClose: VoidFunction
-}
-
-export interface PhoneNumberState {
-  value: string,
-  blurred: boolean,
-  e164: string,
-  updated: boolean,
-  valid: boolean,
-}
-
-export interface UserEntryForm_FormState {
-  defaultSkills: TwilioWorkerSkills,
-  defaultSkillsUpdated: boolean,
-  didUser: boolean,
-  extension: string,
-  extensionBlurred: boolean,
-  extensionUpdated: boolean,
-  extensionValid: boolean,
-  manager: string,
-  managerBlurred: boolean,
-  managerUpdated: boolean,
-  nNumber: string,
-  nNumberBlurred: boolean,
-  nNumberFetchedUser: FetchUserResponse,
-  nNumberUpdated: boolean,
-  outgoing: PhoneNumberState,
-  profileId: string,
-  profileIdBlurred: boolean,
-  profileIdUpdated: boolean,
-  alternateDid: PhoneNumberState,
-  directDialNum: PhoneNumberState,
-  zeroOutEnabled: boolean
 }
 
 const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
@@ -160,79 +124,10 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
     }
   } = useAdminState();
 
-  const initialDefaultSkills = getValidSkillsObject();
-  const getInitialFormState = (): UserEntryForm_FormState => {
-    const initialForm: UserEntryForm_FormState = {
-      defaultSkills: initialDefaultSkills,
-      defaultSkillsUpdated: false,
-      didUser: false,
-      extension: "",
-      extensionBlurred: false,
-      extensionUpdated: false,
-      extensionValid: false,
-      manager: "",
-      managerBlurred: false,
-      managerUpdated: false,
-      nNumber: defaultNNumber,
-      nNumberBlurred: false,
-      nNumberFetchedUser: null,
-      nNumberUpdated: false,
-      outgoing: {
-        value: "",
-        blurred: false,
-        e164: undefined,
-        updated: false,
-        valid: false
-      },
-      profileId: "",
-      profileIdBlurred: false,
-      profileIdUpdated: false,
-      alternateDid: {
-        value: "",
-        blurred: false,
-        e164: undefined,
-        updated: false,
-        valid: false
-      },
-      directDialNum: {
-        value: "",
-        blurred: false,
-        e164: undefined,
-        updated: false,
-        valid: false
-      },
-      zeroOutEnabled: false
-    };
-    if (formMode === formModes.UPDATE) {
-      // did user fields need to be updated if they exist
-      initialForm.defaultSkills = getValidSkillsObject(worker.attributes.default_skills);
-      initialForm.extension = worker.attributes.extension || "";
-      initialForm.extensionValid = true;
-      initialForm.manager = JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number));
-      initialForm.nNumber = worker.attributes.n_number || defaultNNumber;
-      initialForm.outgoing.value = worker.attributes.did ? worker.attributes.did.replace(/^\+1/, "").replace(/^1/, "") : ""; // remove +1 or 1 from start of e164
-      initialForm.outgoing.valid = worker.attributes.did ? true : false;
-      initialForm.profileId = `${worker.attributes.profile_id}`;
-      console.log("alternateDid", worker.alternateDid);
-      console.log("directDialNum", worker.directDialNum);
-      initialForm.alternateDid.value = worker.alternateDid ? worker.alternateDid.replace(/^\+1/, "").replace(/^1/, "") : ""; // remove +1 or 1 from start of e164
-      initialForm.alternateDid.valid = worker.alternateDid ? true : false;
-      initialForm.directDialNum.value = worker.directDialNum ? worker.directDialNum.replace(/^\+1/, "").replace(/^1/, "") : ""; // remove +1 or 1 from start of e164
-      initialForm.directDialNum.valid = worker.directDialNum ? true : false;
-      initialForm.didUser = true
-      // initialForm.didUser = worker.directDialNum ? true : false;
-      initialForm.zeroOutEnabled = worker.zeroOutEnabled;
-    }
-    return initialForm;
-  };
-
-  const [form, setForm] = useState<UserEntryForm_FormState>(getInitialFormState());
-  const [loading, updateLoading] = useState({
-    lookupUser: false,
-    overlayMessage: "",
-    saveStatus: null,
-    saveUser: false
-  });
+  const {
+    form, handleOnBlur, handleNumberUpdate, initialDefaultSkills,
+    loading, updateLoading, setForm
+  } = useUserEntryForm(formMode, worker, managers);
 
   const getZeroOutEnabledFromProfile = (newProfileValue: string): boolean => {
     const targetProfile = profiles.find(profile => profile.profile_id === +newProfileValue);
@@ -246,7 +141,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
       saveStatus: modalOverlayStatuses.SAVING,
       saveUser: true
     });
-    const parsedManager = JSON.parse(form.manager);
+    const parsedManager = JSON.parse(form.manager.value);
 
     // see this wiki page for attributes that will be automatically updated through SSO
     // https://forge.lmig.com/wiki/display/CICCT/Twilio+Flex+SSO+Saml2+Integration
@@ -257,19 +152,19 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
       email_address: form.nNumberFetchedUser.email,
       emp_first_name: form.nNumberFetchedUser.firstName,
       emp_last_name: form.nNumberFetchedUser.lastName,
-      extension: form.extension,
+      extension: form.extension.value,
       full_name: `${form.nNumberFetchedUser.firstName} ${form.nNumberFetchedUser.lastName}`,
       manager_first_name: parsedManager.manager_first_name,
       manager_last_name: parsedManager.manager_last_name,
       manager_n_number: parsedManager.manager_n_number,
-      n_number: form.nNumber.toLowerCase(),
+      n_number: form.nNumber.value.toLowerCase(),
       office_location_name: form.nNumberFetchedUser.officeName,
       office_location_number: form.nNumberFetchedUser.officeNumber,
       primary_dept_name: form.nNumberFetchedUser.departmentName,
       primary_dept_number: form.nNumberFetchedUser.departmentNumber,
-      profile_id: form.profileId,
-      contact_uri: `client:${form.nNumber.toLowerCase()}`,
-      unique_id: form.nNumber.toLowerCase()
+      profile_id: form.profileId.value,
+      contact_uri: `client:${form.nNumber.value.toLowerCase()}`,
+      unique_id: form.nNumber.value.toLowerCase()
     };
     createUser({
       attributes,
@@ -285,17 +180,28 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
           defaultSkills: initialDefaultSkills,
           defaultSkillsUpdated: false,
           // reset extension
-          extension: "",
-          extensionBlurred: false,
-          extensionUpdated: false,
-          extensionValid: false,
+          extension: {
+            value: "",
+            blurred: false,
+            updated: false,
+            valid: false
+          },
           // reset n number
-          nNumber: defaultNNumber,
-          nNumberBlurred: false,
+          nNumber: {
+            ...form.nNumber,
+            value: defaultNNumber,
+            blurred: false
+          },
           nNumberFetchedUser: null,
           // reset blurs for everything else
-          managerBlurred: false,
-          profileIdBlurred: false,
+          manager: {
+            ...form.manager,
+            blurred: false
+          },
+          profileId: {
+            ...form.profileId,
+            blurred: false
+          },
           outgoing: {
             ...form.outgoing,
             blurred: false
@@ -352,24 +258,26 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
       saveUser: true
     });
     const attributes: Partial<TwilioWorker["attributes"]> = {};
-    if (form.managerUpdated) {
-      const parsedManager = JSON.parse(form.manager);
+    if (form.manager.updated) {
+      const parsedManager = JSON.parse(form.manager.value);
       attributes.manager_first_name = parsedManager.manager_first_name;
       attributes.manager_last_name = parsedManager.manager_last_name;
       attributes.manager_n_number = parsedManager.manager_n_number;
     }
-    if (form.profileIdUpdated) {
-      attributes.profile_id = form.profileId;
+    if (form.profileId.updated) {
+      attributes.profile_id = form.profileId.value;
     }
     if (form.outgoing.updated) {
       attributes.did = form.outgoing.e164;
     }
-    if (form.extensionUpdated) {
-      attributes.extension = form.extension;
+    if (form.extension.updated) {
+      attributes.extension = form.extension.value;
     }
     if (form.defaultSkillsUpdated) {
       attributes.default_skills = form.defaultSkills;
     }
+
+    // TODO ADD INACTIVEFORWARDTO
     updateUser({
       workerSid: worker.sid,
       attributes,
@@ -407,13 +315,18 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
   };
 
   const nNumberInputValid = form.nNumberFetchedUser ? true : false;
-  const extensionInputValid = (form.extensionValid || form.extension === "");
-  const managerValid = form.manager !== "";
-  const profileIdValid = form.profileId !== "";
+  const extensionInputValid = (form.extension.valid || form.extension.value === "");
+  const managerValid = form.manager.value !== "";
+  const profileIdValid = form.profileId.value !== "";
   const formValid = (formMode === formModes.INSERT ? nNumberInputValid : true)
     && profileIdValid && managerValid && form.outgoing.valid && extensionInputValid
     && (form.didUser === true ? form.directDialNum.valid && form.alternateDid.valid : true);
-  const formUpdated = (form.defaultSkillsUpdated || form.managerUpdated || form.profileIdUpdated || form.outgoing.updated || form.nNumberUpdated || form.extensionUpdated);
+  const formUpdated = (
+    form.defaultSkillsUpdated || form.manager.updated ||
+    form.profileId.updated || form.outgoing.updated ||
+    form.alternateDid.updated || form.directDialNum.updated ||
+    form.nNumber.updated || form.extension.updated
+  );
 
   return (
     <ModalContainer>
@@ -437,14 +350,11 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
       <FormControlsContainer>
         <FormControlsPane>
           <OutlinedSelect
-            error={form.managerBlurred && !managerValid}
-            helperText={managerValid || !form.managerUpdated ? null : "Please select a manager"}
+            error={form.manager.blurred && !managerValid}
+            helperText={managerValid || !form.manager.updated ? null : "Please select a manager"}
             label={"Manager *"}
             labelWidth={67}
-            onBlur={() => setForm({
-              ...form,
-              managerBlurred: true
-            })}
+            onBlur={() => handleOnBlur("manager")}
             optionsList={managers.sort(sortManagersByName)}
             optionsDisplayFunc={option => {
               return {
@@ -455,20 +365,20 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
             }}
             updateValue={newValue => setForm({
               ...form,
-              manager: newValue,
-              managerUpdated: true
+              manager: {
+                ...form.manager,
+                value: newValue,
+                updated: true
+              }
             })}
-            value={form.manager}
+            value={form.manager.value}
           />
           <OutlinedSelect
-            error={form.profileIdBlurred && !profileIdValid}
-            helperText={profileIdValid || !form.profileIdUpdated ? null : "Please select a team"}
+            error={form.profileId.blurred && !profileIdValid}
+            helperText={profileIdValid || !form.profileId.updated ? null : "Please select a team"}
             label={"Team *"}
             labelWidth={44}
-            onBlur={() => setForm({
-              ...form,
-              profileIdBlurred: true
-            })}
+            onBlur={() => handleOnBlur("profileId")}
             optionsList={profiles.sort(sortProfilesByName)}
             optionsDisplayFunc={option => {
               return {
@@ -479,93 +389,96 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
             }}
             updateValue={newValue => setForm({
               ...form,
-              profileId: newValue,
-              profileIdUpdated: true,
+              profileId: {
+                ...form.profileId,
+                value: newValue,
+                updated: true
+              },
               zeroOutEnabled: getZeroOutEnabledFromProfile(newValue)
             })}
-            value={form.profileId}
+            value={form.profileId.value}
           />
           <ModalPhoneNumber
             allowSevenDigitVdn={false}
             id="outgoing-number"
             number={form.outgoing.value}
-            onBlur={() => setForm({
-              ...form,
-              outgoing: {
-                ...form.outgoing,
-                blurred: true
-              }
-            })}
+            onBlur={() => handleOnBlur("outgoing")}
             label="Outgoing Number *"
             showError={form.outgoing.blurred}
             updateValue={(maskedValue, unmaskedValue, isValid, e164Number) => {
-              setForm({
-                ...form,
-                outgoing: {
-                  ...form.outgoing,
-                  value: maskedValue,
-                  e164: e164Number,
-                  updated: true,
-                  valid: isValid && (e164Number ? true : false)
-                }
-              });
+              handleNumberUpdate(maskedValue, unmaskedValue, isValid, e164Number, "outgoing");
             }}
           />
           <ModalNNumber
             disabled={(formMode === formModes.UPDATE) || (form.nNumberFetchedUser ? true : false)}
             fetchedUser={form.nNumberFetchedUser}
             label="N Number *"
-            onBlur={() => setForm({
-              ...form,
-              nNumberBlurred: true
-            })}
+            onBlur={() => handleOnBlur("nNumber")}
             onClear={() => {
               setForm({
                 ...form,
-                nNumber: defaultNNumber,
-                nNumberFetchedUser: null,
-                nNumberUpdated: true
+                nNumber: {
+                  ...form.nNumber,
+                  value: defaultNNumber,
+                  updated: true
+                },
+                nNumberFetchedUser: null
               });
             }}
             onComplete={(fetchedUser, nNumber) => setForm({
               ...form,
-              nNumber,
+              nNumber: {
+                ...form.nNumber,
+                value: nNumber
+              },
               nNumberFetchedUser: fetchedUser
             })}
             onUpdate={nNumber => {
               setForm({
                 ...form,
-                nNumber,
-                nNumberUpdated: true
+                nNumber: {
+                  ...form.nNumber,
+                  value: nNumber,
+                  updated: true
+                }
               });
             }}
-            value={form.nNumber}
+            value={form.nNumber.value}
           />
           <ModalExtension
-            disabled={form.extensionValid && extensionMatcher.test(form.extension)}
-            error={form.extensionBlurred && !extensionInputValid}
-            extension={form.extension}
+            disabled={form.extension.valid && extensionMatcher.test(form.extension.value)}
+            error={form.extension.blurred && !extensionInputValid}
+            extension={form.extension.value}
             originalValue={(worker && worker.attributes) ? worker.attributes.extension : undefined}
             onBlur={() => setForm({
               ...form,
-              extension: "",
-              extensionUpdated: true,
-              extensionValid: false
+              extension: {
+                ...form.extension,
+                value: "",
+                updated: true,
+                valid: false
+              }
             })}
             onClear={() => {
               setForm({
                 ...form,
-                extension: "",
-                extensionUpdated: true,
-                extensionValid: false
+                extension: {
+                  ...form.extension,
+                  value: "",
+                  updated: true,
+                  valid: false
+                }
               });
             }}
             onUpdate={(extension, extensionValid) => setForm({
               ...form,
-              extension,
-              extensionBlurred: extensionValid, // blur if valid because we are going to disable this control
-              extensionUpdated: true,
-              extensionValid
+              extension: {
+                ...form.extension,
+                value: extension,
+                blurred: extensionValid,
+                updated: true,
+                valid: extensionValid
+              }
             })}
           />
           <ToggleContainer>
@@ -613,52 +526,24 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
                 allowSevenDigitVdn={false}
                 id="twilio-did"
                 number={form.directDialNum.value}
-                onBlur={() => setForm({
-                  ...form,
-                  directDialNum: {
-                    ...form.directDialNum,
-                    blurred: true
-                  }
-                })}
+                onBlur={() => handleOnBlur("directDialNum")}
                 label="Twilio DID *"
                 showError={form.directDialNum.blurred}
                 updateValue={(maskedValue, unmaskedValue, isValid, e164Number) => {
-                  setForm({
-                    ...form,
-                    directDialNum: {
-                      ...form.directDialNum,
-                      value: maskedValue,
-                      e164: e164Number,
-                      updated: true,
-                      valid: isValid && (e164Number ? true : false)
-                    }
-                  });
+                  handleNumberUpdate(maskedValue, unmaskedValue, isValid, e164Number, "directDialNum");
                 }}
               />
               <ModalPhoneNumber
+                disabled={!worker.alternateDid || formMode === formModes.INSERT ? false : true}
+                // disabled={formMode === formModes.INSERT ? false : true}
                 allowSevenDigitVdn={false}
                 id="skype-teams-did"
                 number={form.alternateDid.value}
-                onBlur={() => setForm({
-                  ...form,
-                  alternateDid: {
-                    ...form.alternateDid,
-                    blurred: true
-                  }
-                })}
+                onBlur={() => handleOnBlur("alternateDid")}
                 label="Skype/Teams DID *"
                 showError={form.alternateDid.blurred}
                 updateValue={(maskedValue, unmaskedValue, isValid, e164Number) => {
-                  setForm({
-                    ...form,
-                    alternateDid: {
-                      ...form.alternateDid,
-                      value: maskedValue,
-                      e164: e164Number,
-                      updated: true,
-                      valid: isValid && (e164Number ? true : false)
-                    }
-                  });
+                  handleNumberUpdate(maskedValue, unmaskedValue, isValid, e164Number, "alternateDid");
                 }}
               />
             </>
