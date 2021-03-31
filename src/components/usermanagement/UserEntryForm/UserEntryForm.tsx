@@ -234,13 +234,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
 
   const overflowSkill: (string) = form.profileId ? getTargetProfile(form.profileId).overflow_skill : "";
 
-  const getZeroOutEnabledFromProfile = (newProfileValue: string): boolean => {
-    if (getTargetProfile(newProfileValue).overflow_skill !== null) {
-      return true;
-    } else {
-      return false;
-    }
-  };
+  const getZeroOutEnabledFromProfile = (newProfileValue: string): boolean => getTargetProfile(newProfileValue).overflow_skill !== null;
 
   const doCreateUser = () => {
     updateLoading({
