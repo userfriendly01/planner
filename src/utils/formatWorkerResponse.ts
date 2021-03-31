@@ -10,6 +10,7 @@ export interface DbWorker {
   directDialNum: string,
   workerSid: string,
   zeroOutEnabled: boolean
+  inactiveForwardTo?: string
 }
 
 // Worker object directly from twilio API response
@@ -20,39 +21,39 @@ export interface RawTwilioWorker {
   sid: string
 }
 
-export const formatWorkerResponse = (response: RawTwilioWorker[]): TwilioWorker[] => {
+export const formatWorkerResponse = (response: DbWorker[]): TwilioWorker[] => {
   if (response) {
-    const formattedWorkers = response.map(mapWorkerFromTwilioWorker);
+    const formattedWorkers = response.map(mapWorkerFromDbWorker);
     return formattedWorkers;
   } else {
     return [];
   }
 };
 
-export const mapTwilioWorkerFromDbWorker = (dbWorker: DbWorker): TwilioWorker => {
+export const mapWorkerFromDbWorker = (dbWorker: DbWorker): TwilioWorker => {
   const twilioWorker = {
     ...dbWorker,
     sid: dbWorker.workerSid,
-    skillsDifferent: areSkillsDifferent(dbWorker.attributes)
+    skillsDifferent: dbWorker.attributes ? areSkillsDifferent(dbWorker.attributes) : false
   };
   delete twilioWorker.workerSid;
   return twilioWorker;
 };
 
-export const mapWorkerFromTwilioWorker = (rawTwilioWorker: RawTwilioWorker): TwilioWorker => {
-  let attributes = {};
-  try {
-    attributes = JSON.parse(rawTwilioWorker.attributes);
-  } catch (error) {
-    console.error("mapWorkerFromTwilioWorker - Failed to parse worker attributes to JSON", {
-      rawTwilioWorker,
-      error
-    });
-  }
-  const skillsDifferent = areSkillsDifferent(attributes);
-  return {
-    attributes,
-    sid: rawTwilioWorker.sid,
-    skillsDifferent
-  };
-};
+// export const mapWorkerFromTwilioWorker = (rawTwilioWorker: RawTwilioWorker): TwilioWorker => {
+//   let attributes = {};
+//   try {
+//     attributes = JSON.parse(rawTwilioWorker.attributes);
+//   } catch (error) {
+//     console.error("mapWorkerFromTwilioWorker - Failed to parse worker attributes to JSON", {
+//       rawTwilioWorker,
+//       error
+//     });
+//   }
+//   const skillsDifferent = areSkillsDifferent(attributes);
+//   return {
+//     attributes,
+//     sid: rawTwilioWorker.sid,
+//     skillsDifferent
+//   };
+// };

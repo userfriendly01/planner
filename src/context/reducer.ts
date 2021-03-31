@@ -84,6 +84,7 @@ export interface TwilioWorker {
   alternateDid?: string,
   directDialNum?: string,
   inactiveForwardTo?: string,
+  inactiveForwardToType?: string,
   sid: string,
   skillsDifferent: boolean,
   zeroOutEnabled?: boolean

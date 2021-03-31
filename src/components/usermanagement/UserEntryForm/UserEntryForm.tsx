@@ -1,4 +1,7 @@
-import Switch from "@material-ui/core/Switch";
+import {
+  InputAdornment, Switch
+} from "@material-ui/core";
+import { Edit } from "@material-ui/icons";
 import {
   DefaultSkillSelector,
   ModalExtension,
@@ -10,6 +13,7 @@ import {
   UserEntryFormState
 } from "components";
 import {
+  TaskRouterSkill,
   TwilioWorker,
   useAdminDispatch,
   useAdminState
@@ -27,11 +31,13 @@ import {
 } from "services";
 import styled from "styled-components";
 import {
-  mapTwilioWorkerFromDbWorker,
+  DbWorker,
+  mapWorkerFromDbWorker,
   sortManagersByName,
   sortProfilesByName,
   wait
 } from "utils";
+import ForwardToEntryForm from "../ConfirmationModal/ForwardToEntryForm";
 import useUserEntryForm from "./useUserEntryForm";
 
 const FlexRow = styled.div`
@@ -47,8 +53,6 @@ const ButtonWrapper = styled(FlexRow)`
 const FormControlsContainer = styled.div`
   display: flex;
   flex-direction: row;
-  max-height: 90vh;
-  overflow-y: auto;
   width: 100%;
 `;
 
@@ -56,7 +60,6 @@ const FormControlsPane = styled.div`
   display: flex;
   flex-direction: column;
   min-width: 320px;
-  overflow-y: auto;
   padding: 0 8px;
   width: 100%;
 `;
@@ -76,9 +79,7 @@ const ModalContainer = styled.div`
   flex-direction: column;
   left: 0;
   margin: 0 auto;
-  max-height: 80vh;
   max-width: 700px;
-  overflow-y: auto;
   padding: 0 8px;
   position: absolute;
   right: 0;
@@ -97,11 +98,27 @@ const ToggleLabel = styled.div`
   font-size: 1rem;
 `;
 
+const StyledForwardToEntryForm = styled(ForwardToEntryForm)`
+  margin-top: 100px;
+`;
+
+const StyledIcon = styled(Edit)`
+  && {
+    color: ${props => props.theme.button.blue.backgroundColor};
+    &:hover {
+      color: ${props => props.theme.button.blue.hoverColor};
+      cursor: pointer;
+    }
+  }
+`;
+
 const defaultNNumber = "n";
 
 interface UserEntryFormProps {
   userEntryFormState: UserEntryFormState,
-  handleClose: VoidFunction
+  handleClose: VoidFunction,
+  skills: TaskRouterSkill[],
+  workers: TwilioWorker[]
 }
 
 const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
@@ -111,7 +128,9 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
     userEntryFormState: {
       formMode,
       worker
-    }
+    },
+    skills,
+    workers
   } = props;
 
   const dispatch = useAdminDispatch();
@@ -224,7 +243,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
         });
         dispatch({
           type: "addWorkers",
-          payload: [mapTwilioWorkerFromDbWorker(dbWorker)]
+          payload: [mapWorkerFromDbWorker(dbWorker)]
         });
         updateLoading({
           ...loading,
@@ -277,19 +296,28 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
       attributes.default_skills = form.defaultSkills;
     }
 
-    // TODO ADD INACTIVEFORWARDTO
-    updateUser({
+    const payload: Partial<DbWorker> = {
       workerSid: worker.sid,
       attributes,
-      // values below are used by twilio-worker-api, they do not map to Twilio worker attributes
-      alternateDid: form.alternateDid.e164,
-      directDialNum: form.directDialNum.e164,
       zeroOutEnabled: form.zeroOutEnabled
-    })
+    };
+
+    // values below are used by twilio-worker-api, they do not map to Twilio worker attributes
+    if (form.alternateDid.updated) {
+      payload.alternateDid = form.alternateDid.e164;
+    }
+    if (form.directDialNum.updated) {
+      payload.directDialNum = form.directDialNum.e164;
+    }
+    if (!form.directDialDisabled && worker.directDialNum && form.inactiveForwardTo.updated) {
+      payload.inactiveForwardTo = form.inactiveForwardTo.value;
+    }
+
+    updateUser(payload)
       .then(dbWorker => {
         dispatch(({
           type: "updateWorker",
-          payload: mapTwilioWorkerFromDbWorker(dbWorker)
+          payload: mapWorkerFromDbWorker(dbWorker)
         }));
         updateLoading({
           ...loading,
@@ -300,17 +328,13 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
         wait(handleClose, timeouts.MODAL_OVERLAY);
       })
       .catch(err => {
+        console.error(err.message, err.response.data);
         updateLoading({
           ...loading,
-          overlayMessage: `Failed to update user: ${worker.attributes.full_name}`,
+          overlayMessage: err.response.data.message || `Failed to update user: ${worker.attributes.full_name}`,
           saveStatus: modalOverlayStatuses.FAIL,
           saveUser: true
         });
-        wait(() => updateLoading({
-          ...loading,
-          saveUser: false
-        }), 2000);
-        console.error("UserEntryForm - Failed to update twilio worker", err);
       });
   };
 
@@ -325,7 +349,8 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
     form.defaultSkillsUpdated || form.manager.updated ||
     form.profileId.updated || form.outgoing.updated ||
     form.alternateDid.updated || form.directDialNum.updated ||
-    form.nNumber.updated || form.extension.updated
+    form.nNumber.updated || form.extension.updated ||
+    form.inactiveForwardTo.updated
   );
 
   return (
@@ -483,6 +508,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
           />
           <ToggleContainer>
             <Switch
+              disabled={formMode === formModes.UPDATE && worker.directDialNum ? true : false}
               checked={form.didUser}
               onChange={() => {
                 setForm({
@@ -523,6 +549,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
                 <ToggleLabel>Overflow Skill</ToggleLabel>
               </ToggleContainer>
               <ModalPhoneNumber
+                disabled={form.directDialDisabled}
                 allowSevenDigitVdn={false}
                 id="twilio-did"
                 number={form.directDialNum.value}
@@ -532,10 +559,21 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
                 updateValue={(maskedValue, unmaskedValue, isValid, e164Number) => {
                   handleNumberUpdate(maskedValue, unmaskedValue, isValid, e164Number, "directDialNum");
                 }}
+                icon={worker?.directDialNum && formMode !== formModes.INSERT ? (
+                  <InputAdornment position="end">
+                    <StyledIcon
+                      fontSize="large"
+                      onClick={() => setForm({
+                        ...form,
+                        directDialDisabled: !form.directDialDisabled
+                      })}
+                    />
+                  </InputAdornment>
+                ) : null
+                }
               />
               <ModalPhoneNumber
-                disabled={!worker.alternateDid || formMode === formModes.INSERT ? false : true}
-                // disabled={formMode === formModes.INSERT ? false : true}
+                disabled={!worker?.alternateDid || formMode === formModes.INSERT ? false : true}
                 allowSevenDigitVdn={false}
                 id="skype-teams-did"
                 number={form.alternateDid.value}
@@ -560,6 +598,22 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
               });
             }}
           />
+          {!form.directDialDisabled && formMode === formModes.UPDATE && worker.directDialNum ? (
+            <StyledForwardToEntryForm
+              label={"To change this user's direct dial number please choose a forward to option."}
+              skills={skills}
+              workers={workers}
+              updateForwardTo={(value: string) => {
+                setForm({
+                  ...form,
+                  inactiveForwardTo: {
+                    value: value,
+                    updated: true
+                  }
+                });
+              }}
+            />
+          ) : null}
         </FormControlsPane>
       </FormControlsContainer>
       <ButtonWrapper>

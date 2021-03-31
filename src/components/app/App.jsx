@@ -21,6 +21,7 @@ import styled from "styled-components";
 import {
   wait,
   formatTaskRouterSkills,
+  formatWorkerResponse,
   getUniqueManagerList,
   isErrorIn400s,
   myAxios
@@ -131,7 +132,7 @@ const getWorkers = async dispatch => {
       const response = await myAxios.get(apiPaths.GET_WORKERS);
 
       // filter out workers with "inactiveInd": true
-      for (const worker of response.data) {
+      for (const worker of formatWorkerResponse(response.data)) {
         if (!worker.inactiveInd) {
           filteredWorkers.push(worker);
         }

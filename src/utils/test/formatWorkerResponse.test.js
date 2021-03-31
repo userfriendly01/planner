@@ -1,6 +1,6 @@
 import {
   formatWorkerResponse,
-  mapTwilioWorkerFromDbWorker,
+  mapWorkerFromDbWorker,
   mapWorkerFromTwilioWorker
 } from "utils";
 
@@ -78,7 +78,7 @@ describe("formatWorkerResponse", () => {
 
 const workerSid = "WK123123123";
 
-describe("mapTwilioWorkerFromDbWorker", () => {
+describe("mapWorkerFromDbWorker", () => {
   const attributes = {
     attr1: "whatever",
     attr2: { hi: "I'm an object" }
@@ -88,7 +88,7 @@ describe("mapTwilioWorkerFromDbWorker", () => {
     workerSid
   };
   test("should return TwilioWorker object with attributes, sid & skillsDifferent; NOT workerSid", () => {
-    expect(mapTwilioWorkerFromDbWorker(dbWorker)).toEqual({
+    expect(mapWorkerFromDbWorker(dbWorker)).toEqual({
       attributes,
       sid: workerSid,
       skillsDifferent: false

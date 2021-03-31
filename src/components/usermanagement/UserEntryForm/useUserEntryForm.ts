@@ -14,10 +14,10 @@ import {
 
 interface FieldState {
   value: string,
-  blurred: boolean,
+  blurred?: boolean,
   e164?: string,
   updated: boolean,
-  valid?: boolean,
+  valid?: boolean
 }
 
 interface UserEntryForm_FormState {
@@ -26,7 +26,7 @@ interface UserEntryForm_FormState {
   defaultSkillsUpdated: boolean,
   didUser: boolean,
   extension: FieldState,
-  // inactiveForwardTo: FieldState,
+  inactiveForwardTo: FieldState,
   manager: FieldState,
   nNumber: FieldState,
   nNumberFetchedUser: FetchUserResponse,
@@ -34,7 +34,8 @@ interface UserEntryForm_FormState {
   profileId: FieldState,
   alternateDid: FieldState,
   directDialNum: FieldState,
-  zeroOutEnabled: boolean
+  zeroOutEnabled: boolean,
+  directDialDisabled: boolean
 }
 
 interface LoadingState {
@@ -73,13 +74,10 @@ const useUserEntryForm = (
         updated: false,
         valid: false
       },
-      // TODO
-      // inactiveForwardTo: {
-      //   value: "",
-      //   blurred: false,
-      //   updated: false,
-      //   valid: false
-      // },
+      inactiveForwardTo: {
+        value: "",
+        updated: false
+      },
       manager: {
         value: "",
         blurred: false,
@@ -117,10 +115,10 @@ const useUserEntryForm = (
         updated: false,
         valid: false
       },
-      zeroOutEnabled: false
+      zeroOutEnabled: false,
+      directDialDisabled: false
     };
     if (formMode === formModes.UPDATE) {
-      // did user fields need to be updated if they exist
       initialForm.defaultSkills = getValidSkillsObject(worker.attributes.default_skills);
       initialForm.extension.value = worker.attributes.extension || "";
       initialForm.extension.valid = true;
@@ -133,11 +131,9 @@ const useUserEntryForm = (
       initialForm.alternateDid.valid = worker.alternateDid ? true : false;
       initialForm.directDialNum.value = worker.directDialNum ? worker.directDialNum.replace(/^\+1/, "").replace(/^1/, "") : ""; // remove +1 or 1 from start of e164
       initialForm.directDialNum.valid = worker.directDialNum ? true : false;
-      // initialForm.inactiveForwardTo.value = worker.inactiveForwardTo || "";
-      // initialForm.inactiveForwardTo.valid = true;
-      // initialForm.didUser = true;
       initialForm.didUser = worker.directDialNum ? true : false;
       initialForm.zeroOutEnabled = worker.zeroOutEnabled;
+      initialForm.directDialDisabled = worker.directDialNum ? true : false;
     }
     return initialForm;
   };

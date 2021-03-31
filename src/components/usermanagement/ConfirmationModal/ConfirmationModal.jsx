@@ -79,6 +79,7 @@ const ConfirmationModal = props => {
         <Data>{data.displayData}</Data>
         { isWorkerDid ?
           <ForwardToEntryForm
+            label={"This user has a direct dial number. Please choose a forward to option before confirming."}
             workers={data.workers}
             skills={data.skills}
             updateForwardTo={forwardTo => callbackMethods.setForwardTo(forwardTo)}

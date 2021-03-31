@@ -72,7 +72,8 @@ export interface ModalPhoneNumberProps {
   number: string,
   onBlur: () => void,
   showError?: boolean,
-  updateValue: (maskedValue: string, unmaskedValue: string, isNumberValid: boolean, e164Number: string) => void
+  updateValue: (maskedValue: string, unmaskedValue: string, isNumberValid: boolean, e164Number: string) => void,
+  icon?: JSX.Element
 }
 
 const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
@@ -86,7 +87,8 @@ const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
     number,
     onBlur,
     showError,
-    updateValue
+    updateValue,
+    icon = null
   } = props;
 
   const [useSevenDigitMask, setUseSevenDigitMask] = useState(false);
@@ -104,7 +106,8 @@ const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
         inputComponent: useSevenDigitMask ? SevenDigitInputMask : TenDigitInputMask,
         style: {
           flexGrow: 1
-        }
+        },
+        endAdornment: (icon)
       }}
       label={label}
       name={label}
