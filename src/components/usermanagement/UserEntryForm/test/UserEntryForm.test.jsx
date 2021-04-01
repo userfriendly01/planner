@@ -67,16 +67,12 @@ const profileList = [
   {
     profile_nme: "test",
     profile_id: 1,
-    zero_out_enabled: {
-      data: [1] // true
-    }
+    overflow_skill: null
   },
   {
     profile_nme: "test2",
     profile_id: 2,
-    zero_out_enabled: {
-      data: [0] // false
-    }
+    overflow_skill: "whateverOverflowSkill"
   }
 ];
 
@@ -151,6 +147,7 @@ const validFormOptions = {
 const errMessageFromService = "error message from twilio-workerp-api";
 
 const workerAttributesAfterFormValid = {
+  contact_uri: `client:${validFormOptions.nNumber.toLowerCase()}`,
   default_skills: validFormOptions.defaultSkills,
   did: validFormOptions.didE164,
   email: fetchedUser.email,
@@ -168,7 +165,6 @@ const workerAttributesAfterFormValid = {
   primary_dept_name: fetchedUser.departmentName,
   primary_dept_number: fetchedUser.departmentNumber,
   profile_id: validFormOptions.profileId,
-  contact_uri: `client:${validFormOptions.nNumber.toLowerCase()}`,
   unique_id: validFormOptions.nNumber.toLowerCase()
 };
 
@@ -194,7 +190,7 @@ describe("<UserEntryForm />", () => {
     return render(<UserEntryForm handleClose={mockHandleClose} userEntryFormState={userEntryFormState} />, initialTestState);
   };
 
-  const updateFormSoItIsValid = didWorker => {
+  const updateFormSoItIsValid = (isDidWorker, profileId) => {
     // manager
     act(() => {
       const updateManager = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect) - 1).updateValue;
@@ -209,15 +205,15 @@ describe("<UserEntryForm />", () => {
     // team / profile id
     act(() => {
       const updateProfile = getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect)).updateValue;
-      updateProfile(validFormOptions.profileId);
+      updateProfile(profileId);
     });
     act(() => {
       getMockedComponentProps(OutlinedSelect, getLastInstanceCalled(OutlinedSelect)).onBlur();
     });
     expectOnlyPassedProps(OutlinedSelect, {
-      value: validFormOptions.profileId
+      value: profileId
     }, getLastInstanceCalled(OutlinedSelect));
-    if (didWorker === true) {
+    if (isDidWorker === true) {
       // outgoing number is first of 3 ModalPhoneNumber components
       act(() => {
         const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber) - 2).updateValue;
@@ -511,7 +507,7 @@ describe("<UserEntryForm />", () => {
             attributes: workerAttributesAfterFormValid,
             workerSid: "WK1234"
           };
-          const formattedTwilioWorker = {
+          const formattedWorker = {
             attributes: workerAttributesAfterFormValid,
             sid: rawDbWorker.workerSid,
             skillsDifferent: true
@@ -521,7 +517,7 @@ describe("<UserEntryForm />", () => {
 
           test("should enable Add User button and save user when clicked", async () => {
             const rendered = renderComponent(userEntryFormState);
-            updateFormSoItIsValid(false);
+            updateFormSoItIsValid(false, profileList[0].profile_id);
             // click button
             act(() => {
               const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
@@ -531,12 +527,12 @@ describe("<UserEntryForm />", () => {
               expect(createUser).toHaveBeenCalledWith({
                 activateEp: false, // false for non-DID workers
                 attributes: workerAttributesAfterFormValid,
-                zeroOutEnabled: true // profileId used in this test has this set to true
+                zeroOutEnabled: false // profileId used in this test has overflow_skill = 'null'
               });
               const actions = mockStore.getActions();
               expect(actions).toEqual([{
                 type: "addWorkers",
-                payload: [formattedTwilioWorker]
+                payload: [formattedWorker]
               }]);
               jest.runAllTimers();
               expectOnlyPassedProps(ModalOverlay, {
@@ -565,7 +561,7 @@ describe("<UserEntryForm />", () => {
             }));
             test("should display message passed from service in failure modal", async () => {
               const rendered = renderComponent(userEntryFormState);
-              updateFormSoItIsValid(false);
+              updateFormSoItIsValid(false, profileList[0].profile_id);
               // click button
               act(() => {
                 const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
@@ -575,7 +571,7 @@ describe("<UserEntryForm />", () => {
                 expect(createUser).toHaveBeenCalledWith({
                   activateEp: false, // false for non-DID workers
                   attributes: workerAttributesAfterFormValid,
-                  zeroOutEnabled: true // profileId used in this test has this set to true
+                  zeroOutEnabled: false // profileId used in this test has overflow_skill = 'null'
                 });
                 const actions = mockStore.getActions();
                 expect(actions).toHaveLength(0);
@@ -609,7 +605,7 @@ describe("<UserEntryForm />", () => {
             }));
             test("should display 'Failed to add new user.' in failure modal", async () => {
               const rendered = renderComponent(userEntryFormState);
-              updateFormSoItIsValid(false);
+              updateFormSoItIsValid(false, profileList[0].profile_id);
               // click button
               act(() => {
                 const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
@@ -619,7 +615,7 @@ describe("<UserEntryForm />", () => {
                 expect(createUser).toHaveBeenCalledWith({
                   activateEp: false, // false for non-DID workers
                   attributes: workerAttributesAfterFormValid,
-                  zeroOutEnabled: true // profileId used in this test has this set to true
+                  zeroOutEnabled: false // profileId used in this test has overflow_skill = 'null'
                 });
                 const actions = mockStore.getActions();
                 expect(actions).toHaveLength(0);
@@ -678,15 +674,6 @@ describe("<UserEntryForm />", () => {
         });
       });
 
-      describe("update Overflow Skill", () => {
-        test("should set Overflow Skill to correct value", () => {
-          const rendered = renderComponent(userEntryFormState);
-          fireEvent.click(rendered.getByLabelText("toggle-did-user"));
-          act(() => fireEvent.click(rendered.getByLabelText("toggle overflow skill")));
-          // true
-        });
-      });
-
       describe("update Twilio DID field", () => {
         test("should set Twilio DID to correct value", () => {
           const rendered = renderComponent(userEntryFormState);
@@ -721,33 +708,92 @@ describe("<UserEntryForm />", () => {
       });
 
       describe("fill out form so it is valid", () => {
-        const workerWithoutSid = {
-          attributes: workerAttributesAfterFormValid,
-          alternateDid: validFormOptions.alternateDid.e164,
-          directDialNum: validFormOptions.directDialNum.e164,
-          zeroOutEnabled: true
-        };
-        const rawDbWorker = {
-          ...workerWithoutSid,
-          workerSid: "WK1234"
-        };
-        const formattedTwilioWorker = {
-          attributes: rawDbWorker.attributes,
-          alternateDid: rawDbWorker.alternateDid,
-          directDialNum: rawDbWorker.directDialNum,
-          zeroOutEnabled: rawDbWorker.zeroOutEnabled,
-          sid: rawDbWorker.workerSid,
-          skillsDifferent: true
-        };
-
-        describe("createUser service call succeeds", () => {
-
+        describe("profile ID has 'null' for overflow_skill", () => {
+          const workerWithoutSidZeroOutFalse = {
+            attributes: workerAttributesAfterFormValid,
+            alternateDid: validFormOptions.alternateDid.e164,
+            directDialNum: validFormOptions.directDialNum.e164,
+            zeroOutEnabled: false
+          };
+          const rawDbWorker = {
+            ...workerWithoutSidZeroOutFalse,
+            workerSid: "WK1234"
+          };
+          const formattedWorker = {
+            attributes: rawDbWorker.attributes,
+            alternateDid: rawDbWorker.alternateDid,
+            directDialNum: rawDbWorker.directDialNum,
+            zeroOutEnabled: rawDbWorker.zeroOutEnabled,
+            sid: rawDbWorker.workerSid,
+            skillsDifferent: true
+          };
           beforeEach(() => createUser.mockResolvedValue(rawDbWorker));
-
-          test("should enable Add User button and save user when clicked", async () => {
+          test("request body should include zeroOutEnabled = false and should not include overflow_skill", async () => {
             const rendered = renderComponent(userEntryFormState);
             fireEvent.click(rendered.getByLabelText("toggle-did-user"));
-            updateFormSoItIsValid(true);
+            updateFormSoItIsValid(true, profileList[0].profile_id);
+            // click save button
+            act(() => {
+              const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
+              buttonProps.onClick();
+            });
+            await waitFor(() => {
+              expect(createUser).toHaveBeenCalledWith({
+                ...workerWithoutSidZeroOutFalse,
+                attributes: workerAttributesAfterFormValid,
+                activateEp: true // true for DID workers
+              });
+              const actions = mockStore.getActions();
+              expect(actions).toEqual([{
+                type: "addWorkers",
+                payload: [formattedWorker]
+              }]);
+              jest.runAllTimers();
+              expectOnlyPassedProps(ModalOverlay, {
+                message: "Adding new user...",
+                status: modalOverlayStatuses.SAVING
+              }, getLastInstanceCalled(ModalOverlay) - 1);
+              expectOnlyPassedProps(ModalOverlay, {
+                message: "Successfully added new user",
+                status: modalOverlayStatuses.SUCCESS
+              }, getLastInstanceCalled(ModalOverlay));
+              expectMockedComponent(rendered, { ModalOverlay }, 0);
+            });
+          });
+        });
+
+        describe("profile ID has an overflow_skill value & zeroOutEnabled is true", () => {
+          const workerAttributesAfterFormValidWithOverflowSkill = {
+            ...workerAttributesAfterFormValid,
+            profile_id: profileList[1].profile_id, // overflow_skill exists
+            routing: {
+              skills: [profileList[1].overflow_skill],
+              levels: {}
+            }
+          };
+          const workerWithoutSidZeroOutFalse = {
+            attributes: workerAttributesAfterFormValidWithOverflowSkill,
+            alternateDid: validFormOptions.alternateDid.e164,
+            directDialNum: validFormOptions.directDialNum.e164,
+            zeroOutEnabled: true
+          };
+          const rawDbWorker = {
+            ...workerWithoutSidZeroOutFalse,
+            workerSid: "WK1235"
+          };
+          const formattedWorker = {
+            attributes: rawDbWorker.attributes,
+            alternateDid: rawDbWorker.alternateDid,
+            directDialNum: rawDbWorker.directDialNum,
+            zeroOutEnabled: rawDbWorker.zeroOutEnabled,
+            sid: rawDbWorker.workerSid,
+            skillsDifferent: true
+          };
+          beforeEach(() => createUser.mockResolvedValue(rawDbWorker));
+          test("request body should include overflow skill and zeroOutEnabled = true", async () => {
+            const rendered = renderComponent(userEntryFormState);
+            fireEvent.click(rendered.getByLabelText("toggle-did-user"));
+            updateFormSoItIsValid(true, profileList[1].profile_id);
             // click button
             act(() => {
               const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
@@ -755,13 +801,73 @@ describe("<UserEntryForm />", () => {
             });
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
-                ...workerWithoutSid,
+                ...workerWithoutSidZeroOutFalse,
+                attributes: workerAttributesAfterFormValidWithOverflowSkill,
                 activateEp: true // true for DID workers
               });
               const actions = mockStore.getActions();
               expect(actions).toEqual([{
                 type: "addWorkers",
-                payload: [formattedTwilioWorker]
+                payload: [formattedWorker]
+              }]);
+              jest.runAllTimers();
+              expectOnlyPassedProps(ModalOverlay, {
+                message: "Adding new user...",
+                status: modalOverlayStatuses.SAVING
+              }, getLastInstanceCalled(ModalOverlay) - 1);
+              expectOnlyPassedProps(ModalOverlay, {
+                message: "Successfully added new user",
+                status: modalOverlayStatuses.SUCCESS
+              }, getLastInstanceCalled(ModalOverlay));
+              expectMockedComponent(rendered, { ModalOverlay }, 0);
+            });
+          });
+        });
+
+        describe("profile ID has an overflow_skill value & zeroOutEnabled is set to false", () => {
+          const workerAttributesAfterFormValidWithOverflowSkill = {
+            ...workerAttributesAfterFormValid,
+            profile_id: profileList[1].profile_id // overflow_skill exists
+          };
+          const workerWithoutSidZeroOutFalse = {
+            attributes: workerAttributesAfterFormValidWithOverflowSkill,
+            alternateDid: validFormOptions.alternateDid.e164,
+            directDialNum: validFormOptions.directDialNum.e164,
+            zeroOutEnabled: false
+          };
+          const rawDbWorker = {
+            ...workerWithoutSidZeroOutFalse,
+            workerSid: "WK1235"
+          };
+          const formattedWorker = {
+            attributes: rawDbWorker.attributes,
+            alternateDid: rawDbWorker.alternateDid,
+            directDialNum: rawDbWorker.directDialNum,
+            zeroOutEnabled: rawDbWorker.zeroOutEnabled,
+            sid: rawDbWorker.workerSid,
+            skillsDifferent: true
+          };
+          beforeEach(() => createUser.mockResolvedValue(rawDbWorker));
+          test("request body should include zeroOutEnabled = false and should not include overflow skill", async () => {
+            const rendered = renderComponent(userEntryFormState);
+            fireEvent.click(rendered.getByLabelText("toggle-did-user"));
+            updateFormSoItIsValid(true, profileList[1].profile_id); // select team with overflow_skill
+            fireEvent.click(rendered.getByLabelText("toggle-zero-out")); // set zeroOutEnabled to false
+            // click button
+            act(() => {
+              const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
+              buttonProps.onClick();
+            });
+            await waitFor(() => {
+              expect(createUser).toHaveBeenCalledWith({
+                ...workerWithoutSidZeroOutFalse,
+                attributes: workerAttributesAfterFormValidWithOverflowSkill,
+                activateEp: true // true for DID workers
+              });
+              const actions = mockStore.getActions();
+              expect(actions).toEqual([{
+                type: "addWorkers",
+                payload: [formattedWorker]
               }]);
               jest.runAllTimers();
               expectOnlyPassedProps(ModalOverlay, {
@@ -923,7 +1029,7 @@ describe("<UserEntryForm />", () => {
 
         test("should enable Save User button and save user when clicked", async () => {
           renderComponent(userEntryFormState);
-          updateFormSoItIsValid(false);
+          updateFormSoItIsValid(false, profileList[0].profile_id);
           // click button
           act(() => {
             const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
@@ -963,7 +1069,7 @@ describe("<UserEntryForm />", () => {
 
         test("should enable Add User button and save user when clicked", async () => {
           const rendered = renderComponent(userEntryFormState);
-          updateFormSoItIsValid(false);
+          updateFormSoItIsValid(false, profileList[0].profile_id);
           // click button
           act(() => {
             const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);

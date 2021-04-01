@@ -1,4 +1,7 @@
-import Switch from "@material-ui/core/Switch";
+import {
+  Switch,
+  Tooltip
+} from "@material-ui/core";
 import {
   DefaultSkillSelector,
   ModalExtension,
@@ -225,11 +228,13 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
     saveStatus: null,
     saveUser: false
   });
+  const [profileHasZeroOutEnabled, setProfileHasZeroOutEnabled] = useState(false);
 
-  const getZeroOutEnabledFromProfile = (newProfileValue: string): boolean => {
-    const targetProfile = profiles.find(profile => profile.profile_id === +newProfileValue);
-    return !!targetProfile.zero_out_enabled.data[0];
-  };
+  const getTargetProfile = (newProfileValue: string) => profiles.find(profile => profile.profile_id === +newProfileValue);
+
+  const overflowSkill: (string) = form.profileId ? getTargetProfile(form.profileId).overflow_skill : "";
+
+  const getZeroOutEnabledFromProfile = (newProfileValue: string): boolean => getTargetProfile(newProfileValue).overflow_skill !== null;
 
   const doCreateUser = () => {
     updateLoading({
@@ -243,6 +248,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
     // see this wiki page for attributes that will be automatically updated through SSO
     // https://forge.lmig.com/wiki/display/CICCT/Twilio+Flex+SSO+Saml2+Integration
     const attributes: Partial<TwilioWorker["attributes"]> = {
+      contact_uri: `client:${form.nNumber.toLowerCase()}`,
       default_skills: form.defaultSkills,
       did: form.outgoing.e164,
       email: form.nNumberFetchedUser.email,
@@ -260,9 +266,15 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
       primary_dept_name: form.nNumberFetchedUser.departmentName,
       primary_dept_number: form.nNumberFetchedUser.departmentNumber,
       profile_id: form.profileId,
-      contact_uri: `client:${form.nNumber.toLowerCase()}`,
       unique_id: form.nNumber.toLowerCase()
     };
+    if (overflowSkill !== null && form.zeroOutEnabled) {
+      attributes.routing = {
+        skills: [overflowSkill],
+        levels: {}
+      };
+    }
+
     createUser({
       attributes,
       // values below are used by twilio-worker-api, they do not map to Twilio worker attributes
@@ -464,12 +476,16 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
                 value: option.profile_id
               };
             }}
-            updateValue={newValue => setForm({
-              ...form,
-              profileId: newValue,
-              profileIdUpdated: true,
-              zeroOutEnabled: getZeroOutEnabledFromProfile(newValue)
-            })}
+            updateValue={newValue => {
+              const zeroOutEnabled = getZeroOutEnabledFromProfile(newValue);
+              setForm({
+                ...form,
+                profileId: newValue,
+                profileIdUpdated: true,
+                zeroOutEnabled
+              });
+              setProfileHasZeroOutEnabled(zeroOutEnabled);
+            }}
             value={form.profileId}
           />
           <ModalPhoneNumber
@@ -588,18 +604,22 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
           }
           {form.didUser ? (
             <>
-              <ToggleContainer>
-                <Switch
-                  checked={form.zeroOutEnabled}
-                  value={form.zeroOutEnabled}
-                  onChange={() => setForm({
-                    ...form,
-                    zeroOutEnabled: !form.zeroOutEnabled // toggle
-                  })}
-                  inputProps={{ "aria-label": "toggle overflow skill" }}
-                />
-                <ToggleLabel>Overflow Skill</ToggleLabel>
-              </ToggleContainer>
+              <Tooltip title={profileHasZeroOutEnabled ? "" : "No overflow skill exists for this team"}
+                placement={"bottom-start"}>
+                <ToggleContainer>
+                  <Switch
+                    checked={form.zeroOutEnabled}
+                    value={form.zeroOutEnabled}
+                    disabled={overflowSkill === null}
+                    onChange={() => setForm({
+                      ...form,
+                      zeroOutEnabled: !form.zeroOutEnabled
+                    })}
+                    inputProps={{ "aria-label": "toggle-zero-out" }}
+                  />
+                  <ToggleLabel>Overflow Skill</ToggleLabel>
+                </ToggleContainer>
+              </Tooltip>
               <ModalPhoneNumber
                 allowSevenDigitVdn={false}
                 id="twilio-did"

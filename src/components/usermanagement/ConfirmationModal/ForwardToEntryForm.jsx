@@ -40,7 +40,7 @@ const ForwardToEntryForm = props => {
       return {
         label: worker.attributes.full_name,
         value: worker.sid
-      }
+      };
     });
   };
 
@@ -70,7 +70,7 @@ const ForwardToEntryForm = props => {
     } else {
       updateForwardTo(null);
     }
-  }
+  };
 
   const [ forwardToType, updateForwardToType ] = React.useState("worker");
 
