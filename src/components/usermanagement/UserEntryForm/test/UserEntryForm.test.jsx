@@ -75,6 +75,63 @@ const profileList = [
     overflow_skill: "whateverOverflowSkill"
   }
 ];
+const mockWorkers = [
+  {
+    attributes: {
+      default_skills: {
+        skills: [
+          "466",
+          "psuUm"
+        ],
+        levels: {
+          "466": 3
+        }
+      },
+      full_name: "Test 1",
+      office_location_name: "Neptune",
+      routing: {
+        skills: [
+          "466",
+          "psuUm"
+        ],
+        levels: {
+          "466": 3
+        }
+      }
+    },
+    sid: "WK0",
+    skillsDifferent: false
+  },
+  {
+    attributes: {
+      full_name: "Test 2",
+      office_location_name: "Uranus"
+    },
+    sid: "WK1",
+    skillsDifferent: false
+  },
+  {
+    attributes: {
+      default_skills: {
+        skills: ["466"],
+        levels: {}
+      },
+      full_name: "Test 3",
+      office_location_name: "Jupiter",
+      routing: {
+        skills: [],
+        levels: {}
+      }
+    },
+    sid: "WK2",
+    skillsDifferent: true
+  }
+];
+const mockSkills = [
+  {
+    skill: "aisgl1"
+  }
+];
 
 const initialTestState = {
   ...initialState,
@@ -96,27 +153,27 @@ const fetchedUser = {
   departmentNumber: "4848"
 };
 
-const initialForm = {
-  defaultSkills: {
-    levels: {},
-    skills: []
-  },
-  defaultSkillsUpdated: false,
-  extension: "",
-  extensionUpdated: false,
-  extensionValid: false,
-  manager: "",
-  managerUpdated: false,
-  nNumber: "n",
-  nNumberLookupInfo: null,
-  nNumberUpdated: false,
-  outgoing: "",
-  outgoingE164: undefined,
-  outgoingUpdated: false,
-  outgoingValid: false,
-  profileId: "",
-  profileIdUpdated: false
-};
+// const initialForm = {
+//   defaultSkills: {
+//     levels: {},
+//     skills: []
+//   },
+//   defaultSkillsUpdated: false,
+//   extension: "",
+//   extensionUpdated: false,
+//   extensionValid: false,
+//   manager: "",
+//   managerUpdated: false,
+//   nNumber: "n",
+//   nNumberLookupInfo: null,
+//   nNumberUpdated: false,
+//   outgoing: "",
+//   outgoingE164: undefined,
+//   outgoingUpdated: false,
+//   outgoingValid: false,
+//   profileId: "",
+//   profileIdUpdated: false
+// };
 
 const validFormOptions = {
   alternateDid: {
@@ -187,7 +244,15 @@ describe("<UserEntryForm />", () => {
   });
 
   const renderComponent = userEntryFormState => {
-    return render(<UserEntryForm handleClose={mockHandleClose} userEntryFormState={userEntryFormState} />, initialTestState);
+    return render(
+      <UserEntryForm
+        handleClose={mockHandleClose}
+        userEntryFormState={userEntryFormState}
+        skills={mockSkills}
+        workers={mockWorkers}
+      />,
+      initialTestState
+    );
   };
 
   const updateFormSoItIsValid = (isDidWorker, profileId) => {
@@ -389,7 +454,10 @@ describe("<UserEntryForm />", () => {
 
           // default skills
           const expectedDefaultSkillsProps = {
-            defaultSkills: initialForm.defaultSkills
+            defaultSkills: {
+              levels: {},
+              skills: []
+            }
           };
           expectOnlyPassedProps(DefaultSkillSelector, expectedDefaultSkillsProps, 0);
 

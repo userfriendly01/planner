@@ -149,12 +149,19 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
   } = useUserEntryForm(formMode, worker, managers);
 
   const [profileHasZeroOutEnabled, setProfileHasZeroOutEnabled] = useState(false);
+  const [forwardToToggle, setForwardToToggle] = useState(false);
 
   const getTargetProfile = (newProfileValue: string) => profiles.find(profile => profile.profile_id === +newProfileValue);
-
   const overflowSkill: (string) = form.profileId ? getTargetProfile(form.profileId.value).overflow_skill : "";
-
   const getZeroOutEnabledFromProfile = (newProfileValue: string): boolean => getTargetProfile(newProfileValue).overflow_skill !== null;
+
+  const isOutgoingDisabled = (): boolean => {
+    if (formMode === formModes.INSERT) {
+      return false;
+    } else {
+      return form.editDisabled && worker.directDialNum ? true : false;
+    }
+  };
 
   const doCreateUser = () => {
     updateLoading({
@@ -308,7 +315,6 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
     }
 
     const payload: Partial<DbWorker> = {
-      workerSid: worker.sid,
       attributes,
       zeroOutEnabled: form.zeroOutEnabled
     };
@@ -319,17 +325,20 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
     }
     if (form.directDialNum.updated) {
       payload.directDialNum = form.directDialNum.e164;
+      payload.activateEp = true;
     }
-    if (!form.directDialDisabled && worker.directDialNum && form.inactiveForwardTo.updated) {
+    if (form.inactiveForwardTo.value !== null && form.inactiveForwardTo.updated) {
       payload.inactiveForwardTo = form.inactiveForwardTo.value;
     }
 
-    updateUser(payload)
+    updateUser(worker.sid, payload)
       .then(dbWorker => {
+        console.log(dbWorker);
         dispatch(({
           type: "updateWorker",
-          payload: mapWorkerFromDbWorker(dbWorker)
+          payload: dbWorker
         }));
+
         updateLoading({
           ...loading,
           overlayMessage: `Successfully updated user: ${worker.attributes.full_name}`,
@@ -339,7 +348,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
         wait(handleClose, timeouts.MODAL_OVERLAY);
       })
       .catch(err => {
-        console.error(err.message, err.response.data);
+        console.error(err);
         updateLoading({
           ...loading,
           overlayMessage: err.response.data.message || `Failed to update user: ${worker.attributes.full_name}`,
@@ -353,9 +362,16 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
   const extensionInputValid = (form.extension.valid || form.extension.value === "");
   const managerValid = form.manager.value !== "";
   const profileIdValid = form.profileId.value !== "";
+  const inactiveForwardToValid = (forwardToToggle === true ? form.inactiveForwardTo.value !== null : true);
+  // check if outgoing and directdialnum have been changed to new numbers
+  const didDifferentValid = (
+    forwardToToggle === true ? form.outgoing.value.replace(/\D/g, "") !== worker?.attributes?.did.replace(/^\+1/, "").replace(/^1/, "") &&
+    form.directDialNum.value.replace(/\D/g, "") !== worker?.directDialNum?.replace(/^\+1/, "").replace(/^1/, "") : true
+  );
   const formValid = (formMode === formModes.INSERT ? nNumberInputValid : true)
     && profileIdValid && managerValid && form.outgoing.valid && extensionInputValid
-    && (form.didUser === true ? form.directDialNum.valid && form.alternateDid.valid : true);
+    && (form.didUser === true ? form.directDialNum.valid && form.alternateDid.valid : true)
+    && inactiveForwardToValid && didDifferentValid;
   const formUpdated = (
     form.defaultSkillsUpdated || form.manager.updated ||
     form.profileId.updated || form.outgoing.updated ||
@@ -439,6 +455,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
             value={form.profileId.value}
           />
           <ModalPhoneNumber
+            disabled={isOutgoingDisabled()}
             allowSevenDigitVdn={false}
             id="outgoing-number"
             number={form.outgoing.value}
@@ -448,6 +465,21 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
             updateValue={(maskedValue, unmaskedValue, isValid, e164Number) => {
               handleNumberUpdate(maskedValue, unmaskedValue, isValid, e164Number, "outgoing");
             }}
+            icon={worker?.directDialNum && formMode !== formModes.INSERT ? (
+              <InputAdornment position="end">
+                <StyledIcon
+                  fontSize="large"
+                  onClick={() => {
+                    setForm({
+                      ...form,
+                      editDisabled: !form.editDisabled
+                    });
+                    setForwardToToggle(!forwardToToggle);
+                  }}
+                />
+              </InputAdornment>
+            ) : null
+            }
           />
           <ModalNNumber
             disabled={(formMode === formModes.UPDATE) || (form.nNumberFetchedUser ? true : false)}
@@ -521,38 +553,56 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
               }
             })}
           />
-          <ToggleContainer>
-            <Switch
-              disabled={formMode === formModes.UPDATE && worker.directDialNum ? true : false}
-              checked={form.didUser}
-              onChange={() => {
-                setForm({
-                  ...form,
-                  didUser: !form.didUser,
-                  alternateDid: {
-                    value: "",
-                    blurred: false,
-                    e164: undefined,
-                    updated: false,
-                    valid: false
-                  },
-                  directDialNum: {
-                    value: "",
-                    blurred: false,
-                    e164: undefined,
-                    updated: false,
-                    valid: false
+          <Tooltip
+            title={
+              formMode === formModes.UPDATE && worker.directDialNum ?
+                "Twilio DID can not be removed" : ""
+            }
+            placement={"bottom-start"}
+          >
+            <ToggleContainer>
+              <Switch
+                disabled={formMode === formModes.UPDATE && worker.directDialNum ? true : false}
+                checked={form.didUser}
+                onChange={() => {
+                  setForm({
+                    ...form,
+                    didUser: !form.didUser,
+                    inactiveForwardTo: {
+                      value: null,
+                      updated: false
+                    },
+                    alternateDid: {
+                      value: "",
+                      blurred: false,
+                      e164: undefined,
+                      updated: false,
+                      valid: false
+                    },
+                    directDialNum: {
+                      value: "",
+                      blurred: false,
+                      e164: undefined,
+                      updated: false,
+                      valid: false
+                    }
+                  });
+                  if (formMode === formModes.UPDATE) {
+                    setForwardToToggle(!forwardToToggle);
                   }
-                });
-              }}
-              inputProps={{ "aria-label": "toggle-did-user" }}
-            />
-            <ToggleLabel>DID User</ToggleLabel>
-          </ToggleContainer>
+                }}
+                inputProps={{ "aria-label": "toggle-did-user" }}
+              />
+              <ToggleLabel>DID User</ToggleLabel>
+            </ToggleContainer>
+          </Tooltip>
           {form.didUser ? (
             <>
-              <Tooltip title={profileHasZeroOutEnabled ? "" : "No overflow skill exists for this team"}
-                placement={"bottom-start"}>
+              <Tooltip
+                title={profileHasZeroOutEnabled ?
+                  "" : "No overflow skill exists for this team"}
+                placement={"bottom-start"}
+              >
                 <ToggleContainer>
                   <Switch
                     checked={form.zeroOutEnabled}
@@ -568,28 +618,16 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
                 </ToggleContainer>
               </Tooltip>
               <ModalPhoneNumber
-                disabled={form.directDialDisabled}
+                disabled={form.editDisabled}
                 allowSevenDigitVdn={false}
-                id="twilio-did"
+                id="internal-routing-number"
                 number={form.directDialNum.value}
                 onBlur={() => handleOnBlur("directDialNum")}
-                label="Twilio DID *"
+                label="Internal Routing Number *"
                 showError={form.directDialNum.blurred}
                 updateValue={(maskedValue, unmaskedValue, isValid, e164Number) => {
                   handleNumberUpdate(maskedValue, unmaskedValue, isValid, e164Number, "directDialNum");
                 }}
-                icon={worker?.directDialNum && formMode !== formModes.INSERT ? (
-                  <InputAdornment position="end">
-                    <StyledIcon
-                      fontSize="large"
-                      onClick={() => setForm({
-                        ...form,
-                        directDialDisabled: !form.directDialDisabled
-                      })}
-                    />
-                  </InputAdornment>
-                ) : null
-                }
               />
               <ModalPhoneNumber
                 disabled={!worker?.alternateDid || formMode === formModes.INSERT ? false : true}
@@ -617,9 +655,9 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
               });
             }}
           />
-          {!form.directDialDisabled && formMode === formModes.UPDATE && worker.directDialNum ? (
+          {forwardToToggle && formMode === formModes.UPDATE ? (
             <StyledForwardToEntryForm
-              label={"To change this user's direct dial number please choose a forward to option."}
+              label={"Please choose a forward to option for the existing outgoing number"}
               skills={skills}
               workers={workers}
               updateForwardTo={(value: string) => {
@@ -636,12 +674,24 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
         </FormControlsPane>
       </FormControlsContainer>
       <ButtonWrapper>
-        <StyledButton
-          disabled={formMode === formModes.INSERT ? !formValid : (!formUpdated || !formValid)}
-          onClick={formMode === formModes.INSERT ? doCreateUser : doUpdateUser}
+        <Tooltip
+          title={
+            form.didUser && !didDifferentValid ?
+              "You must edit Outgoing Number and Internal Routing before saving" : ""
+          }
+          placement={"bottom-start"}
+          leaveDelay={500}
+          arrow
         >
-          {formMode === formModes.INSERT ? "Add User" : "Save User"}
-        </StyledButton>
+          <span>
+            <StyledButton
+              disabled={formMode === formModes.INSERT ? !formValid : (!formUpdated || !formValid)}
+              onClick={formMode === formModes.INSERT ? doCreateUser : doUpdateUser}
+            >
+              {formMode === formModes.INSERT ? "Add User" : "Save User"}
+            </StyledButton>
+          </span>
+        </Tooltip>
         <StyledButton
           onClick={handleClose}
         >

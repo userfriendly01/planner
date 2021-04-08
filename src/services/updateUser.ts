@@ -4,6 +4,6 @@ import {
   myAxios
 } from "utils";
 
-export const updateUser = (worker: Partial<DbWorker>): Promise<DbWorker> =>
-  myAxios.post(apiPaths.UPDATE_WORKER, worker)
+export const updateUser = (workerSid: string, worker: Partial<DbWorker>): Promise<DbWorker> =>
+  myAxios.post(apiPaths.UPDATE_WORKER(workerSid), worker)
     .then(response => response.data);

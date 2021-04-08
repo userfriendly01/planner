@@ -35,7 +35,7 @@ interface UserEntryForm_FormState {
   alternateDid: FieldState,
   directDialNum: FieldState,
   zeroOutEnabled: boolean,
-  directDialDisabled: boolean
+  editDisabled: boolean
 }
 
 interface LoadingState {
@@ -75,7 +75,7 @@ const useUserEntryForm = (
         valid: false
       },
       inactiveForwardTo: {
-        value: "",
+        value: null,
         updated: false
       },
       manager: {
@@ -116,7 +116,7 @@ const useUserEntryForm = (
         valid: false
       },
       zeroOutEnabled: false,
-      directDialDisabled: false
+      editDisabled: false
     };
     if (formMode === formModes.UPDATE) {
       initialForm.defaultSkills = getValidSkillsObject(worker.attributes.default_skills);
@@ -133,7 +133,7 @@ const useUserEntryForm = (
       initialForm.directDialNum.valid = worker.directDialNum ? true : false;
       initialForm.didUser = worker.directDialNum ? true : false;
       initialForm.zeroOutEnabled = worker.zeroOutEnabled;
-      initialForm.directDialDisabled = worker.directDialNum ? true : false;
+      initialForm.editDisabled = worker.directDialNum ? true : false;
     }
     return initialForm;
   };

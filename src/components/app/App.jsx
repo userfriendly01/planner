@@ -125,31 +125,21 @@ const getSkills = dispatch => new Promise((resolve, reject) => myAxios.get(apiPa
 );
 
 const getWorkers = async dispatch => {
-  let pageToken = "";
   const filteredWorkers = [];
   try {
-    do {
-      const response = await myAxios.get(apiPaths.GET_WORKERS);
+    const response = await myAxios.get(apiPaths.GET_WORKERS);
 
-      // filter out workers with "inactiveInd": true
-      for (const worker of formatWorkerResponse(response.data)) {
-        if (!worker.inactiveInd) {
-          filteredWorkers.push(worker);
-        }
+    // filter out workers with "inactiveInd": true and no attributes
+    for (const worker of formatWorkerResponse(response.data)) {
+      if (!worker.inactiveInd && worker.attributes) {
+        filteredWorkers.push(worker);
       }
+    }
 
-      dispatch(({
-        type: "addWorkers",
-        payload: filteredWorkers
-      }));
-
-      if (response.data.nextPageUrl) {
-        const url = new URL(response.data.nextPageUrl);
-        pageToken = url.searchParams.get("PageToken");
-      } else {
-        pageToken = null;
-      }
-    } while (pageToken);
+    dispatch(({
+      type: "addWorkers",
+      payload: filteredWorkers
+    }));
 
     const managerList = getUniqueManagerList(filteredWorkers);
     dispatch({
