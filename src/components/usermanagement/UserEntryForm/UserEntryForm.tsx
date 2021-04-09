@@ -152,7 +152,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
   const [forwardToToggle, setForwardToToggle] = useState(false);
 
   const getTargetProfile = (newProfileValue: string) => profiles.find(profile => profile.profile_id === +newProfileValue);
-  const overflowSkill: (string) = form.profileId ? getTargetProfile(form.profileId.value).overflow_skill : "";
+  const overflowSkill: (string) = form.profileId.value ? getTargetProfile(form.profileId.value).overflow_skill : "";
   const getZeroOutEnabledFromProfile = (newProfileValue: string): boolean => getTargetProfile(newProfileValue).overflow_skill !== null;
 
   const isOutgoingDisabled = (): boolean => {
@@ -351,7 +351,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
         console.error(err);
         updateLoading({
           ...loading,
-          overlayMessage: err.response.data.message || `Failed to update user: ${worker.attributes.full_name}`,
+          overlayMessage: err.response?.data.message || `Failed to update user: ${worker.attributes.full_name}`,
           saveStatus: modalOverlayStatuses.FAIL,
           saveUser: true
         });
@@ -568,10 +568,6 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
                   setForm({
                     ...form,
                     didUser: !form.didUser,
-                    inactiveForwardTo: {
-                      value: null,
-                      updated: false
-                    },
                     alternateDid: {
                       value: "",
                       blurred: false,
@@ -587,9 +583,6 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
                       valid: false
                     }
                   });
-                  if (formMode === formModes.UPDATE) {
-                    setForwardToToggle(!forwardToToggle);
-                  }
                 }}
                 inputProps={{ "aria-label": "toggle-did-user" }}
               />

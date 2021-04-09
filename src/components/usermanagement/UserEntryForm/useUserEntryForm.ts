@@ -84,7 +84,7 @@ const useUserEntryForm = (
         updated: false
       },
       nNumber: {
-        value: "",
+        value: "n",
         blurred: false,
         updated: false
       },

@@ -63,7 +63,7 @@ const ConfirmationModal = props => {
     saveResult
   } = props;
 
-  const isWorkerDid = data.selectedWorker.attributes.did;
+  const isWorkerDid = data.selectedWorker.directDialNum;
   const isForwardToSet = data.selectedWorker.inactiveForwardTo ? true : false;
 
   return (
