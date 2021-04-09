@@ -193,7 +193,7 @@ export const reducer = (state: AppState, action: Action): AppState => {
         ...state,
         workerContext: {
           ...state.workerContext,
-          workers: [...state.workerContext.workers.filter(w => w.sid !== action.payload.workerSid), action.payload]
+          workers: [...state.workerContext.workers.filter(w => w.sid !== action.payload.sid), action.payload]
         }
       };
     default:

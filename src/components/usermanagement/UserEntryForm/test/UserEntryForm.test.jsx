@@ -1,6 +1,7 @@
 import UserEntryForm from "../UserEntryForm";
 import {
   DefaultSkillSelector,
+  ForwardToEntryForm,
   ModalExtension,
   ModalNNumber,
   ModalOverlay,
@@ -8,9 +9,6 @@ import {
   OutlinedSelect,
   StyledButton
 } from "components";
-import {
-  InputAdornment, Switch, Tooltip
-} from "@material-ui/core";
 import { initialState } from "context";
 import {
   formModes,
@@ -39,6 +37,7 @@ jest.useFakeTimers();
 jest.mock("components", () => ({
   __esModule: true,
   DefaultSkillSelector: jest.fn(),
+  ForwardToEntryForm: jest.fn(),
   ModalExtension: jest.fn(),
   ModalNNumber: jest.fn(),
   ModalOverlay: jest.fn(),
@@ -47,12 +46,6 @@ jest.mock("components", () => ({
   PaperContainer: jest.fn(),
   StyledButton: jest.fn()
 }));
-
-// jest.mock("@material-ui/core", () => ({
-//   Switch: jest.fn(),
-//   InputAdornment: jest.fn(),
-//   Tooltip: jest.fn()
-// }));
 
 jest.mock("services", () => ({
   createUser: jest.fn(),
@@ -224,15 +217,13 @@ describe("<UserEntryForm />", () => {
     mockStore.reset();
     setupMockedComponents({
       DefaultSkillSelector,
+      ForwardToEntryForm,
       ModalExtension,
       ModalNNumber,
       ModalOverlay,
       ModalPhoneNumber,
       OutlinedSelect,
       StyledButton
-      // Tooltip,
-      // InputAdornment,
-      // Switch
     });
   });
 
@@ -272,7 +263,7 @@ describe("<UserEntryForm />", () => {
       value: profileId
     }, getLastInstanceCalled(OutlinedSelect));
     if (isDidWorker === true) {
-      // outgoing number is first of 3 ModalPhoneNumber components
+      // outgoing number is 1st of 3 ModalPhoneNumber components
       act(() => {
         const updatePhone = getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber) - 2).updateValue;
         updatePhone("(603)456-7890", validFormOptions.did, true, validFormOptions.didE164);
@@ -1065,19 +1056,20 @@ describe("<UserEntryForm />", () => {
         }, 1);
       });
     });
-    describe("did user initial values", () => {
-      const initialDidWorker = {
-        ...initialWorker,
-        directDialNum: validFormOptions.directDialNum.e164,
-        alternateDid: validFormOptions.alternateDid.e164,
-        zeroOutEnabled: false
-      };
-      const didUserEntryFormState = {
-        formMode: formModes.UPDATE,
-        worker: initialDidWorker,
-        open: true
-      };
 
+    const initialDidWorker = {
+      ...initialWorker,
+      directDialNum: "+19458604594",
+      alternateDid: "+14208931234",
+      zeroOutEnabled: false
+    };
+    const didUserEntryFormState = {
+      formMode: formModes.UPDATE,
+      worker: initialDidWorker,
+      open: true
+    };
+
+    describe("did user initial values", () => {
       test("we should render the header, the correct components, and read profiles defined in the context API.", () => {
         const rendered = renderComponent(didUserEntryFormState);
 
@@ -1156,14 +1148,14 @@ describe("<UserEntryForm />", () => {
 
         // Internal Routing Number
         const expectedDirectDialNumProps = {
-          number: validFormOptions.directDialNum.tenDig,
+          number: "9458604594",
           label: "Internal Routing Number *"
         };
         expectOnlyPassedProps(ModalPhoneNumber, expectedDirectDialNumProps, 1);
 
         // Skype/Teams DID
         const expectedalternateDidProps = {
-          number: validFormOptions.alternateDid.tenDig,
+          number: "4208931234",
           label: "Skype/Teams DID *"
         };
         expectOnlyPassedProps(ModalPhoneNumber, expectedalternateDidProps, 2);
@@ -1193,7 +1185,7 @@ describe("<UserEntryForm />", () => {
         attributes: workerAttributes,
         zeroOutEnabled: false
       };
-      describe("update non did user service call succeeds", () => {
+      describe("update non did user", () => {
         const rawDbWorker = {
           attributes: workerAttributes,
           skillsDifferent: true,
@@ -1213,15 +1205,15 @@ describe("<UserEntryForm />", () => {
           await waitFor(() => {
             expect(updateUser).toHaveBeenCalledWith(initialWorker.sid, payload);
             const actions = mockStore.getActions();
-            const expectedTwilioWorkerUpdated = {
+            const expectedWorkerUpdated = {
               ...rawDbWorker,
-              attributes: workerAttributes,
+              sid: rawDbWorker.workerSid,
               skillsDifferent: true
             };
-            delete expectedTwilioWorkerUpdated.friendlyName;
+            delete expectedWorkerUpdated.workerSid;
             expect(actions).toEqual([{
               type: "updateWorker",
-              payload: expectedTwilioWorkerUpdated
+              payload: expectedWorkerUpdated
             }]);
             jest.runAllTimers();
             expectOnlyPassedProps(ModalOverlay, {
@@ -1237,42 +1229,125 @@ describe("<UserEntryForm />", () => {
         });
       });
 
-      describe("update did user service call succeeds", () => {
-        const rawDbWorker = {
-          alternateDid: validFormOptions.alternateDid.e164,
-          attributes: workerAttributes,
-          directDialNum: validFormOptions.directDialNum.e164,
-          skillsDifferent: true,
-          sid: "WK123",
-          zeroOutEnabled: false
-        };
+      describe("update non did user to did user", () => {
         const didPayload = {
           ...payload,
-          alternateDid: rawDbWorker.alternateDid,
-          directDialNum: rawDbWorker.directDialNum
+          activateEp: true,
+          alternateDid: validFormOptions.alternateDid.e164,
+          directDialNum: validFormOptions.directDialNum.e164
+        };
+        const rawDbWorker = {
+          activateEp: didPayload.activateEp,
+          alternateDid: didPayload.alternateDid,
+          attributes: workerAttributes,
+          directDialNum: didPayload.directDialNum,
+          workerSid: "WK123",
+          zeroOutEnabled: false
         };
         beforeEach(() => updateUser.mockResolvedValue(rawDbWorker));
 
         test("should enable Save User button and save user when clicked", async () => {
-          renderComponent(userEntryFormState);
-          updateFormSoItIsValid(false, profileList[0].profile_id);
+          const rendered = renderComponent(userEntryFormState);
+          fireEvent.click(rendered.getByLabelText("toggle-did-user"));
+          updateFormSoItIsValid(true, profileList[0].profile_id);
           // click button
           act(() => {
             const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
             buttonProps.onClick();
           });
           await waitFor(() => {
-            expect(updateUser).toHaveBeenCalledWith(initialWorker.sid, payload);
+            expect(updateUser).toHaveBeenCalledWith(initialWorker.sid, didPayload);
             const actions = mockStore.getActions();
-            const expectedTwilioWorkerUpdated = {
+            const expectedWorkerUpdated = {
               ...rawDbWorker,
-              attributes: workerAttributes,
+              sid: rawDbWorker.workerSid,
               skillsDifferent: true
             };
-            delete expectedTwilioWorkerUpdated.friendlyName;
+            delete expectedWorkerUpdated.workerSid;
             expect(actions).toEqual([{
               type: "updateWorker",
-              payload: expectedTwilioWorkerUpdated
+              payload: expectedWorkerUpdated
+            }]);
+            jest.runAllTimers();
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Updating user: " + initialWorker.attributes.full_name,
+              status: modalOverlayStatuses.SAVING
+            }, getLastInstanceCalled(ModalOverlay) - 1);
+            expectOnlyPassedProps(ModalOverlay, {
+              message: "Successfully updated user: " + initialWorker.attributes.full_name,
+              status: modalOverlayStatuses.SUCCESS
+            }, getLastInstanceCalled(ModalOverlay));
+            expect(mockHandleClose).toHaveBeenCalledTimes(1);
+          });
+        });
+      });
+
+      describe("update did user", () => {
+        const didPayload = {
+          ...payload,
+          activateEp: true,
+          alternateDid: validFormOptions.alternateDid.e164,
+          directDialNum: validFormOptions.directDialNum.e164,
+          inactiveForwardTo: "Mad Skillz"
+        };
+        const rawDbWorker = {
+          activateEp: didPayload.activateEp,
+          alternateDid: didPayload.alternateDid,
+          attributes: workerAttributes,
+          directDialNum: didPayload.directDialNum,
+          workerSid: "WK123",
+          zeroOutEnabled: false
+        };
+        beforeEach(() => updateUser.mockResolvedValue(rawDbWorker));
+
+        test("should enable Save User button and save user when clicked", async () => {
+          const rendered = renderComponent(didUserEntryFormState);
+          expect(rendered.getByLabelText("toggle-did-user")).toHaveAttribute("disabled");
+
+          // check if Outgoing Number is disabled
+          expectOnlyPassedProps(ModalPhoneNumber, {
+            disabled: true
+          }, getLastInstanceCalled(ModalPhoneNumber, 0));
+          // check if Internal Routing Number is disabled
+          expectOnlyPassedProps(ModalPhoneNumber, {
+            disabled: true
+          }, getLastInstanceCalled(ModalPhoneNumber, 1));
+          // check if Skype/Teams DID is disabled
+          expectOnlyPassedProps(ModalPhoneNumber, {
+            disabled: true
+          }, getLastInstanceCalled(ModalPhoneNumber, 2));
+
+          expectMockedComponent(rendered, { ForwardToEntryForm }, 0);
+
+          act(() => {
+            const iconClick = getMockedComponentProps(ModalPhoneNumber, 0).icon.props.children.props;
+            iconClick.onClick();
+          });
+
+          expectMockedComponent(rendered, { ForwardToEntryForm }, 1);
+
+          act(() => {
+            const updateForwardTo = getMockedComponentProps(ForwardToEntryForm).updateForwardTo;
+            updateForwardTo("Mad Skillz");
+          });
+          updateFormSoItIsValid(true, profileList[0].profile_id);
+          // click button
+          act(() => {
+            const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
+            buttonProps.onClick();
+          });
+          await waitFor(() => {
+            expect(updateUser).toHaveBeenCalledWith(initialWorker.sid, didPayload);
+            const actions = mockStore.getActions();
+            const expectedWorkerUpdated = {
+              ...rawDbWorker,
+              sid: rawDbWorker.workerSid,
+              skillsDifferent: true
+            };
+            delete expectedWorkerUpdated.workerSid;
+            expect(actions).toEqual([{
+              type: "updateWorker",
+              payload: expectedWorkerUpdated
             }]);
             jest.runAllTimers();
             expectOnlyPassedProps(ModalOverlay, {

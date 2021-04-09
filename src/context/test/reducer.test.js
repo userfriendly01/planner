@@ -288,7 +288,7 @@ describe("reducer", () => {
       ];
       const workerToUpdate = {
         id: "twoooo",
-        workerSid: "WK67890",
+        sid: "WK67890",
         attributes: "new"
       };
       const action = {
@@ -303,7 +303,7 @@ describe("reducer", () => {
         },
         {
           id: "twoooo",
-          workerSid: "WK67890",
+          sid: "WK67890",
           attributes: "new"
         }
       ]);

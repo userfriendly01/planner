@@ -5,6 +5,7 @@ import {
 import { Edit } from "@material-ui/icons";
 import {
   DefaultSkillSelector,
+  ForwardToEntryForm,
   ModalExtension,
   ModalNNumber,
   ModalOverlay,
@@ -37,7 +38,6 @@ import {
   sortProfilesByName,
   wait
 } from "utils";
-import ForwardToEntryForm from "../ConfirmationModal/ForwardToEntryForm";
 import useUserEntryForm from "./useUserEntryForm";
 
 const FlexRow = styled.div`
@@ -96,10 +96,6 @@ const ToggleLabel = styled.div`
   align-self: center;
   font-weight: 400;
   font-size: 1rem;
-`;
-
-const StyledForwardToEntryForm = styled(ForwardToEntryForm)`
-  margin-top: 100px;
 `;
 
 const StyledIcon = styled(Edit)`
@@ -333,10 +329,9 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
 
     updateUser(worker.sid, payload)
       .then(dbWorker => {
-        console.log(dbWorker);
         dispatch(({
           type: "updateWorker",
-          payload: dbWorker
+          payload: mapWorkerFromDbWorker(dbWorker)
         }));
 
         updateLoading({
@@ -469,6 +464,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
               <InputAdornment position="end">
                 <StyledIcon
                   fontSize="large"
+                  data-testid="toggle-forward-to"
                   onClick={() => {
                     setForm({
                       ...form,
@@ -649,7 +645,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
             }}
           />
           {forwardToToggle && formMode === formModes.UPDATE ? (
-            <StyledForwardToEntryForm
+            <ForwardToEntryForm
               label={"Please choose a forward to option for the existing outgoing number"}
               skills={skills}
               workers={workers}
