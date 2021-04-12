@@ -94,6 +94,7 @@ const mockUpdateForwardTo = jest.fn();
 
 const renderComponent = () => {
   return render(<ForwardToEntryForm
+    label={"This user has a direct dial number. Please choose a forward to option before confirming."}
     skills={mockSkills}
     workers={mockWorkers}
     updateForwardTo={mockUpdateForwardTo}

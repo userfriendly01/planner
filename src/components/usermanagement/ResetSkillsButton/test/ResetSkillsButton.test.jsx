@@ -16,7 +16,7 @@ import {
   setupMockedComponents
 } from "testUtils";
 import {
-  mapWorkerFromTwilioWorker,
+  mapWorkerFromDbWorker,
   myAxios
 } from "utils";
 
@@ -99,7 +99,7 @@ describe("ResetSkillsButton", () => {
             },
             {
               type: "updateWorker",
-              payload: mapWorkerFromTwilioWorker(selectedWorkers[0])
+              payload: mapWorkerFromDbWorker(selectedWorkers[0])
             },
             {
               type: "toggleWorkerSelected",
@@ -109,7 +109,7 @@ describe("ResetSkillsButton", () => {
             },
             {
               type: "updateWorker",
-              payload: mapWorkerFromTwilioWorker(selectedWorkers[2])
+              payload: mapWorkerFromDbWorker(selectedWorkers[2])
             },
             {
               type: "resettingSkills",
@@ -159,7 +159,7 @@ describe("ResetSkillsButton", () => {
             },
             {
               type: "updateWorker",
-              payload: mapWorkerFromTwilioWorker(selectedWorkers[0])
+              payload: mapWorkerFromDbWorker(selectedWorkers[0])
             },
             {
               type: "resettingSkills",

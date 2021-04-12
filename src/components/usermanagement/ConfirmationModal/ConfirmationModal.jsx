@@ -63,7 +63,7 @@ const ConfirmationModal = props => {
     saveResult
   } = props;
 
-  const isWorkerDid = data.selectedWorker.attributes.did;
+  const isWorkerDid = data.selectedWorker.directDialNum;
   const isForwardToSet = data.selectedWorker.inactiveForwardTo ? true : false;
 
   return (
@@ -79,6 +79,7 @@ const ConfirmationModal = props => {
         <Data>{data.displayData}</Data>
         { isWorkerDid ?
           <ForwardToEntryForm
+            label={"This user has a direct dial number. Please choose a forward to option before confirming."}
             workers={data.workers}
             skills={data.skills}
             updateForwardTo={forwardTo => callbackMethods.setForwardTo(forwardTo)}

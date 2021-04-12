@@ -133,6 +133,8 @@ export const ManagementWrapper: React.FC = () => {
         <UserEntryForm
           handleClose={() => setUserEntryFormState(initialUserEntryFormState)}
           userEntryFormState={userEntryFormState}
+          skills={skillsFromContext}
+          workers={workersFromContext.sort(sortWorkersByFullName)}
         />
       </Modal>
       <ManagementHeader
