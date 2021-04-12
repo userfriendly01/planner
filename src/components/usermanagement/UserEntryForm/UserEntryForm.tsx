@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   InputAdornment, Switch, Tooltip
 } from "@material-ui/core";
@@ -26,6 +25,7 @@ import {
   modalOverlayStatuses,
   timeouts
 } from "globals";
+import React, { useState } from "react";
 import {
   createUser,
   updateUser
