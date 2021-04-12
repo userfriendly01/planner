@@ -43,38 +43,33 @@ const profiles = [
   { wow: "amazing" }
 ];
 
-const unfilteredWorkers = [
+const dbWorkers = [
   {
-    sid: "WK1",
+    workerSid: "WK1",
     attributes: {
       wow: "wow"
-    },
-    friendlyName: "n0123456"
+    }
   },
   {
-    sid: "WK2",
+    workerSid: "WK2",
     attributes: {
       neat: "neat"
-    },
-    friendlyName: "n1234567"
+    }
   },
   {
-    sid: "WK3",
+    workerSid: "WK3",
     attributes: {
       stellar: "stellar"
-    },
-    friendlyName: "n2345678"
+    }
   },
   {
-    sid: "WK3",
-    friendlyName: "n2345678"
+    workerSid: "WK4"
   },
   {
-    sid: "WK3",
+    workerSid: "WK5",
     attributes: {
       superrrr: "superrrr"
     },
-    friendlyName: "n2345678",
     inactiveInd: true
   }
 ];
@@ -85,21 +80,21 @@ const filteredWorkers = [
     attributes: {
       wow: "wow"
     },
-    friendlyName: "n0123456"
+    skillsDifferent: false
   },
   {
     sid: "WK2",
     attributes: {
       neat: "neat"
     },
-    friendlyName: "n1234567"
+    skillsDifferent: false
   },
   {
     sid: "WK3",
     attributes: {
       stellar: "stellar"
     },
-    friendlyName: "n2345678"
+    skillsDifferent: false
   }
 ];
 
@@ -153,7 +148,7 @@ describe("<App />", () => {
       axiosMock.onGet(authEndpoint).reply(200, auth);
       axiosMock.onGet(profilesEndpoint).reply(200, profiles);
       axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
-      axiosMock.onGet(workersEndpoint).replyOnce(200, unfilteredWorkers);
+      axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
     });
     describe("initial state, page is loading", () => {
       test("should render LoadingMessage", () => {
@@ -186,7 +181,7 @@ describe("<App />", () => {
               },
               {
                 type: "addWorkers",
-                payload: formatWorkerResponse(filteredWorkers)
+                payload: filteredWorkers
               },
               {
                 type: "loadManagers",
@@ -236,7 +231,7 @@ describe("<App />", () => {
         axiosMock.onGet(authEndpoint).reply(statusCode, { ohno: "booo" });
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
         axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
-        axiosMock.onGet(workersEndpoint).replyOnce(200, unfilteredWorkers);
+        axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
       });
       test("should return 'You are not authorized to view this page'", done => {
         const rendered = render(<App />);
@@ -254,7 +249,7 @@ describe("<App />", () => {
         axiosMock.onGet(authEndpoint).reply(statusCode, { wahhh: "nooo" });
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
         axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
-        axiosMock.onGet(workersEndpoint).replyOnce(200, unfilteredWorkers);
+        axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
       });
       test("should return 'An error occurred while logging in.'", done => {
         const rendered = render(<App />);
@@ -275,7 +270,7 @@ describe("<App />", () => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(statusCode, { wahhhh: "oh noooo" });
         axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
-        axiosMock.onGet(workersEndpoint).replyOnce(200, unfilteredWorkers);
+        axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
       });
       test("should render error message 'Failed to fetch profiles from service'", done => {
         const rendered = render(<App />);
@@ -295,7 +290,7 @@ describe("<App />", () => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
         axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
-        axiosMock.onGet(workersEndpoint, { pageToken: "" }).replyOnce(200, unfilteredWorkers);
+        axiosMock.onGet(workersEndpoint, { pageToken: "" }).replyOnce(200, dbWorkers);
       });
       test("should dispatch all actions and filter workers with inactiveInd: true and no attributes", done => {
         const rendered = render(<App />);
@@ -318,7 +313,7 @@ describe("<App />", () => {
               },
               {
                 type: "addWorkers",
-                payload: formatWorkerResponse(filteredWorkers)
+                payload: filteredWorkers
               },
               {
                 type: "loadManagers",
@@ -359,7 +354,7 @@ describe("<App />", () => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
         axiosMock.onGet(skillsEndpoint).reply(500, { fail: "oh the horror" });
-        axiosMock.onGet(workersEndpoint).replyOnce(200, unfilteredWorkers);
+        axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
       });
       test("should return 'An error occurred while logging in.'", done => {
         const rendered = render(<App />);

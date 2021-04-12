@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { getValidSkillsObject } from "utils";
+import {
+  formatE164PhoneNumber,
+  getValidSkillsObject
+} from "utils";
 import {
   FetchUserResponse
 } from "services";
@@ -41,7 +44,7 @@ interface UserEntryForm_FormState {
 interface LoadingState {
   lookupUser: boolean;
   overlayMessage: string;
-  saveStatus: any;
+  saveStatus: string;
   saveUser: boolean;
 }
 
@@ -49,8 +52,7 @@ interface useFormResponse {
   form: UserEntryForm_FormState,
   handleOnBlur: (field: string) => void,
   handleNumberUpdate: (
-    maskedValue: string, unmaskedValue: string, isValid: boolean,
-    e164Number: string, field: string
+    maskedValue: string, isValid: boolean, e164Number: string, field: string
   ) => void
   initialDefaultSkills: TwilioWorkerSkills,
   loading: LoadingState,
@@ -124,15 +126,15 @@ const useUserEntryForm = (
       initialForm.extension.valid = true;
       initialForm.manager.value = JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number));
       initialForm.nNumber.value = worker.attributes.n_number || "n";
-      initialForm.outgoing.value = worker.attributes.did ? worker.attributes.did.replace(/^\+1/, "").replace(/^1/, "") : ""; // remove +1 or 1 from start of e164
+      initialForm.outgoing.value = worker.attributes.did ? formatE164PhoneNumber(worker.attributes.did) : "";
       initialForm.outgoing.valid = worker.attributes.did ? true : false;
       initialForm.profileId.value = `${worker.attributes.profile_id}`;
-      initialForm.alternateDid.value = worker.alternateDid ? worker.alternateDid.replace(/^\+1/, "").replace(/^1/, "") : ""; // remove +1 or 1 from start of e164
+      initialForm.alternateDid.value = worker.alternateDid ? formatE164PhoneNumber(worker.alternateDid) : "";
       initialForm.alternateDid.valid = worker.alternateDid ? true : false;
-      initialForm.directDialNum.value = worker.directDialNum ? worker.directDialNum.replace(/^\+1/, "").replace(/^1/, "") : ""; // remove +1 or 1 from start of e164
+      initialForm.directDialNum.value = worker.directDialNum ? formatE164PhoneNumber(worker.directDialNum) : "";
       initialForm.directDialNum.valid = worker.directDialNum ? true : false;
       initialForm.didUser = worker.directDialNum ? true : false;
-      initialForm.zeroOutEnabled = worker.zeroOutEnabled;
+      initialForm.zeroOutEnabled = worker.zeroOutEnabled || false;
       initialForm.editDisabled = worker.directDialNum ? true : false;
     }
     return initialForm;
@@ -147,8 +149,7 @@ const useUserEntryForm = (
   });
 
   const handleNumberUpdate = (
-    maskedValue: string, unmaskedValue: string, isValid: boolean,
-    e164Number: string, field: string
+    maskedValue: string, isValid: boolean, e164Number: string, field: string
   ): void => {
     setForm({
       ...form,

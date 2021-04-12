@@ -33,7 +33,9 @@ import {
 import styled from "styled-components";
 import {
   DbWorker,
+  formatE164PhoneNumber,
   mapWorkerFromDbWorker,
+  removeNonNumericCharacters,
   sortManagersByName,
   sortProfilesByName,
   wait
@@ -315,7 +317,6 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
       zeroOutEnabled: form.zeroOutEnabled
     };
 
-    // values below are used by twilio-worker-api, they do not map to Twilio worker attributes
     if (form.alternateDid.updated) {
       payload.alternateDid = form.alternateDid.e164;
     }
@@ -360,8 +361,8 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
   const inactiveForwardToValid = (forwardToToggle === true ? form.inactiveForwardTo.value !== null : true);
   // check if outgoing and directdialnum have been changed to new numbers
   const didDifferentValid = (
-    forwardToToggle === true ? form.outgoing.value.replace(/\D/g, "") !== worker?.attributes?.did.replace(/^\+1/, "").replace(/^1/, "") &&
-    form.directDialNum.value.replace(/\D/g, "") !== worker?.directDialNum?.replace(/^\+1/, "").replace(/^1/, "") : true
+    forwardToToggle === true ? removeNonNumericCharacters(form.outgoing.value) !== formatE164PhoneNumber(worker?.attributes?.did) &&
+    removeNonNumericCharacters(form.directDialNum.value) !== formatE164PhoneNumber(worker?.directDialNum) : true
   );
   const formValid = (formMode === formModes.INSERT ? nNumberInputValid : true)
     && profileIdValid && managerValid && form.outgoing.valid && extensionInputValid
@@ -457,8 +458,8 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
             onBlur={() => handleOnBlur("outgoing")}
             label="Outgoing Number *"
             showError={form.outgoing.blurred}
-            updateValue={(maskedValue, unmaskedValue, isValid, e164Number) => {
-              handleNumberUpdate(maskedValue, unmaskedValue, isValid, e164Number, "outgoing");
+            updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
+              handleNumberUpdate(maskedValue, isValid, e164Number, "outgoing");
             }}
             icon={worker?.directDialNum && formMode !== formModes.INSERT ? (
               <InputAdornment position="end">
@@ -614,8 +615,8 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
                 onBlur={() => handleOnBlur("directDialNum")}
                 label="Internal Routing Number *"
                 showError={form.directDialNum.blurred}
-                updateValue={(maskedValue, unmaskedValue, isValid, e164Number) => {
-                  handleNumberUpdate(maskedValue, unmaskedValue, isValid, e164Number, "directDialNum");
+                updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
+                  handleNumberUpdate(maskedValue, isValid, e164Number, "directDialNum");
                 }}
               />
               <ModalPhoneNumber
@@ -626,8 +627,8 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
                 onBlur={() => handleOnBlur("alternateDid")}
                 label="Skype/Teams DID *"
                 showError={form.alternateDid.blurred}
-                updateValue={(maskedValue, unmaskedValue, isValid, e164Number) => {
-                  handleNumberUpdate(maskedValue, unmaskedValue, isValid, e164Number, "alternateDid");
+                updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
+                  handleNumberUpdate(maskedValue, isValid, e164Number, "alternateDid");
                 }}
               />
             </>
@@ -653,7 +654,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
                 setForm({
                   ...form,
                   inactiveForwardTo: {
-                    value: value,
+                    value,
                     updated: true
                   }
                 });
