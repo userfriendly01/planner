@@ -193,21 +193,26 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
       profile_id: form.profileId.value,
       unique_id: form.nNumber.value.toLowerCase()
     };
-    if (overflowSkill !== null && form.zeroOutEnabled) {
+    if (overflowSkill !== null && form.zeroOutEnabled && form.directDialNum.value) {
       attributes.routing = {
         skills: [overflowSkill],
         levels: {}
       };
     }
 
-    createUser({
-      attributes,
-      // values below are used by twilio-worker-api, they do not map to Twilio worker attributes
-      activateEp: form.directDialNum.value ? true : false,
-      alternateDid: form.alternateDid.e164,
-      directDialNum: form.directDialNum.e164,
-      zeroOutEnabled: form.zeroOutEnabled
-    })
+    const createUserReqBody = form.directDialNum.value ?
+      {
+        attributes,
+        activateEp: true,
+        alternateDid: form.alternateDid.e164,
+        directDialNum: form.directDialNum.e164,
+        zeroOutEnabled: form.zeroOutEnabled
+      } : {
+        attributes,
+        activateEp: false
+      }
+
+    createUser(createUserReqBody)
       .then(dbWorker => {
         setForm({
           ...form,

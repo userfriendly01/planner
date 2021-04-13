@@ -578,8 +578,7 @@ describe("<UserEntryForm />", () => {
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
                 activateEp: false, // false for non-DID workers
-                attributes: workerAttributesAfterFormValid,
-                zeroOutEnabled: false // profileId used in this test has overflow_skill = 'null'
+                attributes: workerAttributesAfterFormValid
               });
               const actions = mockStore.getActions();
               expect(actions).toEqual([{
@@ -622,8 +621,7 @@ describe("<UserEntryForm />", () => {
               await waitFor(() => {
                 expect(createUser).toHaveBeenCalledWith({
                   activateEp: false, // false for non-DID workers
-                  attributes: workerAttributesAfterFormValid,
-                  zeroOutEnabled: false // profileId used in this test has overflow_skill = 'null'
+                  attributes: workerAttributesAfterFormValid
                 });
                 const actions = mockStore.getActions();
                 expect(actions).toHaveLength(0);
@@ -666,8 +664,7 @@ describe("<UserEntryForm />", () => {
               await waitFor(() => {
                 expect(createUser).toHaveBeenCalledWith({
                   activateEp: false, // false for non-DID workers
-                  attributes: workerAttributesAfterFormValid,
-                  zeroOutEnabled: false // profileId used in this test has overflow_skill = 'null'
+                  attributes: workerAttributesAfterFormValid
                 });
                 const actions = mockStore.getActions();
                 expect(actions).toHaveLength(0);
