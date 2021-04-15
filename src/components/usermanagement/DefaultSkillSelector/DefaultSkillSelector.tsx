@@ -29,6 +29,7 @@ const DefaultSkillsWrapper = styled.div`
   flex-direction: column;
   font-size: 0.9em;
   padding: 8px;
+  z-index: 2;
 `;
 
 const IconButtonWrapper = styled.button`

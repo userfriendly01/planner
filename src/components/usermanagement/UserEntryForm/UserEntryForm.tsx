@@ -146,9 +146,8 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
     loading, updateLoading, setForm
   } = useUserEntryForm(formMode, worker, managers);
 
-  const [profileHasZeroOutEnabled, setProfileHasZeroOutEnabled] = useState(false);
+  const [profileHasZeroOutEnabled, setProfileHasZeroOutEnabled] = useState(form.zeroOutEnabled);
   const [forwardToToggle, setForwardToToggle] = useState(false);
-
   const getTargetProfile = (newProfileValue: string) => profiles.find(profile => profile.profile_id === +newProfileValue);
   const overflowSkill: (string) = form.profileId.value ? getTargetProfile(form.profileId.value).overflow_skill : "";
   const getZeroOutEnabledFromProfile = (newProfileValue: string): boolean => getTargetProfile(newProfileValue).overflow_skill !== null;
@@ -167,6 +166,40 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
     } else {
       return form.editDisabled && worker.directDialNum ? true : false;
     }
+  };
+
+  const editPenClick = (): void => {
+    if (forwardToToggle) {
+      // reset did fields to initial form
+      setForm({
+        ...form,
+        directDialNum: {
+          ...form.directDialNum,
+          value: formatE164PhoneNumber(worker.directDialNum),
+          e164: undefined,
+          updated: false,
+          valid: true
+        },
+        inactiveForwardTo: {
+          value: null,
+          updated: false
+        },
+        outgoing: {
+          ...form.outgoing,
+          value: formatE164PhoneNumber(worker.attributes.did),
+          e164: undefined,
+          updated: false,
+          valid: true
+        },
+        editDisabled: !form.editDisabled
+      });
+    } else {
+      setForm({
+        ...form,
+        editDisabled: !form.editDisabled
+      });
+    }
+    setForwardToToggle(!forwardToToggle);
   };
 
   const doCreateUser = () => {
@@ -496,13 +529,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
                 <StyledIcon
                   fontSize="large"
                   data-testid="toggle-forward-to"
-                  onClick={() => {
-                    setForm({
-                      ...form,
-                      editDisabled: !form.editDisabled
-                    });
-                    setForwardToToggle(!forwardToToggle);
-                  }}
+                  onClick={() => editPenClick()}
                 />
               </InputAdornment>
             ) : null

@@ -31,6 +31,9 @@ import {
   setupMockedComponents,
   waitFor
 } from "testUtils";
+import {
+  formatE164PhoneNumber
+} from "utils";
 
 jest.useFakeTimers();
 
@@ -1102,7 +1105,7 @@ describe("<UserEntryForm />", () => {
       ...initialWorker,
       directDialNum: "+19458604594",
       alternateDid: "+14208931234",
-      zeroOutEnabled: false
+      zeroOutEnabled: true
     };
     const didUserEntryFormState = {
       formMode: formModes.UPDATE,
@@ -1345,6 +1348,7 @@ describe("<UserEntryForm />", () => {
         test("should enable Save User button and save user when clicked", async () => {
           const rendered = renderComponent(didUserEntryFormState);
           expect(rendered.getByLabelText("toggle-did-user")).toHaveAttribute("disabled");
+          expect(rendered.getByLabelText("toggle-zero-out")).not.toHaveAttribute("disabled");
 
           // check if Outgoing Number is disabled
           expectOnlyPassedProps(ModalPhoneNumber, {
@@ -1360,12 +1364,10 @@ describe("<UserEntryForm />", () => {
           }, getLastInstanceCalled(ModalPhoneNumber, 2));
 
           expectMockedComponent(rendered, { ForwardToEntryForm }, 0);
-
           act(() => {
             const iconClick = getMockedComponentProps(ModalPhoneNumber, 0).icon.props.children.props;
             iconClick.onClick();
           });
-
           expectMockedComponent(rendered, { ForwardToEntryForm }, 1);
 
           act(() => {
@@ -1576,6 +1578,35 @@ describe("<UserEntryForm />", () => {
               });
             });
           });
+        });
+      });
+
+      describe("Edit pen on outgoing number for did user", () => {
+        test("should reset form to initial values when clicked a second time", () => {
+          renderComponent(didUserEntryFormState);
+          act(() => {
+            const iconClick = getMockedComponentProps(ModalPhoneNumber, 0).icon.props.children.props;
+            iconClick.onClick();
+          });
+          act(() => {
+            const updateForwardTo = getMockedComponentProps(ForwardToEntryForm).updateForwardTo;
+            updateForwardTo("Mad Skillz");
+          });
+          updateFormSoItIsValid(true, profileList[0].profile_id);
+
+          // click icon again to test that it resets the form
+          act(() => {
+            const iconClick = getMockedComponentProps(ModalPhoneNumber, 3).icon.props.children.props;
+            iconClick.onClick();
+          });
+          // outgoing number
+          expectOnlyPassedProps(ModalPhoneNumber, {
+            number: formatE164PhoneNumber(initialDidWorker.attributes.did)
+          }, getLastInstanceCalled(ModalPhoneNumber) - 2);
+          // Internal Routing Number
+          expectOnlyPassedProps(ModalPhoneNumber, {
+            number: formatE164PhoneNumber(initialDidWorker.directDialNum)
+          }, getLastInstanceCalled(ModalPhoneNumber) - 1);
         });
       });
 
