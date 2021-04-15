@@ -75,8 +75,40 @@ const profileList = [
     profile_nme: "test2",
     profile_id: 2,
     overflow_skill: "whateverOverflowSkill"
+  },
+  {
+    profile_nme: "test3",
+    profile_id: 3,
+    overflow_skill: "anotherOverflowSkill"
   }
 ];
+
+const validFormOptions = {
+  alternateDid: {
+    e164: "+18001234567",
+    masked: "(800)123-4567",
+    tenDig: "8001234567"
+  },
+  defaultSkills: {
+    levels: {
+      "a": 1,
+      "b": 3
+    },
+    skills: ["a", "b", "c"]
+  },
+  did: "6034567890",
+  didE164: "+16034567890",
+  directDialNum: {
+    e164: "+18002345678",
+    masked: "(800)234-5678",
+    tenDig: "8002345678"
+  },
+  extension: "1234",
+  manager: managerList[0],
+  nNumber: "n1234567",
+  profileId: profileList[0].profile_id
+};
+
 const mockWorkers = [
   {
     attributes: {
@@ -115,21 +147,59 @@ const mockWorkers = [
     skillsDifferent: false
   },
   {
-    attributes: {
-      default_skills: {
-        skills: ["466"],
-        levels: {}
-      },
-      full_name: "Test 3",
-      office_location_name: "Jupiter",
-      routing: {
-        skills: [],
-        levels: {}
-      },
-      profile_id: 10
-    },
+    // DID worker with overflow skill
     sid: "WK2",
-    skillsDifferent: true
+    activateEp: true,
+    alternateDid: validFormOptions.alternateDid.e164,
+    directDialNum: validFormOptions.directDialNum.e164,
+    zeroOutEnabled: true,
+    attributes: {
+      default_skills: validFormOptions.defaultSkills,
+      did: validFormOptions.didE164,
+      extension: validFormOptions.extension,
+      full_name: "Test 3",
+      manager_first_name: validFormOptions.manager.manager_first_name,
+      manager_last_name: validFormOptions.manager.manager_last_name,
+      manager_n_number: validFormOptions.manager.manager_n_number,
+      office_location_name: "Jupiter",
+      profile_id: profileList[1].profile_id,
+      routing: {
+        skills: [
+          profileList[1].overflow_skill,
+          "whatever"
+        ],
+        levels: {
+          "whatever": 1
+        }
+      }
+    }
+  },
+  {
+    // DID worker without overflow skill
+    sid: "WK3",
+    activateEp: true,
+    alternateDid: validFormOptions.alternateDid.e164,
+    directDialNum: validFormOptions.directDialNum.e164,
+    zeroOutEnabled: true,
+    attributes: {
+      default_skills: validFormOptions.defaultSkills,
+      did: validFormOptions.didE164,
+      extension: validFormOptions.extension,
+      full_name: "Test 4",
+      manager_first_name: validFormOptions.manager.manager_first_name,
+      manager_last_name: validFormOptions.manager.manager_last_name,
+      manager_n_number: validFormOptions.manager.manager_n_number,
+      office_location_name: "Pluto",
+      profile_id: profileList[1].profile_id,
+      routing: {
+        skills: [
+          "payinBills"
+        ],
+        levels: {
+          "payinBills": 1
+        }
+      }
+    }
   }
 ];
 const mockSkills = [
@@ -156,32 +226,6 @@ const fetchedUser = {
   officeNumber: "ABC123",
   departmentName: "Computers",
   departmentNumber: "4848"
-};
-
-const validFormOptions = {
-  alternateDid: {
-    e164: "+18001234567",
-    masked: "(800)123-4567",
-    tenDig: "8001234567"
-  },
-  defaultSkills: {
-    levels: {
-      "a": 1,
-      "b": 3
-    },
-    skills: ["a", "b", "c"]
-  },
-  did: "6034567890",
-  didE164: "+16034567890",
-  directDialNum: {
-    e164: "+18002345678",
-    masked: "(800)234-5678",
-    tenDig: "8002345678"
-  },
-  extension: "1234",
-  manager: managerList[0],
-  nNumber: "n1234567",
-  profileId: profileList[0].profile_id
 };
 
 const errMessageFromService = "error message from twilio-workerp-api";
@@ -349,7 +393,7 @@ describe("<UserEntryForm />", () => {
       defaultSkills: validFormOptions.defaultSkills
     }, getLastInstanceCalled(DefaultSkillSelector));
 
-    // check button enabled
+    // check save button enabled
     const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
     expect(buttonProps.disabled).toBe(false);
   };
@@ -570,7 +614,7 @@ describe("<UserEntryForm />", () => {
           test("should enable Add User button and save user when clicked", async () => {
             const rendered = renderComponent(userEntryFormState);
             updateFormSoItIsValid(false, profileList[0].profile_id);
-            // click button
+            // click save button
             act(() => {
               const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
               buttonProps.onClick();
@@ -613,7 +657,7 @@ describe("<UserEntryForm />", () => {
             test("should display message passed from service in failure modal", async () => {
               const rendered = renderComponent(userEntryFormState);
               updateFormSoItIsValid(false, profileList[0].profile_id);
-              // click button
+              // click save button
               act(() => {
                 const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
                 buttonProps.onClick();
@@ -656,7 +700,7 @@ describe("<UserEntryForm />", () => {
             test("should display 'Failed to add new user.' in failure modal", async () => {
               const rendered = renderComponent(userEntryFormState);
               updateFormSoItIsValid(false, profileList[0].profile_id);
-              // click button
+              // click save button
               act(() => {
                 const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
                 buttonProps.onClick();
@@ -843,7 +887,7 @@ describe("<UserEntryForm />", () => {
             const rendered = renderComponent(userEntryFormState);
             fireEvent.click(rendered.getByLabelText("toggle-did-user"));
             updateFormSoItIsValid(true, profileList[1].profile_id);
-            // click button
+            // click save button
             act(() => {
               const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
               buttonProps.onClick();
@@ -902,7 +946,7 @@ describe("<UserEntryForm />", () => {
             fireEvent.click(rendered.getByLabelText("toggle-did-user"));
             updateFormSoItIsValid(true, profileList[1].profile_id); // select team with overflow_skill
             fireEvent.click(rendered.getByLabelText("toggle-zero-out")); // set zeroOutEnabled to false
-            // click button
+            // click save button
             act(() => {
               const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
               buttonProps.onClick();
@@ -1194,7 +1238,7 @@ describe("<UserEntryForm />", () => {
         test("should enable Save User button and save user when clicked", async () => {
           renderComponent(userEntryFormState);
           updateFormSoItIsValid(false, profileList[0].profile_id);
-          // click button
+          // click save button
           act(() => {
             const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
             buttonProps.onClick();
@@ -1247,7 +1291,7 @@ describe("<UserEntryForm />", () => {
           const rendered = renderComponent(userEntryFormState);
           fireEvent.click(rendered.getByLabelText("toggle-did-user"));
           updateFormSoItIsValid(true, profileList[0].profile_id);
-          // click button
+          // click save button
           act(() => {
             const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
             buttonProps.onClick();
@@ -1280,6 +1324,7 @@ describe("<UserEntryForm />", () => {
       });
 
       describe("update did user", () => {
+        // MIKE: combine this with the didPayload above
         const didPayload = {
           ...payload,
           activateEp: true,
@@ -1328,7 +1373,7 @@ describe("<UserEntryForm />", () => {
             updateForwardTo("Mad Skillz");
           });
           updateFormSoItIsValid(true, profileList[0].profile_id);
-          // click button
+          // click save button
           act(() => {
             const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
             buttonProps.onClick();
@@ -1358,6 +1403,180 @@ describe("<UserEntryForm />", () => {
             expect(mockHandleClose).toHaveBeenCalledTimes(1);
           });
         });
+
+
+        describe("user's profile has an overflow skill", () => {
+          describe("user has an overflow skill", () => {
+            const workerWithOverflowSkill = mockWorkers[2];
+            const didUserWithOverflowSkillEntryFormState = {
+              formMode: formModes.UPDATE,
+              worker: workerWithOverflowSkill,
+              open: true
+            };
+
+            describe("update overflow skill", () => {
+              const updatedProfile = profileList[2]; // different profile, also has overflow_skill
+              const mockWorkerPayload = {
+                ...workerWithOverflowSkill,
+                attributes: {
+                  ...workerWithOverflowSkill.attributes,
+                  profile_id: updatedProfile.profile_id,
+                  routing: {
+                    skills: [
+                      "whatever",
+                      updatedProfile.overflow_skill
+                    ],
+                    levels: {
+                      "whatever": 1
+                    }
+                  }
+                }
+              };
+              delete mockWorkerPayload.attributes.full_name;
+              delete mockWorkerPayload.attributes.office_location_name;
+              delete mockWorkerPayload.sid;
+              const rawDbWorker = {
+                ...mockWorkerPayload,
+                workerSid: "WK123"
+              };
+              delete rawDbWorker.sid;
+              beforeEach(() => updateUser.mockResolvedValue(rawDbWorker));
+              test("should replace current overflow skill", async () => {
+                renderComponent(didUserWithOverflowSkillEntryFormState);
+                updateFormSoItIsValid(true, updatedProfile.profile_id);
+                // click save button
+                act(() => {
+                  const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
+                  buttonProps.onClick();
+                });
+                await waitFor(() => {
+                  expect(updateUser).toHaveBeenCalledWith(workerWithOverflowSkill.sid, mockWorkerPayload);
+                  const actions = mockStore.getActions();
+                  const expectedWorkerUpdated = {
+                    ...rawDbWorker,
+                    sid: rawDbWorker.workerSid,
+                    skillsDifferent: true
+                  };
+                  delete expectedWorkerUpdated.workerSid;
+                  expect(actions).toEqual([{
+                    type: "updateWorker",
+                    payload: expectedWorkerUpdated
+                  }]);
+                });
+              });
+            });
+
+            describe("delete overflow skill", () => {
+              const mockWorkerPayload = {
+                ...workerWithOverflowSkill,
+                zeroOutEnabled: false,
+                attributes: {
+                  ...workerWithOverflowSkill.attributes,
+                  routing: {
+                    skills: [
+                      "whatever"
+                    ],
+                    levels: {
+                      "whatever": 1
+                    }
+                  }
+                }
+              };
+              delete mockWorkerPayload.attributes.full_name;
+              delete mockWorkerPayload.attributes.office_location_name;
+              delete mockWorkerPayload.sid;
+              const rawDbWorker = {
+                ...mockWorkerPayload,
+                workerSid: "WK123"
+              };
+              delete rawDbWorker.sid;
+              beforeEach(() => updateUser.mockResolvedValue(rawDbWorker));
+              test("should remove overflow skill from worker attributes.routing", async () => {
+                const rendered = renderComponent(didUserWithOverflowSkillEntryFormState);
+                updateFormSoItIsValid(true, workerWithOverflowSkill.attributes.profile_id);
+                fireEvent.click(rendered.getByLabelText("toggle-zero-out")); // set zeroOutEnabled to false
+                // click save button
+                act(() => {
+                  const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
+                  buttonProps.onClick();
+                });
+                await waitFor(() => {
+                  expect(updateUser).toHaveBeenCalledWith(workerWithOverflowSkill.sid, mockWorkerPayload);
+                  const actions = mockStore.getActions();
+                  const expectedWorkerUpdated = {
+                    ...rawDbWorker,
+                    sid: rawDbWorker.workerSid,
+                    skillsDifferent: true
+                  };
+                  delete expectedWorkerUpdated.workerSid;
+                  expect(actions).toEqual([{
+                    type: "updateWorker",
+                    payload: expectedWorkerUpdated
+                  }]);
+                });
+              });
+            });
+
+          });
+        });
+
+        describe("user's does not have an overflow skill", () => {
+          const workerWithoutOverflowSkill = mockWorkers[3];
+          const didUserWithoutOverflowSkillEntryFormState = {
+            formMode: formModes.UPDATE,
+            worker: workerWithoutOverflowSkill,
+            open: true
+          };
+          describe("add overflow skill", () => {
+            const mockWorkerPayload = {
+              ...workerWithoutOverflowSkill,
+              attributes: {
+                ...workerWithoutOverflowSkill.attributes,
+                routing: {
+                  skills: [
+                    "payinBills",
+                    profileList[1].overflow_skill
+                  ],
+                  levels: {
+                    "payinBills": 1
+                  }
+                }
+              }
+            };
+            delete mockWorkerPayload.attributes.full_name;
+            delete mockWorkerPayload.attributes.office_location_name;
+            delete mockWorkerPayload.sid;
+            const rawDbWorker = {
+              ...mockWorkerPayload,
+              workerSid: "WK123"
+            };
+            delete rawDbWorker.sid;
+            beforeEach(() => updateUser.mockResolvedValue(rawDbWorker));
+            test("should add the overflow skill for user's profile to the user", async () => {
+              renderComponent(didUserWithoutOverflowSkillEntryFormState);
+              updateFormSoItIsValid(true, profileList[1].profile_id);
+              // click save button
+              act(() => {
+                const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
+                buttonProps.onClick();
+              });
+              await waitFor(() => {
+                expect(updateUser).toHaveBeenCalledWith(workerWithoutOverflowSkill.sid, mockWorkerPayload);
+                const actions = mockStore.getActions();
+                const expectedWorkerUpdated = {
+                  ...rawDbWorker,
+                  sid: rawDbWorker.workerSid,
+                  skillsDifferent: true
+                };
+                delete expectedWorkerUpdated.workerSid;
+                expect(actions).toEqual([{
+                  type: "updateWorker",
+                  payload: expectedWorkerUpdated
+                }]);
+              });
+            });
+          });
+        });
       });
 
       describe("updateUser service call fails", () => {
@@ -1368,7 +1587,7 @@ describe("<UserEntryForm />", () => {
         test("should enable Add User button and save user when clicked", async () => {
           const rendered = renderComponent(userEntryFormState);
           updateFormSoItIsValid(false, profileList[0].profile_id);
-          // click button
+          // click save button
           act(() => {
             const buttonProps = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton) - 1);
             buttonProps.onClick();

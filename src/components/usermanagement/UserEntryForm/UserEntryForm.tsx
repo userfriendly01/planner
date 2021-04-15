@@ -153,6 +153,14 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
   const overflowSkill: (string) = form.profileId.value ? getTargetProfile(form.profileId.value).overflow_skill : "";
   const getZeroOutEnabledFromProfile = (newProfileValue: string): boolean => getTargetProfile(newProfileValue).overflow_skill !== null;
 
+  const getOverflowSkills = (): string[] => {
+    const skills: string[] = [];
+    profiles.forEach(profile => profile.overflow_skill !== null && skills.push(profile.overflow_skill));
+    return skills;
+  };
+  const nonOverflowSkills = worker?.attributes.routing?.skills.filter(skill => !getOverflowSkills().includes(skill));
+  const workerHasOverFlowSkill = (): boolean => worker?.attributes.routing?.skills.some(skill => getOverflowSkills().includes(skill));
+
   const isOutgoingDisabled = (): boolean => {
     if (formMode === formModes.INSERT) {
       return false;
@@ -210,7 +218,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
       } : {
         attributes,
         activateEp: false
-      }
+      };
 
     createUser(createUserReqBody)
       .then(dbWorker => {
@@ -316,6 +324,23 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
     if (form.defaultSkillsUpdated) {
       attributes.default_skills = form.defaultSkills;
     }
+    // update overflow skill
+    if ((form.zeroOutEnabledUpdated || form.profileId.updated) && form.zeroOutEnabled) {
+      attributes.routing = {
+        skills: [
+          ...nonOverflowSkills,
+          overflowSkill
+        ],
+        levels: worker.attributes.routing.levels
+      };
+    }
+    // remove overflow skill
+    if (!form.zeroOutEnabled && workerHasOverFlowSkill()) {
+      attributes.routing = {
+        skills: nonOverflowSkills,
+        levels: worker.attributes.routing.levels
+      };
+    }
 
     const payload: Partial<DbWorker> = {
       attributes,
@@ -378,7 +403,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
     form.profileId.updated || form.outgoing.updated ||
     form.alternateDid.updated || form.directDialNum.updated ||
     form.nNumber.updated || form.extension.updated ||
-    form.inactiveForwardTo.updated
+    form.inactiveForwardTo.updated || form.zeroOutEnabledUpdated
   );
 
   return (
@@ -605,7 +630,8 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
                     disabled={overflowSkill === null}
                     onChange={() => setForm({
                       ...form,
-                      zeroOutEnabled: !form.zeroOutEnabled
+                      zeroOutEnabled: !form.zeroOutEnabled,
+                      zeroOutEnabledUpdated: true
                     })}
                     inputProps={{ "aria-label": "toggle-zero-out" }}
                   />
