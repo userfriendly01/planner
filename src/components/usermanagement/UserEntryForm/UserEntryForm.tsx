@@ -161,7 +161,6 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
   };
 
   const editPenClick = (): void => {
-    setForwardToToggle(!forwardToToggle);
     if (forwardToToggle) {
       // reset did fields to initial form
       setForm({
@@ -192,6 +191,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
         editDisabled: !form.editDisabled
       });
     }
+    setForwardToToggle(!forwardToToggle);
   };
 
   const doCreateUser = () => {
