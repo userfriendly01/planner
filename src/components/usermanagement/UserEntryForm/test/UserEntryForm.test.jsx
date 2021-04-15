@@ -1327,7 +1327,6 @@ describe("<UserEntryForm />", () => {
       });
 
       describe("update did user", () => {
-        // MIKE: combine this with the didPayload above
         const didPayload = {
           ...payload,
           activateEp: true,
