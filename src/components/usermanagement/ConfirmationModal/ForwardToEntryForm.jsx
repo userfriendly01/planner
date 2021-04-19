@@ -30,6 +30,7 @@ const LabelContainer = styled.div`
 
 const ForwardToEntryForm = props => {
   const {
+    label,
     skills,
     workers,
     updateForwardTo
@@ -80,8 +81,8 @@ const ForwardToEntryForm = props => {
       case "skill":
         updateForwardToType("skill");
         break;
-      case "number":
-        updateForwardToType("number");
+      case "phoneNum":
+        updateForwardToType("phoneNum");
         break;
       default:
         updateForwardToType("worker");
@@ -90,7 +91,7 @@ const ForwardToEntryForm = props => {
 
   return (
     <EntryFormContainer>
-      <LabelContainer>This user has a direct dial number. <br/> Please choose a forward to option before confirming.</LabelContainer>
+      <LabelContainer>{label}</LabelContainer>
       <RadioContainer>
         <FormControlLabel
           control={
@@ -115,9 +116,9 @@ const ForwardToEntryForm = props => {
         <FormControlLabel
           control={
             <Radio
-              checked={forwardToType === "number"}
+              checked={forwardToType === "phoneNum"}
               onChange={event => handleRadioChange(event.target.value)}
-              value="number"
+              value="phoneNum"
             />}
           label={<LabelContainer>External<br/>Number</LabelContainer>}
           labelPlacement="bottom"
@@ -135,7 +136,7 @@ const ForwardToEntryForm = props => {
           updateValue={skill => updateForwardTo(skill.value)}
         />
       }
-      {forwardToType === "number" &&
+      {forwardToType === "phoneNum" &&
         <ModalPhoneNumber
           allowSevenDigitVdn={false}
           id="forward-number-input"
@@ -156,6 +157,7 @@ const ForwardToEntryForm = props => {
 };
 
 ForwardToEntryForm.propTypes = {
+  label: PropTypes.string.isRequired,
   updateForwardTo: PropTypes.func.isRequired,
   skills: PropTypes.arrayOf(
     PropTypes.shape({

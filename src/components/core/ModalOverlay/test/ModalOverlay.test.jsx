@@ -1,7 +1,9 @@
 import ModalOverlay from "../ModalOverlay";
 import { modalOverlayStatuses } from "globals";
 import React from "react";
-import { fireEvent, render } from "testUtils";
+import {
+  fireEvent, render
+} from "testUtils";
 
 const mockHandleClose = jest.fn();
 

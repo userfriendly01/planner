@@ -29,9 +29,7 @@ const mockHandleConfirm = jest.fn();
 const mockSetForwardTo = jest.fn();
 const mockDIDWorker = {
   sid: "WK1234567",
-  attributes: {
-    did: "+12256648857"
-  }
+  directDialNum: "+12256648857"
 };
 const mockNoDIDWorker = {
   sid: "WK1234567",
@@ -197,9 +195,7 @@ describe("<ConfirmationModal />", () => {
       test("When its a DID user and the inactiveForwardTo is not set, the confirm button is disabled", () => {
         const selectedWorker = {
           sid: "WK123456",
-          attributes: {
-            did: "+16038518200"
-          }
+          directDialNum: "+16038518200"
         };
         renderComponent(selectedWorker);
         const disabled = StyledButton.mock.calls[0][0].disabled;
@@ -208,9 +204,7 @@ describe("<ConfirmationModal />", () => {
       test("When its a DID user and the inactiveForwardTo is set, the confirm button will be enabled", () => {
         const selectedWorker = {
           sid: "WK123456",
-          attributes: {
-            did: "+16038518200"
-          },
+          directDialNum: "+16038518200",
           inactiveForwardTo: "aisg12"
         };
         renderComponent(selectedWorker);

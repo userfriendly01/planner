@@ -1,9 +1,10 @@
 import {
-  Switch,
-  Tooltip
+  InputAdornment, Switch, Tooltip
 } from "@material-ui/core";
+import { Edit } from "@material-ui/icons";
 import {
   DefaultSkillSelector,
+  ForwardToEntryForm,
   ModalExtension,
   ModalNNumber,
   ModalOverlay,
@@ -13,8 +14,8 @@ import {
   UserEntryFormState
 } from "components";
 import {
+  TaskRouterSkill,
   TwilioWorker,
-  TwilioWorkerSkills,
   useAdminDispatch,
   useAdminState
 } from "context";
@@ -24,23 +25,22 @@ import {
   modalOverlayStatuses,
   timeouts
 } from "globals";
-import React, {
-  useState
-} from "react";
+import React, { useState } from "react";
 import {
   createUser,
-  FetchUserResponse,
   updateUser
 } from "services";
 import styled from "styled-components";
 import {
-  getValidSkillsObject,
-  mapWorkerFromTwilioWorker,
-  mapTwilioWorkerFromDbWorker,
+  DbWorker,
+  formatE164PhoneNumber,
+  mapWorkerFromDbWorker,
+  removeNonNumericCharacters,
   sortManagersByName,
   sortProfilesByName,
   wait
 } from "utils";
+import useUserEntryForm from "./useUserEntryForm";
 
 const FlexRow = styled.div`
   display: flex;
@@ -55,8 +55,6 @@ const ButtonWrapper = styled(FlexRow)`
 const FormControlsContainer = styled.div`
   display: flex;
   flex-direction: row;
-  max-height: 90vh;
-  overflow-y: auto;
   width: 100%;
 `;
 
@@ -64,7 +62,6 @@ const FormControlsPane = styled.div`
   display: flex;
   flex-direction: column;
   min-width: 320px;
-  overflow-y: auto;
   padding: 0 8px;
   width: 100%;
 `;
@@ -84,9 +81,7 @@ const ModalContainer = styled.div`
   flex-direction: column;
   left: 0;
   margin: 0 auto;
-  max-height: 80vh;
   max-width: 700px;
-  overflow-y: auto;
   padding: 0 8px;
   position: absolute;
   right: 0;
@@ -105,43 +100,23 @@ const ToggleLabel = styled.div`
   font-size: 1rem;
 `;
 
+const StyledIcon = styled(Edit)`
+  && {
+    color: ${props => props.theme.button.blue.backgroundColor};
+    &:hover {
+      color: ${props => props.theme.button.blue.hoverColor};
+      cursor: pointer;
+    }
+  }
+`;
+
 const defaultNNumber = "n";
 
-export interface UserEntryFormProps {
+interface UserEntryFormProps {
   userEntryFormState: UserEntryFormState,
-  handleClose: VoidFunction
-}
-
-export interface PhoneNumberState {
-  value: string,
-  blurred: boolean,
-  e164: string,
-  updated: boolean,
-  valid: boolean,
-}
-
-export interface UserEntryForm_FormState {
-  defaultSkills: TwilioWorkerSkills,
-  defaultSkillsUpdated: boolean,
-  didUser: boolean,
-  extension: string,
-  extensionBlurred: boolean,
-  extensionUpdated: boolean,
-  extensionValid: boolean,
-  manager: string,
-  managerBlurred: boolean,
-  managerUpdated: boolean,
-  nNumber: string,
-  nNumberBlurred: boolean,
-  nNumberFetchedUser: FetchUserResponse,
-  nNumberUpdated: boolean,
-  outgoing: PhoneNumberState,
-  profileId: string,
-  profileIdBlurred: boolean,
-  profileIdUpdated: boolean,
-  alternateDid: PhoneNumberState,
-  directDialNum: PhoneNumberState,
-  zeroOutEnabled: boolean
+  handleClose: VoidFunction,
+  skills: TaskRouterSkill[],
+  workers: TwilioWorker[]
 }
 
 const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
@@ -151,7 +126,9 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
     userEntryFormState: {
       formMode,
       worker
-    }
+    },
+    skills,
+    workers
   } = props;
 
   const dispatch = useAdminDispatch();
@@ -164,77 +141,66 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
     }
   } = useAdminState();
 
-  const initialDefaultSkills = getValidSkillsObject();
-  const getInitialFormState = (): UserEntryForm_FormState => {
-    const initialForm: UserEntryForm_FormState = {
-      defaultSkills: initialDefaultSkills,
-      defaultSkillsUpdated: false,
-      didUser: false,
-      extension: "",
-      extensionBlurred: false,
-      extensionUpdated: false,
-      extensionValid: false,
-      manager: "",
-      managerBlurred: false,
-      managerUpdated: false,
-      nNumber: defaultNNumber,
-      nNumberBlurred: false,
-      nNumberFetchedUser: null,
-      nNumberUpdated: false,
-      outgoing: {
-        value: "",
-        blurred: false,
-        e164: undefined,
-        updated: false,
-        valid: false
-      },
-      profileId: "",
-      profileIdBlurred: false,
-      profileIdUpdated: false,
-      alternateDid: {
-        value: "",
-        blurred: false,
-        e164: undefined,
-        updated: false,
-        valid: false
-      },
-      directDialNum: {
-        value: "",
-        blurred: false,
-        e164: undefined,
-        updated: false,
-        valid: false
-      },
-      zeroOutEnabled: false
-    };
-    if (formMode === formModes.UPDATE) {
-      // did user fields need to be updated if they exist
-      initialForm.defaultSkills = getValidSkillsObject(worker.attributes.default_skills);
-      initialForm.extension = worker.attributes.extension || "";
-      initialForm.extensionValid = true;
-      initialForm.manager = JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number));
-      initialForm.nNumber = worker.attributes.n_number || defaultNNumber;
-      initialForm.outgoing.value = worker.attributes.did ? worker.attributes.did.replace(/^\+1/, "").replace(/^1/, "") : ""; // remove +1 or 1 from start of e164
-      initialForm.outgoing.valid = worker.attributes.did ? true : false;
-      initialForm.profileId = `${worker.attributes.profile_id}`;
+  const {
+    form, handleOnBlur, handleNumberUpdate, initialDefaultSkills,
+    loading, updateLoading, setForm
+  } = useUserEntryForm(formMode, worker, managers);
+
+  const [profileHasZeroOutEnabled, setProfileHasZeroOutEnabled] = useState(form.zeroOutEnabled);
+  const [forwardToToggle, setForwardToToggle] = useState(false);
+  const getTargetProfile = (newProfileValue: string) => profiles.find(profile => profile.profile_id === +newProfileValue);
+  const overflowSkill: (string) = form.profileId.value ? getTargetProfile(form.profileId.value).overflow_skill : "";
+  const getZeroOutEnabledFromProfile = (newProfileValue: string): boolean => getTargetProfile(newProfileValue).overflow_skill !== null;
+
+  const getOverflowSkills = (): string[] => {
+    const skills: string[] = [];
+    profiles.forEach(profile => profile.overflow_skill !== null && skills.push(profile.overflow_skill));
+    return skills;
+  };
+  const nonOverflowSkills = worker?.attributes.routing?.skills.filter(skill => !getOverflowSkills().includes(skill));
+  const workerHasOverFlowSkill = (): boolean => worker?.attributes.routing?.skills.some(skill => getOverflowSkills().includes(skill));
+
+  const isOutgoingDisabled = (): boolean => {
+    if (formMode === formModes.INSERT) {
+      return false;
+    } else {
+      return form.editDisabled && worker.directDialNum ? true : false;
     }
-    return initialForm;
   };
 
-  const [form, setForm] = useState<UserEntryForm_FormState>(getInitialFormState());
-  const [loading, updateLoading] = useState({
-    lookupUser: false,
-    overlayMessage: "",
-    saveStatus: null,
-    saveUser: false
-  });
-  const [profileHasZeroOutEnabled, setProfileHasZeroOutEnabled] = useState(false);
-
-  const getTargetProfile = (newProfileValue: string) => profiles.find(profile => profile.profile_id === +newProfileValue);
-
-  const overflowSkill: (string) = form.profileId ? getTargetProfile(form.profileId).overflow_skill : "";
-
-  const getZeroOutEnabledFromProfile = (newProfileValue: string): boolean => getTargetProfile(newProfileValue).overflow_skill !== null;
+  const editPenClick = (): void => {
+    if (forwardToToggle) {
+      // reset did fields to initial form
+      setForm({
+        ...form,
+        directDialNum: {
+          ...form.directDialNum,
+          value: formatE164PhoneNumber(worker.directDialNum),
+          e164: undefined,
+          updated: false,
+          valid: true
+        },
+        inactiveForwardTo: {
+          value: null,
+          updated: false
+        },
+        outgoing: {
+          ...form.outgoing,
+          value: formatE164PhoneNumber(worker.attributes.did),
+          e164: undefined,
+          updated: false,
+          valid: true
+        },
+        editDisabled: !form.editDisabled
+      });
+    } else {
+      setForm({
+        ...form,
+        editDisabled: !form.editDisabled
+      });
+    }
+    setForwardToToggle(!forwardToToggle);
+  };
 
   const doCreateUser = () => {
     updateLoading({
@@ -243,65 +209,80 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
       saveStatus: modalOverlayStatuses.SAVING,
       saveUser: true
     });
-    const parsedManager = JSON.parse(form.manager);
+    const parsedManager = JSON.parse(form.manager.value);
 
     // see this wiki page for attributes that will be automatically updated through SSO
     // https://forge.lmig.com/wiki/display/CICCT/Twilio+Flex+SSO+Saml2+Integration
     const attributes: Partial<TwilioWorker["attributes"]> = {
-      contact_uri: `client:${form.nNumber.toLowerCase()}`,
+      contact_uri: `client:${form.nNumber.value.toLowerCase()}`,
       default_skills: form.defaultSkills,
       did: form.outgoing.e164,
       email: form.nNumberFetchedUser.email,
       email_address: form.nNumberFetchedUser.email,
       emp_first_name: form.nNumberFetchedUser.firstName,
       emp_last_name: form.nNumberFetchedUser.lastName,
-      extension: form.extension,
+      extension: form.extension.value,
       full_name: `${form.nNumberFetchedUser.firstName} ${form.nNumberFetchedUser.lastName}`,
       manager_first_name: parsedManager.manager_first_name,
       manager_last_name: parsedManager.manager_last_name,
       manager_n_number: parsedManager.manager_n_number,
-      n_number: form.nNumber.toLowerCase(),
+      n_number: form.nNumber.value.toLowerCase(),
       office_location_name: form.nNumberFetchedUser.officeName,
       office_location_number: form.nNumberFetchedUser.officeNumber,
       primary_dept_name: form.nNumberFetchedUser.departmentName,
       primary_dept_number: form.nNumberFetchedUser.departmentNumber,
-      profile_id: form.profileId,
-      unique_id: form.nNumber.toLowerCase()
+      profile_id: form.profileId.value,
+      unique_id: form.nNumber.value.toLowerCase()
     };
-    if (overflowSkill !== null && form.zeroOutEnabled) {
+    if (overflowSkill !== null && form.zeroOutEnabled && form.directDialNum.value) {
       attributes.routing = {
         skills: [overflowSkill],
         levels: {}
       };
     }
 
-    createUser({
-      attributes,
-      // values below are used by twilio-worker-api, they do not map to Twilio worker attributes
-      activateEp: form.directDialNum.value ? true : false,
-      alternateDid: form.alternateDid.e164,
-      directDialNum: form.directDialNum.e164,
-      zeroOutEnabled: form.zeroOutEnabled
-    })
+    const createUserReqBody = form.directDialNum.value ?
+      {
+        attributes,
+        activateEp: true,
+        alternateDid: form.alternateDid.e164,
+        directDialNum: form.directDialNum.e164,
+        zeroOutEnabled: form.zeroOutEnabled
+      } : {
+        attributes,
+        activateEp: false
+      };
+
+    createUser(createUserReqBody)
       .then(dbWorker => {
-        const twilioWorker = mapTwilioWorkerFromDbWorker(dbWorker);
         setForm({
           ...form,
           // reset default skills
           defaultSkills: initialDefaultSkills,
           defaultSkillsUpdated: false,
           // reset extension
-          extension: "",
-          extensionBlurred: false,
-          extensionUpdated: false,
-          extensionValid: false,
+          extension: {
+            value: "",
+            blurred: false,
+            updated: false,
+            valid: false
+          },
           // reset n number
-          nNumber: defaultNNumber,
-          nNumberBlurred: false,
+          nNumber: {
+            ...form.nNumber,
+            value: defaultNNumber,
+            blurred: false
+          },
           nNumberFetchedUser: null,
           // reset blurs for everything else
-          managerBlurred: false,
-          profileIdBlurred: false,
+          manager: {
+            ...form.manager,
+            blurred: false
+          },
+          profileId: {
+            ...form.profileId,
+            blurred: false
+          },
           outgoing: {
             ...form.outgoing,
             blurred: false
@@ -324,7 +305,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
         });
         dispatch({
           type: "addWorkers",
-          payload: [twilioWorker]
+          payload: [mapWorkerFromDbWorker(dbWorker)]
         });
         updateLoading({
           ...loading,
@@ -358,30 +339,65 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
       saveUser: true
     });
     const attributes: Partial<TwilioWorker["attributes"]> = {};
-    if (form.managerUpdated) {
-      const parsedManager = JSON.parse(form.manager);
+    if (form.manager.updated) {
+      const parsedManager = JSON.parse(form.manager.value);
       attributes.manager_first_name = parsedManager.manager_first_name;
       attributes.manager_last_name = parsedManager.manager_last_name;
       attributes.manager_n_number = parsedManager.manager_n_number;
     }
-    if (form.profileIdUpdated) {
-      attributes.profile_id = form.profileId;
+    if (form.profileId.updated) {
+      attributes.profile_id = form.profileId.value;
     }
     if (form.outgoing.updated) {
       attributes.did = form.outgoing.e164;
     }
-    if (form.extensionUpdated) {
-      attributes.extension = form.extension;
+    if (form.extension.updated) {
+      attributes.extension = form.extension.value;
     }
     if (form.defaultSkillsUpdated) {
       attributes.default_skills = form.defaultSkills;
     }
-    updateUser(worker.sid, attributes)
-      .then(twilioWorker => {
+    // update overflow skill
+    if ((form.zeroOutEnabledUpdated || form.profileId.updated) && form.zeroOutEnabled) {
+      attributes.routing = {
+        skills: [
+          ...nonOverflowSkills,
+          overflowSkill
+        ],
+        levels: worker.attributes.routing.levels
+      };
+    }
+    // remove overflow skill
+    if (!form.zeroOutEnabled && workerHasOverFlowSkill()) {
+      attributes.routing = {
+        skills: nonOverflowSkills,
+        levels: worker.attributes.routing.levels
+      };
+    }
+
+    const payload: Partial<DbWorker> = {
+      attributes,
+      zeroOutEnabled: form.zeroOutEnabled
+    };
+
+    if (form.alternateDid.updated) {
+      payload.alternateDid = form.alternateDid.e164;
+    }
+    if (form.directDialNum.updated) {
+      payload.directDialNum = form.directDialNum.e164;
+      payload.activateEp = true;
+    }
+    if (form.inactiveForwardTo.value !== null && form.inactiveForwardTo.updated) {
+      payload.inactiveForwardTo = form.inactiveForwardTo.value;
+    }
+
+    updateUser(worker.sid, payload)
+      .then(dbWorker => {
         dispatch(({
           type: "updateWorker",
-          payload: mapWorkerFromTwilioWorker(twilioWorker)
+          payload: mapWorkerFromDbWorker(dbWorker)
         }));
+
         updateLoading({
           ...loading,
           overlayMessage: `Successfully updated user: ${worker.attributes.full_name}`,
@@ -391,28 +407,37 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
         wait(handleClose, timeouts.MODAL_OVERLAY);
       })
       .catch(err => {
+        console.error(err);
         updateLoading({
           ...loading,
-          overlayMessage: `Failed to update user: ${worker.attributes.full_name}`,
+          overlayMessage: err.response?.data.message || `Failed to update user: ${worker.attributes.full_name}`,
           saveStatus: modalOverlayStatuses.FAIL,
           saveUser: true
         });
-        wait(() => updateLoading({
-          ...loading,
-          saveUser: false
-        }), 2000);
-        console.error("UserEntryForm - Failed to update twilio worker", err);
       });
   };
 
   const nNumberInputValid = form.nNumberFetchedUser ? true : false;
-  const extensionInputValid = (form.extensionValid || form.extension === "");
-  const managerValid = form.manager !== "";
-  const profileIdValid = form.profileId !== "";
+  const extensionInputValid = (form.extension.valid || form.extension.value === "");
+  const managerValid = form.manager.value !== "";
+  const profileIdValid = form.profileId.value !== "";
+  const inactiveForwardToValid = (forwardToToggle === true ? form.inactiveForwardTo.value !== null : true);
+  // check if outgoing and directdialnum have been changed to new numbers
+  const didDifferentValid = (
+    forwardToToggle === true ? removeNonNumericCharacters(form.outgoing.value) !== formatE164PhoneNumber(worker?.attributes?.did) &&
+    removeNonNumericCharacters(form.directDialNum.value) !== formatE164PhoneNumber(worker?.directDialNum) : true
+  );
   const formValid = (formMode === formModes.INSERT ? nNumberInputValid : true)
     && profileIdValid && managerValid && form.outgoing.valid && extensionInputValid
-    && (form.didUser === true ? form.directDialNum.valid && form.alternateDid.valid : true);
-  const formUpdated = (form.defaultSkillsUpdated || form.managerUpdated || form.profileIdUpdated || form.outgoing.updated || form.nNumberUpdated || form.extensionUpdated);
+    && (form.didUser === true ? form.directDialNum.valid && form.alternateDid.valid : true)
+    && inactiveForwardToValid && didDifferentValid;
+  const formUpdated = (
+    form.defaultSkillsUpdated || form.manager.updated ||
+    form.profileId.updated || form.outgoing.updated ||
+    form.alternateDid.updated || form.directDialNum.updated ||
+    form.nNumber.updated || form.extension.updated ||
+    form.inactiveForwardTo.updated || form.zeroOutEnabledUpdated
+  );
 
   return (
     <ModalContainer>
@@ -436,14 +461,11 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
       <FormControlsContainer>
         <FormControlsPane>
           <OutlinedSelect
-            error={form.managerBlurred && !managerValid}
-            helperText={managerValid || !form.managerUpdated ? null : "Please select a manager"}
+            error={form.manager.blurred && !managerValid}
+            helperText={managerValid || !form.manager.updated ? null : "Please select a manager"}
             label={"Manager *"}
             labelWidth={67}
-            onBlur={() => setForm({
-              ...form,
-              managerBlurred: true
-            })}
+            onBlur={() => handleOnBlur("manager")}
             optionsList={managers.sort(sortManagersByName)}
             optionsDisplayFunc={option => {
               return {
@@ -454,20 +476,20 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
             }}
             updateValue={newValue => setForm({
               ...form,
-              manager: newValue,
-              managerUpdated: true
+              manager: {
+                ...form.manager,
+                value: newValue,
+                updated: true
+              }
             })}
-            value={form.manager}
+            value={form.manager.value}
           />
           <OutlinedSelect
-            error={form.profileIdBlurred && !profileIdValid}
-            helperText={profileIdValid || !form.profileIdUpdated ? null : "Please select a team"}
+            error={form.profileId.blurred && !profileIdValid}
+            helperText={profileIdValid || !form.profileId.updated ? null : "Please select a team"}
             label={"Team *"}
             labelWidth={44}
-            onBlur={() => setForm({
-              ...form,
-              profileIdBlurred: true
-            })}
+            onBlur={() => handleOnBlur("profileId")}
             optionsList={profiles.sort(sortProfilesByName)}
             optionsDisplayFunc={option => {
               return {
@@ -480,101 +502,121 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
               const zeroOutEnabled = getZeroOutEnabledFromProfile(newValue);
               setForm({
                 ...form,
-                profileId: newValue,
-                profileIdUpdated: true,
+                profileId: {
+                  ...form.profileId,
+                  value: newValue,
+                  updated: true
+                },
                 zeroOutEnabled
               });
               setProfileHasZeroOutEnabled(zeroOutEnabled);
             }}
-            value={form.profileId}
+            value={form.profileId.value}
           />
           <ModalPhoneNumber
+            disabled={isOutgoingDisabled()}
             allowSevenDigitVdn={false}
             id="outgoing-number"
             number={form.outgoing.value}
-            onBlur={() => setForm({
-              ...form,
-              outgoing: {
-                ...form.outgoing,
-                blurred: true
-              }
-            })}
+            onBlur={() => handleOnBlur("outgoing")}
             label="Outgoing Number *"
             showError={form.outgoing.blurred}
-            updateValue={(maskedValue, unmaskedValue, isValid, e164Number) => {
-              setForm({
-                ...form,
-                outgoing: {
-                  ...form.outgoing,
-                  value: maskedValue,
-                  e164: e164Number,
-                  updated: true,
-                  valid: isValid && (e164Number ? true : false)
-                }
-              });
+            updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
+              handleNumberUpdate(maskedValue, isValid, e164Number, "outgoing");
             }}
+            icon={worker?.directDialNum && formMode !== formModes.INSERT ? (
+              <InputAdornment position="end">
+                <StyledIcon
+                  fontSize="large"
+                  data-testid="toggle-forward-to"
+                  onClick={() => editPenClick()}
+                />
+              </InputAdornment>
+            ) : null
+            }
           />
           <ModalNNumber
             disabled={(formMode === formModes.UPDATE) || (form.nNumberFetchedUser ? true : false)}
             fetchedUser={form.nNumberFetchedUser}
             label="N Number *"
-            onBlur={() => setForm({
-              ...form,
-              nNumberBlurred: true
-            })}
+            onBlur={() => handleOnBlur("nNumber")}
             onClear={() => {
               setForm({
                 ...form,
-                nNumber: defaultNNumber,
-                nNumberFetchedUser: null,
-                nNumberUpdated: true
+                nNumber: {
+                  ...form.nNumber,
+                  value: defaultNNumber,
+                  updated: true
+                },
+                nNumberFetchedUser: null
               });
             }}
             onComplete={(fetchedUser, nNumber) => setForm({
               ...form,
-              nNumber,
+              nNumber: {
+                ...form.nNumber,
+                value: nNumber
+              },
               nNumberFetchedUser: fetchedUser
             })}
             onUpdate={nNumber => {
               setForm({
                 ...form,
-                nNumber,
-                nNumberUpdated: true
+                nNumber: {
+                  ...form.nNumber,
+                  value: nNumber,
+                  updated: true
+                }
               });
             }}
-            value={form.nNumber}
+            value={form.nNumber.value}
           />
           <ModalExtension
-            disabled={form.extensionValid && extensionMatcher.test(form.extension)}
-            error={form.extensionBlurred && !extensionInputValid}
-            extension={form.extension}
+            disabled={form.extension.valid && extensionMatcher.test(form.extension.value)}
+            error={form.extension.blurred && !extensionInputValid}
+            extension={form.extension.value}
             originalValue={(worker && worker.attributes) ? worker.attributes.extension : undefined}
             onBlur={() => setForm({
               ...form,
-              extension: "",
-              extensionUpdated: true,
-              extensionValid: false
+              extension: {
+                ...form.extension,
+                value: "",
+                updated: true,
+                valid: false
+              }
             })}
             onClear={() => {
               setForm({
                 ...form,
-                extension: "",
-                extensionUpdated: true,
-                extensionValid: false
+                extension: {
+                  ...form.extension,
+                  value: "",
+                  updated: true,
+                  valid: false
+                }
               });
             }}
             onUpdate={(extension, extensionValid) => setForm({
               ...form,
-              extension,
-              extensionBlurred: extensionValid, // blur if valid because we are going to disable this control
-              extensionUpdated: true,
-              extensionValid
+              extension: {
+                ...form.extension,
+                value: extension,
+                blurred: extensionValid,
+                updated: true,
+                valid: extensionValid
+              }
             })}
           />
-          {/* TODO: remove 'insert only' logic once editUser can handle DID users */}
-          {formMode === formModes.INSERT
-            ? <ToggleContainer>
+          <Tooltip
+            title={
+              formMode === formModes.UPDATE && worker.directDialNum ?
+                "Twilio DID can not be removed" : ""
+            }
+            placement={"bottom-start"}
+          >
+            <ToggleContainer>
               <Switch
+                disabled={formMode === formModes.UPDATE && worker.directDialNum ? true : false}
                 checked={form.didUser}
                 onChange={() => {
                   setForm({
@@ -600,12 +642,14 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
               />
               <ToggleLabel>DID User</ToggleLabel>
             </ToggleContainer>
-            : null
-          }
+          </Tooltip>
           {form.didUser ? (
             <>
-              <Tooltip title={profileHasZeroOutEnabled ? "" : "No overflow skill exists for this team"}
-                placement={"bottom-start"}>
+              <Tooltip
+                title={profileHasZeroOutEnabled ?
+                  "" : "No overflow skill exists for this team"}
+                placement={"bottom-start"}
+              >
                 <ToggleContainer>
                   <Switch
                     checked={form.zeroOutEnabled}
@@ -613,7 +657,8 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
                     disabled={overflowSkill === null}
                     onChange={() => setForm({
                       ...form,
-                      zeroOutEnabled: !form.zeroOutEnabled
+                      zeroOutEnabled: !form.zeroOutEnabled,
+                      zeroOutEnabledUpdated: true
                     })}
                     inputProps={{ "aria-label": "toggle-zero-out" }}
                   />
@@ -621,55 +666,27 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
                 </ToggleContainer>
               </Tooltip>
               <ModalPhoneNumber
+                disabled={form.editDisabled}
                 allowSevenDigitVdn={false}
-                id="twilio-did"
+                id="internal-routing-number"
                 number={form.directDialNum.value}
-                onBlur={() => setForm({
-                  ...form,
-                  directDialNum: {
-                    ...form.directDialNum,
-                    blurred: true
-                  }
-                })}
-                label="Twilio DID *"
+                onBlur={() => handleOnBlur("directDialNum")}
+                label="Internal Routing Number *"
                 showError={form.directDialNum.blurred}
-                updateValue={(maskedValue, unmaskedValue, isValid, e164Number) => {
-                  setForm({
-                    ...form,
-                    directDialNum: {
-                      ...form.directDialNum,
-                      value: maskedValue,
-                      e164: e164Number,
-                      updated: true,
-                      valid: isValid && (e164Number ? true : false)
-                    }
-                  });
+                updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
+                  handleNumberUpdate(maskedValue, isValid, e164Number, "directDialNum");
                 }}
               />
               <ModalPhoneNumber
+                disabled={!worker?.alternateDid || formMode === formModes.INSERT ? false : true}
                 allowSevenDigitVdn={false}
                 id="skype-teams-did"
                 number={form.alternateDid.value}
-                onBlur={() => setForm({
-                  ...form,
-                  alternateDid: {
-                    ...form.alternateDid,
-                    blurred: true
-                  }
-                })}
+                onBlur={() => handleOnBlur("alternateDid")}
                 label="Skype/Teams DID *"
                 showError={form.alternateDid.blurred}
-                updateValue={(maskedValue, unmaskedValue, isValid, e164Number) => {
-                  setForm({
-                    ...form,
-                    alternateDid: {
-                      ...form.alternateDid,
-                      value: maskedValue,
-                      e164: e164Number,
-                      updated: true,
-                      valid: isValid && (e164Number ? true : false)
-                    }
-                  });
+                updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
+                  handleNumberUpdate(maskedValue, isValid, e164Number, "alternateDid");
                 }}
               />
             </>
@@ -686,15 +703,43 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
               });
             }}
           />
+          {forwardToToggle && formMode === formModes.UPDATE ? (
+            <ForwardToEntryForm
+              label={"Please choose a forward to option for the existing outgoing number"}
+              skills={skills}
+              workers={workers}
+              updateForwardTo={(value: string) => {
+                setForm({
+                  ...form,
+                  inactiveForwardTo: {
+                    value,
+                    updated: true
+                  }
+                });
+              }}
+            />
+          ) : null}
         </FormControlsPane>
       </FormControlsContainer>
       <ButtonWrapper>
-        <StyledButton
-          disabled={formMode === formModes.INSERT ? !formValid : (!formUpdated || !formValid)}
-          onClick={formMode === formModes.INSERT ? doCreateUser : doUpdateUser}
+        <Tooltip
+          title={
+            form.didUser && !didDifferentValid ?
+              "You must edit Outgoing Number and Internal Routing before saving" : ""
+          }
+          placement={"bottom-start"}
+          leaveDelay={500}
+          arrow
         >
-          {formMode === formModes.INSERT ? "Add User" : "Save User"}
-        </StyledButton>
+          <span>
+            <StyledButton
+              disabled={formMode === formModes.INSERT ? !formValid : (!formUpdated || !formValid)}
+              onClick={formMode === formModes.INSERT ? doCreateUser : doUpdateUser}
+            >
+              {formMode === formModes.INSERT ? "Add User" : "Save User"}
+            </StyledButton>
+          </span>
+        </Tooltip>
         <StyledButton
           onClick={handleClose}
         >

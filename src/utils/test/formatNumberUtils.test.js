@@ -1,4 +1,5 @@
 import {
+  formatE164PhoneNumber,
   formatTenDigitNumber,
   removeNonNumericCharacters
 } from "../formatNumberUtils";
@@ -44,5 +45,15 @@ describe("formatTenDigitNumber", () => {
 describe("removeNonNumericCharacters", () => {
   test("should return string with non-numeric characters removed", () => {
     expect(removeNonNumericCharacters("ab-c12(3g4)5p")).toBe("12345");
+  });
+});
+
+describe("formatE164PhoneNumber", () => {
+  const expectedPhoneNumber = "8005556666";
+  test("should replace +1 with empty string", () => {
+    expect(formatE164PhoneNumber("+18005556666")).toEqual(expectedPhoneNumber);
+  });
+  test("should replace 1 with empty string", () => {
+    expect(formatE164PhoneNumber("18005556666")).toEqual(expectedPhoneNumber);
   });
 });

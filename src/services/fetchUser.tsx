@@ -9,7 +9,7 @@ export interface FetchUserResponse {
   officeNumber: string,
   departmentName: string,
   departmentNumber: string
-};
+}
 
 export const fetchUser = (nNumber: string): Promise<FetchUserResponse> => myAxios.get(apiPaths.EMPLOYEE_LOOKUP(nNumber.substring(1)))
   .then(res => {

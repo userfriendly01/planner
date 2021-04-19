@@ -64,6 +64,7 @@ const TenDigitInputMask = (inputProps: any) => {
 
 export interface ModalPhoneNumberProps {
   allowSevenDigitVdn?: boolean,
+  disabled?: boolean,
   error?: boolean,
   helperText?: string,
   id: string,
@@ -71,12 +72,14 @@ export interface ModalPhoneNumberProps {
   number: string,
   onBlur: () => void,
   showError?: boolean,
-  updateValue: (maskedValue: string, unmaskedValue: string, isNumberValid: boolean, e164Number: string) => void
+  updateValue: (maskedValue: string, unmaskedValue: string, isNumberValid: boolean, e164Number: string) => void,
+  icon?: JSX.Element
 }
 
 const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
   const {
     allowSevenDigitVdn, // if true, show toggle button to switch between input masks,
+    disabled = false,
     error,
     helperText,
     id,
@@ -84,7 +87,8 @@ const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
     number,
     onBlur,
     showError,
-    updateValue
+    updateValue,
+    icon = null
   } = props;
 
   const [useSevenDigitMask, setUseSevenDigitMask] = useState(false);
@@ -94,6 +98,7 @@ const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
 
   const textField = (
     <TextField
+      disabled={disabled}
       error={error || (showError && validationError)}
       helperText={helperText || (showError && validationError ? validationHelperText : null)}
       id={id}
@@ -101,7 +106,8 @@ const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
         inputComponent: useSevenDigitMask ? SevenDigitInputMask : TenDigitInputMask,
         style: {
           flexGrow: 1
-        }
+        },
+        endAdornment: (icon)
       }}
       label={label}
       name={label}
