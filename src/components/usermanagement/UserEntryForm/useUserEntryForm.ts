@@ -38,6 +38,7 @@ interface UserEntryForm_FormState {
   alternateDid: FieldState,
   directDialNum: FieldState,
   zeroOutEnabled: boolean,
+  zeroOutEnabledUpdated: boolean,
   editDisabled: boolean
 }
 
@@ -118,6 +119,7 @@ const useUserEntryForm = (
         valid: false
       },
       zeroOutEnabled: false,
+      zeroOutEnabledUpdated: false,
       editDisabled: false
     };
     if (formMode === formModes.UPDATE) {

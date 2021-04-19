@@ -146,12 +146,19 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
     loading, updateLoading, setForm
   } = useUserEntryForm(formMode, worker, managers);
 
-  const [profileHasZeroOutEnabled, setProfileHasZeroOutEnabled] = useState(false);
+  const [profileHasZeroOutEnabled, setProfileHasZeroOutEnabled] = useState(form.zeroOutEnabled);
   const [forwardToToggle, setForwardToToggle] = useState(false);
-
   const getTargetProfile = (newProfileValue: string) => profiles.find(profile => profile.profile_id === +newProfileValue);
   const overflowSkill: (string) = form.profileId.value ? getTargetProfile(form.profileId.value).overflow_skill : "";
   const getZeroOutEnabledFromProfile = (newProfileValue: string): boolean => getTargetProfile(newProfileValue).overflow_skill !== null;
+
+  const getOverflowSkills = (): string[] => {
+    const skills: string[] = [];
+    profiles.forEach(profile => profile.overflow_skill !== null && skills.push(profile.overflow_skill));
+    return skills;
+  };
+  const nonOverflowSkills = worker?.attributes.routing?.skills.filter(skill => !getOverflowSkills().includes(skill));
+  const workerHasOverFlowSkill = (): boolean => worker?.attributes.routing?.skills.some(skill => getOverflowSkills().includes(skill));
 
   const isOutgoingDisabled = (): boolean => {
     if (formMode === formModes.INSERT) {
@@ -159,6 +166,40 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
     } else {
       return form.editDisabled && worker.directDialNum ? true : false;
     }
+  };
+
+  const editPenClick = (): void => {
+    if (forwardToToggle) {
+      // reset did fields to initial form
+      setForm({
+        ...form,
+        directDialNum: {
+          ...form.directDialNum,
+          value: formatE164PhoneNumber(worker.directDialNum),
+          e164: undefined,
+          updated: false,
+          valid: true
+        },
+        inactiveForwardTo: {
+          value: null,
+          updated: false
+        },
+        outgoing: {
+          ...form.outgoing,
+          value: formatE164PhoneNumber(worker.attributes.did),
+          e164: undefined,
+          updated: false,
+          valid: true
+        },
+        editDisabled: !form.editDisabled
+      });
+    } else {
+      setForm({
+        ...form,
+        editDisabled: !form.editDisabled
+      });
+    }
+    setForwardToToggle(!forwardToToggle);
   };
 
   const doCreateUser = () => {
@@ -193,21 +234,26 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
       profile_id: form.profileId.value,
       unique_id: form.nNumber.value.toLowerCase()
     };
-    if (overflowSkill !== null && form.zeroOutEnabled) {
+    if (overflowSkill !== null && form.zeroOutEnabled && form.directDialNum.value) {
       attributes.routing = {
         skills: [overflowSkill],
         levels: {}
       };
     }
 
-    createUser({
-      attributes,
-      // values below are used by twilio-worker-api, they do not map to Twilio worker attributes
-      activateEp: form.directDialNum.value ? true : false,
-      alternateDid: form.alternateDid.e164,
-      directDialNum: form.directDialNum.e164,
-      zeroOutEnabled: form.zeroOutEnabled
-    })
+    const createUserReqBody = form.directDialNum.value ?
+      {
+        attributes,
+        activateEp: true,
+        alternateDid: form.alternateDid.e164,
+        directDialNum: form.directDialNum.e164,
+        zeroOutEnabled: form.zeroOutEnabled
+      } : {
+        attributes,
+        activateEp: false
+      };
+
+    createUser(createUserReqBody)
       .then(dbWorker => {
         setForm({
           ...form,
@@ -311,6 +357,23 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
     if (form.defaultSkillsUpdated) {
       attributes.default_skills = form.defaultSkills;
     }
+    // update overflow skill
+    if ((form.zeroOutEnabledUpdated || form.profileId.updated) && form.zeroOutEnabled) {
+      attributes.routing = {
+        skills: [
+          ...nonOverflowSkills,
+          overflowSkill
+        ],
+        levels: worker.attributes.routing.levels
+      };
+    }
+    // remove overflow skill
+    if (!form.zeroOutEnabled && workerHasOverFlowSkill()) {
+      attributes.routing = {
+        skills: nonOverflowSkills,
+        levels: worker.attributes.routing.levels
+      };
+    }
 
     const payload: Partial<DbWorker> = {
       attributes,
@@ -373,7 +436,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
     form.profileId.updated || form.outgoing.updated ||
     form.alternateDid.updated || form.directDialNum.updated ||
     form.nNumber.updated || form.extension.updated ||
-    form.inactiveForwardTo.updated
+    form.inactiveForwardTo.updated || form.zeroOutEnabledUpdated
   );
 
   return (
@@ -466,13 +529,7 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
                 <StyledIcon
                   fontSize="large"
                   data-testid="toggle-forward-to"
-                  onClick={() => {
-                    setForm({
-                      ...form,
-                      editDisabled: !form.editDisabled
-                    });
-                    setForwardToToggle(!forwardToToggle);
-                  }}
+                  onClick={() => editPenClick()}
                 />
               </InputAdornment>
             ) : null
@@ -600,7 +657,8 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
                     disabled={overflowSkill === null}
                     onChange={() => setForm({
                       ...form,
-                      zeroOutEnabled: !form.zeroOutEnabled
+                      zeroOutEnabled: !form.zeroOutEnabled,
+                      zeroOutEnabledUpdated: true
                     })}
                     inputProps={{ "aria-label": "toggle-zero-out" }}
                   />
