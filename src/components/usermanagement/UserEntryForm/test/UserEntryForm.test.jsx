@@ -246,7 +246,7 @@ const workerAttributesAfterFormValid = {
   manager_first_name: validFormOptions.manager.manager_first_name,
   manager_last_name: validFormOptions.manager.manager_last_name,
   manager_n_number: validFormOptions.manager.manager_n_number,
-  n_number: validFormOptions.nNumber,
+  n_number: validFormOptions.nNumber.toLowerCase(),
   office_location_name: fetchedUser.officeName,
   office_location_number: fetchedUser.officeNumber,
   primary_dept_name: fetchedUser.departmentName,

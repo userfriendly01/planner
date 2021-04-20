@@ -18,7 +18,7 @@ describe("filterByNameSkillsAndOffice()", () => {
         }
       },
       office_location_name: "Office 4",
-      unique_id: "N666"
+      n_number: "N666"
     }
   };
 
@@ -123,11 +123,11 @@ describe("filterByNameSkillsAndOffice()", () => {
     expect(filterByNameAndSkills(goodWorkerData, "fake")).toEqual(true);
   });
 
-  test("should find unique_id", () => {
+  test("should find n_number", () => {
     expect(filterByNameAndSkills(goodWorkerData, "N666")).toEqual(true);
   });
 
-  test("should find unique_id, caps should not matter", () => {
+  test("should find n_number, caps should not matter", () => {
     expect(filterByNameAndSkills(goodWorkerData, "n666")).toEqual(true);
   });
 
