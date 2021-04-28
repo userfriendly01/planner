@@ -9,6 +9,7 @@ import {
 import { initialState } from "context";
 import React from "react";
 import { act } from "react-dom/test-utils";
+import { addManager } from "services";
 import {
   expectMockedComponent,
   expectOnlyPassedProps,
@@ -24,6 +25,12 @@ jest.useFakeTimers();
 jest.mock("@material-ui/icons", () => ({
   __esModule: true,
   CloseRounded: jest.fn()
+}));
+
+jest.mock("services", () => ({
+  __esModule: true,
+  addManager: jest.fn(),
+  FetchUserResponse: jest.requireActual("services").FetchUserResponse
 }));
 
 jest.mock("components", () => ({
@@ -87,23 +94,49 @@ describe("<AddManagerModal />", () => {
     });
     describe("Add Manager button is clicked", () => {
       describe("manager is not in list of managers", () => {
-        test("ModalOverlay should render with 'Manager added successfully' & modal should close after 2 seconds (handleClose should be called)", async () => {
-          const rendered = renderComponent();
-          const fetchedManager = {
-            firstName: "Bob",
-            lastName: "Bobson"
-          };
-          updateFormSoValid(fetchedManager, "n0000000");
-          const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
-          act(() => onClick());
-          act(() => jest.runAllTimers());
-          await waitFor(() => {
-            expectMockedComponent(rendered, { ModalOverlay });
-            expectOnlyPassedProps(ModalOverlay, {
-              status: "success",
-              message: "Manager added successfully"
+        describe("call to add the manager succeeds", () => {
+          beforeEach(() => addManager.mockResolvedValue({ good: "to go" }));
+          test("ModalOverlay should render with 'Manager added successfully' & modal should close after 2 seconds (handleClose should be called)", async () => {
+            const rendered = renderComponent();
+            const fetchedManager = {
+              firstName: "Bob",
+              lastName: "Bobson"
+            };
+            updateFormSoValid(fetchedManager, "n0000000");
+            const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
+            act(() => onClick());
+            act(() => jest.runAllTimers());
+            await waitFor(() => {
+              expectMockedComponent(rendered, { ModalOverlay });
+              expectOnlyPassedProps(ModalOverlay, {
+                status: "success",
+                message: "Manager added successfully"
+              });
+              expect(mockHandleClose).toHaveBeenCalledTimes(1);
             });
-            expect(mockHandleClose).toHaveBeenCalledTimes(1);
+          });
+        });
+        describe("call to add the manager fails", () => {
+          const errorResp = { nope: "HOSED!" };
+          beforeEach(() => addManager.mockRejectedValue(errorResp));
+          test("ModalOverlay should render with 'Manager added successfully' & modal should close after 2 seconds (handleClose should be called)", async () => {
+            const rendered = renderComponent();
+            const fetchedManager = {
+              firstName: "Bob",
+              lastName: "Bobson"
+            };
+            updateFormSoValid(fetchedManager, "n0000000");
+            const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
+            act(() => onClick());
+            act(() => jest.runAllTimers());
+            await waitFor(() => {
+              expectOnlyPassedProps(ModalOverlay, {
+                status: "fail",
+                message: JSON.stringify(errorResp)
+              });
+              expect(mockHandleClose).toHaveBeenCalledTimes(0);
+              expectMockedComponent(rendered, { ModalOverlay }, 0);
+            });
           });
         });
       });

@@ -7,6 +7,9 @@ export interface AppState {
   managerContext: {
     managers: Manager[]
   },
+  officeContext: {
+    offices: Map<string, Office>
+  },
   profileContext: {
     profiles: TritonProfile[]
   },
@@ -27,6 +30,11 @@ export interface Manager {
   manager_first_name: string,
   manager_last_name: string,
   manager_n_number: string
+}
+
+export interface Office {
+  office_nme: string,
+  office_num: string
 }
 
 export interface MySqlBoolean {
@@ -101,6 +109,9 @@ export const initialState: AppState = {
   managerContext: {
     managers: []
   },
+  officeContext: {
+    offices: new Map()
+  },
   profileContext: {
     profiles: []
   },
@@ -124,7 +135,15 @@ export const reducer = (state: AppState, action: Action): AppState => {
         ...state,
         managerContext: {
           ...state.managerContext,
-          managers: [...state.managerContext.managers.slice(), action.payload.manager]
+          managers: [...state.managerContext.managers.slice(), action.payload]
+        }
+      };
+    case "addOffice":
+      return {
+        ...state,
+        officeContext: {
+          ...state.officeContext,
+          offices: new Map(state.officeContext.offices).set(action.payload.office_num, action.payload)
         }
       };
     case "addWorkers":
@@ -149,6 +168,14 @@ export const reducer = (state: AppState, action: Action): AppState => {
         managerContext: {
           ...state.managerContext,
           managers: action.payload
+        }
+      };
+    case "loadOffices":
+      return {
+        ...state,
+        officeContext: {
+          ...state.officeContext,
+          offices: new Map(action.payload)
         }
       };
     case "loadProfiles":
