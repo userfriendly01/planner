@@ -163,7 +163,8 @@ const getSkills = dispatch => new Promise((resolve, reject) => myAxios.get(apiPa
 const getWorkers = async dispatch => {
   try {
     const response = await myAxios.get(apiPaths.GET_WORKERS);
-    // filter out workers with "inactiveInd": true and no attributes
+
+    // filter out workers with "inactiveInd": true or no attributes
     const filteredWorkers = formatWorkerResponse(response.data).filter(worker => !worker.inactiveInd && worker.attributes);
     dispatch(({
       type: "addWorkers",

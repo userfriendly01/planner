@@ -47,6 +47,7 @@ const mockWorkerData = [
         }
       },
       full_name: "Test 1",
+      n_number: "n123",
       office_location_name: "Neptune",
       routing: {
         skills: [
@@ -64,6 +65,7 @@ const mockWorkerData = [
   {
     attributes: {
       full_name: "Test 2",
+      n_number: "n456",
       office_location_name: "Uranus"
     },
     sid: "WK1",
@@ -76,6 +78,7 @@ const mockWorkerData = [
         levels: {}
       },
       full_name: "Test 3",
+      n_number: "n6789",
       office_location_name: "Jupiter",
       routing: {
         skills: [],
@@ -126,11 +129,12 @@ describe("<ManagementTable />", () => {
     expect(rendered.getByText("SKILLS (Current)", { selector: "th" })).toBeInTheDocument();
     expect(rendered.getByText("SKILLS (Default)", { selector: "th" })).toBeInTheDocument();
   });
-  test("with workers, we should display full name, id & office location for each", () => {
+  test("with workers, we should display full name, n number & office location for each", () => {
     const rendered = renderComponent(mockWorkerData);
     mockWorkerData.forEach(entry => {
       expect(rendered.container).toHaveTextContent(entry.attributes.full_name);
       expect(rendered.container).toHaveTextContent(entry.attributes.office_location_name);
+      expect(rendered.container).toHaveTextContent(entry.attributes.n_number);
       expect(rendered.container).not.toHaveTextContent(entry.sid);
     });
   });

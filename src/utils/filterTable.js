@@ -2,11 +2,11 @@ export const filterByNameAndSkills = (worker, searchValue) => {
   if (!worker || !worker.attributes || !searchValue) {
     return false;
   }
-  const name = worker.attributes.full_name ? worker.attributes.full_name.toLowerCase() : "";
-  const appliedSkills = worker.attributes.routing ? worker.attributes.routing.skills.toString() : "";
-  const defaultSkills = worker.attributes.default_skills ? worker.attributes.default_skills.skills.toString() : "";
-  const nNumber = worker.attributes.unique_id ? worker.attributes.unique_id.toLowerCase() : "";
-  const office = worker.attributes.office_location_name ? worker.attributes.office_location_name.toLowerCase() : "";
+  const name = worker.attributes.full_name?.toLowerCase() || "";
+  const appliedSkills = worker.attributes.routing?.skills?.toString() || "";
+  const defaultSkills = worker.attributes.default_skills?.skills?.toString() || "";
+  const nNumber = worker.attributes.n_number?.toLowerCase() || "";
+  const office = worker.attributes.office_location_name?.toLowerCase() || "";
   const lowerCaseSearch = searchValue.toLowerCase();
   if (name.indexOf(lowerCaseSearch) >= 0) {
     return true;
