@@ -23,9 +23,7 @@ describe("reducer", () => {
       };
       const action = {
         type: "addManager",
-        payload: {
-          manager: [payload]
-        }
+        payload
       };
       const initialManager = [
         {
@@ -41,7 +39,31 @@ describe("reducer", () => {
         }
       };
       const result = reducer(testState, action);
-      expect(result.managerContext.managers).toEqual([...initialManager, [payload]]);
+      expect(result.managerContext.managers).toEqual([...initialManager, payload]);
+    });
+  });
+  describe("addOffice", () => {
+    test("should add to the office map", () => {
+      const payload ={
+        office_nme: "The Dova",
+        office_num: "016D"
+      };
+      const action = {
+        type: "addOffice",
+        payload
+      };
+      const initialOffices = new Map([["024", {
+        office_nme: "Initial Office",
+        office_num: "024"
+      }]]);
+      const testState = {
+        ...initialState,
+        officeContext: {
+          offices: initialOffices
+        }
+      };
+      const result = reducer(testState, action);
+      expect(result.officeContext.offices).toEqual(initialOffices.set(payload.office_num, payload));
     });
   });
   describe("addWorkers", () => {
@@ -132,6 +154,32 @@ describe("reducer", () => {
       };
       const result = reducer(initialState, action);
       expect(result.managerContext.managers).toEqual(payload);
+    });
+  });
+  describe("loadOffices", () => {
+    test("should initialize a map from the offices map sent in", () => {
+      const payload = new Map([
+        [
+          "A1",
+          {
+            office_nme: "Test1",
+            office_num: "A1"
+          }
+        ],
+        [
+          "A2",
+          {
+            office_nme: "Test2",
+            office_num: "A2"
+          }
+        ]
+      ]);
+      const action = {
+        type: "loadOffices",
+        payload
+      };
+      const result = reducer(initialState, action);
+      expect(result.officeContext.offices).toEqual(payload);
     });
   });
   describe("loadProfiles", () => {

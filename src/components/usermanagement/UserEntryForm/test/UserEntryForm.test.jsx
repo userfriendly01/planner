@@ -16,6 +16,7 @@ import {
 } from "globals";
 import React from "react";
 import {
+  addOffice,
   createUser,
   updateUser
 } from "services";
@@ -51,6 +52,7 @@ jest.mock("components", () => ({
 }));
 
 jest.mock("services", () => ({
+  addOffice: jest.fn(),
   createUser: jest.fn(),
   updateUser: jest.fn()
 }));
@@ -67,6 +69,25 @@ const managerList = [
     manager_n_number: "n7454853"
   }
 ];
+
+const officeMap = new Map([
+  [
+    "ABC123",
+    {
+
+      office_nme: "Office 1",
+      office_num: "ABC123"
+    }
+  ],
+  [
+    "0002",
+    {
+
+      office_nme: "Office 2",
+      office_num: "0002"
+    }
+  ]
+]);
 
 const profileList = [
   {
@@ -213,6 +234,9 @@ const mockSkills = [
 
 const initialTestState = {
   ...initialState,
+  officeContext: {
+    offices: officeMap
+  },
   profileContext: {
     profiles: profileList
   },
@@ -260,6 +284,7 @@ const mockHandleClose = jest.fn();
 describe("<UserEntryForm />", () => {
 
   beforeEach(() => {
+    addOffice.mockResolvedValue("Override me later");
     jest.clearAllMocks();
     mockStore.reset();
     setupMockedComponents({
@@ -601,13 +626,19 @@ describe("<UserEntryForm />", () => {
       });
 
       describe("fill out form so it is valid", () => {
-        describe("createUser service call succeeds", () => {
+        describe("createUser service call and add office service call succeed", () => {
           const rawDbWorker = {
-            attributes: workerAttributesAfterFormValid,
+            attributes: {
+              ...workerAttributesAfterFormValid,
+              office_location_number: "newOffice"
+            },
             workerSid: "WK1234"
           };
           const formattedWorker = {
-            attributes: workerAttributesAfterFormValid,
+            attributes: {
+              ...workerAttributesAfterFormValid,
+              office_location_number: "newOffice"
+            },
             sid: rawDbWorker.workerSid,
             skillsDifferent: true
           };
@@ -615,6 +646,7 @@ describe("<UserEntryForm />", () => {
           beforeEach(() => createUser.mockResolvedValue(rawDbWorker));
 
           test("should enable Add User button and save user when clicked", async () => {
+
             const rendered = renderComponent(userEntryFormState);
             updateFormSoItIsValid(false, profileList[0].profile_id);
             // click save button
@@ -631,12 +663,18 @@ describe("<UserEntryForm />", () => {
               expect(actions).toEqual([{
                 type: "addWorkers",
                 payload: [formattedWorker]
+              },{
+                type: "addOffice",
+                payload: {
+                  office_nme: "Springfield 012B",
+                  office_num: "newOffice"
+                }
               }]);
               jest.runAllTimers();
               expectOnlyPassedProps(ModalOverlay, {
                 message: "Adding new user...",
                 status: modalOverlayStatuses.SAVING
-              }, getLastInstanceCalled(ModalOverlay) - 1);
+              }, getLastInstanceCalled(ModalOverlay) - 2);
               expectOnlyPassedProps(ModalOverlay, {
                 message: "Successfully added new user",
                 status: modalOverlayStatuses.SUCCESS
