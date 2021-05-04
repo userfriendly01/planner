@@ -17,12 +17,17 @@ import React, {
   useEffect,
   useState
 } from "react";
+import {
+  getManagers as getManagersServiceCall,
+  getOffices as getOfficesServiceCall
+} from "services";
 import styled from "styled-components";
 import {
   wait,
+  formatManagersResponse,
+  formatOfficesResponse,
   formatTaskRouterSkills,
   formatWorkerResponse,
-  getUniqueManagerList,
   isErrorIn400s,
   myAxios
 } from "utils";
@@ -63,6 +68,7 @@ const Overlay = styled.div`
   top: 0;
   width: 100%;
 `;
+
 const LoadingMessage = styled.div`
   font-size: 30px;
   padding-bottom: 32px;
@@ -91,6 +97,36 @@ const authenticate = dispatch => new Promise((resolve, reject) => myAxios.get(ap
     });
   })
 );
+
+const getManagers = async dispatch => {
+  try {
+    const managers = await getManagersServiceCall();
+    dispatch({
+      type: "loadManagers",
+      payload: formatManagersResponse(managers)
+    });
+  } catch (error) {
+    throw ({
+      msg: "Failed to fetch managers from service",
+      error
+    });
+  }
+};
+
+const getOffices = async dispatch => {
+  try {
+    const offices = await getOfficesServiceCall();
+    dispatch({
+      type: "loadOffices",
+      payload: formatOfficesResponse(offices)
+    });
+  } catch (error) {
+    throw ({
+      msg: "Failed to fetch offices from service",
+      error
+    });
+  }
+};
 
 const getProfiles = dispatch => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_PROFILES)
   .then(res => {
@@ -130,17 +166,10 @@ const getWorkers = async dispatch => {
 
     // filter out workers with "inactiveInd": true or no attributes
     const filteredWorkers = formatWorkerResponse(response.data).filter(worker => !worker.inactiveInd && worker.attributes);
-
     dispatch(({
       type: "addWorkers",
       payload: filteredWorkers
     }));
-
-    const managerList = getUniqueManagerList(filteredWorkers);
-    dispatch({
-      type: "loadManagers",
-      payload: managerList
-    });
   } catch (error) {
     throw ({
       msg: "Failed to fetch workers from service",
@@ -158,6 +187,8 @@ const App = () => {
   useEffect(() => {
     Promise.all([
       authenticate(dispatch),
+      getManagers(dispatch),
+      getOffices(dispatch),
       getProfiles(dispatch),
       getSkills(dispatch),
       getWorkers(dispatch)

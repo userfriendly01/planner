@@ -15,6 +15,10 @@ import {
 } from "globals";
 import React from "react";
 import {
+  getManagers,
+  getOffices
+} from "services";
+import {
   act,
   expectMockedComponent,
   expectOnlyPassedProps,
@@ -24,9 +28,9 @@ import {
   waitFor
 } from "testUtils";
 import {
+  formatManagersResponse,
+  formatOfficesResponse,
   formatTaskRouterSkills,
-  formatWorkerResponse,
-  getUniqueManagerList,
   myAxios
 } from "utils";
 
@@ -41,6 +45,47 @@ const auth = { whatever: "lol" };
 const profiles = [
   { cool: "neat" },
   { wow: "amazing" }
+];
+
+const dbOffices = [
+  {
+    office_nme: "Office 1",
+    office_num: "1"
+  },
+  {
+    office_nme: "Office 2",
+    office_num: "2"
+  },
+  {
+    office_nme: "Office 3",
+    office_num: "3"
+  },
+  {
+    office_nme: "Office 4",
+    office_num: "4"
+  },
+  {
+    office_nme: "Office 11",
+    office_num: "45F"
+  }
+];
+
+const dbManagers = [
+  {
+    manager_first_nme: "Frank",
+    manager_last_nme: "TheTank",
+    manager_n_num: "BrngGrHt"
+  },
+  {
+    manager_first_nme: "Normal",
+    manager_last_nme: "McBoring",
+    manager_n_num: "n123567"
+  },
+  {
+    manager_first_nme: "Neil",
+    manager_last_nme: "Degrasse-Tyson",
+    manager_n_num: "n0000111"
+  }
 ];
 
 const dbWorkers = [
@@ -129,6 +174,11 @@ jest.mock("components", () => ({
   NotificationModal: jest.fn()
 }));
 
+jest.mock("services", () => ({
+  getManagers: jest.fn(),
+  getOffices: jest.fn()
+}));
+
 describe("<App />", () => {
 
   beforeEach(() => {
@@ -149,6 +199,8 @@ describe("<App />", () => {
       axiosMock.onGet(profilesEndpoint).reply(200, profiles);
       axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
       axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
+      getManagers.mockResolvedValue(dbManagers);
+      getOffices.mockResolvedValue(dbOffices);
     });
     describe("initial state, page is loading", () => {
       test("should render LoadingMessage", () => {
@@ -165,8 +217,16 @@ describe("<App />", () => {
             const rendered = render(<App />);
             await waitFor(() => rendered.getByTestId("app-wrapper"));
             const actions = mockStore.getActions();
-            expect(actions.length).toBe(5);
+            expect(actions.length).toBe(6);
             expect(actions).toEqual([
+              {
+                type: "loadManagers",
+                payload: formatManagersResponse(dbManagers)
+              },
+              {
+                type: "loadOffices",
+                payload: formatOfficesResponse(dbOffices)
+              },
               {
                 type: "loadUserData",
                 payload: { pingIdentity: auth }
@@ -182,10 +242,6 @@ describe("<App />", () => {
               {
                 type: "addWorkers",
                 payload: filteredWorkers
-              },
-              {
-                type: "loadManagers",
-                payload: getUniqueManagerList(formatWorkerResponse(filteredWorkers))
               }
             ]);
             expectMockedComponent(rendered, { Header });
@@ -232,6 +288,8 @@ describe("<App />", () => {
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
         axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
+        getManagers.mockResolvedValue(dbManagers);
+        getOffices.mockResolvedValue(dbOffices);
       });
       test("should return 'You are not authorized to view this page'", done => {
         const rendered = render(<App />);
@@ -250,6 +308,8 @@ describe("<App />", () => {
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
         axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
+        getManagers.mockResolvedValue(dbManagers);
+        getOffices.mockResolvedValue(dbOffices);
       });
       test("should return 'An error occurred while logging in.'", done => {
         const rendered = render(<App />);
@@ -271,6 +331,8 @@ describe("<App />", () => {
         axiosMock.onGet(profilesEndpoint).reply(statusCode, { wahhhh: "oh noooo" });
         axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
+        getManagers.mockResolvedValue(dbManagers);
+        getOffices.mockResolvedValue(dbOffices);
       });
       test("should render error message 'Failed to fetch profiles from service'", done => {
         const rendered = render(<App />);
@@ -291,14 +353,24 @@ describe("<App />", () => {
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
         axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
         axiosMock.onGet(workersEndpoint, { pageToken: "" }).replyOnce(200, dbWorkers);
+        getManagers.mockResolvedValue(dbManagers);
+        getOffices.mockResolvedValue(dbOffices);
       });
       test("should dispatch all actions and filter workers with inactiveInd: true and no attributes", done => {
         const rendered = render(<App />);
         waitFor(() => rendered.getByTestId("app-wrapper"))
           .then(() => {
             const actions = mockStore.getActions();
-            expect(actions.length).toBe(5);
+            expect(actions.length).toBe(6);
             expect(actions).toEqual([
+              {
+                type: "loadManagers",
+                payload: formatManagersResponse(dbManagers)
+              },
+              {
+                type: "loadOffices",
+                payload: formatOfficesResponse(dbOffices)
+              },
               {
                 type: "loadUserData",
                 payload: { pingIdentity: auth }
@@ -314,10 +386,6 @@ describe("<App />", () => {
               {
                 type: "addWorkers",
                 payload: filteredWorkers
-              },
-              {
-                type: "loadManagers",
-                payload: getUniqueManagerList(formatWorkerResponse(filteredWorkers))
               }
             ]);
             expectMockedComponent(rendered, { Header });
@@ -334,6 +402,8 @@ describe("<App />", () => {
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
         axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
         axiosMock.onGet(workersEndpoint).replyOnce(500, { boo: "wahhh" });
+        getManagers.mockResolvedValue(dbManagers);
+        getOffices.mockResolvedValue(dbOffices);
       });
       test("should return 'An error occurred while logging in.'", done => {
         const rendered = render(<App />);
@@ -355,6 +425,8 @@ describe("<App />", () => {
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
         axiosMock.onGet(skillsEndpoint).reply(500, { fail: "oh the horror" });
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
+        getManagers.mockResolvedValue(dbManagers);
+        getOffices.mockResolvedValue(dbOffices);
       });
       test("should return 'An error occurred while logging in.'", done => {
         const rendered = render(<App />);
@@ -362,6 +434,62 @@ describe("<App />", () => {
           .then(() => {
             expect(rendered.container).toHaveTextContent(statusCode);
             expect(rendered.container).toHaveTextContent("Failed to fetch taskrouter skills from service");
+            done();
+          });
+      });
+    });
+  });
+
+  describe(apiPaths.MANAGERS, () => {
+    describe("managers service call returned an error", () => {
+      const error = {
+        response: {
+          data: "boo",
+          status: 500
+        }
+      };
+      beforeEach(() => {
+        axiosMock.onGet(authEndpoint).reply(200, auth);
+        axiosMock.onGet(profilesEndpoint).reply(200, profiles);
+        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
+        getManagers.mockRejectedValue(error);
+        getOffices.mockResolvedValue(dbOffices);
+      });
+      test("should return 'An error occurred while logging in.'", done => {
+        const rendered = render(<App />);
+        waitFor(() => rendered.getByTestId("error-overlay"))
+          .then(() => {
+            expect(rendered.container).toHaveTextContent(error.response.status);
+            expect(rendered.container).toHaveTextContent(`${error.response.status}Failed to fetch managers from service"${error.response.data}"`);
+            done();
+          });
+      });
+    });
+  });
+
+  describe(apiPaths.OFFICES, () => {
+    describe("offices service call returned an error", () => {
+      const error = {
+        response: {
+          data: "boo",
+          status: 500
+        }
+      };
+      beforeEach(() => {
+        axiosMock.onGet(authEndpoint).reply(200, auth);
+        axiosMock.onGet(profilesEndpoint).reply(200, profiles);
+        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
+        getManagers.mockResolvedValue(dbManagers);
+        getOffices.mockRejectedValue(error);
+      });
+      test("should return 'An error occurred while logging in.'", done => {
+        const rendered = render(<App />);
+        waitFor(() => rendered.getByTestId("error-overlay"))
+          .then(() => {
+            expect(rendered.container).toHaveTextContent(error.response.status);
+            expect(rendered.container).toHaveTextContent(`${error.response.status}Failed to fetch offices from service"${error.response.data}"`);
             done();
           });
       });

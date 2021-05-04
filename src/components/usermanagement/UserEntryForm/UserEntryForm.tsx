@@ -27,6 +27,7 @@ import {
 } from "globals";
 import React, { useState } from "react";
 import {
+  addOffice,
   createUser,
   updateUser
 } from "services";
@@ -133,6 +134,9 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
 
   const dispatch = useAdminDispatch();
   const {
+    officeContext: {
+      offices
+    },
     profileContext: {
       profiles
     },
@@ -255,6 +259,22 @@ const UserEntryForm: React.FC<any> = (props: UserEntryFormProps) => {
 
     createUser(createUserReqBody)
       .then(dbWorker => {
+        if (!offices.get(dbWorker.attributes.office_location_number)) {
+          const newOffice = {
+            office_nme: dbWorker.attributes.office_location_name,
+            office_num: dbWorker.attributes.office_location_number
+          };
+          addOffice(newOffice)
+            .then(() => {
+              dispatch({
+                type: "addOffice",
+                payload: newOffice
+              });
+            })
+            .catch(error => {
+              console.log(`Failed to add office: [${error}]`);
+            });
+        }
         setForm({
           ...form,
           // reset default skills

@@ -11,7 +11,10 @@ import {
   useAdminState
 } from "context";
 import React, { useState } from "react";
-import { FetchUserResponse } from "services";
+import {
+  addManager,
+  FetchUserResponse
+} from "services";
 import styled from "styled-components";
 
 const FlexColumn = styled.div`
@@ -66,6 +69,7 @@ const AddManagerModal = (props: AddManagerModalProps) => {
   const { handleClose } = props;
 
   const [manager, setManager] = useState<Manager>(null);
+  const [errorMessage, setErrorMessage] = useState<string>(null);
   const [saveStatus, setSaveStatus] = useState<string>(null);
   const [nNumber, setNNumber] = useState<string>(defaultNNumber);
   const [fetchedUser, setFetchedUser] = useState<FetchUserResponse>(null);
@@ -73,26 +77,42 @@ const AddManagerModal = (props: AddManagerModalProps) => {
   const dispatch = useAdminDispatch();
   const state = useAdminState();
 
-  const addManagerClicked = () => {
+  const addManagerClicked = (): Promise<any> => {
     setSaveStatus(loadingStates.loading);
-    if (!state.managerContext.managers.some(mgr => mgr.manager_n_number.toLowerCase() === nNumber.toLowerCase())) {
-      dispatch(({
-        type: "addManager",
-        payload: { manager }
-      }));
-      setSaveStatus(loadingStates.success);
-      setTimeout(handleClose, 2000);
-    } else {
+    if (state.managerContext.managers.some(savedManager => savedManager.manager_n_number === manager.manager_n_number)) {
       setSaveStatus(loadingStates.fail);
       setTimeout(() => setSaveStatus(null), 2000);
+      setErrorMessage("Manager already exists");
+      console.log("addManager - Failure - Manager Already exists");
+      return Promise.resolve("addManager - Failure - Manager Already exists");
     }
+    return addManager({
+      manager_first_nme: manager.manager_first_name,
+      manager_last_nme: manager.manager_last_name,
+      manager_n_num: manager.manager_n_number
+    })
+      .then(res => {
+        dispatch(({
+          type: "addManager",
+          payload: manager
+        }));
+        setSaveStatus(loadingStates.success);
+        setTimeout(handleClose, 2000);
+        console.log("addManager - Success", res);
+      })
+      .catch(err => {
+        setSaveStatus(loadingStates.fail);
+        setTimeout(() => setSaveStatus(null), 2000);
+        setErrorMessage(JSON.stringify(err));
+        console.log("addManager - Failure", err);
+      });
   };
 
   let overlayMessage = "Saving";
   if (saveStatus === loadingStates.success) {
     overlayMessage = "Manager added successfully";
   } else if (saveStatus === loadingStates.fail) {
-    overlayMessage = "Manager already exists";
+    overlayMessage = errorMessage;
   }
 
   return (
@@ -120,14 +140,14 @@ const AddManagerModal = (props: AddManagerModalProps) => {
                 manager_first_name: fetchedUser.firstName,
                 manager_last_name: fetchedUser.lastName
               });
-              setFetchedUser(fetchedUser)
+              setFetchedUser(fetchedUser);
             }}
             onClear={() => {
               setNNumber(defaultNNumber);
               setManager(null);
             }}
             onUpdate={nNumber => {
-              setNNumber(nNumber)
+              setNNumber(nNumber);
             }}
             value={nNumber}
           />
