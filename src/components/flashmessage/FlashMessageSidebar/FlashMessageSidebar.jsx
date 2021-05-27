@@ -3,9 +3,13 @@ import {
   FormControlLabel,
   RadioGroup
 } from "@material-ui/core";
+import {
+  theme
+} from "globals";
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import { withStyles } from "@material-ui/core/styles";
 
 const SidebarWrapper = styled.div`
   background-color: white;
@@ -18,7 +22,20 @@ const RadioContainer = styled.div`
   display: flex;
   justify-content: space-around;
   width: 100%;
+  padding-left: 5%;
 `;
+
+
+const TealRadio = withStyles({
+  root: {
+    color: theme.libertyDarkTeal,
+    "&$checked": {
+      color: theme.libertyDarkTeal
+    }
+  },
+  checked: {}
+})(props => <Radio color="default" {...props} />);
+
 
 const FlashMessageSidebar = props => {
   const {
@@ -29,68 +46,31 @@ const FlashMessageSidebar = props => {
   const skill = flashMessageState.skill;
 
   const handleRadioChange = selection => {
-    console.log("selection is:" + selection);
     setFlashMessageState({
       ...flashMessageState,
-      skill: null
+      skill: selection,
+      fetching: true
     });
-    switch(selection) {
-      case "aisgL1":
-        setFlashMessageState({
-          ...flashMessageState,
-          skill: "aisgL1",
-          fetching: true
-        });
-        break;
-      case "aisgConsumer":
-        setFlashMessageState({
-          ...flashMessageState,
-          skill: "aisgConsumer",
-          fetching: true
-        });
-        break;
-      case "aisgEcliq":
-        setFlashMessageState({
-          ...flashMessageState,
-          skill: "aisgEcliq",
-          fetching: true
-        });
-        break;
-      case "aisgPassword":
-        setFlashMessageState({
-          ...flashMessageState,
-          skill: "aisgPassword",
-          fetching: true
-        });
-        break;
-      default:
-        setFlashMessageState({
-          ...flashMessageState,
-          skill: "aisgL1",
-          fetching: true
-        });
-    }
-    //trigger right pane to update
   };
 
   return (
     <SidebarWrapper>
       <RadioContainer>
         <RadioGroup name="skill" value={skill} onChange={event => handleRadioChange(event.target.value)}>
-          <FormControlLabel control={<Radio
+          <FormControlLabel control={<TealRadio
             value="aisgL1"
           />}
           label="aisgL1"
           value="aisgL1"/>
-          <FormControlLabel control={<Radio
+          <FormControlLabel control={<TealRadio
             value="aisgConsumer"/>}
           label="aisgConsumer"
           value="aisgConsumer"/>
-          <FormControlLabel control={<Radio
+          <FormControlLabel control={<TealRadio
             value="aisgEcliq"/>}
           label="aisgEcliq"
           value="aisgEcliq"/>
-          <FormControlLabel control={<Radio
+          <FormControlLabel control={<TealRadio
             value="aisgPassword"/>}
           label="aisgPassword"
           value="aisgPassword"/>
