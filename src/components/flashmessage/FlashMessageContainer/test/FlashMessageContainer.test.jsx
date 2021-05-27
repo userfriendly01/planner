@@ -55,7 +55,7 @@ describe("<FlashMessageContainer />", () => {
 
   describe("fetch flash message is successful", () => {
     describe("flash message in DB is empty string", () => {
-      beforeEach(() => axiosMock.onGet(apiPaths.FLASH_MESSAGE + "/5").reply(200, { flashMessage: "" }));
+      beforeEach(() => axiosMock.onGet(apiPaths.FLASH_MESSAGE + "/aisgL1").reply(200, { flashMessage: "" }));
       test("should render editable component; should not render 'loading'", done => {
         const state = getTestState();
         let rendered;
@@ -74,7 +74,7 @@ describe("<FlashMessageContainer />", () => {
       });
     });
     describe("flash message in DB is not an empty string", () => {
-      beforeEach(() => axiosMock.onGet(apiPaths.FLASH_MESSAGE + "/5").reply(200, { flashMessage: "flash message here" }));
+      beforeEach(() => axiosMock.onGet(apiPaths.FLASH_MESSAGE + "/aisgL1").reply(200, { flashMessage: "flash message here" }));
       test("should render locked component; should not render 'loading'", done => {
         const state = getTestState();
         let rendered;
@@ -95,7 +95,7 @@ describe("<FlashMessageContainer />", () => {
   });
 
   describe("fetch flash message fails", () => {
-    beforeEach(() => axiosMock.onGet(apiPaths.FLASH_MESSAGE + "/5").reply(500, "something bad happened"));
+    beforeEach(() => axiosMock.onGet(apiPaths.FLASH_MESSAGE + "/aisgL1").reply(500, "something bad happened"));
     test("should display error message & locked component", done => {
       const state = getTestState();
       let rendered;

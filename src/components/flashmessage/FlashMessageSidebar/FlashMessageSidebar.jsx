@@ -1,9 +1,11 @@
 import {
-  Checkbox,
-  FormControlLabel
+  Radio,
+  FormControlLabel,
+  RadioGroup
 } from "@material-ui/core";
 import React from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 const SidebarWrapper = styled.div`
   background-color: white;
@@ -12,30 +14,95 @@ const SidebarWrapper = styled.div`
   flex-direction: column;
 `;
 
-const StyledFormControl = styled(FormControlLabel)`
-  && {
-    margin-left: 0px;
-  }
-  && .Mui-checked {
-    color: ${props => props.theme.libertyDarkTeal};
-  }
+const RadioContainer = styled.div`
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
 `;
 
-export const FlashMessageSidebar = () => {
-  // This entire component will likely have to be refactored to use context and such once we have more groups.
+const FlashMessageSidebar = props => {
+  const {
+    flashMessageState,
+    setFlashMessageState
+  } = props;
+
+  const skill = flashMessageState.skill;
+
+  const handleRadioChange = selection => {
+    console.log("selection is:" + selection);
+    setFlashMessageState({
+      ...flashMessageState,
+      skill: null
+    });
+    switch(selection) {
+      case "aisgL1":
+        setFlashMessageState({
+          ...flashMessageState,
+          skill: "aisgL1",
+          fetching: true
+        });
+        break;
+      case "aisgConsumer":
+        setFlashMessageState({
+          ...flashMessageState,
+          skill: "aisgConsumer",
+          fetching: true
+        });
+        break;
+      case "aisgEcliq":
+        setFlashMessageState({
+          ...flashMessageState,
+          skill: "aisgEcliq",
+          fetching: true
+        });
+        break;
+      case "aisgPassword":
+        setFlashMessageState({
+          ...flashMessageState,
+          skill: "aisgPassword",
+          fetching: true
+        });
+        break;
+      default:
+        setFlashMessageState({
+          ...flashMessageState,
+          skill: "aisgL1",
+          fetching: true
+        });
+    }
+    //trigger right pane to update
+  };
+
   return (
     <SidebarWrapper>
-      <StyledFormControl
-        control={
-          <Checkbox
-            checked={true} // This will have to change later when we have multiple checkboxes
-            value="aisg"
-          />
-        }
-        label="AISG"
-      />
+      <RadioContainer>
+        <RadioGroup name="skill" value={skill} onChange={event => handleRadioChange(event.target.value)}>
+          <FormControlLabel control={<Radio
+            value="aisgL1"
+          />}
+          label="aisgL1"
+          value="aisgL1"/>
+          <FormControlLabel control={<Radio
+            value="aisgConsumer"/>}
+          label="aisgConsumer"
+          value="aisgConsumer"/>
+          <FormControlLabel control={<Radio
+            value="aisgEcliq"/>}
+          label="aisgEcliq"
+          value="aisgEcliq"/>
+          <FormControlLabel control={<Radio
+            value="aisgPassword"/>}
+          label="aisgPassword"
+          value="aisgPassword"/>
+        </RadioGroup>
+      </RadioContainer>
     </SidebarWrapper>
   );
+};
+
+FlashMessageSidebar.propTypes = {
+  flashMessageState: PropTypes.object.isRequired,
+  setFlashMessageState: PropTypes.func.isRequired
 };
 
 export default FlashMessageSidebar;
