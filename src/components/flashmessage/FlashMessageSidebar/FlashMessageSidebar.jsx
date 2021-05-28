@@ -3,13 +3,13 @@ import {
   FormControlLabel,
   RadioGroup
 } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
 import {
   theme
 } from "globals";
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
 
 const SidebarWrapper = styled.div`
   background-color: white;
@@ -25,7 +25,6 @@ const RadioContainer = styled.div`
   padding-left: 5%;
 `;
 
-
 const TealRadio = withStyles({
   root: {
     color: theme.libertyDarkTeal,
@@ -35,7 +34,6 @@ const TealRadio = withStyles({
   },
   checked: {}
 })(props => <Radio color="default" {...props} />);
-
 
 const FlashMessageSidebar = props => {
   const {
@@ -60,20 +58,16 @@ const FlashMessageSidebar = props => {
           <FormControlLabel control={<TealRadio
             value="aisgL1"
           />}
-          label="aisgL1"
-          value="aisgL1"/>
+          label="aisgL1"/>
           <FormControlLabel control={<TealRadio
             value="aisgConsumer"/>}
-          label="aisgConsumer"
-          value="aisgConsumer"/>
+          label="aisgConsumer"/>
           <FormControlLabel control={<TealRadio
             value="aisgEcliq"/>}
-          label="aisgEcliq"
-          value="aisgEcliq"/>
+          label="aisgEcliq"/>
           <FormControlLabel control={<TealRadio
             value="aisgPassword"/>}
-          label="aisgPassword"
-          value="aisgPassword"/>
+          label="aisgPassword"/>
         </RadioGroup>
       </RadioContainer>
     </SidebarWrapper>

@@ -1,6 +1,8 @@
 import FlashMessageSidebar from "../FlashMessageSidebar";
 import React from "react";
-import { render } from "testUtils";
+import {
+  fireEvent, render
+} from "testUtils";
 
 const mockSetFMState = jest.fn();
 
@@ -22,5 +24,15 @@ describe("<FlashMessageSidebar />", () => {
   test("the FlashMessageSidebar should render a radio group.", () => {
     const rendered = renderComponent(initialMockedFMState);
     expect(rendered.findAllByLabelText("aisgL1")).toBeTruthy();
+  });
+  test("clicking a radio button should change the skill and fetching to true.", () => {
+    const rendered = renderComponent(initialMockedFMState);
+    fireEvent.click(rendered.getByLabelText("aisgConsumer"));
+    expect(mockSetFMState).toHaveBeenCalledTimes(1);
+    expect(mockSetFMState).toHaveBeenCalledWith({
+      ...initialMockedFMState,
+      skill: "aisgConsumer",
+      fetching: true
+    });
   });
 });
