@@ -65,11 +65,7 @@ const FlashMessageContainer = () => {
     serviceCallError: null
   });
 
-  //const [flashMessageSkill]
-
   useEffect(() => {
-    //how do I get this from state, and ensure a default value has been set?
-    console.log("something changed?");
     myAxios.get(apiPaths.FLASH_MESSAGE + `/${flashMessageState.skill}`)
       .then(res => {
         const flashMessage = res.data.flashMessage;
