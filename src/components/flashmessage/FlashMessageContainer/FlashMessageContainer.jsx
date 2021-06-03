@@ -60,13 +60,13 @@ const FlashMessageContainer = () => {
   const [flashMessageState, setFlashMessageState] = useState({
     fetching: true,
     flashMessage: "",
+    skill: "aisgL1",
     readOnly: false,
     serviceCallError: null
   });
 
   useEffect(() => {
-    const callFlowId = 5;
-    myAxios.get(apiPaths.FLASH_MESSAGE + `/${callFlowId}`)
+    myAxios.get(apiPaths.FLASH_MESSAGE + `/${flashMessageState.skill}`)
       .then(res => {
         const flashMessage = res.data.flashMessage;
         let readOnly = false;
@@ -77,7 +77,8 @@ const FlashMessageContainer = () => {
           ...flashMessageState,
           flashMessage,
           fetching: false,
-          readOnly
+          readOnly,
+          serviceCallError: null
         });
       })
       .catch(err => {
@@ -90,11 +91,11 @@ const FlashMessageContainer = () => {
         });
         console.error(fetchError, err);
       });
-  }, []);
+  }, [flashMessageState.skill]);
 
   return (
     <FlashMessageContainerWrapper>
-      <FlashMessageSidebar />
+      <FlashMessageSidebar flashMessageState={flashMessageState} setFlashMessageState={setFlashMessageState} />
       {flashMessageState.fetching ?
         <LoadingContainer>
           <LoadingMessage>Loading...</LoadingMessage>

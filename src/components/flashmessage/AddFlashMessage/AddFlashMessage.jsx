@@ -91,7 +91,7 @@ const AddFlashMessage = props => {
         fetching: true
       });
       const req = {
-        callFlowId: 5,
+        skill: flashMessageState.skill,
         flashMessage: tempFlashMessage,
         updatedBy: nNumber
       };
