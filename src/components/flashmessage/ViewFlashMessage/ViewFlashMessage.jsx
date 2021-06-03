@@ -55,6 +55,7 @@ export const ViewFlashMessage = props => {
   const flashMessage = flashMessageState.flashMessage;
   const adminState = useAdminState();
   const nNumber = adminState.userContext.pingIdentity.sub;
+  const skill = flashMessageState.skill;
 
   const editButtonOnClick = () => setFlashMessageState({
     ...flashMessageState,
@@ -70,7 +71,7 @@ export const ViewFlashMessage = props => {
         serviceCallError: null
       });
       const req = {
-        callFlowId: 5,
+        skill: skill,
         flashMessage: "",
         updatedBy: nNumber
       };
