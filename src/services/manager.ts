@@ -1,14 +1,21 @@
 import { apiPaths }from "globals";
 import { myAxios } from "utils";
 
-export interface DbManager {
+export interface DbManagerResponse {
+  manager_first_nme: string;
+  manager_last_nme: string;
+  manager_n_num: string;
+  manager_id: number;
+}
+
+export interface DbManagerRequest {
   manager_first_nme: string;
   manager_last_nme: string;
   manager_n_num: string;
 }
 
-export const addManager = (manager: DbManager): Promise<any> =>
+export const addManager = (manager: DbManagerRequest): Promise<any> =>
   myAxios.post(apiPaths.MANAGERS, manager).then(response => response.data);
 
-export const getManagers = (): Promise<DbManager[]> =>
+export const getManagers = (): Promise<DbManagerRequest[]> =>
   myAxios.get(apiPaths.MANAGERS).then(response => response.data);

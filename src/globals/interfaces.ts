@@ -13,6 +13,34 @@ export interface UserEntryFormProps {
   workers: TwilioWorker[]
 }
 
+export interface BasicFormInfoProps {
+  form: UserEntryFormState,
+  setForm: (action: Action) => void,
+  skills: TaskRouterSkill[],
+  worker: TwilioWorker,
+  workers: TwilioWorker[],
+  profiles: TritonProfile[],
+  managers: Manager[]
+  forwardToToggle: boolean,
+  setForwardToToggle: (value: boolean) => void,
+  setProfileHasZeroOutEnabled: (value: boolean) => void
+}
+
+export interface DidFormInfoProps {
+  form: UserEntryFormState,
+  setForm: (action: Action) => void,
+  skills: TaskRouterSkill[],
+  worker: TwilioWorker,
+  workers: TwilioWorker[],
+  profiles: TritonProfile[],
+  forwardToToggle: boolean,
+  profileHasZeroOutEnabled: boolean
+}
+
+export interface SkillsFormProps {
+  form: UserEntryFormState,
+  setForm: (action: Action) => void
+}
 export interface FormModes {
   INSERT: string,
   UPDATE: string

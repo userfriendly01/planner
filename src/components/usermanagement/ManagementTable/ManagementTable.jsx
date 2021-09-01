@@ -244,7 +244,7 @@ const ManagementTable = props => {
               });
             };
             return (
-              <CustomTableRow key={index} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">
+              <CustomTableRow key={worker.sid} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">
                 <CustomTableData><TableText>{worker.attributes.full_name}</TableText></CustomTableData>
                 <CustomTableData><TableText>{worker.attributes.n_number}</TableText></CustomTableData>
                 <CustomTableData><TableText>{worker.attributes.extension}</TableText></CustomTableData>

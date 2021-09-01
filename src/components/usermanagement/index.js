@@ -18,3 +18,6 @@ export { default as ResultsModal } from "./ResultsModal/ResultsModal";
 export { default as SearchBox } from "./SearchBox/SearchBox";
 export { default as SkillDropDown } from "./SkillDropDown/SkillDropDown";
 export { default as UserEntryForm } from "./UserEntryForm/UserEntryForm";
+export { default as BasicFormInfo } from "./UserEntryForm/BasicFormInfo";
+export { default as DidFormInfo } from "./UserEntryForm/DidFormInfo";
+export { default as SkillsFormInfo } from "./UserEntryForm/SkillsFormInfo";

@@ -48,6 +48,10 @@ export const ModalContainer = styled.div<{theme: any}>`
   width: 100%;
 `;
 
+export const TabContainer = styled.div`
+  display: flex;
+`;
+
 export const ToggleContainer = styled.div`
   display: flex;
   margin-left: 4px;

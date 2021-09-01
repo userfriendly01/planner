@@ -65,7 +65,7 @@ export interface AddManagerModalProps {
   handleClose: () => void
 }
 
-const AddManagerModal = (props: AddManagerModalProps) => {
+const AddManagerModal = (props: AddManagerModalProps, ref: null) => {
   const { handleClose } = props;
 
   const [manager, setManager] = useState<Manager>(null);
@@ -162,4 +162,4 @@ const AddManagerModal = (props: AddManagerModalProps) => {
   );
 };
 
-export default AddManagerModal;
+export default React.forwardRef(AddManagerModal);

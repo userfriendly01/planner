@@ -1,109 +1,40 @@
 import {
   Action,
   UserEntryFormState,
-  TwilioWorker,
   TritonProfile,
-  TwilioWorkerSkills
-} from "../../globals/interfaces";
+  formModes
+} from "../../globals";
 import {
   getValidSkillsObject,
   formatE164PhoneNumber
 } from "utils";
 
-const SET_UPDATE_FORM_STATE = "SET_UPDATE_FORM_STATE";
-const UPDATE_PHONE_NUMBER = "UPDATE_PHONE_NUMBER";
-const SET_BLUR_ON_FIELD = "SET_BLUR_ON_FIELD";
-const EDIT_PEN_CLICK_FORWARD_TO_TOGGLE = "EDIT_PEN_CLICK_FORWARD_TO_TOGGLE";
-const EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE = "EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE";
-const RESET_FORM_ON_CREATE = "RESET_FORM_ON_CREATE";
-const UPDATE_MANAGER = "UPDATE_MANAGER";
-const UPDATE_TEAM = "UPDATE_TEAM";
-const CLEAR_N_NUMBER = "CLEAR_N_NUMBER";
-const UPDATE_N_NUMBER = "UPDATE_N_NUMBER";
-const COMPLETE_N_NUMBER = "COMPLETE_N_NUMBER";
-const CLEAR_EXTENSION = "CLEAR_EXTENSION";
-const UPDATE_EXTENSION = "UPDATE_EXTENSION";
-const INITIATE_DID_FIELDS = "INITIATE_DID_FIELDS";
-const INITIATE_ZERO_OUT_FIELDS = "INITIATE_ZERO_OUT_FIELDS";
-const UPDATE_DEFAULT_SKILLS = "UPDATE_DEFAULT_SKILLS";
-const UPDATE_INACTIVE_FORWARD_TO = "UPDATE_INACTIVE_FORWARD_TO";
+export const userFormActions = {
+  SET_UPDATE_FORM_STATE: "SET_UPDATE_FORM_STATE",
+  UPDATE_PHONE_NUMBER: "UPDATE_PHONE_NUMBER",
+  SET_BLUR_ON_FIELD: "SET_BLUR_ON_FIELD",
+  EDIT_PEN_CLICK_FORWARD_TO_TOGGLE: "EDIT_PEN_CLICK_FORWARD_TO_TOGGLE",
+  EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE: "EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE",
+  RESET_FORM_ON_CREATE: "RESET_FORM_ON_CREATE",
+  UPDATE_MANAGER: "UPDATE_MANAGER",
+  UPDATE_TEAM: "UPDATE_TEAM",
+  CLEAR_N_NUMBER: "CLEAR_N_NUMBER",
+  UPDATE_N_NUMBER: "UPDATE_N_NUMBER",
+  COMPLETE_N_NUMBER: "COMPLETE_N_NUMBER",
+  CLEAR_EXTENSION: "CLEAR_EXTENSION",
+  UPDATE_EXTENSION: "UPDATE_EXTENSION",
+  INITIATE_DID_FIELDS: "INITIATE_DID_FIELDS",
+  INITIATE_ZERO_OUT_FIELDS: "INITIATE_ZERO_OUT_FIELDS",
+  UPDATE_DEFAULT_SKILLS: "UPDATE_DEFAULT_SKILLS",
+  UPDATE_INACTIVE_FORWARD_TO: "UPDATE_INACTIVE_FORWARD_TO"
+};
 
 const initialDefaultSkills = getValidSkillsObject();
 const getTargetProfile = (profiles: TritonProfile[], newProfileValue: string) => profiles.find((profile: any) => profile.profile_id === +newProfileValue);
 const getZeroOutEnabledFromProfile = (profiles: TritonProfile[], newProfileValue: string): boolean => getTargetProfile(profiles, newProfileValue).overflow_skill !== null;
 
-export const UserFormActions = {
-  setUpdateFormState: (payload: { worker: TwilioWorker, managers: any[]}): Action => ({
-    type: SET_UPDATE_FORM_STATE,
-    payload
-  }),
-  updatePhoneNumber: (payload: { field: string, maskedValue: string, isValid: boolean, e164Number: string }): Action => ({
-    type: UPDATE_PHONE_NUMBER,
-    payload
-  }),
-  setBlurOnField: (payload: string): Action => ({
-    type: SET_BLUR_ON_FIELD,
-    payload
-  }),
-  editPenClickForwardToToggle: (payload: TwilioWorker): Action => ({
-    type: EDIT_PEN_CLICK_FORWARD_TO_TOGGLE,
-    payload
-  }),
-  editPenClickNoForwardToToggle: (): Action => ({
-    type: EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE,
-    payload: null
-  }),
-  resetFormOnCreate: (): Action => ({
-    type: RESET_FORM_ON_CREATE,
-    payload: null
-  }),
-  updateManager: (payload: string): Action => ({
-    type: UPDATE_MANAGER,
-    payload
-  }),
-  updateTeam: (payload: { profileId: string, profiles: TritonProfile[] }): Action => ({
-    type: UPDATE_TEAM,
-    payload
-  }),
-  clearNNumber: (): Action => ({
-    type: CLEAR_N_NUMBER,
-    payload: null
-  }),
-  updateNNumber: (payload: string): Action => ({
-    type: UPDATE_N_NUMBER,
-    payload
-  }),
-  completeNNumber: (payload: { nNumber: string, fetchedUser: any }): Action => ({
-    type: COMPLETE_N_NUMBER,
-    payload
-  }),
-  clearExtension: (): Action => ({
-    type: CLEAR_EXTENSION,
-    payload: null
-  }),
-  updateExtension: (payload: { extension: string, isValid: boolean }): Action => ({
-    type: UPDATE_EXTENSION,
-    payload
-  }),
-  initiateDidFields: (): Action => ({
-    type: INITIATE_DID_FIELDS,
-    payload: null
-  }),
-  initiateZeroOutFields: (): Action => ({
-    type: INITIATE_ZERO_OUT_FIELDS,
-    payload: null
-  }),
-  updateDefaultSkills: (payload: TwilioWorkerSkills): Action => ({
-    type: UPDATE_DEFAULT_SKILLS,
-    payload
-  }),
-  updateInactiveForwardTo: (payload: string): Action => ({
-    type: UPDATE_INACTIVE_FORWARD_TO,
-    payload
-  })
-};
-
 export const initialUserFormState: UserEntryFormState = {
+  formMode: formModes.INSERT,
   defaultSkills: initialDefaultSkills,
   defaultSkillsUpdated: false,
   didUser: false,
@@ -161,11 +92,13 @@ export const initialUserFormState: UserEntryFormState = {
 
 export const userFormReducer = (state: UserEntryFormState, action: Action): UserEntryFormState => {
   switch (action.type) {
-    case SET_UPDATE_FORM_STATE: {
+    case userFormActions.SET_UPDATE_FORM_STATE: {
       const worker = action.payload.worker;
       const managers = action.payload.managers;
+      const formMode = action.payload.formMode;
       return {
         ...state,
+        formMode,
         defaultSkills: getValidSkillsObject(worker.attributes.default_skills),
         extension: {
           ...state.extension,
@@ -204,7 +137,7 @@ export const userFormReducer = (state: UserEntryFormState, action: Action): User
         editDisabled: worker.directDialNum ? true : false
       };
     }
-    case UPDATE_PHONE_NUMBER: {
+    case userFormActions.UPDATE_PHONE_NUMBER: {
       const field = action.payload.field;
       const value = action.payload.maskedValue;
       const isValid = action.payload.isValid;
@@ -220,8 +153,8 @@ export const userFormReducer = (state: UserEntryFormState, action: Action): User
         }
       };
     }
-    case SET_BLUR_ON_FIELD: {
-      const field = action.payload.field;
+    case userFormActions.SET_BLUR_ON_FIELD: {
+      const field = action.payload;
       return {
         ...state,
         [field]: {
@@ -230,7 +163,7 @@ export const userFormReducer = (state: UserEntryFormState, action: Action): User
         }
       };
     }
-    case EDIT_PEN_CLICK_FORWARD_TO_TOGGLE: {
+    case userFormActions.EDIT_PEN_CLICK_FORWARD_TO_TOGGLE: {
       const worker = action.payload;
       return {
         ...state,
@@ -255,18 +188,18 @@ export const userFormReducer = (state: UserEntryFormState, action: Action): User
         editDisabled: !state.editDisabled
       };
     }
-    case EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE: {
+    case userFormActions.EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE: {
       return {
         ...state,
         editDisabled: !state.editDisabled
       };
     }
-    case RESET_FORM_ON_CREATE: {
+    case userFormActions.RESET_FORM_ON_CREATE: {
       return {
         ...initialUserFormState
       };
     }
-    case UPDATE_MANAGER: {
+    case userFormActions.UPDATE_MANAGER: {
       const manager = action.payload;
       return {
         ...state,
@@ -277,7 +210,7 @@ export const userFormReducer = (state: UserEntryFormState, action: Action): User
         }
       };
     }
-    case UPDATE_TEAM: {
+    case userFormActions.UPDATE_TEAM: {
       const profileId = action.payload.profileId;
       const profiles = action.payload.profiles;
       return {
@@ -290,7 +223,7 @@ export const userFormReducer = (state: UserEntryFormState, action: Action): User
         zeroOutEnabled: getZeroOutEnabledFromProfile(profiles, profileId)
       };
     }
-    case CLEAR_N_NUMBER: {
+    case userFormActions.CLEAR_N_NUMBER: {
       return {
         ...state,
         nNumber: {
@@ -301,7 +234,7 @@ export const userFormReducer = (state: UserEntryFormState, action: Action): User
         nNumberFetchedUser: null
       };
     }
-    case UPDATE_N_NUMBER: {
+    case userFormActions.UPDATE_N_NUMBER: {
       const nNumber = action.payload;
       return {
         ...state,
@@ -312,7 +245,7 @@ export const userFormReducer = (state: UserEntryFormState, action: Action): User
         }
       };
     }
-    case COMPLETE_N_NUMBER: {
+    case userFormActions.COMPLETE_N_NUMBER: {
       const nNumber = action.payload.nNumber;
       const fetchedUser = action.payload.fetchedUser;
       return {
@@ -324,7 +257,7 @@ export const userFormReducer = (state: UserEntryFormState, action: Action): User
         nNumberFetchedUser: fetchedUser
       };
     }
-    case CLEAR_EXTENSION: {
+    case userFormActions.CLEAR_EXTENSION: {
       return {
         ...state,
         extension: {
@@ -335,7 +268,7 @@ export const userFormReducer = (state: UserEntryFormState, action: Action): User
         }
       };
     }
-    case UPDATE_EXTENSION: {
+    case userFormActions.UPDATE_EXTENSION: {
       const extension = action.payload.extension;
       const isValid = action.payload.isValid;
       return {
@@ -349,7 +282,7 @@ export const userFormReducer = (state: UserEntryFormState, action: Action): User
         }
       };
     }
-    case INITIATE_DID_FIELDS: {
+    case userFormActions.INITIATE_DID_FIELDS: {
       return {
         ...state,
         didUser: !state.didUser,
@@ -369,14 +302,14 @@ export const userFormReducer = (state: UserEntryFormState, action: Action): User
         }
       };
     }
-    case INITIATE_ZERO_OUT_FIELDS: {
+    case userFormActions.INITIATE_ZERO_OUT_FIELDS: {
       return {
         ...state,
         zeroOutEnabled: !state.zeroOutEnabled,
         zeroOutEnabledUpdated: true
       };
     }
-    case UPDATE_DEFAULT_SKILLS: {
+    case userFormActions.UPDATE_DEFAULT_SKILLS: {
       const defaultSkills = action.payload;
       return {
         ...state,
@@ -384,7 +317,7 @@ export const userFormReducer = (state: UserEntryFormState, action: Action): User
         defaultSkills
       };
     }
-    case UPDATE_INACTIVE_FORWARD_TO: {
+    case userFormActions.UPDATE_INACTIVE_FORWARD_TO: {
       const inactiveForwardTo = action.payload;
       return {
         ...state,
