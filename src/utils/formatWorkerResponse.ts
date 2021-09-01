@@ -1,4 +1,4 @@
-import { TwilioWorker } from "context";
+import { TwilioWorker } from "globals";
 import { areSkillsDifferent } from "utils";
 
 export interface DbWorker {

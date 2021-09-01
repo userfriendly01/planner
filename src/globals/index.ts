@@ -1,3 +1,4 @@
+import { ModalOverlayStatuses } from "globals";
 const CONTACT_MANAGER_BASE_URI = "/contact-manager";
 const SERVICE_BASE_URI = "/service";
 
@@ -22,21 +23,7 @@ export const apiPaths = {
   UPDATE_WORKER: (workerSid: string): string => `${SERVICE_BASE_URI}/updateworker/${workerSid}`
 };
 
-export interface FormModes {
-  INSERT: string,
-  UPDATE: string
-}
-
-export const formModes: FormModes = {
-  INSERT: "insert",
-  UPDATE: "update"
-};
-
-export interface ModalOverlayStatuses {
-  FAIL: string,
-  SAVING: string,
-  SUCCESS: string
-}
+export * from "./interfaces";
 
 export const modalOverlayStatuses: ModalOverlayStatuses = {
   FAIL: "fail",

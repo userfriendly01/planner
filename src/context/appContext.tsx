@@ -1,15 +1,22 @@
 // Our Boy Kent C https://kentcdodds.com/blog/how-to-use-react-context-effectively
 import {
+  initialState,
+  reducer,
+  initialUserFormState,
+  userFormReducer
+} from "context";
+import {
   Action,
   AppState,
-  initialState,
-  reducer
-} from "context";
+  UserEntryFormState
+} from "globals";
 import PropTypes from "prop-types";
 import React, { ReactElement } from "react";
 
-export const DispatchContext = React.createContext(undefined);
 export const StateContext = React.createContext(undefined);
+export const DispatchContext = React.createContext(undefined);
+export const FormStateContext = React.createContext(undefined);
+export const FormDispatchContext = React.createContext(undefined);
 
 interface StateProviderProps {
   children: ReactElement
@@ -45,8 +52,45 @@ const useAdminState = (): AppState => {
   return context;
 };
 
+interface FormStateProviderProps {
+  children: ReactElement
+}
+const FormStateProvider = (props: FormStateProviderProps) => {
+  const [state, dispatch] = React.useReducer(userFormReducer, initialUserFormState);
+  return (
+    <FormStateContext.Provider value={state}>
+      <FormDispatchContext.Provider value={dispatch}>
+        {props.children}
+      </FormDispatchContext.Provider>
+    </FormStateContext.Provider>
+  );
+};
+
+FormStateProvider.propTypes = {
+  children: PropTypes.any
+};
+
+const useFormState = (): UserEntryFormState => {
+  const context: UserEntryFormState = React.useContext(FormStateContext);
+  if (context === undefined) {
+    throw new Error("FormStateContext must be used within a Context Provider");
+  }
+  return context;
+};
+
+const useFormDispatch = (): (action: Action) => VoidFunction => {
+  const context: (action: Action) => VoidFunction = React.useContext(FormDispatchContext);
+  if (context === undefined) {
+    throw new Error("FormDispatchContext must be used within a Context Provider");
+  }
+  return context;
+};
+
 export {
   StateProvider,
+  FormStateProvider,
   useAdminDispatch,
-  useAdminState
+  useAdminState,
+  useFormState,
+  useFormDispatch
 };

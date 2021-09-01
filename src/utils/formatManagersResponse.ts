@@ -1,4 +1,4 @@
-import { Manager } from "context";
+import { Manager } from "globals";
 import { DbManager } from "services";
 
 export const formatManagersResponse = (response: DbManager[]): Manager[] => {

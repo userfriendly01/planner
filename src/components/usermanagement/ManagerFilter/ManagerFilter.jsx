@@ -64,9 +64,9 @@ const ManagerFilter = props => {
             <option data-testid="manager-list" key={"show-all"} value={"show-all"}>Show All</option>,
             <option data-testid="add-manager" key={"add-manager"} value={"add-manager"}>Add New Manager</option>,
             <Divider light key={"divider"}/>,
-            ...sortedManagers.map(manager => (
+            ...sortedManagers.map((manager, index) => (
               <option data-testid="manager-list"
-                key={manager.manager_n_number}
+                key={manager.manager_n_number + index}
                 value={manager.manager_n_number}
               >
                 {manager.manager_first_name} {manager.manager_last_name}

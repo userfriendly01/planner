@@ -6,10 +6,10 @@ import {
   StyledButton
 } from "components";
 import {
-  Manager,
   useAdminDispatch,
   useAdminState
 } from "context";
+import { Manager } from "globals";
 import React, { useState } from "react";
 import {
   addManager,
@@ -79,7 +79,7 @@ const AddManagerModal = (props: AddManagerModalProps) => {
 
   const addManagerClicked = (): Promise<any> => {
     setSaveStatus(loadingStates.loading);
-    if (state.managerContext.managers.some(savedManager => savedManager.manager_n_number === manager.manager_n_number)) {
+    if (state.managerContext.managers.some((savedManager: any) => savedManager.manager_n_number === manager.manager_n_number)) {
       setSaveStatus(loadingStates.fail);
       setTimeout(() => setSaveStatus(null), 2000);
       setErrorMessage("Manager already exists");

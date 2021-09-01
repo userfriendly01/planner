@@ -2,7 +2,6 @@ import {
   PaperContainer,
   StyledButton
 } from "components";
-import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
 
@@ -34,7 +33,13 @@ const TextWrapper = styled.div`
   align-self: center;
 `;
 
-const NotificationModal = props => {
+interface NotificationModalProps {
+  buttonText: string,
+  handleClick: () => void,
+  text: string
+}
+
+const NotificationModal = (props: NotificationModalProps, ref: null) => {
   const {
     buttonText,
     handleClick,
@@ -55,10 +60,4 @@ const NotificationModal = props => {
   );
 };
 
-NotificationModal.propTypes = {
-  buttonText: PropTypes.string.isRequired,
-  handleClick: PropTypes.func.isRequired,
-  text: PropTypes.string.isRequired
-};
-
-export default NotificationModal;
+export default React.forwardRef(NotificationModal);

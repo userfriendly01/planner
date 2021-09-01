@@ -4,7 +4,6 @@ import {
 } from "components";
 import { extensionMatcher } from "globals";
 import { checkExtension } from "services";
-import PropTypes from "prop-types";
 import React, {
   useState
 } from "react";
@@ -110,18 +109,6 @@ const ModalExtension = (props: ModalExtensionProps) => {
       }
     </FlexColumn>
   );
-};
-
-ModalExtension.propTypes = {
-  clearExtension: PropTypes.func.isRequired,
-  disabled: PropTypes.bool.isRequired,
-  error: PropTypes.bool,
-  extension: PropTypes.string.isRequired,
-  form: PropTypes.object.isRequired,
-  isEditExisting: PropTypes.bool,
-  originalValue: PropTypes.string,
-  setForm: PropTypes.func.isRequired,
-  updateValue: PropTypes.func.isRequired
 };
 
 export default ModalExtension;

@@ -2,7 +2,7 @@ import {
   TaskRouterSkill,
   TwilioWorker,
   TwilioWorkerSkills
-} from "context";
+} from "globals";
 import _ from "lodash";
 import { sortTaskRouterSkillByName } from "utils";
 
@@ -48,7 +48,7 @@ export const getValidSkillsObject = (skillsObject?: TwilioWorkerSkills): TwilioW
   };
   if (_.isPlainObject(skillsObject)) {
     if (_.isArray(skillsObject.skills)) {
-      skillsObject.skills.forEach(skill => validObject.skills.push(skill));
+      skillsObject.skills.forEach((skill:any) => validObject.skills.push(skill));
     }
     if (_.isPlainObject(skillsObject.levels)) {
       Object.entries(skillsObject.levels).forEach(([key, value]) => validObject.levels[key] = value);

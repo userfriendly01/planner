@@ -270,8 +270,9 @@ const ManagementTable = props => {
             );
           })}
         </tbody>
-        <Modal open={confirmationModalOpts.open}>
-          { confirmationModalOpts.worker ?
+
+        { confirmationModalOpts.worker ?
+          <Modal open={confirmationModalOpts.open}>
             <ConfirmationModal
               callbackMethods={{
                 onConfirm: handleDeleteUser,
@@ -296,9 +297,9 @@ const ManagementTable = props => {
               }}
               saveResult={saveResult}
             />
-            : null
-          }
-        </Modal>
+          </Modal>
+          : null
+        }
       </CustomTable>
     </TableContainer>
   );

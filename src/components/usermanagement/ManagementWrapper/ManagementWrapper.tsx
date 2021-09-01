@@ -10,10 +10,11 @@ import {
 } from "components";
 import {
   useAdminState,
-  TwilioWorker
+  FormStateProvider
 } from "context";
 import {
   formModes,
+  TwilioWorker,
   workersPerPage
 } from "globals";
 import React, {
@@ -128,37 +129,39 @@ export const ManagementWrapper: React.FC = () => {
   });
 
   return (
-    <ManagementContainer>
-      <Modal disableBackdropClick={true} open={userEntryFormState.open}>
-        <UserEntryForm
-          handleClose={() => setUserEntryFormState(initialUserEntryFormState)}
-          userEntryFormState={userEntryFormState}
-          skills={skillsFromContext}
-          workers={workersFromContext.sort(sortWorkersByFullName)}
-        />
-      </Modal>
-      <ManagementHeader
-        filterBy={state.filterBy}
-        searchBy={state.searchBy}
-        setFilter={setStateFromFilterChange}
-        setSearch={setStateFromSearchChange}
-        setUserEntryFormState={setUserEntryFormState} />
-      <StyledPaper elevation={3}>
-        <ManagementTable
-          deltaToggle={state.deltaToggle}
-          setDeltaToggle={setStateFromDeltaToggle}
-          setUserEntryFormState={setUserEntryFormState}
-          skills={skillsFromContext}
-          paginatedWorkers={workers.slice(workersStart, workersEnd)}
-          workers={workersFromContext.sort(sortWorkersByFullName)}
-        />
-      </StyledPaper>
-      <ManagementPagination
-        end={workersEnd}
-        length={workers.length}
-        page={state.pageSelected}
-        setPage={setStateFromPageChange}
-        start={workersStart + 1}/>
-    </ManagementContainer>
+    <FormStateProvider>
+      <ManagementContainer>
+        <Modal disableBackdropClick={true} open={userEntryFormState.open}>
+          <UserEntryForm
+            handleClose={() => setUserEntryFormState(initialUserEntryFormState)}
+            userEntryFormState={userEntryFormState}
+            skills={skillsFromContext}
+            workers={workersFromContext.sort(sortWorkersByFullName)}
+          />
+        </Modal>
+        <ManagementHeader
+          filterBy={state.filterBy}
+          searchBy={state.searchBy}
+          setFilter={setStateFromFilterChange}
+          setSearch={setStateFromSearchChange}
+          setUserEntryFormState={setUserEntryFormState} />
+        <StyledPaper elevation={3}>
+          <ManagementTable
+            deltaToggle={state.deltaToggle}
+            setDeltaToggle={setStateFromDeltaToggle}
+            setUserEntryFormState={setUserEntryFormState}
+            skills={skillsFromContext}
+            paginatedWorkers={workers.slice(workersStart, workersEnd)}
+            workers={workersFromContext.sort(sortWorkersByFullName)}
+          />
+        </StyledPaper>
+        <ManagementPagination
+          end={workersEnd}
+          length={workers.length}
+          page={state.pageSelected}
+          setPage={setStateFromPageChange}
+          start={workersStart + 1}/>
+      </ManagementContainer>
+    </FormStateProvider>
   );
 };

@@ -6,10 +6,8 @@ import {
   PriorityDropDown,
   SkillDropDown
 } from "components";
-import {
-  TwilioWorkerSkills,
-  useAdminState
-} from "context";
+import { useAdminState } from "context";
+import { TwilioWorkerSkills } from "globals";
 import PropTypes from "prop-types";
 import React, {
   useState
@@ -124,7 +122,7 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
     }
   } = useAdminState();
 
-  const taskrouterSkillsForDropDown = taskrouterSkills.filter(skillObj => !defaultSkills.skills.includes(skillObj.skill));
+  const taskrouterSkillsForDropDown = taskrouterSkills.filter((skillObj: any) => !defaultSkills.skills.includes(skillObj.skill));
 
   const defaultNewSkill: NewTwilioWorkerSkill = {
     levels: [],
