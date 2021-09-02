@@ -1,5 +1,7 @@
 import styled from "styled-components";
+import { Tabs } from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
+import { StyledButton } from "components";
 
 export const FlexRow = styled.div`
   display: flex;
@@ -9,12 +11,20 @@ export const FlexRow = styled.div`
 export const ButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
   padding: 8px;
+  align-items: flex-end;
+`;
+
+export const UserFormButton = styled(StyledButton)`
+  height: 40px;
+  width: 150px;
+  margin-bottom: 15px; 
 `;
 
 export const FormControlsContainer = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
+  justify-content: center;
 `;
 
 export const FormControlsPane = styled.div`
@@ -23,6 +33,7 @@ export const FormControlsPane = styled.div`
   min-width: 320px;
   padding: 0 8px;
   width: 100%;
+  max-width: 400px;
 `;
 
 export const Header1 = styled.h1`
@@ -46,10 +57,15 @@ export const ModalContainer = styled.div<{theme: any}>`
   right: 0;
   top: 10vh;
   width: 100%;
+  min-height: 600px;
 `;
 
 export const TabContainer = styled.div`
   display: flex;
+`;
+
+export const UserFormTabs = styled(Tabs)`
+  min-width: 160px;
 `;
 
 export const ToggleContainer = styled.div`

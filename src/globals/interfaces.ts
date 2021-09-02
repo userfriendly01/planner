@@ -41,6 +41,17 @@ export interface SkillsFormProps {
   form: UserEntryFormState,
   setForm: (action: Action) => void
 }
+export interface UserFormButtonsProps {
+  handleClose: VoidFunction,
+  loading: any,
+  updateLoading: (payload: any) => void
+  form: UserEntryFormState,
+  setForm: (action: Action) => void,
+  profiles: TritonProfile[],
+  offices: Map<string, Office>,
+  worker: TwilioWorker,
+  forwardToToggle: boolean,
+}
 export interface FormModes {
   INSERT: string,
   UPDATE: string
