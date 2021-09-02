@@ -4,15 +4,16 @@ import {
   FormControlsPane
 } from "./UserEntryFormStyles";
 import { DefaultSkillSelector } from "components";
-import { userFormActions } from "context";
-import { SkillsFormProps } from "globals";
+import {
+  useFormState,
+  useFormDispatch,
+  userFormActions
+} from "context";
 
-const SkillsFormInfo = (props: SkillsFormProps) => {
+const SkillsFormInfo = () => {
 
-  const {
-    form,
-    setForm
-  } = props;
+  const form = useFormState();
+  const setForm = useFormDispatch();
 
   return(
     <FormControlsContainer>

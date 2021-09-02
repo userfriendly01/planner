@@ -1,32 +1,28 @@
 import React from "react";
-import {
-  InputAdornment,
-  Switch,
-  Tooltip
-} from "@material-ui/core";
+import { InputAdornment } from "@material-ui/core";
 import {
   FormControlsContainer,
   FormControlsPane,
-  ToggleContainer,
-  ToggleLabel,
   StyledIcon
 } from "./UserEntryFormStyles";
 import {
-  DefaultSkillSelector,
   ForwardToEntryForm,
   ModalExtension,
   ModalNNumber,
   ModalPhoneNumber,
   OutlinedSelect
 } from "components";
-import { userFormActions } from "context";
+import {
+  useFormState,
+  useFormDispatch,
+  userFormActions
+} from "context";
 import {
   sortManagersByName,
   sortProfilesByName,
   isProfileIdValid,
   isManagerValid,
   getZeroOutEnabledFromProfile,
-  getOverflowSkill,
   getExtensionInputValid
 } from "utils";
 import {
@@ -38,8 +34,6 @@ import {
 const BasicFormInfo = (props: BasicFormInfoProps) => {
 
   const {
-    form,
-    setForm,
     skills,
     worker,
     workers,
@@ -49,6 +43,9 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
     setForwardToToggle,
     setProfileHasZeroOutEnabled
   } = props;
+
+  const form = useFormState();
+  const setForm = useFormDispatch();
 
   const isOutgoingDisabled = (): boolean => {
     if (form.formMode === formModes.INSERT) {
@@ -73,6 +70,16 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
     setForwardToToggle(!forwardToToggle);
   };
 
+  const handleOnBlur = (field: string) => {
+    const isFieldValid = form[field].valid;
+    if(!isFieldValid){
+      setForm({
+        type: userFormActions.SET_BLUR_ON_FIELD,
+        payload: field
+      });
+    }
+  };
+
   return(
     <FormControlsContainer>
       <FormControlsPane>
@@ -81,12 +88,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           helperText={isManagerValid(form) || !form.manager.updated ? null : "Please select a manager"}
           label={"Manager *"}
           labelWidth={67}
-          onBlur={() =>
-            setForm({
-              type: userFormActions.SET_BLUR_ON_FIELD,
-              payload: "manager"
-            })
-          }
+          onBlur={() => handleOnBlur("manager")}
           optionsList={managers.sort(sortManagersByName)}
           optionsDisplayFunc={option => {
             return {
@@ -106,12 +108,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           helperText={isProfileIdValid(form) || !form.profileId.updated ? null : "Please select a team"}
           label={"Team *"}
           labelWidth={44}
-          onBlur={() =>
-            setForm({
-              type: userFormActions.SET_BLUR_ON_FIELD,
-              payload: "profileId"
-            })
-          }
+          onBlur={() => handleOnBlur("profileId")}
           optionsList={profiles.sort(sortProfilesByName)}
           optionsDisplayFunc={option => {
             return {
@@ -138,12 +135,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           allowSevenDigitVdn={false}
           id="outgoing-number"
           number={form.outgoing.value}
-          onBlur={() =>
-            setForm({
-              type: userFormActions.SET_BLUR_ON_FIELD,
-              payload: "outgoing"
-            })
-          }
+          onBlur={() => handleOnBlur("outgoing")}
           label="Outgoing Number *"
           showError={form.outgoing.blurred}
           updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
@@ -185,12 +177,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           disabled={(form.formMode === formModes.UPDATE) || (form.nNumberFetchedUser ? true : false)}
           fetchedUser={form.nNumberFetchedUser}
           label="N Number *"
-          onBlur={() =>
-            setForm({
-              type: userFormActions.SET_BLUR_ON_FIELD,
-              payload: "nNumber"
-            })
-          }
+          onBlur={() => handleOnBlur("nNumber")}
           onClear={() => setForm({ type: userFormActions.CLEAR_N_NUMBER })}
           onComplete={(fetchedUser, nNumber) => setForm({
             type: userFormActions.COMPLETE_N_NUMBER,

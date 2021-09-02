@@ -10,11 +10,13 @@ import {
   ToggleLabel
 } from "./UserEntryFormStyles";
 import {
-  DefaultSkillSelector,
-  ForwardToEntryForm,
   ModalPhoneNumber
 } from "components";
-import { userFormActions } from "context";
+import {
+  useFormState,
+  useFormDispatch,
+  userFormActions
+} from "context";
 import { getOverflowSkill } from "utils";
 import {
   formModes,
@@ -24,16 +26,13 @@ import {
 const DidFormInfo = (props: DidFormInfoProps) => {
 
   const {
-    form,
-    setForm,
-    skills,
     worker,
-    workers,
     profiles,
-    forwardToToggle,
     profileHasZeroOutEnabled
   } = props;
 
+  const form = useFormState();
+  const setForm = useFormDispatch();
 
   return(
     <FormControlsContainer>

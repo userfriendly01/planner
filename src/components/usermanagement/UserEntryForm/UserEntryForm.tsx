@@ -39,8 +39,9 @@ const UserEntryForm = (props: UserEntryFormProps, ref: null) => {
   } = props;
 
   const form = useFormState();
-  console.log("**Form: ", form);
   const setForm = useFormDispatch();
+  console.log("**Form: ", form);
+
   const {
     officeContext: {
       offices
@@ -76,8 +77,6 @@ const UserEntryForm = (props: UserEntryFormProps, ref: null) => {
   const defaultView = {
     tab: 0,
     view: <BasicFormInfo
-      form={form}
-      setForm={setForm}
       skills={skills}
       worker={worker}
       workers={workers}
@@ -92,20 +91,15 @@ const UserEntryForm = (props: UserEntryFormProps, ref: null) => {
   const didFormView = {
     tab: 1,
     view: <DidFormInfo
-      form={form}
-      setForm={setForm}
-      skills={skills}
       worker={worker}
-      workers={workers}
       profiles={profiles}
-      forwardToToggle={forwardToToggle}
       profileHasZeroOutEnabled={profileHasZeroOutEnabled}
     />
   };
 
   const skillsView = {
     tab: 2,
-    view: <SkillsFormInfo form={form} setForm={setForm} />
+    view: <SkillsFormInfo />
   };
 
   const [ activeTab, setActiveTab ] = React.useState(defaultView);
@@ -158,8 +152,6 @@ const UserEntryForm = (props: UserEntryFormProps, ref: null) => {
         handleClose={handleClose}
         loading={loading}
         updateLoading={updateLoading}
-        form={form}
-        setForm={setForm}
         profiles={profiles}
         offices={offices}
         worker={worker}

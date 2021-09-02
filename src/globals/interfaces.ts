@@ -14,8 +14,6 @@ export interface UserEntryFormProps {
 }
 
 export interface BasicFormInfoProps {
-  form: UserEntryFormState,
-  setForm: (action: Action) => void,
   skills: TaskRouterSkill[],
   worker: TwilioWorker,
   workers: TwilioWorker[],
@@ -27,26 +25,15 @@ export interface BasicFormInfoProps {
 }
 
 export interface DidFormInfoProps {
-  form: UserEntryFormState,
-  setForm: (action: Action) => void,
-  skills: TaskRouterSkill[],
   worker: TwilioWorker,
-  workers: TwilioWorker[],
   profiles: TritonProfile[],
-  forwardToToggle: boolean,
   profileHasZeroOutEnabled: boolean
 }
 
-export interface SkillsFormProps {
-  form: UserEntryFormState,
-  setForm: (action: Action) => void
-}
 export interface UserFormButtonsProps {
   handleClose: VoidFunction,
   loading: any,
   updateLoading: (payload: any) => void
-  form: UserEntryFormState,
-  setForm: (action: Action) => void,
   profiles: TritonProfile[],
   offices: Map<string, Office>,
   worker: TwilioWorker,

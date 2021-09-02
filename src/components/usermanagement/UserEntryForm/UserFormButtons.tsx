@@ -6,6 +6,8 @@ import {
 } from "./UserEntryFormStyles";
 import {
   useAdminDispatch,
+  useFormState,
+  useFormDispatch,
   userFormActions
 } from "context";
 import {
@@ -38,8 +40,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     handleClose,
     loading,
     updateLoading,
-    form,
-    setForm,
     profiles,
     offices,
     worker,
@@ -47,6 +47,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
   } = props;
 
   const dispatch = useAdminDispatch();
+  const form = useFormState();
+  const setForm = useFormDispatch();
 
   const doCreateUser = () => {
     updateLoading({
