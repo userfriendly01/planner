@@ -27,7 +27,7 @@ import {
   isFormValid,
   mapWorkerFromDbWorker,
   isDidDifferentValid,
-  getOverflowSkill,
+  getOverflowSkillFromProfile,
   isFormUpdated,
   getNonOverflowSkills,
   workerHasOverFlowSkill,
@@ -82,9 +82,10 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       profile_id: form.profileId.value,
       unique_id: form.nNumber.value.toLowerCase()
     };
-    if (getOverflowSkill(form, profiles) !== null && form.zeroOutEnabled && form.directDialNum.value) {
+    const overflowSkill = getOverflowSkillFromProfile(profiles, form.profileId.value);
+    if (overflowSkill !== undefined && form.zeroOutEnabled && form.directDialNum.value) {
       attributes.routing = {
-        skills: [getOverflowSkill(form, profiles)],
+        skills: [overflowSkill],
         levels: {}
       };
     }
@@ -120,7 +121,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             });
         }
         setForm({
-          type: "RESET_FORM_ON_CREATE"
+          type: userFormActions.RESET_FORM_ON_CREATE
         });
         dispatch({
           type: "addWorkers",
@@ -177,7 +178,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       attributes.default_skills = form.defaultSkills;
     }
     // update overflow skill
-    const overflowSkill = getOverflowSkill(form, profiles);
+    const overflowSkill = getOverflowSkillFromProfile(profiles, form.profileId.value);
     if ((form.zeroOutEnabledUpdated || form.profileId.updated) && form.zeroOutEnabled) {
       attributes.routing = {
         skills: [

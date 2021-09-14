@@ -283,6 +283,7 @@ export const userFormReducer = (state: UserEntryFormState, action: Action): User
       };
     }
     case userFormActions.INITIATE_DID_FIELDS: {
+      const zeroOutEnabled = state.didUser ? false : state.zeroOutEnabled;
       return {
         ...state,
         didUser: !state.didUser,
@@ -299,7 +300,8 @@ export const userFormReducer = (state: UserEntryFormState, action: Action): User
           e164: undefined,
           updated: false,
           valid: false
-        }
+        },
+        zeroOutEnabled
       };
     }
     case userFormActions.INITIATE_ZERO_OUT_FIELDS: {

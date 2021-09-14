@@ -22,7 +22,7 @@ import {
   sortProfilesByName,
   isProfileIdValid,
   isManagerValid,
-  getZeroOutEnabledFromProfile,
+  getOverflowSkillFromProfile,
   getExtensionInputValid
 } from "utils";
 import {
@@ -40,8 +40,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
     profiles,
     managers,
     forwardToToggle,
-    setForwardToToggle,
-    setProfileHasZeroOutEnabled
+    setForwardToToggle
   } = props;
 
   const form = useFormState();
@@ -118,7 +117,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
             };
           }}
           updateValue={newValue => {
-            const zeroOutEnabled = getZeroOutEnabledFromProfile(profiles, newValue);
             setForm({
               type: userFormActions.UPDATE_TEAM,
               payload: {
@@ -126,7 +124,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
                 profiles
               }
             });
-            setProfileHasZeroOutEnabled(zeroOutEnabled);
           }}
           value={form.profileId.value}
         />

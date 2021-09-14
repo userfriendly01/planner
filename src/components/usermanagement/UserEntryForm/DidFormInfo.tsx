@@ -17,7 +17,7 @@ import {
   useFormDispatch,
   userFormActions
 } from "context";
-import { getOverflowSkill } from "utils";
+import { getOverflowSkillFromProfile } from "utils";
 import {
   formModes,
   DidFormInfoProps
@@ -27,8 +27,7 @@ const DidFormInfo = (props: DidFormInfoProps) => {
 
   const {
     worker,
-    profiles,
-    profileHasZeroOutEnabled
+    profiles
   } = props;
 
   const form = useFormState();
@@ -48,7 +47,9 @@ const DidFormInfo = (props: DidFormInfoProps) => {
             <Switch
               disabled={form.formMode === formModes.UPDATE && worker.directDialNum ? true : false}
               checked={form.didUser}
-              onChange={() => setForm({ type: userFormActions.INITIATE_DID_FIELDS })}
+              onChange={() => {
+                setForm({ type: userFormActions.INITIATE_DID_FIELDS });
+              }}
               inputProps={{ "aria-label": "toggle-did-user" }}
             />
             <ToggleLabel>DID User</ToggleLabel>
@@ -57,7 +58,7 @@ const DidFormInfo = (props: DidFormInfoProps) => {
         {form.didUser ? (
           <>
             <Tooltip
-              title={profileHasZeroOutEnabled ?
+              title={getOverflowSkillFromProfile(profiles, form.profileId.value) !== undefined ?
                 "" : "No overflow skill exists for this team"}
               placement={"bottom-start"}
             >
@@ -65,7 +66,7 @@ const DidFormInfo = (props: DidFormInfoProps) => {
                 <Switch
                   checked={form.zeroOutEnabled}
                   value={form.zeroOutEnabled}
-                  disabled={getOverflowSkill(form, profiles) === null}
+                  disabled={getOverflowSkillFromProfile(profiles, form.profileId.value) === undefined}
                   onChange={() => setForm({ type: userFormActions.INITIATE_ZERO_OUT_FIELDS })}
                   inputProps={{ "aria-label": "toggle-zero-out" }}
                 />

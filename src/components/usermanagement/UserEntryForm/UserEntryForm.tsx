@@ -65,7 +65,6 @@ const UserEntryForm = (props: UserEntryFormProps, ref: null) => {
     });
   }
 
-  const [profileHasZeroOutEnabled, setProfileHasZeroOutEnabled] = React.useState(form.zeroOutEnabled);
   const [forwardToToggle, setForwardToToggle] = useState(false);
   const [loading, updateLoading] = useState<LoadingState>({
     lookupUser: false,
@@ -84,7 +83,6 @@ const UserEntryForm = (props: UserEntryFormProps, ref: null) => {
       managers={managers}
       forwardToToggle={forwardToToggle}
       setForwardToToggle={setForwardToToggle}
-      setProfileHasZeroOutEnabled={setProfileHasZeroOutEnabled}
     />
   };
 
@@ -93,7 +91,6 @@ const UserEntryForm = (props: UserEntryFormProps, ref: null) => {
     view: <DidFormInfo
       worker={worker}
       profiles={profiles}
-      profileHasZeroOutEnabled={profileHasZeroOutEnabled}
     />
   };
 

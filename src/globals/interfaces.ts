@@ -21,13 +21,11 @@ export interface BasicFormInfoProps {
   managers: Manager[]
   forwardToToggle: boolean,
   setForwardToToggle: (value: boolean) => void,
-  setProfileHasZeroOutEnabled: (value: boolean) => void
 }
 
 export interface DidFormInfoProps {
   worker: TwilioWorker,
   profiles: TritonProfile[],
-  profileHasZeroOutEnabled: boolean
 }
 
 export interface UserFormButtonsProps {

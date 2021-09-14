@@ -19,17 +19,27 @@ export const isExtensionValid = (form: UserEntryFormState): boolean => form.exte
 
 export const isInactiveForwardToValid = (form: UserEntryFormState, forwardToToggle: boolean): boolean => forwardToToggle === true ? form.inactiveForwardTo.value !== null : true;
 
+// For a DID user, the outgoing number is tied to the directDialNum, if you change one you must change both in order for the form to be valid
 export const isDidDifferentValid = (form: UserEntryFormState, worker: TwilioWorker, forwardToToggle: boolean): boolean =>
-  forwardToToggle === true ? removeNonNumericCharacters(form.outgoing.value) !== formatE164PhoneNumber(worker?.attributes?.did) &&
-  removeNonNumericCharacters(form.directDialNum.value) !== formatE164PhoneNumber(worker?.directDialNum) : true;
+  forwardToToggle === true ?
+    removeNonNumericCharacters(form.outgoing.value) !== formatE164PhoneNumber(worker?.attributes?.did) &&
+    removeNonNumericCharacters(form.directDialNum.value) !== formatE164PhoneNumber(worker?.directDialNum)
+    : true;
 
 export const getTargetProfile = (profiles: TritonProfile[], newProfileValue: string): any => profiles.find((profile: any) => profile.profile_id === +newProfileValue);
 
-export const getOverflowSkill = (form: UserEntryFormState, profiles: TritonProfile[]): string => form.profileId.value ? getTargetProfile(profiles, form.profileId.value).overflow_skill : "";
+// export const getOverflowSkill = (form: UserEntryFormState, profiles: TritonProfile[]): string => form.profileId.value ? getTargetProfile(profiles, form.profileId.value).overflow_skill : "";
 
 export const getExtensionInputValid = (form: UserEntryFormState): boolean => form.extension.valid || form.extension.value === "";
 
-export const getZeroOutEnabledFromProfile = (profiles: TritonProfile[], newProfileValue: string): boolean => getTargetProfile(profiles, newProfileValue).overflow_skill !== null;
+export const getOverflowSkillFromProfile = (profiles: TritonProfile[], profileValue: string): string | undefined => {
+  const profile = getTargetProfile(profiles, profileValue);
+  if(profile.overflow_skill === null || profile.overflow_skill === ""){
+    return undefined;
+  } else {
+    return profile.overflow_skill;
+  }
+};
 
 export const getOverflowSkills = (profiles: TritonProfile[]): string[] => {
   const skills: string[] = [];
@@ -47,8 +57,8 @@ form.alternateDid.updated || form.directDialNum.updated ||
 form.nNumber.updated || form.extension.updated ||
 form.inactiveForwardTo.updated || form.zeroOutEnabledUpdated;
 
-export const isFormValid = (form: UserEntryFormState, worker: TwilioWorker, forwardToToggle: boolean): boolean => {
-  return form.formMode === formModes.INSERT ? isNNumberValid(form) : true
+export const isFormValid = (form: UserEntryFormState, worker: TwilioWorker, forwardToToggle: boolean): boolean =>
+  (form.formMode === formModes.INSERT ? isNNumberValid(form) : true)
   && isProfileIdValid(form)
   && isManagerValid(form)
   && form.outgoing.valid
@@ -56,4 +66,3 @@ export const isFormValid = (form: UserEntryFormState, worker: TwilioWorker, forw
   && (form.didUser === true ? form.directDialNum.valid && form.alternateDid.valid : true)
   && isInactiveForwardToValid(form, forwardToToggle)
   && isDidDifferentValid(form, worker, forwardToToggle);
-};

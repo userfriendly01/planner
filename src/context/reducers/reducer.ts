@@ -76,7 +76,8 @@ export const reducer = (state: AppState, action: Action): AppState => {
           offices: new Map(action.payload)
         }
       };
-    case "loadProfiles":
+    case "loadProfiles":{
+      console.log("***Profiles", action.payload);
       return {
         ...state,
         profileContext: {
@@ -84,6 +85,7 @@ export const reducer = (state: AppState, action: Action): AppState => {
           profiles: action.payload
         }
       };
+    }
     case "loadSkills":
       return {
         ...state,
