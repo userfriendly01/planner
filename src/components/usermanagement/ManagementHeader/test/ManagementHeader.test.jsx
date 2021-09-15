@@ -70,7 +70,6 @@ describe("<ManagementHeader />", () => {
     const addUserButtonElement = rendered.getByText("Add User");
     fireEvent.click(addUserButtonElement);
     expect(setUserEntryFormState).toHaveBeenCalledWith({
-      formMode: formModes.INSERT,
       open: true,
       worker: null
     });

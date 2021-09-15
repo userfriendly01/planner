@@ -51,17 +51,6 @@ const UserEntryForm = (props: UserEntryFormProps, ref: null) => {
     }
   } = useAdminState();
 
-  if(form.formMode === formModes.UPDATE) {
-    setForm({
-      type: userFormActions.SET_UPDATE_FORM_STATE,
-      payload: {
-        worker,
-        managers,
-        formMode: formModes.UPDATE
-      }
-    });
-  }
-
   const [forwardToToggle, setForwardToToggle] = useState(false);
   const [loading, updateLoading] = useState<LoadingState>({
     lookupUser: false,
@@ -97,6 +86,12 @@ const UserEntryForm = (props: UserEntryFormProps, ref: null) => {
   };
 
   const [ activeTab, setActiveTab ] = React.useState(defaultView);
+  const doHandleClose = () => {
+    handleClose();
+    setForm({
+      type: userFormActions.RESET_FORM
+    });
+  };
 
   const handleTabChange = (newValue: number) => {
     switch(newValue) {

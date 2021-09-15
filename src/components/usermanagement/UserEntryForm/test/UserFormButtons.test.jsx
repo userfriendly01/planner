@@ -475,7 +475,7 @@ describe("<UserEntryForm />", () => {
               });
               expect(mockSetForm).toBeCalledTimes(1);
               expect(mockSetForm).toBeCalledWith({
-                type: "RESET_FORM_ON_CREATE"
+                type: "RESET_FORM"
               });
               expect(mockDispatch).toBeCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
@@ -545,7 +545,7 @@ describe("<UserEntryForm />", () => {
               });
               expect(mockSetForm).toBeCalledTimes(1);
               expect(mockSetForm).toBeCalledWith({
-                type: "RESET_FORM_ON_CREATE"
+                type: "RESET_FORM"
               });
               expect(mockDispatch).toBeCalledTimes(1);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
@@ -603,7 +603,7 @@ describe("<UserEntryForm />", () => {
               });
               expect(mockSetForm).toBeCalledTimes(1);
               expect(mockSetForm).toBeCalledWith({
-                type: "RESET_FORM_ON_CREATE"
+                type: "RESET_FORM"
               });
               expect(mockDispatch).toBeCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
@@ -664,7 +664,7 @@ describe("<UserEntryForm />", () => {
               });
               expect(mockSetForm).toBeCalledTimes(1);
               expect(mockSetForm).toBeCalledWith({
-                type: "RESET_FORM_ON_CREATE"
+                type: "RESET_FORM"
               });
               expect(mockDispatch).toBeCalledTimes(1);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
@@ -1153,7 +1153,7 @@ describe("<UserEntryForm />", () => {
       });
       expect(mockHandleClose).toBeCalledTimes(1);
       expect(mockSetForm).toBeCalledTimes(1);
-      expect(mockSetForm).toBeCalledWith({ type: userFormActions.RESET_FORM_ON_CREATE });
+      expect(mockSetForm).toBeCalledWith({ type: userFormActions.RESET_FORM });
     });
   });
 });

@@ -161,7 +161,7 @@ const workers = [
 ];
 
 describe("userFormReducer", () => {
-  describe("RESET_FORM_ON_CREATE", () => {
+  describe("RESET_FORM", () => {
     test("should reset form to initial state", () => {
       const initialTestState = {
         ...initialUserFormState,
@@ -169,7 +169,7 @@ describe("userFormReducer", () => {
           value: "2"
         }
       };
-      const action = { type: userFormActions.RESET_FORM_ON_CREATE };
+      const action = { type: userFormActions.RESET_FORM };
       const result = userFormReducer(initialTestState, action);
       expect(result).toStrictEqual(initialUserFormState);
     });

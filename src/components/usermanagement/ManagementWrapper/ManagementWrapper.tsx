@@ -13,7 +13,6 @@ import {
   FormStateProvider
 } from "context";
 import {
-  formModes,
   TwilioWorker,
   workersPerPage
 } from "globals";
@@ -131,7 +130,7 @@ export const ManagementWrapper: React.FC = () => {
       <ManagementContainer>
         <Modal disableBackdropClick={true} open={userEntryFormState.open}>
           <UserEntryForm
-            handleClose={() => setUserEntryFormState(initialUserEntryFormState)}
+            handleClose={() => setUserEntryFormState(initialUserEntryFormState) }
             worker={userEntryFormState.worker}
             skills={skillsFromContext}
             workers={workersFromContext.sort(sortWorkersByFullName)}

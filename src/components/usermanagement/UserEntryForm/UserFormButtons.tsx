@@ -121,7 +121,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             });
         }
         setForm({
-          type: userFormActions.RESET_FORM_ON_CREATE
+          type: userFormActions.RESET_FORM
         });
         dispatch({
           type: "addWorkers",
@@ -261,7 +261,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       <UserFormButton
         onClick={() => {
           handleClose();
-          setForm({ type: userFormActions.RESET_FORM_ON_CREATE });
+          setForm({ type: userFormActions.RESET_FORM });
         }}
       >
           Close

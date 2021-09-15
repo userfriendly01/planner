@@ -44,7 +44,6 @@ const ManagementHeader = props => {
   } = props;
 
   const addUserOnClick = () => setUserEntryFormState({
-    formMode: formModes.INSERT,
     open: true,
     worker: null
   });

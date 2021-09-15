@@ -19,6 +19,7 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
+import { useFormDispatch } from "context";
 
 jest.useFakeTimers();
 
@@ -32,6 +33,15 @@ jest.mock("components", () => ({
 jest.mock("services", () => ({
   __esModule: true,
   deleteUser: jest.fn()
+}));
+
+jest.mock("context", () => ({
+  __esModule: true,
+  useAdminState: jest.requireActual("context").useAdminState,
+  useAdminDispatch: jest.requireActual("context").useAdminDispatch,
+  useFormDispatch: jest.fn(),
+  userFormActions: jest.requireActual("context").userFormActions,
+  initialState: jest.requireActual("context").initialState
 }));
 
 const mockWorkerData = [
@@ -97,6 +107,7 @@ const skills = [
 
 const setDeltaToggle = jest.fn();
 const setUserEntryFormState = jest.fn();
+const mockSetForm = jest.fn();
 
 const renderComponent = (workers, toggle = false, state) => {
   return render(
@@ -120,6 +131,7 @@ describe("<ManagementTable />", () => {
     jest.clearAllMocks();
     mockStore.reset();
     setDeltaToggle.mockClear();
+    useFormDispatch.mockReturnValue(mockSetForm);
   });
   test("with no workers, we should just render a header.", () => {
     const rendered = renderComponent([]);
@@ -301,7 +313,6 @@ describe("<ManagementTable />", () => {
       const indexClicked = 1;
       act(() => fireEvent.click(editButtons[indexClicked]));
       expect(setUserEntryFormState).toHaveBeenCalledWith({
-        formMode: formModes.UPDATE,
         open: true,
         worker: mockWorkerData[indexClicked]
       });

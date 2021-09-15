@@ -13,7 +13,9 @@ import {
 } from "components";
 import {
   useAdminDispatch,
-  useAdminState
+  useAdminState,
+  useFormDispatch,
+  userFormActions
 } from "context";
 import {
   formModes,
@@ -159,6 +161,7 @@ const ManagementTable = props => {
   const state = useAdminState();
   const selectedWorkers = state.workerContext.selectedWorkers;
   const dispatch = useAdminDispatch();
+  const setForm = useFormDispatch();
 
   const handleDeleteUser = () => {
     const deletedWorker = confirmationModalOpts.worker;
@@ -230,8 +233,15 @@ const ManagementTable = props => {
             });
             const editButtonOnClick = event => {
               event.stopPropagation();
+              setForm({
+                type: userFormActions.SET_UPDATE_FORM_STATE,
+                payload: {
+                  worker,
+                  managers: state.managerContext.managers,
+                  formMode: formModes.UPDATE
+                }
+              });
               setUserEntryFormState({
-                formMode: formModes.UPDATE,
                 open: true,
                 worker
               });

@@ -15,7 +15,7 @@ export const userFormActions = {
   SET_BLUR_ON_FIELD: "SET_BLUR_ON_FIELD",
   EDIT_PEN_CLICK_FORWARD_TO_TOGGLE: "EDIT_PEN_CLICK_FORWARD_TO_TOGGLE",
   EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE: "EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE",
-  RESET_FORM_ON_CREATE: "RESET_FORM_ON_CREATE",
+  RESET_FORM: "RESET_FORM",
   UPDATE_MANAGER: "UPDATE_MANAGER",
   UPDATE_TEAM: "UPDATE_TEAM",
   CLEAR_N_NUMBER: "CLEAR_N_NUMBER",
@@ -92,7 +92,7 @@ export const initialUserFormState: UserEntryFormState = {
 
 export const userFormReducer = (state: UserEntryFormState, action: Action): UserEntryFormState => {
   switch (action.type) {
-    case userFormActions.RESET_FORM_ON_CREATE: {
+    case userFormActions.RESET_FORM: {
       return {
         ...initialUserFormState
       };
