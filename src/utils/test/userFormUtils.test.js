@@ -1,5 +1,18 @@
 import { formModes } from "globals";
 import {
+  isProfileIdValid,
+  isManagerValid,
+  isNNumberValid,
+  isExtensionValid,
+  isInactiveForwardToValid,
+  isDidDifferentValid,
+  getTargetProfile,
+  getExtensionInputValid,
+  getOverflowSkillFromProfile,
+  getOverflowSkills,
+  workerHasOverFlowSkill,
+  getNonOverflowSkills,
+  isFormUpdated,
   isFormValid
 } from "../userFormUtils";
 
@@ -15,7 +28,6 @@ const managerList = [
     manager_n_number: "n7454853"
   }
 ];
-
 const profileList = [
   {
     profile_nme: "test1",
@@ -33,7 +45,6 @@ const profileList = [
     overflow_skill: "anotherOverflowSkill"
   }
 ];
-
 const validFormOptions = {
   alternateDid: {
     e164: "+18001234567",
@@ -59,7 +70,6 @@ const validFormOptions = {
   nNumber: "n1234567",
   profileId: profileList[0].profile_id
 };
-
 const mockWorkers = [
   {
     attributes: {
@@ -153,7 +163,6 @@ const mockWorkers = [
     }
   }
 ];
-
 const validFormState = {
   formMode: formModes.INSERT,
   defaultSkills: [],
@@ -214,6 +223,415 @@ const validFormState = {
   zeroOutEnabledUpdated: false,
   editDisabled: false
 };
+const initialFormState = {
+  formMode: formModes.INSERT,
+  defaultSkills: [],
+  defaultSkillsUpdated: false,
+  didUser: false,
+  extension: {
+    value: "",
+    blurred: false,
+    updated: false,
+    valid: false
+  },
+  inactiveForwardTo: {
+    value: null,
+    updated: false
+  },
+  manager: {
+    value: "",
+    blurred: false,
+    updated: false
+  },
+  nNumber: {
+    value: "n",
+    blurred: false,
+    updated: false
+  },
+  nNumberFetchedUser: null,
+  outgoing: {
+    value: "",
+    blurred: false,
+    e164: undefined,
+    updated: false,
+    valid: false
+  },
+  profileId: {
+    value: "",
+    blurred: false,
+    updated: false
+  },
+  alternateDid: {
+    value: "",
+    blurred: false,
+    e164: undefined,
+    updated: false,
+    valid: false
+  },
+  directDialNum: {
+    value: "",
+    blurred: false,
+    e164: undefined,
+    updated: false,
+    valid: false
+  },
+  zeroOutEnabled: false,
+  zeroOutEnabledUpdated: false,
+  editDisabled: false
+};
+
+describe("isProfileIdValid", () => {
+  test("should return true when profile is populated", () => {
+    const form = {
+      profileId: {
+        value: "2"
+      }
+    };
+    const result = isProfileIdValid(form);
+    expect(result).toBe(true);
+  });
+  test("should return false when profile is empty string", () => {
+    const form = {
+      profileId: {
+        value: ""
+      }
+    };
+    const result = isProfileIdValid(form);
+    expect(result).toBe(false);
+  });
+});
+
+describe("isManagerValid", () => {
+  test("should return true when manager is populated", () => {
+    const form = {
+      manager: {
+        value: "Rebecca"
+      }
+    };
+    const result = isManagerValid(form);
+    expect(result).toBe(true);
+  });
+  test("should return false when manager is empty string", () => {
+    const form = {
+      manager: {
+        value: ""
+      }
+    };
+    const result = isManagerValid(form);
+    expect(result).toBe(false);
+  });
+});
+
+describe("isNNumberValid", () => {
+  test("should return true when nNumberFetchedUser is populated", () => {
+    const form = {
+      nNumberFetchedUser: {
+        name: "Faith"
+      }
+    };
+    const result = isNNumberValid(form);
+    expect(result).toBe(true);
+  });
+  test("should return false when nNumberFetchedUser is not populated", () => {
+    const form = {
+      nNumberFetchedUser: null
+    };
+    const result = isNNumberValid(form);
+    expect(result).toBe(false);
+  });
+});
+
+describe("isExtensionValid", () => {
+  test("should return true when extension is valid or populated", () => {
+    const form = {
+      extension: {
+        valid: true,
+        value: ""
+      }
+    };
+    const result = isExtensionValid(form);
+    expect(result).toBe(true);
+  });
+  test("should return false when extension is not valid", () => {
+    const form = {
+      extension: {
+        valid: false
+      }
+    };
+    const result = isExtensionValid(form);
+    expect(result).toBe(false);
+  });
+});
+
+describe("isInactiveForwardToValid", () => {
+  describe("forwardToToggle === true", () => {
+    test("should return true when inactiveForwardTo is valid", () => {
+      const form = {
+        inactiveForwardTo: {
+          value: "WK12334"
+        }
+      };
+      const result = isInactiveForwardToValid(form, true);
+      expect(result).toBe(true);
+    });
+    test("should return false when inactiveForwardTo is not valid", () => {
+      const form = {
+        inactiveForwardTo: {
+          value: null
+        }
+      };
+      const result = isInactiveForwardToValid(form, true);
+      expect(result).toBe(false);
+    });
+  });
+  describe("forwardToToggle === false", () => {
+    test("should return true", () => {
+      const result = isInactiveForwardToValid({}, false);
+      expect(result).toBe(true);
+    });
+  });
+});
+
+describe("isDidDifferentValid", () => {
+  describe("forwardToToggle === true", () => {
+    test("should return true if both outgoing and directDial Num have been changed", () => {
+      const form = {
+        outgoing: {
+          value: "+16038518200"
+        },
+        directDialNum: {
+          value: "+16032453160"
+        }
+      };
+      const result = isDidDifferentValid(form, mockWorkers[2], true);
+      expect(result).toBe(true);
+    });
+    test("should return true if both outgoing and directDial Num are unchanged", () => {
+      const form = {
+        outgoing: {
+          value: validFormOptions.didE164
+        },
+        directDialNum: {
+          value: validFormOptions.directDialNum.e164
+        }
+      };
+      const result = isDidDifferentValid(form, mockWorkers[2], true);
+      expect(result).toBe(true);
+    });
+    test("should return false if only one number is changed", () => {
+      const form = {
+        outgoing: {
+          value: "+16038518200"
+        },
+        directDialNum: {
+          value: validFormOptions.directDialNum.tenDig
+        }
+      };
+      const result = isDidDifferentValid(form, mockWorkers[2], true);
+      expect(result).toBe(false);
+    });
+  });
+  describe("forwardToToggle === false", () => {
+    test("should return true", () => {
+      const result = isDidDifferentValid({}, mockWorkers[2], false);
+      expect(result).toBe(true);
+    });
+  });
+});
+
+describe("getTargetProfile", () => {
+  test("should return profile when found in profile list", () => {
+    const result = getTargetProfile(profileList, "2");
+    expect(result).toStrictEqual(profileList[1]);
+  });
+  test("should return undefined if profile is not found", () => {
+    const result = getTargetProfile(profileList, "4");
+    expect(result).toBe(undefined);
+  });
+});
+
+describe("getExtensionInputValid", () => {
+  test("should return true if extension is valid or empty string", () => {
+    const form = {
+      extension: {
+        valid: true,
+        value: ""
+      }
+    };
+    const result = getExtensionInputValid(form);
+    expect(result).toStrictEqual(true);
+  });
+  test("should return false if extension is inValid", () => {
+    const form = {
+      extension: {
+        valid: false,
+        value: "Nah Bruh"
+      }
+    };
+    const result = getExtensionInputValid(form);
+    expect(result).toBe(false);
+  });
+});
+
+describe("getOverflowSkillFromProfile", () => {
+  test("should return skill if profile has overflow skill", () => {
+    const result = getOverflowSkillFromProfile(profileList, profileList[1].profile_id);
+    expect(result).toBe("whateverOverflowSkill");
+  });
+  test("should return undefined if profile does not have overflow skill", () => {
+    const result = getOverflowSkillFromProfile(profileList, profileList[0].profile_id);
+    expect(result).toBe(undefined);
+  });
+});
+
+describe("getOverflowSkills", () => {
+  test("should return overflow skills from profile list", () => {
+    const result = getOverflowSkills(profileList);
+    expect(result).toStrictEqual(["whateverOverflowSkill", "anotherOverflowSkill"]);
+  });
+});
+
+describe("workerHasOverFlowSkill", () => {
+  test("should return true if worker has overflow skill", () => {
+    const worker = {
+      attributes: {
+        routing: {
+          skills: ["aisgL1", "whateverOverflowSkill"]
+        }
+      }
+    };
+    const result = workerHasOverFlowSkill(worker, profileList);
+    expect(result).toBe(true);
+  });
+  test("should return false if worker does not have overflow skill", () => {
+    const worker = {
+      attributes: {
+        routing: {
+          skills: ["aisgL1"]
+        }
+      }
+    };
+    const result = workerHasOverFlowSkill(worker, profileList);
+    expect(result).toBe(false);
+  });
+});
+
+describe("getNonOverflowSkills", () => {
+  test("should return non overflow skills", () => {
+    const worker = {
+      attributes: {
+        routing: {
+          skills: ["aisgL1"]
+        }
+      }
+    };
+    const result = getNonOverflowSkills(worker, profileList);
+    expect(result).toStrictEqual(["aisgL1"]);
+  });
+});
+
+describe("isFormUpdated", () => {
+  test("form was not updated", () => {
+    const result = isFormUpdated(initialFormState);
+    expect(result).toBe(false);
+  });
+  test("form.defaultSkillsUpdated was updated", () => {
+    const updatedForm = {
+      ...initialFormState,
+      defaultSkillsUpdated: true
+    };
+    const result = isFormUpdated(updatedForm);
+    expect(result).toBe(true);
+  });
+  test("form.manager.updated was updated", () => {
+    const updatedForm = {
+      ...initialFormState,
+      manager: {
+        updated: true
+      }
+    };
+    const result = isFormUpdated(updatedForm);
+    expect(result).toBe(true);
+  });
+  test("form.profileId.updated was updated", () => {
+    const updatedForm = {
+      ...initialFormState,
+      profileId: {
+        updated: true
+      }
+    };
+    const result = isFormUpdated(updatedForm);
+    expect(result).toBe(true);
+  });
+  test("form.outgoing.updated was updated", () => {
+    const updatedForm = {
+      ...initialFormState,
+      outgoing: {
+        updated: true
+      }
+    };
+    const result = isFormUpdated(updatedForm);
+    expect(result).toBe(true);
+  });
+  test("form.alternateDid.updated was updated", () => {
+    const updatedForm = {
+      ...initialFormState,
+      alternateDid: {
+        updated: true
+      }
+    };
+    const result = isFormUpdated(updatedForm);
+    expect(result).toBe(true);
+  });
+  test("form.directDialNum.updated was updated", () => {
+    const updatedForm = {
+      ...initialFormState,
+      directDialNum: {
+        updated: true
+      }
+    };
+    const result = isFormUpdated(updatedForm);
+    expect(result).toBe(true);
+  });
+  test("form.nNumber.updated was updated", () => {
+    const updatedForm = {
+      ...initialFormState,
+      nNumber: {
+        updated: true
+      }
+    };
+    const result = isFormUpdated(updatedForm);
+    expect(result).toBe(true);
+  });
+  test("form.extension.updated was updated", () => {
+    const updatedForm = {
+      ...initialFormState,
+      extension: {
+        updated: true
+      }
+    };
+    const result = isFormUpdated(updatedForm);
+    expect(result).toBe(true);
+  });
+  test("form.inactiveForwardTo.updated was updated", () => {
+    const updatedForm = {
+      ...initialFormState,
+      inactiveForwardTo: {
+        updated: true
+      }
+    };
+    const result = isFormUpdated(updatedForm);
+    expect(result).toBe(true);
+  });
+  test("form.zeroOutEnabledUpdated was updated", () => {
+    const updatedForm = {
+      ...initialFormState,
+      zeroOutEnabledUpdated: true
+    };
+    const result = isFormUpdated(updatedForm);
+    expect(result).toBe(true);
+  });
+});
 
 describe("isFormValid", () => {
   describe("Form is valid", () => {
@@ -262,6 +680,7 @@ describe("isFormValid", () => {
       test("isFormValid should return false", () => {
         const form = {
           ...validFormState,
+          formMode: formModes.UPDATE,
           profileId: {
             ...validFormState.profileId,
             value: ""

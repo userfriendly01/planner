@@ -20,11 +20,14 @@ export const isExtensionValid = (form: UserEntryFormState): boolean => form.exte
 export const isInactiveForwardToValid = (form: UserEntryFormState, forwardToToggle: boolean): boolean => forwardToToggle === true ? form.inactiveForwardTo.value !== null : true;
 
 // For a DID user, the outgoing number is tied to the directDialNum, if you change one you must change both in order for the form to be valid
-export const isDidDifferentValid = (form: UserEntryFormState, worker: TwilioWorker, forwardToToggle: boolean): boolean =>
-  forwardToToggle === true ?
-    removeNonNumericCharacters(form.outgoing.value) !== formatE164PhoneNumber(worker?.attributes?.did) &&
-    removeNonNumericCharacters(form.directDialNum.value) !== formatE164PhoneNumber(worker?.directDialNum)
-    : true;
+export const isDidDifferentValid = (form: UserEntryFormState, worker: TwilioWorker, forwardToToggle: boolean): boolean => {
+  if(forwardToToggle === true) {
+    return removeNonNumericCharacters(form.outgoing.value) !== formatE164PhoneNumber(worker?.attributes?.did)
+    && removeNonNumericCharacters(form.directDialNum.value) !== formatE164PhoneNumber(worker?.directDialNum);
+  } else {
+    return true;
+  }
+};
 
 export const getTargetProfile = (profiles: TritonProfile[], newProfileValue: string): any => profiles.find((profile: any) => profile.profile_id === +newProfileValue);
 
