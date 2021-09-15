@@ -56,6 +56,6 @@ export const timeouts = {
   MODAL_OVERLAY: 2000
 };
 
-export const workersPerPage = 15;
+export const workersPerPage = 10; // TODO: change to 50
 
 export * from "./theme";

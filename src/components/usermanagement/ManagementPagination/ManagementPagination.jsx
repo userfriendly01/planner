@@ -1,3 +1,10 @@
+import { Tooltip } from "@material-ui/core";
+import {
+  NavigateNextOutlined,
+  NavigateBeforeOutlined,
+  SkipNextOutlined,
+  SkipPreviousOutlined
+} from "@material-ui/icons";
 import { workersPerPage } from "globals";
 import PropTypes from "prop-types";
 import React from "react";
@@ -7,22 +14,22 @@ const Highlight = styled.span`
   color: ${props => props.theme.textColor};
 `;
 
-const PageSection = styled.div`
-  color: #C0BFC0;
-  font-size: 1em;
+const NavArrow = styled.span`
+  border-radius: 50%;
+  color: ${props => props.disabled ? props.theme.navArrow.disabledColor.disabledGrey : props.theme.textColor};
+  display: inline-block;
+  height: 25px;
+  margin: 0 1px 0 1px;
+  width: 25px;
+  &:hover {
+    background-color: ${props => props.theme.navArrow.hoverColor};
+    cursor: pointer;
+  }
 `;
 
-const PageButton = styled.button`
-  background-color: ${props => props.value !== props.pageSelected ? "transparent" : props.theme.textColor};
-  border: ${props => props.value !== props.pageSelected ? "#C0BFC0" : props => props.theme.textColor};
-  border-radius: 5px;
-  border-style: solid;
-  border-width: 2px;
+const NavArrowsWrapper = styled.div`
   color: #C0BFC0;
-  cursor: pointer;
-  margin: 0px 2px;
-  outline: none;
-  width: 30px;
+  font-size: 1em;
 `;
 
 const PaginationWrapper = styled.div`
@@ -49,21 +56,44 @@ const ManagementPagination = props => {
     start
   } = props;
 
-  const buttons = [];
   const numWorkers = length;
   const numPages = Math.ceil(numWorkers / workersPerPage);
+  const onFirstPage = page === 1;
+  const onLastPage = page === numPages;
 
-  for (let i = 0; i < numPages; i++) {
-    const pageNum = i + 1;
-    buttons.push(<PageButton key={i} value={pageNum} pageSelected={page} onClick={() => setPage(pageNum)}>{pageNum}</PageButton>);
-  }
+  const navArrowOnClick = pageNum => {
+    console.log(`clicked navigate to page ${pageNum}`);
+    setPage(pageNum);
+  };
+
 
   return (
     <PaginationWrapper>
       <ShowingSection>
-        Showing <Highlight>{start}</Highlight> to <Highlight>{end}</Highlight> of <Highlight>{length}</Highlight> workers
+        <Highlight>{start}</Highlight>-<Highlight>{end}</Highlight> of <Highlight>{length}</Highlight> workers
       </ShowingSection>
-      <PageSection>Pages: {buttons}</PageSection>
+      <NavArrowsWrapper>
+        <NavArrow disabled={onFirstPage}>
+          <Tooltip title="First page">
+            <SkipPreviousOutlined  onClick={!onFirstPage ? () => navArrowOnClick(1) : null} key={"skipPrev"}/>
+          </Tooltip>
+        </NavArrow>
+        <NavArrow disabled={onFirstPage}>
+          <Tooltip title="Previous page">
+            <NavigateBeforeOutlined onClick={!onFirstPage ? () => navArrowOnClick(page - 1) : null} key={"navBefore"}/>
+          </Tooltip>
+        </NavArrow>
+        <NavArrow disabled={onLastPage}>
+          <Tooltip title="Next page">
+            <NavigateNextOutlined onClick={!onLastPage ? () => navArrowOnClick(page + 1) : null} key={"navNext"}/>
+          </Tooltip>
+        </NavArrow>
+        <NavArrow disabled={onLastPage}>
+          <Tooltip title="Last page">
+            <SkipNextOutlined onClick={!onLastPage ? () => navArrowOnClick(numPages) : null} key={"skipNext"}/>
+          </Tooltip>
+        </NavArrow>
+      </NavArrowsWrapper>
     </PaginationWrapper>
   );
 };
