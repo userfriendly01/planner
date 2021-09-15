@@ -92,6 +92,11 @@ export const initialUserFormState: UserEntryFormState = {
 
 export const userFormReducer = (state: UserEntryFormState, action: Action): UserEntryFormState => {
   switch (action.type) {
+    case userFormActions.RESET_FORM_ON_CREATE: {
+      return {
+        ...initialUserFormState
+      };
+    }
     case userFormActions.SET_UPDATE_FORM_STATE: {
       const worker = action.payload.worker;
       const managers = action.payload.managers;
@@ -137,22 +142,6 @@ export const userFormReducer = (state: UserEntryFormState, action: Action): User
         editDisabled: worker.directDialNum ? true : false
       };
     }
-    case userFormActions.UPDATE_PHONE_NUMBER: {
-      const field = action.payload.field;
-      const value = action.payload.maskedValue;
-      const isValid = action.payload.isValid;
-      const e164 = action.payload.e164Number;
-      return {
-        ...state,
-        [field]: {
-          ...state[field],
-          value,
-          e164,
-          updated: true,
-          valid: isValid && (e164 ? true : false)
-        }
-      };
-    }
     case userFormActions.SET_BLUR_ON_FIELD: {
       const field = action.payload;
       return {
@@ -160,125 +149,6 @@ export const userFormReducer = (state: UserEntryFormState, action: Action): User
         [field]: {
           ...state[field],
           blurred: true
-        }
-      };
-    }
-    case userFormActions.EDIT_PEN_CLICK_FORWARD_TO_TOGGLE: {
-      const worker = action.payload;
-      return {
-        ...state,
-        directDialNum: {
-          ...state.directDialNum,
-          value: formatE164PhoneNumber(worker.directDialNum),
-          e164: undefined,
-          updated: false,
-          valid: true
-        },
-        inactiveForwardTo: {
-          value: null,
-          updated: false
-        },
-        outgoing: {
-          ...state.outgoing,
-          value: formatE164PhoneNumber(worker.attributes.did),
-          e164: undefined,
-          updated: false,
-          valid: true
-        },
-        editDisabled: !state.editDisabled
-      };
-    }
-    case userFormActions.EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE: {
-      return {
-        ...state,
-        editDisabled: !state.editDisabled
-      };
-    }
-    case userFormActions.RESET_FORM_ON_CREATE: {
-      return {
-        ...initialUserFormState
-      };
-    }
-    case userFormActions.UPDATE_MANAGER: {
-      const manager = action.payload;
-      return {
-        ...state,
-        manager: {
-          ...state.manager,
-          value: manager,
-          updated: true
-        }
-      };
-    }
-    case userFormActions.UPDATE_TEAM: {
-      const profileId = action.payload.profileId;
-      const profiles = action.payload.profiles;
-      return {
-        ...state,
-        profileId: {
-          ...state.profileId,
-          value: profileId,
-          updated: true
-        },
-        zeroOutEnabled: getZeroOutEnabledFromProfile(profiles, profileId)
-      };
-    }
-    case userFormActions.CLEAR_N_NUMBER: {
-      return {
-        ...state,
-        nNumber: {
-          ...state.nNumber,
-          value: "n",
-          updated: true
-        },
-        nNumberFetchedUser: null
-      };
-    }
-    case userFormActions.UPDATE_N_NUMBER: {
-      const nNumber = action.payload;
-      return {
-        ...state,
-        nNumber: {
-          ...state.nNumber,
-          value: nNumber,
-          updated: true
-        }
-      };
-    }
-    case userFormActions.COMPLETE_N_NUMBER: {
-      const nNumber = action.payload.nNumber;
-      const fetchedUser = action.payload.fetchedUser;
-      return {
-        ...state,
-        nNumber: {
-          ...state.nNumber,
-          value: nNumber
-        },
-        nNumberFetchedUser: fetchedUser
-      };
-    }
-    case userFormActions.CLEAR_EXTENSION: {
-      return {
-        ...state,
-        extension: {
-          ...state.extension,
-          value: "",
-          updated: true,
-          valid: false
-        }
-      };
-    }
-    case userFormActions.UPDATE_EXTENSION: {
-      const extension = action.payload.extension;
-      const isValid = action.payload.isValid;
-      return {
-        ...state,
-        extension: {
-          ...state.extension,
-          value: extension,
-          blurred: isValid,
-          updated: true,
-          valid: isValid
         }
       };
     }
@@ -311,6 +181,80 @@ export const userFormReducer = (state: UserEntryFormState, action: Action): User
         zeroOutEnabledUpdated: true
       };
     }
+    case userFormActions.UPDATE_MANAGER: {
+      const manager = action.payload;
+      return {
+        ...state,
+        manager: {
+          ...state.manager,
+          value: manager,
+          updated: true
+        }
+      };
+    }
+    case userFormActions.UPDATE_TEAM: {
+      const profileId = action.payload.profileId;
+      const profiles = action.payload.profiles;
+      return {
+        ...state,
+        profileId: {
+          ...state.profileId,
+          value: profileId,
+          updated: true
+        },
+        zeroOutEnabled: getZeroOutEnabledFromProfile(profiles, profileId)
+      };
+    }
+    case userFormActions.UPDATE_PHONE_NUMBER: {
+      const field = action.payload.field;
+      const value = action.payload.maskedValue;
+      const isValid = action.payload.isValid;
+      const e164 = action.payload.e164Number;
+      return {
+        ...state,
+        [field]: {
+          ...state[field],
+          value,
+          e164,
+          updated: true,
+          valid: isValid && (e164 ? true : false)
+        }
+      };
+    }
+    case userFormActions.UPDATE_N_NUMBER: {
+      const nNumber = action.payload;
+      return {
+        ...state,
+        nNumber: {
+          ...state.nNumber,
+          value: nNumber,
+          updated: true
+        }
+      };
+    }
+    case userFormActions.COMPLETE_N_NUMBER: {
+      const nNumber = action.payload.nNumber;
+      const fetchedUser = action.payload.fetchedUser;
+      return {
+        ...state,
+        nNumber: {
+          ...state.nNumber,
+          value: nNumber
+        },
+        nNumberFetchedUser: fetchedUser
+      };
+    }
+    case userFormActions.CLEAR_N_NUMBER: {
+      return {
+        ...state,
+        nNumber: {
+          ...state.nNumber,
+          value: "n",
+          updated: false
+        },
+        nNumberFetchedUser: null
+      };
+    }
     case userFormActions.UPDATE_DEFAULT_SKILLS: {
       const defaultSkills = action.payload;
       return {
@@ -327,6 +271,62 @@ export const userFormReducer = (state: UserEntryFormState, action: Action): User
           value: inactiveForwardTo,
           updated: true
         }
+      };
+    }
+    case userFormActions.UPDATE_EXTENSION: {
+      const extension = action.payload.extension;
+      const isValid = action.payload.isValid;
+      return {
+        ...state,
+        extension: {
+          ...state.extension,
+          value: extension,
+          blurred: isValid,
+          updated: true,
+          valid: isValid
+        }
+      };
+    }
+    case userFormActions.CLEAR_EXTENSION: {
+      return {
+        ...state,
+        extension: {
+          ...state.extension,
+          value: "",
+          updated: true,
+          valid: false
+        }
+      };
+    }
+    case userFormActions.EDIT_PEN_CLICK_FORWARD_TO_TOGGLE: {
+      const worker = action.payload;
+      return {
+        ...state,
+        directDialNum: {
+          ...state.directDialNum,
+          value: formatE164PhoneNumber(worker.directDialNum),
+          e164: undefined,
+          updated: false,
+          valid: true
+        },
+        inactiveForwardTo: {
+          value: null,
+          updated: false
+        },
+        outgoing: {
+          ...state.outgoing,
+          value: formatE164PhoneNumber(worker.attributes.did),
+          e164: undefined,
+          updated: false,
+          valid: true
+        },
+        editDisabled: !state.editDisabled
+      };
+    }
+    case userFormActions.EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE: {
+      return {
+        ...state,
+        editDisabled: !state.editDisabled
       };
     }
     default:

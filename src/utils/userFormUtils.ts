@@ -28,8 +28,6 @@ export const isDidDifferentValid = (form: UserEntryFormState, worker: TwilioWork
 
 export const getTargetProfile = (profiles: TritonProfile[], newProfileValue: string): any => profiles.find((profile: any) => profile.profile_id === +newProfileValue);
 
-// export const getOverflowSkill = (form: UserEntryFormState, profiles: TritonProfile[]): string => form.profileId.value ? getTargetProfile(profiles, form.profileId.value).overflow_skill : "";
-
 export const getExtensionInputValid = (form: UserEntryFormState): boolean => form.extension.valid || form.extension.value === "";
 
 export const getOverflowSkillFromProfile = (profiles: TritonProfile[], profileValue: string): string | undefined => {

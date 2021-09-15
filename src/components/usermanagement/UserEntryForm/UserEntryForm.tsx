@@ -30,10 +30,7 @@ const UserEntryForm = (props: UserEntryFormProps, ref: null) => {
 
   const {
     handleClose,
-    userEntryFormState: {
-      formMode,
-      worker
-    },
+    worker,
     skills,
     workers
   } = props;
@@ -54,7 +51,7 @@ const UserEntryForm = (props: UserEntryFormProps, ref: null) => {
     }
   } = useAdminState();
 
-  if(formMode === formModes.UPDATE && form.formMode !== formModes.UPDATE) {
+  if(form.formMode === formModes.UPDATE) {
     setForm({
       type: userFormActions.SET_UPDATE_FORM_STATE,
       payload: {
@@ -101,7 +98,7 @@ const UserEntryForm = (props: UserEntryFormProps, ref: null) => {
 
   const [ activeTab, setActiveTab ] = React.useState(defaultView);
 
-  const handleTabChange = (event: any, newValue: number) => {
+  const handleTabChange = (newValue: number) => {
     switch(newValue) {
       case 1:
         setActiveTab(didFormView);
@@ -127,16 +124,16 @@ const UserEntryForm = (props: UserEntryFormProps, ref: null) => {
             });
           }}
         /> : null}
-      <Header1>{formMode === formModes.INSERT ? "Add a User" : "Edit User"}</Header1>
+      <Header1>{form.formMode === formModes.INSERT ? "Add a User" : "Edit User"}</Header1>
       {
-        formMode === formModes.UPDATE
+        form.formMode === formModes.UPDATE
           ? <Header2>{worker.attributes.full_name}</Header2>
           : null
       }
       <TabContainer>
         <UserFormTabs
           value={activeTab.tab}
-          onChange={handleTabChange}
+          onChange={(event, tab) => handleTabChange(tab)}
           orientation="vertical"
         >
           <Tab label="Basic Info"/>

@@ -78,14 +78,14 @@ const DidFormInfo = (props: DidFormInfoProps) => {
               allowSevenDigitVdn={false}
               id="internal-routing-number"
               number={form.directDialNum.value}
+              label="Internal Routing Number *"
+              showError={form.directDialNum.blurred}
               onBlur={() =>
                 setForm({
                   type: userFormActions.SET_BLUR_ON_FIELD,
                   payload: "directDialNum"
                 })
               }
-              label="Internal Routing Number *"
-              showError={form.directDialNum.blurred}
               updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
                 setForm({
                   type: userFormActions.UPDATE_PHONE_NUMBER,
@@ -103,14 +103,14 @@ const DidFormInfo = (props: DidFormInfoProps) => {
               allowSevenDigitVdn={false}
               id="skype-teams-did"
               number={form.alternateDid.value}
+              label="Skype/Teams DID *"
+              showError={form.alternateDid.blurred}
               onBlur={() =>
                 setForm({
                   type: userFormActions.SET_BLUR_ON_FIELD,
                   payload: "alternateDid"
                 })
               }
-              label="Skype/Teams DID *"
-              showError={form.alternateDid.blurred}
               updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
                 setForm({
                   type: userFormActions.UPDATE_PHONE_NUMBER,

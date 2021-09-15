@@ -46,7 +46,6 @@ interface ManagementWrapperState {
 }
 
 export interface UserEntryFormState {
-  formMode: string,
   open: boolean,
   worker: TwilioWorker
 }
@@ -59,7 +58,6 @@ const initialManagementWrapperState: ManagementWrapperState = {
 };
 
 const initialUserEntryFormState: UserEntryFormState = {
-  formMode: formModes.INSERT,
   open: false,
   worker: null
 };
@@ -134,7 +132,7 @@ export const ManagementWrapper: React.FC = () => {
         <Modal disableBackdropClick={true} open={userEntryFormState.open}>
           <UserEntryForm
             handleClose={() => setUserEntryFormState(initialUserEntryFormState)}
-            userEntryFormState={userEntryFormState}
+            worker={userEntryFormState.worker}
             skills={skillsFromContext}
             workers={workersFromContext.sort(sortWorkersByFullName)}
           />

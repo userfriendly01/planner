@@ -1,13 +1,12 @@
 import { FetchUserResponse } from "services";
 
 export interface FormState {
-  formMode: string,
   open: boolean,
   worker: TwilioWorker
 }
 
 export interface UserEntryFormProps {
-  userEntryFormState: FormState,
+  worker: TwilioWorker,
   handleClose: VoidFunction,
   skills: TaskRouterSkill[],
   workers: TwilioWorker[]
