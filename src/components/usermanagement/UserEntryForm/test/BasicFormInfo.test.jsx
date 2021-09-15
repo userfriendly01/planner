@@ -46,6 +46,7 @@ jest.mock("components", () => ({
   ForwardToEntryForm: jest.fn()
 }));
 
+
 jest.mock("@material-ui/core", () => ({
   __esModule: true,
   InputAdornment: jest.fn(),

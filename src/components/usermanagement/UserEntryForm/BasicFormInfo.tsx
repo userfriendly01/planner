@@ -150,7 +150,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
             <InputAdornment position="end">
               <StyledIcon
                 fontSize="large"
-                data-testid="toggle-forward-to"
                 onClick={() => editPenClick()}
               />
             </InputAdornment>
