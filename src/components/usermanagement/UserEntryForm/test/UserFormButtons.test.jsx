@@ -1,13 +1,11 @@
 import UserFormButtons from "../UserFormButtons";
 import { Tooltip } from "@material-ui/core";
 import { StyledButton } from "components";
-import {
-  initialState,
-  userFormActions
-} from "context";
 import { formModes } from "globals";
 import React from "react";
 import {
+  initialState,
+  userFormActions,
   useAdminDispatch,
   useFormState,
   useFormDispatch
