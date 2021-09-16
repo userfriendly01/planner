@@ -66,6 +66,8 @@ const ManagementPagination = props => {
     setPage(pageNum);
   };
 
+  console.log("current page =", page);
+  console.log("onFirstPage:", onFirstPage);
 
   return (
     <PaginationWrapper>
@@ -75,7 +77,7 @@ const ManagementPagination = props => {
       <NavArrowsWrapper>
         <NavArrow disabled={onFirstPage}>
           <Tooltip title="First page">
-            <SkipPreviousOutlined  onClick={!onFirstPage ? () => navArrowOnClick(1) : null} key={"skipPrev"}/>
+            <SkipPreviousOutlined onClick={!onFirstPage ? () => navArrowOnClick(1) : null} key={"skipPrev"}/>
           </Tooltip>
         </NavArrow>
         <NavArrow disabled={onFirstPage}>

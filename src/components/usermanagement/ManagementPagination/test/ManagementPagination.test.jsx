@@ -1,47 +1,88 @@
 import ManagementPagination from "../ManagementPagination";
-import { workersPerPage } from "globals";
+// import { Tooltip } from "@material-ui/core";
+import {
+  NavigateNextOutlined,
+  NavigateBeforeOutlined,
+  SkipNextOutlined,
+  SkipPreviousOutlined
+} from "@material-ui/icons";
+// import {
+//   screen,
+//   waitFor
+// } from "@testing-library/react"j
+// import { workersPerPage } from "globals";
 import React from "react";
 import {
-  fireEvent,
-  render
+  expectMockedComponent,
+  expectOnlyPassedProps,
+  render,
+  setupMockedComponents
 } from "testUtils";
 
 const setPageFunc = jest.fn();
 
-const renderWithProps = (end, length, page, setPage, start) => {
+jest.mock("@material-ui/icons", () => ({
+  NavigateNextOutlined: jest.fn(),
+  NavigateBeforeOutlined: jest.fn(),
+  SkipNextOutlined: jest.fn(),
+  SkipPreviousOutlined: jest.fn()
+}));
+
+const renderWithProps = page => {
   return render(<ManagementPagination
-    end={end}
-    length={length}
+    end={10}
+    length={15}
     page={page}
-    setPage={setPage}
-    start={start} />);
+    setPage={setPageFunc}
+    start={1} />);
 };
 
 describe("<ManagementPagination />", () => {
   beforeEach(() => {
-    setPageFunc.mockClear();
+    jest.clearAllMocks();
+    setupMockedComponents({
+      NavigateNextOutlined,
+      NavigateBeforeOutlined,
+      SkipNextOutlined,
+      SkipPreviousOutlined
+    });
   });
-  test("we should correctly show the start, end, and of how many", () => {
-    const rendered = renderWithProps(10, 15, 1, setPageFunc, 1);
-    expect(rendered.getByText(/Showing/)).toBeInTheDocument();
-    expect(rendered.getByText("1", { selector: "span" })).toBeInTheDocument();
-    expect(rendered.getByText(/to/)).toBeInTheDocument();
-    expect(rendered.getByText("10", { selector: "span" })).toBeInTheDocument();
-    expect(rendered.getByText(/of/)).toBeInTheDocument();
-    expect(rendered.getByText("15", { selector: "span" })).toBeInTheDocument();
-    expect(rendered.getByText(/workers/)).toBeInTheDocument();
-    expect(setPageFunc.mock.calls.length).toBe(0);
+
+  describe("initial render (on page 1)", () => {
+    test("should display start, end, and of how many", () => {
+      const rendered = renderWithProps(1);
+      expect(rendered.getByText("1", { selector: "span" })).toBeInTheDocument();
+      expect(rendered.getByText(/-/)).toBeInTheDocument();
+      expect(rendered.getByText("10", { selector: "span" })).toBeInTheDocument();
+      expect(rendered.getByText(/of/)).toBeInTheDocument();
+      expect(rendered.getByText("15", { selector: "span" })).toBeInTheDocument();
+      expect(rendered.getByText(/workers/)).toBeInTheDocument();
+      expect(setPageFunc.mock.calls.length).toBe(0);
+      expectMockedComponent(rendered, { SkipPreviousOutlined });
+      expectMockedComponent(rendered, { NavigateBeforeOutlined });
+      expectMockedComponent(rendered, { NavigateNextOutlined });
+      expectMockedComponent(rendered, { SkipNextOutlined });
+    });
+    test("the first & previous arrows should be disabled", () => {
+      renderWithProps(1);
+      expectOnlyPassedProps(SkipPreviousOutlined, { onClick: null });
+      expectOnlyPassedProps(NavigateBeforeOutlined, { onClick: null });
+    });
+
+    describe("on last page", () => {
+      test("the next & last arrows should be enabled", () => {
+        renderWithProps(2);
+        expectOnlyPassedProps(NavigateNextOutlined, { onClick: null });
+        expectOnlyPassedProps(SkipNextOutlined, { onClick: null });
+      });
+    });
   });
-  test("with a length of one greater than workersPerPage we should show two buttons with the correct page numbers", () => {
-    const rendered = renderWithProps(10, workersPerPage + 1, 1, setPageFunc, 1);
-    expect(rendered.getByText("1", { selector: "button" })).toBeInTheDocument();
-    expect(rendered.getByText("2", { selector: "button" })).toBeInTheDocument();
-    expect(setPageFunc.mock.calls.length).toBe(0);
-  });
-  test("when we click a page button, we should fire the function sent in, sent with the correct page number", () => {
-    const rendered = renderWithProps(10, workersPerPage + 1, 1, setPageFunc, 1);
-    fireEvent.click(rendered.getByText("2", { selector: "button" }));
-    expect(setPageFunc.mock.calls.length).toBe(1);
-    expect(setPageFunc.mock.calls[0][0]).toBe(2);
-  });
+
+  // test("when we click a page button, we should fire the function sent in, sent with the correct page number", () => {
+  //   const rendered = renderWithProps(10, workersPerPage + 1, 1, setPageFunc, 1);
+  //   fireEvent.click(rendered.getByText("2", { selector: "button" }));
+  //   expect(setPageFunc.mock.calls.length).toBe(1);
+  //   expect(setPageFunc.mock.calls[0][0]).toBe(2);
+  // });
+
 });
