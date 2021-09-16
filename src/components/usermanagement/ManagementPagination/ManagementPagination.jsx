@@ -61,13 +61,8 @@ const ManagementPagination = props => {
   const onFirstPage = page === 1;
   const onLastPage = page === numPages;
 
-  const navArrowOnClick = pageNum => {
-    console.log(`clicked navigate to page ${pageNum}`);
-    setPage(pageNum);
-  };
-
-  console.log("current page =", page);
-  console.log("onFirstPage:", onFirstPage);
+  console.log("current page =", page); //
+  console.log("onFirstPage:", onFirstPage); //
 
   return (
     <PaginationWrapper>
@@ -77,22 +72,22 @@ const ManagementPagination = props => {
       <NavArrowsWrapper>
         <NavArrow disabled={onFirstPage}>
           <Tooltip title="First page">
-            <SkipPreviousOutlined onClick={!onFirstPage ? () => navArrowOnClick(1) : null} key={"skipPrev"}/>
+            <SkipPreviousOutlined onClick={!onFirstPage ? () => setPage(1) : null} data-testid="first" />
           </Tooltip>
         </NavArrow>
         <NavArrow disabled={onFirstPage}>
           <Tooltip title="Previous page">
-            <NavigateBeforeOutlined onClick={!onFirstPage ? () => navArrowOnClick(page - 1) : null} key={"navBefore"}/>
+            <NavigateBeforeOutlined onClick={!onFirstPage ? () => setPage(page - 1) : null} data-testid="previous" />
           </Tooltip>
         </NavArrow>
         <NavArrow disabled={onLastPage}>
           <Tooltip title="Next page">
-            <NavigateNextOutlined onClick={!onLastPage ? () => navArrowOnClick(page + 1) : null} key={"navNext"}/>
+            <NavigateNextOutlined onClick={!onLastPage ? () => setPage(page + 1) : null} data-testid="next" />
           </Tooltip>
         </NavArrow>
         <NavArrow disabled={onLastPage}>
           <Tooltip title="Last page">
-            <SkipNextOutlined onClick={!onLastPage ? () => navArrowOnClick(numPages) : null} key={"skipNext"}/>
+            <SkipNextOutlined onClick={!onLastPage ? () => setPage(numPages) : null} data-testid="last" />
           </Tooltip>
         </NavArrow>
       </NavArrowsWrapper>
