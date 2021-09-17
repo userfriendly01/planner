@@ -1,103 +1,3 @@
-import { FetchUserResponse } from "services";
-
-export interface FormState {
-  open: boolean,
-  worker: TwilioWorker
-}
-
-export interface UserEntryFormProps {
-  worker: TwilioWorker,
-  handleClose: VoidFunction,
-  skills: TaskRouterSkill[],
-  workers: TwilioWorker[]
-}
-
-export interface BasicFormInfoProps {
-  skills: TaskRouterSkill[],
-  worker: TwilioWorker,
-  workers: TwilioWorker[],
-  profiles: TritonProfile[],
-  managers: Manager[]
-  forwardToToggle: boolean,
-  setForwardToToggle: (value: boolean) => void,
-}
-
-export interface DidFormInfoProps {
-  worker: TwilioWorker,
-  profiles: TritonProfile[],
-}
-
-export interface UserFormButtonsProps {
-  handleClose: VoidFunction,
-  loading: any,
-  updateLoading: (payload: any) => void
-  profiles: TritonProfile[],
-  offices: Map<string, Office>,
-  worker: TwilioWorker,
-  forwardToToggle: boolean,
-}
-export interface FormModes {
-  INSERT: string,
-  UPDATE: string
-}
-
-export const formModes: FormModes = {
-  INSERT: "insert",
-  UPDATE: "update"
-};
-
-export interface ModalOverlayStatuses {
-  FAIL: string,
-  SAVING: string,
-  SUCCESS: string
-}
-
-export interface FieldState {
-  value: string,
-  blurred?: boolean,
-  e164?: string,
-  updated: boolean,
-  valid?: boolean
-}
-
-export interface UserEntryFormState {
-  [index: string]: any;
-  defaultSkills: TwilioWorkerSkills,
-  defaultSkillsUpdated: boolean,
-  didUser: boolean,
-  extension: FieldState,
-  inactiveForwardTo: FieldState,
-  manager: FieldState,
-  nNumber: FieldState,
-  nNumberFetchedUser: FetchUserResponse,
-  outgoing: FieldState,
-  profileId: FieldState,
-  alternateDid: FieldState,
-  directDialNum: FieldState,
-  zeroOutEnabled: boolean,
-  zeroOutEnabledUpdated: boolean,
-  editDisabled: boolean
-}
-
-export interface LoadingState {
-  lookupUser: boolean;
-  overlayMessage: string;
-  saveStatus: string;
-  saveUser: boolean;
-}
-
-export interface UseFormResponse {
-  form: UserEntryFormState,
-  handleOnBlur: (field: string) => void,
-  handleNumberUpdate: (
-    maskedValue: string, isValid: boolean, e164Number: string, field: string
-  ) => void
-  initialDefaultSkills: TwilioWorkerSkills,
-  loading: LoadingState,
-  updateLoading: React.Dispatch<React.SetStateAction<LoadingState>>,
-  setForm: React.Dispatch<React.SetStateAction<UserEntryFormState>>
-}
-
 export interface Action {
   type: string,
   [key: string]: any
@@ -120,10 +20,15 @@ export interface AppState {
     pingIdentity: any // TODO type me!
   },
   workerContext: {
-    workers: TwilioWorker[],
-    selectedWorkers: TwilioWorker[]
+    workers: Worker[],
+    selectedWorkers: Worker[]
   },
   resettingSkills: false
+}
+
+export interface FormModes {
+  INSERT: string,
+  UPDATE: string
 }
 
 export interface Manager {
@@ -132,14 +37,20 @@ export interface Manager {
   manager_n_number: string
 }
 
-export interface Office {
-  office_nme: string,
-  office_num: string
+export interface ModalOverlayStatuses {
+  FAIL: string,
+  SAVING: string,
+  SUCCESS: string
 }
 
 export interface MySqlBoolean {
   data: [0 | 1],
   type: "Buffer"
+}
+
+export interface Office {
+  office_nme: string,
+  office_num: string
 }
 
 export interface TaskRouterSkill {
@@ -164,12 +75,12 @@ export interface TritonProfile {
   overflow_skill: string
 }
 
-export interface TwilioWorker {
+export interface Worker {
   attributes: {
     contact_uri?: string,
-    default_skills?: TwilioWorkerSkills,
+    default_skills?: WorkerSkills,
     did?: string,
-    disabled_skills?: TwilioWorkerSkills,
+    disabled_skills?: WorkerSkills,
     email?: string,
     email_address?: string,
     emp_first_name?: string,
@@ -186,7 +97,7 @@ export interface TwilioWorker {
     primary_dept_number?: string,
     profile_id?: string | number,
     roles?: string[],
-    routing?: TwilioWorkerSkills,
+    routing?: WorkerSkills,
     unique_id?: string
   },
   alternateDid?: string,
@@ -198,7 +109,7 @@ export interface TwilioWorker {
   zeroOutEnabled?: boolean
 }
 
-export interface TwilioWorkerSkills {
+export interface WorkerSkills {
   levels: {
     [key: string]: number
   },

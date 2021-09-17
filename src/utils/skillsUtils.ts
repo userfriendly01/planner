@@ -1,12 +1,12 @@
 import {
   TaskRouterSkill,
-  TwilioWorker,
-  TwilioWorkerSkills
+  Worker,
+  WorkerSkills
 } from "globals";
 import _ from "lodash";
 import { sortTaskRouterSkillByName } from "utils";
 
-export const areSkillsDifferent = (workerAttributes: TwilioWorker["attributes"]): boolean => {
+export const areSkillsDifferent = (workerAttributes: Worker["attributes"]): boolean => {
   const currentSkills = getValidSkillsObject(workerAttributes.routing);
   const defaultSkills = getValidSkillsObject(workerAttributes.default_skills);
   if (defaultSkills.skills.length > 0) {
@@ -41,8 +41,8 @@ export const formatTaskRouterSkills = (rawTaskRouterSkills: RawTaskRotuterSkill[
   };
 }).sort(sortTaskRouterSkillByName);
 
-export const getValidSkillsObject = (skillsObject?: TwilioWorkerSkills): TwilioWorkerSkills => {
-  const validObject: TwilioWorkerSkills = {
+export const getValidSkillsObject = (skillsObject?: WorkerSkills): WorkerSkills => {
+  const validObject: WorkerSkills = {
     skills: [],
     levels: {}
   };

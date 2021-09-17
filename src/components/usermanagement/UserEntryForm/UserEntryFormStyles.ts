@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import { Tabs } from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
-import { StyledButton } from "components";
+import {
+  StyledButton
+} from "components";
 
 export const FlexRow = styled.div`
   display: flex;
@@ -25,6 +27,8 @@ export const FormControlsContainer = styled.div`
   flex-direction: row;
   width: 100%;
   justify-content: center;
+  max-height: 650px;
+  overflow: overlay;
 `;
 
 export const FormControlsPane = styled.div`
@@ -51,7 +55,7 @@ export const ModalContainer = styled.div<{theme: any}>`
   flex-direction: column;
   left: 0;
   margin: 0 auto;
-  max-width: 700px;
+  max-width: 900px;
   padding: 0 8px;
   position: absolute;
   right: 0;

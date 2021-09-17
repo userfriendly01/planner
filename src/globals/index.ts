@@ -1,6 +1,36 @@
-import { ModalOverlayStatuses } from "globals";
+import {
+  ModalOverlayStatuses,
+  FormModes
+} from "globals";
 const CONTACT_MANAGER_BASE_URI = "/contact-manager";
 const SERVICE_BASE_URI = "/service";
+
+export * from "./interfaces";
+export * from "./theme";
+
+export const nNumMatcher = /[n,N]\d{7}/g;
+export const extensionMatcher = /^\d{4}$/;
+export const workersPerPage = 15;
+
+export const modalOverlayStatuses: ModalOverlayStatuses = {
+  FAIL: "fail",
+  SAVING: "saving",
+  SUCCESS: "success"
+};
+
+export const formModes: FormModes = {
+  INSERT: "insert",
+  UPDATE: "update"
+};
+
+export const timeouts = {
+  AUTH: 3600 * 1000,
+  MODAL_OVERLAY: 2000
+};
+
+export const resetResponses = {
+  SKILLS_WERE_EQUAL: "Worker default_skills is equal to currently assigned skills"
+};
 
 export const apiPaths = {
   AUTH: `${SERVICE_BASE_URI}/admin-login`,
@@ -22,27 +52,3 @@ export const apiPaths = {
   RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
   UPDATE_WORKER: (workerSid: string): string => `${SERVICE_BASE_URI}/updateworker/${workerSid}`
 };
-
-export * from "./interfaces";
-
-export const modalOverlayStatuses: ModalOverlayStatuses = {
-  FAIL: "fail",
-  SAVING: "saving",
-  SUCCESS: "success"
-};
-
-export const nNumMatcher = /[n,N]\d{7}/g;
-export const extensionMatcher = /^\d{4}$/;
-
-export const resetResponses = {
-  SKILLS_WERE_EQUAL: "Worker default_skills is equal to currently assigned skills"
-};
-
-export const timeouts = {
-  AUTH: 3600 * 1000,
-  MODAL_OVERLAY: 2000
-};
-
-export const workersPerPage = 15;
-
-export * from "./theme";

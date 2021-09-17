@@ -1,12 +1,14 @@
 import {
   Action,
-  UserEntryFormState,
-  TritonProfile,
   formModes
 } from "../../globals";
 import {
+  UserFormState
+} from "components/usermanagement/UserEntryForm/UserEntryFormInterfaces";
+import {
   getValidSkillsObject,
-  formatE164PhoneNumber
+  formatE164PhoneNumber,
+  getZeroOutEnabledFromProfile
 } from "utils";
 
 export const userFormActions = {
@@ -30,10 +32,8 @@ export const userFormActions = {
 };
 
 const initialDefaultSkills = getValidSkillsObject();
-const getTargetProfile = (profiles: TritonProfile[], newProfileValue: string) => profiles.find((profile: any) => profile.profile_id === +newProfileValue);
-const getZeroOutEnabledFromProfile = (profiles: TritonProfile[], newProfileValue: string): boolean => getTargetProfile(profiles, newProfileValue).overflow_skill !== null;
 
-export const initialUserFormState: UserEntryFormState = {
+export const initialUserFormState: UserFormState = {
   formMode: formModes.INSERT,
   defaultSkills: initialDefaultSkills,
   defaultSkillsUpdated: false,
@@ -90,7 +90,7 @@ export const initialUserFormState: UserEntryFormState = {
   editDisabled: false
 };
 
-export const userFormReducer = (state: UserEntryFormState, action: Action): UserEntryFormState => {
+export const userFormReducer = (state: UserFormState, action: Action): UserFormState => {
   switch (action.type) {
     case userFormActions.RESET_FORM: {
       return {

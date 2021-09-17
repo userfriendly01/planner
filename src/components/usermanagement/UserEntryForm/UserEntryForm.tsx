@@ -2,15 +2,14 @@ import { Tab } from "@material-ui/core";
 import {
   Header1,
   Header2,
-  ModalContainer,
-  TabContainer,
-  UserFormTabs
+  ModalContainer
 } from "./UserEntryFormStyles";
 import {
+  LoadingState,
+  UserEntryFormProps
+} from "./UserEntryFormInterfaces";
+import {
   ModalOverlay,
-  SkillsFormInfo,
-  BasicFormInfo,
-  DidFormInfo,
   UserFormButtons
 } from "components";
 import {
@@ -19,12 +18,9 @@ import {
   useFormDispatch,
   userFormActions
 } from "context";
-import {
-  formModes,
-  LoadingState,
-  UserEntryFormProps
-} from "globals";
+import { formModes } from "globals";
 import React, { useState } from "react";
+import UserFormAccordion from "./UserFormAccordion";
 
 const UserEntryForm = (props: UserEntryFormProps, ref: null) => {
 
@@ -59,51 +55,11 @@ const UserEntryForm = (props: UserEntryFormProps, ref: null) => {
     saveUser: false
   });
 
-  const defaultView = {
-    tab: 0,
-    view: <BasicFormInfo
-      skills={skills}
-      worker={worker}
-      workers={workers}
-      profiles={profiles}
-      managers={managers}
-      forwardToToggle={forwardToToggle}
-      setForwardToToggle={setForwardToToggle}
-    />
-  };
-
-  const didFormView = {
-    tab: 1,
-    view: <DidFormInfo
-      worker={worker}
-      profiles={profiles}
-    />
-  };
-
-  const skillsView = {
-    tab: 2,
-    view: <SkillsFormInfo />
-  };
-
-  const [ activeTab, setActiveTab ] = React.useState(defaultView);
   const doHandleClose = () => {
     handleClose();
     setForm({
       type: userFormActions.RESET_FORM
     });
-  };
-
-  const handleTabChange = (newValue: number) => {
-    switch(newValue) {
-      case 1:
-        setActiveTab(didFormView);
-        break;
-      case 2:
-        setActiveTab(skillsView);
-        break;
-      default:
-        setActiveTab(defaultView);
-    }
   };
 
   return (
@@ -125,20 +81,17 @@ const UserEntryForm = (props: UserEntryFormProps, ref: null) => {
           ? <Header2>{worker.attributes.full_name}</Header2>
           : null
       }
-      <TabContainer>
-        <UserFormTabs
-          value={activeTab.tab}
-          onChange={(event, tab) => handleTabChange(tab)}
-          orientation="vertical"
-        >
-          <Tab label="Basic Info"/>
-          <Tab label="DID Info"/>
-          <Tab label="Default Skills"/>
-        </UserFormTabs>
-        {activeTab.view}
-      </TabContainer>
+      <UserFormAccordion
+        skills={skills}
+        worker={worker}
+        workers={workers}
+        profiles={profiles}
+        managers={managers}
+        forwardToToggle={forwardToToggle}
+        setForwardToToggle={setForwardToToggle}
+      />
       <UserFormButtons
-        handleClose={handleClose}
+        handleClose={doHandleClose}
         loading={loading}
         updateLoading={updateLoading}
         profiles={profiles}

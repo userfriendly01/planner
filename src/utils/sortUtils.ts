@@ -1,7 +1,7 @@
 import {
   Manager,
   TritonProfile,
-  TwilioWorker
+  Worker
 } from "globals";
 
 const sortLast = "zzzzzzzzzzz";
@@ -36,7 +36,7 @@ export const sortTaskRouterSkillByName = (a: any, b: any) => {
   return sortStrings(aName, bName);
 };
 
-export const sortWorkersByFullName = (a: TwilioWorker, b: TwilioWorker) => {
+export const sortWorkersByFullName = (a: Worker, b: Worker) => {
   const [aName, bName] = [a.attributes.full_name || sortLast, b.attributes.full_name || sortLast];
   return sortStrings(aName, bName);
 };

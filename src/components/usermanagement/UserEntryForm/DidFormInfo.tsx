@@ -9,6 +9,7 @@ import {
   ToggleContainer,
   ToggleLabel
 } from "./UserEntryFormStyles";
+import { DidFormInfoProps } from "./UserEntryFormInterfaces";
 import {
   ModalPhoneNumber
 } from "components";
@@ -18,10 +19,7 @@ import {
   userFormActions
 } from "context";
 import { getOverflowSkillFromProfile } from "utils";
-import {
-  formModes,
-  DidFormInfoProps
-} from "globals";
+import { formModes } from "globals";
 
 const DidFormInfo = (props: DidFormInfoProps) => {
 

@@ -13,7 +13,7 @@ import {
   FormStateProvider
 } from "context";
 import {
-  TwilioWorker,
+  Worker,
   workersPerPage
 } from "globals";
 import React, {
@@ -46,7 +46,7 @@ interface ManagementWrapperState {
 
 export interface UserEntryFormState {
   open: boolean,
-  worker: TwilioWorker
+  worker: Worker
 }
 
 const initialManagementWrapperState: ManagementWrapperState = {
@@ -61,7 +61,7 @@ const initialUserEntryFormState: UserEntryFormState = {
   worker: null
 };
 
-const getWorkersStartAndEnd = (pageSelected: number, filteredWorkers: TwilioWorker[]) => {
+const getWorkersStartAndEnd = (pageSelected: number, filteredWorkers: Worker[]) => {
   const workersStart = ((pageSelected - 1) * workersPerPage);
   if (pageSelected * workersPerPage > filteredWorkers.length) {
     return {

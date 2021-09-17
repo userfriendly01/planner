@@ -1,10 +1,17 @@
 import React from "react";
-import { InputAdornment } from "@material-ui/core";
+import {
+  InputAdornment,
+  Switch,
+  Tooltip
+} from "@material-ui/core";
 import {
   FormControlsContainer,
   FormControlsPane,
-  StyledIcon
+  StyledIcon,
+  ToggleContainer,
+  ToggleLabel
 } from "./UserEntryFormStyles";
+import { BasicFormInfoProps } from "./UserEntryFormInterfaces";
 import {
   ForwardToEntryForm,
   ModalExtension,
@@ -18,17 +25,16 @@ import {
   userFormActions
 } from "context";
 import {
+  getExtensionInputValid,
+  getOverflowSkillFromProfile,
   sortManagersByName,
   sortProfilesByName,
   isProfileIdValid,
-  isManagerValid,
-  getOverflowSkillFromProfile,
-  getExtensionInputValid
+  isManagerValid
 } from "utils";
 import {
   extensionMatcher,
-  formModes,
-  BasicFormInfoProps
+  formModes
 } from "globals";
 
 const BasicFormInfo = (props: BasicFormInfoProps) => {
@@ -127,48 +133,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           }}
           value={form.profileId.value}
         />
-        <ModalPhoneNumber
-          disabled={isOutgoingDisabled()}
-          allowSevenDigitVdn={false}
-          id="outgoing-number"
-          number={form.outgoing.value}
-          onBlur={() => handleOnBlur("outgoing")}
-          label="Outgoing Number *"
-          showError={form.outgoing.blurred}
-          updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
-            setForm({
-              type: userFormActions.UPDATE_PHONE_NUMBER,
-              payload: {
-                field: "outgoing",
-                maskedValue,
-                isValid,
-                e164Number
-              }
-            });
-          }}
-          icon={worker?.directDialNum && form.formMode !== formModes.INSERT ? (
-            <InputAdornment position="end">
-              <StyledIcon
-                fontSize="large"
-                onClick={() => editPenClick()}
-              />
-            </InputAdornment>
-          ) : null
-          }
-        />
-        {forwardToToggle && form.formMode === formModes.UPDATE ? (
-          <ForwardToEntryForm
-            label={"Please choose a forward to option for the existing outgoing number"}
-            skills={skills}
-            workers={workers}
-            updateForwardTo={(value: string) => {
-              setForm({
-                type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
-                payload: value
-              });
-            }}
-          />
-        ) : null}
         <ModalNNumber
           disabled={(form.formMode === formModes.UPDATE) || (form.nNumberFetchedUser ? true : false)}
           fetchedUser={form.nNumberFetchedUser}
@@ -205,6 +169,142 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
             }
           })}
         />
+        <Tooltip
+          title={
+            form.formMode === formModes.UPDATE && worker.directDialNum ?
+              "Twilio DID can not be removed" : ""
+          }
+          placement={"bottom-start"}
+        >
+          <ToggleContainer>
+            <Switch
+              disabled={form.formMode === formModes.UPDATE && worker.directDialNum ? true : false}
+              checked={form.didUser}
+              onChange={() => {
+                setForm({ type: userFormActions.INITIATE_DID_FIELDS });
+              }}
+              inputProps={{ "aria-label": "toggle-did-user" }}
+            />
+            <ToggleLabel>DID User</ToggleLabel>
+          </ToggleContainer>
+        </Tooltip>
+        {form.didUser ? (
+          <Tooltip
+            title={getOverflowSkillFromProfile(profiles, form.profileId.value) !== undefined ?
+              "" : "No overflow skill exists for this team"}
+            placement={"bottom-start"}
+          >
+            <ToggleContainer>
+              <Switch
+                checked={form.zeroOutEnabled}
+                value={form.zeroOutEnabled}
+                disabled={getOverflowSkillFromProfile(profiles, form.profileId.value) === undefined}
+                onChange={() => setForm({ type: userFormActions.INITIATE_ZERO_OUT_FIELDS })}
+                inputProps={{ "aria-label": "toggle-zero-out" }}
+              />
+              <ToggleLabel>Overflow Skill</ToggleLabel>
+            </ToggleContainer>
+          </Tooltip>
+        ): null
+        }
+      </FormControlsPane>
+      <FormControlsPane>
+        <ModalPhoneNumber
+          disabled={isOutgoingDisabled()}
+          allowSevenDigitVdn={false}
+          id="outgoing-number"
+          number={form.outgoing.value}
+          onBlur={() => handleOnBlur("outgoing")}
+          label="Outgoing Number *"
+          showError={form.outgoing.blurred}
+          updateValue={(maskedValue: string, _unmaskedValue: string, isValid: boolean, e164Number: string) => {
+            setForm({
+              type: userFormActions.UPDATE_PHONE_NUMBER,
+              payload: {
+                field: "outgoing",
+                maskedValue,
+                isValid,
+                e164Number
+              }
+            });
+          }}
+          icon={worker?.directDialNum && form.formMode !== formModes.INSERT ? (
+            <InputAdornment position="end">
+              <StyledIcon
+                fontSize="large"
+                onClick={() => editPenClick()}
+              />
+            </InputAdornment>
+          ) : null
+          }
+        />
+        {forwardToToggle && form.formMode === formModes.UPDATE ? (
+          <ForwardToEntryForm
+            label={"Please choose a forward to option for the existing outgoing number"}
+            skills={skills}
+            workers={workers}
+            updateForwardTo={(value: string) => {
+              setForm({
+                type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
+                payload: value
+              });
+            }}
+          />
+        ) : null}
+        {form.didUser ? (
+          <>
+            <ModalPhoneNumber
+              disabled={form.editDisabled}
+              allowSevenDigitVdn={false}
+              id="internal-routing-number"
+              number={form.directDialNum.value}
+              label="Internal Routing Number *"
+              showError={form.directDialNum.blurred}
+              onBlur={() =>
+                setForm({
+                  type: userFormActions.SET_BLUR_ON_FIELD,
+                  payload: "directDialNum"
+                })
+              }
+              updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
+                setForm({
+                  type: userFormActions.UPDATE_PHONE_NUMBER,
+                  payload: {
+                    field: "directDialNum",
+                    maskedValue,
+                    isValid,
+                    e164Number
+                  }
+                });
+              }}
+            />
+            <ModalPhoneNumber
+              disabled={!worker?.alternateDid || form.formMode === formModes.INSERT ? false : true}
+              allowSevenDigitVdn={false}
+              id="skype-teams-did"
+              number={form.alternateDid.value}
+              label="Skype/Teams DID *"
+              showError={form.alternateDid.blurred}
+              onBlur={() =>
+                setForm({
+                  type: userFormActions.SET_BLUR_ON_FIELD,
+                  payload: "alternateDid"
+                })
+              }
+              updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
+                setForm({
+                  type: userFormActions.UPDATE_PHONE_NUMBER,
+                  payload: {
+                    field: "alternateDid",
+                    maskedValue,
+                    isValid,
+                    e164Number
+                  }
+                });
+              }}
+            />
+          </>
+        ) : null}
       </FormControlsPane>
     </FormControlsContainer>
   );

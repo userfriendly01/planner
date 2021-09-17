@@ -7,7 +7,7 @@ import {
   SkillDropDown
 } from "components";
 import { useAdminState } from "context";
-import { TwilioWorkerSkills } from "globals";
+import { WorkerSkills } from "globals";
 import PropTypes from "prop-types";
 import React, {
   useState
@@ -26,7 +26,7 @@ const DefaultSkillsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   font-size: 0.9em;
-  padding: 8px;
+  min-height: 400px;
   z-index: 2;
 `;
 
@@ -100,8 +100,8 @@ const SkillRowSeperator = styled.div`
 `;
 
 interface DefaultSkillSelectorProps {
-  defaultSkills: TwilioWorkerSkills,
-  setDefaultSkills: (defaultSkills: TwilioWorkerSkills) => void;
+  defaultSkills: WorkerSkills,
+  setDefaultSkills: (defaultSkills: WorkerSkills) => void;
 }
 
 interface NewTwilioWorkerSkill {
@@ -168,7 +168,7 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
 
   const removeSkillClicked = (skill: string) => () => {
     const updatedDefaultSkills = { ...defaultSkills };
-    updatedDefaultSkills.skills = updatedDefaultSkills.skills.filter(existingSkill => existingSkill !== skill);
+    updatedDefaultSkills.skills = updatedDefaultSkills.skills.filter((existingSkill: any) => existingSkill !== skill);
     delete updatedDefaultSkills.levels[skill];
     setDefaultSkills(updatedDefaultSkills);
   };
@@ -201,7 +201,7 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
       </SkillRow>
       <SkillRowSeperator/>
       <SkillsWrapper>
-        {defaultSkills.skills.sort().map((skill, index) => {
+        {defaultSkills.skills.sort().map((skill: any, index: number) => {
           const taskrouterSkill = findTaskRouterSkill(skill, taskrouterSkills);
           return (
             // @ts-ignore

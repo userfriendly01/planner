@@ -7,9 +7,11 @@ import {
 } from "context";
 import {
   Action,
-  AppState,
-  UserEntryFormState
+  AppState
 } from "globals";
+import {
+  UserFormState
+} from "components/usermanagement/UserEntryForm/UserEntryFormInterfaces";
 import PropTypes from "prop-types";
 import React, { ReactElement } from "react";
 
@@ -70,8 +72,8 @@ FormStateProvider.propTypes = {
   children: PropTypes.any
 };
 
-const useFormState = (): UserEntryFormState => {
-  const context: UserEntryFormState = React.useContext(FormStateContext);
+const useFormState = (): UserFormState => {
+  const context: UserFormState = React.useContext(FormStateContext);
   if (context === undefined) {
     throw new Error("FormStateContext must be used within a Context Provider");
   }

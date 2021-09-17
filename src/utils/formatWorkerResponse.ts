@@ -1,4 +1,4 @@
-import { TwilioWorker } from "globals";
+import { Worker } from "globals";
 import { areSkillsDifferent } from "utils";
 
 export interface DbWorker {
@@ -13,7 +13,7 @@ export interface DbWorker {
   inactiveForwardTo?: string
 }
 
-export const formatWorkerResponse = (response: DbWorker[]): TwilioWorker[] => {
+export const formatWorkerResponse = (response: DbWorker[]): Worker[] => {
   if (response) {
     const formattedWorkers = response.map(mapWorkerFromDbWorker);
     return formattedWorkers;
@@ -22,7 +22,7 @@ export const formatWorkerResponse = (response: DbWorker[]): TwilioWorker[] => {
   }
 };
 
-export const mapWorkerFromDbWorker = (dbWorker: DbWorker): TwilioWorker => {
+export const mapWorkerFromDbWorker = (dbWorker: DbWorker): Worker => {
   const twilioWorker = {
     ...dbWorker,
     sid: dbWorker.workerSid,

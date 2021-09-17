@@ -4,6 +4,7 @@ import {
   UserFormButton,
   ButtonWrapper
 } from "./UserEntryFormStyles";
+import { UserFormButtonsProps } from "./UserEntryFormInterfaces";
 import {
   useAdminDispatch,
   useFormState,
@@ -14,8 +15,7 @@ import {
   formModes,
   modalOverlayStatuses,
   timeouts,
-  TwilioWorker,
-  UserFormButtonsProps
+  Worker
 } from "globals";
 import {
   addOffice,
@@ -61,7 +61,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
     // see this wiki page for attributes that will be automatically updated through SSO
     // https://forge.lmig.com/wiki/display/CICCT/Twilio+Flex+SSO+Saml2+Integration
-    const attributes: Partial<TwilioWorker["attributes"]> = {
+    const attributes: Partial<Worker["attributes"]> = {
       contact_uri: `client:${form.nNumber.value.toLowerCase()}`,
       default_skills: form.defaultSkills,
       did: form.outgoing.e164,
@@ -158,7 +158,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       saveStatus: modalOverlayStatuses.SAVING,
       saveUser: true
     });
-    const attributes: Partial<TwilioWorker["attributes"]> = {};
+    const attributes: Partial<Worker["attributes"]> = {};
     if (form.manager.updated) {
       const parsedManager = JSON.parse(form.manager.value);
       attributes.manager_first_name = parsedManager.manager_first_name;
