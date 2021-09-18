@@ -48,7 +48,7 @@ export const getValidSkillsObject = (skillsObject?: WorkerSkills): WorkerSkills 
   };
   if (_.isPlainObject(skillsObject)) {
     if (_.isArray(skillsObject.skills)) {
-      skillsObject.skills.forEach((skill:any) => validObject.skills.push(skill));
+      skillsObject.skills.forEach((skill: string) => validObject.skills.push(skill));
     }
     if (_.isPlainObject(skillsObject.levels)) {
       Object.entries(skillsObject.levels).forEach(([key, value]) => validObject.levels[key] = value);

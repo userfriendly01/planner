@@ -1,5 +1,9 @@
 import BasicFormInfo from "../BasicFormInfo";
-import { InputAdornment } from "@material-ui/core";
+import {
+  Switch,
+  Tooltip,
+  InputAdornment
+} from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
 import {
   ModalExtension,
@@ -9,7 +13,6 @@ import {
   ForwardToEntryForm
 } from "components";
 import {
-  initialState,
   useFormState,
   useFormDispatch,
   userFormActions
@@ -25,10 +28,17 @@ import {
   expectOnlyPassedProps,
   mockStore,
   render,
-  setupMockedComponents
+  setupMockedComponents,
+  managerList,
+  profileList,
+  mockWorkers,
+  mockSkills,
+  initialFormState,
+  initialTestState
 } from "testUtils";
 import {
-  getExtensionInputValid,
+  isExtensionValid,
+  getOverflowSkillFromProfile,
   isProfileIdValid,
   isManagerValid
 } from "utils";
@@ -50,7 +60,9 @@ jest.mock("components", () => ({
 jest.mock("@material-ui/core", () => ({
   __esModule: true,
   InputAdornment: jest.fn(),
-  Tabs: jest.fn()
+  Tabs: jest.fn(),
+  Switch: jest.fn(),
+  Tooltip: jest.fn()
 }));
 
 jest.mock("@material-ui/icons", () => ({
@@ -67,11 +79,12 @@ jest.mock("context", () => ({
 
 jest.mock("utils", () => ({
   __esModule: true,
-  getExtensionInputValid: jest.fn(),
+  isExtensionValid: jest.fn(),
   isManagerValid: jest.fn(),
   isProfileIdValid: jest.fn(),
   sortProfilesByName: jest.requireActual("utils").sortProfilesByName,
-  sortManagersByName: jest.fn("utils").sortManagersByName
+  sortManagersByName: jest.fn("utils").sortManagersByName,
+  getOverflowSkillFromProfile: jest.fn()
 }));
 
 jest.mock("globals", () => ({
@@ -84,247 +97,6 @@ jest.mock("globals", () => ({
 
 const mockSetForm = jest.fn();
 
-const managerList = [
-  {
-    manager_first_name: "John",
-    manager_last_name: "Wick",
-    manager_n_number: "n1234567",
-    manager_id: "01"
-  },
-  {
-    manager_first_name: "Test",
-    manager_last_name: "Manager",
-    manager_n_number: "n7454853",
-    manager_id: "02"
-  }
-];
-const officeMap = new Map([
-  [
-    "ABC123",
-    {
-
-      office_nme: "Office 1",
-      office_num: "ABC123"
-    }
-  ],
-  [
-    "0002",
-    {
-
-      office_nme: "Office 2",
-      office_num: "0002"
-    }
-  ]
-]);
-const profileList = [
-  {
-    profile_nme: "test1",
-    profile_id: 1,
-    overflow_skill: null
-  },
-  {
-    profile_nme: "test2",
-    profile_id: 2,
-    overflow_skill: "whateverOverflowSkill"
-  },
-  {
-    profile_nme: "test3",
-    profile_id: 3,
-    overflow_skill: "anotherOverflowSkill"
-  }
-];
-const validFormOptions = {
-  alternateDid: {
-    e164: "+18001234567",
-    masked: "(800)123-4567",
-    tenDig: "8001234567"
-  },
-  defaultSkills: {
-    levels: {
-      "a": 1,
-      "b": 3
-    },
-    skills: ["a", "b", "c"]
-  },
-  did: "6034567890",
-  didE164: "+16034567890",
-  directDialNum: {
-    e164: "+18002345678",
-    masked: "(800)234-5678",
-    tenDig: "8002345678"
-  },
-  extension: "1234",
-  manager: managerList[0],
-  nNumber: "n1234567",
-  profileId: profileList[0].profile_id
-};
-const mockWorkers = [
-  {
-    attributes: {
-      default_skills: {
-        skills: [
-          "466",
-          "psuUm"
-        ],
-        levels: {
-          "466": 3
-        }
-      },
-      full_name: "Test 1",
-      office_location_name: "Neptune",
-      routing: {
-        skills: [
-          "466",
-          "psuUm"
-        ],
-        levels: {
-          "466": 3
-        }
-      },
-      profile_id: 15
-    },
-    sid: "WK0",
-    skillsDifferent: false
-  },
-  {
-    attributes: {
-      full_name: "Test 2",
-      office_location_name: "Uranus",
-      profile_id: 15
-    },
-    sid: "WK1",
-    skillsDifferent: false
-  },
-  {
-    // DID worker with overflow skill
-    sid: "WK2",
-    activateEp: true,
-    alternateDid: validFormOptions.alternateDid.e164,
-    directDialNum: validFormOptions.directDialNum.e164,
-    zeroOutEnabled: true,
-    attributes: {
-      default_skills: validFormOptions.defaultSkills,
-      did: validFormOptions.didE164,
-      extension: validFormOptions.extension,
-      full_name: "Test 3",
-      manager_first_name: validFormOptions.manager.manager_first_name,
-      manager_last_name: validFormOptions.manager.manager_last_name,
-      manager_n_number: validFormOptions.manager.manager_n_number,
-      office_location_name: "Jupiter",
-      profile_id: profileList[1].profile_id,
-      routing: {
-        skills: [
-          profileList[1].overflow_skill,
-          "whatever"
-        ],
-        levels: {
-          "whatever": 1
-        }
-      }
-    }
-  },
-  {
-    // DID worker without overflow skill
-    sid: "WK3",
-    activateEp: true,
-    alternateDid: validFormOptions.alternateDid.e164,
-    directDialNum: validFormOptions.directDialNum.e164,
-    zeroOutEnabled: true,
-    attributes: {
-      default_skills: validFormOptions.defaultSkills,
-      did: validFormOptions.didE164,
-      extension: validFormOptions.extension,
-      full_name: "Test 4",
-      manager_first_name: validFormOptions.manager.manager_first_name,
-      manager_last_name: validFormOptions.manager.manager_last_name,
-      manager_n_number: validFormOptions.manager.manager_n_number,
-      office_location_name: "Pluto",
-      profile_id: profileList[1].profile_id,
-      routing: {
-        skills: [
-          "payinBills"
-        ],
-        levels: {
-          "payinBills": 1
-        }
-      }
-    }
-  }
-];
-const mockSkills = [
-  {
-    skill: "aisgl1"
-  }
-];
-const initialFormState = {
-  formMode: formModes.INSERT,
-  defaultSkills: [],
-  defaultSkillsUpdated: false,
-  didUser: false,
-  extension: {
-    value: "",
-    blurred: false,
-    updated: false,
-    valid: false
-  },
-  inactiveForwardTo: {
-    value: null,
-    updated: false
-  },
-  manager: {
-    value: "",
-    blurred: false,
-    updated: false
-  },
-  nNumber: {
-    value: "n",
-    blurred: false,
-    updated: false
-  },
-  nNumberFetchedUser: null,
-  outgoing: {
-    value: "",
-    blurred: false,
-    e164: undefined,
-    updated: false,
-    valid: false
-  },
-  profileId: {
-    value: "",
-    blurred: false,
-    updated: false
-  },
-  alternateDid: {
-    value: "",
-    blurred: false,
-    e164: undefined,
-    updated: false,
-    valid: false
-  },
-  directDialNum: {
-    value: "",
-    blurred: false,
-    e164: undefined,
-    updated: false,
-    valid: false
-  },
-  zeroOutEnabled: false,
-  zeroOutEnabledUpdated: false,
-  editDisabled: false
-};
-const initialTestState = {
-  ...initialState,
-  officeContext: {
-    offices: officeMap
-  },
-  profileContext: {
-    profiles: profileList
-  },
-  managerContext: {
-    managers: managerList
-  }
-};
-
 const mockSetForwardToToggle = jest.fn();
 
 describe("<BasicFormInfo />", () => {
@@ -333,6 +105,7 @@ describe("<BasicFormInfo />", () => {
     jest.clearAllMocks();
     mockStore.reset();
     useFormDispatch.mockReturnValue(mockSetForm);
+    getOverflowSkillFromProfile.mockReturnValue("466");
     useFormState.mockReturnValue(initialFormState);
     setupMockedComponents({
       ModalExtension,
@@ -341,7 +114,9 @@ describe("<BasicFormInfo />", () => {
       OutlinedSelect,
       ForwardToEntryForm,
       InputAdornment,
-      Edit
+      Edit,
+      Switch,
+      Tooltip
     });
   });
 
@@ -358,6 +133,13 @@ describe("<BasicFormInfo />", () => {
       />,
       initialTestState
     );
+  };
+
+  const renderChildComponents = () => {
+    const didToolTip = Tooltip.mock.calls[0][0];
+    render(didToolTip.children);
+    const overFlowToolTip = Tooltip.mock.calls[1][0];
+    render(overFlowToolTip.children);
   };
 
   describe("Manager dropdown", () => {
@@ -381,17 +163,19 @@ describe("<BasicFormInfo />", () => {
         value: JSON.stringify(managerList[0])
       });
     });
-    test("error field should be true", () => {
-      useFormState.mockReturnValue({
-        ...initialFormState,
-        manager: {
-          ...initialFormState.manager,
-          blurred: true
-        }
+    describe("manager field is invalid", () => {
+      test("error field should be true", () => {
+        useFormState.mockReturnValue({
+          ...initialFormState,
+          manager: {
+            ...initialFormState.manager,
+            blurred: true
+          }
+        });
+        isManagerValid.mockReturnValue(false);
+        renderComponent(false);
+        expect(OutlinedSelect.mock.calls[0][0].error).toBe(true);
       });
-      isManagerValid.mockReturnValue(false);
-      renderComponent(false);
-      expect(OutlinedSelect.mock.calls[0][0].error).toBe(true);
     });
     test("helperText is null - manager is valid", () => {
       isManagerValid.mockReturnValue(true);
@@ -822,7 +606,7 @@ describe("<BasicFormInfo />", () => {
           blurred: true
         }
       });
-      getExtensionInputValid.mockReturnValue(false);
+      isExtensionValid.mockReturnValue(false);
       renderComponent(false);
       expect(ModalExtension.mock.calls[0][0].error).toBe(true);
     });
@@ -855,6 +639,215 @@ describe("<BasicFormInfo />", () => {
         onClear();
       });
       expect(mockSetForm).toBeCalledWith({ type: userFormActions.CLEAR_EXTENSION });
+    });
+  });
+  describe("Did Fields", () => {
+    describe("form.didUser === false", () => {
+      beforeEach(() => {
+        useFormState.mockReturnValue(initialFormState);
+      });
+      describe("Initial State", () => {
+        test("Should render the correct initial state", () => {
+          renderComponent();
+          const didToolTip = Tooltip.mock.calls[0][0];
+          expect(didToolTip.title).toBe("");
+          expect(didToolTip.placement).toBe("bottom-start");
+          const rendered = render(didToolTip.children);
+          expect(rendered.container).toHaveTextContent("DID User");
+
+          const didSwitch = Switch.mock.calls[0][0];
+          expect(didSwitch.checked).toEqual(false);
+          expect(didSwitch.disabled).toEqual(false);
+          expect(didSwitch.inputProps).toEqual({ "aria-label": "toggle-did-user" });
+
+          expect(ModalPhoneNumber.mock.calls.length).toBe(1);
+        });
+        test(`DID Tooltip Title should be message when formMode === ${formModes.UPDATE}`, () => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            formMode: formModes.UPDATE
+          });
+          renderComponent();
+          expect(Tooltip.mock.calls[0][0].title).toBe("Twilio DID can not be removed");
+        });
+      });
+      describe("DID User Switch", () => {
+        test("When onChange is called, setForm is called", () => {
+          renderComponent();
+          render(Tooltip.mock.calls[0][0].children);
+
+          act(() => {
+            const onChange = Switch.mock.calls[0][0].onChange;
+            onChange();
+          });
+
+          expect(mockSetForm).toBeCalledTimes(1);
+          expect(mockSetForm).toBeCalledWith({
+            type: userFormActions.INITIATE_DID_FIELDS
+          });
+        });
+      });
+    });
+    describe("form.didUser === true", () => {
+      beforeEach(() => {
+        useFormState.mockReturnValue({
+          ...initialFormState,
+          didUser: true
+        });
+      });
+      describe("Initial State", () => {
+        test("Should render the correct initial state", () => {
+          renderComponent();
+          const didToolTip = Tooltip.mock.calls[0][0];
+          expect(didToolTip.title).toBe("");
+          expect(didToolTip.placement).toBe("bottom-start");
+          const renderedDidToolTip = render(didToolTip.children);
+          expect(renderedDidToolTip.container).toHaveTextContent("DID User");
+
+          const didSwitch = Switch.mock.calls[0][0];
+          expect(didSwitch.checked).toEqual(true);
+          expect(didSwitch.disabled).toEqual(false);
+          expect(didSwitch.inputProps).toEqual({ "aria-label": "toggle-did-user" });
+
+          const overFlowToolTip = Tooltip.mock.calls[1][0];
+          expect(overFlowToolTip.title).toBe("");
+          expect(overFlowToolTip.placement).toBe("bottom-start");
+          const renderedOverflowTT = render(overFlowToolTip.children);
+          expect(renderedOverflowTT.container).toHaveTextContent("Overflow Skill");
+
+          expect(ModalPhoneNumber.mock.calls.length).toBe(3);
+
+          const expectedInternalRoutingNumberProps = {
+            disabled: false,
+            allowSevenDigitVdn: false,
+            id: "internal-routing-number",
+            number: "",
+            label: "Internal Routing Number *",
+            showError: initialFormState.outgoing.blurred
+          };
+          expectOnlyPassedProps(ModalPhoneNumber, expectedInternalRoutingNumberProps, 1);
+
+          const expectedAlternateOutgoingProps = {
+            disabled: false,
+            allowSevenDigitVdn: false,
+            id: "skype-teams-did",
+            number: "",
+            label: "Skype/Teams DID *",
+            showError: initialFormState.alternateDid.blurred
+          };
+          expectOnlyPassedProps(ModalPhoneNumber, expectedAlternateOutgoingProps, 2);
+        });
+        test("Overflow Tooltip Title should be message when overflowSkill is not undefined", () => {
+          getOverflowSkillFromProfile.mockReturnValue(undefined);
+          renderComponent();
+          expect(Tooltip.mock.calls[1][0].title).toBe("No overflow skill exists for this team");
+        });
+      });
+      describe("Overflow Skill Switch", () => {
+        test("Should be disabled with overFlowSkills are undefined", () => {
+          getOverflowSkillFromProfile.mockReturnValue(undefined);
+          renderComponent();
+          renderChildComponents();
+
+          act(() => {
+            const onChange = Switch.mock.calls[1][0].onChange;
+            onChange();
+          });
+
+          expect(mockSetForm).toBeCalledTimes(1);
+          expect(mockSetForm).toBeCalledWith({
+            type: userFormActions.INITIATE_ZERO_OUT_FIELDS
+          });
+        });
+        test("When onChange is called, setForm is called", () => {
+          renderComponent();
+          renderChildComponents();
+
+          act(() => {
+            const onChange = Switch.mock.calls[1][0].onChange;
+            onChange();
+          });
+
+          expect(mockSetForm).toBeCalledTimes(1);
+          expect(mockSetForm).toBeCalledWith({
+            type: userFormActions.INITIATE_ZERO_OUT_FIELDS
+          });
+        });
+      });
+      describe("Internal Routing Number", () => {
+        test("onBlur - should set blur on field", () => {
+          renderComponent();
+          renderChildComponents();
+          act(() => {
+            const onBlur = ModalPhoneNumber.mock.calls[1][0].onBlur;
+            onBlur();
+          });
+          expect(mockSetForm).toBeCalledTimes(1);
+          expect(mockSetForm).toBeCalledWith({
+            type: userFormActions.SET_BLUR_ON_FIELD,
+            payload: "directDialNum"
+          });
+        });
+        test("updateValue - should set internal routing number to correct value", () => {
+          renderComponent();
+          renderChildComponents();
+          act(() => {
+            const updateValue = ModalPhoneNumber.mock.calls[1][0].updateValue;
+            updateValue("(603) 851-8200", null, true, "+16038518200");
+          });
+          expect(mockSetForm).toBeCalledWith({
+            type: userFormActions.UPDATE_PHONE_NUMBER,
+            payload: {
+              field: "directDialNum",
+              maskedValue: "(603) 851-8200",
+              isValid: true,
+              e164Number: "+16038518200"
+            }
+          });
+        });
+      });
+      describe("Alternate DID", () => {
+        test("disabled property should be true", () => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            formMode: formModes.UPDATE,
+            didUser: true
+          });
+          renderComponent();
+          renderChildComponents();
+          expect(ModalPhoneNumber.mock.calls[2][0].disabled).toBe(true);
+        });
+        test("onBlur - should set blur on field", () => {
+          renderComponent();
+          renderChildComponents();
+          act(() => {
+            const onBlur = ModalPhoneNumber.mock.calls[2][0].onBlur;
+            onBlur();
+          });
+          expect(mockSetForm).toBeCalledTimes(1);
+          expect(mockSetForm).toBeCalledWith({
+            type: userFormActions.SET_BLUR_ON_FIELD,
+            payload: "alternateDid"
+          });
+        });
+        test("updateValue - should set internal routing number to correct value", () => {
+          renderComponent();
+          renderChildComponents();
+          act(() => {
+            const updateValue = ModalPhoneNumber.mock.calls[2][0].updateValue;
+            updateValue("(603) 851-8200", null, true, "+16038518200");
+          });
+          expect(mockSetForm).toBeCalledWith({
+            type: userFormActions.UPDATE_PHONE_NUMBER,
+            payload: {
+              field: "alternateDid",
+              maskedValue: "(603) 851-8200",
+              isValid: true,
+              e164Number: "+16038518200"
+            }
+          });
+        });
+      });
     });
   });
 });

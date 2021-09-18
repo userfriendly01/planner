@@ -1,7 +1,7 @@
 import {
   Action,
   AppState
-} from "../../globals/index";
+} from "globals";
 
 export const initialState: AppState = {
   managerContext: {

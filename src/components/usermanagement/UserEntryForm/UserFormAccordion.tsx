@@ -7,22 +7,10 @@ import {
   BasicFormInfo,
   SkillsFormInfo
 } from "components";
-import {
-  FormControlsContainer,
-  FormControlsPane
-} from "./UserEntryFormStyles";
+import { FormControlsContainer } from "./UserEntryForm.Styles";
+import { UserFormAccordianProps } from "./UserEntryForm.Interfaces";
 
-interface AccordionProps {
-  skills: any,
-  worker: any,
-  workers: any,
-  profiles: any,
-  managers: any,
-  forwardToToggle: boolean,
-  setForwardToToggle: any
-}
-
-const UserFormAccordion = (props: AccordionProps) => {
+const UserFormAccordion = (props: UserFormAccordianProps) => {
   const {
     skills,
     worker,
@@ -35,7 +23,7 @@ const UserFormAccordion = (props: AccordionProps) => {
 
   return (
     <FormControlsContainer>
-      <Accordion as="h4" singleTab={true}>
+      <Accordion as="h4">
         <AccordionTab active labelVisual="Basic Info">
           <BasicFormInfo
             skills={skills}

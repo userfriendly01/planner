@@ -1,15 +1,15 @@
-import { Tab } from "@material-ui/core";
 import {
   Header1,
   Header2,
   ModalContainer
-} from "./UserEntryFormStyles";
+} from "./UserEntryForm.Styles";
 import {
   LoadingState,
   UserEntryFormProps
-} from "./UserEntryFormInterfaces";
+} from "./UserEntryForm.Interfaces";
 import {
   ModalOverlay,
+  UserFormAccordion,
   UserFormButtons
 } from "components";
 import {
@@ -20,9 +20,8 @@ import {
 } from "context";
 import { formModes } from "globals";
 import React, { useState } from "react";
-import UserFormAccordion from "./UserFormAccordion";
 
-const UserEntryForm = (props: UserEntryFormProps, ref: null) => {
+const UserEntryForm = (props: UserEntryFormProps) => {
 
   const {
     handleClose,
@@ -103,4 +102,4 @@ const UserEntryForm = (props: UserEntryFormProps, ref: null) => {
   );
 };
 
-export default React.forwardRef(UserEntryForm);
+export default UserEntryForm;

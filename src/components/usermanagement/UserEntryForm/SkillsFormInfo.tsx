@@ -2,7 +2,7 @@ import React from "react";
 import {
   FormControlsContainer,
   FormControlsPane
-} from "./UserEntryFormStyles";
+} from "./UserEntryForm.Styles";
 import { DefaultSkillSelector } from "components";
 import {
   useFormState,

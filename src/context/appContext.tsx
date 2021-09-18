@@ -11,7 +11,7 @@ import {
 } from "globals";
 import {
   UserFormState
-} from "components/usermanagement/UserEntryForm/UserEntryFormInterfaces";
+} from "components/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
 import PropTypes from "prop-types";
 import React, { ReactElement } from "react";
 

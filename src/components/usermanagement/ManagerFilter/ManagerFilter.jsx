@@ -65,9 +65,9 @@ const ManagerFilter = props => {
             <option data-testid="add-manager" key={"add-manager"} value={"add-manager"}>Add New Manager</option>,
             /* eslint-ignore */
             <Divider light key={"divider"}/>,
-            ...sortedManagers.map((manager, index) => (
+            ...sortedManagers.map(manager => (
               <option data-testid="manager-list"
-                key={manager.manager_n_number + index}
+                key={manager.manager_id}
                 value={manager.manager_n_number}
               >
                 {manager.manager_first_name} {manager.manager_last_name}

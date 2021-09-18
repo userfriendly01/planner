@@ -75,7 +75,7 @@ export interface ModalPhoneNumberProps {
   updateValue: (maskedValue: string, unmaskedValue: string, isNumberValid: boolean, e164Number: string) => void,
   icon?: JSX.Element
 }
-const ModalPhoneNumber = (props: ModalPhoneNumberProps, ref: null) => {
+const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
   const {
     allowSevenDigitVdn, // if true, show toggle button to switch between input masks,
     disabled = false,
@@ -153,4 +153,4 @@ const ModalPhoneNumber = (props: ModalPhoneNumberProps, ref: null) => {
   }
 };
 
-export default React.forwardRef(ModalPhoneNumber);
+export default ModalPhoneNumber;

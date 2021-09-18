@@ -2,7 +2,9 @@ import { ManagementWrapper } from "../ManagementWrapper";
 import {
   ManagementHeader,
   ManagementPagination,
-  ManagementTable
+  ManagementTable,
+  UserEntryForm,
+  UserFormButtons
 } from "components";
 import { initialState } from "context";
 import { workersPerPage } from "globals";
@@ -20,7 +22,8 @@ import {
 jest.mock("components", () => ({
   ManagementHeader: jest.fn(),
   ManagementPagination: jest.fn(),
-  ManagementTable: jest.fn()
+  ManagementTable: jest.fn(),
+  UserEntryForm: jest.fn()
 }));
 
 const mockSkills=[
@@ -67,7 +70,8 @@ describe("ManagementWrapper", () => {
     setupMockedComponents({
       ManagementHeader,
       ManagementPagination,
-      ManagementTable
+      ManagementTable,
+      UserEntryForm
     });
   });
 
@@ -526,6 +530,40 @@ describe("ManagementWrapper", () => {
           start: 1
         }, 1);
       });
+    });
+  });
+  describe("User Entry Form Modal", () => {
+    test("form should not render on initial state", () => {
+      const rendered = doRender([]);
+      expectMockedComponent(rendered, { UserEntryForm }, 0);
+    });
+    test("userEntryForm is rendered when setUserEntryFormState is set to open === true", () => {
+      const rendered = doRender([]);
+      expectMockedComponent(rendered, { UserEntryForm }, 0);
+      const setFormState = ManagementTable.mock.calls[0][0].setUserEntryFormState;
+      act(() => {
+        setFormState({
+          open: true,
+          worker: null
+        });
+      });
+      expectMockedComponent(rendered, { UserEntryForm }, 1);
+    });
+    test("When UserEntryForm handleClose is called, setUserEntryFormState is set to open === false", () => {
+      const rendered = doRender([]);
+      expectMockedComponent(rendered, { UserEntryForm }, 0);
+      const setFormState = ManagementTable.mock.calls[0][0].setUserEntryFormState;
+      act(() => {
+        setFormState({
+          open: true,
+          worker: null
+        });
+      });
+      const handleClose = UserEntryForm.mock.calls[0][0].handleClose;
+      act(() => {
+        handleClose();
+      });
+      expectMockedComponent(rendered, { UserEntryForm }, 0);
     });
   });
 });

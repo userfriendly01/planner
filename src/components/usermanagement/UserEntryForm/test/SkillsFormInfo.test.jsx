@@ -5,13 +5,13 @@ import {
   useFormDispatch,
   userFormActions
 } from "context";
-import { formModes } from "globals";
 import React from "react";
 import {
   act,
   mockStore,
   render,
-  setupMockedComponents
+  setupMockedComponents,
+  initialFormState
 } from "testUtils";
 
 jest.useFakeTimers();
@@ -38,61 +38,9 @@ const defaultSkills = {
   skills: ["a", "b", "c"]
 };
 
-const initialFormState = {
-  formMode: formModes.INSERT,
-  defaultSkills,
-  defaultSkillsUpdated: false,
-  didUser: false,
-  extension: {
-    value: "",
-    blurred: false,
-    updated: false,
-    valid: false
-  },
-  inactiveForwardTo: {
-    value: null,
-    updated: false
-  },
-  manager: {
-    value: "",
-    blurred: false,
-    updated: false
-  },
-  nNumber: {
-    value: "n",
-    blurred: false,
-    updated: false
-  },
-  nNumberFetchedUser: null,
-  outgoing: {
-    value: "",
-    blurred: false,
-    e164: undefined,
-    updated: false,
-    valid: false
-  },
-  profileId: {
-    value: "",
-    blurred: false,
-    updated: false
-  },
-  alternateDid: {
-    value: "",
-    blurred: false,
-    e164: undefined,
-    updated: false,
-    valid: false
-  },
-  directDialNum: {
-    value: "",
-    blurred: false,
-    e164: undefined,
-    updated: false,
-    valid: false
-  },
-  zeroOutEnabled: false,
-  zeroOutEnabledUpdated: false,
-  editDisabled: false
+const formState = {
+  ...initialFormState,
+  defaultSkills
 };
 
 describe("<SkillsFormInfo />", () => {
@@ -101,7 +49,7 @@ describe("<SkillsFormInfo />", () => {
     jest.clearAllMocks();
     mockStore.reset();
     useFormDispatch.mockReturnValue(mockSetForm);
-    useFormState.mockReturnValue(initialFormState);
+    useFormState.mockReturnValue(formState);
     setupMockedComponents({
       DefaultSkillSelector
     });

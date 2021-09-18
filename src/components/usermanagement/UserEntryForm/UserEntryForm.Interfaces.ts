@@ -22,7 +22,7 @@ export interface UserEntryFormProps {
   workers: Worker[]
 }
 
-export interface BasicFormInfoProps {
+export interface UserFormAccordianProps {
   skills: TaskRouterSkill[],
   worker: Worker,
   workers: Worker[],
@@ -32,11 +32,15 @@ export interface BasicFormInfoProps {
   setForwardToToggle: (value: boolean) => void,
 }
 
-export interface DidFormInfoProps {
+export interface BasicFormInfoProps {
+  skills: TaskRouterSkill[],
   worker: Worker,
+  workers: Worker[],
   profiles: TritonProfile[],
+  managers: Manager[]
+  forwardToToggle: boolean,
+  setForwardToToggle: (value: boolean) => void,
 }
-
 export interface UserFormButtonsProps {
   handleClose: VoidFunction,
   loading: any,

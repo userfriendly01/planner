@@ -4,7 +4,7 @@ import {
 } from "../../globals";
 import {
   UserFormState
-} from "components/usermanagement/UserEntryForm/UserEntryFormInterfaces";
+} from "components/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
 import {
   getValidSkillsObject,
   formatE164PhoneNumber,
@@ -12,23 +12,23 @@ import {
 } from "utils";
 
 export const userFormActions = {
-  SET_UPDATE_FORM_STATE: "SET_UPDATE_FORM_STATE",
-  UPDATE_PHONE_NUMBER: "UPDATE_PHONE_NUMBER",
-  SET_BLUR_ON_FIELD: "SET_BLUR_ON_FIELD",
-  EDIT_PEN_CLICK_FORWARD_TO_TOGGLE: "EDIT_PEN_CLICK_FORWARD_TO_TOGGLE",
-  EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE: "EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE",
   RESET_FORM: "RESET_FORM",
-  UPDATE_MANAGER: "UPDATE_MANAGER",
-  UPDATE_TEAM: "UPDATE_TEAM",
-  CLEAR_N_NUMBER: "CLEAR_N_NUMBER",
-  UPDATE_N_NUMBER: "UPDATE_N_NUMBER",
-  COMPLETE_N_NUMBER: "COMPLETE_N_NUMBER",
-  CLEAR_EXTENSION: "CLEAR_EXTENSION",
-  UPDATE_EXTENSION: "UPDATE_EXTENSION",
+  SET_UPDATE_FORM_STATE: "SET_UPDATE_FORM_STATE",
+  SET_BLUR_ON_FIELD: "SET_BLUR_ON_FIELD",
   INITIATE_DID_FIELDS: "INITIATE_DID_FIELDS",
   INITIATE_ZERO_OUT_FIELDS: "INITIATE_ZERO_OUT_FIELDS",
+  UPDATE_MANAGER: "UPDATE_MANAGER",
+  UPDATE_TEAM: "UPDATE_TEAM",
+  UPDATE_PHONE_NUMBER: "UPDATE_PHONE_NUMBER",
+  UPDATE_N_NUMBER: "UPDATE_N_NUMBER",
+  COMPLETE_N_NUMBER: "COMPLETE_N_NUMBER",
+  CLEAR_N_NUMBER: "CLEAR_N_NUMBER",
   UPDATE_DEFAULT_SKILLS: "UPDATE_DEFAULT_SKILLS",
-  UPDATE_INACTIVE_FORWARD_TO: "UPDATE_INACTIVE_FORWARD_TO"
+  UPDATE_INACTIVE_FORWARD_TO: "UPDATE_INACTIVE_FORWARD_TO",
+  UPDATE_EXTENSION: "UPDATE_EXTENSION",
+  CLEAR_EXTENSION: "CLEAR_EXTENSION",
+  EDIT_PEN_CLICK_FORWARD_TO_TOGGLE: "EDIT_PEN_CLICK_FORWARD_TO_TOGGLE",
+  EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE: "EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE"
 };
 
 const initialDefaultSkills = getValidSkillsObject();
@@ -100,10 +100,9 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
     case userFormActions.SET_UPDATE_FORM_STATE: {
       const worker = action.payload.worker;
       const managers = action.payload.managers;
-      const formMode = action.payload.formMode;
       return {
         ...state,
-        formMode,
+        formMode: formModes.UPDATE,
         defaultSkills: getValidSkillsObject(worker.attributes.default_skills),
         extension: {
           ...state.extension,

@@ -7,7 +7,6 @@ import {
   isInactiveForwardToValid,
   isDidDifferentValid,
   getTargetProfile,
-  getExtensionInputValid,
   getOverflowSkillFromProfile,
   getOverflowSkills,
   workerHasOverFlowSkill,
@@ -326,7 +325,7 @@ describe("isNNumberValid", () => {
   test("should return true when nNumberFetchedUser is populated", () => {
     const form = {
       nNumberFetchedUser: {
-        name: "Faith"
+        whatever: "Mike"
       }
     };
     const result = isNNumberValid(form);
@@ -342,20 +341,31 @@ describe("isNNumberValid", () => {
 });
 
 describe("isExtensionValid", () => {
-  test("should return true when extension is valid or populated", () => {
+  test("should return true when extension is valid", () => {
     const form = {
       extension: {
         valid: true,
-        value: ""
+        value: "5245"
       }
     };
     const result = isExtensionValid(form);
     expect(result).toBe(true);
   });
-  test("should return false when extension is not valid", () => {
+  test("should return true when extension is empty string", () => {
     const form = {
       extension: {
+        value: "",
         valid: false
+      }
+    };
+    const result = isExtensionValid(form);
+    expect(result).toBe(true);
+  });
+  test("should return false when extension is invalid and value is not an empty string", () => {
+    const form = {
+      extension: {
+        valid: false,
+        value: "5245"
       }
     };
     const result = isExtensionValid(form);
@@ -365,7 +375,7 @@ describe("isExtensionValid", () => {
 
 describe("isInactiveForwardToValid", () => {
   describe("forwardToToggle === true", () => {
-    test("should return true when inactiveForwardTo is valid", () => {
+    test("should return true when inactiveForwardTo is not null", () => {
       const form = {
         inactiveForwardTo: {
           value: "WK12334"
@@ -374,7 +384,7 @@ describe("isInactiveForwardToValid", () => {
       const result = isInactiveForwardToValid(form, true);
       expect(result).toBe(true);
     });
-    test("should return false when inactiveForwardTo is not valid", () => {
+    test("should return false when inactiveForwardTo is null", () => {
       const form = {
         inactiveForwardTo: {
           value: null
@@ -447,29 +457,6 @@ describe("getTargetProfile", () => {
   test("should return undefined if profile is not found", () => {
     const result = getTargetProfile(profileList, "4");
     expect(result).toBe(undefined);
-  });
-});
-
-describe("getExtensionInputValid", () => {
-  test("should return true if extension is valid or empty string", () => {
-    const form = {
-      extension: {
-        valid: true,
-        value: ""
-      }
-    };
-    const result = getExtensionInputValid(form);
-    expect(result).toStrictEqual(true);
-  });
-  test("should return false if extension is inValid", () => {
-    const form = {
-      extension: {
-        valid: false,
-        value: "Nah Bruh"
-      }
-    };
-    const result = getExtensionInputValid(form);
-    expect(result).toBe(false);
   });
 });
 

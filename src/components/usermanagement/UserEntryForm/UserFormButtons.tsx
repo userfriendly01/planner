@@ -3,8 +3,8 @@ import { Tooltip } from "@material-ui/core";
 import {
   UserFormButton,
   ButtonWrapper
-} from "./UserEntryFormStyles";
-import { UserFormButtonsProps } from "./UserEntryFormInterfaces";
+} from "./UserEntryForm.Styles";
+import { UserFormButtonsProps } from "./UserEntryForm.Interfaces";
 import {
   useAdminDispatch,
   useFormState,

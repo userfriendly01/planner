@@ -39,7 +39,7 @@ interface NotificationModalProps {
   text: string
 }
 
-const NotificationModal = (props: NotificationModalProps, ref: null) => {
+const NotificationModal = (props: NotificationModalProps) => {
   const {
     buttonText,
     handleClick,
@@ -60,4 +60,4 @@ const NotificationModal = (props: NotificationModalProps, ref: null) => {
   );
 };
 
-export default React.forwardRef(NotificationModal);
+export default NotificationModal;

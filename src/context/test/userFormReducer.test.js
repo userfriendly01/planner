@@ -8,157 +8,12 @@ import {
   getValidSkillsObject,
   formatE164PhoneNumber
 } from "utils";
-
-const profiles = [
-  {
-    profile_nme: "test1",
-    profile_id: 1,
-    overflow_skill: null
-  },
-  {
-    profile_nme: "test2",
-    profile_id: 2,
-    overflow_skill: "whateverOverflowSkill"
-  },
-  {
-    profile_nme: "test3",
-    profile_id: 3,
-    overflow_skill: "anotherOverflowSkill"
-  }
-];
-const managers = [
-  {
-    manager_first_name: "John",
-    manager_last_name: "Wick",
-    manager_n_number: "n1234567",
-    manager_id: "01"
-  },
-  {
-    manager_first_name: "Test",
-    manager_last_name: "Manager",
-    manager_n_number: "n7454853",
-    manager_id: "02"
-  }
-];
-const validFormOptions = {
-  alternateDid: {
-    e164: "+18001234567",
-    masked: "(800)123-4567",
-    tenDig: "8001234567"
-  },
-  defaultSkills: {
-    levels: {
-      "a": 1,
-      "b": 3
-    },
-    skills: ["a", "b", "c"]
-  },
-  did: "6034567890",
-  didE164: "+16034567890",
-  directDialNum: {
-    e164: "+18002345678",
-    masked: "(800)234-5678",
-    tenDig: "8002345678"
-  },
-  extension: "1234",
-  manager: managers[0],
-  nNumber: "n1234567",
-  profileId: profiles[0].profile_id
-};
-const workers = [
-  {
-    attributes: {
-      default_skills: {
-        skills: [
-          "466",
-          "psuUm"
-        ],
-        levels: {
-          "466": 3
-        }
-      },
-      full_name: "Test 1",
-      office_location_name: "Neptune",
-      routing: {
-        skills: [
-          "466",
-          "psuUm"
-        ],
-        levels: {
-          "466": 3
-        }
-      },
-      profile_id: 15
-    },
-    sid: "WK0",
-    skillsDifferent: false
-  },
-  {
-    attributes: {
-      full_name: "Test 2",
-      office_location_name: "Uranus",
-      profile_id: 15
-    },
-    sid: "WK1",
-    skillsDifferent: false
-  },
-  {
-    // DID worker with overflow skill
-    sid: "WK2",
-    activateEp: true,
-    alternateDid: validFormOptions.alternateDid.e164,
-    directDialNum: validFormOptions.directDialNum.e164,
-    zeroOutEnabled: true,
-    attributes: {
-      default_skills: validFormOptions.defaultSkills,
-      did: validFormOptions.didE164,
-      extension: validFormOptions.extension,
-      full_name: "Test 3",
-      n_number: "n0263786",
-      manager_first_name: validFormOptions.manager.manager_first_name,
-      manager_last_name: validFormOptions.manager.manager_last_name,
-      manager_n_number: validFormOptions.manager.manager_n_number,
-      office_location_name: "Jupiter",
-      profile_id: profiles[1].profile_id,
-      routing: {
-        skills: [
-          profiles[1].overflow_skill,
-          "whatever"
-        ],
-        levels: {
-          "whatever": 1
-        }
-      }
-    }
-  },
-  {
-    // DID worker without overflow skill
-    sid: "WK3",
-    activateEp: true,
-    alternateDid: validFormOptions.alternateDid.e164,
-    directDialNum: validFormOptions.directDialNum.e164,
-    zeroOutEnabled: true,
-    attributes: {
-      default_skills: validFormOptions.defaultSkills,
-      did: validFormOptions.didE164,
-      extension: validFormOptions.extension,
-      full_name: "Test 4",
-      manager_first_name: validFormOptions.manager.manager_first_name,
-      manager_last_name: validFormOptions.manager.manager_last_name,
-      manager_n_number: validFormOptions.manager.manager_n_number,
-      office_location_name: "Pluto",
-      profile_id: profiles[1].profile_id,
-      routing: {
-        skills: [
-          "payinBills"
-        ],
-        levels: {
-          "payinBills": 1
-        }
-      }
-    }
-  }
-];
+import {
+  managerList,
+  profileList,
+  validFormOptions,
+  mockWorkers
+} from "testUtils";
 
 describe("userFormReducer", () => {
   describe("RESET_FORM", () => {
@@ -176,11 +31,10 @@ describe("userFormReducer", () => {
   });
   describe("SET_UPDATE_FORM_STATE for DID User", () => {
     test("should reset form to update state", () => {
-      const worker = workers[2];
+      const worker = mockWorkers[2];
       const payload = {
-        worker: workers[2],
-        formMode: formModes.UPDATE,
-        managers
+        worker,
+        managers: managerList
       };
       const action = {
         type: userFormActions.SET_UPDATE_FORM_STATE,
@@ -189,7 +43,7 @@ describe("userFormReducer", () => {
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
         ...initialUserFormState,
-        formMode: payload.formMode,
+        formMode: formModes.UPDATE,
         defaultSkills: getValidSkillsObject(worker.attributes.default_skills),
         extension: {
           ...initialUserFormState.extension,
@@ -198,11 +52,11 @@ describe("userFormReducer", () => {
         },
         manager: {
           ...initialUserFormState.manager,
-          value: JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number))
+          value: JSON.stringify(managerList.find(m => m.manager_n_number === worker.attributes.manager_n_number))
         },
         nNumber: {
           ...initialUserFormState.nNumber,
-          value: worker.attributes.n_number
+          value: "n"
         },
         outgoing: {
           ...initialUserFormState.outgoing,
@@ -232,11 +86,11 @@ describe("userFormReducer", () => {
   });
   describe("SET_UPDATE_FORM_STATE for NonDID User", () => {
     test("should reset form to update state", () => {
-      const worker = workers[0];
+      const worker = mockWorkers[0];
       const payload = {
-        worker: workers[0],
+        worker,
         formMode: formModes.UPDATE,
-        managers
+        managers: managerList
       };
       const action = {
         type: userFormActions.SET_UPDATE_FORM_STATE,
@@ -254,34 +108,12 @@ describe("userFormReducer", () => {
         },
         manager: {
           ...initialUserFormState.manager,
-          value: JSON.stringify(managers.find(m => m.manager_n_number === worker.attributes.manager_n_number))
-        },
-        nNumber: {
-          ...initialUserFormState.nNumber,
-          value: "n"
-        },
-        outgoing: {
-          ...initialUserFormState.outgoing,
-          value: "",
-          valid: false
+          value: JSON.stringify(managerList.find(m => m.manager_n_number === worker.attributes.manager_n_number))
         },
         profileId: {
           ...initialUserFormState.profileId,
           value: worker.attributes.profile_id
-        },
-        alternateDid: {
-          ...initialUserFormState.alternateDid,
-          value: "",
-          valid: false
-        },
-        directDialNum: {
-          ...initialUserFormState.directDialNum,
-          value: "",
-          valid: false
-        },
-        didUser: false,
-        zeroOutEnabled: false,
-        editDisabled: false
+        }
       };
       expect(result).toStrictEqual(expectedFormState);
     });
@@ -314,61 +146,63 @@ describe("userFormReducer", () => {
       const expectedFormState = {
         ...initialUserFormState,
         didUser: false,
-        alternateDid: {
-          value: "",
-          blurred: false,
-          e164: undefined,
-          updated: false,
-          valid: false
-        },
-        directDialNum: {
-          value: "",
-          blurred: false,
-          e164: undefined,
-          updated: false,
-          valid: false
-        },
         zeroOutEnabled: false
       };
       expect(result).toStrictEqual(expectedFormState);
     });
   });
   describe("INITIATE_DID_FIELDS - NonDID User", () => {
-    test("should initiate DID fields", () => {
+    test("should initiate DID fields and zeroOutEnabled should remain unchanged - false", () => {
       const action = { type: userFormActions.INITIATE_DID_FIELDS };
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
         ...initialUserFormState,
-        didUser: !initialUserFormState.didUser,
-        alternateDid: {
-          value: "",
-          blurred: false,
-          e164: undefined,
-          updated: false,
-          valid: false
-        },
-        directDialNum: {
-          value: "",
-          blurred: false,
-          e164: undefined,
-          updated: false,
-          valid: false
-        },
+        didUser: true,
         zeroOutEnabled: false
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+    test("should initiate DID fields and zeroOutEnabled should remain unchanged - true", () => {
+      const action = { type: userFormActions.INITIATE_DID_FIELDS };
+      const result = userFormReducer({
+        ...initialUserFormState,
+        zeroOutEnabled: true
+      }, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        didUser: true,
+        zeroOutEnabled: true
       };
       expect(result).toStrictEqual(expectedFormState);
     });
   });
   describe("INITIATE_ZERO_OUT_FIELDS", () => {
-    test("should initiate zero out fields", () => {
-      const action = { type: userFormActions.INITIATE_ZERO_OUT_FIELDS };
-      const result = userFormReducer(initialUserFormState, action);
-      const expectedFormState = {
-        ...initialUserFormState,
-        zeroOutEnabled: !initialUserFormState.zeroOutEnabled,
-        zeroOutEnabledUpdated: true
-      };
-      expect(result).toStrictEqual(expectedFormState);
+    describe("zeroOutEnabled === false", () => {
+      test("should set zeroOutEnabled to true", () => {
+        const action = { type: userFormActions.INITIATE_ZERO_OUT_FIELDS };
+        const result = userFormReducer(initialUserFormState, action);
+        const expectedFormState = {
+          ...initialUserFormState,
+          zeroOutEnabled: true,
+          zeroOutEnabledUpdated: true
+        };
+        expect(result).toStrictEqual(expectedFormState);
+      });
+    });
+    describe("zeroOutEnabled === true", () => {
+      test("should initiate zero out fields", () => {
+        const action = { type: userFormActions.INITIATE_ZERO_OUT_FIELDS };
+        const result = userFormReducer({
+          ...initialUserFormState,
+          zeroOutEnabled: true
+        }, action);
+        const expectedFormState = {
+          ...initialUserFormState,
+          zeroOutEnabled: false,
+          zeroOutEnabledUpdated: true
+        };
+        expect(result).toStrictEqual(expectedFormState);
+      });
     });
   });
   describe("UPDATE_MANAGER", () => {
@@ -395,26 +229,65 @@ describe("userFormReducer", () => {
     });
   });
   describe("UPDATE_TEAM", () => {
-    test("should update team", () => {
-      const payload = {
-        profileId: profiles[0].profile_id,
-        profiles
-      };
-      const action = {
-        type: userFormActions.UPDATE_TEAM,
-        payload
-      };
-      const result = userFormReducer(initialUserFormState, action);
-      const expectedFormState = {
-        ...initialUserFormState,
-        profileId: {
-          ...initialUserFormState.profileId,
-          value: payload.profileId,
-          updated: true
-        },
-        zeroOutEnabled: false
-      };
-      expect(result).toStrictEqual(expectedFormState);
+    describe("Profile is updated from a profile without a zero out skill to one with a zero out skill", () => {
+      test("should update team and set zeroOutEnabled to true", () => {
+        const payload = {
+          profileId: profileList[1].profile_id,
+          profiles: profileList
+        };
+        const action = {
+          type: userFormActions.UPDATE_TEAM,
+          payload
+        };
+        const initialTestState = {
+          ...initialUserFormState,
+          profileId: {
+            ...initialUserFormState.profileId,
+            value: profileList[0].profile_id
+          }
+        };
+        const result = userFormReducer(initialTestState, action);
+        const expectedFormState = {
+          ...initialUserFormState,
+          profileId: {
+            ...initialUserFormState.profileId,
+            value: payload.profileId,
+            updated: true
+          },
+          zeroOutEnabled: true
+        };
+        expect(result).toStrictEqual(expectedFormState);
+      });
+    });
+    describe("Profile is updated from a profile with a zero out skill to one without", () => {
+      test("should update team and set zeroOutEnabled to false", () => {
+        const payload = {
+          profileId: profileList[0].profile_id,
+          profiles: profileList
+        };
+        const action = {
+          type: userFormActions.UPDATE_TEAM,
+          payload
+        };
+        const initialTestState = {
+          ...initialUserFormState,
+          profileId: {
+            ...initialUserFormState.profileId,
+            value: profileList[1].profile_id
+          }
+        };
+        const result = userFormReducer(initialTestState, action);
+        const expectedFormState = {
+          ...initialUserFormState,
+          profileId: {
+            ...initialUserFormState.profileId,
+            value: payload.profileId,
+            updated: true
+          },
+          zeroOutEnabled: false
+        };
+        expect(result).toStrictEqual(expectedFormState);
+      });
     });
   });
   describe("UPDATE_PHONE_NUMBER with e164", () => {
@@ -462,8 +335,7 @@ describe("userFormReducer", () => {
           ...initialUserFormState.outgoing,
           value: payload.maskedValue,
           e164: payload.e164Number,
-          updated: true,
-          valid: false
+          updated: true
         }
       };
       expect(result).toStrictEqual(expectedFormState);
@@ -533,7 +405,7 @@ describe("userFormReducer", () => {
   });
   describe("UPDATE_DEFAULT_SKILLS", () => {
     test("should update default skills", () => {
-      const payload = workers[0].default_skills;
+      const payload = mockWorkers[0].default_skills;
       const action = {
         type: userFormActions.UPDATE_DEFAULT_SKILLS,
         payload
@@ -542,7 +414,7 @@ describe("userFormReducer", () => {
       const expectedFormState = {
         ...initialUserFormState,
         defaultSkillsUpdated: true,
-        defaultSkills: workers[0].default_skills
+        defaultSkills: payload
       };
       expect(result).toStrictEqual(expectedFormState);
     });
@@ -616,7 +488,7 @@ describe("userFormReducer", () => {
   });
   describe("EDIT_PEN_CLICK_FORWARD_TO_TOGGLE", () => {
     test("should set forward to toggle fields", () => {
-      const payload = workers[2];
+      const payload = mockWorkers[2];
       const action = {
         type: userFormActions.EDIT_PEN_CLICK_FORWARD_TO_TOGGLE,
         payload
@@ -626,20 +498,12 @@ describe("userFormReducer", () => {
         ...initialUserFormState,
         directDialNum: {
           ...initialUserFormState.directDialNum,
-          value: formatE164PhoneNumber(workers[2].directDialNum),
-          e164: undefined,
-          updated: false,
+          value: formatE164PhoneNumber(mockWorkers[2].directDialNum),
           valid: true
-        },
-        inactiveForwardTo: {
-          value: null,
-          updated: false
         },
         outgoing: {
           ...initialUserFormState.outgoing,
-          value: formatE164PhoneNumber(workers[2].attributes.did),
-          e164: undefined,
-          updated: false,
+          value: formatE164PhoneNumber(mockWorkers[2].attributes.did),
           valid: true
         },
         editDisabled: !initialUserFormState.editDisabled
@@ -654,23 +518,15 @@ describe("userFormReducer", () => {
         ...initialUserFormState,
         directDialNum: {
           ...initialUserFormState.directDialNum,
-          value: formatE164PhoneNumber(workers[2].directDialNum),
-          e164: undefined,
-          updated: false,
+          value: formatE164PhoneNumber(mockWorkers[2].directDialNum),
           valid: true
-        },
-        inactiveForwardTo: {
-          value: null,
-          updated: false
         },
         outgoing: {
           ...initialUserFormState.outgoing,
-          value: formatE164PhoneNumber(workers[2].attributes.did),
-          e164: undefined,
-          updated: false,
+          value: formatE164PhoneNumber(mockWorkers[2].attributes.did),
           valid: true
         },
-        editDisabled: !initialUserFormState.editDisabled
+        editDisabled: true
       };
       const result = userFormReducer(initialTestState, action);
       expect(result).toStrictEqual({

@@ -55,7 +55,7 @@ const ResultsContainer = styled(FlexColumn)`
   width: auto;
 `;
 
-const ResultsModal = (props, ref) => {
+const ResultsModal = props => {
   const {
     error,
     handleClose,
@@ -139,4 +139,4 @@ ResultsModal.propTypes = {
   ).isRequired
 };
 
-export default React.forwardRef(ResultsModal);
+export default ResultsModal;

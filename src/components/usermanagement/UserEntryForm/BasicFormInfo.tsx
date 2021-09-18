@@ -10,8 +10,8 @@ import {
   StyledIcon,
   ToggleContainer,
   ToggleLabel
-} from "./UserEntryFormStyles";
-import { BasicFormInfoProps } from "./UserEntryFormInterfaces";
+} from "./UserEntryForm.Styles";
+import { BasicFormInfoProps } from "./UserEntryForm.Interfaces";
 import {
   ForwardToEntryForm,
   ModalExtension,
@@ -25,7 +25,7 @@ import {
   userFormActions
 } from "context";
 import {
-  getExtensionInputValid,
+  isExtensionValid,
   getOverflowSkillFromProfile,
   sortManagersByName,
   sortProfilesByName,
@@ -156,7 +156,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
         />
         <ModalExtension
           disabled={form.extension.valid && extensionMatcher.test(form.extension.value)}
-          error={form.extension.blurred && !getExtensionInputValid(form)}
+          error={form.extension.blurred && !isExtensionValid(form)}
           extension={form.extension.value}
           originalValue={(worker && worker.attributes) ? worker.attributes.extension : undefined}
           onBlur={() => setForm({ type: userFormActions.CLEAR_EXTENSION })}
