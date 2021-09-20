@@ -4,7 +4,6 @@ import {
   ResetSkillsButton,
   SearchBox
 } from "components";
-import { formModes } from "globals";
 import React from "react";
 import {
   expectMockedComponent,
@@ -26,7 +25,7 @@ const filterBy = "who cares";
 const searchBy = "i don't care";
 const setFilter = jest.fn();
 const setSearch = jest.fn();
-const setUserEntryFormState = jest.fn();
+const setUserModalState = jest.fn();
 
 const renderComponent = () => {
   return render(
@@ -35,7 +34,7 @@ const renderComponent = () => {
       searchBy={searchBy}
       setFilter={setFilter}
       setSearch={setSearch}
-      setUserEntryFormState={setUserEntryFormState}
+      setUserModalState={setUserModalState}
     />);
 };
 
@@ -69,7 +68,7 @@ describe("<ManagementHeader />", () => {
     const rendered = renderComponent();
     const addUserButtonElement = rendered.getByText("Add User");
     fireEvent.click(addUserButtonElement);
-    expect(setUserEntryFormState).toHaveBeenCalledWith({
+    expect(setUserModalState).toHaveBeenCalledWith({
       open: true,
       worker: null
     });

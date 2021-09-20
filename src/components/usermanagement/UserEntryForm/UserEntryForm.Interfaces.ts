@@ -16,7 +16,7 @@ export interface LoadingState {
 }
 
 export interface UserEntryFormProps {
-  worker: Worker,
+  worker: Worker | null,
   handleClose: VoidFunction,
   skills: TaskRouterSkill[],
   workers: Worker[]
@@ -24,7 +24,7 @@ export interface UserEntryFormProps {
 
 export interface UserFormAccordianProps {
   skills: TaskRouterSkill[],
-  worker: Worker,
+  worker: Worker | null,
   workers: Worker[],
   profiles: TritonProfile[],
   managers: Manager[]
@@ -34,7 +34,7 @@ export interface UserFormAccordianProps {
 
 export interface BasicFormInfoProps {
   skills: TaskRouterSkill[],
-  worker: Worker,
+  worker: Worker | null,
   workers: Worker[],
   profiles: TritonProfile[],
   managers: Manager[]
@@ -47,7 +47,7 @@ export interface UserFormButtonsProps {
   updateLoading: (payload: any) => void
   profiles: TritonProfile[],
   offices: Map<string, Office>,
-  worker: Worker,
+  worker: Worker | null,
   forwardToToggle: boolean,
 }
 
@@ -57,11 +57,6 @@ export interface FieldState {
   e164?: string,
   updated: boolean,
   valid?: boolean
-}
-
-export interface UserModalState {
-  open: boolean,
-  worker: Worker
 }
 
 export interface UserFormState {

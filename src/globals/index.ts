@@ -7,6 +7,7 @@ const SERVICE_BASE_URI = "/service";
 
 export * from "./interfaces";
 export * from "./theme";
+export * from "./styles";
 
 export const nNumMatcher = /[n,N]\d{7}/g;
 export const extensionMatcher = /^\d{4}$/;

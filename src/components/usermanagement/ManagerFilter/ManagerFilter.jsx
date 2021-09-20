@@ -1,3 +1,4 @@
+import { Wrapper } from "./ManagerFilter.Styles";
 import {
   Divider,
   FilledInput,
@@ -13,12 +14,7 @@ import React, {
   useEffect,
   useState
 } from "react";
-import styled from "styled-components";
 import { sortManagersByName } from "utils";
-
-const Wrapper = styled.div`
-  display: flex;
-`;
 
 const ManagerFilter = props => {
   const {

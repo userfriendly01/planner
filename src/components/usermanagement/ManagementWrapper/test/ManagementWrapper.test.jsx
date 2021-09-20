@@ -3,8 +3,7 @@ import {
   ManagementHeader,
   ManagementPagination,
   ManagementTable,
-  UserEntryForm,
-  UserFormButtons
+  UserEntryForm
 } from "components";
 import { initialState } from "context";
 import { workersPerPage } from "globals";
@@ -540,7 +539,7 @@ describe("ManagementWrapper", () => {
     test("userEntryForm is rendered when setUserEntryFormState is set to open === true", () => {
       const rendered = doRender([]);
       expectMockedComponent(rendered, { UserEntryForm }, 0);
-      const setFormState = ManagementTable.mock.calls[0][0].setUserEntryFormState;
+      const setFormState = ManagementTable.mock.calls[0][0].setUserModalState;
       act(() => {
         setFormState({
           open: true,
@@ -552,7 +551,7 @@ describe("ManagementWrapper", () => {
     test("When UserEntryForm handleClose is called, setUserEntryFormState is set to open === false", () => {
       const rendered = doRender([]);
       expectMockedComponent(rendered, { UserEntryForm }, 0);
-      const setFormState = ManagementTable.mock.calls[0][0].setUserEntryFormState;
+      const setFormState = ManagementTable.mock.calls[0][0].setUserModalState;
       act(() => {
         setFormState({
           open: true,

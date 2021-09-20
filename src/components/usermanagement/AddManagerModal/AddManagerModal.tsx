@@ -1,3 +1,10 @@
+import {
+  ButtonWrapper,
+  Header,
+  HeaderAndCloseButtonWrapper,
+  LeftDiv,
+  ModalContainer
+} from "./AddManagerModal.Styles";
 import { CloseRounded } from "@material-ui/icons";
 import {
   ModalNNumber,
@@ -9,50 +16,15 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import { Manager } from "globals";
+import {
+  FlexColumn,
+  Manager
+} from "globals";
 import React, { useState } from "react";
 import {
   addManager,
   FetchUserResponse
 } from "services";
-import styled from "styled-components";
-
-const FlexColumn = styled.div`
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-`;
-
-const FlexRow = styled.div`
-  display: flex;
-  flex: 1 1 auto;
-`;
-
-const ButtonWrapper = styled(FlexRow)`
-  justify-content: space-around;
-  padding: 1%;
-`;
-
-const Header = styled.h1`
-  align-self: center;
-`;
-
-const HeaderAndCloseButtonWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-
-const LeftDiv = styled.div`
-  width: 1em;
-`;
-
-const ModalContainer = styled(FlexColumn)`
-  left: 50%;
-  padding: 2%;
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
-`;
 
 const defaultNNumber = "n";
 const loadingStates = {
@@ -60,7 +32,6 @@ const loadingStates = {
   fail: "fail",
   loading: "loading"
 };
-
 export interface AddManagerModalProps {
   handleClose: () => void
 }
@@ -79,7 +50,7 @@ const AddManagerModal = (props: AddManagerModalProps) => {
 
   const addManagerClicked = (): Promise<any> => {
     setSaveStatus(loadingStates.loading);
-    if (state.managerContext.managers.some((savedManager: any) => savedManager.manager_n_number === manager.manager_n_number)) {
+    if (state.managerContext.managers.some((savedManager: Manager) => savedManager.manager_n_number === manager.manager_n_number)) {
       setSaveStatus(loadingStates.fail);
       setTimeout(() => setSaveStatus(null), 2000);
       setErrorMessage("Manager already exists");

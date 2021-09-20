@@ -1,7 +1,12 @@
 import {
-  Modal,
-  Paper
-} from "@material-ui/core";
+  ManagementWrapperState,
+  UserModalState
+} from "./ManagementWrapper.Interfaces";
+import {
+  ManagementContainer,
+  StyledPaper
+} from "./ManagementWrapper.Styles";
+import { Modal } from "@material-ui/core";
 import {
   ManagementHeader,
   ManagementPagination,
@@ -19,35 +24,10 @@ import {
 import React, {
   useState
 } from "react";
-import styled from "styled-components";
 import {
   filterByNameAndSkills,
   sortWorkersByFullName
 } from "utils";
-
-const ManagementContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 0 1%;
-`;
-
-const StyledPaper = styled(Paper)`
-  align-items: center;
-  display: flex;
-  justify-content: center;
-`;
-
-interface ManagementWrapperState {
-  deltaToggle: boolean,
-  pageSelected: number,
-  filterBy: string,
-  searchBy: string
-}
-
-export interface UserEntryFormState {
-  open: boolean,
-  worker: Worker
-}
 
 const initialManagementWrapperState: ManagementWrapperState = {
   deltaToggle: false,
@@ -56,7 +36,7 @@ const initialManagementWrapperState: ManagementWrapperState = {
   searchBy: ""
 };
 
-const initialUserEntryFormState: UserEntryFormState = {
+const initialUserModalState: UserModalState = {
   open: false,
   worker: null
 };
@@ -84,7 +64,7 @@ export const ManagementWrapper: React.FC = () => {
 
   const [state, setState] = useState(initialManagementWrapperState);
 
-  const [userEntryFormState, setUserEntryFormState] = useState(initialUserEntryFormState);
+  const [userModalState, setUserModalState] = useState(initialUserModalState);
 
   if (state.filterBy !== "show-all") {
     workers = workers.filter(worker => worker.attributes.manager_n_number === state.filterBy);
@@ -128,10 +108,10 @@ export const ManagementWrapper: React.FC = () => {
   return (
     <FormStateProvider>
       <ManagementContainer>
-        <Modal disableBackdropClick={true} open={userEntryFormState.open}>
+        <Modal disableBackdropClick={true} open={userModalState.open}>
           <UserEntryForm
-            handleClose={() => setUserEntryFormState(initialUserEntryFormState) }
-            worker={userEntryFormState.worker}
+            handleClose={() => setUserModalState(initialUserModalState) }
+            worker={userModalState.worker}
             skills={skillsFromContext}
             workers={workersFromContext.sort(sortWorkersByFullName)}
           />
@@ -141,12 +121,12 @@ export const ManagementWrapper: React.FC = () => {
           searchBy={state.searchBy}
           setFilter={setStateFromFilterChange}
           setSearch={setStateFromSearchChange}
-          setUserEntryFormState={setUserEntryFormState} />
+          setUserModalState={setUserModalState} />
         <StyledPaper elevation={3}>
           <ManagementTable
             deltaToggle={state.deltaToggle}
             setDeltaToggle={setStateFromDeltaToggle}
-            setUserEntryFormState={setUserEntryFormState}
+            setUserModalState={setUserModalState}
             skills={skillsFromContext}
             paginatedWorkers={workers.slice(workersStart, workersEnd)}
             workers={workersFromContext.sort(sortWorkersByFullName)}

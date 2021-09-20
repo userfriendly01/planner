@@ -4,10 +4,7 @@ import {
   ModalOverlay,
   UserEntryForm
 } from "components";
-import {
-  formModes,
-  theme
-} from "globals";
+import { theme } from "globals";
 import React from "react";
 import { deleteUser } from "services";
 import {
@@ -106,7 +103,7 @@ const skills = [
 ];
 
 const setDeltaToggle = jest.fn();
-const setUserEntryFormState = jest.fn();
+const setUserModalState = jest.fn();
 const mockSetForm = jest.fn();
 
 const renderComponent = (workers, toggle = false, state) => {
@@ -114,7 +111,7 @@ const renderComponent = (workers, toggle = false, state) => {
     <ManagementTable
       deltaToggle={toggle}
       setDeltaToggle={setDeltaToggle}
-      setUserEntryFormState={setUserEntryFormState}
+      setUserModalState={setUserModalState}
       skills={skills}
       paginatedWorkers={workers}
       workers={workers}
@@ -312,7 +309,7 @@ describe("<ManagementTable />", () => {
       expectMockedComponent(rendered, { UserEntryForm }, 0);
       const indexClicked = 1;
       act(() => fireEvent.click(editButtons[indexClicked]));
-      expect(setUserEntryFormState).toHaveBeenCalledWith({
+      expect(setUserModalState).toHaveBeenCalledWith({
         open: true,
         worker: mockWorkerData[indexClicked]
       });
