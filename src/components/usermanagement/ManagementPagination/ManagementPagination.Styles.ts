@@ -4,7 +4,7 @@ export const Highlight = styled.span`
   color: ${props => props.theme.textColor};
 `;
 
-export const PageButton = styled.button<{props: any}>`
+export const PageButton = styled.button<{pageSelected: number}>`
   background-color: ${props => props.value !== props.pageSelected ? "transparent" : props.theme.textColor};
   border: ${props => props.value !== props.pageSelected ? "#C0BFC0" : props => props.theme.textColor};
   border-radius: 5px;
