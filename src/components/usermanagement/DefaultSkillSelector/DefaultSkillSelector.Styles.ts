@@ -4,7 +4,7 @@ export const DefaultSkillsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   font-size: 0.9em;
-  min-height: 400px;
+  min-height: 350px;
   z-index: 2;
 `;
 

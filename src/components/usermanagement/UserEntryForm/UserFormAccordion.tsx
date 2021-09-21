@@ -23,7 +23,7 @@ const UserFormAccordion = (props: UserFormAccordianProps) => {
 
   return (
     <FormControlsContainer>
-      <Accordion as="h4">
+      <Accordion as="h4" singleTab>
         <AccordionTab active labelVisual="Basic Info">
           <BasicFormInfo
             skills={skills}
