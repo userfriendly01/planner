@@ -1,5 +1,4 @@
 import {
-  CenteredH2,
   DefaultSkillsWrapper,
   IconButtonWrapper,
   SkillRow,
@@ -60,7 +59,10 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
 
   const [newSkill, setNewSkill] = useState<NewTwilioWorkerSkill>(defaultNewSkill);
 
-  const newSkillChanged = (skill: any) => {
+  const newSkillChanged = (skill: {
+    [index: string]: any,
+    value: string
+  }) => {
     const skillObj = findTaskRouterSkill(skill.value, taskrouterSkills);
     setNewSkill({
       levels: skillObj.levels,
@@ -96,7 +98,7 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
 
   const removeSkillClicked = (skill: string) => () => {
     const updatedDefaultSkills = { ...defaultSkills };
-    updatedDefaultSkills.skills = updatedDefaultSkills.skills.filter((existingSkill: any) => existingSkill !== skill);
+    updatedDefaultSkills.skills = updatedDefaultSkills.skills.filter((existingSkill: string) => existingSkill !== skill);
     delete updatedDefaultSkills.levels[skill];
     setDefaultSkills(updatedDefaultSkills);
   };
@@ -106,7 +108,6 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
 
   return (
     <DefaultSkillsWrapper>
-      <CenteredH2>Default Skills</CenteredH2>
       <SkillRow>
         <SkillRowItem>
           <SkillDropDown
@@ -129,7 +130,7 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
       </SkillRow>
       <SkillRowSeperator/>
       <SkillsWrapper>
-        {defaultSkills.skills.sort().map((skill: any, index: number) => {
+        {defaultSkills.skills.sort().map((skill: string, index: number) => {
           const taskrouterSkill = findTaskRouterSkill(skill, taskrouterSkills);
           return (
             // @ts-ignore

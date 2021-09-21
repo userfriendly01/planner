@@ -34,11 +34,8 @@ const UserFormAccordion = (props: UserFormAccordianProps) => {
             forwardToToggle={forwardToToggle}
             setForwardToToggle={setForwardToToggle}/>
         </AccordionTab>
-        <AccordionTab labelVisual="Skills">
+        <AccordionTab labelVisual="Default Skills">
           <SkillsFormInfo />
-        </AccordionTab>
-        <AccordionTab labelVisual="Call Recording">
-          TBD
         </AccordionTab>
       </Accordion>
     </FormControlsContainer>

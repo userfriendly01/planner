@@ -34,7 +34,8 @@ export interface FormModes {
 export interface Manager {
   manager_first_name: string,
   manager_last_name: string,
-  manager_n_number: string
+  manager_n_number: string,
+  manager_id?: number | string
 }
 
 export interface ModalOverlayStatuses {

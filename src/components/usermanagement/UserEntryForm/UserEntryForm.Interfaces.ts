@@ -43,7 +43,7 @@ export interface BasicFormInfoProps {
 }
 export interface UserFormButtonsProps {
   handleClose: VoidFunction,
-  loading: any,
+  loading: LoadingState,
   updateLoading: (payload: any) => void
   profiles: TritonProfile[],
   offices: Map<string, Office>,

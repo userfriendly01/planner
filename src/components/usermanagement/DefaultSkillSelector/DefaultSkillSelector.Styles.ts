@@ -1,10 +1,5 @@
 import styled from "styled-components";
 
-export const CenteredH2 = styled.h2`
-  margin: 8px 0;
-  text-align: center;
-`;
-
 export const DefaultSkillsWrapper = styled.div`
   display: flex;
   flex-direction: column;

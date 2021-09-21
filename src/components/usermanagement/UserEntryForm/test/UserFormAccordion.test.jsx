@@ -69,8 +69,7 @@ describe("<UserFormAccordion />", () => {
     renderComponent();
     render(Accordion.mock.calls[0][0].children);
     expect(AccordionTab.mock.calls[0][0].labelVisual).toBe("Basic Info");
-    expect(AccordionTab.mock.calls[1][0].labelVisual).toBe("Skills");
-    expect(AccordionTab.mock.calls[2][0].labelVisual).toBe("Call Recording");
+    expect(AccordionTab.mock.calls[1][0].labelVisual).toBe("Default Skills");
 
     render(AccordionTab.mock.calls[0][0].children);
     render(AccordionTab.mock.calls[1][0].children);

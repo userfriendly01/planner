@@ -52,7 +52,7 @@ export const getNonOverflowSkills = (worker: Worker, profiles: TritonProfile[]):
 
 export const getOverflowSkills = (profiles: TritonProfile[]): string[] => {
   const skills: string[] = [];
-  profiles.forEach((profile: any) => profile.overflow_skill !== null && skills.push(profile.overflow_skill));
+  profiles.forEach((profile: TritonProfile) => profile.overflow_skill !== null && skills.push(profile.overflow_skill));
   return skills;
 };
 
@@ -65,7 +65,7 @@ export const getOverflowSkillFromProfile = (profiles: TritonProfile[], profileVa
   }
 };
 
-export const getTargetProfile = (profiles: TritonProfile[], newProfileValue: string): any => profiles.find((profile: any) => profile.profile_id === +newProfileValue);
+export const getTargetProfile = (profiles: TritonProfile[], newProfileValue: string): TritonProfile => profiles.find((profile: TritonProfile) => profile.profile_id === +newProfileValue);
 
 export const getZeroOutEnabledFromProfile = (profiles: TritonProfile[], newProfileValue: string): boolean => getTargetProfile(profiles, newProfileValue).overflow_skill !== null;
 

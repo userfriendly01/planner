@@ -1,6 +1,7 @@
 import {
   Action,
-  formModes
+  formModes,
+  Manager
 } from "../../globals";
 import {
   UserFormState
@@ -111,7 +112,7 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         },
         manager: {
           ...state.manager,
-          value: JSON.stringify(managers.find((m: any) => m.manager_n_number === worker.attributes.manager_n_number))
+          value: JSON.stringify(managers.find((m: Manager) => m.manager_n_number === worker.attributes.manager_n_number))
         },
         nNumber: {
           ...state.nNumber,

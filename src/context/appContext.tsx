@@ -12,7 +12,6 @@ import {
 import {
   UserFormState
 } from "components/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
-import PropTypes from "prop-types";
 import React, { ReactElement } from "react";
 
 export const StateContext = React.createContext(undefined);
@@ -32,10 +31,6 @@ const StateProvider = (props: StateProviderProps) => {
       </DispatchContext.Provider>
     </StateContext.Provider>
   );
-};
-
-StateProvider.propTypes = {
-  children: PropTypes.any
 };
 
 const useAdminDispatch = (): (action: Action) => VoidFunction => {
@@ -66,10 +61,6 @@ const FormStateProvider = (props: FormStateProviderProps) => {
       </FormDispatchContext.Provider>
     </FormStateContext.Provider>
   );
-};
-
-FormStateProvider.propTypes = {
-  children: PropTypes.any
 };
 
 const useFormState = (): UserFormState => {
