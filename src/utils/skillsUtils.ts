@@ -1,12 +1,12 @@
 import {
   TaskRouterSkill,
-  TwilioWorker,
-  TwilioWorkerSkills
-} from "context";
+  Worker,
+  WorkerSkills
+} from "globals";
 import _ from "lodash";
 import { sortTaskRouterSkillByName } from "utils";
 
-export const areSkillsDifferent = (workerAttributes: TwilioWorker["attributes"]): boolean => {
+export const areSkillsDifferent = (workerAttributes: Worker["attributes"]): boolean => {
   const currentSkills = getValidSkillsObject(workerAttributes.routing);
   const defaultSkills = getValidSkillsObject(workerAttributes.default_skills);
   if (defaultSkills.skills.length > 0) {
@@ -41,14 +41,14 @@ export const formatTaskRouterSkills = (rawTaskRouterSkills: RawTaskRotuterSkill[
   };
 }).sort(sortTaskRouterSkillByName);
 
-export const getValidSkillsObject = (skillsObject?: TwilioWorkerSkills): TwilioWorkerSkills => {
-  const validObject: TwilioWorkerSkills = {
+export const getValidSkillsObject = (skillsObject?: WorkerSkills): WorkerSkills => {
+  const validObject: WorkerSkills = {
     skills: [],
     levels: {}
   };
   if (_.isPlainObject(skillsObject)) {
     if (_.isArray(skillsObject.skills)) {
-      skillsObject.skills.forEach(skill => validObject.skills.push(skill));
+      skillsObject.skills.forEach((skill: string) => validObject.skills.push(skill));
     }
     if (_.isPlainObject(skillsObject.levels)) {
       Object.entries(skillsObject.levels).forEach(([key, value]) => validObject.levels[key] = value);

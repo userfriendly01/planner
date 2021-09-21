@@ -71,6 +71,7 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
+    "@lmig/lmds-react-accordion": "^1.4.11",
     "express": "^4.16.4",
     "express-healthcheck": "^0.1.0"
   },
