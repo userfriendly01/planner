@@ -7,6 +7,7 @@ import {
 } from "@material-ui/icons";
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { workersPerPage } from "globals";
 import React from "react";
 import {
   expectMockedComponent,
@@ -25,8 +26,8 @@ jest.mock("@material-ui/icons", () => ({
 
 const renderComponent = page => {
   return render(<ManagementPagination
-    end={10}
-    length={45}
+    end={workersPerPage}
+    length={65}
     page={page}
     setPage={setPageFunc}
     start={1} />);
@@ -48,9 +49,9 @@ describe("<ManagementPagination />", () => {
       const rendered = renderComponent(1);
       expect(rendered.getByText("1", { selector: "span" })).toBeInTheDocument();
       expect(rendered.getByText(/-/)).toBeInTheDocument();
-      expect(rendered.getByText("10", { selector: "span" })).toBeInTheDocument();
+      expect(rendered.getByText("15", { selector: "span" })).toBeInTheDocument();
       expect(rendered.getByText(/of/)).toBeInTheDocument();
-      expect(rendered.getByText("45", { selector: "span" })).toBeInTheDocument();
+      expect(rendered.getByText("65", { selector: "span" })).toBeInTheDocument();
       expect(rendered.getByText(/workers/)).toBeInTheDocument();
       expect(setPageFunc.mock.calls.length).toBe(0);
       expectMockedComponent(rendered, { SkipPreviousOutlined });
