@@ -1,21 +1,15 @@
 import ManagementPagination from "../ManagementPagination";
-// import { Tooltip } from "@material-ui/core";
 import {
-  NavigateNextOutlined,
   NavigateBeforeOutlined,
+  NavigateNextOutlined,
   SkipNextOutlined,
   SkipPreviousOutlined
 } from "@material-ui/icons";
-import { userEvent } from "@testing-library/user-event";
-// import {
-//   screen,
-//   waitFor
-// } from "@testing-library/react"j
-// import { workersPerPage } from "globals";
+import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import React from "react";
 import {
   expectMockedComponent,
-  expectOnlyPassedProps,
   render,
   setupMockedComponents
 } from "testUtils";
@@ -29,7 +23,7 @@ jest.mock("@material-ui/icons", () => ({
   SkipPreviousOutlined: jest.fn()
 }));
 
-const renderWithProps = page => {
+const renderComponent = page => {
   return render(<ManagementPagination
     end={10}
     length={45}
@@ -50,8 +44,8 @@ describe("<ManagementPagination />", () => {
   });
 
   describe("initial render (on page 1)", () => {
-    test("should display start, end, and of how many and the first & previous arrows should be disabled", () => {
-      const rendered = renderWithProps(1);
+    test("should display start, end & 'of how many' and the first & previous arrows should be disabled", () => {
+      const rendered = renderComponent(1);
       expect(rendered.getByText("1", { selector: "span" })).toBeInTheDocument();
       expect(rendered.getByText(/-/)).toBeInTheDocument();
       expect(rendered.getByText("10", { selector: "span" })).toBeInTheDocument();
@@ -63,54 +57,63 @@ describe("<ManagementPagination />", () => {
       expectMockedComponent(rendered, { NavigateBeforeOutlined });
       expectMockedComponent(rendered, { NavigateNextOutlined });
       expectMockedComponent(rendered, { SkipNextOutlined });
-      expectOnlyPassedProps(SkipPreviousOutlined, { onClick: null });
-      expectOnlyPassedProps(NavigateBeforeOutlined, { onClick: null });
+      expect(screen.getByTestId("first")).toHaveAttribute("disabled");
+      expect(screen.getByTestId("previous")).toHaveAttribute("disabled");
+      expect(screen.getByTestId("next")).not.toHaveAttribute("disabled");
+      expect(screen.getByTestId("last")).not.toHaveAttribute("disabled");
     });
+  });
 
+  describe("on any page other than the last page", () => {
+    const currentPage = 3;
     describe("next page icon is clicked", () => {
-      test.only("should navigate to next page", () => {
-        const currentPage = 2;
-        const rendered = renderWithProps(currentPage);
-        // fireEvent.click(rendered.getByText("2", { selector: "button" }));
-        userEvent.click(rendered.getByTestId("next"));
-        expect(setPageFunc.mock.calls.length).toBe(1);
-        expect(setPageFunc.mock.calls[0][0]).toBe(currentPage + 1);
+      test("should navigate to next page", () => {
+        renderComponent(currentPage);
+        userEvent.click(screen.getByTestId("next"));
+        expect(setPageFunc).toHaveBeenCalledTimes(1);
+        expect(setPageFunc).toHaveBeenCalledWith(currentPage + 1);
       });
     });
 
     describe("last page icon is clicked", () => {
-      test.todo("should navigate to page 5", () => {
-
+      test("should navigate to the last page", () => {
+        renderComponent(currentPage);
+        userEvent.click(screen.getByTestId("last"));
+        expect(setPageFunc).toHaveBeenCalledTimes(1);
+        expect(setPageFunc).toHaveBeenCalledWith(5);
       });
-    });
-
-    describe("on last page", () => {
-      test("the next & last arrows should be disabled", () => {
-        renderWithProps(2);
-        expectOnlyPassedProps(NavigateNextOutlined, { onClick: null });
-        expectOnlyPassedProps(SkipNextOutlined, { onClick: null });
-      });
-
-      describe("previous page icon is clicked", () => {
-        test.todo("should navigate to page 4", () => {
-
-        });
-      });
-
-      describe("first page icon is clicked", () => {
-        test.todo("should navigate to page 1", () => {
-
-        });
-      });
-
     });
   });
 
-  // test("when we click a page button, we should fire the function sent in, sent with the correct page number", () => {
-  // const rendered = renderWithProps(10, workersPerPage + 1, 1, setPageFunc, 1);
-  // fireEvent.click(rendered.getByText("2", { selector: "button" }));
-  // expect(setPageFunc.mock.calls.length).toBe(1);
-  // expect(setPageFunc.mock.calls[0][0]).toBe(2);
-  // });
+  describe("on any page other than the first page", () => {
+    const currentPage = 4;
+    describe("previous page icon is clicked", () => {
+      test("should navigate to the previous page", () => {
+        renderComponent(currentPage);
+        userEvent.click(screen.getByTestId("previous"));
+        expect(setPageFunc).toHaveBeenCalledTimes(1);
+        expect(setPageFunc).toHaveBeenCalledWith(currentPage - 1);
+      });
+    });
+
+    describe("first page icon is clicked", () => {
+      test("should navigate to page 1", () => {
+        renderComponent(currentPage);
+        userEvent.click(screen.getByTestId("first"));
+        expect(setPageFunc).toHaveBeenCalledTimes(1);
+        expect(setPageFunc).toHaveBeenCalledWith(1);
+      });
+    });
+  });
+
+  describe("on last page", () => {
+    test("the next & last arrows should be disabled", () => {
+      renderComponent(5);
+      expect(screen.getByTestId("first")).not.toHaveAttribute("disabled");
+      expect(screen.getByTestId("previous")).not.toHaveAttribute("disabled");
+      expect(screen.getByTestId("next")).toHaveAttribute("disabled");
+      expect(screen.getByTestId("last")).toHaveAttribute("disabled");
+    });
+  });
 
 });
