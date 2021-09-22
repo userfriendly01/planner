@@ -1,4 +1,15 @@
 import {
+  CustomTable,
+  CustomTableData,
+  CustomTableHeader,
+  CustomTableRow,
+  DeltaWrapper,
+  IconWrapper,
+  TableContainer,
+  TableDataFlex,
+  TableText
+} from "./ManagementTable.Styles";
+import {
   Modal,
   Switch
 } from "@material-ui/core";
@@ -13,7 +24,9 @@ import {
 } from "components";
 import {
   useAdminDispatch,
-  useAdminState
+  useAdminState,
+  useFormDispatch,
+  userFormActions
 } from "context";
 import {
   formModes,
@@ -22,123 +35,13 @@ import {
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { deleteUser } from "services";
-import styled from "styled-components";
 import { formatWorkerSkillsToHTML } from "utils";
-
-const headerIconWidth = "64px";
-
-const CustomTable = styled.table`
-  border-spacing: 0;
-  font-size: 14px;
-  table-layout: fixed;
-  width: 100%;
-`;
-
-const CustomTableData = styled.td`
-  color: ${props => props.theme.textColor};
-  padding: 2px 4px;
-  vertical-align: top;
-  &:nth-child(7) {
-    text-align: -webkit-center;
-    vertical-align: middle;
-  }
-  &:nth-child(8) {
-    text-align: -webkit-center;
-    vertical-align: middle;
-  }
-  &:nth-child(9) {
-    text-align: -webkit-center;
-    vertical-align: middle;
-  }
-`;
-
-const CustomTableHeader = styled.th`
-  color: ${props => props.theme.textColor};
-  border-bottom: 2px solid ${props => props.theme.tableRow.borderColor};
-  padding-left: 4px;
-  text-align: left;
-  &:nth-child(1) {
-    width: 15%;
-  }
-  &:nth-child(2) {
-    width: 10%;
-  }
-  &:nth-child(3) {
-    width: 10%;
-  }
-  &:nth-child(4) {
-    width: 18%;
-  }
-  &:nth-child(7) {
-    width: ${headerIconWidth};
-  }
-  &:nth-child(8) {
-    width: ${headerIconWidth};
-  }
-  &:nth-child(9) {
-    width: ${headerIconWidth};
-  }
-`;
-
-const CustomTableRow = styled.tr`
-  &:nth-child(odd) {
-    background-color: ${props => props.selected ? props.theme.tableRow.selectedColor : props.theme.tableRow.alternateRowColor};
-  }
-  background-color: ${props => props.selected ? props.theme.tableRow.selectedColor : "inherit"};
-  &:hover {
-    background-color: ${props => props.selected ? props.theme.tableRow.hoverSelectedColor : props.theme.tableRow.hoverColor};
-    cursor: pointer;
-  }
-`;
-
-const DeltaWrapper = styled.div`
-  align-items: center;
-  color: ${props => props.theme.libertyDarkGray};
-  display: flex;
-  justify-content: center;
-  margin: auto;
-`;
-
-const IconWrapper = styled.div`
-  align-items: center;
-  border-radius: ${props => props.theme.tableRow.icon.hoverDiameter / 2}px;
-  color: ${props => props.theme.libertyDarkGray};
-  cursor: pointer;
-  display: flex;
-  font-size: ${props => props.theme.tableRow.icon.size}px;
-  height: ${props => props.theme.tableRow.icon.hoverDiameter}px;
-  justify-content: center;
-  width: ${props => props.theme.tableRow.icon.hoverDiameter}px;
-  &:hover {
-    background-color: ${props => props.theme.tableRow.selectedColor};
-    cursor: pointer;
-  }
-`;
-
-const TableContainer = styled.div`
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  padding: 2%;
-  position: relative;
-`;
-
-const TableDataFlex = styled.div`
-  color: ${props => props.theme.textColor};
-  display: flex;
-  flex-wrap: wrap;
-`;
-
-const TableText = styled.div`
-  margin: 2px;
-`;
-
 
 const ManagementTable = props => {
   const {
     deltaToggle,
     setDeltaToggle,
-    setUserEntryFormState,
+    setUserModalState,
     skills,
     paginatedWorkers,
     workers
@@ -159,6 +62,7 @@ const ManagementTable = props => {
   const state = useAdminState();
   const selectedWorkers = state.workerContext.selectedWorkers;
   const dispatch = useAdminDispatch();
+  const setForm = useFormDispatch();
 
   const handleDeleteUser = () => {
     const deletedWorker = confirmationModalOpts.worker;
@@ -219,7 +123,7 @@ const ManagementTable = props => {
           </tr>
         </thead>
         <tbody>
-          {paginatedWorkers.map((worker, index) => {
+          {paginatedWorkers.map(worker => {
             const isSelected = selectedWorkers.some(selectedWorker => selectedWorker.sid === worker.sid);
             const handleWorkerOnClick = () => dispatch({
               type: "toggleWorkerSelected",
@@ -230,8 +134,15 @@ const ManagementTable = props => {
             });
             const editButtonOnClick = event => {
               event.stopPropagation();
-              setUserEntryFormState({
-                formMode: formModes.UPDATE,
+              setForm({
+                type: userFormActions.SET_UPDATE_FORM_STATE,
+                payload: {
+                  worker,
+                  managers: state.managerContext.managers,
+                  formMode: formModes.UPDATE
+                }
+              });
+              setUserModalState({
                 open: true,
                 worker
               });
@@ -244,7 +155,7 @@ const ManagementTable = props => {
               });
             };
             return (
-              <CustomTableRow key={index} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">
+              <CustomTableRow key={worker.sid} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">
                 <CustomTableData><TableText>{worker.attributes.full_name}</TableText></CustomTableData>
                 <CustomTableData><TableText>{worker.attributes.n_number}</TableText></CustomTableData>
                 <CustomTableData><TableText>{worker.attributes.extension}</TableText></CustomTableData>
@@ -270,8 +181,9 @@ const ManagementTable = props => {
             );
           })}
         </tbody>
-        <Modal open={confirmationModalOpts.open}>
-          { confirmationModalOpts.worker ?
+
+        { confirmationModalOpts.worker ?
+          <Modal open={confirmationModalOpts.open}>
             <ConfirmationModal
               callbackMethods={{
                 onConfirm: handleDeleteUser,
@@ -296,9 +208,9 @@ const ManagementTable = props => {
               }}
               saveResult={saveResult}
             />
-            : null
-          }
-        </Modal>
+          </Modal>
+          : null
+        }
       </CustomTable>
     </TableContainer>
   );
@@ -307,7 +219,7 @@ const ManagementTable = props => {
 ManagementTable.propTypes = {
   deltaToggle: PropTypes.bool.isRequired,
   setDeltaToggle: PropTypes.func.isRequired,
-  setUserEntryFormState: PropTypes.func.isRequired,
+  setUserModalState: PropTypes.func.isRequired,
   skills: PropTypes.arrayOf(
     PropTypes.shape({
       levels: PropTypes.array,

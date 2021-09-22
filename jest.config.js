@@ -8,7 +8,9 @@ const jestConfig = {
     "<rootDir>/src/context/appContext.js",
     "<rootDir>/src/globals",
     "<rootDir>/jestSetup.js",
-    "/index.js"
+    "/index.js",
+    "<rootDir>/src/*/*/*.Interfaces.ts?(x)"
+
   ],
   collectCoverageFrom: [
     "src/**/*.{js,jsx,ts,tsx}"
@@ -22,7 +24,6 @@ const jestConfig = {
   ],
   moduleNameMapper: {
     // to understand our module paths (ex: files in /src reference other files simply by using 'src/components')
-    // "\\.(css|less|scss)$": "<rootDir>/src/__test__/__mocks__/fileMock.js",
     "^src/(.*)": "<rootDir>/src/$1",
     "^components/(.*)": "<rootDir>/src/components/$1",
     "^components$": "<rootDir>/src/components",
@@ -35,7 +36,8 @@ const jestConfig = {
     "^services/(.*)": "<rootDir>/src/services/$1",
     "^testUtils$": "<rootDir>/__test__/index",
     "^utils$": "<rootDir>/src/utils",
-    "^utils/(.*)": "<rootDir>/src/utils/$1"
+    "^utils/(.*)": "<rootDir>/src/utils/$1",
+    "\\.(css|less)$": "<rootDir>/__test__/styleMock.js"
   },
   setupFilesAfterEnv: ["<rootDir>/jestSetup.js"],
   testMatch: [

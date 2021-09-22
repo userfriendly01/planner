@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Tooltip } from "@material-ui/core";
 import {
   NavigateBeforeOutlined,
@@ -46,6 +47,18 @@ const ShowingSection = styled.div`
   color: #C0BFC0;
   font-size: .825em;
 `;
+=======
+import {
+  Highlight,
+  PageButton,
+  PageSection,
+  PaginationWrapper,
+  ShowingSection
+} from "./ManagementPagination.Styles";
+import { workersPerPage } from "globals";
+import PropTypes from "prop-types";
+import React from "react";
+>>>>>>> 9e57d8cd4904dc6a643754c1efcc1b2fe757a404
 
 const ManagementPagination = props => {
   const {

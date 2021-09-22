@@ -1,4 +1,4 @@
-import { Office } from "context";
+import { Office } from "globals";
 import { DbOffice } from "services";
 
 export const formatOfficesResponse = (response: DbOffice[]): Map<string, Office> => {
