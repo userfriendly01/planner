@@ -196,6 +196,17 @@ describe("<UserFormButtons />", () => {
       sid: rawDbWorker.workerSid,
       skillsDifferent: true
     };
+    const resetFormAfterAddExpectedAction = {
+      type: "RESET_FORM_AFTER_ADD",
+      payload: {
+        managerValue: validFormState.manager.value,
+        outgoing: {
+          value: validFormState.outgoing.value,
+          e164: validFormState.outgoing.e164
+        },
+        profileIdValue: validFormState.profileId.value
+      }
+    };
     describe(`form.formMode === ${formModes.INSERT}`, () => {
       beforeEach(() => {
         isDidDifferentValid.mockReturnValue(true);
@@ -249,9 +260,7 @@ describe("<UserFormButtons />", () => {
                 attributes: workerAttributesAfterFormValid
               });
               expect(mockSetForm).toBeCalledTimes(1);
-              expect(mockSetForm).toBeCalledWith({
-                type: "RESET_FORM"
-              });
+              expect(mockSetForm).toBeCalledWith(resetFormAfterAddExpectedAction);
               expect(mockDispatch).toBeCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
@@ -319,9 +328,7 @@ describe("<UserFormButtons />", () => {
                 zeroOutEnabled: validFormState.zeroOutEnabled
               });
               expect(mockSetForm).toBeCalledTimes(1);
-              expect(mockSetForm).toBeCalledWith({
-                type: "RESET_FORM"
-              });
+              expect(mockSetForm).toBeCalledWith(resetFormAfterAddExpectedAction);
               expect(mockDispatch).toBeCalledTimes(1);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
@@ -377,9 +384,7 @@ describe("<UserFormButtons />", () => {
                 zeroOutEnabled: true
               });
               expect(mockSetForm).toBeCalledTimes(1);
-              expect(mockSetForm).toBeCalledWith({
-                type: "RESET_FORM"
-              });
+              expect(mockSetForm).toBeCalledWith(resetFormAfterAddExpectedAction);
               expect(mockDispatch).toBeCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
@@ -438,9 +443,7 @@ describe("<UserFormButtons />", () => {
                 attributes: workerAttributesAfterFormValid
               });
               expect(mockSetForm).toBeCalledTimes(1);
-              expect(mockSetForm).toBeCalledWith({
-                type: "RESET_FORM"
-              });
+              expect(mockSetForm).toBeCalledWith(resetFormAfterAddExpectedAction);
               expect(mockDispatch).toBeCalledTimes(1);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",

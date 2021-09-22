@@ -16,6 +16,209 @@ import {
 } from "testUtils";
 
 describe("userFormReducer", () => {
+
+  describe("Default Case", () => {
+    test("should return state", () => {
+      const action = { type: "default" };
+      const result = userFormReducer(initialUserFormState, action);
+      expect(result).toStrictEqual(initialUserFormState);
+    });
+  });
+
+  describe("CLEAR_EXTENSION", () => {
+    test("should clear extension", () => {
+      const action = { type: userFormActions.CLEAR_EXTENSION };
+      const initialTestState = {
+        ...initialUserFormState,
+        extension: {
+          ...initialUserFormState.extension,
+          value: validFormOptions.extension,
+          blurred: true,
+          updated: true,
+          valid: true
+        }
+      };
+      const result = userFormReducer(initialTestState, action);
+      const expectedFormState = {
+        ...initialTestState,
+        extension: {
+          ...initialTestState.extension,
+          value: "",
+          valid: false
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
+  describe("CLEAR_N_NUMBER", () => {
+    test("should clear nNumber", () => {
+      const action = { type: userFormActions.CLEAR_N_NUMBER };
+      const startingFormState = {
+        ...initialUserFormState,
+        nNumber: {
+          ...initialUserFormState.nNumber,
+          value: "n0263786"
+        },
+        nNumberFetchedUser: {
+          firstName: "Faith",
+          lastName: "Cuneo"
+        }
+      };
+      const result = userFormReducer(startingFormState, action);
+      expect(result).toStrictEqual(initialUserFormState);
+    });
+  });
+
+  describe("COMPLETE_N_NUMBER", () => {
+    test("should update fetched user", () => {
+      const payload = {
+        nNumber: "n0263786",
+        fetchedUser: {
+          firstName: "Faith",
+          lastName: "Cuneo"
+        }
+      };
+      const action = {
+        type: userFormActions.COMPLETE_N_NUMBER,
+        payload
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        nNumber: {
+          ...initialUserFormState.nNumber,
+          value: payload.nNumber
+        },
+        nNumberFetchedUser: payload.fetchedUser
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
+  describe("EDIT_PEN_CLICK_FORWARD_TO_TOGGLE", () => {
+    test("should set forward to toggle fields", () => {
+      const payload = mockWorkers[2];
+      const action = {
+        type: userFormActions.EDIT_PEN_CLICK_FORWARD_TO_TOGGLE,
+        payload
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        directDialNum: {
+          ...initialUserFormState.directDialNum,
+          value: formatE164PhoneNumber(mockWorkers[2].directDialNum),
+          valid: true
+        },
+        outgoing: {
+          ...initialUserFormState.outgoing,
+          value: formatE164PhoneNumber(mockWorkers[2].attributes.did),
+          valid: true
+        },
+        editDisabled: !initialUserFormState.editDisabled
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
+  describe("EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE", () => {
+    test("should reset forward to toggle", () => {
+      const action = { type: userFormActions.EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE };
+      const initialTestState = {
+        ...initialUserFormState,
+        directDialNum: {
+          ...initialUserFormState.directDialNum,
+          value: formatE164PhoneNumber(mockWorkers[2].directDialNum),
+          valid: true
+        },
+        outgoing: {
+          ...initialUserFormState.outgoing,
+          value: formatE164PhoneNumber(mockWorkers[2].attributes.did),
+          valid: true
+        },
+        editDisabled: true
+      };
+      const result = userFormReducer(initialTestState, action);
+      expect(result).toStrictEqual({
+        ...initialTestState,
+        editDisabled: !initialTestState.editDisabled
+      });
+    });
+  });
+
+  describe("INITIATE_DID_FIELDS - DID User", () => {
+    test("should initiate DID fields", () => {
+      const action = { type: userFormActions.INITIATE_DID_FIELDS };
+      const result = userFormReducer({
+        ...initialUserFormState,
+        didUser: true
+      }, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        didUser: false,
+        zeroOutEnabled: false
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
+  describe("INITIATE_DID_FIELDS - NonDID User", () => {
+    test("should initiate DID fields and zeroOutEnabled should remain unchanged - false", () => {
+      const action = { type: userFormActions.INITIATE_DID_FIELDS };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        didUser: true,
+        zeroOutEnabled: false
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+    test("should initiate DID fields and zeroOutEnabled should remain unchanged - true", () => {
+      const action = { type: userFormActions.INITIATE_DID_FIELDS };
+      const result = userFormReducer({
+        ...initialUserFormState,
+        zeroOutEnabled: true
+      }, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        didUser: true,
+        zeroOutEnabled: true
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
+  describe("INITIATE_ZERO_OUT_FIELDS", () => {
+    describe("zeroOutEnabled === false", () => {
+      test("should set zeroOutEnabled to true", () => {
+        const action = { type: userFormActions.INITIATE_ZERO_OUT_FIELDS };
+        const result = userFormReducer(initialUserFormState, action);
+        const expectedFormState = {
+          ...initialUserFormState,
+          zeroOutEnabled: true,
+          zeroOutEnabledUpdated: true
+        };
+        expect(result).toStrictEqual(expectedFormState);
+      });
+    });
+    describe("zeroOutEnabled === true", () => {
+      test("should initiate zero out fields", () => {
+        const action = { type: userFormActions.INITIATE_ZERO_OUT_FIELDS };
+        const result = userFormReducer({
+          ...initialUserFormState,
+          zeroOutEnabled: true
+        }, action);
+        const expectedFormState = {
+          ...initialUserFormState,
+          zeroOutEnabled: false,
+          zeroOutEnabledUpdated: true
+        };
+        expect(result).toStrictEqual(expectedFormState);
+      });
+    });
+  });
+
   describe("RESET_FORM", () => {
     test("should reset form to initial state", () => {
       const initialTestState = {
@@ -29,6 +232,106 @@ describe("userFormReducer", () => {
       expect(result).toStrictEqual(initialUserFormState);
     });
   });
+
+  describe("RESET_FORM_AFTER_ADD", () => {
+    test("should reset all form fields except Manager, Team & Outbound Number", () => {
+      const managerValue = "Jimini Cricket";
+      const profileIdValue = "42";
+      const updatedOutgoingValues = {
+        value: "8007654321",
+        e164: "+18007654321"
+      };
+      // setting blurred & updated to the opposite of what we expect after the action
+      const blurred = true;
+      const updated = false;
+      const initialTestState = {
+        ...initialUserFormState,
+        manager: {
+          value: managerValue,
+          blurred,
+          updated
+        },
+        outgoing: {
+          value: updatedOutgoingValues.value,
+          e164: updatedOutgoingValues.e164,
+          blurred,
+          updated,
+          valid: false
+        },
+        profileId: {
+          value: profileIdValue,
+          blurred,
+          updated
+        },
+        // randomly selected values that we expect the action to reset
+        extension: {
+          value: "not blank",
+          blurred: true,
+          updated: true,
+          valid: true
+        },
+        directDialNum: {
+          value: "a thousand",
+          blurred: true,
+          e164: "shoelaces",
+          updated: true,
+          valid: true
+        },
+        zeroOutEnabled: true
+      };
+      const action = {
+        type: userFormActions.RESET_FORM_AFTER_ADD,
+        payload: {
+          managerValue,
+          profileIdValue,
+          outgoing: {
+            value: updatedOutgoingValues.value,
+            e164: updatedOutgoingValues.e164
+          }
+        }
+      };
+      expect(userFormReducer(initialTestState, action)).toStrictEqual({
+        ...initialUserFormState,
+        manager: {
+          value: managerValue,
+          blurred: false,
+          updated: true
+        },
+        outgoing: {
+          value: updatedOutgoingValues.value,
+          blurred: false,
+          e164: updatedOutgoingValues.e164,
+          updated: true,
+          valid: true
+        },
+        profileId: {
+          value: profileIdValue,
+          blurred: false,
+          updated: true
+        }
+      });
+    });
+  });
+
+  describe("SET_BLUR_ON_FIELD", () => {
+    test("should reset field blurred property to true", () => {
+      const payload = "outgoing";
+      const action = {
+        type: userFormActions.SET_BLUR_ON_FIELD,
+        payload
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        outgoing: {
+          ...initialUserFormState.outgoing,
+          blurred: true
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
   describe("SET_UPDATE_FORM_STATE for DID User", () => {
     test("should reset form to update state", () => {
       const worker = mockWorkers[2];
@@ -84,6 +387,7 @@ describe("userFormReducer", () => {
       expect(result).toStrictEqual(expectedFormState);
     });
   });
+
   describe("SET_UPDATE_FORM_STATE for NonDID User", () => {
     test("should reset form to update state", () => {
       const worker = mockWorkers[0];
@@ -118,93 +422,68 @@ describe("userFormReducer", () => {
       expect(result).toStrictEqual(expectedFormState);
     });
   });
-  describe("SET_BLUR_ON_FIELD", () => {
-    test("should reset field blurred property to true", () => {
-      const payload = "outgoing";
+
+  describe("UPDATE_DEFAULT_SKILLS", () => {
+    test("should update default skills", () => {
+      const payload = mockWorkers[0].default_skills;
       const action = {
-        type: userFormActions.SET_BLUR_ON_FIELD,
+        type: userFormActions.UPDATE_DEFAULT_SKILLS,
         payload
       };
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
         ...initialUserFormState,
-        outgoing: {
-          ...initialUserFormState.outgoing,
-          blurred: true
+        defaultSkillsUpdated: true,
+        defaultSkills: payload
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
+  describe("UPDATE_EXTENSION", () => {
+    test("should update extension", () => {
+      const payload = {
+        extension: validFormOptions.extension,
+        isValid: true
+      };
+      const action = {
+        type: userFormActions.UPDATE_EXTENSION,
+        payload
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState ={
+        ...initialUserFormState,
+        extension: {
+          ...initialUserFormState.extension,
+          value: validFormOptions.extension,
+          blurred: payload.isValid,
+          updated: true,
+          valid: payload.isValid
         }
       };
       expect(result).toStrictEqual(expectedFormState);
     });
   });
-  describe("INITIATE_DID_FIELDS - DID User", () => {
-    test("should initiate DID fields", () => {
-      const action = { type: userFormActions.INITIATE_DID_FIELDS };
-      const result = userFormReducer({
-        ...initialUserFormState,
-        didUser: true
-      }, action);
-      const expectedFormState = {
-        ...initialUserFormState,
-        didUser: false,
-        zeroOutEnabled: false
+
+  describe("UPDATE_INACTIVE_FORWARD_TO", () => {
+    test("should update inactive forward to", () => {
+      const payload = "WK1231112";
+      const action = {
+        type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
+        payload
       };
-      expect(result).toStrictEqual(expectedFormState);
-    });
-  });
-  describe("INITIATE_DID_FIELDS - NonDID User", () => {
-    test("should initiate DID fields and zeroOutEnabled should remain unchanged - false", () => {
-      const action = { type: userFormActions.INITIATE_DID_FIELDS };
       const result = userFormReducer(initialUserFormState, action);
-      const expectedFormState = {
+      const expectedFormState ={
         ...initialUserFormState,
-        didUser: true,
-        zeroOutEnabled: false
-      };
-      expect(result).toStrictEqual(expectedFormState);
-    });
-    test("should initiate DID fields and zeroOutEnabled should remain unchanged - true", () => {
-      const action = { type: userFormActions.INITIATE_DID_FIELDS };
-      const result = userFormReducer({
-        ...initialUserFormState,
-        zeroOutEnabled: true
-      }, action);
-      const expectedFormState = {
-        ...initialUserFormState,
-        didUser: true,
-        zeroOutEnabled: true
+        inactiveForwardTo: {
+          value: payload,
+          updated: true
+        }
       };
       expect(result).toStrictEqual(expectedFormState);
     });
   });
-  describe("INITIATE_ZERO_OUT_FIELDS", () => {
-    describe("zeroOutEnabled === false", () => {
-      test("should set zeroOutEnabled to true", () => {
-        const action = { type: userFormActions.INITIATE_ZERO_OUT_FIELDS };
-        const result = userFormReducer(initialUserFormState, action);
-        const expectedFormState = {
-          ...initialUserFormState,
-          zeroOutEnabled: true,
-          zeroOutEnabledUpdated: true
-        };
-        expect(result).toStrictEqual(expectedFormState);
-      });
-    });
-    describe("zeroOutEnabled === true", () => {
-      test("should initiate zero out fields", () => {
-        const action = { type: userFormActions.INITIATE_ZERO_OUT_FIELDS };
-        const result = userFormReducer({
-          ...initialUserFormState,
-          zeroOutEnabled: true
-        }, action);
-        const expectedFormState = {
-          ...initialUserFormState,
-          zeroOutEnabled: false,
-          zeroOutEnabledUpdated: true
-        };
-        expect(result).toStrictEqual(expectedFormState);
-      });
-    });
-  });
+
   describe("UPDATE_MANAGER", () => {
     test("should update manager", () => {
       const payload = {
@@ -228,6 +507,80 @@ describe("userFormReducer", () => {
       expect(result).toStrictEqual(expectedFormState);
     });
   });
+
+  describe("UPDATE_N_NUMBER", () => {
+    test("should update nNumber", () => {
+      const payload = "n0263786";
+      const action = {
+        type: userFormActions.UPDATE_N_NUMBER,
+        payload
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        nNumber: {
+          ...initialUserFormState.nNumber,
+          value: payload,
+          updated: true
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
+  describe("UPDATE_PHONE_NUMBER with e164", () => {
+    test("should update phone number", () => {
+      const payload = {
+        field: "outgoing",
+        maskedValue: "(603) 851-8200",
+        isValid: true,
+        e164Number: "+16038518200"
+      };
+      const action = {
+        type: userFormActions.UPDATE_PHONE_NUMBER,
+        payload
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        outgoing: {
+          ...initialUserFormState.outgoing,
+          value: payload.maskedValue,
+          e164: payload.e164Number,
+          updated: true,
+          valid: true
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
+  describe("UPDATE_PHONE_NUMBER without e164", () => {
+    test("should update phone number", () => {
+      const payload = {
+        field: "outgoing",
+        maskedValue: "(603) 851-8200",
+        isValid: true,
+        e164Number: ""
+      };
+      const action = {
+        type: userFormActions.UPDATE_PHONE_NUMBER,
+        payload
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        outgoing: {
+          ...initialUserFormState.outgoing,
+          value: payload.maskedValue,
+          e164: payload.e164Number,
+          updated: true
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
   describe("UPDATE_TEAM", () => {
     describe("Profile is updated from a profile without a zero out skill to one with a zero out skill", () => {
       test("should update team and set zeroOutEnabled to true", () => {
@@ -290,256 +643,5 @@ describe("userFormReducer", () => {
       });
     });
   });
-  describe("UPDATE_PHONE_NUMBER with e164", () => {
-    test("should update phone number", () => {
-      const payload = {
-        field: "outgoing",
-        maskedValue: "(603) 851-8200",
-        isValid: true,
-        e164Number: "+16038518200"
-      };
-      const action = {
-        type: userFormActions.UPDATE_PHONE_NUMBER,
-        payload
-      };
-      const result = userFormReducer(initialUserFormState, action);
-      const expectedFormState = {
-        ...initialUserFormState,
-        outgoing: {
-          ...initialUserFormState.outgoing,
-          value: payload.maskedValue,
-          e164: payload.e164Number,
-          updated: true,
-          valid: true
-        }
-      };
-      expect(result).toStrictEqual(expectedFormState);
-    });
-  });
-  describe("UPDATE_PHONE_NUMBER without e164", () => {
-    test("should update phone number", () => {
-      const payload = {
-        field: "outgoing",
-        maskedValue: "(603) 851-8200",
-        isValid: true,
-        e164Number: ""
-      };
-      const action = {
-        type: userFormActions.UPDATE_PHONE_NUMBER,
-        payload
-      };
-      const result = userFormReducer(initialUserFormState, action);
-      const expectedFormState = {
-        ...initialUserFormState,
-        outgoing: {
-          ...initialUserFormState.outgoing,
-          value: payload.maskedValue,
-          e164: payload.e164Number,
-          updated: true
-        }
-      };
-      expect(result).toStrictEqual(expectedFormState);
-    });
-  });
-  describe("UPDATE_N_NUMBER", () => {
-    test("should update nNumber", () => {
-      const payload = "n0263786";
-      const action = {
-        type: userFormActions.UPDATE_N_NUMBER,
-        payload
-      };
-      const result = userFormReducer(initialUserFormState, action);
-      const expectedFormState = {
-        ...initialUserFormState,
-        nNumber: {
-          ...initialUserFormState.nNumber,
-          value: payload,
-          updated: true
-        }
-      };
-      expect(result).toStrictEqual(expectedFormState);
-    });
-  });
-  describe("COMPLETE_N_NUMBER", () => {
-    test("should update fetched user", () => {
-      const payload = {
-        nNumber: "n0263786",
-        fetchedUser: {
-          firstName: "Faith",
-          lastName: "Cuneo"
-        }
-      };
-      const action = {
-        type: userFormActions.COMPLETE_N_NUMBER,
-        payload
-      };
-      const result = userFormReducer(initialUserFormState, action);
-      const expectedFormState = {
-        ...initialUserFormState,
-        nNumber: {
-          ...initialUserFormState.nNumber,
-          value: payload.nNumber
-        },
-        nNumberFetchedUser: payload.fetchedUser
-      };
-      expect(result).toStrictEqual(expectedFormState);
-    });
-  });
-  describe("CLEAR_N_NUMBER", () => {
-    test("should clear nNumber", () => {
-      const action = { type: userFormActions.CLEAR_N_NUMBER };
-      const startingFormState = {
-        ...initialUserFormState,
-        nNumber: {
-          ...initialUserFormState.nNumber,
-          value: "n0263786"
-        },
-        nNumberFetchedUser: {
-          firstName: "Faith",
-          lastName: "Cuneo"
-        }
-      };
-      const result = userFormReducer(startingFormState, action);
-      expect(result).toStrictEqual(initialUserFormState);
-    });
-  });
-  describe("UPDATE_DEFAULT_SKILLS", () => {
-    test("should update default skills", () => {
-      const payload = mockWorkers[0].default_skills;
-      const action = {
-        type: userFormActions.UPDATE_DEFAULT_SKILLS,
-        payload
-      };
-      const result = userFormReducer(initialUserFormState, action);
-      const expectedFormState = {
-        ...initialUserFormState,
-        defaultSkillsUpdated: true,
-        defaultSkills: payload
-      };
-      expect(result).toStrictEqual(expectedFormState);
-    });
-  });
-  describe("UPDATE_INACTIVE_FORWARD_TO", () => {
-    test("should update inactive forward to", () => {
-      const payload = "WK1231112";
-      const action = {
-        type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
-        payload
-      };
-      const result = userFormReducer(initialUserFormState, action);
-      const expectedFormState ={
-        ...initialUserFormState,
-        inactiveForwardTo: {
-          value: payload,
-          updated: true
-        }
-      };
-      expect(result).toStrictEqual(expectedFormState);
-    });
-  });
-  describe("UPDATE_EXTENSION", () => {
-    test("should update extension", () => {
-      const payload = {
-        extension: validFormOptions.extension,
-        isValid: true
-      };
-      const action = {
-        type: userFormActions.UPDATE_EXTENSION,
-        payload
-      };
-      const result = userFormReducer(initialUserFormState, action);
-      const expectedFormState ={
-        ...initialUserFormState,
-        extension: {
-          ...initialUserFormState.extension,
-          value: validFormOptions.extension,
-          blurred: payload.isValid,
-          updated: true,
-          valid: payload.isValid
-        }
-      };
-      expect(result).toStrictEqual(expectedFormState);
-    });
-  });
-  describe("CLEAR_EXTENSION", () => {
-    test("should clear extension", () => {
-      const action = { type: userFormActions.CLEAR_EXTENSION };
-      const initialTestState = {
-        ...initialUserFormState,
-        extension: {
-          ...initialUserFormState.extension,
-          value: validFormOptions.extension,
-          blurred: true,
-          updated: true,
-          valid: true
-        }
-      };
-      const result = userFormReducer(initialTestState, action);
-      const expectedFormState = {
-        ...initialTestState,
-        extension: {
-          ...initialTestState.extension,
-          value: "",
-          valid: false
-        }
-      };
-      expect(result).toStrictEqual(expectedFormState);
-    });
-  });
-  describe("EDIT_PEN_CLICK_FORWARD_TO_TOGGLE", () => {
-    test("should set forward to toggle fields", () => {
-      const payload = mockWorkers[2];
-      const action = {
-        type: userFormActions.EDIT_PEN_CLICK_FORWARD_TO_TOGGLE,
-        payload
-      };
-      const result = userFormReducer(initialUserFormState, action);
-      const expectedFormState = {
-        ...initialUserFormState,
-        directDialNum: {
-          ...initialUserFormState.directDialNum,
-          value: formatE164PhoneNumber(mockWorkers[2].directDialNum),
-          valid: true
-        },
-        outgoing: {
-          ...initialUserFormState.outgoing,
-          value: formatE164PhoneNumber(mockWorkers[2].attributes.did),
-          valid: true
-        },
-        editDisabled: !initialUserFormState.editDisabled
-      };
-      expect(result).toStrictEqual(expectedFormState);
-    });
-  });
-  describe("EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE", () => {
-    test("should reset forward to toggle", () => {
-      const action = { type: userFormActions.EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE };
-      const initialTestState = {
-        ...initialUserFormState,
-        directDialNum: {
-          ...initialUserFormState.directDialNum,
-          value: formatE164PhoneNumber(mockWorkers[2].directDialNum),
-          valid: true
-        },
-        outgoing: {
-          ...initialUserFormState.outgoing,
-          value: formatE164PhoneNumber(mockWorkers[2].attributes.did),
-          valid: true
-        },
-        editDisabled: true
-      };
-      const result = userFormReducer(initialTestState, action);
-      expect(result).toStrictEqual({
-        ...initialTestState,
-        editDisabled: !initialTestState.editDisabled
-      });
-    });
-  });
-  describe("Default Case", () => {
-    test("should return state", () => {
-      const action = { type: "default" };
-      const result = userFormReducer(initialUserFormState, action);
-      expect(result).toStrictEqual(initialUserFormState);
-    });
-  });
+
 });

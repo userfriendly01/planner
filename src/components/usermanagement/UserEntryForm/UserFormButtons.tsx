@@ -121,7 +121,15 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             });
         }
         setForm({
-          type: userFormActions.RESET_FORM
+          type: userFormActions.RESET_FORM_AFTER_ADD,
+          payload: {
+            managerValue: form.manager.value,
+            outgoing: {
+              value: form.outgoing.value,
+              e164: form.outgoing.e164
+            },
+            profileIdValue: form.profileId.value
+          }
         });
         dispatch({
           type: "addWorkers",
