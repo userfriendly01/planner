@@ -1,4 +1,10 @@
-<<<<<<< HEAD
+import {
+  Highlight,
+  NavArrow,
+  NavArrowsWrapper,
+  PaginationWrapper,
+  ShowingSection
+} from "./ManagementPagination.Styles";
 import { Tooltip } from "@material-ui/core";
 import {
   NavigateBeforeOutlined,
@@ -9,56 +15,6 @@ import {
 import { workersPerPage } from "globals";
 import PropTypes from "prop-types";
 import React from "react";
-import styled from "styled-components";
-
-const Highlight = styled.span`
-  color: ${props => props.theme.textColor};
-`;
-
-const NavArrow = styled.span`
-  border-radius: 50%;
-  color: ${props => props.disabled ? props.theme.navArrow.disabledColor.disabledGrey : props.theme.textColor};
-  display: inline-block;
-  height: 25px;
-  margin: 0 1px 0 1px;
-  width: 25px;
-  &:hover {
-    background-color: ${props => props.theme.navArrow.hoverColor};
-    cursor: pointer;
-  }
-`;
-
-const NavArrowsWrapper = styled.div`
-  color: #C0BFC0;
-  font-size: 1em;
-`;
-
-const PaginationWrapper = styled.div`
-  background-color: white;
-  bottom: 0;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 1% 2% 1% 2%;
-  position: sticky;
-`;
-
-const ShowingSection = styled.div`
-  color: #C0BFC0;
-  font-size: .825em;
-`;
-=======
-import {
-  Highlight,
-  PageButton,
-  PageSection,
-  PaginationWrapper,
-  ShowingSection
-} from "./ManagementPagination.Styles";
-import { workersPerPage } from "globals";
-import PropTypes from "prop-types";
-import React from "react";
->>>>>>> 9e57d8cd4904dc6a643754c1efcc1b2fe757a404
 
 const ManagementPagination = props => {
   const {
