@@ -1,19 +1,19 @@
 import {
   initialUserFormState,
-  userFormReducer,
-  userFormActions
+  userFormActions,
+  userFormReducer
 } from "context";
 import { formModes } from "globals";
 import {
-  getValidSkillsObject,
-  formatE164PhoneNumber
-} from "utils";
-import {
   managerList,
+  mockWorkers,
   profileList,
-  validFormOptions,
-  mockWorkers
+  validFormOptions
 } from "testUtils";
+import {
+  formatE164PhoneNumber,
+  getValidSkillsObject
+} from "utils";
 
 describe("userFormReducer", () => {
 
@@ -67,6 +67,20 @@ describe("userFormReducer", () => {
       };
       const result = userFormReducer(startingFormState, action);
       expect(result).toStrictEqual(initialUserFormState);
+    });
+  });
+
+  describe("CLEAR_OUTGOING_NUMBER", () => {
+    const action = { type: userFormActions.CLEAR_OUTGOING_NUMBER };
+    const startingFormState = {
+      ...initialUserFormState,
+      outgoing: {
+        whatever: "who cares",
+        stuff: "we're gonna clear out"
+      }
+    };
+    test("should clear Outgoing Number", () => {
+      expect(userFormReducer(startingFormState, action)).toStrictEqual(initialUserFormState);
     });
   });
 
@@ -420,6 +434,16 @@ describe("userFormReducer", () => {
         }
       };
       expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
+  describe("SET_USER_PREVIOUSLY_ADDED_TRUE", () => {
+    const action = { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE };
+    test("should set userPreviouslyAdded to true", () => {
+      expect(userFormReducer(initialUserFormState, action)).toStrictEqual({
+        ...initialUserFormState,
+        userPreviouslyAdded: true
+      });
     });
   });
 

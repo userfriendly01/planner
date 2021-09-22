@@ -1,14 +1,14 @@
 import UserFormButtons from "../UserFormButtons";
 import { Tooltip } from "@material-ui/core";
 import { StyledButton } from "components";
+import {
+  useAdminDispatch,
+  useFormDispatch,
+  useFormState,
+  userFormActions
+} from "context";
 import { formModes } from "globals";
 import React from "react";
-import {
-  userFormActions,
-  useAdminDispatch,
-  useFormState,
-  useFormDispatch
-} from "context";
 import {
   addOffice,
   createUser,
@@ -16,43 +16,40 @@ import {
 } from "services";
 import {
   act,
+  fetchedUser,
+  initialFormState,
+  initialTestState,
   mockStore,
-  render,
-  setupMockedComponents,
-  waitFor,
   officeMap,
   profileList,
+  render,
+  setupMockedComponents,
   validFormOptions,
-  initialTestState,
-  worker,
-  initialFormState,
-  fetchedUser,
-  validFormState
+  validFormState,
+  waitFor,
+  worker
 } from "testUtils";
 import {
-  isFormValid,
-  isFormUpdated,
-  isDidDifferentValid,
   getOverflowSkillFromProfile,
   getNonOverflowSkills,
+  isDidDifferentValid,
+  isFormUpdated,
+  isFormValid,
   workerHasOverFlowSkill
 } from "utils";
 
 jest.useFakeTimers();
 
 jest.mock("components", () => ({
-  __esModule: true,
   StyledButton: jest.fn()
 }));
 
 jest.mock("@material-ui/core", () => ({
-  __esModule: true,
   Tooltip: jest.fn(),
   Tabs: jest.fn()
 }));
 
 jest.mock("context", () => ({
-  __esModule: true,
   useAdminDispatch: jest.fn(),
   useFormState: jest.fn(),
   useFormDispatch: jest.fn(),
@@ -75,7 +72,6 @@ jest.mock("utils", () => ({
   workerHasOverFlowSkill: jest.fn(),
   getNonOverflowSkills: jest.fn()
 }));
-
 
 const workerAttributesAfterFormValid = {
   contact_uri: `client:${validFormOptions.nNumber.toLowerCase()}`,
@@ -247,7 +243,7 @@ describe("<UserFormButtons />", () => {
           beforeEach(() => {
             useFormState.mockReturnValue(nonDidValidFormState);
           });
-          test("should save user with non did worker request body when clicked", async done => {
+          test("should save user with non did worker request body when clicked", async () => {
             renderComponent(true);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
@@ -259,9 +255,10 @@ describe("<UserFormButtons />", () => {
                 activateEp: false, // false for non-DID workers
                 attributes: workerAttributesAfterFormValid
               });
-              expect(mockSetForm).toBeCalledTimes(1);
-              expect(mockSetForm).toBeCalledWith(resetFormAfterAddExpectedAction);
-              expect(mockDispatch).toBeCalledTimes(2);
+              expect(mockSetForm).toHaveBeenCalledTimes(2);
+              expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
+              expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
+              expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
                 payload: [formattedWorker]
@@ -274,7 +271,7 @@ describe("<UserFormButtons />", () => {
                 }
               });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toBeCalledTimes(3);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Adding new user...",
                 saveStatus: "saving",
@@ -288,7 +285,6 @@ describe("<UserFormButtons />", () => {
               expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
                 saveUser: false
               });
-              done();
             });
           });
         });
@@ -312,7 +308,7 @@ describe("<UserFormButtons />", () => {
             useFormState.mockReturnValue(validFormState);
             createUser.mockResolvedValue(existingOfficeDbWorker);
           });
-          test("should save user with did worker request body when clicked", async done => {
+          test("should save user with did worker request body when clicked", async () => {
             renderComponent(true);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
@@ -327,15 +323,16 @@ describe("<UserFormButtons />", () => {
                 directDialNum: validFormState.directDialNum.e164,
                 zeroOutEnabled: validFormState.zeroOutEnabled
               });
-              expect(mockSetForm).toBeCalledTimes(1);
-              expect(mockSetForm).toBeCalledWith(resetFormAfterAddExpectedAction);
-              expect(mockDispatch).toBeCalledTimes(1);
+              expect(mockSetForm).toHaveBeenCalledTimes(2);
+              expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
+              expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
+              expect(mockDispatch).toHaveBeenCalledTimes(1);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
                 payload: [formattedWorker]
               });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toBeCalledTimes(3);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Adding new user...",
                 saveStatus: "saving",
@@ -349,7 +346,6 @@ describe("<UserFormButtons />", () => {
               expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
                 saveUser: false
               });
-              done();
             });
           });
         });
@@ -360,7 +356,7 @@ describe("<UserFormButtons />", () => {
               zeroOutEnabled: true
             });
           });
-          test("should include overflow skill and save user with did worker request body when clicked", async done => {
+          test("should include overflow skill and save user with did worker request body when clicked", async () => {
             renderComponent(true);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
@@ -383,9 +379,10 @@ describe("<UserFormButtons />", () => {
                 directDialNum: validFormState.directDialNum.e164,
                 zeroOutEnabled: true
               });
-              expect(mockSetForm).toBeCalledTimes(1);
-              expect(mockSetForm).toBeCalledWith(resetFormAfterAddExpectedAction);
-              expect(mockDispatch).toBeCalledTimes(2);
+              expect(mockSetForm).toHaveBeenCalledTimes(2);
+              expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
+              expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
+              expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
                 payload: [formattedWorker]
@@ -398,7 +395,7 @@ describe("<UserFormButtons />", () => {
                 }
               });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toBeCalledTimes(3);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Adding new user...",
                 saveStatus: "saving",
@@ -412,7 +409,6 @@ describe("<UserFormButtons />", () => {
               expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
                 saveUser: false
               });
-              done();
             });
           });
         });
@@ -430,7 +426,7 @@ describe("<UserFormButtons />", () => {
             useFormState.mockReturnValue(nonDidValidFormState);
             addOffice.mockRejectedValue({ aww: "bummer" });
           });
-          test("should not dispatch AddOffice but should still enable Add User button and save user when clicked", async done => {
+          test("should not dispatch AddOffice but should still enable Add User button and save user when clicked", async () => {
             renderComponent(true);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
@@ -442,15 +438,16 @@ describe("<UserFormButtons />", () => {
                 activateEp: false, // false for non-DID workers
                 attributes: workerAttributesAfterFormValid
               });
-              expect(mockSetForm).toBeCalledTimes(1);
-              expect(mockSetForm).toBeCalledWith(resetFormAfterAddExpectedAction);
-              expect(mockDispatch).toBeCalledTimes(1);
+              expect(mockSetForm).toHaveBeenCalledTimes(2);
+              expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
+              expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
+              expect(mockDispatch).toHaveBeenCalledTimes(1);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
                 payload: [formattedWorker]
               });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toBeCalledTimes(3);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Adding new user...",
                 saveStatus: "saving",
@@ -464,7 +461,6 @@ describe("<UserFormButtons />", () => {
               expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
                 saveUser: false
               });
-              done();
             });
           });
         }
@@ -488,7 +484,7 @@ describe("<UserFormButtons />", () => {
               }
             });
           });
-          test("should not add user and should update loading with failed specific error message", async done => {
+          test("should not add user and should update loading with failed specific error message", async () => {
             renderComponent(true);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
@@ -500,10 +496,10 @@ describe("<UserFormButtons />", () => {
                 activateEp: false, // false for non-DID workers
                 attributes: workerAttributesAfterFormValid
               });
-              expect(mockSetForm).toBeCalledTimes(0);
-              expect(mockDispatch).toBeCalledTimes(0);
+              expect(mockSetForm).toHaveBeenCalledTimes(0);
+              expect(mockDispatch).toHaveBeenCalledTimes(0);
               jest.runAllTimers();
-              expect(mockUpdateLoading).toBeCalledTimes(2);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Adding new user...",
                 saveStatus: "saving",
@@ -514,10 +510,9 @@ describe("<UserFormButtons />", () => {
                 saveStatus: "fail",
                 saveUser: true
               });
-              done();
             });
           });
-          test("should not add user and should update loading with failed generic error message", async done => {
+          test("should not add user and should update loading with failed generic error message", async () => {
             createUser.mockRejectedValue({
               message: "bummer",
               response: {
@@ -535,10 +530,10 @@ describe("<UserFormButtons />", () => {
                 activateEp: false, // false for non-DID workers
                 attributes: workerAttributesAfterFormValid
               });
-              expect(mockSetForm).toBeCalledTimes(0);
-              expect(mockDispatch).toBeCalledTimes(0);
+              expect(mockSetForm).toHaveBeenCalledTimes(0);
+              expect(mockDispatch).toHaveBeenCalledTimes(0);
               jest.runAllTimers();
-              expect(mockUpdateLoading).toBeCalledTimes(2);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Adding new user...",
                 saveStatus: "saving",
@@ -549,7 +544,6 @@ describe("<UserFormButtons />", () => {
                 saveStatus: "fail",
                 saveUser: true
               });
-              done();
             });
           });
         }
@@ -600,7 +594,7 @@ describe("<UserFormButtons />", () => {
             useFormState.mockReturnValue(nonDidValidFormState);
             updateUser.mockResolvedValue(rawDbWorker);
           });
-          test("should save user with non did worker request body when clicked", async done => {
+          test("should save user with non did worker request body when clicked", async () => {
             const updateWorker = {
               ...worker,
               attributes: {
@@ -636,13 +630,13 @@ describe("<UserFormButtons />", () => {
                 attributes: updateWorkerAttributesAfterFormValid,
                 zeroOutEnabled: true
               });
-              expect(mockDispatch).toBeCalledTimes(1);
+              expect(mockDispatch).toHaveBeenCalledTimes(1);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "updateWorker",
                 payload: formattedWorker
               });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toBeCalledTimes(2);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Updating user: Faith Cuneo",
                 saveStatus: "saving",
@@ -653,8 +647,7 @@ describe("<UserFormButtons />", () => {
                 saveStatus: "success",
                 saveUser: true
               });
-              expect(mockHandleClose).toBeCalledTimes(1);
-              done();
+              expect(mockHandleClose).toHaveBeenCalledTimes(1);
             });
           });
         });
@@ -664,7 +657,7 @@ describe("<UserFormButtons />", () => {
             updateUser.mockResolvedValue(rawDbWorker);
             workerHasOverFlowSkill.mockReturnValue(true);
           });
-          test("should save user with did worker request body when clicked", async done => {
+          test("should save user with did worker request body when clicked", async () => {
             const updateWorker = {
               ...worker,
               attributes: {
@@ -702,13 +695,13 @@ describe("<UserFormButtons />", () => {
                 directDialNum: validFormState.directDialNum.e164,
                 zeroOutEnabled: validFormState.zeroOutEnabled
               });
-              expect(mockDispatch).toBeCalledTimes(1);
+              expect(mockDispatch).toHaveBeenCalledTimes(1);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "updateWorker",
                 payload: formattedWorker
               });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toBeCalledTimes(2);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Updating user: Faith Cuneo",
                 saveStatus: "saving",
@@ -719,7 +712,6 @@ describe("<UserFormButtons />", () => {
                 saveStatus: "success",
                 saveUser: true
               });
-              done();
             });
           });
         });
@@ -763,7 +755,7 @@ describe("<UserFormButtons />", () => {
             updateUser.mockResolvedValue(rawDbWorker);
             workerHasOverFlowSkill.mockReturnValue(true);
           });
-          test("should save user with did worker request body when clicked", async done => {
+          test("should save user with did worker request body when clicked", async () => {
             const updateWorker = {
               ...worker,
               attributes: {
@@ -785,13 +777,13 @@ describe("<UserFormButtons />", () => {
                 attributes: {},
                 zeroOutEnabled: true
               });
-              expect(mockDispatch).toBeCalledTimes(1);
+              expect(mockDispatch).toHaveBeenCalledTimes(1);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "updateWorker",
                 payload: formattedWorker
               });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toBeCalledTimes(2);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Updating user: Faith Cuneo",
                 saveStatus: "saving",
@@ -802,7 +794,6 @@ describe("<UserFormButtons />", () => {
                 saveStatus: "success",
                 saveUser: true
               });
-              done();
             });
           });
         });
@@ -847,7 +838,7 @@ describe("<UserFormButtons />", () => {
             }
           });
         });
-        test("should not update user and should update loading with custom error message", async done => {
+        test("should not update user and should update loading with custom error message", async () => {
           renderComponent(true);
           render(Tooltip.mock.calls[0][0].children);
           act(() => {
@@ -860,10 +851,10 @@ describe("<UserFormButtons />", () => {
               inactiveForwardTo: validFormOptions.inactiveForwardTo,
               attributes: updateWorkerAttributesAfterFormValid
             });
-            expect(mockSetForm).toBeCalledTimes(0);
-            expect(mockDispatch).toBeCalledTimes(0);
+            expect(mockSetForm).toHaveBeenCalledTimes(0);
+            expect(mockDispatch).toHaveBeenCalledTimes(0);
             jest.runAllTimers();
-            expect(mockUpdateLoading).toBeCalledTimes(2);
+            expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
             expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
               overlayMessage: "Updating user: Faith Cuneo",
               saveStatus: "saving",
@@ -874,10 +865,9 @@ describe("<UserFormButtons />", () => {
               saveStatus: "fail",
               saveUser: true
             });
-            done();
           });
         });
-        test("should not update user and should update loading with generic failed status", async done => {
+        test("should not update user and should update loading with generic failed status", async () => {
           updateUser.mockRejectedValue({
             message: "bummer",
             response: {
@@ -896,10 +886,10 @@ describe("<UserFormButtons />", () => {
               inactiveForwardTo: validFormOptions.inactiveForwardTo,
               attributes: updateWorkerAttributesAfterFormValid
             });
-            expect(mockSetForm).toBeCalledTimes(0);
-            expect(mockDispatch).toBeCalledTimes(0);
+            expect(mockSetForm).toHaveBeenCalledTimes(0);
+            expect(mockDispatch).toHaveBeenCalledTimes(0);
             jest.runAllTimers();
-            expect(mockUpdateLoading).toBeCalledTimes(2);
+            expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
             expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
               overlayMessage: "Updating user: Faith Cuneo",
               saveStatus: "saving",
@@ -910,7 +900,6 @@ describe("<UserFormButtons />", () => {
               saveStatus: "fail",
               saveUser: true
             });
-            done();
           });
         });
       }
@@ -929,9 +918,9 @@ describe("<UserFormButtons />", () => {
         const onClick = StyledButton.mock.calls[0][0].onClick;
         onClick();
       });
-      expect(mockHandleClose).toBeCalledTimes(1);
-      expect(mockSetForm).toBeCalledTimes(1);
-      expect(mockSetForm).toBeCalledWith({ type: userFormActions.RESET_FORM });
+      expect(mockHandleClose).toHaveBeenCalledTimes(1);
+      expect(mockSetForm).toHaveBeenCalledTimes(1);
+      expect(mockSetForm).toHaveBeenCalledWith({ type: userFormActions.RESET_FORM });
     });
   });
 });
