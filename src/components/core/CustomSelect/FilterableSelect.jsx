@@ -6,6 +6,7 @@ import styled from "styled-components";
 const Wrapper = styled.div`
   width: 200px;
   height: ${props => props.theme.inputHeight}px;
+  z-index: 2;
 `;
 const FilterableSelect = props => {
   const {
