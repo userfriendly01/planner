@@ -1,14 +1,18 @@
+const disabledGrey = "#A7A7A7";
+const hoverBlue = "#9EDEDE";
+const hoverGrey = "rgba(0,0,0,0.15)";
+
 export const theme = {
   backgroundColor: "#FFF",
   button: {
     blue: {
       backgroundColor: "#AAEDED",
-      hoverColor: "#9EDEDE"
+      hoverColor: hoverBlue
     },
     icon: {
-      backgroundHoverColor: "#9EDEDE",
+      backgroundHoverColor: hoverBlue,
       diameter: 24,
-      disabledColor: "#A7A7A7"
+      disabledColor: disabledGrey
     }
   },
   circularProgressSize: 60,
@@ -19,6 +23,10 @@ export const theme = {
   libertyMediumTeal: "#28A3AF",
   libertyYellow: "#FFD000",
   lineSeperatorColor: "#9E9E9E",
+  navArrow: {
+    disabledColor: disabledGrey,
+    hoverColor: hoverGrey
+  },
   resultsModal: {
     fadedError: "rgba(201,40,45,.10)",
     fadedSuccess: "rgba(108,149,60,.10)",
@@ -33,8 +41,8 @@ export const theme = {
       size: 16,
       hoverDiameter: 20
     },
-    hoverColor: "rgba(0,0,0,0.15)",
-    hoverSelectedColor: "#9EDEDE",
+    hoverColor: hoverGrey,
+    hoverSelectedColor: hoverBlue,
     selectedColor: "#AAEDED"
   },
   textColor: "#1A1446",

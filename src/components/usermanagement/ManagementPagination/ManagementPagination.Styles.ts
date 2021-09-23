@@ -4,24 +4,23 @@ export const Highlight = styled.span`
   color: ${props => props.theme.textColor};
 `;
 
-export const PageButton = styled.button<{pageSelected: number}>`
-  background-color: ${props => props.value !== props.pageSelected ? "transparent" : props.theme.textColor};
-  border: ${props => props.value !== props.pageSelected ? "#C0BFC0" : props => props.theme.textColor};
-  border-radius: 5px;
-  border-style: solid;
-  border-width: 2px;
-  color: #C0BFC0;
-  cursor: pointer;
-  margin: 0px 2px;
-  outline: none;
-  width: 30px;
+export const NavArrow = styled.span<{disabled: boolean}>`
+  border-radius: 50%;
+  color: ${props => props.disabled ? props.theme.navArrow.disabledColor.disabledGrey : props.theme.textColor};
+  display: inline-block;
+  height: 25px;
+  margin: 0 1px 0 1px;
+  width: 25px;
+  &:hover {
+    background-color: ${props => props.theme.navArrow.hoverColor};
+    cursor: pointer;
+  }
 `;
 
-export const PageSection = styled.div`
+export const NavArrowsWrapper = styled.div`
   color: #C0BFC0;
   font-size: 1em;
 `;
-
 
 export const PaginationWrapper = styled.div`
   background-color: white;
