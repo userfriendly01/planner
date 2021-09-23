@@ -1,10 +1,17 @@
 import {
   Highlight,
-  PageButton,
-  PageSection,
+  NavArrow,
+  NavArrowsWrapper,
   PaginationWrapper,
   ShowingSection
 } from "./ManagementPagination.Styles";
+import { Tooltip } from "@material-ui/core";
+import {
+  NavigateBeforeOutlined,
+  NavigateNextOutlined,
+  SkipNextOutlined,
+  SkipPreviousOutlined
+} from "@material-ui/icons";
 import { workersPerPage } from "globals";
 import PropTypes from "prop-types";
 import React from "react";
@@ -18,21 +25,46 @@ const ManagementPagination = props => {
     start
   } = props;
 
-  const buttons = [];
   const numWorkers = length;
   const numPages = Math.ceil(numWorkers / workersPerPage);
-
-  for (let i = 0; i < numPages; i++) {
-    const pageNum = i + 1;
-    buttons.push(<PageButton key={i} value={pageNum} pageSelected={page} onClick={() => setPage(pageNum)}>{pageNum}</PageButton>);
-  }
+  const onFirstPage = page === 1;
+  const onLastPage = page === numPages;
 
   return (
     <PaginationWrapper>
       <ShowingSection>
-        Showing <Highlight>{start}</Highlight> to <Highlight>{end}</Highlight> of <Highlight>{length}</Highlight> workers
+        <Highlight>{start}</Highlight>-<Highlight>{end}</Highlight> of <Highlight>{length}</Highlight> workers
       </ShowingSection>
-      <PageSection>Pages: {buttons}</PageSection>
+      <NavArrowsWrapper>
+        <NavArrow
+          data-testid="first"
+          disabled={onFirstPage}
+          onClick={!onFirstPage ? () => setPage(1) : null}
+        >
+          <Tooltip title="First page"><SkipPreviousOutlined/></Tooltip>
+        </NavArrow>
+        <NavArrow
+          data-testid="previous"
+          disabled={onFirstPage}
+          onClick={!onFirstPage ? () => setPage(page - 1) : null}
+        >
+          <Tooltip title="Previous page"><NavigateBeforeOutlined /></Tooltip>
+        </NavArrow>
+        <NavArrow
+          data-testid="next"
+          disabled={onLastPage}
+          onClick={!onLastPage ? () => setPage(page + 1) : null}
+        >
+          <Tooltip title="Next page"><NavigateNextOutlined /></Tooltip>
+        </NavArrow>
+        <NavArrow
+          data-testid="last"
+          disabled={onLastPage}
+          onClick={!onLastPage ? () => setPage(numPages) : null}
+        >
+          <Tooltip title="Last page"><SkipNextOutlined /></Tooltip>
+        </NavArrow>
+      </NavArrowsWrapper>
     </PaginationWrapper>
   );
 };
