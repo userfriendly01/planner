@@ -1,3 +1,4 @@
+import { Wrapper } from "./ManagerFilter.Styles";
 import {
   Divider,
   FilledInput,
@@ -13,12 +14,7 @@ import React, {
   useEffect,
   useState
 } from "react";
-import styled from "styled-components";
 import { sortManagersByName } from "utils";
-
-const Wrapper = styled.div`
-  display: flex;
-`;
 
 const ManagerFilter = props => {
   const {
@@ -63,10 +59,11 @@ const ManagerFilter = props => {
           {[
             <option data-testid="manager-list" key={"show-all"} value={"show-all"}>Show All</option>,
             <option data-testid="add-manager" key={"add-manager"} value={"add-manager"}>Add New Manager</option>,
+            /* eslint-ignore */
             <Divider light key={"divider"}/>,
             ...sortedManagers.map(manager => (
               <option data-testid="manager-list"
-                key={manager.manager_n_number}
+                key={manager.manager_id}
                 value={manager.manager_n_number}
               >
                 {manager.manager_first_name} {manager.manager_last_name}

@@ -61,8 +61,6 @@ const initialTestState = {
 const getAddSkillButton = rendered => rendered.getByTestId("add-skill-button");
 const getDeleteSkillButton = (rendered, instance) => rendered.getAllByTestId("delete-skill-button")[instance];
 
-const title = "Default Skills";
-
 describe("<DefaultSkillSelector />", () => {
   const renderComponent = defaultSkills => render(<DefaultSkillSelector defaultSkills={defaultSkills} setDefaultSkills={mockSetDefaultSkills} />, initialTestState);
   beforeEach(() => {
@@ -83,7 +81,6 @@ describe("<DefaultSkillSelector />", () => {
           levels: {}
         };
         const rendered = renderComponent(defaultSkills);
-        expect(rendered.container).toHaveTextContent(title);
         expectMockedComponent(rendered, { SkillDropDown });
         expectMockedComponent(rendered, { Add });
         expectMockedComponent(rendered, { PriorityDropDown }, 0);
@@ -99,7 +96,6 @@ describe("<DefaultSkillSelector />", () => {
       };
       test("should render the skill drop down, the priority drop down (with current priority displayed), and remove icon", () => {
         const rendered = renderComponent(defaultSkills);
-        expect(rendered.container).toHaveTextContent(title);
         expectMockedComponent(rendered, { SkillDropDown });
         expectMockedComponent(rendered, { Add });
         expect(rendered.container).toHaveTextContent("skillB");
@@ -120,7 +116,6 @@ describe("<DefaultSkillSelector />", () => {
       };
       test("should render the skill and remove icon but not the priority drop down", () => {
         const rendered = renderComponent(defaultSkills);
-        expect(rendered.container).toHaveTextContent(title);
         expectMockedComponent(rendered, { SkillDropDown });
         expectMockedComponent(rendered, { Add });
         expect(rendered.container).toHaveTextContent("skillA");

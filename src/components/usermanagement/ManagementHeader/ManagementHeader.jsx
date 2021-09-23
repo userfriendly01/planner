@@ -1,38 +1,16 @@
 import {
+  ControlItem,
+  ControlsWrapper,
+  RightPadding
+} from "./ManagementHeader.Styles";
+import {
   ManagerFilter,
   ResetSkillsButton,
   SearchBox,
   StyledButton
 } from "components";
-import { formModes } from "globals";
 import PropTypes from "prop-types";
 import React from "react";
-import styled from "styled-components";
-
-const ControlsWrapper = styled.div`
-  align-items: center;
-  display: flex;
-  padding: 1%;
-`;
-
-const ControlItem = styled.div`
-  align-items: center;
-  display: flex;
-  flex: 1;
-  justify-content: center;
-  &:first-child {
-    justify-content: flex-start;
-    margin-right: auto;
-  }
-  &:last-child {
-    justify-content: flex-end;
-    margin-left: auto;
-  }
-`;
-
-const RightPadding = styled.div`
-  padding-right: 8px;
-`;
 
 const ManagementHeader = props => {
   const {
@@ -40,11 +18,10 @@ const ManagementHeader = props => {
     searchBy,
     setFilter,
     setSearch,
-    setUserEntryFormState
+    setUserModalState
   } = props;
 
-  const addUserOnClick = () => setUserEntryFormState({
-    formMode: formModes.INSERT,
+  const addUserOnClick = () => setUserModalState({
     open: true,
     worker: null
   });
@@ -74,7 +51,7 @@ ManagementHeader.propTypes = {
   searchBy: PropTypes.string.isRequired,
   setFilter: PropTypes.func.isRequired,
   setSearch: PropTypes.func.isRequired,
-  setUserEntryFormState: PropTypes.func.isRequired
+  setUserModalState: PropTypes.func.isRequired
 };
 
 export default ManagementHeader;
