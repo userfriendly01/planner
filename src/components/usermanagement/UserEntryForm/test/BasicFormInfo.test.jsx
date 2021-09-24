@@ -1,44 +1,44 @@
 import BasicFormInfo from "../BasicFormInfo";
 import {
+  InputAdornment,
   Switch,
-  Tooltip,
-  InputAdornment
+  Tooltip
 } from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
 import {
+  ForwardToEntryForm,
   ModalExtension,
   ModalNNumber,
   ModalPhoneNumber,
-  OutlinedSelect,
-  ForwardToEntryForm
+  OutlinedSelect
 } from "components";
 import {
-  useFormState,
   useFormDispatch,
+  useFormState,
   userFormActions
 } from "context";
 import {
-  formModes,
-  extensionMatcher
+  extensionMatcher,
+  formModes
 } from "globals";
 import React from "react";
 import {
   act,
   expectMockedComponent,
   expectOnlyPassedProps,
-  mockStore,
-  render,
-  setupMockedComponents,
-  managerList,
-  profileList,
-  mockWorkers,
-  mockSkills,
   initialFormState,
-  initialTestState
+  initialTestState,
+  managerList,
+  mockSkills,
+  mockStore,
+  mockWorkers,
+  profileList,
+  render,
+  setupMockedComponents
 } from "testUtils";
 import {
-  isExtensionValid,
   getOverflowSkillFromProfile,
+  isExtensionValid,
   isProfileIdValid,
   isManagerValid
 } from "utils";
@@ -672,18 +672,33 @@ describe("<BasicFormInfo />", () => {
         });
       });
       describe("DID User Switch", () => {
-        test("When onChange is called, setForm is called", () => {
-          renderComponent();
-          render(Tooltip.mock.calls[0][0].children);
-
-          act(() => {
-            const onChange = Switch.mock.calls[0][0].onChange;
-            onChange();
+        describe("form is in edit mode or form is in add mode opened fresh (no users have been added yet)", () => {
+          test("When onChange is called, setForm is called", () => {
+            renderComponent();
+            render(Tooltip.mock.calls[0][0].children);
+            act(() => {
+              const onChange = Switch.mock.calls[0][0].onChange;
+              onChange();
+            });
+            expect(mockSetForm).toHaveBeenCalledTimes(1);
+            expect(mockSetForm).toHaveBeenCalledWith({ type: userFormActions.INITIATE_DID_FIELDS });
           });
-
-          expect(mockSetForm).toBeCalledTimes(1);
-          expect(mockSetForm).toBeCalledWith({
-            type: userFormActions.INITIATE_DID_FIELDS
+        });
+        describe("still on add form after at least one user has been added", () => {
+          beforeEach(() => useFormState.mockReturnValue({
+            ...initialFormState,
+            userPreviouslyAdded: true
+          }));
+          test("When onChange is called, setForm is called", () => {
+            renderComponent();
+            render(Tooltip.mock.calls[0][0].children);
+            act(() => {
+              const onChange = Switch.mock.calls[0][0].onChange;
+              onChange();
+            });
+            expect(mockSetForm).toHaveBeenCalledTimes(2);
+            expect(mockSetForm).toHaveBeenCalledWith({ type: userFormActions.INITIATE_DID_FIELDS });
+            expect(mockSetForm).toHaveBeenCalledWith({ type: userFormActions.CLEAR_OUTGOING_NUMBER });
           });
         });
       });

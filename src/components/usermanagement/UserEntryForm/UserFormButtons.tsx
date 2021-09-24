@@ -1,14 +1,13 @@
-import React from "react";
-import { Tooltip } from "@material-ui/core";
-import {
-  UserFormButton,
-  ButtonWrapper
-} from "./UserEntryForm.Styles";
 import { UserFormButtonsProps } from "./UserEntryForm.Interfaces";
 import {
+  ButtonWrapper,
+  UserFormButton
+} from "./UserEntryForm.Styles";
+import { Tooltip } from "@material-ui/core";
+import {
   useAdminDispatch,
-  useFormState,
   useFormDispatch,
+  useFormState,
   userFormActions
 } from "context";
 import {
@@ -17,6 +16,7 @@ import {
   timeouts,
   Worker
 } from "globals";
+import React from "react";
 import {
   addOffice,
   createUser,
@@ -24,14 +24,14 @@ import {
 } from "services";
 import {
   DbWorker,
+  getNonOverflowSkills,
+  getOverflowSkillFromProfile,
+  isDidDifferentValid,
+  isFormUpdated,
   isFormValid,
   mapWorkerFromDbWorker,
-  isDidDifferentValid,
-  getOverflowSkillFromProfile,
-  isFormUpdated,
-  getNonOverflowSkills,
-  workerHasOverFlowSkill,
-  wait
+  wait,
+  workerHasOverFlowSkill
 } from "utils";
 
 const UserFormButtons = (props: UserFormButtonsProps) => {
@@ -131,6 +131,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             profileIdValue: form.profileId.value
           }
         });
+        setForm({ type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
         dispatch({
           type: "addWorkers",
           payload: [mapWorkerFromDbWorker(dbWorker)]

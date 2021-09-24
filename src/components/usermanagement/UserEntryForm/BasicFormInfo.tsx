@@ -1,9 +1,4 @@
-import React from "react";
-import {
-  InputAdornment,
-  Switch,
-  Tooltip
-} from "@material-ui/core";
+import { BasicFormInfoProps } from "./UserEntryForm.Interfaces";
 import {
   FormControlsContainer,
   FormControlsPane,
@@ -11,7 +6,11 @@ import {
   ToggleContainer,
   ToggleLabel
 } from "./UserEntryForm.Styles";
-import { BasicFormInfoProps } from "./UserEntryForm.Interfaces";
+import {
+  InputAdornment,
+  Switch,
+  Tooltip
+} from "@material-ui/core";
 import {
   ForwardToEntryForm,
   ModalExtension,
@@ -20,22 +19,23 @@ import {
   OutlinedSelect
 } from "components";
 import {
-  useFormState,
   useFormDispatch,
+  useFormState,
   userFormActions
 } from "context";
-import {
-  isExtensionValid,
-  getOverflowSkillFromProfile,
-  sortManagersByName,
-  sortProfilesByName,
-  isProfileIdValid,
-  isManagerValid
-} from "utils";
 import {
   extensionMatcher,
   formModes
 } from "globals";
+import React from "react";
+import {
+  getOverflowSkillFromProfile,
+  isExtensionValid,
+  isProfileIdValid,
+  isManagerValid,
+  sortManagersByName,
+  sortProfilesByName
+} from "utils";
 
 const BasicFormInfo = (props: BasicFormInfoProps) => {
 
@@ -182,6 +182,9 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
               checked={form.didUser}
               onChange={() => {
                 setForm({ type: userFormActions.INITIATE_DID_FIELDS });
+                if (form.userPreviouslyAdded) {
+                  setForm({ type: userFormActions.CLEAR_OUTGOING_NUMBER });
+                }
               }}
               inputProps={{ "aria-label": "toggle-did-user" }}
             />

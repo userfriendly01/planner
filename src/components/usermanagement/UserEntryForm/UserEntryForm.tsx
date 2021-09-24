@@ -1,21 +1,21 @@
 import {
+  LoadingState,
+  UserEntryFormProps
+} from "./UserEntryForm.Interfaces";
+import {
   Header1,
   Header2,
   ModalContainer
 } from "./UserEntryForm.Styles";
-import {
-  LoadingState,
-  UserEntryFormProps
-} from "./UserEntryForm.Interfaces";
 import {
   ModalOverlay,
   UserFormAccordion,
   UserFormButtons
 } from "components";
 import {
-  useAdminState,
-  useFormState,
   useFormDispatch,
+  useFormState,
+  useAdminState,
   userFormActions
 } from "context";
 import { formModes } from "globals";
@@ -32,7 +32,6 @@ const UserEntryForm = (props: UserEntryFormProps) => {
 
   const form = useFormState();
   const setForm = useFormDispatch();
-  console.log("**Form: ", form);
 
   const {
     officeContext: {

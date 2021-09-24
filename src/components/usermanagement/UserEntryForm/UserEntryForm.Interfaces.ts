@@ -61,20 +61,21 @@ export interface FieldState {
 
 export interface UserFormState {
   [index: string]: any;
-  formMode: string,
+  alternateDid: FieldState,
   defaultSkills: WorkerSkills,
   defaultSkillsUpdated: boolean,
   didUser: boolean,
+  directDialNum: FieldState,
+  editDisabled: boolean,
   extension: FieldState,
+  formMode: string,
   inactiveForwardTo: FieldState,
   manager: FieldState,
   nNumber: FieldState,
   nNumberFetchedUser: FetchUserResponse,
   outgoing: FieldState,
   profileId: FieldState,
-  alternateDid: FieldState,
-  directDialNum: FieldState,
+  userPreviouslyAdded: boolean,
   zeroOutEnabled: boolean,
-  zeroOutEnabledUpdated: boolean,
-  editDisabled: boolean
+  zeroOutEnabledUpdated: boolean
 }
