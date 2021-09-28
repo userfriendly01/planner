@@ -1,20 +1,21 @@
 import {
   Action,
-  formModes,
-  Manager
+  Manager,
+  formModes
 } from "../../globals";
 import {
   UserFormState
 } from "components/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
 import {
-  getValidSkillsObject,
   formatE164PhoneNumber,
+  getValidSkillsObject,
   getZeroOutEnabledFromProfile
 } from "utils";
 
 export const userFormActions = {
   CLEAR_EXTENSION: "CLEAR_EXTENSION",
   CLEAR_N_NUMBER: "CLEAR_N_NUMBER",
+  CLEAR_OUTGOING_NUMBER: "CLEAR_OUTGOING_NUMBER",
   COMPLETE_N_NUMBER: "COMPLETE_N_NUMBER",
   EDIT_PEN_CLICK_FORWARD_TO_TOGGLE: "EDIT_PEN_CLICK_FORWARD_TO_TOGGLE",
   EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE: "EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE",
@@ -24,6 +25,7 @@ export const userFormActions = {
   RESET_FORM_AFTER_ADD: "RESET_FORM_AFTER_ADD",
   SET_BLUR_ON_FIELD: "SET_BLUR_ON_FIELD",
   SET_UPDATE_FORM_STATE: "SET_UPDATE_FORM_STATE",
+  SET_USER_PREVIOUSLY_ADDED_TRUE: "SET_USER_PREVIOUSLY_ADDED_TRUE",
   UPDATE_DEFAULT_SKILLS: "UPDATE_DEFAULT_SKILLS",
   UPDATE_EXTENSION: "UPDATE_EXTENSION",
   UPDATE_INACTIVE_FORWARD_TO: "UPDATE_INACTIVE_FORWARD_TO",
@@ -87,6 +89,7 @@ export const initialUserFormState: UserFormState = {
     updated: false,
     valid: false
   },
+  userPreviouslyAdded: false,
   zeroOutEnabled: false,
   zeroOutEnabledUpdated: false,
   editDisabled: false
@@ -114,6 +117,12 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
           updated: false
         },
         nNumberFetchedUser: null
+      };
+    }
+    case userFormActions.CLEAR_OUTGOING_NUMBER: {
+      return {
+        ...state,
+        outgoing: initialUserFormState.outgoing
       };
     }
     case userFormActions.COMPLETE_N_NUMBER: {
@@ -268,6 +277,12 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         didUser: worker.directDialNum ? true : false,
         zeroOutEnabled: worker.zeroOutEnabled || false,
         editDisabled: worker.directDialNum ? true : false
+      };
+    }
+    case userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE: {
+      return {
+        ...state,
+        userPreviouslyAdded: true
       };
     }
     case userFormActions.UPDATE_DEFAULT_SKILLS: {

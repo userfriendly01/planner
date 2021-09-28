@@ -5,12 +5,11 @@ const jestConfig = {
   coveragePathIgnorePatterns: [
     "<rootDir>/__test__",
     "<rootDir>/src/assets",
+    "<rootDir>/src/components/usermanagement/.*/.*.Interfaces.ts",
     "<rootDir>/src/context/appContext.js",
     "<rootDir>/src/globals",
     "<rootDir>/jestSetup.js",
-    "/index.js",
-    "<rootDir>/src/*/*/*.Interfaces.ts?(x)"
-
+    "/index.js"
   ],
   collectCoverageFrom: [
     "src/**/*.{js,jsx,ts,tsx}"
