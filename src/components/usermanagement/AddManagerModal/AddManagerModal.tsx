@@ -58,8 +58,8 @@ const AddManagerModal = (props: AddManagerModalProps) => {
       return Promise.resolve("addManager - Failure - Manager Already exists");
     }
     return addManager({
-      manager_first_nme: manager.manager_first_name,
-      manager_last_nme: manager.manager_last_name,
+      manager_first_nme: manager.manager_first_name.replace("'", "\\'"),
+      manager_last_nme: manager.manager_last_name.replace("'", "\\'"),
       manager_n_num: manager.manager_n_number
     })
       .then(res => {

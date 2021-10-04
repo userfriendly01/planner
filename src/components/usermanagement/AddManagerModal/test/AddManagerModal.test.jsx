@@ -15,6 +15,7 @@ import {
   expectOnlyPassedProps,
   getLastInstanceCalled,
   getMockedComponentProps,
+  mockStore,
   render,
   setupMockedComponents,
   waitFor
@@ -45,6 +46,7 @@ describe("<AddManagerModal />", () => {
   const mockHandleClose = jest.fn();
   const renderComponent = () => render(<AddManagerModal handleClose={mockHandleClose} />);
   beforeEach(() => {
+    mockStore.reset(),
     setupMockedComponents({
       CloseRounded,
       ModalNNumber,
@@ -113,6 +115,37 @@ describe("<AddManagerModal />", () => {
                 message: "Manager added successfully"
               });
               expect(mockHandleClose).toHaveBeenCalledTimes(1);
+            });
+          });
+          describe("Manager name has an ' ", () => {
+            test("should be formatted and saved successfully", async () => {
+              const rendered = renderComponent();
+              const fetchedManager = {
+                firstName: "B'ob",
+                lastName: "Bob'son"
+              };
+              updateFormSoValid(fetchedManager, "n0000000");
+              const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
+              act(() => onClick());
+              act(() => jest.runAllTimers());
+              await waitFor(() => {
+                expectMockedComponent(rendered, { ModalOverlay });
+                expectOnlyPassedProps(ModalOverlay, {
+                  status: "success",
+                  message: "Manager added successfully"
+                });
+                expect(mockStore.getActions()).toEqual([
+                  {
+                    type: "addManager",
+                    payload: {
+                      "manager_first_name": "B'ob",
+                      "manager_last_name": "Bob'son",
+                      "manager_n_number": "n0000000"
+                    }
+                  }
+                ]);
+                expect(mockHandleClose).toHaveBeenCalledTimes(1);
+              });
             });
           });
         });
