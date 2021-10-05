@@ -118,12 +118,12 @@ describe("<AddManagerModal />", () => {
             });
           });
           describe("Manager name has an ' ", () => {
+            const fetchedManager = {
+              firstName: "B'ob",
+              lastName: "Bob'son"
+            };
             test("should be formatted and saved successfully", async () => {
               const rendered = renderComponent();
-              const fetchedManager = {
-                firstName: "B'ob",
-                lastName: "Bob'son"
-              };
               updateFormSoValid(fetchedManager, "n0000000");
               const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
               act(() => onClick());
