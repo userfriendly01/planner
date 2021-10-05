@@ -46,7 +46,7 @@ describe("<AddManagerModal />", () => {
   const mockHandleClose = jest.fn();
   const renderComponent = () => render(<AddManagerModal handleClose={mockHandleClose} />);
   beforeEach(() => {
-    mockStore.reset(),
+    mockStore.reset();
     setupMockedComponents({
       CloseRounded,
       ModalNNumber,
