@@ -5,7 +5,8 @@ import {
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import {
-  theme
+  theme,
+  profileConfigs
 } from "globals";
 import React from "react";
 import styled from "styled-components";
@@ -41,8 +42,8 @@ const FlashMessageSidebar = props => {
     setFlashMessageState
   } = props;
 
-  const skill = flashMessageState.skill;
-
+  const stateSkill = flashMessageState.skill;
+  const profile = profileConfigs.PROFILE_SKILL_MAP.filter(profile => profile.profileId === flashMessageState.workerProfileId)[0];
   const handleRadioChange = selection => {
     setFlashMessageState({
       ...flashMessageState,
@@ -50,24 +51,15 @@ const FlashMessageSidebar = props => {
       fetching: true
     });
   };
-
   return (
     <SidebarWrapper>
       <RadioContainer>
-        <RadioGroup name="skill" value={skill} onChange={event => handleRadioChange(event.target.value)}>
-          <FormControlLabel control={<TealRadio
-            value="aisgL1"
-          />}
-          label="aisgL1"/>
-          <FormControlLabel control={<TealRadio
-            value="aisgConsumer"/>}
-          label="aisgConsumer"/>
-          <FormControlLabel control={<TealRadio
-            value="aisgEcliq"/>}
-          label="aisgEcliq"/>
-          <FormControlLabel control={<TealRadio
-            value="aisgPassword"/>}
-          label="aisgPassword"/>
+        <RadioGroup name="skill" value={stateSkill} onChange={event => handleRadioChange(event.target.value)}>
+          {profile.skills.map(function(skill) {
+            return <FormControlLabel key={skill} control={<TealRadio
+              value={skill}/>}
+            label={skill}/>;
+          })}
         </RadioGroup>
       </RadioContainer>
     </SidebarWrapper>
