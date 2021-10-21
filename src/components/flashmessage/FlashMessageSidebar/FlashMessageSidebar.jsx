@@ -43,6 +43,7 @@ const FlashMessageSidebar = props => {
   } = props;
 
   const stateSkill = flashMessageState.skill;
+  //This is the matching profile from the constant that matched the workers profile ID
   const profile = profileConfigs.PROFILE_SKILL_MAP.filter(profile => profile.profileId === flashMessageState.workerProfileId)[0];
   const handleRadioChange = selection => {
     setFlashMessageState({
@@ -55,11 +56,7 @@ const FlashMessageSidebar = props => {
     <SidebarWrapper>
       <RadioContainer>
         <RadioGroup name="skill" value={stateSkill} onChange={event => handleRadioChange(event.target.value)}>
-          {profile.skills.map(function(skill) {
-            return <FormControlLabel key={skill} control={<TealRadio
-              value={skill}/>}
-            label={skill}/>;
-          })}
+          !-- loop through the profile.skills to add a button for each skill
         </RadioGroup>
       </RadioContainer>
     </SidebarWrapper>
