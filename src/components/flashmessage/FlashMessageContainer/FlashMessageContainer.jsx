@@ -60,10 +60,11 @@ const FlashMessageContainer = () => {
 
   const adminState = useAdminState();
   const nNumber = adminState.userContext.pingIdentity.sub;
+  console.log("admin state n num: " + nNumber);
   const loggedInWorker = adminState.workerContext.workers.filter(worker => worker.attributes.unique_id === nNumber);
-  const workerProfileId = loggedInWorker[0].attributes.profile_id;
-  const profile = profileConfigs.PROFILE_SKILL_MAP.filter(profile => profile.profileId === workerProfileId);
-  const defaultSkill = profile.length > 0 ? profile[0].skills[0]: "";
+  const workerProfileId = loggedInWorker.length > 0 ? loggedInWorker[0].attributes.profile_id : null;
+  const profileArray = profileConfigs.PROFILE_SKILL_MAP.filter(profile => profile.profileId === workerProfileId);
+  const defaultSkill = profileArray.length > 0 ? profileArray[0].skills[0] : null;
   const [flashMessageState, setFlashMessageState] = useState({
     fetching: true,
     flashMessage: "",
@@ -101,7 +102,7 @@ const FlashMessageContainer = () => {
   }, [flashMessageState.skill]);
 
   return (
-    profile.length > 0 ?
+    profileArray.length > 0 ?
       <FlashMessageContainerWrapper>
         <FlashMessageSidebar flashMessageState={flashMessageState} setFlashMessageState={setFlashMessageState}/>
         {flashMessageState.fetching ?
