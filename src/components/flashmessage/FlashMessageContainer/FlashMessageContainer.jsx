@@ -70,8 +70,8 @@ const FlashMessageContainer = () => {
   });
 
   const workerProfileId = loggedInWorker ? loggedInWorker.attributes.profile_id : null;
-  const profileArray = profileConfigs.PROFILE_SKILL_MAP.filter(profile => profile.profileId === workerProfileId);
-  const defaultSkill = profileArray.length > 0 ? profileArray[0].skills[0] : null;
+  const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === workerProfileId);
+  const defaultSkill = profile?.skills[0] || null;
   const [flashMessageState, setFlashMessageState] = useState({
     fetching: true,
     flashMessage: "",
@@ -109,7 +109,7 @@ const FlashMessageContainer = () => {
   }, [flashMessageState.skill]);
 
   return (
-    profileArray.length > 0 ?
+    profile ?
       <FlashMessageContainerWrapper>
         <FlashMessageSidebar flashMessageState={flashMessageState} setFlashMessageState={setFlashMessageState}/>
         {flashMessageState.fetching ?

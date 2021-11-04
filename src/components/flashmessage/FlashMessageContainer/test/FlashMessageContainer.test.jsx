@@ -19,16 +19,18 @@ import { initialState } from "context";
 
 const axiosMock = new MockAdapter(myAxios);
 
+const dummyNNumber = "n0217643";
+
 const validWorker = {
   attributes: {
-    n_number: "n0217643",
+    n_number: dummyNNumber,
     profile_id: 4
   }
 };
 
 const unauthorizedWorker = {
   attributes: {
-    n_number: "n0217643",
+    n_number: dummyNNumber,
     profile_id: 11
   }
 };
@@ -37,7 +39,7 @@ const authorizedAdminState = {
   ...initialState,
   userContext: {
     pingIdentity: {
-      sub: "n0217643"
+      sub: dummyNNumber
     }
   },
   workerContext: {

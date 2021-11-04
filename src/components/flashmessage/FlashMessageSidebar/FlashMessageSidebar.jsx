@@ -43,7 +43,7 @@ const FlashMessageSidebar = props => {
   } = props;
 
   const stateSkill = flashMessageState.skill;
-  const profile = profileConfigs.PROFILE_SKILL_MAP.filter(profile => profile.profileId === flashMessageState.workerProfileId)[0];
+  const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === flashMessageState.workerProfileId);
   const handleRadioChange = selection => {
     setFlashMessageState({
       ...flashMessageState,
