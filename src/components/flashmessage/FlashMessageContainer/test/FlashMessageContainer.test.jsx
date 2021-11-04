@@ -21,14 +21,14 @@ const axiosMock = new MockAdapter(myAxios);
 
 const validWorker = {
   attributes: {
-    unique_id: "n0217643",
+    n_number: "n0217643",
     profile_id: 4
   }
 };
 
 const unauthorizedWorker = {
   attributes: {
-    unique_id: "n0217643",
+    n_number: "n0217643",
     profile_id: 11
   }
 };
