@@ -5,7 +5,8 @@ import {
   ViewFlashMessage
 } from "components";
 import {
-  apiPaths, profileConfigs,
+  apiPaths,
+  profileConfigs,
   theme
 } from "globals";
 import React, {
