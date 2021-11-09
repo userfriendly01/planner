@@ -80,6 +80,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       primary_dept_name: form.nNumberFetchedUser.departmentName,
       primary_dept_number: form.nNumberFetchedUser.departmentNumber,
       profile_id: form.profileId.value,
+      sip: true,
       unique_id: form.nNumber.value.toLowerCase()
     };
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.profileId.value);
