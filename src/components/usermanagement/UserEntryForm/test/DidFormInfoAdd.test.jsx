@@ -201,7 +201,7 @@ describe("<BasicFormInfo />", () => {
       expect(mockSetForm.mock.calls[1][0]).toEqual({
         type: userFormActions.UPDATE_PHONE_NUMBER,
         payload: {
-          field: "outbound",
+          field: "outgoing",
           maskedValue: "(603) 851-8200",
           isValid: true,
           e164Number: "+16038518200"
