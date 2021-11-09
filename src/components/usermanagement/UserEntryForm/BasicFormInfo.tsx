@@ -2,6 +2,7 @@ import { BasicFormInfoProps } from "./UserEntryForm.Interfaces";
 import {
   FormControlsContainer,
   FormControlsPane,
+  RightColumn,
   ToggleContainer,
   ToggleLabel
 } from "./UserEntryForm.Styles";
@@ -195,7 +196,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
         ): null
         }
       </FormControlsPane>
-      <FormControlsPane>
+      <RightColumn>
         {!form.didUser &&
           <ModalPhoneNumber
             disabled={isOutgoingDisabled()}
@@ -236,7 +237,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
             setForwardToToggle={setForwardToToggle}
           />
         }
-      </FormControlsPane>
+      </RightColumn>
     </FormControlsContainer>
   );
 };

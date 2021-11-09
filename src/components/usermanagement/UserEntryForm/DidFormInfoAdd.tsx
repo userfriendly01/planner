@@ -1,6 +1,5 @@
 import { DidFormInfoProps } from "./UserEntryForm.Interfaces";
 import {
-  FormControlsContainer,
   FormControlsPane,
   StyledIcon
 } from "./UserEntryForm.Styles";
@@ -56,81 +55,79 @@ const BasicFormInfo = (props: DidFormInfoProps) => {
   };
 
   return(
-    <FormControlsContainer>
-      <FormControlsPane>
-        <ModalPhoneNumber
-          disabled={form.editDisabled}
-          allowSevenDigitVdn={false}
-          id="direct-dial-number"
-          number={form.directDialNum.value}
-          label="Direct Dial Number *"
-          showError={form.directDialNum.blurred}
-          onBlur={() => handleOnBlur("directDialNum")}
-          updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
+    <FormControlsPane>
+      <ModalPhoneNumber
+        disabled={form.editDisabled}
+        allowSevenDigitVdn={false}
+        id="direct-dial-number"
+        number={form.directDialNum.value}
+        label="Direct Dial Number *"
+        showError={form.directDialNum.blurred}
+        onBlur={() => handleOnBlur("directDialNum")}
+        updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
+          setForm({
+            type: userFormActions.UPDATE_PHONE_NUMBER,
+            payload: {
+              field: "directDialNum",
+              maskedValue,
+              isValid,
+              e164Number
+            }
+          });
+          setForm({
+            type: userFormActions.UPDATE_PHONE_NUMBER,
+            payload: {
+              field: "outbound",
+              maskedValue,
+              isValid,
+              e164Number
+            }
+          });
+        }}
+        icon={worker?.directDialNum && form.formMode !== formModes.INSERT ? (
+          <InputAdornment position="end">
+            <StyledIcon
+              fontSize="large"
+              onClick={() => editPenClick()}
+            />
+          </InputAdornment>
+        ) : null
+        }
+      />
+      {forwardToToggle && form.formMode === formModes.UPDATE ? (
+        <ForwardToEntryForm
+          label={"Please choose a forward to option for the existing outgoing number"}
+          skills={skills}
+          workers={workers}
+          updateForwardTo={(value: string) => {
             setForm({
-              type: userFormActions.UPDATE_PHONE_NUMBER,
-              payload: {
-                field: "directDialNum",
-                maskedValue,
-                isValid,
-                e164Number
-              }
-            });
-            setForm({
-              type: userFormActions.UPDATE_PHONE_NUMBER,
-              payload: {
-                field: "outbound",
-                maskedValue,
-                isValid,
-                e164Number
-              }
-            });
-          }}
-          icon={worker?.directDialNum && form.formMode !== formModes.INSERT ? (
-            <InputAdornment position="end">
-              <StyledIcon
-                fontSize="large"
-                onClick={() => editPenClick()}
-              />
-            </InputAdornment>
-          ) : null
-          }
-        />
-        {forwardToToggle && form.formMode === formModes.UPDATE ? (
-          <ForwardToEntryForm
-            label={"Please choose a forward to option for the existing outgoing number"}
-            skills={skills}
-            workers={workers}
-            updateForwardTo={(value: string) => {
-              setForm({
-                type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
-                payload: value
-              });
-            }}
-          />
-        ) : null}
-        <ModalPhoneNumber
-          disabled={!worker?.alternateDid || form.formMode === formModes.INSERT ? false : true}
-          allowSevenDigitVdn={false}
-          id="skype-teams-did"
-          number={form.alternateDid.value}
-          label="Skype/Teams DID *"
-          showError={form.alternateDid.blurred}
-          onBlur={() => handleOnBlur("alternateDid")}
-          updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
-            setForm({
-              type: userFormActions.UPDATE_PHONE_NUMBER,
-              payload: {
-                field: "alternateDid",
-                maskedValue,
-                isValid,
-                e164Number
-              }
+              type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
+              payload: value
             });
           }}
         />
-      </FormControlsPane>
-    </FormControlsContainer>
+      ) : null}
+      <ModalPhoneNumber
+        disabled={!worker?.alternateDid || form.formMode === formModes.INSERT ? false : true}
+        allowSevenDigitVdn={false}
+        id="skype-teams-did"
+        number={form.alternateDid.value}
+        label="Skype/Teams DID *"
+        showError={form.alternateDid.blurred}
+        onBlur={() => handleOnBlur("alternateDid")}
+        updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
+          setForm({
+            type: userFormActions.UPDATE_PHONE_NUMBER,
+            payload: {
+              field: "alternateDid",
+              maskedValue,
+              isValid,
+              e164Number
+            }
+          });
+        }}
+      />
+    </FormControlsPane>
   );
 };
 

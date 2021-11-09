@@ -41,6 +41,12 @@ export const FormControlsPane = styled.div`
   max-width: 400px;
 `;
 
+export const RightColumn = styled(FormControlsPane)`
+  display: flex;
+  flex-direction: column;
+  margin-top: -8;
+`;
+
 export const Header1 = styled.h1`
   align-self: center;
 `;
