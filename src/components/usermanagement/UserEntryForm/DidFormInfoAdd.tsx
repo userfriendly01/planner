@@ -77,7 +77,7 @@ const BasicFormInfo = (props: DidFormInfoProps) => {
           setForm({
             type: userFormActions.UPDATE_PHONE_NUMBER,
             payload: {
-              field: "outbound",
+              field: "outgoing",
               maskedValue,
               isValid,
               e164Number

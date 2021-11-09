@@ -50,6 +50,9 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
   const form = useFormState();
   const setForm = useFormDispatch();
 
+  console.log("***Form: ", form);
+  console.log("*** Worker: ", worker);
+
   const doCreateUser = () => {
     updateLoading({
       ...loading,
