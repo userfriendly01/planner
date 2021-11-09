@@ -98,7 +98,7 @@ const BasicFormInfo = (props: DidFormInfoProps) => {
             ) : null
             }
           />
-          {forwardToToggle && form.formMode === formModes.UPDATE ? (
+          {forwardToToggle && form.formMode === formModes.UPDATE && (
             <ForwardToEntryForm
               label={"Please choose a forward to option for the existing outgoing number"}
               skills={skills}
@@ -110,7 +110,7 @@ const BasicFormInfo = (props: DidFormInfoProps) => {
                 });
               }}
             />
-          ) : null}
+          )}
           <ModalPhoneNumber
             disabled={form.editDisabled || isSipUser}
             allowSevenDigitVdn={false}

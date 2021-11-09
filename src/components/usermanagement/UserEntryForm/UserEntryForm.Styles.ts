@@ -44,7 +44,7 @@ export const FormControlsPane = styled.div`
 export const RightColumn = styled(FormControlsPane)`
   display: flex;
   flex-direction: column;
-  margin-top: -8;
+  margin-top: -8px;
 `;
 
 export const Header1 = styled.h1`
