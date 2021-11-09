@@ -91,7 +91,7 @@ const mockSetForm = jest.fn();
 
 const mockSetForwardToToggle = jest.fn();
 
-describe("<BasicFormInfo />", () => {
+describe("<DidFormInfoAdd />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();

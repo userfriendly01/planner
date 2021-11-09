@@ -2,6 +2,7 @@ import { DidFormInfoProps } from "./UserEntryForm.Interfaces";
 import {
   FormControlsContainer,
   FormControlsPane,
+  SipDisclaimer,
   StyledIcon
 } from "./UserEntryForm.Styles";
 import { InputAdornment } from "@material-ui/core";
@@ -29,6 +30,7 @@ const BasicFormInfo = (props: DidFormInfoProps) => {
 
   const form = useFormState();
   const setForm = useFormDispatch();
+  const isSipUser = worker.attributes.sip ? true : false;
 
   const isOutgoingDisabled = (): boolean => {
     if (form.formMode === formModes.INSERT) {
@@ -66,75 +68,77 @@ const BasicFormInfo = (props: DidFormInfoProps) => {
   return(
     <FormControlsContainer>
       <FormControlsPane>
-        <ModalPhoneNumber
-          disabled={isOutgoingDisabled()}
-          allowSevenDigitVdn={false}
-          id="outgoing-number"
-          number={form.outgoing.value}
-          onBlur={() => handleOnBlur("outgoing")}
-          label="Outgoing Number *"
-          showError={form.outgoing.blurred}
-          updateValue={(maskedValue: string, _unmaskedValue: string, isValid: boolean, e164Number: string) => {
-            setForm({
-              type: userFormActions.UPDATE_PHONE_NUMBER,
-              payload: {
-                field: "outgoing",
-                maskedValue,
-                isValid,
-                e164Number
-              }
-            });
-          }}
-          icon={worker?.directDialNum && form.formMode !== formModes.INSERT ? (
-            <InputAdornment position="end">
-              <StyledIcon
-                fontSize="large"
-                onClick={() => editPenClick()}
-              />
-            </InputAdornment>
-          ) : null
-          }
-        />
-        {forwardToToggle && form.formMode === formModes.UPDATE ? (
-          <ForwardToEntryForm
-            label={"Please choose a forward to option for the existing outgoing number"}
-            skills={skills}
-            workers={workers}
-            updateForwardTo={(value: string) => {
+        <>
+          <ModalPhoneNumber
+            disabled={isOutgoingDisabled() || isSipUser}
+            allowSevenDigitVdn={false}
+            id="outgoing-number"
+            number={form.outgoing.value}
+            onBlur={() => handleOnBlur("outgoing")}
+            label="Outgoing Number *"
+            showError={form.outgoing.blurred}
+            updateValue={(maskedValue: string, _unmaskedValue: string, isValid: boolean, e164Number: string) => {
               setForm({
-                type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
-                payload: value
+                type: userFormActions.UPDATE_PHONE_NUMBER,
+                payload: {
+                  field: "outgoing",
+                  maskedValue,
+                  isValid,
+                  e164Number
+                }
+              });
+            }}
+            icon={worker?.directDialNum && form.formMode === formModes.UPDATE && !isSipUser ? (
+              <InputAdornment position="end">
+                <StyledIcon
+                  fontSize="large"
+                  onClick={() => editPenClick()}
+                />
+              </InputAdornment>
+            ) : null
+            }
+          />
+          {forwardToToggle && form.formMode === formModes.UPDATE ? (
+            <ForwardToEntryForm
+              label={"Please choose a forward to option for the existing outgoing number"}
+              skills={skills}
+              workers={workers}
+              updateForwardTo={(value: string) => {
+                setForm({
+                  type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
+                  payload: value
+                });
+              }}
+            />
+          ) : null}
+          <ModalPhoneNumber
+            disabled={form.editDisabled || isSipUser}
+            allowSevenDigitVdn={false}
+            id="internal-routing-number"
+            number={form.directDialNum.value}
+            label="Internal Routing Number *"
+            showError={form.directDialNum.blurred}
+            onBlur={() =>
+              setForm({
+                type: userFormActions.SET_BLUR_ON_FIELD,
+                payload: "directDialNum"
+              })
+            }
+            updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
+              setForm({
+                type: userFormActions.UPDATE_PHONE_NUMBER,
+                payload: {
+                  field: "directDialNum",
+                  maskedValue,
+                  isValid,
+                  e164Number
+                }
               });
             }}
           />
-        ) : null}
+        </>
         <ModalPhoneNumber
-          disabled={form.editDisabled}
-          allowSevenDigitVdn={false}
-          id="internal-routing-number"
-          number={form.directDialNum.value}
-          label="Internal Routing Number *"
-          showError={form.directDialNum.blurred}
-          onBlur={() =>
-            setForm({
-              type: userFormActions.SET_BLUR_ON_FIELD,
-              payload: "directDialNum"
-            })
-          }
-          updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
-            setForm({
-              type: userFormActions.UPDATE_PHONE_NUMBER,
-              payload: {
-                field: "directDialNum",
-                maskedValue,
-                isValid,
-                e164Number
-              }
-            });
-          }}
-        />
-        <ModalPhoneNumber
-          disabled={!worker?.alternateDid || form.formMode === formModes.INSERT ? false : true}
+          disabled={worker?.alternateDid ? true : false}
           allowSevenDigitVdn={false}
           id="skype-teams-did"
           number={form.alternateDid.value}
@@ -158,6 +162,9 @@ const BasicFormInfo = (props: DidFormInfoProps) => {
             });
           }}
         />
+        {isSipUser &&
+          <SipDisclaimer>Phone numbers for SIP users cannot be edited at this time.</SipDisclaimer>
+        }
       </FormControlsPane>
     </FormControlsContainer>
   );

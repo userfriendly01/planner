@@ -91,14 +91,17 @@ const mockSetForm = jest.fn();
 
 const mockSetForwardToToggle = jest.fn();
 
-describe("<BasicFormInfo />", () => {
+describe("<DidFormInfoUpdate />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockStore.reset();
     useFormDispatch.mockReturnValue(mockSetForm);
     getOverflowSkillFromProfile.mockReturnValue("466");
-    useFormState.mockReturnValue(initialFormState);
+    useFormState.mockReturnValue({
+      ...initialFormState,
+      didUser: true
+    });
     setupMockedComponents({
       ModalExtension,
       ModalNNumber,
@@ -141,6 +144,8 @@ describe("<BasicFormInfo />", () => {
         icon: null
       };
       expectOnlyPassedProps(ModalPhoneNumber, expectedOutgoingProps, 0);
+      expect(ModalPhoneNumber.mock.calls[0][0].disabled).toBe(false);
+
     });
     test("disabled property should be true", () => {
       useFormState.mockReturnValue({
@@ -268,107 +273,143 @@ describe("<BasicFormInfo />", () => {
       });
     });
   });
-  describe("Did Fields", () => {
-    beforeEach(() => {
+  describe("Internal Routing Number", () => {
+    test("Should render the correct initial state", () => {
+      renderComponent();
+      expect(ModalPhoneNumber.mock.calls.length).toBe(3);
+
+      const expectedInternalRoutingNumberProps = {
+        disabled: false,
+        allowSevenDigitVdn: false,
+        id: "internal-routing-number",
+        number: "",
+        label: "Internal Routing Number *",
+        showError: initialFormState.outgoing.blurred
+      };
+      expectOnlyPassedProps(ModalPhoneNumber, expectedInternalRoutingNumberProps, 1);
+      expect(ModalPhoneNumber.mock.calls[1][0].disabled).toBe(false);
+    });
+    test("disabled property should be true", () => {
       useFormState.mockReturnValue({
         ...initialFormState,
+        formMode: formModes.UPDATE,
+        editDisabled: true
+      });
+      renderComponent(false);
+      expect(ModalPhoneNumber.mock.calls[0][0].disabled).toBe(true);
+    });
+    test("onBlur - should set blur on field", () => {
+      renderComponent();
+      act(() => {
+        const onBlur = ModalPhoneNumber.mock.calls[1][0].onBlur;
+        onBlur();
+      });
+      expect(mockSetForm).toBeCalledTimes(1);
+      expect(mockSetForm).toBeCalledWith({
+        type: userFormActions.SET_BLUR_ON_FIELD,
+        payload: "directDialNum"
+      });
+    });
+    test("updateValue - should set internal routing number to correct value", () => {
+      renderComponent();
+      act(() => {
+        const updateValue = ModalPhoneNumber.mock.calls[1][0].updateValue;
+        updateValue("(603) 851-8200", null, true, "+16038518200");
+      });
+      expect(mockSetForm).toBeCalledWith({
+        type: userFormActions.UPDATE_PHONE_NUMBER,
+        payload: {
+          field: "directDialNum",
+          maskedValue: "(603) 851-8200",
+          isValid: true,
+          e164Number: "+16038518200"
+        }
+      });
+    });
+  });
+  describe("Skype/Teams DID", () => {
+    test("Should render the correct initial state", () => {
+      render(
+        <DidFormInfoUpdate
+          skills={mockSkills}
+          worker={mockWorkers[1]}
+          workers={mockWorkers}
+          profiles={profileList}
+          managers={managerList}
+          forwardToToggle={false}
+          setForwardToToggle={mockSetForwardToToggle}
+        />,
+        initialTestState
+      );
+      expect(ModalPhoneNumber.mock.calls.length).toBe(3);
+      const expectedAlternateOutgoingProps = {
+        disabled: false,
+        allowSevenDigitVdn: false,
+        id: "skype-teams-did",
+        number: "",
+        label: "Skype/Teams DID *",
+        showError: initialFormState.alternateDid.blurred
+      };
+      expectOnlyPassedProps(ModalPhoneNumber, expectedAlternateOutgoingProps, 2);
+    });
+    test("disabled property should be true", () => {
+      useFormState.mockReturnValue({
+        ...initialFormState,
+        formMode: formModes.UPDATE,
         didUser: true
       });
+      renderComponent();
+      expect(ModalPhoneNumber.mock.calls[2][0].disabled).toBe(true);
     });
-    describe("Initial State", () => {
-      test("Should render the correct initial state", () => {
-        renderComponent();
-        expect(ModalPhoneNumber.mock.calls.length).toBe(3);
-
-        const expectedInternalRoutingNumberProps = {
-          disabled: false,
-          allowSevenDigitVdn: false,
-          id: "internal-routing-number",
-          number: "",
-          label: "Internal Routing Number *",
-          showError: initialFormState.outgoing.blurred
-        };
-        expectOnlyPassedProps(ModalPhoneNumber, expectedInternalRoutingNumberProps, 1);
-
-        const expectedAlternateOutgoingProps = {
-          disabled: false,
-          allowSevenDigitVdn: false,
-          id: "skype-teams-did",
-          number: "",
-          label: "Skype/Teams DID *",
-          showError: initialFormState.alternateDid.blurred
-        };
-        expectOnlyPassedProps(ModalPhoneNumber, expectedAlternateOutgoingProps, 2);
+    test("onBlur - should set blur on field", () => {
+      renderComponent();
+      act(() => {
+        const onBlur = ModalPhoneNumber.mock.calls[2][0].onBlur;
+        onBlur();
+      });
+      expect(mockSetForm).toBeCalledTimes(1);
+      expect(mockSetForm).toBeCalledWith({
+        type: userFormActions.SET_BLUR_ON_FIELD,
+        payload: "alternateDid"
       });
     });
-    describe("Internal Routing Number", () => {
-      test("onBlur - should set blur on field", () => {
-        renderComponent();
-        act(() => {
-          const onBlur = ModalPhoneNumber.mock.calls[1][0].onBlur;
-          onBlur();
-        });
-        expect(mockSetForm).toBeCalledTimes(1);
-        expect(mockSetForm).toBeCalledWith({
-          type: userFormActions.SET_BLUR_ON_FIELD,
-          payload: "directDialNum"
-        });
+    test("updateValue - should set internal routing number to correct value", () => {
+      renderComponent();
+      act(() => {
+        const updateValue = ModalPhoneNumber.mock.calls[2][0].updateValue;
+        updateValue("(603) 851-8200", null, true, "+16038518200");
       });
-      test("updateValue - should set internal routing number to correct value", () => {
-        renderComponent();
-        act(() => {
-          const updateValue = ModalPhoneNumber.mock.calls[1][0].updateValue;
-          updateValue("(603) 851-8200", null, true, "+16038518200");
-        });
-        expect(mockSetForm).toBeCalledWith({
-          type: userFormActions.UPDATE_PHONE_NUMBER,
-          payload: {
-            field: "directDialNum",
-            maskedValue: "(603) 851-8200",
-            isValid: true,
-            e164Number: "+16038518200"
-          }
-        });
+      expect(mockSetForm).toBeCalledWith({
+        type: userFormActions.UPDATE_PHONE_NUMBER,
+        payload: {
+          field: "alternateDid",
+          maskedValue: "(603) 851-8200",
+          isValid: true,
+          e164Number: "+16038518200"
+        }
       });
     });
-    describe("Alternate DID", () => {
-      test("disabled property should be true", () => {
-        useFormState.mockReturnValue({
-          ...initialFormState,
-          formMode: formModes.UPDATE,
-          didUser: true
-        });
-        renderComponent();
-        expect(ModalPhoneNumber.mock.calls[2][0].disabled).toBe(true);
-      });
-      test("onBlur - should set blur on field", () => {
-        renderComponent();
-        act(() => {
-          const onBlur = ModalPhoneNumber.mock.calls[2][0].onBlur;
-          onBlur();
-        });
-        expect(mockSetForm).toBeCalledTimes(1);
-        expect(mockSetForm).toBeCalledWith({
-          type: userFormActions.SET_BLUR_ON_FIELD,
-          payload: "alternateDid"
-        });
-      });
-      test("updateValue - should set internal routing number to correct value", () => {
-        renderComponent();
-        act(() => {
-          const updateValue = ModalPhoneNumber.mock.calls[2][0].updateValue;
-          updateValue("(603) 851-8200", null, true, "+16038518200");
-        });
-        expect(mockSetForm).toBeCalledWith({
-          type: userFormActions.UPDATE_PHONE_NUMBER,
-          payload: {
-            field: "alternateDid",
-            maskedValue: "(603) 851-8200",
-            isValid: true,
-            e164Number: "+16038518200"
-          }
-        });
-      });
+  });
+  describe("worker.attributes.sip === true", () => {
+    beforeEach(() => {
+    });
+    test("Phone Number fields should be disabled and Sip disclaimer should render", () => {
+      const rendered = render(
+        <DidFormInfoUpdate
+          skills={mockSkills}
+          worker={mockWorkers[4]}
+          workers={mockWorkers}
+          profiles={profileList}
+          managers={managerList}
+          forwardToToggle={false}
+          setForwardToToggle={mockSetForwardToToggle}
+        />,
+        initialTestState
+      );
+      expect(ModalPhoneNumber.mock.calls[0][0].disabled).toBe(true);
+      expect(ModalPhoneNumber.mock.calls[1][0].disabled).toBe(true);
+      expect(ModalPhoneNumber.mock.calls[2][0].disabled).toBe(true);
+      expect(rendered.container).toHaveTextContent("Phone numbers for SIP users cannot be edited at this time.");
     });
   });
 });

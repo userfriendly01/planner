@@ -99,6 +99,7 @@ export interface Worker {
     profile_id?: string | number,
     roles?: string[],
     routing?: WorkerSkills,
+    sip?: boolean,
     unique_id?: string
   },
   alternateDid?: string,
