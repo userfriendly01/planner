@@ -10,7 +10,9 @@ import {
   ModalExtension,
   ModalNNumber,
   ModalPhoneNumber,
-  OutlinedSelect
+  OutlinedSelect,
+  DidFormInfoAdd,
+  DidFormInfoUpdate
 } from "components";
 import {
   useFormDispatch,
@@ -47,6 +49,8 @@ jest.useFakeTimers();
 
 jest.mock("components", () => ({
   __esModule: true,
+  DidFormInfoAdd: jest.fn(),
+  DidFormInfoUpdate: jest.fn(),
   ModalExtension: jest.fn(),
   ModalNNumber: jest.fn(),
   ModalPhoneNumber: jest.fn(),
@@ -108,6 +112,8 @@ describe("<BasicFormInfo />", () => {
     getOverflowSkillFromProfile.mockReturnValue("466");
     useFormState.mockReturnValue(initialFormState);
     setupMockedComponents({
+      DidFormInfoAdd,
+      DidFormInfoUpdate,
       ModalExtension,
       ModalNNumber,
       ModalPhoneNumber,
@@ -333,8 +339,7 @@ describe("<BasicFormInfo />", () => {
         allowSevenDigitVdn: false,
         showError: initialFormState.outgoing.blurred,
         number: "",
-        label: "Outgoing Number *",
-        icon: null
+        label: "Outgoing Number *"
       };
       expectOnlyPassedProps(ModalPhoneNumber, expectedOutgoingProps, 0);
     });
@@ -387,80 +392,6 @@ describe("<BasicFormInfo />", () => {
           isValid: true,
           e164Number: "+16038518200"
         }
-      });
-    });
-    describe(`worker.directDialNum && form.formMode !== ${formModes.INSERT}`, () => {
-      beforeEach(() => {
-        useFormState.mockReturnValue({
-          ...initialFormState,
-          formMode: formModes.UPDATE
-        });
-      });
-      test("StyledIcon is rendered with the correct props", () => {
-        renderComponent(true);
-        render(ModalPhoneNumber.mock.calls[0][0].icon);
-        render(InputAdornment.mock.calls[0][0].children);
-
-        const expectedStyledIconProps = {
-          fontSize: "large"
-        };
-        expectOnlyPassedProps(Edit, expectedStyledIconProps, 0);
-      });
-      test("forwardToToggle === true", () => {
-        renderComponent(true);
-        render(ModalPhoneNumber.mock.calls[0][0].icon);
-        render(InputAdornment.mock.calls[0][0].children);
-        act(() => {
-          const onClick = Edit.mock.calls[0][0].onClick;
-          onClick();
-        });
-        expect(mockSetForm).toBeCalledWith({
-          type: userFormActions.EDIT_PEN_CLICK_FORWARD_TO_TOGGLE,
-          payload: mockWorkers[2]
-        });
-        expect(mockSetForwardToToggle).toBeCalledTimes(1);
-        expect(mockSetForwardToToggle).toBeCalledWith(false);
-      });
-      test("forwardToToggle === false", () => {
-        renderComponent(false);
-        render(ModalPhoneNumber.mock.calls[0][0].icon);
-        render(InputAdornment.mock.calls[0][0].children);
-        act(() => {
-          const onClick = Edit.mock.calls[0][0].onClick;
-          onClick();
-        });
-        expect(mockSetForm).toBeCalledWith({ type: userFormActions.EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE });
-        expect(mockSetForwardToToggle).toBeCalledTimes(1);
-        expect(mockSetForwardToToggle).toBeCalledWith(true);
-      });
-    });
-    describe(`forwardToToggle === true && form.formMode === ${formModes.UPDATE}`, () => {
-      beforeEach(() => {
-        useFormState.mockReturnValue({
-          ...initialFormState,
-          formMode: formModes.UPDATE
-        });
-      });
-      test("ForwardToEntryForm is rendered with the correct props", () => {
-        const rendered = renderComponent(true);
-        expectMockedComponent(rendered, { ForwardToEntryForm }, 1);
-        const expectedForwardToEntryProps = {
-          label: "Please choose a forward to option for the existing outgoing number",
-          skills: mockSkills,
-          workers: mockWorkers
-        };
-        expectOnlyPassedProps(ForwardToEntryForm, expectedForwardToEntryProps, 0);
-      });
-      test("updateForwardTo - should update inactiveForwardTo", () => {
-        renderComponent(true);
-        act(() => {
-          const updateForwardTo = ForwardToEntryForm.mock.calls[0][0].updateForwardTo;
-          updateForwardTo("WK123456");
-        });
-        expect(mockSetForm).toBeCalledWith({
-          type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
-          payload: "WK123456"
-        });
       });
     });
   });
@@ -704,15 +635,16 @@ describe("<BasicFormInfo />", () => {
       });
     });
     describe("form.didUser === true", () => {
-      beforeEach(() => {
-        useFormState.mockReturnValue({
-          ...initialFormState,
-          didUser: true
+      describe(`formMode === ${formModes.INSERT}`, () => {
+        beforeEach(() => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            formMode: formModes.INSERT,
+            didUser: true
+          });
         });
-      });
-      describe("Initial State", () => {
         test("Should render the correct initial state", () => {
-          renderComponent();
+          renderComponent(false);
           const didToolTip = Tooltip.mock.calls[0][0];
           expect(didToolTip.title).toBe("");
           expect(didToolTip.placement).toBe("bottom-start");
@@ -730,27 +662,14 @@ describe("<BasicFormInfo />", () => {
           const renderedOverflowTT = render(overFlowToolTip.children);
           expect(renderedOverflowTT.container).toHaveTextContent("Overflow Skill");
 
-          expect(ModalPhoneNumber.mock.calls.length).toBe(3);
-
-          const expectedInternalRoutingNumberProps = {
-            disabled: false,
-            allowSevenDigitVdn: false,
-            id: "internal-routing-number",
-            number: "",
-            label: "Internal Routing Number *",
-            showError: initialFormState.outgoing.blurred
+          const expectedDidFormInfoAddProps = {
+            skills: mockSkills,
+            worker: mockWorkers[2],
+            workers: mockWorkers,
+            forwardToToggle: false,
+            setForwardToToggle: mockSetForwardToToggle
           };
-          expectOnlyPassedProps(ModalPhoneNumber, expectedInternalRoutingNumberProps, 1);
-
-          const expectedAlternateOutgoingProps = {
-            disabled: false,
-            allowSevenDigitVdn: false,
-            id: "skype-teams-did",
-            number: "",
-            label: "Skype/Teams DID *",
-            showError: initialFormState.alternateDid.blurred
-          };
-          expectOnlyPassedProps(ModalPhoneNumber, expectedAlternateOutgoingProps, 2);
+          expectOnlyPassedProps(DidFormInfoAdd, expectedDidFormInfoAddProps, 0);
         });
         test("Overflow Tooltip Title should be message when overflowSkill is not undefined", () => {
           getOverflowSkillFromProfile.mockReturnValue(undefined);
@@ -758,10 +677,54 @@ describe("<BasicFormInfo />", () => {
           expect(Tooltip.mock.calls[1][0].title).toBe("No overflow skill exists for this team");
         });
       });
+      describe(`formMode === ${formModes.UPDATE}`, () => {
+        beforeEach(() => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            formMode: formModes.UPDATE,
+            didUser: true
+          });
+        });
+        test("Should render the correct initial state", () => {
+          renderComponent(false);
+          const didToolTip = Tooltip.mock.calls[0][0];
+          expect(didToolTip.title).toBe("Twilio DID can not be removed");
+          expect(didToolTip.placement).toBe("bottom-start");
+          const renderedDidToolTip = render(didToolTip.children);
+          expect(renderedDidToolTip.container).toHaveTextContent("DID User");
+
+          const didSwitch = Switch.mock.calls[0][0];
+          expect(didSwitch.checked).toEqual(true);
+          expect(didSwitch.disabled).toEqual(true);
+          expect(didSwitch.inputProps).toEqual({ "aria-label": "toggle-did-user" });
+
+          const overFlowToolTip = Tooltip.mock.calls[1][0];
+          expect(overFlowToolTip.title).toBe("");
+          expect(overFlowToolTip.placement).toBe("bottom-start");
+          const renderedOverflowTT = render(overFlowToolTip.children);
+          expect(renderedOverflowTT.container).toHaveTextContent("Overflow Skill");
+
+          const expectedDidFormInfoUpdateProps = {
+            skills: mockSkills,
+            worker: mockWorkers[2],
+            workers: mockWorkers,
+            forwardToToggle: false,
+            setForwardToToggle: mockSetForwardToToggle
+          };
+          expectOnlyPassedProps(DidFormInfoUpdate, expectedDidFormInfoUpdateProps, 0);
+        });
+      });
       describe("Overflow Skill Switch", () => {
-        test("Should be disabled with overFlowSkills are undefined", () => {
+        beforeEach(() => {
           getOverflowSkillFromProfile.mockReturnValue(undefined);
-          renderComponent();
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            formMode: formModes.INSERT,
+            didUser: true
+          });
+        });
+        test("Should be disabled with overFlowSkills are undefined", () => {
+          renderComponent(false);
           renderChildComponents();
 
           act(() => {
@@ -775,7 +738,7 @@ describe("<BasicFormInfo />", () => {
           });
         });
         test("When onChange is called, setForm is called", () => {
-          renderComponent();
+          renderComponent(false);
           renderChildComponents();
 
           act(() => {
@@ -786,80 +749,6 @@ describe("<BasicFormInfo />", () => {
           expect(mockSetForm).toBeCalledTimes(1);
           expect(mockSetForm).toBeCalledWith({
             type: userFormActions.INITIATE_ZERO_OUT_FIELDS
-          });
-        });
-      });
-      describe("Internal Routing Number", () => {
-        test("onBlur - should set blur on field", () => {
-          renderComponent();
-          renderChildComponents();
-          act(() => {
-            const onBlur = ModalPhoneNumber.mock.calls[1][0].onBlur;
-            onBlur();
-          });
-          expect(mockSetForm).toBeCalledTimes(1);
-          expect(mockSetForm).toBeCalledWith({
-            type: userFormActions.SET_BLUR_ON_FIELD,
-            payload: "directDialNum"
-          });
-        });
-        test("updateValue - should set internal routing number to correct value", () => {
-          renderComponent();
-          renderChildComponents();
-          act(() => {
-            const updateValue = ModalPhoneNumber.mock.calls[1][0].updateValue;
-            updateValue("(603) 851-8200", null, true, "+16038518200");
-          });
-          expect(mockSetForm).toBeCalledWith({
-            type: userFormActions.UPDATE_PHONE_NUMBER,
-            payload: {
-              field: "directDialNum",
-              maskedValue: "(603) 851-8200",
-              isValid: true,
-              e164Number: "+16038518200"
-            }
-          });
-        });
-      });
-      describe("Alternate DID", () => {
-        test("disabled property should be true", () => {
-          useFormState.mockReturnValue({
-            ...initialFormState,
-            formMode: formModes.UPDATE,
-            didUser: true
-          });
-          renderComponent();
-          renderChildComponents();
-          expect(ModalPhoneNumber.mock.calls[2][0].disabled).toBe(true);
-        });
-        test("onBlur - should set blur on field", () => {
-          renderComponent();
-          renderChildComponents();
-          act(() => {
-            const onBlur = ModalPhoneNumber.mock.calls[2][0].onBlur;
-            onBlur();
-          });
-          expect(mockSetForm).toBeCalledTimes(1);
-          expect(mockSetForm).toBeCalledWith({
-            type: userFormActions.SET_BLUR_ON_FIELD,
-            payload: "alternateDid"
-          });
-        });
-        test("updateValue - should set internal routing number to correct value", () => {
-          renderComponent();
-          renderChildComponents();
-          act(() => {
-            const updateValue = ModalPhoneNumber.mock.calls[2][0].updateValue;
-            updateValue("(603) 851-8200", null, true, "+16038518200");
-          });
-          expect(mockSetForm).toBeCalledWith({
-            type: userFormActions.UPDATE_PHONE_NUMBER,
-            payload: {
-              field: "alternateDid",
-              maskedValue: "(603) 851-8200",
-              isValid: true,
-              e164Number: "+16038518200"
-            }
           });
         });
       });
