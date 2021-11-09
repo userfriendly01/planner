@@ -232,6 +232,10 @@ describe("<UserFormButtons />", () => {
         });
       });
       describe("createUser service call and add office service call are successful", () => {
+        const createWorkerAttributesAfterFormValid = {
+          ...workerAttributesAfterFormValid,
+          sip: true
+        };
         describe("Worker is not a DID user", () => {
           const nonDidValidFormState = {
             ...validFormState,
@@ -253,7 +257,7 @@ describe("<UserFormButtons />", () => {
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
                 activateEp: false, // false for non-DID workers
-                attributes: workerAttributesAfterFormValid
+                attributes: createWorkerAttributesAfterFormValid
               });
               expect(mockSetForm).toHaveBeenCalledTimes(2);
               expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
@@ -293,12 +297,13 @@ describe("<UserFormButtons />", () => {
             ...rawDbWorker,
             attributes: {
               ...rawDbWorker.attributes,
-              office_location_number: "ABC123"
+              office_location_number: "ABC123",
+              sip: true
             }
           };
           const formattedWorker = {
             attributes: {
-              ...workerAttributesAfterFormValid,
+              ...createWorkerAttributesAfterFormValid,
               office_location_number: "ABC123"
             },
             sid: rawDbWorker.workerSid,
@@ -318,7 +323,7 @@ describe("<UserFormButtons />", () => {
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
                 activateEp: true, // true for DID workers
-                attributes: workerAttributesAfterFormValid,
+                attributes: createWorkerAttributesAfterFormValid,
                 alternateDid: validFormState.alternateDid.e164,
                 directDialNum: validFormState.directDialNum.e164,
                 zeroOutEnabled: validFormState.zeroOutEnabled
@@ -367,7 +372,7 @@ describe("<UserFormButtons />", () => {
               expect(createUser).toHaveBeenCalledWith({
                 activateEp: true, // true for DID workers
                 attributes: {
-                  ...workerAttributesAfterFormValid,
+                  ...createWorkerAttributesAfterFormValid,
                   routing: {
                     levels: {},
                     skills: [
@@ -414,6 +419,10 @@ describe("<UserFormButtons />", () => {
         });
       });
       describe("doCreateUser fails", () => {
+        const createWorkerAttributesAfterFormValid = {
+          ...workerAttributesAfterFormValid,
+          sip: true
+        };
         describe("addOffice fails", () => {
           const nonDidValidFormState = {
             ...validFormState,
@@ -436,7 +445,7 @@ describe("<UserFormButtons />", () => {
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
                 activateEp: false, // false for non-DID workers
-                attributes: workerAttributesAfterFormValid
+                attributes: createWorkerAttributesAfterFormValid
               });
               expect(mockSetForm).toHaveBeenCalledTimes(2);
               expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
@@ -494,7 +503,7 @@ describe("<UserFormButtons />", () => {
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
                 activateEp: false, // false for non-DID workers
-                attributes: workerAttributesAfterFormValid
+                attributes: createWorkerAttributesAfterFormValid
               });
               expect(mockSetForm).toHaveBeenCalledTimes(0);
               expect(mockDispatch).toHaveBeenCalledTimes(0);
@@ -528,7 +537,7 @@ describe("<UserFormButtons />", () => {
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
                 activateEp: false, // false for non-DID workers
-                attributes: workerAttributesAfterFormValid
+                attributes: createWorkerAttributesAfterFormValid
               });
               expect(mockSetForm).toHaveBeenCalledTimes(0);
               expect(mockDispatch).toHaveBeenCalledTimes(0);
