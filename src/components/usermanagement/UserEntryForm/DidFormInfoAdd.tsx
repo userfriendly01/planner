@@ -29,6 +29,8 @@ const BasicFormInfo = (props: DidFormInfoProps) => {
   const form = useFormState();
   const setForm = useFormDispatch();
 
+  //Not currently used - Will save effort when we add edit to SIP users in this file
+  //Same with the forwardTo component and Edit Icon
   const editPenClick = (): void => {
     if (forwardToToggle) {
       // reset did fields to initial form
@@ -94,7 +96,7 @@ const BasicFormInfo = (props: DidFormInfoProps) => {
         ) : null
         }
       />
-      {forwardToToggle && form.formMode === formModes.UPDATE ? (
+      {forwardToToggle && form.formMode === formModes.UPDATE && (
         <ForwardToEntryForm
           label={"Please choose a forward to option for the existing outgoing number"}
           skills={skills}
@@ -106,7 +108,7 @@ const BasicFormInfo = (props: DidFormInfoProps) => {
             });
           }}
         />
-      ) : null}
+      )}
       <ModalPhoneNumber
         disabled={!worker?.alternateDid || form.formMode === formModes.INSERT ? false : true}
         allowSevenDigitVdn={false}

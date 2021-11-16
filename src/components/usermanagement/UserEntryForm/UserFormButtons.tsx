@@ -129,7 +129,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
               value: form.outgoing.value,
               e164: form.outgoing.e164
             },
-            profileIdValue: form.profileId.value
+            profileIdValue: form.profileId.value,
+            didUser: form.didUser
           }
         });
         setForm({ type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });

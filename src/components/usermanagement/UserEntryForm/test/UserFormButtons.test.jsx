@@ -200,7 +200,8 @@ describe("<UserFormButtons />", () => {
           value: validFormState.outgoing.value,
           e164: validFormState.outgoing.e164
         },
-        profileIdValue: validFormState.profileId.value
+        profileIdValue: validFormState.profileId.value,
+        didUser: false
       }
     };
     describe(`form.formMode === ${formModes.INSERT}`, () => {
