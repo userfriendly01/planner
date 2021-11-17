@@ -80,7 +80,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       primary_dept_name: form.nNumberFetchedUser.departmentName,
       primary_dept_number: form.nNumberFetchedUser.departmentNumber,
       profile_id: form.profileId.value,
-      sip: true,
+      sip: form.didUser ? true : false,
       unique_id: form.nNumber.value.toLowerCase()
     };
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.profileId.value);
@@ -204,7 +204,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     // remove overflow skill
     if (!form.zeroOutEnabled && workerHasOverFlowSkill(worker, profiles)) {
       attributes.routing = {
-        skills: getNonOverflowSkills(worker, profiles),
+        skills: nonOverflowSkills,
         levels: levels
       };
     }
