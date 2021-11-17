@@ -190,20 +190,22 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     }
     // update overflow skill
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.profileId.value);
+    const nonOverflowSkills: string[] = getNonOverflowSkills(worker, profiles) ? getNonOverflowSkills(worker, profiles) : [];
+    const levels = worker.attributes?.routing?.levels ? worker.attributes.routing.levels : {};
     if ((form.zeroOutEnabledUpdated || form.profileId.updated) && form.zeroOutEnabled) {
       attributes.routing = {
         skills: [
-          ...getNonOverflowSkills(worker, profiles),
+          ...nonOverflowSkills,
           overflowSkill
         ],
-        levels: worker.attributes.routing.levels
+        levels: levels
       };
     }
     // remove overflow skill
     if (!form.zeroOutEnabled && workerHasOverFlowSkill(worker, profiles)) {
       attributes.routing = {
         skills: getNonOverflowSkills(worker, profiles),
-        levels: worker.attributes.routing.levels
+        levels: levels
       };
     }
 
