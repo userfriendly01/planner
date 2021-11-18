@@ -80,6 +80,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       primary_dept_name: form.nNumberFetchedUser.departmentName,
       primary_dept_number: form.nNumberFetchedUser.departmentNumber,
       profile_id: form.profileId.value,
+      sip: form.didUser ? true : false,
       unique_id: form.nNumber.value.toLowerCase()
     };
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.profileId.value);
@@ -128,7 +129,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
               value: form.outgoing.value,
               e164: form.outgoing.e164
             },
-            profileIdValue: form.profileId.value
+            profileIdValue: form.profileId.value,
+            didUser: form.didUser
           }
         });
         setForm({ type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
@@ -188,20 +190,22 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     }
     // update overflow skill
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.profileId.value);
+    const nonOverflowSkills: string[] = getNonOverflowSkills(worker, profiles) ? getNonOverflowSkills(worker, profiles) : [];
+    const levels = worker.attributes?.routing?.levels ? worker.attributes.routing.levels : {};
     if ((form.zeroOutEnabledUpdated || form.profileId.updated) && form.zeroOutEnabled) {
       attributes.routing = {
         skills: [
-          ...getNonOverflowSkills(worker, profiles),
+          ...nonOverflowSkills,
           overflowSkill
         ],
-        levels: worker.attributes.routing.levels
+        levels: levels
       };
     }
     // remove overflow skill
     if (!form.zeroOutEnabled && workerHasOverFlowSkill(worker, profiles)) {
       attributes.routing = {
-        skills: getNonOverflowSkills(worker, profiles),
-        levels: worker.attributes.routing.levels
+        skills: nonOverflowSkills,
+        levels: levels
       };
     }
 

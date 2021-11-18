@@ -203,11 +203,16 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
       };
     }
     case userFormActions.RESET_FORM_AFTER_ADD: {
-      const outgoingPayload = action.payload.outgoing;
+      const didUser = action.payload.didUser;
+      const outgoingPayload = didUser ? { value: "" } : action.payload.outgoing;
+      const profileId = action.payload.profileIdValue;
+      const manager = action.payload.managerValue;
+
       return {
         ...initialUserFormState,
+        didUser,
         manager: {
-          value: action.payload.managerValue,
+          value: manager,
           blurred: false,
           updated: true
         },
@@ -219,7 +224,7 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
           valid: true
         },
         profileId: {
-          value: action.payload.profileIdValue,
+          value: profileId,
           blurred: false,
           updated: true
         }

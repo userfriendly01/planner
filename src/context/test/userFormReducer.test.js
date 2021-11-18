@@ -248,6 +248,50 @@ describe("userFormReducer", () => {
   });
 
   describe("RESET_FORM_AFTER_ADD", () => {
+    const managerValue = "Jimini Cricket";
+    const profileIdValue = "42";
+    const updatedOutgoingValues = {
+      value: "8007654321",
+      e164: "+18007654321"
+    };
+      // setting blurred & updated to the opposite of what we expect after the action
+    const blurred = true;
+    const updated = false;
+    const initialTestState = {
+      ...initialUserFormState,
+      manager: {
+        value: managerValue,
+        blurred,
+        updated
+      },
+      outgoing: {
+        value: updatedOutgoingValues.value,
+        e164: updatedOutgoingValues.e164,
+        blurred,
+        updated,
+        valid: false
+      },
+      profileId: {
+        value: profileIdValue,
+        blurred,
+        updated
+      },
+      // randomly selected values that we expect the action to reset
+      extension: {
+        value: "not blank",
+        blurred: true,
+        updated: true,
+        valid: true
+      },
+      directDialNum: {
+        value: "a thousand",
+        blurred: true,
+        e164: "shoelaces",
+        updated: true,
+        valid: true
+      },
+      zeroOutEnabled: true
+    };
     test("should reset all form fields except Manager, Team & Outbound Number", () => {
       const managerValue = "Jimini Cricket";
       const profileIdValue = "42";
@@ -301,7 +345,8 @@ describe("userFormReducer", () => {
           outgoing: {
             value: updatedOutgoingValues.value,
             e164: updatedOutgoingValues.e164
-          }
+          },
+          didUser: false
         }
       };
       expect(userFormReducer(initialTestState, action)).toStrictEqual({
@@ -315,6 +360,41 @@ describe("userFormReducer", () => {
           value: updatedOutgoingValues.value,
           blurred: false,
           e164: updatedOutgoingValues.e164,
+          updated: true,
+          valid: true
+        },
+        profileId: {
+          value: profileIdValue,
+          blurred: false,
+          updated: true
+        }
+      });
+    });
+    test("should reset all form fields except Manager, Team & DID Toggle", () => {
+      const action = {
+        type: userFormActions.RESET_FORM_AFTER_ADD,
+        payload: {
+          managerValue,
+          profileIdValue,
+          outgoing: {
+            value: updatedOutgoingValues.value,
+            e164: updatedOutgoingValues.e164
+          },
+          didUser: true
+        }
+      };
+      expect(userFormReducer(initialTestState, action)).toStrictEqual({
+        ...initialUserFormState,
+        didUser: true,
+        manager: {
+          value: managerValue,
+          blurred: false,
+          updated: true
+        },
+        outgoing: {
+          value: "",
+          blurred: false,
+          e164: undefined,
           updated: true,
           valid: true
         },

@@ -41,6 +41,14 @@ export interface BasicFormInfoProps {
   forwardToToggle: boolean,
   setForwardToToggle: (value: boolean) => void,
 }
+
+export interface DidFormInfoProps {
+  skills: TaskRouterSkill[],
+  worker: Worker | null,
+  workers: Worker[],
+  forwardToToggle: boolean,
+  setForwardToToggle: (value: boolean) => void,
+}
 export interface UserFormButtonsProps {
   handleClose: VoidFunction,
   loading: LoadingState,
