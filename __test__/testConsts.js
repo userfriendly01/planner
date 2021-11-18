@@ -334,5 +334,33 @@ export const mockWorkers = [
         }
       }
     }
+  },
+  {
+    // DID SIP Worker
+    sid: "WK4",
+    activateEp: true,
+    alternateDid: validFormOptions.alternateDid.e164,
+    directDialNum: validFormOptions.directDialNum.e164,
+    zeroOutEnabled: true,
+    attributes: {
+      default_skills: validFormOptions.defaultSkills,
+      did: validFormOptions.didE164,
+      extension: validFormOptions.extension,
+      full_name: "Test 4",
+      manager_first_name: validFormOptions.manager.manager_first_name,
+      manager_last_name: validFormOptions.manager.manager_last_name,
+      manager_n_number: validFormOptions.manager.manager_n_number,
+      office_location_name: "Pluto",
+      profile_id: profileList[1].profile_id,
+      routing: {
+        skills: [
+          "payinBills"
+        ],
+        levels: {
+          "payinBills": 1
+        }
+      },
+      sip: true
+    }
   }
 ];

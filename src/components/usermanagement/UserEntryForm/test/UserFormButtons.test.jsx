@@ -200,7 +200,8 @@ describe("<UserFormButtons />", () => {
           value: validFormState.outgoing.value,
           e164: validFormState.outgoing.e164
         },
-        profileIdValue: validFormState.profileId.value
+        profileIdValue: validFormState.profileId.value,
+        didUser: false
       }
     };
     describe(`form.formMode === ${formModes.INSERT}`, () => {
@@ -233,6 +234,10 @@ describe("<UserFormButtons />", () => {
       });
       describe("createUser service call and add office service call are successful", () => {
         describe("Worker is not a DID user", () => {
+          const createWorkerAttributesAfterFormValid = {
+            ...workerAttributesAfterFormValid,
+            sip: false
+          };
           const nonDidValidFormState = {
             ...validFormState,
             directDialNum: {
@@ -253,7 +258,7 @@ describe("<UserFormButtons />", () => {
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
                 activateEp: false, // false for non-DID workers
-                attributes: workerAttributesAfterFormValid
+                attributes: createWorkerAttributesAfterFormValid
               });
               expect(mockSetForm).toHaveBeenCalledTimes(2);
               expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
@@ -289,23 +294,31 @@ describe("<UserFormButtons />", () => {
           });
         });
         describe("Worker is a DID user", () => {
+          const createWorkerAttributesAfterFormValid = {
+            ...workerAttributesAfterFormValid,
+            sip: true
+          };
           const existingOfficeDbWorker = {
             ...rawDbWorker,
             attributes: {
               ...rawDbWorker.attributes,
-              office_location_number: "ABC123"
+              office_location_number: "ABC123",
+              sip: true
             }
           };
           const formattedWorker = {
             attributes: {
-              ...workerAttributesAfterFormValid,
+              ...createWorkerAttributesAfterFormValid,
               office_location_number: "ABC123"
             },
             sid: rawDbWorker.workerSid,
             skillsDifferent: true
           };
           beforeEach(() => {
-            useFormState.mockReturnValue(validFormState);
+            useFormState.mockReturnValue({
+              ...validFormState,
+              didUser: true
+            });
             createUser.mockResolvedValue(existingOfficeDbWorker);
           });
           test("should save user with did worker request body when clicked", async () => {
@@ -318,13 +331,19 @@ describe("<UserFormButtons />", () => {
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
                 activateEp: true, // true for DID workers
-                attributes: workerAttributesAfterFormValid,
+                attributes: createWorkerAttributesAfterFormValid,
                 alternateDid: validFormState.alternateDid.e164,
                 directDialNum: validFormState.directDialNum.e164,
                 zeroOutEnabled: validFormState.zeroOutEnabled
               });
               expect(mockSetForm).toHaveBeenCalledTimes(2);
-              expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
+              expect(mockSetForm).toHaveBeenCalledWith({
+                ...resetFormAfterAddExpectedAction,
+                payload: {
+                  ...resetFormAfterAddExpectedAction.payload,
+                  didUser: true
+                }
+              });
               expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
               expect(mockDispatch).toHaveBeenCalledTimes(1);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
@@ -350,6 +369,10 @@ describe("<UserFormButtons />", () => {
           });
         });
         describe("Worker profile has overflowSkill, zeroOutEnabled and directDialNum", () => {
+          const createWorkerAttributesAfterFormValid = {
+            ...workerAttributesAfterFormValid,
+            sip: false
+          };
           beforeEach(() => {
             useFormState.mockReturnValue({
               ...validFormState,
@@ -367,7 +390,7 @@ describe("<UserFormButtons />", () => {
               expect(createUser).toHaveBeenCalledWith({
                 activateEp: true, // true for DID workers
                 attributes: {
-                  ...workerAttributesAfterFormValid,
+                  ...createWorkerAttributesAfterFormValid,
                   routing: {
                     levels: {},
                     skills: [
@@ -411,9 +434,73 @@ describe("<UserFormButtons />", () => {
               });
             });
           });
+          describe("getNonOverflowSkills returns undefined", () => {
+            beforeEach(() => {
+              getNonOverflowSkills.mockReturnValue(undefined);
+            });
+            test("Should spread empty array in skills", async () => {
+              renderComponent(true);
+              render(Tooltip.mock.calls[0][0].children);
+              act(() => {
+                const onClick = StyledButton.mock.calls[1][0].onClick;
+                onClick();
+              });
+              await waitFor(() => {
+                expect(createUser).toHaveBeenCalledWith({
+                  activateEp: true, // true for DID workers
+                  attributes: {
+                    ...createWorkerAttributesAfterFormValid,
+                    routing: {
+                      levels: {},
+                      skills: [
+                        "466"
+                      ]
+                    }
+                  },
+                  alternateDid: validFormState.alternateDid.e164,
+                  directDialNum: validFormState.directDialNum.e164,
+                  zeroOutEnabled: true
+                });
+                expect(mockSetForm).toHaveBeenCalledTimes(2);
+                expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
+                expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
+                expect(mockDispatch).toHaveBeenCalledTimes(2);
+                expect(mockDispatch.mock.calls[0][0]).toEqual({
+                  type: "addWorkers",
+                  payload: [formattedWorker]
+                });
+                expect(mockDispatch.mock.calls[1][0]).toEqual({
+                  type: "addOffice",
+                  payload: {
+                    office_nme: "Springfield 012B",
+                    office_num: "newOffice"
+                  }
+                });
+                jest.runAllTimers();
+                expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
+                expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
+                  overlayMessage: "Adding new user...",
+                  saveStatus: "saving",
+                  saveUser: true
+                });
+                expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+                  overlayMessage: "Successfully added new user",
+                  saveStatus: "success",
+                  saveUser: true
+                });
+                expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
+                  saveUser: false
+                });
+              });
+            });
+          });
         });
       });
       describe("doCreateUser fails", () => {
+        const createWorkerAttributesAfterFormValid = {
+          ...workerAttributesAfterFormValid,
+          sip: false
+        };
         describe("addOffice fails", () => {
           const nonDidValidFormState = {
             ...validFormState,
@@ -436,7 +523,7 @@ describe("<UserFormButtons />", () => {
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
                 activateEp: false, // false for non-DID workers
-                attributes: workerAttributesAfterFormValid
+                attributes: createWorkerAttributesAfterFormValid
               });
               expect(mockSetForm).toHaveBeenCalledTimes(2);
               expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
@@ -494,7 +581,7 @@ describe("<UserFormButtons />", () => {
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
                 activateEp: false, // false for non-DID workers
-                attributes: workerAttributesAfterFormValid
+                attributes: createWorkerAttributesAfterFormValid
               });
               expect(mockSetForm).toHaveBeenCalledTimes(0);
               expect(mockDispatch).toHaveBeenCalledTimes(0);
@@ -528,7 +615,7 @@ describe("<UserFormButtons />", () => {
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
                 activateEp: false, // false for non-DID workers
-                attributes: workerAttributesAfterFormValid
+                attributes: createWorkerAttributesAfterFormValid
               });
               expect(mockSetForm).toHaveBeenCalledTimes(0);
               expect(mockDispatch).toHaveBeenCalledTimes(0);
@@ -652,35 +739,35 @@ describe("<UserFormButtons />", () => {
           });
         });
         describe("Worker is a DID user", () => {
+          const updateWorkerAttributesAfterFormValid = {
+            default_skills: validFormOptions.defaultSkills,
+            did: validFormOptions.didE164,
+            extension: validFormOptions.extension,
+            manager_first_name: validFormOptions.manager.manager_first_name,
+            manager_last_name: validFormOptions.manager.manager_last_name,
+            manager_n_number: validFormOptions.manager.manager_n_number,
+            profile_id: validFormOptions.profileId,
+            routing: {
+              skills: ["nonSkillL1"],
+              levels: []
+            }
+          };
+          const updateWorker = {
+            ...worker,
+            attributes: {
+              ...worker.attributes,
+              routing: {
+                skills: ["466"],
+                levels: []
+              }
+            }
+          };
           beforeEach(() => {
             useFormState.mockReturnValue(updateFormState);
             updateUser.mockResolvedValue(rawDbWorker);
             workerHasOverFlowSkill.mockReturnValue(true);
           });
           test("should save user with did worker request body when clicked", async () => {
-            const updateWorker = {
-              ...worker,
-              attributes: {
-                ...worker.attributes,
-                routing: {
-                  skills: ["466"],
-                  levels: []
-                }
-              }
-            };
-            const updateWorkerAttributesAfterFormValid = {
-              default_skills: validFormOptions.defaultSkills,
-              did: validFormOptions.didE164,
-              extension: validFormOptions.extension,
-              manager_first_name: validFormOptions.manager.manager_first_name,
-              manager_last_name: validFormOptions.manager.manager_last_name,
-              manager_n_number: validFormOptions.manager.manager_n_number,
-              profile_id: validFormOptions.profileId,
-              routing: {
-                skills: ["nonSkillL1"],
-                levels: []
-              }
-            };
             renderComponent(true, updateWorker);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
@@ -711,6 +798,51 @@ describe("<UserFormButtons />", () => {
                 overlayMessage: "Successfully updated user: Faith Cuneo",
                 saveStatus: "success",
                 saveUser: true
+              });
+            });
+          });
+          describe("getNonOverflowSkills returns undefined", () => {
+            beforeEach(() => {
+              getNonOverflowSkills.mockReturnValue(undefined);
+            });
+            test("Should spread empty array in skills", async () => {
+              renderComponent(true, updateWorker);
+              render(Tooltip.mock.calls[0][0].children);
+              act(() => {
+                const onClick = StyledButton.mock.calls[1][0].onClick;
+                onClick();
+              });
+              await waitFor(() => {
+                expect(updateUser).toHaveBeenCalledWith(worker.sid, {
+                  activateEp: true, // true for DID workers
+                  attributes: {
+                    ...updateWorkerAttributesAfterFormValid,
+                    routing: {
+                      ...updateWorkerAttributesAfterFormValid.routing,
+                      skills: []
+                    }
+                  },
+                  alternateDid: validFormState.alternateDid.e164,
+                  directDialNum: validFormState.directDialNum.e164,
+                  zeroOutEnabled: validFormState.zeroOutEnabled
+                });
+                expect(mockDispatch).toHaveBeenCalledTimes(1);
+                expect(mockDispatch.mock.calls[0][0]).toEqual({
+                  type: "updateWorker",
+                  payload: formattedWorker
+                });
+                jest.runAllTimers();
+                expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+                expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
+                  overlayMessage: "Updating user: Faith Cuneo",
+                  saveStatus: "saving",
+                  saveUser: true
+                });
+                expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+                  overlayMessage: "Successfully updated user: Faith Cuneo",
+                  saveStatus: "success",
+                  saveUser: true
+                });
               });
             });
           });

@@ -41,6 +41,12 @@ export const FormControlsPane = styled.div`
   max-width: 400px;
 `;
 
+export const RightColumn = styled(FormControlsPane)`
+  display: flex;
+  flex-direction: column;
+  margin-top: -8px;
+`;
+
 export const Header1 = styled.h1`
   align-self: center;
 `;
@@ -92,4 +98,10 @@ export const StyledIcon = styled(Edit)<{theme: any}>`
       cursor: pointer;
     }
   }
+`;
+
+export const SipDisclaimer = styled.p`
+  text-align: center;
+  color: red;
+  font-size: 15px;
 `;
