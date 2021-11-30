@@ -102,7 +102,7 @@ const ModalExtension = (props: ModalExtensionProps) => {
         showModalHelperText
           ? <ModalHelperText
             clearFunction={onClear}
-            error={lookupStatus.loading}
+            error={!(lookupStatus.extensionValid || lookupStatus.loading)}
             message={lookupStatus.message}
           />
           : null

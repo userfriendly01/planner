@@ -157,7 +157,7 @@ describe("<ModalExtension />", () => {
         await waitFor(() => {
           // get render BEFORE the last one because it will re-render once more with empty message
           const helperProps = getMockedComponentProps(ModalHelperText, getLastInstanceCalled(ModalHelperText) - 1);
-          expect(helperProps.error).toBe(true);
+          expect(helperProps.error).toBe(false);
           expect(helperProps.message).toEqual("Validating...");
         });
       });
