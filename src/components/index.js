@@ -1,5 +1,6 @@
 export * from "./app";
 export * from "./core";
+export * from "./closedmessage";
 export * from "./flashmessage";
 export * from "./header";
 export * from "./navigation";
