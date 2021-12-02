@@ -36,17 +36,17 @@ const TealRadio = withStyles({
   checked: {}
 })(props => <Radio color="default" {...props} />);
 
-const ClosedMessageSidebar = props => {
+const MessageSidebar = props => {
   const {
-    closedMessageState,
-    setClosedMessageState
+    messageState,
+    setMessageState
   } = props;
 
-  const stateSkill = closedMessageState.skill;
-  const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === closedMessageState.workerProfileId);
+  const stateSkill = messageState.skill;
+  const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === messageState.workerProfileId);
   const handleRadioChange = selection => {
-    setClosedMessageState({
-      ...closedMessageState,
+    setMessageState({
+      ...messageState,
       skill: selection,
       fetching: true
     });
@@ -66,9 +66,9 @@ const ClosedMessageSidebar = props => {
   );
 };
 
-ClosedMessageSidebar.propTypes = {
-  closedMessageState: PropTypes.object.isRequired,
-  setClosedMessageState: PropTypes.func.isRequired
+MessageSidebar.propTypes = {
+  messageState: PropTypes.object.isRequired,
+  setMessageState: PropTypes.func.isRequired
 };
 
-export default ClosedMessageSidebar;
+export default MessageSidebar;

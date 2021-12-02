@@ -1,4 +1,4 @@
-import AddClosedMessage from "../AddClosedMessage";
+import AddMessage from "../AddMessage";
 import MockAdapter from "axios-mock-adapter";
 import { initialState } from "context";
 import { apiPaths } from "globals";
@@ -30,12 +30,12 @@ const initialAdminState = {
 };
 
 const renderComponent = closedMessageState => {
-  return render(<AddClosedMessage
+  return render(<AddMessage
     closedMessageState={closedMessageState}
     setClosedMessageState={mockSetCMState} />, initialAdminState);
 };
 
-describe("<AddClosedMessage />", () => {
+describe("<AddMessage />", () => {
 
   beforeEach(() => {
     axiosMock.reset();

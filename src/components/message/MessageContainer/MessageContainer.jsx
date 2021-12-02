@@ -1,8 +1,8 @@
 import { CircularProgress } from "@material-ui/core";
 import {
-  AddClosedMessage,
-  ClosedMessageSidebar,
-  ViewClosedMessage
+  AddMessage,
+  MessageSidebar,
+  ViewMessage
 } from "components";
 import {
   apiPaths,
@@ -17,7 +17,7 @@ import styled from "styled-components";
 import { myAxios } from "utils";
 import { useAdminState } from "context";
 
-const ClosedMessageContainerWrapper = styled.div`
+const MessageContainerWrapper = styled.div`
   background-color: ${props => props.theme.tableRow.borderColor};
   display: flex;
   height: calc(100vh - 96px);
@@ -57,7 +57,12 @@ const ViewAddWrapper = styled.div`
   width: 100%;
 `;
 
-const ClosedMessageContainer = () => {
+const MessageContainer = props => {
+
+  const {
+    value
+  } = props;
+  console.log("value in messageContainer: " + value );
 
   const adminState = useAdminState();
   const nNumber = adminState.userContext.pingIdentity.sub;
@@ -72,25 +77,35 @@ const ClosedMessageContainer = () => {
   const workerProfileId = loggedInWorker ? loggedInWorker.attributes.profile_id : null;
   const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === workerProfileId);
   const defaultSkill = profile?.skills[0] || null;
-  const [closedMessageState, setClosedMessageState] = useState({
+  const [messageState, setMessageState] = useState({
     fetching: true,
-    closedMessage: "",
+    message: "",
+    messageType: value,
     skill: defaultSkill,
     readOnly: false,
     serviceCallError: null,
     workerProfileId: workerProfileId
   });
   useEffect(() => {
-    myAxios.get(apiPaths.CLOSED_MESSAGE + `/${closedMessageState.skill}`)
+    let apiPath;
+    let dataField;
+    if(value ==="closed"){
+      apiPath = apiPaths.CLOSED_MESSAGE;
+      dataField = "closedMessage";
+    } else {
+      apiPath = apiPaths.FLASH_MESSAGE;
+      dataField = "flashMessage";
+    }
+    myAxios.get(apiPath + `/${messageState.skill}`)
       .then(res => {
-        const closedMessage = res.data.closedMessage;
+        const message = res.data[dataField];//will this work?
         let readOnly = false;
-        if (closedMessage.length > 0) {
+        if (message.length > 0) {
           readOnly = true;
         }
-        setClosedMessageState({
-          ...closedMessageState,
-          closedMessage,
+        setMessageState({
+          ...messageState,
+          message,
           fetching: false,
           readOnly,
           serviceCallError: null
@@ -98,44 +113,44 @@ const ClosedMessageContainer = () => {
       })
       .catch(err => {
         const fetchError = "Failed to fetch closed message. Please refresh this page or submit a request via";
-        setClosedMessageState({
-          ...closedMessageState,
+        setMessageState({
+          ...messageState,
           fetching: false,
           readOnly: true,
           serviceCallError: fetchError
         });
         console.error(fetchError, err);
       });
-  }, [closedMessageState.skill]);
+  }, [messageState.skill]);
 
   return (
     profile ?
-      <ClosedMessageContainerWrapper>
-        <ClosedMessageSidebar closedMessageState={closedMessageState} setClosedMessageState={setClosedMessageState}/>
-        {closedMessageState.fetching ?
+      <MessageContainerWrapper>
+        <MessageSidebar messageState={messageState} setMessageState={setMessageState}/>
+        {messageState.fetching ?
           <LoadingContainer>
             <LoadingMessage>Loading...</LoadingMessage>
             <CircularProgress size={theme.circularProgressSize}/>
           </LoadingContainer>
           :
           <ViewAddWrapper>
-            {closedMessageState.serviceCallError ?
-              <ServiceCallError data-testid="service-call-error">{closedMessageState.serviceCallError}<StyledAnchor
+            {messageState.serviceCallError ?
+              <ServiceCallError data-testid="service-call-error">{messageState.serviceCallError}<StyledAnchor
                 href="https://forge.lmig.com/issues/servicedesk/customer/portal/570/create/10636">Jira Service
                 Desk</StyledAnchor></ServiceCallError> : null}
-            {closedMessageState.readOnly ?
-              <ViewClosedMessage closedMessageState={closedMessageState} setClosedMessageState={setClosedMessageState}/> :
-              <AddClosedMessage closedMessageState={closedMessageState} setClosedMessageState={setClosedMessageState}/>}
+            {messageState.readOnly ?
+              <ViewMessage messageState={messageState} setMessageState={setMessageState}/> :
+              <AddMessage messageState={messageState} setMessageState={setMessageState}/>}
           </ViewAddWrapper>}
-      </ClosedMessageContainerWrapper>
+      </MessageContainerWrapper>
       :
-      <ClosedMessageContainerWrapper>
+      <MessageContainerWrapper>
         <ServiceCallError data-testid="service-call-error">Your profile does not have access to self service closed messages.
           To request access, click the link and submit the provided form.<StyledAnchor
           href="https://forge.lmig.com/issues/servicedesk/customer/portal/570/create/10636">Jira Service
-          Desk</StyledAnchor></ServiceCallError>
-      </ClosedMessageContainerWrapper>
+            Desk</StyledAnchor></ServiceCallError>
+      </MessageContainerWrapper>
   );
 };
 
-export default ClosedMessageContainer;
+export default MessageContainer;

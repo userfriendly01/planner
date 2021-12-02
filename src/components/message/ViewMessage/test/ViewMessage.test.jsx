@@ -1,4 +1,4 @@
-import ViewFlashMessage from "../ViewFlashMessage";
+import ViewMessage from "../ViewMessage";
 import MockAdapter from "axios-mock-adapter";
 import { initialState } from "context";
 import { apiPaths } from "globals";
@@ -30,12 +30,12 @@ const initialAdminState = {
 };
 
 const renderComponent = flashMessageState => {
-  return render(<ViewFlashMessage
+  return render(<ViewMessage
     flashMessageState={flashMessageState}
     setFlashMessageState={mockSetFMState} />, initialAdminState);
 };
 
-describe("<ViewFlashMessage />", () => {
+describe("<ViewMessage />", () => {
   beforeEach(() => mockSetFMState.mockClear());
   describe("initial state", () => {
     test("should render an empty textfield with two buttons.", () => {

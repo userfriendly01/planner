@@ -12,6 +12,7 @@ import {
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
+import MessageContainer from "components/message/MessageContainer/MessageContainer";
 
 const Content = styled.div`
   display: flex;
@@ -79,8 +80,8 @@ const NavTabs = () => {
         <StyledTabs variant="fullWidth" value={value} onChange={handleChange}>
           <StyledTab label="User Management" href="/userManagement" id="nav-tab-userManagement" aria-controls="nav-tabpanel-userManagement" onClick={event => event.preventDefault()}/>
           <StyledTab label="Profile Settings" href="/profileSettings" id="nav-tab-profileSettings" aria-controls="nav-tabpanel-profileSettings" onClick={event => event.preventDefault()}/>
-          <StyledTab label="Flash Message" href="/flashMessage" id="nav-tab-flashMessage" aria-controls="nav-tabpanel-flashMessage" onClick={event => event.preventDefault()}/>
-          <StyledTab label="Closed Message" href="/closedMessage" id="nav-tab-closedMessage" aria-controls="nav-tabpanel-closedMessage" onClick={event => event.preventDefault()}/>
+          <StyledTab label="Flash Message" href="/message" id="nav-tab-flashMessage" aria-controls="nav-tabpanel-flashMessage" onClick={event => event.preventDefault()}/>
+          <StyledTab label="Closed Message" href="/message" id="nav-tab-closedMessage" aria-controls="nav-tabpanel-closedMessage" onClick={event => event.preventDefault()}/>
         </StyledTabs>
       </StyledTabContainer>
       <TabPanel value={value} tabName="userManagement" index={0}>
@@ -90,10 +91,10 @@ const NavTabs = () => {
         <ProfileSettingsContainer />
       </TabPanel>
       <TabPanel value={value} tabName="flashMessage" index={2}>
-        <FlashMessageContainer />
+        <MessageContainer value="flash" />
       </TabPanel>
       <TabPanel value={value} tabName="closedMessage" index={3}>
-        <ClosedMessageContainer />
+        <MessageContainer value="closed" />
       </TabPanel>
     </Content>
   );

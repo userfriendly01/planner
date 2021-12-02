@@ -1,4 +1,4 @@
-import FlashMessageContainer from "../FlashMessageContainer";
+import MessageContainer from "../MessageContainer.jsx";
 import { CircularProgress } from "@material-ui/core";
 import MockAdapter from "axios-mock-adapter";
 import {
@@ -58,7 +58,7 @@ jest.mock("components", () => ({
   ViewFlashMessage: jest.fn()
 }));
 
-describe("<FlashMessageContainer />", () => {
+describe("<MessageContainer />", () => {
 
   beforeEach(() => {
     setupMockedComponents({
@@ -71,7 +71,7 @@ describe("<FlashMessageContainer />", () => {
 
   describe("initial state - fetching message from DB", () => {
     test("should render loading screen", () => {
-      const rendered = render(<FlashMessageContainer />, authorizedAdminState);
+      const rendered = render(<MessageContainer />, authorizedAdminState);
       expect(rendered.container).toHaveTextContent("Loading...");
       expectMockedComponent(rendered, { CircularProgress });
       expectMockedComponent(rendered, { FlashMessageSidebar });
@@ -86,7 +86,7 @@ describe("<FlashMessageContainer />", () => {
       test("should render editable component; should not render 'loading'", done => {
         let rendered;
         act(() => {
-          rendered = render(<FlashMessageContainer />, authorizedAdminState);
+          rendered = render(<MessageContainer />, authorizedAdminState);
           return Promise.resolve();
         })
           .then(() => {
@@ -104,7 +104,7 @@ describe("<FlashMessageContainer />", () => {
       test("should render locked component; should not render 'loading'", done => {
         let rendered;
         act(() => {
-          rendered = render(<FlashMessageContainer />, authorizedAdminState);
+          rendered = render(<MessageContainer />, authorizedAdminState);
           return Promise.resolve();
         })
           .then(() => {
@@ -124,7 +124,7 @@ describe("<FlashMessageContainer />", () => {
     test("should display error message & locked component", done => {
       let rendered;
       act(() => {
-        rendered = render(<FlashMessageContainer />, authorizedAdminState);
+        rendered = render(<MessageContainer />, authorizedAdminState);
         return Promise.resolve();
       })
         .then(() => {
@@ -153,7 +153,7 @@ describe("<FlashMessageContainer />", () => {
         };
         let rendered;
         act(() => {
-          rendered = render(<FlashMessageContainer />, unauthorizedAdminState );
+          rendered = render(<MessageContainer />, unauthorizedAdminState );
           return Promise.resolve();
         })
           .then(() => {
@@ -180,7 +180,7 @@ describe("<FlashMessageContainer />", () => {
         };
         let rendered;
         act(() => {
-          rendered = render(<FlashMessageContainer />, noMatchingWorkerAdminState);
+          rendered = render(<MessageContainer />, noMatchingWorkerAdminState);
           return Promise.resolve();
         })
           .then(() => {

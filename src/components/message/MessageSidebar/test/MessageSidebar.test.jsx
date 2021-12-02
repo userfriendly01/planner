@@ -1,4 +1,4 @@
-import FlashMessageSidebar from "../FlashMessageSidebar";
+import MessageSidebar from "../MessageSidebar";
 import React from "react";
 import {
   fireEvent, render
@@ -23,14 +23,14 @@ const initialMockedCsoState = {
 };
 
 const renderComponent = flashMessageState => {
-  return render(<FlashMessageSidebar
+  return render(<MessageSidebar
     flashMessageState={flashMessageState}
     setFlashMessageState={mockSetFMState} />);
 };
 
-describe("<FlashMessageSidebar />", () => {
+describe("<MessageSidebar />", () => {
   beforeEach(() => mockSetFMState.mockClear());
-  test("the FlashMessageSidebar should render a radio group for AISG.", () => {
+  test("the MessageSidebar should render a radio group for AISG.", () => {
     const rendered = renderComponent(initialMockedAisgState);
     expect(rendered.findAllByLabelText("aisgL1")).toBeTruthy();
     expect(rendered.queryByLabelText("csoPortal")).toBeNull();
@@ -45,7 +45,7 @@ describe("<FlashMessageSidebar />", () => {
       fetching: true
     });
   });
-  test("the FlashMessageSidebar should render a radio group for CSO.", () => {
+  test("the MessageSidebar should render a radio group for CSO.", () => {
     const rendered = renderComponent(initialMockedCsoState);
     expect(rendered.findAllByLabelText("csoBilling")).toBeTruthy();
     expect(rendered.queryByLabelText("aisgL1")).toBeNull();

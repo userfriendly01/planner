@@ -41,7 +41,7 @@ describe("<NavTabs />", () => {
     expect(rendered.getByText("ProfileSettingsContainer")).not.toBeVisible();
   });
 
-  test("when we click on the 'Flash Message' link, only ClosedMessageContainer should be visible", () => {
+  test("when we click on the 'Flash Message' link, only MessageContainer should be visible", () => {
     const rendered = render(<NavTabs />);
     fireEvent.click(rendered.getByText("Flash Message", { selector: "span" }));
     expect(rendered.getByText("FlashMessageContainer")).toBeVisible();
