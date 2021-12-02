@@ -62,7 +62,7 @@ describe("<ModalExtension />", () => {
       const customInputProps = getMockedComponentProps(CustomInput);
       expect(customInputProps.disabled).toBe(disabled);
       expect(customInputProps.label).toBe("Extension");
-      expect(customInputProps.maxLength).toEqual("4");
+      expect(customInputProps.maxLength).toEqual("5");
       expect(customInputProps.name).toBe("Extension");
       const ext = "1111";
       customInputProps.updateValue(ext);
@@ -82,7 +82,8 @@ describe("<ModalExtension />", () => {
       expect(validator("1")).toBe(false);
       expect(validator("ab45")).toBe(false);
       expect(validator("12")).toBe(false);
-      expect(validator("34745")).toEqual(false);
+      expect(validator("3y745")).toEqual(false);
+      expect(validator("34745")).toEqual(true);
       expect(validator("1234")).toEqual(true);
     });
     describe("the validated service call", () => {

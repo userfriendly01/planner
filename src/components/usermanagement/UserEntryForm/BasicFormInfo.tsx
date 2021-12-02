@@ -140,11 +140,9 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           value={form.nNumber.value}
         />
         <ModalExtension
-          disabled={form.extension.valid && extensionMatcher.test(form.extension.value)}
           error={form.extension.blurred && !isExtensionValid(form)}
           extension={form.extension.value}
           originalValue={(worker && worker.attributes) ? worker.attributes.extension : undefined}
-          onBlur={() => setForm({ type: userFormActions.CLEAR_EXTENSION })}
           onClear={() => setForm({ type: userFormActions.CLEAR_EXTENSION })}
           onUpdate={(extension, extensionValid) => setForm({
             type: userFormActions.UPDATE_EXTENSION,

@@ -20,7 +20,7 @@ export interface ModalExtensionProps {
   extension: string,
   isEditExisting?: boolean,
   originalValue?: string,
-  onBlur: () => void,
+  onBlur?: () => void,
   onClear: () => void,
   onUpdate: (value: string, isValid: boolean) => void
 }
@@ -90,7 +90,7 @@ const ModalExtension = (props: ModalExtensionProps) => {
         disabled={disabled}
         error={error}
         label="Extension"
-        maxLength="4"
+        maxLength="5"
         name="Extension"
         onBlur={onBlur}
         updateValue={value => onUpdate(value, false)}

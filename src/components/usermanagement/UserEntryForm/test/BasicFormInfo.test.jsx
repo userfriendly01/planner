@@ -495,7 +495,6 @@ describe("<BasicFormInfo />", () => {
       const rendered = renderComponent(false);
       expectMockedComponent(rendered, { ModalExtension }, 1);
       const expectedExtensionProps = {
-        disabled: false,
         extension: "",
         error: false,
         originalValue: mockWorkers[2].attributes.extension
@@ -517,18 +516,7 @@ describe("<BasicFormInfo />", () => {
       );
       expect(ModalExtension.mock.calls[0][0].originalValue).toBe(undefined);
     });
-    test("disabled property should be true", () => {
-      useFormState.mockReturnValue({
-        ...initialFormState,
-        extension: {
-          ...initialFormState.extension,
-          valid: true
-        }
-      });
-      extensionMatcher.test.mockReturnValue(true);
-      renderComponent(false);
-      expect(ModalExtension.mock.calls[0][0].disabled).toBe(true);
-    });
+    
     test("error field should be true", () => {
       useFormState.mockReturnValue({
         ...initialFormState,
@@ -555,14 +543,7 @@ describe("<BasicFormInfo />", () => {
         }
       });
     });
-    test("onBlur - should reset the field", () => {
-      renderComponent(false);
-      act(() => {
-        const onBlur = ModalExtension.mock.calls[0][0].onBlur;
-        onBlur();
-      });
-      expect(mockSetForm).toBeCalledWith({ type: userFormActions.CLEAR_EXTENSION });
-    });
+    
     test("onClear - should reset the field", () => {
       renderComponent(false);
       act(() => {
