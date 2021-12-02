@@ -2,6 +2,7 @@ import {
   ModalOverlayStatuses,
   FormModes
 } from "globals";
+
 const CONTACT_MANAGER_BASE_URI = "/contact-manager";
 const SERVICE_BASE_URI = "/service";
 
@@ -52,4 +53,17 @@ export const apiPaths = {
   OFFICES: `${CONTACT_MANAGER_BASE_URI}/offices`,
   RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
   UPDATE_WORKER: (workerSid: string): string => `${SERVICE_BASE_URI}/updateworker/${workerSid}`
+};
+
+export const profileConfigs = {
+  PROFILE_SKILL_MAP: [
+    {
+      "profileId": 4,
+      "skills": ["aisgL1", "aisgConsumer", "aisgEcliq", "aisgPassword"]
+    },
+    {
+      "profileId": 7,
+      "skills": ["csoService", "csoBilling", "csoPortal"]
+    }
+  ]
 };

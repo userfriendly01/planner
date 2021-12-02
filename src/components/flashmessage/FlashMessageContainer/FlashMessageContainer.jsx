@@ -6,6 +6,7 @@ import {
 } from "components";
 import {
   apiPaths,
+  profileConfigs,
   theme
 } from "globals";
 import React, {
@@ -14,6 +15,7 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import { myAxios } from "utils";
+import { useAdminState } from "context";
 
 const FlashMessageContainerWrapper = styled.div`
   background-color: ${props => props.theme.tableRow.borderColor};
@@ -57,14 +59,27 @@ const ViewAddWrapper = styled.div`
 
 const FlashMessageContainer = () => {
 
+  const adminState = useAdminState();
+  const nNumber = adminState.userContext.pingIdentity.sub;
+
+  let loggedInWorker;
+  adminState.workerContext.workers.forEach(worker =>{
+    if(worker.attributes.n_number && worker.attributes.n_number.toLowerCase() === nNumber.toLowerCase()){
+      loggedInWorker = worker;
+    }
+  });
+
+  const workerProfileId = loggedInWorker ? loggedInWorker.attributes.profile_id : null;
+  const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === workerProfileId);
+  const defaultSkill = profile?.skills[0] || null;
   const [flashMessageState, setFlashMessageState] = useState({
     fetching: true,
     flashMessage: "",
-    skill: "aisgL1",
+    skill: defaultSkill,
     readOnly: false,
-    serviceCallError: null
+    serviceCallError: null,
+    workerProfileId: workerProfileId
   });
-
   useEffect(() => {
     myAxios.get(apiPaths.FLASH_MESSAGE + `/${flashMessageState.skill}`)
       .then(res => {
@@ -94,22 +109,32 @@ const FlashMessageContainer = () => {
   }, [flashMessageState.skill]);
 
   return (
-    <FlashMessageContainerWrapper>
-      <FlashMessageSidebar flashMessageState={flashMessageState} setFlashMessageState={setFlashMessageState} />
-      {flashMessageState.fetching ?
-        <LoadingContainer>
-          <LoadingMessage>Loading...</LoadingMessage>
-          <CircularProgress size={theme.circularProgressSize} />
-        </LoadingContainer>
-        :
-        <ViewAddWrapper>
-          {flashMessageState.serviceCallError ?
-            <ServiceCallError data-testid="service-call-error">{flashMessageState.serviceCallError}<StyledAnchor href="https://forge.lmig.com/issues/servicedesk/customer/portal/570/create/10636">Jira Service Desk</StyledAnchor></ServiceCallError> : null}
-          {flashMessageState.readOnly ?
-            <ViewFlashMessage flashMessageState={flashMessageState} setFlashMessageState={setFlashMessageState} /> :
-            <AddFlashMessage flashMessageState={flashMessageState} setFlashMessageState={setFlashMessageState} />}
-        </ViewAddWrapper>}
-    </FlashMessageContainerWrapper>
+    profile ?
+      <FlashMessageContainerWrapper>
+        <FlashMessageSidebar flashMessageState={flashMessageState} setFlashMessageState={setFlashMessageState}/>
+        {flashMessageState.fetching ?
+          <LoadingContainer>
+            <LoadingMessage>Loading...</LoadingMessage>
+            <CircularProgress size={theme.circularProgressSize}/>
+          </LoadingContainer>
+          :
+          <ViewAddWrapper>
+            {flashMessageState.serviceCallError ?
+              <ServiceCallError data-testid="service-call-error">{flashMessageState.serviceCallError}<StyledAnchor
+                href="https://forge.lmig.com/issues/servicedesk/customer/portal/570/create/10636">Jira Service
+                Desk</StyledAnchor></ServiceCallError> : null}
+            {flashMessageState.readOnly ?
+              <ViewFlashMessage flashMessageState={flashMessageState} setFlashMessageState={setFlashMessageState}/> :
+              <AddFlashMessage flashMessageState={flashMessageState} setFlashMessageState={setFlashMessageState}/>}
+          </ViewAddWrapper>}
+      </FlashMessageContainerWrapper>
+      :
+      <FlashMessageContainerWrapper>
+        <ServiceCallError data-testid="service-call-error">Your profile does not have access to self service flash messages.
+          To request access, click the link and submit the provided form.<StyledAnchor
+          href="https://forge.lmig.com/issues/servicedesk/customer/portal/570/create/10636">Jira Service
+          Desk</StyledAnchor></ServiceCallError>
+      </FlashMessageContainerWrapper>
   );
 };
 
