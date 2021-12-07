@@ -16,6 +16,7 @@ import React, {
 import styled from "styled-components";
 import { myAxios } from "utils";
 import { useAdminState } from "context";
+import PropTypes from "prop-types";
 
 const MessageContainerWrapper = styled.div`
   background-color: ${props => props.theme.tableRow.borderColor};
@@ -58,11 +59,9 @@ const ViewAddWrapper = styled.div`
 `;
 
 const MessageContainer = props => {
-
   const {
     value
   } = props;
-  console.log("value in messageContainer: " + value );
 
   const adminState = useAdminState();
   const nNumber = adminState.userContext.pingIdentity.sub;
@@ -145,12 +144,16 @@ const MessageContainer = props => {
       </MessageContainerWrapper>
       :
       <MessageContainerWrapper>
-        <ServiceCallError data-testid="service-call-error">Your profile does not have access to self service closed messages.
+        <ServiceCallError data-testid="service-call-error">Your profile does not have access to self service messages.
           To request access, click the link and submit the provided form.<StyledAnchor
           href="https://forge.lmig.com/issues/servicedesk/customer/portal/570/create/10636">Jira Service
             Desk</StyledAnchor></ServiceCallError>
       </MessageContainerWrapper>
   );
+};
+
+MessageContainer.propTypes = {
+  value: PropTypes.string.isRequired
 };
 
 export default MessageContainer;

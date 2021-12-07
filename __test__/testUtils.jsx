@@ -92,7 +92,7 @@ export const setupMockedComponents = (objOfMockedComponents, maxCalls = 20) => {
     const jestFn = objOfMockedComponents[componentName];
     jestFn.mockClear();
     for (let i = 0; i < maxCalls - 1; i++) {
-      jestFn.mockReturnValueOnce(<div data-testid={getDataTestIdWithInstanceCalled(componentName, i)} value = "closed">{componentName}</div>);
+      jestFn.mockReturnValueOnce(<div data-testid={getDataTestIdWithInstanceCalled(componentName, i)}>{componentName}</div>);
     }
     // after maxCalls make sure component at least still renders to avoid unexpected errors
     jestFn.mockReturnValue(<div>{componentName}</div>);

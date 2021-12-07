@@ -5,12 +5,12 @@ import {
 } from "@material-ui/core";
 import {
   ManagementWrapper,
-  ProfileSettingsContainer
+  ProfileSettingsContainer,
+  MessageContainer
 } from "components";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
-import MessageContainer from "components/message/MessageContainer/MessageContainer";
 
 const Content = styled.div`
   display: flex;
