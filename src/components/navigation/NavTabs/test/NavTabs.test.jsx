@@ -1,6 +1,6 @@
 import NavTabs from "../NavTabs";
 import {
-  FlashMessageContainer,
+  MessageContainer,
   ManagementWrapper,
   ProfileSettingsContainer
 } from "components";
@@ -14,7 +14,7 @@ import {
 
 jest.mock("components", () => ({
   __esModule: true,
-  FlashMessageContainer: jest.fn(),
+  MessageContainer: jest.fn(),
   ManagementWrapper: jest.fn(),
   ProfileSettingsContainer: jest.fn()
 }));
@@ -23,7 +23,7 @@ describe("<NavTabs />", () => {
 
   beforeEach(() => {
     setupMockedComponents({
-      FlashMessageContainer,
+      MessageContainer,
       ManagementWrapper,
       ProfileSettingsContainer
     });
@@ -34,17 +34,25 @@ describe("<NavTabs />", () => {
     expect(rendered.getByText("User Management", { selector: "span" })).toBeInTheDocument();
     // expect(rendered.getByText("Settings", { selector: "span" })).toBeInTheDocument();
     expectMockedComponent(rendered, { ManagementWrapper });
-    expectMockedComponent(rendered, { FlashMessageContainer });
+    expectMockedComponent(rendered, { MessageContainer });
     expectMockedComponent(rendered, { ProfileSettingsContainer });
     expect(rendered.getByText("ManagementWrapper")).toBeVisible();
-    expect(rendered.getByText("FlashMessageContainer")).not.toBeVisible();
+    expect(rendered.getByText("MessageContainer")).not.toBeVisible();
     expect(rendered.getByText("ProfileSettingsContainer")).not.toBeVisible();
   });
 
   test("when we click on the 'Flash Message' link, only MessageContainer should be visible", () => {
     const rendered = render(<NavTabs />);
     fireEvent.click(rendered.getByText("Flash Message", { selector: "span" }));
-    expect(rendered.getByText("FlashMessageContainer")).toBeVisible();
+    expect(rendered.getByText("MessageContainer")).toBeVisible();
+    expect(rendered.getByText("ManagementWrapper")).not.toBeVisible();
+    expect(rendered.getByText("ProfileSettingsContainer")).not.toBeVisible();
+  });
+
+  test("when we click on the 'Closed Message' link, only MessageContainer should be visible", () => {
+    const rendered = render(<NavTabs />);
+    fireEvent.click(rendered.getByText("Closed Message", { selector: "span" }));
+    expect(rendered.getByText("MessageContainer")).toBeVisible();
     expect(rendered.getByText("ManagementWrapper")).not.toBeVisible();
     expect(rendered.getByText("ProfileSettingsContainer")).not.toBeVisible();
   });
@@ -54,14 +62,14 @@ describe("<NavTabs />", () => {
     fireEvent.click(rendered.getByText("Profile Settings", { selector: "span" }));
     expect(rendered.getByText("ProfileSettingsContainer")).toBeVisible();
     expect(rendered.getByText("ManagementWrapper")).not.toBeVisible();
-    expect(rendered.getByText("FlashMessageContainer")).not.toBeVisible();
+    expect(rendered.getByText("MessageContainer")).not.toBeVisible();
   });
 
   test("when we click on the already clicked link, nothing should change", () => {
     const rendered = render(<NavTabs />);
     fireEvent.click(rendered.getByText("User Management", { selector: "span" }));
     expect(rendered.getByText("ManagementWrapper")).toBeVisible();
-    expect(rendered.getByText("FlashMessageContainer")).not.toBeVisible();
+    expect(rendered.getByText("MessageContainer")).not.toBeVisible();
     expect(rendered.getByText("ProfileSettingsContainer")).not.toBeVisible();
   });
 });

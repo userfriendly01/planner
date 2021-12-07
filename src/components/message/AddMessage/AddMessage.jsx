@@ -84,7 +84,7 @@ const AddMessage = props => {
   const handleChange = event => setTempMessage(event.target.value);
 
   const handleSubmit = () => {
-    const popUp = confirm("Are you sure you want to create this closed message?");
+    const popUp = confirm("Are you sure you want to create this message?");
     if (popUp === true) {
       setMessageState({
         ...messageState,
@@ -117,7 +117,7 @@ const AddMessage = props => {
         })
         .catch(err => {
           console.log("err: " +err);
-          const uploadError = "Failed to upload closed message. Please try again or submit a request via";
+          const uploadError = "Failed to upload message. Please try again or submit a request via";
           setMessageState({
             ...messageState,
             fetching: false,

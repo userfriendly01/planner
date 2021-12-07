@@ -63,7 +63,7 @@ export const ViewMessage = props => {
   });
 
   const deleteButtonOnClick = () => {
-    const popUp = confirm("Are you sure you want to delete this closed message?");
+    const popUp = confirm("Are you sure you want to delete this message?");
     if (popUp === true) {
       setMessageState({
         ...messageState,
@@ -96,7 +96,7 @@ export const ViewMessage = props => {
           });
         })
         .catch(err => {
-          const deleteError = "Failed to delete closed message. Please try again or submit a request via";
+          const deleteError = "Failed to delete message. Please try again or submit a request via";
           setMessageState({
             ...messageState,
             fetching: false,
