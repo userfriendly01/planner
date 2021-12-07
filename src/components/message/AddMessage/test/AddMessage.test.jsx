@@ -14,18 +14,10 @@ const axiosMock = new MockAdapter(myAxios);
 
 const mockSetMessageState = jest.fn();
 
-const initialMockedFlashMessageState = {
+const initialMockedState = {
   fetching: false,
   message: "",
-  readOnly: false,
-  messageType: "flash"
-};
-
-const initialMockedClosedMessageState = {
-  fetching: false,
-  message: "",
-  readOnly: false,
-  messageType: "closed"
+  readOnly: false
 };
 
 const initialAdminState = {
@@ -44,12 +36,15 @@ const renderComponent = messageState => {
 };
 
 describe("<AddMessage />", () => {
-
   beforeEach(() => {
     axiosMock.reset();
     mockSetMessageState.mockClear();
   });
   describe("Flash Message", () => {
+    const initialMockedFlashMessageState = {
+      ...initialMockedState,
+      messageType: "flash"
+    };
     describe("initial state", () => {
       test("Should render input with value of empty string & charCount of 0; should NOT render special character warning; button should be disabled", () => {
         const rendered = renderComponent(initialMockedFlashMessageState);
@@ -158,6 +153,10 @@ describe("<AddMessage />", () => {
     });
   });
   describe("Closed Message", () => {
+    const initialMockedClosedMessageState = {
+      ...initialMockedState,
+      messageType: "closed"
+    };
     describe("initial state", () => {
       test("Should render input with value of empty string & charCount of 0; should NOT render special character warning; button should be disabled", () => {
         const rendered = renderComponent(initialMockedClosedMessageState);

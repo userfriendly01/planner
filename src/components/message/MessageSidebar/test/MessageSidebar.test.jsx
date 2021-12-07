@@ -4,7 +4,7 @@ import {
   fireEvent, render
 } from "testUtils";
 
-const mockSetFMState = jest.fn();
+const mockSetMessageState = jest.fn();
 
 const initialMockedAisgState = {
   fetching: false,
@@ -22,14 +22,14 @@ const initialMockedCsoState = {
   workerProfileId: 7
 };
 
-const renderComponent = flashMessageState => {
+const renderComponent = messageState => {
   return render(<MessageSidebar
-    flashMessageState={flashMessageState}
-    setFlashMessageState={mockSetFMState} />);
+    messageState={messageState}
+    setMessageState={mockSetMessageState} />);
 };
 
 describe("<MessageSidebar />", () => {
-  beforeEach(() => mockSetFMState.mockClear());
+  beforeEach(() => mockSetMessageState.mockClear());
   test("the MessageSidebar should render a radio group for AISG.", () => {
     const rendered = renderComponent(initialMockedAisgState);
     expect(rendered.findAllByLabelText("aisgL1")).toBeTruthy();
@@ -38,8 +38,8 @@ describe("<MessageSidebar />", () => {
   test("clicking a AISG radio button should change the skill and fetching to true.", () => {
     const rendered = renderComponent(initialMockedAisgState);
     fireEvent.click(rendered.getByLabelText("aisgConsumer"));
-    expect(mockSetFMState).toHaveBeenCalledTimes(1);
-    expect(mockSetFMState).toHaveBeenCalledWith({
+    expect(mockSetMessageState).toHaveBeenCalledTimes(1);
+    expect(mockSetMessageState).toHaveBeenCalledWith({
       ...initialMockedAisgState,
       skill: "aisgConsumer",
       fetching: true
@@ -53,8 +53,8 @@ describe("<MessageSidebar />", () => {
   test("clicking a CSO radio button should change the skill and fetching to true.", () => {
     const rendered = renderComponent(initialMockedCsoState);
     fireEvent.click(rendered.getByLabelText("csoPortal"));
-    expect(mockSetFMState).toHaveBeenCalledTimes(1);
-    expect(mockSetFMState).toHaveBeenCalledWith({
+    expect(mockSetMessageState).toHaveBeenCalledTimes(1);
+    expect(mockSetMessageState).toHaveBeenCalledWith({
       ...initialMockedCsoState,
       skill: "csoPortal",
       fetching: true
