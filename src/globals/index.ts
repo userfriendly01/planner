@@ -11,7 +11,7 @@ export * from "./theme";
 export * from "./styles";
 
 export const nNumMatcher = /[n,N]\d{7}/g;
-export const extensionMatcher = /^\d{4}$/;
+export const extensionMatcher = /^\d{4,5}$/;
 export const workersPerPage = 15;
 
 export const modalOverlayStatuses: ModalOverlayStatuses = {
