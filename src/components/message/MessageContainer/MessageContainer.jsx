@@ -88,7 +88,7 @@ const MessageContainer = props => {
   useEffect(() => {
     let apiPath;
     let dataField;
-    if(value ==="closed"){
+    if(value === "closed"){
       apiPath = apiPaths.CLOSED_MESSAGE;
       dataField = "closedMessage";
     } else {

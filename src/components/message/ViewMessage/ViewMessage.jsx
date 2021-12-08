@@ -73,7 +73,7 @@ export const ViewMessage = props => {
 
       let apiPath;
       let dataField;
-      if(messageState.messageType ==="closed"){
+      if(messageState.messageType === "closed"){
         apiPath = apiPaths.CLOSED_MESSAGE;
         dataField = "closedMessage";
       } else {
