@@ -6,6 +6,14 @@ import {
 
 const mockSetMessageState = jest.fn();
 
+const initialMockedBlSalesState = {
+  fetching: false,
+  flashMessage: "",
+  skill: "blSalesL1",
+  readOnly: false,
+  workerProfileId: 3
+};
+
 const initialMockedAisgState = {
   fetching: false,
   flashMessage: "",
@@ -57,6 +65,21 @@ describe("<MessageSidebar />", () => {
     expect(mockSetMessageState).toHaveBeenCalledWith({
       ...initialMockedCsoState,
       skill: "csoPortal",
+      fetching: true
+    });
+  });
+  test("the MessageSidebar should render a radio group for BL Sales.", () => {
+    const rendered = renderComponent(initialMockedBlSalesState);
+    expect(rendered.findAllByLabelText("blSalesL1")).toBeTruthy();
+    expect(rendered.queryByLabelText("aisgL1")).toBeNull();
+  });
+  test("clicking a BL Sales radio button should change the skill and fetching to true.", () => {
+    const rendered = renderComponent(initialMockedBlSalesState);
+    fireEvent.click(rendered.getByLabelText("blSalesAmazonQuote"));
+    expect(mockSetMessageState).toHaveBeenCalledTimes(1);
+    expect(mockSetMessageState).toHaveBeenCalledWith({
+      ...initialMockedBlSalesState,
+      skill: "blSalesAmazonQuote",
       fetching: true
     });
   });

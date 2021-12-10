@@ -59,6 +59,10 @@ export const apiPaths = {
 export const profileConfigs = {
   PROFILE_SKILL_MAP: [
     {
+      "profileId": 3,
+      "skills": ["blSalesL1", "blSalesAmazonQuote", "blSalesAmazonTriage"]
+    },
+    {
       "profileId": 4,
       "skills": ["aisgL1", "aisgConsumer", "aisgEcliq", "aisgPassword"]
     },
