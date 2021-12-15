@@ -1,8 +1,8 @@
 import { CircularProgress } from "@material-ui/core";
 import {
-  AddFlashMessage,
-  FlashMessageSidebar,
-  ViewFlashMessage
+  AddMessage,
+  MessageSidebar,
+  ViewMessage
 } from "components";
 import {
   apiPaths,
@@ -16,8 +16,9 @@ import React, {
 import styled from "styled-components";
 import { myAxios } from "utils";
 import { useAdminState } from "context";
+import PropTypes from "prop-types";
 
-const FlashMessageContainerWrapper = styled.div`
+const MessageContainerWrapper = styled.div`
   background-color: ${props => props.theme.tableRow.borderColor};
   display: flex;
   height: calc(100vh - 96px);
@@ -57,7 +58,10 @@ const ViewAddWrapper = styled.div`
   width: 100%;
 `;
 
-const FlashMessageContainer = () => {
+const MessageContainer = props => {
+  const {
+    value
+  } = props;
 
   const adminState = useAdminState();
   const nNumber = adminState.userContext.pingIdentity.sub;
@@ -72,70 +76,84 @@ const FlashMessageContainer = () => {
   const workerProfileId = loggedInWorker ? loggedInWorker.attributes.profile_id : null;
   const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === workerProfileId);
   const defaultSkill = profile?.skills[0] || null;
-  const [flashMessageState, setFlashMessageState] = useState({
+  const [messageState, setMessageState] = useState({
     fetching: true,
-    flashMessage: "",
+    message: "",
+    messageType: value,
     skill: defaultSkill,
     readOnly: false,
     serviceCallError: null,
     workerProfileId: workerProfileId
   });
   useEffect(() => {
-    myAxios.get(apiPaths.FLASH_MESSAGE + `/${flashMessageState.skill}`)
+    let apiPath;
+    let dataField;
+    if(value === "closed"){
+      apiPath = apiPaths.CLOSED_MESSAGE;
+      dataField = "closedMessage";
+    } else {
+      apiPath = apiPaths.FLASH_MESSAGE;
+      dataField = "flashMessage";
+    }
+    myAxios.get(apiPath + `/${messageState.skill}`)
       .then(res => {
-        const flashMessage = res.data.flashMessage;
+        const message = res.data[dataField];//will this work?
         let readOnly = false;
-        if (flashMessage.length > 0) {
+        if (message.length > 0) {
           readOnly = true;
         }
-        setFlashMessageState({
-          ...flashMessageState,
-          flashMessage,
+        setMessageState({
+          ...messageState,
+          message,
           fetching: false,
           readOnly,
           serviceCallError: null
         });
       })
       .catch(err => {
-        const fetchError = "Failed to fetch flash message. Please refresh this page or submit a request via";
-        setFlashMessageState({
-          ...flashMessageState,
+        const fetchError = "Failed to fetch closed message. Please refresh this page or submit a request via";
+        setMessageState({
+          ...messageState,
           fetching: false,
           readOnly: true,
           serviceCallError: fetchError
         });
         console.error(fetchError, err);
       });
-  }, [flashMessageState.skill]);
+  }, [messageState.skill]);
 
   return (
     profile ?
-      <FlashMessageContainerWrapper>
-        <FlashMessageSidebar flashMessageState={flashMessageState} setFlashMessageState={setFlashMessageState}/>
-        {flashMessageState.fetching ?
+      <MessageContainerWrapper>
+        <MessageSidebar messageState={messageState} setMessageState={setMessageState}/>
+        {messageState.fetching ?
           <LoadingContainer>
             <LoadingMessage>Loading...</LoadingMessage>
             <CircularProgress size={theme.circularProgressSize}/>
           </LoadingContainer>
           :
           <ViewAddWrapper>
-            {flashMessageState.serviceCallError ?
-              <ServiceCallError data-testid="service-call-error">{flashMessageState.serviceCallError}<StyledAnchor
+            {messageState.serviceCallError ?
+              <ServiceCallError data-testid="service-call-error">{messageState.serviceCallError}<StyledAnchor
                 href="https://forge.lmig.com/issues/servicedesk/customer/portal/570/create/10636">Jira Service
                 Desk</StyledAnchor></ServiceCallError> : null}
-            {flashMessageState.readOnly ?
-              <ViewFlashMessage flashMessageState={flashMessageState} setFlashMessageState={setFlashMessageState}/> :
-              <AddFlashMessage flashMessageState={flashMessageState} setFlashMessageState={setFlashMessageState}/>}
+            {messageState.readOnly ?
+              <ViewMessage messageState={messageState} setMessageState={setMessageState}/> :
+              <AddMessage messageState={messageState} setMessageState={setMessageState}/>}
           </ViewAddWrapper>}
-      </FlashMessageContainerWrapper>
+      </MessageContainerWrapper>
       :
-      <FlashMessageContainerWrapper>
-        <ServiceCallError data-testid="service-call-error">Your profile does not have access to self service flash messages.
+      <MessageContainerWrapper>
+        <ServiceCallError data-testid="service-call-error">Your profile does not have access to self service messages.
           To request access, click the link and submit the provided form.<StyledAnchor
           href="https://forge.lmig.com/issues/servicedesk/customer/portal/570/create/10636">Jira Service
-          Desk</StyledAnchor></ServiceCallError>
-      </FlashMessageContainerWrapper>
+            Desk</StyledAnchor></ServiceCallError>
+      </MessageContainerWrapper>
   );
 };
 
-export default FlashMessageContainer;
+MessageContainer.propTypes = {
+  value: PropTypes.string.isRequired
+};
+
+export default MessageContainer;
