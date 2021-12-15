@@ -36,17 +36,17 @@ const TealRadio = withStyles({
   checked: {}
 })(props => <Radio color="default" {...props} />);
 
-const FlashMessageSidebar = props => {
+const MessageSidebar = props => {
   const {
-    flashMessageState,
-    setFlashMessageState
+    messageState,
+    setMessageState
   } = props;
 
-  const stateSkill = flashMessageState.skill;
-  const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === flashMessageState.workerProfileId);
+  const stateSkill = messageState.skill;
+  const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === messageState.workerProfileId);
   const handleRadioChange = selection => {
-    setFlashMessageState({
-      ...flashMessageState,
+    setMessageState({
+      ...messageState,
       skill: selection,
       fetching: true
     });
@@ -66,9 +66,9 @@ const FlashMessageSidebar = props => {
   );
 };
 
-FlashMessageSidebar.propTypes = {
-  flashMessageState: PropTypes.object.isRequired,
-  setFlashMessageState: PropTypes.func.isRequired
+MessageSidebar.propTypes = {
+  messageState: PropTypes.object.isRequired,
+  setMessageState: PropTypes.func.isRequired
 };
 
-export default FlashMessageSidebar;
+export default MessageSidebar;

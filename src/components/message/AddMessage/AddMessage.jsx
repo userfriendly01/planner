@@ -56,11 +56,11 @@ const StyledForm = styled.form`
   margin: 2vw;
 `;
 
-const AddFlashMessage = props => {
+const AddMessage = props => {
 
   const {
-    flashMessageState,
-    setFlashMessageState
+    messageState,
+    setMessageState
   } = props;
 
   const isMessageValid = message => {
@@ -76,38 +76,50 @@ const AddFlashMessage = props => {
   const adminState = useAdminState();
   const nNumber = adminState.userContext.pingIdentity.sub;
 
-  const [tempFlashMessage, setTempFlashMessage] = useState(flashMessageState.flashMessage);
+  const [tempMessage, setTempMessage] = useState(messageState.message);
 
-  const charCount = tempFlashMessage.length;
-  const validMessage = isMessageValid(tempFlashMessage);
+  const charCount = tempMessage.length;
+  const validMessage = isMessageValid(tempMessage);
 
-  const handleChange = event => setTempFlashMessage(event.target.value);
+  const handleChange = event => setTempMessage(event.target.value);
 
   const handleSubmit = () => {
-    const popUp = confirm("Are you sure you want to create this flash message?");
+    const popUp = confirm("Are you sure you want to create this message?");
     if (popUp === true) {
-      setFlashMessageState({
-        ...flashMessageState,
+      setMessageState({
+        ...messageState,
         fetching: true
       });
+      let apiPath;
+      let dataField;
+      if(messageState.messageType === "closed"){
+        apiPath = apiPaths.CLOSED_MESSAGE;
+        dataField = "closedMessage";
+      } else {
+        apiPath = apiPaths.FLASH_MESSAGE;
+        dataField = "flashMessage";
+      }
       const req = {
-        skill: flashMessageState.skill,
-        flashMessage: tempFlashMessage,
+        skill: messageState.skill,
+        [dataField]: tempMessage,
         updatedBy: nNumber
       };
-      myAxios.post(apiPaths.FLASH_MESSAGE, req)
+
+      myAxios.post(apiPath, req)
         .then(res => {
-          setFlashMessageState({
-            ...flashMessageState,
+          console.log("data: " + res.config.data);
+          setMessageState({
+            ...messageState,
             fetching: false,
-            flashMessage: JSON.parse(res.config.data).flashMessage,
+            message: JSON.parse(res.config.data)[dataField],
             readOnly: true
           });
         })
         .catch(err => {
-          const uploadError = "Failed to upload flash message. Please try again or submit a request via";
-          setFlashMessageState({
-            ...flashMessageState,
+          console.log("err: " +err);
+          const uploadError = "Failed to upload message. Please try again or submit a request via";
+          setMessageState({
+            ...messageState,
             fetching: false,
             serviceCallError: uploadError
           });
@@ -123,23 +135,23 @@ const AddFlashMessage = props => {
           data-testid="add-message-input"
           maxLength="1024"
           onChange={handleChange}
-          placeholder="Enter flash message here..."
+          placeholder="Enter closed message here..."
           type="text"
           validMessage={validMessage}
-          value={tempFlashMessage} />
+          value={tempMessage} />
         <Helpers>
           {!validMessage ? <SpecialCharacterWarning>Special characters are not allowed</SpecialCharacterWarning> : <div></div>}
           <CharCount>Characters: {charCount} / 1024</CharCount>
         </Helpers>
-        <AddMessageButton disabled={tempFlashMessage.length === 0 || !validMessage} onClick={handleSubmit}>Add Message</AddMessageButton>
+        <AddMessageButton disabled={tempMessage.length === 0 || !validMessage} onClick={handleSubmit}>Add Message</AddMessageButton>
       </StyledForm>
     </AddMessageWrapper>
   );
 };
 
-AddFlashMessage.propTypes = {
-  flashMessageState: PropTypes.object.isRequired,
-  setFlashMessageState: PropTypes.func.isRequired
+AddMessage.propTypes = {
+  messageState: PropTypes.object.isRequired,
+  setMessageState: PropTypes.func.isRequired
 };
 
-export default AddFlashMessage;
+export default AddMessage;

@@ -1,10 +1,10 @@
-import FlashMessageContainer from "../FlashMessageContainer";
+import MessageContainer from "../MessageContainer.jsx";
 import { CircularProgress } from "@material-ui/core";
 import MockAdapter from "axios-mock-adapter";
 import {
-  AddFlashMessage,
-  FlashMessageSidebar,
-  ViewFlashMessage
+  AddMessage,
+  MessageSidebar,
+  ViewMessage
 } from "components";
 import { apiPaths } from "globals";
 import React from "react";
@@ -53,30 +53,30 @@ jest.mock("@material-ui/core", () => ({
 
 jest.mock("components", () => ({
   __esModule: true,
-  AddFlashMessage: jest.fn(),
-  FlashMessageSidebar: jest.fn(),
-  ViewFlashMessage: jest.fn()
+  AddMessage: jest.fn(),
+  MessageSidebar: jest.fn(),
+  ViewMessage: jest.fn()
 }));
 
-describe("<FlashMessageContainer />", () => {
+describe("<MessageContainer />", () => {
 
   beforeEach(() => {
     setupMockedComponents({
-      AddFlashMessage,
+      AddMessage,
       CircularProgress,
-      FlashMessageSidebar,
-      ViewFlashMessage
+      MessageSidebar,
+      ViewMessage
     });
   });
 
   describe("initial state - fetching message from DB", () => {
     test("should render loading screen", () => {
-      const rendered = render(<FlashMessageContainer />, authorizedAdminState);
+      const rendered = render(<MessageContainer />, authorizedAdminState);
       expect(rendered.container).toHaveTextContent("Loading...");
       expectMockedComponent(rendered, { CircularProgress });
-      expectMockedComponent(rendered, { FlashMessageSidebar });
-      expectMockedComponent(rendered, { AddFlashMessage }, 0);
-      expectMockedComponent(rendered, { ViewFlashMessage }, 0);
+      expectMockedComponent(rendered, { MessageSidebar });
+      expectMockedComponent(rendered, { AddMessage }, 0);
+      expectMockedComponent(rendered, { ViewMessage }, 0);
     });
   });
 
@@ -86,13 +86,13 @@ describe("<FlashMessageContainer />", () => {
       test("should render editable component; should not render 'loading'", done => {
         let rendered;
         act(() => {
-          rendered = render(<FlashMessageContainer />, authorizedAdminState);
+          rendered = render(<MessageContainer />, authorizedAdminState);
           return Promise.resolve();
         })
           .then(() => {
-            expectMockedComponent(rendered, { FlashMessageSidebar });
-            expectMockedComponent(rendered, { AddFlashMessage } );
-            expectMockedComponent(rendered, { ViewFlashMessage }, 0);
+            expectMockedComponent(rendered, { MessageSidebar });
+            expectMockedComponent(rendered, { AddMessage } );
+            expectMockedComponent(rendered, { ViewMessage }, 0);
             expectMockedComponent(rendered, { CircularProgress }, 0);
             expect(rendered.container).not.toHaveTextContent("Loading...");
             done();
@@ -104,13 +104,13 @@ describe("<FlashMessageContainer />", () => {
       test("should render locked component; should not render 'loading'", done => {
         let rendered;
         act(() => {
-          rendered = render(<FlashMessageContainer />, authorizedAdminState);
+          rendered = render(<MessageContainer />, authorizedAdminState);
           return Promise.resolve();
         })
           .then(() => {
-            expectMockedComponent(rendered, { FlashMessageSidebar });
-            expectMockedComponent(rendered, { ViewFlashMessage });
-            expectMockedComponent(rendered, { AddFlashMessage }, 0);
+            expectMockedComponent(rendered, { MessageSidebar });
+            expectMockedComponent(rendered, { ViewMessage });
+            expectMockedComponent(rendered, { AddMessage }, 0);
             expectMockedComponent(rendered, { CircularProgress }, 0);
             expect(rendered.container).not.toHaveTextContent("Loading...");
             done();
@@ -124,13 +124,13 @@ describe("<FlashMessageContainer />", () => {
     test("should display error message & locked component", done => {
       let rendered;
       act(() => {
-        rendered = render(<FlashMessageContainer />, authorizedAdminState);
+        rendered = render(<MessageContainer />, authorizedAdminState);
         return Promise.resolve();
       })
         .then(() => {
           expect(rendered.getByTestId("service-call-error")).toBeInTheDocument();
-          expectMockedComponent(rendered, { ViewFlashMessage }, 1);
-          expectMockedComponent(rendered, { AddFlashMessage }, 0);
+          expectMockedComponent(rendered, { ViewMessage }, 1);
+          expectMockedComponent(rendered, { AddMessage }, 0);
           done();
         });
     });
@@ -153,13 +153,13 @@ describe("<FlashMessageContainer />", () => {
         };
         let rendered;
         act(() => {
-          rendered = render(<FlashMessageContainer />, unauthorizedAdminState );
+          rendered = render(<MessageContainer />, unauthorizedAdminState );
           return Promise.resolve();
         })
           .then(() => {
             expect(rendered.getByTestId("service-call-error")).toBeInTheDocument();
-            expectMockedComponent(rendered, { ViewFlashMessage }, 0);
-            expectMockedComponent(rendered, { AddFlashMessage }, 0);
+            expectMockedComponent(rendered, { ViewMessage }, 0);
+            expectMockedComponent(rendered, { AddMessage }, 0);
             done();
           });
       });
@@ -180,13 +180,13 @@ describe("<FlashMessageContainer />", () => {
         };
         let rendered;
         act(() => {
-          rendered = render(<FlashMessageContainer />, noMatchingWorkerAdminState);
+          rendered = render(<MessageContainer />, noMatchingWorkerAdminState);
           return Promise.resolve();
         })
           .then(() => {
             expect(rendered.getByTestId("service-call-error")).toBeInTheDocument();
-            expectMockedComponent(rendered, { ViewFlashMessage }, 0);
-            expectMockedComponent(rendered, { AddFlashMessage }, 0);
+            expectMockedComponent(rendered, { ViewMessage }, 0);
+            expectMockedComponent(rendered, { AddMessage }, 0);
             done();
           });
       });

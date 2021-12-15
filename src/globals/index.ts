@@ -37,6 +37,7 @@ export const resetResponses = {
 export const apiPaths = {
   AUTH: `${SERVICE_BASE_URI}/admin-login`,
   CHECK_EXTENSION: `${SERVICE_BASE_URI}/checkextension`,
+  CLOSED_MESSAGE: `${SERVICE_BASE_URI}/closedmessage`,
   CREATE_WORKER: `${SERVICE_BASE_URI}/createworker`,
   DELETE_WORKER: (workerSid: string): string => `${SERVICE_BASE_URI}/deleteworker/${workerSid}`,
   DIAL_LIST: `${CONTACT_MANAGER_BASE_URI}/diallist`,
@@ -57,6 +58,10 @@ export const apiPaths = {
 
 export const profileConfigs = {
   PROFILE_SKILL_MAP: [
+    {
+      "profileId": 3,
+      "skills": ["blSalesL1", "blSalesAmazonQuote", "blSalesAmazonTriage"]
+    },
     {
       "profileId": 4,
       "skills": ["aisgL1", "aisgConsumer", "aisgEcliq", "aisgPassword"]
