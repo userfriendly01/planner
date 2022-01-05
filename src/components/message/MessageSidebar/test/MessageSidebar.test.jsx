@@ -30,6 +30,14 @@ const initialMockedCsoState = {
   workerProfileId: 7
 };
 
+const initialMockedBSCState = {
+  fetching: false,
+  flashMessage: "",
+  skill: "bscCbs",
+  readOnly: false,
+  workerProfileId: 10
+};
+
 const renderComponent = messageState => {
   return render(<MessageSidebar
     messageState={messageState}
@@ -80,6 +88,21 @@ describe("<MessageSidebar />", () => {
     expect(mockSetMessageState).toHaveBeenCalledWith({
       ...initialMockedBlSalesState,
       skill: "blSalesAmazonQuote",
+      fetching: true
+    });
+  });
+  test("the MessageSidebar should render a radio group for BSC.", () => {
+    const rendered = renderComponent(initialMockedBSCState);
+    expect(rendered.findAllByLabelText("bscCbs")).toBeTruthy();
+    expect(rendered.queryByLabelText("aisgL1")).toBeNull();
+  });
+  test("clicking a BSC radio button should change the skill and fetching to true.", () => {
+    const rendered = renderComponent(initialMockedBSCState);
+    fireEvent.click(rendered.getByLabelText("bscCommissions"));
+    expect(mockSetMessageState).toHaveBeenCalledTimes(1);
+    expect(mockSetMessageState).toHaveBeenCalledWith({
+      ...initialMockedBSCState,
+      skill: "bscCommissions",
       fetching: true
     });
   });
