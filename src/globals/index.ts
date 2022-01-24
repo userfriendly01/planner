@@ -59,6 +59,14 @@ export const apiPaths = {
 export const profileConfigs = {
   PROFILE_SKILL_MAP: [
     {
+      "profileId": 1,
+      "skills": ["466"]
+    },
+    {
+      "profileId": 2,
+      "skills": ["psu-l1", "psu-l2", "psu-um"]
+    },
+    {
       "profileId": 3,
       "skills": ["blSalesL1", "blSalesAmazonQuote", "blSalesAmazonTriage"]
     },
@@ -67,8 +75,38 @@ export const profileConfigs = {
       "skills": ["aisgL1", "aisgConsumer", "aisgEcliq", "aisgPassword"]
     },
     {
+      "profileId": 5,
+      "skills": ["premaudit-l1"]
+    },
+    {
+      "profileId": 6,
+      "skills": ["grscollections-l1"]
+    },
+    {
       "profileId": 7,
       "skills": ["csoService", "csoBilling", "csoPortal"]
+    },
+    {
+      "profileId": 8,
+      "skills": ["sbscCertificates", "sbscFarm", "sbscPolicy", "sbscPreferred", "sbscSafeco", "sbscPolicyCopies"]
+    },
+    {
+      "profileId": 9,
+      "skills": ["palL1"]
+    },
+    {
+      "profileId": 10,
+      "skills": ["bscCbs", "bscCbsL2", "bscCbsHelpDesk", "bscAgencyBill", "bscCommissions", "bscMajescoL1", "bscMajescoHelpDesk", "bscBlSafeco",
+        "bscSafecoHelpDesk", "bscLnwL1", "bscPls", "bscLnwOnlineReporting", "bscOcgPl", "bscYwpL1", "bscCOVID19", "bscCertainly"]
+    },
+    {
+      "profileId": 11,
+      "skills": ["ccGeneralSkill12", "ccGeneralSkillSP19", "ccNationalWC20", "ccNationalWCSP21", "ccNationalAL22", "ccNationalALSP23", "ccNationalInq24",
+        "ccNationalInqSP25",  "ccDisability32", "ccGMDisSP33", "ccIDM34", "ccGMIdmSP35",  "ccComcastConcierge36", "ccGroupInqSP37", "ccSharedAGLFNOL38",
+        "ccSharedPFNOL39", "ccSharedStatus40", "ccSharedAGLFNOLSP41", "ccSharedPFNOLSP42","ccSharedStatusSP43", "ccSharedDefault45", "ccSharedDefaultSP47",
+        "ccAgencyMarkets48", "ccPortalSupport53","ccPortalSP54","ccUPSInquiry57", "ccUpsGL58", "ccCaMAA61", "ccCatTEAM62", "ccSuperAssist63",
+        "ccDefaultCC76","ccIronHealth78", "ccWCInquiry81","ccPALInquiry82", "ccWCInquirySP83", "ccPALInquirySP84","ccAuxMisc87","ccAuxPAL88",
+        "ccAuxWC89", "ccUber92","ccCovid93","ccLyft96", "ccNASInquiry97", "ccNASPropertyCAT98"]
     }
   ]
 };

@@ -17,6 +17,9 @@ const SidebarWrapper = styled.div`
   box-shadow: 2px 0px 5px -2px #C0BFC0;
   display: flex;
   flex-direction: column;
+  overflow-y: scroll;
+  min-width: 20%;
+  overflow-x: hidden;
 `;
 
 const RadioContainer = styled.div`
@@ -24,6 +27,10 @@ const RadioContainer = styled.div`
   justify-content: space-around;
   width: 100%;
   padding-left: 5%;
+`;
+
+const StyledFormControl = styled(FormControlLabel)`
+  max-width: 90%;
 `;
 
 const TealRadio = withStyles({
@@ -56,7 +63,7 @@ const MessageSidebar = props => {
       <RadioContainer>
         <RadioGroup name="skill" value={stateSkill} onChange={event => handleRadioChange(event.target.value)}>
           {profile.skills.map(function(skill) {
-            return <FormControlLabel key={skill} control={<TealRadio
+            return <StyledFormControl key={skill} control={<TealRadio
               value={skill}/>}
             label={skill}/>;
           })}
