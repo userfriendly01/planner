@@ -76,7 +76,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       manager_first_name: parsedManager.manager_first_name,
       manager_last_name: parsedManager.manager_last_name,
       manager_n_number: parsedManager.manager_n_number,
-      Manager: `${parsedManager.manager_first_name + parsedManager.manager_last_name}`,//
+      Manager: `${parsedManager.manager_first_name} ${parsedManager.manager_last_name}`,//
       n_number: form.nNumber.value.toLowerCase(),
       office_location_name: form.nNumberFetchedUser.officeName,
       office_location_number: form.nNumberFetchedUser.officeNumber,
@@ -87,7 +87,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       unique_id: form.nNumber.value.toLowerCase()
     };
 
-    console.log("ATTRIBUTES-Create user", attributes);
+    console.log("ATTRIBUTES-Create user", attributes, form.nNumberFetchedUser);
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.profileId.value);
     if (overflowSkill !== undefined && form.zeroOutEnabled && form.directDialNum.value) {
       attributes.routing = {

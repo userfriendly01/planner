@@ -27,7 +27,7 @@ export const fetchUser = (nNumber: string): Promise<FetchUserResponse> => myAxio
         departmentName: res.data[0].person.data.DepartmentName,
         departmentNumber: res.data[0].person.data.DepartmentNumber,
         Department: res.data[0].person.data.DepartmentName,
-        Manager: `${res.data[0].manager.data.manager.FirstName} ${res.data[0].manager.data.manager.LastName}`,
+        Manager: `${res.data[0].manager.data.FirstName} ${res.data[0].manager.data.LastName}`,
         Location: res.data[0].person.data.OfficeName
       };
     } else {

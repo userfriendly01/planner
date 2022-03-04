@@ -8,7 +8,10 @@ export const fetchedUser = {
   officeName: "Springfield 012B",
   officeNumber: "ABC123",
   departmentName: "Computers",
-  departmentNumber: "4848"
+  departmentNumber: "4848",
+  Department: "Computers",
+  Manager: "Test Manager",
+  Location: "Springfield 12B"
 };
 
 export const initialFormState = {
