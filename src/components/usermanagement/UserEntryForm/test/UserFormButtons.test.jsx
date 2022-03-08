@@ -77,18 +77,18 @@ const workerAttributesAfterFormValid = {
   contact_uri: `client:${validFormOptions.nNumber.toLowerCase()}`,
   default_skills: validFormOptions.defaultSkills,
   did: validFormOptions.didE164,
-  Department: fetchedUser.departmentName,
+  Department: fetchedUser.Department,//
   email: fetchedUser.email,
   email_address: fetchedUser.email,
   emp_first_name: fetchedUser.firstName,
   emp_last_name: fetchedUser.lastName,
   extension: validFormOptions.extension,
   full_name: `${fetchedUser.firstName} ${fetchedUser.lastName}`,
-  Location: fetchedUser.officeName,//
+  Location: fetchedUser.Location,//
   manager_first_name: validFormOptions.manager.manager_first_name,
   manager_last_name: validFormOptions.manager.manager_last_name,
   manager_n_number: validFormOptions.manager.manager_n_number,
-  Manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,//
+  Manager: fetchedUser.Manager,//
   n_number: validFormOptions.nNumber.toLowerCase(),
   office_location_name: fetchedUser.officeName,
   office_location_number: fetchedUser.officeNumber,
