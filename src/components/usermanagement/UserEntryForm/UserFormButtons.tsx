@@ -64,7 +64,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     const attributes: Partial<Worker["attributes"]> = {
       contact_uri: `client:${form.nNumber.value.toLowerCase()}`,
       default_skills: form.defaultSkills,
-      Department: form.nNumberFetchedUser.departmentName, //
+      Department: form.nNumberFetchedUser.Department, //
       did: form.outgoing.e164,
       email: form.nNumberFetchedUser.email,
       email_address: form.nNumberFetchedUser.email,
@@ -72,11 +72,11 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       emp_last_name: form.nNumberFetchedUser.lastName,
       extension: form.extension.value,
       full_name: `${form.nNumberFetchedUser.firstName} ${form.nNumberFetchedUser.lastName}`,
-      Location: form.nNumberFetchedUser.officeName,//
+      Location: form.nNumberFetchedUser.Location,//
       manager_first_name: parsedManager.manager_first_name,
       manager_last_name: parsedManager.manager_last_name,
       manager_n_number: parsedManager.manager_n_number,
-      Manager: `${parsedManager.manager_first_name} ${parsedManager.manager_last_name}`,//
+      Manager: form.nNumberFetchedUser.Manager,//
       n_number: form.nNumber.value.toLowerCase(),
       office_location_name: form.nNumberFetchedUser.officeName,
       office_location_number: form.nNumberFetchedUser.officeNumber,
