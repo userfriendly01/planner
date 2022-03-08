@@ -87,7 +87,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       unique_id: form.nNumber.value.toLowerCase()
     };
 
-    console.log("ATTRIBUTES-Create user", attributes, form.nNumberFetchedUser);
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.profileId.value);
     if (overflowSkill !== undefined && form.zeroOutEnabled && form.directDialNum.value) {
       attributes.routing = {
@@ -110,6 +109,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
     createUser(createUserReqBody)
       .then(dbWorker => {
+        console.log("ATTRIBUTES-Create user", attributes, form.nNumberFetchedUser);
         if (!offices.get(dbWorker.attributes.office_location_number)) {
           const newOffice = {
             office_nme: dbWorker.attributes.office_location_name,
