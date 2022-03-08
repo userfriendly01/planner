@@ -64,7 +64,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     const attributes: Partial<Worker["attributes"]> = {
       contact_uri: `client:${form.nNumber.value.toLowerCase()}`,
       default_skills: form.defaultSkills,
-      Department: form.nNumberFetchedUser.Department, //
+      Department: form.nNumberFetchedUser.Department,
       did: form.outgoing.e164,
       email: form.nNumberFetchedUser.email,
       email_address: form.nNumberFetchedUser.email,
@@ -72,11 +72,11 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       emp_last_name: form.nNumberFetchedUser.lastName,
       extension: form.extension.value,
       full_name: `${form.nNumberFetchedUser.firstName} ${form.nNumberFetchedUser.lastName}`,
-      Location: form.nNumberFetchedUser.Location,//
+      Location: form.nNumberFetchedUser.Location,
       manager_first_name: parsedManager.manager_first_name,
       manager_last_name: parsedManager.manager_last_name,
       manager_n_number: parsedManager.manager_n_number,
-      Manager: form.nNumberFetchedUser.Manager,//
+      Manager: form.nNumberFetchedUser.Manager,
       n_number: form.nNumber.value.toLowerCase(),
       office_location_name: form.nNumberFetchedUser.officeName,
       office_location_number: form.nNumberFetchedUser.officeNumber,
@@ -109,7 +109,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
     createUser(createUserReqBody)
       .then(dbWorker => {
-        console.log("ATTRIBUTES-Create user", attributes, form.nNumberFetchedUser);
         if (!offices.get(dbWorker.attributes.office_location_number)) {
           const newOffice = {
             office_nme: dbWorker.attributes.office_location_name,

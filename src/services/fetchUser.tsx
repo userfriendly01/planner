@@ -16,7 +16,6 @@ export interface FetchUserResponse {
 
 export const fetchUser = (nNumber: string): Promise<FetchUserResponse> => myAxios.get(apiPaths.EMPLOYEE_LOOKUP(nNumber.substring(1)))
   .then(res => {
-    console.log("WHAT IS RES?!?!!!", res);
     if (res.data.length !== 0) {
       return {
         email: res.data[0].person.data.Email,
