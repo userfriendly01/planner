@@ -9,9 +9,9 @@ export const fetchedUser = {
   officeNumber: "ABC123",
   departmentName: "Computers",
   departmentNumber: "4848",
-  Department: "Computers",
-  Manager: "Test Manager",
-  Location: "Springfield 12B"
+  department_name: "Computers",
+  manager: "Test Manager",
+  location: "Springfield 12B"
 };
 
 export const initialFormState = {

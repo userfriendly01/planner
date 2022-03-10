@@ -57,9 +57,9 @@ describe("fetchUser", () => {
           officeNumber: fetchUserRes[0].person.data.OfficeNumber,
           departmentName: fetchUserRes[0].person.data.DepartmentName,
           departmentNumber: fetchUserRes[0].person.data.DepartmentNumber,
-          Department: fetchUserRes[0].person.data.DepartmentName,
-          Manager: `${fetchUserRes[0].manager.data.FirstName} ${fetchUserRes[0].manager.data.LastName}`,
-          Location: fetchUserRes[0].person.data.OfficeName
+          department_name: fetchUserRes[0].person.data.DepartmentName,
+          manager: `${fetchUserRes[0].manager.data.FirstName} ${fetchUserRes[0].manager.data.LastName}`,
+          location: fetchUserRes[0].person.data.OfficeName
         });
         done();
       });
