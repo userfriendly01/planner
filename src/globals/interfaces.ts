@@ -81,6 +81,7 @@ export interface Worker {
     contact_uri?: string,
     default_skills?: WorkerSkills,
     department_name?:string,
+    department_id?:string,
     did?: string,
     disabled_skills?: WorkerSkills,
     email?: string,

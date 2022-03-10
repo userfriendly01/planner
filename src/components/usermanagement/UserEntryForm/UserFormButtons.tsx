@@ -64,6 +64,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     const attributes: Partial<Worker["attributes"]> = {
       contact_uri: `client:${form.nNumber.value.toLowerCase()}`,
       default_skills: form.defaultSkills,
+      department_id: form.nNumberFetchedUser.departmentNumber,// need this value otherwise the department_name will not appear,
       department_name: form.nNumberFetchedUser.department_name, // department_name
       did: form.outgoing.e164,
       email: form.nNumberFetchedUser.email,

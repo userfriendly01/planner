@@ -77,6 +77,7 @@ const workerAttributesAfterFormValid = {
   contact_uri: `client:${validFormOptions.nNumber.toLowerCase()}`,
   default_skills: validFormOptions.defaultSkills,
   did: validFormOptions.didE164,
+  department_id: fetchedUser.departmentNumber,//
   department_name: fetchedUser.department_name,//
   email: fetchedUser.email,
   email_address: fetchedUser.email,
