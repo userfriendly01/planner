@@ -110,7 +110,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
     createUser(createUserReqBody)
       .then(dbWorker => {
-        console.log("attributes from create user request body",createUserReqBody.attributes);
         if (!offices.get(dbWorker.attributes.office_location_number)) {
           const newOffice = {
             office_nme: dbWorker.attributes.office_location_name,
