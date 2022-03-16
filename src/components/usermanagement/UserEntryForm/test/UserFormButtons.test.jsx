@@ -78,14 +78,14 @@ const workerAttributesAfterFormValid = {
   default_skills: validFormOptions.defaultSkills,
   did: validFormOptions.didE164,
   department_id: fetchedUser.departmentNumber,//
-  department_name: fetchedUser.department_name,//
+  department_name: fetchedUser.departmentName,//
   email: fetchedUser.email,
   email_address: fetchedUser.email,
   emp_first_name: fetchedUser.firstName,
   emp_last_name: fetchedUser.lastName,
   extension: validFormOptions.extension,
   full_name: `${fetchedUser.firstName} ${fetchedUser.lastName}`,
-  location: fetchedUser.location,//
+  location: fetchedUser.officeName,//
   manager_first_name: validFormOptions.manager.manager_first_name,
   manager_last_name: validFormOptions.manager.manager_last_name,
   manager_n_number: validFormOptions.manager.manager_n_number,

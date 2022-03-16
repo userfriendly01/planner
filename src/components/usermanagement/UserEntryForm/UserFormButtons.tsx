@@ -65,7 +65,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       contact_uri: `client:${form.nNumber.value.toLowerCase()}`,
       default_skills: form.defaultSkills,
       department_id: form.nNumberFetchedUser.departmentNumber,// need this value otherwise the department_name will not appear,
-      department_name: form.nNumberFetchedUser.department_name, // department_name
+      department_name: form.nNumberFetchedUser.departmentName, // department_name
       did: form.outgoing.e164,
       email: form.nNumberFetchedUser.email,
       email_address: form.nNumberFetchedUser.email,
@@ -73,7 +73,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       emp_last_name: form.nNumberFetchedUser.lastName,
       extension: form.extension.value,
       full_name: `${form.nNumberFetchedUser.firstName} ${form.nNumberFetchedUser.lastName}`,
-      location: form.nNumberFetchedUser.location,// location
+      location: form.nNumberFetchedUser.officeName,// location
       manager_first_name: parsedManager.manager_first_name,
       manager_last_name: parsedManager.manager_last_name,
       manager_n_number: parsedManager.manager_n_number,

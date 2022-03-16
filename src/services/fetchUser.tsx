@@ -9,9 +9,7 @@ export interface FetchUserResponse {
   officeNumber: string,
   departmentName: string,
   departmentNumber: string,
-  department_name: string,
   manager: string,
-  location: string
 }
 
 export const fetchUser = (nNumber: string): Promise<FetchUserResponse> => myAxios.get(apiPaths.EMPLOYEE_LOOKUP(nNumber.substring(1)))
@@ -25,9 +23,7 @@ export const fetchUser = (nNumber: string): Promise<FetchUserResponse> => myAxio
         officeNumber: res.data[0].person.data.OfficeNumber,
         departmentName: res.data[0].person.data.DepartmentName,
         departmentNumber: res.data[0].person.data.DepartmentNumber,
-        department_name: res.data[0].person.data.DepartmentName, //
-        manager: `${res.data[0].manager.data.FirstName} ${res.data[0].manager.data.LastName}`, //
-        location: res.data[0].person.data.OfficeName //
+        manager: `${res.data[0].manager.data.FirstName} ${res.data[0].manager.data.LastName}`
       };
     } else {
       throw "fetchUser employee lookup did not return any data";
