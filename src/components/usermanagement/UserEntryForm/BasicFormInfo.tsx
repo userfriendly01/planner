@@ -4,7 +4,8 @@ import {
   FormControlsPane,
   RightColumn,
   ToggleContainer,
-  ToggleLabel
+  ToggleLabel,
+  UserFormButton
 } from "./UserEntryForm.Styles";
 import {
   Switch,
@@ -28,6 +29,7 @@ import {
   formModes
 } from "globals";
 import React from "react";
+import { checkExtension } from "services";
 import {
   getOverflowSkillFromProfile,
   isExtensionValid,
@@ -36,6 +38,31 @@ import {
   sortManagersByName,
   sortProfilesByName
 } from "utils";
+import { useState } from "react";
+import styled from "styled-components";
+
+import ReservedExtensions from "./ReservedExtensions";
+
+const MIN_EXTENSION_NUM = 10000;
+const EXTENSION_NUM_RANGE = 89995;
+const MAX_EXTENSION_TRIES = 5;
+
+enum ExtensionSearchStatuses {
+  Idle,
+  ExistingExtension,
+  WaitingForResponse,
+  NewExtension,
+}
+interface ExtensionStatusParams {
+  searchStatus: ExtensionSearchStatuses,
+  extensionNum: string,
+  tryNumber: number,
+}
+
+const ExtensionWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
 
 const BasicFormInfo = (props: BasicFormInfoProps) => {
 
@@ -52,6 +79,12 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   const form = useFormState();
   const setForm = useFormDispatch();
 
+  const [extensionState, setExtensionState] = useState<ExtensionStatusParams>({
+    searchStatus: ExtensionSearchStatuses.Idle,
+    extensionNum: form.extension.value,
+    tryNumber: 0
+  });
+
   const isOutgoingDisabled = (): boolean => {
     if (form.formMode === formModes.INSERT) {
       return false;
@@ -67,6 +100,60 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
         type: userFormActions.SET_BLUR_ON_FIELD,
         payload: field
       });
+    }
+  };
+
+  const assignExtension = () => {
+    let extNum = "";
+    while (extNum === "") {
+      const oneNum = MIN_EXTENSION_NUM + Math.floor((Math.random() * EXTENSION_NUM_RANGE));
+      console.log("wsx Random extension:", oneNum);
+      if (ReservedExtensions.indexOf(oneNum) === -1) {
+        extNum = oneNum.toString();
+      } else {
+        console.log("wsx Reserved extension skipped:", oneNum);
+      }
+    }
+    if (extensionState.tryNumber < MAX_EXTENSION_TRIES) {
+      console.log("wsx Verifying:", extNum);
+      setExtensionState({
+        searchStatus: ExtensionSearchStatuses.WaitingForResponse,
+        extensionNum: extNum,
+        tryNumber: extensionState.tryNumber + 1
+      });
+      checkExtension(extNum)
+        .then(isExtensionAvailable => {
+          if (isExtensionAvailable) {
+            console.log("wsx Extension is available:", extNum);
+            setExtensionState({
+              searchStatus: ExtensionSearchStatuses.Idle,
+              extensionNum: extNum,
+              tryNumber: 0
+            });
+            setForm({
+              type: userFormActions.UPDATE_EXTENSION,
+              payload: {
+                extension: extNum,
+                isValid: true
+              }
+            });
+          } else {
+            console.log("wsx Number is taken");
+            setExtensionState({
+              searchStatus: ExtensionSearchStatuses.Idle,
+              extensionNum: "",
+              tryNumber: extensionState.tryNumber
+            });
+          }
+        })
+        .catch(err => {
+          console.error("Failed to look up extension", {
+            err,
+            extNum
+          });
+        });
+    } else {
+      console.log("wsx Retries Exhausted");
     }
   };
 
@@ -139,19 +226,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           }}
           value={form.nNumber.value}
         />
-        <ModalExtension
-          error={form.extension.blurred && !isExtensionValid(form)}
-          extension={form.extension.value}
-          originalValue={(worker && worker.attributes) ? worker.attributes.extension : undefined}
-          onClear={() => setForm({ type: userFormActions.CLEAR_EXTENSION })}
-          onUpdate={(extension, extensionValid) => setForm({
-            type: userFormActions.UPDATE_EXTENSION,
-            payload: {
-              extension,
-              isValid: extensionValid
-            }
-          })}
-        />
         <Tooltip
           title={
             form.formMode === formModes.UPDATE && worker.directDialNum ?
@@ -192,6 +266,30 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
             </ToggleContainer>
           </Tooltip>
         ): null
+        }
+        {form.didUser ? (
+          <ExtensionWrapper>
+            <ModalExtension
+              error={form.extension.blurred && !isExtensionValid(form)}
+              extension={form.extension.value}
+              originalValue={(worker && worker.attributes) ? worker.attributes.extension : undefined}
+              onClear={() => setForm({ type: userFormActions.CLEAR_EXTENSION })}
+              onUpdate={(extension, extensionValid) => setForm({
+                type: userFormActions.UPDATE_EXTENSION,
+                payload: {
+                  extension,
+                  isValid: extensionValid
+                }
+              })}
+            />
+            <UserFormButton
+              disabled={false}
+              onClick={assignExtension}
+            >
+              {"Auto-Assign"}
+            </UserFormButton>
+          </ExtensionWrapper>
+        ) : null
         }
       </FormControlsPane>
       <RightColumn>
