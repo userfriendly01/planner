@@ -45,23 +45,27 @@ import ReservedExtensions from "./ReservedExtensions";
 
 const MIN_EXTENSION_NUM = 10000;
 const EXTENSION_NUM_RANGE = 89995;
-const MAX_EXTENSION_TRIES = 5;
+const MAX_EXTENSION_RETRIES = 5;
 
 enum ExtensionSearchStatuses {
   Idle,
-  ExistingExtension,
+  PickANumber,
   WaitingForResponse,
-  NewExtension,
 }
 interface ExtensionStatusParams {
   searchStatus: ExtensionSearchStatuses,
   extensionNum: string,
-  tryNumber: number,
+  retriesRemaining: number,
 }
 
 const ExtensionWrapper = styled.div`
   display: flex;
   flex-direction: row;
+`;
+
+const AutoAsssignWrapper = styled.div`
+  margin-left: 15px;
+  margin-top: 15px;
 `;
 
 const BasicFormInfo = (props: BasicFormInfoProps) => {
@@ -82,7 +86,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   const [extensionState, setExtensionState] = useState<ExtensionStatusParams>({
     searchStatus: ExtensionSearchStatuses.Idle,
     extensionNum: form.extension.value,
-    tryNumber: 0
+    retriesRemaining: MAX_EXTENSION_RETRIES
   });
 
   const isOutgoingDisabled = (): boolean => {
@@ -104,6 +108,15 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   };
 
   const assignExtension = () => {
+    setExtensionState({
+      searchStatus: ExtensionSearchStatuses.PickANumber,
+      extensionNum: "0",
+      retriesRemaining:  MAX_EXTENSION_RETRIES
+    });
+  };
+
+  const pickANumber = () => {
+    console.log("wsx pickANumber");
     let extNum = "";
     while (extNum === "") {
       const oneNum = MIN_EXTENSION_NUM + Math.floor((Math.random() * EXTENSION_NUM_RANGE));
@@ -114,48 +127,55 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
         console.log("wsx Reserved extension skipped:", oneNum);
       }
     }
-    if (extensionState.tryNumber < MAX_EXTENSION_TRIES) {
-      console.log("wsx Verifying:", extNum);
-      setExtensionState({
-        searchStatus: ExtensionSearchStatuses.WaitingForResponse,
-        extensionNum: extNum,
-        tryNumber: extensionState.tryNumber + 1
-      });
-      checkExtension(extNum)
-        .then(isExtensionAvailable => {
-          if (isExtensionAvailable) {
-            console.log("wsx Extension is available:", extNum);
-            setExtensionState({
-              searchStatus: ExtensionSearchStatuses.Idle,
-              extensionNum: extNum,
-              tryNumber: 0
-            });
-            setForm({
-              type: userFormActions.UPDATE_EXTENSION,
-              payload: {
-                extension: extNum,
-                isValid: true
-              }
-            });
-          } else {
-            console.log("wsx Number is taken");
-            setExtensionState({
-              searchStatus: ExtensionSearchStatuses.Idle,
-              extensionNum: "",
-              tryNumber: extensionState.tryNumber
-            });
-          }
-        })
-        .catch(err => {
-          console.error("Failed to look up extension", {
-            err,
-            extNum
+
+    checkExtension(extNum)
+      .then(isExtensionAvailable => {
+        if (isExtensionAvailable) {
+          console.log("wsx Extension is available:", extNum);
+          setExtensionState({
+            searchStatus: ExtensionSearchStatuses.Idle,
+            extensionNum: extNum,
+            retriesRemaining: MAX_EXTENSION_RETRIES
           });
-        });
-    } else {
-      console.log("wsx Retries Exhausted");
-    }
+          setForm({
+            type: userFormActions.UPDATE_EXTENSION,
+            payload: {
+              extension: extNum,
+              isValid: true
+            }
+          });
+        } else {
+          console.log("wsx Twilio says number is taken", extensionState.retriesRemaining);
+          setExtensionState({
+            searchStatus: ExtensionSearchStatuses.PickANumber,
+            extensionNum: "",
+            retriesRemaining: extensionState.retriesRemaining - 1
+          });
+        }
+      })
+      .catch (err => {
+        console.error("Failed to verify extension number", err);
+      });
+
+    setExtensionState({
+      searchStatus: ExtensionSearchStatuses.WaitingForResponse,
+      extensionNum: extNum,
+      retriesRemaining: extensionState.retriesRemaining
+    });
   };
+
+  if (extensionState.searchStatus === ExtensionSearchStatuses.PickANumber) {
+    if (extensionState.retriesRemaining) {
+      pickANumber();
+    } else {
+      console.log("Extension retries exhausted");
+      setExtensionState({
+        searchStatus: ExtensionSearchStatuses.Idle,
+        extensionNum: "0",
+        retriesRemaining: MAX_EXTENSION_RETRIES
+      });
+    }
+  }
 
   return(
     <FormControlsContainer>
@@ -282,12 +302,14 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
                 }
               })}
             />
-            <UserFormButton
-              disabled={false}
-              onClick={assignExtension}
-            >
-              {"Auto-Assign"}
-            </UserFormButton>
+            <AutoAsssignWrapper>
+              <UserFormButton
+                disabled={false}
+                onClick={assignExtension}
+              >
+                {"Auto-Assign"}
+              </UserFormButton>
+            </AutoAsssignWrapper>
           </ExtensionWrapper>
         ) : null
         }
