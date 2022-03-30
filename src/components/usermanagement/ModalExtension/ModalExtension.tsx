@@ -20,16 +20,18 @@ export interface ModalExtensionProps {
   extension: string,
   isEditExisting?: boolean,
   originalValue?: string,
+  message?: string,
+  isError?: boolean,
   onBlur?: () => void,
   onClear: () => void,
-  onUpdate: (value: string, isValid: boolean) => void
+  onUpdate: (value: string, isValid: boolean) => void,
 }
 
-interface ExtensionLookupStatus {
-  extensionValid: boolean,
-  loading: boolean,
-  message: string
-}
+// interface ExtensionLookupStatus {
+//   extensionValid: boolean,
+//   loading: boolean,
+//   message: string
+// }
 
 const ModalExtension = (props: ModalExtensionProps) => {
   const {
@@ -37,52 +39,52 @@ const ModalExtension = (props: ModalExtensionProps) => {
     error,
     extension,
     originalValue,
+    message,
+    isError,
     onBlur,
     onClear,
     onUpdate
   } = props;
 
-  const [lookupStatus, setLookupStatus] = useState<ExtensionLookupStatus>({
-    extensionValid: true,
-    loading: false,
-    message: "Extension is valid"
-  });
+  // const [lookupStatus, setLookupStatus] = useState<ExtensionLookupStatus>({
+  //   extensionValid: true,
+  //   loading: false,
+  //   message: "Extension is valid"
+  // });
 
   const validator = (extension: string) => extensionMatcher.test(extension);
 
-  const inputServiceCall = (extension: string) => {
-    setLookupStatus({
-      ...lookupStatus,
-      loading: true,
-      message: "Validating..."
-    });
-    const isOriginal = originalValue ? extension === originalValue : false;
-    return checkExtension(extension)
-      .then(isExtensionAvailable => {
-        const extensionValid = isExtensionAvailable || isOriginal;
-        setLookupStatus({
-          extensionValid,
-          loading: false,
-          message: extensionValid ? "Extension is valid" : "Extension already in use"
-        });
-        onUpdate(extension, extensionValid);
-      })
-      .catch(err => {
-        console.error("Failed to look up extension", {
-          err,
-          extension
-        });
-        const extensionValid = false;
-        setLookupStatus({
-          extensionValid,
-          loading: false,
-          message: "Error occurred when checking extension"
-        });
-        onUpdate(extension, extensionValid);
-      });
-  };
-
-  const showModalHelperText = validator(extension);
+  // const inputServiceCall = (extension: string) => {
+  //   setLookupStatus({
+  //     ...lookupStatus,
+  //     loading: true,
+  //     message: "Validating..."
+  //   });
+  //   const isOriginal = originalValue ? extension === originalValue : false;
+  //   return checkExtension(extension)
+  //     .then(isExtensionAvailable => {
+  //       const extensionValid = isExtensionAvailable || isOriginal;
+  //       setLookupStatus({
+  //         extensionValid,
+  //         loading: false,
+  //         message: extensionValid ? "Extension is valid" : "Extension already in use"
+  //       });
+  //       onUpdate(extension, extensionValid);
+  //     })
+  //     .catch(err => {
+  //       console.error("Failed to look up extension", {
+  //         err,
+  //         extension
+  //       });
+  //       const extensionValid = false;
+  //       setLookupStatus({
+  //         extensionValid,
+  //         loading: false,
+  //         message: "Error occurred when checking extension"
+  //       });
+  //       onUpdate(extension, extensionValid);
+  //     });
+  // };
 
   return (
     <FlexColumn>
@@ -96,14 +98,14 @@ const ModalExtension = (props: ModalExtensionProps) => {
         updateValue={value => onUpdate(value, false)}
         value={extension}
         validator={validator}
-        validatedServiceCall={inputServiceCall}
+        // validatedServiceCall={inputServiceCall}
       />
       {
-        showModalHelperText
+        message
           ? <ModalHelperText
             clearFunction={onClear}
-            error={!(lookupStatus.extensionValid || lookupStatus.loading)}
-            message={lookupStatus.message}
+            error={isError}
+            message={message}
           />
           : null
       }
