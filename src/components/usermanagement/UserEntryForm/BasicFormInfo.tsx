@@ -353,10 +353,9 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
         {form.didUser ? (
           <ExtensionWrapper>
             <ModalExtension
-              error={form.extension.blurred && !isExtensionValid(form)}
               extension={form.extension.value}
-              originalValue={(worker && worker.attributes) ? worker.attributes.extension : undefined}
               message={extensionState.message}
+              isError={extensionState.isError}
               onClear={handleExtensionCleared}
               onUpdate={(extension, extensionValid) => handleExtensionUpdated(extension)}
             />

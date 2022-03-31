@@ -16,10 +16,8 @@ const FlexColumn = styled.div`
 
 export interface ModalExtensionProps {
   disabled?: boolean,
-  error: boolean,
   extension: string,
   isEditExisting?: boolean,
-  originalValue?: string,
   message?: string,
   isError?: boolean,
   onBlur?: () => void,
@@ -36,9 +34,7 @@ export interface ModalExtensionProps {
 const ModalExtension = (props: ModalExtensionProps) => {
   const {
     disabled,
-    error,
     extension,
-    originalValue,
     message,
     isError,
     onBlur,
@@ -90,7 +86,7 @@ const ModalExtension = (props: ModalExtensionProps) => {
     <FlexColumn>
       <CustomInput
         disabled={disabled}
-        error={error}
+        error={isError}
         label="Extension"
         maxLength="5"
         name="Extension"
