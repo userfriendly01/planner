@@ -13,7 +13,6 @@ const FlexColumn = styled.div`
   display: flex;
   flex-direction: column;
 `;
-
 export interface ModalExtensionProps {
   disabled?: boolean,
   extension: string,
@@ -24,12 +23,6 @@ export interface ModalExtensionProps {
   onClear: () => void,
   onUpdate: (value: string, isValid: boolean) => void,
 }
-
-// interface ExtensionLookupStatus {
-//   extensionValid: boolean,
-//   loading: boolean,
-//   message: string
-// }
 
 const ModalExtension = (props: ModalExtensionProps) => {
   const {
@@ -42,45 +35,7 @@ const ModalExtension = (props: ModalExtensionProps) => {
     onUpdate
   } = props;
 
-  // const [lookupStatus, setLookupStatus] = useState<ExtensionLookupStatus>({
-  //   extensionValid: true,
-  //   loading: false,
-  //   message: "Extension is valid"
-  // });
-
   const validator = (extension: string) => extensionMatcher.test(extension);
-
-  // const inputServiceCall = (extension: string) => {
-  //   setLookupStatus({
-  //     ...lookupStatus,
-  //     loading: true,
-  //     message: "Validating..."
-  //   });
-  //   const isOriginal = originalValue ? extension === originalValue : false;
-  //   return checkExtension(extension)
-  //     .then(isExtensionAvailable => {
-  //       const extensionValid = isExtensionAvailable || isOriginal;
-  //       setLookupStatus({
-  //         extensionValid,
-  //         loading: false,
-  //         message: extensionValid ? "Extension is valid" : "Extension already in use"
-  //       });
-  //       onUpdate(extension, extensionValid);
-  //     })
-  //     .catch(err => {
-  //       console.error("Failed to look up extension", {
-  //         err,
-  //         extension
-  //       });
-  //       const extensionValid = false;
-  //       setLookupStatus({
-  //         extensionValid,
-  //         loading: false,
-  //         message: "Error occurred when checking extension"
-  //       });
-  //       onUpdate(extension, extensionValid);
-  //     });
-  // };
 
   return (
     <FlexColumn>

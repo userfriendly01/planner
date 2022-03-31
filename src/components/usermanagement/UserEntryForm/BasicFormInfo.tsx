@@ -147,15 +147,13 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   };
 
   const pickANumber = () => {
-    console.log("wsx pickANumber");
     let extNum = "";
     while (extNum === "") {
       const oneNum = MIN_EXTENSION_NUM + Math.floor((Math.random() * EXTENSION_NUM_RANGE));
-      console.log("wsx Random extension:", oneNum);
       if (ReservedExtensions.indexOf(oneNum) === -1) {
         extNum = oneNum.toString();
       } else {
-        console.log("wsx Reserved extension skipped:", oneNum);
+        console.warn("Reserved extension skipped:", oneNum);
       }
     }
     validateTwilioExtension(extNum);
@@ -165,7 +163,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
     checkExtension(extNum)
       .then(isExtensionAvailable => {
         if (isExtensionAvailable) {
-          console.log("wsx Extension is available:", extNum);
           setExtensionState({
             ...extensionState,
             searchStatus: SearchStatuses.Idle,
@@ -182,7 +179,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
             }
           });
         } else {
-          console.log("wsx Twilio says number is taken", extensionState);
           if (extensionState.searchStatus === SearchStatuses.PickANumber) {
             setExtensionState({
               ...extensionState,
@@ -212,7 +208,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   };
 
   const validateExtension = () => {
-    console.log("wsx validateExtension");
     validateTwilioExtension(form.extension.value);
   };
 
@@ -237,8 +232,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
       });
     }
   }
-
-  console.log("wsx Extension:", form.extension);
 
   return(
     <FormControlsContainer>
