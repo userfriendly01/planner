@@ -3,10 +3,7 @@ import {
   ModalHelperText
 } from "components";
 import { extensionMatcher } from "globals";
-import { checkExtension } from "services";
-import React, {
-  useState
-} from "react";
+import React from "react";
 import styled from "styled-components";
 
 const FlexColumn = styled.div`

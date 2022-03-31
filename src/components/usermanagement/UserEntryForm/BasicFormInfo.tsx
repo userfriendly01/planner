@@ -32,7 +32,6 @@ import React from "react";
 import { checkExtension } from "services";
 import {
   getOverflowSkillFromProfile,
-  isExtensionValid,
   isProfileIdValid,
   isManagerValid,
   sortManagersByName,
