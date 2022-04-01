@@ -163,9 +163,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   };
 
   const validateTwilioExtension = (extNum:string) => {
-    console.log("AAAAAAAAA");
     if (ReservedExtensions.indexOf(parseInt(extNum)) !== -1) {
-      console.log("BBBBBBBBB");
       setExtensionState({
         ...extensionState,
         message: "Extension is reserved",
