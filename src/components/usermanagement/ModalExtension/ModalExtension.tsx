@@ -13,7 +13,6 @@ const FlexColumn = styled.div`
 export interface ModalExtensionProps {
   disabled?: boolean,
   extension: string,
-  isEditExisting?: boolean,
   message?: string,
   isError?: boolean,
   onBlur?: () => void,
