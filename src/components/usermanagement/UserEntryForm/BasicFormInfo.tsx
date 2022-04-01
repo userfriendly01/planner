@@ -56,7 +56,8 @@ interface ExtensionStatusParams {
   extensionNum: string,
   retriesRemaining: number,
   message?:string,
-  isError?:boolean
+  isError?:boolean,
+  originalExtension:string
 }
 
 const ExtensionWrapper = styled.div`
@@ -88,7 +89,9 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
     searchStatus: SearchStatuses.Idle,
     extensionNum: form.extension.value,
     retriesRemaining: MAX_EXTENSION_RETRIES,
-    message: ""
+    message: "",
+    isError: false,
+    originalExtension: form.extension.value
   });
 
   const isOutgoingDisabled = (): boolean => {
@@ -114,7 +117,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
       type: userFormActions.UPDATE_EXTENSION,
       payload: {
         extension,
-        isValid: false
+        isValid: (extension === extensionState.originalExtension)
       }
     });
     setExtensionState({
@@ -137,8 +140,9 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
 
   const assignExtension = () => {
     setExtensionState({
+      ...extensionState,
       searchStatus: SearchStatuses.PickANumber,
-      extensionNum: "0",
+      extensionNum: "",
       retriesRemaining: MAX_EXTENSION_RETRIES,
       message: "Searching...",
       isError: false
@@ -159,6 +163,17 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   };
 
   const validateTwilioExtension = (extNum:string) => {
+    console.log("AAAAAAAAA");
+    if (ReservedExtensions.indexOf(parseInt(extNum)) !== -1) {
+      console.log("BBBBBBBBB");
+      setExtensionState({
+        ...extensionState,
+        message: "Extension is reserved",
+        isError: true
+      });
+      return;
+    }
+
     checkExtension(extNum)
       .then(isExtensionAvailable => {
         if (isExtensionAvailable) {
@@ -199,9 +214,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
     setExtensionState({
       ...extensionState,
       searchStatus: SearchStatuses.WaitingForResponse,
-      extensionNum: extNum,
-      retriesRemaining: extensionState.retriesRemaining,
-      message: "Checking Twilio",
+      message: "Checking Extension Number with Twilio",
       isError: false
     });
   };
@@ -213,6 +226,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   let extensionButtonLabel = "Auto-Assign";
   let extensionButtonHandler = assignExtension;
   let extensionButtonEnabled = true;
+
   if (form.extension.value.length > 0) {
     extensionButtonLabel = "Verify";
     extensionButtonHandler = validateExtension;
@@ -223,10 +237,12 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
     if (extensionState.retriesRemaining) {
       pickANumber();
     } else {
-      console.log("Extension retries exhausted");
       setExtensionState({
+        ...extensionState,
+        message: "Extension retries exhausted.  Please try again.",
+        isError: true,
         searchStatus: SearchStatuses.Idle,
-        extensionNum: "0",
+        extensionNum: "",
         retriesRemaining: MAX_EXTENSION_RETRIES
       });
     }
@@ -349,7 +365,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
               message={extensionState.message}
               isError={extensionState.isError}
               onClear={handleExtensionCleared}
-              onUpdate={(extension, extensionValid) => handleExtensionUpdated(extension)}
+              onUpdate={extension => handleExtensionUpdated(extension)}
             />
             <ExtensionButtonWrapper>
               <UserFormButton
