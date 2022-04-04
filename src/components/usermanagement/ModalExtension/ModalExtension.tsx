@@ -45,7 +45,6 @@ const ModalExtension = (props: ModalExtensionProps) => {
         updateValue={value => onUpdate(value, false)}
         value={extension}
         validator={validator}
-        // validatedServiceCall={inputServiceCall}
       />
       {
         message
