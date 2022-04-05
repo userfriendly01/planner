@@ -46,15 +46,15 @@ const ModalExtension = (props: ModalExtensionProps) => {
         value={extension}
         validator={validator}
       />
-      {
+      {(
         message
-          ? <ModalHelperText
-            clearFunction={onClear}
-            error={isError}
-            message={message}
-          />
-          : null
-      }
+        ? <ModalHelperText
+        clearFunction={onClear}
+        error={isError}
+        message={message}
+      />
+      : null
+      )}
     </FlexColumn>
   );
 };

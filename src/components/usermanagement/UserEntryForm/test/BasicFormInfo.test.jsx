@@ -12,7 +12,9 @@ import {
   ModalPhoneNumber,
   OutlinedSelect,
   DidFormInfoAdd,
-  DidFormInfoUpdate
+  DidFormInfoUpdate,
+  ExtensionButtonWrapper,
+  UserFormButton
 } from "components";
 import {
   useFormDispatch,
@@ -57,7 +59,9 @@ jest.mock("components", () => ({
   OutlinedSelect: jest.fn(),
   PaperContainer: jest.fn(),
   StyledButton: jest.fn(),
-  ForwardToEntryForm: jest.fn()
+  ForwardToEntryForm: jest.fn(),
+  ExtensionButtonWrapper: jest.fn(),
+  UserFormButton: jest.fn()
 }));
 
 
@@ -122,7 +126,9 @@ describe("<BasicFormInfo />", () => {
       InputAdornment,
       Edit,
       Switch,
-      Tooltip
+      Tooltip,
+      ExtensionButtonWrapper,
+      UserFormButton
     });
   });
 
@@ -490,68 +496,7 @@ describe("<BasicFormInfo />", () => {
       });
     });
   });
-  describe("Old Extension field", () => {
-    // test("Should render the correct initial state", () => {
-    //   const rendered = renderComponent(false);
-    //   expectMockedComponent(rendered, { ModalExtension }, 1);
-    //   const expectedExtensionProps = {
-    //     extension: "",
-    //     isError: false,
-    //     message: "",
-    //     disabled: false
-    //   };
-    //   expectOnlyPassedProps(ModalExtension, expectedExtensionProps, 0);
-    // });
-    test("original value should be undefined", () => {
-      render(
-        <BasicFormInfo
-          skills={mockSkills}
-          worker={null}
-          workers={mockWorkers}
-          profiles={profileList}
-          managers={managerList}
-          forwardToToggle={false}
-          mockSetForwardToToggle={mockSetForwardToToggle}
-        />,
-        initialTestState
-      );
-      expect(ModalExtension.mock.calls[0][0].originalValue).toBe(undefined);
-    });
-
-    test("error field should be true", () => {
-      useFormState.mockReturnValue({
-        ...initialFormState,
-        extension: {
-          ...initialFormState.extension,
-          blurred: true
-        }
-      });
-      isExtensionValid.mockReturnValue(false);
-      renderComponent(false);
-      expect(ModalExtension.mock.calls[0][0].error).toBe(true);
-    });
-    test("onUpdate - should set extension to correct value", () => {
-      renderComponent(false);
-      act(() => {
-        const updateValue = ModalExtension.mock.calls[0][0].onUpdate;
-        updateValue("1234", false);
-      });
-      expect(mockSetForm).toBeCalledWith({
-        type: userFormActions.UPDATE_EXTENSION,
-        payload: {
-          extension: "1234",
-          isValid: false
-        }
-      });
-    });
-    test("onClear - should reset the field", () => {
-      renderComponent(false);
-      act(() => {
-        const onClear = ModalExtension.mock.calls[0][0].onClear;
-        onClear();
-      });
-      expect(mockSetForm).toBeCalledWith({ type: userFormActions.CLEAR_EXTENSION });
-    });
+  describe("Old Exxtension field", () => {
   });
   describe("Did Fields", () => {
     describe("form.didUser === false", () => {
@@ -583,20 +528,6 @@ describe("<BasicFormInfo />", () => {
           expect(Tooltip.mock.calls[0][0].title).toBe("Twilio DID can not be removed");
         });
       });
-      // describe("Extension field", () => {
-      //   test("Extension Should render the correct initial state", () => { // Moved, 10 lines
-      //     const rendered = renderComponent(false);
-      //     expect(rendered.container).toBe("anything");
-      //     expectMockedComponent(rendered, { ModalExtension }, 1);
-      //     const expectedExtensionProps = {
-      //       extension: "",
-      //       isError: false,
-      //       message: "",
-      //       disabled: false
-      //     };
-      //     expectOnlyPassedProps(ModalExtension, expectedExtensionProps, 0);
-      //   });
-      // });
       describe("DID User Switch", () => {
         describe("form is in edit mode or form is in add mode opened fresh (no users have been added yet)", () => {
           test("When onChange is called, setForm is called", () => {
@@ -629,7 +560,78 @@ describe("<BasicFormInfo />", () => {
         });
       });
     });
+
     describe("form.didUser === true", () => {
+      describe("Extension field", () => {
+        beforeEach(() => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            formMode: formModes.INSERT,
+            didUser: true
+          });
+        });
+        test("Expected extension props", () => {
+          const rendered = renderComponent(false);
+          expectMockedComponent(rendered, { ModalExtension }, 1);
+          const expectedExtensionProps = {
+            extension: "",
+            message: "",
+            isError: false
+          };
+          expectOnlyPassedProps(ModalExtension, expectedExtensionProps, 0);
+        });
+        test("original value should be undefined", () => {
+          render(
+            <BasicFormInfo
+              skills={mockSkills}
+              worker={null}
+              workers={mockWorkers}
+              profiles={profileList}
+              managers={managerList}
+              forwardToToggle={false}
+              mockSetForwardToToggle={mockSetForwardToToggle}
+            />,
+            initialTestState
+          );
+          expect(ModalExtension.mock.calls[0][0].originalValue).toBe(undefined);
+        });
+        test("error field should be true", () => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            didUser: true,
+            extension: {
+              ...initialFormState.extension,
+              blurred: true
+            }
+          });
+          isExtensionValid.mockReturnValue(false);
+          renderComponent(false);
+          console.log("wsx ModalExtension.mock.calls[0]:", ModalExtension.mock.calls[0]);
+          expect(ModalExtension.mock.calls[0][0].isError).toBe(false);
+        });
+        test("onUpdate - should set extension to correct value", () => {
+          renderComponent(false);
+          act(() => {
+            const updateValue = ModalExtension.mock.calls[0][0].onUpdate;
+            updateValue("1234", false);
+          });
+          expect(mockSetForm).toBeCalledWith({
+            type: userFormActions.UPDATE_EXTENSION,
+            payload: {
+              extension: "1234",
+              isValid: false
+            }
+          });
+        });
+        test("onClear - should reset the field", () => {
+          renderComponent(false);
+          act(() => {
+            const onClear = ModalExtension.mock.calls[0][0].onClear;
+            onClear();
+          });
+          expect(mockSetForm).toBeCalledWith({ type: userFormActions.CLEAR_EXTENSION });
+        });
+      });
       describe(`formMode === ${formModes.INSERT}`, () => {
         beforeEach(() => {
           useFormState.mockReturnValue({
@@ -638,8 +640,9 @@ describe("<BasicFormInfo />", () => {
             didUser: true
           });
         });
-        test("Should stuff render the correct initial state", () => {
+        test("Should render the correct initial state", () => {
           renderComponent(false);
+          console.log("wsx Tooltip.mock.calls[0]:", Tooltip.mock.calls[0]);
           const didToolTip = Tooltip.mock.calls[0][0];
           expect(didToolTip.title).toBe("");
           expect(didToolTip.placement).toBe("bottom-start");
@@ -656,8 +659,6 @@ describe("<BasicFormInfo />", () => {
           expect(overFlowToolTip.placement).toBe("bottom-start");
           const renderedOverflowTT = render(overFlowToolTip.children);
           expect(renderedOverflowTT.container).toHaveTextContent("Overflow Skill");
-
-          // expect(ModalExtension.mock.calls).toBe("something else");
 
           const expectedDidFormInfoAddProps = {
             skills: mockSkills,

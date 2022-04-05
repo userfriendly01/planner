@@ -366,12 +366,12 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
               onUpdate={extension => handleExtensionUpdated(extension)}
             />
             <ExtensionButtonWrapper>
-              <UserFormButton
+              {/* <UserFormButton
                 disabled={!extensionButtonEnabled || form.extension.valid}
                 onClick={extensionButtonHandler}
               >
                 {extensionButtonLabel}
-              </UserFormButton>
+              </UserFormButton> */}
             </ExtensionButtonWrapper>
           </ExtensionWrapper>
         ) : null
