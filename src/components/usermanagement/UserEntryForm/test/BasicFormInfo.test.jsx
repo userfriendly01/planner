@@ -1,10 +1,10 @@
-import BasicFormInfo from "../BasicFormInfo";
+import BasicFormInfo, { SearchStatuses } from "../BasicFormInfo";
 import {
   InputAdornment,
   Switch,
   Tooltip
 } from "@material-ui/core";
-import { Edit } from "@material-ui/icons";
+import { Edit, FormatAlignJustify } from "@material-ui/icons";
 import {
   ForwardToEntryForm,
   ModalExtension,
@@ -25,7 +25,7 @@ import {
   extensionMatcher,
   formModes
 } from "globals";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   act,
   expectMockedComponent,
@@ -38,7 +38,9 @@ import {
   mockWorkers,
   profileList,
   render,
-  setupMockedComponents
+  setupMockedComponents,
+  waitFor,
+  fireEvent
 } from "testUtils";
 import {
   getOverflowSkillFromProfile,
@@ -47,7 +49,18 @@ import {
   isManagerValid
 } from "utils";
 
+import { StyledButton } from "components";
+import { checkExtension } from "services";
+
 jest.useFakeTimers();
+
+jest.mock("react", () => ({
+  ...jest.requireActual("react"),
+  useState: jest.fn().mockReturnValue([
+    () => jest.fn,
+    () => jest.fn()
+  ])
+}));
 
 jest.mock("components", () => ({
   __esModule: true,
@@ -95,6 +108,11 @@ jest.mock("utils", () => ({
   getOverflowSkillFromProfile: jest.fn()
 }));
 
+jest.mock("services", () => ({
+  __esModule: true,
+  checkExtension: jest.fn()
+}));
+
 jest.mock("globals", () => ({
   __esModule: true,
   extensionMatcher: {
@@ -128,7 +146,8 @@ describe("<BasicFormInfo />", () => {
       Switch,
       Tooltip,
       ExtensionButtonWrapper,
-      UserFormButton
+      UserFormButton,
+      StyledButton
     });
   });
 
@@ -496,8 +515,6 @@ describe("<BasicFormInfo />", () => {
       });
     });
   });
-  describe("Old Exxtension field", () => {
-  });
   describe("Did Fields", () => {
     describe("form.didUser === false", () => {
       beforeEach(() => {
@@ -606,7 +623,6 @@ describe("<BasicFormInfo />", () => {
           });
           isExtensionValid.mockReturnValue(false);
           renderComponent(false);
-          console.log("wsx ModalExtension.mock.calls[0]:", ModalExtension.mock.calls[0]);
           expect(ModalExtension.mock.calls[0][0].isError).toBe(false);
         });
         test("onUpdate - should set extension to correct value", () => {
@@ -631,7 +647,115 @@ describe("<BasicFormInfo />", () => {
           });
           expect(mockSetForm).toBeCalledWith({ type: userFormActions.CLEAR_EXTENSION });
         });
+
+        //=========================================
+        test("button should point to 'validateExtension()' when a valid extension is entered", async () => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            didUser: true,
+            extension: {
+              value: "12345",
+              blurred: false,
+              updated: false,
+              valid: false
+            }
+          });
+          renderComponent(false);
+          const targetFunction = StyledButton.mock.calls[0][0].onClick.toString();
+          expect(targetFunction).toContain("validateExtension");
+        });
+        test("button should point to 'assignExtension()' when extension is blank", async () => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            didUser: true,
+            extension: {
+              value: "",
+              blurred: false,
+              updated: false,
+              valid: false
+            }
+          });
+          renderComponent(false);
+          const targetFunction = StyledButton.mock.calls[0][0].onClick.toString();
+          expect(targetFunction).toContain("assignExtension");
+        });
+
+        test("wsx checkExtension() is called for valid extension number", async () => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            didUser: true,
+            extension: {
+              value: "",
+              blurred: false,
+              updated: false,
+              valid: false
+            }
+          });
+          // useEffect.mock([
+          //   () => ({
+          //     searchStatus: SearchStatuses.Idle,
+          //     extensionNum: "123",
+          //     retriesRemaining: 1,
+          //     message: "",
+          //     isError: false,
+          //     originalExtension: ""
+          //   }),
+          //   () => jest.fn()
+          // ]);
+
+          // THIS MIGHT WORK
+          // const realUseState = React.useState;
+          // console.log("wsx SearchStatuses:", SearchStatuses);
+          // const initialState = {
+          //   searchStatus: 0, // SearchStatuses.Idle,
+          //   extensionNum: "",
+          //   retriesRemaining: 5,
+          //   message: "",
+          //   isError: false
+          // };
+          // jest
+          //   .spyOn(React, "useState")
+          //   .mockImplementationOnce(() => realUseState(initialState));
+
+          const rendered = renderComponent(false);
+          const targetFunction = StyledButton.mock.calls[0][0].onClick;
+          checkExtension.mockReturnValue(Promise.resolve(true));
+
+          act(() => {
+            targetFunction("12345");
+          });
+
+          await waitFor(() => expect(ModalExtension.mock.calls.length).toBe(2));
+          expect(ModalExtension.mock.calls).toBe("anything");
+
+          // expect(checkExtension).toBeCalledTimes(1);
+          // expect(useState).toBeCalled(200);
+          // console.log("rendered.container:", rendered.container);
+          // expect(checkExtension.mock.calls[0][0].error).toBe(true);
+
+          // act(() => {
+          //   targetFunction();
+          // });
+          // expect(targetFunction).toContain("assignExtension");
+        });
+
+        // Reserved:  13378
+        // const verifyButton = rendered.getByTestId("verify-auto-button");
+        // console.log("wsx verifyButton:", verifyButton);
+        // const autoButton = rendered.getByText("AUTO-ASSIGN");
+        // const verifyButton = rendered.getByText("VERIFY");
+        // const verifyButton = rendered.getByTestId("verify-auto-button");
+        // console.log("wsx verifyButton:", verifyButton);
+        // console.log("wsx verifyButton.children:", verifyButton.children);
+        // const verifyButton = rendered.getByTestId("verify-auto-button");
+        // const verifyButton = await waitFor(() => rendered.getByTestId("verify-auto-button"));
+        // expect(verifyButton.children.length).toBe(1);
+        // const child = verifyButton.children[0];
+        // fireEvent.click(verifyButton);
+        //=========================================
       });
+
+
       describe(`formMode === ${formModes.INSERT}`, () => {
         beforeEach(() => {
           useFormState.mockReturnValue({
@@ -642,7 +766,6 @@ describe("<BasicFormInfo />", () => {
         });
         test("Should render the correct initial state", () => {
           renderComponent(false);
-          console.log("wsx Tooltip.mock.calls[0]:", Tooltip.mock.calls[0]);
           const didToolTip = Tooltip.mock.calls[0][0];
           expect(didToolTip.title).toBe("");
           expect(didToolTip.placement).toBe("bottom-start");

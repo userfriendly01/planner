@@ -217,9 +217,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
     });
   };
 
-  const validateExtension = () => {
-    validateTwilioExtension(form.extension.value);
-  };
+  const validateExtension = () => validateTwilioExtension(form.extension.value);
 
   let extensionButtonLabel = "Auto-Assign";
   let extensionButtonHandler = assignExtension;
@@ -358,6 +356,12 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
         }
         {form.didUser ? (
           <ExtensionWrapper>
+            <UserFormButton
+              disabled={false}
+              onClick={handleExtensionCleared}
+            >
+              {extensionButtonLabel}
+            </UserFormButton>
             <ModalExtension
               extension={form.extension.value}
               message={extensionState.message}
@@ -366,12 +370,13 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
               onUpdate={extension => handleExtensionUpdated(extension)}
             />
             <ExtensionButtonWrapper>
-              {/* <UserFormButton
+              <UserFormButton
                 disabled={!extensionButtonEnabled || form.extension.valid}
                 onClick={extensionButtonHandler}
+                data-testid={"verify-auto-button"}
               >
                 {extensionButtonLabel}
-              </UserFormButton> */}
+              </UserFormButton>
             </ExtensionButtonWrapper>
           </ExtensionWrapper>
         ) : null
