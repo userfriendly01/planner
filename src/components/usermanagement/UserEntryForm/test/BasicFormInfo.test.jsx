@@ -54,13 +54,13 @@ import { checkExtension } from "services";
 
 jest.useFakeTimers();
 
-jest.mock("react", () => ({
-  ...jest.requireActual("react"),
-  useState: jest.fn().mockReturnValue([
-    () => jest.fn,
-    () => jest.fn()
-  ])
-}));
+// jest.mock("react", () => ({
+//   ...jest.requireActual("react"),
+//   useState: jest.fn().mockReturnValue([
+//     () => jest.fn,
+//     () => jest.fn()
+//   ])
+// }));
 
 jest.mock("components", () => ({
   __esModule: true,
@@ -649,7 +649,7 @@ describe("<BasicFormInfo />", () => {
         });
 
         //=========================================
-        test("button should point to 'validateExtension()' when a valid extension is entered", async () => {
+        test("wsx button should point to 'validateExtension()' when a valid extension is entered", async () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             didUser: true,
@@ -661,10 +661,10 @@ describe("<BasicFormInfo />", () => {
             }
           });
           renderComponent(false);
-          const targetFunction = StyledButton.mock.calls[0][0].onClick.toString();
+          const targetFunction = StyledButton.mock.calls[1][0].onClick.toString();
           expect(targetFunction).toContain("validateExtension");
         });
-        test("button should point to 'assignExtension()' when extension is blank", async () => {
+        test("wsx button should point to 'assignExtension()' when extension is blank", async () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             didUser: true,
@@ -676,11 +676,11 @@ describe("<BasicFormInfo />", () => {
             }
           });
           renderComponent(false);
-          const targetFunction = StyledButton.mock.calls[0][0].onClick.toString();
-          expect(targetFunction).toContain("assignExtension");
+          const functionName = StyledButton.mock.calls[1][0].onClick.toString();
+          expect(functionName).toContain("assignExtension");
         });
 
-        test("wsx checkExtension() is called for valid extension number", async () => {
+        test("wsx Message displayed while validating an extension number", async () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             didUser: true,
@@ -691,55 +691,60 @@ describe("<BasicFormInfo />", () => {
               valid: false
             }
           });
-          // useEffect.mock([
-          //   () => ({
-          //     searchStatus: SearchStatuses.Idle,
-          //     extensionNum: "123",
-          //     retriesRemaining: 1,
-          //     message: "",
-          //     isError: false,
-          //     originalExtension: ""
-          //   }),
-          //   () => jest.fn()
-          // ]);
 
-          // THIS MIGHT WORK
-          // const realUseState = React.useState;
-          // console.log("wsx SearchStatuses:", SearchStatuses);
-          // const initialState = {
-          //   searchStatus: 0, // SearchStatuses.Idle,
-          //   extensionNum: "",
-          //   retriesRemaining: 5,
-          //   message: "",
-          //   isError: false
-          // };
-          // jest
-          //   .spyOn(React, "useState")
-          //   .mockImplementationOnce(() => realUseState(initialState));
+          renderComponent(false);
+          const extension1 = ModalExtension.mock.calls[0][0];
+          expect(extension1.message).toBe("");
 
-          const rendered = renderComponent(false);
-          const targetFunction = StyledButton.mock.calls[0][0].onClick;
+          const targetFunction = StyledButton.mock.calls[1][0].onClick;
           checkExtension.mockReturnValue(Promise.resolve(true));
 
           act(() => {
             targetFunction("12345");
           });
 
-          await waitFor(() => expect(ModalExtension.mock.calls.length).toBe(2));
-          expect(ModalExtension.mock.calls).toBe("anything");
+          const extension2 = ModalExtension.mock.calls[1][0];
+          expect(extension2.message).toBe("Checking Extension Number with Twilio");
 
-          // expect(checkExtension).toBeCalledTimes(1);
-          // expect(useState).toBeCalled(200);
-          // console.log("rendered.container:", rendered.container);
-          // expect(checkExtension.mock.calls[0][0].error).toBe(true);
 
-          // act(() => {
-          //   targetFunction();
-          // });
-          // expect(targetFunction).toContain("assignExtension");
+        });
+        test("wsx message is display for a reserved extension number", async () => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            didUser: true,
+            extension: {
+              value: "",
+              blurred: false,
+              updated: false,
+              valid: false
+            }
+          });
+
+          renderComponent(false);
+          const validateFunction = StyledButton.mock.calls[1][0].onClick;
+          checkExtension.mockReturnValue(Promise.resolve(true));
+
+          act(() => {
+            validateFunction("13378");
+          });
+
+          const extension2 = ModalExtension.mock.calls[1][0];
+          expect(extension2.message).toBe("Checking Extension Number with Twilio");
         });
 
         // Reserved:  13378
+        // await waitFor(() => expect(ModalExtension.mock.calls.length).toBe(2));
+        // expect(ModalExtension.mock.calls).toBe("anything");
+
+        // expect(checkExtension).toBeCalledTimes(1);
+        // expect(useState).toBeCalled(200);
+        // console.log("rendered.container:", rendered.container);
+        // expect(checkExtension.mock.calls[0][0].error).toBe(true);
+
+        // act(() => {
+        //   targetFunction();
+        // });
+        // expect(targetFunction).toContain("assignExtension");        
         // const verifyButton = rendered.getByTestId("verify-auto-button");
         // console.log("wsx verifyButton:", verifyButton);
         // const autoButton = rendered.getByText("AUTO-ASSIGN");
