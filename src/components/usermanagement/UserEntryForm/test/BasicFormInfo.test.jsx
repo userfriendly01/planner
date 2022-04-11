@@ -680,7 +680,7 @@ describe("<BasicFormInfo />", () => {
           expect(functionName).toContain("assignExtension");
         });
 
-        test("wsx Message displayed while validating an extension number", async () => {
+        test("wsx message is displayed while validating an extension number", async () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             didUser: true,
@@ -708,7 +708,7 @@ describe("<BasicFormInfo />", () => {
 
 
         });
-        test("wsx message is display for a reserved extension number", async () => {
+        test("wsx error message is displayed for a reserved extension number", async () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             didUser: true,
@@ -729,10 +729,13 @@ describe("<BasicFormInfo />", () => {
           });
 
           const extension2 = ModalExtension.mock.calls[1][0];
-          expect(extension2.message).toBe("Checking Extension Number with Twilio");
+          console.log("wsx extension2", extension2.message);
+
+          // expect(extension2.message).toContain("Reserved extension skipped");
+          await waitFor(() => expect(extension2.message).toContain("Reserved extension skipped"));
         });
 
-        // Reserved:  13378
+        // Reserved:  13378 Reserved extension skipped
         // await waitFor(() => expect(ModalExtension.mock.calls.length).toBe(2));
         // expect(ModalExtension.mock.calls).toBe("anything");
 
