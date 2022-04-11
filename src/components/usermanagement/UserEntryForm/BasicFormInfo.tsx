@@ -1,4 +1,4 @@
-import { BasicFormInfoProps } from "./UserEntryForm.Interfaces";
+import { BasicFormInfoProps, ExtensionSearchStatuses } from "./UserEntryForm.Interfaces";
 import {
   FormControlsContainer,
   FormControlsPane,
@@ -51,14 +51,13 @@ enum SearchStatuses {
   PickANumber = 1,
   WaitingForResponse = 2,
 }
-interface ExtensionStatusParams {
-  searchStatus: SearchStatuses,
-  extensionNum: string,
-  retriesRemaining: number,
-  message?:string,
-  isError?:boolean,
-  originalExtension:string
-}
+// interface ExtensionStatusParams {
+//   searchStatus: SearchStatuses,
+//   retriesRemaining: number,
+//   message?:string,
+//   isError?:boolean,
+//   originalExtension:string
+// }
 
 const ExtensionWrapper = styled.div`
   display: flex;
@@ -85,14 +84,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   const form = useFormState();
   const setForm = useFormDispatch();
 
-  const [extensionState, setExtensionState] = useState<ExtensionStatusParams>({
-    searchStatus: SearchStatuses.Idle,
-    extensionNum: form.extension.value,
-    retriesRemaining: MAX_EXTENSION_RETRIES,
-    message: "",
-    isError: false,
-    originalExtension: form.extension.value
-  });
+  console.log("wsx form:", form);
 
   const isOutgoingDisabled = (): boolean => {
     if (form.formMode === formModes.INSERT) {
@@ -113,39 +105,26 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   };
 
   const handleExtensionUpdated = (extension:string) => {
+    console.log("wsx handleExtensionUpdated:", extension);
     setForm({
       type: userFormActions.UPDATE_EXTENSION,
       payload: {
         extension,
-        isValid: (extension === extensionState.originalExtension)
+        isValid: (extension === form.extensionStatus.originalExtension)
       }
     });
-    setExtensionState({
-      ...extensionState,
-      message: "",
-      isError: false
-    });
+    console.log("wsx handleExtensionUpdated DONE");
   };
 
   const handleExtensionCleared = () => {
     setForm({
       type: userFormActions.CLEAR_EXTENSION
     });
-    setExtensionState({
-      ...extensionState,
-      message: "",
-      isError: false
-    });
   };
 
   const assignExtension = () => {
-    setExtensionState({
-      ...extensionState,
-      searchStatus: SearchStatuses.PickANumber,
-      extensionNum: "",
-      retriesRemaining: MAX_EXTENSION_RETRIES,
-      message: "Searching...",
-      isError: false
+    setForm({
+      type: userFormActions.ASSIGN_EXTENSION
     });
   };
 
@@ -164,10 +143,12 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
 
   const validateTwilioExtension = (extNum:string) => {
     if (ReservedExtensions.indexOf(parseInt(extNum)) !== -1) {
-      setExtensionState({
-        ...extensionState,
-        message: "Extension is reserved",
-        isError: true
+      setForm({
+        type: userFormActions.SET_EXTENSION_MESSAGE,
+        payload: {
+          message: "Extension is reserved",
+          isError: true
+        }
       });
       return;
     }
@@ -175,14 +156,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
     checkExtension(extNum)
       .then(isExtensionAvailable => {
         if (isExtensionAvailable) {
-          setExtensionState({
-            ...extensionState,
-            searchStatus: SearchStatuses.Idle,
-            extensionNum: extNum,
-            retriesRemaining: MAX_EXTENSION_RETRIES,
-            message: "Verified",
-            isError: false
-          });
           setForm({
             type: userFormActions.UPDATE_EXTENSION,
             payload: {
@@ -191,16 +164,17 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
             }
           });
         } else {
-          if (extensionState.searchStatus === SearchStatuses.PickANumber) {
-            setExtensionState({
-              ...extensionState,
-              retriesRemaining: extensionState.retriesRemaining - 1
+          if (form.extensionStatus.searchStatus === ExtensionSearchStatuses.PickANumber) {
+            setForm({
+              type: userFormActions.SET_EXTENSION_RETRIES
             });
           } else {
-            setExtensionState({
-              ...extensionState,
-              message: "Extension number already used in Twilio",
-              isError: true
+            setForm({
+              type: userFormActions.SET_EXTENSION_MESSAGE,
+              payload: {
+                message: "Extension number already used in Twilio",
+                isError: true
+              }
             });
           }
         }
@@ -209,11 +183,12 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
         console.error("Failed to contact Twilio", err);
       });
 
-    setExtensionState({
-      ...extensionState,
-      searchStatus: SearchStatuses.WaitingForResponse,
-      message: "Checking Extension Number with Twilio",
-      isError: false
+    setForm({
+      type: userFormActions.SET_EXTENSION_MESSAGE,
+      payload: {
+        message: "Checking Extension Number with Twilio",
+        isError: false
+      }
     });
   };
 
@@ -229,21 +204,20 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
     extensionButtonEnabled = extensionMatcher.test(form.extension.value);
   }
 
-  if (extensionState.searchStatus === SearchStatuses.PickANumber) {
-    if (extensionState.retriesRemaining) {
+  if (form.extensionStatus.searchStatus === ExtensionSearchStatuses.PickANumber) {
+    if (form.extensionStatus.retriesRemaining) {
       pickANumber();
     } else {
-      setExtensionState({
-        ...extensionState,
-        message: "Extension retries exhausted.  Please try again.",
-        isError: true,
-        searchStatus: SearchStatuses.Idle,
-        extensionNum: "",
-        retriesRemaining: MAX_EXTENSION_RETRIES
+      setForm({
+        type: userFormActions.SET_EXTENSION_MESSAGE,
+        payload: {
+          message: "Extension retries exhausted.  Please try again.",
+          isError: true
+        }
       });
     }
   }
-
+  console.log("wsx form.extension.value:", form.extension.value);
   return(
     <FormControlsContainer>
       <FormControlsPane>
@@ -356,18 +330,20 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
         }
         {form.didUser ? (
           <ExtensionWrapper>
-            <UserFormButton
-              disabled={false}
-              onClick={handleExtensionCleared}
-            >
-              {extensionButtonLabel}
-            </UserFormButton>
             <ModalExtension
               extension={form.extension.value}
-              message={extensionState.message}
-              isError={extensionState.isError}
+              message={form.extensionStatus.message}
+              isError={form.extensionStatus.isError}
               onClear={handleExtensionCleared}
-              onUpdate={extension => handleExtensionUpdated(extension)}
+              onUpdate={handleExtensionUpdated}
+              // onUpdate={extension => setForm({
+              //   type: userFormActions.UPDATE_EXTENSION,
+              //   payload: {
+              //     extension,
+              //     isValid: (extension === form.extensionState.originalExtension)
+              //   }
+              // })
+              // }
             />
             <ExtensionButtonWrapper>
               <UserFormButton
