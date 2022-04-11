@@ -37,27 +37,12 @@ import {
   sortManagersByName,
   sortProfilesByName
 } from "utils";
-import { useState } from "react";
 import styled from "styled-components";
 
 import ReservedExtensions from "./ReservedExtensions";
 
 const MIN_EXTENSION_NUM = 10000;
 const EXTENSION_NUM_RANGE = 89995;
-const MAX_EXTENSION_RETRIES = 5;
-
-enum SearchStatuses {
-  Idle = 0,
-  PickANumber = 1,
-  WaitingForResponse = 2,
-}
-// interface ExtensionStatusParams {
-//   searchStatus: SearchStatuses,
-//   retriesRemaining: number,
-//   message?:string,
-//   isError?:boolean,
-//   originalExtension:string
-// }
 
 const ExtensionWrapper = styled.div`
   display: flex;
@@ -84,8 +69,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   const form = useFormState();
   const setForm = useFormDispatch();
 
-  console.log("wsx form:", form);
-
   const isOutgoingDisabled = (): boolean => {
     if (form.formMode === formModes.INSERT) {
       return false;
@@ -105,7 +88,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   };
 
   const handleExtensionUpdated = (extension:string) => {
-    console.log("wsx handleExtensionUpdated:", extension);
     setForm({
       type: userFormActions.UPDATE_EXTENSION,
       payload: {
@@ -113,7 +95,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
         isValid: (extension === form.extensionStatus.originalExtension)
       }
     });
-    console.log("wsx handleExtensionUpdated DONE");
   };
 
   const handleExtensionCleared = () => {

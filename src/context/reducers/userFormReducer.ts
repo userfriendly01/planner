@@ -310,7 +310,6 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
     }
 
     case userFormActions.SET_UPDATE_FORM_STATE: {
-      console.log("wsx SET_UPDATE_FORM_STATE");
       const worker = action.payload.worker;
       const managers = action.payload.managers;
       return {
