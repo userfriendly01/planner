@@ -1,4 +1,5 @@
-import BasicFormInfo, { SearchStatuses } from "../BasicFormInfo";
+import { unmountComponentAtNode } from "react-dom";
+import BasicFormInfo from "../BasicFormInfo";
 import {
   InputAdornment,
   Switch,
@@ -48,7 +49,7 @@ import {
   isProfileIdValid,
   isManagerValid
 } from "utils";
-
+import { ExtensionSearchStatuses } from "../UserEntryForm.Interfaces";
 import { StyledButton } from "components";
 import { checkExtension } from "services";
 
@@ -649,7 +650,7 @@ describe("<BasicFormInfo />", () => {
         });
 
         //=========================================
-        test("wsx button should point to 'validateExtension()' when a valid extension is entered", async () => {
+        test("wsx button label should be 'Verify' when a valid extension is entered", async () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             didUser: true,
@@ -661,10 +662,10 @@ describe("<BasicFormInfo />", () => {
             }
           });
           renderComponent(false);
-          const targetFunction = StyledButton.mock.calls[1][0].onClick.toString();
-          expect(targetFunction).toContain("validateExtension");
+          const buttonLabel = StyledButton.mock.calls[0][0].children.toString();
+          expect(buttonLabel).toBe("Verify");
         });
-        test("wsx button should point to 'assignExtension()' when extension is blank", async () => {
+        test("wsx button label should be 'Auto-Assign' when extension is blank", async () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             didUser: true,
@@ -676,38 +677,72 @@ describe("<BasicFormInfo />", () => {
             }
           });
           renderComponent(false);
-          const functionName = StyledButton.mock.calls[1][0].onClick.toString();
-          expect(functionName).toContain("assignExtension");
+          console.log("StyledButton.mock.calls:", StyledButton.mock.calls);
+          const buttonLabel = StyledButton.mock.calls[0][0].children;
+          expect(buttonLabel).toBe("Auto-Assign");
         });
 
-        test("wsx message is displayed while validating an extension number", async () => {
+        test("wsx1 message is displayed while validating an extension number", async () => {
+          // Faith look here:  I've added running "Faith" commentary in this test for your enjoyment :-)
+          // Comment out the console mocks in jestSetup.js to see the logs I've put in this test.
+          // To run only this test:  jest -t wsx1
+          //
+          beforeEach(() => {
+            // jest.mock("context", () => ({
+            //   __esModule: true,
+            //   useFormDispatch: jest.requireActual("context").useFormDispatch
+            // }));
+          });
+          // afterEach(() => {
+          //   // cleanup on exiting
+          // });
+
           useFormState.mockReturnValue({
             ...initialFormState,
             didUser: true,
             extension: {
-              value: "",
+              value: "12345",
               blurred: false,
               updated: false,
               valid: false
+            },
+            extensionStatus: {
+              ...initialFormState.extensionStatus,
+              searchStatus: ExtensionSearchStatuses.Idle,
+              retriesRemaining: 5,
+              message: "",
+              isError: false,
+              originalExtension: ""
             }
           });
-
-          renderComponent(false);
-          const extension1 = ModalExtension.mock.calls[0][0];
-          expect(extension1.message).toBe("");
-
-          const targetFunction = StyledButton.mock.calls[1][0].onClick;
-          checkExtension.mockReturnValue(Promise.resolve(true));
 
           act(() => {
-            targetFunction("12345");
+            renderComponent(false);
           });
 
-          const extension2 = ModalExtension.mock.calls[1][0];
+          // Faith:  This shows me an array of one render
+          // Find the onUpdate() method and call it
+          console.log("wsx ModalExtension #1:", ModalExtension.mock.calls);
+
+          // Faith:  This is the "Verify" button on the UI.  This should cause the
+          // "message" property on the ModalExtension component to change.
+          // Find the "Verify" function and call it
+          // console.log("StyledButton.mock.calls #1:", StyledButton.mock.calls);
+          const verifyFunction = StyledButton.mock.calls[0][0].onClick;
+          checkExtension.mockReturnValue(Promise.resolve(true)); // Faith:  Used in BasicFormInfo:142
+
+          // Faith:  There's a console.log in the app code proving this gets called
+          act(() => {
+            verifyFunction();
+          });
+
+          // Faith:  And this is where the grand disappointment happens:  This still shows me
+          // an array of 1, indicating (I believe) that ModalExtension has been rendered only once.
+          console.log("wsx ModalExtension #2:", ModalExtension.mock.calls);
+          const extension2 = ModalExtension.mock.calls[0][0];
           expect(extension2.message).toBe("Checking Extension Number with Twilio");
-
-
         });
+
         test("wsx error message is displayed for a reserved extension number", async () => {
           useFormState.mockReturnValue({
             ...initialFormState,
@@ -752,9 +787,6 @@ describe("<BasicFormInfo />", () => {
         // console.log("wsx verifyButton:", verifyButton);
         // const autoButton = rendered.getByText("AUTO-ASSIGN");
         // const verifyButton = rendered.getByText("VERIFY");
-        // const verifyButton = rendered.getByTestId("verify-auto-button");
-        // console.log("wsx verifyButton:", verifyButton);
-        // console.log("wsx verifyButton.children:", verifyButton.children);
         // const verifyButton = rendered.getByTestId("verify-auto-button");
         // const verifyButton = await waitFor(() => rendered.getByTestId("verify-auto-button"));
         // expect(verifyButton.children.length).toBe(1);

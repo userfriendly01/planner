@@ -1,4 +1,7 @@
-import { BasicFormInfoProps, ExtensionSearchStatuses } from "./UserEntryForm.Interfaces";
+import { 
+  BasicFormInfoProps,
+  ExtensionSearchStatuses 
+} from "./UserEntryForm.Interfaces";
 import {
   FormControlsContainer,
   FormControlsPane,
@@ -88,6 +91,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   };
 
   const handleExtensionUpdated = (extension:string) => {
+    console.log("wsx HANDLE EXTENSION UPDATED", extension);
     setForm({
       type: userFormActions.UPDATE_EXTENSION,
       payload: {
@@ -123,6 +127,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   };
 
   const validateTwilioExtension = (extNum:string) => {
+    console.log("validateTwilioExtension() VERIFY CALLED", extNum);
     if (ReservedExtensions.indexOf(parseInt(extNum)) !== -1) {
       setForm({
         type: userFormActions.SET_EXTENSION_MESSAGE,
@@ -173,15 +178,13 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
     });
   };
 
-  const validateExtension = () => validateTwilioExtension(form.extension.value);
-
   let extensionButtonLabel = "Auto-Assign";
   let extensionButtonHandler = assignExtension;
   let extensionButtonEnabled = true;
 
   if (form.extension.value.length > 0) {
     extensionButtonLabel = "Verify";
-    extensionButtonHandler = validateExtension;
+    extensionButtonHandler = () => validateTwilioExtension(form.extension.value);
     extensionButtonEnabled = extensionMatcher.test(form.extension.value);
   }
 
@@ -198,7 +201,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
       });
     }
   }
-  console.log("wsx form.extension.value:", form.extension.value);
+  console.log("wsx RENDER with form.extension:", form.extension);
   return(
     <FormControlsContainer>
       <FormControlsPane>
