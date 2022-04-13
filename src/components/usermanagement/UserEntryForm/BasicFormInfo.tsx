@@ -42,10 +42,7 @@ import {
 } from "utils";
 import styled from "styled-components";
 
-import ReservedExtensions from "./ReservedExtensions";
-
-const MIN_EXTENSION_NUM = 10000;
-const EXTENSION_NUM_RANGE = 89995;
+import ExtensionSearchParams from "./ExtensionSearchParams";
 
 const ExtensionWrapper = styled.div`
   display: flex;
@@ -91,7 +88,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   };
 
   const handleExtensionUpdated = (extension:string) => {
-    console.log("wsx HANDLE EXTENSION UPDATED", extension);
     setForm({
       type: userFormActions.UPDATE_EXTENSION,
       payload: {
@@ -116,19 +112,17 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   const pickANumber = () => {
     let extNum = "";
     while (extNum === "") {
-      const oneNum = MIN_EXTENSION_NUM + Math.floor((Math.random() * EXTENSION_NUM_RANGE));
-      if (ReservedExtensions.indexOf(oneNum) === -1) {
+      const oneNum = ExtensionSearchParams.MinExtensionNum + Math.floor((Math.random() * ExtensionSearchParams.ExtensionNumRange));
+      if (ExtensionSearchParams.ReservedExtensions.indexOf(oneNum) === -1) {
         extNum = oneNum.toString();
-      } else {
-        console.warn("Reserved extension skipped:", oneNum);
       }
     }
     validateTwilioExtension(extNum);
   };
 
   const validateTwilioExtension = (extNum:string) => {
-    console.log("validateTwilioExtension() VERIFY CALLED", extNum);
-    if (ReservedExtensions.indexOf(parseInt(extNum)) !== -1) {
+    console.log("wsx validateTwilioExtension() VERIFY CALLED", extNum);
+    if (ExtensionSearchParams.ReservedExtensions.indexOf(parseInt(extNum)) !== -1) {
       setForm({
         type: userFormActions.SET_EXTENSION_MESSAGE,
         payload: {
@@ -201,7 +195,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
       });
     }
   }
-  console.log("wsx RENDER with form.extension:", form.extension);
   return(
     <FormControlsContainer>
       <FormControlsPane>
@@ -320,14 +313,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
               isError={form.extensionStatus.isError}
               onClear={handleExtensionCleared}
               onUpdate={handleExtensionUpdated}
-              // onUpdate={extension => setForm({
-              //   type: userFormActions.UPDATE_EXTENSION,
-              //   payload: {
-              //     extension,
-              //     isValid: (extension === form.extensionState.originalExtension)
-              //   }
-              // })
-              // }
             />
             <ExtensionButtonWrapper>
               <UserFormButton

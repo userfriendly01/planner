@@ -14,6 +14,7 @@ import {
   formatE164PhoneNumber,
   getValidSkillsObject
 } from "utils";
+import { ExtensionSearchStatuses } from "../../components/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
 
 describe("userFormReducer", () => {
 
@@ -447,6 +448,10 @@ describe("userFormReducer", () => {
           value: worker.attributes.extension,
           valid: true
         },
+        extensionStatus: {
+          ...initialUserFormState.extensionStatus,
+          originalExtension: worker.attributes.extension || ""
+        },
         manager: {
           ...initialUserFormState.manager,
           value: JSON.stringify(managerList.find(m => m.manager_n_number === worker.attributes.manager_n_number))
@@ -563,6 +568,12 @@ describe("userFormReducer", () => {
           blurred: payload.isValid,
           updated: true,
           valid: payload.isValid
+        },
+        extensionStatus: {
+          ...initialUserFormState.extensionStatus,
+          message: "Extension is valid",
+          searchStatus: ExtensionSearchStatuses.Idle,
+          retriesRemaining: 5
         }
       };
       expect(result).toStrictEqual(expectedFormState);

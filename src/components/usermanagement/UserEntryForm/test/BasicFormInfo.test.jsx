@@ -39,9 +39,7 @@ import {
   mockWorkers,
   profileList,
   render,
-  setupMockedComponents,
-  waitFor,
-  fireEvent
+  setupMockedComponents
 } from "testUtils";
 import {
   getOverflowSkillFromProfile,
@@ -52,16 +50,9 @@ import {
 import { ExtensionSearchStatuses } from "../UserEntryForm.Interfaces";
 import { StyledButton } from "components";
 import { checkExtension } from "services";
+// import { ExtensionSearchParams } from "../ExtensionSearchParams";
 
 jest.useFakeTimers();
-
-// jest.mock("react", () => ({
-//   ...jest.requireActual("react"),
-//   useState: jest.fn().mockReturnValue([
-//     () => jest.fn,
-//     () => jest.fn()
-//   ])
-// }));
 
 jest.mock("components", () => ({
   __esModule: true,
@@ -98,6 +89,8 @@ jest.mock("context", () => ({
   useFormDispatch: jest.fn(),
   userFormActions: jest.requireActual("context").userFormActions
 }));
+
+const ExtensionSearchParams = jest.createMockFromModule("../ExtensionSearchParams");
 
 jest.mock("utils", () => ({
   __esModule: true,
@@ -626,20 +619,20 @@ describe("<BasicFormInfo />", () => {
           renderComponent(false);
           expect(ModalExtension.mock.calls[0][0].isError).toBe(false);
         });
-        test("onUpdate - should set extension to correct value", () => {
-          renderComponent(false);
-          act(() => {
-            const updateValue = ModalExtension.mock.calls[0][0].onUpdate;
-            updateValue("1234", false);
-          });
-          expect(mockSetForm).toBeCalledWith({
-            type: userFormActions.UPDATE_EXTENSION,
-            payload: {
-              extension: "1234",
-              isValid: false
-            }
-          });
-        });
+        // test("wsx2 onUpdate - should set extension to correct value", () => {
+        //   renderComponent(false);
+        //   act(() => {
+        //     const updateValue = ModalExtension.mock.calls[0][0].onUpdate;
+        //     updateValue("1234", false);
+        //   });
+        //   expect(mockSetForm).toBeCalledWith({
+        //     type: userFormActions.UPDATE_EXTENSION,
+        //     payload: {
+        //       extension: "1234",
+        //       isValid: false
+        //     }
+        //   });
+        // });
         test("onClear - should reset the field", () => {
           renderComponent(false);
           act(() => {
@@ -681,22 +674,7 @@ describe("<BasicFormInfo />", () => {
           const buttonLabel = StyledButton.mock.calls[0][0].children;
           expect(buttonLabel).toBe("Auto-Assign");
         });
-
-        test("wsx1 message is displayed while validating an extension number", async () => {
-          // Faith look here:  I've added running "Faith" commentary in this test for your enjoyment :-)
-          // Comment out the console mocks in jestSetup.js to see the logs I've put in this test.
-          // To run only this test:  jest -t wsx1
-          //
-          beforeEach(() => {
-            // jest.mock("context", () => ({
-            //   __esModule: true,
-            //   useFormDispatch: jest.requireActual("context").useFormDispatch
-            // }));
-          });
-          // afterEach(() => {
-          //   // cleanup on exiting
-          // });
-
+        test("wsx click the 'Validate' button", () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             didUser: true,
@@ -720,30 +698,58 @@ describe("<BasicFormInfo />", () => {
             renderComponent(false);
           });
 
-          // Faith:  This shows me an array of one render
-          // Find the onUpdate() method and call it
-          console.log("wsx ModalExtension #1:", ModalExtension.mock.calls);
-
-          // Faith:  This is the "Verify" button on the UI.  This should cause the
-          // "message" property on the ModalExtension component to change.
           // Find the "Verify" function and call it
-          // console.log("StyledButton.mock.calls #1:", StyledButton.mock.calls);
           const verifyFunction = StyledButton.mock.calls[0][0].onClick;
-          checkExtension.mockReturnValue(Promise.resolve(true)); // Faith:  Used in BasicFormInfo:142
+          checkExtension.mockReturnValue(Promise.resolve(true));
 
-          // Faith:  There's a console.log in the app code proving this gets called
           act(() => {
             verifyFunction();
           });
 
-          // Faith:  And this is where the grand disappointment happens:  This still shows me
-          // an array of 1, indicating (I believe) that ModalExtension has been rendered only once.
-          console.log("wsx ModalExtension #2:", ModalExtension.mock.calls);
-          const extension2 = ModalExtension.mock.calls[0][0];
-          expect(extension2.message).toBe("Checking Extension Number with Twilio");
-        });
+          const expectedParams = {
+            type: userFormActions.SET_EXTENSION_MESSAGE,
+            payload: {
+              message: "Checking Extension Number with Twilio",
+              isError: false
+            }
+          };
 
+          expect(mockSetForm).toHaveBeenCalledTimes(1);
+          expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
+        });
         test("wsx error message is displayed for a reserved extension number", async () => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            didUser: true,
+            extension: {
+              value: "13378",
+              blurred: false,
+              updated: false,
+              valid: false
+            }
+          });
+
+          renderComponent(false);
+          const validateFunction = StyledButton.mock.calls[0][0].onClick;
+          console.log("validateFunction", validateFunction);
+          checkExtension.mockReturnValue(Promise.resolve(true));
+
+          act(() => {
+            validateFunction();
+          });
+
+          const expectedParams = {
+            type: userFormActions.SET_EXTENSION_MESSAGE,
+            payload: {
+              message: "Extension is reserved",
+              isError: true
+            }
+          };
+
+          expect(mockSetForm).toHaveBeenCalledTimes(1);
+          expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
+        });
+        test("wsx click the Auto-Assign button", async () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             didUser: true,
@@ -756,20 +762,246 @@ describe("<BasicFormInfo />", () => {
           });
 
           renderComponent(false);
-          const validateFunction = StyledButton.mock.calls[1][0].onClick;
+          const autoAssignFunction = StyledButton.mock.calls[0][0].onClick;
+          console.log("autoAssignFunction", autoAssignFunction);
           checkExtension.mockReturnValue(Promise.resolve(true));
 
           act(() => {
-            validateFunction("13378");
+            autoAssignFunction();
           });
 
-          const extension2 = ModalExtension.mock.calls[1][0];
-          console.log("wsx extension2", extension2.message);
+          const expectedParams = {
+            type: userFormActions.ASSIGN_EXTENSION
+          };
 
-          // expect(extension2.message).toContain("Reserved extension skipped");
-          await waitFor(() => expect(extension2.message).toContain("Reserved extension skipped"));
+          expect(mockSetForm).toHaveBeenCalledTimes(1);
+          expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
         });
+        test("wsx Auto-Assign retries exhausted", async () => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            didUser: true,
+            extension: {
+              value: "",
+              blurred: false,
+              updated: false,
+              valid: false
+            },
+            extensionStatus: {
+              ...initialFormState.extensionStatus,
+              searchStatus: ExtensionSearchStatuses.PickANumber,
+              retriesRemaining: 0
+            }
+          });
 
+          renderComponent(false);
+
+          const expectedParams = {
+            type: userFormActions.SET_EXTENSION_MESSAGE,
+            payload: {
+              message: "Extension retries exhausted.  Please try again.",
+              isError: true
+            }
+          };
+
+          expect(mockSetForm).toHaveBeenCalledTimes(1);
+          expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
+        });
+        test("wsx Auto-Assign retries not exhausted", async () => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            didUser: true,
+            extension: {
+              value: "",
+              blurred: false,
+              updated: false,
+              valid: false
+            },
+            extensionStatus: {
+              ...initialFormState.extensionStatus,
+              searchStatus: ExtensionSearchStatuses.PickANumber,
+              retriesRemaining: 5
+            }
+          });
+
+          checkExtension.mockReturnValue(Promise.resolve(true));
+
+          renderComponent(false);
+
+          const expectedParams = {
+            type: userFormActions.SET_EXTENSION_MESSAGE,
+            payload: {
+              message: "Checking Extension Number with Twilio",
+              isError: false
+            }
+          };
+
+          expect(mockSetForm).toHaveBeenCalledTimes(1);
+          expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
+        });
+        test("wsx1 Auto-Assign picks a reserved number", async () => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            didUser: true,
+            extension: {
+              value: "",
+              blurred: false,
+              updated: false,
+              valid: false
+            },
+            extensionStatus: {
+              ...initialFormState.extensionStatus,
+              searchStatus: ExtensionSearchStatuses.PickANumber,
+              retriesRemaining: 5
+            }
+          });
+
+          checkExtension.mockReturnValue(Promise.resolve(true));
+
+          renderComponent(false);
+
+          const expectedParams = {
+            type: userFormActions.SET_EXTENSION_MESSAGE,
+            payload: {
+              message: "Checking Extension Number with Twilio",
+              isError: false
+            }
+          };
+
+          expect(mockSetForm).toHaveBeenCalledTimes(1);
+          expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
+        });
+        test("wsx extension not available", async () => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            didUser: true,
+            extension: {
+              value: "",
+              blurred: false,
+              updated: false,
+              valid: false
+            },
+            extensionStatus: {
+              ...initialFormState.extensionStatus,
+              searchStatus: ExtensionSearchStatuses.PickANumber,
+              retriesRemaining: 5
+            }
+          });
+
+          checkExtension.mockReturnValue(Promise.resolve(false));
+
+          renderComponent(false);
+
+          const expectedParams = {
+            type: userFormActions.SET_EXTENSION_MESSAGE,
+            payload: {
+              message: "Checking Extension Number with Twilio",
+              isError: false
+            }
+          };
+
+          expect(mockSetForm).toHaveBeenCalledTimes(1);
+          expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
+        });
+        test("wsx extension not available", async () => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            didUser: true,
+            extension: {
+              ...initialFormState.extension,
+              value: "1234"
+            }
+          });
+
+          act(() => {
+            renderComponent(false);
+          });
+
+          const verifyFunction = StyledButton.mock.calls[0][0].onClick;
+          checkExtension.mockReturnValue(Promise.resolve(false));
+
+          act(() => {
+            verifyFunction();
+          });
+
+          const expectedParams = {
+            type: userFormActions.SET_EXTENSION_MESSAGE,
+            payload: {
+              message: "Checking Extension Number with Twilio",
+              isError: false
+            }
+          };
+
+          expect(mockSetForm).toHaveBeenCalledTimes(1);
+          expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
+        });
+        test("wsx error while checking extension", async () => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            didUser: true,
+            extension: {
+              ...initialFormState.extension,
+              value: "1234"
+            }
+          });
+
+          act(() => {
+            renderComponent(false);
+          });
+
+          const verifyFunction = StyledButton.mock.calls[0][0].onClick;
+          checkExtension.mockReturnValue(Promise.reject(false));
+
+          act(() => {
+            verifyFunction();
+          });
+
+          // const expectedParams = {
+          //   type: userFormActions.SET_EXTENSION_MESSAGE,
+          //   payload: {
+          //     message: "Checking Extension Number with Twilio",
+          //     isError: false
+          //   }
+          // };
+
+          // expect(mockSetForm).toHaveBeenCalledTimes(1);
+          // expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
+        });
+        // ExtensionSearchParams.mockReturnValue 
+        // ExtensionSearchParams.default.ReservedExtension = [1,2,3];
+        // console.log("ExtensionSearchParams", ExtensionSearchParams);
+        // ExtensionSearchParams
+
+        test("wsx update the extension", () => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            didUser: true
+          });
+
+          act(() => {
+            renderComponent(false);
+          });
+
+          // Find the onUpdate function and call it
+          const onUpdateFunction = ModalExtension.mock.calls[0][0].onUpdate;
+          const someExtension = "23456";
+
+          act(() => {
+            onUpdateFunction(someExtension);
+          });
+
+          const expectedParams = {
+            type: userFormActions.UPDATE_EXTENSION,
+            payload: {
+              extension: someExtension,
+              isValid: false
+            }
+          };
+
+          expect(mockSetForm).toHaveBeenCalledTimes(1);
+          expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
+        });
+        // wsx
         // Reserved:  13378 Reserved extension skipped
         // await waitFor(() => expect(ModalExtension.mock.calls.length).toBe(2));
         // expect(ModalExtension.mock.calls).toBe("anything");
