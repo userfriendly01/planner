@@ -64,7 +64,6 @@ const MessageContainer = props => {
   } = props;
 
   const adminState = useAdminState();
-  console.log("adminState", adminState);
   const nNumber = adminState.userContext.pingIdentity.sub;
 
   let loggedInWorker;
