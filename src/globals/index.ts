@@ -59,6 +59,21 @@ export const apiPaths = {
 export const profileConfigs = {
   PROFILE_SKILL_MAP: [
     {
+      "profileId": 0,
+      "skills": ["466", "aisgConsumer", "aisgEcliq", "aisgL1", "aisgPassword", "blSalesAmazonQuote", "blSalesAmazonTriage", "blSalesL1", "blSalesLargePolicy",
+        "bookxferAgentSupp", "bookxferGeicoSupp", "bscAgencyBill", "bscBlSafeco", "bscCbs", "bscCbsHelpDesk", "bscCertainly", "bscCommissions", "bscCOVID19",
+        "bscLnwL1", "bscLnwOnlineReporting", "bscMajescoHelpDesk", "bscMajescoL1", "bscOcgPl", "bscPls", "bscSafecoHelpDesk", "bscYwpL1", "ccAuxMisc87",
+        "ccAuxPAL88", "ccAuxWC89", "ccBLAGLFNOLSP29", "ccBLDefaultSP46", "ccBLPFNOLSP30", "ccBLStatusSP31", "ccCaMAA61", "ccComcastConcierge36",
+        "ccCovid93", "ccDisability32", "ccGeneralSkill12", "ccGeneralSkillSP19", "ccGMDisSP33", "ccGMIdmSP35", "ccGrmBLAGLFNOL26", "ccGrmBLDefault44",
+        "ccGrmBLPFNOL27", "ccGrmBLStatus28", "ccGrmSuperAssist69", "ccGroupInqSP37", "ccIDM34", "ccIronHealth78", "ccLyft96", "ccNASInquiry97", "ccNASPropertyCAT98",
+        "ccNationalAL22", "ccNationalALSP23", "ccNationalInq24", "ccNationalInqSP25", "ccNationalWC20", "ccNationalWCSP21", "ccPALInquiry82", "ccPALInquirySP84",
+        "ccPortalSP54", "ccPortalSupport53", "ccRoutetoAux80", "ccSharedAGLFNOL38", "ccSharedAGLFNOLSP41", "ccSharedDefault45", "ccSharedDefaultSP47",
+        "ccSharedPFNOL39", "ccSharedPFNOLSP42", "ccSharedStatus40", "ccSharedStatusSP43", "ccSuperAssist63", "ccUber92", "ccUpsGL58", "ccUPSInquiry57",
+        "ccWCInquiry81", "ccWCInquirySP83", "csoBilling", "csoPortal", "csoService", "grscollections-l1", "lscAgentSales", "lscBookTransfer", "lscDirectSales",
+        "lscHomeInsDotCom", "lscMass", "lscOBDialer1", "lscPriorityAgent", "lscPriorityCampaigns", "lscUSAA", "overflowBLAPD", "overflowGrsCasualty",
+        "overflowNAS", "overflowNFSIU", "overflowPropertyMarine", "overflowSSCCST", "overflowSSCS", "overflowSSLRU", "overflowWC", "palL1"]
+    },
+    {
       "profileId": 1,
       "skills": ["466"]
     },
