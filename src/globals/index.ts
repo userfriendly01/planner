@@ -71,7 +71,16 @@ export const profileConfigs = {
         "ccSharedPFNOL39", "ccSharedPFNOLSP42", "ccSharedStatus40", "ccSharedStatusSP43", "ccSuperAssist63", "ccUber92", "ccUpsGL58", "ccUPSInquiry57",
         "ccWCInquiry81", "ccWCInquirySP83", "csoBilling", "csoPortal", "csoService", "grscollections-l1", "lscAgentSales", "lscBookTransfer", "lscDirectSales",
         "lscHomeInsDotCom", "lscMass", "lscOBDialer1", "lscPriorityAgent", "lscPriorityCampaigns", "lscUSAA", "overflowBLAPD", "overflowGrsCasualty",
-        "overflowNAS", "overflowNFSIU", "overflowPropertyMarine", "overflowSSCCST", "overflowSSCS", "overflowSSLRU", "overflowWC", "palL1"]
+        "overflowNAS", "overflowNFSIU", "overflowPropertyMarine", "overflowSSCCST", "overflowSSCS", "overflowSSLRU", "overflowWC", "palL1", "pasAAR",
+        "pasAgtBill", "pasAgtPol", "pasCustBill", "pasCustPol", "pasHelpDesk", "pasMA", "pasProducerSR", "pasSecProfileMgr", "pasSimpleBOP", "pasWACreditBan",
+        "pgsAFIBilling", "pgsAFIPolicy", "pgsAfterHoursCoverPAS", "pgsAgentSpanish", "pgsAnFHome", "pgsCancelTeam", "pgsCAST", "pgsComplexStates",
+        "pgsCustomerService", "pgsCustSvcBackup", "pgsExtendedHrs", "pgsGoldSpanish", "pgsGoldUSAABilling", "pgsGoldUSAAPolicy", "pgsGoldUSAASpanish", "pgsLSCUSAAOverFlow",
+        "pgsMass", "pgsOnlineAcctSvc", "pgsPlatformBilling", "pgsPlatformPolicy", "pgsRightTrackMobile", "pgsRightTrackPlugIn", "pgsTraditionalBill", "pgsTraditionalPol",
+        "pgsWACreditBan", "pluAgMUWInternal", "pluCalifornia", "pluCentral", "pluCentralTX", "pluEastDA", "pluEastOverall", "pluEastWestOverflow", "pluInsInterm",
+        "pluMidAtlantic", "pluMidwest", "pluMountain", "pluNatlPlat", "pluNortheast", "pluNorthwest", "pluOCGCSR", "pluOCGUW", "pluOverflowCentralTX", "pluPeerless",
+        "pluSoutheast", "pluSpecialty", "pluSpecialtyDA", "pluSpecialtyOverflow", "pluWestDA", "pluWestEastOverflow", "pluWestOverall", "premaudit-l1", "psu-l1",
+        "psu-l2", "psu-um", "safecoBillingOps", "safecoCommissions", "sbscCertificates", "sbscFarm", "sbscPolicy", "sbscPolicyCopies", "sbscPreferred", "sbscSafeco"
+        ]
     },
     {
       "profileId": 1,
