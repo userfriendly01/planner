@@ -122,7 +122,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   };
 
   const validateTwilioExtension = (extNum:string) => {
-    console.log("wsx validateTwilioExtension() VERIFY CALLED", extNum);
     if (searchParams.ReservedExtensions.indexOf(parseInt(extNum)) !== -1) {
       setForm({
         type: userFormActions.SET_EXTENSION_MESSAGE,

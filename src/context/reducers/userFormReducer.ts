@@ -30,7 +30,6 @@ export const userFormActions = {
   RESET_FORM_AFTER_ADD: "RESET_FORM_AFTER_ADD",
   SET_BLUR_ON_FIELD: "SET_BLUR_ON_FIELD",
   SET_EXTENSION_MESSAGE: "SET_EXTENSION_MESSAGE",
-  SET_EXTENSION_PICKANUMBER: "SET_EXTENSION_PICKANUMBER",
   SET_EXTENSION_RETRIES: "SET_EXTENSION_RETRIES",
   SET_EXTENSION_VERIFIED: "EXTENSION_VERIFIED",
   SET_UPDATE_FORM_STATE: "SET_UPDATE_FORM_STATE",
@@ -45,7 +44,6 @@ export const userFormActions = {
 };
 
 const initialDefaultSkills = getValidSkillsObject();
-const MAX_EXTENSION_RETRIES = 5;
 
 export const initialUserFormState: UserFormState = {
   formMode: formModes.INSERT,
@@ -114,6 +112,16 @@ export const initialUserFormState: UserFormState = {
 
 export const userFormReducer = (state: UserFormState, action: Action): UserFormState => {
   switch (action.type) {
+    case userFormActions.ASSIGN_EXTENSION: {
+      return {
+        ...state,
+        extensionStatus: {
+          ...state.extensionStatus,
+          searchStatus: ExtensionSearchStatuses.PickANumber,
+          message: "Searching..."
+        }
+      };
+    }
     case userFormActions.CLEAR_EXTENSION: {
       return {
         ...state,
@@ -126,7 +134,7 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         extensionStatus: {
           ...state.extensionStatus,
           searchStatus: ExtensionSearchStatuses.Idle,
-          retriesRemaining: MAX_EXTENSION_RETRIES,
+          retriesRemaining: searchParams.MaxRetries,
           isError: false,
           message: ""
         }
@@ -274,17 +282,7 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
           message: message,
           isError: isError,
           searchStatus: ExtensionSearchStatuses.Idle,
-          retriesRemaining: MAX_EXTENSION_RETRIES
-        }
-      };
-    }
-    case userFormActions.SET_EXTENSION_PICKANUMBER: {
-      return {
-        ...state,
-        extensionStatus: {
-          ...state.extensionStatus,
-          searchStatus: ExtensionSearchStatuses.PickANumber,
-          retriesRemaining: MAX_EXTENSION_RETRIES
+          retriesRemaining: searchParams.MaxRetries
         }
       };
     }
@@ -305,7 +303,7 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         extensionStatus: {
           ...state.extensionStatus,
           searchStatus: ExtensionSearchStatuses.Idle,
-          retriesRemaining: MAX_EXTENSION_RETRIES,
+          retriesRemaining: searchParams.MaxRetries,
           message: "Verified",
           isError: false
         }
@@ -393,17 +391,7 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
           ...state.extensionStatus,
           message,
           searchStatus: ExtensionSearchStatuses.Idle,
-          retriesRemaining: MAX_EXTENSION_RETRIES
-        }
-      };
-    }
-    case userFormActions.ASSIGN_EXTENSION: {
-      return {
-        ...state,
-        extensionStatus: {
-          ...state.extensionStatus,
-          searchStatus: ExtensionSearchStatuses.PickANumber,
-          message: "Searching..."
+          retriesRemaining: searchParams.MaxRetries
         }
       };
     }

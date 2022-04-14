@@ -622,20 +622,6 @@ describe("<BasicFormInfo />", () => {
           renderComponent(false);
           expect(ModalExtension.mock.calls[0][0].isError).toBe(false);
         });
-        // test("wsx2 onUpdate - should set extension to correct value", () => {
-        //   renderComponent(false);
-        //   act(() => {
-        //     const updateValue = ModalExtension.mock.calls[0][0].onUpdate;
-        //     updateValue("1234", false);
-        //   });
-        //   expect(mockSetForm).toBeCalledWith({
-        //     type: userFormActions.UPDATE_EXTENSION,
-        //     payload: {
-        //       extension: "1234",
-        //       isValid: false
-        //     }
-        //   });
-        // });
         test("onClear - should reset the field", () => {
           renderComponent(false);
           act(() => {
@@ -644,9 +630,7 @@ describe("<BasicFormInfo />", () => {
           });
           expect(mockSetForm).toBeCalledWith({ type: userFormActions.CLEAR_EXTENSION });
         });
-
-        //=========================================
-        test("wsx button label should be 'Verify' when a valid extension is entered", async () => {
+        test("button label should be 'Verify' when a valid extension is entered", async () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             didUser: true,
@@ -661,7 +645,7 @@ describe("<BasicFormInfo />", () => {
           const buttonLabel = StyledButton.mock.calls[0][0].children.toString();
           expect(buttonLabel).toBe("Verify");
         });
-        test("wsx button label should be 'Auto-Assign' when extension is blank", async () => {
+        test("button label should be 'Auto-Assign' when extension is blank", async () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             didUser: true,
@@ -677,7 +661,7 @@ describe("<BasicFormInfo />", () => {
           const buttonLabel = StyledButton.mock.calls[0][0].children;
           expect(buttonLabel).toBe("Auto-Assign");
         });
-        test("wsx click the 'Validate' button", () => {
+        test("click the 'Validate' button", () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             didUser: true,
@@ -720,7 +704,7 @@ describe("<BasicFormInfo />", () => {
           expect(mockSetForm).toHaveBeenCalledTimes(1);
           expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
         });
-        test("wsx error message is displayed for a reserved extension number", async () => {
+        test("error message is displayed for a reserved extension number", async () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             didUser: true,
@@ -752,7 +736,7 @@ describe("<BasicFormInfo />", () => {
           expect(mockSetForm).toHaveBeenCalledTimes(1);
           expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
         });
-        test("wsx click the Auto-Assign button", async () => {
+        test("click the Auto-Assign button", async () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             didUser: true,
@@ -780,7 +764,7 @@ describe("<BasicFormInfo />", () => {
           expect(mockSetForm).toHaveBeenCalledTimes(1);
           expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
         });
-        test("wsx Auto-Assign retries exhausted", async () => {
+        test("Auto-Assign retries exhausted", async () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             didUser: true,
@@ -810,7 +794,7 @@ describe("<BasicFormInfo />", () => {
           expect(mockSetForm).toHaveBeenCalledTimes(1);
           expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
         });
-        test("wsx Auto-Assign retries not exhausted", async () => {
+        test("Auto-Assign retries not exhausted", async () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             didUser: true,
@@ -842,75 +826,7 @@ describe("<BasicFormInfo />", () => {
           expect(mockSetForm).toHaveBeenCalledTimes(1);
           expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
         });
-        // test("wsx1 all auto-assign extensions are reserved", async () => {
-        //   useFormState.mockReturnValue({
-        //     ...initialFormState,
-        //     didUser: true,
-        //     extensionStatus: {
-        //       ...initialFormState.extensionStatus,
-        //       searchStatus: ExtensionSearchStatuses.PickANumber
-        //     }
-        //   });
-
-        //   checkExtension.mockReturnValue(Promise.resolve(true));
-        //   // console.log("wsx ExtensionSearchParams:", ExtensionSearchParams);
-
-        //   const mockTable = {
-        //     MinExtensionNum: 2100,
-        //     ExtensionNumRange: 2,
-        //     MaxRetries: 1,
-        //     ReservedExtensions: [ 2100, 2101, 2102 ]
-        //   };
-
-        //   const mockFn = {
-        //     getValues: () => mockTable
-        //   };
-
-        //   jest.spyOn(SearchParams, "getValues")
-        //     .mockImplementation(jest.fn(() => mockFn));
-        //   // SearchParams.mockReturnValue( mockFn );
-
-        //   act(() => {
-        //     renderComponent(false);
-        //   });
-
-        //   // jest.mock("../ExtensionSearchParams", () => ({
-        //   //   ExtensionSearchParams: mockTable
-        //   // }));
-        //   // console.log("wsx AFTER ExtensionSearchParams:", ExtensionSearchParams);
-
-        //   const autoAssignFunction = StyledButton.mock.calls[0][0].onClick;
-        //   // console.log("autoAssignFunction", autoAssignFunction);
-        //   autoAssignFunction();
-
-        //   const expectedParams = {
-        //     type: userFormActions.SET_EXTENSION_MESSAGE,
-        //     payload: {
-        //       message: "Too many extensions are reserved. But please try again.999",
-        //       isError: true
-        //     }
-        //   };
-
-        //   expect(mockSetForm).toHaveBeenCalledTimes(1);
-        //   expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
-
-        //   // jest.spyOn(ExtensionSearchParams, "ExtensionSearchParams").mockImplementation(jest.fn(() => mockTable));
-
-        //   // ExtensionSearchParams.mockReturnValue({
-        //   //   MinExtensionNum: 2100,
-        //   //   ExtensionNumRange: 2,
-        //   //   MaxRetries: 1,
-        //   //   ReservedExtensions: [ 2100, 2101, 2102 ]
-        //   // });
-        //   // console.log("ExtensionSearchParams", ExtensionSearchParams);
-        //   // ExtensionSearchParams ={
-        //   //   MinExtensionNum: 2100,
-        //   //   ExtensionNumRange: 2,
-        //   //   MaxRetries: 1,
-        //   //   ReservedExtensions: [ 2100, 2101, 2102 ]
-        //   // };
-        // });
-        test("wsx extension not available", async () => {
+        test("extension not available", async () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             didUser: true,
@@ -942,7 +858,7 @@ describe("<BasicFormInfo />", () => {
           expect(mockSetForm).toHaveBeenCalledTimes(1);
           expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
         });
-        test("wsx extension not available", async () => {
+        test("extension not available", async () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             didUser: true,
@@ -974,7 +890,7 @@ describe("<BasicFormInfo />", () => {
           expect(mockSetForm).toHaveBeenCalledTimes(1);
           expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
         });
-        test("wsx error while checking extension", async () => {
+        test("error while checking extension", async () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             didUser: true,
@@ -994,24 +910,8 @@ describe("<BasicFormInfo />", () => {
           act(() => {
             verifyFunction();
           });
-
-          // const expectedParams = {
-          //   type: userFormActions.SET_EXTENSION_MESSAGE,
-          //   payload: {
-          //     message: "Checking Extension Number with Twilio",
-          //     isError: false
-          //   }
-          // };
-
-          // expect(mockSetForm).toHaveBeenCalledTimes(1);
-          // expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
         });
-        // ExtensionSearchParams.mockReturnValue 
-        // ExtensionSearchParams.default.ReservedExtension = [1,2,3];
-        // console.log("ExtensionSearchParams", ExtensionSearchParams);
-        // ExtensionSearchParams
-
-        test("wsx update the extension", () => {
+        test("update the extension", () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             didUser: true
@@ -1040,33 +940,7 @@ describe("<BasicFormInfo />", () => {
           expect(mockSetForm).toHaveBeenCalledTimes(1);
           expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
         });
-        // wsx
-        // Reserved:  13378 Reserved extension skipped
-        // await waitFor(() => expect(ModalExtension.mock.calls.length).toBe(2));
-        // expect(ModalExtension.mock.calls).toBe("anything");
-
-        // expect(checkExtension).toBeCalledTimes(1);
-        // expect(useState).toBeCalled(200);
-        // console.log("rendered.container:", rendered.container);
-        // expect(checkExtension.mock.calls[0][0].error).toBe(true);
-
-        // act(() => {
-        //   targetFunction();
-        // });
-        // expect(targetFunction).toContain("assignExtension");        
-        // const verifyButton = rendered.getByTestId("verify-auto-button");
-        // console.log("wsx verifyButton:", verifyButton);
-        // const autoButton = rendered.getByText("AUTO-ASSIGN");
-        // const verifyButton = rendered.getByText("VERIFY");
-        // const verifyButton = rendered.getByTestId("verify-auto-button");
-        // const verifyButton = await waitFor(() => rendered.getByTestId("verify-auto-button"));
-        // expect(verifyButton.children.length).toBe(1);
-        // const child = verifyButton.children[0];
-        // fireEvent.click(verifyButton);
-        //=========================================
       });
-
-
       describe(`formMode === ${formModes.INSERT}`, () => {
         beforeEach(() => {
           useFormState.mockReturnValue({

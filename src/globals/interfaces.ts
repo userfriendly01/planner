@@ -43,13 +43,6 @@ export interface ModalOverlayStatuses {
   SAVING: string,
   SUCCESS: string
 }
-
-enum ExtensionSearchStatuses {
-  Idle = 0,
-  PickANumber = 1,
-  WaitingForResponse = 2,
-}
-
 export interface MySqlBoolean {
   data: [0 | 1],
   type: "Buffer"
