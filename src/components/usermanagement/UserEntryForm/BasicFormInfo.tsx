@@ -42,7 +42,8 @@ import {
 } from "utils";
 import styled from "styled-components";
 
-import ExtensionSearchParams from "./ExtensionSearchParams";
+import { SearchParams } from "./ExtensionSearchParams";
+const searchParams = SearchParams.getValues();
 
 const ExtensionWrapper = styled.div`
   display: flex;
@@ -110,10 +111,10 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   };
 
   const pickANumber = () => {
-    let extNum = "";
-    while (extNum === "") {
-      const oneNum = ExtensionSearchParams.MinExtensionNum + Math.floor((Math.random() * ExtensionSearchParams.ExtensionNumRange));
-      if (ExtensionSearchParams.ReservedExtensions.indexOf(oneNum) === -1) {
+    let extNum = null;
+    while (!extNum) {
+      const oneNum = searchParams.MinExtensionNum + Math.floor((Math.random() * searchParams.ExtensionNumRange));
+      if (searchParams.ReservedExtensions.indexOf(oneNum) === -1) {
         extNum = oneNum.toString();
       }
     }
@@ -122,7 +123,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
 
   const validateTwilioExtension = (extNum:string) => {
     console.log("wsx validateTwilioExtension() VERIFY CALLED", extNum);
-    if (ExtensionSearchParams.ReservedExtensions.indexOf(parseInt(extNum)) !== -1) {
+    if (searchParams.ReservedExtensions.indexOf(parseInt(extNum)) !== -1) {
       setForm({
         type: userFormActions.SET_EXTENSION_MESSAGE,
         payload: {

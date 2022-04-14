@@ -1,6 +1,10 @@
-const ExtensionSearchParams = {
+// This module returns a function that returns a structure, rather 
+// than simply returning a structure.  This is done so that this module
+// can be mocked for unit testing.
+const data = {
   MinExtensionNum: 10000,
   ExtensionNumRange: 89995,
+  MaxRetries: 5,
   ReservedExtensions: [
     13378, 13379, 13380, 13381, 13382, 15729, 16235, 19204, 19206, 19207,
     19208, 19209, 19210, 19211, 19212, 19213, 19214, 19215, 19216, 19217,
@@ -12,4 +16,6 @@ const ExtensionSearchParams = {
   ]
 };
 
-export default ExtensionSearchParams;
+export const SearchParams = {
+  getValues: () => data
+};

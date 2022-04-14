@@ -50,7 +50,7 @@ import {
 import { ExtensionSearchStatuses } from "../UserEntryForm.Interfaces";
 import { StyledButton } from "components";
 import { checkExtension } from "services";
-// import { ExtensionSearchParams } from "../ExtensionSearchParams";
+import { SearchParams } from "../ExtensionSearchParams";
 
 jest.useFakeTimers();
 
@@ -90,8 +90,6 @@ jest.mock("context", () => ({
   userFormActions: jest.requireActual("context").userFormActions
 }));
 
-const ExtensionSearchParams = jest.createMockFromModule("../ExtensionSearchParams");
-
 jest.mock("utils", () => ({
   __esModule: true,
   isExtensionValid: jest.fn(),
@@ -114,6 +112,11 @@ jest.mock("globals", () => ({
   },
   formModes: jest.requireActual("globals").formModes
 }));
+
+// jest.mock("../ExtensionSearchParams", () => ({
+//   __esModule: true,
+//   getValues: jest.fn()
+// }));
 
 const mockSetForm = jest.fn();
 
@@ -839,38 +842,74 @@ describe("<BasicFormInfo />", () => {
           expect(mockSetForm).toHaveBeenCalledTimes(1);
           expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
         });
-        test("wsx1 Auto-Assign picks a reserved number", async () => {
-          useFormState.mockReturnValue({
-            ...initialFormState,
-            didUser: true,
-            extension: {
-              value: "",
-              blurred: false,
-              updated: false,
-              valid: false
-            },
-            extensionStatus: {
-              ...initialFormState.extensionStatus,
-              searchStatus: ExtensionSearchStatuses.PickANumber,
-              retriesRemaining: 5
-            }
-          });
+        // test("wsx1 all auto-assign extensions are reserved", async () => {
+        //   useFormState.mockReturnValue({
+        //     ...initialFormState,
+        //     didUser: true,
+        //     extensionStatus: {
+        //       ...initialFormState.extensionStatus,
+        //       searchStatus: ExtensionSearchStatuses.PickANumber
+        //     }
+        //   });
 
-          checkExtension.mockReturnValue(Promise.resolve(true));
+        //   checkExtension.mockReturnValue(Promise.resolve(true));
+        //   // console.log("wsx ExtensionSearchParams:", ExtensionSearchParams);
 
-          renderComponent(false);
+        //   const mockTable = {
+        //     MinExtensionNum: 2100,
+        //     ExtensionNumRange: 2,
+        //     MaxRetries: 1,
+        //     ReservedExtensions: [ 2100, 2101, 2102 ]
+        //   };
 
-          const expectedParams = {
-            type: userFormActions.SET_EXTENSION_MESSAGE,
-            payload: {
-              message: "Checking Extension Number with Twilio",
-              isError: false
-            }
-          };
+        //   const mockFn = {
+        //     getValues: () => mockTable
+        //   };
 
-          expect(mockSetForm).toHaveBeenCalledTimes(1);
-          expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
-        });
+        //   jest.spyOn(SearchParams, "getValues")
+        //     .mockImplementation(jest.fn(() => mockFn));
+        //   // SearchParams.mockReturnValue( mockFn );
+
+        //   act(() => {
+        //     renderComponent(false);
+        //   });
+
+        //   // jest.mock("../ExtensionSearchParams", () => ({
+        //   //   ExtensionSearchParams: mockTable
+        //   // }));
+        //   // console.log("wsx AFTER ExtensionSearchParams:", ExtensionSearchParams);
+
+        //   const autoAssignFunction = StyledButton.mock.calls[0][0].onClick;
+        //   // console.log("autoAssignFunction", autoAssignFunction);
+        //   autoAssignFunction();
+
+        //   const expectedParams = {
+        //     type: userFormActions.SET_EXTENSION_MESSAGE,
+        //     payload: {
+        //       message: "Too many extensions are reserved. But please try again.999",
+        //       isError: true
+        //     }
+        //   };
+
+        //   expect(mockSetForm).toHaveBeenCalledTimes(1);
+        //   expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
+
+        //   // jest.spyOn(ExtensionSearchParams, "ExtensionSearchParams").mockImplementation(jest.fn(() => mockTable));
+
+        //   // ExtensionSearchParams.mockReturnValue({
+        //   //   MinExtensionNum: 2100,
+        //   //   ExtensionNumRange: 2,
+        //   //   MaxRetries: 1,
+        //   //   ReservedExtensions: [ 2100, 2101, 2102 ]
+        //   // });
+        //   // console.log("ExtensionSearchParams", ExtensionSearchParams);
+        //   // ExtensionSearchParams ={
+        //   //   MinExtensionNum: 2100,
+        //   //   ExtensionNumRange: 2,
+        //   //   MaxRetries: 1,
+        //   //   ReservedExtensions: [ 2100, 2101, 2102 ]
+        //   // };
+        // });
         test("wsx extension not available", async () => {
           useFormState.mockReturnValue({
             ...initialFormState,

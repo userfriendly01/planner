@@ -13,6 +13,9 @@ import {
   getZeroOutEnabledFromProfile
 } from "utils";
 
+import { SearchParams } from "components/usermanagement/UserEntryForm/ExtensionSearchParams";
+const searchParams = SearchParams.getValues();
+
 export const userFormActions = {
   ASSIGN_EXTENSION: "ASSIGN_EXTENSION",
   CLEAR_EXTENSION: "CLEAR_EXTENSION",
@@ -57,7 +60,7 @@ export const initialUserFormState: UserFormState = {
   },
   extensionStatus: {
     searchStatus: ExtensionSearchStatuses.Idle,
-    retriesRemaining: MAX_EXTENSION_RETRIES,
+    retriesRemaining: searchParams.MaxRetries,
     message: "",
     isError: false,
     originalExtension: ""
