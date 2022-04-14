@@ -73,7 +73,7 @@ const MessageContainer = props => {
     }
   });
 
-  const workerProfileId = 0;
+  const workerProfileId = loggedInWorker ? loggedInWorker.attributes.profile_id : null;
   const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === workerProfileId);
   const defaultSkill = profile?.skills[0] || null;
   const [messageState, setMessageState] = useState({
