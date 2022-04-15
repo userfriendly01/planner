@@ -1,7 +1,21 @@
 import {
   ModalOverlayStatuses,
-  FormModes
+  FormModes,
 } from "globals";
+
+import {
+  PROFILE_1_SKILLS,
+  PROFILE_2_SKILLS,
+  PROFILE_3_SKILLS,
+  PROFILE_4_SKILLS,
+  PROFILE_5_SKILLS,
+  PROFILE_6_SKILLS,
+  PROFILE_7_SKILLS,
+  PROFILE_8_SKILLS,
+  PROFILE_9_SKILLS,
+  PROFILE_10_SKILLS,
+  PROFILE_11_SKILLS
+} from "./constants";
 
 const CONTACT_MANAGER_BASE_URI = "/contact-manager";
 const SERVICE_BASE_URI = "/service";
@@ -60,77 +74,52 @@ export const profileConfigs = {
   PROFILE_SKILL_MAP: [
     {
       "profileId": 0,
-      "skills": ["466", "aisgConsumer", "aisgEcliq", "aisgL1", "aisgPassword", "blSalesAmazonQuote", "blSalesAmazonTriage", "blSalesL1", "blSalesLargePolicy",
-        "bookxferAgentSupp", "bookxferGeicoSupp", "bscAgencyBill", "bscBlSafeco", "bscCbs", "bscCbsHelpDesk", "bscCertainly", "bscCommissions", "bscCOVID19",
-        "bscLnwL1", "bscLnwOnlineReporting", "bscMajescoHelpDesk", "bscMajescoL1", "bscOcgPl", "bscPls", "bscSafecoHelpDesk", "bscYwpL1", "ccAuxMisc87",
-        "ccAuxPAL88", "ccAuxWC89", "ccBLAGLFNOLSP29", "ccBLDefaultSP46", "ccBLPFNOLSP30", "ccBLStatusSP31", "ccCaMAA61", "ccComcastConcierge36",
-        "ccCovid93", "ccDisability32", "ccGeneralSkill12", "ccGeneralSkillSP19", "ccGMDisSP33", "ccGMIdmSP35", "ccGrmBLAGLFNOL26", "ccGrmBLDefault44",
-        "ccGrmBLPFNOL27", "ccGrmBLStatus28", "ccGrmSuperAssist69", "ccGroupInqSP37", "ccIDM34", "ccIronHealth78", "ccLyft96", "ccNASInquiry97", "ccNASPropertyCAT98",
-        "ccNationalAL22", "ccNationalALSP23", "ccNationalInq24", "ccNationalInqSP25", "ccNationalWC20", "ccNationalWCSP21", "ccPALInquiry82", "ccPALInquirySP84",
-        "ccPortalSP54", "ccPortalSupport53", "ccRoutetoAux80", "ccSharedAGLFNOL38", "ccSharedAGLFNOLSP41", "ccSharedDefault45", "ccSharedDefaultSP47",
-        "ccSharedPFNOL39", "ccSharedPFNOLSP42", "ccSharedStatus40", "ccSharedStatusSP43", "ccSuperAssist63", "ccUber92", "ccUpsGL58", "ccUPSInquiry57",
-        "ccWCInquiry81", "ccWCInquirySP83", "csoBilling", "csoPortal", "csoService", "grscollections-l1", "lscAgentSales", "lscBookTransfer", "lscDirectSales",
-        "lscHomeInsDotCom", "lscMass", "lscOBDialer1", "lscPriorityAgent", "lscPriorityCampaigns", "lscUSAA", "overflowBLAPD", "overflowGrsCasualty",
-        "overflowNAS", "overflowNFSIU", "overflowPropertyMarine", "overflowSSCCST", "overflowSSCS", "overflowSSLRU", "overflowWC", "palL1", "pasAAR",
-        "pasAgtBill", "pasAgtPol", "pasCustBill", "pasCustPol", "pasHelpDesk", "pasMA", "pasProducerSR", "pasSecProfileMgr", "pasSimpleBOP", "pasWACreditBan",
-        "pgsAFIBilling", "pgsAFIPolicy", "pgsAfterHoursCoverPAS", "pgsAgentSpanish", "pgsAnFHome", "pgsCancelTeam", "pgsCAST", "pgsComplexStates",
-        "pgsCustomerService", "pgsCustSvcBackup", "pgsExtendedHrs", "pgsGoldSpanish", "pgsGoldUSAABilling", "pgsGoldUSAAPolicy", "pgsGoldUSAASpanish", "pgsLSCUSAAOverFlow",
-        "pgsMass", "pgsOnlineAcctSvc", "pgsPlatformBilling", "pgsPlatformPolicy", "pgsRightTrackMobile", "pgsRightTrackPlugIn", "pgsTraditionalBill", "pgsTraditionalPol",
-        "pgsWACreditBan", "pluAgMUWInternal", "pluCalifornia", "pluCentral", "pluCentralTX", "pluEastDA", "pluEastOverall", "pluEastWestOverflow", "pluInsInterm",
-        "pluMidAtlantic", "pluMidwest", "pluMountain", "pluNatlPlat", "pluNortheast", "pluNorthwest", "pluOCGCSR", "pluOCGUW", "pluOverflowCentralTX", "pluPeerless",
-        "pluSoutheast", "pluSpecialty", "pluSpecialtyDA", "pluSpecialtyOverflow", "pluWestDA", "pluWestEastOverflow", "pluWestOverall", "premaudit-l1", "psu-l1",
-        "psu-l2", "psu-um", "safecoBillingOps", "safecoCommissions", "sbscCertificates", "sbscFarm", "sbscPolicy", "sbscPolicyCopies", "sbscPreferred", "sbscSafeco"
-        ]
+      "skills": [...PROFILE_1_SKILLS,...PROFILE_2_SKILLS,...PROFILE_3_SKILLS,...PROFILE_4_SKILLS,...PROFILE_5_SKILLS,...PROFILE_6_SKILLS,
+        ...PROFILE_7_SKILLS,...PROFILE_8_SKILLS,...PROFILE_9_SKILLS,...PROFILE_10_SKILLS,...PROFILE_11_SKILLS]
     },
     {
       "profileId": 1,
-      "skills": ["466"]
+      "skills": PROFILE_1_SKILLS
     },
     {
       "profileId": 2,
-      "skills": ["psu-l1", "psu-l2", "psu-um"]
+      "skills": PROFILE_2_SKILLS
     },
     {
       "profileId": 3,
-      "skills": ["blSalesL1", "blSalesAmazonQuote", "blSalesAmazonTriage"]
+      "skills": PROFILE_3_SKILLS
     },
     {
       "profileId": 4,
-      "skills": ["aisgL1", "aisgConsumer", "aisgEcliq", "aisgPassword"]
+      "skills": PROFILE_4_SKILLS
     },
     {
       "profileId": 5,
-      "skills": ["premaudit-l1"]
+      "skills": PROFILE_5_SKILLS
     },
     {
       "profileId": 6,
-      "skills": ["grscollections-l1"]
+      "skills": PROFILE_6_SKILLS
     },
     {
       "profileId": 7,
-      "skills": ["csoService", "csoBilling", "csoPortal"]
+      "skills": PROFILE_7_SKILLS
     },
     {
       "profileId": 8,
-      "skills": ["sbscCertificates", "sbscFarm", "sbscPolicy", "sbscPreferred", "sbscSafeco", "sbscPolicyCopies"]
+      "skills": PROFILE_8_SKILLS
     },
     {
       "profileId": 9,
-      "skills": ["palL1"]
+      "skills": PROFILE_9_SKILLS
     },
     {
       "profileId": 10,
-      "skills": ["bscCbs", "bscCbsL2", "bscCbsHelpDesk", "bscAgencyBill", "bscCommissions", "bscMajescoL1", "bscMajescoHelpDesk", "bscBlSafeco",
-        "bscSafecoHelpDesk", "bscLnwL1", "bscPls", "bscLnwOnlineReporting", "bscOcgPl", "bscYwpL1", "bscCOVID19", "bscCertainly"]
+      "skills": PROFILE_10_SKILLS
     },
     {
       "profileId": 11,
-      "skills": ["ccGeneralSkill12", "ccGeneralSkillSP19", "ccNationalWC20", "ccNationalWCSP21", "ccNationalAL22", "ccNationalALSP23", "ccNationalInq24",
-        "ccNationalInqSP25",  "ccDisability32", "ccGMDisSP33", "ccIDM34", "ccGMIdmSP35",  "ccComcastConcierge36", "ccGroupInqSP37", "ccSharedAGLFNOL38",
-        "ccSharedPFNOL39", "ccSharedStatus40", "ccSharedAGLFNOLSP41", "ccSharedPFNOLSP42","ccSharedStatusSP43", "ccSharedDefault45", "ccSharedDefaultSP47",
-        "ccAgencyMarkets48", "ccPortalSupport53","ccPortalSP54","ccUPSInquiry57", "ccUpsGL58", "ccCaMAA61", "ccCatTEAM62", "ccSuperAssist63",
-        "ccDefaultCC76","ccIronHealth78", "ccWCInquiry81","ccPALInquiry82", "ccWCInquirySP83", "ccPALInquirySP84","ccAuxMisc87","ccAuxPAL88",
-        "ccAuxWC89", "ccUber92","ccCovid93","ccLyft96", "ccNASInquiry97", "ccNASPropertyCAT98"]
+      "skills": PROFILE_11_SKILLS
     }
   ]
 };
