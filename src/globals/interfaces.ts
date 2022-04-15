@@ -1,3 +1,4 @@
+import { CalabrioGroup } from "../components/usermanagement/CallRecording/CallRecording.Interfaces";
 export interface Action {
   type: string,
   [key: string]: any
@@ -22,6 +23,10 @@ export interface AppState {
   workerContext: {
     workers: Worker[],
     selectedWorkers: Worker[]
+  },
+  calabrioContext: {
+    teams: CalabrioGroup[],
+    groups: CalabrioGroup[]
   },
   resettingSkills: false
 }

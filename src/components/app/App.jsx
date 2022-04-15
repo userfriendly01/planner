@@ -19,7 +19,8 @@ import React, {
 } from "react";
 import {
   getManagers as getManagersServiceCall,
-  getOffices as getOfficesServiceCall
+  getOffices as getOfficesServiceCall,
+  getCalabrioOrg as getCalabrioOrgServiceCall
 } from "services";
 import styled from "styled-components";
 import {
@@ -128,6 +129,22 @@ const getOffices = async dispatch => {
   }
 };
 
+const getCalabrioOrg = async dispatch => {
+  try {
+    const org = await getCalabrioOrgServiceCall();
+    console.log("Org Response from ServiceCall", org);
+    dispatch({
+      type: "loadCalabrioOrg",
+      payload: org
+    });
+  } catch (error) {
+    throw ({
+      msg: "Failed to fetch offices from service",
+      error
+    });
+  }
+};
+
 const getProfiles = dispatch => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_PROFILES)
   .then(res => {
     dispatch({
@@ -191,7 +208,8 @@ const App = () => {
       getOffices(dispatch),
       getProfiles(dispatch),
       getSkills(dispatch),
-      getWorkers(dispatch)
+      getWorkers(dispatch),
+      getCalabrioOrg(dispatch)
     ])
       .then(() => {
         setLoadResult(success);
