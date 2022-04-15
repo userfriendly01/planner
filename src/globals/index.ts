@@ -1,6 +1,6 @@
 import {
   ModalOverlayStatuses,
-  FormModes,
+  FormModes
 } from "globals";
 
 import {
