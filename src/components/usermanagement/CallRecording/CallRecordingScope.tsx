@@ -9,7 +9,12 @@ import {
   userFormActions
 } from "context";
 
-const CallRecordingScope = () => {
+const CallRecordingScope = (props:any) => {
+
+  const {
+    groups,
+    teams
+  } = props;
 
   const form = useFormState();
   const setForm = useFormDispatch();
@@ -24,13 +29,15 @@ const CallRecordingScope = () => {
   return(
     <FormControlsContainer>
       <FormControlsPane>
-        Call Recording
-        <div>Name: </div>
-        <div>Email: </div>
-        <div>n# (ACD Id): </div>
-        <div>Roles: </div>
-        <div>Team: </div>
-        <div>Groups: </div>
+        {
+          groups.map((group: any) => (
+            <div key={group.groupId}>{group.name}
+              {
+                teams.map((team: any) => team.parentGroupId === group.groupId)
+              }
+            </div>
+          ))
+        }
       </FormControlsPane>
     </FormControlsContainer>
   );
