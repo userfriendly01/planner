@@ -14,9 +14,19 @@ import {
 
 const CallRecordingForm = () => {
   const state = useAdminState();
+  const teams = state.calabrioContext.teams;
   const form = useFormState();
   const setForm = useFormDispatch();
   console.log("***STATE!", state);
+
+  const getTeamOptions = () => {
+    return teams.map(team => {
+      return {
+        label: team.name,
+        value: team.groupId
+      };
+    });
+  };
 
   return(
     <FormControlsContainer>
@@ -25,7 +35,7 @@ const CallRecordingForm = () => {
         <div>Roles: </div>
         <div>Team</div>
         <FilterableSelect
-          optionsList={state.calabrioContext.teams}
+          optionsList={getTeamOptions()}
         />
         <div>Scope: </div>
         <CallRecordingScope />
