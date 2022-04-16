@@ -139,7 +139,7 @@ const getCalabrioOrg = async dispatch => {
     });
   } catch (error) {
     throw ({
-      msg: "Failed to fetch offices from service",
+      msg: "Failed to fetch calabrio org from service",
       error
     });
   }
