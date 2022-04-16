@@ -32,7 +32,6 @@ const CallRecordingForm = () => {
   return(
     <FormControlsContainer>
       <FormControlsPane>
-        Call Recording
         <div>Roles: </div>
         <div>Team</div>
         <FilterableSelect

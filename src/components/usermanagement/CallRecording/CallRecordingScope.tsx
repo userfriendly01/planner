@@ -33,7 +33,7 @@ const CallRecordingScope = (props:any) => {
           groups.map((group: any) => (
             <div key={group.groupId}>{group.name}
               {
-                teams.map((team: any) => team.parentGroupId === group.groupId)
+                teams.map((team: any) => (team.parentGroupId === group.groupId))
               }
             </div>
           ))
