@@ -14,6 +14,7 @@ import {
 
 const CallRecordingForm = () => {
   const state = useAdminState();
+  const groups = state.calabrioContext.groups;
   const teams = state.calabrioContext.teams;
   const form = useFormState();
   const setForm = useFormDispatch();
@@ -38,7 +39,10 @@ const CallRecordingForm = () => {
           optionsList={getTeamOptions()}
         />
         <div>Scope: </div>
-        <CallRecordingScope />
+        <CallRecordingScope
+          groups={groups}
+          teams={teams}
+        />
       </FormControlsPane>
     </FormControlsContainer>
   );
