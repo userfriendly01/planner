@@ -12,8 +12,23 @@ export const FormControlsContainer = styled.div`
 
 export const FormControlsPane = styled.div`
   display: flex;
+  flex-direction: column;
   min-width: 320px;
   padding: 0 8px;
   width: 100%;
   max-width: 400px;
+`;
+
+export const ScopeGroupRow = styled.div`
+  border: 2px solid red
+
+`;
+
+export const ScopeTeamRow = styled.div`
+  border: 2px solid blue
+
+`;
+
+export const ScopeContainer = styled.div`
+  border: 2px solid black
 `;

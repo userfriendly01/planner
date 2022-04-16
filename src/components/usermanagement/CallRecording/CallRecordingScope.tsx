@@ -1,7 +1,10 @@
 import React from "react";
 import {
   FormControlsContainer,
-  FormControlsPane
+  FormControlsPane,
+  ScopeContainer,
+  ScopeGroupRow,
+  ScopeTeamRow
 } from "./CallRecording.Styles";
 import {
   useFormState,
@@ -29,15 +32,20 @@ const CallRecordingScope = (props:any) => {
   return(
     <FormControlsContainer>
       <FormControlsPane>
-        {
-          groups.map((group: any) => (
-            <div key={group.groupId}>{group.name}
+        <ScopeContainer>
+          {
+            groups.map((group: any) => {
+              <ScopeGroupRow key={group.groupId}>{group.name}</ScopeGroupRow>;
               {
-                teams.map((team: any) => (team.parentGroupId === group.groupId))
+                teams.map((team: any) => {
+                  if(team.parentGroupId === group.groupId){
+                    return <ScopeTeamRow key={team.groupId}>{team.name}</ScopeTeamRow>;
+                  }
+                });
               }
-            </div>
-          ))
-        }
+            })
+          }
+        </ScopeContainer>
       </FormControlsPane>
     </FormControlsContainer>
   );

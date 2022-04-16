@@ -37,12 +37,11 @@ const CallRecordingForm = () => {
         <FilterableSelect
           optionsList={getTeamOptions()}
         />
-        <div>Scope: </div>
-        <CallRecordingScope
-          groups={groups}
-          teams={teams}
-        />
       </FormControlsPane>
+      <CallRecordingScope
+        groups={groups}
+        teams={teams}
+      />
     </FormControlsContainer>
   );
 };
