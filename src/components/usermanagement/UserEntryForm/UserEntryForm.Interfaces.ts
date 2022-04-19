@@ -59,6 +59,18 @@ export interface UserFormButtonsProps {
   forwardToToggle: boolean,
 }
 
+export enum ExtensionSearchStatuses {
+  Idle = 0,
+  PickANumber = 1,
+  WaitingForResponse = 2,
+}
+interface ExtensionStatusProps {
+  searchStatus: ExtensionSearchStatuses,
+  retriesRemaining: number,
+  message?: string,
+  isError?: boolean,
+  originalExtension: string
+}
 export interface FieldState {
   value: string,
   blurred?: boolean,
@@ -66,7 +78,6 @@ export interface FieldState {
   updated: boolean,
   valid?: boolean
 }
-
 export interface UserFormState {
   [index: string]: any;
   alternateDid: FieldState,
@@ -76,6 +87,7 @@ export interface UserFormState {
   directDialNum: FieldState,
   editDisabled: boolean,
   extension: FieldState,
+  extensionStatus: ExtensionStatusProps,
   formMode: string,
   inactiveForwardTo: FieldState,
   manager: FieldState,

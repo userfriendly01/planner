@@ -1,10 +1,14 @@
-import { BasicFormInfoProps } from "./UserEntryForm.Interfaces";
+import { 
+  BasicFormInfoProps,
+  ExtensionSearchStatuses 
+} from "./UserEntryForm.Interfaces";
 import {
   FormControlsContainer,
   FormControlsPane,
   RightColumn,
   ToggleContainer,
-  ToggleLabel
+  ToggleLabel,
+  UserFormButton
 } from "./UserEntryForm.Styles";
 import {
   Switch,
@@ -28,14 +32,28 @@ import {
   formModes
 } from "globals";
 import React from "react";
+import { checkExtension } from "services";
 import {
   getOverflowSkillFromProfile,
-  isExtensionValid,
   isProfileIdValid,
   isManagerValid,
   sortManagersByName,
   sortProfilesByName
 } from "utils";
+import styled from "styled-components";
+
+import { SearchParams } from "./ExtensionSearchParams";
+const searchParams = SearchParams.getValues();
+
+const ExtensionWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const ExtensionButtonWrapper = styled.div`
+  margin-left: 15px;
+  margin-top: 15px;
+`;
 
 const BasicFormInfo = (props: BasicFormInfoProps) => {
 
@@ -70,6 +88,113 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
     }
   };
 
+  const handleExtensionUpdated = (extension:string) => {
+    setForm({
+      type: userFormActions.UPDATE_EXTENSION,
+      payload: {
+        extension,
+        isValid: (extension === form.extensionStatus.originalExtension)
+      }
+    });
+  };
+
+  const handleExtensionCleared = () => {
+    setForm({
+      type: userFormActions.CLEAR_EXTENSION
+    });
+  };
+
+  const assignExtension = () => {
+    setForm({
+      type: userFormActions.ASSIGN_EXTENSION
+    });
+  };
+
+  const pickANumber = () => {
+    let extNum = null;
+    while (!extNum) {
+      const oneNum = searchParams.MinExtensionNum + Math.floor((Math.random() * searchParams.ExtensionNumRange));
+      if (searchParams.ReservedExtensions.indexOf(oneNum) === -1) {
+        extNum = oneNum.toString();
+      }
+    }
+    validateTwilioExtension(extNum);
+  };
+
+  const validateTwilioExtension = (extNum:string) => {
+    if (searchParams.ReservedExtensions.indexOf(parseInt(extNum)) !== -1) {
+      setForm({
+        type: userFormActions.SET_EXTENSION_MESSAGE,
+        payload: {
+          message: "Extension is reserved",
+          isError: true
+        }
+      });
+      return;
+    }
+
+    checkExtension(extNum)
+      .then(isExtensionAvailable => {
+        if (isExtensionAvailable) {
+          setForm({
+            type: userFormActions.UPDATE_EXTENSION,
+            payload: {
+              extension: extNum,
+              isValid: true
+            }
+          });
+        } else {
+          if (form.extensionStatus.searchStatus === ExtensionSearchStatuses.PickANumber) {
+            setForm({
+              type: userFormActions.SET_EXTENSION_RETRIES
+            });
+          } else {
+            setForm({
+              type: userFormActions.SET_EXTENSION_MESSAGE,
+              payload: {
+                message: "Extension number already used in Twilio",
+                isError: true
+              }
+            });
+          }
+        }
+      })
+      .catch (err => {
+        console.error("Failed to contact Twilio", err);
+      });
+
+    setForm({
+      type: userFormActions.SET_EXTENSION_MESSAGE,
+      payload: {
+        message: "Checking Extension Number with Twilio",
+        isError: false
+      }
+    });
+  };
+
+  let extensionButtonLabel = "Auto-Assign";
+  let extensionButtonHandler = assignExtension;
+  let extensionButtonEnabled = true;
+
+  if (form.extension.value.length > 0) {
+    extensionButtonLabel = "Verify";
+    extensionButtonHandler = () => validateTwilioExtension(form.extension.value);
+    extensionButtonEnabled = extensionMatcher.test(form.extension.value);
+  }
+
+  if (form.extensionStatus.searchStatus === ExtensionSearchStatuses.PickANumber) {
+    if (form.extensionStatus.retriesRemaining) {
+      pickANumber();
+    } else {
+      setForm({
+        type: userFormActions.SET_EXTENSION_MESSAGE,
+        payload: {
+          message: "Extension retries exhausted.  Please try again.",
+          isError: true
+        }
+      });
+    }
+  }
   return(
     <FormControlsContainer>
       <FormControlsPane>
@@ -139,19 +264,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           }}
           value={form.nNumber.value}
         />
-        <ModalExtension
-          error={form.extension.blurred && !isExtensionValid(form)}
-          extension={form.extension.value}
-          originalValue={(worker && worker.attributes) ? worker.attributes.extension : undefined}
-          onClear={() => setForm({ type: userFormActions.CLEAR_EXTENSION })}
-          onUpdate={(extension, extensionValid) => setForm({
-            type: userFormActions.UPDATE_EXTENSION,
-            payload: {
-              extension,
-              isValid: extensionValid
-            }
-          })}
-        />
         <Tooltip
           title={
             form.formMode === formModes.UPDATE && worker.directDialNum ?
@@ -192,6 +304,27 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
             </ToggleContainer>
           </Tooltip>
         ): null
+        }
+        {form.didUser ? (
+          <ExtensionWrapper>
+            <ModalExtension
+              extension={form.extension.value}
+              message={form.extensionStatus.message}
+              isError={form.extensionStatus.isError}
+              onClear={handleExtensionCleared}
+              onUpdate={handleExtensionUpdated}
+            />
+            <ExtensionButtonWrapper>
+              <UserFormButton
+                disabled={!extensionButtonEnabled || form.extension.valid}
+                onClick={extensionButtonHandler}
+                data-testid={"verify-auto-button"}
+              >
+                {extensionButtonLabel}
+              </UserFormButton>
+            </ExtensionButtonWrapper>
+          </ExtensionWrapper>
+        ) : null
         }
       </FormControlsPane>
       <RightColumn>

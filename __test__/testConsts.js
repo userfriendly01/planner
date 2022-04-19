@@ -1,5 +1,8 @@
 import { formModes } from "globals";
 import { initialState } from "context";
+import {
+  ExtensionSearchStatuses
+} from "components/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
 
 export const fetchedUser = {
   email: "test@abc.com",
@@ -36,6 +39,13 @@ export const initialFormState = {
     blurred: false,
     updated: false,
     valid: false
+  },
+  extensionStatus: {
+    searchStatus: ExtensionSearchStatuses.Idle,
+    retriesRemaining: 5,
+    message: "",
+    isError: false,
+    originalExtension: ""
   },
   formMode: formModes.INSERT,
   inactiveForwardTo: {

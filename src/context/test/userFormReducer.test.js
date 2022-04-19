@@ -14,6 +14,9 @@ import {
   formatE164PhoneNumber,
   getValidSkillsObject
 } from "utils";
+import { ExtensionSearchStatuses } from "../../components/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
+import { SearchParams } from "../../components/usermanagement/UserEntryForm/ExtensionSearchParams";
+const searchParams = SearchParams.getValues();
 
 describe("userFormReducer", () => {
 
@@ -25,6 +28,30 @@ describe("userFormReducer", () => {
     });
   });
 
+  describe("ASSIGN_EXTENSION", () => {
+    test("should change searchStatus state", () => {
+      const action = { type: userFormActions.ASSIGN_EXTENSION };
+      const initialTestState = {
+        ...initialUserFormState,
+        extension: {
+          ...initialUserFormState.extension
+        },
+        extensionStatus: {
+          ...initialUserFormState.extensionStatus
+        }
+      };
+      const result = userFormReducer(initialTestState, action);
+      const expectedFormState = {
+        ...initialTestState,
+        extensionStatus: {
+          ...initialTestState.extensionStatus,
+          searchStatus: ExtensionSearchStatuses.PickANumber,
+          message: "Searching..."
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
   describe("CLEAR_EXTENSION", () => {
     test("should clear extension", () => {
       const action = { type: userFormActions.CLEAR_EXTENSION };
@@ -50,7 +77,6 @@ describe("userFormReducer", () => {
       expect(result).toStrictEqual(expectedFormState);
     });
   });
-
   describe("CLEAR_N_NUMBER", () => {
     test("should clear nNumber", () => {
       const action = { type: userFormActions.CLEAR_N_NUMBER };
@@ -406,7 +432,6 @@ describe("userFormReducer", () => {
       });
     });
   });
-
   describe("SET_BLUR_ON_FIELD", () => {
     test("should reset field blurred property to true", () => {
       const payload = "outgoing";
@@ -424,6 +449,77 @@ describe("userFormReducer", () => {
       };
       expect(result).toStrictEqual(expectedFormState);
     });
+  });
+  test("SET_EXTENSION_MESSAGE should update message", () => {
+    const testMessage = "Test message";
+    const action = {
+      type: userFormActions.SET_EXTENSION_MESSAGE,
+      payload: {
+        message: testMessage,
+        isError: false
+      }
+    };
+    const initialTestState = {
+      ...initialUserFormState
+    };
+
+    const result = userFormReducer(initialTestState, action);
+    const expectedFormState = {
+      ...initialTestState,
+      extensionStatus: {
+        ...initialTestState.extensionStatus,
+        message: testMessage,
+        isError: false
+      }
+    };
+    expect(result).toStrictEqual(expectedFormState);
+  });
+  test("SET_EXTENSION_RETRIES should decrement retriesRemaining", () => {
+    const action = { type: userFormActions.SET_EXTENSION_RETRIES };
+    const initialTestState = {
+      ...initialUserFormState,
+      extensionStatus: {
+        ...initialUserFormState.extensionStatus,
+        searchStatus: ExtensionSearchStatuses.PickANumber,
+        retriesRemaining: 3
+      }
+    };
+
+    const result = userFormReducer(initialTestState, action);
+    const expectedFormState = {
+      ...initialTestState,
+      extensionStatus: {
+        ...initialTestState.extensionStatus,
+        retriesRemaining: 2
+      }
+    };
+    expect(result).toStrictEqual(expectedFormState);
+  });
+  test("SET_EXTENSION_VERIFIED reset search params and a verified message", () => {
+    const action = { type: userFormActions.SET_EXTENSION_VERIFIED };
+    const initialTestState = {
+      ...initialUserFormState,
+      extensionStatus: {
+        ...initialUserFormState.extensionStatus,
+        searchStatus: ExtensionSearchStatuses.PickANumber,
+        retriesRemaining: 1,
+        message: "Some message",
+        isError: true
+      }
+    };
+
+    const result = userFormReducer(initialTestState, action);
+    const expectedFormState = {
+      ...initialTestState,
+      extensionStatus: {
+        ...initialTestState.extensionStatus,
+        searchStatus: ExtensionSearchStatuses.Idle,
+        retriesRemaining: searchParams.MaxRetries,
+        message: "Verified",
+        isError: false
+      }
+    };
+    expect(result).toStrictEqual(expectedFormState);
   });
 
   describe("SET_UPDATE_FORM_STATE for DID User", () => {
@@ -446,6 +542,10 @@ describe("userFormReducer", () => {
           ...initialUserFormState.extension,
           value: worker.attributes.extension,
           valid: true
+        },
+        extensionStatus: {
+          ...initialUserFormState.extensionStatus,
+          originalExtension: worker.attributes.extension || ""
         },
         manager: {
           ...initialUserFormState.manager,
@@ -563,6 +663,12 @@ describe("userFormReducer", () => {
           blurred: payload.isValid,
           updated: true,
           valid: payload.isValid
+        },
+        extensionStatus: {
+          ...initialUserFormState.extensionStatus,
+          message: "Extension is valid",
+          searchStatus: ExtensionSearchStatuses.Idle,
+          retriesRemaining: 5
         }
       };
       expect(result).toStrictEqual(expectedFormState);

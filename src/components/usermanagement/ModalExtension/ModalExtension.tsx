@@ -3,92 +3,41 @@ import {
   ModalHelperText
 } from "components";
 import { extensionMatcher } from "globals";
-import { checkExtension } from "services";
-import React, {
-  useState
-} from "react";
+import React from "react";
 import styled from "styled-components";
 
 const FlexColumn = styled.div`
   display: flex;
   flex-direction: column;
 `;
-
 export interface ModalExtensionProps {
   disabled?: boolean,
-  error: boolean,
   extension: string,
-  isEditExisting?: boolean,
-  originalValue?: string,
+  message?: string,
+  isError?: boolean,
   onBlur?: () => void,
   onClear: () => void,
-  onUpdate: (value: string, isValid: boolean) => void
-}
-
-interface ExtensionLookupStatus {
-  extensionValid: boolean,
-  loading: boolean,
-  message: string
+  onUpdate: (value: string, isValid: boolean) => void,
 }
 
 const ModalExtension = (props: ModalExtensionProps) => {
   const {
     disabled,
-    error,
     extension,
-    originalValue,
+    message,
+    isError,
     onBlur,
     onClear,
     onUpdate
   } = props;
 
-  const [lookupStatus, setLookupStatus] = useState<ExtensionLookupStatus>({
-    extensionValid: true,
-    loading: false,
-    message: "Extension is valid"
-  });
-
   const validator = (extension: string) => extensionMatcher.test(extension);
-
-  const inputServiceCall = (extension: string) => {
-    setLookupStatus({
-      ...lookupStatus,
-      loading: true,
-      message: "Validating..."
-    });
-    const isOriginal = originalValue ? extension === originalValue : false;
-    return checkExtension(extension)
-      .then(isExtensionAvailable => {
-        const extensionValid = isExtensionAvailable || isOriginal;
-        setLookupStatus({
-          extensionValid,
-          loading: false,
-          message: extensionValid ? "Extension is valid" : "Extension already in use"
-        });
-        onUpdate(extension, extensionValid);
-      })
-      .catch(err => {
-        console.error("Failed to look up extension", {
-          err,
-          extension
-        });
-        const extensionValid = false;
-        setLookupStatus({
-          extensionValid,
-          loading: false,
-          message: "Error occurred when checking extension"
-        });
-        onUpdate(extension, extensionValid);
-      });
-  };
-
-  const showModalHelperText = validator(extension);
 
   return (
     <FlexColumn>
       <CustomInput
         disabled={disabled}
-        error={error}
+        error={isError}
         label="Extension"
         maxLength="5"
         name="Extension"
@@ -96,17 +45,16 @@ const ModalExtension = (props: ModalExtensionProps) => {
         updateValue={value => onUpdate(value, false)}
         value={extension}
         validator={validator}
-        validatedServiceCall={inputServiceCall}
       />
-      {
-        showModalHelperText
+      {(
+        message
           ? <ModalHelperText
             clearFunction={onClear}
-            error={!(lookupStatus.extensionValid || lookupStatus.loading)}
-            message={lookupStatus.message}
+            error={isError}
+            message={message}
           />
           : null
-      }
+      )}
     </FlexColumn>
   );
 };
