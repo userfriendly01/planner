@@ -1,11 +1,10 @@
-import { unmountComponentAtNode } from "react-dom";
 import BasicFormInfo from "../BasicFormInfo";
 import {
   InputAdornment,
   Switch,
   Tooltip
 } from "@material-ui/core";
-import { Edit, FormatAlignJustify } from "@material-ui/icons";
+import { Edit } from "@material-ui/icons";
 import {
   ForwardToEntryForm,
   ModalExtension,
@@ -23,10 +22,9 @@ import {
   userFormActions
 } from "context";
 import {
-  extensionMatcher,
   formModes
 } from "globals";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   act,
   expectMockedComponent,
@@ -50,7 +48,6 @@ import {
 import { ExtensionSearchStatuses } from "../UserEntryForm.Interfaces";
 import { StyledButton } from "components";
 import { checkExtension } from "services";
-import { SearchParams } from "../ExtensionSearchParams";
 
 jest.useFakeTimers();
 
@@ -112,11 +109,6 @@ jest.mock("globals", () => ({
   },
   formModes: jest.requireActual("globals").formModes
 }));
-
-// jest.mock("../ExtensionSearchParams", () => ({
-//   __esModule: true,
-//   getValues: jest.fn()
-// }));
 
 const mockSetForm = jest.fn();
 
