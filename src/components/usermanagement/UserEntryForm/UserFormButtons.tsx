@@ -14,7 +14,8 @@ import {
   formModes,
   modalOverlayStatuses,
   timeouts,
-  Worker
+  Worker,
+  CALABRIO_SERVER_ID
 } from "globals";
 import React from "react";
 import {
@@ -86,6 +87,18 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       profile_id: form.profileId.value,
       sip: form.didUser ? true : false,
       unique_id: form.nNumber.value.toLowerCase()
+    };
+
+    const calabrioAttributes: any = {
+      acdId: "", //populate with workerSid returned
+      acdServerId: CALABRIO_SERVER_ID,
+      adLogin: form.calabrioUser.isScreenRecorded ? `LM\\${form.nNumber.value.toLowerCase()}` : null,
+      email: form.nNumberFetchedUser.email,
+      firstName: form.nNumberFetchedUser.firstName,
+      lastName: form.nNumberFetchedUser.lastName,
+      groupId: form.calabrioUser.team,
+      roles: form.calabrioUser.roles,
+      scope: form.calabrioUser.scope
     };
 
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.profileId.value);

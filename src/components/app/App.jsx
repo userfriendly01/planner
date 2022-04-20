@@ -208,8 +208,8 @@ const App = () => {
       getOffices(dispatch),
       getProfiles(dispatch),
       getSkills(dispatch),
-      getWorkers(dispatch),
-      getCalabrioOrg(dispatch)
+      getWorkers(dispatch)
+      // getCalabrioOrg(dispatch)
     ])
       .then(() => {
         setLoadResult(success);

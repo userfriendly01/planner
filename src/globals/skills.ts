@@ -15,3 +15,58 @@ export const PROFILE_11_SKILLS = ["ccGeneralSkill12", "ccGeneralSkillSP19", "ccN
   "ccAgencyMarkets48", "ccPortalSupport53","ccPortalSP54","ccUPSInquiry57", "ccUpsGL58", "ccCaMAA61", "ccCatTEAM62", "ccSuperAssist63",
   "ccDefaultCC76","ccIronHealth78", "ccWCInquiry81","ccPALInquiry82", "ccWCInquirySP83", "ccPALInquirySP84","ccAuxMisc87","ccAuxPAL88",
   "ccAuxWC89", "ccUber92","ccCovid93","ccLyft96", "ccNASInquiry97", "ccNASPropertyCAT98"];
+
+
+export const profileConfigs = {
+  PROFILE_SKILL_MAP: [
+    {
+      "profileId": 0,
+      "skills": [...PROFILE_1_SKILLS,...PROFILE_2_SKILLS,...PROFILE_3_SKILLS,...PROFILE_4_SKILLS,...PROFILE_5_SKILLS,...PROFILE_6_SKILLS,
+        ...PROFILE_7_SKILLS,...PROFILE_8_SKILLS,...PROFILE_9_SKILLS,...PROFILE_10_SKILLS,...PROFILE_11_SKILLS]
+    },
+    {
+      "profileId": 1,
+      "skills": PROFILE_1_SKILLS
+    },
+    {
+      "profileId": 2,
+      "skills": PROFILE_2_SKILLS
+    },
+    {
+      "profileId": 3,
+      "skills": PROFILE_3_SKILLS
+    },
+    {
+      "profileId": 4,
+      "skills": PROFILE_4_SKILLS
+    },
+    {
+      "profileId": 5,
+      "skills": PROFILE_5_SKILLS
+    },
+    {
+      "profileId": 6,
+      "skills": PROFILE_6_SKILLS
+    },
+    {
+      "profileId": 7,
+      "skills": PROFILE_7_SKILLS
+    },
+    {
+      "profileId": 8,
+      "skills": PROFILE_8_SKILLS
+    },
+    {
+      "profileId": 9,
+      "skills": PROFILE_9_SKILLS
+    },
+    {
+      "profileId": 10,
+      "skills": PROFILE_10_SKILLS
+    },
+    {
+      "profileId": 11,
+      "skills": PROFILE_11_SKILLS
+    }
+  ]
+};

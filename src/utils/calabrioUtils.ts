@@ -1,8 +1,13 @@
 import { calabrioGroupLevels } from "globals";
-import {
-  CalabrioGroup,
-  CalabrioUser
-} from "../components/usermanagement/CallRecording/CallRecording.Interfaces";
+import { CalabrioGroup } from "../components/usermanagement/CallRecording/CallRecording.Interfaces";
+
+export const formatCalabrioTenant = (groupsArray: CalabrioGroup[]): CalabrioGroup => {
+  const tenants: CalabrioGroup[] = groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.TENANT);
+  if(tenants.length > 1){
+    console.warn("Multiple Tenants found for Calabrio! This is unexpected and may require code changes for the scope component in the Call Recording Folder");
+  }
+  return tenants[0];
+};
 
 export const formatCalabrioTeams = (groupsArray: CalabrioGroup[]): CalabrioGroup[] => {
   return groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.TEAM);
@@ -11,24 +16,6 @@ export const formatCalabrioTeams = (groupsArray: CalabrioGroup[]): CalabrioGroup
 export const formatCalabrioGroups = (groupsArray: CalabrioGroup[]): CalabrioGroup[] => {
   return groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.GROUP);
 };
-
-// export const formatCalabrioUsers = (groupsArray: CalabrioGroup[]): CalabrioUser[] => {
-//   const users: CalabrioUser[] = [];
-//   groupsArray.map((group: CalabrioGroup) => {
-//     group.agents.map((agent: CalabrioUser) => {
-//       const team: CalabrioGroup = groupsArray.find((group: CalabrioGroup) => group.groupId === agent.groupId);
-//       const updatedUser = {
-//         ...agent,
-//         team,
-//         group: groupsArray.find((group: CalabrioGroup) => group.groupId === team.parentGroupId)
-//       };
-//       users.push(updatedUser);
-//     });
-//   });
-//   return users;
-// };
-
-//groups, teams, tenants are all on the same level of the response, identified by groupLevel
 
 /*
 [

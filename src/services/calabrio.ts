@@ -3,10 +3,13 @@ import { CalabrioGroup } from "../components/usermanagement/CallRecording/CallRe
 import { myAxios } from "utils";
 
 export const getCalabrioOrg = async (): Promise<CalabrioGroup[]> => {
-  const organization: any = await myAxios.get(apiPaths.GET_CALABRIO_ORG);
-  console.log("ORGANIZATION: ", organization);
-  return organization.data.map((group: CalabrioGroup) => {
-    delete group.agents;
-    return group;
-  });
+  return await myAxios.get(apiPaths.GET_CALABRIO_ORG);
+};
+
+export const getCalabrioRoles = async (): Promise<CalabrioGroup[]> => {
+  return await myAxios.get(apiPaths.GET_CALABRIO_ROLES);
+};
+
+export const getCalabrioUser = async (personId: number): Promise<CalabrioGroup[]> => {
+  return await myAxios.get(apiPaths.GET_CALABRIO_USER(personId));
 };

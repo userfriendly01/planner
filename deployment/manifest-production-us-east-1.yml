@@ -8,6 +8,7 @@ applications:
   memory: 1024M
   timeout: 180
   env:
+    APP_ENV: prod
     NODE_ENV: production
   blue-green:
     health-check-endpoint: /health
