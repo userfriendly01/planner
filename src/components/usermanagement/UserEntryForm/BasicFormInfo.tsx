@@ -93,7 +93,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
       type: userFormActions.UPDATE_EXTENSION,
       payload: {
         extension,
-        isValid: (extension === form.extensionStatus.originalExtension)
+        isValid: (extension === form.extensionStatus.originalExtension && form.extensionStatus.originalExtension)
       }
     });
   };
