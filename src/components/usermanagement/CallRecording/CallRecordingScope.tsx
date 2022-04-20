@@ -37,7 +37,7 @@ const CallRecordingScope = (props:any) => {
     When individual team is selected: nothing else is selected
   */
 
-    
+
   const tenant: CalabrioGroup = {
     "groupId": 208,
     "name": "Liberty Mutual",
@@ -103,7 +103,6 @@ const CallRecordingScope = (props:any) => {
       "parentGroupName": "LibertyMutual",
       "groupLevel": "GROUP"
     },
-    ,
     {
       "groupId": 130,
       "name": "Default Group8",
@@ -194,7 +193,7 @@ const CallRecordingScope = (props:any) => {
     getCalabrioRoles().then(res => {
       console.log("Calabrio Roles", res);
     }).catch(err => {
-      console.error("Failed to fetch Calabrio Roles.", err)
+      console.error("Failed to fetch Calabrio Roles.", err);
     });
     //check for worker email in the agents list and get agent if found
   }, []);
@@ -205,18 +204,21 @@ const CallRecordingScope = (props:any) => {
 
   console.log("Selected Group! ", selectedGroup);
   const identifyChildrenTeams = (groupId: number) => {
-     const childrenTeams = teams.filter((team) => team.parentGroupId === groupId);
-     return childrenTeams;
+    const childrenTeams = teams.filter(team => team.parentGroupId === groupId);
+    return childrenTeams;
   };
 
   const handleCheckGroup = (checkedGroup: any, isChecked: boolean) => {
-    const childrenTeams = identifyChildrenTeams(checkedGroup.groupId)
+    const childrenTeams = identifyChildrenTeams(checkedGroup.groupId);
     if(isChecked){
       setCheckedGroups([...checkedGroups, checkedGroup]);
       setCheckedTeams([...checkedTeams, ...childrenTeams]);
     } else {
       setCheckedGroups(checkedGroups.filter((group: any) => group.groupId !== checkedGroup.groupId));
-      setCheckedTeams(checkedTeams.filter((team: any) => childrenTeams.includes(team)));
+      console.warn("Checking object equality test:" checkedTeams);
+      const final = checkedTeams.filter((team: any) => childrenTeams.some(cteam => cteam.groupId === team.groupId));
+      console.warn("Final Result", final);
+      // setCheckedTeams();
     }
   };
 
@@ -229,15 +231,12 @@ const CallRecordingScope = (props:any) => {
   };
 
   const checkIfParital = (groupId: number): boolean => {
-    
+
     return false;
   };
 
   const isChecked = (groupId: number): boolean => {
-    console.log("checkedTeams", checkedTeams);
-    console.log("checkedGroups", checkedGroups);
-    const result = checkedTeams.some((group: any) => group.groupId === groupId) || checkedGroups.some((group: any) => group.groupId === groupId)
-    console.log('result', result);
+    const result = checkedTeams.some((group: any) => group.groupId === groupId) || checkedGroups.some((group: any) => group.groupId === groupId);
     return result;
   };
 
@@ -247,38 +246,38 @@ const CallRecordingScope = (props:any) => {
         <CustomTableData><TableText>Full Admin Access</TableText></CustomTableData>
         <CustomTableData><Checkbox onChange={value => console.log("Checkbox clicked", value)}/></CustomTableData>
       </FullAccessWrapper>
-    <ScopeContainer>
-      <TableBody>
-        {
-          groups.map((group: any) => (
-            <ScopeRow
-              onClick={() => setSelectedGroup(group)}
-              selected={selectedGroup.groupId === group.groupId}
-              key={group.groupId}
-            >
-              <CustomTableData>
-                <Checkbox
-                  checked={isChecked(group.groupId)}
-                  indeterminate={checkIfParital(group.groupId)}
-                  onChange={e => handleCheckGroup(group, e.target.checked)}
-                />
-              </CustomTableData>
-              <CustomTableData><TableText>{group.name}</TableText></CustomTableData>
-            </ScopeRow>
-          ))
-        }
-      </TableBody>
-      <TableBody>
-        {
-          identifyChildrenTeams(selectedGroup.groupId).map((team: any) => (
+      <ScopeContainer>
+        <TableBody>
+          {
+            groups.map((group: any) => (
+              <ScopeRow
+                onClick={() => setSelectedGroup(group)}
+                selected={selectedGroup.groupId === group.groupId}
+                key={group.groupId}
+              >
+                <CustomTableData>
+                  <Checkbox
+                    checked={isChecked(group.groupId)}
+                    indeterminate={checkIfParital(group.groupId)}
+                    onChange={e => handleCheckGroup(group, e.target.checked)}
+                  />
+                </CustomTableData>
+                <CustomTableData><TableText>{group.name}</TableText></CustomTableData>
+              </ScopeRow>
+            ))
+          }
+        </TableBody>
+        <TableBody>
+          {
+            identifyChildrenTeams(selectedGroup.groupId).map((team: any) => (
               <ScopeRow selected={false} key={team.groupId}>
                 <CustomTableData><Checkbox checked={isChecked(team.groupId)} onChange={e => handleCheckTeam(team, e.target.checked)} /></CustomTableData>
                 <CustomTableData><TableText>{team.name}</TableText></CustomTableData>
               </ScopeRow>
-          ))
-        }
-      </TableBody>
-    </ScopeContainer>
+            ))
+          }
+        </TableBody>
+      </ScopeContainer>
     </FormControlsPane>
   );
 };
