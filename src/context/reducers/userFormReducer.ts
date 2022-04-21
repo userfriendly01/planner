@@ -4,7 +4,8 @@ import {
   formModes
 } from "../../globals";
 import {
-  UserFormState
+  UserFormState,
+  ExtensionSearchStatuses
 } from "components/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
 import {
   formatE164PhoneNumber,
@@ -12,7 +13,11 @@ import {
   getZeroOutEnabledFromProfile
 } from "utils";
 
+import { SearchParams } from "components/usermanagement/UserEntryForm/ExtensionSearchParams";
+const searchParams = SearchParams.getValues();
+
 export const userFormActions = {
+  ASSIGN_EXTENSION: "ASSIGN_EXTENSION",
   CLEAR_EXTENSION: "CLEAR_EXTENSION",
   CLEAR_N_NUMBER: "CLEAR_N_NUMBER",
   CLEAR_OUTGOING_NUMBER: "CLEAR_OUTGOING_NUMBER",
@@ -24,6 +29,9 @@ export const userFormActions = {
   RESET_FORM: "RESET_FORM",
   RESET_FORM_AFTER_ADD: "RESET_FORM_AFTER_ADD",
   SET_BLUR_ON_FIELD: "SET_BLUR_ON_FIELD",
+  SET_EXTENSION_MESSAGE: "SET_EXTENSION_MESSAGE",
+  SET_EXTENSION_RETRIES: "SET_EXTENSION_RETRIES",
+  SET_EXTENSION_VERIFIED: "EXTENSION_VERIFIED",
   SET_UPDATE_FORM_STATE: "SET_UPDATE_FORM_STATE",
   SET_USER_PREVIOUSLY_ADDED_TRUE: "SET_USER_PREVIOUSLY_ADDED_TRUE",
   UPDATE_DEFAULT_SKILLS: "UPDATE_DEFAULT_SKILLS",
@@ -47,6 +55,13 @@ export const initialUserFormState: UserFormState = {
     blurred: false,
     updated: false,
     valid: false
+  },
+  extensionStatus: {
+    searchStatus: ExtensionSearchStatuses.Idle,
+    retriesRemaining: searchParams.MaxRetries,
+    message: "",
+    isError: false,
+    originalExtension: ""
   },
   inactiveForwardTo: {
     value: null,
@@ -97,6 +112,16 @@ export const initialUserFormState: UserFormState = {
 
 export const userFormReducer = (state: UserFormState, action: Action): UserFormState => {
   switch (action.type) {
+    case userFormActions.ASSIGN_EXTENSION: {
+      return {
+        ...state,
+        extensionStatus: {
+          ...state.extensionStatus,
+          searchStatus: ExtensionSearchStatuses.PickANumber,
+          message: "Searching..."
+        }
+      };
+    }
     case userFormActions.CLEAR_EXTENSION: {
       return {
         ...state,
@@ -105,6 +130,13 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
           value: "",
           updated: true,
           valid: false
+        },
+        extensionStatus: {
+          ...state.extensionStatus,
+          searchStatus: ExtensionSearchStatuses.Idle,
+          retriesRemaining: searchParams.MaxRetries,
+          isError: false,
+          message: ""
         }
       };
     }
@@ -240,6 +272,44 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         }
       };
     }
+    case userFormActions.SET_EXTENSION_MESSAGE: {
+      const message = action.payload.message;
+      const isError = action.payload.isError;
+      return {
+        ...state,
+        extensionStatus: {
+          ...state.extensionStatus,
+          message: message,
+          isError: isError,
+          searchStatus: ExtensionSearchStatuses.Idle,
+          retriesRemaining: searchParams.MaxRetries
+        }
+      };
+    }
+    case userFormActions.SET_EXTENSION_RETRIES: {
+      const remaining = state.extensionStatus.retriesRemaining - 1;
+      return {
+        ...state,
+        extensionStatus: {
+          ...state.extensionStatus,
+          searchStatus: remaining ? ExtensionSearchStatuses.PickANumber : ExtensionSearchStatuses.Idle,
+          retriesRemaining: remaining
+        }
+      };
+    }
+    case userFormActions.SET_EXTENSION_VERIFIED: {
+      return {
+        ... state,
+        extensionStatus: {
+          ...state.extensionStatus,
+          searchStatus: ExtensionSearchStatuses.Idle,
+          retriesRemaining: searchParams.MaxRetries,
+          message: "Verified",
+          isError: false
+        }
+      };
+    }
+
     case userFormActions.SET_UPDATE_FORM_STATE: {
       const worker = action.payload.worker;
       const managers = action.payload.managers;
@@ -251,6 +321,12 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
           ...state.extension,
           value: worker.attributes.extension || "",
           valid: true
+        },
+        extensionStatus: {
+          ...state.extensionStatus,
+          originalExtension: worker.attributes.extension || "",
+          isError: false,
+          message: ""
         },
         manager: {
           ...state.manager,
@@ -301,6 +377,7 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
     case userFormActions.UPDATE_EXTENSION: {
       const extension = action.payload.extension;
       const isValid = action.payload.isValid;
+      const message = isValid ? "Extension is valid" : "";
       return {
         ...state,
         extension: {
@@ -309,6 +386,12 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
           blurred: isValid,
           updated: true,
           valid: isValid
+        },
+        extensionStatus: {
+          ...state.extensionStatus,
+          message,
+          searchStatus: ExtensionSearchStatuses.Idle,
+          retriesRemaining: searchParams.MaxRetries
         }
       };
     }

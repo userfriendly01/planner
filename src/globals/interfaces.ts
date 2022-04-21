@@ -43,7 +43,6 @@ export interface ModalOverlayStatuses {
   SAVING: string,
   SUCCESS: string
 }
-
 export interface MySqlBoolean {
   data: [0 | 1],
   type: "Buffer"
