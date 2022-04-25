@@ -135,7 +135,7 @@ const getCalabrioOrg = async dispatch => {
     console.log("Org Response from ServiceCall", org);
     dispatch({
       type: "loadCalabrioOrg",
-      payload: org
+      payload: org.data
     });
   } catch (error) {
     console.error("Failed to fetch calabrio org from service");
