@@ -256,6 +256,7 @@ describe("<BasicFormInfo />", () => {
   });
   describe("Team dropdown", () => {
     test("Should render the correct initial state", () => {
+      removeProfileZeroIfNeeded.mockReturnValue(profileList);
       const rendered = renderComponent(false);
       expectMockedComponent(rendered, { OutlinedSelect }, 2);
       const expectedTeamProps = {
