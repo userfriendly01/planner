@@ -41,6 +41,7 @@ import {
 } from "testUtils";
 import {
   getOverflowSkillFromProfile,
+  removeProfileZeroIfNeeded,
   isExtensionValid,
   isProfileIdValid,
   isManagerValid
@@ -94,7 +95,8 @@ jest.mock("utils", () => ({
   isProfileIdValid: jest.fn(),
   sortProfilesByName: jest.requireActual("utils").sortProfilesByName,
   sortManagersByName: jest.fn("utils").sortManagersByName,
-  getOverflowSkillFromProfile: jest.fn()
+  getOverflowSkillFromProfile: jest.fn(),
+  removeProfileZeroIfNeeded: jest.fn()
 }));
 
 jest.mock("services", () => ({
@@ -281,11 +283,13 @@ describe("<BasicFormInfo />", () => {
           blurred: true
         }
       });
+      removeProfileZeroIfNeeded.mockReturnValue(profileList);
       isProfileIdValid.mockReturnValue(false);
       renderComponent(false);
       expect(OutlinedSelect.mock.calls[1][0].error).toBe(true);
     });
     test("helperText is null - profileId is valid", () => {
+      removeProfileZeroIfNeeded.mockReturnValue(profileList);
       isProfileIdValid.mockReturnValue(true);
       renderComponent(false);
       expect(OutlinedSelect.mock.calls[1][0].helperText).toBe(null);
@@ -298,6 +302,7 @@ describe("<BasicFormInfo />", () => {
           updated: true
         }
       });
+      removeProfileZeroIfNeeded.mockReturnValue(profileList);
       isProfileIdValid.mockReturnValue(false);
       renderComponent(false);
       expect(OutlinedSelect.mock.calls[1][0].helperText).toBe("Please select a team");
