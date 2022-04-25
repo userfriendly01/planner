@@ -1,3 +1,4 @@
+import Axios from "axios";
 import {
   Radio,
   FormControlLabel,
@@ -6,9 +7,10 @@ import {
 import { withStyles } from "@material-ui/core/styles";
 import {
   theme,
-  profileConfigs
+  profileConfigs,
+  apiPaths
 } from "globals";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import LighteningBolt from "icons/LighteningBolt-06.png";
@@ -52,13 +54,66 @@ const TealRadio = withStyles({
 const MessageSidebar = props => {
   const {
     messageState,
-    setMessageState
+    setMessageState,
+    messageType
   } = props;
 
   const stateSkill = messageState.skill;
   const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === messageState.workerProfileId);
 
-  const handleRadioChange = selection => {
+  const [ localState, setLocalState ] = useState({
+    nextSkillIdx: 0,
+    skillList: profile.skills.map(
+      skill => {
+        return {
+          skillId: skill,
+          isFetched: false,
+          hasFlashMessage: false
+        };
+      }
+    )
+  });
+
+  let apiPath;
+  let dataField;
+  if(messageType === "closed"){
+    apiPath = apiPaths.CLOSED_MESSAGE;
+    dataField = "closedMessage";
+  } else {
+    apiPath = apiPaths.FLASH_MESSAGE;
+    dataField = "flashMessage";
+  }
+
+  useEffect(() => {
+    if (localState.skillList.length > 0) {
+      if (localState.nextSkillIdx < 3) { //localState.skillList.length) {
+        console.log("wsx api call for ", localState.skillList[localState.nextSkillIdx].skillId);
+        Axios.get(apiPath + `/${localState.skillList[localState.nextSkillIdx].skillId}`)
+          .then(result => {
+            console.log("wsx Result: ", result);
+            const message = result.data[dataField];
+            let readOnly = false;
+            if (message.length > 0) {
+              readOnly = true;
+            }
+            setLocalState({
+              ...localState,
+              nextSkillIdx: localState.nextSkillIdx + 1
+            });
+          })
+          .catch(err => {
+            const fetchError = "wsx Failed to fetch message. ";
+            console.error(fetchError, err);
+            setLocalState({
+              ...localState,
+              nextSkillIdx: localState.nextSkillIdx + 1
+            });
+          });
+      }
+    }
+  });
+
+  const handleOnChange = selection => {
     setMessageState({
       ...messageState,
       skill: selection,
@@ -66,7 +121,7 @@ const MessageSidebar = props => {
     });
   };
 
-  const makeRadioLabel = skill => {
+  const makeRadioButton = skill => {
     return (
       <div>
         <StyledFormControl
@@ -82,9 +137,9 @@ const MessageSidebar = props => {
   return (
     <SidebarWrapper>
       <RadioContainer>
-        <RadioGroup name="skill" value={stateSkill} onChange={event => handleRadioChange(event.target.value)}>
+        <RadioGroup name="skill" value={stateSkill} onChange={event => handleOnChange(event.target.value)}>
           {profile.skills.map(function(skill) {
-            return makeRadioLabel(skill);
+            return makeRadioButton(skill);
           })}
         </RadioGroup>
       </RadioContainer>
@@ -94,7 +149,8 @@ const MessageSidebar = props => {
 
 MessageSidebar.propTypes = {
   messageState: PropTypes.object.isRequired,
-  setMessageState: PropTypes.func.isRequired
+  setMessageState: PropTypes.func.isRequired,
+  messageType: PropTypes.string.isRequired
 };
 
 export default MessageSidebar;

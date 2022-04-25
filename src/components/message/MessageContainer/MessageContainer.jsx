@@ -60,7 +60,7 @@ const ViewAddWrapper = styled.div`
 
 const MessageContainer = props => {
   const {
-    value
+    value: messageType
   } = props;
 
   const adminState = useAdminState();
@@ -79,17 +79,17 @@ const MessageContainer = props => {
   const [messageState, setMessageState] = useState({
     fetching: true,
     message: "",
-    messageType: value,
+    messageType: messageType,
     skill: defaultSkill,
     readOnly: false,
     serviceCallError: null,
     workerProfileId: workerProfileId
   });
   useEffect(() => {
-    console.log("wsx MesssageContainer.useEffect: ", value);
+    console.log("wsx MesssageContainer.useEffect: ", messageType);
     let apiPath;
     let dataField;
-    if(value === "closed"){
+    if(messageType === "closed"){
       apiPath = apiPaths.CLOSED_MESSAGE;
       dataField = "closedMessage";
     } else {
@@ -127,7 +127,7 @@ const MessageContainer = props => {
   return (
     profile ?
       <MessageContainerWrapper>
-        <MessageSidebar messageState={messageState} setMessageState={setMessageState}/>
+        <MessageSidebar messageState={messageState} setMessageState={setMessageState} messageType={messageType}/>
         {messageState.fetching ?
           <LoadingContainer>
             <LoadingMessage>Loading...</LoadingMessage>
