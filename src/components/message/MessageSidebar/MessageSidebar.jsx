@@ -11,7 +11,7 @@ import {
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import LighteningBolt from "icons/LighteningBolt-03.png";
+import LighteningBolt from "icons/LighteningBolt-06.png";
 
 const SidebarWrapper = styled.div`
   background-color: white;
@@ -50,8 +50,6 @@ const TealRadio = withStyles({
 })(props => <Radio color="default" {...props} />);
 
 const MessageSidebar = props => {
-  console.log("wsx LighteningBolt:", LighteningBolt);
-
   const {
     messageState,
     setMessageState
@@ -59,6 +57,7 @@ const MessageSidebar = props => {
 
   const stateSkill = messageState.skill;
   const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === messageState.workerProfileId);
+
   const handleRadioChange = selection => {
     setMessageState({
       ...messageState,
@@ -85,12 +84,6 @@ const MessageSidebar = props => {
       <RadioContainer>
         <RadioGroup name="skill" value={stateSkill} onChange={event => handleRadioChange(event.target.value)}>
           {profile.skills.map(function(skill) {
-            // return <StyledFormControl
-            //   key={skill}
-            //   control={<TealRadio
-            //     value={skill}
-            //   />}
-            //   label={skill}/>; // wsx "skill" displayed on UI
             return makeRadioLabel(skill);
           })}
         </RadioGroup>
