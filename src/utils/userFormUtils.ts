@@ -70,14 +70,12 @@ export const removeProfileZeroIfNeeded = (profiles: TritonProfile[]) => {
   const adminState = useAdminState();
   const nNumber = adminState.userContext.pingIdentity.sub;
 
-  let loggedInWorker;
+  let workerProfileId;
   adminState.workerContext.workers.forEach(worker =>{
     if(worker.attributes.n_number && worker.attributes.n_number.toLowerCase() === nNumber.toLowerCase()){
-      loggedInWorker = worker;
+      workerProfileId = worker.attributes.profile_id;
     }
   });
-
-  const workerProfileId = loggedInWorker ? loggedInWorker.attributes.profile_id : null;
   
   if(workerProfileId !== 0){
     const filteredProfiles = profiles.filter(e => e.profile_id !== 0);
