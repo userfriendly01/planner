@@ -11,21 +11,64 @@ import {
   useFormDispatch,
   userFormActions
 } from "context";
+import {
+  getCalabrioRoles,
+  getCalabrioUser
+} from "services";
 
-const CallRecordingForm = () => {
+const CallRecordingForm = (props: any) => {
+  const {
+    worker
+  } = props;
   const state = useAdminState();
+  const tenant = state.calabrioContext.tenant;
   const groups = state.calabrioContext.groups;
   const teams = state.calabrioContext.teams;
-  const roles = [
-    "Administrator",
-    "Supervisor",
-    "Agent",
-    "Agent-Sync"
-  ];
+  const users = state.calabrioContext.users;
+
   const form = useFormState();
   const setForm = useFormDispatch();
   console.log("***STATE!", state);
   console.log("ENV", process.env.APP_ENV);
+
+  const [ roles, setRoles ] = React.useState([]);
+  // const [ user, setUser ] = React.useState(null);
+
+  React.useEffect(() => {
+    getCalabrioRoles(tenant.groupId).then(res => {
+      setRoles(res);
+      console.log("Calabrio Roles", res);
+    }).catch(err => {
+      console.error("Failed to fetch Calabrio Roles.", err);
+    });
+
+  }, []);
+
+  React.useEffect(() => {
+    const email = form.nNumberFetchedUser.email.toLowerCase();
+    const userRecord = users.filter(user => user.email.toLowerCase() === email);
+
+    if(userRecord){
+      getCalabrioUser(tenant.groupId).then((res: any) => {
+        console.log("Fetched Calabrio User", res);
+        setForm({
+          type: userFormActions.SET_CALABRIO_USER,
+          payload: {
+            isScreenRecorded: res.adLogin ? true : false,
+            team: res.groupId,
+            roles: res.roles,
+            scope: {
+              groups: res.scope.groups,
+              teams: res.scope.teams,
+              tenant: res.scope.tenant
+            }
+          }
+        });
+      }).catch(err => {
+        console.error("Failed to fetch Calabrio Roles.", err);
+      });
+    }
+  }, []);
 
   const getRoleOptions = () => {
     return roles.map(role => {
@@ -59,6 +102,9 @@ const CallRecordingForm = () => {
       <CallRecordingScope
         groups={groups}
         teams={teams}
+        worker={worker}
+        form={form}
+        setForm={setForm}
       />
     </FormControlsContainer>
   );

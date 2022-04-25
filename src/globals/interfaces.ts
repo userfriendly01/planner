@@ -27,7 +27,8 @@ export interface AppState {
   calabrioContext: {
     tenant: any,
     teams: CalabrioGroup[],
-    groups: CalabrioGroup[]
+    groups: CalabrioGroup[],
+    users: any[]
   },
   resettingSkills: false
 }

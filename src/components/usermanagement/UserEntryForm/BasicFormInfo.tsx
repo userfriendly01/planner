@@ -1,6 +1,6 @@
-import { 
+import {
   BasicFormInfoProps,
-  ExtensionSearchStatuses 
+  ExtensionSearchStatuses
 } from "./UserEntryForm.Interfaces";
 import {
   FormControlsContainer,

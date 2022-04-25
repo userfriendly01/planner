@@ -5,7 +5,8 @@ import {
 import {
   formatCalabrioTenant,
   formatCalabrioTeams,
-  formatCalabrioGroups
+  formatCalabrioGroups,
+  formatCalabrioUsers
 } from "utils";
 
 export const initialState: AppState = {
@@ -31,7 +32,8 @@ export const initialState: AppState = {
   calabrioContext: {
     tenant: {},
     teams: [],
-    groups: []
+    groups: [],
+    users: []
   },
   resettingSkills: false
 };
@@ -92,7 +94,8 @@ export const reducer = (state: AppState, action: Action): AppState => {
         calabrioContext: {
           tenant: formatCalabrioTenant(action.payload),
           groups: formatCalabrioGroups(action.payload),
-          teams: formatCalabrioTeams(action.payload)
+          teams: formatCalabrioTeams(action.payload),
+          users: formatCalabrioUsers(action.payload)
         }
       };
     case "loadProfiles":{

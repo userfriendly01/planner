@@ -29,6 +29,7 @@ export const userFormActions = {
   RESET_FORM: "RESET_FORM",
   RESET_FORM_AFTER_ADD: "RESET_FORM_AFTER_ADD",
   SET_BLUR_ON_FIELD: "SET_BLUR_ON_FIELD",
+  SET_CALABRIO_USER: "SET_CALABRIO_USER",
   SET_EXTENSION_MESSAGE: "SET_EXTENSION_MESSAGE",
   SET_EXTENSION_RETRIES: "SET_EXTENSION_RETRIES",
   SET_EXTENSION_VERIFIED: "EXTENSION_VERIFIED",
@@ -109,9 +110,9 @@ export const initialUserFormState: UserFormState = {
     team: 225,
     roles: [],
     scope: {
-      "groups": [],
-      "teams": [],
-      "tenant": null
+      groups: [],
+      teams: [],
+      tenant: null
     }
   },
   userPreviouslyAdded: false,
@@ -280,6 +281,12 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
           ...state[field],
           blurred: true
         }
+      };
+    }
+    case userFormActions.SET_CALABRIO_USER: {
+      return {
+        ...state,
+        calabrioUser: action.payload
       };
     }
     case userFormActions.SET_EXTENSION_MESSAGE: {

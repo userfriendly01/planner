@@ -17,6 +17,18 @@ export const formatCalabrioGroups = (groupsArray: CalabrioGroup[]): CalabrioGrou
   return groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.GROUP);
 };
 
+export const formatCalabrioUsers = (groupsArray: CalabrioGroup[]): any[] => {
+  const users: any[] = [];
+  groupsArray.forEach((group: CalabrioGroup) => {
+    if(group.agents){
+      group.agents.forEach(agent => {
+        users.push(agent);
+      });
+    }
+  });
+  return users;
+};
+
 /*
 [
     {

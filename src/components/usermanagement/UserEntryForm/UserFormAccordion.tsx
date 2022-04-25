@@ -39,7 +39,9 @@ const UserFormAccordion = (props: UserFormAccordianProps) => {
           <SkillsFormInfo />
         </AccordionTab>
         <AccordionTab labelVisual="Call Recording">
-          <CallRecordingForm />
+          <CallRecordingForm
+            worker={worker}
+          />
         </AccordionTab>
       </Accordion>
     </FormControlsContainer>

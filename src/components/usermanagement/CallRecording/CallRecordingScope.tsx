@@ -16,16 +16,15 @@ import {
   useFormState,
   useFormDispatch
 } from "context";
-import {
-  getCalabrioRoles
-} from "services";
+
 
 const CallRecordingScope = (props:any) => {
 
-  // const {
-  //   groups,
-  //   teams
-  // } = props;
+  const {
+    groups,
+    teams,
+    worker
+  } = props;
 
   const form = useFormState();
   const setForm = useFormDispatch();
@@ -37,166 +36,146 @@ const CallRecordingScope = (props:any) => {
     When individual team is selected: nothing else is selected
   */
 
-
-  const tenant: CalabrioGroup = {
-    "groupId": 208,
-    "name": "Liberty Mutual",
-    "displayId": null,
-    "parentGroupId": null,
-    "parentGroupName": "Default Group",
-    "groupLevel": "TENANT"
-  };
-  const groups: any[] = [
-    {
-      "groupId": 209,
-      "name": "Default Group1",
-      "displayId": null,
-      "parentGroupId": 12,
-      "parentGroupName": "LibertyMutual",
-      "groupLevel": "GROUP"
-    },
-    {
-      "groupId": 124,
-      "name": "Default Group2",
-      "displayId": null,
-      "parentGroupId": 12,
-      "parentGroupName": "LibertyMutual",
-      "groupLevel": "GROUP"
-    },
-    {
-      "groupId": 125,
-      "name": "Default Group3",
-      "displayId": null,
-      "parentGroupId": 12,
-      "parentGroupName": "LibertyMutual",
-      "groupLevel": "GROUP"
-    },
-    {
-      "groupId": 126,
-      "name": "Default Group4",
-      "displayId": null,
-      "parentGroupId": 12,
-      "parentGroupName": "LibertyMutual",
-      "groupLevel": "GROUP"
-    },
-    {
-      "groupId": 127,
-      "name": "Default Group5",
-      "displayId": null,
-      "parentGroupId": 12,
-      "parentGroupName": "LibertyMutual",
-      "groupLevel": "GROUP"
-    },
-    {
-      "groupId": 138,
-      "name": "Default Group6",
-      "displayId": null,
-      "parentGroupId": 12,
-      "parentGroupName": "LibertyMutual",
-      "groupLevel": "GROUP"
-    },
-    {
-      "groupId": 129,
-      "name": "Default Group7",
-      "displayId": null,
-      "parentGroupId": 12,
-      "parentGroupName": "LibertyMutual",
-      "groupLevel": "GROUP"
-    },
-    {
-      "groupId": 130,
-      "name": "Default Group8",
-      "displayId": null,
-      "parentGroupId": 12,
-      "parentGroupName": "LibertyMutual",
-      "groupLevel": "GROUP"
-    },
-    {
-      "groupId": 131,
-      "name": "Default Group8",
-      "displayId": null,
-      "parentGroupId": 12,
-      "parentGroupName": "LibertyMutual",
-      "groupLevel": "GROUP"
-    },
-    {
-      "groupId": 132,
-      "name": "Default Group9",
-      "displayId": null,
-      "parentGroupId": 12,
-      "parentGroupName": "LibertyMutual",
-      "groupLevel": "GROUP"
-    },
-    {
-      "groupId": 133,
-      "name": "Default Group10",
-      "displayId": null,
-      "parentGroupId": 12,
-      "parentGroupName": "LibertyMutual",
-      "groupLevel": "GROUP"
-    }
-  ];
-  const teams: any[] = [
-    {
-      "groupId": 225,
-      "name": "Default Team",
-      "displayId": null,
-      "parentGroupId": 209,
-      "parentGroupName": "Default Group",
-      "groupLevel": "TEAM"
-    },
-    {
-      "groupId": 210,
-      "name": "Default Team2",
-      "displayId": null,
-      "parentGroupId": 209,
-      "parentGroupName": "Default Group",
-      "groupLevel": "TEAM"
-    },
-    {
-      "groupId": 230,
-      "name": "Game of Phones",
-      "displayId": null,
-      "parentGroupId": 209,
-      "parentGroupName": "Default Group",
-      "groupLevel": "TEAM"
-    },
-    {
-      "groupId": 215,
-      "name": "New Team 9",
-      "displayId": null,
-      "parentGroupId": 124,
-      "parentGroupName": "New Test Group 9",
-      "groupLevel": "TEAM"
-    },
-    {
-      "groupId": 217,
-      "name": "New Team 6",
-      "displayId": null,
-      "parentGroupId": 216,
-      "parentGroupName": "New Test Group 6",
-      "groupLevel": "TEAM"
-    },
-    {
-      "groupId": 219,
-      "name": "New Team 10",
-      "displayId": null,
-      "parentGroupId": 218,
-      "parentGroupName": "New Test Group 10",
-      "groupLevel": "TEAM"
-    }
-  ];
-
-  const [ worker, setWorker ] = React.useState(null);
-
-  React.useEffect(() => {
-    getCalabrioRoles().then(res => {
-      console.log("Calabrio Roles", res);
-    }).catch(err => {
-      console.error("Failed to fetch Calabrio Roles.", err);
-    });
-    //check for worker email in the agents list and get agent if found
-  }, []);
+  // const groups: any[] = [
+  //   {
+  //     "groupId": 209,
+  //     "name": "Default Group1",
+  //     "displayId": null,
+  //     "parentGroupId": 12,
+  //     "parentGroupName": "LibertyMutual",
+  //     "groupLevel": "GROUP"
+  //   },
+  //   {
+  //     "groupId": 124,
+  //     "name": "Default Group2",
+  //     "displayId": null,
+  //     "parentGroupId": 12,
+  //     "parentGroupName": "LibertyMutual",
+  //     "groupLevel": "GROUP"
+  //   },
+  //   {
+  //     "groupId": 125,
+  //     "name": "Default Group3",
+  //     "displayId": null,
+  //     "parentGroupId": 12,
+  //     "parentGroupName": "LibertyMutual",
+  //     "groupLevel": "GROUP"
+  //   },
+  //   {
+  //     "groupId": 126,
+  //     "name": "Default Group4",
+  //     "displayId": null,
+  //     "parentGroupId": 12,
+  //     "parentGroupName": "LibertyMutual",
+  //     "groupLevel": "GROUP"
+  //   },
+  //   {
+  //     "groupId": 127,
+  //     "name": "Default Group5",
+  //     "displayId": null,
+  //     "parentGroupId": 12,
+  //     "parentGroupName": "LibertyMutual",
+  //     "groupLevel": "GROUP"
+  //   },
+  //   {
+  //     "groupId": 138,
+  //     "name": "Default Group6",
+  //     "displayId": null,
+  //     "parentGroupId": 12,
+  //     "parentGroupName": "LibertyMutual",
+  //     "groupLevel": "GROUP"
+  //   },
+  //   {
+  //     "groupId": 129,
+  //     "name": "Default Group7",
+  //     "displayId": null,
+  //     "parentGroupId": 12,
+  //     "parentGroupName": "LibertyMutual",
+  //     "groupLevel": "GROUP"
+  //   },
+  //   {
+  //     "groupId": 130,
+  //     "name": "Default Group8",
+  //     "displayId": null,
+  //     "parentGroupId": 12,
+  //     "parentGroupName": "LibertyMutual",
+  //     "groupLevel": "GROUP"
+  //   },
+  //   {
+  //     "groupId": 131,
+  //     "name": "Default Group8",
+  //     "displayId": null,
+  //     "parentGroupId": 12,
+  //     "parentGroupName": "LibertyMutual",
+  //     "groupLevel": "GROUP"
+  //   },
+  //   {
+  //     "groupId": 132,
+  //     "name": "Default Group9",
+  //     "displayId": null,
+  //     "parentGroupId": 12,
+  //     "parentGroupName": "LibertyMutual",
+  //     "groupLevel": "GROUP"
+  //   },
+  //   {
+  //     "groupId": 133,
+  //     "name": "Default Group10",
+  //     "displayId": null,
+  //     "parentGroupId": 12,
+  //     "parentGroupName": "LibertyMutual",
+  //     "groupLevel": "GROUP"
+  //   }
+  // ];
+  // const teams: any[] = [
+  //   {
+  //     "groupId": 225,
+  //     "name": "Default Team",
+  //     "displayId": null,
+  //     "parentGroupId": 209,
+  //     "parentGroupName": "Default Group",
+  //     "groupLevel": "TEAM"
+  //   },
+  //   {
+  //     "groupId": 210,
+  //     "name": "Default Team2",
+  //     "displayId": null,
+  //     "parentGroupId": 209,
+  //     "parentGroupName": "Default Group",
+  //     "groupLevel": "TEAM"
+  //   },
+  //   {
+  //     "groupId": 230,
+  //     "name": "Game of Phones",
+  //     "displayId": null,
+  //     "parentGroupId": 209,
+  //     "parentGroupName": "Default Group",
+  //     "groupLevel": "TEAM"
+  //   },
+  //   {
+  //     "groupId": 215,
+  //     "name": "New Team 9",
+  //     "displayId": null,
+  //     "parentGroupId": 124,
+  //     "parentGroupName": "New Test Group 9",
+  //     "groupLevel": "TEAM"
+  //   },
+  //   {
+  //     "groupId": 217,
+  //     "name": "New Team 6",
+  //     "displayId": null,
+  //     "parentGroupId": 216,
+  //     "parentGroupName": "New Test Group 6",
+  //     "groupLevel": "TEAM"
+  //   },
+  //   {
+  //     "groupId": 219,
+  //     "name": "New Team 10",
+  //     "displayId": null,
+  //     "parentGroupId": 218,
+  //     "parentGroupName": "New Test Group 10",
+  //     "groupLevel": "TEAM"
+  //   }
+  // ];
 
   const [ selectedGroup, setSelectedGroup ] = React.useState(groups[0]);
   const [ checkedGroups, setCheckedGroups ] = React.useState(worker ? worker.scope.groups : []);
@@ -207,7 +186,7 @@ const CallRecordingScope = (props:any) => {
   console.log("checkedTeams", checkedTeams);
 
   const identifyChildrenTeams = (groupId: number) => {
-    const childrenTeams = teams.filter(team => team.parentGroupId === groupId);
+    const childrenTeams = teams.filter((team: any) => team.parentGroupId === groupId);
     return childrenTeams;
   };
 
@@ -278,7 +257,12 @@ const CallRecordingScope = (props:any) => {
     <FormControlsPane>
       <FullAccessWrapper>
         <CustomTableData><TableText>Full Admin Access</TableText></CustomTableData>
-        <CustomTableData><Checkbox onChange={e => handleCheckAdmin(e.target.checked)}/></CustomTableData>
+        <CustomTableData>
+          <Checkbox
+            onChange={e => handleCheckAdmin(e.target.checked)}
+            checked={false}
+          />
+        </CustomTableData>
       </FullAccessWrapper>
       <ScopeContainer>
         <TableBody>
