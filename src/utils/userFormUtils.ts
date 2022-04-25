@@ -11,6 +11,7 @@ import {
   formatE164PhoneNumber,
   removeNonNumericCharacters
 } from "utils";
+import { useAdminState } from "context";
 
 // For a DID user, the outgoing number is tied to the directDialNum, if you change one you must change both in order for the form to be valid
 export const isDidDifferentValid = (form: UserFormState, worker: Worker, forwardToToggle: boolean): boolean => {
@@ -64,6 +65,27 @@ export const getOverflowSkillFromProfile = (profiles: TritonProfile[], profileVa
     return profile.overflow_skill;
   }
 };
+
+export const removeProfileZeroIfNeeded = (profiles: TritonProfile[]) => {
+  const adminState = useAdminState();
+  const nNumber = adminState.userContext.pingIdentity.sub;
+
+  let loggedInWorker;
+  adminState.workerContext.workers.forEach(worker =>{
+    if(worker.attributes.n_number && worker.attributes.n_number.toLowerCase() === nNumber.toLowerCase()){
+      loggedInWorker = worker;
+    }
+  });
+
+  const workerProfileId = loggedInWorker ? loggedInWorker.attributes.profile_id : null;
+  
+  if(workerProfileId !== 0){
+    const filteredProfiles = profiles.filter(e => e.profile_id !== 0);
+    return filteredProfiles;
+  }
+  return profiles;
+
+}
 
 export const getTargetProfile = (profiles: TritonProfile[], newProfileValue: string): TritonProfile => profiles.find((profile: TritonProfile) => profile.profile_id === +newProfileValue);
 

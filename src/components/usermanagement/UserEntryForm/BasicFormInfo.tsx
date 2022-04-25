@@ -35,6 +35,7 @@ import React from "react";
 import { checkExtension } from "services";
 import {
   getOverflowSkillFromProfile,
+  removeProfileZeroIfNeeded,
   isProfileIdValid,
   isManagerValid,
   sortManagersByName,
@@ -224,7 +225,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           label={"Team *"}
           labelWidth={44}
           onBlur={() => handleOnBlur("profileId")}
-          optionsList={profiles.sort(sortProfilesByName)}
+          optionsList={removeProfileZeroIfNeeded(profiles.sort(sortProfilesByName))}
           optionsDisplayFunc={option => {
             return {
               display: option.profile_nme,
