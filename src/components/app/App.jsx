@@ -138,10 +138,9 @@ const getCalabrioOrg = async dispatch => {
       payload: org
     });
   } catch (error) {
-    throw ({
-      msg: "Failed to fetch calabrio org from service",
-      error
-    });
+    console.error("Failed to fetch calabrio org from service");
+    //We're not throwing an error here so that we can still load Triton Admin and use its other features if this fails
+    //Additionally - there can be local issues we have to work out when trying to call this 
   }
 };
 
@@ -208,8 +207,8 @@ const App = () => {
       getOffices(dispatch),
       getProfiles(dispatch),
       getSkills(dispatch),
-      getWorkers(dispatch)
-      // getCalabrioOrg(dispatch)
+      getWorkers(dispatch),
+      getCalabrioOrg(dispatch)
     ])
       .then(() => {
         setLoadResult(success);

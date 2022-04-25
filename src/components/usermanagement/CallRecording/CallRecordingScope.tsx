@@ -203,48 +203,82 @@ const CallRecordingScope = (props:any) => {
   const [ checkedTeams, setCheckedTeams ] = React.useState(worker ? worker.scope.teams : []);
 
   console.log("Selected Group! ", selectedGroup);
+  console.log("checkedGroups", checkedGroups);
+  console.log("checkedTeams", checkedTeams);
+
   const identifyChildrenTeams = (groupId: number) => {
     const childrenTeams = teams.filter(team => team.parentGroupId === groupId);
     return childrenTeams;
   };
 
+  const isGroupInList = (group: any, groupArray: any) => {
+    return groupArray.some((chteam: any) => JSON.stringify(chteam) === JSON.stringify(group));
+  };
+
   const handleCheckGroup = (checkedGroup: any, isChecked: boolean) => {
     const childrenTeams = identifyChildrenTeams(checkedGroup.groupId);
     if(isChecked){
-      setCheckedGroups([...checkedGroups, checkedGroup]);
+      if(!isGroupInList(checkedGroup, checkedGroups)){
+        setCheckedGroups([...checkedGroups, checkedGroup]);
+      }
       setCheckedTeams([...checkedTeams, ...childrenTeams]);
     } else {
       setCheckedGroups(checkedGroups.filter((group: any) => group.groupId !== checkedGroup.groupId));
-      console.warn("Checking object equality test:" checkedTeams);
-      const final = checkedTeams.filter((team: any) => childrenTeams.some(cteam => cteam.groupId === team.groupId));
-      console.warn("Final Result", final);
-      // setCheckedTeams();
+      setCheckedTeams(checkedTeams.filter((team: any) => !isGroupInList(team, childrenTeams)));
     }
   };
 
   const handleCheckTeam = (checkedTeam: any, isChecked: boolean) => {
     if(isChecked){
-      setCheckedTeams([...checkedTeams, checkedTeam]);
+      if(!isGroupInList(checkedTeam, checkedTeams)){
+        setCheckedTeams([...checkedTeams, checkedTeam]);
+      }
     } else {
       setCheckedTeams(checkedTeams.filter((team: any) => team.groupId !== checkedTeam.groupId));
     }
   };
 
   const checkIfParital = (groupId: number): boolean => {
-
-    return false;
+    const isGroupChecked = checkedGroups.some((group: any) => group.groupId === groupId);
+    const childrenTeams = identifyChildrenTeams(groupId);
+    const result = childrenTeams.filter((team: any) => isGroupInList(team, checkedTeams));
+    if(result.length === 0) {
+      return false;
+    } else if(result.length !== childrenTeams.length) {
+      if(isGroupChecked){
+        setCheckedGroups(checkedGroups.filter((group: any) => group.groupId !== groupId));
+      }
+      return true;
+    } else {
+      return false;
+    }
   };
 
   const isChecked = (groupId: number): boolean => {
-    const result = checkedTeams.some((group: any) => group.groupId === groupId) || checkedGroups.some((group: any) => group.groupId === groupId);
-    return result;
+    const childrenTeams = identifyChildrenTeams(groupId);
+    const isGroupChecked = checkedGroups.some((group: any) => group.groupId === groupId);
+    if(isGroupChecked && childrenTeams.length === 0){
+      return true;
+    }
+    const checkedChildrenTeams = childrenTeams.filter((team: any) => isGroupInList(team, checkedTeams));
+    return isGroupChecked && checkedChildrenTeams.length > 0 || checkedTeams.some((group: any) => group.groupId === groupId);
+  };
+
+  const handleCheckAdmin = (isChecked: boolean) => {
+    if(isChecked){
+      setCheckedGroups(groups);
+      setCheckedTeams(teams);
+    } else {
+      setCheckedGroups([]);
+      setCheckedTeams([]);
+    }
   };
 
   return(
     <FormControlsPane>
       <FullAccessWrapper>
         <CustomTableData><TableText>Full Admin Access</TableText></CustomTableData>
-        <CustomTableData><Checkbox onChange={value => console.log("Checkbox clicked", value)}/></CustomTableData>
+        <CustomTableData><Checkbox onChange={e => handleCheckAdmin(e.target.checked)}/></CustomTableData>
       </FullAccessWrapper>
       <ScopeContainer>
         <TableBody>
