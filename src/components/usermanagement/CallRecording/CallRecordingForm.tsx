@@ -76,8 +76,8 @@ const CallRecordingForm = (props: any) => {
   const getRoleOptions = () => {
     return roles.map(role => {
       return {
-        label: role,
-        value: role
+        label: role.name,
+        value: role.id
       };
     });
   };
