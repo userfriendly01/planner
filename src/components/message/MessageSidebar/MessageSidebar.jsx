@@ -10,7 +10,7 @@ import {
   profileConfigs,
   apiPaths
 } from "globals";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import LighteningBolt from "icons/LighteningBolt-06.png";
@@ -61,19 +61,6 @@ const MessageSidebar = props => {
   const stateSkill = messageState.skill;
   const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === messageState.workerProfileId);
 
-  const [ localState, setLocalState ] = useState({
-    nextSkillIdx: 0,
-    skillList: profile.skills.map(
-      skill => {
-        return {
-          skillId: skill,
-          isFetched: false,
-          hasFlashMessage: false
-        };
-      }
-    )
-  });
-
   let apiPath;
   let dataField;
   if(messageType === "closed"){
@@ -85,33 +72,15 @@ const MessageSidebar = props => {
   }
 
   useEffect(() => {
-    console.log("wsx localState.skillList.length: ", localState.skillList.length);
-    if (localState.skillList.length > 0) {
-      if (localState.nextSkillIdx < 3) { //localState.skillList.length) {
-        console.log("wsx api call for ", localState.skillList[localState.nextSkillIdx].skillId);
-        Axios.get(apiPath + `/${localState.skillList[localState.nextSkillIdx].skillId}`)
-          .then(result => {
-            console.log("wsx Result: ", result);
-            const message = result.data[dataField];
-            let readOnly = false;
-            if (message.length > 0) {
-              readOnly = true;
-            }
-            setLocalState({
-              ...localState,
-              nextSkillIdx: localState.nextSkillIdx + 1
-            });
-          })
-          .catch(err => {
-            const fetchError = "wsx Failed to fetch message. ";
-            console.error(fetchError, err);
-            setLocalState({
-              ...localState,
-              nextSkillIdx: localState.nextSkillIdx + 1
-            });
-          });
-      }
-    }
+    console.log("wsx api call for skills & messages");
+    Axios.get(apiPath + "/skill/skillsandmessages")
+      .then(result => {
+        console.log("wsx Result: ", result);
+      })
+      .catch(err => {
+        const fetchError = "wsx Failed to fetch skills and messages: ";
+        console.error(fetchError, err);
+      });
   });
 
   const handleOnChange = selection => {
