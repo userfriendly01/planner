@@ -85,6 +85,7 @@ const MessageSidebar = props => {
   }
 
   useEffect(() => {
+    console.log("wsx localState.skillList.length: ", localState.skillList.length);
     if (localState.skillList.length > 0) {
       if (localState.nextSkillIdx < 3) { //localState.skillList.length) {
         console.log("wsx api call for ", localState.skillList[localState.nextSkillIdx].skillId);
