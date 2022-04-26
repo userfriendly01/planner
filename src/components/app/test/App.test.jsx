@@ -203,7 +203,7 @@ describe("<App />", () => {
       axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
       getManagers.mockResolvedValue(dbManagers);
       getOffices.mockResolvedValue(dbOffices);
-      getCalabrioOrg.mockResolvedValue([]);
+      getCalabrioOrg.mockResolvedValue({ data: []});
     });
     describe("initial state, page is loading", () => {
       test("should render LoadingMessage", () => {
