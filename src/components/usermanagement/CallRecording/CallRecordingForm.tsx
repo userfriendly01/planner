@@ -29,6 +29,7 @@ const CallRecordingForm = (props: any) => {
   const form = useFormState();
   const setForm = useFormDispatch();
   console.log("***STATE!", state);
+  console.log("worker", worker);
   console.log("ENV", process.env.APP_ENV);
 
   const [ roles, setRoles ] = React.useState([]);
@@ -45,28 +46,30 @@ const CallRecordingForm = (props: any) => {
   }, []);
 
   React.useEffect(() => {
-    const email = form.nNumberFetchedUser.email.toLowerCase();
-    const userRecord = users.filter(user => user.email.toLowerCase() === email);
+    if(worker && form.formMode ==="UPDATE") {
+      const email = form.nNumberFetchedUser.email.toLowerCase();
+      const userRecord = users.filter(user => user.email.toLowerCase() === email);
 
-    if(userRecord){
-      getCalabrioUser(tenant.groupId).then((res: any) => {
-        console.log("Fetched Calabrio User", res);
-        setForm({
-          type: userFormActions.SET_CALABRIO_USER,
-          payload: {
-            isScreenRecorded: res.adLogin ? true : false,
-            team: res.groupId,
-            roles: res.roles,
-            scope: {
-              groups: res.scope.groups,
-              teams: res.scope.teams,
-              tenant: res.scope.tenant
+      if(userRecord){
+        getCalabrioUser(tenant.groupId).then((res: any) => {
+          console.log("Fetched Calabrio User", res);
+          setForm({
+            type: userFormActions.SET_CALABRIO_USER,
+            payload: {
+              isScreenRecorded: res.adLogin ? true : false,
+              team: res.groupId,
+              roles: res.roles,
+              scope: {
+                groups: res.scope.groups,
+                teams: res.scope.teams,
+                tenant: res.scope.tenant
+              }
             }
-          }
+          });
+        }).catch(err => {
+          console.error("Failed to fetch Calabrio Roles.", err);
         });
-      }).catch(err => {
-        console.error("Failed to fetch Calabrio Roles.", err);
-      });
+      }
     }
   }, []);
 
