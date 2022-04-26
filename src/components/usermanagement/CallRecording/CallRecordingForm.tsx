@@ -36,9 +36,9 @@ const CallRecordingForm = (props: any) => {
   // const [ user, setUser ] = React.useState(null);
 
   React.useEffect(() => {
-    getCalabrioRoles(tenant.groupId).then(res => {
-      setRoles(res);
+    getCalabrioRoles(tenant.groupId).then((res:any) => {
       console.log("Calabrio Roles", res);
+      setRoles(res.data);
     }).catch(err => {
       console.error("Failed to fetch Calabrio Roles.", err);
     });
