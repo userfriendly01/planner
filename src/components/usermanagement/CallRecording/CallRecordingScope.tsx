@@ -233,14 +233,14 @@ const CallRecordingScope = (props:any) => {
     }
   };
 
-  const isChecked = (groupId: number): boolean => {
+  const isGroupChecked = (groupId: number): boolean => {
     const childrenTeams = identifyChildrenTeams(groupId);
     const isGroupChecked = checkedGroups.some((group: any) => group.groupId === groupId);
     if(isGroupChecked && childrenTeams.length === 0){
       return true;
     }
     const checkedChildrenTeams = childrenTeams.filter((team: any) => isGroupInList(team, checkedTeams));
-    return isGroupChecked && checkedChildrenTeams.length > 0 || checkedTeams.some((group: any) => group.groupId === groupId);
+    return isGroupChecked && checkedChildrenTeams.length > 0;
   };
 
   const handleCheckAdmin = (isChecked: boolean) => {
@@ -275,7 +275,7 @@ const CallRecordingScope = (props:any) => {
               >
                 <CustomTableData>
                   <Checkbox
-                    checked={isChecked(group.groupId)}
+                    checked={isGroupChecked(group.groupId)}
                     indeterminate={checkIfParital(group.groupId)}
                     onChange={e => handleCheckGroup(group, e.target.checked)}
                   />
@@ -289,7 +289,11 @@ const CallRecordingScope = (props:any) => {
           {
             identifyChildrenTeams(selectedGroup.groupId).map((team: any) => (
               <ScopeRow selected={false} key={team.groupId}>
-                <CustomTableData><Checkbox checked={isChecked(team.groupId)} onChange={e => handleCheckTeam(team, e.target.checked)} /></CustomTableData>
+                <CustomTableData>
+                  <Checkbox
+                    checked={checkedTeams.some((group: any) => group.groupId === team.groupId)}
+                    onChange={e => handleCheckTeam(team, e.target.checked)}
+                  /></CustomTableData>
                 <CustomTableData><TableText>{team.name}</TableText></CustomTableData>
               </ScopeRow>
             ))
