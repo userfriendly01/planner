@@ -22,8 +22,7 @@ const CallRecordingScope = (props:any) => {
 
   const {
     groups,
-    teams,
-    worker
+    teams
   } = props;
 
   const form = useFormState();
@@ -178,10 +177,11 @@ const CallRecordingScope = (props:any) => {
   // ];
 
   const [ selectedGroup, setSelectedGroup ] = React.useState(groups[0]);
-  const [ checkedGroups, setCheckedGroups ] = React.useState(worker ? worker.scope.groups : []);
-  const [ checkedTeams, setCheckedTeams ] = React.useState(worker ? worker.scope.teams : []);
+  const [ checkedGroups, setCheckedGroups ] = React.useState(form.calabrioUser.scope.groups);
+  const [ checkedTeams, setCheckedTeams ] = React.useState(form.calabrioUser.scope.teams);
 
   console.log("Selected Group! ", selectedGroup);
+  console.log("Form!", form);
   console.log("checkedGroups", checkedGroups);
   console.log("checkedTeams", checkedTeams);
 

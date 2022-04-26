@@ -105,9 +105,6 @@ const CallRecordingForm = (props: any) => {
       <CallRecordingScope
         groups={groups}
         teams={teams}
-        worker={worker}
-        form={form}
-        setForm={setForm}
       />
     </FormControlsContainer>
   );

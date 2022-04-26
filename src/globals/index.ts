@@ -56,7 +56,7 @@ export const apiPaths = {
   EMPLOYEE_LOOKUP: (nNumber: string): string => `${SERVICE_BASE_URI}/employeelookup/${nNumber}`,
   FLASH_MESSAGE: `${SERVICE_BASE_URI}/flashmessage`,
   GET_CALABRIO_ORG: `${SERVICE_BASE_URI}/calabrio-get-org`,
-  GET_CALABRIO_ROLES: (tenantId: number): any => `${SERVICE_BASE_URI}/calabrio-get-roles/${tenantId}`,
+  GET_CALABRIO_ROLES: (tenantId: number): any => `${SERVICE_BASE_URI}/calabrio-get-roles-by-tenant/${tenantId}`,
   GET_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-get-user/${personId}`,
   GET_PROFILE_DATA: (profileId: string | number): string => `${CONTACT_MANAGER_BASE_URI}/triton/${profileId}`,
   GET_PROFILES: `${CONTACT_MANAGER_BASE_URI}/profiles`,
