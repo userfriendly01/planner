@@ -23,11 +23,13 @@ const CallRecordingScope = (props:any) => {
 
   const {
     groups,
-    teams
+    teams,
+    form,
+    setForm
   } = props;
 
-  const form = useFormState();
-  const setForm = useFormDispatch();
+  // const form = useFormState();
+  // const setForm = useFormDispatch();
   /*
   Scope Component Rules:
     When Tenant is clicked: all groups and teams are selected
@@ -304,7 +306,7 @@ const CallRecordingScope = (props:any) => {
               >
                 <CustomTableData>
                   <Checkbox
-                    checked={groups[index].checked}
+                    checked={groups[index] ? groups[index].checked : null}
                     indeterminate={checkIfParital(index)}
                     onChange={e => handleCheckGroup(index, e.target.checked)}
                   />
@@ -320,7 +322,7 @@ const CallRecordingScope = (props:any) => {
               <ScopeRow selected={false} key={team.groupId}>
                 <CustomTableData>
                   <Checkbox
-                    checked={teams[index].checked}
+                    checked={teams[index] ? teams[index].checked : false}
                     onChange={e => setForm({
                       type: userFormActions.CHECK_TEAM,
                       payload: {
