@@ -19,6 +19,7 @@ import {
 import {
   useFormDispatch,
   useFormState,
+  useAdminState,
   userFormActions
 } from "context";
 import {
@@ -84,6 +85,7 @@ jest.mock("@material-ui/icons", () => ({
 jest.mock("context", () => ({
   __esModule: true,
   useFormState: jest.fn(),
+  useAdminState: jest.fn(),
   useFormDispatch: jest.fn(),
   userFormActions: jest.requireActual("context").userFormActions
 }));
