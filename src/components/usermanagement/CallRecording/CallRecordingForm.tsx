@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   FormControlsContainer,
   FormControlsPane
@@ -35,7 +35,8 @@ const CallRecordingForm = (props: any) => {
   const [ roles, setRoles ] = React.useState([]);
   // const [ user, setUser ] = React.useState(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    console.log("Use effect is entered");
     getCalabrioRoles(tenant.groupId).then((res:any) => {
       console.log("Calabrio Roles", res);
       setRoles(res.data);
@@ -81,7 +82,7 @@ const CallRecordingForm = (props: any) => {
         }
       });
     }
-  }, []);
+  },[]);
 
 
   const getRoleOptions = () => {
