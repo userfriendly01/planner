@@ -117,8 +117,6 @@ const CallRecordingForm = (props: any) => {
       <CallRecordingScope
         groups={form.calabrioUser.scope.groups}
         teams={form.calabrioUser.scope.teams}
-        form={form}
-        setForm={setForm}
       />
     </FormControlsContainer>
   );
