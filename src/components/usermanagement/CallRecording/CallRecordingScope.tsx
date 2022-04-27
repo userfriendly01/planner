@@ -186,15 +186,18 @@ const CallRecordingScope = (props:any) => {
   console.log("checkedTeams", checkedTeams);
 
   const identifyChildrenTeams = (groupId: number) => {
+    console.log("identifyChildrenTeams is run");
     const childrenTeams = teams.filter((team: any) => team.parentGroupId === groupId);
     return childrenTeams;
   };
 
   const isGroupInList = (group: any, groupArray: any) => {
+    console.log("isGroupInList is run");
     return groupArray.some((chteam: any) => JSON.stringify(chteam) === JSON.stringify(group));
   };
 
   const handleCheckGroup = (checkedGroup: any, isChecked: boolean) => {
+    console.log("handleCheckTeam is run");
     const childrenTeams = identifyChildrenTeams(checkedGroup.groupId);
     if(isChecked){
       if(!isGroupInList(checkedGroup, checkedGroups)){
@@ -208,6 +211,7 @@ const CallRecordingScope = (props:any) => {
   };
 
   const handleCheckTeam = (checkedTeam: any, isChecked: boolean) => {
+    console.log("handleCheckTeam is run");
     if(isChecked){
       if(!isGroupInList(checkedTeam, checkedTeams)){
         setCheckedTeams([...checkedTeams, checkedTeam]);
@@ -218,6 +222,7 @@ const CallRecordingScope = (props:any) => {
   };
 
   const checkIfParital = (groupId: number): boolean => {
+    console.log("checkIfParital is run");
     const isGroupChecked = checkedGroups.some((group: any) => group.groupId === groupId);
     const childrenTeams = identifyChildrenTeams(groupId);
     const result = childrenTeams.filter((team: any) => isGroupInList(team, checkedTeams));
@@ -234,6 +239,7 @@ const CallRecordingScope = (props:any) => {
   };
 
   const isGroupChecked = (groupId: number): boolean => {
+    console.log("isGroupChecked is run");
     const childrenTeams = identifyChildrenTeams(groupId);
     const isGroupChecked = checkedGroups.some((group: any) => group.groupId === groupId);
     if(isGroupChecked && childrenTeams.length === 0){
@@ -260,7 +266,7 @@ const CallRecordingScope = (props:any) => {
         <CustomTableData>
           <Checkbox
             onChange={e => handleCheckAdmin(e.target.checked)}
-            checked={false}
+            checked={checkedGroups.length === groups.length && checkedTeams.length === teams.length}
           />
         </CustomTableData>
       </FullAccessWrapper>
