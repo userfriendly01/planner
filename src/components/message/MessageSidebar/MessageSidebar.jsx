@@ -58,24 +58,24 @@ const MessageSidebar = props => {
     messageType
   } = props;
 
-  let flashMessages = null;
-  let flashMessageRetries = 3;
+  let allSkills = null;
+  let retries = 3;
 
   const stateSkill = messageState.skill;
   const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === messageState.workerProfileId);
 
   useEffect(() => {
-    if (!flashMessages && flashMessageRetries) {
-      flashMessageRetries -= 1;
-      const path = apiPaths.ALL_MESSAGES;
+    if (!allSkills && retries) {
+      retries -= 1;
+      const path = apiPaths.ALL_SKILLS;
       console.log("wsx api call for skills & messages to: ", path);
       Axios.get(path)
         .then(result => {
-          flashMessages = result;
-          console.log("wsx skillandmessages: ", flashMessages);
+          allSkills = result;
+          console.log("wsx allSkills: ", allSkills);
         })
         .catch(err => {
-          const fetchError = "wsx Failed to fetch skills and messages: ";
+          const fetchError = "wsx Failed to fetch all skills: ";
           console.error(fetchError, err);
         });
     }
