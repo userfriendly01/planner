@@ -301,7 +301,7 @@ const CallRecordingScope = (props:any) => {
                 groups.map((group: any, index: number) => (
                   <ScopeRow
                     onClick={() => setSelectedGroup(group)}
-                    selected={selectedGroup.groupId === group.groupId}
+                    selected={selectedGroup ? selectedGroup.groupId === group.groupId : false}
                     key={group.groupId}
                   >
                     <CustomTableData>
