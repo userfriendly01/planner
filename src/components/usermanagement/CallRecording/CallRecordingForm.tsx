@@ -43,45 +43,45 @@ const CallRecordingForm = (props: any) => {
     }).catch(err => {
       console.error("Failed to fetch Calabrio Roles.", err);
     });
-    if(worker && form.formMode ==="UPDATE") {
-      const email = form.nNumberFetchedUser.email.toLowerCase();
-      const userRecord = users.filter(user => user.email.toLowerCase() === email);
-      //update to put all groups on worker but check the ones that the existing worker has
-      if(userRecord){
-        getCalabrioUser(tenant.groupId).then((res: any) => {
-          console.log("Fetched Calabrio User", res);
-          setForm({
-            type: userFormActions.SET_CALABRIO_USER,
-            payload: {
-              isScreenRecorded: res.adLogin ? true : false,
-              team: res.groupId,
-              roles: res.roles,
-              scope: {
-                groups: res.scope.groups,
-                teams: res.scope.teams,
-                tenant: res.scope.tenant
-              }
-            }
-          });
-        }).catch(err => {
-          console.error("Failed to fetch Calabrio Roles.", err);
-        });
-      }
-    } else {
-      console.log("useEffect for new user entered", groups);
-      setForm({
-        type: userFormActions.SET_CALABRIO_USER,
-        payload: {
-          ...form.calabrioUser,
-          isScreenRecorded: true,
-          scope: {
-            groups,
-            teams,
-            tenant
-          }
-        }
-      });
-    }
+    // if(worker && form.formMode ==="UPDATE") {
+    //   const email = form.nNumberFetchedUser.email.toLowerCase();
+    //   const userRecord = users.filter(user => user.email.toLowerCase() === email);
+    //   //update to put all groups on worker but check the ones that the existing worker has
+    //   if(userRecord){
+    //     getCalabrioUser(tenant.groupId).then((res: any) => {
+    //       console.log("Fetched Calabrio User", res);
+    //       setForm({
+    //         type: userFormActions.SET_CALABRIO_USER,
+    //         payload: {
+    //           isScreenRecorded: res.adLogin ? true : false,
+    //           team: res.groupId,
+    //           roles: res.roles,
+    //           scope: {
+    //             groups: res.scope.groups,
+    //             teams: res.scope.teams,
+    //             tenant: res.scope.tenant
+    //           }
+    //         }
+    //       });
+    //     }).catch(err => {
+    //       console.error("Failed to fetch Calabrio Roles.", err);
+    //     });
+    //   }
+    // } else {
+    //   console.log("useEffect for new user entered", groups);
+    //   setForm({
+    //     type: userFormActions.SET_CALABRIO_USER,
+    //     payload: {
+    //       ...form.calabrioUser,
+    //       isScreenRecorded: true,
+    //       scope: {
+    //         groups,
+    //         teams,
+    //         tenant
+    //       }
+    //     }
+    //   });
+    // }
   },[]);
 
 
