@@ -181,6 +181,7 @@ const CallRecordingScope = (props:any) => {
   // const [ checkedGroups, setCheckedGroups ] = React.useState(form.calabrioUser.scope.groups);
   // const [ checkedTeams, setCheckedTeams ] = React.useState(form.calabrioUser.scope.teams);
 
+  console.log("groups in scope", groups);
   console.log("Selected Group! ", selectedGroup);
   console.log("Form!", form);
   //Calabrio user can hold all groups with their index and indicate if its checked or not
