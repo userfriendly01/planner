@@ -41,7 +41,7 @@ import {
 } from "testUtils";
 import {
   getOverflowSkillFromProfile,
-  removeProfileZeroIfNeeded,
+  removeProfileZeroIfAdminNotInProfileZero,
   isExtensionValid,
   isProfileIdValid,
   isManagerValid
@@ -96,7 +96,7 @@ jest.mock("utils", () => ({
   sortProfilesByName: jest.requireActual("utils").sortProfilesByName,
   sortManagersByName: jest.fn("utils").sortManagersByName,
   getOverflowSkillFromProfile: jest.fn(),
-  removeProfileZeroIfNeeded: jest.fn()
+  removeProfileZeroIfAdminNotInProfileZero: jest.fn()
 }));
 
 jest.mock("services", () => ({
@@ -256,7 +256,7 @@ describe("<BasicFormInfo />", () => {
   });
   describe("Team dropdown", () => {
     test("Should render the correct initial state", () => {
-      removeProfileZeroIfNeeded.mockReturnValue(profileList);
+      removeProfileZeroIfAdminNotInProfileZero.mockReturnValue(profileList);
       const rendered = renderComponent(false);
       expectMockedComponent(rendered, { OutlinedSelect }, 2);
       const expectedTeamProps = {
@@ -284,13 +284,13 @@ describe("<BasicFormInfo />", () => {
           blurred: true
         }
       });
-      removeProfileZeroIfNeeded.mockReturnValue(profileList);
+      removeProfileZeroIfAdminNotInProfileZero.mockReturnValue(profileList);
       isProfileIdValid.mockReturnValue(false);
       renderComponent(false);
       expect(OutlinedSelect.mock.calls[1][0].error).toBe(true);
     });
     test("helperText is null - profileId is valid", () => {
-      removeProfileZeroIfNeeded.mockReturnValue(profileList);
+      removeProfileZeroIfAdminNotInProfileZero.mockReturnValue(profileList);
       isProfileIdValid.mockReturnValue(true);
       renderComponent(false);
       expect(OutlinedSelect.mock.calls[1][0].helperText).toBe(null);
@@ -303,7 +303,7 @@ describe("<BasicFormInfo />", () => {
           updated: true
         }
       });
-      removeProfileZeroIfNeeded.mockReturnValue(profileList);
+      removeProfileZeroIfAdminNotInProfileZero.mockReturnValue(profileList);
       isProfileIdValid.mockReturnValue(false);
       renderComponent(false);
       expect(OutlinedSelect.mock.calls[1][0].helperText).toBe("Please select a team");

@@ -25,6 +25,7 @@ import {
 import {
   useFormDispatch,
   useFormState,
+  useAdminState,
   userFormActions
 } from "context";
 import {
@@ -35,7 +36,7 @@ import React from "react";
 import { checkExtension } from "services";
 import {
   getOverflowSkillFromProfile,
-  removeProfileZeroIfNeeded,
+  removeProfileZeroIfAdminNotInProfileZero,
   isProfileIdValid,
   isManagerValid,
   sortManagersByName,
@@ -69,6 +70,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   } = props;
 
   const form = useFormState();
+  const adminState = useAdminState();
   const setForm = useFormDispatch();
 
   const isOutgoingDisabled = (): boolean => {
@@ -225,7 +227,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           label={"Team *"}
           labelWidth={44}
           onBlur={() => handleOnBlur("profileId")}
-          optionsList={removeProfileZeroIfNeeded(profiles.sort(sortProfilesByName))}
+          optionsList={removeProfileZeroIfAdminNotInProfileZero(adminState, profiles.sort(sortProfilesByName))}
           optionsDisplayFunc={option => {
             return {
               display: option.profile_nme,

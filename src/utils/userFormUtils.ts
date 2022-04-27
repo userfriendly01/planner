@@ -2,7 +2,8 @@ import {
   TritonProfile,
   Worker,
   formModes,
-  WorkerSkills
+  WorkerSkills,
+  AppState
 } from "globals";
 import {
   UserFormState
@@ -11,7 +12,6 @@ import {
   formatE164PhoneNumber,
   removeNonNumericCharacters
 } from "utils";
-import { useAdminState } from "context";
 
 // For a DID user, the outgoing number is tied to the directDialNum, if you change one you must change both in order for the form to be valid
 export const isDidDifferentValid = (form: UserFormState, worker: Worker, forwardToToggle: boolean): boolean => {
@@ -66,18 +66,17 @@ export const getOverflowSkillFromProfile = (profiles: TritonProfile[], profileVa
   }
 };
 
-export const removeProfileZeroIfNeeded = (profiles: TritonProfile[]) => {
-  const adminState = useAdminState();
-  const nNumber = adminState.userContext.pingIdentity.sub;
+export const removeProfileZeroIfAdminNotInProfileZero = (adminState: AppState, profiles: TritonProfile[]) => {
+  const adGroups: String[] = adminState && adminState.userContext && adminState.userContext.pingIdentity ? adminState.userContext.pingIdentity.groups: [];
 
-  let workerProfileId;
-  adminState.workerContext.workers.forEach(worker =>{
-    if(worker.attributes.n_number && worker.attributes.n_number.toLowerCase() === nNumber.toLowerCase()){
-      workerProfileId = worker.attributes.profile_id;
+  let adminGroup = false;
+  adGroups.forEach(group =>{
+    if(group.includes("gci-cicct-triton-prod-admin") || group.includes("gci-cicct-triton-test-admin") || group.includes("gci-cicct-triton-dev-admin")){
+      adminGroup = true;
     }
   });
   
-  if(workerProfileId !== 0){
+  if(!adminGroup){
     const filteredProfiles = profiles.filter(e => e.profile_id !== 0);
     return filteredProfiles;
   }
