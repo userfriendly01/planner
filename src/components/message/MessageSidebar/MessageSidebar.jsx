@@ -58,29 +58,27 @@ const MessageSidebar = props => {
     messageType
   } = props;
 
+  let flashMessages = null;
+  let flashMessageRetries = 3;
+
   const stateSkill = messageState.skill;
   const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === messageState.workerProfileId);
 
-  let apiPath;
-  let dataField;
-  if(messageType === "closed"){
-    apiPath = apiPaths.CLOSED_MESSAGE;
-    dataField = "closedMessage";
-  } else {
-    apiPath = apiPaths.FLASH_MESSAGE;
-    dataField = "flashMessage";
-  }
-
   useEffect(() => {
-    console.log("wsx api call for skills & messages");
-    Axios.get(apiPath + "/skill/skillsandmessages")
-      .then(result => {
-        console.log("wsx Result: ", result);
-      })
-      .catch(err => {
-        const fetchError = "wsx Failed to fetch skills and messages: ";
-        console.error(fetchError, err);
-      });
+    if (!flashMessages && flashMessageRetries) {
+      flashMessageRetries -= 1;
+      const path = apiPaths.ALL_MESSAGES;
+      console.log("wsx api call for skills & messages to: ", path);
+      Axios.get(path)
+        .then(result => {
+          flashMessages = result;
+          console.log("wsx skillandmessages: ", flashMessages);
+        })
+        .catch(err => {
+          const fetchError = "wsx Failed to fetch skills and messages: ";
+          console.error(fetchError, err);
+        });
+    }
   });
 
   const handleOnChange = selection => {

@@ -60,6 +60,7 @@ export const apiPaths = {
   DIRECTORY_ENTRY: (directoryId: string | number): string => `${CONTACT_MANAGER_BASE_URI}/directory/${directoryId}`,
   EMPLOYEE_LOOKUP: (nNumber: string): string => `${SERVICE_BASE_URI}/employeelookup/${nNumber}`,
   FLASH_MESSAGE: `${SERVICE_BASE_URI}/flashmessage`,
+  ALL_MESSAGES: `${SERVICE_BASE_URI}/skillsandmessages`,
   GET_PROFILE_DATA: (profileId: string | number): string => `${CONTACT_MANAGER_BASE_URI}/triton/${profileId}`,
   GET_PROFILES: `${CONTACT_MANAGER_BASE_URI}/profiles`,
   GET_TASKROUTER_SKILLS: `${SERVICE_BASE_URI}/taskrouterskills`,
