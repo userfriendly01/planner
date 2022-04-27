@@ -23,13 +23,11 @@ const CallRecordingScope = (props:any) => {
 
   const {
     groups,
-    teams,
-    form,
-    setForm
+    teams
   } = props;
 
-  // const form = useFormState();
-  // const setForm = useFormDispatch();
+  const form = useFormState();
+  const setForm = useFormDispatch();
   /*
   Scope Component Rules:
     When Tenant is clicked: all groups and teams are selected
