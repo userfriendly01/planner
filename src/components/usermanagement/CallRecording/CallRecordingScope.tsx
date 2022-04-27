@@ -214,7 +214,7 @@ const CallRecordingScope = (props:any) => {
   // };
 
   const handleCheckGroup = (index: number, isChecked: boolean) => {
-    console.log("handleCheckTeam is run");
+    console.log("handleCheckGroup is run");
     const group = groups[index];
 
     const childrenTeams = identifyChildrenTeams(group.groupId);
@@ -252,7 +252,7 @@ const CallRecordingScope = (props:any) => {
     console.log("checkIfParital is run", group);
     const childrenTeams = identifyChildrenTeams(group.groupId);
     console.log("childrenTeams in checkIfPartial", childrenTeams);
-    const checkedChildrenTeams = childrenTeams.filter((team: any) => team.checked === true);
+    const checkedChildrenTeams = childrenTeams.filter((team: any) => team.checked === false);
     if(childrenTeams.length !== 0 && checkedChildrenTeams.length !== childrenTeams.length){
       return true;
     } else {

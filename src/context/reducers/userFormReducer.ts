@@ -136,6 +136,7 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
       };
     }
     case userFormActions.CHECK_GROUP: {
+      console.log("Reducer payload", action.payload, state);
       return {
         ...state,
         calabrioUser: {
@@ -144,7 +145,10 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
             ...state.calabrioUser.scope,
             groups: {
               ...state.calabrioUser.scope.groups,
-              [action.payload.index]: action.payload.checked
+              [action.payload.index]: {
+                ...state.calabrioUser.scope.groups[action.payload.index],
+                checked: action.payload.checked
+              }
             }
           }
         }
@@ -159,7 +163,10 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
             ...state.calabrioUser.scope,
             teams: {
               ...state.calabrioUser.scope.teams,
-              [action.payload.index]: action.payload.checked
+              [action.payload.index]: {
+                ...state.calabrioUser.scope.teams[action.payload.index],
+                checked: action.payload.checked
+              }
             }
           }
         }
