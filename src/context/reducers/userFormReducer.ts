@@ -109,7 +109,7 @@ export const initialUserFormState: UserFormState = {
   },
   calabrioUser: {
     isScreenRecorded: false,
-    team: 0,
+    team: null,
     roles: [],
     scope: {
       groups: [],

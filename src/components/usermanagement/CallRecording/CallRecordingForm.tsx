@@ -42,10 +42,6 @@ const CallRecordingForm = (props: any) => {
     }).catch(err => {
       console.error("Failed to fetch Calabrio Roles.", err);
     });
-
-  }, []);
-
-  React.useEffect(() => {
     if(worker && form.formMode ==="UPDATE") {
       const email = form.nNumberFetchedUser.email.toLowerCase();
       const userRecord = users.filter(user => user.email.toLowerCase() === email);
@@ -71,10 +67,12 @@ const CallRecordingForm = (props: any) => {
         });
       }
     } else {
+      console.log("useEffect for new user entered", groups);
       setForm({
         type: userFormActions.SET_CALABRIO_USER,
         payload: {
           ...form.calabrioUser,
+          isScreenRecorded: true,
           scope: {
             groups,
             teams,
@@ -84,6 +82,7 @@ const CallRecordingForm = (props: any) => {
       });
     }
   }, []);
+
 
   const getRoleOptions = () => {
     return roles.map(role => {
