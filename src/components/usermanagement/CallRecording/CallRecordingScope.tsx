@@ -286,7 +286,7 @@ const CallRecordingScope = (props:any) => {
 
   return(
     <>
-      { groups.length > 0 ?
+      { groups.length > 0 && selectedGroup ?
         <FormControlsPane>
           <FullAccessWrapper>
             <CustomTableData><TableText>Full Admin Access</TableText></CustomTableData>
