@@ -243,7 +243,7 @@ const CallRecordingScope = (props:any) => {
 
   const checkIfParital = (index: number): boolean => {
     const group = groups[index];
-    console.log("checkIfParital is run");
+    console.log("checkIfParital is run", group);
     const childrenTeams = identifyChildrenTeams(group.groupId);
     const checkedChildrenTeams = childrenTeams.filter((team: any) => team.checked === true);
     if(childrenTeams.length !== 0 && checkedChildrenTeams.length !== childrenTeams.length){
@@ -285,59 +285,63 @@ const CallRecordingScope = (props:any) => {
   };
 
   return(
-    <FormControlsPane>
-      <FullAccessWrapper>
-        <CustomTableData><TableText>Full Admin Access</TableText></CustomTableData>
-        <CustomTableData>
-          <Checkbox
-            onChange={e => handleCheckAdmin(e.target.checked)}
-            checked={checkIfAdmin()}
-          />
-        </CustomTableData>
-      </FullAccessWrapper>
-      <ScopeContainer>
-        <TableBody>
-          {
-            groups.map((group: any, index: number) => (
-              <ScopeRow
-                onClick={() => setSelectedGroup(group)}
-                selected={selectedGroup.groupId === group.groupId}
-                key={group.groupId}
-              >
-                <CustomTableData>
-                  <Checkbox
-                    checked={groups[index] ? groups[index].checked : null}
-                    indeterminate={checkIfParital(index)}
-                    onChange={e => handleCheckGroup(index, e.target.checked)}
-                  />
-                </CustomTableData>
-                <CustomTableData><TableText>{group.name}</TableText></CustomTableData>
-              </ScopeRow>
-            ))
-          }
-        </TableBody>
-        <TableBody>
-          {
-            identifyChildrenTeams(selectedGroup.groupId).map((team: any, index: number) => (
-              <ScopeRow selected={false} key={team.groupId}>
-                <CustomTableData>
-                  <Checkbox
-                    checked={teams[index] ? teams[index].checked : false}
-                    onChange={e => setForm({
-                      type: userFormActions.CHECK_TEAM,
-                      payload: {
-                        index,
-                        checked: e.target.checked
-                      }
-                    })}
-                  /></CustomTableData>
-                <CustomTableData><TableText>{team.name}</TableText></CustomTableData>
-              </ScopeRow>
-            ))
-          }
-        </TableBody>
-      </ScopeContainer>
-    </FormControlsPane>
+    <>
+      { groups.length > 0 ?
+        <FormControlsPane>
+          <FullAccessWrapper>
+            <CustomTableData><TableText>Full Admin Access</TableText></CustomTableData>
+            <CustomTableData>
+              <Checkbox
+                onChange={e => handleCheckAdmin(e.target.checked)}
+                checked={checkIfAdmin()}
+              />
+            </CustomTableData>
+          </FullAccessWrapper>
+          <ScopeContainer>
+            <TableBody>
+              {
+                groups.map((group: any, index: number) => (
+                  <ScopeRow
+                    onClick={() => setSelectedGroup(group)}
+                    selected={selectedGroup.groupId === group.groupId}
+                    key={group.groupId}
+                  >
+                    <CustomTableData>
+                      <Checkbox
+                        checked={groups[index] ? groups[index].checked : null}
+                        indeterminate={checkIfParital(index)}
+                        onChange={e => handleCheckGroup(index, e.target.checked)}
+                      />
+                    </CustomTableData>
+                    <CustomTableData><TableText>{group.name}</TableText></CustomTableData>
+                  </ScopeRow>
+                ))
+              }
+            </TableBody>
+            <TableBody>
+              {
+                identifyChildrenTeams(selectedGroup.groupId).map((team: any, index: number) => (
+                  <ScopeRow selected={false} key={team.groupId}>
+                    <CustomTableData>
+                      <Checkbox
+                        checked={teams[index] ? teams[index].checked : false}
+                        onChange={e => setForm({
+                          type: userFormActions.CHECK_TEAM,
+                          payload: {
+                            index,
+                            checked: e.target.checked
+                          }
+                        })}
+                      /></CustomTableData>
+                    <CustomTableData><TableText>{team.name}</TableText></CustomTableData>
+                  </ScopeRow>
+                ))
+              }
+            </TableBody>
+          </ScopeContainer>
+        </FormControlsPane>
+        : null}
+    </>
   );
 };
 
