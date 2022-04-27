@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Checkbox } from "@material-ui/core";
 import {
   TableBody,
@@ -177,9 +177,15 @@ const CallRecordingScope = (props:any) => {
   //   }
   // ];
 
-  const [ selectedGroup, setSelectedGroup ] = React.useState(groups[0]);
+  const [ selectedGroup, setSelectedGroup ] = React.useState(null);
   // const [ checkedGroups, setCheckedGroups ] = React.useState(form.calabrioUser.scope.groups);
   // const [ checkedTeams, setCheckedTeams ] = React.useState(form.calabrioUser.scope.teams);
+
+  useEffect(() => {
+    if(groups.length > 0) {
+      setSelectedGroup(groups[0]);
+    }
+  }, [groups]);
 
   console.log("groups in scope", groups);
   console.log("Selected Group! ", selectedGroup);
