@@ -189,12 +189,13 @@ const CallRecordingScope = (props:any) => {
   const identifyChildrenTeams = (groupId: number) => {
     console.log("identifyChildrenTeams is run");
     //can clean this up to only return index if it works
-    const childrenTeams = teams.map((team: any, index: number) => {
+    const childrenTeams: any[] = [];
+    teams.forEach((team: any, index: number) => {
       if(team.parentGroupId === groupId){
-        return {
+        childrenTeams.push({
           index,
           ...team
-        };
+        });
       }
     });
     return childrenTeams;
