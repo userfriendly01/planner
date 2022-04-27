@@ -49,7 +49,7 @@ const CallRecordingForm = (props: any) => {
     if(worker && form.formMode ==="UPDATE") {
       const email = form.nNumberFetchedUser.email.toLowerCase();
       const userRecord = users.filter(user => user.email.toLowerCase() === email);
-
+      //update to put all groups on worker but check the ones that the existing worker has
       if(userRecord){
         getCalabrioUser(tenant.groupId).then((res: any) => {
           console.log("Fetched Calabrio User", res);
@@ -70,6 +70,18 @@ const CallRecordingForm = (props: any) => {
           console.error("Failed to fetch Calabrio Roles.", err);
         });
       }
+    } else {
+      setForm({
+        type: userFormActions.SET_CALABRIO_USER,
+        payload: {
+          ...form.calabrioUser,
+          scope: {
+            groups,
+            teams,
+            tenant
+          }
+        }
+      });
     }
   }, []);
 

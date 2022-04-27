@@ -18,6 +18,8 @@ const searchParams = SearchParams.getValues();
 
 export const userFormActions = {
   ASSIGN_EXTENSION: "ASSIGN_EXTENSION",
+  CHECK_TEAM: "CHECK_TEAM",
+  CHECK_GROUP: "CHECK_GROUP",
   CLEAR_EXTENSION: "CLEAR_EXTENSION",
   CLEAR_N_NUMBER: "CLEAR_N_NUMBER",
   CLEAR_OUTGOING_NUMBER: "CLEAR_OUTGOING_NUMBER",
@@ -107,7 +109,7 @@ export const initialUserFormState: UserFormState = {
   },
   calabrioUser: {
     isScreenRecorded: false,
-    team: 225,
+    team: 0,
     roles: [],
     scope: {
       groups: [],
@@ -130,6 +132,36 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
           ...state.extensionStatus,
           searchStatus: ExtensionSearchStatuses.PickANumber,
           message: "Searching..."
+        }
+      };
+    }
+    case userFormActions.CHECK_GROUP: {
+      return {
+        ...state,
+        calabrioUser: {
+          ...state.calabrioUser,
+          scope: {
+            ...state.calabrioUser.scope,
+            groups: {
+              ...state.calabrioUser.scope.groups,
+              [action.payload.index]: action.payload.checked
+            }
+          }
+        }
+      };
+    }
+    case userFormActions.CHECK_TEAM: {
+      return {
+        ...state,
+        calabrioUser: {
+          ...state.calabrioUser,
+          scope: {
+            ...state.calabrioUser.scope,
+            teams: {
+              ...state.calabrioUser.scope.teams,
+              [action.payload.index]: action.payload.checked
+            }
+          }
         }
       };
     }

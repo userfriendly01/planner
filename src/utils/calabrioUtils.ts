@@ -10,11 +10,23 @@ export const formatCalabrioTenant = (groupsArray: CalabrioGroup[]): CalabrioGrou
 };
 
 export const formatCalabrioTeams = (groupsArray: CalabrioGroup[]): CalabrioGroup[] => {
-  return groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.TEAM);
+  const teams =  groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.TEAM);
+  return teams.map(team => {
+    return {
+      ...team,
+      checked: false
+    };
+  });
 };
 
 export const formatCalabrioGroups = (groupsArray: CalabrioGroup[]): CalabrioGroup[] => {
-  return groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.GROUP);
+  const groups = groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.GROUP);
+  return groups.map(group => {
+    return {
+      ...group,
+      checked: false
+    };
+  });
 };
 
 export const formatCalabrioUsers = (groupsArray: CalabrioGroup[]): any[] => {

@@ -14,7 +14,8 @@ import {
 } from "./CallRecording.Interfaces";
 import {
   useFormState,
-  useFormDispatch
+  useFormDispatch,
+  userFormActions
 } from "context";
 
 
@@ -177,86 +178,108 @@ const CallRecordingScope = (props:any) => {
   // ];
 
   const [ selectedGroup, setSelectedGroup ] = React.useState(groups[0]);
-  const [ checkedGroups, setCheckedGroups ] = React.useState(form.calabrioUser.scope.groups);
-  const [ checkedTeams, setCheckedTeams ] = React.useState(form.calabrioUser.scope.teams);
+  // const [ checkedGroups, setCheckedGroups ] = React.useState(form.calabrioUser.scope.groups);
+  // const [ checkedTeams, setCheckedTeams ] = React.useState(form.calabrioUser.scope.teams);
 
   console.log("Selected Group! ", selectedGroup);
   console.log("Form!", form);
-  console.log("checkedGroups", checkedGroups);
-  console.log("checkedTeams", checkedTeams);
+  //Calabrio user can hold all groups with their index and indicate if its checked or not
+  //then when we submit the add user we can filter for only the true ones
 
   const identifyChildrenTeams = (groupId: number) => {
     console.log("identifyChildrenTeams is run");
-    const childrenTeams = teams.filter((team: any) => team.parentGroupId === groupId);
+    //can clean this up to only return index if it works
+    const childrenTeams = teams.map((team: any, index: number) => {
+      if(team.parentGroupId === groupId){
+        return {
+          index,
+          ...team
+        };
+      }
+    });
     return childrenTeams;
   };
 
-  const isGroupInList = (group: any, groupArray: any) => {
-    console.log("isGroupInList is run");
-    return groupArray.some((chteam: any) => JSON.stringify(chteam) === JSON.stringify(group));
-  };
+  // const isGroupInList = (group: any, groupArray: any) => {
+  //   console.log("isGroupInList is run");
+  //   return groupArray.some((chteam: any) => JSON.stringify(chteam) === JSON.stringify(group));
+  // };
 
-  const handleCheckGroup = (checkedGroup: any, isChecked: boolean) => {
+  const handleCheckGroup = (index: number, isChecked: boolean) => {
     console.log("handleCheckTeam is run");
-    const childrenTeams = identifyChildrenTeams(checkedGroup.groupId);
-    if(isChecked){
-      if(!isGroupInList(checkedGroup, checkedGroups)){
-        setCheckedGroups([...checkedGroups, checkedGroup]);
+    const group = groups[index];
+
+    const childrenTeams = identifyChildrenTeams(group.groupId);
+    setForm({
+      type: userFormActions.CHECK_GROUP,
+      payload: {
+        index,
+        checked: isChecked
       }
-      setCheckedTeams([...checkedTeams, ...childrenTeams]);
-    } else {
-      setCheckedGroups(checkedGroups.filter((group: any) => group.groupId !== checkedGroup.groupId));
-      setCheckedTeams(checkedTeams.filter((team: any) => !isGroupInList(team, childrenTeams)));
-    }
+    });
+    childrenTeams.forEach((team:any) => {
+      setForm({
+        type: userFormActions.CHECK_TEAM,
+        payload: {
+          index: team.index,
+          checked: isChecked
+        }
+      });
+    });
   };
 
-  const handleCheckTeam = (checkedTeam: any, isChecked: boolean) => {
-    console.log("handleCheckTeam is run");
-    if(isChecked){
-      if(!isGroupInList(checkedTeam, checkedTeams)){
-        setCheckedTeams([...checkedTeams, checkedTeam]);
-      }
-    } else {
-      setCheckedTeams(checkedTeams.filter((team: any) => team.groupId !== checkedTeam.groupId));
-    }
-  };
+  // const handleCheckTeam = (checkedTeam: any, isChecked: boolean) => {
+  //   console.log("handleCheckTeam is run");
+  //   if(isChecked){
+  //     if(!isGroupInList(checkedTeam, checkedTeams)){
+  //       setCheckedTeams([...checkedTeams, checkedTeam]);
+  //     }
+  //   } else {
+  //     setCheckedTeams(checkedTeams.filter((team: any) => team.groupId !== checkedTeam.groupId));
+  //   }
+  // };
 
-  const checkIfParital = (groupId: number): boolean => {
+  const checkIfParital = (index: number): boolean => {
+    const group = groups[index];
     console.log("checkIfParital is run");
-    const isGroupChecked = checkedGroups.some((group: any) => group.groupId === groupId);
-    const childrenTeams = identifyChildrenTeams(groupId);
-    const result = childrenTeams.filter((team: any) => isGroupInList(team, checkedTeams));
-    if(result.length === 0) {
-      return false;
-    } else if(result.length !== childrenTeams.length) {
-      if(isGroupChecked){
-        setCheckedGroups(checkedGroups.filter((group: any) => group.groupId !== groupId));
-      }
+    const childrenTeams = identifyChildrenTeams(group.groupId);
+    const checkedChildrenTeams = childrenTeams.filter((team: any) => team.checked === true);
+    if(childrenTeams.length !== 0 && checkedChildrenTeams.length !== childrenTeams.length){
       return true;
     } else {
       return false;
     }
   };
 
-  const isGroupChecked = (groupId: number): boolean => {
-    console.log("isGroupChecked is run");
-    const childrenTeams = identifyChildrenTeams(groupId);
-    const isGroupChecked = checkedGroups.some((group: any) => group.groupId === groupId);
-    if(isGroupChecked && childrenTeams.length === 0){
-      return true;
-    }
-    const checkedChildrenTeams = childrenTeams.filter((team: any) => isGroupInList(team, checkedTeams));
-    return isGroupChecked && checkedChildrenTeams.length > 0;
-  };
+  // const isGroupChecked = (groupId: number, index: number): boolean => {
+  //   console.log("isGroupChecked is run");
+  //   const childrenTeams = identifyChildrenTeams(groupId);
+  //   const isGroupChecked = groups[index].checked;
+  //   if(isGroupChecked && childrenTeams.length === 0){
+  //     return true;
+  //   }
+  //   return isGroupChecked && allChildrenChecked;
+  // };
 
   const handleCheckAdmin = (isChecked: boolean) => {
-    if(isChecked){
-      setCheckedGroups(groups);
-      setCheckedTeams(teams);
-    } else {
-      setCheckedGroups([]);
-      setCheckedTeams([]);
-    }
+    groups.forEach((group: any, index: number) => setForm({
+      type: userFormActions.CHECK_GROUP,
+      payload: {
+        index,
+        checked: isChecked
+      }
+    }));
+    teams.forEach((team: any, index: number) => setForm({
+      type: userFormActions.CHECK_TEAM,
+      payload: {
+        index,
+        checked: isChecked
+      }
+    }));
+  };
+
+  const checkIfAdmin = () => {
+    return groups.some((group: any) => group.checked === false) || teams.some((team: any) => team.checked === false);
   };
 
   return(
@@ -266,14 +289,14 @@ const CallRecordingScope = (props:any) => {
         <CustomTableData>
           <Checkbox
             onChange={e => handleCheckAdmin(e.target.checked)}
-            checked={checkedGroups.length === groups.length && checkedTeams.length === teams.length}
+            checked={checkIfAdmin()}
           />
         </CustomTableData>
       </FullAccessWrapper>
       <ScopeContainer>
         <TableBody>
           {
-            groups.map((group: any) => (
+            groups.map((group: any, index: number) => (
               <ScopeRow
                 onClick={() => setSelectedGroup(group)}
                 selected={selectedGroup.groupId === group.groupId}
@@ -281,9 +304,9 @@ const CallRecordingScope = (props:any) => {
               >
                 <CustomTableData>
                   <Checkbox
-                    checked={isGroupChecked(group.groupId)}
-                    indeterminate={checkIfParital(group.groupId)}
-                    onChange={e => handleCheckGroup(group, e.target.checked)}
+                    checked={groups[index].checked}
+                    indeterminate={checkIfParital(index)}
+                    onChange={e => handleCheckGroup(index, e.target.checked)}
                   />
                 </CustomTableData>
                 <CustomTableData><TableText>{group.name}</TableText></CustomTableData>
@@ -293,12 +316,18 @@ const CallRecordingScope = (props:any) => {
         </TableBody>
         <TableBody>
           {
-            identifyChildrenTeams(selectedGroup.groupId).map((team: any) => (
+            identifyChildrenTeams(selectedGroup.groupId).map((team: any, index: number) => (
               <ScopeRow selected={false} key={team.groupId}>
                 <CustomTableData>
                   <Checkbox
-                    checked={checkedTeams.some((group: any) => group.groupId === team.groupId)}
-                    onChange={e => handleCheckTeam(team, e.target.checked)}
+                    checked={teams[index].checked}
+                    onChange={e => setForm({
+                      type: userFormActions.CHECK_TEAM,
+                      payload: {
+                        index,
+                        checked: e.target.checked
+                      }
+                    })}
                   /></CustomTableData>
                 <CustomTableData><TableText>{team.name}</TableText></CustomTableData>
               </ScopeRow>
