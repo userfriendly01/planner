@@ -51,10 +51,7 @@ const CallRecordingScope = (props:any) => {
 
   const handleCheckGroup = (index: number, isChecked: boolean) => {
     const group = groups[index];
-
     const childrenTeams = identifyChildrenTeams(group.groupId);
-    console.log("handleCheckGroup childrenTeams", childrenTeams, group);
-
     setForm({
       type: userFormActions.CHECK_GROUP,
       payload: {
@@ -97,17 +94,14 @@ const CallRecordingScope = (props:any) => {
 
   const checkIfParital = (index: number): void => {
     const group = groups[index];
-    console.log("checkIfParital is run", group);
     const childrenTeams = identifyChildrenTeams(group.groupId);
-    console.log("childrenTeams in checkIfPartial", childrenTeams);
     const checkedChildrenTeams = childrenTeams.filter((teamIndex: any) => teams[teamIndex].checked === true);
-    console.log("checkedChildrenTeams in checkIfPartial", checkedChildrenTeams);
+
     const childrenTeamsExist = childrenTeams.length !== 0;
     const noChildrenTeamsChecked = checkedChildrenTeams.length === 0;
     const allChildrenTeamsChecked = checkedChildrenTeams.length === childrenTeams.length;
-    const groupChecked = group.checked;
-    if(!childrenTeamsExist || (noChildrenTeamsChecked && !groupChecked) || (allChildrenTeamsChecked && groupChecked)){
-      console.log("Trying to set partial to false");
+
+    if(!childrenTeamsExist || (noChildrenTeamsChecked && !group.checked) || (allChildrenTeamsChecked && group.checked)){
       if(group.partial !== false){
         setForm({
           type: userFormActions.CHECK_GROUP,
@@ -119,7 +113,6 @@ const CallRecordingScope = (props:any) => {
         });
       }
     } else {
-      console.log("Trying to set partial to true");
       if(group.partial !== true){
         setForm({
           type: userFormActions.CHECK_GROUP,
