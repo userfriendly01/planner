@@ -110,10 +110,12 @@ const MessageSidebar = props => {
 
   // skill_nme, flash_msg_tts_txt, closed_msg_tts_txt
   const makeRadioButton = skillName => {
-    const skill = skillData.allSkills.find(skill => skill.skillName === skillName);
     let hasFlash = false;
-    if (skill && skill.flashMessage) {
-      hasFlash = true;
+    if (skillData.allSkills) {
+      const skill = skillData.allSkills.find(skill => skill.skillName === skillName);
+      if (skill && skill.flashMessage) {
+        hasFlash = true;
+      }
     }
     console.log("wsx skill: ", skillName, hasFlash);
     if (hasFlash) {
