@@ -73,13 +73,13 @@ const CallRecordingForm = (props: any) => {
       const userTeams = [];
 
       groups.forEach(group => userGroups.push({
-        group: { ...group },
+        ...group,
         checked: false,
         partial: false
       }));
 
       teams.forEach(team => userTeams.push({
-        team: { ...team },
+        ...team,
         checked: false
       }));
       setForm({
