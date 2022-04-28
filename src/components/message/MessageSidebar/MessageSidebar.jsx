@@ -10,7 +10,10 @@ import {
   profileConfigs,
   apiPaths
 } from "globals";
-import React, { useEffect } from "react";
+import React, {
+  useEffect,
+  useState 
+} from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import LighteningBolt from "icons/LighteningBolt-06.png";
@@ -58,26 +61,42 @@ const MessageSidebar = props => {
     messageType
   } = props;
 
-  let allSkills = null;
-  let retries = 3;
-
   const stateSkill = messageState.skill;
   const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === messageState.workerProfileId);
 
+  const [ skillData, setSkillData ] = useState({
+    fetchInProgress: false,
+    allSkills: [], // wsx someSkills,
+    retries: 3
+  });
+
   useEffect(() => {
-    if (!allSkills && retries) {
-      retries -= 1;
+    if (!skillData.fetchInProgress && skillData.retries) {
       const path = apiPaths.ALL_SKILLS;
-      console.log("wsx api call for skills & messages to: ", path);
       Axios.get(path)
         .then(result => {
-          allSkills = result;
-          console.log("wsx allSkills: ", allSkills);
+          console.log("wsx result.data.allSkills: ", result.data.allSkills);
+          setSkillData({
+            ...skillData,
+            allSkills: result.data.allSkills,
+            fetchInProgress: false,
+            retries: 0
+          });
         })
         .catch(err => {
           const fetchError = "wsx Failed to fetch all skills: ";
           console.error(fetchError, err);
+          setSkillData({
+            ...skillData,
+            fetchInProgress: false,
+            retries: skillData.retries - 1
+          });
         });
+      setSkillData({
+        ...skillData,
+        fetchInProgress: true,
+        retries: skillData.retries - 1
+      });
     }
   });
 
@@ -89,17 +108,41 @@ const MessageSidebar = props => {
     });
   };
 
-  const makeRadioButton = skill => {
-    return (
-      <div>
-        <StyledFormControl
-          key={skill}
-          control={<TealRadio value={skill} />}
-          label={skill}
-        />
-        <StyledBolt src={LighteningBolt} alt="*"/>
-      </div>
-    );
+  // skill_nme, flash_msg_tts_txt, closed_msg_tts_txt
+  const makeRadioButton = skillNme => {
+    const skill = skillData.allSkills.find(skill => skill.skill_nme === skillNme);
+    let hasFlash = false;
+    if (skill && skill.flash_msg_tts_txt) {
+      hasFlash = true;
+    }
+    console.log("wsx skill: ", skill, hasFlash); //, skill.flash_msg_tts_txt);
+    if (hasFlash) {
+      return (
+        <div>
+          <StyledFormControl
+            key={skillNme}
+            control={<TealRadio value={skillNme} />}
+            label={skillNme}
+          />
+          <StyledBolt
+            key={`Bolt-${skillNme}`}
+            src={LighteningBolt}
+            alt="*"
+          />
+        </div>
+      );
+    } else {
+
+      return (
+        <div>
+          <StyledFormControl
+            key={skillNme}
+            control={<TealRadio value={skillNme} />}
+            label={skillNme}
+          />
+        </div>
+      );
+    }
   };
 
   return (
