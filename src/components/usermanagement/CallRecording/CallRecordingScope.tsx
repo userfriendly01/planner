@@ -199,6 +199,7 @@ const CallRecordingScope = (props:any) => {
     const childrenTeams: any[] = [];
     teams.forEach((team: any, index: number) => {
       if(team.parentGroupId === groupId){
+        console.log("identifyChildrenTeams entereed forEach logic");
         childrenTeams.push({
           index,
           ...team
@@ -214,10 +215,11 @@ const CallRecordingScope = (props:any) => {
   // };
 
   const handleCheckGroup = (index: number, isChecked: boolean) => {
-    console.log("handleCheckGroup is run");
     const group = groups[index];
 
     const childrenTeams = identifyChildrenTeams(group.groupId);
+    console.log("handleCheckGroup childrenTeams", childrenTeams, group);
+
     setForm({
       type: userFormActions.CHECK_GROUP,
       payload: {
