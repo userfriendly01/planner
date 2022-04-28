@@ -69,8 +69,8 @@ const CallRecordingForm = (props: any) => {
       }
     } else {
       console.log("useEffect for new user entered", groups);
-      const userGroups = [];
-      const userTeams = [];
+      const userGroups: any[] = [];
+      const userTeams: any[] = [];
 
       groups.forEach(group => userGroups.push({
         ...group,
@@ -88,8 +88,8 @@ const CallRecordingForm = (props: any) => {
           ...form.calabrioUser,
           isScreenRecorded: true,
           scope: {
-            groups: groups.filter(group => group),
-            teams: teams.filter(team => team),
+            groups: userGroups,
+            teams: userTeams,
             tenant
           }
         }
