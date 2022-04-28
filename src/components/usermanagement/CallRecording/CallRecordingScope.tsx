@@ -63,6 +63,16 @@ const CallRecordingScope = (props:any) => {
         boxType: "checked"
       }
     });
+    if(!isChecked){
+      setForm({
+        type: userFormActions.CHECK_GROUP,
+        payload: {
+          index,
+          checked: false,
+          boxType: "partial"
+        }
+      });
+    }
     childrenTeams.forEach((teamIndex:any) => {
       setForm({
         type: userFormActions.CHECK_TEAM,
@@ -71,7 +81,6 @@ const CallRecordingScope = (props:any) => {
           checked: isChecked
         }
       });
-      checkIfParital(index);
     });
   };
 
