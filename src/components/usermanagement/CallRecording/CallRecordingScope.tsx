@@ -329,15 +329,15 @@ const CallRecordingScope = (props:any) => {
             </TableBody>
             <TableBody>
               {
-                identifyChildrenTeams(selectedGroup.groupId).map((team: any, index: number) => (
+                identifyChildrenTeams(selectedGroup.groupId).map((team: any) => (
                   <ScopeRow selected={false} key={team.groupId}>
                     <CustomTableData>
                       <Checkbox
-                        checked={teams[index] ? teams[index].checked : false}
+                        checked={team.checked}
                         onChange={e => setForm({
                           type: userFormActions.CHECK_TEAM,
                           payload: {
-                            index,
+                            index: team.index,
                             checked: e.target.checked
                           }
                         })}
