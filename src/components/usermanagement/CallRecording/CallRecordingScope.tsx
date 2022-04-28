@@ -128,13 +128,25 @@ const CallRecordingScope = (props:any) => {
   };
 
   const handleCheckAdmin = (isChecked: boolean) => {
-    groups.forEach((group: any, index: number) => setForm({
-      type: userFormActions.CHECK_GROUP,
-      payload: {
-        index,
-        checked: isChecked
-      }
-    }));
+    groups.forEach((group: any, index: number) => {
+      setForm({
+        type: userFormActions.CHECK_GROUP,
+        payload: {
+          index,
+          checked: isChecked,
+          boxType: "checked"
+        }
+      });
+      setForm({
+        type: userFormActions.CHECK_GROUP,
+        payload: {
+          index,
+          checked: false,
+          boxType: "partial"
+        }
+      });
+    }
+    );
     teams.forEach((team: any, index: number) => setForm({
       type: userFormActions.CHECK_TEAM,
       payload: {
