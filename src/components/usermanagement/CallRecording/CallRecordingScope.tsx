@@ -96,8 +96,8 @@ const CallRecordingScope = (props:any) => {
       console.log("Team", teams[teamIndex]);
       teams[teamIndex].checked === true;
     });
-    console.log("checkedChildrenTeams in checkIfPartial", childrenTeams);
-    if(childrenTeams.length !== 0 && checkedChildrenTeams.length !== childrenTeams.length && group.checked || checkedChildrenTeams.length === childrenTeams.length && !group.checked){
+    console.log("checkedChildrenTeams in checkIfPartial", checkedChildrenTeams);
+    if(childrenTeams.length !== 0 && checkedChildrenTeams.length !== childrenTeams.length && group.checked || childrenTeams.length !== 0 && checkedChildrenTeams.length === childrenTeams.length && !group.checked){
       return true;
     } else {
       return false;
