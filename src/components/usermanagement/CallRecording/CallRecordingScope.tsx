@@ -96,7 +96,7 @@ const CallRecordingScope = (props:any) => {
     console.log("childrenTeams in checkIfPartial", childrenTeams);
     const checkedChildrenTeams = childrenTeams.filter((teamIndex: any) => teams[teamIndex].checked === true);
     console.log("checkedChildrenTeams in checkIfPartial", checkedChildrenTeams);
-    if(childrenTeams.length !== 0 && checkedChildrenTeams.length !== childrenTeams.length && group.checked || childrenTeams.length !== 0 && checkedChildrenTeams.length === childrenTeams.length && !group.checked){
+    if(childrenTeams.length !== 0 && checkedChildrenTeams.length !== childrenTeams.length || childrenTeams.length !== 0 && checkedChildrenTeams.length === childrenTeams.length && !group.checked){
       console.log("Trying to set partial to true");
       setForm({
         type: userFormActions.CHECK_GROUP,
