@@ -137,37 +137,27 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
     }
     case userFormActions.CHECK_GROUP: {
       console.log("Reducer payload", action.payload, state);
+      state.calabrioUser.scope.groups[action.payload.index].checked = action.payload.checked;
       return {
         ...state,
         calabrioUser: {
           ...state.calabrioUser,
           scope: {
             ...state.calabrioUser.scope,
-            groups: {
-              ...state.calabrioUser.scope.groups,
-              [action.payload.index]: {
-                ...state.calabrioUser.scope.groups[action.payload.index],
-                checked: action.payload.checked
-              }
-            }
+            groups: state.calabrioUser.scope.groups
           }
         }
       };
     }
     case userFormActions.CHECK_TEAM: {
+      state.calabrioUser.scope.teams[action.payload.index].checked = action.payload.checked;
       return {
         ...state,
         calabrioUser: {
           ...state.calabrioUser,
           scope: {
             ...state.calabrioUser.scope,
-            teams: {
-              ...state.calabrioUser.scope.teams,
-              [action.payload.index]: {
-                ...state.calabrioUser.scope.teams[action.payload.index],
-                checked: action.payload.checked
-              }
-            }
+            teams: state.calabrioUser.scope.teams
           }
         }
       };
