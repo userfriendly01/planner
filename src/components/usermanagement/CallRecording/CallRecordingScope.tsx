@@ -72,6 +72,7 @@ const CallRecordingScope = (props:any) => {
         }
       });
     });
+    checkIfParital(index);
   };
 
   const handleCheckTeam = (index: number, isChecked: boolean) => {
@@ -96,6 +97,7 @@ const CallRecordingScope = (props:any) => {
     const checkedChildrenTeams = childrenTeams.filter((teamIndex: any) => teams[teamIndex].checked === true);
     console.log("checkedChildrenTeams in checkIfPartial", checkedChildrenTeams);
     if(childrenTeams.length !== 0 && checkedChildrenTeams.length !== childrenTeams.length && group.checked || childrenTeams.length !== 0 && checkedChildrenTeams.length === childrenTeams.length && !group.checked){
+      console.log("Trying to set partial to true");
       setForm({
         type: userFormActions.CHECK_GROUP,
         payload: {
@@ -105,6 +107,7 @@ const CallRecordingScope = (props:any) => {
         }
       });
     } else {
+      console.log("Trying to set partial to false");
       setForm({
         type: userFormActions.CHECK_GROUP,
         payload: {
