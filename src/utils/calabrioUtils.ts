@@ -24,6 +24,7 @@ export const formatCalabrioGroups = (groupsArray: CalabrioGroup[]): CalabrioGrou
   return groups.map(group => {
     return {
       ...group,
+      partial: false,
       checked: false
     };
   });

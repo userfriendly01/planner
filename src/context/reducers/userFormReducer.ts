@@ -136,8 +136,7 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
       };
     }
     case userFormActions.CHECK_GROUP: {
-      console.log("Reducer payload", action.payload, state);
-      state.calabrioUser.scope.groups[action.payload.index].checked = action.payload.checked;
+      state.calabrioUser.scope.groups[action.payload.index][action.payload.boxType] = action.payload.checked;
       return {
         ...state,
         calabrioUser: {

@@ -59,7 +59,8 @@ const CallRecordingScope = (props:any) => {
       type: userFormActions.CHECK_GROUP,
       payload: {
         index,
-        checked: isChecked
+        checked: isChecked,
+        boxType: "checked"
       }
     });
     childrenTeams.forEach((teamIndex:any) => {
@@ -86,7 +87,7 @@ const CallRecordingScope = (props:any) => {
     checkIfParital(groupIndex);
   };
 
-  const checkIfParital = (index: number): boolean => {
+  const checkIfParital = (index: number): void => {
     const group = groups[index];
     console.log("checkIfParital is run", group);
     const childrenTeams = identifyChildrenTeams(group.groupId);
@@ -95,9 +96,23 @@ const CallRecordingScope = (props:any) => {
     const checkedChildrenTeams = childrenTeams.filter((teamIndex: any) => teams[teamIndex].checked === true);
     console.log("checkedChildrenTeams in checkIfPartial", checkedChildrenTeams);
     if(childrenTeams.length !== 0 && checkedChildrenTeams.length !== childrenTeams.length && group.checked || childrenTeams.length !== 0 && checkedChildrenTeams.length === childrenTeams.length && !group.checked){
-      return true;
+      setForm({
+        type: userFormActions.CHECK_GROUP,
+        payload: {
+          index,
+          checked: true,
+          boxType: "partial"
+        }
+      });
     } else {
-      return false;
+      setForm({
+        type: userFormActions.CHECK_GROUP,
+        payload: {
+          index,
+          checked: false,
+          boxType: "partial"
+        }
+      });
     }
   };
 
@@ -146,8 +161,8 @@ const CallRecordingScope = (props:any) => {
                   >
                     <CustomTableData>
                       <Checkbox
-                        checked={groups[index] ? groups[index].checked : null}
-                        indeterminate={checkIfParital(index)}
+                        checked={groups[index] ? groups[index].checked : false}
+                        indeterminate={groups[index] ? groups[index].partial : false}
                         onChange={e => handleCheckGroup(index, e.target.checked)}
                       />
                     </CustomTableData>
