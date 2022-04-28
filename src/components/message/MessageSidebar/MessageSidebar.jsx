@@ -66,7 +66,7 @@ const MessageSidebar = props => {
 
   const [ skillData, setSkillData ] = useState({
     fetchInProgress: false,
-    allSkills: [], // wsx someSkills,
+    allSkills: null, // wsx someSkills,
     retries: 3
   });
 
@@ -109,23 +109,23 @@ const MessageSidebar = props => {
   };
 
   // skill_nme, flash_msg_tts_txt, closed_msg_tts_txt
-  const makeRadioButton = skillNme => {
-    const skill = skillData.allSkills.find(skill => skill.skill_nme === skillNme);
+  const makeRadioButton = skillName => {
+    const skill = skillData.allSkills.find(skill => skill.skillName === skillName);
     let hasFlash = false;
-    if (skill && skill.flash_msg_tts_txt) {
+    if (skill && skill.flashMessage) {
       hasFlash = true;
     }
-    console.log("wsx skill: ", skill, hasFlash); //, skill.flash_msg_tts_txt);
+    console.log("wsx skill: ", skillName, hasFlash);
     if (hasFlash) {
       return (
         <div>
           <StyledFormControl
-            key={skillNme}
-            control={<TealRadio value={skillNme} />}
-            label={skillNme}
+            key={skillName}
+            control={<TealRadio value={skillName} />}
+            label={skillName}
           />
           <StyledBolt
-            key={`Bolt-${skillNme}`}
+            key={`Bolt-${skillName}`}
             src={LighteningBolt}
             alt="*"
           />
@@ -136,9 +136,9 @@ const MessageSidebar = props => {
       return (
         <div>
           <StyledFormControl
-            key={skillNme}
-            control={<TealRadio value={skillNme} />}
-            label={skillNme}
+            key={skillName}
+            control={<TealRadio value={skillName} />}
+            label={skillName}
           />
         </div>
       );
