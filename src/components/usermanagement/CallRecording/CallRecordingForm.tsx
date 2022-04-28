@@ -75,8 +75,8 @@ const CallRecordingForm = (props: any) => {
           ...form.calabrioUser,
           isScreenRecorded: true,
           scope: {
-            groups: [...groups],
-            teams: [...teams],
+            groups: groups.filter(group => group),
+            teams: teams.filter(team => team),
             tenant
           }
         }

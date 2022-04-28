@@ -100,7 +100,7 @@ const CallRecordingScope = (props:any) => {
     const noChildrenTeamsChecked = checkedChildrenTeams.length === 0;
     const allChildrenTeamsChecked = checkedChildrenTeams.length === childrenTeams.length;
     const groupChecked = group.checked;
-    if(noChildrenTeamsChecked || allChildrenTeamsChecked || !childrenTeamsExist){
+    if(!childrenTeamsExist || noChildrenTeamsChecked || (allChildrenTeamsChecked && !groupChecked)){
       console.log("Trying to set partial to false");
       if(group.partial !== false){
         setForm({
