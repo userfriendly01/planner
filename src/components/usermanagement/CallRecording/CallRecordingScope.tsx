@@ -28,158 +28,7 @@ const CallRecordingScope = (props:any) => {
 
   const form = useFormState();
   const setForm = useFormDispatch();
-  /*
-  Scope Component Rules:
-    When Tenant is clicked: all groups and teams are selected
-    When Group is clicked: all teams within group are selected
-    When Group is selected and individual team within that group is de-selected, entire group is de-selected
-    When individual team is selected: nothing else is selected
-  */
-
-  // const groups: any[] = [
-  //   {
-  //     "groupId": 209,
-  //     "name": "Default Group1",
-  //     "displayId": null,
-  //     "parentGroupId": 12,
-  //     "parentGroupName": "LibertyMutual",
-  //     "groupLevel": "GROUP"
-  //   },
-  //   {
-  //     "groupId": 124,
-  //     "name": "Default Group2",
-  //     "displayId": null,
-  //     "parentGroupId": 12,
-  //     "parentGroupName": "LibertyMutual",
-  //     "groupLevel": "GROUP"
-  //   },
-  //   {
-  //     "groupId": 125,
-  //     "name": "Default Group3",
-  //     "displayId": null,
-  //     "parentGroupId": 12,
-  //     "parentGroupName": "LibertyMutual",
-  //     "groupLevel": "GROUP"
-  //   },
-  //   {
-  //     "groupId": 126,
-  //     "name": "Default Group4",
-  //     "displayId": null,
-  //     "parentGroupId": 12,
-  //     "parentGroupName": "LibertyMutual",
-  //     "groupLevel": "GROUP"
-  //   },
-  //   {
-  //     "groupId": 127,
-  //     "name": "Default Group5",
-  //     "displayId": null,
-  //     "parentGroupId": 12,
-  //     "parentGroupName": "LibertyMutual",
-  //     "groupLevel": "GROUP"
-  //   },
-  //   {
-  //     "groupId": 138,
-  //     "name": "Default Group6",
-  //     "displayId": null,
-  //     "parentGroupId": 12,
-  //     "parentGroupName": "LibertyMutual",
-  //     "groupLevel": "GROUP"
-  //   },
-  //   {
-  //     "groupId": 129,
-  //     "name": "Default Group7",
-  //     "displayId": null,
-  //     "parentGroupId": 12,
-  //     "parentGroupName": "LibertyMutual",
-  //     "groupLevel": "GROUP"
-  //   },
-  //   {
-  //     "groupId": 130,
-  //     "name": "Default Group8",
-  //     "displayId": null,
-  //     "parentGroupId": 12,
-  //     "parentGroupName": "LibertyMutual",
-  //     "groupLevel": "GROUP"
-  //   },
-  //   {
-  //     "groupId": 131,
-  //     "name": "Default Group8",
-  //     "displayId": null,
-  //     "parentGroupId": 12,
-  //     "parentGroupName": "LibertyMutual",
-  //     "groupLevel": "GROUP"
-  //   },
-  //   {
-  //     "groupId": 132,
-  //     "name": "Default Group9",
-  //     "displayId": null,
-  //     "parentGroupId": 12,
-  //     "parentGroupName": "LibertyMutual",
-  //     "groupLevel": "GROUP"
-  //   },
-  //   {
-  //     "groupId": 133,
-  //     "name": "Default Group10",
-  //     "displayId": null,
-  //     "parentGroupId": 12,
-  //     "parentGroupName": "LibertyMutual",
-  //     "groupLevel": "GROUP"
-  //   }
-  // ];
-  // const teams: any[] = [
-  //   {
-  //     "groupId": 225,
-  //     "name": "Default Team",
-  //     "displayId": null,
-  //     "parentGroupId": 209,
-  //     "parentGroupName": "Default Group",
-  //     "groupLevel": "TEAM"
-  //   },
-  //   {
-  //     "groupId": 210,
-  //     "name": "Default Team2",
-  //     "displayId": null,
-  //     "parentGroupId": 209,
-  //     "parentGroupName": "Default Group",
-  //     "groupLevel": "TEAM"
-  //   },
-  //   {
-  //     "groupId": 230,
-  //     "name": "Game of Phones",
-  //     "displayId": null,
-  //     "parentGroupId": 209,
-  //     "parentGroupName": "Default Group",
-  //     "groupLevel": "TEAM"
-  //   },
-  //   {
-  //     "groupId": 215,
-  //     "name": "New Team 9",
-  //     "displayId": null,
-  //     "parentGroupId": 124,
-  //     "parentGroupName": "New Test Group 9",
-  //     "groupLevel": "TEAM"
-  //   },
-  //   {
-  //     "groupId": 217,
-  //     "name": "New Team 6",
-  //     "displayId": null,
-  //     "parentGroupId": 216,
-  //     "parentGroupName": "New Test Group 6",
-  //     "groupLevel": "TEAM"
-  //   },
-  //   {
-  //     "groupId": 219,
-  //     "name": "New Team 10",
-  //     "displayId": null,
-  //     "parentGroupId": 218,
-  //     "parentGroupName": "New Test Group 10",
-  //     "groupLevel": "TEAM"
-  //   }
-  // ];
-
   const [ selectedGroup, setSelectedGroup ] = React.useState(null);
-  // const [ checkedGroups, setCheckedGroups ] = React.useState(form.calabrioUser.scope.groups);
-  // const [ checkedTeams, setCheckedTeams ] = React.useState(form.calabrioUser.scope.teams);
 
   useEffect(() => {
     if(groups.length > 0) {
@@ -187,14 +36,10 @@ const CallRecordingScope = (props:any) => {
     }
   }, [groups]);
 
-  console.log("groups in scope", groups);
   console.log("Selected Group! ", selectedGroup);
   console.log("Form!", form);
-  //Calabrio user can hold all groups with their index and indicate if its checked or not
-  //then when we submit the add user we can filter for only the true ones
 
   const identifyChildrenTeams = (groupId: number) => {
-    //can clean this up to only return index if it works
     const childrenTeams: any[] = [];
     teams.forEach((team: any, index: number) => {
       if(team.parentGroupId === groupId){
@@ -226,6 +71,18 @@ const CallRecordingScope = (props:any) => {
         }
       });
     });
+  };
+
+  const handleCheckTeam = (index: number, isChecked: boolean) => {
+    const team = teams[index];
+    setForm({
+      type: userFormActions.CHECK_TEAM,
+      payload: {
+        index: index,
+        checked: isChecked
+      }
+    });
+    checkIfParital(team.parentGroupId);
   };
 
   const checkIfParital = (index: number): boolean => {
@@ -304,13 +161,7 @@ const CallRecordingScope = (props:any) => {
                     <CustomTableData>
                       <Checkbox
                         checked={teams[teamIndex].checked}
-                        onChange={e => setForm({
-                          type: userFormActions.CHECK_TEAM,
-                          payload: {
-                            index: teamIndex,
-                            checked: e.target.checked
-                          }
-                        })}
+                        onChange={e => handleCheckTeam(teamIndex, e.target.checked)}
                       /></CustomTableData>
                     <CustomTableData><TableText>{teams[teamIndex].name}</TableText></CustomTableData>
                   </ScopeRow>
