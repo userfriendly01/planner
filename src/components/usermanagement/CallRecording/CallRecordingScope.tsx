@@ -199,9 +199,9 @@ const CallRecordingScope = (props:any) => {
     const childrenTeams: any[] = [];
     teams.forEach((team: any, index: number) => {
       if(team.parentGroupId === groupId){
-        console.log("identifyChildrenTeams entereed forEach logic");
+        console.log("identifyChildrenTeams entereed forEach logic", index);
         childrenTeams.push({
-          index,
+          index: index,
           ...team
         });
       }
