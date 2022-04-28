@@ -49,6 +49,7 @@ export const resetResponses = {
 };
 
 export const apiPaths = {
+  ALL_SKILLS: `${SERVICE_BASE_URI}/allskills`,
   AUTH: `${SERVICE_BASE_URI}/admin-login`,
   CHECK_EXTENSION: `${SERVICE_BASE_URI}/checkextension`,
   CLOSED_MESSAGE: `${SERVICE_BASE_URI}/closedmessage`,
@@ -60,7 +61,6 @@ export const apiPaths = {
   DIRECTORY_ENTRY: (directoryId: string | number): string => `${CONTACT_MANAGER_BASE_URI}/directory/${directoryId}`,
   EMPLOYEE_LOOKUP: (nNumber: string): string => `${SERVICE_BASE_URI}/employeelookup/${nNumber}`,
   FLASH_MESSAGE: `${SERVICE_BASE_URI}/flashmessage`,
-  ALL_SKILLS: `${SERVICE_BASE_URI}/allskills`,
   GET_PROFILE_DATA: (profileId: string | number): string => `${CONTACT_MANAGER_BASE_URI}/triton/${profileId}`,
   GET_PROFILES: `${CONTACT_MANAGER_BASE_URI}/profiles`,
   GET_TASKROUTER_SKILLS: `${SERVICE_BASE_URI}/taskrouterskills`,
