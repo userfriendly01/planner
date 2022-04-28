@@ -74,7 +74,7 @@ const CallRecordingScope = (props:any) => {
   };
 
   const handleCheckTeam = (index: number, isChecked: boolean) => {
-    const team = teams[index];
+    const parentGroupId = teams[index].parentGroupId;
     setForm({
       type: userFormActions.CHECK_TEAM,
       payload: {
@@ -82,7 +82,8 @@ const CallRecordingScope = (props:any) => {
         checked: isChecked
       }
     });
-    checkIfParital(team.parentGroupId);
+    const groupIndex = groups.findIndex((group: any) => group.groupId === parentGroupId);
+    checkIfParital(groupIndex);
   };
 
   const checkIfParital = (index: number): boolean => {
