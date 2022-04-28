@@ -256,7 +256,7 @@ const CallRecordingScope = (props:any) => {
     console.log("childrenTeams in checkIfPartial", childrenTeams);
     const checkedChildrenTeams = childrenTeams.filter((team: any) => team.checked === true);
     console.log("checkedChildrenTeams in checkIfPartial", childrenTeams);
-    if(childrenTeams.length !== 0 && checkedChildrenTeams.length !== childrenTeams.length && group.checked){
+    if(childrenTeams.length !== 0 && checkedChildrenTeams.length !== childrenTeams.length && group.checked || checkedChildrenTeams.length === childrenTeams.length && !group.checked){
       return true;
     } else {
       return false;
@@ -291,7 +291,7 @@ const CallRecordingScope = (props:any) => {
   };
 
   const checkIfAdmin = () => {
-    return groups.some((group: any) => group.checked === false) || teams.some((team: any) => team.checked === false);
+    return !groups.some((group: any) => group.checked === false) && !teams.some((team: any) => team.checked === false);
   };
 
   return(
