@@ -69,6 +69,19 @@ const CallRecordingForm = (props: any) => {
       }
     } else {
       console.log("useEffect for new user entered", groups);
+      const userGroups = [];
+      const userTeams = [];
+
+      groups.forEach(group => userGroups.push({
+        group: { ...group },
+        checked: false,
+        partial: false
+      }));
+
+      teams.forEach(team => userTeams.push({
+        team: { ...team },
+        checked: false
+      }));
       setForm({
         type: userFormActions.SET_CALABRIO_USER,
         payload: {
