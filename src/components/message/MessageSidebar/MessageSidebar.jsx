@@ -73,8 +73,7 @@ const MessageSidebar = props => {
             skillData: {
               ...messageState.skillData,
               allSkills: result.data.allSkills,
-              fetchInProgress: false,
-              retries: 0
+              fetchInProgress: false
             }
           });
         })
@@ -154,7 +153,7 @@ const MessageSidebar = props => {
       <RadioContainer>
         <RadioGroup
           name="skill"
-          value={stateSkill} 
+          value={stateSkill}
           onChange={event => handleOnChange(event.target.value)}
         >
           {profile.skills.map(function(skill) {
