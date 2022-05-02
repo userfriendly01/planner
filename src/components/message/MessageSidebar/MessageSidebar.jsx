@@ -10,10 +10,7 @@ import {
   profileConfigs,
   apiPaths
 } from "globals";
-import React, {
-  useEffect,
-  useState 
-} from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import LighteningBolt from "icons/LighteningBolt-06.png";
@@ -63,39 +60,44 @@ const MessageSidebar = props => {
 
   const stateSkill = messageState.skill;
   const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === messageState.workerProfileId);
-
-  const [ skillData, setSkillData ] = useState({
-    fetchInProgress: false,
-    allSkills: null, // wsx someSkills,
-    retries: 3
-  });
+  console.log("wsx state1: ", messageState);
 
   useEffect(() => {
-    if (!skillData.fetchInProgress && skillData.retries) {
+    if (!messageState.skillData.allSkills && !messageState.skillData.fetchInProgress && messageState.skillData.retries) {
       const path = apiPaths.ALL_SKILLS;
       Axios.get(path)
         .then(result => {
           console.log("wsx result.data.allSkills: ", result.data.allSkills);
-          setSkillData({
-            ...skillData,
-            allSkills: result.data.allSkills,
-            fetchInProgress: false,
-            retries: 0
+          setMessageState({
+            ...messageState,
+            skillData: {
+              ...messageState.skillData,
+              allSkills: result.data.allSkills,
+              fetchInProgress: false,
+              retries: 0
+            }
           });
         })
         .catch(err => {
           const fetchError = "wsx Failed to fetch all skills: ";
           console.error(fetchError, err);
-          setSkillData({
-            ...skillData,
-            fetchInProgress: false,
-            retries: skillData.retries - 1
+          setMessageState({
+            ...messageState,
+            skillData: {
+              ...messageState.skillData,
+              fetchInProgress: false,
+              retries: messageState.skillData.retries - 1
+            }
           });
         });
-      setSkillData({
-        ...skillData,
-        fetchInProgress: true,
-        retries: skillData.retries - 1
+
+      setMessageState({
+        ...messageState,
+        skillData: {
+          ...messageState.skillData,
+          fetchInProgress: true,
+          retries: messageState.skillData.retries - 1
+        }
       });
     }
   });
@@ -111,8 +113,8 @@ const MessageSidebar = props => {
   // skill_nme, flash_msg_tts_txt, closed_msg_tts_txt
   const makeRadioButton = skillName => {
     let hasFlash = false;
-    if (skillData.allSkills) {
-      const skill = skillData.allSkills.find(skill => skill.skillName === skillName);
+    if (messageState.skillData.allSkills) {
+      const skill = messageState.skillData.allSkills.find(skill => skill.skillName === skillName);
       if (skill && skill.flashMessage) {
         hasFlash = true;
       }

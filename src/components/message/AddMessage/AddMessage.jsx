@@ -112,7 +112,11 @@ const AddMessage = props => {
             ...messageState,
             fetching: false,
             message: JSON.parse(res.config.data)[dataField],
-            readOnly: true
+            readOnly: true,
+            skillData: {
+              ...messageState.skillData,
+              allSkills: null
+            }
           });
         })
         .catch(err => {

@@ -83,7 +83,12 @@ const MessageContainer = props => {
     skill: defaultSkill,
     readOnly: false,
     serviceCallError: null,
-    workerProfileId: workerProfileId
+    workerProfileId: workerProfileId,
+    skillData: {
+      fetchInProgress: false,
+      allSkills: null,
+      retries: 3
+    }
   });
   useEffect(() => {
     console.log("wsx MesssageContainer.useEffect: ", messageType);
