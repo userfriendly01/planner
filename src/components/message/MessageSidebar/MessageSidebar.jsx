@@ -117,17 +117,17 @@ const MessageSidebar = props => {
         hasFlash = true;
       }
     }
-    console.log("wsx skill: ", skillName, hasFlash);
+    // console.log("wsx skill: ", skillName, hasFlash);
     if (hasFlash) {
       return (
-        <div>
+        <div key={`${skillName}-div`}>
           <StyledFormControl
-            key={skillName}
+            key={`${skillName}-sc`}
             control={<TealRadio value={skillName} />}
             label={skillName}
           />
           <StyledBolt
-            key={`Bolt-${skillName}`}
+            key={`${skillName}-bolt`}
             src={LighteningBolt}
             alt="*"
           />
@@ -136,9 +136,9 @@ const MessageSidebar = props => {
     } else {
 
       return (
-        <div>
+        <div key={`${skillName}-div`}>
           <StyledFormControl
-            key={skillName}
+            key={`${skillName}-sc`}
             control={<TealRadio value={skillName} />}
             label={skillName}
           />
@@ -150,7 +150,11 @@ const MessageSidebar = props => {
   return (
     <SidebarWrapper>
       <RadioContainer>
-        <RadioGroup name="skill" value={stateSkill} onChange={event => handleOnChange(event.target.value)}>
+        <RadioGroup
+          name="skill"
+          value={stateSkill} 
+          onChange={event => handleOnChange(event.target.value)}
+        >
           {profile.skills.map(function(skill) {
             return makeRadioButton(skill);
           })}
