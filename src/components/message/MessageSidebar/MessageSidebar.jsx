@@ -39,6 +39,8 @@ const StyledFormControl = styled(FormControlLabel)`
 
 const StyledBolt = styled.img`
   max-height: 22px;
+  margin-left: -7px;
+  margin-bottom: -7px;
 `;
 
 const TealRadio = withStyles({
@@ -57,6 +59,12 @@ const MessageSidebar = props => {
     setMessageState,
     messageType
   } = props;
+  const someData = [{
+    "skillName": "psu-um",
+    "timeOfDays": [],
+    "flashMessage": "Flash message demo example - this is an edit",
+    "closedMessage": "consumer closed"
+  }];
 
   const stateSkill = messageState.skill;
   const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === messageState.workerProfileId);
@@ -84,7 +92,8 @@ const MessageSidebar = props => {
             skillData: {
               ...messageState.skillData,
               fetchInProgress: false,
-              retries: messageState.skillData.retries - 1
+              retries: messageState.skillData.retries - 1,
+              allSkills: someData // wsx remove me
             }
           });
         });
@@ -94,7 +103,8 @@ const MessageSidebar = props => {
         skillData: {
           ...messageState.skillData,
           fetchInProgress: true,
-          retries: messageState.skillData.retries - 1
+          retries: messageState.skillData.retries - 1,
+          allSkills: someData // wsx remove me
         }
       });
     }
