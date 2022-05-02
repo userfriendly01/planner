@@ -60,7 +60,6 @@ const MessageSidebar = props => {
 
   const stateSkill = messageState.skill;
   const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === messageState.workerProfileId);
-  console.log("wsx state1: ", messageState);
 
   useEffect(() => {
     if (!messageState.skillData.allSkills && !messageState.skillData.fetchInProgress && messageState.skillData.retries) {
