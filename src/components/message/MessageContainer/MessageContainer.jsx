@@ -91,7 +91,6 @@ const MessageContainer = props => {
     }
   });
   useEffect(() => {
-    console.log("wsx MesssageContainer.useEffect: ", messageType);
     let apiPath;
     let dataField;
     if(messageType === "closed"){
@@ -101,7 +100,6 @@ const MessageContainer = props => {
       apiPath = apiPaths.FLASH_MESSAGE;
       dataField = "flashMessage";
     }
-    console.log("wsx apiPath: ", apiPath, messageState.skill);
     myAxios.get(apiPath + `/${messageState.skill}`)
       .then(res => {
         const message = res.data[dataField];//will this work?

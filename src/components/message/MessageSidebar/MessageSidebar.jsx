@@ -74,7 +74,6 @@ const MessageSidebar = props => {
       const path = apiPaths.ALL_SKILLS;
       Axios.get(path)
         .then(result => {
-          console.log("wsx result.data.allSkills: ", result.data.allSkills);
           setMessageState({
             ...messageState,
             skillData: {
@@ -85,15 +84,14 @@ const MessageSidebar = props => {
           });
         })
         .catch(err => {
-          const fetchError = "wsx Failed to fetch all skills: ";
+          const fetchError = "Failed to fetch all skills: ";
           console.error(fetchError, err);
           setMessageState({
             ...messageState,
             skillData: {
               ...messageState.skillData,
               fetchInProgress: false,
-              retries: messageState.skillData.retries - 1,
-              allSkills: someData // wsx remove me
+              retries: messageState.skillData.retries - 1
             }
           });
         });
@@ -103,8 +101,7 @@ const MessageSidebar = props => {
         skillData: {
           ...messageState.skillData,
           fetchInProgress: true,
-          retries: messageState.skillData.retries - 1,
-          allSkills: someData // wsx remove me
+          retries: messageState.skillData.retries - 1
         }
       });
     }
@@ -127,7 +124,7 @@ const MessageSidebar = props => {
         hasFlash = true;
       }
     }
-    // console.log("wsx skill: ", skillName, hasFlash);
+
     if (hasFlash) {
       return (
         <div key={`${skillName}-div`}>
