@@ -59,12 +59,6 @@ const MessageSidebar = props => {
     setMessageState,
     messageType
   } = props;
-  const someData = [{
-    "skillName": "psu-um",
-    "timeOfDays": [],
-    "flashMessage": "Flash message demo example - this is an edit",
-    "closedMessage": "consumer closed"
-  }];
 
   const stateSkill = messageState.skill;
   const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === messageState.workerProfileId);
