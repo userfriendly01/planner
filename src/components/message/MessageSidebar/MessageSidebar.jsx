@@ -109,7 +109,6 @@ const MessageSidebar = props => {
     });
   };
 
-  // skill_nme, flash_msg_tts_txt, closed_msg_tts_txt
   const makeRadioButton = skillName => {
     let hasFlash = false;
     if (messageState.skillData.allSkills) {

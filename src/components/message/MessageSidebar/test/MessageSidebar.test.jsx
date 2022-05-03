@@ -6,12 +6,18 @@ import {
 
 const mockSetMessageState = jest.fn();
 
+const initalSkillDataState = {
+  fetchInProgress: false,
+  allSkills: null,
+  retries: 3
+};
 const initialMockedBlSalesState = {
   fetching: false,
   flashMessage: "",
   skill: "blSalesL1",
   readOnly: false,
-  workerProfileId: 3
+  workerProfileId: 3,
+  skillData: initalSkillDataState
 };
 
 const initialMockedAisgState = {
@@ -19,7 +25,8 @@ const initialMockedAisgState = {
   flashMessage: "",
   skill: "aisgL1",
   readOnly: false,
-  workerProfileId: 4
+  workerProfileId: 4,
+  skillData: initalSkillDataState
 };
 
 const initialMockedCsoState = {
@@ -27,7 +34,8 @@ const initialMockedCsoState = {
   flashMessage: "",
   skill: "csoBilling",
   readOnly: false,
-  workerProfileId: 7
+  workerProfileId: 7,
+  skillData: initalSkillDataState
 };
 
 const initialMockedBSCState = {
@@ -35,7 +43,8 @@ const initialMockedBSCState = {
   flashMessage: "",
   skill: "bscCbs",
   readOnly: false,
-  workerProfileId: 10
+  workerProfileId: 10,
+  skillData: initalSkillDataState
 };
 
 const renderComponent = messageState => {
@@ -54,7 +63,7 @@ describe("<MessageSidebar />", () => {
   test("clicking a AISG radio button should change the skill and fetching to true.", () => {
     const rendered = renderComponent(initialMockedAisgState);
     fireEvent.click(rendered.getByLabelText("aisgConsumer"));
-    expect(mockSetMessageState).toHaveBeenCalledTimes(1);
+    expect(mockSetMessageState).toHaveBeenCalledTimes(2);
     expect(mockSetMessageState).toHaveBeenCalledWith({
       ...initialMockedAisgState,
       skill: "aisgConsumer",
@@ -69,7 +78,7 @@ describe("<MessageSidebar />", () => {
   test("clicking a CSO radio button should change the skill and fetching to true.", () => {
     const rendered = renderComponent(initialMockedCsoState);
     fireEvent.click(rendered.getByLabelText("csoPortal"));
-    expect(mockSetMessageState).toHaveBeenCalledTimes(1);
+    expect(mockSetMessageState).toHaveBeenCalledTimes(2);
     expect(mockSetMessageState).toHaveBeenCalledWith({
       ...initialMockedCsoState,
       skill: "csoPortal",
@@ -84,7 +93,7 @@ describe("<MessageSidebar />", () => {
   test("clicking a BL Sales radio button should change the skill and fetching to true.", () => {
     const rendered = renderComponent(initialMockedBlSalesState);
     fireEvent.click(rendered.getByLabelText("blSalesAmazonQuote"));
-    expect(mockSetMessageState).toHaveBeenCalledTimes(1);
+    expect(mockSetMessageState).toHaveBeenCalledTimes(2);
     expect(mockSetMessageState).toHaveBeenCalledWith({
       ...initialMockedBlSalesState,
       skill: "blSalesAmazonQuote",
@@ -99,7 +108,7 @@ describe("<MessageSidebar />", () => {
   test("clicking a BSC radio button should change the skill and fetching to true.", () => {
     const rendered = renderComponent(initialMockedBSCState);
     fireEvent.click(rendered.getByLabelText("bscCommissions"));
-    expect(mockSetMessageState).toHaveBeenCalledTimes(1);
+    expect(mockSetMessageState).toHaveBeenCalledTimes(2);
     expect(mockSetMessageState).toHaveBeenCalledWith({
       ...initialMockedBSCState,
       skill: "bscCommissions",
