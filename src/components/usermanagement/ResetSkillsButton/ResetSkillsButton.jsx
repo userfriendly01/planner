@@ -11,6 +11,7 @@ import { apiPaths } from "globals";
 import React, { useState } from "react";
 import {
   mapWorkerFromDbWorker,
+  mapWorker,
   myAxios
 } from "utils";
 
@@ -43,7 +44,9 @@ const ResetSkillsButton = () => {
         const passedWorkers = [];
         response.data.forEach(result => {
           if (result.updated){
-            const updatedWorker = mapWorkerFromDbWorker(result.worker);
+            result.worker.attributes = JSON.parse(result.worker.attributes);
+            const updatedWorker = mapWorker(result.worker);
+
             dispatch({
               type: "toggleWorkerSelected",
               payload: {
