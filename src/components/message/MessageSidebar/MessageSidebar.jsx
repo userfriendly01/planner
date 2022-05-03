@@ -50,7 +50,8 @@ const MessageSidebar = props => {
   } = props;
 
   const stateSkill = messageState.skill;
-  const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === messageState.workerProfileId);
+  const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === messageState.workerProfileId) || { skills: [] };
+
   const handleRadioChange = selection => {
     setMessageState({
       ...messageState,
