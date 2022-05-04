@@ -106,6 +106,7 @@ const MessageSidebar = props => {
 
   useEffect(() => {
     async () => {
+      console.log("wsx useEffect");
       if (!messageState.skillData.allSkills && !messageState.skillData.fetchInProgress && messageState.skillData.retries) {
 
         // Retrieve list of all flash and closed messages via a call to /allskills 
