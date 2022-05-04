@@ -43,7 +43,10 @@ const ResetSkillsButton = () => {
         const passedWorkers = [];
         response.data.forEach(result => {
           if (result.updated){
+            result.worker.workerSid = result.workerSid;
+            result.worker.attributes = JSON.parse(result.worker.attributes);
             const updatedWorker = mapWorkerFromDbWorker(result.worker);
+
             dispatch({
               type: "toggleWorkerSelected",
               payload: {
