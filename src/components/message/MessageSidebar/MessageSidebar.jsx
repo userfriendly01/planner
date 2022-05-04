@@ -105,46 +105,48 @@ const MessageSidebar = props => {
   // });
 
   useEffect(() => {
-    async () => {
-      console.log("wsx useEffect");
-      if (!messageState.skillData.allSkills && !messageState.skillData.fetchInProgress && messageState.skillData.retries) {
-
-        // Retrieve list of all flash and closed messages via a call to /allskills 
-        try {
-          console.log("wsx WXXXXX 1");
-          setMessageState({
-            ...messageState,
-            skillData: {
-              ...messageState.skillData,
-              fetchInProgress: true,
-              retries: messageState.skillData.retries - 1
-            }
-          });
-          const result = await Axios.get(apiPaths.ALL_SKILLS);
-
-          console.log("wsx WXXXXX 2");
-          setMessageState({
-            ...messageState,
-            skillData: {
-              ...messageState.skillData,
-              allSkills: result.data.allSkills,
-              fetchInProgress: false
-            }
-          });
-
-        } catch (err) {
-          console.log("wsx WXXXXX 3");
-          console.log(`Unexpected error fetching from ${apiPaths.ALL_SKILLS}: `, err);
-          setMessageState({
-            ...messageState,
-            skillData: {
-              ...messageState.skillData,
-              fetchInProgress: false          }
-          });
-        }
-      }
-    };
+    console.log("wsx useEffect()");
+    if (!messageState.skillData.allSkills && !messageState.skillData.fetchInProgress && messageState.skillData.retries) {
+      loadAllskils();
+    }
   });
+
+  // Retrieve list of all flash and closed messages via a call to /allskills 
+  async function loadAllskils() {
+    try {
+      console.log("wsx WXXXXX 1");
+      setMessageState({
+        ...messageState,
+        skillData: {
+          ...messageState.skillData,
+          fetchInProgress: true,
+          retries: messageState.skillData.retries - 1
+        }
+      });
+      const result = await Axios.get(apiPaths.ALL_SKILLS);
+
+      console.log("wsx WXXXXX 2");
+      setMessageState({
+        ...messageState,
+        skillData: {
+          ...messageState.skillData,
+          allSkills: result.data.allSkills,
+          fetchInProgress: false
+        }
+      });
+
+    } catch (err) {
+      console.log("wsx WXXXXX 3");
+      console.log(`Unexpected error fetching from ${apiPaths.ALL_SKILLS}: `, err);
+      setMessageState({
+        ...messageState,
+        skillData: {
+          ...messageState.skillData,
+          fetchInProgress: false
+        }
+      });
+    }
+  }
 
   const handleOnChange = selection => {
     setMessageState({
@@ -179,7 +181,6 @@ const MessageSidebar = props => {
         </div>
       );
     } else {
-
       return (
         <div key={`${skillName}-div`}>
           <StyledFormControl
