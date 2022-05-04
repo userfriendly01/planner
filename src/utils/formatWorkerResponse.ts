@@ -13,13 +13,6 @@ export interface DbWorker {
   inactiveForwardTo?: string
 }
 
-export interface TwilioWorker {
-  sid: string,
-  attributes: {
-    [key: string]: any
-  }
-}
-
 export const formatWorkerResponse = (response: DbWorker[]): Worker[] => {
   if (response) {
     const formattedWorkers = response.map(mapWorkerFromDbWorker);
@@ -38,12 +31,3 @@ export const mapWorkerFromDbWorker = (dbWorker: DbWorker): Worker => {
   delete worker.workerSid;
   return worker;
 };
-
-export const mapWorker = (twilioWorker : TwilioWorker): Worker => {
-  const worker = {
-    ...twilioWorker,
-    skillsDifferent: twilioWorker.attributes ? areSkillsDifferent(twilioWorker.attributes) : false
-  }
-
-  return worker;
-}

@@ -31,17 +31,28 @@ const axiosMock = new MockAdapter(myAxios);
 const selectedWorkers = [
   {
     sid: "WK0",
-    name: "Test0"
+    name: "Test1",
+    attributes: "{\"routing\": {\"skills\": [\"asigl1\", \"aisgl2\"], \"levels\": {\"aisgl1\": 1,\"aisgl2\": 2}},\"default_skills\": {\"skills\": [\"asigl1\", \"aisgl2\"],\"levels\": {\"aisgl1\": 1,\"aisgl2\": 2}}}"
   },
   {
     sid: "WK1",
-    name: "Test1"
-  },
-  {
-    sid: "WK2",
-    name: "Test2"
+    name: "Test2",
+    attributes: "{\"routing\": {\"skills\": [\"asigl1\", \"aisgl2\"], \"levels\": {\"aisgl1\": 1,\"aisgl2\": 2}},\"default_skills\": {\"skills\": [\"asigl1\", \"aisgl2\"],\"levels\": {\"aisgl1\": 1,\"aisgl2\": 2}}}"
   }
 ];
+
+const convertedWorkers = [
+  {
+    workerSid: selectedWorkers[0].sid,
+    name: selectedWorkers[0].name,
+    attributes: JSON.parse(selectedWorkers[0].attributes)
+  },
+  {
+    workerSid: selectedWorkers[1].sid,
+    name: selectedWorkers[1].name,
+    attributes: JSON.parse(selectedWorkers[1].attributes)
+  }
+]
 
 describe("ResetSkillsButton", () => {
 
@@ -73,8 +84,8 @@ describe("ResetSkillsButton", () => {
           },
           {
             updated: true,
-            workerSid: selectedWorkers[2].sid,
-            worker: selectedWorkers[2]
+            workerSid: selectedWorkers[1].sid,
+            worker: selectedWorkers[1]
           }
         ]);
       });
@@ -99,17 +110,17 @@ describe("ResetSkillsButton", () => {
             },
             {
               type: "updateWorker",
-              payload: mapWorkerFromDbWorker(selectedWorkers[0])
+              payload: mapWorkerFromDbWorker(convertedWorkers[0])
             },
             {
               type: "toggleWorkerSelected",
               payload: {
-                sid: selectedWorkers[2].sid
+                sid: selectedWorkers[1].sid
               }
             },
             {
               type: "updateWorker",
-              payload: mapWorkerFromDbWorker(selectedWorkers[2])
+              payload: mapWorkerFromDbWorker(convertedWorkers[1])
             },
             {
               type: "resettingSkills",
@@ -132,8 +143,8 @@ describe("ResetSkillsButton", () => {
           {
             reason: "bad stuff happened",
             updated: false,
-            workerSid: selectedWorkers[2].sid,
-            worker: selectedWorkers[2]
+            workerSid: selectedWorkers[1].sid,
+            worker: selectedWorkers[1]
           }
         ]);
       });
@@ -159,7 +170,7 @@ describe("ResetSkillsButton", () => {
             },
             {
               type: "updateWorker",
-              payload: mapWorkerFromDbWorker(selectedWorkers[0])
+              payload: mapWorkerFromDbWorker(convertedWorkers[0])
             },
             {
               type: "resettingSkills",
