@@ -1,9 +1,13 @@
 import MessageSidebar from "../MessageSidebar";
 import React from "react";
 import {
-  fireEvent, render
+  fireEvent, render, waitFor
 } from "testUtils";
+import MockAdapter from "axios-mock-adapter";
+import { myAxios } from "utils";
+import { apiPaths } from "globals";
 
+const axiosMock = new MockAdapter(myAxios);
 const mockSetMessageState = jest.fn();
 
 const initalSkillDataState = {
@@ -11,6 +15,7 @@ const initalSkillDataState = {
   allSkills: null,
   retries: 3
 };
+
 const initialMockedBlSalesState = {
   fetching: false,
   flashMessage: "",
@@ -46,6 +51,37 @@ const initialMockedBSCState = {
   workerProfileId: 10,
   skillData: initalSkillDataState
 };
+
+const initialMockedwsxState = {
+  fetching: false,
+  flashMessage: "",
+  skill: "blSalesL1",
+  readOnly: false,
+  workerProfileId: 3,
+  skillData: initalSkillDataState
+};
+
+const allSkillsResponse = [
+  200,
+  {
+    data: {
+      allSkills: [
+        {
+          skillName: "466",
+          timeOfDays: [],
+          flashMessage: null,
+          closedMessage: null
+        },{
+          skillName: "aisgConsumer",
+          timeOfDays: [],
+          flashMessage: "Flash message demo example - this is an edit",
+          closedMessage: "consumer closed"
+        }
+      ]
+    }
+  },
+  null
+];
 
 const renderComponent = messageState => {
   return render(<MessageSidebar
@@ -115,4 +151,34 @@ describe("<MessageSidebar />", () => {
       fetching: true
     });
   });
+  describe("wsx Initial call to /allSkills", () => {
+    beforeEach(() => {
+      // axiosMock.onGet(apiPaths.ALL_SKILLS).reply(200, allSkillsResponse);
+      // axiosMock.onGet(apiPaths.ALL_SKILLS).reply(() => {
+      //   return new Promise(function (resolve, reject) {
+      //     resolve(allSkillsResponse);
+      //   });
+      // axiosMock.onGet(apiPaths.ALL_SKILLS).reply(Promise.resolve(allSkillsResponse));
+      axiosMock.onGet(apiPaths.ALL_SKILLS). //reply(allSkillsResponse);
+    });
+
+    test("wsx not really sure", async () => {
+      axiosMock.onGet(apiPaths.ALL_SKILLS).reply(allSkillsResponse);
+      const rendered = renderComponent(initialMockedwsxState);
+      expect(mockSetMessageState).toHaveBeenCalledTimes(1);
+      expect(mockSetMessageState).toHaveBeenCalledWith({
+        ...initialMockedwsxState,
+        skillData: {
+          ...initialMockedwsxState.skillData,
+          fetchInProgress: true,
+          retries: 2
+        }
+      });
+      await waitFor(() => expect(mockSetMessageState).toHaveBeenCalledTimes(4));
+      expect(mockSetMessageState).toHaveBeenCalledWith(1);
+    });
+  });
 });
+/*
+      beforeEach(() => axiosMock.onGet(apiPaths.FLASH_MESSAGE + "/aisgL1").reply(200, { flashMessage: "" }));
+*/

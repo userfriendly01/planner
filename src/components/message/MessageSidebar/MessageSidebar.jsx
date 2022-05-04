@@ -63,11 +63,65 @@ const MessageSidebar = props => {
   const stateSkill = messageState.skill;
   const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === messageState.workerProfileId);
 
+  // useEffect(() => {
+  //   if (!messageState.skillData.allSkills && !messageState.skillData.fetchInProgress && messageState.skillData.retries) {
+  //     Axios.get(apiPaths.ALL_SKILLS)
+  //       .then(result => {
+  //         console.log("wsx WXXXXX 1");
+  //         setMessageState({
+  //           ...messageState,
+  //           skillData: {
+  //             ...messageState.skillData,
+  //             allSkills: result.data.allSkills,
+  //             fetchInProgress: false
+  //           }
+  //         });
+  //       })
+  //       .catch(err => {
+  //         const fetchError = "Failed to fetch all skills: ";
+  //         console.log("wsx EEEEEEERROR: ", err);
+  //         console.error(fetchError, err);
+  //         console.log("wsx WXXXXX 2");
+  //         setMessageState({
+  //           ...messageState,
+  //           skillData: {
+  //             ...messageState.skillData,
+  //             fetchInProgress: false,
+  //             retries: messageState.skillData.retries - 1
+  //           }
+  //         });
+  //       });
+
+  //     console.log("wsx WXXXXX 3");
+  //     setMessageState({
+  //       ...messageState,
+  //       skillData: {
+  //         ...messageState.skillData,
+  //         fetchInProgress: true,
+  //         retries: messageState.skillData.retries - 1
+  //       }
+  //     });
+  //   }
+  // });
+
   useEffect(() => {
-    if (!messageState.skillData.allSkills && !messageState.skillData.fetchInProgress && messageState.skillData.retries) {
-      const path = apiPaths.ALL_SKILLS;
-      Axios.get(path)
-        .then(result => {
+    async () => {
+      if (!messageState.skillData.allSkills && !messageState.skillData.fetchInProgress && messageState.skillData.retries) {
+
+        // Retrieve list of all flash and closed messages via a call to /allskills 
+        try {
+          console.log("wsx WXXXXX 1");
+          setMessageState({
+            ...messageState,
+            skillData: {
+              ...messageState.skillData,
+              fetchInProgress: true,
+              retries: messageState.skillData.retries - 1
+            }
+          });
+          const result = await Axios.get(apiPaths.ALL_SKILLS);
+
+          console.log("wsx WXXXXX 2");
           setMessageState({
             ...messageState,
             skillData: {
@@ -76,29 +130,19 @@ const MessageSidebar = props => {
               fetchInProgress: false
             }
           });
-        })
-        .catch(err => {
-          const fetchError = "Failed to fetch all skills: ";
-          console.error(fetchError, err);
+
+        } catch (err) {
+          console.log("wsx WXXXXX 3");
+          console.log(`Unexpected error fetching from ${apiPaths.ALL_SKILLS}: `, err);
           setMessageState({
             ...messageState,
             skillData: {
               ...messageState.skillData,
-              fetchInProgress: false,
-              retries: messageState.skillData.retries - 1
-            }
+              fetchInProgress: false          }
           });
-        });
-
-      setMessageState({
-        ...messageState,
-        skillData: {
-          ...messageState.skillData,
-          fetchInProgress: true,
-          retries: messageState.skillData.retries - 1
         }
-      });
-    }
+      }
+    };
   });
 
   const handleOnChange = selection => {
