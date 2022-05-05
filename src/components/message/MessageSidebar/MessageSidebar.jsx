@@ -61,7 +61,7 @@ const MessageSidebar = props => {
   } = props;
 
   const stateSkill = messageState.skill;
-  const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === messageState.workerProfileId);
+  const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === messageState.workerProfileId) || { skills: []};
 
   // useEffect(() => {
   //   if (!messageState.skillData.allSkills && !messageState.skillData.fetchInProgress && messageState.skillData.retries) {
@@ -106,50 +106,56 @@ const MessageSidebar = props => {
 
   useEffect(() => {
     console.log("wsx useEffect()", !messageState.skillData.allSkills, !messageState.skillData.fetchInProgress, messageState.skillData.retries) > 0;
-    if (!messageState.skillData.allSkills && !messageState.skillData.fetchInProgress && messageState.skillData.retries) {
-      setMessageState({
-        ...messageState,
-        skillData: {
-          ...messageState.skillData,
-          fetchInProgress: true,
-          retries: messageState.skillData.retries - 1
-        }
+    if (!messageState.skillData.allSkills && !messageState.skillData.fetchInProgress && messageState.skillData.retries > 0) {
+
+      setMessageState(state => {
+        const newState = {
+          ...state,
+          skillData: {
+            ...state.skillData,
+            fetchInProgress: true,
+            retries: state.skillData.retries - 1
+          }
+        };
+        return newState;
       });
       loadAllskills();
     }
   });
 
-  // Retrieve list of all flash and closed messages via a call to /allskills 
+  // Retrieve list of all flash and closed messages for all skills via a call to /allskills 
   async function loadAllskills() {
     try {
-      console.log("wsx WXXXXX 1");
+      console.log("loadAllskills()");
       const result = await Axios.get(apiPaths.ALL_SKILLS);
 
-      console.log("wsx WXXXXX 2");
-      setMessageState({
-        ...messageState,
-        skillData: {
-          ...messageState.skillData,
-          allSkills: result.data.allSkills,
-          fetchInProgress: false
-        }
+      setMessageState(state => {
+        return {
+          ...state,
+          skillData: {
+            ...state.skillData,
+            allSkills: result.data.allSkills,
+            fetchInProgress: false
+          }
+        };
       });
-
     } catch (err) {
-      console.log("wsx WXXXXX 3");
+      console.log("wsx Catch Error()");
       console.log(`Unexpected error fetching from ${apiPaths.ALL_SKILLS}: `, err);
-      setMessageState({
-        ...messageState,
-        skillData: {
-          ...messageState.skillData,
-          fetchInProgress: false,
-          retries: messageState.skillData.retries - 1
-        }
+      setMessageState(state => {
+        return {
+          ...state,
+          skillData: {
+            ...state.skillData,
+            fetchInProgress: false,
+            retries: state.skillData.retries - 1
+          }
+        };
       });
     }
   }
 
-  const handleOnChange = selection => {
+  const handleRadioChange = selection => {
     setMessageState({
       ...messageState,
       skill: selection,
@@ -200,7 +206,7 @@ const MessageSidebar = props => {
         <RadioGroup
           name="skill"
           value={stateSkill}
-          onChange={event => handleOnChange(event.target.value)}
+          onChange={event => handleRadioChange(event.target.value)}
         >
           {profile.skills.map(function(skill) {
             return makeRadioButton(skill);

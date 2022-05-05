@@ -19,6 +19,7 @@ import {
 import {
   useFormDispatch,
   useFormState,
+  useAdminState,
   userFormActions
 } from "context";
 import {
@@ -41,6 +42,7 @@ import {
 } from "testUtils";
 import {
   getOverflowSkillFromProfile,
+  removeProfileZeroIfAdminNotInProfileZero,
   isExtensionValid,
   isProfileIdValid,
   isManagerValid
@@ -83,6 +85,7 @@ jest.mock("@material-ui/icons", () => ({
 jest.mock("context", () => ({
   __esModule: true,
   useFormState: jest.fn(),
+  useAdminState: jest.fn(),
   useFormDispatch: jest.fn(),
   userFormActions: jest.requireActual("context").userFormActions
 }));
@@ -94,7 +97,8 @@ jest.mock("utils", () => ({
   isProfileIdValid: jest.fn(),
   sortProfilesByName: jest.requireActual("utils").sortProfilesByName,
   sortManagersByName: jest.fn("utils").sortManagersByName,
-  getOverflowSkillFromProfile: jest.fn()
+  getOverflowSkillFromProfile: jest.fn(),
+  removeProfileZeroIfAdminNotInProfileZero: jest.fn()
 }));
 
 jest.mock("services", () => ({
@@ -254,6 +258,7 @@ describe("<BasicFormInfo />", () => {
   });
   describe("Team dropdown", () => {
     test("Should render the correct initial state", () => {
+      removeProfileZeroIfAdminNotInProfileZero.mockReturnValue(profileList);
       const rendered = renderComponent(false);
       expectMockedComponent(rendered, { OutlinedSelect }, 2);
       const expectedTeamProps = {
@@ -281,11 +286,13 @@ describe("<BasicFormInfo />", () => {
           blurred: true
         }
       });
+      removeProfileZeroIfAdminNotInProfileZero.mockReturnValue(profileList);
       isProfileIdValid.mockReturnValue(false);
       renderComponent(false);
       expect(OutlinedSelect.mock.calls[1][0].error).toBe(true);
     });
     test("helperText is null - profileId is valid", () => {
+      removeProfileZeroIfAdminNotInProfileZero.mockReturnValue(profileList);
       isProfileIdValid.mockReturnValue(true);
       renderComponent(false);
       expect(OutlinedSelect.mock.calls[1][0].helperText).toBe(null);
@@ -298,6 +305,7 @@ describe("<BasicFormInfo />", () => {
           updated: true
         }
       });
+      removeProfileZeroIfAdminNotInProfileZero.mockReturnValue(profileList);
       isProfileIdValid.mockReturnValue(false);
       renderComponent(false);
       expect(OutlinedSelect.mock.calls[1][0].helperText).toBe("Please select a team");
