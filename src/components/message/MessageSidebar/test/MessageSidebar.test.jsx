@@ -1,13 +1,9 @@
 import MessageSidebar from "../MessageSidebar";
 import React from "react";
 import {
-  fireEvent, render, waitFor
+  fireEvent, render, act
 } from "testUtils";
-import MockAdapter from "axios-mock-adapter";
-import { myAxios } from "utils";
-import { apiPaths } from "globals";
 
-const axiosMock = new MockAdapter(myAxios);
 const mockSetMessageState = jest.fn();
 
 const initalSkillDataState = {
@@ -52,36 +48,57 @@ const initialMockedBSCState = {
   skillData: initalSkillDataState
 };
 
-const initialMockedwsxState = {
+const initialNoFlashMessageState = {
   fetching: false,
   flashMessage: "",
-  skill: "blSalesL1",
+  skill: "aisgConsumer",
   readOnly: false,
   workerProfileId: 3,
   skillData: initalSkillDataState
 };
 
-const allSkillsResponse = [
-  200,
+const allSkillsDefaultDataset = [
   {
-    data: {
-      allSkills: [
-        {
-          skillName: "466",
-          timeOfDays: [],
-          flashMessage: null,
-          closedMessage: null
-        },{
-          skillName: "aisgConsumer",
-          timeOfDays: [],
-          flashMessage: "Flash message demo example - this is an edit",
-          closedMessage: "consumer closed"
-        }
-      ]
-    }
-  },
-  null
+    skillName: "csoService",
+    timeOfDays: [],
+    flashMessage: "",
+    closedMessage: null
+  },{
+    skillName: "csoBilling",
+    timeOfDays: [],
+    flashMessage: "Flash Message for aisgConsumer",
+    closedMessage: "consumer closed"
+  }
 ];
+
+const initalFlashMessageState = {
+  fetching: false,
+  flashMessage: "",
+  skill: "csoService",
+  readOnly: false,
+  workerProfileId: 7,
+  skillData: {
+    fetchInProgress: false,
+    allSkills: allSkillsDefaultDataset,
+    retries: 3
+  }
+};
+
+const allSkillsHttpResponse = {
+  data: {
+    allSkills: allSkillsDefaultDataset
+  }
+};
+
+import { myAxios } from "utils"; // utils consumes axios
+jest.mock("utils", () => ({
+  myAxios: {
+    get: jest.fn()
+  },
+  default: {
+    get: jest.fn()
+  }
+}));
 
 const renderComponent = messageState => {
   return render(<MessageSidebar
@@ -90,7 +107,13 @@ const renderComponent = messageState => {
 };
 
 describe("<MessageSidebar />", () => {
-  beforeEach(() => mockSetMessageState.mockClear());
+  beforeEach(() => {
+    jest.resetAllMocks();
+    jest.clearAllMocks();
+    mockSetMessageState.mockClear();
+    myAxios.get.mockResolvedValue(allSkillsHttpResponse);
+  });
+
   test("the MessageSidebar should render a radio group for AISG.", () => {
     const rendered = renderComponent(initialMockedAisgState);
     expect(rendered.findAllByLabelText("aisgL1")).toBeTruthy();
@@ -151,34 +174,39 @@ describe("<MessageSidebar />", () => {
       fetching: true
     });
   });
-  describe("wsx Initial call to /allSkills", () => {
-    beforeEach(() => {
-      // axiosMock.onGet(apiPaths.ALL_SKILLS).reply(200, allSkillsResponse);
-      // axiosMock.onGet(apiPaths.ALL_SKILLS).reply(() => {
-      //   return new Promise(function (resolve, reject) {
-      //     resolve(allSkillsResponse);
-      //   });
-      // axiosMock.onGet(apiPaths.ALL_SKILLS).reply(Promise.resolve(allSkillsResponse));
-      axiosMock.onGet(apiPaths.ALL_SKILLS). //reply(allSkillsResponse);
+  test("successful call, no flash messages", async () => {
+    await act(() => {
+      renderComponent(initialNoFlashMessageState);
     });
-
-    test("wsx not really sure", async () => {
-      axiosMock.onGet(apiPaths.ALL_SKILLS).reply(allSkillsResponse);
-      const rendered = renderComponent(initialMockedwsxState);
-      expect(mockSetMessageState).toHaveBeenCalledTimes(1);
-      expect(mockSetMessageState).toHaveBeenCalledWith({
-        ...initialMockedwsxState,
-        skillData: {
-          ...initialMockedwsxState.skillData,
-          fetchInProgress: true,
-          retries: 2
-        }
+    expect(mockSetMessageState).toHaveBeenCalledTimes(2);
+  });
+  test("successful call with flash messages", async () => {
+    await act(() => {
+      renderComponent(initalFlashMessageState);
+    });
+    expect(mockSetMessageState).toHaveBeenCalledTimes(0);
+  });
+  test("successful call with flash messages", async () => {
+    await act(() => {
+      renderComponent(initalFlashMessageState);
+    });
+    expect(mockSetMessageState).toHaveBeenCalledTimes(0);
+  });
+  test("unsuccessful call", async () => {
+    await act(() => {
+      myAxios.get.mockResolvedValue(() => { throw new Error("network error"); });
+      renderComponent(initialNoFlashMessageState);
+    });
+    expect(mockSetMessageState).toHaveBeenCalledTimes(2);
+  });
+  test("unknown profile id", async () => {
+    await act(() => {
+      renderComponent({
+        ...initalFlashMessageState,
+        workerProfileId: 9999
       });
-      await waitFor(() => expect(mockSetMessageState).toHaveBeenCalledTimes(4));
-      expect(mockSetMessageState).toHaveBeenCalledWith(1);
     });
+    expect(mockSetMessageState).toHaveBeenCalledTimes(0);
   });
 });
-/*
-      beforeEach(() => axiosMock.onGet(apiPaths.FLASH_MESSAGE + "/aisgL1").reply(200, { flashMessage: "" }));
-*/
+

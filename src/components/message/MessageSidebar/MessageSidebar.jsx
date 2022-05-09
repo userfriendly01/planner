@@ -1,4 +1,4 @@
-import Axios from "axios";
+import { myAxios } from "utils";
 import {
   Radio,
   FormControlLabel,
@@ -63,97 +63,42 @@ const MessageSidebar = props => {
   const stateSkill = messageState.skill;
   const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === messageState.workerProfileId) || { skills: []};
 
-  // useEffect(() => {
-  //   if (!messageState.skillData.allSkills && !messageState.skillData.fetchInProgress && messageState.skillData.retries) {
-  //     Axios.get(apiPaths.ALL_SKILLS)
-  //       .then(result => {
-  //         console.log("wsx WXXXXX 1");
-  //         setMessageState({
-  //           ...messageState,
-  //           skillData: {
-  //             ...messageState.skillData,
-  //             allSkills: result.data.allSkills,
-  //             fetchInProgress: false
-  //           }
-  //         });
-  //       })
-  //       .catch(err => {
-  //         const fetchError = "Failed to fetch all skills: ";
-  //         console.log("wsx EEEEEEERROR: ", err);
-  //         console.error(fetchError, err);
-  //         console.log("wsx WXXXXX 2");
-  //         setMessageState({
-  //           ...messageState,
-  //           skillData: {
-  //             ...messageState.skillData,
-  //             fetchInProgress: false,
-  //             retries: messageState.skillData.retries - 1
-  //           }
-  //         });
-  //       });
-
-  //     console.log("wsx WXXXXX 3");
-  //     setMessageState({
-  //       ...messageState,
-  //       skillData: {
-  //         ...messageState.skillData,
-  //         fetchInProgress: true,
-  //         retries: messageState.skillData.retries - 1
-  //       }
-  //     });
-  //   }
-  // });
-
   useEffect(() => {
-    console.log("wsx useEffect()", !messageState.skillData.allSkills, !messageState.skillData.fetchInProgress, messageState.skillData.retries) > 0;
-    if (!messageState.skillData.allSkills && !messageState.skillData.fetchInProgress && messageState.skillData.retries > 0) {
+    if (!messageState.skillData.allSkills && !messageState.skillData.fetchInProgress && messageState.skillData.retries) {
+      myAxios.get(apiPaths.ALL_SKILLS)
+        .then(result => {
+          setMessageState({
+            ...messageState,
+            skillData: {
+              ...messageState.skillData,
+              allSkills: result.data.allSkills,
+              fetchInProgress: false
+            }
+          });
+        })
+        .catch(err => {
+          const fetchError = "Failed to fetch all skills: ";
+          console.error(fetchError, err);
+          setMessageState({
+            ...messageState,
+            skillData: {
+              ...messageState.skillData,
+              fetchInProgress: false,
+              retries: messageState.skillData.retries - 1
+            }
+          });
+        });
 
-      setMessageState(state => {
-        const newState = {
-          ...state,
-          skillData: {
-            ...state.skillData,
-            fetchInProgress: true,
-            retries: state.skillData.retries - 1
-          }
-        };
-        return newState;
+      setMessageState({
+        ...messageState,
+        skillData: {
+          ...messageState.skillData,
+          fetchInProgress: true,
+          retries: messageState.skillData.retries - 1
+        }
       });
-      loadAllskills();
     }
   });
-
-  // Retrieve list of all flash and closed messages for all skills via a call to /allskills 
-  async function loadAllskills() {
-    try {
-      console.log("loadAllskills()");
-      const result = await Axios.get(apiPaths.ALL_SKILLS);
-
-      setMessageState(state => {
-        return {
-          ...state,
-          skillData: {
-            ...state.skillData,
-            allSkills: result.data.allSkills,
-            fetchInProgress: false
-          }
-        };
-      });
-    } catch (err) {
-      console.log("wsx Catch Error()");
-      console.log(`Unexpected error fetching from ${apiPaths.ALL_SKILLS}: `, err);
-      setMessageState(state => {
-        return {
-          ...state,
-          skillData: {
-            ...state.skillData,
-            fetchInProgress: false,
-            retries: state.skillData.retries - 1
-          }
-        };
-      });
-    }
-  }
 
   const handleRadioChange = selection => {
     setMessageState({
