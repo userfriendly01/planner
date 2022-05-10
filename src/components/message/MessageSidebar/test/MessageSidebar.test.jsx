@@ -174,30 +174,55 @@ describe("<MessageSidebar />", () => {
       fetching: true
     });
   });
-  test("successful call, no flash messages", async () => {
+  test("wsx successful call, no flash messages", async () => {
     await act(() => {
       renderComponent(initialNoFlashMessageState);
     });
     expect(mockSetMessageState).toHaveBeenCalledTimes(2);
+    expect(mockSetMessageState).toHaveBeenNthCalledWith(1, {
+      ...initialNoFlashMessageState,
+      skillData: {
+        ...initialNoFlashMessageState.skillData,
+        fetchInProgress: true,
+        retries: 2
+      }
+    });
+    expect(mockSetMessageState).toHaveBeenNthCalledWith(2, {
+      ...initialNoFlashMessageState,
+      skillData: {
+        ...initialNoFlashMessageState.skillData,
+        allSkills: allSkillsDefaultDataset
+      }
+    });
   });
-  test("successful call with flash messages", async () => {
+  test("no need to call for flash message list", async () => {
     await act(() => {
       renderComponent(initalFlashMessageState);
     });
     expect(mockSetMessageState).toHaveBeenCalledTimes(0);
   });
-  test("successful call with flash messages", async () => {
-    await act(() => {
-      renderComponent(initalFlashMessageState);
-    });
-    expect(mockSetMessageState).toHaveBeenCalledTimes(0);
-  });
-  test("unsuccessful call", async () => {
+  test("network error", async () => {
     await act(() => {
       myAxios.get.mockResolvedValue(() => { throw new Error("network error"); });
       renderComponent(initialNoFlashMessageState);
     });
     expect(mockSetMessageState).toHaveBeenCalledTimes(2);
+    expect(mockSetMessageState).toHaveBeenNthCalledWith(1, {
+      ...initialNoFlashMessageState,
+      skillData: {
+        ...initialNoFlashMessageState.skillData,
+        fetchInProgress: true,
+        retries: 2
+      }
+    });
+    expect(mockSetMessageState).toHaveBeenNthCalledWith(2, {
+      ...initialNoFlashMessageState,
+      skillData: {
+        ...initialNoFlashMessageState.skillData,
+        allSkills: null,
+        retries: 2
+      }
+    });
   });
   test("unknown profile id", async () => {
     await act(() => {
@@ -209,4 +234,3 @@ describe("<MessageSidebar />", () => {
     expect(mockSetMessageState).toHaveBeenCalledTimes(0);
   });
 });
-
