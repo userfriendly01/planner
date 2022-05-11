@@ -151,7 +151,7 @@ const getCalabrioRoles = async dispatch => {
     console.log("Roles Response from ServiceCall", roles);
     dispatch({
       type: "loadCalabrioRoles",
-      payload: roles
+      payload: roles.data
     });
   } catch (error) {
     console.error("Failed to fetch calabrio Roles from service");
