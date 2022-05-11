@@ -84,7 +84,8 @@ describe("<ViewMessage />", () => {
                   fetching: false,
                   message: "",
                   messageType: "flash",
-                  readOnly: false
+                  readOnly: false,
+                  skillData: { "allSkills": null }
                 });
                 done();
               });
@@ -165,11 +166,12 @@ describe("<ViewMessage />", () => {
             })
               .then(() => {
                 expect(mockSetMessageState).toHaveBeenCalledTimes(2);
-                expect(mockSetMessageState).toHaveBeenCalledWith({
+                expect(mockSetMessageState).toHaveBeenCalledWith(            {
                   fetching: false,
                   message: "",
                   messageType: "closed",
-                  readOnly: false
+                  readOnly: false,
+                  skillData: { "allSkills": null }
                 });
                 done();
               });

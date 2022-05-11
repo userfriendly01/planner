@@ -1,3 +1,4 @@
+import { myAxios } from "utils";
 import {
   Radio,
   FormControlLabel,
@@ -6,11 +7,13 @@ import {
 import { withStyles } from "@material-ui/core/styles";
 import {
   theme,
-  profileConfigs
+  profileConfigs,
+  apiPaths
 } from "globals";
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import LighteningBolt from "icons/LighteningBolt-06.png";
 
 const SidebarWrapper = styled.div`
   background-color: white;
@@ -31,6 +34,13 @@ const RadioContainer = styled.div`
 
 const StyledFormControl = styled(FormControlLabel)`
   max-width: 90%;
+  vertical-align: bottom;
+`;
+
+const StyledBolt = styled.img`
+  max-height: 22px;
+  margin-left: -7px;
+  margin-bottom: -7px;
 `;
 
 const TealRadio = withStyles({
@@ -50,7 +60,44 @@ const MessageSidebar = props => {
   } = props;
 
   const stateSkill = messageState.skill;
-  const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === messageState.workerProfileId) || { skills: [] };
+  const profile = profileConfigs.PROFILE_SKILL_MAP.find(profile => profile.profileId === messageState.workerProfileId) || { skills: []};
+
+  useEffect(() => {
+    if (!messageState.skillData.allSkills && !messageState.skillData.fetchInProgress && messageState.skillData.retries) {
+      myAxios.get(apiPaths.ALL_SKILLS)
+        .then(result => {
+          setMessageState({
+            ...messageState,
+            skillData: {
+              ...messageState.skillData,
+              allSkills: result.data.allSkills,
+              fetchInProgress: false
+            }
+          });
+        })
+        .catch(err => {
+          const fetchError = "Failed to fetch all skills: ";
+          console.error(fetchError, err);
+          setMessageState({
+            ...messageState,
+            skillData: {
+              ...messageState.skillData,
+              fetchInProgress: false,
+              retries: messageState.skillData.retries - 1
+            }
+          });
+        });
+
+      setMessageState({
+        ...messageState,
+        skillData: {
+          ...messageState.skillData,
+          fetchInProgress: true,
+          retries: messageState.skillData.retries - 1
+        }
+      });
+    }
+  });
 
   const handleRadioChange = selection => {
     setMessageState({
@@ -59,14 +106,54 @@ const MessageSidebar = props => {
       fetching: true
     });
   };
+
+  const makeRadioButton = skillName => {
+    let hasFlash = false;
+    if (messageState.skillData.allSkills) {
+      const skill = messageState.skillData.allSkills.find(skill => skill.skillName === skillName);
+      if (skill && skill.flashMessage) {
+        hasFlash = true;
+      }
+    }
+
+    if (hasFlash) {
+      return (
+        <div key={`${skillName}-div`}>
+          <StyledFormControl
+            key={`${skillName}-sc`}
+            control={<TealRadio value={skillName} />}
+            label={skillName}
+          />
+          <StyledBolt
+            key={`${skillName}-bolt`}
+            src={LighteningBolt}
+            alt="*"
+          />
+        </div>
+      );
+    } else {
+      return (
+        <div key={`${skillName}-div`}>
+          <StyledFormControl
+            key={`${skillName}-sc`}
+            control={<TealRadio value={skillName} />}
+            label={skillName}
+          />
+        </div>
+      );
+    }
+  };
+
   return (
     <SidebarWrapper>
       <RadioContainer>
-        <RadioGroup name="skill" value={stateSkill} onChange={event => handleRadioChange(event.target.value)}>
+        <RadioGroup
+          name="skill"
+          value={stateSkill}
+          onChange={event => handleRadioChange(event.target.value)}
+        >
           {profile.skills.map(function(skill) {
-            return <StyledFormControl key={skill} control={<TealRadio
-              value={skill}/>}
-            label={skill}/>;
+            return makeRadioButton(skill);
           })}
         </RadioGroup>
       </RadioContainer>

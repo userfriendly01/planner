@@ -17,7 +17,12 @@ const mockSetMessageState = jest.fn();
 const initialMockedState = {
   fetching: false,
   message: "",
-  readOnly: false
+  readOnly: false,
+  skillData: {
+    fetchInProgress: false,
+    allSkills: null,
+    retries: 3
+  }
 };
 
 const initialAdminState = {
@@ -225,7 +230,7 @@ describe("<AddMessage />", () => {
               });
           });
         });
-        describe("post to clsoedmessage fails", () => {
+        describe("post to closedmessage fails", () => {
           beforeEach(() => axiosMock.onPost(apiPaths.CLOSED_MESSAGE).reply(500, "oh no! it failed"));
           test("should call mockSetMessageState with fetching = false and service call error", done => {
             const rendered = renderComponent(validMessageState);
