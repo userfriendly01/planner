@@ -31,6 +31,7 @@ export const initialState: AppState = {
   },
   calabrioContext: {
     tenant: {},
+    roles: [],
     teams: [],
     groups: [],
     users: []
@@ -92,10 +93,19 @@ export const reducer = (state: AppState, action: Action): AppState => {
       return {
         ...state,
         calabrioContext: {
+          ...state.calabrioContext,
           tenant: formatCalabrioTenant(action.payload),
           groups: formatCalabrioGroups(action.payload),
           teams: formatCalabrioTeams(action.payload),
           users: formatCalabrioUsers(action.payload)
+        }
+      };
+    case "loadCalabrioRoles":
+      return {
+        ...state,
+        calabrioContext: {
+          ...state.calabrioContext,
+          roles: action.payload
         }
       };
     case "loadProfiles":{

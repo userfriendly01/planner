@@ -4,7 +4,10 @@ import {
   FormControlsPane
 } from "./CallRecording.Styles";
 import CallRecordingScope from "./CallRecordingScope";
-import { FilterableSelect } from "components";
+import {
+  FilterableSelect,
+  MultiSelect
+} from "components";
 import {
   useAdminState,
   useFormState,
@@ -24,6 +27,7 @@ const CallRecordingForm = (props: any) => {
   const tenant = state.calabrioContext.tenant;
   const groups = state.calabrioContext.groups;
   const teams = state.calabrioContext.teams;
+  const roles = state.calabrioContext.roles;
   const users = state.calabrioContext.users;
 
   const form = useFormState();
@@ -32,17 +36,7 @@ const CallRecordingForm = (props: any) => {
   console.log("worker", worker);
   console.log("ENV", process.env.APP_ENV);
 
-  const [ roles, setRoles ] = React.useState([]);
-  // const [ user, setUser ] = React.useState(null);
-
   useEffect(() => {
-    console.log("Use effect is entered");
-    getCalabrioRoles(tenant.groupId).then((res:any) => {
-      console.log("Calabrio Roles", res);
-      setRoles(res.data);
-    }).catch(err => {
-      console.error("Failed to fetch Calabrio Roles.", err);
-    });
     if(worker && form.formMode ==="UPDATE") {
       const email = form.nNumberFetchedUser.email.toLowerCase();
       const userRecord = users.filter(user => user.email.toLowerCase() === email);
@@ -118,14 +112,24 @@ const CallRecordingForm = (props: any) => {
   return(
     <FormControlsContainer>
       <FormControlsPane>
-        <div>Roles: </div>
-        <FilterableSelect
-          optionsList={getRoleOptions()}
+        <MultiSelect
+          options={getRoleOptions()}
+          updateValue={roles => setForm({
+            type: userFormActions.SET_CALABRIO_ROLES,
+            payload: roles
+          })}
+          value={form.calabrioUser.roles}
         />
-        <div>Team</div>
         <FilterableSelect
           optionsList={getTeamOptions()}
+          updateValue={team => setForm({
+            type: userFormActions.SET_CALABRIO_TEAM,
+            payload: team
+          })}
         />
+        {/* <FilterableSelect
+          optionsList={getTeamOptions()}
+        /> */}
       </FormControlsPane>
       <CallRecordingScope
         groups={form.calabrioUser.scope.groups}

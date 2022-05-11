@@ -18,8 +18,8 @@ const searchParams = SearchParams.getValues();
 
 export const userFormActions = {
   ASSIGN_EXTENSION: "ASSIGN_EXTENSION",
-  CHECK_TEAM: "CHECK_TEAM",
-  CHECK_GROUP: "CHECK_GROUP",
+  CHECK_CALABRIO_TEAM: "CHECK_CALABRIO_TEAM",
+  CHECK_CALABRIO_GROUP: "CHECK_CALABRIO_GROUP",
   CLEAR_EXTENSION: "CLEAR_EXTENSION",
   CLEAR_N_NUMBER: "CLEAR_N_NUMBER",
   CLEAR_OUTGOING_NUMBER: "CLEAR_OUTGOING_NUMBER",
@@ -32,6 +32,8 @@ export const userFormActions = {
   RESET_FORM_AFTER_ADD: "RESET_FORM_AFTER_ADD",
   SET_BLUR_ON_FIELD: "SET_BLUR_ON_FIELD",
   SET_CALABRIO_USER: "SET_CALABRIO_USER",
+  SET_CALABRIO_TEAM: "SET_CALABRIO_TEAM",
+  SET_CALABRIO_ROLES: "SET_CALABRIO_ROLES",
   SET_EXTENSION_MESSAGE: "SET_EXTENSION_MESSAGE",
   SET_EXTENSION_RETRIES: "SET_EXTENSION_RETRIES",
   SET_EXTENSION_VERIFIED: "EXTENSION_VERIFIED",
@@ -135,7 +137,7 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         }
       };
     }
-    case userFormActions.CHECK_GROUP: {
+    case userFormActions.CHECK_CALABRIO_GROUP: {
       state.calabrioUser.scope.groups[action.payload.index][action.payload.boxType] = action.payload.checked;
       return {
         ...state,
@@ -148,7 +150,7 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         }
       };
     }
-    case userFormActions.CHECK_TEAM: {
+    case userFormActions.CHECK_CALABRIO_TEAM: {
       state.calabrioUser.scope.teams[action.payload.index].checked = action.payload.checked;
       return {
         ...state,
@@ -315,6 +317,24 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
       return {
         ...state,
         calabrioUser: action.payload
+      };
+    }
+    case userFormActions.SET_CALABRIO_ROLES: {
+      return {
+        ...state,
+        calabrioUser: {
+          ...state.calabrioUser,
+          roles: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_CALABRIO_TEAM: {
+      return {
+        ...state,
+        calabrioUser: {
+          ...state.calabrioUser,
+          team: action.payload
+        }
       };
     }
     case userFormActions.SET_EXTENSION_MESSAGE: {

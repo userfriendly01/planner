@@ -22,6 +22,7 @@ const FilterableSelect = props => {
         onSelectResetsInput={true}
         options={optionsList}
         searchable={true}
+        multiple
       />
     </Wrapper>
   );

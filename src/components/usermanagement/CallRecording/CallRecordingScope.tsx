@@ -53,7 +53,7 @@ const CallRecordingScope = (props:any) => {
     const group = groups[index];
     const childrenTeams = identifyChildrenTeams(group.groupId);
     setForm({
-      type: userFormActions.CHECK_GROUP,
+      type: userFormActions.CHECK_CALABRIO_GROUP,
       payload: {
         index,
         checked: isChecked,
@@ -61,7 +61,7 @@ const CallRecordingScope = (props:any) => {
       }
     });
     setForm({
-      type: userFormActions.CHECK_GROUP,
+      type: userFormActions.CHECK_CALABRIO_GROUP,
       payload: {
         index,
         checked: false,
@@ -70,7 +70,7 @@ const CallRecordingScope = (props:any) => {
     });
     childrenTeams.forEach((teamIndex:any) => {
       setForm({
-        type: userFormActions.CHECK_TEAM,
+        type: userFormActions.CHECK_CALABRIO_TEAM,
         payload: {
           index: teamIndex,
           checked: isChecked
@@ -82,7 +82,7 @@ const CallRecordingScope = (props:any) => {
   const handleCheckTeam = (index: number, isChecked: boolean) => {
     const parentGroupId = teams[index].parentGroupId;
     setForm({
-      type: userFormActions.CHECK_TEAM,
+      type: userFormActions.CHECK_CALABRIO_TEAM,
       payload: {
         index: index,
         checked: isChecked
@@ -104,7 +104,7 @@ const CallRecordingScope = (props:any) => {
     if(!childrenTeamsExist || (noChildrenTeamsChecked && !group.checked) || (allChildrenTeamsChecked && group.checked)){
       if(group.partial !== false){
         setForm({
-          type: userFormActions.CHECK_GROUP,
+          type: userFormActions.CHECK_CALABRIO_GROUP,
           payload: {
             index,
             checked: false,
@@ -115,7 +115,7 @@ const CallRecordingScope = (props:any) => {
     } else {
       if(group.partial !== true){
         setForm({
-          type: userFormActions.CHECK_GROUP,
+          type: userFormActions.CHECK_CALABRIO_GROUP,
           payload: {
             index,
             checked: true,
@@ -129,7 +129,7 @@ const CallRecordingScope = (props:any) => {
   const handleCheckAdmin = (isChecked: boolean) => {
     groups.forEach((group: any, index: number) => {
       setForm({
-        type: userFormActions.CHECK_GROUP,
+        type: userFormActions.CHECK_CALABRIO_GROUP,
         payload: {
           index,
           checked: isChecked,
@@ -137,7 +137,7 @@ const CallRecordingScope = (props:any) => {
         }
       });
       setForm({
-        type: userFormActions.CHECK_GROUP,
+        type: userFormActions.CHECK_CALABRIO_GROUP,
         payload: {
           index,
           checked: false,
@@ -147,7 +147,7 @@ const CallRecordingScope = (props:any) => {
     }
     );
     teams.forEach((team: any, index: number) => setForm({
-      type: userFormActions.CHECK_TEAM,
+      type: userFormActions.CHECK_CALABRIO_TEAM,
       payload: {
         index,
         checked: isChecked
