@@ -129,9 +129,9 @@ const CallRecordingForm = (props: any) => {
         <MultiSelect
           label={"Team"}
           options={getTeamOptions()}
-          updateValue={team => setForm({
+          updateValue={teamId => setForm({
             type: userFormActions.SET_CALABRIO_TEAM,
-            payload: team
+            payload: teams.map(team => team.groupId === teamId)
           })}
           value={form.calabrioUser.team}
         />

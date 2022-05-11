@@ -124,6 +124,9 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     createUser(createUserReqBody)
       .then(dbWorker => {
         console.log("Initiate Create Calabrio User: ", dbWorker);
+        if(dbWorker){
+          calabrioAttributes.acdId = dbWorker.workerSid;
+        }
         if (!offices.get(dbWorker.attributes.office_location_number)) {
           const newOffice = {
             office_nme: dbWorker.attributes.office_location_name,
