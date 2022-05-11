@@ -50,7 +50,7 @@ const AddManagerModal = (props: AddManagerModalProps) => {
 
   const addManagerClicked = (): Promise<any> => {
     setSaveStatus(loadingStates.loading);
-    if (state.managerContext.managers.some((savedManager: Manager) => savedManager.manager_n_number === manager.manager_n_number)) {
+    if (state.managerContext.managers.some((savedManager: Manager) => savedManager.manager_n_number.toLowerCase() === manager.manager_n_number.toLowerCase())) {
       setSaveStatus(loadingStates.fail);
       setTimeout(() => setSaveStatus(null), 2000);
       setErrorMessage("Manager already exists");
@@ -60,7 +60,7 @@ const AddManagerModal = (props: AddManagerModalProps) => {
     return addManager({
       manager_first_nme: manager.manager_first_name.replace("'", "\\'"),
       manager_last_nme: manager.manager_last_name.replace("'", "\\'"),
-      manager_n_num: manager.manager_n_number
+      manager_n_num: manager.manager_n_number.toLowerCase()
     })
       .then(res => {
         dispatch(({
