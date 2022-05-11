@@ -21,6 +21,7 @@ import React from "react";
 import {
   addOffice,
   createUser,
+  createCalabrioUser,
   updateUser
 } from "services";
 import {
@@ -96,7 +97,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       email: form.nNumberFetchedUser.email,
       firstName: form.nNumberFetchedUser.firstName,
       lastName: form.nNumberFetchedUser.lastName,
-      groupId: form.calabrioUser.team,
+      groupId: form.calabrioUser.team.groupId,
       roles: form.calabrioUser.roles,
       scope: {
         groups: form.calabrioUser.scope.groups.filter((group: any) => group.checked),
@@ -131,7 +132,11 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         if(dbWorker){
           calabrioAttributes.acdId = dbWorker.workerSid;
           console.log("Create Calabrio Payload: ", calabrioAttributes);
-
+          createCalabrioUser(calabrioAttributes).then(res => {
+            console.log("Successfully Created Calabrio User", res);
+          }).catch(err => {
+            console.error("Failed to Create Calabrio User", err);
+          });
         }
         if (!offices.get(dbWorker.attributes.office_location_number)) {
           const newOffice = {

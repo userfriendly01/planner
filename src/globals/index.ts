@@ -46,6 +46,7 @@ export const resetResponses = {
 export const apiPaths = {
   AUTH: `${SERVICE_BASE_URI}/admin-login`,
   CHECK_EXTENSION: `${SERVICE_BASE_URI}/checkextension`,
+  CREATE_CALABRIO_USER: `${SERVICE_BASE_URI}/calabrio-add-user`,
   CLOSED_MESSAGE: `${SERVICE_BASE_URI}/closedmessage`,
   CREATE_WORKER: `${SERVICE_BASE_URI}/createworker`,
   DELETE_WORKER: (workerSid: string): string => `${SERVICE_BASE_URI}/deleteworker/${workerSid}`,
