@@ -130,7 +130,7 @@ const MessageContainer = props => {
   return (
     profile ?
       <MessageContainerWrapper>
-        <MessageSidebar messageState={messageState} setMessageState={setMessageState} messageType={messageType}/>
+        <MessageSidebar messageState={messageState} setMessageState={setMessageState}/>
         {messageState.fetching ?
           <LoadingContainer>
             <LoadingMessage>Loading...</LoadingMessage>

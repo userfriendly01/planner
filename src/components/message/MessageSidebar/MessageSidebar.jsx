@@ -56,8 +56,7 @@ const TealRadio = withStyles({
 const MessageSidebar = props => {
   const {
     messageState,
-    setMessageState,
-    messageType
+    setMessageState
   } = props;
 
   const stateSkill = messageState.skill;
@@ -164,8 +163,7 @@ const MessageSidebar = props => {
 
 MessageSidebar.propTypes = {
   messageState: PropTypes.object.isRequired,
-  setMessageState: PropTypes.func.isRequired,
-  messageType: PropTypes.string.isRequired
+  setMessageState: PropTypes.func.isRequired
 };
 
 export default MessageSidebar;
