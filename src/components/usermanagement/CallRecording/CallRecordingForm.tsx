@@ -21,11 +21,7 @@ import {
   useFormDispatch,
   userFormActions
 } from "context";
-import {
-  getCalabrioRoles,
-  getCalabrioUser
-} from "services";
-import styled from "styled-components";
+import { getCalabrioUser } from "services";
 
 const CallRecordingForm = (props: any) => {
   const {
@@ -43,13 +39,6 @@ const CallRecordingForm = (props: any) => {
   console.log("***STATE!", state);
   console.log("worker", worker);
   console.log("ENV", process.env.APP_ENV);
-
-  const OutlinedSelectFormControl = styled(FormControl)`
-  && {
-    width: 230px;
-    margin: 8px 0;
-  }
-`;
 
   useEffect(() => {
     if(worker && form.formMode ==="UPDATE") {
