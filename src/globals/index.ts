@@ -14,7 +14,13 @@ import {
   PROFILE_8_SKILLS,
   PROFILE_9_SKILLS,
   PROFILE_10_SKILLS,
-  PROFILE_11_SKILLS
+  PROFILE_11_SKILLS,
+  PROFILE_32_SKILLS,
+  PROFILE_33_SKILLS,
+  PROFILE_34_SKILLS,
+  PROFILE_35_SKILLS,
+  PROFILE_36_SKILLS,
+  PROFILE_37_SKILLS
 } from "./constants";
 
 const CONTACT_MANAGER_BASE_URI = "/contact-manager";
@@ -76,7 +82,8 @@ export const profileConfigs = {
     {
       "profileId": 0,
       "skills": [...PROFILE_1_SKILLS,...PROFILE_2_SKILLS,...PROFILE_3_SKILLS,...PROFILE_4_SKILLS,...PROFILE_5_SKILLS,...PROFILE_6_SKILLS,
-        ...PROFILE_7_SKILLS,...PROFILE_8_SKILLS,...PROFILE_9_SKILLS,...PROFILE_10_SKILLS,...PROFILE_11_SKILLS]
+        ...PROFILE_7_SKILLS,...PROFILE_8_SKILLS,...PROFILE_9_SKILLS,...PROFILE_10_SKILLS,...PROFILE_11_SKILLS,...PROFILE_32_SKILLS,...PROFILE_33_SKILLS,
+        ...PROFILE_34_SKILLS,...PROFILE_35_SKILLS,...PROFILE_36_SKILLS,...PROFILE_37_SKILLS]
     },
     {
       "profileId": 1,
@@ -121,6 +128,30 @@ export const profileConfigs = {
     {
       "profileId": 11,
       "skills": PROFILE_11_SKILLS
+    },
+    {
+      "profileId": 32,
+      "skills": PROFILE_32_SKILLS
+    },
+    {
+      "profileId": 33,
+      "skills": PROFILE_33_SKILLS
+    },
+    {
+      "profileId": 34,
+      "skills": PROFILE_34_SKILLS
+    },
+    {
+      "profileId": 35,
+      "skills": PROFILE_35_SKILLS
+    },
+    {
+      "profileId": 36,
+      "skills": PROFILE_36_SKILLS
+    },
+    {
+      "profileId": 37,
+      "skills": PROFILE_37_SKILLS
     }
   ]
 };
