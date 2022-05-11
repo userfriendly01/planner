@@ -124,7 +124,7 @@ const CallRecordingForm = (props: any) => {
             type: userFormActions.SET_CALABRIO_ROLES,
             payload: roles.filter(role => selectedRoles.includes(role))
           })}
-          value={form.calabrioUser.roles.map((role: any) => { return role.id; })}
+          value={form.calabrioUser.roles.map((role: any) => { return role.id; }) || ""}
         />
         <MultiSelect
           label={"Team"}
@@ -133,7 +133,7 @@ const CallRecordingForm = (props: any) => {
             type: userFormActions.SET_CALABRIO_TEAM,
             payload: teams.find(team => team.groupId === teamId)
           })}
-          value={form.calabrioUser.team.groupId}
+          value={form.calabrioUser.team.groupId || ""}
         />
         <ToggleContainer>
           <Switch
