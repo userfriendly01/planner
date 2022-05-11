@@ -1,10 +1,7 @@
 import {
   FormControl,
-  FormHelperText,
-  Input,
   InputLabel,
   MenuItem,
-  OutlinedInput,
   Select
 } from "@material-ui/core";
 import PropTypes from "prop-types";
@@ -14,7 +11,7 @@ import styled from "styled-components";
 const OutlinedSelectFormControl = styled(FormControl)`
   && {
     width: 230px;
-    margin: 8px 0;
+    margin: 8px 20px;
   }
 `;
 
@@ -41,12 +38,6 @@ export const MultiSelect = props => {
         multiple={multiple}
         value={value}
         onChange={event => updateValue(event.target.value)}
-        // input={
-        //   <OutlinedInput
-        //     name={"Roles"}
-        //     labelWidth={"200px"}
-        //   />
-        // }
       >
         {options.map(option => (
           <MenuItem key={option.value} value={option.value}>

@@ -12,8 +12,10 @@ export const FormControlsContainer = styled.div`
 
 export const FormControlsPane = styled.div`
   display: flex;
+  align-items: center;
   flex-direction: column;
   padding: 0 8px;
+  justify-content: center;
 `;
 
 export const FullAccessWrapper = styled.div`
@@ -21,6 +23,15 @@ export const FullAccessWrapper = styled.div`
   align-items: center;
 `;
 
+export const ToggleContainer = styled.div`
+  display: flex;
+`;
+
+export const ToggleLabel = styled.div`
+  align-self: center;
+  font-weight: 400;
+  font-size: 1rem;
+`;
 
 export const ScopeRow = styled.div<{ selected: boolean }>`
   display: flex;

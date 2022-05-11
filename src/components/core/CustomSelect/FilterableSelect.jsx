@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import Select from "react-select";
 import styled from "styled-components";
+import { OutlinedInput } from "@material-ui/core";
 
 const Wrapper = styled.div`
   width: 200px;
@@ -22,7 +23,12 @@ const FilterableSelect = props => {
         onSelectResetsInput={true}
         options={optionsList}
         searchable={true}
-        multiple
+        input={
+          <OutlinedInput
+            name={"Roles"}
+            labelWidth={"200px"}
+          />
+        }
       />
     </Wrapper>
   );

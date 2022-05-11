@@ -1,11 +1,14 @@
 import React, { useEffect } from "react";
 import {
   FormControl,
-  InputLabel
+  InputLabel,
+  Switch
 } from "@material-ui/core";
 import {
   FormControlsContainer,
-  FormControlsPane
+  FormControlsPane,
+  ToggleContainer,
+  ToggleLabel
 } from "./CallRecording.Styles";
 import CallRecordingScope from "./CallRecordingScope";
 import {
@@ -143,6 +146,20 @@ const CallRecordingForm = (props: any) => {
           })}
           value={form.calabrioUser.team}
         />
+        <ToggleContainer>
+          <Switch
+            // disabled={form.formMode === formModes.UPDATE && worker.directDialNum ? true : false}
+            checked={form.calabrioUser.isScreenRecorded}
+            onChange={e =>
+              setForm({
+                type: userFormActions.SET_CALABRIO_SCREEN_RECORDING,
+                payload: e.target.checked
+              })
+            }
+            inputProps={{ "aria-label": "toggle-did-user" }}
+          />
+          <ToggleLabel>Screen Recording</ToggleLabel>
+        </ToggleContainer>
       </FormControlsPane>
       <CallRecordingScope
         groups={form.calabrioUser.scope.groups}
