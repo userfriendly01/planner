@@ -139,7 +139,7 @@ const AddMessage = props => {
           data-testid="add-message-input"
           maxLength="1024"
           onChange={handleChange}
-          placeholder="Enter closed message here..."
+          placeholder="Enter message here..."
           type="text"
           validMessage={validMessage}
           value={tempMessage} />
