@@ -131,7 +131,7 @@ const CallRecordingForm = (props: any) => {
           options={getTeamOptions()}
           updateValue={teamId => setForm({
             type: userFormActions.SET_CALABRIO_TEAM,
-            payload: teams.filter(team => team.groupId === teamId)
+            payload: teams.find(team => team.groupId === teamId)
           })}
           value={form.calabrioUser.team}
         />
