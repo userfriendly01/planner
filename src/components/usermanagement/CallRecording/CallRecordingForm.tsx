@@ -1,5 +1,9 @@
 import React, { useEffect } from "react";
 import {
+  FormControl,
+  InputLabel
+} from "@material-ui/core";
+import {
   FormControlsContainer,
   FormControlsPane
 } from "./CallRecording.Styles";
@@ -18,6 +22,7 @@ import {
   getCalabrioRoles,
   getCalabrioUser
 } from "services";
+import styled from "styled-components";
 
 const CallRecordingForm = (props: any) => {
   const {
@@ -35,6 +40,13 @@ const CallRecordingForm = (props: any) => {
   console.log("***STATE!", state);
   console.log("worker", worker);
   console.log("ENV", process.env.APP_ENV);
+
+  const OutlinedSelectFormControl = styled(FormControl)`
+  && {
+    width: 230px;
+    margin: 8px 0;
+  }
+`;
 
   useEffect(() => {
     if(worker && form.formMode ==="UPDATE") {
@@ -113,23 +125,24 @@ const CallRecordingForm = (props: any) => {
     <FormControlsContainer>
       <FormControlsPane>
         <MultiSelect
+          multiple={true}
           options={getRoleOptions()}
+          label={"Roles"}
           updateValue={roles => setForm({
             type: userFormActions.SET_CALABRIO_ROLES,
             payload: roles
           })}
           value={form.calabrioUser.roles}
         />
-        <FilterableSelect
-          optionsList={getTeamOptions()}
+        <MultiSelect
+          label={"Team"}
+          options={getTeamOptions()}
           updateValue={team => setForm({
             type: userFormActions.SET_CALABRIO_TEAM,
             payload: team
           })}
+          value={form.calabrioUser.team}
         />
-        {/* <FilterableSelect
-          optionsList={getTeamOptions()}
-        /> */}
       </FormControlsPane>
       <CallRecordingScope
         groups={form.calabrioUser.scope.groups}

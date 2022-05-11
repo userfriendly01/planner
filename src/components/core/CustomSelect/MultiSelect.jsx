@@ -21,6 +21,8 @@ const OutlinedSelectFormControl = styled(FormControl)`
 export const MultiSelect = props => {
   const {
     options,
+    label,
+    multiple,
     updateValue,
     value
   } = props;
@@ -32,19 +34,19 @@ export const MultiSelect = props => {
         backgroundColor: "white",
         padding: "0 5"
       }} htmlFor={"outlined-${label}-native-simple"}>
-        Roles
+        {label}
       </InputLabel>
       <Select
         disabled={false}
-        multiple
+        multiple={multiple}
         value={value}
         onChange={event => updateValue(event.target.value)}
-        input={
-          <OutlinedInput
-            name={"Roles"}
-            labelWidth={"200px"}
-          />
-        }
+        // input={
+        //   <OutlinedInput
+        //     name={"Roles"}
+        //     labelWidth={"200px"}
+        //   />
+        // }
       >
         {options.map(option => (
           <MenuItem key={option.value} value={option.value}>
@@ -62,11 +64,12 @@ MultiSelect.propTypes = {
   // disabled: PropTypes.bool,
   // error: PropTypes.bool,
   // helperText: PropTypes.string,
-  // label: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
   // labelWidth: PropTypes.number.isRequired,
   // noBlankValue: PropTypes.bool,
   // onBlur: PropTypes.func,
   // optionsDisplayFunc: PropTypes.func.isRequired,
+  multiple: PropTypes.bool,
   options: PropTypes.array.isRequired,
   updateValue: PropTypes.func.isRequired,
   value: PropTypes.oneOfType([
