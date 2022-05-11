@@ -122,7 +122,7 @@ const CallRecordingForm = (props: any) => {
           label={"Roles"}
           updateValue={selectedRoles => setForm({
             type: userFormActions.SET_CALABRIO_ROLES,
-            payload: roles.filter(role => selectedRoles.includes(role))
+            payload: roles.filter(role => selectedRoles.some((srole:any) => JSON.stringify(srole) === JSON.stringify(role)))
           })}
           value={form.calabrioUser.roles.map((role: any) => { return role.id; })}
         />
