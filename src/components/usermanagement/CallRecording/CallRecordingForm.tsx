@@ -120,10 +120,12 @@ const CallRecordingForm = (props: any) => {
           multiple={true}
           options={getRoleOptions()}
           label={"Roles"}
-          updateValue={selectedRoles => setForm({
-            type: userFormActions.SET_CALABRIO_ROLES,
-            payload: roles.filter(role => selectedRoles.some((srole:any) => JSON.stringify(srole) === JSON.stringify(role)))
-          })}
+          updateValue={selectedRoles => {
+            console.log("Selected Roles", selectedRoles);
+            setForm({
+              type: userFormActions.SET_CALABRIO_ROLES,
+              payload: roles.filter(role => selectedRoles.some((roleId:any) => roleId === role.id))
+            }); }}
           value={form.calabrioUser.roles.map((role: any) => { return role.id; })}
         />
         <MultiSelect
