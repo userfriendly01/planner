@@ -98,7 +98,11 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       lastName: form.nNumberFetchedUser.lastName,
       groupId: form.calabrioUser.team,
       roles: form.calabrioUser.roles,
-      scope: form.calabrioUser.scope
+      scope: {
+        groups: form.calabrioUser.scope.groups.filter((group: any) => group.checked),
+        teams: form.calabrioUser.scope.teams.filter((team: any) => team.checked),
+        tenant: null
+      }
     };
 
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.profileId.value);
@@ -126,6 +130,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         console.log("Initiate Create Calabrio User: ", dbWorker);
         if(dbWorker){
           calabrioAttributes.acdId = dbWorker.workerSid;
+          console.log("Create Calabrio Payload: ", calabrioAttributes);
+
         }
         if (!offices.get(dbWorker.attributes.office_location_number)) {
           const newOffice = {
