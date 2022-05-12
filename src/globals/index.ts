@@ -49,6 +49,7 @@ export const resetResponses = {
 };
 
 export const apiPaths = {
+  ALL_SKILLS: `${SERVICE_BASE_URI}/allskills`,
   AUTH: `${SERVICE_BASE_URI}/admin-login`,
   CHECK_EXTENSION: `${SERVICE_BASE_URI}/checkextension`,
   CLOSED_MESSAGE: `${SERVICE_BASE_URI}/closedmessage`,

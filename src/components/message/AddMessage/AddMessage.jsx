@@ -112,7 +112,11 @@ const AddMessage = props => {
             ...messageState,
             fetching: false,
             message: JSON.parse(res.config.data)[dataField],
-            readOnly: true
+            readOnly: true,
+            skillData: {
+              ...messageState.skillData,
+              allSkills: null
+            }
           });
         })
         .catch(err => {
@@ -135,7 +139,7 @@ const AddMessage = props => {
           data-testid="add-message-input"
           maxLength="1024"
           onChange={handleChange}
-          placeholder="Enter closed message here..."
+          placeholder="Enter message here..."
           type="text"
           validMessage={validMessage}
           value={tempMessage} />
