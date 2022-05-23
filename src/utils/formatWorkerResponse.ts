@@ -29,5 +29,8 @@ export const mapWorkerFromDbWorker = (dbWorker: DbWorker): Worker => {
     skillsDifferent: dbWorker.attributes ? areSkillsDifferent(dbWorker.attributes) : false
   };
   delete worker.workerSid;
+  if (worker.attributes?.manager_n_number) {
+    worker.attributes.manager_n_number = worker.attributes.manager_n_number.toLowerCase()
+  }
   return worker;
 };
