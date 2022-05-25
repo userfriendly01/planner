@@ -38,7 +38,6 @@ const CallRecordingForm = (props: any) => {
   const setForm = useFormDispatch();
   console.log("***STATE!", state);
   console.log("worker", worker);
-  console.log("ENV", process.env.APP_ENV);
 
   useEffect(() => {
     if(worker && form.formMode ==="UPDATE") {

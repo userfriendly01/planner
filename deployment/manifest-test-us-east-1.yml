@@ -8,7 +8,6 @@ applications:
   memory: 512M
   timeout: 180
   env:
-    APP_ENV: nonprod
     NODE_ENV: production
   services:
     - everyday-curfew

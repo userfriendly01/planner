@@ -1,5 +1,4 @@
 const ESLintPlugin = require("eslint-webpack-plugin");
-const { DefinePlugin } = require("webpack");
 const path = require("path");
 
 const resolvePathInSrc = resourceInSrc => {
@@ -16,10 +15,7 @@ const config = {
     // publicPath: "/triton-admin/"
   },
   plugins: [
-    new ESLintPlugin({ failOnWarning: true }),
-    new DefinePlugin({
-      "process.env.APP_ENV": JSON.stringify(process.env.APP_ENV) || JSON.stringify("local")
-    })
+    new ESLintPlugin({ failOnWarning: true })
   ],
   module: {
     rules: [

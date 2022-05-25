@@ -12,7 +12,6 @@ export * from "./skills";
 const CONTACT_MANAGER_BASE_URI = "/contact-manager";
 const SERVICE_BASE_URI = "/service";
 
-export const CALABRIO_SERVER_ID = process.env.APP_ENV === "prod" ? 14 : 32;
 export const nNumMatcher = /[n,N]\d{7}/g;
 export const extensionMatcher = /^\d{4,5}$/;
 export const workersPerPage = 15;
