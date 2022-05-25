@@ -182,7 +182,7 @@ describe("<BasicFormInfo />", () => {
       const managerOptionsDisplayFunc = OutlinedSelect.mock.calls[0][0].optionsDisplayFunc;
       const managerOption = managerOptionsDisplayFunc(managerList[0]);
       expect(managerOption).toEqual({
-        display: `${managerList[0].manager_first_name} ${managerList[0].manager_last_name}`,
+        display: `${managerList[0].manager_first_name} ${managerList[0].manager_last_name} - ${managerList[0].manager_n_number}`,
         key: managerList[0].manager_id,
         value: JSON.stringify(managerList[0])
       });

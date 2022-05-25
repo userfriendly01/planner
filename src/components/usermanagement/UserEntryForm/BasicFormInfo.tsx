@@ -210,7 +210,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           optionsList={managers.sort(sortManagersByName)}
           optionsDisplayFunc={option => {
             return {
-              display: `${option.manager_first_name} ${option.manager_last_name}`,
+              display: `${option.manager_first_name} ${option.manager_last_name} - ${option.manager_n_number}`,
               key: option.manager_id,
               value: JSON.stringify(option)
             };
