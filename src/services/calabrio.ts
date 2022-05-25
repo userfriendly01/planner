@@ -11,8 +11,8 @@ export const getCalabrioOrg = async (): Promise<CalabrioGroup[]> => {
   return await myAxios.get(apiPaths.GET_CALABRIO_ORG);
 };
 
-export const getCalabrioRoles = async (tenantId: number): Promise<CalabrioGroup[]> => {
-  return await myAxios.get(apiPaths.GET_CALABRIO_ROLES(tenantId));
+export const getCalabrioRoles = async (): Promise<CalabrioGroup[]> => {
+  return await myAxios.get(apiPaths.GET_CALABRIO_ROLES);
 };
 
 export const getCalabrioUser = async (personId: number): Promise<CalabrioGroup[]> => {
