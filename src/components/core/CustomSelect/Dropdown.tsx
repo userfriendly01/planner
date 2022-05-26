@@ -26,8 +26,6 @@ export const Dropdown = (props: any) => {
     onBlur
   } = props;
 
-  console.log("STYLES", styles);
-
   const stylesObject = {
     width: styles && styles.width ? styles.width : "250px",
     minHeight: styles && styles.height ? styles.height : "56px",
@@ -37,11 +35,17 @@ export const Dropdown = (props: any) => {
     }
   };
 
-  console.log("STYLES", stylesObject);
-
   const ListItem = styled.li`
     font-size: ${styles && styles.fontSize ? styles.fontSize : "15px"};
   `;
+
+  const handleCheckEqual = (option: any, value: any) => {
+    if(typeof value === "object") {
+      return option?.value === value?.value || value?.value === "";
+    } else if(typeof value === "string"){
+      return option?.value === value || option?.label === value || value === "";
+    }
+  };
 
   return (
     <Autocomplete
@@ -52,7 +56,7 @@ export const Dropdown = (props: any) => {
       limitTags={1}
       options={options}
       value={value}
-      isOptionEqualToValue={(option: any, value: any) => option?.value === value?.value}
+      isOptionEqualToValue={handleCheckEqual}
       onChange={updateValue}
       disabled={false}
       onBlur={onBlur}

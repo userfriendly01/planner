@@ -112,6 +112,7 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
         <SkillRowItem>
           <SkillDropDown
             taskrouterSkills={taskrouterSkillsForDropDown}
+            skill={newSkill.skill}
             updateSkill={newSkillChanged} />
         </SkillRowItem>
         <SkillRowItem>

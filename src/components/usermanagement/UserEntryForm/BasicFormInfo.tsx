@@ -20,6 +20,7 @@ import {
   ModalExtension,
   ModalNNumber,
   ModalPhoneNumber,
+  Dropdown,
   OutlinedSelect
 } from "components";
 import {
@@ -69,6 +70,8 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
 
   const form = useFormState();
   const setForm = useFormDispatch();
+
+  console.log("FORM", form);
 
   const isOutgoingDisabled = (): boolean => {
     if (form.formMode === formModes.INSERT) {
@@ -195,53 +198,50 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
       });
     }
   }
+
   return(
     <FormControlsContainer>
       <FormControlsPane>
-        <OutlinedSelect
+        <Dropdown
           error={form.manager.blurred && !isManagerValid(form)}
-          helperText={isManagerValid(form) || !form.manager.updated ? null : "Please select a manager"}
           label={"Manager *"}
-          labelWidth={67}
-          onBlur={() => handleOnBlur("manager")}
-          optionsList={managers.sort(sortManagersByName)}
-          optionsDisplayFunc={option => {
-            return {
-              display: `${option.manager_first_name} ${option.manager_last_name}`,
-              key: option.manager_id,
-              value: JSON.stringify(option)
-            };
+          styles={{
+            width: "384px",
+            margin: "8px 0px 5px 0px"
           }}
-          updateValue={newValue => setForm({
+          onBlur={() => handleOnBlur("manager")}
+          options={managers.sort(sortManagersByName).map(manager => ({
+            label: `${manager.manager_first_name} ${manager.manager_last_name}`,
+            value: manager.manager_n_number,
+            ...manager
+          }))}
+          updateValue={(event: any, newValue: any) => setForm({
             type: userFormActions.UPDATE_MANAGER,
             payload: newValue
           })}
           value={form.manager.value}
         />
-        <OutlinedSelect
+        <Dropdown
           error={form.profileId.blurred && !isProfileIdValid(form)}
-          helperText={isProfileIdValid(form) || !form.profileId.updated ? null : "Please select a team"}
           label={"Team *"}
-          labelWidth={44}
+          styles={{
+            width: "384px",
+            margin: "10px 0px"
+          }}
           onBlur={() => handleOnBlur("profileId")}
-          optionsList={profiles.sort(sortProfilesByName)}
-          optionsDisplayFunc={option => {
-            return {
-              display: option.profile_nme,
-              key: option.profile_id,
-              value: option.profile_id
-            };
-          }}
-          updateValue={newValue => {
-            setForm({
-              type: userFormActions.UPDATE_TEAM,
-              payload: {
-                profileId: newValue,
-                profiles
-              }
-            });
-          }}
-          value={form.profileId.value}
+          options={profiles.sort(sortProfilesByName).map((profile: any) => ({
+            label: profile.profile_nme,
+            value: profile.profile_id,
+            ...profile
+          }))}
+          updateValue={(event: any, newValue: any) => setForm({
+            type: userFormActions.UPDATE_TEAM,
+            payload: {
+              profileId: newValue.value,
+              profiles
+            }
+          })}
+          value={profiles.find(p => p.profile_id === form.profileId.value)?.profile_nme || ""}
         />
         <ModalNNumber
           disabled={(form.formMode === formModes.UPDATE) || (form.nNumberFetchedUser ? true : false)}
