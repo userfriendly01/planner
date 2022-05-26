@@ -20,7 +20,7 @@ const ProfileDropDown = props => {
           value: profile.profile_id,
           ...profile
         }))}
-        updateValue={updateProfile}
+        updateValue={(event, newInput) => updateProfile(newInput.value)}
         value={{
           label: profileId ? profileId.toString(): "",
           value: profileId || ""
