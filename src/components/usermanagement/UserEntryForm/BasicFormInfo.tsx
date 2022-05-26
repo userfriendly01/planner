@@ -20,8 +20,7 @@ import {
   ModalExtension,
   ModalNNumber,
   ModalPhoneNumber,
-  Dropdown,
-  OutlinedSelect
+  Dropdown
 } from "components";
 import {
   useFormDispatch,

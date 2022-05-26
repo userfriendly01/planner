@@ -1,4 +1,4 @@
-import { OutlinedSelect } from "components";
+import { Dropdown } from "components";
 import PropTypes from "prop-types";
 import React from "react";
 
@@ -9,22 +9,22 @@ const ProfileDropDown = props => {
     updateProfile
   } = props;
 
+  console.log("Available Profiles", availableProfiles);
+
   return (
     <div>
-      <OutlinedSelect
+      <Dropdown
         label={"Profile"}
-        labelWidth={65}
-        noBlankValue={profileId === null ? false : true}
-        optionsList={availableProfiles}
-        optionsDisplayFunc={option => {
-          return {
-            display: `${option.profile_id} - ${option.profile_nme}`,
-            key: option.profile_id,
-            value: option.profile_id
-          };
-        }}
+        options={availableProfiles.map(profile => ({
+          label: `${profile.profile_id} - ${profile.profile_nme}`,
+          value: profile.profile_id,
+          ...profile
+        }))}
         updateValue={updateProfile}
-        value={profileId}
+        value={{
+          label: profileId ? profileId.toString(): "",
+          value: profileId || ""
+        }}
       />
     </div>
   );
