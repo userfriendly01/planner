@@ -14,40 +14,51 @@ import styled from "styled-components";
     divider: If you want to display a divider in your list, add an object to the array where the label is "divider"
 */
 
-export const SimpleFilter = (props: any) => {
+export const Dropdown = (props: any) => {
   const {
     options,
     label,
     multiple,
     styles,
     updateValue,
-    value
+    value,
+    error,
+    onBlur
   } = props;
 
+  console.log("STYLES", styles);
+
   const stylesObject = {
-    width: styles && styles.width ? styles.width : 250,
-    minHeight: styles && styles.height ? styles.height : 56,
-    margin: "5px"
+    width: styles && styles.width ? styles.width : "250px",
+    minHeight: styles && styles.height ? styles.height : "56px",
+    margin: styles && styles.margin ? styles.margin : "5px",
+    ".MuiOutlinedInput-notchedOutline": {
+      border: styles && styles.noBorder ? "none" : "invalidValueToForceOriginalStyling"
+    }
   };
 
+  console.log("STYLES", stylesObject);
+
   const ListItem = styled.li`
-    font-size: ${styles && styles.size ? styles.size : "15px"};
+    font-size: ${styles && styles.fontSize ? styles.fontSize : "15px"};
   `;
 
   return (
     <Autocomplete
       multiple={multiple}
-      limitTags={1}
+      size={styles && styles.small ? "small" :"medium"}
       disableClearable={!multiple}
       disableCloseOnSelect={multiple}
+      limitTags={1}
       options={options}
       value={value}
       isOptionEqualToValue={(option: any, value: any) => option?.value === value?.value}
       onChange={updateValue}
+      disabled={false}
+      onBlur={onBlur}
       sx={stylesObject}
-      renderInput={(params: any) => <TextField {...params} label={label} />}
+      renderInput={(params: any) => <TextField {...params} label={label} error={error} />}
       renderOption={(props: any, option: any) => {
-        console.log("RENDERED OPTION", option, props["data-option-index"]);
         if (option.label === "divider") {
           return <Divider key={props["data-option-index"]} />;
         } else {

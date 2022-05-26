@@ -1,4 +1,4 @@
-import { SimpleSelect } from "components";
+import { Dropdown } from "components";
 import PropTypes from "prop-types";
 import React from "react";
 
@@ -10,18 +10,22 @@ const PriorityDropDown = props => {
   } = props;
 
   return (
-    <SimpleSelect
-      noBlankValue={true}
-      optionsList={availablePriorities}
-      optionsDisplayFunc={option => {
-        return {
-          display: option,
-          key: option,
-          value: option
-        };
+    <Dropdown
+      styles={{
+        small: true,
+        noBorder: true,
+        height: "40px"
       }}
-      updateValue={updatePriority}
-      value={priorityValue}
+      isOptionEqualToValue
+      options={availablePriorities.map(priority => ({
+        label: priority.toString(),
+        value: priority
+      }))}
+      updateValue={(event, selectedRoles) => updatePriority(selectedRoles.value)}
+      value={{
+        label: priorityValue.toString(),
+        value: priorityValue
+      }}
     />
   );
 };

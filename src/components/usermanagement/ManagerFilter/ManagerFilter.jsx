@@ -2,7 +2,7 @@ import { Wrapper } from "./ManagerFilter.Styles";
 import { Modal } from "@material-ui/core";
 import {
   AddManagerModal,
-  SimpleFilter
+  Dropdown
 } from "components";
 import { useAdminState } from "context";
 import PropTypes from "prop-types";
@@ -58,7 +58,7 @@ const ManagerFilter = props => {
 
   return (
     <Wrapper>
-      <SimpleFilter
+      <Dropdown
         label="Manager Filter"
         options={options}
         styles= {{ width: 275 }}

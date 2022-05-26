@@ -9,10 +9,7 @@ import {
   ToggleLabel
 } from "./CallRecording.Styles";
 import CallRecordingScope from "./CallRecordingScope";
-import {
-  MultiSelect,
-  SimpleFilter
-} from "components";
+import { Dropdown } from "components";
 import {
   useAdminState,
   useFormState,
@@ -131,36 +128,24 @@ const CallRecordingForm = (props: any) => {
   return(
     <FormControlsContainer>
       <FormControlsPane>
-        <SimpleFilter
-          options={options}
-          multiple={true}
-          value={selectedOptions}
-          label="Love"
-          updateValue={(event: any, newInputValue: any) => {
-            console.log("NEW VALUE: ", newInputValue);
-            setSelectedOptions(newInputValue);
-          }}
-        />
-        <MultiSelect
+        <Dropdown
+          label="Roles"
           multiple={true}
           options={getRoleOptions()}
-          label={"Roles"}
-          updateValue={selectedRoles => {
-            console.log("Selected Roles", selectedRoles);
-            setForm({
-              type: userFormActions.SET_CALABRIO_ROLES,
-              payload: roles.filter(role => selectedRoles.some((roleId:any) => roleId === role.id))
-            }); }}
-          value={form.calabrioUser.roles.map((role: any) => { return role.id; })}
-        />
-        <MultiSelect
-          label={"Team"}
-          options={getTeamOptions()}
-          updateValue={teamId => setForm({
-            type: userFormActions.SET_CALABRIO_TEAM,
-            payload: teams.find(team => team.groupId === teamId)
+          value={form.calabrioUser.roles}
+          updateValue={(event: any, selectedRoles: any) => setForm({
+            type: userFormActions.SET_CALABRIO_ROLES,
+            payload: selectedRoles
           })}
-          value={form.calabrioUser.team ? form.calabrioUser.team.groupId : ""}
+        />
+        <Dropdown
+          label="Team"
+          options={getTeamOptions()}
+          value={form.calabrioUser.team}
+          updateValue={(event: any, team: any) => setForm({
+            type: userFormActions.SET_CALABRIO_TEAM,
+            payload: team
+          })}
         />
         <ToggleContainer>
           <Switch
