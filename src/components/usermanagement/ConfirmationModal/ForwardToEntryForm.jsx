@@ -3,7 +3,7 @@ import {
   Radio
 } from "@material-ui/core";
 import {
-  FilterableSelect,
+  Dropdown,
   ModalPhoneNumber
 } from "components";
 import PropTypes from "prop-types";
@@ -125,15 +125,23 @@ const ForwardToEntryForm = props => {
         />
       </RadioContainer>
       {forwardToType === "worker" &&
-        <FilterableSelect
-          optionsList={getWorkerOptions()}
-          updateValue={worker => updateForwardTo(worker.value)}
+        <Dropdown
+          styles={{
+            width: "210px",
+            margin: "16px 0px 8px 0px"
+          }}
+          options={getWorkerOptions()}
+          updateValue={(event, worker) => updateForwardTo(worker.value)}
         />
       }
       {forwardToType === "skill" &&
-        <FilterableSelect
-          optionsList={getSkillOptions()}
-          updateValue={skill => updateForwardTo(skill.value)}
+        <Dropdown
+          styles={{
+            width: "210px",
+            margin: "16px 0px 8px 0px"
+          }}
+          options={getSkillOptions()}
+          updateValue={(event, skill) => updateForwardTo(skill.value)}
         />
       }
       {forwardToType === "phoneNum" &&

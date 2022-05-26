@@ -9,7 +9,13 @@ const ProfileDropDown = props => {
     updateProfile
   } = props;
 
-  console.log("Available Profiles", availableProfiles);
+  const getValue = () => {
+    const profile = availableProfiles.find(p => p.profile_id === profileId);
+    return profile ? {
+      label: `${profile.profile_id} - ${profile.profile_nme}`,
+      value: profileId || ""
+    } : "";
+  };
 
   return (
     <div>
@@ -21,10 +27,7 @@ const ProfileDropDown = props => {
           ...profile
         }))}
         updateValue={(event, newInput) => updateProfile(newInput.value)}
-        value={{
-          label: profileId ? profileId.toString(): "",
-          value: profileId || ""
-        }}
+        value={getValue()}
       />
     </div>
   );
