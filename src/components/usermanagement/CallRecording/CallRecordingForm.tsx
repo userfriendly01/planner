@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
 import {
-  FormControl,
-  InputLabel,
   Switch
 } from "@material-ui/core";
 import {
@@ -12,8 +10,8 @@ import {
 } from "./CallRecording.Styles";
 import CallRecordingScope from "./CallRecordingScope";
 import {
-  FilterableSelect,
-  MultiSelect
+  MultiSelect,
+  SimpleFilter
 } from "components";
 import {
   useAdminState,
@@ -111,10 +109,38 @@ const CallRecordingForm = (props: any) => {
       };
     });
   };
-
+  const [selectedOptions, setSelectedOptions] = React.useState([]);
+  const options = [
+    {
+      label: "role 1",
+      value: "14"
+    },
+    {
+      label: "divider",
+      value: "divider"
+    },
+    {
+      label: "role 2",
+      value: "24"
+    },
+    {
+      label: "role 3",
+      value: "34"
+    }
+  ];
   return(
     <FormControlsContainer>
       <FormControlsPane>
+        <SimpleFilter
+          options={options}
+          multiple={true}
+          value={selectedOptions}
+          label="Love"
+          updateValue={(event: any, newInputValue: any) => {
+            console.log("NEW VALUE: ", newInputValue);
+            setSelectedOptions(newInputValue);
+          }}
+        />
         <MultiSelect
           multiple={true}
           options={getRoleOptions()}

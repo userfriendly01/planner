@@ -133,7 +133,7 @@ const getOffices = async dispatch => {
 const getCalabrioOrg = async dispatch => {
   try {
     const org = await getCalabrioOrgServiceCall();
-    console.warn("Org Response from ServiceCall", org);
+    console.log("Calabrio Org", org);
     dispatch({
       type: "loadCalabrioOrg",
       payload: org.data
@@ -148,7 +148,7 @@ const getCalabrioOrg = async dispatch => {
 const getCalabrioRoles = async dispatch => {
   try {
     const roles = await getCalabrioRolesServiceCall();
-    console.log("Roles Response from ServiceCall", roles);
+    console.log("Calabrio Roles", roles);
     dispatch({
       type: "loadCalabrioRoles",
       payload: roles.data

@@ -23,7 +23,6 @@ export const MultiSelect = props => {
     updateValue,
     value
   } = props;
-  console.log("value", value);
 
   return (
     <OutlinedSelectFormControl variant={"outlined"} error={false}>
@@ -52,14 +51,7 @@ export const MultiSelect = props => {
 };
 
 MultiSelect.propTypes = {
-  // disabled: PropTypes.bool,
-  // error: PropTypes.bool,
-  // helperText: PropTypes.string,
   label: PropTypes.string.isRequired,
-  // labelWidth: PropTypes.number.isRequired,
-  // noBlankValue: PropTypes.bool,
-  // onBlur: PropTypes.func,
-  // optionsDisplayFunc: PropTypes.func.isRequired,
   multiple: PropTypes.bool,
   options: PropTypes.array.isRequired,
   updateValue: PropTypes.func.isRequired,

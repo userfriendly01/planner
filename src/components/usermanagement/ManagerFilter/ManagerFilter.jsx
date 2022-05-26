@@ -1,13 +1,9 @@
 import { Wrapper } from "./ManagerFilter.Styles";
+import { Modal } from "@material-ui/core";
 import {
-  Divider,
-  FilledInput,
-  FormControl,
-  InputLabel,
-  Modal,
-  Select
-} from "@material-ui/core";
-import { AddManagerModal } from "components";
+  AddManagerModal,
+  SimpleFilter
+} from "components";
 import { useAdminState } from "context";
 import PropTypes from "prop-types";
 import React, {
@@ -41,37 +37,34 @@ const ManagerFilter = props => {
     }
   });
 
+  const options = [
+    {
+      label: "Show All",
+      value: "show-all"
+    },
+    {
+      label: "Add Manager",
+      value: "add-manager"
+    },
+    {
+      label: "divider",
+      value: "divider"
+    },
+    ...sortedManagers.map(manager => ({
+      label: `${manager.manager_first_name} ${manager.manager_last_name} | ${manager.manager_n_number}`,
+      value: manager.manager_n_number
+    }))
+  ];
+
   return (
     <Wrapper>
-      <FormControl variant="filled">
-        <InputLabel shrink htmlFor="filled-filter-native-simple">
-          Manager Filter
-        </InputLabel>
-        <Select
-          native
-          value={filterBy}
-          onChange={event => setFilter(event.target.value)}
-          input={
-            <FilledInput name="filter" id="filled-filter-native-simple" />
-          }
-          inputProps={{ "data-testid": "select" }}
-        >
-          {[
-            <option data-testid="manager-list" key={"show-all"} value={"show-all"}>Show All</option>,
-            <option data-testid="add-manager" key={"add-manager"} value={"add-manager"}>Add New Manager</option>,
-            /* eslint-ignore */
-            <Divider light key={"divider"}/>,
-            ...sortedManagers.map(manager => (
-              <option data-testid="manager-list"
-                key={manager.manager_id}
-                value={manager.manager_n_number}
-              >
-                {manager.manager_first_name} {manager.manager_last_name}
-              </option>
-            ))
-          ]}
-        </Select>
-      </FormControl>
+      <SimpleFilter
+        label="Manager Filter"
+        options={options}
+        styles= {{ width: 275 }}
+        value={options.find(option => option.value === filterBy)}
+        updateValue={(event, newInputValue) => setFilter(newInputValue.value)}
+      />
       <Modal disableBackdropClick={true} open={isAddManagerModalOpen}>
         <AddManagerModal data-testid="add-manager-modal" handleClose={handleCloseAddManager} />
       </Modal>
