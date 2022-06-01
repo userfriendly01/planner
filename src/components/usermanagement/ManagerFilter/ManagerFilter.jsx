@@ -66,7 +66,7 @@ const ManagerFilter = props => {
                 key={manager.manager_id}
                 value={manager.manager_n_number}
               >
-                {manager.manager_first_name} {manager.manager_last_name}
+                {manager.manager_first_name} {manager.manager_last_name} - {manager.manager_n_number}
               </option>
             ))
           ]}
