@@ -147,20 +147,6 @@ const CallRecordingForm = (props: any) => {
             payload: team
           })}
         />
-        <ToggleContainer>
-          <Switch
-            // disabled={form.formMode === formModes.UPDATE && worker.directDialNum ? true : false}
-            checked={form.calabrioUser.isScreenRecorded}
-            onChange={e =>
-              setForm({
-                type: userFormActions.SET_CALABRIO_SCREEN_RECORDING,
-                payload: e.target.checked
-              })
-            }
-            inputProps={{ "aria-label": "toggle-did-user" }}
-          />
-          <ToggleLabel>Screen Recording</ToggleLabel>
-        </ToggleContainer>
       </FormControlsPane>
       <CallRecordingScope
         groups={form.calabrioUser.scope.groups}

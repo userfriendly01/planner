@@ -131,7 +131,10 @@ const ForwardToEntryForm = props => {
             margin: "16px 0px 8px 0px"
           }}
           options={getWorkerOptions()}
-          updateValue={(event, worker) => updateForwardTo(worker.value)}
+          updateValue={(event, worker) => {
+            console.log("UPDATED VALUE", worker);
+            updateForwardTo(worker.value);
+          }}
         />
       }
       {forwardToType === "skill" &&

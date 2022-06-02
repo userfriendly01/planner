@@ -209,7 +209,7 @@ const CallRecordingScope = (props:any) => {
             </TableBody>
           </ScopeContainer>
         </FormControlsPane>
-        : null}
+        : <h3>Failed to load Calabrio Organization</h3>}
     </>
   );
 };

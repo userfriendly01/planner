@@ -13,7 +13,7 @@ const ProfileDropDown = props => {
     const profile = availableProfiles.find(p => p.profile_id === profileId);
     return profile ? {
       label: `${profile.profile_id} - ${profile.profile_nme}`,
-      value: profileId || ""
+      value: profileId
     } : "";
   };
 

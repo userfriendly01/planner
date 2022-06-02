@@ -9,8 +9,7 @@ import {
   ForwardToEntryForm,
   ModalExtension,
   ModalNNumber,
-  ModalPhoneNumber,
-  OutlinedSelect
+  ModalPhoneNumber
 } from "components";
 import {
   useFormDispatch,
@@ -42,7 +41,6 @@ jest.mock("components", () => ({
   ModalExtension: jest.fn(),
   ModalNNumber: jest.fn(),
   ModalPhoneNumber: jest.fn(),
-  OutlinedSelect: jest.fn(),
   PaperContainer: jest.fn(),
   StyledButton: jest.fn(),
   ForwardToEntryForm: jest.fn()
@@ -106,7 +104,6 @@ describe("<DidFormInfoUpdate />", () => {
       ModalExtension,
       ModalNNumber,
       ModalPhoneNumber,
-      OutlinedSelect,
       ForwardToEntryForm,
       InputAdornment,
       Edit,

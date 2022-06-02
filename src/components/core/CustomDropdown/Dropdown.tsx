@@ -42,7 +42,7 @@ export const Dropdown = (props: any) => {
   const handleCheckEqual = (option: any, value: any) => {
     if(typeof value === "object") {
       return option?.value === value?.value || value?.value === "";
-    } else if(typeof value === "string"){
+    } else {
       return option?.value === value || option?.label === value || value === "";
     }
   };
@@ -61,13 +61,13 @@ export const Dropdown = (props: any) => {
       disabled={false}
       onBlur={onBlur}
       sx={stylesObject}
-      renderInput={(params: any) => <TextField {...params} label={label} error={error} />}
+      renderInput={(params: any) => <TextField {...params} label={label} error={error} key={props["data-option-index"]} />}
       renderOption={(props: any, option: any) => {
         if (option.label === "divider") {
           return <Divider key={props["data-option-index"]} />;
         } else {
-          return <ListItem {...props}>
-            { option.label}
+          return <ListItem  {...props} key={props["data-option-index"]}>
+            {option.label}
           </ListItem>;
         }
       }}

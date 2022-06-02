@@ -16,7 +16,6 @@ const PriorityDropDown = props => {
         noBorder: true,
         height: "40px"
       }}
-      isOptionEqualToValue
       options={availablePriorities.map(priority => ({
         label: priority.toString(),
         value: priority
