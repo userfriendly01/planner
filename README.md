@@ -15,7 +15,7 @@ Technologies used within this project:
 * [Jest](https://facebook.github.io/jest/)
 
 Recommended IDEs:
-* [Visual Studio Code] (https://code.visualstudio.com/download)
+* [Visual Studio Code](https://code.visualstudio.com/download)
 * [WebStorm](https://www.jetbrains.com/webstorm/download/) (Javascript, frontend)
 * [Atom](https://atom.io/) (Javascript, frontend, other languages)
   *  Recommended packages to install for Atom:
@@ -31,27 +31,41 @@ Recommended IDEs:
 Install [node.js and npm](https://nodejs.org/en/download/) to run this project
 The required versions needed are defined in package.json under ```engines```
 
-### Install and start this application
+### Cloning this Repository
+```
+git clone https://github.com/lmigtech/cicct-softphone-admin-ui.git
+```
+### Installing Dependencies
 
-Install package dependencies for this project
 ```
 npm install
 ```
 
-### Using the applications locally
+### Running the Admin UI Locally
+Running locally requires that you also have running instances of two other repositories:
+* [cicct-user-gateway](https://github.com/lmigtech/cicct-user-gateway)
+* [cicct-softphone-service](https://github.com/lmigtech/cicct-softphone-service)
 
-##### You must access this application through the cicct-user-gateway over port 8082 locally
+Download, build, and run these services as described in their respective readme files.
 
-This application (cicct-softphone-admin-ui) must be accessed through the cicct-user-gateway and will need to communicate to cicct-softphone-service (also through the gateway)
+#### Starting the Admin UI
+```
+npm start
+```
 
-These applications will run on the following ports when started locally:
+You should now have 3 running applications, each on their own port:
+
 ```
 cicct-user-gateway        8082
 cicct-softphone-admin-ui  8084
 cicct-softphone-service   8080
 ```
 
-Make sure all three applications are running locally on the specified ports above
+#### Connecting to the Admin UI
+
+Point your browser at:  http://localhost:8082/triton-admin
+
+#### Authentication
 
 This app uses PING authentication in a deployed state when `NODE_ENV=production`. When running locally you should have `NODE_ENV=development` and the application will simply bypass the authentication middleware in the `cicct-softphone-service` application.
 
