@@ -65,6 +65,9 @@ cicct-softphone-service   8080
 
 Point your browser at:  http://localhost:8082/triton-admin
 
+For additional details on running the Admin UI locally, please refer
+to the [TIPS readme file](./documentation/TIPS.md)
+
 #### Authentication
 
 This app uses PING authentication in a deployed state when `NODE_ENV=production`. When running locally you should have `NODE_ENV=development` and the application will simply bypass the authentication middleware in the `cicct-softphone-service` application.
