@@ -22,6 +22,7 @@ import {
 const CallRecordingScope = (props:any) => {
 
   const {
+    worker,
     groups,
     teams
   } = props;
@@ -33,6 +34,11 @@ const CallRecordingScope = (props:any) => {
   useEffect(() => {
     if(groups.length > 0) {
       setSelectedGroup(groups[0]);
+    }
+    if(worker){
+      groups.forEach((group: any, index: number) => {
+        checkIfParital(index);
+      });
     }
   }, [groups]);
 

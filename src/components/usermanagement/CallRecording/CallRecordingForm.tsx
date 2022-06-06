@@ -1,12 +1,7 @@
 import React, { useEffect } from "react";
 import {
-  Switch
-} from "@material-ui/core";
-import {
   FormControlsContainer,
-  FormControlsPane,
-  ToggleContainer,
-  ToggleLabel
+  FormControlsPane
 } from "./CallRecording.Styles";
 import CallRecordingScope from "./CallRecordingScope";
 import { Dropdown } from "components";
@@ -37,30 +32,62 @@ const CallRecordingForm = (props: any) => {
   useEffect(() => {
     if(worker && form.formMode ==="UPDATE") {
       const email = form.nNumberFetchedUser.email.toLowerCase();
-      const userRecord = users.filter(user => user.email.toLowerCase() === email);
+      const userRecord = users.find(user => user.email.toLowerCase() === email);
       //update to put all groups on worker but check the ones that the existing worker has
       if(userRecord){
-        getCalabrioUser(tenant.groupId).then((res: any) => {
+        getCalabrioUser(userRecord.personId).then((res: any) => {
           console.log("Fetched Calabrio User", res);
+          const userGroups: any[] = [];
+          const userTeams: any[] = [];
+
+          groups.forEach(group => {
+            if(res.scope.groups.some((groupId: number) => group.groupId === groupId)){
+              userGroups.push({
+                ...group,
+                checked: true,
+                partial: false
+              });
+            } else {
+              userGroups.push({
+                ...group,
+                checked: false,
+                partial: false
+              });
+            }
+          });
+
+          teams.forEach(team => {
+            if(res.scope.teams.some((teamId: number) => team.groupId === teamId)){
+              userGroups.push({
+                ...team,
+                checked: true
+              });
+            } else {
+              userGroups.push({
+                ...team,
+                checked: false
+              });
+            }
+          });
           setForm({
             type: userFormActions.SET_CALABRIO_USER,
             payload: {
-              isScreenRecorded: res.adLogin ? true : false,
               team: res.groupId,
               roles: res.roles,
               scope: {
-                groups: res.scope.groups,
-                teams: res.scope.teams,
+                groups: userGroups,
+                teams: userTeams,
                 tenant: res.scope.tenant
               }
             }
           });
         }).catch(err => {
-          console.error("Failed to fetch Calabrio Roles.", err);
+          console.error("Failed to fetch Calabrio User.", err);
         });
+      } else {
+        console.log("No user was found in Calabrio with this email");
       }
     } else {
-      console.log("useEffect for new user entered", groups);
       const userGroups: any[] = [];
       const userTeams: any[] = [];
 
@@ -74,6 +101,7 @@ const CallRecordingForm = (props: any) => {
         ...team,
         checked: false
       }));
+
       setForm({
         type: userFormActions.SET_CALABRIO_USER,
         payload: {
@@ -106,26 +134,7 @@ const CallRecordingForm = (props: any) => {
       };
     });
   };
-  const [selectedOptions, setSelectedOptions] = React.useState([]);
-  const options = [
-    {
-      label: "role 1",
-      value: "14"
-    },
-    {
-      label: "divider",
-      value: "divider"
-    },
-    {
-      label: "role 2",
-      value: "24"
-    },
-    {
-      label: "role 3",
-      value: "34"
-    }
-  ];
-  return(
+  return (
     <FormControlsContainer>
       <FormControlsPane>
         <Dropdown

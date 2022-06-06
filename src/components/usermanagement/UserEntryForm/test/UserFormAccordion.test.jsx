@@ -5,6 +5,7 @@ import {
 } from "@lmig/lmds-react-accordion";
 import {
   BasicFormInfo,
+  CallRecordingForm,
   SkillsFormInfo,
   StyledButton
 } from "components";
@@ -25,6 +26,7 @@ jest.useFakeTimers();
 jest.mock("components", () => ({
   __esModule: true,
   BasicFormInfo: jest.fn(),
+  CallRecordingForm: jest.fn(),
   SkillsFormInfo: jest.fn(),
   StyledButton: jest.fn()
 }));
@@ -44,6 +46,7 @@ describe("<UserFormAccordion />", () => {
     mockStore.reset();
     setupMockedComponents({
       BasicFormInfo,
+      CallRecordingForm,
       SkillsFormInfo,
       StyledButton,
       Accordion,
@@ -70,9 +73,11 @@ describe("<UserFormAccordion />", () => {
     render(Accordion.mock.calls[0][0].children);
     expect(AccordionTab.mock.calls[0][0].labelVisual).toBe("Basic Info");
     expect(AccordionTab.mock.calls[1][0].labelVisual).toBe("Default Skills");
+    expect(AccordionTab.mock.calls[2][0].labelVisual).toBe("Call Recording");
 
     render(AccordionTab.mock.calls[0][0].children);
     render(AccordionTab.mock.calls[1][0].children);
+    render(AccordionTab.mock.calls[2][0].children);
 
     const expectedBasicFormProps = {
       skills: mockSkills,
@@ -85,5 +90,6 @@ describe("<UserFormAccordion />", () => {
     };
     expectOnlyPassedProps(BasicFormInfo, expectedBasicFormProps);
     expect(SkillsFormInfo.mock.calls.length).toBe(1);
+    expectOnlyPassedProps(CallRecordingForm, { worker: mockWorkers[0] });
   });
 });

@@ -34,7 +34,6 @@ export const userFormActions = {
   SET_CALABRIO_USER: "SET_CALABRIO_USER",
   SET_CALABRIO_TEAM: "SET_CALABRIO_TEAM",
   SET_CALABRIO_ROLES: "SET_CALABRIO_ROLES",
-  SET_CALABRIO_SCREEN_RECORDING: "SET_CALABRIO_SCREEN_RECORDING",
   SET_EXTENSION_MESSAGE: "SET_EXTENSION_MESSAGE",
   SET_EXTENSION_RETRIES: "SET_EXTENSION_RETRIES",
   SET_EXTENSION_VERIFIED: "EXTENSION_VERIFIED",
@@ -335,15 +334,6 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         calabrioUser: {
           ...state.calabrioUser,
           team: action.payload
-        }
-      };
-    }
-    case userFormActions.SET_CALABRIO_SCREEN_RECORDING: {
-      return {
-        ...state,
-        calabrioUser: {
-          ...state.calabrioUser,
-          isScreenRecorded: action.payload
         }
       };
     }

@@ -182,6 +182,73 @@ describe("reducer", () => {
       expect(result.officeContext.offices).toEqual(payload);
     });
   });
+  describe("loadCalabrioOrg", () => {
+    test("should initialize a map from the offices map sent in", () => {
+      const payload = [
+        {
+          groupLevel: "TENANT"
+        },
+        {
+          groupLevel: "GROUP"
+        },
+        {
+          groupLevel: "TEAM",
+          agents: [
+            {
+              firstName: "Faith",
+              lastName: "Cuneo"
+            }
+          ]
+        }
+      ];
+      const action = {
+        type: "loadCalabrioOrg",
+        payload
+      };
+      const expectedResults = {
+        tenant: { groupLevel: "TENANT" },
+        roles: [],
+        teams: [{
+          groupLevel: "TEAM",
+          agents: [
+            {
+              firstName: "Faith",
+              lastName: "Cuneo"
+            }
+          ]
+        }],
+        groups: [{
+          groupLevel: "GROUP"
+        }],
+        users: [{
+          firstName: "Faith",
+          lastName: "Cuneo"
+        }]
+      };
+      const result = reducer(initialState, action);
+      expect(result.calabrioContext).toEqual(expectedResults);
+    });
+  });
+  describe("loadCalabrioRoles", () => {
+    test("should initialize a map from the offices map sent in", () => {
+      const payload = [
+        {
+          id: 1,
+          name: "Administrator"
+        },
+        {
+          id: 2,
+          name: "Agent"
+        }
+      ];
+      const action = {
+        type: "loadCalabrioRoles",
+        payload
+      };
+      const result = reducer(initialState, action);
+      expect(result.calabrioContext.roles).toEqual(payload);
+    });
+  });
   describe("loadProfiles", () => {
     test("should initialize or reinitialize the profiles array", () => {
       const payload = [

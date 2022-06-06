@@ -91,7 +91,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
     const calabrioAttributes: any = {
       acdId: "", //populate with workerSid returned
-      adLogin: form.calabrioUser.isScreenRecorded ? `LM\\${form.nNumber.value.toLowerCase()}` : null,
+      adLogin: `LM\\${form.nNumber.value.toLowerCase()}`,
       email: form.nNumberFetchedUser.email,
       firstName: form.nNumberFetchedUser.firstName,
       lastName: form.nNumberFetchedUser.lastName,
@@ -134,6 +134,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             console.log("Successfully Created Calabrio User", res);
           }).catch(err => {
             console.error("Failed to Create Calabrio User", err);
+            //Throw notification they have to create manually
           });
         }
         if (!offices.get(dbWorker.attributes.office_location_number)) {

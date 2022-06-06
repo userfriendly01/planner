@@ -52,6 +52,193 @@ describe("userFormReducer", () => {
       expect(result).toStrictEqual(expectedFormState);
     });
   });
+
+  describe("CHECK_CALABRIO_GROUP", () => {
+    const calabrioGroups = [
+      {
+        id: 1,
+        checked: false,
+        partial: false
+      },
+      {
+        id: 2,
+        checked: false,
+        partial: false
+      },
+      {
+        id: 3,
+        checked: false,
+        partial: false
+      }
+    ];
+    describe("checked box checked", () => {
+      const payload = {
+        index: 1,
+        boxType: "checked",
+        checked: true
+      };
+      test("should change calabrio group state", () => {
+        const action = {
+          type: userFormActions.CHECK_CALABRIO_GROUP,
+          payload
+        };
+        const initialTestState = {
+          ...initialUserFormState,
+          calabrioUser: {
+            ...initialUserFormState.calabrioUser,
+            scope: {
+              ...initialUserFormState.calabrioUser.scope,
+              groups: calabrioGroups
+            }
+          }
+        };
+        const result = userFormReducer(initialTestState, action);
+        const expectedFormState = {
+          ...initialUserFormState,
+          calabrioUser: {
+            ...initialTestState.calabrioUser,
+            scope: {
+              ...initialTestState.calabrioUser.scope,
+              groups: [
+                {
+                  id: 1,
+                  checked: false,
+                  partial: false
+                },
+                {
+                  id: 2,
+                  checked: true,
+                  partial: false
+                },
+                {
+                  id: 3,
+                  checked: false,
+                  partial: false
+                }
+              ]
+            }
+          }
+        };
+        expect(result).toStrictEqual(expectedFormState);
+      });
+    });
+    describe("partial box checked", () => {
+      const payload = {
+        index: 0,
+        boxType: "partial",
+        checked: true
+      };
+      test("should change calabrio group state", () => {
+        const action = {
+          type: userFormActions.CHECK_CALABRIO_GROUP,
+          payload
+        };
+        const initialTestState = {
+          ...initialUserFormState,
+          calabrioUser: {
+            ...initialUserFormState.calabrioUser,
+            scope: {
+              ...initialUserFormState.calabrioUser.scope,
+              groups: calabrioGroups
+            }
+          }
+        };
+        const result = userFormReducer(initialTestState, action);
+        const expectedFormState = {
+          ...initialUserFormState,
+          calabrioUser: {
+            ...initialTestState.calabrioUser,
+            scope: {
+              ...initialTestState.calabrioUser.scope,
+              groups: [
+                {
+                  id: 1,
+                  checked: false,
+                  partial: true
+                },
+                {
+                  id: 2,
+                  checked: true, //state carries from prevous test
+                  partial: false
+                },
+                {
+                  id: 3,
+                  checked: false,
+                  partial: false
+                }
+              ]
+            }
+          }
+        };
+        expect(result).toStrictEqual(expectedFormState);
+      });
+    });
+  });
+
+  describe("CHECK_CALABRIO_TEAM", () => {
+    const calabrioTeams = [
+      {
+        id: 1,
+        checked: false
+      },
+      {
+        id: 2,
+        checked: false
+      },
+      {
+        id: 3,
+        checked: false
+      }
+    ];
+    describe("checked box checked", () => {
+      const payload = {
+        index: 1,
+        checked: true
+      };
+      test("should change calabrio team state", () => {
+        const action = {
+          type: userFormActions.CHECK_CALABRIO_TEAM,
+          payload
+        };
+        const initialTestState = {
+          ...initialUserFormState,
+          calabrioUser: {
+            ...initialUserFormState.calabrioUser,
+            scope: {
+              ...initialUserFormState.calabrioUser.scope,
+              teams: calabrioTeams
+            }
+          }
+        };
+        const result = userFormReducer(initialTestState, action);
+        const expectedFormState = {
+          ...initialUserFormState,
+          calabrioUser: {
+            ...initialTestState.calabrioUser,
+            scope: {
+              ...initialTestState.calabrioUser.scope,
+              teams: [
+                {
+                  id: 1,
+                  checked: false
+                },
+                {
+                  id: 2,
+                  checked: true
+                },
+                {
+                  id: 3,
+                  checked: false
+                }
+              ]
+            }
+          }
+        };
+        expect(result).toStrictEqual(expectedFormState);
+      });
+    });
+  });
+
   describe("CLEAR_EXTENSION", () => {
     test("should clear extension", () => {
       const action = { type: userFormActions.CLEAR_EXTENSION };
@@ -77,6 +264,7 @@ describe("userFormReducer", () => {
       expect(result).toStrictEqual(expectedFormState);
     });
   });
+
   describe("CLEAR_N_NUMBER", () => {
     test("should clear nNumber", () => {
       const action = { type: userFormActions.CLEAR_N_NUMBER };
@@ -432,6 +620,7 @@ describe("userFormReducer", () => {
       });
     });
   });
+
   describe("SET_BLUR_ON_FIELD", () => {
     test("should reset field blurred property to true", () => {
       const payload = "outgoing";
@@ -450,76 +639,136 @@ describe("userFormReducer", () => {
       expect(result).toStrictEqual(expectedFormState);
     });
   });
-  test("SET_EXTENSION_MESSAGE should update message", () => {
-    const testMessage = "Test message";
-    const action = {
-      type: userFormActions.SET_EXTENSION_MESSAGE,
-      payload: {
-        message: testMessage,
-        isError: false
-      }
-    };
-    const initialTestState = {
-      ...initialUserFormState
-    };
 
-    const result = userFormReducer(initialTestState, action);
-    const expectedFormState = {
-      ...initialTestState,
-      extensionStatus: {
-        ...initialTestState.extensionStatus,
-        message: testMessage,
-        isError: false
-      }
-    };
-    expect(result).toStrictEqual(expectedFormState);
+  describe("SET_CALABRIO_USER", () => {
+    test("should set Calabrio User to Payload", () => {
+      const payload = { user: "new" };
+      const action = {
+        type: userFormActions.SET_CALABRIO_USER,
+        payload
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrioUser: payload
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
   });
-  test("SET_EXTENSION_RETRIES should decrement retriesRemaining", () => {
-    const action = { type: userFormActions.SET_EXTENSION_RETRIES };
-    const initialTestState = {
-      ...initialUserFormState,
-      extensionStatus: {
-        ...initialUserFormState.extensionStatus,
-        searchStatus: ExtensionSearchStatuses.PickANumber,
-        retriesRemaining: 3
-      }
-    };
 
-    const result = userFormReducer(initialTestState, action);
-    const expectedFormState = {
-      ...initialTestState,
-      extensionStatus: {
-        ...initialTestState.extensionStatus,
-        retriesRemaining: 2
-      }
-    };
-    expect(result).toStrictEqual(expectedFormState);
+  describe("SET_CALABRIO_ROLES", () => {
+    test("should set Calabrio User Roles to Payload", () => {
+      const payload = [{ role: "Admin" }];
+      const action = {
+        type: userFormActions.SET_CALABRIO_ROLES,
+        payload
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrioUser: {
+          ...initialUserFormState.calabrioUser,
+          roles: payload
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
   });
-  test("SET_EXTENSION_VERIFIED reset search params and a verified message", () => {
-    const action = { type: userFormActions.SET_EXTENSION_VERIFIED };
-    const initialTestState = {
-      ...initialUserFormState,
-      extensionStatus: {
-        ...initialUserFormState.extensionStatus,
-        searchStatus: ExtensionSearchStatuses.PickANumber,
-        retriesRemaining: 1,
-        message: "Some message",
-        isError: true
-      }
-    };
 
-    const result = userFormReducer(initialTestState, action);
-    const expectedFormState = {
-      ...initialTestState,
-      extensionStatus: {
-        ...initialTestState.extensionStatus,
-        searchStatus: ExtensionSearchStatuses.Idle,
-        retriesRemaining: searchParams.MaxRetries,
-        message: "Verified",
-        isError: false
-      }
-    };
-    expect(result).toStrictEqual(expectedFormState);
+  describe("SET_CALABRIO_TEAM", () => {
+    test("should set Calabrio User Roles to Payload", () => {
+      const payload = { team: "new" };
+      const action = {
+        type: userFormActions.SET_CALABRIO_TEAM,
+        payload
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrioUser: {
+          ...initialUserFormState.calabrioUser,
+          team: payload
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
+  describe("SET_EXTENSION_MESSAGE", () => {
+    test("SET_EXTENSION_MESSAGE should update message", () => {
+      const testMessage = "Test message";
+      const action = {
+        type: userFormActions.SET_EXTENSION_MESSAGE,
+        payload: {
+          message: testMessage,
+          isError: false
+        }
+      };
+      const initialTestState = {
+        ...initialUserFormState
+      };
+      const result = userFormReducer(initialTestState, action);
+      const expectedFormState = {
+        ...initialTestState,
+        extensionStatus: {
+          ...initialTestState.extensionStatus,
+          message: testMessage,
+          isError: false
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
+  describe("SET_EXTENSION_RETRIES", () => {
+    test("SET_EXTENSION_RETRIES should decrement retriesRemaining", () => {
+      const action = { type: userFormActions.SET_EXTENSION_RETRIES };
+      const initialTestState = {
+        ...initialUserFormState,
+        extensionStatus: {
+          ...initialUserFormState.extensionStatus,
+          searchStatus: ExtensionSearchStatuses.PickANumber,
+          retriesRemaining: 3
+        }
+      };
+      const result = userFormReducer(initialTestState, action);
+      const expectedFormState = {
+        ...initialTestState,
+        extensionStatus: {
+          ...initialTestState.extensionStatus,
+          retriesRemaining: 2
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
+  describe("SET_EXTENSION_VERIFIED", () => {
+    test("SET_EXTENSION_VERIFIED reset search params and a verified message", () => {
+      const action = { type: userFormActions.SET_EXTENSION_VERIFIED };
+      const initialTestState = {
+        ...initialUserFormState,
+        extensionStatus: {
+          ...initialUserFormState.extensionStatus,
+          searchStatus: ExtensionSearchStatuses.PickANumber,
+          retriesRemaining: 1,
+          message: "Some message",
+          isError: true
+        }
+      };
+      const result = userFormReducer(initialTestState, action);
+      const expectedFormState = {
+        ...initialTestState,
+        extensionStatus: {
+          ...initialTestState.extensionStatus,
+          searchStatus: ExtensionSearchStatuses.Idle,
+          retriesRemaining: searchParams.MaxRetries,
+          message: "Verified",
+          isError: false
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
   });
 
   describe("SET_UPDATE_FORM_STATE for DID User", () => {
@@ -853,5 +1102,4 @@ describe("userFormReducer", () => {
       });
     });
   });
-
 });

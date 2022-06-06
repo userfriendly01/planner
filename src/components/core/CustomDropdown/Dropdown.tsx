@@ -23,7 +23,8 @@ export const Dropdown = (props: any) => {
     updateValue,
     value,
     error,
-    onBlur
+    onBlur,
+    disabled
   } = props;
 
   const stylesObject = {
@@ -58,7 +59,7 @@ export const Dropdown = (props: any) => {
       value={value}
       isOptionEqualToValue={handleCheckEqual}
       onChange={updateValue}
-      disabled={false}
+      disabled={disabled}
       onBlur={onBlur}
       sx={stylesObject}
       renderInput={(params: any) => <TextField {...params} label={label} error={error} key={props["data-option-index"]} />}
