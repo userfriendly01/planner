@@ -18,7 +18,6 @@ const CallRecordingForm = (props: any) => {
     worker
   } = props;
   const state = useAdminState();
-  const tenant = state.calabrioContext.tenant;
   const groups = state.calabrioContext.groups;
   const teams = state.calabrioContext.teams;
   const roles = state.calabrioContext.roles;
@@ -76,8 +75,7 @@ const CallRecordingForm = (props: any) => {
               roles: res.roles,
               scope: {
                 groups: userGroups,
-                teams: userTeams,
-                tenant: res.scope.tenant
+                teams: userTeams
               }
             }
           });
@@ -106,11 +104,9 @@ const CallRecordingForm = (props: any) => {
         type: userFormActions.SET_CALABRIO_USER,
         payload: {
           ...form.calabrioUser,
-          isScreenRecorded: true,
           scope: {
             groups: userGroups,
-            teams: userTeams,
-            tenant
+            teams: userTeams
           }
         }
       });

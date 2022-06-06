@@ -81,8 +81,7 @@ export const initialFormState = {
     roles: [],
     scope: {
       "groups": [],
-      "teams": [],
-      "tenant": null
+      "teams": []
     }
   },
   userPreviouslyAdded: false,
@@ -242,8 +241,7 @@ export const validFormState = {
     roles: [],
     scope: {
       "groups": [],
-      "teams": [],
-      "tenant": null
+      "teams": []
     }
   },
   zeroOutEnabled: false,

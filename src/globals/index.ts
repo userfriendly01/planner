@@ -28,7 +28,6 @@ export const formModes: FormModes = {
 };
 
 export const calabrioGroupLevels: CalabrioGroupLevel = {
-  TENANT: "TENANT",
   GROUP: "GROUP",
   TEAM: "TEAM"
 };

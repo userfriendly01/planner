@@ -42,6 +42,5 @@ export interface CalabrioGroup {
 }
 export interface CalabrioGroupLevel {
   GROUP: string,
-  TEAM: string,
-  TENANT: string
+  TEAM: string
 }

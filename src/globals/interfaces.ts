@@ -26,7 +26,6 @@ export interface AppState {
   },
   calabrioContext: {
     roles: any[],
-    tenant: any,
     teams: CalabrioGroup[],
     groups: CalabrioGroup[],
     users: any[]

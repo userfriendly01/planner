@@ -110,13 +110,11 @@ export const initialUserFormState: UserFormState = {
     valid: false
   },
   calabrioUser: {
-    isScreenRecorded: false,
     team: null,
     roles: [],
     scope: {
       groups: [],
-      teams: [],
-      tenant: null
+      teams: []
     }
   },
   userPreviouslyAdded: false,

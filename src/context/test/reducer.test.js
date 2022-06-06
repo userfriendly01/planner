@@ -186,9 +186,6 @@ describe("reducer", () => {
     test("should initialize a map from the offices map sent in", () => {
       const payload = [
         {
-          groupLevel: "TENANT"
-        },
-        {
           groupLevel: "GROUP"
         },
         {
@@ -206,7 +203,6 @@ describe("reducer", () => {
         payload
       };
       const expectedResults = {
-        tenant: { groupLevel: "TENANT" },
         roles: [],
         teams: [{
           groupLevel: "TEAM",
