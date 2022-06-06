@@ -29,7 +29,7 @@ Recommended IDEs:
 ### Prerequisites
 
 Install [node.js and npm](https://nodejs.org/en/download/) to run this project
-The required versions needed are defined in package.json under ```engines```
+The needed versions are defined in package.json under ```engines```
 
 ### Cloning this Repository
 ```
@@ -53,7 +53,7 @@ Download, build, and run these services as described in their respective readme 
 npm start
 ```
 
-You should now have 3 running applications, each on their own port:
+You should now have 3 running applications, on these ports:
 
 ```
 cicct-user-gateway        8082
@@ -79,3 +79,8 @@ Run unit tests with the following command
 ```
 npm run test
 ```
+
+## Development Notes
+### Icons
+Keep icons under 8KB in size in order to ensure they're embedded in the runtime code by Webpack.
+Larger images will break.
