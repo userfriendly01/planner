@@ -46,7 +46,8 @@ Running locally requires that you also have running instances of two other repos
 * [cicct-user-gateway](https://github.com/lmigtech/cicct-user-gateway)
 * [cicct-softphone-service](https://github.com/lmigtech/cicct-softphone-service)
 
-Download, build, and run these services as described in their respective readme files.
+Download, build, and run these services as described in their respective readme files, before starting
+the Admin UI.
 
 #### Starting the Admin UI
 ```
@@ -54,11 +55,11 @@ npm start
 ```
 
 You should now have 3 running applications, on these ports:
-
 ```
 cicct-user-gateway        8082
 cicct-softphone-admin-ui  8084
 cicct-softphone-service   8080
+cicct-callflow-api        8081
 ```
 
 #### Connecting to the Admin UI
