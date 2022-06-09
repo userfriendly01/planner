@@ -14,6 +14,7 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import LighteningBolt from "icons/LighteningBolt-06.png";
+import ClosedLogo from "icons/closed-logo.png";
 
 const SidebarWrapper = styled.div`
   background-color: white;
@@ -109,10 +110,15 @@ const MessageSidebar = props => {
 
   const makeRadioButton = skillName => {
     let hasFlash = false;
+    let hasClosed = false;
+    console.log("GCx", messageState);
     if (messageState.skillData.allSkills) {
       const skill = messageState.skillData.allSkills.find(skill => skill.skillName === skillName);
       if (skill && skill.flashMessage) {
         hasFlash = true;
+      }
+      if (skill && skill.closedMessage) {
+        hasClosed = true;
       }
     }
 
@@ -141,6 +147,10 @@ const MessageSidebar = props => {
           />
         </div>
       );
+    }
+
+    if (hasClosed) {
+
     }
   };
 
