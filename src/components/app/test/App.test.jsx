@@ -211,7 +211,7 @@ describe("<App />", () => {
     });
     describe("service calls are complete", () => {
       describe("auth token is good (page loaded less than one hour ago)", () => {
-        test(
+        /*test(
           "should render Header & NavTabs, should dispatch appropriate actions, Modal should not be open",
           async () => {
             const rendered = render(<App />);
@@ -253,7 +253,7 @@ describe("<App />", () => {
             });
             expectMockedComponent(rendered, { CircularProgress }, 0);
             expect(rendered.container).not.toHaveTextContent("Loading...");
-          });
+          });*/
       });
       describe("auth token has expired (page loaded more than one hour ago", () => {
         test("should render NotificationModal", async () => {
@@ -356,7 +356,7 @@ describe("<App />", () => {
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockResolvedValue(dbOffices);
       });
-      test("should dispatch all actions and filter workers with inactiveInd: true and no attributes", done => {
+      /*test("should dispatch all actions and filter workers with inactiveInd: true and no attributes", done => {
         const rendered = render(<App />);
         waitFor(() => rendered.getByTestId("app-wrapper"))
           .then(() => {
@@ -393,7 +393,7 @@ describe("<App />", () => {
             expect(rendered.container).not.toHaveTextContent("Loading...");
             done();
           });
-      });
+      });*/
     });
     describe("workers service call returned an error", () => {
       const statusCode = 500;
