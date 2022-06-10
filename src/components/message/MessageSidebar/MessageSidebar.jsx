@@ -44,6 +44,12 @@ const StyledBolt = styled.img`
   margin-bottom: -7px;
 `;
 
+const StyledClosed = styled.img`
+  max-height: 22px;
+  margin-left: -7px;
+  margin-bottom: -7px;
+`;
+
 const TealRadio = withStyles({
   root: {
     color: theme.libertyDarkTeal,
@@ -122,36 +128,25 @@ const MessageSidebar = props => {
       }
     }
 
-    if (hasFlash) {
-      return (
-        <div key={`${skillName}-div`}>
-          <StyledFormControl
-            key={`${skillName}-sc`}
-            control={<TealRadio value={skillName} />}
-            label={skillName}
-          />
-          <StyledBolt
-            key={`${skillName}-bolt`}
-            src={LighteningBolt}
-            alt="*"
-          />
-        </div>
-      );
-    } else {
-      return (
-        <div key={`${skillName}-div`}>
-          <StyledFormControl
-            key={`${skillName}-sc`}
-            control={<TealRadio value={skillName} />}
-            label={skillName}
-          />
-        </div>
-      );
-    }
-
-    if (hasClosed) {
-
-    }
+    return (
+      <div key={`${skillName}-div`}>
+        <StyledFormControl
+          key={`${skillName}-sc`}
+          control={<TealRadio value={skillName} />}
+          label={skillName}
+        />
+        {hasFlash ? <StyledBolt
+          key={`${skillName}-bolt`}
+          src={LighteningBolt}
+          alt="*"
+        /> : null}
+        {hasClosed ? <StyledClosed
+          key={`${skillName}-closed`}
+          src={ClosedLogo}
+          alt="~"
+        /> : null}
+      </div>
+    );
   };
 
   return (
