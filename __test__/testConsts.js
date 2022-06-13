@@ -76,12 +76,11 @@ export const initialFormState = {
     updated: false
   },
   calabrioUser: {
-    isScreenRecorded: false,
-    team: 225,
+    team: null,
     roles: [],
     scope: {
-      "groups": [],
-      "teams": []
+      groups: [],
+      teams: []
     }
   },
   userPreviouslyAdded: false,
@@ -236,7 +235,6 @@ export const validFormState = {
     valid: true
   },
   calabrioUser: {
-    isScreenRecorded: false,
     team: 225,
     roles: [],
     scope: {
@@ -259,6 +257,66 @@ export const worker = {
   skillsDifferent: false
 };
 
+export const calabrioContext = {
+  groups: [
+    {
+      groupId: 100,
+      name: "Hawaii 50 Group"
+    },
+    {
+      groupId: 200,
+      name: "FNOL Group"
+    }
+  ],
+  teams: [
+    {
+      groupId: 101,
+      parentGroupId: 100,
+      name: "Hawaii Team 50"
+    },
+    {
+      groupId: 102,
+      parentGroupId: 100,
+      name: "Hawaii Specialty Team"
+    },
+    {
+      groupId: 201,
+      parentGroupId: 200,
+      name: "FNOL Team"
+    }
+  ],
+  roles: [
+    {
+      id: 1,
+      name: "Administrator"
+    },
+    {
+      id: 2,
+      name: "Agent"
+    },
+    {
+      id: 3,
+      name: "QM Only"
+    }
+  ],
+  users: [
+    {
+      "personId": 200,
+      "firstName": "Brittany",
+      "lastName": "Magee",
+      "groupId": 102,
+      "email": "Brittany.Magee@libertymutual.com"
+    },
+    {
+      "personId": 220,
+      "firstName": "Faith",
+      "lastName": "Cuneo",
+      "groupId": 201,
+      "email": "Faith.Cuneo@libertymutual.com"
+    }
+  ]
+};
+
 export const initialTestState = {
   ...initialState,
   officeContext: {
@@ -269,7 +327,8 @@ export const initialTestState = {
   },
   managerContext: {
     managers: managerList
-  }
+  },
+  calabrioContext
 };
 
 export const mockWorkers = [

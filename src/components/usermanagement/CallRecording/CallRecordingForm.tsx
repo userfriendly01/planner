@@ -13,10 +13,7 @@ import {
 } from "context";
 import { getCalabrioUser } from "services";
 
-const CallRecordingForm = (props: any) => {
-  const {
-    worker
-  } = props;
+const CallRecordingForm = () => {
   const state = useAdminState();
   const groups = state.calabrioContext.groups;
   const teams = state.calabrioContext.teams;
@@ -25,14 +22,16 @@ const CallRecordingForm = (props: any) => {
 
   const form = useFormState();
   const setForm = useFormDispatch();
-  console.log("***STATE!", state);
-  console.log("worker", worker);
+  // console.log("***STATE!", state);
+  // console.log("worker", form.nNumberFetchedUser);
 
   useEffect(() => {
-    if(worker && form.formMode ==="UPDATE") {
+    console.log("in use effect");
+    if(form.nNumberFetchedUser && form.formMode ==="UPDATE") {
       const email = form.nNumberFetchedUser.email.toLowerCase();
       const userRecord = users.find(user => user.email.toLowerCase() === email);
-      //update to put all groups on worker but check the ones that the existing worker has
+      console.log("in update", userRecord);
+
       if(userRecord){
         getCalabrioUser(userRecord.personId).then((res: any) => {
           console.log("Fetched Calabrio User", res);
@@ -57,17 +56,18 @@ const CallRecordingForm = (props: any) => {
 
           teams.forEach(team => {
             if(res.scope.teams.some((teamId: number) => team.groupId === teamId)){
-              userGroups.push({
+              userTeams.push({
                 ...team,
                 checked: true
               });
             } else {
-              userGroups.push({
+              userTeams.push({
                 ...team,
                 checked: false
               });
             }
           });
+
           setForm({
             type: userFormActions.SET_CALABRIO_USER,
             payload: {
@@ -79,11 +79,15 @@ const CallRecordingForm = (props: any) => {
               }
             }
           });
+
         }).catch(err => {
+          setForm({
+            type: "butts"
+          });
           console.error("Failed to fetch Calabrio User.", err);
         });
       } else {
-        console.log("No user was found in Calabrio with this email");
+        console.warn("No user was found in Calabrio with this email");
       }
     } else {
       const userGroups: any[] = [];
