@@ -362,7 +362,7 @@ describe("<App />", () => {
           .then(() => {
             const actions = mockStore.getActions();
             expect(actions.length).toBe(6);
-            expect(actions.equals([
+            expect(actions).toEqual([
               {
                 type: "loadManagers",
                 payload: formatManagersResponse(dbManagers)
@@ -387,7 +387,7 @@ describe("<App />", () => {
                 type: "addWorkers",
                 payload: filteredWorkers
               }
-            ])).toBe(true);
+            ]);
             expectMockedComponent(rendered, { Header });
             expectMockedComponent(rendered, { NavTabs });
             expect(rendered.container).not.toHaveTextContent("Loading...");
