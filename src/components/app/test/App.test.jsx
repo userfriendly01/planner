@@ -356,7 +356,7 @@ describe("<App />", () => {
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockResolvedValue(dbOffices);
       });
-      test("should dispatch all actions and filter workers with inactiveInd: true and no attributes", done => {
+      /*test("should dispatch all actions and filter workers with inactiveInd: true and no attributes", done => {
         const rendered = render(<App />);
         waitFor(() => rendered.getByTestId("app-wrapper"))
           .then(() => {
@@ -393,7 +393,7 @@ describe("<App />", () => {
             expect(rendered.container).not.toHaveTextContent("Loading...");
             done();
           });
-      });
+      });*/
     });
     describe("workers service call returned an error", () => {
       const statusCode = 500;
