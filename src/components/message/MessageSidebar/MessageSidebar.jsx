@@ -41,12 +41,13 @@ const StyledFormControl = styled(FormControlLabel)`
 const StyledBolt = styled.img`
   max-height: 22px;
   margin-left: -7px;
-  margin-right: 7px;
+  margin-right: 14px;
   margin-bottom: -7px;
 `;
 
 const StyledClosed = styled.img`
   max-height: 22px;
+  margin-left: -7px
   margin-bottom: -7px;
 `;
 
