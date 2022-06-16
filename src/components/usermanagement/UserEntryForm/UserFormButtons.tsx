@@ -180,6 +180,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       attributes.manager_first_name = parsedManager.manager_first_name;
       attributes.manager_last_name = parsedManager.manager_last_name;
       attributes.manager_n_number = parsedManager.manager_n_number;
+      attributes.manager = parsedManager.manager_first_name + ' ' + parsedManager.manager_last_name;
     }
     if (form.profileId.updated) {
       attributes.profile_id = form.profileId.value;
