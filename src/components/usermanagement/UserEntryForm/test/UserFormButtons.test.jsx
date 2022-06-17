@@ -703,6 +703,7 @@ describe("<UserFormButtons />", () => {
               manager_first_name: validFormOptions.manager.manager_first_name,
               manager_last_name: validFormOptions.manager.manager_last_name,
               manager_n_number: validFormOptions.manager.manager_n_number,
+              manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
               profile_id: validFormOptions.profileId,
               routing: {
                 skills: ["nonSkillL1","466"],
@@ -750,6 +751,7 @@ describe("<UserFormButtons />", () => {
             manager_first_name: validFormOptions.manager.manager_first_name,
             manager_last_name: validFormOptions.manager.manager_last_name,
             manager_n_number: validFormOptions.manager.manager_n_number,
+            manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
             profile_id: validFormOptions.profileId,
             routing: {
               skills: ["nonSkillL1"],
@@ -960,6 +962,7 @@ describe("<UserFormButtons />", () => {
           manager_first_name: validFormOptions.manager.manager_first_name,
           manager_last_name: validFormOptions.manager.manager_last_name,
           manager_n_number: validFormOptions.manager.manager_n_number,
+          manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
           profile_id: validFormOptions.profileId
         };
         beforeEach(() => {
