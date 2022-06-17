@@ -2,6 +2,25 @@
 
 This document offers some tips and tricks for running the Admin UI locally.
 
+## With or Without cicct-callflow-api
+When this project is run as described in the main [ReadMe](../README.md), the softphone-service will
+make calls to the callflow-api located in Liberty's development environment.
+If you want to run the callflow-api locally instead, follow these steps:
+1. Download and configure the [cicct-callflow-api repository](https://github.com/lmigtech/cicct-callflow-api/tree/CCT-4900-Update-Triton-UI-ReadMe) as described in its ReadMe
+1. Start the callflow-api as described in its ReadMe
+1. Change the CALLFLOW_API_BASE_URL environment variable for the softphone-service to `http://localhost:8081/api`
+1. Restart the softphone-service
+
+You should now have these four respositories running on these ports:
+```
+cicct-user-gateway        8082
+cicct-softphone-admin-ui  8084
+cicct-softphone-service   8080
+cicct-callflow-api        8081
+```
+
+Running the callflow-api locally should fix the flash and closed message problem described below.
+
 ## The Session Cookie
 
 When you first fire up the Admin UI, you likely see this error:
@@ -33,7 +52,8 @@ be seen in the Network tab of Chrome Developer Tools:
 <img src="./messageErrors.png" alt="Error 500"/>
 
 The work-around is to test features related to these message types
-in the development environment, rather than locally.
+in the development environment rather than locally,
+or alternatively, to run the callflow-api locally as described earlier in this document.
 
 ## Site Can't Be Reached
 <img src="./cantReach.png" alt="Website can't be reached"/>
