@@ -699,7 +699,10 @@ describe("<UserFormButtons />", () => {
             const updateWorkerAttributesAfterFormValid = {
               default_skills: validFormOptions.defaultSkills,
               did: validFormOptions.didE164,
+              department_id: validFormState.nNumberFetchedUser.departmentNumber,
+              department_name: validFormState.nNumberFetchedUser.departmentName,
               extension: validFormOptions.extension,
+              location: validFormState.nNumberFetchedUser.departmentName,
               manager_first_name: validFormOptions.manager.manager_first_name,
               manager_last_name: validFormOptions.manager.manager_last_name,
               manager_n_number: validFormOptions.manager.manager_n_number,
@@ -747,7 +750,10 @@ describe("<UserFormButtons />", () => {
           const updateWorkerAttributesAfterFormValid = {
             default_skills: validFormOptions.defaultSkills,
             did: validFormOptions.didE164,
+            department_id: validFormOptions.nNumberFetchedUser.departmentNumber,
+            department_name: validFormOptions.nNumberFetchedUser.departmentName,
             extension: validFormOptions.extension,
+            location: validFormOptions.nNumberFetchedUser.departmentName,
             manager_first_name: validFormOptions.manager.manager_first_name,
             manager_last_name: validFormOptions.manager.manager_last_name,
             manager_n_number: validFormOptions.manager.manager_n_number,
@@ -912,7 +918,11 @@ describe("<UserFormButtons />", () => {
             });
             await waitFor(() => {
               expect(updateUser).toHaveBeenCalledWith(worker.sid, {
-                attributes: {},
+                attributes: {
+                  department_id: fetchedUser.departmentNumber,
+                  department_name: fetchedUser.departmentName,
+                  location: fetchedUser.departmentName
+                },
                 zeroOutEnabled: true
               });
               expect(mockDispatch).toHaveBeenCalledTimes(1);
@@ -957,8 +967,11 @@ describe("<UserFormButtons />", () => {
         };
         const updateWorkerAttributesAfterFormValid = {
           default_skills: validFormOptions.defaultSkills,
+          department_id: validFormOptions.nNumberFetchedUser.departmentNumber,
+          department_name: validFormOptions.nNumberFetchedUser.departmentName,
           did: validFormOptions.didE164,
           extension: validFormOptions.extension,
+          location: validFormOptions.nNumberFetchedUser.departmentName,
           manager_first_name: validFormOptions.manager.manager_first_name,
           manager_last_name: validFormOptions.manager.manager_last_name,
           manager_n_number: validFormOptions.manager.manager_n_number,

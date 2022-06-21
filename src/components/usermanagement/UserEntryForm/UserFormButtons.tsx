@@ -194,6 +194,10 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     if (form.defaultSkillsUpdated) {
       attributes.default_skills = form.defaultSkills;
     }
+    attributes.department_id = form.nNumberFetchedUser.departmentNumber;
+    attributes.department_name = form.nNumberFetchedUser.departmentName;
+    attributes.location = form.nNumberFetchedUser.departmentName
+
     // update overflow skill
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.profileId.value);
     const nonOverflowSkills: string[] = getNonOverflowSkills(worker, profiles) ? getNonOverflowSkills(worker, profiles) : [];
