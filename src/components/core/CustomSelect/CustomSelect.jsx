@@ -56,7 +56,7 @@ export const OutlinedSelect = props => {
       <Select
         disabled={disabled}
         native
-        value={value || ""}
+        value={value || value === 0 ? value : ""}
         onBlur={onBlur}
         onChange={event => updateValue(event.target.value)}
         input={

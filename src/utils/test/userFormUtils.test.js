@@ -8,12 +8,37 @@ import {
   isDidDifferentValid,
   getTargetProfile,
   getOverflowSkillFromProfile,
+  removeProfileZeroIfAdminNotInProfileZero,
   getOverflowSkills,
   workerHasOverFlowSkill,
   getNonOverflowSkills,
   isFormUpdated,
   isFormValid
 } from "../userFormUtils";
+
+const adminStateIsAdmin = {
+  userContext: {
+    pingIdentity: {
+      groups: ["CN=gci-cicct-triton-prod-admin"]
+    }
+  }
+};
+
+const adminStateIsNotAdmin = {
+  userContext: {
+    pingIdentity: {
+      groups: ["CN=gci-cicct-triton-not-admin"]
+    }
+  }
+};
+
+const adminStateIsErroneous = {
+  frog: {
+    merp: {
+      bloop: ["ribbit"]
+    }
+  }
+};
 
 const managerList = [
   {
@@ -41,6 +66,28 @@ const profileList = [
   {
     profile_nme: "test3",
     profile_id: 3,
+    overflow_skill: "anotherOverflowSkill"
+  }
+];
+const profileListWithZero = [
+  {
+    profile_nme: "test1",
+    profile_id: 1,
+    overflow_skill: null
+  },
+  {
+    profile_nme: "test2",
+    profile_id: 2,
+    overflow_skill: "whateverOverflowSkill"
+  },
+  {
+    profile_nme: "test3",
+    profile_id: 3,
+    overflow_skill: "anotherOverflowSkill"
+  },
+  {
+    profile_nme: "test0",
+    profile_id: 0,
     overflow_skill: "anotherOverflowSkill"
   }
 ];
@@ -468,6 +515,21 @@ describe("getOverflowSkillFromProfile", () => {
   test("should return undefined if profile does not have overflow skill", () => {
     const result = getOverflowSkillFromProfile(profileList, profileList[0].profile_id);
     expect(result).toBe(undefined);
+  });
+});
+
+describe("removeProfileZeroIfAdminNotInProfileZero", () => {
+  test("user is a triton-admin, should return full profile list", () => {
+    const result = removeProfileZeroIfAdminNotInProfileZero(adminStateIsAdmin, profileListWithZero);
+    expect(result).toEqual(profileListWithZero);
+  });
+  test("user is not a triton-admin, should return full not profile list", () => {
+    const result = removeProfileZeroIfAdminNotInProfileZero(adminStateIsNotAdmin, profileListWithZero);
+    expect(result).toEqual(profileList);
+  });
+  test("user state is erroneous, should return full not profile list", () => {
+    const result = removeProfileZeroIfAdminNotInProfileZero(adminStateIsErroneous, profileListWithZero);
+    expect(result).toEqual(profileList);
   });
 });
 

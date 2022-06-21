@@ -1,11 +1,10 @@
-import { unmountComponentAtNode } from "react-dom";
 import BasicFormInfo from "../BasicFormInfo";
 import {
   InputAdornment,
   Switch,
   Tooltip
 } from "@material-ui/core";
-import { Edit, FormatAlignJustify } from "@material-ui/icons";
+import { Edit } from "@material-ui/icons";
 import {
   ForwardToEntryForm,
   ModalExtension,
@@ -20,13 +19,13 @@ import {
 import {
   useFormDispatch,
   useFormState,
+  useAdminState,
   userFormActions
 } from "context";
 import {
-  extensionMatcher,
   formModes
 } from "globals";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   act,
   expectMockedComponent,
@@ -43,6 +42,7 @@ import {
 } from "testUtils";
 import {
   getOverflowSkillFromProfile,
+  removeProfileZeroIfAdminNotInProfileZero,
   isExtensionValid,
   isProfileIdValid,
   isManagerValid
@@ -50,7 +50,6 @@ import {
 import { ExtensionSearchStatuses } from "../UserEntryForm.Interfaces";
 import { StyledButton } from "components";
 import { checkExtension } from "services";
-import { SearchParams } from "../ExtensionSearchParams";
 
 jest.useFakeTimers();
 
@@ -86,6 +85,7 @@ jest.mock("@material-ui/icons", () => ({
 jest.mock("context", () => ({
   __esModule: true,
   useFormState: jest.fn(),
+  useAdminState: jest.fn(),
   useFormDispatch: jest.fn(),
   userFormActions: jest.requireActual("context").userFormActions
 }));
@@ -97,7 +97,8 @@ jest.mock("utils", () => ({
   isProfileIdValid: jest.fn(),
   sortProfilesByName: jest.requireActual("utils").sortProfilesByName,
   sortManagersByName: jest.fn("utils").sortManagersByName,
-  getOverflowSkillFromProfile: jest.fn()
+  getOverflowSkillFromProfile: jest.fn(),
+  removeProfileZeroIfAdminNotInProfileZero: jest.fn()
 }));
 
 jest.mock("services", () => ({
@@ -112,11 +113,6 @@ jest.mock("globals", () => ({
   },
   formModes: jest.requireActual("globals").formModes
 }));
-
-// jest.mock("../ExtensionSearchParams", () => ({
-//   __esModule: true,
-//   getValues: jest.fn()
-// }));
 
 const mockSetForm = jest.fn();
 
@@ -186,7 +182,7 @@ describe("<BasicFormInfo />", () => {
       const managerOptionsDisplayFunc = OutlinedSelect.mock.calls[0][0].optionsDisplayFunc;
       const managerOption = managerOptionsDisplayFunc(managerList[0]);
       expect(managerOption).toEqual({
-        display: `${managerList[0].manager_first_name} ${managerList[0].manager_last_name}`,
+        display: `${managerList[0].manager_first_name} ${managerList[0].manager_last_name} - ${managerList[0].manager_n_number}`,
         key: managerList[0].manager_id,
         value: JSON.stringify(managerList[0])
       });
@@ -262,6 +258,7 @@ describe("<BasicFormInfo />", () => {
   });
   describe("Team dropdown", () => {
     test("Should render the correct initial state", () => {
+      removeProfileZeroIfAdminNotInProfileZero.mockReturnValue(profileList);
       const rendered = renderComponent(false);
       expectMockedComponent(rendered, { OutlinedSelect }, 2);
       const expectedTeamProps = {
@@ -289,11 +286,13 @@ describe("<BasicFormInfo />", () => {
           blurred: true
         }
       });
+      removeProfileZeroIfAdminNotInProfileZero.mockReturnValue(profileList);
       isProfileIdValid.mockReturnValue(false);
       renderComponent(false);
       expect(OutlinedSelect.mock.calls[1][0].error).toBe(true);
     });
     test("helperText is null - profileId is valid", () => {
+      removeProfileZeroIfAdminNotInProfileZero.mockReturnValue(profileList);
       isProfileIdValid.mockReturnValue(true);
       renderComponent(false);
       expect(OutlinedSelect.mock.calls[1][0].helperText).toBe(null);
@@ -306,6 +305,7 @@ describe("<BasicFormInfo />", () => {
           updated: true
         }
       });
+      removeProfileZeroIfAdminNotInProfileZero.mockReturnValue(profileList);
       isProfileIdValid.mockReturnValue(false);
       renderComponent(false);
       expect(OutlinedSelect.mock.calls[1][0].helperText).toBe("Please select a team");

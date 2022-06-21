@@ -25,6 +25,7 @@ import {
 import {
   useFormDispatch,
   useFormState,
+  useAdminState,
   userFormActions
 } from "context";
 import {
@@ -35,6 +36,7 @@ import React from "react";
 import { checkExtension } from "services";
 import {
   getOverflowSkillFromProfile,
+  removeProfileZeroIfAdminNotInProfileZero,
   isProfileIdValid,
   isManagerValid,
   sortManagersByName,
@@ -68,6 +70,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   } = props;
 
   const form = useFormState();
+  const adminState = useAdminState();
   const setForm = useFormDispatch();
 
   const isOutgoingDisabled = (): boolean => {
@@ -93,7 +96,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
       type: userFormActions.UPDATE_EXTENSION,
       payload: {
         extension,
-        isValid: (extension === form.extensionStatus.originalExtension)
+        isValid: (extension === form.extensionStatus.originalExtension && form.extensionStatus.originalExtension)
       }
     });
   };
@@ -207,7 +210,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           optionsList={managers.sort(sortManagersByName)}
           optionsDisplayFunc={option => {
             return {
-              display: `${option.manager_first_name} ${option.manager_last_name}`,
+              display: `${option.manager_first_name} ${option.manager_last_name} - ${option.manager_n_number}`,
               key: option.manager_id,
               value: JSON.stringify(option)
             };
@@ -224,7 +227,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           label={"Team *"}
           labelWidth={44}
           onBlur={() => handleOnBlur("profileId")}
-          optionsList={profiles.sort(sortProfilesByName)}
+          optionsList={removeProfileZeroIfAdminNotInProfileZero(adminState, profiles.sort(sortProfilesByName))}
           optionsDisplayFunc={option => {
             return {
               display: option.profile_nme,

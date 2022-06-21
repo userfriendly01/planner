@@ -92,7 +92,11 @@ export const ViewMessage = props => {
             ...messageState,
             fetching: false,
             message: "",
-            readOnly: false
+            readOnly: false,
+            skillData: {
+              ...messageState.skillData,
+              allSkills: null
+            }
           });
         })
         .catch(err => {

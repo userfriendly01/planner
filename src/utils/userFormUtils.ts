@@ -2,7 +2,8 @@ import {
   TritonProfile,
   Worker,
   formModes,
-  WorkerSkills
+  WorkerSkills,
+  AppState
 } from "globals";
 import {
   UserFormState
@@ -64,6 +65,24 @@ export const getOverflowSkillFromProfile = (profiles: TritonProfile[], profileVa
     return profile.overflow_skill;
   }
 };
+
+export const removeProfileZeroIfAdminNotInProfileZero = (adminState: AppState, profiles: TritonProfile[]) => {
+  const adGroups: String[] = adminState && adminState.userContext && adminState.userContext.pingIdentity ? adminState.userContext.pingIdentity.groups: [];
+
+  let adminGroup = false;
+  adGroups.forEach(group =>{
+    if(group.includes("gci-cicct-triton-prod-admin") || group.includes("gci-cicct-triton-test-admin") || group.includes("gci-cicct-triton-dev-admin")){
+      adminGroup = true;
+    }
+  });
+  
+  if(!adminGroup){
+    const filteredProfiles = profiles.filter(e => e.profile_id !== 0);
+    return filteredProfiles;
+  }
+  return profiles;
+
+}
 
 export const getTargetProfile = (profiles: TritonProfile[], newProfileValue: string): TritonProfile => profiles.find((profile: TritonProfile) => profile.profile_id === +newProfileValue);
 
