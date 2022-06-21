@@ -6,6 +6,8 @@ export interface DbManagerRequest {
   manager_first_nme: string;
   manager_last_nme: string;
   manager_n_num: string;
+  profile_id: number;
+  calabrio_team_ids: string
 }
 
 export interface DbManagerResponse {

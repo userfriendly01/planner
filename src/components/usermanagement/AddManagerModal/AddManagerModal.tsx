@@ -46,6 +46,8 @@ const AddManagerModal = (props: AddManagerModalProps) => {
   const [saveStatus, setSaveStatus] = useState<string>(null);
   const [nNumber, setNNumber] = useState<string>(defaultNNumber);
   const [fetchedUser, setFetchedUser] = useState<FetchUserResponse>(null);
+  const [ profile, setProfile ] = useState<any>(null);
+  const [ calabrioTeams, setCalabrioTeams ] = useState<any[]>([]);
 
   const dispatch = useAdminDispatch();
   const state = useAdminState();
@@ -62,7 +64,9 @@ const AddManagerModal = (props: AddManagerModalProps) => {
     return addManager({
       manager_first_nme: manager.manager_first_name.replace("'", "\\'"),
       manager_last_nme: manager.manager_last_name.replace("'", "\\'"),
-      manager_n_num: manager.manager_n_number
+      manager_n_num: manager.manager_n_number,
+      profile_id: profile ? profile.profile_id : null,
+      calabrio_team_ids: calabrioTeams.map(team => team.groupId).toString()
     })
       .then(res => {
         dispatch(({
@@ -127,7 +131,7 @@ const AddManagerModal = (props: AddManagerModalProps) => {
           <Dropdown
             label={"Team *"}
             styles={{
-              width: "384px",
+              width: "400px",
               margin: "10px 0px"
             }}
             options={state.profileContext.profiles.sort(sortProfilesByName).map((profile: any) => ({
@@ -135,13 +139,14 @@ const AddManagerModal = (props: AddManagerModalProps) => {
               value: profile.profile_id,
               ...profile
             }))}
-            updateValue={(event: any, newValue: any) => console.log("update profile for manager", newValue)}
+            value={profile}
+            updateValue={(event: any, newValue: any) => setProfile(newValue)}
           />
           <Dropdown
             multiple={true}
             label={"Calabrio Team Options *"}
             styles={{
-              width: "384px",
+              width: "400px",
               margin: "10px 0px"
             }}
             options={state.calabrioContext.teams.map((team: any) => ({
@@ -149,7 +154,8 @@ const AddManagerModal = (props: AddManagerModalProps) => {
               value: team.id,
               ...team
             }))}
-            updateValue={(event: any, newValue: any) => console.log("update calabrio teams for manager", newValue)}
+            value={calabrioTeams}
+            updateValue={(event: any, newValue: any) => setCalabrioTeams(newValue)}
           />
         </FlexColumn>
         <ButtonWrapper>
