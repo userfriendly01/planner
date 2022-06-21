@@ -19,8 +19,10 @@ export interface DbManagerResponse {
   calabrio_team_ids: string
 }
 
-export const addManager = (manager: DbManagerRequest): Promise<any> =>
-  myAxios.post(apiPaths.MANAGERS, manager).then(response => response.data);
+export const addManager = (manager: DbManagerRequest): Promise<any> => {
+  console.log("Add Manager Payload: ", manager);
+  return myAxios.post(apiPaths.MANAGERS, manager).then(response => response.data);
+};
 
 export const getManagers = (): Promise<DbManagerRequest[]> =>
   myAxios.get(apiPaths.MANAGERS).then(response => response.data);

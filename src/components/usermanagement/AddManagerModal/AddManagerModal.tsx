@@ -49,6 +49,8 @@ const AddManagerModal = (props: AddManagerModalProps) => {
   const [ profile, setProfile ] = useState<any>(null);
   const [ calabrioTeams, setCalabrioTeams ] = useState<any[]>([]);
 
+  console.log("Calabrio Teams", calabrioTeams);
+
   const dispatch = useAdminDispatch();
   const state = useAdminState();
 
@@ -159,7 +161,7 @@ const AddManagerModal = (props: AddManagerModalProps) => {
           />
         </FlexColumn>
         <ButtonWrapper>
-          <StyledButton disabled={!manager} onClick={addManagerClicked} data-testid={"add-manager-button"}>
+          <StyledButton disabled={!manager || !profile || !calabrioTeams} onClick={addManagerClicked} data-testid={"add-manager-button"}>
             Add Manager
           </StyledButton>
         </ButtonWrapper>
