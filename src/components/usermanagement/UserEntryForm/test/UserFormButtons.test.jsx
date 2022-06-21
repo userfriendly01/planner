@@ -12,8 +12,7 @@ import React from "react";
 import {
   addOffice,
   createUser,
-  updateUser,
-  createCalabrioUser
+  updateUser
 } from "services";
 import {
   act,
@@ -58,7 +57,6 @@ jest.mock("context", () => ({
 }));
 
 jest.mock("services", () => ({
-  createCalabrioUser: jest.fn(),
   addOffice: jest.fn(),
   createUser: jest.fn(),
   updateUser: jest.fn()
@@ -109,7 +107,6 @@ const mockUpdateLoading = jest.fn();
 describe("<UserFormButtons />", () => {
 
   beforeEach(() => {
-    createCalabrioUser.mockResolvedValue("Override me later");
     addOffice.mockResolvedValue("Override me later");
     jest.clearAllMocks();
     mockStore.reset();

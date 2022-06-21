@@ -14,14 +14,12 @@ import {
   formModes,
   modalOverlayStatuses,
   timeouts,
-  Worker,
-  // CALABRIO_SERVER_ID
+  Worker
 } from "globals";
 import React from "react";
 import {
   addOffice,
   createUser,
-  createCalabrioUser,
   updateUser
 } from "services";
 import {
@@ -90,22 +88,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       unique_id: form.nNumber.value.toLowerCase()
     };
 
-    const calabrioAttributes: any = {
-      acdId: "", //populate with workerSid returned
-      // acdServerId: CALABRIO_SERVER_ID,
-      adLogin: form.calabrioUser.isScreenRecorded ? `LM\\${form.nNumber.value.toLowerCase()}` : null,
-      email: form.nNumberFetchedUser.email,
-      firstName: form.nNumberFetchedUser.firstName,
-      lastName: form.nNumberFetchedUser.lastName,
-      groupId: form.calabrioUser.team.groupId,
-      roles: form.calabrioUser.roles,
-      scope: {
-        groups: form.calabrioUser.scope.groups.filter((group: any) => group.checked),
-        teams: form.calabrioUser.scope.teams.filter((team: any) => team.checked),
-        tenant: null
-      }
-    };
-
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.profileId.value);
     if (overflowSkill !== undefined && form.zeroOutEnabled && form.directDialNum.value) {
       attributes.routing = {
@@ -128,16 +110,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
     createUser(createUserReqBody)
       .then(dbWorker => {
-        console.log("Initiate Create Calabrio User: ", dbWorker);
-        if(dbWorker){
-          calabrioAttributes.acdId = dbWorker.workerSid;
-          console.log("Create Calabrio Payload: ", calabrioAttributes);
-          createCalabrioUser(calabrioAttributes).then(res => {
-            console.log("Successfully Created Calabrio User", res);
-          }).catch(err => {
-            console.error("Failed to Create Calabrio User", err);
-          });
-        }
         if (!offices.get(dbWorker.attributes.office_location_number)) {
           const newOffice = {
             office_nme: dbWorker.attributes.office_location_name,

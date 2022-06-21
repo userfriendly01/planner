@@ -5,8 +5,7 @@ import {
 } from "@lmig/lmds-react-accordion";
 import {
   BasicFormInfo,
-  SkillsFormInfo,
-  CallRecordingForm
+  SkillsFormInfo
 } from "components";
 import { FormControlsContainer } from "./UserEntryForm.Styles";
 import { UserFormAccordianProps } from "./UserEntryForm.Interfaces";
@@ -37,11 +36,6 @@ const UserFormAccordion = (props: UserFormAccordianProps) => {
         </AccordionTab>
         <AccordionTab labelVisual="Default Skills">
           <SkillsFormInfo />
-        </AccordionTab>
-        <AccordionTab labelVisual="Call Recording">
-          <CallRecordingForm
-            worker={worker}
-          />
         </AccordionTab>
       </Accordion>
     </FormControlsContainer>

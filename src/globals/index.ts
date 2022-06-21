@@ -2,7 +2,6 @@ import {
   ModalOverlayStatuses,
   FormModes
 } from "globals";
-import { CalabrioGroupLevel } from "../components/usermanagement/CallRecording/CallRecording.Interfaces";
 
 export * from "./interfaces";
 export * from "./theme";
@@ -27,7 +26,7 @@ export const formModes: FormModes = {
   UPDATE: "update"
 };
 
-export const calabrioGroupLevels: CalabrioGroupLevel = {
+export const calabrioGroupLevels: any = {
   TENANT: "TENANT",
   GROUP: "GROUP",
   TEAM: "TEAM"

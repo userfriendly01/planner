@@ -75,16 +75,6 @@ export const initialFormState = {
     blurred: false,
     updated: false
   },
-  calabrioUser: {
-    isScreenRecorded: false,
-    team: 225,
-    roles: [],
-    scope: {
-      "groups": [],
-      "teams": [],
-      "tenant": null
-    }
-  },
   userPreviouslyAdded: false,
   zeroOutEnabled: false,
   zeroOutEnabledUpdated: false
@@ -235,16 +225,6 @@ export const validFormState = {
     e164: "+16032453160",
     updated: true,
     valid: true
-  },
-  calabrioUser: {
-    isScreenRecorded: false,
-    team: 225,
-    roles: [],
-    scope: {
-      "groups": [],
-      "teams": [],
-      "tenant": null
-    }
   },
   zeroOutEnabled: false,
   zeroOutEnabledUpdated: false,
