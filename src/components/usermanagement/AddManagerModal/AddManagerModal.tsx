@@ -49,10 +49,10 @@ const AddManagerModal = (props: AddManagerModalProps) => {
   const [ profile, setProfile ] = useState<any>(null);
   const [ calabrioTeams, setCalabrioTeams ] = useState<any[]>([]);
 
-  console.log("Calabrio Teams", calabrioTeams);
-
   const dispatch = useAdminDispatch();
   const state = useAdminState();
+
+  console.log("State", state);
 
   const addManagerClicked = (): Promise<any> => {
     setSaveStatus(loadingStates.loading);
@@ -153,7 +153,7 @@ const AddManagerModal = (props: AddManagerModalProps) => {
             }}
             options={state.calabrioContext.teams.map((team: any) => ({
               label: team.name,
-              value: team.id,
+              value: team.groupId,
               ...team
             }))}
             value={calabrioTeams}
