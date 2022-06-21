@@ -7,6 +7,7 @@ import {
 } from "./AddManagerModal.Styles";
 import { CloseRounded } from "@material-ui/icons";
 import {
+  Dropdown,
   ModalNNumber,
   ModalOverlay,
   PaperContainer,
@@ -25,6 +26,7 @@ import {
   addManager,
   FetchUserResponse
 } from "services";
+import { sortProfilesByName } from "utils";
 
 const defaultNNumber = "n";
 const loadingStates = {
@@ -121,6 +123,33 @@ const AddManagerModal = (props: AddManagerModalProps) => {
               setNNumber(nNumber);
             }}
             value={nNumber}
+          />
+          <Dropdown
+            label={"Team *"}
+            styles={{
+              width: "384px",
+              margin: "10px 0px"
+            }}
+            options={state.profileContext.profiles.sort(sortProfilesByName).map((profile: any) => ({
+              label: profile.profile_nme,
+              value: profile.profile_id,
+              ...profile
+            }))}
+            updateValue={(event: any, newValue: any) => console.log("update profile for manager", newValue)}
+          />
+          <Dropdown
+            multiple={true}
+            label={"Calabrio Team Options *"}
+            styles={{
+              width: "384px",
+              margin: "10px 0px"
+            }}
+            options={state.calabrioContext.teams.map((team: any) => ({
+              label: team.name,
+              value: team.id,
+              ...team
+            }))}
+            updateValue={(event: any, newValue: any) => console.log("update calabrio teams for manager", newValue)}
           />
         </FlexColumn>
         <ButtonWrapper>
