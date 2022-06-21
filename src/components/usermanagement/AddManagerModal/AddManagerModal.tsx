@@ -7,6 +7,7 @@ import {
 } from "./AddManagerModal.Styles";
 import { CloseRounded } from "@material-ui/icons";
 import {
+  Dropdown,
   ModalNNumber,
   ModalOverlay,
   PaperContainer,
@@ -25,6 +26,7 @@ import {
   addManager,
   FetchUserResponse
 } from "services";
+import { sortProfilesByName } from "utils";
 
 const defaultNNumber = "n";
 const loadingStates = {
@@ -44,13 +46,15 @@ const AddManagerModal = (props: AddManagerModalProps) => {
   const [saveStatus, setSaveStatus] = useState<string>(null);
   const [nNumber, setNNumber] = useState<string>(defaultNNumber);
   const [fetchedUser, setFetchedUser] = useState<FetchUserResponse>(null);
+  const [ profile, setProfile ] = useState<any>(null);
+  const [ calabrioTeams, setCalabrioTeams ] = useState<any[]>([]);
 
   const dispatch = useAdminDispatch();
   const state = useAdminState();
 
   const addManagerClicked = (): Promise<any> => {
     setSaveStatus(loadingStates.loading);
-    if (state.managerContext.managers.some((savedManager: Manager) => savedManager.manager_n_number === manager.manager_n_number)) {
+    if (state.managerContext.managers.some((savedManager: Manager) => savedManager.manager_n_number.toLowerCase() === manager.manager_n_number)) {
       setSaveStatus(loadingStates.fail);
       setTimeout(() => setSaveStatus(null), 2000);
       setErrorMessage("Manager already exists");
@@ -60,7 +64,9 @@ const AddManagerModal = (props: AddManagerModalProps) => {
     return addManager({
       manager_first_nme: manager.manager_first_name.replace("'", "\\'"),
       manager_last_nme: manager.manager_last_name.replace("'", "\\'"),
-      manager_n_num: manager.manager_n_number
+      manager_n_num: manager.manager_n_number,
+      profile_id: profile ? profile.profile_id : null,
+      calabrio_team_ids: calabrioTeams.map(team => team.groupId).toString()
     })
       .then(res => {
         dispatch(({
@@ -107,7 +113,7 @@ const AddManagerModal = (props: AddManagerModalProps) => {
             onComplete={(fetchedUser, nNumber) => {
               setNNumber(nNumber);
               setManager({
-                manager_n_number: nNumber,
+                manager_n_number: nNumber.toLowerCase(),
                 manager_first_name: fetchedUser.firstName,
                 manager_last_name: fetchedUser.lastName
               });
@@ -122,9 +128,38 @@ const AddManagerModal = (props: AddManagerModalProps) => {
             }}
             value={nNumber}
           />
+          <Dropdown
+            label={"Team *"}
+            styles={{
+              width: "400px",
+              margin: "10px 0px"
+            }}
+            options={state.profileContext.profiles.sort(sortProfilesByName).map((profile: any) => ({
+              label: profile.profile_nme,
+              value: profile.profile_id,
+              ...profile
+            }))}
+            value={profile}
+            updateValue={(event: any, newValue: any) => setProfile(newValue)}
+          />
+          <Dropdown
+            multiple={true}
+            label={"Calabrio Team Options *"}
+            styles={{
+              width: "400px",
+              margin: "10px 0px"
+            }}
+            options={state.calabrioContext.teams.map((team: any) => ({
+              label: team.name,
+              value: team.groupId,
+              ...team
+            }))}
+            value={calabrioTeams}
+            updateValue={(event: any, newValue: any) => setCalabrioTeams(newValue)}
+          />
         </FlexColumn>
         <ButtonWrapper>
-          <StyledButton disabled={!manager} onClick={addManagerClicked} data-testid={"add-manager-button"}>
+          <StyledButton disabled={!manager || !profile || !calabrioTeams} onClick={addManagerClicked} data-testid={"add-manager-button"}>
             Add Manager
           </StyledButton>
         </ButtonWrapper>
