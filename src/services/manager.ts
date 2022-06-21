@@ -13,6 +13,8 @@ export interface DbManagerResponse {
   manager_last_nme: string;
   manager_n_num: string;
   manager_id: number;
+  profile_id: number;
+  calabrio_team_ids: number[]
 }
 
 export const addManager = (manager: DbManagerRequest): Promise<any> =>
