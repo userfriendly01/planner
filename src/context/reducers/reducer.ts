@@ -3,7 +3,6 @@ import {
   AppState
 } from "globals";
 import {
-  formatCalabrioTenant,
   formatCalabrioTeams,
   formatCalabrioGroups,
   formatCalabrioUsers
@@ -93,7 +92,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
         ...state,
         calabrioContext: {
           ...state.calabrioContext,
-          tenant: formatCalabrioTenant(action.payload),
           groups: formatCalabrioGroups(action.payload),
           teams: formatCalabrioTeams(action.payload),
           users: formatCalabrioUsers(action.payload)

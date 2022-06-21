@@ -4,7 +4,7 @@ import {
   Radio
 } from "@material-ui/core";
 import {
-  FilterableSelect,
+  Dropdown,
   ModalPhoneNumber
 } from "components";
 import React from "react";
@@ -17,7 +17,7 @@ import {
 
 jest.mock("components", () => ({
   __esModule: true,
-  FilterableSelect: jest.fn(),
+  Dropdown: jest.fn(),
   ModalPhoneNumber: jest.fn()
 }));
 
@@ -105,7 +105,7 @@ describe("<ForwardToEntryForm />", () => {
 
   beforeEach(() => {
     setupMockedComponents({
-      FilterableSelect,
+      Dropdown,
       ModalPhoneNumber,
       FormControlLabel,
       Radio
@@ -121,9 +121,9 @@ describe("<ForwardToEntryForm />", () => {
     expect(rendered.container).toHaveTextContent("This user has a direct dial number. Please choose a forward to option before confirming.");
     expectMockedComponent(rendered, { FormControlLabel }, 3);
     expectMockedComponent(rendered, { Radio }, 3);
-    expectMockedComponent(rendered, { FilterableSelect }, 1);
+    expectMockedComponent(rendered, { Dropdown }, 1);
     expectMockedComponent(rendered, { ModalPhoneNumber }, 0);
-    expect(FilterableSelect.mock.calls[0][0].optionsList).toStrictEqual(mockWorkerOptions);
+    expect(Dropdown.mock.calls[0][0].options).toStrictEqual(mockWorkerOptions);
   });
   describe("New Radio option is selected", () => {
     test("when skill radio button is selected, handleChange is called and skills dropdown is rendered", () => {
@@ -143,8 +143,8 @@ describe("<ForwardToEntryForm />", () => {
       render(FormControlLabel.mock.calls[4][0].control);
       expect(Radio.mock.calls[3][0].checked).toBe(false);
       expect(Radio.mock.calls[4][0].checked).toBe(true);
-      expectMockedComponent(rendered, { FilterableSelect }, 1);
-      expect(FilterableSelect.mock.calls[1][0].optionsList).toStrictEqual(mockSkillOptions);
+      expectMockedComponent(rendered, { Dropdown }, 1);
+      expect(Dropdown.mock.calls[1][0].options).toStrictEqual(mockSkillOptions);
     });
     test("when number radio button is selected, handleChange is called and number field is rendered", () => {
       const rendered = renderComponent();
@@ -163,7 +163,7 @@ describe("<ForwardToEntryForm />", () => {
       render(FormControlLabel.mock.calls[5][0].control);
       expect(Radio.mock.calls[3][0].checked).toBe(false);
       expect(Radio.mock.calls[4][0].checked).toBe(true);
-      expectMockedComponent(rendered, { FilterableSelect }, 0);
+      expectMockedComponent(rendered, { Dropdown }, 0);
       expectMockedComponent(rendered, { ModalPhoneNumber }, 1);
     });
     test("when person radio button is selected, handleChange is called and worker dropdown is rendered", () => {
@@ -183,7 +183,7 @@ describe("<ForwardToEntryForm />", () => {
       render(FormControlLabel.mock.calls[5][0].control);
       expect(Radio.mock.calls[3][0].checked).toBe(false);
       expect(Radio.mock.calls[4][0].checked).toBe(true);
-      expectMockedComponent(rendered, { FilterableSelect }, 0);
+      expectMockedComponent(rendered, { Dropdown }, 0);
       expectMockedComponent(rendered, { ModalPhoneNumber }, 1);
       const revertChange = Radio.mock.calls[0][0].onChange;
       act(() => revertChange({
@@ -198,9 +198,9 @@ describe("<ForwardToEntryForm />", () => {
   describe("Worker dropdown is displayed", () => {
     test("when a worker is selected from dropdown, updateForwardTo is called with that value", () => {
       renderComponent();
-      const updateValue = FilterableSelect.mock.calls[0][0].updateValue;
-      act(() => updateValue(FilterableSelect.mock.calls[0][0].optionsList[0]));
-      expect(FilterableSelect.mock.calls[0][0].optionsList).toStrictEqual(mockWorkerOptions);
+      const updateValue = Dropdown.mock.calls[0][0].updateValue;
+      act(() => updateValue(null, Dropdown.mock.calls[0][0].options[0]));
+      expect(Dropdown.mock.calls[0][0].options).toStrictEqual(mockWorkerOptions);
       expect(mockUpdateForwardTo).toHaveBeenCalledTimes(1);
       expect(mockUpdateForwardTo).toHaveBeenCalledWith(mockWorkerOptions[0].value);
     });
@@ -215,9 +215,9 @@ describe("<ForwardToEntryForm />", () => {
           value: Radio.mock.calls[0][0].value
         }
       }));
-      const updateValue = FilterableSelect.mock.calls[1][0].updateValue;
-      act(() => updateValue(FilterableSelect.mock.calls[1][0].optionsList[0]));
-      expect(FilterableSelect.mock.calls[1][0].optionsList).toStrictEqual(mockSkillOptions);
+      const updateValue = Dropdown.mock.calls[1][0].updateValue;
+      act(() => updateValue(null, Dropdown.mock.calls[1][0].options[0]));
+      expect(Dropdown.mock.calls[1][0].options).toStrictEqual(mockSkillOptions);
       expect(mockUpdateForwardTo).toHaveBeenCalledTimes(2);
       expect(mockUpdateForwardTo).toHaveBeenCalledWith(mockSkillOptions[0].value);
     });

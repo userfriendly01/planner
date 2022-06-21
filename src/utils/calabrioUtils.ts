@@ -17,14 +17,6 @@ export interface CalabrioGroup {
     agents?: CalabrioUser[]
   }
 
-export const formatCalabrioTenant = (groupsArray: CalabrioGroup[]): CalabrioGroup => {
-  const tenants: CalabrioGroup[] = groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.TENANT);
-  if(tenants.length > 1){
-    console.warn("Multiple Tenants found for Calabrio! This is unexpected and may require code changes for the scope component in the Call Recording Folder");
-  }
-  return tenants[0];
-};
-
 export const formatCalabrioTeams = (groupsArray: CalabrioGroup[]): CalabrioGroup[] => {
   return groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.TEAM);
 };
