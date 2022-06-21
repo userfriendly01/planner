@@ -14,7 +14,7 @@ export interface DbManagerResponse {
   manager_n_num: string;
   manager_id: number;
   profile_id: number;
-  calabrio_team_ids: number[]
+  calabrio_team_ids: string
 }
 
 export const addManager = (manager: DbManagerRequest): Promise<any> =>
