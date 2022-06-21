@@ -217,10 +217,22 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
             value: manager.manager_n_number,
             ...manager
           }))}
-          updateValue={(event: any, newValue: any) => setForm({
-            type: userFormActions.UPDATE_MANAGER,
-            payload: newValue
-          })}
+          updateValue={(event: any, newValue: any) => {
+            console.log("***Selected Manager", newValue);
+            setForm({
+              type: userFormActions.UPDATE_MANAGER,
+              payload: newValue
+            });
+            if(newValue.profile_id || newValue.profile_id === 0){
+              setForm({
+                type: userFormActions.UPDATE_TEAM,
+                payload: {
+                  profileId: newValue.profile_id,
+                  profiles
+                }
+              });
+            }
+          }}
           value={form.manager.value}
         />
         <Dropdown
