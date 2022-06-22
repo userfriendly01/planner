@@ -90,6 +90,5 @@ describe("<UserFormAccordion />", () => {
     };
     expectOnlyPassedProps(BasicFormInfo, expectedBasicFormProps);
     expect(SkillsFormInfo.mock.calls.length).toBe(1);
-    expectOnlyPassedProps(CallRecordingForm, { worker: mockWorkers[0] });
   });
 });

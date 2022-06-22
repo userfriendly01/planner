@@ -117,7 +117,6 @@ const CallRecordingForm = () => {
     }
   },[]);
 
-
   const getRoleOptions = () => {
     return roles.map(role => {
       return {
@@ -127,12 +126,23 @@ const CallRecordingForm = () => {
     });
   };
   const getTeamOptions = () => {
-    return teams.map(team => {
-      return {
-        label: team.name,
-        value: team.groupId
-      };
-    });
+    const managerTeams = form.manager.value ? form.manager.value.calabrio_team_ids: [];
+    const availableTeams = teams.filter(team => managerTeams.includes(team.groupId));
+    if(availableTeams.length > 0){
+      return availableTeams.map(team => {
+        return {
+          label: team.name,
+          value: team.groupId
+        };
+      });
+    } else {
+      return teams.map(team => {
+        return {
+          label: team.name,
+          value: team.groupId
+        };
+      });
+    }
   };
   return (
     <FormControlsContainer>
