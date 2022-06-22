@@ -126,7 +126,7 @@ const CallRecordingForm = () => {
     });
   };
   const getTeamOptions = () => {
-    const managerTeams = form.manager.value ? form.manager.value.calabrio_team_ids: [];
+    const managerTeams = form.manager.value && form.manager.value.calabrio_team_ids ? form.manager.value.calabrio_team_ids: [];
     const availableTeams = teams.filter(team => managerTeams.includes(team.groupId));
     if(availableTeams.length > 0){
       return availableTeams.map(team => {

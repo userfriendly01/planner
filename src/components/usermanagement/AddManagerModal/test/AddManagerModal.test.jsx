@@ -143,7 +143,9 @@ describe("<AddManagerModal />", () => {
                     payload: {
                       "manager_first_name": "B'ob",
                       "manager_last_name": "Bob'son",
-                      "manager_n_number": "n0000000"
+                      "manager_n_number": "n0000000",
+                      profile_id: null,
+                      calabrio_team_ids: ""
                     }
                   }
                 ]);
