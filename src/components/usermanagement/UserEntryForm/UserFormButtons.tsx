@@ -20,6 +20,7 @@ import React from "react";
 import {
   addOffice,
   createUser,
+  fetchUser,
   updateUser
 } from "services";
 import {
@@ -169,7 +170,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
   };
 
   const doUpdateUser = () => {
-    console.log(`form atrtibutes: ${form.nNumberFetchedUser}`)
     console.log(`form: ${JSON.stringify(form)}`)
     updateLoading({
       ...loading,
@@ -197,9 +197,13 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     if (form.defaultSkillsUpdated) {
       attributes.default_skills = form.defaultSkills;
     }
-    attributes.department_id = form.nNumberFetchedUser.departmentNumber;
-    attributes.department_name = form.nNumberFetchedUser.departmentName;
-    attributes.location = form.nNumberFetchedUser.departmentName
+    fetchUser(form.unique_id).then(nNumberFetchedUser => {
+      console.log(`form atrtibutes: ${nNumberFetchedUser}`)
+      attributes.department_id = nNumberFetchedUser.departmentNumber;
+      attributes.department_name = nNumberFetchedUser.departmentName;
+      attributes.location = nNumberFetchedUser.departmentName
+    })
+
 
     // update overflow skill
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.profileId.value);
