@@ -168,6 +168,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
   };
 
   const doUpdateUser = () => {
+    console.log(`form atrtibutes: ${form.nNumberFetchedUser}`)
+    console.log(`form: ${form}`)
     updateLoading({
       ...loading,
       overlayMessage: `Updating user: ${worker.attributes.full_name}`,
@@ -195,7 +197,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       attributes.default_skills = form.defaultSkills;
     }
     attributes.department_id = form.nNumberFetchedUser.departmentNumber;
-    console.log(`form atrtibutes: ${form.nNumberFetchedUser}`)
     attributes.department_name = form.nNumberFetchedUser.departmentName;
     attributes.location = form.nNumberFetchedUser.departmentName
 
