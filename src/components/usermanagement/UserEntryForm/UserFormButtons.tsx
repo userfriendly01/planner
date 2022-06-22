@@ -87,6 +87,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       sip: form.didUser ? true : false,
       unique_id: form.nNumber.value.toLowerCase()
     };
+    console.log(`attributes: ${JSON.stringify(attributes)}`)
 
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.profileId.value);
     if (overflowSkill !== undefined && form.zeroOutEnabled && form.directDialNum.value) {
