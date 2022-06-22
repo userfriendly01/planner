@@ -169,7 +169,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
   const doUpdateUser = () => {
     console.log(`form atrtibutes: ${form.nNumberFetchedUser}`)
-    console.log(`form: ${form}`)
+    console.log(`form: ${JSON.stringify(form)}`)
     updateLoading({
       ...loading,
       overlayMessage: `Updating user: ${worker.attributes.full_name}`,
