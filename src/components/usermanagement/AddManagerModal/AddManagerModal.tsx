@@ -24,7 +24,8 @@ import {
 import React, { useState } from "react";
 import {
   addManager,
-  FetchUserResponse
+  FetchUserResponse,
+  updateManager
 } from "services";
 import { sortProfilesByName } from "utils";
 
@@ -62,7 +63,7 @@ const AddManagerModal = (props: AddManagerModalProps) => {
       return Promise.resolve("addManager - Failure - Manager Already exists");
     }
     const profileId = profile ? profile.profile_id : null;
-    const teams = calabrioTeams.map(team => team.groupId).toString();
+    const teams = JSON.stringify(calabrioTeams.map(team => team.groupId));
     return addManager({
       manager_first_nme: manager.manager_first_name.replace("'", "\\'"),
       manager_last_nme: manager.manager_last_name.replace("'", "\\'"),
