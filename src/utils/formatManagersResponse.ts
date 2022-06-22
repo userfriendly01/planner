@@ -1,15 +1,11 @@
 import { Manager } from "globals";
 import { DbManagerResponse } from "services";
 
-const parseCalabrioTeams = (manager: DbManagerResponse) => {
-  const teamsString = manager.calabrio_team_ids;
-  if(typeof teamsString === "string"){
-    try {
-      return teamsString.split(",").map(teamId => parseInt(teamId));
-    } catch(err) {
-      console.error("Error parsing Calabrio Teams for Manager Id", manager.manager_id);
-    }
-  } else {
+const parseCalabrioTeams = (manager: DbManagerResponse): any => {
+  try {
+    return JSON.parse(manager.calabrio_team_ids);
+  } catch(err) {
+    console.error("Error parsing Calabrio Teams for Manager Id", manager.manager_id);
     return [];
   }
 };
