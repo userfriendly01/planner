@@ -1,7 +1,7 @@
 import MessageSidebar from "../MessageSidebar";
 import React from "react";
 import {
-  fireEvent, render, act
+  fireEvent, render, act, screen
 } from "testUtils";
 
 const mockSetMessageState = jest.fn();
@@ -232,5 +232,12 @@ describe("<MessageSidebar />", () => {
       });
     });
     expect(mockSetMessageState).toHaveBeenCalledTimes(0);
+  });
+  describe("Test if hasClosed is behaving appropriately.", () => {
+    test.only("Closed icon should render", () => {
+      const rendered = renderComponent(initalFlashMessageState);
+      const imgContainer = screen.getByRole('img');
+      expect(imgContainer).toBe(':p');
+    });
   });
 });
