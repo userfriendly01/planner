@@ -210,16 +210,12 @@ describe("<UserFormButtons />", () => {
         didUser: false
       }
     };
-    const fetchedWorker = { 
-      departmentName: "departmentName",
-      departmentNumber: "departmentNumber"
-    }
+
     describe(`form.formMode === ${formModes.INSERT}`, () => {
       beforeEach(() => {
         isDidDifferentValid.mockReturnValue(true);
         isFormValid.mockReturnValue(true);
         createUser.mockResolvedValue(rawDbWorker);
-        fetchUser.mockResolvedValue(fetchedWorker);
         addOffice.mockResolvedValue("yay!");
         useFormState.mockReturnValue(validFormState);
       });
