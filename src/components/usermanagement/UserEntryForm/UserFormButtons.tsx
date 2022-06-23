@@ -88,7 +88,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       sip: form.didUser ? true : false,
       unique_id: form.nNumber.value.toLowerCase()
     };
-    console.log(`attributes: ${JSON.stringify(attributes)}`)
 
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.profileId.value);
     if (overflowSkill !== undefined && form.zeroOutEnabled && form.directDialNum.value) {
@@ -170,8 +169,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
   };
 
   const doUpdateUser = () => {
-
-    console.log(`form: ${JSON.stringify(form)}`)
     updateLoading({
       ...loading,
       overlayMessage: `Updating user: ${worker.attributes.full_name}`,
@@ -199,17 +196,11 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       attributes.default_skills = form.defaultSkills;
     }
     
-    const nNumber = form.nNumber.value;
-    fetchUser(nNumber)
-      .then(nNumberFetchedUser => {
-        console.log(`form atrtibutes: ${nNumberFetchedUser}`)
-        attributes.department_id = nNumberFetchedUser.departmentNumber;
-        attributes.department_name = nNumberFetchedUser.departmentName;
-        attributes.location = nNumberFetchedUser.departmentName
-      })
-      .catch(err => {
-        console.log('idk dude')
-      })
+    fetchUser(form.nNumber.value).then(nNumberFetchedUser => {
+      attributes.department_id = nNumberFetchedUser.departmentNumber;
+      attributes.department_name = nNumberFetchedUser.departmentName;
+      attributes.location = nNumberFetchedUser.departmentName
+    })
 
 
     // update overflow skill
