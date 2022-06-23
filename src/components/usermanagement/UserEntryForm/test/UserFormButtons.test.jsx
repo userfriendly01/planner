@@ -12,6 +12,7 @@ import React from "react";
 import {
   addOffice,
   createUser,
+  fetchUser,
   updateUser
 } from "services";
 import {
@@ -59,6 +60,7 @@ jest.mock("context", () => ({
 jest.mock("services", () => ({
   addOffice: jest.fn(),
   createUser: jest.fn(),
+  fetchUser: jest.fn(),
   updateUser: jest.fn()
 }));
 
@@ -208,11 +210,16 @@ describe("<UserFormButtons />", () => {
         didUser: false
       }
     };
+    const fetchedWorker = { 
+      departmentName: "departmentName",
+      departmentNumber: "departmentNumber"
+    }
     describe(`form.formMode === ${formModes.INSERT}`, () => {
       beforeEach(() => {
         isDidDifferentValid.mockReturnValue(true);
         isFormValid.mockReturnValue(true);
         createUser.mockResolvedValue(rawDbWorker);
+        fetchUser.mockReturnValue(fetchedWorker);
         addOffice.mockResolvedValue("yay!");
         useFormState.mockReturnValue(validFormState);
       });
@@ -684,6 +691,8 @@ describe("<UserFormButtons />", () => {
           beforeEach(() => {
             useFormState.mockReturnValue(nonDidValidFormState);
             updateUser.mockResolvedValue(rawDbWorker);
+            fetchUser.mockReturnValue(fetchedUser);
+
           });
           test("should save user with non did worker request body when clicked", async () => {
             const updateWorker = {

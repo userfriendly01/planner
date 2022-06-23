@@ -170,6 +170,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
   };
 
   const doUpdateUser = () => {
+
     console.log(`form: ${JSON.stringify(form)}`)
     updateLoading({
       ...loading,
@@ -197,12 +198,12 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     if (form.defaultSkillsUpdated) {
       attributes.default_skills = form.defaultSkills;
     }
-    fetchUser(form.unique_id).then(nNumberFetchedUser => {
-      console.log(`form atrtibutes: ${nNumberFetchedUser}`)
-      attributes.department_id = nNumberFetchedUser.departmentNumber;
-      attributes.department_name = nNumberFetchedUser.departmentName;
-      attributes.location = nNumberFetchedUser.departmentName
-    })
+
+    const nNumberFetchedUser = fetchUser(form.nNumber.value);
+    console.log(`form atrtibutes: ${nNumberFetchedUser}`)
+    attributes.department_id = nNumberFetchedUser.departmentNumber;
+    attributes.department_name = nNumberFetchedUser.departmentName;
+    attributes.location = nNumberFetchedUser.departmentName;
 
 
     // update overflow skill
