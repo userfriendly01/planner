@@ -219,7 +219,7 @@ describe("<UserFormButtons />", () => {
         isDidDifferentValid.mockReturnValue(true);
         isFormValid.mockReturnValue(true);
         createUser.mockResolvedValue(rawDbWorker);
-        fetchUser.mockReturnValue(fetchedWorker);
+        fetchUser.mockResolvedValue(fetchedWorker);
         addOffice.mockResolvedValue("yay!");
         useFormState.mockReturnValue(validFormState);
       });
@@ -691,7 +691,7 @@ describe("<UserFormButtons />", () => {
           beforeEach(() => {
             useFormState.mockReturnValue(nonDidValidFormState);
             updateUser.mockResolvedValue(rawDbWorker);
-            fetchUser.mockReturnValue(fetchedUser);
+            fetchUser.mockResolvedValue(fetchedUser);
 
           });
           test("should save user with non did worker request body when clicked", async () => {

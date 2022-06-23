@@ -198,12 +198,18 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     if (form.defaultSkillsUpdated) {
       attributes.default_skills = form.defaultSkills;
     }
-
-    const nNumberFetchedUser = fetchUser(form.nNumber.value);
-    console.log(`form atrtibutes: ${nNumberFetchedUser}`)
-    attributes.department_id = nNumberFetchedUser.departmentNumber;
-    attributes.department_name = nNumberFetchedUser.departmentName;
-    attributes.location = nNumberFetchedUser.departmentName;
+    
+    const nNumber = form.nNumber.value;
+    fetchUser(nNumber)
+      .then(nNumberFetchedUser => {
+        console.log(`form atrtibutes: ${nNumberFetchedUser}`)
+        attributes.department_id = nNumberFetchedUser.departmentNumber;
+        attributes.department_name = nNumberFetchedUser.departmentName;
+        attributes.location = nNumberFetchedUser.departmentName
+      })
+      .catch(err => {
+        console.log('idk dude')
+      })
 
 
     // update overflow skill
