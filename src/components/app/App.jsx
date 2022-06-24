@@ -102,7 +102,6 @@ const authenticate = dispatch => new Promise((resolve, reject) => myAxios.get(ap
 const getManagers = async dispatch => {
   try {
     const managers = await getManagersServiceCall();
-    console.log("**Managers", managers);
     dispatch({
       type: "loadManagers",
       payload: formatManagersResponse(managers)

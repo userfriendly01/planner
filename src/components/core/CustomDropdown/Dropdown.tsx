@@ -12,6 +12,7 @@ import styled from "styled-components";
        The rest of the object structure doesnt matter
     multiple: Pass this boolean as "true" if you want the option to select multiple dropdown options
     divider: If you want to display a divider in your list, add an object to the array where the label is "divider"
+    syles: You can pass through multiple styles to control width, height, if there is a border etc
 */
 
 export const Dropdown = (props: any) => {

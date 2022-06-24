@@ -52,15 +52,13 @@ const AddManagerModal = (props: AddManagerModalProps) => {
   const dispatch = useAdminDispatch();
   const state = useAdminState();
 
-  console.log("State", state);
-
   const addManagerClicked = (): Promise<any> => {
     setSaveStatus(loadingStates.loading);
     if (state.managerContext.managers.some((savedManager: Manager) => savedManager.manager_n_number.toLowerCase() === manager.manager_n_number)) {
       setSaveStatus(loadingStates.fail);
       setTimeout(() => setSaveStatus(null), 2000);
       setErrorMessage("Manager already exists");
-      console.log("addManager - Failure - Manager Already exists");
+      console.warn("addManager - Failure - Manager Already exists");
       return Promise.resolve("addManager - Failure - Manager Already exists");
     }
     const profileId = profile ? profile.profile_id : null;
