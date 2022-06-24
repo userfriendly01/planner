@@ -41,12 +41,13 @@ const StyledFormControl = styled(FormControlLabel)`
 const StyledBolt = styled.img`
   max-height: 22px;
   margin-left: -7px;
+  margin-right: 14px;
   margin-bottom: -7px;
 `;
 
 const StyledClosed = styled.img`
   max-height: 22px;
-  margin-left: -7px;
+  margin-left: -7px
   margin-bottom: -7px;
 `;
 
@@ -117,7 +118,6 @@ const MessageSidebar = props => {
   const makeRadioButton = skillName => {
     let hasFlash = false;
     let hasClosed = false;
-    console.log("GCx", messageState);
     if (messageState.skillData.allSkills) {
       const skill = messageState.skillData.allSkills.find(skill => skill.skillName === skillName);
       if (skill && skill.flashMessage) {
