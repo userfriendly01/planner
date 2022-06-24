@@ -233,11 +233,18 @@ describe("<MessageSidebar />", () => {
     });
     expect(mockSetMessageState).toHaveBeenCalledTimes(0);
   });
-  describe("Test if hasClosed is behaving appropriately.", () => {
-    test.only("Closed icon should render", () => {
-      const rendered = renderComponent(initalFlashMessageState);
-      const imgContainer = screen.getByRole('img');
-      expect(imgContainer).toBe(':p');
+  describe("Test if hasClosed is true when expected.", () => {
+    test("Closed icon should render", () => {
+      renderComponent(initalFlashMessageState);
+      const imgContainer = screen.getAllByRole("img");
+      expect(imgContainer.length).toBe(2);
+    });
+  });
+  describe("Test if hasClosed is flase when expected.", () => {
+    test("Closed icon shouldn't render", () => {
+      renderComponent(initialNoFlashMessageState);
+      const imgContainer = screen.queryAllByRole("img");
+      expect(imgContainer.length).toBe(0);
     });
   });
 });
