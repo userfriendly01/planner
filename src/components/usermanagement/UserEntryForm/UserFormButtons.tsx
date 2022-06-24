@@ -168,7 +168,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       });
   };
 
-  const doUpdateUser = () => {
+  const doUpdateUser =  async () => {
     updateLoading({
       ...loading,
       overlayMessage: `Updating user: ${worker.attributes.full_name}`,
@@ -195,12 +195,11 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     if (form.defaultSkillsUpdated) {
       attributes.default_skills = form.defaultSkills;
     }
-    
-    fetchUser(form.nNumber.value).then(nNumberFetchedUser => {
-      attributes.department_id = nNumberFetchedUser.departmentNumber;
-      attributes.department_name = nNumberFetchedUser.departmentName;
-      attributes.location = nNumberFetchedUser.departmentName
-    })
+
+    const nNumberFetchedUser = await fetchUser(form.nNumber.value);
+    attributes.department_id = nNumberFetchedUser.departmentNumber;
+    attributes.department_name = nNumberFetchedUser.departmentName;
+    attributes.location = nNumberFetchedUser.departmentName
 
 
     // update overflow skill
