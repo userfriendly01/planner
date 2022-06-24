@@ -12,6 +12,7 @@ import React from "react";
 import {
   addOffice,
   createUser,
+  fetchUser,
   updateUser
 } from "services";
 import {
@@ -59,6 +60,7 @@ jest.mock("context", () => ({
 jest.mock("services", () => ({
   addOffice: jest.fn(),
   createUser: jest.fn(),
+  fetchUser: jest.fn(),
   updateUser: jest.fn()
 }));
 
@@ -208,6 +210,7 @@ describe("<UserFormButtons />", () => {
         didUser: false
       }
     };
+
     describe(`form.formMode === ${formModes.INSERT}`, () => {
       beforeEach(() => {
         isDidDifferentValid.mockReturnValue(true);
@@ -684,6 +687,8 @@ describe("<UserFormButtons />", () => {
           beforeEach(() => {
             useFormState.mockReturnValue(nonDidValidFormState);
             updateUser.mockResolvedValue(rawDbWorker);
+            fetchUser.mockResolvedValue(fetchedUser);
+
           });
           test("should save user with non did worker request body when clicked", async () => {
             const updateWorker = {
@@ -699,10 +704,14 @@ describe("<UserFormButtons />", () => {
             const updateWorkerAttributesAfterFormValid = {
               default_skills: validFormOptions.defaultSkills,
               did: validFormOptions.didE164,
+              department_id: validFormState.nNumberFetchedUser.departmentNumber,
+              department_name: validFormState.nNumberFetchedUser.departmentName,
               extension: validFormOptions.extension,
+              location: validFormState.nNumberFetchedUser.departmentName,
               manager_first_name: validFormOptions.manager.manager_first_name,
               manager_last_name: validFormOptions.manager.manager_last_name,
               manager_n_number: validFormOptions.manager.manager_n_number,
+              manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
               profile_id: validFormOptions.profileId,
               routing: {
                 skills: ["nonSkillL1","466"],
@@ -746,10 +755,14 @@ describe("<UserFormButtons />", () => {
           const updateWorkerAttributesAfterFormValid = {
             default_skills: validFormOptions.defaultSkills,
             did: validFormOptions.didE164,
+            department_id: validFormOptions.nNumberFetchedUser.departmentNumber,
+            department_name: validFormOptions.nNumberFetchedUser.departmentName,
             extension: validFormOptions.extension,
+            location: validFormOptions.nNumberFetchedUser.departmentName,
             manager_first_name: validFormOptions.manager.manager_first_name,
             manager_last_name: validFormOptions.manager.manager_last_name,
             manager_n_number: validFormOptions.manager.manager_n_number,
+            manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
             profile_id: validFormOptions.profileId,
             routing: {
               skills: ["nonSkillL1"],
@@ -910,7 +923,11 @@ describe("<UserFormButtons />", () => {
             });
             await waitFor(() => {
               expect(updateUser).toHaveBeenCalledWith(worker.sid, {
-                attributes: {},
+                attributes: {
+                  department_id: fetchedUser.departmentNumber,
+                  department_name: fetchedUser.departmentName,
+                  location: fetchedUser.departmentName
+                },
                 zeroOutEnabled: true
               });
               expect(mockDispatch).toHaveBeenCalledTimes(1);
@@ -955,11 +972,15 @@ describe("<UserFormButtons />", () => {
         };
         const updateWorkerAttributesAfterFormValid = {
           default_skills: validFormOptions.defaultSkills,
+          department_id: validFormOptions.nNumberFetchedUser.departmentNumber,
+          department_name: validFormOptions.nNumberFetchedUser.departmentName,
           did: validFormOptions.didE164,
           extension: validFormOptions.extension,
+          location: validFormOptions.nNumberFetchedUser.departmentName,
           manager_first_name: validFormOptions.manager.manager_first_name,
           manager_last_name: validFormOptions.manager.manager_last_name,
           manager_n_number: validFormOptions.manager.manager_n_number,
+          manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
           profile_id: validFormOptions.profileId
         };
         beforeEach(() => {
