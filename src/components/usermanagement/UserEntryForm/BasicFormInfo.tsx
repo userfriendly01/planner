@@ -70,10 +70,21 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   } = props;
 
   const form = useFormState();
-  const adminState = useAdminState();
   const setForm = useFormDispatch();
 
   console.log("FORM", form);
+
+  const formatDropdownOption = (value: any, label: string, option: any) => {
+    if(typeof option === "object"){
+      return {
+        ...option,
+        value,
+        label
+      };
+    } else {
+      return "";
+    }
+  };
 
   const isOutgoingDisabled = (): boolean => {
     if (form.formMode === formModes.INSERT) {
@@ -212,13 +223,8 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
             margin: "8px 0px 5px 0px"
           }}
           onBlur={() => handleOnBlur("manager")}
-          options={managers.sort(sortManagersByName).map(manager => ({
-            label: `${manager.manager_first_name} ${manager.manager_last_name}`,
-            value: manager.manager_n_number,
-            ...manager
-          }))}
+          options={managers.sort(sortManagersByName).map(manager => formatDropdownOption(manager.manager_n_number, `${manager.manager_first_name} ${manager.manager_last_name} - ${manager.manager_n_number}`, manager))}
           updateValue={(event: any, newValue: any) => {
-            console.log("***Selected Manager", newValue);
             setForm({
               type: userFormActions.UPDATE_MANAGER,
               payload: newValue
@@ -233,7 +239,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
               });
             }
           }}
-          value={form.manager.value}
+          value={form.manager.value ? `${form.manager.value.manager_first_name} ${form.manager.value.manager_last_name} - ${form.manager.value.manager_n_number}`: ""}
         />
         <Dropdown
           error={form.profileId.blurred && !isProfileIdValid(form)}
@@ -243,11 +249,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
             margin: "10px 0px"
           }}
           onBlur={() => handleOnBlur("profileId")}
-          options={profiles.sort(sortProfilesByName).map((profile: any) => ({
-            label: profile.profile_nme,
-            value: profile.profile_id,
-            ...profile
-          }))}
+          options={profiles.sort(sortProfilesByName).map((profile: any) => formatDropdownOption(profile.profile_id, profile.profile_nme, profile))}
           updateValue={(event: any, newValue: any) => setForm({
             type: userFormActions.UPDATE_TEAM,
             payload: {

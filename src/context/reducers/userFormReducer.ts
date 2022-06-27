@@ -330,7 +330,7 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         },
         manager: {
           ...state.manager,
-          value: JSON.stringify(managers.find((m: Manager) => m.manager_n_number === worker.attributes.manager_n_number))
+          value: managers.find((m: Manager) => m.manager_n_number === worker.attributes.manager_n_number)
         },
         nNumber: {
           ...state.nNumber,

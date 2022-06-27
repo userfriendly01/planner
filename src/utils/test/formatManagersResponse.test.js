@@ -9,7 +9,7 @@ describe("formatManagersResponse", () => {
       manager_last_nme: "test",
       manager_n_num: "test",
       profile_id: 1,
-      calabrio_team_ids: "210, 215"
+      calabrio_team_ids: "[210, 215]"
     },
     {
       manager_id: 2,

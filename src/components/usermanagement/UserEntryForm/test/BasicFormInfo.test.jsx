@@ -171,7 +171,7 @@ describe("<BasicFormInfo />", () => {
       const expectedManagerProps = {
         label: "Manager *",
         options: managerList.map(manager => ({
-          label: `${manager.manager_first_name} ${manager.manager_last_name}`,
+          label: `${manager.manager_first_name} ${manager.manager_last_name} - ${manager.manager_n_number}`,
           value: manager.manager_n_number,
           ...manager
         })),
@@ -224,11 +224,11 @@ describe("<BasicFormInfo />", () => {
       renderComponent(false);
       act(() => {
         const updateValue = Dropdown.mock.calls[0][0].updateValue;
-        updateValue(null, JSON.stringify(managerList[0]));
+        updateValue(null, managerList[0]);
       });
       expect(mockSetForm).toBeCalledWith({
         type: userFormActions.UPDATE_MANAGER,
-        payload: JSON.stringify(managerList[0])
+        payload: managerList[0]
       });
     });
   });

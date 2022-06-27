@@ -3,7 +3,7 @@ import { DbManagerResponse } from "services";
 
 const parseCalabrioTeams = (manager: DbManagerResponse): any => {
   try {
-    return JSON.parse(manager.calabrio_team_ids);
+    return manager.calabrio_team_ids ? JSON.parse(manager.calabrio_team_ids): [];
   } catch(err) {
     console.error("Error parsing Calabrio Teams for Manager Id", manager.manager_id);
     return [];

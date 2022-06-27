@@ -558,7 +558,7 @@ describe("userFormReducer", () => {
         },
         manager: {
           ...initialUserFormState.manager,
-          value: JSON.stringify(managerList.find(m => m.manager_n_number === worker.attributes.manager_n_number))
+          value: managerList.find(m => m.manager_n_number === worker.attributes.manager_n_number)
         },
         nNumber: {
           ...initialUserFormState.nNumber,
