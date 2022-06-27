@@ -161,6 +161,7 @@ export const validFormOptions = {
   extension: "1234",
   manager: managerList[0],
   nNumber: "n1234567",
+  nNumberFetchedUser: fetchedUser,
   profileId: profileList[0].profile_id
 };
 
