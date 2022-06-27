@@ -145,13 +145,13 @@ const filteredWorkers = [
 
 const taskrouterSkills = [
   {
-    multivale: false,
+    multivalue: false,
     minimum: 0,
     maximum: 1,
     name: "wow"
   },
   {
-    multivale: true,
+    multivalue: true,
     minimum: 2,
     maximum: 99,
     name: "neat"
