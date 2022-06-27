@@ -15,6 +15,7 @@ import {
   PROFILE_9_SKILLS,
   PROFILE_10_SKILLS,
   PROFILE_11_SKILLS,
+  PROFILE_28_SKILLS,
   PROFILE_32_SKILLS,
   PROFILE_33_SKILLS,
   PROFILE_34_SKILLS,
@@ -81,9 +82,26 @@ export const profileConfigs = {
   PROFILE_SKILL_MAP: [
     {
       "profileId": 0,
-      "skills": [...PROFILE_1_SKILLS,...PROFILE_2_SKILLS,...PROFILE_3_SKILLS,...PROFILE_4_SKILLS,...PROFILE_5_SKILLS,...PROFILE_6_SKILLS,
-        ...PROFILE_7_SKILLS,...PROFILE_8_SKILLS,...PROFILE_9_SKILLS,...PROFILE_10_SKILLS,...PROFILE_11_SKILLS,...PROFILE_32_SKILLS,...PROFILE_33_SKILLS,
-        ...PROFILE_34_SKILLS,...PROFILE_35_SKILLS,...PROFILE_36_SKILLS,...PROFILE_37_SKILLS]
+      "skills": [
+        ...PROFILE_1_SKILLS,
+        ...PROFILE_2_SKILLS,
+        ...PROFILE_3_SKILLS,
+        ...PROFILE_4_SKILLS,
+        ...PROFILE_5_SKILLS,
+        ...PROFILE_6_SKILLS,
+        ...PROFILE_7_SKILLS,
+        ...PROFILE_8_SKILLS,
+        ...PROFILE_9_SKILLS,
+        ...PROFILE_10_SKILLS,
+        ...PROFILE_11_SKILLS,
+        ...PROFILE_28_SKILLS,
+        ...PROFILE_32_SKILLS,
+        ...PROFILE_33_SKILLS,
+        ...PROFILE_34_SKILLS,
+        ...PROFILE_35_SKILLS,
+        ...PROFILE_36_SKILLS,
+        ...PROFILE_37_SKILLS
+      ]
     },
     {
       "profileId": 1,
@@ -128,6 +146,10 @@ export const profileConfigs = {
     {
       "profileId": 11,
       "skills": PROFILE_11_SKILLS
+    },
+    {
+      "profileId": 28,
+      "skills": PROFILE_28_SKILLS
     },
     {
       "profileId": 32,

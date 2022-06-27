@@ -51,11 +51,11 @@ describe("<ManagementFilter />", () => {
     const rendered = renderComponent();
     expect(rendered.container).toHaveTextContent("Manager Filter");
     expect(rendered.queryAllByTestId("manager-list")[0]).toHaveTextContent("Show All");
-    expect(rendered.queryAllByTestId("manager-list")[1]).toHaveTextContent("Ben Redman");
-    expect(rendered.queryAllByTestId("manager-list")[2]).toHaveTextContent("Christine Haley");
-    expect(rendered.queryAllByTestId("manager-list")[3]).toHaveTextContent("Faith Cuneo");
-    expect(rendered.queryAllByTestId("manager-list")[4]).toHaveTextContent("Michael Nieman");
-    expect(rendered.queryAllByTestId("manager-list")[5]).toHaveTextContent("Michael Nieman");
+    expect(rendered.queryAllByTestId("manager-list")[1]).toHaveTextContent("Ben Redman - n0222222");
+    expect(rendered.queryAllByTestId("manager-list")[2]).toHaveTextContent("Christine Haley - n0333333");
+    expect(rendered.queryAllByTestId("manager-list")[3]).toHaveTextContent("Faith Cuneo - n0444444");
+    expect(rendered.queryAllByTestId("manager-list")[4]).toHaveTextContent("Michael Nieman - n0555555");
+    expect(rendered.queryAllByTestId("manager-list")[5]).toHaveTextContent("Michael Nieman - n0555555");
   });
 
   test("When an option is clicked in the filter, the setFilter method is fired with the correct parameters", () => {

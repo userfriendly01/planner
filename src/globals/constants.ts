@@ -15,6 +15,7 @@ export const PROFILE_11_SKILLS = ["ccGeneralSkill12", "ccGeneralSkillSP19", "ccN
   "ccAgencyMarkets48", "ccPortalSupport53","ccPortalSP54","ccUPSInquiry57", "ccUpsGL58", "ccCaMAA61", "ccCatTEAM62", "ccSuperAssist63",
   "ccDefaultCC76","ccIronHealth78", "ccWCInquiry81","ccPALInquiry82", "ccWCInquirySP83", "ccPALInquirySP84","ccAuxMisc87","ccAuxPAL88",
   "ccAuxWC89", "ccUber92","ccCovid93","ccLyft96", "ccNASInquiry97", "ccNASPropertyCAT98"];
+export const PROFILE_28_SKILLS = ["blUWFarm", "blUWInlandMarine", "blUWZone1", "blUWZone2", "blUWZone3", "blUWZone4", "blUWZone5", "blUWZone6"];
 export const PROFILE_32_SKILLS = ["lscAgentSales", "lscBookTransfer", "lscDirectSales", "lscHomeInsDotCom", "lscMass", "lscOBDialer1", "lscOBDialer2", "lscOBDialer3", 
   "lscPriorityAgent", "lscPriorityCampaigns", "lscUSAA"];
 export const PROFILE_33_SKILLS = ["pasAAR", "pasAgtBill", "pasAgtPol", "pasCustBill", "pasCustPol", "pasHelpDesk", "pasMA", "pasProducerSR", "pasSecProfileMgr",

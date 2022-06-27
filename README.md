@@ -42,13 +42,14 @@ npm install
 
 ##### You must access this application through the cicct-user-gateway over port 8082 locally
 
-This application (cicct-softphone-admin-ui) must be accessed through the cicct-user-gateway and will need to communicate to cicct-softphone-service (also through the gateway)
+This application (cicct-softphone-admin-ui) must be accessed through the cicct-user-gateway and will need to communicate to cicct-softphone-service (also through the gateway) and cicct-callflow-api. See [here](https://github.com/lmigtech/cicct-callflow-api) on how to run cicct-callflow-api.
 
 These applications will run on the following ports when started locally:
 ```
 cicct-user-gateway        8082
 cicct-softphone-admin-ui  8084
 cicct-softphone-service   8080
+cicct-callflow-api        8081
 ```
 
 Make sure all three applications are running locally on the specified ports above

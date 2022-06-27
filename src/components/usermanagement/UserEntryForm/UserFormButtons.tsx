@@ -20,6 +20,7 @@ import React from "react";
 import {
   addOffice,
   createUser,
+  fetchUser,
   updateUser
 } from "services";
 import {
@@ -167,7 +168,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       });
   };
 
-  const doUpdateUser = () => {
+  const doUpdateUser =  async () => {
     updateLoading({
       ...loading,
       overlayMessage: `Updating user: ${worker.attributes.full_name}`,
@@ -180,6 +181,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       attributes.manager_first_name = parsedManager.manager_first_name;
       attributes.manager_last_name = parsedManager.manager_last_name;
       attributes.manager_n_number = parsedManager.manager_n_number;
+      attributes.manager = parsedManager.manager_first_name + ' ' + parsedManager.manager_last_name;
     }
     if (form.profileId.updated) {
       attributes.profile_id = form.profileId.value;
@@ -193,6 +195,13 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     if (form.defaultSkillsUpdated) {
       attributes.default_skills = form.defaultSkills;
     }
+
+    const nNumberFetchedUser = await fetchUser(form.nNumber.value);
+    attributes.department_id = nNumberFetchedUser.departmentNumber;
+    attributes.department_name = nNumberFetchedUser.departmentName;
+    attributes.location = nNumberFetchedUser.departmentName
+
+
     // update overflow skill
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.profileId.value);
     const nonOverflowSkills: string[] = getNonOverflowSkills(worker, profiles) ? getNonOverflowSkills(worker, profiles) : [];
