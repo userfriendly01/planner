@@ -37,27 +37,27 @@ const loadingStates = {
 };
 export interface ManagerModalProps {
   handleClose: () => void,
-  editManager: any
+  selectedManager: any
 }
 
 const ManagerModal = (props: ManagerModalProps) => {
   const {
     handleClose,
-    editManager
+    selectedManager
   } = props;
 
   const state = useAdminState();
   const profiles = state.profileContext.profiles;
   const calabrioTeams = state.calabrioContext.teams;
-  const [manager, setManager] = useState<Manager>(editManager ? editManager : null);
+  const [manager, setManager] = useState<Manager>(selectedManager ? selectedManager : null);
   const [errorMessage, setErrorMessage] = useState<string>(null);
   const [saveStatus, setSaveStatus] = useState<string>(null);
-  const [nNumber, setNNumber] = useState<string>(editManager ? editManager.manager_n_number : defaultNNumber);
+  const [nNumber, setNNumber] = useState<string>(selectedManager ? selectedManager.manager_n_number : defaultNNumber);
   const [fetchedUser, setFetchedUser] = useState<FetchUserResponse>(null);
-  const [ profile, setProfile ] = useState<any>(editManager ? profiles.find(p => p.profile_id === editManager.profile_id) : null);
-  const [ selectedCalabrioTeams, setSelectedCalabrioTeams ] = useState<number[]>(editManager ? editManager.calabrio_team_ids :[]);
+  const [ profile, setProfile ] = useState<any>(selectedManager ? profiles.find(p => p.profile_id === selectedManager.profile_id) : null);
+  const [ selectedCalabrioTeams, setSelectedCalabrioTeams ] = useState<number[]>(selectedManager ? selectedManager.calabrio_team_ids :[]);
 
-  console.warn("EDIT MANAGER", editManager);
+  console.warn("selectedManager", selectedManager);
   console.log("profile", profile);
   console.log("calabrioTeams", calabrioTeams);
   console.log("selectedCalabrioTeams", selectedCalabrioTeams);
@@ -69,7 +69,7 @@ const ManagerModal = (props: ManagerModalProps) => {
       ...team,
       value: team.groupId,
       label: team.name
-    } : "";
+    } : teamId;
   };
   const dispatch = useAdminDispatch();
 
@@ -112,10 +112,12 @@ const ManagerModal = (props: ManagerModalProps) => {
   };
 
   const editManagerClicked = (): Promise<any> => {
-    console.warn("EDIT IS RUNNING WHYYY");
     setSaveStatus(loadingStates.loading);
     const profileId = profile ? profile.profile_id : null;
+    console.warn("EDIT IS RUNNING", selectedCalabrioTeams);
     const teams = JSON.stringify(selectedCalabrioTeams);
+    console.warn("teams", teams);
+
     return editManager(manager.manager_id, {
       profile_id: profileId,
       calabrio_team_ids: teams
@@ -159,7 +161,7 @@ const ManagerModal = (props: ManagerModalProps) => {
           /> : null}
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>
-          { editManager ?
+          { selectedManager ?
             <Header>Edit {manager.manager_first_name} {manager.manager_last_name}</Header>
             : <Header>Add a Manager</Header>
           }
@@ -218,7 +220,7 @@ const ManagerModal = (props: ManagerModalProps) => {
           />
         </FlexColumn>
         <ButtonWrapper>
-          { editManager ?
+          { selectedManager ?
             <StyledButton disabled={!manager || !profile || selectedCalabrioTeams.length === 0} onClick={editManagerClicked} data-testid={"edit-manager-button"}>
               Save
             </StyledButton>

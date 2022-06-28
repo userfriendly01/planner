@@ -111,7 +111,7 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
         CustomRender={DropdownOption}
       />
       <Modal disableBackdropClick={true} open={isManagerModalOpen}>
-        <ManagerModal data-testid="add-manager-modal" handleClose={handleCloseManager} editManager={selectedManager}/>
+        <ManagerModal data-testid="add-manager-modal" handleClose={handleCloseManager} selectedManager={selectedManager}/>
       </Modal>
     </Wrapper>
   );
