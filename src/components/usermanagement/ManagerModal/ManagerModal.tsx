@@ -62,12 +62,13 @@ const ManagerModal = (props: ManagerModalProps) => {
   console.log("selectedCalabrioTeams", selectedCalabrioTeams);
 
   const getCalabrioOption = (teamId: number) => {
-    const team = calabrioTeams.find(team => team.groupdId === teamId);
-    return {
+    const team = calabrioTeams.find(team => team.groupId === teamId);
+
+    return team ? {
       ...team,
       value: team.groupId,
       label: team.name
-    };
+    } : "";
   };
   const dispatch = useAdminDispatch();
 
