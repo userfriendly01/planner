@@ -47,6 +47,14 @@ export const reducer = (state: AppState, action: Action): AppState => {
           managers: [...state.managerContext.managers.slice(), action.payload]
         }
       };
+    case "editManager":
+      return {
+        ...state,
+        managerContext: {
+          ...state.managerContext,
+          managers: action.payload
+        }
+      };
     case "addOffice":
       return {
         ...state,

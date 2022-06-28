@@ -114,24 +114,25 @@ const ManagerModal = (props: ManagerModalProps) => {
   const editManagerClicked = (): Promise<any> => {
     setSaveStatus(loadingStates.loading);
     const profileId = profile ? profile.profile_id : null;
-    console.warn("EDIT IS RUNNING", selectedCalabrioTeams);
     const teams = JSON.stringify(selectedCalabrioTeams);
-    console.warn("teams", teams);
 
     return editManager(manager.manager_id, {
       profile_id: profileId,
       calabrio_team_ids: teams
     })
       .then((res: any) => {
+        const updatedArray = state.managerContext.managers.map(m => {
+          if(m.manager_id === manager.manager_id){
+            return manager;
+          } else {
+            return m;
+          }
+        });
         console.log("dispatch edit managers");
-        // dispatch(({
-        //   type: "addManager",
-        //   payload: {
-        //     ...manager,
-        //     profile_id: profileId,
-        //     calabrio_team_ids: teams
-        //   }
-        // }));
+        dispatch(({
+          type: "editManager",
+          payload: updatedArray
+        }));
         setSaveStatus(loadingStates.success);
         setTimeout(handleClose, 2000);
         console.log("editManager - Success", res);
@@ -169,7 +170,7 @@ const ManagerModal = (props: ManagerModalProps) => {
         </HeaderAndCloseButtonWrapper>
         <FlexColumn>
           <ModalNNumber
-            disabled={saveStatus || editManager ? true : false}
+            disabled={saveStatus || selectedManager ? true : false}
             fetchedUser={fetchedUser}
             label="N Number"
             onComplete={(fetchedUser, nNumber) => {
