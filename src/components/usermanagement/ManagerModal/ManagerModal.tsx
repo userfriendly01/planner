@@ -83,13 +83,12 @@ const ManagerModal = (props: ManagerModalProps) => {
       return Promise.resolve("addManager - Failure - Manager Already exists");
     }
     const profileId = profile ? profile.profile_id : null;
-    const teams = JSON.stringify(selectedCalabrioTeams);
     return addManager({
       manager_first_nme: manager.manager_first_name.replace("'", "\\'"),
       manager_last_nme: manager.manager_last_name.replace("'", "\\'"),
       manager_n_num: manager.manager_n_number,
       profile_id: profileId,
-      calabrio_team_ids: teams
+      calabrio_team_ids: JSON.stringify(selectedCalabrioTeams)
     })
       .then(res => {
         dispatch(({
@@ -97,7 +96,7 @@ const ManagerModal = (props: ManagerModalProps) => {
           payload: {
             ...manager,
             profile_id: profileId,
-            calabrio_team_ids: teams
+            calabrio_team_ids: selectedCalabrioTeams
           }
         }));
         setSaveStatus(loadingStates.success);
