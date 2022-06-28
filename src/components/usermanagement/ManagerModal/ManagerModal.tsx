@@ -58,8 +58,6 @@ const ManagerModal = (props: ManagerModalProps) => {
 
   const dispatch = useAdminDispatch();
 
-  console.log("MANAGER PASSED IN", editManager);
-
   const addManagerClicked = (): Promise<any> => {
     setSaveStatus(loadingStates.loading);
     if (state.managerContext.managers.some((savedManager: Manager) => savedManager.manager_n_number.toLowerCase() === manager.manager_n_number)) {
@@ -211,7 +209,10 @@ const ManagerModal = (props: ManagerModalProps) => {
               ...team
             }))}
             value={selectedCalabrioTeams.map(team => team.name)}
-            updateValue={(event: any, newValue: any) => setSelectedCalabrioTeams(newValue)}
+            updateValue={(event: any, newValue: any) => {
+              console.log("Calabrio new Values", newValue);
+              setSelectedCalabrioTeams(newValue);
+            }}
           />
         </FlexColumn>
         <ButtonWrapper>
