@@ -54,8 +54,16 @@ const ManagerModal = (props: ManagerModalProps) => {
   const [nNumber, setNNumber] = useState<string>(editManager ? editManager.manager_n_number : defaultNNumber);
   const [fetchedUser, setFetchedUser] = useState<FetchUserResponse>(null);
   const [ profile, setProfile ] = useState<any>(editManager ? profiles.find(p => p.profile_id === editManager.profile_id) : null);
-  const [ selectedCalabrioTeams, setSelectedCalabrioTeams ] = useState<any[]>(editManager ? calabrioTeams.filter(team => editManager.calabrio_team_ids.includes(team.groupId)) :[]);
+  const [ selectedCalabrioTeams, setSelectedCalabrioTeams ] = useState<any[]>(editManager ? editManager.calabrio_team_ids :[]);
 
+  const getCalabrioOption = (teamId: number) => {
+    const team = calabrioTeams.find(team => team.groupdId === teamId);
+    return {
+      ...team,
+      value: team.groupId,
+      label: team.name
+    };
+  };
   const dispatch = useAdminDispatch();
 
   const addManagerClicked = (): Promise<any> => {
@@ -203,12 +211,8 @@ const ManagerModal = (props: ManagerModalProps) => {
               width: "400px",
               margin: "10px 0px"
             }}
-            options={state.calabrioContext.teams.map((team: any) => ({
-              label: team.name,
-              value: team.groupId,
-              ...team
-            }))}
-            value={selectedCalabrioTeams.map(team => team.name)}
+            options={calabrioTeams.map((team: any) => getCalabrioOption(team.groupId))}
+            value={selectedCalabrioTeams.map(teamId => getCalabrioOption(teamId))}
             updateValue={(event: any, newValue: any) => {
               console.log("Calabrio new Values", newValue);
               setSelectedCalabrioTeams(newValue);
@@ -216,7 +220,7 @@ const ManagerModal = (props: ManagerModalProps) => {
           />
         </FlexColumn>
         <ButtonWrapper>
-          <StyledButton disabled={!manager || !profile || calabrioTeams.length < 0} onClick={addManagerClicked} data-testid={"add-manager-button"}>
+          <StyledButton disabled={!manager || !profile || calabrioTeams.length === 0} onClick={addManagerClicked} data-testid={"add-manager-button"}>
             Add Manager
           </StyledButton>
         </ButtonWrapper>
