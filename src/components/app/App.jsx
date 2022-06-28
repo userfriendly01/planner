@@ -19,7 +19,8 @@ import React, {
 } from "react";
 import {
   getManagers as getManagersServiceCall,
-  getOffices as getOfficesServiceCall
+  getOffices as getOfficesServiceCall,
+  getCalabrioOrg as getCalabrioOrgServiceCall
 } from "services";
 import styled from "styled-components";
 import {
@@ -128,6 +129,21 @@ const getOffices = async dispatch => {
   }
 };
 
+const getCalabrioOrg = async dispatch => {
+  try {
+    const org = await getCalabrioOrgServiceCall();
+    console.log("Calabrio Org", org);
+    dispatch({
+      type: "loadCalabrioOrg",
+      payload: org.data
+    });
+  } catch (error) {
+    console.error("Failed to fetch calabrio org from service");
+    //We're not throwing an error here so that we can still load Triton Admin and use its other features if this fails
+    //Additionally - there can be local issues we have to work out when trying to call this 
+  }
+};
+
 const getProfiles = dispatch => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_PROFILES)
   .then(res => {
     dispatch({
@@ -191,7 +207,8 @@ const App = () => {
       getOffices(dispatch),
       getProfiles(dispatch),
       getSkills(dispatch),
-      getWorkers(dispatch)
+      getWorkers(dispatch),
+      getCalabrioOrg(dispatch)
     ])
       .then(() => {
         setLoadResult(success);

@@ -1,5 +1,5 @@
 import ProfileDropDown from "../ProfileDropDown";
-import { OutlinedSelect } from "components";
+import { Dropdown } from "components";
 import React from "react";
 import {
   expectMockedComponent,
@@ -11,7 +11,7 @@ import {
 
 jest.mock("components", () => ({
   __esModule: true,
-  OutlinedSelect: jest.fn()
+  Dropdown: jest.fn()
 }));
 
 const updateProfile = jest.fn();
@@ -25,41 +25,47 @@ describe("<ProfileDropDown />", () => {
   const availableProfiles = [
     {
       profile_id: 1,
-      profile_nme: "First Profile"
+      profile_nme: "First Profile",
+      value: 1,
+      label: "First Profile"
+
     },
     {
       profile_id: 2,
-      profile_nme: "Second Profile"
+      profile_nme: "Second Profile",
+      value: 2,
+      label: "Second Profile"
     },
     {
       profile_id: 3,
-      profile_nme: "Third Profile"
+      profile_nme: "Third Profile",
+      value: 3,
+      label: "Third Profile"
     }
   ];
-  const profileId = "2";
 
   beforeEach(() => {
     jest.clearAllMocks();
-    setupMockedComponents({ OutlinedSelect });
+    setupMockedComponents({ Dropdown });
   });
   describe("a profile is selected", () => {
     test("should render OutlinedSelect with correct props", () => {
       const rendered = render(<ProfileDropDown
         availableProfiles={availableProfiles}
-        profileId={profileId}
+        profileId={availableProfiles[0].profile_id}
         updateProfile={updateProfile}
       />);
-      expectMockedComponent(rendered, { OutlinedSelect }, 1);
-      const optionsDisplayFunc = OutlinedSelect.mock.calls[0][0].optionsDisplayFunc;
-      const option = optionsDisplayFunc(availableProfiles[1]);
-      expect(option).toEqual({
-        display: "2 - Second Profile",
-        key: 2,
-        value: 2
+      expectMockedComponent(rendered, { Dropdown }, 1);
+      expectOnlyPassedProps(Dropdown, {
+        label: "Profile",
+        value: {
+          label: "1 - First Profile",
+          value: 1
+        }
       });
-      const { updateValue } = getMockedComponentProps(OutlinedSelect);
-      updateValue(profileId);
-      expect(updateProfile).toHaveBeenCalledWith(profileId);
+      const { updateValue } = getMockedComponentProps(Dropdown);
+      updateValue(null, availableProfiles[1]);
+      expect(updateProfile).toHaveBeenCalledWith(availableProfiles[1].value);
     });
   });
   describe("no profile is selected (profileID is null)", () => {
@@ -69,9 +75,10 @@ describe("<ProfileDropDown />", () => {
         profileId={null}
         updateProfile={updateProfile}
       />);
-      expectMockedComponent(rendered, { OutlinedSelect }, 1);
-      expectOnlyPassedProps(OutlinedSelect, {
-        noBlankValue: false
+      expectMockedComponent(rendered, { Dropdown }, 1);
+      expectOnlyPassedProps(Dropdown, {
+        label: "Profile",
+        value: ""
       });
     });
   });

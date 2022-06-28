@@ -10,7 +10,7 @@ import {
   ModalExtension,
   ModalNNumber,
   ModalPhoneNumber,
-  OutlinedSelect,
+  Dropdown,
   DidFormInfoAdd,
   DidFormInfoUpdate,
   ExtensionButtonWrapper,
@@ -22,9 +22,7 @@ import {
   useAdminState,
   userFormActions
 } from "context";
-import {
-  formModes
-} from "globals";
+import { formModes } from "globals";
 import React from "react";
 import {
   act,
@@ -60,7 +58,7 @@ jest.mock("components", () => ({
   ModalExtension: jest.fn(),
   ModalNNumber: jest.fn(),
   ModalPhoneNumber: jest.fn(),
-  OutlinedSelect: jest.fn(),
+  Dropdown: jest.fn(),
   PaperContainer: jest.fn(),
   StyledButton: jest.fn(),
   ForwardToEntryForm: jest.fn(),
@@ -132,7 +130,7 @@ describe("<BasicFormInfo />", () => {
       ModalExtension,
       ModalNNumber,
       ModalPhoneNumber,
-      OutlinedSelect,
+      Dropdown,
       ForwardToEntryForm,
       InputAdornment,
       Edit,
@@ -169,23 +167,18 @@ describe("<BasicFormInfo />", () => {
   describe("Manager dropdown", () => {
     test("Should render the correct initial state", () => {
       const rendered = renderComponent(false);
-      expectMockedComponent(rendered, { OutlinedSelect }, 2);
+      expectMockedComponent(rendered, { Dropdown }, 2);
       const expectedManagerProps = {
         label: "Manager *",
-        labelWidth: 67,
-        optionsList: managerList,
+        options: managerList.map(manager => ({
+          label: `${manager.manager_first_name} ${manager.manager_last_name} - ${manager.manager_n_number}`,
+          value: manager.manager_n_number,
+          ...manager
+        })),
         value: "",
-        helperText: null,
         error: false
       };
-      expectOnlyPassedProps(OutlinedSelect, expectedManagerProps, 0);
-      const managerOptionsDisplayFunc = OutlinedSelect.mock.calls[0][0].optionsDisplayFunc;
-      const managerOption = managerOptionsDisplayFunc(managerList[0]);
-      expect(managerOption).toEqual({
-        display: `${managerList[0].manager_first_name} ${managerList[0].manager_last_name} - ${managerList[0].manager_n_number}`,
-        key: managerList[0].manager_id,
-        value: JSON.stringify(managerList[0])
-      });
+      expectOnlyPassedProps(Dropdown, expectedManagerProps, 0);
     });
     describe("manager field is invalid", () => {
       test("error field should be true", () => {
@@ -198,30 +191,13 @@ describe("<BasicFormInfo />", () => {
         });
         isManagerValid.mockReturnValue(false);
         renderComponent(false);
-        expect(OutlinedSelect.mock.calls[0][0].error).toBe(true);
+        expect(Dropdown.mock.calls[0][0].error).toBe(true);
       });
-    });
-    test("helperText is null - manager is valid", () => {
-      isManagerValid.mockReturnValue(true);
-      renderComponent(false);
-      expect(OutlinedSelect.mock.calls[0][0].helperText).toBe(null);
-    });
-    test("helperText is populated - manager is not valid and has been updated", () => {
-      useFormState.mockReturnValue({
-        ...initialFormState,
-        manager: {
-          ...initialFormState.manager,
-          updated: true
-        }
-      });
-      isManagerValid.mockReturnValue(false);
-      renderComponent(false);
-      expect(OutlinedSelect.mock.calls[0][0].helperText).toBe("Please select a manager");
     });
     test("onBlur - invalid manager should set blur on field", () => {
       renderComponent(false);
       act(() => {
-        const onBlur = OutlinedSelect.mock.calls[0][0].onBlur;
+        const onBlur = Dropdown.mock.calls[0][0].onBlur;
         onBlur();
       });
       expect(mockSetForm).toBeCalledWith({
@@ -239,7 +215,7 @@ describe("<BasicFormInfo />", () => {
       });
       renderComponent(false);
       act(() => {
-        const onBlur = OutlinedSelect.mock.calls[0][0].onBlur;
+        const onBlur = Dropdown.mock.calls[0][0].onBlur;
         onBlur();
       });
       expect(mockSetForm).toBeCalledTimes(0);
@@ -247,12 +223,12 @@ describe("<BasicFormInfo />", () => {
     test("updateValue - should set manager to correct value", () => {
       renderComponent(false);
       act(() => {
-        const updateValue = OutlinedSelect.mock.calls[0][0].updateValue;
-        updateValue(JSON.stringify(managerList[0]));
+        const updateValue = Dropdown.mock.calls[0][0].updateValue;
+        updateValue(null, managerList[0]);
       });
       expect(mockSetForm).toBeCalledWith({
         type: userFormActions.UPDATE_MANAGER,
-        payload: JSON.stringify(managerList[0])
+        payload: managerList[0]
       });
     });
   });
@@ -260,23 +236,18 @@ describe("<BasicFormInfo />", () => {
     test("Should render the correct initial state", () => {
       removeProfileZeroIfAdminNotInProfileZero.mockReturnValue(profileList);
       const rendered = renderComponent(false);
-      expectMockedComponent(rendered, { OutlinedSelect }, 2);
+      expectMockedComponent(rendered, { Dropdown }, 2);
       const expectedTeamProps = {
         label: "Team *",
-        labelWidth: 44,
-        optionsList: profileList,
+        options: profileList.map(profile => ({
+          label: profile.profile_nme,
+          value: profile.profile_id,
+          ...profile
+        })),
         value: "",
-        helperText: null,
         error: false
       };
-      expectOnlyPassedProps(OutlinedSelect, expectedTeamProps, 1);
-      const teamOptionsDisplayFunc = OutlinedSelect.mock.calls[1][0].optionsDisplayFunc;
-      const teamOption = teamOptionsDisplayFunc(profileList[0]);
-      expect(teamOption).toEqual({
-        display: profileList[0].profile_nme,
-        key: profileList[0].profile_id,
-        value: profileList[0].profile_id
-      });
+      expectOnlyPassedProps(Dropdown, expectedTeamProps, 1);
     });
     test("error field should be true", () => {
       useFormState.mockReturnValue({
@@ -289,31 +260,12 @@ describe("<BasicFormInfo />", () => {
       removeProfileZeroIfAdminNotInProfileZero.mockReturnValue(profileList);
       isProfileIdValid.mockReturnValue(false);
       renderComponent(false);
-      expect(OutlinedSelect.mock.calls[1][0].error).toBe(true);
-    });
-    test("helperText is null - profileId is valid", () => {
-      removeProfileZeroIfAdminNotInProfileZero.mockReturnValue(profileList);
-      isProfileIdValid.mockReturnValue(true);
-      renderComponent(false);
-      expect(OutlinedSelect.mock.calls[1][0].helperText).toBe(null);
-    });
-    test("helperText is populated - profileId is not valid and has been updated", () => {
-      useFormState.mockReturnValue({
-        ...initialFormState,
-        profileId: {
-          ...initialFormState.profileId,
-          updated: true
-        }
-      });
-      removeProfileZeroIfAdminNotInProfileZero.mockReturnValue(profileList);
-      isProfileIdValid.mockReturnValue(false);
-      renderComponent(false);
-      expect(OutlinedSelect.mock.calls[1][0].helperText).toBe("Please select a team");
+      expect(Dropdown.mock.calls[1][0].error).toBe(true);
     });
     test("onBlur - invalid profileId should set blur on field", () => {
       renderComponent(false);
       act(() => {
-        const onBlur = OutlinedSelect.mock.calls[1][0].onBlur;
+        const onBlur = Dropdown.mock.calls[1][0].onBlur;
         onBlur();
       });
       expect(mockSetForm).toBeCalledWith({
@@ -331,7 +283,7 @@ describe("<BasicFormInfo />", () => {
       });
       renderComponent(false);
       act(() => {
-        const onBlur = OutlinedSelect.mock.calls[1][0].onBlur;
+        const onBlur = Dropdown.mock.calls[1][0].onBlur;
         onBlur();
       });
       expect(mockSetForm).toBeCalledTimes(0);
@@ -339,8 +291,8 @@ describe("<BasicFormInfo />", () => {
     test("updateValue - should set profile_id to correct value", () => {
       renderComponent(false);
       act(() => {
-        const updateValue = OutlinedSelect.mock.calls[1][0].updateValue;
-        updateValue(profileList[0].profile_id);
+        const updateValue = Dropdown.mock.calls[1][0].updateValue;
+        updateValue(null, { value: profileList[0].profile_id });
       });
       expect(mockSetForm).toBeCalledWith({
         type: userFormActions.UPDATE_TEAM,
