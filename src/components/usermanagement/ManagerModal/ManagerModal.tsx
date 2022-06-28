@@ -121,7 +121,7 @@ const ManagerModal = (props: ManagerModalProps) => {
       profile_id: profileId,
       calabrio_team_ids: teams
     })
-      .then(res => {
+      .then((res: any) => {
         console.log("dispatch edit managers");
         // dispatch(({
         //   type: "addManager",
@@ -135,7 +135,7 @@ const ManagerModal = (props: ManagerModalProps) => {
         setTimeout(handleClose, 2000);
         console.log("editManager - Success", res);
       })
-      .catch(err => {
+      .catch((err: any) => {
         setSaveStatus(loadingStates.fail);
         setTimeout(() => setSaveStatus(null), 2000);
         setErrorMessage(JSON.stringify(err));
