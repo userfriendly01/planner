@@ -237,6 +237,14 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
                   profiles
                 }
               });
+            } else {
+              setForm({
+                type: userFormActions.UPDATE_TEAM,
+                payload: {
+                  profileId: "",
+                  profiles
+                }
+              });
             }
           }}
           value={form.manager.value ? `${form.manager.value.manager_first_name} ${form.manager.value.manager_last_name} - ${form.manager.value.manager_n_number}`: ""}
