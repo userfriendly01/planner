@@ -182,6 +182,49 @@ describe("reducer", () => {
       expect(result.officeContext.offices).toEqual(payload);
     });
   });
+  describe("loadCalabrioOrg", () => {
+    test("should initialize a map from the offices map sent in", () => {
+      const payload = [
+        {
+          groupLevel: "GROUP"
+        },
+        {
+          groupLevel: "TEAM",
+          agents: [
+            {
+              firstName: "Faith",
+              lastName: "Cuneo"
+            }
+          ]
+        }
+      ];
+      const action = {
+        type: "loadCalabrioOrg",
+        payload
+      };
+      const expectedResults = {
+        teams: [{
+          groupLevel: "TEAM",
+          agents: [
+            {
+              firstName: "Faith",
+              lastName: "Cuneo"
+            }
+          ]
+        }],
+        groups: [{
+          groupLevel: "GROUP"
+        }],
+        tenant: {},
+        users: [{
+          firstName: "Faith",
+          lastName: "Cuneo"
+        }]
+      };
+      const result = reducer(initialState, action);
+      expect(result.calabrioContext).toEqual(expectedResults);
+    });
+  });
   describe("loadProfiles", () => {
     test("should initialize or reinitialize the profiles array", () => {
       const payload = [

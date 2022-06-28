@@ -1,6 +1,6 @@
-import { 
+import {
   BasicFormInfoProps,
-  ExtensionSearchStatuses 
+  ExtensionSearchStatuses
 } from "./UserEntryForm.Interfaces";
 import {
   FormControlsContainer,
@@ -20,7 +20,7 @@ import {
   ModalExtension,
   ModalNNumber,
   ModalPhoneNumber,
-  OutlinedSelect
+  Dropdown
 } from "components";
 import {
   useFormDispatch,
@@ -70,8 +70,21 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   } = props;
 
   const form = useFormState();
-  const adminState = useAdminState();
   const setForm = useFormDispatch();
+
+  console.log("FORM", form);
+
+  const formatDropdownOption = (value: any, label: string, option: any) => {
+    if(typeof option === "object"){
+      return {
+        ...option,
+        value,
+        label
+      };
+    } else {
+      return "";
+    }
+  };
 
   const isOutgoingDisabled = (): boolean => {
     if (form.formMode === formModes.INSERT) {
@@ -198,53 +211,61 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
       });
     }
   }
+
   return(
     <FormControlsContainer>
       <FormControlsPane>
-        <OutlinedSelect
+        <Dropdown
           error={form.manager.blurred && !isManagerValid(form)}
-          helperText={isManagerValid(form) || !form.manager.updated ? null : "Please select a manager"}
           label={"Manager *"}
-          labelWidth={67}
+          styles={{
+            width: "384px",
+            margin: "8px 0px 5px 0px"
+          }}
           onBlur={() => handleOnBlur("manager")}
-          optionsList={managers.sort(sortManagersByName)}
-          optionsDisplayFunc={option => {
-            return {
-              display: `${option.manager_first_name} ${option.manager_last_name} - ${option.manager_n_number}`,
-              key: option.manager_id,
-              value: JSON.stringify(option)
-            };
-          }}
-          updateValue={newValue => setForm({
-            type: userFormActions.UPDATE_MANAGER,
-            payload: newValue
-          })}
-          value={form.manager.value}
-        />
-        <OutlinedSelect
-          error={form.profileId.blurred && !isProfileIdValid(form)}
-          helperText={isProfileIdValid(form) || !form.profileId.updated ? null : "Please select a team"}
-          label={"Team *"}
-          labelWidth={44}
-          onBlur={() => handleOnBlur("profileId")}
-          optionsList={removeProfileZeroIfAdminNotInProfileZero(adminState, profiles.sort(sortProfilesByName))}
-          optionsDisplayFunc={option => {
-            return {
-              display: option.profile_nme,
-              key: option.profile_id,
-              value: option.profile_id
-            };
-          }}
-          updateValue={newValue => {
+          options={managers.sort(sortManagersByName).map(manager => formatDropdownOption(manager.manager_n_number, `${manager.manager_first_name} ${manager.manager_last_name} - ${manager.manager_n_number}`, manager))}
+          updateValue={(event: any, newValue: any) => {
             setForm({
-              type: userFormActions.UPDATE_TEAM,
-              payload: {
-                profileId: newValue,
-                profiles
-              }
+              type: userFormActions.UPDATE_MANAGER,
+              payload: newValue
             });
+            if(newValue.profile_id || newValue.profile_id === 0){
+              setForm({
+                type: userFormActions.UPDATE_TEAM,
+                payload: {
+                  profileId: newValue.profile_id,
+                  profiles
+                }
+              });
+            } else {
+              setForm({
+                type: userFormActions.UPDATE_TEAM,
+                payload: {
+                  profileId: "",
+                  profiles
+                }
+              });
+            }
           }}
-          value={form.profileId.value}
+          value={form.manager.value ? `${form.manager.value.manager_first_name} ${form.manager.value.manager_last_name} - ${form.manager.value.manager_n_number}`: ""}
+        />
+        <Dropdown
+          error={form.profileId.blurred && !isProfileIdValid(form)}
+          label={"Team *"}
+          styles={{
+            width: "384px",
+            margin: "10px 0px"
+          }}
+          onBlur={() => handleOnBlur("profileId")}
+          options={profiles.sort(sortProfilesByName).map((profile: any) => formatDropdownOption(profile.profile_id, profile.profile_nme, profile))}
+          updateValue={(event: any, newValue: any) => setForm({
+            type: userFormActions.UPDATE_TEAM,
+            payload: {
+              profileId: newValue.value,
+              profiles
+            }
+          })}
+          value={profiles.find(p => p.profile_id === form.profileId.value)?.profile_nme || ""}
         />
         <ModalNNumber
           disabled={(form.formMode === formModes.UPDATE) || (form.nNumberFetchedUser ? true : false)}

@@ -1,6 +1,5 @@
 export * from "./CustomInput/CustomInput";
-export * from "./CustomSelect/CustomSelect";
-export { default as FilterableSelect } from "./CustomSelect/FilterableSelect";
+export * from "./CustomDropdown/Dropdown";
 export { default as ModalOverlay } from "./ModalOverlay/ModalOverlay";
 export { default as ModalPhoneNumber } from "./ModalPhoneNumber/ModalPhoneNumber";
 export { default as NotificationModal } from "./NotificationModal/NotificationModal";

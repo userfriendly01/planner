@@ -1,11 +1,12 @@
-import { FilterableSelect } from "components";
+import { Dropdown } from "components";
 import PropTypes from "prop-types";
 import React from "react";
 
 const SkillDropDown = props => {
   const {
     taskrouterSkills,
-    updateSkill
+    updateSkill,
+    skill
   } = props;
 
   const getSkillOptions = optionsList => {
@@ -16,9 +17,18 @@ const SkillDropDown = props => {
   };
 
   return (
-    <FilterableSelect
-      optionsList={getSkillOptions(taskrouterSkills)}
-      updateValue={updateSkill}
+    <Dropdown
+      styles={{
+        small: true,
+        height: "40px",
+        width: "180px"
+      }}
+      options={getSkillOptions(taskrouterSkills)}
+      value={{
+        label: skill,
+        value: skill
+      }}
+      updateValue={(event, newInputValue) => updateSkill(newInputValue)}
     />
   );
 };
@@ -30,6 +40,13 @@ SkillDropDown.propTypes = {
       levels: PropTypes.arrayOf(PropTypes.number)
     })
   ).isRequired,
+  skill: PropTypes.oneOfType([
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      value: PropTypes.string.isRequired
+    }),
+    PropTypes.string.isRequired
+  ]),
   updateSkill: PropTypes.func.isRequired
 };
 
