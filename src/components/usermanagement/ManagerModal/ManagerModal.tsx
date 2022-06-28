@@ -24,6 +24,7 @@ import {
 import React, { useState } from "react";
 import {
   addManager,
+  editManager,
   FetchUserResponse
 } from "services";
 import { sortProfilesByName } from "utils";
@@ -55,6 +56,10 @@ const ManagerModal = (props: ManagerModalProps) => {
   const [fetchedUser, setFetchedUser] = useState<FetchUserResponse>(null);
   const [ profile, setProfile ] = useState<any>(editManager ? profiles.find(p => p.profile_id === editManager.profile_id) : null);
   const [ selectedCalabrioTeams, setSelectedCalabrioTeams ] = useState<any[]>(editManager ? editManager.calabrio_team_ids :[]);
+
+  console.log("profile", profile);
+  console.log("calabrioTeams", calabrioTeams);
+  console.log("selectedCalabrioTeams", selectedCalabrioTeams);
 
   const getCalabrioOption = (teamId: number) => {
     const team = calabrioTeams.find(team => team.groupdId === teamId);
@@ -107,13 +112,6 @@ const ManagerModal = (props: ManagerModalProps) => {
 
   const editManagerClicked = (): Promise<any> => {
     setSaveStatus(loadingStates.loading);
-    if (state.managerContext.managers.some((savedManager: Manager) => savedManager.manager_n_number.toLowerCase() === manager.manager_n_number)) {
-      setSaveStatus(loadingStates.fail);
-      setTimeout(() => setSaveStatus(null), 2000);
-      setErrorMessage("Manager already exists");
-      console.warn("addManager - Failure - Manager Already exists");
-      return Promise.resolve("addManager - Failure - Manager Already exists");
-    }
     const profileId = profile ? profile.profile_id : null;
     const teams = JSON.stringify(selectedCalabrioTeams.map(team => team.groupId));
     return addManager({
@@ -220,7 +218,7 @@ const ManagerModal = (props: ManagerModalProps) => {
           />
         </FlexColumn>
         <ButtonWrapper>
-          <StyledButton disabled={!manager || !profile || calabrioTeams.length === 0} onClick={addManagerClicked} data-testid={"add-manager-button"}>
+          <StyledButton disabled={!manager || !profile || selectedCalabrioTeams.length === 0} onClick={addManagerClicked} data-testid={"add-manager-button"}>
             Add Manager
           </StyledButton>
         </ButtonWrapper>

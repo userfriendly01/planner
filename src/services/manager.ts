@@ -24,5 +24,10 @@ export const addManager = (manager: DbManagerRequest): Promise<any> => {
   return myAxios.post(apiPaths.MANAGERS, manager).then(response => response.data);
 };
 
+export const editManager = (managerId: number, manager: DbManagerRequest): Promise<any> => {
+  console.log("Edit Manager Payload: ", manager);
+  return myAxios.put(`apiPaths.MANAGERS/${managerId}`, manager).then(response => response.data);
+};
+
 export const getManagers = (): Promise<DbManagerRequest[]> =>
   myAxios.get(apiPaths.MANAGERS).then(response => response.data);
