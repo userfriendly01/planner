@@ -142,7 +142,7 @@ describe("<ManagerModal />", () => {
                   {
                     type: "addManager",
                     payload: {
-                      calabrio_team_ids: "[]",
+                      calabrio_team_ids: [],
                       manager_first_name: "B'ob",
                       manager_last_name: "Bob'son",
                       manager_n_number: "n0000000",
