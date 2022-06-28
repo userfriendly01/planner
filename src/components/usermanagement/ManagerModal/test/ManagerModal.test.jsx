@@ -32,6 +32,7 @@ jest.mock("@material-ui/icons", () => ({
 jest.mock("services", () => ({
   __esModule: true,
   addManager: jest.fn(),
+  editManager: jest.fn(),
   FetchUserResponse: jest.requireActual("services").FetchUserResponse
 }));
 
@@ -46,7 +47,7 @@ jest.mock("components", () => ({
 
 describe("<ManagerModal />", () => {
   const mockHandleClose = jest.fn();
-  const renderComponent = () => render(<ManagerModal handleClose={mockHandleClose} />);
+  const renderComponent = () => render(<ManagerModal handleClose={mockHandleClose} editManager={null}/>);
   beforeEach(() => {
     mockStore.reset();
     setupMockedComponents({
@@ -115,7 +116,7 @@ describe("<ManagerModal />", () => {
               expectMockedComponent(rendered, { ModalOverlay });
               expectOnlyPassedProps(ModalOverlay, {
                 status: "success",
-                message: "Manager added successfully"
+                message: "Manager saved successfully"
               });
               expect(mockHandleClose).toHaveBeenCalledTimes(1);
             });
@@ -135,7 +136,7 @@ describe("<ManagerModal />", () => {
                 expectMockedComponent(rendered, { ModalOverlay });
                 expectOnlyPassedProps(ModalOverlay, {
                   status: "success",
-                  message: "Manager added successfully"
+                  message: "Manager saved successfully"
                 });
                 expect(mockStore.getActions()).toEqual([
                   {
@@ -196,7 +197,7 @@ describe("<ManagerModal />", () => {
         }
       };
       test("ModalOverlay should render 'Manager already exists' & modal should remain open (handleClose should not be called)", async () => {
-        const rendered = render(<ManagerModal handleClose={mockHandleClose}/>, testState);
+        const rendered = render(<ManagerModal handleClose={mockHandleClose} editManager={null}/>, testState);
         updateFormSoValid(fetchedManager, managerNNumber);
         const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
         act(() => onClick());

@@ -55,8 +55,9 @@ const ManagerModal = (props: ManagerModalProps) => {
   const [nNumber, setNNumber] = useState<string>(editManager ? editManager.manager_n_number : defaultNNumber);
   const [fetchedUser, setFetchedUser] = useState<FetchUserResponse>(null);
   const [ profile, setProfile ] = useState<any>(editManager ? profiles.find(p => p.profile_id === editManager.profile_id) : null);
-  const [ selectedCalabrioTeams, setSelectedCalabrioTeams ] = useState<any[]>(editManager ? editManager.calabrio_team_ids :[]);
+  const [ selectedCalabrioTeams, setSelectedCalabrioTeams ] = useState<number[]>(editManager ? editManager.calabrio_team_ids :[]);
 
+  console.warn("EDIT MANAGER", editManager);
   console.log("profile", profile);
   console.log("calabrioTeams", calabrioTeams);
   console.log("selectedCalabrioTeams", selectedCalabrioTeams);
@@ -82,7 +83,7 @@ const ManagerModal = (props: ManagerModalProps) => {
       return Promise.resolve("addManager - Failure - Manager Already exists");
     }
     const profileId = profile ? profile.profile_id : null;
-    const teams = JSON.stringify(selectedCalabrioTeams.map(team => team.groupId));
+    const teams = JSON.stringify(selectedCalabrioTeams);
     return addManager({
       manager_first_nme: manager.manager_first_name.replace("'", "\\'"),
       manager_last_nme: manager.manager_last_name.replace("'", "\\'"),
@@ -112,40 +113,39 @@ const ManagerModal = (props: ManagerModalProps) => {
   };
 
   const editManagerClicked = (): Promise<any> => {
+    console.warn("EDIT IS RUNNING WHYYY");
     setSaveStatus(loadingStates.loading);
     const profileId = profile ? profile.profile_id : null;
-    const teams = JSON.stringify(selectedCalabrioTeams.map(team => team.groupId));
-    return addManager({
-      manager_first_nme: manager.manager_first_name.replace("'", "\\'"),
-      manager_last_nme: manager.manager_last_name.replace("'", "\\'"),
-      manager_n_num: manager.manager_n_number,
+    const teams = JSON.stringify(selectedCalabrioTeams);
+    return editManager(manager.manager_id, {
       profile_id: profileId,
       calabrio_team_ids: teams
     })
       .then(res => {
-        dispatch(({
-          type: "addManager",
-          payload: {
-            ...manager,
-            profile_id: profileId,
-            calabrio_team_ids: teams
-          }
-        }));
+        console.log("dispatch edit managers");
+        // dispatch(({
+        //   type: "addManager",
+        //   payload: {
+        //     ...manager,
+        //     profile_id: profileId,
+        //     calabrio_team_ids: teams
+        //   }
+        // }));
         setSaveStatus(loadingStates.success);
         setTimeout(handleClose, 2000);
-        console.log("addManager - Success", res);
+        console.log("editManager - Success", res);
       })
       .catch(err => {
         setSaveStatus(loadingStates.fail);
         setTimeout(() => setSaveStatus(null), 2000);
         setErrorMessage(JSON.stringify(err));
-        console.log("addManager - Failure", err);
+        console.log("editManager - Failure", err);
       });
   };
 
   let overlayMessage = "Saving";
   if (saveStatus === loadingStates.success) {
-    overlayMessage = "Manager added successfully";
+    overlayMessage = "Manager saved successfully";
   } else if (saveStatus === loadingStates.fail) {
     overlayMessage = errorMessage;
   }
@@ -219,9 +219,14 @@ const ManagerModal = (props: ManagerModalProps) => {
           />
         </FlexColumn>
         <ButtonWrapper>
-          <StyledButton disabled={!manager || !profile || selectedCalabrioTeams.length === 0} onClick={addManagerClicked} data-testid={"add-manager-button"}>
-            Add Manager
-          </StyledButton>
+          { editManager ?
+            <StyledButton disabled={!manager || !profile || selectedCalabrioTeams.length === 0} onClick={editManagerClicked} data-testid={"edit-manager-button"}>
+              Save
+            </StyledButton>
+            : <StyledButton disabled={!manager || !profile || selectedCalabrioTeams.length === 0} onClick={addManagerClicked} data-testid={"add-manager-button"}>
+              Add Manager
+            </StyledButton>
+          }
         </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>
