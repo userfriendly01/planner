@@ -1,18 +1,32 @@
-import { Wrapper } from "./ManagerFilter.Styles";
+import {
+  Label,
+  IconWrapper,
+  Wrapper
+} from "./ManagerDropdown.Styles";
 import { Modal } from "@material-ui/core";
+import { Edit } from "@material-ui/icons";
 import {
   AddManagerModal,
   Dropdown
 } from "components";
 import { useAdminState } from "context";
-import PropTypes from "prop-types";
 import React, {
   useEffect,
   useState
 } from "react";
 import { sortManagersByName } from "utils";
 
-const ManagerFilter = props => {
+interface ManagerDropDownProps {
+  filterBy: string,
+  setFilter: (filter: string) => void
+}
+
+interface DropdownOption {
+  label: string,
+  value: any
+}
+
+const ManagerDropdown = (props: ManagerDropDownProps) => {
   const {
     filterBy,
     setFilter
@@ -37,7 +51,7 @@ const ManagerFilter = props => {
     }
   });
 
-  const options = [
+  const options: DropdownOption[] = [
     {
       label: "Show All",
       value: "show-all"
@@ -56,14 +70,37 @@ const ManagerFilter = props => {
     }))
   ];
 
+  const DropdownOption = (props: any) => {
+    const {
+      option
+    } = props;
+
+    return (
+      <Wrapper>
+        { option.label === "Show All" || option.label === "Add Manager" || option.label === "divider"
+          ? option.label
+          : <Wrapper>
+            <Label>
+              {option.label}
+            </Label>
+            <IconWrapper onClick={() => console.log("**EDIT**")} data-testid="edit-button">
+              <Edit fontSize={"inherit"}/>
+            </IconWrapper>
+          </Wrapper>
+        }
+      </Wrapper>
+    );
+  };
+
   return (
     <Wrapper>
       <Dropdown
         label="Manager Filter"
         options={options}
-        styles= {{ width: 275 }}
-        value={options.find(option => option.value === filterBy)}
-        updateValue={(event, newInputValue) => setFilter(newInputValue.value)}
+        styles= {{ width: 325 }}
+        value={options.find((option: DropdownOption) => option.value === filterBy)}
+        updateValue={(event: any, newInputValue: any) => setFilter(newInputValue.value)}
+        CustomRender={DropdownOption}
       />
       <Modal disableBackdropClick={true} open={isAddManagerModalOpen}>
         <AddManagerModal data-testid="add-manager-modal" handleClose={handleCloseAddManager} />
@@ -72,9 +109,4 @@ const ManagerFilter = props => {
   );
 };
 
-ManagerFilter.propTypes = {
-  filterBy: PropTypes.string.isRequired,
-  setFilter: PropTypes.func.isRequired
-};
-
-export default ManagerFilter;
+export default ManagerDropdown;

@@ -14,7 +14,7 @@ const TextInput = styled(TextField)`
   && {
     margin: 0 8px;
     width: 100%;
-    max-width: 275px;
+    max-width: 325px;
   }
 `;
 

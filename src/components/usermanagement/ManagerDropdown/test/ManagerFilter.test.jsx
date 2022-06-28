@@ -1,4 +1,4 @@
-import ManagerFilter from "../ManagerFilter";
+import ManagerDropdown from "../ManagerDropdown";
 import { initialState } from "context";
 import React from "react";
 import {
@@ -43,7 +43,7 @@ const initialTestState  = {
 };
 
 const renderComponent = () => render(
-  <ManagerFilter filterBy={filterBy} setFilter={setFilter} />, initialTestState
+  <ManagerDropdown filterBy={filterBy} setFilter={setFilter} />, initialTestState
 );
 
 describe("<ManagementFilter />", () => {
@@ -71,7 +71,7 @@ describe("<ManagementFilter />", () => {
   test("When filterBy is add-manager, the Add Manager Modal is set to open", () => {
     const expectedTarget = "add-manager";
     const rendered = render(
-      <ManagerFilter filterBy={expectedTarget} setFilter={setFilter} />, initialTestState
+      <ManagerDropdown filterBy={expectedTarget} setFilter={setFilter} />, initialTestState
     );
     // const select = rendered.getByTestId("select");
     // act(() => {
@@ -83,7 +83,7 @@ describe("<ManagementFilter />", () => {
   test("When the Modal is closed, the handle close function is called", () => {
     const expectedTarget = "add-manager";
     const rendered = render(
-      <ManagerFilter filterBy={expectedTarget} setFilter={setFilter} />, initialTestState
+      <ManagerDropdown filterBy={expectedTarget} setFilter={setFilter} />, initialTestState
     );
     // const select = rendered.getByTestId("select");
     // act(() => {

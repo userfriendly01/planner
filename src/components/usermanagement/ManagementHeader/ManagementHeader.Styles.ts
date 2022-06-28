@@ -1,12 +1,14 @@
+import { StyledButton } from "components";
 import styled from "styled-components";
 
 export const ControlItem = styled.div`
+  width: 33%;
   align-items: center;
   display: flex;
   flex: 1;
   justify-content: center;
   &:first-child {
-    justify-content: flex-start;
+    justify-content: center;
     margin-right: auto;
   }
   &:last-child {
@@ -23,4 +25,11 @@ export const ControlsWrapper = styled.div`
 
 export const RightPadding = styled.div`
   padding-right: 8px;
+`;
+
+export const AddUserButton = styled(StyledButton)`
+  width: 35%;
+  .MuiButtonBase-root {
+    margin-left: 10px; 
+  }
 `;

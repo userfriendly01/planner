@@ -1,13 +1,12 @@
 import {
+  AddUserButton,
   ControlItem,
-  ControlsWrapper,
-  RightPadding
+  ControlsWrapper
 } from "./ManagementHeader.Styles";
 import {
-  ManagerFilter,
+  ManagerDropdown,
   ResetSkillsButton,
-  SearchBox,
-  StyledButton
+  SearchBox
 } from "components";
 import PropTypes from "prop-types";
 import React from "react";
@@ -29,18 +28,16 @@ const ManagementHeader = props => {
   return (
     <ControlsWrapper>
       <ControlItem>
-        <ManagerFilter filterBy={filterBy} setFilter={setFilter}/>
+        <ManagerDropdown filterBy={filterBy} setFilter={setFilter}/>
       </ControlItem>
       <ControlItem>
         <SearchBox searchBy={searchBy} setSearch={setSearch}/>
       </ControlItem>
       <ControlItem>
-        <RightPadding>
-          <ResetSkillsButton />
-        </RightPadding>
-        <StyledButton onClick={addUserOnClick} data-testid={"add-user-button"}>
+        <ResetSkillsButton />
+        <AddUserButton onClick={addUserOnClick} data-testid={"add-user-button"}>
           Add User
-        </StyledButton>
+        </AddUserButton>
       </ControlItem>
     </ControlsWrapper>
   );
