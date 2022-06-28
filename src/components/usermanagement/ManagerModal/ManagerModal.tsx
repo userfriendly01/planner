@@ -59,6 +59,7 @@ const ManagerModal = (props: ManagerModalProps) => {
 
   console.warn("selectedManager", selectedManager);
   console.log("profile", profile);
+  console.log("managers", state.managerContext.managers);
   console.log("calabrioTeams", calabrioTeams);
   console.log("selectedCalabrioTeams", selectedCalabrioTeams);
 
@@ -91,6 +92,7 @@ const ManagerModal = (props: ManagerModalProps) => {
       calabrio_team_ids: JSON.stringify(selectedCalabrioTeams)
     })
       .then(res => {
+        console.log("dispatch managers", selectedCalabrioTeams);
         dispatch(({
           type: "addManager",
           payload: {
