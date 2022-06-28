@@ -214,7 +214,7 @@ const ManagerModal = (props: ManagerModalProps) => {
             value={selectedCalabrioTeams.map(teamId => getCalabrioOption(teamId))}
             updateValue={(event: any, newValue: any) => {
               console.log("Calabrio new Values", newValue);
-              setSelectedCalabrioTeams(newValue.map(team => team.value));
+              setSelectedCalabrioTeams(newValue.map((team:any) => team.value));
             }}
           />
         </FlexColumn>
