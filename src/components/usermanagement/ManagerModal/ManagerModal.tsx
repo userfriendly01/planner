@@ -95,6 +95,7 @@ const ManagerModal = (props: ManagerModalProps) => {
           type: "addManager",
           payload: {
             ...manager,
+            manager_id: res.insertId,
             profile_id: profileId,
             calabrio_team_ids: selectedCalabrioTeams
           }
