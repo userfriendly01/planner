@@ -1,4 +1,4 @@
-import AddManagerModal from "../AddManagerModal";
+import ManagerModal from "../ManagerModal";
 import { CloseRounded } from "@material-ui/icons";
 import {
   Dropdown,
@@ -44,9 +44,9 @@ jest.mock("components", () => ({
   StyledButton: jest.fn()
 }));
 
-describe("<AddManagerModal />", () => {
+describe("<ManagerModal />", () => {
   const mockHandleClose = jest.fn();
-  const renderComponent = () => render(<AddManagerModal handleClose={mockHandleClose} />);
+  const renderComponent = () => render(<ManagerModal handleClose={mockHandleClose} />);
   beforeEach(() => {
     mockStore.reset();
     setupMockedComponents({
@@ -196,7 +196,7 @@ describe("<AddManagerModal />", () => {
         }
       };
       test("ModalOverlay should render 'Manager already exists' & modal should remain open (handleClose should not be called)", async () => {
-        const rendered = render(<AddManagerModal handleClose={mockHandleClose}/>, testState);
+        const rendered = render(<ManagerModal handleClose={mockHandleClose}/>, testState);
         updateFormSoValid(fetchedManager, managerNNumber);
         const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
         act(() => onClick());

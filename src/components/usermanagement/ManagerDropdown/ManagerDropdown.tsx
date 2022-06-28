@@ -6,7 +6,7 @@ import {
 import { Modal } from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
 import {
-  AddManagerModal,
+  ManagerModal,
   Dropdown
 } from "components";
 import { useAdminState } from "context";
@@ -32,24 +32,32 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
     setFilter
   } = props;
 
-  const managers = useAdminState().managerContext.managers;
+  const state = useAdminState();
+  const managers = state.managerContext.managers;
   const sortedManagers = [ ...managers ].sort(sortManagersByName);
-  const [isAddManagerModalOpen, setIsAddManagerModalOpen] = useState(false);
+  const [isManagerModalOpen, setIsManagerModalOpen] = useState(false);
+  const [ selectedManager, setSelectedManager ] = useState(null);
 
-  const handleOpenAddManager = () => {
-    setIsAddManagerModalOpen(true);
+  const handleOpenManager = () => {
+    setIsManagerModalOpen(true);
   };
 
-  const handleCloseAddManager = () => {
+  const handleEditManager = async (option: DropdownOption) => {
+    setSelectedManager(managers.find(manager => manager.manager_n_number === option.value));
+    setIsManagerModalOpen(true);
+  };
+
+  const handleCloseManager = () => {
+    setSelectedManager(null);
     setFilter("show-all");
-    setIsAddManagerModalOpen(false);
+    setIsManagerModalOpen(false);
   };
 
   useEffect(() => {
     if(filterBy === "add-manager"){
-      handleOpenAddManager();
+      handleOpenManager();
     }
-  });
+  }, [filterBy]);
 
   const options: DropdownOption[] = [
     {
@@ -83,7 +91,7 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
             <Label>
               {option.label}
             </Label>
-            <IconWrapper onClick={() => console.log("**EDIT**")} data-testid="edit-button">
+            <IconWrapper onClick={() => handleEditManager(option)} data-testid="edit-button">
               <Edit fontSize={"inherit"}/>
             </IconWrapper>
           </Wrapper>
@@ -102,8 +110,8 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
         updateValue={(event: any, newInputValue: any) => setFilter(newInputValue.value)}
         CustomRender={DropdownOption}
       />
-      <Modal disableBackdropClick={true} open={isAddManagerModalOpen}>
-        <AddManagerModal data-testid="add-manager-modal" handleClose={handleCloseAddManager} />
+      <Modal disableBackdropClick={true} open={isManagerModalOpen}>
+        <ManagerModal data-testid="add-manager-modal" handleClose={handleCloseManager} editManager={selectedManager}/>
       </Modal>
     </Wrapper>
   );

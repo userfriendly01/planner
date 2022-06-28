@@ -43,6 +43,10 @@ export const Dropdown = (props: any) => {
     font-size: ${styles && styles.fontSize ? styles.fontSize : "15px"};
   `;
 
+  console.log("Dropdown Value", value);
+  console.log("Dropdown Options", options);
+
+
   const handleCheckEqual = (option: any, value: any) => {
     if(typeof value === "object") {
       return option?.value === value?.value || value?.value === "";

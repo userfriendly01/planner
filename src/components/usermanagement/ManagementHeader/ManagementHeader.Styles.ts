@@ -23,13 +23,6 @@ export const ControlsWrapper = styled.div`
   padding: 1%;
 `;
 
-export const RightPadding = styled.div`
-  padding-right: 8px;
-`;
-
 export const AddUserButton = styled(StyledButton)`
   width: 35%;
-  .MuiButtonBase-root {
-    margin-left: 10px; 
-  }
 `;

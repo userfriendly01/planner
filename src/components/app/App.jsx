@@ -36,9 +36,6 @@ import {
 const AppWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  .scrollbar-hidden::-webkit-scrollbar {
-    display: none;
-  }
 `;
 
 const ErrorMessage = styled.div`
