@@ -57,15 +57,13 @@ const ManagerModal = (props: ManagerModalProps) => {
   const [ profile, setProfile ] = useState<any>(selectedManager ? profiles.find(p => p.profile_id === selectedManager.profile_id) : null);
   const [ selectedCalabrioTeams, setSelectedCalabrioTeams ] = useState<number[]>(selectedManager ? selectedManager.calabrio_team_ids :[]);
 
-  console.warn("selectedManager", selectedManager);
+  console.log("selectedManager", selectedManager);
   console.log("profile", profile);
-  console.log("managers", state.managerContext.managers);
   console.log("calabrioTeams", calabrioTeams);
   console.log("selectedCalabrioTeams", selectedCalabrioTeams);
 
   const getCalabrioOption = (teamId: number) => {
     const team = calabrioTeams.find(team => team.groupId === teamId);
-
     return team ? {
       ...team,
       value: team.groupId,
@@ -84,6 +82,7 @@ const ManagerModal = (props: ManagerModalProps) => {
       return Promise.resolve("addManager - Failure - Manager Already exists");
     }
     const profileId = profile ? profile.profile_id : null;
+
     return addManager({
       manager_first_nme: manager.manager_first_name.replace("'", "\\'"),
       manager_last_nme: manager.manager_last_name.replace("'", "\\'"),
@@ -92,7 +91,6 @@ const ManagerModal = (props: ManagerModalProps) => {
       calabrio_team_ids: JSON.stringify(selectedCalabrioTeams)
     })
       .then(res => {
-        console.log("dispatch managers", selectedCalabrioTeams);
         dispatch(({
           type: "addManager",
           payload: {
@@ -109,8 +107,8 @@ const ManagerModal = (props: ManagerModalProps) => {
       .catch(err => {
         setSaveStatus(loadingStates.fail);
         setTimeout(() => setSaveStatus(null), 2000);
-        setErrorMessage(JSON.stringify(err));
-        console.log("addManager - Failure", err);
+        setErrorMessage("Failed to Create Manager");
+        console.error("addManager - Failure", err);
       });
   };
 
@@ -147,8 +145,8 @@ const ManagerModal = (props: ManagerModalProps) => {
       .catch((err: any) => {
         setSaveStatus(loadingStates.fail);
         setTimeout(() => setSaveStatus(null), 2000);
-        setErrorMessage(JSON.stringify(err));
-        console.log("editManager - Failure", err);
+        setErrorMessage("Failed to update Manager");
+        console.error("editManager - Failure", err);
       });
   };
 
@@ -221,10 +219,7 @@ const ManagerModal = (props: ManagerModalProps) => {
             }}
             options={calabrioTeams.map((team: any) => getCalabrioOption(team.groupId))}
             value={selectedCalabrioTeams.map(teamId => getCalabrioOption(teamId))}
-            updateValue={(event: any, newValue: any) => {
-              console.log("Calabrio new Values", newValue);
-              setSelectedCalabrioTeams(newValue.map((team:any) => team.value));
-            }}
+            updateValue={(event: any, newValue: any) => setSelectedCalabrioTeams(newValue.map((team:any) => team.value))}
           />
         </FlexColumn>
         <ButtonWrapper>
