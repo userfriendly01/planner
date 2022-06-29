@@ -126,7 +126,11 @@ const ManagerModal = (props: ManagerModalProps) => {
       .then((res: any) => {
         const updatedArray = state.managerContext.managers.map(m => {
           if(m.manager_id === manager.manager_id){
-            return manager;
+            return {
+              ...manager,
+              profile_id: profileId,
+              calabrio_team_ids: selectedCalabrioTeams
+            };
           } else {
             return m;
           }
