@@ -4,7 +4,7 @@ import {
   HeaderAndCloseButtonWrapper,
   LeftDiv,
   ModalContainer
-} from "./AddManagerModal.Styles";
+} from "./ManagerModal.Styles";
 import { CloseRounded } from "@material-ui/icons";
 import {
   Dropdown,
@@ -24,6 +24,7 @@ import {
 import React, { useState } from "react";
 import {
   addManager,
+  editManager,
   FetchUserResponse
 } from "services";
 import { sortProfilesByName } from "utils";
@@ -34,23 +35,37 @@ const loadingStates = {
   fail: "fail",
   loading: "loading"
 };
-export interface AddManagerModalProps {
-  handleClose: () => void
+export interface ManagerModalProps {
+  handleClose: () => void,
+  selectedManager: any
 }
 
-const AddManagerModal = (props: AddManagerModalProps) => {
-  const { handleClose } = props;
+const ManagerModal = (props: ManagerModalProps) => {
+  const {
+    handleClose,
+    selectedManager
+  } = props;
 
-  const [manager, setManager] = useState<Manager>(null);
+  const state = useAdminState();
+  const profiles = state.profileContext.profiles;
+  const calabrioTeams = state.calabrioContext.teams;
+  const [manager, setManager] = useState<Manager>(selectedManager ? selectedManager : null);
   const [errorMessage, setErrorMessage] = useState<string>(null);
   const [saveStatus, setSaveStatus] = useState<string>(null);
-  const [nNumber, setNNumber] = useState<string>(defaultNNumber);
+  const [nNumber, setNNumber] = useState<string>(selectedManager ? selectedManager.manager_n_number : defaultNNumber);
   const [fetchedUser, setFetchedUser] = useState<FetchUserResponse>(null);
-  const [ profile, setProfile ] = useState<any>(null);
-  const [ calabrioTeams, setCalabrioTeams ] = useState<any[]>([]);
+  const [ profile, setProfile ] = useState<any>(selectedManager ? profiles.find(p => p.profile_id === selectedManager.profile_id) : null);
+  const [ selectedCalabrioTeams, setSelectedCalabrioTeams ] = useState<number[]>(selectedManager ? selectedManager.calabrio_team_ids :[]);
 
+  const getCalabrioOption = (teamId: number) => {
+    const team = calabrioTeams.find(team => team.groupId === teamId);
+    return team ? {
+      ...team,
+      value: team.groupId,
+      label: team.name
+    } : teamId;
+  };
   const dispatch = useAdminDispatch();
-  const state = useAdminState();
 
   const addManagerClicked = (): Promise<any> => {
     setSaveStatus(loadingStates.loading);
@@ -62,21 +77,22 @@ const AddManagerModal = (props: AddManagerModalProps) => {
       return Promise.resolve("addManager - Failure - Manager Already exists");
     }
     const profileId = profile ? profile.profile_id : null;
-    const teams = JSON.stringify(calabrioTeams.map(team => team.groupId));
+
     return addManager({
       manager_first_nme: manager.manager_first_name.replace("'", "\\'"),
       manager_last_nme: manager.manager_last_name.replace("'", "\\'"),
       manager_n_num: manager.manager_n_number,
       profile_id: profileId,
-      calabrio_team_ids: teams
+      calabrio_team_ids: JSON.stringify(selectedCalabrioTeams)
     })
       .then(res => {
         dispatch(({
           type: "addManager",
           payload: {
             ...manager,
+            manager_id: res.insertId,
             profile_id: profileId,
-            calabrio_team_ids: teams
+            calabrio_team_ids: selectedCalabrioTeams
           }
         }));
         setSaveStatus(loadingStates.success);
@@ -86,14 +102,51 @@ const AddManagerModal = (props: AddManagerModalProps) => {
       .catch(err => {
         setSaveStatus(loadingStates.fail);
         setTimeout(() => setSaveStatus(null), 2000);
-        setErrorMessage(JSON.stringify(err));
-        console.log("addManager - Failure", err);
+        setErrorMessage("Failed to Create Manager");
+        console.error("addManager - Failure", err);
+      });
+  };
+
+  const editManagerClicked = (): Promise<any> => {
+    setSaveStatus(loadingStates.loading);
+    const profileId = profile ? profile.profile_id : null;
+    const teams = JSON.stringify(selectedCalabrioTeams);
+
+    return editManager(manager.manager_id, {
+      profile_id: profileId,
+      calabrio_team_ids: teams
+    })
+      .then((res: any) => {
+        const updatedArray = state.managerContext.managers.map(m => {
+          if(m.manager_id === manager.manager_id){
+            return {
+              ...manager,
+              profile_id: profileId,
+              calabrio_team_ids: selectedCalabrioTeams
+            };
+          } else {
+            return m;
+          }
+        });
+        dispatch(({
+          type: "editManager",
+          payload: updatedArray
+        }));
+        setSaveStatus(loadingStates.success);
+        setTimeout(handleClose, 2000);
+        console.log("editManager - Success", res);
+      })
+      .catch((err: any) => {
+        setSaveStatus(loadingStates.fail);
+        setTimeout(() => setSaveStatus(null), 2000);
+        setErrorMessage("Failed to update Manager");
+        console.error("editManager - Failure", err);
       });
   };
 
   let overlayMessage = "Saving";
   if (saveStatus === loadingStates.success) {
-    overlayMessage = "Manager added successfully";
+    overlayMessage = "Manager saved successfully";
   } else if (saveStatus === loadingStates.fail) {
     overlayMessage = errorMessage;
   }
@@ -108,12 +161,15 @@ const AddManagerModal = (props: AddManagerModalProps) => {
           /> : null}
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>
-          <Header>Add a Manager</Header>
+          { selectedManager ?
+            <Header>Edit {manager.manager_first_name} {manager.manager_last_name}</Header>
+            : <Header>Add a Manager</Header>
+          }
           <CloseRounded data-testid={"close-button"} onClick={handleClose}/>
         </HeaderAndCloseButtonWrapper>
         <FlexColumn>
           <ModalNNumber
-            disabled={saveStatus ? true : false}
+            disabled={saveStatus || selectedManager ? true : false}
             fetchedUser={fetchedUser}
             label="N Number"
             onComplete={(fetchedUser, nNumber) => {
@@ -145,7 +201,7 @@ const AddManagerModal = (props: AddManagerModalProps) => {
               value: profile.profile_id,
               ...profile
             }))}
-            value={profile}
+            value={profile && profile.profile_nme ? profile.profile_nme : ""}
             updateValue={(event: any, newValue: any) => setProfile(newValue)}
           />
           <Dropdown
@@ -155,23 +211,24 @@ const AddManagerModal = (props: AddManagerModalProps) => {
               width: "400px",
               margin: "10px 0px"
             }}
-            options={state.calabrioContext.teams.map((team: any) => ({
-              label: team.name,
-              value: team.groupId,
-              ...team
-            }))}
-            value={calabrioTeams}
-            updateValue={(event: any, newValue: any) => setCalabrioTeams(newValue)}
+            options={calabrioTeams.map((team: any) => getCalabrioOption(team.groupId))}
+            value={selectedCalabrioTeams.map(teamId => getCalabrioOption(teamId))}
+            updateValue={(event: any, newValue: any) => setSelectedCalabrioTeams(newValue.map((team:any) => team.value))}
           />
         </FlexColumn>
         <ButtonWrapper>
-          <StyledButton disabled={!manager || !profile || calabrioTeams.length < 0} onClick={addManagerClicked} data-testid={"add-manager-button"}>
-            Add Manager
-          </StyledButton>
+          { selectedManager ?
+            <StyledButton disabled={!manager || !profile || selectedCalabrioTeams.length === 0} onClick={editManagerClicked} data-testid={"edit-manager-button"}>
+              Save
+            </StyledButton>
+            : <StyledButton disabled={!manager || !profile || selectedCalabrioTeams.length === 0} onClick={addManagerClicked} data-testid={"add-manager-button"}>
+              Add Manager
+            </StyledButton>
+          }
         </ButtonWrapper>
       </PaperContainer>
     </ModalContainer>
   );
 };
 
-export default AddManagerModal;
+export default ManagerModal;

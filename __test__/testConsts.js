@@ -191,7 +191,7 @@ export const validFormState = {
     updated: false
   },
   manager: {
-    value: "{\"manager_first_name\": \"John\",\"manager_last_name\": \"Wick\",\"manager_n_number\": \"n1234567\"}",
+    value: managerList[0],
     blurred: false,
     updated: true
   },
