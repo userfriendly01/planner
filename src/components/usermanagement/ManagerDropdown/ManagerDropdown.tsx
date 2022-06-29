@@ -10,10 +10,7 @@ import {
   Dropdown
 } from "components";
 import { useAdminState } from "context";
-import React, {
-  useEffect,
-  useState
-} from "react";
+import React, { useState } from "react";
 import { sortManagersByName } from "utils";
 
 interface ManagerDropDownProps {
@@ -52,12 +49,6 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
     setFilter("show-all");
     setIsManagerModalOpen(false);
   };
-
-  useEffect(() => {
-    if(filterBy === "add-manager"){
-      handleOpenManager();
-    }
-  }, [filterBy]);
 
   const options: DropdownOption[] = [
     {
@@ -103,15 +94,20 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
   return (
     <Wrapper>
       <Dropdown
-        label="Manager Filter"
+        label="Manager Dropdown"
         options={options}
         styles= {{ width: 325 }}
         value={options.find((option: DropdownOption) => option.value === filterBy)}
-        updateValue={(event: any, newInputValue: any) => setFilter(newInputValue.value)}
+        updateValue={(event: any, newInputValue: any) => {
+          setFilter(newInputValue.value);
+          if(newInputValue.value === "add-manager"){
+            handleOpenManager();
+          }
+        }}
         CustomRender={DropdownOption}
       />
       <Modal disableBackdropClick={true} open={isManagerModalOpen}>
-        <ManagerModal data-testid="add-manager-modal" handleClose={handleCloseManager} selectedManager={selectedManager}/>
+        <ManagerModal handleClose={handleCloseManager} selectedManager={selectedManager}/>
       </Modal>
     </Wrapper>
   );
