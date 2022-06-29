@@ -10,6 +10,14 @@ export interface DbManagerRequest {
   calabrio_team_ids: string
 }
 
+export interface DbUpdateManagerRequest {
+  manager_first_nme?: string;
+  manager_last_nme?: string;
+  manager_n_num?: string;
+  profile_id: number;
+  calabrio_team_ids: string
+}
+
 export interface DbManagerResponse {
   manager_first_nme: string;
   manager_last_nme: string;
@@ -19,10 +27,11 @@ export interface DbManagerResponse {
   calabrio_team_ids: string
 }
 
-export const addManager = (manager: DbManagerRequest): Promise<any> => {
-  console.log("Add Manager Payload: ", manager);
-  return myAxios.post(apiPaths.MANAGERS, manager).then(response => response.data);
-};
+export const addManager = (manager: DbManagerRequest): Promise<any> =>
+  myAxios.post(apiPaths.MANAGERS, manager).then(response => response.data);
+
+export const editManager = (managerId: string | number, manager: DbUpdateManagerRequest): Promise<any> =>
+  myAxios.put(`${apiPaths.MANAGERS}/${managerId}`, manager).then(response => response.data);
 
 export const getManagers = (): Promise<DbManagerRequest[]> =>
   myAxios.get(apiPaths.MANAGERS).then(response => response.data);

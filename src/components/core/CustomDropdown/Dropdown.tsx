@@ -17,15 +17,16 @@ import styled from "styled-components";
 
 export const Dropdown = (props: any) => {
   const {
-    options,
+    CustomRender,
+    disabled,
+    error,
     label,
     multiple,
+    onBlur,
+    options,
     styles,
     updateValue,
-    value,
-    error,
-    onBlur,
-    disabled
+    value
   } = props;
 
   const stylesObject = {
@@ -38,6 +39,7 @@ export const Dropdown = (props: any) => {
   };
 
   const ListItem = styled.li`
+    width: ${styles && styles.width ? styles.width : "250px"},
     font-size: ${styles && styles.fontSize ? styles.fontSize : "15px"};
   `;
 
@@ -67,6 +69,10 @@ export const Dropdown = (props: any) => {
       renderOption={(props: any, option: any) => {
         if (option.label === "divider") {
           return <Divider key={props["data-option-index"]} />;
+        } else if (CustomRender){
+          return <ListItem  {...props} key={props["data-option-index"]}>
+            <CustomRender option={option}/>
+          </ListItem>;
         } else {
           return <ListItem  {...props} key={props["data-option-index"]}>
             {option.label}

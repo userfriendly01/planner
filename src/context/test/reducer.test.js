@@ -42,6 +42,34 @@ describe("reducer", () => {
       expect(result.managerContext.managers).toEqual([...initialManager, payload]);
     });
   });
+  describe("editManager", () => {
+    test("should update the managers array", () => {
+      const payload = [{
+        manager_first_name: "joe",
+        manager_last_name: "smith",
+        manager_n_number: "n1234657"
+      }];
+      const action = {
+        type: "editManager",
+        payload
+      };
+      const initialManager = [
+        {
+          manager_first_name: "frank",
+          manager_last_name: "smith",
+          manager_n_number: "n7685955"
+        }
+      ];
+      const testState = {
+        ...initialState,
+        managerContext: {
+          managers: initialManager
+        }
+      };
+      const result = reducer(testState, action);
+      expect(result.managerContext.managers).toEqual(payload);
+    });
+  });
   describe("addOffice", () => {
     test("should add to the office map", () => {
       const payload ={
