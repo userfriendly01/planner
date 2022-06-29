@@ -57,11 +57,6 @@ const ManagerModal = (props: ManagerModalProps) => {
   const [ profile, setProfile ] = useState<any>(selectedManager ? profiles.find(p => p.profile_id === selectedManager.profile_id) : null);
   const [ selectedCalabrioTeams, setSelectedCalabrioTeams ] = useState<number[]>(selectedManager ? selectedManager.calabrio_team_ids :[]);
 
-  console.log("selectedManager", selectedManager);
-  console.log("profile", profile);
-  console.log("calabrioTeams", calabrioTeams);
-  console.log("selectedCalabrioTeams", selectedCalabrioTeams);
-
   const getCalabrioOption = (teamId: number) => {
     const team = calabrioTeams.find(team => team.groupId === teamId);
     return team ? {
@@ -133,7 +128,6 @@ const ManagerModal = (props: ManagerModalProps) => {
             return m;
           }
         });
-        console.log("dispatch edit managers");
         dispatch(({
           type: "editManager",
           payload: updatedArray

@@ -6,7 +6,6 @@ export const Wrapper = styled.div`
   position: relative;
 `;
 
-
 export const Label = styled.div`
   display: flex;
   width: 90%;

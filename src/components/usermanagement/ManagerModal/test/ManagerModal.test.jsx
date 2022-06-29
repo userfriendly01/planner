@@ -7,11 +7,7 @@ import {
   PaperContainer,
   StyledButton
 } from "components";
-import {
-  useAdminDispatch,
-  useAdminState
-} from "context";
-import { initialState } from "context";
+import { useAdminState } from "context";
 import React from "react";
 import { act } from "react-dom/test-utils";
 import {
