@@ -349,7 +349,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
         }
       </FormControlsPane>
       <RightColumn>
-        {!form.didUser &&
+        {!form.didUser ?
           <ModalPhoneNumber
             disabled={isOutgoingDisabled()}
             allowSevenDigitVdn={false}
@@ -369,15 +369,15 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
                 }
               });
             }}
+          /> :
+          <DidFormInfo
+            skills={skills}
+            worker={worker}
+            workers={workers}
+            forwardToToggle={forwardToToggle}
+            setForwardToToggle={setForwardToToggle}
           />
         }
-        <DidFormInfo
-          skills={skills}
-          worker={worker}
-          workers={workers}
-          forwardToToggle={forwardToToggle}
-          setForwardToToggle={setForwardToToggle}
-        />
       </RightColumn>
     </FormControlsContainer>
   );
