@@ -15,8 +15,7 @@ import {
   Tooltip
 } from "@material-ui/core";
 import {
-  DidFormInfoAdd,
-  DidFormInfoUpdate,
+  DidFormInfo,
   ModalExtension,
   ModalNNumber,
   ModalPhoneNumber,
@@ -25,7 +24,6 @@ import {
 import {
   useFormDispatch,
   useFormState,
-  useAdminState,
   userFormActions
 } from "context";
 import {
@@ -36,7 +34,6 @@ import React from "react";
 import { checkExtension } from "services";
 import {
   getOverflowSkillFromProfile,
-  removeProfileZeroIfAdminNotInProfileZero,
   isProfileIdValid,
   isManagerValid,
   sortManagersByName,
@@ -374,24 +371,13 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
             }}
           />
         }
-        {form.didUser && form.formMode === formModes.INSERT &&
-          <DidFormInfoAdd
-            skills={skills}
-            worker={worker}
-            workers={workers}
-            forwardToToggle={forwardToToggle}
-            setForwardToToggle={setForwardToToggle}
-          />
-        }
-        {form.didUser && form.formMode === formModes.UPDATE &&
-          <DidFormInfoUpdate
-            skills={skills}
-            worker={worker}
-            workers={workers}
-            forwardToToggle={forwardToToggle}
-            setForwardToToggle={setForwardToToggle}
-          />
-        }
+        <DidFormInfo
+          skills={skills}
+          worker={worker}
+          workers={workers}
+          forwardToToggle={forwardToToggle}
+          setForwardToToggle={setForwardToToggle}
+        />
       </RightColumn>
     </FormControlsContainer>
   );
