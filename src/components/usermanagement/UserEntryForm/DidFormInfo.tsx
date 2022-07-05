@@ -16,7 +16,7 @@ import {
 import { formModes } from "globals";
 import React from "react";
 
-const BasicFormInfo = (props: DidFormInfoProps) => {
+const DidFormInfo = (props: DidFormInfoProps) => {
 
   const {
     skills,
@@ -133,4 +133,4 @@ const BasicFormInfo = (props: DidFormInfoProps) => {
   );
 };
 
-export default BasicFormInfo;
+export default DidFormInfo;
