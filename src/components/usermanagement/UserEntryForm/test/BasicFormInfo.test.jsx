@@ -11,15 +11,13 @@ import {
   ModalNNumber,
   ModalPhoneNumber,
   Dropdown,
-  DidFormInfoAdd,
-  DidFormInfoUpdate,
+  DidFormInfo,
   ExtensionButtonWrapper,
   UserFormButton
 } from "components";
 import {
   useFormDispatch,
   useFormState,
-  useAdminState,
   userFormActions
 } from "context";
 import { formModes } from "globals";
@@ -53,8 +51,7 @@ jest.useFakeTimers();
 
 jest.mock("components", () => ({
   __esModule: true,
-  DidFormInfoAdd: jest.fn(),
-  DidFormInfoUpdate: jest.fn(),
+  DidFormInfo: jest.fn(),
   ModalExtension: jest.fn(),
   ModalNNumber: jest.fn(),
   ModalPhoneNumber: jest.fn(),
@@ -125,8 +122,7 @@ describe("<BasicFormInfo />", () => {
     getOverflowSkillFromProfile.mockReturnValue("466");
     useFormState.mockReturnValue(initialFormState);
     setupMockedComponents({
-      DidFormInfoAdd,
-      DidFormInfoUpdate,
+      DidFormInfo,
       ModalExtension,
       ModalNNumber,
       ModalPhoneNumber,
@@ -920,14 +916,14 @@ describe("<BasicFormInfo />", () => {
           const renderedOverflowTT = render(overFlowToolTip.children);
           expect(renderedOverflowTT.container).toHaveTextContent("Overflow Skill");
 
-          const expectedDidFormInfoAddProps = {
+          const expectedDidFormInfoProps = {
             skills: mockSkills,
             worker: mockWorkers[2],
             workers: mockWorkers,
             forwardToToggle: false,
             setForwardToToggle: mockSetForwardToToggle
           };
-          expectOnlyPassedProps(DidFormInfoAdd, expectedDidFormInfoAddProps, 0);
+          expectOnlyPassedProps(DidFormInfo, expectedDidFormInfoProps, 0);
         });
         test("Overflow Tooltip Title should be message when overflowSkill is not undefined", () => {
           getOverflowSkillFromProfile.mockReturnValue(undefined);
@@ -962,14 +958,14 @@ describe("<BasicFormInfo />", () => {
           const renderedOverflowTT = render(overFlowToolTip.children);
           expect(renderedOverflowTT.container).toHaveTextContent("Overflow Skill");
 
-          const expectedDidFormInfoUpdateProps = {
+          const expectedDidFormInfoProps = {
             skills: mockSkills,
             worker: mockWorkers[2],
             workers: mockWorkers,
             forwardToToggle: false,
             setForwardToToggle: mockSetForwardToToggle
           };
-          expectOnlyPassedProps(DidFormInfoUpdate, expectedDidFormInfoUpdateProps, 0);
+          expectOnlyPassedProps(DidFormInfo, expectedDidFormInfoProps, 0);
         });
       });
       describe("Overflow Skill Switch", () => {
