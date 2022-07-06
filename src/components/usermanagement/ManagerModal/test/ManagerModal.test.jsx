@@ -119,10 +119,6 @@ describe("<ManagerModal />", () => {
     act(() => {
       getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).onComplete(fetchedManager, nNumber);
     });
-<<<<<<< HEAD:src/components/usermanagement/AddManagerModal/test/AddManagerModal.test.jsx
-    // button should be enabled
-    // expect(getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton)).disabled).toBe(false);
-=======
     act(() => {
       Dropdown.mock.calls[6][0].updateValue(null, {
         profile_id: 4
@@ -132,7 +128,6 @@ describe("<ManagerModal />", () => {
       }]);
     });
     expect(getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton)).disabled).toBe(false);
->>>>>>> dev:src/components/usermanagement/ManagerModal/test/ManagerModal.test.jsx
   };
 
   describe("Add Manager", () => {
@@ -188,20 +183,12 @@ describe("<ManagerModal />", () => {
                   {
                     type: "addManager",
                     payload: {
-<<<<<<< HEAD:src/components/usermanagement/AddManagerModal/test/AddManagerModal.test.jsx
-                      "manager_first_name": "B'ob",
-                      "manager_last_name": "Bob'son",
-                      "manager_n_number": "n0000000",
-                      profile_id: null,
-                      calabrio_team_ids: ""
-=======
                       calabrio_team_ids: [215],
                       manager_id: undefined,
                       manager_first_name: "B'ob",
                       manager_last_name: "Bob'son",
                       manager_n_number: "n0000000",
                       profile_id: 4
->>>>>>> dev:src/components/usermanagement/ManagerModal/test/ManagerModal.test.jsx
                     }
                   }
                 ]);

@@ -75,6 +75,14 @@ export const initialFormState = {
     blurred: false,
     updated: false
   },
+  calabrioUser: {
+    team: null,
+    roles: [],
+    scope: {
+      groups: [],
+      teams: []
+    }
+  },
   userPreviouslyAdded: false,
   zeroOutEnabled: false,
   zeroOutEnabledUpdated: false
@@ -226,6 +234,14 @@ export const validFormState = {
     e164: "+16032453160",
     updated: true,
     valid: true
+  },
+  calabrioUser: {
+    team: 225,
+    roles: [],
+    scope: {
+      "groups": [],
+      "teams": []
+    }
   },
   zeroOutEnabled: false,
   zeroOutEnabledUpdated: false,
