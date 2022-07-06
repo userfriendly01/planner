@@ -32,7 +32,8 @@ export const initialState: AppState = {
     tenant: {},
     teams: [],
     groups: [],
-    users: []
+    users: [],
+    roles: []
   },
   resettingSkills: false
 };

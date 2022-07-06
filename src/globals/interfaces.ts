@@ -1,8 +1,8 @@
+import { CalabrioGroup } from "../components/usermanagement/CallRecording/CallRecording.Interfaces";
 export interface Action {
   type: string,
   [key: string]: any
 }
-
 export interface AppState {
   managerContext: {
     managers: Manager[]
@@ -25,9 +25,10 @@ export interface AppState {
   },
   calabrioContext: {
     tenant: any,
-    teams: any[],
-    groups: any[],
-    users: any[]
+    teams: CalabrioGroup[],
+    groups: CalabrioGroup[],
+    users: any[],
+    roles: any[]
   },
   resettingSkills: false
 }
