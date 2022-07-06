@@ -247,7 +247,8 @@ describe("reducer", () => {
         users: [{
           firstName: "Faith",
           lastName: "Cuneo"
-        }]
+        }],
+        roles: []
       };
       const result = reducer(initialState, action);
       expect(result.calabrioContext).toEqual(expectedResults);
