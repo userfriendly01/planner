@@ -11,8 +11,7 @@ import {
   ModalNNumber,
   ModalPhoneNumber,
   Dropdown,
-  DidFormInfoAdd,
-  DidFormInfoUpdate,
+  DidFormInfo,
   ExtensionButtonWrapper,
   UserFormButton
 } from "components";
@@ -39,6 +38,7 @@ import {
 } from "testUtils";
 import {
   getOverflowSkillFromProfile,
+  removeProfileZeroIfAdminNotInProfileZero,
   isExtensionValid,
   isProfileIdValid,
   isManagerValid
@@ -51,8 +51,7 @@ jest.useFakeTimers();
 
 jest.mock("components", () => ({
   __esModule: true,
-  DidFormInfoAdd: jest.fn(),
-  DidFormInfoUpdate: jest.fn(),
+  DidFormInfo: jest.fn(),
   ModalExtension: jest.fn(),
   ModalNNumber: jest.fn(),
   ModalPhoneNumber: jest.fn(),
@@ -81,6 +80,7 @@ jest.mock("@material-ui/icons", () => ({
 jest.mock("context", () => ({
   __esModule: true,
   useFormState: jest.fn(),
+  useAdminState: jest.fn(),
   useFormDispatch: jest.fn(),
   userFormActions: jest.requireActual("context").userFormActions
 }));
@@ -92,7 +92,8 @@ jest.mock("utils", () => ({
   isProfileIdValid: jest.fn(),
   sortProfilesByName: jest.requireActual("utils").sortProfilesByName,
   sortManagersByName: jest.fn("utils").sortManagersByName,
-  getOverflowSkillFromProfile: jest.fn()
+  getOverflowSkillFromProfile: jest.fn(),
+  removeProfileZeroIfAdminNotInProfileZero: jest.fn()
 }));
 
 jest.mock("services", () => ({
@@ -108,11 +109,6 @@ jest.mock("globals", () => ({
   formModes: jest.requireActual("globals").formModes
 }));
 
-// jest.mock("../ExtensionSearchParams", () => ({
-//   __esModule: true,
-//   getValues: jest.fn()
-// }));
-
 const mockSetForm = jest.fn();
 
 const mockSetForwardToToggle = jest.fn();
@@ -126,8 +122,7 @@ describe("<BasicFormInfo />", () => {
     getOverflowSkillFromProfile.mockReturnValue("466");
     useFormState.mockReturnValue(initialFormState);
     setupMockedComponents({
-      DidFormInfoAdd,
-      DidFormInfoUpdate,
+      DidFormInfo,
       ModalExtension,
       ModalNNumber,
       ModalPhoneNumber,
@@ -172,7 +167,7 @@ describe("<BasicFormInfo />", () => {
       const expectedManagerProps = {
         label: "Manager *",
         options: managerList.map(manager => ({
-          label: `${manager.manager_first_name} ${manager.manager_last_name}`,
+          label: `${manager.manager_first_name} ${manager.manager_last_name} - ${manager.manager_n_number}`,
           value: manager.manager_n_number,
           ...manager
         })),
@@ -225,16 +220,17 @@ describe("<BasicFormInfo />", () => {
       renderComponent(false);
       act(() => {
         const updateValue = Dropdown.mock.calls[0][0].updateValue;
-        updateValue(null, JSON.stringify(managerList[0]));
+        updateValue(null, managerList[0]);
       });
       expect(mockSetForm).toBeCalledWith({
         type: userFormActions.UPDATE_MANAGER,
-        payload: JSON.stringify(managerList[0])
+        payload: managerList[0]
       });
     });
   });
   describe("Team dropdown", () => {
     test("Should render the correct initial state", () => {
+      removeProfileZeroIfAdminNotInProfileZero.mockReturnValue(profileList);
       const rendered = renderComponent(false);
       expectMockedComponent(rendered, { Dropdown }, 2);
       const expectedTeamProps = {
@@ -257,6 +253,7 @@ describe("<BasicFormInfo />", () => {
           blurred: true
         }
       });
+      removeProfileZeroIfAdminNotInProfileZero.mockReturnValue(profileList);
       isProfileIdValid.mockReturnValue(false);
       renderComponent(false);
       expect(Dropdown.mock.calls[1][0].error).toBe(true);
@@ -919,14 +916,14 @@ describe("<BasicFormInfo />", () => {
           const renderedOverflowTT = render(overFlowToolTip.children);
           expect(renderedOverflowTT.container).toHaveTextContent("Overflow Skill");
 
-          const expectedDidFormInfoAddProps = {
+          const expectedDidFormInfoProps = {
             skills: mockSkills,
             worker: mockWorkers[2],
             workers: mockWorkers,
             forwardToToggle: false,
             setForwardToToggle: mockSetForwardToToggle
           };
-          expectOnlyPassedProps(DidFormInfoAdd, expectedDidFormInfoAddProps, 0);
+          expectOnlyPassedProps(DidFormInfo, expectedDidFormInfoProps, 0);
         });
         test("Overflow Tooltip Title should be message when overflowSkill is not undefined", () => {
           getOverflowSkillFromProfile.mockReturnValue(undefined);
@@ -961,14 +958,14 @@ describe("<BasicFormInfo />", () => {
           const renderedOverflowTT = render(overFlowToolTip.children);
           expect(renderedOverflowTT.container).toHaveTextContent("Overflow Skill");
 
-          const expectedDidFormInfoUpdateProps = {
+          const expectedDidFormInfoProps = {
             skills: mockSkills,
             worker: mockWorkers[2],
             workers: mockWorkers,
             forwardToToggle: false,
             setForwardToToggle: mockSetForwardToToggle
           };
-          expectOnlyPassedProps(DidFormInfoUpdate, expectedDidFormInfoUpdateProps, 0);
+          expectOnlyPassedProps(DidFormInfo, expectedDidFormInfoProps, 0);
         });
       });
       describe("Overflow Skill Switch", () => {

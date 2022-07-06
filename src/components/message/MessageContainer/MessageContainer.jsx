@@ -60,7 +60,7 @@ const ViewAddWrapper = styled.div`
 
 const MessageContainer = props => {
   const {
-    value
+    value: messageType
   } = props;
 
   const adminState = useAdminState();
@@ -79,16 +79,21 @@ const MessageContainer = props => {
   const [messageState, setMessageState] = useState({
     fetching: true,
     message: "",
-    messageType: value,
+    messageType: messageType,
     skill: defaultSkill,
     readOnly: false,
     serviceCallError: null,
-    workerProfileId: workerProfileId
+    workerProfileId: workerProfileId,
+    skillData: {
+      fetchInProgress: false,
+      allSkills: null,
+      retries: 3
+    }
   });
   useEffect(() => {
     let apiPath;
     let dataField;
-    if(value === "closed"){
+    if(messageType === "closed"){
       apiPath = apiPaths.CLOSED_MESSAGE;
       dataField = "closedMessage";
     } else {

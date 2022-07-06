@@ -29,7 +29,7 @@ export const initialState: AppState = {
     selectedWorkers: []
   },
   calabrioContext: {
-    roles: [],
+    tenant: {},
     teams: [],
     groups: [],
     users: []
@@ -45,6 +45,14 @@ export const reducer = (state: AppState, action: Action): AppState => {
         managerContext: {
           ...state.managerContext,
           managers: [...state.managerContext.managers.slice(), action.payload]
+        }
+      };
+    case "editManager":
+      return {
+        ...state,
+        managerContext: {
+          ...state.managerContext,
+          managers: action.payload
         }
       };
     case "addOffice":
@@ -72,7 +80,7 @@ export const reducer = (state: AppState, action: Action): AppState => {
         }
       };
     case "loadManagers":
-      console.log("***Managers: ", action.payload);
+      console.log("**Final Manager Payload: ", action.payload);
       return {
         ...state,
         managerContext: {
@@ -96,14 +104,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
           groups: formatCalabrioGroups(action.payload),
           teams: formatCalabrioTeams(action.payload),
           users: formatCalabrioUsers(action.payload)
-        }
-      };
-    case "loadCalabrioRoles":
-      return {
-        ...state,
-        calabrioContext: {
-          ...state.calabrioContext,
-          roles: action.payload
         }
       };
     case "loadProfiles":{

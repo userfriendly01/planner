@@ -2,16 +2,10 @@ import { Manager } from "globals";
 import { DbManagerResponse } from "services";
 
 const parseCalabrioTeams = (manager: DbManagerResponse): any => {
-  const teamsString: any = manager.calabrio_team_ids;
-  console.log("Type of Manager Calabrio Teams", typeof teamsString);
-
-  if(typeof teamsString === "string"){
-    try {
-      return JSON.parse(teamsString);
-    } catch(err) {
-      console.error("Error parsing Calabrio Teams for Manager Id", manager.manager_id);
-    }
-  } else {
+  try {
+    return manager.calabrio_team_ids ? JSON.parse(manager.calabrio_team_ids): [];
+  } catch(err) {
+    console.error("Error parsing Calabrio Teams for Manager Id", manager.manager_id);
     return [];
   }
 };

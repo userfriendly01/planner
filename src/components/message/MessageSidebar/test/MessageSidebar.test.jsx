@@ -1,17 +1,24 @@
 import MessageSidebar from "../MessageSidebar";
 import React from "react";
 import {
-  fireEvent, render
+  fireEvent, render, act, screen
 } from "testUtils";
 
 const mockSetMessageState = jest.fn();
+
+const initalSkillDataState = {
+  fetchInProgress: false,
+  allSkills: null,
+  retries: 3
+};
 
 const initialMockedBlSalesState = {
   fetching: false,
   flashMessage: "",
   skill: "blSalesL1",
   readOnly: false,
-  workerProfileId: 3
+  workerProfileId: 3,
+  skillData: initalSkillDataState
 };
 
 const initialMockedAisgState = {
@@ -19,7 +26,8 @@ const initialMockedAisgState = {
   flashMessage: "",
   skill: "aisgL1",
   readOnly: false,
-  workerProfileId: 4
+  workerProfileId: 4,
+  skillData: initalSkillDataState
 };
 
 const initialMockedCsoState = {
@@ -27,7 +35,8 @@ const initialMockedCsoState = {
   flashMessage: "",
   skill: "csoBilling",
   readOnly: false,
-  workerProfileId: 7
+  workerProfileId: 7,
+  skillData: initalSkillDataState
 };
 
 const initialMockedBSCState = {
@@ -35,8 +44,61 @@ const initialMockedBSCState = {
   flashMessage: "",
   skill: "bscCbs",
   readOnly: false,
-  workerProfileId: 10
+  workerProfileId: 10,
+  skillData: initalSkillDataState
 };
+
+const initialNoFlashMessageState = {
+  fetching: false,
+  flashMessage: "",
+  skill: "aisgConsumer",
+  readOnly: false,
+  workerProfileId: 3,
+  skillData: initalSkillDataState
+};
+
+const allSkillsDefaultDataset = [
+  {
+    skillName: "csoService",
+    timeOfDays: [],
+    flashMessage: "",
+    closedMessage: null
+  },{
+    skillName: "csoBilling",
+    timeOfDays: [],
+    flashMessage: "Flash Message for aisgConsumer",
+    closedMessage: "consumer closed"
+  }
+];
+
+const initalFlashMessageState = {
+  fetching: false,
+  flashMessage: "",
+  skill: "csoService",
+  readOnly: false,
+  workerProfileId: 7,
+  skillData: {
+    fetchInProgress: false,
+    allSkills: allSkillsDefaultDataset,
+    retries: 3
+  }
+};
+
+const allSkillsHttpResponse = {
+  data: {
+    allSkills: allSkillsDefaultDataset
+  }
+};
+
+import { myAxios } from "utils"; // utils consumes axios
+jest.mock("utils", () => ({
+  myAxios: {
+    get: jest.fn()
+  },
+  default: {
+    get: jest.fn()
+  }
+}));
 
 const renderComponent = messageState => {
   return render(<MessageSidebar
@@ -45,7 +107,13 @@ const renderComponent = messageState => {
 };
 
 describe("<MessageSidebar />", () => {
-  beforeEach(() => mockSetMessageState.mockClear());
+  beforeEach(() => {
+    jest.resetAllMocks();
+    jest.clearAllMocks();
+    mockSetMessageState.mockClear();
+    myAxios.get.mockResolvedValue(allSkillsHttpResponse);
+  });
+
   test("the MessageSidebar should render a radio group for AISG.", () => {
     const rendered = renderComponent(initialMockedAisgState);
     expect(rendered.findAllByLabelText("aisgL1")).toBeTruthy();
@@ -54,7 +122,7 @@ describe("<MessageSidebar />", () => {
   test("clicking a AISG radio button should change the skill and fetching to true.", () => {
     const rendered = renderComponent(initialMockedAisgState);
     fireEvent.click(rendered.getByLabelText("aisgConsumer"));
-    expect(mockSetMessageState).toHaveBeenCalledTimes(1);
+    expect(mockSetMessageState).toHaveBeenCalledTimes(2);
     expect(mockSetMessageState).toHaveBeenCalledWith({
       ...initialMockedAisgState,
       skill: "aisgConsumer",
@@ -69,7 +137,7 @@ describe("<MessageSidebar />", () => {
   test("clicking a CSO radio button should change the skill and fetching to true.", () => {
     const rendered = renderComponent(initialMockedCsoState);
     fireEvent.click(rendered.getByLabelText("csoPortal"));
-    expect(mockSetMessageState).toHaveBeenCalledTimes(1);
+    expect(mockSetMessageState).toHaveBeenCalledTimes(2);
     expect(mockSetMessageState).toHaveBeenCalledWith({
       ...initialMockedCsoState,
       skill: "csoPortal",
@@ -84,7 +152,7 @@ describe("<MessageSidebar />", () => {
   test("clicking a BL Sales radio button should change the skill and fetching to true.", () => {
     const rendered = renderComponent(initialMockedBlSalesState);
     fireEvent.click(rendered.getByLabelText("blSalesAmazonQuote"));
-    expect(mockSetMessageState).toHaveBeenCalledTimes(1);
+    expect(mockSetMessageState).toHaveBeenCalledTimes(2);
     expect(mockSetMessageState).toHaveBeenCalledWith({
       ...initialMockedBlSalesState,
       skill: "blSalesAmazonQuote",
@@ -99,11 +167,84 @@ describe("<MessageSidebar />", () => {
   test("clicking a BSC radio button should change the skill and fetching to true.", () => {
     const rendered = renderComponent(initialMockedBSCState);
     fireEvent.click(rendered.getByLabelText("bscCommissions"));
-    expect(mockSetMessageState).toHaveBeenCalledTimes(1);
+    expect(mockSetMessageState).toHaveBeenCalledTimes(2);
     expect(mockSetMessageState).toHaveBeenCalledWith({
       ...initialMockedBSCState,
       skill: "bscCommissions",
       fetching: true
+    });
+  });
+  test("wsx successful call, no flash messages", async () => {
+    await act(() => {
+      renderComponent(initialNoFlashMessageState);
+    });
+    expect(mockSetMessageState).toHaveBeenCalledTimes(2);
+    expect(mockSetMessageState).toHaveBeenNthCalledWith(1, {
+      ...initialNoFlashMessageState,
+      skillData: {
+        ...initialNoFlashMessageState.skillData,
+        fetchInProgress: true,
+        retries: 2
+      }
+    });
+    expect(mockSetMessageState).toHaveBeenNthCalledWith(2, {
+      ...initialNoFlashMessageState,
+      skillData: {
+        ...initialNoFlashMessageState.skillData,
+        allSkills: allSkillsDefaultDataset
+      }
+    });
+  });
+  test("no need to call for flash message list", async () => {
+    await act(() => {
+      renderComponent(initalFlashMessageState);
+    });
+    expect(mockSetMessageState).toHaveBeenCalledTimes(0);
+  });
+  test("network error", async () => {
+    await act(() => {
+      myAxios.get.mockResolvedValue(() => { throw new Error("network error"); });
+      renderComponent(initialNoFlashMessageState);
+    });
+    expect(mockSetMessageState).toHaveBeenCalledTimes(2);
+    expect(mockSetMessageState).toHaveBeenNthCalledWith(1, {
+      ...initialNoFlashMessageState,
+      skillData: {
+        ...initialNoFlashMessageState.skillData,
+        fetchInProgress: true,
+        retries: 2
+      }
+    });
+    expect(mockSetMessageState).toHaveBeenNthCalledWith(2, {
+      ...initialNoFlashMessageState,
+      skillData: {
+        ...initialNoFlashMessageState.skillData,
+        allSkills: null,
+        retries: 2
+      }
+    });
+  });
+  test("unknown profile id", async () => {
+    await act(() => {
+      renderComponent({
+        ...initalFlashMessageState,
+        workerProfileId: 9999
+      });
+    });
+    expect(mockSetMessageState).toHaveBeenCalledTimes(0);
+  });
+  describe("Test if hasClosed is true when expected.", () => {
+    test("Closed icon should render", () => {
+      renderComponent(initalFlashMessageState);
+      const imgContainer = screen.getAllByRole("img");
+      expect(imgContainer.length).toBe(2);
+    });
+  });
+  describe("Test if hasClosed is flase when expected.", () => {
+    test("Closed icon shouldn't render", () => {
+      renderComponent(initialNoFlashMessageState);
+      const imgContainer = screen.queryAllByRole("img");
+      expect(imgContainer.length).toBe(0);
     });
   });
 });

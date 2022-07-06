@@ -25,11 +25,13 @@ const config = {
         exclude: /node_modules/
       },
       {
-        test: /\.png?$/,
-        loader: "file-loader",
-        options: {
-          name: "[name].[ext]"
-        }
+        test: /\.(png|jp(e*)g|svg)$/,
+        use: [{
+          loader: "url-loader",
+          options: {
+            limit: 8192 // Convert images < 8KB to base64 strings
+          }
+        }]
       },
       {
         test: /\.css$/,

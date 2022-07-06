@@ -23,11 +23,14 @@ export const formatWorkerResponse = (response: DbWorker[]): Worker[] => {
 };
 
 export const mapWorkerFromDbWorker = (dbWorker: DbWorker): Worker => {
-  const twilioWorker = {
+  const worker = {
     ...dbWorker,
     sid: dbWorker.workerSid,
     skillsDifferent: dbWorker.attributes ? areSkillsDifferent(dbWorker.attributes) : false
   };
-  delete twilioWorker.workerSid;
-  return twilioWorker;
+  delete worker.workerSid;
+  if (worker.attributes?.manager_n_number) {
+    worker.attributes.manager_n_number = worker.attributes.manager_n_number.toLowerCase()
+  }
+  return worker;
 };

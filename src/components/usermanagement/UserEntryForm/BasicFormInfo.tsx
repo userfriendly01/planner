@@ -15,8 +15,7 @@ import {
   Tooltip
 } from "@material-ui/core";
 import {
-  DidFormInfoAdd,
-  DidFormInfoUpdate,
+  DidFormInfo,
   ModalExtension,
   ModalNNumber,
   ModalPhoneNumber,
@@ -72,6 +71,18 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
 
   console.log("FORM", form);
 
+  const formatDropdownOption = (value: any, label: string, option: any) => {
+    if(typeof option === "object"){
+      return {
+        ...option,
+        value,
+        label
+      };
+    } else {
+      return "";
+    }
+  };
+
   const isOutgoingDisabled = (): boolean => {
     if (form.formMode === formModes.INSERT) {
       return false;
@@ -95,7 +106,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
       type: userFormActions.UPDATE_EXTENSION,
       payload: {
         extension,
-        isValid: (extension === form.extensionStatus.originalExtension)
+        isValid: (extension === form.extensionStatus.originalExtension && form.extensionStatus.originalExtension)
       }
     });
   };
@@ -209,13 +220,8 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
             margin: "8px 0px 5px 0px"
           }}
           onBlur={() => handleOnBlur("manager")}
-          options={managers.sort(sortManagersByName).map(manager => ({
-            label: `${manager.manager_first_name} ${manager.manager_last_name}`,
-            value: manager.manager_n_number,
-            ...manager
-          }))}
+          options={managers.sort(sortManagersByName).map(manager => formatDropdownOption(manager.manager_n_number, `${manager.manager_first_name} ${manager.manager_last_name} - ${manager.manager_n_number}`, manager))}
           updateValue={(event: any, newValue: any) => {
-            console.log("***Selected Manager", newValue);
             setForm({
               type: userFormActions.UPDATE_MANAGER,
               payload: newValue
@@ -228,9 +234,17 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
                   profiles
                 }
               });
+            } else {
+              setForm({
+                type: userFormActions.UPDATE_TEAM,
+                payload: {
+                  profileId: "",
+                  profiles
+                }
+              });
             }
           }}
-          value={form.manager.value}
+          value={form.manager.value ? `${form.manager.value.manager_first_name} ${form.manager.value.manager_last_name} - ${form.manager.value.manager_n_number}`: ""}
         />
         <Dropdown
           error={form.profileId.blurred && !isProfileIdValid(form)}
@@ -240,11 +254,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
             margin: "10px 0px"
           }}
           onBlur={() => handleOnBlur("profileId")}
-          options={profiles.sort(sortProfilesByName).map((profile: any) => ({
-            label: profile.profile_nme,
-            value: profile.profile_id,
-            ...profile
-          }))}
+          options={profiles.sort(sortProfilesByName).map((profile: any) => formatDropdownOption(profile.profile_id, profile.profile_nme, profile))}
           updateValue={(event: any, newValue: any) => setForm({
             type: userFormActions.UPDATE_TEAM,
             payload: {
@@ -339,7 +349,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
         }
       </FormControlsPane>
       <RightColumn>
-        {!form.didUser &&
+        {!form.didUser ?
           <ModalPhoneNumber
             disabled={isOutgoingDisabled()}
             allowSevenDigitVdn={false}
@@ -359,19 +369,8 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
                 }
               });
             }}
-          />
-        }
-        {form.didUser && form.formMode === formModes.INSERT &&
-          <DidFormInfoAdd
-            skills={skills}
-            worker={worker}
-            workers={workers}
-            forwardToToggle={forwardToToggle}
-            setForwardToToggle={setForwardToToggle}
-          />
-        }
-        {form.didUser && form.formMode === formModes.UPDATE &&
-          <DidFormInfoUpdate
+          /> :
+          <DidFormInfo
             skills={skills}
             worker={worker}
             workers={workers}

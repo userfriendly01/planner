@@ -5,8 +5,8 @@ import {
 } from "@lmig/lmds-react-accordion";
 import {
   BasicFormInfo,
-  SkillsFormInfo,
-  CallRecordingForm
+  CallRecordingForm,
+  SkillsFormInfo
 } from "components";
 import { FormControlsContainer } from "./UserEntryForm.Styles";
 import { UserFormAccordianProps } from "./UserEntryForm.Interfaces";

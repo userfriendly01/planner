@@ -42,6 +42,34 @@ describe("reducer", () => {
       expect(result.managerContext.managers).toEqual([...initialManager, payload]);
     });
   });
+  describe("editManager", () => {
+    test("should update the managers array", () => {
+      const payload = [{
+        manager_first_name: "joe",
+        manager_last_name: "smith",
+        manager_n_number: "n1234657"
+      }];
+      const action = {
+        type: "editManager",
+        payload
+      };
+      const initialManager = [
+        {
+          manager_first_name: "frank",
+          manager_last_name: "smith",
+          manager_n_number: "n7685955"
+        }
+      ];
+      const testState = {
+        ...initialState,
+        managerContext: {
+          managers: initialManager
+        }
+      };
+      const result = reducer(testState, action);
+      expect(result.managerContext.managers).toEqual(payload);
+    });
+  });
   describe("addOffice", () => {
     test("should add to the office map", () => {
       const payload ={
@@ -203,7 +231,6 @@ describe("reducer", () => {
         payload
       };
       const expectedResults = {
-        roles: [],
         teams: [{
           groupLevel: "TEAM",
           agents: [
@@ -216,6 +243,7 @@ describe("reducer", () => {
         groups: [{
           groupLevel: "GROUP"
         }],
+        tenant: {},
         users: [{
           firstName: "Faith",
           lastName: "Cuneo"
@@ -223,26 +251,6 @@ describe("reducer", () => {
       };
       const result = reducer(initialState, action);
       expect(result.calabrioContext).toEqual(expectedResults);
-    });
-  });
-  describe("loadCalabrioRoles", () => {
-    test("should initialize a map from the offices map sent in", () => {
-      const payload = [
-        {
-          id: 1,
-          name: "Administrator"
-        },
-        {
-          id: 2,
-          name: "Agent"
-        }
-      ];
-      const action = {
-        type: "loadCalabrioRoles",
-        payload
-      };
-      const result = reducer(initialState, action);
-      expect(result.calabrioContext.roles).toEqual(payload);
     });
   });
   describe("loadProfiles", () => {

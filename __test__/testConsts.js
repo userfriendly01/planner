@@ -75,14 +75,6 @@ export const initialFormState = {
     blurred: false,
     updated: false
   },
-  calabrioUser: {
-    team: null,
-    roles: [],
-    scope: {
-      groups: [],
-      teams: []
-    }
-  },
   userPreviouslyAdded: false,
   zeroOutEnabled: false,
   zeroOutEnabledUpdated: false
@@ -169,6 +161,7 @@ export const validFormOptions = {
   extension: "1234",
   manager: managerList[0],
   nNumber: "n1234567",
+  nNumberFetchedUser: fetchedUser,
   profileId: profileList[0].profile_id
 };
 
@@ -198,7 +191,7 @@ export const validFormState = {
     updated: false
   },
   manager: {
-    value: "{\"manager_first_name\": \"John\",\"manager_last_name\": \"Wick\",\"manager_n_number\": \"n1234567\"}",
+    value: managerList[0],
     blurred: false,
     updated: true
   },
@@ -233,14 +226,6 @@ export const validFormState = {
     e164: "+16032453160",
     updated: true,
     valid: true
-  },
-  calabrioUser: {
-    team: 225,
-    roles: [],
-    scope: {
-      "groups": [],
-      "teams": []
-    }
   },
   zeroOutEnabled: false,
   zeroOutEnabledUpdated: false,

@@ -1,5 +1,4 @@
-export { default as AddManagerModal } from "./AddManagerModal/AddManagerModal";
-export { default as CallRecordingForm } from "./CallRecording/CallRecordingForm";
+export { default as ManagerModal } from "./ManagerModal/ManagerModal";
 export { default as ConfirmationModal } from "./ConfirmationModal/ConfirmationModal";
 export { default as ForwardToEntryForm } from "./ConfirmationModal/ForwardToEntryForm";
 export { default as DefaultSkillSelector } from "./DefaultSkillSelector/DefaultSkillSelector";
@@ -7,7 +6,7 @@ export { default as ManagementHeader } from "./ManagementHeader/ManagementHeader
 export { default as ManagementPagination } from "./ManagementPagination/ManagementPagination";
 export { default as ManagementTable } from "./ManagementTable/ManagementTable";
 export * from "./ManagementWrapper/ManagementWrapper";
-export { default as ManagerFilter } from "./ManagerFilter/ManagerFilter";
+export { default as ManagerDropdown } from "./ManagerDropdown/ManagerDropdown.tsx";
 export { default as ModalFetchingRing } from "./ModalFetchingRing/ModalFetchingRing";
 export { default as ModalHelperText } from "./ModalHelperText/ModalHelperText";
 export { default as ModalExtension } from "./ModalExtension/ModalExtension";

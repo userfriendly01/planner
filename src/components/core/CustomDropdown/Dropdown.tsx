@@ -12,19 +12,21 @@ import styled from "styled-components";
        The rest of the object structure doesnt matter
     multiple: Pass this boolean as "true" if you want the option to select multiple dropdown options
     divider: If you want to display a divider in your list, add an object to the array where the label is "divider"
+    syles: You can pass through multiple styles to control width, height, if there is a border etc
 */
 
 export const Dropdown = (props: any) => {
   const {
-    options,
+    CustomRender,
+    disabled,
+    error,
     label,
     multiple,
+    onBlur,
+    options,
     styles,
     updateValue,
-    value,
-    error,
-    onBlur,
-    disabled
+    value
   } = props;
 
   const stylesObject = {
@@ -37,6 +39,7 @@ export const Dropdown = (props: any) => {
   };
 
   const ListItem = styled.li`
+    width: ${styles && styles.width ? styles.width : "250px"},
     font-size: ${styles && styles.fontSize ? styles.fontSize : "15px"};
   `;
 
@@ -66,6 +69,10 @@ export const Dropdown = (props: any) => {
       renderOption={(props: any, option: any) => {
         if (option.label === "divider") {
           return <Divider key={props["data-option-index"]} />;
+        } else if (CustomRender){
+          return <ListItem  {...props} key={props["data-option-index"]}>
+            <CustomRender option={option}/>
+          </ListItem>;
         } else {
           return <ListItem  {...props} key={props["data-option-index"]}>
             {option.label}

@@ -1,5 +1,21 @@
 import { calabrioGroupLevels } from "globals";
-import { CalabrioGroup } from "../components/usermanagement/CallRecording/CallRecording.Interfaces";
+
+export interface CalabrioUser {
+    [key: string]: any,
+    personId: number,
+    firstName: string,
+    lastName: string,
+    email: string,
+  }
+export interface CalabrioGroup {
+    groupId: number,
+    name: string,
+    displayId: null | number,
+    parentGroupId: number,
+    parentGroupName: string,
+    groupLevel: string,
+    agents?: CalabrioUser[]
+  }
 
 export const formatCalabrioTeams = (groupsArray: CalabrioGroup[]): CalabrioGroup[] => {
   return groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.TEAM);

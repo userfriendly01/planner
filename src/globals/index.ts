@@ -2,7 +2,6 @@ import {
   ModalOverlayStatuses,
   FormModes
 } from "globals";
-import { CalabrioGroupLevel } from "../components/usermanagement/CallRecording/CallRecording.Interfaces";
 
 export * from "./interfaces";
 export * from "./theme";
@@ -27,7 +26,8 @@ export const formModes: FormModes = {
   UPDATE: "update"
 };
 
-export const calabrioGroupLevels: CalabrioGroupLevel = {
+export const calabrioGroupLevels: any = {
+  TENANT: "TENANT",
   GROUP: "GROUP",
   TEAM: "TEAM"
 };
@@ -42,6 +42,7 @@ export const resetResponses = {
 };
 
 export const apiPaths = {
+  ALL_SKILLS: `${SERVICE_BASE_URI}/allskills`,
   AUTH: `${SERVICE_BASE_URI}/admin-login`,
   CHECK_EXTENSION: `${SERVICE_BASE_URI}/checkextension`,
   CREATE_CALABRIO_USER: `${SERVICE_BASE_URI}/calabrio-add-user`,
