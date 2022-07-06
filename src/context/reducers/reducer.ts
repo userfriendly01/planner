@@ -107,6 +107,14 @@ export const reducer = (state: AppState, action: Action): AppState => {
           users: formatCalabrioUsers(action.payload)
         }
       };
+    case "loadCalabrioRoles":
+      return {
+        ...state,
+        calabrioContext: {
+          ...state.calabrioContext,
+          roles: action.payload
+        }
+      };
     case "loadProfiles":{
       return {
         ...state,

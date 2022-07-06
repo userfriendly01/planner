@@ -254,6 +254,26 @@ describe("reducer", () => {
       expect(result.calabrioContext).toEqual(expectedResults);
     });
   });
+  describe("loadCalabrioRoles", () => {
+    test("should initialize a map from the offices map sent in", () => {
+      const payload = [
+        {
+          id: 1,
+          name: "Administrator"
+        },
+        {
+          id: 2,
+          name: "Agent"
+        }
+      ];
+      const action = {
+        type: "loadCalabrioRoles",
+        payload
+      };
+      const result = reducer(initialState, action);
+      expect(result.calabrioContext.roles).toEqual(payload);
+    });
+  });
   describe("loadProfiles", () => {
     test("should initialize or reinitialize the profiles array", () => {
       const payload = [

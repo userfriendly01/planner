@@ -22,7 +22,7 @@ const CallRecordingForm = () => {
 
   const form = useFormState();
   const setForm = useFormDispatch();
-  // console.log("***STATE!", state);
+  console.log("***STATE!", state);
   // console.log("worker", form.nNumberFetchedUser);
 
   useEffect(() => {
