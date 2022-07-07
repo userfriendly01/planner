@@ -11,6 +11,7 @@ import {
   ManagementHeader,
   ManagementPagination,
   ManagementTable,
+  MergeUsersModal,
   UserEntryForm
 } from "components";
 import {
@@ -115,6 +116,9 @@ export const ManagementWrapper: React.FC = () => {
             skills={skillsFromContext}
             workers={workersFromContext.sort(sortWorkersByFullName)}
           />
+        </Modal>
+        <Modal disableBackdropClick={true} open={userModalState.open}>
+          <MergeUsersModal />
         </Modal>
         <ManagementHeader
           filterBy={state.filterBy}

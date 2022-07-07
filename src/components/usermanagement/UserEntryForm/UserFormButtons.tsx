@@ -265,6 +265,14 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
   return (
     <ButtonWrapper>
+      <UserFormButton
+        onClick={() => {
+          handleClose();
+          setForm({ type: userFormActions.RESET_FORM });
+        }}
+      >
+          Close
+      </UserFormButton>
       <Tooltip
         title={
           form.didUser && !isDidDifferentValid(form, worker, forwardToToggle) ?
@@ -283,14 +291,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           </UserFormButton>
         </span>
       </Tooltip>
-      <UserFormButton
-        onClick={() => {
-          handleClose();
-          setForm({ type: userFormActions.RESET_FORM });
-        }}
-      >
-          Close
-      </UserFormButton>
     </ButtonWrapper>
   );
 };
