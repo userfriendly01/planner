@@ -39,7 +39,23 @@ const MergeUsersModal = () => {
             margin="normal"
           />
         </UserWrapper>
-        <Text>6. Click Save in the upper right hand corner in Calabrio</Text>
+        <UserWrapper>
+          <StyledTextField
+            disabled={true}
+            label="Primary Search By"
+            variant="outlined"
+            value="WKe7ddc4e2bb44a978647dcb062dd7ad13"
+            margin="normal"
+          />
+          <StyledTextField
+            disabled={true}
+            label="Duplicate Search By"
+            variant="outlined"
+            value="WKe7ddc4e2bb44a978647dcb062dd7ad13"
+            margin="normal"
+          />
+        </UserWrapper>
+        <Text style={{ marginTop: "10px" }}>6. Click Save in the upper right hand corner in Calabrio</Text>
         <Text>7. Once the users are merged, select continue on this screen.</Text>
         <SubHeader>If you hit cancel, the Triton user will be created and clean up work will still be required for this user in Calabrio</SubHeader>
       </InstructionsWrapper>

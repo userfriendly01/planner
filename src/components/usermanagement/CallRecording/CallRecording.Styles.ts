@@ -129,13 +129,12 @@ export const SubHeader = styled.div`
 
 
 export const Text = styled.div`
-  margin-bottom: 5px;
+  margin: 0px 0px 5px 10px;
 `;
 
 export const UserWrapper = styled.div`
   display: flex;
   justify-content: space-around;
-  margin: 20px 0px;
 `;
 
 export const StyledTextField = styled(TextField)`

@@ -1,4 +1,5 @@
 import { calabrioGroupLevels } from "globals";
+import { getCalabrioUser } from "services";
 
 export interface CalabrioUser {
     [key: string]: any,
@@ -37,42 +38,72 @@ export const formatCalabrioUsers = (groupsArray: CalabrioGroup[]): any[] => {
   return users;
 };
 
-const conflictingUserResultOptions = {
-  NO_ACTION: "No Action Taken",
-  CALABRIO_RECORD_INACTIVATED: "Existing Calabrio Records were found and Inactivated",
-  TWILIO_WORKER_DELETED: "A worker with the same n# has been detected in Twilio and deleted"
+export const searchByOptions = {
+  NAME: "name",
+  N_NUMBER: "nNumber",
+  ACD_ID: "ACD ID"
 };
-
 interface ConflictingUserResult {
-  id: string | number | null,
-  result: string
+  conflictFound: boolean,
+  duplicateUser?: CalabrioUser,
+  scenario?: number,
+  searchBy?: string,
 }
-export const deleteConflictingUsers = async (user: CalabrioUser, nNumber: string, users: CalabrioUser[]): Promise<ConflictingUserResult[]> => {
+export const checkConflictingUsers = async (user: CalabrioUser, nNumber: string, users: CalabrioUser[]): Promise<ConflictingUserResult> => {
   const email = user.email;
   const firstName = user.firstName;
   const lastName = user.lastName;
   const personId = user.personId;
-  const results: ConflictingUserResult[] = [];
 
   users.forEach(async user => {
-    if (user.adLogin.includes(nNumber)) {
-      await console.log("delete Calabrio record");
-    }
 
     if(user.email === email){
-      await console.log("delete Calabrio record");
+      const duplicateUser = await getCalabrioUser(personId);
+      return {
+        conflictFound: true,
+        duplicateUser,
+        scenario: 3,
+        searchBy: searchByOptions.NAME
+      };
+    }
+
+    if (user.adLogin.includes(nNumber)) {
+      const duplicateUser = await getCalabrioUser(personId);
+      return {
+        conflictFound: true,
+        duplicateUser,
+        scenario: 4,
+        searchBy: searchByOptions.N_NUMBER
+      };
     }
 
     if (user.firstName === firstName && user.lastName === lastName){
-      await console.log("delete Twilio worker and User Record");
+      const duplicateUser = await getCalabrioUser(personId);
+      return {
+        conflictFound: true,
+        duplicateUser,
+        scenario: 6,
+        searchBy: searchByOptions.NAME
+      };
+    }
+
+    if(user.email.includes(nNumber)){
+      const duplicateUser = await getCalabrioUser(personId);
+      return {
+        conflictFound: true,
+        duplicateUser,
+        scenario: 6,
+        searchBy: searchByOptions.NAME
+      };
     }
   });
 
-  //Question for Kim - Do you want confirmations for these steps or just keep it behind the scenes
   //Need to update the check for duplicate agent check to look for agents in Twilio without records in the DB
   //Considerations on dup fields - if we're going to update a record we have to do all the clean up checks first
 
-  return results;
+  return {
+    conflictFound: false
+  };
   //Will searchby first and last name,
   //If a record is found we will fetch the full user from Calabrio
   //Then we will fetch the worker from Twilio.. if the n# is the same, we will delete the Triton Worker and inactivate the Calabrio worker
