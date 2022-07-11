@@ -1,9 +1,8 @@
 # CICCT Softphone Admin UI Application
 
-## Getting Started
-
 These instructions will get you up and running on your local machine for development and testing purposes.
 
+## Getting Started
 ### Overview
 
 Technologies used within this project:
@@ -17,14 +16,6 @@ Technologies used within this project:
 Recommended IDEs:
 * [Visual Studio Code](https://code.visualstudio.com/download)
 * [WebStorm](https://www.jetbrains.com/webstorm/download/) (Javascript, frontend)
-* [Atom](https://atom.io/) (Javascript, frontend, other languages)
-  *  Recommended packages to install for Atom:
-    * atom-typescript
-    * linter-sass-lint
-    * linter-eslint
-    * linter-tslint
-    * linter-scss-lint
-    * linter-css-lint
 
 ### Prerequisites
 
@@ -70,7 +61,9 @@ to the [TIPS readme file](./documentation/TIPS.md)
 
 #### Authentication
 
-This app uses PING authentication in a deployed state when `NODE_ENV=production`. When running locally you should have `NODE_ENV=development` and the application will simply bypass the authentication middleware in the `cicct-softphone-service` application.
+This app uses PING authentication in a deployed state when `NODE_ENV=production`.
+When running locally you should have `NODE_ENV=development` and the application will simply bypass 
+the authentication middleware in the `cicct-softphone-service` application.
 
 ## Running the tests
 

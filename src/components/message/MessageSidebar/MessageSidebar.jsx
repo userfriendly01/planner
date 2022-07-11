@@ -97,7 +97,7 @@ const MessageSidebar = props => {
         }
       });
     }
-  });
+  }, []); // Run the first time component renders but no more
 
   const handleRadioChange = selection => {
     setMessageState({

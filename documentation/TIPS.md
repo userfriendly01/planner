@@ -2,7 +2,7 @@
 
 This document offers some tips and tricks for running the Admin UI locally.
 
-## With or Without cicct-callflow-api
+## Running cicct-callflow-api locally
 When this project is run as described in the main [ReadMe](../README.md), the softphone-service will
 make calls to the callflow-api located in Liberty's development environment.
 If you want to run the callflow-api locally instead, follow these steps:
@@ -18,8 +18,6 @@ cicct-softphone-admin-ui  8084
 cicct-softphone-service   8080
 cicct-callflow-api        8081
 ```
-
-Running the callflow-api locally should fix the flash and closed message problem described below.
 
 ## The Session Cookie
 
@@ -44,16 +42,6 @@ create it from the browser console.
 procedure twice if you copy the dev cookie just before it expires
 
 <img src="./chromeDevTools.png" alt="Chrome Developer Tools"/>
-
-## Flash and Closed Message Retrieval Fails
-This is a known problem - retrieval of Flash and Closed messages fails.  This failure can
-be seen in the Network tab of Chrome Developer Tools:
-
-<img src="./messageErrors.png" alt="Error 500"/>
-
-The work-around is to test features related to these message types
-in the development environment rather than locally,
-or alternatively, to run the callflow-api locally as described earlier in this document.
 
 ## Site Can't Be Reached
 <img src="./cantReach.png" alt="Website can't be reached"/>
