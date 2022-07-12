@@ -46,6 +46,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
   } = useAdminState();
 
   const [forwardToToggle, setForwardToToggle] = useState(false);
+
   const [loading, updateLoading] = useState<LoadingState>({
     lookupUser: false,
     overlayMessage: "",

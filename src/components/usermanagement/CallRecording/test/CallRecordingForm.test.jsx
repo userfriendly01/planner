@@ -25,7 +25,8 @@ jest.mock("../CallRecordingScope", () => ({
 }));
 
 jest.mock("components", () => ({
-  Dropdown: jest.fn()
+  Dropdown: jest.fn(),
+  StyledButton: jest.fn()
 }));
 
 jest.mock("services", () => ({

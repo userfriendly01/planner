@@ -101,8 +101,22 @@ export const checkConflictingUsers = async (user: CalabrioUser, nNumber: string,
   //Need to update the check for duplicate agent check to look for agents in Twilio without records in the DB
   //Considerations on dup fields - if we're going to update a record we have to do all the clean up checks first
 
+  // return {
+  //   conflictFound: false
+  // };
+  const duplicateUser = {
+    email: "faith.cuneo@libertymutual.com",
+    adLogin: "LM\\n0263786",
+    firstName: "Faith",
+    lastName: "Cuneo",
+    acdId: "WK123456789456789456",
+    personId: 6
+  };
   return {
-    conflictFound: false
+    conflictFound: true,
+    duplicateUser,
+    scenario: 6,
+    searchBy: searchByOptions.NAME
   };
   //Will searchby first and last name,
   //If a record is found we will fetch the full user from Calabrio

@@ -3,7 +3,11 @@ import {
   ButtonWrapper,
   UserFormButton
 } from "./UserEntryForm.Styles";
-import { Tooltip } from "@material-ui/core";
+import {
+  Modal,
+  Tooltip
+} from "@material-ui/core";
+import { MergeUsersModal } from "components";
 import {
   useAdminDispatch,
   useFormDispatch,
@@ -50,6 +54,11 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
   const dispatch = useAdminDispatch();
   const form = useFormState();
   const setForm = useFormDispatch();
+  const [ calabrioAttributes, setCalabrioAttributes ] = React.useState(null);
+  const [ mergeUsersModalState, setMergeUsersModalState ] = React.useState({
+    open: false,
+    duplicateUser: null
+  });
 
   const doCreateUser = () => {
     updateLoading({
@@ -84,9 +93,22 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       primary_dept_name: form.nNumberFetchedUser.departmentName,
       primary_dept_number: form.nNumberFetchedUser.departmentNumber,
       profile_id: form.profileId.value,
-      sip: form.didUser ? true : false,
       unique_id: form.nNumber.value.toLowerCase()
     };
+
+    setCalabrioAttributes({
+      acdId: "", //populate with workerSid returned
+      adLogin: `LM\\${form.nNumber.value.toLowerCase()}`,
+      email: form.nNumberFetchedUser?.email,
+      firstName: form.nNumberFetchedUser?.firstName,
+      lastName: form.nNumberFetchedUser?.lastName,
+      groupId: form.calabrioUser.team?.groupId,
+      roles: form.calabrioUser.roles,
+      scope: {
+        groups: form.calabrioUser.scope.groups.filter((group: any) => group.checked),
+        teams: form.calabrioUser.scope.teams.filter((team: any) => team.checked)
+      }
+    });
 
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.profileId.value);
     if (overflowSkill !== undefined && form.zeroOutEnabled && form.directDialNum.value) {
@@ -139,22 +161,21 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           }
         });
         setForm({ type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
+
         dispatch({
           type: "addWorkers",
           payload: [mapWorkerFromDbWorker(dbWorker)]
         });
-        updateLoading({
-          ...loading,
-          overlayMessage: "Successfully added new user",
-          saveStatus: modalOverlayStatuses.SUCCESS,
-          saveUser: true
+
+        setCalabrioAttributes({
+          ...calabrioAttributes,
+          acdId: dbWorker.workerSid
         });
-        wait(() => {
-          updateLoading({
-            ...loading,
-            saveUser: false
-          });
-        }, timeouts.MODAL_OVERLAY);
+
+        setMergeUsersModalState({
+          open: true,
+          duplicateUser: null
+        });
       })
       .catch(err => {
         console.error(err.message, err.response.data);
@@ -265,6 +286,15 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
   return (
     <ButtonWrapper>
+      <Modal disableBackdropClick={true} open={mergeUsersModalState.open}>
+        <MergeUsersModal
+          loading={loading}
+          updateLoading={updateLoading}
+          primaryUser={calabrioAttributes}
+          mergeUsersModalState={mergeUsersModalState}
+          setMergeUsersModalState={setMergeUsersModalState}
+        />
+      </Modal>
       <UserFormButton
         onClick={() => {
           handleClose();

@@ -1,5 +1,6 @@
 import UserEntryForm from "../UserEntryForm";
 import {
+  MergeUsersModal,
   ModalOverlay,
   StyledButton,
   UserFormAccordion,
@@ -28,6 +29,7 @@ import {
 
 jest.mock("components", () => ({
   __esModule: true,
+  MergeUsersModal: jest.fn(),
   ModalOverlay: jest.fn(),
   UserFormAccordion: jest.fn(),
   StyledButton: jest.fn(),
@@ -56,6 +58,7 @@ describe("<UserEntryForm />", () => {
     useFormState.mockReturnValue(initialFormState);
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
+      MergeUsersModal,
       ModalOverlay,
       UserFormAccordion,
       UserFormButtons,

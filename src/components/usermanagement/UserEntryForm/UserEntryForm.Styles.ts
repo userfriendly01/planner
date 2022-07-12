@@ -99,9 +99,3 @@ export const StyledIcon = styled(Edit)<{theme: any}>`
     }
   }
 `;
-
-export const SipDisclaimer = styled.p`
-  text-align: center;
-  color: red;
-  font-size: 15px;
-`;

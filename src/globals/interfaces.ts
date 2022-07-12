@@ -46,6 +46,7 @@ export interface Manager {
 }
 
 export interface ModalOverlayStatuses {
+  PARTIAL_FAIL: string,
   FAIL: string,
   SAVING: string,
   SUCCESS: string
@@ -109,7 +110,6 @@ export interface Worker {
     profile_id?: string | number,
     roles?: string[],
     routing?: WorkerSkills,
-    sip?: boolean,
     unique_id?: string
   },
   alternateDid?: string,

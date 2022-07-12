@@ -16,6 +16,7 @@ export const extensionMatcher = /^\d{4,5}$/;
 export const workersPerPage = 15;
 
 export const modalOverlayStatuses: ModalOverlayStatuses = {
+  PARTIAL_FAIL: "partial fail",
   FAIL: "fail",
   SAVING: "saving",
   SUCCESS: "success"
