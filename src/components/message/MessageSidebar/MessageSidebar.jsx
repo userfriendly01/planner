@@ -14,6 +14,7 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import LighteningBolt from "icons/LighteningBolt-06.png";
+import ClosedLogo from "icons/closed-logo.png";
 
 const SidebarWrapper = styled.div`
   background-color: white;
@@ -40,6 +41,13 @@ const StyledFormControl = styled(FormControlLabel)`
 const StyledBolt = styled.img`
   max-height: 22px;
   margin-left: -7px;
+  margin-right: 14px;
+  margin-bottom: -7px;
+`;
+
+const StyledClosed = styled.img`
+  max-height: 22px;
+  margin-left: -7px
   margin-bottom: -7px;
 `;
 
@@ -109,39 +117,36 @@ const MessageSidebar = props => {
 
   const makeRadioButton = skillName => {
     let hasFlash = false;
+    let hasClosed = false;
     if (messageState.skillData.allSkills) {
       const skill = messageState.skillData.allSkills.find(skill => skill.skillName === skillName);
       if (skill && skill.flashMessage) {
         hasFlash = true;
       }
+      if (skill && skill.closedMessage) {
+        hasClosed = true;
+      }
     }
 
-    if (hasFlash) {
-      return (
-        <div key={`${skillName}-div`}>
-          <StyledFormControl
-            key={`${skillName}-sc`}
-            control={<TealRadio value={skillName} />}
-            label={skillName}
-          />
-          <StyledBolt
-            key={`${skillName}-bolt`}
-            src={LighteningBolt}
-            alt="*"
-          />
-        </div>
-      );
-    } else {
-      return (
-        <div key={`${skillName}-div`}>
-          <StyledFormControl
-            key={`${skillName}-sc`}
-            control={<TealRadio value={skillName} />}
-            label={skillName}
-          />
-        </div>
-      );
-    }
+    return (
+      <div key={`${skillName}-div`}>
+        <StyledFormControl
+          key={`${skillName}-sc`}
+          control={<TealRadio value={skillName} />}
+          label={skillName}
+        />
+        {hasFlash ? <StyledBolt
+          key={`${skillName}-bolt`}
+          src={LighteningBolt}
+          alt="*"
+        /> : null}
+        {hasClosed ? <StyledClosed
+          key={`${skillName}-closed`}
+          src={ClosedLogo}
+          alt="~"
+        /> : null}
+      </div>
+    );
   };
 
   return (

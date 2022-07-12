@@ -42,6 +42,34 @@ describe("reducer", () => {
       expect(result.managerContext.managers).toEqual([...initialManager, payload]);
     });
   });
+  describe("editManager", () => {
+    test("should update the managers array", () => {
+      const payload = [{
+        manager_first_name: "joe",
+        manager_last_name: "smith",
+        manager_n_number: "n1234657"
+      }];
+      const action = {
+        type: "editManager",
+        payload
+      };
+      const initialManager = [
+        {
+          manager_first_name: "frank",
+          manager_last_name: "smith",
+          manager_n_number: "n7685955"
+        }
+      ];
+      const testState = {
+        ...initialState,
+        managerContext: {
+          managers: initialManager
+        }
+      };
+      const result = reducer(testState, action);
+      expect(result.managerContext.managers).toEqual(payload);
+    });
+  });
   describe("addOffice", () => {
     test("should add to the office map", () => {
       const payload ={
@@ -180,6 +208,49 @@ describe("reducer", () => {
       };
       const result = reducer(initialState, action);
       expect(result.officeContext.offices).toEqual(payload);
+    });
+  });
+  describe("loadCalabrioOrg", () => {
+    test("should initialize a map from the offices map sent in", () => {
+      const payload = [
+        {
+          groupLevel: "GROUP"
+        },
+        {
+          groupLevel: "TEAM",
+          agents: [
+            {
+              firstName: "Faith",
+              lastName: "Cuneo"
+            }
+          ]
+        }
+      ];
+      const action = {
+        type: "loadCalabrioOrg",
+        payload
+      };
+      const expectedResults = {
+        teams: [{
+          groupLevel: "TEAM",
+          agents: [
+            {
+              firstName: "Faith",
+              lastName: "Cuneo"
+            }
+          ]
+        }],
+        groups: [{
+          groupLevel: "GROUP"
+        }],
+        tenant: {},
+        users: [{
+          firstName: "Faith",
+          lastName: "Cuneo"
+        }]
+      };
+      const result = reducer(initialState, action);
+      expect(result.calabrioContext).toEqual(expectedResults);
     });
   });
   describe("loadProfiles", () => {

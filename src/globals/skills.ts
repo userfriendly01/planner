@@ -16,15 +16,98 @@ export const PROFILE_11_SKILLS = ["ccGeneralSkill12", "ccGeneralSkillSP19", "ccN
   "ccDefaultCC76","ccIronHealth78", "ccWCInquiry81","ccPALInquiry82", "ccWCInquirySP83", "ccPALInquirySP84","ccAuxMisc87","ccAuxPAL88",
   "ccAuxWC89", "ccUber92","ccCovid93","ccLyft96", "ccNASInquiry97", "ccNASPropertyCAT98"];
 export const PROFILE_28_SKILLS = ["blUWFarm", "blUWInlandMarine", "blUWZone1", "blUWZone2", "blUWZone3", "blUWZone4", "blUWZone5", "blUWZone6"];
-export const PROFILE_32_SKILLS = ["lscAgentSales", "lscBookTransfer", "lscDirectSales", "lscHomeInsDotCom", "lscMass", "lscOBDialer1", "lscOBDialer2", "lscOBDialer3", 
+export const PROFILE_32_SKILLS = ["lscAgentSales", "lscBookTransfer", "lscDirectSales", "lscHomeInsDotCom", "lscMass", "lscOBDialer1", "lscOBDialer2", "lscOBDialer3",
   "lscPriorityAgent", "lscPriorityCampaigns", "lscUSAA"];
 export const PROFILE_33_SKILLS = ["pasAAR", "pasAgtBill", "pasAgtPol", "pasCustBill", "pasCustPol", "pasHelpDesk", "pasMA", "pasProducerSR", "pasSecProfileMgr",
   "pasSimpleBOP"];
 export const PROFILE_34_SKILLS = ["pluAgMUWInternal", "pluEastDA", "pluEastOverall", "pluMidwest", "pluOCGCSR", "pluOCGUW", "pluPeerless", "pluSoutheast",
   "pluWestEastOverflow", "pluWestOverall"];
 export const PROFILE_35_SKILLS = ["bookxferGeicoSupp", "pgsAFIBilling", "pgsAFIPolicy", "pgsAfterHoursCoverPAS", "pgsAnFHome", "pgsComplexStates", "pgsCustSvcBackup",
-  "pgsExtendedHrs", "pgsGoldUSAABilling", "pgsGoldUSAAPolicy", "pgsMass", "pgsPlatformBilling", "pgsPlatformPolicy", "pgsTraditionalBill", "pgsTraditionalPol", 
+  "pgsExtendedHrs", "pgsGoldUSAABilling", "pgsGoldUSAAPolicy", "pgsMass", "pgsPlatformBilling", "pgsPlatformPolicy", "pgsTraditionalBill", "pgsTraditionalPol",
   "pgsWACreditBan"];
 export const PROFILE_36_SKILLS = ["bookxferAgentSupp"];
-export const PROFILE_37_SKILLS = ["pasAgtBill", "pasCustBill", "pgsAFIBilling", "pgsCAST", "pgsGoldUSAABilling", "pgsOnlineAcctSvc", "pgsPlatformBilling", 
-"pgsRightTrackMobile", "pgsRightTrackPlugIn", "pgsTraditionalBill"];
+export const PROFILE_37_SKILLS = ["pasAgtBill", "pasCustBill", "pgsAFIBilling", "pgsCAST", "pgsGoldUSAABilling", "pgsOnlineAcctSvc", "pgsPlatformBilling",
+  "pgsRightTrackMobile", "pgsRightTrackPlugIn", "pgsTraditionalBill"];
+
+
+export const profileConfigs = {
+  PROFILE_SKILL_MAP: [
+    {
+      "profileId": 0,
+      "skills": [...PROFILE_1_SKILLS,...PROFILE_2_SKILLS,...PROFILE_3_SKILLS,...PROFILE_4_SKILLS,...PROFILE_5_SKILLS,...PROFILE_6_SKILLS,
+        ...PROFILE_7_SKILLS,...PROFILE_8_SKILLS,...PROFILE_9_SKILLS,...PROFILE_10_SKILLS,...PROFILE_11_SKILLS]
+    },
+    {
+      "profileId": 1,
+      "skills": PROFILE_1_SKILLS
+    },
+    {
+      "profileId": 2,
+      "skills": PROFILE_2_SKILLS
+    },
+    {
+      "profileId": 3,
+      "skills": PROFILE_3_SKILLS
+    },
+    {
+      "profileId": 4,
+      "skills": PROFILE_4_SKILLS
+    },
+    {
+      "profileId": 5,
+      "skills": PROFILE_5_SKILLS
+    },
+    {
+      "profileId": 6,
+      "skills": PROFILE_6_SKILLS
+    },
+    {
+      "profileId": 7,
+      "skills": PROFILE_7_SKILLS
+    },
+    {
+      "profileId": 8,
+      "skills": PROFILE_8_SKILLS
+    },
+    {
+      "profileId": 9,
+      "skills": PROFILE_9_SKILLS
+    },
+    {
+      "profileId": 10,
+      "skills": PROFILE_10_SKILLS
+    },
+    {
+      "profileId": 11,
+      "skills": PROFILE_11_SKILLS
+    },
+    {
+      "profileId": 28,
+      "skills": PROFILE_28_SKILLS
+    },
+    {
+      "profileId": 32,
+      "skills": PROFILE_32_SKILLS
+    },
+    {
+      "profileId": 33,
+      "skills": PROFILE_33_SKILLS
+    },
+    {
+      "profileId": 34,
+      "skills": PROFILE_34_SKILLS
+    },
+    {
+      "profileId": 35,
+      "skills": PROFILE_35_SKILLS
+    },
+    {
+      "profileId": 36,
+      "skills": PROFILE_11_SKILLS
+    },
+    {
+      "profileId": 37,
+      "skills": PROFILE_11_SKILLS
+    }
+  ]
+};

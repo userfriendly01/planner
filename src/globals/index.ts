@@ -3,33 +3,13 @@ import {
   FormModes
 } from "globals";
 
-import {
-  PROFILE_1_SKILLS,
-  PROFILE_2_SKILLS,
-  PROFILE_3_SKILLS,
-  PROFILE_4_SKILLS,
-  PROFILE_5_SKILLS,
-  PROFILE_6_SKILLS,
-  PROFILE_7_SKILLS,
-  PROFILE_8_SKILLS,
-  PROFILE_9_SKILLS,
-  PROFILE_10_SKILLS,
-  PROFILE_11_SKILLS,
-  PROFILE_28_SKILLS,
-  PROFILE_32_SKILLS,
-  PROFILE_33_SKILLS,
-  PROFILE_34_SKILLS,
-  PROFILE_35_SKILLS,
-  PROFILE_36_SKILLS,
-  PROFILE_37_SKILLS
-} from "./constants";
-
-const CONTACT_MANAGER_BASE_URI = "/contact-manager";
-const SERVICE_BASE_URI = "/service";
-
 export * from "./interfaces";
 export * from "./theme";
 export * from "./styles";
+export * from "./skills";
+
+const CONTACT_MANAGER_BASE_URI = "/contact-manager";
+const SERVICE_BASE_URI = "/service";
 
 export const nNumMatcher = /[n,N]\d{7}/g;
 export const extensionMatcher = /^\d{4,5}$/;
@@ -46,6 +26,12 @@ export const formModes: FormModes = {
   UPDATE: "update"
 };
 
+export const calabrioGroupLevels: any = {
+  TENANT: "TENANT",
+  GROUP: "GROUP",
+  TEAM: "TEAM"
+};
+
 export const timeouts = {
   AUTH: 3600 * 1000,
   MODAL_OVERLAY: 2000
@@ -59,6 +45,7 @@ export const apiPaths = {
   ALL_SKILLS: `${SERVICE_BASE_URI}/allskills`,
   AUTH: `${SERVICE_BASE_URI}/admin-login`,
   CHECK_EXTENSION: `${SERVICE_BASE_URI}/checkextension`,
+  CREATE_CALABRIO_USER: `${SERVICE_BASE_URI}/calabrio-add-user`,
   CLOSED_MESSAGE: `${SERVICE_BASE_URI}/closedmessage`,
   CREATE_WORKER: `${SERVICE_BASE_URI}/createworker`,
   DELETE_WORKER: (workerSid: string): string => `${SERVICE_BASE_URI}/deleteworker/${workerSid}`,
@@ -68,6 +55,9 @@ export const apiPaths = {
   DIRECTORY_ENTRY: (directoryId: string | number): string => `${CONTACT_MANAGER_BASE_URI}/directory/${directoryId}`,
   EMPLOYEE_LOOKUP: (nNumber: string): string => `${SERVICE_BASE_URI}/employeelookup/${nNumber}`,
   FLASH_MESSAGE: `${SERVICE_BASE_URI}/flashmessage`,
+  GET_CALABRIO_ORG: `${SERVICE_BASE_URI}/calabrio-get-org`,
+  GET_CALABRIO_ROLES: `${SERVICE_BASE_URI}/calabrio-get-roles`,
+  GET_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-get-user/${personId}`,
   GET_PROFILE_DATA: (profileId: string | number): string => `${CONTACT_MANAGER_BASE_URI}/triton/${profileId}`,
   GET_PROFILES: `${CONTACT_MANAGER_BASE_URI}/profiles`,
   GET_TASKROUTER_SKILLS: `${SERVICE_BASE_URI}/taskrouterskills`,
@@ -76,104 +66,4 @@ export const apiPaths = {
   OFFICES: `${CONTACT_MANAGER_BASE_URI}/offices`,
   RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
   UPDATE_WORKER: (workerSid: string): string => `${SERVICE_BASE_URI}/updateworker/${workerSid}`
-};
-
-export const profileConfigs = {
-  PROFILE_SKILL_MAP: [
-    {
-      "profileId": 0,
-      "skills": [
-        ...PROFILE_1_SKILLS,
-        ...PROFILE_2_SKILLS,
-        ...PROFILE_3_SKILLS,
-        ...PROFILE_4_SKILLS,
-        ...PROFILE_5_SKILLS,
-        ...PROFILE_6_SKILLS,
-        ...PROFILE_7_SKILLS,
-        ...PROFILE_8_SKILLS,
-        ...PROFILE_9_SKILLS,
-        ...PROFILE_10_SKILLS,
-        ...PROFILE_11_SKILLS,
-        ...PROFILE_28_SKILLS,
-        ...PROFILE_32_SKILLS,
-        ...PROFILE_33_SKILLS,
-        ...PROFILE_34_SKILLS,
-        ...PROFILE_35_SKILLS,
-        ...PROFILE_36_SKILLS,
-        ...PROFILE_37_SKILLS
-      ]
-    },
-    {
-      "profileId": 1,
-      "skills": PROFILE_1_SKILLS
-    },
-    {
-      "profileId": 2,
-      "skills": PROFILE_2_SKILLS
-    },
-    {
-      "profileId": 3,
-      "skills": PROFILE_3_SKILLS
-    },
-    {
-      "profileId": 4,
-      "skills": PROFILE_4_SKILLS
-    },
-    {
-      "profileId": 5,
-      "skills": PROFILE_5_SKILLS
-    },
-    {
-      "profileId": 6,
-      "skills": PROFILE_6_SKILLS
-    },
-    {
-      "profileId": 7,
-      "skills": PROFILE_7_SKILLS
-    },
-    {
-      "profileId": 8,
-      "skills": PROFILE_8_SKILLS
-    },
-    {
-      "profileId": 9,
-      "skills": PROFILE_9_SKILLS
-    },
-    {
-      "profileId": 10,
-      "skills": PROFILE_10_SKILLS
-    },
-    {
-      "profileId": 11,
-      "skills": PROFILE_11_SKILLS
-    },
-    {
-      "profileId": 28,
-      "skills": PROFILE_28_SKILLS
-    },
-    {
-      "profileId": 32,
-      "skills": PROFILE_32_SKILLS
-    },
-    {
-      "profileId": 33,
-      "skills": PROFILE_33_SKILLS
-    },
-    {
-      "profileId": 34,
-      "skills": PROFILE_34_SKILLS
-    },
-    {
-      "profileId": 35,
-      "skills": PROFILE_35_SKILLS
-    },
-    {
-      "profileId": 36,
-      "skills": PROFILE_36_SKILLS
-    },
-    {
-      "profileId": 37,
-      "skills": PROFILE_37_SKILLS
-    }
-  ]
 };

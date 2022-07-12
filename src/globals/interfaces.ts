@@ -23,6 +23,12 @@ export interface AppState {
     workers: Worker[],
     selectedWorkers: Worker[]
   },
+  calabrioContext: {
+    tenant: any,
+    teams: any[],
+    groups: any[],
+    users: any[]
+  },
   resettingSkills: false
 }
 

@@ -72,7 +72,7 @@ interface ExtensionStatusProps {
   originalExtension: string
 }
 export interface FieldState {
-  value: string,
+  value: any,
   blurred?: boolean,
   e164?: string,
   updated: boolean,

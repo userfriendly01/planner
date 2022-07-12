@@ -20,6 +20,7 @@ import React from "react";
 import {
   addOffice,
   createUser,
+  fetchUser,
   updateUser
 } from "services";
 import {
@@ -57,7 +58,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       saveStatus: modalOverlayStatuses.SAVING,
       saveUser: true
     });
-    const parsedManager = JSON.parse(form.manager.value);
 
     // see this wiki page for attributes that will be automatically updated through SSO
     // https://forge.lmig.com/wiki/display/CICCT/Twilio+Flex+SSO+Saml2+Integration
@@ -74,9 +74,9 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       extension: form.extension.value,
       full_name: `${form.nNumberFetchedUser.firstName} ${form.nNumberFetchedUser.lastName}`,
       location: form.nNumberFetchedUser.officeName,
-      manager_first_name: parsedManager.manager_first_name,
-      manager_last_name: parsedManager.manager_last_name,
-      manager_n_number: parsedManager.manager_n_number,
+      manager_first_name: form.manager.value.manager_first_name,
+      manager_last_name: form.manager.value.manager_last_name,
+      manager_n_number: form.manager.value.manager_n_number,
       manager: form.nNumberFetchedUser.manager,
       n_number: form.nNumber.value.toLowerCase(),
       office_location_name: form.nNumberFetchedUser.officeName,
@@ -167,7 +167,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       });
   };
 
-  const doUpdateUser = () => {
+  const doUpdateUser =  async () => {
     updateLoading({
       ...loading,
       overlayMessage: `Updating user: ${worker.attributes.full_name}`,
@@ -176,10 +176,10 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     });
     const attributes: Partial<Worker["attributes"]> = {};
     if (form.manager.updated) {
-      const parsedManager = JSON.parse(form.manager.value);
-      attributes.manager_first_name = parsedManager.manager_first_name;
-      attributes.manager_last_name = parsedManager.manager_last_name;
-      attributes.manager_n_number = parsedManager.manager_n_number;
+      attributes.manager_first_name = form.manager.value.manager_first_name;
+      attributes.manager_last_name = form.manager.value.manager_last_name;
+      attributes.manager_n_number = form.manager.value.manager_n_number;
+      attributes.manager = form.manager.value.manager_first_name + " " + form.manager.value.manager_last_name;
     }
     if (form.profileId.updated) {
       attributes.profile_id = form.profileId.value;
@@ -193,6 +193,13 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     if (form.defaultSkillsUpdated) {
       attributes.default_skills = form.defaultSkills;
     }
+    const nNumberFetchedUser = await fetchUser(form.nNumber.value);
+    if(nNumberFetchedUser){
+      nNumberFetchedUser.departmentNumber ? attributes.department_id = nNumberFetchedUser.departmentNumber : null;
+      nNumberFetchedUser.departmentName ? attributes.department_name = nNumberFetchedUser.departmentName: null;
+      nNumberFetchedUser.departmentName ? attributes.location = nNumberFetchedUser.departmentName: null;
+    }
+
     // update overflow skill
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.profileId.value);
     const nonOverflowSkills: string[] = getNonOverflowSkills(worker, profiles) ? getNonOverflowSkills(worker, profiles) : [];

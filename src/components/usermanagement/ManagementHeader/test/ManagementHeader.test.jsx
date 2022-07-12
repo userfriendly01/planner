@@ -1,6 +1,6 @@
 import ManagementHeader from "../ManagementHeader";
 import {
-  ManagerFilter,
+  ManagerDropdown,
   ResetSkillsButton,
   SearchBox
 } from "components";
@@ -16,7 +16,7 @@ import {
 
 jest.mock("components/usermanagement", () => ({
   __esModule: true,
-  ManagerFilter: jest.fn(),
+  ManagerDropdown: jest.fn(),
   ResetSkillsButton: jest.fn(),
   SearchBox: jest.fn()
 }));
@@ -42,18 +42,18 @@ describe("<ManagementHeader />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     setupMockedComponents({
-      ManagerFilter,
+      ManagerDropdown,
       ResetSkillsButton,
       SearchBox
     });
   });
 
-  test("upon initial render, should render ManagerFilter with correct props and SearchBox with correct props, and ResetSkillsButton", () => {
+  test("upon initial render, should render ManagerDropdown with correct props and SearchBox with correct props, and ResetSkillsButton", () => {
     const rendered = renderComponent();
 
-    expectMockedComponent(rendered, { ManagerFilter });
-    expectOnlyPassedProps(ManagerFilter, { filterBy });
-    getMockedComponentProps(ManagerFilter).setFilter();
+    expectMockedComponent(rendered, { ManagerDropdown });
+    expectOnlyPassedProps(ManagerDropdown, { filterBy });
+    getMockedComponentProps(ManagerDropdown).setFilter();
     expect(setFilter).toHaveBeenCalledTimes(1);
 
     expectMockedComponent(rendered, { ResetSkillsButton });

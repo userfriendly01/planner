@@ -14,7 +14,9 @@ const config = {
     path: path.resolve(__dirname, "dist")
     // publicPath: "/triton-admin/"
   },
-  plugins: [new ESLintPlugin({ failOnWarning: true })],
+  plugins: [
+    new ESLintPlugin({ failOnWarning: true })
+  ],
   module: {
     rules: [
       {

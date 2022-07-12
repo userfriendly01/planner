@@ -2,6 +2,11 @@ import {
   Action,
   AppState
 } from "globals";
+import {
+  formatCalabrioTeams,
+  formatCalabrioGroups,
+  formatCalabrioUsers
+} from "utils";
 
 export const initialState: AppState = {
   managerContext: {
@@ -23,6 +28,12 @@ export const initialState: AppState = {
     workers: [],
     selectedWorkers: []
   },
+  calabrioContext: {
+    tenant: {},
+    teams: [],
+    groups: [],
+    users: []
+  },
   resettingSkills: false
 };
 
@@ -34,6 +45,14 @@ export const reducer = (state: AppState, action: Action): AppState => {
         managerContext: {
           ...state.managerContext,
           managers: [...state.managerContext.managers.slice(), action.payload]
+        }
+      };
+    case "editManager":
+      return {
+        ...state,
+        managerContext: {
+          ...state.managerContext,
+          managers: action.payload
         }
       };
     case "addOffice":
@@ -61,6 +80,7 @@ export const reducer = (state: AppState, action: Action): AppState => {
         }
       };
     case "loadManagers":
+      console.log("**Final Manager Payload: ", action.payload);
       return {
         ...state,
         managerContext: {
@@ -76,8 +96,17 @@ export const reducer = (state: AppState, action: Action): AppState => {
           offices: new Map(action.payload)
         }
       };
+    case "loadCalabrioOrg":
+      return {
+        ...state,
+        calabrioContext: {
+          ...state.calabrioContext,
+          groups: formatCalabrioGroups(action.payload),
+          teams: formatCalabrioTeams(action.payload),
+          users: formatCalabrioUsers(action.payload)
+        }
+      };
     case "loadProfiles":{
-      console.log("***Profiles", action.payload);
       return {
         ...state,
         profileContext: {
