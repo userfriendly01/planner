@@ -105,7 +105,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       email: form.nNumberFetchedUser?.email,
       firstName: form.nNumberFetchedUser?.firstName,
       lastName: form.nNumberFetchedUser?.lastName,
-      groupId: form.calabrioUser.team?.groupId,
+      groupId: form.calabrioUser.team?.value,
       roles: form.calabrioUser.roles,
       scope: {
         groups: form.calabrioUser.scope.groups.filter((group: any) => group.checked),
