@@ -177,6 +177,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         });
 
         checkConflictingUsers(calabrioAttributes, users).then(() => {
+          console.log("Calabrio Attributes sent for create user", calabrioAttributes);
           createCalabrioUser(calabrioAttributes).then(() => {
             setMergeUsersModalState({
               open: true,
