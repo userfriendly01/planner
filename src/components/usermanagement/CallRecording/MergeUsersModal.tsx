@@ -24,6 +24,7 @@ import {
 } from "services";
 import {
   checkDuplicateRecords,
+  searchByOptions,
   wait
 } from "utils";
 
@@ -63,6 +64,22 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
       open: false,
       primaryUser: null
     });
+  };
+
+  const getDuplicateSearchBy = () => {
+    if(conflictState){
+      const user = conflictState.user;
+      switch(conflictState.searchBy){
+        case searchByOptions.ACD_ID:
+          return user.acdId;
+        case searchByOptions.N_NUMBER:
+          return user.adLogin;
+        default:
+          return `${user.firstName} ${user.lastName}`;
+      }
+    } else {
+      return "";
+    }
   };
 
   const handleConflictCheck = async () => {
@@ -159,13 +176,13 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
               disabled={true}
               label="Duplicate Search By"
               variant="outlined"
-              value="WKe7ddc4e2bb44a978647dcb062dd7ad13"
+              value={getDuplicateSearchBy()}
               margin="normal"
             />
           </UserWrapper>
           <Text style={{ marginTop: "10px" }}>6. Click Save in the upper right hand corner in Calabrio</Text>
           <Text>7. Once the users are merged, select continue on this screen.</Text>
-          <SubHeader>If you hit cancel, the Triton user will be created and clean up work will still be required for this user in Calabrio</SubHeader>
+          <SubHeader>If you hit cancel, additional clean up may still be needed in Calabrio which could cause downstream negative impacts</SubHeader>
         </InstructionsWrapper>
         <ButtonWrapper>
           <Button

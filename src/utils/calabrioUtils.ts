@@ -95,12 +95,11 @@ export const checkDuplicateRecords = async (user: CalabrioUser, nNumber: string,
   const email = user.email;
   const firstName = user.firstName;
   const lastName = user.lastName;
-  const personId = user.personId;
 
-  users.forEach(async user => {
+  users.forEach(async u => {
 
-    if(user.email.includes(email)){
-      const duplicateUser = await getCalabrioUser(personId);
+    if(u.email.includes(email)){
+      const duplicateUser = await getCalabrioUser(u.personId);
       return {
         conflictFound: true,
         duplicateUser,
@@ -109,8 +108,8 @@ export const checkDuplicateRecords = async (user: CalabrioUser, nNumber: string,
       };
     }
 
-    if (user.adLogin.includes(nNumber)) {
-      const duplicateUser = await getCalabrioUser(personId);
+    if (u.adLogin.includes(nNumber)) {
+      const duplicateUser = await getCalabrioUser(u.personId);
       return {
         conflictFound: true,
         duplicateUser,
@@ -119,8 +118,8 @@ export const checkDuplicateRecords = async (user: CalabrioUser, nNumber: string,
       };
     }
 
-    if(user.email.includes(nNumber)){
-      const duplicateUser = await getCalabrioUser(personId);
+    if(u.email.includes(nNumber)){
+      const duplicateUser = await getCalabrioUser(u.personId);
       return {
         conflictFound: true,
         duplicateUser,
