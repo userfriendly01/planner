@@ -58,13 +58,10 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
   const dispatch = useAdminDispatch();
   const form = useFormState();
   const setForm = useFormDispatch();
-  const [ calabrioAttributes, setCalabrioAttributes ] = React.useState(null);
   const [ mergeUsersModalState, setMergeUsersModalState ] = React.useState({
     open: false,
-    duplicateUser: null
+    primaryUser: null
   });
-
-  console.warn("CALABRIO ATTRIBUTES", calabrioAttributes);
 
   const doCreateUser = () => {
     updateLoading({
@@ -102,7 +99,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       unique_id: form.nNumber.value.toLowerCase()
     };
 
-    setCalabrioAttributes({
+    const calabrioAttributes = {
       acdId: "", //populate with workerSid returned
       adLogin: `LM\\${form.nNumber.value.toLowerCase()}`,
       email: form.nNumberFetchedUser?.email,
@@ -114,7 +111,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         groups: form.calabrioUser.scope.groups.filter((group: any) => group.checked),
         teams: form.calabrioUser.scope.teams.filter((team: any) => team.checked)
       }
-    });
+    };
 
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.profileId.value);
     if (overflowSkill !== undefined && form.zeroOutEnabled && form.directDialNum.value) {
@@ -173,17 +170,14 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           payload: [mapWorkerFromDbWorker(dbWorker)]
         });
 
-        setCalabrioAttributes({
-          ...calabrioAttributes,
-          acdId: dbWorker.workerSid
-        });
+        calabrioAttributes.acdId = dbWorker.workerSid;
 
         checkConflictingUsers(calabrioAttributes, users).then(() => {
           console.log("Calabrio Attributes sent for create user", calabrioAttributes);
           createCalabrioUser(calabrioAttributes).then(() => {
             setMergeUsersModalState({
               open: true,
-              duplicateUser: null
+              primaryUser: calabrioAttributes
             });
           });
         }).then(err => {
@@ -309,7 +303,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         <MergeUsersModal
           loading={loading}
           updateLoading={updateLoading}
-          primaryUser={calabrioAttributes}
           mergeUsersModalState={mergeUsersModalState}
           setMergeUsersModalState={setMergeUsersModalState}
         />

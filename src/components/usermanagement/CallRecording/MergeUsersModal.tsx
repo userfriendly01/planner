@@ -30,7 +30,6 @@ import {
 interface MergeUsersModalProps {
   loading: any,
   updateLoading: (payload: any) => void,
-  primaryUser: any,
   mergeUsersModalState: any,
   setMergeUsersModalState: (state: any) => void
 }
@@ -39,7 +38,6 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
   const {
     loading,
     mergeUsersModalState,
-    primaryUser,
     setMergeUsersModalState,
     updateLoading
   } = props;
@@ -48,7 +46,7 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
   const dispatch = useAdminDispatch();
   const form = useFormState();
   const [ conflictState, setConflictState ] = React.useState(null);
-  console.log("PRIMARY USER IN MERGE USERS MODAL", primaryUser);
+  console.log("PRIMARY USER IN MERGE USERS MODAL", mergeUsersModalState.primaryUser);
 
   React.useEffect(() => {
     const runConflictCheck = async () => {
@@ -63,7 +61,7 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
   const handleClose = () => {
     setMergeUsersModalState({
       open: false,
-      duplicateUser: null
+      primaryUser: null
     });
   };
 
@@ -138,14 +136,14 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
               disabled={true}
               label="Primary User"
               variant="outlined"
-              value={primaryUser?.acdId}
+              value={mergeUsersModalState.primaryUser?.acdId}
               margin="normal"
             />
             <StyledTextField
               disabled={true}
               label="Duplicate User"
               variant="outlined"
-              value={mergeUsersModalState.duplicateUser?.acdId}
+              value={conflictState.user?.acdId}
               margin="normal"
             />
           </UserWrapper>
@@ -154,7 +152,7 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
               disabled={true}
               label="Primary Search By"
               variant="outlined"
-              value="WKe7ddc4e2bb44a978647dcb062dd7ad13"
+              value={`${mergeUsersModalState.primaryUser?.firstName} ${mergeUsersModalState.primaryUser?.lastName}`}
               margin="normal"
             />
             <StyledTextField
@@ -173,7 +171,7 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
           <Button
             onClick={() => {
               setMergeUsersModalState({
-                duplicateUser: null,
+                primaryUser: null,
                 open: false
               });
               updateLoading({
