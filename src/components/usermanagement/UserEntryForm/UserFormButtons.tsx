@@ -64,7 +64,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     duplicateUser: null
   });
 
-  console.warn("CALABRIO ATTRIBUTES", calabrio);
+  console.warn("CALABRIO ATTRIBUTES", calabrioAttributes);
 
   const doCreateUser = () => {
     updateLoading({
