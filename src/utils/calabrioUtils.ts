@@ -66,7 +66,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[]): P
     const acdId = user.acdId;
     const adLogin = user.adLogin;
 
-    users.forEach(async u => {
+    await users.forEach(async u => {
       if(u.acdId === acdId){
         throw new Error("Calabrio Record with this ACD Id already exists. New Record should not be added.");
       }
