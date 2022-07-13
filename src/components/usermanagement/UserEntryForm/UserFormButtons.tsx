@@ -10,6 +10,7 @@ import {
 import { MergeUsersModal } from "components";
 import {
   useAdminDispatch,
+  useAdminState,
   useFormDispatch,
   useFormState,
   userFormActions
@@ -23,11 +24,13 @@ import {
 import React from "react";
 import {
   addOffice,
+  createCalabrioUser,
   createUser,
   fetchUser,
   updateUser
 } from "services";
 import {
+  checkConflictingUsers,
   DbWorker,
   getNonOverflowSkills,
   getOverflowSkillFromProfile,
@@ -51,6 +54,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     forwardToToggle
   } = props;
 
+  const users = useAdminState().calabrioContext.users;
   const dispatch = useAdminDispatch();
   const form = useFormState();
   const setForm = useFormDispatch();
@@ -172,9 +176,21 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           acdId: dbWorker.workerSid
         });
 
-        setMergeUsersModalState({
-          open: true,
-          duplicateUser: null
+        checkConflictingUsers(calabrioAttributes, users).then(() => {
+          createCalabrioUser(calabrioAttributes).then(() => {
+            setMergeUsersModalState({
+              open: true,
+              duplicateUser: null
+            });
+          });
+        }).then(err => {
+          console.error("Error Creating Calabrio User");
+          updateLoading({
+            ...loading,
+            overlayMessage: "Triton User Created. Error Creating Calabrio User",
+            saveStatus: modalOverlayStatuses.PARTIAL_FAIL,
+            saveUser: true
+          });
         });
       })
       .catch(err => {

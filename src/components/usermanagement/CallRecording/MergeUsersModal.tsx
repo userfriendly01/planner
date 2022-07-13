@@ -20,11 +20,10 @@ import {
   timeouts
 } from "globals";
 import {
-  getCalabrioOrg,
-  createCalabrioUser
+  getCalabrioOrg
 } from "services";
 import {
-  checkConflictingUsers,
+  checkDuplicateRecords,
   wait
 } from "utils";
 
@@ -39,10 +38,10 @@ interface MergeUsersModalProps {
 const MergeUsersModal = (props: MergeUsersModalProps) => {
   const {
     loading,
-    updateLoading,
-    primaryUser,
     mergeUsersModalState,
-    setMergeUsersModalState
+    primaryUser,
+    setMergeUsersModalState,
+    updateLoading
   } = props;
 
   const state = useAdminState();
@@ -80,37 +79,25 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
         payload: org.data
       });
       try {
-        const res = await checkConflictingUsers(form.calabrioUser, form.nNumber.value.toLowerCase(), state.calabrioContext.users);
+        const res: any = await checkDuplicateRecords(form.calabrioUser, form.nNumber.value.toLowerCase(), state.calabrioContext.users);
         if(res.conflictFound || form.calabrioUser){
           setConflictState(res);
           console.log("Conflict Found!");
           return res;
         } else {
-          try {
-            await createCalabrioUser(primaryUser);
-            handleClose();
+          handleClose();
+          updateLoading({
+            ...loading,
+            overlayMessage: "Successfully added new user",
+            saveStatus: modalOverlayStatuses.SUCCESS,
+            saveUser: true
+          });
+          wait(() => {
             updateLoading({
               ...loading,
-              overlayMessage: "Successfully added new user",
-              saveStatus: modalOverlayStatuses.SUCCESS,
-              saveUser: true
+              saveUser: false
             });
-            wait(() => {
-              updateLoading({
-                ...loading,
-                saveUser: false
-              });
-            }, timeouts.MODAL_OVERLAY);
-          } catch(err){
-            handleClose();
-            updateLoading({
-              ...loading,
-              overlayMessage: "Triton Admin User added but Calabrio User not added",
-              saveStatus: modalOverlayStatuses.SUCCESS,
-              saveUser: true
-            });
-            console.error("Triton Admin User added but Calabrio User not added", err);
-          }
+          }, timeouts.MODAL_OVERLAY);
         }
       } catch(err){
         console.log("Error validating conflicting users for Calabrio", err);

@@ -1,5 +1,8 @@
 import { calabrioGroupLevels } from "globals";
-import { getCalabrioUser } from "services";
+import {
+  getCalabrioUser,
+  updateCalabrioUser
+} from "services";
 
 export interface CalabrioUser {
     [key: string]: any,
@@ -49,7 +52,46 @@ interface ConflictingUserResult {
   scenario?: number,
   searchBy?: string,
 }
-export const checkConflictingUsers = async (user: CalabrioUser, nNumber: string, users: CalabrioUser[]): Promise<ConflictingUserResult> => {
+
+/*
+  Used when creating a new Calabrio User.
+  This method is used to identify existing Calabrio users that would prevent a new Calabrio User from being created.
+  If any records are found, they are updated so as to not pose a conflict anymore.
+  These checks are repeated after the Calabrio User is created so the merge users instructions can be provided to the admin.
+  The duplicate fields that would prevent a Calabrio user from being created are email, acdId, or adLogin
+*/
+export const checkConflictingUsers = async (user: any, users: CalabrioUser[]): Promise<void> => {
+  try {
+    const email = user.email;
+    const acdId = user.acdId;
+    const adLogin = user.adLogin;
+
+    users.forEach(async u => {
+      if(u.acdId === acdId){
+        throw new Error("Calabrio Record with this ACD Id already exists. New Record should not be added.");
+      }
+
+      if (u.adLogin === adLogin) {
+        const user: CalabrioUser = await getCalabrioUser(u.personId);
+        console.log("Fetched conflicting user: ", user);
+        user.adLogin = `xx-${user.adLogin}`;
+        await updateCalabrioUser(u.personId, user);
+      }
+
+      if(u.email === email){
+        const user: CalabrioUser = await getCalabrioUser(u.personId);
+        console.log("Fetched conflicting user: ", user);
+        user.email = `xx-${user.email}`;
+        await updateCalabrioUser(u.personId, user);
+      }
+    });
+  } catch(err) {
+    console.error("Error thrown trying to fetch and validate Conflicting Users");
+  }
+  return;
+};
+
+export const checkDuplicateRecords = async (user: CalabrioUser, nNumber: string, users: CalabrioUser[]): Promise<ConflictingUserResult> => {
   const email = user.email;
   const firstName = user.firstName;
   const lastName = user.lastName;
@@ -57,7 +99,7 @@ export const checkConflictingUsers = async (user: CalabrioUser, nNumber: string,
 
   users.forEach(async user => {
 
-    if(user.email === email){
+    if(user.email.includes(email)){
       const duplicateUser = await getCalabrioUser(personId);
       return {
         conflictFound: true,
@@ -73,17 +115,7 @@ export const checkConflictingUsers = async (user: CalabrioUser, nNumber: string,
         conflictFound: true,
         duplicateUser,
         scenario: 4,
-        searchBy: searchByOptions.N_NUMBER
-      };
-    }
-
-    if (user.firstName === firstName && user.lastName === lastName){
-      const duplicateUser = await getCalabrioUser(personId);
-      return {
-        conflictFound: true,
-        duplicateUser,
-        scenario: 6,
-        searchBy: searchByOptions.NAME
+        searchBy: firstName && lastName ? searchByOptions.NAME : searchByOptions.N_NUMBER
       };
     }
 
@@ -99,26 +131,9 @@ export const checkConflictingUsers = async (user: CalabrioUser, nNumber: string,
   });
 
   //Need to update the check for duplicate agent check to look for agents in Twilio without records in the DB
-  //Considerations on dup fields - if we're going to update a record we have to do all the clean up checks first
-
-  // return {
-  //   conflictFound: false
-  // };
-  const duplicateUser = {
-    email: "faith.cuneo@libertymutual.com",
-    adLogin: "LM\\n0263786",
-    firstName: "Faith",
-    lastName: "Cuneo",
-    acdId: "WK123456789456789456",
-    personId: 6
-  };
-  return {
-    conflictFound: true,
-    duplicateUser,
-    scenario: 6,
-    searchBy: searchByOptions.NAME
-  };
-  //Will searchby first and last name,
-  //If a record is found we will fetch the full user from Calabrio
   //Then we will fetch the worker from Twilio.. if the n# is the same, we will delete the Triton Worker and inactivate the Calabrio worker
+
+  return {
+    conflictFound: false
+  };
 };

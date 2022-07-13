@@ -8,6 +8,7 @@ import {
   StyledButton
 } from "components";
 import {
+  useAdminState,
   useAdminDispatch,
   useFormDispatch,
   useFormState,
@@ -17,6 +18,7 @@ import { formModes } from "globals";
 import React from "react";
 import {
   addOffice,
+  createCalabrioUser,
   createUser,
   fetchUser,
   updateUser
@@ -37,6 +39,7 @@ import {
   worker
 } from "testUtils";
 import {
+  checkConflictingUsers,
   getOverflowSkillFromProfile,
   getNonOverflowSkills,
   isDidDifferentValid,
@@ -59,6 +62,7 @@ jest.mock("@material-ui/core", () => ({
 }));
 
 jest.mock("context", () => ({
+  useAdminState: jest.fn(),
   useAdminDispatch: jest.fn(),
   useFormState: jest.fn(),
   useFormDispatch: jest.fn(),
@@ -69,10 +73,12 @@ jest.mock("services", () => ({
   addOffice: jest.fn(),
   createUser: jest.fn(),
   fetchUser: jest.fn(),
-  updateUser: jest.fn()
+  updateUser: jest.fn(),
+  createCalabrioUser: jest.fn()
 }));
 
 jest.mock("utils", () => ({
+  checkConflictingUsers: jest.fn(),
   isFormValid: jest.fn(),
   isFormUpdated: jest.fn(),
   isDidDifferentValid: jest.fn(),
@@ -123,6 +129,13 @@ describe("<UserFormButtons />", () => {
     getOverflowSkillFromProfile.mockReturnValue("466");
     useFormDispatch.mockReturnValue(mockSetForm);
     useAdminDispatch.mockReturnValue(mockDispatch);
+    useAdminState.mockReturnValue({
+      calabrioContext: {
+        users: []
+      }
+    });
+    checkConflictingUsers.mockResolvedValue({ yay: "woot!" });
+    createCalabrioUser.mockResolvedValue({ yay: "woot!" });
     setupMockedComponents({
       StyledButton,
       Tooltip,
@@ -290,7 +303,7 @@ describe("<UserFormButtons />", () => {
                 }
               });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toHaveBeenCalledTimes(1);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Adding new user...",
                 saveStatus: "saving",
@@ -361,7 +374,7 @@ describe("<UserFormButtons />", () => {
                 payload: [formattedWorker]
               });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toHaveBeenCalledTimes(1);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Adding new user...",
                 saveStatus: "saving",
@@ -425,7 +438,7 @@ describe("<UserFormButtons />", () => {
                 }
               });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toHaveBeenCalledTimes(1);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Adding new user...",
                 saveStatus: "saving",
@@ -484,7 +497,7 @@ describe("<UserFormButtons />", () => {
                   }
                 });
                 jest.runAllTimers();
-                expect(mockUpdateLoading).toHaveBeenCalledTimes(1);
+                expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
                 expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                   overlayMessage: "Adding new user...",
                   saveStatus: "saving",
@@ -538,7 +551,7 @@ describe("<UserFormButtons />", () => {
                 payload: [formattedWorker]
               });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toHaveBeenCalledTimes(1);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Adding new user...",
                 saveStatus: "saving",
