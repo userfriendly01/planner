@@ -72,14 +72,16 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[]): P
       }
 
       if (u.adLogin === adLogin) {
-        const user: CalabrioUser = await getCalabrioUser(u.personId);
+        const res: CalabrioUser = await getCalabrioUser(u.personId);
+        const user = res.user;
         console.log("Fetched conflicting user: ", user);
         user.adLogin = `xx-${user.adLogin}`;
         await updateCalabrioUser(u.personId, user);
       }
 
       if(u.email === email){
-        const user: CalabrioUser = await getCalabrioUser(u.personId);
+        const res: CalabrioUser = await getCalabrioUser(u.personId);
+        const user = res.user;
         console.log("Fetched conflicting user: ", user);
         user.email = `xx-${user.email}`;
         await updateCalabrioUser(u.personId, user);
