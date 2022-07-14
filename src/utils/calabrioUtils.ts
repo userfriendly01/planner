@@ -98,6 +98,7 @@ export const checkDuplicateRecords = async (user: CalabrioUser, users: CalabrioU
   const firstName = user.firstName;
   const lastName = user.lastName;
   const adLogin = user.adLogin;
+  const acdId = user.acdId;
 
   console.warn("**User in check duplicates", user);
 
@@ -105,7 +106,7 @@ export const checkDuplicateRecords = async (user: CalabrioUser, users: CalabrioU
     await Promise.all(users.map(async u => {
       console.warn("individual User", u);
 
-      if(u.email?.includes(email)){
+      if(u.email?.includes(email) && u.skillId !== acdId){
         const res = await getCalabrioUser(u.personId);
         const duplicateUser = res.data;
         return Promise.reject({
@@ -116,7 +117,7 @@ export const checkDuplicateRecords = async (user: CalabrioUser, users: CalabrioU
         });
       }
 
-      if (u.adLogin?.includes(adLogin)) {
+      if (u.adLogin?.includes(adLogin) && u.skillId !== acdId) {
         const res = await getCalabrioUser(u.personId);
         const duplicateUser = res.data;
         return Promise.reject({
