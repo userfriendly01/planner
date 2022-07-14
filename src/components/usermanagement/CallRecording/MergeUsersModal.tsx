@@ -121,7 +121,7 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
         }
       }
     } catch (error) {
-      console.error("Failed to reload calabrio org from merge users modal");
+      console.error("Error Thrown in Merge Users Modal", error);
       handleClose();
       updateLoading({
         ...loading,
@@ -155,7 +155,7 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
               disabled={true}
               label="Duplicate User"
               variant="outlined"
-              value={conflictState.user?.acdId}
+              value={conflictState.duplicateUser?.acdId}
               margin="normal"
             />
           </UserWrapper>
