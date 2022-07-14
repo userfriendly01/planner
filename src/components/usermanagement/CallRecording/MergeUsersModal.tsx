@@ -12,15 +12,14 @@ import {
 } from "./CallRecording.Styles";
 import {
   useAdminState,
-  useAdminDispatch,
-  useFormState
+  useAdminDispatch
 } from "context";
 import {
   modalOverlayStatuses,
   timeouts
 } from "globals";
 import {
-  getCalabrioOrg
+  getCalabrioAgents
 } from "services";
 import {
   checkDuplicateRecords,
@@ -83,11 +82,11 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
 
   const handleConflictCheck = async () => {
     try {
-      const org: any = await getCalabrioOrg();
-      console.log("Calabrio Org", org);
+      const res: any = await getCalabrioAgents();
+      console.log("Calabrio Agents", res.data);
       dispatch({
-        type: "loadCalabrioOrg",
-        payload: org.data
+        type: "loadCalabrioAgents",
+        payload: res.data
       });
       try {
         await checkDuplicateRecords(mergeUsersModalState.primaryUser, state.calabrioContext.users);
