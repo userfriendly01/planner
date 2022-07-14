@@ -22,23 +22,19 @@ export interface CalabrioGroup {
   }
 
 export const formatCalabrioTeams = (groupsArray: CalabrioGroup[]): CalabrioGroup[] => {
-  return groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.TEAM);
+  const teams = groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.TEAM);
+  return teams.map(team => {
+    delete team.agents;
+    return team;
+  });
 };
 
 export const formatCalabrioGroups = (groupsArray: CalabrioGroup[]): CalabrioGroup[] => {
-  return groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.GROUP);
-};
-
-export const formatCalabrioUsers = (groupsArray: CalabrioGroup[]): any[] => {
-  const users: any[] = [];
-  groupsArray.forEach((group: CalabrioGroup) => {
-    if(group.agents){
-      group.agents.forEach(agent => {
-        users.push(agent);
-      });
-    }
+  const groups = groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.GROUP);
+  return groups.map(group => {
+    delete group.agents;
+    return group;
   });
-  return users;
 };
 
 export const searchByOptions = {
@@ -106,7 +102,7 @@ export const checkDuplicateRecords = async (user: CalabrioUser, users: CalabrioU
     await Promise.all(users.map(async u => {
       console.warn("individual User", u);
 
-      if(u.email?.includes(email) && u.skillId !== acdId){
+      if(u.email?.includes(email) && u.skillId !== acdId ){
         const res = await getCalabrioUser(u.personId);
         const duplicateUser = res.data;
         return Promise.reject({

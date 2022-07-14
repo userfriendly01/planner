@@ -1,8 +1,10 @@
 import {
   createCalabrioUser,
+  getCalabrioAgents,
   getCalabrioOrg,
   getCalabrioRoles,
-  getCalabrioUser
+  getCalabrioUser,
+  updateCalabrioUser
 } from "../calabrio";
 import MockAdapter from "axios-mock-adapter";
 import { apiPaths }from "globals";
@@ -38,6 +40,32 @@ describe("createCalabrioUser", () => {
     test("should reject with error", done => {
       createCalabrioUser(user).catch(rejectedVal => {
         expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(user);
+        expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
+        done();
+      });
+    });
+  });
+});
+
+describe("getCalabrioAgents", () => {
+  describe("call succeeds", () => {
+    const data = { huzzah: "you are winner" };
+    beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_AGENTS).replyOnce(200, data));
+    test("should resolve with any successful response", done => {
+      getCalabrioAgents()
+        .then(resolvedValue => {
+          expect(axiosMock.history.get.length).toEqual(1);
+          expect(resolvedValue.data).toEqual(data);
+          done();
+        });
+    });
+  });
+  describe("call fails", () => {
+    const badResponse = { wahh: "boo" };
+    beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_AGENTS).replyOnce(500, badResponse));
+    test("should reject with error", done => {
+      getCalabrioAgents().catch(rejectedVal => {
+        expect(axiosMock.history.get.length).toEqual(1);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();
       });
@@ -116,6 +144,32 @@ describe("getCalabrioUser", () => {
     test("should reject with error", done => {
       getCalabrioUser(67).catch(rejectedVal => {
         expect(axiosMock.history.get.length).toEqual(1);
+        expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
+        done();
+      });
+    });
+  });
+});
+
+describe("updateCalabrioUser", () => {
+  describe("call succeeds", () => {
+    const data = { huzzah: "you are winner" };
+    beforeEach(() => axiosMock.onPut(apiPaths.UPDATE_CALABRIO_USER(67)).replyOnce(200, data));
+    test("should resolve with any successful response", done => {
+      updateCalabrioUser(67)
+        .then(resolvedValue => {
+          expect(axiosMock.history.put.length).toEqual(1);
+          expect(resolvedValue.data).toEqual(data);
+          done();
+        });
+    });
+  });
+  describe("call fails", () => {
+    const badResponse = { wahh: "boo" };
+    beforeEach(() => axiosMock.onPut(apiPaths.UPDATE_CALABRIO_USER(67)).replyOnce(500, badResponse));
+    test("should reject with error", done => {
+      updateCalabrioUser(67).catch(rejectedVal => {
+        expect(axiosMock.history.put.length).toEqual(1);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();
       });
