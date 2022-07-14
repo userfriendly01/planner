@@ -90,35 +90,35 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
         payload: org.data
       });
       try {
-        const res: any = await checkDuplicateRecords(mergeUsersModalState.primaryUser, state.calabrioContext.users);
-        if(res.conflictFound){
-          setConflictState(res);
-          console.log("Conflict Found!");
-          return res;
-        } else {
-          handleClose();
-          updateLoading({
-            ...loading,
-            overlayMessage: "Successfully added new user",
-            saveStatus: modalOverlayStatuses.SUCCESS,
-            saveUser: true
-          });
-          wait(() => {
-            updateLoading({
-              ...loading,
-              saveUser: false
-            });
-          }, timeouts.MODAL_OVERLAY);
-        }
-      } catch(err){
-        console.error("Error validating conflicting users for Calabrio", err);
+        await checkDuplicateRecords(mergeUsersModalState.primaryUser, state.calabrioContext.users);
         handleClose();
         updateLoading({
           ...loading,
-          overlayMessage: "Triton Admin failed to check for conflicting Calabrio users. Please validate Calabrio and manually add the user.",
-          saveStatus: modalOverlayStatuses.PARTIAL_FAIL,
+          overlayMessage: "Successfully added new user",
+          saveStatus: modalOverlayStatuses.SUCCESS,
           saveUser: true
         });
+        wait(() => {
+          updateLoading({
+            ...loading,
+            saveUser: false
+          });
+        }, timeouts.MODAL_OVERLAY);
+      } catch(err){
+        console.log("ERR", err);
+        if(err.conflictFound){
+          console.log("Conflict Found!", err);
+          setConflictState(err);
+        } else {
+          console.error("Error validating conflicting users for Calabrio", err);
+          handleClose();
+          updateLoading({
+            ...loading,
+            overlayMessage: "Triton Admin failed to check for conflicting Calabrio users. Please validate Calabrio and manually add the user.",
+            saveStatus: modalOverlayStatuses.PARTIAL_FAIL,
+            saveUser: true
+          });
+        }
       }
     } catch (error) {
       console.error("Failed to reload calabrio org from merge users modal");
@@ -130,7 +130,6 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
         saveUser: true
       });
     }
-    return null;
   };
 
   return (
