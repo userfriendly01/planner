@@ -181,7 +181,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             });
           });
         }).then(err => {
-          console.error("Error Creating Calabrio User");
+          console.error("Error Creating Calabrio User", err);
           updateLoading({
             ...loading,
             overlayMessage: "Triton User Created. Error Creating Calabrio User",

@@ -68,15 +68,19 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[]): P
       }
 
       if (u.adLogin === adLogin) {
+        const res: CalabrioUser = await getCalabrioUser(u.personId);
+        const user = res.data;
         console.log("Fetched conflicting user: ", user);
-        user.adLogin = `xx-${u.id}-${u.adLogin}`;
-        await updateCalabrioUser(u.id, user);
+        user.adLogin = `xx-${user.id}-${user.adLogin}`;
+        await updateCalabrioUser(user.id, user);
       }
 
       if(u.email === email){
+        const res: CalabrioUser = await getCalabrioUser(u.personId);
+        const user = res.data;
         console.log("Fetched conflicting user: ", user);
-        user.email = `xx-${u.id}-${u.email}`;
-        await updateCalabrioUser(u.id, user);
+        user.email = `xx-${user.id}-${user.email}`;
+        await updateCalabrioUser(user.id, user);
       }
     }));
   } catch(err) {
@@ -107,7 +111,7 @@ export const checkDuplicateRecords = async (user: CalabrioUser, users: CalabrioU
         });
       }
 
-      if (u.adLogin?.includes(adLogin) && u.skillId !== acdId) {
+      if (u.adLogin?.includes(adLogin) && u.acdId !== acdId) {
         return Promise.reject({
           conflictFound: true,
           duplicateUser: u,
