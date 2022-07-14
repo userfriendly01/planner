@@ -66,7 +66,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[]): P
     const acdId = user.acdId;
     const adLogin = user.adLogin;
 
-    await users.forEach(async u => {
+    await Promise.all(users.map(async u => {
       if(u.acdId === acdId){
         throw new Error("Calabrio Record with this ACD Id already exists. New Record should not be added.");
       }
@@ -86,7 +86,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[]): P
         user.email = `xx-${user.email}`;
         await updateCalabrioUser(u.personId, user);
       }
-    });
+    }));
   } catch(err) {
     console.error("Error thrown trying to fetch and validate Conflicting Users");
   }
