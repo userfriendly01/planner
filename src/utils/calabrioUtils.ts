@@ -98,7 +98,8 @@ export const checkDuplicateRecords = async (user: CalabrioUser, nNumber: string,
   const firstName = user.firstName;
   const lastName = user.lastName;
 
-  users.forEach(async u => {
+  console.warn("**User in check duplicates", user);
+  users.map(async u => {
 
     if(u.email.includes(email)){
       const duplicateUser = await getCalabrioUser(u.personId);
