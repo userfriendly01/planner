@@ -104,7 +104,7 @@ export const checkDuplicateRecords = async (user: CalabrioUser, users: CalabrioU
   if(user){
     await Promise.all(users.map(async u => {
 
-      if(u.email.includes(email)){
+      if(u.email && u.email.includes(email)){
         const duplicateUser = await getCalabrioUser(u.personId);
         return Promise.reject({
           conflictFound: true,
@@ -114,7 +114,7 @@ export const checkDuplicateRecords = async (user: CalabrioUser, users: CalabrioU
         });
       }
 
-      if (u.adLogin.includes(adLogin)) {
+      if (u.adLogin && u.adLogin.includes(adLogin)) {
         const duplicateUser = await getCalabrioUser(u.personId);
         return Promise.reject({
           conflictFound: true,
