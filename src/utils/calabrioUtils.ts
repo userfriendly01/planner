@@ -68,19 +68,15 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[]): P
       }
 
       if (u.adLogin === adLogin) {
-        const res: CalabrioUser = await getCalabrioUser(u.personId);
-        const user = res.data;
         console.log("Fetched conflicting user: ", user);
-        user.adLogin = `xx-${u.personId}-${user.adLogin}`;
-        await updateCalabrioUser(u.personId, user);
+        user.adLogin = `xx-${u.id}-${u.adLogin}`;
+        await updateCalabrioUser(u.id, user);
       }
 
       if(u.email === email){
-        const res: CalabrioUser = await getCalabrioUser(u.personId);
-        const user = res.data;
         console.log("Fetched conflicting user: ", user);
-        user.email = `xx-${u.personId}-${user.email}`;
-        await updateCalabrioUser(u.personId, user);
+        user.email = `xx-${u.id}-${u.email}`;
+        await updateCalabrioUser(u.id, user);
       }
     }));
   } catch(err) {
@@ -102,23 +98,19 @@ export const checkDuplicateRecords = async (user: CalabrioUser, users: CalabrioU
     await Promise.all(users.map(async u => {
       console.warn("individual User", u);
 
-      if(u.email?.includes(email) && u.skillId !== acdId ){
-        const res = await getCalabrioUser(u.personId);
-        const duplicateUser = res.data;
+      if(u.email?.includes(email) && u.acdId !== acdId ){
         return Promise.reject({
           conflictFound: true,
-          duplicateUser,
+          duplicateUser: u,
           scenario: 3,
           searchBy: searchByOptions.NAME
         });
       }
 
       if (u.adLogin?.includes(adLogin) && u.skillId !== acdId) {
-        const res = await getCalabrioUser(u.personId);
-        const duplicateUser = res.data;
         return Promise.reject({
           conflictFound: true,
-          duplicateUser,
+          duplicateUser: u,
           scenario: 4,
           searchBy: firstName && lastName ? searchByOptions.NAME : searchByOptions.N_NUMBER
         });
