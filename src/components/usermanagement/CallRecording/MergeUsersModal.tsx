@@ -148,14 +148,14 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
               disabled={true}
               label="Primary User"
               variant="outlined"
-              value={mergeUsersModalState.duplicateUser?.acdId}
+              value={conflictState.duplicateUser?.acdId}
               margin="normal"
             />
             <StyledTextField
               disabled={true}
               label="Duplicate User"
               variant="outlined"
-              value={conflictState.primaryUser?.acdId}
+              value={mergeUsersModalState.primaryUser?.acdId}
               margin="normal"
             />
           </UserWrapper>
