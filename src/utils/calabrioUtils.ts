@@ -93,44 +93,37 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[]): P
   return;
 };
 
-export const checkDuplicateRecords = async (user: CalabrioUser, nNumber: string, users: CalabrioUser[]): Promise<ConflictingUserResult> => {
+export const checkDuplicateRecords = async (user: CalabrioUser, users: CalabrioUser[]): Promise<ConflictingUserResult> => {
   const email = user.email;
   const firstName = user.firstName;
   const lastName = user.lastName;
+  const adLogin = user.adLogin;
 
   console.warn("**User in check duplicates", user);
-  users.map(async u => {
+  if(user){
+    users.map(async u => {
 
-    if(u.email.includes(email)){
-      const duplicateUser = await getCalabrioUser(u.personId);
-      return {
-        conflictFound: true,
-        duplicateUser,
-        scenario: 3,
-        searchBy: searchByOptions.NAME
-      };
-    }
+      if(u.email.includes(email)){
+        const duplicateUser = await getCalabrioUser(u.personId);
+        return {
+          conflictFound: true,
+          duplicateUser,
+          scenario: 3,
+          searchBy: searchByOptions.NAME
+        };
+      }
 
-    if (u.adLogin.includes(nNumber)) {
-      const duplicateUser = await getCalabrioUser(u.personId);
-      return {
-        conflictFound: true,
-        duplicateUser,
-        scenario: 4,
-        searchBy: firstName && lastName ? searchByOptions.NAME : searchByOptions.N_NUMBER
-      };
-    }
-
-    if(u.email.includes(nNumber)){
-      const duplicateUser = await getCalabrioUser(u.personId);
-      return {
-        conflictFound: true,
-        duplicateUser,
-        scenario: 6,
-        searchBy: searchByOptions.NAME
-      };
-    }
-  });
+      if (u.adLogin.includes(adLogin)) {
+        const duplicateUser = await getCalabrioUser(u.personId);
+        return {
+          conflictFound: true,
+          duplicateUser,
+          scenario: 4,
+          searchBy: firstName && lastName ? searchByOptions.NAME : searchByOptions.N_NUMBER
+        };
+      }
+    });
+  }
 
   return {
     conflictFound: false

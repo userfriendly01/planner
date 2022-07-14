@@ -94,8 +94,8 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
         payload: org.data
       });
       try {
-        const res: any = await checkDuplicateRecords(form.calabrioUser, form.nNumber.value.toLowerCase(), state.calabrioContext.users);
-        if(res.conflictFound || form.calabrioUser){
+        const res: any = await checkDuplicateRecords(mergeUsersModalState.primaryUser, state.calabrioContext.users);
+        if(res.conflictFound){
           setConflictState(res);
           console.log("Conflict Found!");
           return res;
