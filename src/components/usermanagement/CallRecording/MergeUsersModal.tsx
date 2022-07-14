@@ -148,14 +148,14 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
               disabled={true}
               label="Primary User"
               variant="outlined"
-              value={mergeUsersModalState.primaryUser?.acdId}
+              value={mergeUsersModalState.duplicateUser?.acdId}
               margin="normal"
             />
             <StyledTextField
               disabled={true}
               label="Duplicate User"
               variant="outlined"
-              value={conflictState.duplicateUser?.acdId}
+              value={conflictState.primaryUser?.acdId}
               margin="normal"
             />
           </UserWrapper>
@@ -164,14 +164,14 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
               disabled={true}
               label="Primary Search By"
               variant="outlined"
-              value={`${mergeUsersModalState.primaryUser?.firstName} ${mergeUsersModalState.primaryUser?.lastName}`}
+              value={getDuplicateSearchBy()}
               margin="normal"
             />
             <StyledTextField
               disabled={true}
               label="Duplicate Search By"
               variant="outlined"
-              value={getDuplicateSearchBy()}
+              value={`${mergeUsersModalState.primaryUser?.firstName} ${mergeUsersModalState.primaryUser?.lastName}`}
               margin="normal"
             />
           </UserWrapper>
