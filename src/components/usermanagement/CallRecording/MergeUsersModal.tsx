@@ -67,14 +67,14 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
 
   const getDuplicateSearchBy = () => {
     if(conflictState){
-      const user = conflictState.user;
+      const user = conflictState.duplicateUser;
       switch(conflictState.searchBy){
         case searchByOptions.ACD_ID:
-          return user.acdId;
+          return user?.acdId;
         case searchByOptions.N_NUMBER:
-          return user.adLogin;
+          return user?.adLogin;
         default:
-          return `${user.firstName} ${user.lastName}`;
+          return `${user?.firstName} ${user?.lastName}`;
       }
     } else {
       return "";
