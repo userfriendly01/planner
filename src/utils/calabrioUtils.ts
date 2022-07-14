@@ -75,7 +75,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[]): P
         const res: CalabrioUser = await getCalabrioUser(u.personId);
         const user = res.data;
         console.log("Fetched conflicting user: ", user);
-        user.adLogin = `xx-${user.adLogin}`;
+        user.adLogin = `xx-${u.personId}-${user.adLogin}`;
         await updateCalabrioUser(u.personId, user);
       }
 
@@ -83,7 +83,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[]): P
         const res: CalabrioUser = await getCalabrioUser(u.personId);
         const user = res.data;
         console.log("Fetched conflicting user: ", user);
-        user.email = `xx-${user.email}`;
+        user.email = `xx-${u.personId}-${user.email}`;
         await updateCalabrioUser(u.personId, user);
       }
     }));
@@ -130,9 +130,6 @@ export const checkDuplicateRecords = async (user: CalabrioUser, nNumber: string,
       };
     }
   });
-
-  //Need to update the check for duplicate agent check to look for agents in Twilio without records in the DB
-  //Then we will fetch the worker from Twilio.. if the n# is the same, we will delete the Triton Worker and inactivate the Calabrio worker
 
   return {
     conflictFound: false
