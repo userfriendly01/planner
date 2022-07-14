@@ -100,29 +100,30 @@ export const checkDuplicateRecords = async (user: CalabrioUser, users: CalabrioU
   const adLogin = user.adLogin;
 
   console.warn("**User in check duplicates", user);
+
   if(user){
-    users.map(async u => {
+    await Promise.all(users.map(async u => {
 
       if(u.email.includes(email)){
         const duplicateUser = await getCalabrioUser(u.personId);
-        return {
+        return Promise.reject({
           conflictFound: true,
           duplicateUser,
           scenario: 3,
           searchBy: searchByOptions.NAME
-        };
+        });
       }
 
       if (u.adLogin.includes(adLogin)) {
         const duplicateUser = await getCalabrioUser(u.personId);
-        return {
+        return Promise.reject({
           conflictFound: true,
           duplicateUser,
           scenario: 4,
           searchBy: firstName && lastName ? searchByOptions.NAME : searchByOptions.N_NUMBER
-        };
+        });
       }
-    });
+    }));
   }
 
   return {

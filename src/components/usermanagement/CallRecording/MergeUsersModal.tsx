@@ -45,7 +45,6 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
 
   const state = useAdminState();
   const dispatch = useAdminDispatch();
-  const form = useFormState();
   const [ conflictState, setConflictState ] = React.useState(null);
   console.log("PRIMARY USER IN MERGE USERS MODAL", mergeUsersModalState.primaryUser);
 
@@ -85,9 +84,6 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
   const handleConflictCheck = async () => {
     try {
       const org: any = await getCalabrioOrg();
-      // const org: any = {
-      //   data: []
-      // };
       console.log("Calabrio Org", org);
       dispatch({
         type: "loadCalabrioOrg",
