@@ -42,7 +42,6 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
     updateLoading
   } = props;
 
-  const state = useAdminState();
   const dispatch = useAdminDispatch();
   const [ conflictState, setConflictState ] = React.useState(null);
   console.log("PRIMARY USER IN MERGE USERS MODAL", mergeUsersModalState.primaryUser);
@@ -88,7 +87,9 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
         type: "loadCalabrioAgents",
         payload: res.data
       });
+      //make sure we wait for this to be populated
       try {
+        const state = useAdminState();
         await checkDuplicateRecords(mergeUsersModalState.primaryUser, state.calabrioContext.users);
         handleClose();
         updateLoading({
