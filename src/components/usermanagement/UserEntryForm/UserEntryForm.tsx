@@ -92,6 +92,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       />
       <UserFormButtons
         handleClose={doHandleClose}
+        setUserModalState={handleClose}
         loading={loading}
         updateLoading={updateLoading}
         profiles={profiles}

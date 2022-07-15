@@ -31,12 +31,14 @@ interface MergeUsersModalProps {
   loading: any,
   updateLoading: (payload: any) => void,
   mergeUsersModalState: any,
-  setMergeUsersModalState: (state: any) => void
+  setMergeUsersModalState: (state: any) => void,
+  setUserModalState: (state: any) => void
 }
 
 const MergeUsersModal = (props: MergeUsersModalProps) => {
   const {
     loading,
+    setUserModalState,
     mergeUsersModalState,
     setMergeUsersModalState,
     updateLoading
@@ -103,6 +105,7 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
             ...loading,
             saveUser: false
           });
+          setUserModalState();
         }, timeouts.MODAL_OVERLAY);
       } catch(err){
         console.log("ERR", err);

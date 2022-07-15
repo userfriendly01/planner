@@ -57,7 +57,8 @@ export interface UserFormButtonsProps {
   profiles: TritonProfile[],
   offices: Map<string, Office>,
   worker: Worker | null,
-  forwardToToggle: boolean
+  forwardToToggle: boolean,
+  setUserModalState: (payload: any) => void
 }
 
 export enum ExtensionSearchStatuses {

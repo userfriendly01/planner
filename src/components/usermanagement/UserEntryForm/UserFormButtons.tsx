@@ -51,7 +51,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     profiles,
     offices,
     worker,
-    forwardToToggle
+    forwardToToggle,
+    setUserModalState
   } = props;
 
   const users = useAdminState().calabrioContext.users;
@@ -303,6 +304,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         <MergeUsersModal
           loading={loading}
           updateLoading={updateLoading}
+          setUserModalState={setUserModalState}
           mergeUsersModalState={mergeUsersModalState}
           setMergeUsersModalState={setMergeUsersModalState}
         />

@@ -24,10 +24,12 @@ const UserFormAccordion = (props: UserFormAccordianProps) => {
     setForwardToToggle
   } = props;
 
+  const [ active, setActive ] = React.useState(true);
+
   return (
     <FormControlsContainer>
       <Accordion as="h4" singleTab>
-        <AccordionTab active labelVisual="Basic Info">
+        <AccordionTab active={active} labelVisual="Basic Info">
           <BasicFormInfo
             skills={skills}
             worker={worker}
@@ -38,16 +40,13 @@ const UserFormAccordion = (props: UserFormAccordianProps) => {
             setForwardToToggle={setForwardToToggle}/>
         </AccordionTab>
         {form.formMode === formModes.INSERT ?
-          <AccordionTab labelVisual="Call Recording">
-            <CallRecordingForm
-              form={form}
-            />
+          <AccordionTab active={!active}labelVisual="Call Recording">
+            <CallRecordingForm />
           </AccordionTab> : null
         }
-        <AccordionTab labelVisual="Default Skills">
+        <AccordionTab active={!active}labelVisual="Default Skills">
           <SkillsFormInfo />
         </AccordionTab>
-
       </Accordion>
     </FormControlsContainer>
   );
