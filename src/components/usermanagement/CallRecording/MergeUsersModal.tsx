@@ -109,6 +109,10 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
         if(err.conflictFound){
           console.log("Conflict Found!", err);
           setConflictState(err);
+          setMergeUsersModalState({
+            ...mergeUsersModalState,
+            open: true
+          });
         } else {
           console.error("Error validating conflicting users for Calabrio", err);
           handleClose();

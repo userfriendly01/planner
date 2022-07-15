@@ -176,7 +176,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           console.log("Calabrio Attributes sent for create user", calabrioAttributes);
           createCalabrioUser(calabrioAttributes).then(() => {
             setMergeUsersModalState({
-              open: true,
+              open: false,
               primaryUser: calabrioAttributes
             });
           });
