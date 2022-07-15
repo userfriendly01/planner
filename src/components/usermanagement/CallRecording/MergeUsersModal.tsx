@@ -82,15 +82,15 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
   const handleConflictCheck = async () => {
     try {
       const res: any = await getCalabrioAgents();
+      const agents = res.data;
       console.log("Calabrio Agents", res.data);
       dispatch({
         type: "loadCalabrioAgents",
-        payload: res.data
+        payload: agents
       });
       //make sure we wait for this to be populated
       try {
-        const state = useAdminState();
-        await checkDuplicateRecords(mergeUsersModalState.primaryUser, state.calabrioContext.users);
+        await checkDuplicateRecords(mergeUsersModalState.primaryUser, agents);
         handleClose();
         updateLoading({
           ...loading,

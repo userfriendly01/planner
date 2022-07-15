@@ -8,6 +8,9 @@ import {
   CallRecordingForm,
   SkillsFormInfo
 } from "components";
+import {
+  useFormState
+} from "context";
 import { FormControlsContainer } from "./UserEntryForm.Styles";
 import { UserFormAccordianProps } from "./UserEntryForm.Interfaces";
 
@@ -22,6 +25,8 @@ const UserFormAccordion = (props: UserFormAccordianProps) => {
     setForwardToToggle
   } = props;
 
+  const form = useFormState();
+
   return (
     <FormControlsContainer>
       <Accordion as="h4" singleTab>
@@ -35,12 +40,15 @@ const UserFormAccordion = (props: UserFormAccordianProps) => {
             forwardToToggle={forwardToToggle}
             setForwardToToggle={setForwardToToggle}/>
         </AccordionTab>
+        {form.formMode === "INSERT" ?
+          <AccordionTab labelVisual="Call Recording">
+            <CallRecordingForm />
+          </AccordionTab> : null
+        }
         <AccordionTab labelVisual="Default Skills">
           <SkillsFormInfo />
         </AccordionTab>
-        <AccordionTab labelVisual="Call Recording">
-          <CallRecordingForm />
-        </AccordionTab>
+
       </Accordion>
     </FormControlsContainer>
   );
