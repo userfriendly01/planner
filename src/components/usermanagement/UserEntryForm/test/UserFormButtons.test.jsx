@@ -303,7 +303,7 @@ describe("<UserFormButtons />", () => {
                 }
               });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(1);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Adding new user...",
                 saveStatus: "saving",
@@ -374,7 +374,7 @@ describe("<UserFormButtons />", () => {
                 payload: [formattedWorker]
               });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(1);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Adding new user...",
                 saveStatus: "saving",
@@ -438,7 +438,7 @@ describe("<UserFormButtons />", () => {
                 }
               });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(1);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Adding new user...",
                 saveStatus: "saving",
@@ -497,7 +497,7 @@ describe("<UserFormButtons />", () => {
                   }
                 });
                 jest.runAllTimers();
-                expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+                expect(mockUpdateLoading).toHaveBeenCalledTimes(1);
                 expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                   overlayMessage: "Adding new user...",
                   saveStatus: "saving",
@@ -551,7 +551,7 @@ describe("<UserFormButtons />", () => {
                 payload: [formattedWorker]
               });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(1);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Adding new user...",
                 saveStatus: "saving",
