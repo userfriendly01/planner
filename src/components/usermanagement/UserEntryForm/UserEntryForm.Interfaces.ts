@@ -58,7 +58,7 @@ export interface UserFormButtonsProps {
   offices: Map<string, Office>,
   worker: Worker | null,
   forwardToToggle: boolean,
-  setUserModalState: (payload: any) => void
+  setUserModalState: () => void
 }
 
 export enum ExtensionSearchStatuses {

@@ -32,7 +32,7 @@ interface MergeUsersModalProps {
   updateLoading: (payload: any) => void,
   mergeUsersModalState: any,
   setMergeUsersModalState: (state: any) => void,
-  setUserModalState: (state: any) => void
+  setUserModalState: () => void
 }
 
 const MergeUsersModal = (props: MergeUsersModalProps) => {
