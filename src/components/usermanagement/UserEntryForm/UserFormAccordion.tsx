@@ -10,6 +10,7 @@ import {
 } from "components";
 import { FormControlsContainer } from "./UserEntryForm.Styles";
 import { UserFormAccordianProps } from "./UserEntryForm.Interfaces";
+import { formModes } from "globals";
 
 const UserFormAccordion = (props: UserFormAccordianProps) => {
   const {
@@ -36,7 +37,7 @@ const UserFormAccordion = (props: UserFormAccordianProps) => {
             forwardToToggle={forwardToToggle}
             setForwardToToggle={setForwardToToggle}/>
         </AccordionTab>
-        {form.formMode === "INSERT" ?
+        {form.formMode === formModes.INSERT ?
           <AccordionTab labelVisual="Call Recording">
             <CallRecordingForm />
           </AccordionTab> : null
