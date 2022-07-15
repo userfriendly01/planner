@@ -39,7 +39,9 @@ const UserFormAccordion = (props: UserFormAccordianProps) => {
         </AccordionTab>
         {form.formMode === formModes.INSERT ?
           <AccordionTab labelVisual="Call Recording">
-            <CallRecordingForm />
+            <CallRecordingForm
+              form={form}
+            />
           </AccordionTab> : null
         }
         <AccordionTab labelVisual="Default Skills">

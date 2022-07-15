@@ -13,28 +13,28 @@ import {
 } from "context";
 import { getCalabrioUser } from "services";
 
-const CallRecordingForm = () => {
+const CallRecordingForm = (props: any) => {
+
+  const {
+    form
+  } = props;
   const state = useAdminState();
   const groups = state.calabrioContext.groups;
   const teams = state.calabrioContext.teams;
   const roles = state.calabrioContext.roles;
   const users = state.calabrioContext.users;
 
-  const form = useFormState();
   const setForm = useFormDispatch();
   console.log("***STATE!", state);
   // console.log("worker", form.nNumberFetchedUser);
 
   useEffect(() => {
-    console.log("in use effect");
     if(form.nNumberFetchedUser && form.formMode ==="UPDATE") {
       const email = form.nNumberFetchedUser.email.toLowerCase();
       const userRecord = users.find(user => user.email.toLowerCase() === email);
-      console.log("in update", userRecord);
 
       if(userRecord){
         getCalabrioUser(userRecord.personId).then((res: any) => {
-          console.log("Fetched Calabrio User", res);
           const userGroups: any[] = [];
           const userTeams: any[] = [];
 
@@ -81,9 +81,6 @@ const CallRecordingForm = () => {
           });
 
         }).catch(err => {
-          setForm({
-            type: "butts"
-          });
           console.error("Failed to fetch Calabrio User.", err);
         });
       } else {
