@@ -109,7 +109,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       roles: form.calabrioUser.roles,
       scope: {
         groups: form.calabrioUser.scope.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),
-        teams: form.calabrioUser.scope.teams.filter((team: any) => team.checked).map(g: any) => g.groupId)
+        teams: form.calabrioUser.scope.teams.filter((team: any) => team.checked).map((g: any) => g.groupId)
       }
     };
 
