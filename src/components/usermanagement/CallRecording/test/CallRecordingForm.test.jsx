@@ -56,7 +56,7 @@ describe("CallRecordingForm", () => {
   describe("User is being created", () => {
     describe("initial render", () => {
       test("Form is rendered as expected", () => {
-        render(<CallRecordingForm/>);
+        render(<CallRecordingForm form={initialFormState}/>);
         expect(Dropdown.mock.calls.length).toBe(2);
         expectOnlyPassedProps(Dropdown, {
           label: "Roles",
@@ -123,7 +123,7 @@ describe("CallRecordingForm", () => {
     describe("Role Dropdown", () => {
       describe("updateValue is called", () => {
         test("setForm is called with the appropriate params", () => {
-          render(<CallRecordingForm/>);
+          render(<CallRecordingForm form={initialFormState}/>);
           expect(Dropdown.mock.calls.length).toBe(2);
           const updateRole = Dropdown.mock.calls[0][0].updateValue;
           act(() => {
@@ -140,7 +140,7 @@ describe("CallRecordingForm", () => {
     describe("Team Dropdown", () => {
       describe("updateValue is called", () => {
         test("setForm is called with the appropriate params", () => {
-          render(<CallRecordingForm/>);
+          render(<CallRecordingForm form={initialFormState}/>);
           expect(Dropdown.mock.calls.length).toBe(2);
           const updateTeam = Dropdown.mock.calls[1][0].updateValue;
           act(() => {
@@ -168,28 +168,29 @@ describe("CallRecordingForm", () => {
           teams: [102, 201]
         }
       };
-      beforeEach(() => {
-        useFormState.mockReturnValue({
-          ...initialFormState,
-          calabrioUser: {
-            team: 225,
-            roles: [],
-            scope: {
-              groups: [],
-              teams: []
-            }
-          },
-          formMode: "UPDATE",
-          nNumberFetchedUser: {
-            email: "faith.Cuneo@libertymutual.com",
-            firstName: "Faith",
-            lastName: "Cuneo"
+      const formState = {
+        ...initialFormState,
+        calabrioUser: {
+          team: 225,
+          roles: [],
+          scope: {
+            groups: [],
+            teams: []
           }
-        });
+        },
+        formMode: "UPDATE",
+        nNumberFetchedUser: {
+          email: "faith.Cuneo@libertymutual.com",
+          firstName: "Faith",
+          lastName: "Cuneo"
+        }
+      };
+      beforeEach(() => {
+        // useFormState.mockReturnValue(formState);
         getCalabrioUser.mockResolvedValue(user);
       });
       test("Form is rendered as expected", async () => {
-        render(<CallRecordingForm/>);
+        render(<CallRecordingForm form={formState}/>);
         expect(Dropdown.mock.calls.length).toBe(2);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
@@ -239,27 +240,28 @@ describe("CallRecordingForm", () => {
       });
     });
     describe("worker was not found in Calabrio User state", () => {
-      beforeEach(() => {
-        useFormState.mockReturnValue({
-          ...initialFormState,
-          calabrioUser: {
-            team: 225,
-            roles: [],
-            scope: {
-              groups: [],
-              teams: []
-            }
-          },
-          formMode: "UPDATE",
-          nNumberFetchedUser: {
-            email: "Mike.Nieman@libertymutual.com",
-            firstName: "Mike",
-            lastName: "Nieman"
+      const formState = {
+        ...initialFormState,
+        calabrioUser: {
+          team: 225,
+          roles: [],
+          scope: {
+            groups: [],
+            teams: []
           }
-        });
-      });
+        },
+        formMode: "UPDATE",
+        nNumberFetchedUser: {
+          email: "Mike.Nieman@libertymutual.com",
+          firstName: "Mike",
+          lastName: "Nieman"
+        }
+      };
+      // beforeEach(() => {
+      //   useFormState.mockReturnValue(formState);
+      // });
       test("Form is rendered as expected", async () => {
-        render(<CallRecordingForm/>);
+        render(<CallRecordingForm form={formState}/>);
         expect(Dropdown.mock.calls.length).toBe(2);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(0);
@@ -268,28 +270,29 @@ describe("CallRecordingForm", () => {
       });
     });
     describe("Worker was found in Calabrio User state but failed to fetch user", () => {
-      beforeEach(() => {
-        useFormState.mockReturnValue({
-          ...initialFormState,
-          calabrioUser: {
-            team: 225,
-            roles: [],
-            scope: {
-              groups: [],
-              teams: []
-            }
-          },
-          formMode: "UPDATE",
-          nNumberFetchedUser: {
-            email: "faith.Cuneo@libertymutual.com",
-            firstName: "Faith",
-            lastName: "Cuneo"
+      const formState = {
+        ...initialFormState,
+        calabrioUser: {
+          team: 225,
+          roles: [],
+          scope: {
+            groups: [],
+            teams: []
           }
-        });
+        },
+        formMode: "UPDATE",
+        nNumberFetchedUser: {
+          email: "faith.Cuneo@libertymutual.com",
+          firstName: "Faith",
+          lastName: "Cuneo"
+        }
+      };
+      beforeEach(() => {
+        // useFormState.mockReturnValue(formState);
         getCalabrioUser.mockRejectedValue({ aww: "boo" });
       });
       test("Form is rendered as expected", async () => {
-        render(<CallRecordingForm/>);
+        render(<CallRecordingForm form={formState}/>);
         expect(Dropdown.mock.calls.length).toBe(2);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
