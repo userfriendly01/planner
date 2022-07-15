@@ -55,7 +55,7 @@ describe("<UserFormAccordion />", () => {
     return render(
       <UserFormAccordion
         form={{
-          formMode: "INSERT"
+          formMode: "insert"
         }}
         skills={mockSkills}
         worker={mockWorkers[0]}
