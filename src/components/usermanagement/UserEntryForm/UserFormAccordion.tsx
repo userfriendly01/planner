@@ -8,14 +8,12 @@ import {
   CallRecordingForm,
   SkillsFormInfo
 } from "components";
-import {
-  useFormState
-} from "context";
 import { FormControlsContainer } from "./UserEntryForm.Styles";
 import { UserFormAccordianProps } from "./UserEntryForm.Interfaces";
 
 const UserFormAccordion = (props: UserFormAccordianProps) => {
   const {
+    form,
     skills,
     worker,
     workers,
@@ -24,8 +22,6 @@ const UserFormAccordion = (props: UserFormAccordianProps) => {
     forwardToToggle,
     setForwardToToggle
   } = props;
-
-  const form = useFormState();
 
   return (
     <FormControlsContainer>

@@ -54,6 +54,9 @@ describe("<UserFormAccordion />", () => {
   const renderComponent = () => {
     return render(
       <UserFormAccordion
+        form={{
+          formMode: "INSERT"
+        }}
         skills={mockSkills}
         worker={mockWorkers[0]}
         workers={mockWorkers}
@@ -69,10 +72,10 @@ describe("<UserFormAccordion />", () => {
     renderComponent();
     render(Accordion.mock.calls[0][0].children);
     expect(AccordionTab.mock.calls[0][0].labelVisual).toBe("Basic Info");
-    expect(AccordionTab.mock.calls[1][0].labelVisual).toBe("Default Skills");
+    expect(AccordionTab.mock.calls[2][0].labelVisual).toBe("Default Skills");
 
     render(AccordionTab.mock.calls[0][0].children);
-    render(AccordionTab.mock.calls[1][0].children);
+    render(AccordionTab.mock.calls[2][0].children);
 
     const expectedBasicFormProps = {
       skills: mockSkills,

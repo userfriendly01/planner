@@ -81,6 +81,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
           : null
       }
       <UserFormAccordion
+        form={form}
         skills={skills}
         worker={worker}
         workers={workers}

@@ -23,6 +23,7 @@ export interface UserEntryFormProps {
 }
 
 export interface UserFormAccordianProps {
+  form: any,
   skills: TaskRouterSkill[],
   worker: Worker | null,
   workers: Worker[],
