@@ -20,7 +20,7 @@ export const FormControlsContainer = styled.div`
   flex-direction: row;
   width: 100%;
   justify-content: space-around;
-  max-height: 300px;
+  height: 280px;
   padding-top: 5px;
   overflow: overlay;
 `;

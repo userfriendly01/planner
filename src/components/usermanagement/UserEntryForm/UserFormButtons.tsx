@@ -108,8 +108,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       groupId: form.calabrioUser.team?.value,
       roles: form.calabrioUser.roles,
       scope: {
-        groups: form.calabrioUser.scope.groups.filter((group: any) => group.checked),
-        teams: form.calabrioUser.scope.teams.filter((team: any) => team.checked)
+        groups: form.calabrioUser.scope.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),
+        teams: form.calabrioUser.scope.teams.filter((team: any) => team.checked).map(g: any) => g.groupId)
       }
     };
 
@@ -180,7 +180,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
               primaryUser: calabrioAttributes
             });
           });
-        }).then(err => {
+        }).catch(err => {
           console.error("Error Creating Calabrio User", err);
           updateLoading({
             ...loading,
