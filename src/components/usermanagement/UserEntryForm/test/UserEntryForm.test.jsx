@@ -143,10 +143,6 @@ describe("<UserEntryForm />", () => {
           handleClose();
         });
         expect(mockHandleClose).toBeCalledTimes(1);
-        expect(mockSetForm).toBeCalledTimes(1);
-        expect(mockSetForm).toBeCalledWith({
-          type: userFormActions.RESET_FORM
-        });
       });
     });
   });

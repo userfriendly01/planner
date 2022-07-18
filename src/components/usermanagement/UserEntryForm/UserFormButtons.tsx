@@ -51,8 +51,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     profiles,
     offices,
     worker,
-    forwardToToggle,
-    setUserModalState
+    forwardToToggle
   } = props;
 
   const users = useAdminState().calabrioContext.users;
@@ -285,6 +284,9 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           saveStatus: modalOverlayStatuses.SUCCESS,
           saveUser: true
         });
+        setForm({
+          type: userFormActions.RESET_FORM
+        });
         wait(handleClose, timeouts.MODAL_OVERLAY);
       })
       .catch(err => {
@@ -304,17 +306,17 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         <MergeUsersModal
           loading={loading}
           updateLoading={updateLoading}
-          setUserModalState={setUserModalState}
+          handleClose={handleClose}
           mergeUsersModalState={mergeUsersModalState}
           setMergeUsersModalState={setMergeUsersModalState}
         />
       </Modal>
-      <UserFormButton
-        onClick={() => {
-          handleClose();
-          setForm({ type: userFormActions.RESET_FORM });
-        }}
-      >
+      <UserFormButton onClick={() => {
+        handleClose();
+        setForm({
+          type: userFormActions.RESET_FORM
+        });
+      }}>
           Close
       </UserFormButton>
       <Tooltip

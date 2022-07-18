@@ -13,17 +13,14 @@ import {
 } from "context";
 import { getCalabrioUser } from "services";
 
-const CallRecordingForm = (props: any) => {
-
-  const {
-    form
-  } = props;
+const CallRecordingForm = () => {
   const state = useAdminState();
   const groups = state.calabrioContext.groups;
   const teams = state.calabrioContext.teams;
   const roles = state.calabrioContext.roles;
   const users = state.calabrioContext.users;
 
+  const form = useFormState();
   const setForm = useFormDispatch();
   console.log("***STATE!", state);
   // console.log("worker", form.nNumberFetchedUser);

@@ -56,7 +56,7 @@ describe("CallRecordingForm", () => {
   describe("User is being created", () => {
     describe("initial render", () => {
       test("Form is rendered as expected", () => {
-        render(<CallRecordingForm form={initialFormState}/>);
+        render(<CallRecordingForm/>);
         expect(Dropdown.mock.calls.length).toBe(2);
         expectOnlyPassedProps(Dropdown, {
           label: "Roles",
@@ -123,7 +123,7 @@ describe("CallRecordingForm", () => {
     describe("Role Dropdown", () => {
       describe("updateValue is called", () => {
         test("setForm is called with the appropriate params", () => {
-          render(<CallRecordingForm form={initialFormState}/>);
+          render(<CallRecordingForm />);
           expect(Dropdown.mock.calls.length).toBe(2);
           const updateRole = Dropdown.mock.calls[0][0].updateValue;
           act(() => {
@@ -140,7 +140,7 @@ describe("CallRecordingForm", () => {
     describe("Team Dropdown", () => {
       describe("updateValue is called", () => {
         test("setForm is called with the appropriate params", () => {
-          render(<CallRecordingForm form={initialFormState}/>);
+          render(<CallRecordingForm />);
           expect(Dropdown.mock.calls.length).toBe(2);
           const updateTeam = Dropdown.mock.calls[1][0].updateValue;
           act(() => {
@@ -186,11 +186,11 @@ describe("CallRecordingForm", () => {
         }
       };
       beforeEach(() => {
-        // useFormState.mockReturnValue(formState);
+        useFormState.mockReturnValue(formState);
         getCalabrioUser.mockResolvedValue(user);
       });
       test("Form is rendered as expected", async () => {
-        render(<CallRecordingForm form={formState}/>);
+        render(<CallRecordingForm/>);
         expect(Dropdown.mock.calls.length).toBe(2);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
@@ -257,11 +257,11 @@ describe("CallRecordingForm", () => {
           lastName: "Nieman"
         }
       };
-      // beforeEach(() => {
-      //   useFormState.mockReturnValue(formState);
-      // });
+      beforeEach(() => {
+        useFormState.mockReturnValue(formState);
+      });
       test("Form is rendered as expected", async () => {
-        render(<CallRecordingForm form={formState}/>);
+        render(<CallRecordingForm/>);
         expect(Dropdown.mock.calls.length).toBe(2);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(0);
@@ -288,11 +288,11 @@ describe("CallRecordingForm", () => {
         }
       };
       beforeEach(() => {
-        // useFormState.mockReturnValue(formState);
+        useFormState.mockReturnValue(formState);
         getCalabrioUser.mockRejectedValue({ aww: "boo" });
       });
       test("Form is rendered as expected", async () => {
-        render(<CallRecordingForm form={formState}/>);
+        render(<CallRecordingForm/>);
         expect(Dropdown.mock.calls.length).toBe(2);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);

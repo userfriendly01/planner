@@ -32,13 +32,13 @@ interface MergeUsersModalProps {
   updateLoading: (payload: any) => void,
   mergeUsersModalState: any,
   setMergeUsersModalState: (state: any) => void,
-  setUserModalState: () => void
+  handleClose: (reopen: boolean | null) => void
 }
 
 const MergeUsersModal = (props: MergeUsersModalProps) => {
   const {
     loading,
-    setUserModalState,
+    handleClose,
     mergeUsersModalState,
     setMergeUsersModalState,
     updateLoading
@@ -58,7 +58,7 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
     }
   }, []);
 
-  const handleClose = () => {
+  const handleCloseMergeUserModal = () => {
     setMergeUsersModalState({
       open: false,
       primaryUser: null
@@ -93,7 +93,7 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
       //make sure we wait for this to be populated
       try {
         await checkDuplicateRecords(mergeUsersModalState.primaryUser, agents);
-        handleClose();
+        handleCloseMergeUserModal();
         updateLoading({
           ...loading,
           overlayMessage: "Successfully added new user",
@@ -105,7 +105,7 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
             ...loading,
             saveUser: false
           });
-          setUserModalState();
+          handleClose(true);
         }, timeouts.MODAL_OVERLAY);
       } catch(err){
         console.log("ERR", err);
@@ -114,7 +114,7 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
           setConflictState(err);
         } else {
           console.error("Error validating conflicting users for Calabrio", err);
-          handleClose();
+          handleCloseMergeUserModal();
           updateLoading({
             ...loading,
             overlayMessage: "Triton Admin failed to check for conflicting Calabrio users. Please validate Calabrio and manually add the user.",
@@ -125,7 +125,7 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
       }
     } catch (error) {
       console.error("Error Thrown in Merge Users Modal", error);
-      handleClose();
+      handleCloseMergeUserModal();
       updateLoading({
         ...loading,
         overlayMessage: "Triton Admin failed to add Calabrio user. Please validate Calabrio and manually add the user.",
@@ -133,6 +133,26 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
         saveUser: true
       });
     }
+  };
+
+  const handleCloseMergeUsersModal = () => {
+    setMergeUsersModalState({
+      primaryUser: null,
+      open: false
+    });
+    updateLoading({
+      ...loading,
+      overlayMessage: "This user requires cleanup work in Calabrio.",
+      saveStatus: modalOverlayStatuses.PARTIAL_FAIL,
+      saveUser: true
+    });
+    wait(() => {
+      updateLoading({
+        ...loading,
+        saveUser: false
+      });
+      handleClose(true);
+    }, timeouts.MODAL_OVERLAY);
   };
 
   return (
@@ -183,26 +203,12 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
           <SubHeader>If you hit cancel, additional clean up may still be needed in Calabrio which could cause downstream negative impacts</SubHeader>
         </InstructionsWrapper>
         <ButtonWrapper>
-          <Button
-            onClick={() => {
-              setMergeUsersModalState({
-                primaryUser: null,
-                open: false
-              });
-              updateLoading({
-                ...loading,
-                overlayMessage: "Triton Admin User added but Calabrio User not added",
-                saveStatus: modalOverlayStatuses.PARTIAL_FAIL,
-                saveUser: true
-              });
-            }}
-          >Cancel</Button>
+          <Button onClick={handleCloseMergeUsersModal}>Cancel</Button>
           <Button
             onClick={() => {
               setConflictState(null);
               handleConflictCheck();
-            }
-            }
+            }}
           >Continue</Button>
         </ButtonWrapper>
 
