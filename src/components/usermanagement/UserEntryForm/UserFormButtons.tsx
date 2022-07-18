@@ -151,19 +151,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
               console.log(`Failed to add office: [${error}]`);
             });
         }
-        setForm({
-          type: userFormActions.RESET_FORM_AFTER_ADD,
-          payload: {
-            managerValue: form.manager.value,
-            outgoing: {
-              value: form.outgoing.value,
-              e164: form.outgoing.e164
-            },
-            profileIdValue: form.profileId.value,
-            didUser: form.didUser
-          }
-        });
-        setForm({ type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
 
         dispatch({
           type: "addWorkers",
@@ -179,6 +166,19 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
               open: true,
               primaryUser: calabrioAttributes
             });
+            setForm({
+              type: userFormActions.RESET_FORM_AFTER_ADD,
+              payload: {
+                managerValue: form.manager.value,
+                outgoing: {
+                  value: form.outgoing.value,
+                  e164: form.outgoing.e164
+                },
+                profileIdValue: form.profileId.value,
+                didUser: form.didUser
+              }
+            });
+            setForm({ type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
           });
         }).catch(err => {
           console.error("Error Creating Calabrio User", err);
