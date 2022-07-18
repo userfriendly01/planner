@@ -166,19 +166,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
               open: true,
               primaryUser: calabrioAttributes
             });
-            setForm({
-              type: userFormActions.RESET_FORM_AFTER_ADD,
-              payload: {
-                managerValue: form.manager.value,
-                outgoing: {
-                  value: form.outgoing.value,
-                  e164: form.outgoing.e164
-                },
-                profileIdValue: form.profileId.value,
-                didUser: form.didUser
-              }
-            });
-            setForm({ type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
           });
         }).catch(err => {
           console.error("Error Creating Calabrio User", err);
@@ -300,13 +287,32 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       });
   };
 
+  const handleCloseMergeUsersModal = () => {
+    handleClose();
+    if(form.formMode === formModes.INSERT){
+      setForm({
+        type: userFormActions.RESET_FORM_AFTER_ADD,
+        payload: {
+          managerValue: form.manager.value,
+          outgoing: {
+            value: form.outgoing.value,
+            e164: form.outgoing.e164
+          },
+          profileIdValue: form.profileId.value,
+          didUser: form.didUser
+        }
+      });
+      setForm({ type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
+    }
+  };
+
   return (
     <ButtonWrapper>
       <Modal disableBackdropClick={true} open={mergeUsersModalState.open}>
         <MergeUsersModal
           loading={loading}
           updateLoading={updateLoading}
-          handleClose={handleClose}
+          handleClose={handleCloseMergeUsersModal}
           mergeUsersModalState={mergeUsersModalState}
           setMergeUsersModalState={setMergeUsersModalState}
         />
