@@ -287,8 +287,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       });
   };
 
-  const handleCloseMergeUsersModal = () => {
-    handleClose();
+  const handleCloseMergeUsersModal = (reopen: boolean) => {
+    handleClose(reopen);
     if(form.formMode === formModes.INSERT){
       setForm({
         type: userFormActions.RESET_FORM_AFTER_ADD,
