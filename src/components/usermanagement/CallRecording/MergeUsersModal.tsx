@@ -115,7 +115,7 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
         }
       }
     } catch (error) {
-      console.error("Error validating conflicting users for Calabrio", err);
+      console.error("Error validating conflicting users for Calabrio", error);
       handleCloseMergeUserModal();
       updateLoading({
         ...loading,
