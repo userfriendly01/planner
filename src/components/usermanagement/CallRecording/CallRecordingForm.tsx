@@ -112,16 +112,6 @@ const CallRecordingForm = () => {
   },[]);
 
   const getRoleOptions = () => {
-    const roles = [
-      {
-        name: "Administrator",
-        id: 12
-      },
-      {
-        name: "Agent",
-        id: 13
-      }
-    ];
     return roles.map((role: any) => {
       return {
         label: role.name,
@@ -170,6 +160,7 @@ const CallRecordingForm = () => {
             type: userFormActions.SET_CALABRIO_TEAM,
             payload: team
           })}
+          styles={{ width: "300px" }}
         />
       </FormControlsPane>
       <CallRecordingScope
