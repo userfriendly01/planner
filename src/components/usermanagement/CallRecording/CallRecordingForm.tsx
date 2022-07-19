@@ -26,7 +26,6 @@ const CallRecordingForm = () => {
   // console.log("worker", form.nNumberFetchedUser);
 
   useEffect(() => {
-    console.warn("***useEffect runs for call recording form", form);
     if(form.calabrioUser.scope.groups.length === 0 || form.calabrioUser.scope.teams.length === 0) {
       if(form.nNumberFetchedUser && form.formMode ==="UPDATE") {
         setScopeOnExistingUser();
