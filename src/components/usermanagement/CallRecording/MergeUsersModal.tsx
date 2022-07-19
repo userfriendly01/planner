@@ -90,7 +90,6 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
         type: "loadCalabrioAgents",
         payload: agents
       });
-      //make sure we wait for this to be populated
       try {
         await checkDuplicateRecords(mergeUsersModalState.primaryUser, agents);
         handleCloseMergeUserModal();
@@ -108,30 +107,29 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
           handleClose(true);
         }, timeouts.MODAL_OVERLAY);
       } catch(err){
-        console.log("ERR", err);
         if(err.conflictFound){
-          console.log("Conflict Found!", err);
+          console.warn("Conflict Found!", err);
           setConflictState(err);
         } else {
-          console.error("Error validating conflicting users for Calabrio", err);
-          handleCloseMergeUserModal();
-          updateLoading({
-            ...loading,
-            overlayMessage: "Triton Admin failed to check for conflicting Calabrio users. Please validate Calabrio and manually add the user.",
-            saveStatus: modalOverlayStatuses.PARTIAL_FAIL,
-            saveUser: true
-          });
+          throw(err);
         }
       }
     } catch (error) {
-      console.error("Error Thrown in Merge Users Modal", error);
+      console.error("Error validating conflicting users for Calabrio", err);
       handleCloseMergeUserModal();
       updateLoading({
         ...loading,
-        overlayMessage: "Triton Admin failed to add Calabrio user. Please validate Calabrio and manually add the user.",
+        overlayMessage: "Failed to check for conflicting Calabrio users.",
         saveStatus: modalOverlayStatuses.PARTIAL_FAIL,
         saveUser: true
       });
+      wait(() => {
+        updateLoading({
+          ...loading,
+          saveUser: false
+        });
+        handleClose(true);
+      }, timeouts.MODAL_OVERLAY);
     }
   };
 
@@ -213,7 +211,7 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
         </ButtonWrapper>
 
       </ModalContainer>
-      : <div></div>
+      : <div/>
   );
 };
 

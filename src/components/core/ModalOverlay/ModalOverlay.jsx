@@ -107,6 +107,7 @@ const TextWrapper = styled.div`
   font-size: initial;
   margin-top: 5%;
   text-align: center;
+  color: ${status === modalOverlayStatuses.PARTIAL_FAIL ? "black" : "white"}
 `;
 
 const ModalOverlay = props => {
@@ -161,7 +162,7 @@ const ModalOverlay = props => {
     >
       <InnerContainer>
         {
-          (status === modalOverlayStatuses.FAIL ||  status === modalOverlayStatuses.PARTIAL_FAIL) && handleClose
+          (status === modalOverlayStatuses.FAIL) && handleClose
             ? <CloseButtonDiv>
               <StyledCloseRounded data-testid="close-button" onClick={handleClose} />
             </CloseButtonDiv>
