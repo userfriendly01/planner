@@ -288,8 +288,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
   };
 
   const handleCloseMergeUsersModal = (reopen: boolean) => {
-    handleClose(reopen);
     if(form.formMode === formModes.INSERT){
+      handleClose(reopen);
       setForm({
         type: userFormActions.RESET_FORM_AFTER_ADD,
         payload: {
@@ -303,6 +303,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         }
       });
       setForm({ type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
+    } else {
+      handleClose(reopen);
     }
   };
 

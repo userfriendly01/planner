@@ -221,18 +221,18 @@ describe("<UserFormButtons />", () => {
       sid: rawDbWorker.workerSid,
       skillsDifferent: true
     };
-    const resetFormAfterAddExpectedAction = {
-      type: "RESET_FORM_AFTER_ADD",
-      payload: {
-        managerValue: validFormState.manager.value,
-        outgoing: {
-          value: validFormState.outgoing.value,
-          e164: validFormState.outgoing.e164
-        },
-        profileIdValue: validFormState.profileId.value,
-        didUser: false
-      }
-    };
+    // const resetFormAfterAddExpectedAction = {
+    //   type: "RESET_FORM_AFTER_ADD",
+    //   payload: {
+    //     managerValue: validFormState.manager.value,
+    //     outgoing: {
+    //       value: validFormState.outgoing.value,
+    //       e164: validFormState.outgoing.e164
+    //     },
+    //     profileIdValue: validFormState.profileId.value,
+    //     didUser: false
+    //   }
+    // };
 
     describe(`form.formMode === ${formModes.INSERT}`, () => {
       beforeEach(() => {
