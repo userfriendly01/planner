@@ -26,90 +26,101 @@ const CallRecordingForm = () => {
   // console.log("worker", form.nNumberFetchedUser);
 
   useEffect(() => {
-    if(form.nNumberFetchedUser && form.formMode ==="UPDATE") {
-      const email = form.nNumberFetchedUser.email.toLowerCase();
-      const userRecord = users.find(user => user.email.toLowerCase() === email);
-
-      if(userRecord){
-        getCalabrioUser(userRecord.personId).then((res: any) => {
-          const userGroups: any[] = [];
-          const userTeams: any[] = [];
-
-          groups.forEach(group => {
-            if(res.scope.groups.some((groupId: number) => group.groupId === groupId)){
-              userGroups.push({
-                ...group,
-                checked: true,
-                partial: false
-              });
-            } else {
-              userGroups.push({
-                ...group,
-                checked: false,
-                partial: false
-              });
-            }
-          });
-
-          teams.forEach(team => {
-            if(res.scope.teams.some((teamId: number) => team.groupId === teamId)){
-              userTeams.push({
-                ...team,
-                checked: true
-              });
-            } else {
-              userTeams.push({
-                ...team,
-                checked: false
-              });
-            }
-          });
-
-          setForm({
-            type: userFormActions.SET_CALABRIO_USER,
-            payload: {
-              team: res.groupId,
-              roles: res.roles,
-              scope: {
-                groups: userGroups,
-                teams: userTeams
-              }
-            }
-          });
-
-        }).catch(err => {
-          console.error("Failed to fetch Calabrio User.", err);
-        });
+    console.warn("***useEffect runs for call recording form", form);
+    if(form.calabrioUser.scope.groups.length === 0 || form.calabrioUser.scope.teams.length === 0) {
+      if(form.nNumberFetchedUser && form.formMode ==="UPDATE") {
+        setScopeOnExistingUser();
       } else {
-        console.warn("No user was found in Calabrio with this email");
+        setScopeOnNewUser();
       }
-    } else {
-      const userGroups: any[] = [];
-      const userTeams: any[] = [];
-
-      groups.forEach(group => userGroups.push({
-        ...group,
-        checked: false,
-        partial: false
-      }));
-
-      teams.forEach(team => userTeams.push({
-        ...team,
-        checked: false
-      }));
-
-      setForm({
-        type: userFormActions.SET_CALABRIO_USER,
-        payload: {
-          ...form.calabrioUser,
-          scope: {
-            groups: userGroups,
-            teams: userTeams
-          }
-        }
-      });
     }
-  },[]);
+  });
+
+  const setScopeOnNewUser = () => {
+    const userGroups: any[] = [];
+    const userTeams: any[] = [];
+
+    groups.forEach(group => userGroups.push({
+      ...group,
+      checked: false,
+      partial: false
+    }));
+
+    teams.forEach(team => userTeams.push({
+      ...team,
+      checked: false
+    }));
+
+    setForm({
+      type: userFormActions.SET_CALABRIO_USER,
+      payload: {
+        ...form.calabrioUser,
+        scope: {
+          groups: userGroups,
+          teams: userTeams
+        }
+      }
+    });
+  };
+
+  const setScopeOnExistingUser = () => {
+    const email = form.nNumberFetchedUser.email.toLowerCase();
+    const userRecord = users.find(user => user.email.toLowerCase() === email);
+
+    if(userRecord){
+      getCalabrioUser(userRecord.personId).then((res: any) => {
+        const userGroups: any[] = [];
+        const userTeams: any[] = [];
+
+        groups.forEach(group => {
+          if(res.scope.groups.some((groupId: number) => group.groupId === groupId)){
+            userGroups.push({
+              ...group,
+              checked: true,
+              partial: false
+            });
+          } else {
+            userGroups.push({
+              ...group,
+              checked: false,
+              partial: false
+            });
+          }
+        });
+
+        teams.forEach(team => {
+          if(res.scope.teams.some((teamId: number) => team.groupId === teamId)){
+            userTeams.push({
+              ...team,
+              checked: true
+            });
+          } else {
+            userTeams.push({
+              ...team,
+              checked: false
+            });
+          }
+        });
+
+        setForm({
+          type: userFormActions.SET_CALABRIO_USER,
+          payload: {
+            team: res.groupId,
+            roles: res.roles,
+            scope: {
+              groups: userGroups,
+              teams: userTeams
+            }
+          }
+        });
+
+      }).catch(err => {
+        console.error("Failed to fetch Calabrio User.", err);
+      });
+    } else {
+      console.warn("No user was found in Calabrio with this email");
+    }
+  };
 
   const getRoleOptions = () => {
     return roles.map((role: any) => {
