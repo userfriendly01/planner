@@ -29,7 +29,6 @@ export const FormControlsPane = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 0 8px;
   justify-content: center;
 `;
 
@@ -62,6 +61,8 @@ export const ScopeRow = styled.div<{ selected: boolean }>`
 export const ScopeContainer = styled.div`
   display: flex;
   height: 80%;
+  width: 90%;
+  font-size: 15px;
   justify-content: space-evenly;
 `;
 
