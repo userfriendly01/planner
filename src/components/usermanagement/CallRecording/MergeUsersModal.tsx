@@ -1,4 +1,5 @@
 import React from "react";
+import { searchByOptions } from "./CallRecording.Interfaces";
 import {
   Button,
   ButtonWrapper,
@@ -23,7 +24,6 @@ import {
 } from "services";
 import {
   checkDuplicateRecords,
-  searchByOptions,
   wait
 } from "utils";
 

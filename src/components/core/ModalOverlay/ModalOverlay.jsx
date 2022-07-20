@@ -103,12 +103,6 @@ const StyledCloseRounded = styled(CloseRounded)`
   }
 `;
 
-const TextWrapper = styled.div`
-  font-size: initial;
-  margin-top: 5%;
-  text-align: center;
-  color: ${status === modalOverlayStatuses.PARTIAL_FAIL ? "black" : "white"}
-`;
 
 const ModalOverlay = props => {
   const {
@@ -116,6 +110,13 @@ const ModalOverlay = props => {
     handleClose,
     status
   } = props;
+
+  const TextWrapper = styled.div`
+  font-size: initial;
+  margin-top: 5%;
+  text-align: center;
+  color: ${status === modalOverlayStatuses.PARTIAL_FAIL ? "black" : "white"}
+`;
 
   const getIconAndBackground = status => {
     if (status === modalOverlayStatuses.SUCCESS) {

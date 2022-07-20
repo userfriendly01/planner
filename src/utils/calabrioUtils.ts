@@ -1,25 +1,14 @@
-import { calabrioGroupLevels } from "globals";
+import {
+  calabrioGroupLevels,
+  CalabrioUser,
+  CalabrioGroup,
+  ConflictingUserResult,
+  searchByOptions
+} from "../components/usermanagement/CallRecording/CallRecording.Interfaces";
 import {
   getCalabrioUser,
   updateCalabrioUser
 } from "services";
-
-export interface CalabrioUser {
-    [key: string]: any,
-    personId: number,
-    firstName: string,
-    lastName: string,
-    email: string,
-  }
-export interface CalabrioGroup {
-    groupId: number,
-    name: string,
-    displayId: null | number,
-    parentGroupId: number,
-    parentGroupName: string,
-    groupLevel: string,
-    agents?: CalabrioUser[]
-  }
 
 export const formatCalabrioTeams = (groupsArray: CalabrioGroup[]): CalabrioGroup[] => {
   const teams = groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.TEAM);
@@ -37,18 +26,6 @@ export const formatCalabrioGroups = (groupsArray: CalabrioGroup[]): CalabrioGrou
   });
 };
 
-export const searchByOptions = {
-  NAME: "name",
-  N_NUMBER: "nNumber",
-  ACD_ID: "ACD ID"
-};
-interface ConflictingUserResult {
-  conflictFound: boolean,
-  duplicateUser?: CalabrioUser,
-  scenario?: number,
-  searchBy?: string,
-}
-
 /*
   Used when creating a new Calabrio User.
   This method is used to identify existing Calabrio users that would prevent a new Calabrio User from being created.
@@ -62,7 +39,9 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[]): P
     const acdId = user.acdId;
     const adLogin = user.adLogin;
 
+    // console.warn("new user", user);
     await Promise.all(users.map(async u => {
+      // console.warn("user in list", u);
       if(u.acdId === acdId){
         throw new Error("Calabrio Record with this ACD Id already exists. New Record should not be added.");
       }
@@ -70,37 +49,46 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[]): P
       if (u.adLogin === adLogin) {
         const res: CalabrioUser = await getCalabrioUser(u.id);
         const user = res.data;
-        console.log("Fetched conflicting user: ", user);
+        // console.warn("Conflicting User Found: ", user);
         user.adLogin = `xx-${user.id}-${user.adLogin}`;
+        user.roles = [];
+        user.scope = {
+          groups: [],
+          teams: [],
+          tenant: null
+        };
         await updateCalabrioUser(user.id, user);
       }
-
+      // console.warn(`u.email ${u.email} - email ${email}`, u);
       if(u.email === email){
+        console.warn("you have to get in here", getCalabrioUser);
         const res: CalabrioUser = await getCalabrioUser(u.id);
         const user = res.data;
-        console.log("Fetched conflicting user: ", user);
+        console.warn("Conflicting User Found: ", user);
         user.email = `xx-${user.id}-${user.email}`;
+        user.roles = [];
+        user.scope = {
+          groups: [],
+          teams: [],
+          tenant: null
+        };
         await updateCalabrioUser(user.id, user);
       }
     }));
   } catch(err) {
-    console.error("Error thrown trying to fetch and validate Conflicting Users");
+    console.warn("you dont get here right?", err);
+    console.error("Error thrown trying to fetch and validate Conflicting Users", err);
   }
   return;
 };
 
 export const checkDuplicateRecords = async (user: CalabrioUser, users: CalabrioUser[]): Promise<ConflictingUserResult> => {
   const email = user.email;
-  const firstName = user.firstName;
-  const lastName = user.lastName;
   const adLogin = user.adLogin;
   const acdId = user.acdId;
 
-  console.warn("**User in check duplicates", user);
-
   if(user){
     await Promise.all(users.map(async u => {
-      console.warn("individual User", u);
 
       if(u.email?.includes(email) && u.acdId !== acdId ){
         return Promise.reject({
@@ -116,7 +104,7 @@ export const checkDuplicateRecords = async (user: CalabrioUser, users: CalabrioU
           conflictFound: true,
           duplicateUser: u,
           scenario: 4,
-          searchBy: firstName && lastName ? searchByOptions.NAME : searchByOptions.N_NUMBER
+          searchBy: u.firstName && u.lastName ? searchByOptions.NAME : searchByOptions.N_NUMBER
         });
       }
     }));

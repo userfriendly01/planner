@@ -27,12 +27,6 @@ export const formModes: FormModes = {
   UPDATE: "update"
 };
 
-export const calabrioGroupLevels: any = {
-  TENANT: "TENANT",
-  GROUP: "GROUP",
-  TEAM: "TEAM"
-};
-
 export const timeouts = {
   AUTH: 3600 * 1000,
   MODAL_OVERLAY: 2000
