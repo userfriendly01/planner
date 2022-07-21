@@ -112,7 +112,7 @@ const ManagerModal = (props: ManagerModalProps) => {
     const profileId = profile ? profile.profile_id : null;
     const teams = JSON.stringify(selectedCalabrioTeams);
 
-    return editManager(manager.manager_id, {
+    return editManager(manager.manager_id, { // wsx Axios call to apply an update
       profile_id: profileId,
       calabrio_team_ids: teams
     })
@@ -143,6 +143,10 @@ const ManagerModal = (props: ManagerModalProps) => {
         console.error("editManager - Failure", err);
       });
   };
+
+  // const deleteManagerClicked = (): Promise<any> => {
+  //   return null; // wsx launch form here
+  // };
 
   let overlayMessage = "Saving";
   if (saveStatus === loadingStates.success) {

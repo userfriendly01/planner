@@ -1,4 +1,5 @@
 export { default as ManagerModal } from "./ManagerModal/ManagerModal";
+export { default as ManagerDelete } from "./ManagerDelete/ManagerDelete";
 export { default as ConfirmationModal } from "./ConfirmationModal/ConfirmationModal";
 export { default as ForwardToEntryForm } from "./ConfirmationModal/ForwardToEntryForm";
 export { default as DefaultSkillSelector } from "./DefaultSkillSelector/DefaultSkillSelector";
