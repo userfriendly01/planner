@@ -4,7 +4,8 @@ import {
   HeaderAndCloseButtonWrapper,
   LeftDiv,
   ModalContainer,
-  TextBox
+  TextBox,
+  PenaltyBox
 } from "./ManagerDelete.Styles";
 import { CloseRounded } from "@material-ui/icons";
 import {
@@ -61,8 +62,6 @@ const ManagerDelete = (props: ManagerDeleteProps) => {
   const dispatch = useAdminDispatch();
 
 
-  const members = workers.filter(worker => worker.attributes.manager_n_number === manager.manager_n_number);
-  console.log("wsx8 members", members);
   // profiles = no
   // calabrioTeams = empty
   // manager = manager object
@@ -81,6 +80,12 @@ const ManagerDelete = (props: ManagerDeleteProps) => {
   //     console.error(`wsx9 ${workerInfo.emp_first_name} ${workerInfo.emp_last_name} works for ${manager.manager_first_name}`);
   //   }
   // }
+
+
+  const teamMembers = workers.filter(worker => worker.attributes.manager_n_number === manager.manager_n_number);
+  // console.log("wsx8 members", teamMembers);
+  const memberNames = teamMembers.map(worker => `${worker.attributes.emp_first_name} ${worker.attributes.emp_last_name}`);
+  const theTeam = memberNames.join(", ");
 
   // const getCalabrioOption = (teamId: number) => {
   //   const team = calabrioTeams.find(team => team.groupId === teamId);
@@ -176,19 +181,9 @@ const ManagerDelete = (props: ManagerDeleteProps) => {
     overlayMessage = errorMessage;
   }
 
-  return (
-    <ModalContainer>
-      <PaperContainer>
-        {saveStatus ? // When form is busy, I think
-          <ModalOverlay
-            message={overlayMessage}
-            status={saveStatus}
-          /> : null}
-        <HeaderAndCloseButtonWrapper>
-          <LeftDiv></LeftDiv>
-          <Header>Delete Manager {manager.manager_first_name} {manager.manager_last_name}</Header>
-          <CloseRounded data-testid={"close-button"} onClick={handleClose}/>
-        </HeaderAndCloseButtonWrapper>
+  const confirmationForm = () => {
+    return (
+      <div>
         <FlexColumn>
           <TextBox>
             Are you sure you want to delete this manager?
@@ -203,6 +198,62 @@ const ManagerDelete = (props: ManagerDeleteProps) => {
             Delete
           </StyledButton>
         </ButtonWrapper>
+      </div>
+    );
+  };
+
+  const errorForm = () => {
+    return (
+      <div>
+        <FlexColumn>
+          <TextBox>
+            Sorry, this manager cannot be deleted until these team members are re-assigned:
+          </TextBox>
+          <PenaltyBox>
+            {theTeam}
+          </PenaltyBox>
+        </FlexColumn>
+        <ButtonWrapper>
+          <StyledButton
+            disabled={!manager || !profile || selectedCalabrioTeams.length === 0}
+            onClick={handleClose}
+            data-testid={"delete-manager-button"}
+          >
+            Close
+          </StyledButton>
+        </ButtonWrapper>
+      </div>
+    );
+  };
+
+  return (
+    <ModalContainer>
+      <PaperContainer>
+        {saveStatus ? // When form is busy, I think
+          <ModalOverlay
+            message={overlayMessage}
+            status={saveStatus}
+          /> : null}
+        <HeaderAndCloseButtonWrapper>
+          <LeftDiv></LeftDiv>
+          <Header>Delete Manager {manager.manager_first_name} {manager.manager_last_name}</Header>
+          <CloseRounded data-testid={"close-button"} onClick={handleClose}/>
+        </HeaderAndCloseButtonWrapper>
+        { teamMembers.length ? errorForm() :  confirmationForm() }
+        {/* <FlexColumn>
+          <TextBox>
+            Are you sure you want to delete this manager?
+          </TextBox>
+        </FlexColumn>
+        <ButtonWrapper>
+          <StyledButton
+            disabled={!manager || !profile || selectedCalabrioTeams.length === 0}
+            onClick={deleteManagerClicked}
+            data-testid={"delete-manager-button"}
+          >
+            Delete
+          </StyledButton>
+        </ButtonWrapper> */}
       </PaperContainer>
     </ModalContainer>
   );

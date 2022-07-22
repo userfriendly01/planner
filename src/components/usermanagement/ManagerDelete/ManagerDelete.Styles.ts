@@ -5,9 +5,15 @@ import {
 import styled from "styled-components";
 
 export const TextBox = styled.div`
-  padding-bottom: 30px;
   padding-top: 10px;
+  padding-bottom: 30px;
   text-align: center;
+`;
+
+export const PenaltyBox = styled.div`
+  padding-bottom: 30px;
+  text-align: center;
+  font-weight: bold;
 `;
 
 export const ButtonWrapper = styled(FlexRow)`
