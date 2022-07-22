@@ -4,6 +4,12 @@ import {
 } from "globals";
 import styled from "styled-components";
 
+export const TextBox = styled.div`
+  padding-bottom: 30px;
+  padding-top: 10px;
+  text-align: center;
+`;
+
 export const ButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
   padding: 1%;

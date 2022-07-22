@@ -144,10 +144,6 @@ const ManagerModal = (props: ManagerModalProps) => {
       });
   };
 
-  // const deleteManagerClicked = (): Promise<any> => {
-  //   return null; // wsx launch form here
-  // };
-
   let overlayMessage = "Saving";
   if (saveStatus === loadingStates.success) {
     overlayMessage = "Manager saved successfully";

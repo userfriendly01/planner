@@ -3,7 +3,8 @@ import {
   Header,
   HeaderAndCloseButtonWrapper,
   LeftDiv,
-  ModalContainer
+  ModalContainer,
+  TextBox
 } from "./ManagerDelete.Styles";
 import { CloseRounded } from "@material-ui/icons";
 import {
@@ -56,6 +57,30 @@ const ManagerDelete = (props: ManagerDeleteProps) => {
   const [fetchedUser, setFetchedUser] = useState<FetchUserResponse>(null);
   const [ profile, setProfile ] = useState<any>(selectedManager ? profiles.find(p => p.profile_id === selectedManager.profile_id) : null);
   const [ selectedCalabrioTeams, setSelectedCalabrioTeams ] = useState<number[]>(selectedManager ? selectedManager.calabrio_team_ids :[]);
+  const workers = useAdminState().workerContext.workers;
+  const dispatch = useAdminDispatch();
+
+
+  const members = workers.filter(worker => worker.attributes.manager_n_number === manager.manager_n_number);
+  console.log("wsx8 members", members);
+  // profiles = no
+  // calabrioTeams = empty
+  // manager = manager object
+  // nNumber = n0216624
+  // profile = profile object with a Profile Id like "12"
+  // workersFromContext = An array of 72 workers with names and Twilio attributes
+  // selectedCalabrioTeams = [210,n1,n2,n3]
+  // console.error("wsx0", manager);
+  // console.error("wsx1", nNumber);
+  // console.error("wsx2", profile);
+  // console.error("wsx3", selectedCalabrioTeams);
+  // console.log("wsx4", workers);
+  // for (let count = 0; count < workersFromContext.length; count++) {
+  //   const workerInfo = workersFromContext[count].attributes;
+  //   if (workerInfo.manager_n_number === manager.manager_n_number) {
+  //     console.error(`wsx9 ${workerInfo.emp_first_name} ${workerInfo.emp_last_name} works for ${manager.manager_first_name}`);
+  //   }
+  // }
 
   // const getCalabrioOption = (teamId: number) => {
   //   const team = calabrioTeams.find(team => team.groupId === teamId);
@@ -65,7 +90,6 @@ const ManagerDelete = (props: ManagerDeleteProps) => {
   //     label: team.name
   //   } : teamId;
   // };
-  const dispatch = useAdminDispatch();
 
   // const addManagerClicked = (): Promise<any> => {
   //   setSaveStatus(loadingStates.loading);
@@ -145,9 +169,9 @@ const ManagerDelete = (props: ManagerDeleteProps) => {
   return Promise.resolve(123);
   };
 
-  let overlayMessage = "Saving";
+  let overlayMessage = "Deleting...";
   if (saveStatus === loadingStates.success) {
-    overlayMessage = "Manager saved successfully";
+    overlayMessage = "Manager deleted successfully";
   } else if (saveStatus === loadingStates.fail) {
     overlayMessage = errorMessage;
   }
@@ -155,23 +179,28 @@ const ManagerDelete = (props: ManagerDeleteProps) => {
   return (
     <ModalContainer>
       <PaperContainer>
-        {/* {saveStatus ? // When form is busy, I think
+        {saveStatus ? // When form is busy, I think
           <ModalOverlay
             message={overlayMessage}
             status={saveStatus}
-          /> : null} */}
+          /> : null}
         <HeaderAndCloseButtonWrapper>
           <LeftDiv></LeftDiv>
-          <Header>Delete Manager {manager.manager_first_name} {manager.manager_last_name}?</Header>
+          <Header>Delete Manager {manager.manager_first_name} {manager.manager_last_name}</Header>
           <CloseRounded data-testid={"close-button"} onClick={handleClose}/>
         </HeaderAndCloseButtonWrapper>
+        <FlexColumn>
+          <TextBox>
+            Are you sure you want to delete this manager?
+          </TextBox>
+        </FlexColumn>
         <ButtonWrapper>
           <StyledButton
             disabled={!manager || !profile || selectedCalabrioTeams.length === 0}
             onClick={deleteManagerClicked}
             data-testid={"delete-manager-button"}
           >
-            Delete This Manager
+            Delete
           </StyledButton>
         </ButtonWrapper>
       </PaperContainer>

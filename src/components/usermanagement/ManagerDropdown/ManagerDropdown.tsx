@@ -99,9 +99,9 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
             <IconWrapper onClick={() => handleEditManager(option)} data-testid="edit-button">
               <Edit fontSize={"inherit"}/>
             </IconWrapper>
-            {/* <IconWrapper onClick={() => handleDeleteManager(option)} data-testid="delete-button">
+            <IconWrapper onClick={() => handleDeleteManager(option)} data-testid="delete-button">
               <Edit fontSize={"inherit"}/>
-            </IconWrapper> */}
+            </IconWrapper>
           </Wrapper>
         }
       </Wrapper>
@@ -126,9 +126,9 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
       <Modal disableBackdropClick={true} open={isManagerModalOpen}>
         <ManagerModal handleClose={handleCloseManager} selectedManager={selectedManager}/>
       </Modal>
-      {/* <Modal disableBackdropClick={true} open={isManagerDeleteOpen}>
+      <Modal disableBackdropClick={true} open={isManagerDeleteOpen}>
         <ManagerDelete handleClose={handleCloseManagerDelete} selectedManager={selectedManager}/>
-      </Modal> */}
+      </Modal>
     </Wrapper>
   );
 };
