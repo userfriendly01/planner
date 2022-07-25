@@ -24,6 +24,5 @@ export const getCalabrioRoles = async (): Promise<CalabrioGroup[]> => {
 };
 
 export const getCalabrioUser = async (personId: number): Promise<any> => {
-  console.warn("HERRE I AMM");
   return await myAxios.get(apiPaths.GET_CALABRIO_USER(personId));
 };
