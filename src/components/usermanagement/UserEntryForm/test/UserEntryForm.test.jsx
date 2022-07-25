@@ -1,5 +1,6 @@
 import UserEntryForm from "../UserEntryForm";
 import {
+  MergeUsersModal,
   ModalOverlay,
   StyledButton,
   UserFormAccordion,
@@ -8,8 +9,7 @@ import {
 import {
   useAdminState,
   useFormState,
-  useFormDispatch,
-  userFormActions
+  useFormDispatch
 } from "context";
 import { formModes } from "globals";
 import React from "react";
@@ -28,6 +28,7 @@ import {
 
 jest.mock("components", () => ({
   __esModule: true,
+  MergeUsersModal: jest.fn(),
   ModalOverlay: jest.fn(),
   UserFormAccordion: jest.fn(),
   StyledButton: jest.fn(),
@@ -56,6 +57,7 @@ describe("<UserEntryForm />", () => {
     useFormState.mockReturnValue(initialFormState);
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
+      MergeUsersModal,
       ModalOverlay,
       UserFormAccordion,
       UserFormButtons,
@@ -140,10 +142,6 @@ describe("<UserEntryForm />", () => {
           handleClose();
         });
         expect(mockHandleClose).toBeCalledTimes(1);
-        expect(mockSetForm).toBeCalledTimes(1);
-        expect(mockSetForm).toBeCalledWith({
-          type: userFormActions.RESET_FORM
-        });
       });
     });
   });

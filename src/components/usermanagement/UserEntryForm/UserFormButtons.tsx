@@ -3,9 +3,14 @@ import {
   ButtonWrapper,
   UserFormButton
 } from "./UserEntryForm.Styles";
-import { Tooltip } from "@material-ui/core";
+import {
+  Modal,
+  Tooltip
+} from "@material-ui/core";
+import { MergeUsersModal } from "components";
 import {
   useAdminDispatch,
+  useAdminState,
   useFormDispatch,
   useFormState,
   userFormActions
@@ -19,11 +24,13 @@ import {
 import React from "react";
 import {
   addOffice,
+  createCalabrioUser,
   createUser,
   fetchUser,
   updateUser
 } from "services";
 import {
+  checkConflictingUsers,
   DbWorker,
   getNonOverflowSkills,
   getOverflowSkillFromProfile,
@@ -47,9 +54,18 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     forwardToToggle
   } = props;
 
+  const {
+    users,
+    roles
+  } = useAdminState().calabrioContext;
+
   const dispatch = useAdminDispatch();
   const form = useFormState();
   const setForm = useFormDispatch();
+  const [ mergeUsersModalState, setMergeUsersModalState ] = React.useState({
+    open: false,
+    permanentUser: null
+  });
 
   const doCreateUser = () => {
     updateLoading({
@@ -84,8 +100,21 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       primary_dept_name: form.nNumberFetchedUser.departmentName,
       primary_dept_number: form.nNumberFetchedUser.departmentNumber,
       profile_id: form.profileId.value,
-      sip: form.didUser ? true : false,
       unique_id: form.nNumber.value.toLowerCase()
+    };
+
+    const calabrioAttributes = {
+      acdId: "", //populate with workerSid returned
+      adLogin: `LM\\${form.nNumber.value.toLowerCase()}`,
+      email: form.nNumberFetchedUser?.email,
+      firstName: form.nNumberFetchedUser?.firstName,
+      lastName: form.nNumberFetchedUser?.lastName,
+      groupId: form.calabrioUser.team?.value,
+      roles: form.calabrioUser.roles,
+      scope: {
+        groups: form.calabrioUser.scope.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),
+        teams: form.calabrioUser.scope.teams.filter((team: any) => team.checked).map((g: any) => g.groupId)
+      }
     };
 
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.profileId.value);
@@ -126,35 +155,33 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
               console.log(`Failed to add office: [${error}]`);
             });
         }
-        setForm({
-          type: userFormActions.RESET_FORM_AFTER_ADD,
-          payload: {
-            managerValue: form.manager.value,
-            outgoing: {
-              value: form.outgoing.value,
-              e164: form.outgoing.e164
-            },
-            profileIdValue: form.profileId.value,
-            didUser: form.didUser
-          }
-        });
-        setForm({ type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
+
         dispatch({
           type: "addWorkers",
           payload: [mapWorkerFromDbWorker(dbWorker)]
         });
-        updateLoading({
-          ...loading,
-          overlayMessage: "Successfully added new user",
-          saveStatus: modalOverlayStatuses.SUCCESS,
-          saveUser: true
-        });
-        wait(() => {
+
+        calabrioAttributes.acdId = dbWorker.workerSid;
+
+        checkConflictingUsers(calabrioAttributes, users, roles).then(() => {
+          console.log("Calabrio Attributes sent for create user", calabrioAttributes);
+          createCalabrioUser(calabrioAttributes).then(() => {
+            setMergeUsersModalState({
+              open: true,
+              permanentUser: calabrioAttributes
+            });
+          }).catch(err => {
+            throw err;
+          });
+        }).catch(err => {
+          console.error("Error Creating Calabrio User", err);
           updateLoading({
             ...loading,
-            saveUser: false
+            overlayMessage: "Triton User Created. Error Creating Calabrio User",
+            saveStatus: modalOverlayStatuses.PARTIAL_FAIL,
+            saveUser: true
           });
-        }, timeouts.MODAL_OVERLAY);
+        });
       })
       .catch(err => {
         console.error(err.message, err.response.data);
@@ -250,6 +277,9 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           saveStatus: modalOverlayStatuses.SUCCESS,
           saveUser: true
         });
+        setForm({
+          type: userFormActions.RESET_FORM
+        });
         wait(handleClose, timeouts.MODAL_OVERLAY);
       })
       .catch(err => {
@@ -263,8 +293,46 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       });
   };
 
+  const handleCloseMergeUsersModal = (reopen: boolean) => {
+    if(form.formMode === formModes.INSERT){
+      handleClose(reopen);
+      setForm({
+        type: userFormActions.RESET_FORM_AFTER_ADD,
+        payload: {
+          managerValue: form.manager.value,
+          outgoing: {
+            value: form.outgoing.value,
+            e164: form.outgoing.e164
+          },
+          profileIdValue: form.profileId.value,
+          didUser: form.didUser
+        }
+      });
+      setForm({ type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
+    } else {
+      handleClose(reopen);
+    }
+  };
+
   return (
     <ButtonWrapper>
+      <Modal disableBackdropClick={true} open={mergeUsersModalState.open}>
+        <MergeUsersModal
+          loading={loading}
+          updateLoading={updateLoading}
+          handleClose={handleCloseMergeUsersModal}
+          mergeUsersModalState={mergeUsersModalState}
+          setMergeUsersModalState={setMergeUsersModalState}
+        />
+      </Modal>
+      <UserFormButton onClick={() => {
+        handleClose();
+        setForm({
+          type: userFormActions.RESET_FORM
+        });
+      }}>
+          Close
+      </UserFormButton>
       <Tooltip
         title={
           form.didUser && !isDidDifferentValid(form, worker, forwardToToggle) ?
@@ -283,14 +351,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           </UserFormButton>
         </span>
       </Tooltip>
-      <UserFormButton
-        onClick={() => {
-          handleClose();
-          setForm({ type: userFormActions.RESET_FORM });
-        }}
-      >
-          Close
-      </UserFormButton>
     </ButtonWrapper>
   );
 };

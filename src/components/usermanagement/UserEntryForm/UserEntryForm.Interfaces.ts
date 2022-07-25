@@ -17,12 +17,13 @@ export interface LoadingState {
 
 export interface UserEntryFormProps {
   worker: Worker | null,
-  handleClose: VoidFunction,
+  handleClose: (reopen: boolean | void) => void,
   skills: TaskRouterSkill[],
   workers: Worker[]
 }
 
 export interface UserFormAccordianProps {
+  form: any,
   skills: TaskRouterSkill[],
   worker: Worker | null,
   workers: Worker[],
@@ -50,13 +51,13 @@ export interface DidFormInfoProps {
   setForwardToToggle: (value: boolean) => void,
 }
 export interface UserFormButtonsProps {
-  handleClose: VoidFunction,
+  handleClose: (reopen: boolean | void) => void,
   loading: LoadingState,
   updateLoading: (payload: any) => void
   profiles: TritonProfile[],
   offices: Map<string, Office>,
   worker: Worker | null,
-  forwardToToggle: boolean,
+  forwardToToggle: boolean
 }
 
 export enum ExtensionSearchStatuses {

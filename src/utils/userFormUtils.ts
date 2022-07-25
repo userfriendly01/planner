@@ -39,8 +39,16 @@ export const isFormValid = (form: UserFormState, worker: Worker, forwardToToggle
   && isExtensionValid(form)
   && (form.didUser === true ? form.directDialNum.valid && form.alternateDid.valid : true)
   && isInactiveForwardToValid(form, forwardToToggle)
-  && isDidDifferentValid(form, worker, forwardToToggle);
+  && isDidDifferentValid(form, worker, forwardToToggle)
+  && isCalabrioUserValid(form);
 
+export const isCalabrioUserValid =  (form: UserFormState): boolean => {
+  if(form.formMode === formModes.UPDATE){
+    return true;
+  } else {
+    return form.calabrioUser.team && form.calabrioUser.roles.length > 0;
+  }
+};
 export const isManagerValid = (form: UserFormState): boolean => form.manager.value !== "";
 
 export const isNNumberValid = (form: UserFormState): boolean => form.nNumberFetchedUser ? true : false;
@@ -75,14 +83,13 @@ export const removeProfileZeroIfAdminNotInProfileZero = (adminState: AppState, p
       adminGroup = true;
     }
   });
-  
+
   if(!adminGroup){
     const filteredProfiles = profiles.filter(e => e.profile_id !== 0);
     return filteredProfiles;
   }
   return profiles;
-
-}
+};
 
 export const getTargetProfile = (profiles: TritonProfile[], newProfileValue: string): TritonProfile => profiles.find((profile: TritonProfile) => profile.profile_id === +newProfileValue);
 

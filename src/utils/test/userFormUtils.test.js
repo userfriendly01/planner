@@ -92,6 +92,10 @@ const profileListWithZero = [
   }
 ];
 const validFormOptions = {
+  calabrioUser: {
+    team: 214,
+    roles: ["imarole"]
+  },
   alternateDid: {
     e164: "+18001234567",
     masked: "(800)123-4567",
@@ -211,6 +215,7 @@ const mockWorkers = [
 ];
 const validFormState = {
   formMode: formModes.INSERT,
+  calabrioUser: validFormOptions.calabrioUser,
   defaultSkills: [],
   defaultSkillsUpdated: false,
   didUser: false,

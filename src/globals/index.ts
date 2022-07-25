@@ -16,6 +16,7 @@ export const extensionMatcher = /^\d{4,5}$/;
 export const workersPerPage = 15;
 
 export const modalOverlayStatuses: ModalOverlayStatuses = {
+  PARTIAL_FAIL: "partial fail",
   FAIL: "fail",
   SAVING: "saving",
   SUCCESS: "success"
@@ -24,12 +25,6 @@ export const modalOverlayStatuses: ModalOverlayStatuses = {
 export const formModes: FormModes = {
   INSERT: "insert",
   UPDATE: "update"
-};
-
-export const calabrioGroupLevels: any = {
-  TENANT: "TENANT",
-  GROUP: "GROUP",
-  TEAM: "TEAM"
 };
 
 export const timeouts = {
@@ -55,6 +50,7 @@ export const apiPaths = {
   DIRECTORY_ENTRY: (directoryId: string | number): string => `${CONTACT_MANAGER_BASE_URI}/directory/${directoryId}`,
   EMPLOYEE_LOOKUP: (nNumber: string): string => `${SERVICE_BASE_URI}/employeelookup/${nNumber}`,
   FLASH_MESSAGE: `${SERVICE_BASE_URI}/flashmessage`,
+  GET_CALABRIO_AGENTS: `${SERVICE_BASE_URI}/calabrio-get-agents`,
   GET_CALABRIO_ORG: `${SERVICE_BASE_URI}/calabrio-get-org`,
   GET_CALABRIO_ROLES: `${SERVICE_BASE_URI}/calabrio-get-roles`,
   GET_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-get-user/${personId}`,
@@ -65,5 +61,6 @@ export const apiPaths = {
   MANAGERS: `${CONTACT_MANAGER_BASE_URI}/managers`,
   OFFICES: `${CONTACT_MANAGER_BASE_URI}/offices`,
   RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
+  UPDATE_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-update-user/${personId}`,
   UPDATE_WORKER: (workerSid: string): string => `${SERVICE_BASE_URI}/updateworker/${workerSid}`
 };

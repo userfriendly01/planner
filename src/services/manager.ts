@@ -1,15 +1,12 @@
 import { apiPaths }from "globals";
 import { myAxios } from "utils";
-
-
-export interface DbManagerRequest {
+export interface DbAddManagerRequest {
   manager_first_nme: string;
   manager_last_nme: string;
   manager_n_num: string;
   profile_id: number;
   calabrio_team_ids: string
 }
-
 export interface DbUpdateManagerRequest {
   manager_first_nme?: string;
   manager_last_nme?: string;
@@ -17,7 +14,6 @@ export interface DbUpdateManagerRequest {
   profile_id: number;
   calabrio_team_ids: string
 }
-
 export interface DbManagerResponse {
   manager_first_nme: string;
   manager_last_nme: string;
@@ -27,7 +23,7 @@ export interface DbManagerResponse {
   calabrio_team_ids: string
 }
 
-export const addManager = (manager: DbManagerRequest): Promise<any> =>
+export const addManager = (manager: DbAddManagerRequest): Promise<any> =>
   myAxios.post(apiPaths.MANAGERS, manager).then(response => response.data);
 
 export const editManager = (managerId: string | number, manager: DbUpdateManagerRequest): Promise<any> =>
@@ -37,5 +33,5 @@ export const editManager = (managerId: string | number, manager: DbUpdateManager
 export const deleteManager = (managerId: string | number): Promise<any> =>
   myAxios.put(`${apiPaths.MANAGERS}/${managerId}`).then(response => response.data);
 
-export const getManagers = (): Promise<DbManagerRequest[]> =>
+export const getManagers = (): Promise<DbManagerResponse[]> =>
   myAxios.get(apiPaths.MANAGERS).then(response => response.data);

@@ -23,6 +23,14 @@ describe("<ModalOverlay />", () => {
       expect(rendered.getByText(successMessage)).toBeInTheDocument();
     });
   });
+  describe("status = 'partial fail'", () => {
+    const failMessage = "2nd place winner";
+    test("should display partial fail message", () => {
+      const rendered = render(<ModalOverlay status={modalOverlayStatuses.PARTIAL_FAIL} message={failMessage} />);
+      expect(rendered).toBeTruthy();
+      expect(rendered.getByText(failMessage)).toBeInTheDocument();
+    });
+  });
   describe("status = 'fail'", () => {
     const failMessage = "oh nooooo";
     test("should display fail message", () => {
