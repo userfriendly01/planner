@@ -73,7 +73,6 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
 
   const handleConflictCheck = async () => {
     try {
-      console.warn("Start");
       const res: any = await getCalabrioAgents();
       const agents = res.data;
       console.warn("Calabrio Agents", res.data);
@@ -109,7 +108,6 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
         }
       }
     } catch (error) {
-      console.warn("End", setMergeUsersModalState);
       console.error("Error validating conflicting users for Calabrio", error);
       setMergeUsersModalState({
         open: false,
