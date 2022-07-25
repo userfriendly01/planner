@@ -36,8 +36,8 @@ export const formatCalabrioGroups = (groupsArray: CalabrioGroup[]): CalabrioGrou
 export const checkConflictingUsers = async (user: any, users: CalabrioUser[], roles: any[]): Promise<void> => {
   try {
     const email = typeof user.email === "string" ? user.email.toLowerCase() : user.email;
-    const acdId = user.acdId;
     const adLogin = typeof user.adLogin === "string" ? user.adLogin.toLowerCase() : user.adLogin;
+    const acdId = user.acdId;
     const agentSyncRole = roles.find(r => r.name.toLowerCase().includes("agent-sync"));
     const defaultAgentSyncRole = {
       id: 3,
@@ -51,8 +51,6 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
 
       const dupUserAdLogin = typeof u.adLogin === "string" ? u.adLogin.toLowerCase() : u.adLogin;
       const dupUserEmail = typeof u.email === "string" ? u.email.toLowerCase() : u.email;
-      console.warn(`New User AdLogin: ${adLogin} - Dup User Ad Login ${dupUserAdLogin}`);
-      console.warn(`New User Email: ${email} - Dup User Email ${dupUserEmail}`);
 
       if (dupUserAdLogin === adLogin) {
         const res: CalabrioUser = await getCalabrioUser(u.id);
@@ -89,13 +87,17 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
 
 export const checkDuplicateRecords = async (user: CalabrioUser, users: CalabrioUser[]): Promise<ConflictingUserResult> => {
   if(user){
-    const email = user.email;
-    const adLogin = user.adLogin;
-    const acdId = user.acdId;
+    const email = typeof user.email === "string" ? user.email.toLowerCase() : user.email;
+    const adLogin = typeof user.adLogin === "string" ? user.adLogin.toLowerCase() : user.adLogin;
+    const acdId = typeof user.acdId === "string" ? user.acdId.toLowerCase() : user.acdId;
 
     await Promise.all(users.map(async u => {
 
-      if(u.email?.includes(email) && u.acdId !== acdId ){
+      const dupUserAdLogin = typeof u.adLogin === "string" ? u.adLogin.toLowerCase() : u.adLogin;
+      const dupUserEmail = typeof u.email === "string" ? u.email.toLowerCase() : u.email;
+      const dupUserAcdId = typeof u.acdId === "string" ? u.acdId.toLowerCase() : u.acdId;
+
+      if(dupUserEmail?.includes(email) && dupUserAcdId !== acdId ){
         return Promise.reject({
           conflictFound: true,
           duplicateUser: u,
@@ -104,7 +106,7 @@ export const checkDuplicateRecords = async (user: CalabrioUser, users: CalabrioU
         });
       }
 
-      if (u.adLogin?.includes(adLogin) && u.acdId !== acdId) {
+      if (dupUserAdLogin?.includes(adLogin) && dupUserAcdId !== acdId) {
         return Promise.reject({
           conflictFound: true,
           duplicateUser: u,
