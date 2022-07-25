@@ -60,7 +60,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
   const setForm = useFormDispatch();
   const [ mergeUsersModalState, setMergeUsersModalState ] = React.useState({
     open: false,
-    primaryUser: null
+    permanentUser: null
   });
 
   const doCreateUser = () => {
@@ -164,7 +164,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           createCalabrioUser(calabrioAttributes).then(() => {
             setMergeUsersModalState({
               open: true,
-              primaryUser: calabrioAttributes
+              permanentUser: calabrioAttributes
             });
           });
         }).catch(err => {

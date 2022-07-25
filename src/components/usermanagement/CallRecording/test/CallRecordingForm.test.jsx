@@ -189,7 +189,7 @@ describe("CallRecordingForm", () => {
         useFormState.mockReturnValue(formState);
         getCalabrioUser.mockResolvedValue(user);
       });
-      test("Form is rendered as expected", async () => {
+      test.only("Form is rendered as expected", async () => {
         render(<CallRecordingForm/>);
         expect(Dropdown.mock.calls.length).toBe(2);
         expect(CallRecordingScope.mock.calls.length).toBe(1);

@@ -11,10 +11,7 @@ import {
   StyledTextField,
   UserWrapper
 } from "./CallRecording.Styles";
-import {
-  useAdminState,
-  useAdminDispatch
-} from "context";
+import { useAdminDispatch } from "context";
 import {
   modalOverlayStatuses,
   timeouts
@@ -46,7 +43,7 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
 
   const dispatch = useAdminDispatch();
   const [ conflictState, setConflictState ] = React.useState(null);
-  console.log("PRIMARY USER IN MERGE USERS MODAL", mergeUsersModalState.primaryUser);
+  console.log("PRIMARY USER IN MERGE USERS MODAL", mergeUsersModalState.permanentUser);
 
   React.useEffect(() => {
     const runConflictCheck = async () => {
@@ -57,13 +54,6 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
       runConflictCheck();
     }
   }, []);
-
-  const handleCloseMergeUserModal = () => {
-    setMergeUsersModalState({
-      open: false,
-      primaryUser: null
-    });
-  };
 
   const getDuplicateSearchBy = () => {
     if(conflictState){
@@ -83,16 +73,20 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
 
   const handleConflictCheck = async () => {
     try {
+      console.warn("Start");
       const res: any = await getCalabrioAgents();
       const agents = res.data;
-      console.log("Calabrio Agents", res.data);
+      console.warn("Calabrio Agents", res.data);
       dispatch({
         type: "loadCalabrioAgents",
         payload: agents
       });
       try {
-        await checkDuplicateRecords(mergeUsersModalState.primaryUser, agents);
-        handleCloseMergeUserModal();
+        await checkDuplicateRecords(mergeUsersModalState.permanentUser, agents);
+        setMergeUsersModalState({
+          open: false,
+          permanentUser: null
+        });
         updateLoading({
           ...loading,
           overlayMessage: "Successfully added new user",
@@ -115,8 +109,12 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
         }
       }
     } catch (error) {
+      console.warn("End", setMergeUsersModalState);
       console.error("Error validating conflicting users for Calabrio", error);
-      handleCloseMergeUserModal();
+      setMergeUsersModalState({
+        open: false,
+        permanentUser: null
+      });
       updateLoading({
         ...loading,
         overlayMessage: "Failed to check for conflicting Calabrio users.",
@@ -135,7 +133,7 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
 
   const handleCloseMergeUsersModal = () => {
     setMergeUsersModalState({
-      primaryUser: null,
+      permanentUser: null,
       open: false
     });
     updateLoading({
@@ -176,7 +174,7 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
               disabled={true}
               label="Duplicate User"
               variant="outlined"
-              value={mergeUsersModalState.primaryUser?.acdId}
+              value={mergeUsersModalState.permanentUser?.acdId}
               margin="normal"
             />
           </UserWrapper>
@@ -192,7 +190,7 @@ const MergeUsersModal = (props: MergeUsersModalProps) => {
               disabled={true}
               label="Duplicate Search By"
               variant="outlined"
-              value={`${mergeUsersModalState.primaryUser?.firstName} ${mergeUsersModalState.primaryUser?.lastName}`}
+              value={`${mergeUsersModalState.permanentUser?.firstName} ${mergeUsersModalState.permanentUser?.lastName}`}
               margin="normal"
             />
           </UserWrapper>

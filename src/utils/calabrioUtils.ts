@@ -39,9 +39,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[]): P
     const acdId = user.acdId;
     const adLogin = user.adLogin;
 
-    // console.warn("new user", user);
     await Promise.all(users.map(async u => {
-      // console.warn("user in list", u);
       if(u.acdId === acdId){
         throw new Error("Calabrio Record with this ACD Id already exists. New Record should not be added.");
       }
@@ -49,7 +47,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[]): P
       if (u.adLogin === adLogin) {
         const res: CalabrioUser = await getCalabrioUser(u.id);
         const user = res.data;
-        // console.warn("Conflicting User Found: ", user);
+        console.warn("Conflicting User Found: ", user);
         user.adLogin = `xx-${user.id}-${user.adLogin}`;
         user.roles = [];
         user.scope = {
@@ -59,9 +57,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[]): P
         };
         await updateCalabrioUser(user.id, user);
       }
-      // console.warn(`u.email ${u.email} - email ${email}`, u);
       if(u.email === email){
-        console.warn("you have to get in here", getCalabrioUser);
         const res: CalabrioUser = await getCalabrioUser(u.id);
         const user = res.data;
         console.warn("Conflicting User Found: ", user);
@@ -76,18 +72,17 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[]): P
       }
     }));
   } catch(err) {
-    console.warn("you dont get here right?", err);
     console.error("Error thrown trying to fetch and validate Conflicting Users", err);
   }
   return;
 };
 
 export const checkDuplicateRecords = async (user: CalabrioUser, users: CalabrioUser[]): Promise<ConflictingUserResult> => {
-  const email = user.email;
-  const adLogin = user.adLogin;
-  const acdId = user.acdId;
-
   if(user){
+    const email = user.email;
+    const adLogin = user.adLogin;
+    const acdId = user.acdId;
+
     await Promise.all(users.map(async u => {
 
       if(u.email?.includes(email) && u.acdId !== acdId ){
