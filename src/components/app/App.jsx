@@ -20,6 +20,8 @@ import React, {
 import {
   getManagers as getManagersServiceCall,
   getOffices as getOfficesServiceCall,
+  getCalabrioAgents as getCalabrioAgentsServiceCall,
+  getCalabrioRoles as getCalabrioRolesServiceCall,
   getCalabrioOrg as getCalabrioOrgServiceCall
 } from "services";
 import styled from "styled-components";
@@ -129,6 +131,21 @@ const getOffices = async dispatch => {
   }
 };
 
+const getCalabrioAgents = async dispatch => {
+  try {
+    const agents = await getCalabrioAgentsServiceCall();
+    console.log("Calabrio Agents", agents.data);
+    dispatch({
+      type: "loadCalabrioAgents",
+      payload: agents.data
+    });
+  } catch (error) {
+    console.error("Failed to fetch calabrio org from service");
+    //We're not throwing an error here so that we can still load Triton Admin and use its other features if this fails
+    //Additionally - there can be local issues we have to work out when trying to call this 
+  }
+};
+
 const getCalabrioOrg = async dispatch => {
   try {
     const org = await getCalabrioOrgServiceCall();
@@ -139,6 +156,21 @@ const getCalabrioOrg = async dispatch => {
     });
   } catch (error) {
     console.error("Failed to fetch calabrio org from service");
+    //We're not throwing an error here so that we can still load Triton Admin and use its other features if this fails
+    //Additionally - there can be local issues we have to work out when trying to call this 
+  }
+};
+
+const getCalabrioRoles = async dispatch => {
+  try {
+    const roles = await getCalabrioRolesServiceCall();
+    console.log("Calabrio Roles", roles);
+    dispatch({
+      type: "loadCalabrioRoles",
+      payload: roles.data
+    });
+  } catch (error) {
+    console.error("Failed to fetch calabrio Roles from service");
     //We're not throwing an error here so that we can still load Triton Admin and use its other features if this fails
     //Additionally - there can be local issues we have to work out when trying to call this 
   }
@@ -208,7 +240,9 @@ const App = () => {
       getProfiles(dispatch),
       getSkills(dispatch),
       getWorkers(dispatch),
-      getCalabrioOrg(dispatch)
+      getCalabrioAgents(dispatch),
+      getCalabrioOrg(dispatch),
+      getCalabrioRoles(dispatch)
     ])
       .then(() => {
         setLoadResult(success);

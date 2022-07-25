@@ -1,38 +1,111 @@
-import { calabrioGroupLevels } from "globals";
-
-export interface CalabrioUser {
-    [key: string]: any,
-    personId: number,
-    firstName: string,
-    lastName: string,
-    email: string,
-  }
-export interface CalabrioGroup {
-    groupId: number,
-    name: string,
-    displayId: null | number,
-    parentGroupId: number,
-    parentGroupName: string,
-    groupLevel: string,
-    agents?: CalabrioUser[]
-  }
+import {
+  calabrioGroupLevels,
+  CalabrioUser,
+  CalabrioGroup,
+  ConflictingUserResult,
+  searchByOptions
+} from "../components/usermanagement/CallRecording/CallRecording.Interfaces";
+import {
+  getCalabrioUser,
+  updateCalabrioUser
+} from "services";
 
 export const formatCalabrioTeams = (groupsArray: CalabrioGroup[]): CalabrioGroup[] => {
-  return groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.TEAM);
+  const teams = groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.TEAM);
+  return teams.map(team => {
+    delete team.agents;
+    return team;
+  });
 };
 
 export const formatCalabrioGroups = (groupsArray: CalabrioGroup[]): CalabrioGroup[] => {
-  return groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.GROUP);
+  const groups = groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.GROUP);
+  return groups.map(group => {
+    delete group.agents;
+    return group;
+  });
 };
 
-export const formatCalabrioUsers = (groupsArray: CalabrioGroup[]): any[] => {
-  const users: any[] = [];
-  groupsArray.forEach((group: CalabrioGroup) => {
-    if(group.agents){
-      group.agents.forEach(agent => {
-        users.push(agent);
-      });
-    }
-  });
-  return users;
+/*
+  Used when creating a new Calabrio User.
+  This method is used to identify existing Calabrio users that would prevent a new Calabrio User from being created.
+  If any records are found, they are updated so as to not pose a conflict anymore.
+  These checks are repeated after the Calabrio User is created so the merge users instructions can be provided to the admin.
+  The duplicate fields that would prevent a Calabrio user from being created are email, acdId, or adLogin
+*/
+export const checkConflictingUsers = async (user: any, users: CalabrioUser[]): Promise<void> => {
+  try {
+    const email = user.email;
+    const acdId = user.acdId;
+    const adLogin = user.adLogin;
+
+    await Promise.all(users.map(async u => {
+      if(u.acdId === acdId){
+        throw new Error("Calabrio Record with this ACD Id already exists. New Record should not be added.");
+      }
+
+      if (u.adLogin === adLogin) {
+        const res: CalabrioUser = await getCalabrioUser(u.id);
+        const user = res.data;
+        console.warn("Conflicting User Found: ", user);
+        user.adLogin = `xx-${user.id}-${user.adLogin}`;
+        user.roles = [];
+        user.scope = {
+          groups: [],
+          teams: [],
+          tenant: null
+        };
+        await updateCalabrioUser(user.id, user);
+      }
+      if(u.email === email){
+        const res: CalabrioUser = await getCalabrioUser(u.id);
+        const user = res.data;
+        console.warn("Conflicting User Found: ", user);
+        user.email = `xx-${user.id}-${user.email}`;
+        user.roles = [];
+        user.scope = {
+          groups: [],
+          teams: [],
+          tenant: null
+        };
+        await updateCalabrioUser(user.id, user);
+      }
+    }));
+  } catch(err) {
+    console.error("Error thrown trying to fetch and validate Conflicting Users", err);
+  }
+  return;
+};
+
+export const checkDuplicateRecords = async (user: CalabrioUser, users: CalabrioUser[]): Promise<ConflictingUserResult> => {
+  if(user){
+    const email = user.email;
+    const adLogin = user.adLogin;
+    const acdId = user.acdId;
+
+    await Promise.all(users.map(async u => {
+
+      if(u.email?.includes(email) && u.acdId !== acdId ){
+        return Promise.reject({
+          conflictFound: true,
+          duplicateUser: u,
+          scenario: 3,
+          searchBy: searchByOptions.NAME
+        });
+      }
+
+      if (u.adLogin?.includes(adLogin) && u.acdId !== acdId) {
+        return Promise.reject({
+          conflictFound: true,
+          duplicateUser: u,
+          scenario: 4,
+          searchBy: u.firstName && u.lastName ? searchByOptions.NAME : searchByOptions.N_NUMBER
+        });
+      }
+    }));
+  }
+
+  return {
+    conflictFound: false
+  };
 };

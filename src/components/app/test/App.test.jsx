@@ -15,7 +15,9 @@ import {
 } from "globals";
 import React from "react";
 import {
+  getCalabrioAgents,
   getCalabrioOrg,
+  getCalabrioRoles,
   getManagers,
   getOffices
 } from "services";
@@ -178,6 +180,8 @@ jest.mock("components", () => ({
 jest.mock("services", () => ({
   getManagers: jest.fn(),
   getOffices: jest.fn(),
+  getCalabrioAgents: jest.fn(),
+  getCalabrioRoles: jest.fn(),
   getCalabrioOrg: jest.fn()
 }));
 
@@ -203,7 +207,9 @@ describe("<App />", () => {
       axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
       getManagers.mockResolvedValue(dbManagers);
       getOffices.mockResolvedValue(dbOffices);
+      getCalabrioAgents.mockResolvedValue({ data: []});
       getCalabrioOrg.mockResolvedValue({ data: []});
+      getCalabrioRoles.mockResolvedValue({ data: []});
     });
     describe("initial state, page is loading", () => {
       test("should render LoadingMessage", () => {
@@ -220,7 +226,7 @@ describe("<App />", () => {
             const rendered = render(<App />);
             await waitFor(() => rendered.getByTestId("app-wrapper"));
             const actions = mockStore.getActions();
-            expect(actions.length).toBe(7);
+            expect(actions.length).toBe(9);
             expect(actions).toEqual([
               {
                 type: "loadManagers",
@@ -231,7 +237,15 @@ describe("<App />", () => {
                 payload: formatOfficesResponse(dbOffices)
               },
               {
+                type: "loadCalabrioAgents",
+                payload: []
+              },
+              {
                 type: "loadCalabrioOrg",
+                payload: []
+              },
+              {
+                type: "loadCalabrioRoles",
                 payload: []
               },
               {
@@ -368,7 +382,7 @@ describe("<App />", () => {
         waitFor(() => rendered.getByTestId("app-wrapper"))
           .then(() => {
             const actions = mockStore.getActions();
-            expect(actions.length).toBe(7);
+            expect(actions.length).toBe(9);
             expect(actions).toEqual([
               {
                 type: "loadManagers",
@@ -379,7 +393,15 @@ describe("<App />", () => {
                 payload: formatOfficesResponse(dbOffices)
               },
               {
+                type: "loadCalabrioAgents",
+                payload: []
+              },
+              {
                 type: "loadCalabrioOrg",
+                payload: []
+              },
+              {
+                type: "loadCalabrioRoles",
                 payload: []
               },
               {
@@ -506,6 +528,71 @@ describe("<App />", () => {
       });
     });
   });
+  describe("Calabrio Agents", () => {
+    describe("Calabrio org service call returned an error", () => {
+      beforeEach(() => {
+        axiosMock.onGet(authEndpoint).reply(200, auth);
+        axiosMock.onGet(profilesEndpoint).reply(200, profiles);
+        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
+        getManagers.mockResolvedValue(dbManagers);
+        getOffices.mockResolvedValue(dbOffices);
+        getCalabrioAgents.mockRejectedValue("aww");
+        getCalabrioOrg.mockResolvedValue({ data: []});
+        getCalabrioRoles.mockResolvedValue({ data: []});
+      });
+      test("should still load triton admin", async done => {
+        const rendered = render(<App />);
+        await waitFor(() => rendered.getByTestId("app-wrapper"));
+        const actions = mockStore.getActions();
+        expect(actions.length).toBe(8);
+        expect(actions).toEqual([
+          {
+            type: "loadManagers",
+            payload: formatManagersResponse(dbManagers)
+          },
+          {
+            type: "loadOffices",
+            payload: formatOfficesResponse(dbOffices)
+          },
+          {
+            type: "loadCalabrioOrg",
+            payload: []
+          },
+          {
+            type: "loadCalabrioRoles",
+            payload: []
+          },
+          {
+            type: "loadUserData",
+            payload: { pingIdentity: auth }
+          },
+          {
+            type: "loadProfiles",
+            payload: profiles
+          },
+          {
+            type: "loadSkills",
+            payload: formatTaskRouterSkills(taskrouterSkills)
+          },
+          {
+            type: "addWorkers",
+            payload: filteredWorkers
+          }
+        ]);
+        expectMockedComponent(rendered, { Header });
+        expectMockedComponent(rendered, { NavTabs });
+        expectMockedComponent(rendered, { Modal });
+        expectOnlyPassedProps(Modal, {
+          disableBackdropClick: true,
+          open: false
+        });
+        expectMockedComponent(rendered, { CircularProgress }, 0);
+        expect(rendered.container).not.toHaveTextContent("Loading...");
+        done();
+      });
+    });
+  });
   describe("Calabrio Org", () => {
     describe("Calabrio org service call returned an error", () => {
       beforeEach(() => {
@@ -516,12 +603,14 @@ describe("<App />", () => {
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockResolvedValue(dbOffices);
         getCalabrioOrg.mockRejectedValue("aww");
+        getCalabrioAgents.mockResolvedValue({ data: []});
+        getCalabrioRoles.mockResolvedValue({ data: []});
       });
       test("should still load triton admin", async done => {
         const rendered = render(<App />);
         await waitFor(() => rendered.getByTestId("app-wrapper"));
         const actions = mockStore.getActions();
-        expect(actions.length).toBe(6);
+        expect(actions.length).toBe(8);
         expect(actions).toEqual([
           {
             type: "loadManagers",
@@ -530,6 +619,79 @@ describe("<App />", () => {
           {
             type: "loadOffices",
             payload: formatOfficesResponse(dbOffices)
+          },
+          {
+            type: "loadCalabrioAgents",
+            payload: []
+          },
+          {
+            type: "loadCalabrioRoles",
+            payload: []
+          },
+          {
+            type: "loadUserData",
+            payload: { pingIdentity: auth }
+          },
+          {
+            type: "loadProfiles",
+            payload: profiles
+          },
+          {
+            type: "loadSkills",
+            payload: formatTaskRouterSkills(taskrouterSkills)
+          },
+          {
+            type: "addWorkers",
+            payload: filteredWorkers
+          }
+        ]);
+        expectMockedComponent(rendered, { Header });
+        expectMockedComponent(rendered, { NavTabs });
+        expectMockedComponent(rendered, { Modal });
+        expectOnlyPassedProps(Modal, {
+          disableBackdropClick: true,
+          open: false
+        });
+        expectMockedComponent(rendered, { CircularProgress }, 0);
+        expect(rendered.container).not.toHaveTextContent("Loading...");
+        done();
+      });
+    });
+  });
+  describe("Calabrio Roles", () => {
+    describe("Calabrio roles service call returned an error", () => {
+      beforeEach(() => {
+        axiosMock.onGet(authEndpoint).reply(200, auth);
+        axiosMock.onGet(profilesEndpoint).reply(200, profiles);
+        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
+        getManagers.mockResolvedValue(dbManagers);
+        getOffices.mockResolvedValue(dbOffices);
+        getCalabrioAgents.mockResolvedValue({ data: []});
+        getCalabrioOrg.mockResolvedValue({ data: []});
+        getCalabrioRoles.mockRejectedValue("aww");
+      });
+      test("should still load triton admin", async done => {
+        const rendered = render(<App />);
+        await waitFor(() => rendered.getByTestId("app-wrapper"));
+        const actions = mockStore.getActions();
+        expect(actions.length).toBe(8);
+        expect(actions).toEqual([
+          {
+            type: "loadManagers",
+            payload: formatManagersResponse(dbManagers)
+          },
+          {
+            type: "loadOffices",
+            payload: formatOfficesResponse(dbOffices)
+          },
+          {
+            type: "loadCalabrioAgents",
+            payload: []
+          },
+          {
+            type: "loadCalabrioOrg",
+            payload: []
           },
           {
             type: "loadUserData",

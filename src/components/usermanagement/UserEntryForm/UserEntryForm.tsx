@@ -15,8 +15,7 @@ import {
 import {
   useFormDispatch,
   useFormState,
-  useAdminState,
-  userFormActions
+  useAdminState
 } from "context";
 import { formModes } from "globals";
 import React, { useState } from "react";
@@ -31,7 +30,6 @@ const UserEntryForm = (props: UserEntryFormProps) => {
   } = props;
 
   const form = useFormState();
-  const setForm = useFormDispatch();
 
   const {
     officeContext: {
@@ -46,19 +44,13 @@ const UserEntryForm = (props: UserEntryFormProps) => {
   } = useAdminState();
 
   const [forwardToToggle, setForwardToToggle] = useState(false);
+
   const [loading, updateLoading] = useState<LoadingState>({
     lookupUser: false,
     overlayMessage: "",
     saveStatus: null,
     saveUser: false
   });
-
-  const doHandleClose = () => {
-    handleClose();
-    setForm({
-      type: userFormActions.RESET_FORM
-    });
-  };
 
   return (
     <ModalContainer>
@@ -80,6 +72,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
           : null
       }
       <UserFormAccordion
+        form={form}
         skills={skills}
         worker={worker}
         workers={workers}
@@ -89,7 +82,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
         setForwardToToggle={setForwardToToggle}
       />
       <UserFormButtons
-        handleClose={doHandleClose}
+        handleClose={handleClose}
         loading={loading}
         updateLoading={updateLoading}
         profiles={profiles}

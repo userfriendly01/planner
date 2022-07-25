@@ -29,8 +29,6 @@ const DidFormInfo = (props: DidFormInfoProps) => {
   const form = useFormState();
   const setForm = useFormDispatch();
 
-  //Not currently used - Will save effort when we add edit to SIP users in this file
-  //Same with the forwardTo component and Edit Icon
   const editPenClick = (): void => {
     if (forwardToToggle) {
       // reset did fields to initial form
