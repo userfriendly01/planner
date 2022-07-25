@@ -15,10 +15,12 @@ import { getCalabrioUser } from "services";
 
 const CallRecordingForm = () => {
   const state = useAdminState();
-  const groups = state.calabrioContext.groups;
-  const teams = state.calabrioContext.teams;
-  const roles = state.calabrioContext.roles;
-  const users = state.calabrioContext.users;
+  const {
+    groups,
+    teams,
+    roles,
+    users
+  } = state.calabrioContext;
 
   const form = useFormState();
   const setForm = useFormDispatch();
