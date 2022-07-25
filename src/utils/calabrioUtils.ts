@@ -27,22 +27,22 @@ export const formatCalabrioGroups = (groupsArray: CalabrioGroup[]): CalabrioGrou
 };
 
 /*
-  Used when creating a new Calabrio User.
-  This method is used to identify existing Calabrio users that would prevent a new Calabrio User from being created.
-  If any records are found, they are updated so as to not pose a conflict anymore.
-  These checks are repeated after the Calabrio User is created so the merge users instructions can be provided to the admin.
-  The duplicate fields that would prevent a Calabrio user from being created are email, acdId, or adLogin
+  To understand this method, refer to this wiki: https://forge.lmig.com/wiki/display/CICCT/Calabrio+Form
 */
 export const checkConflictingUsers = async (user: any, users: CalabrioUser[], roles: any[]): Promise<void> => {
   try {
+    const {
+      acdId,
+      firstName,
+      lastName,
+      groupId
+    } = user;
     const email = typeof user.email === "string" ? user.email.toLowerCase() : user.email;
     const adLogin = typeof user.adLogin === "string" ? user.adLogin.toLowerCase() : user.adLogin;
-    const acdId = user.acdId;
-    const agentSyncRole = roles.find(r => r.name.toLowerCase().includes("agent-sync"));
-    const defaultAgentSyncRole = {
+    const agentSyncRole = roles.find(r => r.name.toLowerCase().includes("agent-sync") || {
       id: 3,
       name: "Agent-Sync Only;"
-    };
+    });
 
     console.warn("agentSyncRole", agentSyncRole);
 
@@ -53,35 +53,30 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
 
       const dupUserAdLogin = typeof u.adLogin === "string" ? u.adLogin.toLowerCase() : u.adLogin;
       const dupUserEmail = typeof u.email === "string" ? u.email.toLowerCase() : u.email;
+
       console.warn("Conflicting User Object: ", u);
       console.warn(`New User AdLogin: ${adLogin} - Conflicting User AdLogin ${dupUserAdLogin}`);
       console.warn(`New User email: ${email} - Conflicting User email ${dupUserEmail}`);
 
-      if (dupUserAdLogin === adLogin) {
+      if (dupUserAdLogin === adLogin || dupUserEmail === email) {
         const res: CalabrioUser = await getCalabrioUser(u.id);
         const user = res.data;
         console.warn("Conflicting User Found: ", user);
-        user.adLogin = `xx-${user.id}-${user.adLogin}`;
-        user.roles = agentSyncRole ? [agentSyncRole] : [defaultAgentSyncRole];
-        user.scope = {
-          groups: [],
-          teams: [],
-          tenant: null
+        const updatedPayload: any = {
+          firstName,
+          lastName,
+          groupId,
+          adLogin: `xx-${user.id}-${user.adLogin}`,
+          email: `xx-${user.id}-${user.email}`,
+          roles: [agentSyncRole],
+          scope: {
+            groups: [],
+            teams: [],
+            tenant: null
+          }
         };
-        await updateCalabrioUser(user.id, user);
-      }
-      if(dupUserEmail === email){
-        const res: CalabrioUser = await getCalabrioUser(u.id);
-        const user = res.data;
-        console.warn("Conflicting User Found: ", user);
-        user.email = `xx-${user.id}-${user.email}`;
-        user.roles = agentSyncRole ? [agentSyncRole] : [defaultAgentSyncRole];
-        user.scope = {
-          groups: [],
-          teams: [],
-          tenant: null
-        };
-        await updateCalabrioUser(user.id, user);
+
+        await updateCalabrioUser(user.id, updatedPayload);
       }
     }));
   } catch(err) {
