@@ -53,7 +53,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
 
       const dupUserAdLogin = typeof u.adLogin === "string" ? u.adLogin.toLowerCase() : u.adLogin;
       const dupUserEmail = typeof u.email === "string" ? u.email.toLowerCase() : u.email;
-
+      console.warn("Conflicting User Object: ", u);
       console.warn(`New User AdLogin: ${adLogin} - Conflicting User AdLogin ${dupUserAdLogin}`);
       console.warn(`New User email: ${email} - Conflicting User email ${dupUserEmail}`);
 
