@@ -5,13 +5,16 @@ import {
 } from "@lmig/lmds-react-accordion";
 import {
   BasicFormInfo,
+  CallRecordingForm,
   SkillsFormInfo
 } from "components";
 import { FormControlsContainer } from "./UserEntryForm.Styles";
 import { UserFormAccordianProps } from "./UserEntryForm.Interfaces";
+import { formModes } from "globals";
 
 const UserFormAccordion = (props: UserFormAccordianProps) => {
   const {
+    form,
     skills,
     worker,
     workers,
@@ -34,6 +37,11 @@ const UserFormAccordion = (props: UserFormAccordianProps) => {
             forwardToToggle={forwardToToggle}
             setForwardToToggle={setForwardToToggle}/>
         </AccordionTab>
+        {form.formMode === formModes.INSERT ?
+          <AccordionTab labelVisual="Call Recording">
+            <CallRecordingForm />
+          </AccordionTab> : null
+        }
         <AccordionTab labelVisual="Default Skills">
           <SkillsFormInfo />
         </AccordionTab>

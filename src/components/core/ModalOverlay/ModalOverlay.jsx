@@ -1,4 +1,7 @@
-import { CloseRounded } from "@material-ui/icons";
+import {
+  CloseRounded,
+  Warning
+} from "@material-ui/icons";
 import { ModalFetchingRing } from "components";
 import { modalOverlayStatuses } from "globals";
 import PropTypes from "prop-types";
@@ -100,11 +103,6 @@ const StyledCloseRounded = styled(CloseRounded)`
   }
 `;
 
-const TextWrapper = styled.div`
-  font-size: initial;
-  margin-top: 5%;
-  text-align: center;
-`;
 
 const ModalOverlay = props => {
   const {
@@ -112,6 +110,13 @@ const ModalOverlay = props => {
     handleClose,
     status
   } = props;
+
+  const TextWrapper = styled.div`
+  font-size: initial;
+  margin-top: 5%;
+  text-align: center;
+  color: ${status === modalOverlayStatuses.PARTIAL_FAIL ? "black" : "white"}
+`;
 
   const getIconAndBackground = status => {
     if (status === modalOverlayStatuses.SUCCESS) {
@@ -122,6 +127,11 @@ const ModalOverlay = props => {
             <Circle fill="none" stroke="#FFFFFF" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1"/>
             <Check fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
           </Icon>
+      };
+    } else if (status === modalOverlayStatuses.PARTIAL_FAIL) {
+      return {
+        background: "goldenrod",
+        icon: <Warning fontSize="large"/>
       };
     } else if (status === modalOverlayStatuses.FAIL) {
       return {

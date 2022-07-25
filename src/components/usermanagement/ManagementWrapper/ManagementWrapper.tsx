@@ -105,12 +105,24 @@ export const ManagementWrapper: React.FC = () => {
     searchBy
   });
 
+  const handleClose = (reopen: boolean) => {
+    if(reopen){
+      setUserModalState(initialUserModalState);
+      setUserModalState({
+        open: true,
+        worker: null
+      });
+    } else {
+      setUserModalState(initialUserModalState);
+    }
+  };
+
   return (
     <FormStateProvider>
       <ManagementContainer>
         <Modal disableBackdropClick={true} open={userModalState.open}>
           <UserEntryForm
-            handleClose={() => setUserModalState(initialUserModalState) }
+            handleClose={handleClose}
             worker={userModalState.worker}
             skills={skillsFromContext}
             workers={workersFromContext.sort(sortWorkersByFullName)}

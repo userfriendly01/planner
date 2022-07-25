@@ -232,25 +232,64 @@ describe("reducer", () => {
       };
       const expectedResults = {
         teams: [{
-          groupLevel: "TEAM",
-          agents: [
-            {
-              firstName: "Faith",
-              lastName: "Cuneo"
-            }
-          ]
+          groupLevel: "TEAM"
         }],
         groups: [{
           groupLevel: "GROUP"
         }],
         tenant: {},
-        users: [{
-          firstName: "Faith",
-          lastName: "Cuneo"
-        }]
+        users: [],
+        roles: []
       };
       const result = reducer(initialState, action);
       expect(result.calabrioContext).toEqual(expectedResults);
+    });
+  });
+  describe("loadCalabrioAgents", () => {
+    test("should initialize a map from the offices map sent in", () => {
+      const payload = [
+        {
+          firstName: "Faith",
+          lastName: "Cuneo"
+        },
+        {
+          firstName: "Joe",
+          lastName: "Ebert"
+        }
+      ];
+      const action = {
+        type: "loadCalabrioAgents",
+        payload
+      };
+      const expectedResults = {
+        teams: [],
+        groups: [],
+        tenant: {},
+        users: payload,
+        roles: []
+      };
+      const result = reducer(initialState, action);
+      expect(result.calabrioContext).toEqual(expectedResults);
+    });
+  });
+  describe("loadCalabrioRoles", () => {
+    test("should initialize a map from the offices map sent in", () => {
+      const payload = [
+        {
+          id: 1,
+          name: "Administrator"
+        },
+        {
+          id: 2,
+          name: "Agent"
+        }
+      ];
+      const action = {
+        type: "loadCalabrioRoles",
+        payload
+      };
+      const result = reducer(initialState, action);
+      expect(result.calabrioContext.roles).toEqual(payload);
     });
   });
   describe("loadProfiles", () => {

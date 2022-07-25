@@ -1,8 +1,8 @@
+import { CalabrioGroup } from "../components/usermanagement/CallRecording/CallRecording.Interfaces";
 export interface Action {
   type: string,
   [key: string]: any
 }
-
 export interface AppState {
   managerContext: {
     managers: Manager[]
@@ -25,9 +25,10 @@ export interface AppState {
   },
   calabrioContext: {
     tenant: any,
-    teams: any[],
-    groups: any[],
-    users: any[]
+    teams: CalabrioGroup[],
+    groups: CalabrioGroup[],
+    users: any[],
+    roles: any[]
   },
   resettingSkills: false
 }
@@ -45,6 +46,7 @@ export interface Manager {
 }
 
 export interface ModalOverlayStatuses {
+  PARTIAL_FAIL: string,
   FAIL: string,
   SAVING: string,
   SUCCESS: string
@@ -108,7 +110,6 @@ export interface Worker {
     profile_id?: string | number,
     roles?: string[],
     routing?: WorkerSkills,
-    sip?: boolean,
     unique_id?: string
   },
   alternateDid?: string,
