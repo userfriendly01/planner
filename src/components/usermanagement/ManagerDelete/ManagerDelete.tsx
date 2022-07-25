@@ -27,6 +27,7 @@ import React, { useState } from "react";
 import {
   addManager,
   editManager,
+  deleteManager,
   FetchUserResponse
 } from "services";
 import { sortProfilesByName } from "utils";
@@ -62,6 +63,7 @@ const ManagerDelete = (props: ManagerDeleteProps) => {
   const dispatch = useAdminDispatch();
 
 
+  // wsx My Notes
   // profiles = no
   // calabrioTeams = empty
   // manager = manager object
@@ -83,7 +85,6 @@ const ManagerDelete = (props: ManagerDeleteProps) => {
 
 
   const teamMembers = workers.filter(worker => worker.attributes.manager_n_number === manager.manager_n_number);
-  // console.log("wsx8 members", teamMembers);
   const memberNames = teamMembers.map(worker => `${worker.attributes.emp_first_name} ${worker.attributes.emp_last_name}`);
   const theTeam = memberNames.join(", ");
 
@@ -137,7 +138,8 @@ const ManagerDelete = (props: ManagerDeleteProps) => {
   // };
 
   const deleteManagerClicked = (): Promise<any> => {
-  //   setSaveStatus(loadingStates.loading);
+    setSaveStatus(loadingStates.loading);
+
   //   const profileId = profile ? profile.profile_id : null;
   //   const teams = JSON.stringify(selectedCalabrioTeams);
 

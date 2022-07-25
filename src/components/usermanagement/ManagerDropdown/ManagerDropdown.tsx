@@ -4,7 +4,10 @@ import {
   Wrapper
 } from "./ManagerDropdown.Styles";
 import { Modal } from "@material-ui/core";
-import { Edit } from "@material-ui/icons";
+import {
+  Edit,
+  Delete
+} from "@material-ui/icons";
 import {
   ManagerModal,
   ManagerDelete,
@@ -100,7 +103,7 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
               <Edit fontSize={"inherit"}/>
             </IconWrapper>
             <IconWrapper onClick={() => handleDeleteManager(option)} data-testid="delete-button">
-              <Edit fontSize={"inherit"}/>
+              <Delete fontSize={"inherit"}/>
             </IconWrapper>
           </Wrapper>
         }
