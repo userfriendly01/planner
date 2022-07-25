@@ -33,23 +33,29 @@ export const formatCalabrioGroups = (groupsArray: CalabrioGroup[]): CalabrioGrou
   These checks are repeated after the Calabrio User is created so the merge users instructions can be provided to the admin.
   The duplicate fields that would prevent a Calabrio user from being created are email, acdId, or adLogin
 */
-export const checkConflictingUsers = async (user: any, users: CalabrioUser[]): Promise<void> => {
+export const checkConflictingUsers = async (user: any, users: CalabrioUser[], roles: any[]): Promise<void> => {
   try {
-    const email = user.email;
+    const email = typeof user.email === "string" ? user.email.toLowerCase() : user.email;
     const acdId = user.acdId;
-    const adLogin = user.adLogin;
+    const adLogin = typeof user.adLogin === "string" ? user.adLogin.toLowerCase() : user.adLogin;
+    const agentSyncRole = roles.find(r => r.name === "Agent-Sync Only");
 
     await Promise.all(users.map(async u => {
       if(u.acdId === acdId){
         throw new Error("Calabrio Record with this ACD Id already exists. New Record should not be added.");
       }
 
-      if (u.adLogin === adLogin) {
+      const dupUserAdLogin = typeof u.adLogin === "string" ? u.adLogin.toLowerCase() : u.adLogin;
+      const dupUserEmail = typeof u.email === "string" ? u.email.toLowerCase() : u.email;
+      console.warn(`New User AdLogin: ${adLogin} - Dup User Ad Login ${dupUserAdLogin}`);
+      console.warn(`New User Email: ${email} - Dup User Email ${dupUserEmail}`);
+
+      if (dupUserAdLogin === adLogin) {
         const res: CalabrioUser = await getCalabrioUser(u.id);
         const user = res.data;
         console.warn("Conflicting User Found: ", user);
         user.adLogin = `xx-${user.id}-${user.adLogin}`;
-        user.roles = [];
+        user.roles = [agentSyncRole];
         user.scope = {
           groups: [],
           teams: [],
@@ -57,7 +63,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[]): P
         };
         await updateCalabrioUser(user.id, user);
       }
-      if(u.email === email){
+      if(dupUserEmail === email){
         const res: CalabrioUser = await getCalabrioUser(u.id);
         const user = res.data;
         console.warn("Conflicting User Found: ", user);
