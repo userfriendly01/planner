@@ -44,6 +44,8 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
       name: "Agent-Sync Only;"
     };
 
+    console.warn("agentSyncRole", agentSyncRole);
+
     await Promise.all(users.map(async u => {
       if(u.acdId === acdId){
         throw new Error("Calabrio Record with this ACD Id already exists. New Record should not be added.");
@@ -51,6 +53,9 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
 
       const dupUserAdLogin = typeof u.adLogin === "string" ? u.adLogin.toLowerCase() : u.adLogin;
       const dupUserEmail = typeof u.email === "string" ? u.email.toLowerCase() : u.email;
+
+      console.warn(`New User AdLogin: ${adLogin} - Conflicting User AdLogin ${dupUserAdLogin}`);
+      console.warn(`New User email: ${email} - Conflicting User email ${dupUserEmail}`);
 
       if (dupUserAdLogin === adLogin) {
         const res: CalabrioUser = await getCalabrioUser(u.id);
@@ -96,6 +101,10 @@ export const checkDuplicateRecords = async (user: CalabrioUser, users: CalabrioU
       const dupUserAdLogin = typeof u.adLogin === "string" ? u.adLogin.toLowerCase() : u.adLogin;
       const dupUserEmail = typeof u.email === "string" ? u.email.toLowerCase() : u.email;
       const dupUserAcdId = typeof u.acdId === "string" ? u.acdId.toLowerCase() : u.acdId;
+
+      console.warn(`New User AdLogin: ${adLogin} - Duplicate User AdLogin ${dupUserAdLogin}`);
+      console.warn(`New User email: ${email} - Duplicate User email ${dupUserEmail}`);
+      console.warn(`New User acdId: ${acdId} - Duplicate User acdId ${dupUserAcdId}`);
 
       if(dupUserEmail?.includes(email) && dupUserAcdId !== acdId ){
         return Promise.reject({
