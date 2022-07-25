@@ -38,7 +38,11 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
     const email = typeof user.email === "string" ? user.email.toLowerCase() : user.email;
     const acdId = user.acdId;
     const adLogin = typeof user.adLogin === "string" ? user.adLogin.toLowerCase() : user.adLogin;
-    const agentSyncRole = roles.find(r => r.name === "Agent-Sync Only");
+    const agentSyncRole = roles.find(r => r.name.toLowerCase().includes("agent-sync"));
+    const defaultAgentSyncRole = {
+      id: 3,
+      name: "Agent-Sync Only;"
+    };
 
     await Promise.all(users.map(async u => {
       if(u.acdId === acdId){
@@ -55,7 +59,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
         const user = res.data;
         console.warn("Conflicting User Found: ", user);
         user.adLogin = `xx-${user.id}-${user.adLogin}`;
-        user.roles = [agentSyncRole];
+        user.roles = agentSyncRole ? [agentSyncRole] : [defaultAgentSyncRole];
         user.scope = {
           groups: [],
           teams: [],
@@ -68,7 +72,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
         const user = res.data;
         console.warn("Conflicting User Found: ", user);
         user.email = `xx-${user.id}-${user.email}`;
-        user.roles = [];
+        user.roles = agentSyncRole ? [agentSyncRole] : [defaultAgentSyncRole];
         user.scope = {
           groups: [],
           teams: [],
