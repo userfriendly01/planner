@@ -3,11 +3,7 @@ import {
   ButtonWrapper,
   UserFormButton
 } from "./UserEntryForm.Styles";
-import {
-  Modal,
-  Tooltip
-} from "@material-ui/core";
-import { MergeUsersModal } from "components";
+import { Tooltip } from "@material-ui/core";
 import {
   useAdminDispatch,
   useAdminState,
@@ -166,10 +162,19 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         checkConflictingUsers(calabrioAttributes, users, roles).then(() => {
           console.log("Calabrio Attributes sent for create user", calabrioAttributes);
           createCalabrioUser(calabrioAttributes).then(() => {
-            setMergeUsersModalState({
-              open: true,
-              permanentUser: calabrioAttributes
+            updateLoading({
+              ...loading,
+              overlayMessage: "Successfully added new user",
+              saveStatus: modalOverlayStatuses.SUCCESS,
+              saveUser: true
             });
+            wait(() => {
+              updateLoading({
+                ...loading,
+                saveUser: false
+              });
+              handleClose(true);
+            }, timeouts.MODAL_OVERLAY);
           }).catch(err => {
             throw err;
           });
@@ -316,15 +321,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
   return (
     <ButtonWrapper>
-      <Modal disableBackdropClick={true} open={mergeUsersModalState.open}>
-        <MergeUsersModal
-          loading={loading}
-          updateLoading={updateLoading}
-          handleClose={handleCloseMergeUsersModal}
-          mergeUsersModalState={mergeUsersModalState}
-          setMergeUsersModalState={setMergeUsersModalState}
-        />
-      </Modal>
       <UserFormButton onClick={() => {
         handleClose();
         setForm({
