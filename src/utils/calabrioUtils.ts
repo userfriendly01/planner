@@ -73,7 +73,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
       console.warn(`lastName: ${lastName} === dupUserLastName: ${dupUserLastName} | ${lastName === dupUserLastName}`);
       console.warn(`equates to: ${!email && acdId && firstName === dupUserFirstName && lastName === dupUserLastName}`);
 
-      if (!email && acdId && firstName === dupUserFirstName && lastName === dupUserLastName) {
+      if (!dupUserEmail && acdId && firstName === dupUserFirstName && lastName === dupUserLastName) {
         const res: CalabrioUser = await getCalabrioUser(u.id);
         const user = res.data;
         console.warn("Conflicting User Found with First and Last Name: ", user);
