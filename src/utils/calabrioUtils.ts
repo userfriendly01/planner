@@ -32,10 +32,10 @@ export const formatCalabrioGroups = (groupsArray: CalabrioGroup[]): CalabrioGrou
 export const checkConflictingUsers = async (user: any, users: CalabrioUser[], roles: any[]): Promise<void> => {
   try {
     const {
-      acdId,
-      firstName,
-      lastName
+      acdId
     } = user;
+    const firstName = typeof user.firstName === "string" ? user.firstName.toLowerCase() : user.firstName;
+    const lastName = typeof user.lastName === "string" ? user.lastName.toLowerCase() : user.lastName;
     const email = typeof user.email === "string" ? user.email.toLowerCase() : user.email;
     const adLogin = typeof user.adLogin === "string" ? user.adLogin.toLowerCase() : user.adLogin;
 
@@ -46,6 +46,9 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
 
       const dupUserAdLogin = typeof u.adLogin === "string" ? u.adLogin.toLowerCase() : u.adLogin;
       const dupUserEmail = typeof u.email === "string" ? u.email.toLowerCase() : u.email;
+      const dupUserFirstName = typeof u.firstName === "string" ? u.firstName.toLowerCase() : u.firstName;
+      const dupUserLastName = typeof u.lastName === "string" ? u.lastName.toLowerCase() : u.lastName;
+
 
       console.warn("Conflicting User Object: ", u);
       console.warn(`ACD ID: ${acdId}`);
@@ -64,7 +67,13 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
         await updateCalabrioUser(user.id, user);
       }
 
-      if (!email && acdId && firstName === user.firstName && lastName === user.lastName) {
+      console.warn("!email", !email);
+      console.warn("acdId", acdId);
+      console.warn(`firstName: ${firstName} === dupUserFirstName: ${dupUserFirstName} | ${firstName === dupUserFirstName}`);
+      console.warn(`lastName: ${lastName} === dupUserLastName: ${dupUserLastName} | ${lastName === dupUserLastName}`);
+      console.warn(`equates to: ${!email && acdId && firstName === dupUserFirstName && lastName === dupUserLastName}`);
+
+      if (!email && acdId && firstName === dupUserFirstName && lastName === dupUserLastName) {
         const res: CalabrioUser = await getCalabrioUser(u.id);
         const user = res.data;
         console.warn("Conflicting User Found with First and Last Name: ", user);
