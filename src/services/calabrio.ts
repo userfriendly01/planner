@@ -11,7 +11,6 @@ export const createCalabrioUser = async (payload: any): Promise<CalabrioGroup[]>
 };
 
 export const updateCalabrioUser = async (personId: number, payload: any): Promise<CalabrioUser> => {
-  //if you dont send acdId, the acdID and server ID will be deleted, if you send a new ACD Id, the service will insert the AcdServerId
   return await myAxios.put(apiPaths.UPDATE_CALABRIO_USER(personId), payload);
 };
 

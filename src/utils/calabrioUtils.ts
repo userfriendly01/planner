@@ -27,7 +27,7 @@ export const formatCalabrioGroups = (groupsArray: CalabrioGroup[]): CalabrioGrou
 };
 
 /*
-  To understand this method, refer to this wiki: https://forge.lmig.com/wiki/display/CICCT/Calabrio+Form
+  https://forge.lmig.com/wiki/display/CICCT/Calabrio+Form
 */
 export const checkConflictingUsers = async (user: any, users: CalabrioUser[], roles: any[]): Promise<void> => {
   try {
@@ -38,12 +38,6 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
     } = user;
     const email = typeof user.email === "string" ? user.email.toLowerCase() : user.email;
     const adLogin = typeof user.adLogin === "string" ? user.adLogin.toLowerCase() : user.adLogin;
-    const agentSyncRole = roles.find(r => r.name.toLowerCase().includes("agent-sync") || {
-      id: 3,
-      name: "Agent-Sync Only;"
-    });
-
-    console.warn("agentSyncRole", agentSyncRole);
 
     await Promise.all(users.map(async u => {
       if(u.acdId === acdId){
@@ -54,6 +48,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
       const dupUserEmail = typeof u.email === "string" ? u.email.toLowerCase() : u.email;
 
       console.warn("Conflicting User Object: ", u);
+      console.warn(`ACD ID: ${acdId}`);
       console.warn(`New User AdLogin: ${adLogin} - Conflicting User AdLogin ${dupUserAdLogin}`);
       console.warn(`New User email: ${email} - Conflicting User email ${dupUserEmail}`);
 
