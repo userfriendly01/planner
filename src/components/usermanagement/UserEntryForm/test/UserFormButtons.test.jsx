@@ -221,18 +221,18 @@ describe("<UserFormButtons />", () => {
       sid: rawDbWorker.workerSid,
       skillsDifferent: true
     };
-    // const resetFormAfterAddExpectedAction = {
-    //   type: "RESET_FORM_AFTER_ADD",
-    //   payload: {
-    //     managerValue: validFormState.manager.value,
-    //     outgoing: {
-    //       value: validFormState.outgoing.value,
-    //       e164: validFormState.outgoing.e164
-    //     },
-    //     profileIdValue: validFormState.profileId.value,
-    //     didUser: false
-    //   }
-    // };
+    const resetFormAfterAddExpectedAction = {
+      type: "RESET_FORM_AFTER_ADD",
+      payload: {
+        managerValue: validFormState.manager.value,
+        outgoing: {
+          value: validFormState.outgoing.value,
+          e164: validFormState.outgoing.e164
+        },
+        profileIdValue: validFormState.profileId.value,
+        didUser: false
+      }
+    };
 
     describe(`form.formMode === ${formModes.INSERT}`, () => {
       beforeEach(() => {
@@ -287,9 +287,9 @@ describe("<UserFormButtons />", () => {
                 activateEp: false, // false for non-DID workers
                 attributes: createWorkerAttributesAfterFormValid
               });
-              // expect(mockSetForm).toHaveBeenCalledTimes(2);
-              // expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
-              // expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
+              expect(mockSetForm).toHaveBeenCalledTimes(2);
+              expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
+              expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
               expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
@@ -303,20 +303,20 @@ describe("<UserFormButtons />", () => {
                 }
               });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toHaveBeenCalledTimes(1);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Adding new user...",
                 saveStatus: "saving",
                 saveUser: true
               });
-              // expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
-              //   overlayMessage: "Successfully added new user",
-              //   saveStatus: "success",
-              //   saveUser: true
-              // });
-              // expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
-              //   saveUser: false
-              // });
+              expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+                overlayMessage: "Successfully added new user",
+                saveStatus: "success",
+                saveUser: true
+              });
+              expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
+                saveUser: false
+              });
             });
           });
         });
@@ -359,35 +359,35 @@ describe("<UserFormButtons />", () => {
                 directDialNum: validFormState.directDialNum.e164,
                 zeroOutEnabled: validFormState.zeroOutEnabled
               });
-              // expect(mockSetForm).toHaveBeenCalledTimes(2);
-              // expect(mockSetForm).toHaveBeenCalledWith({
-              //   ...resetFormAfterAddExpectedAction,
-              //   payload: {
-              //     ...resetFormAfterAddExpectedAction.payload,
-              //     didUser: true
-              //   }
-              // });
-              // expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
+              expect(mockSetForm).toHaveBeenCalledTimes(2);
+              expect(mockSetForm).toHaveBeenCalledWith({
+                ...resetFormAfterAddExpectedAction,
+                payload: {
+                  ...resetFormAfterAddExpectedAction.payload,
+                  didUser: true
+                }
+              });
+              expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
               expect(mockDispatch).toHaveBeenCalledTimes(1);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
                 payload: [formattedWorker]
               });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toHaveBeenCalledTimes(1);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Adding new user...",
                 saveStatus: "saving",
                 saveUser: true
               });
-              // expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
-              //   overlayMessage: "Successfully added new user",
-              //   saveStatus: "success",
-              //   saveUser: true
-              // });
-              // expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
-              //   saveUser: false
-              // });
+              expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+                overlayMessage: "Successfully added new user",
+                saveStatus: "success",
+                saveUser: true
+              });
+              expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
+                saveUser: false
+              });
             });
           });
         });
@@ -422,9 +422,9 @@ describe("<UserFormButtons />", () => {
                 directDialNum: validFormState.directDialNum.e164,
                 zeroOutEnabled: true
               });
-              // expect(mockSetForm).toHaveBeenCalledTimes(2);
-              // expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
-              // expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
+              expect(mockSetForm).toHaveBeenCalledTimes(2);
+              expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
+              expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
               expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
@@ -438,20 +438,20 @@ describe("<UserFormButtons />", () => {
                 }
               });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toHaveBeenCalledTimes(1);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Adding new user...",
                 saveStatus: "saving",
                 saveUser: true
               });
-              // expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
-              //   overlayMessage: "Successfully added new user",
-              //   saveStatus: "success",
-              //   saveUser: true
-              // });
-              // expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
-              //   saveUser: false
-              // });
+              expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+                overlayMessage: "Successfully added new user",
+                saveStatus: "success",
+                saveUser: true
+              });
+              expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
+                saveUser: false
+              });
             });
           });
           describe("getNonOverflowSkills returns undefined", () => {
@@ -481,9 +481,9 @@ describe("<UserFormButtons />", () => {
                   directDialNum: validFormState.directDialNum.e164,
                   zeroOutEnabled: true
                 });
-                // expect(mockSetForm).toHaveBeenCalledTimes(2);
-                // expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
-                // expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
+                expect(mockSetForm).toHaveBeenCalledTimes(2);
+                expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
+                expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
                 expect(mockDispatch).toHaveBeenCalledTimes(2);
                 expect(mockDispatch.mock.calls[0][0]).toEqual({
                   type: "addWorkers",
@@ -497,20 +497,20 @@ describe("<UserFormButtons />", () => {
                   }
                 });
                 jest.runAllTimers();
-                expect(mockUpdateLoading).toHaveBeenCalledTimes(1);
+                expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
                 expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                   overlayMessage: "Adding new user...",
                   saveStatus: "saving",
                   saveUser: true
                 });
-                // expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
-                //   overlayMessage: "Successfully added new user",
-                //   saveStatus: "success",
-                //   saveUser: true
-                // });
-                // expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
-                //   saveUser: false
-                // });
+                expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+                  overlayMessage: "Successfully added new user",
+                  saveStatus: "success",
+                  saveUser: true
+                });
+                expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
+                  saveUser: false
+                });
               });
             });
           });
@@ -542,29 +542,29 @@ describe("<UserFormButtons />", () => {
                 activateEp: false, // false for non-DID workers
                 attributes: createWorkerAttributesAfterFormValid
               });
-              // expect(mockSetForm).toHaveBeenCalledTimes(2);
-              // expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
-              // expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
+              expect(mockSetForm).toHaveBeenCalledTimes(2);
+              expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
+              expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
               expect(mockDispatch).toHaveBeenCalledTimes(1);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
                 payload: [formattedWorker]
               });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toHaveBeenCalledTimes(1);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Adding new user...",
                 saveStatus: "saving",
                 saveUser: true
               });
-              // expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
-              //   overlayMessage: "Successfully added new user",
-              //   saveStatus: "success",
-              //   saveUser: true
-              // });
-              // expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
-              //   saveUser: false
-              // });
+              expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+                overlayMessage: "Successfully added new user",
+                saveStatus: "success",
+                saveUser: true
+              });
+              expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
+                saveUser: false
+              });
             });
           });
         }
