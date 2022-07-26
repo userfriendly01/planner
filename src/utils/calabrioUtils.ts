@@ -34,8 +34,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
     const {
       acdId,
       firstName,
-      lastName,
-      groupId
+      lastName
     } = user;
     const email = typeof user.email === "string" ? user.email.toLowerCase() : user.email;
     const adLogin = typeof user.adLogin === "string" ? user.adLogin.toLowerCase() : user.adLogin;
@@ -61,67 +60,27 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
       if (dupUserAdLogin === adLogin || dupUserEmail === email) {
         const res: CalabrioUser = await getCalabrioUser(u.id);
         const user = res.data;
-        console.warn("Conflicting User Found: ", user);
-        const updatedPayload: any = {
-          firstName,
-          lastName,
-          groupId,
-          adLogin: `xx-${user.id}-${user.adLogin}`,
-          email: `xx-${user.id}-${user.email}`,
-          roles: [agentSyncRole],
-          scope: {
-            groups: [],
-            teams: [],
-            tenant: null
-          }
-        };
+        console.warn("Conflicting User Found with Duplicate Email or Windows Login: ", user);
 
-        await updateCalabrioUser(user.id, updatedPayload);
+        user.adLogin = `xx-${user.id}-${user.adLogin}`;
+        user.email = `xx-${user.id}-${user.email}`;
+        user.deactivated = Date.now();
+
+        await updateCalabrioUser(user.id, user);
+      }
+
+      if (!email && acdId && firstName === user.firstName && lastName === user.lastName) {
+        const res: CalabrioUser = await getCalabrioUser(u.id);
+        const user = res.data;
+        console.warn("Conflicting User Found with First and Last Name: ", user);
+
+        user.deactivated = Date.now();
+
+        await updateCalabrioUser(user.id, user);
       }
     }));
   } catch(err) {
     console.error("Error thrown trying to fetch and validate Conflicting Users", err);
   }
   return;
-};
-
-export const checkDuplicateRecords = async (user: CalabrioUser, users: CalabrioUser[]): Promise<ConflictingUserResult> => {
-  if(user){
-    const email = typeof user.email === "string" ? user.email.toLowerCase() : user.email;
-    const adLogin = typeof user.adLogin === "string" ? user.adLogin.toLowerCase() : user.adLogin;
-    const acdId = typeof user.acdId === "string" ? user.acdId.toLowerCase() : user.acdId;
-
-    await Promise.all(users.map(async u => {
-
-      const dupUserAdLogin = typeof u.adLogin === "string" ? u.adLogin.toLowerCase() : u.adLogin;
-      const dupUserEmail = typeof u.email === "string" ? u.email.toLowerCase() : u.email;
-      const dupUserAcdId = typeof u.acdId === "string" ? u.acdId.toLowerCase() : u.acdId;
-
-      console.warn(`New User AdLogin: ${adLogin} - Duplicate User AdLogin ${dupUserAdLogin}`);
-      console.warn(`New User email: ${email} - Duplicate User email ${dupUserEmail}`);
-      console.warn(`New User acdId: ${acdId} - Duplicate User acdId ${dupUserAcdId}`);
-
-      if(dupUserEmail?.includes(email) && dupUserAcdId !== acdId ){
-        return Promise.reject({
-          conflictFound: true,
-          duplicateUser: u,
-          scenario: 3,
-          searchBy: searchByOptions.NAME
-        });
-      }
-
-      if (dupUserAdLogin?.includes(adLogin) && dupUserAcdId !== acdId) {
-        return Promise.reject({
-          conflictFound: true,
-          duplicateUser: u,
-          scenario: 4,
-          searchBy: u.firstName && u.lastName ? searchByOptions.NAME : searchByOptions.N_NUMBER
-        });
-      }
-    }));
-  }
-
-  return {
-    conflictFound: false
-  };
 };
