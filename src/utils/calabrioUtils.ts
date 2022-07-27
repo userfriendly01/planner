@@ -85,11 +85,6 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
       const dupUserFirstName = toLowerCaseString(u.firstName);
       const dupUserLastName = toLowerCaseString(u.lastName);
 
-
-      console.warn("Conflicting User Object: ", u);
-      console.warn(`New User AdLogin: ${adLogin} - Conflicting User AdLogin ${dupUserAdLogin}`);
-      console.warn(`New User email: ${email} - Conflicting User email ${dupUserEmail}`);
-
       if (dupUserAdLogin === adLogin || dupUserEmail === email) {
         const res: CalabrioUser = await getCalabrioUser(u.id);
         const user = res.data;
@@ -101,12 +96,6 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
 
         await updateCalabrioUser(user.id, user);
       }
-
-      console.warn("!email", !email);
-      console.warn("acdId", acdId);
-      console.warn(`firstName: ${firstName} === dupUserFirstName: ${dupUserFirstName} | ${firstName === dupUserFirstName}`);
-      console.warn(`lastName: ${lastName} === dupUserLastName: ${dupUserLastName} | ${lastName === dupUserLastName}`);
-      console.warn(`equates to: ${!email && acdId && firstName === dupUserFirstName && lastName === dupUserLastName}`);
 
       if (!dupUserEmail && acdId && firstName === dupUserFirstName && lastName === dupUserLastName) {
         const res: CalabrioUser = await getCalabrioUser(u.id);
