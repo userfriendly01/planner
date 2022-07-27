@@ -10,6 +10,32 @@ import {
   updateCalabrioUser
 } from "services";
 
+const calabrioTenants = {
+  PROD: "tenant0215",
+  NP: "LibertyMutual"
+};
+
+//Calabrio doesnt offer an API for this, only PST, MNT, CST, and EST were requested so we hardcoded them here as they are unlikely to change
+//They are also the same through environments
+export const calabrioTimeZones =  [
+  {
+    label: "America/New_York (EST/EDT)",
+    value: 173
+  },
+  {
+    label: "America/Los_Angeles (PST/PDT)",
+    value: 151
+  },
+  {
+    label: "America/Denver (MST/MDT)",
+    value: 110
+  },
+  {
+    label: "America/Chicago (CST/CDT)",
+    value: 99
+  }
+];
+
 export const formatCalabrioTeams = (groupsArray: CalabrioGroup[]): CalabrioGroup[] => {
   const teams = groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.TEAM);
   return teams.map(team => {
@@ -26,29 +52,41 @@ export const formatCalabrioGroups = (groupsArray: CalabrioGroup[]): CalabrioGrou
   });
 };
 
+export const formatCalabrioTenant = (groupsArray: CalabrioGroup[]): CalabrioGroup => {
+  const group = groupsArray.find((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.TENANT);
+  return group;
+};
+
+const toLowerCaseString = (variable: any) => {
+  return typeof variable === "string" ? variable.toLowerCase() : variable;
+};
+
 /*
   https://forge.lmig.com/wiki/display/CICCT/Calabrio+Form
 */
 export const checkConflictingUsers = async (user: any, users: CalabrioUser[], roles: any[]): Promise<void> => {
   try {
     const {
-      acdId,
-      firstName,
-      lastName
+      acdId
     } = user;
-    const email = typeof user.email === "string" ? user.email.toLowerCase() : user.email;
-    const adLogin = typeof user.adLogin === "string" ? user.adLogin.toLowerCase() : user.adLogin;
+
+    const firstName = toLowerCaseString(user.firstName);
+    const lastName = toLowerCaseString(user.lastName);
+    const email = toLowerCaseString(user.email);
+    const adLogin = toLowerCaseString(user.adLogin);
 
     await Promise.all(users.map(async u => {
       if(u.acdId === acdId){
         throw new Error("Calabrio Record with this ACD Id already exists. New Record should not be added.");
       }
 
-      const dupUserAdLogin = typeof u.adLogin === "string" ? u.adLogin.toLowerCase() : u.adLogin;
-      const dupUserEmail = typeof u.email === "string" ? u.email.toLowerCase() : u.email;
+      const dupUserAdLogin = toLowerCaseString(u.adLogin);
+      const dupUserEmail = toLowerCaseString(u.email);
+      const dupUserFirstName = toLowerCaseString(u.firstName);
+      const dupUserLastName = toLowerCaseString(u.lastName);
+
 
       console.warn("Conflicting User Object: ", u);
-      console.warn(`ACD ID: ${acdId}`);
       console.warn(`New User AdLogin: ${adLogin} - Conflicting User AdLogin ${dupUserAdLogin}`);
       console.warn(`New User email: ${email} - Conflicting User email ${dupUserEmail}`);
 
@@ -64,12 +102,19 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
         await updateCalabrioUser(user.id, user);
       }
 
-      if (!email && acdId && firstName === user.firstName && lastName === user.lastName) {
+      console.warn("!email", !email);
+      console.warn("acdId", acdId);
+      console.warn(`firstName: ${firstName} === dupUserFirstName: ${dupUserFirstName} | ${firstName === dupUserFirstName}`);
+      console.warn(`lastName: ${lastName} === dupUserLastName: ${dupUserLastName} | ${lastName === dupUserLastName}`);
+      console.warn(`equates to: ${!email && acdId && firstName === dupUserFirstName && lastName === dupUserLastName}`);
+
+      if (!dupUserEmail && acdId && firstName === dupUserFirstName && lastName === dupUserLastName) {
         const res: CalabrioUser = await getCalabrioUser(u.id);
         const user = res.data;
         console.warn("Conflicting User Found with First and Last Name: ", user);
 
         user.deactivated = Date.now();
+        user.email = `SHELLUSER${user.id}@libertymutual.com`;
 
         await updateCalabrioUser(user.id, user);
       }
