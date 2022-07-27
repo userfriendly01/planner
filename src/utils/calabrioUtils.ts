@@ -57,6 +57,10 @@ export const formatCalabrioTenant = (groupsArray: CalabrioGroup[]): CalabrioGrou
   return group;
 };
 
+const toLowerCaseString = (variable: any) => {
+  return typeof variable === "string" ? variable.toLowerCase() : variable;
+};
+
 /*
   https://forge.lmig.com/wiki/display/CICCT/Calabrio+Form
 */
@@ -65,24 +69,24 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
     const {
       acdId
     } = user;
-    const firstName = typeof user.firstName === "string" ? user.firstName.toLowerCase() : user.firstName;
-    const lastName = typeof user.lastName === "string" ? user.lastName.toLowerCase() : user.lastName;
-    const email = typeof user.email === "string" ? user.email.toLowerCase() : user.email;
-    const adLogin = typeof user.adLogin === "string" ? user.adLogin.toLowerCase() : user.adLogin;
+
+    const firstName = toLowerCaseString(user.firstName);
+    const lastName = toLowerCaseString(user.lastName);
+    const email = toLowerCaseString(user.email);
+    const adLogin = toLowerCaseString(user.adLogin);
 
     await Promise.all(users.map(async u => {
       if(u.acdId === acdId){
         throw new Error("Calabrio Record with this ACD Id already exists. New Record should not be added.");
       }
 
-      const dupUserAdLogin = typeof u.adLogin === "string" ? u.adLogin.toLowerCase() : u.adLogin;
-      const dupUserEmail = typeof u.email === "string" ? u.email.toLowerCase() : u.email;
-      const dupUserFirstName = typeof u.firstName === "string" ? u.firstName.toLowerCase() : u.firstName;
-      const dupUserLastName = typeof u.lastName === "string" ? u.lastName.toLowerCase() : u.lastName;
+      const dupUserAdLogin = toLowerCaseString(u.adLogin);
+      const dupUserEmail = toLowerCaseString(u.email);
+      const dupUserFirstName = toLowerCaseString(u.firstName);
+      const dupUserLastName = toLowerCaseString(u.lastName);
 
 
       console.warn("Conflicting User Object: ", u);
-      console.warn(`ACD ID: ${acdId}`);
       console.warn(`New User AdLogin: ${adLogin} - Conflicting User AdLogin ${dupUserAdLogin}`);
       console.warn(`New User email: ${email} - Conflicting User email ${dupUserEmail}`);
 
