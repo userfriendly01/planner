@@ -110,6 +110,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
         console.warn("Conflicting User Found with First and Last Name: ", user);
 
         user.deactivated = Date.now();
+        user.email = `SHELLUSER${user.id}@libertymutual.com`;
 
         await updateCalabrioUser(user.id, user);
       }
