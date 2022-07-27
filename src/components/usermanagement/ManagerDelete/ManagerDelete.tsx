@@ -43,7 +43,7 @@ export interface ManagerDeleteProps {
   selectedManager: any
 }
 
-const ManagerDelete = (props: ManagerDeleteProps) => {
+const ManagerDelete = (props: ManagerDeleteProps): any => {
   const {
     handleClose,
     selectedManager
@@ -88,92 +88,37 @@ const ManagerDelete = (props: ManagerDeleteProps) => {
   const memberNames = teamMembers.map(worker => `${worker.attributes.emp_first_name} ${worker.attributes.emp_last_name}`);
   const theTeam = memberNames.join(", ");
 
-  // const getCalabrioOption = (teamId: number) => {
-  //   const team = calabrioTeams.find(team => team.groupId === teamId);
-  //   return team ? {
-  //     ...team,
-  //     value: team.groupId,
-  //     label: team.name
-  //   } : teamId;
-  // };
-
-  // const addManagerClicked = (): Promise<any> => {
-  //   setSaveStatus(loadingStates.loading);
-  //   if (state.managerContext.managers.some((savedManager: Manager) => savedManager.manager_n_number.toLowerCase() === manager.manager_n_number)) {
-  //     setSaveStatus(loadingStates.fail);
-  //     setTimeout(() => setSaveStatus(null), 2000);
-  //     setErrorMessage("Manager already exists");
-  //     console.warn("addManager - Failure - Manager Already exists");
-  //     return Promise.resolve("addManager - Failure - Manager Already exists");
-  //   }
-  //   const profileId = profile ? profile.profile_id : null;
-
-  //   return addManager({
-  //     manager_first_nme: manager.manager_first_name.replace("'", "\\'"),
-  //     manager_last_nme: manager.manager_last_name.replace("'", "\\'"),
-  //     manager_n_num: manager.manager_n_number,
-  //     profile_id: profileId,
-  //     calabrio_team_ids: JSON.stringify(selectedCalabrioTeams)
-  //   })
-  //     .then(res => {
-  //       dispatch(({
-  //         type: "addManager",
-  //         payload: {
-  //           ...manager,
-  //           manager_id: res.insertId,
-  //           profile_id: profileId,
-  //           calabrio_team_ids: selectedCalabrioTeams
-  //         }
-  //       }));
-  //       setSaveStatus(loadingStates.success);
-  //       setTimeout(handleClose, 2000);
-  //       console.log("addManager - Success", res);
-  //     })
-  //     .catch(err => {
-  //       setSaveStatus(loadingStates.fail);
-  //       setTimeout(() => setSaveStatus(null), 2000);
-  //       setErrorMessage("Failed to Create Manager");
-  //       console.error("addManager - Failure", err);
-  //     });
-  // };
-
   const deleteManagerClicked = (): Promise<any> => {
     setSaveStatus(loadingStates.loading);
 
-  //   const profileId = profile ? profile.profile_id : null;
-  //   const teams = JSON.stringify(selectedCalabrioTeams);
+    // const profileId = profile ? profile.profile_id : null;
 
-  //   return editManager(manager.manager_id, {
-  //     profile_id: profileId,
-  //     calabrio_team_ids: teams
-  //   })
-  //     .then((res: any) => {
-  //       const updatedArray = state.managerContext.managers.map(m => {
-  //         if(m.manager_id === manager.manager_id){
-  //           return {
-  //             ...manager,
-  //             profile_id: profileId,
-  //             calabrio_team_ids: selectedCalabrioTeams
-  //           };
-  //         } else {
-  //           return m;
-  //         }
-  //       });
-  //       dispatch(({
-  //         type: "editManager",
-  //         payload: updatedArray
-  //       }));
-  //       setSaveStatus(loadingStates.success);
-  //       setTimeout(handleClose, 2000);
-  //       console.log("editManager - Success", res);
-  //     })
-  //     .catch((err: any) => {
-  //       setSaveStatus(loadingStates.fail);
-  //       setTimeout(() => setSaveStatus(null), 2000);
-  //       setErrorMessage("Failed to update Manager");
-  //       console.error("editManager - Failure", err);
-  //     });
-  return Promise.resolve(123);
+    return deleteManager(manager.manager_id)
+      .then((res: any) => {
+
+        console.log("wsx1", state.managerContext.managers); // Array of all manager objects
+        console.log("wsx2", manager); // The manager currently selected.  This is the guy I want to remove.
+        const idx = state.managerContext.managers.findIndex(mgr => mgr.manager_n_number === manager.manager_n_number);
+        console.log("wsx3 Index number:", idx);
+
+        // Remove this manager from our state
+        const lowerHalf = state.managerContext.managers.slice(0, idx);
+        const upperHalf = state.managerContext.managers.slice(idx + 1);
+        const updatedArray = [...lowerHalf, ...upperHalf];
+        dispatch(({
+          type: "editManager",
+          payload: updatedArray
+        }));
+        setSaveStatus(loadingStates.success);
+        setTimeout(handleClose, 2000);
+        console.log("deleteManager() Success", res);
+      })
+      .catch((err: any) => {
+        setSaveStatus(loadingStates.fail);
+        setTimeout(() => setSaveStatus(null), 2000);
+        setErrorMessage("Failed to delete Manager");
+        console.error("deleteManager() failure:", err);
+      });
   };
 
   let overlayMessage = "Deleting...";
