@@ -10,6 +10,32 @@ import {
   updateCalabrioUser
 } from "services";
 
+const calabrioTenants = {
+  PROD: "tenant0215",
+  NP: "LibertyMutual"
+};
+
+//Calabrio doesnt offer an API for this, only PST, MNT, CST, and EST were requested so we hardcoded them here as they are unlikely to change
+//They are also the same through environments
+export const calabrioTimeZones =  [
+  {
+    label: "America/New_York (EST/EDT)",
+    value: 173
+  },
+  {
+    label: "America/Los_Angeles (PST/PDT)",
+    value: 151
+  },
+  {
+    label: "America/Denver (MST/MDT)",
+    value: 110
+  },
+  {
+    label: "America/Chicago (CST/CDT)",
+    value: 99
+  }
+];
+
 export const formatCalabrioTeams = (groupsArray: CalabrioGroup[]): CalabrioGroup[] => {
   const teams = groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.TEAM);
   return teams.map(team => {
@@ -24,6 +50,11 @@ export const formatCalabrioGroups = (groupsArray: CalabrioGroup[]): CalabrioGrou
     delete group.agents;
     return group;
   });
+};
+
+export const formatCalabrioTenant = (groupsArray: CalabrioGroup[]): CalabrioGroup => {
+  const group = groupsArray.find((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.TENANT);
+  return group;
 };
 
 /*

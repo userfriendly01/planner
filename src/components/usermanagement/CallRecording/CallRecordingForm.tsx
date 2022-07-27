@@ -4,6 +4,9 @@ import {
   FormControlsPane
 } from "./CallRecording.Styles";
 import CallRecordingScope from "./CallRecordingScope";
+import {
+  calabrioTimeZones
+} from "utils";
 import { Dropdown } from "components";
 import {
   useAdminState,
@@ -170,6 +173,16 @@ const CallRecordingForm = () => {
           value={form.calabrioUser.team}
           updateValue={(event: any, team: any) => setForm({
             type: userFormActions.SET_CALABRIO_TEAM,
+            payload: team
+          })}
+          styles={{ width: "300px" }}
+        />
+        <Dropdown
+          label="Time Zone"
+          options={calabrioTimeZones}
+          value={form.calabrioUser.timezone}
+          updateValue={(event: any, team: any) => setForm({
+            type: userFormActions.SET_CALABRIO_TIMEZONE,
             payload: team
           })}
           styles={{ width: "300px" }}

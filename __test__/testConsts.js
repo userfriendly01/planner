@@ -77,6 +77,10 @@ export const initialFormState = {
   },
   calabrioUser: {
     team: null,
+    timezone: {
+      label: "EST",
+      value: 173
+    },
     roles: [],
     scope: {
       groups: [],
@@ -237,6 +241,10 @@ export const validFormState = {
   },
   calabrioUser: {
     team: 225,
+    timezone: {
+      label: "EST",
+      value: 173
+    },
     roles: [],
     scope: {
       "groups": [],

@@ -9,6 +9,7 @@ import {
 } from "components/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
 import {
   formatE164PhoneNumber,
+  calabrioTimeZones,
   getValidSkillsObject,
   getZeroOutEnabledFromProfile
 } from "utils";
@@ -33,6 +34,7 @@ export const userFormActions = {
   SET_BLUR_ON_FIELD: "SET_BLUR_ON_FIELD",
   SET_CALABRIO_USER: "SET_CALABRIO_USER",
   SET_CALABRIO_TEAM: "SET_CALABRIO_TEAM",
+  SET_CALABRIO_TIMEZONE: "SET_CALABRIO_TIMEZONE",
   SET_CALABRIO_ROLES: "SET_CALABRIO_ROLES",
   SET_EXTENSION_MESSAGE: "SET_EXTENSION_MESSAGE",
   SET_EXTENSION_RETRIES: "SET_EXTENSION_RETRIES",
@@ -111,6 +113,7 @@ export const initialUserFormState: UserFormState = {
   },
   calabrioUser: {
     team: null,
+    timezone: calabrioTimeZones[0],
     roles: [],
     scope: {
       groups: [],
@@ -332,6 +335,15 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         calabrioUser: {
           ...state.calabrioUser,
           team: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_CALABRIO_TIMEZONE: {
+      return {
+        ...state,
+        calabrioUser: {
+          ...state.calabrioUser,
+          timezone: action.payload
         }
       };
     }
