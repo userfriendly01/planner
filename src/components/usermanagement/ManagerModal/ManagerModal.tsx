@@ -112,7 +112,7 @@ const ManagerModal = (props: ManagerModalProps) => {
     const profileId = profile ? profile.profile_id : null;
     const teams = JSON.stringify(selectedCalabrioTeams);
 
-    return editManager(manager.manager_id, { // wsx Axios call to apply an update
+    return editManager(manager.manager_id, {
       profile_id: profileId,
       calabrio_team_ids: teams
     })

@@ -54,7 +54,7 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
     setIsManagerDeleteOpen(true);
   };
 
-  const handleCloseManager = () => { // wsx Have to rename this to handleCloseManagerModal
+  const handleCloseManager = () => {
     setSelectedManager(null);
     setFilter("show-all");
     setIsManagerModalOpen(false);

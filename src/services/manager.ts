@@ -31,7 +31,6 @@ export const editManager = (managerId: string | number, manager: DbUpdateManager
 
 export const deleteManager = (managerId: string | number): Promise<any> =>
   myAxios.delete(`${apiPaths.MANAGERS}/${managerId}`).then(response => response.data);
-// Promise.resolve({ "some": managerId });
 
 export const getManagers = (): Promise<DbManagerResponse[]> =>
   myAxios.get(apiPaths.MANAGERS).then(response => response.data);
