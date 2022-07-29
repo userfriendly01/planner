@@ -57,7 +57,7 @@ describe("CallRecordingForm", () => {
     describe("initial render", () => {
       test("Form is rendered as expected", () => {
         render(<CallRecordingForm/>);
-        expect(Dropdown.mock.calls.length).toBe(2);
+        expect(Dropdown.mock.calls.length).toBe(3);
         expectOnlyPassedProps(Dropdown, {
           label: "Roles",
           multiple: true,
@@ -115,7 +115,11 @@ describe("CallRecordingForm", () => {
                 parentGroupId: 200
               }]
             },
-            team: null
+            team: null,
+            timezone: {
+              label: "EST",
+              value: 173
+            }
           }
         });
       });
@@ -124,7 +128,7 @@ describe("CallRecordingForm", () => {
       describe("updateValue is called", () => {
         test("setForm is called with the appropriate params", () => {
           render(<CallRecordingForm />);
-          expect(Dropdown.mock.calls.length).toBe(2);
+          expect(Dropdown.mock.calls.length).toBe(3);
           const updateRole = Dropdown.mock.calls[0][0].updateValue;
           act(() => {
             updateRole(null, [calabrioContext.roles[0], calabrioContext.roles[2]]);
@@ -141,7 +145,7 @@ describe("CallRecordingForm", () => {
       describe("updateValue is called", () => {
         test("setForm is called with the appropriate params", () => {
           render(<CallRecordingForm />);
-          expect(Dropdown.mock.calls.length).toBe(2);
+          expect(Dropdown.mock.calls.length).toBe(3);
           const updateTeam = Dropdown.mock.calls[1][0].updateValue;
           act(() => {
             updateTeam(null, calabrioContext.teams[0]);
@@ -191,7 +195,7 @@ describe("CallRecordingForm", () => {
       });
       test("Form is rendered as expected", async () => {
         render(<CallRecordingForm/>);
-        expect(Dropdown.mock.calls.length).toBe(2);
+        expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
         expect(getCalabrioUser).toHaveBeenCalledWith(220);
@@ -262,7 +266,7 @@ describe("CallRecordingForm", () => {
       });
       test("Form is rendered as expected", async () => {
         render(<CallRecordingForm/>);
-        expect(Dropdown.mock.calls.length).toBe(2);
+        expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(0);
         expect(mockSetForm).toHaveBeenCalledTimes(0);
@@ -293,7 +297,7 @@ describe("CallRecordingForm", () => {
       });
       test("Form is rendered as expected", async () => {
         render(<CallRecordingForm/>);
-        expect(Dropdown.mock.calls.length).toBe(2);
+        expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
         expect(getCalabrioUser).toHaveBeenCalledWith(220);

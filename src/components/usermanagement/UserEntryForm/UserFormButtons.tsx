@@ -3,11 +3,7 @@ import {
   ButtonWrapper,
   UserFormButton
 } from "./UserEntryForm.Styles";
-import {
-  Modal,
-  Tooltip
-} from "@material-ui/core";
-import { MergeUsersModal } from "components";
+import { Tooltip } from "@material-ui/core";
 import {
   useAdminDispatch,
   useAdminState,
@@ -62,10 +58,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
   const dispatch = useAdminDispatch();
   const form = useFormState();
   const setForm = useFormDispatch();
-  const [ mergeUsersModalState, setMergeUsersModalState ] = React.useState({
-    open: false,
-    permanentUser: null
-  });
 
   const doCreateUser = () => {
     updateLoading({
@@ -110,6 +102,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       firstName: form.nNumberFetchedUser?.firstName,
       lastName: form.nNumberFetchedUser?.lastName,
       groupId: form.calabrioUser.team?.value,
+      timeZone: form.calabrioUser.timezone.value,
       roles: form.calabrioUser.roles,
       scope: {
         groups: form.calabrioUser.scope.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),
@@ -166,10 +159,32 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         checkConflictingUsers(calabrioAttributes, users, roles).then(() => {
           console.log("Calabrio Attributes sent for create user", calabrioAttributes);
           createCalabrioUser(calabrioAttributes).then(() => {
-            setMergeUsersModalState({
-              open: true,
-              permanentUser: calabrioAttributes
+            setForm({
+              type: userFormActions.RESET_FORM_AFTER_ADD,
+              payload: {
+                managerValue: form.manager.value,
+                outgoing: {
+                  value: form.outgoing.value,
+                  e164: form.outgoing.e164
+                },
+                profileIdValue: form.profileId.value,
+                didUser: form.didUser
+              }
             });
+            setForm({ type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
+            updateLoading({
+              ...loading,
+              overlayMessage: "Successfully added new user",
+              saveStatus: modalOverlayStatuses.SUCCESS,
+              saveUser: true
+            });
+            wait(() => {
+              updateLoading({
+                ...loading,
+                saveUser: false
+              });
+              handleClose(true);
+            }, timeouts.MODAL_OVERLAY);
           }).catch(err => {
             throw err;
           });
@@ -293,38 +308,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       });
   };
 
-  const handleCloseMergeUsersModal = (reopen: boolean) => {
-    if(form.formMode === formModes.INSERT){
-      handleClose(reopen);
-      setForm({
-        type: userFormActions.RESET_FORM_AFTER_ADD,
-        payload: {
-          managerValue: form.manager.value,
-          outgoing: {
-            value: form.outgoing.value,
-            e164: form.outgoing.e164
-          },
-          profileIdValue: form.profileId.value,
-          didUser: form.didUser
-        }
-      });
-      setForm({ type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
-    } else {
-      handleClose(reopen);
-    }
-  };
-
   return (
     <ButtonWrapper>
-      <Modal disableBackdropClick={true} open={mergeUsersModalState.open}>
-        <MergeUsersModal
-          loading={loading}
-          updateLoading={updateLoading}
-          handleClose={handleCloseMergeUsersModal}
-          mergeUsersModalState={mergeUsersModalState}
-          setMergeUsersModalState={setMergeUsersModalState}
-        />
-      </Modal>
       <UserFormButton onClick={() => {
         handleClose();
         setForm({

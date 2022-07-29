@@ -1,5 +1,8 @@
 import { apiPaths }from "globals";
-import { CalabrioGroup } from "../components/usermanagement/CallRecording/CallRecording.Interfaces";
+import {
+  CalabrioGroup,
+  CalabrioUser
+} from "../components/usermanagement/CallRecording/CallRecording.Interfaces";
 import { myAxios } from "utils";
 
 
@@ -7,7 +10,7 @@ export const createCalabrioUser = async (payload: any): Promise<CalabrioGroup[]>
   return await myAxios.post(apiPaths.CREATE_CALABRIO_USER, payload);
 };
 
-export const updateCalabrioUser = async (personId: number, payload: any): Promise<CalabrioGroup[]> => {
+export const updateCalabrioUser = async (personId: number, payload: any): Promise<CalabrioUser> => {
   return await myAxios.put(apiPaths.UPDATE_CALABRIO_USER(personId), payload);
 };
 
