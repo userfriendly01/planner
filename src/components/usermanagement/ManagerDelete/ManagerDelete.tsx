@@ -23,11 +23,9 @@ import {
 } from "globals";
 import React, { useState } from "react";
 import {
-  deleteManager,
-  FetchUserResponse
+  deleteManager
 } from "services";
 
-const defaultNNumber = "n";
 const loadingStates = {
   success: "success",
   fail: "fail",
@@ -63,7 +61,7 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
 
     return deleteManager(manager.manager_id)
       .then((res: any) => {
-        // Remove this manager from our state
+        // Remove the deleted manager from our state
         const idx = state.managerContext.managers.findIndex(mgr => mgr.manager_n_number === manager.manager_n_number);
         const lowerHalf = state.managerContext.managers.slice(0, idx);
         const upperHalf = state.managerContext.managers.slice(idx + 1);
@@ -75,13 +73,13 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
         }));
         setSaveStatus(loadingStates.success);
         setTimeout(handleClose, 2000);
-        console.log("deleteManager() Success", res);
+        console.log("deleteManager() successful", res);
       })
       .catch((err: any) => {
         setSaveStatus(loadingStates.fail);
         setTimeout(() => setSaveStatus(null), 2000);
         setErrorMessage("Failed to delete Manager");
-        console.error("deleteManager() failure:", err);
+        console.error("deleteManager() failed:", err);
       });
   };
 
