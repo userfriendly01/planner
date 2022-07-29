@@ -1,4 +1,4 @@
-import ManagerModal from "../ManagerModal";
+import ManagerDelete from "../ManagerDelete";
 import { CloseRounded } from "@material-ui/icons";
 import {
   Dropdown,
@@ -12,7 +12,8 @@ import React from "react";
 import { act } from "react-dom/test-utils";
 import {
   addManager,
-  editManager
+  editManager,
+  deleteManager
 } from "services";
 import {
   expectMockedComponent,
@@ -36,6 +37,7 @@ jest.mock("services", () => ({
   __esModule: true,
   addManager: jest.fn(),
   editManager: jest.fn(),
+  deleteManager: jest.fn(),
   FetchUserResponse: jest.requireActual("services").FetchUserResponse
 }));
 
@@ -53,9 +55,18 @@ jest.mock("components", () => ({
   StyledButton: jest.fn()
 }));
 
-describe("<ManagerModal />", () => {
+const selectedManager = {
+  manager_n_number: "10"
+};
+
+describe("<ManagerDelete />", () => {
   const mockHandleClose = jest.fn();
-  const renderComponent = () => render(<ManagerModal handleClose={mockHandleClose} selectedManager={null}/>);
+  const renderComponent = () => render(
+    <ManagerDelete handleClose={mockHandleClose}
+      selectedManager={selectedManager}
+    />
+  );
+
   beforeEach(() => {
     mockStore.reset();
     jest.clearAllMocks();
@@ -92,19 +103,31 @@ describe("<ManagerModal />", () => {
             manager_n_number: "n0262226"
           }
         ]
+      },
+      workerContext: {
+        workers: [
+          {
+            attributes: {
+              emp_first_name: "Warren",
+              emp_last_name: "Spencer",
+              manager_n_number: "3"
+            }
+          }
+        ]
       }
     });
   });
+  // const workers = useAdminState().workerContext.workers;
+  // workers.filter(worker => worker.attributes.manager_n_number === manager.manager_n_number);
 
-  describe("initial state of the modal", () => {
+  describe("wsx initial state of the modal", () => {
     test("should render StyledButton, CloseRounded & ModalNNumber once each", () => {
       const rendered = renderComponent();
       expectMockedComponent(rendered, { StyledButton });
       expectMockedComponent(rendered, { CloseRounded });
-      expectMockedComponent(rendered, { ModalNNumber });
     });
     test("should not render ModalOverlay", () => {
-      const rendered = renderComponent();
+      const rendered = renderComponent(10);
       expect(rendered.queryAllByText("ModalOverlay").length).toBe(0);
     });
   });
