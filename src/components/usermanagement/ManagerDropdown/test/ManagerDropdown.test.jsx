@@ -121,7 +121,7 @@ describe("<ManagementFilter />", () => {
       Dropdown.mock.calls[0][0].updateValue(null, selection);
     });
     expect(setFilter).toHaveBeenCalledWith(selection.value);
-    expect(Modal.mock.calls[1][0].open).toBe(true);
+    expect(Modal.mock.calls[2][0].open).toBe(true);
   });
 
   test("When the Modal is closed, the handle close function is called", () => {
@@ -134,12 +134,13 @@ describe("<ManagementFilter />", () => {
       Dropdown.mock.calls[0][0].updateValue(null, selection);
     });
     expect(setFilter).toHaveBeenCalledWith(selection.value);
-    render(Modal.mock.calls[1][0].children);
+    // expect(Modal.mock.calls).toBe("wsx3");
+    render(Modal.mock.calls[2][0].children);
     act(() => {
       ManagerModal.mock.calls[0][0].handleClose();
     });
     expect(setFilter.mock.calls[3][0]).toBe("show-all");
-    expect(Modal.mock.calls[2][0].open).toBe(false);
+    expect(Modal.mock.calls[3][0].open).toBe(false);
   });
 
   describe("Custom Render", () => {
@@ -205,7 +206,8 @@ describe("<ManagementFilter />", () => {
         const button = rendered.getByTestId("edit-button");
         expect(button);
         fireEvent.click(button);
-        expect(Modal.mock.calls[1][0].open).toBe(true);
+        expect(Modal.mock.calls[2][0].open).toBe(true);
+        // expect(Modal.mock.calls).toBe(true);
       });
     });
   });
