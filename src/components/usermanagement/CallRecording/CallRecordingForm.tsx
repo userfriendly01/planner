@@ -181,9 +181,9 @@ const CallRecordingForm = () => {
           label="Time Zone"
           options={calabrioTimeZones}
           value={form.calabrioUser.timezone}
-          updateValue={(event: any, team: any) => setForm({
+          updateValue={(event: any, timezone: any) => setForm({
             type: userFormActions.SET_CALABRIO_TIMEZONE,
-            payload: team
+            payload: timezone
           })}
           styles={{ width: "300px" }}
         />

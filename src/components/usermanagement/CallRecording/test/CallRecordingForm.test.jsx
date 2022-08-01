@@ -18,6 +18,8 @@ import {
   setupMockedComponents,
   waitFor
 } from "testUtils";
+import { calabrioTimeZones } from "utils";
+
 
 jest.mock("../CallRecordingScope", () => ({
   __esModule: true,
@@ -51,39 +53,12 @@ describe("CallRecordingForm", () => {
   });
   describe("User is being created", () => {
     describe("initial render", () => {
-      test("Form is rendered as expected", () => {
-        render(<CallRecordingForm/>);
-        expect(Dropdown.mock.calls.length).toBe(3);
-        expectOnlyPassedProps(Dropdown, {
-          label: "Roles",
-          multiple: true,
-          options: calabrioContext.roles.map(role => {
-            return {
-              label: role.name,
-              value: role.id
-            };
-          }),
-          value: []
-        }, 0);
-        expectOnlyPassedProps(Dropdown, {
-          label: "Team",
-          options: calabrioContext.teams.map(team => {
-            return {
-              label: team.name,
-              value: team.groupId
-            };
-          }),
-          value: null
-        }, 1);
-        expect(CallRecordingScope.mock.calls.length).toBe(1);
-        expect(getCalabrioUser).toHaveBeenCalledTimes(0);
-        expect(mockSetForm).toHaveBeenCalledTimes(1);
-        expect(mockSetForm).toHaveBeenCalledWith({
-          type: "SET_CALABRIO_USER",
-          payload: {
-            roles: [],
-            scope: {
-              groups: [{
+      describe("User form groups and teams are empty", () => {
+        const expectedPayload = {
+          ...initialFormState.calabrioUser,
+          scope: {
+            groups: [
+              {
                 checked: false,
                 groupId: 100,
                 name: "Hawaii 50 Group",
@@ -93,30 +68,194 @@ describe("CallRecordingForm", () => {
                 groupId: 200,
                 name: "FNOL Group",
                 partial: false
-              }],
-              teams: [{
-                checked: false,
-                groupId: 101,
-                name: "Hawaii Team 50",
-                parentGroupId: 100
-              }, {
-                checked: false,
-                groupId: 102,
-                name: "Hawaii Specialty Team",
-                parentGroupId: 100
-              }, {
-                checked: false,
-                groupId: 201,
-                name: "FNOL Team",
-                parentGroupId: 200
-              }]
-            },
-            team: null,
-            timezone: {
-              label: "EST",
-              value: 173
-            }
+              }
+            ],
+            teams: [{
+              checked: false,
+              groupId: 101,
+              name: "Hawaii Team 50",
+              parentGroupId: 100
+            }, {
+              checked: false,
+              groupId: 102,
+              name: "Hawaii Specialty Team",
+              parentGroupId: 100
+            }, {
+              checked: false,
+              groupId: 201,
+              name: "FNOL Team",
+              parentGroupId: 200
+            }]
           }
+        };
+        describe("teams length is 0 while groups > 0", () => {
+          beforeEach(() => {
+            useFormState.mockReturnValue({
+              ...initialFormState,
+              calabrioUser: {
+                ...initialFormState.calabrioUser,
+                scope: {
+                  ...initialFormState.calabrioUser.scope,
+                  teams: [{
+                    name: "Team 1",
+                    id: 2
+                  }]
+                }
+              }
+            });
+          });
+          test("setScopeOnNewUser is called", () => {
+            render(<CallRecordingForm/>);
+            expect(mockSetForm).toBeCalledTimes(1);
+            expect(mockSetForm).toBeCalledWith({
+              type: "SET_CALABRIO_USER",
+              payload: expectedPayload
+            });
+          });
+        });
+        describe("groups length is 0 while teams > 0", () => {
+          beforeEach(() => {
+            useFormState.mockReturnValue({
+              ...initialFormState,
+              calabrioUser: {
+                ...initialFormState.calabrioUser,
+                scope: {
+                  ...initialFormState.calabrioUser.scope,
+                  groups: [{
+                    name: "Group 1",
+                    id: 2
+                  }]
+                }
+              }
+            });
+          });
+          test("setScopeOnNewUser is called", () => {
+            render(<CallRecordingForm/>);
+            expect(mockSetForm).toBeCalledTimes(1);
+            expect(mockSetForm).toBeCalledWith({
+              type: "SET_CALABRIO_USER",
+              payload: expectedPayload
+            });
+          });
+        });
+      });
+      describe("groups and teams are both empty", () => {
+        test("Form is rendered as expected", () => {
+          render(<CallRecordingForm/>);
+          expect(Dropdown.mock.calls.length).toBe(3);
+          expectOnlyPassedProps(Dropdown, {
+            label: "Roles",
+            multiple: true,
+            options: calabrioContext.roles.map(role => {
+              return {
+                label: role.name,
+                value: role.id
+              };
+            }),
+            value: []
+          }, 0);
+          expectOnlyPassedProps(Dropdown, {
+            label: "Team",
+            options: calabrioContext.teams.map(team => {
+              return {
+                label: team.name,
+                value: team.groupId
+              };
+            }),
+            value: null
+          }, 1);
+          expect(CallRecordingScope.mock.calls.length).toBe(1);
+          expect(getCalabrioUser).toHaveBeenCalledTimes(0);
+          expect(mockSetForm).toHaveBeenCalledTimes(1);
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: "SET_CALABRIO_USER",
+            payload: {
+              roles: [],
+              scope: {
+                groups: [{
+                  checked: false,
+                  groupId: 100,
+                  name: "Hawaii 50 Group",
+                  partial: false
+                }, {
+                  checked: false,
+                  groupId: 200,
+                  name: "FNOL Group",
+                  partial: false
+                }],
+                teams: [{
+                  checked: false,
+                  groupId: 101,
+                  name: "Hawaii Team 50",
+                  parentGroupId: 100
+                }, {
+                  checked: false,
+                  groupId: 102,
+                  name: "Hawaii Specialty Team",
+                  parentGroupId: 100
+                }, {
+                  checked: false,
+                  groupId: 201,
+                  name: "FNOL Team",
+                  parentGroupId: 200
+                }]
+              },
+              team: null,
+              timezone: {
+                label: "EST",
+                value: 173
+              }
+            }
+          });
+        });
+      });
+      describe("groups and teams are both length > 0", () => {
+        beforeEach(() => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            calabrioUser: {
+              ...initialFormState.calabrioUser,
+              scope: {
+                ...initialFormState.calabrioUser.scope,
+                teams: [{
+                  name: "Team 1",
+                  id: 2
+                }],
+                groups: [{
+                  name: "Group 1",
+                  id: 2
+                }]
+              }
+            }
+          });
+        });
+        test("Form is rendered as expected", () => {
+          render(<CallRecordingForm/>);
+          expect(Dropdown.mock.calls.length).toBe(3);
+          expectOnlyPassedProps(Dropdown, {
+            label: "Roles",
+            multiple: true,
+            options: calabrioContext.roles.map(role => {
+              return {
+                label: role.name,
+                value: role.id
+              };
+            }),
+            value: []
+          }, 0);
+          expectOnlyPassedProps(Dropdown, {
+            label: "Team",
+            options: calabrioContext.teams.map(team => {
+              return {
+                label: team.name,
+                value: team.groupId
+              };
+            }),
+            value: null
+          }, 1);
+          expect(CallRecordingScope.mock.calls.length).toBe(1);
+          expect(getCalabrioUser).toHaveBeenCalledTimes(0);
+          expect(mockSetForm).toHaveBeenCalledTimes(0);
         });
       });
     });
@@ -138,10 +277,30 @@ describe("CallRecordingForm", () => {
       });
     });
     describe("Team Dropdown", () => {
+      describe("manager's'calabrio teams is not null", () => {
+        beforeEach(() => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            manager: {
+              value: {
+                calabrio_team_ids: [102, 101]
+              }
+            }
+          });
+        });
+        test("The dropdown should only show the managers teams", () => {
+          render(<CallRecordingForm />);
+          expect(Dropdown.mock.calls[1][0].label).toBe("Team");
+          expect(Dropdown.mock.calls[1][0].options.length).toBe(2);
+        });
+      });
       describe("updateValue is called", () => {
         test("setForm is called with the appropriate params", () => {
           render(<CallRecordingForm />);
           expect(Dropdown.mock.calls.length).toBe(3);
+          expect(Dropdown.mock.calls[1][0].label).toBe("Team");
+          expect(Dropdown.mock.calls[1][0].options.length).toBe(3);
+
           const updateTeam = Dropdown.mock.calls[1][0].updateValue;
           act(() => {
             updateTeam(null, calabrioContext.teams[0]);
@@ -151,6 +310,24 @@ describe("CallRecordingForm", () => {
             type: "SET_CALABRIO_TEAM",
             payload: calabrioContext.teams[0]
           });
+        });
+      });
+    });
+  });
+  describe("Timezone Dropdown", () => {
+    describe("updateValue is called", () => {
+      test("setForm is called with the appropriate params", () => {
+        render(<CallRecordingForm />);
+        expect(Dropdown.mock.calls.length).toBe(3);
+        expect(Dropdown.mock.calls[2][0].options).toBe(calabrioTimeZones);
+        const updateTimeZone = Dropdown.mock.calls[2][0].updateValue;
+        act(() => {
+          updateTimeZone(null, calabrioTimeZones[1]);
+        });
+        expect(mockSetForm).toHaveBeenCalledTimes(2);
+        expect(mockSetForm).toHaveBeenCalledWith({
+          type: "SET_CALABRIO_TIMEZONE",
+          payload: calabrioTimeZones[1]
         });
       });
     });
