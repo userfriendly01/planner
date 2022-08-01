@@ -40,7 +40,7 @@ const CallRecordingScope = (props:any) => {
         checkIfParital(index);
       });
     }
-  }, [groups]);
+  }, [worker, groups]);
 
   console.log("Selected Group! ", selectedGroup);
   console.log("Form!", form);
