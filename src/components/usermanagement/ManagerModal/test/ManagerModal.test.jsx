@@ -33,9 +33,6 @@ jest.mock("@material-ui/icons", () => ({
 }));
 
 jest.mock("services", () => ({
-  __esModule: true,
-  addManager: jest.fn(),
-  editManager: jest.fn(),
   FetchUserResponse: jest.requireActual("services").FetchUserResponse
 }));
 

@@ -177,14 +177,6 @@ jest.mock("components", () => ({
   NotificationModal: jest.fn()
 }));
 
-jest.mock("services", () => ({
-  getManagers: jest.fn(),
-  getOffices: jest.fn(),
-  getCalabrioAgents: jest.fn(),
-  getCalabrioRoles: jest.fn(),
-  getCalabrioOrg: jest.fn()
-}));
-
 describe("<App />", () => {
 
   beforeEach(() => {

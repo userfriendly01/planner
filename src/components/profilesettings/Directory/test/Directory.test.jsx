@@ -30,10 +30,6 @@ jest.mock("components", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("services", () => ({
-  deleteDirectory: jest.fn()
-}));
-
 const profileId = "89";
 const refreshProfileData = jest.fn();
 const directory = [

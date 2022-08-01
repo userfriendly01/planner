@@ -29,10 +29,6 @@ jest.mock("components", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("services", () => ({
-  getCalabrioUser: jest.fn()
-}));
-
 jest.mock("context", () => ({
   useAdminState: jest.fn(),
   useFormState: jest.fn(),

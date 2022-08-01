@@ -69,14 +69,6 @@ jest.mock("context", () => ({
   userFormActions: jest.requireActual("context").userFormActions
 }));
 
-jest.mock("services", () => ({
-  addOffice: jest.fn(),
-  createUser: jest.fn(),
-  fetchUser: jest.fn(),
-  updateUser: jest.fn(),
-  createCalabrioUser: jest.fn()
-}));
-
 jest.mock("utils", () => ({
   checkConflictingUsers: jest.fn(),
   isFormValid: jest.fn(),

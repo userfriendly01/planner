@@ -87,25 +87,28 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
 
       if (dupUserAdLogin === adLogin || dupUserEmail === email) {
         const res: CalabrioUser = await getCalabrioUser(u.id);
-        const user = res.data;
-        console.warn("Conflicting User Found with Duplicate Email or Windows Login: ", user);
+        const dupUser = res.data;
+        console.warn("Conflicting User Found with Duplicate Email or Windows Login: ", dupUser);
 
-        user.adLogin = `xx-${user.id}-${user.adLogin}`;
-        user.email = `xx-${user.id}-${user.email}`;
-        user.deactivated = Date.now();
+        dupUser.adLogin = `xx-${dupUser.id}-${dupUser.adLogin}`;
+        dupUser.email = `xx-${dupUser.id}-${dupUser.email}`;
+        dupUser.deactivated = Date.now();
 
-        await updateCalabrioUser(user.id, user);
+        await updateCalabrioUser(dupUser.id, dupUser);
+        return;
       }
 
       if (!dupUserEmail && acdId && firstName === dupUserFirstName && lastName === dupUserLastName) {
         const res: CalabrioUser = await getCalabrioUser(u.id);
-        const user = res.data;
-        console.warn("Conflicting User Found with First and Last Name: ", user);
+        const dupUser = res.data;
+        console.warn("Conflicting User Found with First and Last Name: ", dupUser);
 
-        user.deactivated = Date.now();
-        user.email = `SHELLUSER${user.id}@libertymutual.com`;
+        dupUser.deactivated = Date.now();
+        dupUser.adLogin = `SHELLUSER-${dupUser.id}`;
+        dupUser.email = `SHELLUSER-${dupUser.id}@libertymutual.com`;
 
-        await updateCalabrioUser(user.id, user);
+        await updateCalabrioUser(dupUser.id, dupUser);
+        return;
       }
     }));
   } catch(err) {

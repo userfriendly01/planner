@@ -96,11 +96,6 @@ jest.mock("utils", () => ({
   removeProfileZeroIfAdminNotInProfileZero: jest.fn()
 }));
 
-jest.mock("services", () => ({
-  __esModule: true,
-  checkExtension: jest.fn()
-}));
-
 jest.mock("globals", () => ({
   __esModule: true,
   extensionMatcher: {
