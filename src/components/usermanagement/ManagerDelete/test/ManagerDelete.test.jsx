@@ -55,18 +55,52 @@ jest.mock("components", () => ({
   StyledButton: jest.fn()
 }));
 
-const selectedManager = {
-  manager_n_number: "10"
+const mockHandleClose = jest.fn();
+const renderComponent = selectedManager => render(
+  <ManagerDelete handleClose={mockHandleClose}
+    selectedManager={selectedManager}
+  />
+);
+
+const defaultAdminState = {
+  profileContext: {
+    profiles: [{
+      profile_id: 4
+    }]
+  },
+  managerContext: {
+    managers: [
+      {
+        manager_id: 3,
+        manager_n_number: "n0262226"
+      },
+      {
+        manager_id: 10,
+        manager_n_number: "n0263786"
+      }
+    ]
+  },
+  workerContext: {
+    workers: [
+      {
+        attributes: {
+          emp_first_name: "Warren",
+          emp_last_name: "Spencer",
+          manager_n_number: "n0262226"
+        }
+      },
+      {
+        attributes: {
+          emp_first_name: "Calista",
+          emp_last_name: "Flockhart",
+          manager_n_number: "n0262226"
+        }
+      }
+    ]
+  }
 };
 
 describe("<ManagerDelete />", () => {
-  const mockHandleClose = jest.fn();
-  const renderComponent = () => render(
-    <ManagerDelete handleClose={mockHandleClose}
-      selectedManager={selectedManager}
-    />
-  );
-
   beforeEach(() => {
     mockStore.reset();
     jest.clearAllMocks();
@@ -80,346 +114,386 @@ describe("<ManagerDelete />", () => {
     PaperContainer.mockClear();
     PaperContainer.mockImplementation(props => <div>{props.children}</div>);
     mockHandleClose.mockClear();
-    useAdminState.mockReturnValue({
-      profileContext: {
-        profiles: [{
-          profile_id: 4
-        }]
-      },
-      calabrioContext: {
-        teams: [{
-          groupId: 215,
-          name: "Calabrio Group One"
-        }]
-      },
-      managerContext: {
-        managers: [
-          {
-            manager_id: 10,
-            manager_n_number: "n0263786"
-          },
-          {
-            manager_id: 3,
-            manager_n_number: "n0262226"
-          }
-        ]
-      },
-      workerContext: {
-        workers: [
-          {
-            attributes: {
-              emp_first_name: "Warren",
-              emp_last_name: "Spencer",
-              manager_n_number: "3"
-            }
-          }
-        ]
-      }
-    });
+    useAdminState.mockReturnValue(defaultAdminState);
   });
-  // const workers = useAdminState().workerContext.workers;
-  // workers.filter(worker => worker.attributes.manager_n_number === manager.manager_n_number);
 
-  describe("wsx initial state of the modal", () => {
-    test("should render StyledButton, CloseRounded & ModalNNumber once each", () => {
-      const rendered = renderComponent();
+  const managerObject = manager => {
+    return { manager_n_number: manager };
+  };
+
+  describe("initial state of the modal", () => { // wsx ok
+    test("should render StyledButton and CloseRounded once each", () => {
+      const rendered = renderComponent(managerObject("n0262226"));
       expectMockedComponent(rendered, { StyledButton });
       expectMockedComponent(rendered, { CloseRounded });
     });
     test("should not render ModalOverlay", () => {
-      const rendered = renderComponent(10);
+      const rendered = renderComponent(managerObject("n0262226"));
       expect(rendered.queryAllByText("ModalOverlay").length).toBe(0);
     });
   });
 
-  const updateFormSoValid = (fetchedManager, nNumber) => {
-    act(() => {
-      getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).onUpdate("n02");
-    });
-    act(() => {
-      getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).onClear();
-    });
-    act(() => {
-      getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).onComplete(fetchedManager, nNumber);
-    });
-    act(() => {
-      Dropdown.mock.calls[6][0].updateValue(null, {
-        profile_id: 4
+  describe("Delete Manager button is clicked", () => {
+    describe("wsx manager does not have any workers on their team", () => {
+      useAdminState.mockReturnValue(defaultAdminState);
+      describe("call to delete the manager succeeds", () => {
+        beforeEach(() => {
+          deleteManager.mockResolvedValue({ good: "to go" });
+        });
+        test("modalOverlay should render with 'Manager deleted successfully' & modal should close after 2 seconds (handleClose should be called)", async () => {
+          const rendered = renderComponent(managerObject("n0263786"));
+          const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
+          act(() => onClick());
+          act(() => jest.runAllTimers());
+          await waitFor(() => {
+            expectMockedComponent(rendered, { ModalOverlay });
+            expectOnlyPassedProps(ModalOverlay, {
+              status: "success",
+              message: "Manager deleted successfully"
+            });
+            expect(mockHandleClose).toHaveBeenCalledTimes(1);
+          });
+        });
       });
-      Dropdown.mock.calls[7][0].updateValue(null, [{
-        value: 215
-      }]);
+      describe("call to delete the manager fails", () => {
+        const errorResp = { nope: "HOSED!" };
+        beforeEach(() => deleteManager.mockRejectedValue(errorResp));
+        test("wsx confirmation form should look a certain way", () => {
+          const rendered = renderComponent(managerObject("n0263786"));
+          // ToDo: test the form's static elements
+        });
+        test("modalOverlay should render with 'Manager added successfully' & modal should close after 2 seconds (handleClose should be called)", async () => {
+          const rendered = renderComponent(managerObject("n0263786"));
+          const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
+          act(() => onClick());
+          act(() => jest.runAllTimers());
+          await waitFor(() => {
+            expectOnlyPassedProps(ModalOverlay, {
+              status: "fail",
+              message: "Failed to delete Manager"
+            });
+            expect(mockHandleClose).toHaveBeenCalledTimes(0);
+            expectMockedComponent(rendered, { ModalOverlay }, 0);
+          });
+        });
+      });
     });
-    expect(getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton)).disabled).toBe(false);
-  };
+    describe("Manager has existing workers on their team", () => {
+      // rendered = renderComponent(managerObject("n0263786"));
+      test("error form should look a certain way", () => {
+        const rendered = renderComponent(managerObject("n0263786"));
+        // ToDo: test the form's static elements
+      });
 
-  describe("Add Manager", () => {
-    describe("initial state", () => {
-      test("should be disabled", () => {
-        const rendered = renderComponent();
-        expectMockedComponent(rendered, { StyledButton }, 1);
-        const { disabled } = getMockedComponentProps(StyledButton);
-        expect(disabled).toBe(true);
-      });
-    });
-    describe("Add Manager button is clicked", () => {
-      describe("manager is not in list of managers", () => {
-        describe("call to add the manager succeeds", () => {
-          beforeEach(() => addManager.mockResolvedValue({ good: "to go" }));
-          test("ModalOverlay should render with 'Manager added successfully' & modal should close after 2 seconds (handleClose should be called)", async () => {
-            const rendered = renderComponent();
-            const fetchedManager = {
-              firstName: "Bob",
-              lastName: "Bobson"
-            };
-            updateFormSoValid(fetchedManager, "n0000000");
-            const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
-            act(() => onClick());
-            act(() => jest.runAllTimers());
-            await waitFor(() => {
-              expectMockedComponent(rendered, { ModalOverlay });
-              expectOnlyPassedProps(ModalOverlay, {
-                status: "success",
-                message: "Manager saved successfully"
-              });
-              expect(mockHandleClose).toHaveBeenCalledTimes(1);
-            });
-          });
-          describe("Manager name has an ' ", () => {
-            const fetchedManager = {
-              firstName: "B'ob",
-              lastName: "Bob'son"
-            };
-            test("should be formatted and saved successfully", async () => {
-              const rendered = renderComponent();
-              updateFormSoValid(fetchedManager, "n0000000");
-              const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
-              act(() => onClick());
-              act(() => jest.runAllTimers());
-              await waitFor(() => {
-                expectMockedComponent(rendered, { ModalOverlay });
-                expectOnlyPassedProps(ModalOverlay, {
-                  status: "success",
-                  message: "Manager saved successfully"
-                });
-                expect(mockStore.getActions()).toEqual([
-                  {
-                    type: "addManager",
-                    payload: {
-                      calabrio_team_ids: [215],
-                      manager_id: undefined,
-                      manager_first_name: "B'ob",
-                      manager_last_name: "Bob'son",
-                      manager_n_number: "n0000000",
-                      profile_id: 4
-                    }
-                  }
-                ]);
-                expect(mockHandleClose).toHaveBeenCalledTimes(1);
-              });
-            });
-          });
-        });
-        describe("call to add the manager fails", () => {
-          const errorResp = { nope: "HOSED!" };
-          beforeEach(() => addManager.mockRejectedValue(errorResp));
-          test("ModalOverlay should render with 'Manager added successfully' & modal should close after 2 seconds (handleClose should be called)", async () => {
-            const rendered = renderComponent();
-            const fetchedManager = {
-              firstName: "Bob",
-              lastName: "Bobson"
-            };
-            updateFormSoValid(fetchedManager, "n0000000");
-            const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
-            act(() => onClick());
-            act(() => jest.runAllTimers());
-            await waitFor(() => {
-              expectOnlyPassedProps(ModalOverlay, {
-                status: "fail",
-                message: "Failed to Create Manager"
-              });
-              expect(mockHandleClose).toHaveBeenCalledTimes(0);
-              expectMockedComponent(rendered, { ModalOverlay }, 0);
-            });
-          });
-        });
-      });
-    });
-    describe("manager is already in the list of managers", () => {
-      const managerNNumber = "n1234567";
-      const fetchedManager = {
-        firstName: "Bob",
-        lastName: "Bobson"
-      };
-      beforeEach(() => {
-        useAdminState.mockReturnValue({
-          profileContext: {
-            profiles: [{
-              profile_id: 4
-            }]
-          },
-          calabrioContext: {
-            teams: [{
-              groupId: 215,
-              name: "Calabrio Group One"
-            }]
-          },
-          managerContext: {
-            managers: [{
-              manager_first_name: "Ialready",
-              manager_last_name: "Exist",
-              manager_n_number: managerNNumber
-            }]
-          }
-        });
-      });
-      test("ModalOverlay should render 'Failed to Create Manager' & modal should remain open (handleClose should not be called)", async () => {
-        const rendered = render(<ManagerModal handleClose={mockHandleClose} editManager={null}/>);
-        updateFormSoValid(fetchedManager, managerNNumber);
-        const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
-        act(() => onClick());
-        act(() => jest.runAllTimers());
-        await waitFor(() => {
-          expectOnlyPassedProps(ModalOverlay, {
-            status: "fail",
-            message: "Manager already exists"
-          });
-          expect(mockHandleClose).toHaveBeenCalledTimes(0);
-          expectMockedComponent(rendered, { ModalOverlay }, 0);
-        });
-      });
+      // test("wsx ", async () => {
+      //   const rendered = renderComponent(managerObject("n0262226"));
+      //   const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
+      //   act(() => onClick());
+      //   act(() => jest.runAllTimers());
+      //   await waitFor(() => {
+      //     expectMockedComponent(rendered, { ModalOverlay });
+      //     expectOnlyPassedProps(ModalOverlay, {
+      //       status: "success",
+      //       message: "Manager deleted successfully"
+      //     });
+      //     expect(mockHandleClose).toHaveBeenCalledTimes(1);
+      //   });
+      // });
     });
   });
 
-  describe("Update Manager", () => {
-    const renderComponent = manager => render(<ManagerModal handleClose={mockHandleClose} selectedManager={manager}/>);
-    beforeEach(() => {
+  // describe("wsx Delete Manager confirmation dialog", () => {
+  //   //
+  // });
 
-    });
-    describe("Initial State", () => {
-      const selectedManager = {
-        manager_first_name: "Faith",
-        manager_last_name: "Cuneo",
-        manager_n_number: "n0263786",
-        profile_id: null,
-        calabrio_team_ids: [215, 225]
-      };
-      test("Should show edit form with edit button", () => {
-        const rendered = renderComponent(selectedManager);
-        expect(rendered.container).toHaveTextContent("Edit Faith Cuneo");
-        expect(StyledButton.mock.calls[0][0].children).toBe("Save");
-        expect(StyledButton.mock.calls[0][0].disabled).toBe(true);
-      });
-    });
-    describe("Update Manager Button", () => {
-      const selectedManager = {
-        manager_id: 10,
-        manager_first_name: "Faith",
-        manager_last_name: "Cuneo",
-        manager_n_number: "n0263786",
-        profile_id: null,
-        calabrio_team_ids: [215, 225]
-      };
-      describe("Manager and Profile are selected and selectedCalabrioTeam Length !== 0", () => {
-        test("Save Button should be enabled", () => {
-          renderComponent(selectedManager);
-          act(() => {
-            Dropdown.mock.calls[0][0].updateValue(null, { profile_id: 4 });
-          });
-          expect(StyledButton.mock.calls[0][0].children).toBe("Save");
-          expect(StyledButton.mock.calls[0][0].disabled).toBe(true);
-          expect(StyledButton.mock.calls[1][0].disabled).toBe(false);
-        });
-      });
-      describe("Update Manager Button is clicked", () => {
-        describe("editManager service call is successful", () => {
-          beforeEach(() => {
-            editManager.mockResolvedValue({ yay: "woo!" });
-          });
-          test("Should dispatch editManager and update Modal", async () => {
-            renderComponent(selectedManager);
-            act(() => {
-              Dropdown.mock.calls[0][0].updateValue(null, { profile_id: 4 });
-            });
-            act(() => {
-              StyledButton.mock.calls[1][0].onClick();
-            });
-            await waitFor(() => {
-              expect(editManager).toHaveBeenCalledTimes(1);
-              expect(editManager).toHaveBeenCalledWith(10, {
-                calabrio_team_ids: "[215,225]",
-                profile_id: 4
-              });
-              expect(mockHandleClose).toHaveBeenCalledTimes(1);
-              expect(mockStore.getActions()).toEqual([
-                {
-                  type: "editManager",
-                  payload: [
-                    {
-                      calabrio_team_ids: [215, 225],
-                      manager_id: 10,
-                      manager_first_name: "Faith",
-                      manager_last_name: "Cuneo",
-                      manager_n_number: "n0263786",
-                      profile_id: 4
-                    },
-                    {
-                      manager_id: 3,
-                      manager_n_number: "n0262226"
-                    }
-                  ]
-                }
-              ]);
-              expect(ModalOverlay.mock.calls[1][0]).toStrictEqual({
-                message: "Manager saved successfully",
-                status: "success"
-              });
-            });
-          });
-        });
-        describe("editManager service call fails", () => {
-          beforeEach(() => {
-            editManager.mockRejectedValue({ aww: "boo!" });
-          });
-          test("Should not dispatch editManager and update Modal with fail status", async () => {
-            renderComponent(selectedManager);
-            act(() => {
-              Dropdown.mock.calls[0][0].updateValue(null, { profile_id: 4 });
-            });
-            act(() => {
-              StyledButton.mock.calls[1][0].onClick();
-            });
-            await waitFor(() => {
-              expect(editManager).toHaveBeenCalledTimes(1);
-              expect(editManager).toHaveBeenCalledWith(10, {
-                calabrio_team_ids: "[215,225]",
-                profile_id: 4
-              });
-              expect(mockHandleClose).toHaveBeenCalledTimes(0);
-              expect(mockStore.getActions().length).toEqual(0);
-              expect(ModalOverlay.mock.calls[2][0]).toStrictEqual({
-                message: "Failed to update Manager",
-                status: "fail"
-              });
-            });
-          });
-        });
-      });
-    });
-  });
+  // const updateFormSoValid = (fetchedManager, nNumber) => {
+  //   act(() => {
+  //     getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).onUpdate("n02");
+  //   });
+  //   act(() => {
+  //     getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).onClear();
+  //   });
+  //   act(() => {
+  //     getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).onComplete(fetchedManager, nNumber);
+  //   });
+  //   act(() => {
+  //     Dropdown.mock.calls[6][0].updateValue(null, {
+  //       profile_id: 4
+  //     });
+  //     Dropdown.mock.calls[7][0].updateValue(null, [{
+  //       value: 215
+  //     }]);
+  //   });
+  //   expect(getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton)).disabled).toBe(false);
+  // };
 
-  describe("close button", () => {
-    test("should render whenever modal is open", () => {
-      const rendered = renderComponent();
-      expectMockedComponent(rendered, { CloseRounded }, 1);
-    });
-    describe("when clicked", () => {
-      test("should close the modal", () => {
-        renderComponent();
-        const { onClick } = getMockedComponentProps(CloseRounded);
-        act(() => onClick());
-        expect(mockHandleClose).toBeCalled();
-      });
-    });
-  });
+  // describe("Add Manager", () => {
+  //   describe("initial state", () => {
+  //     test("should be disabled", () => {
+  //       const rendered = renderComponent();
+  //       expectMockedComponent(rendered, { StyledButton }, 1);
+  //       const { disabled } = getMockedComponentProps(StyledButton);
+  //       expect(disabled).toBe(true);
+  //     });
+  //   });
+  //   describe("Add Manager button is clicked", () => {
+  //     describe("manager is not in list of managers", () => {
+  //       describe("call to add the manager succeeds", () => {
+  //         beforeEach(() => addManager.mockResolvedValue({ good: "to go" }));
+  //         test("ModalOverlay should render with 'Manager added successfully' & modal should close after 2 seconds (handleClose should be called)", async () => {
+  //           const rendered = renderComponent();
+  //           const fetchedManager = {
+  //             firstName: "Bob",
+  //             lastName: "Bobson"
+  //           };
+  //           updateFormSoValid(fetchedManager, "n0000000");
+  //           const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
+  //           act(() => onClick());
+  //           act(() => jest.runAllTimers());
+  //           await waitFor(() => {
+  //             expectMockedComponent(rendered, { ModalOverlay });
+  //             expectOnlyPassedProps(ModalOverlay, {
+  //               status: "success",
+  //               message: "Manager saved successfully"
+  //             });
+  //             expect(mockHandleClose).toHaveBeenCalledTimes(1);
+  //           });
+  //         });
+  //         describe("Manager name has an ' ", () => {
+  //           const fetchedManager = {
+  //             firstName: "B'ob",
+  //             lastName: "Bob'son"
+  //           };
+  //           test("should be formatted and saved successfully", async () => {
+  //             const rendered = renderComponent();
+  //             updateFormSoValid(fetchedManager, "n0000000");
+  //             const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
+  //             act(() => onClick());
+  //             act(() => jest.runAllTimers());
+  //             await waitFor(() => {
+  //               expectMockedComponent(rendered, { ModalOverlay });
+  //               expectOnlyPassedProps(ModalOverlay, {
+  //                 status: "success",
+  //                 message: "Manager saved successfully"
+  //               });
+  //               expect(mockStore.getActions()).toEqual([
+  //                 {
+  //                   type: "addManager",
+  //                   payload: {
+  //                     calabrio_team_ids: [215],
+  //                     manager_id: undefined,
+  //                     manager_first_name: "B'ob",
+  //                     manager_last_name: "Bob'son",
+  //                     manager_n_number: "n0000000",
+  //                     profile_id: 4
+  //                   }
+  //                 }
+  //               ]);
+  //               expect(mockHandleClose).toHaveBeenCalledTimes(1);
+  //             });
+  //           });
+  //         });
+  //       });
+  //       describe("call to add the manager fails", () => {
+  //         const errorResp = { nope: "HOSED!" };
+  //         beforeEach(() => addManager.mockRejectedValue(errorResp));
+  //         test("ModalOverlay should render with 'Manager added successfully' & modal should close after 2 seconds (handleClose should be called)", async () => {
+  //           const rendered = renderComponent();
+  //           const fetchedManager = {
+  //             firstName: "Bob",
+  //             lastName: "Bobson"
+  //           };
+  //           updateFormSoValid(fetchedManager, "n0000000");
+  //           const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
+  //           act(() => onClick());
+  //           act(() => jest.runAllTimers());
+  //           await waitFor(() => {
+  //             expectOnlyPassedProps(ModalOverlay, {
+  //               status: "fail",
+  //               message: "Failed to Create Manager"
+  //             });
+  //             expect(mockHandleClose).toHaveBeenCalledTimes(0);
+  //             expectMockedComponent(rendered, { ModalOverlay }, 0);
+  //           });
+  //         });
+  //       });
+  //     });
+  //   });
+  //   describe("manager is already in the list of managers", () => {
+  //     const managerNNumber = "n1234567";
+  //     const fetchedManager = {
+  //       firstName: "Bob",
+  //       lastName: "Bobson"
+  //     };
+  //     beforeEach(() => {
+  //       useAdminState.mockReturnValue({
+  //         profileContext: {
+  //           profiles: [{
+  //             profile_id: 4
+  //           }]
+  //         },
+  //         calabrioContext: {
+  //           teams: [{
+  //             groupId: 215,
+  //             name: "Calabrio Group One"
+  //           }]
+  //         },
+  //         managerContext: {
+  //           managers: [{
+  //             manager_first_name: "Ialready",
+  //             manager_last_name: "Exist",
+  //             manager_n_number: managerNNumber
+  //           }]
+  //         }
+  //       });
+  //     });
+  //     test("ModalOverlay should render 'Failed to Create Manager' & modal should remain open (handleClose should not be called)", async () => {
+  //       const rendered = render(<ManagerModal handleClose={mockHandleClose} editManager={null}/>);
+  //       updateFormSoValid(fetchedManager, managerNNumber);
+  //       const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
+  //       act(() => onClick());
+  //       act(() => jest.runAllTimers());
+  //       await waitFor(() => {
+  //         expectOnlyPassedProps(ModalOverlay, {
+  //           status: "fail",
+  //           message: "Manager already exists"
+  //         });
+  //         expect(mockHandleClose).toHaveBeenCalledTimes(0);
+  //         expectMockedComponent(rendered, { ModalOverlay }, 0);
+  //       });
+  //     });
+  //   });
+  // });
+
+  // describe("Update Manager", () => {
+  //   const renderComponent = manager => render(<ManagerModal handleClose={mockHandleClose} selectedManager={manager}/>);
+  //   beforeEach(() => {
+
+  //   });
+  //   describe("Initial State", () => {
+  //     const selectedManager = {
+  //       manager_first_name: "Faith",
+  //       manager_last_name: "Cuneo",
+  //       manager_n_number: "n0263786",
+  //       profile_id: null,
+  //       calabrio_team_ids: [215, 225]
+  //     };
+  //     test("Should show edit form with edit button", () => {
+  //       const rendered = renderComponent(selectedManager);
+  //       expect(rendered.container).toHaveTextContent("Edit Faith Cuneo");
+  //       expect(StyledButton.mock.calls[0][0].children).toBe("Save");
+  //       expect(StyledButton.mock.calls[0][0].disabled).toBe(true);
+  //     });
+  //   });
+  //   describe("Update Manager Button", () => {
+  //     const selectedManager = {
+  //       manager_id: 10,
+  //       manager_first_name: "Faith",
+  //       manager_last_name: "Cuneo",
+  //       manager_n_number: "n0263786",
+  //       profile_id: null,
+  //       calabrio_team_ids: [215, 225]
+  //     };
+  //     describe("Manager and Profile are selected and selectedCalabrioTeam Length !== 0", () => {
+  //       test("Save Button should be enabled", () => {
+  //         renderComponent(selectedManager);
+  //         act(() => {
+  //           Dropdown.mock.calls[0][0].updateValue(null, { profile_id: 4 });
+  //         });
+  //         expect(StyledButton.mock.calls[0][0].children).toBe("Save");
+  //         expect(StyledButton.mock.calls[0][0].disabled).toBe(true);
+  //         expect(StyledButton.mock.calls[1][0].disabled).toBe(false);
+  //       });
+  //     });
+  //     describe("Update Manager Button is clicked", () => {
+  //       describe("editManager service call is successful", () => {
+  //         beforeEach(() => {
+  //           editManager.mockResolvedValue({ yay: "woo!" });
+  //         });
+  //         test("Should dispatch editManager and update Modal", async () => {
+  //           renderComponent(selectedManager);
+  //           act(() => {
+  //             Dropdown.mock.calls[0][0].updateValue(null, { profile_id: 4 });
+  //           });
+  //           act(() => {
+  //             StyledButton.mock.calls[1][0].onClick();
+  //           });
+  //           await waitFor(() => {
+  //             expect(editManager).toHaveBeenCalledTimes(1);
+  //             expect(editManager).toHaveBeenCalledWith(10, {
+  //               calabrio_team_ids: "[215,225]",
+  //               profile_id: 4
+  //             });
+  //             expect(mockHandleClose).toHaveBeenCalledTimes(1);
+  //             expect(mockStore.getActions()).toEqual([
+  //               {
+  //                 type: "editManager",
+  //                 payload: [
+  //                   {
+  //                     calabrio_team_ids: [215, 225],
+  //                     manager_id: 10,
+  //                     manager_first_name: "Faith",
+  //                     manager_last_name: "Cuneo",
+  //                     manager_n_number: "n0263786",
+  //                     profile_id: 4
+  //                   },
+  //                   {
+  //                     manager_id: 3,
+  //                     manager_n_number: "n0262226"
+  //                   }
+  //                 ]
+  //               }
+  //             ]);
+  //             expect(ModalOverlay.mock.calls[1][0]).toStrictEqual({
+  //               message: "Manager saved successfully",
+  //               status: "success"
+  //             });
+  //           });
+  //         });
+  //       });
+  //       describe("editManager service call fails", () => {
+  //         beforeEach(() => {
+  //           editManager.mockRejectedValue({ aww: "boo!" });
+  //         });
+  //         test("Should not dispatch editManager and update Modal with fail status", async () => {
+  //           renderComponent(selectedManager);
+  //           act(() => {
+  //             Dropdown.mock.calls[0][0].updateValue(null, { profile_id: 4 });
+  //           });
+  //           act(() => {
+  //             StyledButton.mock.calls[1][0].onClick();
+  //           });
+  //           await waitFor(() => {
+  //             expect(editManager).toHaveBeenCalledTimes(1);
+  //             expect(editManager).toHaveBeenCalledWith(10, {
+  //               calabrio_team_ids: "[215,225]",
+  //               profile_id: 4
+  //             });
+  //             expect(mockHandleClose).toHaveBeenCalledTimes(0);
+  //             expect(mockStore.getActions().length).toEqual(0);
+  //             expect(ModalOverlay.mock.calls[2][0]).toStrictEqual({
+  //               message: "Failed to update Manager",
+  //               status: "fail"
+  //             });
+  //           });
+  //         });
+  //       });
+  //     });
+  //   });
+  // });
+
+  // describe("close button", () => {
+  //   test("should render whenever modal is open", () => {
+  //     const rendered = renderComponent();
+  //     expectMockedComponent(rendered, { CloseRounded }, 1);
+  //   });
+  //   describe("when clicked", () => {
+  //     test("should close the modal", () => {
+  //       renderComponent();
+  //       const { onClick } = getMockedComponentProps(CloseRounded);
+  //       act(() => onClick());
+  //       expect(mockHandleClose).toBeCalled();
+  //     });
+  //   });
+  // });
 });
