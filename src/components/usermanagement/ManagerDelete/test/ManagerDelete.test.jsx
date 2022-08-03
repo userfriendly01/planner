@@ -5,17 +5,12 @@ import {
   ModalNNumber,
   ModalOverlay,
   PaperContainer,
-  StyledButton,
-  TextBox
+  StyledButton
 } from "components";
 import { useAdminState } from "context";
 import React from "react";
 import { act } from "react-dom/test-utils";
-import {
-  addManager,
-  editManager,
-  deleteManager
-} from "services";
+import { deleteManager } from "services";
 import {
   expectMockedComponent,
   expectOnlyPassedProps,
@@ -24,8 +19,7 @@ import {
   mockStore,
   render,
   setupMockedComponents,
-  waitFor,
-  getByTestId
+  waitFor
 } from "testUtils";
 
 jest.useFakeTimers();
@@ -129,11 +123,14 @@ describe("<ManagerDelete />", () => {
       expectMockedComponent(rendered, { StyledButton });
       expectMockedComponent(rendered, { CloseRounded });
       expect(rendered.queryAllByText("ModalOverlay").length).toBe(0);
-      const textBox = rendered.getByTestId("delete-confirmation-textbox");
-      expect(textBox).toHaveTextContent("Are you sure you want to delete this manager?");
     });
   });
   describe("manager does not have any workers on their team", () => {
+    test("confirmation dialog is displayed", () => {
+      const rendered = renderComponent(managerObject("n0263786"));
+      const textBox = rendered.getByTestId("delete-confirmation-textbox");
+      expect(textBox).toHaveTextContent("Are you sure you want to delete this manager?");
+    });
     describe("'Delete Manager' button is clicked", () => {
       describe("call to delete the manager succeeds", () => {
         beforeEach(() => {
@@ -157,7 +154,7 @@ describe("<ManagerDelete />", () => {
       describe("call to delete the manager fails", () => {
         const errorResp = { nope: "2 minutes for elbowing!" };
         beforeEach(() => deleteManager.mockRejectedValue(errorResp));
-        test("modalOverlay should render with 'Manager added successfully' & modal should close after 2 seconds (handleClose should be called)", async () => {
+        test("modalOverlay should render with 'Failed to delete Manager' & modal should close after 2 seconds (handleClose should be called)", async () => {
           const rendered = renderComponent(managerObject("n0263786"));
           const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
           act(() => onClick());
@@ -173,14 +170,14 @@ describe("<ManagerDelete />", () => {
         });
       });
     });
-    describe("Manager has existing workers on their team", () => {
-      test("the error dialog is displayed", async () => {
-        const rendered = renderComponent(managerObject("n0262226"));
-        const textBox = rendered.getByTestId("team-members-error-textbox");
-        expect(textBox).toHaveTextContent("Sorry, this manager cannot be deleted until these team members are re-assigned:");
-        const penaltyBox = rendered.getByTestId("team-members-error-penaltybox");
-        expect(penaltyBox).toHaveTextContent("Warren Spencer, Calista Flockhart");
-      });
+  });
+  describe("manager has existing workers on their team", () => {
+    test("the error dialog is displayed", async () => {
+      const rendered = renderComponent(managerObject("n0262226"));
+      const textBox = rendered.getByTestId("team-members-error-textbox");
+      expect(textBox).toHaveTextContent("Sorry, this manager cannot be deleted until these team members are re-assigned:");
+      const penaltyBox = rendered.getByTestId("team-members-error-penaltybox");
+      expect(penaltyBox).toHaveTextContent("Warren Spencer, Calista Flockhart");
     });
   });
 });
