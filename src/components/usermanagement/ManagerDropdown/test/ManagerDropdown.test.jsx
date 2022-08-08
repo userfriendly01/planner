@@ -134,7 +134,6 @@ describe("<ManagementFilter />", () => {
       Dropdown.mock.calls[0][0].updateValue(null, selection);
     });
     expect(setFilter).toHaveBeenCalledWith(selection.value);
-    // expect(Modal.mock.calls).toBe("wsx3");
     render(Modal.mock.calls[2][0].children);
     act(() => {
       ManagerModal.mock.calls[0][0].handleClose();
@@ -207,7 +206,6 @@ describe("<ManagementFilter />", () => {
         expect(button);
         fireEvent.click(button);
         expect(Modal.mock.calls[2][0].open).toBe(true);
-        // expect(Modal.mock.calls).toBe(true);
       });
     });
   });
