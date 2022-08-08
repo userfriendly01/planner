@@ -694,6 +694,25 @@ describe("userFormReducer", () => {
     });
   });
 
+  describe("SET_CALABRIO_TEAM", () => {
+    test("should set Calabrio User Roles to Payload", () => {
+      const payload = { timezone: "EST" };
+      const action = {
+        type: userFormActions.SET_CALABRIO_TIMEZONE,
+        payload
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrioUser: {
+          ...initialUserFormState.calabrioUser,
+          timezone: payload
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
   describe("SET_EXTENSION_MESSAGE", () => {
     test("SET_EXTENSION_MESSAGE should update message", () => {
       const testMessage = "Test message";

@@ -645,6 +645,79 @@ describe("<UserFormButtons />", () => {
         }
         );
       });
+      describe("checkConflictingUsers fails", () => {
+        const nonDidValidFormState = {
+          ...validFormState,
+          directDialNum: {
+            ...validFormState.directDialNum,
+            value: ""
+          }
+        };
+        beforeEach(() => {
+          useFormState.mockReturnValue(nonDidValidFormState);
+          checkConflictingUsers.mockRejectedValue({ aww: "bummer" });
+        });
+        test("createCalabrioUser should not be called", async () => {
+          renderComponent(true);
+          render(Tooltip.mock.calls[0][0].children);
+          act(() => {
+            const onClick = StyledButton.mock.calls[1][0].onClick;
+            onClick();
+          });
+          await waitFor(() => {
+            expect(createCalabrioUser).toHaveBeenCalledTimes(0);
+            jest.runAllTimers();
+            expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+            expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
+              overlayMessage: "Adding new user...",
+              saveStatus: "saving",
+              saveUser: true
+            });
+            expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+              overlayMessage: "Triton User Created. Error Creating Calabrio User",
+              saveStatus: "partial fail",
+              saveUser: true
+            });
+          });
+        });
+      });
+      describe("createCalabrioUser fails", () => {
+        const nonDidValidFormState = {
+          ...validFormState,
+          directDialNum: {
+            ...validFormState.directDialNum,
+            value: ""
+          }
+        };
+        beforeEach(() => {
+          useFormState.mockReturnValue(nonDidValidFormState);
+          checkConflictingUsers.mockResolvedValue("yay");
+          createCalabrioUser.mockRejectedValue({ aww: "bummer" });
+        });
+        test("setForm should not be called", async () => {
+          renderComponent(true);
+          render(Tooltip.mock.calls[0][0].children);
+          act(() => {
+            const onClick = StyledButton.mock.calls[1][0].onClick;
+            onClick();
+          });
+          await waitFor(() => {
+            expect(mockSetForm).toHaveBeenCalledTimes(0);
+            jest.runAllTimers();
+            expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+            expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
+              overlayMessage: "Adding new user...",
+              saveStatus: "saving",
+              saveUser: true
+            });
+            expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+              overlayMessage: "Triton User Created. Error Creating Calabrio User",
+              saveStatus: "partial fail",
+              saveUser: true
+            });
+          });
+        });
+      });
     });
     describe(`form.formMode === ${formModes.UPDATE}`, () => {
       const updateFormState = {

@@ -10,40 +10,34 @@ import {
   FullAccessWrapper
 } from "./CallRecording.Styles";
 import {
-  CalabrioGroup
-} from "./CallRecording.Interfaces";
-import {
-  useFormState,
   useFormDispatch,
   userFormActions
 } from "context";
 
-
 const CallRecordingScope = (props:any) => {
 
   const {
-    worker,
-    groups,
-    teams
+    calabrioUser
   } = props;
 
-  const form = useFormState();
+  const {
+    groups,
+    teams
+  } = calabrioUser.scope;
+
   const setForm = useFormDispatch();
   const [ selectedGroup, setSelectedGroup ] = React.useState(null);
 
   useEffect(() => {
     if(groups.length > 0) {
       setSelectedGroup(groups[0]);
-    }
-    if(worker){
       groups.forEach((group: any, index: number) => {
-        checkIfParital(index);
+        checkIfPartial(index);
       });
     }
-  }, [worker, groups]);
+  }, [groups]);
 
-  console.log("Selected Group! ", selectedGroup);
-  console.log("Form!", form);
+  console.log("groups", groups);
 
   const identifyChildrenTeams = (groupId: number) => {
     const childrenTeams: any[] = [];
@@ -95,11 +89,12 @@ const CallRecordingScope = (props:any) => {
       }
     });
     const groupIndex = groups.findIndex((group: any) => group.groupId === parentGroupId);
-    checkIfParital(groupIndex);
+    checkIfPartial(groupIndex);
   };
 
-  const checkIfParital = (index: number): void => {
+  const checkIfPartial = (index: number): void => {
     const group = groups[index];
+    console.log(group);
     const childrenTeams = identifyChildrenTeams(group.groupId);
     const checkedChildrenTeams = childrenTeams.filter((teamIndex: any) => teams[teamIndex].checked === true);
 
@@ -173,6 +168,7 @@ const CallRecordingScope = (props:any) => {
             <CustomTableData><TableText>Full Admin Access</TableText></CustomTableData>
             <CustomTableData>
               <Checkbox
+                data-testid="admin-checkbox"
                 onChange={e => handleCheckAdmin(e.target.checked)}
                 checked={checkIfAdmin()}
               />
@@ -183,12 +179,14 @@ const CallRecordingScope = (props:any) => {
               {
                 groups.map((group: any, index: number) => (
                   <ScopeRow
+                    data-testid={`group-row-${groups[index].groupId}`}
                     onClick={() => setSelectedGroup(group)}
                     selected={selectedGroup ? selectedGroup.groupId === group.groupId : false}
                     key={group.groupId}
                   >
                     <CustomTableData>
                       <Checkbox
+                        data-testid={`group-checkbox-${groups[index].groupId}`}
                         checked={groups[index] ? groups[index].checked : false}
                         indeterminate={groups[index] ? groups[index].partial : false}
                         onChange={e => handleCheckGroup(index, e.target.checked)}
@@ -202,9 +200,13 @@ const CallRecordingScope = (props:any) => {
             <TableBody>
               {
                 identifyChildrenTeams(selectedGroup.groupId).map((teamIndex: any) => (
-                  <ScopeRow selected={false} key={teams[teamIndex].groupId}>
+                  <ScopeRow
+                    data-testid={`team-row-${teams[teamIndex].groupId}`}
+                    selected={false}
+                    key={teams[teamIndex].groupId}>
                     <CustomTableData>
                       <Checkbox
+                        data-testid={`team-checkbox-${teams[teamIndex].groupId}`}
                         checked={teams[teamIndex].checked}
                         onChange={e => handleCheckTeam(teamIndex, e.target.checked)}
                       /></CustomTableData>

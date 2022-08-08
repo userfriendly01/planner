@@ -186,7 +186,13 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
               handleClose(true);
             }, timeouts.MODAL_OVERLAY);
           }).catch(err => {
-            throw err;
+            console.error("Error Creating Calabrio User", err);
+            updateLoading({
+              ...loading,
+              overlayMessage: "Triton User Created. Error Creating Calabrio User",
+              saveStatus: modalOverlayStatuses.PARTIAL_FAIL,
+              saveUser: true
+            });
           });
         }).catch(err => {
           console.error("Error Creating Calabrio User", err);
@@ -197,8 +203,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             saveUser: true
           });
         });
-      })
-      .catch(err => {
+      }).catch(err => {
         console.error(err.message, err.response.data);
         updateLoading({
           ...loading,

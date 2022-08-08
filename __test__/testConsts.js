@@ -83,8 +83,17 @@ export const initialFormState = {
     },
     roles: [],
     scope: {
-      groups: [],
-      teams: []
+      groups: [{
+        name: "group1",
+        groupId: 1,
+        checked: true,
+        partial: false
+      }],
+      teams: [{
+        name: "team1",
+        groupId: 2,
+        checked: true
+      }]
     }
   },
   userPreviouslyAdded: false,
@@ -97,7 +106,8 @@ export const managerList = [
     manager_first_name: "John",
     manager_last_name: "Wick",
     manager_n_number: "n1234567",
-    manager_id: "01"
+    manager_id: "01",
+    profile_id: 11
   },
   {
     manager_first_name: "Test",
@@ -174,7 +184,28 @@ export const validFormOptions = {
   manager: managerList[0],
   nNumber: "n1234567",
   nNumberFetchedUser: fetchedUser,
-  profileId: profileList[0].profile_id
+  profileId: profileList[0].profile_id,
+  calabrioUser: {
+    team: null,
+    timezone: {
+      label: "EST",
+      value: 173
+    },
+    roles: [],
+    scope: {
+      groups: [{
+        name: "group1",
+        groupId: 1,
+        checked: true,
+        partial: false
+      }],
+      teams: [{
+        name: "team1",
+        groupId: 2,
+        checked: true
+      }]
+    }
+  }
 };
 
 export const validFormState = {
@@ -247,8 +278,17 @@ export const validFormState = {
     },
     roles: [],
     scope: {
-      "groups": [],
-      "teams": []
+      groups: [{
+        name: "group1",
+        groupId: 1,
+        checked: true,
+        partial: false
+      }],
+      teams: [{
+        name: "team1",
+        groupId: 2,
+        checked: true
+      }]
     }
   },
   zeroOutEnabled: false,
@@ -275,6 +315,11 @@ export const calabrioContext = {
     {
       groupId: 200,
       name: "FNOL Group"
+    }
+    ,
+    {
+      groupId: 300,
+      name: "No Teams Group"
     }
   ],
   teams: [

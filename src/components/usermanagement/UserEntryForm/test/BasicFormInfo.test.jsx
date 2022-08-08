@@ -211,7 +211,7 @@ describe("<BasicFormInfo />", () => {
       });
       expect(mockSetForm).toBeCalledTimes(0);
     });
-    test("updateValue - should set manager to correct value", () => {
+    test("updateValue - should set manager and team to correct value", () => {
       renderComponent(false);
       act(() => {
         const updateValue = Dropdown.mock.calls[0][0].updateValue;
@@ -220,6 +220,31 @@ describe("<BasicFormInfo />", () => {
       expect(mockSetForm).toBeCalledWith({
         type: userFormActions.UPDATE_MANAGER,
         payload: managerList[0]
+      });
+      expect(mockSetForm).toBeCalledWith({
+        type: userFormActions.UPDATE_TEAM,
+        payload: {
+          profileId: managerList[0].profile_id,
+          profiles: profileList
+        }
+      });
+    });
+    test("updateValue - should set manager to correct value and reset team", () => {
+      renderComponent(false);
+      act(() => {
+        const updateValue = Dropdown.mock.calls[0][0].updateValue;
+        updateValue(null, managerList[1]);
+      });
+      expect(mockSetForm).toBeCalledWith({
+        type: userFormActions.UPDATE_MANAGER,
+        payload: managerList[1]
+      });
+      expect(mockSetForm).toBeCalledWith({
+        type: userFormActions.UPDATE_TEAM,
+        payload: {
+          profileId: "",
+          profiles: profileList
+        }
       });
     });
   });

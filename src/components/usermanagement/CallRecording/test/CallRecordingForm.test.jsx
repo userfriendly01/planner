@@ -44,7 +44,16 @@ describe("CallRecordingForm", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useAdminState.mockReturnValue(initialTestState);
-    useFormState.mockReturnValue(initialFormState);
+    useFormState.mockReturnValue({
+      ...initialFormState,
+      calabrioUser: {
+        ...initialFormState.calabrioUser,
+        scope: {
+          groups: [],
+          teams: []
+        }
+      }
+    });
     useFormDispatch.mockReturnValue(mockSetForm);
     setupMockedComponents({
       CallRecordingScope,
@@ -68,6 +77,12 @@ describe("CallRecordingForm", () => {
                 groupId: 200,
                 name: "FNOL Group",
                 partial: false
+              },
+              {
+                checked: false,
+                groupId: 300,
+                name: "No Teams Group",
+                partial: false
               }
             ],
             teams: [{
@@ -88,14 +103,14 @@ describe("CallRecordingForm", () => {
             }]
           }
         };
-        describe("teams length is 0 while groups > 0", () => {
+        describe("groups length is 0 while groups > 0", () => {
           beforeEach(() => {
             useFormState.mockReturnValue({
               ...initialFormState,
               calabrioUser: {
                 ...initialFormState.calabrioUser,
                 scope: {
-                  ...initialFormState.calabrioUser.scope,
+                  groups: [],
                   teams: [{
                     name: "Team 1",
                     id: 2
@@ -113,14 +128,14 @@ describe("CallRecordingForm", () => {
             });
           });
         });
-        describe("groups length is 0 while teams > 0", () => {
+        describe("teams length is 0 while teams > 0", () => {
           beforeEach(() => {
             useFormState.mockReturnValue({
               ...initialFormState,
               calabrioUser: {
                 ...initialFormState.calabrioUser,
                 scope: {
-                  ...initialFormState.calabrioUser.scope,
+                  teams: [],
                   groups: [{
                     name: "Group 1",
                     id: 2
@@ -181,6 +196,12 @@ describe("CallRecordingForm", () => {
                   checked: false,
                   groupId: 200,
                   name: "FNOL Group",
+                  partial: false
+                },
+                {
+                  checked: false,
+                  groupId: 300,
+                  name: "No Teams Group",
                   partial: false
                 }],
                 teams: [{
@@ -391,6 +412,12 @@ describe("CallRecordingForm", () => {
                   checked: true,
                   groupId: 200,
                   name: "FNOL Group",
+                  partial: false
+                },
+                {
+                  checked: false,
+                  groupId: 300,
+                  name: "No Teams Group",
                   partial: false
                 }],
                 teams: [{

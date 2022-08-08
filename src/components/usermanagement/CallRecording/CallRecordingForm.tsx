@@ -189,8 +189,7 @@ const CallRecordingForm = () => {
         />
       </FormControlsPane>
       <CallRecordingScope
-        groups={form.calabrioUser.scope.groups}
-        teams={form.calabrioUser.scope.teams}
+        calabrioUser={form.calabrioUser}
       />
     </FormControlsContainer>
   );
