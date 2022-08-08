@@ -118,7 +118,6 @@ const CallRecordingForm = () => {
             }
           }
         });
-
       }).catch(err => {
         console.error("Failed to fetch Calabrio User.", err);
       });

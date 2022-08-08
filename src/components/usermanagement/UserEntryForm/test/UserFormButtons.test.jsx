@@ -128,6 +128,7 @@ describe("<UserFormButtons />", () => {
     });
     checkConflictingUsers.mockResolvedValue({ yay: "woot!" });
     createCalabrioUser.mockResolvedValue({ yay: "woot!" });
+    fetchUser.mockResolvedValue({ yay: "woot!" });
     setupMockedComponents({
       StyledButton,
       Tooltip,
