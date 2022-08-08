@@ -54,12 +54,9 @@ describe("<UserFormAccordion />", () => {
     });
   });
 
-  const renderComponent = formMode => {
+  const renderComponent = () => {
     return render(
       <UserFormAccordion
-        form={{
-          formMode
-        }}
         skills={mockSkills}
         worker={mockWorkers[0]}
         workers={mockWorkers}
@@ -70,28 +67,7 @@ describe("<UserFormAccordion />", () => {
       />
     );
   };
-  test("temporary test - dont show call recording tab when form is in update mode", () => {
-    renderComponent("update");
-    render(Accordion.mock.calls[0][0].children);
-    expect(AccordionTab.mock.calls[0][0].labelVisual).toBe("Basic Info");
-    expect(AccordionTab.mock.calls[1][0].labelVisual).toBe("Default Skills");
 
-    render(AccordionTab.mock.calls[0][0].children);
-    render(AccordionTab.mock.calls[1][0].children);
-
-    const expectedBasicFormProps = {
-      skills: mockSkills,
-      worker: mockWorkers[0],
-      workers: mockWorkers,
-      profiles: profileList,
-      managers: managerList,
-      forwardToToggle: false,
-      setForwardToToggle: mockForwardToToggle
-    };
-    expectOnlyPassedProps(BasicFormInfo, expectedBasicFormProps);
-    expect(SkillsFormInfo.mock.calls.length).toBe(1);
-    expect(CallRecordingForm.mock.calls.length).toBe(0);
-  });
 
   test("Should render the correct initial state", () => {
     renderComponent("insert");

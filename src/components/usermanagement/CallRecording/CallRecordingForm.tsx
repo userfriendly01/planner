@@ -111,6 +111,7 @@ const CallRecordingForm = () => {
           payload: {
             team: res.groupId,
             roles: res.roles,
+            timeZone: res.timeZone,
             scope: {
               groups: userGroups,
               teams: userTeams
