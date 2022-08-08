@@ -22,7 +22,7 @@ export const ButtonWrapper = styled(FlexRow)`
 `;
 
 export const Header = styled.h1`
-  align-self: center;
+  text-align: center;
 `;
 
 export const HeaderAndCloseButtonWrapper = styled.div`
