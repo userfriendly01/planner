@@ -61,10 +61,13 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
 
 
   const [newName, setNewName] = useState<string>();
-  //const [parentGroupId]
+  const [parentGroupId, setParentGroupId] = useState<number>();
 
   const temp = (): any => {
-    createCalabrioTeam({ test: newName });
+    createCalabrioTeam({
+      name: newName,
+      parentGroupId: parentGroupId
+    });
   };
 
   return (
@@ -80,7 +83,6 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
             label={"New Team Name"}
             value={newName}
             onChange={(event: any) => {
-              console.log(groups);
               setNewName(event.target.value);
             }}
           />
@@ -91,12 +93,12 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
               margin: "10px 0px"
             }}
             options={groups.sort().map((group: any) => ({
-              label: group.name,
-              value: group.groupId,
+              label: group.parentGroupId,
+              value: group.parentGroupId,
               ...group
             }))}
             value={""}
-            //updateValue={(event: any, newValue: any) => setProfile(newValue)}
+            updateValue={(event: any, newValue: any) => setParentGroupId(newValue)}
           />
         </FlexColumn>
         <ButtonWrapper>
