@@ -22,7 +22,7 @@ import {
   addOffice,
   createCalabrioUser,
   createUser,
-  fetchUser,
+  fetchUser as fetchUserServiceCall,
   updateUser
 } from "services";
 import {
@@ -58,6 +58,21 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
   const dispatch = useAdminDispatch();
   const form = useFormState();
   const setForm = useFormDispatch();
+
+
+  React.useEffect(() => {
+    if(!form.nNumberFetchedUser){
+      fetchUserServiceCall(form.nNumber.value).then(fetchedUser => {
+        setForm({
+          type: userFormActions.COMPLETE_N_NUMBER,
+          payload: {
+            nNumber: form.nNumber.value,
+            fetchedUser
+          }
+        });
+      });
+    }
+  }, []);
 
   const doCreateUser = () => {
     updateLoading({
@@ -240,7 +255,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     if (form.defaultSkillsUpdated) {
       attributes.default_skills = form.defaultSkills;
     }
-    const nNumberFetchedUser = await fetchUser(form.nNumber.value);
+    const nNumberFetchedUser = form.nNumberFetchedUser;
     if(nNumberFetchedUser){
       nNumberFetchedUser.departmentNumber ? attributes.department_id = nNumberFetchedUser.departmentNumber : null;
       nNumberFetchedUser.departmentName ? attributes.department_name = nNumberFetchedUser.departmentName: null;
