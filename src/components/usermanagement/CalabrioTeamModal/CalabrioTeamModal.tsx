@@ -59,6 +59,8 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
   } = state.calabrioContext;
   const { handleClose } = props;
 
+  console.log(groups);
+
   const [newName, setNewName] = useState<string>();
   //const [parentGroupId]
 
@@ -88,8 +90,8 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
               width: "400px",
               margin: "10px 0px"
             }}
-            options={state.calabrioContext.groups.sort().map((group: any) => ({
-              label: group.groupId,
+            options={groups.sort().map((group: any) => ({
+              label: group.name,
               value: group.groupId,
               ...group
             }))}
