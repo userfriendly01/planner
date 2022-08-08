@@ -40,6 +40,7 @@ export const apiPaths = {
   ALL_SKILLS: `${SERVICE_BASE_URI}/allskills`,
   AUTH: `${SERVICE_BASE_URI}/admin-login`,
   CHECK_EXTENSION: `${SERVICE_BASE_URI}/checkextension`,
+  CREATE_CALABRIO_TEAM: `${SERVICE_BASE_URI}/calabrio-add-team`,
   CREATE_CALABRIO_USER: `${SERVICE_BASE_URI}/calabrio-add-user`,
   CLOSED_MESSAGE: `${SERVICE_BASE_URI}/closedmessage`,
   CREATE_WORKER: `${SERVICE_BASE_URI}/createworker`,

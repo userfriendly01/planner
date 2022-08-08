@@ -5,6 +5,9 @@ import {
 } from "../components/usermanagement/CallRecording/CallRecording.Interfaces";
 import { myAxios } from "utils";
 
+export const createCalabrioTeam = async (payload: any): Promise<CalabrioGroup[]> => {
+  return await myAxios.post(apiPaths.CREATE_CALABRIO_TEAM, payload);
+};
 
 export const createCalabrioUser = async (payload: any): Promise<CalabrioGroup[]> => {
   return await myAxios.post(apiPaths.CREATE_CALABRIO_USER, payload);

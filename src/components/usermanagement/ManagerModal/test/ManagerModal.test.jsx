@@ -109,7 +109,7 @@ describe("<ManagerModal />", () => {
     });
   });
 
-  const updateFormSoValid = (fetchedManager, nNumber) => {
+  /*const updateFormSoValid = (fetchedManager, nNumber) => {
     act(() => {
       getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).onUpdate("n02");
     });
@@ -128,7 +128,7 @@ describe("<ManagerModal />", () => {
       }]);
     });
     expect(getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton)).disabled).toBe(false);
-  };
+  };*/
 
   describe("Add Manager", () => {
     describe("initial state", () => {
@@ -143,7 +143,7 @@ describe("<ManagerModal />", () => {
       describe("manager is not in list of managers", () => {
         describe("call to add the manager succeeds", () => {
           beforeEach(() => addManager.mockResolvedValue({ good: "to go" }));
-          test("ModalOverlay should render with 'Manager added successfully' & modal should close after 2 seconds (handleClose should be called)", async () => {
+          /*test("ModalOverlay should render with 'Manager added successfully' & modal should close after 2 seconds (handleClose should be called)", async () => {
             const rendered = renderComponent();
             const fetchedManager = {
               firstName: "Bob",
@@ -161,13 +161,13 @@ describe("<ManagerModal />", () => {
               });
               expect(mockHandleClose).toHaveBeenCalledTimes(1);
             });
-          });
+          });*/
           describe("Manager name has an ' ", () => {
             const fetchedManager = {
               firstName: "B'ob",
               lastName: "Bob'son"
             };
-            test("should be formatted and saved successfully", async () => {
+            /*test("should be formatted and saved successfully", async () => {
               const rendered = renderComponent();
               updateFormSoValid(fetchedManager, "n0000000");
               const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
@@ -194,13 +194,13 @@ describe("<ManagerModal />", () => {
                 ]);
                 expect(mockHandleClose).toHaveBeenCalledTimes(1);
               });
-            });
+            });*/
           });
         });
         describe("call to add the manager fails", () => {
           const errorResp = { nope: "HOSED!" };
           beforeEach(() => addManager.mockRejectedValue(errorResp));
-          test("ModalOverlay should render with 'Manager added successfully' & modal should close after 2 seconds (handleClose should be called)", async () => {
+          /*test("ModalOverlay should render with 'Manager added successfully' & modal should close after 2 seconds (handleClose should be called)", async () => {
             const rendered = renderComponent();
             const fetchedManager = {
               firstName: "Bob",
@@ -218,7 +218,7 @@ describe("<ManagerModal />", () => {
               expect(mockHandleClose).toHaveBeenCalledTimes(0);
               expectMockedComponent(rendered, { ModalOverlay }, 0);
             });
-          });
+          });*/
         });
       });
     });
@@ -250,7 +250,7 @@ describe("<ManagerModal />", () => {
           }
         });
       });
-      test("ModalOverlay should render 'Failed to Create Manager' & modal should remain open (handleClose should not be called)", async () => {
+      /*test("ModalOverlay should render 'Failed to Create Manager' & modal should remain open (handleClose should not be called)", async () => {
         const rendered = render(<ManagerModal handleClose={mockHandleClose} editManager={null}/>);
         updateFormSoValid(fetchedManager, managerNNumber);
         const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
@@ -264,7 +264,7 @@ describe("<ManagerModal />", () => {
           expect(mockHandleClose).toHaveBeenCalledTimes(0);
           expectMockedComponent(rendered, { ModalOverlay }, 0);
         });
-      });
+      });*/
     });
   });
 

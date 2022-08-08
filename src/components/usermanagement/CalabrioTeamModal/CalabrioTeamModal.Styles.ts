@@ -4,12 +4,6 @@ import {
 } from "globals";
 import styled from "styled-components";
 
-export const Wrapper = styled.div`
-  display: flex;
-  min-width: 100%;
-  position: relative;
-`;
-
 export const ButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
   padding: 1%;
