@@ -61,16 +61,18 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
 
   React.useEffect(() => {
-    if(!form.nNumberFetchedUser){
-      fetchUserServiceCall(form.nNumber.value).then(fetchedUser => {
-        setForm({
-          type: userFormActions.COMPLETE_N_NUMBER,
-          payload: {
-            nNumber: form.nNumber.value,
-            fetchedUser
-          }
-        });
+    const fetchUser = async () => {
+      const fetchedUser = await fetchUserServiceCall(form.nNumber.value);
+      setForm({
+        type: userFormActions.COMPLETE_N_NUMBER,
+        payload: {
+          nNumber: form.nNumber.value,
+          fetchedUser
+        }
       });
+    };
+    if(!form.nNumberFetchedUser){
+      fetchUser();
     }
   }, []);
 

@@ -32,7 +32,9 @@ const CallRecordingForm = () => {
 
   useEffect(() => {
     if(form.calabrioUser.scope.groups.length === 0 || form.calabrioUser.scope.teams.length === 0) {
+      console.warn("groups and teams are empty");
       if(form.nNumberFetchedUser && form.formMode ==="UPDATE") {
+        console.warn("update and fetched user");
         setScopeOnExistingUser();
       } else {
         setScopeOnNewUser();
