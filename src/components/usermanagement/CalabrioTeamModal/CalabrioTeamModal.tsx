@@ -59,7 +59,6 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
   } = state.calabrioContext;
   const { handleClose } = props;
 
-  console.log(groups);
 
   const [newName, setNewName] = useState<string>();
   //const [parentGroupId]
@@ -81,6 +80,7 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
             label={"New Team Name"}
             value={newName}
             onChange={(event: any) => {
+              console.log(groups);
               setNewName(event.target.value);
             }}
           />
