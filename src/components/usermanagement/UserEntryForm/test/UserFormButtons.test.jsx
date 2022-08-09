@@ -795,7 +795,7 @@ describe("<UserFormButtons />", () => {
                 payload: formattedWorker
               });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Updating user: Faith Cuneo",
                 saveStatus: "saving",
@@ -805,6 +805,9 @@ describe("<UserFormButtons />", () => {
                 overlayMessage: "Successfully updated user: Faith Cuneo",
                 saveStatus: "success",
                 saveUser: true
+              });
+              expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
+                saveUser: false
               });
               expect(mockHandleClose).toHaveBeenCalledTimes(1);
             });
@@ -863,7 +866,7 @@ describe("<UserFormButtons />", () => {
                 payload: formattedWorker
               });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Updating user: Faith Cuneo",
                 saveStatus: "saving",
@@ -873,6 +876,9 @@ describe("<UserFormButtons />", () => {
                 overlayMessage: "Successfully updated user: Faith Cuneo",
                 saveStatus: "success",
                 saveUser: true
+              });
+              expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
+                saveUser: false
               });
             });
           });
@@ -907,7 +913,7 @@ describe("<UserFormButtons />", () => {
                   payload: formattedWorker
                 });
                 jest.runAllTimers();
-                expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+                expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
                 expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                   overlayMessage: "Updating user: Faith Cuneo",
                   saveStatus: "saving",
@@ -917,6 +923,9 @@ describe("<UserFormButtons />", () => {
                   overlayMessage: "Successfully updated user: Faith Cuneo",
                   saveStatus: "success",
                   saveUser: true
+                });
+                expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
+                  saveUser: false
                 });
               });
             });
@@ -993,7 +1002,7 @@ describe("<UserFormButtons />", () => {
                 payload: formattedWorker
               });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Updating user: Faith Cuneo",
                 saveStatus: "saving",
@@ -1003,6 +1012,9 @@ describe("<UserFormButtons />", () => {
                 overlayMessage: "Successfully updated user: Faith Cuneo",
                 saveStatus: "success",
                 saveUser: true
+              });
+              expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
+                saveUser: false
               });
             });
           });

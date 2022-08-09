@@ -21,7 +21,8 @@ import {
   createCalabrioUser,
   createUser,
   fetchUser as fetchUserServiceCall,
-  updateUser
+  updateUser,
+  updateCalabrioUser
 } from "services";
 import {
   checkConflictingUsers,
@@ -120,7 +121,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       firstName: form.nNumberFetchedUser?.firstName,
       lastName: form.nNumberFetchedUser?.lastName,
       groupId: form.calabrioUser.team?.value,
-      timeZone: form.calabrioUser.timezone.value,
+      timeZone: form.calabrioUser.timezone?.value,
       roles: form.calabrioUser.roles,
       scope: {
         groups: form.calabrioUser.scope.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),
@@ -326,18 +327,43 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           };
         }
 
-        updateLoading({
-          ...loading,
-          overlayMessage: `Successfully updated user: ${worker.attributes.full_name}`,
-          saveStatus: modalOverlayStatuses.SUCCESS,
-          saveUser: true
+        checkConflictingUsers(calabrioAttributes, users, roles).then(() => {
+          console.log("Calabrio Attributes sent for create user", calabrioAttributes);
+          const calabrioCall = form.calabrioUser.id ? (attributes: any) => updateCalabrioUser(form.calabrioUser.id, attributes) : (attributes: any) => createCalabrioUser(attributes);
+          calabrioCall(calabrioAttributes).then(() => {
+            setForm({ type: userFormActions.RESET_FORM });
+            updateLoading({
+              ...loading,
+              overlayMessage: `Successfully updated user: ${worker.attributes.full_name}`,
+              saveStatus: modalOverlayStatuses.SUCCESS,
+              saveUser: true
+            });
+            wait(() => {
+              updateLoading({
+                ...loading,
+                saveUser: false
+              });
+              handleClose();
+            }, timeouts.MODAL_OVERLAY);
+          }).catch(err => {
+            console.error("Error updating Calabrio user", err);
+            updateLoading({
+              ...loading,
+              overlayMessage: "Triton user updated. Error updating Calabrio user",
+              saveStatus: modalOverlayStatuses.PARTIAL_FAIL,
+              saveUser: true
+            });
+          });
+        }).catch(err => {
+          console.error("Error updating Calabrio user", err);
+          updateLoading({
+            ...loading,
+            overlayMessage: "Triton User updated. Error updating Calabrio user",
+            saveStatus: modalOverlayStatuses.PARTIAL_FAIL,
+            saveUser: true
+          });
         });
-        setForm({
-          type: userFormActions.RESET_FORM
-        });
-        wait(handleClose, timeouts.MODAL_OVERLAY);
-      })
-      .catch(err => {
+      }).catch(err => {
         console.error(err);
         updateLoading({
           ...loading,

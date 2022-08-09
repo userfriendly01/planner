@@ -113,6 +113,7 @@ export const initialUserFormState: UserFormState = {
   },
   calabrioUser: {
     updated: false,
+    id: null,
     team: null,
     timezone: calabrioTimeZones[0],
     roles: [],

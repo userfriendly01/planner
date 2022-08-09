@@ -122,6 +122,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         setForm({
           type: userFormActions.SET_CALABRIO_USER,
           payload: {
+            id: userRecord.id,
             team: fetchedUser.groupId ? teams.find(team => team.groupId === fetchedUser.groupId) : form.groupId,
             roles: fetchedUser.roles || form.calabrioUser.roles,
             timezone: fetchedUser.timezone || form.calabrioUser.timezone,
