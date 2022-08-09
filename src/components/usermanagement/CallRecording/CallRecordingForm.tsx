@@ -144,6 +144,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   const getRoleOptions = () => {
     return roles.map((role: any) => {
       return {
+        ...role,
         label: role.name,
         value: role.id
       };
@@ -155,6 +156,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
     if(availableTeams.length > 0){
       return availableTeams.map(team => {
         return {
+          ...team,
           label: team.name,
           value: team.groupId
         };
@@ -162,6 +164,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
     } else {
       return teams.map(team => {
         return {
+          ...team,
           label: team.name,
           value: team.groupId
         };
@@ -186,6 +189,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
           label="Team"
           options={getTeamOptions()}
           value={form.calabrioUser.team ?{
+            ...form.calabrioUser.team,
             label: form.calabrioUser.team.name,
             value: form.calabrioUser.team.groupId
           }: ""}

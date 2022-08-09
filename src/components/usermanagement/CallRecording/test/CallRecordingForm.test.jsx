@@ -169,6 +169,7 @@ describe("CallRecordingForm", () => {
             multiple: true,
             options: calabrioContext.roles.map(role => {
               return {
+                ...role,
                 label: role.name,
                 value: role.id
               };
@@ -179,6 +180,7 @@ describe("CallRecordingForm", () => {
             label: "Team",
             options: calabrioContext.teams.map(team => {
               return {
+                ...team,
                 label: team.name,
                 value: team.groupId
               };
@@ -266,6 +268,7 @@ describe("CallRecordingForm", () => {
             multiple: true,
             options: calabrioContext.roles.map(role => {
               return {
+                ...role,
                 label: role.name,
                 value: role.id
               };
@@ -276,6 +279,7 @@ describe("CallRecordingForm", () => {
             label: "Team",
             options: calabrioContext.teams.map(team => {
               return {
+                ...team,
                 label: team.name,
                 value: team.groupId
               };
