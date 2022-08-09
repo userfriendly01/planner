@@ -315,8 +315,7 @@ export const calabrioContext = {
     {
       groupId: 200,
       name: "FNOL Group"
-    }
-    ,
+    },
     {
       groupId: 300,
       name: "No Teams Group"
@@ -355,18 +354,18 @@ export const calabrioContext = {
   ],
   users: [
     {
-      "personId": 200,
-      "firstName": "Brittany",
-      "lastName": "Magee",
-      "groupId": 102,
-      "email": "Brittany.Magee@libertymutual.com"
+      id: 200,
+      firstName: "Brittany",
+      lastName: "Magee",
+      groupId: 102,
+      email: "Brittany.Magee@libertymutual.com"
     },
     {
-      "personId": 220,
-      "firstName": "Faith",
-      "lastName": "Cuneo",
-      "groupId": 201,
-      "email": "Faith.Cuneo@libertymutual.com"
+      id: 220,
+      firstName: "Faith",
+      lastName: "Cuneo",
+      groupId: 201,
+      email: "Faith.Cuneo@libertymutual.com"
     }
   ]
 };
