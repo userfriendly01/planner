@@ -12,6 +12,7 @@ import {
   useAdminState,
   userFormActions
 } from "context";
+import { formModes } from "globals";
 import { getCalabrioUser } from "services";
 
 interface CallRecordingFormInterface {
@@ -44,7 +45,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   }, []);
 
   useEffect(() => {
-    if(form.nNumberFetchedUser && form.formMode ==="UPDATE") {
+    if(form.nNumberFetchedUser && form.formMode === formModes.UPDATE) {
       console.warn("form.nNumberFetchedUser - update and fetched user");
       setScopeOnExistingUser();
     }

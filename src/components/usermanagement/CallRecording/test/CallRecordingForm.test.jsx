@@ -420,7 +420,7 @@ describe("CallRecordingForm", () => {
             teams: []
           }
         },
-        formMode: "UPDATE",
+        formMode: "update",
         nNumberFetchedUser: {
           email: "faith.Cuneo@libertymutual.com",
           firstName: "Faith",
@@ -500,7 +500,7 @@ describe("CallRecordingForm", () => {
             teams: []
           }
         },
-        formMode: "UPDATE",
+        formMode: "update",
         nNumberFetchedUser: {
           email: "Mike.Nieman@libertymutual.com",
           firstName: "Mike",
@@ -530,7 +530,7 @@ describe("CallRecordingForm", () => {
             teams: []
           }
         },
-        formMode: "UPDATE",
+        formMode: "update",
         nNumberFetchedUser: {
           email: "faith.Cuneo@libertymutual.com",
           firstName: "Faith",
