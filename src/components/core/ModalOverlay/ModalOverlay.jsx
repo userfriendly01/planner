@@ -163,7 +163,7 @@ const ModalOverlay = props => {
     >
       <InnerContainer>
         {
-          status === modalOverlayStatuses.FAIL && handleClose
+          status === modalOverlayStatuses.FAIL || status === modalOverlayStatuses.PARTIAL_FAIL && handleClose
             ? <CloseButtonDiv>
               <StyledCloseRounded data-testid="close-button" onClick={handleClose} />
             </CloseButtonDiv>

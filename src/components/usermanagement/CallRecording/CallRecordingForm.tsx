@@ -185,7 +185,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         <Dropdown
           label="Team"
           options={getTeamOptions()}
-          value={form.calabrioUser.team ? {
+          value={form.calabrioUser.team ?{
             label: form.calabrioUser.team.name,
             value: form.calabrioUser.team.groupId
           }: ""}

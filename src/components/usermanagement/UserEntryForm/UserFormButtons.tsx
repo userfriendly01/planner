@@ -319,8 +319,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           calabrioAttributes.email = form.nNumberFetchedUser?.email;
           calabrioAttributes.firstName = form.nNumberFetchedUser?.firstName;
           calabrioAttributes.lastName = form.nNumberFetchedUser?.lastName;
-          calabrioAttributes.groupId = form.calabrioUser.team?.value;
-          calabrioAttributes.timeZone = form.calabrioUser.timezone.value;
+          calabrioAttributes.groupId = form.calabrioUser.team?.groupId;
+          calabrioAttributes.timeZone = form.calabrioUser.timezone?.value;
           calabrioAttributes.roles = form.calabrioUser.roles;
           calabrioAttributes.scope = {
             groups: form.calabrioUser.scope.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),

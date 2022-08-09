@@ -75,7 +75,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
 
     await Promise.all(users.map(async u => {
       if(u.acdId === acdId){
-        throw new Error("Calabrio Record with this ACD Id already exists. New Record should not be added.");
+        return;
       }
 
       const dupUserAdLogin = toLowerCaseString(u.adLogin);
