@@ -10,8 +10,6 @@ import {
 import {
   useAdminState,
   useAdminDispatch,
-  useFormDispatch,
-  useFormState,
   userFormActions
 } from "context";
 import { formModes } from "globals";
@@ -119,7 +117,6 @@ describe("<UserFormButtons />", () => {
     jest.clearAllMocks();
     mockStore.reset();
     getOverflowSkillFromProfile.mockReturnValue("466");
-    useFormDispatch.mockReturnValue(mockSetForm);
     useAdminDispatch.mockReturnValue(mockDispatch);
     useAdminState.mockReturnValue({
       calabrioContext: {
@@ -137,9 +134,11 @@ describe("<UserFormButtons />", () => {
     });
   });
 
-  const renderComponent = (forwardToToggle, customWorker) => {
+  const renderComponent = (form, forwardToToggle, customWorker) => {
     return render(
       <UserFormButtons
+        form={form}
+        setForm={mockSetForm}
         handleClose={mockHandleClose}
         loading={""}
         updateLoading={mockUpdateLoading}
@@ -151,21 +150,19 @@ describe("<UserFormButtons />", () => {
       initialTestState
     );
   };
-  beforeEach(() => {
-  });
 
   describe("Tooltip Toggle", () => {
     describe("form.didUser === true", () => {
+      const form = {
+        ...initialFormState,
+        didUser: true
+      };
       beforeEach(() => {
-        useFormState.mockReturnValue({
-          ...initialFormState,
-          didUser: true
-        });
         isDidDifferentValid.mockReturnValue(true);
       });
       describe("forwardToToggle === false", () => {
         test("Tooltip title should be blank", () => {
-          renderComponent(false);
+          renderComponent(form, false);
           expect(Tooltip.mock.calls[0][0].title).toBe("");
         });
       });
@@ -174,14 +171,14 @@ describe("<UserFormButtons />", () => {
         describe("isDidDifferentValue === false", () => {
           test(`Tooltip title should equal ${toolTipTitle}`, () => {
             isDidDifferentValid.mockReturnValue(false);
-            renderComponent(true);
+            renderComponent(form, true);
             expect(Tooltip.mock.calls[0][0].title).toBe(toolTipTitle);
           });
         });
         describe("isDidDifferentValue === true", () => {
           test("Tooltip title should be blank", () => {
             isDidDifferentValid.mockReturnValue(true);
-            renderComponent(true);
+            renderComponent(form, true);
             expect(Tooltip.mock.calls[0][0].title).toBe("");
           });
         });
@@ -189,11 +186,10 @@ describe("<UserFormButtons />", () => {
     });
     describe("form.didUser === false", () => {
       beforeEach(() => {
-        useFormState.mockReturnValue(initialFormState);
         isDidDifferentValid.mockReturnValue(true);
       });
       test("Tooltip title should be blank", () => {
-        renderComponent(true);
+        renderComponent(initialFormState, true);
         expect(Tooltip.mock.calls[0][0].title).toBe("");
       });
     });
@@ -233,24 +229,23 @@ describe("<UserFormButtons />", () => {
         isFormValid.mockReturnValue(true);
         createUser.mockResolvedValue(rawDbWorker);
         addOffice.mockResolvedValue("yay!");
-        useFormState.mockReturnValue(validFormState);
       });
 
       describe("Initial State", () => {
         test("UserFormButton should be called 'Add User'", () => {
-          renderComponent(true);
+          renderComponent(validFormState, true);
           render(Tooltip.mock.calls[0][0].children);
           expect(StyledButton.mock.calls[1][0].children).toBe("Add User");
         });
         test("When form is valid, Add User Button is enabled", () => {
           isFormValid.mockReturnValue(true);
-          renderComponent(true);
+          renderComponent(validFormState, true);
           render(Tooltip.mock.calls[0][0].children);
           expect(StyledButton.mock.calls[1][0].disabled).toBe(false);
         });
         test("When form is invalid, Add User Button is disabled", () => {
           isFormValid.mockReturnValue(false);
-          renderComponent(true);
+          renderComponent(validFormState, true);
           render(Tooltip.mock.calls[0][0].children);
           expect(StyledButton.mock.calls[1][0].disabled).toBe(true);
         });
@@ -265,11 +260,8 @@ describe("<UserFormButtons />", () => {
               value: ""
             }
           };
-          beforeEach(() => {
-            useFormState.mockReturnValue(nonDidValidFormState);
-          });
           test("should save user with non did worker request body when clicked", async () => {
-            renderComponent(true);
+            renderComponent(nonDidValidFormState, true);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
               const onClick = StyledButton.mock.calls[1][0].onClick;
@@ -330,15 +322,15 @@ describe("<UserFormButtons />", () => {
             sid: rawDbWorker.workerSid,
             skillsDifferent: true
           };
+          const form = {
+            ...validFormState,
+            didUser: true
+          };
           beforeEach(() => {
-            useFormState.mockReturnValue({
-              ...validFormState,
-              didUser: true
-            });
             createUser.mockResolvedValue(existingOfficeDbWorker);
           });
           test("should save user with did worker request body when clicked", async () => {
-            renderComponent(true);
+            renderComponent(form, true);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
               const onClick = StyledButton.mock.calls[1][0].onClick;
@@ -386,14 +378,12 @@ describe("<UserFormButtons />", () => {
         });
         describe("Worker profile has overflowSkill, zeroOutEnabled and directDialNum", () => {
           const createWorkerAttributesAfterFormValid = workerAttributesAfterFormValid;
-          beforeEach(() => {
-            useFormState.mockReturnValue({
-              ...validFormState,
-              zeroOutEnabled: true
-            });
-          });
+          const form = {
+            ...validFormState,
+            zeroOutEnabled: true
+          };
           test("should include overflow skill and save user with did worker request body when clicked", async () => {
-            renderComponent(true);
+            renderComponent(form, true);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
               const onClick = StyledButton.mock.calls[1][0].onClick;
@@ -452,7 +442,7 @@ describe("<UserFormButtons />", () => {
               getNonOverflowSkills.mockReturnValue(undefined);
             });
             test("Should spread empty array in skills", async () => {
-              renderComponent(true);
+              renderComponent(form, true);
               render(Tooltip.mock.calls[0][0].children);
               act(() => {
                 const onClick = StyledButton.mock.calls[1][0].onClick;
@@ -520,11 +510,10 @@ describe("<UserFormButtons />", () => {
             }
           };
           beforeEach(() => {
-            useFormState.mockReturnValue(nonDidValidFormState);
             addOffice.mockRejectedValue({ aww: "bummer" });
           });
           test("should not dispatch AddOffice but should still enable Add User button and save user when clicked", async () => {
-            renderComponent(true);
+            renderComponent(nonDidValidFormState, true);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
               const onClick = StyledButton.mock.calls[1][0].onClick;
@@ -571,7 +560,6 @@ describe("<UserFormButtons />", () => {
             }
           };
           beforeEach(() => {
-            useFormState.mockReturnValue(nonDidValidFormState);
             createUser.mockRejectedValue({
               message: "bummer",
               response: {
@@ -582,7 +570,7 @@ describe("<UserFormButtons />", () => {
             });
           });
           test("should not add user and should update loading with failed specific error message", async () => {
-            renderComponent(true);
+            renderComponent(nonDidValidFormState, true);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
               const onClick = StyledButton.mock.calls[1][0].onClick;
@@ -616,7 +604,7 @@ describe("<UserFormButtons />", () => {
                 data: {}
               }
             });
-            renderComponent(true);
+            renderComponent(nonDidValidFormState, true);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
               const onClick = StyledButton.mock.calls[1][0].onClick;
@@ -643,8 +631,7 @@ describe("<UserFormButtons />", () => {
               });
             });
           });
-        }
-        );
+        });
       });
       describe("checkConflictingUsers fails", () => {
         const nonDidValidFormState = {
@@ -655,11 +642,10 @@ describe("<UserFormButtons />", () => {
           }
         };
         beforeEach(() => {
-          useFormState.mockReturnValue(nonDidValidFormState);
           checkConflictingUsers.mockRejectedValue({ aww: "bummer" });
         });
         test("createCalabrioUser should not be called", async () => {
-          renderComponent(true);
+          renderComponent(nonDidValidFormState, true);
           render(Tooltip.mock.calls[0][0].children);
           act(() => {
             const onClick = StyledButton.mock.calls[1][0].onClick;
@@ -691,12 +677,11 @@ describe("<UserFormButtons />", () => {
           }
         };
         beforeEach(() => {
-          useFormState.mockReturnValue(nonDidValidFormState);
           checkConflictingUsers.mockResolvedValue("yay");
           createCalabrioUser.mockRejectedValue({ aww: "bummer" });
         });
         test("setForm should not be called", async () => {
-          renderComponent(true);
+          renderComponent(nonDidValidFormState, true);
           render(Tooltip.mock.calls[0][0].children);
           act(() => {
             const onClick = StyledButton.mock.calls[1][0].onClick;
@@ -726,25 +711,24 @@ describe("<UserFormButtons />", () => {
         formMode: formModes.UPDATE
       };
       beforeEach(() => {
-        useFormState.mockReturnValue(updateFormState);
         isFormUpdated.mockReturnValue(true);
         getNonOverflowSkills.mockReturnValue(["nonSkillL1"]);
       });
       describe("Initial State", () => {
         test("UserFormButton should be called 'Save User'", () => {
-          renderComponent(true);
+          renderComponent(updateFormState, true);
           render(Tooltip.mock.calls[0][0].children);
           expect(StyledButton.mock.calls[1][0].children).toBe("Save User");
         });
         test("When form is valid, Add Save Button is enabled", () => {
           isFormValid.mockReturnValue(true);
-          renderComponent(true);
+          renderComponent(updateFormState, true);
           render(Tooltip.mock.calls[0][0].children);
           expect(StyledButton.mock.calls[1][0].disabled).toBe(false);
         });
         test("When form is invalid, Add Save Button is disabled", () => {
           isFormValid.mockReturnValue(false);
-          renderComponent(true);
+          renderComponent(updateFormState, true);
           render(Tooltip.mock.calls[0][0].children);
           expect(StyledButton.mock.calls[1][0].disabled).toBe(true);
         });
@@ -761,7 +745,6 @@ describe("<UserFormButtons />", () => {
             zeroOutEnabled: true
           };
           beforeEach(() => {
-            useFormState.mockReturnValue(nonDidValidFormState);
             updateUser.mockResolvedValue(rawDbWorker);
             fetchUser.mockResolvedValue(fetchedUser);
 
@@ -794,7 +777,7 @@ describe("<UserFormButtons />", () => {
                 levels: []
               }
             };
-            renderComponent(true, updateWorker);
+            renderComponent(nonDidValidFormState, true, updateWorker);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
               const onClick = StyledButton.mock.calls[1][0].onClick;
@@ -856,12 +839,11 @@ describe("<UserFormButtons />", () => {
             }
           };
           beforeEach(() => {
-            useFormState.mockReturnValue(updateFormState);
             updateUser.mockResolvedValue(rawDbWorker);
             workerHasOverFlowSkill.mockReturnValue(true);
           });
           test("should save user with did worker request body when clicked", async () => {
-            renderComponent(true, updateWorker);
+            renderComponent(updateFormState, true, updateWorker);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
               const onClick = StyledButton.mock.calls[1][0].onClick;
@@ -899,7 +881,7 @@ describe("<UserFormButtons />", () => {
               getNonOverflowSkills.mockReturnValue(undefined);
             });
             test("Should spread empty array in skills", async () => {
-              renderComponent(true, updateWorker);
+              renderComponent(updateFormState, true, updateWorker);
               render(Tooltip.mock.calls[0][0].children);
               act(() => {
                 const onClick = StyledButton.mock.calls[1][0].onClick;
@@ -976,7 +958,6 @@ describe("<UserFormButtons />", () => {
             zeroOutEnabled: true
           };
           beforeEach(() => {
-            useFormState.mockReturnValue(unchangedForm);
             updateUser.mockResolvedValue(rawDbWorker);
             workerHasOverFlowSkill.mockReturnValue(true);
           });
@@ -991,7 +972,7 @@ describe("<UserFormButtons />", () => {
                 }
               }
             };
-            renderComponent(true, updateWorker);
+            renderComponent(unchangedForm, true, updateWorker);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
               const onClick = StyledButton.mock.calls[1][0].onClick;
@@ -1060,7 +1041,6 @@ describe("<UserFormButtons />", () => {
           profile_id: validFormOptions.profileId
         };
         beforeEach(() => {
-          useFormState.mockReturnValue(nonDidValidFormState);
           workerHasOverFlowSkill.mockReturnValue(false);
           updateUser.mockRejectedValue({
             message: "bummer",
@@ -1072,7 +1052,7 @@ describe("<UserFormButtons />", () => {
           });
         });
         test("should not update user and should update loading with custom error message", async () => {
-          renderComponent(true);
+          renderComponent(nonDidValidFormState, true);
           render(Tooltip.mock.calls[0][0].children);
           act(() => {
             const onClick = StyledButton.mock.calls[1][0].onClick;
@@ -1107,7 +1087,7 @@ describe("<UserFormButtons />", () => {
               data: {}
             }
           });
-          renderComponent(true);
+          renderComponent(nonDidValidFormState, true);
           render(Tooltip.mock.calls[0][0].children);
           act(() => {
             const onClick = StyledButton.mock.calls[1][0].onClick;
@@ -1143,10 +1123,9 @@ describe("<UserFormButtons />", () => {
     beforeEach(() => {
       isDidDifferentValid.mockReturnValue(true);
       isFormValid.mockReturnValue(true);
-      useFormState.mockReturnValue(validFormState);
     });
     test("When the Close Button is clicked, handleClose and setForm should be called", () => {
-      renderComponent(true);
+      renderComponent(validFormState, true);
       act(() => {
         const onClick = StyledButton.mock.calls[0][0].onClick;
         onClick();

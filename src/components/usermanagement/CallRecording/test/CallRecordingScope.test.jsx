@@ -6,16 +6,9 @@ import {
   TextField
 } from "@material-ui/core";
 import {
-  useFormState,
-  useFormDispatch,
-  userFormActions
-} from "context";
-import {
   act,
   calabrioContext,
   fireEvent,
-  expectOnlyPassedProps,
-  initialFormState,
   render,
   setupMockedComponents
 } from "testUtils";
@@ -60,14 +53,13 @@ const renderComponent = (customGroups, customTeams) => {
         teams: customTeams ? customTeams : teams
       }
     }}
+    setForm={mockSetForm}
   />);
 };
 
 describe("<CallRecordingScope", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    useFormState.mockReturnValue(initialFormState);
-    useFormDispatch.mockReturnValue(mockSetForm);
     setupMockedComponents({
       Checkbox,
       TextField,
@@ -98,6 +90,7 @@ describe("<CallRecordingScope", () => {
               teams
             }
           }}
+          setForm={mockSetForm}
         />);
         expect(rendered.getByTestId("group-row-100").selected).toBe(true);
         expect(rendered.getByTestId("group-row-200").selected).toBe(false);

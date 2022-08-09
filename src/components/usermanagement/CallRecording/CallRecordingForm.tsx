@@ -10,14 +10,21 @@ import {
 import { Dropdown } from "components";
 import {
   useAdminState,
-  useFormState,
-  useFormDispatch,
   userFormActions
 } from "context";
 import { getCalabrioUser } from "services";
 
-const CallRecordingForm = () => {
+interface CallRecordingFormInterface {
+  form: any,
+  setForm: (payload: any) => void
+}
+
+const CallRecordingForm = (props: CallRecordingFormInterface) => {
   const state = useAdminState();
+  const {
+    form,
+    setForm
+  } = props;
   const {
     groups,
     teams,
@@ -25,8 +32,8 @@ const CallRecordingForm = () => {
     users
   } = state.calabrioContext;
 
-  const form = useFormState();
-  const setForm = useFormDispatch();
+  // const form = useFormState();
+  // const setForm = useFormDispatch();
   console.log("***STATE!", state);
 
   useEffect(() => {
@@ -193,6 +200,7 @@ const CallRecordingForm = () => {
       </FormControlsPane>
       <CallRecordingScope
         calabrioUser={form.calabrioUser}
+        setForm={setForm}
       />
     </FormControlsContainer>
   );

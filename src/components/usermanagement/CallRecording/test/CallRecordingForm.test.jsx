@@ -2,11 +2,7 @@ import React from "react";
 import CallRecordingForm from "../CallRecordingForm";
 import CallRecordingScope from "../CallRecordingScope";
 import { Dropdown } from "components";
-import {
-  useAdminState,
-  useFormState,
-  useFormDispatch
-} from "context";
+import { useAdminState } from "context";
 import { getCalabrioUser } from "services";
 import {
   act,
@@ -44,17 +40,6 @@ describe("CallRecordingForm", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useAdminState.mockReturnValue(initialTestState);
-    useFormState.mockReturnValue({
-      ...initialFormState,
-      calabrioUser: {
-        ...initialFormState.calabrioUser,
-        scope: {
-          groups: [],
-          teams: []
-        }
-      }
-    });
-    useFormDispatch.mockReturnValue(mockSetForm);
     setupMockedComponents({
       CallRecordingScope,
       Dropdown
@@ -62,101 +47,114 @@ describe("CallRecordingForm", () => {
   });
   describe("User is being created", () => {
     describe("initial render", () => {
-      describe("User form groups and teams are empty", () => {
-        const expectedPayload = {
-          ...initialFormState.calabrioUser,
-          scope: {
-            groups: [
-              {
-                checked: false,
-                groupId: 100,
-                name: "Hawaii 50 Group",
-                partial: false
-              }, {
-                checked: false,
-                groupId: 200,
-                name: "FNOL Group",
-                partial: false
-              },
-              {
-                checked: false,
-                groupId: 300,
-                name: "No Teams Group",
-                partial: false
-              }
-            ],
-            teams: [{
+      const expectedPayload = {
+        ...initialFormState.calabrioUser,
+        scope: {
+          groups: [
+            {
               checked: false,
-              groupId: 101,
-              name: "Hawaii Team 50",
-              parentGroupId: 100
+              groupId: 100,
+              name: "Hawaii 50 Group",
+              partial: false
             }, {
               checked: false,
-              groupId: 102,
-              name: "Hawaii Specialty Team",
-              parentGroupId: 100
-            }, {
+              groupId: 200,
+              name: "FNOL Group",
+              partial: false
+            },
+            {
               checked: false,
-              groupId: 201,
-              name: "FNOL Team",
-              parentGroupId: 200
-            }]
+              groupId: 300,
+              name: "No Teams Group",
+              partial: false
+            }
+          ],
+          teams: [{
+            checked: false,
+            groupId: 101,
+            name: "Hawaii Team 50",
+            parentGroupId: 100
+          }, {
+            checked: false,
+            groupId: 102,
+            name: "Hawaii Specialty Team",
+            parentGroupId: 100
+          }, {
+            checked: false,
+            groupId: 201,
+            name: "FNOL Team",
+            parentGroupId: 200
+          }]
+        }
+      };
+      describe("groups length is 0 while groups > 0", () => {
+        const form = {
+          ...initialFormState,
+          calabrioUser: {
+            ...initialFormState.calabrioUser,
+            scope: {
+              groups: [],
+              teams: [{
+                name: "Team 1",
+                id: 2
+              }]
+            }
           }
         };
-        describe("groups length is 0 while groups > 0", () => {
-          beforeEach(() => {
-            useFormState.mockReturnValue({
-              ...initialFormState,
-              calabrioUser: {
-                ...initialFormState.calabrioUser,
-                scope: {
-                  groups: [],
-                  teams: [{
-                    name: "Team 1",
-                    id: 2
-                  }]
-                }
-              }
-            });
-          });
-          test("setScopeOnNewUser is called", () => {
-            render(<CallRecordingForm/>);
-            expect(mockSetForm).toBeCalledTimes(1);
-            expect(mockSetForm).toBeCalledWith({
-              type: "SET_CALABRIO_USER",
-              payload: expectedPayload
-            });
+        test("setScopeOnNewUser is called", () => {
+          render(<CallRecordingForm
+            form={form}
+            setForm={mockSetForm}
+          />);
+          expect(mockSetForm).toBeCalledTimes(1);
+          expect(mockSetForm).toBeCalledWith({
+            type: "SET_CALABRIO_USER",
+            payload: expectedPayload
           });
         });
-        describe("teams length is 0 while teams > 0", () => {
-          beforeEach(() => {
-            useFormState.mockReturnValue({
-              ...initialFormState,
-              calabrioUser: {
-                ...initialFormState.calabrioUser,
-                scope: {
-                  teams: [],
-                  groups: [{
-                    name: "Group 1",
-                    id: 2
-                  }]
-                }
-              }
-            });
-          });
-          test("setScopeOnNewUser is called", () => {
-            render(<CallRecordingForm/>);
-            expect(mockSetForm).toBeCalledTimes(1);
-            expect(mockSetForm).toBeCalledWith({
-              type: "SET_CALABRIO_USER",
-              payload: expectedPayload
-            });
+      });
+      describe("teams length is 0 while teams > 0", () => {
+        const form = {
+          ...initialFormState,
+          calabrioUser: {
+            ...initialFormState.calabrioUser,
+            scope: {
+              teams: [],
+              groups: [{
+                name: "Group 1",
+                id: 2
+              }]
+            }
+          }
+        };
+        test("setScopeOnNewUser is called", () => {
+          render(<CallRecordingForm
+            form={form}
+            setForm={mockSetForm}
+          />);
+          expect(mockSetForm).toBeCalledTimes(1);
+          expect(mockSetForm).toBeCalledWith({
+            type: "SET_CALABRIO_USER",
+            payload: expectedPayload
           });
         });
       });
       describe("groups and teams are both empty", () => {
         test("Form is rendered as expected", () => {
-          render(<CallRecordingForm/>);
+          const form = {
+            ...initialFormState,
+            calabrioUser: {
+              ...initialFormState.calabrioUser,
+              scope: {
+                groups: [],
+                teams: []
+              }
+            }
+          };
+          render(<CallRecordingForm
+            form={form}
+            setForm={mockSetForm}
+          />);
           expect(Dropdown.mock.calls.length).toBe(3);
           expectOnlyPassedProps(Dropdown, {
             label: "Roles",
@@ -231,27 +229,28 @@ describe("CallRecordingForm", () => {
         });
       });
       describe("groups and teams are both length > 0", () => {
-        beforeEach(() => {
-          useFormState.mockReturnValue({
-            ...initialFormState,
-            calabrioUser: {
-              ...initialFormState.calabrioUser,
-              scope: {
-                ...initialFormState.calabrioUser.scope,
-                teams: [{
-                  name: "Team 1",
-                  id: 2
-                }],
-                groups: [{
-                  name: "Group 1",
-                  id: 2
-                }]
-              }
+        const form = {
+          ...initialFormState,
+          calabrioUser: {
+            ...initialFormState.calabrioUser,
+            scope: {
+              ...initialFormState.calabrioUser.scope,
+              teams: [{
+                name: "Team 1",
+                id: 2
+              }],
+              groups: [{
+                name: "Group 1",
+                id: 2
+              }]
             }
-          });
-        });
+          }
+        };
         test("Form is rendered as expected", () => {
-          render(<CallRecordingForm/>);
+          render(<CallRecordingForm
+            form={form}
+            setForm={mockSetForm}
+          />);
           expect(Dropdown.mock.calls.length).toBe(3);
           expectOnlyPassedProps(Dropdown, {
             label: "Roles",
@@ -281,15 +280,35 @@ describe("CallRecordingForm", () => {
       });
     });
     describe("Role Dropdown", () => {
+      const form = {
+        ...initialFormState,
+        calabrioUser: {
+          ...initialFormState.calabrioUser,
+          scope: {
+            ...initialFormState.calabrioUser.scope,
+            teams: [{
+              name: "Team 1",
+              id: 2
+            }],
+            groups: [{
+              name: "Group 1",
+              id: 2
+            }]
+          }
+        }
+      };
       describe("updateValue is called", () => {
         test("setForm is called with the appropriate params", () => {
-          render(<CallRecordingForm />);
+          render(<CallRecordingForm
+            form={form}
+            setForm={mockSetForm}
+          />);
           expect(Dropdown.mock.calls.length).toBe(3);
           const updateRole = Dropdown.mock.calls[0][0].updateValue;
           act(() => {
             updateRole(null, [calabrioContext.roles[0], calabrioContext.roles[2]]);
           });
-          expect(mockSetForm).toHaveBeenCalledTimes(2);
+          expect(mockSetForm).toHaveBeenCalledTimes(1);
           expect(mockSetForm).toHaveBeenCalledWith({
             type: "SET_CALABRIO_ROLES",
             payload: [calabrioContext.roles[0], calabrioContext.roles[2]]
@@ -298,26 +317,30 @@ describe("CallRecordingForm", () => {
       });
     });
     describe("Team Dropdown", () => {
+      const form = {
+        ...initialFormState,
+        manager: {
+          value: {
+            calabrio_team_ids: [102, 101]
+          }
+        }
+      };
       describe("manager's'calabrio teams is not null", () => {
-        beforeEach(() => {
-          useFormState.mockReturnValue({
-            ...initialFormState,
-            manager: {
-              value: {
-                calabrio_team_ids: [102, 101]
-              }
-            }
-          });
-        });
         test("The dropdown should only show the managers teams", () => {
-          render(<CallRecordingForm />);
+          render(<CallRecordingForm
+            form={form}
+            setForm={mockSetForm}
+          />);
           expect(Dropdown.mock.calls[1][0].label).toBe("Team");
           expect(Dropdown.mock.calls[1][0].options.length).toBe(2);
         });
       });
       describe("updateValue is called", () => {
         test("setForm is called with the appropriate params", () => {
-          render(<CallRecordingForm />);
+          render(<CallRecordingForm
+            form={initialFormState}
+            setForm={mockSetForm}
+          />);
           expect(Dropdown.mock.calls.length).toBe(3);
           expect(Dropdown.mock.calls[1][0].label).toBe("Team");
           expect(Dropdown.mock.calls[1][0].options.length).toBe(3);
@@ -326,7 +349,7 @@ describe("CallRecordingForm", () => {
           act(() => {
             updateTeam(null, calabrioContext.teams[0]);
           });
-          expect(mockSetForm).toHaveBeenCalledTimes(2);
+          expect(mockSetForm).toHaveBeenCalledTimes(1);
           expect(mockSetForm).toHaveBeenCalledWith({
             type: "SET_CALABRIO_TEAM",
             payload: calabrioContext.teams[0]
@@ -335,16 +358,36 @@ describe("CallRecordingForm", () => {
       });
     });
     describe("Timezone Dropdown", () => {
+      const form = {
+        ...initialFormState,
+        calabrioUser: {
+          ...initialFormState.calabrioUser,
+          scope: {
+            ...initialFormState.calabrioUser.scope,
+            teams: [{
+              name: "Team 1",
+              id: 2
+            }],
+            groups: [{
+              name: "Group 1",
+              id: 2
+            }]
+          }
+        }
+      };
       describe("updateValue is called", () => {
         test("setForm is called with the appropriate params", () => {
-          render(<CallRecordingForm />);
+          render(<CallRecordingForm
+            form={form}
+            setForm={mockSetForm}
+          />);
           expect(Dropdown.mock.calls.length).toBe(3);
           expect(Dropdown.mock.calls[2][0].options).toBe(calabrioTimeZones);
           const updateTimeZone = Dropdown.mock.calls[2][0].updateValue;
           act(() => {
             updateTimeZone(null, calabrioTimeZones[1]);
           });
-          expect(mockSetForm).toHaveBeenCalledTimes(2);
+          expect(mockSetForm).toHaveBeenCalledTimes(1);
           expect(mockSetForm).toHaveBeenCalledWith({
             type: "SET_CALABRIO_TIMEZONE",
             payload: calabrioTimeZones[1]
@@ -385,11 +428,13 @@ describe("CallRecordingForm", () => {
         }
       };
       beforeEach(() => {
-        useFormState.mockReturnValue(formState);
         getCalabrioUser.mockResolvedValue(user);
       });
       test("Form is rendered as expected", async () => {
-        render(<CallRecordingForm/>);
+        render(<CallRecordingForm
+          form={formState}
+          setForm={mockSetForm}
+        />);
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
@@ -462,11 +507,11 @@ describe("CallRecordingForm", () => {
           lastName: "Nieman"
         }
       };
-      beforeEach(() => {
-        useFormState.mockReturnValue(formState);
-      });
       test("Form is rendered as expected", async () => {
-        render(<CallRecordingForm/>);
+        render(<CallRecordingForm
+          form={formState}
+          setForm={mockSetForm}
+        />);
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(0);
@@ -493,11 +538,13 @@ describe("CallRecordingForm", () => {
         }
       };
       beforeEach(() => {
-        useFormState.mockReturnValue(formState);
         getCalabrioUser.mockRejectedValue({ aww: "boo" });
       });
       test("Form is rendered as expected", async () => {
-        render(<CallRecordingForm/>);
+        render(<CallRecordingForm
+          form={formState}
+          setForm={mockSetForm}
+        />);
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);

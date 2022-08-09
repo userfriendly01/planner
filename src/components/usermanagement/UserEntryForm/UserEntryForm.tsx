@@ -29,8 +29,6 @@ const UserEntryForm = (props: UserEntryFormProps) => {
     workers
   } = props;
 
-  const form = useFormState();
-
   const {
     officeContext: {
       offices
@@ -43,6 +41,8 @@ const UserEntryForm = (props: UserEntryFormProps) => {
     }
   } = useAdminState();
 
+  const form = useFormState();
+  const setForm = useFormDispatch();
   const [forwardToToggle, setForwardToToggle] = useState(false);
 
   const [loading, updateLoading] = useState<LoadingState>({
@@ -72,22 +72,26 @@ const UserEntryForm = (props: UserEntryFormProps) => {
           : null
       }
       <UserFormAccordion
+        form={form}
+        forwardToToggle={forwardToToggle}
+        managers={managers}
+        profiles={profiles}
+        setForm={setForm}
+        setForwardToToggle={setForwardToToggle}
         skills={skills}
         worker={worker}
         workers={workers}
-        profiles={profiles}
-        managers={managers}
-        forwardToToggle={forwardToToggle}
-        setForwardToToggle={setForwardToToggle}
       />
       <UserFormButtons
+        form={form}
+        forwardToToggle={forwardToToggle}
         handleClose={handleClose}
         loading={loading}
-        updateLoading={updateLoading}
-        profiles={profiles}
         offices={offices}
+        profiles={profiles}
+        setForm={setForm}
+        updateLoading={updateLoading}
         worker={worker}
-        forwardToToggle={forwardToToggle}
       />
     </ModalContainer>
   );

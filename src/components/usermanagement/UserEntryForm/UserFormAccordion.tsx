@@ -9,17 +9,19 @@ import {
   SkillsFormInfo
 } from "components";
 import { FormControlsContainer } from "./UserEntryForm.Styles";
-import { UserFormAccordianProps } from "./UserEntryForm.Interfaces";
+import { UserFormAccordionProps } from "./UserEntryForm.Interfaces";
 
-const UserFormAccordion = (props: UserFormAccordianProps) => {
+const UserFormAccordion = (props: UserFormAccordionProps) => {
   const {
+    form,
+    forwardToToggle,
+    managers,
+    profiles,
+    setForm,
+    setForwardToToggle,
     skills,
     worker,
-    workers,
-    profiles,
-    managers,
-    forwardToToggle,
-    setForwardToToggle
+    workers
   } = props;
 
   return (
@@ -36,7 +38,10 @@ const UserFormAccordion = (props: UserFormAccordianProps) => {
             setForwardToToggle={setForwardToToggle}/>
         </AccordionTab>
         <AccordionTab labelVisual="Call Recording">
-          <CallRecordingForm />
+          <CallRecordingForm
+            form={form}
+            setForm={setForm}
+          />
         </AccordionTab>
         <AccordionTab labelVisual="Default Skills">
           <SkillsFormInfo />

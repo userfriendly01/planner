@@ -9,15 +9,13 @@ import {
   FormControlsPane,
   FullAccessWrapper
 } from "./CallRecording.Styles";
-import {
-  useFormDispatch,
-  userFormActions
-} from "context";
+import { userFormActions } from "context";
 
 const CallRecordingScope = (props:any) => {
 
   const {
-    calabrioUser
+    calabrioUser,
+    setForm
   } = props;
 
   const {
@@ -25,7 +23,6 @@ const CallRecordingScope = (props:any) => {
     teams
   } = calabrioUser.scope;
 
-  const setForm = useFormDispatch();
   const [ selectedGroup, setSelectedGroup ] = React.useState(null);
 
   useEffect(() => {
