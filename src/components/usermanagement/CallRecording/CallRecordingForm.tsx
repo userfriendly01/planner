@@ -80,7 +80,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
 
   const setScopeOnExistingUser = () => {
     const email = form.nNumberFetchedUser.email.toLowerCase();
-    const userRecord = users.find(user => user.email.toLowerCase() === email);
+    const userRecord = users.find(user => user.email?.toLowerCase() === email);
 
     if(userRecord){
       getCalabrioUser(userRecord.personId).then((res: any) => {
