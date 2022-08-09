@@ -34,6 +34,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   const form = useFormState();
   const setForm = useFormDispatch();
   console.log("***STATE!", state);
+  console.log("***Twilio Worker", twilioWorker);
 
   useEffect(() => {
     if(form.calabrioUser.scope.groups.length === 0 || form.calabrioUser.scope.teams.length === 0) {
@@ -78,7 +79,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
 
   const setScopeOnExistingUser = () => {
     const email = form.nNumberFetchedUser.email?.toLowerCase();
-    const acdId = twilioWorker.acdId?.toLowerCase();
+    const acdId = twilioWorker.sid?.toLowerCase();
     const userRecord = users.find(user => user.acdId?.toLowerCase() === acdId) || users.find(user => user.email?.toLowerCase() === email);
     console.warn("userRecord", userRecord);
 
