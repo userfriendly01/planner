@@ -81,9 +81,10 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   const setScopeOnExistingUser = () => {
     const email = form.nNumberFetchedUser.email.toLowerCase();
     const userRecord = users.find(user => user.email?.toLowerCase() === email);
+    console.warn("userRecord", userRecord);
 
     if(userRecord){
-      getCalabrioUser(userRecord.personId).then((res: any) => {
+      getCalabrioUser(userRecord.id).then((res: any) => {
         const userGroups: any[] = [];
         const userTeams: any[] = [];
 
