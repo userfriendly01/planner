@@ -63,6 +63,7 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
 
   const [newName, setNewName] = useState<string>();
   const [parentGroupId, setParentGroupId] = useState<number>();
+  const [group, setGroup] = useState<any>();
 
   const temp = (): any => {
     createCalabrioTeam({
@@ -98,8 +99,11 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
               value: group.groupId,
               ...group
             }))}
-            value={""}
-            updateValue={(event: any, newValue: any) => setParentGroupId(newValue.groupId)}
+            value={group && group.name ? group.name : ""}
+            updateValue={(event: any, newValue: any) =>
+            { setParentGroupId(newValue.groupId);
+              setGroup(newValue); }
+            }
           />
         </FlexColumn>
         <ButtonWrapper>
