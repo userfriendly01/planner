@@ -77,8 +77,8 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   };
 
   const setScopeOnExistingUser = () => {
-    const email = form.nNumberFetchedUser.email.toLowerCase();
-    const acdId = twilioWorker.acdId.toLowerCase();
+    const email = form.nNumberFetchedUser.email?.toLowerCase();
+    const acdId = twilioWorker.acdId?.toLowerCase();
     const userRecord = users.find(user => user.acdId?.toLowerCase() === acdId) || users.find(user => user.email?.toLowerCase() === email);
     console.warn("userRecord", userRecord);
 

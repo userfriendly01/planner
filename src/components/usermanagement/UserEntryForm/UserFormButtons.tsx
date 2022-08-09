@@ -73,7 +73,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         console.error("Failed to fetch user from peoples database.");
       }
     };
-    if(!form.nNumberFetchedUser){
+    if(!form.nNumberFetchedUser && form.nNumber.value){
       fetchUser();
     }
   }, []);
