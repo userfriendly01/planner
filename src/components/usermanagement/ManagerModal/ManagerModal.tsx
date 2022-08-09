@@ -66,12 +66,12 @@ const ManagerModal = (props: ManagerModalProps) => {
     {
       label: "divider",
       value: "divider"
-    }/*,
+    },
     ...calabrioTeams.map((team: any) => ({
-      label: getCalabrioOption(team).name,
-      value: getCalabrioOption(team.groupId).valueOf,
+      label: team.name,
+      value: team.groupId,
       ...team
-    }))*/
+    }))
   ];
   const [manager, setManager] = useState<Manager>(selectedManager ? selectedManager : null);
   const [errorMessage, setErrorMessage] = useState<string>(null);
