@@ -183,7 +183,7 @@ describe("CallRecordingForm", () => {
                 value: team.groupId
               };
             }),
-            value: null
+            value: ""
           }, 1);
           expect(CallRecordingScope.mock.calls.length).toBe(1);
           expect(getCalabrioUser).toHaveBeenCalledTimes(0);
@@ -280,7 +280,7 @@ describe("CallRecordingForm", () => {
                 value: team.groupId
               };
             }),
-            value: null
+            value: ""
           }, 1);
           expect(CallRecordingScope.mock.calls.length).toBe(1);
           expect(getCalabrioUser).toHaveBeenCalledTimes(0);
@@ -504,7 +504,10 @@ describe("CallRecordingForm", () => {
         ...initialFormState,
         calabrioUser: {
           ...initialFormState.calabrioUser,
-          team: 225,
+          team: {
+            value: 225,
+            label: "Team 1"
+          },
           roles: [],
           scope: {
             groups: [],
@@ -534,7 +537,10 @@ describe("CallRecordingForm", () => {
       const formState = {
         ...initialFormState,
         calabrioUser: {
-          team: 225,
+          team: {
+            value: 225,
+            label: "Team 1"
+          },
           roles: [],
           scope: {
             groups: [],

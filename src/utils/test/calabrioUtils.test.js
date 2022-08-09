@@ -8,6 +8,9 @@ import {
   getCalabrioUser,
   updateCalabrioUser
 } from "services";
+import {
+  calabrioContext
+} from "testUtils";
 
 Date.now = jest.fn();
 
@@ -195,7 +198,7 @@ describe("calabrioUtils", () => {
         }
       };
       test("Error is thrown", async () => {
-        await checkConflictingUsers(user, users);
+        await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
         expect(getCalabrioUser).toBeCalledTimes(1);
         expect(getCalabrioUser).toBeCalledWith("5");
         expect(console.error).toBeCalledTimes(1);
@@ -232,7 +235,7 @@ describe("calabrioUtils", () => {
           getCalabrioUser.mockRejectedValue({ boo: "aww" });
         });
         test("Error should be caught and logged", async () => {
-          await checkConflictingUsers(user, users);
+          await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("1");
           expect(console.error).toBeCalledTimes(1);
@@ -256,7 +259,7 @@ describe("calabrioUtils", () => {
             email: `xx-${users[0].id}-${users[0].email}`,
             adLogin: `xx-${users[0].id}-${users[0].adLogin}`
           };
-          await checkConflictingUsers(user, users);
+          await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("1");
           expect(updateCalabrioUser).toBeCalledTimes(1);
@@ -282,7 +285,7 @@ describe("calabrioUtils", () => {
             email: `xx-${users[0].id}-${users[0].email}`,
             adLogin: `xx-${users[0].id}-${users[0].adLogin}`
           };
-          await checkConflictingUsers(user, users);
+          await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("1");
           expect(updateCalabrioUser).toBeCalledTimes(1);
@@ -321,7 +324,7 @@ describe("calabrioUtils", () => {
           getCalabrioUser.mockRejectedValue({ boo: "aww" });
         });
         test("Error should be caught and logged", async () => {
-          await checkConflictingUsers(user, users);
+          await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("5");
           expect(console.error).toBeCalledTimes(1);
@@ -345,7 +348,7 @@ describe("calabrioUtils", () => {
             email: `xx-${users[4].id}-${users[4].email}`,
             adLogin: `xx-${users[4].id}-${users[4].adLogin}`
           };
-          await checkConflictingUsers(user, users);
+          await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("5");
           expect(updateCalabrioUser).toBeCalledTimes(1);
@@ -371,7 +374,7 @@ describe("calabrioUtils", () => {
             email: `xx-${users[4].id}-${users[4].email}`,
             adLogin: `xx-${users[4].id}-${users[4].adLogin}`
           };
-          await checkConflictingUsers(user, users);
+          await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("5");
           expect(updateCalabrioUser).toBeCalledTimes(1);
@@ -410,7 +413,7 @@ describe("calabrioUtils", () => {
           getCalabrioUser.mockRejectedValue({ boo: "aww" });
         });
         test("Error should be caught and logged", async () => {
-          await checkConflictingUsers(user, users);
+          await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("4");
           expect(console.error).toBeCalledTimes(1);
@@ -434,7 +437,7 @@ describe("calabrioUtils", () => {
             email: `SHELLUSER-${users[3].id}@libertymutual.com`,
             adLogin: `SHELLUSER-${users[3].id}`
           };
-          await checkConflictingUsers(user, users);
+          await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("4");
           expect(updateCalabrioUser).toBeCalledTimes(1);
@@ -460,7 +463,7 @@ describe("calabrioUtils", () => {
             email: `SHELLUSER-${users[3].id}@libertymutual.com`,
             adLogin: `SHELLUSER-${users[3].id}`
           };
-          await checkConflictingUsers(user, users);
+          await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("4");
           expect(updateCalabrioUser).toBeCalledTimes(1);

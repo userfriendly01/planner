@@ -53,7 +53,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
   const {
     users,
-    roles
+    roles,
+    teams
   } = useAdminState().calabrioContext;
 
   const dispatch = useAdminDispatch();
@@ -175,7 +176,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
         calabrioAttributes.acdId = dbWorker.workerSid;
 
-        checkConflictingUsers(calabrioAttributes, users, roles).then(() => {
+        checkConflictingUsers(calabrioAttributes, users, roles, teams).then(() => {
           console.log("Calabrio Attributes sent for create user", calabrioAttributes);
           createCalabrioUser(calabrioAttributes).then(() => {
             setForm({
@@ -327,8 +328,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           };
         }
 
-        checkConflictingUsers(calabrioAttributes, users, roles).then(() => {
-          console.log("Calabrio Attributes sent for create user", calabrioAttributes);
+        checkConflictingUsers(calabrioAttributes, users, roles, teams).then(() => {
+          console.log("Calabrio Attributes sent for update user", calabrioAttributes);
           const calabrioCall = form.calabrioUser.id ? (attributes: any) => updateCalabrioUser(form.calabrioUser.id, attributes) : (attributes: any) => createCalabrioUser(attributes);
           calabrioCall(calabrioAttributes).then(() => {
             setForm({ type: userFormActions.RESET_FORM });

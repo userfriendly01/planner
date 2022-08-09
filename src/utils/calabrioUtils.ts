@@ -1,16 +1,14 @@
 import {
   calabrioGroupLevels,
   CalabrioUser,
-  CalabrioGroup,
-  ConflictingUserResult,
-  searchByOptions
+  CalabrioGroup
 } from "../components/usermanagement/CallRecording/CallRecording.Interfaces";
 import {
   getCalabrioUser,
   updateCalabrioUser
 } from "services";
 
-const calabrioTenants = {
+export const calabrioTenants = {
   PROD: "tenant0215",
   NP: "LibertyMutual"
 };
@@ -64,7 +62,7 @@ const toLowerCaseString = (variable: any) => {
 /*
   https://forge.lmig.com/wiki/display/CICCT/Calabrio+Form
 */
-export const checkConflictingUsers = async (user: any, users: CalabrioUser[], roles: any[]): Promise<void> => {
+export const checkConflictingUsers = async (user: any, users: CalabrioUser[], roles: any[], teams: any[]): Promise<void> => {
   try {
     const {
       acdId
@@ -93,6 +91,12 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
         dupUser.adLogin = `xx-${dupUser.id}-${dupUser.adLogin}`;
         dupUser.email = `xx-${dupUser.id}-${dupUser.email}`;
         dupUser.deactivated = Date.now();
+        if(dupUser.roles.length === 0){
+          dupUser.roles = roles.filter(role => role.name.toLowerCase().includes("agent-sync"));
+        }
+        if(!dupUser.team){
+          dupUser.team = teams.find(team => team.name.toLowerCase().includes("default")).groupId;
+        }
 
         await updateCalabrioUser(dupUser.id, dupUser);
         return;
@@ -106,7 +110,12 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
         dupUser.deactivated = Date.now();
         dupUser.adLogin = `SHELLUSER-${dupUser.id}`;
         dupUser.email = `SHELLUSER-${dupUser.id}@libertymutual.com`;
-
+        if(dupUser.roles.length === 0){
+          dupUser.roles = roles.filter(role => role.name.toLowerCase().includes("agent-sync"));
+        }
+        if(!dupUser.team){
+          dupUser.team = teams.find(team => team.name.toLowerCase().includes("default")).groupId;
+        }
         await updateCalabrioUser(dupUser.id, dupUser);
         return;
       }
