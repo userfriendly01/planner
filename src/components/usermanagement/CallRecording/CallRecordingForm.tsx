@@ -87,9 +87,10 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
       getCalabrioUser(userRecord.id).then((res: any) => {
         const userGroups: any[] = [];
         const userTeams: any[] = [];
-
+        const fetchedUser = res.data;
+        console.warn("Fetched Calabrio User: ", res);
         groups.forEach(group => {
-          if(res.scope.groups.some((groupId: number) => group.groupId === groupId)){
+          if(fetchedUser.scope.groups.some((groupId: number) => group.groupId === groupId)){
             userGroups.push({
               ...group,
               checked: true,
@@ -105,7 +106,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         });
 
         teams.forEach(team => {
-          if(res.scope.teams.some((teamId: number) => team.groupId === teamId)){
+          if(fetchedUser.scope.teams.some((teamId: number) => team.groupId === teamId)){
             userTeams.push({
               ...team,
               checked: true
@@ -121,9 +122,9 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         setForm({
           type: userFormActions.SET_CALABRIO_USER,
           payload: {
-            team: res.groupId,
-            roles: res.roles,
-            timeZone: res.timeZone,
+            team: fetchedUser.groupId,
+            roles: fetchedUser.roles,
+            timeZone: fetchedUser.timeZone,
             scope: {
               groups: userGroups,
               teams: userTeams

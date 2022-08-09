@@ -428,7 +428,9 @@ describe("CallRecordingForm", () => {
         }
       };
       beforeEach(() => {
-        getCalabrioUser.mockResolvedValue(user);
+        getCalabrioUser.mockResolvedValue({
+          data: user
+        });
       });
       test("Form is rendered as expected", async () => {
         render(<CallRecordingForm
