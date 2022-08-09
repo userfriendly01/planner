@@ -18,19 +18,19 @@ export const calabrioTenants = {
 export const calabrioTimeZones =  [
   {
     label: "America/New_York (EST/EDT)",
-    value: 173
+    value: "America/New_York"
   },
   {
     label: "America/Los_Angeles (PST/PDT)",
-    value: 151
+    value: "America/Los_Angeles"
   },
   {
     label: "America/Denver (MST/MDT)",
-    value: 110
+    value: "America/Denver"
   },
   {
     label: "America/Chicago (CST/CDT)",
-    value: 99
+    value: "America/Chicago"
   }
 ];
 
