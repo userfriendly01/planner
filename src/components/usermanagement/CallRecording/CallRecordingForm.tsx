@@ -126,7 +126,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
             id: userRecord.id,
             team: fetchedUser.groupId ? teams.find(team => team.groupId === fetchedUser.groupId) : form.groupId,
             roles: fetchedUser.roles || form.calabrioUser.roles,
-            timezone: fetchedUser.timezone || form.calabrioUser.timezone,
+            timezone: fetchedUser.timeZone || form.calabrioUser.timezone,
             scope: {
               groups: userGroups,
               teams: userTeams
