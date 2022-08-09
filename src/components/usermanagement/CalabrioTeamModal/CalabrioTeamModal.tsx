@@ -44,7 +44,7 @@ interface DropdownOption {
   label: string,
   value: any
 }
-console.log("hello");
+
 export interface TeamModalProps {
   handleClose: () => void
 }
@@ -93,12 +93,12 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
               margin: "10px 0px"
             }}
             options={groups.sort().map((group: any) => ({
-              label: group.parentGroupId,
-              value: group.parentGroupId,
+              label: group.name,
+              value: group.groupId,
               ...group
             }))}
             value={""}
-            updateValue={(event: any, newValue: any) => setParentGroupId(newValue)}
+            updateValue={(event: any, newValue: any) => setParentGroupId(newValue.groupId)}
           />
         </FlexColumn>
         <ButtonWrapper>
