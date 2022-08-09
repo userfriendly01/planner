@@ -10,22 +10,20 @@ import {
 import { Dropdown } from "components";
 import {
   useAdminState,
-  userFormActions
+  userFormActions,
+  useFormState,
+  useFormDispatch
 } from "context";
 import { formModes } from "globals";
 import { getCalabrioUser } from "services";
 
 interface CallRecordingFormInterface {
-  form: any,
-  setForm: (payload: any) => void
+  twilioWorker: any
 }
 
 const CallRecordingForm = (props: CallRecordingFormInterface) => {
   const state = useAdminState();
-  const {
-    form,
-    setForm
-  } = props;
+  const { twilioWorker } = props;
   const {
     groups,
     teams,
@@ -33,8 +31,8 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
     users
   } = state.calabrioContext;
 
-  // const form = useFormState();
-  // const setForm = useFormDispatch();
+  const form = useFormState();
+  const setForm = useFormDispatch();
   console.log("***STATE!", state);
 
   useEffect(() => {
@@ -80,7 +78,8 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
 
   const setScopeOnExistingUser = () => {
     const email = form.nNumberFetchedUser.email.toLowerCase();
-    const userRecord = users.find(user => user.email?.toLowerCase() === email);
+    const acdId = twilioWorker.acdId.toLowerCase();
+    const userRecord = users.find(user => user.acdId?.toLowerCase() === acdId) || users.find(user => user.email?.toLowerCase() === email);
     console.warn("userRecord", userRecord);
 
     if(userRecord){
@@ -89,6 +88,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         const userTeams: any[] = [];
         const fetchedUser = res.data;
         console.warn("Fetched Calabrio User: ", res);
+
         groups.forEach(group => {
           if(fetchedUser.scope.groups.some((groupId: number) => group.groupId === groupId)){
             userGroups.push({
@@ -122,9 +122,9 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         setForm({
           type: userFormActions.SET_CALABRIO_USER,
           payload: {
-            team: fetchedUser.groupId,
-            roles: fetchedUser.roles,
-            timeZone: fetchedUser.timeZone,
+            team: fetchedUser.groupId ? teams.find(team => team.groupId === fetchedUser.groupId) : form.groupId,
+            roles: fetchedUser.roles || form.calabrioUser.roles,
+            timezone: fetchedUser.timezone || form.calabrioUser.timezone,
             scope: {
               groups: userGroups,
               teams: userTeams

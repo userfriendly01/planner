@@ -72,11 +72,9 @@ const UserEntryForm = (props: UserEntryFormProps) => {
           : null
       }
       <UserFormAccordion
-        form={form}
         forwardToToggle={forwardToToggle}
         managers={managers}
         profiles={profiles}
-        setForm={setForm}
         setForwardToToggle={setForwardToToggle}
         skills={skills}
         worker={worker}

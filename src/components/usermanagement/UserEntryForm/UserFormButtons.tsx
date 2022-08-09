@@ -240,6 +240,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       saveUser: true
     });
     const attributes: Partial<Worker["attributes"]> = {};
+    const calabrioAttributes: any = {};
+
     if (form.manager.updated) {
       attributes.manager_first_name = form.manager.value.manager_first_name;
       attributes.manager_last_name = form.manager.value.manager_last_name;
@@ -308,6 +310,21 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           type: "updateWorker",
           payload: mapWorkerFromDbWorker(dbWorker)
         }));
+
+        if(form.calabrioUser.updated) {
+          calabrioAttributes.acdId = dbWorker.workerSid;
+          calabrioAttributes.adLogin = `LM\\${form.nNumber.value.toLowerCase()}`;
+          calabrioAttributes.email = form.nNumberFetchedUser?.email;
+          calabrioAttributes.firstName = form.nNumberFetchedUser?.firstName;
+          calabrioAttributes.lastName = form.nNumberFetchedUser?.lastName;
+          calabrioAttributes.groupId = form.calabrioUser.team?.value;
+          calabrioAttributes.timeZone = form.calabrioUser.timezone.value;
+          calabrioAttributes.roles = form.calabrioUser.roles;
+          calabrioAttributes.scope = {
+            groups: form.calabrioUser.scope.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),
+            teams: form.calabrioUser.scope.teams.filter((team: any) => team.checked).map((g: any) => g.groupId)
+          };
+        }
 
         updateLoading({
           ...loading,

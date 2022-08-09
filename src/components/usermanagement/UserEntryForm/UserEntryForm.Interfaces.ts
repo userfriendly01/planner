@@ -23,14 +23,12 @@ export interface UserEntryFormProps {
 }
 
 export interface UserFormAccordionProps {
-  form: any,
   skills: TaskRouterSkill[],
   worker: Worker | null,
   workers: Worker[],
   profiles: TritonProfile[],
   managers: Manager[]
   forwardToToggle: boolean,
-  setForm: (payload: any) => void,
   setForwardToToggle: (value: boolean) => void,
 }
 

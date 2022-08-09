@@ -13,11 +13,9 @@ import { UserFormAccordionProps } from "./UserEntryForm.Interfaces";
 
 const UserFormAccordion = (props: UserFormAccordionProps) => {
   const {
-    form,
     forwardToToggle,
     managers,
     profiles,
-    setForm,
     setForwardToToggle,
     skills,
     worker,
@@ -38,10 +36,7 @@ const UserFormAccordion = (props: UserFormAccordionProps) => {
             setForwardToToggle={setForwardToToggle}/>
         </AccordionTab>
         <AccordionTab labelVisual="Call Recording">
-          <CallRecordingForm
-            form={form}
-            setForm={setForm}
-          />
+          <CallRecordingForm twilioWorker={worker} />
         </AccordionTab>
         <AccordionTab labelVisual="Default Skills">
           <SkillsFormInfo />

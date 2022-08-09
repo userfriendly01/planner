@@ -76,6 +76,7 @@ export const initialFormState = {
     updated: false
   },
   calabrioUser: {
+    updated: false,
     team: null,
     timezone: {
       label: "EST",

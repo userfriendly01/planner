@@ -320,10 +320,7 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
     case userFormActions.SET_CALABRIO_USER: {
       return {
         ...state,
-        calabrioUser: {
-          ...action.payload,
-          updated: true
-        }
+        calabrioUser: action.payload
       };
     }
     case userFormActions.SET_CALABRIO_ROLES: {

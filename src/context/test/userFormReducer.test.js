@@ -646,7 +646,6 @@ describe("userFormReducer", () => {
   describe("SET_CALABRIO_USER", () => {
     test("should set Calabrio User to Payload", () => {
       const payload = {
-        updated: true,
         user: "new"
       };
       const action = {
