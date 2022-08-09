@@ -334,25 +334,26 @@ describe("CallRecordingForm", () => {
         });
       });
     });
-  });
-  describe("Timezone Dropdown", () => {
-    describe("updateValue is called", () => {
-      test("setForm is called with the appropriate params", () => {
-        render(<CallRecordingForm />);
-        expect(Dropdown.mock.calls.length).toBe(3);
-        expect(Dropdown.mock.calls[2][0].options).toBe(calabrioTimeZones);
-        const updateTimeZone = Dropdown.mock.calls[2][0].updateValue;
-        act(() => {
-          updateTimeZone(null, calabrioTimeZones[1]);
-        });
-        expect(mockSetForm).toHaveBeenCalledTimes(2);
-        expect(mockSetForm).toHaveBeenCalledWith({
-          type: "SET_CALABRIO_TIMEZONE",
-          payload: calabrioTimeZones[1]
+    describe("Timezone Dropdown", () => {
+      describe("updateValue is called", () => {
+        test("setForm is called with the appropriate params", () => {
+          render(<CallRecordingForm />);
+          expect(Dropdown.mock.calls.length).toBe(3);
+          expect(Dropdown.mock.calls[2][0].options).toBe(calabrioTimeZones);
+          const updateTimeZone = Dropdown.mock.calls[2][0].updateValue;
+          act(() => {
+            updateTimeZone(null, calabrioTimeZones[1]);
+          });
+          expect(mockSetForm).toHaveBeenCalledTimes(2);
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: "SET_CALABRIO_TIMEZONE",
+            payload: calabrioTimeZones[1]
+          });
         });
       });
     });
   });
+
   describe("User is being updated", () => {
     describe("initial successful render", () => {
       const user = {
@@ -394,7 +395,7 @@ describe("CallRecordingForm", () => {
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
         expect(getCalabrioUser).toHaveBeenCalledWith(220);
         await waitFor(() => {
-          expect(mockSetForm).toHaveBeenCalledTimes(1);
+          expect(mockSetForm).toHaveBeenCalledTimes(2);
           expect(mockSetForm).toHaveBeenCalledWith({
             type: "SET_CALABRIO_USER",
             payload: {
@@ -469,7 +470,7 @@ describe("CallRecordingForm", () => {
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(0);
-        expect(mockSetForm).toHaveBeenCalledTimes(0);
+        expect(mockSetForm).toHaveBeenCalledTimes(1);
         expect(console.warn).toHaveBeenCalledWith("No user was found in Calabrio with this email");
       });
     });
@@ -501,7 +502,7 @@ describe("CallRecordingForm", () => {
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
         expect(getCalabrioUser).toHaveBeenCalledWith(220);
-        expect(mockSetForm).toHaveBeenCalledTimes(0);
+        expect(mockSetForm).toHaveBeenCalledTimes(1);
         await waitFor(() => {
           expect(console.error.mock.calls.length).toBe(1);
         });

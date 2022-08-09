@@ -62,14 +62,18 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
   React.useEffect(() => {
     const fetchUser = async () => {
-      const fetchedUser = await fetchUserServiceCall(form.nNumber.value);
-      setForm({
-        type: userFormActions.COMPLETE_N_NUMBER,
-        payload: {
-          nNumber: form.nNumber.value,
-          fetchedUser
-        }
-      });
+      try {
+        const fetchedUser = await fetchUserServiceCall(form.nNumber.value);
+        setForm({
+          type: userFormActions.COMPLETE_N_NUMBER,
+          payload: {
+            nNumber: form.nNumber.value,
+            fetchedUser
+          }
+        });
+      } catch (err) {
+        console.error("Failed to fetch user from peoples database.");
+      }
     };
     if(!form.nNumberFetchedUser){
       fetchUser();
