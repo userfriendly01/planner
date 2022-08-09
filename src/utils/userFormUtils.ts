@@ -29,7 +29,7 @@ export const isFormUpdated = (form: UserFormState): boolean => form.defaultSkill
 form.profileId.updated || form.outgoing.updated ||
 form.alternateDid.updated || form.directDialNum.updated ||
 form.nNumber.updated || form.extension.updated ||
-form.inactiveForwardTo.updated || form.zeroOutEnabledUpdated;
+form.inactiveForwardTo.updated || form.zeroOutEnabledUpdated || form.calabrioUser.updated;
 
 export const isFormValid = (form: UserFormState, worker: Worker, forwardToToggle: boolean): boolean =>
   (form.formMode === formModes.INSERT ? isNNumberValid(form) : true)
@@ -75,7 +75,7 @@ export const getOverflowSkillFromProfile = (profiles: TritonProfile[], profileVa
 };
 
 export const removeProfileZeroIfAdminNotInProfileZero = (adminState: AppState, profiles: TritonProfile[]) => {
-  const adGroups: String[] = adminState && adminState.userContext && adminState.userContext.pingIdentity ? adminState.userContext.pingIdentity.groups: [];
+  const adGroups: string[] = adminState && adminState.userContext && adminState.userContext.pingIdentity ? adminState.userContext.pingIdentity.groups: [];
 
   let adminGroup = false;
   adGroups.forEach(group =>{

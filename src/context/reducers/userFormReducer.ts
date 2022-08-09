@@ -112,6 +112,7 @@ export const initialUserFormState: UserFormState = {
     valid: false
   },
   calabrioUser: {
+    updated: false,
     team: null,
     timezone: calabrioTimeZones[0],
     roles: [],
@@ -147,7 +148,8 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
           scope: {
             ...state.calabrioUser.scope,
             groups: state.calabrioUser.scope.groups
-          }
+          },
+          updated: true
         }
       };
     }
@@ -160,7 +162,8 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
           scope: {
             ...state.calabrioUser.scope,
             teams: state.calabrioUser.scope.teams
-          }
+          },
+          updated: true
         }
       };
     }
@@ -317,7 +320,10 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
     case userFormActions.SET_CALABRIO_USER: {
       return {
         ...state,
-        calabrioUser: action.payload
+        calabrioUser: {
+          ...action.payload,
+          updated: true
+        }
       };
     }
     case userFormActions.SET_CALABRIO_ROLES: {
@@ -325,7 +331,8 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         ...state,
         calabrioUser: {
           ...state.calabrioUser,
-          roles: action.payload
+          roles: action.payload,
+          updated: true
         }
       };
     }
@@ -334,7 +341,8 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         ...state,
         calabrioUser: {
           ...state.calabrioUser,
-          team: action.payload
+          team: action.payload,
+          updated: true
         }
       };
     }
@@ -343,7 +351,8 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         ...state,
         calabrioUser: {
           ...state.calabrioUser,
-          timezone: action.payload
+          timezone: action.payload,
+          updated: true
         }
       };
     }

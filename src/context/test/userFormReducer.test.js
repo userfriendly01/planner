@@ -97,6 +97,7 @@ describe("userFormReducer", () => {
           ...initialUserFormState,
           calabrioUser: {
             ...initialTestState.calabrioUser,
+            updated: true,
             scope: {
               ...initialTestState.calabrioUser.scope,
               groups: [
@@ -148,6 +149,7 @@ describe("userFormReducer", () => {
           ...initialUserFormState,
           calabrioUser: {
             ...initialTestState.calabrioUser,
+            updated: true,
             scope: {
               ...initialTestState.calabrioUser.scope,
               groups: [
@@ -215,6 +217,7 @@ describe("userFormReducer", () => {
           ...initialUserFormState,
           calabrioUser: {
             ...initialTestState.calabrioUser,
+            updated: true,
             scope: {
               ...initialTestState.calabrioUser.scope,
               teams: [
@@ -642,7 +645,10 @@ describe("userFormReducer", () => {
 
   describe("SET_CALABRIO_USER", () => {
     test("should set Calabrio User to Payload", () => {
-      const payload = { user: "new" };
+      const payload = {
+        updated: true,
+        user: "new"
+      };
       const action = {
         type: userFormActions.SET_CALABRIO_USER,
         payload
@@ -668,6 +674,7 @@ describe("userFormReducer", () => {
         ...initialUserFormState,
         calabrioUser: {
           ...initialUserFormState.calabrioUser,
+          updated: true,
           roles: payload
         }
       };
@@ -687,6 +694,7 @@ describe("userFormReducer", () => {
         ...initialUserFormState,
         calabrioUser: {
           ...initialUserFormState.calabrioUser,
+          updated: true,
           team: payload
         }
       };
@@ -706,6 +714,7 @@ describe("userFormReducer", () => {
         ...initialUserFormState,
         calabrioUser: {
           ...initialUserFormState.calabrioUser,
+          updated: true,
           timezone: payload
         }
       };
