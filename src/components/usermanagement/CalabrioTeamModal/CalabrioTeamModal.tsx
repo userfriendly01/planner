@@ -59,6 +59,7 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
   } = state.calabrioContext;
   const { handleClose } = props;
 
+  consle.log("THESE ARE NEW CHANGES");
 
   const [newName, setNewName] = useState<string>();
   const [parentGroupId, setParentGroupId] = useState<number>();
