@@ -40,7 +40,7 @@ jest.mock("context", () => ({
 
 const mockSetForm = jest.fn();
 const twilioWorker = {
-  acdId: "WK12354345"
+  sid: "WK12354345"
 };
 
 describe("CallRecordingForm", () => {
