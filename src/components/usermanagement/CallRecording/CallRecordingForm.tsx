@@ -109,16 +109,6 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
           payload: discrepancy
         });
       }
-      const discrepancy: Discrepancy = {
-        type: discrepancyType.CALABRIO,
-        message: "No Record found in Calabrio."
-      };
-      console.warn("New Code", discrepancy);
-      setForm({
-        type: userFormActions.SET_DISCREPANCIES,
-        payload: discrepancy
-      });
-      console.warn("No user was found in Calabrio with this email");
       getCalabrioUser(userRecord.id).then((res: any) => {
         const userGroups: any[] = [];
         const userTeams: any[] = [];
@@ -176,7 +166,6 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         type: discrepancyType.CALABRIO,
         message: "No Record found in Calabrio."
       };
-      console.warn("New Code", discrepancy);
       setForm({
         type: userFormActions.SET_DISCREPANCIES,
         payload: discrepancy
