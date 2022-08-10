@@ -86,9 +86,39 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
     const email = form.nNumberFetchedUser.email?.toLowerCase();
     const acdId = twilioWorker.sid?.toLowerCase();
     const userRecord = users.find(user => user.acdId?.toLowerCase() === acdId) || users.find(user => user.email?.toLowerCase() === email);
-    console.warn("userRecord", userRecord);
+    console.log("userRecord", userRecord);
 
     if(userRecord){
+      if(userRecord.adLogin?.toLowerCase() !== `LM\\${form.nNumber.value.toLowerCase()}`){
+        const discrepancy: Discrepancy = {
+          type: discrepancyType.CALABRIO,
+          message: "User is not correctly set up for screen recording in Calabrio."
+        };
+        setForm({
+          type: userFormActions.SET_DISCREPANCIES,
+          payload: discrepancy
+        });
+      }
+      if(userRecord.email?.toLowerCase() !== email){
+        const discrepancy: Discrepancy = {
+          type: discrepancyType.CALABRIO,
+          message: "Calabrio Email does not match HR email. This could cause Calabrio Login issues"
+        };
+        setForm({
+          type: userFormActions.SET_DISCREPANCIES,
+          payload: discrepancy
+        });
+      }
+      const discrepancy: Discrepancy = {
+        type: discrepancyType.CALABRIO,
+        message: "No Record found in Calabrio."
+      };
+      console.warn("New Code", discrepancy);
+      setForm({
+        type: userFormActions.SET_DISCREPANCIES,
+        payload: discrepancy
+      });
+      console.warn("No user was found in Calabrio with this email");
       getCalabrioUser(userRecord.id).then((res: any) => {
         const userGroups: any[] = [];
         const userTeams: any[] = [];
@@ -144,7 +174,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
     } else {
       const discrepancy: Discrepancy = {
         type: discrepancyType.CALABRIO,
-        message: "No Record found in Calabrio. This will be corrected when you hit 'Save'"
+        message: "No Record found in Calabrio."
       };
       console.warn("New Code", discrepancy);
       setForm({

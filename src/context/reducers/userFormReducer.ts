@@ -358,8 +358,10 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
     }
     case userFormActions.SET_DISCREPANCIES: {
       console.warn("Running the form set");
-      state.discrepancies.push(action.payload);
-      return state;
+      return {
+        ...state,
+        discrepancies: state.discrepancies.push(action.payload)
+      };
     }
     case userFormActions.SET_EXTENSION_MESSAGE: {
       const message = action.payload.message;
