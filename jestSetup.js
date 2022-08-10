@@ -26,7 +26,7 @@ If you need to use the real file in your test, use jest.requireActual for the fu
 jest.mock("services", () => ({
   createCalabrioUser: jest.fn(),
   updateCalabrioUser: jest.fn(),
-  getCalabrioAgents: jest.fn(),
+  getCalabrioUsers: jest.fn(),
   getCalabrioOrg: jest.fn(),
   getCalabrioRoles: jest.fn(),
   getCalabrioUser: jest.fn(),

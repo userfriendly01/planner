@@ -20,7 +20,7 @@ import React, {
 import {
   getManagers as getManagersServiceCall,
   getOffices as getOfficesServiceCall,
-  getCalabrioAgents as getCalabrioAgentsServiceCall,
+  getCalabrioUsers as getCalabrioUsersServiceCall,
   getCalabrioRoles as getCalabrioRolesServiceCall,
   getCalabrioOrg as getCalabrioOrgServiceCall
 } from "services";
@@ -131,12 +131,12 @@ const getOffices = async dispatch => {
   }
 };
 
-const getCalabrioAgents = async dispatch => {
+const getCalabrioUsers = async dispatch => {
   try {
-    const agents = await getCalabrioAgentsServiceCall();
+    const agents = await getCalabrioUsersServiceCall();
     console.log("Calabrio Agents", agents.data);
     dispatch({
-      type: "loadCalabrioAgents",
+      type: "loadCalabrioUsers",
       payload: agents.data
     });
   } catch (error) {
@@ -240,7 +240,7 @@ const App = () => {
       getProfiles(dispatch),
       getSkills(dispatch),
       getWorkers(dispatch),
-      getCalabrioAgents(dispatch),
+      getCalabrioUsers(dispatch),
       getCalabrioOrg(dispatch),
       getCalabrioRoles(dispatch)
     ])

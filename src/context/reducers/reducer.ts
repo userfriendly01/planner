@@ -107,7 +107,7 @@ export const reducer = (state: AppState, action: Action): AppState => {
           tenant: formatCalabrioTenant(action.payload)
         }
       };
-    case "loadCalabrioAgents":
+    case "loadCalabrioUsers":
       return {
         ...state,
         calabrioContext: {

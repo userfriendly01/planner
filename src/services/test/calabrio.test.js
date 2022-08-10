@@ -1,6 +1,6 @@
 import {
   createCalabrioUser,
-  getCalabrioAgents,
+  getCalabrioUsers,
   getCalabrioOrg,
   getCalabrioRoles,
   getCalabrioUser,
@@ -47,12 +47,12 @@ describe("createCalabrioUser", () => {
   });
 });
 
-describe("getCalabrioAgents", () => {
+describe("getCalabrioUsers", () => {
   describe("call succeeds", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_AGENTS).replyOnce(200, data));
     test("should resolve with any successful response", done => {
-      getCalabrioAgents()
+      getCalabrioUsers()
         .then(resolvedValue => {
           expect(axiosMock.history.get.length).toEqual(1);
           expect(resolvedValue.data).toEqual(data);
@@ -64,7 +64,7 @@ describe("getCalabrioAgents", () => {
     const badResponse = { wahh: "boo" };
     beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_AGENTS).replyOnce(500, badResponse));
     test("should reject with error", done => {
-      getCalabrioAgents().catch(rejectedVal => {
+      getCalabrioUsers().catch(rejectedVal => {
         expect(axiosMock.history.get.length).toEqual(1);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();

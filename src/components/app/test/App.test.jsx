@@ -15,7 +15,7 @@ import {
 } from "globals";
 import React from "react";
 import {
-  getCalabrioAgents,
+  getCalabrioUsers,
   getCalabrioOrg,
   getCalabrioRoles,
   getManagers,
@@ -199,7 +199,7 @@ describe("<App />", () => {
       axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
       getManagers.mockResolvedValue(dbManagers);
       getOffices.mockResolvedValue(dbOffices);
-      getCalabrioAgents.mockResolvedValue({ data: []});
+      getCalabrioUsers.mockResolvedValue({ data: []});
       getCalabrioOrg.mockResolvedValue({ data: []});
       getCalabrioRoles.mockResolvedValue({ data: []});
     });
@@ -229,7 +229,7 @@ describe("<App />", () => {
                 payload: formatOfficesResponse(dbOffices)
               },
               {
-                type: "loadCalabrioAgents",
+                type: "loadCalabrioUsers",
                 payload: []
               },
               {
@@ -385,7 +385,7 @@ describe("<App />", () => {
                 payload: formatOfficesResponse(dbOffices)
               },
               {
-                type: "loadCalabrioAgents",
+                type: "loadCalabrioUsers",
                 payload: []
               },
               {
@@ -529,7 +529,7 @@ describe("<App />", () => {
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockResolvedValue(dbOffices);
-        getCalabrioAgents.mockRejectedValue("aww");
+        getCalabrioUsers.mockRejectedValue("aww");
         getCalabrioOrg.mockResolvedValue({ data: []});
         getCalabrioRoles.mockResolvedValue({ data: []});
       });
@@ -595,7 +595,7 @@ describe("<App />", () => {
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockResolvedValue(dbOffices);
         getCalabrioOrg.mockRejectedValue("aww");
-        getCalabrioAgents.mockResolvedValue({ data: []});
+        getCalabrioUsers.mockResolvedValue({ data: []});
         getCalabrioRoles.mockResolvedValue({ data: []});
       });
       test("should still load triton admin", async done => {
@@ -613,7 +613,7 @@ describe("<App />", () => {
             payload: formatOfficesResponse(dbOffices)
           },
           {
-            type: "loadCalabrioAgents",
+            type: "loadCalabrioUsers",
             payload: []
           },
           {
@@ -659,7 +659,7 @@ describe("<App />", () => {
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockResolvedValue(dbOffices);
-        getCalabrioAgents.mockResolvedValue({ data: []});
+        getCalabrioUsers.mockResolvedValue({ data: []});
         getCalabrioOrg.mockResolvedValue({ data: []});
         getCalabrioRoles.mockRejectedValue("aww");
       });
@@ -678,7 +678,7 @@ describe("<App />", () => {
             payload: formatOfficesResponse(dbOffices)
           },
           {
-            type: "loadCalabrioAgents",
+            type: "loadCalabrioUsers",
             payload: []
           },
           {

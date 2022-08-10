@@ -19,6 +19,7 @@ import {
   createCalabrioUser,
   createUser,
   fetchUser,
+  getCalabrioUsers,
   updateUser
 } from "services";
 import {
@@ -126,6 +127,7 @@ describe("<UserFormButtons />", () => {
     checkConflictingUsers.mockResolvedValue({ yay: "woot!" });
     createCalabrioUser.mockResolvedValue({ yay: "woot!" });
     fetchUser.mockResolvedValue({ yay: "woot!" });
+    getCalabrioUsers.mockResolvedValue({ data: "yay!" });
     setupMockedComponents({
       StyledButton,
       Tooltip,
@@ -275,7 +277,7 @@ describe("<UserFormButtons />", () => {
               expect(mockSetForm).toHaveBeenCalledTimes(2);
               expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
               expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
-              expect(mockDispatch).toHaveBeenCalledTimes(2);
+              expect(mockDispatch).toHaveBeenCalledTimes(3);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
                 payload: [formattedWorker]
@@ -286,6 +288,10 @@ describe("<UserFormButtons />", () => {
                   office_nme: "Springfield 012B",
                   office_num: "newOffice"
                 }
+              });
+              expect(mockDispatch.mock.calls[2][0]).toEqual({
+                type: "loadCalabrioUsers",
+                payload: "yay!"
               });
               jest.runAllTimers();
               expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
@@ -353,10 +359,14 @@ describe("<UserFormButtons />", () => {
                 }
               });
               expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
-              expect(mockDispatch).toHaveBeenCalledTimes(1);
+              expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
                 payload: [formattedWorker]
+              });
+              expect(mockDispatch.mock.calls[1][0]).toEqual({
+                type: "loadCalabrioUsers",
+                payload: "yay!"
               });
               jest.runAllTimers();
               expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
@@ -408,7 +418,7 @@ describe("<UserFormButtons />", () => {
               expect(mockSetForm).toHaveBeenCalledTimes(2);
               expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
               expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
-              expect(mockDispatch).toHaveBeenCalledTimes(2);
+              expect(mockDispatch).toHaveBeenCalledTimes(3);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
                 payload: [formattedWorker]
@@ -419,6 +429,10 @@ describe("<UserFormButtons />", () => {
                   office_nme: "Springfield 012B",
                   office_num: "newOffice"
                 }
+              });
+              expect(mockDispatch.mock.calls[2][0]).toEqual({
+                type: "loadCalabrioUsers",
+                payload: "yay!"
               });
               jest.runAllTimers();
               expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
@@ -467,7 +481,7 @@ describe("<UserFormButtons />", () => {
                 expect(mockSetForm).toHaveBeenCalledTimes(2);
                 expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
                 expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
-                expect(mockDispatch).toHaveBeenCalledTimes(2);
+                expect(mockDispatch).toHaveBeenCalledTimes(3);
                 expect(mockDispatch.mock.calls[0][0]).toEqual({
                   type: "addWorkers",
                   payload: [formattedWorker]
@@ -478,6 +492,10 @@ describe("<UserFormButtons />", () => {
                     office_nme: "Springfield 012B",
                     office_num: "newOffice"
                   }
+                });
+                expect(mockDispatch.mock.calls[2][0]).toEqual({
+                  type: "loadCalabrioUsers",
+                  payload: "yay!"
                 });
                 jest.runAllTimers();
                 expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
@@ -527,10 +545,14 @@ describe("<UserFormButtons />", () => {
               expect(mockSetForm).toHaveBeenCalledTimes(2);
               expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
               expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
-              expect(mockDispatch).toHaveBeenCalledTimes(1);
+              expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
                 payload: [formattedWorker]
+              });
+              expect(mockDispatch.mock.calls[1][0]).toEqual({
+                type: "loadCalabrioUsers",
+                payload: "yay!"
               });
               jest.runAllTimers();
               expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
@@ -789,10 +811,14 @@ describe("<UserFormButtons />", () => {
                 attributes: updateWorkerAttributesAfterFormValid,
                 zeroOutEnabled: true
               });
-              expect(mockDispatch).toHaveBeenCalledTimes(1);
+              expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "updateWorker",
                 payload: formattedWorker
+              });
+              expect(mockDispatch.mock.calls[1][0]).toEqual({
+                type: "loadCalabrioUsers",
+                payload: "yay!"
               });
               jest.runAllTimers();
               expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
@@ -860,10 +886,14 @@ describe("<UserFormButtons />", () => {
                 directDialNum: validFormState.directDialNum.e164,
                 zeroOutEnabled: validFormState.zeroOutEnabled
               });
-              expect(mockDispatch).toHaveBeenCalledTimes(1);
+              expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "updateWorker",
                 payload: formattedWorker
+              });
+              expect(mockDispatch.mock.calls[1][0]).toEqual({
+                type: "loadCalabrioUsers",
+                payload: "yay!"
               });
               jest.runAllTimers();
               expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
@@ -907,10 +937,14 @@ describe("<UserFormButtons />", () => {
                   directDialNum: validFormState.directDialNum.e164,
                   zeroOutEnabled: validFormState.zeroOutEnabled
                 });
-                expect(mockDispatch).toHaveBeenCalledTimes(1);
+                expect(mockDispatch).toHaveBeenCalledTimes(2);
                 expect(mockDispatch.mock.calls[0][0]).toEqual({
                   type: "updateWorker",
                   payload: formattedWorker
+                });
+                expect(mockDispatch.mock.calls[1][0]).toEqual({
+                  type: "loadCalabrioUsers",
+                  payload: "yay!"
                 });
                 jest.runAllTimers();
                 expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
@@ -996,10 +1030,14 @@ describe("<UserFormButtons />", () => {
                 },
                 zeroOutEnabled: true
               });
-              expect(mockDispatch).toHaveBeenCalledTimes(1);
+              expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "updateWorker",
                 payload: formattedWorker
+              });
+              expect(mockDispatch.mock.calls[1][0]).toEqual({
+                type: "loadCalabrioUsers",
+                payload: "yay!"
               });
               jest.runAllTimers();
               expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
