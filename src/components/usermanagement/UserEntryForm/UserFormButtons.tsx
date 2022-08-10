@@ -408,7 +408,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
   const isUserFormButtonEnabled = form.formMode === formModes.INSERT
     ? isFormValid(form, worker, forwardToToggle)
-    : (isFormUpdated(form) || form.discrepencies.length > 0) && isFormValid(form, worker, forwardToToggle);
+    : (isFormUpdated(form) || form.discrepancies.length > 0) && isFormValid(form, worker, forwardToToggle);
 
   return (
     <ButtonWrapper>

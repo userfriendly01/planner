@@ -1172,7 +1172,7 @@ describe("<UserFormButtons />", () => {
             expect(updateUser).toHaveBeenCalledWith(worker.sid, {
               zeroOutEnabled: false,
               inactiveForwardTo: validFormOptions.inactiveForwardTo,
-              attributes: updateWorkerAttributesAfterFormValid,
+              attributes: updateWorkerAttributesAfterFormValid
             });
             expect(mockSetForm).toHaveBeenCalledTimes(0);
             expect(mockDispatch).toHaveBeenCalledTimes(0);
