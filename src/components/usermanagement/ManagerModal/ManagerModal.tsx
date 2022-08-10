@@ -253,9 +253,7 @@ const ManagerModal = (props: ManagerModalProps) => {
                   const index = newInputValue.findIndex((object: any) => {
                     object.value === "add-team";
                   });
-                  console.log(newInputValue);
                   newInputValue.splice(index, 1);
-                  console.log(newInputValue);
                 }
                 setSelectedCalabrioTeams(newInputValue.map((team:any) => team.value));
               }}
