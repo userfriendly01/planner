@@ -73,6 +73,7 @@ const ManagerModal = (props: ManagerModalProps) => {
       ...team
     }))
   ];
+  console.log(calabrioTeams);
   const [manager, setManager] = useState<Manager>(selectedManager ? selectedManager : null);
   const [errorMessage, setErrorMessage] = useState<string>(null);
   const [saveStatus, setSaveStatus] = useState<string>(null);

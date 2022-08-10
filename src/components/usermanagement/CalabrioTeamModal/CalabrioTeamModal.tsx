@@ -8,7 +8,7 @@ import {
 import {
   CloseRounded
 } from "@material-ui/icons";
-import { TextField } from '@mui/material';
+import { TextField } from "@mui/material";
 import {
   Dropdown,
   ModalNNumber,
@@ -51,6 +51,7 @@ export interface TeamModalProps {
 
 const CalabrioTeamModal = (props: TeamModalProps) => {
   const state = useAdminState();
+  const dispatch = useAdminDispatch();
   const {
     groups,
     teams,
@@ -105,7 +106,18 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
           />
         </FlexColumn>
         <ButtonWrapper>
-          <StyledButton disabled={!newName || !parentGroupId} onClick={() => { createTeam(); handleClose(); }} data-testid={"edit-manager-button"}>
+          <StyledButton
+            disabled={!newName || !parentGroupId}
+            onClick={() => {
+              createTeam().then((res: any) => {
+                handleClose();
+                dispatch({
+                  type: "addCalabrioTeam",
+                  payload: res.data
+                });
+              });
+            }}
+            data-testid={"edit-manager-button"}>
             Add Team
           </StyledButton>
         </ButtonWrapper>
