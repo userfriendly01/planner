@@ -46,7 +46,7 @@ interface DropdownOption {
 }
 
 export interface TeamModalProps {
-  handleClose: () => void
+  handleClose: (res: any) => void
 }
 
 const CalabrioTeamModal = (props: TeamModalProps) => {
