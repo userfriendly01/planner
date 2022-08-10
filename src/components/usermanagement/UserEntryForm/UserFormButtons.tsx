@@ -13,7 +13,9 @@ import {
   formModes,
   modalOverlayStatuses,
   timeouts,
-  Worker
+  Worker,
+  Discrepancy,
+  discrepancyType
 } from "globals";
 import React from "react";
 import {
@@ -71,6 +73,16 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             fetchedUser
           }
         });
+        if(form.formMode === formModes.UPDATE && fetchedUser.email?.toLowerCase() !== worker.attributes?.email?.toLowerCase()){
+          const discrepancy: Discrepancy = {
+            type: discrepancyType.CALABRIO,
+            message: "Triton email does not match HR email."
+          };
+          setForm({
+            type: userFormActions.SET_DISCREPANCIES,
+            payload: discrepancy
+          });
+        }
       } catch (err) {
         console.error("Failed to fetch user from peoples database.");
       }

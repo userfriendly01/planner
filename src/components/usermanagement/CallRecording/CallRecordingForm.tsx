@@ -89,7 +89,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
     console.log("userRecord", userRecord);
 
     if(userRecord){
-      if(userRecord.adLogin?.toLowerCase() !== `LM\\${form.nNumber.value.toLowerCase()}`){
+      if(userRecord.adLogin?.toLowerCase() !== `LM\\\\${form.nNumber.value.toLowerCase()}`){
         const discrepancy: Discrepancy = {
           type: discrepancyType.CALABRIO,
           message: "User is not correctly set up for screen recording in Calabrio."
