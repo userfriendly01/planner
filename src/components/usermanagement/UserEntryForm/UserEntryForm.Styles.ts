@@ -57,6 +57,7 @@ export const Header2 = styled.h2`
 
 export const Header4 = styled.h4`
   align-self: center;
+  margin: 5px;
 `;
 
 export const Text = styled.div`

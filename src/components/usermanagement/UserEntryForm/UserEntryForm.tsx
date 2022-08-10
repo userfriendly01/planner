@@ -77,10 +77,12 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       {
         form.discrepancies.length > 0
           ? <DiscrepancyContainer>
-            <Header4>Discrepencies have been found for this worker. They will be corrected when you hit Save</Header4>
+            <Header4>Discrepencies have been found for this worker. They will be corrected when you hit &#39Save User&#39 </Header4>
             {
               form.discrepancies.forEach((d:any) => {
-                <Text>{d.message}</Text>;
+                return (
+                  <Text>{d.message}</Text>
+                );
               })
             }
           </DiscrepancyContainer>
