@@ -27,12 +27,6 @@ const DashCheck = keyframes`
 }
 `;
 
-const StyledWarning = styled(Warning)`
-  .MuiSvgIcon-root {
-    font-size: 100px;
-  }
-`;
-
 const Check = styled.polyline`
   stroke-dasharray: 1000;
   stroke-dashoffset: -100;
@@ -137,7 +131,7 @@ const ModalOverlay = props => {
     } else if (status === modalOverlayStatuses.PARTIAL_FAIL) {
       return {
         background: "goldenrod",
-        icon: <StyledWarning width={"80px"} height={"80px"}/>
+        icon: <Warning fontSize="80px"/>
       };
     } else if (status === modalOverlayStatuses.FAIL) {
       return {
