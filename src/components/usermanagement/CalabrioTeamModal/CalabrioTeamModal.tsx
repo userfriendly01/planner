@@ -64,13 +64,6 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
   const [parentGroupId, setParentGroupId] = useState<number>();
   const [group, setGroup] = useState<any>();
 
-  const createTeam = (): any => {
-    createCalabrioTeam({
-      name: newName,
-      parentGroupId: parentGroupId
-    });
-  };
-
   return (
     <ModalContainer>
       <PaperContainer>
@@ -109,7 +102,10 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
           <StyledButton
             disabled={!newName || !parentGroupId}
             onClick={() => {
-              createTeam().then((res: any) => {
+              createCalabrioTeam({
+                name: newName,
+                parentGroupId: parentGroupId
+              }).then((res: any) => {
                 handleClose();
                 dispatch({
                   type: "addCalabrioTeam",
