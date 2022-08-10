@@ -65,8 +65,8 @@ const IconAndMessageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  justify-content: center;
   padding: 16px;
+  margin-top: 15%;
 `;
 
 const InnerContainer = styled.div`
@@ -109,7 +109,6 @@ const StyledCloseRounded = styled(CloseRounded)`
   }
 `;
 
-
 const ModalOverlay = props => {
   const {
     message,
@@ -138,7 +137,7 @@ const ModalOverlay = props => {
     } else if (status === modalOverlayStatuses.PARTIAL_FAIL) {
       return {
         background: "goldenrod",
-        icon: <StyledWarning/>
+        icon: <StyledWarning width={"80px"} height={"80px"}/>
       };
     } else if (status === modalOverlayStatuses.FAIL) {
       return {
