@@ -261,7 +261,11 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       saveUser: true
     });
     const attributes: Partial<Worker["attributes"]> = {};
-    const calabrioAttributes: any = {};
+    attributes.email = form.nNumberFetchedUser.email;
+    attributes.email_address = form.nNumberFetchedUser.email;
+    attributes.emp_first_name = form.nNumberFetchedUser.firstName;
+    attributes.emp_last_name = form.nNumberFetchedUser.lastName;
+    attributes.full_name = `${form.nNumberFetchedUser.firstName} ${form.nNumberFetchedUser.lastName}`;
 
     if (form.manager.updated) {
       attributes.manager_first_name = form.manager.value.manager_first_name;
@@ -331,6 +335,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           type: "updateWorker",
           payload: mapWorkerFromDbWorker(dbWorker)
         }));
+
+        const calabrioAttributes: any = {};
 
         if(form.calabrioUser.updated) {
           calabrioAttributes.acdId = dbWorker.workerSid;
