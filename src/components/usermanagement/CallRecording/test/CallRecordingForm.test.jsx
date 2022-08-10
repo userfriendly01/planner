@@ -449,6 +449,7 @@ describe("CallRecordingForm", () => {
           expect(mockSetForm).toHaveBeenCalledWith({
             type: "SET_CALABRIO_USER",
             payload: {
+              "updated": false,
               id: 220,
               roles: [{
                 id: 2,
