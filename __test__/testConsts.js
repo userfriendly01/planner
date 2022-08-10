@@ -33,6 +33,7 @@ export const initialFormState = {
     updated: false,
     valid: false
   },
+  discrepancies: [],
   editDisabled: false,
   extension: {
     value: "",
@@ -181,6 +182,7 @@ export const validFormOptions = {
     masked: "(800)234-5678",
     tenDig: "8002345678"
   },
+  discrepancies: [],
   extension: "1234",
   manager: managerList[0],
   nNumber: "n1234567",
@@ -224,6 +226,7 @@ export const validFormState = {
   },
   defaultSkillsUpdated: true,
   didUser: false,
+  discrepancies: [],
   extension: {
     value: validFormOptions.extension,
     blurred: false,

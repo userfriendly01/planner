@@ -533,7 +533,7 @@ describe("CallRecordingForm", () => {
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(0);
-        expect(mockSetForm).toHaveBeenCalledTimes(1);
+        expect(mockSetForm).toHaveBeenCalledTimes(2);
         expect(console.warn).toHaveBeenCalledWith("No user was found in Calabrio with this email");
       });
     });

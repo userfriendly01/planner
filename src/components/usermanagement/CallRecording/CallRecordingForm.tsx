@@ -14,7 +14,11 @@ import {
   useFormState,
   useFormDispatch
 } from "context";
-import { formModes } from "globals";
+import {
+  Discrepancy,
+  discrepancyType,
+  formModes
+} from "globals";
 import { getCalabrioUser } from "services";
 
 interface CallRecordingFormInterface {
@@ -41,6 +45,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
       console.warn("groups and teams are empty");
       setScopeOnNewUser();
     }
+
   }, []);
 
   useEffect(() => {
@@ -137,6 +142,14 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         console.error("Failed to fetch Calabrio User.", err);
       });
     } else {
+      const discrepancy: Discrepancy = {
+        type: discrepancyType.CALABRIO,
+        message: "No Record found in Calabrio. This will be corrected when you hit 'Save'"
+      };
+      setForm({
+        type: userFormActions.SET_DISCREPANCIES,
+        payload: discrepancy
+      });
       console.warn("No user was found in Calabrio with this email");
     }
   };

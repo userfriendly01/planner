@@ -55,6 +55,14 @@ export const Header2 = styled.h2`
   align-self: center;
 `;
 
+export const Header4 = styled.h4`
+  align-self: center;
+`;
+
+export const Text = styled.div`
+  align-self: center;
+`;
+
 export const ModalContainer = styled.div<{theme: any}>`
   background-color: ${props => props.theme.backgroundColor};
   border-radius: 4px;

@@ -36,6 +36,7 @@ export const userFormActions = {
   SET_CALABRIO_TEAM: "SET_CALABRIO_TEAM",
   SET_CALABRIO_TIMEZONE: "SET_CALABRIO_TIMEZONE",
   SET_CALABRIO_ROLES: "SET_CALABRIO_ROLES",
+  SET_DISCREPANCIES: "SET_DISCREPANCIES",
   SET_EXTENSION_MESSAGE: "SET_EXTENSION_MESSAGE",
   SET_EXTENSION_RETRIES: "SET_EXTENSION_RETRIES",
   SET_EXTENSION_VERIFIED: "EXTENSION_VERIFIED",
@@ -54,6 +55,7 @@ const initialDefaultSkills = getValidSkillsObject();
 
 export const initialUserFormState: UserFormState = {
   formMode: formModes.INSERT,
+  discrepancies: [],
   defaultSkills: initialDefaultSkills,
   defaultSkillsUpdated: false,
   didUser: false,
@@ -353,6 +355,10 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
           updated: true
         }
       };
+    }
+    case userFormActions.SET_DISCREPANCIES: {
+      state.discrepancies.push(action.payload);
+      return state;
     }
     case userFormActions.SET_EXTENSION_MESSAGE: {
       const message = action.payload.message;

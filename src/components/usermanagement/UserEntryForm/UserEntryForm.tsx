@@ -5,6 +5,8 @@ import {
 import {
   Header1,
   Header2,
+  Header4,
+  Text,
   ModalContainer
 } from "./UserEntryForm.Styles";
 import {
@@ -69,6 +71,18 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       {
         form.formMode === formModes.UPDATE
           ? <Header2>{worker.attributes.full_name}</Header2>
+          : null
+      }
+      {
+        form.discrepancies.length > 0
+          ? <div>
+            <Header4>Discrepencies have been found for this worker.</Header4>
+            {
+              form.discrepancies.forEach((d:any) => {
+                <Text>{d.message}</Text>;
+              })
+            }
+          </div>
           : null
       }
       <UserFormAccordion
