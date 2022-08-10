@@ -29,5 +29,8 @@ export const addManager = (manager: DbAddManagerRequest): Promise<any> =>
 export const editManager = (managerId: string | number, manager: DbUpdateManagerRequest): Promise<any> =>
   myAxios.put(`${apiPaths.MANAGERS}/${managerId}`, manager).then(response => response.data);
 
+export const deleteManager = (managerId: string | number): Promise<any> =>
+  myAxios.delete(`${apiPaths.MANAGERS}/${managerId}`).then(response => response.data);
+
 export const getManagers = (): Promise<DbManagerResponse[]> =>
   myAxios.get(apiPaths.MANAGERS).then(response => response.data);
