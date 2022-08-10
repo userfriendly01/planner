@@ -89,6 +89,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
     console.log("userRecord", userRecord);
 
     if(userRecord){
+      console.warn(`adcompare = ${userRecord.adLogin?.toLowerCase()} vs ${`LM\\\\${form.nNumber.value.toLowerCase()}`} `);
       if(userRecord.adLogin?.toLowerCase() !== `LM\\\\${form.nNumber.value.toLowerCase()}`){
         const discrepancy: Discrepancy = {
           type: discrepancyType.CALABRIO,

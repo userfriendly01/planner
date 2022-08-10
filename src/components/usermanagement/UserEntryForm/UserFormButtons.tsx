@@ -73,7 +73,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             fetchedUser
           }
         });
-        if(form.formMode === formModes.UPDATE && fetchedUser.email?.toLowerCase() !== worker.attributes?.email?.toLowerCase()){
+        if(fetchedUser.email?.toLowerCase() !== worker.attributes?.email?.toLowerCase()){
           const discrepancy: Discrepancy = {
             type: discrepancyType.CALABRIO,
             message: "Triton email does not match HR email."
@@ -87,7 +87,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         console.error("Failed to fetch user from peoples database.");
       }
     };
-    if(!form.nNumberFetchedUser && form.nNumber.value){
+    if(!form.nNumberFetchedUser && form.nNumber.value && form.formMode === formModes.UPDATE){
       fetchUser();
     }
   }, []);
