@@ -28,8 +28,9 @@ const DashCheck = keyframes`
 `;
 
 const StyledWarning = styled(Warning)`
-  font-size: 100px;
-  color: black;
+  .MuiSvgIcon-root {
+    font-size: 100px;
+  }
 `;
 
 const Check = styled.polyline`
@@ -92,7 +93,7 @@ const Overlay = styled(FlexRow)`
   font-size: 1.8em;
   height: 100%;
   justify-content: ${props => props.status === modalOverlayStatuses.FAIL ? "space-between" : "center"};
-  opacity: ${props => props.opacity === modalOverlayStatuses.PARTIAL_FAIL ? ".92" : ".75"};
+  opacity: ${props => props.status === modalOverlayStatuses.PARTIAL_FAIL ? ".92" : ".75"};
   width: 100%;
   z-index: 100;
   left: 0;
