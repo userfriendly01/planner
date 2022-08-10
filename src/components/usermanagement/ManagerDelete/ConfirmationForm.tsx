@@ -11,14 +11,14 @@ import {
 import React from "react";
 
 export interface ConfirmationFormProps {
-  selectedManager: any,
-  deleteManagerClicked: () => void
+  SelectedManager: any,
+  DeleteManagerClicked: () => void
 }
 
 const ConfirmationForm = (props:ConfirmationFormProps) : any => {
   const {
-    selectedManager,
-    deleteManagerClicked
+    SelectedManager,
+    DeleteManagerClicked
   } = props;
 
   return (
@@ -30,8 +30,8 @@ const ConfirmationForm = (props:ConfirmationFormProps) : any => {
       </FlexColumn>
       <ButtonWrapper>
         <StyledButton
-          disabled={!selectedManager}
-          onClick={deleteManagerClicked}
+          disabled={!SelectedManager}
+          onClick={DeleteManagerClicked}
           data-testid={"delete-manager-button"}
         >
           Delete

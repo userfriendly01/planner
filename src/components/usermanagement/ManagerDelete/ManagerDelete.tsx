@@ -111,7 +111,7 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
           { teamMembers.length ?
             <ErrorForm TeamMembers={teamMembers} HandleClose={handleClose}/>
             :
-            <ConfirmationForm selectedManager={selectedManager} deleteManagerClicked={deleteManagerClicked}/>
+            <ConfirmationForm SelectedManager={selectedManager} DeleteManagerClicked={deleteManagerClicked}/>
           }
         </PaperContainer>
       </ModalContainer>
