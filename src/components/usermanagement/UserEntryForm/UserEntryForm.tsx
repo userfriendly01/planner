@@ -7,7 +7,8 @@ import {
   Header2,
   Header4,
   Text,
-  ModalContainer
+  ModalContainer,
+  DiscrepancyContainer
 } from "./UserEntryForm.Styles";
 import {
   ModalOverlay,
@@ -75,14 +76,14 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       }
       {
         form.discrepancies.length > 0
-          ? <div>
+          ? <DiscrepancyContainer>
             <Header4>Discrepencies have been found for this worker.</Header4>
             {
               form.discrepancies.forEach((d:any) => {
                 <Text>{d.message}</Text>;
               })
             }
-          </div>
+          </DiscrepancyContainer>
           : null
       }
       <UserFormAccordion

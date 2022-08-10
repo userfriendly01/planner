@@ -63,6 +63,10 @@ export const Text = styled.div`
   align-self: center;
 `;
 
+export const DiscrepancyContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 export const ModalContainer = styled.div<{theme: any}>`
   background-color: ${props => props.theme.backgroundColor};
   border-radius: 4px;
