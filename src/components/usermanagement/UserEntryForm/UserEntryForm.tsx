@@ -77,11 +77,11 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       {
         form.discrepancies.length > 0
           ? <DiscrepancyContainer>
-            <Header4>Discrepencies have been found for this worker. They will be corrected when you hit &#39Save User&#39 </Header4>
+            <Header4>Discrepencies have been found for this worker. They will be corrected when you hit Save User </Header4>
             {
-              form.discrepancies.forEach((d:any) => {
+              form.discrepancies.map((d:any, index: number) => {
                 return (
-                  <Text>{d.message}</Text>
+                  <Text key={index}>{d.message}</Text>
                 );
               })
             }
