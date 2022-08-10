@@ -1,7 +1,8 @@
 import {
   Action,
   Manager,
-  formModes
+  formModes,
+  discrepancyType
 } from "../../globals";
 import {
   UserFormState,
@@ -357,14 +358,14 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
       };
     }
     case userFormActions.SET_DISCREPANCIES: {
-      console.warn("Running the form set");
-      const updated: any[] = [action.payload];
-      state.discrepancies.forEach((d: any) => {
-        updated.push(d);
-      });
+      const type = action.payload.type;
       return {
         ...state,
-        discrepancies: updated
+        discrepancies: [...state.discrepancies.slice(), action.payload],
+        calabrioUser: {
+          ...state.calabrioUser,
+          updated: type === discrepancyType.CALABRIO ? true : false
+        }
       };
     }
     case userFormActions.SET_EXTENSION_MESSAGE: {

@@ -351,50 +351,50 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             groups: form.calabrioUser.scope.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),
             teams: form.calabrioUser.scope.teams.filter((team: any) => team.checked).map((g: any) => g.groupId)
           };
-        }
 
-        checkConflictingUsers(calabrioAttributes, users, roles, teams).then(() => {
-          console.log("Calabrio Attributes sent for update user", calabrioAttributes);
-          const calabrioCall = form.calabrioUser.id ? (attributes: any) => updateCalabrioUser(form.calabrioUser.id, attributes) : (attributes: any) => createCalabrioUser(attributes);
-          calabrioCall(calabrioAttributes).then(() => {
-            getCalabrioUsers().then((agents: any) => {
-              dispatch({
-                type: "loadCalabrioUsers",
-                payload: agents.data
-              });
-            }).catch(err => console.error("Failed to reset state after conflict check & calabrio user add", err));
-            setForm({ type: userFormActions.RESET_FORM });
-            updateLoading({
-              ...loading,
-              overlayMessage: `Successfully updated user: ${worker.attributes.full_name}`,
-              saveStatus: modalOverlayStatuses.SUCCESS,
-              saveUser: true
-            });
-            wait(() => {
+          checkConflictingUsers(calabrioAttributes, users, roles, teams).then(() => {
+            console.log("Calabrio Attributes sent for update user", calabrioAttributes);
+            const calabrioCall = form.calabrioUser.id ? (attributes: any) => updateCalabrioUser(form.calabrioUser.id, attributes) : (attributes: any) => createCalabrioUser(attributes);
+            calabrioCall(calabrioAttributes).then(() => {
+              getCalabrioUsers().then((agents: any) => {
+                dispatch({
+                  type: "loadCalabrioUsers",
+                  payload: agents.data
+                });
+              }).catch(err => console.error("Failed to reset state after conflict check & calabrio user add", err));
+              setForm({ type: userFormActions.RESET_FORM });
               updateLoading({
                 ...loading,
-                saveUser: false
+                overlayMessage: `Successfully updated user: ${worker.attributes.full_name}`,
+                saveStatus: modalOverlayStatuses.SUCCESS,
+                saveUser: true
               });
-              handleClose();
-            }, timeouts.MODAL_OVERLAY);
+              wait(() => {
+                updateLoading({
+                  ...loading,
+                  saveUser: false
+                });
+                handleClose();
+              }, timeouts.MODAL_OVERLAY);
+            }).catch(err => {
+              console.error("Error updating Calabrio user", err);
+              updateLoading({
+                ...loading,
+                overlayMessage: "Triton user updated. Error updating Calabrio user",
+                saveStatus: modalOverlayStatuses.PARTIAL_FAIL,
+                saveUser: true
+              });
+            });
           }).catch(err => {
             console.error("Error updating Calabrio user", err);
             updateLoading({
               ...loading,
-              overlayMessage: "Triton user updated. Error updating Calabrio user",
+              overlayMessage: "Triton User updated. Error updating Calabrio user",
               saveStatus: modalOverlayStatuses.PARTIAL_FAIL,
               saveUser: true
             });
           });
-        }).catch(err => {
-          console.error("Error updating Calabrio user", err);
-          updateLoading({
-            ...loading,
-            overlayMessage: "Triton User updated. Error updating Calabrio user",
-            saveStatus: modalOverlayStatuses.PARTIAL_FAIL,
-            saveUser: true
-          });
-        });
+        }
       }).catch(err => {
         console.error(err);
         updateLoading({

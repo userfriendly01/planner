@@ -43,11 +43,7 @@ export const isFormValid = (form: UserFormState, worker: Worker, forwardToToggle
   && isCalabrioUserValid(form);
 
 export const isCalabrioUserValid =  (form: UserFormState): boolean => {
-  if(form.formMode === formModes.UPDATE){
-    return true;
-  } else {
-    return form.calabrioUser.team && form.calabrioUser.roles.length > 0;
-  }
+  return form.calabrioUser.team && form.calabrioUser.roles.length > 0;
 };
 export const isManagerValid = (form: UserFormState): boolean => form.manager.value !== "";
 
