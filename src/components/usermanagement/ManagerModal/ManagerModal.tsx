@@ -250,6 +250,12 @@ const ManagerModal = (props: ManagerModalProps) => {
               updateValue={(event: any, newInputValue: any) => {
                 if(newInputValue.some((t: any) => t.value === "add-team")){
                   handleOpenTeam();
+                  const index = newInputValue.findIndex((object: any) => {
+                    object.value === "add-team";
+                  });
+                  console.log(newInputValue);
+                  newInputValue.splice(index, 1);
+                  console.log(newInputValue);
                 }
                 setSelectedCalabrioTeams(newInputValue.map((team:any) => team.value));
               }}
