@@ -55,6 +55,13 @@ export const formatCalabrioTenant = (groupsArray: CalabrioGroup[]): CalabrioGrou
   return group;
 };
 
+export const formatCalabrioRoles = (rolesArray: any[]): any[] => {
+  return rolesArray.map((role: any) => {
+    delete role.permissions;
+    return role;
+  });
+};
+
 const toLowerCaseString = (variable: any) => {
   return typeof variable === "string" ? variable.toLowerCase() : variable;
 };

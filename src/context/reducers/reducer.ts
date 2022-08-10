@@ -5,7 +5,8 @@ import {
 import {
   formatCalabrioTeams,
   formatCalabrioTenant,
-  formatCalabrioGroups
+  formatCalabrioGroups,
+  formatCalabrioRoles
 } from "utils";
 
 export const initialState: AppState = {
@@ -120,7 +121,7 @@ export const reducer = (state: AppState, action: Action): AppState => {
         ...state,
         calabrioContext: {
           ...state.calabrioContext,
-          roles: action.payload
+          roles: formatCalabrioRoles(action.payload)
         }
       };
     case "loadProfiles":{
