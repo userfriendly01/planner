@@ -27,6 +27,11 @@ const DashCheck = keyframes`
 }
 `;
 
+const StyledWarning = styled(Warning)`
+  font-size: 100px;
+  color: black;
+`;
+
 const Check = styled.polyline`
   stroke-dasharray: 1000;
   stroke-dashoffset: -100;
@@ -87,7 +92,7 @@ const Overlay = styled(FlexRow)`
   font-size: 1.8em;
   height: 100%;
   justify-content: ${props => props.status === modalOverlayStatuses.FAIL ? "space-between" : "center"};
-  opacity: .75;
+  opacity: ${props => props.opacity === modalOverlayStatuses.PARTIAL_FAIL ? ".92" : ".75"};
   width: 100%;
   z-index: 100;
   left: 0;
@@ -112,10 +117,11 @@ const ModalOverlay = props => {
   } = props;
 
   const TextWrapper = styled.div`
-  font-size: initial;
+  font-size: 18px;
   margin-top: 5%;
   text-align: center;
-  color: ${status === modalOverlayStatuses.PARTIAL_FAIL ? "black" : "white"}
+  word-spacing: 2px;
+  color: white;
 `;
 
   const getIconAndBackground = status => {
@@ -131,7 +137,7 @@ const ModalOverlay = props => {
     } else if (status === modalOverlayStatuses.PARTIAL_FAIL) {
       return {
         background: "goldenrod",
-        icon: <Warning fontSize="large"/>
+        icon: <StyledWarning/>
       };
     } else if (status === modalOverlayStatuses.FAIL) {
       return {

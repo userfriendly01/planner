@@ -380,7 +380,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
               console.error("Error updating Calabrio user", err);
               let message = "Triton user updated. Error updating Calabrio user";
               if(!form.calabrioUser.id){
-                message = "Triton user updated. Missing Calabrio profile was not able to be created. To resolve this issue, go into Calabrio and search for this user in the inactive users. Once found, you can re-activate their old profile and come back here, refresh Triton Admin, and update this worker to be accurate. If that does not work, delete and recreate the user.";
+                message = "Triton user updated.  **Calabrio User Not Updated**  Missing Calabrio profile was not able to be created. To resolve this issue, go into Calabrio and search for this user in the inactive users. Once found, you can re-activate their old profile and come back here, refresh Triton Admin, and update this worker to be accurate. If that does not work, delete and recreate the user.";
               }
               updateLoading({
                 ...loading,
