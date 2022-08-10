@@ -406,6 +406,10 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       });
   };
 
+  const isUserFormButtonEnabled = form.formMode === formModes.INSERT
+    ? isFormValid(form, worker, forwardToToggle)
+    : isFormUpdated(form) || form.discrepencies.length > 0 && isFormValid(form, worker, forwardToToggle);
+
   return (
     <ButtonWrapper>
       <UserFormButton onClick={() => {
@@ -427,7 +431,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       >
         <span>
           <UserFormButton
-            disabled={form.formMode === formModes.INSERT ? !isFormValid(form, worker, forwardToToggle) : (!isFormUpdated(form) || !isFormValid(form, worker, forwardToToggle))}
+            disabled={!isUserFormButtonEnabled}
             onClick={form.formMode === formModes.INSERT ? doCreateUser : doUpdateUser}
           >
             {form.formMode === formModes.INSERT ? "Add User" : "Save User"}
