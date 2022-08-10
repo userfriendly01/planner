@@ -89,7 +89,6 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
     console.log("userRecord", userRecord);
 
     if(userRecord){
-      console.warn(`adcompare = ${userRecord.adLogin?.toLowerCase()} vs ${`lm\\\\${form.nNumber.value.toLowerCase()}`} `);
       if(userRecord.adLogin?.toLowerCase() !== `lm\\${form.nNumber.value.toLowerCase()}`){
         const discrepancy: Discrepancy = {
           type: discrepancyType.CALABRIO,
@@ -149,6 +148,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         setForm({
           type: userFormActions.SET_CALABRIO_USER,
           payload: {
+            ...form.calabrioUser,
             id: userRecord.id,
             team: fetchedUser.groupId ? teams.find(team => team.groupId === fetchedUser.groupId) : form.groupId,
             roles: fetchedUser.roles || form.calabrioUser.roles,
