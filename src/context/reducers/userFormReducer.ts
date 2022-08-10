@@ -358,14 +358,9 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
       };
     }
     case userFormActions.SET_DISCREPANCIES: {
-      const type = action.payload.type;
       return {
         ...state,
-        discrepancies: [...state.discrepancies.slice(), action.payload],
-        calabrioUser: {
-          ...state.calabrioUser,
-          updated: type === discrepancyType.CALABRIO ? true : false
-        }
+        discrepancies: [...state.discrepancies.slice(), action.payload]
       };
     }
     case userFormActions.SET_EXTENSION_MESSAGE: {

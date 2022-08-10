@@ -85,6 +85,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   const setScopeOnExistingUser = () => {
     const email = form.nNumberFetchedUser.email?.toLowerCase();
     const acdId = twilioWorker.sid?.toLowerCase();
+    let updated = false;
     const userRecord = users.find(user => user.acdId?.toLowerCase() === acdId) || users.find(user => user.email?.toLowerCase() === email);
     console.log("userRecord", userRecord);
 
@@ -98,6 +99,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
           type: userFormActions.SET_DISCREPANCIES,
           payload: discrepancy
         });
+        updated = true;
       }
       if(userRecord.email?.toLowerCase() !== email){
         const discrepancy: Discrepancy = {
@@ -108,6 +110,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
           type: userFormActions.SET_DISCREPANCIES,
           payload: discrepancy
         });
+        updated = true;
       }
       getCalabrioUser(userRecord.id).then((res: any) => {
         const userGroups: any[] = [];
@@ -148,7 +151,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         setForm({
           type: userFormActions.SET_CALABRIO_USER,
           payload: {
-            ...form.calabrioUser,
+            updated,
             id: userRecord.id,
             team: fetchedUser.groupId ? teams.find(team => team.groupId === fetchedUser.groupId) : form.groupId,
             roles: fetchedUser.roles || form.calabrioUser.roles,
@@ -163,6 +166,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         console.error("Failed to fetch Calabrio User.", err);
       });
     } else {
+      console.warn("No user was found in Calabrio with this email");
       const discrepancy: Discrepancy = {
         type: discrepancyType.CALABRIO,
         message: "No Record found in Calabrio."
@@ -171,7 +175,13 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         type: userFormActions.SET_DISCREPANCIES,
         payload: discrepancy
       });
-      console.warn("No user was found in Calabrio with this email");
+      setForm({
+        type: userFormActions.SET_CALABRIO_USER,
+        payload: {
+          ...form.calabrioUser,
+          updated: true
+        }
+      });
     }
   };
 
