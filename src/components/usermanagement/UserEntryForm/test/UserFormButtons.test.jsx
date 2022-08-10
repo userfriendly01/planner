@@ -785,6 +785,11 @@ describe("<UserFormButtons />", () => {
             const updateWorkerAttributesAfterFormValid = {
               default_skills: validFormOptions.defaultSkills,
               did: validFormOptions.didE164,
+              email: "test@abc.com",
+              email_address: "test@abc.com",
+              emp_first_name: "Frank",
+              emp_last_name: "Rizzo",
+              full_name: "Frank Rizzo",
               department_id: validFormState.nNumberFetchedUser.departmentNumber,
               department_name: validFormState.nNumberFetchedUser.departmentName,
               extension: validFormOptions.extension,
@@ -842,6 +847,11 @@ describe("<UserFormButtons />", () => {
         describe("Worker is a DID user", () => {
           const updateWorkerAttributesAfterFormValid = {
             default_skills: validFormOptions.defaultSkills,
+            email: "test@abc.com",
+            email_address: "test@abc.com",
+            emp_first_name: "Frank",
+            emp_last_name: "Rizzo",
+            full_name: "Frank Rizzo",
             did: validFormOptions.didE164,
             department_id: validFormOptions.nNumberFetchedUser.departmentNumber,
             department_name: validFormOptions.nNumberFetchedUser.departmentName,
@@ -931,7 +941,12 @@ describe("<UserFormButtons />", () => {
                     routing: {
                       ...updateWorkerAttributesAfterFormValid.routing,
                       skills: []
-                    }
+                    },
+                    email: "test@abc.com",
+                    email_address: "test@abc.com",
+                    emp_first_name: "Frank",
+                    emp_last_name: "Rizzo",
+                    full_name: "Frank Rizzo"
                   },
                   alternateDid: validFormState.alternateDid.e164,
                   directDialNum: validFormState.directDialNum.e164,
@@ -1026,7 +1041,12 @@ describe("<UserFormButtons />", () => {
                 attributes: {
                   department_id: fetchedUser.departmentNumber,
                   department_name: fetchedUser.departmentName,
-                  location: fetchedUser.departmentName
+                  location: fetchedUser.departmentName,
+                  email: "test@abc.com",
+                  email_address: "test@abc.com",
+                  emp_first_name: "Frank",
+                  emp_last_name: "Rizzo",
+                  full_name: "Frank Rizzo"
                 },
                 zeroOutEnabled: true
               });
@@ -1082,6 +1102,11 @@ describe("<UserFormButtons />", () => {
           department_id: validFormOptions.nNumberFetchedUser.departmentNumber,
           department_name: validFormOptions.nNumberFetchedUser.departmentName,
           did: validFormOptions.didE164,
+          email: "test@abc.com",
+          email_address: "test@abc.com",
+          emp_first_name: "Frank",
+          emp_last_name: "Rizzo",
+          full_name: "Frank Rizzo",
           extension: validFormOptions.extension,
           location: validFormOptions.nNumberFetchedUser.departmentName,
           manager_first_name: validFormOptions.manager.manager_first_name,
@@ -1147,7 +1172,7 @@ describe("<UserFormButtons />", () => {
             expect(updateUser).toHaveBeenCalledWith(worker.sid, {
               zeroOutEnabled: false,
               inactiveForwardTo: validFormOptions.inactiveForwardTo,
-              attributes: updateWorkerAttributesAfterFormValid
+              attributes: updateWorkerAttributesAfterFormValid,
             });
             expect(mockSetForm).toHaveBeenCalledTimes(0);
             expect(mockDispatch).toHaveBeenCalledTimes(0);
