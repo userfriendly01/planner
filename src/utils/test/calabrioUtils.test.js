@@ -257,7 +257,8 @@ describe("calabrioUtils", () => {
             ...users[0],
             deactivated: "Right Now",
             email: `xx-${users[0].id}-${users[0].email}`,
-            adLogin: `xx-${users[0].id}-${users[0].adLogin}`
+            adLogin: `xx-${users[0].id}-${users[0].adLogin}`,
+            acdId: `xx-${users[0].acdId}`
           };
           await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
@@ -283,7 +284,8 @@ describe("calabrioUtils", () => {
             ...users[0],
             deactivated: "Right Now",
             email: `xx-${users[0].id}-${users[0].email}`,
-            adLogin: `xx-${users[0].id}-${users[0].adLogin}`
+            adLogin: `xx-${users[0].id}-${users[0].adLogin}`,
+            acdId: `xx-${users[0].acdId}`
           };
           await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
@@ -346,7 +348,8 @@ describe("calabrioUtils", () => {
             ...users[4],
             deactivated: "Right Now",
             email: `xx-${users[4].id}-${users[4].email}`,
-            adLogin: `xx-${users[4].id}-${users[4].adLogin}`
+            adLogin: `xx-${users[4].id}-${users[4].adLogin}`,
+            acdId: `xx-${users[4].acdId}`
           };
           await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
@@ -372,7 +375,8 @@ describe("calabrioUtils", () => {
             ...users[4],
             deactivated: "Right Now",
             email: `xx-${users[4].id}-${users[4].email}`,
-            adLogin: `xx-${users[4].id}-${users[4].adLogin}`
+            adLogin: `xx-${users[4].id}-${users[4].adLogin}`,
+            acdId: `xx-${users[4].acdId}`
           };
           await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
@@ -435,7 +439,8 @@ describe("calabrioUtils", () => {
             ...users[3],
             deactivated: "Right Now",
             email: `SHELLUSER-${users[3].id}@libertymutual.com`,
-            adLogin: `SHELLUSER-${users[3].id}`
+            adLogin: `SHELLUSER-${users[3].id}`,
+            acdId: `SH-${users[3].acdId}`
           };
           await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
@@ -461,7 +466,8 @@ describe("calabrioUtils", () => {
             ...users[3],
             deactivated: "Right Now",
             email: `SHELLUSER-${users[3].id}@libertymutual.com`,
-            adLogin: `SHELLUSER-${users[3].id}`
+            adLogin: `SHELLUSER-${users[3].id}`,
+            acdId: `SH-${users[3].acdId}`
           };
           await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);

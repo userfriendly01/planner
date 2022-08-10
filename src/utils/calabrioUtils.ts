@@ -95,9 +95,11 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
         const dupUser = res.data;
         console.warn("Conflicting User Found with Duplicate Email or Windows Login: ", dupUser);
 
+        dupUser.deactivated = Date.now();
         dupUser.adLogin = `xx-${dupUser.id}-${dupUser.adLogin}`;
         dupUser.email = `xx-${dupUser.id}-${dupUser.email}`;
-        dupUser.deactivated = Date.now();
+        dupUser.acdId = `xx-${dupUser.acdId}`;
+
         if(dupUser.roles.length === 0){
           dupUser.roles = roles.filter(role => role.name.toLowerCase().includes("agent-sync"));
         }
@@ -117,6 +119,8 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
         dupUser.deactivated = Date.now();
         dupUser.adLogin = `SHELLUSER-${dupUser.id}`;
         dupUser.email = `SHELLUSER-${dupUser.id}@libertymutual.com`;
+        dupUser.acdId = `SH-${dupUser.acdId}`;
+
         if(dupUser.roles.length === 0){
           dupUser.roles = roles.filter(role => role.name.toLowerCase().includes("agent-sync"));
         }
