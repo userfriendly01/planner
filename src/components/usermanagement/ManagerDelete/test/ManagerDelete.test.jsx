@@ -131,15 +131,18 @@ describe("<ManagerDelete />", () => {
       expect(rendered.queryAllByText("ModalOverlay").length).toBe(0);
     });
   });
-  describe("there are no workers", () => {
-    test("should render without breaking", () => {
+  describe("should render with empty data sets", () => {
+    test("should render empty divs when there's no manager", () => {
+      renderComponent(null);
+    });
+    test("should render with no workers", () => {
       useAdminState.mockReturnValue({
         ...defaultAdminState,
         workerContext: {
           workers: []
         }
       });
-      renderComponent(managerObject(""));
+      renderComponent(managerObject("n0262226"));
     });
   });
   describe("manager does not have any workers on their team", () => {

@@ -1,30 +1,24 @@
 import {
-  ButtonWrapper,
   Header,
   HeaderAndCloseButtonWrapper,
   LeftDiv,
   ModalContainer,
-  TextBox,
-  PenaltyBox
 } from "./ManagerDelete.Styles";
 import { CloseRounded } from "@material-ui/icons";
 import {
   ModalOverlay,
-  PaperContainer,
-  StyledButton
+  PaperContainer
 } from "components";
 import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import {
-  FlexColumn,
-  Manager
-} from "globals";
 import React, { useState } from "react";
 import {
   deleteManager
 } from "services";
+import ConfirmationForm from "./ConfirmationForm";
+import ErrorForm from "./ErrorForm";
 
 const loadingStates = {
   success: "success",
@@ -43,23 +37,34 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
   } = props;
 
   const state = useAdminState();
-  const [manager] = useState<Manager>(selectedManager);
-  const [errorMessage, setErrorMessage] = useState<string>(null);
-  const [saveStatus, setSaveStatus] = useState<string>(null);
   const workers = useAdminState().workerContext.workers;
   const dispatch = useAdminDispatch();
+  const [errorMessage, setErrorMessage] = useState<string>(null);
+  const [saveStatus, setSaveStatus] = useState<string>(null);
 
-  const teamMembers = workers.filter(worker => worker.attributes.manager_n_number === manager.manager_n_number);
-  const memberNames = teamMembers.map(worker => `${worker.attributes.emp_first_name} ${worker.attributes.emp_last_name}`);
-  const theTeam = memberNames.join(", ");
+  const buildTeamMembersList = () => {
+    if (workers.length === 0) {
+      return "";
+    }
+
+    const members = workers.filter(worker => {
+      if (worker.attributes.manager_n_number && selectedManager) {
+        if (worker.attributes.manager_n_number.toLowerCase() === selectedManager.manager_n_number.toLowerCase()) {
+          return true;
+        }
+      }
+    });
+    const memberNames = members.map(worker => `${worker.attributes.emp_first_name} ${worker.attributes.emp_last_name}`);
+    return memberNames.join(", ");
+  };
 
   const deleteManagerClicked = (): Promise<any> => {
     setSaveStatus(loadingStates.loading);
 
-    return deleteManager(manager.manager_id)
+    return deleteManager(selectedManager.manager_id)
       .then((res: any) => {
         // Remove the deleted manager from our local state
-        const idx = state.managerContext.managers.findIndex(mgr => mgr.manager_n_number === manager.manager_n_number);
+        const idx = state.managerContext.managers.findIndex(mgr => mgr.manager_n_number === selectedManager.manager_n_number);
         const lowerHalf = state.managerContext.managers.slice(0, idx);
         const upperHalf = state.managerContext.managers.slice(idx + 1);
         const updatedArray = [...lowerHalf, ...upperHalf];
@@ -87,63 +92,30 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
     overlayMessage = errorMessage;
   }
 
-  const confirmationForm = () => {
-    return (
-      <div>
-        <FlexColumn>
-          <TextBox data-testid={"delete-confirmation-textbox"}>
-            Are you sure you want to delete this manager?
-          </TextBox>
-        </FlexColumn>
-        <ButtonWrapper>
-          <StyledButton
-            disabled={!manager}
-            onClick={deleteManagerClicked}
-            data-testid={"delete-manager-button"}
-          >
-            Delete
-          </StyledButton>
-        </ButtonWrapper>
-      </div>
-    );
-  };
-
-  const errorForm = () => {
-    return (
-      <div>
-        <FlexColumn>
-          <TextBox data-testid={"team-members-error-textbox"}>
-            Sorry, this manager cannot be deleted until these team members are re-assigned:
-          </TextBox>
-          <PenaltyBox data-testid={"team-members-error-penaltybox"}>
-            {theTeam}
-          </PenaltyBox>
-        </FlexColumn>
-        <ButtonWrapper>
-          <StyledButton onClick={handleClose} data-testid={"delete-manager-button"}>
-            Close
-          </StyledButton>
-        </ButtonWrapper>
-      </div>
-    );
-  };
+  const teamMembers = buildTeamMembersList();
 
   return (
-    <ModalContainer>
-      <PaperContainer>
-        {saveStatus ?
-          <ModalOverlay
-            message={overlayMessage}
-            status={saveStatus}
-          /> : null}
-        <HeaderAndCloseButtonWrapper>
-          <LeftDiv></LeftDiv>
-          <Header>Delete Manager {manager.manager_first_name} {manager.manager_last_name}</Header>
-          <CloseRounded data-testid={"close-button"} onClick={handleClose}/>
-        </HeaderAndCloseButtonWrapper>
-        { teamMembers.length ? errorForm() :  confirmationForm() }
-      </PaperContainer>
-    </ModalContainer>
+    selectedManager ?
+      <ModalContainer>
+        <PaperContainer>
+          {saveStatus ?
+            <ModalOverlay
+              message={overlayMessage}
+              status={saveStatus}
+            /> : null}
+          <HeaderAndCloseButtonWrapper>
+            <LeftDiv></LeftDiv>
+            <Header>Delete Manager {selectedManager.manager_first_name} {selectedManager.manager_last_name}</Header>
+            <CloseRounded data-testid={"close-button"} onClick={handleClose}/>
+          </HeaderAndCloseButtonWrapper>
+          { teamMembers.length ?
+            <ErrorForm TeamMembers={teamMembers} HandleClose={handleClose}/>
+            :
+            <ConfirmationForm selectedManager={selectedManager} deleteManagerClicked={deleteManagerClicked}/>
+          }
+        </PaperContainer>
+      </ModalContainer>
+      : <div></div>
   );
 };
 
