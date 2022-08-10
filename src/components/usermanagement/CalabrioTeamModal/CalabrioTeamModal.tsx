@@ -106,7 +106,7 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
                 name: newName,
                 parentGroupId: parentGroupId
               }).then((res: any) => {
-                handleClose();
+                handleClose(res);
                 dispatch({
                   type: "addCalabrioTeam",
                   payload: res.data
