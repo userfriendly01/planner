@@ -105,11 +105,7 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
           />
         </FlexColumn>
         <ButtonWrapper>
-          <StyledButton disabled={!newName || !parentGroupId} onClick={() => {
-            createTeam;
-            handleClose;
-          }}
-          data-testid={"edit-manager-button"}>
+          <StyledButton disabled={!newName || !parentGroupId} onClick={() => { createTeam(); handleClose(); }} data-testid={"edit-manager-button"}>
             Add Team
           </StyledButton>
         </ButtonWrapper>
