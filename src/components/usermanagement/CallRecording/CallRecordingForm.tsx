@@ -90,7 +90,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
 
     if(userRecord){
       console.warn(`adcompare = ${userRecord.adLogin?.toLowerCase()} vs ${`lm\\\\${form.nNumber.value.toLowerCase()}`} `);
-      if(userRecord.adLogin?.toLowerCase() !== `lm\\\\${form.nNumber.value.toLowerCase()}`){
+      if(userRecord.adLogin?.toLowerCase() !== `lm\\${form.nNumber.value.toLowerCase()}`){
         const discrepancy: Discrepancy = {
           type: discrepancyType.CALABRIO,
           message: "User is not correctly set up for screen recording in Calabrio."
