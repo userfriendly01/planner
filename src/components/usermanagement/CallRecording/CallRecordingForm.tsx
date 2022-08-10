@@ -91,6 +91,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
 
     if(userRecord){
       if(userRecord.adLogin?.toLowerCase() !== `lm\\${form.nNumber.value.toLowerCase()}`){
+        console.warn("Windows Login does not match calabrio record");
         const discrepancy: Discrepancy = {
           type: discrepancyType.CALABRIO,
           message: "User is not correctly set up for screen recording in Calabrio."
@@ -111,6 +112,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
           payload: discrepancy
         });
         updated = true;
+        console.warn("Email does not match calabrio record");
       }
       getCalabrioUser(userRecord.id).then((res: any) => {
         const userGroups: any[] = [];
@@ -147,7 +149,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
             });
           }
         });
-
+        console.warn("Updated is set to:", updated);
         setForm({
           type: userFormActions.SET_CALABRIO_USER,
           payload: {
