@@ -394,6 +394,21 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
               saveUser: true
             });
           });
+        } else {
+          setForm({ type: userFormActions.RESET_FORM });
+          updateLoading({
+            ...loading,
+            overlayMessage: `Successfully updated user: ${worker.attributes.full_name}`,
+            saveStatus: modalOverlayStatuses.SUCCESS,
+            saveUser: true
+          });
+          wait(() => {
+            updateLoading({
+              ...loading,
+              saveUser: false
+            });
+            handleClose();
+          }, timeouts.MODAL_OVERLAY);
         }
       }).catch(err => {
         console.error(err);

@@ -816,14 +816,10 @@ describe("<UserFormButtons />", () => {
                 attributes: updateWorkerAttributesAfterFormValid,
                 zeroOutEnabled: true
               });
-              expect(mockDispatch).toHaveBeenCalledTimes(2);
+              expect(mockDispatch).toHaveBeenCalledTimes(1);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "updateWorker",
                 payload: formattedWorker
-              });
-              expect(mockDispatch.mock.calls[1][0]).toEqual({
-                type: "loadCalabrioUsers",
-                payload: "yay!"
               });
               jest.runAllTimers();
               expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
@@ -896,14 +892,10 @@ describe("<UserFormButtons />", () => {
                 directDialNum: validFormState.directDialNum.e164,
                 zeroOutEnabled: validFormState.zeroOutEnabled
               });
-              expect(mockDispatch).toHaveBeenCalledTimes(2);
+              expect(mockDispatch).toHaveBeenCalledTimes(1);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "updateWorker",
                 payload: formattedWorker
-              });
-              expect(mockDispatch.mock.calls[1][0]).toEqual({
-                type: "loadCalabrioUsers",
-                payload: "yay!"
               });
               jest.runAllTimers();
               expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
@@ -952,14 +944,10 @@ describe("<UserFormButtons />", () => {
                   directDialNum: validFormState.directDialNum.e164,
                   zeroOutEnabled: validFormState.zeroOutEnabled
                 });
-                expect(mockDispatch).toHaveBeenCalledTimes(2);
+                expect(mockDispatch).toHaveBeenCalledTimes(1);
                 expect(mockDispatch.mock.calls[0][0]).toEqual({
                   type: "updateWorker",
                   payload: formattedWorker
-                });
-                expect(mockDispatch.mock.calls[1][0]).toEqual({
-                  type: "loadCalabrioUsers",
-                  payload: "yay!"
                 });
                 jest.runAllTimers();
                 expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
@@ -1050,14 +1038,10 @@ describe("<UserFormButtons />", () => {
                 },
                 zeroOutEnabled: true
               });
-              expect(mockDispatch).toHaveBeenCalledTimes(2);
+              expect(mockDispatch).toHaveBeenCalledTimes(1);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "updateWorker",
                 payload: formattedWorker
-              });
-              expect(mockDispatch.mock.calls[1][0]).toEqual({
-                type: "loadCalabrioUsers",
-                payload: "yay!"
               });
               jest.runAllTimers();
               expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
