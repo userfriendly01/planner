@@ -251,7 +251,7 @@ const ManagerModal = (props: ManagerModalProps) => {
                 if(newInputValue.some((t: any) => t.value === "add-team")){
                   handleOpenTeam();
                 }
-                //setSelectedCalabrioTeams(newInputValue.map((team:any) => team.value));
+                setSelectedCalabrioTeams(newInputValue.map((team:any) => team.value));
               }}
             />
             <Modal disableBackdropClick={true} open={isTeamModalOpen}>
