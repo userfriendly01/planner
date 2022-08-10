@@ -358,10 +358,10 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
     }
     case userFormActions.SET_DISCREPANCIES: {
       console.warn("Running the form set");
-      const updated = [
-        ...state.discrepancies,
-        action.payload
-      ];
+      const updated: any[] = [action.payload];
+      state.discrepancies.forEach((d: any) => {
+        updated.push(d);
+      });
       return {
         ...state,
         discrepancies: updated
