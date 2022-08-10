@@ -49,7 +49,7 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
     setIsManagerModalOpen(true);
   };
 
-  const handleDeleteManager = async (option: DropdownOption) => {
+  const handleOpenDeleteManager = async (option: DropdownOption) => {
     setSelectedManager(managers.find(manager => manager.manager_n_number === option.value));
     setIsManagerDeleteOpen(true);
   };
@@ -102,7 +102,7 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
             <IconWrapper onClick={() => handleEditManager(option)} data-testid="edit-button">
               <Edit fontSize={"inherit"}/>
             </IconWrapper>
-            <IconWrapper onClick={() => handleDeleteManager(option)} data-testid="delete-button">
+            <IconWrapper onClick={() => handleOpenDeleteManager(option)} data-testid="delete-button">
               <Delete fontSize={"inherit"}/>
             </IconWrapper>
           </Wrapper>

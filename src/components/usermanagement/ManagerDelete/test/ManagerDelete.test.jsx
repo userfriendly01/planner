@@ -91,6 +91,12 @@ const defaultAdminState = {
           emp_last_name: "Flockhart",
           manager_n_number: "n0262226"
         }
+      },
+      {
+        attributes: {
+          emp_first_name: "Shania",
+          emp_last_name: "Twain"
+        }
       }
     ]
   }
@@ -123,6 +129,17 @@ describe("<ManagerDelete />", () => {
       expectMockedComponent(rendered, { StyledButton });
       expectMockedComponent(rendered, { CloseRounded });
       expect(rendered.queryAllByText("ModalOverlay").length).toBe(0);
+    });
+  });
+  describe("there are no workers", () => {
+    test("should render without breaking", () => {
+      useAdminState.mockReturnValue({
+        ...defaultAdminState,
+        workerContext: {
+          workers: []
+        }
+      });
+      renderComponent(managerObject(""));
     });
   });
   describe("manager does not have any workers on their team", () => {
