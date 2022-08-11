@@ -99,12 +99,12 @@ const ManagerModal = (props: ManagerModalProps) => {
 
   const handleCloseTeam = (res: any) => {
     setIsTeamModalOpen(false);
-    const temp = {
+    /*const temp = {
       ...res,
       label: res.name,
       value: res.groupId
     };
-    /*dispatch(({
+    dispatch(({
       type: "addCalabrioTeam",
       payload: {
         ...manager,
@@ -112,8 +112,8 @@ const ManagerModal = (props: ManagerModalProps) => {
         profile_id: profileId,
         calabrio_team_ids: selectedCalabrioTeams
       }
-    }));*/
-    setSelectedCalabrioTeams(calabrioTeams.map((team:any) => team.value));
+    }));
+    setSelectedCalabrioTeams(calabrioTeams.map((team:any) => team.value));*/
   };
 
   const addManagerClicked = (): Promise<any> => {
