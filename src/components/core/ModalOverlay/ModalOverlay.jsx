@@ -131,7 +131,10 @@ const ModalOverlay = props => {
     } else if (status === modalOverlayStatuses.PARTIAL_FAIL) {
       return {
         background: "goldenrod",
-        icon: <Warning fontSize="80px"/>
+        icon: <Warning style={{
+          fontSize: "80px",
+          "width": "80px"
+        }} />
       };
     } else if (status === modalOverlayStatuses.FAIL) {
       return {
