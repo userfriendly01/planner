@@ -108,15 +108,12 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
               }).then((res: any) => {
                 handleClose();
                 const updatedArray = state.calabrioContext.teams.map(t => {
-                  if(t.groupId === res.groupId){
-                    return {
-                      ...res,
-                      label: res.name,
-                      value: res.groupId
-                    };
-                  } else {
-                    return t;
-                  }
+                  return t;
+                });
+                updatedArray.push({
+                  ...res,
+                  label: res.name,
+                  value: res.groupId
                 });
                 dispatch({
                   type: "addCalabrioTeam",
