@@ -46,7 +46,7 @@ interface DropdownOption {
 }
 
 export interface TeamModalProps {
-  handleClose: () => void
+  handleClose: (res: any) => void
 }
 
 const CalabrioTeamModal = (props: TeamModalProps) => {
@@ -106,7 +106,7 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
                 name: newName,
                 parentGroupId: parentGroupId
               }).then((res: any) => {
-                handleClose();
+                handleClose(res);
                 dispatch({
                   type: "addCalabrioTeam",
                   payload: res.data
