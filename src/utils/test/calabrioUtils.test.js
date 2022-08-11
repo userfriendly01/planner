@@ -2,6 +2,7 @@ import {
   formatCalabrioTeams,
   formatCalabrioTenant,
   formatCalabrioGroups,
+  formatCalabrioRoles,
   checkConflictingUsers
 } from "utils";
 import {
@@ -103,7 +104,10 @@ const users = [
     firstName: "April",
     lastName: "Ludgate",
     adLogin: "LM\\n0261113",
-    roles: [],
+    roles: [{
+      id: 2,
+      name: "Administrator"
+    }],
     team: 213,
     scope: {
       teams: [],
@@ -117,7 +121,10 @@ const users = [
     firstName: "",
     lastName: "",
     adLogin: "LM\\n0261114",
-    roles: [],
+    roles: [{
+      id: 2,
+      name: "Administrator"
+    }],
     team: 213,
     scope: {
       teams: [],
@@ -176,33 +183,43 @@ describe("calabrioUtils", () => {
       expect(result).toStrictEqual(expectedResult);
     });
   });
+  describe("formatCalabrioRoles", () => {
+    const roles = [
+      {
+        name: "I'm a Role!",
+        permissions: [
+          { name: "I'm a permission!" }
+        ]
+      },
+      {
+        name: "I'm another Role!",
+        permissions: [
+          { name: "I'm another permission!" }
+        ]
+      }
+    ];
+    test("Calabrio payload is filtered as expected", () => {
+      const expectedResult = [
+        { name: "I'm a Role!" },
+        { name: "I'm another Role!" }
+      ];
+      const result = formatCalabrioRoles(roles);
+      expect(result).toStrictEqual(expectedResult);
+    });
+  });
   describe("checkConflictingUsers", () => {
-    describe("duplicate user has same acd Id", () => {
+    describe("acd Id === dupUser acd Id", () => {
       const user = {
-        acdId: "WK123456789",
-        email: "faith.scott@libertymutual.com",
+        acdId: "WK9999888",
+        email: "faith.griffin@libertymutual.com",
         firstName: "Faith",
         lastName: "Cuneo",
-        adLogin: "LM\\n0261114",
-        roles: [{
-          id: 2,
-          name: "Admin"
-        }],
-        team: 216,
-        scope: {
-          teams: [{
-            id: 43,
-            name: "Team Two"
-          }],
-          groups: []
-        }
+        adLogin: "LM\\n0260331"
       };
-      test("Error is thrown", async () => {
+      test("should return", async () => {
         await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
-        expect(getCalabrioUser).toBeCalledTimes(1);
-        expect(getCalabrioUser).toBeCalledWith("5");
-        expect(console.error).toBeCalledTimes(1);
-        expect(console.error.mock.calls[0][0]).toContain("Error thrown trying to fetch and validate Conflicting Users");
+        expect(getCalabrioUser).toBeCalledTimes(0);
+        expect(updateCalabrioUser).toBeCalledTimes(0);
       });
     });
     describe("conflicting profile found with email", () => {
@@ -293,6 +310,33 @@ describe("calabrioUtils", () => {
           expect(updateCalabrioUser).toBeCalledTimes(1);
           expect(updateCalabrioUser).toBeCalledWith("1", updatedUser);
           expect(console.error).toBeCalledTimes(0);
+        });
+        describe("Dup User has no team", () => {
+          beforeEach(() => {
+            userResponse = {
+              data: {
+                ...users[0],
+                team: null
+              }
+            };
+            getCalabrioUser.mockResolvedValue(userResponse);
+          });
+          test("No Error is returned and user is successfully updated", async () => {
+            const updatedUser = {
+              ...users[0],
+              deactivated: "Right Now",
+              email: `xx-${users[0].id}-${users[0].email}`,
+              adLogin: `xx-${users[0].id}-${users[0].adLogin}`,
+              acdId: `xx-${users[0].acdId}`,
+              team: undefined
+            };
+            await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
+            expect(getCalabrioUser).toBeCalledTimes(1);
+            expect(getCalabrioUser).toBeCalledWith("1");
+            expect(updateCalabrioUser).toBeCalledTimes(1);
+            expect(updateCalabrioUser).toBeCalledWith("1", updatedUser);
+            expect(console.error).toBeCalledTimes(0);
+          });
         });
       });
     });
@@ -385,6 +429,60 @@ describe("calabrioUtils", () => {
           expect(updateCalabrioUser).toBeCalledWith("5", updatedUser);
           expect(console.error).toBeCalledTimes(0);
         });
+        describe("Dup User has no team", () => {
+          beforeEach(() => {
+            userResponse = {
+              data: {
+                ...users[4],
+                team: null
+              }
+            };
+            getCalabrioUser.mockResolvedValue(userResponse);
+          });
+          test("No Error is returned and user is successfully updated", async () => {
+            const updatedUser = {
+              ...users[4],
+              deactivated: "Right Now",
+              email: `xx-${users[4].id}-${users[4].email}`,
+              adLogin: `xx-${users[4].id}-${users[4].adLogin}`,
+              acdId: `xx-${users[4].acdId}`,
+              team: undefined
+            };
+            await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
+            expect(getCalabrioUser).toBeCalledTimes(1);
+            expect(getCalabrioUser).toBeCalledWith("5");
+            expect(updateCalabrioUser).toBeCalledTimes(1);
+            expect(updateCalabrioUser).toBeCalledWith("5", updatedUser);
+            expect(console.error).toBeCalledTimes(0);
+          });
+        });
+        describe("Dup User has no roles", () => {
+          beforeEach(() => {
+            userResponse = {
+              data: {
+                ...users[4],
+                roles: []
+              }
+            };
+            getCalabrioUser.mockResolvedValue(userResponse);
+          });
+          test("No Error is returned and user is successfully updated", async () => {
+            const updatedUser = {
+              ...users[4],
+              deactivated: "Right Now",
+              email: `xx-${users[4].id}-${users[4].email}`,
+              adLogin: `xx-${users[4].id}-${users[4].adLogin}`,
+              acdId: `xx-${users[4].acdId}`,
+              roles: []
+            };
+            await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
+            expect(getCalabrioUser).toBeCalledTimes(1);
+            expect(getCalabrioUser).toBeCalledWith("5");
+            expect(updateCalabrioUser).toBeCalledTimes(1);
+            expect(updateCalabrioUser).toBeCalledWith("5", updatedUser);
+            expect(console.error).toBeCalledTimes(0);
+          });
+        });
       });
     });
     describe("conflicting profile found with First and Last Name", () => {
@@ -475,6 +573,60 @@ describe("calabrioUtils", () => {
           expect(updateCalabrioUser).toBeCalledTimes(1);
           expect(updateCalabrioUser).toBeCalledWith("4", updatedUser);
           expect(console.error).toBeCalledTimes(0);
+        });
+        describe("Dup User has no roles", () => {
+          beforeEach(() => {
+            userResponse = {
+              data: {
+                ...users[3],
+                roles: []
+              }
+            };
+            getCalabrioUser.mockResolvedValue(userResponse);
+          });
+          test("No Error is returned and user is successfully updated", async () => {
+            const updatedUser = {
+              ...users[3],
+              deactivated: "Right Now",
+              email: `SHELLUSER-${users[3].id}@libertymutual.com`,
+              adLogin: `SHELLUSER-${users[3].id}`,
+              acdId: `SH-${users[3].acdId}`,
+              roles: []
+            };
+            await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
+            expect(getCalabrioUser).toBeCalledTimes(1);
+            expect(getCalabrioUser).toBeCalledWith("4");
+            expect(updateCalabrioUser).toBeCalledTimes(1);
+            expect(updateCalabrioUser).toBeCalledWith("4", updatedUser);
+            expect(console.error).toBeCalledTimes(0);
+          });
+        });
+        describe("Dup User has no team", () => {
+          beforeEach(() => {
+            userResponse = {
+              data: {
+                ...users[3],
+                team: null
+              }
+            };
+            getCalabrioUser.mockResolvedValue(userResponse);
+          });
+          test("No Error is returned and user is successfully updated", async () => {
+            const updatedUser = {
+              ...users[3],
+              deactivated: "Right Now",
+              email: `SHELLUSER-${users[3].id}@libertymutual.com`,
+              adLogin: `SHELLUSER-${users[3].id}`,
+              acdId: `SH-${users[3].acdId}`,
+              team: undefined
+            };
+            await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
+            expect(getCalabrioUser).toBeCalledTimes(1);
+            expect(getCalabrioUser).toBeCalledWith("4");
+            expect(updateCalabrioUser).toBeCalledTimes(1);
+            expect(updateCalabrioUser).toBeCalledWith("4", updatedUser);
+            expect(console.error).toBeCalledTimes(0);
+          });
         });
       });
     });

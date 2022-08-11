@@ -104,7 +104,8 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
           dupUser.roles = roles.filter(role => role.name.toLowerCase().includes("agent-sync"));
         }
         if(!dupUser.team){
-          dupUser.team = teams.find(team => team.name.toLowerCase().includes("default")).groupId;
+          console.warn("do we get in here?", teams.find(team => team.name.toLowerCase().includes("default")));
+          dupUser.team = teams.find(team => team.name.toLowerCase().includes("default"))?.groupId;
         }
 
         await updateCalabrioUser(dupUser.id, dupUser);
@@ -125,7 +126,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
           dupUser.roles = roles.filter(role => role.name.toLowerCase().includes("agent-sync"));
         }
         if(!dupUser.team){
-          dupUser.team = teams.find(team => team.name.toLowerCase().includes("default")).groupId;
+          dupUser.team = teams.find(team => team.name.toLowerCase().includes("default"))?.groupId;
         }
         await updateCalabrioUser(dupUser.id, dupUser);
         return;

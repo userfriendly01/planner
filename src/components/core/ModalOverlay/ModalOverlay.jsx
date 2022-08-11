@@ -60,7 +60,7 @@ const IconAndMessageWrapper = styled.div`
   flex-direction: column;
   flex-grow: 1;
   padding: 16px;
-  margin-top: 15%;
+  margin-top: 20%;
 `;
 
 const InnerContainer = styled.div`

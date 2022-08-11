@@ -7,6 +7,8 @@ import { Tooltip } from "@material-ui/core";
 import {
   useAdminDispatch,
   useAdminState,
+  useFormState,
+  useFormDispatch,
   userFormActions
 } from "context";
 import {
@@ -43,13 +45,11 @@ import {
 const UserFormButtons = (props: UserFormButtonsProps) => {
 
   const {
-    form,
     forwardToToggle,
     handleClose,
     loading,
     offices,
     profiles,
-    setForm,
     updateLoading,
     worker
   } = props;
@@ -60,6 +60,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     teams
   } = useAdminState().calabrioContext;
 
+  const form = useFormState();
+  const setForm = useFormDispatch();
   const dispatch = useAdminDispatch();
 
   React.useEffect(() => {

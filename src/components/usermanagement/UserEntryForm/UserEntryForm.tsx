@@ -16,7 +16,6 @@ import {
   UserFormButtons
 } from "components";
 import {
-  useFormDispatch,
   useFormState,
   useAdminState
 } from "context";
@@ -45,7 +44,6 @@ const UserEntryForm = (props: UserEntryFormProps) => {
   } = useAdminState();
 
   const form = useFormState();
-  const setForm = useFormDispatch();
   const [forwardToToggle, setForwardToToggle] = useState(false);
 
   const [loading, updateLoading] = useState<LoadingState>({
@@ -98,13 +96,11 @@ const UserEntryForm = (props: UserEntryFormProps) => {
         workers={workers}
       />
       <UserFormButtons
-        form={form}
         forwardToToggle={forwardToToggle}
         handleClose={handleClose}
         loading={loading}
         offices={offices}
         profiles={profiles}
-        setForm={setForm}
         updateLoading={updateLoading}
         worker={worker}
       />

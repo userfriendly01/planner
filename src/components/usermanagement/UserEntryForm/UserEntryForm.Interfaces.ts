@@ -50,13 +50,11 @@ export interface DidFormInfoProps {
   setForwardToToggle: (value: boolean) => void,
 }
 export interface UserFormButtonsProps {
-  form: any,
   forwardToToggle: boolean,
   handleClose: (reopen: boolean | void) => void,
   loading: LoadingState,
   offices: Map<string, Office>,
   profiles: TritonProfile[],
-  setForm: (payload: any) => void,
   updateLoading: (payload: any) => void,
   worker: Worker | null,
 }
