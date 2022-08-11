@@ -99,7 +99,7 @@ const ManagerModal = (props: ManagerModalProps) => {
 
   const handleCloseTeam = () => {
     setIsTeamModalOpen(false);
-    setSelectedCalabrioTeams(calabrioTeams.map((team:any) => team.value));
+    //setSelectedCalabrioTeams(calabrioTeams.map((team:any) => team.value));
   };
 
   const addManagerClicked = (): Promise<any> => {
