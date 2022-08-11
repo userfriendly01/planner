@@ -721,6 +721,30 @@ describe("userFormReducer", () => {
     });
   });
 
+  describe("SET_DISCREPANCIES", () => {
+    test("should set Calabrio User Roles to Payload", () => {
+      const payload = {
+        type: "Calabrio",
+        message: "Missing acdId"
+      };
+      const action = {
+        type: userFormActions.SET_DISCREPANCIES,
+        payload
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        discrepancies: [
+          {
+            type: "Calabrio",
+            message: "Missing acdId"
+          }
+        ]
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
   describe("SET_EXTENSION_MESSAGE", () => {
     test("SET_EXTENSION_MESSAGE should update message", () => {
       const testMessage = "Test message";
@@ -748,25 +772,49 @@ describe("userFormReducer", () => {
   });
 
   describe("SET_EXTENSION_RETRIES", () => {
-    test("SET_EXTENSION_RETRIES should decrement retriesRemaining", () => {
-      const action = { type: userFormActions.SET_EXTENSION_RETRIES };
-      const initialTestState = {
-        ...initialUserFormState,
-        extensionStatus: {
-          ...initialUserFormState.extensionStatus,
-          searchStatus: ExtensionSearchStatuses.PickANumber,
-          retriesRemaining: 3
-        }
-      };
-      const result = userFormReducer(initialTestState, action);
-      const expectedFormState = {
-        ...initialTestState,
-        extensionStatus: {
-          ...initialTestState.extensionStatus,
-          retriesRemaining: 2
-        }
-      };
-      expect(result).toStrictEqual(expectedFormState);
+    describe("remaining === 0", () => {
+      test("SET_EXTENSION_RETRIES should decrement retriesRemaining", () => {
+        const action = { type: userFormActions.SET_EXTENSION_RETRIES };
+        const initialTestState = {
+          ...initialUserFormState,
+          extensionStatus: {
+            ...initialUserFormState.extensionStatus,
+            searchStatus: ExtensionSearchStatuses.Idle,
+            retriesRemaining: 1
+          }
+        };
+        const result = userFormReducer(initialTestState, action);
+        const expectedFormState = {
+          ...initialTestState,
+          extensionStatus: {
+            ...initialTestState.extensionStatus,
+            retriesRemaining: 0
+          }
+        };
+        expect(result).toStrictEqual(expectedFormState);
+      });
+    });
+    describe("remaining > 0", () => {
+      test("SET_EXTENSION_RETRIES should decrement retriesRemaining", () => {
+        const action = { type: userFormActions.SET_EXTENSION_RETRIES };
+        const initialTestState = {
+          ...initialUserFormState,
+          extensionStatus: {
+            ...initialUserFormState.extensionStatus,
+            searchStatus: ExtensionSearchStatuses.PickANumber,
+            retriesRemaining: 3
+          }
+        };
+        const result = userFormReducer(initialTestState, action);
+        const expectedFormState = {
+          ...initialTestState,
+          extensionStatus: {
+            ...initialTestState.extensionStatus,
+            retriesRemaining: 2
+          }
+        };
+        expect(result).toStrictEqual(expectedFormState);
+      });
     });
   });
 
@@ -921,33 +969,65 @@ describe("userFormReducer", () => {
   });
 
   describe("UPDATE_EXTENSION", () => {
-    test("should update extension", () => {
-      const payload = {
-        extension: validFormOptions.extension,
-        isValid: true
-      };
-      const action = {
-        type: userFormActions.UPDATE_EXTENSION,
-        payload
-      };
-      const result = userFormReducer(initialUserFormState, action);
-      const expectedFormState ={
-        ...initialUserFormState,
-        extension: {
-          ...initialUserFormState.extension,
-          value: validFormOptions.extension,
-          blurred: payload.isValid,
-          updated: true,
-          valid: payload.isValid
-        },
-        extensionStatus: {
-          ...initialUserFormState.extensionStatus,
-          message: "Extension is valid",
-          searchStatus: ExtensionSearchStatuses.Idle,
-          retriesRemaining: 5
-        }
-      };
-      expect(result).toStrictEqual(expectedFormState);
+    describe("Extension is valid", () => {
+      test("should update extension", () => {
+        const payload = {
+          extension: validFormOptions.extension,
+          isValid: true
+        };
+        const action = {
+          type: userFormActions.UPDATE_EXTENSION,
+          payload
+        };
+        const result = userFormReducer(initialUserFormState, action);
+        const expectedFormState ={
+          ...initialUserFormState,
+          extension: {
+            ...initialUserFormState.extension,
+            value: validFormOptions.extension,
+            blurred: payload.isValid,
+            updated: true,
+            valid: payload.isValid
+          },
+          extensionStatus: {
+            ...initialUserFormState.extensionStatus,
+            message: "Extension is valid",
+            searchStatus: ExtensionSearchStatuses.Idle,
+            retriesRemaining: 5
+          }
+        };
+        expect(result).toStrictEqual(expectedFormState);
+      });
+    });
+    describe("Extension is not valid", () => {
+      test("should update extension", () => {
+        const payload = {
+          extension: validFormOptions.extension,
+          isValid: false
+        };
+        const action = {
+          type: userFormActions.UPDATE_EXTENSION,
+          payload
+        };
+        const result = userFormReducer(initialUserFormState, action);
+        const expectedFormState ={
+          ...initialUserFormState,
+          extension: {
+            ...initialUserFormState.extension,
+            value: validFormOptions.extension,
+            blurred: payload.isValid,
+            updated: true,
+            valid: payload.isValid
+          },
+          extensionStatus: {
+            ...initialUserFormState.extensionStatus,
+            message: "",
+            searchStatus: ExtensionSearchStatuses.Idle,
+            retriesRemaining: 5
+          }
+        };
+        expect(result).toStrictEqual(expectedFormState);
+      });
     });
   });
 
