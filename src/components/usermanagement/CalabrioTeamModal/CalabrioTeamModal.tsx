@@ -46,7 +46,7 @@ interface DropdownOption {
 }
 
 export interface TeamModalProps {
-  handleClose: (res: any) => void
+  handleClose: () => void
 }
 
 const CalabrioTeamModal = (props: TeamModalProps) => {
@@ -106,10 +106,21 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
                 name: newName,
                 parentGroupId: parentGroupId
               }).then((res: any) => {
-                handleClose(res);
+                handleClose();
+                const updatedArray = state.calabrioContext.teams.map(t => {
+                  if(t.groupId === res.groupId){
+                    return {
+                      ...res,
+                      label: res.name,
+                      value: res.groupId
+                    };
+                  } else {
+                    return t;
+                  }
+                });
                 dispatch({
                   type: "addCalabrioTeam",
-                  payload: res.data
+                  payload: updatedArray
                 });
               });
             }}
