@@ -106,12 +106,11 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
                 name: newName,
                 parentGroupId: parentGroupId
               }).then((res: any) => {
-                handleClose(res);
-                console.log(res.data);
                 dispatch({
                   type: "addCalabrioTeam",
                   payload: res.data
                 });
+                handleClose(res);
               });
             }}
             data-testid={"edit-manager-button"}>

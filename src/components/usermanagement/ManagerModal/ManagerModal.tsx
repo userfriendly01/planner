@@ -73,7 +73,6 @@ const ManagerModal = (props: ManagerModalProps) => {
       ...team
     }))
   ];
-  console.log(calabrioTeams);
   const [manager, setManager] = useState<Manager>(selectedManager ? selectedManager : null);
   const [errorMessage, setErrorMessage] = useState<string>(null);
   const [saveStatus, setSaveStatus] = useState<string>(null);
@@ -99,21 +98,12 @@ const ManagerModal = (props: ManagerModalProps) => {
 
   const handleCloseTeam = (res: any) => {
     setIsTeamModalOpen(false);
-    /*const temp = {
-      ...res,
+    const temp = {
       label: res.name,
-      value: res.groupId
+      value: res.groupId,
+      ...res
     };
-    dispatch(({
-      type: "addCalabrioTeam",
-      payload: {
-        ...manager,
-        manager_id: res.insertId,
-        profile_id: profileId,
-        calabrio_team_ids: selectedCalabrioTeams
-      }
-    }));
-    setSelectedCalabrioTeams(calabrioTeams.map((team:any) => team.value));*/
+    selectedCalabrioTeams.push(temp);
   };
 
   const addManagerClicked = (): Promise<any> => {
