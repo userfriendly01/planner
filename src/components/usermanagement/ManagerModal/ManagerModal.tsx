@@ -104,6 +104,15 @@ const ManagerModal = (props: ManagerModalProps) => {
       label: res.name,
       value: res.groupId
     };
+    /*dispatch(({
+      type: "addCalabrioTeam",
+      payload: {
+        ...manager,
+        manager_id: res.insertId,
+        profile_id: profileId,
+        calabrio_team_ids: selectedCalabrioTeams
+      }
+    }));*/
     setSelectedCalabrioTeams(calabrioTeams.map((team:any) => team.value));
   };
 
