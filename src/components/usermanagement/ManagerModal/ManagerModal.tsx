@@ -104,6 +104,7 @@ const ManagerModal = (props: ManagerModalProps) => {
       ...res
     };
     selectedCalabrioTeams.push(temp);
+    setSelectedCalabrioTeams(selectedCalabrioTeams.map((team:any) => team.value));
   };
 
   const addManagerClicked = (): Promise<any> => {
