@@ -99,9 +99,7 @@ const ManagerModal = (props: ManagerModalProps) => {
   const handleCloseTeam = (res: any) => {
     setIsTeamModalOpen(false);
     const temp = {
-      label: res.data.name,
-      value: res.data.groupId,
-      ...res
+      value: res.data.groupId
     };
     selectedCalabrioTeams.push(temp);
     console.log("GCX selectedCalabrioTeams", res, temp, selectedCalabrioTeams);
