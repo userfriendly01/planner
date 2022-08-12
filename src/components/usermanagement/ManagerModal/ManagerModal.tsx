@@ -99,11 +99,13 @@ const ManagerModal = (props: ManagerModalProps) => {
   const handleCloseTeam = (res: any) => {
     setIsTeamModalOpen(false);
     const temp = {
-      value: res.data.groupId
+      label: res.data.name,
+      value: res.data.groupId,
+      ...res
     };
-    selectedCalabrioTeams.push(temp);
-    console.log("GCX selectedCalabrioTeams", res, temp, selectedCalabrioTeams);
-    setSelectedCalabrioTeams(selectedCalabrioTeams.map((team:any) => team.value));
+    const newlist= [...selectedCalabrioTeams, temp];
+    console.log("GCX selectedCalabrioTeams", res, temp, newlist);
+    setSelectedCalabrioTeams(newlist.map((team:any) => team.value));
   };
 
   const addManagerClicked = (): Promise<any> => {
