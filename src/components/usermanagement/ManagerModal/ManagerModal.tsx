@@ -104,6 +104,7 @@ const ManagerModal = (props: ManagerModalProps) => {
       ...res
     };
     selectedCalabrioTeams.push(temp);
+    console.log("GCX selectedCalabrioTeams",selectedCalabrioTeams);
     setSelectedCalabrioTeams(selectedCalabrioTeams.map((team:any) => team.value));
   };
 
@@ -253,7 +254,7 @@ const ManagerModal = (props: ManagerModalProps) => {
                 margin: "10px 0px"
               }}
               options={options}
-              value={selectedCalabrioTeams.map(teamId => getCalabrioOption(teamId))}
+              value={selectedCalabrioTeams.map((teamId:any) => getCalabrioOption(teamId))}
               updateValue={(event: any, newInputValue: any) => {
                 if(newInputValue.some((t: any) => t.value === "add-team")){
                   handleOpenTeam();
