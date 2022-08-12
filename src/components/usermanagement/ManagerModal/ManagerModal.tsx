@@ -104,7 +104,7 @@ const ManagerModal = (props: ManagerModalProps) => {
       ...res
     };
     selectedCalabrioTeams.push(temp);
-    console.log("GCX selectedCalabrioTeams",temp, selectedCalabrioTeams);
+    console.log("GCX selectedCalabrioTeams", res, temp, selectedCalabrioTeams);
     setSelectedCalabrioTeams(selectedCalabrioTeams.map((team:any) => team.value));
   };
 
