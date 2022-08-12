@@ -99,8 +99,8 @@ const ManagerModal = (props: ManagerModalProps) => {
   const handleCloseTeam = (res: any) => {
     setIsTeamModalOpen(false);
     const temp = {
-      label: res.name,
-      value: res.groupId,
+      label: res.data.name,
+      value: res.data.groupId,
       ...res
     };
     selectedCalabrioTeams.push(temp);
