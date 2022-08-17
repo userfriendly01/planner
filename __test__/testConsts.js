@@ -275,6 +275,7 @@ export const validFormState = {
     valid: true
   },
   calabrioUser: {
+    update: false,
     team: 225,
     timezone: {
       label: "EST",

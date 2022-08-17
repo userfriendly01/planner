@@ -140,8 +140,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       timeZone: form.calabrioUser.timezone?.value,
       roles: form.calabrioUser.roles,
       scope: {
-        groups: form.calabrioUser.scope.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),
-        teams: form.calabrioUser.scope.teams.filter((team: any) => team.checked).map((g: any) => g.groupId)
+        groups: form.calabrioUser.scope?.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),
+        teams: form.calabrioUser.scope?.teams.filter((team: any) => team.checked).map((g: any) => g.groupId)
       }
     };
 
@@ -263,11 +263,13 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       saveUser: true
     });
     const attributes: Partial<Worker["attributes"]> = {};
-    attributes.email = form.nNumberFetchedUser.email;
-    attributes.email_address = form.nNumberFetchedUser.email;
-    attributes.emp_first_name = form.nNumberFetchedUser.firstName;
-    attributes.emp_last_name = form.nNumberFetchedUser.lastName;
-    attributes.full_name = `${form.nNumberFetchedUser.firstName} ${form.nNumberFetchedUser.lastName}`;
+    const nNumberFetchedUser = form.nNumberFetchedUser;
+
+    attributes.email = nNumberFetchedUser?.email;
+    attributes.email_address = nNumberFetchedUser?.email;
+    attributes.emp_first_name = nNumberFetchedUser?.firstName;
+    attributes.emp_last_name = nNumberFetchedUser?.lastName;
+    attributes.full_name = `${nNumberFetchedUser?.firstName} ${nNumberFetchedUser?.lastName}`;
 
     if (form.manager.updated) {
       attributes.manager_first_name = form.manager.value.manager_first_name;
@@ -287,7 +289,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     if (form.defaultSkillsUpdated) {
       attributes.default_skills = form.defaultSkills;
     }
-    const nNumberFetchedUser = form.nNumberFetchedUser;
     if(nNumberFetchedUser){
       nNumberFetchedUser.departmentNumber ? attributes.department_id = nNumberFetchedUser.departmentNumber : null;
       nNumberFetchedUser.departmentName ? attributes.department_name = nNumberFetchedUser.departmentName: null;
@@ -339,7 +340,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         }));
 
         const calabrioAttributes: any = {};
-
         if(form.calabrioUser.updated) {
           calabrioAttributes.acdId = dbWorker.workerSid;
           calabrioAttributes.adLogin = `LM\\${form.nNumber.value.toLowerCase()}`;
@@ -350,8 +350,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           calabrioAttributes.timeZone = form.calabrioUser.timezone?.value;
           calabrioAttributes.roles = form.calabrioUser.roles;
           calabrioAttributes.scope = {
-            groups: form.calabrioUser.scope.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),
-            teams: form.calabrioUser.scope.teams.filter((team: any) => team.checked).map((g: any) => g.groupId)
+            groups: form.calabrioUser.scope?.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),
+            teams: form.calabrioUser.scope?.teams.filter((team: any) => team.checked).map((g: any) => g.groupId)
           };
 
           checkConflictingUsers(calabrioAttributes, users, roles, teams).then(() => {
