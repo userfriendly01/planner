@@ -180,7 +180,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
               });
             })
             .catch(error => {
-              console.log(`Failed to add office: [${error}]`);
+              console.error(`Failed to add office: [${error}]`);
             });
         }
 

@@ -34,8 +34,6 @@ const CallRecordingScope = (props:any) => {
     }
   }, [groups]);
 
-  console.log("groups", groups);
-
   const identifyChildrenTeams = (groupId: number) => {
     const childrenTeams: any[] = [];
     teams.forEach((team: any, index: number) => {
@@ -91,7 +89,6 @@ const CallRecordingScope = (props:any) => {
 
   const checkIfPartial = (index: number): void => {
     const group = groups[index];
-    console.log(group);
     const childrenTeams = identifyChildrenTeams(group.groupId);
     const checkedChildrenTeams = childrenTeams.filter((teamIndex: any) => teams[teamIndex].checked === true);
 

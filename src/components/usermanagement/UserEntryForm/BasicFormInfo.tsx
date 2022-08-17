@@ -69,8 +69,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   const form = useFormState();
   const setForm = useFormDispatch();
 
-  console.log("FORM", form);
-
   const formatDropdownOption = (value: any, label: string, option: any) => {
     if(typeof option === "object"){
       return {

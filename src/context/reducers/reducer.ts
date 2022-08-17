@@ -82,7 +82,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
         }
       };
     case "loadManagers":
-      console.log("**Final Manager Payload: ", action.payload);
       return {
         ...state,
         managerContext: {

@@ -649,7 +649,6 @@ describe("<BasicFormInfo />", () => {
             }
           });
           renderComponent(false);
-          console.log("StyledButton.mock.calls:", StyledButton.mock.calls);
           const buttonLabel = StyledButton.mock.calls[0][0].children;
           expect(buttonLabel).toBe("Auto-Assign");
         });
@@ -710,7 +709,6 @@ describe("<BasicFormInfo />", () => {
 
           renderComponent(false);
           const validateFunction = StyledButton.mock.calls[0][0].onClick;
-          console.log("validateFunction", validateFunction);
           checkExtension.mockReturnValue(Promise.resolve(true));
 
           act(() => {
@@ -742,7 +740,6 @@ describe("<BasicFormInfo />", () => {
 
           renderComponent(false);
           const autoAssignFunction = StyledButton.mock.calls[0][0].onClick;
-          console.log("autoAssignFunction", autoAssignFunction);
           checkExtension.mockReturnValue(Promise.resolve(true));
 
           act(() => {
