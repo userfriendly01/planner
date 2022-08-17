@@ -564,5 +564,21 @@ describe("ManagementWrapper", () => {
       });
       expectMockedComponent(rendered, { UserEntryForm }, 0);
     });
+    test("When UserEntryForm handleClose is called with reopen, setUserEntryFormState is set to open === true", () => {
+      const rendered = doRender([]);
+      expectMockedComponent(rendered, { UserEntryForm }, 0);
+      const setFormState = ManagementTable.mock.calls[0][0].setUserModalState;
+      act(() => {
+        setFormState({
+          open: true,
+          worker: null
+        });
+      });
+      const handleClose = UserEntryForm.mock.calls[0][0].handleClose;
+      act(() => {
+        handleClose(true);
+      });
+      expectMockedComponent(rendered, { UserEntryForm }, 1);
+    });
   });
 });

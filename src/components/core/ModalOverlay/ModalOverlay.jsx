@@ -59,8 +59,8 @@ const IconAndMessageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  justify-content: center;
   padding: 16px;
+  margin-top: 20%;
 `;
 
 const InnerContainer = styled.div`
@@ -87,7 +87,7 @@ const Overlay = styled(FlexRow)`
   font-size: 1.8em;
   height: 100%;
   justify-content: ${props => props.status === modalOverlayStatuses.FAIL ? "space-between" : "center"};
-  opacity: .75;
+  opacity: ${props => props.status === modalOverlayStatuses.PARTIAL_FAIL ? ".92" : ".75"};
   width: 100%;
   z-index: 100;
   left: 0;
@@ -103,7 +103,6 @@ const StyledCloseRounded = styled(CloseRounded)`
   }
 `;
 
-
 const ModalOverlay = props => {
   const {
     message,
@@ -112,10 +111,11 @@ const ModalOverlay = props => {
   } = props;
 
   const TextWrapper = styled.div`
-  font-size: initial;
+  font-size: 18px;
   margin-top: 5%;
   text-align: center;
-  color: ${status === modalOverlayStatuses.PARTIAL_FAIL ? "black" : "white"}
+  word-spacing: 2px;
+  color: white;
 `;
 
   const getIconAndBackground = status => {
@@ -131,7 +131,10 @@ const ModalOverlay = props => {
     } else if (status === modalOverlayStatuses.PARTIAL_FAIL) {
       return {
         background: "goldenrod",
-        icon: <Warning fontSize="large"/>
+        icon: <Warning style={{
+          fontSize: "80px",
+          "width": "80px"
+        }} />
       };
     } else if (status === modalOverlayStatuses.FAIL) {
       return {
@@ -163,7 +166,7 @@ const ModalOverlay = props => {
     >
       <InnerContainer>
         {
-          status === modalOverlayStatuses.FAIL && handleClose
+          (status === modalOverlayStatuses.FAIL || status === modalOverlayStatuses.PARTIAL_FAIL) && handleClose
             ? <CloseButtonDiv>
               <StyledCloseRounded data-testid="close-button" onClick={handleClose} />
             </CloseButtonDiv>

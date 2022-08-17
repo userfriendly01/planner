@@ -96,11 +96,6 @@ jest.mock("utils", () => ({
   removeProfileZeroIfAdminNotInProfileZero: jest.fn()
 }));
 
-jest.mock("services", () => ({
-  __esModule: true,
-  checkExtension: jest.fn()
-}));
-
 jest.mock("globals", () => ({
   __esModule: true,
   extensionMatcher: {
@@ -176,6 +171,30 @@ describe("<BasicFormInfo />", () => {
       };
       expectOnlyPassedProps(Dropdown, expectedManagerProps, 0);
     });
+    describe("options is not an object", () => {
+      test("should return empty string", () => {
+        const rendered = render(
+          <BasicFormInfo
+            skills={mockSkills}
+            worker={mockWorkers[2]}
+            workers={mockWorkers}
+            profiles={profileList}
+            managers={["option"]}
+            forwardToToggle={false}
+            setForwardToToggle={mockSetForwardToToggle}
+          />,
+          initialTestState
+        );
+        expectMockedComponent(rendered, { Dropdown }, 2);
+        const expectedManagerProps = {
+          label: "Manager *",
+          options: [""],
+          value: "",
+          error: false
+        };
+        expectOnlyPassedProps(Dropdown, expectedManagerProps, 0);
+      });
+    });
     describe("manager field is invalid", () => {
       test("error field should be true", () => {
         useFormState.mockReturnValue({
@@ -216,7 +235,7 @@ describe("<BasicFormInfo />", () => {
       });
       expect(mockSetForm).toBeCalledTimes(0);
     });
-    test("updateValue - should set manager to correct value", () => {
+    test("updateValue - should set manager and team to correct value", () => {
       renderComponent(false);
       act(() => {
         const updateValue = Dropdown.mock.calls[0][0].updateValue;
@@ -225,6 +244,31 @@ describe("<BasicFormInfo />", () => {
       expect(mockSetForm).toBeCalledWith({
         type: userFormActions.UPDATE_MANAGER,
         payload: managerList[0]
+      });
+      expect(mockSetForm).toBeCalledWith({
+        type: userFormActions.UPDATE_TEAM,
+        payload: {
+          profileId: managerList[0].profile_id,
+          profiles: profileList
+        }
+      });
+    });
+    test("updateValue - should set manager to correct value and reset team", () => {
+      renderComponent(false);
+      act(() => {
+        const updateValue = Dropdown.mock.calls[0][0].updateValue;
+        updateValue(null, managerList[1]);
+      });
+      expect(mockSetForm).toBeCalledWith({
+        type: userFormActions.UPDATE_MANAGER,
+        payload: managerList[1]
+      });
+      expect(mockSetForm).toBeCalledWith({
+        type: userFormActions.UPDATE_TEAM,
+        payload: {
+          profileId: "",
+          profiles: profileList
+        }
       });
     });
   });
@@ -605,7 +649,6 @@ describe("<BasicFormInfo />", () => {
             }
           });
           renderComponent(false);
-          console.log("StyledButton.mock.calls:", StyledButton.mock.calls);
           const buttonLabel = StyledButton.mock.calls[0][0].children;
           expect(buttonLabel).toBe("Auto-Assign");
         });
@@ -666,7 +709,6 @@ describe("<BasicFormInfo />", () => {
 
           renderComponent(false);
           const validateFunction = StyledButton.mock.calls[0][0].onClick;
-          console.log("validateFunction", validateFunction);
           checkExtension.mockReturnValue(Promise.resolve(true));
 
           act(() => {
@@ -698,7 +740,6 @@ describe("<BasicFormInfo />", () => {
 
           renderComponent(false);
           const autoAssignFunction = StyledButton.mock.calls[0][0].onClick;
-          console.log("autoAssignFunction", autoAssignFunction);
           checkExtension.mockReturnValue(Promise.resolve(true));
 
           act(() => {

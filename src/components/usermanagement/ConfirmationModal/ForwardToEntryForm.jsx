@@ -132,7 +132,6 @@ const ForwardToEntryForm = props => {
           }}
           options={getWorkerOptions()}
           updateValue={(event, worker) => {
-            console.log("UPDATED VALUE", worker);
             updateForwardTo(worker.value);
           }}
         />

@@ -22,8 +22,7 @@ export interface UserEntryFormProps {
   workers: Worker[]
 }
 
-export interface UserFormAccordianProps {
-  form: any,
+export interface UserFormAccordionProps {
   skills: TaskRouterSkill[],
   worker: Worker | null,
   workers: Worker[],
@@ -51,13 +50,13 @@ export interface DidFormInfoProps {
   setForwardToToggle: (value: boolean) => void,
 }
 export interface UserFormButtonsProps {
+  forwardToToggle: boolean,
   handleClose: (reopen: boolean | void) => void,
   loading: LoadingState,
-  updateLoading: (payload: any) => void
-  profiles: TritonProfile[],
   offices: Map<string, Office>,
+  profiles: TritonProfile[],
+  updateLoading: (payload: any) => void,
   worker: Worker | null,
-  forwardToToggle: boolean
 }
 
 export enum ExtensionSearchStatuses {

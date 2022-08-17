@@ -326,6 +326,9 @@ const initialFormState = {
     updated: false,
     valid: false
   },
+  calabrioUser: {
+    updated: false
+  },
   zeroOutEnabled: false,
   zeroOutEnabledUpdated: false,
   editDisabled: false

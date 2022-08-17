@@ -7,23 +7,27 @@ import { Tooltip } from "@material-ui/core";
 import {
   useAdminDispatch,
   useAdminState,
-  useFormDispatch,
   useFormState,
+  useFormDispatch,
   userFormActions
 } from "context";
 import {
   formModes,
   modalOverlayStatuses,
   timeouts,
-  Worker
+  Worker,
+  Discrepancy,
+  discrepancyType
 } from "globals";
 import React from "react";
 import {
   addOffice,
   createCalabrioUser,
   createUser,
-  fetchUser,
-  updateUser
+  fetchUser as fetchUserServiceCall,
+  getCalabrioUsers,
+  updateUser,
+  updateCalabrioUser
 } from "services";
 import {
   checkConflictingUsers,
@@ -41,23 +45,54 @@ import {
 const UserFormButtons = (props: UserFormButtonsProps) => {
 
   const {
+    forwardToToggle,
     handleClose,
     loading,
-    updateLoading,
-    profiles,
     offices,
-    worker,
-    forwardToToggle
+    profiles,
+    updateLoading,
+    worker
   } = props;
 
   const {
     users,
-    roles
+    roles,
+    teams
   } = useAdminState().calabrioContext;
 
-  const dispatch = useAdminDispatch();
   const form = useFormState();
   const setForm = useFormDispatch();
+  const dispatch = useAdminDispatch();
+
+  React.useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const fetchedUser = await fetchUserServiceCall(form.nNumber.value);
+        setForm({
+          type: userFormActions.COMPLETE_N_NUMBER,
+          payload: {
+            nNumber: form.nNumber.value,
+            fetchedUser
+          }
+        });
+        if(fetchedUser.email?.toLowerCase() !== worker.attributes?.email?.toLowerCase()){
+          const discrepancy: Discrepancy = {
+            type: discrepancyType.CALABRIO,
+            message: "Triton email does not match HR email."
+          };
+          setForm({
+            type: userFormActions.SET_DISCREPANCIES,
+            payload: discrepancy
+          });
+        }
+      } catch (err) {
+        console.error("Failed to fetch user from peoples database.");
+      }
+    };
+    if(!form.nNumberFetchedUser && form.nNumber.value && form.formMode === formModes.UPDATE){
+      fetchUser();
+    }
+  }, []);
 
   const doCreateUser = () => {
     updateLoading({
@@ -102,11 +137,11 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       firstName: form.nNumberFetchedUser?.firstName,
       lastName: form.nNumberFetchedUser?.lastName,
       groupId: form.calabrioUser.team?.value,
-      timeZone: form.calabrioUser.timezone.value,
+      timeZone: form.calabrioUser.timezone?.value,
       roles: form.calabrioUser.roles,
       scope: {
-        groups: form.calabrioUser.scope.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),
-        teams: form.calabrioUser.scope.teams.filter((team: any) => team.checked).map((g: any) => g.groupId)
+        groups: form.calabrioUser.scope?.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),
+        teams: form.calabrioUser.scope?.teams.filter((team: any) => team.checked).map((g: any) => g.groupId)
       }
     };
 
@@ -145,7 +180,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
               });
             })
             .catch(error => {
-              console.log(`Failed to add office: [${error}]`);
+              console.error(`Failed to add office: [${error}]`);
             });
         }
 
@@ -156,9 +191,15 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
         calabrioAttributes.acdId = dbWorker.workerSid;
 
-        checkConflictingUsers(calabrioAttributes, users, roles).then(() => {
+        checkConflictingUsers(calabrioAttributes, users, roles, teams).then(() => {
           console.log("Calabrio Attributes sent for create user", calabrioAttributes);
           createCalabrioUser(calabrioAttributes).then(() => {
+            getCalabrioUsers().then((agents: any) => {
+              dispatch({
+                type: "loadCalabrioUsers",
+                payload: agents.data
+              });
+            }).catch(err => console.error("Failed to reset state after conflict check & calabrio user add", err));
             setForm({
               type: userFormActions.RESET_FORM_AFTER_ADD,
               payload: {
@@ -186,7 +227,13 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
               handleClose(true);
             }, timeouts.MODAL_OVERLAY);
           }).catch(err => {
-            throw err;
+            console.error("Error Creating Calabrio User", err);
+            updateLoading({
+              ...loading,
+              overlayMessage: "Triton User Created. Error Creating Calabrio User",
+              saveStatus: modalOverlayStatuses.PARTIAL_FAIL,
+              saveUser: true
+            });
           });
         }).catch(err => {
           console.error("Error Creating Calabrio User", err);
@@ -197,8 +244,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             saveUser: true
           });
         });
-      })
-      .catch(err => {
+      }).catch(err => {
         console.error(err.message, err.response.data);
         updateLoading({
           ...loading,
@@ -217,6 +263,14 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       saveUser: true
     });
     const attributes: Partial<Worker["attributes"]> = {};
+    const nNumberFetchedUser = form.nNumberFetchedUser;
+
+    attributes.email = nNumberFetchedUser?.email;
+    attributes.email_address = nNumberFetchedUser?.email;
+    attributes.emp_first_name = nNumberFetchedUser?.firstName;
+    attributes.emp_last_name = nNumberFetchedUser?.lastName;
+    attributes.full_name = `${nNumberFetchedUser?.firstName} ${nNumberFetchedUser?.lastName}`;
+
     if (form.manager.updated) {
       attributes.manager_first_name = form.manager.value.manager_first_name;
       attributes.manager_last_name = form.manager.value.manager_last_name;
@@ -235,7 +289,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     if (form.defaultSkillsUpdated) {
       attributes.default_skills = form.defaultSkills;
     }
-    const nNumberFetchedUser = await fetchUser(form.nNumber.value);
     if(nNumberFetchedUser){
       nNumberFetchedUser.departmentNumber ? attributes.department_id = nNumberFetchedUser.departmentNumber : null;
       nNumberFetchedUser.departmentName ? attributes.department_name = nNumberFetchedUser.departmentName: null;
@@ -286,18 +339,84 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           payload: mapWorkerFromDbWorker(dbWorker)
         }));
 
-        updateLoading({
-          ...loading,
-          overlayMessage: `Successfully updated user: ${worker.attributes.full_name}`,
-          saveStatus: modalOverlayStatuses.SUCCESS,
-          saveUser: true
-        });
-        setForm({
-          type: userFormActions.RESET_FORM
-        });
-        wait(handleClose, timeouts.MODAL_OVERLAY);
-      })
-      .catch(err => {
+        const calabrioAttributes: any = {};
+        if(form.calabrioUser.updated) {
+          calabrioAttributes.acdId = dbWorker.workerSid;
+          calabrioAttributes.adLogin = `LM\\${form.nNumber.value.toLowerCase()}`;
+          calabrioAttributes.email = form.nNumberFetchedUser?.email;
+          calabrioAttributes.firstName = form.nNumberFetchedUser?.firstName;
+          calabrioAttributes.lastName = form.nNumberFetchedUser?.lastName;
+          calabrioAttributes.groupId = form.calabrioUser.team?.groupId;
+          calabrioAttributes.timeZone = form.calabrioUser.timezone?.value;
+          calabrioAttributes.roles = form.calabrioUser.roles;
+          calabrioAttributes.scope = {
+            groups: form.calabrioUser.scope?.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),
+            teams: form.calabrioUser.scope?.teams.filter((team: any) => team.checked).map((g: any) => g.groupId)
+          };
+
+          checkConflictingUsers(calabrioAttributes, users, roles, teams).then(() => {
+            console.log("Calabrio Attributes sent for update user", calabrioAttributes);
+            const calabrioCall = form.calabrioUser.id ? (attributes: any) => updateCalabrioUser(form.calabrioUser.id, attributes) : (attributes: any) => createCalabrioUser(attributes);
+            calabrioCall(calabrioAttributes).then(() => {
+              getCalabrioUsers().then((agents: any) => {
+                dispatch({
+                  type: "loadCalabrioUsers",
+                  payload: agents.data
+                });
+              }).catch(err => console.error("Failed to reset state after conflict check & calabrio user add", err));
+              setForm({ type: userFormActions.RESET_FORM });
+              updateLoading({
+                ...loading,
+                overlayMessage: `Successfully updated user: ${worker.attributes.full_name}`,
+                saveStatus: modalOverlayStatuses.SUCCESS,
+                saveUser: true
+              });
+              wait(() => {
+                updateLoading({
+                  ...loading,
+                  saveUser: false
+                });
+                handleClose();
+              }, timeouts.MODAL_OVERLAY);
+            }).catch(err => {
+              console.error("Error updating Calabrio user", err);
+              let message = "Triton user updated. Error updating Calabrio user";
+              if(!form.calabrioUser.id){
+                message = "Triton user updated.  **Calabrio User Not Updated**  Missing Calabrio profile was not able to be created. To resolve this issue, go into Calabrio and search for this user in the inactive users. Once found, you can re-activate their old profile and come back here, refresh Triton Admin, and update this worker to be accurate. If that does not work, delete and recreate the user.";
+              }
+              updateLoading({
+                ...loading,
+                overlayMessage: message,
+                saveStatus: modalOverlayStatuses.PARTIAL_FAIL,
+                saveUser: true
+              });
+            });
+          }).catch(err => {
+            console.error("Error updating Calabrio user", err);
+            updateLoading({
+              ...loading,
+              overlayMessage: "Triton User updated. Error updating Calabrio user",
+              saveStatus: modalOverlayStatuses.PARTIAL_FAIL,
+              saveUser: true
+            });
+          });
+        } else {
+          setForm({ type: userFormActions.RESET_FORM });
+          updateLoading({
+            ...loading,
+            overlayMessage: `Successfully updated user: ${worker.attributes.full_name}`,
+            saveStatus: modalOverlayStatuses.SUCCESS,
+            saveUser: true
+          });
+          wait(() => {
+            updateLoading({
+              ...loading,
+              saveUser: false
+            });
+            handleClose();
+          }, timeouts.MODAL_OVERLAY);
+        }
+      }).catch(err => {
         console.error(err);
         updateLoading({
           ...loading,
@@ -307,6 +426,10 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         });
       });
   };
+
+  const isUserFormButtonEnabled = form.formMode === formModes.INSERT
+    ? isFormValid(form, worker, forwardToToggle)
+    : (isFormUpdated(form) || form.discrepancies.length > 0) && isFormValid(form, worker, forwardToToggle);
 
   return (
     <ButtonWrapper>
@@ -329,7 +452,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       >
         <span>
           <UserFormButton
-            disabled={form.formMode === formModes.INSERT ? !isFormValid(form, worker, forwardToToggle) : (!isFormUpdated(form) || !isFormValid(form, worker, forwardToToggle))}
+            disabled={!isUserFormButtonEnabled}
             onClick={form.formMode === formModes.INSERT ? doCreateUser : doUpdateUser}
           >
             {form.formMode === formModes.INSERT ? "Add User" : "Save User"}

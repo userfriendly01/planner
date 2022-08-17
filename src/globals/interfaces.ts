@@ -3,6 +3,15 @@ export interface Action {
   type: string,
   [key: string]: any
 }
+
+export const discrepancyType = {
+  CALABRIO: "Calabrio",
+  TRITON: "Triton"
+};
+export interface Discrepancy {
+  message: string,
+  type: string
+}
 export interface AppState {
   managerContext: {
     managers: Manager[]

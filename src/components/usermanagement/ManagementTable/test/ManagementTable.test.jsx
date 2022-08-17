@@ -27,11 +27,6 @@ jest.mock("components", () => ({
   UserEntryForm: jest.fn()
 }));
 
-jest.mock("services", () => ({
-  __esModule: true,
-  deleteUser: jest.fn()
-}));
-
 jest.mock("context", () => ({
   __esModule: true,
   useAdminState: jest.requireActual("context").useAdminState,
