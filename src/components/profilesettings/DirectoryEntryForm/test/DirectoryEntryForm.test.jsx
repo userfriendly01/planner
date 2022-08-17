@@ -52,12 +52,6 @@ jest.mock("components", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("services", () => ({
-  __esModule: true,
-  insertDirectory: jest.fn(),
-  updateDirectory: jest.fn()
-}));
-
 const first_nme = "Some";
 const last_nme = "Contact";
 const phone_num = "8006665555";

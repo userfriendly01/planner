@@ -9,19 +9,17 @@ import {
   SkillsFormInfo
 } from "components";
 import { FormControlsContainer } from "./UserEntryForm.Styles";
-import { UserFormAccordianProps } from "./UserEntryForm.Interfaces";
-import { formModes } from "globals";
+import { UserFormAccordionProps } from "./UserEntryForm.Interfaces";
 
-const UserFormAccordion = (props: UserFormAccordianProps) => {
+const UserFormAccordion = (props: UserFormAccordionProps) => {
   const {
-    form,
+    forwardToToggle,
+    managers,
+    profiles,
+    setForwardToToggle,
     skills,
     worker,
-    workers,
-    profiles,
-    managers,
-    forwardToToggle,
-    setForwardToToggle
+    workers
   } = props;
 
   return (
@@ -37,11 +35,9 @@ const UserFormAccordion = (props: UserFormAccordianProps) => {
             forwardToToggle={forwardToToggle}
             setForwardToToggle={setForwardToToggle}/>
         </AccordionTab>
-        {form.formMode === formModes.INSERT ?
-          <AccordionTab labelVisual="Call Recording">
-            <CallRecordingForm />
-          </AccordionTab> : null
-        }
+        <AccordionTab labelVisual="Call Recording">
+          <CallRecordingForm twilioWorker={worker} />
+        </AccordionTab>
         <AccordionTab labelVisual="Default Skills">
           <SkillsFormInfo />
         </AccordionTab>

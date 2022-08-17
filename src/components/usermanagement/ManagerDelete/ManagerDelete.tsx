@@ -2,7 +2,7 @@ import {
   Header,
   HeaderAndCloseButtonWrapper,
   LeftDiv,
-  ModalContainer,
+  ModalContainer
 } from "./ManagerDelete.Styles";
 import { CloseRounded } from "@material-ui/icons";
 import {

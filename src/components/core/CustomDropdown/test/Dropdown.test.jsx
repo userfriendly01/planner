@@ -462,4 +462,33 @@ describe("CustomDropdown", () => {
       });
     });
   });
+  describe("custom render is passed", () => {
+    test("custom render is rendered", () => {
+      const CustomRender = jest.fn();
+      setupMockedComponents({
+        CustomRender
+      });
+      render(<Dropdown
+        options={options}
+        label={label}
+        updateValue={mockUpdateValue}
+        value={value}
+        onBlur={mockOnBlur}
+        CustomRender={CustomRender}
+      />);
+      const renderOption = Autocomplete.mock.calls[0][0].renderOption;
+      act(() => {
+        const optionOne = renderOption({}, options[0]);
+        const optionTwo = renderOption({}, options[1]);
+        const optionThree = renderOption({}, options[2]);
+        render(optionOne);
+        render(optionTwo);
+        render(optionThree);
+        expect(CustomRender).toBeCalledTimes(3);
+        expect(CustomRender.mock.calls[0][0].option.label).toBe("Option One");
+        expect(CustomRender.mock.calls[1][0].option.label).toBe("Option Two");
+        expect(CustomRender.mock.calls[2][0].option.label).toBe("Option Three");
+      });
+    });
+  });
 });

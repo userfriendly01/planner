@@ -1,16 +1,14 @@
 import {
   calabrioGroupLevels,
   CalabrioUser,
-  CalabrioGroup,
-  ConflictingUserResult,
-  searchByOptions
+  CalabrioGroup
 } from "../components/usermanagement/CallRecording/CallRecording.Interfaces";
 import {
   getCalabrioUser,
   updateCalabrioUser
 } from "services";
 
-const calabrioTenants = {
+export const calabrioTenants = {
   PROD: "tenant0215",
   NP: "LibertyMutual"
 };
@@ -20,19 +18,19 @@ const calabrioTenants = {
 export const calabrioTimeZones =  [
   {
     label: "America/New_York (EST/EDT)",
-    value: 173
+    value: "America/New_York"
   },
   {
     label: "America/Los_Angeles (PST/PDT)",
-    value: 151
+    value: "America/Los_Angeles"
   },
   {
     label: "America/Denver (MST/MDT)",
-    value: 110
+    value: "America/Denver"
   },
   {
     label: "America/Chicago (CST/CDT)",
-    value: 99
+    value: "America/Chicago"
   }
 ];
 
@@ -57,6 +55,13 @@ export const formatCalabrioTenant = (groupsArray: CalabrioGroup[]): CalabrioGrou
   return group;
 };
 
+export const formatCalabrioRoles = (rolesArray: any[]): any[] => {
+  return rolesArray.map((role: any) => {
+    delete role.permissions;
+    return role;
+  });
+};
+
 const toLowerCaseString = (variable: any) => {
   return typeof variable === "string" ? variable.toLowerCase() : variable;
 };
@@ -64,7 +69,7 @@ const toLowerCaseString = (variable: any) => {
 /*
   https://forge.lmig.com/wiki/display/CICCT/Calabrio+Form
 */
-export const checkConflictingUsers = async (user: any, users: CalabrioUser[], roles: any[]): Promise<void> => {
+export const checkConflictingUsers = async (user: any, users: CalabrioUser[], roles: any[], teams: any[]): Promise<void> => {
   try {
     const {
       acdId
@@ -77,7 +82,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
 
     await Promise.all(users.map(async u => {
       if(u.acdId === acdId){
-        throw new Error("Calabrio Record with this ACD Id already exists. New Record should not be added.");
+        return;
       }
 
       const dupUserAdLogin = toLowerCaseString(u.adLogin);
@@ -87,25 +92,44 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
 
       if (dupUserAdLogin === adLogin || dupUserEmail === email) {
         const res: CalabrioUser = await getCalabrioUser(u.id);
-        const user = res.data;
-        console.warn("Conflicting User Found with Duplicate Email or Windows Login: ", user);
+        const dupUser = res.data;
+        console.warn("Conflicting User Found with Duplicate Email or Windows Login: ", dupUser);
 
-        user.adLogin = `xx-${user.id}-${user.adLogin}`;
-        user.email = `xx-${user.id}-${user.email}`;
-        user.deactivated = Date.now();
+        dupUser.deactivated = Date.now();
+        dupUser.adLogin = `xx-${dupUser.id}-${dupUser.adLogin}`;
+        dupUser.email = `xx-${dupUser.id}-${dupUser.email}`;
+        dupUser.acdId = `xx-${dupUser.acdId}`;
 
-        await updateCalabrioUser(user.id, user);
+        if(dupUser.roles.length === 0){
+          dupUser.roles = roles.filter(role => role.name.toLowerCase().includes("agent-sync"));
+        }
+        if(!dupUser.team){
+          console.warn("do we get in here?", teams.find(team => team.name.toLowerCase().includes("default")));
+          dupUser.team = teams.find(team => team.name.toLowerCase().includes("default"))?.groupId;
+        }
+
+        await updateCalabrioUser(dupUser.id, dupUser);
+        return;
       }
 
       if (!dupUserEmail && acdId && firstName === dupUserFirstName && lastName === dupUserLastName) {
         const res: CalabrioUser = await getCalabrioUser(u.id);
-        const user = res.data;
-        console.warn("Conflicting User Found with First and Last Name: ", user);
+        const dupUser = res.data;
+        console.warn("Conflicting User Found with First and Last Name: ", dupUser);
 
-        user.deactivated = Date.now();
-        user.email = `SHELLUSER${user.id}@libertymutual.com`;
+        dupUser.deactivated = Date.now();
+        dupUser.adLogin = `SHELLUSER-${dupUser.id}`;
+        dupUser.email = `SHELLUSER-${dupUser.id}@libertymutual.com`;
+        dupUser.acdId = `SH-${dupUser.acdId}`;
 
-        await updateCalabrioUser(user.id, user);
+        if(dupUser.roles.length === 0){
+          dupUser.roles = roles.filter(role => role.name.toLowerCase().includes("agent-sync"));
+        }
+        if(!dupUser.team){
+          dupUser.team = teams.find(team => team.name.toLowerCase().includes("default"))?.groupId;
+        }
+        await updateCalabrioUser(dupUser.id, dupUser);
+        return;
       }
     }));
   } catch(err) {

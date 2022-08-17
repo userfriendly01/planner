@@ -10,14 +10,24 @@ import {
 import { Dropdown } from "components";
 import {
   useAdminState,
+  userFormActions,
   useFormState,
-  useFormDispatch,
-  userFormActions
+  useFormDispatch
 } from "context";
+import {
+  Discrepancy,
+  discrepancyType,
+  formModes
+} from "globals";
 import { getCalabrioUser } from "services";
 
-const CallRecordingForm = () => {
+interface CallRecordingFormInterface {
+  twilioWorker: any
+}
+
+const CallRecordingForm = (props: CallRecordingFormInterface) => {
   const state = useAdminState();
+  const { twilioWorker } = props;
   const {
     groups,
     teams,
@@ -27,18 +37,21 @@ const CallRecordingForm = () => {
 
   const form = useFormState();
   const setForm = useFormDispatch();
-  console.log("***STATE!", state);
-  // console.log("worker", form.nNumberFetchedUser);
 
   useEffect(() => {
     if(form.calabrioUser.scope.groups.length === 0 || form.calabrioUser.scope.teams.length === 0) {
-      if(form.nNumberFetchedUser && form.formMode ==="UPDATE") {
-        setScopeOnExistingUser();
-      } else {
-        setScopeOnNewUser();
-      }
+      console.warn("groups and teams are empty");
+      setScopeOnNewUser();
     }
-  });
+
+  }, []);
+
+  useEffect(() => {
+    if(form.nNumberFetchedUser && form.formMode === formModes.UPDATE) {
+      console.warn("form.nNumberFetchedUser - update and fetched user");
+      setScopeOnExistingUser();
+    }
+  }, [form.nNumberFetchedUser]);
 
   const setScopeOnNewUser = () => {
     const userGroups: any[] = [];
@@ -68,16 +81,45 @@ const CallRecordingForm = () => {
   };
 
   const setScopeOnExistingUser = () => {
-    const email = form.nNumberFetchedUser.email.toLowerCase();
-    const userRecord = users.find(user => user.email.toLowerCase() === email);
+    const email = form.nNumberFetchedUser.email?.toLowerCase();
+    const acdId = twilioWorker.sid?.toLowerCase();
+    let updated = false;
+    const userRecord = users.find(user => user.acdId?.toLowerCase() === acdId) || users.find(user => user.email?.toLowerCase() === email);
+    console.log("User Record Found in Calabrio Agents", userRecord);
 
     if(userRecord){
-      getCalabrioUser(userRecord.personId).then((res: any) => {
+      if(userRecord.adLogin?.toLowerCase() !== `lm\\${form.nNumber.value.toLowerCase()}`){
+        console.warn("Windows Login does not match calabrio record");
+        const discrepancy: Discrepancy = {
+          type: discrepancyType.CALABRIO,
+          message: "User is not correctly set up for screen recording in Calabrio."
+        };
+        setForm({
+          type: userFormActions.SET_DISCREPANCIES,
+          payload: discrepancy
+        });
+        updated = true;
+      }
+      if(userRecord.email?.toLowerCase() !== email){
+        const discrepancy: Discrepancy = {
+          type: discrepancyType.CALABRIO,
+          message: "Calabrio Email does not match HR email. This could cause Calabrio Login issues"
+        };
+        setForm({
+          type: userFormActions.SET_DISCREPANCIES,
+          payload: discrepancy
+        });
+        updated = true;
+        console.warn("Email does not match calabrio record");
+      }
+      getCalabrioUser(userRecord.id).then((res: any) => {
         const userGroups: any[] = [];
         const userTeams: any[] = [];
+        const fetchedUser = res.data;
+        console.warn("Fetched Calabrio User: ", res);
 
         groups.forEach(group => {
-          if(res.scope.groups.some((groupId: number) => group.groupId === groupId)){
+          if(fetchedUser.scope.groups.some((groupId: number) => group.groupId === groupId)){
             userGroups.push({
               ...group,
               checked: true,
@@ -93,7 +135,7 @@ const CallRecordingForm = () => {
         });
 
         teams.forEach(team => {
-          if(res.scope.teams.some((teamId: number) => team.groupId === teamId)){
+          if(fetchedUser.scope.teams.some((teamId: number) => team.groupId === teamId)){
             userTeams.push({
               ...team,
               checked: true
@@ -109,26 +151,44 @@ const CallRecordingForm = () => {
         setForm({
           type: userFormActions.SET_CALABRIO_USER,
           payload: {
-            team: res.groupId,
-            roles: res.roles,
+            updated,
+            id: userRecord.id,
+            team: fetchedUser.groupId ? teams.find(team => team.groupId === fetchedUser.groupId) : form.groupId,
+            roles: fetchedUser.roles || form.calabrioUser.roles,
+            timezone: fetchedUser.timeZone || form.calabrioUser.timezone,
             scope: {
               groups: userGroups,
               teams: userTeams
             }
           }
         });
-
       }).catch(err => {
         console.error("Failed to fetch Calabrio User.", err);
       });
     } else {
       console.warn("No user was found in Calabrio with this email");
+      const discrepancy: Discrepancy = {
+        type: discrepancyType.CALABRIO,
+        message: "No Record found in Calabrio."
+      };
+      setForm({
+        type: userFormActions.SET_DISCREPANCIES,
+        payload: discrepancy
+      });
+      setForm({
+        type: userFormActions.SET_CALABRIO_USER,
+        payload: {
+          ...form.calabrioUser,
+          updated: true
+        }
+      });
     }
   };
 
   const getRoleOptions = () => {
     return roles.map((role: any) => {
       return {
+        ...role,
         label: role.name,
         value: role.id
       };
@@ -140,6 +200,7 @@ const CallRecordingForm = () => {
     if(availableTeams.length > 0){
       return availableTeams.map(team => {
         return {
+          ...team,
           label: team.name,
           value: team.groupId
         };
@@ -147,6 +208,7 @@ const CallRecordingForm = () => {
     } else {
       return teams.map(team => {
         return {
+          ...team,
           label: team.name,
           value: team.groupId
         };
@@ -170,7 +232,11 @@ const CallRecordingForm = () => {
         <Dropdown
           label="Team"
           options={getTeamOptions()}
-          value={form.calabrioUser.team}
+          value={form.calabrioUser.team ?{
+            ...form.calabrioUser.team,
+            label: form.calabrioUser.team.name,
+            value: form.calabrioUser.team.groupId
+          }: ""}
           updateValue={(event: any, team: any) => setForm({
             type: userFormActions.SET_CALABRIO_TEAM,
             payload: team
@@ -181,16 +247,16 @@ const CallRecordingForm = () => {
           label="Time Zone"
           options={calabrioTimeZones}
           value={form.calabrioUser.timezone}
-          updateValue={(event: any, team: any) => setForm({
+          updateValue={(event: any, timezone: any) => setForm({
             type: userFormActions.SET_CALABRIO_TIMEZONE,
-            payload: team
+            payload: timezone
           })}
           styles={{ width: "300px" }}
         />
       </FormControlsPane>
       <CallRecordingScope
-        groups={form.calabrioUser.scope.groups}
-        teams={form.calabrioUser.scope.teams}
+        calabrioUser={form.calabrioUser}
+        setForm={setForm}
       />
     </FormControlsContainer>
   );

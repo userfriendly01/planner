@@ -10,17 +10,22 @@ import {
 import {
   useAdminState,
   useAdminDispatch,
-  useFormDispatch,
   useFormState,
+  useFormDispatch,
   userFormActions
 } from "context";
-import { formModes } from "globals";
+import {
+  discrepancyType,
+  formModes
+} from "globals";
 import React from "react";
 import {
   addOffice,
   createCalabrioUser,
   createUser,
   fetchUser,
+  getCalabrioUsers,
+  updateCalabrioUser,
   updateUser
 } from "services";
 import {
@@ -67,14 +72,6 @@ jest.mock("context", () => ({
   useFormState: jest.fn(),
   useFormDispatch: jest.fn(),
   userFormActions: jest.requireActual("context").userFormActions
-}));
-
-jest.mock("services", () => ({
-  addOffice: jest.fn(),
-  createUser: jest.fn(),
-  fetchUser: jest.fn(),
-  updateUser: jest.fn(),
-  createCalabrioUser: jest.fn()
 }));
 
 jest.mock("utils", () => ({
@@ -126,8 +123,8 @@ describe("<UserFormButtons />", () => {
     addOffice.mockResolvedValue("Override me later");
     jest.clearAllMocks();
     mockStore.reset();
-    getOverflowSkillFromProfile.mockReturnValue("466");
     useFormDispatch.mockReturnValue(mockSetForm);
+    getOverflowSkillFromProfile.mockReturnValue("466");
     useAdminDispatch.mockReturnValue(mockDispatch);
     useAdminState.mockReturnValue({
       calabrioContext: {
@@ -136,6 +133,8 @@ describe("<UserFormButtons />", () => {
     });
     checkConflictingUsers.mockResolvedValue({ yay: "woot!" });
     createCalabrioUser.mockResolvedValue({ yay: "woot!" });
+    fetchUser.mockResolvedValue({ yay: "woot!" });
+    getCalabrioUsers.mockResolvedValue({ data: "yay!" });
     setupMockedComponents({
       StyledButton,
       Tooltip,
@@ -158,16 +157,15 @@ describe("<UserFormButtons />", () => {
       initialTestState
     );
   };
-  beforeEach(() => {
-  });
 
   describe("Tooltip Toggle", () => {
     describe("form.didUser === true", () => {
+      const form = {
+        ...initialFormState,
+        didUser: true
+      };
       beforeEach(() => {
-        useFormState.mockReturnValue({
-          ...initialFormState,
-          didUser: true
-        });
+        useFormState.mockReturnValue(form);
         isDidDifferentValid.mockReturnValue(true);
       });
       describe("forwardToToggle === false", () => {
@@ -196,8 +194,8 @@ describe("<UserFormButtons />", () => {
     });
     describe("form.didUser === false", () => {
       beforeEach(() => {
-        useFormState.mockReturnValue(initialFormState);
         isDidDifferentValid.mockReturnValue(true);
+        useFormState.mockReturnValue(initialFormState);
       });
       test("Tooltip title should be blank", () => {
         renderComponent(true);
@@ -241,6 +239,9 @@ describe("<UserFormButtons />", () => {
         createUser.mockResolvedValue(rawDbWorker);
         addOffice.mockResolvedValue("yay!");
         useFormState.mockReturnValue(validFormState);
+        checkConflictingUsers.mockResolvedValue("Yay!");
+        updateCalabrioUser.mockResolvedValue("yay!");
+        getCalabrioUsers.mockResolvedValue({ data: ["agent1", "agent2"]});
       });
 
       describe("Initial State", () => {
@@ -262,7 +263,7 @@ describe("<UserFormButtons />", () => {
           expect(StyledButton.mock.calls[1][0].disabled).toBe(true);
         });
       });
-      describe("createUser service call and add office service call are successful", () => {
+      describe("createUser service call, add office service call, and createCalabruioUser service call are successful", () => {
         describe("Worker is not a DID user", () => {
           const createWorkerAttributesAfterFormValid = workerAttributesAfterFormValid;
           const nonDidValidFormState = {
@@ -290,7 +291,10 @@ describe("<UserFormButtons />", () => {
               expect(mockSetForm).toHaveBeenCalledTimes(2);
               expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
               expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
-              expect(mockDispatch).toHaveBeenCalledTimes(2);
+              expect(checkConflictingUsers).toHaveBeenCalledTimes(1);
+              expect(createCalabrioUser).toHaveBeenCalledTimes(1);
+              expect(getCalabrioUsers).toHaveBeenCalledTimes(1);
+              expect(mockDispatch).toHaveBeenCalledTimes(3);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
                 payload: [formattedWorker]
@@ -301,6 +305,10 @@ describe("<UserFormButtons />", () => {
                   office_nme: "Springfield 012B",
                   office_num: "newOffice"
                 }
+              });
+              expect(mockDispatch.mock.calls[2][0]).toEqual({
+                type: "loadCalabrioUsers",
+                payload: ["agent1", "agent2"]
               });
               jest.runAllTimers();
               expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
@@ -337,12 +345,13 @@ describe("<UserFormButtons />", () => {
             sid: rawDbWorker.workerSid,
             skillsDifferent: true
           };
+          const form = {
+            ...validFormState,
+            didUser: true
+          };
           beforeEach(() => {
-            useFormState.mockReturnValue({
-              ...validFormState,
-              didUser: true
-            });
             createUser.mockResolvedValue(existingOfficeDbWorker);
+            useFormState.mockReturnValue(form);
           });
           test("should save user with did worker request body when clicked", async () => {
             renderComponent(true);
@@ -368,10 +377,14 @@ describe("<UserFormButtons />", () => {
                 }
               });
               expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
-              expect(mockDispatch).toHaveBeenCalledTimes(1);
+              expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
                 payload: [formattedWorker]
+              });
+              expect(mockDispatch.mock.calls[1][0]).toEqual({
+                type: "loadCalabrioUsers",
+                payload: ["agent1", "agent2"]
               });
               jest.runAllTimers();
               expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
@@ -393,11 +406,12 @@ describe("<UserFormButtons />", () => {
         });
         describe("Worker profile has overflowSkill, zeroOutEnabled and directDialNum", () => {
           const createWorkerAttributesAfterFormValid = workerAttributesAfterFormValid;
+          const form = {
+            ...validFormState,
+            zeroOutEnabled: true
+          };
           beforeEach(() => {
-            useFormState.mockReturnValue({
-              ...validFormState,
-              zeroOutEnabled: true
-            });
+            useFormState.mockReturnValue(form);
           });
           test("should include overflow skill and save user with did worker request body when clicked", async () => {
             renderComponent(true);
@@ -425,7 +439,7 @@ describe("<UserFormButtons />", () => {
               expect(mockSetForm).toHaveBeenCalledTimes(2);
               expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
               expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
-              expect(mockDispatch).toHaveBeenCalledTimes(2);
+              expect(mockDispatch).toHaveBeenCalledTimes(3);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
                 payload: [formattedWorker]
@@ -436,6 +450,10 @@ describe("<UserFormButtons />", () => {
                   office_nme: "Springfield 012B",
                   office_num: "newOffice"
                 }
+              });
+              expect(mockDispatch.mock.calls[2][0]).toEqual({
+                type: "loadCalabrioUsers",
+                payload: ["agent1", "agent2"]
               });
               jest.runAllTimers();
               expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
@@ -457,6 +475,7 @@ describe("<UserFormButtons />", () => {
           describe("getNonOverflowSkills returns undefined", () => {
             beforeEach(() => {
               getNonOverflowSkills.mockReturnValue(undefined);
+              useFormState.mockReturnValue(form);
             });
             test("Should spread empty array in skills", async () => {
               renderComponent(true);
@@ -484,7 +503,7 @@ describe("<UserFormButtons />", () => {
                 expect(mockSetForm).toHaveBeenCalledTimes(2);
                 expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
                 expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
-                expect(mockDispatch).toHaveBeenCalledTimes(2);
+                expect(mockDispatch).toHaveBeenCalledTimes(3);
                 expect(mockDispatch.mock.calls[0][0]).toEqual({
                   type: "addWorkers",
                   payload: [formattedWorker]
@@ -495,6 +514,10 @@ describe("<UserFormButtons />", () => {
                     office_nme: "Springfield 012B",
                     office_num: "newOffice"
                   }
+                });
+                expect(mockDispatch.mock.calls[2][0]).toEqual({
+                  type: "loadCalabrioUsers",
+                  payload: ["agent1", "agent2"]
                 });
                 jest.runAllTimers();
                 expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
@@ -527,8 +550,8 @@ describe("<UserFormButtons />", () => {
             }
           };
           beforeEach(() => {
-            useFormState.mockReturnValue(nonDidValidFormState);
             addOffice.mockRejectedValue({ aww: "bummer" });
+            useFormState.mockReturnValue(nonDidValidFormState);
           });
           test("should not dispatch AddOffice but should still enable Add User button and save user when clicked", async () => {
             renderComponent(true);
@@ -545,10 +568,14 @@ describe("<UserFormButtons />", () => {
               expect(mockSetForm).toHaveBeenCalledTimes(2);
               expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
               expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
-              expect(mockDispatch).toHaveBeenCalledTimes(1);
+              expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
                 payload: [formattedWorker]
+              });
+              expect(mockDispatch.mock.calls[1][0]).toEqual({
+                type: "loadCalabrioUsers",
+                payload: ["agent1", "agent2"]
               });
               jest.runAllTimers();
               expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
@@ -567,8 +594,7 @@ describe("<UserFormButtons />", () => {
               });
             });
           });
-        }
-        );
+        });
         describe("createUser fails", () => {
           const nonDidValidFormState = {
             ...validFormState,
@@ -650,19 +676,225 @@ describe("<UserFormButtons />", () => {
               });
             });
           });
-        }
-        );
+        });
+      });
+      describe("checkConflictingUsers fails", () => {
+        const nonDidValidFormState = {
+          ...validFormState,
+          directDialNum: {
+            ...validFormState.directDialNum,
+            value: ""
+          }
+        };
+        beforeEach(() => {
+          checkConflictingUsers.mockRejectedValue({ aww: "bummer" });
+          useFormState.mockReturnValue(nonDidValidFormState);
+        });
+        test("createCalabrioUser should not be called", async () => {
+          renderComponent(true);
+          render(Tooltip.mock.calls[0][0].children);
+          act(() => {
+            const onClick = StyledButton.mock.calls[1][0].onClick;
+            onClick();
+          });
+          await waitFor(() => {
+            expect(createCalabrioUser).toHaveBeenCalledTimes(0);
+            jest.runAllTimers();
+            expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+            expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
+              overlayMessage: "Adding new user...",
+              saveStatus: "saving",
+              saveUser: true
+            });
+            expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+              overlayMessage: "Triton User Created. Error Creating Calabrio User",
+              saveStatus: "partial fail",
+              saveUser: true
+            });
+          });
+        });
+      });
+      describe("createCalabrioUser fails", () => {
+        const nonDidValidFormState = {
+          ...validFormState,
+          directDialNum: {
+            ...validFormState.directDialNum,
+            value: ""
+          }
+        };
+        beforeEach(() => {
+          useFormState.mockReturnValue(nonDidValidFormState);
+          checkConflictingUsers.mockResolvedValue("yay");
+          createCalabrioUser.mockRejectedValue({ aww: "bummer" });
+        });
+        test("setForm should not be called", async () => {
+          renderComponent(true);
+          render(Tooltip.mock.calls[0][0].children);
+          act(() => {
+            const onClick = StyledButton.mock.calls[1][0].onClick;
+            onClick();
+          });
+          await waitFor(() => {
+            expect(mockSetForm).toHaveBeenCalledTimes(0);
+            jest.runAllTimers();
+            expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+            expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
+              overlayMessage: "Adding new user...",
+              saveStatus: "saving",
+              saveUser: true
+            });
+            expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+              overlayMessage: "Triton User Created. Error Creating Calabrio User",
+              saveStatus: "partial fail",
+              saveUser: true
+            });
+          });
+        });
+      });
+      describe("getCalabrioUsers fails", () => {
+        const nonDidValidFormState = {
+          ...validFormState,
+          directDialNum: {
+            ...validFormState.directDialNum,
+            value: ""
+          }
+        };
+        beforeEach(() => {
+          useFormState.mockReturnValue(nonDidValidFormState);
+          getCalabrioUsers.mockRejectedValue({ aww: "bummer" });
+        });
+        test("setForm should not be called", async () => {
+          renderComponent(true);
+          render(Tooltip.mock.calls[0][0].children);
+          act(() => {
+            const onClick = StyledButton.mock.calls[1][0].onClick;
+            onClick();
+          });
+          await waitFor(() => {
+            expect(mockSetForm).toHaveBeenCalledTimes(2);
+            expect(mockDispatch).toBeCalledTimes(2);
+            expect(mockDispatch.mock.calls[0][0].type).toBe("addWorkers");
+            expect(mockDispatch.mock.calls[1][0].type).toBe("addOffice");
+            jest.runAllTimers();
+            expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
+            expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
+              overlayMessage: "Adding new user...",
+              saveStatus: "saving",
+              saveUser: true
+            });
+            expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+              overlayMessage: "Successfully added new user",
+              saveStatus: "success",
+              saveUser: true
+            });
+            expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
+              saveUser: false
+            });
+          });
+        });
       });
     });
     describe(`form.formMode === ${formModes.UPDATE}`, () => {
       const updateFormState = {
         ...validFormState,
-        formMode: formModes.UPDATE
+        formMode: formModes.UPDATE,
+        calabrioUser: {
+          updated: true
+        }
       };
       beforeEach(() => {
         useFormState.mockReturnValue(updateFormState);
         isFormUpdated.mockReturnValue(true);
         getNonOverflowSkills.mockReturnValue(["nonSkillL1"]);
+        checkConflictingUsers.mockResolvedValue("Yay!");
+        createCalabrioUser.mockResolvedValue("yay!");
+        getCalabrioUsers.mockResolvedValue({ data: ["agent1", "agent2"]});
+      });
+      describe("nNumberFetchedUser is null", () => {
+        const updateFormState = {
+          ...validFormState,
+          formMode: formModes.UPDATE,
+          nNumberFetchedUser: null
+        };
+        describe("fetchUser throws an error", () => {
+          beforeEach(() => {
+            useFormState.mockReturnValue(updateFormState);
+            fetchUser.mockRejectedValue({ boo: "aww" });
+          });
+          test("Error is caught and logged", async () => {
+            renderComponent(true);
+            expect(fetchUser).toBeCalledTimes(1);
+            await waitFor(() => {
+              expect(mockSetForm).toHaveBeenCalledTimes(0);
+            });
+          });
+        });
+        describe("fetchUser is Successful", () => {
+          beforeEach(() => {
+            useFormState.mockReturnValue(updateFormState);
+          });
+          describe("email matches existing user", () => {
+            const sameEmailUser = {
+              email: "faith.cuneo@libertymutual.com"
+            };
+            beforeEach(() => {
+              fetchUser.mockResolvedValue(sameEmailUser);
+            });
+            test("fetchUser is run on render and mockSetForm is called once", async () => {
+              renderComponent(true, {
+                ...worker,
+                attributes: {
+                  ...worker.attributes,
+                  email: "Faith.Cuneo@libertymutual.com"
+                }
+              });
+              expect(fetchUser).toBeCalledTimes(1);
+              await waitFor(() => {
+                expect(mockSetForm).toBeCalledTimes(1);
+                expect(mockSetForm).toBeCalledWith({
+                  type: "COMPLETE_N_NUMBER",
+                  payload: {
+                    fetchedUser: {
+                      email: "faith.cuneo@libertymutual.com"
+                    },
+                    nNumber: "n1234567"
+                  }
+                });
+              });
+            });
+          });
+          describe("email does not match existing user", () => {
+            const differentEmailUser = {
+              email: "faith.cuneo@safeco.com"
+            };
+            beforeEach(() => {
+              fetchUser.mockResolvedValue(differentEmailUser);
+            });
+            test("fetchUser is run on render and mockSetForm is called twice", async () => {
+              renderComponent(true);
+              expect(fetchUser).toBeCalledTimes(1);
+              await waitFor(() => {
+                expect(mockSetForm).toBeCalledTimes(2);
+                expect(mockSetForm).toBeCalledWith({
+                  type: "COMPLETE_N_NUMBER",
+                  payload: {
+                    fetchedUser: {
+                      email: "faith.cuneo@safeco.com"
+                    },
+                    nNumber: "n1234567"
+                  }
+                });
+                expect(mockSetForm).toBeCalledWith({
+                  type: "SET_DISCREPANCIES",
+                  payload: {
+                    type: discrepancyType.CALABRIO,
+                    message: "Triton email does not match HR email."
+                  }
+                });
+              });
+            });
+          });
+        });
       });
       describe("Initial State", () => {
         test("UserFormButton should be called 'Save User'", () => {
@@ -683,10 +915,14 @@ describe("<UserFormButtons />", () => {
           expect(StyledButton.mock.calls[1][0].disabled).toBe(true);
         });
       });
-      describe("updateUser service call and add office service call are successful", () => {
+      describe("updateUser service call, add office service call, and createCalabrioUser service call are successful", () => {
         describe("Worker is not a DID user", () => {
           const nonDidValidFormState = {
             ...updateFormState,
+            calabrioUser: {
+              updated: true,
+              id: 1
+            },
             directDialNum: {
               ...updateFormState.directDialNum,
               value: "",
@@ -695,10 +931,9 @@ describe("<UserFormButtons />", () => {
             zeroOutEnabled: true
           };
           beforeEach(() => {
-            useFormState.mockReturnValue(nonDidValidFormState);
             updateUser.mockResolvedValue(rawDbWorker);
             fetchUser.mockResolvedValue(fetchedUser);
-
+            useFormState.mockReturnValue(nonDidValidFormState);
           });
           test("should save user with non did worker request body when clicked", async () => {
             const updateWorker = {
@@ -714,6 +949,11 @@ describe("<UserFormButtons />", () => {
             const updateWorkerAttributesAfterFormValid = {
               default_skills: validFormOptions.defaultSkills,
               did: validFormOptions.didE164,
+              email: "test@abc.com",
+              email_address: "test@abc.com",
+              emp_first_name: "Frank",
+              emp_last_name: "Rizzo",
+              full_name: "Frank Rizzo",
               department_id: validFormState.nNumberFetchedUser.departmentNumber,
               department_name: validFormState.nNumberFetchedUser.departmentName,
               extension: validFormOptions.extension,
@@ -740,13 +980,20 @@ describe("<UserFormButtons />", () => {
                 attributes: updateWorkerAttributesAfterFormValid,
                 zeroOutEnabled: true
               });
-              expect(mockDispatch).toHaveBeenCalledTimes(1);
+              expect(checkConflictingUsers).toBeCalledTimes(1);
+              expect(updateCalabrioUser).toBeCalledTimes(1);
+              expect(getCalabrioUsers).toBeCalledTimes(1);
+              expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "updateWorker",
                 payload: formattedWorker
               });
+              expect(mockDispatch.mock.calls[1][0]).toEqual({
+                type: "loadCalabrioUsers",
+                payload: ["agent1", "agent2"]
+              });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Updating user: Faith Cuneo",
                 saveStatus: "saving",
@@ -757,6 +1004,9 @@ describe("<UserFormButtons />", () => {
                 saveStatus: "success",
                 saveUser: true
               });
+              expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
+                saveUser: false
+              });
               expect(mockHandleClose).toHaveBeenCalledTimes(1);
             });
           });
@@ -764,6 +1014,11 @@ describe("<UserFormButtons />", () => {
         describe("Worker is a DID user", () => {
           const updateWorkerAttributesAfterFormValid = {
             default_skills: validFormOptions.defaultSkills,
+            email: "test@abc.com",
+            email_address: "test@abc.com",
+            emp_first_name: "Frank",
+            emp_last_name: "Rizzo",
+            full_name: "Frank Rizzo",
             did: validFormOptions.didE164,
             department_id: validFormOptions.nNumberFetchedUser.departmentNumber,
             department_name: validFormOptions.nNumberFetchedUser.departmentName,
@@ -790,9 +1045,9 @@ describe("<UserFormButtons />", () => {
             }
           };
           beforeEach(() => {
-            useFormState.mockReturnValue(updateFormState);
             updateUser.mockResolvedValue(rawDbWorker);
             workerHasOverFlowSkill.mockReturnValue(true);
+            useFormState.mockReturnValue(updateFormState);
           });
           test("should save user with did worker request body when clicked", async () => {
             renderComponent(true, updateWorker);
@@ -809,13 +1064,17 @@ describe("<UserFormButtons />", () => {
                 directDialNum: validFormState.directDialNum.e164,
                 zeroOutEnabled: validFormState.zeroOutEnabled
               });
-              expect(mockDispatch).toHaveBeenCalledTimes(1);
+              expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "updateWorker",
                 payload: formattedWorker
               });
+              expect(mockDispatch.mock.calls[1][0]).toEqual({
+                type: "loadCalabrioUsers",
+                payload: ["agent1", "agent2"]
+              });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Updating user: Faith Cuneo",
                 saveStatus: "saving",
@@ -826,11 +1085,15 @@ describe("<UserFormButtons />", () => {
                 saveStatus: "success",
                 saveUser: true
               });
+              expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
+                saveUser: false
+              });
             });
           });
           describe("getNonOverflowSkills returns undefined", () => {
             beforeEach(() => {
               getNonOverflowSkills.mockReturnValue(undefined);
+              useFormState.mockReturnValue(updateFormState);
             });
             test("Should spread empty array in skills", async () => {
               renderComponent(true, updateWorker);
@@ -847,19 +1110,28 @@ describe("<UserFormButtons />", () => {
                     routing: {
                       ...updateWorkerAttributesAfterFormValid.routing,
                       skills: []
-                    }
+                    },
+                    email: "test@abc.com",
+                    email_address: "test@abc.com",
+                    emp_first_name: "Frank",
+                    emp_last_name: "Rizzo",
+                    full_name: "Frank Rizzo"
                   },
                   alternateDid: validFormState.alternateDid.e164,
                   directDialNum: validFormState.directDialNum.e164,
                   zeroOutEnabled: validFormState.zeroOutEnabled
                 });
-                expect(mockDispatch).toHaveBeenCalledTimes(1);
+                expect(mockDispatch).toHaveBeenCalledTimes(2);
                 expect(mockDispatch.mock.calls[0][0]).toEqual({
                   type: "updateWorker",
                   payload: formattedWorker
                 });
+                expect(mockDispatch.mock.calls[1][0]).toEqual({
+                  type: "loadCalabrioUsers",
+                  payload: ["agent1", "agent2"]
+                });
                 jest.runAllTimers();
-                expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+                expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
                 expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                   overlayMessage: "Updating user: Faith Cuneo",
                   saveStatus: "saving",
@@ -869,6 +1141,9 @@ describe("<UserFormButtons />", () => {
                   overlayMessage: "Successfully updated user: Faith Cuneo",
                   saveStatus: "success",
                   saveUser: true
+                });
+                expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
+                  saveUser: false
                 });
               });
             });
@@ -910,9 +1185,9 @@ describe("<UserFormButtons />", () => {
             zeroOutEnabled: true
           };
           beforeEach(() => {
-            useFormState.mockReturnValue(unchangedForm);
             updateUser.mockResolvedValue(rawDbWorker);
             workerHasOverFlowSkill.mockReturnValue(true);
+            useFormState.mockReturnValue(unchangedForm);
           });
           test("should save user with did worker request body when clicked", async () => {
             const updateWorker = {
@@ -936,17 +1211,26 @@ describe("<UserFormButtons />", () => {
                 attributes: {
                   department_id: fetchedUser.departmentNumber,
                   department_name: fetchedUser.departmentName,
-                  location: fetchedUser.departmentName
+                  location: fetchedUser.departmentName,
+                  email: "test@abc.com",
+                  email_address: "test@abc.com",
+                  emp_first_name: "Frank",
+                  emp_last_name: "Rizzo",
+                  full_name: "Frank Rizzo"
                 },
                 zeroOutEnabled: true
               });
-              expect(mockDispatch).toHaveBeenCalledTimes(1);
+              expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "updateWorker",
                 payload: formattedWorker
               });
+              expect(mockDispatch.mock.calls[1][0]).toEqual({
+                type: "loadCalabrioUsers",
+                payload: ["agent1", "agent2"]
+              });
               jest.runAllTimers();
-              expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
               expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                 overlayMessage: "Updating user: Faith Cuneo",
                 saveStatus: "saving",
@@ -956,6 +1240,173 @@ describe("<UserFormButtons />", () => {
                 overlayMessage: "Successfully updated user: Faith Cuneo",
                 saveStatus: "success",
                 saveUser: true
+              });
+              expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
+                saveUser: false
+              });
+            });
+          });
+        });
+        describe("nNumberFetchedUser is null", () => {
+          const updateWorkerAttributesAfterFormValid = {
+            default_skills: validFormOptions.defaultSkills,
+            email: undefined,
+            email_address: undefined,
+            emp_first_name: undefined,
+            emp_last_name: undefined,
+            full_name: undefined + " " + undefined,
+            did: validFormOptions.didE164,
+            extension: validFormOptions.extension,
+            manager_first_name: validFormOptions.manager.manager_first_name,
+            manager_last_name: validFormOptions.manager.manager_last_name,
+            manager_n_number: validFormOptions.manager.manager_n_number,
+            manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
+            profile_id: validFormOptions.profileId,
+            routing: {
+              skills: ["nonSkillL1"],
+              levels: []
+            }
+          };
+          const updateWorker = {
+            ...worker,
+            attributes: {
+              ...worker.attributes,
+              routing: {
+                skills: ["466"],
+                levels: []
+              }
+            }
+          };
+          beforeEach(() => {
+            updateUser.mockResolvedValue(rawDbWorker);
+            workerHasOverFlowSkill.mockReturnValue(true);
+            useFormState.mockReturnValue({
+              ...updateFormState,
+              nNumberFetchedUser: null
+            });
+          });
+          test("should save user with did worker request body when clicked", async () => {
+            renderComponent(true, updateWorker);
+            render(Tooltip.mock.calls[0][0].children);
+            act(() => {
+              const onClick = StyledButton.mock.calls[1][0].onClick;
+              onClick();
+            });
+            await waitFor(() => {
+              expect(updateUser).toHaveBeenCalledWith(worker.sid, {
+                activateEp: true, // true for DID workers
+                attributes: updateWorkerAttributesAfterFormValid,
+                alternateDid: validFormState.alternateDid.e164,
+                directDialNum: validFormState.directDialNum.e164,
+                zeroOutEnabled: validFormState.zeroOutEnabled
+              });
+              expect(mockDispatch).toHaveBeenCalledTimes(2);
+              expect(mockDispatch.mock.calls[0][0]).toEqual({
+                type: "updateWorker",
+                payload: formattedWorker
+              });
+              expect(mockDispatch.mock.calls[1][0]).toEqual({
+                type: "loadCalabrioUsers",
+                payload: ["agent1", "agent2"]
+              });
+              jest.runAllTimers();
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
+              expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
+                overlayMessage: "Updating user: Faith Cuneo",
+                saveStatus: "saving",
+                saveUser: true
+              });
+              expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+                overlayMessage: "Successfully updated user: Faith Cuneo",
+                saveStatus: "success",
+                saveUser: true
+              });
+              expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
+                saveUser: false
+              });
+            });
+          });
+        });
+        describe("nNumberFetchedUser is missing information", () => {
+          const updateWorkerAttributesAfterFormValid = {
+            default_skills: validFormOptions.defaultSkills,
+            email: "test@abc.com",
+            email_address: "test@abc.com",
+            emp_first_name: "Frank",
+            emp_last_name: "Rizzo",
+            full_name: "Frank Rizzo",
+            did: validFormOptions.didE164,
+            extension: validFormOptions.extension,
+            manager_first_name: validFormOptions.manager.manager_first_name,
+            manager_last_name: validFormOptions.manager.manager_last_name,
+            manager_n_number: validFormOptions.manager.manager_n_number,
+            manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
+            profile_id: validFormOptions.profileId,
+            routing: {
+              skills: ["nonSkillL1"],
+              levels: []
+            }
+          };
+          const updateWorker = {
+            ...worker,
+            attributes: {
+              ...worker.attributes,
+              routing: {
+                skills: ["466"],
+                levels: []
+              }
+            }
+          };
+          beforeEach(() => {
+            updateUser.mockResolvedValue(rawDbWorker);
+            workerHasOverFlowSkill.mockReturnValue(true);
+            useFormState.mockReturnValue({
+              ...updateFormState,
+              nNumberFetchedUser: {
+                ...updateFormState.nNumberFetchedUser,
+                departmentNumber: null,
+                departmentName: null
+              }
+            });
+          });
+          test("should save user with did worker request body when clicked", async () => {
+            renderComponent(true, updateWorker);
+            render(Tooltip.mock.calls[0][0].children);
+            act(() => {
+              const onClick = StyledButton.mock.calls[1][0].onClick;
+              onClick();
+            });
+            await waitFor(() => {
+              expect(updateUser).toHaveBeenCalledWith(worker.sid, {
+                activateEp: true, // true for DID workers
+                attributes: updateWorkerAttributesAfterFormValid,
+                alternateDid: validFormState.alternateDid.e164,
+                directDialNum: validFormState.directDialNum.e164,
+                zeroOutEnabled: validFormState.zeroOutEnabled
+              });
+              expect(mockDispatch).toHaveBeenCalledTimes(2);
+              expect(mockDispatch.mock.calls[0][0]).toEqual({
+                type: "updateWorker",
+                payload: formattedWorker
+              });
+              expect(mockDispatch.mock.calls[1][0]).toEqual({
+                type: "loadCalabrioUsers",
+                payload: ["agent1", "agent2"]
+              });
+              jest.runAllTimers();
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
+              expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
+                overlayMessage: "Updating user: Faith Cuneo",
+                saveStatus: "saving",
+                saveUser: true
+              });
+              expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+                overlayMessage: "Successfully updated user: Faith Cuneo",
+                saveStatus: "success",
+                saveUser: true
+              });
+              expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
+                saveUser: false
               });
             });
           });
@@ -985,6 +1436,11 @@ describe("<UserFormButtons />", () => {
           department_id: validFormOptions.nNumberFetchedUser.departmentNumber,
           department_name: validFormOptions.nNumberFetchedUser.departmentName,
           did: validFormOptions.didE164,
+          email: "test@abc.com",
+          email_address: "test@abc.com",
+          emp_first_name: "Frank",
+          emp_last_name: "Rizzo",
+          full_name: "Frank Rizzo",
           extension: validFormOptions.extension,
           location: validFormOptions.nNumberFetchedUser.departmentName,
           manager_first_name: validFormOptions.manager.manager_first_name,
@@ -994,8 +1450,8 @@ describe("<UserFormButtons />", () => {
           profile_id: validFormOptions.profileId
         };
         beforeEach(() => {
-          useFormState.mockReturnValue(nonDidValidFormState);
           workerHasOverFlowSkill.mockReturnValue(false);
+          useFormState.mockReturnValue(nonDidValidFormState);
           updateUser.mockRejectedValue({
             message: "bummer",
             response: {
@@ -1069,8 +1525,197 @@ describe("<UserFormButtons />", () => {
             });
           });
         });
-      }
-      );
+      });
+      describe("checkConflictingUsers fails", () => {
+        beforeEach(() => {
+          updateUser.mockResolvedValue("ysy!");
+          checkConflictingUsers.mockRejectedValue({ aww: "bummer" });
+        });
+        test("updateCalabrioUser should not be called", async () => {
+          renderComponent(true);
+          render(Tooltip.mock.calls[0][0].children);
+          act(() => {
+            const onClick = StyledButton.mock.calls[1][0].onClick;
+            onClick();
+          });
+          await waitFor(() => {
+            expect(createCalabrioUser).toHaveBeenCalledTimes(0);
+            jest.runAllTimers();
+            expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+            expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
+              overlayMessage: "Updating user: Faith Cuneo",
+              saveStatus: "saving",
+              saveUser: true
+            });
+            expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+              overlayMessage: "Triton User updated. Error updating Calabrio user",
+              saveStatus: "partial fail",
+              saveUser: true
+            });
+          });
+        });
+      });
+      describe("createCalabrioUser fails", () => {
+        beforeEach(() => {
+          updateUser.mockResolvedValue("yay!");
+          checkConflictingUsers.mockResolvedValue("yay");
+          createCalabrioUser.mockRejectedValue({ aww: "bummer" });
+        });
+        test("setForm should not be called", async () => {
+          renderComponent(true);
+          render(Tooltip.mock.calls[0][0].children);
+          act(() => {
+            const onClick = StyledButton.mock.calls[1][0].onClick;
+            onClick();
+          });
+          await waitFor(() => {
+            expect(createCalabrioUser).toHaveBeenCalledTimes(1);
+            expect(mockSetForm).toHaveBeenCalledTimes(0);
+            jest.runAllTimers();
+            expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+            expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
+              overlayMessage: "Updating user: Faith Cuneo",
+              saveStatus: "saving",
+              saveUser: true
+            });
+            expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+              overlayMessage: "Triton user updated.  **Calabrio User Not Updated**  Missing Calabrio profile was not able to be created. To resolve this issue, go into Calabrio and search for this user in the inactive users. Once found, you can re-activate their old profile and come back here, refresh Triton Admin, and update this worker to be accurate. If that does not work, delete and recreate the user.",
+              saveStatus: "partial fail",
+              saveUser: true
+            });
+          });
+        });
+      });
+      describe("updateCalabrioUser fails", () => {
+        const form = {
+          ...validFormState,
+          formMode: formModes.UPDATE,
+          calabrioUser: {
+            ...validFormState.calabrioUser,
+            updated: true,
+            id: 2
+          }
+        };
+        beforeEach(() => {
+          useFormState.mockReturnValue(form);
+          updateUser.mockResolvedValue("yay!");
+          checkConflictingUsers.mockResolvedValue("yay");
+          updateCalabrioUser.mockRejectedValue({ aww: "bummer" });
+        });
+        test("setForm should not be called", async () => {
+          renderComponent(true);
+          render(Tooltip.mock.calls[0][0].children);
+          act(() => {
+            const onClick = StyledButton.mock.calls[1][0].onClick;
+            onClick();
+          });
+          await waitFor(() => {
+            expect(checkConflictingUsers).toHaveBeenCalledTimes(1);
+            expect(updateCalabrioUser).toHaveBeenCalledTimes(1);
+            expect(mockSetForm).toHaveBeenCalledTimes(0);
+            jest.runAllTimers();
+            expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+            expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
+              overlayMessage: "Updating user: Faith Cuneo",
+              saveStatus: "saving",
+              saveUser: true
+            });
+            expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+              overlayMessage: "Triton user updated. Error updating Calabrio user",
+              saveStatus: "partial fail",
+              saveUser: true
+            });
+          });
+        });
+      });
+      describe("getCalabrioUsers fails", () => {
+        const form = {
+          ...validFormState,
+          formMode: formModes.UPDATE,
+          calabrioUser: {
+            ...validFormState.calabrioUser,
+            updated: true,
+            id: 2
+          }
+        };
+        beforeEach(() => {
+          useFormState.mockReturnValue(form);
+          updateUser.mockResolvedValue("yay!");
+          checkConflictingUsers.mockResolvedValue("yay");
+          updateCalabrioUser.mockResolvedValue({ data: ["agent1", "agent2"]});
+          getCalabrioUsers.mockRejectedValue({ aww: "bummer" });
+        });
+        test("setForm should not be called", async () => {
+          renderComponent(true);
+          render(Tooltip.mock.calls[0][0].children);
+          act(() => {
+            const onClick = StyledButton.mock.calls[1][0].onClick;
+            onClick();
+          });
+          await waitFor(() => {
+            expect(mockSetForm).toHaveBeenCalledTimes(1);
+            expect(mockDispatch).toHaveBeenCalledTimes(1);
+            expect(mockDispatch.mock.calls[0][0].type).toBe("updateWorker");
+            jest.runAllTimers();
+            expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
+            expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
+              overlayMessage: "Updating user: Faith Cuneo",
+              saveStatus: "saving",
+              saveUser: true
+            });
+            expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+              overlayMessage: "Successfully updated user: Faith Cuneo",
+              saveStatus: "success",
+              saveUser: true
+            });
+            expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
+              saveUser: false
+            });
+          });
+        });
+      });
+      describe("calabrioUser is not updated", () => {
+        const form = {
+          ...validFormState,
+          formMode: formModes.UPDATE
+        };
+        beforeEach(() => {
+          useFormState.mockReturnValue(form);
+          updateUser.mockResolvedValue("yay!");
+        });
+        test("setForm should not be called", async () => {
+          renderComponent(true);
+          render(Tooltip.mock.calls[0][0].children);
+          act(() => {
+            const onClick = StyledButton.mock.calls[1][0].onClick;
+            onClick();
+          });
+          await waitFor(() => {
+            expect(checkConflictingUsers).toHaveBeenCalledTimes(0);
+            expect(updateCalabrioUser).toHaveBeenCalledTimes(0);
+            expect(createCalabrioUser).toHaveBeenCalledTimes(0);
+            expect(getCalabrioUsers).toHaveBeenCalledTimes(0);
+            expect(mockSetForm).toHaveBeenCalledTimes(1);
+            expect(mockDispatch).toHaveBeenCalledTimes(1);
+            expect(mockDispatch.mock.calls[0][0].type).toBe("updateWorker");
+            jest.runAllTimers();
+            expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
+            expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
+              overlayMessage: "Updating user: Faith Cuneo",
+              saveStatus: "saving",
+              saveUser: true
+            });
+            expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+              overlayMessage: "Successfully updated user: Faith Cuneo",
+              saveStatus: "success",
+              saveUser: true
+            });
+            expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
+              saveUser: false
+            });
+          });
+        });
+      });
     });
   });
   describe("Close Button", () => {
