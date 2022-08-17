@@ -545,11 +545,126 @@ describe("CallRecordingForm", () => {
         expect(getCalabrioUser).toHaveBeenCalledWith(220);
         await waitFor(() => {
           expect(mockSetForm).toHaveBeenCalledTimes(2);
+          expect(mockSetForm).toHaveBeenCalledWith(
+            {
+              type: "SET_DISCREPANCIES",
+              payload: {
+                message: "User is not correctly set up for screen recording in Calabrio.",
+                type: "Calabrio"
+              }
+            });
           expect(mockSetForm).toHaveBeenCalledWith({
             type: "SET_CALABRIO_USER",
             payload: {
               updated: true,
               id: 220,
+              roles: [{
+                id: 2,
+                name: "Agent"
+              }],
+              scope: {
+                groups: [{
+                  checked: false,
+                  groupId: 100,
+                  name: "Hawaii 50 Group",
+                  partial: false
+                }, {
+                  checked: true,
+                  groupId: 200,
+                  name: "FNOL Group",
+                  partial: false
+                },
+                {
+                  checked: false,
+                  groupId: 300,
+                  name: "No Teams Group",
+                  partial: false
+                }],
+                teams: [{
+                  checked: false,
+                  groupId: 101,
+                  name: "Hawaii Team 50",
+                  parentGroupId: 100
+                }, {
+                  checked: false,
+                  groupId: 102,
+                  name: "Hawaii Specialty Team",
+                  parentGroupId: 100
+                }, {
+                  checked: true,
+                  groupId: 201,
+                  name: "FNOL Team",
+                  parentGroupId: 200
+                }]
+              },
+              team: {
+                groupId: 201,
+                name: "FNOL Team",
+                parentGroupId: 200
+              },
+              timezone: {
+                label: "EST",
+                value: 173
+              }
+            }
+          });
+        });
+      });
+    });
+    describe("Email on User Record does not match form.nNumberFetchedUser.email", () => {
+      const user = {
+        groupId: 201,
+        roles: [{
+          id: 2,
+          name: "Agent"
+        }],
+        scope: {
+          groups: [200],
+          teams: [201]
+        },
+        adLogin: "LM\n0223786"
+      };
+      const formState = {
+        ...initialFormState,
+        formMode: "update",
+        nNumber: {
+          value: "n0222444"
+        },
+        nNumberFetchedUser: {
+          email: "faith.cuneo@libertymutual.com",
+          firstName: "Faith",
+          lastName: "Cuneo"
+        }
+      };
+      beforeEach(() => {
+        getCalabrioUser.mockResolvedValue({
+          data: user
+        });
+        useFormState.mockReturnValue(formState);
+      });
+      test("Form is rendered as expected", async () => {
+        render(<CallRecordingForm twilioWorker={{
+          sid: "WK1234"
+        }} />);
+        expect(Dropdown.mock.calls.length).toBe(3);
+        expect(CallRecordingScope.mock.calls.length).toBe(1);
+        expect(getCalabrioUser).toHaveBeenCalledTimes(1);
+        expect(getCalabrioUser).toHaveBeenCalledWith(200);
+        await waitFor(() => {
+          expect(mockSetForm).toHaveBeenCalledTimes(2);
+          expect(mockSetForm.mock.calls[0][0]).toStrictEqual(
+            {
+              type: "SET_DISCREPANCIES",
+              payload: {
+                message: "Calabrio Email does not match HR email. This could cause Calabrio Login issues",
+                type: "Calabrio"
+              }
+            });
+          expect(mockSetForm.mock.calls[1][0]).toStrictEqual({
+            type: "SET_CALABRIO_USER",
+            payload: {
+              updated: true,
+              id: 200,
               roles: [{
                 id: 2,
                 name: "Agent"

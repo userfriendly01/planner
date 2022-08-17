@@ -360,13 +360,16 @@ export const calabrioContext = {
   users: [
     {
       id: 200,
+      acdId: "WK1234",
       firstName: "Brittany",
       lastName: "Magee",
       groupId: 102,
+      adLogin: "LM\\n0222444",
       email: "Brittany.Magee@libertymutual.com"
     },
     {
       id: 220,
+      acdId: "WK5678",
       firstName: "Faith",
       lastName: "Cuneo",
       groupId: 201,
