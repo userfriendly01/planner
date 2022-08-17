@@ -171,6 +171,30 @@ describe("<BasicFormInfo />", () => {
       };
       expectOnlyPassedProps(Dropdown, expectedManagerProps, 0);
     });
+    describe("options is not an object", () => {
+      test("should return empty string", () => {
+        const rendered = render(
+          <BasicFormInfo
+            skills={mockSkills}
+            worker={mockWorkers[2]}
+            workers={mockWorkers}
+            profiles={profileList}
+            managers={["option"]}
+            forwardToToggle={false}
+            setForwardToToggle={mockSetForwardToToggle}
+          />,
+          initialTestState
+        );
+        expectMockedComponent(rendered, { Dropdown }, 2);
+        const expectedManagerProps = {
+          label: "Manager *",
+          options: [""],
+          value: "",
+          error: false
+        };
+        expectOnlyPassedProps(Dropdown, expectedManagerProps, 0);
+      });
+    });
     describe("manager field is invalid", () => {
       test("error field should be true", () => {
         useFormState.mockReturnValue({

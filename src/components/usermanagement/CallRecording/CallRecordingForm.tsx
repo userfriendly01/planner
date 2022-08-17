@@ -149,7 +149,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
             });
           }
         });
-        console.warn("Updated is set to:", updated);
+
         setForm({
           type: userFormActions.SET_CALABRIO_USER,
           payload: {
