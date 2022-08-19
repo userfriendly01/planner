@@ -5,11 +5,13 @@ import {
   ModalNNumber,
   ModalOverlay,
   PaperContainer,
-  StyledButton
+  StyledButton,
+  CalabrioTeamModal
 } from "components";
 import { useAdminState } from "context";
 import React from "react";
 import { act } from "react-dom/test-utils";
+import { Modal } from "@material-ui/core";
 import {
   addManager,
   editManager
@@ -32,6 +34,10 @@ jest.mock("@material-ui/icons", () => ({
   CloseRounded: jest.fn()
 }));
 
+jest.mock("@material-ui/core", () => ({
+  Modal: jest.fn()
+}));
+
 jest.mock("services", () => ({
   __esModule: true,
   addManager: jest.fn(),
@@ -50,7 +56,8 @@ jest.mock("components", () => ({
   ModalNNumber: jest.fn(),
   ModalOverlay: jest.fn(),
   PaperContainer: jest.fn(),
-  StyledButton: jest.fn()
+  StyledButton: jest.fn(),
+  CalabrioTeamModal: jest.fn()
 }));
 
 describe("<ManagerModal />", () => {
@@ -64,7 +71,9 @@ describe("<ManagerModal />", () => {
       CloseRounded,
       ModalNNumber,
       ModalOverlay,
-      StyledButton
+      StyledButton,
+      CalabrioTeamModal,
+      Modal
     });
     PaperContainer.mockClear();
     PaperContainer.mockImplementation(props => <div>{props.children}</div>);
@@ -109,7 +118,7 @@ describe("<ManagerModal />", () => {
     });
   });
 
-  /*const updateFormSoValid = (fetchedManager, nNumber) => {
+  const updateFormSoValid = (fetchedManager, nNumber) => {
     act(() => {
       getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).onUpdate("n02");
     });
@@ -128,7 +137,7 @@ describe("<ManagerModal />", () => {
       }]);
     });
     expect(getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton)).disabled).toBe(false);
-  };*/
+  };
 
   describe("Add Manager", () => {
     describe("initial state", () => {
@@ -143,7 +152,7 @@ describe("<ManagerModal />", () => {
       describe("manager is not in list of managers", () => {
         describe("call to add the manager succeeds", () => {
           beforeEach(() => addManager.mockResolvedValue({ good: "to go" }));
-          /*test("ModalOverlay should render with 'Manager added successfully' & modal should close after 2 seconds (handleClose should be called)", async () => {
+          test("ModalOverlay should render with 'Manager added successfully' & modal should close after 2 seconds (handleClose should be called)", async () => {
             const rendered = renderComponent();
             const fetchedManager = {
               firstName: "Bob",
@@ -161,13 +170,13 @@ describe("<ManagerModal />", () => {
               });
               expect(mockHandleClose).toHaveBeenCalledTimes(1);
             });
-          });*/
+          });
           describe("Manager name has an ' ", () => {
             const fetchedManager = {
               firstName: "B'ob",
               lastName: "Bob'son"
             };
-            /*test("should be formatted and saved successfully", async () => {
+            test("should be formatted and saved successfully", async () => {
               const rendered = renderComponent();
               updateFormSoValid(fetchedManager, "n0000000");
               const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
@@ -194,13 +203,13 @@ describe("<ManagerModal />", () => {
                 ]);
                 expect(mockHandleClose).toHaveBeenCalledTimes(1);
               });
-            });*/
+            });
           });
         });
         describe("call to add the manager fails", () => {
           const errorResp = { nope: "HOSED!" };
           beforeEach(() => addManager.mockRejectedValue(errorResp));
-          /*test("ModalOverlay should render with 'Manager added successfully' & modal should close after 2 seconds (handleClose should be called)", async () => {
+          test("ModalOverlay should render with 'Manager added successfully' & modal should close after 2 seconds (handleClose should be called)", async () => {
             const rendered = renderComponent();
             const fetchedManager = {
               firstName: "Bob",
@@ -218,7 +227,7 @@ describe("<ManagerModal />", () => {
               expect(mockHandleClose).toHaveBeenCalledTimes(0);
               expectMockedComponent(rendered, { ModalOverlay }, 0);
             });
-          });*/
+          });
         });
       });
     });
@@ -250,7 +259,7 @@ describe("<ManagerModal />", () => {
           }
         });
       });
-      /*test("ModalOverlay should render 'Failed to Create Manager' & modal should remain open (handleClose should not be called)", async () => {
+      test("ModalOverlay should render 'Failed to Create Manager' & modal should remain open (handleClose should not be called)", async () => {
         const rendered = render(<ManagerModal handleClose={mockHandleClose} editManager={null}/>);
         updateFormSoValid(fetchedManager, managerNNumber);
         const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
@@ -264,7 +273,38 @@ describe("<ManagerModal />", () => {
           expect(mockHandleClose).toHaveBeenCalledTimes(0);
           expectMockedComponent(rendered, { ModalOverlay }, 0);
         });
-      });*/
+      });
+    });
+    describe("add Calabrio team is selected", () => {
+      test("CalabrioTeamModal should render when add-team is selected", async () => {
+        const selection = {
+          label: "Add Calabrio Team",
+          value: "add-team"
+        };
+        const rendered = renderComponent();
+        act(() => {
+          Dropdown.mock.calls[1][0].updateValue(null, [selection]);
+          const grandchild = Modal.mock.calls[0][0].children;
+          render(grandchild);
+        });
+        expect(Modal.mock.calls[1][0].open).toBe(true);
+      });
+    });
+    describe("the calabrio team modal closes when expected", () => {
+      test("changing the open attribute to false closes the modal", async () => {
+        const selection = {
+          label: "Add Calabrio Team",
+          value: "add-team"
+        };
+        const rendered = renderComponent();
+        act(() => {
+          Dropdown.mock.calls[1][0].updateValue(null, [selection]);
+          const grandchild = Modal.mock.calls[0][0].children;
+          render(grandchild);
+          CalabrioTeamModal.mock.calls[0][0].handleClose({ data: { groupId: 300 }});
+        });
+        expect(Modal.mock.calls[1][0].open).toBe(false);
+      });
     });
   });
 

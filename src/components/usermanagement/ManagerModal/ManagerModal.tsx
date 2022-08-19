@@ -80,7 +80,7 @@ const ManagerModal = (props: ManagerModalProps) => {
   const [fetchedUser, setFetchedUser] = useState<FetchUserResponse>(null);
   const [ profile, setProfile ] = useState<any>(selectedManager ? profiles.find(p => p.profile_id === selectedManager.profile_id) : null);
   const [ selectedCalabrioTeams, setSelectedCalabrioTeams ] = useState<number[]>(selectedManager ? selectedManager.calabrio_team_ids :[]);
-  const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
+  const [isTeamModalOpen, setIsTeamModalOpen] = useState<boolean>(false);
 
   const getCalabrioOption = (teamId: number): any => {
     const team = calabrioTeams.find(team => team.groupId === teamId);
@@ -99,7 +99,6 @@ const ManagerModal = (props: ManagerModalProps) => {
   const handleCloseTeam = (res: any) => {
     setIsTeamModalOpen(false);
     const newlist= [...selectedCalabrioTeams, res.data.groupId];
-    console.log("GCX selectedCalabrioTeams", res, newlist);
     setSelectedCalabrioTeams(newlist.map((team:number) => team));
   };
 
@@ -255,6 +254,7 @@ const ManagerModal = (props: ManagerModalProps) => {
                   handleOpenTeam();
                 }
                 else{
+                  console.warn("reached the else condition");
                   setSelectedCalabrioTeams(newInputValue.map((team:any) => team.value));
                 }
               }}
