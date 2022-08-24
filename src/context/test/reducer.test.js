@@ -250,7 +250,7 @@ describe("reducer", () => {
       expect(result.calabrioContext).toEqual(expectedResults);
     });
   });
-  describe("loadCalabrioAgents", () => {
+  describe("loadCalabrioUsers", () => {
     test("should initialize a map from the offices map sent in", () => {
       const payload = [
         {
@@ -263,7 +263,7 @@ describe("reducer", () => {
         }
       ];
       const action = {
-        type: "loadCalabrioAgents",
+        type: "loadCalabrioUsers",
         payload
       };
       const expectedResults = {

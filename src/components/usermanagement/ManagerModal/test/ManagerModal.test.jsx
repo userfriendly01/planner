@@ -39,9 +39,6 @@ jest.mock("@material-ui/core", () => ({
 }));
 
 jest.mock("services", () => ({
-  __esModule: true,
-  addManager: jest.fn(),
-  editManager: jest.fn(),
   FetchUserResponse: jest.requireActual("services").FetchUserResponse
 }));
 

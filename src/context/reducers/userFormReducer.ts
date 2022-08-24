@@ -1,7 +1,8 @@
 import {
   Action,
   Manager,
-  formModes
+  formModes,
+  discrepancyType
 } from "../../globals";
 import {
   UserFormState,
@@ -36,6 +37,7 @@ export const userFormActions = {
   SET_CALABRIO_TEAM: "SET_CALABRIO_TEAM",
   SET_CALABRIO_TIMEZONE: "SET_CALABRIO_TIMEZONE",
   SET_CALABRIO_ROLES: "SET_CALABRIO_ROLES",
+  SET_DISCREPANCIES: "SET_DISCREPANCIES",
   SET_EXTENSION_MESSAGE: "SET_EXTENSION_MESSAGE",
   SET_EXTENSION_RETRIES: "SET_EXTENSION_RETRIES",
   SET_EXTENSION_VERIFIED: "EXTENSION_VERIFIED",
@@ -54,6 +56,7 @@ const initialDefaultSkills = getValidSkillsObject();
 
 export const initialUserFormState: UserFormState = {
   formMode: formModes.INSERT,
+  discrepancies: [],
   defaultSkills: initialDefaultSkills,
   defaultSkillsUpdated: false,
   didUser: false,
@@ -112,6 +115,8 @@ export const initialUserFormState: UserFormState = {
     valid: false
   },
   calabrioUser: {
+    updated: false,
+    id: null,
     team: null,
     timezone: calabrioTimeZones[0],
     roles: [],
@@ -147,7 +152,8 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
           scope: {
             ...state.calabrioUser.scope,
             groups: state.calabrioUser.scope.groups
-          }
+          },
+          updated: true
         }
       };
     }
@@ -160,7 +166,8 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
           scope: {
             ...state.calabrioUser.scope,
             teams: state.calabrioUser.scope.teams
-          }
+          },
+          updated: true
         }
       };
     }
@@ -325,7 +332,8 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         ...state,
         calabrioUser: {
           ...state.calabrioUser,
-          roles: action.payload
+          roles: action.payload,
+          updated: true
         }
       };
     }
@@ -334,7 +342,8 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         ...state,
         calabrioUser: {
           ...state.calabrioUser,
-          team: action.payload
+          team: action.payload,
+          updated: true
         }
       };
     }
@@ -343,8 +352,15 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         ...state,
         calabrioUser: {
           ...state.calabrioUser,
-          timezone: action.payload
+          timezone: action.payload,
+          updated: true
         }
+      };
+    }
+    case userFormActions.SET_DISCREPANCIES: {
+      return {
+        ...state,
+        discrepancies: [...state.discrepancies.slice(), action.payload]
       };
     }
     case userFormActions.SET_EXTENSION_MESSAGE: {

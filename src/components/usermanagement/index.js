@@ -1,5 +1,6 @@
 export { default as ManagerModal } from "./ManagerModal/ManagerModal";
 export { default as CalabrioTeamModal } from "./CalabrioTeamModal/CalabrioTeamModal";
+export { default as ManagerDelete } from "./ManagerDelete/ManagerDelete";
 export { default as CallRecordingForm } from "./CallRecording/CallRecordingForm";
 export { default as ConfirmationModal } from "./ConfirmationModal/ConfirmationModal";
 export { default as ForwardToEntryForm } from "./ConfirmationModal/ForwardToEntryForm";

@@ -5,7 +5,10 @@ import {
 import {
   Header1,
   Header2,
-  ModalContainer
+  Header4,
+  Text,
+  ModalContainer,
+  DiscrepancyContainer
 } from "./UserEntryForm.Styles";
 import {
   ModalOverlay,
@@ -13,7 +16,6 @@ import {
   UserFormButtons
 } from "components";
 import {
-  useFormDispatch,
   useFormState,
   useAdminState
 } from "context";
@@ -29,8 +31,6 @@ const UserEntryForm = (props: UserEntryFormProps) => {
     workers
   } = props;
 
-  const form = useFormState();
-
   const {
     officeContext: {
       offices
@@ -43,7 +43,11 @@ const UserEntryForm = (props: UserEntryFormProps) => {
     }
   } = useAdminState();
 
+  const form = useFormState();
   const [forwardToToggle, setForwardToToggle] = useState(false);
+
+  console.log("STATE", useAdminState());
+  console.log("FORM", form);
 
   const [loading, updateLoading] = useState<LoadingState>({
     lookupUser: false,
@@ -71,24 +75,37 @@ const UserEntryForm = (props: UserEntryFormProps) => {
           ? <Header2>{worker.attributes.full_name}</Header2>
           : null
       }
+      {
+        form.discrepancies.length > 0
+          ? <DiscrepancyContainer>
+            <Header4>Discrepencies have been found for this worker. They will be corrected when you hit Save User </Header4>
+            {
+              form.discrepancies.map((d:any, index: number) => {
+                return (
+                  <Text key={index}>{d.message}</Text>
+                );
+              })
+            }
+          </DiscrepancyContainer>
+          : null
+      }
       <UserFormAccordion
-        form={form}
+        forwardToToggle={forwardToToggle}
+        managers={managers}
+        profiles={profiles}
+        setForwardToToggle={setForwardToToggle}
         skills={skills}
         worker={worker}
         workers={workers}
-        profiles={profiles}
-        managers={managers}
-        forwardToToggle={forwardToToggle}
-        setForwardToToggle={setForwardToToggle}
       />
       <UserFormButtons
+        forwardToToggle={forwardToToggle}
         handleClose={handleClose}
         loading={loading}
-        updateLoading={updateLoading}
-        profiles={profiles}
         offices={offices}
+        profiles={profiles}
+        updateLoading={updateLoading}
         worker={worker}
-        forwardToToggle={forwardToToggle}
       />
     </ModalContainer>
   );

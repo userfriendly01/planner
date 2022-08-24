@@ -4,9 +4,13 @@ import {
   Wrapper
 } from "./ManagerDropdown.Styles";
 import { Modal } from "@material-ui/core";
-import { Edit } from "@material-ui/icons";
+import {
+  Edit,
+  Delete
+} from "@material-ui/icons";
 import {
   ManagerModal,
+  ManagerDelete,
   Dropdown
 } from "components";
 import { useAdminState } from "context";
@@ -33,6 +37,7 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
   const managers = state.managerContext.managers;
   const sortedManagers = [ ...managers ].sort(sortManagersByName);
   const [isManagerModalOpen, setIsManagerModalOpen] = useState(false);
+  const [isManagerDeleteOpen, setIsManagerDeleteOpen] = useState(false);
   const [ selectedManager, setSelectedManager ] = useState(null);
 
   const handleOpenManager = () => {
@@ -44,10 +49,22 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
     setIsManagerModalOpen(true);
   };
 
+  const handleOpenDeleteManager = async (option: DropdownOption) => {
+    setSelectedManager(managers.find(manager => manager.manager_n_number === option.value));
+    setIsManagerDeleteOpen(true);
+  };
+
   const handleCloseManager = () => {
     setSelectedManager(null);
     setFilter("show-all");
     setIsManagerModalOpen(false);
+    setIsManagerDeleteOpen(false);
+  };
+
+  const handleCloseManagerDelete = () => {
+    setSelectedManager(null);
+    setFilter("show-all");
+    setIsManagerDeleteOpen(false);
   };
 
   const options: DropdownOption[] = [
@@ -85,6 +102,9 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
             <IconWrapper onClick={() => handleEditManager(option)} data-testid="edit-button">
               <Edit fontSize={"inherit"}/>
             </IconWrapper>
+            <IconWrapper onClick={() => handleOpenDeleteManager(option)} data-testid="delete-button">
+              <Delete fontSize={"inherit"}/>
+            </IconWrapper>
           </Wrapper>
         }
       </Wrapper>
@@ -108,6 +128,9 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
       />
       <Modal disableBackdropClick={true} open={isManagerModalOpen}>
         <ManagerModal handleClose={handleCloseManager} selectedManager={selectedManager}/>
+      </Modal>
+      <Modal disableBackdropClick={true} open={isManagerDeleteOpen}>
+        <ManagerDelete handleClose={handleCloseManagerDelete} selectedManager={selectedManager}/>
       </Modal>
     </Wrapper>
   );

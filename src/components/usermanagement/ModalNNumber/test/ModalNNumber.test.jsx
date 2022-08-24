@@ -21,11 +21,6 @@ jest.mock("components", () => ({
   ModalHelperText: jest.fn()
 }));
 
-jest.mock("services", () => ({
-  __esModule: true,
-  fetchUser: jest.fn()
-}));
-
 const mockOnClear = jest.fn();
 const mockOnComplete = jest.fn();
 const mockOnBlur = jest.fn();

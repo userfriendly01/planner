@@ -29,6 +29,27 @@ describe("formatManagersResponse", () => {
     expect(formatManagersResponse([])).toEqual([]);
   });
 
+  test("if parseCalabrioTeams throws an error, return empty array for calabrio teams", () => {
+    const unformattedResponse = [
+      {
+        manager_id: 1,
+        manager_first_nme: "test",
+        manager_last_nme: "test",
+        manager_n_num: "test",
+        profile_id: 1,
+        calabrio_team_ids: "210, 215]"
+      }
+    ];
+    expect(formatManagersResponse(unformattedResponse)).toEqual([{
+      manager_id: 1,
+      manager_first_name: "test",
+      manager_last_name: "test",
+      manager_n_number: "test",
+      profile_id: 1,
+      calabrio_team_ids: []
+    }]);
+  });
+
   test("should return array of formatted managers", () => {
     const formattedManagers = [
       {
