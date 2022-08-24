@@ -1,18 +1,14 @@
 import {
   ButtonWrapper,
+  CloseButton,
   Header,
   HeaderAndCloseButtonWrapper,
-  LeftDiv,
   ModalContainer
 } from "./CalabrioTeamModal.Styles";
-import {
-  CloseRounded
-} from "@material-ui/icons";
+
 import { TextField } from "@mui/material";
 import {
   Dropdown,
-  ModalNNumber,
-  ModalOverlay,
   PaperContainer,
   StyledButton
 } from "components";
@@ -20,31 +16,9 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import {
-  FlexColumn,
-  Manager
-} from "globals";
+import { FlexColumn } from "globals";
 import React, { useState } from "react";
-import {
-  addManager,
-  editManager,
-  createCalabrioTeam,
-  FetchUserResponse
-} from "services";
-import { sortProfilesByName } from "utils";
-
-const defaultNNumber = "n";
-const loadingStates = {
-  success: "success",
-  fail: "fail",
-  loading: "loading"
-};
-
-interface DropdownOption {
-  label: string,
-  value: any
-}
-
+import { createCalabrioTeam } from "services";
 export interface TeamModalProps {
   handleClose: (res: any) => void
 }
@@ -52,33 +26,45 @@ export interface TeamModalProps {
 const CalabrioTeamModal = (props: TeamModalProps) => {
   const state = useAdminState();
   const dispatch = useAdminDispatch();
-  const {
-    groups,
-    teams,
-    roles,
-    users
-  } = state.calabrioContext;
+  const { groups } = state.calabrioContext;
   const { handleClose } = props;
 
-  const [newName, setNewName] = useState<string>();
-  const [parentGroupId, setParentGroupId] = useState<number>();
-  const [group, setGroup] = useState<any>();
+  const initialNewTeamState: any = {
+    name: null,
+    parentGroupId: null
+  };
+  const [ newTeam, setNewTeam ] = useState(initialNewTeamState);
+
+  const handleOnSubmit = () => {
+    createCalabrioTeam({
+      name: newTeam.name,
+      parentGroupId: newTeam.parentGroupId
+    }).then((res: any) => {
+      dispatch({
+        type: "addCalabrioTeam",
+        payload: res.data
+      });
+      handleClose(res);
+    }).catch(err => {
+      console.error("Unable to Add Calabrio Team", err);
+    });
+  };
 
   return (
     <ModalContainer>
       <PaperContainer>
         <HeaderAndCloseButtonWrapper>
-          <LeftDiv></LeftDiv>
-          <Header>Add a Calabrio Team</Header>
-          <CloseRounded data-testid={"close-button"} onClick={handleClose}/>
+          <h1>Add a Calabrio Team</h1>
+          <CloseButton onClick={handleClose}/>
         </HeaderAndCloseButtonWrapper>
         <FlexColumn>
           <TextField
             label={"New Team Name"}
-            value={newName}
-            onChange={(event: any) => {
-              setNewName(event.target.value);
-            }}
+            value={newTeam.name || ""}
+            onChange={(event: any) => setNewTeam({
+              ...newTeam,
+              name: event.target.value
+            })}
           />
           <Dropdown
             label={"Parent Group ID"}
@@ -91,29 +77,19 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
               value: group.groupId,
               ...group
             }))}
-            value={group && group.name ? group.name : ""}
+            value={newTeam.parentGroupId || ""}
             updateValue={(event: any, newValue: any) =>
-            { setParentGroupId(newValue.groupId);
-              setGroup(newValue); }
-            }
+              setNewTeam({
+                ...newTeam,
+                parentGroupId: newValue.groupId
+              })}
           />
         </FlexColumn>
         <ButtonWrapper>
           <StyledButton
-            disabled={!newName || !parentGroupId}
-            onClick={() => {
-              createCalabrioTeam({
-                name: newName,
-                parentGroupId: parentGroupId
-              }).then((res: any) => {
-                dispatch({
-                  type: "addCalabrioTeam",
-                  payload: res.data
-                });
-                handleClose(res);
-              });
-            }}
-            data-testid={"edit-manager-button"}>
+            disabled={!newTeam.name || !newTeam.parentGroupId}
+            onClick={handleOnSubmit}
+            data-testid={"create-calabrio-team-button"}>
             Add Team
           </StyledButton>
         </ButtonWrapper>

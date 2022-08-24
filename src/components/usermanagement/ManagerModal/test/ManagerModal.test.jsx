@@ -278,7 +278,7 @@ describe("<ManagerModal />", () => {
           label: "Add Calabrio Team",
           value: "add-team"
         };
-        const rendered = renderComponent();
+        renderComponent();
         act(() => {
           Dropdown.mock.calls[1][0].updateValue(null, [selection]);
           const grandchild = Modal.mock.calls[0][0].children;
@@ -293,7 +293,7 @@ describe("<ManagerModal />", () => {
           label: "Add Calabrio Team",
           value: "add-team"
         };
-        const rendered = renderComponent();
+        renderComponent();
         act(() => {
           Dropdown.mock.calls[1][0].updateValue(null, [selection]);
           const grandchild = Modal.mock.calls[0][0].children;

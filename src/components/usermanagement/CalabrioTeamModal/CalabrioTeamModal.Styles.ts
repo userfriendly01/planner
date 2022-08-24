@@ -3,6 +3,12 @@ import {
   FlexRow
 } from "globals";
 import styled from "styled-components";
+import { CloseRounded } from "@material-ui/icons";
+
+export const CloseButton = styled(CloseRounded)`
+  position: absolute;
+  right: 10px;
+`;
 
 export const ButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
@@ -11,15 +17,13 @@ export const ButtonWrapper = styled(FlexRow)`
 
 export const Header = styled.h1`
   align-self: center;
+  justify-content: center;
 `;
 
 export const HeaderAndCloseButtonWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
-`;
-
-export const LeftDiv = styled.div`
-  width: 1em;
+  justify-content: center;
+  margin: 5px;
 `;
 
 export const ModalContainer = styled(FlexColumn)`

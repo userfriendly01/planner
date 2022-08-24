@@ -252,9 +252,7 @@ const ManagerModal = (props: ManagerModalProps) => {
               updateValue={(event: any, newInputValue: any) => {
                 if(newInputValue.some((t: any) => t.value === "add-team")){
                   handleOpenTeam();
-                }
-                else{
-                  console.warn("reached the else condition");
+                } else {
                   setSelectedCalabrioTeams(newInputValue.map((team:any) => team.value));
                 }
               }}
