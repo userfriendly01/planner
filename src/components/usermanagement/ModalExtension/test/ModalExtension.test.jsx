@@ -16,11 +16,6 @@ jest.mock("components", () => ({
   ModalHelperText: jest.fn()
 }));
 
-jest.mock("services", () => ({
-  __esModule: true,
-  checkExtension: jest.fn()
-}));
-
 const mockOnBlur = jest.fn();
 const mockOnClear = jest.fn();
 const mockOnUpdate = jest.fn();

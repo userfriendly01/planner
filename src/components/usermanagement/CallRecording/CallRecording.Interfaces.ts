@@ -26,7 +26,7 @@ export interface CalabrioFetchedUser {
   groupId: number,
   tenantId: number,
   email: string,
-  timeZone: string,
+  timezone: string,
   adLogin: string,
   roles: [{
     id: number,

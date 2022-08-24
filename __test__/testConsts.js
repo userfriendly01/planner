@@ -33,6 +33,7 @@ export const initialFormState = {
     updated: false,
     valid: false
   },
+  discrepancies: [],
   editDisabled: false,
   extension: {
     value: "",
@@ -76,6 +77,7 @@ export const initialFormState = {
     updated: false
   },
   calabrioUser: {
+    updated: false,
     team: null,
     timezone: {
       label: "EST",
@@ -83,8 +85,17 @@ export const initialFormState = {
     },
     roles: [],
     scope: {
-      groups: [],
-      teams: []
+      groups: [{
+        name: "group1",
+        groupId: 1,
+        checked: true,
+        partial: false
+      }],
+      teams: [{
+        name: "team1",
+        groupId: 2,
+        checked: true
+      }]
     }
   },
   userPreviouslyAdded: false,
@@ -97,7 +108,8 @@ export const managerList = [
     manager_first_name: "John",
     manager_last_name: "Wick",
     manager_n_number: "n1234567",
-    manager_id: "01"
+    manager_id: "01",
+    profile_id: 11
   },
   {
     manager_first_name: "Test",
@@ -170,11 +182,33 @@ export const validFormOptions = {
     masked: "(800)234-5678",
     tenDig: "8002345678"
   },
+  discrepancies: [],
   extension: "1234",
   manager: managerList[0],
   nNumber: "n1234567",
   nNumberFetchedUser: fetchedUser,
-  profileId: profileList[0].profile_id
+  profileId: profileList[0].profile_id,
+  calabrioUser: {
+    team: null,
+    timezone: {
+      label: "EST",
+      value: 173
+    },
+    roles: [],
+    scope: {
+      groups: [{
+        name: "group1",
+        groupId: 1,
+        checked: true,
+        partial: false
+      }],
+      teams: [{
+        name: "team1",
+        groupId: 2,
+        checked: true
+      }]
+    }
+  }
 };
 
 export const validFormState = {
@@ -192,6 +226,7 @@ export const validFormState = {
   },
   defaultSkillsUpdated: true,
   didUser: false,
+  discrepancies: [],
   extension: {
     value: validFormOptions.extension,
     blurred: false,
@@ -240,6 +275,7 @@ export const validFormState = {
     valid: true
   },
   calabrioUser: {
+    update: false,
     team: 225,
     timezone: {
       label: "EST",
@@ -247,8 +283,17 @@ export const validFormState = {
     },
     roles: [],
     scope: {
-      "groups": [],
-      "teams": []
+      groups: [{
+        name: "group1",
+        groupId: 1,
+        checked: true,
+        partial: false
+      }],
+      teams: [{
+        name: "team1",
+        groupId: 2,
+        checked: true
+      }]
     }
   },
   zeroOutEnabled: false,
@@ -275,6 +320,10 @@ export const calabrioContext = {
     {
       groupId: 200,
       name: "FNOL Group"
+    },
+    {
+      groupId: 300,
+      name: "No Teams Group"
     }
   ],
   teams: [
@@ -310,18 +359,21 @@ export const calabrioContext = {
   ],
   users: [
     {
-      "personId": 200,
-      "firstName": "Brittany",
-      "lastName": "Magee",
-      "groupId": 102,
-      "email": "Brittany.Magee@libertymutual.com"
+      id: 200,
+      acdId: "WK1234",
+      firstName: "Brittany",
+      lastName: "Magee",
+      groupId: 102,
+      adLogin: "LM\\n0222444",
+      email: "Brittany.Magee@libertymutual.com"
     },
     {
-      "personId": 220,
-      "firstName": "Faith",
-      "lastName": "Cuneo",
-      "groupId": 201,
-      "email": "Faith.Cuneo@libertymutual.com"
+      id: 220,
+      acdId: "WK5678",
+      firstName: "Faith",
+      lastName: "Cuneo",
+      groupId: 201,
+      email: "Faith.Cuneo@libertymutual.com"
     }
   ]
 };

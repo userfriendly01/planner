@@ -29,7 +29,7 @@ export const isFormUpdated = (form: UserFormState): boolean => form.defaultSkill
 form.profileId.updated || form.outgoing.updated ||
 form.alternateDid.updated || form.directDialNum.updated ||
 form.nNumber.updated || form.extension.updated ||
-form.inactiveForwardTo.updated || form.zeroOutEnabledUpdated;
+form.inactiveForwardTo.updated || form.zeroOutEnabledUpdated || form.calabrioUser.updated;
 
 export const isFormValid = (form: UserFormState, worker: Worker, forwardToToggle: boolean): boolean =>
   (form.formMode === formModes.INSERT ? isNNumberValid(form) : true)
@@ -43,11 +43,7 @@ export const isFormValid = (form: UserFormState, worker: Worker, forwardToToggle
   && isCalabrioUserValid(form);
 
 export const isCalabrioUserValid =  (form: UserFormState): boolean => {
-  if(form.formMode === formModes.UPDATE){
-    return true;
-  } else {
-    return form.calabrioUser.team && form.calabrioUser.roles.length > 0;
-  }
+  return form.calabrioUser.team && form.calabrioUser.roles.length > 0;
 };
 export const isManagerValid = (form: UserFormState): boolean => form.manager.value !== "";
 
@@ -75,7 +71,7 @@ export const getOverflowSkillFromProfile = (profiles: TritonProfile[], profileVa
 };
 
 export const removeProfileZeroIfAdminNotInProfileZero = (adminState: AppState, profiles: TritonProfile[]) => {
-  const adGroups: String[] = adminState && adminState.userContext && adminState.userContext.pingIdentity ? adminState.userContext.pingIdentity.groups: [];
+  const adGroups: string[] = adminState && adminState.userContext && adminState.userContext.pingIdentity ? adminState.userContext.pingIdentity.groups: [];
 
   let adminGroup = false;
   adGroups.forEach(group =>{
