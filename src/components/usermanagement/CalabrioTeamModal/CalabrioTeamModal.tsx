@@ -1,11 +1,9 @@
 import {
   ButtonWrapper,
   CloseButton,
-  Header,
   HeaderAndCloseButtonWrapper,
   ModalContainer
 } from "./CalabrioTeamModal.Styles";
-
 import { TextField } from "@mui/material";
 import {
   Dropdown,
@@ -61,10 +59,12 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
           <TextField
             label={"New Team Name"}
             value={newTeam.name || ""}
-            onChange={(event: any) => setNewTeam({
-              ...newTeam,
-              name: event.target.value
-            })}
+            onChange={(event: any) => {
+              setNewTeam({
+                ...newTeam,
+                name: event.target.value
+              });
+            }}
           />
           <Dropdown
             label={"Parent Group ID"}
@@ -88,8 +88,7 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
         <ButtonWrapper>
           <StyledButton
             disabled={!newTeam.name || !newTeam.parentGroupId}
-            onClick={handleOnSubmit}
-            data-testid={"create-calabrio-team-button"}>
+            onClick={handleOnSubmit}>
             Add Team
           </StyledButton>
         </ButtonWrapper>

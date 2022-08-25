@@ -15,11 +15,6 @@ export const ButtonWrapper = styled(FlexRow)`
   padding: 1%;
 `;
 
-export const Header = styled.h1`
-  align-self: center;
-  justify-content: center;
-`;
-
 export const HeaderAndCloseButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
