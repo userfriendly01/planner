@@ -2,7 +2,7 @@ import { formModes } from "globals";
 import { initialState } from "context";
 import {
   ExtensionSearchStatuses
-} from "components/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
+} from "components/tabs/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
 
 export const fetchedUser = {
   email: "test@abc.com",

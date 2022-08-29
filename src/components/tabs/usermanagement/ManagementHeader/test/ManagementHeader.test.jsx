@@ -14,7 +14,7 @@ import {
   setupMockedComponents
 } from "testUtils";
 
-jest.mock("components/usermanagement", () => ({
+jest.mock("components/tabs/usermanagement", () => ({
   __esModule: true,
   ManagerDropdown: jest.fn(),
   ResetSkillsButton: jest.fn(),

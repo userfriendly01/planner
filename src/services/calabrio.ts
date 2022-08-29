@@ -2,7 +2,7 @@ import { apiPaths }from "globals";
 import {
   CalabrioGroup,
   CalabrioUser
-} from "../components/usermanagement/CallRecording/CallRecording.Interfaces";
+} from "../components/tabs/usermanagement/CallRecording/CallRecording.Interfaces";
 import { myAxios } from "utils";
 
 

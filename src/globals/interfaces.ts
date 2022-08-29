@@ -1,4 +1,4 @@
-import { CalabrioGroup } from "../components/usermanagement/CallRecording/CallRecording.Interfaces";
+import { CalabrioGroup } from "../components/tabs/usermanagement/CallRecording/CallRecording.Interfaces";
 export interface Action {
   type: string,
   [key: string]: any
