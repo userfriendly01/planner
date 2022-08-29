@@ -23,7 +23,8 @@ export const initialState: AppState = {
     taskrouterSkills: []
   },
   userContext: {
-    pingIdentity: {}
+    pingIdentity: {},
+    authenticationProfiles: []
   },
   workerContext: {
     workers: [],

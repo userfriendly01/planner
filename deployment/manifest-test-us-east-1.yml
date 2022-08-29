@@ -9,6 +9,8 @@ applications:
   timeout: 180
   env:
     NODE_ENV: production
+    AUTHENTICATION_AD_GROUPS:
+      - GCI-CCT-TRITON-TEST-TRITONADMIN
   services:
     - everyday-curfew
   blue-green:

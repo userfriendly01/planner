@@ -9,6 +9,10 @@ applications:
   timeout: 180
   env:
     NODE_ENV: production
+    TRITON_AUTH_AD_GROUPS:
+      - GCI-CCT-TRITON-DEV-TRITONADMIN
+    ALOHA_AUTH_AD_GROUPS:
+      - TBD
   services:
     - everyday-curfew
   blue-green:
