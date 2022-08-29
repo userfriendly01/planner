@@ -8,7 +8,7 @@ beforeEach(() => {
 });
 
 beforeAll(() => {
-  // console.log = jest.fn();
+  console.log = jest.fn();
   console.error = jest.fn();
   console.warn = jest.fn();
 });
@@ -25,6 +25,7 @@ If you need to use the real file in your test, use jest.requireActual for the fu
 
 jest.mock("services", () => ({
   createCalabrioUser: jest.fn(),
+  createCalabrioTeam: jest.fn(),
   deleteManager: jest.fn(),
   updateCalabrioUser: jest.fn(),
   getCalabrioUsers: jest.fn(),

@@ -1,4 +1,5 @@
 import {
+  createCalabrioTeam,
   createCalabrioUser,
   getCalabrioUsers,
   getCalabrioOrg,
@@ -47,7 +48,33 @@ describe("createCalabrioUser", () => {
   });
 });
 
-describe("getCalabrioUsers", () => {
+describe("createCalabrioTeam", () => {
+  describe("call succeeds", () => {
+    const data = { huzzah: "you are winner" };
+    beforeEach(() => axiosMock.onPost(apiPaths.CREATE_CALABRIO_TEAM).replyOnce(200, data));
+    test("should resolve with any successful response", done => {
+      createCalabrioTeam(user)
+        .then(resolvedValue => {
+          expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(user);
+          expect(resolvedValue.data).toEqual(data);
+          done();
+        });
+    });
+  });
+  describe("call fails", () => {
+    const badResponse = { wahh: "boo" };
+    beforeEach(() => axiosMock.onPost(apiPaths.CREATE_CALABRIO_TEAM).replyOnce(500, badResponse));
+    test("should reject with error", done => {
+      createCalabrioTeam(user).catch(rejectedVal => {
+        expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(user);
+        expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
+        done();
+      });
+    });
+  });
+});
+
+describe("getCalabrioAgents", () => {
   describe("call succeeds", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_AGENTS).replyOnce(200, data));

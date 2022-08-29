@@ -1,5 +1,6 @@
 import {
   addManager,
+  deleteManager,
   editManager,
   getManagers
 } from "../manager";
@@ -51,6 +52,7 @@ describe("addManager", () => {
   });
 });
 
+
 describe("editManager", () => {
   const updatedManager = {
     manager_id: 10,
@@ -78,6 +80,31 @@ describe("editManager", () => {
     test("should reject with error", done => {
       editManager(updatedManager.manager_id, updatedManager).catch(rejectedVal => {
         expect(JSON.parse(axiosMock.history.put[0].data)).toEqual(updatedManager);
+        expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
+        done();
+      });
+    });
+  });
+});
+
+describe("deleteManager", () => {
+  const managerId = 10;
+  describe("call succeeds", () => {
+    const data = { huzzah: "you are winner" };
+    beforeEach(() => axiosMock.onDelete(`${managerEndpoint}/${managerId}`).replyOnce(200, data));
+    test("should resolve with any successful response", done => {
+      deleteManager(managerId)
+        .then(resolvedValue => {
+          expect(resolvedValue).toEqual(data);
+          done();
+        });
+    });
+  });
+  describe("call fails", () => {
+    const badResponse = { wahh: "boo" };
+    beforeEach(() => axiosMock.onDelete(`${managerEndpoint}/${managerId}`).replyOnce(500, badResponse));
+    test("should reject with error", done => {
+      deleteManager(managerId).catch(rejectedVal => {
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();
       });
