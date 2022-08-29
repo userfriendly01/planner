@@ -250,6 +250,29 @@ describe("reducer", () => {
       expect(result.calabrioContext).toEqual(expectedResults);
     });
   });
+  describe("addCalabrioTeam", () => {
+    test("should initialize a map from the offices map sent in", () => {
+      const newCalabrioTeam = {
+        name: "Yay team",
+        parentGroupId: 12
+      };
+      const action = {
+        type: "addCalabrioTeam",
+        payload: newCalabrioTeam
+      };
+      const expectedResults = {
+        teams: [
+          newCalabrioTeam
+        ],
+        groups: [],
+        tenant: {},
+        users: [],
+        roles: []
+      };
+      const result = reducer(initialState, action);
+      expect(result.calabrioContext).toEqual(expectedResults);
+    });
+  });
   describe("loadCalabrioUsers", () => {
     test("should initialize a map from the offices map sent in", () => {
       const payload = [
