@@ -23,6 +23,8 @@ const jestConfig = {
   moduleNameMapper: {
     // to understand our module paths (ex: files in /src reference other files simply by using 'src/components')
     "^src/(.*)": "<rootDir>/src/$1",
+    "^authentication/(.*)": "<rootDir>/src/authentication/$1",
+    "^authentication$": "<rootDir>/src/authentication",
     "^components/(.*)": "<rootDir>/src/components/$1",
     "^components$": "<rootDir>/src/components",
     "^context/(.*)": "<rootDir>/src/context/$1",

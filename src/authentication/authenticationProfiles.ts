@@ -1,36 +1,9 @@
-export const enum tabNames {
-  USER_MANAGEMENT = "User Management",
-  PROFILE_SETTINGS = "Profile Settings",
-  CLOSED_MESSAGE = "Closed Message",
-  FLASH_MESSAGE = "Flash Message",
-  ROUTING_RULES = "Routing Rules"
-}
-
-export const enum permissions {
-  READ = "read",
-  WRITE = "write"
-}
-
-export const enum authenticationStartups {
-  TRITON = "cct-triton-tritonadmin",
-  ALOHA = "cct-aloha-tritonadmin"
-}
-export interface authenticationProfile {
-  permissions: permissions,
-  adGroups: string[],
-  tabs: tabNames[],
-  startup: authenticationStartups,
-  description?: string
-}
-
-export interface authenticationProfileOptions {
-  TRITON: authenticationProfile,
-  ALOHA_READ: authenticationProfile,
-  ALOHA_WRITE: authenticationProfile
-}
-
-console.log("ENVIRONMENT AD GROUPS - process.env.TRITON_AUTH_AD_GROUPS", process.env.TRITON_AUTH_AD_GROUPS);
-console.log("ENVIRONMENT AD GROUPS - ALOHA_AUTH_AD_GROUPS", process.env.ALOHA_AUTH_AD_GROUPS);
+import {
+  tabNames,
+  permissions,
+  authenticationStartups,
+  authenticationProfileOptions
+} from "./authentication.Interfaces";
 
 export const authenticationProfiles: authenticationProfileOptions = {
   TRITON: {
