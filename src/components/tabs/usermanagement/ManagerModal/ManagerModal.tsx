@@ -1,3 +1,5 @@
+
+import { Wrapper } from "./ManagerModal.Styles";
 import {
   ButtonWrapper,
   Header,
@@ -5,13 +7,15 @@ import {
   LeftDiv,
   ModalContainer
 } from "./ManagerModal.Styles";
+import { Modal } from "@material-ui/core";
 import { CloseRounded } from "@material-ui/icons";
 import {
   Dropdown,
   ModalNNumber,
   ModalOverlay,
   PaperContainer,
-  StyledButton
+  StyledButton,
+  CalabrioTeamModal
 } from "components";
 import {
   useAdminDispatch,
@@ -37,7 +41,12 @@ const loadingStates = {
 };
 export interface ManagerModalProps {
   handleClose: () => void,
-  selectedManager: any
+  selectedManager: any,
+}
+
+interface DropdownOption {
+  label: string,
+  value: any
 }
 
 const ManagerModal = (props: ManagerModalProps) => {
@@ -49,6 +58,21 @@ const ManagerModal = (props: ManagerModalProps) => {
   const state = useAdminState();
   const profiles = state.profileContext.profiles;
   const calabrioTeams = state.calabrioContext.teams;
+  const options: DropdownOption[] = [
+    {
+      label: "Add Calabrio Team",
+      value: "add-team"
+    },
+    {
+      label: "divider",
+      value: "divider"
+    },
+    ...calabrioTeams.map((team: any) => ({
+      label: team.name,
+      value: team.groupId,
+      ...team
+    }))
+  ];
   const [manager, setManager] = useState<Manager>(selectedManager ? selectedManager : null);
   const [errorMessage, setErrorMessage] = useState<string>(null);
   const [saveStatus, setSaveStatus] = useState<string>(null);
@@ -56,8 +80,9 @@ const ManagerModal = (props: ManagerModalProps) => {
   const [fetchedUser, setFetchedUser] = useState<FetchUserResponse>(null);
   const [ profile, setProfile ] = useState<any>(selectedManager ? profiles.find(p => p.profile_id === selectedManager.profile_id) : null);
   const [ selectedCalabrioTeams, setSelectedCalabrioTeams ] = useState<number[]>(selectedManager ? selectedManager.calabrio_team_ids :[]);
+  const [isTeamModalOpen, setIsTeamModalOpen] = useState<boolean>(false);
 
-  const getCalabrioOption = (teamId: number) => {
+  const getCalabrioOption = (teamId: number): any => {
     const team = calabrioTeams.find(team => team.groupId === teamId);
     return team ? {
       ...team,
@@ -66,6 +91,16 @@ const ManagerModal = (props: ManagerModalProps) => {
     } : teamId;
   };
   const dispatch = useAdminDispatch();
+
+  const handleOpenTeam = () => {
+    setIsTeamModalOpen(true);
+  };
+
+  const handleCloseTeam = (res: any) => {
+    setIsTeamModalOpen(false);
+    const newlist= [...selectedCalabrioTeams, res.data.groupId];
+    setSelectedCalabrioTeams(newlist.map((team:number) => team));
+  };
 
   const addManagerClicked = (): Promise<any> => {
     setSaveStatus(loadingStates.loading);
@@ -204,17 +239,28 @@ const ManagerModal = (props: ManagerModalProps) => {
             value={profile && profile.profile_nme ? profile.profile_nme : ""}
             updateValue={(event: any, newValue: any) => setProfile(newValue)}
           />
-          <Dropdown
-            multiple={true}
-            label={"Calabrio Team Options *"}
-            styles={{
-              width: "400px",
-              margin: "10px 0px"
-            }}
-            options={calabrioTeams.map((team: any) => getCalabrioOption(team.groupId))}
-            value={selectedCalabrioTeams.map(teamId => getCalabrioOption(teamId))}
-            updateValue={(event: any, newValue: any) => setSelectedCalabrioTeams(newValue.map((team:any) => team.value))}
-          />
+          <Wrapper>
+            <Dropdown
+              multiple={true}
+              label={"Calabrio Team Options *"}
+              styles={{
+                width: "400px",
+                margin: "10px 0px"
+              }}
+              options={options}
+              value={selectedCalabrioTeams.map((teamId:any) => getCalabrioOption(teamId))}
+              updateValue={(event: any, newInputValue: any) => {
+                if(newInputValue.some((t: any) => t.value === "add-team")){
+                  handleOpenTeam();
+                } else {
+                  setSelectedCalabrioTeams(newInputValue.map((team:any) => team.value));
+                }
+              }}
+            />
+            <Modal disableBackdropClick={true} open={isTeamModalOpen}>
+              <CalabrioTeamModal handleClose={handleCloseTeam}/>
+            </Modal>
+          </Wrapper>
         </FlexColumn>
         <ButtonWrapper>
           { selectedManager ?

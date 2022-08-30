@@ -5,11 +5,13 @@ import {
   ModalNNumber,
   ModalOverlay,
   PaperContainer,
-  StyledButton
+  StyledButton,
+  CalabrioTeamModal
 } from "components";
 import { useAdminState } from "context";
 import React from "react";
 import { act } from "react-dom/test-utils";
+import { Modal } from "@material-ui/core";
 import {
   addManager,
   editManager
@@ -32,6 +34,10 @@ jest.mock("@material-ui/icons", () => ({
   CloseRounded: jest.fn()
 }));
 
+jest.mock("@material-ui/core", () => ({
+  Modal: jest.fn()
+}));
+
 jest.mock("services", () => ({
   FetchUserResponse: jest.requireActual("services").FetchUserResponse
 }));
@@ -47,7 +53,8 @@ jest.mock("components", () => ({
   ModalNNumber: jest.fn(),
   ModalOverlay: jest.fn(),
   PaperContainer: jest.fn(),
-  StyledButton: jest.fn()
+  StyledButton: jest.fn(),
+  CalabrioTeamModal: jest.fn()
 }));
 
 describe("<ManagerModal />", () => {
@@ -61,7 +68,9 @@ describe("<ManagerModal />", () => {
       CloseRounded,
       ModalNNumber,
       ModalOverlay,
-      StyledButton
+      StyledButton,
+      CalabrioTeamModal,
+      Modal
     });
     PaperContainer.mockClear();
     PaperContainer.mockImplementation(props => <div>{props.children}</div>);
@@ -261,6 +270,37 @@ describe("<ManagerModal />", () => {
           expect(mockHandleClose).toHaveBeenCalledTimes(0);
           expectMockedComponent(rendered, { ModalOverlay }, 0);
         });
+      });
+    });
+    describe("add Calabrio team is selected", () => {
+      test("CalabrioTeamModal should render when add-team is selected", async () => {
+        const selection = {
+          label: "Add Calabrio Team",
+          value: "add-team"
+        };
+        renderComponent();
+        act(() => {
+          Dropdown.mock.calls[1][0].updateValue(null, [selection]);
+          const grandchild = Modal.mock.calls[0][0].children;
+          render(grandchild);
+        });
+        expect(Modal.mock.calls[1][0].open).toBe(true);
+      });
+    });
+    describe("the calabrio team modal closes when expected", () => {
+      test("changing the open attribute to false closes the modal", async () => {
+        const selection = {
+          label: "Add Calabrio Team",
+          value: "add-team"
+        };
+        renderComponent();
+        act(() => {
+          Dropdown.mock.calls[1][0].updateValue(null, [selection]);
+          const grandchild = Modal.mock.calls[0][0].children;
+          render(grandchild);
+          CalabrioTeamModal.mock.calls[0][0].handleClose({ data: { groupId: 300 }});
+        });
+        expect(Modal.mock.calls[1][0].open).toBe(false);
       });
     });
   });

@@ -124,6 +124,14 @@ export const reducer = (state: AppState, action: Action): AppState => {
           roles: formatCalabrioRoles(action.payload)
         }
       };
+    case "addCalabrioTeam":
+      return {
+        ...state,
+        calabrioContext: {
+          ...state.calabrioContext,
+          teams: [...state.calabrioContext.teams.slice(), action.payload]
+        }
+      };
     case "loadProfiles":{
       return {
         ...state,
