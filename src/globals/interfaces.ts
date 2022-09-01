@@ -24,7 +24,7 @@ export interface AppState {
     profiles: TritonProfile[]
   },
   skillContext: {
-    taskrouterSkills: TaskRouterSkill[]
+    skills: Skill[]
   },
   userContext: {
     pingIdentity: any // TODO type me!
@@ -75,6 +75,12 @@ export interface Office {
 export interface TaskRouterSkill {
   skill: string,
   levels: number[]
+}
+
+export interface Skill {
+  [key: string]: any
+  skill: string,
+  levels: number[],
 }
 
 export interface TritonProfile {

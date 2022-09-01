@@ -20,7 +20,7 @@ export const initialState: AppState = {
     profiles: []
   },
   skillContext: {
-    taskrouterSkills: []
+    skills: []
   },
   userContext: {
     pingIdentity: {},
@@ -146,7 +146,7 @@ export const reducer = (state: AppState, action: Action): AppState => {
         ...state,
         skillContext: {
           ...state.skillContext,
-          taskrouterSkills: action.payload
+          skills: action.payload.sort()
         }
       };
     case "loadUserData":

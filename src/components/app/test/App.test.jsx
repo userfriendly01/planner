@@ -33,14 +33,13 @@ import {
 import {
   formatManagersResponse,
   formatOfficesResponse,
-  formatTaskRouterSkills,
   myAxios
 } from "utils";
 
 const authEndpoint = apiPaths.AUTH;
 const axiosMock = new MockAdapter(myAxios);
 const profilesEndpoint = apiPaths.GET_PROFILES;
-const skillsEndpoint = apiPaths.GET_TASKROUTER_SKILLS;
+const skillsEndpoint = apiPaths.GET_SKILLS;
 const workersEndpoint = apiPaths.GET_WORKERS;
 
 const auth = { whatever: "lol" };
@@ -146,7 +145,7 @@ const filteredWorkers = [
   }
 ];
 
-const taskrouterSkills = [
+const skills = [
   {
     multivalue: false,
     minimum: 0,
@@ -195,7 +194,7 @@ describe("<App />", () => {
     beforeEach(() => {
       axiosMock.onGet(authEndpoint).reply(200, auth);
       axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-      axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+      axiosMock.onGet(skillsEndpoint).reply(200, skills);
       axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
       getManagers.mockResolvedValue(dbManagers);
       getOffices.mockResolvedValue(dbOffices);
@@ -250,7 +249,7 @@ describe("<App />", () => {
               },
               {
                 type: "loadSkills",
-                payload: formatTaskRouterSkills(taskrouterSkills)
+                payload: skills
               },
               {
                 type: "addWorkers",
@@ -299,7 +298,7 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(statusCode, { ohno: "booo" });
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockResolvedValue(dbOffices);
@@ -319,7 +318,7 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(statusCode, { wahhh: "nooo" });
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockResolvedValue(dbOffices);
@@ -342,7 +341,7 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(statusCode, { wahhhh: "oh noooo" });
-        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockResolvedValue(dbOffices);
@@ -364,7 +363,7 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint, { pageToken: "" }).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockResolvedValue(dbOffices);
@@ -406,7 +405,7 @@ describe("<App />", () => {
               },
               {
                 type: "loadSkills",
-                payload: formatTaskRouterSkills(taskrouterSkills)
+                payload: skills
               },
               {
                 type: "addWorkers",
@@ -425,7 +424,7 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(500, { boo: "wahhh" });
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockResolvedValue(dbOffices);
@@ -458,7 +457,7 @@ describe("<App />", () => {
         waitFor(() => rendered.getByTestId("error-overlay"))
           .then(() => {
             expect(rendered.container).toHaveTextContent(statusCode);
-            expect(rendered.container).toHaveTextContent("Failed to fetch taskrouter skills from service");
+            expect(rendered.container).toHaveTextContent("Failed to fetch skills from service");
             done();
           });
       });
@@ -476,7 +475,7 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockRejectedValue(error);
         getOffices.mockResolvedValue(dbOffices);
@@ -504,7 +503,7 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockRejectedValue(error);
@@ -525,7 +524,7 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockResolvedValue(dbOffices);
@@ -565,7 +564,7 @@ describe("<App />", () => {
           },
           {
             type: "loadSkills",
-            payload: formatTaskRouterSkills(taskrouterSkills)
+            payload: skills
           },
           {
             type: "addWorkers",
@@ -590,7 +589,7 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockResolvedValue(dbOffices);
@@ -630,7 +629,7 @@ describe("<App />", () => {
           },
           {
             type: "loadSkills",
-            payload: formatTaskRouterSkills(taskrouterSkills)
+            payload: skills
           },
           {
             type: "addWorkers",
@@ -655,7 +654,7 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockResolvedValue(dbOffices);
@@ -695,7 +694,7 @@ describe("<App />", () => {
           },
           {
             type: "loadSkills",
-            payload: formatTaskRouterSkills(taskrouterSkills)
+            payload: skills
           },
           {
             type: "addWorkers",

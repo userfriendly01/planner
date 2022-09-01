@@ -37,21 +37,21 @@ const mockSetDefaultSkills = jest.fn();
 const initialTestState = {
   ...initialState,
   skillContext: {
-    taskrouterSkills: [
+    skills: [
       {
-        skill: "skillA",
+        name: "skillA",
         levels: []
       },
       {
-        skill: "skillB",
+        name: "skillB",
         levels: [ 1, 2, 3, 4 ]
       },
       {
-        skill: "skillC",
+        name: "skillC",
         levels: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
       },
       {
-        skill: "skillD",
+        name: "skillD",
         levels: []
       }
     ]
@@ -85,7 +85,7 @@ describe("<DefaultSkillSelector />", () => {
         expectMockedComponent(rendered, { Add });
         expectMockedComponent(rendered, { PriorityDropDown }, 0);
         expectOnlyPassedProps(SkillDropDown, {
-          taskrouterSkills: initialTestState.skillContext.taskrouterSkills
+          skills: initialTestState.skillContext.skills
         });
       });
     });

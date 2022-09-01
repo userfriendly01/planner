@@ -16,7 +16,7 @@ import {
 } from "components";
 import { useAdminState } from "context";
 import {
-  TaskRouterSkill,
+  Skill,
   WorkerSkills
 } from "globals";
 import PropTypes from "prop-types";
@@ -45,11 +45,11 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
 
   const {
     skillContext: {
-      taskrouterSkills
+      skills
     }
   } = useAdminState();
 
-  const taskrouterSkillsForDropDown = taskrouterSkills.filter((skillObj: TaskRouterSkill) => !defaultSkills.skills.includes(skillObj.skill));
+  const skillsForDropDown = skills.filter((skillObj: Skill) => !defaultSkills.skills.includes(skillObj.name));
 
   const defaultNewSkill: NewTwilioWorkerSkill = {
     levels: [],
@@ -63,11 +63,11 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
     [index: string]: any,
     value: string
   }) => {
-    const skillObj = findTaskRouterSkill(skill.value, taskrouterSkills);
+    const skillObj = findTaskRouterSkill(skill.value, skills);
     setNewSkill({
       levels: skillObj.levels,
       levelSelected: skillObj.levels.length > 0 ? skillObj.levels[0] : null,
-      skill: skillObj.skill
+      skill: skillObj.name
     });
   };
 
@@ -111,7 +111,7 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
       <SkillRow>
         <SkillRowItem>
           <SkillDropDown
-            taskrouterSkills={taskrouterSkillsForDropDown}
+            skills={skillsForDropDown}
             skill={newSkill.skill}
             updateSkill={newSkillChanged} />
         </SkillRowItem>
@@ -132,7 +132,7 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
       <SkillRowSeperator/>
       <SkillsWrapper>
         {defaultSkills.skills.sort().map((skill: string, index: number) => {
-          const taskrouterSkill = findTaskRouterSkill(skill, taskrouterSkills);
+          const taskrouterSkill = findTaskRouterSkill(skill, skills);
           return (
             // @ts-ignore
             <SkillRow highlightOnHover={true} key={`default-skill-row-${index}`}>

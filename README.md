@@ -50,7 +50,10 @@ You should now have 3 running applications, on these ports:
 cicct-user-gateway        8082
 cicct-softphone-admin-ui  8084
 cicct-softphone-service   8080
+cicct-callflow-api        8081
 ```
+#### Pointing to the local callflow api
+
 
 #### Connecting to the Admin UI
 
@@ -77,3 +80,14 @@ npm run test
 ### Icons
 Keep icons under 8KB in size in order to ensure they're embedded in the runtime code by Webpack.
 Larger images will break.
+
+
+## Project Notes
+### Flash Messages and Closed Messages
+Flash Messages and Closed messages are inserted into the callflow tables. For this reason we are pulling the list of skills from the callflow table. However the relationship of skill to profile is defined in the contact-manager database. The callflow api is taking this into consideration.
+
+The call to the flash message table returns the skills and the flash and closed messages
+The call to Twilio includes the levels
+
+Proposed refactor:
+  Load all skills from Twilio into the state at the beginning, make individual API calls for closed and flash messages on the message sidebar

@@ -1,7 +1,6 @@
 import {
   areSkillsDifferent,
   findTaskRouterSkill,
-  formatTaskRouterSkills,
   getValidSkillsObject
 } from "../skillsUtils";
 
@@ -200,97 +199,44 @@ describe("skillsUtils", () => {
   });
 
   describe("findTaskRouterSkill", () => {
-    test("returns skill object when it exists in taskrouterSkills", () => {
+    test("returns skill object when it exists in skills", () => {
       const skill = "psu-l1";
-      const taskrouterSkills = [
+      const skills = [
         {
-          skill: "psu-l1",
+          name: "psu-l1",
           levels: [1,2,3,4,5]
         },
         {
-          skill: "wow",
+          name: "wow",
           levels: [1,2]
         },
         {
-          skill: "amazing",
+          name: "amazing",
           levels: []
         }
       ];
-      expect(findTaskRouterSkill(skill, taskrouterSkills)).toEqual(taskrouterSkills[0]);
+      expect(findTaskRouterSkill(skill, skills)).toEqual(skills[0]);
     });
-    test("returns skill object with empty levels array when skill does not exist in taskrouterSkills", () => {
+    test("returns skill object with empty levels array when skill does not exist in skills", () => {
       const skill = "nope";
-      const taskrouterSkills = [
+      const skills = [
         {
-          skill: "psu-l1",
+          name: "psu-l1",
           levels: [1,2,3,4,5]
         },
         {
-          skill: "wow",
+          name: "wow",
           levels: [1,2]
         },
         {
-          skill: "amazing",
+          name: "amazing",
           levels: []
         }
       ];
-      expect(findTaskRouterSkill(skill, taskrouterSkills)).toEqual({
+      expect(findTaskRouterSkill(skill, skills)).toEqual({
         skill,
         levels: []
       });
-    });
-  });
-
-  describe("formatTaskRouterSkills", () => {
-    test("should return array of {skill, levels} object sorted by skill name from raw taskrouter skills", () => {
-      const taskrouterSkills = [
-        {
-          minimum: 0,
-          multivalue: true,
-          name: "skill2",
-          maximum: 3
-        },
-        {
-          minimum: null,
-          multivalue: false,
-          name: "skill1",
-          maximum: null
-        },
-        {
-          minimum: 1,
-          multivalue: true,
-          name: "skill4",
-          maximum: 8
-        },
-        {
-          minimum: 1,
-          name: "skill3",
-          maximum: 3
-        }
-      ];
-      expect(formatTaskRouterSkills(taskrouterSkills)).toEqual([
-        {
-          skill: "skill1",
-          levels: []
-        },
-        {
-          skill: "skill2",
-          levels: [0,1,2,3]
-        },
-        {
-          skill: "skill3",
-          levels: []
-        },
-        {
-          skill: "skill4",
-          levels: [1,2,3,4,5,6,7,8]
-        }
-      ]);
-    });
-
-    test("should return empty array when receives empty array", () => {
-      const taskrouterSkills = [];
-      expect(formatTaskRouterSkills(taskrouterSkills)).toEqual([]);
     });
   });
 

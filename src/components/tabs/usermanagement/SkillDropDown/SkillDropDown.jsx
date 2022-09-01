@@ -4,15 +4,15 @@ import React from "react";
 
 const SkillDropDown = props => {
   const {
-    taskrouterSkills,
+    skills,
     updateSkill,
     skill
   } = props;
 
   const getSkillOptions = optionsList => {
     return optionsList.map(option => ({
-      value: option.skill,
-      label: option.skill
+      value: option.name,
+      label: option.name
     }));
   };
 
@@ -23,7 +23,7 @@ const SkillDropDown = props => {
         height: "40px",
         width: "180px"
       }}
-      options={getSkillOptions(taskrouterSkills)}
+      options={getSkillOptions(skills)}
       value={{
         label: skill,
         value: skill
@@ -34,7 +34,7 @@ const SkillDropDown = props => {
 };
 
 SkillDropDown.propTypes = {
-  taskrouterSkills: PropTypes.arrayOf(
+  skills: PropTypes.arrayOf(
     PropTypes.shape({
       skill: PropTypes.string.isRequired,
       levels: PropTypes.arrayOf(PropTypes.number)

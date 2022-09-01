@@ -58,7 +58,7 @@ const getWorkersStartAndEnd = (pageSelected: number, filteredWorkers: Worker[]) 
 
 export const ManagementWrapper: React.FC = () => {
   const workersFromContext = useAdminState().workerContext.workers;
-  const skillsFromContext = useAdminState().skillContext.taskrouterSkills;
+  const skillsFromContext = useAdminState().skillContext.skills;
 
   let workers = [ ...workersFromContext ].sort(sortWorkersByFullName);
 

@@ -16,10 +16,10 @@ jest.mock("components", () => ({
 
 describe("<SkillDropDown />", () => {
   const skills = [
-    { skill: "skill3" },
-    { skill: "skill2" },
-    { skill: "skill1" },
-    { skill: "skill4" }
+    { name: "skill3" },
+    { name: "skill2" },
+    { name: "skill1" },
+    { name: "skill4" }
   ];
 
   const options = [
@@ -42,7 +42,7 @@ describe("<SkillDropDown />", () => {
   ];
 
   const mockUpdateSkill = jest.fn();
-  const renderComponent = () => render(<SkillDropDown taskrouterSkills={skills} skillValue={"skill3"} updateSkill={mockUpdateSkill} />);
+  const renderComponent = () => render(<SkillDropDown skills={skills} skillValue={"skill3"} updateSkill={mockUpdateSkill} />);
   beforeEach(() => {
     setupMockedComponents({ Dropdown });
     mockUpdateSkill.mockClear();

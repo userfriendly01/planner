@@ -1,8 +1,7 @@
 import {
   sortDialListEntriesByName,
   sortDirectoryListEntriesByName,
-  sortManagersByName,
-  sortTaskRouterSkillByName
+  sortManagersByName
 } from "../sortUtils";
 
 describe("sortDialListEntriesByName", () => {
@@ -159,21 +158,21 @@ describe("sortManagersByName", () => {
   });
 });
 
-describe("sortSkillsByName", () => {
-  const arr = [
-    { skill: "bee" },
-    { skill: "dee" },
-    { skill: "cee" },
-    { skill: "ay" },
-    { skill: "ay" }
-  ];
-  test("should return array in alphabetical order", () => {
-    expect(arr.sort(sortTaskRouterSkillByName)).toEqual([
-      { skill: "ay" },
-      { skill: "ay" },
-      { skill: "bee" },
-      { skill: "cee" },
-      { skill: "dee" }
-    ]);
-  });
-});
+// describe("sortSkillsByName", () => {
+//   const arr = [
+//     { skill: "bee" },
+//     { skill: "dee" },
+//     { skill: "cee" },
+//     { skill: "ay" },
+//     { skill: "ay" }
+//   ];
+//   test("should return array in alphabetical order", () => {
+//     expect(arr.sort(sortTaskRouterSkillByName)).toEqual([
+//       { skill: "ay" },
+//       { skill: "ay" },
+//       { skill: "bee" },
+//       { skill: "cee" },
+//       { skill: "dee" }
+//     ]);
+//   });
+// });

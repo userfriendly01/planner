@@ -337,7 +337,7 @@ describe("reducer", () => {
     });
   });
   describe("loadSkills", () => {
-    test("should update skilContext.taskrouterSkills to payload", () => {
+    test("should update skilContext.skills to payload", () => {
       const payload = [
         {
           skill: "psu-l1",
@@ -357,7 +357,7 @@ describe("reducer", () => {
         payload
       };
       const result = reducer(initialState, action);
-      expect(result.skillContext.taskrouterSkills).toEqual(payload);
+      expect(result.skillContext.skills).toEqual(payload);
     });
   });
   describe("loadUserData", () => {

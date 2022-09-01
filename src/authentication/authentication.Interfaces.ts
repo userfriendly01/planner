@@ -3,7 +3,8 @@ export const enum tabNames {
   PROFILE_SETTINGS = "Profile Settings",
   CLOSED_MESSAGE = "Closed Message",
   FLASH_MESSAGE = "Flash Message",
-  ROUTING_RULES = "Routing Rules"
+  ROUTING_RULES = "Routing Rules",
+  CALL_FLOW_MANAGEMENT = "Call Flow Management"
 }
 
 export const enum permissions {

@@ -61,7 +61,7 @@ describe("ManagementWrapper", () => {
   const doRender = (workers = []) => {
     const state = { ...initialState };
     state.workerContext.workers = workers;
-    state.skillContext.taskrouterSkills = mockSkills;
+    state.skillContext.skills = mockSkills;
     return render(component, state);
   };
 

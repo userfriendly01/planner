@@ -44,6 +44,7 @@ const SearchBox = props => {
         )
       }}
       id="outlined-SearchBox-input"
+      key={"searchBox"}
       label="Search"
       margin="normal"
       name="outlined-SearchBox-input"
