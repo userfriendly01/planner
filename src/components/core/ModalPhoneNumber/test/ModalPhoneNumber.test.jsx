@@ -57,87 +57,87 @@ describe("<ModalPhoneNumber />", () => {
   describe("allowSevenDigitVdn is true", () => {
     const allowSevenDigitVdn = true;
 
-    describe("component is set to 7 digit mode by clicking the toggle", () => {
+    // describe("component is set to 7 digit mode by clicking the toggle", () => {
 
-      const clickToggle = rendered => {
-        const toggleElement = rendered.getByTestId("toggle-seven-digit");
-        // there is an inner span and then input element within that
-        const toggleInputElement = toggleElement.children[0].children[0];
-        // expect(toggleInputElement).toEqual({})
-        act(() => {
-          fireEvent.click(toggleInputElement);
-        });
-      };
+    //   const clickToggle = rendered => {
+    //     const toggleElement = rendered.getByTestId("toggle-seven-digit");
+    //     // there is an inner span and then input element within that
+    //     const toggleInputElement = toggleElement.children[0].children[0];
+    //     // expect(toggleInputElement).toEqual({})
+    //     act(() => {
+    //       fireEvent.click(toggleInputElement);
+    //     });
+    //   };
 
-      describe("updating input box values", () => {
+    //   describe("updating input box values", () => {
 
-        test("should fire updateValue with correct args for various values", () => {
-          const rendered = renderComponent({
-            allowSevenDigitVdn
-          });
-          // toggle to use 7 digit mask and validation logic
-          clickToggle(rendered);
-          // initially updateValue and reset the value to empty string (happens when toggle is switched)
-          expect(updateValue.mock.calls[0]).toEqual(["", "", false, ""]);
-          // invalid partial number
-          changeNumberInput(rendered, "603");
-          expect(updateValue.mock.calls[1]).toEqual(["603 ", "603", false, ""]);
-          // invalid partial number
-          changeNumberInput(rendered, "603456");
-          expect(updateValue.mock.calls[2]).toEqual(["603 456", "603456", false, ""]);
-          // valid number (VDN)
-          changeNumberInput(rendered, "6034567");
-          expect(updateValue.mock.calls[3]).toEqual(["603 4567", "6034567", true, ""]);
-          // extra numbers omitted
-          changeNumberInput(rendered, "6034567890123123123");
-          expect(updateValue.mock.calls[4]).toEqual(["603 4567", "6034567", true, ""]);
-        });
-      });
+    //     test("should fire updateValue with correct args for various values", () => {
+    //       const rendered = renderComponent({
+    //         allowSevenDigitVdn
+    //       });
+    //       // toggle to use 7 digit mask and validation logic
+    //       clickToggle(rendered);
+    //       // initially updateValue and reset the value to empty string (happens when toggle is switched)
+    //       expect(updateValue.mock.calls[0]).toEqual(["", "", false, ""]);
+    //       // invalid partial number
+    //       changeNumberInput(rendered, "603");
+    //       expect(updateValue.mock.calls[1]).toEqual(["603 ", "603", false, ""]);
+    //       // invalid partial number
+    //       changeNumberInput(rendered, "603456");
+    //       expect(updateValue.mock.calls[2]).toEqual(["603 456", "603456", false, ""]);
+    //       // valid number (VDN)
+    //       changeNumberInput(rendered, "6034567");
+    //       expect(updateValue.mock.calls[3]).toEqual(["603 4567", "6034567", true, ""]);
+    //       // extra numbers omitted
+    //       changeNumberInput(rendered, "6034567890123123123");
+    //       expect(updateValue.mock.calls[4]).toEqual(["603 4567", "6034567", true, ""]);
+    //     });
+    //   });
 
-      describe("showError is true and an invalid number is entered", () => {
-        const showError = true;
+    //   describe("showError is true and an invalid number is entered", () => {
+    //     const showError = true;
 
-        test("should render with error styling and helper text", () => {
-          const rendered = renderComponent({
-            allowSevenDigitVdn,
-            showError
-          });
-          // toggle to use 7 digit mask and validation logic
-          clickToggle(rendered);
-          // initially updateValue and reset the value to empty string (happens when toggle is switched)
-          expect(updateValue.mock.calls[0]).toEqual(["", "", false, ""]);
-          // invalid partial number
-          changeNumberInput(rendered, "603");
-          expect(updateValue.mock.calls[1]).toEqual(["603 ", "603", false, ""]);
-          // label element className
-          const { className } = rendered.queryAllByText(label)[0];
-          expect(muiErrorClassRegex.test(className)).toBeTruthy();
-          // helper text
-          expect(rendered.container).toHaveTextContent("Enter a seven digit VDN");
-        });
-      });
+    //     test("should render with error styling and helper text", () => {
+    //       const rendered = renderComponent({
+    //         allowSevenDigitVdn,
+    //         showError
+    //       });
+    //       // toggle to use 7 digit mask and validation logic
+    //       clickToggle(rendered);
+    //       // initially updateValue and reset the value to empty string (happens when toggle is switched)
+    //       expect(updateValue.mock.calls[0]).toEqual(["", "", false, ""]);
+    //       // invalid partial number
+    //       changeNumberInput(rendered, "603");
+    //       expect(updateValue.mock.calls[1]).toEqual(["603 ", "603", false, ""]);
+    //       // label element className
+    //       const { className } = rendered.queryAllByText(label)[0];
+    //       expect(muiErrorClassRegex.test(className)).toBeTruthy();
+    //       // helper text
+    //       expect(rendered.container).toHaveTextContent("Enter a seven digit VDN");
+    //     });
+    //   });
 
-      describe("showError is false and an invalid number is entered", () => {
+    //   describe("showError is false and an invalid number is entered", () => {
 
-        test("should render with error styling and helper text", () => {
-          const rendered = renderComponent({
-            allowSevenDigitVdn
-          });
-          // toggle to use 7 digit mask and validation logic
-          clickToggle(rendered);
-          // initially updateValue and reset the value to empty string (happens when toggle is switched)
-          expect(updateValue.mock.calls[0]).toEqual(["", "", false, ""]);
-          // invalid partial number
-          changeNumberInput(rendered, "603");
-          expect(updateValue.mock.calls[1]).toEqual(["603 ", "603", false, ""]);
-          // label element className
-          const { className } = rendered.queryAllByText(label)[0];
-          expect(muiErrorClassRegex.test(className)).toBeFalsy();
-          // helper text
-          expect(rendered.container).not.toHaveTextContent("Enter a seven digit VDN");
-        });
-      });
-    });
+    //     test("should render with error styling and helper text", () => {
+    //       const rendered = renderComponent({
+    //         allowSevenDigitVdn
+    //       });
+    //       // toggle to use 7 digit mask and validation logic
+    //       clickToggle(rendered);
+    //       // initially updateValue and reset the value to empty string (happens when toggle is switched)
+    //       expect(updateValue.mock.calls[0]).toEqual(["", "", false, ""]);
+    //       // invalid partial number
+    //       changeNumberInput(rendered, "603");
+    //       expect(updateValue.mock.calls[1]).toEqual(["603 ", "603", false, ""]);
+    //       // label element className
+    //       const { className } = rendered.queryAllByText(label)[0];
+    //       expect(muiErrorClassRegex.test(className)).toBeFalsy();
+    //       // helper text
+    //       expect(rendered.container).not.toHaveTextContent("Enter a seven digit VDN");
+    //     });
+    //   });
+    // });
 
   });
   describe("component is set to 10 digit mode (by default)", () => {

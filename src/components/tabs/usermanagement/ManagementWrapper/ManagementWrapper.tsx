@@ -6,7 +6,7 @@ import {
   ManagementContainer,
   StyledPaper
 } from "./ManagementWrapper.Styles";
-import { Modal } from "@material-ui/core";
+import { Modal } from "@mui/material";
 import {
   ManagementHeader,
   ManagementPagination,
@@ -117,10 +117,20 @@ export const ManagementWrapper: React.FC = () => {
     }
   };
 
+  const disableBackDropClick = (event: any, reason: string) => {
+    if (reason !== "backdropClick") {
+      handleClose(false);
+    }
+  };
+
+
   return (
     <FormStateProvider>
       <ManagementContainer>
-        <Modal disableBackdropClick={true} open={userModalState.open}>
+        <Modal
+          open={userModalState.open}
+          onClose={disableBackDropClick}
+        >
           <UserEntryForm
             handleClose={handleClose}
             worker={userModalState.worker}

@@ -6,10 +6,13 @@ import {
 import {
   Switch,
   TextField
-} from "@material-ui/core";
+} from "@mui/material";
 import React, { useState } from "react";
 import MaskedInput from "react-text-mask";
+import PropTypes from "prop-types";
 import styled from "styled-components";
+
+//Warning - if you want to try and convert this to a tsx file, there seems to be version weirdness with @types/react-text-mask and its... not worth it
 
 const tenDigitMask = ["(", /[1-9]/, /\d/, /\d/, ")", " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/];
 const sevenDigitMask = [/[1-9]/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/];
@@ -26,9 +29,9 @@ const SwitchContainer = styled.div`
   margin-left: 8px;
 `;
 
-const SevenDigitInputMask = (inputProps: any) => {
+const SevenDigitInputMask = inputProps => {
   const {
-    inputRef,
+    // inputRef,
     ...other
   } = inputProps;
   return (
@@ -37,16 +40,16 @@ const SevenDigitInputMask = (inputProps: any) => {
       guide={false}
       mask={sevenDigitMask}
       placeholderChar={"\u2000"}
-      ref={ref => {
-        inputRef(ref ? ref.inputElement : null);
-      }}
+      // ref={ref => {
+      //   inputRef(ref ? ref.inputElement : null);
+      // }}
       showMask />
   );
 };
 
-const TenDigitInputMask = (inputProps: any) => {
+const TenDigitInputMask = inputProps => {
   const {
-    inputRef,
+    // inputRef,
     ...other
   } = inputProps;
   return (
@@ -55,27 +58,27 @@ const TenDigitInputMask = (inputProps: any) => {
       guide={false}
       mask={tenDigitMask}
       placeholderChar={"\u2000"}
-      ref={ref => {
-        inputRef(ref ? ref.inputElement : null);
-      }}
+      // ref={ref => {
+      //   inputRef(ref ? ref.inputElement : null);
+      // }}
       showMask />
   );
 };
 
-export interface ModalPhoneNumberProps {
-  allowSevenDigitVdn?: boolean,
-  disabled?: boolean,
-  error?: boolean,
-  helperText?: string,
-  id: string,
-  label: string,
-  number: string,
-  onBlur: () => void,
-  showError?: boolean,
-  updateValue: (maskedValue: string, unmaskedValue: string, isNumberValid: boolean, e164Number: string) => void,
-  icon?: JSX.Element
-}
-const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
+// export interface ModalPhoneNumberProps {
+//   allowSevenDigitVdn?: boolean,
+//   disabled?: boolean,
+//   error?: boolean,
+//   helperText?: string,
+//   id: string,
+//   label: string,
+//   number: string,
+//   onBlur: () => void,
+//   showError?: boolean,
+//   updateValue: (maskedValue: string, unmaskedValue: string, isNumberValid: boolean, e164Number: string) => void,
+//   icon?: JSX.Element
+// }
+const ModalPhoneNumber = props => {
   const {
     allowSevenDigitVdn, // if true, show toggle button to switch between input masks,
     disabled = false,
@@ -151,6 +154,21 @@ const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
   } else {
     return textField;
   }
+};
+
+ModalPhoneNumber.propTypes = {
+  // message: PropTypes.string.isRequired,
+  allowSevenDigitVdn: PropTypes.bool, // if true, show toggle button to switch between input masks,
+  disabled: PropTypes.bool,
+  error: PropTypes.bool,
+  helperText: PropTypes.string,
+  id: PropTypes.string,
+  label: PropTypes.string,
+  number: PropTypes.number,
+  onBlur: PropTypes.func,
+  showError: PropTypes.bool,
+  updateValue: PropTypes.func,
+  icon: PropTypes.any
 };
 
 export default ModalPhoneNumber;

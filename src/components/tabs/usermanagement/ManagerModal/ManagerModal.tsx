@@ -7,7 +7,7 @@ import {
   LeftDiv,
   ModalContainer
 } from "./ManagerModal.Styles";
-import { Modal } from "@material-ui/core";
+import { Modal } from "@mui/material";
 import { CloseRounded } from "@material-ui/icons";
 import {
   Dropdown,
@@ -97,9 +97,11 @@ const ManagerModal = (props: ManagerModalProps) => {
   };
 
   const handleCloseTeam = (res: any) => {
+    if(res){
+      const newlist= [...selectedCalabrioTeams, res.data.groupId];
+      setSelectedCalabrioTeams(newlist.map((team:number) => team));
+    }
     setIsTeamModalOpen(false);
-    const newlist= [...selectedCalabrioTeams, res.data.groupId];
-    setSelectedCalabrioTeams(newlist.map((team:number) => team));
   };
 
   const addManagerClicked = (): Promise<any> => {
@@ -186,6 +188,10 @@ const ManagerModal = (props: ManagerModalProps) => {
     overlayMessage = errorMessage;
   }
 
+  const disableBackDropClick = (event: any, reason: string) => {
+    //do nothing
+  };
+
   return (
     <ModalContainer>
       <PaperContainer>
@@ -257,7 +263,10 @@ const ManagerModal = (props: ManagerModalProps) => {
                 }
               }}
             />
-            <Modal disableBackdropClick={true} open={isTeamModalOpen}>
+            <Modal
+              open={isTeamModalOpen}
+              onClose={disableBackDropClick}
+            >
               <CalabrioTeamModal handleClose={handleCloseTeam}/>
             </Modal>
           </Wrapper>

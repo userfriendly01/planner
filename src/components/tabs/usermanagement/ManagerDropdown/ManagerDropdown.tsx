@@ -3,7 +3,7 @@ import {
   IconWrapper,
   Wrapper
 } from "./ManagerDropdown.Styles";
-import { Modal } from "@material-ui/core";
+import { Modal } from "@mui/material";
 import {
   Edit,
   Delete
@@ -86,6 +86,12 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
     }))
   ];
 
+  const disableBackDropClick = (event: any, reason: string) => {
+    if (reason !== "backdropClick") {
+      handleCloseManager();
+    }
+  };
+
   const DropdownOption = (props: any) => {
     const {
       option
@@ -126,10 +132,14 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
         }}
         CustomRender={DropdownOption}
       />
-      <Modal disableBackdropClick={true} open={isManagerModalOpen}>
+      <Modal
+        onClose={disableBackDropClick}
+        open={isManagerModalOpen}>
         <ManagerModal handleClose={handleCloseManager} selectedManager={selectedManager}/>
       </Modal>
-      <Modal disableBackdropClick={true} open={isManagerDeleteOpen}>
+      <Modal
+        onClose={disableBackDropClick}
+        open={isManagerDeleteOpen}>
         <ManagerDelete handleClose={handleCloseManagerDelete} selectedManager={selectedManager}/>
       </Modal>
     </Wrapper>
