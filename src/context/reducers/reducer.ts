@@ -146,7 +146,7 @@ export const reducer = (state: AppState, action: Action): AppState => {
         ...state,
         skillContext: {
           ...state.skillContext,
-          skills: action.payload.sort()
+          skills: action.payload
         }
       };
     case "loadUserData":

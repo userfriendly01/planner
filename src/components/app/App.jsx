@@ -195,7 +195,7 @@ const getSkills = dispatch => new Promise((resolve, reject) => myAxios.get(apiPa
   .then(res => {
     dispatch({
       type: "loadSkills",
-      payload: res.data
+      payload: res.data.consolidatedSkills
     });
     resolve(true);
   })
