@@ -1,8 +1,6 @@
 import UserFormAccordion from "../UserFormAccordion";
-import {
-  Accordion,
-  AccordionTab
-} from "@lmig/lmds-react-accordion";
+import { AccordionTab } from "@lmig/lmds-react-accordion";
+import { Accordion } from "@mui/material";
 import {
   BasicFormInfo,
   CallRecordingForm,
@@ -33,8 +31,12 @@ jest.mock("components", () => ({
 
 jest.mock("@lmig/lmds-react-accordion", () => ({
   __esModule: true,
-  Accordion: jest.fn(),
   AccordionTab: jest.fn()
+}));
+
+jest.mock("@mui/material", () => ({
+  __esModule: true,
+  Accordion: jest.fn()
 }));
 
 const mockForwardToToggle = jest.fn();

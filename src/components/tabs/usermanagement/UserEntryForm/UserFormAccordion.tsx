@@ -1,8 +1,6 @@
 import * as React from "react";
-import {
-  Accordion,
-  AccordionTab
-} from "@lmig/lmds-react-accordion";
+import { AccordionTab } from "@lmig/lmds-react-accordion";
+import { Accordion } from "@mui/material";
 import {
   BasicFormInfo,
   CallRecordingForm,
@@ -24,7 +22,7 @@ const UserFormAccordion = (props: UserFormAccordionProps) => {
 
   return (
     <FormControlsContainer>
-      <Accordion as="h4" singleTab>
+      <Accordion>
         <AccordionTab active labelVisual="Basic Info">
           <BasicFormInfo
             skills={skills}
