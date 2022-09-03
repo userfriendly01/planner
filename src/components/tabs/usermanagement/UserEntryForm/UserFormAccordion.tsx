@@ -11,6 +11,7 @@ import {
 } from "components";
 import { FormControlsContainer } from "./UserEntryForm.Styles";
 import { UserFormAccordionProps } from "./UserEntryForm.Interfaces";
+import styled from "styled-components";
 
 const UserFormAccordion = (props: UserFormAccordionProps) => {
   const {
