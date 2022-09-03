@@ -1,6 +1,9 @@
 import * as React from "react";
-import { AccordionTab } from "@lmig/lmds-react-accordion";
-import { Accordion } from "@mui/material";
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails
+} from "@mui/material";
 import {
   BasicFormInfo,
   CallRecordingForm,
@@ -22,8 +25,9 @@ const UserFormAccordion = (props: UserFormAccordionProps) => {
 
   return (
     <FormControlsContainer>
-      <Accordion>
-        <AccordionTab active labelVisual="Basic Info">
+      <Accordion expanded={true}>
+        <AccordionSummary>Basic Info</AccordionSummary>
+        <AccordionDetails>
           <BasicFormInfo
             skills={skills}
             worker={worker}
@@ -32,13 +36,19 @@ const UserFormAccordion = (props: UserFormAccordionProps) => {
             managers={managers}
             forwardToToggle={forwardToToggle}
             setForwardToToggle={setForwardToToggle}/>
-        </AccordionTab>
-        <AccordionTab labelVisual="Call Recording">
+        </AccordionDetails>
+      </Accordion>
+      <Accordion>
+        <AccordionSummary>Default Skills</AccordionSummary>
+        <AccordionDetails>
           <CallRecordingForm twilioWorker={worker} />
-        </AccordionTab>
-        <AccordionTab labelVisual="Default Skills">
+        </AccordionDetails>
+      </Accordion>
+      <Accordion>
+        <AccordionSummary>Default Skills</AccordionSummary>
+        <AccordionDetails>
           <SkillsFormInfo />
-        </AccordionTab>
+        </AccordionDetails>
       </Accordion>
     </FormControlsContainer>
   );
