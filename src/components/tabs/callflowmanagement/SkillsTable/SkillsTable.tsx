@@ -97,16 +97,16 @@ const SkillsTable = (props: SkillsTableProps) => {
         </thead>
         <tbody>
           {filteredSkills.map((skill: Skill) => {
-            const isSelected = selected.some(s => s === skill.skill);
+            const isSelected = selected.some(s => s === skill.name);
             return (
-              <CustomTableRow key={skill.skill} onClick={() => handleSetSelected(skill.skill, isSelected)} selected={isSelected} data-testid="table-row">
+              <CustomTableRow key={skill.name} onClick={() => handleSetSelected(skill.name, isSelected)} selected={isSelected} data-testid="table-row">
                 <CustomTableData><TableText>
                   <Checkbox
                     checked={isSelected}
                     style={{ padding: "0px" }}
                   />
                 </TableText></CustomTableData>
-                <CustomTableData><TableText>{skill.skill}</TableText></CustomTableData>
+                <CustomTableData><TableText>{skill.name}</TableText></CustomTableData>
                 <CustomTableData><TableText>{getProfilesForSkill()}</TableText></CustomTableData>
                 <CustomTableData><TableText><FlashOn/></TableText></CustomTableData>
                 <CustomTableData><TableText><Block/></TableText></CustomTableData>

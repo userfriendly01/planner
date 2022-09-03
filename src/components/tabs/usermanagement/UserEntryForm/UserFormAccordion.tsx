@@ -23,33 +23,40 @@ const UserFormAccordion = (props: UserFormAccordionProps) => {
     workers
   } = props;
 
+  const AccordionWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+  `;
+
   return (
     <FormControlsContainer>
-      <Accordion expanded={true}>
-        <AccordionSummary>Basic Info</AccordionSummary>
-        <AccordionDetails>
-          <BasicFormInfo
-            skills={skills}
-            worker={worker}
-            workers={workers}
-            profiles={profiles}
-            managers={managers}
-            forwardToToggle={forwardToToggle}
-            setForwardToToggle={setForwardToToggle}/>
-        </AccordionDetails>
-      </Accordion>
-      <Accordion>
-        <AccordionSummary>Default Skills</AccordionSummary>
-        <AccordionDetails>
-          <CallRecordingForm twilioWorker={worker} />
-        </AccordionDetails>
-      </Accordion>
-      <Accordion>
-        <AccordionSummary>Default Skills</AccordionSummary>
-        <AccordionDetails>
-          <SkillsFormInfo />
-        </AccordionDetails>
-      </Accordion>
+      <AccordionWrapper>
+        <Accordion expanded={true}>
+          <AccordionSummary>Basic Info</AccordionSummary>
+          <AccordionDetails>
+            <BasicFormInfo
+              skills={skills}
+              worker={worker}
+              workers={workers}
+              profiles={profiles}
+              managers={managers}
+              forwardToToggle={forwardToToggle}
+              setForwardToToggle={setForwardToToggle}/>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary>Call Recording</AccordionSummary>
+          <AccordionDetails>
+            <CallRecordingForm twilioWorker={worker} />
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary>Default Skills</AccordionSummary>
+          <AccordionDetails>
+            <SkillsFormInfo />
+          </AccordionDetails>
+        </Accordion>
+      </AccordionWrapper>
     </FormControlsContainer>
   );
 };
