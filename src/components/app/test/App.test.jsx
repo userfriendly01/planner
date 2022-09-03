@@ -145,20 +145,22 @@ const filteredWorkers = [
   }
 ];
 
-const skills = [
-  {
-    multivalue: false,
-    minimum: 0,
-    maximum: 1,
-    name: "wow"
-  },
-  {
-    multivalue: true,
-    minimum: 2,
-    maximum: 99,
-    name: "neat"
-  }
-];
+const skills = {
+  consolidatedSkills: [
+    {
+      multivalue: false,
+      minimum: 0,
+      maximum: 1,
+      name: "wow"
+    },
+    {
+      multivalue: true,
+      minimum: 2,
+      maximum: 99,
+      name: "neat"
+    }
+  ]
+};
 
 delete window.location;
 window.location = { reload: jest.fn() };
@@ -249,7 +251,7 @@ describe("<App />", () => {
               },
               {
                 type: "loadSkills",
-                payload: skills
+                payload: skills.consolidatedSkills
               },
               {
                 type: "addWorkers",
@@ -405,7 +407,7 @@ describe("<App />", () => {
               },
               {
                 type: "loadSkills",
-                payload: skills
+                payload: skills.consolidatedSkills
               },
               {
                 type: "addWorkers",
@@ -564,7 +566,7 @@ describe("<App />", () => {
           },
           {
             type: "loadSkills",
-            payload: skills
+            payload: skills.consolidatedSkills
           },
           {
             type: "addWorkers",
@@ -629,7 +631,7 @@ describe("<App />", () => {
           },
           {
             type: "loadSkills",
-            payload: skills
+            payload: skills.consolidatedSkills
           },
           {
             type: "addWorkers",
@@ -694,7 +696,7 @@ describe("<App />", () => {
           },
           {
             type: "loadSkills",
-            payload: skills
+            payload: skills.consolidatedSkills
           },
           {
             type: "addWorkers",
