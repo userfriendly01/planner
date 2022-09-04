@@ -77,11 +77,7 @@ const CallFlowContainer = () => {
       console.warn("MAPPING THROUGH", skill);
       skill.profiles.map((p: any) => {
         console.warn("Selected Roles", selectedProfiles);
-        if(selectedProfiles.includes(p.profileId)) {
-          return true;
-        } else {
-          return false;
-        }
+        return selectedProfiles.some((sp: any) => sp.profile_id === p.profileId);
       });
     });
     console.warn("Filtered by Profile: ", filtered);
