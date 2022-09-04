@@ -32,7 +32,7 @@ import {
 import React, {
   useEffect, useState
 } from "react";
-import { filterSkillsByNameAndProfile } from "utils";
+import { filterSkillsByName } from "utils";
 
 interface SkillsTableProps {
   searchBy: string,
@@ -68,8 +68,8 @@ const SkillsTable = (props: SkillsTableProps) => {
     console.warn(`Use Effect entered!... searchBy: ${searchBy} Filtered Skills: `, filteredSkills);
     const trimmedSearch = searchBy.trim();
     if (trimmedSearch !== "") {
-      setFilteredSkills(filteredSkills.filter((skill: Skill) => filterSkillsByNameAndProfile(skill, trimmedSearch)));
-      console.warn("New filtered skills", filteredSkills.filter((skill: Skill) => filterSkillsByNameAndProfile(skill, trimmedSearch)));
+      setFilteredSkills(filteredSkills.filter((skill: Skill) => filterSkillsByName(skill, trimmedSearch)));
+      console.warn("New filtered skills", filteredSkills.filter((skill: Skill) => filterSkillsByName(skill, trimmedSearch)));
     } }, [searchBy]);
 
   const getProfilesForSkill = (skill: any) => {
