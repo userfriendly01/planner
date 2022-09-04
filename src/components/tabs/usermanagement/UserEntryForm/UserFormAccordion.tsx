@@ -44,7 +44,9 @@ const UserFormAccordion = (props: UserFormAccordionProps) => {
     <FormControlsContainer>
       <AccordionWrapper>
         <StyledAccordion expanded={activeTab === tabNames.BASIC_INFO}>
-          <AccordionSummary>{tabNames.BASIC_INFO}</AccordionSummary>
+          <AccordionSummary
+            onClick={() => setActiveTab(tabNames.BASIC_INFO)}
+          >{tabNames.BASIC_INFO}</AccordionSummary>
           <AccordionDetails>
             <BasicFormInfo
               skills={skills}
@@ -57,13 +59,17 @@ const UserFormAccordion = (props: UserFormAccordionProps) => {
           </AccordionDetails>
         </StyledAccordion>
         <StyledAccordion expanded={activeTab === tabNames.CALL_RECORDING}>
-          <AccordionSummary>{tabNames.CALL_RECORDING}</AccordionSummary>
+          <AccordionSummary
+            onClick={() => setActiveTab(tabNames.CALL_RECORDING)}
+          >{tabNames.CALL_RECORDING}</AccordionSummary>
           <AccordionDetails>
             <CallRecordingForm twilioWorker={worker} />
           </AccordionDetails>
         </StyledAccordion>
         <StyledAccordion expanded={activeTab === tabNames.DEFAULT_SKILLS}>
-          <AccordionSummary>{tabNames.DEFAULT_SKILLS}</AccordionSummary>
+          <AccordionSummary
+            onClick={() => setActiveTab(tabNames.DEFAULT_SKILLS)}
+          >{tabNames.DEFAULT_SKILLS}</AccordionSummary>
           <AccordionDetails>
             <SkillsFormInfo />
           </AccordionDetails>

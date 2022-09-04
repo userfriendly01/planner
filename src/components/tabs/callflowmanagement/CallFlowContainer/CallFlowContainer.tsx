@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, {
+  useState, useEffect
+} from "react";
 import {
   MessageBox,
   SkillsTable,
-  ProfileDropDown
+  Dropdown
 } from "components";
 import {
   useAdminState
@@ -11,6 +13,9 @@ import styled from "styled-components";
 import {
   filterSkillsByName
 } from "utils";
+import {
+  Skill
+} from "globals";
 import { SearchBox } from "components/tabs/usermanagement";
 
 const CallFlowContainer = () => {
@@ -52,25 +57,43 @@ const CallFlowContainer = () => {
 
   const [searchBy, setSearchBy] = useState("");
   const [ selected, setSelected ] = useState([]);
-  const profiles = useAdminState().profileContext.profiles;
+  const state = useAdminState();
+  const profiles = state.profileContext.profiles;
+  const skills = state.skillContext.skills;
+  const [ filteredSkills, setFilteredSkills ] = useState(skills.slice());
 
-  // const state = useAdminState();
-  // const skills = state.skillContext.skills;
-  // let filteredSkills = skills.slice();
+  useEffect(() => {
+    console.warn(`Use Effect entered!... searchBy: ${searchBy} Filtered Skills: `, filteredSkills);
+    const trimmedSearch = searchBy.trim();
+    if (trimmedSearch !== "") {
+      setFilteredSkills(filteredSkills.filter((skill: Skill) => filterSkillsByName(skill, trimmedSearch)));
+      console.warn("New filtered skills", filteredSkills.filter((skill: Skill) => filterSkillsByName(skill, trimmedSearch)));
+    } }, [searchBy]);
 
-  // const trimmedSearch = searchBy.trim();
-  // if (trimmedSearch !== "") {
-  //   filteredSkills = filteredSkills.filter(worker => filterSkillsByName(worker, trimmedSearch));
-  // }
+  const filterByProfile = (selectedRoles: any[]) => {
+    const filtered = filteredSkills.filter((skill: Skill) => {
+      skill.profiles.map((p: any) => {
+        console.warn("Selected Roles", selectedRoles);
+        if(selectedRoles.includes(p.profileId)) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+    });
+    console.warn("Filtered by Profile: ", filtered);
+    setFilteredSkills(filtered);
+  };
 
   return (
     <CallflowWrapper>
       <SearchSkillsWrapper>
         <Header>
-          <ProfileDropDown
+          <Dropdown
+            label="Profile Id"
+            multiple={true}
             availableProfiles={profiles}
-            updateProfile={() => console.log("profile")}
-            profileId={1}
+            updateValue={(event: any, selectedRoles: any) => filterByProfile(selectedRoles)}
           />
           <SearchBox
             key={"search-box"}
@@ -80,9 +103,9 @@ const CallFlowContainer = () => {
         </Header>
         <SkillsWrapper>
           <SkillsTable
+            filteredSkills={filteredSkills}
             selected={selected}
             setSelected={setSelected}
-            searchBy={searchBy}
           />
         </SkillsWrapper>
       </SearchSkillsWrapper>

@@ -35,14 +35,14 @@ import React, {
 import { filterSkillsByName } from "utils";
 
 interface SkillsTableProps {
-  searchBy: string,
+  filteredSkills: any[],
   selected: any[],
   setSelected: (skills: any[]) => void
 }
 
 const SkillsTable = (props: SkillsTableProps) => {
   const {
-    searchBy,
+    filteredSkills,
     selected,
     setSelected
   } = props;
@@ -59,18 +59,8 @@ const SkillsTable = (props: SkillsTableProps) => {
 
   const [confirmationModalOpts, setConfirmationModalOpts] = useState(defaultModalOpts);
   const [saveResult, setSaveResult] = useState(defaultSaveResult);
-  const state = useAdminState();
-  const skills = state.skillContext.skills;
-  const [ filteredSkills, setFilteredSkills ] = useState(skills.slice());
   // let filteredSkills = skills.slice();
 
-  useEffect(() => {
-    console.warn(`Use Effect entered!... searchBy: ${searchBy} Filtered Skills: `, filteredSkills);
-    const trimmedSearch = searchBy.trim();
-    if (trimmedSearch !== "") {
-      setFilteredSkills(filteredSkills.filter((skill: Skill) => filterSkillsByName(skill, trimmedSearch)));
-      console.warn("New filtered skills", filteredSkills.filter((skill: Skill) => filterSkillsByName(skill, trimmedSearch)));
-    } }, [searchBy]);
 
   const getProfilesForSkill = (skill: any) => {
     let profileString = "";
