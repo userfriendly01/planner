@@ -85,6 +85,16 @@ const CallFlowContainer = () => {
     setFilteredSkills(filtered);
   };
 
+  const getProfileOptions = () => {
+    return profiles.map((p: any) => {
+      return {
+        ...p,
+        label: p.profile_nme,
+        value: p.profile_id
+      };
+    });
+  };
+
   return (
     <CallflowWrapper>
       <SearchSkillsWrapper>
@@ -92,7 +102,7 @@ const CallFlowContainer = () => {
           <Dropdown
             label="Profile Id"
             multiple={true}
-            availableProfiles={profiles}
+            options={getProfileOptions()}
             updateValue={(event: any, selectedRoles: any) => filterByProfile(selectedRoles)}
           />
           <SearchBox
