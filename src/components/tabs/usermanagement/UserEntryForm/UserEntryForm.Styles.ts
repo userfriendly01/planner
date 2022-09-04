@@ -122,5 +122,7 @@ export const StyledIcon = styled(Edit)<{theme: any}>`
 export const StyledAccordion = styled(Accordion)`
   border-top: 1px solid black;
   border-bottom: 1px solid black;
+  border-right: none;
+  border-left: none;
   padding: 5px 0px
 `;

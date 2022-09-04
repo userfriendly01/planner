@@ -32,11 +32,19 @@ const UserFormAccordion = (props: UserFormAccordionProps) => {
     flex-direction: column;
   `;
 
+  const tabNames = {
+    BASIC_INFO: "Basic Info",
+    CALL_RECORDING: "Call Recording",
+    DEFAULT_SKILLS: "Default Skills"
+  };
+
+  const [activeTab, setActiveTab] = React.useState(tabNames.BASIC_INFO);
+
   return (
     <FormControlsContainer>
       <AccordionWrapper>
-        <StyledAccordion expanded={true}>
-          <AccordionSummary>Basic Info</AccordionSummary>
+        <StyledAccordion expanded={activeTab === tabNames.BASIC_INFO}>
+          <AccordionSummary>{tabNames.BASIC_INFO}</AccordionSummary>
           <AccordionDetails>
             <BasicFormInfo
               skills={skills}
@@ -48,14 +56,14 @@ const UserFormAccordion = (props: UserFormAccordionProps) => {
               setForwardToToggle={setForwardToToggle}/>
           </AccordionDetails>
         </StyledAccordion>
-        <StyledAccordion>
-          <AccordionSummary>Call Recording</AccordionSummary>
+        <StyledAccordion expanded={activeTab === tabNames.CALL_RECORDING}>
+          <AccordionSummary>{tabNames.CALL_RECORDING}</AccordionSummary>
           <AccordionDetails>
             <CallRecordingForm twilioWorker={worker} />
           </AccordionDetails>
         </StyledAccordion>
-        <StyledAccordion>
-          <AccordionSummary>Default Skills</AccordionSummary>
+        <StyledAccordion expanded={activeTab === tabNames.DEFAULT_SKILLS}>
+          <AccordionSummary>{tabNames.DEFAULT_SKILLS}</AccordionSummary>
           <AccordionDetails>
             <SkillsFormInfo />
           </AccordionDetails>
