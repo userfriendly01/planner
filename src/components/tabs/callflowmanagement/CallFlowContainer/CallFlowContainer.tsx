@@ -60,6 +60,7 @@ const CallFlowContainer = () => {
   const state = useAdminState();
   const profiles = state.profileContext.profiles;
   const skills = state.skillContext.skills;
+  const [ selectedProfiles, setSelectedProfiles ] = useState([]);
   const [ filteredSkills, setFilteredSkills ] = useState(skills.slice());
 
   useEffect(() => {
@@ -70,11 +71,13 @@ const CallFlowContainer = () => {
       console.warn("New filtered skills", filteredSkills.filter((skill: Skill) => filterSkillsByName(skill, trimmedSearch)));
     } }, [searchBy]);
 
-  const filterByProfile = (selectedRoles: any[]) => {
+  const filterByProfile = (selectedProfiles: any[]) => {
+    console.warn("selectedProfiles", selectedProfiles);
     const filtered = filteredSkills.filter((skill: Skill) => {
+      console.warn("MAPPING THROUGH", skill);
       skill.profiles.map((p: any) => {
-        console.warn("Selected Roles", selectedRoles);
-        if(selectedRoles.includes(p.profileId)) {
+        console.warn("Selected Roles", selectedProfiles);
+        if(selectedProfiles.includes(p.profileId)) {
           return true;
         } else {
           return false;
@@ -82,6 +85,7 @@ const CallFlowContainer = () => {
       });
     });
     console.warn("Filtered by Profile: ", filtered);
+    setSelectedProfiles(selectedProfiles);
     setFilteredSkills(filtered);
   };
 
@@ -102,6 +106,7 @@ const CallFlowContainer = () => {
           <Dropdown
             label="Profile Id"
             multiple={true}
+            value={selectedProfiles}
             options={getProfileOptions()}
             updateValue={(event: any, selectedRoles: any) => filterByProfile(selectedRoles)}
           />

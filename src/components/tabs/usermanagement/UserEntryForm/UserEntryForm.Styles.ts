@@ -128,4 +128,5 @@ export const StyledAccordion = styled(Accordion)`
   border-left: none;
   box-shadow: none;
   padding: 5px 0px
+  margin: 0px;
 `;
