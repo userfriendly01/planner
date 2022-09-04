@@ -9,7 +9,10 @@ import {
   CallRecordingForm,
   SkillsFormInfo
 } from "components";
-import { FormControlsContainer } from "./UserEntryForm.Styles";
+import {
+  FormControlsContainer,
+  StyledAccordion
+} from "./UserEntryForm.Styles";
 import { UserFormAccordionProps } from "./UserEntryForm.Interfaces";
 import styled from "styled-components";
 
@@ -32,7 +35,7 @@ const UserFormAccordion = (props: UserFormAccordionProps) => {
   return (
     <FormControlsContainer>
       <AccordionWrapper>
-        <Accordion expanded={true}>
+        <StyledAccordion expanded={true}>
           <AccordionSummary>Basic Info</AccordionSummary>
           <AccordionDetails>
             <BasicFormInfo
@@ -44,19 +47,19 @@ const UserFormAccordion = (props: UserFormAccordionProps) => {
               forwardToToggle={forwardToToggle}
               setForwardToToggle={setForwardToToggle}/>
           </AccordionDetails>
-        </Accordion>
-        <Accordion>
+        </StyledAccordion>
+        <StyledAccordion>
           <AccordionSummary>Call Recording</AccordionSummary>
           <AccordionDetails>
             <CallRecordingForm twilioWorker={worker} />
           </AccordionDetails>
-        </Accordion>
-        <Accordion>
+        </StyledAccordion>
+        <StyledAccordion>
           <AccordionSummary>Default Skills</AccordionSummary>
           <AccordionDetails>
             <SkillsFormInfo />
           </AccordionDetails>
-        </Accordion>
+        </StyledAccordion>
       </AccordionWrapper>
     </FormControlsContainer>
   );
