@@ -78,12 +78,17 @@ const CallFlowContainer = () => {
     if(selectedProfiles.length > 0){
       filtered = filteredSkills.filter((skill: Skill) => {
         console.warn("MAPPING THROUGH", skill);
-        return skill.profiles.map((p: any) => {
+        let shouldReturn = false;
+        skill.profiles.forEach((p: any) => {
           console.warn("Selected Roles", selectedProfiles);
+          console.warn("Profile?", p);
           const logic = selectedProfiles.some((sp: any) => sp.profile_id === p.profileId);
           console.warn("Logic: ", logic);
-          return logic;
+          if(logic){
+            shouldReturn = true;
+          }
         });
+        return shouldReturn;
       });
       console.warn("Filtered by Profile: ", filtered);
       setFilteredSkills(filtered);
