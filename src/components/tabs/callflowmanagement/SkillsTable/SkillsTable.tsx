@@ -65,6 +65,7 @@ const SkillsTable = (props: SkillsTableProps) => {
   // let filteredSkills = skills.slice();
 
   useEffect(() => {
+    console.warn(`Use Effect entered!... searchBy: ${searchBy} Filtered Skills: ${filteredSkills}`);
     const trimmedSearch = searchBy.trim();
     if (trimmedSearch !== "") {
       setFilteredSkills(filteredSkills.filter((skill: Skill) => filterSkillsByNameAndProfile(skill, trimmedSearch)));
@@ -75,7 +76,7 @@ const SkillsTable = (props: SkillsTableProps) => {
     let profileString = "";
     skill.profiles?.map((p: any, index: number) => {
       profileString = profileString + `${p.profileName} - ${p.profileId}`;
-      if(index > 0){
+      if(index !== filteredSkills.length - 1){
         profileString = profileString + ",\n";
       }
     });

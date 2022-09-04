@@ -4,7 +4,6 @@ import styled from "styled-components";
 const headerIconWidth = "10px";
 
 export const StyledCheckBox = styled(Checkbox)`
-StyledCheckBox
   padding: 0px;
 `;
 
@@ -46,10 +45,10 @@ export const CustomTableHeader = styled.th`
     text-align: -webkit-center;
   }
   &:nth-child(2) {
-    width: 40%;
+    width: 35%;
   }
   &:nth-child(3) {
-    width: 20%;
+    width: 35%;
   }
   &:nth-child(4) {
     width: ${headerIconWidth};
