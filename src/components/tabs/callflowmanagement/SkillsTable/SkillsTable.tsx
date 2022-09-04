@@ -29,7 +29,9 @@ import {
   FilterAlt,
   FlashOn
 } from "@mui/icons-material";
-import React, { useState } from "react";
+import React, {
+  useEffect, useState
+} from "react";
 import { filterSkillsByNameAndProfile } from "utils";
 
 interface SkillsTableProps {
@@ -59,14 +61,25 @@ const SkillsTable = (props: SkillsTableProps) => {
   const [saveResult, setSaveResult] = useState(defaultSaveResult);
   const state = useAdminState();
   const skills = state.skillContext.skills;
-  let filteredSkills = skills.slice();
+  const [ filteredSkills, setFilteredSkills ] = useState(skills.slice());
+  // let filteredSkills = skills.slice();
 
-  const trimmedSearch = searchBy.trim();
-  if (trimmedSearch !== "") {
-    filteredSkills = filteredSkills.filter((skill: Skill) => filterSkillsByNameAndProfile(skill, trimmedSearch));
-  }
-  const getProfilesForSkill = () => {
-    return "Test Profile - 1";
+  useEffect(() => {
+    const trimmedSearch = searchBy.trim();
+    if (trimmedSearch !== "") {
+      setFilteredSkills(filteredSkills.filter((skill: Skill) => filterSkillsByNameAndProfile(skill, trimmedSearch)));
+    }
+  }, [searchBy]);
+
+  const getProfilesForSkill = (skill: any) => {
+    let profileString = "";
+    skill.profiles?.map((p: any, index: number) => {
+      profileString = profileString + `${p.profileName} - ${p.profileId}`;
+      if(index > 0){
+        profileString = profileString + ",\n";
+      }
+    });
+    return profileString;
   };
 
   const handleSetSelected = (skillName: string, isSelected: boolean) => {
@@ -107,7 +120,7 @@ const SkillsTable = (props: SkillsTableProps) => {
                   />
                 </TableText></CustomTableData>
                 <CustomTableData><TableText>{skill.name}</TableText></CustomTableData>
-                <CustomTableData><TableText>{getProfilesForSkill()}</TableText></CustomTableData>
+                <CustomTableData><TableText>{getProfilesForSkill(skill)}</TableText></CustomTableData>
                 <CustomTableData><TableText><FlashOn/></TableText></CustomTableData>
                 <CustomTableData><TableText><Block/></TableText></CustomTableData>
               </CustomTableRow>
