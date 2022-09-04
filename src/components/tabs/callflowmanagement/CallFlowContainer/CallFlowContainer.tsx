@@ -73,16 +73,24 @@ const CallFlowContainer = () => {
 
   const filterByProfile = (selectedProfiles: any[]) => {
     console.warn("selectedProfiles", selectedProfiles);
-    const filtered = filteredSkills.filter((skill: Skill) => {
-      console.warn("MAPPING THROUGH", skill);
-      skill.profiles.map((p: any) => {
-        console.warn("Selected Roles", selectedProfiles);
-        return selectedProfiles.some((sp: any) => sp.profile_id === p.profileId);
-      });
-    });
-    console.warn("Filtered by Profile: ", filtered);
     setSelectedProfiles(selectedProfiles);
-    setFilteredSkills(filtered);
+    let filtered;
+    if(selectedProfiles.length > 0){
+      filtered = filteredSkills.filter((skill: Skill) => {
+        console.warn("MAPPING THROUGH", skill);
+        return skill.profiles.map((p: any) => {
+          console.warn("Selected Roles", selectedProfiles);
+          const logic = selectedProfiles.some((sp: any) => sp.profile_id === p.profileId);
+          console.warn("Logic: ", logic);
+          return logic;
+        });
+      });
+      console.warn("Filtered by Profile: ", filtered);
+      setFilteredSkills(filtered);
+    } else {
+      setFilteredSkills(skills.slice());
+    }
+
   };
 
   const getProfileOptions = () => {
@@ -105,6 +113,7 @@ const CallFlowContainer = () => {
             value={selectedProfiles}
             options={getProfileOptions()}
             updateValue={(event: any, selectedRoles: any) => filterByProfile(selectedRoles)}
+            styles={{ width: "300px" }}
           />
           <SearchBox
             key={"search-box"}
