@@ -65,35 +65,35 @@ const CallFlowContainer = () => {
 
   useEffect(() => {
     console.warn(`Use Effect entered!... searchBy: ${searchBy} Filtered Skills: `, filteredSkills);
+    filterBySearch();
+  }, [searchBy]);
+
+  const filterBySearch = () => {
     const trimmedSearch = searchBy.trim();
     if (trimmedSearch !== "") {
       setFilteredSkills(filteredSkills.filter((skill: Skill) => filterSkillsByName(skill, trimmedSearch)));
-      console.warn("New filtered skills", filteredSkills.filter((skill: Skill) => filterSkillsByName(skill, trimmedSearch)));
-    } }, [searchBy]);
+    }
+  };
 
   const filterByProfile = (selectedProfiles: any[]) => {
-    console.warn("selectedProfiles", selectedProfiles);
     setSelectedProfiles(selectedProfiles);
-    let filtered;
     if(selectedProfiles.length > 0){
-      filtered = filteredSkills.filter((skill: Skill) => {
-        console.warn("MAPPING THROUGH", skill);
+      const filtered = filteredSkills.filter((skill: Skill) => {
         let shouldReturn = false;
         skill.profiles.forEach((p: any) => {
-          console.warn("Selected Roles", selectedProfiles);
-          console.warn("Profile?", p);
-          const logic = selectedProfiles.some((sp: any) => sp.profile_id === p.profileId);
-          console.warn("Logic: ", logic);
-          if(logic){
+          if(selectedProfiles.some((sp: any) => sp.profile_id === p.profileId)){
             shouldReturn = true;
           }
         });
         return shouldReturn;
       });
-      console.warn("Filtered by Profile: ", filtered);
       setFilteredSkills(filtered);
     } else {
-      setFilteredSkills(skills.slice());
+      if(searchBy){
+        filterBySearch();
+      } else {
+        setFilteredSkills(skills.slice());
+      }
     }
 
   };
