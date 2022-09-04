@@ -9,7 +9,7 @@ import {
 } from "context";
 import styled from "styled-components";
 import {
-  filterSkillsByNameAndProfile
+  filterSkillsByName
 } from "utils";
 import { SearchBox } from "components/tabs/usermanagement";
 
@@ -60,7 +60,7 @@ const CallFlowContainer = () => {
 
   // const trimmedSearch = searchBy.trim();
   // if (trimmedSearch !== "") {
-  //   filteredSkills = filteredSkills.filter(worker => filterSkillsByNameAndProfile(worker, trimmedSearch));
+  //   filteredSkills = filteredSkills.filter(worker => filterSkillsByName(worker, trimmedSearch));
   // }
 
   return (
