@@ -71,26 +71,10 @@ export const CustomTableRow = styled.tr<{ selected: boolean }>`
   }
 `;
 
-export const DeltaWrapper = styled.div`
-  align-items: center;
-  color: ${props => props.theme.libertyDarkGray};
-  display: flex;
-  justify-content: center;
-  margin: auto;
-`;
-
-export const IconWrapper = styled.div`
-  align-items: center;
-  border-radius: ${props => props.theme.tableRow.icon.hoverDiameter / 2}px;
-  color: ${props => props.theme.libertyDarkGray};
+export const FilterWrapper = styled.div<{ active: boolean }>`
+  color: ${props => props.active ? "rgb(170, 237, 237)" : "black"};
   cursor: pointer;
-  display: flex;
-  font-size: ${props => props.theme.tableRow.icon.size}px;
-  height: ${props => props.theme.tableRow.icon.hoverDiameter}px;
-  justify-content: center;
-  width: ${props => props.theme.tableRow.icon.hoverDiameter}px;
   &:hover {
-    background-color: ${props => props.theme.tableRow.selectedColor};
     cursor: pointer;
   }
 `;

@@ -3,8 +3,7 @@ import {
   CustomTableData,
   CustomTableHeader,
   CustomTableRow,
-  DeltaWrapper,
-  IconWrapper,
+  FilterWrapper,
   TableContainer,
   StyledCheckBox,
   TableText
@@ -106,17 +105,19 @@ const SkillsTable = (props: SkillsTableProps) => {
             <CustomTableHeader
               onClick={() => setFilteredState({
                 ...filteredState,
-                [filterType.FLASH]: !filteredState.flashMessage
+                [filterType.FLASH]: !filteredState[filterType.FLASH]
               })
               }
-            >FLASH</CustomTableHeader>
+            ><FilterWrapper active={filteredState[filterType.FLASH]}>FLASH</FilterWrapper>
+            </CustomTableHeader>
             <CustomTableHeader
               onClick={() => setFilteredState({
                 ...filteredState,
-                [filterType.CLOSED]: !filteredState.closedMessage
+                [filterType.CLOSED]: !filteredState[filterType.CLOSED]
               })
               }
-            >CLOSED</CustomTableHeader>
+            ><FilterWrapper active={filteredState[filterType.CLOSED]}>CLOSED</FilterWrapper>
+            </CustomTableHeader>
           </tr>
         </thead>
         <tbody>
@@ -131,7 +132,7 @@ const SkillsTable = (props: SkillsTableProps) => {
                   />
                 </TableText></CustomTableData>
                 <CustomTableData><TableText>{skill.name}</TableText></CustomTableData>
-                <CustomTableData><TableText>{getProfilesForSkill(skill).map((d: any) => ({ d }))}</TableText></CustomTableData>
+                <CustomTableData><TableText>{getProfilesForSkill(skill).map((d: any) => d)}</TableText></CustomTableData>
                 <CustomTableData><TableText>{skill.flashMessage && <FlashOn/>}</TableText></CustomTableData>
                 <CustomTableData><TableText>{skill.closedMessage && <Block/>}</TableText></CustomTableData>
               </CustomTableRow>
