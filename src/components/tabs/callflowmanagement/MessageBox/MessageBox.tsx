@@ -6,6 +6,7 @@ import {
   UserFormButton,
   IconWrapper
 } from "./MessageBox.Styles";
+import  Download from "../Export/Export";
 import { MessageBoxProps } from "../CallFlowManagement.Interfaces";
 import {
   Edit,
@@ -49,6 +50,10 @@ export const MessageBox = (props: MessageBoxProps) => {
   const isMultiSelection = selected.length > 1;
   const [ action, setAction ] = useState(actionTypes.VIEW);
   const [ text, setText ] = useState(isSingleSelection ? selected[0][messageVariable]: "");
+
+  console.log("messageVariable", messageVariable);
+  console.log("selected[0][messageVariable]", selected[0][messageVariable]);
+  console.log("text", text);
 
   const handleIconClick = (actionType: actionTypes) => {
     action === actionType ? setAction(actionTypes.VIEW) : setAction(actionType);
@@ -151,6 +156,7 @@ export const MessageBox = (props: MessageBoxProps) => {
 
   return (
     <MessageBoxWrapper>
+      { isMultiSelection && <Download />}
       <h1>{messageType}</h1>
       <ActionBar>
         <IconWrapper active={action === actionTypes.EDIT}>
