@@ -73,7 +73,6 @@
     "@mui/material": "^5.8.1",
     "@progress/kendo-licensing": "^1.2.2",
     "@progress/kendo-react-excel-export": "^5.5.0",
-    "@progress/kendo-react-grid": "^5.5.0",
     "css-loader": "^2.1.1",
     "express": "^4.16.4",
     "express-healthcheck": "^0.1.0",

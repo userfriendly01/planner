@@ -6,13 +6,13 @@ import {
   UserFormButton,
   IconWrapper
 } from "./MessageBox.Styles";
-import  Download from "../Export/Export";
 import { MessageBoxProps } from "../CallFlowManagement.Interfaces";
 import {
   Edit,
   Delete,
   FileDownload
 } from "@mui/icons-material";
+import { ExcelExport } from "@progress/kendo-react-excel-export";
 import {
   useAdminState
 } from "context";
@@ -43,17 +43,24 @@ export const MessageBox = (props: MessageBoxProps) => {
     messageType
   } = props;
 
+  const _export = React.useRef(null);
   const nNumber = useAdminState().userContext.pingIdentity.sub;
   const apiCall = messageType === "Closed Message" ? updateClosedMessage : updateFlashMessage;
   const messageVariable = messageType === "Closed Message" ? "closedMessage" : "flashMessage";
   const isSingleSelection = selected.length === 1;
   const isMultiSelection = selected.length > 1;
   const [ action, setAction ] = useState(actionTypes.VIEW);
-  const [ text, setText ] = useState(isSingleSelection ? selected[0][messageVariable]: "");
+  const [ text, setText ] = useState("");
 
   console.log("messageVariable", messageVariable);
   console.log("selected[0][messageVariable]", selected.length > 0 ? selected[0][messageVariable]: null);
   console.log("text", text);
+
+  React.useEffect(() => {
+    if(isSingleSelection) {
+      setText(selected[0][messageVariable]);
+    }
+  }, [selected]);
 
   const handleIconClick = (actionType: actionTypes) => {
     action === actionType ? setAction(actionTypes.VIEW) : setAction(actionType);
@@ -152,11 +159,32 @@ export const MessageBox = (props: MessageBoxProps) => {
 
   const handleExport = () => {
     console.log("Handle Export has been clicked!");
+    const columns = [
+      {
+        field: "name",
+        title: "Skill Name",
+        width: "50px"
+      },
+      {
+        field: "closedMessage",
+        title: "Closed Message",
+        width: "200px"
+      },
+      {
+        field: "flashMessage",
+        title: "Flash Message",
+        width: "200px"
+      }
+    ];
+    if (_export.current !== null) {
+      _export.current.save(selected, columns);
+    }
+    setAction(actionTypes.VIEW);
   };
 
   return (
     <MessageBoxWrapper>
-      { isMultiSelection && <Download />}
+      <ExcelExport ref={_export}/>
       <h1>{messageType}</h1>
       <ActionBar>
         <IconWrapper active={action === actionTypes.EDIT}>
