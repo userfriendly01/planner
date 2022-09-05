@@ -4,11 +4,6 @@ import { Edit } from "@material-ui/icons";
 import {
   StyledButton
 } from "components";
-import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails
-} from "@mui/material";
 
 export const FlexRow = styled.div`
   display: flex;
@@ -119,14 +114,14 @@ export const StyledIcon = styled(Edit)<{theme: any}>`
   }
 `;
 
-export const StyledAccordion = styled(Accordion)`
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
-  border-top-left-radius: 0px;
-  border-top-right-radius: 0px;
-  border-right: none;
-  border-left: none;
-  box-shadow: none;
-  padding: 5px 0px
-  margin: 0px;
-`;
+// export const StyledAccordion = styled(Accordion)`
+//   border-top: 1px solid black;
+//   border-bottom: 1px solid black;
+//   border-top-left-radius: 0px;
+//   border-top-right-radius: 0px;
+//   border-right: none;
+//   border-left: none;
+//   box-shadow: none;
+//   padding: 5px 0px
+//   margin: 0px;
+// `;
