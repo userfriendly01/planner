@@ -65,6 +65,12 @@ export const MessageBox = (props: MessageBoxProps) => {
   }, [selected]);
 
   const handleIconClick = (actionType: actionTypes) => {
+    if(action === actionType){
+      setAction(actionTypes.VIEW);
+      if(actionType === actionTypes.EDIT){
+        setText("");
+      }
+    }
     action === actionType ? setAction(actionTypes.VIEW) : setAction(actionType);
   };
 
@@ -106,7 +112,7 @@ export const MessageBox = (props: MessageBoxProps) => {
         if(s.name === skillName) {
           updatedSkill = {
             ...s,
-            messageVariable: message
+            [messageVariable]: message
           };
         }
       });
