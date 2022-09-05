@@ -6,13 +6,14 @@ import {
 import {
   Switch,
   TextField
-} from "@mui/material";
+} from "@material-ui/core";
+import PropTypes from "prop-types";
 import React, { useState } from "react";
 import MaskedInput from "react-text-mask";
-import PropTypes from "prop-types";
 import styled from "styled-components";
 
-//Warning - if you want to try and convert this to a tsx file, there seems to be version weirdness with @types/react-text-mask and its... not worth it
+//react-text-mask is not compatible with the versions of @types-react thats installed
+//converting this to a jsx file since I cant get it to get along with the project as a tsx
 
 const tenDigitMask = ["(", /[1-9]/, /\d/, /\d/, ")", " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/];
 const sevenDigitMask = [/[1-9]/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/];
@@ -65,19 +66,6 @@ const TenDigitInputMask = inputProps => {
   );
 };
 
-// export interface ModalPhoneNumberProps {
-//   allowSevenDigitVdn?: boolean,
-//   disabled?: boolean,
-//   error?: boolean,
-//   helperText?: string,
-//   id: string,
-//   label: string,
-//   number: string,
-//   onBlur: () => void,
-//   showError?: boolean,
-//   updateValue: (maskedValue: string, unmaskedValue: string, isNumberValid: boolean, e164Number: string) => void,
-//   icon?: JSX.Element
-// }
 const ModalPhoneNumber = props => {
   const {
     allowSevenDigitVdn, // if true, show toggle button to switch between input masks,
@@ -157,18 +145,17 @@ const ModalPhoneNumber = props => {
 };
 
 ModalPhoneNumber.propTypes = {
-  // message: PropTypes.string.isRequired,
-  allowSevenDigitVdn: PropTypes.bool, // if true, show toggle button to switch between input masks,
+  allowSevenDigitVdn: PropTypes.bool,
   disabled: PropTypes.bool,
   error: PropTypes.bool,
   helperText: PropTypes.string,
   id: PropTypes.string,
   label: PropTypes.string,
-  number: PropTypes.number,
+  number: PropTypes.string,
   onBlur: PropTypes.func,
   showError: PropTypes.bool,
-  updateValue: PropTypes.func,
-  icon: PropTypes.any
+  updateValue: PropTypes.func.isRequired,
+  icon: PropTypes.element
 };
 
 export default ModalPhoneNumber;
