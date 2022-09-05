@@ -15,6 +15,9 @@ import {
   useAdminState
 } from "context";
 import {
+  Skill
+} from "globals";
+import {
   updateFlashMessage,
   updateClosedMessage
 } from "services";
@@ -37,6 +40,7 @@ export const MessageBox = (props: MessageBoxProps) => {
   } = props;
 
   const nNumber = useAdminState().userContext.pingIdentity.sub;
+  const apiCall = messageType === "Closed Message" ? updateClosedMessage : updateFlashMessage;
   const messageVariable = messageType === "Closed Message" ? "closedMessage" : "flashMessage";
   const isSingleSelection = selected.length === 1;
   const isMultiSelection = selected.length > 1;
@@ -64,16 +68,21 @@ export const MessageBox = (props: MessageBoxProps) => {
     }
   };
 
-  const handleEdit = () => {
+  const handleEdit = async () => {
     console.log("Handle Edit has been clicked!");
+    const results = await Promise.allSettled(selected.map((skill: Skill) => {
+      return apiCall(skill, text, nNumber);
+    }));
+    console.log("Handle Results", results);
   };
 
+  //Delete can be handled as a separate story - leaving the structure here
   const handleDelete = () => {
     console.log("Handle Delete has been clicked!");
   };
 
   const handleExport = () => {
-    console.log("Handle Edit has been clicked!");
+    console.log("Handle Export has been clicked!");
   };
 
   return (
@@ -83,16 +92,13 @@ export const MessageBox = (props: MessageBoxProps) => {
         <IconWrapper active={action === actionTypes.EDIT}>
           <Edit onClick={() => handleIconClick(actionTypes.EDIT)}/>
         </IconWrapper>
-        <IconWrapper active={action === actionTypes.DELETE} >
-          <Delete onClick={() => handleIconClick(actionTypes.DELETE)} />
-        </IconWrapper>
         { isMultiSelection && <IconWrapper active={action === actionTypes.EXPORT}>
           <FileDownload onClick={() => handleIconClick(actionTypes.EXPORT)}  />
         </IconWrapper>}
       </ActionBar>
       <TextField
-        readOnly={action === actionTypes.VIEW}
-        onChange={setText}
+        readOnly={action !== actionTypes.EDIT}
+        onChange={event => setText(event.target.value)}
         value={text}
       />
       {(isSingleSelection || isMultiSelection) && action !== actionTypes.VIEW &&

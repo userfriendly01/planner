@@ -32,6 +32,7 @@ export const UserFormButton = styled(StyledButton)`
 
 export const IconWrapper = styled.div<{ active: boolean }>`
   align-items: center;
+  justify-content: center;
   border-radius: 20px;
   color: ${props => props.theme.libertyDarkGray};
   cursor: pointer;
