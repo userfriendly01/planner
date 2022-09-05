@@ -104,5 +104,7 @@ export const TableContainer = styled.div`
 `;
 
 export const TableText = styled.div`
+  display: flex;
+  flex-direction: column;
   margin: 2px;
 `;

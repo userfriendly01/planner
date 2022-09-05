@@ -23,8 +23,11 @@ export const filterByNameAndSkills = (worker, searchValue) => {
 };
 
 export const filterSkillsByName = (skill, searchValue) => {
-  if (!skill || !searchValue) {
+  if (!skill) {
     return false;
+  }
+  if (!searchValue){
+    return true;
   }
   const name = skill.name?.toLowerCase() || "";
   const lowerCaseSearch = searchValue.toLowerCase();

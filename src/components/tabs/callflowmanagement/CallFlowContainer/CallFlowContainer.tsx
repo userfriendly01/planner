@@ -55,51 +55,55 @@ const CallFlowContainer = () => {
     margin: 40 0 30 0;
   `;
 
-  const [searchBy, setSearchBy] = useState("");
   const [ selected, setSelected ] = useState([]);
   const state = useAdminState();
-  const profiles = state.profileContext.profiles;
-  const skills = state.skillContext.skills;
-  const [ selectedProfiles, setSelectedProfiles ] = useState([]);
-  const [ filteredSkills, setFilteredSkills ] = useState(skills.slice());
+
+  const defaultFilteredState: any = {
+    searchBy: "",
+    profiles: [],
+    closedFilter: false,
+    flashFilter: false,
+    filteredList: []
+  };
+  const [ filteredState, setFilteredState ] = useState(defaultFilteredState);
 
   useEffect(() => {
-    console.warn(`Use Effect entered!... searchBy: ${searchBy} Filtered Skills: `, filteredSkills);
-    filterBySearch();
-  }, [searchBy]);
-
-  const filterBySearch = () => {
-    const trimmedSearch = searchBy.trim();
-    if (trimmedSearch !== "") {
-      setFilteredSkills(filteredSkills.filter((skill: Skill) => filterSkillsByName(skill, trimmedSearch)));
-    }
-  };
-
-  const filterByProfile = (selectedProfiles: any[]) => {
-    setSelectedProfiles(selectedProfiles);
-    if(selectedProfiles.length > 0){
-      const filtered = filteredSkills.filter((skill: Skill) => {
+    console.warn("filteredState", filteredState);
+    let filteredList = state.skillContext.skills.slice();
+    //filter by profile
+    if(filteredState.profiles.length > 0){
+      filteredList = filteredList.filter((skill: Skill) => {
         let shouldReturn = false;
         skill.profiles.forEach((p: any) => {
-          if(selectedProfiles.some((sp: any) => sp.profile_id === p.profileId)){
+          if(filteredState.profiles.some((sp: any) => sp.profile_id === p.profileId)){
             shouldReturn = true;
           }
         });
         return shouldReturn;
       });
-      setFilteredSkills(filtered);
-    } else {
-      if(searchBy){
-        filterBySearch();
-      } else {
-        setFilteredSkills(skills.slice());
-      }
+    }
+    //filter by searchBy
+    const trimmedSearch = filteredState.searchBy.trim();
+    filteredList = filteredList.filter((skill: Skill) => filterSkillsByName(skill, trimmedSearch));
+
+    //filter by closed
+    if(filteredState.closedFilter){
+      filteredList = filteredList.filter((skill: Skill) => skill.closedMessage);
+    }
+    //filter by flash
+    if(filteredState.flashFilter){
+      filteredList = filteredList.filter((skill: Skill) => skill.flashMessage);
     }
 
-  };
+    console.warn("new list", filteredList);
+    setFilteredState({
+      ...filteredState,
+      filteredList
+    });
+  }, [filteredState.searchBy, filteredState.profiles, filteredState.closedFilter, filteredState.flashFilter]);
 
   const getProfileOptions = () => {
-    return profiles.map((p: any) => {
+    return state.profileContext.profiles.map((p: any) => {
       return {
         ...p,
         label: p.profile_nme,
@@ -115,22 +119,31 @@ const CallFlowContainer = () => {
           <Dropdown
             label="Profile Id"
             multiple={true}
-            value={selectedProfiles}
+            value={filteredState.profiles}
             options={getProfileOptions()}
-            updateValue={(event: any, selectedRoles: any) => filterByProfile(selectedRoles)}
+            updateValue={(event: any, selectedProfiles: any) => setFilteredState({
+              ...filteredState,
+              profiles: selectedProfiles
+            })}
             styles={{ width: "300px" }}
           />
           <SearchBox
             key={"search-box"}
-            searchBy={searchBy}
-            setSearch={setSearchBy}
+            searchBy={filteredState.searchBy}
+            setSearch={(value: string) => {
+              setFilteredState({
+                ...filteredState,
+                searchBy: value
+              });
+            }}
           />
         </Header>
         <SkillsWrapper>
           <SkillsTable
-            filteredSkills={filteredSkills}
+            filteredState={filteredState}
             selected={selected}
             setSelected={setSelected}
+            setFilteredState={setFilteredState}
           />
         </SkillsWrapper>
       </SearchSkillsWrapper>

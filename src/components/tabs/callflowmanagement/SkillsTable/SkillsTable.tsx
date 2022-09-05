@@ -35,16 +35,18 @@ import React, {
 import { filterSkillsByName } from "utils";
 
 interface SkillsTableProps {
-  filteredSkills: any[],
+  filteredState: any,
   selected: any[],
   setSelected: (skills: any[]) => void
+  setFilteredState: (filterState: any) => void
 }
 
 const SkillsTable = (props: SkillsTableProps) => {
   const {
-    filteredSkills,
+    filteredState,
     selected,
-    setSelected
+    setSelected,
+    setFilteredState
   } = props;
 
   const defaultModalOpts = {
@@ -57,20 +59,27 @@ const SkillsTable = (props: SkillsTableProps) => {
     message: null
   };
 
+  const filterType = {
+    CLOSED: "closedFilter",
+    FLASH: "flashFilter"
+  };
+
   const [confirmationModalOpts, setConfirmationModalOpts] = useState(defaultModalOpts);
   const [saveResult, setSaveResult] = useState(defaultSaveResult);
-  // let filteredSkills = skills.slice();
 
+  console.warn("filteredState in the table", filteredState);
 
   const getProfilesForSkill = (skill: any) => {
-    let profileString = "";
+    const profileDivs: any = [];
     skill.profiles?.map((p: any, index: number) => {
-      profileString = profileString + `${p.profileName} - ${p.profileId}`;
-      if(index !== filteredSkills.length - 1){
-        profileString = profileString + ",\n";
+      if(index !== filteredState.filteredList.length - 1){
+        profileDivs.push(<div>{p.profileName} - {p.profileId}</div>);
+      } else {
+        profileDivs.push(<div>{p.profileName} - {p.profileId},</div>);
       }
     });
-    return profileString;
+    console.warn("profileDivs", profileDivs);
+    return profileDivs;
   };
 
   const handleSetSelected = (skillName: string, isSelected: boolean) => {
@@ -80,7 +89,6 @@ const SkillsTable = (props: SkillsTableProps) => {
       setSelected([...selected, skillName ]);
     }
   };
-
 
   return (
     <TableContainer>
@@ -95,12 +103,24 @@ const SkillsTable = (props: SkillsTableProps) => {
             </CustomTableHeader>
             <CustomTableHeader>SKILL NAME</CustomTableHeader>
             <CustomTableHeader>PROFILES</CustomTableHeader>
-            <CustomTableHeader>FLASH</CustomTableHeader>
-            <CustomTableHeader>CLOSED</CustomTableHeader>
+            <CustomTableHeader
+              onClick={() => setFilteredState({
+                ...filteredState,
+                [filterType.FLASH]: !filteredState.flashMessage
+              })
+              }
+            >FLASH</CustomTableHeader>
+            <CustomTableHeader
+              onClick={() => setFilteredState({
+                ...filteredState,
+                [filterType.CLOSED]: !filteredState.closedMessage
+              })
+              }
+            >CLOSED</CustomTableHeader>
           </tr>
         </thead>
         <tbody>
-          {filteredSkills.map((skill: Skill) => {
+          {filteredState.filteredList.map((skill: Skill) => {
             const isSelected = selected.some(s => s === skill.name);
             return (
               <CustomTableRow key={skill.name} onClick={() => handleSetSelected(skill.name, isSelected)} selected={isSelected} data-testid="table-row">
@@ -111,9 +131,9 @@ const SkillsTable = (props: SkillsTableProps) => {
                   />
                 </TableText></CustomTableData>
                 <CustomTableData><TableText>{skill.name}</TableText></CustomTableData>
-                <CustomTableData><TableText>{getProfilesForSkill(skill)}</TableText></CustomTableData>
-                <CustomTableData><TableText><FlashOn/></TableText></CustomTableData>
-                <CustomTableData><TableText><Block/></TableText></CustomTableData>
+                <CustomTableData><TableText>{getProfilesForSkill(skill).map((d: any) => ({ d }))}</TableText></CustomTableData>
+                <CustomTableData><TableText>{skill.flashMessage && <FlashOn/>}</TableText></CustomTableData>
+                <CustomTableData><TableText>{skill.closedMessage && <Block/>}</TableText></CustomTableData>
               </CustomTableRow>
             );
           })}
