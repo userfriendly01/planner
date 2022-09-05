@@ -52,7 +52,7 @@ export const MessageBox = (props: MessageBoxProps) => {
   const [ text, setText ] = useState(isSingleSelection ? selected[0][messageVariable]: "");
 
   console.log("messageVariable", messageVariable);
-  console.log("selected[0][messageVariable]", selected[0][messageVariable]);
+  console.log("selected[0][messageVariable]", selected.length > 0 ? selected[0][messageVariable]: null);
   console.log("text", text);
 
   const handleIconClick = (actionType: actionTypes) => {
