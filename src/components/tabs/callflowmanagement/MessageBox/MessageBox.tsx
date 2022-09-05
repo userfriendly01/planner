@@ -6,6 +6,7 @@ import {
   UserFormButton,
   IconWrapper
 } from "./MessageBox.Styles";
+import { MessageBoxProps } from "../CallFlowManagement.Interfaces";
 import {
   Edit,
   Delete,
@@ -21,10 +22,6 @@ import {
   updateFlashMessage,
   updateClosedMessage
 } from "services";
-interface MessageBoxProps {
-  selected: any[],
-  messageType: string
-}
 
 enum actionTypes  {
   VIEW = "view",
@@ -35,6 +32,8 @@ enum actionTypes  {
 
 export const MessageBox = (props: MessageBoxProps) => {
   const {
+    confirmationModalOpts,
+    setConfirmationModalOpts,
     selected,
     messageType
   } = props;
@@ -52,7 +51,6 @@ export const MessageBox = (props: MessageBoxProps) => {
   };
 
   const handleOnSave = () => {
-    //add in a confirmation step
     switch(action){
       case actionTypes.EDIT:
         handleEdit();
@@ -68,12 +66,31 @@ export const MessageBox = (props: MessageBoxProps) => {
     }
   };
 
-  const handleEdit = async () => {
-    console.log("Handle Edit has been clicked!");
-    const results = await Promise.allSettled(selected.map((skill: Skill) => {
-      return apiCall(skill, text, nNumber);
-    }));
-    console.log("Handle Results", results);
+  const handleCloseConfirmation = () => {
+    setConfirmationModalOpts({
+      ...confirmationModalOpts,
+      open: false
+    });
+  };
+
+  const handleEdit = () => {
+    const onConfirm = async () => {
+      const results = await Promise.allSettled(selected.map((skill: Skill) => {
+        return apiCall(skill, text, nNumber);
+      }));
+      console.log("Handle Results", results);
+    };
+    const confirmationText = `Are you sure you want to update the ${messageType}
+    for ${ !isMultiSelection ? selected[0].name : selected.length + " skills"}`;
+
+    setConfirmationModalOpts({
+      open: true,
+      confirmationText,
+      callbackMethods: {
+        onConfirm: onConfirm,
+        handleClose: handleCloseConfirmation
+      }
+    });
   };
 
   //Delete can be handled as a separate story - leaving the structure here

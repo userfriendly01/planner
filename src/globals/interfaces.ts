@@ -80,7 +80,7 @@ export interface TaskRouterSkill {
 export interface Skill {
   [key: string]: any
   skill: string,
-  levels: number[],
+  levels: number[]
 }
 
 export interface TritonProfile {

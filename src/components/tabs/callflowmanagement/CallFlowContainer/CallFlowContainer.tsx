@@ -2,70 +2,58 @@ import React, {
   useState, useEffect
 } from "react";
 import {
+  CallflowWrapper,
+  SkillsWrapper,
+  SearchSkillsWrapper,
+  MessageWrapper,
+  Header
+} from "./CallFlowContainer.Styles";
+import {
+  ConfirmationModalOptsProps,
+  FilteredStateProps,
+  SaveResultProps
+} from "../CallFlowManagement.Interfaces";
+import {
+  CallFlowConfirmationModal,
   MessageBox,
   SkillsTable,
   Dropdown
 } from "components";
-import {
-  useAdminState
-} from "context";
-import styled from "styled-components";
-import {
-  filterSkillsByName
-} from "utils";
-import {
-  Skill
-} from "globals";
+import { useAdminState } from "context";
+import { filterSkillsByName } from "utils";
+import { Skill } from "globals";
+import { Modal } from "@mui/material";
 import { SearchBox } from "components/tabs/usermanagement";
 
 const CallFlowContainer = () => {
 
-  const CallflowWrapper = styled.div`
-    display: flex;
-    padding: 0px 20px;
-  `;
-
-  const SkillsWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    overflow-y: scroll;
-    max-height: 700px;
-  `;
-
-  const SearchSkillsWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    width: 60%;
-  `;
-
-  const MessageWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    width: 60%;
-  `;
-
-  const Header = styled.div`
-    display: flex;
-    width: 100%;
-    align-items: center;
-    justify-content: space-around;
-    margin: 40 0 30 0;
-  `;
-
-  const [ selected, setSelected ] = useState([]);
-  const state = useAdminState();
-
-  const defaultFilteredState: any = {
+  const defaultFilteredState: FilteredStateProps = {
     searchBy: "",
     profiles: [],
     closedFilter: false,
     flashFilter: false,
     filteredList: []
   };
+
+  const defaultConfirmationModalOpts: ConfirmationModalOptsProps = {
+    open: false,
+    confirmationText: "",
+    callbackMethods: {
+      onConfirm: null,
+      handleClose: null
+    }
+  };
+
+  const defaultSaveResult: SaveResultProps = {
+    status: null,
+    message: null
+  };
+
+  const state = useAdminState();
+  const [ selected, setSelected ] = useState([]);
   const [ filteredState, setFilteredState ] = useState(defaultFilteredState);
+  const [ confirmationModalOpts, setConfirmationModalOpts ] = useState(defaultConfirmationModalOpts);
+  const [ saveResult, setSaveResult ] = useState(defaultSaveResult);
 
   useEffect(() => {
     console.warn("filteredState", filteredState);
@@ -149,14 +137,24 @@ const CallFlowContainer = () => {
       </SearchSkillsWrapper>
       <MessageWrapper>
         <MessageBox
+          confirmationModalOpts={confirmationModalOpts}
+          setConfirmationModalOpts={setConfirmationModalOpts}
           selected={selected}
           messageType="Closed Message"
         />
         <MessageBox
+          confirmationModalOpts={confirmationModalOpts}
+          setConfirmationModalOpts={setConfirmationModalOpts}
           selected={selected}
           messageType="Flash Message"
         />
       </MessageWrapper>
+      <Modal open={confirmationModalOpts.open}>
+        <CallFlowConfirmationModal
+          confirmationModalOpts={confirmationModalOpts}
+          saveResult={saveResult}
+        />
+      </Modal>
     </CallflowWrapper>
   );
 };

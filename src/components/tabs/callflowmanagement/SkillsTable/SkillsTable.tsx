@@ -5,29 +5,15 @@ import {
   CustomTableRow,
   FilterWrapper,
   TableContainer,
-  StyledCheckBox,
   TableText
 } from "./SkillsTable.Styles";
-import {
-  Modal,
-  Checkbox
-} from "@mui/material";
-import { ModalOverlay } from "components";
-import {
-  useAdminDispatch,
-  useAdminState,
-  useFormDispatch,
-  userFormActions
-} from "context";
-import {
-  modalOverlayStatuses,
-  Skill
-} from "globals";
+import { Checkbox } from "@mui/material";
 import {
   Block,
   FlashOn
 } from "@mui/icons-material";
-import React, { useState } from "react";
+import { Skill } from "globals";
+import React from "react";
 
 interface SkillsTableProps {
   filteredState: any,
@@ -44,23 +30,10 @@ const SkillsTable = (props: SkillsTableProps) => {
     setFilteredState
   } = props;
 
-  const defaultModalOpts = {
-    open: false,
-    change: false
-  };
-
-  const defaultSaveResult: any = {
-    status: null,
-    message: null
-  };
-
   const filterType = {
     CLOSED: "closedFilter",
     FLASH: "flashFilter"
   };
-
-  const [confirmationModalOpts, setConfirmationModalOpts] = useState(defaultModalOpts);
-  const [saveResult, setSaveResult] = useState(defaultSaveResult);
 
   const getProfilesForSkill = (skill: any) => {
     const profileDivs: any = [];
@@ -132,12 +105,6 @@ const SkillsTable = (props: SkillsTableProps) => {
             );
           })}
         </tbody>
-        { confirmationModalOpts.change ?
-          <Modal open={confirmationModalOpts.open}>
-            <div>Im a confirmation modal</div>
-          </Modal>
-          : null
-        }
       </CustomTable>
     </TableContainer>
   );
