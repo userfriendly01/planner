@@ -178,6 +178,14 @@ export const reducer = (state: AppState, action: Action): AppState => {
           workers: [...state.workerContext.workers.filter(w => w.sid !== action.payload.sid), action.payload]
         }
       };
+    case "updateSkills":
+      return {
+        ...state,
+        skillContext: {
+          ...state.skillContext,
+          skills: action.payload
+        }
+      };
     default:
       return state;
   }

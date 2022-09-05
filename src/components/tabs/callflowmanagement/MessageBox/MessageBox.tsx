@@ -14,7 +14,8 @@ import {
 } from "@mui/icons-material";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
 import {
-  useAdminState
+  useAdminState,
+  useAdminDispatch
 } from "context";
 import {
   Skill,
@@ -44,7 +45,9 @@ export const MessageBox = (props: MessageBoxProps) => {
   } = props;
 
   const _export = React.useRef(null);
-  const nNumber = useAdminState().userContext.pingIdentity.sub;
+  const state = useAdminState();
+  const dispatch = useAdminDispatch();
+  const nNumber = state.userContext.pingIdentity.sub;
   const apiCall = messageType === "Closed Message" ? updateClosedMessage : updateFlashMessage;
   const messageVariable = messageType === "Closed Message" ? "closedMessage" : "flashMessage";
   const isSingleSelection = selected.length === 1;
@@ -52,13 +55,12 @@ export const MessageBox = (props: MessageBoxProps) => {
   const [ action, setAction ] = useState(actionTypes.VIEW);
   const [ text, setText ] = useState("");
 
-  console.log("messageVariable", messageVariable);
-  console.log("selected[0][messageVariable]", selected.length > 0 ? selected[0][messageVariable]: null);
-  console.log("text", text);
-
   React.useEffect(() => {
     if(isSingleSelection) {
       setText(selected[0][messageVariable]);
+    } else {
+      setAction(actionTypes.VIEW);
+      setText("");
     }
   }, [selected]);
 
@@ -93,6 +95,29 @@ export const MessageBox = (props: MessageBoxProps) => {
     });
   };
 
+  const updateStateOnResolvedPromises = (promises: any[]) => {
+    const skills = state.skillContext.skills.slice();
+    const updatedSkills = skills.map(s => {
+      let updatedSkill = s;
+      promises.forEach(promise => {
+        const data = JSON.parse(promise.value.config.data);
+        const skillName = data.skill;
+        const message = data[messageVariable];
+        if(s.name === skillName) {
+          updatedSkill = {
+            ...s,
+            messageVariable: message
+          };
+        }
+      });
+      return updatedSkill;
+    });
+    dispatch({
+      type: "updateSkills",
+      payload: updatedSkills
+    });
+  };
+
   const handleResults = (results: any[]) => {
     console.log("Handle Results", results);
     const successfulPromises = results.filter(r => r.status === "fulfilled");
@@ -102,6 +127,7 @@ export const MessageBox = (props: MessageBoxProps) => {
         message: "Request Successfully Processed",
         status: ModalOverlayStatuses.SUCCESS
       });
+      updateStateOnResolvedPromises(successfulPromises);
       setTimeout(() => {
         handleCloseConfirmation();
         setSelected([]);
@@ -121,6 +147,7 @@ export const MessageBox = (props: MessageBoxProps) => {
           message = message + data.skill;
         }
       });
+      updateStateOnResolvedPromises(successfulPromises);
       setSaveResult({
         message,
         status: ModalOverlayStatuses.PARTIAL_FAIL
