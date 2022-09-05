@@ -5,7 +5,6 @@ import {
   FlexRow
 } from "globals";
 
-
 export const Button = styled(StyledButton)`
   height: 40;
   width: 100;
@@ -14,7 +13,7 @@ export const Button = styled(StyledButton)`
 export const ButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
   padding: 1%;
-  height: 50px;
+  max-height: 50px;
 `;
 
 export const ConfirmationText = styled.h2`
@@ -22,11 +21,14 @@ export const ConfirmationText = styled.h2`
   font-size: 18px;
   padding: 0px 10px 0px 10px;
   text-align: center;
+  align-items: center;
   line-height: 2;
+  min-height: 250px;
 `;
 
 export const ModalContainer = styled(FlexColumn)`
   position: absolute;
+  min-height: 300px;
   top: 50%;
   left: 50%;
   padding: 2%;

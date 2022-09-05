@@ -138,18 +138,18 @@ const CallFlowContainer = () => {
       <MessageWrapper>
         <MessageBox
           confirmationModalOpts={confirmationModalOpts}
-          saveResult={saveResult}
           setSaveResult={setSaveResult}
           setConfirmationModalOpts={setConfirmationModalOpts}
           selected={selected}
+          setSelected={setSelected}
           messageType="Closed Message"
         />
         <MessageBox
           confirmationModalOpts={confirmationModalOpts}
-          saveResult={saveResult}
           setSaveResult={setSaveResult}
           setConfirmationModalOpts={setConfirmationModalOpts}
           selected={selected}
+          setSelected={setSelected}
           messageType="Flash Message"
         />
       </MessageWrapper>

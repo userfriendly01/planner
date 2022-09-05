@@ -7,6 +7,7 @@ import {
   TableContainer,
   TableText
 } from "./SkillsTable.Styles";
+import { SkillsTableProps } from "../CallFlowManagement.Interfaces";
 import { Checkbox } from "@mui/material";
 import {
   Block,
@@ -14,13 +15,6 @@ import {
 } from "@mui/icons-material";
 import { Skill } from "globals";
 import React from "react";
-
-interface SkillsTableProps {
-  filteredState: any,
-  selected: any[],
-  setSelected: (skills: any[]) => void
-  setFilteredState: (filterState: any) => void
-}
 
 const SkillsTable = (props: SkillsTableProps) => {
   const {
@@ -30,6 +24,7 @@ const SkillsTable = (props: SkillsTableProps) => {
     setFilteredState
   } = props;
 
+  const allSkillsSelected = selected.length === filteredState.filteredList.length;
   const filterType = {
     CLOSED: "closedFilter",
     FLASH: "flashFilter"
@@ -55,6 +50,14 @@ const SkillsTable = (props: SkillsTableProps) => {
     }
   };
 
+  const handleSelectAll = () => {
+    if(allSkillsSelected){
+      setSelected([]);
+    } else {
+      setSelected(filteredState.filteredList);
+    }
+  };
+
   return (
     <TableContainer>
       <CustomTable>
@@ -62,7 +65,8 @@ const SkillsTable = (props: SkillsTableProps) => {
           <tr>
             <CustomTableHeader>
               <Checkbox
-                checked={false}
+                checked={allSkillsSelected}
+                onChange={handleSelectAll}
                 style={{ padding: "0px" }}
               />
             </CustomTableHeader>

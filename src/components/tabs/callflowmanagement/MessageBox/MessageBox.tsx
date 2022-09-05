@@ -34,11 +34,11 @@ enum actionTypes  {
 
 export const MessageBox = (props: MessageBoxProps) => {
   const {
-    saveResult,
     setSaveResult,
     confirmationModalOpts,
     setConfirmationModalOpts,
     selected,
+    setSelected,
     messageType
   } = props;
 
@@ -92,6 +92,7 @@ export const MessageBox = (props: MessageBoxProps) => {
       });
       setTimeout(() => {
         handleCloseConfirmation();
+        setSelected([]);
       }, timeouts.MODAL_OVERLAY);
     } else if (successfulPromises.length === 0){
       setSaveResult({

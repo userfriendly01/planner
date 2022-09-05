@@ -1,4 +1,7 @@
-import { ModalOverlayStatuses } from "globals";
+import {
+  ModalOverlayStatuses,
+  Skill
+} from "globals";
 
 export interface ConfirmationModalOptsProps {
   open: boolean,
@@ -29,9 +32,16 @@ export interface FilteredStateProps {
 
 export interface MessageBoxProps {
   confirmationModalOpts: ConfirmationModalOptsProps,
-  saveResult: SaveResultProps
   setSaveResult: (props: SaveResultProps) => void,
   setConfirmationModalOpts: (props: ConfirmationModalOptsProps) => void,
   selected: any[],
+  setSelected: (props: Skill[]) => void
   messageType: string
+}
+
+export interface SkillsTableProps {
+  filteredState: any,
+  selected: any[],
+  setSelected: (skills: any[]) => void
+  setFilteredState: (filterState: any) => void
 }

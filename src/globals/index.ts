@@ -1,7 +1,4 @@
-import {
-  ModalOverlayStatuses,
-  FormModes
-} from "globals";
+import { FormModes } from "globals";
 
 export * from "./interfaces";
 export * from "./theme";
@@ -14,13 +11,6 @@ const SERVICE_BASE_URI = "/service";
 export const nNumMatcher = /[n,N]\d{7}/g;
 export const extensionMatcher = /^\d{4,5}$/;
 export const workersPerPage = 15;
-
-// export const ModalOverlayStatuses: ModalOverlayStatuses = {
-//   PARTIAL_FAIL: "partial fail",
-//   FAIL: "fail",
-//   SAVING: "saving",
-//   SUCCESS: "success"
-// };
 
 export const formModes: FormModes = {
   INSERT: "insert",
