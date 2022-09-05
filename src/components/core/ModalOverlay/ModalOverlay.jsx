@@ -41,6 +41,8 @@ const Circle = styled.circle`
 
 const CloseButtonDiv = styled.div`
   align-self: flex-end;
+  position: absolute;
+  top: 0;
 `;
 
 const FlexRow = styled.div`
@@ -60,7 +62,7 @@ const IconAndMessageWrapper = styled.div`
   flex-direction: column;
   flex-grow: 1;
   padding: 16px;
-  margin-top: 20%;
+  justify-content: center'
 `;
 
 const InnerContainer = styled.div`

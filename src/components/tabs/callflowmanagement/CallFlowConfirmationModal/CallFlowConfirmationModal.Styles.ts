@@ -23,12 +23,11 @@ export const ConfirmationText = styled.h2`
   text-align: center;
   align-items: center;
   line-height: 2;
-  min-height: 250px;
+  min-height: 150px;
 `;
 
 export const ModalContainer = styled(FlexColumn)`
   position: absolute;
-  min-height: 300px;
   top: 50%;
   left: 50%;
   padding: 2%;
