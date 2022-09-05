@@ -29,6 +29,8 @@ export interface FilteredStateProps {
 
 export interface MessageBoxProps {
   confirmationModalOpts: ConfirmationModalOptsProps,
+  saveResult: SaveResultProps
+  setSaveResult: (props: SaveResultProps) => void,
   setConfirmationModalOpts: (props: ConfirmationModalOptsProps) => void,
   selected: any[],
   messageType: string

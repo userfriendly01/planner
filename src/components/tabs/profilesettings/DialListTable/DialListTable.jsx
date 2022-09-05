@@ -14,7 +14,7 @@ import {
 import {
   apiPaths,
   formModes,
-  modalOverlayStatuses,
+  ModalOverlayStatuses,
   timeouts
 } from "globals";
 import PropTypes from "prop-types";
@@ -152,7 +152,7 @@ const DialListTable = props => {
       setDialListTableState({
         ...dialListTableState,
         overlayMessage: "Deleting dial list entry...",
-        saveStatus: modalOverlayStatuses.SAVING
+        saveStatus: ModalOverlayStatuses.SAVING
       });
       myAxios.delete(apiPaths.DIAL_LIST_ENTRY(diallistId))
         .then(res => {
@@ -163,7 +163,7 @@ const DialListTable = props => {
           setDialListTableState({
             ...dialListTableState,
             overlayMessage: "Successfully deleted dial list entry",
-            saveStatus: modalOverlayStatuses.SUCCESS
+            saveStatus: ModalOverlayStatuses.SUCCESS
           });
           waitAndHideOverlay();
         })
@@ -174,7 +174,7 @@ const DialListTable = props => {
           setDialListTableState({
             ...dialListTableState,
             overlayMessage: "Failed to delete dial list entry",
-            saveStatus: modalOverlayStatuses.FAIL
+            saveStatus: ModalOverlayStatuses.FAIL
           });
           waitAndHideOverlay();
         });

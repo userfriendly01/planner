@@ -4,7 +4,7 @@ import {
   Edit
 } from "@material-ui/icons";
 import { ModalOverlay } from "components";
-import { modalOverlayStatuses } from "globals";
+import { ModalOverlayStatuses } from "globals";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
@@ -161,7 +161,7 @@ PhoneNumberTable.propTypes = {
   emptyListMsg: PropTypes.string.isRequired,
   phoneNumberList: PropTypes.array.isRequired,
   saveState: PropTypes.shape({
-    status: PropTypes.oneOf(Object.values(modalOverlayStatuses)),
+    status: PropTypes.oneOf(Object.values(ModalOverlayStatuses)),
     overlayMessage: PropTypes.string
   }).isRequired
 };

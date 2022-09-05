@@ -19,11 +19,10 @@ export const ButtonWrapper = styled(FlexRow)`
 
 export const ConfirmationText = styled.h2`
   display: flex;
-  justify-content: center;
-  align-items: center;
   font-size: 18px;
-  padding: 0px 10px 0px 10px ;
-  height: 60px;
+  padding: 0px 10px 0px 10px;
+  text-align: center;
+  line-height: 2;
 `;
 
 export const ModalContainer = styled(FlexColumn)`

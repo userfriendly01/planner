@@ -23,7 +23,8 @@ import {
 } from "context";
 import {
   FlexColumn,
-  Manager
+  Manager,
+  ModalOverlayStatuses
 } from "globals";
 import React, { useState } from "react";
 import {
@@ -34,11 +35,6 @@ import {
 import { sortProfilesByName } from "utils";
 
 const defaultNNumber = "n";
-const loadingStates = {
-  success: "success",
-  fail: "fail",
-  loading: "loading"
-};
 export interface ManagerModalProps {
   handleClose: () => void,
   selectedManager: any,
@@ -75,7 +71,7 @@ const ManagerModal = (props: ManagerModalProps) => {
   ];
   const [manager, setManager] = useState<Manager>(selectedManager ? selectedManager : null);
   const [errorMessage, setErrorMessage] = useState<string>(null);
-  const [saveStatus, setSaveStatus] = useState<string>(null);
+  const [saveStatus, setSaveStatus] = useState<ModalOverlayStatuses>(null);
   const [nNumber, setNNumber] = useState<string>(selectedManager ? selectedManager.manager_n_number : defaultNNumber);
   const [fetchedUser, setFetchedUser] = useState<FetchUserResponse>(null);
   const [ profile, setProfile ] = useState<any>(selectedManager ? profiles.find(p => p.profile_id === selectedManager.profile_id) : null);
@@ -105,9 +101,9 @@ const ManagerModal = (props: ManagerModalProps) => {
   };
 
   const addManagerClicked = (): Promise<any> => {
-    setSaveStatus(loadingStates.loading);
+    setSaveStatus(ModalOverlayStatuses.SAVING);
     if (state.managerContext.managers.some((savedManager: Manager) => savedManager.manager_n_number.toLowerCase() === manager.manager_n_number)) {
-      setSaveStatus(loadingStates.fail);
+      setSaveStatus(ModalOverlayStatuses.FAIL);
       setTimeout(() => setSaveStatus(null), 2000);
       setErrorMessage("Manager already exists");
       console.warn("addManager - Failure - Manager Already exists");
@@ -132,12 +128,12 @@ const ManagerModal = (props: ManagerModalProps) => {
             calabrio_team_ids: selectedCalabrioTeams
           }
         }));
-        setSaveStatus(loadingStates.success);
+        setSaveStatus(ModalOverlayStatuses.SUCCESS);
         setTimeout(handleClose, 2000);
         console.log("addManager - Success", res);
       })
       .catch(err => {
-        setSaveStatus(loadingStates.fail);
+        setSaveStatus(ModalOverlayStatuses.FAIL);
         setTimeout(() => setSaveStatus(null), 2000);
         setErrorMessage("Failed to Create Manager");
         console.error("addManager - Failure", err);
@@ -145,7 +141,7 @@ const ManagerModal = (props: ManagerModalProps) => {
   };
 
   const editManagerClicked = (): Promise<any> => {
-    setSaveStatus(loadingStates.loading);
+    setSaveStatus(ModalOverlayStatuses.SAVING);
     const profileId = profile ? profile.profile_id : null;
     const teams = JSON.stringify(selectedCalabrioTeams);
 
@@ -169,12 +165,12 @@ const ManagerModal = (props: ManagerModalProps) => {
           type: "editManager",
           payload: updatedArray
         }));
-        setSaveStatus(loadingStates.success);
+        setSaveStatus(ModalOverlayStatuses.SUCCESS);
         setTimeout(handleClose, 2000);
         console.log("editManager - Success", res);
       })
       .catch((err: any) => {
-        setSaveStatus(loadingStates.fail);
+        setSaveStatus(ModalOverlayStatuses.FAIL);
         setTimeout(() => setSaveStatus(null), 2000);
         setErrorMessage("Failed to update Manager");
         console.error("editManager - Failure", err);
@@ -182,9 +178,9 @@ const ManagerModal = (props: ManagerModalProps) => {
   };
 
   let overlayMessage = "Saving";
-  if (saveStatus === loadingStates.success) {
+  if (saveStatus === ModalOverlayStatuses.SUCCESS) {
     overlayMessage = "Manager saved successfully";
-  } else if (saveStatus === loadingStates.fail) {
+  } else if (saveStatus === ModalOverlayStatuses.FAIL) {
     overlayMessage = errorMessage;
   }
 

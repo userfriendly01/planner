@@ -56,11 +56,11 @@ export interface Manager {
   manager_id?: number | string
 }
 
-export interface ModalOverlayStatuses {
-  PARTIAL_FAIL: string,
-  FAIL: string,
-  SAVING: string,
-  SUCCESS: string
+export enum ModalOverlayStatuses {
+  PARTIAL_FAIL = "partial fail",
+  FAIL = "fail",
+  SAVING = "saving",
+  SUCCESS = "success"
 }
 export interface MySqlBoolean {
   data: [0 | 1],

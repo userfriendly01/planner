@@ -1,5 +1,6 @@
 import {
   Manager,
+  ModalOverlayStatuses,
   Office,
   TaskRouterSkill,
   TritonProfile,
@@ -11,7 +12,7 @@ import { FetchUserResponse } from "services";
 export interface LoadingState {
   lookupUser: boolean;
   overlayMessage: string;
-  saveStatus: string;
+  saveStatus: ModalOverlayStatuses;
   saveUser: boolean;
 }
 

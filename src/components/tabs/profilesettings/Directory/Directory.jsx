@@ -6,7 +6,7 @@ import {
 } from "components";
 import {
   formModes,
-  modalOverlayStatuses,
+  ModalOverlayStatuses,
   timeouts
 } from "globals";
 import PropTypes from "prop-types";
@@ -65,7 +65,7 @@ const Directory = props => {
         ...directoryState,
         saveState: {
           overlayMessage: "Deleting directory entry...",
-          status: modalOverlayStatuses.SAVING
+          status: ModalOverlayStatuses.SAVING
         }
       });
       deleteDirectory(directoryId)
@@ -75,7 +75,7 @@ const Directory = props => {
             ...directoryState,
             saveState: {
               overlayMessage: "Successfully deleted directory entry",
-              status: modalOverlayStatuses.SUCCESS
+              status: ModalOverlayStatuses.SUCCESS
             }
           });
           waitAndHideOverlay();
@@ -88,7 +88,7 @@ const Directory = props => {
             ...directoryState,
             saveState: {
               overlayMessage: "Failed to delete directory entry",
-              status: modalOverlayStatuses.FAIL
+              status: ModalOverlayStatuses.FAIL
             }
           });
           waitAndHideOverlay();

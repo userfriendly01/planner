@@ -8,7 +8,7 @@ import {
 import {
   apiPaths,
   formModes,
-  modalOverlayStatuses,
+  ModalOverlayStatuses,
   timeouts
 } from "globals";
 import React from "react";
@@ -199,13 +199,13 @@ describe("<DialListTable />", () => {
   //             // expect saving message
   //             expectOnlyPassedProps(ModalOverlay, {
   //               message: "Deleting dial list entry...",
-  //               status: modalOverlayStatuses.SAVING
+  //               status: ModalOverlayStatuses.SAVING
   //             }, getLastInstanceCalled(ModalOverlay) - 1);
   //             expect(refreshProfileData).toHaveBeenCalledTimes(1);
   //             // expect success message
   //             expectOnlyPassedProps(ModalOverlay, {
   //               message: "Successfully deleted dial list entry",
-  //               status: modalOverlayStatuses.SUCCESS
+  //               status: ModalOverlayStatuses.SUCCESS
   //             }, getLastInstanceCalled(ModalOverlay));
   //             // expect overlay disappears
   //             expectMockedComponent(rendered, { ModalOverlay }, 0);
@@ -234,13 +234,13 @@ describe("<DialListTable />", () => {
   //             // expect saving message
   //             expectOnlyPassedProps(ModalOverlay, {
   //               message: "Deleting dial list entry...",
-  //               status: modalOverlayStatuses.SAVING
+  //               status: ModalOverlayStatuses.SAVING
   //             }, getLastInstanceCalled(ModalOverlay) - 1);
   //             expect(refreshProfileData).toHaveBeenCalledTimes(0);
   //             // expect success message
   //             expectOnlyPassedProps(ModalOverlay, {
   //               message: "Failed to delete dial list entry",
-  //               status: modalOverlayStatuses.FAIL
+  //               status: ModalOverlayStatuses.FAIL
   //             }, getLastInstanceCalled(ModalOverlay));
   //             // expect overlay disappears
   //             expectMockedComponent(rendered, { ModalOverlay }, 0);

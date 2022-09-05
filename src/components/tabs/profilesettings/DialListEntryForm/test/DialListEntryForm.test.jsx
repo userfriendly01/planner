@@ -14,7 +14,7 @@ import {
 import {
   apiPaths,
   formModes,
-  modalOverlayStatuses,
+  ModalOverlayStatuses,
   timeouts
 } from "globals";
 import React from "react";
@@ -220,12 +220,12 @@ describe("<DialListEntryForm />", () => {
             // First call of ModalOverlay displays pending status
             expectOnlyPassedProps(ModalOverlay, {
               message: "Adding dial list entry...",
-              status: modalOverlayStatuses.SAVING
+              status: ModalOverlayStatuses.SAVING
             }, getLastInstanceCalled(ModalOverlay) - 1);
             // Second call of ModalOverlay displays success message
             expectOnlyPassedProps(ModalOverlay, {
               message: "Successfully added dial list entry",
-              status: modalOverlayStatuses.SUCCESS
+              status: ModalOverlayStatuses.SUCCESS
             }, getLastInstanceCalled(ModalOverlay));
             expect(refreshProfileData).toHaveBeenCalledTimes(1);
           });
@@ -303,12 +303,12 @@ describe("<DialListEntryForm />", () => {
             // First call of ModalOverlay displays pending status
             expectOnlyPassedProps(ModalOverlay, {
               message: "Adding dial list entry...",
-              status: modalOverlayStatuses.SAVING
+              status: ModalOverlayStatuses.SAVING
             }, getLastInstanceCalled(ModalOverlay) - 1);
             // Second call of ModalOverlay displays failure message
             expectOnlyPassedProps(ModalOverlay, {
               message: "Failed to add dial list entry",
-              status: modalOverlayStatuses.FAIL
+              status: ModalOverlayStatuses.FAIL
             }, getLastInstanceCalled(ModalOverlay));
             expect(refreshProfileData).toHaveBeenCalledTimes(0);
           });
@@ -466,12 +466,12 @@ describe("<DialListEntryForm />", () => {
             // First call of ModalOverlay displays pending status
             expectOnlyPassedProps(ModalOverlay, {
               message: "Updating dial list entry...",
-              status: modalOverlayStatuses.SAVING
+              status: ModalOverlayStatuses.SAVING
             }, getLastInstanceCalled(ModalOverlay) - 1);
             // Second call of ModalOverlay displays success message
             expectOnlyPassedProps(ModalOverlay, {
               message: "Successfully updated dial list entry",
-              status: modalOverlayStatuses.SUCCESS
+              status: ModalOverlayStatuses.SUCCESS
             }, getLastInstanceCalled(ModalOverlay));
             expect(refreshProfileData).toHaveBeenCalledTimes(1);
           });
@@ -533,12 +533,12 @@ describe("<DialListEntryForm />", () => {
             // First call of ModalOverlay displays pending status
             expectOnlyPassedProps(ModalOverlay, {
               message: "Updating dial list entry...",
-              status: modalOverlayStatuses.SAVING
+              status: ModalOverlayStatuses.SAVING
             }, getLastInstanceCalled(ModalOverlay) - 1);
             // Second call of ModalOverlay displays failure message
             expectOnlyPassedProps(ModalOverlay, {
               message: "Failed to update dial list entry",
-              status: modalOverlayStatuses.FAIL
+              status: ModalOverlayStatuses.FAIL
             }, getLastInstanceCalled(ModalOverlay));
             expect(refreshProfileData).toHaveBeenCalledTimes(0);
           });

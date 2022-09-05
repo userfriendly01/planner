@@ -3,7 +3,7 @@ import {
   Warning
 } from "@material-ui/icons";
 import { ModalFetchingRing } from "components";
-import { modalOverlayStatuses } from "globals";
+import { ModalOverlayStatuses } from "globals";
 import PropTypes from "prop-types";
 import React from "react";
 import styled, { keyframes } from "styled-components";
@@ -86,8 +86,8 @@ const Overlay = styled(FlexRow)`
   font-family: 'Roboto', sans-serif;
   font-size: 1.8em;
   height: 100%;
-  justify-content: ${props => props.status === modalOverlayStatuses.FAIL ? "space-between" : "center"};
-  opacity: ${props => props.status === modalOverlayStatuses.PARTIAL_FAIL ? ".92" : ".75"};
+  justify-content: ${props => props.status === ModalOverlayStatuses.FAIL ? "space-between" : "center"};
+  opacity: ${props => props.status === ModalOverlayStatuses.PARTIAL_FAIL ? ".92" : ".75"};
   width: 100%;
   z-index: 100;
   left: 0;
@@ -119,7 +119,7 @@ const ModalOverlay = props => {
 `;
 
   const getIconAndBackground = status => {
-    if (status === modalOverlayStatuses.SUCCESS) {
+    if (status === ModalOverlayStatuses.SUCCESS) {
       return {
         background: "green",
         icon:
@@ -128,7 +128,7 @@ const ModalOverlay = props => {
             <Check fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 "/>
           </Icon>
       };
-    } else if (status === modalOverlayStatuses.PARTIAL_FAIL) {
+    } else if (status === ModalOverlayStatuses.PARTIAL_FAIL) {
       return {
         background: "goldenrod",
         icon: <Warning style={{
@@ -136,7 +136,7 @@ const ModalOverlay = props => {
           "width": "80px"
         }} />
       };
-    } else if (status === modalOverlayStatuses.FAIL) {
+    } else if (status === ModalOverlayStatuses.FAIL) {
       return {
         background: "red",
         icon:
@@ -166,7 +166,7 @@ const ModalOverlay = props => {
     >
       <InnerContainer>
         {
-          (status === modalOverlayStatuses.FAIL || status === modalOverlayStatuses.PARTIAL_FAIL) && handleClose
+          (status === ModalOverlayStatuses.FAIL || status === ModalOverlayStatuses.PARTIAL_FAIL) && handleClose
             ? <CloseButtonDiv>
               <StyledCloseRounded data-testid="close-button" onClick={handleClose} />
             </CloseButtonDiv>
@@ -186,7 +186,7 @@ const ModalOverlay = props => {
 ModalOverlay.propTypes = {
   message: PropTypes.string.isRequired,
   handleClose: PropTypes.func,
-  status: PropTypes.oneOf(Object.values(modalOverlayStatuses)).isRequired
+  status: PropTypes.oneOf(Object.values(ModalOverlayStatuses)).isRequired
 };
 
 export default ModalOverlay;

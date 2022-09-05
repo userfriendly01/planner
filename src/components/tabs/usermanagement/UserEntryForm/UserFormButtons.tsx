@@ -13,7 +13,7 @@ import {
 } from "context";
 import {
   formModes,
-  modalOverlayStatuses,
+  ModalOverlayStatuses,
   timeouts,
   Worker,
   Discrepancy,
@@ -98,7 +98,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     updateLoading({
       ...loading,
       overlayMessage: "Adding new user...",
-      saveStatus: modalOverlayStatuses.SAVING,
+      saveStatus: ModalOverlayStatuses.SAVING,
       saveUser: true
     });
 
@@ -216,7 +216,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             updateLoading({
               ...loading,
               overlayMessage: "Successfully added new user",
-              saveStatus: modalOverlayStatuses.SUCCESS,
+              saveStatus: ModalOverlayStatuses.SUCCESS,
               saveUser: true
             });
             wait(() => {
@@ -231,7 +231,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             updateLoading({
               ...loading,
               overlayMessage: "Triton User Created. Error Creating Calabrio User",
-              saveStatus: modalOverlayStatuses.PARTIAL_FAIL,
+              saveStatus: ModalOverlayStatuses.PARTIAL_FAIL,
               saveUser: true
             });
           });
@@ -240,7 +240,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           updateLoading({
             ...loading,
             overlayMessage: "Triton User Created. Error Creating Calabrio User",
-            saveStatus: modalOverlayStatuses.PARTIAL_FAIL,
+            saveStatus: ModalOverlayStatuses.PARTIAL_FAIL,
             saveUser: true
           });
         });
@@ -249,7 +249,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         updateLoading({
           ...loading,
           overlayMessage: err.response.data.message || "Failed to add new user.",
-          saveStatus: modalOverlayStatuses.FAIL,
+          saveStatus: ModalOverlayStatuses.FAIL,
           saveUser: true
         });
       });
@@ -259,7 +259,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     updateLoading({
       ...loading,
       overlayMessage: `Updating user: ${worker.attributes.full_name}`,
-      saveStatus: modalOverlayStatuses.SAVING,
+      saveStatus: ModalOverlayStatuses.SAVING,
       saveUser: true
     });
     const attributes: Partial<Worker["attributes"]> = {};
@@ -368,7 +368,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
               updateLoading({
                 ...loading,
                 overlayMessage: `Successfully updated user: ${worker.attributes.full_name}`,
-                saveStatus: modalOverlayStatuses.SUCCESS,
+                saveStatus: ModalOverlayStatuses.SUCCESS,
                 saveUser: true
               });
               wait(() => {
@@ -387,7 +387,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
               updateLoading({
                 ...loading,
                 overlayMessage: message,
-                saveStatus: modalOverlayStatuses.PARTIAL_FAIL,
+                saveStatus: ModalOverlayStatuses.PARTIAL_FAIL,
                 saveUser: true
               });
             });
@@ -396,7 +396,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             updateLoading({
               ...loading,
               overlayMessage: "Triton User updated. Error updating Calabrio user",
-              saveStatus: modalOverlayStatuses.PARTIAL_FAIL,
+              saveStatus: ModalOverlayStatuses.PARTIAL_FAIL,
               saveUser: true
             });
           });
@@ -405,7 +405,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           updateLoading({
             ...loading,
             overlayMessage: `Successfully updated user: ${worker.attributes.full_name}`,
-            saveStatus: modalOverlayStatuses.SUCCESS,
+            saveStatus: ModalOverlayStatuses.SUCCESS,
             saveUser: true
           });
           wait(() => {
@@ -421,7 +421,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         updateLoading({
           ...loading,
           overlayMessage: err.response?.data.message || `Failed to update user: ${worker.attributes.full_name}`,
-          saveStatus: modalOverlayStatuses.FAIL,
+          saveStatus: ModalOverlayStatuses.FAIL,
           saveUser: true
         });
       });

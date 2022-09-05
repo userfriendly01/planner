@@ -11,7 +11,7 @@ import {
 } from "components";
 import {
   formModes,
-  modalOverlayStatuses,
+  ModalOverlayStatuses,
   timeouts
 } from "globals";
 import PropTypes from "prop-types";
@@ -91,13 +91,13 @@ const DirectoryEntryForm = props => {
       refreshProfileData();
       setLoading({
         overlayMessage: `Successfully ${added ? "added" : "updated"} directory entry`,
-        saveStatus: modalOverlayStatuses.SUCCESS
+        saveStatus: ModalOverlayStatuses.SUCCESS
       });
       waitAndHideOverlay(true);
     } else {
       setLoading({
         overlayMessage: `Failed to ${added ? "add" : "update"} directory entry`,
-        saveStatus: modalOverlayStatuses.FAIL
+        saveStatus: ModalOverlayStatuses.FAIL
       });
       waitAndHideOverlay();
     }
@@ -117,7 +117,7 @@ const DirectoryEntryForm = props => {
   const insertDirectoryEntry = () => {
     setLoading({
       overlayMessage: "Adding directory entry...",
-      saveStatus: modalOverlayStatuses.SAVING
+      saveStatus: ModalOverlayStatuses.SAVING
     });
     insertDirectory(form.first_nme, form.last_nme, form.phone_num, profileId)
       .then(() => {
@@ -131,7 +131,7 @@ const DirectoryEntryForm = props => {
   const updateDirectoryEntry = () => {
     setLoading({
       overlayMessage: "Updating directory entry...",
-      saveStatus: modalOverlayStatuses.SAVING
+      saveStatus: ModalOverlayStatuses.SAVING
     });
     updateDirectory(directoryState.directoryId, form.first_nme, form.last_nme, form.phone_num)
       .then(() => {

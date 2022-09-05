@@ -17,14 +17,11 @@ import React, { useState } from "react";
 import {
   deleteManager
 } from "services";
+import {
+  ModalOverlayStatuses
+} from "globals";
 import ConfirmationForm from "./ConfirmationForm";
 import ErrorForm from "./ErrorForm";
-
-const loadingStates = {
-  success: "success",
-  fail: "fail",
-  loading: "loading"
-};
 export interface ManagerDeleteProps {
   handleClose: () => void,
   selectedManager: any
@@ -40,7 +37,7 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
   const workers = useAdminState().workerContext.workers;
   const dispatch = useAdminDispatch();
   const [errorMessage, setErrorMessage] = useState<string>(null);
-  const [saveStatus, setSaveStatus] = useState<string>(null);
+  const [saveStatus, setSaveStatus] = useState<ModalOverlayStatuses>(null);
 
   const buildTeamMembersList = () => {
     if (workers.length === 0) {
@@ -59,7 +56,7 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
   };
 
   const deleteManagerClicked = (): Promise<any> => {
-    setSaveStatus(loadingStates.loading);
+    setSaveStatus(ModalOverlayStatuses.SAVING);
 
     return deleteManager(selectedManager.manager_id)
       .then((res: any) => {
@@ -73,12 +70,12 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
           payload: updatedArray
         }));
 
-        setSaveStatus(loadingStates.success);
+        setSaveStatus(ModalOverlayStatuses.SUCCESS);
         setTimeout(handleClose, 2000);
         console.log("deleteManager() successful", res);
       })
       .catch((err: any) => {
-        setSaveStatus(loadingStates.fail);
+        setSaveStatus(ModalOverlayStatuses.FAIL);
         setTimeout(() => setSaveStatus(null), 2000);
         setErrorMessage("Failed to delete Manager");
         console.error("deleteManager() failed:", err);
@@ -86,9 +83,9 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
   };
 
   let overlayMessage = "Deleting...";
-  if (saveStatus === loadingStates.success) {
+  if (saveStatus === ModalOverlayStatuses.SUCCESS) {
     overlayMessage = "Manager deleted successfully";
-  } else if (saveStatus === loadingStates.fail) {
+  } else if (saveStatus === ModalOverlayStatuses.FAIL) {
     overlayMessage = errorMessage;
   }
 

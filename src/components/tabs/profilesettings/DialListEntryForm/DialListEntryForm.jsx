@@ -16,7 +16,7 @@ import {
 import {
   apiPaths,
   formModes,
-  modalOverlayStatuses,
+  ModalOverlayStatuses,
   timeouts
 } from "globals";
 import PropTypes from "prop-types";
@@ -130,7 +130,7 @@ const DialListEntryForm = props => {
     };
     setLoading({
       overlayMessage: "Adding dial list entry...",
-      saveStatus: modalOverlayStatuses.SAVING
+      saveStatus: ModalOverlayStatuses.SAVING
     });
     myAxios.post(apiPaths.DIAL_LIST, requestBody)
       .then(res => {
@@ -141,7 +141,7 @@ const DialListEntryForm = props => {
         refreshProfileData();
         setLoading({
           overlayMessage: "Successfully added dial list entry",
-          saveStatus: modalOverlayStatuses.SUCCESS
+          saveStatus: ModalOverlayStatuses.SUCCESS
         });
         waitAndHideOverlay(true);
       })
@@ -152,7 +152,7 @@ const DialListEntryForm = props => {
         });
         setLoading({
           overlayMessage: "Failed to add dial list entry",
-          saveStatus: modalOverlayStatuses.FAIL
+          saveStatus: ModalOverlayStatuses.FAIL
         });
         waitAndHideOverlay();
       });
@@ -166,7 +166,7 @@ const DialListEntryForm = props => {
     };
     setLoading({
       overlayMessage: "Updating dial list entry...",
-      saveStatus: modalOverlayStatuses.SAVING
+      saveStatus: ModalOverlayStatuses.SAVING
     });
     myAxios.put(apiPaths.DIAL_LIST_ENTRY(dialListTableState.dialListId), requestBody)
       .then(res => {
@@ -177,7 +177,7 @@ const DialListEntryForm = props => {
         refreshProfileData();
         setLoading({
           overlayMessage: "Successfully updated dial list entry",
-          saveStatus: modalOverlayStatuses.SUCCESS
+          saveStatus: ModalOverlayStatuses.SUCCESS
         });
         waitAndHideOverlay(true);
       })
@@ -188,7 +188,7 @@ const DialListEntryForm = props => {
         });
         setLoading({
           overlayMessage: "Failed to update dial list entry",
-          saveStatus: modalOverlayStatuses.FAIL
+          saveStatus: ModalOverlayStatuses.FAIL
         });
         waitAndHideOverlay();
       });

@@ -16,7 +16,9 @@ import {
   useAdminState
 } from "context";
 import {
-  Skill
+  Skill,
+  ModalOverlayStatuses,
+  timeouts
 } from "globals";
 import {
   updateFlashMessage,
@@ -32,6 +34,8 @@ enum actionTypes  {
 
 export const MessageBox = (props: MessageBoxProps) => {
   const {
+    saveResult,
+    setSaveResult,
     confirmationModalOpts,
     setConfirmationModalOpts,
     selected,
@@ -71,17 +75,59 @@ export const MessageBox = (props: MessageBoxProps) => {
       ...confirmationModalOpts,
       open: false
     });
+    setSaveResult({
+      message: "",
+      status: null
+    });
+  };
+
+  const handleResults = (results: any[]) => {
+    console.log("Handle Results", results);
+    const successfulPromises = results.filter(r => r.status === "fulfilled");
+    const rejectedPromises = results.filter(r => r.status === "rejected");
+    if(rejectedPromises.length === 0){
+      setSaveResult({
+        message: "Request Successfully Processed",
+        status: ModalOverlayStatuses.SUCCESS
+      });
+      setTimeout(() => {
+        handleCloseConfirmation();
+      }, timeouts.MODAL_OVERLAY);
+    } else if (successfulPromises.length === 0){
+      setSaveResult({
+        message: "Request Failed",
+        status: ModalOverlayStatuses.FAIL
+      });
+    } else {
+      let message = "The following skills failed to update: ";
+      rejectedPromises.forEach((promise: any, index: number) => {
+        const data = JSON.parse(promise.value.config.data);
+        if(index !== rejectedPromises.length - 1){
+          message = message + data.skill + ", ";
+        } else {
+          message = message + data.skill;
+        }
+      });
+      setSaveResult({
+        message,
+        status: ModalOverlayStatuses.PARTIAL_FAIL
+      });
+    }
   };
 
   const handleEdit = () => {
     const onConfirm = async () => {
+      setSaveResult({
+        message: "Processing...",
+        status: ModalOverlayStatuses.SAVING
+      });
       const results = await Promise.allSettled(selected.map((skill: Skill) => {
         return apiCall(skill, text, nNumber);
       }));
-      console.log("Handle Results", results);
+      handleResults(results);
     };
     const confirmationText = `Are you sure you want to update the ${messageType}
-    for ${ !isMultiSelection ? selected[0].name : selected.length + " skills"}`;
+    for ${ !isMultiSelection ? selected[0].name : selected.length + " skills?"}`;
 
     setConfirmationModalOpts({
       open: true,
@@ -93,7 +139,7 @@ export const MessageBox = (props: MessageBoxProps) => {
     });
   };
 
-  //Delete can be handled as a separate story - leaving the structure here
+  //Delete can be handled as a separate story  - leaving the structure here
   const handleDelete = () => {
     console.log("Handle Delete has been clicked!");
   };

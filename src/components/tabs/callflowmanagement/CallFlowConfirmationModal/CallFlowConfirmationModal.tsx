@@ -23,12 +23,13 @@ const CallFlowConfirmationModal = (props: CallFlowConfirmationModalProps) => {
   return (
     <ModalContainer>
       <PaperContainer>
-        {saveResult.status !== null ?
+        { saveResult.status !== null &&
           <ModalOverlay
             message={saveResult.message}
             status={saveResult.status}
             handleClose={handleClose}
-          /> : null}
+          />
+        }
         <ConfirmationText>{confirmationModalOpts.confirmationText}</ConfirmationText>
         <ButtonWrapper>
           <Button onClick={onConfirm}>

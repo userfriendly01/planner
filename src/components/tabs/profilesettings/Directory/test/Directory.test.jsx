@@ -6,7 +6,7 @@ import {
 } from "components";
 import {
   formModes,
-  modalOverlayStatuses,
+  ModalOverlayStatuses,
   timeouts
 } from "globals";
 import React from "react";
@@ -151,11 +151,11 @@ describe("<Directory />", () => {
   //       expect(PhoneNumberTable.mock.calls[0][0].saveState).toEqual({ status: null });
   //       expect(PhoneNumberTable.mock.calls[1][0].saveState).toEqual({
   //         overlayMessage: "Deleting directory entry...",
-  //         status: modalOverlayStatuses.SAVING
+  //         status: ModalOverlayStatuses.SAVING
   //       });
   //       expect(PhoneNumberTable.mock.calls[2][0].saveState).toEqual({
   //         overlayMessage: "Successfully deleted directory entry",
-  //         status: modalOverlayStatuses.SUCCESS
+  //         status: ModalOverlayStatuses.SUCCESS
   //       });
   //       expect(PhoneNumberTable.mock.calls[3][0].saveState).toEqual({ status: null });
   //     });
@@ -172,11 +172,11 @@ describe("<Directory />", () => {
   //       expect(PhoneNumberTable.mock.calls[0][0].saveState).toEqual({ status: null });
   //       expect(PhoneNumberTable.mock.calls[1][0].saveState).toEqual({
   //         overlayMessage: "Deleting directory entry...",
-  //         status: modalOverlayStatuses.SAVING
+  //         status: ModalOverlayStatuses.SAVING
   //       });
   //       expect(PhoneNumberTable.mock.calls[2][0].saveState).toEqual({
   //         overlayMessage: "Failed to delete directory entry",
-  //         status: modalOverlayStatuses.FAIL
+  //         status: ModalOverlayStatuses.FAIL
   //       });
   //       expect(PhoneNumberTable.mock.calls[3][0].saveState).toEqual({ status: null });
   //     });

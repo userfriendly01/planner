@@ -30,7 +30,7 @@ import {
 } from "context";
 import {
   formModes,
-  modalOverlayStatuses
+  ModalOverlayStatuses
 } from "globals";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
@@ -67,7 +67,7 @@ const ManagementTable = props => {
   const handleDeleteUser = () => {
     const deletedWorker = confirmationModalOpts.worker;
     setSaveResult({
-      status: modalOverlayStatuses.SAVING,
+      status: ModalOverlayStatuses.SAVING,
       message: "Saving"
     });
     let resultMessage;
@@ -79,7 +79,7 @@ const ManagementTable = props => {
           payload: deletedWorker.sid
         });
         setSaveResult({
-          status: modalOverlayStatuses.SUCCESS,
+          status: ModalOverlayStatuses.SUCCESS,
           message: resultMessage
         });
         setTimeout(() => {
@@ -97,7 +97,7 @@ const ManagementTable = props => {
           error: err
         });
         setSaveResult({
-          status: modalOverlayStatuses.FAIL,
+          status: ModalOverlayStatuses.FAIL,
           message: resultMessage
         });
       });

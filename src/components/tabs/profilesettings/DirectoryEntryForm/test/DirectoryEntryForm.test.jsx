@@ -12,7 +12,7 @@ import {
 } from "components";
 import {
   formModes,
-  modalOverlayStatuses,
+  ModalOverlayStatuses,
   timeouts
 } from "globals";
 import React from "react";
@@ -238,12 +238,12 @@ describe("<DirectoryEntryForm />", () => {
             // First call of ModalOverlay displays pending status
             expectOnlyPassedProps(ModalOverlay, {
               message: "Adding directory entry...",
-              status: modalOverlayStatuses.SAVING
+              status: ModalOverlayStatuses.SAVING
             }, getLastInstanceCalled(ModalOverlay) - 1);
             // Second call of ModalOverlay displays success message
             expectOnlyPassedProps(ModalOverlay, {
               message: "Successfully added directory entry",
-              status: modalOverlayStatuses.SUCCESS
+              status: ModalOverlayStatuses.SUCCESS
             }, getLastInstanceCalled(ModalOverlay));
             expect(refreshProfileData).toHaveBeenCalledTimes(1);
           });
@@ -318,12 +318,12 @@ describe("<DirectoryEntryForm />", () => {
             // First call of ModalOverlay displays pending status
             expectOnlyPassedProps(ModalOverlay, {
               message: "Adding directory entry...",
-              status: modalOverlayStatuses.SAVING
+              status: ModalOverlayStatuses.SAVING
             }, getLastInstanceCalled(ModalOverlay) - 1);
             // Second call of ModalOverlay displays failure message
             expectOnlyPassedProps(ModalOverlay, {
               message: "Failed to add directory entry",
-              status: modalOverlayStatuses.FAIL
+              status: ModalOverlayStatuses.FAIL
             }, getLastInstanceCalled(ModalOverlay));
             expect(refreshProfileData).toHaveBeenCalledTimes(0);
           });
@@ -494,12 +494,12 @@ describe("<DirectoryEntryForm />", () => {
             // First call of ModalOverlay displays pending status
             expectOnlyPassedProps(ModalOverlay, {
               message: "Updating directory entry...",
-              status: modalOverlayStatuses.SAVING
+              status: ModalOverlayStatuses.SAVING
             }, getLastInstanceCalled(ModalOverlay) - 1);
             // Second call of ModalOverlay displays success message
             expectOnlyPassedProps(ModalOverlay, {
               message: "Successfully updated directory entry",
-              status: modalOverlayStatuses.SUCCESS
+              status: ModalOverlayStatuses.SUCCESS
             }, getLastInstanceCalled(ModalOverlay));
             expect(refreshProfileData).toHaveBeenCalledTimes(1);
           });
@@ -567,12 +567,12 @@ describe("<DirectoryEntryForm />", () => {
             // First call of ModalOverlay displays pending status
             expectOnlyPassedProps(ModalOverlay, {
               message: "Updating directory entry...",
-              status: modalOverlayStatuses.SAVING
+              status: ModalOverlayStatuses.SAVING
             }, getLastInstanceCalled(ModalOverlay) - 1);
             // Second call of ModalOverlay displays failure message
             expectOnlyPassedProps(ModalOverlay, {
               message: "Failed to update directory entry",
-              status: modalOverlayStatuses.FAIL
+              status: ModalOverlayStatuses.FAIL
             }, getLastInstanceCalled(ModalOverlay));
             expect(refreshProfileData).toHaveBeenCalledTimes(0);
           });
