@@ -7,9 +7,13 @@ import {
   Switch,
   TextField
 } from "@material-ui/core";
+import PropTypes from "prop-types";
 import React, { useState } from "react";
 import MaskedInput from "react-text-mask";
 import styled from "styled-components";
+
+//react-text-mask is not compatible with the versions of @types-react thats installed
+//converting this to a jsx file since I cant get it to get along with the project as a tsx
 
 const tenDigitMask = ["(", /[1-9]/, /\d/, /\d/, ")", " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/];
 const sevenDigitMask = [/[1-9]/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/];
@@ -26,7 +30,7 @@ const SwitchContainer = styled.div`
   margin-left: 8px;
 `;
 
-const SevenDigitInputMask = (inputProps: any) => {
+const SevenDigitInputMask = inputProps => {
   const {
     inputRef,
     ...other
@@ -44,7 +48,7 @@ const SevenDigitInputMask = (inputProps: any) => {
   );
 };
 
-const TenDigitInputMask = (inputProps: any) => {
+const TenDigitInputMask = inputProps => {
   const {
     inputRef,
     ...other
@@ -62,20 +66,7 @@ const TenDigitInputMask = (inputProps: any) => {
   );
 };
 
-export interface ModalPhoneNumberProps {
-  allowSevenDigitVdn?: boolean,
-  disabled?: boolean,
-  error?: boolean,
-  helperText?: string,
-  id: string,
-  label: string,
-  number: string,
-  onBlur: () => void,
-  showError?: boolean,
-  updateValue: (maskedValue: string, unmaskedValue: string, isNumberValid: boolean, e164Number: string) => void,
-  icon?: JSX.Element
-}
-const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
+const ModalPhoneNumber = props => {
   const {
     allowSevenDigitVdn, // if true, show toggle button to switch between input masks,
     disabled = false,
@@ -151,6 +142,20 @@ const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
   } else {
     return textField;
   }
+};
+
+ModalPhoneNumber.propTypes = {
+  allowSevenDigitVdn: PropTypes.bool,
+  disabled: PropTypes.bool,
+  error: PropTypes.bool,
+  helperText: PropTypes.string,
+  id: PropTypes.string,
+  label: PropTypes.string,
+  number: PropTypes.string,
+  onBlur: PropTypes.func,
+  showError: PropTypes.bool,
+  updateValue: PropTypes.func.isRequired,
+  icon: PropTypes.element
 };
 
 export default ModalPhoneNumber;

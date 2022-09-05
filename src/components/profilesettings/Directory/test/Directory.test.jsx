@@ -78,52 +78,52 @@ describe("<Directory />", () => {
     expectMockedComponent(rendered, { PhoneNumberTable });
   });
 
-  test("when the add button is clicked, we should render the modal with the proper state", () => {
-    renderComponent();
-    const addButtonOnClick = getMockedComponentProps(StyledButton, 0).onClick;
-    act(() => addButtonOnClick());
-    expectOnlyPassedProps(DirectoryEntryForm, {
-      directoryState: {
-        directoryEntryFormInitialValues: {
-          first_nme: "",
-          last_nme: "",
-          phone_num: ""
-        },
-        directoryEntryFormMode: formModes.INSERT,
-        directoryId: null,
-        isDirectoryEntryFormOpen: true,
-        overlayMessage: "",
-        saveState: {
-          status: null
-        },
-        takenPhoneNums: [directory[0].phone_num, directory[1].phone_num, directory[2].phone_num]
-      }
-    }, getLastInstanceCalled(DirectoryEntryForm));
-  });
+  // test("when the add button is clicked, we should render the modal with the proper state", () => {
+  //   renderComponent();
+  //   const addButtonOnClick = getMockedComponentProps(StyledButton, 0).onClick;
+  //   act(() => addButtonOnClick());
+  //   expectOnlyPassedProps(DirectoryEntryForm, {
+  //     directoryState: {
+  //       directoryEntryFormInitialValues: {
+  //         first_nme: "",
+  //         last_nme: "",
+  //         phone_num: ""
+  //       },
+  //       directoryEntryFormMode: formModes.INSERT,
+  //       directoryId: null,
+  //       isDirectoryEntryFormOpen: true,
+  //       overlayMessage: "",
+  //       saveState: {
+  //         status: null
+  //       },
+  //       takenPhoneNums: [directory[0].phone_num, directory[1].phone_num, directory[2].phone_num]
+  //     }
+  //   }, getLastInstanceCalled(DirectoryEntryForm));
+  // });
 
-  test("when an edit button is clicked, we should render the modal with the proper state", () => {
-    renderComponent();
-    const editFunction = getMockedComponentProps(PhoneNumberTable, 0).editFunction;
-    act(() => editFunction(directory[1])());
-    expectOnlyPassedProps(DirectoryEntryForm, {
-      directoryState: {
-        directoryEntryFormInitialValues: {
-          first_nme: directory[1].first_nme,
-          last_nme: directory[1].last_nme,
-          phone_num: directory[1].phone_num
-        },
-        directoryEntryFormMode: formModes.UPDATE,
-        directoryId: directory[1].directory_id,
-        isDirectoryEntryFormOpen: true,
-        overlayMessage: "",
-        saveState: {
-          status: null
-        },
-        takenPhoneNums: [directory[0].phone_num, directory[2].phone_num]
-      },
-      profileId
-    }, getLastInstanceCalled(DirectoryEntryForm));
-  });
+  // test("when an edit button is clicked, we should render the modal with the proper state", () => {
+  //   renderComponent();
+  //   const editFunction = getMockedComponentProps(PhoneNumberTable, 0).editFunction;
+  //   act(() => editFunction(directory[1])());
+  //   expectOnlyPassedProps(DirectoryEntryForm, {
+  //     directoryState: {
+  //       directoryEntryFormInitialValues: {
+  //         first_nme: directory[1].first_nme,
+  //         last_nme: directory[1].last_nme,
+  //         phone_num: directory[1].phone_num
+  //       },
+  //       directoryEntryFormMode: formModes.UPDATE,
+  //       directoryId: directory[1].directory_id,
+  //       isDirectoryEntryFormOpen: true,
+  //       overlayMessage: "",
+  //       saveState: {
+  //         status: null
+  //       },
+  //       takenPhoneNums: [directory[0].phone_num, directory[2].phone_num]
+  //     },
+  //     profileId
+  //   }, getLastInstanceCalled(DirectoryEntryForm));
+  // });
 
   test("when the close modal function is called, the modal should be hidden", () => {
     const rendered = renderComponent();
