@@ -25,13 +25,9 @@ import {
 } from "globals";
 import {
   Block,
-  FilterAlt,
   FlashOn
 } from "@mui/icons-material";
-import React, {
-  useEffect, useState
-} from "react";
-import { filterSkillsByName } from "utils";
+import React, { useState } from "react";
 
 interface SkillsTableProps {
   filteredState: any,
@@ -66,8 +62,6 @@ const SkillsTable = (props: SkillsTableProps) => {
   const [confirmationModalOpts, setConfirmationModalOpts] = useState(defaultModalOpts);
   const [saveResult, setSaveResult] = useState(defaultSaveResult);
 
-  console.warn("filteredState in the table", filteredState);
-
   const getProfilesForSkill = (skill: any) => {
     const profileDivs: any = [];
     skill.profiles?.map((p: any, index: number) => {
@@ -77,15 +71,14 @@ const SkillsTable = (props: SkillsTableProps) => {
         profileDivs.push(<div>{p.profileName} - {p.profileId},</div>);
       }
     });
-    console.warn("profileDivs", profileDivs);
     return profileDivs;
   };
 
-  const handleSetSelected = (skillName: string, isSelected: boolean) => {
+  const handleSetSelected = (skill: any, isSelected: boolean) => {
     if(isSelected){
-      setSelected(selected.filter(s => s !== skillName));
+      setSelected(selected.filter(s => s.name !== skill.name));
     } else {
-      setSelected([...selected, skillName ]);
+      setSelected([...selected, skill ]);
     }
   };
 
@@ -122,9 +115,9 @@ const SkillsTable = (props: SkillsTableProps) => {
         </thead>
         <tbody>
           {filteredState.filteredList.map((skill: Skill) => {
-            const isSelected = selected.some(s => s === skill.name);
+            const isSelected = selected.some(s => s.name === skill.name);
             return (
-              <CustomTableRow key={skill.name} onClick={() => handleSetSelected(skill.name, isSelected)} selected={isSelected} data-testid="table-row">
+              <CustomTableRow key={skill.name} onClick={() => handleSetSelected(skill, isSelected)} selected={isSelected} data-testid="table-row">
                 <CustomTableData><TableText>
                   <Checkbox
                     checked={isSelected}

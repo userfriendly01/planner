@@ -1,47 +1,33 @@
 import React, { useState } from "react";
-import { StyledButton } from "components";
-import styled from "styled-components";
+import {
+  MessageBoxWrapper,
+  ActionBar,
+  TextField,
+  UserFormButton,
+  IconWrapper
+} from "./MessageBox.Styles";
 import {
   Edit,
   Delete,
   FileDownload
 } from "@mui/icons-material";
-
-const MessageBoxWrapper = styled.div`
-  display: flex;
-  width: 600px;
-  margin-top: 25px;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const Header = styled.h1`
-
-`;
-
-const ActionBar = styled.div`
-  display: flex;
-  width: 500px;
-  justify-content: space-around
-`;
-
-const TextField = styled.textarea`
-  background-color: rgba(0,0,0,0.04);
-  padding: 10px;
-  height: 150px;
-  width: 500px;
-  margin: 5 0 10 0;
-`;
-
-export const UserFormButton = styled(StyledButton)`
-  height: 40px;
-  width: 450px;
-  margin-bottom: 15px; 
-`;
-
+import {
+  useAdminState
+} from "context";
+import {
+  updateFlashMessage,
+  updateClosedMessage
+} from "services";
 interface MessageBoxProps {
   selected: any[],
   messageType: string
+}
+
+enum actionTypes  {
+  VIEW = "view",
+  EDIT = "edit",
+  DELETE = "delete",
+  EXPORT = "export"
 }
 
 export const MessageBox = (props: MessageBoxProps) => {
@@ -50,25 +36,72 @@ export const MessageBox = (props: MessageBoxProps) => {
     messageType
   } = props;
 
-  const isMulti = selected.length > 1;
-  const action = "Update";
+  const nNumber = useAdminState().userContext.pingIdentity.sub;
+  const messageVariable = messageType === "Closed Message" ? "closedMessage" : "flashMessage";
+  const isSingleSelection = selected.length === 1;
+  const isMultiSelection = selected.length > 1;
+  const [ action, setAction ] = useState(actionTypes.VIEW);
+  const [ text, setText ] = useState(isSingleSelection ? selected[0][messageVariable]: "");
+
+  const handleIconClick = (actionType: actionTypes) => {
+    action === actionType ? setAction(actionTypes.VIEW) : setAction(actionType);
+  };
+
+  const handleOnSave = () => {
+    //add in a confirmation step
+    switch(action){
+      case actionTypes.EDIT:
+        handleEdit();
+        break;
+      case actionTypes.DELETE:
+        handleDelete();
+        break;
+      case actionTypes.EXPORT:
+        handleExport();
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleEdit = () => {
+    console.log("Handle Edit has been clicked!");
+  };
+
+  const handleDelete = () => {
+    console.log("Handle Delete has been clicked!");
+  };
+
+  const handleExport = () => {
+    console.log("Handle Edit has been clicked!");
+  };
 
   return (
     <MessageBoxWrapper>
-      <Header>{messageType}</Header>
+      <h1>{messageType}</h1>
       <ActionBar>
-        <Edit />
-        <Delete />
-        {isMulti && <FileDownload />}
+        <IconWrapper active={action === actionTypes.EDIT}>
+          <Edit onClick={() => handleIconClick(actionTypes.EDIT)}/>
+        </IconWrapper>
+        <IconWrapper active={action === actionTypes.DELETE} >
+          <Delete onClick={() => handleIconClick(actionTypes.DELETE)} />
+        </IconWrapper>
+        { isMultiSelection && <IconWrapper active={action === actionTypes.EXPORT}>
+          <FileDownload onClick={() => handleIconClick(actionTypes.EXPORT)}  />
+        </IconWrapper>}
       </ActionBar>
-      <TextField>
-        Heres some text.
-      </TextField>
-      {selected.length > 0 &&
-        <UserFormButton>
-          { isMulti ?
+      <TextField
+        readOnly={action === actionTypes.VIEW}
+        onChange={setText}
+        value={text}
+      />
+      {(isSingleSelection || isMultiSelection) && action !== actionTypes.VIEW &&
+        <UserFormButton
+          onClick={handleOnSave}
+        >
+          { isMultiSelection ?
             `${action} ${selected.length} ${messageType}s`
-            : `${action} ${selected[0]} ${messageType}`
+            : `${action} ${selected[0].name} ${messageType}`
           }
         </UserFormButton>
       }
