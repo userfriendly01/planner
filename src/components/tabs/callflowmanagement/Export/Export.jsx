@@ -1,4 +1,7 @@
 import * as React from "react";
+import {
+  Grid, GridColumn, GridToolbar
+} from "@progress/kendo-react-grid";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
 
 const products = [{
@@ -1246,13 +1249,27 @@ const Download = () => {
 
   return (
     <ExcelExport data={products} ref={_export}>
-      <button
-        title="Export Excel"
-        className="k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary"
-        onClick={excelExport}
+      <Grid
+        data={products}
+        style={{
+          height: "420px"
+        }}
       >
-        Export to Excel
-      </button>
+        <GridToolbar>
+          <button
+            title="Export Excel"
+            className="k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary"
+            onClick={excelExport}
+          >
+            Export to Excel
+          </button>
+        </GridToolbar>
+        <GridColumn field="ProductID" title="Product ID" width="50px" />
+        <GridColumn field="ProductName" title="Product Name" width="350px" />
+        <GridColumn field="UnitPrice" title="Price" />
+        <GridColumn field="UnitsInStock" title="In stock" />
+        <GridColumn field="Discontinued" title="Discontinued" />
+      </Grid>
     </ExcelExport>
   );
 };
