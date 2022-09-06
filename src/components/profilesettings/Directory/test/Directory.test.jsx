@@ -9,6 +9,7 @@ import {
   modalOverlayStatuses,
   timeouts
 } from "globals";
+import { Modal } from "@material-ui/core";
 import React from "react";
 import { deleteDirectory } from "services";
 import {
@@ -28,6 +29,10 @@ jest.mock("components", () => ({
   DirectoryEntryForm: jest.fn(),
   PhoneNumberTable: jest.fn(),
   StyledButton: jest.fn()
+}));
+
+jest.mock("@material-ui/core", () => ({
+  Modal: jest.fn()
 }));
 
 const profileId = "89";
@@ -67,6 +72,7 @@ describe("<Directory />", () => {
     jest.clearAllMocks();
     setupMockedComponents({
       DirectoryEntryForm,
+      Modal,
       PhoneNumberTable,
       StyledButton
     });
@@ -78,61 +84,67 @@ describe("<Directory />", () => {
     expectMockedComponent(rendered, { PhoneNumberTable });
   });
 
-  // test("when the add button is clicked, we should render the modal with the proper state", () => {
-  //   renderComponent();
-  //   const addButtonOnClick = getMockedComponentProps(StyledButton, 0).onClick;
-  //   act(() => addButtonOnClick());
-  //   expectOnlyPassedProps(DirectoryEntryForm, {
-  //     directoryState: {
-  //       directoryEntryFormInitialValues: {
-  //         first_nme: "",
-  //         last_nme: "",
-  //         phone_num: ""
-  //       },
-  //       directoryEntryFormMode: formModes.INSERT,
-  //       directoryId: null,
-  //       isDirectoryEntryFormOpen: true,
-  //       overlayMessage: "",
-  //       saveState: {
-  //         status: null
-  //       },
-  //       takenPhoneNums: [directory[0].phone_num, directory[1].phone_num, directory[2].phone_num]
-  //     }
-  //   }, getLastInstanceCalled(DirectoryEntryForm));
-  // });
+  test("when the add button is clicked, we should render the modal with the proper state", () => {
+    renderComponent();
+    const addButtonOnClick = getMockedComponentProps(StyledButton, 0).onClick;
+    act(() => addButtonOnClick());
+    render(Modal.mock.calls[1][0].children);
+    expectOnlyPassedProps(DirectoryEntryForm, {
+      directoryState: {
+        directoryEntryFormInitialValues: {
+          first_nme: "",
+          last_nme: "",
+          phone_num: ""
+        },
+        directoryEntryFormMode: formModes.INSERT,
+        directoryId: null,
+        isDirectoryEntryFormOpen: true,
+        overlayMessage: "",
+        saveState: {
+          status: null
+        },
+        takenPhoneNums: [directory[0].phone_num, directory[1].phone_num, directory[2].phone_num]
+      }
+    }, getLastInstanceCalled(DirectoryEntryForm));
+  });
 
-  // test("when an edit button is clicked, we should render the modal with the proper state", () => {
-  //   renderComponent();
-  //   const editFunction = getMockedComponentProps(PhoneNumberTable, 0).editFunction;
-  //   act(() => editFunction(directory[1])());
-  //   expectOnlyPassedProps(DirectoryEntryForm, {
-  //     directoryState: {
-  //       directoryEntryFormInitialValues: {
-  //         first_nme: directory[1].first_nme,
-  //         last_nme: directory[1].last_nme,
-  //         phone_num: directory[1].phone_num
-  //       },
-  //       directoryEntryFormMode: formModes.UPDATE,
-  //       directoryId: directory[1].directory_id,
-  //       isDirectoryEntryFormOpen: true,
-  //       overlayMessage: "",
-  //       saveState: {
-  //         status: null
-  //       },
-  //       takenPhoneNums: [directory[0].phone_num, directory[2].phone_num]
-  //     },
-  //     profileId
-  //   }, getLastInstanceCalled(DirectoryEntryForm));
-  // });
+  test("when an edit button is clicked, we should render the modal with the proper state", () => {
+    renderComponent();
+    const editFunction = getMockedComponentProps(PhoneNumberTable, 0).editFunction;
+    act(() => editFunction(directory[1])());
+    render(Modal.mock.calls[1][0].children);
+    expectOnlyPassedProps(DirectoryEntryForm, {
+      directoryState: {
+        directoryEntryFormInitialValues: {
+          first_nme: directory[1].first_nme,
+          last_nme: directory[1].last_nme,
+          phone_num: directory[1].phone_num
+        },
+        directoryEntryFormMode: formModes.UPDATE,
+        directoryId: directory[1].directory_id,
+        isDirectoryEntryFormOpen: true,
+        overlayMessage: "",
+        saveState: {
+          status: null
+        },
+        takenPhoneNums: [directory[0].phone_num, directory[2].phone_num]
+      },
+      profileId
+    }, getLastInstanceCalled(DirectoryEntryForm));
+  });
 
   test("when the close modal function is called, the modal should be hidden", () => {
     const rendered = renderComponent();
     const editFunction = getMockedComponentProps(PhoneNumberTable, 0).editFunction;
     act(() => editFunction(directory[1])());
+    render(Modal.mock.calls[1][0].children);
     expectMockedComponent(rendered, { DirectoryEntryForm }, 1);
     const closeModal = getMockedComponentProps(DirectoryEntryForm, 0).closeModal;
     act(() => closeModal());
-    expectMockedComponent(rendered, { DirectoryEntryForm }, 0);
+    render(Modal.mock.calls[2][0].children);
+    expect(Modal.mock.calls[2][0].open).toBe(false);
+    const lastInstanceOfDirectoryEntryForm = DirectoryEntryForm.mock.calls[getLastInstanceCalled(DirectoryEntryForm)][0];
+    expect(lastInstanceOfDirectoryEntryForm.directoryState.isDirectoryEntryFormOpen).toBe(false);
   });
 
   describe("deleting", () => {
