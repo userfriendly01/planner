@@ -1,7 +1,7 @@
 import {
   CircularProgress,
   Modal
-} from "@material-ui/core";
+} from "@mui/material";
 import {
   Header,
   NavTabs,

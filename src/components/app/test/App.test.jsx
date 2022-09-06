@@ -2,7 +2,7 @@ import App from "../App";
 import {
   CircularProgress,
   Modal
-} from "@material-ui/core";
+} from "@mui/material";
 import MockAdapter from "axios-mock-adapter";
 import {
   Header,
@@ -166,7 +166,7 @@ window.location = { reload: jest.fn() };
 
 jest.useFakeTimers();
 
-jest.mock("@material-ui/core", () => ({
+jest.mock("@mui/material", () => ({
   CircularProgress: jest.fn(),
   Modal: jest.fn()
 }));

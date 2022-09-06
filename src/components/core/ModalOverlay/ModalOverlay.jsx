@@ -1,7 +1,7 @@
 import {
   CloseRounded,
   Warning
-} from "@material-ui/icons";
+} from "@mui/material";
 import { ModalFetchingRing } from "components";
 import { modalOverlayStatuses } from "globals";
 import PropTypes from "prop-types";

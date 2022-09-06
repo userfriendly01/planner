@@ -6,7 +6,7 @@ import {
 import {
   Switch,
   TextField
-} from "@material-ui/core";
+} from "@mui/material";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import MaskedInput from "react-text-mask";
@@ -47,6 +47,7 @@ const SevenDigitInputMask = inputProps => {
       showMask />
   );
 };
+
 
 const TenDigitInputMask = inputProps => {
   const {
@@ -111,6 +112,7 @@ const ModalPhoneNumber = props => {
         let e164Number = "";
         try {
           e164Number = getE164Number(unmaskedValue);
+        // eslint-disable-next-line no-empty
         } catch (e) {}
         updateValue(maskedValue, unmaskedValue, isNumberValid(unmaskedValue, useSevenDigitMask), e164Number);
       }}
