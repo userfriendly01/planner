@@ -300,7 +300,7 @@ describe("<ManagerModal />", () => {
           render(grandchild);
           CalabrioTeamModal.mock.calls[0][0].handleClose({ data: { groupId: 300 }});
         });
-        // expect(Modal.mock.calls[1][0].open).toBe(false);
+        expect(Modal.mock.calls[2][0].open).toBe(false);
       });
     });
   });
