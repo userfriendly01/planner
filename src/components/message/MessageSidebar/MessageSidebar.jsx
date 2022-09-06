@@ -3,10 +3,8 @@ import {
   Radio,
   FormControlLabel,
   RadioGroup
-} from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+} from "@mui/material";
 import {
-  theme,
   profileConfigs,
   apiPaths
 } from "globals";
@@ -51,15 +49,15 @@ const StyledClosed = styled.img`
   margin-bottom: -7px;
 `;
 
-const TealRadio = withStyles({
-  root: {
-    color: theme.libertyDarkTeal,
-    "&$checked": {
-      color: theme.libertyDarkTeal
-    }
-  },
-  checked: {}
-})(props => <Radio color="default" {...props} />);
+// const TealRadio = withStyles({
+//   root: {
+//     color: theme.libertyDarkTeal,
+//     "&$checked": {
+//       color: theme.libertyDarkTeal
+//     }
+//   },
+//   checked: {}
+// })(props => <Radio color="default" {...props} />);
 
 const MessageSidebar = props => {
   const {
@@ -132,7 +130,7 @@ const MessageSidebar = props => {
       <div key={`${skillName}-div`}>
         <StyledFormControl
           key={`${skillName}-sc`}
-          control={<TealRadio value={skillName} />}
+          control={<Radio value={skillName} />}
           label={skillName}
         />
         {hasFlash ? <StyledBolt

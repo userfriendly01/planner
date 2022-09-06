@@ -1,5 +1,5 @@
 import MessageContainer from "../MessageContainer.jsx";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
 import MockAdapter from "axios-mock-adapter";
 import {
   AddMessage,
@@ -47,7 +47,7 @@ const authorizedAdminState = {
   }
 };
 
-jest.mock("@material-ui/core", () => ({
+jest.mock("@mui/material", () => ({
   CircularProgress: jest.fn()
 }));
 
