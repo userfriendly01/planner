@@ -88,7 +88,7 @@ const CallFlowContainer = () => {
       ...filteredState,
       filteredList
     });
-  }, [filteredState.searchBy, filteredState.profiles, filteredState.closedFilter, filteredState.flashFilter]);
+  }, [filteredState.searchBy, filteredState.profiles, filteredState.closedFilter, filteredState.flashFilter, state.skillContext.skills]);
 
   const getProfileOptions = () => {
     return state.profileContext.profiles.map((p: any) => {

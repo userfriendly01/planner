@@ -5,7 +5,8 @@ import {
   CustomTableRow,
   FilterWrapper,
   TableContainer,
-  TableText
+  TableText,
+  TableIcon
 } from "./SkillsTable.Styles";
 import { SkillsTableProps } from "../CallFlowManagement.Interfaces";
 import { Checkbox } from "@mui/material";
@@ -103,8 +104,8 @@ const SkillsTable = (props: SkillsTableProps) => {
                 </TableText></CustomTableData>
                 <CustomTableData><TableText>{skill.name}</TableText></CustomTableData>
                 <CustomTableData><TableText>{getProfilesForSkill(skill).map((d: any) => d)}</TableText></CustomTableData>
-                <CustomTableData><TableText>{skill.flashMessage && <FlashOn/>}</TableText></CustomTableData>
-                <CustomTableData><TableText>{skill.closedMessage && <Block/>}</TableText></CustomTableData>
+                <CustomTableData><TableIcon>{skill.flashMessage && <FlashOn/>}</TableIcon></CustomTableData>
+                <CustomTableData><TableIcon>{skill.closedMessage && <Block/>}</TableIcon></CustomTableData>
               </CustomTableRow>
             );
           })}

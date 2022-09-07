@@ -92,3 +92,10 @@ export const TableText = styled.div`
   flex-direction: column;
   margin: 2px;
 `;
+
+export const TableIcon = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 2px;
+  align-items: center;
+`;
