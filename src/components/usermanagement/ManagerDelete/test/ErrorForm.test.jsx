@@ -10,11 +10,6 @@ import {
 } from "testUtils";
 import ErrorForm from "../ErrorForm";
 
-jest.mock("@material-ui/icons", () => ({
-  __esModule: true,
-  CloseRounded: jest.fn()
-}));
-
 jest.mock("components", () => ({
   __esModule: true,
   StyledButton: jest.fn()

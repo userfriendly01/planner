@@ -5,13 +5,13 @@ import {
   PaginationWrapper,
   ShowingSection
 } from "./ManagementPagination.Styles";
-import { Tooltip } from "@material-ui/core";
+import { Tooltip } from "@mui/material";
 import {
   NavigateBeforeOutlined,
   NavigateNextOutlined,
   SkipNextOutlined,
   SkipPreviousOutlined
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import { workersPerPage } from "globals";
 import PropTypes from "prop-types";
 import React from "react";

@@ -9,7 +9,7 @@ import {
   modalOverlayStatuses,
   timeouts
 } from "globals";
-import { Modal } from "@material-ui/core";
+import { Modal } from "@mui/material";
 import React from "react";
 import { deleteDirectory } from "services";
 import {
@@ -31,7 +31,7 @@ jest.mock("components", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("@material-ui/core", () => ({
+jest.mock("@mui/material", () => ({
   Modal: jest.fn()
 }));
 

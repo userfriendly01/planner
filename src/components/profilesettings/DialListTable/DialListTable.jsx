@@ -1,11 +1,11 @@
 import {
   Modal,
   Paper
-} from "@material-ui/core";
+} from "@mui/material";
 import {
   Delete,
   Edit
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import {
   DialListEntryForm,
   ModalOverlay,

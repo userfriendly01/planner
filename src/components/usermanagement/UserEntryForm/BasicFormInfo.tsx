@@ -13,7 +13,7 @@ import {
 import {
   Switch,
   Tooltip
-} from "@material-ui/core";
+} from "@mui/material";
 import {
   DidFormInfo,
   ModalExtension,

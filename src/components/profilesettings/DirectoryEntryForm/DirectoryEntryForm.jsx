@@ -2,7 +2,7 @@ import {
   isNumberValid,
   unMaskPhoneNumber
 } from "@lmig/phone-number-utils";
-import { TextField } from "@material-ui/core";
+import { TextField } from "@mui/material";
 import {
   ModalOverlay,
   ModalPhoneNumber,

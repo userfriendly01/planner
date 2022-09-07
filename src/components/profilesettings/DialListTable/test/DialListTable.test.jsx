@@ -25,7 +25,7 @@ import {
   within
 } from "testUtils";
 import { myAxios } from "utils";
-import { Modal } from "@material-ui/core";
+import { Modal } from "@mui/material";
 
 jest.useFakeTimers();
 
@@ -36,10 +36,10 @@ jest.mock("components", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("@material-ui/core", () => ({
+jest.mock("@mui/material", () => ({
   __esModule: true,
   Modal: jest.fn(),
-  Paper: jest.requireActual("@material-ui/core").Paper
+  Paper: jest.requireActual("@mui/material").Paper
 }));
 
 const axiosMock = new MockAdapter(myAxios);

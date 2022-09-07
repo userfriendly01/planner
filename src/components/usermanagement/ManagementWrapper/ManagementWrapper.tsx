@@ -6,7 +6,7 @@ import {
   ManagementContainer,
   StyledPaper
 } from "./ManagementWrapper.Styles";
-import { Modal } from "@material-ui/core";
+import { Modal } from "@mui/material";
 import {
   ManagementHeader,
   ManagementPagination,
