@@ -1,4 +1,4 @@
-import { ThreeDRotation } from "@material-ui/icons";
+import { ThreeDRotation } from "@mui/icons-material";
 import {
   CustomInput,
   ModalHelperText

@@ -2,7 +2,7 @@ import UserFormButtons from "../UserFormButtons";
 import {
   Modal,
   Tooltip
-} from "@material-ui/core";
+} from "@mui/material";
 import {
   MergeUsersModal,
   StyledButton
@@ -60,7 +60,7 @@ jest.mock("components", () => ({
   MergeUsersModal: jest.fn()
 }));
 
-jest.mock("@material-ui/core", () => ({
+jest.mock("@mui/material", () => ({
   Tooltip: jest.fn(),
   Tabs: jest.fn(),
   Modal: jest.fn()

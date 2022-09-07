@@ -4,7 +4,7 @@ import { StyledButton } from "components";
 import {
   Checkbox,
   TextField
-} from "@material-ui/core";
+} from "@mui/material";
 import {
   act,
   calabrioContext,
@@ -13,7 +13,7 @@ import {
   setupMockedComponents
 } from "testUtils";
 
-jest.mock("@material-ui/core", () => ({
+jest.mock("@mui/material", () => ({
   Checkbox: jest.fn(),
   TextField: jest.fn()
 }));

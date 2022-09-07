@@ -1,5 +1,5 @@
 import { CustomInput } from "../CustomInput";
-import { TextField } from "@material-ui/core";
+import { TextField } from "@mui/material";
 import { ModalFetchingRing } from "components";
 import React from "react";
 import {
@@ -8,7 +8,7 @@ import {
   setupMockedComponents
 } from "testUtils";
 
-jest.mock("@material-ui/core", () => ({
+jest.mock("@mui/material", () => ({
   __esModule: true,
   TextField: jest.fn()
 }));

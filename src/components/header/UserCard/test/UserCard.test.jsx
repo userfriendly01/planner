@@ -1,5 +1,5 @@
 import UserCard from "../UserCard";
-import { AccountBox } from "@material-ui/icons";
+import { AccountBox } from "@mui/icons-material";
 import { initialState } from "context";
 import React from "react";
 import {
@@ -8,7 +8,7 @@ import {
   setupMockedComponents
 } from "testUtils";
 
-jest.mock("@material-ui/icons", () => ({
+jest.mock("@mui/icons-material", () => ({
   __esModule: true,
   AccountBox: jest.fn()
 }));

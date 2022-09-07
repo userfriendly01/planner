@@ -1,5 +1,5 @@
 import ManagerModal from "../ManagerModal";
-import { CloseRounded } from "@material-ui/icons";
+import { CloseRounded } from "@mui/icons-material";
 import {
   Dropdown,
   ModalNNumber,
@@ -29,7 +29,7 @@ import {
 
 jest.useFakeTimers();
 
-jest.mock("@material-ui/icons", () => ({
+jest.mock("@mui/icons-material", () => ({
   __esModule: true,
   CloseRounded: jest.fn()
 }));
@@ -300,7 +300,7 @@ describe("<ManagerModal />", () => {
           render(grandchild);
           CalabrioTeamModal.mock.calls[0][0].handleClose({ data: { groupId: 300 }});
         });
-        // expect(Modal.mock.calls[1][0].open).toBe(false);
+        expect(Modal.mock.calls[2][0].open).toBe(false);
       });
     });
   });

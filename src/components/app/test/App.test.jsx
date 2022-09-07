@@ -2,7 +2,7 @@ import App from "../App";
 import {
   CircularProgress,
   Modal
-} from "@material-ui/core";
+} from "@mui/material";
 import MockAdapter from "axios-mock-adapter";
 import {
   Header,
@@ -167,7 +167,7 @@ window.location = { reload: jest.fn() };
 
 jest.useFakeTimers();
 
-jest.mock("@material-ui/core", () => ({
+jest.mock("@mui/material", () => ({
   CircularProgress: jest.fn(),
   Modal: jest.fn()
 }));
@@ -262,7 +262,6 @@ describe("<App />", () => {
             expectMockedComponent(rendered, { NavTabs });
             expectMockedComponent(rendered, { Modal });
             expectOnlyPassedProps(Modal, {
-              disableBackdropClick: true,
               open: false
             });
             expectMockedComponent(rendered, { CircularProgress }, 0);
@@ -277,7 +276,6 @@ describe("<App />", () => {
           const modalChildrenRendered = render(<div>{modalChildren}</div>);
           await act(() => jest.advanceTimersByTime(timeouts.AUTH));
           expectOnlyPassedProps(Modal, {
-            disableBackdropClick: true,
             open: true
           });
           expectMockedComponent(modalChildrenRendered, { NotificationModal });
@@ -577,7 +575,6 @@ describe("<App />", () => {
         expectMockedComponent(rendered, { NavTabs });
         expectMockedComponent(rendered, { Modal });
         expectOnlyPassedProps(Modal, {
-          disableBackdropClick: true,
           open: false
         });
         expectMockedComponent(rendered, { CircularProgress }, 0);
@@ -642,7 +639,6 @@ describe("<App />", () => {
         expectMockedComponent(rendered, { NavTabs });
         expectMockedComponent(rendered, { Modal });
         expectOnlyPassedProps(Modal, {
-          disableBackdropClick: true,
           open: false
         });
         expectMockedComponent(rendered, { CircularProgress }, 0);
@@ -707,7 +703,6 @@ describe("<App />", () => {
         expectMockedComponent(rendered, { NavTabs });
         expectMockedComponent(rendered, { Modal });
         expectOnlyPassedProps(Modal, {
-          disableBackdropClick: true,
           open: false
         });
         expectMockedComponent(rendered, { CircularProgress }, 0);

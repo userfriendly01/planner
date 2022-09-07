@@ -1,4 +1,4 @@
-import { Modal } from "@material-ui/core";
+import { Modal } from "@mui/material";
 import {
   DirectoryEntryForm,
   PhoneNumberTable,
@@ -133,7 +133,7 @@ const Directory = props => {
         </StyledButton>
       </AddContactButtonContainer>
       <Modal
-        disableBackdropClick={true}
+        onClose={() => { return; }}
         open={directoryState.isDirectoryEntryFormOpen}
       >
         <DirectoryEntryForm

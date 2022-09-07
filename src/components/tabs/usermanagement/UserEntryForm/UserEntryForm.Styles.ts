@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { Tabs } from "@material-ui/core";
-import { Edit } from "@material-ui/icons";
+import { Tabs } from "@mui/material";
+import { Edit } from "@mui/icons-material";
 import {
   StyledButton
 } from "components";

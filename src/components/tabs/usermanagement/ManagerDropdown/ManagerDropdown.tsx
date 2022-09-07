@@ -7,7 +7,7 @@ import { Modal } from "@mui/material";
 import {
   Edit,
   Delete
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import {
   ManagerModal,
   ManagerDelete,
@@ -132,14 +132,10 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
         }}
         CustomRender={DropdownOption}
       />
-      <Modal
-        onClose={disableBackDropClick}
-        open={isManagerModalOpen}>
+      <Modal onClose={() => { return; }} open={isManagerModalOpen}>
         <ManagerModal handleClose={handleCloseManager} selectedManager={selectedManager}/>
       </Modal>
-      <Modal
-        onClose={disableBackDropClick}
-        open={isManagerDeleteOpen}>
+      <Modal onClose={() => { return; }} open={isManagerDeleteOpen}>
         <ManagerDelete handleClose={handleCloseManagerDelete} selectedManager={selectedManager}/>
       </Modal>
     </Wrapper>

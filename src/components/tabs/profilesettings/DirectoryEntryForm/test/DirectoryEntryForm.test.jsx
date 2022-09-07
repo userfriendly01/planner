@@ -2,8 +2,7 @@ import DirectoryEntryForm from "../DirectoryEntryForm";
 import {
   TextField,
   Tooltip
-} from "@material-ui/core";
-import { InfoOutlined } from "@material-ui/icons";
+} from "@mui/material";
 import {
   ModalOverlay,
   ModalPhoneNumber,
@@ -33,15 +32,10 @@ import {
 
 jest.useFakeTimers();
 
-jest.mock("@material-ui/core", () => ({
+jest.mock("@mui/material", () => ({
   __esModule: true,
   TextField: jest.fn(),
   Tooltip: jest.fn()
-}));
-
-jest.mock("@material-ui/icons", () => ({
-  __esModule: true,
-  InfoOutlined: jest.fn()
 }));
 
 jest.mock("components", () => ({
@@ -75,7 +69,6 @@ describe("<DirectoryEntryForm />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     setupMockedComponents({
-      InfoOutlined,
       ModalPhoneNumber,
       ModalOverlay,
       StyledButton,

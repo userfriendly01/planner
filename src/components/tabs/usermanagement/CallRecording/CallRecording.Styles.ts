@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { StyledButton } from "components";
-import { TextField } from "@material-ui/core";
+import { TextField } from "@mui/material";
 
 export const Button = styled(StyledButton)`
   height: 40px;

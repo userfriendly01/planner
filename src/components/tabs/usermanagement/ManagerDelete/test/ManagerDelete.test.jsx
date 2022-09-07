@@ -1,5 +1,5 @@
 import ManagerDelete from "../ManagerDelete";
-import { CloseRounded } from "@material-ui/icons";
+import { CloseRounded } from "@mui/icons-material";
 import {
   Dropdown,
   ModalNNumber,
@@ -24,7 +24,7 @@ import {
 
 jest.useFakeTimers();
 
-jest.mock("@material-ui/icons", () => ({
+jest.mock("@mui/icons-material", () => ({
   __esModule: true,
   CloseRounded: jest.fn()
 }));

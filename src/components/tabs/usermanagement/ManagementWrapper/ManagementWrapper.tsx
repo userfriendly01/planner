@@ -127,10 +127,7 @@ export const ManagementWrapper: React.FC = () => {
   return (
     <FormStateProvider>
       <ManagementContainer>
-        <Modal
-          open={userModalState.open}
-          onClose={disableBackDropClick}
-        >
+        <Modal onClose={() => { return; }} open={userModalState.open}>
           <UserEntryForm
             handleClose={handleClose}
             worker={userModalState.worker}

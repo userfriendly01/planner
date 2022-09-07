@@ -3,7 +3,7 @@ import {
   FormControlsPane,
   StyledIcon
 } from "./UserEntryForm.Styles";
-import { InputAdornment } from "@material-ui/core";
+import { InputAdornment } from "@mui/material";
 import {
   ForwardToEntryForm,
   ModalPhoneNumber

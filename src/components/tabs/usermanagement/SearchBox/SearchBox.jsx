@@ -2,10 +2,10 @@ import {
   IconButton,
   InputAdornment,
   TextField
-} from "@material-ui/core";
+} from "@mui/material";
 import {
   ClearRounded
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";

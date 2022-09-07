@@ -1,11 +1,11 @@
 import {
   Modal,
   Paper
-} from "@material-ui/core";
+} from "@mui/material";
 import {
   Delete,
   Edit
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import {
   DialListEntryForm,
   ModalOverlay,
@@ -201,7 +201,7 @@ const DialListTable = props => {
           Add Contact
         </StyledButton>
       </AddContactButtonContainer>
-      <Modal disableBackdropClick={true} open={dialListTableState.isDialListEntryFormOpen}>
+      <Modal onClose={() => { return; }} open={dialListTableState.isDialListEntryFormOpen}>
         <DialListEntryForm
           dialListTableState={dialListTableState}
           profileId={profileId}

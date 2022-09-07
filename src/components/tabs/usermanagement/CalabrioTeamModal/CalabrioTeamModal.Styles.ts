@@ -3,7 +3,7 @@ import {
   FlexRow
 } from "globals";
 import styled from "styled-components";
-import { CloseRounded } from "@material-ui/icons";
+import { CloseRounded } from "@mui/icons-material";
 
 export const CloseButton = styled(CloseRounded)`
   position: absolute;

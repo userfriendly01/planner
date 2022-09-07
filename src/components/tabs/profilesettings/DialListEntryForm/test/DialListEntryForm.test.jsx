@@ -2,8 +2,8 @@ import DialListEntryForm from "../DialListEntryForm";
 import {
   TextField,
   Tooltip
-} from "@material-ui/core";
-import { InfoOutlined } from "@material-ui/icons";
+} from "@mui/material";
+import { InfoOutlined } from "@mui/icons-material";
 import MockAdapter from "axios-mock-adapter";
 import {
   PaperContainer,
@@ -32,13 +32,13 @@ import { myAxios } from "utils";
 
 jest.useFakeTimers();
 
-jest.mock("@material-ui/core", () => ({
+jest.mock("@mui/material", () => ({
   __esModule: true,
   TextField: jest.fn(),
   Tooltip: jest.fn()
 }));
 
-jest.mock("@material-ui/icons", () => ({
+jest.mock("@mui/icons-material", () => ({
   __esModule: true,
   InfoOutlined: jest.fn()
 }));

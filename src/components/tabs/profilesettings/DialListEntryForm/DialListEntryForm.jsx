@@ -5,8 +5,8 @@ import {
 import {
   TextField,
   Tooltip
-} from "@material-ui/core";
-import { InfoOutlined } from "@material-ui/icons";
+} from "@mui/material";
+import { InfoOutlined } from "@mui/icons-material";
 import {
   PaperContainer,
   ModalPhoneNumber,
