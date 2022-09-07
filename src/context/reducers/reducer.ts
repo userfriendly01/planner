@@ -23,8 +23,7 @@ export const initialState: AppState = {
     skills: []
   },
   userContext: {
-    pingIdentity: {},
-    authenticationProfiles: []
+    pingIdentity: {}
   },
   workerContext: {
     workers: [],

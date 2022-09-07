@@ -101,7 +101,7 @@ const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
       helperText={helperText || (showError && validationError ? validationHelperText : null)}
       id={id}
       InputProps={{
-        inputComponent: {InputComponent},
+        inputComponent: InputComponent,
         style: {
           flexGrow: 1
         },

@@ -1,7 +1,7 @@
 import {
   Tab,
   Tabs
-} from "@material-ui/core";
+} from "@mui/material";
 import styled from "styled-components";
 
 export const Content = styled.div`
@@ -15,6 +15,7 @@ export const StyledTabs = styled(Tabs)`
 `;
 
 export const StyledTab = styled(Tab)`
+  color: black !important;
   && {
     font-size: 1.1em;
   }

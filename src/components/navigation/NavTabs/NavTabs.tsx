@@ -1,4 +1,4 @@
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import {
   Content,
   StyledTabs,
@@ -6,14 +6,14 @@ import {
   StyledTabContainer
 } from "./NavTabs.Styles";
 import {
-  TabPanelProps
+  TabPanelProps,
+  TabNames
 } from "./NavTabs.Interfaces";
 import {
   CallFlowContainer,
   ManagementWrapper,
   ProfileSettingsContainer
 } from "components";
-import { tabNames } from "authentication";
 import React from "react";
 
 const TabPanel = (props: TabPanelProps) => {
@@ -60,13 +60,13 @@ const NavTabs = () => {
           <StyledTab label="Call Flow Management" id="nav-tab-callFlowManagement" aria-controls="nav-tabpanel-callFlowManagement" onClick={event => event.preventDefault()}/>
         </StyledTabs>
       </StyledTabContainer>
-      <TabPanel value={value} tabName={tabNames.USER_MANAGEMENT} index={0}>
+      <TabPanel value={value} tabName={TabNames.USER_MANAGEMENT} index={0}>
         <ManagementWrapper />
       </TabPanel>
-      <TabPanel value={value} tabName={tabNames.PROFILE_SETTINGS} index={1}>
+      <TabPanel value={value} tabName={TabNames.PROFILE_SETTINGS} index={1}>
         <ProfileSettingsContainer />
       </TabPanel>
-      <TabPanel value={value} tabName={tabNames.CALL_FLOW_MANAGEMENT} index={2}>
+      <TabPanel value={value} tabName={TabNames.CALL_FLOW_MANAGEMENT} index={2}>
         <CallFlowContainer />
       </TabPanel>
     </Content>
