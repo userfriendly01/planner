@@ -201,7 +201,7 @@ const DialListTable = props => {
           Add Contact
         </StyledButton>
       </AddContactButtonContainer>
-      <Modal disableBackdropClick={true} open={dialListTableState.isDialListEntryFormOpen}>
+      <Modal onClose={() => { return; }} open={dialListTableState.isDialListEntryFormOpen}>
         <DialListEntryForm
           dialListTableState={dialListTableState}
           profileId={profileId}

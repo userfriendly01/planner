@@ -126,10 +126,10 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
         }}
         CustomRender={DropdownOption}
       />
-      <Modal disableBackdropClick={true} open={isManagerModalOpen}>
+      <Modal onClose={() => { return; }} open={isManagerModalOpen}>
         <ManagerModal handleClose={handleCloseManager} selectedManager={selectedManager}/>
       </Modal>
-      <Modal disableBackdropClick={true} open={isManagerDeleteOpen}>
+      <Modal onClose={() => { return; }} open={isManagerDeleteOpen}>
         <ManagerDelete handleClose={handleCloseManagerDelete} selectedManager={selectedManager}/>
       </Modal>
     </Wrapper>

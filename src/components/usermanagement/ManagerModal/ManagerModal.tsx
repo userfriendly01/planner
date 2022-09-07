@@ -257,7 +257,7 @@ const ManagerModal = (props: ManagerModalProps) => {
                 }
               }}
             />
-            <Modal disableBackdropClick={true} open={isTeamModalOpen}>
+            <Modal onClose={() => { return; }} open={isTeamModalOpen}>
               <CalabrioTeamModal handleClose={handleCloseTeam}/>
             </Modal>
           </Wrapper>

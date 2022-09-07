@@ -133,7 +133,7 @@ const Directory = props => {
         </StyledButton>
       </AddContactButtonContainer>
       <Modal
-        disableBackdropClick={true}
+        onClose={() => { return; }}
         open={directoryState.isDirectoryEntryFormOpen}
       >
         <DirectoryEntryForm

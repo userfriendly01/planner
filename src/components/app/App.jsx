@@ -263,7 +263,7 @@ const App = () => {
         <AppWrapper data-testid="app-wrapper">
           <Header/>
           <NavTabs/>
-          <Modal disableBackdropClick={true} open={showModal === true}>
+          <Modal onClose={() => { return; }} open={showModal === true}>
             <NotificationModal
               buttonText={"Reload"}
               handleClick={() => window.location.reload()}
