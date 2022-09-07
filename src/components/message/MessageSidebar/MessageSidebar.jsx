@@ -49,16 +49,6 @@ const StyledClosed = styled.img`
   margin-bottom: -7px;
 `;
 
-// const TealRadio = withStyles({
-//   root: {
-//     color: theme.libertyDarkTeal,
-//     "&$checked": {
-//       color: theme.libertyDarkTeal
-//     }
-//   },
-//   checked: {}
-// })(props => <Radio color="default" {...props} />);
-
 const MessageSidebar = props => {
   const {
     messageState,

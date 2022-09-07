@@ -29,6 +29,7 @@
     "@testing-library/user-event": "^13.2.1",
     "@types/jest": "^26.0.10",
     "@types/lodash": "^4.14.184",
+    "@types/react-text-mask": "^5.4.11",
     "@types/styled-components": "^5.1.4",
     "@typescript-eslint/eslint-plugin": "^4.17.0",
     "@typescript-eslint/parser": "^4.17.0",
