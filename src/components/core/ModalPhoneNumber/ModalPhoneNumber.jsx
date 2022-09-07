@@ -32,7 +32,6 @@ const SwitchContainer = styled.div`
 
 const SevenDigitInputMask = inputProps => {
   const {
-    // inputRef,
     ...other
   } = inputProps;
   return (
@@ -41,9 +40,6 @@ const SevenDigitInputMask = inputProps => {
       guide={false}
       mask={sevenDigitMask}
       placeholderChar={"\u2000"}
-      // ref={ref => {
-      //   inputRef(ref ? ref.inputElement : null);
-      // }}
       showMask />
   );
 };
@@ -51,7 +47,6 @@ const SevenDigitInputMask = inputProps => {
 
 const TenDigitInputMask = inputProps => {
   const {
-    // inputRef,
     ...other
   } = inputProps;
   return (
@@ -60,16 +55,13 @@ const TenDigitInputMask = inputProps => {
       guide={false}
       mask={tenDigitMask}
       placeholderChar={"\u2000"}
-      // ref={ref => {
-      //   inputRef(ref ? ref.inputElement : null);
-      // }}
       showMask />
   );
 };
 
 const ModalPhoneNumber = props => {
   const {
-    allowSevenDigitVdn, // if true, show toggle button to switch between input masks,
+    allowSevenDigitVdn,
     disabled = false,
     error,
     helperText,
