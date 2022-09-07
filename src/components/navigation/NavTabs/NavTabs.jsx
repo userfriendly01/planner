@@ -23,6 +23,9 @@ const StyledTabs = styled(Tabs)`
 `;
 
 const StyledTab = styled(Tab)`
+  .Mui-selected {
+    color: black;
+  };
   && {
     font-size: 1.1em;
   }
