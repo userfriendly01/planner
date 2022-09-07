@@ -32,7 +32,7 @@ const SwitchContainer = styled.div`
 
 const SevenDigitInputMask = inputProps => {
   const {
-    // inputRef,
+    inputRef,
     ...other
   } = inputProps;
   return (
@@ -41,9 +41,9 @@ const SevenDigitInputMask = inputProps => {
       guide={false}
       mask={sevenDigitMask}
       placeholderChar={"\u2000"}
-      // ref={ref => {
-      //   inputRef(ref ? ref.inputElement : null);
-      // }}
+      ref={ref => {
+        inputRef(ref ? ref.inputElement : null);
+      }}
       showMask />
   );
 };
@@ -51,7 +51,7 @@ const SevenDigitInputMask = inputProps => {
 
 const TenDigitInputMask = inputProps => {
   const {
-    // inputRef,
+    inputRef,
     ...other
   } = inputProps;
   return (
@@ -60,9 +60,9 @@ const TenDigitInputMask = inputProps => {
       guide={false}
       mask={tenDigitMask}
       placeholderChar={"\u2000"}
-      // ref={ref => {
-      //   inputRef(ref ? ref.inputElement : null);
-      // }}
+      ref={ref => {
+        inputRef(ref ? ref.inputElement : null);
+      }}
       showMask />
   );
 };
@@ -86,6 +86,7 @@ const ModalPhoneNumber = props => {
 
   const validationError = !isNumberValid(unMaskPhoneNumber(number), useSevenDigitMask);
   const validationHelperText = useSevenDigitMask ? "Enter a seven digit VDN" : "Enter a valid ten digit phone number";
+  const InputComponent = useSevenDigitMask ? SevenDigitInputMask : TenDigitInputMask;
 
   const textField = (
     <TextField
@@ -94,7 +95,7 @@ const ModalPhoneNumber = props => {
       helperText={helperText || (showError && validationError ? validationHelperText : null)}
       id={id}
       InputProps={{
-        inputComponent: useSevenDigitMask ? SevenDigitInputMask : TenDigitInputMask,
+        inputComponent: {InputComponent},
         style: {
           flexGrow: 1
         },
