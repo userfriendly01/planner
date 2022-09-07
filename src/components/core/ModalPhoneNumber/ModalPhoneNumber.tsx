@@ -26,6 +26,10 @@ const SwitchContainer = styled.div`
   margin-left: 8px;
 `;
 
+const StyledTextField = styled(TextField)`
+  ${props => props.value ? ".MuiFormLabel-root { transform: translate(14px, -9px) scale(.75); background-color: white; padding: 0 5; }" : null}
+`;
+
 const SevenDigitInputMask = (inputProps: any) => {
   const {
     ...other
@@ -90,7 +94,7 @@ const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
   const validationHelperText = useSevenDigitMask ? "Enter a seven digit VDN" : "Enter a valid ten digit phone number";
 
   const textField = (
-    <TextField
+    <StyledTextField
       disabled={disabled}
       error={error || (showError && validationError)}
       helperText={helperText || (showError && validationError ? validationHelperText : null)}
