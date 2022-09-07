@@ -23,8 +23,12 @@ const StyledTabs = styled(Tabs)`
 `;
 
 const StyledTab = styled(Tab)`
-  .Mui-selected {
+  color: red;
+  .MuiTab-root.Mui-selected {
     color: black;
+  };
+  .MuiButtonBase-root.Mui-selected {
+    color: purple;
   };
   && {
     font-size: 1.1em;
