@@ -1,7 +1,7 @@
 import {
   Tab,
   Tabs
-} from "@material-ui/core";
+} from "@mui/material";
 import styled from "styled-components";
 
 export const Content = styled.div`
