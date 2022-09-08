@@ -1,4 +1,4 @@
-import { ClearRounded } from "@material-ui/icons";
+import { ClearRounded } from "@mui/icons-material";
 import SearchBox from "../SearchBox";
 import React from "react";
 import { act } from "react-dom/test-utils";
@@ -11,7 +11,7 @@ import {
 
 const mockFunction = jest.fn();
 
-jest.mock("@material-ui/icons", () => ({
+jest.mock("@mui/icons-material", () => ({
   __esModule: true,
   ClearRounded: jest.fn()
 }));

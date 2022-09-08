@@ -6,7 +6,7 @@ import {
 import {
   Switch,
   TextField
-} from "@material-ui/core";
+} from "@mui/material";
 import React, { useState } from "react";
 import MaskedInput from "react-text-mask";
 import styled from "styled-components";
@@ -26,9 +26,12 @@ const SwitchContainer = styled.div`
   margin-left: 8px;
 `;
 
+const StyledTextField = styled(TextField)`
+  ${props => props.value ? ".MuiFormLabel-root { transform: translate(14px, -9px) scale(.75); background-color: white; padding: 0 5; }" : null}
+`;
+
 const SevenDigitInputMask = (inputProps: any) => {
   const {
-    inputRef,
     ...other
   } = inputProps;
   return (
@@ -37,16 +40,13 @@ const SevenDigitInputMask = (inputProps: any) => {
       guide={false}
       mask={sevenDigitMask}
       placeholderChar={"\u2000"}
-      ref={ref => {
-        inputRef(ref ? ref.inputElement : null);
-      }}
       showMask />
   );
 };
 
+
 const TenDigitInputMask = (inputProps: any) => {
   const {
-    inputRef,
     ...other
   } = inputProps;
   return (
@@ -55,9 +55,6 @@ const TenDigitInputMask = (inputProps: any) => {
       guide={false}
       mask={tenDigitMask}
       placeholderChar={"\u2000"}
-      ref={ref => {
-        inputRef(ref ? ref.inputElement : null);
-      }}
       showMask />
   );
 };
@@ -75,9 +72,10 @@ export interface ModalPhoneNumberProps {
   updateValue: (maskedValue: string, unmaskedValue: string, isNumberValid: boolean, e164Number: string) => void,
   icon?: JSX.Element
 }
+
 const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
   const {
-    allowSevenDigitVdn, // if true, show toggle button to switch between input masks,
+    allowSevenDigitVdn,
     disabled = false,
     error,
     helperText,
@@ -96,7 +94,7 @@ const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
   const validationHelperText = useSevenDigitMask ? "Enter a seven digit VDN" : "Enter a valid ten digit phone number";
 
   const textField = (
-    <TextField
+    <StyledTextField
       disabled={disabled}
       error={error || (showError && validationError)}
       helperText={helperText || (showError && validationError ? validationHelperText : null)}
@@ -120,6 +118,7 @@ const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
         let e164Number = "";
         try {
           e164Number = getE164Number(unmaskedValue);
+        // eslint-disable-next-line no-empty
         } catch (e) {}
         updateValue(maskedValue, unmaskedValue, isNumberValid(unmaskedValue, useSevenDigitMask), e164Number);
       }}

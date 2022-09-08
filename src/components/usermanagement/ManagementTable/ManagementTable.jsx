@@ -12,12 +12,12 @@ import {
 import {
   Modal,
   Switch
-} from "@material-ui/core";
+} from "@mui/material";
 import {
   Delete,
   Edit,
   ChangeHistoryRounded
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import {
   ConfirmationModal,
   ModalOverlay

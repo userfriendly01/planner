@@ -7,8 +7,8 @@ import {
   LeftDiv,
   ModalContainer
 } from "./ManagerModal.Styles";
-import { Modal } from "@material-ui/core";
-import { CloseRounded } from "@material-ui/icons";
+import { Modal } from "@mui/material";
+import { CloseRounded } from "@mui/icons-material";
 import {
   Dropdown,
   ModalNNumber,
@@ -257,7 +257,7 @@ const ManagerModal = (props: ManagerModalProps) => {
                 }
               }}
             />
-            <Modal disableBackdropClick={true} open={isTeamModalOpen}>
+            <Modal onClose={() => { return; }} open={isTeamModalOpen}>
               <CalabrioTeamModal handleClose={handleCloseTeam}/>
             </Modal>
           </Wrapper>

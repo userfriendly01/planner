@@ -25,6 +25,7 @@ import {
   within
 } from "testUtils";
 import { myAxios } from "utils";
+import { Modal } from "@mui/material";
 
 jest.useFakeTimers();
 
@@ -33,6 +34,12 @@ jest.mock("components", () => ({
   DialListEntryForm: jest.fn(),
   ModalOverlay: jest.fn(),
   StyledButton: jest.fn()
+}));
+
+jest.mock("@mui/material", () => ({
+  __esModule: true,
+  Modal: jest.fn(),
+  Paper: jest.requireActual("@mui/material").Paper
 }));
 
 const axiosMock = new MockAdapter(myAxios);
@@ -58,7 +65,8 @@ describe("<DialListTable />", () => {
     setupMockedComponents({
       DialListEntryForm,
       ModalOverlay,
-      StyledButton
+      StyledButton,
+      Modal
     });
   });
 
@@ -78,6 +86,7 @@ describe("<DialListTable />", () => {
       act(() => {
         addButtonOnClick();
       });
+      render(Modal.mock.calls[1][0].children);
       expectOnlyPassedProps(DialListEntryForm, {
         dialListTableState: {
           dialListEntryFormInitialValues: {
@@ -134,6 +143,7 @@ describe("<DialListTable />", () => {
       act(() => {
         addButtonOnClick();
       });
+      render(Modal.mock.calls[1][0].children);
       expectOnlyPassedProps(DialListEntryForm, {
         dialListTableState: {
           dialListEntryFormInitialValues: {
@@ -159,6 +169,7 @@ describe("<DialListTable />", () => {
         act(() => {
           fireEvent.click(editButtonElement);
         });
+        render(Modal.mock.calls[1][0].children);
         expectOnlyPassedProps(DialListEntryForm, {
           dialListTableState: {
             dialListEntryFormInitialValues: {

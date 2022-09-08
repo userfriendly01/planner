@@ -2,7 +2,7 @@ import DefaultSkillSelector from "../DefaultSkillSelector";
 import {
   Add,
   Delete
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import {
   PriorityDropDown,
   SkillDropDown
@@ -19,7 +19,7 @@ import {
   setupMockedComponents
 } from "testUtils";
 
-jest.mock("@material-ui/icons", () => ({
+jest.mock("@mui/icons-material", () => ({
   __esModule: true,
   Add: jest.fn(),
   Delete: jest.fn()

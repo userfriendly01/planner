@@ -9,7 +9,7 @@ import {
 import {
   Add,
   Delete
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import {
   PriorityDropDown,
   SkillDropDown

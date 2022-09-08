@@ -2,7 +2,7 @@ import {
   Tab,
   Tabs,
   Typography
-} from "@material-ui/core";
+} from "@mui/material";
 import {
   ManagementWrapper,
   ProfileSettingsContainer,
@@ -23,6 +23,7 @@ const StyledTabs = styled(Tabs)`
 `;
 
 const StyledTab = styled(Tab)`
+  color: black !important;
   && {
     font-size: 1.1em;
   }
