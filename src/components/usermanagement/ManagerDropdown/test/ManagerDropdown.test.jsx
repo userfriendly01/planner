@@ -4,7 +4,7 @@ import {
   ManagerModal
 } from "components";
 import { initialState } from "context";
-import { Modal } from "@material-ui/core";
+import { Modal } from "@mui/material";
 import React from "react";
 import { sortManagersByName } from "utils";
 import {
@@ -19,7 +19,7 @@ jest.mock("components", () => ({
   ManagerModal: jest.fn()
 }));
 
-jest.mock("@material-ui/core", () => ({
+jest.mock("@mui/material", () => ({
   Modal: jest.fn()
 }));
 

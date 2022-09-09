@@ -9,6 +9,7 @@ import {
   modalOverlayStatuses,
   timeouts
 } from "globals";
+import { Modal } from "@mui/material";
 import React from "react";
 import { deleteDirectory } from "services";
 import {
@@ -28,6 +29,10 @@ jest.mock("components", () => ({
   DirectoryEntryForm: jest.fn(),
   PhoneNumberTable: jest.fn(),
   StyledButton: jest.fn()
+}));
+
+jest.mock("@mui/material", () => ({
+  Modal: jest.fn()
 }));
 
 const profileId = "89";
@@ -67,6 +72,7 @@ describe("<Directory />", () => {
     jest.clearAllMocks();
     setupMockedComponents({
       DirectoryEntryForm,
+      Modal,
       PhoneNumberTable,
       StyledButton
     });
@@ -82,6 +88,7 @@ describe("<Directory />", () => {
     renderComponent();
     const addButtonOnClick = getMockedComponentProps(StyledButton, 0).onClick;
     act(() => addButtonOnClick());
+    render(Modal.mock.calls[1][0].children);
     expectOnlyPassedProps(DirectoryEntryForm, {
       directoryState: {
         directoryEntryFormInitialValues: {
@@ -105,6 +112,7 @@ describe("<Directory />", () => {
     renderComponent();
     const editFunction = getMockedComponentProps(PhoneNumberTable, 0).editFunction;
     act(() => editFunction(directory[1])());
+    render(Modal.mock.calls[1][0].children);
     expectOnlyPassedProps(DirectoryEntryForm, {
       directoryState: {
         directoryEntryFormInitialValues: {
@@ -129,10 +137,14 @@ describe("<Directory />", () => {
     const rendered = renderComponent();
     const editFunction = getMockedComponentProps(PhoneNumberTable, 0).editFunction;
     act(() => editFunction(directory[1])());
+    render(Modal.mock.calls[1][0].children);
     expectMockedComponent(rendered, { DirectoryEntryForm }, 1);
     const closeModal = getMockedComponentProps(DirectoryEntryForm, 0).closeModal;
     act(() => closeModal());
-    expectMockedComponent(rendered, { DirectoryEntryForm }, 0);
+    render(Modal.mock.calls[2][0].children);
+    expect(Modal.mock.calls[2][0].open).toBe(false);
+    const lastInstanceOfDirectoryEntryForm = DirectoryEntryForm.mock.calls[getLastInstanceCalled(DirectoryEntryForm)][0];
+    expect(lastInstanceOfDirectoryEntryForm.directoryState.isDirectoryEntryFormOpen).toBe(false);
   });
 
   describe("deleting", () => {

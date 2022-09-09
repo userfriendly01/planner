@@ -2,7 +2,7 @@ import ForwardToEntryForm from "../ForwardToEntryForm";
 import {
   FormControlLabel,
   Radio
-} from "@material-ui/core";
+} from "@mui/material";
 import {
   Dropdown,
   ModalPhoneNumber
@@ -21,7 +21,7 @@ jest.mock("components", () => ({
   ModalPhoneNumber: jest.fn()
 }));
 
-jest.mock("@material-ui/core", () => ({
+jest.mock("@mui/material", () => ({
   __esModule: true,
   FormControlLabel: jest.fn(),
   Radio: jest.fn()

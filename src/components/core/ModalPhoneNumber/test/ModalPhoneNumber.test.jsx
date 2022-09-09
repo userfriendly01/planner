@@ -1,267 +1,269 @@
 import ModalPhoneNumber from "../ModalPhoneNumber";
+import MaskedInput from "react-text-mask";
 import React from "react";
 import {
+  getE164Number,
+  isNumberValid,
+  unMaskPhoneNumber
+} from "@lmig/phone-number-utils";
+import {
+  Switch,
+  TextField
+} from "@mui/material";
+import {
   act,
-  fireEvent,
-  muiErrorClassRegex,
-  render
+  getLastInstanceCalled,
+  expectOnlyPassedProps,
+  render,
+  setupMockedComponents
 } from "testUtils";
 
-const updateValue = jest.fn();
+
+jest.mock("react-text-mask", () => ({
+  __esModule: true,
+  default: jest.fn()
+}));
+
+jest.mock("@mui/material", () => ({
+  __esModule: true,
+  Switch: jest.fn(),
+  TextField: jest.fn()
+}));
+
+jest.mock("@lmig/phone-number-utils", () => ({
+  getE164Number: jest.fn(),
+  isNumberValid: jest.fn(),
+  unMaskPhoneNumber: jest.fn()
+}));
 
 const id = "outgoing-id";
 const label = "Outgoing Number";
+const number = "12345";
+const mockHelperText = "I'm helper text!";
+const mockOnBlur = jest.fn();
+const mockUpdateValue = jest.fn();
+const tenDigitMask = ["(", /[1-9]/, /\d/, /\d/, ")", " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/];
+const sevenDigitMask = [/[1-9]/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/];
 
-const renderComponent = ({
+const renderComponent = (
   allowSevenDigitVdn,
   error,
-  helperText,
-  number,
-  onBlur,
-  showError
-}) => {
+  showError,
+  helperText
+) => {
   return render(
     <ModalPhoneNumber
       allowSevenDigitVdn={allowSevenDigitVdn}
       error={error}
       helperText={helperText}
       id={id}
-      number={number || ""}
-      onBlur={onBlur}
+      number={number}
+      onBlur={mockOnBlur}
       label={label}
       showError={showError}
-      updateValue={updateValue}
+      updateValue={mockUpdateValue}
     />
   );
 };
 
 describe("<ModalPhoneNumber />", () => {
-
   beforeEach(() => {
-    updateValue.mockClear();
+    jest.clearAllMocks();
+    isNumberValid.mockReturnValue(false);
+    unMaskPhoneNumber.mockReturnValue("unmaskednumber");
+    getE164Number.mockReturnValue("e164number");
+    setupMockedComponents({
+      Switch,
+      TextField,
+      MaskedInput
+    });
   });
-
-  const changeNumberInput = (rendered, value) => {
-    act(() => {
-      fireEvent.change(rendered.getByLabelText(label), { target: { value }});
+  describe("Initial Render", () => {
+    describe("10 digit mask", () => {
+      test("Should render props with 10 digit mask ", () => {
+        renderComponent(false, false, false, mockHelperText);
+        expectOnlyPassedProps(TextField, {
+          disabled: false,
+          error: false,
+          helperText: mockHelperText,
+          id,
+          label: label,
+          name: label,
+          onBlur: mockOnBlur,
+          margin: "normal",
+          variant: "outlined",
+          value: number
+        }, getLastInstanceCalled(TextField));
+        const renderInputMask = TextField.mock.calls[0][0].InputProps.inputComponent;
+        const InputMask = renderInputMask({ inputRef: jest.fn() });
+        render(InputMask);
+        expect(MaskedInput.mock.calls[0][0].mask).toStrictEqual(tenDigitMask);
+      });
     });
-  };
-
-  test("the initial state should be just an empty text field, with the correct label", () => {
-    const rendered = renderComponent({
-      label: ""
+    describe("Should allow for 7 digits", () => {
+      test("Should render props with 7 digit mask ", () => {
+        renderComponent(true, false, false, mockHelperText);
+        expectOnlyPassedProps(TextField, {
+          disabled: false,
+          error: false,
+          helperText: mockHelperText,
+          id,
+          label: label,
+          name: label,
+          onBlur: mockOnBlur,
+          margin: "normal",
+          variant: "outlined",
+          value: number
+        }, getLastInstanceCalled(TextField));
+        const renderInputMask = TextField.mock.calls[0][0].InputProps.inputComponent;
+        const InputMask = renderInputMask({ inputRef: jest.fn() });
+        render(InputMask);
+        expect(Switch.mock.calls[0][0].checked).toBe(false);
+        const toggleSwitch = Switch.mock.calls[0][0].onChange;
+        act(() => toggleSwitch());
+        expect(Switch.mock.calls[1][0].checked).toBe(true);
+        const render7DigitInputMask = TextField.mock.calls[1][0].InputProps.inputComponent;
+        const newInputMask = render7DigitInputMask({ inputRef: jest.fn() });
+        render(newInputMask);
+        expect(MaskedInput.mock.calls[1][0].mask).toStrictEqual(sevenDigitMask);
+      });
     });
-    expect(rendered.getByLabelText("Outgoing Number")).toBeTruthy();
+    describe("error === true", () => {
+      test("should render Text Field with error === true", () => {
+        renderComponent(false, true, false, mockHelperText);
+        expectOnlyPassedProps(TextField, {
+          disabled: false,
+          error: true,
+          helperText: mockHelperText,
+          id,
+          label: label,
+          name: label,
+          onBlur: mockOnBlur,
+          margin: "normal",
+          variant: "outlined",
+          value: number
+        }, getLastInstanceCalled(TextField));
+      });
+    });
+    describe("showError === true", () => {
+      describe("validationError === true", () => {
+        test("should render Text Field with error === true", () => {
+          renderComponent(false, false, true, mockHelperText);
+          expectOnlyPassedProps(TextField, {
+            disabled: false,
+            error: true,
+            helperText: mockHelperText,
+            id,
+            label: label,
+            name: label,
+            onBlur: mockOnBlur,
+            margin: "normal",
+            variant: "outlined",
+            value: number
+          }, getLastInstanceCalled(TextField));
+        });
+      });
+      describe("validationError === false", () => {
+        beforeEach(() => {
+          isNumberValid.mockReturnValue(true);
+        });
+        test("should render Text Field with error === false", () => {
+          renderComponent(false, false, true, mockHelperText);
+          expectOnlyPassedProps(TextField, {
+            disabled: false,
+            error: false,
+            helperText: mockHelperText,
+            id,
+            label: label,
+            name: label,
+            onBlur: mockOnBlur,
+            margin: "normal",
+            variant: "outlined",
+            value: number
+          }, getLastInstanceCalled(TextField));
+        });
+      });
+    });
+    describe("helper text is not passed through", () => {
+      describe("showError === true", () => {
+        describe("validationError === false", () => {
+          beforeEach(() => {
+            isNumberValid.mockReturnValue(true);
+          });
+          test("should render no helper text", () => {
+            renderComponent(false, false, true, "");
+            expectOnlyPassedProps(TextField, {
+              disabled: false,
+              error: false,
+              helperText: null,
+              id,
+              label: label,
+              name: label,
+              onBlur: mockOnBlur,
+              margin: "normal",
+              variant: "outlined",
+              value: number
+            }, getLastInstanceCalled(TextField));
+          });
+        });
+        describe("validationError === true", () => {
+          describe("mask is 10 digits", () => {
+            test("should render no helper text", () => {
+              renderComponent(false, false, true, "");
+              expectOnlyPassedProps(TextField, {
+                disabled: false,
+                error: true,
+                helperText: "Enter a valid ten digit phone number",
+                id,
+                label: label,
+                name: label,
+                onBlur: mockOnBlur,
+                margin: "normal",
+                variant: "outlined",
+                value: number
+              }, getLastInstanceCalled(TextField));
+            });
+          });
+          describe("mask is 7 digits", () => {
+            test("should render no helper text", () => {
+              renderComponent(true, false, true, "");
+              expect(Switch.mock.calls[0][0].checked).toBe(false);
+              const toggleSwitch = Switch.mock.calls[0][0].onChange;
+              act(() => toggleSwitch());
+              expectOnlyPassedProps(TextField, {
+                disabled: false,
+                error: true,
+                helperText: "Enter a seven digit VDN",
+                id,
+                label: label,
+                name: label,
+                onBlur: mockOnBlur,
+                margin: "normal",
+                variant: "outlined",
+                value: number
+              }, getLastInstanceCalled(TextField));
+            });
+          });
+        });
+      });
+    });
   });
-
-  describe("allowSevenDigitVdn is true", () => {
-    const allowSevenDigitVdn = true;
-
-    describe("component is set to 7 digit mode by clicking the toggle", () => {
-
-      const clickToggle = rendered => {
-        const toggleElement = rendered.getByTestId("toggle-seven-digit");
-        // there is an inner span and then input element within that
-        const toggleInputElement = toggleElement.children[0].children[0];
-        // expect(toggleInputElement).toEqual({})
-        act(() => {
-          fireEvent.click(toggleInputElement);
-        });
-      };
-
-      describe("updating input box values", () => {
-
-        test("should fire updateValue with correct args for various values", () => {
-          const rendered = renderComponent({
-            allowSevenDigitVdn
-          });
-          // toggle to use 7 digit mask and validation logic
-          clickToggle(rendered);
-          // initially updateValue and reset the value to empty string (happens when toggle is switched)
-          expect(updateValue.mock.calls[0]).toEqual(["", "", false, ""]);
-          // invalid partial number
-          changeNumberInput(rendered, "603");
-          expect(updateValue.mock.calls[1]).toEqual(["603 ", "603", false, ""]);
-          // invalid partial number
-          changeNumberInput(rendered, "603456");
-          expect(updateValue.mock.calls[2]).toEqual(["603 456", "603456", false, ""]);
-          // valid number (VDN)
-          changeNumberInput(rendered, "6034567");
-          expect(updateValue.mock.calls[3]).toEqual(["603 4567", "6034567", true, ""]);
-          // extra numbers omitted
-          changeNumberInput(rendered, "6034567890123123123");
-          expect(updateValue.mock.calls[4]).toEqual(["603 4567", "6034567", true, ""]);
-        });
-      });
-
-      describe("showError is true and an invalid number is entered", () => {
-        const showError = true;
-
-        test("should render with error styling and helper text", () => {
-          const rendered = renderComponent({
-            allowSevenDigitVdn,
-            showError
-          });
-          // toggle to use 7 digit mask and validation logic
-          clickToggle(rendered);
-          // initially updateValue and reset the value to empty string (happens when toggle is switched)
-          expect(updateValue.mock.calls[0]).toEqual(["", "", false, ""]);
-          // invalid partial number
-          changeNumberInput(rendered, "603");
-          expect(updateValue.mock.calls[1]).toEqual(["603 ", "603", false, ""]);
-          // label element className
-          const { className } = rendered.queryAllByText(label)[0];
-          expect(muiErrorClassRegex.test(className)).toBeTruthy();
-          // helper text
-          expect(rendered.container).toHaveTextContent("Enter a seven digit VDN");
-        });
-      });
-
-      describe("showError is false and an invalid number is entered", () => {
-
-        test("should render with error styling and helper text", () => {
-          const rendered = renderComponent({
-            allowSevenDigitVdn
-          });
-          // toggle to use 7 digit mask and validation logic
-          clickToggle(rendered);
-          // initially updateValue and reset the value to empty string (happens when toggle is switched)
-          expect(updateValue.mock.calls[0]).toEqual(["", "", false, ""]);
-          // invalid partial number
-          changeNumberInput(rendered, "603");
-          expect(updateValue.mock.calls[1]).toEqual(["603 ", "603", false, ""]);
-          // label element className
-          const { className } = rendered.queryAllByText(label)[0];
-          expect(muiErrorClassRegex.test(className)).toBeFalsy();
-          // helper text
-          expect(rendered.container).not.toHaveTextContent("Enter a seven digit VDN");
-        });
-      });
+  describe("onBlur is called", () => {
+    test("handleOnBlur should be called", () => {
+      renderComponent(false, false, false, mockHelperText);
+      const onBlur = TextField.mock.calls[0][0].onBlur;
+      act(() => onBlur());
+      expect(mockOnBlur).toHaveBeenCalledTimes(1);
     });
-
   });
-  describe("component is set to 10 digit mode (by default)", () => {
-
-    describe("updating input box values", () => {
-
-      test("should fire updateValue with correct args for various values", () => {
-        const rendered = renderComponent({});
-        // invalid partial number
-        changeNumberInput(rendered, "603");
-        expect(updateValue.mock.calls[0]).toEqual(["(603) ", "603", false, ""]);
-        // invalid partial number
-        changeNumberInput(rendered, "603456");
-        expect(updateValue.mock.calls[1]).toEqual(["(603) 456", "603456", false, ""]);
-        // valid number
-        changeNumberInput(rendered, "6034567890");
-        expect(updateValue.mock.calls[2]).toEqual(["(603) 456-7890", "6034567890", true, "+16034567890"]);
-        // extra numbers omitted
-        changeNumberInput(rendered, "6034567890123123123");
-        expect(updateValue.mock.calls[3]).toEqual(["(603) 456-7890", "6034567890", true, "+16034567890"]);
-      });
-    });
-
-    describe("showError is true and an invalid number is entered", () => {
-      const showError = true;
-
-      test("should render with error styling and helper text", () => {
-        const rendered = renderComponent({
-          showError
-        });
-        // invalid partial number
-        changeNumberInput(rendered, "603");
-        expect(updateValue.mock.calls[0]).toEqual(["(603) ", "603", false, ""]);
-        // label element className
-        const { className } = rendered.queryAllByText(label)[0];
-        expect(muiErrorClassRegex.test(className)).toBeTruthy();
-        // helper text
-        expect(rendered.container).toHaveTextContent("Enter a valid ten digit phone number");
-      });
-    });
-
-    describe("showError is false and an invalid number is entered", () => {
-
-      test("should render with error styling and helper text", () => {
-        const rendered = renderComponent({});
-        // invalid partial number
-        changeNumberInput(rendered, "603");
-        expect(updateValue.mock.calls[0]).toEqual(["(603) ", "603", false, ""]);
-        // label element className
-        const { className } = rendered.queryAllByText(label)[0];
-        expect(muiErrorClassRegex.test(className)).toBeFalsy();
-        // helper text
-        expect(rendered.container).not.toHaveTextContent("Enter a valid ten digit phone number");
-      });
-    });
-
-    describe("showError is true and and number is invalid", () => {
-
-      test("should render with error styling and helper text", () => {
-        const rendered = renderComponent({
-          showError: true,
-          number: "(603)"
-        });
-        // label element className
-        const { className } = rendered.queryAllByText(label)[0];
-        expect(muiErrorClassRegex.test(className)).toBeTruthy();
-        // helper text
-        expect(rendered.container).toHaveTextContent("Enter a valid ten digit phone number");
-      });
-    });
-
-    describe("showError is true and and number is valid", () => {
-
-      test("should render with no error styling and no helper text", () => {
-        const rendered = renderComponent({
-          showError: true,
-          number: "(603) 812-6666"
-        });
-        // label element className
-        const { className } = rendered.queryAllByText(label)[0];
-        expect(muiErrorClassRegex.test(className)).toBeFalsy();
-        // helper text
-        expect(rendered.container).not.toHaveTextContent("Enter a valid ten digit phone number");
-      });
-    });
-
-    describe("helperText and error are passed and number input is also invalid", () => {
-      const error = true;
-      const helperText = "Some text to help ya";
-
-      test("should render with error styling and helper text", () => {
-        const rendered = renderComponent({
-          error,
-          helperText
-        });
-        // invalid partial number
-        changeNumberInput(rendered, "603");
-        expect(updateValue.mock.calls[0]).toEqual(["(603) ", "603", false, ""]);
-        // label element className
-        const { className } = rendered.queryAllByText(label)[0];
-        expect(muiErrorClassRegex.test(className)).toBeTruthy();
-        // helper text
-        expect(rendered.container).toHaveTextContent(helperText);
-      });
-    });
-
-    describe("helperText and error are passed and number input valid", () => {
-      const error = true;
-      const helperText = "Some text to help ya";
-
-      test("should render with error styling and helper text", () => {
-        const rendered = renderComponent({
-          error,
-          helperText
-        });
-        // invalid partial number
-        changeNumberInput(rendered, "6038126666");
-        expect(updateValue.mock.calls[0]).toEqual(["(603) 812-6666", "6038126666", true, "+16038126666"]);
-        // label element className
-        const { className } = rendered.queryAllByText(label)[0];
-        expect(muiErrorClassRegex.test(className)).toBeTruthy();
-        // helper text
-        expect(rendered.container).toHaveTextContent(helperText);
-      });
-    });
+  describe("onChange is called", () => {
+    renderComponent(false, false, false, mockHelperText);
+    const onChange = TextField.mock.calls[0][0].onChange;
+    act(() => onChange({
+      target: {
+        value: "newValue"
+      }
+    }));
+    expect(mockUpdateValue).toHaveBeenCalledTimes(1);
   });
 });

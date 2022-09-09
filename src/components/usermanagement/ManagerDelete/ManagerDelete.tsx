@@ -4,7 +4,7 @@ import {
   LeftDiv,
   ModalContainer
 } from "./ManagerDelete.Styles";
-import { CloseRounded } from "@material-ui/icons";
+import { CloseRounded } from "@mui/icons-material";
 import {
   ModalOverlay,
   PaperContainer

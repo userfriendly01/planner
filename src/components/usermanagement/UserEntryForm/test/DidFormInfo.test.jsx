@@ -3,8 +3,8 @@ import {
   InputAdornment,
   Switch,
   Tooltip
-} from "@material-ui/core";
-import { Edit } from "@material-ui/icons";
+} from "@mui/material";
+import { Edit } from "@mui/icons-material";
 import {
   ForwardToEntryForm,
   ModalExtension,
@@ -47,7 +47,7 @@ jest.mock("components", () => ({
 }));
 
 
-jest.mock("@material-ui/core", () => ({
+jest.mock("@mui/material", () => ({
   __esModule: true,
   InputAdornment: jest.fn(),
   Tabs: jest.fn(),
@@ -55,7 +55,7 @@ jest.mock("@material-ui/core", () => ({
   Tooltip: jest.fn()
 }));
 
-jest.mock("@material-ui/icons", () => ({
+jest.mock("@mui/icons-material", () => ({
   __esModule: true,
   Edit: jest.fn()
 }));

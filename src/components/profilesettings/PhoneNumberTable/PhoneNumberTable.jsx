@@ -1,8 +1,8 @@
-import { Paper } from "@material-ui/core";
+import { Paper } from "@mui/material";
 import {
   Delete,
   Edit
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import { ModalOverlay } from "components";
 import { modalOverlayStatuses } from "globals";
 import PropTypes from "prop-types";

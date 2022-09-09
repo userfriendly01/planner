@@ -3,7 +3,7 @@ import {
   ButtonWrapper,
   UserFormButton
 } from "./UserEntryForm.Styles";
-import { Tooltip } from "@material-ui/core";
+import { Tooltip } from "@mui/material";
 import {
   useAdminDispatch,
   useAdminState,

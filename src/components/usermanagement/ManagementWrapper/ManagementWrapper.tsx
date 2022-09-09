@@ -6,7 +6,7 @@ import {
   ManagementContainer,
   StyledPaper
 } from "./ManagementWrapper.Styles";
-import { Modal } from "@material-ui/core";
+import { Modal } from "@mui/material";
 import {
   ManagementHeader,
   ManagementPagination,
@@ -120,7 +120,7 @@ export const ManagementWrapper: React.FC = () => {
   return (
     <FormStateProvider>
       <ManagementContainer>
-        <Modal disableBackdropClick={true} open={userModalState.open}>
+        <Modal onClose={() => { return; }} open={userModalState.open}>
           <UserEntryForm
             handleClose={handleClose}
             worker={userModalState.worker}

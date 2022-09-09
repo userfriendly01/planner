@@ -1,8 +1,8 @@
-import { Tooltip } from "@material-ui/core";
+import { Tooltip } from "@mui/material";
 import {
   Edit,
   Delete
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import { useAdminState } from "context";
 import { apiPaths } from "globals";
 import PropTypes from "prop-types";

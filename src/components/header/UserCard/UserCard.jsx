@@ -1,4 +1,4 @@
-import { AccountBox } from "@material-ui/icons";
+import { AccountBox } from "@mui/icons-material";
 import { useAdminState } from "context";
 import React from "react";
 import styled from "styled-components";

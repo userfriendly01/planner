@@ -4,7 +4,7 @@ import {
   NavigateNextOutlined,
   SkipNextOutlined,
   SkipPreviousOutlined
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { workersPerPage } from "globals";
@@ -17,7 +17,7 @@ import {
 
 const setPageFunc = jest.fn();
 
-jest.mock("@material-ui/icons", () => ({
+jest.mock("@mui/icons-material", () => ({
   NavigateNextOutlined: jest.fn(),
   NavigateBeforeOutlined: jest.fn(),
   SkipNextOutlined: jest.fn(),
