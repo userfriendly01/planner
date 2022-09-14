@@ -90,7 +90,7 @@ const CallFlowContainer = () => {
     } else {
       filteredList = filteredList.filter((skill: Skill) => {
         let shouldReturn = false;
-        if(skill.profiles.some((sp: any) => sp.profile_id === workerProfileId)){
+        if(skill.profiles.some((sp: any) => sp.profileId === workerProfileId)){
           shouldReturn = true;
         }
         return shouldReturn;
