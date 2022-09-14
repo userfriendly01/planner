@@ -25,7 +25,7 @@ const SkillsTable = (props: SkillsTableProps) => {
     setFilteredState
   } = props;
 
-  const allSkillsSelected = selected.length === filteredState.filteredList.length;
+  const allSkillsSelected = selected.length === filteredState.filteredList.length && filteredState.filteredList.length > 0;
   const filterType = {
     CLOSED: "closedFilter",
     FLASH: "flashFilter"
