@@ -1,10 +1,19 @@
 import { Checkbox } from "@mui/material";
 import styled from "styled-components";
+import { StyledButton } from "components";
 
 const headerIconWidth = "10px";
 
 export const StyledCheckBox = styled(Checkbox)`
   padding: 0px;
+`;
+
+export const Header = styled.div`
+display: flex;
+width: 100%;
+align-items: center;
+justify-content: space-around;
+margin: 40 0 30 0;
 `;
 
 export const CustomTable = styled.table`
@@ -98,4 +107,24 @@ export const TableIcon = styled.div`
   flex-direction: column;
   margin: 2px;
   align-items: center;
+`;
+
+export const SkillsTableWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  overflow-y: scroll;
+  max-height: 700px;
+`;
+
+export const SkillsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 60%;
+`;
+
+export const ExportButton = styled(StyledButton)`
+  height: 40px;
+  width: 100px;
 `;

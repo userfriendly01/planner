@@ -3,27 +3,26 @@ import React, {
 } from "react";
 import {
   CallflowWrapper,
-  SkillsWrapper,
-  SearchSkillsWrapper,
-  MessageWrapper,
-  Header
-} from "./CallFlowContainer.Styles";
+  MessageWrapper
+} from "./CallFlowManagement.Styles";
+import {
+  FilteredStateProps, Views
+} from "./CallFlowManagement.Interfaces";
 import {
   ConfirmationModalOptsProps,
-  FilteredStateProps,
   SaveResultProps
-} from "../CallFlowManagement.Interfaces";
+} from "../CallFlowConfirmationModal/CallFlowConfirmationModal.Interfaces";
 import {
   CallFlowConfirmationModal,
-  MessageBox,
-  SkillsTable,
-  Dropdown
+  Dropdown,
+  MessageContainer,
+  SkillsContainer
 } from "components";
 import { useAdminState } from "context";
 import { filterSkillsByName } from "utils";
 import { Skill } from "globals";
 import { Modal } from "@mui/material";
-import { SearchBox } from "components/tabs/usermanagement";
+import { messageTypes } from "../ClosedFlashMessage/ClosedFlashMessage.Interfaces";
 
 const CallFlowContainer = () => {
 
@@ -49,28 +48,14 @@ const CallFlowContainer = () => {
     message: null
   };
 
-  let loggedInWorker: any = {};
   const state = useAdminState();
-  console.log("STATE: ", state);
-  const nNumber = state.userContext.pingIdentity.sub;
-  console.log("***NNumber: ", nNumber);
-  state.workerContext.workers.forEach((worker: any) =>{
-    if(worker.attributes?.n_number?.toLowerCase() === nNumber.toLowerCase()){
-      console.log("***Found a matching worker!: ", worker);
-      loggedInWorker = worker;
-    }
-  });
-
-  console.log("***loggedInWorker: ", loggedInWorker);
-
-  const workerProfileId = loggedInWorker?.attributes?.profile_id;
-  console.log("***workerProfileId: ", workerProfileId);
-  const isAdmin = workerProfileId === 0;
-  console.log("***isAdmin: ", isAdmin);
+  const isAdmin = state.userContext.isAdmin;
+  const userProfileId = state.userContext.profileId;
   const [ selected, setSelected ] = useState([]);
   const [ filteredState, setFilteredState ] = useState(defaultFilteredState);
   const [ confirmationModalOpts, setConfirmationModalOpts ] = useState(defaultConfirmationModalOpts);
   const [ saveResult, setSaveResult ] = useState(defaultSaveResult);
+  const [ view, setView ] = React.useState(Views.CLOSED_MESSAGE);
 
   useEffect(() => {
     let filteredList = state.skillContext.skills.slice();
@@ -90,7 +75,7 @@ const CallFlowContainer = () => {
     } else {
       filteredList = filteredList.filter((skill: Skill) => {
         let shouldReturn = false;
-        if(skill.profiles.some((sp: any) => sp.profileId === workerProfileId)){
+        if(skill.profiles.some((sp: any) => sp.profileId === userProfileId)){
           shouldReturn = true;
         }
         return shouldReturn;
@@ -116,71 +101,62 @@ const CallFlowContainer = () => {
     });
   }, [filteredState.searchBy, filteredState.profiles, filteredState.closedFilter, filteredState.flashFilter, state.skillContext.skills]);
 
-  const getProfileOptions = () => {
-    return state.profileContext.profiles.map((p: any) => {
+  const getViewOptions = () => {
+    return Object.keys(Views).map(view => {
       return {
-        ...p,
-        label: p.profile_nme,
-        value: p.profile_id
+        label: view,
+        value: view
       };
     });
   };
 
+  const FlashMessageView =
+    <MessageWrapper>
+      <SkillsContainer
+        filteredState={filteredState}
+        selected={selected}
+        setSelected={setSelected}
+        setFilteredState={setFilteredState}
+      />
+      <MessageContainer
+        confirmationModalOpts={confirmationModalOpts}
+        setSaveResult={setSaveResult}
+        setConfirmationModalOpts={setConfirmationModalOpts}
+        selected={selected}
+        setSelected={setSelected}
+        messageType={messageTypes.FLASH}
+      />
+    </MessageWrapper>;
+
+  const ClosedMessageView =
+    <MessageWrapper>
+      <SkillsContainer
+        filteredState={filteredState}
+        selected={selected}
+        setSelected={setSelected}
+        setFilteredState={setFilteredState}
+      />
+      <MessageContainer
+        confirmationModalOpts={confirmationModalOpts}
+        setSaveResult={setSaveResult}
+        setConfirmationModalOpts={setConfirmationModalOpts}
+        selected={selected}
+        setSelected={setSelected}
+        messageType={messageTypes.FLASH}
+      />
+    </MessageWrapper>;
+
   return (
     <CallflowWrapper>
-      <SearchSkillsWrapper>
-        <Header>
-          { isAdmin &&
-          <Dropdown
-            label="Profile Id"
-            multiple={true}
-            value={filteredState.profiles}
-            options={getProfileOptions()}
-            updateValue={(event: any, selectedProfiles: any) => setFilteredState({
-              ...filteredState,
-              profiles: selectedProfiles
-            })}
-            styles={{ width: "300px" }}
-          />
-          }
-          <SearchBox
-            key={"search-box"}
-            searchBy={filteredState.searchBy}
-            setSearch={(value: string) => {
-              setFilteredState({
-                ...filteredState,
-                searchBy: value
-              });
-            }}
-          />
-        </Header>
-        <SkillsWrapper>
-          <SkillsTable
-            filteredState={filteredState}
-            selected={selected}
-            setSelected={setSelected}
-            setFilteredState={setFilteredState}
-          />
-        </SkillsWrapper>
-      </SearchSkillsWrapper>
-      <MessageWrapper>
-        <MessageBox
-          confirmationModalOpts={confirmationModalOpts}
-          setSaveResult={setSaveResult}
-          setConfirmationModalOpts={setConfirmationModalOpts}
-          selected={selected}
-          setSelected={setSelected}
-          messageType="Closed Message"
-        />
-        <MessageBox
-          confirmationModalOpts={confirmationModalOpts}
-          setSaveResult={setSaveResult}
-          setConfirmationModalOpts={setConfirmationModalOpts}
-          selected={selected}
-          setSelected={setSelected}
-          messageType="Flash Message"
-        />
-      </MessageWrapper>
+      <Dropdown
+        label="What would you like to do?"
+        value={view}
+        options={getViewOptions()}
+        updateValue={(event: any, view: any) => setView(view)}
+        styles={{ width: "200px" }}
+      />
+      {view === Views.CLOSED_MESSAGE && ClosedMessageView}
+      {view === Views.FLASH_MESSAGE && FlashMessageView}
       <Modal open={confirmationModalOpts.open}>
         <CallFlowConfirmationModal
           confirmationModalOpts={confirmationModalOpts}

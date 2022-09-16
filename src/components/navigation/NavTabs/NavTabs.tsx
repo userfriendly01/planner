@@ -10,7 +10,7 @@ import {
   TabNames
 } from "./NavTabs.Interfaces";
 import {
-  CallFlowContainer,
+  CallflowManagementWrapper,
   ManagementWrapper,
   ProfileSettingsContainer
 } from "components";
@@ -67,7 +67,7 @@ const NavTabs = () => {
         <ProfileSettingsContainer />
       </TabPanel>
       <TabPanel value={value} tabName={TabNames.CALL_FLOW_MANAGEMENT} index={2}>
-        <CallFlowContainer />
+        <CallflowManagementWrapper />
       </TabPanel>
     </Content>
   );

@@ -7,7 +7,10 @@ import {
   NavTabs,
   NotificationModal
 } from "components";
-import { useAdminDispatch } from "context";
+import {
+  useAdminDispatch,
+  useAdminState
+} from "context";
 import {
   apiPaths,
   theme,
@@ -31,7 +34,8 @@ import {
   formatOfficesResponse,
   formatWorkerResponse,
   isErrorIn400s,
-  myAxios
+  myAxios,
+  setAuthenticatedUserState
 } from "utils";
 
 const AppWrapper = styled.div`
@@ -229,6 +233,7 @@ const App = () => {
 
   const [loadResult, setLoadResult] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const state = useAdminState();
   const dispatch = useAdminDispatch();
 
   useEffect(() => {
@@ -245,6 +250,7 @@ const App = () => {
     ])
       .then(() => {
         setLoadResult(success);
+        setAuthenticatedUserState(state, dispatch);
       })
       .catch(err => {
         console.error(err.msg, { error: err.error });

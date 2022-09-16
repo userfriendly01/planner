@@ -1,89 +1,44 @@
-import React, { useState } from "react";
-import {
-  MessageBoxWrapper,
-  ActionBar,
-  TextField,
-  UserFormButton,
-  IconWrapper
-} from "./MessageBox.Styles";
-import { MessageBoxProps } from "../CallFlowManagement.Interfaces";
-import {
-  Edit,
-  Delete,
-  FileDownload
-} from "@mui/icons-material";
-import { ExcelExport } from "@progress/kendo-react-excel-export";
+import React from "react";
 import {
   useAdminState,
   useAdminDispatch
 } from "context";
 import {
-  Skill,
   ModalOverlayStatuses,
+  Skill,
   timeouts
 } from "globals";
+import { UserFormButton } from "../ClosedFlashMessage.Styles";
 import {
-  updateFlashMessage,
-  updateClosedMessage
-} from "services";
+  ActionTypes,
+  SaveButtonProps
+} from "../ClosedFlashMessage.Interfaces";
 
-enum actionTypes  {
-  VIEW = "view",
-  EDIT = "edit",
-  DELETE = "delete",
-  EXPORT = "export"
-}
-
-export const MessageBox = (props: MessageBoxProps) => {
+const SaveButton = (props: SaveButtonProps) => {
   const {
+    action,
+    selected,
     setSaveResult,
     confirmationModalOpts,
+    messageType,
     setConfirmationModalOpts,
-    selected,
     setSelected,
-    messageType
+    text
   } = props;
 
-  const _export = React.useRef(null);
   const state = useAdminState();
   const dispatch = useAdminDispatch();
   const nNumber = state.userContext.pingIdentity.sub;
-  const apiCall = messageType === "Closed Message" ? updateClosedMessage : updateFlashMessage;
-  const messageVariable = messageType === "Closed Message" ? "closedMessage" : "flashMessage";
   const isSingleSelection = selected.length === 1;
   const isMultiSelection = selected.length > 1;
-  const [ action, setAction ] = useState(actionTypes.VIEW);
-  const [ text, setText ] = useState("");
-
-  React.useEffect(() => {
-    if(isSingleSelection) {
-      setText(selected[0][messageVariable]);
-    } else {
-      setAction(actionTypes.VIEW);
-      setText("");
-    }
-  }, [selected]);
-
-  const handleIconClick = (actionType: actionTypes) => {
-    if(action === actionType){
-      setAction(actionTypes.VIEW);
-      if(actionType === actionTypes.EDIT){
-        setText("");
-      }
-    }
-    action === actionType ? setAction(actionTypes.VIEW) : setAction(actionType);
-  };
 
   const handleOnSave = () => {
     switch(action){
-      case actionTypes.EDIT:
+      case ActionTypes.EDIT:
         handleEdit();
         break;
-      case actionTypes.DELETE:
+      case ActionTypes.DELETE:
         handleDelete();
-        break;
-      case actionTypes.EXPORT:
-        handleExport();
         break;
       default:
         break;
@@ -108,11 +63,11 @@ export const MessageBox = (props: MessageBoxProps) => {
       promises.forEach(promise => {
         const data = JSON.parse(promise.value.config.data);
         const skillName = data.skill;
-        const message = data[messageVariable];
+        const message = data[messageType.variable];
         if(s.name === skillName) {
           updatedSkill = {
             ...s,
-            [messageVariable]: message
+            [messageType.variable]: message
           };
         }
       });
@@ -168,7 +123,7 @@ export const MessageBox = (props: MessageBoxProps) => {
         status: ModalOverlayStatuses.SAVING
       });
       const results = await Promise.allSettled(selected.map((skill: Skill) => {
-        return apiCall(skill, text, nNumber);
+        return messageType.updateFunction(skill, text, nNumber);
       }));
       handleResults(results);
     };
@@ -185,65 +140,42 @@ export const MessageBox = (props: MessageBoxProps) => {
     });
   };
 
-  //Delete can be handled as a separate story  - leaving the structure here
   const handleDelete = () => {
-    console.log("Handle Delete has been clicked!");
-  };
+    const onConfirm = async () => {
+      setSaveResult({
+        message: "Processing...",
+        status: ModalOverlayStatuses.SAVING
+      });
+      const results = await Promise.allSettled(selected.map((skill: Skill) => {
+        return messageType.updateFunction(skill, "", nNumber);
+      }));
+      handleResults(results);
+    };
+    const confirmationText = `Are you sure you want to delete the ${messageType}
+    for ${ !isMultiSelection ? selected[0].name : selected.length + " skills?"}`;
 
-  const handleExport = () => {
-    console.log("Handle Export has been clicked!");
-    const columns = [
-      {
-        field: "name",
-        title: "Skill Name",
-        width: "50px"
-      },
-      {
-        field: "closedMessage",
-        title: "Closed Message",
-        width: "200px"
-      },
-      {
-        field: "flashMessage",
-        title: "Flash Message",
-        width: "200px"
+    setConfirmationModalOpts({
+      open: true,
+      confirmationText,
+      callbackMethods: {
+        onConfirm: onConfirm,
+        handleClose: handleCloseConfirmation
       }
-    ];
-    if (_export.current !== null) {
-      _export.current.save(selected, columns);
-    }
-    setAction(actionTypes.VIEW);
+    });
   };
 
   return (
-    <MessageBoxWrapper>
-      <ExcelExport ref={_export}/>
-      <h1>{messageType}</h1>
-      <ActionBar>
-        <IconWrapper active={action === actionTypes.EDIT}>
-          <Edit onClick={() => handleIconClick(actionTypes.EDIT)}/>
-        </IconWrapper>
-        { isMultiSelection && <IconWrapper active={action === actionTypes.EXPORT}>
-          <FileDownload onClick={() => handleIconClick(actionTypes.EXPORT)}  />
-        </IconWrapper>}
-      </ActionBar>
-      <TextField
-        readOnly={action !== actionTypes.EDIT}
-        onChange={event => setText(event.target.value)}
-        value={text}
-      />
-      {(isSingleSelection || isMultiSelection) && action !== actionTypes.VIEW &&
-        <UserFormButton
-          onClick={handleOnSave}
-        >
+    <div>
+      {(isSingleSelection || isMultiSelection) && action !== ActionTypes.VIEW &&
+        <UserFormButton onClick={handleOnSave}>
           { isMultiSelection ?
             `${action} ${selected.length} ${messageType}s`
             : `${action} ${selected[0].name} ${messageType}`
           }
         </UserFormButton>
       }
-    </MessageBoxWrapper>
+    </div>
   );
 };
 
-export default MessageBox;
+export default SaveButton;

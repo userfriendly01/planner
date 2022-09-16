@@ -7,8 +7,9 @@ import {
   TableContainer,
   TableText,
   TableIcon
-} from "./SkillsTable.Styles";
-import { SkillsTableProps } from "../CallFlowManagement.Interfaces";
+} from "../Skills.Styles";
+import { SkillsTableProps } from "../Skills.Interfaces";
+import { messageTypes } from "../../ClosedFlashMessage/ClosedFlashMessage.Interfaces";
 import { Checkbox } from "@mui/material";
 import {
   Block,
@@ -26,10 +27,6 @@ const SkillsTable = (props: SkillsTableProps) => {
   } = props;
 
   const allSkillsSelected = selected.length === filteredState.filteredList.length && filteredState.filteredList.length > 0;
-  const filterType = {
-    CLOSED: "closedFilter",
-    FLASH: "flashFilter"
-  };
 
   const getProfilesForSkill = (skill: any) => {
     const profileDivs: any = [];
@@ -76,18 +73,18 @@ const SkillsTable = (props: SkillsTableProps) => {
             <CustomTableHeader
               onClick={() => setFilteredState({
                 ...filteredState,
-                [filterType.FLASH]: !filteredState[filterType.FLASH]
+                [messageTypes.FLASH.variable]: !messageTypes.FLASH.variable
               })
               }
-            ><FilterWrapper active={filteredState[filterType.FLASH]}>FLASH</FilterWrapper>
+            ><FilterWrapper active={filteredState[messageTypes.FLASH.variable]}>FLASH</FilterWrapper>
             </CustomTableHeader>
             <CustomTableHeader
               onClick={() => setFilteredState({
                 ...filteredState,
-                [filterType.CLOSED]: !filteredState[filterType.CLOSED]
+                [messageTypes.CLOSED.variable]: !filteredState[messageTypes.CLOSED.variable]
               })
               }
-            ><FilterWrapper active={filteredState[filterType.CLOSED]}>CLOSED</FilterWrapper>
+            ><FilterWrapper active={filteredState[messageTypes.CLOSED.variable]}>CLOSED</FilterWrapper>
             </CustomTableHeader>
           </tr>
         </thead>

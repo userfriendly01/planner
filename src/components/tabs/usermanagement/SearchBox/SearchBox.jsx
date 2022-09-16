@@ -10,20 +10,20 @@ import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
 
-const TextInput = styled(TextField)`
-  && {
-    margin: 0 8px;
-    width: 100%;
-    max-width: 325px;
-  }
-`;
-
 const SearchBox = props => {
   const {
     searchBy,
-    setSearch
+    setSearch,
+    styles
   } = props;
 
+  const TextInput = styled(TextField)`
+  && {
+    margin: 0 8px;
+    width: 100%;
+    max-width: ${props => props.styles && props.styles.width ? props.styles.width : "325px"};
+  }
+`;
   const clearComponent = searchBy === "" ? null :
     <InputAdornment position="end">
       <IconButton
@@ -49,6 +49,7 @@ const SearchBox = props => {
       margin="normal"
       name="outlined-SearchBox-input"
       onChange={event => setSearch(event.target.value)}
+      styles={styles}
       variant="outlined"
       value={searchBy}
     />
@@ -57,7 +58,8 @@ const SearchBox = props => {
 
 SearchBox.propTypes = {
   searchBy: PropTypes.string.isRequired,
-  setSearch: PropTypes.func.isRequired
+  setSearch: PropTypes.func.isRequired,
+  styles: PropTypes.any
 };
 
 export default SearchBox;

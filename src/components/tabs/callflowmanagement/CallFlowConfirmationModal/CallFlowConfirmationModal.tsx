@@ -4,7 +4,7 @@ import {
   ConfirmationText,
   ModalContainer
 } from "./CallFlowConfirmationModal.Styles";
-import { CallFlowConfirmationModalProps } from "../CallFlowManagement.Interfaces";
+import { CallFlowConfirmationModalProps } from "./CallFlowConfirmationModal.Interfaces";
 import {
   ModalOverlay,
   PaperContainer

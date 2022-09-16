@@ -26,7 +26,9 @@ export interface AppState {
     skills: Skill[]
   },
   userContext: {
-    pingIdentity: any // TODO type me!
+    pingIdentity: any // TODO type me!,
+    isAdmin: boolean,
+    profileId: number | string | null
   },
   workerContext: {
     workers: Worker[],

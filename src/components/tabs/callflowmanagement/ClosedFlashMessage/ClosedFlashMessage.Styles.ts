@@ -1,5 +1,15 @@
-import styled from "styled-components";
 import { StyledButton } from "components";
+import styled from "styled-components";
+
+export const FormControlsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  max-height: 650px;
+  padding-top: 5px;
+  overflow: overlay;
+`;
 
 export const MessageBoxWrapper = styled.div`
   display: flex;
@@ -7,13 +17,6 @@ export const MessageBoxWrapper = styled.div`
   margin-top: 25px;
   flex-direction: column;
   align-items: center;
-`;
-
-export const ActionBar = styled.div`
-  display: flex;
-  width: 500px;
-  height: 30px;
-  justify-content: space-around
 `;
 
 export const TextField = styled.textarea`
@@ -24,10 +27,17 @@ export const TextField = styled.textarea`
   margin: 5 0 10 0;
 `;
 
-export const UserFormButton = styled(StyledButton)`
+export const UserFormButton: any = styled(StyledButton)`
   height: 40px;
   width: 450px;
   margin-bottom: 15px; 
+`;
+
+export const ActionBarWrapper = styled.div`
+display: flex;
+width: 500px;
+height: 30px;
+justify-content: space-around
 `;
 
 export const IconWrapper = styled.div<{ active: boolean }>`
@@ -45,4 +55,3 @@ export const IconWrapper = styled.div<{ active: boolean }>`
     cursor: pointer;
   }
 `;
-
