@@ -127,7 +127,7 @@ const SaveButton = (props: SaveButtonProps) => {
       }));
       handleResults(results);
     };
-    const confirmationText = `Are you sure you want to update the ${messageType}
+    const confirmationText = `Are you sure you want to update the ${messageType.name}
     for ${ !isMultiSelection ? selected[0].name : selected.length + " skills?"}`;
 
     setConfirmationModalOpts({
@@ -151,7 +151,7 @@ const SaveButton = (props: SaveButtonProps) => {
       }));
       handleResults(results);
     };
-    const confirmationText = `Are you sure you want to delete the ${messageType}
+    const confirmationText = `Are you sure you want to delete the ${messageType.name}
     for ${ !isMultiSelection ? selected[0].name : selected.length + " skills?"}`;
 
     setConfirmationModalOpts({
@@ -169,8 +169,8 @@ const SaveButton = (props: SaveButtonProps) => {
       {(isSingleSelection || isMultiSelection) && action !== ActionTypes.VIEW &&
         <UserFormButton onClick={handleOnSave}>
           { isMultiSelection ?
-            `${action} ${selected.length} ${messageType}s`
-            : `${action} ${selected[0].name} ${messageType}`
+            `${action} ${selected.length} ${messageType.name}s`
+            : `${action} ${selected[0].name} ${messageType.name}`
           }
         </UserFormButton>
       }
