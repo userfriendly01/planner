@@ -219,7 +219,7 @@ describe("<App />", () => {
             const rendered = render(<App />);
             await waitFor(() => rendered.getByTestId("app-wrapper"));
             const actions = mockStore.getActions();
-            expect(actions.length).toBe(9);
+            expect(actions.length).toBe(10);
             expect(actions).toEqual([
               {
                 type: "loadManagers",
@@ -256,6 +256,13 @@ describe("<App />", () => {
               {
                 type: "addWorkers",
                 payload: filteredWorkers
+              },
+              {
+                type: "setAuthenticationOnUser",
+                payload: {
+                  isAdmin: false,
+                  profileId: undefined
+                }
               }
             ]);
             expectMockedComponent(rendered, { Header });
@@ -373,7 +380,7 @@ describe("<App />", () => {
         waitFor(() => rendered.getByTestId("app-wrapper"))
           .then(() => {
             const actions = mockStore.getActions();
-            expect(actions.length).toBe(9);
+            expect(actions.length).toBe(10);
             expect(actions).toEqual([
               {
                 type: "loadManagers",
@@ -410,6 +417,13 @@ describe("<App />", () => {
               {
                 type: "addWorkers",
                 payload: filteredWorkers
+              },
+              {
+                type: "setAuthenticationOnUser",
+                payload: {
+                  isAdmin: false,
+                  profileId: undefined
+                }
               }
             ]);
             expectMockedComponent(rendered, { Header });
@@ -536,7 +550,7 @@ describe("<App />", () => {
         const rendered = render(<App />);
         await waitFor(() => rendered.getByTestId("app-wrapper"));
         const actions = mockStore.getActions();
-        expect(actions.length).toBe(8);
+        expect(actions.length).toBe(9);
         expect(actions).toEqual([
           {
             type: "loadManagers",
@@ -569,6 +583,13 @@ describe("<App />", () => {
           {
             type: "addWorkers",
             payload: filteredWorkers
+          },
+          {
+            type: "setAuthenticationOnUser",
+            payload: {
+              isAdmin: false,
+              profileId: undefined
+            }
           }
         ]);
         expectMockedComponent(rendered, { Header });
@@ -600,7 +621,7 @@ describe("<App />", () => {
         const rendered = render(<App />);
         await waitFor(() => rendered.getByTestId("app-wrapper"));
         const actions = mockStore.getActions();
-        expect(actions.length).toBe(8);
+        expect(actions.length).toBe(9);
         expect(actions).toEqual([
           {
             type: "loadManagers",
@@ -633,6 +654,13 @@ describe("<App />", () => {
           {
             type: "addWorkers",
             payload: filteredWorkers
+          },
+          {
+            type: "setAuthenticationOnUser",
+            payload: {
+              isAdmin: false,
+              profileId: undefined
+            }
           }
         ]);
         expectMockedComponent(rendered, { Header });
@@ -664,7 +692,7 @@ describe("<App />", () => {
         const rendered = render(<App />);
         await waitFor(() => rendered.getByTestId("app-wrapper"));
         const actions = mockStore.getActions();
-        expect(actions.length).toBe(8);
+        expect(actions.length).toBe(9);
         expect(actions).toEqual([
           {
             type: "loadManagers",
@@ -697,6 +725,13 @@ describe("<App />", () => {
           {
             type: "addWorkers",
             payload: filteredWorkers
+          },
+          {
+            type: "setAuthenticationOnUser",
+            payload: {
+              isAdmin: false,
+              profileId: undefined
+            }
           }
         ]);
         expectMockedComponent(rendered, { Header });
