@@ -10,7 +10,13 @@ import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
 
-let TextInput;
+const TextInput = styled(TextField)`
+  && {
+    margin: 0 8px;
+    width: 100%;
+    max-width: ${props => props.styles && props.styles.width ? props.styles.width : "325px"};
+  }
+`;
 
 const SearchBox = props => {
   const {
@@ -18,16 +24,6 @@ const SearchBox = props => {
     setSearch,
     styles
   } = props;
-
-  React.useEffect(() => {
-    TextInput = styled(TextField)`
-    && {
-      margin: 0 8px;
-      width: 100%;
-      max-width: ${props => props.styles && props.styles.width ? props.styles.width : "325px"};
-    }
-  `;
-  }, [styles]);
 
   const clearComponent = searchBy === "" ? null :
     <InputAdornment position="end">
