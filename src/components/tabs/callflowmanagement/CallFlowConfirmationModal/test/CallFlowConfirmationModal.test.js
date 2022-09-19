@@ -6,6 +6,7 @@ import {
 } from "components";
 import { ModalOverlayStatuses } from "globals";
 import {
+  act,
   render,
   setupMockedComponents
 } from "testUtils";
@@ -30,6 +31,7 @@ const confirmationModalOpts = {
 
 describe("CallFlowConfirmationModal",() => {
   beforeEach(() => {
+    jest.clearAllMocks();
     setupMockedComponents({
       ModalOverlay,
       StyledButton
@@ -65,6 +67,34 @@ describe("CallFlowConfirmationModal",() => {
           handleClose: mockHandleClose
         });
       });
+    });
+  });
+  describe("onConfirm is called", () => {
+    const saveResult = {
+      status: null,
+      message: null
+    };
+    test("mockOnConfirm is called", () => {
+      render(<CallFlowConfirmationModal saveResult={saveResult} confirmationModalOpts={confirmationModalOpts} />);
+      const confirmOnClick = StyledButton.mock.calls[0][0].onClick;
+      act(() => {
+        confirmOnClick();
+      });
+      expect(mockOnConfirm).toHaveBeenCalledTimes(1);
+    });
+  });
+  describe("handleClose is called", () => {
+    const saveResult = {
+      status: null,
+      message: null
+    };
+    test("mockHandleClose is called", () => {
+      render(<CallFlowConfirmationModal saveResult={saveResult} confirmationModalOpts={confirmationModalOpts} />);
+      const confirmhandleClose = StyledButton.mock.calls[1][0].onClick;
+      act(() => {
+        confirmhandleClose();
+      });
+      expect(mockHandleClose).toHaveBeenCalledTimes(1);
     });
   });
 });

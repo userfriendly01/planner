@@ -1,9 +1,10 @@
-export interface FilteredStateProps {
-  searchBy: string,
-  profiles: any[],
+export interface TableStateProps {
   closedFilter: boolean,
   flashFilter: boolean,
-  filteredList: any[]
+  filteredList: any[],
+  profiles: any[],
+  searchBy: string,
+  selected: any //replace with Skill type
 }
 
 export const views = [

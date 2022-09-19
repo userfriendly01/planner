@@ -21,29 +21,32 @@ import React from "react";
 const SkillsTable = (props: SkillsTableProps) => {
   const {
     checked,
-    filteredState,
-    selected,
+    tableState,
     setChecked,
-    setFilteredState,
-    setSelected
+    setTableState
   } = props;
 
   React.useEffect(() => {
-    const skill = filteredState.filteredList.find((s: any) => s.name === selected?.name);
-    if(skill && JSON.stringify(skill) !== JSON.stringify(selected)){
-      console.warn("Entered state to update to new value");
-      setSelected(skill);
-    } else if(!skill){
-      setSelected(null);
+    const skill = tableState.filteredList.find((s: any) => s.name === tableState.selected?.name);
+    if(skill && JSON.stringify(skill) !== JSON.stringify(tableState.selected)){
+      setTableState({
+        ...tableState,
+        selected: skill
+      });
+    } else if(!skill) {
+      setTableState({
+        ...tableState,
+        selected: null
+      });
     }
-  }, [filteredState]);
+  }, [tableState]);
 
-  const allSkillsSelected = checked.length === filteredState.filteredList.length && filteredState.filteredList.length > 0;
+  const allSkillsSelected = checked.length === tableState.filteredList.length && tableState.filteredList.length > 0;
 
   const getProfilesForSkill = (skill: any) => {
     const profileDivs: any = [];
     skill.profiles?.map((p: any, index: number) => {
-      if(index !== filteredState.filteredList.length - 1){
+      if(index !== tableState.filteredList.length - 1){
         profileDivs.push(<div>{p.profileName} - {p.profileId}</div>);
       } else {
         profileDivs.push(<div>{p.profileName} - {p.profileId},</div>);
@@ -65,7 +68,7 @@ const SkillsTable = (props: SkillsTableProps) => {
     if(allSkillsSelected){
       setChecked([]);
     } else {
-      setChecked(filteredState.filteredList);
+      setChecked(tableState.filteredList);
     }
   };
 
@@ -84,29 +87,32 @@ const SkillsTable = (props: SkillsTableProps) => {
             <CustomTableHeader>SKILL NAME</CustomTableHeader>
             <CustomTableHeader>PROFILES</CustomTableHeader>
             <CustomTableHeader
-              onClick={() => setFilteredState({
-                ...filteredState,
-                [messageTypes.FLASH.filter]: !filteredState[messageTypes.FLASH.filter]
+              onClick={() => setTableState({
+                ...tableState,
+                [messageTypes.FLASH.filter]: !tableState[messageTypes.FLASH.filter]
               })
               }
-            ><FilterWrapper active={filteredState[messageTypes.FLASH.filter]}>FLASH</FilterWrapper>
+            ><FilterWrapper active={tableState[messageTypes.FLASH.filter]}>FLASH</FilterWrapper>
             </CustomTableHeader>
             <CustomTableHeader
-              onClick={() => setFilteredState({
-                ...filteredState,
-                [messageTypes.CLOSED.filter]: !filteredState[messageTypes.CLOSED.filter]
+              onClick={() => setTableState({
+                ...tableState,
+                [messageTypes.CLOSED.filter]: !tableState[messageTypes.CLOSED.filter]
               })
               }
-            ><FilterWrapper active={filteredState[messageTypes.CLOSED.filter]}>CLOSED</FilterWrapper>
+            ><FilterWrapper active={tableState[messageTypes.CLOSED.filter]}>CLOSED</FilterWrapper>
             </CustomTableHeader>
           </tr>
         </thead>
         <tbody>
-          {filteredState.filteredList.map((skill: Skill) => {
+          {tableState.filteredList.map((skill: Skill) => {
             const isChecked = checked.some((s: any) => s.name === skill.name);
-            const isSelected = selected?.name === skill.name;
+            const isSelected = tableState.selected?.name === skill.name;
             return (
-              <CustomTableRow key={skill.name}  selected={isSelected} onClick={() => setSelected(skill)}>
+              <CustomTableRow key={skill.name}  selected={isSelected} onClick={() => setTableState({
+                ...tableState,
+                selected: skill
+              })}>
                 <CustomTableData><TableText>
                   <Checkbox
                     onClick={() => handleSetChecked(skill, isChecked)}

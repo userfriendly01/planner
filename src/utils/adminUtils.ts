@@ -6,9 +6,8 @@ export const checkIfAdmin = (profileId: number) => {
 };
 
 export const getWorkerProfileId = (state: AppState) => {
-  console.log("STATE WHEN WE LOOK FOR PROFILE ID", state);
   let loggedInWorker: any = {};
-  const nNumber = state.userContext.pingIdentity.sub;
+  const nNumber = state.userContext.pingIdentity?.sub;
   state.workerContext.workers.forEach((worker: any) =>{
     if(worker.attributes?.n_number?.toLowerCase() === nNumber.toLowerCase()){
       loggedInWorker = worker;

@@ -6,7 +6,7 @@ import {
   MessageWrapper
 } from "./CallFlowManagement.Styles";
 import {
-  FilteredStateProps, views
+  TableStateProps, views
 } from "./CallFlowManagement.Interfaces";
 import {
   ConfirmationModalOptsProps,
@@ -26,9 +26,9 @@ import { messageTypes } from "../ClosedFlashMessage/ClosedFlashMessage.Interface
 
 const CallFlowContainer = () => {
 
-  const defaultFilteredState: FilteredStateProps = {
+  const defaultTableState: TableStateProps = {
     searchBy: "",
-    // selected: null,
+    selected: null,
     profiles: [],
     closedFilter: false,
     flashFilter: false,
@@ -53,23 +53,21 @@ const CallFlowContainer = () => {
   const isAdmin = state.userContext.isAdmin;
   const userProfileId = state.userContext.profileId;
   const [ checked, setChecked ] = useState([]);
-  const [ selected, setSelected ] = useState(null);
-  const [ filteredState, setFilteredState ] = useState(defaultFilteredState);
+  const [ tableState, setTableState ] = useState(defaultTableState);
   const [ confirmationModalOpts, setConfirmationModalOpts ] = useState(defaultConfirmationModalOpts);
   const [ saveResult, setSaveResult ] = useState(defaultSaveResult);
   const [ view, setView ] = React.useState(views[0]);
-  console.log("Filtered State: ", filteredState);
+  console.log("Filtered State: ", tableState);
 
   useEffect(() => {
     let filteredList = state.skillContext.skills.slice();
-
     //filter by profile
     if(isAdmin) {
-      if(filteredState.profiles.length > 0){
+      if(tableState.profiles.length > 0){
         filteredList = filteredList.filter((skill: Skill) => {
           let shouldReturn = false;
           skill.profiles.forEach((p: any) => {
-            if(filteredState.profiles.some((sp: any) => sp.profile_id === p.profileId)){
+            if(tableState.profiles.some((sp: any) => sp.profile_id === p.profileId)){
               shouldReturn = true;
             }
           });
@@ -87,39 +85,37 @@ const CallFlowContainer = () => {
     }
 
     //filter by searchBy
-    const trimmedSearch = filteredState.searchBy.trim();
+    const trimmedSearch = tableState.searchBy.trim();
     filteredList = filteredList.filter((skill: Skill) => filterSkillsByName(skill, trimmedSearch));
 
     //filter by closed
-    if(filteredState.closedFilter){
+    if(tableState.closedFilter){
       filteredList = filteredList.filter((skill: Skill) => skill.closedMessage);
     }
     //filter by flash
-    if(filteredState.flashFilter){
+    if(tableState.flashFilter){
       filteredList = filteredList.filter((skill: Skill) => skill.flashMessage);
     }
 
-    setFilteredState({
-      ...filteredState,
+    setTableState({
+      ...tableState,
       filteredList
     });
-  }, [filteredState.searchBy, filteredState.profiles, filteredState.closedFilter, filteredState.flashFilter, state.skillContext.skills]);
+  }, [tableState.searchBy, tableState.profiles, tableState.closedFilter, tableState.flashFilter, state.skillContext.skills]);
 
   const FlashMessageView =
     <MessageWrapper>
       <SkillsContainer
         checked={checked}
-        filteredState={filteredState}
-        selected={selected}
+        tableState={tableState}
         setChecked={setChecked}
-        setFilteredState={setFilteredState}
-        setSelected={setSelected}
+        setTableState={setTableState}
       />
       <MessageContainer
         confirmationModalOpts={confirmationModalOpts}
         checked={checked}
         messageType={messageTypes.FLASH}
-        selected={selected}
+        tableState={tableState}
         setChecked={setChecked}
         setConfirmationModalOpts={setConfirmationModalOpts}
         setSaveResult={setSaveResult}
@@ -130,17 +126,15 @@ const CallFlowContainer = () => {
     <MessageWrapper>
       <SkillsContainer
         checked={checked}
-        filteredState={filteredState}
-        selected={selected}
+        tableState={tableState}
         setChecked={setChecked}
-        setFilteredState={setFilteredState}
-        setSelected={setSelected}
+        setTableState={setTableState}
       />
       <MessageContainer
         confirmationModalOpts={confirmationModalOpts}
         checked={checked}
         messageType={messageTypes.CLOSED}
-        selected={selected}
+        tableState={tableState}
         setChecked={setChecked}
         setConfirmationModalOpts={setConfirmationModalOpts}
         setSaveResult={setSaveResult}
@@ -153,7 +147,10 @@ const CallFlowContainer = () => {
         label="What would you like to do?"
         value={view}
         options={views}
-        updateValue={(event: any, view: any) => setView(view)}
+        updateValue={(event: any, view: any) => {
+          console.log("HMMM", view);
+          setView(view);
+        }}
         styles={{
           margin: "40 0 60 0",
           width: "500px"

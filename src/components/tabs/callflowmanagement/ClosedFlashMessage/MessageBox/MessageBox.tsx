@@ -12,7 +12,7 @@ export const MessageBox = (props: MessageBoxProps) => {
   const {
     text,
     setText,
-    selected,
+    tableState,
     action,
     checked,
     messageType
@@ -21,10 +21,9 @@ export const MessageBox = (props: MessageBoxProps) => {
   const isMultiChecked = checked.length > 1;
 
   React.useEffect(() => {
-    console.log("Selected", selected);
     const variable = messageType.variable;
-    if(selected) {
-      const text = selected[variable] || "";
+    if(tableState.selected) {
+      const text = tableState.selected[variable] || "";
       setText(text);
     }else {
       setText("");
@@ -32,7 +31,7 @@ export const MessageBox = (props: MessageBoxProps) => {
     if(action !== ActionTypes.VIEW && isMultiChecked){
       setText("");
     }
-  }, [action, selected]);
+  }, [action, tableState.selected]);
 
   return (
     <MessageBoxWrapper>

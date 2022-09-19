@@ -15,7 +15,7 @@ const MessageContainer = (props: MessageContainerProps) => {
     checked,
     confirmationModalOpts,
     messageType,
-    selected,
+    tableState,
     setChecked,
     setConfirmationModalOpts,
     setSaveResult
@@ -35,7 +35,7 @@ const MessageContainer = (props: MessageContainerProps) => {
         action={action}
         checked={checked}
         messageType={messageType}
-        selected={selected}
+        tableState={tableState}
         setText={setText}
         text={text}
       />

@@ -2,6 +2,7 @@ import {
   ConfirmationModalOptsProps,
   SaveResultProps
 } from "../CallFlowConfirmationModal/CallFlowConfirmationModal.Interfaces";
+import { TableStateProps } from "../CallFlowManagementWrapper/CallFlowManagement.Interfaces";
 import { Skill } from "globals";
 import {
   updateClosedMessage,
@@ -23,7 +24,7 @@ export interface MessageContainerProps {
   checked: any[],
   confirmationModalOpts: ConfirmationModalOptsProps,
   messageType: any,
-  selected: any,
+  tableState: TableStateProps,
   setChecked: (props: Skill[]) => void,
   setConfirmationModalOpts: (props: ConfirmationModalOptsProps) => void,
   setSaveResult: (props: SaveResultProps) => void,
@@ -32,7 +33,7 @@ export interface MessageContainerProps {
 export interface MessageBoxProps {
   action: ActionTypes,
   checked: any[],
-  selected: any,
+  tableState: TableStateProps,
   text: string,
   setText: (text: string) => void,
   messageType: any

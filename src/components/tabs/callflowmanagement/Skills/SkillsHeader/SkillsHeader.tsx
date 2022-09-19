@@ -13,8 +13,8 @@ const SkillsHeader = (props: SkillsHeaderProps) => {
 
   const {
     checked,
-    filteredState,
-    setFilteredState
+    tableState,
+    setTableState
   } = props;
 
   const _export = React.useRef(null);
@@ -60,10 +60,10 @@ const SkillsHeader = (props: SkillsHeaderProps) => {
           <Dropdown
             label="Profile Id"
             multiple={true}
-            value={filteredState.profiles}
+            value={tableState.profiles}
             options={getProfileOptions()}
-            updateValue={(event: any, checkedProfiles: any) => setFilteredState({
-              ...filteredState,
+            updateValue={(event: any, checkedProfiles: any) => setTableState({
+              ...tableState,
               profiles: checkedProfiles
             })}
             styles={{ width: "300px" }}
@@ -72,10 +72,10 @@ const SkillsHeader = (props: SkillsHeaderProps) => {
       <SearchBox
         key={"search-box"}
         styles={{ width: "300px" }}
-        searchBy={filteredState.searchBy}
+        searchBy={tableState.searchBy}
         setSearch={(value: string) => {
-          setFilteredState({
-            ...filteredState,
+          setTableState({
+            ...tableState,
             searchBy: value
           });
         }}
