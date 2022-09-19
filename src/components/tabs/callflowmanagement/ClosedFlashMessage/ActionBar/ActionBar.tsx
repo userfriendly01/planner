@@ -36,8 +36,8 @@ const ActionBar = (props: ActionBarProps) => {
       <IconWrapper active={action === ActionTypes.EDIT}>
         <Edit onClick={() => handleIconClick(ActionTypes.EDIT)}/>
       </IconWrapper>
-      <IconWrapper active={action === ActionTypes.EDIT}>
-        <Delete onClick={() => handleIconClick(ActionTypes.EDIT)}/>
+      <IconWrapper active={action === ActionTypes.DELETE}>
+        <Delete onClick={() => handleIconClick(ActionTypes.DELETE)}/>
       </IconWrapper>
     </ActionBarWrapper>
   );

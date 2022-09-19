@@ -73,7 +73,7 @@ const SkillsTable = (props: SkillsTableProps) => {
             <CustomTableHeader
               onClick={() => setFilteredState({
                 ...filteredState,
-                [messageTypes.FLASH.filter]: !messageTypes.FLASH.filter
+                [messageTypes.FLASH.filter]: !filteredState[messageTypes.FLASH.filter]
               })
               }
             ><FilterWrapper active={filteredState[messageTypes.FLASH.filter]}>FLASH</FilterWrapper>
