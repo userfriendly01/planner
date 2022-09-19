@@ -6,7 +6,13 @@ export interface FilteredStateProps {
   filteredList: any[]
 }
 
-export enum Views {
-  CLOSED_MESSAGE = "Closed Message Management",
-  FLASH_MESSAGE = "Flash Message Management"
-}
+export const views = [
+  {
+    value: "CLOSED_MESSAGE",
+    label: "Closed Message Management"
+  },
+  {
+    value: "FLASH_MESSAGE",
+    label: "Flash Message Management"
+  }
+];

@@ -3,10 +3,12 @@ import {
   AppState
 } from "globals";
 import {
+  checkIfAdmin,
   formatCalabrioTeams,
   formatCalabrioTenant,
   formatCalabrioGroups,
-  formatCalabrioRoles
+  formatCalabrioRoles,
+  getWorkerProfileId
 } from "utils";
 
 export const initialState: AppState = {
@@ -156,13 +158,13 @@ export const reducer = (state: AppState, action: Action): AppState => {
         userContext: action.payload
       };
     case "setAuthenticationOnUser": {
-      console.log("STATE IN THE REDUCER", state);
+      const profileId = getWorkerProfileId(state);
       return {
         ...state,
         userContext: {
           ...state.userContext,
-          profileId: action.payload.profileId,
-          isAdmin: action.payload.isAdmin
+          profileId,
+          isAdmin: checkIfAdmin(profileId)
         }
       };
     }

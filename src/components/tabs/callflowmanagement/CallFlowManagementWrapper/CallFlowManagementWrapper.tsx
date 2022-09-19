@@ -6,7 +6,7 @@ import {
   MessageWrapper
 } from "./CallFlowManagement.Styles";
 import {
-  FilteredStateProps, Views
+  FilteredStateProps, views
 } from "./CallFlowManagement.Interfaces";
 import {
   ConfirmationModalOptsProps,
@@ -55,7 +55,7 @@ const CallFlowContainer = () => {
   const [ filteredState, setFilteredState ] = useState(defaultFilteredState);
   const [ confirmationModalOpts, setConfirmationModalOpts ] = useState(defaultConfirmationModalOpts);
   const [ saveResult, setSaveResult ] = useState(defaultSaveResult);
-  const [ view, setView ] = React.useState(Views.CLOSED_MESSAGE);
+  const [ view, setView ] = React.useState(views[0]);
 
   useEffect(() => {
     let filteredList = state.skillContext.skills.slice();
@@ -101,15 +101,6 @@ const CallFlowContainer = () => {
     });
   }, [filteredState.searchBy, filteredState.profiles, filteredState.closedFilter, filteredState.flashFilter, state.skillContext.skills]);
 
-  const getViewOptions = () => {
-    return Object.keys(Views).map(view => {
-      return {
-        label: view,
-        value: view
-      };
-    });
-  };
-
   const FlashMessageView =
     <MessageWrapper>
       <SkillsContainer
@@ -151,9 +142,9 @@ const CallFlowContainer = () => {
       <Dropdown
         label="What would you like to do?"
         value={view}
-        options={getViewOptions()}
+        options={views}
         updateValue={(event: any, view: any) => {
-          console.log("New View");
+          console.log("New View", view);
           setView(view);
         }}
         styles={{
@@ -161,8 +152,8 @@ const CallFlowContainer = () => {
           width: "500px"
         }}
       />
-      {view === Views.CLOSED_MESSAGE && ClosedMessageView}
-      {view === Views.FLASH_MESSAGE && FlashMessageView}
+      {view === views.find(v => v.value === "CLOSED_MESSAGE") && ClosedMessageView}
+      {view === views.find(v => v.value === "FLASH_MESSAGE") && FlashMessageView}
       <Modal open={confirmationModalOpts.open}>
         <CallFlowConfirmationModal
           confirmationModalOpts={confirmationModalOpts}

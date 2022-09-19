@@ -1,22 +1,11 @@
 import { AppState } from "globals";
 
-export const setAuthenticatedUserState = (state: AppState, dispatch: any) => {
-  const profileId = getWorkerProfileId(state);
-  const isAdmin = checkIfAdmin(profileId);
-  dispatch({
-    type: "setAuthenticationOnUser",
-    payload: {
-      profileId,
-      isAdmin
-    }
-  });
-};
 
-const checkIfAdmin = (profileId: number) => {
+export const checkIfAdmin = (profileId: number) => {
   return profileId === 0;
 };
 
-const getWorkerProfileId = (state: AppState) => {
+export const getWorkerProfileId = (state: AppState) => {
   console.log("STATE WHEN WE LOOK FOR PROFILE ID", state);
   let loggedInWorker: any = {};
   const nNumber = state.userContext.pingIdentity.sub;
