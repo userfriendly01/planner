@@ -9,11 +9,10 @@ export const StyledCheckBox = styled(Checkbox)`
 `;
 
 export const Header = styled.div`
-display: flex;
-width: 100%;
-align-items: center;
-justify-content: space-around;
-margin: 40 0 30 0;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-around;
 `;
 
 export const CustomTable = styled.table`

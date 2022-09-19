@@ -5,7 +5,6 @@ export const FormControlsContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   max-height: 650px;
   padding-top: 5px;
   overflow: hidden;

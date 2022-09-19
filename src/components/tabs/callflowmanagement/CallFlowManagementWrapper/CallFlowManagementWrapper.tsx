@@ -153,7 +153,7 @@ const CallFlowContainer = () => {
           setView(view);
         }}
         styles={{
-          margin: "40px",
+          margin: "40 0 60 0",
           width: "500px"
         }}
       />

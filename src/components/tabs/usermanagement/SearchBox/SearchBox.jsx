@@ -11,11 +11,11 @@ import React from "react";
 import styled from "styled-components";
 
 const TextInput = styled(TextField)`
-&& {
-  margin: 0 8px;
-  width: 100%;
-  max-width: ${props => props.styles && props.styles.width ? props.styles.width : "325px"};
-}
+  && {
+    margin: 0 8px;
+    width: 100%;
+    max-width: ${props => props.styles && props.styles.width ? props.styles.width : "325px"};
+  }
 `;
 
 const SearchBox = props => {
@@ -45,7 +45,6 @@ const SearchBox = props => {
         )
       }}
       id="outlined-SearchBox-input"
-      key={"searchBox"}
       label="Search"
       margin="normal"
       name="outlined-SearchBox-input"
