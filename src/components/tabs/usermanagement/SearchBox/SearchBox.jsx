@@ -10,6 +10,14 @@ import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
 
+const TextInput = styled(TextField)`
+&& {
+  margin: 0 8px;
+  width: 100%;
+  max-width: ${props => props.styles && props.styles.width ? props.styles.width : "325px"};
+}
+`;
+
 const SearchBox = props => {
   const {
     searchBy,
@@ -17,13 +25,6 @@ const SearchBox = props => {
     styles
   } = props;
 
-  const TextInput = styled(TextField)`
-  && {
-    margin: 0 8px;
-    width: 100%;
-    max-width: ${props => props.styles && props.styles.width ? props.styles.width : "325px"};
-  }
-`;
   const clearComponent = searchBy === "" ? null :
     <InputAdornment position="end">
       <IconButton
