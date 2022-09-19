@@ -56,12 +56,10 @@ const CallFlowContainer = () => {
   const [ confirmationModalOpts, setConfirmationModalOpts ] = useState(defaultConfirmationModalOpts);
   const [ saveResult, setSaveResult ] = useState(defaultSaveResult);
   const [ view, setView ] = React.useState(views[0]);
+  console.log("Filtered State: ", filteredState);
 
   useEffect(() => {
     let filteredList = state.skillContext.skills.slice();
-    console.log("Starting Filtered List: ", filteredList);
-    console.log("isAdmin: ", isAdmin);
-    console.log("Profile Id: ", userProfileId);
 
     //filter by profile
     if(isAdmin) {
@@ -79,7 +77,6 @@ const CallFlowContainer = () => {
     } else {
       filteredList = filteredList.filter((skill: Skill) => {
         let shouldReturn = false;
-        console.log("Skills Profiles: ", skill.profiles);
         if(skill.profiles.some((sp: any) => sp.profileId === userProfileId)){
           shouldReturn = true;
         }
@@ -148,10 +145,7 @@ const CallFlowContainer = () => {
         label="What would you like to do?"
         value={view}
         options={views}
-        updateValue={(event: any, view: any) => {
-          console.log("New View", view);
-          setView(view);
-        }}
+        updateValue={(event: any, view: any) => setView(view)}
         styles={{
           margin: "40 0 60 0",
           width: "500px"
