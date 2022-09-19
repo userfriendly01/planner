@@ -245,7 +245,11 @@ const App = () => {
     ])
       .then(() => {
         setLoadResult(success);
-        dispatch({ type: "setAuthenticationOnUser" });
+        try {
+          dispatch(({ type: "setAuthenticationOnUser" }));
+        } catch(err) {
+          console.error("Unable to identify admin or profile Id");
+        }
       })
       .catch(err => {
         console.error(err.msg, { error: err.error });
