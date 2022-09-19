@@ -59,6 +59,10 @@ const CallFlowContainer = () => {
 
   useEffect(() => {
     let filteredList = state.skillContext.skills.slice();
+    console.log("Starting Filtered List: ", filteredList);
+    console.log("isAdmin: ", isAdmin);
+    console.log("Profile Id: ", userProfileId);
+
     //filter by profile
     if(isAdmin) {
       if(filteredState.profiles.length > 0){
@@ -75,6 +79,7 @@ const CallFlowContainer = () => {
     } else {
       filteredList = filteredList.filter((skill: Skill) => {
         let shouldReturn = false;
+        console.log("Skills Profiles: ", skill.profiles);
         if(skill.profiles.some((sp: any) => sp.profileId === userProfileId)){
           shouldReturn = true;
         }

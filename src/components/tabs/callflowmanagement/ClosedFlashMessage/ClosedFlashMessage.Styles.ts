@@ -8,7 +8,7 @@ export const FormControlsContainer = styled.div`
   justify-content: center;
   max-height: 650px;
   padding-top: 5px;
-  overflow: overlay;
+  overflow: hidden;
 `;
 
 export const MessageBoxWrapper = styled.div`
