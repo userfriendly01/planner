@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 export const FormControlsContainer = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   width: 100%;
   justify-content: center;
   max-height: 650px;

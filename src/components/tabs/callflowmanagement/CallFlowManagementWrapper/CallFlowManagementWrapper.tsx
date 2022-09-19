@@ -153,7 +153,10 @@ const CallFlowContainer = () => {
         value={view}
         options={getViewOptions()}
         updateValue={(event: any, view: any) => setView(view)}
-        styles={{ width: "200px" }}
+        styles={{
+          margin: "40px",
+          width: "500px"
+        }}
       />
       {view === Views.CLOSED_MESSAGE && ClosedMessageView}
       {view === Views.FLASH_MESSAGE && FlashMessageView}

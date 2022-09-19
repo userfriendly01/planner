@@ -31,7 +31,6 @@ export const MessageBox = (props: MessageBoxProps) => {
 
   return (
     <MessageBoxWrapper>
-      <h1>{messageType.name}</h1>
       <TextField
         readOnly={action !== ActionTypes.EDIT}
         onChange={(event: any) => setText(event.target.value)}

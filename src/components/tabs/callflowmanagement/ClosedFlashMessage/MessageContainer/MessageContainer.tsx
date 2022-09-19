@@ -25,6 +25,7 @@ const MessageContainer = (props: MessageContainerProps) => {
 
   return (
     <FormControlsContainer>
+      <h1>{messageType.name}</h1>
       <ActionBar
         action={action}
         setAction={setAction}
