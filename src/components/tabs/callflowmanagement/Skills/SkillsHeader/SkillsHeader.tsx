@@ -65,12 +65,12 @@ const SkillsHeader = (props: SkillsHeaderProps) => {
               ...filteredState,
               profiles: selectedProfiles
             })}
-            styles={{ width: "200px" }}
+            styles={{ width: "300px" }}
           />
       }
       <SearchBox
         key={"search-box"}
-        styles={{ width: "200px" }}
+        styles={{ width: "300px" }}
         searchBy={filteredState.searchBy}
         setSearch={(value: string) => {
           setFilteredState({
@@ -79,7 +79,7 @@ const SkillsHeader = (props: SkillsHeaderProps) => {
           });
         }}
       />
-      <ExportButton onClick={handleExport} >Export</ExportButton>
+      <ExportButton onClick={handleExport} ref={_export}>Export</ExportButton>
     </Header>
   );
 };
