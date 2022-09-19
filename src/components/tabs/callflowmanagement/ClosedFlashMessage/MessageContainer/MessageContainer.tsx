@@ -12,12 +12,13 @@ import {
 
 const MessageContainer = (props: MessageContainerProps) => {
   const {
-    setSaveResult,
-    confirmationModalOpts,
-    setConfirmationModalOpts,
     checked,
+    confirmationModalOpts,
+    messageType,
+    selected,
     setChecked,
-    messageType
+    setConfirmationModalOpts,
+    setSaveResult
   } = props;
 
   const [ text, setText ] = React.useState("");
@@ -32,12 +33,11 @@ const MessageContainer = (props: MessageContainerProps) => {
         setText={setText}
       />
       <MessageBox
-        text={text}
-        setText={setText}
         action={action}
         checked={checked}
-        setAction={setAction}
-        messageType={messageType}
+        selected={selected}
+        setText={setText}
+        text={text}
       />
       <SaveButton
         action={action}

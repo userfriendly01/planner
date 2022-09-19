@@ -68,13 +68,13 @@ export const CustomTableHeader = styled.th`
   }
 `;
 
-export const CustomTableRow = styled.tr<{ checked: boolean }>`
+export const CustomTableRow = styled.tr<{ selected: boolean }>`
   &:nth-child(odd) {
-    background-color: ${props => props.checked ? props.theme.tableRow.checkedColor : props.theme.tableRow.alternateRowColor};
+    background-color: ${props => props.selected ? props.theme.tableRow.selectedColor : props.theme.tableRow.alternateRowColor};
   }
-  background-color: ${props => props.checked ? props.theme.tableRow.checkedColor : "inherit"};
+  background-color: ${props => props.selected ? props.theme.tableRow.selectedColor : "inherit"};
   &:hover {
-    background-color: ${props => props.checked ? props.theme.tableRow.hoverSelectedColor : props.theme.tableRow.hoverColor};
+    background-color: ${props => props.selected ? props.theme.tableRow.hoverSelectedColor : props.theme.tableRow.hoverColor};
     cursor: pointer;
   }
 `;

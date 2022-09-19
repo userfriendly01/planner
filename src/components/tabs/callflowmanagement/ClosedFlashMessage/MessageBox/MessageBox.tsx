@@ -12,20 +12,16 @@ export const MessageBox = (props: MessageBoxProps) => {
   const {
     text,
     setText,
+    selected,
     action,
-    setAction,
-    checked,
-    messageType
+    checked
   } = props;
 
   const isSingleSelection = checked.length === 1;
 
   React.useEffect(() => {
-    if(isSingleSelection) {
-      setText(checked[0][messageType.variable]);
-    } else {
-      setAction(ActionTypes.VIEW);
-      setText("");
+    if(action === ActionTypes.VIEW){
+      setText(selected);
     }
   }, [checked]);
 

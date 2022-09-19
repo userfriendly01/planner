@@ -1,8 +1,10 @@
 export interface SkillsContainerProps {
-  filteredState: any,
   checked: any[],
+  filteredState: any,
+  selected: any,
   setChecked: (skills: any[]) => void
   setFilteredState: (filterState: any) => void
+  setSelected: (selected: any[]) => void
 }
 
 export interface SkillsHeaderProps {
@@ -12,8 +14,10 @@ export interface SkillsHeaderProps {
 }
 
 export interface SkillsTableProps {
-  filteredState: any,
   checked: any[],
+  filteredState: any,
+  selected: any,
   setChecked: (skills: any[]) => void
   setFilteredState: (filterState: any) => void
+  setSelected: (selected: any[]) => void
 }

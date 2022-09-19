@@ -12,10 +12,12 @@ import {
 const SkillsContainer = (props: SkillsContainerProps) => {
 
   const {
-    filteredState,
     checked,
+    filteredState,
+    selected,
     setChecked,
-    setFilteredState
+    setFilteredState,
+    setSelected
   } = props;
 
   return (
@@ -27,10 +29,12 @@ const SkillsContainer = (props: SkillsContainerProps) => {
       />
       <SkillsTableWrapper>
         <SkillsTable
-          filteredState={filteredState}
           checked={checked}
+          filteredState={filteredState}
+          selected={selected}
           setChecked={setChecked}
           setFilteredState={setFilteredState}
+          setSelected={setSelected}
         />
       </SkillsTableWrapper>
     </SkillsWrapper>

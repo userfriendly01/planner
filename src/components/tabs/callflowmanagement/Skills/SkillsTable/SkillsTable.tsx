@@ -20,10 +20,12 @@ import React from "react";
 
 const SkillsTable = (props: SkillsTableProps) => {
   const {
-    filteredState,
     checked,
+    filteredState,
+    selected,
     setChecked,
-    setFilteredState
+    setFilteredState,
+    setSelected
   } = props;
 
   const allSkillsSelected = checked.length === filteredState.filteredList.length && filteredState.filteredList.length > 0;
@@ -90,12 +92,14 @@ const SkillsTable = (props: SkillsTableProps) => {
         </thead>
         <tbody>
           {filteredState.filteredList.map((skill: Skill) => {
-            const isSelected = checked.some(s => s.name === skill.name);
+            const isChecked = checked.some(s => s.name === skill.name);
+            const isSelected = selected === skill.name;
             return (
-              <CustomTableRow key={skill.name} onClick={() => handleSetChecked(skill, isSelected)} checked={isSelected} data-testid="table-row">
+              <CustomTableRow key={skill.name}  selected={isSelected}>
                 <CustomTableData><TableText>
                   <Checkbox
-                    checked={isSelected}
+                    onClick={() => handleSetChecked(skill, isChecked)}
+                    checked={isChecked}
                     style={{ padding: "0px" }}
                   />
                 </TableText></CustomTableData>

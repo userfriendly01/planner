@@ -21,21 +21,21 @@ export interface ActionBarProps {
 }
 
 export interface MessageContainerProps {
-  confirmationModalOpts: ConfirmationModalOptsProps,
-  setSaveResult: (props: SaveResultProps) => void,
-  setConfirmationModalOpts: (props: ConfirmationModalOptsProps) => void,
   checked: any[],
-  setChecked: (props: Skill[]) => void,
+  confirmationModalOpts: ConfirmationModalOptsProps,
   messageType: any,
+  selected: any,
+  setChecked: (props: Skill[]) => void,
+  setConfirmationModalOpts: (props: ConfirmationModalOptsProps) => void,
+  setSaveResult: (props: SaveResultProps) => void,
 }
 
 export interface MessageBoxProps {
+  action: ActionTypes,
+  checked: any[],
+  selected: any,
   text: string,
   setText: (text: string) => void,
-  action: ActionTypes,
-  setAction: (action: ActionTypes) => void,
-  checked: any[],
-  messageType: any
 }
 
 export interface SaveButtonProps {

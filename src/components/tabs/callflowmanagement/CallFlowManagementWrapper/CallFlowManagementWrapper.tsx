@@ -52,6 +52,7 @@ const CallFlowContainer = () => {
   const isAdmin = state.userContext.isAdmin;
   const userProfileId = state.userContext.profileId;
   const [ checked, setChecked ] = useState([]);
+  const [ selected, setSelected ] = useState(null);
   const [ filteredState, setFilteredState ] = useState(defaultFilteredState);
   const [ confirmationModalOpts, setConfirmationModalOpts ] = useState(defaultConfirmationModalOpts);
   const [ saveResult, setSaveResult ] = useState(defaultSaveResult);
@@ -106,36 +107,42 @@ const CallFlowContainer = () => {
   const FlashMessageView =
     <MessageWrapper>
       <SkillsContainer
-        filteredState={filteredState}
         checked={checked}
+        filteredState={filteredState}
+        selected={selected}
         setChecked={setChecked}
         setFilteredState={setFilteredState}
+        setSelected={setSelected}
       />
       <MessageContainer
         confirmationModalOpts={confirmationModalOpts}
-        setSaveResult={setSaveResult}
-        setConfirmationModalOpts={setConfirmationModalOpts}
         checked={checked}
-        setChecked={setChecked}
         messageType={messageTypes.FLASH}
+        selected={selected}
+        setChecked={setChecked}
+        setConfirmationModalOpts={setConfirmationModalOpts}
+        setSaveResult={setSaveResult}
       />
     </MessageWrapper>;
 
   const ClosedMessageView =
     <MessageWrapper>
       <SkillsContainer
-        filteredState={filteredState}
         checked={checked}
+        filteredState={filteredState}
+        selected={selected}
         setChecked={setChecked}
         setFilteredState={setFilteredState}
+        setSelected={setSelected}
       />
       <MessageContainer
         confirmationModalOpts={confirmationModalOpts}
-        setSaveResult={setSaveResult}
-        setConfirmationModalOpts={setConfirmationModalOpts}
         checked={checked}
-        setChecked={setChecked}
         messageType={messageTypes.CLOSED}
+        selected={selected}
+        setChecked={setChecked}
+        setConfirmationModalOpts={setConfirmationModalOpts}
+        setSaveResult={setSaveResult}
       />
     </MessageWrapper>;
 
