@@ -17,6 +17,7 @@ const checkIfAdmin = (profileId: number) => {
 };
 
 const getWorkerProfileId = (state: AppState) => {
+  console.log("STATE WHEN WE LOOK FOR PROFILE ID", state);
   let loggedInWorker: any = {};
   const nNumber = state.userContext.pingIdentity.sub;
   state.workerContext.workers.forEach((worker: any) =>{

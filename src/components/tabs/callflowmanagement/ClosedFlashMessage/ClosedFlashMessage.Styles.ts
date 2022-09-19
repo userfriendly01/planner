@@ -4,7 +4,7 @@ import styled from "styled-components";
 export const FormControlsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
+  align-items: center;
   justify-content: center;
   max-height: 650px;
   padding-top: 5px;
@@ -14,7 +14,7 @@ export const FormControlsContainer = styled.div`
 export const MessageBoxWrapper = styled.div`
   display: flex;
   width: 600px;
-  margin-top: 25px;
+  margin-top: 5px;
   flex-direction: column;
   align-items: center;
 `;
