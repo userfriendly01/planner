@@ -51,7 +51,7 @@ const CallFlowContainer = () => {
   const state = useAdminState();
   const isAdmin = state.userContext.isAdmin;
   const userProfileId = state.userContext.profileId;
-  const [ selected, setSelected ] = useState([]);
+  const [ checked, setChecked ] = useState([]);
   const [ filteredState, setFilteredState ] = useState(defaultFilteredState);
   const [ confirmationModalOpts, setConfirmationModalOpts ] = useState(defaultConfirmationModalOpts);
   const [ saveResult, setSaveResult ] = useState(defaultSaveResult);
@@ -107,16 +107,16 @@ const CallFlowContainer = () => {
     <MessageWrapper>
       <SkillsContainer
         filteredState={filteredState}
-        selected={selected}
-        setSelected={setSelected}
+        checked={checked}
+        setChecked={setChecked}
         setFilteredState={setFilteredState}
       />
       <MessageContainer
         confirmationModalOpts={confirmationModalOpts}
         setSaveResult={setSaveResult}
         setConfirmationModalOpts={setConfirmationModalOpts}
-        selected={selected}
-        setSelected={setSelected}
+        checked={checked}
+        setChecked={setChecked}
         messageType={messageTypes.FLASH}
       />
     </MessageWrapper>;
@@ -125,16 +125,16 @@ const CallFlowContainer = () => {
     <MessageWrapper>
       <SkillsContainer
         filteredState={filteredState}
-        selected={selected}
-        setSelected={setSelected}
+        checked={checked}
+        setChecked={setChecked}
         setFilteredState={setFilteredState}
       />
       <MessageContainer
         confirmationModalOpts={confirmationModalOpts}
         setSaveResult={setSaveResult}
         setConfirmationModalOpts={setConfirmationModalOpts}
-        selected={selected}
-        setSelected={setSelected}
+        checked={checked}
+        setChecked={setChecked}
         messageType={messageTypes.CLOSED}
       />
     </MessageWrapper>;

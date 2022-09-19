@@ -13,8 +13,8 @@ const SkillsContainer = (props: SkillsContainerProps) => {
 
   const {
     filteredState,
-    selected,
-    setSelected,
+    checked,
+    setChecked,
     setFilteredState
   } = props;
 
@@ -22,14 +22,14 @@ const SkillsContainer = (props: SkillsContainerProps) => {
     <SkillsWrapper>
       <SkillsHeader
         filteredState={filteredState}
-        selected={selected}
+        checked={checked}
         setFilteredState={setFilteredState}
       />
       <SkillsTableWrapper>
         <SkillsTable
           filteredState={filteredState}
-          selected={selected}
-          setSelected={setSelected}
+          checked={checked}
+          setChecked={setChecked}
           setFilteredState={setFilteredState}
         />
       </SkillsTableWrapper>

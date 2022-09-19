@@ -17,20 +17,20 @@ import {
 const SaveButton = (props: SaveButtonProps) => {
   const {
     action,
-    selected,
+    checked,
     setSaveResult,
     confirmationModalOpts,
     messageType,
     setConfirmationModalOpts,
-    setSelected,
+    setChecked,
     text
   } = props;
 
   const state = useAdminState();
   const dispatch = useAdminDispatch();
   const nNumber = state.userContext.pingIdentity.sub;
-  const isSingleSelection = selected.length === 1;
-  const isMultiSelection = selected.length > 1;
+  const isSingleSelection = checked.length === 1;
+  const isMultiSelection = checked.length > 1;
 
   const handleOnSave = () => {
     switch(action){
@@ -91,7 +91,7 @@ const SaveButton = (props: SaveButtonProps) => {
       updateStateOnResolvedPromises(successfulPromises);
       setTimeout(() => {
         handleCloseConfirmation();
-        setSelected([]);
+        setChecked([]);
       }, timeouts.MODAL_OVERLAY);
     } else if (successfulPromises.length === 0){
       setSaveResult({
@@ -122,13 +122,13 @@ const SaveButton = (props: SaveButtonProps) => {
         message: "Processing...",
         status: ModalOverlayStatuses.SAVING
       });
-      const results = await Promise.allSettled(selected.map((skill: Skill) => {
+      const results = await Promise.allSettled(checked.map((skill: Skill) => {
         return messageType.updateFunction(skill, text, nNumber);
       }));
       handleResults(results);
     };
     const confirmationText = `Are you sure you want to update the ${messageType.name}
-    for ${ !isMultiSelection ? selected[0].name : selected.length + " skills?"}`;
+    for ${ !isMultiSelection ? checked[0].name : checked.length + " skills?"}`;
 
     setConfirmationModalOpts({
       open: true,
@@ -146,13 +146,13 @@ const SaveButton = (props: SaveButtonProps) => {
         message: "Processing...",
         status: ModalOverlayStatuses.SAVING
       });
-      const results = await Promise.allSettled(selected.map((skill: Skill) => {
+      const results = await Promise.allSettled(checked.map((skill: Skill) => {
         return messageType.updateFunction(skill, "", nNumber);
       }));
       handleResults(results);
     };
     const confirmationText = `Are you sure you want to delete the ${messageType.name}
-    for ${ !isMultiSelection ? selected[0].name : selected.length + " skills?"}`;
+    for ${ !isMultiSelection ? checked[0].name : checked.length + " skills?"}`;
 
     setConfirmationModalOpts({
       open: true,
@@ -169,8 +169,8 @@ const SaveButton = (props: SaveButtonProps) => {
       {(isSingleSelection || isMultiSelection) && action !== ActionTypes.VIEW &&
         <UserFormButton onClick={handleOnSave}>
           { isMultiSelection ?
-            `${action} ${selected.length} ${messageType.name}s`
-            : `${action} ${selected[0].name} ${messageType.name}`
+            `${action} ${checked.length} ${messageType.name}s`
+            : `${action} ${checked[0].name} ${messageType.name}`
           }
         </UserFormButton>
       }

@@ -12,7 +12,7 @@ import { ExcelExport } from "@progress/kendo-react-excel-export";
 const SkillsHeader = (props: SkillsHeaderProps) => {
 
   const {
-    selected,
+    checked,
     filteredState,
     setFilteredState
   } = props;
@@ -50,7 +50,7 @@ const SkillsHeader = (props: SkillsHeaderProps) => {
       }
     ];
     if (_export.current !== null) {
-      _export.current.save(selected, columns);
+      _export.current.save(checked, columns);
     }
   };
 
@@ -62,9 +62,9 @@ const SkillsHeader = (props: SkillsHeaderProps) => {
             multiple={true}
             value={filteredState.profiles}
             options={getProfileOptions()}
-            updateValue={(event: any, selectedProfiles: any) => setFilteredState({
+            updateValue={(event: any, checkedProfiles: any) => setFilteredState({
               ...filteredState,
-              profiles: selectedProfiles
+              profiles: checkedProfiles
             })}
             styles={{ width: "300px" }}
           />

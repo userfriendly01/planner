@@ -21,12 +21,12 @@ import React from "react";
 const SkillsTable = (props: SkillsTableProps) => {
   const {
     filteredState,
-    selected,
-    setSelected,
+    checked,
+    setChecked,
     setFilteredState
   } = props;
 
-  const allSkillsSelected = selected.length === filteredState.filteredList.length && filteredState.filteredList.length > 0;
+  const allSkillsSelected = checked.length === filteredState.filteredList.length && filteredState.filteredList.length > 0;
 
   const getProfilesForSkill = (skill: any) => {
     const profileDivs: any = [];
@@ -40,19 +40,19 @@ const SkillsTable = (props: SkillsTableProps) => {
     return profileDivs;
   };
 
-  const handleSetSelected = (skill: any, isSelected: boolean) => {
+  const handleSetChecked = (skill: any, isSelected: boolean) => {
     if(isSelected){
-      setSelected(selected.filter(s => s.name !== skill.name));
+      setChecked(checked.filter(s => s.name !== skill.name));
     } else {
-      setSelected([...selected, skill ]);
+      setChecked([...checked, skill ]);
     }
   };
 
   const handleSelectAll = () => {
     if(allSkillsSelected){
-      setSelected([]);
+      setChecked([]);
     } else {
-      setSelected(filteredState.filteredList);
+      setChecked(filteredState.filteredList);
     }
   };
 
@@ -90,9 +90,9 @@ const SkillsTable = (props: SkillsTableProps) => {
         </thead>
         <tbody>
           {filteredState.filteredList.map((skill: Skill) => {
-            const isSelected = selected.some(s => s.name === skill.name);
+            const isSelected = checked.some(s => s.name === skill.name);
             return (
-              <CustomTableRow key={skill.name} onClick={() => handleSetSelected(skill, isSelected)} selected={isSelected} data-testid="table-row">
+              <CustomTableRow key={skill.name} onClick={() => handleSetChecked(skill, isSelected)} checked={isSelected} data-testid="table-row">
                 <CustomTableData><TableText>
                   <Checkbox
                     checked={isSelected}

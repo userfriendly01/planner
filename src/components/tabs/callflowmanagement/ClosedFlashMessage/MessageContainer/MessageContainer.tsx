@@ -15,8 +15,8 @@ const MessageContainer = (props: MessageContainerProps) => {
     setSaveResult,
     confirmationModalOpts,
     setConfirmationModalOpts,
-    selected,
-    setSelected,
+    checked,
+    setChecked,
     messageType
   } = props;
 
@@ -35,7 +35,7 @@ const MessageContainer = (props: MessageContainerProps) => {
         text={text}
         setText={setText}
         action={action}
-        selected={selected}
+        checked={checked}
         setAction={setAction}
         messageType={messageType}
       />
@@ -44,8 +44,8 @@ const MessageContainer = (props: MessageContainerProps) => {
         confirmationModalOpts= {confirmationModalOpts}
         setSaveResult={setSaveResult}
         setConfirmationModalOpts={setConfirmationModalOpts}
-        selected={selected}
-        setSelected={setSelected}
+        checked={checked}
+        setChecked={setChecked}
         messageType={messageType}
         text={text}
       />
