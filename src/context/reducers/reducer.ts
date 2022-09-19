@@ -155,7 +155,8 @@ export const reducer = (state: AppState, action: Action): AppState => {
         ...state,
         userContext: action.payload
       };
-    case "setAuthenticationOnUser":
+    case "setAuthenticationOnUser": {
+      console.log("STATE IN THE REDUCER", state);
       return {
         ...state,
         userContext: {
@@ -164,6 +165,7 @@ export const reducer = (state: AppState, action: Action): AppState => {
           isAdmin: action.payload.isAdmin
         }
       };
+    }
     case "resettingSkills":
       return {
         ...state,

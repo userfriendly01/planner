@@ -142,7 +142,7 @@ const CallFlowContainer = () => {
         setConfirmationModalOpts={setConfirmationModalOpts}
         selected={selected}
         setSelected={setSelected}
-        messageType={messageTypes.FLASH}
+        messageType={messageTypes.CLOSED}
       />
     </MessageWrapper>;
 
@@ -152,7 +152,10 @@ const CallFlowContainer = () => {
         label="What would you like to do?"
         value={view}
         options={getViewOptions()}
-        updateValue={(event: any, view: any) => setView(view)}
+        updateValue={(event: any, view: any) => {
+          console.log("New View");
+          setView(view);
+        }}
         styles={{
           margin: "40px",
           width: "500px"
