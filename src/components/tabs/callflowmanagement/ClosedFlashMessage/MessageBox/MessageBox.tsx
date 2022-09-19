@@ -18,14 +18,21 @@ export const MessageBox = (props: MessageBoxProps) => {
     messageType
   } = props;
 
-  const isSingleSelection = checked.length === 1;
+  const isMultiChecked = checked.length > 1;
 
   React.useEffect(() => {
+    console.log("Selected", selected);
     const variable = messageType.variable;
-    if(action === ActionTypes.VIEW){
-      setText(selected[variable]);
+    if(selected) {
+      const text = selected[variable] || "";
+      setText(text);
+    }else {
+      setText("");
     }
-  }, [selected]);
+    if(action !== ActionTypes.VIEW && isMultiChecked){
+      setText("");
+    }
+  }, [action, selected]);
 
   return (
     <MessageBoxWrapper>

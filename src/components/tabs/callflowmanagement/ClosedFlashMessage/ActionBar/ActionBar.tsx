@@ -17,16 +17,12 @@ const ActionBar = (props: ActionBarProps) => {
 
   const {
     action,
-    setAction,
-    setText
+    setAction
   } = props;
 
   const handleIconClick = (actionType: ActionTypes) => {
     if(action === actionType){
       setAction(ActionTypes.VIEW);
-    }
-    if(actionType === ActionTypes.EDIT){
-      setText("");
     }
     action === actionType ? setAction(ActionTypes.VIEW) : setAction(actionType);
   };

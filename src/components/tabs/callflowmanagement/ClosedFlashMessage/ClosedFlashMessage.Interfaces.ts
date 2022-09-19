@@ -16,8 +16,7 @@ export enum ActionTypes  {
 
 export interface ActionBarProps {
   action: ActionTypes,
-  setAction: (action: ActionTypes) => void,
-  setText: (text: string) => void
+  setAction: (action: ActionTypes) => void
 }
 
 export interface MessageContainerProps {
@@ -41,6 +40,7 @@ export interface MessageBoxProps {
 
 export interface SaveButtonProps {
   action: ActionTypes,
+  setAction: (action: ActionTypes) => void
   setSaveResult: (props: SaveResultProps) => void,
   checked: any[],
   confirmationModalOpts: ConfirmationModalOptsProps,

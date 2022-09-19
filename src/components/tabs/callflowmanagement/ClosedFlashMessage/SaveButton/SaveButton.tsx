@@ -18,6 +18,7 @@ const SaveButton = (props: SaveButtonProps) => {
   const {
     action,
     checked,
+    setAction,
     setSaveResult,
     confirmationModalOpts,
     messageType,
@@ -92,6 +93,7 @@ const SaveButton = (props: SaveButtonProps) => {
       setTimeout(() => {
         handleCloseConfirmation();
         setChecked([]);
+        setAction(ActionTypes.VIEW);
       }, timeouts.MODAL_OVERLAY);
     } else if (successfulPromises.length === 0){
       setSaveResult({
@@ -166,13 +168,14 @@ const SaveButton = (props: SaveButtonProps) => {
 
   return (
     <div>
-      {(isSingleSelection || isMultiSelection) && action !== ActionTypes.VIEW &&
+      {(isSingleSelection || isMultiSelection) && action !== ActionTypes.VIEW ?
         <UserFormButton onClick={handleOnSave}>
           { isMultiSelection ?
             `${action} ${checked.length} ${messageType.name}s`
             : `${action} ${checked[0].name} ${messageType.name}`
           }
         </UserFormButton>
+        : <div>No Skills Checked</div>
       }
     </div>
   );

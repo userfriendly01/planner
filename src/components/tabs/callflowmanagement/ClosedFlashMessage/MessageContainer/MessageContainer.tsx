@@ -30,7 +30,6 @@ const MessageContainer = (props: MessageContainerProps) => {
       <ActionBar
         action={action}
         setAction={setAction}
-        setText={setText}
       />
       <MessageBox
         action={action}
@@ -43,6 +42,7 @@ const MessageContainer = (props: MessageContainerProps) => {
       <SaveButton
         action={action}
         confirmationModalOpts= {confirmationModalOpts}
+        setAction={setAction}
         setSaveResult={setSaveResult}
         setConfirmationModalOpts={setConfirmationModalOpts}
         checked={checked}

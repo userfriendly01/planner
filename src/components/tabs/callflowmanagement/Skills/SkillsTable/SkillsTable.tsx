@@ -28,6 +28,16 @@ const SkillsTable = (props: SkillsTableProps) => {
     setSelected
   } = props;
 
+  React.useEffect(() => {
+    const skill = filteredState.filteredList.find((s: any) => s.name === selected?.name);
+    if(skill && JSON.stringify(skill) !== JSON.stringify(selected)){
+      console.warn("Entered state to update to new value");
+      setSelected(skill);
+    } else if(!skill){
+      setSelected(null);
+    }
+  }, [filteredState]);
+
   const allSkillsSelected = checked.length === filteredState.filteredList.length && filteredState.filteredList.length > 0;
 
   const getProfilesForSkill = (skill: any) => {
@@ -93,8 +103,8 @@ const SkillsTable = (props: SkillsTableProps) => {
         </thead>
         <tbody>
           {filteredState.filteredList.map((skill: Skill) => {
-            const isChecked = checked.some(s => s.name === skill.name);
-            const isSelected = selected === skill.name;
+            const isChecked = checked.some((s: any) => s.name === skill.name);
+            const isSelected = selected?.name === skill.name;
             return (
               <CustomTableRow key={skill.name}  selected={isSelected} onClick={() => setSelected(skill)}>
                 <CustomTableData><TableText>
