@@ -28,6 +28,7 @@ const CallFlowContainer = () => {
 
   const defaultFilteredState: FilteredStateProps = {
     searchBy: "",
+    // selected: null,
     profiles: [],
     closedFilter: false,
     flashFilter: false,

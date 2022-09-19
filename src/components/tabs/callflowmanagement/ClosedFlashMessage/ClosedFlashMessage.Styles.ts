@@ -14,7 +14,7 @@ export const FormControlsContainer = styled.div`
 export const MessageBoxWrapper = styled.div`
   display: flex;
   width: 600px;
-  margin-top: 5px;
+  margin-top: 10px;
   flex-direction: column;
   align-items: center;
 `;
@@ -22,7 +22,7 @@ export const MessageBoxWrapper = styled.div`
 export const TextField = styled.textarea`
   background-color: rgba(0,0,0,0.04);
   padding: 10px;
-  height: 150px;
+  height: 200px;
   width: 500px;
   margin: 5 0 10 0;
 `;

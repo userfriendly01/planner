@@ -35,6 +35,7 @@ const MessageContainer = (props: MessageContainerProps) => {
       <MessageBox
         action={action}
         checked={checked}
+        messageType={messageType}
         selected={selected}
         setText={setText}
         text={text}

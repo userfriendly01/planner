@@ -36,6 +36,7 @@ export interface MessageBoxProps {
   selected: any,
   text: string,
   setText: (text: string) => void,
+  messageType: any
 }
 
 export interface SaveButtonProps {

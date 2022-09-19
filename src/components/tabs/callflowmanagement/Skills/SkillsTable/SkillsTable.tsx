@@ -50,6 +50,7 @@ const SkillsTable = (props: SkillsTableProps) => {
     }
   };
 
+
   const handleSelectAll = () => {
     if(allSkillsSelected){
       setChecked([]);
@@ -95,7 +96,7 @@ const SkillsTable = (props: SkillsTableProps) => {
             const isChecked = checked.some(s => s.name === skill.name);
             const isSelected = selected === skill.name;
             return (
-              <CustomTableRow key={skill.name}  selected={isSelected} onClick={() => setSelected(skill.name)}>
+              <CustomTableRow key={skill.name}  selected={isSelected} onClick={() => setSelected(skill)}>
                 <CustomTableData><TableText>
                   <Checkbox
                     onClick={() => handleSetChecked(skill, isChecked)}
