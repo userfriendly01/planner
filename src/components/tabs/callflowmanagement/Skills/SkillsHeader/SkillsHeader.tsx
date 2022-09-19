@@ -7,6 +7,7 @@ import { Dropdown } from "components";
 import { SearchBox } from "components/tabs/usermanagement";
 import { useAdminState } from "context";
 import React from "react";
+import { ExcelExport } from "@progress/kendo-react-excel-export";
 
 const SkillsHeader = (props: SkillsHeaderProps) => {
 
@@ -79,7 +80,7 @@ const SkillsHeader = (props: SkillsHeaderProps) => {
           });
         }}
       />
-      <ExportButton onClick={handleExport} ref={_export}>Export</ExportButton>
+      <ExportButton onClick={handleExport}><ExcelExport ref={_export}/>Export</ExportButton>
     </Header>
   );
 };

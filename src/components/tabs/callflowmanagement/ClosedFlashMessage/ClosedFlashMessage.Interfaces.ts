@@ -52,11 +52,13 @@ export interface SaveButtonProps {
 export const messageTypes = {
   CLOSED: {
     name: "Closed Message",
+    filter: "closedFilter",
     variable: "closedMessage",
     updateFunction: updateClosedMessage
   },
   FLASH: {
     name: "Flash Message",
+    filter: "flashFilter",
     variable: "flashMessage",
     updateFunction: updateFlashMessage
   }

@@ -120,7 +120,7 @@ export const SkillsWrapper = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  width: 60%;
+  width: 50%;
 `;
 
 export const ExportButton = styled(StyledButton)`

@@ -73,18 +73,18 @@ const SkillsTable = (props: SkillsTableProps) => {
             <CustomTableHeader
               onClick={() => setFilteredState({
                 ...filteredState,
-                [messageTypes.FLASH.variable]: !messageTypes.FLASH.variable
+                [messageTypes.FLASH.filter]: !messageTypes.FLASH.filter
               })
               }
-            ><FilterWrapper active={filteredState[messageTypes.FLASH.variable]}>FLASH</FilterWrapper>
+            ><FilterWrapper active={filteredState[messageTypes.FLASH.filter]}>FLASH</FilterWrapper>
             </CustomTableHeader>
             <CustomTableHeader
               onClick={() => setFilteredState({
                 ...filteredState,
-                [messageTypes.CLOSED.variable]: !filteredState[messageTypes.CLOSED.variable]
+                [messageTypes.CLOSED.filter]: !filteredState[messageTypes.CLOSED.filter]
               })
               }
-            ><FilterWrapper active={filteredState[messageTypes.CLOSED.variable]}>CLOSED</FilterWrapper>
+            ><FilterWrapper active={filteredState[messageTypes.CLOSED.filter]}>CLOSED</FilterWrapper>
             </CustomTableHeader>
           </tr>
         </thead>

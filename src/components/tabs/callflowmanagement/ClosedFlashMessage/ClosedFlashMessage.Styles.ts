@@ -7,6 +7,7 @@ export const FormControlsContainer = styled.div`
   align-items: center;
   max-height: 650px;
   padding-top: 5px;
+  width: 50%;
   overflow: hidden;
 `;
 
