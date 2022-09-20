@@ -22,13 +22,13 @@ export const MessageBox = (props: MessageBoxProps) => {
 
   React.useEffect(() => {
     const variable = messageType.variable;
-    if(tableState.selected) {
+
+    if(action !== ActionTypes.VIEW && isMultiChecked){
+      setText("");
+    } else if (tableState.selected){
       const text = tableState.selected[variable] || "";
       setText(text);
-    }else {
-      setText("");
-    }
-    if(action !== ActionTypes.VIEW && isMultiChecked){
+    } else {
       setText("");
     }
   }, [action, tableState.selected]);
