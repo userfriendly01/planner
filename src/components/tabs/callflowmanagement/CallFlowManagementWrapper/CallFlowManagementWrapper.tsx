@@ -147,10 +147,7 @@ const CallFlowContainer = () => {
         label="What would you like to do?"
         value={view}
         options={views}
-        updateValue={(event: any, view: any) => {
-          console.log("HMMM", view);
-          setView(view);
-        }}
+        updateValue={(event: any, view: any) => setView(view)}
         styles={{
           margin: "40 0 60 0",
           width: "500px"

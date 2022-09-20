@@ -12,7 +12,6 @@ import {
   Delete
 } from "@mui/icons-material";
 
-
 const ActionBar = (props: ActionBarProps) => {
 
   const {
@@ -23,17 +22,22 @@ const ActionBar = (props: ActionBarProps) => {
   const handleIconClick = (actionType: ActionTypes) => {
     if(action === actionType){
       setAction(ActionTypes.VIEW);
+    } else {
+      setAction(actionType);
     }
-    action === actionType ? setAction(ActionTypes.VIEW) : setAction(actionType);
   };
 
   return (
     <ActionBarWrapper>
-      <IconWrapper active={action === ActionTypes.EDIT}>
-        <Edit onClick={() => handleIconClick(ActionTypes.EDIT)}/>
+      <IconWrapper
+        active={action === ActionTypes.EDIT}
+        onClick={() => handleIconClick(ActionTypes.EDIT)}>
+        <Edit/>
       </IconWrapper>
-      <IconWrapper active={action === ActionTypes.DELETE}>
-        <Delete onClick={() => handleIconClick(ActionTypes.DELETE)}/>
+      <IconWrapper
+        active={action === ActionTypes.DELETE}
+        onClick={() => handleIconClick(ActionTypes.DELETE)}>
+        <Delete/>
       </IconWrapper>
     </ActionBarWrapper>
   );
