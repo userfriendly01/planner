@@ -36,7 +36,7 @@ const SkillsTable = (props: SkillsTableProps) => {
     } else if(!skill) {
       setTableState({
         ...tableState,
-        selected: null
+        selected: tableState.filteredList[0]
       });
     }
   }, [tableState]);

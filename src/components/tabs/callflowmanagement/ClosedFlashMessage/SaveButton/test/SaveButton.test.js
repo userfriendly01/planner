@@ -176,7 +176,7 @@ describe("<SaveButton /> ", () => {
                   })
                 }
               });
-              updateFlashMessage.mockReturnValueOnce({
+              updateFlashMessage.mockRejectedValueOnce({
                 config: {
                   data: JSON.stringify({
                     skill: "skillName",

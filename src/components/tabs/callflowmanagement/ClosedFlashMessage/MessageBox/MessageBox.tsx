@@ -33,6 +33,7 @@ export const MessageBox = (props: MessageBoxProps) => {
     }
   }, [action, tableState.selected]);
 
+
   return (
     <MessageBoxWrapper>
       <TextField
