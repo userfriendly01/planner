@@ -469,6 +469,9 @@ export const initialTestState = {
     skills: skillsList
   },
   userContext: {
+    pingIdentity: {
+      sub: "n0263786"
+    },
     isAdmin: false,
     profileId: 10
   },

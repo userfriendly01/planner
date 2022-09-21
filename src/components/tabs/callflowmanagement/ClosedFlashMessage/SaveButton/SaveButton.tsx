@@ -18,13 +18,13 @@ const SaveButton = (props: SaveButtonProps) => {
   const {
     action,
     checked,
-    setAction,
-    setSaveResult,
     confirmationModalOpts,
     messageType,
-    setConfirmationModalOpts,
+    text,
+    setAction,
     setChecked,
-    text
+    setConfirmationModalOpts,
+    setSaveResult
   } = props;
 
   const state = useAdminState();
@@ -129,8 +129,7 @@ const SaveButton = (props: SaveButtonProps) => {
       }));
       handleResults(results);
     };
-    const confirmationText = `Are you sure you want to update the ${messageType.name}
-    for ${ !isMultiSelection ? checked[0].name : checked.length + " skills?"}`;
+    const confirmationText = `Are you sure you want to update the ${messageType.name} for ${!isMultiSelection ? checked[0].name : checked.length + " skills?"}`;
 
     setConfirmationModalOpts({
       open: true,
@@ -153,8 +152,7 @@ const SaveButton = (props: SaveButtonProps) => {
       }));
       handleResults(results);
     };
-    const confirmationText = `Are you sure you want to delete the ${messageType.name}
-    for ${ !isMultiSelection ? checked[0].name : checked.length + " skills?"}`;
+    const confirmationText = `Are you sure you want to delete the ${messageType.name} for ${ !isMultiSelection ? checked[0].name : checked.length + " skills?"}`;
 
     setConfirmationModalOpts({
       open: true,
@@ -168,15 +166,15 @@ const SaveButton = (props: SaveButtonProps) => {
 
   return (
     <div>
-      {(isSingleSelection || isMultiSelection) && action !== ActionTypes.VIEW ?
+      {(isSingleSelection || isMultiSelection) && action !== ActionTypes.VIEW &&
         <UserFormButton onClick={handleOnSave}>
           { isMultiSelection ?
             `${action} ${checked.length} ${messageType.name}s`
             : `${action} ${checked[0].name} ${messageType.name}`
           }
         </UserFormButton>
-        : <div>No Skills Checked</div>
       }
+      { checked.length === 0 && <div>No Skills Checked</div> }
     </div>
   );
 };
