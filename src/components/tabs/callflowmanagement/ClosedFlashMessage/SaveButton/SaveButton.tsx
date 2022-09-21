@@ -83,8 +83,13 @@ const SaveButton = (props: SaveButtonProps) => {
   const handleResults = (results: any[]) => {
     console.log("Handle Results", results);
     const successfulPromises = results.filter(r => r.status === "fulfilled");
-    const rejectedPromises = results.filter(r => r.status === "rejected");
-    if(rejectedPromises.length === 0){
+    const rejectedPromiseSkills: any[] = [];
+    results.forEach((r, index) => {
+      if(r.status === "rejected"){
+        rejectedPromiseSkills.push(checked[index]);
+      }
+    });
+    if(rejectedPromiseSkills.length === 0){
       setSaveResult({
         message: "Request Successfully Processed",
         status: ModalOverlayStatuses.SUCCESS
@@ -102,12 +107,11 @@ const SaveButton = (props: SaveButtonProps) => {
       });
     } else {
       let message = "The following skills failed to update: ";
-      rejectedPromises.forEach((promise: any, index: number) => {
-        const data = JSON.parse(promise.value.config.data);
-        if(index !== rejectedPromises.length - 1){
-          message = message + data.skill + ", ";
+      rejectedPromiseSkills.forEach((skill: any, index: number) => {
+        if(index !== rejectedPromiseSkills.length - 1){
+          message = message + skill.name + ", ";
         } else {
-          message = message + data.skill;
+          message = message + skill.name;
         }
       });
       updateStateOnResolvedPromises(successfulPromises);

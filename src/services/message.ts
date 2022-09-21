@@ -7,12 +7,7 @@ export const updateFlashMessage = (skill: any, message: string, nNumber: string)
     flashMessage: message,
     updatedBy: nNumber
   };
-  return myAxios.post(apiPaths.FLASH_MESSAGE, req).catch((err: any) => {
-    return Promise.reject({
-      ...err,
-      skill
-    });
-  });
+  myAxios.post(apiPaths.FLASH_MESSAGE, req);
 };
 
 export const updateClosedMessage = (skill: any, message: string, nNumber: string) => {

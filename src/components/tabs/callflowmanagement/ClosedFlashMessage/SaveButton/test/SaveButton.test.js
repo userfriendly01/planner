@@ -122,13 +122,13 @@ describe("<SaveButton /> ", () => {
                 updateFlashMessage.mockResolvedValue({
                   config: {
                     data: JSON.stringify({
-                      skill: "skillName",
+                      skill: "aisgL1",
                       flashMessage: "I'm a new flash message!"
                     })
                   }
                 });
               });
-              test.only("dispatch should be called for all resolved promises", async () => {
+              test("dispatch should be called for all resolved promises", async () => {
                 renderComponent(ActionTypes.EDIT, [skillsList[0], skillsList[1]], messageTypes.FLASH);
                 const saveButton = UserFormButton.mock.calls[0][0].onClick;
                 act(() => {
@@ -138,6 +138,10 @@ describe("<SaveButton /> ", () => {
                 act(() => {
                   onConfirm();
                 });
+                expect(updateFlashMessage).toHaveBeenCalledTimes(2);
+                expect(updateFlashMessage).toHaveBeenCalledWith(skillsList[0], text, nNumber);
+                expect(updateFlashMessage).toHaveBeenCalledWith(skillsList[1], text, nNumber);
+
                 jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
                 await waitFor(() => {
                   expect(mockSetAction).toHaveBeenCalledTimes(1);
@@ -159,15 +163,14 @@ describe("<SaveButton /> ", () => {
                     status: null
                   });
                   expect(mockDispatch).toHaveBeenCalledTimes(1);
-                  expect(updateFlashMessage).toHaveBeenCalledTimes(2);
-                  expect(updateFlashMessage).toHaveBeenCalledWith(skillsList[0], text, nNumber);
-                  expect(updateFlashMessage).toHaveBeenCalledWith(skillsList[1], text, nNumber);
+
                 });
               });
             });
           });
           describe("partial promises are resolved", () => {
             beforeEach(() => {
+              updateFlashMessage.mockRejectedValueOnce("aww");
               updateFlashMessage.mockResolvedValueOnce({
                 config: {
                   data: JSON.stringify({
@@ -176,17 +179,10 @@ describe("<SaveButton /> ", () => {
                   })
                 }
               });
-              updateFlashMessage.mockRejectedValueOnce({
-                config: {
-                  data: JSON.stringify({
-                    skill: "skillName",
-                    flashMessage: "I'm a new flash message!"
-                  })
-                }
-              });
+              updateFlashMessage.mockRejectedValueOnce("aww");
             });
-            test("dispatch should be called resolved promises and modal overlay should display failed skills", async () => {
-              renderComponent(ActionTypes.EDIT, [skillsList[0], skillsList[1]], messageTypes.FLASH);
+            test("dispatch should be called resolved promises and modal overlay should display partial fail skills", async () => {
+              renderComponent(ActionTypes.EDIT, [skillsList[0], skillsList[1], skillsList[2]], messageTypes.FLASH);
               const saveButton = UserFormButton.mock.calls[0][0].onClick;
               act(() => {
                 saveButton();
@@ -195,42 +191,64 @@ describe("<SaveButton /> ", () => {
               act(() => {
                 onConfirm();
               });
+              expect(updateFlashMessage).toHaveBeenCalledTimes(3);
+              expect(updateFlashMessage).toHaveBeenCalledWith(skillsList[0], text, nNumber);
+              expect(updateFlashMessage).toHaveBeenCalledWith(skillsList[1], text, nNumber);
+              expect(updateFlashMessage).toHaveBeenCalledWith(skillsList[2], text, nNumber);
+
               jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
               await waitFor(() => {
-                expect(mockSetAction).toHaveBeenCalledTimes(1);
-                expect(mockSetAction).toHaveBeenCalledWith(ActionTypes.VIEW);
-                expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(2);
-                expect(mockSetSaveResult).toHaveBeenCalledTimes(3);
-                expect(mockSetChecked).toHaveBeenCalledWith([]);
-                expect(mockSetSaveResult).toHaveBeenCalledTimes(3);
+                expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
+                expect(mockSetSaveResult).toHaveBeenCalledTimes(2);
                 expect(mockSetSaveResult).toHaveBeenCalledWith({
                   message: "Processing...",
                   status: ModalOverlayStatuses.SAVING
                 });
                 expect(mockSetSaveResult).toHaveBeenCalledWith({
-                  message: "Request Successfully Processed",
-                  status: ModalOverlayStatuses.SUCCESS
-                });
-                expect(mockSetSaveResult).toHaveBeenCalledWith({
-                  message: "",
-                  status: null
+                  message: "The following skills failed to update: lscOBDialer1, bscCommisssions",
+                  status: ModalOverlayStatuses.PARTIAL_FAIL
                 });
                 expect(mockDispatch).toHaveBeenCalledTimes(1);
-                expect(updateFlashMessage).toHaveBeenCalledTimes(2);
-                expect(updateFlashMessage).toHaveBeenCalledWith(skillsList[0], text, nNumber);
-                expect(updateFlashMessage).toHaveBeenCalledWith(skillsList[1], text, nNumber);
               });
             });
           });
           describe("all promises are rejected", () => {
+            beforeEach(() => {
+              updateFlashMessage.mockRejectedValueOnce("aww");
+              updateFlashMessage.mockRejectedValueOnce("aww");
+            });
+            test("modal overlay should display as failed", async () => {
+              renderComponent(ActionTypes.EDIT, [skillsList[0], skillsList[2]], messageTypes.FLASH);
+              const saveButton = UserFormButton.mock.calls[0][0].onClick;
+              act(() => {
+                saveButton();
+              });
+              const onConfirm = mockSetConfirmationModalOpts.mock.calls[0][0].callbackMethods.onConfirm;
+              act(() => {
+                onConfirm();
+              });
+              expect(updateFlashMessage).toHaveBeenCalledTimes(2);
+              expect(updateFlashMessage).toHaveBeenCalledWith(skillsList[0], text, nNumber);
+              expect(updateFlashMessage).toHaveBeenCalledWith(skillsList[2], text, nNumber);
 
+              jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
+              await waitFor(() => {
+                expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
+                expect(mockSetSaveResult).toHaveBeenCalledTimes(2);
+                expect(mockSetSaveResult).toHaveBeenCalledWith({
+                  message: "Processing...",
+                  status: ModalOverlayStatuses.SAVING
+                });
+                expect(mockSetSaveResult).toHaveBeenCalledWith({
+                  message: "Request Failed",
+                  status: ModalOverlayStatuses.FAIL
+                });
+                expect(mockSetAction).toHaveBeenCalledTimes(0);
+                expect(mockSetChecked).toHaveBeenCalledTimes(0);
+                expect(mockDispatch).toHaveBeenCalledTimes(0);
+              });
+            });
           });
-        });
-        test("update function is called and results are handled", () => {
-
-        });
-        describe("handleCloseConfirmation is called", () => {
-
         });
       });
       describe("messageType is CLOSED", () => {
@@ -243,6 +261,141 @@ describe("<SaveButton /> ", () => {
           expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
           expect(mockSetConfirmationModalOpts.mock.calls[0][0].confirmationText).toBe("Are you sure you want to update the Closed Message for lscOBDialer1");
           expect(mockSetConfirmationModalOpts.mock.calls[0][0].open).toBe(true);
+        });
+        describe("onConfirm is called", () => {
+          describe("handleResults", () => {
+            describe("all promises are resolved", () => {
+              beforeEach(() => {
+                updateClosedMessage.mockResolvedValue({
+                  config: {
+                    data: JSON.stringify({
+                      skill: "skillName",
+                      flashMessage: "I'm a new flash message!"
+                    })
+                  }
+                });
+              });
+              test("dispatch should be called for all resolved promises", async () => {
+                renderComponent(ActionTypes.EDIT, [skillsList[0], skillsList[1]], messageTypes.CLOSED);
+                const saveButton = UserFormButton.mock.calls[0][0].onClick;
+                act(() => {
+                  saveButton();
+                });
+                const onConfirm = mockSetConfirmationModalOpts.mock.calls[0][0].callbackMethods.onConfirm;
+                act(() => {
+                  onConfirm();
+                });
+                expect(updateClosedMessage).toHaveBeenCalledTimes(2);
+                expect(updateClosedMessage).toHaveBeenCalledWith(skillsList[0], text, nNumber);
+                expect(updateClosedMessage).toHaveBeenCalledWith(skillsList[1], text, nNumber);
+
+                jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
+                await waitFor(() => {
+                  expect(mockSetAction).toHaveBeenCalledTimes(1);
+                  expect(mockSetAction).toHaveBeenCalledWith(ActionTypes.VIEW);
+                  expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(2);
+                  expect(mockSetSaveResult).toHaveBeenCalledTimes(3);
+                  expect(mockSetChecked).toHaveBeenCalledWith([]);
+                  expect(mockSetSaveResult).toHaveBeenCalledTimes(3);
+                  expect(mockSetSaveResult).toHaveBeenCalledWith({
+                    message: "Processing...",
+                    status: ModalOverlayStatuses.SAVING
+                  });
+                  expect(mockSetSaveResult).toHaveBeenCalledWith({
+                    message: "Request Successfully Processed",
+                    status: ModalOverlayStatuses.SUCCESS
+                  });
+                  expect(mockSetSaveResult).toHaveBeenCalledWith({
+                    message: "",
+                    status: null
+                  });
+                  expect(mockDispatch).toHaveBeenCalledTimes(1);
+
+                });
+              });
+            });
+          });
+          describe("partial promises are resolved", () => {
+            beforeEach(() => {
+              updateClosedMessage.mockRejectedValueOnce("aww");
+              updateClosedMessage.mockResolvedValueOnce({
+                config: {
+                  data: JSON.stringify({
+                    skill: "skillName",
+                    flashMessage: "I'm a new flash message!"
+                  })
+                }
+              });
+              updateClosedMessage.mockRejectedValueOnce("aww");
+            });
+            test("dispatch should be called resolved promises and modal overlay should display partial fail skills", async () => {
+              renderComponent(ActionTypes.EDIT, [skillsList[0], skillsList[1], skillsList[2]], messageTypes.CLOSED);
+              const saveButton = UserFormButton.mock.calls[0][0].onClick;
+              act(() => {
+                saveButton();
+              });
+              const onConfirm = mockSetConfirmationModalOpts.mock.calls[0][0].callbackMethods.onConfirm;
+              act(() => {
+                onConfirm();
+              });
+              expect(updateClosedMessage).toHaveBeenCalledTimes(3);
+              expect(updateClosedMessage).toHaveBeenCalledWith(skillsList[0], text, nNumber);
+              expect(updateClosedMessage).toHaveBeenCalledWith(skillsList[1], text, nNumber);
+              expect(updateClosedMessage).toHaveBeenCalledWith(skillsList[2], text, nNumber);
+
+              jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
+              await waitFor(() => {
+                expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
+                expect(mockSetSaveResult).toHaveBeenCalledTimes(2);
+                expect(mockSetSaveResult).toHaveBeenCalledWith({
+                  message: "Processing...",
+                  status: ModalOverlayStatuses.SAVING
+                });
+                expect(mockSetSaveResult).toHaveBeenCalledWith({
+                  message: "The following skills failed to update: lscOBDialer1, bscCommisssions",
+                  status: ModalOverlayStatuses.PARTIAL_FAIL
+                });
+                expect(mockDispatch).toHaveBeenCalledTimes(1);
+              });
+            });
+          });
+          describe("all promises are rejected", () => {
+            beforeEach(() => {
+              updateClosedMessage.mockRejectedValueOnce("aww");
+              updateClosedMessage.mockRejectedValueOnce("aww");
+            });
+            test("modal overlay should display as failed", async () => {
+              renderComponent(ActionTypes.EDIT, [skillsList[0], skillsList[2]], messageTypes.CLOSED);
+              const saveButton = UserFormButton.mock.calls[0][0].onClick;
+              act(() => {
+                saveButton();
+              });
+              const onConfirm = mockSetConfirmationModalOpts.mock.calls[0][0].callbackMethods.onConfirm;
+              act(() => {
+                onConfirm();
+              });
+              expect(updateClosedMessage).toHaveBeenCalledTimes(2);
+              expect(updateClosedMessage).toHaveBeenCalledWith(skillsList[0], text, nNumber);
+              expect(updateClosedMessage).toHaveBeenCalledWith(skillsList[2], text, nNumber);
+
+              jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
+              await waitFor(() => {
+                expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
+                expect(mockSetSaveResult).toHaveBeenCalledTimes(2);
+                expect(mockSetSaveResult).toHaveBeenCalledWith({
+                  message: "Processing...",
+                  status: ModalOverlayStatuses.SAVING
+                });
+                expect(mockSetSaveResult).toHaveBeenCalledWith({
+                  message: "Request Failed",
+                  status: ModalOverlayStatuses.FAIL
+                });
+                expect(mockSetAction).toHaveBeenCalledTimes(0);
+                expect(mockSetChecked).toHaveBeenCalledTimes(0);
+                expect(mockDispatch).toHaveBeenCalledTimes(0);
+              });
+            });
+          });
         });
       });
     });
@@ -258,6 +411,141 @@ describe("<SaveButton /> ", () => {
           expect(mockSetConfirmationModalOpts.mock.calls[0][0].confirmationText).toBe("Are you sure you want to delete the Flash Message for lscOBDialer1");
           expect(mockSetConfirmationModalOpts.mock.calls[0][0].open).toBe(true);
         });
+        describe("onConfirm is called", () => {
+          describe("handleResults", () => {
+            describe("all promises are resolved", () => {
+              beforeEach(() => {
+                updateFlashMessage.mockResolvedValue({
+                  config: {
+                    data: JSON.stringify({
+                      skill: "skillName",
+                      flashMessage: "I'm a new flash message!"
+                    })
+                  }
+                });
+              });
+              test("dispatch should be called for all resolved promises", async () => {
+                renderComponent(ActionTypes.DELETE, [skillsList[0], skillsList[1]], messageTypes.FLASH);
+                const saveButton = UserFormButton.mock.calls[0][0].onClick;
+                act(() => {
+                  saveButton();
+                });
+                const onConfirm = mockSetConfirmationModalOpts.mock.calls[0][0].callbackMethods.onConfirm;
+                act(() => {
+                  onConfirm();
+                });
+                expect(updateFlashMessage).toHaveBeenCalledTimes(2);
+                expect(updateFlashMessage).toHaveBeenCalledWith(skillsList[0], "", nNumber);
+                expect(updateFlashMessage).toHaveBeenCalledWith(skillsList[1], "", nNumber);
+
+                jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
+                await waitFor(() => {
+                  expect(mockSetAction).toHaveBeenCalledTimes(1);
+                  expect(mockSetAction).toHaveBeenCalledWith(ActionTypes.VIEW);
+                  expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(2);
+                  expect(mockSetSaveResult).toHaveBeenCalledTimes(3);
+                  expect(mockSetChecked).toHaveBeenCalledWith([]);
+                  expect(mockSetSaveResult).toHaveBeenCalledTimes(3);
+                  expect(mockSetSaveResult).toHaveBeenCalledWith({
+                    message: "Processing...",
+                    status: ModalOverlayStatuses.SAVING
+                  });
+                  expect(mockSetSaveResult).toHaveBeenCalledWith({
+                    message: "Request Successfully Processed",
+                    status: ModalOverlayStatuses.SUCCESS
+                  });
+                  expect(mockSetSaveResult).toHaveBeenCalledWith({
+                    message: "",
+                    status: null
+                  });
+                  expect(mockDispatch).toHaveBeenCalledTimes(1);
+
+                });
+              });
+            });
+          });
+          describe("partial promises are resolved", () => {
+            beforeEach(() => {
+              updateFlashMessage.mockRejectedValueOnce("aww");
+              updateFlashMessage.mockResolvedValueOnce({
+                config: {
+                  data: JSON.stringify({
+                    skill: "skillName",
+                    flashMessage: "I'm a new flash message!"
+                  })
+                }
+              });
+              updateFlashMessage.mockRejectedValueOnce("aww");
+            });
+            test("dispatch should be called resolved promises and modal overlay should display partial fail skills", async () => {
+              renderComponent(ActionTypes.DELETE, [skillsList[0], skillsList[1], skillsList[2]], messageTypes.FLASH);
+              const saveButton = UserFormButton.mock.calls[0][0].onClick;
+              act(() => {
+                saveButton();
+              });
+              const onConfirm = mockSetConfirmationModalOpts.mock.calls[0][0].callbackMethods.onConfirm;
+              act(() => {
+                onConfirm();
+              });
+              expect(updateFlashMessage).toHaveBeenCalledTimes(3);
+              expect(updateFlashMessage).toHaveBeenCalledWith(skillsList[0], "", nNumber);
+              expect(updateFlashMessage).toHaveBeenCalledWith(skillsList[1], "", nNumber);
+              expect(updateFlashMessage).toHaveBeenCalledWith(skillsList[2], "", nNumber);
+
+              jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
+              await waitFor(() => {
+                expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
+                expect(mockSetSaveResult).toHaveBeenCalledTimes(2);
+                expect(mockSetSaveResult).toHaveBeenCalledWith({
+                  message: "Processing...",
+                  status: ModalOverlayStatuses.SAVING
+                });
+                expect(mockSetSaveResult).toHaveBeenCalledWith({
+                  message: "The following skills failed to update: lscOBDialer1, bscCommisssions",
+                  status: ModalOverlayStatuses.PARTIAL_FAIL
+                });
+                expect(mockDispatch).toHaveBeenCalledTimes(1);
+              });
+            });
+          });
+          describe("all promises are rejected", () => {
+            beforeEach(() => {
+              updateFlashMessage.mockRejectedValueOnce("aww");
+              updateFlashMessage.mockRejectedValueOnce("aww");
+            });
+            test("modal overlay should display as failed", async () => {
+              renderComponent(ActionTypes.DELETE, [skillsList[0], skillsList[2]], messageTypes.FLASH);
+              const saveButton = UserFormButton.mock.calls[0][0].onClick;
+              act(() => {
+                saveButton();
+              });
+              const onConfirm = mockSetConfirmationModalOpts.mock.calls[0][0].callbackMethods.onConfirm;
+              act(() => {
+                onConfirm();
+              });
+              expect(updateFlashMessage).toHaveBeenCalledTimes(2);
+              expect(updateFlashMessage).toHaveBeenCalledWith(skillsList[0], "", nNumber);
+              expect(updateFlashMessage).toHaveBeenCalledWith(skillsList[2], "", nNumber);
+
+              jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
+              await waitFor(() => {
+                expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
+                expect(mockSetSaveResult).toHaveBeenCalledTimes(2);
+                expect(mockSetSaveResult).toHaveBeenCalledWith({
+                  message: "Processing...",
+                  status: ModalOverlayStatuses.SAVING
+                });
+                expect(mockSetSaveResult).toHaveBeenCalledWith({
+                  message: "Request Failed",
+                  status: ModalOverlayStatuses.FAIL
+                });
+                expect(mockSetAction).toHaveBeenCalledTimes(0);
+                expect(mockSetChecked).toHaveBeenCalledTimes(0);
+                expect(mockDispatch).toHaveBeenCalledTimes(0);
+              });
+            });
+          });
+        });
       });
       describe("messageType is CLOSED", () => {
         test("confirmation modal options are set to expected properties", () => {
@@ -270,10 +558,151 @@ describe("<SaveButton /> ", () => {
           expect(mockSetConfirmationModalOpts.mock.calls[0][0].confirmationText).toBe("Are you sure you want to delete the Closed Message for lscOBDialer1");
           expect(mockSetConfirmationModalOpts.mock.calls[0][0].open).toBe(true);
         });
+        describe("onConfirm is called", () => {
+          describe("handleResults", () => {
+            describe("all promises are resolved", () => {
+              beforeEach(() => {
+                updateClosedMessage.mockResolvedValue({
+                  config: {
+                    data: JSON.stringify({
+                      skill: "skillName",
+                      flashMessage: "I'm a new flash message!"
+                    })
+                  }
+                });
+              });
+              test("dispatch should be called for all resolved promises", async () => {
+                renderComponent(ActionTypes.DELETE, [skillsList[0], skillsList[1]], messageTypes.CLOSED);
+                const saveButton = UserFormButton.mock.calls[0][0].onClick;
+                act(() => {
+                  saveButton();
+                });
+                const onConfirm = mockSetConfirmationModalOpts.mock.calls[0][0].callbackMethods.onConfirm;
+                act(() => {
+                  onConfirm();
+                });
+                expect(updateClosedMessage).toHaveBeenCalledTimes(2);
+                expect(updateClosedMessage).toHaveBeenCalledWith(skillsList[0], "", nNumber);
+                expect(updateClosedMessage).toHaveBeenCalledWith(skillsList[1], "", nNumber);
+
+                jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
+                await waitFor(() => {
+                  expect(mockSetAction).toHaveBeenCalledTimes(1);
+                  expect(mockSetAction).toHaveBeenCalledWith(ActionTypes.VIEW);
+                  expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(2);
+                  expect(mockSetSaveResult).toHaveBeenCalledTimes(3);
+                  expect(mockSetChecked).toHaveBeenCalledWith([]);
+                  expect(mockSetSaveResult).toHaveBeenCalledTimes(3);
+                  expect(mockSetSaveResult).toHaveBeenCalledWith({
+                    message: "Processing...",
+                    status: ModalOverlayStatuses.SAVING
+                  });
+                  expect(mockSetSaveResult).toHaveBeenCalledWith({
+                    message: "Request Successfully Processed",
+                    status: ModalOverlayStatuses.SUCCESS
+                  });
+                  expect(mockSetSaveResult).toHaveBeenCalledWith({
+                    message: "",
+                    status: null
+                  });
+                  expect(mockDispatch).toHaveBeenCalledTimes(1);
+                });
+              });
+            });
+          });
+          describe("partial promises are resolved", () => {
+            beforeEach(() => {
+              updateClosedMessage.mockRejectedValueOnce("aww");
+              updateClosedMessage.mockResolvedValueOnce({
+                config: {
+                  data: JSON.stringify({
+                    skill: "skillName",
+                    flashMessage: "I'm a new flash message!"
+                  })
+                }
+              });
+              updateClosedMessage.mockRejectedValueOnce("aww");
+            });
+            test("dispatch should be called resolved promises and modal overlay should display partial fail skills", async () => {
+              renderComponent(ActionTypes.DELETE, [skillsList[0], skillsList[1], skillsList[2]], messageTypes.CLOSED);
+              const saveButton = UserFormButton.mock.calls[0][0].onClick;
+              act(() => {
+                saveButton();
+              });
+              const onConfirm = mockSetConfirmationModalOpts.mock.calls[0][0].callbackMethods.onConfirm;
+              act(() => {
+                onConfirm();
+              });
+              expect(updateClosedMessage).toHaveBeenCalledTimes(3);
+              expect(updateClosedMessage).toHaveBeenCalledWith(skillsList[0], "", nNumber);
+              expect(updateClosedMessage).toHaveBeenCalledWith(skillsList[1], "", nNumber);
+              expect(updateClosedMessage).toHaveBeenCalledWith(skillsList[2], "", nNumber);
+
+              jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
+              await waitFor(() => {
+                expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
+                expect(mockSetSaveResult).toHaveBeenCalledTimes(2);
+                expect(mockSetSaveResult).toHaveBeenCalledWith({
+                  message: "Processing...",
+                  status: ModalOverlayStatuses.SAVING
+                });
+                expect(mockSetSaveResult).toHaveBeenCalledWith({
+                  message: "The following skills failed to update: lscOBDialer1, bscCommisssions",
+                  status: ModalOverlayStatuses.PARTIAL_FAIL
+                });
+                expect(mockDispatch).toHaveBeenCalledTimes(1);
+              });
+            });
+          });
+          describe("all promises are rejected", () => {
+            beforeEach(() => {
+              updateClosedMessage.mockRejectedValueOnce("aww");
+              updateClosedMessage.mockRejectedValueOnce("aww");
+            });
+            test("modal overlay should display as failed", async () => {
+              renderComponent(ActionTypes.DELETE, [skillsList[0], skillsList[2]], messageTypes.CLOSED);
+              const saveButton = UserFormButton.mock.calls[0][0].onClick;
+              act(() => {
+                saveButton();
+              });
+              const onConfirm = mockSetConfirmationModalOpts.mock.calls[0][0].callbackMethods.onConfirm;
+              act(() => {
+                onConfirm();
+              });
+              expect(updateClosedMessage).toHaveBeenCalledTimes(2);
+              expect(updateClosedMessage).toHaveBeenCalledWith(skillsList[0], "", nNumber);
+              expect(updateClosedMessage).toHaveBeenCalledWith(skillsList[2], "", nNumber);
+
+              jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
+              await waitFor(() => {
+                expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
+                expect(mockSetSaveResult).toHaveBeenCalledTimes(2);
+                expect(mockSetSaveResult).toHaveBeenCalledWith({
+                  message: "Processing...",
+                  status: ModalOverlayStatuses.SAVING
+                });
+                expect(mockSetSaveResult).toHaveBeenCalledWith({
+                  message: "Request Failed",
+                  status: ModalOverlayStatuses.FAIL
+                });
+                expect(mockSetAction).toHaveBeenCalledTimes(0);
+                expect(mockSetChecked).toHaveBeenCalledTimes(0);
+                expect(mockDispatch).toHaveBeenCalledTimes(0);
+              });
+            });
+          });
+        });
       });
     });
-    describe("action === undefined", () => {
-
+    describe("messageType is undefined", () => {
+      test("nothing happens", () => {
+        renderComponent(undefined, [skillsList[0]], messageTypes.CLOSED);
+        const saveButton = UserFormButton.mock.calls[0][0].onClick;
+        act(() => {
+          saveButton();
+        });
+        expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(0);
+      });
     });
   });
 });
