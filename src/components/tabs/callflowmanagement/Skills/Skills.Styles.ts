@@ -118,6 +118,7 @@ export const SkillsTableWrapper = styled.div`
 
 export const SkillsWrapper = styled.div`
   display: flex;
+  margin-top: 10px;
   align-items: center;
   flex-direction: column;
   width: 50%;

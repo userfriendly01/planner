@@ -128,7 +128,7 @@ describe("<SaveButton /> ", () => {
                   }
                 });
               });
-              test("dispatch should be called for all resolved promises", async () => {
+              test.only("dispatch should be called for all resolved promises", async () => {
                 renderComponent(ActionTypes.EDIT, [skillsList[0], skillsList[1]], messageTypes.FLASH);
                 const saveButton = UserFormButton.mock.calls[0][0].onClick;
                 act(() => {
