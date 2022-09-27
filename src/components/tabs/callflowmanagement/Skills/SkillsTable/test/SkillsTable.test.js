@@ -1,14 +1,9 @@
 import React from "react";
 import SkillsTable from "../SkillsTable";
 import {
-  CustomTable,
-  CustomTableData,
   CustomTableHeader,
   CustomTableRow,
-  FilterWrapper,
-  TableContainer,
-  TableText,
-  TableIcon
+  FilterWrapper
 } from "../../Skills.Styles";
 import {
   Block,
@@ -18,7 +13,6 @@ import { Checkbox } from "@mui/material";
 import {
   act,
   render,
-  expectOnlyPassedProps,
   setupMockedComponents,
   skillsList
 } from "testUtils";

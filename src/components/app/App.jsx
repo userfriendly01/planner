@@ -244,9 +244,8 @@ const App = () => {
       getCalabrioRoles(dispatch)
     ])
       .then(() => {
-        dispatch(({ type: "setAuthenticationOnUser" }));
+        dispatch({ type: "setAuthenticationOnUser" });
         setLoadResult(success);
-
       })
       .catch(err => {
         console.error(err.msg, { error: err.error });
