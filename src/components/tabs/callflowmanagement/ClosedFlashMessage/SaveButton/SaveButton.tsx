@@ -57,18 +57,15 @@ const SaveButton = (props: SaveButtonProps) => {
     });
   };
 
-  const updateStateOnResolvedPromises = (promises: any[]) => {
+  const updateStateOnResolvedPromises = (fulfilledSkills: any[]) => {
     const skills = state.skillContext.skills.slice();
     const updatedSkills = skills.map(s => {
       let updatedSkill = s;
-      promises.forEach(promise => {
-        const data = JSON.parse(promise.value.config.data);
-        const skillName = data.skill;
-        const message = data[messageType.variable];
-        if(s.name === skillName) {
+      fulfilledSkills.forEach(skill => {
+        if(s.name === skill.name) {
           updatedSkill = {
             ...s,
-            [messageType.variable]: message
+            [messageType.variable]: text
           };
         }
       });
@@ -82,7 +79,12 @@ const SaveButton = (props: SaveButtonProps) => {
 
   const handleResults = (results: any[]) => {
     console.log("Handle Results", results);
-    const successfulPromises = results.filter(r => r.status === "fulfilled");
+    const successfulPromises: any[] = [];
+    results.forEach((r, index) => {
+      if(r.status === "fulfilled"){
+        successfulPromises.push(checked[index]);
+      }
+    });
     const rejectedPromiseSkills: any[] = [];
     results.forEach((r, index) => {
       if(r.status === "rejected"){

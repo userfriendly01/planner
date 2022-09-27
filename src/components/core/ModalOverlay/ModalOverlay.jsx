@@ -58,12 +58,11 @@ const Icon = styled.svg`
 
 const IconAndMessageWrapper = styled.div`
   align-items: center;
-  justify-content: center;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   padding: 16px;
-  justify-content: center'
+  justify-content: center;
 `;
 
 const InnerContainer = styled.div`
