@@ -26,7 +26,7 @@ export interface AppState {
     skills: Skill[]
   },
   userContext: {
-    pingIdentity: any // TODO type me!,
+    pingIdentity: PingIdentity,
     isAdmin: boolean,
     profileId: number | string | null
   },
@@ -42,6 +42,24 @@ export interface AppState {
     roles: any[]
   },
   resettingSkills: false
+}
+
+export interface PingIdentity {
+  firstName: string,
+  lastName: string,
+  sub: string,
+  mail: string,
+  groups: string[],
+  aud: string,
+  displayName: string,
+  access_token: string,
+  acr: string,
+  exp: number,
+  iat: number,
+  iss: string,
+  jti: string,
+  "pi.pa.attr_exp": number,
+  "pi.pa.rat": number
 }
 
 export interface FormModes {

@@ -117,13 +117,6 @@ export const ManagementWrapper: React.FC = () => {
     }
   };
 
-  const disableBackDropClick = (event: any, reason: string) => {
-    if (reason !== "backdropClick") {
-      handleClose(false);
-    }
-  };
-
-
   return (
     <FormStateProvider>
       <ManagementContainer>

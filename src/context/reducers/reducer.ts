@@ -25,7 +25,7 @@ export const initialState: AppState = {
     skills: []
   },
   userContext: {
-    pingIdentity: {},
+    pingIdentity: null,
     isAdmin: false,
     profileId: null
   },
@@ -158,7 +158,7 @@ export const reducer = (state: AppState, action: Action): AppState => {
         userContext: action.payload
       };
     case "setAuthenticationOnUser": {
-      const profileId = getWorkerProfileId(state);
+      const profileId: number = getWorkerProfileId(state);
       return {
         ...state,
         userContext: {

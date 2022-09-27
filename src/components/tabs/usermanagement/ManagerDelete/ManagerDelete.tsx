@@ -14,12 +14,8 @@ import {
   useAdminState
 } from "context";
 import React, { useState } from "react";
-import {
-  deleteManager
-} from "services";
-import {
-  ModalOverlayStatuses
-} from "globals";
+import { deleteManager } from "services";
+import { ModalOverlayStatuses } from "globals";
 import ConfirmationForm from "./ConfirmationForm";
 import ErrorForm from "./ErrorForm";
 export interface ManagerDeleteProps {

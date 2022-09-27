@@ -19,10 +19,7 @@ import {
   useFormState,
   useAdminState
 } from "context";
-import {
-  formModes,
-  ModalOverlayStatuses
-} from "globals";
+import { formModes } from "globals";
 import React, { useState } from "react";
 
 const UserEntryForm = (props: UserEntryFormProps) => {

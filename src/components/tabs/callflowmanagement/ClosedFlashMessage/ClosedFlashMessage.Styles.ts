@@ -34,10 +34,10 @@ export const UserFormButton: any = styled(StyledButton)`
 `;
 
 export const ActionBarWrapper = styled.div`
-display: flex;
-width: 500px;
-height: 30px;
-justify-content: space-around
+  display: flex;
+  width: 500px;
+  height: 30px;
+  justify-content: space-around
 `;
 
 export const IconWrapper = styled.div<{ active: boolean }>`

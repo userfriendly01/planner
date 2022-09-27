@@ -475,6 +475,27 @@ export const initialTestState = {
     isAdmin: false,
     profileId: 10
   },
+  workerContext: {
+    workers: [
+      {
+        attributes: {
+          n_number: "N0263786",
+          profile_id: 12
+        }
+      },
+      {
+        attributes: {
+          n_number: "n0000000",
+          profile_id: "12"
+        }
+      },
+      {
+        attributes: {
+          n_number: "n1111111"
+        }
+      }
+    ]
+  },
   calabrioContext
 };
 
