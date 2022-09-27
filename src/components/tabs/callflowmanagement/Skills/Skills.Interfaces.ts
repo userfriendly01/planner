@@ -1,19 +1,21 @@
+import { Skill } from "globals";
+import { TableState } from "../CallFlowManagementWrapper/CallFlowManagement.Interfaces";
 export interface SkillsContainerProps {
-  checked: any[],
-  tableState: any,
-  setChecked: (skills: any[]) => void
-  setTableState: (filterState: any) => void
+  checked: Skill[],
+  tableState: TableState,
+  setChecked: (skills: Skill[]) => void
+  setTableState: (tableState: TableState) => void
 }
 
 export interface SkillsHeaderProps {
-  tableState: any,
-  checked: any[],
-  setTableState: (filterState: any) => void
+  tableState: TableState,
+  checked: Skill[],
+  setTableState: (tableState: TableState) => void
 }
 
 export interface SkillsTableProps {
-  checked: any[],
-  tableState: any,
-  setChecked: (skills: any[]) => void
-  setTableState: (filterState: any) => void
+  checked: Skill[],
+  tableState: TableState,
+  setChecked: (skills: Skill[]) => void
+  setTableState: (tableState: TableState) => void
 }

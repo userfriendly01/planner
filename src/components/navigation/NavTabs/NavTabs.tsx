@@ -42,10 +42,6 @@ const TabPanel = (props: TabPanelProps) => {
 const NavTabs = () => {
   const [value, setValue] = React.useState(0);
 
-  //We should test to see if the "other" makes a difference
-  console.log("ENVIRONMENT AD GROUPS - TRITON_AUTH_AD_GROUPS", process.env.TRITON_AUTH_AD_GROUPS);
-  console.log("ENVIRONMENT AD GROUPS - ALOHA_AUTH_AD_GROUPS", process.env.ALOHA_AUTH_AD_GROUPS);
-
   function handleChange(event: any, newValue: number) {
     setValue(newValue);
     window.scrollTo(0, 0);

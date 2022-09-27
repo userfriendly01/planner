@@ -6,7 +6,10 @@ import {
   MessageWrapper
 } from "./CallFlowManagement.Styles";
 import {
-  TableStateProps, views
+  SkillProfile,
+  TableState,
+  View,
+  views
 } from "./CallFlowManagement.Interfaces";
 import {
   ConfirmationModalOptsProps,
@@ -20,13 +23,15 @@ import {
 } from "components";
 import { useAdminState } from "context";
 import { filterSkillsByName } from "utils";
-import { Skill } from "globals";
+import {
+  Skill, TritonProfile
+} from "globals";
 import { Modal } from "@mui/material";
 import { messageTypes } from "../ClosedFlashMessage/ClosedFlashMessage.Interfaces";
 
 const CallFlowContainer = () => {
 
-  const defaultTableState: TableStateProps = {
+  const defaultTableState: TableState = {
     searchBy: "",
     selected: null,
     profiles: [],
@@ -66,8 +71,8 @@ const CallFlowContainer = () => {
       if(tableState.profiles.length > 0){
         filteredList = filteredList.filter((skill: Skill) => {
           let shouldReturn = false;
-          skill.profiles.forEach((p: any) => {
-            if(tableState.profiles.some((sp: any) => sp.profile_id === p.profileId)){
+          skill.profiles.forEach((p: SkillProfile) => {
+            if(tableState.profiles.some((sp: TritonProfile) => sp.profile_id === p.profileId)){
               shouldReturn = true;
             }
           });
@@ -77,7 +82,7 @@ const CallFlowContainer = () => {
     } else {
       filteredList = filteredList.filter((skill: Skill) => {
         let shouldReturn = false;
-        if(skill.profiles.some((sp: any) => sp.profileId === userProfileId)){
+        if(skill.profiles.some((sp: SkillProfile) => sp.profileId === userProfileId)){
           shouldReturn = true;
         }
         return shouldReturn;
@@ -147,7 +152,7 @@ const CallFlowContainer = () => {
         label="What would you like to do?"
         value={view}
         options={views}
-        updateValue={(event: any, view: any) => setView(view)}
+        updateValue={(event: any, view: View) => setView(view)}
         styles={{
           margin: "40 0 60 0",
           width: "500px"

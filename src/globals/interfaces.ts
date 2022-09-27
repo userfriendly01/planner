@@ -72,15 +72,17 @@ export interface Office {
   office_num: string
 }
 
-export interface TaskRouterSkill {
-  skill: string,
-  levels: number[]
-}
-
 export interface Skill {
   [key: string]: any
-  skill: string,
-  levels: number[]
+  name: string,
+  profiles: any[],
+  closedMessage: string,
+  flashMessage: string,
+  levels: any[],
+  timeOfDays: any[],
+  vhCallTarget: string,
+  vhCallerId: string,
+  vhThreshold: number
 }
 
 export interface TritonProfile {
@@ -103,11 +105,11 @@ export interface TritonProfile {
 export interface Worker {
   attributes: {
     contact_uri?: string,
-    default_skills?: WorkerSkills,
+    default_skills?: WorkerAttributeSkills,
     department_name?:string,
     department_id?:string,
     did?: string,
-    disabled_skills?: WorkerSkills,
+    disabled_skills?: WorkerAttributeSkills,
     email?: string,
     email_address?: string,
     emp_first_name?: string,
@@ -126,7 +128,7 @@ export interface Worker {
     primary_dept_number?: string,
     profile_id?: string | number,
     roles?: string[],
-    routing?: WorkerSkills,
+    routing?: WorkerAttributeSkills,
     unique_id?: string
   },
   alternateDid?: string,
@@ -138,7 +140,7 @@ export interface Worker {
   zeroOutEnabled?: boolean
 }
 
-export interface WorkerSkills {
+export interface WorkerAttributeSkills {
   levels: {
     [key: string]: number
   },

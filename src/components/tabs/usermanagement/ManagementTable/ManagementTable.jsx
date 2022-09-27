@@ -35,7 +35,7 @@ import {
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { deleteUser } from "services";
-import { formatWorkerSkillsToHTML } from "utils";
+import { formatWorkerAttributeSkillsToHTML } from "utils";
 
 const ManagementTable = props => {
   const {
@@ -160,8 +160,8 @@ const ManagementTable = props => {
                 <CustomTableData><TableText>{worker.attributes.n_number}</TableText></CustomTableData>
                 <CustomTableData><TableText>{worker.attributes.extension}</TableText></CustomTableData>
                 <CustomTableData><TableText>{worker.attributes.office_location_name}</TableText></CustomTableData>
-                <CustomTableData><TableDataFlex>{formatWorkerSkillsToHTML(worker.attributes.routing)}</TableDataFlex></CustomTableData>
-                <CustomTableData><TableDataFlex>{formatWorkerSkillsToHTML(worker.attributes.default_skills)}</TableDataFlex></CustomTableData>
+                <CustomTableData><TableDataFlex>{formatWorkerAttributeSkillsToHTML(worker.attributes.routing)}</TableDataFlex></CustomTableData>
+                <CustomTableData><TableDataFlex>{formatWorkerAttributeSkillsToHTML(worker.attributes.default_skills)}</TableDataFlex></CustomTableData>
                 <CustomTableData>
                   {
                     worker.skillsDifferent ? <DeltaWrapper data-testid="delta-icon"><ChangeHistoryRounded fontSize={"inherit"}/></DeltaWrapper> : null

@@ -16,7 +16,7 @@ const SkillsDiv = styled.div`
   padding: 1 3;
 `;
 
-export const formatWorkerSkillsToHTML = routingObj => {
+export const formatWorkerAttributeSkillsToHTML = routingObj => {
   if (routingObj && Array.isArray(routingObj.skills) && routingObj.skills.length > 0) {
     return routingObj.skills.map((skill, index) => {
       if (routingObj.levels && routingObj.levels[skill]) {

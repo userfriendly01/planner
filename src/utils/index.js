@@ -5,7 +5,7 @@ export * from "./formatManagersResponse";
 export * from "./formatOfficesResponse";
 export * from "./formatNumberUtils";
 export * from "./formatWorkerResponse";
-export * from "./formatWorkerSkillsToHTML";
+export * from "./formatWorkerAttributeSkillsToHTML";
 export * from "./isErrorIn400s";
 export * from "./myAxios";
 export * from "./skillsUtils";

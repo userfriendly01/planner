@@ -16,7 +16,7 @@ import {
   FlashOn
 } from "@mui/icons-material";
 import { Skill } from "globals";
-import React from "react";
+import React, { ReactElement } from "react";
 
 const SkillsTable = (props: SkillsTableProps) => {
   const {
@@ -27,7 +27,7 @@ const SkillsTable = (props: SkillsTableProps) => {
   } = props;
 
   React.useEffect(() => {
-    const skill = tableState.filteredList.find((s: any) => s.name === tableState.selected?.name);
+    const skill = tableState.filteredList.find((s: Skill) => s.name === tableState.selected?.name);
     if(skill && JSON.stringify(skill) !== JSON.stringify(tableState.selected)){
       setTableState({
         ...tableState,
@@ -43,8 +43,8 @@ const SkillsTable = (props: SkillsTableProps) => {
 
   const allSkillsSelected = checked.length === tableState.filteredList.length && tableState.filteredList.length > 0;
 
-  const getProfilesForSkill = (skill: any) => {
-    const profileDivs: any = [];
+  const getProfilesForSkill = (skill: Skill) => {
+    const profileDivs: ReactElement[] = [];
     skill.profiles?.map((p: any, index: number) => {
       if(index !== skill.profiles.length - 1){
         profileDivs.push(<div>{p.profileName} - {p.profileId}, </div>);
@@ -55,7 +55,7 @@ const SkillsTable = (props: SkillsTableProps) => {
     return profileDivs;
   };
 
-  const handleSetChecked = (skill: any, isSelected: boolean) => {
+  const handleSetChecked = (skill: Skill, isSelected: boolean) => {
     if(isSelected){
       setChecked(checked.filter(s => s.name !== skill.name));
     } else {
@@ -106,7 +106,7 @@ const SkillsTable = (props: SkillsTableProps) => {
         </thead>
         <tbody>
           {tableState.filteredList.map((skill: Skill) => {
-            const isChecked = checked.some((s: any) => s.name === skill.name);
+            const isChecked = checked.some((s: Skill) => s.name === skill.name);
             const isSelected = tableState.selected?.name === skill.name;
             return (
               <CustomTableRow key={skill.name}  selected={isSelected} onClick={() => setTableState({
@@ -121,7 +121,7 @@ const SkillsTable = (props: SkillsTableProps) => {
                   />
                 </TableText></CustomTableData>
                 <CustomTableData><TableText>{skill.name}</TableText></CustomTableData>
-                <CustomTableData><TableText>{getProfilesForSkill(skill).map((d: any) => d)}</TableText></CustomTableData>
+                <CustomTableData><TableText>{getProfilesForSkill(skill).map((d: ReactElement) => d)}</TableText></CustomTableData>
                 <CustomTableData><TableIcon>{skill.flashMessage && <FlashOn/>}</TableIcon></CustomTableData>
                 <CustomTableData><TableIcon>{skill.closedMessage && <Block/>}</TableIcon></CustomTableData>
               </CustomTableRow>

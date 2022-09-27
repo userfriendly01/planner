@@ -2,10 +2,10 @@ import {
   Manager,
   ModalOverlayStatuses,
   Office,
-  TaskRouterSkill,
+  Skill,
   TritonProfile,
   Worker,
-  WorkerSkills
+  WorkerAttributeSkills
 } from "globals";
 import { FetchUserResponse } from "services";
 
@@ -19,12 +19,12 @@ export interface LoadingState {
 export interface UserEntryFormProps {
   worker: Worker | null,
   handleClose: (reopen: boolean | void) => void,
-  skills: TaskRouterSkill[],
+  skills: Skill[],
   workers: Worker[]
 }
 
 export interface UserFormAccordionProps {
-  skills: TaskRouterSkill[],
+  skills: Skill[],
   worker: Worker | null,
   workers: Worker[],
   profiles: TritonProfile[],
@@ -34,7 +34,7 @@ export interface UserFormAccordionProps {
 }
 
 export interface BasicFormInfoProps {
-  skills: TaskRouterSkill[],
+  skills: Skill[],
   worker: Worker | null,
   workers: Worker[],
   profiles: TritonProfile[],
@@ -44,7 +44,7 @@ export interface BasicFormInfoProps {
 }
 
 export interface DidFormInfoProps {
-  skills: TaskRouterSkill[],
+  skills: Skill[],
   worker: Worker | null,
   workers: Worker[],
   forwardToToggle: boolean,
@@ -82,7 +82,7 @@ export interface FieldState {
 export interface UserFormState {
   [index: string]: any;
   alternateDid: FieldState,
-  defaultSkills: WorkerSkills,
+  defaultSkills: WorkerAttributeSkills,
   defaultSkillsUpdated: boolean,
   didUser: boolean,
   directDialNum: FieldState,

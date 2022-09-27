@@ -79,10 +79,10 @@ const SaveButton = (props: SaveButtonProps) => {
 
   const handleResults = (results: any[]) => {
     console.log("Handle Results", results);
-    const successfulPromises: any[] = [];
+    const successfulPromiseSkills: any[] = [];
     results.forEach((r, index) => {
       if(r.status === "fulfilled"){
-        successfulPromises.push(checked[index]);
+        successfulPromiseSkills.push(checked[index]);
       }
     });
     const rejectedPromiseSkills: any[] = [];
@@ -96,13 +96,13 @@ const SaveButton = (props: SaveButtonProps) => {
         message: "Request Successfully Processed",
         status: ModalOverlayStatuses.SUCCESS
       });
-      updateStateOnResolvedPromises(successfulPromises);
+      updateStateOnResolvedPromises(successfulPromiseSkills);
       setTimeout(() => {
         handleCloseConfirmation();
         setChecked([]);
         setAction(ActionTypes.VIEW);
       }, timeouts.MODAL_OVERLAY);
-    } else if (successfulPromises.length === 0){
+    } else if (successfulPromiseSkills.length === 0){
       setSaveResult({
         message: "Request Failed",
         status: ModalOverlayStatuses.FAIL
@@ -116,7 +116,7 @@ const SaveButton = (props: SaveButtonProps) => {
           message = message + skill.name;
         }
       });
-      updateStateOnResolvedPromises(successfulPromises);
+      updateStateOnResolvedPromises(successfulPromiseSkills);
       setSaveResult({
         message,
         status: ModalOverlayStatuses.PARTIAL_FAIL

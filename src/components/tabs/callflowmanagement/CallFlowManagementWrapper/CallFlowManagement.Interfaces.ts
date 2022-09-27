@@ -1,10 +1,25 @@
-export interface TableStateProps {
+import {
+  Skill,
+  TritonProfile
+} from "globals";
+
+export interface SkillProfile {
+  profileId: number,
+  profileName: string
+}
+export interface TableState {
+  [key: string]: any
   closedFilter: boolean,
   flashFilter: boolean,
-  filteredList: any[],
-  profiles: any[],
+  filteredList: Skill[],
+  profiles: TritonProfile[],
   searchBy: string,
-  selected: any //replace with Skill type
+  selected: Skill
+}
+
+export interface View {
+  value: string,
+  label: string
 }
 
 export const views = [

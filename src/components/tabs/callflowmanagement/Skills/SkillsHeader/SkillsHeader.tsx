@@ -3,9 +3,11 @@ import {
   Header
 } from "../Skills.Styles";
 import { SkillsHeaderProps } from "../Skills.Interfaces";
+import { SkillProfile } from "../../CallFlowManagementWrapper/CallFlowManagement.Interfaces";
 import { Dropdown } from "components";
 import { SearchBox } from "components/tabs/usermanagement";
 import { useAdminState } from "context";
+import { TritonProfile } from "globals";
 import React from "react";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
 
@@ -22,7 +24,7 @@ const SkillsHeader = (props: SkillsHeaderProps) => {
   const isAdmin = state.userContext.isAdmin;
 
   const getProfileOptions = () => {
-    return state.profileContext.profiles.map((p: any) => {
+    return state.profileContext.profiles.map((p: TritonProfile) => {
       return {
         ...p,
         label: p.profile_nme,
@@ -62,7 +64,7 @@ const SkillsHeader = (props: SkillsHeaderProps) => {
             multiple={true}
             value={tableState.profiles}
             options={getProfileOptions()}
-            updateValue={(event: any, checkedProfiles: any) => setTableState({
+            updateValue={(event: any, checkedProfiles: TritonProfile[]) => setTableState({
               ...tableState,
               profiles: checkedProfiles
             })}

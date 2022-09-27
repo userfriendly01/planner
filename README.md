@@ -54,7 +54,6 @@ cicct-softphone-admin-ui  8084
 cicct-softphone-service   8080
 ```
 
-
 #### Connecting to the Admin UI
 
 Point your browser at:  http://localhost:8082/triton-admin
@@ -80,6 +79,3 @@ npm run test
 ### Icons
 Keep icons under 8KB in size in order to ensure they're embedded in the runtime code by Webpack.
 Larger images will break.
-
-
-## Project Notes
