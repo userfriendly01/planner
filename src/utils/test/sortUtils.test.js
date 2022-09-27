@@ -1,7 +1,8 @@
 import {
   sortDialListEntriesByName,
   sortDirectoryListEntriesByName,
-  sortManagersByName
+  sortManagersByName,
+  sortSkillByName
 } from "../sortUtils";
 
 describe("sortDialListEntriesByName", () => {
@@ -154,6 +155,25 @@ describe("sortManagersByName", () => {
         manager_first_name: "Muhammad",
         manager_last_name: "Smith"
       }
+    ]);
+  });
+});
+
+describe("sortSkillsByName", () => {
+  const arr = [
+    { name: "bee" },
+    { name: "dee" },
+    { name: "cee" },
+    { name: "ay" },
+    { name: "ay" }
+  ];
+  test("should return array in alphabetical order", () => {
+    expect(arr.sort(sortSkillByName)).toEqual([
+      { name: "ay" },
+      { name: "ay" },
+      { name: "bee" },
+      { name: "cee" },
+      { name: "dee" }
     ]);
   });
 });
