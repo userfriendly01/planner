@@ -46,10 +46,10 @@ const SkillsTable = (props: SkillsTableProps) => {
   const getProfilesForSkill = (skill: any) => {
     const profileDivs: any = [];
     skill.profiles?.map((p: any, index: number) => {
-      if(index !== tableState.filteredList.length - 1){
-        profileDivs.push(<div>{p.profileName} - {p.profileId}</div>);
+      if(index !== skill.profiles.length - 1){
+        profileDivs.push(<div>{p.profileName} - {p.profileId}, </div>);
       } else {
-        profileDivs.push(<div>{p.profileName} - {p.profileId},</div>);
+        profileDivs.push(<div>{p.profileName} - {p.profileId}</div>);
       }
     });
     return profileDivs;

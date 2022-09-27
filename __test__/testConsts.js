@@ -382,7 +382,7 @@ export const skillsList = [
   {
     name: "lscOBDialer1",
     profiles: [{
-      name: "Licensed Sales Center",
+      profileName: "Licensed Sales Center",
       profileId: 32
     }],
     flashMessage: "",
@@ -396,7 +396,7 @@ export const skillsList = [
   {
     name: "aisgL1",
     profiles: [{
-      name: "AISG",
+      profileName: "AISG",
       profileId: 4
     }],
     flashMessage: "",
@@ -410,7 +410,7 @@ export const skillsList = [
   {
     name: "bscCommisssions",
     profiles: [{
-      name: "BSC",
+      profileName: "BSC",
       profileId: 10
     }],
     flashMessage: "OH NO WE'RE EXPLODING!! ",
@@ -425,11 +425,11 @@ export const skillsList = [
     name: "bscCbsL2",
     profiles: [
       {
-        name: "BSC",
+        profileName: "BSC",
         profileId: 10
       },
       {
-        name: "BLST Billing",
+        profileName: "BLST Billing",
         profileId: 12
       }
     ],
