@@ -46,84 +46,6 @@ const SaveButton = (props: SaveButtonProps) => {
     }
   };
 
-  const handleCloseConfirmation = () => {
-    setConfirmationModalOpts({
-      ...confirmationModalOpts,
-      open: false
-    });
-    setSaveResult({
-      message: "",
-      status: null
-    });
-  };
-
-  const updateStateOnResolvedPromises = (fulfilledSkills: any[]) => {
-    const skills = state.skillContext.skills.slice();
-    const updatedSkills = skills.map(s => {
-      let updatedSkill = s;
-      fulfilledSkills.forEach(skill => {
-        if(s.name === skill.name) {
-          updatedSkill = {
-            ...s,
-            [messageType.variable]: text
-          };
-        }
-      });
-      return updatedSkill;
-    });
-    dispatch({
-      type: "updateSkills",
-      payload: updatedSkills
-    });
-  };
-
-  const handleResults = (results: any[]) => {
-    console.log("Handle Results", results);
-    const successfulPromiseSkills: any[] = [];
-    results.forEach((r, index) => {
-      if(r.status === "fulfilled"){
-        successfulPromiseSkills.push(checked[index]);
-      }
-    });
-    const rejectedPromiseSkills: any[] = [];
-    results.forEach((r, index) => {
-      if(r.status === "rejected"){
-        rejectedPromiseSkills.push(checked[index]);
-      }
-    });
-    if(rejectedPromiseSkills.length === 0){
-      setSaveResult({
-        message: "Request Successfully Processed",
-        status: ModalOverlayStatuses.SUCCESS
-      });
-      updateStateOnResolvedPromises(successfulPromiseSkills);
-      setTimeout(() => {
-        handleCloseConfirmation();
-        setChecked([]);
-        setAction(ActionTypes.VIEW);
-      }, timeouts.MODAL_OVERLAY);
-    } else if (successfulPromiseSkills.length === 0){
-      setSaveResult({
-        message: "Request Failed",
-        status: ModalOverlayStatuses.FAIL
-      });
-    } else {
-      let message = "The following skills failed to update: ";
-      rejectedPromiseSkills.forEach((skill: any, index: number) => {
-        if(index !== rejectedPromiseSkills.length - 1){
-          message = message + skill.name + ", ";
-        } else {
-          message = message + skill.name;
-        }
-      });
-      updateStateOnResolvedPromises(successfulPromiseSkills);
-      setSaveResult({
-        message,
-        status: ModalOverlayStatuses.PARTIAL_FAIL
-      });
-    }
-  };
-
   const handleEdit = () => {
     const onConfirm = async () => {
       setSaveResult({
@@ -167,6 +89,83 @@ const SaveButton = (props: SaveButtonProps) => {
         onConfirm: onConfirm,
         handleClose: handleCloseConfirmation
       }
+    });
+  };
+
+  const handleCloseConfirmation = () => {
+    setConfirmationModalOpts({
+      ...confirmationModalOpts,
+      open: false
+    });
+    setSaveResult({
+      message: "",
+      status: null
+    });
+  };
+
+  const handleResults = (results: any[]) => {
+    const successfulPromiseSkills: any[] = [];
+    const rejectedPromiseSkills: any[] = [];
+
+    results.forEach((r, index) => {
+      if(r.status === "fulfilled"){
+        successfulPromiseSkills.push(checked[index]);
+      }
+      if(r.status === "rejected"){
+        rejectedPromiseSkills.push(checked[index]);
+      }
+    });
+
+    if(rejectedPromiseSkills.length === 0){
+      setSaveResult({
+        message: "Request Successfully Processed",
+        status: ModalOverlayStatuses.SUCCESS
+      });
+      updateStateOnResolvedPromises(successfulPromiseSkills);
+      setTimeout(() => {
+        handleCloseConfirmation();
+        setChecked([]);
+        setAction(ActionTypes.VIEW);
+      }, timeouts.MODAL_OVERLAY);
+    } else if (successfulPromiseSkills.length === 0){
+      setSaveResult({
+        message: "Request Failed",
+        status: ModalOverlayStatuses.FAIL
+      });
+    } else {
+      let message = "The following skills failed to update: ";
+      rejectedPromiseSkills.forEach((skill: any, index: number) => {
+        if(index !== rejectedPromiseSkills.length - 1){
+          message = message + skill.name + ", ";
+        } else {
+          message = message + skill.name;
+        }
+      });
+      updateStateOnResolvedPromises(successfulPromiseSkills);
+      setSaveResult({
+        message,
+        status: ModalOverlayStatuses.PARTIAL_FAIL
+      });
+    }
+  };
+
+  const updateStateOnResolvedPromises = (fulfilledSkills: any[]) => {
+    const skills = state.skillContext.skills.slice();
+    const updatedSkills = skills.map(s => {
+      let updatedSkill = s;
+      fulfilledSkills.forEach(skill => {
+        if(s.name === skill.name) {
+          updatedSkill = {
+            ...s,
+            [messageType.variable]: text
+          };
+        }
+      });
+      return updatedSkill;
+    });
+    dispatch({
+      type: "updateSkills",
+      payload: updatedSkills
     });
   };
 

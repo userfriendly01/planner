@@ -27,7 +27,10 @@ import {
   Skill, TritonProfile
 } from "globals";
 import { Modal } from "@mui/material";
-import { messageTypes } from "../ClosedFlashMessage/ClosedFlashMessage.Interfaces";
+import {
+  MessageType,
+  messageTypes
+} from "../ClosedFlashMessage/ClosedFlashMessage.Interfaces";
 
 const CallFlowContainer = () => {
 
@@ -108,43 +111,27 @@ const CallFlowContainer = () => {
     });
   }, [tableState.searchBy, tableState.profiles, tableState.closedFilter, tableState.flashFilter, state.skillContext.skills]);
 
-  const FlashMessageView =
-    <MessageWrapper>
-      <SkillsContainer
-        checked={checked}
-        tableState={tableState}
-        setChecked={setChecked}
-        setTableState={setTableState}
-      />
-      <MessageContainer
-        confirmationModalOpts={confirmationModalOpts}
-        checked={checked}
-        messageType={messageTypes.FLASH}
-        tableState={tableState}
-        setChecked={setChecked}
-        setConfirmationModalOpts={setConfirmationModalOpts}
-        setSaveResult={setSaveResult}
-      />
-    </MessageWrapper>;
-
-  const ClosedMessageView =
-    <MessageWrapper>
-      <SkillsContainer
-        checked={checked}
-        tableState={tableState}
-        setChecked={setChecked}
-        setTableState={setTableState}
-      />
-      <MessageContainer
-        confirmationModalOpts={confirmationModalOpts}
-        checked={checked}
-        messageType={messageTypes.CLOSED}
-        tableState={tableState}
-        setChecked={setChecked}
-        setConfirmationModalOpts={setConfirmationModalOpts}
-        setSaveResult={setSaveResult}
-      />
-    </MessageWrapper>;
+  const MessageView = (messageType: MessageType) => {
+    return (
+      <MessageWrapper>
+        <SkillsContainer
+          checked={checked}
+          tableState={tableState}
+          setChecked={setChecked}
+          setTableState={setTableState}
+        />
+        <MessageContainer
+          confirmationModalOpts={confirmationModalOpts}
+          checked={checked}
+          messageType={messageType}
+          tableState={tableState}
+          setChecked={setChecked}
+          setConfirmationModalOpts={setConfirmationModalOpts}
+          setSaveResult={setSaveResult}
+        />
+      </MessageWrapper>
+    );
+  };
 
   return (
     <CallflowWrapper>
@@ -158,8 +145,8 @@ const CallFlowContainer = () => {
           width: "500px"
         }}
       />
-      {view === views.find(v => v.value === "CLOSED_MESSAGE") && ClosedMessageView}
-      {view === views.find(v => v.value === "FLASH_MESSAGE") && FlashMessageView}
+      {view === views.find(v => v.value === views[0].value) && MessageView(messageTypes.CLOSED)}
+      {view === views.find(v => v.value === views[1].value) && MessageView(messageTypes.FLASH)}
       <Modal open={confirmationModalOpts.open}>
         <CallFlowConfirmationModal
           confirmationModalOpts={confirmationModalOpts}
