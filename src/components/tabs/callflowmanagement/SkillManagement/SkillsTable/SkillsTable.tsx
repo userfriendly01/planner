@@ -9,12 +9,10 @@ import {
   TableIcon
 } from "../Skills.Styles";
 import { SkillsTableProps } from "../Skills.Interfaces";
-import { messageTypes } from "../../ClosedFlashMessage/ClosedFlashMessage.Interfaces";
+import { messageTypes } from "../ClosedFlashMessage/ClosedFlashMessage.Interfaces";
 import { Checkbox } from "@mui/material";
-import {
-  Block,
-  FlashOn
-} from "@mui/icons-material";
+import { Circle } from "@mui/icons-material";
+import { Tooltip } from "@mui/material";
 import { Skill } from "globals";
 import React, { ReactElement } from "react";
 
@@ -122,8 +120,20 @@ const SkillsTable = (props: SkillsTableProps) => {
                 </TableText></CustomTableData>
                 <CustomTableData><TableText>{skill.name}</TableText></CustomTableData>
                 <CustomTableData><TableText>{getProfilesForSkill(skill).map((d: ReactElement) => d)}</TableText></CustomTableData>
-                <CustomTableData><TableIcon>{skill.flashMessage && <FlashOn/>}</TableIcon></CustomTableData>
-                <CustomTableData><TableIcon>{skill.closedMessage && <Block/>}</TableIcon></CustomTableData>
+                <CustomTableData>
+                  {skill.flashMessage &&
+                    <Tooltip title={<h1 style={{ fontSize: "15px" }}>{skill.flashMessage}</h1>}>
+                      <TableIcon><Circle fontSize="small"/></TableIcon>
+                    </Tooltip>
+                  }
+                </CustomTableData>
+                <CustomTableData>
+                  {skill.closedMessage &&
+                    <Tooltip title={<h1 style={{ fontSize: "15px" }}>{skill.closedMessage}</h1>}>
+                      <TableIcon><Circle fontSize="small"/></TableIcon>
+                    </Tooltip>
+                  }
+                </CustomTableData>
               </CustomTableRow>
             );
           })}

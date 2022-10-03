@@ -1,17 +1,15 @@
 import { StyledButton } from "components";
 import styled from "styled-components";
 
-export const FormControlsContainer = styled.div`
+export const MessageBoxWrapper = styled.div`
   display: flex;
+  width: 600px;
+  margin-top: 10px;
   flex-direction: column;
   align-items: center;
-  max-height: 650px;
-  padding-top: 5px;
-  width: 50%;
-  overflow: hidden;
 `;
 
-export const MessageBoxWrapper = styled.div`
+export const MessageContainerWrapper = styled.div`
   display: flex;
   width: 600px;
   margin-top: 10px;
@@ -23,7 +21,7 @@ export const TextField = styled.textarea`
   background-color: rgba(0,0,0,0.04);
   padding: 10px;
   height: 200px;
-  width: 500px;
+  width: 400px;
   margin: 5 0 10 0;
 `;
 
@@ -33,12 +31,6 @@ export const UserFormButton: any = styled(StyledButton)`
   margin-bottom: 15px; 
 `;
 
-export const ActionBarWrapper = styled.div`
-  display: flex;
-  width: 500px;
-  height: 30px;
-  justify-content: space-around
-`;
 
 export const IconWrapper = styled.div<{ active: boolean }>`
   align-items: center;

@@ -8,24 +8,30 @@ import {
   Skill,
   timeouts
 } from "globals";
-import { UserFormButton } from "../ClosedFlashMessage.Styles";
+import {
+  SaveButtonProps,
+  UserFormButton
+} from "../";
 import {
   ActionTypes,
-  SaveButtonProps
-} from "../ClosedFlashMessage.Interfaces";
+  ConfirmationExportDiv,
+  ExportButton
+} from "../../";
 
 const SaveButton = (props: SaveButtonProps) => {
   const {
     action,
     checked,
     confirmationModalOpts,
-    messageType,
+    propertyValue,
     text,
     setAction,
     setChecked,
     setConfirmationModalOpts,
     setSaveResult
   } = props;
+
+  console.log("**MEssage type!", propertyValue);
 
   const state = useAdminState();
   const dispatch = useAdminDispatch();
@@ -35,10 +41,10 @@ const SaveButton = (props: SaveButtonProps) => {
 
   const handleOnSave = () => {
     switch(action){
-      case ActionTypes.EDIT:
+      case ActionTypes[2]:
         handleEdit();
         break;
-      case ActionTypes.DELETE:
+      case ActionTypes[3]:
         handleDelete();
         break;
       default:
@@ -53,11 +59,19 @@ const SaveButton = (props: SaveButtonProps) => {
         status: ModalOverlayStatuses.SAVING
       });
       const results = await Promise.allSettled(checked.map((skill: Skill) => {
-        return messageType.updateFunction(skill, text, nNumber);
+        return propertyValue.updateFunction(skill, text, nNumber);
       }));
       handleResults(results);
     };
-    const confirmationText = `Are you sure you want to update the ${messageType.name} for ${!isMultiSelection ? checked[0].name : checked.length + " skills?"}`;
+    const confirmationText = <div>
+      {`Are you sure you want to update the ${propertyValue.name} for ${!isMultiSelection ? checked[0].name + "?" : checked.length + " skills?"}`}
+      {checked.some(s => s[propertyValue.variable]) &&
+        <ConfirmationExportDiv>
+          You will be overridding existing {propertyValue.name}&apos;s. Click the export button to save this data for future use.
+          <ExportButton checked={checked} />
+        </ConfirmationExportDiv>
+      }
+    </div>;
 
     setConfirmationModalOpts({
       open: true,
@@ -76,11 +90,11 @@ const SaveButton = (props: SaveButtonProps) => {
         status: ModalOverlayStatuses.SAVING
       });
       const results = await Promise.allSettled(checked.map((skill: Skill) => {
-        return messageType.updateFunction(skill, "", nNumber);
+        return propertyValue.updateFunction(skill, "", nNumber);
       }));
       handleResults(results);
     };
-    const confirmationText = `Are you sure you want to delete the ${messageType.name} for ${ !isMultiSelection ? checked[0].name : checked.length + " skills?"}`;
+    const confirmationText = `Are you sure you want to delete the ${propertyValue.name} for ${ !isMultiSelection ? checked[0].name : checked.length + " skills?"}`;
 
     setConfirmationModalOpts({
       open: true,
@@ -125,7 +139,7 @@ const SaveButton = (props: SaveButtonProps) => {
       setTimeout(() => {
         handleCloseConfirmation();
         setChecked([]);
-        setAction(ActionTypes.VIEW);
+        setAction(ActionTypes[0]);
       }, timeouts.MODAL_OVERLAY);
     } else if (successfulPromiseSkills.length === 0){
       setSaveResult({
@@ -157,7 +171,7 @@ const SaveButton = (props: SaveButtonProps) => {
         if(s.name === skill.name) {
           updatedSkill = {
             ...s,
-            [messageType.variable]: text
+            [propertyValue.variable]: text
           };
         }
       });
@@ -171,11 +185,11 @@ const SaveButton = (props: SaveButtonProps) => {
 
   return (
     <div>
-      {(isSingleSelection || isMultiSelection) && action !== ActionTypes.VIEW &&
+      {(isSingleSelection || isMultiSelection) && action !== ActionTypes[0] &&
         <UserFormButton onClick={handleOnSave}>
           { isMultiSelection ?
-            `${action} ${checked.length} ${messageType.name}s`
-            : `${action} ${checked[0].name} ${messageType.name}`
+            `${action.label} ${checked.length} ${propertyValue.name}s`
+            : `${action.label} ${checked[0].name} ${propertyValue.name}`
           }
         </UserFormButton>
       }

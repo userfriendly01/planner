@@ -24,11 +24,7 @@ export interface View {
 
 export const views = [
   {
-    value: "CLOSED_MESSAGE",
-    label: "Closed Message Management"
-  },
-  {
-    value: "FLASH_MESSAGE",
-    label: "Flash Message Management"
+    value: "SKILLS_MANAGEMENT",
+    label: "Skills Management"
   }
 ];

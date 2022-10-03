@@ -1,15 +1,15 @@
 import {
-  ExportButton,
-  Header
-} from "../Skills.Styles";
-import { SkillsHeaderProps } from "../Skills.Interfaces";
-import { SkillProfile } from "../../CallFlowManagementWrapper/CallFlowManagement.Interfaces";
-import { Dropdown } from "components";
+  Dropdown,
+  ExportButton
+} from "components";
+import {
+  StyledHeader,
+  SkillsHeaderProps
+} from "../";
 import { SearchBox } from "components/tabs/usermanagement";
 import { useAdminState } from "context";
 import { TritonProfile } from "globals";
 import React from "react";
-import { ExcelExport } from "@progress/kendo-react-excel-export";
 
 const SkillsHeader = (props: SkillsHeaderProps) => {
 
@@ -19,7 +19,6 @@ const SkillsHeader = (props: SkillsHeaderProps) => {
     setTableState
   } = props;
 
-  const _export = React.useRef(null);
   const state = useAdminState();
   const isAdmin = state.userContext.isAdmin;
 
@@ -33,31 +32,8 @@ const SkillsHeader = (props: SkillsHeaderProps) => {
     });
   };
 
-  const handleExport = () => {
-    const columns = [
-      {
-        field: "name",
-        title: "Skill Name",
-        width: "50px"
-      },
-      {
-        field: "closedMessage",
-        title: "Closed Message",
-        width: "200px"
-      },
-      {
-        field: "flashMessage",
-        title: "Flash Message",
-        width: "200px"
-      }
-    ];
-    if (_export.current !== null) {
-      _export.current.save(checked, columns);
-    }
-  };
-
   return (
-    <Header>
+    <StyledHeader>
       { isAdmin &&
           <Dropdown
             label="Profile Id"
@@ -82,8 +58,8 @@ const SkillsHeader = (props: SkillsHeaderProps) => {
           });
         }}
       />
-      <ExportButton onClick={handleExport}><ExcelExport ref={_export}/>Export</ExportButton>
-    </Header>
+      <ExportButton checked={checked}/>
+    </StyledHeader>
   );
 };
 

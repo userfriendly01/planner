@@ -18,7 +18,7 @@ import {
 import {
   CallFlowConfirmationModal,
   Dropdown,
-  MessageContainer,
+  ActionContainer,
   SkillsContainer
 } from "components";
 import { useAdminState } from "context";
@@ -27,10 +27,6 @@ import {
   Skill, TritonProfile
 } from "globals";
 import { Modal } from "@mui/material";
-import {
-  MessageType,
-  messageTypes
-} from "../ClosedFlashMessage/ClosedFlashMessage.Interfaces";
 
 const CallFlowContainer = () => {
 
@@ -111,27 +107,23 @@ const CallFlowContainer = () => {
     });
   }, [tableState.searchBy, tableState.profiles, tableState.closedFilter, tableState.flashFilter, state.skillContext.skills]);
 
-  const MessageView = (messageType: MessageType) => {
-    return (
-      <MessageWrapper>
-        <SkillsContainer
-          checked={checked}
-          tableState={tableState}
-          setChecked={setChecked}
-          setTableState={setTableState}
-        />
-        <MessageContainer
-          confirmationModalOpts={confirmationModalOpts}
-          checked={checked}
-          messageType={messageType}
-          tableState={tableState}
-          setChecked={setChecked}
-          setConfirmationModalOpts={setConfirmationModalOpts}
-          setSaveResult={setSaveResult}
-        />
-      </MessageWrapper>
-    );
-  };
+  const SkillsManagementView =
+    <MessageWrapper>
+      <SkillsContainer
+        checked={checked}
+        tableState={tableState}
+        setChecked={setChecked}
+        setTableState={setTableState}
+      />
+      <ActionContainer
+        confirmationModalOpts={confirmationModalOpts}
+        checked={checked}
+        tableState={tableState}
+        setChecked={setChecked}
+        setConfirmationModalOpts={setConfirmationModalOpts}
+        setSaveResult={setSaveResult}
+      />
+    </MessageWrapper>;
 
   return (
     <CallflowWrapper>
@@ -145,8 +137,7 @@ const CallFlowContainer = () => {
           width: "500px"
         }}
       />
-      {view === views.find(v => v.value === views[0].value) && MessageView(messageTypes.CLOSED)}
-      {view === views.find(v => v.value === views[1].value) && MessageView(messageTypes.FLASH)}
+      {view === views.find(v => v.value === views[0].value) && SkillsManagementView}
       <Modal open={confirmationModalOpts.open}>
         <CallFlowConfirmationModal
           confirmationModalOpts={confirmationModalOpts}

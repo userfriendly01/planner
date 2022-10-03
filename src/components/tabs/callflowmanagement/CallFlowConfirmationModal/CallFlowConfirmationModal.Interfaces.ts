@@ -2,7 +2,7 @@ import { ModalOverlayStatuses } from "globals";
 
 export interface ConfirmationModalOptsProps {
   open: boolean,
-  confirmationText: string,
+  confirmationText: any,
   callbackMethods: {
     onConfirm: () => void,
     handleClose: () => void

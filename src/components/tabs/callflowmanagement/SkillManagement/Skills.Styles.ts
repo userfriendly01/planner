@@ -8,7 +8,7 @@ export const StyledCheckBox = styled(Checkbox)`
   padding: 0px;
 `;
 
-export const Header = styled.div`
+export const StyledHeader = styled.div`
   display: flex;
   width: 100%;
   align-items: center;
@@ -87,6 +87,16 @@ export const FilterWrapper = styled.div<{ active: boolean }>`
   }
 `;
 
+export const FormControlsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-height: 650px;
+  padding-top: 5px;
+  width: 40%;
+  overflow: hidden;
+`;
+
 export const TableContainer = styled.div`
   display: flex;
   flex: 1 1 auto;
@@ -121,10 +131,17 @@ export const SkillsWrapper = styled.div`
   margin-top: 10px;
   align-items: center;
   flex-direction: column;
-  width: 50%;
+  width: 60%;
 `;
 
-export const ExportButton = styled(StyledButton)`
+export const StyledExportButton = styled(StyledButton)`
   height: 40px;
   width: 100px;
+`;
+
+export const ConfirmationExportDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px 0px;
 `;

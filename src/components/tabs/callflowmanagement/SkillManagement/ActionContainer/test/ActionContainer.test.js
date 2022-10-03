@@ -1,6 +1,5 @@
-import MessageContainer from "../MessageContainer";
+import ActionContainer from "../ActionContainer";
 import {
-  ActionBar,
   MessageBox,
   SaveButton
 } from "components";
@@ -13,7 +12,6 @@ import {
 import { ActionTypes } from "../../ClosedFlashMessage.Interfaces";
 
 jest.mock("components", () => ({
-  ActionBar: jest.fn(),
   MessageBox: jest.fn(),
   SaveButton: jest.fn(),
   StyledButton: jest.fn()
@@ -31,17 +29,16 @@ const props = {
   setSaveResult: jest.fn()
 };
 
-describe("<MessageContainer/>", () => {
+describe("<ActionContainer/>", () => {
   beforeEach(() => {
     setupMockedComponents({
-      ActionBar,
       MessageBox,
       SaveButton
     });
   });
   describe("initial render", () => {
     test("should render as expected", () => {
-      const rendered = render(<MessageContainer
+      const rendered = render(<ActionContainer
         checked={props.checked}
         confirmationModalOpts={props.confirmationModalOpts}
         messageType={props.messageType}
@@ -51,9 +48,6 @@ describe("<MessageContainer/>", () => {
         setSaveResult={props.setSaveResult}
       />);
       expect(rendered.container).toHaveTextContent(props.messageType.name);
-      expectOnlyPassedProps(ActionBar, {
-        action: ActionTypes.VIEW
-      });
       expectOnlyPassedProps(MessageBox, {
         action: ActionTypes.VIEW,
         checked: props.checked,

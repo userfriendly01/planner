@@ -1,8 +1,9 @@
 import {
   ConfirmationModalOptsProps,
   SaveResultProps
-} from "../CallFlowConfirmationModal/CallFlowConfirmationModal.Interfaces";
-import { TableState } from "../CallFlowManagementWrapper/CallFlowManagement.Interfaces";
+} from "../../CallFlowConfirmationModal/CallFlowConfirmationModal.Interfaces";
+import { TableState } from "../../CallFlowManagementWrapper/CallFlowManagement.Interfaces";
+import { ActionTypes } from "../Skills.Interfaces";
 import { Skill } from "globals";
 import {
   updateClosedMessage,
@@ -10,29 +11,8 @@ import {
 } from "services";
 import { AxiosResponse } from "axios";
 
-export enum ActionTypes  {
-  VIEW = "view",
-  EDIT = "edit",
-  DELETE = "delete"
-}
-
-export interface ActionBarProps {
-  action: ActionTypes,
-  setAction: (action: ActionTypes) => void
-}
-
-export interface MessageContainerProps {
-  checked: Skill[],
-  confirmationModalOpts: ConfirmationModalOptsProps,
-  messageType: MessageType,
-  tableState: TableState,
-  setChecked: (props: Skill[]) => void,
-  setConfirmationModalOpts: (props: ConfirmationModalOptsProps) => void,
-  setSaveResult: (props: SaveResultProps) => void,
-}
-
 export interface MessageBoxProps {
-  action: ActionTypes,
+  action: typeof ActionTypes[0],
   checked: Skill[],
   tableState: TableState,
   text: string,
@@ -41,14 +21,14 @@ export interface MessageBoxProps {
 }
 
 export interface SaveButtonProps {
-  action: ActionTypes,
-  setAction: (action: ActionTypes) => void
+  action: typeof ActionTypes[0],
+  setAction: (action: typeof ActionTypes[0]) => void
   setSaveResult: (props: SaveResultProps) => void,
   checked: Skill[],
   confirmationModalOpts: ConfirmationModalOptsProps,
   setConfirmationModalOpts: (props: ConfirmationModalOptsProps) => void,
   setChecked: (props: Skill[]) => void,
-  messageType: MessageType,
+  propertyValue: any,
   text: string
 }
 

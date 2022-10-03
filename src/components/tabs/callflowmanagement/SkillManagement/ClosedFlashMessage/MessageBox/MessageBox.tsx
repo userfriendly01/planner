@@ -3,10 +3,8 @@ import {
   MessageBoxWrapper,
   TextField
 } from "../ClosedFlashMessage.Styles";
-import {
-  ActionTypes,
-  MessageBoxProps
-} from "../ClosedFlashMessage.Interfaces";
+import { MessageBoxProps } from "../ClosedFlashMessage.Interfaces";
+import { ActionTypes } from "../../Skills.Interfaces";
 
 export const MessageBox = (props: MessageBoxProps) => {
   const {
@@ -23,7 +21,7 @@ export const MessageBox = (props: MessageBoxProps) => {
   React.useEffect(() => {
     const variable = messageType.variable;
 
-    if(action !== ActionTypes.VIEW && isMultiChecked){
+    if(action !== ActionTypes[0] && isMultiChecked){
       setText("");
     } else if (tableState.selected){
       const text = tableState.selected[variable] || "";
@@ -37,7 +35,7 @@ export const MessageBox = (props: MessageBoxProps) => {
   return (
     <MessageBoxWrapper>
       <TextField
-        readOnly={action !== ActionTypes.EDIT}
+        readOnly={action !== ActionTypes[2]}
         onChange={(event: any) => setText(event.target.value)}
         value={text}
       />

@@ -12,7 +12,7 @@ import {
 } from "testUtils";
 
 jest.mock("../../ClosedFlashMessage.Styles", () => ({
-  MessageBoxWrapper: jest.requireActual("../../ClosedFlashMessage.Styles").ActionBarWrapper,
+  MessageBoxWrapper: jest.requireActual("../../ClosedFlashMessage.Styles").MessageBoxWrapper,
   TextField: jest.fn()
 }));
 

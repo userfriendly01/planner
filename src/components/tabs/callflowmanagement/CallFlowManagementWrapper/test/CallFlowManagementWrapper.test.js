@@ -4,7 +4,7 @@ import { views } from "../CallFlowManagement.Interfaces";
 import {
   CallFlowConfirmationModal,
   Dropdown,
-  MessageContainer,
+  ActionContainer,
   SkillsContainer
 } from "components";
 import { useAdminState } from "context";
@@ -23,7 +23,7 @@ import { messageTypes } from "../../ClosedFlashMessage/ClosedFlashMessage.Interf
 jest.mock("components", () => ({
   CallFlowConfirmationModal: jest.fn(),
   Dropdown: jest.fn(),
-  MessageContainer: jest.fn(),
+  ActionContainer: jest.fn(),
   SkillsContainer: jest.fn()
 }));
 
@@ -67,7 +67,7 @@ describe("CallFlowConfirmationModal", () => {
     setupMockedComponents({
       CallFlowConfirmationModal,
       Dropdown,
-      MessageContainer,
+      ActionContainer,
       SkillsContainer,
       Modal
     });
@@ -82,11 +82,11 @@ describe("CallFlowConfirmationModal", () => {
         checked: [],
         tableState: initialTableState
       }, getLastInstanceCalled(SkillsContainer));
-      expectOnlyPassedProps(MessageContainer, {
+      expectOnlyPassedProps(ActionContainer, {
         checked: [],
         confirmationModalOpts,
         messageType: messageTypes.CLOSED
-      }, getLastInstanceCalled(MessageContainer));
+      }, getLastInstanceCalled(ActionContainer));
       expectOnlyPassedProps(Dropdown, {
         label: "What would you like to do?",
         value: views[0],
@@ -248,18 +248,18 @@ describe("CallFlowConfirmationModal", () => {
       act(() => {
         updateView(null, views[1]);
       });
-      expectOnlyPassedProps(MessageContainer, {
+      expectOnlyPassedProps(ActionContainer, {
         checked: [],
         confirmationModalOpts,
         messageType: messageTypes.FLASH
-      }, getLastInstanceCalled(MessageContainer));
+      }, getLastInstanceCalled(ActionContainer));
     });
   });
   describe("confirmationModalOpts.open === true", () => {
     test("CallFlowConfirmationModal should be rendered", () => {
       render(<CallFlowManagementWrapper />);
-      const modalOpts = MessageContainer.mock.calls[0][0].confirmationModalOpts;
-      const setModalOpts = MessageContainer.mock.calls[0][0].setConfirmationModalOpts;
+      const modalOpts = ActionContainer.mock.calls[0][0].confirmationModalOpts;
+      const setModalOpts = ActionContainer.mock.calls[0][0].setConfirmationModalOpts;
       act(() => {
         setModalOpts({
           ...modalOpts,

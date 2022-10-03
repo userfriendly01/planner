@@ -32,11 +32,11 @@ const CallFlowConfirmationModal = (props: CallFlowConfirmationModalProps) => {
         }
         <ConfirmationText>{confirmationModalOpts.confirmationText}</ConfirmationText>
         <ButtonWrapper>
-          <Button onClick={onConfirm}>
-            Confirm
-          </Button>
           <Button onClick={handleClose}>
             Cancel
+          </Button>
+          <Button onClick={onConfirm}>
+            Confirm
           </Button>
         </ButtonWrapper>
       </PaperContainer>

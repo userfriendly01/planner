@@ -40,7 +40,7 @@ describe("<NavTabs />", () => {
     expect(rendered.getByText("ProfileSettingsContainer")).not.toBeVisible();
   });
 
-  test("when we click on the 'Call Flow Management' link, only MessageContainer should be visible", () => {
+  test("when we click on the 'Call Flow Management' link, only CallflowManagementWrapper should be visible", () => {
     const rendered = render(<NavTabs />);
     fireEvent.click(rendered.getByText("Call Flow Management"));
     expect(rendered.getAllByText("CallflowManagementWrapper")[0]).toBeVisible();
