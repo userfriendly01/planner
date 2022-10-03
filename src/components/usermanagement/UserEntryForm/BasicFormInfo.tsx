@@ -297,7 +297,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
               onChange={() => {
                 setForm({ type: userFormActions.INITIATE_DID_FIELDS });
                 if (form.extension.value) {
-                  setForm({type: userFormActions.CLEAR_EXTENSION});
+                  setForm({ type: userFormActions.CLEAR_EXTENSION });
                 }
                 if (form.userPreviouslyAdded) {
                   setForm({ type: userFormActions.CLEAR_OUTGOING_NUMBER });
