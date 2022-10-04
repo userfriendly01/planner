@@ -8,7 +8,6 @@ import {
   propertyOptions,
   ActionContainerProps
 } from "../Skills.Interfaces";
-import { messageTypes } from "../ClosedFlashMessage/ClosedFlashMessage.Interfaces";
 
 const ActionContainer = (props: ActionContainerProps) => {
   const {

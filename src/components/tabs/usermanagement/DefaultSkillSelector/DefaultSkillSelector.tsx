@@ -42,11 +42,7 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
     setDefaultSkills
   } = props;
 
-  const {
-    skillContext: {
-      skills
-    }
-  } = useAdminState();
+  const skills = useAdminState().skillContext.skills.slice().filter(s => s.levels);
 
   const skillsForDropDown = skills.filter((skillObj: Skill) => !defaultSkills.skills.includes(skillObj.name));
 

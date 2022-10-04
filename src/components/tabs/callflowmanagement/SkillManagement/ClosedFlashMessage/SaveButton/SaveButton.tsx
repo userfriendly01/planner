@@ -94,7 +94,16 @@ const SaveButton = (props: SaveButtonProps) => {
       }));
       handleResults(results);
     };
-    const confirmationText = `Are you sure you want to delete the ${messageType.name} for ${ !isMultiSelection ? tableState.selected[0].name : tableState.selected.length + " skills?"}`;
+
+    const confirmationText = <div>
+      {`Are you sure you want to delete the ${messageType.name} for ${!isMultiSelection ? tableState.selected[0].name + "?" : tableState.selected.length + " skills?"}`}
+      {tableState.selected.some(s => s[messageType.variable]) &&
+      <ConfirmationExportDiv>
+        You will be deleting existing {messageType.name}&apos;s. Click the export button to save this data for future use.
+        <ExportButton selected={tableState.selected} />
+      </ConfirmationExportDiv>
+      }
+    </div>;
 
     setConfirmationModalOpts({
       open: true,
@@ -168,13 +177,14 @@ const SaveButton = (props: SaveButtonProps) => {
 
   const updateStateOnResolvedPromises = (fulfilledSkills: Skill[])=> {
     const skills = state.skillContext.skills.slice();
+    const updatedText = action === ActionTypes.DELETE ? "" : text;
     const updatedSkills = skills.map(s => {
       let updatedSkill = s;
       fulfilledSkills.forEach(skill => {
         if(s.name === skill.name) {
           updatedSkill = {
             ...s,
-            [messageType.variable]: text
+            [messageType.variable]: updatedText
           };
         }
       });

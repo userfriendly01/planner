@@ -418,7 +418,8 @@ describe("<SaveButton /> ", () => {
             saveButton();
           });
           expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
-          expect(mockSetConfirmationModalOpts.mock.calls[0][0].confirmationText).toBe("Are you sure you want to delete the Flash Message for lscOBDialer1");
+          const confirmationDiv = render(mockSetConfirmationModalOpts.mock.calls[0][0].confirmationText).container;
+          expect(confirmationDiv).toHaveTextContent("Are you sure you want to delete the Flash Message for lscOBDialer1?");
           expect(mockSetConfirmationModalOpts.mock.calls[0][0].open).toBe(true);
         });
         describe("onConfirm is called", () => {
@@ -563,7 +564,8 @@ describe("<SaveButton /> ", () => {
             saveButton();
           });
           expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
-          expect(mockSetConfirmationModalOpts.mock.calls[0][0].confirmationText).toBe("Are you sure you want to delete the Closed Message for lscOBDialer1");
+          const confirmationDiv = render(mockSetConfirmationModalOpts.mock.calls[0][0].confirmationText).container;
+          expect(confirmationDiv).toHaveTextContent("Are you sure you want to delete the Closed Message for lscOBDialer1?");
           expect(mockSetConfirmationModalOpts.mock.calls[0][0].open).toBe(true);
         });
         describe("onConfirm is called", () => {
