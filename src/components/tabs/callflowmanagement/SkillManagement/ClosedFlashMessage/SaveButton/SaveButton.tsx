@@ -21,30 +21,30 @@ import {
 const SaveButton = (props: SaveButtonProps) => {
   const {
     action,
-    checked,
     confirmationModalOpts,
-    propertyValue,
+    messageType,
+    tableState,
     text,
     setAction,
-    setChecked,
     setConfirmationModalOpts,
-    setSaveResult
+    setSaveResult,
+    setTableState
   } = props;
 
-  console.log("**MEssage type!", propertyValue);
+  console.log("**Message type!", messageType);
 
   const state = useAdminState();
   const dispatch = useAdminDispatch();
   const nNumber = state.userContext.pingIdentity.sub;
-  const isSingleSelection = checked.length === 1;
-  const isMultiSelection = checked.length > 1;
+  const isSingleSelection = tableState.selected.length === 1;
+  const isMultiSelection = tableState.selected.length > 1;
 
   const handleOnSave = () => {
     switch(action){
-      case ActionTypes[2]:
+      case ActionTypes.EDIT:
         handleEdit();
         break;
-      case ActionTypes[3]:
+      case ActionTypes.DELETE:
         handleDelete();
         break;
       default:
@@ -58,17 +58,17 @@ const SaveButton = (props: SaveButtonProps) => {
         message: "Processing...",
         status: ModalOverlayStatuses.SAVING
       });
-      const results = await Promise.allSettled(checked.map((skill: Skill) => {
-        return propertyValue.updateFunction(skill, text, nNumber);
+      const results = await Promise.allSettled(tableState.selected.map((skill: Skill) => {
+        return messageType.updateFunction(skill, text, nNumber);
       }));
       handleResults(results);
     };
     const confirmationText = <div>
-      {`Are you sure you want to update the ${propertyValue.name} for ${!isMultiSelection ? checked[0].name + "?" : checked.length + " skills?"}`}
-      {checked.some(s => s[propertyValue.variable]) &&
+      {`Are you sure you want to update the ${messageType.name} for ${!isMultiSelection ? tableState.selected[0].name + "?" : tableState.selected.length + " skills?"}`}
+      {tableState.selected.some(s => s[messageType.variable]) &&
         <ConfirmationExportDiv>
-          You will be overridding existing {propertyValue.name}&apos;s. Click the export button to save this data for future use.
-          <ExportButton checked={checked} />
+          You will be overridding existing {messageType.name}&apos;s. Click the export button to save this data for future use.
+          <ExportButton selected={tableState.selected} />
         </ConfirmationExportDiv>
       }
     </div>;
@@ -89,12 +89,12 @@ const SaveButton = (props: SaveButtonProps) => {
         message: "Processing...",
         status: ModalOverlayStatuses.SAVING
       });
-      const results = await Promise.allSettled(checked.map((skill: Skill) => {
-        return propertyValue.updateFunction(skill, "", nNumber);
+      const results = await Promise.allSettled(tableState.selected.map((skill: Skill) => {
+        return messageType.updateFunction(skill, "", nNumber);
       }));
       handleResults(results);
     };
-    const confirmationText = `Are you sure you want to delete the ${propertyValue.name} for ${ !isMultiSelection ? checked[0].name : checked.length + " skills?"}`;
+    const confirmationText = `Are you sure you want to delete the ${messageType.name} for ${ !isMultiSelection ? tableState.selected[0].name : tableState.selected.length + " skills?"}`;
 
     setConfirmationModalOpts({
       open: true,
@@ -123,10 +123,10 @@ const SaveButton = (props: SaveButtonProps) => {
 
     results.forEach((r, index) => {
       if(r.status === "fulfilled"){
-        successfulPromiseSkills.push(checked[index]);
+        successfulPromiseSkills.push(tableState.selected[index]);
       }
       if(r.status === "rejected"){
-        rejectedPromiseSkills.push(checked[index]);
+        rejectedPromiseSkills.push(tableState.selected[index]);
       }
     });
 
@@ -135,11 +135,14 @@ const SaveButton = (props: SaveButtonProps) => {
         message: "Request Successfully Processed",
         status: ModalOverlayStatuses.SUCCESS
       });
+      setTableState({
+        ...tableState,
+        selected: []
+      });
       updateStateOnResolvedPromises(successfulPromiseSkills);
       setTimeout(() => {
         handleCloseConfirmation();
-        setChecked([]);
-        setAction(ActionTypes[0]);
+        setAction(null);
       }, timeouts.MODAL_OVERLAY);
     } else if (successfulPromiseSkills.length === 0){
       setSaveResult({
@@ -163,7 +166,7 @@ const SaveButton = (props: SaveButtonProps) => {
     }
   };
 
-  const updateStateOnResolvedPromises = (fulfilledSkills: any[]) => {
+  const updateStateOnResolvedPromises = (fulfilledSkills: Skill[])=> {
     const skills = state.skillContext.skills.slice();
     const updatedSkills = skills.map(s => {
       let updatedSkill = s;
@@ -171,7 +174,7 @@ const SaveButton = (props: SaveButtonProps) => {
         if(s.name === skill.name) {
           updatedSkill = {
             ...s,
-            [propertyValue.variable]: text
+            [messageType.variable]: text
           };
         }
       });
@@ -185,15 +188,15 @@ const SaveButton = (props: SaveButtonProps) => {
 
   return (
     <div>
-      {(isSingleSelection || isMultiSelection) && action !== ActionTypes[0] &&
+      {(isSingleSelection || isMultiSelection) && action && action !== ActionTypes.VIEW &&
         <UserFormButton onClick={handleOnSave}>
           { isMultiSelection ?
-            `${action.label} ${checked.length} ${propertyValue.name}s`
-            : `${action.label} ${checked[0].name} ${propertyValue.name}`
+            `${action.label} ${tableState.selected.length} ${messageType.name}s`
+            : `${action.label} ${tableState.selected[0].name} ${messageType.name}`
           }
         </UserFormButton>
       }
-      { checked.length === 0 && <div>No Skills Checked</div> }
+      { tableState.selected.length === 0 && <div>**Select a skill to move forward**</div> }
     </div>
   );
 };

@@ -14,7 +14,6 @@ import React from "react";
 const SkillsHeader = (props: SkillsHeaderProps) => {
 
   const {
-    checked,
     tableState,
     setTableState
   } = props;
@@ -58,7 +57,7 @@ const SkillsHeader = (props: SkillsHeaderProps) => {
           });
         }}
       />
-      <ExportButton checked={checked}/>
+      <ExportButton selected={tableState.selected}/>
     </StyledHeader>
   );
 };

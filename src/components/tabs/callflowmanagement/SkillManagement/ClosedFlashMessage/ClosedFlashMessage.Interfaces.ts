@@ -3,17 +3,25 @@ import {
   SaveResultProps
 } from "../../CallFlowConfirmationModal/CallFlowConfirmationModal.Interfaces";
 import { TableState } from "../../CallFlowManagementWrapper/CallFlowManagement.Interfaces";
-import { ActionTypes } from "../Skills.Interfaces";
+import { ActionType } from "../Skills.Interfaces";
 import { Skill } from "globals";
 import {
   updateClosedMessage,
   updateFlashMessage
 } from "services";
 import { AxiosResponse } from "axios";
-
+export interface MessageContainerProps {
+  action: ActionType,
+  confirmationModalOpts: ConfirmationModalOptsProps,
+  tableState: TableState,
+  messageType: MessageType,
+  setAction: (action: ActionType) => void,
+  setTableState: (state: TableState) => void,
+  setConfirmationModalOpts: (props: ConfirmationModalOptsProps) => void,
+  setSaveResult: (props: SaveResultProps) => void,
+}
 export interface MessageBoxProps {
-  action: typeof ActionTypes[0],
-  checked: Skill[],
+  action: ActionType,
   tableState: TableState,
   text: string,
   setText: (text: string) => void,
@@ -21,14 +29,14 @@ export interface MessageBoxProps {
 }
 
 export interface SaveButtonProps {
-  action: typeof ActionTypes[0],
-  setAction: (action: typeof ActionTypes[0]) => void
+  action: ActionType,
+  setAction: (action: ActionType) => void
   setSaveResult: (props: SaveResultProps) => void,
-  checked: Skill[],
+  tableState: TableState,
   confirmationModalOpts: ConfirmationModalOptsProps,
   setConfirmationModalOpts: (props: ConfirmationModalOptsProps) => void,
-  setChecked: (props: Skill[]) => void,
-  propertyValue: any,
+  setTableState: (state: TableState) => void,
+  messageType: MessageType,
   text: string
 }
 

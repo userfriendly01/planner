@@ -31,10 +31,9 @@ jest.mock("context", () => ({
 }));
 
 const mockSetTableState = jest.fn();
-const checked = [skillsList[0]];
 const tableState = {
   searchBy: "searchy",
-  selected: true,
+  selected: [skillsList[0]],
   profiles: [{
     label: "Profile 1",
     value: 1
@@ -43,7 +42,6 @@ const tableState = {
 
 const renderComponent = () => {
   const rendered = render(<SkillsHeader
-    checked={checked}
     tableState={tableState}
     setTableState={mockSetTableState}
   />);
@@ -70,7 +68,7 @@ describe("<SkillsContainer />", () => {
       });
       expect(ExportButton.mock.calls.length).toBe(1);
       expectOnlyPassedProps(ExportButton, {
-        checked
+        selected: tableState.selected
       });
     });
     describe("user is admin", () => {
@@ -103,7 +101,7 @@ describe("<SkillsContainer />", () => {
         });
         expect(ExportButton.mock.calls.length).toBe(1);
         expectOnlyPassedProps(ExportButton, {
-          checked
+          selected: tableState.selected
         });
       });
       describe("dropdown updateValue is called", () => {

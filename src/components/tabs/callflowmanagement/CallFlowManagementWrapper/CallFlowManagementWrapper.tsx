@@ -32,7 +32,7 @@ const CallFlowContainer = () => {
 
   const defaultTableState: TableState = {
     searchBy: "",
-    selected: null,
+    selected: [],
     profiles: [],
     closedFilter: false,
     flashFilter: false,
@@ -56,7 +56,6 @@ const CallFlowContainer = () => {
   const state = useAdminState();
   const isAdmin = state.userContext.isAdmin;
   const userProfileId = state.userContext.profileId;
-  const [ checked, setChecked ] = useState([]);
   const [ tableState, setTableState ] = useState(defaultTableState);
   const [ confirmationModalOpts, setConfirmationModalOpts ] = useState(defaultConfirmationModalOpts);
   const [ saveResult, setSaveResult ] = useState(defaultSaveResult);
@@ -65,6 +64,7 @@ const CallFlowContainer = () => {
 
   useEffect(() => {
     let filteredList = state.skillContext.skills.slice();
+    console.log("CallflowManagementWrapper useEffect is re-run", filteredList);
     //filter by profile
     if(isAdmin) {
       if(tableState.profiles.length > 0){
@@ -110,18 +110,15 @@ const CallFlowContainer = () => {
   const SkillsManagementView =
     <MessageWrapper>
       <SkillsContainer
-        checked={checked}
         tableState={tableState}
-        setChecked={setChecked}
         setTableState={setTableState}
       />
       <ActionContainer
         confirmationModalOpts={confirmationModalOpts}
-        checked={checked}
         tableState={tableState}
-        setChecked={setChecked}
         setConfirmationModalOpts={setConfirmationModalOpts}
         setSaveResult={setSaveResult}
+        setTableState={setTableState}
       />
     </MessageWrapper>;
 

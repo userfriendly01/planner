@@ -1,74 +1,62 @@
 import * as React from "react";
+import { SaveButton } from "components";
 import {
-  MessageBox,
-  SaveButton
-} from "components";
-import { FormControlsContainer } from "../../Skills.Styles";
-import {
-  ActionTypes,
-  ActionContainerProps
-} from "../../Skills.Interfaces";
-import {
+  MessageContainerProps,
   MessageContainerWrapper,
-  messageTypes
+  MessageBoxWrapper,
+  TextField
 } from "../";
+import { ActionTypes } from "../../";
 
-const MessageContainer = (props: ActionContainerProps) => {
+const MessageContainer = (props: MessageContainerProps) => {
   const {
-    checked,
+    action,
     confirmationModalOpts,
+    messageType,
     tableState,
-    setChecked,
+    setAction,
+    setTableState,
     setConfirmationModalOpts,
     setSaveResult
   } = props;
 
-  const propertyOptions = [
-    {
-      label: "Closed Message",
-      value: messageTypes.CLOSED,
-      actions: [
-        ActionTypes[2],
-        ActionTypes[3]
-      ]
-    },
-    {
-      label: "Flash Message",
-      value: messageTypes.FLASH,
-      actions: [
-        ActionTypes[2],
-        ActionTypes[3]
-      ]
-    }
-  ];
-
   const [ text, setText ] = React.useState("");
-  const [ propertySelection, setPropertySelection ] = React.useState(propertyOptions[0]);
-  const [ action, setAction ] = React.useState(null);
-  console.log("**Action", action);
-  console.log("**ActionTypes", ActionTypes);
+
+  React.useEffect(() => {
+    const variable = messageType.variable;
+
+    if(tableState.selected.length > 1 || tableState.selected.length === 0){
+      setText("");
+    } else {
+      const text = tableState.selected[0][variable] || "";
+      setText(text);
+    }
+  }, [action, tableState.selected]);
 
   return (
     <MessageContainerWrapper>
-      <MessageBox
-        action={action}
-        checked={checked}
-        messageType={propertySelection.value}
-        tableState={tableState}
-        setText={setText}
-        text={text}
-      />
-      <SaveButton
-        action={action}
-        confirmationModalOpts= {confirmationModalOpts}
-        setAction={setAction}
-        setSaveResult={setSaveResult}
-        setConfirmationModalOpts={setConfirmationModalOpts}
-        checked={checked}
-        setChecked={setChecked}
-        propertyValue={propertySelection.value}
-        text={text}
-      />
+      {action === ActionTypes.EDIT &&
+        <MessageBoxWrapper>
+          <TextField
+            onChange={(event: any) => setText(event.target.value)}
+            value={text}
+          />
+        </MessageBoxWrapper>
+      }
+      {action &&
+        <SaveButton
+          action={action}
+          confirmationModalOpts= {confirmationModalOpts}
+          setAction={setAction}
+          setSaveResult={setSaveResult}
+          setConfirmationModalOpts={setConfirmationModalOpts}
+          tableState={tableState}
+          setTableState={setTableState}
+          messageType={messageType}
+          text={text}
+        />
+      }
+
     </MessageContainerWrapper>
   );
 };

@@ -17,7 +17,7 @@ jest.mock("@progress/kendo-react-excel-export", () => ({
   ExcelExport: jest.fn()
 }));
 
-const checked = [skillsList[0]];
+const selected = [skillsList[0]];
 
 describe("<ExportButton />", () => {
   beforeEach(() => {
@@ -29,7 +29,7 @@ describe("<ExportButton />", () => {
   });
   describe("initial render", () => {
     test("should render as expected", () => {
-      render(<ExportButton checked={checked}/>);
+      render(<ExportButton selected={selected}/>);
       render(StyledButton.mock.calls[0][0].children);
       expect(StyledButton.mock.calls.length).toBe(1);
       expect(ExcelExport).toHaveBeenCalled();
@@ -37,7 +37,7 @@ describe("<ExportButton />", () => {
   });
   describe("Export Button on click is called", () => {
     test("should call handleExport", () => {
-      render(<ExportButton checked={checked}/>);
+      render(<ExportButton selected={selected}/>);
       const onClick = StyledButton.mock.calls[0][0].onClick;
       act(() => {
         onClick();

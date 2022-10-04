@@ -17,16 +17,12 @@ jest.mock("components", () => ({
   StyledButton: jest.fn()
 }));
 
-const mockSetChecked = jest.fn();
 const mockSetTableState = jest.fn();
-const checked = [skillsList[0]];
-const tableState = { selected: true };
+const tableState = { selected: skillsList[0] };
 
 const renderComponent = () => {
   return render(<SkillsContainer
-    checked={checked}
     tableState={tableState}
-    setChecked={mockSetChecked}
     setTableState={mockSetTableState}
   />);
 };
@@ -44,14 +40,11 @@ describe("<SkillsContainer />", () => {
       expect(SkillsHeader.mock.calls.length).toBe(1);
       expectOnlyPassedProps(SkillsHeader, {
         tableState,
-        checked,
         setTableState: mockSetTableState
       });
       expect(SkillsTable.mock.calls.length).toBe(1);
       expectOnlyPassedProps(SkillsTable, {
-        checked,
         tableState,
-        setChecked: mockSetChecked,
         setTableState: mockSetTableState
       });
     });

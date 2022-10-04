@@ -14,7 +14,7 @@ export interface TableState {
   filteredList: Skill[],
   profiles: TritonProfile[],
   searchBy: string,
-  selected: Skill
+  selected: Skill[]
 }
 
 export interface View {

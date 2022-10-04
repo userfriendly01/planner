@@ -1,15 +1,13 @@
-import ActionContainer from "../ActionContainer";
-import {
-  MessageBox,
-  SaveButton
-} from "components";
+import MessageContainer from "../MessageContainer";
+import { SaveButton } from "components";
 import React from "react";
 import {
   expectOnlyPassedProps,
   render,
   setupMockedComponents
 } from "testUtils";
-import { ActionTypes } from "../../ClosedFlashMessage.Interfaces";
+import { TextField } from "../../";
+import { ActionTypes } from "../../../";
 
 jest.mock("components", () => ({
   MessageBox: jest.fn(),
@@ -17,51 +15,51 @@ jest.mock("components", () => ({
   StyledButton: jest.fn()
 }));
 
+jest.mock("../../", () => ({
+  MessageContainerProps: jest.requireActual("../../").MessageContainerProps,
+  MessageContainerWrapper: jest.requireActual("../../").MessageContainerWrapper,
+  MessageBoxWrapper: jest.requireActual("../../").MessageBoxWrapper,
+  TextField: jest.fn()
+}));
+
 const props = {
-  checked: "checked",
   confirmationModalOpts: "opts",
   messageType: {
     name: "closed"
   },
-  tableState: "state",
-  setChecked: jest.fn(),
+  tableState: {
+    selected: []
+  },
   setConfirmationModalOpts: jest.fn(),
-  setSaveResult: jest.fn()
+  setSaveResult: jest.fn(),
+  setTableState: jest.fn(),
+  setAction: jest.fn()
 };
 
 describe("<ActionContainer/>", () => {
   beforeEach(() => {
     setupMockedComponents({
-      MessageBox,
+      TextField,
       SaveButton
     });
   });
   describe("initial render", () => {
     test("should render as expected", () => {
-      const rendered = render(<ActionContainer
-        checked={props.checked}
+      render(<MessageContainer
+        action={ActionTypes.EDIT}
         confirmationModalOpts={props.confirmationModalOpts}
         messageType={props.messageType}
         tableState={props.tableState}
-        setChecked={props.setChecked}
+        setAction={props.setAction}
+        setTableState={props.setTableState}
         setConfirmationModalOpts={props.setConfirmationModalOpts}
         setSaveResult={props.setSaveResult}
       />);
-      expect(rendered.container).toHaveTextContent(props.messageType.name);
-      expectOnlyPassedProps(MessageBox, {
-        action: ActionTypes.VIEW,
-        checked: props.checked,
-        messageType: props.messageType,
-        tableState: props.tableState,
-        text: ""
-      });
       expectOnlyPassedProps(SaveButton, {
-        action: ActionTypes.VIEW,
+        action: ActionTypes.EDIT,
         confirmationModalOpts: props.confirmationModalOpts,
         setSaveResult: props.setSaveResult,
         setConfirmationModalOpts: props.setConfirmationModalOpts,
-        checked: props.checked,
-        setChecked: props.setChecked,
         messageType: props.messageType,
         text: ""
       });

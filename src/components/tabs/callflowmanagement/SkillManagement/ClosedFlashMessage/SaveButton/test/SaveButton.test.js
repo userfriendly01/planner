@@ -1,6 +1,25 @@
 import SaveButton from "../SaveButton";
-import { UserFormButton } from "../../ClosedFlashMessage.Styles";
+import {
+  UserFormButton,
+  messageTypes
+} from "../../";
+import {
+  ActionTypes,
+  ExportButton
+} from "../../../";
+import {
+  useAdminState,
+  useAdminDispatch
+} from "context";
+import {
+  ModalOverlayStatuses,
+  timeouts
+} from "globals";
 import React from "react";
+import {
+  updateFlashMessage,
+  updateClosedMessage
+} from "services";
 import {
   act,
   initialTestState,
@@ -9,22 +28,7 @@ import {
   skillsList,
   waitFor
 } from "testUtils";
-import {
-  useAdminState,
-  useAdminDispatch
-} from "context";
-import {
-  updateFlashMessage,
-  updateClosedMessage
-} from "services";
-import {
-  ModalOverlayStatuses,
-  timeouts
-} from "globals";
-import {
-  ActionTypes,
-  messageTypes
-} from "../../ClosedFlashMessage.Interfaces";
+
 
 jest.mock("../../ClosedFlashMessage.Styles", () => ({
   UserFormButton: jest.fn()
@@ -35,30 +39,37 @@ jest.mock("context", () => ({
   useAdminDispatch: jest.fn()
 }));
 
+jest.mock("../../../", () => ({
+  ActionTypes: jest.requireActual("../../../").ActionTypes,
+  ConfirmationExportDiv: jest.requireActual("../../../").ConfirmationExportDiv,
+  ExportButton: jest.fn()
+}));
 jest.useFakeTimers();
 
 const mockDispatch = jest.fn();
 const mockSetAction = jest.fn();
 const mockSetSaveResult = jest.fn();
+const mockSetTableState = jest.fn();
 const mockSetConfirmationModalOpts = jest.fn();
-const mockSetChecked = jest.fn();
 const text = "I'm the new flash message.. save me!";
 const nNumber = "n0263786";
 const confirmationModalOpts = {
 
 };
 
-const renderComponent = (action, checked, messageType) => {
+const renderComponent = (action, selected, messageType) => {
   return render(<SaveButton
     action={action}
-    checked={checked}
     confirmationModalOpts={confirmationModalOpts}
     messageType={messageType}
+    tableState={{
+      selected: selected || []
+    }}
     text={text}
     setAction={mockSetAction}
-    setChecked={mockSetChecked}
     setConfirmationModalOpts={mockSetConfirmationModalOpts}
     setSaveResult={mockSetSaveResult}
+    setTableState={mockSetTableState}
   />);
 };
 
@@ -69,6 +80,7 @@ describe("<SaveButton /> ", () => {
     useAdminDispatch.mockReturnValue(mockDispatch);
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
+      ExportButton,
       UserFormButton
     });
   });
@@ -76,29 +88,29 @@ describe("<SaveButton /> ", () => {
     describe("isSingleSelection === true && action !== view", () => {
       test("should render button with single selection text", () => {
         const rendered = renderComponent(ActionTypes.EDIT, [skillsList[0]], messageTypes.CLOSED);
-        expect(UserFormButton.mock.calls[0][0].children).toBe("edit lscOBDialer1 Closed Message");
-        expect(rendered.container).not.toHaveTextContent("No Skills Checked");
+        expect(UserFormButton.mock.calls[0][0].children).toBe("Edit lscOBDialer1 Closed Message");
+        expect(rendered.container).not.toHaveTextContent("Select a skill to move forward");
       });
     });
     describe("isMultiSelection === true && action !== view", () => {
       test("should render button with multiple selection text", () => {
         const rendered = renderComponent(ActionTypes.EDIT, [skillsList[0], skillsList[1]], messageTypes.CLOSED);
-        expect(UserFormButton.mock.calls[0][0].children).toBe("edit 2 Closed Messages");
-        expect(rendered.container).not.toHaveTextContent("No Skills Checked");
+        expect(UserFormButton.mock.calls[0][0].children).toBe("Edit 2 Closed Messages");
+        expect(rendered.container).not.toHaveTextContent("Select a skill to move forward");
       });
     });
     describe("action === view", () => {
       test("button should not be rendered", () => {
         const rendered = renderComponent(ActionTypes.VIEW, [skillsList[0], skillsList[1]], messageTypes.CLOSED);
         expect(UserFormButton.mock.calls.length).toBe(0);
-        expect(rendered.container).not.toHaveTextContent("No Skills Checked");
+        expect(rendered.container).not.toHaveTextContent("Select a skill to move forward");
       });
     });
-    describe("no skills are checked", () => {
+    describe("no skills are selected", () => {
       test("button should not be rendered", () => {
         const rendered = renderComponent(ActionTypes.EDIT, [], messageTypes.CLOSED);
         expect(UserFormButton.mock.calls.length).toBe(0);
-        expect(rendered.container).toHaveTextContent("No Skills Checked");
+        expect(rendered.container).toHaveTextContent("Select a skill to move forward");
       });
     });
   });
@@ -112,7 +124,8 @@ describe("<SaveButton /> ", () => {
             saveButton();
           });
           expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
-          expect(mockSetConfirmationModalOpts.mock.calls[0][0].confirmationText).toBe("Are you sure you want to update the Flash Message for lscOBDialer1");
+          const confirmationDiv = render(mockSetConfirmationModalOpts.mock.calls[0][0].confirmationText).container;
+          expect(confirmationDiv).toHaveTextContent("Are you sure you want to update the Flash Message for lscOBDialer1?");
           expect(mockSetConfirmationModalOpts.mock.calls[0][0].open).toBe(true);
         });
         describe("onConfirm is called", () => {
@@ -145,10 +158,9 @@ describe("<SaveButton /> ", () => {
                 jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
                 await waitFor(() => {
                   expect(mockSetAction).toHaveBeenCalledTimes(1);
-                  expect(mockSetAction).toHaveBeenCalledWith(ActionTypes.VIEW);
+                  expect(mockSetAction).toHaveBeenCalledWith(null);
                   expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(2);
                   expect(mockSetSaveResult).toHaveBeenCalledTimes(3);
-                  expect(mockSetChecked).toHaveBeenCalledWith([]);
                   expect(mockSetSaveResult).toHaveBeenCalledTimes(3);
                   expect(mockSetSaveResult).toHaveBeenCalledWith({
                     message: "Processing...",
@@ -244,7 +256,6 @@ describe("<SaveButton /> ", () => {
                   status: ModalOverlayStatuses.FAIL
                 });
                 expect(mockSetAction).toHaveBeenCalledTimes(0);
-                expect(mockSetChecked).toHaveBeenCalledTimes(0);
                 expect(mockDispatch).toHaveBeenCalledTimes(0);
               });
             });
@@ -259,7 +270,8 @@ describe("<SaveButton /> ", () => {
             saveButton();
           });
           expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
-          expect(mockSetConfirmationModalOpts.mock.calls[0][0].confirmationText).toBe("Are you sure you want to update the Closed Message for lscOBDialer1");
+          const confirmationDiv = render(mockSetConfirmationModalOpts.mock.calls[0][0].confirmationText).container;
+          expect(confirmationDiv).toHaveTextContent("Are you sure you want to update the Closed Message for lscOBDialer1");
           expect(mockSetConfirmationModalOpts.mock.calls[0][0].open).toBe(true);
         });
         describe("onConfirm is called", () => {
@@ -292,10 +304,9 @@ describe("<SaveButton /> ", () => {
                 jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
                 await waitFor(() => {
                   expect(mockSetAction).toHaveBeenCalledTimes(1);
-                  expect(mockSetAction).toHaveBeenCalledWith(ActionTypes.VIEW);
+                  expect(mockSetAction).toHaveBeenCalledWith(null);
                   expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(2);
                   expect(mockSetSaveResult).toHaveBeenCalledTimes(3);
-                  expect(mockSetChecked).toHaveBeenCalledWith([]);
                   expect(mockSetSaveResult).toHaveBeenCalledTimes(3);
                   expect(mockSetSaveResult).toHaveBeenCalledWith({
                     message: "Processing...",
@@ -391,7 +402,6 @@ describe("<SaveButton /> ", () => {
                   status: ModalOverlayStatuses.FAIL
                 });
                 expect(mockSetAction).toHaveBeenCalledTimes(0);
-                expect(mockSetChecked).toHaveBeenCalledTimes(0);
                 expect(mockDispatch).toHaveBeenCalledTimes(0);
               });
             });
@@ -441,10 +451,9 @@ describe("<SaveButton /> ", () => {
                 jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
                 await waitFor(() => {
                   expect(mockSetAction).toHaveBeenCalledTimes(1);
-                  expect(mockSetAction).toHaveBeenCalledWith(ActionTypes.VIEW);
+                  expect(mockSetAction).toHaveBeenCalledWith(null);
                   expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(2);
                   expect(mockSetSaveResult).toHaveBeenCalledTimes(3);
-                  expect(mockSetChecked).toHaveBeenCalledWith([]);
                   expect(mockSetSaveResult).toHaveBeenCalledTimes(3);
                   expect(mockSetSaveResult).toHaveBeenCalledWith({
                     message: "Processing...",
@@ -540,7 +549,6 @@ describe("<SaveButton /> ", () => {
                   status: ModalOverlayStatuses.FAIL
                 });
                 expect(mockSetAction).toHaveBeenCalledTimes(0);
-                expect(mockSetChecked).toHaveBeenCalledTimes(0);
                 expect(mockDispatch).toHaveBeenCalledTimes(0);
               });
             });
@@ -588,10 +596,9 @@ describe("<SaveButton /> ", () => {
                 jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
                 await waitFor(() => {
                   expect(mockSetAction).toHaveBeenCalledTimes(1);
-                  expect(mockSetAction).toHaveBeenCalledWith(ActionTypes.VIEW);
+                  expect(mockSetAction).toHaveBeenCalledWith(null);
                   expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(2);
                   expect(mockSetSaveResult).toHaveBeenCalledTimes(3);
-                  expect(mockSetChecked).toHaveBeenCalledWith([]);
                   expect(mockSetSaveResult).toHaveBeenCalledTimes(3);
                   expect(mockSetSaveResult).toHaveBeenCalledWith({
                     message: "Processing...",
@@ -686,7 +693,6 @@ describe("<SaveButton /> ", () => {
                   status: ModalOverlayStatuses.FAIL
                 });
                 expect(mockSetAction).toHaveBeenCalledTimes(0);
-                expect(mockSetChecked).toHaveBeenCalledTimes(0);
                 expect(mockDispatch).toHaveBeenCalledTimes(0);
               });
             });
@@ -694,14 +700,10 @@ describe("<SaveButton /> ", () => {
         });
       });
     });
-    describe("messageType is undefined", () => {
+    describe("action is undefined", () => {
       test("nothing happens", () => {
         renderComponent(undefined, [skillsList[0]], messageTypes.CLOSED);
-        const saveButton = UserFormButton.mock.calls[0][0].onClick;
-        act(() => {
-          saveButton();
-        });
-        expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(0);
+        expect(UserFormButton.mock.calls.length).toBe(0);
       });
     });
   });

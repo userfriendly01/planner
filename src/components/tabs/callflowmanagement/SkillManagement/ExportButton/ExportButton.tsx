@@ -8,7 +8,7 @@ import { ExcelExport } from "@progress/kendo-react-excel-export";
 
 const ExportButton = (props: SkillsExportButtonProps) => {
   const {
-    checked
+    selected
   } = props;
 
   const _export = React.useRef(null);
@@ -32,7 +32,7 @@ const ExportButton = (props: SkillsExportButtonProps) => {
       }
     ];
     if (_export.current !== null) {
-      _export.current.save(checked, columns);
+      _export.current.save(selected, columns);
     }
   };
 

@@ -18,7 +18,6 @@ import {
   act
 } from "testUtils";
 import { Modal } from "@mui/material";
-import { messageTypes } from "../../ClosedFlashMessage/ClosedFlashMessage.Interfaces";
 
 jest.mock("components", () => ({
   CallFlowConfirmationModal: jest.fn(),
@@ -41,7 +40,7 @@ const initialTableState = {
   flashFilter: false,
   profiles: [],
   searchBy: "",
-  selected: null
+  selected: []
 };
 
 const confirmationModalOpts = {
@@ -79,13 +78,10 @@ describe("CallFlowConfirmationModal", () => {
     test("initial form renders as expected", () => {
       render(<CallFlowManagementWrapper />);
       expectOnlyPassedProps(SkillsContainer, {
-        checked: [],
         tableState: initialTableState
       }, getLastInstanceCalled(SkillsContainer));
       expectOnlyPassedProps(ActionContainer, {
-        checked: [],
-        confirmationModalOpts,
-        messageType: messageTypes.CLOSED
+        confirmationModalOpts
       }, getLastInstanceCalled(ActionContainer));
       expectOnlyPassedProps(Dropdown, {
         label: "What would you like to do?",
@@ -107,7 +103,6 @@ describe("CallFlowConfirmationModal", () => {
           test("filtered list is set to only skills with profiles matching userProfileId", () => {
             render(<CallFlowManagementWrapper />);
             expectOnlyPassedProps(SkillsContainer, {
-              checked: [],
               tableState: initialTableState
             }, getLastInstanceCalled(SkillsContainer));
           });
@@ -125,7 +120,6 @@ describe("CallFlowConfirmationModal", () => {
           test("filtered list is set to an empty array", () => {
             render(<CallFlowManagementWrapper />);
             expectOnlyPassedProps(SkillsContainer, {
-              checked: [],
               tableState: {
                 ...initialTableState,
                 filteredList: []
@@ -139,7 +133,6 @@ describe("CallFlowConfirmationModal", () => {
           test("filtered list is equal to full skills state", () => {
             render(<CallFlowManagementWrapper />);
             expectOnlyPassedProps(SkillsContainer, {
-              checked: [],
               tableState: {
                 ...initialTableState,
                 filteredList: skillsList
@@ -162,7 +155,6 @@ describe("CallFlowConfirmationModal", () => {
               });
             });
             expectOnlyPassedProps(SkillsContainer, {
-              checked: [],
               tableState: {
                 ...initialTableState,
                 profiles: [{
@@ -188,7 +180,6 @@ describe("CallFlowConfirmationModal", () => {
           });
         });
         expectOnlyPassedProps(SkillsContainer, {
-          checked: [],
           tableState: {
             ...initialTableState,
             searchBy: "bsc",
@@ -209,7 +200,6 @@ describe("CallFlowConfirmationModal", () => {
           });
         });
         expectOnlyPassedProps(SkillsContainer, {
-          checked: [],
           tableState: {
             ...initialTableState,
             closedFilter: true,
@@ -231,7 +221,6 @@ describe("CallFlowConfirmationModal", () => {
           });
         });
         expectOnlyPassedProps(SkillsContainer, {
-          checked: [],
           tableState: {
             ...initialTableState,
             flashFilter: true,
@@ -242,18 +231,7 @@ describe("CallFlowConfirmationModal", () => {
     });
   });
   describe("view is changed", () => {
-    test("FlashMessageView is rendered", () => {
-      render(<CallFlowManagementWrapper />);
-      const updateView = Dropdown.mock.calls[1][0].updateValue;
-      act(() => {
-        updateView(null, views[1]);
-      });
-      expectOnlyPassedProps(ActionContainer, {
-        checked: [],
-        confirmationModalOpts,
-        messageType: messageTypes.FLASH
-      }, getLastInstanceCalled(ActionContainer));
-    });
+    //No other options to change to at this time - shell for a future test
   });
   describe("confirmationModalOpts.open === true", () => {
     test("CallFlowConfirmationModal should be rendered", () => {

@@ -5,54 +5,62 @@ import {
 } from "components";
 import { FormControlsContainer } from "../Skills.Styles";
 import {
-  ActionTypes,
+  propertyOptions,
   ActionContainerProps
 } from "../Skills.Interfaces";
 import { messageTypes } from "../ClosedFlashMessage/ClosedFlashMessage.Interfaces";
 
 const ActionContainer = (props: ActionContainerProps) => {
   const {
-    checked,
     confirmationModalOpts,
     tableState,
-    setChecked,
     setConfirmationModalOpts,
-    setSaveResult
+    setSaveResult,
+    setTableState
   } = props;
 
-  const propertyOptions = [
-    {
-      label: "Closed Message",
-      value: messageTypes.CLOSED,
-      actions: [
-        ActionTypes[2],
-        ActionTypes[3]
-      ]
-    },
-    {
-      label: "Flash Message",
-      value: messageTypes.FLASH,
-      actions: [
-        ActionTypes[2],
-        ActionTypes[3]
-      ]
-    }
-  ];
-
-  const [ text, setText ] = React.useState("");
-  const [ propertySelection, setPropertySelection ] = React.useState(propertyOptions[0]);
+  const [ propertySelection, setPropertySelection ] = React.useState(propertyOptions.CLOSED_MESSAGE);
   const [ action, setAction ] = React.useState(null);
-  console.log("**Action", action);
-  console.log("**ActionTypes", ActionTypes);
 
+  const getPropertySelectionView = () => {
+    switch(propertySelection.label){
+      case propertyOptions.CLOSED_MESSAGE.label:
+        return <MessageContainer
+          action={action}
+          confirmationModalOpts={confirmationModalOpts}
+          tableState={tableState}
+          messageType={propertySelection.value}
+          setAction={setAction}
+          setTableState={setTableState}
+          setConfirmationModalOpts={setConfirmationModalOpts}
+          setSaveResult={setSaveResult}
+        />;
+      case propertyOptions.FLASH_MESSAGE.label:
+        return <MessageContainer
+          action={action}
+          confirmationModalOpts={confirmationModalOpts}
+          tableState={tableState}
+          messageType={propertySelection.value}
+          setAction={setAction}
+          setTableState={setTableState}
+          setConfirmationModalOpts={setConfirmationModalOpts}
+          setSaveResult={setSaveResult}
+        />;
+      default:
+        return null;
+    }
+  };
   return (
     <FormControlsContainer>
       <h1>{propertySelection.label}</h1>
       <Dropdown
         label="What are you changing?"
         value={propertySelection}
-        options={propertyOptions}
-        updateValue={(event: any, property: any) => setPropertySelection(property)}
+        options={Object.values(propertyOptions)}
+        updateValue={(event: any, property: any) => {
+          setPropertySelection(property);
+          if(action) { setAction(null); }
+        }}
         styles={{
           margin: "10 0",
           width: "400px"
@@ -68,16 +76,7 @@ const ActionContainer = (props: ActionContainerProps) => {
           width: "400px"
         }}
       />
-      {action === ActionTypes[2] &&
-      <MessageContainer
-        checked={checked}
-        confirmationModalOpts={confirmationModalOpts}
-        tableState={tableState}
-        setChecked={setChecked}
-        setConfirmationModalOpts={setConfirmationModalOpts}
-        setSaveResult={setSaveResult}
-      />
-      }
+      {getPropertySelectionView()}
     </FormControlsContainer>
   );
 };

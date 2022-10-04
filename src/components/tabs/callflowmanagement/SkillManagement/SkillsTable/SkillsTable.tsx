@@ -18,28 +18,12 @@ import React, { ReactElement } from "react";
 
 const SkillsTable = (props: SkillsTableProps) => {
   const {
-    checked,
     tableState,
-    setChecked,
     setTableState
   } = props;
 
-  React.useEffect(() => {
-    const skill = tableState.filteredList.find((s: Skill) => s.name === tableState.selected?.name);
-    if(skill && JSON.stringify(skill) !== JSON.stringify(tableState.selected)){
-      setTableState({
-        ...tableState,
-        selected: skill
-      });
-    } else if(!skill) {
-      setTableState({
-        ...tableState,
-        selected: tableState.filteredList[0]
-      });
-    }
-  }, [tableState]);
-
-  const allSkillsSelected = checked.length === tableState.filteredList.length && tableState.filteredList.length > 0;
+  console.log("Skills table is re-rendered: ", tableState);
+  const allSkillsSelected = tableState.selected.length === tableState.filteredList.length && tableState.filteredList.length > 0;
 
   const getProfilesForSkill = (skill: Skill) => {
     const profileDivs: ReactElement[] = [];
@@ -53,20 +37,32 @@ const SkillsTable = (props: SkillsTableProps) => {
     return profileDivs;
   };
 
-  const handleSetChecked = (skill: Skill, isSelected: boolean) => {
+  const handleSetSelected = (skill: Skill, isSelected: boolean) => {
     if(isSelected){
-      setChecked(checked.filter(s => s.name !== skill.name));
+      setTableState({
+        ...tableState,
+        selected: tableState.selected.filter(s => s.name !== skill.name)
+      });
     } else {
-      setChecked([...checked, skill ]);
+      setTableState({
+        ...tableState,
+        selected: [...tableState.selected, skill ]
+      });
     }
   };
 
 
   const handleSelectAll = () => {
     if(allSkillsSelected){
-      setChecked([]);
+      setTableState({
+        ...tableState,
+        selected: []
+      });
     } else {
-      setChecked(tableState.filteredList);
+      setTableState({
+        ...tableState,
+        selected: tableState.filteredList
+      });
     }
   };
 
@@ -104,17 +100,13 @@ const SkillsTable = (props: SkillsTableProps) => {
         </thead>
         <tbody>
           {tableState.filteredList.map((skill: Skill) => {
-            const isChecked = checked.some((s: Skill) => s.name === skill.name);
-            const isSelected = tableState.selected?.name === skill.name;
+            const isSelected = tableState.selected.some((s: Skill) => s.name === skill.name);
             return (
-              <CustomTableRow key={skill.name}  selected={isSelected} onClick={() => setTableState({
-                ...tableState,
-                selected: skill
-              })}>
+              <CustomTableRow key={skill.name}  selected={isSelected} onClick={() => handleSetSelected(skill, isSelected)}>
                 <CustomTableData><TableText>
                   <Checkbox
-                    onClick={() => handleSetChecked(skill, isChecked)}
-                    checked={isChecked}
+                    onClick={() => handleSetSelected(skill, isSelected)}
+                    checked={isSelected}
                     style={{ padding: "0px" }}
                   />
                 </TableText></CustomTableData>
@@ -122,14 +114,18 @@ const SkillsTable = (props: SkillsTableProps) => {
                 <CustomTableData><TableText>{getProfilesForSkill(skill).map((d: ReactElement) => d)}</TableText></CustomTableData>
                 <CustomTableData>
                   {skill.flashMessage &&
-                    <Tooltip title={<h1 style={{ fontSize: "15px" }}>{skill.flashMessage}</h1>}>
+                    <Tooltip
+                      placement="right"
+                      title={<h1 style={{ fontSize: "15px" }}>{skill.flashMessage}</h1>}>
                       <TableIcon><Circle fontSize="small"/></TableIcon>
                     </Tooltip>
                   }
                 </CustomTableData>
                 <CustomTableData>
                   {skill.closedMessage &&
-                    <Tooltip title={<h1 style={{ fontSize: "15px" }}>{skill.closedMessage}</h1>}>
+                    <Tooltip
+                      placement="right"
+                      title={<h1 style={{ fontSize: "15px" }}>{skill.closedMessage}</h1>}>
                       <TableIcon><Circle fontSize="small"/></TableIcon>
                     </Tooltip>
                   }
