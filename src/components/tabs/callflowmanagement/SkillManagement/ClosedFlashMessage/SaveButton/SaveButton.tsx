@@ -9,14 +9,12 @@ import {
   timeouts
 } from "globals";
 import {
+  ConfirmationDiv,
+  ConfirmationExportDiv,
   SaveButtonProps,
   UserFormButton
 } from "../";
-import {
-  ActionTypes,
-  ConfirmationExportDiv,
-  ExportButton
-} from "../../";
+import { ActionTypes } from "../../";
 
 const SaveButton = (props: SaveButtonProps) => {
   const {
@@ -63,15 +61,14 @@ const SaveButton = (props: SaveButtonProps) => {
       }));
       handleResults(results);
     };
-    const confirmationText = <div>
+    const confirmationText = <ConfirmationDiv>
       {`Are you sure you want to update the ${messageType.name} for ${!isMultiSelection ? tableState.selected[0].name + "?" : tableState.selected.length + " skills?"}`}
       {tableState.selected.some(s => s[messageType.variable]) &&
         <ConfirmationExportDiv>
-          You will be overridding existing {messageType.name}&apos;s. Click the export button to save this data for future use.
-          <ExportButton selected={tableState.selected} />
+          You will be overriding existing {messageType.name}s. Click the export button to save this data for future use.
         </ConfirmationExportDiv>
       }
-    </div>;
+    </ConfirmationDiv>;
 
     setConfirmationModalOpts({
       open: true,
@@ -95,15 +92,14 @@ const SaveButton = (props: SaveButtonProps) => {
       handleResults(results);
     };
 
-    const confirmationText = <div>
+    const confirmationText = <ConfirmationDiv>
       {`Are you sure you want to delete the ${messageType.name} for ${!isMultiSelection ? tableState.selected[0].name + "?" : tableState.selected.length + " skills?"}`}
       {tableState.selected.some(s => s[messageType.variable]) &&
       <ConfirmationExportDiv>
-        You will be deleting existing {messageType.name}&apos;s. Click the export button to save this data for future use.
-        <ExportButton selected={tableState.selected} />
+        You will be deleting existing {messageType.name}s. Click the export button to save this data for future use.
       </ConfirmationExportDiv>
       }
-    </div>;
+    </ConfirmationDiv>;
 
     setConfirmationModalOpts({
       open: true,

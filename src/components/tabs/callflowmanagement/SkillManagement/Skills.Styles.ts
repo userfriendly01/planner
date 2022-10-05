@@ -139,9 +139,9 @@ export const StyledExportButton = styled(StyledButton)`
   width: 100px;
 `;
 
-export const ConfirmationExportDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 10px 0px;
-`;
+// export const ConfirmationExportDiv = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   margin: 10px 0px;
+// `;

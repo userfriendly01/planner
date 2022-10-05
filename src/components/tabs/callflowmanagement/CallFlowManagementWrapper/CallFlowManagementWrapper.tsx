@@ -137,6 +137,7 @@ const CallFlowContainer = () => {
       {view === views.find(v => v.value === views[0].value) && SkillsManagementView}
       <Modal open={confirmationModalOpts.open}>
         <CallFlowConfirmationModal
+          tableState={tableState}
           confirmationModalOpts={confirmationModalOpts}
           saveResult={saveResult}
         />

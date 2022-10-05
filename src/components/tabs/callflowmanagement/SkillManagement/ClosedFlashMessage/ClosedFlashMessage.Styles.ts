@@ -1,6 +1,19 @@
 import { StyledButton } from "components";
 import styled from "styled-components";
 
+export const ConfirmationDiv = styled.div`
+  font-weight: bold;
+`;
+
+export const ConfirmationExportDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px 0px;
+  font-size: 15px;
+  font-weight: normal;
+`;
+
 export const MessageBoxWrapper = styled.div`
   display: flex;
   width: 600px;

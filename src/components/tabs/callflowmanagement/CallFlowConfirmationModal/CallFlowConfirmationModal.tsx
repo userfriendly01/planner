@@ -7,12 +7,14 @@ import {
 import { CallFlowConfirmationModalProps } from "./CallFlowConfirmationModal.Interfaces";
 import {
   ModalOverlay,
-  PaperContainer
+  PaperContainer,
+  ExportButton
 } from "components";
 import React from "react";
 
 const CallFlowConfirmationModal = (props: CallFlowConfirmationModalProps) => {
   const {
+    tableState,
     confirmationModalOpts,
     saveResult
   } = props;
@@ -35,6 +37,7 @@ const CallFlowConfirmationModal = (props: CallFlowConfirmationModalProps) => {
           <Button onClick={handleClose}>
             Cancel
           </Button>
+          <ExportButton selected={tableState.selected}/>
           <Button onClick={onConfirm}>
             Confirm
           </Button>

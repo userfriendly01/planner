@@ -3,10 +3,7 @@ import {
   UserFormButton,
   messageTypes
 } from "../../";
-import {
-  ActionTypes,
-  ExportButton
-} from "../../../";
+import { ActionTypes } from "../../../";
 import {
   useAdminState,
   useAdminDispatch
@@ -29,20 +26,20 @@ import {
   waitFor
 } from "testUtils";
 
-
-jest.mock("../../ClosedFlashMessage.Styles", () => ({
-  UserFormButton: jest.fn()
-}));
-
 jest.mock("context", () => ({
   useAdminState: jest.fn(),
   useAdminDispatch: jest.fn()
 }));
 
 jest.mock("../../../", () => ({
-  ActionTypes: jest.requireActual("../../../").ActionTypes,
-  ConfirmationExportDiv: jest.requireActual("../../../").ConfirmationExportDiv,
-  ExportButton: jest.fn()
+  ActionTypes: jest.requireActual("../../../").ActionTypes
+}));
+
+jest.mock("../../", () => ({
+  UserFormButton: jest.fn(),
+  messageTypes: jest.requireActual("../../").messageTypes,
+  ConfirmationDiv: jest.requireActual("../../").ConfirmationDiv,
+  ConfirmationExportDiv: jest.requireActual("../../").ConfirmationExportDiv
 }));
 jest.useFakeTimers();
 
@@ -80,7 +77,6 @@ describe("<SaveButton /> ", () => {
     useAdminDispatch.mockReturnValue(mockDispatch);
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
-      ExportButton,
       UserFormButton
     });
   });
@@ -704,8 +700,13 @@ describe("<SaveButton /> ", () => {
     });
     describe("action is undefined", () => {
       test("nothing happens", () => {
-        renderComponent(undefined, [skillsList[0]], messageTypes.CLOSED);
-        expect(UserFormButton.mock.calls.length).toBe(0);
+        renderComponent({ label: "Undefined Action" }, [skillsList[0]], messageTypes.CLOSED);
+        expect(UserFormButton.mock.calls.length).toBe(1);
+        const saveButton = UserFormButton.mock.calls[0][0].onClick;
+        act(() => {
+          saveButton();
+        });
+        expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(0);
       });
     });
   });

@@ -28,6 +28,7 @@ export const ConfirmationText = styled.h2`
 
 export const ModalContainer = styled(FlexColumn)`
   position: absolute;
+  min-width: 650px;
   top: 50%;
   left: 50%;
   padding: 2%;

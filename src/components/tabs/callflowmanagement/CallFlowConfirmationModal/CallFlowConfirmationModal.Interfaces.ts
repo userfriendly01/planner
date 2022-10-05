@@ -1,4 +1,5 @@
 import { ModalOverlayStatuses } from "globals";
+import { TableState } from "../CallFlowManagementWrapper/CallFlowManagement.Interfaces";
 
 export interface ConfirmationModalOptsProps {
   open: boolean,
@@ -15,5 +16,6 @@ export interface SaveResultProps {
 
 export interface CallFlowConfirmationModalProps {
   confirmationModalOpts: ConfirmationModalOptsProps,
-  saveResult: SaveResultProps
+  saveResult: SaveResultProps,
+  tableState: TableState
 }

@@ -2,6 +2,7 @@ import React from "react";
 import CallFlowConfirmationModal from "../CallFlowConfirmationModal";
 import {
   ModalOverlay,
+  ExportButton,
   StyledButton
 } from "components";
 import { ModalOverlayStatuses } from "globals";
@@ -12,6 +13,7 @@ import {
 } from "testUtils";
 
 jest.mock("components", () => ({
+  ExportButton: jest.fn(),
   ModalOverlay: jest.fn(),
   PaperContainer: jest.requireActual("components").PaperContainer,
   StyledButton: jest.fn()
@@ -29,10 +31,15 @@ const confirmationModalOpts = {
   }
 };
 
+const tableState = {
+  selected: []
+};
+
 describe("CallFlowConfirmationModal",() => {
   beforeEach(() => {
     jest.clearAllMocks();
     setupMockedComponents({
+      ExportButton,
       ModalOverlay,
       StyledButton
     });
@@ -43,7 +50,7 @@ describe("CallFlowConfirmationModal",() => {
       message: null
     };
     test("initial form renders as expected", () => {
-      const rendered = render(<CallFlowConfirmationModal saveResult={saveResult} confirmationModalOpts={confirmationModalOpts} />);
+      const rendered = render(<CallFlowConfirmationModal saveResult={saveResult} confirmationModalOpts={confirmationModalOpts} tableState={tableState}/>);
       expect(rendered.container).toHaveTextContent(confirmationModalOpts.confirmationText);
       expect(ModalOverlay.mock.calls.length).toBe(0);
       expect(StyledButton.mock.calls.length).toBe(2);
@@ -51,6 +58,7 @@ describe("CallFlowConfirmationModal",() => {
       expect(StyledButton.mock.calls[0][0].children).toBe("Cancel");
       expect(StyledButton.mock.calls[1][0].onClick).toBe(mockOnConfirm);
       expect(StyledButton.mock.calls[1][0].children).toBe("Confirm");
+      expect(ExportButton.mock.calls.length).toBe(1);
     });
     describe("saveResult.status !== null", () => {
       const saveResult = {
@@ -58,7 +66,7 @@ describe("CallFlowConfirmationModal",() => {
         message: "Hold your horses"
       };
       test("ModalOverlay is rendered", () => {
-        render(<CallFlowConfirmationModal saveResult={saveResult} confirmationModalOpts={confirmationModalOpts} />);
+        render(<CallFlowConfirmationModal saveResult={saveResult} confirmationModalOpts={confirmationModalOpts}  tableState={tableState}/>);
         expect(StyledButton.mock.calls.length).toBe(2);
         expect(ModalOverlay.mock.calls.length).toBe(1);
         expect(ModalOverlay.mock.calls[0][0]).toStrictEqual({
@@ -75,7 +83,7 @@ describe("CallFlowConfirmationModal",() => {
       message: null
     };
     test("mockHandleClose is called", () => {
-      render(<CallFlowConfirmationModal saveResult={saveResult} confirmationModalOpts={confirmationModalOpts} />);
+      render(<CallFlowConfirmationModal saveResult={saveResult} confirmationModalOpts={confirmationModalOpts}  tableState={tableState}/>);
       const confirmhandleClose = StyledButton.mock.calls[0][0].onClick;
       act(() => {
         confirmhandleClose();
@@ -89,7 +97,7 @@ describe("CallFlowConfirmationModal",() => {
       message: null
     };
     test("mockOnConfirm is called", () => {
-      render(<CallFlowConfirmationModal saveResult={saveResult} confirmationModalOpts={confirmationModalOpts} />);
+      render(<CallFlowConfirmationModal saveResult={saveResult} confirmationModalOpts={confirmationModalOpts}  tableState={tableState}/>);
       const confirmOnClick = StyledButton.mock.calls[1][0].onClick;
       act(() => {
         confirmOnClick();
