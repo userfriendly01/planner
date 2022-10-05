@@ -64,7 +64,6 @@ const CallFlowContainer = () => {
 
   useEffect(() => {
     let filteredList = state.skillContext.skills.slice();
-    console.log("CallflowManagementWrapper useEffect is re-run", filteredList);
     //filter by profile
     if(isAdmin) {
       if(tableState.profiles.length > 0){

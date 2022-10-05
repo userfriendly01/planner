@@ -29,8 +29,6 @@ const SaveButton = (props: SaveButtonProps) => {
     setTableState
   } = props;
 
-  console.log("**Message type!", messageType);
-
   const state = useAdminState();
   const dispatch = useAdminDispatch();
   const nNumber = state.userContext.pingIdentity.sub;

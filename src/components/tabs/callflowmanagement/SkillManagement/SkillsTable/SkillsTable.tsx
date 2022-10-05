@@ -22,7 +22,6 @@ const SkillsTable = (props: SkillsTableProps) => {
     setTableState
   } = props;
 
-  console.log("Skills table is re-rendered: ", tableState);
   const allSkillsSelected = tableState.selected.length === tableState.filteredList.length && tableState.filteredList.length > 0;
 
   const getProfilesForSkill = (skill: Skill) => {
