@@ -8,8 +8,7 @@ import {
   act,
   expectOnlyPassedProps,
   render,
-  setupMockedComponents,
-  waitfor
+  setupMockedComponents
 } from "testUtils";
 import { propertyOptions } from "../../Skills.Interfaces";
 import {
@@ -97,22 +96,20 @@ describe("<ActionContainer/>", () => {
       });
     });
     describe("Action is defined", () => {
-      test.only("action should be reset", () => {
+      test("action should be reset", () => {
         renderComponent();
-        const updateAction = Dropdown.mock.calls[1][0].updateValue;
-        const updateProperty = Dropdown.mock.calls[0][0].updateValue;
         act(() => {
+          const updateAction = Dropdown.mock.calls[1][0].updateValue;
           updateAction(null, ActionTypes.EDIT);
+        });
+        act(() => {
+          const updateProperty = Dropdown.mock.calls[2][0].updateValue;
           updateProperty(null, propertyOptions.FLASH_MESSAGE);
         });
-        // act(() => {
-        //   updateProperty(null, propertyOptions.FLASH_MESSAGE);
-        // });
-        // expect(Dropdown.mock.calls.length).toBe(4);
-        // expect(Dropdown.mock.calls[3][0]).toBe("butts");
-        // expect(Dropdown.mock.calls[4][0].value).toBe(propertyOptions.FLASH_MESSAGE);
-        // expect(Dropdown.mock.calls[5][0].value).toBe(null);
-        // expect(Dropdown.mock.calls[5][0].options).toBe(propertyOptions.FLASH_MESSAGE.actions);
+        expect(Dropdown.mock.calls.length).toBe(6);
+        expect(Dropdown.mock.calls[4][0].value).toBe(propertyOptions.FLASH_MESSAGE);
+        expect(Dropdown.mock.calls[5][0].value).toBe(null);
+        expect(Dropdown.mock.calls[5][0].options).toBe(propertyOptions.FLASH_MESSAGE.actions);
       });
     });
   });
