@@ -58,6 +58,7 @@ const ActionContainer = (props: ActionContainerProps) => {
         options={Object.values(propertyOptions)}
         updateValue={(event: any, property: any) => {
           setPropertySelection(property);
+          console.warn("Action?", action);
           if(action) { setAction(null); }
         }}
         styles={{
