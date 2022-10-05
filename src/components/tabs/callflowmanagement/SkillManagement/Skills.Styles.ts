@@ -138,10 +138,3 @@ export const StyledExportButton = styled(StyledButton)`
   height: 40px;
   width: 100px;
 `;
-
-// export const ConfirmationExportDiv = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   margin: 10px 0px;
-// `;
