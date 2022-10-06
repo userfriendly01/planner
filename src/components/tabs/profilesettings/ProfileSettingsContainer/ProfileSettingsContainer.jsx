@@ -1,6 +1,7 @@
 import {
   DialListTable,
   Directory,
+  Dropdown,
   ProfileDropDown
 } from "components";
 import { useAdminState } from "context";
@@ -13,6 +14,17 @@ import {
   sortDirectoryListEntriesByName
 } from "utils";
 
+const views = [
+  {
+    value: "PROFILE_DIRECTORY",
+    label: "Profile Directory"
+  },
+  {
+    value: "PROFILE_SETTINGS",
+    label: "Profile Settings"
+  }
+]
+
 const ProfileSettingsContainerDiv = styled.div`
   height: calc(100vh - 96px);
   padding: 1%;
@@ -24,6 +36,7 @@ const ProfileSettingsMessage = styled.div`
 `;
 
 const ProfileSettingsContainer = () => {
+  const [ view, setView ] = React.useState(views[0]);
 
   const initialProfileState = {
     dialList: [],
@@ -31,6 +44,7 @@ const ProfileSettingsContainer = () => {
     message: "Please select a profile",
     profileId: null
   };
+
   const [profileSettingsState, setProfileSettingsState] = useState(initialProfileState);
 
   const profilesFromContextMinusGoP = useAdminState().profileContext.profiles.filter(({ profile_id }) => profile_id !== 0);
@@ -68,37 +82,56 @@ const ProfileSettingsContainer = () => {
 
   return(
     <ProfileSettingsContainerDiv>
-      <ProfileDropDown
-        availableProfiles={profilesFromContextMinusGoP}
-        profileId={profileId}
-        updateProfile={fetchProfileInformation}
+
+      <Dropdown
+        label="What would you like to do?"
+        value={view}
+        options={views}
+        updateValue={(event, view) => setView(view)}
+        styles={{
+          margin: "40 0 60 0",
+          width: "500px"
+        }}
       />
       {
-        profileId !== null && profileId !== ""
+        view === 'PROFILE_DIRECTORY'
           ?
           <div>
-            <DialListTable
-              dialList={dialList}
+            <ProfileDropDown
+              availableProfiles={profilesFromContextMinusGoP}
               profileId={profileId}
-              refreshProfileData={() => fetchProfileInformation(profileId)}
+              updateProfile={fetchProfileInformation}
             />
-            <Directory
-              directory={directoryList}
-              profileId={profileId}
-              refreshProfileData={() => fetchProfileInformation(profileId)}
-            />
+            {
+              profileId !== null && profileId !== ""
+                ?
+                <div>
+                  <DialListTable
+                    dialList={dialList}
+                    profileId={profileId}
+                    refreshProfileData={() => fetchProfileInformation(profileId)}
+                  />
+                  <Directory
+                    directory={directoryList}
+                    profileId={profileId}
+                    refreshProfileData={() => fetchProfileInformation(profileId)}
+                  />
+                </div>
+                :
+                null
+            }
+            {
+              message
+                ?
+                <ProfileSettingsMessage data-testid="message">
+                  <h1>{message}</h1>
+                </ProfileSettingsMessage>
+                :
+                null
+            }
           </div>
           :
-          null
-      }
-      {
-        message
-          ?
-          <ProfileSettingsMessage data-testid="message">
-            <h1>{message}</h1>
-          </ProfileSettingsMessage>
-          :
-          null
+          <h1>hello</h1>
       }
     </ProfileSettingsContainerDiv>
   );
