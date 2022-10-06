@@ -3,7 +3,6 @@ import {
   Directory,
   Dropdown,
   ProfileDropDown,
-  AddProfileButton,
   ProfileSettingsTable
 } from "components";
 import { useAdminState } from "context";
@@ -35,6 +34,13 @@ const ProfileSettingsContainerDiv = styled.div`
 const ProfileSettingsMessage = styled.div`
   margin-top: 25vh;
   text-align: center;
+`;
+
+const CallflowWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0px 20px;
 `;
 
 const ProfileSettingsContainer = () => {
@@ -84,17 +90,18 @@ const ProfileSettingsContainer = () => {
 
   return(
     <ProfileSettingsContainerDiv>
-
-      <Dropdown
-        label="What would you like to do?"
-        value={view}
-        options={views}
-        updateValue={(event, view) => setView(view)}
-        styles={{
-          margin: "40 0 60 0",
-          width: "500px"
-        }}
-      />
+      <CallflowWrapper>
+        <Dropdown
+          label="What would you like to do?"
+          value={view}
+          options={views}
+          updateValue={(event, view) => setView(view)}
+          styles={{
+            margin: "40 0 60 0",
+            width: "500px"
+          }}
+        />
+      </CallflowWrapper>
       {
         view.value === "PROFILE_DIRECTORY"
           ?
@@ -134,7 +141,6 @@ const ProfileSettingsContainer = () => {
           </div>
           :
           <div>
-            <AddProfileButton />
             <ProfileSettingsTable 
               profileList={profilesFromContextMinusGoP}
             />
