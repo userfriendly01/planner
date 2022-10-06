@@ -2,6 +2,7 @@ import {
   initialState,
   reducer
 } from "context";
+import { initialTestState, skillsList } from "../../../__test__/testConsts";
 
 describe("reducer", () => {
   describe("invalid action", () => {
@@ -337,7 +338,7 @@ describe("reducer", () => {
     });
   });
   describe("loadSkills", () => {
-    test("should update skilContext.taskrouterSkills to payload", () => {
+    test("should update skilContext.skills to payload", () => {
       const payload = [
         {
           skill: "psu-l1",
@@ -357,7 +358,7 @@ describe("reducer", () => {
         payload
       };
       const result = reducer(initialState, action);
-      expect(result.skillContext.taskrouterSkills).toEqual(payload);
+      expect(result.skillContext.skills).toEqual(payload);
     });
   });
   describe("loadUserData", () => {
@@ -373,6 +374,20 @@ describe("reducer", () => {
       };
       const result = reducer(initialState, action);
       expect(result.userContext).toEqual(payload);
+    });
+  });
+  describe("setAuthenticationOnUser", () => {
+    test("should set the userContext data", () => {
+      const action = { type: "setAuthenticationOnUser" };
+      const result = reducer(initialTestState, action);
+      expect(result).toEqual({
+        ...initialTestState,
+        userContext: {
+          ...initialTestState.userContext,
+          profileId: 12,
+          isAdmin: false
+        }
+      });
     });
   });
   describe("resettingSkills", () => {
@@ -493,6 +508,21 @@ describe("reducer", () => {
           attributes: "new"
         }
       ]);
+    });
+  });
+  describe("updateSkills", () => {
+    test("should set the skills array on skillContext", () => {
+      const action = {
+        type: "updateSkills",
+        payload: skillsList
+      };
+      const result = reducer(initialState, action);
+      expect(result).toEqual({
+        ...initialState,
+        skillContext: {
+          skills: skillsList
+        }
+      });
     });
   });
 });

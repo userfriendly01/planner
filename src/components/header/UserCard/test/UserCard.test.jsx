@@ -1,9 +1,9 @@
 import UserCard from "../UserCard";
 import { AccountBox } from "@mui/icons-material";
-import { initialState } from "context";
 import React from "react";
 import {
   expectMockedComponent,
+  initialTestState,
   render,
   setupMockedComponents
 } from "testUtils";
@@ -22,7 +22,7 @@ describe("<UserCard />", () => {
   });
 
   test("should render a div with correct name and Account Box icon.", () => {
-    const state = initialState;
+    const state = initialTestState;
     state.userContext.pingIdentity.displayName = "John Doe";
     const rendered = render(<UserCard />, state);
     expectMockedComponent(rendered, { AccountBox });

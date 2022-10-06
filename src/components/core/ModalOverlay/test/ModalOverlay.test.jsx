@@ -1,5 +1,5 @@
 import ModalOverlay from "../ModalOverlay";
-import { modalOverlayStatuses } from "globals";
+import { ModalOverlayStatuses } from "globals";
 import React from "react";
 import {
   fireEvent, render
@@ -10,7 +10,7 @@ const mockHandleClose = jest.fn();
 describe("<ModalOverlay />", () => {
   describe("status = 'saving'", () => {
     test("should display 'whatever'", () => {
-      const rendered = render(<ModalOverlay status={modalOverlayStatuses.SAVING} message="whatever" />);
+      const rendered = render(<ModalOverlay status={ModalOverlayStatuses.SAVING} message="whatever" />);
       expect(rendered).toBeTruthy();
       expect(rendered.getByText("whatever")).toBeInTheDocument();
       expect(rendered.queryByTestId("close-button")).not.toBeInTheDocument();
@@ -19,7 +19,7 @@ describe("<ModalOverlay />", () => {
   describe("status = 'success'", () => {
     const successMessage = "something good";
     test("should display success message", () => {
-      const rendered = render(<ModalOverlay status={modalOverlayStatuses.SUCCESS} message={successMessage} />);
+      const rendered = render(<ModalOverlay status={ModalOverlayStatuses.SUCCESS} message={successMessage} />);
       expect(rendered).toBeTruthy();
       expect(rendered.getByText(successMessage)).toBeInTheDocument();
       expect(rendered.queryByTestId("close-button")).not.toBeInTheDocument();
@@ -28,7 +28,7 @@ describe("<ModalOverlay />", () => {
   describe("status = 'partial fail' && handleClose is passed", () => {
     const failMessage = "2nd place winner";
     test("should display partial fail message", () => {
-      const rendered = render(<ModalOverlay status={modalOverlayStatuses.PARTIAL_FAIL} message={failMessage} handleClose={jest.fn()}/>);
+      const rendered = render(<ModalOverlay status={ModalOverlayStatuses.PARTIAL_FAIL} message={failMessage} handleClose={jest.fn()}/>);
       expect(rendered).toBeTruthy();
       expect(rendered.getByText(failMessage)).toBeInTheDocument();
       expect(rendered.getByTestId("close-button")).toBeInTheDocument();
@@ -37,7 +37,7 @@ describe("<ModalOverlay />", () => {
   describe("status = 'partial fail' && handleClose is not passed", () => {
     const failMessage = "2nd place winner";
     test("should display partial fail message", () => {
-      const rendered = render(<ModalOverlay status={modalOverlayStatuses.PARTIAL_FAIL} message={failMessage}/>);
+      const rendered = render(<ModalOverlay status={ModalOverlayStatuses.PARTIAL_FAIL} message={failMessage}/>);
       expect(rendered).toBeTruthy();
       expect(rendered.getByText(failMessage)).toBeInTheDocument();
       expect(rendered.queryByTestId("close-button")).not.toBeInTheDocument();
@@ -46,7 +46,7 @@ describe("<ModalOverlay />", () => {
   describe("status = 'fail' && handleClose is passed", () => {
     const failMessage = "oh nooooo";
     test("should display fail message", () => {
-      const rendered = render(<ModalOverlay status={modalOverlayStatuses.FAIL} message={failMessage} handleClose={jest.fn()}/>);
+      const rendered = render(<ModalOverlay status={ModalOverlayStatuses.FAIL} message={failMessage} handleClose={jest.fn()}/>);
       expect(rendered).toBeTruthy();
       expect(rendered.getByText(failMessage)).toBeInTheDocument();
       expect(rendered.getByTestId("close-button")).toBeInTheDocument();
@@ -55,7 +55,7 @@ describe("<ModalOverlay />", () => {
   describe("status = 'fail' && handleClose is not passed", () => {
     const failMessage = "oh nooooo";
     test("should display fail message", () => {
-      const rendered = render(<ModalOverlay status={modalOverlayStatuses.FAIL} message={failMessage}/>);
+      const rendered = render(<ModalOverlay status={ModalOverlayStatuses.FAIL} message={failMessage}/>);
       expect(rendered).toBeTruthy();
       expect(rendered.getByText(failMessage)).toBeInTheDocument();
       expect(rendered.queryByTestId("close-button")).not.toBeInTheDocument();
@@ -65,7 +65,7 @@ describe("<ModalOverlay />", () => {
     const failMessage = "oh nooooo";
     test("should display fail message", () => {
       const rendered = render(<ModalOverlay
-        status={modalOverlayStatuses.FAIL}
+        status={ModalOverlayStatuses.FAIL}
         message={failMessage}
         handleClose={mockHandleClose}/>);
       const closeButton = rendered.getByTestId("close-button");

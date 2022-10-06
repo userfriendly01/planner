@@ -1,10 +1,10 @@
-import { formatWorkerSkillsToHTML } from "utils";
+import { formatWorkerAttributeSkillsToHTML } from "utils";
 import { render } from "testUtils";
 
-describe("formatWorkerSkillsToHTML()", () => {
+describe("formatWorkerAttributeSkillsToHTML()", () => {
 
   test("if input is undefined, return null", () => {
-    expect(formatWorkerSkillsToHTML(undefined)).toEqual(null);
+    expect(formatWorkerAttributeSkillsToHTML(undefined)).toEqual(null);
   });
 
   test("if routing skills are empty, return null", () => {
@@ -12,7 +12,7 @@ describe("formatWorkerSkillsToHTML()", () => {
       skills: [],
       levels: {}
     };
-    expect(formatWorkerSkillsToHTML(testData)).toEqual(null);
+    expect(formatWorkerAttributeSkillsToHTML(testData)).toEqual(null);
   });
 
   test("if routing skills is a string we should return null", () => {
@@ -22,7 +22,7 @@ describe("formatWorkerSkillsToHTML()", () => {
         "466": 3
       }
     };
-    expect(formatWorkerSkillsToHTML(testData)).toEqual(null);
+    expect(formatWorkerAttributeSkillsToHTML(testData)).toEqual(null);
   });
 
   test("if routing skills exist, we should return the correct formatting, with or without a priority.", () => {
@@ -32,7 +32,7 @@ describe("formatWorkerSkillsToHTML()", () => {
         "466": 3
       }
     };
-    const rendered = render(formatWorkerSkillsToHTML(testData));
+    const rendered = render(formatWorkerAttributeSkillsToHTML(testData));
     expect(rendered.getByText("466", { exact: false })).toBeInTheDocument();
     expect(rendered.getByText("466", { exact: false })).toHaveStyleRule("border-color", "#C0BFC0");
     expect(rendered.getByText("466", { exact: false })).toHaveStyleRule("border-style", "solid");

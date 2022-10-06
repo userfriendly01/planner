@@ -29,7 +29,6 @@ import {
   wait,
   formatManagersResponse,
   formatOfficesResponse,
-  formatTaskRouterSkills,
   formatWorkerResponse,
   isErrorIn400s,
   myAxios
@@ -192,17 +191,17 @@ const getProfiles = dispatch => new Promise((resolve, reject) => myAxios.get(api
   })
 );
 
-const getSkills = dispatch => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_TASKROUTER_SKILLS)
+const getSkills = dispatch => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_SKILLS)
   .then(res => {
     dispatch({
       type: "loadSkills",
-      payload: formatTaskRouterSkills(res.data)
+      payload: res.data.consolidatedSkills
     });
     resolve(true);
   })
   .catch(error => {
     reject({
-      msg: "Failed to fetch taskrouter skills from service",
+      msg: "Failed to fetch skills from service",
       error
     });
   })
@@ -245,6 +244,7 @@ const App = () => {
       getCalabrioRoles(dispatch)
     ])
       .then(() => {
+        dispatch({ type: "setAuthenticationOnUser" });
         setLoadResult(success);
       })
       .catch(err => {

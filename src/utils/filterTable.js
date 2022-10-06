@@ -21,3 +21,18 @@ export const filterByNameAndSkills = (worker, searchValue) => {
   }
   return false;
 };
+
+export const filterSkillsByName = (skill, searchValue) => {
+  if (!skill) {
+    return false;
+  }
+  if (!searchValue){
+    return true;
+  }
+  const name = skill.name?.toLowerCase() || "";
+  const lowerCaseSearch = searchValue.toLowerCase();
+  if (name.indexOf(lowerCaseSearch) >= 0) {
+    return true;
+  }
+  return false;
+};

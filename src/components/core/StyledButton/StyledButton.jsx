@@ -4,9 +4,9 @@ import styled from "styled-components";
 export default styled(Button)`
   && {
     color: black;
-    background: ${props => props.theme.button.blue.backgroundColor};
+    background: ${props => props.color ? props.color : props.theme.button.blue.backgroundColor};
     &:hover {
-      background: ${props => props.theme.button.blue.hoverColor};
+      background: ${props => props.color ? props.color : props.theme.button.blue.hoverColor};
     }
   }
 `;

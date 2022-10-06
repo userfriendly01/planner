@@ -11,7 +11,7 @@ import {
 } from "globals";
 import {
   UserFormState
-} from "components/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
+} from "components/tabs/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
 import React, { ReactElement } from "react";
 
 export const StateContext = React.createContext(undefined);

@@ -10,6 +10,9 @@ import {
   NotificationModal
 } from "components";
 import {
+  useAdminDispatch
+} from "context";
+import {
   apiPaths,
   timeouts
 } from "globals";
@@ -25,7 +28,6 @@ import {
   act,
   expectMockedComponent,
   expectOnlyPassedProps,
-  mockStore,
   render,
   setupMockedComponents,
   waitFor
@@ -33,14 +35,13 @@ import {
 import {
   formatManagersResponse,
   formatOfficesResponse,
-  formatTaskRouterSkills,
   myAxios
 } from "utils";
 
 const authEndpoint = apiPaths.AUTH;
 const axiosMock = new MockAdapter(myAxios);
 const profilesEndpoint = apiPaths.GET_PROFILES;
-const skillsEndpoint = apiPaths.GET_TASKROUTER_SKILLS;
+const skillsEndpoint = apiPaths.GET_SKILLS;
 const workersEndpoint = apiPaths.GET_WORKERS;
 
 const auth = { whatever: "lol" };
@@ -146,20 +147,22 @@ const filteredWorkers = [
   }
 ];
 
-const taskrouterSkills = [
-  {
-    multivalue: false,
-    minimum: 0,
-    maximum: 1,
-    name: "wow"
-  },
-  {
-    multivalue: true,
-    minimum: 2,
-    maximum: 99,
-    name: "neat"
-  }
-];
+const skills = {
+  consolidatedSkills: [
+    {
+      multivalue: false,
+      minimum: 0,
+      maximum: 1,
+      name: "wow"
+    },
+    {
+      multivalue: true,
+      minimum: 2,
+      maximum: 99,
+      name: "neat"
+    }
+  ]
+};
 
 delete window.location;
 window.location = { reload: jest.fn() };
@@ -177,11 +180,17 @@ jest.mock("components", () => ({
   NotificationModal: jest.fn()
 }));
 
+jest.mock("context", () => ({
+  useAdminDispatch: jest.fn()
+}));
+
+const mockAdminDispatch = jest.fn();
+
 describe("<App />", () => {
 
   beforeEach(() => {
-    mockStore.reset();
     jest.clearAllMocks();
+    useAdminDispatch.mockReturnValue(mockAdminDispatch);
     setupMockedComponents({
       CircularProgress,
       Header,
@@ -195,7 +204,7 @@ describe("<App />", () => {
     beforeEach(() => {
       axiosMock.onGet(authEndpoint).reply(200, auth);
       axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-      axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+      axiosMock.onGet(skillsEndpoint).reply(200, skills);
       axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
       getManagers.mockResolvedValue(dbManagers);
       getOffices.mockResolvedValue(dbOffices);
@@ -217,46 +226,50 @@ describe("<App />", () => {
           async () => {
             const rendered = render(<App />);
             await waitFor(() => rendered.getByTestId("app-wrapper"));
-            const actions = mockStore.getActions();
-            expect(actions.length).toBe(9);
-            expect(actions).toEqual([
-              {
-                type: "loadManagers",
-                payload: formatManagersResponse(dbManagers)
-              },
-              {
-                type: "loadOffices",
-                payload: formatOfficesResponse(dbOffices)
-              },
-              {
-                type: "loadCalabrioUsers",
-                payload: []
-              },
-              {
-                type: "loadCalabrioOrg",
-                payload: []
-              },
-              {
-                type: "loadCalabrioRoles",
-                payload: []
-              },
-              {
-                type: "loadUserData",
-                payload: { pingIdentity: auth }
-              },
-              {
-                type: "loadProfiles",
-                payload: profiles
-              },
-              {
-                type: "loadSkills",
-                payload: formatTaskRouterSkills(taskrouterSkills)
-              },
-              {
-                type: "addWorkers",
-                payload: filteredWorkers
-              }
-            ]);
+            expect(mockAdminDispatch).toHaveBeenCalledTimes(10);
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadManagers",
+              payload: formatManagersResponse(dbManagers)
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadOffices",
+              payload: formatOfficesResponse(dbOffices)
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadCalabrioUsers",
+              payload: []
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadCalabrioOrg",
+              payload: []
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadCalabrioRoles",
+              payload: []
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadUserData",
+              payload: { pingIdentity: auth }
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadProfiles",
+              payload: profiles
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadManagers",
+              payload: formatManagersResponse(dbManagers)
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadSkills",
+              payload: skills.consolidatedSkills
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "addWorkers",
+              payload: filteredWorkers
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "setAuthenticationOnUser"
+            });
             expectMockedComponent(rendered, { Header });
             expectMockedComponent(rendered, { NavTabs });
             expectMockedComponent(rendered, { Modal });
@@ -297,7 +310,7 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(statusCode, { ohno: "booo" });
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockResolvedValue(dbOffices);
@@ -317,7 +330,7 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(statusCode, { wahhh: "nooo" });
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockResolvedValue(dbOffices);
@@ -340,7 +353,7 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(statusCode, { wahhhh: "oh noooo" });
-        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockResolvedValue(dbOffices);
@@ -362,7 +375,7 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint, { pageToken: "" }).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockResolvedValue(dbOffices);
@@ -371,46 +384,50 @@ describe("<App />", () => {
         const rendered = render(<App />);
         waitFor(() => rendered.getByTestId("app-wrapper"))
           .then(() => {
-            const actions = mockStore.getActions();
-            expect(actions.length).toBe(9);
-            expect(actions).toEqual([
-              {
-                type: "loadManagers",
-                payload: formatManagersResponse(dbManagers)
-              },
-              {
-                type: "loadOffices",
-                payload: formatOfficesResponse(dbOffices)
-              },
-              {
-                type: "loadCalabrioUsers",
-                payload: []
-              },
-              {
-                type: "loadCalabrioOrg",
-                payload: []
-              },
-              {
-                type: "loadCalabrioRoles",
-                payload: []
-              },
-              {
-                type: "loadUserData",
-                payload: { pingIdentity: auth }
-              },
-              {
-                type: "loadProfiles",
-                payload: profiles
-              },
-              {
-                type: "loadSkills",
-                payload: formatTaskRouterSkills(taskrouterSkills)
-              },
-              {
-                type: "addWorkers",
-                payload: filteredWorkers
-              }
-            ]);
+            expect(mockAdminDispatch).toHaveBeenCalledTimes(10);
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadManagers",
+              payload: formatManagersResponse(dbManagers)
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadOffices",
+              payload: formatOfficesResponse(dbOffices)
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadCalabrioUsers",
+              payload: []
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadCalabrioOrg",
+              payload: []
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadCalabrioRoles",
+              payload: []
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadUserData",
+              payload: { pingIdentity: auth }
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadProfiles",
+              payload: profiles
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadManagers",
+              payload: formatManagersResponse(dbManagers)
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadSkills",
+              payload: skills.consolidatedSkills
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "addWorkers",
+              payload: filteredWorkers
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "setAuthenticationOnUser"
+            });
             expectMockedComponent(rendered, { Header });
             expectMockedComponent(rendered, { NavTabs });
             expect(rendered.container).not.toHaveTextContent("Loading...");
@@ -423,7 +440,7 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(500, { boo: "wahhh" });
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockResolvedValue(dbOffices);
@@ -456,7 +473,7 @@ describe("<App />", () => {
         waitFor(() => rendered.getByTestId("error-overlay"))
           .then(() => {
             expect(rendered.container).toHaveTextContent(statusCode);
-            expect(rendered.container).toHaveTextContent("Failed to fetch taskrouter skills from service");
+            expect(rendered.container).toHaveTextContent("Failed to fetch skills from service");
             done();
           });
       });
@@ -474,7 +491,7 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockRejectedValue(error);
         getOffices.mockResolvedValue(dbOffices);
@@ -502,7 +519,7 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockRejectedValue(error);
@@ -523,7 +540,7 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockResolvedValue(dbOffices);
@@ -534,42 +551,46 @@ describe("<App />", () => {
       test("should still load triton admin", async done => {
         const rendered = render(<App />);
         await waitFor(() => rendered.getByTestId("app-wrapper"));
-        const actions = mockStore.getActions();
-        expect(actions.length).toBe(8);
-        expect(actions).toEqual([
-          {
-            type: "loadManagers",
-            payload: formatManagersResponse(dbManagers)
-          },
-          {
-            type: "loadOffices",
-            payload: formatOfficesResponse(dbOffices)
-          },
-          {
-            type: "loadCalabrioOrg",
-            payload: []
-          },
-          {
-            type: "loadCalabrioRoles",
-            payload: []
-          },
-          {
-            type: "loadUserData",
-            payload: { pingIdentity: auth }
-          },
-          {
-            type: "loadProfiles",
-            payload: profiles
-          },
-          {
-            type: "loadSkills",
-            payload: formatTaskRouterSkills(taskrouterSkills)
-          },
-          {
-            type: "addWorkers",
-            payload: filteredWorkers
-          }
-        ]);
+        expect(mockAdminDispatch).toHaveBeenCalledTimes(9);
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadManagers",
+          payload: formatManagersResponse(dbManagers)
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadOffices",
+          payload: formatOfficesResponse(dbOffices)
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadCalabrioOrg",
+          payload: []
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadCalabrioRoles",
+          payload: []
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadUserData",
+          payload: { pingIdentity: auth }
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadProfiles",
+          payload: profiles
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadManagers",
+          payload: formatManagersResponse(dbManagers)
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadSkills",
+          payload: skills.consolidatedSkills
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "addWorkers",
+          payload: filteredWorkers
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "setAuthenticationOnUser"
+        });
         expectMockedComponent(rendered, { Header });
         expectMockedComponent(rendered, { NavTabs });
         expectMockedComponent(rendered, { Modal });
@@ -587,7 +608,7 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockResolvedValue(dbOffices);
@@ -598,42 +619,46 @@ describe("<App />", () => {
       test("should still load triton admin", async done => {
         const rendered = render(<App />);
         await waitFor(() => rendered.getByTestId("app-wrapper"));
-        const actions = mockStore.getActions();
-        expect(actions.length).toBe(8);
-        expect(actions).toEqual([
-          {
-            type: "loadManagers",
-            payload: formatManagersResponse(dbManagers)
-          },
-          {
-            type: "loadOffices",
-            payload: formatOfficesResponse(dbOffices)
-          },
-          {
-            type: "loadCalabrioUsers",
-            payload: []
-          },
-          {
-            type: "loadCalabrioRoles",
-            payload: []
-          },
-          {
-            type: "loadUserData",
-            payload: { pingIdentity: auth }
-          },
-          {
-            type: "loadProfiles",
-            payload: profiles
-          },
-          {
-            type: "loadSkills",
-            payload: formatTaskRouterSkills(taskrouterSkills)
-          },
-          {
-            type: "addWorkers",
-            payload: filteredWorkers
-          }
-        ]);
+        expect(mockAdminDispatch).toHaveBeenCalledTimes(9);
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadManagers",
+          payload: formatManagersResponse(dbManagers)
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadOffices",
+          payload: formatOfficesResponse(dbOffices)
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadCalabrioUsers",
+          payload: []
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadCalabrioRoles",
+          payload: []
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadUserData",
+          payload: { pingIdentity: auth }
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadProfiles",
+          payload: profiles
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadManagers",
+          payload: formatManagersResponse(dbManagers)
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadSkills",
+          payload: skills.consolidatedSkills
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "addWorkers",
+          payload: filteredWorkers
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "setAuthenticationOnUser"
+        });
         expectMockedComponent(rendered, { Header });
         expectMockedComponent(rendered, { NavTabs });
         expectMockedComponent(rendered, { Modal });
@@ -651,7 +676,7 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(skillsEndpoint).reply(200, taskrouterSkills);
+        axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
         getOffices.mockResolvedValue(dbOffices);
@@ -662,42 +687,46 @@ describe("<App />", () => {
       test("should still load triton admin", async done => {
         const rendered = render(<App />);
         await waitFor(() => rendered.getByTestId("app-wrapper"));
-        const actions = mockStore.getActions();
-        expect(actions.length).toBe(8);
-        expect(actions).toEqual([
-          {
-            type: "loadManagers",
-            payload: formatManagersResponse(dbManagers)
-          },
-          {
-            type: "loadOffices",
-            payload: formatOfficesResponse(dbOffices)
-          },
-          {
-            type: "loadCalabrioUsers",
-            payload: []
-          },
-          {
-            type: "loadCalabrioOrg",
-            payload: []
-          },
-          {
-            type: "loadUserData",
-            payload: { pingIdentity: auth }
-          },
-          {
-            type: "loadProfiles",
-            payload: profiles
-          },
-          {
-            type: "loadSkills",
-            payload: formatTaskRouterSkills(taskrouterSkills)
-          },
-          {
-            type: "addWorkers",
-            payload: filteredWorkers
-          }
-        ]);
+        expect(mockAdminDispatch).toHaveBeenCalledTimes(9);
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadManagers",
+          payload: formatManagersResponse(dbManagers)
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadOffices",
+          payload: formatOfficesResponse(dbOffices)
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadCalabrioUsers",
+          payload: []
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadCalabrioOrg",
+          payload: []
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadUserData",
+          payload: { pingIdentity: auth }
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadProfiles",
+          payload: profiles
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadManagers",
+          payload: formatManagersResponse(dbManagers)
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadSkills",
+          payload: skills.consolidatedSkills
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "addWorkers",
+          payload: filteredWorkers
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "setAuthenticationOnUser"
+        });
         expectMockedComponent(rendered, { Header });
         expectMockedComponent(rendered, { NavTabs });
         expectMockedComponent(rendered, { Modal });
