@@ -100,7 +100,7 @@ const ProfileSettingsContainer = () => {
         }}
       />
       {
-        view === 'PROFILE_DIRECTORY'
+        view === "PROFILE_DIRECTORY"
           ?
           <div>
             <ProfileDropDown
