@@ -2,7 +2,9 @@ import {
   DialListTable,
   Directory,
   Dropdown,
-  ProfileDropDown
+  ProfileDropDown,
+  AddProfileButton,
+  ProfileSettingsTable
 } from "components";
 import { useAdminState } from "context";
 import { apiPaths } from "globals";
@@ -37,8 +39,6 @@ const ProfileSettingsMessage = styled.div`
 
 const ProfileSettingsContainer = () => {
   const [ view, setView ] = React.useState(views[0]);
-
-  console.log('view', view);
 
   const initialProfileState = {
     dialList: [],
@@ -133,7 +133,12 @@ const ProfileSettingsContainer = () => {
             }
           </div>
           :
-          <h1>hello there</h1>
+          <div>
+            <AddProfileButton />
+            <ProfileSettingsTable 
+              profileList={profilesFromContextMinusGoP}
+            />
+          </div>
       }
     </ProfileSettingsContainerDiv>
   );
