@@ -16,6 +16,10 @@ import {
 
 const views = [
   {
+    value: "",
+    label: ""
+  },
+  {
     value: "PROFILE_DIRECTORY",
     label: "Profile Directory"
   },
@@ -37,6 +41,8 @@ const ProfileSettingsMessage = styled.div`
 
 const ProfileSettingsContainer = () => {
   const [ view, setView ] = React.useState(views[0]);
+
+  console.log('view', view);
 
   const initialProfileState = {
     dialList: [],
@@ -131,7 +137,7 @@ const ProfileSettingsContainer = () => {
             }
           </div>
           :
-          <h1>hello</h1>
+          <h1>{ console.log(view) }</h1>
       }
     </ProfileSettingsContainerDiv>
   );
