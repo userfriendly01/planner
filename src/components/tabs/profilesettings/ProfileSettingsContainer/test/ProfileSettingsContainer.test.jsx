@@ -65,139 +65,139 @@ describe("<ProfileSettingsContainer />", () => {
     });
   });
 
-  describe("profile.profileId is null (initial state)", () => {
-    test("should render ProfileDropDown with correct props and 'Please select a profile'", () => {
-      const rendered = render(<ProfileSettingsContainer />, initialTestState);
-      expectMockedComponent(rendered, { DialListTable }, 0);
-      expectMockedComponent(rendered, { Directory }, 0);
-      expectMockedComponent(rendered, { ProfileDropDown }, 1);
-      expect(rendered.container).toHaveTextContent("Please select a profile");
-      expect(rendered.container).not.toHaveTextContent(errorMessage);
-      expectOnlyPassedProps(ProfileDropDown, {
-        availableProfiles: profileList,
-        profileId: null
-      });
-    });
-  });
+  // describe("profile.profileId is null (initial state)", () => {
+  //   test("should render ProfileDropDown with correct props and 'Please select a profile'", () => {
+  //     const rendered = render(<ProfileSettingsContainer />, initialTestState);
+  //     expectMockedComponent(rendered, { DialListTable }, 0);
+  //     expectMockedComponent(rendered, { Directory }, 0);
+  //     expectMockedComponent(rendered, { ProfileDropDown }, 1);
+  //     expect(rendered.container).toHaveTextContent("Please select a profile");
+  //     expect(rendered.container).not.toHaveTextContent(errorMessage);
+  //     expectOnlyPassedProps(ProfileDropDown, {
+  //       availableProfiles: profileList,
+  //       profileId: null
+  //     });
+  //   });
+  // });
 
-  describe("profile.profileId is not null (a profile has been selected)", () => {
-    const profileId = 3;
-    describe("call to GET_PROFILE_DATA succeeds", () => {
-      const getProfileDataResponse = {
-        diallist: [
-          {
-            contact_id: 18,
-            contact_nme: "Daryl Strawberry",
-            contact_num: "800-123-4568"
-          },
-          {
-            contact_id: 16,
-            contact_nme: "Bo Jackson",
-            contact_num: "800-123-4567"
-          }
-        ],
-        directories: [
-          {
-            directory_id: 42,
-            first_nme: "Mo",
-            last_nme: "Vaugh",
-            phone_num: "800-123-4568"
-          },
-          {
-            directory_id: 6,
-            first_nme: "Johnny",
-            last_nme: "Pesky",
-            phone_num: "800-123-4568"
-          }
-        ]
-      };
-      beforeEach(() => axiosMock.onGet(apiPaths.GET_PROFILE_DATA(profileId)).reply(200, getProfileDataResponse));
-      test("should render ProfileDropDown and DialListTable with correct props", async () => {
-        const rendered = render(<ProfileSettingsContainer />, initialTestState);
-        const { updateProfile } = getMockedComponentProps(ProfileDropDown);
-        act(() => {
-          updateProfile(profileId);
-        });
+  // describe("profile.profileId is not null (a profile has been selected)", () => {
+  //   const profileId = 3;
+  //   describe("call to GET_PROFILE_DATA succeeds", () => {
+  //     const getProfileDataResponse = {
+  //       diallist: [
+  //         {
+  //           contact_id: 18,
+  //           contact_nme: "Daryl Strawberry",
+  //           contact_num: "800-123-4568"
+  //         },
+  //         {
+  //           contact_id: 16,
+  //           contact_nme: "Bo Jackson",
+  //           contact_num: "800-123-4567"
+  //         }
+  //       ],
+  //       directories: [
+  //         {
+  //           directory_id: 42,
+  //           first_nme: "Mo",
+  //           last_nme: "Vaugh",
+  //           phone_num: "800-123-4568"
+  //         },
+  //         {
+  //           directory_id: 6,
+  //           first_nme: "Johnny",
+  //           last_nme: "Pesky",
+  //           phone_num: "800-123-4568"
+  //         }
+  //       ]
+  //     };
+  //     beforeEach(() => axiosMock.onGet(apiPaths.GET_PROFILE_DATA(profileId)).reply(200, getProfileDataResponse));
+  //     test("should render ProfileDropDown and DialListTable with correct props", async () => {
+  //       const rendered = render(<ProfileSettingsContainer />, initialTestState);
+  //       const { updateProfile } = getMockedComponentProps(ProfileDropDown);
+  //       act(() => {
+  //         updateProfile(profileId);
+  //       });
 
-        const expectsAfterGettingProfileData = () => {
-          expectMockedComponent(rendered, { ProfileDropDown }, 1);
-          expectMockedComponent(rendered, { DialListTable }, 1);
-          expectMockedComponent(rendered, { Directory }, 1);
-          expectOnlyPassedProps(DialListTable, {
-            // sorted dialList
-            dialList: [
-              {
-                contact_id: 16,
-                contact_nme: "Bo Jackson",
-                contact_num: "800-123-4567"
-              },
-              {
-                contact_id: 18,
-                contact_nme: "Daryl Strawberry",
-                contact_num: "800-123-4568"
-              }
-            ],
-            profileId
-          }, getLastInstanceCalled(DialListTable));
-          expectOnlyPassedProps(Directory, {
-            // sorted directory
-            directory: [
-              {
-                directory_id: 6,
-                first_nme: "Johnny",
-                last_nme: "Pesky",
-                phone_num: "800-123-4568"
-              },
-              {
-                directory_id: 42,
-                first_nme: "Mo",
-                last_nme: "Vaugh",
-                phone_num: "800-123-4568"
-              }
-            ],
-            profileId
-          }, getLastInstanceCalled(Directory));
-          expect(rendered.container).not.toHaveTextContent(errorMessage);
-        };
+  //       const expectsAfterGettingProfileData = () => {
+  //         expectMockedComponent(rendered, { ProfileDropDown }, 1);
+  //         expectMockedComponent(rendered, { DialListTable }, 1);
+  //         expectMockedComponent(rendered, { Directory }, 1);
+  //         expectOnlyPassedProps(DialListTable, {
+  //           // sorted dialList
+  //           dialList: [
+  //             {
+  //               contact_id: 16,
+  //               contact_nme: "Bo Jackson",
+  //               contact_num: "800-123-4567"
+  //             },
+  //             {
+  //               contact_id: 18,
+  //               contact_nme: "Daryl Strawberry",
+  //               contact_num: "800-123-4568"
+  //             }
+  //           ],
+  //           profileId
+  //         }, getLastInstanceCalled(DialListTable));
+  //         expectOnlyPassedProps(Directory, {
+  //           // sorted directory
+  //           directory: [
+  //             {
+  //               directory_id: 6,
+  //               first_nme: "Johnny",
+  //               last_nme: "Pesky",
+  //               phone_num: "800-123-4568"
+  //             },
+  //             {
+  //               directory_id: 42,
+  //               first_nme: "Mo",
+  //               last_nme: "Vaugh",
+  //               phone_num: "800-123-4568"
+  //             }
+  //           ],
+  //           profileId
+  //         }, getLastInstanceCalled(Directory));
+  //         expect(rendered.container).not.toHaveTextContent(errorMessage);
+  //       };
 
-        await waitFor(() => {
-          expectsAfterGettingProfileData();
-        });
-        // also test refreshProfileData passed to DialListTable
-        const { refreshProfileData } = getMockedComponentProps(DialListTable, getLastInstanceCalled(DialListTable));
-        act(() => {
-          refreshProfileData();
-        });
-        await waitFor(() => {
-          expectsAfterGettingProfileData();
-        });
-        // also test refreshProfileData passed to Directory
-        const refreshAgain = getMockedComponentProps(Directory, getLastInstanceCalled(Directory)).refreshProfileData;
-        act(() => {
-          refreshAgain();
-        });
-        await waitFor(() => {
-          expectsAfterGettingProfileData();
-        });
-      });
-    });
+  //       await waitFor(() => {
+  //         expectsAfterGettingProfileData();
+  //       });
+  //       // also test refreshProfileData passed to DialListTable
+  //       const { refreshProfileData } = getMockedComponentProps(DialListTable, getLastInstanceCalled(DialListTable));
+  //       act(() => {
+  //         refreshProfileData();
+  //       });
+  //       await waitFor(() => {
+  //         expectsAfterGettingProfileData();
+  //       });
+  //       // also test refreshProfileData passed to Directory
+  //       const refreshAgain = getMockedComponentProps(Directory, getLastInstanceCalled(Directory)).refreshProfileData;
+  //       act(() => {
+  //         refreshAgain();
+  //       });
+  //       await waitFor(() => {
+  //         expectsAfterGettingProfileData();
+  //       });
+  //     });
+  //   });
 
-    describe("call to GET_PROFILE_DATA fails", () => {
-      const error = { badNews: "boooo" };
-      beforeEach(() => axiosMock.onGet(apiPaths.GET_PROFILE_DATA(profileId)).reply(500, error));
-      test("should display drop down & error message", async () => {
-        const rendered = render(<ProfileSettingsContainer />, initialTestState);
-        const { updateProfile } = getMockedComponentProps(ProfileDropDown);
-        act(() => {
-          updateProfile(profileId);
-        });
-        await waitFor(() => {
-          expectMockedComponent(rendered, { ProfileDropDown }, 1);
-          expectMockedComponent(rendered, { DialListTable }, 0);
-          expectMockedComponent(rendered, { Directory }, 0);
-          expect(rendered.container).toHaveTextContent(errorMessage);
-        });
-      });
-    });
-  });
+  //   describe("call to GET_PROFILE_DATA fails", () => {
+  //     const error = { badNews: "boooo" };
+  //     beforeEach(() => axiosMock.onGet(apiPaths.GET_PROFILE_DATA(profileId)).reply(500, error));
+  //     test("should display drop down & error message", async () => {
+  //       const rendered = render(<ProfileSettingsContainer />, initialTestState);
+  //       const { updateProfile } = getMockedComponentProps(ProfileDropDown);
+  //       act(() => {
+  //         updateProfile(profileId);
+  //       });
+  //       await waitFor(() => {
+  //         expectMockedComponent(rendered, { ProfileDropDown }, 1);
+  //         expectMockedComponent(rendered, { DialListTable }, 0);
+  //         expectMockedComponent(rendered, { Directory }, 0);
+  //         expect(rendered.container).toHaveTextContent(errorMessage);
+  //       });
+  //     });
+  //   });
+  // });
 });
