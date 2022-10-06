@@ -16,10 +16,6 @@ import {
 
 const views = [
   {
-    value: "",
-    label: ""
-  },
-  {
     value: "PROFILE_DIRECTORY",
     label: "Profile Directory"
   },
@@ -100,7 +96,7 @@ const ProfileSettingsContainer = () => {
         }}
       />
       {
-        view === "PROFILE_DIRECTORY"
+        view.value === "PROFILE_DIRECTORY"
           ?
           <div>
             <ProfileDropDown
@@ -137,7 +133,7 @@ const ProfileSettingsContainer = () => {
             }
           </div>
           :
-          <h1>{ console.log(view) }</h1>
+          <h1>hello there</h1>
       }
     </ProfileSettingsContainerDiv>
   );
