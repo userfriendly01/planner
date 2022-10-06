@@ -5,5 +5,4 @@ export { default as DirectoryEntryForm } from "./DirectoryEntryForm/DirectoryEnt
 export { default as PhoneNumberTable } from "./PhoneNumberTable/PhoneNumberTable";
 export { default as ProfileDropDown } from "./ProfileDropDown/ProfileDropDown";
 export { default as ProfileSettingsTable } from "./ProfileSettingsTable/ProfileSettingsTable";
-export { default as AddProfileButton } from "./AddProfileButton/AddProfileButton";
 export { default as ProfileSettingsContainer } from "./ProfileSettingsContainer/ProfileSettingsContainer";
