@@ -140,11 +140,9 @@ const ProfileSettingsContainer = () => {
             }
           </div>
           :
-          <div>
-            <ProfileSettingsTable 
-              profileList={profilesFromContextMinusGoP}
-            />
-          </div>
+          <ProfileSettingsTable 
+            profileList={profilesFromContextMinusGoP}
+          />
       }
     </ProfileSettingsContainerDiv>
   );

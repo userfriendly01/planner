@@ -1,6 +1,8 @@
-export const formatProfileBooleanData = (number: number): string => {
+import CheckIcon from '@mui/icons-material/Check';
+
+export const formatProfileBooleanData = (number: number): any => {
     if (number === 1) {
-       return 'true'
+       return CheckIcon;
     }
-    return 'false'
+    return '';
 };
