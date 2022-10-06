@@ -3,10 +3,12 @@ import {
   AppState
 } from "globals";
 import {
+  checkIfAdmin,
   formatCalabrioTeams,
   formatCalabrioTenant,
   formatCalabrioGroups,
-  formatCalabrioRoles
+  formatCalabrioRoles,
+  getWorkerProfileId
 } from "utils";
 
 export const initialState: AppState = {
@@ -20,10 +22,12 @@ export const initialState: AppState = {
     profiles: []
   },
   skillContext: {
-    taskrouterSkills: []
+    skills: []
   },
   userContext: {
-    pingIdentity: {}
+    pingIdentity: null,
+    isAdmin: false,
+    profileId: null
   },
   workerContext: {
     workers: [],
@@ -145,7 +149,7 @@ export const reducer = (state: AppState, action: Action): AppState => {
         ...state,
         skillContext: {
           ...state.skillContext,
-          taskrouterSkills: action.payload
+          skills: action.payload
         }
       };
     case "loadUserData":
@@ -153,6 +157,17 @@ export const reducer = (state: AppState, action: Action): AppState => {
         ...state,
         userContext: action.payload
       };
+    case "setAuthenticationOnUser": {
+      const profileId: number = getWorkerProfileId(state);
+      return {
+        ...state,
+        userContext: {
+          ...state.userContext,
+          profileId,
+          isAdmin: checkIfAdmin(profileId)
+        }
+      };
+    }
     case "resettingSkills":
       return {
         ...state,
@@ -175,6 +190,14 @@ export const reducer = (state: AppState, action: Action): AppState => {
         workerContext: {
           ...state.workerContext,
           workers: [...state.workerContext.workers.filter(w => w.sid !== action.payload.sid), action.payload]
+        }
+      };
+    case "updateSkills":
+      return {
+        ...state,
+        skillContext: {
+          ...state.skillContext,
+          skills: action.payload
         }
       };
     default:

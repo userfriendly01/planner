@@ -2,7 +2,7 @@ import {
   calabrioGroupLevels,
   CalabrioUser,
   CalabrioGroup
-} from "../components/usermanagement/CallRecording/CallRecording.Interfaces";
+} from "../components/tabs/usermanagement/CallRecording/CallRecording.Interfaces";
 import {
   getCalabrioUser,
   updateCalabrioUser

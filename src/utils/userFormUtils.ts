@@ -2,12 +2,11 @@ import {
   TritonProfile,
   Worker,
   formModes,
-  WorkerSkills,
   AppState
 } from "globals";
 import {
   UserFormState
-} from "components/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
+} from "components/tabs/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
 import {
   formatE164PhoneNumber,
   removeNonNumericCharacters

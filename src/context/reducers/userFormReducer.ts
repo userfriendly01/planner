@@ -7,7 +7,7 @@ import {
 import {
   UserFormState,
   ExtensionSearchStatuses
-} from "components/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
+} from "components/tabs/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
 import {
   formatE164PhoneNumber,
   calabrioTimeZones,
@@ -15,7 +15,7 @@ import {
   getZeroOutEnabledFromProfile
 } from "utils";
 
-import { SearchParams } from "components/usermanagement/UserEntryForm/ExtensionSearchParams";
+import { SearchParams } from "components/tabs/usermanagement/UserEntryForm/ExtensionSearchParams";
 const searchParams = SearchParams.getValues();
 
 export const userFormActions = {

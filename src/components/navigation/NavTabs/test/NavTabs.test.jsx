@@ -1,6 +1,6 @@
 import NavTabs from "../NavTabs";
 import {
-  MessageContainer,
+  CallflowManagementWrapper,
   ManagementWrapper,
   ProfileSettingsContainer
 } from "components";
@@ -14,7 +14,7 @@ import {
 
 jest.mock("components", () => ({
   __esModule: true,
-  MessageContainer: jest.fn(),
+  CallflowManagementWrapper: jest.fn(),
   ManagementWrapper: jest.fn(),
   ProfileSettingsContainer: jest.fn()
 }));
@@ -25,38 +25,25 @@ describe("<NavTabs />", () => {
     setupMockedComponents({
       ManagementWrapper,
       ProfileSettingsContainer,
-      MessageContainer
+      CallflowManagementWrapper
     });
   });
 
   test("we should load the links, as well as default to showing the Management Pane", () => {
     const rendered = render(<NavTabs />);
-    expect(MessageContainer.mock.calls[0][0].value).toBe("flash");
     expect(rendered.getByText("User Management")).toBeInTheDocument();
-    // expect(rendered.getByText("Settings", { selector: "span" })).toBeInTheDocument();
     expectMockedComponent(rendered, { ManagementWrapper });
-    expectMockedComponent(rendered, { MessageContainer }, 2);
+    expectMockedComponent(rendered, { CallflowManagementWrapper }, 1);
     expectMockedComponent(rendered, { ProfileSettingsContainer });
     expect(rendered.getByText("ManagementWrapper")).toBeVisible();
-    expect(rendered.getAllByText("MessageContainer")[0]).not.toBeVisible();
-    expect(rendered.getAllByText("MessageContainer")[1]).not.toBeVisible();
+    expect(rendered.getAllByText("CallflowManagementWrapper")[0]).not.toBeVisible();
     expect(rendered.getByText("ProfileSettingsContainer")).not.toBeVisible();
   });
 
-  test("when we click on the 'Flash Message' link, only MessageContainer should be visible", () => {
+  test("when we click on the 'Call Flow Management' link, only CallflowManagementWrapper should be visible", () => {
     const rendered = render(<NavTabs />);
-    fireEvent.click(rendered.getByText("Flash Message"));
-    expect(rendered.getAllByText("MessageContainer")[0]).toBeVisible();
-    expect(rendered.getAllByText("MessageContainer")[1]).not.toBeVisible();
-    expect(rendered.getByText("ManagementWrapper")).not.toBeVisible();
-    expect(rendered.getByText("ProfileSettingsContainer")).not.toBeVisible();
-  });
-
-  test("when we click on the 'Closed Message' link, only MessageContainer should be visible", () => {
-    const rendered = render(<NavTabs />);
-    fireEvent.click(rendered.getByText("Closed Message"));
-    expect(rendered.getAllByText("MessageContainer")[0]).not.toBeVisible();
-    expect(rendered.getAllByText("MessageContainer")[1]).toBeVisible();
+    fireEvent.click(rendered.getByText("Call Flow Management"));
+    expect(rendered.getAllByText("CallflowManagementWrapper")[0]).toBeVisible();
     expect(rendered.getByText("ManagementWrapper")).not.toBeVisible();
     expect(rendered.getByText("ProfileSettingsContainer")).not.toBeVisible();
   });
@@ -66,16 +53,14 @@ describe("<NavTabs />", () => {
     fireEvent.click(rendered.getByText("Profile Settings"));
     expect(rendered.getByText("ProfileSettingsContainer")).toBeVisible();
     expect(rendered.getByText("ManagementWrapper")).not.toBeVisible();
-    expect(rendered.getAllByText("MessageContainer")[0]).not.toBeVisible();
-    expect(rendered.getAllByText("MessageContainer")[1]).not.toBeVisible();
+    expect(rendered.getAllByText("CallflowManagementWrapper")[0]).not.toBeVisible();
   });
 
   test("when we click on the already clicked link, nothing should change", () => {
     const rendered = render(<NavTabs />);
     fireEvent.click(rendered.getByText("User Management"));
     expect(rendered.getByText("ManagementWrapper")).toBeVisible();
-    expect(rendered.getAllByText("MessageContainer")[0]).not.toBeVisible();
-    expect(rendered.getAllByText("MessageContainer")[1]).not.toBeVisible();
+    expect(rendered.getAllByText("CallflowManagementWrapper")[0]).not.toBeVisible();
     expect(rendered.getByText("ProfileSettingsContainer")).not.toBeVisible();
   });
 });

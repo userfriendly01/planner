@@ -5,5 +5,6 @@ export * from "./deleteUser";
 export * from "./directory";
 export * from "./fetchUser";
 export * from "./manager";
+export * from "./message";
 export * from "./office";
 export * from "./updateUser";

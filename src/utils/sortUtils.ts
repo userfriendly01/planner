@@ -31,8 +31,8 @@ export const sortStrings = (a: string, b: string) => {
   return 0;
 };
 
-export const sortTaskRouterSkillByName = (a: any, b: any) => {
-  const [aName, bName] = [a.skill, b.skill];
+export const sortSkillByName = (a: any, b: any) => {
+  const [aName, bName] = [a.name, b.name];
   return sortStrings(aName, bName);
 };
 

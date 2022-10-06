@@ -1,4 +1,4 @@
-require("jest-dom/extend-expect");
+require("@testing-library/jest-dom/extend-expect");
 require("jest-styled-components");
 
 const { mockStore } = require("./__test__/testUtils");
@@ -24,25 +24,27 @@ If you need to use the real file in your test, use jest.requireActual for the fu
 */
 
 jest.mock("services", () => ({
-  createCalabrioUser: jest.fn(),
+  addManager: jest.fn(),
+  addOffice: jest.fn(),
+  checkExtension: jest.fn(),
   createCalabrioTeam: jest.fn(),
+  createCalabrioUser: jest.fn(),
+  createUser: jest.fn(),
+  deleteDirectory: jest.fn(),
   deleteManager: jest.fn(),
-  updateCalabrioUser: jest.fn(),
-  getCalabrioUsers: jest.fn(),
+  deleteUser: jest.fn(),
+  editManager: jest.fn(),
+  fetchUser: jest.fn(),
   getCalabrioOrg: jest.fn(),
   getCalabrioRoles: jest.fn(),
   getCalabrioUser: jest.fn(),
-  checkExtension: jest.fn(),
-  createUser: jest.fn(),
-  deleteUser: jest.fn(),
-  deleteDirectory: jest.fn(),
-  insertDirectory: jest.fn(),
-  updateDirectory: jest.fn(),
-  fetchUser: jest.fn(),
-  addManager: jest.fn(),
-  editManager: jest.fn(),
-  getManagers: jest.fn(),
-  addOffice: jest.fn(),
+  getCalabrioUsers: jest.fn(),
   getOffices: jest.fn(),
+  getManagers: jest.fn(),
+  insertDirectory: jest.fn(),
+  updateCalabrioUser: jest.fn(),
+  updateClosedMessage: jest.fn(),
+  updateDirectory: jest.fn(),
+  updateFlashMessage: jest.fn(),
   updateUser: jest.fn()
 }));
