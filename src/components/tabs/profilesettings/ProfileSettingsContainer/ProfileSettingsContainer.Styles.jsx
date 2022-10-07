@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const CallflowWrapper = styled.div`
+export const ProfileSettingsDropdownWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;

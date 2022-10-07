@@ -15,7 +15,7 @@ import {
   profileSettingsViews
 } from "utils";
 import {
-  CallflowWrapper,
+  ProfileSettingsDropdownWrapper,
   ProfileSettingsContainerDiv,
   ProfileSettingsMessage,
 } from "./ProfileSettingsContainer.Styles";
@@ -67,7 +67,7 @@ const ProfileSettingsContainer = () => {
 
   return(
     <ProfileSettingsContainerDiv>
-      <CallflowWrapper>
+      <ProfileSettingsDropdownWrapper>
         <Dropdown
           label="What would you like to do?"
           value={view}
@@ -78,7 +78,7 @@ const ProfileSettingsContainer = () => {
             width: "500px"
           }}
         />
-      </CallflowWrapper>
+      </ProfileSettingsDropdownWrapper>
       {
         view.value === "PROFILE_DIRECTORY"
           ?
