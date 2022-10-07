@@ -13,6 +13,7 @@ export const CustomTableData = styled.td`
   color: #1A1446;
   padding: 2px 4px;
   vertical-align: top;
+  padding-bottom: 10px;
 `;
 
 export const CustomTableHeader = styled.th`
@@ -20,7 +21,6 @@ export const CustomTableHeader = styled.th`
   border-bottom: 2px solid #F5F5F5;
   padding: 10px 4px;
   text-align: left;
-  position: sticky;
   &:nth-child(1) {
     width: 2%;
   }
