@@ -59,7 +59,7 @@ const ProfileSettingsTable = props => {
                       <TableText>{formatProfileBooleanData(entry.otbnd_recorded_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText><Check/></TableText>
+                      <TableText>{formatProfileBooleanData(entry.acw_option_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
                       <TableText>{formatProfileBooleanData(entry.manual_recorded_i.data[0])}</TableText>
