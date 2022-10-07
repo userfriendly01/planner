@@ -9,7 +9,6 @@ import {
   TableContainer
 } from "./ProfileSettingsTable.Styles";
 import { formatProfileBooleanData } from "utils";
-import { Check } from "@mui/icons-material";
 
 const ProfileSettingsTable = props => {
   const { profileList } = props;
