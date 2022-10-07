@@ -3,7 +3,7 @@ export * from "./filterTable";
 export * from "./calabrioUtils";
 export * from "./formatManagersResponse";
 export * from "./formatOfficesResponse";
-export * from "./formatProfileData";
+export * from "./profileUtils";
 export * from "./formatNumberUtils";
 export * from "./formatWorkerResponse";
 export * from "./formatWorkerAttributeSkillsToHTML";

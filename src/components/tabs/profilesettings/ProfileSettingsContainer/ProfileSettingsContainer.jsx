@@ -8,43 +8,20 @@ import {
 import { useAdminState } from "context";
 import { apiPaths } from "globals";
 import React, { useState } from "react";
-import styled from "styled-components";
 import {
   myAxios,
   sortDialListEntriesByName,
-  sortDirectoryListEntriesByName
+  sortDirectoryListEntriesByName,
+  profileSettingsViews
 } from "utils";
-
-const views = [
-  {
-    value: "PROFILE_DIRECTORY",
-    label: "Profile Directory"
-  },
-  {
-    value: "PROFILE_SETTINGS",
-    label: "Profile Settings"
-  }
-]
-
-const ProfileSettingsContainerDiv = styled.div`
-  height: calc(100vh - 96px);
-  padding: 1%;
-`;
-
-const ProfileSettingsMessage = styled.div`
-  margin-top: 25vh;
-  text-align: center;
-`;
-
-const CallflowWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0px 20px;
-`;
+import {
+  CallflowWrapper,
+  ProfileSettingsContainerDiv,
+  ProfileSettingsMessage,
+} from "./ProfileSettingsContainer.Styles";
 
 const ProfileSettingsContainer = () => {
-  const [ view, setView ] = React.useState(views[0]);
+  const [ view, setView ] = React.useState(profileSettingsViews[0]);
 
   const initialProfileState = {
     dialList: [],
@@ -94,7 +71,7 @@ const ProfileSettingsContainer = () => {
         <Dropdown
           label="What would you like to do?"
           value={view}
-          options={views}
+          options={profileSettingsViews}
           updateValue={(event, view) => setView(view)}
           styles={{
             margin: "40 0 60 0",
