@@ -41,18 +41,12 @@ import {
 const authEndpoint = apiPaths.AUTH;
 const axiosMock = new MockAdapter(myAxios);
 const profilesEndpoint = apiPaths.GET_PROFILES;
-const activitiesEndpoint = apiPaths.GET_ACTIVITIES;
 const skillsEndpoint = apiPaths.GET_SKILLS;
 const workersEndpoint = apiPaths.GET_WORKERS;
 
 const auth = { whatever: "lol" };
 
 const profiles = [
-  { cool: "neat" },
-  { wow: "amazing" }
-];
-
-const activities = [
   { cool: "neat" },
   { wow: "amazing" }
 ];
@@ -210,7 +204,6 @@ describe("<App />", () => {
     beforeEach(() => {
       axiosMock.onGet(authEndpoint).reply(200, auth);
       axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-      axiosMock.onGet(activitiesEndpoint).reply(200, activities);
       axiosMock.onGet(skillsEndpoint).reply(200, skills);
       axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
       getManagers.mockResolvedValue(dbManagers);
@@ -233,7 +226,7 @@ describe("<App />", () => {
           async () => {
             const rendered = render(<App />);
             await waitFor(() => rendered.getByTestId("app-wrapper"));
-            expect(mockAdminDispatch).toHaveBeenCalledTimes(11);
+            expect(mockAdminDispatch).toHaveBeenCalledTimes(10);
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadManagers",
               payload: formatManagersResponse(dbManagers)
@@ -261,10 +254,6 @@ describe("<App />", () => {
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadProfiles",
               payload: profiles
-            });
-            expect(mockAdminDispatch).toHaveBeenCalledWith({
-              type: "loadActivities",
-              payload: activities
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadManagers",
@@ -321,7 +310,6 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(statusCode, { ohno: "booo" });
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(activitiesEndpoint).reply(200, activities);
         axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
@@ -342,7 +330,6 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(statusCode, { wahhh: "nooo" });
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(activitiesEndpoint).reply(200, activities);
         axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
@@ -366,7 +353,6 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(statusCode, { wahhhh: "oh noooo" });
-        axiosMock.onGet(activitiesEndpoint).reply(200, activities);
         axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
@@ -389,7 +375,6 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(activitiesEndpoint).reply(200, activities);
         axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint, { pageToken: "" }).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
@@ -399,7 +384,7 @@ describe("<App />", () => {
         const rendered = render(<App />);
         waitFor(() => rendered.getByTestId("app-wrapper"))
           .then(() => {
-            expect(mockAdminDispatch).toHaveBeenCalledTimes(11);
+            expect(mockAdminDispatch).toHaveBeenCalledTimes(10);
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadManagers",
               payload: formatManagersResponse(dbManagers)
@@ -429,10 +414,6 @@ describe("<App />", () => {
               payload: profiles
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
-              type: "loadActivities",
-              payload: activities
-            });
-            expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadManagers",
               payload: formatManagersResponse(dbManagers)
             });
@@ -459,7 +440,6 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(activitiesEndpoint).reply(200, activities);
         axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(500, { boo: "wahhh" });
         getManagers.mockResolvedValue(dbManagers);
@@ -483,7 +463,6 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(activitiesEndpoint).reply(200, activities);
         axiosMock.onGet(skillsEndpoint).reply(500, { fail: "oh the horror" });
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
@@ -512,7 +491,6 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(activitiesEndpoint).reply(200, activities);
         axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockRejectedValue(error);
@@ -541,7 +519,6 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(activitiesEndpoint).reply(200, activities);
         axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
@@ -563,7 +540,6 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(activitiesEndpoint).reply(200, activities);
         axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
@@ -575,7 +551,7 @@ describe("<App />", () => {
       test("should still load triton admin", async done => {
         const rendered = render(<App />);
         await waitFor(() => rendered.getByTestId("app-wrapper"));
-        expect(mockAdminDispatch).toHaveBeenCalledTimes(10);
+        expect(mockAdminDispatch).toHaveBeenCalledTimes(9);
         expect(mockAdminDispatch).toHaveBeenCalledWith({
           type: "loadManagers",
           payload: formatManagersResponse(dbManagers)
@@ -599,10 +575,6 @@ describe("<App />", () => {
         expect(mockAdminDispatch).toHaveBeenCalledWith({
           type: "loadProfiles",
           payload: profiles
-        });
-        expect(mockAdminDispatch).toHaveBeenCalledWith({
-          type: "loadActivities",
-          payload: activities
         });
         expect(mockAdminDispatch).toHaveBeenCalledWith({
           type: "loadManagers",
@@ -636,7 +608,6 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(activitiesEndpoint).reply(200, activities);
         axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
@@ -648,7 +619,7 @@ describe("<App />", () => {
       test("should still load triton admin", async done => {
         const rendered = render(<App />);
         await waitFor(() => rendered.getByTestId("app-wrapper"));
-        expect(mockAdminDispatch).toHaveBeenCalledTimes(10);
+        expect(mockAdminDispatch).toHaveBeenCalledTimes(9);
         expect(mockAdminDispatch).toHaveBeenCalledWith({
           type: "loadManagers",
           payload: formatManagersResponse(dbManagers)
@@ -672,10 +643,6 @@ describe("<App />", () => {
         expect(mockAdminDispatch).toHaveBeenCalledWith({
           type: "loadProfiles",
           payload: profiles
-        });
-        expect(mockAdminDispatch).toHaveBeenCalledWith({
-          type: "loadActivities",
-          payload: activities
         });
         expect(mockAdminDispatch).toHaveBeenCalledWith({
           type: "loadManagers",
@@ -709,7 +676,6 @@ describe("<App />", () => {
       beforeEach(() => {
         axiosMock.onGet(authEndpoint).reply(200, auth);
         axiosMock.onGet(profilesEndpoint).reply(200, profiles);
-        axiosMock.onGet(activitiesEndpoint).reply(200, activities);
         axiosMock.onGet(skillsEndpoint).reply(200, skills);
         axiosMock.onGet(workersEndpoint).replyOnce(200, dbWorkers);
         getManagers.mockResolvedValue(dbManagers);
@@ -721,7 +687,7 @@ describe("<App />", () => {
       test("should still load triton admin", async done => {
         const rendered = render(<App />);
         await waitFor(() => rendered.getByTestId("app-wrapper"));
-        expect(mockAdminDispatch).toHaveBeenCalledTimes(10);
+        expect(mockAdminDispatch).toHaveBeenCalledTimes(9);
         expect(mockAdminDispatch).toHaveBeenCalledWith({
           type: "loadManagers",
           payload: formatManagersResponse(dbManagers)
@@ -745,10 +711,6 @@ describe("<App />", () => {
         expect(mockAdminDispatch).toHaveBeenCalledWith({
           type: "loadProfiles",
           payload: profiles
-        });
-        expect(mockAdminDispatch).toHaveBeenCalledWith({
-          type: "loadActivities",
-          payload: activities
         });
         expect(mockAdminDispatch).toHaveBeenCalledWith({
           type: "loadManagers",
