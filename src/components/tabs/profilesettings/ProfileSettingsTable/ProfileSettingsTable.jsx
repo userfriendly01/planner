@@ -8,7 +8,10 @@ import {
   StyledPaper,
   TableContainer
 } from "./ProfileSettingsTable.Styles";
-import { formatProfileBooleanData } from "utils";
+import {
+  formatProfileBooleanData,
+  formatOverflowSkillData
+ } from "utils";
 
 const ProfileSettingsTable = props => {
   const { profileList } = props;
@@ -30,53 +33,57 @@ const ProfileSettingsTable = props => {
               <CustomTableHeader>ACW Data Entry</CustomTableHeader>
               <CustomTableHeader>Manual Recorded Inbound</CustomTableHeader>
               <CustomTableHeader>Agent Assisted Pay</CustomTableHeader>
+              <CustomTableHeader>Overflow Skill</CustomTableHeader>
               <CustomTableHeader>CTAC Profile Change</CustomTableHeader>
               <CustomTableHeader>Policy Number Edit</CustomTableHeader>
             </tr>
           </thead>
           <tbody>
             {
-              profileList.map(entry => {
+              profileList.map(profile => {
                 return(
-                  <CustomTableRow key={entry.profile_id} data-testid="table-row">
+                  <CustomTableRow key={profile.profile_id} data-testid="table-row">
                     <CustomTableData>
-                      <TableText>{entry.profile_id}</TableText>
+                      <TableText>{profile.profile_id}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{entry.profile_nme}</TableText>
+                      <TableText>{profile.profile_nme}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(entry.recorded_i.data[0])}</TableText>
+                      <TableText>{formatProfileBooleanData(profile.recorded_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(entry.auto_answd_i.data[0])}</TableText>
+                      <TableText>{formatProfileBooleanData(profile.auto_answd_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(entry.pmt_prcsg_i.data[0])}</TableText>
+                      <TableText>{formatProfileBooleanData(profile.pmt_prcsg_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(entry.otbnd_recorded_i.data[0])}</TableText>
+                      <TableText>{formatProfileBooleanData(profile.otbnd_recorded_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(entry.acw_option_i.data[0])}</TableText>
+                      <TableText>{formatProfileBooleanData(profile.acw_option_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(entry.manual_recorded_i.data[0])}</TableText>
+                      <TableText>{formatProfileBooleanData(profile.manual_recorded_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(entry.acw_data_entry_i.data[0])}</TableText>
+                      <TableText>{formatProfileBooleanData(profile.acw_data_entry_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(entry.manual_record_inbound_i.data[0])}</TableText>
+                      <TableText>{formatProfileBooleanData(profile.manual_record_inbound_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(entry.agent_assisted_pay_i.data[0])}</TableText>
+                      <TableText>{formatProfileBooleanData(profile.agent_assisted_pay_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(entry.completeTasksOnActivityChange_option_i.data[0])}</TableText>
+                      <TableText>{formatOverflowSkillData(profile.overflow_skill)}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(entry.policy_number_edit_i.data[0])}</TableText>
+                      <TableText>{formatProfileBooleanData(profile.completeTasksOnActivityChange_option_i.data[0])}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
+                      <TableText>{formatProfileBooleanData(profile.policy_number_edit_i.data[0])}</TableText>
                     </CustomTableData>
                   </CustomTableRow>
                 );
