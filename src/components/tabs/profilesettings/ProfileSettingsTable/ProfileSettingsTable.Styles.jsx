@@ -14,6 +14,9 @@ export const CustomTableData = styled.td`
   padding: 2px 4px;
   vertical-align: top;
   padding-bottom: 10px;
+  &:nth-child(2) {
+    text-align: left;
+  }
 `;
 
 export const CustomTableHeader = styled.th`
@@ -21,6 +24,9 @@ export const CustomTableHeader = styled.th`
   border-bottom: 2px solid #F5F5F5;
   padding: 10px 4px;
   text-align: center;
+  position: sticky;
+  top: 90px;
+  background-color: white;
   &:nth-child(1) {
     width: 2%;
   }
@@ -35,9 +41,6 @@ export const CustomTableRow = styled.tr`
     background-color: rgba(0,0,0,0.04);
   }
   background-color: "inherit";
-  &:nth-child(2) {
-    text-align: left;
-  }
   &:hover {
     background-color: rgba(0,0,0,0.15);
     cursor: pointer;
