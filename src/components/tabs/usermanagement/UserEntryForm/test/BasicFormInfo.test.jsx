@@ -1,4 +1,5 @@
 import BasicFormInfo from "../BasicFormInfo";
+import { SearchParams } from "../ExtensionSearchParams";
 import {
   InputAdornment,
   Switch,
@@ -715,13 +716,24 @@ describe("<BasicFormInfo />", () => {
             validateFunction();
           });
 
-          const expectedParams = {
-            type: userFormActions.SET_EXTENSION_MESSAGE,
-            payload: {
-              message: "Extension is reserved",
-              isError: true
-            }
-          };
+          let expectedParams;
+          if(SearchParams.getValues().ReservedExtensions.length > 0){
+            expectedParams = {
+              type: userFormActions.SET_EXTENSION_MESSAGE,
+              payload: {
+                message: "Extension is reserved",
+                isError: true
+              }
+            };
+          } else {
+            expectedParams = {
+              type: userFormActions.SET_EXTENSION_MESSAGE,
+              payload: {
+                message: "Checking Extension Number with Twilio",
+                isError: false
+              }
+            };
+          }
 
           expect(mockSetForm).toHaveBeenCalledTimes(1);
           expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
