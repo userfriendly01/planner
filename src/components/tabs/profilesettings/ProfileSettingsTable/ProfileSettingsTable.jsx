@@ -23,12 +23,9 @@ const ProfileSettingsTable = props => {
         <CustomTable>
           <thead>
             <tr>
-              <Tooltip
-                  placement="top"
-                  title={<h1 style={{ fontSize: "15px" }}>Profile ID</h1>}>
+              <Tooltip placement="top" title="Profile ID">
                   <CustomTableHeader>ID</CustomTableHeader>
               </Tooltip>
-              <CustomTableHeader>ID</CustomTableHeader>
               <CustomTableHeader>Name</CustomTableHeader>
               <CustomTableHeader>Recorded</CustomTableHeader>
               <CustomTableHeader>Auto Answered</CustomTableHeader>
