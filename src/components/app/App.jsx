@@ -37,7 +37,6 @@ import {
 const AppWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  overflow: auto;
 `;
 
 const ErrorMessage = styled.div`

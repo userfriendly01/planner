@@ -8,7 +8,7 @@ export const ProfileSettingsDropdownWrapper = styled.div`
 `;
 
 export const ProfileSettingsContainerDiv = styled.div`
-  height: calc(100vh - 96px);
+  height: 100%;
   padding: 1%;
 `;
 

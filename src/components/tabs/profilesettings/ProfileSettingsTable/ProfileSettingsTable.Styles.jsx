@@ -25,7 +25,7 @@ export const CustomTableHeader = styled.th`
   padding: 10px 4px;
   text-align: center;
   position: sticky;
-  top: 90px;
+  top: 95px;
   background-color: white;
   &:nth-child(1) {
     width: 2%;
