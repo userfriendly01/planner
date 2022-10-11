@@ -12,6 +12,7 @@ import {
   formatProfileBooleanData,
   formatOverflowSkillData
  } from "utils";
+ import { Tooltip } from "@mui/material";
 
 const ProfileSettingsTable = props => {
   const { profileList } = props;
@@ -22,6 +23,11 @@ const ProfileSettingsTable = props => {
         <CustomTable>
           <thead>
             <tr>
+              <Tooltip
+                  placement="top"
+                  title={<h1 style={{ fontSize: "15px" }}>Profile ID</h1>}>
+                  <CustomTableHeader>ID</CustomTableHeader>
+              </Tooltip>
               <CustomTableHeader>ID</CustomTableHeader>
               <CustomTableHeader>Name</CustomTableHeader>
               <CustomTableHeader>Recorded</CustomTableHeader>
