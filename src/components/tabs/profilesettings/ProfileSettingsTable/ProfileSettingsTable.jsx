@@ -26,19 +26,45 @@ const ProfileSettingsTable = props => {
               <Tooltip placement="top" title="Profile ID">
                   <CustomTableHeader>ID</CustomTableHeader>
               </Tooltip>
-              <CustomTableHeader>Name</CustomTableHeader>
-              <CustomTableHeader>Recorded</CustomTableHeader>
-              <CustomTableHeader>Auto Answered</CustomTableHeader>
-              <CustomTableHeader>PMT PRCSG</CustomTableHeader>
-              <CustomTableHeader>Outbound Recorded</CustomTableHeader>
-              <CustomTableHeader>ACW Option</CustomTableHeader>
-              <CustomTableHeader>Manual Recorded</CustomTableHeader>
-              <CustomTableHeader>ACW Data Entry</CustomTableHeader>
-              <CustomTableHeader>Manual Recorded Inbound</CustomTableHeader>
-              <CustomTableHeader>Agent Assisted Pay</CustomTableHeader>
-              <CustomTableHeader>Overflow Skill</CustomTableHeader>
-              <CustomTableHeader>CTAC Profile Change</CustomTableHeader>
-              <CustomTableHeader>Policy Number Edit</CustomTableHeader>
+              <Tooltip placement="top" title="Profile Name">
+                <CustomTableHeader>Name</CustomTableHeader>
+              </Tooltip>
+              <Tooltip placement="top" title="All calls inbound are automatically recorded">
+                <CustomTableHeader>Recorded</CustomTableHeader>
+              </Tooltip>
+              <Tooltip placement="top" title="Automatically picks an available agent and accepts a call">
+                <CustomTableHeader>Auto Answered</CustomTableHeader>
+              </Tooltip>
+              <Tooltip placement="top" title="Click for Payment button is enabled">
+                <CustomTableHeader>PMT PRCSG</CustomTableHeader>
+              </Tooltip>
+              <Tooltip placement="top" title="All calls outbound are automatically recorded">
+                <CustomTableHeader>Outbound Recorded</CustomTableHeader>
+              </Tooltip>
+              <Tooltip placement="top" title="Agent has the choice to enable or disable acw">
+                <CustomTableHeader>ACW Option</CustomTableHeader>
+              </Tooltip>
+              <Tooltip placement="top" title="Button appears with call controls">
+                <CustomTableHeader>Manual Recorded</CustomTableHeader>
+              </Tooltip>
+              <Tooltip placement="top" title="If ACW is enabled, during wrapup, call tagging appears">
+                <CustomTableHeader>ACW Data Entry</CustomTableHeader>
+              </Tooltip>
+              <Tooltip placement="top" title="Button appears with call controls">
+                <CustomTableHeader>Manual Recorded Inbound</CustomTableHeader>
+              </Tooltip>
+              <Tooltip placement="top" title="Need a tooltip!">
+                <CustomTableHeader>Agent Assisted Pay</CustomTableHeader>
+              </Tooltip>
+              <Tooltip placement="top" title="An agent misses a call, and its forwarded to next available agent with the same manager">
+                <CustomTableHeader>Overflow Skill</CustomTableHeader>
+              </Tooltip>
+              <Tooltip placement="top" title="Need a tooltip!">
+                <CustomTableHeader>CTAC Profile Change</CustomTableHeader>
+              </Tooltip>
+              <Tooltip placement="top" title="An agent can capture and save a different policy number than what the IVR previously loaded.">
+                <CustomTableHeader>Policy Number Edit</CustomTableHeader>
+              </Tooltip>
             </tr>
           </thead>
           <tbody>
