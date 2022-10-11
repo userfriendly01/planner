@@ -14,13 +14,19 @@ export const CustomTableData = styled.td`
   padding: 2px 4px;
   vertical-align: top;
   padding-bottom: 10px;
+  &:nth-child(2) {
+    text-align: left;
+  }
 `;
 
 export const CustomTableHeader = styled.th`
   color: #1A1446;
   border-bottom: 2px solid #F5F5F5;
   padding: 10px 4px;
-  text-align: left;
+  text-align: center;
+  position: sticky;
+  top: 95px;
+  background-color: white;
   &:nth-child(1) {
     width: 2%;
   }
@@ -30,6 +36,7 @@ export const CustomTableHeader = styled.th`
 `;
 
 export const CustomTableRow = styled.tr`
+  text-align: center;
   &:nth-child(odd) {
     background-color: rgba(0,0,0,0.04);
   }

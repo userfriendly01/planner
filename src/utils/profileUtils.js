@@ -1,11 +1,18 @@
 import React from "react";
 import { Check } from "@mui/icons-material";
 
-export const formatProfileBooleanData = number => {
-  if (number === 1) {
+export const formatProfileBooleanData = value => {
+  if (value === 1) {
     return <Check />;
   }
   return "";
+};
+
+export const formatOverflowSkillData = value => {
+  if (value === null) {
+    return  "";
+  }
+  return value;
 };
 
 export const profileSettingsViews = [
