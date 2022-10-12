@@ -34,7 +34,6 @@ const ProfileSettingsTable = props => {
               <CustomTableHeader>Manual Recorded Inbound</CustomTableHeader>
               <CustomTableHeader>Agent Assisted Pay</CustomTableHeader>
               <CustomTableHeader>Overflow Skill</CustomTableHeader>
-              <CustomTableHeader>CTAC Profile Change</CustomTableHeader>
               <CustomTableHeader>Policy Number Edit</CustomTableHeader>
             </tr>
           </thead>
@@ -78,9 +77,6 @@ const ProfileSettingsTable = props => {
                     </CustomTableData>
                     <CustomTableData>
                       <TableText>{formatOverflowSkillData(profile.overflow_skill)}</TableText>
-                    </CustomTableData>
-                    <CustomTableData>
-                      <TableText>{formatProfileBooleanData(profile.completeTasksOnActivityChange_option_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
                       <TableText>{formatProfileBooleanData(profile.policy_number_edit_i.data[0])}</TableText>
