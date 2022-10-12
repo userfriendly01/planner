@@ -36,9 +36,6 @@ describe("<ProfileSettingsTable />", () => {
           data: [1]
         },
         overflow_skill: "Overflow Skill",
-        completeTasksOnActivityChange_option_i: {
-          data: [0]
-        },
         policy_number_edit_i: {
           data: [0]
         },
@@ -74,9 +71,6 @@ describe("<ProfileSettingsTable />", () => {
           data: [1]
         },
         overflow_skill: "Overflow Skill 2",
-        completeTasksOnActivityChange_option_i: {
-          data: [0]
-        },
         policy_number_edit_i: {
           data: [0]
         },
@@ -86,9 +80,9 @@ describe("<ProfileSettingsTable />", () => {
       const rendered = render(<ProfileSettingsTable profileList={profiles}/>)
       expect(rendered.getByText("ID", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Name", { selector: "th" })).toBeInTheDocument();
-      expect(rendered.getByText("Recorded", { selector: "th" })).toBeInTheDocument();
+      expect(rendered.getByText("Inbound Recorded", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Auto Answered", { selector: "th" })).toBeInTheDocument();
-      expect(rendered.getByText("PMT PRCSG", { selector: "th" })).toBeInTheDocument();
+      expect(rendered.getByText("Payment Processing", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Outbound Recorded", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("ACW Option", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Manual Recorded", { selector: "th" })).toBeInTheDocument();
@@ -96,7 +90,6 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByText("Manual Recorded Inbound", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Agent Assisted Pay", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Overflow Skill", { selector: "th" })).toBeInTheDocument();
-      expect(rendered.getByText("CTAC Profile Change", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Policy Number Edit", { selector: "th" })).toBeInTheDocument();
       const tableRows = rendered.getAllByTestId("table-row");
       expect(tableRows.length).toBe(2);
