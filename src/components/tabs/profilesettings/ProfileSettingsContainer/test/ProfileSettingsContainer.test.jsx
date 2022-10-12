@@ -3,7 +3,9 @@ import MockAdapter from "axios-mock-adapter";
 import {
   DialListTable,
   Directory,
-  ProfileDropDown
+  Dropdown,
+  ProfileDropDown,
+  ProfileSettingsTable
 } from "components";
 import { initialState } from "context";
 import { apiPaths } from "globals";
@@ -26,7 +28,9 @@ jest.mock("components", () => ({
   __esModule: true,
   DialListTable: jest.fn(),
   Directory: jest.fn(),
-  ProfileDropDown: jest.fn()
+  ProfileDropDown: jest.fn(),
+  Dropdown: jest.fn(),
+  ProfileSettingsTable: jest.fn()
 }));
 
 const profileList = [
@@ -61,7 +65,9 @@ describe("<ProfileSettingsContainer />", () => {
     setupMockedComponents({
       DialListTable,
       Directory,
-      ProfileDropDown
+      ProfileDropDown,
+      Dropdown,
+      ProfileSettingsTable
     });
   });
 
@@ -71,6 +77,8 @@ describe("<ProfileSettingsContainer />", () => {
       expectMockedComponent(rendered, { DialListTable }, 0);
       expectMockedComponent(rendered, { Directory }, 0);
       expectMockedComponent(rendered, { ProfileDropDown }, 1);
+      expectMockedComponent(rendered, { Dropdown }, 1);
+      expectMockedComponent(rendered, { ProfileSettingsTable }, 0);
       expect(rendered.container).toHaveTextContent("Please select a profile");
       expect(rendered.container).not.toHaveTextContent(errorMessage);
       expectOnlyPassedProps(ProfileDropDown, {
@@ -123,6 +131,8 @@ describe("<ProfileSettingsContainer />", () => {
           expectMockedComponent(rendered, { ProfileDropDown }, 1);
           expectMockedComponent(rendered, { DialListTable }, 1);
           expectMockedComponent(rendered, { Directory }, 1);
+          expectMockedComponent(rendered, { Dropdown }, 1);
+          expectMockedComponent(rendered, { ProfileSettingsTable }, 0);
           expectOnlyPassedProps(DialListTable, {
             // sorted dialList
             dialList: [
@@ -195,6 +205,8 @@ describe("<ProfileSettingsContainer />", () => {
           expectMockedComponent(rendered, { ProfileDropDown }, 1);
           expectMockedComponent(rendered, { DialListTable }, 0);
           expectMockedComponent(rendered, { Directory }, 0);
+          expectMockedComponent(rendered, { Dropdown }, 1);
+          expectMockedComponent(rendered, { ProfileSettingsTable }, 0);
           expect(rendered.container).toHaveTextContent(errorMessage);
         });
       });
