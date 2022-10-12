@@ -29,28 +29,28 @@ jest.mock("@mui/material", () => ({
 
 const mockSkills = [
   {
-    skill: "skill A"
+    name: "skill A"
   },
   {
-    skill: "skill B"
+    name: "skill B"
   },
   {
-    skill: "skill C"
+    name: "skill C"
   }
 ];
 
 const mockSkillOptions = [
   {
-    label: mockSkills[0].skill,
-    value: mockSkills[0].skill
+    label: mockSkills[0].name,
+    value: mockSkills[0].name
   },
   {
-    label: mockSkills[1].skill,
-    value: mockSkills[1].skill
+    label: mockSkills[1].name,
+    value: mockSkills[1].name
   },
   {
-    label: mockSkills[2].skill,
-    value: mockSkills[2].skill
+    label: mockSkills[2].name,
+    value: mockSkills[2].name
   }
 ];
 
