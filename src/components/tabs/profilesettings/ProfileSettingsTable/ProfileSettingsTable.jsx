@@ -26,9 +26,11 @@ const ProfileSettingsTable = props => {
             <tr>
               {
                 profileTableConstants.map(entry => {
-                  <Tooltip placement="top" title={entry.TOOLTIP}>
-                    <CustomTableHeader>{entry.COLUMN_NAME}</CustomTableHeader>
-                  </Tooltip>
+                  return(
+                    <Tooltip placement="top" title={entry.TOOLTIP}>
+                      <CustomTableHeader>{entry.COLUMN_NAME}</CustomTableHeader>
+                    </Tooltip>
+                  )
                 })
               }
             </tr>

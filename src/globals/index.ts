@@ -35,7 +35,7 @@ export const profileTableConstants = [
     TOOLTIP: "Profile Name",
   },
   {
-    COLUMN_NAME: "Inbound Recordeds",
+    COLUMN_NAME: "Inbound Recorded",
     TOOLTIP: "All inbound calls are automatically recorded",
   },
   {
