@@ -44,10 +44,10 @@ const ProfileSettingsTable = props => {
               <Tooltip placement="top" title="UI Feature: Agent has the choice to enable or disable after call work (wrap-up). Default setting is off">
                 <CustomTableHeader>ACW Option</CustomTableHeader>
               </Tooltip>
-              <Tooltip placement="top" title="UI Feature: Manual recording button appears in call controls when enabled">
+              <Tooltip placement="top" title="UI Feature: Manual recording button appears in call controls when enabled. User will have the ability to manually start and stop recordings">
                 <CustomTableHeader>Manual Recorded</CustomTableHeader>
               </Tooltip>
-              <Tooltip placement="top" title="UI Feature: If enabled, during wrap-up, call tagging toggle appears which enables a form to appear">
+              <Tooltip placement="top" title="UI Feature: If enabled, during wrap-up, call tagging toggle appears which gives an input form to the user">
                 <CustomTableHeader>ACW Data Entry</CustomTableHeader>
               </Tooltip>
               <Tooltip placement="top" title="UI Feature: Manual recording button appears in call controls when enabled. User will have the ability to manually start and stop recordings on inbound calls">
@@ -56,7 +56,7 @@ const ProfileSettingsTable = props => {
               <Tooltip placement="top" title="Not a currently enabled UI feature">
                 <CustomTableHeader>Agent Assisted Pay</CustomTableHeader>
               </Tooltip>
-              <Tooltip placement="top" title="An agent misses a call, and it's forwarded to next available agent with the same manager">
+              <Tooltip placement="top" title="An agent misses a call, and it's forwarded to the next available agent with the same manager">
                 <CustomTableHeader>Overflow Skill</CustomTableHeader>
               </Tooltip>
               <Tooltip placement="top" title="UI Feature: An agent can capture and save a different policy number than what the IVR previously loaded">
