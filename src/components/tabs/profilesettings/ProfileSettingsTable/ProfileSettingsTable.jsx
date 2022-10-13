@@ -12,6 +12,8 @@ import {
   formatProfileBooleanData,
   formatOverflowSkillData
  } from "utils";
+import { Tooltip } from "@mui/material";
+import { profileTableColumnHeader } from "globals";
 
 const ProfileSettingsTable = props => {
   const { profileList } = props;
@@ -22,19 +24,15 @@ const ProfileSettingsTable = props => {
         <CustomTable>
           <thead>
             <tr>
-              <CustomTableHeader>ID</CustomTableHeader>
-              <CustomTableHeader>Name</CustomTableHeader>
-              <CustomTableHeader>Recorded</CustomTableHeader>
-              <CustomTableHeader>Auto Answered</CustomTableHeader>
-              <CustomTableHeader>PMT PRCSG</CustomTableHeader>
-              <CustomTableHeader>Outbound Recorded</CustomTableHeader>
-              <CustomTableHeader>ACW Option</CustomTableHeader>
-              <CustomTableHeader>Manual Recorded</CustomTableHeader>
-              <CustomTableHeader>ACW Data Entry</CustomTableHeader>
-              <CustomTableHeader>Manual Recorded Inbound</CustomTableHeader>
-              <CustomTableHeader>Agent Assisted Pay</CustomTableHeader>
-              <CustomTableHeader>Overflow Skill</CustomTableHeader>
-              <CustomTableHeader>Policy Number Edit</CustomTableHeader>
+              {
+                profileTableColumnHeader.map(entry => {
+                  return(
+                    <Tooltip placement="top" title={entry.TOOLTIP}>
+                      <CustomTableHeader>{entry.COLUMN_NAME}</CustomTableHeader>
+                    </Tooltip>
+                  )
+                })
+              }
             </tr>
           </thead>
           <tbody>
