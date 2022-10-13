@@ -109,7 +109,7 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByLabelText("UI Feature: If enabled, during wrap-up, call tagging toggle appears which gives an input form to the user")).toBeInTheDocument();
       expect(rendered.getByLabelText("UI Feature: Manual recording button appears in call controls when enabled. User will have the ability to manually start and stop recordings on inbound calls")).toBeInTheDocument();
       expect(rendered.getByLabelText("Not a currently enabled UI feature")).toBeInTheDocument();
-      expect(rendered.getByLabelText("An agent misses a call, and it's forwarded to the next available agent with the same manager")).toBeInTheDocument();
+      expect(rendered.getByLabelText("An agent misses a call and it is forwarded to the next available agent with the same manager")).toBeInTheDocument();
       expect(rendered.getByLabelText("UI Feature: An agent can capture and save a different policy number than what the IVR previously loaded")).toBeInTheDocument();
     });
   });

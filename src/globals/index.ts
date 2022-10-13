@@ -72,7 +72,7 @@ export const profileTableColumnHeader = [
   },
   {
     COLUMN_NAME: "Overflow Skill",
-    TOOLTIP: "An agent misses a call, and it's forwarded to the next available agent with the same manager",
+    TOOLTIP: "An agent misses a call and it is forwarded to the next available agent with the same manager",
   },
   {
     COLUMN_NAME: "Policy Number Edit",
