@@ -59,11 +59,13 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
     value: string
   }) => {
     const skillObj = skills.find(skillObj => skillObj.name === skill.value);
-    setNewSkill({
-      levels: skillObj.levels,
-      levelSelected: skillObj.levels.length > 0 ? skillObj.levels[0] : null,
-      skill: skillObj.name
-    });
+    if(skillObj){
+      setNewSkill({
+        levels: skillObj.levels,
+        levelSelected: skillObj.levels.length > 0 ? skillObj.levels[0] : null,
+        skill: skillObj.name
+      });
+    }
   };
 
   const newSkillLevelChanged = (level: string) => setNewSkill({
@@ -127,7 +129,10 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
       <SkillRowSeperator/>
       <SkillsWrapper>
         {defaultSkills.skills.sort().map((skill: string, index: number) => {
-          const taskrouterSkill = skills.find(skillObj => skillObj.name === skill);
+          const taskrouterSkill: any = skills.find(skillObj => skillObj.name === skill) || {
+            name: skill,
+            levels: []
+          };
           return (
             // @ts-ignore
             <SkillRow highlightOnHover={true} key={`default-skill-row-${index}`}>
