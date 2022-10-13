@@ -48,8 +48,8 @@ const ForwardToEntryForm = props => {
   const getSkillOptions = () => {
     return skills.map(skill => {
       return {
-        label: skill.skill,
-        value: skill.skill
+        label: skill.name,
+        value: skill.name
       };
     });
   };
