@@ -135,7 +135,11 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
       <SkillRowSeperator/>
       <SkillsWrapper>
         {defaultSkills.skills.sort().map((skill: string, index: number) => {
-          const taskrouterSkill = skills.find(skillObj => skillObj.name === skill);
+          const taskrouterSkill: any = skills.find(skillObj => skillObj.name === skill) || {
+            name: skill,
+            levels: []
+          };
+          console.warn("Taskrouter Skill", taskrouterSkill);
           return (
             // @ts-ignore
             <SkillRow highlightOnHover={true} key={`default-skill-row-${index}`}>
