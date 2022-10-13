@@ -25,6 +25,61 @@ export const resetResponses = {
   SKILLS_WERE_EQUAL: "Worker default_skills is equal to currently assigned skills"
 };
 
+export const profileTableColumnHeader = [
+  {
+    COLUMN_NAME: "ID",
+    TOOLTIP: "Unique Profile Identification",
+  },
+  {
+    COLUMN_NAME: "Name",
+    TOOLTIP: "Profile Name",
+  },
+  {
+    COLUMN_NAME: "Inbound Recorded",
+    TOOLTIP: "All inbound calls are automatically recorded",
+  },
+  {
+    COLUMN_NAME: "Auto Answered",
+    TOOLTIP: "Automatically accepts a call and routes to an agent",
+  },
+  {
+    COLUMN_NAME: "Payment Processing",
+    TOOLTIP: "UI Feature: Click for payment button is enabled to manually pause/resume call recordings",
+  },
+  {
+    COLUMN_NAME: "Outbound Recorded",
+    TOOLTIP: "All outbound calls are automatically recorded",
+  },
+  {
+    COLUMN_NAME: "ACW Option",
+    TOOLTIP: "UI Feature: Agent has the choice to enable or disable after call work (wrap-up). Default setting is off",
+  },
+  {
+    COLUMN_NAME: "Manual Recorded",
+    TOOLTIP: "UI Feature: Manual recording button appears in call controls when enabled. User will have the ability to manually start and stop recordings",
+  },
+  {
+    COLUMN_NAME: "ACW Data Entry",
+    TOOLTIP: "UI Feature: If enabled, during wrap-up, call tagging toggle appears which gives an input form to the user",
+  },
+  {
+    COLUMN_NAME: "Manual Recorded Inbound",
+    TOOLTIP: "UI Feature: Manual recording button appears in call controls when enabled. User will have the ability to manually start and stop recordings on inbound calls",
+  },
+  {
+    COLUMN_NAME: "Agent Assisted Pay",
+    TOOLTIP: "Not a currently enabled UI feature",
+  },
+  {
+    COLUMN_NAME: "Overflow Skill",
+    TOOLTIP: "An agent misses a call and it is forwarded to the next available agent with the same manager",
+  },
+  {
+    COLUMN_NAME: "Policy Number Edit",
+    TOOLTIP: "UI Feature: An agent can capture and save a different policy number than what the IVR previously loaded",
+  }
+];
+
 export const apiPaths = {
   AUTH: `${SERVICE_BASE_URI}/admin-login`,
   CHECK_EXTENSION: `${SERVICE_BASE_URI}/checkextension`,
