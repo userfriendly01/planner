@@ -45,7 +45,6 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
   const skills = useAdminState().skillContext.skills.slice().filter(s => s.levels);
 
   const skillsForDropDown = skills.filter((skillObj: Skill) => !defaultSkills.skills.includes(skillObj.name));
-  console.warn("SKILLS FOR DROPDOWN", skillsForDropDown);
 
   const defaultNewSkill: NewTwilioWorkerSkill = {
     levels: [],
@@ -60,7 +59,6 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
     value: string
   }) => {
     const skillObj = skills.find(skillObj => skillObj.name === skill.value);
-    console.warn("Within newSkillChanged", skillObj);
     if(skillObj){
       setNewSkill({
         levels: skillObj.levels,
@@ -77,7 +75,6 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
 
   const existingSkillLevelChanged = (skill: string) => (level: string) => {
     const updatedDefaultSkills = { ...defaultSkills };
-    console.warn("Within existingSkillLevelChanged", updatedDefaultSkills);
     updatedDefaultSkills.levels[skill] = parseInt(level);
     setDefaultSkills(updatedDefaultSkills);
   };
@@ -89,7 +86,6 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
     } = newSkill;
     const updatedDefaultSkills = { ...defaultSkills };
     updatedDefaultSkills.skills.push(skill);
-    console.warn("Within addSkillClicked", updatedDefaultSkills);
     if (newSkill.levelSelected) {
       updatedDefaultSkills.levels[skill] = levelSelected;
     }
@@ -99,13 +95,11 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
 
   const removeSkillClicked = (skill: string) => () => {
     const updatedDefaultSkills = { ...defaultSkills };
-    console.warn("Within removeSkillClicked", updatedDefaultSkills);
     updatedDefaultSkills.skills = updatedDefaultSkills.skills.filter((existingSkill: string) => existingSkill !== skill);
     delete updatedDefaultSkills.levels[skill];
     setDefaultSkills(updatedDefaultSkills);
   };
 
-  console.warn("NEW SKILL", newSkill);
   const skillHasPriorities = newSkill.levels.length > 0;
   const addSkillButtonDisabled = newSkill.skill === "" || (skillHasPriorities && !newSkill.levelSelected);
 
@@ -139,7 +133,6 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
             name: skill,
             levels: []
           };
-          console.warn("Taskrouter Skill", taskrouterSkill);
           return (
             // @ts-ignore
             <SkillRow highlightOnHover={true} key={`default-skill-row-${index}`}>
