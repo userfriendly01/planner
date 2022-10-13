@@ -44,7 +44,7 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
 
   const skills = useAdminState().skillContext.skills.slice().filter(s => s.levels);
 
-  const skillsForDropDown = skills.filter((skillObj: Skill) => !defaultSkills.skills.includes(skillObj.name));
+  const skillsForDropDown = skills.filter((skillObj: Skill) => !defaultSkills.skills.includes(skillObj.name) && skillObj.levels);
 
   const defaultNewSkill: NewTwilioWorkerSkill = {
     levels: [],
@@ -53,6 +53,7 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
   };
 
   const [newSkill, setNewSkill] = useState<NewTwilioWorkerSkill>(defaultNewSkill);
+  console.log("NEW SKILL", newSkill);
 
   const newSkillChanged = (skill: {
     [index: string]: any,
