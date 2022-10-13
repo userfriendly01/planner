@@ -14,6 +14,7 @@ import {
   ManagementWrapper,
   ProfileSettingsContainer
 } from "components";
+import { useAdminState } from "context";
 import React from "react";
 
 const TabPanel = (props: TabPanelProps) => {
@@ -41,6 +42,8 @@ const TabPanel = (props: TabPanelProps) => {
 
 const NavTabs = () => {
   const [value, setValue] = React.useState(0);
+
+  console.log("STATE", useAdminState());
 
   function handleChange(event: any, newValue: number) {
     setValue(newValue);
