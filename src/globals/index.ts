@@ -25,7 +25,7 @@ export const resetResponses = {
   SKILLS_WERE_EQUAL: "Worker default_skills is equal to currently assigned skills"
 };
 
-export const profileTableConstants = [
+export const profileTableColumnHeader = [
   {
     COLUMN_NAME: "ID",
     TOOLTIP: "Unique Profile Identification",

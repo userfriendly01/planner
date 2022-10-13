@@ -76,7 +76,8 @@ describe("<ProfileSettingsTable />", () => {
         },
       },
     ];
-    test("should render header and correct info & buttons for each entry", () => {
+
+    test("should render correct column headers and number of rows", async () => {
       const rendered = render(<ProfileSettingsTable profileList={profiles}/>)
       expect(rendered.getByText("ID", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Name", { selector: "th" })).toBeInTheDocument();
@@ -93,6 +94,23 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByText("Policy Number Edit", { selector: "th" })).toBeInTheDocument();
       const tableRows = rendered.getAllByTestId("table-row");
       expect(tableRows.length).toBe(2);
+    });
+
+    test("should render correct tooltips", async () => {
+      const rendered = render(<ProfileSettingsTable profileList={profiles}/>)
+      expect(rendered.getByLabelText("Unique Profile Identification")).toBeInTheDocument();
+      expect(rendered.getByLabelText("Profile Name")).toBeInTheDocument();
+      expect(rendered.getByLabelText("All inbound calls are automatically recorded")).toBeInTheDocument();
+      expect(rendered.getByLabelText("Automatically accepts a call and routes to an agent")).toBeInTheDocument();
+      expect(rendered.getByLabelText("UI Feature: Click for payment button is enabled to manually pause/resume call recordings")).toBeInTheDocument();
+      expect(rendered.getByLabelText("All outbound calls are automatically recorded")).toBeInTheDocument();
+      expect(rendered.getByLabelText("UI Feature: Agent has the choice to enable or disable after call work (wrap-up). Default setting is off")).toBeInTheDocument();
+      expect(rendered.getByLabelText("UI Feature: Manual recording button appears in call controls when enabled. User will have the ability to manually start and stop recordings")).toBeInTheDocument();
+      expect(rendered.getByLabelText("UI Feature: If enabled, during wrap-up, call tagging toggle appears which gives an input form to the user")).toBeInTheDocument();
+      expect(rendered.getByLabelText("UI Feature: Manual recording button appears in call controls when enabled. User will have the ability to manually start and stop recordings on inbound calls")).toBeInTheDocument();
+      expect(rendered.getByLabelText("Not a currently enabled UI feature")).toBeInTheDocument();
+      expect(rendered.getByLabelText("An agent misses a call, and it's forwarded to the next available agent with the same manager")).toBeInTheDocument();
+      expect(rendered.getByLabelText("UI Feature: An agent can capture and save a different policy number than what the IVR previously loaded")).toBeInTheDocument();
     });
   });
 });

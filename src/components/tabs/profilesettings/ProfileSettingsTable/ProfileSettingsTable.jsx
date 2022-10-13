@@ -13,7 +13,7 @@ import {
   formatOverflowSkillData
  } from "utils";
 import { Tooltip } from "@mui/material";
-import { profileTableConstants } from "globals";
+import { profileTableColumnHeader } from "globals";
 
 const ProfileSettingsTable = props => {
   const { profileList } = props;
@@ -25,7 +25,7 @@ const ProfileSettingsTable = props => {
           <thead>
             <tr>
               {
-                profileTableConstants.map(entry => {
+                profileTableColumnHeader.map(entry => {
                   return(
                     <Tooltip placement="top" title={entry.TOOLTIP}>
                       <CustomTableHeader>{entry.COLUMN_NAME}</CustomTableHeader>
