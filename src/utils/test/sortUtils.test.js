@@ -2,7 +2,9 @@ import {
   sortDialListEntriesByName,
   sortDirectoryListEntriesByName,
   sortManagersByName,
-  sortSkillByName
+  sortSkillByName,
+  sortProfilesById,
+  sortProfilesByName
 } from "../sortUtils";
 
 describe("sortDialListEntriesByName", () => {
@@ -174,6 +176,52 @@ describe("sortSkillsByName", () => {
       { name: "bee" },
       { name: "cee" },
       { name: "dee" }
+    ]);
+  });
+});
+
+describe("sortProfilesById", () => {
+  const profiles = [
+    { profile_id: 2 },
+    { profile_id: 1 },
+    { profile_id: 9 },
+    { profile_id: 8 },
+    { profile_id: 3 },
+    { profile_id: 4 },
+    { profile_id: 5 },
+    { profile_id: 6 },
+    { profile_id: 7 }
+  ];
+  test("should return array in numerical order", () => {
+    expect(profiles.sort(sortProfilesById)).toEqual([
+      { profile_id: 1 },
+      { profile_id: 2 },
+      { profile_id: 3 },
+      { profile_id: 4 },
+      { profile_id: 5 },
+      { profile_id: 6 },
+      { profile_id: 7 },
+      { profile_id: 8 },
+      { profile_id: 9 }
+    ]);
+  });
+});
+
+describe("sortProfilesByName", () => {
+  const profiles = [
+    { profile_nme: "AISG" },
+    { profile_nme: "Premium Audit" },
+    { profile_nme: "CSO" },
+    { profile_nme: "GRS Claims" },
+    { profile_nme: "PAL1" }
+  ];
+  test("should return array in alphebetical order", () => {
+    expect(profiles.sort(sortProfilesByName)).toEqual([
+      { profile_nme: "AISG" },
+      { profile_nme: "CSO" },
+      { profile_nme: "GRS Claims" },
+      { profile_nme: "PAL1" },
+      { profile_nme: "Premium Audit" }
     ]);
   });
 });
