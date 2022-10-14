@@ -21,6 +21,8 @@ export const sortManagersByName = (a: Manager, b: Manager) => {
   return sortStrings(aName, bName);
 };
 
+export const sortProfilesById = (a: TritonProfile, b: TritonProfile) => sortNumbers(a.profile_id, b.profile_id);
+
 export const sortProfilesByName = (a: TritonProfile, b: TritonProfile) => sortStrings(a.profile_nme, b.profile_nme);
 
 export const sortStrings = (a: string, b: string) => {
@@ -29,6 +31,10 @@ export const sortStrings = (a: string, b: string) => {
   if (_a < _b) { return -1; }
   if (_a > _b) { return 1; }
   return 0;
+};
+
+export const sortNumbers = (a: number, b: number) => {
+  return a - b;
 };
 
 export const sortSkillByName = (a: any, b: any) => {
