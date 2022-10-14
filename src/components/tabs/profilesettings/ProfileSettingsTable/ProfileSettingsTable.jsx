@@ -10,7 +10,8 @@ import {
 } from "./ProfileSettingsTable.Styles";
 import {
   formatProfileBooleanData,
-  formatOverflowSkillData
+  formatOverflowSkillData,
+  sortProfilesById
  } from "utils";
 import { Tooltip } from "@mui/material";
 import { profileTableColumnHeader } from "globals";
@@ -37,7 +38,7 @@ const ProfileSettingsTable = props => {
           </thead>
           <tbody>
             {
-              profileList.map(profile => {
+              profileList.sort(sortProfilesById).map(profile => {
                 return(
                   <CustomTableRow key={profile.profile_id} data-testid="table-row">
                     <CustomTableData>
