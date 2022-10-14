@@ -1,6 +1,7 @@
 import { Dropdown } from "components";
 import PropTypes from "prop-types";
 import React from "react";
+import { sortProfilesById } from "utils";
 
 const ProfileDropDown = props => {
   const {
@@ -21,7 +22,7 @@ const ProfileDropDown = props => {
     <div>
       <Dropdown
         label={"Profile"}
-        options={availableProfiles.map(profile => ({
+        options={availableProfiles.sort(sortProfilesById).map(profile => ({
           label: `${profile.profile_id} - ${profile.profile_nme}`,
           value: profile.profile_id,
           ...profile
