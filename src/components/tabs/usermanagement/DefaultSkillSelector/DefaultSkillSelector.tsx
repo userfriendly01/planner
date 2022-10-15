@@ -17,19 +17,18 @@ import {
 import { useAdminState } from "context";
 import {
   Skill,
-  WorkerSkills
+  WorkerAttributeSkills
 } from "globals";
 import PropTypes from "prop-types";
 import React, {
   useState
 } from "react";
-import { findTaskRouterSkill } from "utils";
 
 
 const DashDiv = <div>-</div>;
 interface DefaultSkillSelectorProps {
-  defaultSkills: WorkerSkills,
-  setDefaultSkills: (defaultSkills: WorkerSkills) => void;
+  defaultSkills: WorkerAttributeSkills,
+  setDefaultSkills: (defaultSkills: WorkerAttributeSkills) => void;
 }
 interface NewTwilioWorkerSkill {
   levels: number[],
@@ -43,11 +42,7 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
     setDefaultSkills
   } = props;
 
-  const {
-    skillContext: {
-      skills
-    }
-  } = useAdminState();
+  const skills = useAdminState().skillContext.skills.slice().filter(s => s.levels);
 
   const skillsForDropDown = skills.filter((skillObj: Skill) => !defaultSkills.skills.includes(skillObj.name));
 
@@ -63,12 +58,14 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
     [index: string]: any,
     value: string
   }) => {
-    const skillObj = findTaskRouterSkill(skill.value, skills);
-    setNewSkill({
-      levels: skillObj.levels,
-      levelSelected: skillObj.levels.length > 0 ? skillObj.levels[0] : null,
-      skill: skillObj.name
-    });
+    const skillObj = skills.find(skillObj => skillObj.name === skill.value);
+    if(skillObj){
+      setNewSkill({
+        levels: skillObj.levels,
+        levelSelected: skillObj.levels.length > 0 ? skillObj.levels[0] : null,
+        skill: skillObj.name
+      });
+    }
   };
 
   const newSkillLevelChanged = (level: string) => setNewSkill({
@@ -132,7 +129,10 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
       <SkillRowSeperator/>
       <SkillsWrapper>
         {defaultSkills.skills.sort().map((skill: string, index: number) => {
-          const taskrouterSkill = findTaskRouterSkill(skill, skills);
+          const taskrouterSkill: any = skills.find(skillObj => skillObj.name === skill) || {
+            name: skill,
+            levels: []
+          };
           return (
             // @ts-ignore
             <SkillRow highlightOnHover={true} key={`default-skill-row-${index}`}>

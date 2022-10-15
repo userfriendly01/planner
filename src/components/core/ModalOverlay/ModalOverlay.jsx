@@ -62,7 +62,7 @@ const IconAndMessageWrapper = styled.div`
   flex-direction: column;
   flex-grow: 1;
   padding: 16px;
-  justify-content: center'
+  justify-content: center;
 `;
 
 const InnerContainer = styled.div`

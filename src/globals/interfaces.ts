@@ -1,5 +1,4 @@
 import { CalabrioGroup } from "../components/tabs/usermanagement/CallRecording/CallRecording.Interfaces";
-import { authenticationProfileOptions } from "authentication";
 export interface Action {
   type: string,
   [key: string]: any
@@ -27,8 +26,9 @@ export interface AppState {
     skills: Skill[]
   },
   userContext: {
-    pingIdentity: any // TODO type me!
-    authenticationProfiles: authenticationProfileOptions[]
+    pingIdentity: PingIdentity,
+    isAdmin: boolean,
+    profileId: number | string | null
   },
   workerContext: {
     workers: Worker[],
@@ -42,6 +42,24 @@ export interface AppState {
     roles: any[]
   },
   resettingSkills: false
+}
+
+export interface PingIdentity {
+  firstName: string,
+  lastName: string,
+  sub: string,
+  mail: string,
+  groups: string[],
+  aud: string,
+  displayName: string,
+  access_token: string,
+  acr: string,
+  exp: number,
+  iat: number,
+  iss: string,
+  jti: string,
+  "pi.pa.attr_exp": number,
+  "pi.pa.rat": number
 }
 
 export interface FormModes {
@@ -72,15 +90,17 @@ export interface Office {
   office_num: string
 }
 
-export interface TaskRouterSkill {
-  skill: string,
-  levels: number[]
-}
-
 export interface Skill {
   [key: string]: any
-  skill: string,
-  levels: number[]
+  name: string,
+  profiles: any[],
+  closedMessage: string,
+  flashMessage: string,
+  levels: any[],
+  timeOfDays: any[],
+  vhCallTarget: string,
+  vhCallerId: string,
+  vhThreshold: number
 }
 
 export interface TritonProfile {
@@ -103,11 +123,11 @@ export interface TritonProfile {
 export interface Worker {
   attributes: {
     contact_uri?: string,
-    default_skills?: WorkerSkills,
+    default_skills?: WorkerAttributeSkills,
     department_name?:string,
     department_id?:string,
     did?: string,
-    disabled_skills?: WorkerSkills,
+    disabled_skills?: WorkerAttributeSkills,
     email?: string,
     email_address?: string,
     emp_first_name?: string,
@@ -126,7 +146,7 @@ export interface Worker {
     primary_dept_number?: string,
     profile_id?: string | number,
     roles?: string[],
-    routing?: WorkerSkills,
+    routing?: WorkerAttributeSkills,
     unique_id?: string
   },
   alternateDid?: string,
@@ -138,7 +158,7 @@ export interface Worker {
   zeroOutEnabled?: boolean
 }
 
-export interface WorkerSkills {
+export interface WorkerAttributeSkills {
   levels: {
     [key: string]: number
   },

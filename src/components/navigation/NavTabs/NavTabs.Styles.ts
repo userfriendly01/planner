@@ -15,6 +15,7 @@ export const StyledTabs = styled(Tabs)`
 `;
 
 export const StyledTab = styled(Tab)`
+  color: black !important;
   && {
     font-size: 1.1em;
   }

@@ -1,4 +1,5 @@
 import BasicFormInfo from "../BasicFormInfo";
+import { SearchParams } from "../ExtensionSearchParams";
 import {
   InputAdornment,
   Switch,
@@ -715,13 +716,24 @@ describe("<BasicFormInfo />", () => {
             validateFunction();
           });
 
-          const expectedParams = {
-            type: userFormActions.SET_EXTENSION_MESSAGE,
-            payload: {
-              message: "Extension is reserved",
-              isError: true
-            }
-          };
+          let expectedParams;
+          if(SearchParams.getValues().ReservedExtensions.length > 0){
+            expectedParams = {
+              type: userFormActions.SET_EXTENSION_MESSAGE,
+              payload: {
+                message: "Extension is reserved",
+                isError: true
+              }
+            };
+          } else {
+            expectedParams = {
+              type: userFormActions.SET_EXTENSION_MESSAGE,
+              payload: {
+                message: "Checking Extension Number with Twilio",
+                isError: false
+              }
+            };
+          }
 
           expect(mockSetForm).toHaveBeenCalledTimes(1);
           expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
@@ -928,6 +940,25 @@ describe("<BasicFormInfo />", () => {
 
           expect(mockSetForm).toHaveBeenCalledTimes(1);
           expect(mockSetForm).toHaveBeenCalledWith(expectedParams);
+        });
+        test("when onChange is called, setForm is called to clear extension", () => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            didUser: true,
+            extension: {
+              value: "12345",
+              blurred: false,
+              updated: false,
+              valid: false
+            }
+          });
+          renderComponent();
+          render(Tooltip.mock.calls[0][0].children);
+          act(() => {
+            const onChange = Switch.mock.calls[0][0].onChange;
+            onChange();
+          });
+          expect(mockSetForm).toHaveBeenCalledWith({ type: userFormActions.CLEAR_EXTENSION });
         });
       });
       describe(`formMode === ${formModes.INSERT}`, () => {

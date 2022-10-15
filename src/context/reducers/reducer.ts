@@ -3,10 +3,12 @@ import {
   AppState
 } from "globals";
 import {
+  checkIfAdmin,
   formatCalabrioTeams,
   formatCalabrioTenant,
   formatCalabrioGroups,
-  formatCalabrioRoles
+  formatCalabrioRoles,
+  getWorkerProfileId
 } from "utils";
 
 export const initialState: AppState = {
@@ -23,8 +25,9 @@ export const initialState: AppState = {
     skills: []
   },
   userContext: {
-    pingIdentity: {},
-    authenticationProfiles: []
+    pingIdentity: null,
+    isAdmin: false,
+    profileId: null
   },
   workerContext: {
     workers: [],
@@ -154,6 +157,17 @@ export const reducer = (state: AppState, action: Action): AppState => {
         ...state,
         userContext: action.payload
       };
+    case "setAuthenticationOnUser": {
+      const profileId: number = getWorkerProfileId(state);
+      return {
+        ...state,
+        userContext: {
+          ...state.userContext,
+          profileId,
+          isAdmin: checkIfAdmin(profileId)
+        }
+      };
+    }
     case "resettingSkills":
       return {
         ...state,

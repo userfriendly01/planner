@@ -296,6 +296,9 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
               checked={form.didUser}
               onChange={() => {
                 setForm({ type: userFormActions.INITIATE_DID_FIELDS });
+                if (form.extension.value) {
+                  setForm({ type: userFormActions.CLEAR_EXTENSION });
+                }
                 if (form.userPreviouslyAdded) {
                   setForm({ type: userFormActions.CLEAR_OUTGOING_NUMBER });
                 }

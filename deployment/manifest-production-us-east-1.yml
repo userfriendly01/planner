@@ -9,7 +9,5 @@ applications:
   timeout: 180
   env:
     NODE_ENV: production
-    AUTHENTICATION_AD_GROUPS:
-      - GCI-CCT-TRITON-PROD-TRITONADMIN
   blue-green:
     health-check-endpoint: /health

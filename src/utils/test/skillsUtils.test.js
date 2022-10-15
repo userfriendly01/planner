@@ -1,6 +1,5 @@
 import {
   areSkillsDifferent,
-  findTaskRouterSkill,
   getValidSkillsObject
 } from "../skillsUtils";
 
@@ -195,48 +194,6 @@ describe("skillsUtils", () => {
           socool: 1
         }
       }
-    });
-  });
-
-  describe("findTaskRouterSkill", () => {
-    test("returns skill object when it exists in skills", () => {
-      const skill = "psu-l1";
-      const skills = [
-        {
-          name: "psu-l1",
-          levels: [1,2,3,4,5]
-        },
-        {
-          name: "wow",
-          levels: [1,2]
-        },
-        {
-          name: "amazing",
-          levels: []
-        }
-      ];
-      expect(findTaskRouterSkill(skill, skills)).toEqual(skills[0]);
-    });
-    test("returns skill object with empty levels array when skill does not exist in skills", () => {
-      const skill = "nope";
-      const skills = [
-        {
-          name: "psu-l1",
-          levels: [1,2,3,4,5]
-        },
-        {
-          name: "wow",
-          levels: [1,2]
-        },
-        {
-          name: "amazing",
-          levels: []
-        }
-      ];
-      expect(findTaskRouterSkill(skill, skills)).toEqual({
-        skill,
-        levels: []
-      });
     });
   });
 

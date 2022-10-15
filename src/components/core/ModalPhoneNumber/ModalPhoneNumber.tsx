@@ -92,7 +92,6 @@ const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
 
   const validationError = !isNumberValid(unMaskPhoneNumber(number), useSevenDigitMask);
   const validationHelperText = useSevenDigitMask ? "Enter a seven digit VDN" : "Enter a valid ten digit phone number";
-  const InputComponent = useSevenDigitMask ? SevenDigitInputMask : TenDigitInputMask;
 
   const textField = (
     <StyledTextField
@@ -101,7 +100,7 @@ const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
       helperText={helperText || (showError && validationError ? validationHelperText : null)}
       id={id}
       InputProps={{
-        inputComponent: InputComponent,
+        inputComponent: useSevenDigitMask ? SevenDigitInputMask : TenDigitInputMask,
         style: {
           flexGrow: 1
         },

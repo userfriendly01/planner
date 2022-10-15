@@ -86,12 +86,6 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
     }))
   ];
 
-  const disableBackDropClick = (event: any, reason: string) => {
-    if (reason !== "backdropClick") {
-      handleCloseManager();
-    }
-  };
-
   const DropdownOption = (props: any) => {
     const {
       option

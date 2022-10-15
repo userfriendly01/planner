@@ -14,14 +14,15 @@ const TextInput = styled(TextField)`
   && {
     margin: 0 8px;
     width: 100%;
-    max-width: 325px;
+    max-width: ${props => props.styles && props.styles.width ? props.styles.width : "325px"};
   }
 `;
 
 const SearchBox = props => {
   const {
     searchBy,
-    setSearch
+    setSearch,
+    styles
   } = props;
 
   const clearComponent = searchBy === "" ? null :
@@ -44,11 +45,11 @@ const SearchBox = props => {
         )
       }}
       id="outlined-SearchBox-input"
-      key={"searchBox"}
       label="Search"
       margin="normal"
       name="outlined-SearchBox-input"
       onChange={event => setSearch(event.target.value)}
+      styles={styles}
       variant="outlined"
       value={searchBy}
     />
@@ -57,7 +58,8 @@ const SearchBox = props => {
 
 SearchBox.propTypes = {
   searchBy: PropTypes.string.isRequired,
-  setSearch: PropTypes.func.isRequired
+  setSearch: PropTypes.func.isRequired,
+  styles: PropTypes.any
 };
 
 export default SearchBox;

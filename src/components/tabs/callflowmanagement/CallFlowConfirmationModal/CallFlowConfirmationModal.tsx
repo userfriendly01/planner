@@ -4,15 +4,17 @@ import {
   ConfirmationText,
   ModalContainer
 } from "./CallFlowConfirmationModal.Styles";
-import { CallFlowConfirmationModalProps } from "../CallFlowManagement.Interfaces";
+import { CallFlowConfirmationModalProps } from "./CallFlowConfirmationModal.Interfaces";
 import {
   ModalOverlay,
-  PaperContainer
+  PaperContainer,
+  ExportButton
 } from "components";
 import React from "react";
 
 const CallFlowConfirmationModal = (props: CallFlowConfirmationModalProps) => {
   const {
+    tableState,
     confirmationModalOpts,
     saveResult
   } = props;
@@ -32,11 +34,12 @@ const CallFlowConfirmationModal = (props: CallFlowConfirmationModalProps) => {
         }
         <ConfirmationText>{confirmationModalOpts.confirmationText}</ConfirmationText>
         <ButtonWrapper>
-          <Button onClick={onConfirm}>
-            Confirm
-          </Button>
           <Button onClick={handleClose}>
             Cancel
+          </Button>
+          <ExportButton selected={tableState.selected}/>
+          <Button onClick={onConfirm}>
+            Confirm
           </Button>
         </ButtonWrapper>
       </PaperContainer>

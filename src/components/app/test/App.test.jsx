@@ -10,6 +10,9 @@ import {
   NotificationModal
 } from "components";
 import {
+  useAdminDispatch
+} from "context";
+import {
   apiPaths,
   timeouts
 } from "globals";
@@ -25,7 +28,6 @@ import {
   act,
   expectMockedComponent,
   expectOnlyPassedProps,
-  mockStore,
   render,
   setupMockedComponents,
   waitFor
@@ -178,11 +180,17 @@ jest.mock("components", () => ({
   NotificationModal: jest.fn()
 }));
 
+jest.mock("context", () => ({
+  useAdminDispatch: jest.fn()
+}));
+
+const mockAdminDispatch = jest.fn();
+
 describe("<App />", () => {
 
   beforeEach(() => {
-    mockStore.reset();
     jest.clearAllMocks();
+    useAdminDispatch.mockReturnValue(mockAdminDispatch);
     setupMockedComponents({
       CircularProgress,
       Header,
@@ -218,46 +226,50 @@ describe("<App />", () => {
           async () => {
             const rendered = render(<App />);
             await waitFor(() => rendered.getByTestId("app-wrapper"));
-            const actions = mockStore.getActions();
-            expect(actions.length).toBe(9);
-            expect(actions).toEqual([
-              {
-                type: "loadManagers",
-                payload: formatManagersResponse(dbManagers)
-              },
-              {
-                type: "loadOffices",
-                payload: formatOfficesResponse(dbOffices)
-              },
-              {
-                type: "loadCalabrioUsers",
-                payload: []
-              },
-              {
-                type: "loadCalabrioOrg",
-                payload: []
-              },
-              {
-                type: "loadCalabrioRoles",
-                payload: []
-              },
-              {
-                type: "loadUserData",
-                payload: { pingIdentity: auth }
-              },
-              {
-                type: "loadProfiles",
-                payload: profiles
-              },
-              {
-                type: "loadSkills",
-                payload: skills.consolidatedSkills
-              },
-              {
-                type: "addWorkers",
-                payload: filteredWorkers
-              }
-            ]);
+            expect(mockAdminDispatch).toHaveBeenCalledTimes(10);
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadManagers",
+              payload: formatManagersResponse(dbManagers)
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadOffices",
+              payload: formatOfficesResponse(dbOffices)
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadCalabrioUsers",
+              payload: []
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadCalabrioOrg",
+              payload: []
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadCalabrioRoles",
+              payload: []
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadUserData",
+              payload: { pingIdentity: auth }
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadProfiles",
+              payload: profiles
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadManagers",
+              payload: formatManagersResponse(dbManagers)
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadSkills",
+              payload: skills.consolidatedSkills
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "addWorkers",
+              payload: filteredWorkers
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "setAuthenticationOnUser"
+            });
             expectMockedComponent(rendered, { Header });
             expectMockedComponent(rendered, { NavTabs });
             expectMockedComponent(rendered, { Modal });
@@ -372,46 +384,50 @@ describe("<App />", () => {
         const rendered = render(<App />);
         waitFor(() => rendered.getByTestId("app-wrapper"))
           .then(() => {
-            const actions = mockStore.getActions();
-            expect(actions.length).toBe(9);
-            expect(actions).toEqual([
-              {
-                type: "loadManagers",
-                payload: formatManagersResponse(dbManagers)
-              },
-              {
-                type: "loadOffices",
-                payload: formatOfficesResponse(dbOffices)
-              },
-              {
-                type: "loadCalabrioUsers",
-                payload: []
-              },
-              {
-                type: "loadCalabrioOrg",
-                payload: []
-              },
-              {
-                type: "loadCalabrioRoles",
-                payload: []
-              },
-              {
-                type: "loadUserData",
-                payload: { pingIdentity: auth }
-              },
-              {
-                type: "loadProfiles",
-                payload: profiles
-              },
-              {
-                type: "loadSkills",
-                payload: skills.consolidatedSkills
-              },
-              {
-                type: "addWorkers",
-                payload: filteredWorkers
-              }
-            ]);
+            expect(mockAdminDispatch).toHaveBeenCalledTimes(10);
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadManagers",
+              payload: formatManagersResponse(dbManagers)
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadOffices",
+              payload: formatOfficesResponse(dbOffices)
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadCalabrioUsers",
+              payload: []
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadCalabrioOrg",
+              payload: []
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadCalabrioRoles",
+              payload: []
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadUserData",
+              payload: { pingIdentity: auth }
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadProfiles",
+              payload: profiles
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadManagers",
+              payload: formatManagersResponse(dbManagers)
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadSkills",
+              payload: skills.consolidatedSkills
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "addWorkers",
+              payload: filteredWorkers
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "setAuthenticationOnUser"
+            });
             expectMockedComponent(rendered, { Header });
             expectMockedComponent(rendered, { NavTabs });
             expect(rendered.container).not.toHaveTextContent("Loading...");
@@ -535,42 +551,46 @@ describe("<App />", () => {
       test("should still load triton admin", async done => {
         const rendered = render(<App />);
         await waitFor(() => rendered.getByTestId("app-wrapper"));
-        const actions = mockStore.getActions();
-        expect(actions.length).toBe(8);
-        expect(actions).toEqual([
-          {
-            type: "loadManagers",
-            payload: formatManagersResponse(dbManagers)
-          },
-          {
-            type: "loadOffices",
-            payload: formatOfficesResponse(dbOffices)
-          },
-          {
-            type: "loadCalabrioOrg",
-            payload: []
-          },
-          {
-            type: "loadCalabrioRoles",
-            payload: []
-          },
-          {
-            type: "loadUserData",
-            payload: { pingIdentity: auth }
-          },
-          {
-            type: "loadProfiles",
-            payload: profiles
-          },
-          {
-            type: "loadSkills",
-            payload: skills.consolidatedSkills
-          },
-          {
-            type: "addWorkers",
-            payload: filteredWorkers
-          }
-        ]);
+        expect(mockAdminDispatch).toHaveBeenCalledTimes(9);
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadManagers",
+          payload: formatManagersResponse(dbManagers)
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadOffices",
+          payload: formatOfficesResponse(dbOffices)
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadCalabrioOrg",
+          payload: []
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadCalabrioRoles",
+          payload: []
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadUserData",
+          payload: { pingIdentity: auth }
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadProfiles",
+          payload: profiles
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadManagers",
+          payload: formatManagersResponse(dbManagers)
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadSkills",
+          payload: skills.consolidatedSkills
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "addWorkers",
+          payload: filteredWorkers
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "setAuthenticationOnUser"
+        });
         expectMockedComponent(rendered, { Header });
         expectMockedComponent(rendered, { NavTabs });
         expectMockedComponent(rendered, { Modal });
@@ -599,42 +619,46 @@ describe("<App />", () => {
       test("should still load triton admin", async done => {
         const rendered = render(<App />);
         await waitFor(() => rendered.getByTestId("app-wrapper"));
-        const actions = mockStore.getActions();
-        expect(actions.length).toBe(8);
-        expect(actions).toEqual([
-          {
-            type: "loadManagers",
-            payload: formatManagersResponse(dbManagers)
-          },
-          {
-            type: "loadOffices",
-            payload: formatOfficesResponse(dbOffices)
-          },
-          {
-            type: "loadCalabrioUsers",
-            payload: []
-          },
-          {
-            type: "loadCalabrioRoles",
-            payload: []
-          },
-          {
-            type: "loadUserData",
-            payload: { pingIdentity: auth }
-          },
-          {
-            type: "loadProfiles",
-            payload: profiles
-          },
-          {
-            type: "loadSkills",
-            payload: skills.consolidatedSkills
-          },
-          {
-            type: "addWorkers",
-            payload: filteredWorkers
-          }
-        ]);
+        expect(mockAdminDispatch).toHaveBeenCalledTimes(9);
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadManagers",
+          payload: formatManagersResponse(dbManagers)
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadOffices",
+          payload: formatOfficesResponse(dbOffices)
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadCalabrioUsers",
+          payload: []
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadCalabrioRoles",
+          payload: []
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadUserData",
+          payload: { pingIdentity: auth }
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadProfiles",
+          payload: profiles
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadManagers",
+          payload: formatManagersResponse(dbManagers)
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadSkills",
+          payload: skills.consolidatedSkills
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "addWorkers",
+          payload: filteredWorkers
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "setAuthenticationOnUser"
+        });
         expectMockedComponent(rendered, { Header });
         expectMockedComponent(rendered, { NavTabs });
         expectMockedComponent(rendered, { Modal });
@@ -663,42 +687,46 @@ describe("<App />", () => {
       test("should still load triton admin", async done => {
         const rendered = render(<App />);
         await waitFor(() => rendered.getByTestId("app-wrapper"));
-        const actions = mockStore.getActions();
-        expect(actions.length).toBe(8);
-        expect(actions).toEqual([
-          {
-            type: "loadManagers",
-            payload: formatManagersResponse(dbManagers)
-          },
-          {
-            type: "loadOffices",
-            payload: formatOfficesResponse(dbOffices)
-          },
-          {
-            type: "loadCalabrioUsers",
-            payload: []
-          },
-          {
-            type: "loadCalabrioOrg",
-            payload: []
-          },
-          {
-            type: "loadUserData",
-            payload: { pingIdentity: auth }
-          },
-          {
-            type: "loadProfiles",
-            payload: profiles
-          },
-          {
-            type: "loadSkills",
-            payload: skills.consolidatedSkills
-          },
-          {
-            type: "addWorkers",
-            payload: filteredWorkers
-          }
-        ]);
+        expect(mockAdminDispatch).toHaveBeenCalledTimes(9);
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadManagers",
+          payload: formatManagersResponse(dbManagers)
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadOffices",
+          payload: formatOfficesResponse(dbOffices)
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadCalabrioUsers",
+          payload: []
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadCalabrioOrg",
+          payload: []
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadUserData",
+          payload: { pingIdentity: auth }
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadProfiles",
+          payload: profiles
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadManagers",
+          payload: formatManagersResponse(dbManagers)
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadSkills",
+          payload: skills.consolidatedSkills
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "addWorkers",
+          payload: filteredWorkers
+        });
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "setAuthenticationOnUser"
+        });
         expectMockedComponent(rendered, { Header });
         expectMockedComponent(rendered, { NavTabs });
         expectMockedComponent(rendered, { Modal });

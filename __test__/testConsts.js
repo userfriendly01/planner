@@ -378,6 +378,82 @@ export const calabrioContext = {
   ]
 };
 
+export const skillsList = [
+  {
+    name: "lscOBDialer1",
+    profiles: [{
+      profileName: "Licensed Sales Center",
+      profileId: 32
+    }],
+    flashMessage: "",
+    closedMessage: "",
+    levels: [ 1, 2, 3],
+    timeOfDays: [],
+    vhCallTarget: null,
+    vhCallerId: null,
+    vhThreshold: null
+  },
+  {
+    name: "aisgL1",
+    profiles: [{
+      profileName: "AISG",
+      profileId: 4
+    }],
+    flashMessage: "",
+    closedMessage: "Sorry, we're closed.",
+    levels: [],
+    timeOfDays: [],
+    vhCallTarget: null,
+    vhCallerId: null,
+    vhThreshold: null
+  },
+  {
+    name: "bscCommisssions",
+    profiles: [{
+      profileName: "BSC",
+      profileId: 10
+    }],
+    flashMessage: "OH NO WE'RE EXPLODING!! ",
+    closedMessage: "Sorry, we're closed.",
+    levels: [1, 2, 3, 4, 5, 6, 7],
+    timeOfDays: [],
+    vhCallTarget: null,
+    vhCallerId: null,
+    vhThreshold: null
+  },
+  {
+    name: "bscCbsL2",
+    profiles: [
+      {
+        profileName: "BSC",
+        profileId: 10
+      },
+      {
+        profileName: "BLST Billing",
+        profileId: 12
+      }
+    ],
+    flashMessage: "",
+    closedMessage: "",
+    levels: [],
+    timeOfDays: [],
+    vhCallTarget: null,
+    vhCallerId: null,
+    vhThreshold: null
+  },
+  {
+    name: "lscUSAA",
+    profiles: [],
+    flashMessage: "",
+    closedMessage: "",
+    levels: [],
+    timeOfDays: [],
+    vhCallTarget: null,
+    vhCallerId: null,
+    vhThreshold: null
+  }
+];
+
 export const initialTestState = {
   ...initialState,
   officeContext: {
@@ -388,6 +464,37 @@ export const initialTestState = {
   },
   managerContext: {
     managers: managerList
+  },
+  skillContext: {
+    skills: skillsList
+  },
+  userContext: {
+    pingIdentity: {
+      sub: "n0263786"
+    },
+    isAdmin: false,
+    profileId: 10
+  },
+  workerContext: {
+    workers: [
+      {
+        attributes: {
+          n_number: "N0263786",
+          profile_id: 12
+        }
+      },
+      {
+        attributes: {
+          n_number: "n0000000",
+          profile_id: "12"
+        }
+      },
+      {
+        attributes: {
+          n_number: "n1111111"
+        }
+      }
+    ]
   },
   calabrioContext
 };

@@ -1,7 +1,11 @@
-import { apiPaths } from "globals";
+import {
+  apiPaths,
+  Skill
+} from "globals";
+import { AxiosResponse } from "axios";
 import { myAxios } from "utils";
 
-export const updateFlashMessage = (skill: any, message: string, nNumber: string) => {
+export const updateFlashMessage = (skill: Skill, message: string, nNumber: string): Promise<AxiosResponse<any>> => {
   const req = {
     skill: skill.name,
     flashMessage: message,
@@ -10,7 +14,7 @@ export const updateFlashMessage = (skill: any, message: string, nNumber: string)
   return myAxios.post(apiPaths.FLASH_MESSAGE, req);
 };
 
-export const updateClosedMessage = (skill: any, message: string, nNumber: string) => {
+export const updateClosedMessage = (skill: Skill, message: string, nNumber: string): Promise<AxiosResponse<any>> => {
   const req = {
     skill: skill.name,
     closedMessage: message,

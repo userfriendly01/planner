@@ -6,14 +6,15 @@ import {
   StyledTabContainer
 } from "./NavTabs.Styles";
 import {
-  TabPanelProps
+  TabPanelProps,
+  TabNames
 } from "./NavTabs.Interfaces";
 import {
-  CallFlowContainer,
+  CallflowManagementWrapper,
   ManagementWrapper,
   ProfileSettingsContainer
 } from "components";
-import { tabNames } from "authentication";
+import { useAdminState } from "context";
 import React from "react";
 
 const TabPanel = (props: TabPanelProps) => {
@@ -42,9 +43,7 @@ const TabPanel = (props: TabPanelProps) => {
 const NavTabs = () => {
   const [value, setValue] = React.useState(0);
 
-  //We should test to see if the "other" makes a difference
-  console.log("ENVIRONMENT AD GROUPS - TRITON_AUTH_AD_GROUPS", process.env.TRITON_AUTH_AD_GROUPS);
-  console.log("ENVIRONMENT AD GROUPS - ALOHA_AUTH_AD_GROUPS", process.env.ALOHA_AUTH_AD_GROUPS);
+  console.log("STATE", useAdminState());
 
   function handleChange(event: any, newValue: number) {
     setValue(newValue);
@@ -60,14 +59,14 @@ const NavTabs = () => {
           <StyledTab label="Call Flow Management" id="nav-tab-callFlowManagement" aria-controls="nav-tabpanel-callFlowManagement" onClick={event => event.preventDefault()}/>
         </StyledTabs>
       </StyledTabContainer>
-      <TabPanel value={value} tabName={tabNames.USER_MANAGEMENT} index={0}>
+      <TabPanel value={value} tabName={TabNames.USER_MANAGEMENT} index={0}>
         <ManagementWrapper />
       </TabPanel>
-      <TabPanel value={value} tabName={tabNames.PROFILE_SETTINGS} index={1}>
+      <TabPanel value={value} tabName={TabNames.PROFILE_SETTINGS} index={1}>
         <ProfileSettingsContainer />
       </TabPanel>
-      <TabPanel value={value} tabName={tabNames.CALL_FLOW_MANAGEMENT} index={2}>
-        <CallFlowContainer />
+      <TabPanel value={value} tabName={TabNames.CALL_FLOW_MANAGEMENT} index={2}>
+        <CallflowManagementWrapper />
       </TabPanel>
     </Content>
   );

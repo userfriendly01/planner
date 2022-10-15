@@ -19,10 +19,7 @@ import {
   useFormState,
   useAdminState
 } from "context";
-import {
-  formModes,
-  ModalOverlayStatuses
-} from "globals";
+import { formModes } from "globals";
 import React, { useState } from "react";
 
 const UserEntryForm = (props: UserEntryFormProps) => {
@@ -49,7 +46,6 @@ const UserEntryForm = (props: UserEntryFormProps) => {
   const form = useFormState();
   const [forwardToToggle, setForwardToToggle] = useState(false);
 
-  console.log("STATE", useAdminState());
   console.log("FORM", form);
 
   const [loading, updateLoading] = useState<LoadingState>({

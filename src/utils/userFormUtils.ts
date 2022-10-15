@@ -2,7 +2,6 @@ import {
   TritonProfile,
   Worker,
   formModes,
-  WorkerSkills,
   AppState
 } from "globals";
 import {

@@ -184,10 +184,6 @@ const ManagerModal = (props: ManagerModalProps) => {
     overlayMessage = errorMessage;
   }
 
-  const disableBackDropClick = (event: any, reason: string) => {
-    //do nothing
-  };
-
   return (
     <ModalContainer>
       <PaperContainer>
