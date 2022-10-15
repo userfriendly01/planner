@@ -77,7 +77,12 @@ describe("<SkillsContainer />", () => {
           ...initialTestState,
           userContext: {
             ...initialTestState.userContext,
-            isAdmin: true
+            authenticationProfiles: [
+              {
+                ...initialTestState.userContext.authenticationProfiles[0],
+                isAdmin: true
+              }
+            ]
           }
         });
       });

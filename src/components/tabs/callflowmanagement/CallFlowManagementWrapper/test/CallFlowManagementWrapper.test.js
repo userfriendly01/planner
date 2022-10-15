@@ -59,8 +59,13 @@ describe("CallFlowConfirmationModal", () => {
       ...initialTestState,
       userContext: {
         ...initialTestState.userContext,
-        isAdmin: true,
-        profileId: 0
+        authenticationProfiles: [
+          {
+            ...initialTestState.userContext.authenticationProfiles[0],
+            isAdmin: true,
+            profileId: 0
+          }
+        ]
       }
     });
     setupMockedComponents({
@@ -113,7 +118,13 @@ describe("CallFlowConfirmationModal", () => {
               ...initialTestState,
               userContext: {
                 ...initialTestState.userContext,
-                profileId: 13
+                authenticationProfiles: [
+                  {
+                    ...initialTestState.userContext.authenticationProfiles[0],
+                    isAdmin: false,
+                    profileId: 13
+                  }
+                ]
               }
             });
           });
