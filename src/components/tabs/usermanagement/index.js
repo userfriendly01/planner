@@ -8,7 +8,7 @@ export { default as DefaultSkillSelector } from "./DefaultSkillSelector/DefaultS
 export { default as ManagementHeader } from "./ManagementHeader/ManagementHeader";
 export { default as ManagementPagination } from "./ManagementPagination/ManagementPagination";
 export { default as ManagementTable } from "./ManagementTable/ManagementTable";
-export * from "./ManagementWrapper/ManagementWrapper";
+export { default as ManagementWrapper } from "./ManagementWrapper/ManagementWrapper";
 export { default as ManagerDropdown } from "./ManagerDropdown/ManagerDropdown.tsx";
 export { default as ModalFetchingRing } from "./ModalFetchingRing/ModalFetchingRing";
 export { default as ModalHelperText } from "./ModalHelperText/ModalHelperText";

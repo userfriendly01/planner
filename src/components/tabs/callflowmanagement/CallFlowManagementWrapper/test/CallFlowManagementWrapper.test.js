@@ -26,6 +26,13 @@ jest.mock("components", () => ({
   SkillsContainer: jest.fn()
 }));
 
+jest.mock("components", () => ({
+  CallFlowConfirmationModal: jest.fn(),
+  Dropdown: jest.fn(),
+  ActionContainer: jest.fn(),
+  SkillsContainer: jest.fn()
+}));
+
 jest.mock("@mui/material", () => ({
   Modal: jest.fn()
 }));

@@ -1,5 +1,5 @@
 import { formModes } from "globals";
-import { authenticationProfiles } from "../src/authentication/authenticationProfiles";
+// import { authenticationProfiles } from "../src/authentication/authenticationProfiles";
 import { initialState } from "context";
 import {
   ExtensionSearchStatuses
@@ -475,8 +475,11 @@ export const initialTestState = {
     },
     authenticationProfiles: [
       {
-        ...authenticationProfiles.TRITON,
-        profileId: 10
+        name: "Triton",
+        permissionLevel: "read",
+        isAdmin: false,
+        profileId: 10,
+        tabs: []
       }
     ]
   },

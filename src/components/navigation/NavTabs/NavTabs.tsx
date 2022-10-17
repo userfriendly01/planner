@@ -5,17 +5,9 @@ import {
   StyledTab,
   StyledTabContainer
 } from "./NavTabs.Styles";
-import {
-  TabPanelProps,
-  TabNames
-} from "./NavTabs.Interfaces";
-import {
-  CallflowManagementWrapper,
-  ManagementWrapper,
-  ProfileSettingsContainer
-} from "components";
-import { useAdminState } from "context";
+import { TabPanelProps } from "./NavTabs.Interfaces";
 import React from "react";
+import { useAdminState } from "context";
 
 const TabPanel = (props: TabPanelProps) => {
   const {
@@ -41,9 +33,23 @@ const TabPanel = (props: TabPanelProps) => {
 };
 
 const NavTabs = () => {
+  const state = useAdminState();
+  const authenticationProfiles = state.userContext.authenticationProfiles;
   const [value, setValue] = React.useState(0);
+  const [ tabs, setTabs ] = React.useState([]);
+  console.log("STATE", state);
 
-  console.log("STATE", useAdminState());
+  React.useEffect(() => {
+    const allowedTabs: any[] = [];
+    authenticationProfiles.forEach(p => {
+      p.tabs.forEach((t: any) => {
+        allowedTabs.push(t);
+      });
+    });
+    console.log("allowed Tabs", allowedTabs);
+    setTabs(allowedTabs);
+  }, []);
+
 
   function handleChange(event: any, newValue: number) {
     setValue(newValue);
@@ -51,23 +57,25 @@ const NavTabs = () => {
   }
 
   return (
-    <Content >
-      <StyledTabContainer>
-        <StyledTabs variant="fullWidth" value={value} onChange={handleChange}>
-          <StyledTab label="User Management" id="nav-tab-userManagement" aria-controls="nav-tabpanel-userManagement" onClick={event => event.preventDefault()}/>
-          <StyledTab label="Profile Settings" id="nav-tab-profileSettings" aria-controls="nav-tabpanel-profileSettings" onClick={event => event.preventDefault()}/>
-          <StyledTab label="Call Flow Management" id="nav-tab-callFlowManagement" aria-controls="nav-tabpanel-callFlowManagement" onClick={event => event.preventDefault()}/>
-        </StyledTabs>
-      </StyledTabContainer>
-      <TabPanel value={value} tabName={TabNames.USER_MANAGEMENT} index={0}>
-        <ManagementWrapper />
-      </TabPanel>
-      <TabPanel value={value} tabName={TabNames.PROFILE_SETTINGS} index={1}>
-        <ProfileSettingsContainer />
-      </TabPanel>
-      <TabPanel value={value} tabName={TabNames.CALL_FLOW_MANAGEMENT} index={2}>
-        <CallflowManagementWrapper />
-      </TabPanel>
+    <Content>
+      <>
+        <StyledTabContainer>
+          <StyledTabs variant="fullWidth" value={value} onChange={handleChange}>
+            { tabs.map((t: any) => (
+              <StyledTab label={t.label} key={t.value} id={`nav-tab-${t.value}`} aria-controls={`nav-tabpanel-${t.value}`} onClick={event => event.preventDefault()}/>
+            )) }
+          </StyledTabs>
+        </StyledTabContainer>
+        {
+          tabs.map((t: any, index: number) => {
+            const Component = t.component;
+            console.log("WHATS THIS", t);
+            return <TabPanel key={t.value} value={value} tabName={t.label} index={index}>
+              <Component/>
+            </TabPanel>;
+          })
+        }
+      </>
     </Content>
   );
 };

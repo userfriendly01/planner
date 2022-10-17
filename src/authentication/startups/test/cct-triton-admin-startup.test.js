@@ -1,8 +1,6 @@
 import { runTritonAdminStartup } from "../cct-triton-admin-startup";
 import MockAdapter from "axios-mock-adapter";
-import {
-  useAdminDispatch
-} from "context";
+import { useAdminDispatch } from "context";
 import { apiPaths } from "globals";
 import {
   getCalabrioUsers,
@@ -16,6 +14,14 @@ import {
   formatOfficesResponse,
   myAxios
 } from "utils";
+
+jest.mock("../../authenticationInterfaces", () => ({
+  startupProfiles: {
+    TRITON: {
+      name: "triton"
+    }
+  }
+}));
 
 const axiosMock = new MockAdapter(myAxios);
 const profilesEndpoint = apiPaths.GET_PROFILES;

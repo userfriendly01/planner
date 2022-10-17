@@ -1,4 +1,4 @@
-import { ManagementWrapper } from "../ManagementWrapper";
+import ManagementWrapper from "../ManagementWrapper";
 import {
   ManagementHeader,
   ManagementPagination,
@@ -22,7 +22,11 @@ jest.mock("components", () => ({
   ManagementHeader: jest.fn(),
   ManagementPagination: jest.fn(),
   ManagementTable: jest.fn(),
-  UserEntryForm: jest.fn()
+  UserEntryForm: jest.fn(),
+  ProfileSettingsContainer: jest.fn(),
+  CallflowManagementWrapper: jest.fn(),
+  AlohaFlowContainer: jest.fn(),
+  AlohaRoutingContainer: jest.fn()
 }));
 
 const mockSkills=[
