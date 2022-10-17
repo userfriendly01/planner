@@ -2,7 +2,7 @@ import {
   checkIfAdmin,
   getWorkerProfileId
 } from "utils";
-import { initialTestState } from "testUtils";
+import { initialTestState } from "../../../__test__/testConsts";
 
 describe("adminUtils", () => {
   beforeEach(() => {
@@ -22,23 +22,36 @@ describe("adminUtils", () => {
   });
   describe("getWorkerProfileId", () => {
     describe("profile Id is number", () => {
-      const nNumber = "N0263786";
       test("should return worker profile Id", () => {
-        const profileId = getWorkerProfileId(nNumber, initialTestState.workerContext.workers);
+        const profileId = getWorkerProfileId(initialTestState);
         expect(profileId).toBe(12);
       });
     });
     describe("profile Id is string", () => {
-      const nNumber = "n0000000";
       test("should return worker profile Id", () => {
-        const profileId = getWorkerProfileId(nNumber, initialTestState.workerContext.workers);
+        const nNumber = "n0000000";
+        const profileId = getWorkerProfileId({
+          ...initialTestState,
+          userContext: {
+            pingIdentity: {
+              sub: nNumber
+            }
+          }
+        });
         expect(profileId).toBe(12);
       });
     });
     describe("profile Id is null", () => {
       test("should return worker profile Id", () => {
         const nNumber = "n1111111";
-        const profileId = getWorkerProfileId(nNumber, initialTestState.workerContext.workers);
+        const profileId = getWorkerProfileId({
+          ...initialTestState,
+          userContext: {
+            pingIdentity: {
+              sub: nNumber
+            }
+          }
+        });
         expect(profileId).toBe(null);
       });
     });
