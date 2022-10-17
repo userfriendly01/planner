@@ -34,7 +34,8 @@ jest.mock("components", () => ({
 }));
 
 jest.mock("@mui/material", () => ({
-  Modal: jest.fn()
+  Modal: jest.fn(),
+  Paper: jest.fn()
 }));
 
 jest.mock("context", () => ({
