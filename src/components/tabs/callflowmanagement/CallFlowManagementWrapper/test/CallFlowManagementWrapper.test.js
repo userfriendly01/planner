@@ -59,7 +59,7 @@ const confirmationModalOpts = {
   }
 };
 
-describe("CallFlowConfirmationModal", () => {
+describe("CallFlowManagementWrapper", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useAdminState.mockReturnValue({

@@ -4,17 +4,19 @@ import {
   runAlohaFlowStartup
 } from "./startups";
 
-import {
-  ManagementWrapper,
-  ProfileSettingsContainer,
-  CallflowManagementWrapper,
-  AlohaRoutingContainer,
-  AlohaFlowContainer
-} from "components";
-// import ProfileSettingsContainer from "../components/tabs/profilesettings/ProfileSettingsContainer/ProfileSettingsContainer";
-// import CallflowManagementWrapper from "../components/tabs/callflowmanagement/CallFlowManagementWrapper/CallFlowManagementWrapper";
-// import AlohaRoutingContainer from "../components/tabs/alohaRouting/AlohaRoutingContainer";
-// import AlohaFlowContainer from "../components/tabs/alohaFlow/AlohaFlowContainer";
+// import {
+//   ManagementWrapper,
+//   ProfileSettingsContainer,
+//   CallflowManagementWrapper,
+//   AlohaRoutingContainer,
+//   AlohaFlowContainer
+// } from "components";
+
+import ManagementWrapper from "../components/tabs/usermanagement/ManagementWrapper/ManagementWrapper";
+import ProfileSettingsContainer from "../components/tabs/profilesettings/ProfileSettingsContainer/ProfileSettingsContainer";
+import CallflowManagementWrapper from "../components/tabs/callflowmanagement/CallFlowManagementWrapper/CallFlowManagementWrapper";
+import AlohaRoutingContainer from "../components/tabs/alohaRouting/AlohaRoutingContainer";
+import AlohaFlowContainer from "../components/tabs/alohaFlow/AlohaFlowContainer";
 
 export const descriptions = {
   Triton: "The Triton developers & admins use these tabs for Triton user management, Triton profile settings, and managing closed and flash messages for IVRs leading to Twilio and Triton.",

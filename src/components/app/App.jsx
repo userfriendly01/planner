@@ -11,9 +11,6 @@ import {
   Overlay,
   LoadingMessage
 } from "./App.Styles";
-// import {
-//   Environments
-// } from "authentication";
 import {
   Header,
   NavTabs,

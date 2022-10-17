@@ -54,7 +54,9 @@ const CallFlowContainer = () => {
     message: null
   };
 
+
   const state = useAdminState();
+  console.warn("Whats dis", state.userContext);
   const tritonProfile = state.userContext.authenticationProfiles.find((p: any) => p.name === authenticationProfiles.TRITON.name);
   const isAdmin = tritonProfile.isAdmin;
   const userProfileId = tritonProfile.profileId;

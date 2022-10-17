@@ -1,5 +1,4 @@
 import { formModes } from "globals";
-// import { authenticationProfiles } from "../src/authentication/authenticationProfiles";
 import { initialState } from "context";
 import {
   ExtensionSearchStatuses
@@ -471,7 +470,8 @@ export const initialTestState = {
   },
   userContext: {
     pingIdentity: {
-      sub: "n0263786"
+      sub: "n0263786",
+      groups: []
     },
     authenticationProfiles: [
       {

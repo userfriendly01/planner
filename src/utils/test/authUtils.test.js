@@ -2,7 +2,7 @@ import {
   checkIfAdmin,
   getWorkerProfileId
 } from "utils";
-import { initialTestState } from "../../../__test__/testConsts";
+import { initialTestState } from "testUtils";
 
 describe("adminUtils", () => {
   beforeEach(() => {
@@ -23,35 +23,22 @@ describe("adminUtils", () => {
   describe("getWorkerProfileId", () => {
     describe("profile Id is number", () => {
       test("should return worker profile Id", () => {
-        const profileId = getWorkerProfileId(initialTestState);
+        const nNumber = "N0263786";
+        const profileId = getWorkerProfileId(nNumber, initialTestState.workerContext.workers);
         expect(profileId).toBe(12);
       });
     });
     describe("profile Id is string", () => {
       test("should return worker profile Id", () => {
         const nNumber = "n0000000";
-        const profileId = getWorkerProfileId({
-          ...initialTestState,
-          userContext: {
-            pingIdentity: {
-              sub: nNumber
-            }
-          }
-        });
+        const profileId = getWorkerProfileId(nNumber, initialTestState.workerContext.workers);
         expect(profileId).toBe(12);
       });
     });
     describe("profile Id is null", () => {
       test("should return worker profile Id", () => {
         const nNumber = "n1111111";
-        const profileId = getWorkerProfileId({
-          ...initialTestState,
-          userContext: {
-            pingIdentity: {
-              sub: nNumber
-            }
-          }
-        });
+        const profileId = getWorkerProfileId(nNumber, initialTestState.workerContext.workers);
         expect(profileId).toBe(null);
       });
     });
