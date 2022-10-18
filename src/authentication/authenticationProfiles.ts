@@ -127,7 +127,6 @@ export const getAdGroupPermissionMapping = () => {
 };
 
 export const getStartupProfiles = () => {
-  console.log("STARTUP PROFILES", runTritonAdminStartup);
   return {
     TRITON: {
       name: "triton",
