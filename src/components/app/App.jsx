@@ -85,7 +85,6 @@ const App = () => {
         setLoadResult(success);
       })
       .catch(err => {
-        console.log("FINAL ERROR", err);
         console.error(err.msg, { error: err.error });
         setLoadResult(err);
       });

@@ -1,0 +1,35 @@
+import { runAlohaRoutingStartup } from "../cct-aloha-routing-startup";
+import MockAdapter from "axios-mock-adapter";
+import { useAdminDispatch } from "context";
+import { getStartupProfiles } from "authentication";
+import { myAxios } from "utils";
+import { startups } from "testUtils";
+
+const axiosMock = new MockAdapter(myAxios);
+
+jest.mock("context", () => ({
+  useAdminDispatch: jest.fn()
+}));
+
+const mockAdminDispatch = jest.fn();
+
+describe("cct-aloha-routing-startup", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    axiosMock.reset();
+    getStartupProfiles.mockReturnValueOnce(startups);
+    useAdminDispatch.mockReturnValue(mockAdminDispatch);
+  });
+
+  describe("runAlohaRoutingStartup", () => {
+    beforeEach(() => {
+
+    });
+    describe("No Service Calls are Required for Aloha Routing Startup", () => {
+      test("Should return authentication profile name", async () => {
+        const result = await runAlohaRoutingStartup(mockAdminDispatch);
+        expect(result).toStrictEqual([startups.ALOHA_ROUTE.name]);
+      });
+    });
+  });
+});

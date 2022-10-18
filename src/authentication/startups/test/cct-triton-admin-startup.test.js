@@ -143,8 +143,6 @@ const skills = {
   ]
 };
 
-jest.useFakeTimers();
-
 jest.mock("context", () => ({
   useAdminDispatch: jest.fn()
 }));
