@@ -2,10 +2,7 @@ import {
   initialState,
   reducer
 } from "context";
-import {
-  initialTestState,
-  skillsList
-} from "../../../__test__/testConsts";
+import { skillsList } from "testUtils";
 
 describe("reducer", () => {
   describe("invalid action", () => {

@@ -1,6 +1,7 @@
 import React from "react";
 import CallFlowManagementWrapper from "../CallFlowManagementWrapper";
 import { views } from "../CallFlowManagement.Interfaces";
+import { getAuthenticationProfileTemplates } from "authentication";
 import {
   CallFlowConfirmationModal,
   Dropdown,
@@ -15,7 +16,8 @@ import {
   expectOnlyPassedProps,
   setupMockedComponents,
   initialTestState,
-  act
+  act,
+  authenticationProfileTemplates
 } from "testUtils";
 import { Modal } from "@mui/material";
 
@@ -63,6 +65,7 @@ const confirmationModalOpts = {
 describe("CallFlowManagementWrapper", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    getAuthenticationProfileTemplates.mockReturnValue(authenticationProfileTemplates);
     useAdminState.mockReturnValue({
       ...initialTestState,
       userContext: {

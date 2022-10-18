@@ -8,12 +8,12 @@ beforeEach(() => {
 });
 
 beforeAll(() => {
-  console.log = jest.fn();
+  // console.log = jest.fn();
   console.error = jest.fn();
   console.warn = jest.fn();
 });
 
-jest.mock("./src/authentication");
+jest.mock("authentication");
 
 /* Services are mocked at a global level.
 We did this because of a WEIRD glitch where the utils folder cant mock files within the project.

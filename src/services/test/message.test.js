@@ -5,7 +5,7 @@ import {
 import MockAdapter from "axios-mock-adapter";
 import { apiPaths } from "globals";
 import { myAxios } from "utils";
-import { skillsList } from "../../../__test__/testConsts";
+import { skillsList } from "testUtils";
 
 const axiosMock = new MockAdapter(myAxios);
 

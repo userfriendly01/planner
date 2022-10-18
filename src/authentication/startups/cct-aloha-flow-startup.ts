@@ -1,7 +1,7 @@
-import { startupProfiles } from "../authenticationInterfaces";
+import { getStartupProfiles } from "authentication";
 
 export const runAlohaFlowStartup = (dispatch: any) => {
   return Promise.all([
-    Promise.resolve(startupProfiles.ALOHA_FLOW.name)
+    Promise.resolve(getStartupProfiles().ALOHA_FLOW.name)
   ]);
 };

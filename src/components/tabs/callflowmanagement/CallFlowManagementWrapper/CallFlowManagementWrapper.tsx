@@ -1,7 +1,7 @@
 import React, {
   useState, useEffect
 } from "react";
-import { authenticationProfiles } from "../../../../authentication/authenticationProfiles";
+import { getAuthenticationProfileTemplates } from "authentication";
 import {
   CallflowWrapper,
   MessageWrapper
@@ -57,7 +57,7 @@ const CallFlowContainer = () => {
 
   const state = useAdminState();
   console.warn("Whats dis", state.userContext);
-  const tritonProfile = state.userContext.authenticationProfiles.find((p: any) => p.name === authenticationProfiles.TRITON.name);
+  const tritonProfile = state.userContext.authenticationProfiles.find((p: any) => p.name === getAuthenticationProfileTemplates().TRITON.name);
   const isAdmin = tritonProfile.isAdmin;
   const userProfileId = tritonProfile.profileId;
   const [ tableState, setTableState ] = useState(defaultTableState);

@@ -1,13 +1,10 @@
+import { Worker } from "globals";
 import {
-  AppState,
-  Worker
-} from "globals";
-import {
-  adGroupPermissionMapping,
-  authenticationProfiles,
+  getAdGroupPermissionMapping,
+  getAuthenticationProfileTemplates,
   Permissions,
-  startupProfiles
-} from "../authentication";
+  getStartupProfiles
+} from "authentication";
 
 export const checkIfAdmin = (profileId: number): boolean => {
   return profileId === 0;
@@ -31,7 +28,7 @@ export const getWorkerProfileId = (nNumber: string, workers: Worker[]): number =
   }
 };
 
-export const getAdGroups = (unformattedGroups: string[]): string[] => {
+const getAdGroups = (unformattedGroups: string[]): string[] => {
   const adgroups: string[] = [];
   unformattedGroups.map((string: string) => {
     string.split(",").forEach(adgroup => {
@@ -42,25 +39,21 @@ export const getAdGroups = (unformattedGroups: string[]): string[] => {
 };
 
 export const getPermissions = (unformattedAdGroups: string[]): any[] => {
-  console.log("*** unformatted AD groups", unformattedAdGroups);
   const myAdGroups = getAdGroups(unformattedAdGroups);
-  console.warn("*** adGroupPermissionMapping", adGroupPermissionMapping);
-  return adGroupPermissionMapping.filter((permission: any) =>
+  return getAdGroupPermissionMapping().filter((permission: any) =>
     myAdGroups.includes(`cn=${permission.adGroup.toLowerCase()}`));
 };
 
 export const getStartups = (permissions: any[]): any[] => {
   const startups: any[] = [];
   permissions.forEach((p: any) => {
-    console.log("startup compare", startups, p.startup.name);
-    const matchingStartup = startups.find(s => s.name === p.startup.name);
+    const matchingStartup = startups.find(s => s === p.startup.function);
     if(!matchingStartup){
       startups.push(p.startup.function);
     }
   });
   return startups;
 };
-
 
 export const getAuthenticationProfiles = (permissions: any[], nNumber: any, startups: any[]) => {
   const myProfiles: any[] = [];
@@ -83,12 +76,11 @@ export const getAuthenticationProfiles = (permissions: any[], nNumber: any, star
 };
 
 const checkTritonProfileAuthentication = (myProfiles: any[], nNumber: any, startups: any[]) => {
-  const tritonProfile = myProfiles.find(a => a.name === authenticationProfiles.TRITON.name);
-  const tritonStartupResponse = startups.find((resArray: any[]) => resArray[0] === startupProfiles.TRITON.name);
-  console.log("tritonStartupResponse", tritonStartupResponse);
+  const tritonProfile = myProfiles.find(a => a.name === getAuthenticationProfileTemplates().TRITON.name);
+  const tritonStartupResponse = startups.find((resArray: any[]) => resArray[0] === getStartupProfiles().TRITON.name);
   if(tritonProfile && tritonStartupResponse ){
     const profileId = getWorkerProfileId(nNumber, tritonStartupResponse[1]);
-    const updatePermissionIndex = myProfiles.indexOf(myProfiles.find(a => a.name === authenticationProfiles.TRITON.name));
+    const updatePermissionIndex = myProfiles.indexOf(myProfiles.find(a => a.name === getAuthenticationProfileTemplates().TRITON.name));
     myProfiles[updatePermissionIndex].isAdmin = checkIfAdmin(profileId);
     myProfiles[updatePermissionIndex].profileId = profileId;
   }

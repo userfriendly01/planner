@@ -501,6 +501,12 @@ export const initialTestState = {
         attributes: {
           n_number: "n1111111"
         }
+      },
+      {
+        attributes: {
+          n_number: "n2222222",
+          profile_id: 0
+        }
       }
     ]
   },

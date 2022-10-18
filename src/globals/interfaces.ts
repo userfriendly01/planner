@@ -1,5 +1,5 @@
 import { CalabrioGroup } from "../components/tabs/usermanagement/CallRecording/CallRecording.Interfaces";
-import { AuthenticationProfile } from "../authentication/authenticationInterfaces";
+import { AuthenticationProfile } from "authentication";
 export interface Action {
   type: string,
   [key: string]: any

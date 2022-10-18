@@ -2,6 +2,7 @@ import { runTritonAdminStartup } from "../cct-triton-admin-startup";
 import MockAdapter from "axios-mock-adapter";
 import { useAdminDispatch } from "context";
 import { apiPaths } from "globals";
+import { getStartupProfiles } from "authentication";
 import {
   getCalabrioUsers,
   getCalabrioOrg,
@@ -14,14 +15,7 @@ import {
   formatOfficesResponse,
   myAxios
 } from "utils";
-
-jest.mock("../../authenticationInterfaces", () => ({
-  startupProfiles: {
-    TRITON: {
-      name: "triton"
-    }
-  }
-}));
+import { startups } from "testUtils";
 
 const axiosMock = new MockAdapter(myAxios);
 const profilesEndpoint = apiPaths.GET_PROFILES;
@@ -168,6 +162,7 @@ describe("cct-triton-admin-startup", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     axiosMock.reset();
+    getStartupProfiles.mockReturnValueOnce(startups);
     useAdminDispatch.mockReturnValue(mockAdminDispatch);
   });
 

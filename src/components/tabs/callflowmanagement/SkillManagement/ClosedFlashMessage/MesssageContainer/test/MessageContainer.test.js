@@ -48,7 +48,7 @@ const renderComponent = tableState => {
   />);
 };
 
-describe("<ActionContainer/>", () => {
+describe("<MessageContainer/>", () => {
   beforeEach(() => {
     setupMockedComponents({
       TextField,

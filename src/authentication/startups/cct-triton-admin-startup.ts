@@ -1,4 +1,4 @@
-import { startupProfiles } from "../authenticationInterfaces";
+import { getStartupProfiles } from "authentication";
 import { apiPaths } from "globals";
 import {
   getManagers as getManagersServiceCall,
@@ -141,7 +141,7 @@ const getWorkers = async (dispatch: any) => {
 
 export const runTritonAdminStartup = (dispatch: any) => {
   return Promise.all([
-    Promise.resolve(startupProfiles.TRITON.name),
+    Promise.resolve(getStartupProfiles().TRITON.name),
     getWorkers(dispatch),
     getManagers(dispatch),
     getOffices(dispatch),
