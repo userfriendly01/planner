@@ -41,12 +41,9 @@ const authenticateAndStartup = dispatch => new Promise((resolve, reject) => myAx
   .then(res => {
     const pingIdentity = res.data;
     const permissions = getPermissions(pingIdentity.groups);
-    console.warn("Permissions", permissions);
     const startupFiles = getStartups(permissions);
-    console.warn("startupFiles", startupFiles);
     const startupPromises = startupFiles.map(startup => { return startup(dispatch); });
     Promise.all(startupPromises).then(res => {
-      console.warn("Startup File Returns: ", res);
       const authenticationProfiles = getAuthenticationProfiles(permissions, pingIdentity?.sub, res);
       dispatch({
         type: "loadUserData",
@@ -57,7 +54,7 @@ const authenticateAndStartup = dispatch => new Promise((resolve, reject) => myAx
       });
       resolve(true);
     }).catch(error => {
-      const msg = "An error occurred on startup: ${authenticationProfile}";
+      const msg = "An error occurred on startup";
       reject({
         msg,
         error
@@ -83,13 +80,12 @@ const App = () => {
   const dispatch = useAdminDispatch();
 
   useEffect(() => {
-    Promise.all([
-      authenticateAndStartup(dispatch)
-    ])
+    authenticateAndStartup(dispatch)
       .then(() => {
         setLoadResult(success);
       })
       .catch(err => {
+        console.log("FINAL ERROR", err);
         console.error(err.msg, { error: err.error });
         setLoadResult(err);
       });

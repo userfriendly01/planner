@@ -21,11 +21,15 @@ import {
   act,
   expectMockedComponent,
   expectOnlyPassedProps,
+  mockRunTritonStartup,
   render,
   setupMockedComponents,
+  startups,
   waitFor
 } from "testUtils";
 import {
+  getAuthenticationProfiles,
+  getPermissions,
   getStartups,
   myAxios
 } from "utils";
@@ -33,7 +37,11 @@ import {
 const authEndpoint = apiPaths.AUTH;
 const axiosMock = new MockAdapter(myAxios);
 
-const auth = { whatever: "lol" };
+const auth = {
+  whatever: "lol",
+  groups: "Adgroups",
+  sub: "n0263786"
+};
 
 delete window.location;
 window.location = { reload: jest.fn() };
@@ -65,6 +73,7 @@ jest.mock("utils", () => ({
 }));
 
 const mockAdminDispatch = jest.fn();
+const authenticationProfiles = ["profile 1"];
 
 describe("<App />", () => {
 
@@ -72,7 +81,10 @@ describe("<App />", () => {
     jest.clearAllMocks();
     useAdminDispatch.mockReturnValue(mockAdminDispatch);
     axiosMock.onGet(authEndpoint).reply(200, auth);
-    getStartups.mockReturnValue([]);
+    getPermissions.mockReturnValue("permissions");
+    mockRunTritonStartup.mockResolvedValue("Things went well!");
+    getAuthenticationProfiles.mockReturnValue(authenticationProfiles);
+    getStartups.mockReturnValue([startups.TRITON.function]);
     setupMockedComponents({
       CircularProgress,
       Header,
@@ -82,7 +94,7 @@ describe("<App />", () => {
     });
   });
 
-  describe("authenticationAndStartup are successful", () => {
+  describe("authenticationAndStartup is successful", () => {
     beforeEach(() => {
     });
     describe("initial state, page is loading", () => {
@@ -107,6 +119,22 @@ describe("<App />", () => {
             });
             expectMockedComponent(rendered, { CircularProgress }, 0);
             expect(rendered.container).not.toHaveTextContent("Loading...");
+            expect(getPermissions).toHaveBeenCalledTimes(1);
+            expect(getPermissions).toHaveBeenCalledWith(auth.groups);
+            expect(getStartups).toHaveBeenCalledTimes(1);
+            expect(getStartups).toHaveBeenCalledWith("permissions");
+            expect(mockRunTritonStartup).toHaveBeenCalledTimes(1);
+            expect(mockRunTritonStartup).toHaveBeenCalledWith(mockAdminDispatch);
+            expect(getAuthenticationProfiles).toHaveBeenCalledTimes(1);
+            expect(getAuthenticationProfiles).toHaveBeenCalledWith("permissions", "n0263786", ["Things went well!"]);
+            expect(mockAdminDispatch).toHaveBeenCalledTimes(1);
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadUserData",
+              payload: {
+                pingIdentity: auth,
+                authenticationProfiles
+              }
+            });
           });
       });
       describe("auth token has expired (page loaded more than one hour ago", () => {
@@ -129,11 +157,47 @@ describe("<App />", () => {
           act(() => handleClick());
           expect(window.location.reload).toHaveBeenCalledTimes(1);
         });
+        describe("onClose is called for modal", () => {
+          test("modal does not close", async () => {
+            const rendered = render(<App />);
+            await waitFor(() => rendered.getByTestId("app-wrapper"));
+            expect(Modal.mock.calls.length).toBe(1);
+            await act(() => jest.advanceTimersByTime(timeouts.AUTH));
+            expect(Modal.mock.calls.length).toBe(2);
+            expectOnlyPassedProps(Modal, {
+              open: true
+            });
+            // testing handleClose for code coverage
+            const handleClose = Modal.mock.calls[0][0].onClose;
+            act(() => handleClose());
+            expect(Modal.mock.calls.length).toBe(2);
+            expect(Modal.mock.calls[1][0].open).toBe(true);
+          });
+        });
       });
     });
   });
 
-  describe(authEndpoint, () => {
+  describe("authenticationAndStartup fails", () => {
+    describe("startup file fails", () => {
+      const statusCode = 500;
+      beforeEach(() => {
+        mockRunTritonStartup.mockRejectedValue({
+          response: {
+            status: statusCode
+          }
+        });
+      });
+      test("should throw error up the stack", done => {
+        const rendered = render(<App />);
+        waitFor(() => rendered.getByTestId("error-overlay"))
+          .then(() => {
+            expect(rendered.container).toHaveTextContent(statusCode);
+            expect(rendered.container).toHaveTextContent("An error occurred on startup");
+            done();
+          });
+      });
+    });
     describe("authentication service call returned an error in the 400's", () => {
       const statusCode = 403;
       beforeEach(() => {
