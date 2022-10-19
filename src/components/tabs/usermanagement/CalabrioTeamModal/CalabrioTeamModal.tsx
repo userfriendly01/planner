@@ -49,6 +49,7 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
       setSaveStatus(ModalOverlayStatuses.FAIL);
       setErrorMessage("Team Already Exists");
     } else {
+      setSaveStatus(ModalOverlayStatuses.SAVING);
       createCalabrioTeam({
         name: newTeam.name,
         parentGroupId: newTeam.parentGroupId.groupId
@@ -79,7 +80,7 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
       <PaperContainer>
         {saveStatus ?
           <ModalOverlay
-            handleClose={handleClose}
+            handleClose={() => setSaveStatus(null)}
             message={overlayMessage}
             status={saveStatus}
           /> : null}
