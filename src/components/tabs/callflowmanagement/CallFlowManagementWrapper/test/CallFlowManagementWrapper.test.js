@@ -1,6 +1,7 @@
 import React from "react";
 import CallFlowManagementWrapper from "../CallFlowManagementWrapper";
 import { views } from "../CallFlowManagement.Interfaces";
+import { getAuthenticationProfileTemplates } from "authentication";
 import {
   CallFlowConfirmationModal,
   Dropdown,
@@ -15,7 +16,8 @@ import {
   expectOnlyPassedProps,
   setupMockedComponents,
   initialTestState,
-  act
+  act,
+  authenticationProfileTemplates
 } from "testUtils";
 import { Modal } from "@mui/material";
 
@@ -26,8 +28,16 @@ jest.mock("components", () => ({
   SkillsContainer: jest.fn()
 }));
 
+jest.mock("components", () => ({
+  CallFlowConfirmationModal: jest.fn(),
+  Dropdown: jest.fn(),
+  ActionContainer: jest.fn(),
+  SkillsContainer: jest.fn()
+}));
+
 jest.mock("@mui/material", () => ({
-  Modal: jest.fn()
+  Modal: jest.fn(),
+  Paper: jest.fn()
 }));
 
 jest.mock("context", () => ({
@@ -52,15 +62,21 @@ const confirmationModalOpts = {
   }
 };
 
-describe("CallFlowConfirmationModal", () => {
+describe("CallFlowManagementWrapper", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    getAuthenticationProfileTemplates.mockReturnValue(authenticationProfileTemplates);
     useAdminState.mockReturnValue({
       ...initialTestState,
       userContext: {
         ...initialTestState.userContext,
-        isAdmin: true,
-        profileId: 0
+        authenticationProfiles: [
+          {
+            ...initialTestState.userContext.authenticationProfiles[0],
+            isAdmin: true,
+            profileId: 0
+          }
+        ]
       }
     });
     setupMockedComponents({
@@ -113,7 +129,13 @@ describe("CallFlowConfirmationModal", () => {
               ...initialTestState,
               userContext: {
                 ...initialTestState.userContext,
-                profileId: 13
+                authenticationProfiles: [
+                  {
+                    ...initialTestState.userContext.authenticationProfiles[0],
+                    isAdmin: false,
+                    profileId: 13
+                  }
+                ]
               }
             });
           });

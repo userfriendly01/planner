@@ -7,7 +7,7 @@
     "build": "webpack",
     "eslint": "eslint ./src",
     "start": "webpack-dev-server --progress --colors --config webpack.local.config.js",
-    "test": "jest --config=jest.config.js --coverage --detectOpenHandles",
+    "test": "jest --config=jest.config.js --coverage --detectOpenHandles --maxWorkers=50%",
     "test-bamboo": "jest --config=jest.bamboo.config.js --coverage"
   },
   "repository": {

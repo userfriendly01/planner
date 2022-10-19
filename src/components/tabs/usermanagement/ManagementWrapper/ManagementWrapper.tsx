@@ -56,7 +56,7 @@ const getWorkersStartAndEnd = (pageSelected: number, filteredWorkers: Worker[]) 
   }
 };
 
-export const ManagementWrapper: React.FC = () => {
+const ManagementWrapper: React.FC = () => {
   const workersFromContext = useAdminState().workerContext.workers;
   const skillsFromContext = useAdminState().skillContext.skills;
 
@@ -154,3 +154,5 @@ export const ManagementWrapper: React.FC = () => {
     </FormStateProvider>
   );
 };
+
+export default ManagementWrapper;

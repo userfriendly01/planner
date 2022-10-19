@@ -1,0 +1,163 @@
+import {
+  AlohaFlowContainer,
+  AlohaRoutingContainer,
+  CallflowManagementWrapper,
+  ManagementWrapper,
+  ProfileSettingsContainer
+} from "components";
+
+export const mockRunTritonStartup = jest.fn();
+export const mockRunAlohaRoutingStartup = jest.fn();
+export const mockRunAlohaFlowStartup = jest.fn();
+
+export const descriptions = {
+  Triton: "Test Triton Description",
+  Aloha_Routing: "Test Aloha Routing Description",
+  Aloha_Flow: "Test Aloha Flow Description"
+};
+
+export const tabs = {
+  TRITON_USER_MANAGEMENT: {
+    value: "triton-user-management",
+    label: "User Management",
+    component: ManagementWrapper
+  },
+  TRITON_PROFILE_SETTINGS: {
+    value: "triton-profile-settings",
+    label: "Profile Settings",
+    component: ProfileSettingsContainer
+  },
+  TRITON_CALL_FLOW_MANAGEMENT: {
+    value: "triton-callflow-management",
+    label: "Call Flow Management",
+    component: CallflowManagementWrapper
+  },
+  ALOHA_CALL_FLOW_MANAGEMENT: {
+    value: "aloha-callflow-management",
+    label: "Call Flow Management",
+    component: AlohaFlowContainer
+  },
+  ALOHA_ROUTING_RULES: {
+    value: "aloha-routing-rules",
+    label: "Routing Rules",
+    component: AlohaRoutingContainer
+  }
+};
+
+export const startups = {
+  TRITON: {
+    name: "triton",
+    function: mockRunTritonStartup
+  },
+  ALOHA_ROUTE: {
+    name: "aloha-route",
+    function: mockRunAlohaRoutingStartup
+  },
+  ALOHA_FLOW: {
+    name: "aloha-flow",
+    function: mockRunAlohaFlowStartup
+  }
+};
+
+export const authenticationProfileTemplates = {
+  TRITON: {
+    name: "Triton",
+    permissionLevel: "read",
+    isAdmin: false,
+    profileId: null,
+    tabs: [
+      tabs.TRITON_USER_MANAGEMENT,
+      tabs.TRITON_PROFILE_SETTINGS,
+      tabs.TRITON_CALL_FLOW_MANAGEMENT
+    ]
+  },
+  ALOHA_ROUTE: {
+    name: "Aloha Route",
+    permissionLevel: "read",
+    tabs: [
+      tabs.ALOHA_ROUTING_RULES
+    ]
+  },
+  ALOHA_FLOW: {
+    name: "Aloha Flow",
+    permissionLevel: "read",
+    tabs: [
+      tabs.ALOHA_CALL_FLOW_MANAGEMENT
+    ]
+  }
+};
+
+export const adGroupPermissionMapping = [
+  {
+    adGroup: "GCI-CCT-TRITON-DEV-TRITONADMIN",
+    environments: ["development"],
+    permissionLevel: "write",
+    startup: startups.TRITON,
+    description: descriptions.Triton,
+    authenticationProfile: authenticationProfileTemplates.TRITON
+  },
+  {
+    adGroup: "GCI-CCT-TRITON-TEST-TRITONADMIN",
+    environments: ["test"],
+    permissionLevel: "write",
+    startup: startups.TRITON,
+    description: descriptions.Triton,
+    authenticationProfile: authenticationProfileTemplates.TRITON
+  },
+  {
+    adGroup: "GCI-CCT-TRITON-PROD-TRITONADMIN",
+    environments: ["production"],
+    permissionLevel: "write",
+    startup: startups.TRITON,
+    description: descriptions.Triton,
+    authenticationProfile: authenticationProfileTemplates.TRITON
+  },
+  {
+    adGroup: "GPI-CCT-CONFIG-FLOW-READ",
+    environments: ["development", "test", "production"],
+    permissionLevel: "read",
+    startup: startups.ALOHA_FLOW,
+    description: descriptions.Aloha_Flow,
+    authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
+  },
+  {
+    adGroup: "GPI-CCT-CONFIG-FLOW-READWRITE-NP",
+    environments: ["development", "test"],
+    permissionLevel: "write",
+    startup: startups.ALOHA_FLOW,
+    description: descriptions.Aloha_Flow,
+    authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
+  },
+  {
+    adGroup: "GPI-CCT-CONFIG-FLOW-READWRITE-PROD",
+    environments: ["production"],
+    permissionLevel: "write",
+    startup: startups.ALOHA_FLOW,
+    description: descriptions.Aloha_Flow,
+    authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
+  },
+  {
+    adGroup: "GPI-CCT-CONFIG-ROUTE-READ",
+    environments: ["development", "test", "production"],
+    permissionLevel: "read",
+    startup: startups.ALOHA_ROUTE,
+    description: descriptions.Aloha_Routing,
+    authenticationProfile: authenticationProfileTemplates.ALOHA_ROUTE
+  },
+  {
+    adGroup: "GPI-CCT-CONFIG-ROUTE-READWRITE-NP",
+    environments: ["development", "test"],
+    permissionLevel: "write",
+    startup: startups.ALOHA_ROUTE,
+    description: descriptions.Aloha_Routing,
+    authenticationProfile: authenticationProfileTemplates.ALOHA_ROUTE
+  },
+  {
+    adGroup: "GPI-CCT-CONFIG-ROUTE-READWRITE-PROD",
+    environments: ["production"],
+    permissionLevel: "write",
+    startup: startups.ALOHA_ROUTE,
+    description: descriptions.Aloha_Routing,
+    authenticationProfile: authenticationProfileTemplates.ALOHA_ROUTE
+  }
+];
