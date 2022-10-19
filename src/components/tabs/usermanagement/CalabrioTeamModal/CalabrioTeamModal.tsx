@@ -58,7 +58,7 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
           type: "addCalabrioTeam",
           payload: res.data
         });
-        handleClose(res);
+        handleClose(res.data);
       }).catch(err => {
         console.error("Unable to Add Calabrio Team", err);
         setSaveStatus(ModalOverlayStatuses.FAIL);

@@ -92,9 +92,9 @@ const ManagerModal = (props: ManagerModalProps) => {
     setIsTeamModalOpen(true);
   };
 
-  const handleCloseTeam = (res: any) => {
-    if(res){
-      const newlist= [...selectedCalabrioTeams, res.data.groupId];
+  const handleCloseTeam = (newTeam: any) => {
+    if(newTeam && newTeam.groupId){
+      const newlist= [...selectedCalabrioTeams, newTeam.groupId];
       setSelectedCalabrioTeams(newlist.map((team:number) => team));
     }
     setIsTeamModalOpen(false);
