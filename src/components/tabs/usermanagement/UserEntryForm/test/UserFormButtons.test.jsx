@@ -40,8 +40,7 @@ import {
   setupMockedComponents,
   validFormOptions,
   validFormState,
-  waitFor,
-  worker
+  waitFor
 } from "testUtils";
 import {
   checkConflictingUsers,
@@ -85,6 +84,16 @@ jest.mock("utils", () => ({
   workerHasOverFlowSkill: jest.fn(),
   getNonOverflowSkills: jest.fn()
 }));
+
+export const worker = {
+  attributes: {
+    full_name: "Faith Cuneo",
+    office_location_name: "Uranus",
+    profile_id: 15
+  },
+  sid: "WK1",
+  skillsDifferent: false
+};
 
 const workerAttributesAfterFormValid = {
   contact_uri: `client:${validFormOptions.nNumber.toLowerCase()}`,

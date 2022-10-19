@@ -46,7 +46,6 @@ const NavTabs = () => {
         allowedTabs.push(t);
       });
     });
-    console.log("allowed Tabs", allowedTabs);
     setTabs(allowedTabs);
   }, []);
 

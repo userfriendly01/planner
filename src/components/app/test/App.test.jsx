@@ -95,8 +95,6 @@ describe("<App />", () => {
   });
 
   describe("authenticationAndStartup is successful", () => {
-    beforeEach(() => {
-    });
     describe("initial state, page is loading", () => {
       test("should render LoadingMessage", () => {
         const rendered = render(<App />);
