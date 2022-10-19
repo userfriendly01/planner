@@ -25,10 +25,11 @@ describe("cct-aloha-routing-startup", () => {
     beforeEach(() => {
 
     });
-    describe("No Service Calls are Required for Aloha Routing Startup", () => {
-      test("Should return authentication profile name", async () => {
+    describe("Service Calls are successful", () => {
+      test("**MUST RETURN STARTUP NAME FIRST**", async () => {
         const result = await runAlohaRoutingStartup(mockAdminDispatch);
-        expect(result).toStrictEqual([startups.ALOHA_ROUTE.name]);
+        const firstResponse = result[0];
+        expect(firstResponse).toStrictEqual(startups.ALOHA_ROUTE.name);
       });
     });
   });

@@ -28,7 +28,7 @@ export const getWorkerProfileId = (nNumber: string, workers: Worker[]): number =
   }
 };
 
-const getAdGroups = (unformattedGroups: string[]): string[] => {
+const formatAdGroups = (unformattedGroups: string[]): string[] => {
   const adgroups: string[] = [];
   unformattedGroups.map((string: string) => {
     string.split(",").forEach(adgroup => {
@@ -39,7 +39,7 @@ const getAdGroups = (unformattedGroups: string[]): string[] => {
 };
 
 export const getPermissions = (unformattedAdGroups: string[]): any[] => {
-  const myAdGroups = getAdGroups(unformattedAdGroups);
+  const myAdGroups = formatAdGroups(unformattedAdGroups);
   return getAdGroupPermissionMapping().filter((permission: any) =>
     myAdGroups.includes(`cn=${permission.adGroup.toLowerCase()}`));
 };

@@ -140,6 +140,8 @@ const getWorkers = async (dispatch: any) => {
 };
 
 export const runTritonAdminStartup = (dispatch: any) => {
+  /* Please add new service calls to the end of this Promise.all,
+  the existing order is important */
   return Promise.all([
     Promise.resolve(getStartupProfiles().TRITON.name),
     getWorkers(dispatch),

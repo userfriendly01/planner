@@ -25,10 +25,11 @@ describe("cct-aloha-flow-startup", () => {
     beforeEach(() => {
 
     });
-    describe("No Service Calls are Required for Aloha Flow Startup", () => {
-      test("Should return authentication profile name", async () => {
+    describe("Service Calls are successful", () => {
+      test("**MUST RETURN STARTUP NAME FIRST**", async () => {
         const result = await runAlohaFlowStartup(mockAdminDispatch);
-        expect(result).toStrictEqual([startups.ALOHA_FLOW.name]);
+        const firstResponse = result[0];
+        expect(firstResponse).toStrictEqual(startups.ALOHA_FLOW.name);
       });
     });
   });

@@ -176,6 +176,16 @@ describe("cct-triton-admin-startup", () => {
       getCalabrioRoles.mockResolvedValue({ data: []});
     });
     describe("all service calls successful", () => {
+      test("**MUST RETURN STARTUP NAME FIRST**", async () => {
+        const result = await runTritonAdminStartup(mockAdminDispatch);
+        const firstResponse = result[0];
+        expect(firstResponse).toStrictEqual(startups.TRITON.name);
+      });
+      test("**MUST RETURN WORKER RESPONSE SECOND**", async () => {
+        const result = await runTritonAdminStartup(mockAdminDispatch);
+        const secondResponse = result[1];
+        expect(secondResponse).toStrictEqual(filteredWorkers);
+      });
       describe("auth token is good (page loaded less than one hour ago)", () => {
         test(
           "should render Header & NavTabs, should dispatch appropriate actions, Modal should not be open",
