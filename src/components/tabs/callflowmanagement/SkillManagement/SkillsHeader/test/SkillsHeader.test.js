@@ -1,4 +1,5 @@
 import SkillsHeader from "../SkillsHeader";
+import { getAuthenticationProfileTemplates } from "authentication";
 import { SearchBox } from "components/tabs/usermanagement";
 import React from "react";
 import {
@@ -8,6 +9,7 @@ import {
 import { useAdminState } from "context";
 import {
   act,
+  authenticationProfileTemplates,
   render,
   expectOnlyPassedProps,
   skillsList,
@@ -48,9 +50,10 @@ const renderComponent = () => {
   return rendered;
 };
 
-describe("<SkillsContainer />", () => {
+describe("<SkillsHeader />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    getAuthenticationProfileTemplates.mockReturnValue(authenticationProfileTemplates);
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       SearchBox,
@@ -77,7 +80,12 @@ describe("<SkillsContainer />", () => {
           ...initialTestState,
           userContext: {
             ...initialTestState.userContext,
-            isAdmin: true
+            authenticationProfiles: [
+              {
+                ...initialTestState.userContext.authenticationProfiles[0],
+                isAdmin: true
+              }
+            ]
           }
         });
       });
@@ -128,6 +136,34 @@ describe("<SkillsContainer />", () => {
               }
             ]
           });
+        });
+      });
+    });
+    describe("user is not admin", () => {
+      beforeEach(() => {
+        useAdminState.mockReturnValue({
+          ...initialTestState,
+          userContext: {
+            ...initialTestState.userContext,
+            authenticationProfiles: [
+              {
+                ...initialTestState.userContext.authenticationProfiles[0],
+                isAdmin: false
+              }
+            ]
+          }
+        });
+      });
+      test("should render profile dropdown", () => {
+        renderComponent();
+        expect(Dropdown.mock.calls.length).toBe(0);
+        expect(SearchBox.mock.calls.length).toBe(1);
+        expectOnlyPassedProps(SearchBox, {
+          searchBy: tableState.searchBy
+        });
+        expect(ExportButton.mock.calls.length).toBe(1);
+        expectOnlyPassedProps(ExportButton, {
+          selected: tableState.selected
         });
       });
     });

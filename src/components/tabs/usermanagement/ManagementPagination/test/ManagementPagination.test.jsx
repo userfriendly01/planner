@@ -18,10 +18,14 @@ import {
 const setPageFunc = jest.fn();
 
 jest.mock("@mui/icons-material", () => ({
+  AccountBox: jest.fn(),
   NavigateNextOutlined: jest.fn(),
   NavigateBeforeOutlined: jest.fn(),
   SkipNextOutlined: jest.fn(),
-  SkipPreviousOutlined: jest.fn()
+  SkipPreviousOutlined: jest.fn(),
+  CloseRounded: jest.fn(),
+  Edit: jest.fn(),
+  InfoOutlined: jest.fn()
 }));
 
 const renderComponent = page => {

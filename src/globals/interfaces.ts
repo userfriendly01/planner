@@ -1,4 +1,5 @@
 import { CalabrioGroup } from "../components/tabs/usermanagement/CallRecording/CallRecording.Interfaces";
+import { AuthenticationProfile } from "authentication";
 export interface Action {
   type: string,
   [key: string]: any
@@ -27,8 +28,7 @@ export interface AppState {
   },
   userContext: {
     pingIdentity: PingIdentity,
-    isAdmin: boolean,
-    profileId: number | string | null
+    authenticationProfiles: AuthenticationProfile[]
   },
   workerContext: {
     workers: Worker[],
@@ -151,6 +151,7 @@ export interface Worker {
   },
   alternateDid?: string,
   directDialNum?: string,
+  inactiveInd?: string,
   inactiveForwardTo?: string,
   inactiveForwardToType?: string,
   sid: string,
