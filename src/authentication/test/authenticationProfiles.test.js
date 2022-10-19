@@ -29,12 +29,6 @@ jest.mock("components", () => ({
   AlohaFlowContainer: jest.fn()
 }));
 
-jest.mock("authentication", () => ({
-  Environments: jest.requireActual("authentication".Environments),
-  Permissions: jest.requireActual("authentication".Permissions),
-  descriptions: jest.requireActual("authentication".descriptions)
-}));
-
 describe("authenticationProfiles", () => {
   beforeEach(() => {
     jest.clearAllMocks();

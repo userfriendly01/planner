@@ -69,7 +69,6 @@ const NavTabs = () => {
         {
           tabs.map((t: any, index: number) => {
             const Component = t.component;
-            console.log("WHATS THIS", t);
             return <TabPanel key={t.value} value={value} tabName={t.label} index={index}>
               <Component/>
             </TabPanel>;

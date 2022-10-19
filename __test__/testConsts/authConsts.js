@@ -1,3 +1,11 @@
+import {
+  AlohaFlowContainer,
+  AlohaRoutingContainer,
+  CallflowManagementWrapper,
+  ManagementWrapper,
+  ProfileSettingsContainer
+} from "components";
+
 export const mockRunTritonStartup = jest.fn();
 export const mockRunAlohaRoutingStartup = jest.fn();
 export const mockRunAlohaFlowStartup = jest.fn();
@@ -12,27 +20,27 @@ export const tabs = {
   TRITON_USER_MANAGEMENT: {
     value: "triton-user-management",
     label: "User Management",
-    component: "ManagementWrapperComponent"
+    component: ManagementWrapper
   },
   TRITON_PROFILE_SETTINGS: {
     value: "triton-profile-settings",
     label: "Profile Settings",
-    component: "ProfileSettingsContainerComponent"
+    component: ProfileSettingsContainer
   },
   TRITON_CALL_FLOW_MANAGEMENT: {
     value: "triton-callflow-management",
     label: "Call Flow Management",
-    component: "CallflowManagementWrapperComponent"
+    component: CallflowManagementWrapper
   },
   ALOHA_CALL_FLOW_MANAGEMENT: {
     value: "aloha-callflow-management",
     label: "Call Flow Management",
-    component: "AlohaFlowContainerComponent"
+    component: AlohaFlowContainer
   },
   ALOHA_ROUTING_RULES: {
     value: "aloha-routing-rules",
     label: "Routing Rules",
-    component: "AlohaRoutingContainerComponent"
+    component: AlohaRoutingContainer
   }
 };
 
