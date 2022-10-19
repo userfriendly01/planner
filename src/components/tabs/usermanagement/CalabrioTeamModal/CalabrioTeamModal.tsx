@@ -8,13 +8,17 @@ import { TextField } from "@mui/material";
 import {
   Dropdown,
   PaperContainer,
-  StyledButton
+  StyledButton,
+  ModalOverlay
 } from "components";
 import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import { FlexColumn } from "globals";
+import {
+  FlexColumn,
+  ModalOverlayStatuses
+} from "globals";
 import React, { useState } from "react";
 import { createCalabrioTeam } from "services";
 export interface TeamModalProps {
@@ -24,7 +28,10 @@ export interface TeamModalProps {
 const CalabrioTeamModal = (props: TeamModalProps) => {
   const state = useAdminState();
   const dispatch = useAdminDispatch();
-  const { groups } = state.calabrioContext;
+  const {
+    groups,
+    teams
+  } = state.calabrioContext;
   const { handleClose } = props;
 
   const initialNewTeamState: any = {
@@ -32,25 +39,45 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
     parentGroupId: null
   };
   const [ newTeam, setNewTeam ] = useState(initialNewTeamState);
+  const [errorMessage, setErrorMessage] = useState<string>(null);
+  const [saveStatus, setSaveStatus] = useState<ModalOverlayStatuses>(null);
 
   const handleOnSubmit = () => {
-    createCalabrioTeam({
-      name: newTeam.name,
-      parentGroupId: newTeam.parentGroupId.groupId
-    }).then((res: any) => {
-      dispatch({
-        type: "addCalabrioTeam",
-        payload: res.data
+    const teamExists = teams.find(t => t.name === newTeam.name);
+    if(teamExists){
+      setSaveStatus(ModalOverlayStatuses.FAIL);
+      setErrorMessage("Team Already Exists");
+    } else {
+      createCalabrioTeam({
+        name: newTeam.name,
+        parentGroupId: newTeam.parentGroupId.groupId
+      }).then((res: any) => {
+        dispatch({
+          type: "addCalabrioTeam",
+          payload: res.data
+        });
+        handleClose(res);
+      }).catch(err => {
+        console.error("Unable to Add Calabrio Team", err);
       });
-      handleClose(res);
-    }).catch(err => {
-      console.error("Unable to Add Calabrio Team", err);
-    });
+    }
   };
+
+  let overlayMessage = "Saving";
+  if (saveStatus === ModalOverlayStatuses.SUCCESS) {
+    overlayMessage = "Manager saved successfully";
+  } else if (saveStatus === ModalOverlayStatuses.FAIL) {
+    overlayMessage = errorMessage;
+  }
 
   return (
     <ModalContainer>
       <PaperContainer>
+        {saveStatus ?
+          <ModalOverlay
+            message={overlayMessage}
+            status={saveStatus}
+          /> : null}
         <HeaderAndCloseButtonWrapper>
           <h1>Add a Calabrio Team</h1>
           <CloseButton onClick={handleClose}/>
