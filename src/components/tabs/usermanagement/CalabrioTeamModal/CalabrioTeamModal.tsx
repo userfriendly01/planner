@@ -17,7 +17,8 @@ import {
 } from "context";
 import {
   FlexColumn,
-  ModalOverlayStatuses
+  ModalOverlayStatuses,
+  timeouts
 } from "globals";
 import React, { useState } from "react";
 import { createCalabrioTeam } from "services";
@@ -43,10 +44,11 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
   const [saveStatus, setSaveStatus] = useState<ModalOverlayStatuses>(null);
 
   const handleOnSubmit = () => {
-    const teamExists = teams.find(t => t.name === newTeam.name);
+    const teamExists = teams.find(t => t.name.toLowerCase() === newTeam.name.toLowerCase());
     if(teamExists){
       setSaveStatus(ModalOverlayStatuses.FAIL);
       setErrorMessage("Team Already Exists");
+      setTimeout(() => setSaveStatus(null), timeouts.MODAL_OVERLAY);
     } else {
       createCalabrioTeam({
         name: newTeam.name,
@@ -59,6 +61,8 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
         handleClose(res);
       }).catch(err => {
         console.error("Unable to Add Calabrio Team", err);
+        setSaveStatus(ModalOverlayStatuses.FAIL);
+        setErrorMessage("Unable to Add Calabrio Team");
       });
     }
   };
