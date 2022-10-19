@@ -13,11 +13,18 @@ import {
   UserFormState
 } from "components/tabs/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
 import React, { ReactElement } from "react";
+import { ProfileEntryFormState } from "components/tabs/profilesettings/ProfileEntryForm/ProfileEntryForm.Interfaces";
+import {
+  initialProfileEntryFormState,
+  profileEntryFormReducer
+} from "./reducers/profileEntryFormReducer";
 
 export const StateContext = React.createContext(undefined);
 export const DispatchContext = React.createContext(undefined);
 export const FormStateContext = React.createContext(undefined);
 export const FormDispatchContext = React.createContext(undefined);
+export const ProfileEntryStateContext = React.createContext(undefined);
+export const ProfileEntryDispatchContext = React.createContext(undefined);
 
 interface StateProviderProps {
   children: ReactElement
@@ -63,6 +70,20 @@ const FormStateProvider = (props: FormStateProviderProps) => {
   );
 };
 
+interface ProfileEntryFormStateProviderProps {
+  children: ReactElement
+}
+const ProfileEntryFormStateProvider = (props: ProfileEntryFormStateProviderProps) => {
+  const [state, dispatch] = React.useReducer(profileEntryFormReducer, initialProfileEntryFormState);
+  return (
+    <ProfileEntryStateContext.Provider value={state}>
+      <ProfileEntryDispatchContext.Provider value={dispatch}>
+        {props.children}
+      </ProfileEntryDispatchContext.Provider>
+    </ProfileEntryStateContext.Provider>
+  );
+};
+
 const useFormState = (): UserFormState => {
   const context: UserFormState = React.useContext(FormStateContext);
   if (context === undefined) {
@@ -79,11 +100,30 @@ const useFormDispatch = (): (action: Action) => VoidFunction => {
   return context;
 };
 
+const profileEntryFormState = (): ProfileEntryFormState => {
+  const context: ProfileEntryFormState = React.useContext(ProfileEntryStateContext);
+  if (context === undefined) {
+    throw new Error("ProfileEntryStateContext must be used within a Context Provider");
+  }
+  return context;
+};
+
+const profileEntryFormDispatch = (): (action: Action) => VoidFunction => {
+  const context: (action: Action) => VoidFunction = React.useContext(ProfileEntryDispatchContext);
+  if (context === undefined) {
+    throw new Error("ProfileEntryDispatchContext must be used within a Context Provider");
+  }
+  return context;
+};
+
 export {
   StateProvider,
   FormStateProvider,
   useAdminDispatch,
   useAdminState,
   useFormState,
-  useFormDispatch
+  useFormDispatch,
+  profileEntryFormState,
+  profileEntryFormDispatch,
+  ProfileEntryFormStateProvider
 };

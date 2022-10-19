@@ -5,8 +5,12 @@ import {
   ProfileDropDown,
   ProfileSettingsTable
 } from "components";
-import { useAdminState } from "context";
+import {
+  useAdminState,
+  ProfileEntryFormStateProvider
+} from "context";
 import { apiPaths } from "globals";
+import { Modal } from "@mui/material";
 import React, { useState } from "react";
 import {
   myAxios,
@@ -18,7 +22,12 @@ import {
   ProfileSettingsDropdownWrapper,
   ProfileSettingsContainerDiv,
   ProfileSettingsMessage,
+  SettingsContainer,
+  ControlsWrapper,
+  ControlItem,
+  AddProfileButton
 } from "./ProfileSettingsContainer.Styles";
+import { ProfileEntryForm } from "components";
 
 const ProfileSettingsContainer = () => {
   const [ view, setView ] = React.useState(profileSettingsViews[0]);
@@ -29,8 +38,13 @@ const ProfileSettingsContainer = () => {
     message: "Please select a profile",
     profileId: null
   };
+  const initialProfileModalState = {
+    open: false,
+    profile: null
+  };
 
   const [profileSettingsState, setProfileSettingsState] = useState(initialProfileState);
+  const [profileModalState, setProfileModalState] = useState(initialProfileModalState);
 
   const profilesFromContextMinusGoP = useAdminState().profileContext.profiles.filter(({ profile_id }) => profile_id !== 0);
 
@@ -65,63 +79,85 @@ const ProfileSettingsContainer = () => {
     profileId
   } = profileSettingsState;
 
+  const addProfileOnClick = () => setProfileModalState({
+    open: true,
+    profile: null
+  });
+
   return(
-    <ProfileSettingsContainerDiv>
-      <ProfileSettingsDropdownWrapper>
-        <Dropdown
-          label="What would you like to do?"
-          value={view}
-          options={profileSettingsViews}
-          updateValue={(event, view) => setView(view)}
-          styles={{
-            margin: "40 0 60 0",
-            width: "500px"
-          }}
-        />
-      </ProfileSettingsDropdownWrapper>
-      {
-        view.value === "PROFILE_DIRECTORY"
-          ?
-          <div>
-            <ProfileDropDown
-              availableProfiles={profilesFromContextMinusGoP}
-              profileId={profileId}
-              updateProfile={fetchProfileInformation}
-            />
-            {
-              profileId !== null && profileId !== ""
-                ?
-                <div>
-                  <DialListTable
-                    dialList={dialList}
-                    profileId={profileId}
-                    refreshProfileData={() => fetchProfileInformation(profileId)}
-                  />
-                  <Directory
-                    directory={directoryList}
-                    profileId={profileId}
-                    refreshProfileData={() => fetchProfileInformation(profileId)}
-                  />
-                </div>
-                :
-                null
-            }
-            {
-              message
-                ?
-                <ProfileSettingsMessage data-testid="message">
-                  <h1>{message}</h1>
-                </ProfileSettingsMessage>
-                :
-                null
-            }
-          </div>
-          :
-          <ProfileSettingsTable 
-            profileList={profilesFromContextMinusGoP}
+    <ProfileEntryFormStateProvider>
+      <ProfileSettingsContainerDiv>
+        <Modal onClose={() => { return; }} open={profileModalState.open}>
+          <ProfileEntryForm
+            handleClose={() => setProfileModalState(initialProfileModalState)}
+            profile={profileModalState.profile}
           />
-      }
-    </ProfileSettingsContainerDiv>
+        </Modal>
+        <ProfileSettingsDropdownWrapper>
+          <Dropdown
+            label="What would you like to do?"
+            value={view}
+            options={profileSettingsViews}
+            updateValue={(event, view) => setView(view)}
+            styles={{
+              margin: "40 0 60 0",
+              width: "500px"
+            }}
+          />
+        </ProfileSettingsDropdownWrapper>
+        {
+          view.value === "PROFILE_DIRECTORY"
+            ?
+            <div>
+              <ProfileDropDown
+                availableProfiles={profilesFromContextMinusGoP}
+                profileId={profileId}
+                updateProfile={fetchProfileInformation}
+              />
+              {
+                profileId !== null && profileId !== ""
+                  ?
+                  <div>
+                    <DialListTable
+                      dialList={dialList}
+                      profileId={profileId}
+                      refreshProfileData={() => fetchProfileInformation(profileId)}
+                    />
+                    <Directory
+                      directory={directoryList}
+                      profileId={profileId}
+                      refreshProfileData={() => fetchProfileInformation(profileId)}
+                    />
+                  </div>
+                  :
+                  null
+              }
+              {
+                message
+                  ?
+                  <ProfileSettingsMessage data-testid="message">
+                    <h1>{message}</h1>
+                  </ProfileSettingsMessage>
+                  :
+                  null
+              }
+            </div>
+            :
+            <SettingsContainer>
+              <ControlsWrapper>
+                <ControlItem>
+                  <AddProfileButton onClick={addProfileOnClick} data-testid={"add-profile-button"}>
+                    Add Profile
+                  </AddProfileButton>
+                </ControlItem>
+              </ControlsWrapper>
+              <ProfileSettingsTable
+                profileList={profilesFromContextMinusGoP}
+              />
+            </SettingsContainer>
+        }
+      </ProfileSettingsContainerDiv>
+    </ProfileEntryFormStateProvider>
   );
 };
 

@@ -22,6 +22,9 @@ export interface AppState {
   profileContext: {
     profiles: TritonProfile[]
   },
+  activitiesContext: {
+    activities: Activity[]
+  },
   skillContext: {
     skills: Skill[]
   },
@@ -118,6 +121,15 @@ export interface TritonProfile {
   row_crtn_dtm: string,
   row_updt_dtm: string,
   overflow_skill: string
+}
+
+export interface Activity {
+  activity_id: number,
+  activity_nme: string,
+  available_i: {
+    data?: number[],
+    type?: string
+  }
 }
 
 export interface Worker {

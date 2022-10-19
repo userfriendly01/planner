@@ -191,6 +191,23 @@ const getProfiles = dispatch => new Promise((resolve, reject) => myAxios.get(api
   })
 );
 
+const getActivities = dispatch => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_ACTIVITIES)
+  .then(res => {
+    dispatch({
+      type: "loadActivities",
+      payload: res.data
+    });
+    resolve(true);
+  })
+  .catch(error => {
+    reject({
+      msg: "Failed to fetch activities from service",
+      error
+    });
+  })
+);
+
+
 const getSkills = dispatch => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_SKILLS)
   .then(res => {
     dispatch({
@@ -238,6 +255,7 @@ const App = () => {
       getOffices(dispatch),
       getProfiles(dispatch),
       getSkills(dispatch),
+      getActivities(dispatch),
       getWorkers(dispatch),
       getCalabrioUsers(dispatch),
       getCalabrioOrg(dispatch),
