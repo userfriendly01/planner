@@ -36,7 +36,7 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
   const handleOnSubmit = () => {
     createCalabrioTeam({
       name: newTeam.name,
-      parentGroupId: newTeam.parentGroupId
+      parentGroupId: newTeam.parentGroupId.groupId
     }).then((res: any) => {
       dispatch({
         type: "addCalabrioTeam",
@@ -81,7 +81,7 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
             updateValue={(event: any, newValue: any) =>
               setNewTeam({
                 ...newTeam,
-                parentGroupId: newValue.groupId
+                parentGroupId: newValue
               })}
           />
         </FlexColumn>
