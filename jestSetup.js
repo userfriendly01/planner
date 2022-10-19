@@ -13,6 +13,8 @@ beforeAll(() => {
   console.warn = jest.fn();
 });
 
+jest.mock("authentication");
+
 /* Services are mocked at a global level.
 We did this because of a WEIRD glitch where the utils folder cant mock files within the project.
 If you need to use the real file in your test, use jest.requireActual for the function you need like below

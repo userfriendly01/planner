@@ -13,7 +13,11 @@ const mockFunction = jest.fn();
 
 jest.mock("@mui/icons-material", () => ({
   __esModule: true,
-  ClearRounded: jest.fn()
+  AccountBox: jest.fn(),
+  ClearRounded: jest.fn(),
+  CloseRounded: jest.fn(),
+  Edit: jest.fn(),
+  InfoOutlined: jest.fn()
 }));
 
 const renderComponent = searchBy => {

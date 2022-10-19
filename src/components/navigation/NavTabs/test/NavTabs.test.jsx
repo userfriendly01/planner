@@ -2,50 +2,93 @@ import NavTabs from "../NavTabs";
 import {
   CallflowManagementWrapper,
   ManagementWrapper,
-  ProfileSettingsContainer
+  ProfileSettingsContainer,
+  AlohaFlowContainer,
+  AlohaRoutingContainer
 } from "components";
+import {
+  useAdminState
+} from "context";
 import React from "react";
 import {
   expectMockedComponent,
   fireEvent,
+  initialTestState,
   render,
-  setupMockedComponents
+  setupMockedComponents,
+  tabs
 } from "testUtils";
 
 jest.mock("components", () => ({
-  __esModule: true,
   CallflowManagementWrapper: jest.fn(),
   ManagementWrapper: jest.fn(),
-  ProfileSettingsContainer: jest.fn()
+  ProfileSettingsContainer: jest.fn(),
+  AlohaFlowContainer: jest.fn(),
+  AlohaRoutingContainer: jest.fn()
 }));
 
-describe("<NavTabs />", () => {
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
+}));
 
+jest.mock("authentication", () => ({
+  getTabs: jest.requireActual("authentication").getTabs
+}));
+
+const state = {
+  ...initialTestState,
+  userContext: {
+    ...initialTestState.userContext,
+    authenticationProfiles: [
+      {
+        tabs: [
+          tabs.TRITON_USER_MANAGEMENT,
+          tabs.TRITON_PROFILE_SETTINGS,
+          tabs.TRITON_CALL_FLOW_MANAGEMENT
+        ]
+      },
+      {
+        tabs: [
+          tabs.ALOHA_CALL_FLOW_MANAGEMENT
+        ]
+      }
+    ]
+  }
+};
+
+describe("<NavTabs />", () => {
   beforeEach(() => {
+    useAdminState.mockReturnValue(state);
     setupMockedComponents({
       ManagementWrapper,
       ProfileSettingsContainer,
-      CallflowManagementWrapper
+      CallflowManagementWrapper,
+      AlohaFlowContainer,
+      AlohaRoutingContainer
     });
   });
 
   test("we should load the links, as well as default to showing the Management Pane", () => {
     const rendered = render(<NavTabs />);
     expect(rendered.getByText("User Management")).toBeInTheDocument();
-    expectMockedComponent(rendered, { ManagementWrapper });
+    expectMockedComponent(rendered, { ManagementWrapper }, 1);
     expectMockedComponent(rendered, { CallflowManagementWrapper }, 1);
-    expectMockedComponent(rendered, { ProfileSettingsContainer });
+    expectMockedComponent(rendered, { ProfileSettingsContainer }, 1);
+    expectMockedComponent(rendered, { AlohaFlowContainer }, 1);
+    expectMockedComponent(rendered, { AlohaRoutingContainer }, 0);
     expect(rendered.getByText("ManagementWrapper")).toBeVisible();
     expect(rendered.getAllByText("CallflowManagementWrapper")[0]).not.toBeVisible();
     expect(rendered.getByText("ProfileSettingsContainer")).not.toBeVisible();
+    expect(rendered.getByText("AlohaFlowContainer")).not.toBeVisible();
   });
 
   test("when we click on the 'Call Flow Management' link, only CallflowManagementWrapper should be visible", () => {
     const rendered = render(<NavTabs />);
-    fireEvent.click(rendered.getByText("Call Flow Management"));
+    fireEvent.click(rendered.getAllByText("Call Flow Management")[0]);
     expect(rendered.getAllByText("CallflowManagementWrapper")[0]).toBeVisible();
     expect(rendered.getByText("ManagementWrapper")).not.toBeVisible();
     expect(rendered.getByText("ProfileSettingsContainer")).not.toBeVisible();
+    expect(rendered.getByText("AlohaFlowContainer")).not.toBeVisible();
   });
 
   test("when we click on the 'Profile Settings' link, only ProfileSettingsContainer should be visible", () => {
@@ -54,6 +97,16 @@ describe("<NavTabs />", () => {
     expect(rendered.getByText("ProfileSettingsContainer")).toBeVisible();
     expect(rendered.getByText("ManagementWrapper")).not.toBeVisible();
     expect(rendered.getAllByText("CallflowManagementWrapper")[0]).not.toBeVisible();
+    expect(rendered.getByText("AlohaFlowContainer")).not.toBeVisible();
+  });
+
+  test("when we click on the 'Aloha Flow Container' link, only AlohaFlowContainer should be visible", () => {
+    const rendered = render(<NavTabs />);
+    fireEvent.click(rendered.getAllByText("Call Flow Management")[1]);
+    expect(rendered.getByText("ProfileSettingsContainer")).not.toBeVisible();
+    expect(rendered.getByText("ManagementWrapper")).not.toBeVisible();
+    expect(rendered.getAllByText("CallflowManagementWrapper")[0]).not.toBeVisible();
+    expect(rendered.getByText("AlohaFlowContainer")).toBeVisible();
   });
 
   test("when we click on the already clicked link, nothing should change", () => {
@@ -62,5 +115,6 @@ describe("<NavTabs />", () => {
     expect(rendered.getByText("ManagementWrapper")).toBeVisible();
     expect(rendered.getAllByText("CallflowManagementWrapper")[0]).not.toBeVisible();
     expect(rendered.getByText("ProfileSettingsContainer")).not.toBeVisible();
+    expect(rendered.getByText("AlohaFlowContainer")).not.toBeVisible();
   });
 });

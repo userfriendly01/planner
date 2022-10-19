@@ -16,7 +16,12 @@ jest.mock("@mui/material", () => ({
   __esModule: true,
   Autocomplete: jest.fn(),
   Divider: jest.fn(),
-  TextField: jest.fn()
+  TextField: jest.fn(),
+  Button: jest.fn(),
+  Tabs: jest.fn(),
+  Tab: jest.fn(),
+  Paper: jest.fn(),
+  Checkbox: jest.fn()
 }));
 
 const mockOnBlur = jest.fn();

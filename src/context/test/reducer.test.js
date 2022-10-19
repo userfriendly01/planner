@@ -2,7 +2,7 @@ import {
   initialState,
   reducer
 } from "context";
-import { initialTestState, skillsList } from "../../../__test__/testConsts";
+import { skillsList } from "testUtils";
 
 describe("reducer", () => {
   describe("invalid action", () => {
@@ -374,20 +374,6 @@ describe("reducer", () => {
       };
       const result = reducer(initialState, action);
       expect(result.userContext).toEqual(payload);
-    });
-  });
-  describe("setAuthenticationOnUser", () => {
-    test("should set the userContext data", () => {
-      const action = { type: "setAuthenticationOnUser" };
-      const result = reducer(initialTestState, action);
-      expect(result).toEqual({
-        ...initialTestState,
-        userContext: {
-          ...initialTestState.userContext,
-          profileId: 12,
-          isAdmin: false
-        }
-      });
     });
   });
   describe("resettingSkills", () => {

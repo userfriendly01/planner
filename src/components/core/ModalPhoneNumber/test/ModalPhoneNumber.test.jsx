@@ -27,7 +27,12 @@ jest.mock("react-text-mask", () => ({
 jest.mock("@mui/material", () => ({
   __esModule: true,
   Switch: jest.fn(),
-  TextField: jest.fn()
+  TextField: jest.fn(),
+  Button: jest.fn(),
+  Tabs: jest.fn(),
+  Tab: jest.fn(),
+  Paper: jest.fn(),
+  Checkbox: jest.fn()
 }));
 
 jest.mock("@lmig/phone-number-utils", () => ({
