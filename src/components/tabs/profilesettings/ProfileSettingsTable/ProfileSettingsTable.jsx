@@ -89,7 +89,7 @@ const ProfileSettingsTable = props => {
                       <TableDataFlex>
                         {
                           JSON.parse(profile.activities).map(activity => {
-                            formatActivityData(activity)
+                            return formatActivityData(activity)
                           })
                         }
                       </TableDataFlex>
