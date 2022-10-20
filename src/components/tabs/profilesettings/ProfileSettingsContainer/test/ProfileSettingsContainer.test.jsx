@@ -5,8 +5,11 @@ import {
   Directory,
   Dropdown,
   ProfileDropDown,
-  ProfileSettingsTable
+  ProfileSettingsTable,
+  StyledButton,
+  ProfileEntryForm
 } from "components";
+import { Modal } from "@mui/material";
 import { initialState } from "context";
 import { apiPaths } from "globals";
 import React from "react";
@@ -30,7 +33,13 @@ jest.mock("components", () => ({
   Directory: jest.fn(),
   ProfileDropDown: jest.fn(),
   Dropdown: jest.fn(),
-  ProfileSettingsTable: jest.fn()
+  ProfileSettingsTable: jest.fn(),
+  StyledButton: jest.fn(),
+  ProfileEntryForm: jest.fn()
+}));
+
+jest.mock("@mui/material", () => ({
+  Modal: jest.fn()
 }));
 
 const profileList = [
@@ -67,7 +76,10 @@ describe("<ProfileSettingsContainer />", () => {
       Directory,
       ProfileDropDown,
       Dropdown,
-      ProfileSettingsTable
+      ProfileSettingsTable,
+      StyledButton,
+      Modal,
+      ProfileEntryForm
     });
   });
 
@@ -79,6 +91,9 @@ describe("<ProfileSettingsContainer />", () => {
       expectMockedComponent(rendered, { ProfileDropDown }, 1);
       expectMockedComponent(rendered, { Dropdown }, 1);
       expectMockedComponent(rendered, { ProfileSettingsTable }, 0);
+      expectMockedComponent(rendered, { Modal }, 1);
+      expectMockedComponent(rendered, { ProfileEntryForm }, 0);
+      expectMockedComponent(rendered, { StyledButton }, 0);
       expect(rendered.container).toHaveTextContent("Please select a profile");
       expect(rendered.container).not.toHaveTextContent(errorMessage);
       expectOnlyPassedProps(ProfileDropDown, {
@@ -211,5 +226,46 @@ describe("<ProfileSettingsContainer />", () => {
         });
       });
     });
+  });
+
+  describe("Profile Entry Form Modal", () => {
+    test("form should not render on initial state", () => {
+      const rendered = render(<ProfileSettingsContainer />, initialTestState);
+      expectMockedComponent(rendered, { ProfileEntryForm }, 0);
+    });
+    test("add profile button is shown when dropdown is changed to PROFILE_SETTINGS", () => {
+      const rendered = render(<ProfileSettingsContainer />, initialTestState);
+      act(() => {
+        const updateValue = Dropdown.mock.calls[0][0].updateValue;
+        updateValue(null, {
+          value: "PROFILE_SETTINGS",
+          label: "Profile Settings"
+        });
+      });
+      expectMockedComponent(rendered, { StyledButton }, 1);
+    });
+    test("When ProfileEntryForm handleClose is called, setProfileEntryFormState is set to open === false", () => {
+      const rendered = render(<ProfileSettingsContainer />, initialTestState);
+      expectMockedComponent(rendered, { ProfileEntryForm }, 0);
+      act(() => {
+        const updateValue = Dropdown.mock.calls[0][0].updateValue;
+        updateValue(null, {
+          value: "PROFILE_SETTINGS",
+          label: "Profile Settings"
+        });
+      });
+      expect(StyledButton.mock.calls[0][0].children).toBe("Add Profile");
+      act(() => {
+        const onClick = StyledButton.mock.calls[0][0].onClick;
+        onClick();
+      });
+      render(Modal.mock.calls[0][0].children);
+      expectMockedComponent(rendered, { ProfileEntryForm }, 1);
+      const handleClose = ProfileEntryForm.mock.calls[0][0].handleClose;
+      act(() => {
+        handleClose();
+      });
+    });
+
   });
 });

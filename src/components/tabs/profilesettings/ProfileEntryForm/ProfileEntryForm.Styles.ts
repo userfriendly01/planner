@@ -33,7 +33,7 @@ export const ButtonWrapper = styled(FlexRow)`
   align-items: flex-end;
 `;
 
-export const UserFormButton = styled(StyledButton)`
+export const FormButton = styled(StyledButton)`
   height: 40px;
   width: 150px;
   margin-bottom: 15px; 
@@ -74,6 +74,12 @@ export const Label = styled.p`
   line-height: 1.5;
   letter-spacing: 0.00938em;
   margin: 5px;
+`;
+
+export const RightColumn = styled(FormControlsPane)`
+  display: flex;
+  flex-direction: column;
+  margin-top: -8px;
 `;
 
 // profile activities control

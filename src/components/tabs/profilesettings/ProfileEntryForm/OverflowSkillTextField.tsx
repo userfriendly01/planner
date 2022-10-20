@@ -1,4 +1,4 @@
-import { CustomInput } from "components/core";
+import { CustomInput } from "components";
 import {
   profileEntryFormState,
   profileEntryFormDispatch

@@ -2,15 +2,17 @@ import React from "react";
 import {
   profileEntryFormDispatch,
   profileEntryFormState,
-  userFormActions
+  profileEntryFormActions
 } from "context";
 import { ProfileFormButtonsProps } from "./ProfileEntryForm.Interfaces";
 import {
   ButtonWrapper,
-  UserFormButton
+  FormButton
 } from "./ProfileEntryForm.Styles";
 import {
-  formModes, ModalOverlayStatuses, timeouts
+  formModes,
+  ModalOverlayStatuses,
+  timeouts
 } from "globals";
 import {
   isProfileFormValid,
@@ -63,7 +65,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
         });
         handleClose();
         setForm({
-          type: userFormActions.RESET_FORM
+          type: profileEntryFormActions.RESET_FORM
         });
       }, timeouts.MODAL_OVERLAY);
 
@@ -76,20 +78,20 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
 
   return (
     <ButtonWrapper>
-      <UserFormButton onClick={() => {
+      <FormButton onClick={() => {
         handleClose();
         setForm({
-          type: userFormActions.RESET_FORM
+          type: profileEntryFormActions.RESET_FORM
         });
       }}>
         Close
-      </UserFormButton>
-      <UserFormButton
+      </FormButton>
+      <FormButton
         disabled={!isProfileFormButtonEnabled}
         onClick={form.formMode === formModes.INSERT ? doCreateProfile : doUpdateProfile}
       >
         {form.formMode === formModes.INSERT ? "Add Profile" : "Save Profile"}
-      </UserFormButton>
+      </FormButton>
     </ButtonWrapper>
   );
 };

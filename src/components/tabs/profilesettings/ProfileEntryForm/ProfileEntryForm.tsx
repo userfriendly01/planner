@@ -10,14 +10,14 @@ import {
 } from "./ProfileEntryForm.Styles";
 import {
   ModalOverlay,
-  ProfileFormButtons
+  ProfileFormButtons,
+  ProfileFormFields
 } from "components";
 import {
   profileEntryFormDispatch,
   profileEntryFormState,
   useAdminState
 } from "context";
-import ProfileFormFields from "./ProfileFormFields";
 import { profileEntryFormActions } from "context/reducers/profileEntryFormReducer";
 
 const ProfileEntryForm = (props: ProfileEntryFormProps) => {
@@ -29,8 +29,6 @@ const ProfileEntryForm = (props: ProfileEntryFormProps) => {
   const form = profileEntryFormState();
   const setForm = profileEntryFormDispatch();
   const profileId = useAdminState().profileContext.profiles.length || 1;
-
-  console.log("***** form ****", form);
 
   React.useEffect(() => {
     setForm({

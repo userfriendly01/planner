@@ -42,9 +42,7 @@ const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectFieldProps) 
     value: number
   }) => {
     const activity = activities.find(activity => activity.activity_id === profileActivity.value);
-    if(activity){
-      setNewProfileActivity(activity);
-    }
+    setNewProfileActivity(activity);
   };
 
   const addProfileActivityClicked = () => {

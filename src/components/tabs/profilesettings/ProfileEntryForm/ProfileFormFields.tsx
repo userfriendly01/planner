@@ -7,7 +7,8 @@ import {
   FormControlsContainer,
   FormControlsPane,
   ToggleContainer,
-  Label
+  Label,
+  RightColumn
 } from "./ProfileEntryForm.Styles";
 
 import {
@@ -18,11 +19,12 @@ import {
   profileEntryFormDispatch,
   profileEntryFormState
 } from "context";
-import { RightColumn } from "components/tabs/usermanagement/UserEntryForm/UserEntryForm.Styles";
-import ProfileNameTextField from "./ProfileNameTextField";
-import ProfileActivitiesSelectField from "./ProfileActivitiesSelectField";
 import { profileEntryFormActions } from "context/reducers/profileEntryFormReducer";
-import OverflowSkillTextField from "./OverflowSkillTextField";
+import {
+  ProfileNameTextField,
+  ProfileActivitiesSelectField,
+  OverflowSkillTextField
+} from "components";
 
 const ProfileFormFields = (props: ProfileFormFieldsProps) => {
 
