@@ -79,6 +79,10 @@ export const profileTableColumnHeader = [
     TOOLTIP: "UI Feature: An agent can capture and save a different policy number than what the IVR previously loaded",
   },
   {
+    COLUMN_NAME: "Voice Mail Transcription",
+    TOOLTIP: "enter tooltip here",
+  },
+  {
     COLUMN_NAME: "Activities",
     TOOLTIP: "Profile Activities",
   }

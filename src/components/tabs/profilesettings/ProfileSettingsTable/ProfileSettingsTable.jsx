@@ -83,13 +83,16 @@ const ProfileSettingsTable = props => {
                       <TableText>{formatProfileBooleanData(profile.policy_number_edit_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
+                      <TableText>{formatProfileBooleanData(profile.voice_mail_transcription_i.data[0])}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
                       <TableDataFlex>
                         {
                           JSON.parse(profile.activities).map(activity => {
                             return <ActivitiesDiv>{activity}</ActivitiesDiv>
                           })
                         }
-                        </TableDataFlex>
+                      </TableDataFlex>
                     </CustomTableData>
                   </CustomTableRow>
                 );
