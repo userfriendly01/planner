@@ -76,13 +76,13 @@ export const TableDataFlex = styled.div`
    flex-wrap: wrap;
  `;
 
- export const ActivitiesDiv = styled.div`
-   border-color: #C0BFC0;
-   border-style: solid;
-   border-radius: 5px;
-   border-width: 2px;
-   font-size: .85em;
-   font-weight: 800;
-   margin: 2;
-   padding: 1 3;
- `;
+export const ActivitiesDiv = styled.div`
+  border-color: #C0BFC0;
+  border-style: solid;
+  border-radius: 5px;
+  border-width: 2px;
+  font-size: .85em;
+  font-weight: 800;
+  margin: 2;
+  padding: 1 3;
+`;
