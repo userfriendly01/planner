@@ -7,8 +7,7 @@ import {
   TableText,
   StyledPaper,
   TableContainer,
-  TableDataFlex,
-  ActivitiesDiv
+  TableDataFlex
 } from "./ProfileSettingsTable.Styles";
 import {
   formatProfileBooleanData,
