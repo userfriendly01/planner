@@ -33,7 +33,7 @@ export const CustomTableHeader = styled.th`
   &:nth-child(2) {
     width: 10%;
   }
-  &:nth-child(14) {
+  &:nth-child(15) {
     width: 15%;
   }
 `;
