@@ -71,7 +71,7 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
 
   let overlayMessage = "Saving";
   if (saveStatus === ModalOverlayStatuses.SUCCESS) {
-    overlayMessage = "Manager saved successfully";
+    overlayMessage = "New Calabrio Team saved successfully";
   } else if (saveStatus === ModalOverlayStatuses.FAIL) {
     overlayMessage = errorMessage;
   }
