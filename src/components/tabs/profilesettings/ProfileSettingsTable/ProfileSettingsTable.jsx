@@ -85,7 +85,7 @@ const ProfileSettingsTable = props => {
                     <CustomTableData>
                       <TableDataFlex>
                         {
-                          profile.activities.map(activity => {
+                          profile.JSON.parse(activities).map(activity => {
                             return <ActivitiesDiv>{activity}</ActivitiesDiv>
                           })
                         }
