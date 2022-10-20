@@ -80,7 +80,7 @@ export const profileTableColumnHeader = [
   },
   {
     COLUMN_NAME: "Voice Mail Transcription",
-    TOOLTIP: "Voice mails will be transcribed and sent within the notifcation email to the user",
+    TOOLTIP: "Voice mail will be transcribed and sent within the notification email to the user",
   },
   {
     COLUMN_NAME: "Activities",

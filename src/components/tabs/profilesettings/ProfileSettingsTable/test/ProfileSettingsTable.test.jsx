@@ -121,7 +121,7 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByLabelText("Not a currently enabled UI feature")).toBeInTheDocument();
       expect(rendered.getByLabelText("An agent misses a call and it is forwarded to the next available agent with the same manager")).toBeInTheDocument();
       expect(rendered.getByLabelText("UI Feature: An agent can capture and save a different policy number than what the IVR previously loaded")).toBeInTheDocument();
-      expect(rendered.getByLabelText("Voice mails will be transcribed and sent within the notifcation email to the user")).toBeInTheDocument();
+      expect(rendered.getByLabelText("Voice mail will be transcribed and sent within the notification email to the user")).toBeInTheDocument();
       expect(rendered.getByLabelText("Profile Activities")).toBeInTheDocument();
     });
   });
