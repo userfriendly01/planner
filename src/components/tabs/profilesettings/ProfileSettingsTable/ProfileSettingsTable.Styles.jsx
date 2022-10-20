@@ -33,6 +33,9 @@ export const CustomTableHeader = styled.th`
   &:nth-child(2) {
     width: 10%;
   }
+  &:nth-child(14) {
+    width: 15%;
+  }
 `;
 
 export const CustomTableRow = styled.tr`
@@ -66,3 +69,20 @@ export const TableContainer = styled.div`
   padding: 2%;
   position: relative;
 `;
+
+export const TableDataFlex = styled.div`
+   color: #1A1446;
+   display: flex;
+   flex-wrap: wrap;
+ `;
+
+ export const ActivitiesDiv = styled.div`
+   border-color: #C0BFC0;
+   border-style: solid;
+   border-radius: 5px;
+   border-width: 2px;
+   font-size: .85em;
+   font-weight: 800;
+   margin: 2;
+   padding: 1 3;
+ `;

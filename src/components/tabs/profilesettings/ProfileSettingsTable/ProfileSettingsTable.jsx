@@ -6,7 +6,9 @@ import {
   CustomTableRow,
   TableText,
   StyledPaper,
-  TableContainer
+  TableContainer,
+  TableDataFlex,
+  ActivitiesDiv
 } from "./ProfileSettingsTable.Styles";
 import {
   formatProfileBooleanData,
@@ -79,6 +81,15 @@ const ProfileSettingsTable = props => {
                     </CustomTableData>
                     <CustomTableData>
                       <TableText>{formatProfileBooleanData(profile.policy_number_edit_i.data[0])}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
+                      <TableDataFlex>
+                        {
+                          profile.activities.map(activity => {
+                            return <ActivitiesDiv>{activity}</ActivitiesDiv>
+                          })
+                        }
+                        </TableDataFlex>
                     </CustomTableData>
                   </CustomTableRow>
                 );
