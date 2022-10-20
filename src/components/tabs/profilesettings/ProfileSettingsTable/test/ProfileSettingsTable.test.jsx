@@ -39,7 +39,7 @@ describe("<ProfileSettingsTable />", () => {
         policy_number_edit_i: {
           data: [0]
         },
-        activities: ["Offline", "Available", "Busy"]
+        activities: '["Offline", "Available", "Busy"]'
       },
       {
         profile_id: 2,
@@ -75,7 +75,7 @@ describe("<ProfileSettingsTable />", () => {
         policy_number_edit_i: {
           data: [0]
         },
-        activities: ["Offline", "Available", "Busy"]
+        activities: '["Offline", "Available", "Busy"]'
       }
     ];
 
