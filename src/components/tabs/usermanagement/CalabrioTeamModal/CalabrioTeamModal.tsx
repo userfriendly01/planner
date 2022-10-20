@@ -61,9 +61,10 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
         setSaveStatus(ModalOverlayStatuses.SUCCESS);
         setTimeout(() => handleClose(res.data), timeouts.MODAL_OVERLAY);
       }).catch(err => {
-        console.error("Unable to Add Calabrio Team", err);
+        const msg = "Unable to Add Calabrio Team";
+        console.error(msg, err);
         setSaveStatus(ModalOverlayStatuses.FAIL);
-        setErrorMessage("Unable to Add Calabrio Team");
+        setErrorMessage(msg);
       });
     }
   };

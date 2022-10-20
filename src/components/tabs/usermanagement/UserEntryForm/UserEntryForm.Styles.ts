@@ -1,9 +1,7 @@
 import styled from "styled-components";
 import { Tabs } from "@mui/material";
 import { Edit } from "@mui/icons-material";
-import {
-  StyledButton
-} from "components";
+import { StyledButton } from "components";
 
 export const FlexRow = styled.div`
   display: flex;

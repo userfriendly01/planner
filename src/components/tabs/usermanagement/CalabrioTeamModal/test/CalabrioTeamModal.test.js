@@ -4,6 +4,7 @@ import { CloseButton } from "../CalabrioTeamModal.Styles";
 import { TextField } from "@mui/material";
 import {
   Dropdown,
+  ModalOverlay,
   PaperContainer,
   StyledButton
 } from "components";
@@ -25,7 +26,8 @@ jest.mock("components", () => ({
   __esModule: true,
   Dropdown: jest.fn(),
   PaperContainer: jest.fn(),
-  StyledButton: jest.fn()
+  StyledButton: jest.fn(),
+  ModalOverlay: jest.fn()
 }));
 
 jest.mock("context", () => ({
@@ -46,6 +48,7 @@ jest.mock("../CalabrioTeamModal.Styles", () => ({
   ModalContainer: jest.requireActual("../CalabrioTeamModal.Styles").ModalContainer
 }));
 
+jest.useFakeTimers();
 const mockHandleClose = jest.fn();
 const mockAdminDispatch = jest.fn();
 
@@ -57,12 +60,12 @@ describe("<CalabrioTeamModal />", () => {
     setupMockedComponents({
       CloseButton,
       Dropdown,
+      ModalOverlay,
       PaperContainer,
       StyledButton,
       TextField
     });
   });
-
   describe("Initial Render", () => {
     test("CalabrioTeamModal Renders as expected", () => {
       render(<CalabrioTeamModal handleClose={mockHandleClose}/>);
@@ -115,24 +118,70 @@ describe("<CalabrioTeamModal />", () => {
     });
   });
   describe("Parent Group Dropdown is updated", () => {
-    // test("Dropdown value === selection", () => {
-    //   render(<CalabrioTeamModal handleClose={mockHandleClose}/>);
-    //   render(PaperContainer.mock.calls[0][0].children);
-    //   expect(Dropdown.mock.calls.length).toBe(1);
-    //   expect(Dropdown.mock.calls[0][0].value).toBe("");
-    //   const updateValue = Dropdown.mock.calls[0][0].updateValue;
-    //   const selection = {
-    //     ...initialTestState.calabrioContext.groups[0]
-    //   };
-    //   act(() => {
-    //     updateValue(null, selection);
-    //   });
-    //   render(PaperContainer.mock.calls[1][0].children);
-    //   expect(Dropdown.mock.calls.length).toBe(2);
-    //   expect(Dropdown.mock.calls[1][0].value).toBe(100);
-    // });
+    test("Dropdown value === selection", () => {
+      render(<CalabrioTeamModal handleClose={mockHandleClose}/>);
+      render(PaperContainer.mock.calls[0][0].children);
+      expect(Dropdown.mock.calls.length).toBe(1);
+      expect(Dropdown.mock.calls[0][0].value).toBe("");
+      const updateValue = Dropdown.mock.calls[0][0].updateValue;
+      const selection = {
+        ...initialTestState.calabrioContext.groups[0]
+      };
+      act(() => {
+        updateValue(null, selection);
+      });
+      render(PaperContainer.mock.calls[1][0].children);
+      expect(Dropdown.mock.calls.length).toBe(2);
+      expect(Dropdown.mock.calls[1][0].value).toBe(selection);
+    });
   });
   describe("Submit button is clicked", () => {
+    describe("team name already exists", () => {
+      test("should update modal overlay to fail and message to Team Already Exists", async () => {
+        render(<CalabrioTeamModal handleClose={mockHandleClose}/>);
+        render(PaperContainer.mock.calls[0][0].children);
+
+        const updateNameField = TextField.mock.calls[0][0].onChange;
+        const newName = initialTestState.calabrioContext.teams[0].name;
+
+        act(() => {
+          updateNameField({
+            target: {
+              value: newName
+            }
+          });
+        });
+
+        render(PaperContainer.mock.calls[1][0].children);
+        const updateParentTeamDropdown = Dropdown.mock.calls[1][0].updateValue;
+        const selection = {
+          ...initialTestState.calabrioContext.groups[0]
+        };
+        act(() => {
+          updateParentTeamDropdown(null, selection);
+        });
+        render(PaperContainer.mock.calls[2][0].children);
+        expect(StyledButton.mock.calls[2][0].disabled).toBe(false);
+
+        const onSubmit = StyledButton.mock.calls[2][0].onClick;
+        act(() => {
+          onSubmit();
+        });
+        const rendered = render(PaperContainer.mock.calls[3][0].children);
+        expect(rendered.container).toHaveTextContent("ModalOverlay");
+        expect(ModalOverlay).toHaveBeenCalledTimes(1);
+        expectOnlyPassedProps(ModalOverlay, {
+          message: "Team Already Exists",
+          status: "fail"
+        });
+        const closeOverlay = ModalOverlay.mock.calls[0][0].handleClose;
+        act(() => {
+          closeOverlay(null);
+        });
+        const lastrender = render(PaperContainer.mock.calls[4][0].children);
+        expect(lastrender.container).not.toHaveTextContent("ModalOverlay");
+      });
+    });
     describe("createCalabrioTeam is successful", () => {
       beforeEach(() => {
         createCalabrioTeam.mockResolvedValue({
@@ -159,7 +208,6 @@ describe("<CalabrioTeamModal />", () => {
         const selection = {
           ...initialTestState.calabrioContext.groups[0]
         };
-
         act(() => {
           updateParentTeamDropdown(null, selection);
         });
@@ -176,7 +224,8 @@ describe("<CalabrioTeamModal />", () => {
             type: "addCalabrioTeam",
             payload: "yay!"
           });
-          // expect(mockHandleClose).toHaveBeenCalledTimes(1);
+          jest.runAllTimers();
+          expect(mockHandleClose).toHaveBeenCalledTimes(1);
         });
       });
     });
