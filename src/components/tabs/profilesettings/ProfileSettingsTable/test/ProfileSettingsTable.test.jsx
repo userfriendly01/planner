@@ -39,6 +39,9 @@ describe("<ProfileSettingsTable />", () => {
         policy_number_edit_i: {
           data: [0]
         },
+        voice_mail_transcription_i: {
+          data: [0]
+        },
         activities: '["Offline", "Available", "Busy"]'
       },
       {
@@ -73,6 +76,9 @@ describe("<ProfileSettingsTable />", () => {
         },
         overflow_skill: "Overflow Skill 2",
         policy_number_edit_i: {
+          data: [0]
+        },
+        voice_mail_transcription_i: {
           data: [0]
         },
         activities: '["Offline", "Available", "Busy"]'
