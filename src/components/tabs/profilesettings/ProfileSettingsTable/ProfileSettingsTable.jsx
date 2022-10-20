@@ -13,6 +13,7 @@ import {
 import {
   formatProfileBooleanData,
   formatOverflowSkillData,
+  formatActivityData,
   sortProfilesById
  } from "utils";
 import { Tooltip } from "@mui/material";
@@ -89,10 +90,7 @@ const ProfileSettingsTable = props => {
                       <TableDataFlex>
                         {
                           JSON.parse(profile.activities).map(activity => {
-                            if(activity === null) {
-                              return '';
-                            }
-                            return <ActivitiesDiv>{activity}</ActivitiesDiv>
+                            formatActivityData(activity)
                           })
                         }
                       </TableDataFlex>
