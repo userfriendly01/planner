@@ -6,11 +6,13 @@ import {
   CustomTableRow,
   TableText,
   StyledPaper,
-  TableContainer
+  TableContainer,
+  TableDataFlex
 } from "./ProfileSettingsTable.Styles";
 import {
   formatProfileBooleanData,
   formatOverflowSkillData,
+  formatActivityData,
   sortProfilesById
  } from "utils";
 import { Tooltip } from "@mui/material";
@@ -79,6 +81,18 @@ const ProfileSettingsTable = props => {
                     </CustomTableData>
                     <CustomTableData>
                       <TableText>{formatProfileBooleanData(profile.policy_number_edit_i.data[0])}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
+                      <TableText>{formatProfileBooleanData(profile.voice_mail_transcription_i.data[0])}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
+                      <TableDataFlex>
+                        {
+                          JSON.parse(profile.activities).map(activity => {
+                            return formatActivityData(activity)
+                          })
+                        }
+                      </TableDataFlex>
                     </CustomTableData>
                   </CustomTableRow>
                 );

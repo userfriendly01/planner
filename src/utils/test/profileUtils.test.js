@@ -2,8 +2,10 @@
  import { Check } from "@mui/icons-material";
  import {
   formatProfileBooleanData,
-  formatOverflowSkillData
+  formatOverflowSkillData,
+  formatActivityData
  } from "../profileUtils";
+ import { ActivitiesDiv } from "../../components/tabs/profilesettings/ProfileSettingsTable/ProfileSettingsTable.Styles"
 
 describe("profileUtils", () => {
   describe("formatProfileBooleanData", () => {
@@ -21,6 +23,15 @@ describe("profileUtils", () => {
     });
     test("should return empty string for null overflow skill", () => {
       expect(formatOverflowSkillData(null)).toBe("");
+    });
+  });
+
+  describe("formatActivityData", () => {
+    test("should return activity within activity div", () => {
+      expect(formatActivityData("Busy")).toStrictEqual(<ActivitiesDiv>{"Busy"}</ActivitiesDiv>);
+    });
+    test("should return empty string for null activity", () => {
+      expect(formatActivityData(null)).toBe("");
     });
   });
 });

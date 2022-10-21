@@ -77,6 +77,14 @@ export const profileTableColumnHeader = [
   {
     COLUMN_NAME: "Policy Number Edit",
     TOOLTIP: "UI Feature: An agent can capture and save a different policy number than what the IVR previously loaded",
+  },
+  {
+    COLUMN_NAME: "Voice Mail Transcription",
+    TOOLTIP: "Voice mail will be transcribed and sent within the notification email to the user",
+  },
+  {
+    COLUMN_NAME: "Activities",
+    TOOLTIP: "Profile Activities",
   }
 ];
 
