@@ -1,5 +1,4 @@
 import ProfileActivitiesSelectField from "../ProfileActivitiesSelectField";
-// import PriorityDropDown from "../../../usermanagement/PriorityDropDown/PriorityDropDown";
 import {
   Add,
   Delete
