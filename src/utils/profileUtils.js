@@ -1,5 +1,6 @@
 import React from "react";
 import { Check } from "@mui/icons-material";
+import { ActivitiesDiv } from "../components/tabs/profilesettings/ProfileSettingsTable/ProfileSettingsTable.Styles";
 
 export const formatProfileBooleanData = value => {
   if (value === 1) {
@@ -8,11 +9,18 @@ export const formatProfileBooleanData = value => {
   return "";
 };
 
-export const formatOverflowSkillData = value => {
-  if (value === null) {
+export const formatOverflowSkillData = overflowSkill => {
+  if (overflowSkill === null) {
     return  "";
   }
-  return value;
+  return overflowSkill;
+};
+
+export const formatActivityData = activity => {
+  if (activity === null) {
+    return "";
+  }
+  return <ActivitiesDiv>{activity}</ActivitiesDiv>;
 };
 
 export const profileSettingsViews = [
