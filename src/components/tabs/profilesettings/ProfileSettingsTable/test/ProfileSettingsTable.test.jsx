@@ -39,6 +39,10 @@ describe("<ProfileSettingsTable />", () => {
         policy_number_edit_i: {
           data: [0]
         },
+        voice_mail_transcription_i: {
+          data: [0]
+        },
+        activities: '["Offline", "Available", "Busy"]'
       },
       {
         profile_id: 2,
@@ -74,7 +78,11 @@ describe("<ProfileSettingsTable />", () => {
         policy_number_edit_i: {
           data: [0]
         },
-      },
+        voice_mail_transcription_i: {
+          data: [0]
+        },
+        activities: '["Offline", "Available", "Busy"]'
+      }
     ];
 
     test("should render correct column headers and number of rows", async () => {
@@ -92,6 +100,8 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByText("Agent Assisted Pay", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Overflow Skill", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Policy Number Edit", { selector: "th" })).toBeInTheDocument();
+      expect(rendered.getByText("Voice Mail Transcription", { selector: "th" })).toBeInTheDocument();
+      expect(rendered.getByText("Activities", { selector: "th" })).toBeInTheDocument();
       const tableRows = rendered.getAllByTestId("table-row");
       expect(tableRows.length).toBe(2);
     });
@@ -111,6 +121,8 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByLabelText("Not a currently enabled UI feature")).toBeInTheDocument();
       expect(rendered.getByLabelText("An agent misses a call and it is forwarded to the next available agent with the same manager")).toBeInTheDocument();
       expect(rendered.getByLabelText("UI Feature: An agent can capture and save a different policy number than what the IVR previously loaded")).toBeInTheDocument();
+      expect(rendered.getByLabelText("Voice mail will be transcribed and sent within the notification email to the user")).toBeInTheDocument();
+      expect(rendered.getByLabelText("Profile Activities")).toBeInTheDocument();
     });
   });
 });

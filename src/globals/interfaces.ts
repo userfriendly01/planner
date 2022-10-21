@@ -115,12 +115,15 @@ export interface TritonProfile {
   manual_recorded_i: MySqlBoolean,
   otbnd_recorded_i: MySqlBoolean,
   pmt_prcsg_i: MySqlBoolean,
+  policy_number_edit_i: MySqlBoolean,
+  voice_mail_transcription_i: MySqlBoolean,
   profile_id: number,
   profile_nme: string,
   recorded_i: MySqlBoolean,
   row_crtn_dtm: string,
   row_updt_dtm: string,
-  overflow_skill: string
+  overflow_skill: string,
+  activities: string
 }
 
 export interface Activity {
