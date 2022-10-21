@@ -2,7 +2,10 @@ import {
   initialState,
   reducer
 } from "context";
-import { skillsList } from "testUtils";
+import {
+  mockActivities,
+  skillsList
+} from "testUtils";
 
 describe("reducer", () => {
   describe("invalid action", () => {
@@ -335,6 +338,17 @@ describe("reducer", () => {
       };
       const result = reducer(initialState, action);
       expect(result.profileContext.profiles).toEqual(payload);
+    });
+  });
+  describe("loadActivities", () => {
+    test("should update activitiesContext.activities to payload", () => {
+      const payload = mockActivities;
+      const action = {
+        type: "loadActivities",
+        payload
+      };
+      const result = reducer(initialState, action);
+      expect(result.activitiesContext.activities).toEqual(payload);
     });
   });
   describe("loadSkills", () => {

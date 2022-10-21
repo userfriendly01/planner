@@ -3,7 +3,9 @@ import {
   initialState,
   reducer,
   initialUserFormState,
-  userFormReducer
+  userFormReducer,
+  initialProfileEntryFormState,
+  profileEntryFormReducer
 } from "context";
 import {
   Action,
@@ -14,10 +16,6 @@ import {
 } from "components/tabs/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
 import React, { ReactElement } from "react";
 import { ProfileEntryFormState } from "components/tabs/profilesettings/ProfileEntryForm/ProfileEntryForm.Interfaces";
-import {
-  initialProfileEntryFormState,
-  profileEntryFormReducer
-} from "./reducers/profileEntryFormReducer";
 
 export const StateContext = React.createContext(undefined);
 export const DispatchContext = React.createContext(undefined);

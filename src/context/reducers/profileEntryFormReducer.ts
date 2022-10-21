@@ -8,7 +8,6 @@ import {
 
 export const profileEntryFormActions = {
   RESET_FORM: "RESET_FORM",
-  RESET_FORM_AFTER_ADD: "RESET_FORM_AFTER_ADD",
   TOGGLE: "TOGGLE",
   SET_PROFILE_ID: "SET_PROFILE_ID",
   SET_PROFILE_NAME: "SET_PROFILE_NAME",
