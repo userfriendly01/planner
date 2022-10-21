@@ -49,7 +49,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     delete payload["formMode"];
     console.log(payload);
 
-    /// TODO - call actual mathod to create profile
+    /// TODO - call actual method to create profile
     wait(() => {
 
       updateLoading({

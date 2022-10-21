@@ -79,7 +79,7 @@ export const Label = styled.p`
 export const RightColumn = styled(FormControlsPane)`
   display: flex;
   flex-direction: column;
-  margin-top: -8px;
+  margin-top: -20px;
 `;
 
 // profile activities control
