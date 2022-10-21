@@ -33,7 +33,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   const isProfileFormButtonEnabled = isProfileFormValid(form);
 
   const doCreateProfile = () => {
-    console.log("************* TODO - create profile");
+    console.log("TODO - create profile");
     updateLoading({
       ...loading,
       overlayMessage: "Adding new profile...",
@@ -73,7 +73,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   };
 
   const doUpdateProfile = () => {
-    console.log("************* TODO - update profile");
+    console.log("TODO - update profile");
   };
 
   return (

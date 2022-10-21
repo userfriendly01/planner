@@ -59,6 +59,7 @@ export interface ProfileEntryFormState {
   agentAssistedPay: boolean,
   paymentProcessing: boolean,
   policyNumberEdit: boolean,
+  voiceMailTranscription: boolean
 }
 
 export interface ToggleFormField {

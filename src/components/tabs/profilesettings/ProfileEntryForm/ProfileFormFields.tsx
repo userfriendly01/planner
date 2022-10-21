@@ -55,6 +55,10 @@ const ProfileFormFields = (props: ProfileFormFieldsProps) => {
     {
       fieldKey: "agentAssistedPay",
       label: "Agent Assisted Pay"
+    },
+    {
+      fieldKey: "voiceMailTranscription",
+      label: "Voice Mail Transcription"
     }
   ];
 

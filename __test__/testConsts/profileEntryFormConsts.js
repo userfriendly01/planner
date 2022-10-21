@@ -12,6 +12,7 @@ export const initialProfileEntryFormState = {
   acwDataEntry: false,
   manualRecordedInbound: false,
   agentAssistedPay: false,
+  voiceMailTranscription: false,
   paymentProcessing: false,
   policyNumberEdit: false,
   overflowSkill: {
@@ -38,6 +39,7 @@ export const validProfileEntryFormState = {
   acwDataEntry: true,
   manualRecordedInbound: false,
   agentAssistedPay: false,
+  voiceMailTranscription: false,
   paymentProcessing: false,
   policyNumberEdit: false,
   overflowSkill: {
@@ -64,6 +66,7 @@ export const invalidProfileEntryFormState = {
   acwDataEntry: true,
   manualRecordedInbound: false,
   agentAssistedPay: false,
+  voiceMailTranscription: false,
   paymentProcessing: false,
   policyNumberEdit: false,
   overflowSkill: {
