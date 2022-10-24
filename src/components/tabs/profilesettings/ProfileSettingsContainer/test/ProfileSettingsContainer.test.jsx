@@ -64,7 +64,7 @@ const initialTestState = {
   },
   userContext: {
     pingIdentity: {
-      sub: "n0288363"
+      sub: "n0138110"
     }
   }
 };
