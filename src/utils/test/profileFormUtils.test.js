@@ -13,6 +13,10 @@ describe("isProfileNameValid", () => {
     const result = isProfileNameValid("Te$t-Value (profile)");
     expect(result).toBe(true);
   });
+  test("should return false when profile name is over 80 characters", () => {
+    const result = isProfileNameValid("testprofiletestprofiletestprofiletestprofiletestprofiletestprofiletestprofiletestprofiletestprofile");
+    expect(result).toBe(false);
+  });
   test("should return false when profile name is empty string", () => {
     const result = isProfileNameValid("");
     expect(result).toBe(false);
@@ -30,6 +34,10 @@ describe("isOverflowSkillValid", () => {
   });
   test("overflow skill is invalid when special character", () => {
     const result = isOverflowSkillValid("test-skill");
+    expect(result).toBe(false);
+  });
+  test("overflow skill is invalid when over 80 characters", () => {
+    const result = isOverflowSkillValid("testoverflowskilltestoverflowskilltestoverflowskilltestoverflowskilltestoverflowskill");
     expect(result).toBe(false);
   });
   test("empty overflow skill is valid", () => {

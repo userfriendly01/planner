@@ -147,8 +147,6 @@ const skills = {
   ]
 };
 
-
-
 jest.mock("context", () => ({
   useAdminDispatch: jest.fn()
 }));
