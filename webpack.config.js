@@ -1,5 +1,4 @@
 const ESLintPlugin = require("eslint-webpack-plugin");
-const { DefinePlugin } = require("webpack");
 const path = require("path");
 
 const resolvePathInSrc = resourceInSrc => {
@@ -56,11 +55,5 @@ const config = {
     mainFiles: [ "index" ]
   }
 };
-
-config.plugins.push(
-  new DefinePlugin({
-    "process.env.APPLICATION_ENV": JSON.stringify(process.env.APPLICATION_ENV) || JSON.stringify("youNeedToSetThisLocally"),
-  })
-);
 
 module.exports = config;

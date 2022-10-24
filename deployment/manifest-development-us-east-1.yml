@@ -9,7 +9,6 @@ applications:
   timeout: 180
   env:
     NODE_ENV: production
-    APPLICATION_ENV: development
   services:
     - everyday-curfew
   blue-green:

@@ -9,6 +9,5 @@ applications:
   timeout: 180
   env:
     NODE_ENV: production
-    APPLICATION_ENV: production
   blue-green:
     health-check-endpoint: /health
