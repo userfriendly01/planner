@@ -33,6 +33,8 @@ import { ProfileEntryForm } from "components";
 const ProfileSettingsContainer = () => {
   const [ view, setView ] = React.useState(profileSettingsViews[0]);
 
+  console.log('process.env.APPLICATION_ENV', process.env.APPLICATION_ENV);
+
   const initialProfileState = {
     dialList: [],
     directoryList: [],
