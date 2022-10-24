@@ -241,7 +241,7 @@ describe("<ProfileSettingsContainer />", () => {
       const rendered = render(<ProfileSettingsContainer />, initialTestState);
       expectMockedComponent(rendered, { ProfileEntryForm }, 0);
     });
-    test("add profile button is shown when dropdown is changed to PROFILE_SETTINGS", () => {
+    test("add profile button and profile settings table is shown when dropdown is changed to PROFILE_SETTINGS", () => {
       const rendered = render(<ProfileSettingsContainer />, initialTestState);
       act(() => {
         const updateValue = Dropdown.mock.calls[0][0].updateValue;
@@ -251,6 +251,7 @@ describe("<ProfileSettingsContainer />", () => {
         });
       });
       expectMockedComponent(rendered, { StyledButton }, 1);
+      expectMockedComponent(rendered, { ProfileSettingsTable }, 1);
     });
     test("When ProfileEntryForm handleClose is called, setProfileEntryFormState is set to open === false", () => {
       const rendered = render(<ProfileSettingsContainer />, initialTestState);
@@ -274,6 +275,5 @@ describe("<ProfileSettingsContainer />", () => {
         handleClose();
       });
     });
-
   });
 });
