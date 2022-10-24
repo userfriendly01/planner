@@ -16,7 +16,8 @@ import {
   myAxios,
   sortDialListEntriesByName,
   sortDirectoryListEntriesByName,
-  profileSettingsViews
+  profileSettingsViews,
+  checkIfPO
 } from "utils";
 import {
   ProfileSettingsDropdownWrapper,
@@ -47,6 +48,7 @@ const ProfileSettingsContainer = () => {
   const [profileModalState, setProfileModalState] = useState(initialProfileModalState);
 
   const profilesFromContextMinusGoP = useAdminState().profileContext.profiles.filter(({ profile_id }) => profile_id !== 0);
+  const loggedInRepNNumber = useAdminState().userContext.pingIdentity.sub;
 
   const fetchProfileInformation = profileId => {
     myAxios.get(apiPaths.GET_PROFILE_DATA(profileId))
@@ -144,13 +146,17 @@ const ProfileSettingsContainer = () => {
             </div>
             :
             <SettingsContainer>
-              <ControlsWrapper>
-                <ControlItem>
-                  <AddProfileButton onClick={addProfileOnClick} data-testid={"add-profile-button"}>
-                    Add Profile
-                  </AddProfileButton>
-                </ControlItem>
-              </ControlsWrapper>
+              {
+                checkIfPO(loggedInRepNNumber) ?
+                  <ControlsWrapper>
+                    <ControlItem>
+                      <AddProfileButton onClick={addProfileOnClick} data-testid={"add-profile-button"}>
+                        Add Profile
+                      </AddProfileButton>
+                    </ControlItem>
+                  </ControlsWrapper>
+                : null
+              }
               <ProfileSettingsTable
                 profileList={profilesFromContextMinusGoP}
               />

@@ -10,6 +10,18 @@ export const checkIfAdmin = (profileId: number): boolean => {
   return profileId === 0;
 };
 
+export const checkIfPO = (nNumber: string): boolean => {
+  const productOwners = [
+    "n0138110",
+    "n0116796",
+    "n0088625",
+    "n0183277",
+    "n0196231"
+  ];
+
+  return productOwners.includes(nNumber.toLowerCase()) || process.env.APPLICATION_ENV !== "production"
+};
+
 export const getWorkerProfileId = (nNumber: string, workers: Worker[]): number => {
   let loggedInWorker: Worker;
   workers.forEach((worker: Worker) =>{
