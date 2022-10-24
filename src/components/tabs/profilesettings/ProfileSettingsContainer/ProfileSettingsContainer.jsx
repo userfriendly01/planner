@@ -147,7 +147,7 @@ const ProfileSettingsContainer = () => {
             :
             <SettingsContainer>
               {
-                checkIfPO(loggedInRepNNumber) ?
+                checkIfPO(loggedInRepNNumber) || process.env.APPLICATION_ENV !== "production" ?
                   <ControlsWrapper>
                     <ControlItem>
                       <AddProfileButton onClick={addProfileOnClick} data-testid={"add-profile-button"}>
