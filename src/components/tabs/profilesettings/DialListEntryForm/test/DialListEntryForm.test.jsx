@@ -7,7 +7,7 @@ import { InfoOutlined } from "@mui/icons-material";
 import MockAdapter from "axios-mock-adapter";
 import {
   PaperContainer,
-  ModalPhoneNumber,
+  PhoneNumberInput,
   ModalOverlay,
   StyledButton
 } from "components";
@@ -46,7 +46,7 @@ jest.mock("@mui/icons-material", () => ({
 jest.mock("components", () => ({
   __esModule: true,
   PaperContainer: jest.fn(),
-  ModalPhoneNumber: jest.fn(),
+  PhoneNumberInput: jest.fn(),
   ModalOverlay: jest.fn(),
   StyledButton: jest.fn()
 }));
@@ -78,7 +78,7 @@ describe("<DialListEntryForm />", () => {
     jest.clearAllMocks();
     setupMockedComponents({
       InfoOutlined,
-      ModalPhoneNumber,
+      PhoneNumberInput,
       ModalOverlay,
       StyledButton,
       TextField,
@@ -107,12 +107,12 @@ describe("<DialListEntryForm />", () => {
       test("should render input components with no initial values, no error flags on inputs and save button disabled", done => {
         renderComponent(dialListTableState);
         // Transfer Number input for contact_num
-        expectOnlyPassedProps(ModalPhoneNumber, {
+        expectOnlyPassedProps(PhoneNumberInput, {
           error: false,
           helperText: null,
           number: "",
           showError: false
-        }, getLastInstanceCalled(ModalPhoneNumber));
+        }, getLastInstanceCalled(PhoneNumberInput));
         // Friendly Name input for contact_nme
         expectOnlyPassedProps(TextField, {
           error: false,
@@ -134,19 +134,19 @@ describe("<DialListEntryForm />", () => {
         renderComponent(dialListTableState);
         act(() => {
           // Transfer Number input
-          getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).onBlur();
+          getMockedComponentProps(PhoneNumberInput, getLastInstanceCalled(PhoneNumberInput)).onBlur();
         });
         act(() => {
           // Friendly Name input
           getMockedComponentProps(TextField, getLastInstanceCalled(TextField) - 1).onBlur();
         });
         // Transfer Number input for contact_num should use its native error logic so we set showError to true
-        expectOnlyPassedProps(ModalPhoneNumber, {
+        expectOnlyPassedProps(PhoneNumberInput, {
           error: false,
           helperText: null,
           number: "",
           showError: true
-        }, getLastInstanceCalled(ModalPhoneNumber));
+        }, getLastInstanceCalled(PhoneNumberInput));
         // Friendly Name input for contact_nme
         expectOnlyPassedProps(TextField, {
           error: true,
@@ -156,16 +156,16 @@ describe("<DialListEntryForm />", () => {
         const updatedContactNum = "(800) who-cares";
         act(() => {
           // Transfer Number input set to valid but duplicate number
-          getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber))
+          getMockedComponentProps(PhoneNumberInput, getLastInstanceCalled(PhoneNumberInput))
             .updateValue(updatedContactNum, otherContactNums[0], true);
         });
         // Transfer Number input for contact_num is valid but is a duplicate
-        expectOnlyPassedProps(ModalPhoneNumber, {
+        expectOnlyPassedProps(PhoneNumberInput, {
           error: true,
           helperText: "Number already exists in dial list",
           number: updatedContactNum,
           showError: true
-        }, getLastInstanceCalled(ModalPhoneNumber));
+        }, getLastInstanceCalled(PhoneNumberInput));
         done();
       });
 
@@ -188,7 +188,7 @@ describe("<DialListEntryForm />", () => {
 
           act(() => {
             // Transfer Number input update
-            getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber))
+            getMockedComponentProps(PhoneNumberInput, getLastInstanceCalled(PhoneNumberInput))
               .updateValue(updatedMaskedNumber, updatedUnmaskedNumber, true);
           });
           act(() => {
@@ -263,7 +263,7 @@ describe("<DialListEntryForm />", () => {
 
           act(() => {
             // Transfer Number input update
-            getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber))
+            getMockedComponentProps(PhoneNumberInput, getLastInstanceCalled(PhoneNumberInput))
               .updateValue(updatedMaskedNumber, updatedUnmaskedNumber, true);
           });
           act(() => {
@@ -349,12 +349,12 @@ describe("<DialListEntryForm />", () => {
       test("should render input components with initial values and no error flags on inputs and save button enabled", done => {
         renderComponent(dialListTableState);
         // Transfer Number input for contact_num
-        expectOnlyPassedProps(ModalPhoneNumber, {
+        expectOnlyPassedProps(PhoneNumberInput, {
           error: false,
           helperText: null,
           number: contact_num,
           showError: false
-        }, getLastInstanceCalled(ModalPhoneNumber));
+        }, getLastInstanceCalled(PhoneNumberInput));
         // Friendly Name input for contact_nme
         expectOnlyPassedProps(TextField, {
           error: false,
@@ -376,19 +376,19 @@ describe("<DialListEntryForm />", () => {
         renderComponent(dialListTableState);
         act(() => {
           // Transfer Number input
-          getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).onBlur();
+          getMockedComponentProps(PhoneNumberInput, getLastInstanceCalled(PhoneNumberInput)).onBlur();
         });
         act(() => {
           // Friendly Name input
           getMockedComponentProps(TextField, getLastInstanceCalled(TextField) - 1).onBlur();
         });
         // Transfer Number input for contact_num
-        expectOnlyPassedProps(ModalPhoneNumber, {
+        expectOnlyPassedProps(PhoneNumberInput, {
           error: false,
           helperText: null,
           number: contact_num,
           showError: true
-        }, getLastInstanceCalled(ModalPhoneNumber));
+        }, getLastInstanceCalled(PhoneNumberInput));
         // Friendly Name input for contact_nme
         expectOnlyPassedProps(TextField, {
           error: false,
@@ -427,7 +427,7 @@ describe("<DialListEntryForm />", () => {
 
           act(() => {
             // Transfer Number input update
-            getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber))
+            getMockedComponentProps(PhoneNumberInput, getLastInstanceCalled(PhoneNumberInput))
               .updateValue(updatedMaskedNumber, updatedUnmaskedNumber, true);
           });
           act(() => {
@@ -508,7 +508,7 @@ describe("<DialListEntryForm />", () => {
 
           act(() => {
             // Transfer Number input update
-            getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber))
+            getMockedComponentProps(PhoneNumberInput, getLastInstanceCalled(PhoneNumberInput))
               .updateValue(updatedMaskedNumber, updatedUnmaskedNumber, true);
           });
           act(() => {

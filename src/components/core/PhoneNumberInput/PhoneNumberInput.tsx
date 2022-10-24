@@ -59,7 +59,7 @@ const TenDigitInputMask = (inputProps: any) => {
   );
 };
 
-export interface ModalPhoneNumberProps {
+export interface PhoneNumberInputProps {
   allowSevenDigitVdn?: boolean,
   disabled?: boolean,
   error?: boolean,
@@ -73,7 +73,7 @@ export interface ModalPhoneNumberProps {
   icon?: JSX.Element
 }
 
-const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
+const PhoneNumberInput = (props: PhoneNumberInputProps) => {
   const {
     allowSevenDigitVdn,
     disabled = false,
@@ -152,4 +152,4 @@ const ModalPhoneNumber = (props: ModalPhoneNumberProps) => {
   }
 };
 
-export default ModalPhoneNumber;
+export default PhoneNumberInput;

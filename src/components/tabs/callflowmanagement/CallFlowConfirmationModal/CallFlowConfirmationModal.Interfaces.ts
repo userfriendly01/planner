@@ -4,6 +4,7 @@ import { TableState } from "../CallFlowManagementWrapper/CallFlowManagement.Inte
 export interface ConfirmationModalOptsProps {
   open: boolean,
   confirmationText: any,
+  exportButton: boolean,
   callbackMethods: {
     onConfirm: () => void,
     handleClose: () => void

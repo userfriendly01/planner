@@ -5,7 +5,7 @@ import {
 } from "@mui/material";
 import {
   Dropdown,
-  ModalPhoneNumber
+  PhoneNumberInput
 } from "components";
 import React from "react";
 import {
@@ -18,7 +18,7 @@ import {
 jest.mock("components", () => ({
   __esModule: true,
   Dropdown: jest.fn(),
-  ModalPhoneNumber: jest.fn()
+  PhoneNumberInput: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
@@ -106,7 +106,7 @@ describe("<ForwardToEntryForm />", () => {
   beforeEach(() => {
     setupMockedComponents({
       Dropdown,
-      ModalPhoneNumber,
+      PhoneNumberInput,
       FormControlLabel,
       Radio
     });
@@ -122,7 +122,7 @@ describe("<ForwardToEntryForm />", () => {
     expectMockedComponent(rendered, { FormControlLabel }, 3);
     expectMockedComponent(rendered, { Radio }, 3);
     expectMockedComponent(rendered, { Dropdown }, 1);
-    expectMockedComponent(rendered, { ModalPhoneNumber }, 0);
+    expectMockedComponent(rendered, { PhoneNumberInput }, 0);
     expect(Dropdown.mock.calls[0][0].options).toStrictEqual(mockWorkerOptions);
   });
   describe("New Radio option is selected", () => {
@@ -164,7 +164,7 @@ describe("<ForwardToEntryForm />", () => {
       expect(Radio.mock.calls[3][0].checked).toBe(false);
       expect(Radio.mock.calls[4][0].checked).toBe(true);
       expectMockedComponent(rendered, { Dropdown }, 0);
-      expectMockedComponent(rendered, { ModalPhoneNumber }, 1);
+      expectMockedComponent(rendered, { PhoneNumberInput }, 1);
     });
     test("when person radio button is selected, handleChange is called and worker dropdown is rendered", () => {
       const rendered = renderComponent();
@@ -184,7 +184,7 @@ describe("<ForwardToEntryForm />", () => {
       expect(Radio.mock.calls[3][0].checked).toBe(false);
       expect(Radio.mock.calls[4][0].checked).toBe(true);
       expectMockedComponent(rendered, { Dropdown }, 0);
-      expectMockedComponent(rendered, { ModalPhoneNumber }, 1);
+      expectMockedComponent(rendered, { PhoneNumberInput }, 1);
       const revertChange = Radio.mock.calls[0][0].onChange;
       act(() => revertChange({
         target: {
@@ -232,7 +232,7 @@ describe("<ForwardToEntryForm />", () => {
           value: Radio.mock.calls[0][0].value
         }
       }));
-      const updateValue = ModalPhoneNumber.mock.calls[0][0].updateValue;
+      const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
       act(() => updateValue("(603-851-820)", "603851820", false));
       expect(mockUpdateForwardTo).toHaveBeenCalledTimes(2);
       expect(mockUpdateForwardTo).toHaveBeenCalledWith(null);
@@ -246,7 +246,7 @@ describe("<ForwardToEntryForm />", () => {
           value: Radio.mock.calls[0][0].value
         }
       }));
-      const updateValue = ModalPhoneNumber.mock.calls[0][0].updateValue;
+      const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
       act(() => updateValue("(603-851-8200)", "6038518200", true));
       expect(mockUpdateForwardTo).toHaveBeenCalledTimes(2);
       expect(mockUpdateForwardTo).toHaveBeenCalledWith("+16038518200");
@@ -260,9 +260,9 @@ describe("<ForwardToEntryForm />", () => {
           value: Radio.mock.calls[0][0].value
         }
       }));
-      const onBlur = ModalPhoneNumber.mock.calls[0][0].onBlur;
+      const onBlur = PhoneNumberInput.mock.calls[0][0].onBlur;
       act(() => onBlur());
-      expect(ModalPhoneNumber.mock.calls[1][0].showError).toBe(true);
+      expect(PhoneNumberInput.mock.calls[1][0].showError).toBe(true);
     });
   });
 });

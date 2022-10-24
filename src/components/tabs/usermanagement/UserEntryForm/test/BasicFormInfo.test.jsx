@@ -10,7 +10,7 @@ import {
   ForwardToEntryForm,
   ModalExtension,
   ModalNNumber,
-  ModalPhoneNumber,
+  PhoneNumberInput,
   Dropdown,
   DidFormInfo,
   ExtensionButtonWrapper,
@@ -55,7 +55,7 @@ jest.mock("components", () => ({
   DidFormInfo: jest.fn(),
   ModalExtension: jest.fn(),
   ModalNNumber: jest.fn(),
-  ModalPhoneNumber: jest.fn(),
+  PhoneNumberInput: jest.fn(),
   Dropdown: jest.fn(),
   PaperContainer: jest.fn(),
   StyledButton: jest.fn(),
@@ -121,7 +121,7 @@ describe("<BasicFormInfo />", () => {
       DidFormInfo,
       ModalExtension,
       ModalNNumber,
-      ModalPhoneNumber,
+      PhoneNumberInput,
       Dropdown,
       ForwardToEntryForm,
       InputAdornment,
@@ -347,7 +347,7 @@ describe("<BasicFormInfo />", () => {
   describe("Outgoing Number", () => {
     test("Should render the correct initial state", () => {
       const rendered = renderComponent(false);
-      expectMockedComponent(rendered, { ModalPhoneNumber }, 1);
+      expectMockedComponent(rendered, { PhoneNumberInput }, 1);
       const expectedOutgoingProps = {
         disabled: false,
         id: "outgoing-number",
@@ -356,7 +356,7 @@ describe("<BasicFormInfo />", () => {
         number: "",
         label: "Outgoing Number *"
       };
-      expectOnlyPassedProps(ModalPhoneNumber, expectedOutgoingProps, 0);
+      expectOnlyPassedProps(PhoneNumberInput, expectedOutgoingProps, 0);
     });
     test("disabled property should be true", () => {
       useFormState.mockReturnValue({
@@ -365,12 +365,12 @@ describe("<BasicFormInfo />", () => {
         editDisabled: true
       });
       renderComponent(false);
-      expect(ModalPhoneNumber.mock.calls[0][0].disabled).toBe(true);
+      expect(PhoneNumberInput.mock.calls[0][0].disabled).toBe(true);
     });
     test("onBlur - invalid number should set blur on field", () => {
       renderComponent(false);
       act(() => {
-        const onBlur = ModalPhoneNumber.mock.calls[0][0].onBlur;
+        const onBlur = PhoneNumberInput.mock.calls[0][0].onBlur;
         onBlur();
       });
       expect(mockSetForm).toBeCalledWith({
@@ -388,7 +388,7 @@ describe("<BasicFormInfo />", () => {
       });
       renderComponent(false);
       act(() => {
-        const onBlur = ModalPhoneNumber.mock.calls[0][0].onBlur;
+        const onBlur = PhoneNumberInput.mock.calls[0][0].onBlur;
         onBlur();
       });
       expect(mockSetForm).toBeCalledTimes(0);
@@ -396,7 +396,7 @@ describe("<BasicFormInfo />", () => {
     test("updateValue - should set outgoing to correct value", () => {
       renderComponent(false);
       act(() => {
-        const updateValue = ModalPhoneNumber.mock.calls[0][0].updateValue;
+        const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
         updateValue("(603) 851-8200", null, true, "+16038518200");
       });
       expect(mockSetForm).toBeCalledWith({
@@ -524,7 +524,7 @@ describe("<BasicFormInfo />", () => {
           expect(didSwitch.disabled).toEqual(false);
           expect(didSwitch.inputProps).toEqual({ "aria-label": "toggle-did-user" });
 
-          expect(ModalPhoneNumber.mock.calls.length).toBe(1);
+          expect(PhoneNumberInput.mock.calls.length).toBe(1);
         });
         test(`DID Tooltip Title should be message when formMode === ${formModes.UPDATE}`, () => {
           useFormState.mockReturnValue({

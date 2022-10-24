@@ -24,6 +24,7 @@ const mockHandleClose = jest.fn();
 
 const confirmationModalOpts = {
   open: true,
+  exportButton: true,
   confirmationText: "You sure Bruh?",
   callbackMethods: {
     onConfirm: mockOnConfirm,

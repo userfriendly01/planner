@@ -20,7 +20,8 @@ import {
   CallFlowConfirmationModal,
   Dropdown,
   ActionContainer,
-  SkillsContainer
+  SkillsContainer,
+  TfnActivation
 } from "components";
 import { useAdminState } from "context";
 import { filterSkillsByName } from "utils";
@@ -42,6 +43,7 @@ const CallFlowContainer = () => {
 
   const defaultConfirmationModalOpts: ConfirmationModalOptsProps = {
     open: false,
+    exportButton: false,
     confirmationText: "",
     callbackMethods: {
       onConfirm: null,
@@ -54,7 +56,6 @@ const CallFlowContainer = () => {
     message: null
   };
 
-
   const state = useAdminState();
   const tritonProfile = state.userContext.authenticationProfiles.find((p: any) => p.name === getAuthenticationProfileTemplates().TRITON.name);
   const isAdmin = tritonProfile.isAdmin;
@@ -62,7 +63,7 @@ const CallFlowContainer = () => {
   const [ tableState, setTableState ] = useState(defaultTableState);
   const [ confirmationModalOpts, setConfirmationModalOpts ] = useState(defaultConfirmationModalOpts);
   const [ saveResult, setSaveResult ] = useState(defaultSaveResult);
-  const [ view, setView ] = React.useState(views[0]);
+  const [ view, setView ] = React.useState(views.SKILLS);
   console.log("Filtered State: ", tableState);
 
   useEffect(() => {
@@ -124,19 +125,26 @@ const CallFlowContainer = () => {
       />
     </MessageWrapper>;
 
+  const TfnActivationView = <TfnActivation
+    confirmationModalOpts={confirmationModalOpts}
+    setSaveResult={setSaveResult}
+    setConfirmationModalOpts={setConfirmationModalOpts}
+  />;
+
   return (
     <CallflowWrapper>
       <Dropdown
         label="What would you like to do?"
         value={view}
-        options={views}
+        options={Object.values(views)}
         updateValue={(event: any, view: View) => setView(view)}
         styles={{
           margin: "40 0 60 0",
           width: "500px"
         }}
       />
-      {view === views.find(v => v.value === views[0].value) && SkillsManagementView}
+      {view === views.SKILLS && SkillsManagementView}
+      {view === views.TFN && TfnActivationView}
       <Modal open={confirmationModalOpts.open}>
         <CallFlowConfirmationModal
           tableState={tableState}

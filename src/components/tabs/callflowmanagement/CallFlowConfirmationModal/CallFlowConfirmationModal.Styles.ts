@@ -22,6 +22,7 @@ export const ConfirmationText = styled.h2`
   padding: 0px 10px 0px 10px;
   text-align: center;
   align-items: center;
+  align-self: center;
   line-height: 2;
   min-height: 150px;
 `;

@@ -55,6 +55,7 @@ const initialTableState = {
 
 const confirmationModalOpts = {
   open: false,
+  exportButton: false,
   confirmationText: "",
   callbackMethods: {
     onConfirm: null,
@@ -101,8 +102,8 @@ describe("CallFlowManagementWrapper", () => {
       }, getLastInstanceCalled(ActionContainer));
       expectOnlyPassedProps(Dropdown, {
         label: "What would you like to do?",
-        value: views[0],
-        options: views
+        value: views.SKILLS,
+        options: Object.values(views)
       }, getLastInstanceCalled(Dropdown));
       expectOnlyPassedProps(Modal, {
         open: false

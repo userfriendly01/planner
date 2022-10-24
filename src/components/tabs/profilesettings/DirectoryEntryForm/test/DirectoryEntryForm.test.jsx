@@ -5,7 +5,7 @@ import {
 } from "@mui/material";
 import {
   ModalOverlay,
-  ModalPhoneNumber,
+  PhoneNumberInput,
   PaperContainer,
   StyledButton
 } from "components";
@@ -41,7 +41,7 @@ jest.mock("@mui/material", () => ({
 jest.mock("components", () => ({
   __esModule: true,
   PaperContainer: jest.fn(),
-  ModalPhoneNumber: jest.fn(),
+  PhoneNumberInput: jest.fn(),
   ModalOverlay: jest.fn(),
   StyledButton: jest.fn()
 }));
@@ -69,7 +69,7 @@ describe("<DirectoryEntryForm />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     setupMockedComponents({
-      ModalPhoneNumber,
+      PhoneNumberInput,
       ModalOverlay,
       StyledButton,
       TextField,
@@ -98,12 +98,12 @@ describe("<DirectoryEntryForm />", () => {
       test("should render input components with no initial values, no error flags on inputs and save button disabled", done => {
         renderComponent(directoryState);
         // Phone Number input for phone_num
-        expectOnlyPassedProps(ModalPhoneNumber, {
+        expectOnlyPassedProps(PhoneNumberInput, {
           error: false,
           helperText: null,
           number: "",
           showError: false
-        }, getLastInstanceCalled(ModalPhoneNumber));
+        }, getLastInstanceCalled(PhoneNumberInput));
         // First Name input for first_nme
         expectOnlyPassedProps(TextField, {
           error: false,
@@ -127,7 +127,7 @@ describe("<DirectoryEntryForm />", () => {
         renderComponent(directoryState);
         act(() => {
           // Phone Number input
-          getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).onBlur();
+          getMockedComponentProps(PhoneNumberInput, getLastInstanceCalled(PhoneNumberInput)).onBlur();
         });
         act(() => {
           // First Name input
@@ -138,12 +138,12 @@ describe("<DirectoryEntryForm />", () => {
           getMockedComponentProps(TextField, getLastInstanceCalled(TextField)).onBlur();
         });
         // Transfer Number input for phone_num should use its native error logic so we set showError to true
-        expectOnlyPassedProps(ModalPhoneNumber, {
+        expectOnlyPassedProps(PhoneNumberInput, {
           error: false,
           helperText: null,
           number: "",
           showError: true
-        }, getLastInstanceCalled(ModalPhoneNumber));
+        }, getLastInstanceCalled(PhoneNumberInput));
         // Friendly Name input for first_nme
         expectOnlyPassedProps(TextField, {
           error: true,
@@ -158,16 +158,16 @@ describe("<DirectoryEntryForm />", () => {
         const updatedContactNum = "(800) who-cares";
         act(() => {
           // Phone Number input set to valid but duplicate number
-          getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber))
+          getMockedComponentProps(PhoneNumberInput, getLastInstanceCalled(PhoneNumberInput))
             .updateValue(updatedContactNum, takenPhoneNums[0], true);
         });
         // Phone Number input for phone_num is valid but is a duplicate
-        expectOnlyPassedProps(ModalPhoneNumber, {
+        expectOnlyPassedProps(PhoneNumberInput, {
           error: true,
           helperText: "Number already exists in directory",
           number: updatedContactNum,
           showError: true
-        }, getLastInstanceCalled(ModalPhoneNumber));
+        }, getLastInstanceCalled(PhoneNumberInput));
         done();
       });
 
@@ -191,7 +191,7 @@ describe("<DirectoryEntryForm />", () => {
 
           act(() => {
             // Phone Number input update
-            getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber))
+            getMockedComponentProps(PhoneNumberInput, getLastInstanceCalled(PhoneNumberInput))
               .updateValue(updatedMaskedNumber, updatedUnmaskedNumber, true);
           });
           act(() => {
@@ -271,7 +271,7 @@ describe("<DirectoryEntryForm />", () => {
 
           act(() => {
             // Phone Number input update
-            getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber))
+            getMockedComponentProps(PhoneNumberInput, getLastInstanceCalled(PhoneNumberInput))
               .updateValue(updatedMaskedNumber, updatedUnmaskedNumber, true);
           });
           act(() => {
@@ -358,12 +358,12 @@ describe("<DirectoryEntryForm />", () => {
       test("should render input components with initial values and no error flags on inputs and save button enabled", done => {
         renderComponent(directoryState);
         // Phone Number input for phone_num
-        expectOnlyPassedProps(ModalPhoneNumber, {
+        expectOnlyPassedProps(PhoneNumberInput, {
           error: false,
           helperText: null,
           number: phone_num,
           showError: false
-        }, getLastInstanceCalled(ModalPhoneNumber));
+        }, getLastInstanceCalled(PhoneNumberInput));
         // First Name input for first_nme
         expectOnlyPassedProps(TextField, {
           error: false,
@@ -387,7 +387,7 @@ describe("<DirectoryEntryForm />", () => {
         renderComponent(directoryState);
         act(() => {
           // Phone Number input
-          getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber)).onBlur();
+          getMockedComponentProps(PhoneNumberInput, getLastInstanceCalled(PhoneNumberInput)).onBlur();
         });
         act(() => {
           // First Name input
@@ -398,12 +398,12 @@ describe("<DirectoryEntryForm />", () => {
           getMockedComponentProps(TextField, getLastInstanceCalled(TextField)).onBlur();
         });
         // Phone Number input for phone_num
-        expectOnlyPassedProps(ModalPhoneNumber, {
+        expectOnlyPassedProps(PhoneNumberInput, {
           error: false,
           helperText: null,
           number: phone_num,
           showError: true
-        }, getLastInstanceCalled(ModalPhoneNumber));
+        }, getLastInstanceCalled(PhoneNumberInput));
         // First Name input for first_nme
         expectOnlyPassedProps(TextField, {
           error: false,
@@ -448,7 +448,7 @@ describe("<DirectoryEntryForm />", () => {
 
           act(() => {
             // Phone Number input update
-            getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber))
+            getMockedComponentProps(PhoneNumberInput, getLastInstanceCalled(PhoneNumberInput))
               .updateValue(updatedMaskedNumber, updatedUnmaskedNumber, true);
           });
           act(() => {
@@ -527,7 +527,7 @@ describe("<DirectoryEntryForm />", () => {
 
           act(() => {
             // Phone Number input update
-            getMockedComponentProps(ModalPhoneNumber, getLastInstanceCalled(ModalPhoneNumber))
+            getMockedComponentProps(PhoneNumberInput, getLastInstanceCalled(PhoneNumberInput))
               .updateValue(updatedMaskedNumber, updatedUnmaskedNumber, true);
           });
           act(() => {
