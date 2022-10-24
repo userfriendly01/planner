@@ -60,7 +60,6 @@ describe("adminUtils", () => {
   });
   describe("checkIfPO", () => {
     describe("n# is a GOP PO", () => {
-      process.env.APPLICATION_ENV = "production";
       test("should return true for n0183277", () => {
         expect(checkIfPO('n0183277')).toBe(true);
       });
@@ -72,13 +71,11 @@ describe("adminUtils", () => {
       });
     });
     describe("n# is not a GOP PO", () => {
-      process.env.APPLICATION_ENV = "production";
       test("should return false", () => {
         expect(checkIfPO('n0288363')).toBe(false);
       });
     });
     describe("n# is not a GOP PO but it is a non production enviornment", () => {
-      process.env.APPLICATION_ENV = "development";
       test("should return true", () => {
         expect(checkIfPO('n0288363')).toBe(true);
       });
