@@ -148,6 +148,9 @@ describe("<ProfileSettingsContainer />", () => {
           expectMockedComponent(rendered, { Directory }, 1);
           expectMockedComponent(rendered, { Dropdown }, 1);
           expectMockedComponent(rendered, { ProfileSettingsTable }, 0);
+          expectMockedComponent(rendered, { Modal }, 1);
+          expectMockedComponent(rendered, { ProfileEntryForm }, 0);
+          expectMockedComponent(rendered, { StyledButton }, 0);
           expectOnlyPassedProps(DialListTable, {
             // sorted dialList
             dialList: [
