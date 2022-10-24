@@ -75,11 +75,6 @@ describe("adminUtils", () => {
         expect(checkIfPO('n0288363')).toBe(false);
       });
     });
-    describe("n# is not a GOP PO but it is a non production enviornment", () => {
-      test("should return true", () => {
-        expect(checkIfPO('n0288363')).toBe(true);
-      });
-    });
   });
   describe("getWorkerProfileId", () => {
     describe("profile Id is number", () => {
