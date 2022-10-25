@@ -19,10 +19,16 @@ import {
   setupMockedComponents,
   waitFor
 } from "testUtils";
+import { Close } from "@mui/icons-material";
 import { TextField } from "@mui/material";
 
 jest.mock("@mui/material", () => ({
-  TextField: jest.fn()
+  TextField: jest.fn(),
+  InputAdornment: jest.requireActual("@mui/material").InputAdornment
+}));
+
+jest.mock("@mui/icons-material", () => ({
+  Close: jest.fn()
 }));
 
 jest.mock("components", () => ({
@@ -69,6 +75,7 @@ describe("TfnActivation", () => {
     getTfn.mockResolvedValue("Phone Number not found");
     jest.clearAllMocks();
     setupMockedComponents({
+      Close,
       Dropdown,
       PhoneNumberInput,
       StyledButton,
@@ -185,7 +192,7 @@ describe("TfnActivation", () => {
       });
     });
   });
-  describe("additional fields", () => {
+  describe("Additional fields", () => {
     describe("group dropdown", () => {
       describe("updateValue is called", () => {
         describe("group selection !== BL Sales", () => {

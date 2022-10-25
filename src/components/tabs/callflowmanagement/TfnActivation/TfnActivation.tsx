@@ -1,5 +1,6 @@
 import {
   AdditionalFieldsWrapper,
+  ClearIcon,
   DisplayNameField,
   EntryMessageField,
   TfnWrapper,
@@ -23,6 +24,7 @@ import {
   ModalOverlayStatuses,
   timeouts
 } from "globals";
+import { InputAdornment } from "@mui/material";
 
 interface TnfActivationProps {
   confirmationModalOpts: ConfirmationModalOptsProps,
@@ -54,15 +56,18 @@ export const TfnActivation = (props: TnfActivationProps) => {
   const [ tfnState, setTfnState ] = React.useState(defaultTfnState);
 
   React.useEffect(() => {
+    console.warn("outside tfnActivationGroups", tfnActivationGroups);
     if(tfnState.number.valid){
       getTfn(tfnState.number.e164).then((res: any) => {
-        const group = Object.values(tfnActivationGroups).find(g => g.callflowId = res.data?.callflow_id);
+        console.warn("tfnActivationGroups", tfnActivationGroups);
+        const matchingGroup = Object.values(tfnActivationGroups).find(g => g.callflowId === res.data?.callflow_id);
+        console.warn("what is this group?", matchingGroup);
         const fetchedTfnState = {
           ...tfnState,
-          group: group ? {
-            ...group,
-            label: group.name,
-            value: group.callflowId
+          group: matchingGroup ? {
+            ...matchingGroup,
+            label: matchingGroup.name,
+            value: matchingGroup.callflowId
           }: null,
           displayName: res.data?.display_nme || "",
           entryMessage: res.data?.entry_msg || defaultEntryMessage
@@ -72,6 +77,10 @@ export const TfnActivation = (props: TnfActivationProps) => {
         console.error("TFN GET RESPONSE: ", err);
       });
       setShowFields(true);
+    } else {
+      if(showFields) {
+        setShowFields(false);
+      }
     }
   }, [tfnState.number.valid]);
 
@@ -180,6 +189,14 @@ export const TfnActivation = (props: TnfActivationProps) => {
             }
           });
         }}
+        icon= {
+          <InputAdornment position="end">
+            <ClearIcon
+              fontSize="large"
+              onClick={() => setTfnState(defaultTfnState)}
+            />
+          </InputAdornment>
+        }
       />
       {showFields &&
         <AdditionalFieldsWrapper>

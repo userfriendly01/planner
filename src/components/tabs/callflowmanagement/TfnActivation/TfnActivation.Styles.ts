@@ -1,4 +1,5 @@
 import { TextField } from "@mui/material";
+import { Close } from "@mui/icons-material";
 import { StyledButton } from "components";
 import styled from "styled-components";
 
@@ -32,5 +33,15 @@ export const TfnWrapper = styled.div`
 export const SubmitButton = styled(StyledButton)`
   && {
     margin-top: 30px;
+  }
+`;
+
+export const ClearIcon = styled(Close)<{theme: any}>`
+  && {
+    color: ${props => props.theme.button.blue.backgroundColor};
+    &:hover {
+      color: ${props => props.theme.button.blue.hoverColor};
+      cursor: pointer;
+    }
   }
 `;
