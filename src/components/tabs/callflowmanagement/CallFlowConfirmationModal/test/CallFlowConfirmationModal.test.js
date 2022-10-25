@@ -24,6 +24,7 @@ const mockHandleClose = jest.fn();
 
 const confirmationModalOpts = {
   open: true,
+  exportButton: true,
   confirmationText: "You sure Bruh?",
   callbackMethods: {
     onConfirm: mockOnConfirm,
@@ -59,6 +60,15 @@ describe("CallFlowConfirmationModal",() => {
       expect(StyledButton.mock.calls[1][0].onClick).toBe(mockOnConfirm);
       expect(StyledButton.mock.calls[1][0].children).toBe("Confirm");
       expect(ExportButton.mock.calls.length).toBe(1);
+    });
+    describe("exportButton === false", () => {
+      test("should not render export button", () => {
+        render(<CallFlowConfirmationModal saveResult={saveResult} confirmationModalOpts={{
+          ...confirmationModalOpts,
+          exportButton: false
+        }} tableState={tableState}/>);
+        expect(ExportButton.mock.calls.length).toBe(0);
+      });
     });
     describe("saveResult.status !== null", () => {
       const saveResult = {

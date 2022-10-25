@@ -19,6 +19,7 @@ import {
 
 jest.mock("@mui/icons-material", () => ({
   Circle: jest.fn(),
+  Close: jest.fn(),
   CloseRounded: jest.fn(),
   AccountBox: jest.fn(),
   Edit: jest.fn(),

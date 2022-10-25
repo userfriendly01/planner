@@ -37,7 +37,7 @@ const CallFlowConfirmationModal = (props: CallFlowConfirmationModalProps) => {
           <Button onClick={handleClose}>
             Cancel
           </Button>
-          <ExportButton selected={tableState.selected}/>
+          { confirmationModalOpts.exportButton && <ExportButton selected={tableState.selected}/>}
           <Button onClick={onConfirm}>
             Confirm
           </Button>

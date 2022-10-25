@@ -3,10 +3,11 @@ import CallFlowManagementWrapper from "../CallFlowManagementWrapper";
 import { views } from "../CallFlowManagement.Interfaces";
 import { getAuthenticationProfileTemplates } from "authentication";
 import {
+  ActionContainer,
   CallFlowConfirmationModal,
   Dropdown,
-  ActionContainer,
-  SkillsContainer
+  SkillsContainer,
+  TfnActivation
 } from "components";
 import { useAdminState } from "context";
 import {
@@ -32,7 +33,8 @@ jest.mock("components", () => ({
   CallFlowConfirmationModal: jest.fn(),
   Dropdown: jest.fn(),
   ActionContainer: jest.fn(),
-  SkillsContainer: jest.fn()
+  SkillsContainer: jest.fn(),
+  TfnActivation: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
@@ -55,6 +57,7 @@ const initialTableState = {
 
 const confirmationModalOpts = {
   open: false,
+  exportButton: false,
   confirmationText: "",
   callbackMethods: {
     onConfirm: null,
@@ -80,11 +83,12 @@ describe("CallFlowManagementWrapper", () => {
       }
     });
     setupMockedComponents({
+      ActionContainer,
       CallFlowConfirmationModal,
       Dropdown,
-      ActionContainer,
+      Modal,
       SkillsContainer,
-      Modal
+      TfnActivation
     });
   });
   describe("initial render", () => {
@@ -101,8 +105,8 @@ describe("CallFlowManagementWrapper", () => {
       }, getLastInstanceCalled(ActionContainer));
       expectOnlyPassedProps(Dropdown, {
         label: "What would you like to do?",
-        value: views[0],
-        options: views
+        value: views.SKILLS,
+        options: Object.values(views)
       }, getLastInstanceCalled(Dropdown));
       expectOnlyPassedProps(Modal, {
         open: false
@@ -253,7 +257,21 @@ describe("CallFlowManagementWrapper", () => {
     });
   });
   describe("view is changed", () => {
-    //No other options to change to at this time - shell for a future test
+    describe("TFN Activation View is selected", () => {
+      test("should render TFN activation component", () => {
+        const rendered = render(<CallFlowManagementWrapper />);
+        const changeView = Dropdown.mock.calls[0][0].updateValue;
+        expect(rendered.container).toHaveTextContent("ActionContainer");
+        expect(rendered.container).toHaveTextContent("SkillsContainer");
+        expect(rendered.container).not.toHaveTextContent("TfnActivation");
+        act(() => {
+          changeView(null, views.TFN);
+        });
+        expect(rendered.container).not.toHaveTextContent("ActionContainer");
+        expect(rendered.container).not.toHaveTextContent("SkillsContainer");
+        expect(rendered.container).toHaveTextContent("TfnActivation");
+      });
+    });
   });
   describe("confirmationModalOpts.open === true", () => {
     test("CallFlowConfirmationModal should be rendered", () => {
