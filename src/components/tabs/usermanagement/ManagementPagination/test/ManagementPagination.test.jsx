@@ -23,6 +23,7 @@ jest.mock("@mui/icons-material", () => ({
   NavigateBeforeOutlined: jest.fn(),
   SkipNextOutlined: jest.fn(),
   SkipPreviousOutlined: jest.fn(),
+  Close: jest.fn(),
   CloseRounded: jest.fn(),
   Edit: jest.fn(),
   InfoOutlined: jest.fn()
