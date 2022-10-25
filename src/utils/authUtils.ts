@@ -16,10 +16,11 @@ export const checkIfPO = (nNumber: string): boolean => {
     "n0116796",
     "n0088625",
     "n0183277",
-    "n0196231"
+    "n0196231",
+    "n1590719"
   ];
 
-  return productOwners.includes(nNumber.toLowerCase())
+  return productOwners.includes(nNumber.toLowerCase()) || process.env.APPLICATION_ENV !== "production";
 };
 
 export const getWorkerProfileId = (nNumber: string, workers: Worker[]): number => {
