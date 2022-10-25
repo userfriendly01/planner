@@ -15,6 +15,7 @@ jest.mock("@mui/icons-material", () => ({
   __esModule: true,
   AccountBox: jest.fn(),
   ClearRounded: jest.fn(),
+  Close: jest.fn(),
   CloseRounded: jest.fn(),
   Edit: jest.fn(),
   InfoOutlined: jest.fn()

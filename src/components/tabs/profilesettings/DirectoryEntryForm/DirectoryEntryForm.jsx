@@ -5,7 +5,7 @@ import {
 import { TextField } from "@mui/material";
 import {
   ModalOverlay,
-  ModalPhoneNumber,
+  PhoneNumberInput,
   PaperContainer,
   StyledButton
 } from "components";
@@ -72,7 +72,7 @@ const DirectoryEntryForm = props => {
       phone_num_is_duplicate: false,
       phone_num_updated: false,
       phone_num_valid: isNumberValid(unMaskPhoneNumber(phone_num)), // unmasked phone number value ex: `8005554444`
-      maskedPhoneNumber: phone_num // raw masked phone number value to properly update ModalPhoneNumber with ex: `(800) 555-4444`,
+      maskedPhoneNumber: phone_num // raw masked phone number value to properly update PhoneNumberInput with ex: `(800) 555-4444`,
     };
   };
 
@@ -151,7 +151,7 @@ const DirectoryEntryForm = props => {
             status={loading.saveStatus}
           /> : null}
         <Header>{directoryState.directoryEntryFormMode === formModes.INSERT ? "Add Directory Entry" : "Edit Directory Entry"}</Header>
-        <ModalPhoneNumber
+        <PhoneNumberInput
           allowSevenDigitVdn={false}
           error={form.phone_num_is_duplicate}
           helperText={form.phone_num_is_duplicate ? "Number already exists in directory" : null}

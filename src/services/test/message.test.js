@@ -28,7 +28,7 @@ describe("updateFlashMessage", () => {
         .then(resolvedValue => {
           expect(JSON.parse(axiosMock.history.post[0].data)).toEqual({
             skill: skill.name,
-            flashMessage: message,
+            flashMessage: "I\\'m a new flash message!",
             updatedBy: nNumber
           });
           expect(resolvedValue.data).toEqual(data);
@@ -43,7 +43,7 @@ describe("updateFlashMessage", () => {
       updateFlashMessage(skill, message, nNumber).catch(rejectedVal => {
         expect(JSON.parse(axiosMock.history.post[0].data)).toEqual({
           skill: skill.name,
-          flashMessage: message,
+          flashMessage: "I\\'m a new flash message!",
           updatedBy: nNumber
         });
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
@@ -64,7 +64,7 @@ describe("updateClosedMessage", () => {
         .then(resolvedValue => {
           expect(JSON.parse(axiosMock.history.post[0].data)).toEqual({
             skill: skill.name,
-            closedMessage: message,
+            closedMessage: "I\\'m a new closed message!",
             updatedBy: nNumber
           });
           expect(resolvedValue.data).toEqual(data);
@@ -79,7 +79,7 @@ describe("updateClosedMessage", () => {
       updateClosedMessage(skill, message, nNumber).catch(rejectedVal => {
         expect(JSON.parse(axiosMock.history.post[0].data)).toEqual({
           skill: skill.name,
-          closedMessage: message,
+          closedMessage: "I\\'m a new closed message!",
           updatedBy: nNumber
         });
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));

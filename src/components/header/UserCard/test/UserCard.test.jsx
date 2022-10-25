@@ -13,7 +13,8 @@ jest.mock("@mui/icons-material", () => ({
   AccountBox: jest.fn(),
   CloseRounded: jest.fn(),
   Edit: jest.fn(),
-  InfoOutlined: jest.fn()
+  InfoOutlined: jest.fn(),
+  Close: jest.fn()
 }));
 
 describe("<UserCard />", () => {

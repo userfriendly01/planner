@@ -7,4 +7,5 @@ export * from "./fetchUser";
 export * from "./manager";
 export * from "./message";
 export * from "./office";
+export * from "./tfnActivation";
 export * from "./updateUser";
