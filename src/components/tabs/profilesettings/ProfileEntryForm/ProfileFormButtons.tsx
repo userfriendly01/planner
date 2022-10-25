@@ -43,7 +43,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     const payload = {
       profile_id: form.profileId,
       profile_nme: form.profileName.value,
-      activity_id: form.activitiesList,
+      activity_id: form.activitiesList.map(activity => activity.activity_id),
       recorded_i: form.inboundRecorded,
       auto_answd_i: form.autoAnswered,
       pmt_prcsg_i: form.paymentProcessing,
