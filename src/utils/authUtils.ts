@@ -20,7 +20,7 @@ export const checkIfPO = (nNumber: string): boolean => {
     "n1590719"
   ];
 
-  return productOwners.includes(nNumber.toLowerCase()) || process.env.APPLICATION_ENV !== "production";
+  return productOwners.includes(nNumber.toLowerCase());
 };
 
 export const getWorkerProfileId = (nNumber: string, workers: Worker[]): number => {
