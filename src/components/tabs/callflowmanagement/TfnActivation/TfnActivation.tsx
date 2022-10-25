@@ -6,10 +6,7 @@ import {
   TfnWrapper,
   SubmitButton
 } from "./TfnActivation.Styles";
-import {
-  ConfirmationModalOptsProps,
-  SaveResultProps
-} from "../CallFlowConfirmationModal/CallFlowConfirmationModal.Interfaces";
+import { TfnActivationProps } from "./TfnActivation.Interfaces";
 import React from "react";
 import {
   Dropdown,
@@ -26,13 +23,9 @@ import {
 } from "globals";
 import { InputAdornment } from "@mui/material";
 
-interface TnfActivationProps {
-  confirmationModalOpts: ConfirmationModalOptsProps,
-  setSaveResult: (props: SaveResultProps) => void,
-  setConfirmationModalOpts: (props: ConfirmationModalOptsProps) => void
-}
 
-export const TfnActivation = (props: TnfActivationProps) => {
+
+export const TfnActivation = (props: TfnActivationProps) => {
   const {
     confirmationModalOpts,
     setConfirmationModalOpts,
