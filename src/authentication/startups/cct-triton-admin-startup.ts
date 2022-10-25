@@ -139,22 +139,6 @@ const getWorkers = async (dispatch: any) => {
   }
 };
 
-const getActivities = (dispatch: any) => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_ACTIVITIES)
-  .then(res => {
-    dispatch({
-      type: "loadActivities",
-      payload: res.data
-    });
-    resolve(true);
-  })
-  .catch(error => {
-    reject({
-      msg: "Failed to fetch activities from service",
-      error
-    });
-  })
-);
-
 export const runTritonAdminStartup = (dispatch: any) => {
   /* Please add new service calls to the end of this Promise.all,
   the existing order is important */
@@ -167,7 +151,6 @@ export const runTritonAdminStartup = (dispatch: any) => {
     getSkills(dispatch),
     getCalabrioUsers(dispatch),
     getCalabrioOrg(dispatch),
-    getCalabrioRoles(dispatch),
-    getActivities(dispatch)
+    getCalabrioRoles(dispatch)
   ]);
 };

@@ -18,15 +18,44 @@ import {
   Add,
   Delete
 } from "@mui/icons-material";
-import { useAdminState } from "context";
-import { Activity } from "globals";
+import {
+  useAdminState,
+  useAdminDispatch
+} from "context";
+import {
+  Activity,
+  apiPaths
+} from "globals";
 import { Tooltip } from "@mui/material";
+import { myAxios } from "utils";
+
+const getActivities = (dispatch: any) => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_ACTIVITIES)
+  .then(res => {
+    dispatch({
+      type: "loadActivities",
+      payload: res.data
+    });
+    resolve(true);
+  })
+  .catch(error => {
+    reject({
+      msg: "Failed to fetch activities from service",
+      error
+    });
+  })
+);
 
 const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectFieldProps) => {
   const {
     activitiesList,
     setActivitiesList
   } = props;
+
+  const dispatch = useAdminDispatch();
+
+  React.useEffect(() => {
+    getActivities(dispatch).catch(error => console.error(error.msg));
+  }, []);
 
   const activities = useAdminState().activitiesContext.activities;
   const profileActivitiesForDropDown = activities.filter(activity => !activitiesList.includes(activity)); //profileActivitiesList.filter((profileActivityObj: ProfileActivity) => !profileActivitiesList.skills.includes(skillObj.name));

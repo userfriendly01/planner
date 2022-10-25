@@ -3,18 +3,24 @@ import {
   Add,
   Delete
 } from "@mui/icons-material";
+import MockAdapter from "axios-mock-adapter";
 import { Dropdown } from "components";
 import React from "react";
+import { myAxios } from "utils";
 import {
   expectMockedComponent,
   render,
   setupMockedComponents,
   fireEvent,
   getMockedComponentProps,
-  initialTestState
+  initialTestState,
+  mockActivities,
+  waitFor
 } from "testUtils";
+import { apiPaths } from "globals";
 import {
-  useAdminState
+  useAdminState,
+  useAdminDispatch
 } from "context";
 import { Tooltip } from "@mui/material";
 import { act } from "react-dom/test-utils";
@@ -32,7 +38,8 @@ jest.mock("@mui/material", () => ({
 
 jest.mock("context", () => ({
   __esModule: true,
-  useAdminState: jest.fn()
+  useAdminState: jest.fn(),
+  useAdminDispatch: jest.fn()
 }));
 
 jest.mock("components", () => ({
@@ -41,7 +48,11 @@ jest.mock("components", () => ({
   StyledButton: jest.fn()
 }));
 
+const statusCode = 500;
+const axiosMock = new MockAdapter(myAxios);
+const activitiesEndpoint = apiPaths.GET_ACTIVITIES;
 const mockSetActivitiesList = jest.fn();
+const mockAdminDispatch = jest.fn();
 const renderComponent = mockActivitiesList => render(<ProfileActivitiesSelectField
   activitiesList={mockActivitiesList}
   setActivitiesList={mockSetActivitiesList}
@@ -61,14 +72,38 @@ describe("<ProfileActivitiesSelectField />", () => {
     });
     mockSetActivitiesList.mockClear();
     useAdminState.mockReturnValue(initialTestState);
+    useAdminDispatch.mockReturnValue(mockAdminDispatch);
+    axiosMock.onGet(activitiesEndpoint).reply(200, mockActivities);
   });
 
   describe("initial state", () => {
-    test("should render activities select component with no activities selected", () => {
+    test("should render activities select component with no activities selected", async () => {
       const rendered = renderComponent([]);
       expectMockedComponent(rendered, { Dropdown });
       expectMockedComponent(rendered, { Add });
       expectMockedComponent(rendered, { Delete }, 0);
+      await waitFor(() => {
+        expect(mockAdminDispatch).toHaveBeenCalledTimes(1);
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadActivities",
+          payload: mockActivities
+        });
+      });
+    });
+  });
+
+  describe(activitiesEndpoint, () => {
+    describe("activities service call returned an error", () => {
+      beforeEach(() => {
+        axiosMock.onGet(activitiesEndpoint).reply(statusCode, { fail: "oh the horror" });
+      });
+      test("should return 'An error occurred while logging in.'", async () => {
+        try {
+          renderComponent([]);
+        } catch(err) {
+          expect(err.msg).toBe("Failed to fetch activities from service");
+        }
+      });
     });
   });
 

@@ -33,7 +33,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   const isProfileFormButtonEnabled = isProfileFormValid(form);
 
   const doCreateProfile = () => {
-    console.log("TODO - create profile");
+    console.log("TODO - create profile", form);
     updateLoading({
       ...loading,
       overlayMessage: "Adding new profile...",
@@ -41,12 +41,21 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       saveProfile: true
     });
     const payload = {
-      ...form,
-      activitiesList: form.activitiesList.map(activity => activity.activity_id),
-      profileName: form.profileName.value,
-      overflowSkill: form.overflowSkill.value
+      profile_id: form.profileId,
+      profile_nme: form.profileName.value,
+      recorded_i: form.inboundRecorded,
+      auto_answd_i: form.autoAnswered,
+      pmt_prcsg_i: form.paymentProcessing,
+      otbnd_recorded_i: form.outboundRecorded,
+      acw_option_i: form.acwOption,
+      manual_recorded_i: form.manualRecorded,
+      acw_data_entry_i: form.acwDataEntry,
+      manual_record_inbound_i: form.manualRecordedInbound,
+      agent_assisted_pay_i: form.agentAssistedPay,
+      overflow_skill: form.overflowSkill.value??null,
+      policy_number_edit_i: form.policyNumberEdit,
+      voice_mail_transcription_i: form.voiceMailTranscription
     };
-    delete payload["formMode"];
     console.log(payload);
 
     /// TODO - call actual method to create profile
