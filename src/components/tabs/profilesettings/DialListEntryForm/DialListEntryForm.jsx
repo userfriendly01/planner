@@ -9,7 +9,7 @@ import {
 import { InfoOutlined } from "@mui/icons-material";
 import {
   PaperContainer,
-  ModalPhoneNumber,
+  PhoneNumberInput,
   ModalOverlay,
   StyledButton
 } from "components";
@@ -92,7 +92,7 @@ const DialListEntryForm = props => {
       contact_num_updated: false,
       contact_num_valid: isNumberValid(unMaskPhoneNumber(contact_num)), // unmasked phone number value ex: `8005554444`
       external_num,
-      maskedPhoneNumber: contact_num // raw masked phone number value to properly update ModalPhoneNumber with ex: `(800) 555-4444`,
+      maskedPhoneNumber: contact_num // raw masked phone number value to properly update PhoneNumberInput with ex: `(800) 555-4444`,
     };
   };
 
@@ -203,7 +203,7 @@ const DialListEntryForm = props => {
             status={loading.saveStatus}
           /> : null}
         <Header>{dialListTableState.dialListEntryFormMode === formModes.INSERT ? "Add Dial List Entry" : "Edit Dial List Entry"}</Header>
-        <ModalPhoneNumber
+        <PhoneNumberInput
           allowSevenDigitVdn={true}
           error={form.contact_num_is_duplicate}
           helperText={form.contact_num_is_duplicate ? "Number already exists in dial list" : null}

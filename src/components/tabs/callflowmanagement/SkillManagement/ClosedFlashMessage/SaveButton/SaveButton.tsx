@@ -70,6 +70,7 @@ const SaveButton = (props: SaveButtonProps) => {
 
     setConfirmationModalOpts({
       open: true,
+      exportButton: true,
       confirmationText,
       callbackMethods: {
         onConfirm: onConfirm,
@@ -101,6 +102,7 @@ const SaveButton = (props: SaveButtonProps) => {
 
     setConfirmationModalOpts({
       open: true,
+      exportButton: true,
       confirmationText,
       callbackMethods: {
         onConfirm: onConfirm,

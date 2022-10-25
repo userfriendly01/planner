@@ -28,63 +28,63 @@ export const resetResponses = {
 export const profileTableColumnHeader = [
   {
     COLUMN_NAME: "ID",
-    TOOLTIP: "Unique Profile Identification",
+    TOOLTIP: "Unique Profile Identification"
   },
   {
     COLUMN_NAME: "Name",
-    TOOLTIP: "Profile Name",
+    TOOLTIP: "Profile Name"
   },
   {
     COLUMN_NAME: "Inbound Recorded",
-    TOOLTIP: "All inbound calls are automatically recorded",
+    TOOLTIP: "All inbound calls are automatically recorded"
   },
   {
     COLUMN_NAME: "Auto Answered",
-    TOOLTIP: "Automatically accepts a call and routes to an agent",
+    TOOLTIP: "Automatically accepts a call and routes to an agent"
   },
   {
     COLUMN_NAME: "Payment Processing",
-    TOOLTIP: "UI Feature: Click for payment button is enabled to manually pause/resume call recordings",
+    TOOLTIP: "UI Feature: Click for payment button is enabled to manually pause/resume call recordings"
   },
   {
     COLUMN_NAME: "Outbound Recorded",
-    TOOLTIP: "All outbound calls are automatically recorded",
+    TOOLTIP: "All outbound calls are automatically recorded"
   },
   {
     COLUMN_NAME: "ACW Option",
-    TOOLTIP: "UI Feature: Agent has the choice to enable or disable after call work (wrap-up). Default setting is off",
+    TOOLTIP: "UI Feature: Agent has the choice to enable or disable after call work (wrap-up). Default setting is off"
   },
   {
     COLUMN_NAME: "Manual Recorded",
-    TOOLTIP: "UI Feature: Manual recording button appears in call controls when enabled. User will have the ability to manually start and stop recordings",
+    TOOLTIP: "UI Feature: Manual recording button appears in call controls when enabled. User will have the ability to manually start and stop recordings"
   },
   {
     COLUMN_NAME: "ACW Data Entry",
-    TOOLTIP: "UI Feature: If enabled, during wrap-up, call tagging toggle appears which gives an input form to the user",
+    TOOLTIP: "UI Feature: If enabled, during wrap-up, call tagging toggle appears which gives an input form to the user"
   },
   {
     COLUMN_NAME: "Manual Recorded Inbound",
-    TOOLTIP: "UI Feature: Manual recording button appears in call controls when enabled. User will have the ability to manually start and stop recordings on inbound calls",
+    TOOLTIP: "UI Feature: Manual recording button appears in call controls when enabled. User will have the ability to manually start and stop recordings on inbound calls"
   },
   {
     COLUMN_NAME: "Agent Assisted Pay",
-    TOOLTIP: "Not a currently enabled UI feature",
+    TOOLTIP: "Not a currently enabled UI feature"
   },
   {
     COLUMN_NAME: "Overflow Skill",
-    TOOLTIP: "An agent misses a call and it is forwarded to the next available agent with the same manager",
+    TOOLTIP: "An agent misses a call and it is forwarded to the next available agent with the same manager"
   },
   {
     COLUMN_NAME: "Policy Number Edit",
-    TOOLTIP: "UI Feature: An agent can capture and save a different policy number than what the IVR previously loaded",
+    TOOLTIP: "UI Feature: An agent can capture and save a different policy number than what the IVR previously loaded"
   },
   {
     COLUMN_NAME: "Voice Mail Transcription",
-    TOOLTIP: "Voice mail will be transcribed and sent within the notification email to the user",
+    TOOLTIP: "Voice mail will be transcribed and sent within the notification email to the user"
   },
   {
     COLUMN_NAME: "Activities",
-    TOOLTIP: "Profile Activities",
+    TOOLTIP: "Profile Activities"
   }
 ];
 
@@ -113,6 +113,7 @@ export const apiPaths = {
   MANAGERS: `${CONTACT_MANAGER_BASE_URI}/managers`,
   OFFICES: `${CONTACT_MANAGER_BASE_URI}/offices`,
   RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
+  TFN_DATA: `${SERVICE_BASE_URI}/tfn`,
   UPDATE_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-update-user/${personId}`,
   UPDATE_WORKER: (workerSid: string): string => `${SERVICE_BASE_URI}/updateworker/${workerSid}`
 };

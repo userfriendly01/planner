@@ -18,7 +18,7 @@ import {
   DidFormInfo,
   ModalExtension,
   ModalNNumber,
-  ModalPhoneNumber,
+  PhoneNumberInput,
   Dropdown
 } from "components";
 import {
@@ -351,7 +351,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
       </FormControlsPane>
       <RightColumn>
         {!form.didUser ?
-          <ModalPhoneNumber
+          <PhoneNumberInput
             disabled={isOutgoingDisabled()}
             allowSevenDigitVdn={false}
             id="outgoing-number"

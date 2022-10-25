@@ -1,4 +1,4 @@
-import ModalPhoneNumber from "../ModalPhoneNumber";
+import PhoneNumberInput from "../PhoneNumberInput";
 import MaskedInput from "react-text-mask";
 import React from "react";
 import {
@@ -57,7 +57,7 @@ const renderComponent = (
   helperText
 ) => {
   return render(
-    <ModalPhoneNumber
+    <PhoneNumberInput
       allowSevenDigitVdn={allowSevenDigitVdn}
       error={error}
       helperText={helperText}
@@ -71,7 +71,7 @@ const renderComponent = (
   );
 };
 
-describe("<ModalPhoneNumber />", () => {
+describe("<PhoneNumberInput />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     isNumberValid.mockReturnValue(false);

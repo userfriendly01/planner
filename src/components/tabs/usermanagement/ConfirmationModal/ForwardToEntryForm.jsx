@@ -4,7 +4,7 @@ import {
 } from "@mui/material";
 import {
   Dropdown,
-  ModalPhoneNumber
+  PhoneNumberInput
 } from "components";
 import PropTypes from "prop-types";
 import React from "react";
@@ -147,7 +147,7 @@ const ForwardToEntryForm = props => {
         />
       }
       {forwardToType === "phoneNum" &&
-        <ModalPhoneNumber
+        <PhoneNumberInput
           allowSevenDigitVdn={false}
           id="forward-number-input"
           label="Forward To Number"

@@ -6,7 +6,7 @@ import {
 import { InputAdornment } from "@mui/material";
 import {
   ForwardToEntryForm,
-  ModalPhoneNumber
+  PhoneNumberInput
 } from "components";
 import {
   useFormDispatch,
@@ -56,7 +56,7 @@ const DidFormInfo = (props: DidFormInfoProps) => {
 
   return(
     <FormControlsPane>
-      <ModalPhoneNumber
+      <PhoneNumberInput
         disabled={form.editDisabled}
         allowSevenDigitVdn={false}
         id="direct-dial-number"
@@ -107,7 +107,7 @@ const DidFormInfo = (props: DidFormInfoProps) => {
           }}
         />
       )}
-      <ModalPhoneNumber
+      <PhoneNumberInput
         disabled={!worker?.alternateDid || form.formMode === formModes.INSERT ? false : true}
         allowSevenDigitVdn={false}
         id="skype-teams-did"

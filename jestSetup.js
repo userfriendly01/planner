@@ -43,10 +43,12 @@ jest.mock("services", () => ({
   getCalabrioUsers: jest.fn(),
   getOffices: jest.fn(),
   getManagers: jest.fn(),
+  getTfn: jest.fn(),
   insertDirectory: jest.fn(),
   updateCalabrioUser: jest.fn(),
   updateClosedMessage: jest.fn(),
   updateDirectory: jest.fn(),
   updateFlashMessage: jest.fn(),
+  updateTfn: jest.fn(),
   updateUser: jest.fn()
 }));

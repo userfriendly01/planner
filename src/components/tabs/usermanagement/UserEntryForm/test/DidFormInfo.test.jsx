@@ -9,7 +9,7 @@ import {
   ForwardToEntryForm,
   ModalExtension,
   ModalNNumber,
-  ModalPhoneNumber
+  PhoneNumberInput
 } from "components";
 import {
   useFormDispatch,
@@ -40,7 +40,7 @@ jest.mock("components", () => ({
   __esModule: true,
   ModalExtension: jest.fn(),
   ModalNNumber: jest.fn(),
-  ModalPhoneNumber: jest.fn(),
+  PhoneNumberInput: jest.fn(),
   PaperContainer: jest.fn(),
   StyledButton: jest.fn(),
   ForwardToEntryForm: jest.fn()
@@ -103,7 +103,7 @@ describe("<DidFormInfo />", () => {
     setupMockedComponents({
       ModalExtension,
       ModalNNumber,
-      ModalPhoneNumber,
+      PhoneNumberInput,
       ForwardToEntryForm,
       InputAdornment,
       Edit,
@@ -129,7 +129,7 @@ describe("<DidFormInfo />", () => {
   describe("Initial State", () => {
     test("Should render the correct initial state", () => {
       renderComponent();
-      expect(ModalPhoneNumber.mock.calls.length).toBe(2);
+      expect(PhoneNumberInput.mock.calls.length).toBe(2);
 
       const expectedInternalRoutingNumberProps = {
         disabled: false,
@@ -139,7 +139,7 @@ describe("<DidFormInfo />", () => {
         label: "Direct Dial Number *",
         showError: initialFormState.directDialNum.blurred
       };
-      expectOnlyPassedProps(ModalPhoneNumber, expectedInternalRoutingNumberProps, 0);
+      expectOnlyPassedProps(PhoneNumberInput, expectedInternalRoutingNumberProps, 0);
 
       const expectedAlternateOutgoingProps = {
         disabled: false,
@@ -149,14 +149,14 @@ describe("<DidFormInfo />", () => {
         label: "Skype/Teams DID *",
         showError: initialFormState.alternateDid.blurred
       };
-      expectOnlyPassedProps(ModalPhoneNumber, expectedAlternateOutgoingProps, 1);
+      expectOnlyPassedProps(PhoneNumberInput, expectedAlternateOutgoingProps, 1);
     });
   });
   describe("Direct Dial Number", () => {
     test("onBlur - should set blur on field", () => {
       renderComponent();
       act(() => {
-        const onBlur = ModalPhoneNumber.mock.calls[0][0].onBlur;
+        const onBlur = PhoneNumberInput.mock.calls[0][0].onBlur;
         onBlur();
       });
       expect(mockSetForm).toBeCalledTimes(1);
@@ -174,7 +174,7 @@ describe("<DidFormInfo />", () => {
       });
       renderComponent();
       act(() => {
-        const onBlur = ModalPhoneNumber.mock.calls[0][0].onBlur;
+        const onBlur = PhoneNumberInput.mock.calls[0][0].onBlur;
         onBlur();
       });
       expect(mockSetForm).toBeCalledTimes(0);
@@ -182,7 +182,7 @@ describe("<DidFormInfo />", () => {
     test("updateValue - should set internal routing number to correct value", () => {
       renderComponent();
       act(() => {
-        const updateValue = ModalPhoneNumber.mock.calls[0][0].updateValue;
+        const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
         updateValue("(603) 851-8200", null, true, "+16038518200");
       });
       expect(mockSetForm).toBeCalledTimes(2);
@@ -214,7 +214,7 @@ describe("<DidFormInfo />", () => {
       });
       test("StyledIcon is rendered with the correct props", () => {
         renderComponent(true);
-        render(ModalPhoneNumber.mock.calls[0][0].icon);
+        render(PhoneNumberInput.mock.calls[0][0].icon);
         render(InputAdornment.mock.calls[0][0].children);
 
         const expectedStyledIconProps = {
@@ -224,7 +224,7 @@ describe("<DidFormInfo />", () => {
       });
       test("forwardToToggle === true", () => {
         renderComponent(true);
-        render(ModalPhoneNumber.mock.calls[0][0].icon);
+        render(PhoneNumberInput.mock.calls[0][0].icon);
         render(InputAdornment.mock.calls[0][0].children);
         act(() => {
           const onClick = Edit.mock.calls[0][0].onClick;
@@ -239,7 +239,7 @@ describe("<DidFormInfo />", () => {
       });
       test("forwardToToggle === false", () => {
         renderComponent(false);
-        render(ModalPhoneNumber.mock.calls[0][0].icon);
+        render(PhoneNumberInput.mock.calls[0][0].icon);
         render(InputAdornment.mock.calls[0][0].children);
         act(() => {
           const onClick = Edit.mock.calls[0][0].onClick;
@@ -288,12 +288,12 @@ describe("<DidFormInfo />", () => {
         didUser: true
       });
       renderComponent();
-      expect(ModalPhoneNumber.mock.calls[1][0].disabled).toBe(true);
+      expect(PhoneNumberInput.mock.calls[1][0].disabled).toBe(true);
     });
     test("onBlur - should set blur on field", () => {
       renderComponent();
       act(() => {
-        const onBlur = ModalPhoneNumber.mock.calls[1][0].onBlur;
+        const onBlur = PhoneNumberInput.mock.calls[1][0].onBlur;
         onBlur();
       });
       expect(mockSetForm).toBeCalledTimes(1);
@@ -305,7 +305,7 @@ describe("<DidFormInfo />", () => {
     test("updateValue - should set internal routing number to correct value", () => {
       renderComponent();
       act(() => {
-        const updateValue = ModalPhoneNumber.mock.calls[1][0].updateValue;
+        const updateValue = PhoneNumberInput.mock.calls[1][0].updateValue;
         updateValue("(603) 851-8200", null, true, "+16038518200");
       });
       expect(mockSetForm).toBeCalledWith({
