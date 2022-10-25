@@ -49,12 +49,9 @@ export const TfnActivation = (props: TfnActivationProps) => {
   const [ tfnState, setTfnState ] = React.useState(defaultTfnState);
 
   React.useEffect(() => {
-    console.warn("outside tfnActivationGroups", tfnActivationGroups);
     if(tfnState.number.valid){
       getTfn(tfnState.number.e164).then((res: any) => {
-        console.warn("tfnActivationGroups", tfnActivationGroups);
         const matchingGroup = Object.values(tfnActivationGroups).find(g => g.callflowId === res.data?.callflow_id);
-        console.warn("what is this group?", matchingGroup);
         const fetchedTfnState = {
           ...tfnState,
           group: matchingGroup ? {
