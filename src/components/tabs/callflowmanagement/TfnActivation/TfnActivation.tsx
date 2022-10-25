@@ -14,9 +14,7 @@ import {
   Dropdown,
   PhoneNumberInput
 } from "components";
-import {
-  useAdminState
-} from "context";
+import { useAdminState } from "context";
 import {
   getTfn,
   updateTfn
@@ -58,7 +56,7 @@ export const TfnActivation = (props: TnfActivationProps) => {
   React.useEffect(() => {
     if(tfnState.number.valid){
       getTfn(tfnState.number.e164).then((res: any) => {
-        const group = tfnActivationGroups.find(g => g.callflowId = res.data.callflow_id);
+        const group = Object.values(tfnActivationGroups).find(g => g.callflowId = res.data?.callflow_id);
         const fetchedTfnState = {
           ...tfnState,
           group: group ? {
@@ -66,8 +64,8 @@ export const TfnActivation = (props: TnfActivationProps) => {
             label: group.name,
             value: group.callflowId
           }: null,
-          displayName: res.data.display_nme || "",
-          entryMessage: res.data.entry_msg || defaultEntryMessage
+          displayName: res.data?.display_nme || "",
+          entryMessage: res.data?.entry_msg || defaultEntryMessage
         };
         setTfnState(fetchedTfnState);
       }).catch((err: any) => {
@@ -77,26 +75,32 @@ export const TfnActivation = (props: TnfActivationProps) => {
     }
   }, [tfnState.number.valid]);
 
-  const tfnActivationGroups = [
-    {
+  const tfnActivationGroups = {
+    SBSC: {
       name: "SBSC",
       callflowId: 9,
       defaultSkill: "sbscCertificates",
-      voiceWebhookUrl: "https://cicct-app-gateway.libertymutual.com/sbsc/entry/jc"
+      voiceWebhookUrl: "https://cicct-app-gateway.libertymutual.com/sbsc/entry/jc",
+      label: "SBSC",
+      value: 9
     },
-    {
+    BL_SALES: {
       name: "BL Sales",
       callflowId: 3,
       defaultSkill: "blSalesL1",
-      voiceWebhookUrl: "https://cicct-app-gateway.libertymutual.com/blsales/welcome/jc"
+      voiceWebhookUrl: "https://cicct-app-gateway.libertymutual.com/blsales/welcome/jc",
+      label: "BL Sales",
+      value: 3
     },
-    {
+    CLAIMS: {
       name: "Claims Intake Vanity",
       callflowId: 20,
       defaultSkill: "ccGeneralSkill12",
-      voiceWebhookUrl: "https://cicct-app-gateway.libertymutual.com/claimsintake/vanity/entry/jc"
+      voiceWebhookUrl: "https://cicct-app-gateway.libertymutual.com/claimsintake/vanity/entry/jc",
+      label: "Claims Intake Vanity",
+      value: 20
     }
-  ];
+  };
 
   const onConfirm = () => {
     setSaveResult({
@@ -182,18 +186,11 @@ export const TfnActivation = (props: TnfActivationProps) => {
           <Dropdown
             label="Group"
             value={tfnState.group}
-            options={tfnActivationGroups.map(g => {
-              return {
-                ...g,
-                label: g.name,
-                value: g.callflowId
-              };
-            })}
+            options={Object.values(tfnActivationGroups)}
             updateValue={(event: any, group: any) => {
-              console.log("hm", tfnActivationGroups[1].name, group.label);
               setTfnState({
                 ...tfnState,
-                entryMessage: group.value === tfnActivationGroups[1].callflowId ? defaultEntryMessage : tfnState.entryMessage,
+                entryMessage: group.value === tfnActivationGroups.BL_SALES.callflowId ? defaultEntryMessage : tfnState.entryMessage,
                 group
               }); }
             }
@@ -211,7 +208,7 @@ export const TfnActivation = (props: TnfActivationProps) => {
             })}
           />
           <EntryMessageField
-            disabled={tfnState.group && tfnState.group.name === "BL Sales"}
+            disabled={tfnState.group && tfnState.group.name === tfnActivationGroups.BL_SALES.name}
             label="Entry Message"
             multiline={true}
             minRows={4}

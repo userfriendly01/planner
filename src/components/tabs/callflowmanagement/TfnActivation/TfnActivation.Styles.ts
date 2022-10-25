@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { StyledButton } from "components/core";
+import { StyledButton } from "components";
 import styled from "styled-components";
 
 export const AdditionalFieldsWrapper = styled.div`
