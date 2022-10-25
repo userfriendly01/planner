@@ -23,9 +23,6 @@ export interface AppState {
   profileContext: {
     profiles: TritonProfile[]
   },
-  activitiesContext: {
-    activities: Activity[]
-  },
   skillContext: {
     skills: Skill[]
   },

@@ -19,9 +19,6 @@ export const initialState: AppState = {
   profileContext: {
     profiles: []
   },
-  activitiesContext: {
-    activities: []
-  },
   skillContext: {
     skills: []
   },
@@ -144,14 +141,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
         }
       };
     }
-    case "loadActivities":
-      return {
-        ...state,
-        activitiesContext: {
-          ...state.activitiesContext,
-          activities: action.payload
-        }
-      };
     case "loadSkills":
       return {
         ...state,

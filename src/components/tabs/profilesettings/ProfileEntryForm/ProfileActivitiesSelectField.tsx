@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   ProfileActivitiesSelectFieldProps
 } from "./ProfileEntryForm.Interfaces";
@@ -19,23 +19,15 @@ import {
   Delete
 } from "@mui/icons-material";
 import {
-  useAdminState,
-  useAdminDispatch
-} from "context";
-import {
   Activity,
   apiPaths
 } from "globals";
 import { Tooltip } from "@mui/material";
 import { myAxios } from "utils";
 
-const getActivities = (dispatch: any) => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_ACTIVITIES)
+const getActivities = () => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_ACTIVITIES)
   .then(res => {
-    dispatch({
-      type: "loadActivities",
-      payload: res.data
-    });
-    resolve(true);
+    resolve(res.data);
   })
   .catch(error => {
     reject({
@@ -51,21 +43,24 @@ const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectFieldProps) 
     setActivitiesList
   } = props;
 
-  const dispatch = useAdminDispatch();
-
-  React.useEffect(() => {
-    getActivities(dispatch).catch(error => console.error(error.msg));
-  }, []);
-
-  const activities = useAdminState().activitiesContext.activities;
-  const profileActivitiesForDropDown = activities.filter(activity => !activitiesList.includes(activity)); //profileActivitiesList.filter((profileActivityObj: ProfileActivity) => !profileActivitiesList.skills.includes(skillObj.name));
-
   const defaultNewActivity: Activity = {
     activity_id: null,
     activity_nme: "",
     available_i: null
   };
-  const [newProfileActivity, setNewProfileActivity] = useState<Activity>(defaultNewActivity);
+  const [newProfileActivity, setNewProfileActivity] = React.useState<Activity>(defaultNewActivity);
+  const [activities, setActivities] = React.useState([]);
+
+  React.useEffect(() => {
+    getActivities()
+      .then((allActivities: Activity[]) => {
+        setActivities(allActivities);
+      })
+      .catch(error => console.error(error.msg));
+  }, []);
+
+  const profileActivitiesForDropDown = activities.filter(activity => !activitiesList.includes(activity)); //profileActivitiesList.filter((profileActivityObj: ProfileActivity) => !profileActivitiesList.skills.includes(skillObj.name));
+
   const newProfileActivityChanged = (profileActivity: {
     [index: string]: any,
     value: number

@@ -53,7 +53,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       acw_data_entry_i: form.acwDataEntry,
       manual_record_inbound_i: form.manualRecordedInbound,
       agent_assisted_pay_i: form.agentAssistedPay,
-      overflow_skill: form.overflowSkill.value??null,
+      overflow_skill: form.overflowSkill.value || null,
       policy_number_edit_i: form.policyNumberEdit,
       voice_mail_transcription_i: form.voiceMailTranscription
     };
