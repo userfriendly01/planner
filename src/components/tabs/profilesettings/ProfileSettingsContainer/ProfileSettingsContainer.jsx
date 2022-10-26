@@ -159,6 +159,7 @@ const ProfileSettingsContainer = () => {
               }
               <ProfileSettingsTable
                 profileList={profilesFromContextMinusGoP}
+                loggedInRep={loggedInRepNNumber}
               />
             </SettingsContainer>
         }

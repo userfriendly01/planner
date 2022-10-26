@@ -11,17 +11,18 @@ import {
   IconWrapper
 } from "./ProfileSettingsTable.Styles";
 import {
+  checkIfPO,
   formatProfileBooleanData,
   formatOverflowSkillData,
   formatActivityData,
   sortProfilesById
- } from "utils";
+} from "utils";
 import { Tooltip } from "@mui/material";
 import { Edit } from "@mui/icons-material";
 import { profileTableColumnHeader } from "globals";
 
 const ProfileSettingsTable = props => {
-  const { profileList } = props;
+  const { profileList, loggedInRep } = props;
 
   return(
     <TableContainer>
@@ -48,11 +49,15 @@ const ProfileSettingsTable = props => {
                     <CustomTableData>
                       <TableText>{profile.profile_id}</TableText>
                     </CustomTableData>
-                    <CustomTableData>
-                      <IconWrapper data-testid="edit-button">
-                        <Edit fontSize={"inherit"}/>
-                      </IconWrapper>
-                    </CustomTableData>
+                      {
+                        checkIfPO(loggedInRep) ? 
+                          <CustomTableData>
+                            <IconWrapper data-testid="edit-button">
+                              <Edit fontSize={"inherit"}/>
+                            </IconWrapper>
+                          </CustomTableData>
+                        : null
+                      }
                     <CustomTableData>
                       <TableText>{profile.profile_nme}</TableText>
                     </CustomTableData>
