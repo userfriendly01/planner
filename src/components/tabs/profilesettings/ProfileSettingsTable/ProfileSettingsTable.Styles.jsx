@@ -89,7 +89,7 @@ export const ActivitiesDiv = styled.div`
 
 export const IconWrapper = styled.div`
   align-items: center;
-  border-radius: ${20/ 2}px;
+  border-radius: 10px;
   color: #343741;
   cursor: pointer;
   display: flex;

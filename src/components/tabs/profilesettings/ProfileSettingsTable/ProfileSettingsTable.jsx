@@ -16,7 +16,8 @@ import {
   formatActivityData,
   sortProfilesById
  } from "utils";
-import { Edit, Tooltip } from "@mui/material";
+import { Tooltip } from "@mui/material";
+import { Edit } from "@mui/icons-material";
 import { profileTableColumnHeader } from "globals";
 
 const ProfileSettingsTable = props => {
