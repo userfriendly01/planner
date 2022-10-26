@@ -31,7 +31,7 @@ import {
 const ProfileSettingsTable = props => {
   const { profileList, loggedInRep, setProfileModalState } = props;
 
-  const editButtonOnClick = (event, profile) => {
+  const editButtonOnClick = (profile) => (event) => {
     event.stopPropagation();
     // profileEntryFormDispatch({
     //   type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
