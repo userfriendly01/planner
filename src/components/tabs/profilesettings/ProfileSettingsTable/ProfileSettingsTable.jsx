@@ -49,18 +49,18 @@ const ProfileSettingsTable = props => {
                     <CustomTableData>
                       <TableText>{profile.profile_id}</TableText>
                     </CustomTableData>
-                      {
-                        checkIfPO(loggedInRep) ? 
-                          <CustomTableData>
-                            <IconWrapper data-testid="edit-button">
-                              <Edit fontSize={"inherit"}/>
-                            </IconWrapper>
-                          </CustomTableData>
-                        : null
-                      }
                     <CustomTableData>
                       <TableText>{profile.profile_nme}</TableText>
                     </CustomTableData>
+                    {
+                      checkIfPO(loggedInRep) ? 
+                        <CustomTableData>
+                          <IconWrapper data-testid="edit-button">
+                            <Edit fontSize={"inherit"}/>
+                          </IconWrapper>
+                        </CustomTableData>
+                      : null
+                    }
                     <CustomTableData>
                       <TableText>{formatProfileBooleanData(profile.recorded_i.data[0])}</TableText>
                     </CustomTableData>
