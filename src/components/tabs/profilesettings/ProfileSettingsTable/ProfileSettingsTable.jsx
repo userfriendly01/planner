@@ -29,8 +29,22 @@ import {
 } from "context";
 
 const ProfileSettingsTable = props => {
-  const { profileList, loggedInRep } = props;
-  const setForm = profileEntryFormDispatch();
+  const { profileList, loggedInRep, setUserModalState } = props;
+  // const setForm = profileEntryFormDispatch();
+
+  const editButtonOnClick = event => {
+    event.stopPropagation();
+    // setForm({
+    //   type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
+    //   payload: {
+    //     formMode: formModes.UPDATE
+    //   }
+    // });
+    setUserModalState({
+      open: true,
+      profile: null
+    });
+  };
 
   return(
     <TableContainer>
@@ -52,21 +66,6 @@ const ProfileSettingsTable = props => {
           <tbody>
             {
               profileList.sort(sortProfilesById).map(profile => {
-                const editButtonOnClick = event => {
-                  event.stopPropagation();
-                  setForm({
-                    type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
-                    payload: {
-                      event,
-                      formMode: formModes.UPDATE
-                    }
-                  });
-                  setUserModalState({
-                    open: true,
-                    profile: event
-                  });
-                };
-
                 return(
                   <CustomTableRow key={profile.profile_id} data-testid="table-row">
                     <CustomTableData>
