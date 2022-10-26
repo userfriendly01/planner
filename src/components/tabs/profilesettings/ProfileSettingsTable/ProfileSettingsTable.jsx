@@ -19,31 +19,18 @@ import {
 } from "utils";
 import { Tooltip } from "@mui/material";
 import { Edit } from "@mui/icons-material";
-import { profileTableColumnHeader } from "globals";
+import {
+  profileTableColumnHeader,
+  formModes
+} from "globals";
 import {
   profileEntryFormDispatch,
-  profileEntryFormReducer
+  profileEntryFormActions
 } from "context";
 
 const ProfileSettingsTable = props => {
   const { profileList, loggedInRep } = props;
   const setForm = profileEntryFormDispatch();
-
-  const editButtonOnClick = event => {
-    console.log('event', event);
-    event.stopPropagation();
-    setForm({
-      type: profileEntryFormReducer.SET_UPDATE_PROFILE_FORM_STATE,
-      payload: {
-        event,
-        formMode: formModes.UPDATE,
-      }
-    });
-    setProfileModalState({
-      open: true,
-      profile: event
-    });
-  };
 
   return(
     <TableContainer>
@@ -65,6 +52,21 @@ const ProfileSettingsTable = props => {
           <tbody>
             {
               profileList.sort(sortProfilesById).map(profile => {
+                const editButtonOnClick = event => {
+                  event.stopPropagation();
+                  setForm({
+                    type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
+                    payload: {
+                      event,
+                      formMode: formModes.UPDATE
+                    }
+                  });
+                  setUserModalState({
+                    open: true,
+                    profile: event
+                  });
+                };
+
                 return(
                   <CustomTableRow key={profile.profile_id} data-testid="table-row">
                     <CustomTableData>
