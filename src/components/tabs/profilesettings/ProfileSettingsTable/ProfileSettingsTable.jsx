@@ -30,11 +30,13 @@ import {
 
 const ProfileSettingsTable = props => {
   const { profileList, loggedInRep, setProfileModalState } = props;
-  // const setForm = profileEntryFormDispatch();
 
   const editButtonOnClick = event => {
+    console.log('event', event);
+    console.log('event', JSON.stringify(event));
+
     event.stopPropagation();
-    // setForm({
+    // profileEntryFormDispatch({
     //   type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
     //   payload: {
     //     formMode: formModes.UPDATE
