@@ -79,9 +79,10 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
       };
     }
     case profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE: {
+      console.log('state', state);
       return {
         ...state,
-        formMode: formModes.UPDATE,
+        formMode: action.payload.formMode,
       };
     }
     default:

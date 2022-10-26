@@ -33,12 +33,12 @@ const ProfileSettingsTable = props => {
 
   const editButtonOnClick = (profile) => (event) => {
     event.stopPropagation();
-    // profileEntryFormDispatch({
-    //   type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
-    //   payload: {
-    //     formMode: formModes.UPDATE
-    //   }
-    // });
+    profileEntryFormDispatch({
+      type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
+      payload: {
+        formMode: formModes.UPDATE
+      }
+    });
     setProfileModalState({
       open: true,
       profile

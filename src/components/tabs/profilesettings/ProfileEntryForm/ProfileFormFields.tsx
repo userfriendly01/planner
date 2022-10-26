@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  ProfileFormFieldsProps,
   ToggleFormField
 } from "./ProfileEntryForm.Interfaces";
 import {
@@ -26,11 +25,7 @@ import {
   OverflowSkillTextField
 } from "components";
 
-const ProfileFormFields = (props: ProfileFormFieldsProps) => {
-
-  const {
-    profile
-  } = props;
+const ProfileFormFields = () => {
 
   const form = profileEntryFormState();
   const setForm = profileEntryFormDispatch();

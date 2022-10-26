@@ -23,8 +23,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   const {
     handleClose,
     loading,
-    updateLoading,
-    profile
+    updateLoading
   } = props;
 
   const form = profileEntryFormState();

@@ -1,11 +1,9 @@
 import {
-  TritonProfile,
   ModalOverlayStatuses,
   Activity
 } from "globals";
 
 export interface ProfileEntryFormProps {
-  profile: TritonProfile | null,
   handleClose: (reopen: boolean | void) => void
 }
 
@@ -19,18 +17,13 @@ export interface LoadingState {
 export interface ProfileFormButtonsProps {
   handleClose: (reopen: boolean | void) => void,
   loading: LoadingState,
-  updateLoading: (payload: any) => void,
-  profile: TritonProfile | null,
+  updateLoading: (payload: any) => void
 }
 
 export interface FieldState {
   value: any,
   updated?: boolean,
   valid?: boolean
-}
-
-export interface ProfileFormFieldsProps {
-  profile: TritonProfile
 }
 
 export interface TextFieldProps {
