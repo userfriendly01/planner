@@ -5,7 +5,7 @@ import { render } from "testUtils";
 describe("<ProfileSettingsTable />", () => {
   describe("profile has entries in its profile list", () => {
     const nNumber = "n0138110"
-    const setUserModalState = jest.fn()
+    const setProfileModalState = jest.fn()
     const profiles = [
       {
         profile_id: 1,
@@ -88,7 +88,7 @@ describe("<ProfileSettingsTable />", () => {
     ];
 
     test("should render correct column headers and number of rows", async () => {
-      const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={nNumber} setUserModalState={setUserModalState}/>)
+      const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={nNumber} setProfileModalState={setProfileModalState}/>)
       expect(rendered.getByText("ID", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Name", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Inbound Recorded", { selector: "th" })).toBeInTheDocument();
@@ -109,7 +109,7 @@ describe("<ProfileSettingsTable />", () => {
     });
 
     test("should render correct tooltips", async () => {
-      const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={nNumber} setUserModalState={setUserModalState}/>)
+      const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={nNumber} setProfileModalState={setProfileModalState}/>)
       expect(rendered.getByLabelText("Unique Profile Identification")).toBeInTheDocument();
       expect(rendered.getByLabelText("Profile Name")).toBeInTheDocument();
       expect(rendered.getByLabelText("All inbound calls are automatically recorded")).toBeInTheDocument();

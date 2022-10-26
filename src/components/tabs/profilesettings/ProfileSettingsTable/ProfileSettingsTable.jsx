@@ -29,7 +29,7 @@ import {
 } from "context";
 
 const ProfileSettingsTable = props => {
-  const { profileList, loggedInRep, setUserModalState } = props;
+  const { profileList, loggedInRep, setProfileModalState } = props;
   // const setForm = profileEntryFormDispatch();
 
   const editButtonOnClick = event => {
@@ -40,7 +40,7 @@ const ProfileSettingsTable = props => {
     //     formMode: formModes.UPDATE
     //   }
     // });
-    setUserModalState({
+    setProfileModalState({
       open: true,
       profile: null
     });
