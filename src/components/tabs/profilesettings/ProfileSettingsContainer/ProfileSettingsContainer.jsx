@@ -160,6 +160,7 @@ const ProfileSettingsContainer = () => {
               <ProfileSettingsTable
                 profileList={profilesFromContextMinusGoP}
                 loggedInRep={loggedInRepNNumber}
+                setProfileModalState={setProfileModalState}
               />
             </SettingsContainer>
         }

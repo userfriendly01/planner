@@ -20,9 +20,30 @@ import {
 import { Tooltip } from "@mui/material";
 import { Edit } from "@mui/icons-material";
 import { profileTableColumnHeader } from "globals";
+import {
+  profileEntryFormDispatch,
+  profileEntryFormReducer
+} from "context";
 
 const ProfileSettingsTable = props => {
   const { profileList, loggedInRep } = props;
+  const setForm = profileEntryFormDispatch();
+
+  const editButtonOnClick = event => {
+    console.log('event', event);
+    event.stopPropagation();
+    setForm({
+      type: profileEntryFormReducer.SET_UPDATE_PROFILE_FORM_STATE,
+      payload: {
+        event,
+        formMode: formModes.UPDATE,
+      }
+    });
+    setProfileModalState({
+      open: true,
+      profile: event
+    });
+  };
 
   return(
     <TableContainer>
@@ -100,7 +121,7 @@ const ProfileSettingsTable = props => {
                     {
                       checkIfPO(loggedInRep) ? 
                         <CustomTableData>
-                          <IconWrapper data-testid="edit-button">
+                          <IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
                             <Edit fontSize={"inherit"}/>
                           </IconWrapper>
                         </CustomTableData>
