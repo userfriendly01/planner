@@ -35,6 +35,10 @@ export const profileTableColumnHeader = [
     TOOLTIP: "Profile Name"
   },
   {
+    COLUMN_NAME: "",
+    TOOLTIP: ""
+  },
+  {
     COLUMN_NAME: "Inbound Recorded",
     TOOLTIP: "All inbound calls are automatically recorded"
   },
