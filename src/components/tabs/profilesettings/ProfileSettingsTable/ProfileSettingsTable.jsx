@@ -7,7 +7,8 @@ import {
   TableText,
   StyledPaper,
   TableContainer,
-  TableDataFlex
+  TableDataFlex,
+  IconWrapper
 } from "./ProfileSettingsTable.Styles";
 import {
   formatProfileBooleanData,
@@ -15,7 +16,7 @@ import {
   formatActivityData,
   sortProfilesById
  } from "utils";
-import { Tooltip } from "@mui/material";
+import { Edit, Tooltip } from "@mui/material";
 import { profileTableColumnHeader } from "globals";
 
 const ProfileSettingsTable = props => {
@@ -45,6 +46,11 @@ const ProfileSettingsTable = props => {
                   <CustomTableRow key={profile.profile_id} data-testid="table-row">
                     <CustomTableData>
                       <TableText>{profile.profile_id}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
+                      <IconWrapper data-testid="edit-button">
+                        <Edit fontSize={"inherit"}/>
+                      </IconWrapper>
                     </CustomTableData>
                     <CustomTableData>
                       <TableText>{profile.profile_nme}</TableText>

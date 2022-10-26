@@ -86,3 +86,19 @@ export const ActivitiesDiv = styled.div`
   margin: 2;
   padding: 1 3;
 `;
+
+export const IconWrapper = styled.div`
+  align-items: center;
+  border-radius: ${20/ 2}px;
+  color: #343741;
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  height: 20px;
+  justify-content: center;
+  width: 20px;
+  &:hover {
+    background-color: #AAEDED;
+    cursor: pointer;
+  }
+`;
