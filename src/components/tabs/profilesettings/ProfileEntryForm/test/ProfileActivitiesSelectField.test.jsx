@@ -68,13 +68,6 @@ describe("<ProfileActivitiesSelectField />", () => {
       expectMockedComponent(rendered, { Dropdown });
       expectMockedComponent(rendered, { Add });
       expectMockedComponent(rendered, { Delete }, 0);
-      // await waitFor(() => {
-      //   expect(mockAdminDispatch).toHaveBeenCalledTimes(1);
-      //   expect(mockAdminDispatch).toHaveBeenCalledWith({
-      //     type: "loadActivities",
-      //     payload: mockActivities
-      //   });
-      // });
     });
   });
 

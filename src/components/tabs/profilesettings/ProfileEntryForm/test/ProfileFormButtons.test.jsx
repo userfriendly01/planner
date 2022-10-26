@@ -2,8 +2,7 @@ import ProfileFormButtons from "../ProfileFormButtons";
 import React from "react";
 import {
   profileEntryFormDispatch,
-  profileEntryFormState,
-  profileEntryFormActions
+  profileEntryFormState
 } from "context";
 import {
   Modal
@@ -111,8 +110,6 @@ describe("<ProfileFormButtons />", () => {
             jest.runAllTimers();
             expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
             expect(mockHandleClose).toHaveBeenCalledTimes(1);
-            // expect(mockSetForm).toHaveBeenCalledTimes(1);
-            // expect(mockSetForm).toHaveBeenCalledWith( { type: profileEntryFormActions.RESET_FORM });
           });
         });
       });
