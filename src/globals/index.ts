@@ -35,10 +35,6 @@ export const profileTableColumnHeader = [
     TOOLTIP: "Profile Name"
   },
   {
-    COLUMN_NAME: "",
-    TOOLTIP: ""
-  },
-  {
     COLUMN_NAME: "Inbound Recorded",
     TOOLTIP: "All inbound calls are automatically recorded"
   },
@@ -89,6 +85,10 @@ export const profileTableColumnHeader = [
   {
     COLUMN_NAME: "Activities",
     TOOLTIP: "Profile Activities"
+  },
+  {
+    COLUMN_NAME: "",
+    TOOLTIP: ""
   }
 ];
 
