@@ -31,11 +31,7 @@ import {
 const ProfileSettingsTable = props => {
   const { profileList, loggedInRep, setProfileModalState } = props;
 
-  const editButtonOnClick = event => {
-    console.log('event', event);
-    console.log('event', JSON.stringify(event));
-
-    event.stopPropagation();
+  const editButtonOnClick = profile => {
     // profileEntryFormDispatch({
     //   type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
     //   payload: {
@@ -44,7 +40,7 @@ const ProfileSettingsTable = props => {
     // });
     setProfileModalState({
       open: true,
-      profile: null
+      profile
     });
   };
 
@@ -124,7 +120,7 @@ const ProfileSettingsTable = props => {
                     {
                       checkIfPO(loggedInRep) ? 
                         <CustomTableData>
-                          <IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
+                          <IconWrapper onClick={editButtonOnClick(profile)} data-testid="edit-button">
                             <Edit fontSize={"inherit"}/>
                           </IconWrapper>
                         </CustomTableData>
