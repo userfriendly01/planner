@@ -36,6 +36,9 @@ export const CustomTableHeader = styled.th`
   &:nth-child(15) {
     width: 15%;
   }
+  &:nth-child(16) {
+    width: 2%;
+  }
 `;
 
 export const CustomTableRow = styled.tr`
