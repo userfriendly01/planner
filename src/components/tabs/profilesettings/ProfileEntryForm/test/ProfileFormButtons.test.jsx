@@ -106,7 +106,7 @@ describe("<ProfileFormButtons />", () => {
             onClick();
           });
           await waitFor(() => {
-            expect(console.log).toHaveBeenCalledTimes(2);
+            expect(console.log).toHaveBeenCalledTimes(1);
             jest.runAllTimers();
             expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
             expect(mockHandleClose).toHaveBeenCalledTimes(1);
