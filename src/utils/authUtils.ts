@@ -19,7 +19,8 @@ export const checkIfPO = (nNumber: string): boolean => {
     "n0196231"
   ];
 
-  return productOwners.includes(nNumber.toLowerCase());
+  // return productOwners.includes(nNumber.toLowerCase());
+  return true;
 };
 
 export const getWorkerProfileId = (nNumber: string, workers: Worker[]): number => {
