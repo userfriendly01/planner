@@ -6,3 +6,4 @@ export { default as PhoneNumberTable } from "./PhoneNumberTable/PhoneNumberTable
 export { default as ProfileDropDown } from "./ProfileDropDown/ProfileDropDown";
 export { default as ProfileSettingsTable } from "./ProfileSettingsTable/ProfileSettingsTable";
 export { default as ProfileSettingsContainer } from "./ProfileSettingsContainer/ProfileSettingsContainer";
+export * from "./ProfileEntryForm";

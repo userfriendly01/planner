@@ -1,5 +1,6 @@
 import {
   checkIfAdmin,
+  checkIfPO,
   getAuthenticationProfiles,
   getPermissions,
   getStartups,
@@ -54,6 +55,24 @@ describe("adminUtils", () => {
     describe("profileId !== 0 ", () => {
       test("should return false", () => {
         expect(checkIfAdmin(12)).toBe(false);
+      });
+    });
+  });
+  describe("checkIfPO", () => {
+    describe("n# is a GOP PO", () => {
+      test("should return true for n0183277", () => {
+        expect(checkIfPO('n0183277')).toBe(true);
+      });
+      test("should return true for n0116796", () => {
+        expect(checkIfPO('n0116796')).toBe(true);
+      });
+      test("should return true for N0116796", () => {
+        expect(checkIfPO('N0116796')).toBe(true);
+      });
+    });
+    describe("n# is not a GOP PO", () => {
+      test("should return false", () => {
+        expect(checkIfPO('n0288363')).toBe(false);
       });
     });
   });

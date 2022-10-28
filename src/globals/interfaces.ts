@@ -123,6 +123,15 @@ export interface TritonProfile {
   activities: string
 }
 
+export interface Activity {
+  activity_id: number,
+  activity_nme: string,
+  available_i: {
+    data?: number[],
+    type?: string
+  }
+}
+
 export interface Worker {
   attributes: {
     contact_uri?: string,
