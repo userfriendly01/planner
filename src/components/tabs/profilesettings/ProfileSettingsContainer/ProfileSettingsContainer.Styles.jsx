@@ -1,3 +1,4 @@
+import { StyledButton } from "components";
 import styled from "styled-components";
 
 export const ProfileSettingsDropdownWrapper = styled.div`
@@ -15,4 +16,36 @@ export const ProfileSettingsContainerDiv = styled.div`
 export const ProfileSettingsMessage = styled.div`
   margin-top: 25vh;
   text-align: center;
+`;
+
+export const SettingsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 0 1%;
+`;
+
+export const ControlsWrapper = styled.div`
+  align-items: center;
+  display: flex;
+  padding: 0 2%;
+`;
+
+export const ControlItem = styled.div`
+  width: 33%;
+  align-items: center;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  &:first-child {
+    justify-content: center;
+    margin-right: auto;
+  }
+  &:last-child {
+    justify-content: flex-end;
+    margin-left: auto;
+  }
+`;
+
+export const AddProfileButton = styled(StyledButton)`
+  width: 17%;
 `;

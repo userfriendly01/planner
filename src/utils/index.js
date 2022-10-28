@@ -13,6 +13,7 @@ export * from "./skillsUtils";
 export * from "./sortUtils";
 export * from "./timeUtils";
 export * from "./userFormUtils";
+export * from "./profileFormUtils";
 
 export const escapeQuotes = payload => {
   const replaceAll = (string, search, replace) => {
