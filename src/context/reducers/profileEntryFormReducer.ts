@@ -79,6 +79,8 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
       };
     }
     case profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE: {
+      console.log('action', JSON.stringify(action));
+      console.log('action.payload', JSON.stringify(action.payload));
       console.log('state', state);
       return {
         ...state,
