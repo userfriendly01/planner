@@ -47,18 +47,19 @@ describe("isOverflowSkillValid", () => {
 });
 
 describe("isProfileFormValid", () => {
-  test("should return true when all three profileId, profileName and overflowSkill are valid", () => {
+  test("should return true when all three activitiesList, profileName and overflowSkill are valid", () => {
     const form = {
-      profileId: 40,
+      activitiesList: [2,3],
       profileName: { valid: true },
       overflowSkill: { valid: true }
     };
     const result = isProfileFormValid(form);
     expect(result).toBe(true);
   });
-  test("should return form valid (null) when profileId is null", () => {
+  test("should return form valid when profileId is null", () => {
     const form = {
       profileId: null,
+      activitiesList: [2,3],
       profileName: { valid: true },
       overflowSkill: { valid: true }
     };
@@ -67,7 +68,7 @@ describe("isProfileFormValid", () => {
   });
   test("should return false when profileName is invalid", () => {
     const form = {
-      profileId: 40,
+      activitiesList: [2,3],
       profileName: { valid: false },
       overflowSkill: { valid: true }
     };
@@ -76,11 +77,20 @@ describe("isProfileFormValid", () => {
   });
   test("should return false when overflowSkill is invalid", () => {
     const form = {
-      profileId: 40,
+      activitiesList: [2,3],
       profileName: { valid: true },
       overflowSkill: { valid: false }
     };
     const result = isProfileFormValid(form);
     expect(result).toBe(false);
+  });
+  test("should return 0 (form invalid) when no activities added / activitiesList is enpty", () => {
+    const form = {
+      activitiesList: [],
+      profileName: { valid: true },
+      overflowSkill: { valid: false }
+    };
+    const result = isProfileFormValid(form);
+    expect(result).toBe(0);
   });
 });

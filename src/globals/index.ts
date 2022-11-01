@@ -95,6 +95,7 @@ export const apiPaths = {
   CREATE_CALABRIO_USER: `${SERVICE_BASE_URI}/calabrio-add-user`,
   CLOSED_MESSAGE: `${SERVICE_BASE_URI}/closedmessage`,
   CREATE_WORKER: `${SERVICE_BASE_URI}/createworker`,
+  CREATE_PROFILE: `${CONTACT_MANAGER_BASE_URI}/profiles`,
   DELETE_WORKER: (workerSid: string): string => `${SERVICE_BASE_URI}/deleteworker/${workerSid}`,
   DIAL_LIST: `${CONTACT_MANAGER_BASE_URI}/diallist`,
   DIAL_LIST_ENTRY: (dialListId: number): string => `${CONTACT_MANAGER_BASE_URI}/diallist/${dialListId}`,

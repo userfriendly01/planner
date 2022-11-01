@@ -12,12 +12,14 @@ import {
 import {
   formModes,
   ModalOverlayStatuses,
+  ProfilePayload,
   timeouts
 } from "globals";
 import {
   isProfileFormValid,
   wait
 } from "utils";
+import { createProfile } from "services";
 
 const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   const {
@@ -37,7 +39,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       saveStatus: ModalOverlayStatuses.SAVING,
       saveProfile: true
     });
-    const payload = {
+    const payload: ProfilePayload = {
       profile_id: form.profileId,
       profile_nme: form.profileName.value,
       activity_id: form.activitiesList.map(activity => activity.activity_id),
@@ -54,14 +56,11 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       policy_number_edit_i: form.policyNumberEdit,
       voice_mail_transcription_i: form.voiceMailTranscription
     };
-    console.log(payload);
 
-    /// TODO - call actual method to create profile
-    wait(() => {
-
+    createProfile(payload).then(response => {
       updateLoading({
         ...loading,
-        overlayMessage: "Successfully added new profile",
+        overlayMessage: `Successfully added new profile, ID: ${response.data?.profile_id}`,
         saveStatus: ModalOverlayStatuses.SUCCESS,
         saveProfile: true
       });
@@ -75,8 +74,20 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
           type: profileEntryFormActions.RESET_FORM
         });
       }, timeouts.MODAL_OVERLAY);
-
-    }, 3000);
+    }).catch(e => {
+      updateLoading({
+        ...loading,
+        overlayMessage: "Error creating new profile",
+        saveStatus: ModalOverlayStatuses.FAIL,
+        saveProfile: true
+      });
+      wait(() => {
+        updateLoading({
+          ...loading,
+          saveProfile: false
+        });
+      }, timeouts.MODAL_OVERLAY);
+    });
   };
 
   const doUpdateProfile = () => {
