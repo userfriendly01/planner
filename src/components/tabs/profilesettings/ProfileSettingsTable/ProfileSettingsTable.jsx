@@ -31,7 +31,7 @@ import {
 const ProfileSettingsTable = props => {
   const { profileList, loggedInRep, setProfileModalState } = props;
 
-  const editButtonOnClick = (profile) => (event) => {
+  const editButtonOnClick = (event) => {
     event.stopPropagation();
     profileEntryFormDispatch({
       type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
@@ -40,8 +40,7 @@ const ProfileSettingsTable = props => {
       }
     });
     setProfileModalState({
-      open: true,
-      profile
+      open: true
     });
   };
 
