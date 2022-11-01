@@ -30,6 +30,21 @@ import {
 
 const ProfileSettingsTable = props => {
   const { profileList, loggedInRep, setProfileModalState } = props;
+  const setForm = profileEntryFormDispatch();
+
+  const editButtonOnClick = event => {
+    event.stopPropagation();
+    setForm({
+      type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
+      payload: {
+        formMode: formModes.UPDATE,
+        profile
+      }
+    });
+    setProfileModalState({
+      open: true
+    });
+  };
 
   return(
     <TableContainer>
@@ -51,19 +66,6 @@ const ProfileSettingsTable = props => {
           <tbody>
             {
               profileList.sort(sortProfilesById).map(profile => {
-                const editButtonOnClick = (profile) => (event) => {
-                  event.stopPropagation();
-                  profileEntryFormDispatch({
-                    type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
-                    payload: {
-                      formMode: formModes.UPDATE
-                    }
-                  });
-                  setProfileModalState({
-                    open: true
-                  });
-                };
-
                 return(
                   <CustomTableRow key={profile.profile_id} data-testid="table-row">
                     <CustomTableData>
@@ -120,7 +122,7 @@ const ProfileSettingsTable = props => {
                     {
                       checkIfPO(loggedInRep) ? 
                         <CustomTableData>
-                          <IconWrapper onClick={editButtonOnClick(profile)} data-testid="edit-button">
+                          <IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
                             <Edit fontSize={"inherit"}/>
                           </IconWrapper>
                         </CustomTableData>
