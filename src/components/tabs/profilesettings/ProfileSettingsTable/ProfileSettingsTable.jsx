@@ -124,7 +124,7 @@ const ProfileSettingsTable = props => {
                             <Edit fontSize={"inherit"}/>
                           </IconWrapper>
                         </CustomTableData>
-                      : null
+                      : <CustomTableData />
                     }
                   </CustomTableRow>
                 );
