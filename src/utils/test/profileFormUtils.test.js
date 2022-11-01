@@ -56,14 +56,14 @@ describe("isProfileFormValid", () => {
     const result = isProfileFormValid(form);
     expect(result).toBe(true);
   });
-  test("should return form invalid (null) when profileId is null", () => {
+  test("should return form valid (null) when profileId is null", () => {
     const form = {
       profileId: null,
       profileName: { valid: true },
       overflowSkill: { valid: true }
     };
     const result = isProfileFormValid(form);
-    expect(result).toBe(null);
+    expect(result).toBe(true);
   });
   test("should return false when profileName is invalid", () => {
     const form = {

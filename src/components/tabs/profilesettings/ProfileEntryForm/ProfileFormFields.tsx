@@ -2,6 +2,7 @@ import React from "react";
 import {
   ToggleFormField
 } from "./ProfileEntryForm.Interfaces";
+import { formModes } from "globals";
 import {
   FormControlsContainer,
   FormControlsPane,
@@ -9,7 +10,6 @@ import {
   Label,
   RightColumn
 } from "./ProfileEntryForm.Styles";
-
 import {
   FormControlLabel,
   Switch
@@ -83,7 +83,9 @@ const ProfileFormFields = () => {
   return (
     <FormControlsContainer>
       <FormControlsPane>
-        <Label>Profile ID: { form.profileId }</Label>
+        {
+          form.formMode === formModes.INSERT ? "" :  <Label>Profile ID: { form.profileId }</Label>
+        }
         <ProfileNameTextField label="Profile Name *" />
         {
           leftToggleControls.map((control, index) => (
@@ -113,7 +115,7 @@ const ProfileFormFields = () => {
         />
       </FormControlsPane>
       <RightColumn>
-        <div style={{ height: "125px" }}></div>
+        <div style={form.formMode === formModes.INSERT ? { height: "95px" } : { height: "125px" }}></div>
         {
           rightToggleControls.map((control, index) => (
             <ToggleContainer key={index}>

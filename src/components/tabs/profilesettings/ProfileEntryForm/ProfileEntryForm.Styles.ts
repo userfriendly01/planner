@@ -112,7 +112,6 @@ export const IconButtonWrapper = styled.button`
 export const ProfileActivityRow = styled.div`
   align-items: center;
   display: flex;
-  height: 32px;
   &:hover { ${/* @ts-ignore */""}
     background-color: ${props => props.highlightOnHover ? props.theme.tableRow.hoverColor : null}
   }
@@ -144,6 +143,7 @@ export const ProfileActivityRowSeperator = styled.div`
 export const ProfileActivitiesWrapper = styled.div`
   max-height: 50vh;
   overflow-y: auto;
+  padding: 15px 10px;
 
   &::-webkit-scrollbar {
     background-color: #F5F5F5;

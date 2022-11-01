@@ -16,11 +16,7 @@ import {
   ProfileFormButtons,
   ProfileFormFields
 } from "components";
-import {
-  profileEntryFormDispatch,
-  profileEntryFormState,
-  useAdminState
-} from "context";
+import { profileEntryFormState } from "context";
 
 jest.mock("components", () => ({
   __esModule: true,
@@ -40,7 +36,6 @@ jest.mock("context", () => ({
 }));
 
 jest.useFakeTimers();
-const mockSetForm = jest.fn();
 const mockHandleClose = jest.fn();
 
 describe("<ProfileEntryForm />", () => {
@@ -48,9 +43,7 @@ describe("<ProfileEntryForm />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockStore.reset();
-    profileEntryFormDispatch.mockReturnValue(mockSetForm);
     profileEntryFormState.mockReturnValue(initialFormState);
-    useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       ModalOverlay,
       ProfileFormButtons,
@@ -73,21 +66,6 @@ describe("<ProfileEntryForm />", () => {
       renderComponent();
       expect(ModalOverlay.mock.calls.length).toBe(0);
       expect(ProfileFormButtons.mock.calls.length).toBe(1);
-    });
-    test("handle no profiles, and intialize with profile id 1", () => {
-      useAdminState.mockReturnValue({
-        ...initialTestState,
-        profileContext: {
-          profiles: []
-        }
-      });
-      renderComponent();
-      expect(ModalOverlay.mock.calls.length).toBe(0);
-      expect(ProfileFormButtons.mock.calls.length).toBe(1);
-      expect(mockSetForm).toHaveBeenCalledWith({
-        "payload": 1,
-        "type": "SET_PROFILE_ID"
-      });
     });
   });
 

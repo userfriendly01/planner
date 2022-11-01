@@ -29,10 +29,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   const form = profileEntryFormState();
   const setForm = profileEntryFormDispatch();
 
-  const isProfileFormButtonEnabled = isProfileFormValid(form);
-
   const doCreateProfile = () => {
-    console.log("TODO - create profile", form);
     updateLoading({
       ...loading,
       overlayMessage: "Adding new profile...",
@@ -96,7 +93,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
         Close
       </FormButton>
       <FormButton
-        disabled={!isProfileFormButtonEnabled}
+        disabled={!isProfileFormValid(form)}
         onClick={form.formMode === formModes.INSERT ? doCreateProfile : doUpdateProfile}
       >
         {form.formMode === formModes.INSERT ? "Add Profile" : "Save Profile"}

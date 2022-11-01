@@ -43,35 +43,32 @@ const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectFieldProps) 
     setActivitiesList
   } = props;
 
-  const defaultNewActivity: Activity = {
-    activity_id: null,
-    activity_nme: "",
-    available_i: null
-  };
-  const [newProfileActivity, setNewProfileActivity] = React.useState<Activity>(defaultNewActivity);
+  const defaultNewActivity: Activity[] = [];
+  const [newProfileActivity, setNewProfileActivity] = React.useState<Activity[]>(defaultNewActivity);
   const [activities, setActivities] = React.useState([]);
 
   React.useEffect(() => {
-    getActivities()
-      .then((allActivities: Activity[]) => {
-        setActivities(allActivities);
-      })
-      .catch(error => console.error(error.msg));
+    if(!activities.length) {
+      getActivities()
+        .then((allActivities: Activity[]) => {
+          setActivities(allActivities);
+        })
+        .catch(error => console.error(error.msg));
+    }
   }, []);
 
-  const profileActivitiesForDropDown = activities.filter(activity => !activitiesList.includes(activity)); //profileActivitiesList.filter((profileActivityObj: ProfileActivity) => !profileActivitiesList.skills.includes(skillObj.name));
+  const profileActivitiesForDropDown = activities.filter(activity => !activitiesList.includes(activity));
 
-  const newProfileActivityChanged = (profileActivity: {
+  const newProfileActivityChanged = (profileActivity: Array<{
     [index: string]: any,
     value: number
-  }) => {
-    const activity = activities.find(activity => activity.activity_id === profileActivity.value);
-    setNewProfileActivity(activity);
+  }>) => {
+    const selectedActivities = profileActivity.map(selectedActivity => activities.find(activity => selectedActivity.value === activity.activity_id));
+    setNewProfileActivity(selectedActivities);
   };
 
   const addProfileActivityClicked = () => {
-    const updatedActivitiesList = [ ...activitiesList ];
-    updatedActivitiesList.push(newProfileActivity);
+    const updatedActivitiesList = [ ...activitiesList, ...newProfileActivity ];
     setActivitiesList(updatedActivitiesList);
     setNewProfileActivity(defaultNewActivity);
   };
@@ -95,20 +92,16 @@ const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectFieldProps) 
         <ProfileActivityRowItem>
           <Dropdown
             styles={{
-              small: true,
-              height: "40px",
-              width: "180px"
+              "max-width": "380px"
             }}
             options={getDropDownOptions(profileActivitiesForDropDown)}
-            value={{
-              label: newProfileActivity.activity_nme,
-              value: newProfileActivity.activity_id
-            }}
-            updateValue={(event: any, newInputValue: { [index: string]: any; value: number; }) => newProfileActivityChanged(newInputValue)}
+            multiple= {true}
+            value= {getDropDownOptions(newProfileActivity)}
+            updateValue={(event: any, newInputValue: Array<{ [index: string]: any; value: number; }>) => newProfileActivityChanged(newInputValue)}
           />
         </ProfileActivityRowItem>
         <ProfileActivityRowItem>
-          <IconButtonWrapper disabled={ newProfileActivity.activity_nme === "" } onClick={addProfileActivityClicked} data-testid="add-profileActivity-button">
+          <IconButtonWrapper disabled={ !newProfileActivity.length } onClick={addProfileActivityClicked} data-testid="add-profileActivity-button">
             <Add fontSize={"inherit"}/>
           </IconButtonWrapper>
         </ProfileActivityRowItem>
@@ -120,7 +113,7 @@ const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectFieldProps) 
             // @ts-ignore
             <ProfileActivityRow highlightOnHover={true} key={`activity-row-${index}`}>
               <Tooltip
-                title={activity.available_i.data[0]?"Available":"Unavailable"}
+                title={activity.available_i.data[0]? "Available": "Unavailable"}
                 placement={"bottom"}
               >
                 <ProfileActivityRowItem>{activity.activity_nme}</ProfileActivityRowItem>

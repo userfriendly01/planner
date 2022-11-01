@@ -88,7 +88,7 @@ describe("<ProfileActivitiesSelectField />", () => {
 
   describe("changes made to the add activities drop down", () => {
     beforeEach(() => {
-      const mockNewActivity = {
+      const mockNewActivity = [{
         activity_id: 1,
         activity_nme: "Offline",
         available_i: {
@@ -97,7 +97,7 @@ describe("<ProfileActivitiesSelectField />", () => {
           ],
           "type": "Buffer"
         }
-      };
+      }];
       React.useState = jest.fn()
         .mockReturnValueOnce([mockNewActivity, jest.fn()])
         .mockReturnValueOnce([mockActivities, jest.fn()]);
@@ -117,7 +117,7 @@ describe("<ProfileActivitiesSelectField />", () => {
       expect(rendered.container).not.toHaveTextContent("Offline");
       act(() => {
         const { updateValue } = getMockedComponentProps(Dropdown);
-        updateValue("", { value: 1 } );
+        updateValue("", [{ value: 1 }] );
       });
       act(() => {
         fireEvent.click(getAddActivityButton(rendered));
@@ -149,7 +149,7 @@ describe("<ProfileActivitiesSelectField />", () => {
 
   describe("remove button", () => {
     beforeEach(() => {
-      const mockNewActivity = {
+      const mockNewActivity = [{
         activity_id: 1,
         activity_nme: "Offline",
         available_i: {
@@ -158,7 +158,7 @@ describe("<ProfileActivitiesSelectField />", () => {
           ],
           "type": "Buffer"
         }
-      };
+      }];
       React.useState = jest.fn()
         .mockReturnValueOnce([mockNewActivity, jest.fn()])
         .mockReturnValueOnce([mockActivities, jest.fn()]);

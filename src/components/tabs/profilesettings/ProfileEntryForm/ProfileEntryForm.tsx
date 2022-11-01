@@ -13,26 +13,12 @@ import {
   ProfileFormButtons,
   ProfileFormFields
 } from "components";
-import {
-  profileEntryFormDispatch,
-  profileEntryFormState,
-  useAdminState
-} from "context";
-import { profileEntryFormActions } from "context/reducers/profileEntryFormReducer";
+import { profileEntryFormState } from "context";
 
 const ProfileEntryForm = (props: ProfileEntryFormProps) => {
   const { handleClose } = props;
 
   const form = profileEntryFormState();
-  const setForm = profileEntryFormDispatch();
-  const profileId = useAdminState().profileContext.profiles.length || 1;
-
-  React.useEffect(() => {
-    setForm({
-      type: profileEntryFormActions.SET_PROFILE_ID,
-      payload: profileId
-    });
-  }, []);
 
   const [loading, updateLoading] = useState<LoadingState>({
     lookupProfile: false,

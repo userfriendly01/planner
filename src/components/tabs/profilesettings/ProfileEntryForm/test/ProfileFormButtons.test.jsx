@@ -2,7 +2,8 @@ import ProfileFormButtons from "../ProfileFormButtons";
 import React from "react";
 import {
   profileEntryFormDispatch,
-  profileEntryFormState
+  profileEntryFormState,
+  profileEntryFormActions
 } from "context";
 import {
   Modal
@@ -34,9 +35,9 @@ jest.mock("components", () => ({
 
 jest.mock("context", () => ({
   __esModule: true,
-  userFormActions: jest.fn(),
   profileEntryFormState: jest.fn(),
-  profileEntryFormDispatch: jest.fn()
+  profileEntryFormDispatch: jest.fn(),
+  profileEntryFormActions: { RESET_FORM: "RESET_FORM" }
 }));
 
 jest.mock("@mui/material", () => ({
@@ -106,11 +107,26 @@ describe("<ProfileFormButtons />", () => {
             onClick();
           });
           await waitFor(() => {
-            expect(console.log).toHaveBeenCalledTimes(2);
+            expect(console.log).toHaveBeenCalledTimes(1);
             jest.runAllTimers();
             expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
             expect(mockHandleClose).toHaveBeenCalledTimes(1);
           });
+        });
+      });
+      describe("close is clicked", () => {
+        beforeEach(() => {
+          jest.clearAllMocks();
+        });
+        test("Modal is closed, and form resets", async () => {
+          renderComponent();
+          act(() => {
+            const onClick = StyledButton.mock.calls[0][0].onClick;
+            onClick();
+          });
+          expect(mockHandleClose).toHaveBeenCalledTimes(1);
+          expect(mockSetForm).toHaveBeenCalledTimes(1);
+          expect(mockSetForm).toHaveBeenCalledWith({ type: profileEntryFormActions.RESET_FORM });
         });
       });
     });
