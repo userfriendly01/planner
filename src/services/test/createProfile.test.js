@@ -12,7 +12,7 @@ beforeEach(() => {
 
 describe("call to CREATE_PROFILE succeeds", () => {
   const profileData = { profile_id: 52 };
-  beforeEach(() => axiosMock.onPost(apiPaths.CREATE_PROFILE).reply(200, profileData));
+  beforeEach(() => axiosMock.onPost(apiPaths.PROFILES).reply(200, profileData));
   test("should resolve with profile data", done => {
     createProfile({ attributes: "whatever" })
       .then(resolvedValue => {
@@ -23,7 +23,7 @@ describe("call to CREATE_PROFILE succeeds", () => {
 });
 
 describe("call to CREATE_PROFILE fails", () => {
-  beforeEach(() => axiosMock.onPost(apiPaths.CREATE_PROFILE).replyOnce(500, "uh oh"));
+  beforeEach(() => axiosMock.onPost(apiPaths.PROFILES).replyOnce(500, "uh oh"));
   test("should reject with error", done => {
     createProfile({ attributes: "whatever" })
       .catch(rejectedValue => {

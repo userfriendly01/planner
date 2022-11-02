@@ -89,7 +89,7 @@ const getCalabrioRoles = async (dispatch: any) => {
   }
 };
 
-const getProfiles = (dispatch: any) => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_PROFILES)
+const getProfiles = (dispatch: any) => new Promise((resolve, reject) => myAxios.get(apiPaths.PROFILES)
   .then(res => {
     dispatch({
       type: "loadProfiles",
