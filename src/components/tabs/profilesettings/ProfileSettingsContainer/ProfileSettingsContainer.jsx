@@ -143,7 +143,6 @@ const ProfileSettingsContainer = () => {
               }
             </div>
             :
-            <ProfileEntryFormStateProvider>
               <SettingsContainer>
                 {
                   checkIfPO(loggedInRepNNumber) ?
@@ -156,13 +155,14 @@ const ProfileSettingsContainer = () => {
                     </ControlsWrapper>
                   : null
                 }
-                <ProfileSettingsTable
-                  profileList={profilesFromContextMinusGoP}
-                  loggedInRep={loggedInRepNNumber}
-                  setProfileModalState={setProfileModalState}
-                />
+                <ProfileEntryFormStateProvider>
+                  <ProfileSettingsTable
+                    profileList={profilesFromContextMinusGoP}
+                    loggedInRep={loggedInRepNNumber}
+                    setProfileModalState={setProfileModalState}
+                  />
+                </ProfileEntryFormStateProvider>
               </SettingsContainer>
-            </ProfileEntryFormStateProvider>
         }
       </ProfileSettingsContainerDiv>
     </ProfileEntryFormStateProvider>
