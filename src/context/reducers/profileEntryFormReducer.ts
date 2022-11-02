@@ -89,7 +89,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         profileId: action.payload.profile.profile_id,
         activitiesList: [JSON.parse(action.payload.profile.activities)],
         formMode: action.payload.formMode,
-        autoAnswered: formatProfileBooleanDataTrueFalse(action.payload.profile.auto_answd_i.data[0]),
+        // autoAnswered: formatProfileBooleanDataTrueFalse(action.payload.profile.auto_answd_i.data[0]),
         // inboundRecorded: formatProfileBooleanDataTrueFalse(action.payload.profile.recorded_i.data[0]),
         // outboundRecorded: formatProfileBooleanDataTrueFalse(action.payload.profile.otbnd_recorded_i.data[0]),
         // acwOption: formatProfileBooleanDataTrueFalse(action.payload.profile.acw_option_i.data[0]),
