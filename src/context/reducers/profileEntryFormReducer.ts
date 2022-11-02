@@ -6,7 +6,8 @@ import {
   formModes
 } from "globals";
 import {
-  formatProfileBooleanDataTrueFalse
+  formatProfileBooleanDataTrueFalse,
+  formatOverflowSkillData
 } from "utils";
 
 export const profileEntryFormActions = {
@@ -88,6 +89,17 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
       console.log('action', profile.recorded_i.data[0]);
       console.log('action', profile.otbnd_recorded_i.data[0]);
       console.log('action', profile.acw_option_i.data[0]);
+      console.log('action', profile.profile_id);
+      console.log('action', [JSON.parse(profile.activities)]);
+      console.log('action', profile.manual_recorded_i.data[0]);
+      console.log('action', profile.acw_data_entry_i.data[0]);
+      console.log('action', profile.manual_record_inbound_i.data[0]);
+      console.log('action', profile.agent_assisted_pay_i.data[0]);
+      console.log('action', profile.pmt_prcsg_i.data[0]);
+      console.log('action', profile.policy_number_edit_i.data[0]);
+      console.log('action', profile.voice_mail_transcription_i.data[0]);
+      console.log('action', profile.profile_nme);
+      console.log('action', formatOverflowSkillData(profile.overflow_skill));
       console.log('state', state);
       return {
         ...state,
@@ -106,7 +118,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         policyNumberEdit: formatProfileBooleanDataTrueFalse(profile.policy_number_edit_i.data[0]),
         voiceMailTranscription: formatProfileBooleanDataTrueFalse(profile.voice_mail_transcription_i.data[0]),
         overflowSkill: {
-          value: profile.overflow_skill || "",
+          value: formatOverflowSkillData(profile.overflow_skill),
           valid: true
         },
         profileName: {
