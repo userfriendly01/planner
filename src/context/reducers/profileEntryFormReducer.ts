@@ -88,17 +88,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         ...state,
         profileId: profile.profile_id,
         formMode: action.payload.formMode,
-        autoAnswered: formatProfileBooleanDataTrueFalse(profile.auto_answd_i.data[0]),
-        inboundRecorded: formatProfileBooleanDataTrueFalse(profile.recorded_i.data[0]),
-        outboundRecorded: formatProfileBooleanDataTrueFalse(profile.otbnd_recorded_i.data[0]),
-        acwOption: formatProfileBooleanDataTrueFalse(profile.acw_option_i.data[0]),
-        manualRecorded: formatProfileBooleanDataTrueFalse(profile.manual_recorded_i.data[0]),
-        acwDataEntry: formatProfileBooleanDataTrueFalse(profile.acw_data_entry_i.data[0]),
-        manualRecordedInbound: formatProfileBooleanDataTrueFalse(profile.manual_record_inbound_i.data[0]),
-        agentAssistedPay: formatProfileBooleanDataTrueFalse(profile.agent_assisted_pay_i.data[0]),
-        paymentProcessing: formatProfileBooleanDataTrueFalse(profile.pmt_prcsg_i.data[0]),
-        policyNumberEdit: formatProfileBooleanDataTrueFalse(profile.policy_number_edit_i.data[0]),
-        voiceMailTranscription: formatProfileBooleanDataTrueFalse(profile.voice_mail_transcription_i.data[0])
+        autoAnswered: formatProfileBooleanDataTrueFalse(profile.auto_answd_i.data[0])
       };
     }
     default:
