@@ -84,47 +84,10 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
     }
     case profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE: {
       const profile = action.payload.profile;
-      console.log('action', profile.auto_answd_i.data[0]);
-      console.log('action', profile);
-      console.log('action', profile.recorded_i.data[0]);
-      console.log('action', profile.otbnd_recorded_i.data[0]);
-      console.log('action', profile.acw_option_i.data[0]);
-      console.log('action', profile.profile_id);
-      console.log('action', [JSON.parse(profile.activities)]);
-      console.log('action', profile.manual_recorded_i.data[0]);
-      console.log('action', profile.acw_data_entry_i.data[0]);
-      console.log('action', profile.manual_record_inbound_i.data[0]);
-      console.log('action', profile.agent_assisted_pay_i.data[0]);
-      console.log('action', profile.pmt_prcsg_i.data[0]);
-      console.log('action', profile.policy_number_edit_i.data[0]);
-      console.log('action', profile.voice_mail_transcription_i.data[0]);
-      console.log('action', profile.profile_nme);
-      console.log('action', formatOverflowSkillData(profile.overflow_skill));
-      console.log('state', state);
       return {
         ...state,
         profileId: profile.profile_id,
-        activitiesList: [JSON.parse(profile.activities)],
-        formMode: action.payload.formMode,
-        autoAnswered: formatProfileBooleanDataTrueFalse(profile.auto_answd_i.data[0]),
-        inboundRecorded: formatProfileBooleanDataTrueFalse(profile.recorded_i.data[0]),
-        outboundRecorded: formatProfileBooleanDataTrueFalse(profile.otbnd_recorded_i.data[0]),
-        acwOption: formatProfileBooleanDataTrueFalse(profile.acw_option_i.data[0]),
-        manualRecorded: formatProfileBooleanDataTrueFalse(profile.manual_recorded_i.data[0]),
-        acwDataEntry: formatProfileBooleanDataTrueFalse(profile.acw_data_entry_i.data[0]),
-        manualRecordedInbound: formatProfileBooleanDataTrueFalse(profile.manual_record_inbound_i.data[0]),
-        agentAssistedPay: formatProfileBooleanDataTrueFalse(profile.agent_assisted_pay_i.data[0]),
-        paymentProcessing: formatProfileBooleanDataTrueFalse(profile.pmt_prcsg_i.data[0]),
-        policyNumberEdit: formatProfileBooleanDataTrueFalse(profile.policy_number_edit_i.data[0]),
-        voiceMailTranscription: formatProfileBooleanDataTrueFalse(profile.voice_mail_transcription_i.data[0]),
-        overflowSkill: {
-          value: formatOverflowSkillData(profile.overflow_skill),
-          valid: true
-        },
-        profileName: {
-          value: profile.profile_nme,
-          valid: true
-        }
+        formMode: action.payload.formMode
       };
     }
     default:
