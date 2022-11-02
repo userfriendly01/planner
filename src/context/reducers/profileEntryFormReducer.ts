@@ -98,7 +98,15 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         agentAssistedPay: formatProfileBooleanDataTrueFalse(profile.agent_assisted_pay_i.data[0]),
         paymentProcessing: formatProfileBooleanDataTrueFalse(profile.pmt_prcsg_i.data[0]),
         policyNumberEdit: formatProfileBooleanDataTrueFalse(profile.policy_number_edit_i.data[0]),
-        voiceMailTranscription: formatProfileBooleanDataTrueFalse(profile.voice_mail_transcription_i.data[0])
+        voiceMailTranscription: formatProfileBooleanDataTrueFalse(profile.voice_mail_transcription_i.data[0]),
+        overflowSkill: {
+          value: formatOverflowSkillData(profile.overflow_skill),
+          valid: true
+        },
+        profileName: {
+          value: profile.profile_nme,
+          valid: true
+        }
       };
     }
     default:
