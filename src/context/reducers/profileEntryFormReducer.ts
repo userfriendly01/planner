@@ -5,6 +5,9 @@ import {
   Action,
   formModes
 } from "globals";
+import {
+  formatProfileBooleanDataTrueFalse
+} from "utils"
 
 export const profileEntryFormActions = {
   RESET_FORM: "RESET_FORM",
@@ -80,11 +83,31 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
     }
     case profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE: {
       console.log('action', JSON.stringify(action));
-      console.log('action.payload', JSON.stringify(action.payload));
       console.log('state', state);
       return {
         ...state,
+        profileId: action.payload.profile.profile_id,
+        activitiesList: [JSON.parse(action.payload.profile.activities)],
         formMode: action.payload.formMode,
+        autoAnswered: formatProfileBooleanDataTrueFalse(action.payload.profile.auto_answd_i.data[0]),  
+        inboundRecorded: formatProfileBooleanDataTrueFalse(action.payload.profile.recorded_i.data[0]),
+        outboundRecorded: formatProfileBooleanDataTrueFalse(action.payload.profile.otbnd_recorded_i.data[0]),
+        acwOption: formatProfileBooleanDataTrueFalse(action.payload.profile.acw_option_i.data[0]),
+        manualRecorded: formatProfileBooleanDataTrueFalse(action.payload.profile.manual_recorded_i.data[0]),
+        acwDataEntry: formatProfileBooleanDataTrueFalse(action.payload.profile.acw_data_entry_i.data[0]),
+        manualRecordedInbound: formatProfileBooleanDataTrueFalse(action.payload.profile.manual_record_inbound_i.data[0]),
+        agentAssistedPay: formatProfileBooleanDataTrueFalse(action.payload.profile.agent_assisted_pay_i.data[0]),
+        paymentProcessing: formatProfileBooleanDataTrueFalse(action.payload.profile.pmt_prcsg_i.data[0]),
+        policyNumberEdit: formatProfileBooleanDataTrueFalse(action.payload.profile.policy_number_edit_i.data[0]),
+        voiceMailTranscription: formatProfileBooleanDataTrueFalse(action.payload.profile.voice_mail_transcription_i.data[0]),
+        overflowSkill: {
+          value: action.payload.profile.overflow_skill,
+          valid: true
+        },
+        profileName: {
+          value: action.payload.profile.profile_nme,
+          valid: true
+        }
       };
     }
     default:
