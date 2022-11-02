@@ -1,11 +1,28 @@
 import ProfileSettingsTable from "../ProfileSettingsTable";
 import React from "react";
 import { render } from "testUtils";
+import {
+  profileEntryFormDispatch
+} from "context";
+
+const setProfileModalState = jest.fn()
+
+jest.mock("context", () => ({
+  __esModule: true,
+  profileEntryFormDispatch: jest.fn(),
+  profileEntryFormActions: { SET_UPDATE_PROFILE_FORM_STATE: "SET_UPDATE_PROFILE_FORM_STATE" }
+}));
+
+const mockSetForm = jest.fn();
 
 describe("<ProfileSettingsTable />", () => {
   describe("profile has entries in its profile list", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      profileEntryFormDispatch.mockReturnValue(mockSetForm);
+    });
+
     const nNumber = "n0138110"
-    const setProfileModalState = jest.fn()
     const profiles = [
       {
         profile_id: 1,
