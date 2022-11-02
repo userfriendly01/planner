@@ -52,19 +52,6 @@ const ProfileSettingsTable = props => {
           <tbody>
             {
               profileList.sort(sortProfilesById).map(profile => {
-                const editButtonOnClick = event => {
-                  event.stopPropagation();
-                  setForm({
-                    type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
-                    payload: {
-                      formMode: formModes.UPDATE,
-                      profile
-                    }
-                  });
-                  setProfileModalState({
-                    open: true
-                  });
-                };
                 return(
                   <CustomTableRow key={profile.profile_id} data-testid="table-row">
                     <CustomTableData>
@@ -121,7 +108,20 @@ const ProfileSettingsTable = props => {
                     {
                       checkIfPO(loggedInRep) ? 
                         <CustomTableData>
-                          <IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
+                          <IconWrapper
+                            onClick={() => {
+                              setForm({
+                                type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
+                                payload: {
+                                  formMode: formModes.UPDATE,
+                                  profile
+                                }
+                              });
+                              setProfileModalState({
+                                open: true
+                              });
+                            }}
+                            data-testid="edit-button">
                             <Edit fontSize={"inherit"}/>
                           </IconWrapper>
                         </CustomTableData>
