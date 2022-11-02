@@ -155,13 +155,11 @@ const ProfileSettingsContainer = () => {
                     </ControlsWrapper>
                   : null
                 }
-                <ProfileEntryFormStateProvider>
-                  <ProfileSettingsTable
-                    profileList={profilesFromContextMinusGoP}
-                    loggedInRep={loggedInRepNNumber}
-                    setProfileModalState={setProfileModalState}
-                  />
-                </ProfileEntryFormStateProvider>
+                <ProfileSettingsTable
+                  profileList={profilesFromContextMinusGoP}
+                  loggedInRep={loggedInRepNNumber}
+                  setProfileModalState={setProfileModalState}
+                />
               </SettingsContainer>
         }
       </ProfileSettingsContainerDiv>
