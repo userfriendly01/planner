@@ -7,7 +7,7 @@ import {
 } from "globals";
 import {
   formatProfileBooleanDataTrueFalse
-} from "utils"
+} from "utils";
 
 export const profileEntryFormActions = {
   RESET_FORM: "RESET_FORM",
@@ -106,7 +106,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         policyNumberEdit: formatProfileBooleanDataTrueFalse(profile.policy_number_edit_i.data[0]),
         voiceMailTranscription: formatProfileBooleanDataTrueFalse(profile.voice_mail_transcription_i.data[0]),
         overflowSkill: {
-          value: profile.overflow_skill,
+          value: profile.overflow_skill || "",
           valid: true
         },
         profileName: {
