@@ -32,6 +32,20 @@ const ProfileSettingsTable = props => {
   const { profileList, loggedInRep, setProfileModalState } = props;
   const setForm = profileEntryFormDispatch();
 
+  const editButtonOnClick = event => {
+    event.stopPropagation();
+    setForm({
+      type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
+      payload: {
+        formMode: formModes.UPDATE,
+        profile
+      }
+    });
+    setProfileModalState({
+      open: true
+    });
+  };
+
   return(
     <TableContainer>
       <StyledPaper elevation={3}>
@@ -108,20 +122,7 @@ const ProfileSettingsTable = props => {
                     {
                       checkIfPO(loggedInRep) ? 
                         <CustomTableData>
-                          <IconWrapper
-                            onClick={() => {
-                              setForm({
-                                type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
-                                payload: {
-                                  formMode: formModes.UPDATE,
-                                  profile
-                                }
-                              });
-                              setProfileModalState({
-                                open: true
-                              });
-                            }}
-                            data-testid="edit-button">
+                          <IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
                             <Edit fontSize={"inherit"}/>
                           </IconWrapper>
                         </CustomTableData>

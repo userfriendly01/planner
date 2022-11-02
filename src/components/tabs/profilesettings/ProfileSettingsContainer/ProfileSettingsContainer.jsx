@@ -143,24 +143,26 @@ const ProfileSettingsContainer = () => {
               }
             </div>
             :
-            <SettingsContainer>
-              {
-                checkIfPO(loggedInRepNNumber) ?
-                  <ControlsWrapper>
-                    <ControlItem>
-                      <AddProfileButton onClick={addProfileOnClick} data-testid={"add-profile-button"}>
-                        Add Profile
-                      </AddProfileButton>
-                    </ControlItem>
-                  </ControlsWrapper>
-                : null
-              }
-              <ProfileSettingsTable
-                profileList={profilesFromContextMinusGoP}
-                loggedInRep={loggedInRepNNumber}
-                setProfileModalState={setProfileModalState}
-              />
-            </SettingsContainer>
+            <ProfileEntryFormStateProvider>
+              <SettingsContainer>
+                {
+                  checkIfPO(loggedInRepNNumber) ?
+                    <ControlsWrapper>
+                      <ControlItem>
+                        <AddProfileButton onClick={addProfileOnClick} data-testid={"add-profile-button"}>
+                          Add Profile
+                        </AddProfileButton>
+                      </ControlItem>
+                    </ControlsWrapper>
+                  : null
+                }
+                <ProfileSettingsTable
+                  profileList={profilesFromContextMinusGoP}
+                  loggedInRep={loggedInRepNNumber}
+                  setProfileModalState={setProfileModalState}
+                />
+              </SettingsContainer>
+            </ProfileEntryFormStateProvider>
         }
       </ProfileSettingsContainerDiv>
     </ProfileEntryFormStateProvider>
