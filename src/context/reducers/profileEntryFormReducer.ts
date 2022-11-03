@@ -84,10 +84,22 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
     }
     case profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE: {
       const profile = action.payload.profile;
+      const activitiesList = JSON.parse(profile.activities).map((activity: { activity_id: number; activity_nme: string; availability: number; }) => {
+        return {
+          activity_id: activity.activity_id,
+          activity_nme: activity.activity_nme,
+          available_i: {
+            data: [activity.availability],
+            type: "Buffer"
+          }
+        }
+      })
+      
       return {
         ...state,
         profileId: profile.profile_id,
         formMode: action.payload.formMode,
+        activitiesList,
         autoAnswered: formatProfileBooleanDataTrueFalse(profile.auto_answd_i.data[0]),
         inboundRecorded: formatProfileBooleanDataTrueFalse(profile.recorded_i.data[0]),
         outboundRecorded: formatProfileBooleanDataTrueFalse(profile.otbnd_recorded_i.data[0]),
