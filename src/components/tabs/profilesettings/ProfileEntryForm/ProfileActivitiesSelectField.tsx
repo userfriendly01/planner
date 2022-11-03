@@ -1,7 +1,5 @@
 import React from "react";
-import {
-  ProfileActivitiesSelectFieldProps
-} from "./ProfileEntryForm.Interfaces";
+import { ProfileActivitiesSelectFieldProps } from "./ProfileEntryForm.Interfaces";
 import {
   IconButtonWrapper,
   ProfileActivitiesControlWrapper,
@@ -11,9 +9,7 @@ import {
   Label,
   ProfileActivitiesWrapper
 } from "./ProfileEntryForm.Styles";
-import {
-  Dropdown
-} from "components";
+import { Dropdown } from "components";
 import {
   Add,
   Delete
@@ -74,7 +70,7 @@ const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectFieldProps) 
   };
 
   const removeProfileActivityClicked = (activityToBeRemoved: Activity) => {
-    const updatedActivitiesList = activitiesList.filter(activity => activity.activity_id!==activityToBeRemoved.activity_id);
+    const updatedActivitiesList = activitiesList.filter(activity => activity.activity_id !== activityToBeRemoved.activity_id);
     setActivitiesList(updatedActivitiesList);
   };
 
@@ -95,13 +91,13 @@ const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectFieldProps) 
               "max-width": "380px"
             }}
             options={getDropDownOptions(profileActivitiesForDropDown)}
-            multiple= {true}
-            value= {getDropDownOptions(newProfileActivity)}
+            multiple={true}
+            value={getDropDownOptions(newProfileActivity)}
             updateValue={(event: any, newInputValue: Array<{ [index: string]: any; value: number; }>) => newProfileActivityChanged(newInputValue)}
           />
         </ProfileActivityRowItem>
         <ProfileActivityRowItem>
-          <IconButtonWrapper disabled={ !newProfileActivity.length } onClick={addProfileActivityClicked} data-testid="add-profileActivity-button">
+          <IconButtonWrapper disabled={!newProfileActivity.length} onClick={addProfileActivityClicked} data-testid="add-profileActivity-button">
             <Add fontSize={"inherit"}/>
           </IconButtonWrapper>
         </ProfileActivityRowItem>

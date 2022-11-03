@@ -18,8 +18,8 @@ const OverflowSkillTextField = (props: TextFieldProps) => {
 
   return (
     <CustomInput
-      error={ form.overflowSkill.updated && !form.overflowSkill.valid }
-      label= {label}
+      error={form.overflowSkill.updated && !form.overflowSkill.valid}
+      label={label}
       name={label}
       maxLength="80"
       updateValue={overflowSkill => {

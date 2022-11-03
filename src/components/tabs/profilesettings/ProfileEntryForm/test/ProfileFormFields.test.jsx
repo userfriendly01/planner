@@ -23,7 +23,6 @@ import {
 } from "testUtils";
 import React from "react";
 
-
 jest.mock("components", () => ({
   __esModule: true,
   ProfileNameTextField: jest.fn(),

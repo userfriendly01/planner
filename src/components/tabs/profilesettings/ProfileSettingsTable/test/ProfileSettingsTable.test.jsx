@@ -1,9 +1,7 @@
 import ProfileSettingsTable from "../ProfileSettingsTable";
 import React from "react";
 import { render } from "testUtils";
-import {
-  profileEntryFormDispatch
-} from "context";
+import { profileEntryFormDispatch } from "context";
 
 const setProfileModalState = jest.fn()
 
