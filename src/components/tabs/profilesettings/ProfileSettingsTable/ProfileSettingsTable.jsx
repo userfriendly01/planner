@@ -114,13 +114,13 @@ const ProfileSettingsTable = props => {
                       <TableDataFlex>
                         {
                           JSON.parse(profile.activities).map(activity => {
-                            return formatActivityData(activity)
+                            return formatActivityData(activity.name)
                           })
                         }
                       </TableDataFlex>
                     </CustomTableData>
                     {
-                      checkIfPO(loggedInRep) ? 
+                      checkIfPO(loggedInRep) ?
                         <CustomTableData>
                           <IconWrapper onClick={editButtonOnClick(profile)} data-testid="edit-button">
                             <Edit fontSize={"inherit"}/>
