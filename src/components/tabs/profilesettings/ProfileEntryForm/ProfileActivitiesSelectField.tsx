@@ -53,7 +53,12 @@ const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectFieldProps) 
     }
   }, []);
 
-  const profileActivitiesForDropDown = activities.filter(activity => !activitiesList.includes(activity.activity_id));
+  const profileActivitiesForDropDown = activities.filter(activity => {
+      return !activitiesList.find(item => {
+        return item.activity_id === activity.activity_id;
+      });
+  });
+
   console.log('activities', activities);
   console.log('activitiesList', activitiesList);
   console.log('profileActivitiesForDropDown', profileActivitiesForDropDown);
