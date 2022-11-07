@@ -10,6 +10,19 @@ import { StyledButton } from "components";
 import { formModes } from "globals";
 import { isProfileFormValid } from "utils";
 import {
+  Modal
+} from "@mui/material";
+import {
+  StyledButton
+} from "components";
+import {
+  formModes,
+  ModalOverlayStatuses
+} from "globals";
+import {
+  isProfileFormValid
+} from "utils";
+import {
   act,
   initialTestState,
   render,
@@ -18,6 +31,7 @@ import {
   waitFor,
   validProfileEntryFormState
 } from "testUtils";
+import { createProfile } from "services";
 
 jest.useFakeTimers();
 
@@ -41,8 +55,6 @@ jest.mock("utils", () => ({
   isProfileFormValid: jest.fn(),
   wait: jest.requireActual("utils").wait
 }));
-
-console.log = jest.fn();
 
 const mockSetForm = jest.fn();
 const mockHandleClose = jest.fn();
@@ -92,6 +104,7 @@ describe("<ProfileFormButtons />", () => {
       });
       describe("create profile is clicked", () => {
         test("service call to create profile is successful", async () => {
+          createProfile.mockImplementation(() => { return Promise.resolve(200, { response: "success" } ); });
           profileEntryFormState.mockReturnValue(validProfileEntryFormState);
           renderComponent();
           act(() => {
@@ -99,10 +112,34 @@ describe("<ProfileFormButtons />", () => {
             onClick();
           });
           await waitFor(() => {
-            expect(console.log).toHaveBeenCalledTimes(1);
+            expect(createProfile).toHaveBeenCalledTimes(1);
             jest.runAllTimers();
             expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
             expect(mockHandleClose).toHaveBeenCalledTimes(1);
+          });
+        });
+        test("service call to create profile is unsuccessful", async () => {
+          jest.clearAllMocks();
+          const errorRes = {
+            response: "error"
+          };
+          createProfile.mockRejectedValue(errorRes);
+          profileEntryFormState.mockReturnValue(validProfileEntryFormState);
+          renderComponent();
+          act(() => {
+            const onClick = StyledButton.mock.calls[1][0].onClick;
+            onClick();
+          });
+          await waitFor(() => {
+            expect(createProfile).toHaveBeenCalledTimes(1);
+            jest.runAllTimers();
+            expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
+            expect(mockUpdateLoading).toHaveBeenCalledWith({
+              "saveStatus": ModalOverlayStatuses.FAIL,
+              "overlayMessage": "Error creating new profile",
+              "saveProfile": true
+            });
+            expect(mockHandleClose).toHaveBeenCalledTimes(0);
           });
         });
       });
