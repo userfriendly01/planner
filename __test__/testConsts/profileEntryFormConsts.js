@@ -4,17 +4,39 @@ export const initialProfileEntryFormState = {
   profileId: null,
   activitiesList: [],
   formMode: formModes.INSERT,
-  autoAnswered: true,
-  inboundRecorded: true,
-  outboundRecorded: true,
-  acwOption: false,
-  manualRecorded: false,
-  acwDataEntry: false,
-  manualRecordedInbound: false,
-  agentAssistedPay: false,
-  voiceMailTranscription: false,
-  paymentProcessing: false,
-  policyNumberEdit: false,
+  autoAnswered: {
+    value: true
+  },
+  inboundRecorded: {
+    value: true
+  },
+  outboundRecorded: {
+    value: true
+  },
+  acwOption: {
+    value: false
+  },
+  manualRecorded: {
+    value: false
+  },
+  acwDataEntry: {
+    value: false
+  },
+  manualRecordedInbound: {
+    value: false
+  },
+  agentAssistedPay: {
+    value: false
+  },
+  voiceMailTranscription: {
+    value: false
+  },
+  paymentProcessing: {
+    value: false
+  },
+  policyNumberEdit: {
+    value: false
+  },
   overflowSkill: {
     value: "",
     updated: false,
@@ -31,17 +53,40 @@ export const validProfileEntryFormState = {
   profileId: 40,
   activitiesList: [5, 6],
   formMode: formModes.INSERT,
-  autoAnswered: true,
-  inboundRecorded: true,
-  outboundRecorded: true,
-  acwOption: false,
-  manualRecorded: false,
-  acwDataEntry: true,
-  manualRecordedInbound: false,
-  agentAssistedPay: false,
-  voiceMailTranscription: false,
-  paymentProcessing: false,
-  policyNumberEdit: false,
+  autoAnswered: {
+    value: true
+  },
+  inboundRecorded: {
+    value: true
+  },
+  outboundRecorded: {
+    value: true
+  },
+  acwOption: {
+    value: false
+  },
+  manualRecorded: {
+    value: false
+  },
+  acwDataEntry: {
+    value: true,
+    updated: true
+  },
+  manualRecordedInbound: {
+    value: false
+  },
+  agentAssistedPay: {
+    value: false
+  },
+  voiceMailTranscription: {
+    value: false
+  },
+  paymentProcessing: {
+    value: false
+  },
+  policyNumberEdit: {
+    value: false
+  },
   overflowSkill: {
     value: "validskill",
     updated: true,
@@ -58,17 +103,40 @@ export const invalidProfileEntryFormState = {
   profileId: 40,
   activitiesList: [5, 6],
   formMode: formModes.INSERT,
-  autoAnswered: true,
-  inboundRecorded: true,
-  outboundRecorded: true,
-  acwOption: false,
-  manualRecorded: false,
-  acwDataEntry: true,
-  manualRecordedInbound: false,
-  agentAssistedPay: false,
-  voiceMailTranscription: false,
-  paymentProcessing: false,
-  policyNumberEdit: false,
+  autoAnswered: {
+    value: true
+  },
+  inboundRecorded: {
+    value: true
+  },
+  outboundRecorded: {
+    value: true
+  },
+  acwOption: {
+    value: false
+  },
+  manualRecorded: {
+    value: false
+  },
+  acwDataEntry: {
+    value: true,
+    updated: true
+  },
+  manualRecordedInbound: {
+    value: false
+  },
+  agentAssistedPay: {
+    value: false
+  },
+  voiceMailTranscription: {
+    value: false
+  },
+  paymentProcessing: {
+    value: false
+  },
+  policyNumberEdit: {
+    value: false
+  },
   overflowSkill: {
     value: "validskill$$",
     updated: true,
