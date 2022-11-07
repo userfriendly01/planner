@@ -54,6 +54,9 @@ const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectFieldProps) 
   }, []);
 
   const profileActivitiesForDropDown = activities.filter(activity => !activitiesList.includes(activity));
+  console.log('activities', activities);
+  console.log('activitiesList', activitiesList);
+  console.log('profileActivitiesForDropDown', profileActivitiesForDropDown);
 
   const newProfileActivityChanged = (profileActivity: Array<{
     [index: string]: any,
