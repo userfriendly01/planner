@@ -55,8 +55,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
     case profileEntryFormActions.TOGGLE: {
       return {
         ...state,
-        [action.fieldKey]: !state[action.payload],
-        updated: true
+        [action.payload.fieldKey]: action.payload
       };
     }
     case profileEntryFormActions.SET_PROFILE_ID: {

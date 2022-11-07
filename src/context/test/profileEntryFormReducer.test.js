@@ -38,6 +38,7 @@ describe("userFormReducer", () => {
         fieldKey: "policyNumberEdit"
       };
       const result = profileEntryFormReducer(initialProfileEntryFormState, action);
+      console.log('result', result)
       expect(result).toStrictEqual(initialTestState);
     });
   });

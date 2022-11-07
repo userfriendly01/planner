@@ -95,10 +95,13 @@ const ProfileFormFields = () => {
                 labelPlacement="end"
                 control={<Switch
                   inputProps={{ "aria-label": "toggle-zero-out" }}
-                  checked={form[control.fieldKey]}
+                  checked={form[control.fieldKey].fieldKey}
                   onChange={() => setForm({
                     type: profileEntryFormActions.TOGGLE,
-                    fieldKey: control.fieldKey
+                    payload: {
+                      fieldKey: control.fieldKey,
+                      updated: true
+                    }
                   })} />} />
             </ToggleContainer>
           ))
@@ -124,10 +127,13 @@ const ProfileFormFields = () => {
                 labelPlacement="end"
                 control={<Switch
                   inputProps={{ "aria-label": "toggle-zero-out" }}
-                  checked={form[control.fieldKey]}
+                  checked={form[control.fieldKey].fieldKey}
                   onChange={() => setForm({
                     type: profileEntryFormActions.TOGGLE,
-                    fieldKey: control.fieldKey
+                    payload: {
+                      fieldKey: control.fieldKey,
+                      updated: true
+                    }
                   })} />} />
             </ToggleContainer>
           ))
