@@ -59,10 +59,6 @@ const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectFieldProps) 
       });
   });
 
-  console.log('activities', activities);
-  console.log('activitiesList', activitiesList);
-  console.log('profileActivitiesForDropDown', profileActivitiesForDropDown);
-
   const newProfileActivityChanged = (profileActivity: Array<{
     [index: string]: any,
     value: number
