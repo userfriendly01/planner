@@ -19,7 +19,10 @@ import {
   isProfileFormValid,
   wait
 } from "utils";
-import { createProfile } from "services";
+import {
+  createProfile,
+  editProfile
+} from "services";
 
 const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   const {
@@ -38,6 +41,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       saveStatus: ModalOverlayStatuses.SAVING,
       saveProfile: true
     });
+
     const payload: ProfilePayload = {
       profile_id: form.profileId,
       profile_nme: form.profileName.value,
@@ -90,9 +94,14 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   };
 
   const doUpdateProfile = () => {
-    console.log('form', form);
+    updateLoading({
+      ...loading,
+      overlayMessage: `Editing profile ${form.profileId}...`,
+      saveStatus: ModalOverlayStatuses.SAVING,
+      saveProfile: true
+    });
 
-    const payload = {
+    const payload: ProfilePayload = {
       profile_id: form.profileId,
       profile_nme: form.profileName.value,
       activity_id: form.activitiesList.map(activity => activity.activity_id),
@@ -109,7 +118,38 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       policy_number_edit_i: form.policyNumberEdit,
       voice_mail_transcription_i: form.voiceMailTranscription
     };
-    console.log('payload', payload);
+
+    editProfile(payload).then(() => {
+      updateLoading({
+        ...loading,
+        overlayMessage: `Successfully updated profile with ID ${form.profileId}}`,
+        saveStatus: ModalOverlayStatuses.SUCCESS,
+        saveProfile: true
+      });
+      wait(() => {
+        updateLoading({
+          ...loading,
+          saveProfile: false
+        });
+        handleClose();
+        setForm({
+          type: profileEntryFormActions.RESET_FORM
+        });
+      }, timeouts.MODAL_OVERLAY);
+    }).catch(e => {
+      updateLoading({
+        ...loading,
+        overlayMessage: `Error updating profile with ID ${form.profileId}`,
+        saveStatus: ModalOverlayStatuses.FAIL,
+        saveProfile: true
+      });
+      wait(() => {
+        updateLoading({
+          ...loading,
+          saveProfile: false
+        });
+      }, timeouts.MODAL_OVERLAY);
+    });
   };
 
   return (
