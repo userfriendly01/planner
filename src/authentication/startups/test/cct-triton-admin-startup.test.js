@@ -18,7 +18,7 @@ import {
 import { startups } from "testUtils";
 
 const axiosMock = new MockAdapter(myAxios);
-const profilesEndpoint = apiPaths.GET_PROFILES;
+const profilesEndpoint = apiPaths.PROFILES;
 const skillsEndpoint = apiPaths.GET_SKILLS;
 const workersEndpoint = apiPaths.GET_WORKERS;
 const calabrioUsersEndpoint = apiPaths.GET_CALABRIO_AGENTS;
