@@ -7,21 +7,11 @@ import {
 } from "context";
 import { Modal } from "@mui/material";
 import { StyledButton } from "components";
-import { formModes } from "globals";
-import { isProfileFormValid } from "utils";
-import {
-  Modal
-} from "@mui/material";
-import {
-  StyledButton
-} from "components";
 import {
   formModes,
   ModalOverlayStatuses
 } from "globals";
-import {
-  isProfileFormValid
-} from "utils";
+import { isProfileFormValid } from "utils";
 import {
   act,
   initialTestState,
