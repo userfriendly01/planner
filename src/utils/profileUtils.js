@@ -11,9 +11,9 @@ export const formatProfileBooleanData = value => {
 
 export const formatProfileBooleanDataTrueFalse = value => {
   if (value === 1) {
-    return true;
+    return { value: true };
   }
-  return false;
+  return { value: false };
 };
 
 export const formatOverflowSkillData = overflowSkill => {

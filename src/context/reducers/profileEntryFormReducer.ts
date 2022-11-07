@@ -24,17 +24,39 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
   profileId: null,
   activitiesList: [],
   formMode: formModes.INSERT,
-  autoAnswered: true,
-  inboundRecorded: true,
-  outboundRecorded: true,
-  acwOption: false,
-  manualRecorded: false,
-  acwDataEntry: false,
-  manualRecordedInbound: false,
-  agentAssistedPay: false,
-  paymentProcessing: false,
-  policyNumberEdit: false,
-  voiceMailTranscription: false,
+  autoAnswered: {
+    value: true
+  },
+  inboundRecorded: {
+    value: true
+  },
+  outboundRecorded: {
+    value: true
+  },
+  acwOption: {
+    value: false
+  },
+  manualRecorded: {
+    value: false
+  },
+  acwDataEntry: {
+    value: false
+  },
+  manualRecordedInbound: {
+    value: false
+  },
+  agentAssistedPay: {
+    value: false
+  },
+  paymentProcessing: {
+    value: false
+  },
+  policyNumberEdit: {
+    value: false
+  },
+  voiceMailTranscription: {
+    value: false
+  },
   overflowSkill: {
     value: "",
     valid: true
@@ -55,7 +77,10 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
     case profileEntryFormActions.TOGGLE: {
       return {
         ...state,
-        [action.payload.fieldKey]: action.payload
+        [action.fieldKey]: {
+          value: !state[action.fieldKey.value],
+          updated: true
+        }
       };
     }
     case profileEntryFormActions.SET_PROFILE_ID: {

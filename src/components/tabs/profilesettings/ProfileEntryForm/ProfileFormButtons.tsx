@@ -46,18 +46,18 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       profile_id: form.profileId,
       profile_nme: form.profileName.value,
       activity_id: form.activitiesList.map(activity => activity.activity_id),
-      recorded_i: form.inboundRecorded,
-      auto_answd_i: form.autoAnswered,
-      pmt_prcsg_i: form.paymentProcessing,
-      otbnd_recorded_i: form.outboundRecorded,
-      acw_option_i: form.acwOption,
-      manual_recorded_i: form.manualRecorded,
-      acw_data_entry_i: form.acwDataEntry,
-      manual_record_inbound_i: form.manualRecordedInbound,
-      agent_assisted_pay_i: form.agentAssistedPay,
+      recorded_i: form.inboundRecorded.value,
+      auto_answd_i: form.autoAnswered.value,
+      pmt_prcsg_i: form.paymentProcessing.value,
+      otbnd_recorded_i: form.outboundRecorded.value,
+      acw_option_i: form.acwOption.value,
+      manual_recorded_i: form.manualRecorded.value,
+      acw_data_entry_i: form.acwDataEntry.value,
+      manual_record_inbound_i: form.manualRecordedInbound.value,
+      agent_assisted_pay_i: form.agentAssistedPay.value,
       overflow_skill: form.overflowSkill.value || null,
-      policy_number_edit_i: form.policyNumberEdit,
-      voice_mail_transcription_i: form.voiceMailTranscription
+      policy_number_edit_i: form.policyNumberEdit.value,
+      voice_mail_transcription_i: form.voiceMailTranscription.value
     };
 
     createProfile(payload).then(response => {
@@ -107,18 +107,18 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       profile_id: form.profileId,
       profile_nme: form.profileName.value,
       activity_id: form.activitiesList.map(activity => activity.activity_id),
-      recorded_i: form.inboundRecorded,
-      auto_answd_i: form.autoAnswered,
-      pmt_prcsg_i: form.paymentProcessing,
-      otbnd_recorded_i: form.outboundRecorded,
-      acw_option_i: form.acwOption,
-      manual_recorded_i: form.manualRecorded,
-      acw_data_entry_i: form.acwDataEntry,
-      manual_record_inbound_i: form.manualRecordedInbound,
-      agent_assisted_pay_i: form.agentAssistedPay,
+      recorded_i: form.inboundRecorded.value,
+      auto_answd_i: form.autoAnswered.value,
+      pmt_prcsg_i: form.paymentProcessing.value,
+      otbnd_recorded_i: form.outboundRecorded.value,
+      acw_option_i: form.acwOption.value,
+      manual_recorded_i: form.manualRecorded.value,
+      acw_data_entry_i: form.acwDataEntry.value,
+      manual_record_inbound_i: form.manualRecordedInbound.value,
+      agent_assisted_pay_i: form.agentAssistedPay.value,
       overflow_skill: form.overflowSkill.value || null,
-      policy_number_edit_i: form.policyNumberEdit,
-      voice_mail_transcription_i: form.voiceMailTranscription
+      policy_number_edit_i: form.policyNumberEdit.value,
+      voice_mail_transcription_i: form.voiceMailTranscription.value
     };
 
     console.log('payload', payload);

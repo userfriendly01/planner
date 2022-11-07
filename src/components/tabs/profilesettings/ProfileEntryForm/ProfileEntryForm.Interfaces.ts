@@ -42,17 +42,17 @@ export interface ProfileEntryFormState {
   profileName: FieldState,
   overflowSkill: FieldState,
   activitiesList: Activity[],
-  autoAnswered: boolean,
-  inboundRecorded: boolean,
-  outboundRecorded: boolean,
-  acwOption: boolean,
-  manualRecorded: boolean,
-  acwDataEntry: boolean,
-  manualRecordedInbound: boolean,
-  agentAssistedPay: boolean,
-  paymentProcessing: boolean,
-  policyNumberEdit: boolean,
-  voiceMailTranscription: boolean
+  autoAnswered: FieldState,
+  inboundRecorded: FieldState,
+  outboundRecorded: FieldState,
+  acwOption: FieldState,
+  manualRecorded: FieldState,
+  acwDataEntry: FieldState,
+  manualRecordedInbound: FieldState,
+  agentAssistedPay: FieldState,
+  paymentProcessing: FieldState,
+  policyNumberEdit: FieldState,
+  voiceMailTranscription: FieldState
 }
 
 export interface ToggleFormField {

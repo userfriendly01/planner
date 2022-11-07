@@ -18,7 +18,9 @@ describe("userFormReducer", () => {
     test("should reset form to initial state", () => {
       const initialTestState = {
         ...initialProfileEntryFormState,
-        policyNumberEdit: false,
+        policyNumberEdit: {
+          value: false
+        },
         activitiesList: [2,3]
       };
       const action = { type: profileEntryFormActions.RESET_FORM };
@@ -31,14 +33,16 @@ describe("userFormReducer", () => {
     test("should toggle passed fieldKey in form", () => {
       const initialTestState = {
         ...initialProfileEntryFormState,
-        policyNumberEdit: true
+        policyNumberEdit: {
+          value: true,
+          updated: true
+        }
       };
       const action = {
         type: profileEntryFormActions.TOGGLE,
         fieldKey: "policyNumberEdit"
       };
       const result = profileEntryFormReducer(initialProfileEntryFormState, action);
-      console.log('result', result)
       expect(result).toStrictEqual(initialTestState);
     });
   });
