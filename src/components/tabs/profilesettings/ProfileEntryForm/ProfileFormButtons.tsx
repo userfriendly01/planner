@@ -101,7 +101,9 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       saveProfile: true
     });
 
-    const payload: ProfilePayload = {
+    console.log('form', form);
+
+    const payload = {
       profile_id: form.profileId,
       profile_nme: form.profileName.value,
       activity_id: form.activitiesList.map(activity => activity.activity_id),
@@ -118,6 +120,8 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       policy_number_edit_i: form.policyNumberEdit,
       voice_mail_transcription_i: form.voiceMailTranscription
     };
+
+    console.log('payload', payload);
 
     editProfile(payload).then(() => {
       updateLoading({
