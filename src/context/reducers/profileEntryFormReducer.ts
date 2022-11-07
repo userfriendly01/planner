@@ -78,7 +78,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
       return {
         ...state,
         [action.fieldKey]: {
-          value: !state[action.fieldKey.value],
+          value: !state[action.fieldKey].value,
           updated: true
         }
       };
