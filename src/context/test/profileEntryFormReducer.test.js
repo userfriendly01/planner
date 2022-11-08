@@ -100,7 +100,8 @@ describe("userFormReducer", () => {
     test("should set activittiesList to payload passed", () => {
       const initialTestState = {
         ...initialProfileEntryFormState,
-        activitiesList: [2,3]
+        activitiesList: [2,3],
+        activitiesUpdated: true
       };
       const action = {
         type: profileEntryFormActions.UPDATE_ACTIVITIES_LIST,
