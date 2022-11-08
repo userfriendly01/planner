@@ -19,10 +19,10 @@ describe("profileUtils", () => {
   });
 
   describe("formatProfileBooleanDataTrueFalse", () => {
-    test("should return true object", () => {
+    test("should return true value object", () => {
       expect(formatProfileBooleanDataTrueFalse(1)).toStrictEqual({ value: true });
     });
-    test("should return false object", () => {
+    test("should return false value object", () => {
       expect(formatProfileBooleanDataTrueFalse(0)).toStrictEqual({ value: false });
     });
   });
