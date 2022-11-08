@@ -17,6 +17,15 @@ describe("profileUtils", () => {
     });
   });
 
+  describe("formatProfileBooleanDataTrueFalse", () => {
+    test("should return Check component", () => {
+      expect(formatProfileBooleanDataTrueFalse(1)).toStrictEqual({ value: true });
+    });
+    test("should return empty string for non 1 value", () => {
+      expect(formatProfileBooleanDataTrueFalse(0)).toStrictEqual({ value: false });
+    });
+  });
+
   describe("formatOverflowSkillData", () => {
     test("should return overflow skill", () => {
       expect(formatOverflowSkillData("OverflowSkill")).toBe("OverflowSkill");
