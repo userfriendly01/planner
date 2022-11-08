@@ -125,25 +125,132 @@ describe("profileEntryFormReducer", () => {
     });
   });
 
-  // describe("SET_UPDATE_PROFILE_FORM_STATE", () => {
-  //   test("should set activitiesList to payload passed", () => {
-  //     const profile = 
+  describe("SET_UPDATE_PROFILE_FORM_STATE", () => {
+    test("should set edit prepopulated fields to state", () => {
+      const profile = {
+        profile_id: 0,
+        profile_nme: "Game of Phones",
+        recorded_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        auto_answd_i: {
+          type: "Buffer",
+          data: [1]
+        },
+        pmt_prcsg_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        otbnd_recorded_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        acw_option_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        manual_recorded_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        acw_data_entry_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        manual_record_inbound_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        agent_assisted_pay_i: {
+          type: "Buffer",
+          data: [1]
+        },
+        overflow_skill: null,
+        policy_number_edit_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        voice_mail_transcription_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        click_to_dial_i: {
+          type: "Buffer",
+          data: [1]
+        },
+        activities: "[{\"id\": 1, \"name\": \"Offline\", \"availability\": 0}]"
+      }
 
-  //     const expectedState = {
-  //       ...initialProfileEntryFormState,
-  //       activitiesList: [2,3],
-  //       activitiesUpdated: true
-  //     };
-  //     const action = {
-  //       type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
-  //       payload: {
-  //         formMode: formModes.UPDATE,
-  //         profile
-  //       }
-  //     };
-  //     const result = profileEntryFormReducer(initialProfileEntryFormState, action);
-  //     expect(result).toStrictEqual(expectedState);
-  //   });
-  // });
-
+      const expectedState = {
+        ...initialProfileEntryFormState,
+        activitiesList: [{
+          activity_id: 1,
+          activity_nme: "Offline",
+          available_i: {
+            data: [
+              0,
+            ],
+            type: "Buffer",
+          },
+        }],
+        formMode: formModes.UPDATE,
+        autoAnswered: {
+          value: true
+        },
+        inboundRecorded: {
+          value: false
+        },
+        outboundRecorded: {
+          value: false
+        },
+        acwOption: {
+          value: false
+        },
+        manualRecorded: {
+          value: false
+        },
+        acwDataEntry: {
+          value: false
+        },
+        manualRecordedInbound: {
+          value: false
+        },
+        agentAssistedPay: {
+          value: true
+        },
+        paymentProcessing: {
+          value: false
+        },
+        policyNumberEdit: {
+          value: false
+        },
+        voiceMailTranscription: {
+          value: false
+        },
+        overflowSkill: {
+          value: "",
+          valid: true
+        },
+        profileName: {
+          value: "",
+          valid: false
+        },
+        profileId: 0,
+        profileName: {
+          valid: true,
+          value: "Game of Phones",
+        }
+      };
+      const action = {
+        type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
+        payload: {
+          formMode: formModes.UPDATE,
+          profile
+        }
+      };
+      const result = profileEntryFormReducer(initialProfileEntryFormState, action);
+      expect(result).toStrictEqual(expectedState);
+    });
+  });
 });
