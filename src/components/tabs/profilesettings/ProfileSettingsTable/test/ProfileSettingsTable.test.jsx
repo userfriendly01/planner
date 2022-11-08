@@ -1,9 +1,14 @@
 import ProfileSettingsTable from "../ProfileSettingsTable";
 import React from "react";
-import { render } from "testUtils";
+import {
+  act,
+  expectMockedComponent,
+  fireEvent,
+  render,
+  setupMockedComponents
+} from "testUtils";
 import { profileEntryFormDispatch } from "context";
-
-const setProfileModalState = jest.fn()
+import { ProfileEntryForm } from "components"
 
 jest.mock("context", () => ({
   __esModule: true,
@@ -11,99 +16,108 @@ jest.mock("context", () => ({
   profileEntryFormActions: { SET_UPDATE_PROFILE_FORM_STATE: "SET_UPDATE_PROFILE_FORM_STATE" }
 }));
 
+jest.mock("components", () => ({
+  __esModule: true,
+  ProfileEntryForm: jest.fn()
+}));
+
 const mockSetForm = jest.fn();
+const setProfileModalState = jest.fn();
 
 describe("<ProfileSettingsTable />", () => {
-  describe("profile has entries in its profile list", () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-      profileEntryFormDispatch.mockReturnValue(mockSetForm);
+  beforeEach(() => {
+    setupMockedComponents({
+      ProfileEntryForm
     });
+    jest.clearAllMocks();
+    profileEntryFormDispatch.mockReturnValue(mockSetForm);
+  });
 
-    const nNumber = "n0138110"
-    const profiles = [
-      {
-        profile_id: 1,
-        profile_nme: "Game of Phones",
-        recorded_i: {
-          data: [0]
-        },
-        auto_answd_i: {
-          data: [0]
-        },
-        pmt_prcsg_i: {
-          data: [0]
-        },
-        otbnd_recorded_i: {
-          data: [1]
-        },
-        acw_option_i: {
-          data: [0]
-        },
-        manual_recorded_i: {
-          data: [1]
-        },
-        acw_data_entry_i: {
-          data: [0]
-        },
-        manual_record_inbound_i: {
-          data: [1]
-        },
-        agent_assisted_pay_i: {
-          data: [1]
-        },
-        overflow_skill: "Overflow Skill",
-        policy_number_edit_i: {
-          data: [0]
-        },
-        voice_mail_transcription_i: {
-          data: [0]
-        },
-        activities: '["Offline", "Available", "Busy"]'
+  const validNid = "n0138110"
+  const profiles = [
+    {
+      profile_id: 1,
+      profile_nme: "Game of Phones",
+      recorded_i: {
+        data: [0]
       },
-      {
-        profile_id: 2,
-        profile_nme: "Game of Gnomes",
-        recorded_i: {
-          data: [1]
-        },
-        auto_answd_i: {
-          data: [1]
-        },
-        pmt_prcsg_i: {
-          data: [1]
-        },
-        otbnd_recorded_i: {
-          data: [1]
-        },
-        acw_option_i: {
-          data: [1]
-        },
-        manual_recorded_i: {
-          data: [1]
-        },
-        acw_data_entry_i: {
-          data: [0]
-        },
-        manual_record_inbound_i: {
-          data: [1]
-        },
-        agent_assisted_pay_i: {
-          data: [1]
-        },
-        overflow_skill: "Overflow Skill 2",
-        policy_number_edit_i: {
-          data: [0]
-        },
-        voice_mail_transcription_i: {
-          data: [0]
-        },
-        activities: '["Offline", "Available", "Busy"]'
-      }
-    ];
+      auto_answd_i: {
+        data: [0]
+      },
+      pmt_prcsg_i: {
+        data: [0]
+      },
+      otbnd_recorded_i: {
+        data: [1]
+      },
+      acw_option_i: {
+        data: [0]
+      },
+      manual_recorded_i: {
+        data: [1]
+      },
+      acw_data_entry_i: {
+        data: [0]
+      },
+      manual_record_inbound_i: {
+        data: [1]
+      },
+      agent_assisted_pay_i: {
+        data: [1]
+      },
+      overflow_skill: "Overflow Skill",
+      policy_number_edit_i: {
+        data: [0]
+      },
+      voice_mail_transcription_i: {
+        data: [0]
+      },
+      activities: '["Offline", "Available", "Busy"]'
+    },
+    {
+      profile_id: 2,
+      profile_nme: "Game of Gnomes",
+      recorded_i: {
+        data: [1]
+      },
+      auto_answd_i: {
+        data: [1]
+      },
+      pmt_prcsg_i: {
+        data: [1]
+      },
+      otbnd_recorded_i: {
+        data: [1]
+      },
+      acw_option_i: {
+        data: [1]
+      },
+      manual_recorded_i: {
+        data: [1]
+      },
+      acw_data_entry_i: {
+        data: [0]
+      },
+      manual_record_inbound_i: {
+        data: [1]
+      },
+      agent_assisted_pay_i: {
+        data: [1]
+      },
+      overflow_skill: "Overflow Skill 2",
+      policy_number_edit_i: {
+        data: [0]
+      },
+      voice_mail_transcription_i: {
+        data: [0]
+      },
+      activities: '["Offline", "Available", "Busy"]'
+    }
+  ];
 
+  describe("profile has entries in its profile list", () => {
     test("should render correct column headers and number of rows", async () => {
-      const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={nNumber} setProfileModalState={setProfileModalState}/>)
+      const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={validNid} setProfileModalState={setProfileModalState}/>)
       expect(rendered.getByText("ID", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Name", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Inbound Recorded", { selector: "th" })).toBeInTheDocument();
@@ -126,7 +140,7 @@ describe("<ProfileSettingsTable />", () => {
     });
 
     test("should render correct tooltips", async () => {
-      const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={nNumber} setProfileModalState={setProfileModalState}/>)
+      const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={validNid} setProfileModalState={setProfileModalState}/>)
       expect(rendered.getByLabelText("Unique Profile Identification")).toBeInTheDocument();
       expect(rendered.getByLabelText("Profile Name")).toBeInTheDocument();
       expect(rendered.getByLabelText("All inbound calls are automatically recorded")).toBeInTheDocument();
@@ -142,6 +156,19 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByLabelText("UI Feature: An agent can capture and save a different policy number than what the IVR previously loaded")).toBeInTheDocument();
       expect(rendered.getByLabelText("Voice mail will be transcribed and sent within the notification email to the user")).toBeInTheDocument();
       expect(rendered.getByLabelText("Profile Activities")).toBeInTheDocument();
+    });
+  });
+
+  describe("Edit icon is clicked in row", () => {
+    test("should show ProfileEntryForm for corresponding profile", () => {
+      const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={validNid} setProfileModalState={setProfileModalState}/>)
+      const editButtons = rendered.getAllByTestId("edit-button");
+      expectMockedComponent(rendered, { ProfileEntryForm }, 0);
+      const indexClicked = 1;
+      act(() => fireEvent.click(editButtons[indexClicked]));
+      expect(setProfileModalState).toHaveBeenCalledWith({
+        open: true
+      });
     });
   });
 });
