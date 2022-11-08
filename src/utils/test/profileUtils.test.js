@@ -2,6 +2,7 @@
  import { Check } from "@mui/icons-material";
  import {
   formatProfileBooleanData,
+  formatProfileBooleanDataTrueFalse,
   formatOverflowSkillData,
   formatActivityData
  } from "../profileUtils";
@@ -18,10 +19,10 @@ describe("profileUtils", () => {
   });
 
   describe("formatProfileBooleanDataTrueFalse", () => {
-    test("should return Check component", () => {
+    test("should return true object", () => {
       expect(formatProfileBooleanDataTrueFalse(1)).toStrictEqual({ value: true });
     });
-    test("should return empty string for non 1 value", () => {
+    test("should return false object", () => {
       expect(formatProfileBooleanDataTrueFalse(0)).toStrictEqual({ value: false });
     });
   });
