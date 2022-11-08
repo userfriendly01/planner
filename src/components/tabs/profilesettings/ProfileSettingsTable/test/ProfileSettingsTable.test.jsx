@@ -159,8 +159,8 @@ describe("<ProfileSettingsTable />", () => {
     });
   });
 
-  describe("Edit icon is clicked in row", () => {
-    test("should show ProfileEntryForm for corresponding profile", () => {
+  describe("Edit icon", () => {
+    test("is clicked in row should show ProfileEntryForm for corresponding profile", () => {
       const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={validNid} setProfileModalState={setProfileModalState}/>)
       const editButtons = rendered.getAllByTestId("edit-button");
       expectMockedComponent(rendered, { ProfileEntryForm }, 0);
@@ -169,6 +169,15 @@ describe("<ProfileSettingsTable />", () => {
       expect(setProfileModalState).toHaveBeenCalledWith({
         open: true
       });
+    });
+    test("does not render any edit icons for an invalidNid", () => {
+      const invalidNid = 'n0288362'
+      const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={invalidNid} setProfileModalState={setProfileModalState}/>)
+      expect(rendered.queryAllByTestId("edit-button")).toHaveLength(0);
+    });
+    test("renders an edit icons per profile for a validNid", () => {
+      const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={validNid} setProfileModalState={setProfileModalState}/>)
+      expect(rendered.queryAllByTestId("edit-button")).toHaveLength(2);
     });
   });
 });
