@@ -100,28 +100,52 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       saveStatus: ModalOverlayStatuses.SAVING,
       saveProfile: true
     });
-
     console.log('form', form);
 
-    const payload = {
+    const payload: Partial<ProfilePayload> = {
       profile_id: form.profileId,
-      profile_nme: form.profileName.value,
       activity_id: form.activitiesList.map(activity => activity.activity_id),
-      recorded_i: form.inboundRecorded.value,
-      auto_answd_i: form.autoAnswered.value,
-      pmt_prcsg_i: form.paymentProcessing.value,
-      otbnd_recorded_i: form.outboundRecorded.value,
-      acw_option_i: form.acwOption.value,
-      manual_recorded_i: form.manualRecorded.value,
-      acw_data_entry_i: form.acwDataEntry.value,
-      manual_record_inbound_i: form.manualRecordedInbound.value,
-      agent_assisted_pay_i: form.agentAssistedPay.value,
-      overflow_skill: form.overflowSkill.value || null,
-      policy_number_edit_i: form.policyNumberEdit.value,
-      voice_mail_transcription_i: form.voiceMailTranscription.value
     };
 
-    console.log('payload', payload);
+    if (form.profileName.updated) {
+      payload.profile_nme = form.profileName.value;
+    }
+    if (form.overflowSkill.updated) {
+      payload.overflow_skill = form.overflowSkill.value || null;
+    }
+    if (form.inboundRecorded.updated) {
+      payload.recorded_i = form.inboundRecorded.value;
+    }
+    if (form.autoAnswered.updated) {
+      payload.auto_answd_i = form.autoAnswered.value;
+    }
+    if (form.paymentProcessing.updated) {
+      payload.pmt_prcsg_i = form.paymentProcessing.value;
+    }
+    if (form.outboundRecorded.updated) {
+      payload.otbnd_recorded_i = form.outboundRecorded.value;
+    }
+    if (form.acwOption.updated) {
+      payload.acw_option_i = form.acwOption.value;
+    }
+    if (form.manualRecorded.updated) {
+      payload.manual_recorded_i = form.manualRecorded.value;
+    }
+    if (form.acwDataEntry.updated) {
+      payload.acw_data_entry_i = form.acwDataEntry.value;
+    }
+    if (form.manualRecordedInbound.updated) {
+      payload.manual_record_inbound_i = form.manualRecordedInbound.value;
+    }
+    if (form.agentAssistedPay.updated) {
+      payload.agent_assisted_pay_i = form.agentAssistedPay.value;
+    }
+    if (form.policyNumberEdit.updated) {
+      payload.policy_number_edit_i = form.policyNumberEdit.value;
+    }
+    if (form.voiceMailTranscription.updated) {
+      payload.voice_mail_transcription_i = form.voiceMailTranscription.value;
+    }
 
     editProfile(payload).then(() => {
       updateLoading({
