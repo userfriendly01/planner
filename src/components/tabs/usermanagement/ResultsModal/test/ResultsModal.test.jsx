@@ -65,7 +65,7 @@ describe("<ResultsModal />", () => {
       expect(rendered.getByTestId("successContainer")).toHaveStyleRule("border-color", theme.successColor);
       expect(rendered.getByTestId("successContainer")).toHaveStyleRule("background-color", theme.resultsModal.fadedSuccess);
       expect(rendered.getByText("2 worker(s) reset successfully")).toBeTruthy();
--      expect(rendered.queryAllByTestId("warningContainer")).toHaveLength(0);
+      expect(rendered.queryAllByTestId("warningContainer")).toHaveLength(0);
       expect(rendered.queryAllByTestId("failureContainer")).toHaveLength(0);
     });
   });
