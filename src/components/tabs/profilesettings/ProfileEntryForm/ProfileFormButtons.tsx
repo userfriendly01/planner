@@ -100,7 +100,6 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       saveStatus: ModalOverlayStatuses.SAVING,
       saveProfile: true
     });
-    console.log('form', form);
 
     const payload: Partial<ProfilePayload> = {
       profile_id: form.profileId,
