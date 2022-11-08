@@ -104,7 +104,8 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
     case profileEntryFormActions.UPDATE_ACTIVITIES_LIST: {
       return {
         ...state,
-        activitiesList: action.payload
+        activitiesList: action.payload,
+        activitiesUpdated: true
       };
     }
     case profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE: {

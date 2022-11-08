@@ -104,7 +104,6 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
 
     const payload: Partial<ProfilePayload> = {
       profile_id: form.profileId,
-      activity_id: form.activitiesList.map(activity => activity.activity_id),
     };
 
     if (form.profileName.updated) {
@@ -112,6 +111,9 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     }
     if (form.overflowSkill.updated) {
       payload.overflow_skill = form.overflowSkill.value || null;
+    }
+    if (form.activitiesUpdated) {
+      payload.activity_id = form.activitiesList.map(activity => activity.activity_id),
     }
     if (form.inboundRecorded.updated) {
       payload.recorded_i = form.inboundRecorded.value;
