@@ -113,7 +113,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       payload.overflow_skill = form.overflowSkill.value || null;
     }
     if (form.activitiesUpdated) {
-      payload.activity_id = form.activitiesList.map(activity => activity.activity_id),
+      payload.activity_id = form.activitiesList.map(activity => activity.activity_id);
     }
     if (form.inboundRecorded.updated) {
       payload.recorded_i = form.inboundRecorded.value;
