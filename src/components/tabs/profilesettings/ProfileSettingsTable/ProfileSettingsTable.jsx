@@ -56,7 +56,7 @@ const ProfileSettingsTable = props => {
                 profileTableColumnHeader.map(entry => {
                   return(
                     <Tooltip placement="top" title={entry.TOOLTIP}>
-                      <CustomTableHeader>{entry.COLUMN_NAME}</CustomTableHeader>
+                      <CustomTableHeader data-testid="table-header">{entry.COLUMN_NAME}</CustomTableHeader>
                     </Tooltip>
                   )
                 })

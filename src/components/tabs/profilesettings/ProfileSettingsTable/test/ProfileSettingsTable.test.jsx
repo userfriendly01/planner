@@ -120,7 +120,9 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByText("Voice Mail Transcription", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Activities", { selector: "th" })).toBeInTheDocument();
       const tableRows = rendered.getAllByTestId("table-row");
+      const tableHeaders = rendered.getAllByTestId("table-header");
       expect(tableRows.length).toBe(2);
+      expect(tableHeaders.length).toBe(16);
     });
 
     test("should render correct tooltips", async () => {
