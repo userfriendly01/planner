@@ -72,7 +72,23 @@ describe("<ProfileSettingsTable />", () => {
       voice_mail_transcription_i: {
         data: [0]
       },
-      activities: '["Offline", "Available", "Busy"]'
+      activities: [
+        {
+          id: 1,
+          name: "Offline",
+          availability: 0
+        },
+        {
+          id: 2,
+          name: "Available",
+          availability: 1
+        },
+        {
+          id: 9,
+          name: "Busy",
+          availability: 0
+        }
+      ]
     },
     {
       profile_id: 2,
@@ -111,7 +127,23 @@ describe("<ProfileSettingsTable />", () => {
       voice_mail_transcription_i: {
         data: [0]
       },
-      activities: '["Offline", "Available", "Busy"]'
+      activities: [
+        {
+          id: 1,
+          name: "Offline",
+          availability: 0
+        },
+        {
+          id: 2,
+          name: "Available",
+          availability: 1
+        },
+        {
+          id: 9,
+          name: "Busy",
+          availability: 0
+        }
+      ]
     }
   ];
 
