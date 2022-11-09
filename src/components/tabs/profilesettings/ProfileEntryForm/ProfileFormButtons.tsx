@@ -151,7 +151,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     editProfile(payload).then(() => {
       updateLoading({
         ...loading,
-        overlayMessage: `Successfully updated profile with ID ${form.profileId}}`,
+        overlayMessage: `Successfully updated profile with ID ${form.profileId}`,
         saveStatus: ModalOverlayStatuses.SUCCESS,
         saveProfile: true
       });

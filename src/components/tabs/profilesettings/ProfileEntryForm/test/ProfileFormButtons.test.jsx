@@ -21,10 +21,7 @@ import {
   waitFor,
   validProfileEntryFormState
 } from "testUtils";
-import {
-  createProfile,
-  editProfile
-} from "services";
+import { createProfile } from "services";
 
 jest.useFakeTimers();
 

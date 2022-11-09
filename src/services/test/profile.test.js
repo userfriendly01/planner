@@ -37,10 +37,10 @@ describe("call to CREATE_PROFILE fails", () => {
 });
 
 describe("call to EDIT_PROFILE succeeds", () => {
-  const profileData = { profile_id: 52 };
-  beforeEach(() => axiosMock.onPut(apiPaths.PROFILES).reply(200, profileData));
+  const profileData = { profile_id: 1 };
+  beforeEach(() => axiosMock.onPut(`${apiPaths.PROFILES}/${profileData.profile_id}`).replyOnce(200, profileData));
   test("should resolve with profile data", done => {
-    editProfile({ attributes: "whatever" })
+    editProfile(profileData)
       .then(resolvedValue => {
         expect(resolvedValue.data).toEqual(profileData);
         done();
@@ -49,9 +49,10 @@ describe("call to EDIT_PROFILE succeeds", () => {
 });
 
 describe("call to EDIT_PROFILE fails", () => {
-  beforeEach(() => axiosMock.onPut(apiPaths.PROFILES).replyOnce(500, "uh oh"));
+  const profileData = { profile_id: 1 };
+  beforeEach(() => axiosMock.onPut(`${apiPaths.PROFILES}/${profileData.profile_id}`).replyOnce(500, "uh oh"));
   test("should reject with error", done => {
-    editProfile({ attributes: "whatever" })
+    editProfile(profileData)
       .catch(rejectedValue => {
         expect(rejectedValue).toEqual(new Error("Request failed with status code 500"));
         done();
