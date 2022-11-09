@@ -90,10 +90,12 @@ const ProfileSettingsContainer = () => {
     <ProfileEntryFormStateProvider>
       <ProfileSettingsContainerDiv>
         <Modal onClose={() => { return; }} open={profileModalState.open}>
-          <ProfileEntryForm
-            handleClose={() => setProfileModalState(initialProfileModalState)}
-            profile={profileModalState.profile}
-          />
+          <>
+            <ProfileEntryForm
+              handleClose={() => setProfileModalState(initialProfileModalState)}
+              profile={profileModalState.profile}
+            />
+          </>
         </Modal>
         <ProfileSettingsDropdownWrapper>
           <Dropdown
@@ -155,7 +157,7 @@ const ProfileSettingsContainer = () => {
                       </AddProfileButton>
                     </ControlItem>
                   </ControlsWrapper>
-                : null
+                  : null
               }
               <ProfileSettingsTable
                 profileList={profilesFromContextMinusGoP}
