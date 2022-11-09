@@ -148,3 +148,52 @@ export const invalidProfileEntryFormState = {
     valid: false
   }
 };
+
+export const initialProfileEditEntryFormState = {
+  profileId: 1,
+  activitiesList: [],
+  formMode: formModes.UPDATE,
+  autoAnswered: {
+    value: true
+  },
+  inboundRecorded: {
+    value: true
+  },
+  outboundRecorded: {
+    value: true
+  },
+  acwOption: {
+    value: false
+  },
+  manualRecorded: {
+    value: false
+  },
+  acwDataEntry: {
+    value: false
+  },
+  manualRecordedInbound: {
+    value: false
+  },
+  agentAssistedPay: {
+    value: false
+  },
+  voiceMailTranscription: {
+    value: false
+  },
+  paymentProcessing: {
+    value: false
+  },
+  policyNumberEdit: {
+    value: false
+  },
+  overflowSkill: {
+    value: "Overflow Skill",
+    updated: false,
+    valid: true
+  },
+  profileName: {
+    value: "Test Profile",
+    updated: false,
+    valid: true
+  }
+};
