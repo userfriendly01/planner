@@ -4,6 +4,7 @@ export * from "./createUser";
 export * from "./deleteUser";
 export * from "./directory";
 export * from "./fetchUser";
+export * from "./flowTableService";
 export * from "./manager";
 export * from "./message";
 export * from "./office";
