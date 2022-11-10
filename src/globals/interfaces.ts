@@ -123,6 +123,24 @@ export interface TritonProfile {
   activities: string
 }
 
+export interface ProfilePayload {
+  profile_id: null | number,
+  profile_nme: string,
+  activity_id: Array<number>,
+  recorded_i: boolean,
+  auto_answd_i: boolean,
+  pmt_prcsg_i: boolean,
+  otbnd_recorded_i: boolean,
+  acw_option_i: boolean,
+  manual_recorded_i: boolean,
+  acw_data_entry_i: boolean,
+  manual_record_inbound_i: boolean,
+  agent_assisted_pay_i: boolean,
+  overflow_skill: string | null,
+  policy_number_edit_i: boolean,
+  voice_mail_transcription_i: boolean
+}
+
 export interface Activity {
   activity_id: number,
   activity_nme: string,
