@@ -1,8 +1,9 @@
 import React from "react";
+import DataGridFlow from "./DataGridFlow/DataGridFlow";
 
 const AlohaFlowContainer = () => {
   return (
-    <div>Aloha Call Flow Tab Under Construction</div>
+    <DataGridFlow></DataGridFlow>
   );
 };
 
