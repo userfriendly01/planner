@@ -1,8 +1,6 @@
 /* eslint-disable no-console */
 
-// import * as constants from "../common/constants";
-const constants = {};
-constants["API_URL"] = "https://2yooyvouuzeq7evpxtv5ojad3m.appsync-api.us-east-1.amazonaws.com/graphql";
+import { getGraphQLEndpoint } from "../utils";
 
 /**
  * This is the function use to query the appsync API to get the data from DB
@@ -13,7 +11,7 @@ constants["API_URL"] = "https://2yooyvouuzeq7evpxtv5ojad3m.appsync-api.us-east-1
 async function queryFlowData(accessToken, nextToken = null) {
   let result = {};
   try {
-    const response = await fetch(constants.API_URL, {
+    const response = await fetch(getGraphQLEndpoint(), {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -100,7 +98,7 @@ async function retrieveFlowData(accessToken) {
 async function updateFlowDB(item, accessToken) {
   let response;
   try {
-    const fetchResponse = await fetch(constants.API_URL, {
+    const fetchResponse = await fetch(getGraphQLEndpoint(), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -195,7 +193,7 @@ async function addFlowRule(item, accessToken) {
     || [];
 
   try {
-    const fetchResponse = await fetch(constants.API_URL, {
+    const fetchResponse = await fetch(getGraphQLEndpoint(), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -284,7 +282,7 @@ async function addFlowRule(item, accessToken) {
 async function deleteFlowRule(item, accessToken) {
   let response;
   try {
-    const fetchResponse = await fetch(constants.API_URL, {
+    const fetchResponse = await fetch(getGraphQLEndpoint(), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
