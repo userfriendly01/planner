@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import { getGraphQLEndpoint } from "../utils";
+import { getGraphQLEndpoint } from "utils";
 
 /**
  * This is the function use to query the appsync API to get the data from DB

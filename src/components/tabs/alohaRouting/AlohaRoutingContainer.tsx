@@ -1,8 +1,9 @@
 import React from "react";
+import { DataGridRouting } from "./DataGridRouting";
 
 const AlohaRoutingContainer = () => {
   return (
-    <div>Aloha Routing Flow Tab Under Construction</div>
+    <DataGridRouting />
   );
 };
 
