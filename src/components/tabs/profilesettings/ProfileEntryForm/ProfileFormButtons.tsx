@@ -32,6 +32,9 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   const form = profileEntryFormState();
   const setForm = profileEntryFormDispatch();
 
+  // #####
+  console.log("########## form: ", form);
+
   const doCreateProfile = () => {
     updateLoading({
       ...loading,
@@ -54,8 +57,12 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       agent_assisted_pay_i: form.agentAssistedPay,
       overflow_skill: form.overflowSkill.value || null,
       policy_number_edit_i: form.policyNumberEdit,
-      voice_mail_transcription_i: form.voiceMailTranscription
+      voice_mail_transcription_i: form.voiceMailTranscription,
+      click_to_dial_i: form.clickToDial
     };
+
+    // #####
+    console.log("########## payload: ", payload);
 
     createProfile(payload).then(response => {
       updateLoading({

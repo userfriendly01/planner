@@ -50,6 +50,10 @@ const ProfileSettingsContainer = () => {
   const profilesFromContextMinusGoP = useAdminState().profileContext.profiles.filter(({ profile_id }) => profile_id !== 0);
   const loggedInRepNNumber = useAdminState().userContext.pingIdentity.sub;
 
+  // #####
+  console.log("########## loggedInRepNNumber: ", loggedInRepNNumber);
+  console.log("########## profilesFromContextMinusGoP: ", profilesFromContextMinusGoP);
+
   const fetchProfileInformation = profileId => {
     myAxios.get(apiPaths.GET_PROFILE_DATA(profileId))
       .then(res => {

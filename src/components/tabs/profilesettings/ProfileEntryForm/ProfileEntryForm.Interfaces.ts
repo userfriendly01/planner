@@ -59,7 +59,8 @@ export interface ProfileEntryFormState {
   agentAssistedPay: boolean,
   paymentProcessing: boolean,
   policyNumberEdit: boolean,
-  voiceMailTranscription: boolean
+  voiceMailTranscription: boolean,
+  clickToDial: boolean
 }
 
 export interface ToggleFormField {

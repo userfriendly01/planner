@@ -30,6 +30,7 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
   paymentProcessing: false,
   policyNumberEdit: false,
   voiceMailTranscription: false,
+  clickToDial: false,
   overflowSkill: {
     value: "",
     valid: true
