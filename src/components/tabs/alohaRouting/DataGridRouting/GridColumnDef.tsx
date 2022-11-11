@@ -5,44 +5,51 @@ export const RoutingGridColumnDef: GridColDef[] = [
     headerName: "ID",
     field: "id",
     sortable: true,
-    width: 60
+    width: 60,
+    align: "center",
+    headerClassName: "routing-table-header"
   },
   {
     headerName: "Brand",
     field: "brand",
     sortable: true,
-    width: 80
+    width: 80,
+    align: "center"
   },
   {
     headerName: "Caller State",
     field: "callerState",
     sortable: true,
-    width: 110
+    width: 110,
+    align: "center"
   },
   {
     headerName: "Caller Type",
     field: "callerType",
     sortable: true,
-    width: 110
+    width: 110,
+    align: "center"
   },
   {
     headerName: "Caller Intent",
     field: "callIntent",
     sortable: true,
-    width: 110
+    width: 110,
+    align: "center"
   },
   {
     headerName: "Channel",
     field: "channel",
     sortable: true,
-    width: 110
+    width: 110,
+    align: "center"
   },
   {
     headerName: "Day Of Week",
     field: "dayOfWeek",
     sortable: true,
     align: "center",
-    width: 120,
+    width: 80,
   },
   {
     headerName: "Transfer Dest.",

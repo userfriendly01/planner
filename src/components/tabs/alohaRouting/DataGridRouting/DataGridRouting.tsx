@@ -1,14 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { DataGrid } from "@mui/x-data-grid";
+import React, { useEffect } from "react";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { CircularProgress } from "@mui/material";
 import { RoutingGridColumnDef } from "./GridColumnDef"
-import { CctSharedCallRoutingGlobalDb, RoutingFilter, RoutingMasterData } from "../AlohaRouting.Interfaces";
+import { CctSharedCallRoutingGlobalDb, RoutingFilter, RoutingInitState, RoutingMasterData } from "../AlohaRouting.Interfaces";
 import { retrieveRoutingData } from "services";
-import { CACHED_CALL_ROUTING_PER_PAGE, CACHE_FILTER_ROUTING, getAccessToken, routingInitState } from "utils";
+import { CACHED_CALL_ROUTING_PAGE_NO, CACHED_CALL_ROUTING_PER_PAGE, CACHE_FILTER_ROUTING, getAccessToken, routingInitState } from "utils";
 import { getGridMasterData } from "./GridMaster";
+import { RoutingTableBox } from "../AlohaRouting.Styles";
 
 export const DataGridRouting = () => {
     const accessToken: string = getAccessToken();
-    const [state, setState] = useState(routingInitState);
+    const reducer = (state: RoutingInitState, updatedState: RoutingInitState): RoutingInitState => {
+        return { ...state, ...updatedState }
+    }
+    const [state, dispatch] = React.useReducer(reducer, routingInitState);
 
     const getAdvanceFilter = (): RoutingFilter => {
         try {
@@ -48,9 +53,9 @@ export const DataGridRouting = () => {
             });
             console.log('filterRecords>', advanceFilteredArray);
 
-            setState({ ...state, filteredItems: advanceFilteredArray });
+            dispatch({ filteredItems: advanceFilteredArray });
         } else {
-            setState({ ...state, filteredItems: result });
+            dispatch({ filteredItems: result });
         }
     }
 
@@ -60,8 +65,7 @@ export const DataGridRouting = () => {
             const sortedResult = result.sort(((a, b) => a.id - b.id));
             const minId = sortedResult[0].id;
             const maxId = sortedResult[result.length - 1].id;
-            setState({
-                ...state,
+            dispatch({
                 data: result,
                 filteredItems: result,
                 fetching: false,
@@ -76,10 +80,9 @@ export const DataGridRouting = () => {
             if (advanceFilterLength > 0) {
                 filterRecords();
             }
-            setState({ ...state, masterData });
+            dispatch({ masterData });
         } else {
-            setState({
-                ...state,
+            dispatch({
                 data: result,
                 filteredItems: result,
                 fetching: false,
@@ -89,22 +92,39 @@ export const DataGridRouting = () => {
     }
     const setPerPage = (newPageSize: number) => {
         sessionStorage.setItem(CACHED_CALL_ROUTING_PER_PAGE, newPageSize.toString());
-        setState({ ...state, perPage: newPageSize });
+        dispatch({ perPage: newPageSize });
+    }
+
+    const setPage = (newPage: number) => {
+        sessionStorage.setItem(CACHED_CALL_ROUTING_PAGE_NO, newPage.toString());
+        dispatch({ page: newPage });
     }
 
     useEffect(() => {
-        loadDataTable();
-    })
+        loadDataTable().then(() => {
+            console.log("Data Table:", state.filteredItems);
+        });
+    }, [dispatch])
 
     return (
-        <div style={{ height: 400, width: '100%' }}>
+        <RoutingTableBox>
             <DataGrid
                 rows={state.filteredItems}
                 columns={RoutingGridColumnDef}
-                pageSize={5}
+                page={state.page}
+                pageSize={state.perPage}
+                onPageChange={(newPage: number) => setPage(newPage)}
                 onPageSizeChange={(newPageSize: number) => setPerPage(newPageSize)}
                 rowsPerPageOptions={[10, 20, 50, 100]}
+                paginationMode="client"
+                pagination
+                checkboxSelection
+                components={
+                    {
+                        Toolbar: GridToolbar
+                    }
+                }
             />
-        </div>
+        </RoutingTableBox>
     )
 }

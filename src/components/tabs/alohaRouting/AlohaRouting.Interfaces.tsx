@@ -56,5 +56,5 @@ export interface RoutingInitState {
     saveSuccess?: boolean;
     page?: number;
     perPage?: number;
-    masterData? : RoutingMasterData;
+    masterData?: RoutingMasterData;
 }
