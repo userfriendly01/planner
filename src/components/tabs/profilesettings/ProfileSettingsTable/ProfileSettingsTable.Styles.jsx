@@ -90,6 +90,10 @@ export const BubbleDiv = styled.div`
   padding: 1 3;
 `;
 
+export const HighlightRed = styled.span`
+  color: #ff0000;
+`;
+
 export const IconWrapper = styled.div`
   align-items: center;
   border-radius: 10px;

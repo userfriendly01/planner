@@ -1,6 +1,9 @@
 import React from "react";
 import { Check } from "@mui/icons-material";
-import { BubbleDiv } from "../components/tabs/profilesettings/ProfileSettingsTable/ProfileSettingsTable.Styles";
+import {
+  BubbleDiv,
+  HighlightRed
+} from "../components/tabs/profilesettings/ProfileSettingsTable/ProfileSettingsTable.Styles";
 
 export const formatProfileBooleanData = value => {
   if (value === 1) {
@@ -23,10 +26,10 @@ export const formatProfileACWDataEntry = (value, options) => {
     });
   }
   if (value === 1 && !options.length) {
-    return "Options not configured but feature enabled";
+    return  <HighlightRed>{"Options not configured but feature enabled"}</HighlightRed>;
   }
   if (value === 0 && options.length) {
-    return "Options configured but feature disabled";
+    return  <HighlightRed>{"Options configured but feature disabled"}</HighlightRed>;
   }
   return "";
 };
