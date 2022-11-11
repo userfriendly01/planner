@@ -12,7 +12,6 @@ export const checkIfAdmin = (profileId: number): boolean => {
 
 export const checkIfPO = (nNumber: string): boolean => {
   const productOwners = [
-    "n1576459",
     "n0138110",
     "n0116796",
     "n0088625",
