@@ -6,7 +6,7 @@
   formatOverflowSkillData,
   formatActivityData
  } from "../profileUtils";
- import { ActivitiesDiv } from "../../components/tabs/profilesettings/ProfileSettingsTable/ProfileSettingsTable.Styles"
+ import { BubbleDiv } from "../../components/tabs/profilesettings/ProfileSettingsTable/ProfileSettingsTable.Styles"
 
 describe("profileUtils", () => {
   describe("formatProfileBooleanData", () => {
@@ -38,7 +38,7 @@ describe("profileUtils", () => {
 
   describe("formatActivityData", () => {
     test("should return activity within activity div", () => {
-      expect(formatActivityData("Busy")).toStrictEqual(<ActivitiesDiv>{"Busy"}</ActivitiesDiv>);
+      expect(formatActivityData("Busy")).toStrictEqual(<BubbleDiv>{"Busy"}</BubbleDiv>);
     });
     test("should return empty string for null activity", () => {
       expect(formatActivityData(null)).toBe("");

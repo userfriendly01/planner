@@ -1,6 +1,6 @@
 import React from "react";
 import { Check } from "@mui/icons-material";
-import { ActivitiesDiv } from "../components/tabs/profilesettings/ProfileSettingsTable/ProfileSettingsTable.Styles";
+import { BubbleDiv } from "../components/tabs/profilesettings/ProfileSettingsTable/ProfileSettingsTable.Styles";
 
 export const formatProfileBooleanData = value => {
   if (value === 1) {
@@ -16,6 +16,17 @@ export const formatProfileBooleanDataTrueFalse = value => {
   return { value: false };
 };
 
+export const formatProfileACWDataEntry = (value, options) => {
+  if (value === 1 && options) {
+    return options.map(option => {
+      return <BubbleDiv>{option.display_nme}</BubbleDiv>;
+    })
+  }
+  if (value === 0 ) {
+    return ''
+  }
+};
+
 export const formatOverflowSkillData = overflowSkill => {
   if (overflowSkill === null) {
     return  "";
@@ -27,7 +38,7 @@ export const formatActivityData = activity => {
   if (activity === null) {
     return "";
   }
-  return <ActivitiesDiv>{activity}</ActivitiesDiv>;
+  return <BubbleDiv>{activity}</BubbleDiv>;
 };
 
 export const profileSettingsViews = [

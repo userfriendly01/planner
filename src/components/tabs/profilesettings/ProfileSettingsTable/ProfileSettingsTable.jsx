@@ -13,6 +13,7 @@ import {
 import {
   checkIfPO,
   formatProfileBooleanData,
+  formatProfileACWDataEntry,
   formatOverflowSkillData,
   formatActivityData,
   sortProfilesById,
@@ -128,7 +129,7 @@ const ProfileSettingsTable = props => {
                       <TableText>{formatProfileBooleanData(profile.manual_recorded_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(profile.acw_data_entry_i.data[0])}</TableText>
+                      <TableText>{formatProfileACWDataEntry(profile.acw_data_entry_i.data[0], workerTaskInfo.filter(data => data.profile_id === profile.profile_id))}</TableText>
                     </CustomTableData>
                     <CustomTableData>
                       <TableText>{formatProfileBooleanData(profile.manual_record_inbound_i.data[0])}</TableText>

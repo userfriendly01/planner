@@ -79,7 +79,7 @@ export const TableDataFlex = styled.div`
    flex-wrap: wrap;
  `;
 
-export const ActivitiesDiv = styled.div`
+export const BubbleDiv = styled.div`
   border-color: #C0BFC0;
   border-style: solid;
   border-radius: 5px;
