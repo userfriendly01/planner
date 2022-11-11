@@ -22,9 +22,13 @@ export const formatProfileACWDataEntry = (value, options) => {
       return <BubbleDiv>{option.display_nme}</BubbleDiv>;
     })
   }
-  if (value === 0 ) {
-    return ''
+  if (value === 1 && !options) {
+    return 'Options not configured!'
   }
+  if (value === 0 && options) {
+    return 'Options configured but feature disabled'
+  }
+  return ''
 };
 
 export const formatOverflowSkillData = overflowSkill => {
