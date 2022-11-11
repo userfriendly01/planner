@@ -26,10 +26,10 @@ export const formatProfileACWDataEntry = (value, options) => {
     });
   }
   if (value === 1 && !options.length) {
-    return  <HighlightRed>{"Options not configured but feature enabled"}</HighlightRed>;
+    return  <BubbleDiv><HighlightRed>{"Options not configured but feature enabled"}</HighlightRed></BubbleDiv>;
   }
   if (value === 0 && options.length) {
-    return  <HighlightRed>{"Options configured but feature disabled"}</HighlightRed>;
+    return  <BubbleDiv><HighlightRed>{"Options configured but feature disabled"}</HighlightRed></BubbleDiv>;
   }
   return "";
 };
