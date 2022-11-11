@@ -30,7 +30,7 @@ export const mapWorkerFromDbWorker = (dbWorker: DbWorker): Worker => {
   };
   delete worker.workerSid;
   if (worker.attributes?.manager_n_number) {
-    worker.attributes.manager_n_number = worker.attributes.manager_n_number.toLowerCase()
+    worker.attributes.manager_n_number = worker.attributes.manager_n_number.toLowerCase();
   }
   return worker;
 };
