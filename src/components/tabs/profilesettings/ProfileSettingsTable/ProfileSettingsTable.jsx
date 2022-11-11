@@ -21,16 +21,30 @@ import { Tooltip } from "@mui/material";
 import { Edit } from "@mui/icons-material";
 import {
   profileTableColumnHeader,
-  formModes
+  formModes,
+  apiPaths
 } from "globals";
 import {
   profileEntryFormDispatch,
   profileEntryFormActions
 } from "context";
 
+const getWorkerTaskInfo = () => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_PROFILE_WORKER_TASK_INFO)
+  .then(res => {
+    resolve(res.data);
+  })
+  .catch(error => {
+    reject({
+      msg: "Failed to fetch worker task info from service",
+      error
+    });
+  })
+);
+
 const ProfileSettingsTable = props => {
   const { profileList, loggedInRep, setProfileModalState } = props;
   const setForm = profileEntryFormDispatch();
+  const [workerTaskInfo, setWorkerTaskInfo] = React.useState([]);
 
   const editButtonOnClick = (profile) => event => {
     event.stopPropagation();
@@ -46,6 +60,17 @@ const ProfileSettingsTable = props => {
     });
   };
 
+  React.useEffect(() => {
+    if(!workerTaskInfo.length) {
+      getWorkerTaskInfo()
+        .then((allWorkerTaskInfo) => {
+          setWorkerTaskInfo(allWorkerTaskInfo);
+        })
+        .catch(error => console.error(error.msg));
+    }
+  }, []);
+
+  console.log('workerTaskInfo', workerTaskInfo);
   return(
     <TableContainer>
       <StyledPaper elevation={3}>
