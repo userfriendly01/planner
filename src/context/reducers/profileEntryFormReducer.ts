@@ -17,7 +17,7 @@ export const profileEntryFormActions = {
   SET_PROFILE_NAME: "SET_PROFILE_NAME",
   SET_OVERFLOW_SKILL: "SET_OVERFLOW_SKILL",
   UPDATE_ACTIVITIES_LIST: "UPDATE_ACTIVITIES_LIST",
-  SET_UPDATE_PROFILE_FORM_STATE: "SET_UPDATE_PROFILE_FORM_STATE",
+  SET_UPDATE_PROFILE_FORM_STATE: "SET_UPDATE_PROFILE_FORM_STATE"
 };
 
 export const initialProfileEntryFormState: ProfileEntryFormState = {
@@ -118,8 +118,8 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
             data: [activity.availability],
             type: "Buffer"
           }
-        }
-      })
+        };
+      });
 
       return {
         ...state,

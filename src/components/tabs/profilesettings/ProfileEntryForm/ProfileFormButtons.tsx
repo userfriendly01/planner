@@ -102,23 +102,23 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     });
 
     const payload: Partial<ProfilePayload> = {
-      profile_id: form.profileId,
+      profile_id: form.profileId
     };
 
-    form.profileName.updated ? payload.profile_nme = form.profileName.value : null
-    form.overflowSkill.updated ? payload.overflow_skill = form.overflowSkill.value || null : null
-    form.activitiesUpdated ? payload.activity_id = form.activitiesList.map(activity => activity.activity_id) : null
-    form.inboundRecorded.updated ? payload.recorded_i = form.inboundRecorded.value : null
-    form.autoAnswered.updated ? payload.auto_answd_i = form.autoAnswered.value : null
-    form.paymentProcessing.updated ? payload.pmt_prcsg_i = form.paymentProcessing.value : null
-    form.outboundRecorded.updated ? payload.otbnd_recorded_i = form.outboundRecorded.value : null
-    form.acwOption.updated ? payload.acw_option_i = form.acwOption.value : null
-    form.manualRecorded.updated ? payload.manual_recorded_i = form.manualRecorded.value : null
-    form.acwDataEntry.updated ? payload.acw_data_entry_i = form.acwDataEntry.value : null
-    form.manualRecordedInbound.updated ? payload.manual_record_inbound_i = form.manualRecordedInbound.value : null
-    form.agentAssistedPay.updated ? payload.agent_assisted_pay_i = form.agentAssistedPay.value : null
-    form.policyNumberEdit.updated ? payload.policy_number_edit_i = form.policyNumberEdit.value : null
-    form.voiceMailTranscription.updated ? payload.voice_mail_transcription_i = form.voiceMailTranscription.value : null
+    form.profileName.updated ? payload.profile_nme = form.profileName.value : null;
+    form.overflowSkill.updated ? payload.overflow_skill = form.overflowSkill.value || null : null;
+    form.activitiesUpdated ? payload.activity_id = form.activitiesList.map(activity => activity.activity_id) : null;
+    form.inboundRecorded.updated ? payload.recorded_i = form.inboundRecorded.value : null;
+    form.autoAnswered.updated ? payload.auto_answd_i = form.autoAnswered.value : null;
+    form.paymentProcessing.updated ? payload.pmt_prcsg_i = form.paymentProcessing.value : null;
+    form.outboundRecorded.updated ? payload.otbnd_recorded_i = form.outboundRecorded.value : null;
+    form.acwOption.updated ? payload.acw_option_i = form.acwOption.value : null;
+    form.manualRecorded.updated ? payload.manual_recorded_i = form.manualRecorded.value : null;
+    form.acwDataEntry.updated ? payload.acw_data_entry_i = form.acwDataEntry.value : null;
+    form.manualRecordedInbound.updated ? payload.manual_record_inbound_i = form.manualRecordedInbound.value : null;
+    form.agentAssistedPay.updated ? payload.agent_assisted_pay_i = form.agentAssistedPay.value : null;
+    form.policyNumberEdit.updated ? payload.policy_number_edit_i = form.policyNumberEdit.value : null;
+    form.voiceMailTranscription.updated ? payload.voice_mail_transcription_i = form.voiceMailTranscription.value : null;
 
     editProfile(payload).then(() => {
       updateLoading({

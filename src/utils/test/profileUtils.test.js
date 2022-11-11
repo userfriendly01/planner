@@ -1,12 +1,12 @@
- import React from "react";
- import { Check } from "@mui/icons-material";
- import {
+import React from "react";
+import { Check } from "@mui/icons-material";
+import {
   formatProfileBooleanData,
   formatProfileBooleanDataTrueFalse,
   formatOverflowSkillData,
   formatActivityData
- } from "../profileUtils";
- import { BubbleDiv } from "../../components/tabs/profilesettings/ProfileSettingsTable/ProfileSettingsTable.Styles"
+} from "../profileUtils";
+import { BubbleDiv } from "../../components/tabs/profilesettings/ProfileSettingsTable/ProfileSettingsTable.Styles";
 
 describe("profileUtils", () => {
   describe("formatProfileBooleanData", () => {

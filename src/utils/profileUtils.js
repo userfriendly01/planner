@@ -20,7 +20,7 @@ export const formatProfileACWDataEntry = (value, options) => {
   if (value === 1 && options) {
     return options.map(option => {
       return <BubbleDiv key={option.wrkr_tsk_info_id}>{option.display_nme}</BubbleDiv>;
-    })
+    });
   }
   if (value === 1 && !options) {
     return "Options not configured but feature enabled";
