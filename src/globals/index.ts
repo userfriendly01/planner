@@ -85,6 +85,10 @@ export const profileTableColumnHeader = [
   {
     COLUMN_NAME: "Activities",
     TOOLTIP: "Profile Activities"
+  },
+  {
+    COLUMN_NAME: "",
+    TOOLTIP: ""
   }
 ];
 

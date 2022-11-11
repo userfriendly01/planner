@@ -39,9 +39,9 @@ const ProfileSettingsContainer = () => {
     message: "Please select a profile",
     profileId: null
   };
+  
   const initialProfileModalState = {
-    open: false,
-    profile: null
+    open: false
   };
 
   const [profileSettingsState, setProfileSettingsState] = useState(initialProfileState);
@@ -82,8 +82,7 @@ const ProfileSettingsContainer = () => {
   } = profileSettingsState;
 
   const addProfileOnClick = () => setProfileModalState({
-    open: true,
-    profile: null
+    open: true
   });
 
   return(
@@ -93,7 +92,6 @@ const ProfileSettingsContainer = () => {
           <>
             <ProfileEntryForm
               handleClose={() => setProfileModalState(initialProfileModalState)}
-              profile={profileModalState.profile}
             />
           </>
         </Modal>
@@ -161,6 +159,8 @@ const ProfileSettingsContainer = () => {
               }
               <ProfileSettingsTable
                 profileList={profilesFromContextMinusGoP}
+                loggedInRep={loggedInRepNNumber}
+                setProfileModalState={setProfileModalState}
               />
             </SettingsContainer>
         }

@@ -7,19 +7,44 @@ import {
   TableText,
   StyledPaper,
   TableContainer,
-  TableDataFlex
+  TableDataFlex,
+  IconWrapper
 } from "./ProfileSettingsTable.Styles";
 import {
+  checkIfPO,
   formatProfileBooleanData,
   formatOverflowSkillData,
   formatActivityData,
   sortProfilesById
- } from "utils";
+} from "utils";
 import { Tooltip } from "@mui/material";
-import { profileTableColumnHeader } from "globals";
+import { Edit } from "@mui/icons-material";
+import {
+  profileTableColumnHeader,
+  formModes
+} from "globals";
+import {
+  profileEntryFormDispatch,
+  profileEntryFormActions
+} from "context";
 
 const ProfileSettingsTable = props => {
-  const { profileList } = props;
+  const { profileList, loggedInRep, setProfileModalState } = props;
+  const setForm = profileEntryFormDispatch();
+
+  const editButtonOnClick = (profile) => event => {
+    event.stopPropagation();
+    setForm({
+      type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
+      payload: {
+        formMode: formModes.UPDATE,
+        profile
+      }
+    });
+    setProfileModalState({
+      open: true
+    });
+  };
 
   return(
     <TableContainer>
@@ -31,7 +56,7 @@ const ProfileSettingsTable = props => {
                 profileTableColumnHeader.map(entry => {
                   return(
                     <Tooltip placement="top" title={entry.TOOLTIP}>
-                      <CustomTableHeader>{entry.COLUMN_NAME}</CustomTableHeader>
+                      <CustomTableHeader data-testid="table-header">{entry.COLUMN_NAME}</CustomTableHeader>
                     </Tooltip>
                   )
                 })
@@ -89,11 +114,20 @@ const ProfileSettingsTable = props => {
                       <TableDataFlex>
                         {
                           JSON.parse(profile.activities).map(activity => {
-                            return formatActivityData(activity)
+                            return formatActivityData(activity.name)
                           })
                         }
                       </TableDataFlex>
                     </CustomTableData>
+                    {
+                      checkIfPO(loggedInRep) ?
+                        <CustomTableData>
+                          <IconWrapper onClick={editButtonOnClick(profile)} data-testid="edit-button">
+                            <Edit fontSize={"inherit"}/>
+                          </IconWrapper>
+                        </CustomTableData>
+                      : <CustomTableData />
+                    }
                   </CustomTableRow>
                 );
               })
