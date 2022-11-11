@@ -17,15 +17,15 @@ export const formatProfileBooleanDataTrueFalse = value => {
 };
 
 export const formatProfileACWDataEntry = (value, options) => {
-  if (value === 1 && options) {
+  if (value === 1 && options.length) {
     return options.map(option => {
       return <BubbleDiv key={option.wrkr_tsk_info_id}>{option.display_nme}</BubbleDiv>;
     });
   }
-  if (value === 1 && !options) {
+  if (value === 1 && !options.length) {
     return "Options not configured but feature enabled";
   }
-  if (value === 0 && options) {
+  if (value === 0 && options.length) {
     return "Options configured but feature disabled";
   }
   return "";
