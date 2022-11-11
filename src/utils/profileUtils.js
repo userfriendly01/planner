@@ -19,16 +19,16 @@ export const formatProfileBooleanDataTrueFalse = value => {
 export const formatProfileACWDataEntry = (value, options) => {
   if (value === 1 && options) {
     return options.map(option => {
-      return <BubbleDiv>{option.display_nme}</BubbleDiv>;
+      return <BubbleDiv key={option.wrkr_tsk_info_id}>{option.display_nme}</BubbleDiv>;
     })
   }
   if (value === 1 && !options) {
-    return 'Options not configured!'
+    return "Options not configured but feature enabled";
   }
   if (value === 0 && options) {
-    return 'Options configured but feature disabled'
+    return "Options configured but feature disabled";
   }
-  return ''
+  return "";
 };
 
 export const formatOverflowSkillData = overflowSkill => {
