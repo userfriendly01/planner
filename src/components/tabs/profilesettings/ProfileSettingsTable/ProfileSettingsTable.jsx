@@ -31,9 +31,13 @@ import {
 
 const getWorkerTaskInfo = () => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_PROFILE_WORKER_TASK_INFO)
   .then(res => {
+    console.log('res', res)
+    console.log('res.data', res.data)
+
     resolve(res.data);
   })
   .catch(error => {
+    console.error('Failed to fetch worker task info from service')
     reject({
       msg: "Failed to fetch worker task info from service",
       error
@@ -61,12 +65,17 @@ const ProfileSettingsTable = props => {
   };
 
   React.useEffect(() => {
+    console.log('workerTaskInfo length', workerTaskInfo.length);
+    console.log('workerTaskInfo length', !workerTaskInfo.length);
+
     if(!workerTaskInfo.length) {
       getWorkerTaskInfo()
         .then((allWorkerTaskInfo) => {
+          console.log('allWorkerTaskInfo', allWorkerTaskInfo);
+
           setWorkerTaskInfo(allWorkerTaskInfo);
         })
-        .catch(error => console.error(error.msg));
+        .catch(error => console.error("ERROR", error));
     }
   }, []);
 
