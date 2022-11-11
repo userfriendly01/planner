@@ -1,14 +1,14 @@
 /* eslint-disable no-console, max-len,  no-return-assign */
 
-const CACHE_MASTER_DATA = 'FLOW_MASTER_DATA';
-const masterDataItems = ['channel', 'brand', 'callerType', 'callFlowTemplate', 'callFlowRoute', 'pkey'];
-const masterDataItemsFromContent = ['callFlowRoute'];
-const filteredItems = [null, 'null', ''];
+const CACHE_MASTER_DATA = "FLOW_MASTER_DATA";
+const masterDataItems = ["channel", "brand", "callerType", "callFlowTemplate", "callFlowRoute", "pkey"];
+const masterDataItemsFromContent = ["callFlowRoute"];
+const filteredItems = [null, "null", ""];
 
 const clearGridMasterData = () => localStorage.removeItem(CACHE_MASTER_DATA);
 
 const getValueFromKeyPath = (element:any, key:any) => {
-  if (element == null) {
+  if (element === null) {
     return null;
   } if (masterDataItemsFromContent.includes(key)) {
     return element.content ? element.content[key] : element.content;
@@ -24,7 +24,7 @@ const getGridMasterData = (data:any = []) => {
       masterData = JSON.parse(masterData);
     } else {
       masterData = {};
-      data.forEach((elem:any) => masterDataItems.forEach((key) => {
+      data.forEach((elem: any) => masterDataItems.forEach(key => {
         const value = getValueFromKeyPath(elem, key);
         const isValueIsNull = filteredItems.includes(value);
         if (!masterData[key]) {
@@ -34,16 +34,16 @@ const getGridMasterData = (data:any = []) => {
           masterData[key].push(value);
         }
       }));
-      Object.keys(masterData).forEach((key) => masterData[key] = [...new Set(masterData[key])].sort());
+      Object.keys(masterData).forEach(key => masterData[key] = [...new Set(masterData[key])].sort());
       localStorage.setItem(CACHE_MASTER_DATA, JSON.stringify(masterData));
     }
   } catch (err) {
-    console.error('Error in parsing master data', err);
+    console.error("Error in parsing master data", err);
   }
   return masterData;
 };
 
 export {
   getGridMasterData,
-  clearGridMasterData,
+  clearGridMasterData
 };
