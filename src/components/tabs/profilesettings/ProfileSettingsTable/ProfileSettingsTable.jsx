@@ -32,7 +32,7 @@ const ProfileSettingsTable = props => {
   const { profileList, loggedInRep, setProfileModalState } = props;
   const setForm = profileEntryFormDispatch();
 
-  const editButtonOnClick = (profile) => event => {
+  const editButtonOnClick = profile => event => {
     event.stopPropagation();
     setForm({
       type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
@@ -55,10 +55,10 @@ const ProfileSettingsTable = props => {
               {
                 profileTableColumnHeader.map(entry => {
                   return(
-                    <Tooltip placement="top" title={entry.TOOLTIP}>
+                    <Tooltip key={entry.COLUMN_NAME} placement="top" title={entry.TOOLTIP}>
                       <CustomTableHeader data-testid="table-header">{entry.COLUMN_NAME}</CustomTableHeader>
                     </Tooltip>
-                  )
+                  );
                 })
               }
             </tr>
@@ -114,7 +114,7 @@ const ProfileSettingsTable = props => {
                       <TableDataFlex>
                         {
                           JSON.parse(profile.activities).map(activity => {
-                            return formatActivityData(activity.name)
+                            return <div key={`${activity.name}`}>{formatActivityData(activity.name)}</div>;
                           })
                         }
                       </TableDataFlex>
@@ -126,7 +126,7 @@ const ProfileSettingsTable = props => {
                             <Edit fontSize={"inherit"}/>
                           </IconWrapper>
                         </CustomTableData>
-                      : <CustomTableData />
+                        : <CustomTableData />
                     }
                   </CustomTableRow>
                 );
@@ -136,7 +136,7 @@ const ProfileSettingsTable = props => {
         </CustomTable>
       </StyledPaper>
     </TableContainer>
-  )
+  );
 };
 
 export default ProfileSettingsTable;

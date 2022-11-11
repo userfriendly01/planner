@@ -39,7 +39,7 @@ const ProfileSettingsContainer = () => {
     message: "Please select a profile",
     profileId: null
   };
-  
+
   const initialProfileModalState = {
     open: false
   };
