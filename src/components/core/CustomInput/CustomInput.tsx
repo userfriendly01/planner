@@ -29,7 +29,7 @@ export interface CustomInputProps {
   validator?: (value: string) => boolean,
   validatedServiceCall?: (value: string) => Promise<any>,
   value: string
-};
+}
 
 export const CustomInput = (props: CustomInputProps) => {
   const {
