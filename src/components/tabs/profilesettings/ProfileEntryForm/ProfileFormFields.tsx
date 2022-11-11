@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  ProfileFormFieldsProps,
   ToggleFormField
 } from "./ProfileEntryForm.Interfaces";
 import { formModes } from "globals";
@@ -26,11 +25,7 @@ import {
   OverflowSkillTextField
 } from "components";
 
-const ProfileFormFields = (props: ProfileFormFieldsProps) => {
-
-  const {
-    profile
-  } = props;
+const ProfileFormFields = () => {
 
   const form = profileEntryFormState();
   const setForm = profileEntryFormDispatch();
@@ -104,7 +99,7 @@ const ProfileFormFields = (props: ProfileFormFieldsProps) => {
                 labelPlacement="end"
                 control={<Switch
                   inputProps={{ "aria-label": "toggle-zero-out" }}
-                  checked={form[control.fieldKey]}
+                  checked={form[control.fieldKey].value}
                   onChange={() => setForm({
                     type: profileEntryFormActions.TOGGLE,
                     fieldKey: control.fieldKey
@@ -133,7 +128,7 @@ const ProfileFormFields = (props: ProfileFormFieldsProps) => {
                 labelPlacement="end"
                 control={<Switch
                   inputProps={{ "aria-label": "toggle-zero-out" }}
-                  checked={form[control.fieldKey]}
+                  checked={form[control.fieldKey].value}
                   onChange={() => setForm({
                     type: profileEntryFormActions.TOGGLE,
                     fieldKey: control.fieldKey
@@ -145,4 +140,5 @@ const ProfileFormFields = (props: ProfileFormFieldsProps) => {
     </FormControlsContainer>
   );
 };
+
 export default ProfileFormFields;

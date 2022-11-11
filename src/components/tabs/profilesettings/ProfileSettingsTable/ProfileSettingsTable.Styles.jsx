@@ -36,6 +36,9 @@ export const CustomTableHeader = styled.th`
   &:nth-child(16) {
     width: 15%;
   }
+  &:nth-child(17) {
+    width: 2%;
+  }
 `;
 
 export const CustomTableRow = styled.tr`
@@ -85,4 +88,20 @@ export const ActivitiesDiv = styled.div`
   font-weight: 800;
   margin: 2;
   padding: 1 3;
+`;
+
+export const IconWrapper = styled.div`
+  align-items: center;
+  border-radius: 10px;
+  color: #343741;
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  height: 20px;
+  justify-content: center;
+  width: 20px;
+  &:hover {
+    background-color: #AAEDED;
+    cursor: pointer;
+  }
 `;

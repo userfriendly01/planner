@@ -16,10 +16,7 @@ import {
 import { profileEntryFormState } from "context";
 
 const ProfileEntryForm = (props: ProfileEntryFormProps) => {
-  const {
-    handleClose,
-    profile
-  } = props;
+  const { handleClose } = props;
 
   const form = profileEntryFormState();
 
@@ -44,14 +41,11 @@ const ProfileEntryForm = (props: ProfileEntryFormProps) => {
           }}
         /> : null}
       <Header1>{form.formMode === formModes.INSERT ? "Add a Profile" : "Edit Profile"}</Header1>
-      <ProfileFormFields
-        profile={profile}
-      />
+      <ProfileFormFields />
       <ProfileFormButtons
         handleClose={handleClose}
         loading={loading}
         updateLoading={updateLoading}
-        profile={profile}
       />
     </ModalContainer>
   );

@@ -9,6 +9,13 @@ export const formatProfileBooleanData = value => {
   return "";
 };
 
+export const formatProfileBooleanDataTrueFalse = value => {
+  if (value === 1) {
+    return { value: true };
+  }
+  return { value: false };
+};
+
 export const formatOverflowSkillData = overflowSkill => {
   if (overflowSkill === null) {
     return  "";

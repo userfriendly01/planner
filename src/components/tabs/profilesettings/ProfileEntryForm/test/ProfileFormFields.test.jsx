@@ -23,7 +23,6 @@ import {
 } from "testUtils";
 import React from "react";
 
-
 jest.mock("components", () => ({
   __esModule: true,
   ProfileNameTextField: jest.fn(),
@@ -43,7 +42,6 @@ jest.mock("@mui/material", () => ({
   Switch: jest.fn()
 }));
 
-const mockProfile = {};
 const mockSetForm = jest.fn();
 
 describe("<ProfileFormFields />", () => {
@@ -63,9 +61,7 @@ describe("<ProfileFormFields />", () => {
 
   const renderComponent = () => {
     return render(
-      <ProfileFormFields
-        profile={mockProfile}
-      />, initialTestState
+      <ProfileFormFields />, initialTestState
     );
   };
 

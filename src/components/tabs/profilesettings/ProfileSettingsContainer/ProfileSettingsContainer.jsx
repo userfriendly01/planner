@@ -39,9 +39,9 @@ const ProfileSettingsContainer = () => {
     message: "Please select a profile",
     profileId: null
   };
+
   const initialProfileModalState = {
-    open: false,
-    profile: null
+    open: false
   };
 
   const [profileSettingsState, setProfileSettingsState] = useState(initialProfileState);
@@ -49,10 +49,6 @@ const ProfileSettingsContainer = () => {
 
   const profilesFromContextMinusGoP = useAdminState().profileContext.profiles.filter(({ profile_id }) => profile_id !== 0);
   const loggedInRepNNumber = useAdminState().userContext.pingIdentity.sub;
-
-  // #####
-  console.log("########## loggedInRepNNumber: ", loggedInRepNNumber);
-  console.log("########## profilesFromContextMinusGoP: ", profilesFromContextMinusGoP);
 
   const fetchProfileInformation = profileId => {
     myAxios.get(apiPaths.GET_PROFILE_DATA(profileId))
@@ -86,8 +82,7 @@ const ProfileSettingsContainer = () => {
   } = profileSettingsState;
 
   const addProfileOnClick = () => setProfileModalState({
-    open: true,
-    profile: null
+    open: true
   });
 
   return(
@@ -96,7 +91,6 @@ const ProfileSettingsContainer = () => {
         <Modal onClose={() => { return; }} open={profileModalState.open}>
           <ProfileEntryForm
             handleClose={() => setProfileModalState(initialProfileModalState)}
-            profile={profileModalState.profile}
           />
         </Modal>
         <ProfileSettingsDropdownWrapper>
@@ -159,10 +153,12 @@ const ProfileSettingsContainer = () => {
                       </AddProfileButton>
                     </ControlItem>
                   </ControlsWrapper>
-                : null
+                  : null
               }
               <ProfileSettingsTable
                 profileList={profilesFromContextMinusGoP}
+                loggedInRep={loggedInRepNNumber}
+                setProfileModalState={setProfileModalState}
               />
             </SettingsContainer>
         }

@@ -3,8 +3,9 @@ import {
   initialProfileEntryFormState,
   profileEntryFormActions
 } from "context";
+import { formModes } from "globals";
 
-describe("userFormReducer", () => {
+describe("profileEntryFormReducer", () => {
 
   describe("Default Case", () => {
     test("should return state", () => {
@@ -18,7 +19,9 @@ describe("userFormReducer", () => {
     test("should reset form to initial state", () => {
       const initialTestState = {
         ...initialProfileEntryFormState,
-        policyNumberEdit: false,
+        policyNumberEdit: {
+          value: false
+        },
         activitiesList: [2,3]
       };
       const action = { type: profileEntryFormActions.RESET_FORM };
@@ -29,22 +32,25 @@ describe("userFormReducer", () => {
 
   describe("TOGGLE", () => {
     test("should toggle passed fieldKey in form", () => {
-      const initialTestState = {
+      const expectedState = {
         ...initialProfileEntryFormState,
-        policyNumberEdit: true
+        policyNumberEdit: {
+          value: true,
+          updated: true
+        }
       };
       const action = {
         type: profileEntryFormActions.TOGGLE,
         fieldKey: "policyNumberEdit"
       };
       const result = profileEntryFormReducer(initialProfileEntryFormState, action);
-      expect(result).toStrictEqual(initialTestState);
+      expect(result).toStrictEqual(expectedState);
     });
   });
 
   describe("SET_PROFILE_ID", () => {
     test("should set profileId to payload passed", () => {
-      const initialTestState = {
+      const expectedState = {
         ...initialProfileEntryFormState,
         profileId: 40
       };
@@ -53,57 +59,197 @@ describe("userFormReducer", () => {
         payload: 40
       };
       const result = profileEntryFormReducer(initialProfileEntryFormState, action);
-      expect(result).toStrictEqual(initialTestState);
+      expect(result).toStrictEqual(expectedState);
     });
   });
 
   describe("SET_PROFILE_NAME", () => {
     test("should set profileName to payload passed", () => {
-      const initialTestState = {
+      const expectedState = {
         ...initialProfileEntryFormState,
         profileName: {
-          some: "payload"
+          value: "AISG",
+          valid: true,
+          updated: true
         }
       };
       const action = {
         type: profileEntryFormActions.SET_PROFILE_NAME,
-        payload: { some: "payload" }
+        payload: {
+          value: "AISG",
+          valid: true,
+          updated: true
+        }
       };
       const result = profileEntryFormReducer(initialProfileEntryFormState, action);
-      expect(result).toStrictEqual(initialTestState);
+      expect(result).toStrictEqual(expectedState);
     });
   });
 
   describe("SET_OVERFLOW_SKILL", () => {
     test("should set overflowSkill to payload passed", () => {
-      const initialTestState = {
+      const expectedState = {
         ...initialProfileEntryFormState,
         overflowSkill: {
-          some: "payload"
+          value: "overflowSkill",
+          valid: true,
+          updated: true
         }
       };
       const action = {
         type: profileEntryFormActions.SET_OVERFLOW_SKILL,
-        payload: { some: "payload" }
+        payload: {
+          value: "overflowSkill",
+          valid: true,
+          updated: true
+        }
       };
       const result = profileEntryFormReducer(initialProfileEntryFormState, action);
-      expect(result).toStrictEqual(initialTestState);
+      expect(result).toStrictEqual(expectedState);
     });
   });
 
   describe("UPDATE_ACTIVITIES_LIST", () => {
-    test("should set activittiesList to payload passed", () => {
-      const initialTestState = {
+    test("should set activitiesList to payload passed", () => {
+      const expectedState = {
         ...initialProfileEntryFormState,
-        activitiesList: [2,3]
+        activitiesList: [2,3],
+        activitiesUpdated: true
       };
       const action = {
         type: profileEntryFormActions.UPDATE_ACTIVITIES_LIST,
         payload: [2,3]
       };
       const result = profileEntryFormReducer(initialProfileEntryFormState, action);
-      expect(result).toStrictEqual(initialTestState);
+      expect(result).toStrictEqual(expectedState);
     });
   });
 
+  describe("SET_UPDATE_PROFILE_FORM_STATE", () => {
+    test("should set edit prepopulated fields to state", () => {
+      const profile = {
+        profile_id: 0,
+        profile_nme: "Game of Phones",
+        recorded_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        auto_answd_i: {
+          type: "Buffer",
+          data: [1]
+        },
+        pmt_prcsg_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        otbnd_recorded_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        acw_option_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        manual_recorded_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        acw_data_entry_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        manual_record_inbound_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        agent_assisted_pay_i: {
+          type: "Buffer",
+          data: [1]
+        },
+        overflow_skill: null,
+        policy_number_edit_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        voice_mail_transcription_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        click_to_dial_i: {
+          type: "Buffer",
+          data: [1]
+        },
+        activities: "[{\"id\": 1, \"name\": \"Offline\", \"availability\": 0}]"
+      }
+
+      const expectedState = {
+        ...initialProfileEntryFormState,
+        activitiesList: [{
+          activity_id: 1,
+          activity_nme: "Offline",
+          available_i: {
+            data: [
+              0,
+            ],
+            type: "Buffer",
+          },
+        }],
+        formMode: formModes.UPDATE,
+        autoAnswered: {
+          value: true
+        },
+        inboundRecorded: {
+          value: false
+        },
+        outboundRecorded: {
+          value: false
+        },
+        acwOption: {
+          value: false
+        },
+        manualRecorded: {
+          value: false
+        },
+        acwDataEntry: {
+          value: false
+        },
+        manualRecordedInbound: {
+          value: false
+        },
+        agentAssistedPay: {
+          value: true
+        },
+        paymentProcessing: {
+          value: false
+        },
+        policyNumberEdit: {
+          value: false
+        },
+        voiceMailTranscription: {
+          value: false
+        },
+        clickToDial: {
+          value: true
+        },
+        overflowSkill: {
+          value: "",
+          valid: true
+        },
+        profileId: 0,
+        profileName: {
+          valid: true,
+          value: "Game of Phones"
+        }
+      };
+      const action = {
+        type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
+        payload: {
+          formMode: formModes.UPDATE,
+          profile
+        }
+      };
+      const result = profileEntryFormReducer(initialProfileEntryFormState, action);
+      expect(result).toStrictEqual(expectedState);
+    });
+  });
 });

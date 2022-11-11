@@ -18,8 +18,8 @@ const ProfileNameTextField = (props: TextFieldProps ) => {
 
   return (
     <CustomInput
-      error={ form.profileName.updated && !form.profileName.valid }
-      label= {label}
+      error={form.profileName.updated && !form.profileName.valid}
+      label={label}
       name={label}
       maxLength="80"
       updateValue={profileName => {
