@@ -1,10 +1,14 @@
 import styled from "styled-components";
 
+export const SkillHeaderText = styled.h3`
+  align-self: center;
+  margin: 20px 0px;
+`;
+
 export const DefaultSkillsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   font-size: 0.9em;
-  min-height: 350px;
   z-index: 2;
 `;
 
@@ -27,7 +31,6 @@ export const IconButtonWrapper = styled.button`
 export const SkillRow = styled.div`
   align-items: center;
   display: flex;
-  height: 32px;
   &:hover { ${/* @ts-ignore */""}
     background-color: ${props => props.highlightOnHover ? props.theme.tableRow.hoverColor : null}
   }
@@ -57,7 +60,7 @@ export const SkillRowSeperator = styled.div`
 `;
 
 export const SkillsWrapper = styled.div`
-  max-height: 50vh;
+  max-height: 20vh;
   overflow-y: auto;
 
   &::-webkit-scrollbar {

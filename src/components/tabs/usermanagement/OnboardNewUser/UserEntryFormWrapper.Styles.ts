@@ -1,5 +1,8 @@
 import styled from "styled-components";
-import { Tabs } from "@mui/material";
+import {
+  Divider,
+  Tabs
+} from "@mui/material";
 import { Edit } from "@mui/icons-material";
 import { StyledButton } from "components";
 
@@ -28,6 +31,7 @@ export const FormControlsContainer = styled.div`
   max-height: 650px;
   padding-top: 5px;
   overflow: overlay;
+  margin: 20px 0px;
 `;
 
 export const FormControlsPane = styled.div`
@@ -45,12 +49,20 @@ export const RightColumn = styled(FormControlsPane)`
   margin-top: -8px;
 `;
 
+export const StyledDivider = styled(Divider)`
+  margin: 20px 0px !important;
+`;
+
 export const Header1 = styled.h1`
   align-self: center;
 `;
 
 export const Header2 = styled.h2`
   align-self: center;
+`;
+
+export const Header3 = styled.h3`
+  margin: 20px 0px;
 `;
 
 export const Header4 = styled.h4`
@@ -61,6 +73,11 @@ export const Header4 = styled.h4`
 
 export const Text = styled.div`
   align-self: center;
+`;
+
+export const HeaderRow = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 
 export const DiscrepancyContainer = styled.div`

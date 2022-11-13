@@ -152,6 +152,7 @@ const ModalExtension = (props: ModalExtensionProps) => {
           error={isError}
           label="Extension"
           maxLength="5"
+          styles={{ width: "200px" }}
           name="Extension"
           onBlur={onBlur}
           updateValue={value => handleExtensionUpdated(value)}

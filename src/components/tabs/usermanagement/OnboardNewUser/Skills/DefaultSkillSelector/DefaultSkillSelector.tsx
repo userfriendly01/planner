@@ -4,7 +4,8 @@ import {
   SkillRow,
   SkillRowItem,
   SkillRowSeperator,
-  SkillsWrapper
+  SkillsWrapper,
+  SkillHeaderText
 } from "./DefaultSkillSelector.Styles";
 import {
   Add,
@@ -105,6 +106,7 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
 
   return (
     <DefaultSkillsWrapper>
+      <SkillHeaderText>Default Skill Profile (Optional)</SkillHeaderText>
       <SkillRow>
         <SkillRowItem>
           <SkillDropDown

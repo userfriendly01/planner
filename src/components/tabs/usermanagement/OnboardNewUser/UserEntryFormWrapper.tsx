@@ -8,13 +8,14 @@ import {
   Header4,
   Text,
   ModalContainer,
-  DiscrepancyContainer
+  DiscrepancyContainer,
+  StyledDivider,
+  HeaderRow
 } from "./UserEntryFormWrapper.Styles";
 import {
   ModalOverlay,
   BasicFormInfo,
   CallRecordingForm,
-  SkillsFormInfo,
   UserFormButtons
 } from "components";
 import {
@@ -24,6 +25,7 @@ import {
 import { formModes } from "globals";
 import React, { useState } from "react";
 import { sortWorkersByFullName } from "utils";
+import { Checkbox } from "@mui/material";
 
 const UserEntryForm = (props: UserEntryFormProps) => {
 
@@ -86,7 +88,11 @@ const UserEntryForm = (props: UserEntryFormProps) => {
           </DiscrepancyContainer>
           : null
       }
-      <h2>Triton User Settings</h2>
+      <StyledDivider />
+      <HeaderRow>
+        <h2>Triton User Settings</h2>
+        <Checkbox checked={true}/>
+      </HeaderRow>
       <BasicFormInfo
         skills={skills}
         worker={worker}
@@ -96,9 +102,13 @@ const UserEntryForm = (props: UserEntryFormProps) => {
         forwardToToggle={forwardToToggle}
         setForwardToToggle={setForwardToToggle}
       />
-      <SkillsFormInfo />
-      <h2>Calabrio Quality Management User Settings</h2>
+      <StyledDivider />
+      <HeaderRow>
+        <h2>Calabrio Quality Management User Settings</h2>
+        <Checkbox checked={true}/>
+      </HeaderRow>
       <CallRecordingForm twilioWorker={worker} />
+      <StyledDivider />
       <UserFormButtons
         forwardToToggle={forwardToToggle}
         handleClose={handleClose}

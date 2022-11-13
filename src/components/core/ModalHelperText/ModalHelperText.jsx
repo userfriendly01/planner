@@ -11,12 +11,8 @@ const ClearButton = styled.button`
   outline: none;
 `;
 
-const FlexRow = styled.div`
+const HelperTextSection = styled.div`
   display: flex;
-  flex: 1 1 auto;
-`;
-
-const HelperTextSection = styled(FlexRow)`
   color: ${props => props.error ? "red" : "green"};
   font-family: 'Roboto', sans-serif;
   font-size: 0.8em;

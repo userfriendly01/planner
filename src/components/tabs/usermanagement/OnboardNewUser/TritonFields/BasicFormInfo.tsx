@@ -15,7 +15,8 @@ import {
   ExtensionInput,
   NNumberInput,
   PhoneNumberInput,
-  Dropdown
+  Dropdown,
+  SkillsFormInfo
 } from "components";
 import {
   useFormDispatch,
@@ -236,6 +237,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
             setForwardToToggle={setForwardToToggle}
           />
         }
+        <SkillsFormInfo />
       </RightColumn>
     </FormControlsContainer>
   );

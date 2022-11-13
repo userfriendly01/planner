@@ -1,8 +1,5 @@
 import React from "react";
-import {
-  FormControlsContainer,
-  FormControlsPane
-} from "../UserEntryFormWrapper.Styles";
+import { FormControlsPane } from "../UserEntryFormWrapper.Styles";
 import { DefaultSkillSelector } from "components";
 import {
   useFormState,
@@ -16,19 +13,17 @@ const SkillsFormInfo = () => {
   const setForm = useFormDispatch();
 
   return(
-    <FormControlsContainer>
-      <FormControlsPane>
-        <DefaultSkillSelector
-          defaultSkills={form.defaultSkills}
-          setDefaultSkills={(defaultSkills: any) => {
-            setForm({
-              type: userFormActions.UPDATE_DEFAULT_SKILLS,
-              payload: defaultSkills
-            });
-          }}
-        />
-      </FormControlsPane>
-    </FormControlsContainer>
+    <FormControlsPane>
+      <DefaultSkillSelector
+        defaultSkills={form.defaultSkills}
+        setDefaultSkills={(defaultSkills: any) => {
+          setForm({
+            type: userFormActions.UPDATE_DEFAULT_SKILLS,
+            payload: defaultSkills
+          });
+        }}
+      />
+    </FormControlsPane>
   );
 };
 

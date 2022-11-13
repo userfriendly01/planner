@@ -1,5 +1,4 @@
 import { ModalNNumberProps } from "./NNumberInput.Interfaces";
-import { FlexColumn } from "globals";
 import {
   CustomInput,
   ModalHelperText
@@ -39,7 +38,7 @@ const NNumberEntryField = (props: ModalNNumberProps) => {
   };
 
   return (
-    <FlexColumn>
+    <>
       <CustomInput
         disabled={disabled}
         error={lookupError ? true : false}
@@ -64,7 +63,7 @@ const NNumberEntryField = (props: ModalNNumberProps) => {
           />
           : null
       }
-    </FlexColumn>
+    </>
   );
 };
 
