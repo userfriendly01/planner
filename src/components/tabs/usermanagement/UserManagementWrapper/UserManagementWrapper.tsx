@@ -4,32 +4,41 @@ import {
   View,
   views
 } from "./UserManagement.Interfaces";
-import { WorkerOpts } from "../OnboardNewUser/UserEntryFormWrapper.Interfaces";
+import {
+  UserAction,
+  WorkerOpts
+} from "../OnboardNewUser/UserEntryFormWrapper.Interfaces";
 import {
   UserEntryForm,
-  ManagementWrapper,
+  TritonUserManagementWrapper,
   Dropdown
 } from "components";
 import { FormStateProvider } from "context";
 
-
 const UserManagementWrapper = () => {
 
+  const [ view, setView ] = React.useState(views.ONBOARD_NEW_USER);
   const defaultWorkerOpts: WorkerOpts = {
     worker: null,
-    action: null,
+    action: UserAction.ADD,
     systems: {
-      triton: false,
-      calabrio_qm: false,
+      triton: true,
+      calabrio_qm: true,
       calabrio_wfm: false
     }
   };
-
-  const [ view, setView ] = React.useState(views.ONBOARD_NEW_USER);
   const [ selectedWorkerOpts, setSelectedWorkerOpts ] = React.useState(defaultWorkerOpts);
+
+  React.useEffect(() => {
+    console.log("I'm getting hit at least");
+    if(selectedWorkerOpts.action !== UserAction.ADD && selectedWorkerOpts.worker){
+      setView(views.ONBOARD_NEW_USER);
+    }
+  }, [selectedWorkerOpts.action]);
 
   return (
     <FormStateProvider>
+
       <CallflowWrapper>
         <Dropdown
           label="What would you like to do?"
@@ -37,7 +46,7 @@ const UserManagementWrapper = () => {
           options={Object.values(views)}
           updateValue={(event: any, view: View) => setView(view)}
           styles={{
-            margin: "40 0 60 0",
+            margin: "40 0 30 0",
             width: "500px"
           }}
         />
@@ -46,7 +55,11 @@ const UserManagementWrapper = () => {
           workerOpts={selectedWorkerOpts}
           setWorkerOpts={setSelectedWorkerOpts}
         />}
-        {view === views.TRITON_USERS && <ManagementWrapper />}
+        {view === views.TRITON_USERS && <TritonUserManagementWrapper
+          setView={setView}
+          workerOpts={selectedWorkerOpts}
+          setWorkerOpts={setSelectedWorkerOpts}
+        />}
       </CallflowWrapper>
     </FormStateProvider>
   );

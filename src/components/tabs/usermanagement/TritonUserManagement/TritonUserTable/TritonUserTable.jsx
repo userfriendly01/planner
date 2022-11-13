@@ -9,6 +9,7 @@ import {
   TableDataFlex,
   TableText
 } from "./TableUserTable.Styles";
+import { UserAction } from "../../OnboardNewUser/UserEntryFormWrapper.Interfaces";
 import {
   Switch
 } from "@mui/material";
@@ -32,10 +33,15 @@ import {
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { formatWorkerAttributeSkillsToHTML } from "utils";
+import { views } from "../../UserManagementWrapper/UserManagement.Interfaces";
 
 const TritonUserTable = props => {
   const {
+    view,
+    setView,
     deltaToggle,
+    workerOpts,
+    setWorkerOpts,
     setDeltaToggle,
     skills,
     paginatedWorkers,
@@ -97,7 +103,11 @@ const TritonUserTable = props => {
                   formMode: formModes.UPDATE
                 }
               });
-              //redirect to user form
+              setWorkerOpts({
+                ...workerOpts,
+                action: UserAction.EDIT,
+                worker: worker
+              });
             };
             return (
               <CustomTableRow key={worker.sid} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">
@@ -141,6 +151,10 @@ TritonUserTable.propTypes = {
       skill: PropTypes.string
     })
   ).isRequired,
+  workerOpts: PropTypes.any,
+  view: PropTypes.any,
+  setView: PropTypes.any,
+  setWorkerOpts: PropTypes.any,
   workers: PropTypes.arrayOf(
     PropTypes.shape({
       attributes: PropTypes.object,

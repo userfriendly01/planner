@@ -1,3 +1,4 @@
+import React from "react";
 import styled from "styled-components";
 
 export const SkillHeaderText = styled.h3`
@@ -11,6 +12,8 @@ export const DefaultSkillsWrapper = styled.div`
   font-size: 0.9em;
   z-index: 2;
 `;
+
+export const DashDiv = <div>-</div>;
 
 export const IconButtonWrapper = styled.button`
   all: unset;
@@ -28,10 +31,10 @@ export const IconButtonWrapper = styled.button`
   }
 `;
 
-export const SkillRow = styled.div`
+export const SkillRow = styled.div<{ highlightOnHover?: boolean }>`
   align-items: center;
   display: flex;
-  &:hover { ${/* @ts-ignore */""}
+  &:hover
     background-color: ${props => props.highlightOnHover ? props.theme.tableRow.hoverColor : null}
   }
 `;

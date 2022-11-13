@@ -1,4 +1,4 @@
-import ManagementWrapper from "../ManagementWrapper";
+import ManagementWrapper from "../TritonUserManagementWrapper";
 import {
   ManagementHeader,
   ManagementPagination,

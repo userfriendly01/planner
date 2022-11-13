@@ -4,7 +4,7 @@ export { default as ManagerDelete } from "./TritonUserManagement/ManagerDelete/M
 export { default as ManagementHeader } from "./TritonUserManagement/ManagementHeader/ManagementHeader";
 export { default as ManagementPagination } from "./ManagementPagination/ManagementPagination";
 export { default as TritonUserTable } from "./TritonUserManagement/TritonUserTable/TritonUserTable";
-export { default as ManagementWrapper } from "./TritonUserManagement/ManagementWrapper/ManagementWrapper";
+export { default as TritonUserManagementWrapper } from "./TritonUserManagement/TritonUserManagementWrapper/TritonUserManagementWrapper";
 export { default as ManagerDropdown } from "./TritonUserManagement/ManagerDropdown/ManagerDropdown";
 export { default as ResetSkillsButton } from "./TritonUserManagement/ResetSkillsButton/ResetSkillsButton";
 export { default as ResultsModal } from "./TritonUserManagement/ResultsModal/ResultsModal";

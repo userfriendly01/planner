@@ -1,5 +1,6 @@
 import {
   LoadingState,
+  UserAction,
   UserEntryFormProps
 } from "./UserEntryFormWrapper.Interfaces";
 import {
@@ -55,6 +56,27 @@ const UserEntryForm = (props: UserEntryFormProps) => {
     saveUser: false
   });
 
+  const handleCheckbox = (checked: boolean, system: string) => {
+    if(!checked && system === "calabrio_qm"){
+      console.log("Please select a reason for skipping the calabrio profile.", checked);
+      setWorkerOpts({
+        ...workerOpts,
+        systems: {
+          ...workerOpts.systems,
+          [system]: checked
+        }
+      });
+    } else {
+      setWorkerOpts({
+        ...workerOpts,
+        systems: {
+          ...workerOpts.systems,
+          [system]: checked
+        }
+      });
+    }
+  };
+
   return (
     <ModalContainer>
       {loading.saveUser ?
@@ -91,7 +113,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       <StyledDivider />
       <HeaderRow>
         <h2>Triton User Settings</h2>
-        <Checkbox checked={true}/>
+        <Checkbox checked={workerOpts.systems.triton} onChange={(event: any) => handleCheckbox(event.target.checked, "triton")}/>
       </HeaderRow>
       <BasicFormInfo
         skills={skills}
@@ -105,7 +127,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       <StyledDivider />
       <HeaderRow>
         <h2>Calabrio Quality Management User Settings</h2>
-        <Checkbox checked={true}/>
+        <Checkbox checked={workerOpts.systems.calabrio_qm} onChange={(event: any) => handleCheckbox(event.target.checked, "calabrio_qm")}/>
       </HeaderRow>
       <CallRecordingForm twilioWorker={worker} />
       <StyledDivider />

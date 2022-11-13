@@ -1,4 +1,5 @@
 import {
+  DashDiv,
   DefaultSkillsWrapper,
   IconButtonWrapper,
   SkillRow,
@@ -8,34 +9,22 @@ import {
   SkillHeaderText
 } from "./DefaultSkillSelector.Styles";
 import {
-  Add,
-  Delete
-} from "@mui/icons-material";
+  DefaultSkillSelectorProps,
+  NewTwilioWorkerSkill
+} from "./DefaultSkillSelector.Interfaces";
 import {
   PriorityDropDown,
   SkillDropDown
 } from "components";
 import { useAdminState } from "context";
-import {
-  Skill,
-  WorkerAttributeSkills
-} from "globals";
-import PropTypes from "prop-types";
+import { Skill } from "globals";
 import React, {
   useState
 } from "react";
-
-
-const DashDiv = <div>-</div>;
-interface DefaultSkillSelectorProps {
-  defaultSkills: WorkerAttributeSkills,
-  setDefaultSkills: (defaultSkills: WorkerAttributeSkills) => void;
-}
-interface NewTwilioWorkerSkill {
-  levels: number[],
-  levelSelected: number,
-  skill: string
-}
+import {
+  Add,
+  Delete
+} from "@mui/icons-material";
 
 const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
   const {
@@ -136,11 +125,10 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
             levels: []
           };
           return (
-            // @ts-ignore
             <SkillRow highlightOnHover={true} key={`default-skill-row-${index}`}>
               <SkillRowItem>{skill}</SkillRowItem>
               <SkillRowItem>
-                {defaultSkills.levels.hasOwnProperty(skill) === true ?
+                {defaultSkills.levels[skill] ?
                   <PriorityDropDown
                     availablePriorities={taskrouterSkill.levels}
                     priorityValue={defaultSkills.levels[skill]}
@@ -158,14 +146,6 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
       </SkillsWrapper>
     </DefaultSkillsWrapper>
   );
-};
-
-DefaultSkillSelector.propTypes = {
-  defaultSkills: PropTypes.shape({
-    levels: PropTypes.object.isRequired,
-    skills: PropTypes.array.isRequired
-  }),
-  setDefaultSkills: PropTypes.func.isRequired
 };
 
 export default DefaultSkillSelector;

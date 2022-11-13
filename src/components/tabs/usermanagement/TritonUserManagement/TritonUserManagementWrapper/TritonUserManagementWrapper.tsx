@@ -1,11 +1,11 @@
 import {
   ManagementWrapperState,
   UserModalState
-} from "./ManagementWrapper.Interfaces";
+} from "./TritonUserManagementWrapper.Interfaces";
 import {
   ManagementContainer,
   StyledPaper
-} from "./ManagementWrapper.Styles";
+} from "./TritonUserManagementWrapper.Styles";
 import {
   ManagementHeader,
   ManagementPagination,
@@ -26,17 +26,14 @@ import {
   filterByNameAndSkills,
   sortWorkersByFullName
 } from "utils";
+import { View } from "../../UserManagementWrapper/UserManagement.Interfaces";
+import { WorkerOpts } from "../../OnboardNewUser/UserEntryFormWrapper.Interfaces";
 
 const initialManagementWrapperState: ManagementWrapperState = {
   deltaToggle: false,
   pageSelected: 1,
   filterBy: "show-all",
   searchBy: ""
-};
-
-const initialUserModalState: UserModalState = {
-  open: false,
-  worker: null
 };
 
 const getWorkersStartAndEnd = (pageSelected: number, filteredWorkers: Worker[]) => {
@@ -54,7 +51,19 @@ const getWorkersStartAndEnd = (pageSelected: number, filteredWorkers: Worker[]) 
   }
 };
 
-const ManagementWrapper: React.FC = () => {
+interface TritonUserManagementWrapperProps {
+  workerOpts: WorkerOpts
+  setWorkerOpts: (opts: WorkerOpts) => void
+  setView: (view: View) => void
+  view?: View
+}
+const TritonUserManagementWrapper: any = (props: TritonUserManagementWrapperProps) => {
+  const {
+    workerOpts,
+    setWorkerOpts,
+    view,
+    setView
+  } = props;
   const workersFromContext = useAdminState().workerContext.workers;
   const skillsFromContext = useAdminState().skillContext.skills;
 
@@ -102,31 +111,33 @@ const ManagementWrapper: React.FC = () => {
   });
 
   return (
-    <FormStateProvider>
-      <ManagementContainer>
-        <ManagementHeader
-          filterBy={state.filterBy}
-          searchBy={state.searchBy}
-          setFilter={setStateFromFilterChange}
-          setSearch={setStateFromSearchChange} />
-        <StyledPaper elevation={3}>
-          <TritonUserTable
-            deltaToggle={state.deltaToggle}
-            setDeltaToggle={setStateFromDeltaToggle}
-            skills={skillsFromContext}
-            paginatedWorkers={workers.slice(workersStart, workersEnd)}
-            workers={workersFromContext.sort(sortWorkersByFullName)}
-          />
-        </StyledPaper>
-        <ManagementPagination
-          end={workersEnd}
-          length={workers.length}
-          page={state.pageSelected}
-          setPage={setStateFromPageChange}
-          start={workersStart + 1}/>
-      </ManagementContainer>
-    </FormStateProvider>
+    <ManagementContainer>
+      <ManagementHeader
+        filterBy={state.filterBy}
+        searchBy={state.searchBy}
+        setFilter={setStateFromFilterChange}
+        setSearch={setStateFromSearchChange} />
+      <StyledPaper elevation={3}>
+        <TritonUserTable
+          view={view}
+          setView={setView}
+          workerOpts={workerOpts}
+          setWorkerOpts={setWorkerOpts}
+          deltaToggle={state.deltaToggle}
+          setDeltaToggle={setStateFromDeltaToggle}
+          skills={skillsFromContext}
+          paginatedWorkers={workers.slice(workersStart, workersEnd)}
+          workers={workersFromContext.sort(sortWorkersByFullName)}
+        />
+      </StyledPaper>
+      <ManagementPagination
+        end={workersEnd}
+        length={workers.length}
+        page={state.pageSelected}
+        setPage={setStateFromPageChange}
+        start={workersStart + 1}/>
+    </ManagementContainer>
   );
 };
 
-export default ManagementWrapper;
+export default TritonUserManagementWrapper;

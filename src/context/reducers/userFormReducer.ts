@@ -399,9 +399,10 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
     }
 
     case userFormActions.SET_UPDATE_FORM_STATE: {
+      console.warn("i'm tryna set the state!", action.payload);
       const worker = action.payload.worker;
       const managers = action.payload.managers;
-      return {
+      const finalObj = {
         ...state,
         formMode: formModes.UPDATE,
         defaultSkills: getValidSkillsObject(worker.attributes.default_skills),
@@ -447,6 +448,8 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         zeroOutEnabled: worker.zeroOutEnabled || false,
         editDisabled: worker.directDialNum ? true : false
       };
+      console.log("FINAL", finalObj);
+      return finalObj;
     }
     case userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE: {
       return {
