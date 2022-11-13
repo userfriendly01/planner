@@ -4,9 +4,7 @@ import {
   formModes,
   AppState
 } from "globals";
-import {
-  UserFormState
-} from "components/tabs/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
+import { UserFormState } from "components/tabs/usermanagement/OnboardNewUser/UserEntryFormWrapper.Interfaces";
 import {
   formatE164PhoneNumber,
   removeNonNumericCharacters

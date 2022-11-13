@@ -1,13 +1,10 @@
 import {
   Action,
   Manager,
-  formModes,
-  discrepancyType
+  formModes
 } from "../../globals";
-import {
-  UserFormState,
-  ExtensionSearchStatuses
-} from "components/tabs/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
+import { UserFormState } from "components/tabs/usermanagement/OnboardNewUser/UserEntryFormWrapper.Interfaces";
+import { ExtensionSearchStatuses } from "components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionInput/ExtensionInput.Interfaces";
 import {
   formatE164PhoneNumber,
   calabrioTimeZones,
@@ -15,7 +12,7 @@ import {
   getZeroOutEnabledFromProfile
 } from "utils";
 
-import { SearchParams } from "components/tabs/usermanagement/UserEntryForm/ExtensionSearchParams";
+import { SearchParams } from "components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionSearchParams";
 const searchParams = SearchParams.getValues();
 
 export const userFormActions = {

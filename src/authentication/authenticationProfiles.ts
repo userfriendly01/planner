@@ -8,7 +8,7 @@ import {
   runAlohaFlowStartup
 } from "authentication";
 import {
-  ManagementWrapper,
+  UserManagementWrapper,
   ProfileSettingsContainer,
   CallflowManagementWrapper,
   AlohaRoutingContainer,
@@ -148,7 +148,7 @@ export const getTabs = () => {
     TRITON_USER_MANAGEMENT: {
       value: "triton-user-management",
       label: "User Management",
-      component: ManagementWrapper
+      component: UserManagementWrapper
     },
     TRITON_PROFILE_SETTINGS: {
       value: "triton-profile-settings",
