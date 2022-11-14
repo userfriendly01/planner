@@ -39,7 +39,7 @@ const ProfileSettingsContainer = () => {
     message: "Please select a profile",
     profileId: null
   };
-  
+
   const initialProfileModalState = {
     open: false
   };
@@ -153,7 +153,7 @@ const ProfileSettingsContainer = () => {
                       </AddProfileButton>
                     </ControlItem>
                   </ControlsWrapper>
-                : null
+                  : null
               }
               <ProfileSettingsTable
                 profileList={profilesFromContextMinusGoP}

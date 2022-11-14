@@ -228,6 +228,9 @@ describe("profileEntryFormReducer", () => {
         voiceMailTranscription: {
           value: false
         },
+        clickToDial: {
+          value: true
+        },
         overflowSkill: {
           value: "",
           valid: true

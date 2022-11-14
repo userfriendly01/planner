@@ -135,6 +135,9 @@ const ProfileSettingsTable = props => {
                       <TableText>{formatProfileBooleanData(profile.voice_mail_transcription_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
+                      <TableText>{formatProfileBooleanData(profile.click_to_dial_i.data[0])}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
                       <TableDataFlex>
                         {
                           JSON.parse(profile.activities).map(activity => {

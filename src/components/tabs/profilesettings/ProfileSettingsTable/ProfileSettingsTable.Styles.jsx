@@ -36,10 +36,10 @@ export const CustomTableHeader = styled.th`
   &:nth-child(9) {
     width: 8%;
   }
-  &:nth-child(15) {
+  &:nth-child(16) {
     width: 15%;
   }
-  &:nth-child(16) {
+  &:nth-child(17) {
     width: 2%;
   }
 `;
