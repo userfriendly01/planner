@@ -16,32 +16,30 @@ import {
   formatProfileACWDataEntry,
   formatOverflowSkillData,
   formatActivityData,
-  sortProfilesById,
-  myAxios
+  sortProfilesById
 } from "utils";
 import { Tooltip } from "@mui/material";
 import { Edit } from "@mui/icons-material";
 import {
   profileTableColumnHeader,
-  formModes,
-  apiPaths
+  formModes
 } from "globals";
 import {
   profileEntryFormDispatch,
   profileEntryFormActions
 } from "context";
+import { getWorkerTaskInfo as getWorkerTaskInfoServiceCall } from "services";
 
-const getWorkerTaskInfo = () => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_PROFILE_WORKER_TASK_INFO)
-  .then(res => {
-    resolve(res.data);
-  })
-  .catch(error => {
-    reject({
+const getWorkerTaskInfo = async () => {
+  try {
+    return await getWorkerTaskInfoServiceCall();
+  } catch (error) {
+    throw ({
       msg: "Failed to fetch worker task info from service",
       error
     });
-  })
-);
+  }
+};
 
 const ProfileSettingsTable = props => {
   const { profileList, loggedInRep, setProfileModalState } = props;

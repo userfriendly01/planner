@@ -9,9 +9,6 @@ import {
 } from "testUtils";
 import { profileEntryFormDispatch } from "context";
 import { ProfileEntryForm } from "components"
-import { apiPaths } from "globals";
-import { myAxios } from "utils";
-import MockAdapter from "axios-mock-adapter";
 
 jest.mock("context", () => ({
   __esModule: true,
@@ -26,9 +23,6 @@ jest.mock("components", () => ({
 
 const mockSetForm = jest.fn();
 const setProfileModalState = jest.fn();
-
-const profileWorkerTaskInfoEndpoint = apiPaths.GET_PROFILE_WORKER_TASK_INFO;
-const axiosMock = new MockAdapter(myAxios);
 
 describe("<ProfileSettingsTable />", () => {
   beforeEach(() => {
@@ -184,21 +178,6 @@ describe("<ProfileSettingsTable />", () => {
     test("renders an edit icon per profile for a validNid", () => {
       const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={validNid} setProfileModalState={setProfileModalState}/>)
       expect(rendered.queryAllByTestId("edit-button")).toHaveLength(2);
-    });
-  });
-
-  describe(profileWorkerTaskInfoEndpoint, () => {
-    describe("activities service call returned an error", () => {
-      beforeEach(() => {
-        axiosMock.onGet(profileWorkerTaskInfoEndpoint).reply(500, { fail: "oh the horror" });
-      });
-      test("should return 'An error occurred while fetching worker task info from service'", async () => {
-        try {
-          render(<ProfileSettingsTable profileList={profiles} loggedInRep={validNid} setProfileModalState={setProfileModalState}/>)
-        } catch(err) {
-          expect(err.msg).toBe("Failed to fetch worker task info from servic");
-        }
-      });
     });
   });
 });
