@@ -2,8 +2,7 @@ import ManagementWrapper from "../TritonUserManagementWrapper";
 import {
   ManagementHeader,
   ManagementPagination,
-  ManagementTable,
-  UserEntryForm
+  TritonUserTable
 } from "components";
 import { initialState } from "context";
 import { workersPerPage } from "globals";
@@ -22,7 +21,7 @@ jest.mock("components", () => ({
   ManagementHeader: jest.fn(),
   ManagementPagination: jest.fn(),
   ManagementTable: jest.fn(),
-  UserEntryForm: jest.fn(),
+  TritonUserTable: jest.fn(),
   ProfileSettingsContainer: jest.fn(),
   CallflowManagementWrapper: jest.fn(),
   AlohaFlowContainer: jest.fn(),
@@ -73,8 +72,7 @@ describe("ManagementWrapper", () => {
     setupMockedComponents({
       ManagementHeader,
       ManagementPagination,
-      ManagementTable,
-      UserEntryForm
+      TritonUserTable
     });
   });
 
@@ -83,7 +81,7 @@ describe("ManagementWrapper", () => {
       const rendered = doRender(workers);
       expectMockedComponent(rendered, { ManagementHeader });
       expectMockedComponent(rendered, { ManagementPagination });
-      expectMockedComponent(rendered, { ManagementTable });
+      expectMockedComponent(rendered, { TritonUserTable });
     });
   };
   describe("6 workers. less than workersPerPage. some with undefined full_name", () => {
@@ -111,7 +109,7 @@ describe("ManagementWrapper", () => {
       });
       test("ManagementTable should be passed all workers (sorted with undefined full_name last) as prop", () => {
         doRender(workers);
-        expectOnlyPassedProps(ManagementTable, {
+        expectOnlyPassedProps(TritonUserTable, {
           deltaToggle: false,
           workers: sortedWorkers
         });
@@ -152,7 +150,7 @@ describe("ManagementWrapper", () => {
       });
       test("ManagementTable should be passed all workers (sorted) as prop", () => {
         doRender(workers);
-        expectOnlyPassedProps(ManagementTable, {
+        expectOnlyPassedProps(TritonUserTable, {
           deltaToggle: false,
           workers: sortedWorkers
         });
@@ -180,7 +178,7 @@ describe("ManagementWrapper", () => {
       test("ManagementTable should be passed filtered workers having manager n0000000", () => {
         doRender(workers);
         doSetFilter();
-        expectOnlyPassedProps(ManagementTable, {
+        expectOnlyPassedProps(TritonUserTable, {
           paginatedWorkers: [
             sortedWorkers[0],
             sortedWorkers[1],
@@ -267,7 +265,7 @@ describe("ManagementWrapper", () => {
       });
       test(`ManagementTable should be passed first ${workersPerPage} workers (sorted) as prop`, () => {
         doRender(workers);
-        expectOnlyPassedProps(ManagementTable, {
+        expectOnlyPassedProps(TritonUserTable, {
           paginatedWorkers: sortedWorkers.slice(0, workersPerPage),
           workers: sortedWorkers,
           skills: mockSkills
@@ -296,7 +294,7 @@ describe("ManagementWrapper", () => {
       test("ManagementTable should be passed filtered workers having manager n3333333", () => {
         doRender(workers);
         doSetFilter();
-        expectOnlyPassedProps(ManagementTable, {
+        expectOnlyPassedProps(TritonUserTable, {
           paginatedWorkers: [
             sortedWorkers[0],
             sortedWorkers[1],
@@ -330,7 +328,7 @@ describe("ManagementWrapper", () => {
       test("ManagementTable should be passed filtered workers h -> v", () => {
         doRender(workers);
         doSetFilter();
-        expectOnlyPassedProps(ManagementTable, {
+        expectOnlyPassedProps(TritonUserTable, {
           paginatedWorkers: [
             sortedWorkers[7],
             sortedWorkers[8],
@@ -382,7 +380,7 @@ describe("ManagementWrapper", () => {
       test("ManagementTable should be passed filtered workers w -> z", () => {
         doRender(workers);
         doSetFilterAndChangePage();
-        expectOnlyPassedProps(ManagementTable, {
+        expectOnlyPassedProps(TritonUserTable, {
           paginatedWorkers: [
             sortedWorkers[22],
             sortedWorkers[23],
@@ -391,7 +389,7 @@ describe("ManagementWrapper", () => {
           ],
           workers: sortedWorkers,
           skills: mockSkills
-        }, getLastInstanceCalled(ManagementTable));
+        }, getLastInstanceCalled(TritonUserTable));
       });
       test(`ManagementPagination should be passed end = 19, length = 19, page = 2, start = ${workersPerPage + 1}`, () => {
         doRender(workers);
@@ -417,7 +415,7 @@ describe("ManagementWrapper", () => {
       test("ManagementTable should be passed filtered workers having the default skill 466", () => {
         doRender(workers);
         doSetSearch();
-        expectOnlyPassedProps(ManagementTable, {
+        expectOnlyPassedProps(TritonUserTable, {
           paginatedWorkers: [
             sortedWorkers[5],
             sortedWorkers[6]
@@ -450,7 +448,7 @@ describe("ManagementWrapper", () => {
       test("ManagementTable should be passed filtered workers having the applied skill 'test'", () => {
         doRender(workers);
         doSetSearch();
-        expectOnlyPassedProps(ManagementTable, {
+        expectOnlyPassedProps(TritonUserTable, {
           paginatedWorkers: [
             sortedWorkers[7],
             sortedWorkers[8]
@@ -483,7 +481,7 @@ describe("ManagementWrapper", () => {
       test("ManagementTable should be passed filtered workers having the name 'aldo'", () => {
         doRender(workers);
         doSetSearch();
-        expectOnlyPassedProps(ManagementTable, {
+        expectOnlyPassedProps(TritonUserTable, {
           paginatedWorkers: [
             sortedWorkers[0]
           ],
@@ -504,18 +502,18 @@ describe("ManagementWrapper", () => {
     });
     describe("testing toggling on only different skills", () => {
       const doSetSearch = () => act(() => {
-        const setStateFromSearchChange = ManagementTable.mock.calls[0][0].setDeltaToggle;
+        const setStateFromSearchChange = TritonUserTable.mock.calls[0][0].setDeltaToggle;
         setStateFromSearchChange(true);
       });
       test("ManagementTable should be passed deltaToggle 'true'", () => {
         doRender(workers);
         doSetSearch();
-        expectOnlyPassedProps(ManagementTable, { deltaToggle: true }, 1);
+        expectOnlyPassedProps(TritonUserTable, { deltaToggle: true }, 1);
       });
       test("ManagementTable should be passed filtered workers having current skills that differ from applied skills", () => {
         doRender(workers);
         doSetSearch();
-        expectOnlyPassedProps(ManagementTable, {
+        expectOnlyPassedProps(TritonUserTable, {
           paginatedWorkers: [
             sortedWorkers[6]
           ],
@@ -533,56 +531,6 @@ describe("ManagementWrapper", () => {
           start: 1
         }, 1);
       });
-    });
-  });
-  describe("User Entry Form Modal", () => {
-    test("form should not render on initial state", () => {
-      const rendered = doRender([]);
-      expectMockedComponent(rendered, { UserEntryForm }, 0);
-    });
-    test("userEntryForm is rendered when setUserEntryFormState is set to open === true", () => {
-      const rendered = doRender([]);
-      expectMockedComponent(rendered, { UserEntryForm }, 0);
-      const setFormState = ManagementTable.mock.calls[0][0].setUserModalState;
-      act(() => {
-        setFormState({
-          open: true,
-          worker: null
-        });
-      });
-      expectMockedComponent(rendered, { UserEntryForm }, 1);
-    });
-    test("When UserEntryForm handleClose is called, setUserEntryFormState is set to open === false", () => {
-      const rendered = doRender([]);
-      expectMockedComponent(rendered, { UserEntryForm }, 0);
-      const setFormState = ManagementTable.mock.calls[0][0].setUserModalState;
-      act(() => {
-        setFormState({
-          open: true,
-          worker: null
-        });
-      });
-      const handleClose = UserEntryForm.mock.calls[0][0].handleClose;
-      act(() => {
-        handleClose();
-      });
-      expectMockedComponent(rendered, { UserEntryForm }, 0);
-    });
-    test("When UserEntryForm handleClose is called with reopen, setUserEntryFormState is set to open === true", () => {
-      const rendered = doRender([]);
-      expectMockedComponent(rendered, { UserEntryForm }, 0);
-      const setFormState = ManagementTable.mock.calls[0][0].setUserModalState;
-      act(() => {
-        setFormState({
-          open: true,
-          worker: null
-        });
-      });
-      const handleClose = UserEntryForm.mock.calls[0][0].handleClose;
-      act(() => {
-        handleClose(true);
-      });
-      expectMockedComponent(rendered, { UserEntryForm }, 1);
     });
   });
 });

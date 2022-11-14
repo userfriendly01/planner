@@ -4,23 +4,134 @@ import {
   DeleteTritonUserWrapper,
   Text
 } from "./DeleteTritonUser.Styles";
+import {
+  UserFormButton,
+  ButtonWrapper
+} from "../UserEntryFormWrapper.Styles";
 import { ForwardToEntryForm } from "components";
 import React from "react";
-import { Checkbox } from "@mui/material";
+import {
+  FormControlLabel,
+  Radio
+} from "@mui/material";
+import { deleteUser } from "services";
+import {
+  formModes,
+  ModalOverlayStatuses,
+  timeouts
+} from "globals";
+import { useAdminDispatch } from "context";
+import { wait } from "utils";
 
 const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
   const {
-    workerOpts,
-    setWorkerOpts
+    handleClose,
+    loading,
+    setWorkerOpts,
+    updateLoading,
+    workerOpts
   } = props;
 
+  const dispatch = useAdminDispatch();
   const isWorkerDid = workerOpts.worker.directDialNum;
+  const [deleteTriton, setDeleteTriton] = React.useState(workerOpts.systems.triton);
+  const [deleteCalabrioQm, setDeleteClabrioQm] = React.useState(workerOpts.systems.calabrio_qm);
+  const [deleteCalabrioWfm, setDeleteCalabrioWfm ] = React.useState(workerOpts.systems.calabrio_wfm);
+
+  const handleDeleteUser = () => {
+    const deletedWorker = workerOpts.worker;
+    const workerName = deletedWorker.attributes?.full_name || deletedWorker.displayId || deletedWorker.DisplayName;
+    updateLoading({
+      ...loading,
+      overlayMessage: `Deleting user: ${workerName}`,
+      saveStatus: ModalOverlayStatuses.SAVING,
+      saveUser: true
+    });
+    let resultMessage;
+    const tritonPromise = deleteUser(deletedWorker)
+      .then(() => {
+        resultMessage = `Successfully deleted Triton worker with sid ${deletedWorker.sid}`;
+        console.log(resultMessage);
+        dispatch({
+          type: "deleteWorker",
+          payload: deletedWorker.sid
+        });
+        updateLoading({
+          ...loading,
+          overlayMessage: "Successfully Deleted User",
+          saveStatus: ModalOverlayStatuses.SUCCESS,
+          saveUser: true
+        });
+        wait(() => {
+          updateLoading({
+            ...loading,
+            saveUser: false
+          });
+          handleClose();
+        }, timeouts.MODAL_OVERLAY);
+      })
+      .catch(err => {
+        if (typeof err.response.data.error === "object" ){
+          resultMessage = `Failed to delete worker ${deletedWorker.sid}`;
+        } else {
+          resultMessage = err.response.data.error;
+        }
+        console.error(resultMessage, {
+          error: err
+        });
+        updateLoading({
+          ...loading,
+          overlayMessage: "Error Deleting Triton User",
+          saveStatus: ModalOverlayStatuses.FAIL,
+          saveUser: true
+        });
+      });
+  };
+
+  const wtf = () => {
+    console.log("**WWHHHAATTT TFF");
+  };
 
   return (
     <DeleteTritonUserWrapper>
       <Text>This user will be deleted/deactivated from the checked systems.</Text>
       <CheckboxWrapper>
-        <Checkbox /><Checkbox /><Checkbox />
+        { workerOpts.systems.triton && <>
+          <FormControlLabel
+            control={
+              <Radio
+                checked={deleteTriton}
+                value="triton"
+                onClick={() => setDeleteTriton(!deleteTriton)}
+              />}
+            label="Triton"
+            labelPlacement="bottom"
+          />
+        </>}
+        { workerOpts.systems.calabrio_qm && <>
+          <FormControlLabel
+            control={
+              <Radio
+                checked={deleteCalabrioQm}
+                onChange={event => setDeleteClabrioQm(event.target.checked)}
+                value="calabrio-qm"
+              />}
+            label="Calabrio QM"
+            labelPlacement="bottom"
+          />
+        </>}
+        { workerOpts.systems.calabrio_wfm && <>
+          <FormControlLabel
+            control={
+              <Radio
+                checked={deleteCalabrioWfm}
+                onChange={event => setDeleteCalabrioWfm(event.target.checked)}
+                value="calabrio-wfm"
+              />}
+            label="Calabrio WFM"
+            labelPlacement="bottom"
+          />
+        </>}
       </CheckboxWrapper>
       { isWorkerDid ?
         <ForwardToEntryForm
@@ -35,6 +146,17 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
         />
         : null
       }
+      <ButtonWrapper>
+        <UserFormButton onClick={handleClose}>
+          Close
+        </UserFormButton>
+        <UserFormButton
+          disabled={!deleteTriton && !deleteCalabrioQm && !deleteCalabrioWfm}
+          onClick={handleDeleteUser}
+        >
+          Confirm Delete
+        </UserFormButton>
+      </ButtonWrapper>
     </DeleteTritonUserWrapper>
   );
 };

@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const CheckboxWrapper = styled.div`
   display: flex;
+  justify-content: space-around;
 `;
 export const DeleteTritonUserWrapper = styled.div`
   display: flex;

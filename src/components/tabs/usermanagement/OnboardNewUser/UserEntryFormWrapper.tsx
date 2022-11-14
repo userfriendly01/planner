@@ -14,6 +14,7 @@ import {
   HeaderRow
 } from "./UserEntryFormWrapper.Styles";
 import {
+  DeleteTritonUser,
   ModalOverlay,
   BasicFormInfo,
   CallRecordingForm,
@@ -21,7 +22,9 @@ import {
 } from "components";
 import {
   useFormState,
-  useAdminState
+  useAdminState,
+  useFormDispatch,
+  profileEntryFormActions
 } from "context";
 import { formModes } from "globals";
 import React, { useState } from "react";
@@ -45,9 +48,18 @@ const UserEntryForm = (props: UserEntryFormProps) => {
   const offices = state.officeContext.offices;
 
   const form = useFormState();
+  const setForm = useFormDispatch();
   const [forwardToToggle, setForwardToToggle] = useState(false);
 
   console.log("FORM", form);
+
+  React.useEffect(() => {
+    if(workerOpts.action === UserAction.ADD) {
+      setForm({
+        type: profileEntryFormActions.RESET_FORM
+      });
+    }
+  }, [ workerOpts.action]);
 
   const [loading, updateLoading] = useState<LoadingState>({
     lookupUser: false,
@@ -90,11 +102,18 @@ const UserEntryForm = (props: UserEntryFormProps) => {
             });
           }}
         /> : null}
-      <Header1>{form.formMode === formModes.INSERT ? "Add a User" : "Edit User"}</Header1>
-      {
-        form.formMode === formModes.UPDATE
-          ? <Header2>{worker.attributes.full_name}</Header2>
-          : null
+      { workerOpts.action === UserAction.ADD && <Header1>Onboard New User</Header1> }
+      { workerOpts.action === UserAction.EDIT && <Header1>Edit User</Header1> }
+      { workerOpts.action === UserAction.DELETE && <Header1>Deactivate User</Header1> }
+      { workerOpts.action !== UserAction.ADD && <Header2>{worker.attributes.full_name}</Header2> }
+      { workerOpts.action === UserAction.DELETE &&
+        <DeleteTritonUser
+          handleClose={handleClose}
+          loading={loading}
+          workerOpts={workerOpts}
+          setWorkerOpts={setWorkerOpts}
+          updateLoading={updateLoading}
+        />
       }
       {
         form.discrepancies.length > 0
@@ -113,9 +132,14 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       <StyledDivider />
       <HeaderRow>
         <h2>Triton User Settings</h2>
-        <Checkbox checked={workerOpts.systems.triton} onChange={(event: any) => handleCheckbox(event.target.checked, "triton")}/>
+        { workerOpts.action !== UserAction.DELETE &&
+          <Checkbox
+            checked={workerOpts.systems.triton}
+            onChange={(event: any) => handleCheckbox(event.target.checked, "triton")}
+          />
+        }
       </HeaderRow>
-      <BasicFormInfo
+      { workerOpts.systems.triton && <BasicFormInfo
         skills={skills}
         worker={worker}
         workers={workers}
@@ -123,15 +147,21 @@ const UserEntryForm = (props: UserEntryFormProps) => {
         managers={managers}
         forwardToToggle={forwardToToggle}
         setForwardToToggle={setForwardToToggle}
-      />
+      /> }
+
       <StyledDivider />
       <HeaderRow>
         <h2>Calabrio Quality Management User Settings</h2>
-        <Checkbox checked={workerOpts.systems.calabrio_qm} onChange={(event: any) => handleCheckbox(event.target.checked, "calabrio_qm")}/>
+        { workerOpts.action !== UserAction.DELETE &&
+          <Checkbox
+            checked={workerOpts.systems.calabrio_qm}
+            onChange={(event: any) => handleCheckbox(event.target.checked, "calabrio_qm")}
+          />
+        }
       </HeaderRow>
-      <CallRecordingForm twilioWorker={worker} />
+      { workerOpts.systems.calabrio_qm && <CallRecordingForm twilioWorker={worker} /> }
       <StyledDivider />
-      <UserFormButtons
+      { workerOpts.action !== UserAction.DELETE && <UserFormButtons
         forwardToToggle={forwardToToggle}
         handleClose={handleClose}
         loading={loading}
@@ -140,6 +170,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
         updateLoading={updateLoading}
         worker={worker}
       />
+      }
     </ModalContainer>
   );
 };

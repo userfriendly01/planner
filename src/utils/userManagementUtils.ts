@@ -4,11 +4,15 @@ import {
   formModes,
   AppState
 } from "globals";
-import { UserFormState } from "components/tabs/usermanagement/OnboardNewUser/UserEntryFormWrapper.Interfaces";
+import {
+  UserFormState,
+  WorkerOpts
+} from "components/tabs/usermanagement/OnboardNewUser/UserEntryFormWrapper.Interfaces";
 import {
   formatE164PhoneNumber,
   removeNonNumericCharacters
 } from "utils";
+import { views } from "components/tabs/usermanagement/UserManagementWrapper/UserManagement.Interfaces";
 
 // For a DID user, the outgoing number is tied to the directDialNum, if you change one you must change both in order for the form to be valid
 export const isDidDifferentValid = (form: UserFormState, worker: Worker, forwardToToggle: boolean): boolean => {
@@ -90,4 +94,39 @@ export const getZeroOutEnabledFromProfile = (profiles: TritonProfile[], newProfi
 
 export const workerHasOverFlowSkill = (worker: Worker, profiles: TritonProfile[]): boolean => worker?.attributes.routing?.skills.some(skill => getOverflowSkills(profiles).includes(skill));
 
+export const identifyUserProfiles = (state: AppState, workerOpts: WorkerOpts) => {
+  const systems = {
+    ...workerOpts.systems
+  };
 
+  const routedFrom = workerOpts.routedFrom;
+  const worker = workerOpts.worker;
+  switch(routedFrom){
+    case views.TRITON_USERS: {
+      const workerSid = worker.sid?.toLowerCase();
+      const email = worker.attributes?.email?.toLowerCase();
+      const calabrioQmUser = state.calabrioContext.users.find(user => user.acdId?.toLowerCase() === workerSid) || state.calabrioContext.users.find((user: any) => user.email?.toLowerCase() === email);
+      console.log("**Hit Triton switch", systems);
+      systems.triton = true,
+      systems.calabrio_qm = calabrioQmUser ? true : false;
+      systems.calabrio_wfm = false;
+      return systems;
+    }
+    case views.CALABRIO_QM_USERS: {
+      const acdId = worker.acdId.toLowerCase();
+      const calabrioQmUser = state.workerContext.workers.find(worker => worker.sid?.toLowerCase() === acdId);
+
+      systems.triton = true,
+      systems.calabrio_qm = calabrioQmUser ? true : false;
+      systems.calabrio_wfm = false;
+      return systems;
+    }
+    case views.CALABRIO_WFM_USERS:
+      //future enhancement
+      return systems;
+    default:
+      console.log("**Hit default switch", routedFrom);
+
+      return systems;
+  }
+};

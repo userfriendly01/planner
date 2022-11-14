@@ -1,4 +1,5 @@
 import {
+  CalabrioQmUser,
   Manager,
   ModalOverlayStatuses,
   Office,
@@ -31,10 +32,10 @@ export interface UserSystem {
 }
 
 export interface WorkerOpts {
-  worker: Worker | null,
+  worker: any,
   action: UserAction,
   systems: UserSystem,
-
+  routedFrom: View
 }
 
 export interface UserEntryFormProps {

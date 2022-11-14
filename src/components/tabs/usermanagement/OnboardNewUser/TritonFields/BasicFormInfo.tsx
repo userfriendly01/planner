@@ -64,7 +64,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
     if (form.formMode === formModes.INSERT) {
       return false;
     } else {
-      return form.editDisabled && worker.directDialNum ? true : false;
+      return form.editDisabled && worker?.directDialNum ? true : false;
     }
   };
 
@@ -156,14 +156,14 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
         />
         <Tooltip
           title={
-            form.formMode === formModes.UPDATE && worker.directDialNum ?
+            form.formMode === formModes.UPDATE && worker?.directDialNum ?
               "Twilio DID can not be removed" : ""
           }
           placement={"bottom-start"}
         >
           <ToggleContainer>
             <Switch
-              disabled={form.formMode === formModes.UPDATE && worker.directDialNum ? true : false}
+              disabled={form.formMode === formModes.UPDATE && worker?.directDialNum ? true : false}
               checked={form.didUser}
               onChange={() => {
                 setForm({ type: userFormActions.INITIATE_DID_FIELDS });

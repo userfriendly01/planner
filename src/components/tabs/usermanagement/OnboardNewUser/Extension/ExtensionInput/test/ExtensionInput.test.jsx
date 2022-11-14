@@ -1,11 +1,17 @@
-import ModalExtension from "../ExtensionInput";
+import ExtensionInput from "../ExtensionInput";
 import {
   CustomInput,
-  ModalHelperText
+  ModalHelperText,
+  UserFormButton
 } from "components";
+import {
+  useFormState,
+  useFormDispatch
+} from "context";
 import React from "react";
 import {
   getMockedComponentProps,
+  initialFormState,
   render,
   setupMockedComponents
 } from "testUtils";
@@ -13,32 +19,40 @@ import {
 jest.mock("components", () => ({
   __esModule: true,
   CustomInput: jest.fn(),
-  ModalHelperText: jest.fn()
+  ModalHelperText: jest.fn(),
+  StyledButton: jest.fn(),
+  UserFormButton: jest.fn()
+}));
+
+jest.mock("context", () => ({
+  useFormDispatch: jest.fn(),
+  useFormState: jest.fn(),
+  userFormActions: jest.requireActual("context").userFormActions
 }));
 
 const mockOnBlur = jest.fn();
-const mockOnClear = jest.fn();
-const mockOnUpdate = jest.fn();
+const mockSetForm = jest.fn();
 
 const renderComponent = (disabled, extension, isError, message) => {
-  return render(<ModalExtension
+  return render(<ExtensionInput
     disabled={disabled}
     extension={extension}
     message={message}
     isError={isError}
     onBlur={mockOnBlur}
-    onClear={mockOnClear}
-    onUpdate={mockOnUpdate}
   />);
 };
 
-describe("<ModalExtension />", () => {
+describe("<Extension Input />", () => {
   beforeEach(() => {
     setupMockedComponents({
       CustomInput,
-      ModalHelperText
+      ModalHelperText,
+      UserFormButton
     });
     jest.clearAllMocks();
+    useFormState.mockReturnValue(initialFormState);
+    useFormDispatch.mockReturnValue(mockSetForm);
   });
   describe("testing the CustomInput props", () => {
     test("the initial state should be just an empty text field, with the correct label, and no helper text", () => {
@@ -54,7 +68,7 @@ describe("<ModalExtension />", () => {
       expect(customInputProps.name).toBe("Extension");
       const ext = "1111";
       customInputProps.updateValue(ext);
-      expect(mockOnUpdate).toHaveBeenCalledWith(ext, false);
+      //Faith update later
       customInputProps.onBlur();
       expect(mockOnBlur).toHaveBeenCalledWith();
       expect(customInputProps.value).toBe(extension);
@@ -84,7 +98,6 @@ describe("<ModalExtension />", () => {
         expect(props.error).toBe(false);
         expect(props.message).toBe(message);
         props.clearFunction();
-        expect(mockOnClear).toHaveBeenCalledTimes(1);
       });
       test("should show error message when one is provided", () => {
         const message = "Some error message";
@@ -103,7 +116,6 @@ describe("<ModalExtension />", () => {
         const customInputProps = getMockedComponentProps(CustomInput);
         const ext = "91111";
         customInputProps.updateValue(ext);
-        expect(mockOnUpdate).toHaveBeenCalledWith(ext, false);
       });
     });
   });

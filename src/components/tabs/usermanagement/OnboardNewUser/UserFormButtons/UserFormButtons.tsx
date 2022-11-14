@@ -427,45 +427,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       });
   };
 
-  // const doDeleteUser = () => {
-  //   const deletedWorker = confirmationModalOpts.worker;
-  //   setSaveResult({
-  //     status: ModalOverlayStatuses.SAVING,
-  //     message: "Saving"
-  //   });
-  //   let resultMessage;
-  //   return deleteUser(deletedWorker)
-  //     .then(() => {
-  //       resultMessage = `Successfully deleted Triton worker with sid ${deletedWorker.sid}`;
-  //       dispatch({
-  //         type: "deleteWorker",
-  //         payload: deletedWorker.sid
-  //       });
-  //       setSaveResult({
-  //         status: ModalOverlayStatuses.SUCCESS,
-  //         message: resultMessage
-  //       });
-  //       setTimeout(() => {
-  //         setConfirmationModalOpts(defaultModalOpts);
-  //         setSaveResult(defaultSaveResult);
-  //       }, 2000);
-  //     })
-  //     .catch(err => {
-  //       if (typeof err.response.data.error === "object" ){
-  //         resultMessage = `Failed to delete worker ${deletedWorker.sid}`;
-  //       } else {
-  //         resultMessage = err.response.data.error;
-  //       }
-  //       console.error(resultMessage, {
-  //         error: err
-  //       });
-  //       setSaveResult({
-  //         status: ModalOverlayStatuses.FAIL,
-  //         message: resultMessage
-  //       });
-  //     });
-  // };
-
   const isUserFormButtonEnabled = form.formMode === formModes.INSERT
     ? isFormValid(form, worker, forwardToToggle)
     : (isFormUpdated(form) || form.discrepancies.length > 0) && isFormValid(form, worker, forwardToToggle);

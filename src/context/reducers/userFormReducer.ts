@@ -11,7 +11,6 @@ import {
   getValidSkillsObject,
   getZeroOutEnabledFromProfile
 } from "utils";
-
 import { SearchParams } from "components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionSearchParams";
 const searchParams = SearchParams.getValues();
 
@@ -39,6 +38,7 @@ export const userFormActions = {
   SET_EXTENSION_RETRIES: "SET_EXTENSION_RETRIES",
   SET_EXTENSION_VERIFIED: "EXTENSION_VERIFIED",
   SET_UPDATE_FORM_STATE: "SET_UPDATE_FORM_STATE",
+  SET_DELETE_FORM_STATE: "SET_DELETE_FORM_STATE",
   SET_USER_PREVIOUSLY_ADDED_TRUE: "SET_USER_PREVIOUSLY_ADDED_TRUE",
   UPDATE_DEFAULT_SKILLS: "UPDATE_DEFAULT_SKILLS",
   UPDATE_EXTENSION: "UPDATE_EXTENSION",
@@ -399,12 +399,63 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
     }
 
     case userFormActions.SET_UPDATE_FORM_STATE: {
-      console.warn("i'm tryna set the state!", action.payload);
       const worker = action.payload.worker;
       const managers = action.payload.managers;
       const finalObj = {
         ...state,
         formMode: formModes.UPDATE,
+        defaultSkills: getValidSkillsObject(worker.attributes.default_skills),
+        extension: {
+          ...state.extension,
+          value: worker.attributes.extension || "",
+          valid: true
+        },
+        extensionStatus: {
+          ...state.extensionStatus,
+          originalExtension: worker.attributes.extension || "",
+          isError: false,
+          message: ""
+        },
+        manager: {
+          ...state.manager,
+          value: managers.find((m: Manager) => m.manager_n_number === worker.attributes.manager_n_number)
+        },
+        nNumber: {
+          ...state.nNumber,
+          value: worker.attributes.n_number || "n"
+        },
+        outgoing: {
+          ...state.outgoing,
+          value: worker.attributes.did ? formatE164PhoneNumber(worker.attributes.did) : "",
+          valid: worker.attributes.did ? true : false
+        },
+        profileId: {
+          ...state.profileId,
+          value: worker.attributes.profile_id
+        },
+        alternateDid: {
+          ...state.alternateDid,
+          value: worker.alternateDid ? formatE164PhoneNumber(worker.alternateDid) : "",
+          valid: worker.alternateDid ? true : false
+        },
+        directDialNum: {
+          ...state.directDialNum,
+          value: worker.directDialNum ? formatE164PhoneNumber(worker.directDialNum) : "",
+          valid: worker.directDialNum ? true : false
+        },
+        didUser: worker.directDialNum ? true : false,
+        zeroOutEnabled: worker.zeroOutEnabled || false,
+        editDisabled: worker.directDialNum ? true : false
+      };
+      console.log("FINAL", finalObj);
+      return finalObj;
+    }
+    case userFormActions.SET_DELETE_FORM_STATE: {
+      const worker = action.payload.worker;
+      const managers = action.payload.managers;
+      const finalObj = {
+        ...state,
+        formMode: formModes.DELETE,
         defaultSkills: getValidSkillsObject(worker.attributes.default_skills),
         extension: {
           ...state.extension,

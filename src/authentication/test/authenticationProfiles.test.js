@@ -13,7 +13,7 @@ import {
   runAlohaFlowStartup
 } from "authentication";
 import {
-  ManagementWrapper,
+  UserManagementWrapper,
   ProfileSettingsContainer,
   CallflowManagementWrapper,
   AlohaRoutingContainer,
@@ -22,7 +22,7 @@ import {
 import { setupMockedComponents } from "testUtils";
 
 jest.mock("components", () => ({
-  ManagementWrapper: jest.fn(),
+  UserManagementWrapper: jest.fn(),
   ProfileSettingsContainer: jest.fn(),
   CallflowManagementWrapper: jest.fn(),
   AlohaRoutingContainer: jest.fn(),
@@ -33,7 +33,7 @@ describe("authenticationProfiles", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     setupMockedComponents({
-      ManagementWrapper,
+      UserManagementWrapper,
       ProfileSettingsContainer,
       CallflowManagementWrapper,
       AlohaRoutingContainer,
@@ -180,7 +180,7 @@ describe("authenticationProfiles", () => {
         TRITON_USER_MANAGEMENT: {
           value: "triton-user-management",
           label: "User Management",
-          component: ManagementWrapper
+          component: UserManagementWrapper
         },
         TRITON_PROFILE_SETTINGS: {
           value: "triton-profile-settings",

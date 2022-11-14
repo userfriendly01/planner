@@ -5,8 +5,7 @@ import {
   Header,
   HeaderAndCloseButtonWrapper,
   LeftDiv,
-  ModalContainer,
-  PaperContainer
+  ModalContainer
 } from "./ManagerModal.Styles";
 import { Modal } from "@mui/material";
 import { CloseRounded } from "@mui/icons-material";
@@ -15,7 +14,8 @@ import {
   NNumberInput,
   ModalOverlay,
   StyledButton,
-  CalabrioTeamModal
+  CalabrioTeamModal,
+  PaperContainer
 } from "components";
 import {
   useAdminDispatch,

@@ -1,6 +1,4 @@
-import {
-  ExtensionSearchStatuses
-} from "components/tabs/usermanagement/OnboardNewUser/UserEntryForm/UserEntryForm.Interfaces";
+import { ExtensionSearchStatuses } from "components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionInput/ExtensionInput.Interfaces";
 import { formModes } from "globals";
 import {
   managerList,

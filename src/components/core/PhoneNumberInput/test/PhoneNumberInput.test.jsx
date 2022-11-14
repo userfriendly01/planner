@@ -26,6 +26,7 @@ jest.mock("react-text-mask", () => ({
 
 jest.mock("@mui/material", () => ({
   __esModule: true,
+  Divider: jest.fn(),
   Switch: jest.fn(),
   TextField: jest.fn(),
   Button: jest.fn(),

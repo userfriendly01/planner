@@ -18,9 +18,7 @@ import {
   Edit,
   ChangeHistoryRounded
 } from "@mui/icons-material";
-import {
-  ModalOverlay
-} from "components";
+import { ModalOverlay } from "components";
 import {
   useAdminDispatch,
   useAdminState,
@@ -30,34 +28,19 @@ import {
 import {
   formModes
 } from "globals";
+import React from "react";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
 import { formatWorkerAttributeSkillsToHTML } from "utils";
 import { views } from "../../UserManagementWrapper/UserManagement.Interfaces";
 
 const TritonUserTable = props => {
   const {
-    view,
-    setView,
     deltaToggle,
     workerOpts,
     setWorkerOpts,
     setDeltaToggle,
-    skills,
-    paginatedWorkers,
-    workers
+    paginatedWorkers
   } = props;
-
-  const defaultModalOpts = {
-    open: false,
-    worker: null
-  };
-
-  const defaultSaveResult = {
-    status: null,
-    message: null
-  };
-
 
   const state = useAdminState();
   const selectedWorkers = state.workerContext.selectedWorkers;
@@ -106,7 +89,25 @@ const TritonUserTable = props => {
               setWorkerOpts({
                 ...workerOpts,
                 action: UserAction.EDIT,
-                worker: worker
+                worker: worker,
+                routedFrom: views.TRITON_USERS
+              });
+            };
+            const deleteButtonOnClick = event => {
+              event.stopPropagation();
+              setForm({
+                type: userFormActions.SET_UPDATE_FORM_STATE,
+                payload: {
+                  worker,
+                  managers: state.managerContext.managers,
+                  formMode: formModes.DELETE
+                }
+              });
+              setWorkerOpts({
+                ...workerOpts,
+                action: UserAction.DELETE,
+                worker: worker,
+                routedFrom: views.TRITON_USERS
               });
             };
             return (
@@ -128,7 +129,7 @@ const TritonUserTable = props => {
                   </IconWrapper>
                 </CustomTableData>
                 <CustomTableData>
-                  <IconWrapper onClick={() => console.log("will redirect to userform")} data-testid="delete-button">
+                  <IconWrapper onClick={deleteButtonOnClick} data-testid="delete-button">
                     <Delete fontSize={"inherit"}/>
                   </IconWrapper>
                 </CustomTableData>

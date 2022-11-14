@@ -64,7 +64,8 @@ export interface PingIdentity {
 
 export interface FormModes {
   INSERT: string,
-  UPDATE: string
+  UPDATE: string,
+  DELETE: string
 }
 
 export interface Manager {
@@ -194,4 +195,23 @@ export interface WorkerAttributeSkills {
     [key: string]: number
   },
   skills: string[]
+}
+
+export interface CalabrioQmUser {
+  acdId: string,
+  acdServerId: number,
+  activated: number,
+  adLogin: string,
+  deactivated: number,
+  displayId: string,
+  email: string,
+  firstName: string,
+  groupId: number,
+  id: number,
+  isHotdeskDefaultUser: boolean,
+  isReconcileOnly: boolean,
+  isSynchronized: boolean,
+  isSystemUser: boolean,
+  lastName: string,
+  timeZone: number
 }

@@ -8,17 +8,17 @@ import React from "react";
 import {
   expectMockedComponent,
   expectOnlyPassedProps,
-  fireEvent,
   getMockedComponentProps,
   render,
   setupMockedComponents
 } from "testUtils";
 
-jest.mock("components/tabs/usermanagement", () => ({
+jest.mock("components", () => ({
   __esModule: true,
   ManagerDropdown: jest.fn(),
   ResetSkillsButton: jest.fn(),
-  SearchBox: jest.fn()
+  SearchBox: jest.fn(),
+  StyledButton: jest.fn()
 }));
 
 const filterBy = "who cares";
@@ -62,15 +62,5 @@ describe("<ManagementHeader />", () => {
     expectOnlyPassedProps(SearchBox, { searchBy });
     getMockedComponentProps(SearchBox).setSearch();
     expect(setSearch).toHaveBeenCalledTimes(1);
-  });
-
-  test("when Add User button is clicked setUserEntryFormState is called", () => {
-    const rendered = renderComponent();
-    const addUserButtonElement = rendered.getByText("Add User");
-    fireEvent.click(addUserButtonElement);
-    expect(setUserModalState).toHaveBeenCalledWith({
-      open: true,
-      worker: null
-    });
   });
 });

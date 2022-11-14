@@ -14,8 +14,8 @@ import {
   formatE164PhoneNumber,
   getValidSkillsObject
 } from "utils";
-import { ExtensionSearchStatuses } from "../../components/tabs/usermanagement/OnboardNewUser/UserEntryForm/UserEntryForm.Interfaces";
-import { SearchParams } from "../../components/tabs/usermanagement/OnboardNewUser/UserEntryForm/Extension/ExtensionSearchParams";
+import { ExtensionSearchStatuses } from "components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionInput/ExtensionInput.Interfaces";
+import { SearchParams } from "components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionSearchParams";
 const searchParams = SearchParams.getValues();
 
 describe("userFormReducer", () => {

@@ -2,7 +2,7 @@ import ManagerModal from "../ManagerModal";
 import { CloseRounded } from "@mui/icons-material";
 import {
   Dropdown,
-  ModalNNumber,
+  NNumberInput,
   ModalOverlay,
   PaperContainer,
   StyledButton,
@@ -35,7 +35,8 @@ jest.mock("@mui/icons-material", () => ({
 }));
 
 jest.mock("@mui/material", () => ({
-  Modal: jest.fn()
+  Modal: jest.fn(),
+  Paper: jest.fn()
 }));
 
 jest.mock("services", () => ({
@@ -50,7 +51,7 @@ jest.mock("context", () => ({
 jest.mock("components", () => ({
   __esModule: true,
   Dropdown: jest.fn(),
-  ModalNNumber: jest.fn(),
+  NNumberInput: jest.fn(),
   ModalOverlay: jest.fn(),
   PaperContainer: jest.fn(),
   StyledButton: jest.fn(),
@@ -59,21 +60,23 @@ jest.mock("components", () => ({
 
 describe("<ManagerModal />", () => {
   const mockHandleClose = jest.fn();
-  const renderComponent = () => render(<ManagerModal handleClose={mockHandleClose} selectedManager={null}/>);
+  const renderComponent = () => {
+    render(<ManagerModal handleClose={mockHandleClose} selectedManager={null}/>);
+    render(PaperContainer.mock.calls[0][0].children);
+  };
   beforeEach(() => {
     mockStore.reset();
     jest.clearAllMocks();
     setupMockedComponents({
       Dropdown,
       CloseRounded,
-      ModalNNumber,
+      NNumberInput,
       ModalOverlay,
       StyledButton,
       CalabrioTeamModal,
-      Modal
+      Modal,
+      PaperContainer
     });
-    PaperContainer.mockClear();
-    PaperContainer.mockImplementation(props => <div>{props.children}</div>);
     mockHandleClose.mockClear();
     useAdminState.mockReturnValue({
       profileContext: {
@@ -103,11 +106,11 @@ describe("<ManagerModal />", () => {
   });
 
   describe("initial state of the modal", () => {
-    test("should render StyledButton, CloseRounded & ModalNNumber once each", () => {
+    test("should render StyledButton, CloseRounded & NNumberInput once each", () => {
       const rendered = renderComponent();
       expectMockedComponent(rendered, { StyledButton });
       expectMockedComponent(rendered, { CloseRounded });
-      expectMockedComponent(rendered, { ModalNNumber });
+      expectMockedComponent(rendered, { NNumberInput });
     });
     test("should not render ModalOverlay", () => {
       const rendered = renderComponent();
@@ -117,13 +120,13 @@ describe("<ManagerModal />", () => {
 
   const updateFormSoValid = (fetchedManager, nNumber) => {
     act(() => {
-      getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).onUpdate("n02");
+      getMockedComponentProps(NNumberInput, getLastInstanceCalled(NNumberInput)).onUpdate("n02");
     });
     act(() => {
-      getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).onClear();
+      getMockedComponentProps(NNumberInput, getLastInstanceCalled(NNumberInput)).onClear();
     });
     act(() => {
-      getMockedComponentProps(ModalNNumber, getLastInstanceCalled(ModalNNumber)).onComplete(fetchedManager, nNumber);
+      getMockedComponentProps(NNumberInput, getLastInstanceCalled(NNumberInput)).onComplete(fetchedManager, nNumber);
     });
     act(() => {
       Dropdown.mock.calls[6][0].updateValue(null, {
@@ -428,7 +431,7 @@ describe("<ManagerModal />", () => {
       expectMockedComponent(rendered, { CloseRounded }, 1);
     });
     describe("when clicked", () => {
-      test("should close the modal", () => {
+      test.only("should close the modal", () => {
         renderComponent();
         const { onClick } = getMockedComponentProps(CloseRounded);
         act(() => onClick());
