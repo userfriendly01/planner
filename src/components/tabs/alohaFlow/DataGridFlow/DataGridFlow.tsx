@@ -4,7 +4,7 @@
    react/jsx-props-no-spreading
 */
 
-import "Grid.scss";
+import "./Grid.scss";
 import "react-toastify/dist/ReactToastify.css";
 import DataTable, { createTheme } from "react-data-table-component";
 import{
@@ -264,9 +264,9 @@ const DataGridFlow = ({ accessToken }: { accessToken: string }) => {
 
 
   return (
-    <div className="data-grid">
+    <div className="data-grid-wrapper">
       <div className="data-grid-wrapper">
-        <div className="data-table-wrapper">
+        <div className="data-grid-wrapper">
           <DataTable
             actions={(
               <GridTopHeader

@@ -55,7 +55,7 @@ const config = {
       services: resolvePathInSrc("services"),
       utils: resolvePathInSrc("utils")
     },
-    extensions: [ ".js", ".jsx", ".ts", ".tsx" ],
+    extensions: [ ".js", ".jsx", ".ts", ".tsx",".scss" ],
     mainFiles: [ "index" ]
   }
 };
