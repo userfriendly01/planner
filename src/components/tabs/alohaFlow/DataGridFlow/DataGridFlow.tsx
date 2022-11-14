@@ -4,7 +4,7 @@
    react/jsx-props-no-spreading
 */
 
-import "./Grid.scss";
+import "Grid.scss";
 import "react-toastify/dist/ReactToastify.css";
 import DataTable, { createTheme } from "react-data-table-component";
 import{
