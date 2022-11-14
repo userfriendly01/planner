@@ -1,4 +1,3 @@
-import { CSSObject } from "styled-components";
 import theme from "./GridTheme";
 export const headColor = "#167F92";
 export const headTextColor = "#ffffff";
