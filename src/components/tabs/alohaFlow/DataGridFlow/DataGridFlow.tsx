@@ -7,11 +7,11 @@
 import "./Grid.scss";
 import "react-toastify/dist/ReactToastify.css";
 import DataTable, { createTheme } from "react-data-table-component";
-import{
+import {
   ToastContainer,
   toast
 } from "react-toastify";
-import React,{
+import React, {
   useState,
   useEffect
 } from "react";
@@ -22,13 +22,16 @@ import { GridStyle } from "./GridStyle";
 import GridTheme from "./GridTheme";
 import GridTopHeader from "./GridTopHeader";
 import { retrieveFlowData } from "services";
-import{
+import {
   CctSharedCallFlowDb,
   FlowAdvanceFilter
 } from "../AlohaFlow.Interfaces";
+import { getAccessToken, getGraphQLEndpoint } from "utils";
 
 createTheme("gridTheme", { ...GridTheme }, "gridTheme");
-const DataGridFlow = ({ accessToken }: { accessToken: string }) => {
+const DataGridFlow = () => {
+  const accessToken: string = getAccessToken();
+  const graphQlApiUrl: string = getGraphQLEndpoint();
   const [dataFlow, setDataFlow] = useState({
     "data": [],
     "filteredItems": [],
@@ -51,12 +54,12 @@ const DataGridFlow = ({ accessToken }: { accessToken: string }) => {
     loadDataTable();
     setDataFlow((dataFlowProps: any) => ({
       ...dataFlowProps,
-      "page": sessionStorage.getItem("CALL_FLOW_PAGE_NO")|| 1,
+      "page": sessionStorage.getItem("CALL_FLOW_PAGE_NO") || 1,
       "perPage": sessionStorage.getItem("CALL_FLOW_PER_PAGE") || 10
     }));
   }, []);
 
-  const handleFilterInputChange = (event: any ) => {
+  const handleFilterInputChange = (event: any) => {
     setDataFlow(dataFlowProps => ({
       ...dataFlowProps,
       [event.target.name]: event.target.value
@@ -91,7 +94,7 @@ const DataGridFlow = ({ accessToken }: { accessToken: string }) => {
     }));
   };
 
-  const openAddModal = (flag:boolean, ruleType: number) => {
+  const openAddModal = (flag: boolean, ruleType: number) => {
     if (!flag && ruleType) {
       showToastMessage(
         "success",
@@ -120,8 +123,8 @@ const DataGridFlow = ({ accessToken }: { accessToken: string }) => {
   };
 
   const loadDataTable = async () => {
-    let result: CctSharedCallFlowDb[] = await retrieveFlowData(accessToken);
-    if(result.length > 0) {
+    let result: CctSharedCallFlowDb[] = await retrieveFlowData(accessToken, graphQlApiUrl);
+    if (result.length > 0) {
       result = result.sort((a: any, b: any) => a.pkey - b.pkey);
       result = result.map((item: any, index: any) => (
         {
@@ -132,7 +135,7 @@ const DataGridFlow = ({ accessToken }: { accessToken: string }) => {
       const minId = result[0].id;
       const maxId = result[result.length - 1].id;
 
-      setDataFlow((dataFlowProps:any) => ({
+      setDataFlow((dataFlowProps: any) => ({
         ...dataFlowProps,
         "data": result,
         "filteredItems": result,
@@ -148,7 +151,7 @@ const DataGridFlow = ({ accessToken }: { accessToken: string }) => {
         "masterData": masterData
       }));
     } else {
-      setDataFlow((dataFlowProps:any) => ({
+      setDataFlow((dataFlowProps: any) => ({
         ...dataFlowProps,
         "data": result,
         "filteredItems": result,
@@ -175,7 +178,7 @@ const DataGridFlow = ({ accessToken }: { accessToken: string }) => {
             )}
             columns={GridColumnDef}
             customStyles={GridStyle}
-            data={dataFlow.filteredItems.slice((dataFlow.page - 1) * dataFlow.perPage, dataFlow.page* dataFlow.perPage)}
+            data={dataFlow.filteredItems.slice((dataFlow.page - 1) * dataFlow.perPage, dataFlow.page * dataFlow.perPage)}
             defaultSortFieldId={1}
             highlightOnHover
             expandableRows

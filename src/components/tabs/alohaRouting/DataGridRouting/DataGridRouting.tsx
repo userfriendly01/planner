@@ -3,13 +3,14 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { RoutingGridColumnDef } from "./GridColumnDef"
 import { CctSharedCallRoutingGlobalDb, RoutingFilter, RoutingInitState, RoutingMasterData } from "../AlohaRouting.Interfaces";
 import { retrieveRoutingData } from "services";
-import { CACHED_CALL_ROUTING_PAGE_NO, CACHED_CALL_ROUTING_PER_PAGE, CACHE_FILTER_ROUTING, getAccessToken, routingInitState } from "utils";
+import { CACHED_CALL_ROUTING_PAGE_NO, CACHED_CALL_ROUTING_PER_PAGE, CACHE_FILTER_ROUTING, getAccessToken, routingInitState, getGraphQLEndpoint } from "utils";
 import { getGridMasterData } from "./GridMaster";
 import { RoutingTableBox } from "../AlohaRouting.Styles";
 import GridSpinner from "./GridSpinner";
 
 export const DataGridRouting = () => {
     const accessToken: string = getAccessToken();
+    const graphQlApiUrl: string = getGraphQLEndpoint();
     const reducer = (state: RoutingInitState, updatedState: RoutingInitState): RoutingInitState => {
         return { ...state, ...updatedState }
     }
@@ -60,7 +61,7 @@ export const DataGridRouting = () => {
     }
 
     const loadDataTable = async () => {
-        const result: CctSharedCallRoutingGlobalDb[] = await retrieveRoutingData(accessToken);
+        const result: CctSharedCallRoutingGlobalDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl);
         if (result.length > 0) {
             const sortedResult: CctSharedCallRoutingGlobalDb[] = result.sort(((a: CctSharedCallRoutingGlobalDb, b: CctSharedCallRoutingGlobalDb) => a.id - b.id));
             const minId: number = sortedResult[0].id;

@@ -1,5 +1,4 @@
-import { useAdminState } from "../context"
-
+import { useAdminState } from "context";
 /**
  *  This function return graphQL endpoint based on running environment  
  * @returns string: GraphQL Endpoint

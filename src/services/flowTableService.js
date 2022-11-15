@@ -1,17 +1,16 @@
 /* eslint-disable no-console */
 
-import { getGraphQLEndpoint } from "utils";
-
 /**
  * This is the function use to query the appsync API to get the data from DB
- * @param {*} accessToken OAuth tokent to use while calling graphql query
- * @param {*} nextToken Token for next set of data
+ * @param {String} accessToken OAuth tokent to use while calling graphql query
+ * @param {String} nextToken Token for next set of data
+ * @param {String} graphQlApiUrl Endpoint URL
  * @returns list of data and nextToken if any
  */
-async function queryFlowData(accessToken, nextToken = null) {
+async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
   let result = {};
   try {
-    const response = await fetch(getGraphQLEndpoint(), {
+    const response = await fetch(graphQlApiUrl, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -70,10 +69,11 @@ async function queryFlowData(accessToken, nextToken = null) {
 /**
  * This is the function to use to call queryFlowData function multiple time
  * until nextToken become null
- * @param {*} accessToken OAuth Access Token
+ * @param {String} accessToken OAuth Access Token
+ * @param {String} graphQlApiUrl Endpoint URL 
  * @returns {flowData} list of data contain all the result present in DB
  */
-async function retrieveFlowData(accessToken) {
+async function retrieveFlowData(accessToken, graphQlApiUrl) {
   console.log("retrieveFlowData Token:", accessToken);
   let flowData = [];
   let isFirstTime = true;
@@ -81,7 +81,7 @@ async function retrieveFlowData(accessToken) {
   try {
     while (isFirstTime || result.data?.listCctSharedCallFlowDbs.nextToken) {
       // eslint-disable-next-line no-shadow
-      result = await queryFlowData(accessToken, result.data?.listCctSharedCallFlowDbs.nextToken);
+      result = await queryFlowData(accessToken, result.data?.listCctSharedCallFlowDbs.nextToken, graphQlApiUrl);
       const listItems = result.data?.listCctSharedCallFlowDbs?.items || [];
       const tempFlowData = listItems.map(elem => ({
         ...elem,
@@ -96,10 +96,17 @@ async function retrieveFlowData(accessToken) {
   return flowData;
 }
 
-async function updateFlowDB(item, accessToken) {
+/**
+ * This is the Function to update the Flow Object ]to the DB
+ * @param {flowData} item Flow object that need to update
+ * @param {String} accessToken token to use while calling graphql query 
+ * @param {String} graphQlApiUrl Endpoint URL 
+ * @returns 
+ */
+async function updateFlowDB(item, accessToken, graphQlApiUrl) {
   let response;
   try {
-    const fetchResponse = await fetch(getGraphQLEndpoint(), {
+    const fetchResponse = await fetch(graphQlApiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -184,7 +191,14 @@ async function updateFlowDB(item, accessToken) {
   return response;
 }
 
-async function addFlowRule(item, accessToken) {
+/**
+ * This is the Function to add the Flow Object ]to the DB
+ * @param {flowData} item Flow object that need to add
+ * @param {String} accessToken token to use while calling graphql query 
+ * @param {String} graphQlApiUrl Endpoint URL 
+ * @returns 
+ */
+async function addFlowRule(item, accessToken, graphQlApiUrl) {
   let response;
   const curTime = new Date().toISOString();
   const dataRequests = item.dataRequests.value
@@ -194,7 +208,7 @@ async function addFlowRule(item, accessToken) {
     || [];
 
   try {
-    const fetchResponse = await fetch(getGraphQLEndpoint(), {
+    const fetchResponse = await fetch(graphQlApiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -280,10 +294,17 @@ async function addFlowRule(item, accessToken) {
   return response;
 }
 
-async function deleteFlowRule(item, accessToken) {
+/**
+ * This is the Function to delete the Flow Object from the DB
+ * @param {flowData} item Flow object that need to delete
+ * @param {String} accessToken token to use while calling graphql query 
+ * @param {String} graphQlApiUrl Endpoint URL 
+ * @returns 
+ */
+async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
   let response;
   try {
-    const fetchResponse = await fetch(getGraphQLEndpoint(), {
+    const fetchResponse = await fetch(graphQlApiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

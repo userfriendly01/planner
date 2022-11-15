@@ -1,17 +1,16 @@
 /* eslint-disable no-console */
 
-import { getGraphQLEndpoint } from "../utils";
-
 /**
  * This is the function use to query the appsync API to get the data from DB
- * @param {*} accessToken token to use while calling graphql query
- * @param {*} nextToken Token for next set of data
+ * @param {String} accessToken token to use while calling graphql query
+ * @param {String} nextToken Token for next set of data
+ * @param {String} graphQlApiUrl GraphQL Endpoint for Query and Mutation
  * @returns list of data and nextToken if any
  */
-async function queryRoutingData(accessToken, nextToken = null) {
+async function queryRoutingData(accessToken, nextToken = null, graphQlApiUrl) {
   let result = {};
   try {
-    const response = await fetch(getGraphQLEndpoint(), {
+    const response = await fetch(graphQlApiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -57,10 +56,11 @@ async function queryRoutingData(accessToken, nextToken = null) {
 /**
  * This is the function to use to call queryRoutingData function multiple time
  * until nextToken become null
- * @param {*} accessToken token to use while calling graphql query
+ * @param {String} accessToken token to use while calling graphql query
+ * @param {*} graphQlApiUrl GraphQL Endpoint for Query and Mutation
  * @returns {routingData} list of data contain all the result present in DB
  */
-async function retrieveRoutingData(accessToken) {
+async function retrieveRoutingData(accessToken, graphQlApiUrl) {
   let routingData = [];
   let isFirstTime = true;
   let result = {};
@@ -68,7 +68,7 @@ async function retrieveRoutingData(accessToken) {
     while (isFirstTime || result.data?.listCctSharedCallRoutingGlobalDbs.nextToken) {
       // eslint-disable-next-line no-shadow
       result = await queryRoutingData(accessToken, result.data?.listCctSharedCallRoutingGlobalDbs
-        .nextToken);
+        .nextToken, graphQlApiUrl);
       const listItems = result.data?.listCctSharedCallRoutingGlobalDbs?.items || [];
       const tempRoutingData = listItems.map(elem => (
         {
@@ -86,10 +86,17 @@ async function retrieveRoutingData(accessToken) {
   return routingData;
 }
 
-async function updateRoutingDB(item, accessToken) {
+/**
+ * This is the Function to update the Routing Object ]to the DB
+ * @param {routingData} item Routing object that need to update
+ * @param {String} accessToken token to use while calling graphql query 
+ * @param {String} graphQlApiUrl Endpoint URL 
+ * @returns 
+ */
+async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
   let response;
   try {
-    const fetchResponse = await fetch(getGraphQLEndpoint(), {
+    const fetchResponse = await fetch(graphQlApiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -147,10 +154,17 @@ async function updateRoutingDB(item, accessToken) {
   return response;
 }
 
-async function addRoutingRule(item, accessToken) {
+/**
+ * This is the Function to add the Routing Object ]to the DB
+ * @param {routingData} item Routing object that need to add
+ * @param {String} accessToken token to use while calling graphql query 
+ * @param {String} graphQlApiUrl Endpoint URL 
+ * @returns 
+ */
+async function addRoutingRule(item, accessToken, graphQlApiUrl) {
   let response;
   try {
-    const fetchResponse = await fetch(getGraphQLEndpoint(), {
+    const fetchResponse = await fetch(graphQlApiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -209,10 +223,17 @@ async function addRoutingRule(item, accessToken) {
   return response;
 }
 
-async function deleteRoutingRule(item, accessToken) {
+/**
+ * This is the Function to delete the Routing Object ]to the DB
+ * @param {routingData} item Routing object that need to delete
+ * @param {String} accessToken token to use while calling graphql query 
+ * @param {String} graphQlApiUrl Endpoint URL 
+ * @returns 
+ */
+async function deleteRoutingRule(item, accessToken, graphQlApiUrl) {
   let response;
   try {
-    const fetchResponse = await fetch(getGraphQLEndpoint(), {
+    const fetchResponse = await fetch(graphQlApiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
