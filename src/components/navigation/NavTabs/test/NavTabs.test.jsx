@@ -102,7 +102,7 @@ describe("<NavTabs />", () => {
 
   test("when we click on the 'Aloha Flow Container' link, only AlohaFlowContainer should be visible", () => {
     const rendered = render(<NavTabs />);
-    fireEvent.click(rendered.getAllByText("Call Flow Management")[1]);
+    fireEvent.click(rendered.getByText("Call Flow DB Management"));
     expect(rendered.getByText("ProfileSettingsContainer")).not.toBeVisible();
     expect(rendered.getByText("ManagementWrapper")).not.toBeVisible();
     expect(rendered.getAllByText("CallflowManagementWrapper")[0]).not.toBeVisible();
