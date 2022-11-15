@@ -34,9 +34,13 @@ const config = {
         }]
       },
       {
-        test: /\.css$/,
-        use: ["style-loader", "css-loader"]
-      }
+        test: /\.(sa|sc|c)ss$/,
+        use: [
+          'style-loader',
+          'css-loader',
+          'sass-loader',
+        ],
+      },
     ]
   },
   resolve: {
@@ -51,7 +55,7 @@ const config = {
       services: resolvePathInSrc("services"),
       utils: resolvePathInSrc("utils")
     },
-    extensions: [ ".js", ".jsx", ".ts", ".tsx" ],
+    extensions: [ ".js", ".jsx", ".ts", ".tsx",".scss" ],
     mainFiles: [ "index" ]
   }
 };

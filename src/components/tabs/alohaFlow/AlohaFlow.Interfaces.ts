@@ -20,7 +20,18 @@ interface DRCFlow {
     whisper: String;
     requestID: String;
 }
+
+export interface FlowAdvanceFilter {
+    channel?: Array<string>;
+    brand?: Array<string>;
+    callerType?: Array<string>;
+    callFlowTemplate?: Array<string>;
+    callFlowRoute?: Array<string>;
+    pkey?: Array<string>
+
+}
 export interface CctSharedCallFlowDb {
+    id:number,
     pkey: String;
     agentId?: String;
     brand?: String;
@@ -28,8 +39,26 @@ export interface CctSharedCallFlowDb {
     channel?: String;
     content?: FlowContent;
     createTime?: String;
-    dialedDescription: String;
+    dialedDescription?: String;
     employeeId?: String;
-    userDestination: String;
-    DRC: DRCFlow;
+    userDestination?: String;
+    DRC?: DRCFlow;
+}
+
+export interface FlowInitState {
+    data?: [];
+    filteredItems?: [];
+    fetching?: boolean;
+    selectedRow?: undefined;
+    isEditModalOpen?: boolean;
+    isAddModalOpen?: boolean;
+    isAdvanceSearchModalOpen?: boolean;
+    idStart?: number;
+    idEnd?: number;
+    maxId?: number;
+    minId?: number;
+    saveSuccess?: number;
+    page?: number;
+    perPage?: number;
+    advanceFilter?: Array<FlowAdvanceFilter>
 }

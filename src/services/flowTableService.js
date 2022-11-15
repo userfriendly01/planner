@@ -74,6 +74,7 @@ async function queryFlowData(accessToken, nextToken = null) {
  * @returns {flowData} list of data contain all the result present in DB
  */
 async function retrieveFlowData(accessToken) {
+  console.log("retrieveFlowData Token:", accessToken);
   let flowData = [];
   let isFirstTime = true;
   let result = {};

@@ -37,7 +37,7 @@ const jestConfig = {
     "^testUtils$": "<rootDir>/__test__/index",
     "^utils$": "<rootDir>/src/utils",
     "^utils/(.*)": "<rootDir>/src/utils/$1",
-    "\\.(css|less)$": "<rootDir>/__test__/styleMock.js"
+    "\\.(css|less|scss)$": "<rootDir>/__test__/styleMock.js"
   },
   setupFilesAfterEnv: ["<rootDir>/jestSetup.js"],
   testMatch: [
