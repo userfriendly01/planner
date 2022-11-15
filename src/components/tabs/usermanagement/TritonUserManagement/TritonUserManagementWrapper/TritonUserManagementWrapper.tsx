@@ -1,141 +1,113 @@
-import {
-  ManagementWrapperState,
-  UserModalState
-} from "./TritonUserManagementWrapper.Interfaces";
+import { ManagementWrapperState } from "./TritonUserManagementWrapper.Interfaces";
 import {
   ManagementContainer,
   StyledPaper
 } from "./TritonUserManagementWrapper.Styles";
+import { TritonUserManagementWrapperProps } from "./TritonUserManagementWrapper.Interfaces";
 import {
   ManagementHeader,
-  ManagementPagination,
+  Pagination,
   TritonUserTable
 } from "components";
-import {
-  useAdminState,
-  FormStateProvider
-} from "context";
-import {
-  Worker,
-  workersPerPage
-} from "globals";
-import React, {
-  useState
-} from "react";
+import { useAdminState } from "context";
+import { Worker } from "globals";
+import React from "react";
 import {
   filterByNameAndSkills,
   sortWorkersByFullName
 } from "utils";
-import { View } from "../../UserManagementWrapper/UserManagement.Interfaces";
-import { WorkerOpts } from "../../OnboardNewUser/UserEntryFormWrapper.Interfaces";
 
-const initialManagementWrapperState: ManagementWrapperState = {
-  deltaToggle: false,
-  pageSelected: 1,
-  filterBy: "show-all",
-  searchBy: ""
-};
-
-const getWorkersStartAndEnd = (pageSelected: number, filteredWorkers: Worker[]) => {
-  const workersStart = ((pageSelected - 1) * workersPerPage);
-  if (pageSelected * workersPerPage > filteredWorkers.length) {
-    return {
-      workersStart,
-      workersEnd: (((pageSelected - 1) * workersPerPage) + (filteredWorkers.length % workersPerPage))
-    };
-  } else {
-    return {
-      workersStart,
-      workersEnd: pageSelected * workersPerPage
-    };
-  }
-};
-
-interface TritonUserManagementWrapperProps {
-  workerOpts: WorkerOpts
-  setWorkerOpts: (opts: WorkerOpts) => void
-  setView: (view: View) => void
-  view?: View
-}
 const TritonUserManagementWrapper: any = (props: TritonUserManagementWrapperProps) => {
   const {
     workerOpts,
-    setWorkerOpts,
-    view,
-    setView
+    setWorkerOpts
   } = props;
-  const workersFromContext = useAdminState().workerContext.workers;
-  const skillsFromContext = useAdminState().skillContext.skills;
 
-  let workers = [ ...workersFromContext ].sort(sortWorkersByFullName);
+  const defaultTableState: any = {
+    searchBy: "",
+    selected: [],
+    managerFilter: null,
+    deltaFilter: false,
+    pagination: {
+      usersPerPage: 25,
+      pageNumber: 1,
+      length: 0,
+      startingUserIndex: null,
+      endingUserIndex: null
+    },
+    filteredList: []
+  };
 
-  const [state, setState] = useState(initialManagementWrapperState);
+  const state = useAdminState();
+  const [ tableState, setTableState ] = React.useState(defaultTableState);
 
-  if (state.filterBy !== "show-all") {
-    workers = workers.filter(worker => worker.attributes.manager_n_number === state.filterBy);
-  }
-  if (state.deltaToggle) {
-    workers = workers.filter(worker => worker.skillsDifferent);
-  }
-  const trimmedSearch = state.searchBy.trim();
-  if (trimmedSearch !== "") {
-    workers = workers.filter(worker => filterByNameAndSkills(worker, trimmedSearch));
-  }
+  React.useEffect(() => {
+    let filteredList = state.workerContext.workers.slice().sort(sortWorkersByFullName);
+    console.log("**Starting FL", filteredList);
+    console.log("tableState", tableState);
 
-  const {
-    workersStart,
-    workersEnd
-  } = getWorkersStartAndEnd(state.pageSelected, workers);
+    //filter by manager
+    if(tableState.managerFilter){
+      // const managerFound = state.managerContext.managers.find((manager: Manager) => manager.manager_n_number === tableState.manager);
+      // if(managerFound){
+      filteredList = filteredList.filter((worker: Worker) => worker.attributes.manager_n_number === tableState.managerFilter);
+      // }
+    }
+    console.log("**Manager FL", filteredList);
 
-  const setStateFromDeltaToggle = (deltaToggle: boolean) => setState({
-    ...state,
-    deltaToggle,
-    pageSelected: 1
-  });
 
-  const setStateFromFilterChange = (filterBy: string) => setState({
-    ...state,
-    pageSelected: 1,
-    filterBy
-  });
+    //filter by deltaFilter
+    if(tableState.deltaFilter){
+      filteredList = filteredList.filter(worker => worker.skillsDifferent);
+    }
 
-  const setStateFromPageChange = (pageSelected: number) => setState({
-    ...state,
-    pageSelected
-  });
+    console.log("**Delta FL", filteredList);
 
-  const setStateFromSearchChange = (searchBy: string) => setState({
-    ...state,
-    pageSelected: 1,
-    searchBy
-  });
+    //filter by searchBy
+    const trimmedSearch = tableState.searchBy.trim();
+    filteredList = filteredList.filter((worker: any) => filterByNameAndSkills(worker, trimmedSearch));
+
+    console.log("**Search FL", filteredList);
+
+    const length = filteredList.slice().length;
+    //filter by pagination
+    const startingUserIndex = tableState.pagination.pageNumber !== 1 ? ((tableState.pagination.pageNumber - 1) * tableState.pagination.usersPerPage) + 1 : 0;
+    const endingUserIndex = tableState.pagination.pageNumber * tableState.pagination.usersPerPage;
+    filteredList = filteredList.slice(startingUserIndex, endingUserIndex);
+
+    console.log("**pagination FL", filteredList);
+
+    setTableState({
+      ...tableState,
+      filteredList,
+      pagination: {
+        ...tableState.pagination,
+        length: length,
+        startingUserIndex,
+        endingUserIndex
+      }
+    });
+    console.log("final filtered list", filteredList);
+  }, [tableState.searchBy, tableState.managerFilter, tableState.pagination.pageNumber, state.workerContext]);
 
   return (
     <ManagementContainer>
       <ManagementHeader
-        filterBy={state.filterBy}
-        searchBy={state.searchBy}
-        setFilter={setStateFromFilterChange}
-        setSearch={setStateFromSearchChange} />
+        tableState={tableState}
+        setTableState={setTableState}
+      />
       <StyledPaper elevation={3}>
         <TritonUserTable
-          view={view}
-          setView={setView}
+          tableState={tableState}
+          setTableState={setTableState}
           workerOpts={workerOpts}
           setWorkerOpts={setWorkerOpts}
-          deltaToggle={state.deltaToggle}
-          setDeltaToggle={setStateFromDeltaToggle}
-          skills={skillsFromContext}
-          paginatedWorkers={workers.slice(workersStart, workersEnd)}
-          workers={workersFromContext.sort(sortWorkersByFullName)}
         />
       </StyledPaper>
-      <ManagementPagination
-        end={workersEnd}
-        length={workers.length}
-        page={state.pageSelected}
-        setPage={setStateFromPageChange}
-        start={workersStart + 1}/>
+      <Pagination
+        tableState={tableState}
+        setTableState={setTableState}
+      />
     </ManagementContainer>
   );
 };

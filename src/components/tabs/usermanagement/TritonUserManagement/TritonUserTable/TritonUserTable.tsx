@@ -10,9 +10,7 @@ import {
   TableText
 } from "./TableUserTable.Styles";
 import { UserAction } from "../../OnboardNewUser/UserEntryFormWrapper.Interfaces";
-import {
-  Switch
-} from "@mui/material";
+import { Switch } from "@mui/material";
 import {
   Delete,
   Edit,
@@ -26,20 +24,20 @@ import {
   userFormActions
 } from "context";
 import {
-  formModes
+  formModes,
+  ModalOverlayStatuses
 } from "globals";
 import React from "react";
-import PropTypes from "prop-types";
 import { formatWorkerAttributeSkillsToHTML } from "utils";
+import { TritonUserTableProps } from "./TritonUserTable.Interfaces";
 import { views } from "../../UserManagementWrapper/UserManagement.Interfaces";
 
-const TritonUserTable = props => {
+const TritonUserTable = (props: TritonUserTableProps) => {
   const {
-    deltaToggle,
+    tableState,
     workerOpts,
     setWorkerOpts,
-    setDeltaToggle,
-    paginatedWorkers
+    setTableState
   } = props;
 
   const state = useAdminState();
@@ -49,7 +47,7 @@ const TritonUserTable = props => {
 
   return (
     <TableContainer>
-      { state.resettingSkills ? <ModalOverlay message="Resetting Worker Skills" status="saving" /> : null }
+      { state.resettingSkills ? <ModalOverlay message="Resetting Worker Skills" status={ModalOverlayStatuses.SAVING} /> : null }
       <CustomTable>
         <thead>
           <tr>
@@ -60,14 +58,18 @@ const TritonUserTable = props => {
             <CustomTableHeader>SKILLS (Current)</CustomTableHeader>
             <CustomTableHeader>SKILLS (Default)</CustomTableHeader>
             <CustomTableHeader>
-              <Switch checked={deltaToggle} onChange={() => setDeltaToggle(!deltaToggle)} inputProps={{ "aria-label": "toggle skills modified" }} />
+              <Switch checked={tableState.deltaFilter} onChange={() =>
+                setTableState({
+                  ...tableState,
+                  deltaFilter: !tableState.deltaFilter
+                })} inputProps={{ "aria-label": "toggle skills modified" }} />
             </CustomTableHeader>
             <CustomTableHeader/>
             <CustomTableHeader/>
           </tr>
         </thead>
         <tbody>
-          {paginatedWorkers.map(worker => {
+          {tableState.filteredList.map((worker: any) => {
             const isSelected = selectedWorkers.some(selectedWorker => selectedWorker.sid === worker.sid);
             const handleWorkerOnClick = () => dispatch({
               type: "toggleWorkerSelected",
@@ -76,7 +78,7 @@ const TritonUserTable = props => {
                 sid: worker.sid
               }
             });
-            const editButtonOnClick = event => {
+            const editButtonOnClick = (event: any) => {
               event.stopPropagation();
               setForm({
                 type: userFormActions.SET_UPDATE_FORM_STATE,
@@ -93,7 +95,7 @@ const TritonUserTable = props => {
                 routedFrom: views.TRITON_USERS
               });
             };
-            const deleteButtonOnClick = event => {
+            const deleteButtonOnClick = (event: any) => {
               event.stopPropagation();
               setForm({
                 type: userFormActions.SET_UPDATE_FORM_STATE,
@@ -140,35 +142,6 @@ const TritonUserTable = props => {
       </CustomTable>
     </TableContainer>
   );
-};
-
-TritonUserTable.propTypes = {
-  deltaToggle: PropTypes.bool.isRequired,
-  setDeltaToggle: PropTypes.func.isRequired,
-  skills: PropTypes.arrayOf(
-    PropTypes.shape({
-      levels: PropTypes.array,
-      levelSelected: PropTypes.number,
-      skill: PropTypes.string
-    })
-  ).isRequired,
-  workerOpts: PropTypes.any,
-  view: PropTypes.any,
-  setView: PropTypes.any,
-  setWorkerOpts: PropTypes.any,
-  workers: PropTypes.arrayOf(
-    PropTypes.shape({
-      attributes: PropTypes.object,
-      sid: PropTypes.string
-    })
-  ),
-  paginatedWorkers: PropTypes.arrayOf(
-    PropTypes.shape({
-      attributes: PropTypes.object,
-      id: PropTypes.string,
-      sid: PropTypes.string
-    })
-  )
 };
 
 export default TritonUserTable;

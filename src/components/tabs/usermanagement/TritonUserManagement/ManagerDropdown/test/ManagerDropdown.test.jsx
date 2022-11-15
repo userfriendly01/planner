@@ -71,6 +71,7 @@ describe("<ManagementFilter />", () => {
       ManagerModal,
       Modal
     });
+    jest.clearAllMocks();
   });
   test("upon initial render, should display Manager Filter,  add user button, and all managers should be listed in the dropdown sorted by first name", () => {
     renderComponent();
@@ -120,7 +121,6 @@ describe("<ManagementFilter />", () => {
     act(() => {
       Dropdown.mock.calls[0][0].updateValue(null, selection);
     });
-    expect(setFilter).toHaveBeenCalledWith(selection.value);
     expect(Modal.mock.calls[2][0].open).toBe(true);
   });
 
@@ -133,12 +133,12 @@ describe("<ManagementFilter />", () => {
     act(() => {
       Dropdown.mock.calls[0][0].updateValue(null, selection);
     });
-    expect(setFilter).toHaveBeenCalledWith(selection.value);
+    expect(setFilter).toHaveBeenCalledTimes(0);
     render(Modal.mock.calls[2][0].children);
     act(() => {
       ManagerModal.mock.calls[0][0].handleClose();
     });
-    expect(setFilter.mock.calls[3][0]).toBe("show-all");
+    expect(setFilter.mock.calls[0][0]).toBe("show-all");
     expect(Modal.mock.calls[3][0].open).toBe(false);
   });
 

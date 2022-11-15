@@ -215,3 +215,17 @@ export interface CalabrioQmUser {
   lastName: string,
   timeZone: number
 }
+
+export interface TableStateProps {
+  [key: string]: any,
+  searchBy: string,
+  selected: any,
+  pagination: {
+    usersPerPage: number,
+    pageNumber: number,
+    length: number,
+    startingUserIndex: number | null,
+    endingUserIndex: number | null
+  },
+  filteredList: any[]
+}

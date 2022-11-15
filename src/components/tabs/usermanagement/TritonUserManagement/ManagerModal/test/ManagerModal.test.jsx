@@ -11,7 +11,10 @@ import {
 import { useAdminState } from "context";
 import React from "react";
 import { act } from "react-dom/test-utils";
-import { Modal } from "@mui/material";
+import {
+  Modal,
+  Paper
+} from "@mui/material";
 import {
   addManager,
   editManager
@@ -31,12 +34,22 @@ jest.useFakeTimers();
 
 jest.mock("@mui/icons-material", () => ({
   __esModule: true,
-  CloseRounded: jest.fn()
+  CloseRounded: jest.fn(),
+  AccountBox: jest.fn(),
+  Edit: jest.fn(),
+  Close: jest.fn(),
+  InfoOutlined: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
   Modal: jest.fn(),
-  Paper: jest.fn()
+  Paper: jest.requireActual("@mui/material").Paper,
+  TextField: jest.fn(),
+  Button: jest.fn(),
+  Tabs: jest.fn(),
+  Tab: jest.fn(),
+  Divider: jest.fn(),
+  Checkbox: jest.fn()
 }));
 
 jest.mock("services", () => ({
@@ -53,17 +66,23 @@ jest.mock("components", () => ({
   Dropdown: jest.fn(),
   NNumberInput: jest.fn(),
   ModalOverlay: jest.fn(),
-  PaperContainer: jest.fn(),
+  PaperContainer: jest.requireActual("components").PaperContainer,
   StyledButton: jest.fn(),
   CalabrioTeamModal: jest.fn()
 }));
 
+const mockHandleClose = jest.fn();
+
+const renderComponent = () => {
+  return render(
+    <ManagerModal
+      handleClose={mockHandleClose}
+      selectedManager={null}
+    />);
+  // return render(PaperContainer.mock.calls[0][0].children);
+};
+
 describe("<ManagerModal />", () => {
-  const mockHandleClose = jest.fn();
-  const renderComponent = () => {
-    render(<ManagerModal handleClose={mockHandleClose} selectedManager={null}/>);
-    render(PaperContainer.mock.calls[0][0].children);
-  };
   beforeEach(() => {
     mockStore.reset();
     jest.clearAllMocks();
@@ -74,8 +93,7 @@ describe("<ManagerModal />", () => {
       ModalOverlay,
       StyledButton,
       CalabrioTeamModal,
-      Modal,
-      PaperContainer
+      Modal
     });
     mockHandleClose.mockClear();
     useAdminState.mockReturnValue({
@@ -431,7 +449,7 @@ describe("<ManagerModal />", () => {
       expectMockedComponent(rendered, { CloseRounded }, 1);
     });
     describe("when clicked", () => {
-      test.only("should close the modal", () => {
+      test("should close the modal", () => {
         renderComponent();
         const { onClick } = getMockedComponentProps(CloseRounded);
         act(() => onClick());

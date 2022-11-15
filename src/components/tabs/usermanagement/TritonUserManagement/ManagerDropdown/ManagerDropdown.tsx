@@ -119,9 +119,12 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
         styles= {{ width: 325 }}
         value={options.find((option: DropdownOption) => option.value === filterBy)}
         updateValue={(event: any, newInputValue: any) => {
-          setFilter(newInputValue.value);
           if(newInputValue.value === "add-manager"){
             handleOpenManager();
+          } else if(newInputValue.value === "show-all") {
+            setFilter(null);
+          } else if(newInputValue.value !== "divider") {
+            setFilter(newInputValue.value);
           }
         }}
         CustomRender={DropdownOption}
