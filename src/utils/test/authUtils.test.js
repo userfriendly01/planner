@@ -72,7 +72,7 @@ describe("adminUtils", () => {
     });
     describe("n# is not a GOP PO", () => {
       test("should return false", () => {
-        expect(checkIfPO('n0288363')).toBe(false);
+        expect(checkIfPO('n0288362')).toBe(false);
       });
     });
   });
