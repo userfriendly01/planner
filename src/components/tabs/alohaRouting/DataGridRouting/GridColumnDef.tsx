@@ -6,8 +6,7 @@ export const RoutingGridColumnDef: GridColDef[] = [
     field: "id",
     sortable: true,
     width: 60,
-    align: "center",
-    headerClassName: "routing-table-header"
+    align: "center"
   },
   {
     headerName: "Brand",

@@ -1,22 +1,22 @@
 export interface CctSharedCallRoutingGlobalDb {
     id: number;
-    all?: String;
-    brand?: String;
-    callIntent?: String;
-    callerState?: String;
-    callerType?: String;
-    channel?: String;
-    dayOfWeek?: String;
-    endTime?: String;
-    percentOfCallers?: String;
-    pkey: String;
-    policyType?: String;
-    skey: String;
-    startTime?: String;
-    transferDestination?: String;
-    transferMessage?: String;
-    twilioSkill?: String;
-    crcSkill?: String;
+    all?: string;
+    brand?: string;
+    callIntent?: string;
+    callerState?: string;
+    callerType?: string;
+    channel?: string;
+    dayOfWeek?: string;
+    endTime?: string;
+    percentOfCallers?: string;
+    pkey: string;
+    policyType?: string;
+    skey: string;
+    startTime?: string;
+    transferDestination?: string;
+    transferMessage?: string;
+    twilioSkill?: string;
+    crcSkill?: string;
 }
 export interface RoutingMasterData {
     channel?: Array<string>;

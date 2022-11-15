@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { CircularProgress } from "@mui/material";
 import { RoutingGridColumnDef } from "./GridColumnDef"
 import { CctSharedCallRoutingGlobalDb, RoutingFilter, RoutingInitState, RoutingMasterData } from "../AlohaRouting.Interfaces";
 import { retrieveRoutingData } from "services";
 import { CACHED_CALL_ROUTING_PAGE_NO, CACHED_CALL_ROUTING_PER_PAGE, CACHE_FILTER_ROUTING, getAccessToken, routingInitState } from "utils";
 import { getGridMasterData } from "./GridMaster";
 import { RoutingTableBox } from "../AlohaRouting.Styles";
+import GridSpinner from "./GridSpinner";
 
 export const DataGridRouting = () => {
     const accessToken: string = getAccessToken();
@@ -41,7 +41,7 @@ export const DataGridRouting = () => {
         if (advanceFilterLength > 0) {
             const advanceFilteredArray: Array<CctSharedCallRoutingGlobalDb> = [];
             result.forEach((item) => {
-                let matched = 0;
+                let matched: number = 0;
                 Object.keys(advanceFilter).forEach((key: keyof RoutingFilter) => {
                     if (item[key] === advanceFilter[key]) {
                         matched += 1;
@@ -62,9 +62,9 @@ export const DataGridRouting = () => {
     const loadDataTable = async () => {
         const result: CctSharedCallRoutingGlobalDb[] = await retrieveRoutingData(accessToken);
         if (result.length > 0) {
-            const sortedResult = result.sort(((a, b) => a.id - b.id));
-            const minId = sortedResult[0].id;
-            const maxId = sortedResult[result.length - 1].id;
+            const sortedResult: CctSharedCallRoutingGlobalDb[] = result.sort(((a: CctSharedCallRoutingGlobalDb, b: CctSharedCallRoutingGlobalDb) => a.id - b.id));
+            const minId: number = sortedResult[0].id;
+            const maxId: number = sortedResult[result.length - 1].id;
             dispatch({
                 data: result,
                 filteredItems: result,
@@ -118,12 +118,20 @@ export const DataGridRouting = () => {
                 rowsPerPageOptions={[10, 20, 50, 100]}
                 paginationMode="client"
                 pagination
+                loading={state.fetching}
                 checkboxSelection
+                autoHeight
                 components={
                     {
-                        Toolbar: GridToolbar
+                        Toolbar: GridToolbar,
+                        LoadingOverlay: GridSpinner
                     }
                 }
+                sx={{
+                    '& .MuiDataGrid-columnHeaderTitle': {
+                        fontWeight: 600
+                    }
+                }}
             />
         </RoutingTableBox>
     )
