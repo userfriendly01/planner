@@ -202,7 +202,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
       return {
         ...role,
         label: role.name,
-        value: role.name
+        value: role.id
       };
     });
   };
