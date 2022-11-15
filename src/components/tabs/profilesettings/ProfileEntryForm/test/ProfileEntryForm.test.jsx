@@ -7,7 +7,6 @@ import {
   setupMockedComponents,
   expectOnlyPassedProps,
   initialFormState,
-  mockProfile,
   initialTestState,
   act
 } from "testUtils";
@@ -56,7 +55,6 @@ describe("<ProfileEntryForm />", () => {
     return render(
       <ProfileEntryForm
         handleClose={mockHandleClose}
-        profile={mockProfile}
       />, initialTestState
     );
   };
