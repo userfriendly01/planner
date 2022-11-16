@@ -94,15 +94,15 @@ export const calabrioContext = {
   roles: [
     {
       id: 1,
-      name: "Administrator"
+      name: "Supervisor"
     },
     {
       id: 2,
-      name: "Agent"
+      name: "QM Agent"
     },
     {
       id: 3,
-      name: "QM Only"
+      name: "WFM_QM_Agent_NT"
     }
   ],
   users: [
