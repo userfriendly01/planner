@@ -89,9 +89,11 @@ const ProfileSettingsContainer = () => {
     <ProfileEntryFormStateProvider>
       <ProfileSettingsContainerDiv>
         <Modal onClose={() => { return; }} open={profileModalState.open}>
-          <ProfileEntryForm
-            handleClose={() => setProfileModalState(initialProfileModalState)}
-          />
+          <>
+            <ProfileEntryForm
+              handleClose={() => setProfileModalState(initialProfileModalState)}
+            />
+          </>
         </Modal>
         <ProfileSettingsDropdownWrapper>
           <Dropdown

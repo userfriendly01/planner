@@ -121,12 +121,14 @@ const ManagementWrapper: React.FC = () => {
     <FormStateProvider>
       <ManagementContainer>
         <Modal onClose={() => { return; }} open={userModalState.open}>
-          <UserEntryForm
-            handleClose={handleClose}
-            worker={userModalState.worker}
-            skills={skillsFromContext}
-            workers={workersFromContext.sort(sortWorkersByFullName)}
-          />
+          <>
+            <UserEntryForm
+              handleClose={handleClose}
+              worker={userModalState.worker}
+              skills={skillsFromContext}
+              workers={workersFromContext.sort(sortWorkersByFullName)}
+            />
+          </>
         </Modal>
         <ManagementHeader
           filterBy={state.filterBy}
