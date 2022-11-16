@@ -66,7 +66,7 @@ const ProfileSettingsTable = props => {
         .then((allWorkerTaskInfo) => {
           setWorkerTaskInfo(allWorkerTaskInfo);
         })
-        .catch(error => console.error("ERROR: ", error.msg));
+        .catch(error => console.error("ERROR:", error.msg));
     }
   }, []);
 
