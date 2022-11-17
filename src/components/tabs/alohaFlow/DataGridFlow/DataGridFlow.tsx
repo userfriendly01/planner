@@ -5,12 +5,7 @@
 */
 
 import "./Grid.scss";
-import "react-toastify/dist/ReactToastify.css";
 import DataTable, { createTheme } from "react-data-table-component";
-import{
-  ToastContainer,
-  toast
-} from "react-toastify";
 import React,{
   useState,
   useEffect
@@ -22,17 +17,16 @@ import { GridStyle } from "./GridStyle";
 import GridTheme from "./GridTheme";
 import GridTopHeader from "./GridTopHeader";
 import { retrieveFlowData } from "services";
-import{
-  CctSharedCallFlowDb,
-  FlowAdvanceFilter
-} from "../AlohaFlow.Interfaces";
+import{ CctSharedCallFlowDb } from "../AlohaFlow.Interfaces";
+import CustomToast from "../../../core/CustomToast/CustomToast";
+import AddFlow from "../AddFlow/AddFlow";
 
 createTheme("gridTheme", { ...GridTheme }, "gridTheme");
 const DataGridFlow = ({ accessToken }: { accessToken: string }) => {
   const [dataFlow, setDataFlow] = useState({
     "data": [],
     "filteredItems": [],
-    "advanceFilter": Array<FlowAdvanceFilter>,
+    "advanceFilter": [],
     "fetching": true,
     "selectedRow": undefined,
     "isEditModalOpen": false,
@@ -46,15 +40,20 @@ const DataGridFlow = ({ accessToken }: { accessToken: string }) => {
     "page": 1,
     "perPage": 10
   });
+  const [alertBar, setAlertBar] = useState({
+    "open": false,
+    "msg": "",
+    "severityType": ""
+  });
 
   useEffect(() => {
     loadDataTable();
-    setDataFlow((dataFlowProps: any) => ({
+    setDataFlow((dataFlowProps:any) => ({
       ...dataFlowProps,
       "page": sessionStorage.getItem("CALL_FLOW_PAGE_NO")|| 1,
       "perPage": sessionStorage.getItem("CALL_FLOW_PER_PAGE") || 10
     }));
-  }, []);
+  },[]);
 
   const handleFilterInputChange = (event: any ) => {
     setDataFlow(dataFlowProps => ({
@@ -79,44 +78,27 @@ const DataGridFlow = ({ accessToken }: { accessToken: string }) => {
     }));
   };
 
-  const openEditModal = (flag: boolean, row: any, message: string) => {
-    if (!flag && row) {
-      showToastMessage("success", message);
-      loadDataTable();
-    }
-    setDataFlow(dataFlowProps => ({
-      ...dataFlowProps,
-      "isEditModalOpen": flag,
-      "selectedRow": row
+  const handleClose = (flag:boolean)=>{
+    setAlertBar(alertBarProps => ({
+      ...alertBarProps,
+      "open": flag
     }));
   };
 
-  const openAddModal = (flag:boolean, ruleType: number) => {
+  const openAddModal = (flag:boolean, ruleType?: number) => {
     if (!flag && ruleType) {
-      showToastMessage(
-        "success",
-        "New flow has been successfully added!! "
-      );
+      setAlertBar(alertBarProps => ({
+        ...alertBarProps,
+        "open": flag,
+        "severityType": "success",
+        "msg": "New flow has been successfully added!! "
+      }));
       loadDataTable();
     }
     setDataFlow(dataFlowProps => ({
       ...dataFlowProps,
       "isAddModalOpen": flag
     }));
-  };
-
-  const showToastMessage = (type: string, message: string) => {
-    toast(message, {
-      position: "top-center",
-      autoClose: 1500,
-      className: "success-toast",
-      //type,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined
-    });
   };
 
   const loadDataTable = async () => {
@@ -131,7 +113,6 @@ const DataGridFlow = ({ accessToken }: { accessToken: string }) => {
       ));
       const minId = result[0].id;
       const maxId = result[result.length - 1].id;
-
       setDataFlow((dataFlowProps:any) => ({
         ...dataFlowProps,
         "data": result,
@@ -154,10 +135,12 @@ const DataGridFlow = ({ accessToken }: { accessToken: string }) => {
         "filteredItems": result,
         "fetching": false
       }));
-      showToastMessage(
-        "error",
-        "Error in retriving Flow record. Please check the API Key "
-      );
+      setAlertBar(alertBarProps => ({
+        ...alertBarProps,
+        "open": true,
+        "msg": "Error in retriving Flow record. Please check the API Key",
+        "severityType": "error"
+      }));
     }
   };
 
@@ -197,16 +180,16 @@ const DataGridFlow = ({ accessToken }: { accessToken: string }) => {
         </div>
       </div>
 
-      {/* <AddModal
-          accessToken={props.accessToken}
-          isOpen={dataFlow["isAddModalOpen"]}
-          newId={dataFlow["maxId"] + 1}
-          openModal={openAddModal}
-          onClose={() => {
-            openAddModal(false);
-            return true;
-          }}
-        />*/}
+      <AddFlow
+        accessToken={accessToken}
+        isOpen={dataFlow.isAddModalOpen}
+        newId={dataFlow.maxId + 1}
+        openModal={openAddModal}
+        onClose={() => {
+          openAddModal(false);
+          return true;
+        }}
+      />
 
       {/*<EditModal
           accessToken={props.accessToken}
@@ -235,17 +218,11 @@ const DataGridFlow = ({ accessToken }: { accessToken: string }) => {
           }}
         />*/}
 
-      <ToastContainer
-        position="top-center"
-        autoClose={1500}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        theme="colored"
-        pauseOnHover={false}
+      <CustomToast
+        open = {alertBar.open}
+        onClose ={handleClose}
+        msg = {alertBar.msg}
+        severityType = {alertBar.severityType}
       />
     </div>
   );
