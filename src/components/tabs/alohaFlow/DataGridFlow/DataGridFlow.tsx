@@ -6,7 +6,7 @@
 
 import "./Grid.scss";
 import DataTable, { createTheme } from "react-data-table-component";
-import React,{
+import React, {
   useState,
   useEffect
 } from "react";
@@ -17,45 +17,50 @@ import { GridStyle } from "./GridStyle";
 import GridTheme from "./GridTheme";
 import GridTopHeader from "./GridTopHeader";
 import { retrieveFlowData } from "services";
-import{ CctSharedCallFlowDb } from "../AlohaFlow.Interfaces";
 import CustomToast from "../../../core/CustomToast/CustomToast";
 import AddFlow from "../AddFlow/AddFlow";
-
+import { CctSharedCallFlowDb } from "../AlohaFlow.Interfaces";
+import {
+  getAccessToken,
+  getGraphQLEndpoint
+} from "utils";
 createTheme("gridTheme", { ...GridTheme }, "gridTheme");
-const DataGridFlow = ({ accessToken }: { accessToken: string }) => {
+const DataGridFlow = () => {
+  const accessToken: string = getAccessToken();
+  const graphQlApiUrl: string = getGraphQLEndpoint();
   const [dataFlow, setDataFlow] = useState({
-    "data": [],
-    "filteredItems": [],
-    "advanceFilter": [],
-    "fetching": true,
-    "selectedRow": undefined,
-    "isEditModalOpen": false,
-    "isAddModalOpen": false,
-    "isAdvanceSearchModalOpen": false,
-    "idStart": 0,
-    "idEnd": 0,
-    "maxId": 0,
-    "minId": 0,
-    "saveSuccess": 0,
-    "page": 1,
-    "perPage": 10
+    data: [],
+    filteredItems: [],
+    advanceFilter: [],
+    fetching: true,
+    selectedRow: undefined,
+    isEditModalOpen: false,
+    isAddModalOpen: false,
+    isAdvanceSearchModalOpen: false,
+    idStart: 0,
+    idEnd: 0,
+    maxId: 0,
+    minId: 0,
+    saveSuccess: 0,
+    page: 1,
+    perPage: 10
   });
   const [alertBar, setAlertBar] = useState({
-    "open": false,
-    "msg": "",
-    "severityType": ""
+    open: false,
+    msg: "",
+    severityType: ""
   });
 
   useEffect(() => {
     loadDataTable();
-    setDataFlow((dataFlowProps:any) => ({
+    setDataFlow((dataFlowProps: any) => ({
       ...dataFlowProps,
-      "page": sessionStorage.getItem("CALL_FLOW_PAGE_NO")|| 1,
-      "perPage": sessionStorage.getItem("CALL_FLOW_PER_PAGE") || 10
+      page: sessionStorage.getItem("CALL_FLOW_PAGE_NO") || 1,
+      perPage: sessionStorage.getItem("CALL_FLOW_PER_PAGE") || 10
     }));
-  },[]);
+  }, []);
 
-  const handleFilterInputChange = (event: any ) => {
+  const handleFilterInputChange = (event: any) => {
     setDataFlow(dataFlowProps => ({
       ...dataFlowProps,
       [event.target.name]: event.target.value
@@ -66,7 +71,7 @@ const DataGridFlow = ({ accessToken }: { accessToken: string }) => {
     sessionStorage.setItem("CALL_FLOW_PAGE_NO", newPage.toString());
     setDataFlow(dataFlowProps => ({
       ...dataFlowProps,
-      "page": newPage
+      page: newPage
     }));
   };
 
@@ -74,72 +79,74 @@ const DataGridFlow = ({ accessToken }: { accessToken: string }) => {
     sessionStorage.setItem("CALL_FLOW_PER_PAGE", newPerPage.toString());
     setDataFlow(dataFlowProps => ({
       ...dataFlowProps,
-      "perPage": newPerPage
+      perPage: newPerPage
     }));
   };
 
-  const handleClose = (flag:boolean)=>{
+  const handleClose = (flag: boolean) => {
     setAlertBar(alertBarProps => ({
       ...alertBarProps,
-      "open": flag
+      open: flag
     }));
   };
 
-  const openAddModal = (flag:boolean, ruleType?: number) => {
+  const openAddModal = (flag: boolean, ruleType?: number) => {
     if (!flag && ruleType) {
       setAlertBar(alertBarProps => ({
         ...alertBarProps,
-        "open": flag,
-        "severityType": "success",
-        "msg": "New flow has been successfully added!! "
+        open: flag,
+        severityType: "success",
+        msg: "New flow has been successfully added!! "
       }));
       loadDataTable();
     }
     setDataFlow(dataFlowProps => ({
       ...dataFlowProps,
-      "isAddModalOpen": flag
+      isAddModalOpen: flag
     }));
   };
 
   const loadDataTable = async () => {
-    let result: CctSharedCallFlowDb[] = await retrieveFlowData(accessToken);
-    if(result.length > 0) {
+    let result: CctSharedCallFlowDb[] = await retrieveFlowData(
+      accessToken,
+      graphQlApiUrl
+    );
+    if (result.length > 0) {
       result = result.sort((a: any, b: any) => a.pkey - b.pkey);
-      result = result.map((item: any, index: any) => (
-        {
-          ...item,
-          id: index + 1
-        }
-      ));
+      result = result.map((item: any, index: any) => ({
+        ...item,
+        id: index + 1
+      }));
       const minId = result[0].id;
       const maxId = result[result.length - 1].id;
-      setDataFlow((dataFlowProps:any) => ({
+
+      setDataFlow((dataFlowProps: any) => ({
         ...dataFlowProps,
-        "data": result,
-        "filteredItems": result,
-        "fetching": false,
-        "idStart": minId,
-        "idEnd": maxId,
-        "maxId": maxId,
-        "minId": minId
+        data: result,
+        filteredItems: result,
+        fetching: false,
+        idStart: minId,
+        idEnd: maxId,
+        maxId: maxId,
+        minId: minId
       }));
       const masterData = getGridMasterData(result);
       setDataFlow(dataFlowProps => ({
         ...dataFlowProps,
-        "masterData": masterData
+        masterData: masterData
       }));
     } else {
-      setDataFlow((dataFlowProps:any) => ({
+      setDataFlow((dataFlowProps: any) => ({
         ...dataFlowProps,
-        "data": result,
-        "filteredItems": result,
-        "fetching": false
+        data: result,
+        filteredItems: result,
+        fetching: false
       }));
       setAlertBar(alertBarProps => ({
         ...alertBarProps,
-        "open": true,
-        "msg": "Error in retriving Flow record. Please check the API Key",
-        "severityType": "error"
+        open: true,
+        msg: "Error in retrieving Flow record. Please check the API Key",
+        severityType: "error"
       }));
     }
   };
@@ -149,20 +156,23 @@ const DataGridFlow = ({ accessToken }: { accessToken: string }) => {
       <div className="data-grid-wrapper">
         <div className="data-grid-wrapper">
           <DataTable
-            actions={(
+            actions={
               <GridTopHeader
                 {...dataFlow}
                 handleFilterInputChange={handleFilterInputChange}
                 openAddModal={openAddModal}
               />
-            )}
+            }
             columns={GridColumnDef}
             customStyles={GridStyle}
-            data={dataFlow.filteredItems.slice((dataFlow.page - 1) * dataFlow.perPage, dataFlow.page* dataFlow.perPage)}
+            data={dataFlow.filteredItems.slice(
+              (dataFlow.page - 1) * dataFlow.perPage,
+              dataFlow.page * dataFlow.perPage
+            )}
             defaultSortFieldId={1}
             highlightOnHover
             expandableRows
-            onColumnOrderChange={(): void => (console.log(GridColumnDef))}
+            onColumnOrderChange={(): void => console.log(GridColumnDef)}
             pagination
             paginationServer
             paginationDefaultPage={dataFlow.page}
@@ -181,7 +191,6 @@ const DataGridFlow = ({ accessToken }: { accessToken: string }) => {
       </div>
 
       <AddFlow
-        accessToken={accessToken}
         isOpen={dataFlow.isAddModalOpen}
         newId={dataFlow.maxId + 1}
         openModal={openAddModal}
@@ -219,15 +228,13 @@ const DataGridFlow = ({ accessToken }: { accessToken: string }) => {
         />*/}
 
       <CustomToast
-        open = {alertBar.open}
-        onClose ={handleClose}
-        msg = {alertBar.msg}
-        severityType = {alertBar.severityType}
+        open={alertBar.open}
+        onClose={handleClose}
+        msg={alertBar.msg}
+        severityType={alertBar.severityType}
       />
     </div>
   );
 };
 
 export default DataGridFlow;
-
-

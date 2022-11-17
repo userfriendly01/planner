@@ -2,6 +2,7 @@
  import { Check } from "@mui/icons-material";
  import {
   formatProfileBooleanData,
+  formatProfileBooleanDataTrueFalse,
   formatOverflowSkillData,
   formatActivityData
  } from "../profileUtils";
@@ -14,6 +15,15 @@ describe("profileUtils", () => {
     });
     test("should return empty string for non 1 value", () => {
       expect(formatProfileBooleanData(0)).toBe("");
+    });
+  });
+
+  describe("formatProfileBooleanDataTrueFalse", () => {
+    test("should return true value object", () => {
+      expect(formatProfileBooleanDataTrueFalse(1)).toStrictEqual({ value: true });
+    });
+    test("should return false value object", () => {
+      expect(formatProfileBooleanDataTrueFalse(0)).toStrictEqual({ value: false });
     });
   });
 

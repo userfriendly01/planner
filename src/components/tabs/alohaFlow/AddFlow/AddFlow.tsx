@@ -12,8 +12,7 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import {
   initRule,
-  flowFields,
-  masterDataValues
+  flowFields
 } from "./FlowFieldsConfig";
 import ComponentControl from "../../../core/SharedComponents/ComponentControl";
 import {
@@ -27,11 +26,22 @@ import {
   HeadingStyled
 } from "../AlohaFlow.Styles";
 import CustomToast from "../../../core/CustomToast/CustomToast";
+import {
+  getAccessToken,
+  getGraphQLEndpoint
+} from "utils";
+import { retrieveFlowData } from "services";
+import { CctSharedCallFlowDb } from "../AlohaFlow.Interfaces";
+import { getGridMasterData } from "../DataGridFlow/GridMaster";
 
 export default (props:any) => {
   const {
-    accessToken, onClose, isOpen = false, newId, openModal
+    onClose, isOpen = false, newId, openModal
   } = props;
+  const accessToken: string = getAccessToken();
+  const graphQlApiUrl: string = getGraphQLEndpoint();
+  const languageOffer = ["English", "Spanish"];
+  const userDestination = ["Avaya", "Twilio"];
   const [flowRule, setFlowRule] = useState({ ...initRule });
   const [dropDownValues, setDropDownValues] = useState({
     "brand": [],
@@ -48,11 +58,25 @@ export default (props:any) => {
   let dropDownOptions;
   useEffect(() => {
     async function fetchData() {
-      const masterData = await masterDataValues(accessToken);
-      setDropDownValues(masterData);
+      const masterData = localStorage.getItem("FLOW_MASTER_DATA");
+      let masterDataObject:any;
+      if (masterData !== undefined && masterData !== null) {
+        masterDataObject = JSON.parse(masterData);
+      } else {
+        const result:CctSharedCallFlowDb[] = await retrieveFlowData(accessToken,graphQlApiUrl);
+        masterDataObject = await getGridMasterData(result);
+      }
+      setDropDownValues(dropDownValuesProps => ({
+        ...dropDownValuesProps,
+        "brand": masterDataObject.brand,
+        "channel": masterDataObject.channel,
+        "languageOffer": languageOffer,
+        "userDestinaton": userDestination
+      }));
     }
     fetchData();
-  }, []);
+
+  },[]);
 
   const handleClose = (flag:boolean)=>{
     setAlertBar(alertBarProps => ({
@@ -67,7 +91,7 @@ export default (props:any) => {
     value = (key === "pkey" && !value.startsWith("+")) ? `+1${value}` : value;
     const newFlowRule = {
       [key]: { value },
-      id: newId    
+      id: newId
     };
 
     setFlowRule((rule:any) => ({
@@ -105,7 +129,7 @@ export default (props:any) => {
   function handleOnCreateRoute() {
     const isValidForm = validateRoute();
     if (isValidForm) {
-      addFlowRule(flowRule, accessToken).then(apiResponse => {
+      addFlowRule(flowRule, accessToken,graphQlApiUrl).then(apiResponse => {
         if (!apiResponse.errors) {
           openModal(true, "ADD_ROUTE_RULE");
           setFlowRule({ ...initRule });

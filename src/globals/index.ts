@@ -83,8 +83,16 @@ export const profileTableColumnHeader = [
     TOOLTIP: "Voice mail will be transcribed and sent within the notification email to the user"
   },
   {
+    COLUMN_NAME: "Click To Dial",
+    TOOLTIP: "Enable click-to-dial/transfer from external application"
+  },
+  {
     COLUMN_NAME: "Activities",
     TOOLTIP: "Profile Activities"
+  },
+  {
+    COLUMN_NAME: "",
+    TOOLTIP: ""
   }
 ];
 

@@ -41,6 +41,12 @@ jest.mock("@lmig/phone-number-utils", () => ({
   unMaskPhoneNumber: jest.fn()
 }));
 
+jest.mock("@mui/x-data-grid", () => ({
+  __esModule: true,
+  DataGrid: jest.fn(),
+  GridToolbar : jest.fn()
+}));
+
 const id = "outgoing-id";
 const label = "Outgoing Number";
 const number = "12345";
@@ -99,7 +105,7 @@ describe("<PhoneNumberInput />", () => {
           variant: "outlined",
           value: number
         }, getLastInstanceCalled(TextField));
-        const renderInputMask = TextField.mock.calls[0][0].InputProps.inputComponent;
+        const renderInputMask = TextField.mock.calls[0][0].InputProps.inputComponent.render;
         const InputMask = renderInputMask({ inputRef: jest.fn() });
         render(InputMask);
         expect(MaskedInput.mock.calls[0][0].mask).toStrictEqual(tenDigitMask);
@@ -120,14 +126,14 @@ describe("<PhoneNumberInput />", () => {
           variant: "outlined",
           value: number
         }, getLastInstanceCalled(TextField));
-        const renderInputMask = TextField.mock.calls[0][0].InputProps.inputComponent;
+        const renderInputMask = TextField.mock.calls[0][0].InputProps.inputComponent.render;
         const InputMask = renderInputMask({ inputRef: jest.fn() });
         render(InputMask);
         expect(Switch.mock.calls[0][0].checked).toBe(false);
         const toggleSwitch = Switch.mock.calls[0][0].onChange;
         act(() => toggleSwitch());
         expect(Switch.mock.calls[1][0].checked).toBe(true);
-        const render7DigitInputMask = TextField.mock.calls[1][0].InputProps.inputComponent;
+        const render7DigitInputMask = TextField.mock.calls[1][0].InputProps.inputComponent.render;
         const newInputMask = render7DigitInputMask({ inputRef: jest.fn() });
         render(newInputMask);
         expect(MaskedInput.mock.calls[1][0].mask).toStrictEqual(sevenDigitMask);

@@ -7,19 +7,44 @@ import {
   TableText,
   StyledPaper,
   TableContainer,
-  TableDataFlex
+  TableDataFlex,
+  IconWrapper
 } from "./ProfileSettingsTable.Styles";
 import {
+  checkIfPO,
   formatProfileBooleanData,
   formatOverflowSkillData,
   formatActivityData,
   sortProfilesById
- } from "utils";
+} from "utils";
 import { Tooltip } from "@mui/material";
-import { profileTableColumnHeader } from "globals";
+import { Edit } from "@mui/icons-material";
+import {
+  profileTableColumnHeader,
+  formModes
+} from "globals";
+import {
+  profileEntryFormDispatch,
+  profileEntryFormActions
+} from "context";
 
 const ProfileSettingsTable = props => {
-  const { profileList } = props;
+  const { profileList, loggedInRep, setProfileModalState } = props;
+  const setForm = profileEntryFormDispatch();
+
+  const editButtonOnClick = profile => event => {
+    event.stopPropagation();
+    setForm({
+      type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
+      payload: {
+        formMode: formModes.UPDATE,
+        profile
+      }
+    });
+    setProfileModalState({
+      open: true
+    });
+  };
 
   return(
     <TableContainer>
@@ -30,10 +55,10 @@ const ProfileSettingsTable = props => {
               {
                 profileTableColumnHeader.map(entry => {
                   return(
-                    <Tooltip placement="top" title={entry.TOOLTIP}>
-                      <CustomTableHeader>{entry.COLUMN_NAME}</CustomTableHeader>
+                    <Tooltip key={entry.COLUMN_NAME} placement="top" title={entry.TOOLTIP}>
+                      <CustomTableHeader data-testid="table-header">{entry.COLUMN_NAME}</CustomTableHeader>
                     </Tooltip>
-                  )
+                  );
                 })
               }
             </tr>
@@ -86,14 +111,26 @@ const ProfileSettingsTable = props => {
                       <TableText>{formatProfileBooleanData(profile.voice_mail_transcription_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
+                      <TableText>{formatProfileBooleanData(profile.click_to_dial_i.data[0])}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
                       <TableDataFlex>
                         {
                           JSON.parse(profile.activities).map(activity => {
-                            return formatActivityData(activity)
+                            return <div key={`${activity.name}`}>{formatActivityData(activity.name)}</div>;
                           })
                         }
                       </TableDataFlex>
                     </CustomTableData>
+                    {
+                      checkIfPO(loggedInRep) ?
+                        <CustomTableData>
+                          <IconWrapper onClick={editButtonOnClick(profile)} data-testid="edit-button">
+                            <Edit fontSize={"inherit"}/>
+                          </IconWrapper>
+                        </CustomTableData>
+                        : <CustomTableData />
+                    }
                   </CustomTableRow>
                 );
               })
@@ -102,7 +139,7 @@ const ProfileSettingsTable = props => {
         </CustomTable>
       </StyledPaper>
     </TableContainer>
-  )
+  );
 };
 
 export default ProfileSettingsTable;

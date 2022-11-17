@@ -1,8 +1,3 @@
-//import { getGridMasterData } from "services";
-import { retrieveFlowData } from "services";
-import { CctSharedCallFlowDb } from "../AlohaFlow.Interfaces";
-import { getGridMasterData } from "../DataGridFlow/GridMaster";
-
 const readOnlyFields = [
   "pkey"
 ];
@@ -16,35 +11,6 @@ const mandatoryFields = [
   "dialedDescription",
   "pkey"
 ];
-
-const languageOffer = ["English", "Spanish"];
-
-const userDestination = ["Avaya", "Twilio"];
-
-const brand:string[]=[];
-
-const channel:string[] = [];
-
-const dropDownList = {
-  brand,
-  channel,
-  languageOffer,
-  userDestination
-};
-
-const masterDataValues =  async(accessToken:string) =>{
-  const masterData = localStorage.getItem("FLOW_MASTER_DATA");
-  let masterDataObject;
-  if (masterData !== undefined && masterData !== null) {
-    masterDataObject = JSON.parse(masterData);
-  } else{
-    const result:CctSharedCallFlowDb[] = await retrieveFlowData(accessToken);
-    masterDataObject = await getGridMasterData(result);
-  }
-  dropDownList.brand = masterDataObject.brand;
-  dropDownList.channel = masterDataObject.channel;
-  return dropDownList;
-};
 
 const flowFields = [
   {
@@ -194,8 +160,5 @@ export {
   initRule,
   mandatoryFields,
   numbersOnlyFields,
-  readOnlyFields,
-  languageOffer,
-  userDestination,
-  masterDataValues
+  readOnlyFields
 };

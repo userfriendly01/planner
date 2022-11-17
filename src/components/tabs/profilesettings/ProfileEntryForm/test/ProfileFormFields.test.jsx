@@ -23,7 +23,6 @@ import {
 } from "testUtils";
 import React from "react";
 
-
 jest.mock("components", () => ({
   __esModule: true,
   ProfileNameTextField: jest.fn(),
@@ -43,7 +42,6 @@ jest.mock("@mui/material", () => ({
   Switch: jest.fn()
 }));
 
-const mockProfile = {};
 const mockSetForm = jest.fn();
 
 describe("<ProfileFormFields />", () => {
@@ -63,9 +61,7 @@ describe("<ProfileFormFields />", () => {
 
   const renderComponent = () => {
     return render(
-      <ProfileFormFields
-        profile={mockProfile}
-      />, initialTestState
+      <ProfileFormFields />, initialTestState
     );
   };
 
@@ -73,7 +69,7 @@ describe("<ProfileFormFields />", () => {
     test("Should render the correct initial state", () => {
       const rendered = renderComponent();
       expectMockedComponent(rendered, { ProfileNameTextField });
-      expectMockedComponent(rendered, { FormControlLabel }, 11);
+      expectMockedComponent(rendered, { FormControlLabel }, 12);
       expect(rendered.container).toHaveTextContent(/^ProfileNameTextField/i);
       expectMockedComponent(rendered, { OverflowSkillTextField });
       expectMockedComponent(rendered, { ProfileActivitiesSelectField });

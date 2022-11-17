@@ -8,6 +8,7 @@ export * from "./flowTableService";
 export * from "./manager";
 export * from "./message";
 export * from "./office";
+export * from "./routingTableService";
 export * from "./tfnActivation";
 export * from "./updateUser";
 export * from "./profile";

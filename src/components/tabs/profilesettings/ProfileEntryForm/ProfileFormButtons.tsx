@@ -19,14 +19,16 @@ import {
   isProfileFormValid,
   wait
 } from "utils";
-import { createProfile } from "services";
+import {
+  createProfile,
+  editProfile
+} from "services";
 
 const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   const {
     handleClose,
     loading,
-    updateLoading,
-    profile
+    updateLoading
   } = props;
 
   const form = profileEntryFormState();
@@ -39,22 +41,24 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       saveStatus: ModalOverlayStatuses.SAVING,
       saveProfile: true
     });
+
     const payload: ProfilePayload = {
       profile_id: form.profileId,
       profile_nme: form.profileName.value,
       activity_id: form.activitiesList.map(activity => activity.activity_id),
-      recorded_i: form.inboundRecorded,
-      auto_answd_i: form.autoAnswered,
-      pmt_prcsg_i: form.paymentProcessing,
-      otbnd_recorded_i: form.outboundRecorded,
-      acw_option_i: form.acwOption,
-      manual_recorded_i: form.manualRecorded,
-      acw_data_entry_i: form.acwDataEntry,
-      manual_record_inbound_i: form.manualRecordedInbound,
-      agent_assisted_pay_i: form.agentAssistedPay,
+      recorded_i: form.inboundRecorded.value,
+      auto_answd_i: form.autoAnswered.value,
+      pmt_prcsg_i: form.paymentProcessing.value,
+      otbnd_recorded_i: form.outboundRecorded.value,
+      acw_option_i: form.acwOption.value,
+      manual_recorded_i: form.manualRecorded.value,
+      acw_data_entry_i: form.acwDataEntry.value,
+      manual_record_inbound_i: form.manualRecordedInbound.value,
+      agent_assisted_pay_i: form.agentAssistedPay.value,
       overflow_skill: form.overflowSkill.value || null,
-      policy_number_edit_i: form.policyNumberEdit,
-      voice_mail_transcription_i: form.voiceMailTranscription
+      policy_number_edit_i: form.policyNumberEdit.value,
+      voice_mail_transcription_i: form.voiceMailTranscription.value,
+      click_to_dial_i: form.clickToDial.value
     };
 
     createProfile(payload).then(response => {
@@ -91,7 +95,64 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   };
 
   const doUpdateProfile = () => {
-    console.log("TODO - update profile");
+    updateLoading({
+      ...loading,
+      overlayMessage: `Editing profile ${form.profileId}...`,
+      saveStatus: ModalOverlayStatuses.SAVING,
+      saveProfile: true
+    });
+
+    const payload: Partial<ProfilePayload> = {
+      profile_id: form.profileId
+    };
+
+    form.profileName.updated ? payload.profile_nme = form.profileName.value : null;
+    form.overflowSkill.updated ? payload.overflow_skill = form.overflowSkill.value || null : null;
+    form.activitiesUpdated ? payload.activity_id = form.activitiesList.map(activity => activity.activity_id) : null;
+    form.inboundRecorded.updated ? payload.recorded_i = form.inboundRecorded.value : null;
+    form.autoAnswered.updated ? payload.auto_answd_i = form.autoAnswered.value : null;
+    form.paymentProcessing.updated ? payload.pmt_prcsg_i = form.paymentProcessing.value : null;
+    form.outboundRecorded.updated ? payload.otbnd_recorded_i = form.outboundRecorded.value : null;
+    form.acwOption.updated ? payload.acw_option_i = form.acwOption.value : null;
+    form.manualRecorded.updated ? payload.manual_recorded_i = form.manualRecorded.value : null;
+    form.acwDataEntry.updated ? payload.acw_data_entry_i = form.acwDataEntry.value : null;
+    form.manualRecordedInbound.updated ? payload.manual_record_inbound_i = form.manualRecordedInbound.value : null;
+    form.agentAssistedPay.updated ? payload.agent_assisted_pay_i = form.agentAssistedPay.value : null;
+    form.policyNumberEdit.updated ? payload.policy_number_edit_i = form.policyNumberEdit.value : null;
+    form.voiceMailTranscription.updated ? payload.voice_mail_transcription_i = form.voiceMailTranscription.value : null;
+    form.clickToDial.updated ? payload.click_to_dial_i = form.clickToDial.value : null;
+
+    editProfile(payload).then(() => {
+      updateLoading({
+        ...loading,
+        overlayMessage: `Successfully updated profile with ID ${form.profileId}`,
+        saveStatus: ModalOverlayStatuses.SUCCESS,
+        saveProfile: true
+      });
+      wait(() => {
+        updateLoading({
+          ...loading,
+          saveProfile: false
+        });
+        handleClose();
+        setForm({
+          type: profileEntryFormActions.RESET_FORM
+        });
+      }, timeouts.MODAL_OVERLAY);
+    }).catch(e => {
+      updateLoading({
+        ...loading,
+        overlayMessage: `Error updating profile with ID ${form.profileId}`,
+        saveStatus: ModalOverlayStatuses.FAIL,
+        saveProfile: true
+      });
+      wait(() => {
+        updateLoading({
+          ...loading,
+          saveProfile: false
+        });
+      }, timeouts.MODAL_OVERLAY);
+    });
   };
 
   return (

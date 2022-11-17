@@ -26,7 +26,7 @@ export default function TimePickerComponent({
         label={label}
         InputProps={{
           sx: {
-            width: 264
+            width: "calc(95%)"
           }
         }}
         // eslint-disable-next-line react/jsx-props-no-spreading
