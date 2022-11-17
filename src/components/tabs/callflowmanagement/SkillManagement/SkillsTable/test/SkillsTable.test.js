@@ -37,6 +37,12 @@ jest.mock("@mui/material", () => ({
   Tooltip: jest.fn()
 }));
 
+jest.mock("@mui/x-data-grid", () => ({
+  __esModule: true,
+  DataGrid: jest.fn(),
+  GridToolbar : jest.fn()
+}));
+
 jest.mock("../../Skills.Styles", () => ({
   CustomTable: jest.requireActual("../../Skills.Styles").CustomTable,
   CustomTableData: jest.requireActual("../../Skills.Styles").CustomTableData,
