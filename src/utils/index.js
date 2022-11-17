@@ -10,11 +10,13 @@ export * from "./formatWorkerResponse";
 export * from "./formatWorkerAttributeSkillsToHTML";
 export * from "./isErrorIn400s";
 export * from "./myAxios";
+export * from "./routingUtils";
 export * from "./skillsUtils";
 export * from "./sortUtils";
 export * from "./timeUtils";
 export * from "./userFormUtils";
 export * from "./profileFormUtils";
+export * from "./userTokenUtils";
 
 export const escapeQuotes = payload => {
   const replaceAll = (string, search, replace) => {

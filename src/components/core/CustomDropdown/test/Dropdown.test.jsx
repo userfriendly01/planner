@@ -24,6 +24,12 @@ jest.mock("@mui/material", () => ({
   Checkbox: jest.fn()
 }));
 
+jest.mock("@mui/x-data-grid", () => ({
+  __esModule: true,
+  DataGrid: jest.fn(),
+  GridToolbar : jest.fn()
+}));
+
 const mockOnBlur = jest.fn();
 const mockUpdateValue = jest.fn();
 
