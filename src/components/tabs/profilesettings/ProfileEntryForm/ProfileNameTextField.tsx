@@ -8,7 +8,7 @@ import React from "react";
 import { isProfileNameValid } from "utils";
 import { TextFieldProps } from "./ProfileEntryForm.Interfaces";
 
-const ProfileNameTextField = (props: TextFieldProps ) => {
+const ProfileNameTextField = (props: TextFieldProps) => {
   const {
     label
   } = props;

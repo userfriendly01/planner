@@ -54,9 +54,9 @@ const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectFieldProps) 
   }, []);
 
   const profileActivitiesForDropDown = activities.filter(activity => {
-      return !activitiesList.find(item => {
-        return item.activity_id === activity.activity_id;
-      });
+    return !activitiesList.find(item => {
+      return item.activity_id === activity.activity_id;
+    });
   });
 
   const newProfileActivityChanged = (profileActivity: Array<{

@@ -13,6 +13,7 @@ import {
 import {
   checkIfPO,
   formatProfileBooleanData,
+  formatProfileACWDataEntry,
   formatOverflowSkillData,
   formatActivityData,
   sortProfilesById
@@ -27,10 +28,23 @@ import {
   profileEntryFormDispatch,
   profileEntryFormActions
 } from "context";
+import { getWorkerTaskInfo as getWorkerTaskInfoServiceCall } from "services";
+
+const getWorkerTaskInfo = async () => {
+  try {
+    return await getWorkerTaskInfoServiceCall();
+  } catch (error) {
+    throw ({
+      msg: "Failed to fetch worker task info from service",
+      error
+    });
+  }
+};
 
 const ProfileSettingsTable = props => {
   const { profileList, loggedInRep, setProfileModalState } = props;
   const setForm = profileEntryFormDispatch();
+  const [workerTaskInfo, setWorkerTaskInfo] = React.useState([]);
 
   const editButtonOnClick = profile => event => {
     event.stopPropagation();
@@ -45,6 +59,16 @@ const ProfileSettingsTable = props => {
       open: true
     });
   };
+
+  React.useEffect(() => {
+    if(!workerTaskInfo.length) {
+      getWorkerTaskInfo()
+        .then((allWorkerTaskInfo) => {
+          setWorkerTaskInfo(allWorkerTaskInfo);
+        })
+        .catch(error => console.error("ERROR:", error.msg));
+    }
+  }, []);
 
   return(
     <TableContainer>
@@ -93,7 +117,7 @@ const ProfileSettingsTable = props => {
                       <TableText>{formatProfileBooleanData(profile.manual_recorded_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(profile.acw_data_entry_i.data[0])}</TableText>
+                      <TableText>{formatProfileACWDataEntry(profile.acw_data_entry_i.data[0], workerTaskInfo.filter(data => data.profile_id === profile.profile_id))}</TableText>
                     </CustomTableData>
                     <CustomTableData>
                       <TableText>{formatProfileBooleanData(profile.manual_record_inbound_i.data[0])}</TableText>
