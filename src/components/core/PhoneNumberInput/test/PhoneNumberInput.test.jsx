@@ -41,6 +41,12 @@ jest.mock("@lmig/phone-number-utils", () => ({
   unMaskPhoneNumber: jest.fn()
 }));
 
+jest.mock("@mui/x-data-grid", () => ({
+  __esModule: true,
+  DataGrid: jest.fn(),
+  GridToolbar : jest.fn()
+}));
+
 const id = "outgoing-id";
 const label = "Outgoing Number";
 const number = "12345";
