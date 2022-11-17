@@ -4,10 +4,6 @@ export interface View {
 }
 
 export const views = {
-  ONBOARD_NEW_USER: {
-    value: "ONBOARD_NEW_USER",
-    label: "Onboard New User"
-  },
   TRITON_USERS: {
     value: "TRITON_USERS",
     label: "Triton Users"
@@ -23,5 +19,9 @@ export const views = {
   COMPARE_PROFILES: {
     value: "COMPARE_USER_PROFILES",
     label: "Compare User Profiles"
+  },
+  ONBOARD_NEW_USER: {
+    value: "ONBOARD_NEW_USER",
+    label: "Onboard New User"
   }
 };

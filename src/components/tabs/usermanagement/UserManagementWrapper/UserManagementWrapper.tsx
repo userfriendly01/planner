@@ -21,7 +21,7 @@ import { identifyUserProfiles } from "utils";
 
 const UserManagementWrapper = () => {
 
-  const [ view, setView ] = React.useState(views.ONBOARD_NEW_USER);
+  const [ view, setView ] = React.useState(views.TRITON_USERS);
   const state = useAdminState();
 
   const defaultWorkerOpts: WorkerOpts = {

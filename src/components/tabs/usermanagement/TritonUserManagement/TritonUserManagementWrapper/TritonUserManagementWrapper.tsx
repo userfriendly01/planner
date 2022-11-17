@@ -1,4 +1,3 @@
-import { ManagementWrapperState } from "./TritonUserManagementWrapper.Interfaces";
 import {
   ManagementContainer,
   StyledPaper
