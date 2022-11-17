@@ -228,18 +228,17 @@ describe("profileEntryFormReducer", () => {
         voiceMailTranscription: {
           value: false
         },
+        clickToDial: {
+          value: true
+        },
         overflowSkill: {
           value: "",
           valid: true
         },
-        profileName: {
-          value: "",
-          valid: false
-        },
         profileId: 0,
         profileName: {
           valid: true,
-          value: "Game of Phones",
+          value: "Game of Phones"
         }
       };
       const action = {

@@ -202,12 +202,14 @@ const DialListTable = props => {
         </StyledButton>
       </AddContactButtonContainer>
       <Modal onClose={() => { return; }} open={dialListTableState.isDialListEntryFormOpen}>
-        <DialListEntryForm
-          dialListTableState={dialListTableState}
-          profileId={profileId}
-          refreshProfileData={refreshProfileData}
-          setDialListTableState={setDialListTableState}
-        />
+        <>
+          <DialListEntryForm
+            dialListTableState={dialListTableState}
+            profileId={profileId}
+            refreshProfileData={refreshProfileData}
+            setDialListTableState={setDialListTableState}
+          />
+        </>
       </Modal>
       {
         dialList.length === 0
@@ -275,7 +277,7 @@ const DialListTable = props => {
 
 DialListTable.propTypes = {
   dialList: PropTypes.array.isRequired,
-  profileId: PropTypes.string.isRequired,
+  profileId: PropTypes.number.isRequired,
   refreshProfileData: PropTypes.func.isRequired
 };
 

@@ -72,6 +72,9 @@ describe("<ProfileSettingsTable />", () => {
       voice_mail_transcription_i: {
         data: [0]
       },
+      click_to_dial_i: {
+        data: [1]
+      },
       activities: "[{\"id\": 1, \"name\": \"Offline\", \"availability\": 0}]"
     },
     {
@@ -111,6 +114,9 @@ describe("<ProfileSettingsTable />", () => {
       voice_mail_transcription_i: {
         data: [0]
       },
+      click_to_dial_i: {
+        data: [0]
+      },
       activities: "[{\"id\": 1, \"name\": \"Offline\", \"availability\": 0}]"
     }
   ];
@@ -132,11 +138,12 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByText("Overflow Skill", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Policy Number Edit", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Voice Mail Transcription", { selector: "th" })).toBeInTheDocument();
+      expect(rendered.getByText("Click To Dial", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Activities", { selector: "th" })).toBeInTheDocument();
       const tableRows = rendered.getAllByTestId("table-row");
       const tableHeaders = rendered.getAllByTestId("table-header");
       expect(tableRows.length).toBe(2);
-      expect(tableHeaders.length).toBe(16);
+      expect(tableHeaders.length).toBe(17);
     });
 
     test("should render correct tooltips", async () => {
@@ -155,6 +162,7 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByLabelText("An agent misses a call and it is forwarded to the next available agent with the same manager")).toBeInTheDocument();
       expect(rendered.getByLabelText("UI Feature: An agent can capture and save a different policy number than what the IVR previously loaded")).toBeInTheDocument();
       expect(rendered.getByLabelText("Voice mail will be transcribed and sent within the notification email to the user")).toBeInTheDocument();
+      expect(rendered.getByLabelText("Enable click-to-dial/transfer from external application")).toBeInTheDocument();
       expect(rendered.getByLabelText("Profile Activities")).toBeInTheDocument();
     });
   });
@@ -171,7 +179,7 @@ describe("<ProfileSettingsTable />", () => {
       });
     });
     test("does not render any edit icons for an invalidNid", () => {
-      const invalidNid = 'n0288362'
+      const invalidNid = "n0288362";
       const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={invalidNid} setProfileModalState={setProfileModalState}/>)
       expect(rendered.queryAllByTestId("edit-button")).toHaveLength(0);
     });

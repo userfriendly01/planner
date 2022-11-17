@@ -146,11 +146,13 @@ const CallFlowContainer = () => {
       {view === views.SKILLS && SkillsManagementView}
       {view === views.TFN && TfnActivationView}
       <Modal open={confirmationModalOpts.open}>
-        <CallFlowConfirmationModal
-          tableState={tableState}
-          confirmationModalOpts={confirmationModalOpts}
-          saveResult={saveResult}
-        />
+        <>
+          <CallFlowConfirmationModal
+            tableState={tableState}
+            confirmationModalOpts={confirmationModalOpts}
+            saveResult={saveResult}
+          />
+        </>
       </Modal>
     </CallflowWrapper>
   );

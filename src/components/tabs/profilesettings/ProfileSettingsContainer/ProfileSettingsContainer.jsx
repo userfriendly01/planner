@@ -39,7 +39,7 @@ const ProfileSettingsContainer = () => {
     message: "Please select a profile",
     profileId: null
   };
-  
+
   const initialProfileModalState = {
     open: false
   };
@@ -89,9 +89,11 @@ const ProfileSettingsContainer = () => {
     <ProfileEntryFormStateProvider>
       <ProfileSettingsContainerDiv>
         <Modal onClose={() => { return; }} open={profileModalState.open}>
-          <ProfileEntryForm
-            handleClose={() => setProfileModalState(initialProfileModalState)}
-          />
+          <>
+            <ProfileEntryForm
+              handleClose={() => setProfileModalState(initialProfileModalState)}
+            />
+          </>
         </Modal>
         <ProfileSettingsDropdownWrapper>
           <Dropdown
@@ -153,7 +155,7 @@ const ProfileSettingsContainer = () => {
                       </AddProfileButton>
                     </ControlItem>
                   </ControlsWrapper>
-                : null
+                  : null
               }
               <ProfileSettingsTable
                 profileList={profilesFromContextMinusGoP}
