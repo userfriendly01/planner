@@ -132,6 +132,12 @@ export default (props:any) => {
       addFlowRule(flowRule, accessToken,graphQlApiUrl).then(apiResponse => {
         if (!apiResponse.errors) {
           openModal(true, "ADD_ROUTE_RULE");
+          setAlertBar(alertBarProps => ({
+            ...alertBarProps,
+            "open": true,
+            "severityType": "success",
+            "msg": "New flow has been successfully added!!"
+          }));
           setFlowRule({ ...initRule });
           return true;
         }

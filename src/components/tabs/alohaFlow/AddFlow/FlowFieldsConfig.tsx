@@ -2,8 +2,6 @@ const readOnlyFields = [
   "pkey"
 ];
 
-const numbersOnlyFields: any[] = [];
-
 const mandatoryFields = [
   "brand",
   "channel",
@@ -159,6 +157,5 @@ export {
   flowFields,
   initRule,
   mandatoryFields,
-  numbersOnlyFields,
   readOnlyFields
 };

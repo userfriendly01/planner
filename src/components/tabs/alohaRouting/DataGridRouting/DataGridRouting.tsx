@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { RoutingGridColumnDef } from "./GridColumnDef"
+import { RoutingGridColumnDef } from "./GridColumnDef";
 import { CctSharedCallRoutingGlobalDb, RoutingFilter, RoutingInitState, RoutingMasterData } from "../AlohaRouting.Interfaces";
 import { retrieveRoutingData } from "services";
 import { CACHED_CALL_ROUTING_PAGE_NO, CACHED_CALL_ROUTING_PER_PAGE, CACHE_FILTER_ROUTING, getAccessToken, routingInitState, getGraphQLEndpoint } from "utils";

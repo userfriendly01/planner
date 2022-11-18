@@ -8,9 +8,9 @@ export interface ComponentControlProps{
     dropDownOptions: string[],
     name: string,
     label: string,
-    type: any,
+    type: string,
     value: any,
-    onChange: any,
+    onChange: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>,
     disabled?: boolean,
     error: boolean,
     required: boolean
