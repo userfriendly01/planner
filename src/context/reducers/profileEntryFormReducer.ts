@@ -17,12 +17,14 @@ export const profileEntryFormActions = {
   SET_PROFILE_NAME: "SET_PROFILE_NAME",
   SET_OVERFLOW_SKILL: "SET_OVERFLOW_SKILL",
   UPDATE_ACTIVITIES_LIST: "UPDATE_ACTIVITIES_LIST",
+  UPDATE_ACW_OPTIONS_LIST: "UPDATE_ACW_OPTIONS_LIST",
   SET_UPDATE_PROFILE_FORM_STATE: "SET_UPDATE_PROFILE_FORM_STATE",
 };
 
 export const initialProfileEntryFormState: ProfileEntryFormState = {
   profileId: null,
   activitiesList: [],
+  acwOptionsList: [],
   formMode: formModes.INSERT,
   autoAnswered: {
     value: true
@@ -108,8 +110,27 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         activitiesUpdated: true
       };
     }
+    case profileEntryFormActions.UPDATE_ACW_OPTIONS_LIST: {
+      return {
+        ...state,
+        acwOptionsList: action.payload,
+        acwOptionsUpdated: true
+      };
+    }
     case profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE: {
       const profile = action.payload.profile;
+      
+      const acwOptionsList = JSON.parse(profile.acwOptions).map((acwOption: { display_nme: string; options_id: number; profile_id: number; row_crtn_dtm: string; row_updt_dtm:string; wrkr_tsk_info_id:number}) => {
+        return {
+          display_nme: acwOption.display_nme,
+          options_id: acwOption.options_id,
+          profile_id: acwOption.profile_id,
+          row_crtn_dtm: acwOption.row_crtn_dtm,
+          row_updt_dtm: acwOption.row_updt_dtm,
+          wrkr_tsk_info_id: acwOption.wrkr_tsk_info_id
+        }
+      });
+      
       const activitiesList = JSON.parse(profile.activities).map((activity: { id: number; name: string; availability: number; }) => {
         return {
           activity_id: activity.id,
@@ -119,13 +140,15 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
             type: "Buffer"
           }
         }
-      })
+      });
+
 
       return {
         ...state,
         profileId: profile.profile_id,
         formMode: action.payload.formMode,
         activitiesList,
+        acwOptionsList,
         autoAnswered: formatProfileBooleanDataTrueFalse(profile.auto_answd_i.data[0]),
         inboundRecorded: formatProfileBooleanDataTrueFalse(profile.recorded_i.data[0]),
         outboundRecorded: formatProfileBooleanDataTrueFalse(profile.otbnd_recorded_i.data[0]),

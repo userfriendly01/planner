@@ -22,6 +22,7 @@ import { profileEntryFormActions } from "context/reducers/profileEntryFormReduce
 import {
   ProfileNameTextField,
   ProfileActivitiesSelectField,
+  ProfileACWOptionsSelectField,
   OverflowSkillTextField
 } from "components";
 
@@ -110,6 +111,15 @@ const ProfileFormFields = () => {
             setForm({
               type: profileEntryFormActions.UPDATE_ACTIVITIES_LIST,
               payload: activitiesList
+            });
+          }}
+        />
+        <ProfileACWOptionsSelectField
+          acwOptionsList={form.acwOptionsList}
+          setACWOptionsList={acwOptionsList => {
+            setForm({
+              type: profileEntryFormActions.UPDATE_ACW_OPTIONS_LIST,
+              payload: acwOptionsList
             });
           }}
         />

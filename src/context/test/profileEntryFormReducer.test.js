@@ -179,7 +179,8 @@ describe("profileEntryFormReducer", () => {
           type: "Buffer",
           data: [1]
         },
-        activities: "[{\"id\": 1, \"name\": \"Offline\", \"availability\": 0}]"
+        activities: "[{\"id\": 1, \"name\": \"Offline\", \"availability\": 0}]",
+        acwOptions: "[{\"display_nme\": \"Call Type\", \"options_id\": 1, \"profile_id\": 15, \"row_crtn_dtm\": \"2019-10-24T12:58:48.000Z\", \"row_updt_dtm\": \"2019-10-24T12:58:48.000Z\", \"wrkr_tsk_info_id\": 1}]"
       }
 
       const expectedState = {
@@ -193,6 +194,14 @@ describe("profileEntryFormReducer", () => {
             ],
             type: "Buffer",
           },
+        }],
+        acwOptionsList: [{
+          display_nme: "Call Type", 
+          options_id: 1,
+          profile_id: 15,
+          row_crtn_dtm: "2019-10-24T12:58:48.000Z",
+          row_updt_dtm: "2019-10-24T12:58:48.000Z", 
+          wrkr_tsk_info_id: 1
         }],
         formMode: formModes.UPDATE,
         autoAnswered: {

@@ -3,7 +3,6 @@
 
 const jestConfig = {
   coveragePathIgnorePatterns: [
-    "<rootDir>/__test__",
     "<rootDir>/src/assets",
     "<rootDir>/src/context/appContext.js",
     "<rootDir>/src/globals",
@@ -46,7 +45,6 @@ const jestConfig = {
   ],
   testPathIgnorePatterns: [
     "<rootDir>/node_modules/",
-    "<rootDir>/src/__test__",
     "<rootDir>/src/assets"
   ],
   transform: {

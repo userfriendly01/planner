@@ -120,7 +120,8 @@ export interface TritonProfile {
   row_crtn_dtm: string,
   row_updt_dtm: string,
   overflow_skill: string,
-  activities: string
+  activities: string,
+  acwOptions: string
 }
 
 export interface ProfilePayload {
@@ -148,6 +149,15 @@ export interface Activity {
     data?: number[],
     type?: string
   }
+}
+
+export interface ACWOption {
+  profile_id: number,
+  wrkr_tsk_info_id: number,
+  display_nme: string,
+  options_id: number,
+  row_crtn_dtm: string,
+  row_updt_dtm: string,
 }
 
 export interface Worker {
