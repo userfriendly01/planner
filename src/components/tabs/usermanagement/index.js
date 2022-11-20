@@ -1,12 +1,3 @@
-export { default as ManagerModal } from "./TritonUsersView/ManagerModal/ManagerModal";
-export { default as CalabrioTeamModal } from "../orgmanagement/CalabrioTeamModal/CalabrioTeamModal";
-export { default as ManagerDelete } from "./TritonUsersView/ManagerDelete/ManagerDelete";
-export { default as ManagementHeader } from "./TritonUsersView/TritonUsersHeader/TritonUsersHeader";
-export { default as ManagementPagination } from "./ManagementPagination/ManagementPagination";
-export { default as TritonUserTable } from "./TritonUsersView/TritonUserTable/TritonUserTable";
-export { default as TritonUserManagementWrapper } from "./TritonUsersView/TritonUsersViewWrapper/TritonUsersViewWrapper";
-export { default as ManagerDropdown } from "./TritonUsersView/ManagerDropdown/ManagerDropdown";
-export { default as ResetSkillsButton } from "./TritonUsersView/ResetSkills/ResetSkillsButton";
-export { default as ResultsModal } from "./TritonUsersView/ResetSkills/ResetSkillsResultModal";
-export { default as UserManagementWrapper } from "./UserManagementWrapper/UserManagementWrapper";
 export * from "./OnboardNewUser";
+export * from "./TritonUsersView";
+export * from "./UserManagementWrapper";

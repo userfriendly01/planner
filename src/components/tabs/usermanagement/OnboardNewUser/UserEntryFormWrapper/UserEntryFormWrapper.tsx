@@ -1,18 +1,16 @@
 import {
-  LoadingState,
-  UserAction,
-  UserEntryFormProps
-} from "./UserEntryFormWrapper.Interfaces";
-import {
+  DiscrepancyContainer,
   Header1,
   Header2,
   Header4,
-  Text,
+  HeaderRow,
+  LoadingState,
   ModalContainer,
-  DiscrepancyContainer,
   StyledDivider,
-  HeaderRow
-} from "./UserEntryFormWrapper.Styles";
+  Text,
+  UserAction,
+  UserEntryFormProps
+} from "./";
 import {
   DeleteTritonUser,
   ModalOverlay,
@@ -26,8 +24,7 @@ import {
   useFormDispatch,
   profileEntryFormActions
 } from "context";
-import { formModes } from "globals";
-import React, { useState } from "react";
+import React from "react";
 import { sortWorkersByFullName } from "utils";
 import { Checkbox } from "@mui/material";
 
@@ -49,7 +46,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
 
   const form = useFormState();
   const setForm = useFormDispatch();
-  const [forwardToToggle, setForwardToToggle] = useState(false);
+  const [forwardToToggle, setForwardToToggle] = React.useState(false);
 
   console.log("FORM", form);
 
@@ -61,7 +58,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
     }
   }, [ workerOpts.action]);
 
-  const [loading, updateLoading] = useState<LoadingState>({
+  const [loading, updateLoading] = React.useState<LoadingState>({
     lookupUser: false,
     overlayMessage: "",
     saveStatus: null,

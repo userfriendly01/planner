@@ -65,9 +65,7 @@ export interface BasicFormInfoProps {
 }
 
 export interface DidFormInfoProps {
-  skills: Skill[],
   worker: Worker | null,
-  workers: Worker[],
   forwardToToggle: boolean,
   setForwardToToggle: (value: boolean) => void,
 }

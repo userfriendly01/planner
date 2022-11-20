@@ -1,9 +1,8 @@
-import { UserFormButtonsProps } from "../UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 import {
   ButtonWrapper,
-  UserFormButton
-} from "../UserEntryFormWrapper.Styles";
-import { Tooltip } from "@mui/material";
+  UserFormButton,
+  UserFormButtonsProps
+} from "../";
 import {
   useAdminDispatch,
   useAdminState,
@@ -41,6 +40,7 @@ import {
   wait,
   workerHasOverFlowSkill
 } from "utils";
+import { Tooltip } from "@mui/material";
 
 const UserFormButtons = (props: UserFormButtonsProps) => {
 

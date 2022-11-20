@@ -1,14 +1,10 @@
 import {
   ButtonWrapper,
+  FlexColumn,
   TextBox,
   PenaltyBox
-} from "./ManagerDelete.Styles";
-import {
-  StyledButton
-} from "components";
-import {
-  FlexColumn
-} from "globals";
+} from "./";
+import { StyledButton } from "components";
 import React from "react";
 
 export interface ErrorFormProps {

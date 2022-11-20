@@ -1,12 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
+  CallRecordingScope,
   FormControlsContainer,
   FormControlsPane
-} from "./CallRecording.Styles";
-import CallRecordingScope from "./CallRecordingScope";
-import {
-  calabrioTimeZones
-} from "utils";
+} from "./";
 import { Dropdown } from "components";
 import {
   useAdminState,
@@ -20,6 +17,7 @@ import {
   formModes
 } from "globals";
 import { getCalabrioUser } from "services";
+import { calabrioTimeZones } from "utils";
 
 interface CallRecordingFormInterface {
   twilioWorker: any
@@ -38,7 +36,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   const form = useFormState();
   const setForm = useFormDispatch();
 
-  useEffect(() => {
+  React.useEffect(() => {
     if(form.calabrioUser.scope.groups.length === 0 || form.calabrioUser.scope.teams.length === 0) {
       console.warn("groups and teams are empty");
       setScopeOnNewUser();
@@ -46,7 +44,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
 
   }, []);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if(form.nNumberFetchedUser && form.formMode === formModes.UPDATE) {
       console.warn("form.nNumberFetchedUser - update and fetched user");
       setScopeOnExistingUser();

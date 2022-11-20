@@ -2,9 +2,9 @@ import {
   Button,
   ButtonWrapper,
   ConfirmationText,
-  ModalContainer
-} from "./CallFlowConfirmationModal.Styles";
-import { CallFlowConfirmationModalProps } from "./CallFlowConfirmationModal.Interfaces";
+  ModalContainer,
+  CallFlowConfirmationModalProps
+} from "./";
 import {
   ModalOverlay,
   PaperContainer,

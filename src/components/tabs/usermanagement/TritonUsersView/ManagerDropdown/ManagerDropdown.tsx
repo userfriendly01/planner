@@ -1,13 +1,10 @@
 import {
+  DropdownOption,
   Label,
   IconWrapper,
+  ManagerDropDownProps,
   Wrapper
-} from "./ManagerDropdown.Styles";
-import { Modal } from "@mui/material";
-import {
-  Edit,
-  Delete
-} from "@mui/icons-material";
+} from "./";
 import {
   ManagerModal,
   ManagerDelete,
@@ -16,16 +13,11 @@ import {
 import { useAdminState } from "context";
 import React, { useState } from "react";
 import { sortManagersByName } from "utils";
-
-interface ManagerDropDownProps {
-  filterBy: string,
-  setFilter: (filter: string) => void
-}
-
-interface DropdownOption {
-  label: string,
-  value: any
-}
+import {
+  Edit,
+  Delete
+} from "@mui/icons-material";
+import { Modal } from "@mui/material";
 
 const ManagerDropdown = (props: ManagerDropDownProps) => {
   const {

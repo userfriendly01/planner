@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { Checkbox } from "@mui/material";
+import React from "react";
 import {
   TableBody,
   TableText,
@@ -8,8 +7,9 @@ import {
   ScopeRow,
   FormControlsPane,
   FullAccessWrapper
-} from "./CallRecording.Styles";
+} from "./";
 import { userFormActions } from "context";
+import { Checkbox } from "@mui/material";
 
 const CallRecordingScope = (props:any) => {
 
@@ -25,7 +25,7 @@ const CallRecordingScope = (props:any) => {
 
   const [ selectedGroup, setSelectedGroup ] = React.useState(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if(groups.length > 0) {
       setSelectedGroup(groups[0]);
       groups.forEach((group: any, index: number) => {

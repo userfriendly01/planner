@@ -1,9 +1,8 @@
-import { DidFormInfoProps } from "../UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 import {
+  DidFormInfoProps,
   FormControlsPane,
   StyledIcon
-} from "../UserEntryFormWrapper.Styles";
-import { InputAdornment } from "@mui/material";
+} from "..";
 import {
   ForwardToEntryForm,
   PhoneNumberInput
@@ -15,13 +14,12 @@ import {
 } from "context";
 import { formModes } from "globals";
 import React from "react";
+import { InputAdornment } from "@mui/material";
 
 const DidFormInfo = (props: DidFormInfoProps) => {
 
   const {
-    skills,
     worker,
-    workers,
     forwardToToggle,
     setForwardToToggle
   } = props;

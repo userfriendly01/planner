@@ -1,27 +1,24 @@
-import { DeleteTritonUserProps } from "./DeleteTritonUser.Interfaces";
 import {
+  ButtonWrapper,
   CheckboxWrapper,
+  DeleteTritonUserProps,
   DeleteTritonUserWrapper,
-  Text
-} from "./DeleteTritonUser.Styles";
-import {
-  UserFormButton,
-  ButtonWrapper
-} from "../UserEntryFormWrapper.Styles";
+  Text,
+  UserFormButton
+} from "../";
 import { ForwardToEntryForm } from "components";
+import { useAdminDispatch } from "context";
+import {
+  ModalOverlayStatuses,
+  timeouts
+} from "globals";
 import React from "react";
+import { deleteUser } from "services";
+import { wait } from "utils";
 import {
   FormControlLabel,
   Radio
 } from "@mui/material";
-import { deleteUser } from "services";
-import {
-  formModes,
-  ModalOverlayStatuses,
-  timeouts
-} from "globals";
-import { useAdminDispatch } from "context";
-import { wait } from "utils";
 
 const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
   const {

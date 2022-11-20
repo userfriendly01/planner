@@ -1,10 +1,10 @@
 import {
   ManagementContainer,
-  StyledPaper
-} from "./TritonUsersViewWrapper.Styles";
-import { TritonUserManagementWrapperProps } from "./TritonUsersViewWrapper.Interfaces";
+  StyledPaper,
+  TritonUserManagementWrapperProps
+} from "./";
 import {
-  ManagementHeader,
+  TritonUsersHeader,
   Pagination,
   TritonUserTable
 } from "components";
@@ -91,7 +91,7 @@ const TritonUserManagementWrapper: any = (props: TritonUserManagementWrapperProp
 
   return (
     <ManagementContainer>
-      <ManagementHeader
+      <TritonUsersHeader
         tableState={tableState}
         setTableState={setTableState}
       />

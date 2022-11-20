@@ -1,14 +1,14 @@
-
-import { Wrapper } from "./ManagerModal.Styles";
 import {
   ButtonWrapper,
+  defaultNNumber,
+  DropdownOption,
   Header,
   HeaderAndCloseButtonWrapper,
   LeftDiv,
-  ModalContainer
-} from "./ManagerModal.Styles";
-import { Modal } from "@mui/material";
-import { CloseRounded } from "@mui/icons-material";
+  ManagerModalProps,
+  ModalContainer,
+  Wrapper
+} from "./";
 import {
   Dropdown,
   NNumberInput,
@@ -33,17 +33,8 @@ import {
   FetchUserResponse
 } from "services";
 import { sortProfilesByName } from "utils";
-
-const defaultNNumber = "n";
-export interface ManagerModalProps {
-  handleClose: () => void,
-  selectedManager: any,
-}
-
-interface DropdownOption {
-  label: string,
-  value: any
-}
+import { Modal } from "@mui/material";
+import { CloseRounded } from "@mui/icons-material";
 
 const ManagerModal = (props: ManagerModalProps) => {
   const {

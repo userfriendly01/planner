@@ -1,21 +1,21 @@
-import { BasicFormInfoProps } from "../UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 import {
+  BasicFormInfoProps,
   FormControlsContainer,
   FormControlsPane,
   RightColumn,
   ToggleContainer,
   ToggleLabel
-} from "../UserEntryFormWrapper.Styles";
+} from "..";
 import {
   Switch,
   Tooltip
 } from "@mui/material";
 import {
   DidFormInfo,
+  Dropdown,
   ExtensionInput,
   NNumberInput,
   PhoneNumberInput,
-  Dropdown,
   SkillsFormInfo
 } from "components";
 import {
@@ -230,9 +230,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
             }}
           /> :
           <DidFormInfo
-            skills={skills}
             worker={worker}
-            workers={workers}
             forwardToToggle={forwardToToggle}
             setForwardToToggle={setForwardToToggle}
           />

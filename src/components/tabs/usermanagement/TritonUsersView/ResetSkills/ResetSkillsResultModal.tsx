@@ -1,4 +1,12 @@
 import {
+  ButtonWrapper,
+  FlexRowMax,
+  Header,
+  ModalContainer,
+  ResultsContainer,
+  ResultsModalProps
+} from "./";
+import {
   PaperContainer,
   StyledButton
 } from "components";
@@ -6,56 +14,9 @@ import {
   resetResponses,
   theme
 } from "globals";
-import PropTypes from "prop-types";
 import React from "react";
-import styled from "styled-components";
 
-const FlexColumn = styled.div`
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  margin: 5px;
-`;
-
-const FlexRow = styled.div`
-  display: flex;
-  padding: 5px;
-  flex: 1 1 auto;
-`;
-
-const ButtonWrapper = styled(FlexRow)`
-  justify-content: space-around;
-  padding: 1%;
-`;
-
-const FlexRowMax = styled(FlexRow)`
-  width: max-content;
-`;
-
-const Header = styled.h1`
-  align-self: center;
-`;
-
-const ModalContainer = styled(FlexColumn)`
-  font-family: 'Roboto', sans-serif;
-  left: 50%;
-  padding: 2%;
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
-`;
-
-const ResultsContainer = styled(FlexColumn)`
-  background-color: ${props => props.backgroundColor};
-  border-width: 2px;
-  border-color: ${props => props.borderColor};
-  border-style: solid;
-  border-radius: 10px;
-  padding: 5px;
-  width: auto;
-`;
-
-const ResultsModal = props => {
+const ResultsModal = (props: ResultsModalProps) => {
   const {
     error,
     handleClose,
@@ -79,8 +40,8 @@ const ResultsModal = props => {
     );
   }
 
-  const warnOnWorkers = [];
-  const failOnWorkers = [];
+  const warnOnWorkers: any[] = [];
+  const failOnWorkers: any[] = [];
   unsuccessfulWorkers.forEach((worker, index) => {
     const display =
       <FlexRowMax key={index}>
@@ -121,22 +82,6 @@ const ResultsModal = props => {
       </PaperContainer>
     </ModalContainer>
   );
-};
-
-ResultsModal.propTypes = {
-  error: PropTypes.string,
-  handleClose: PropTypes.func.isRequired,
-  successfulWorkers: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string
-    })
-  ).isRequired,
-  unsuccessfulWorkers: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string,
-      reason: PropTypes.string
-    })
-  ).isRequired
 };
 
 export default ResultsModal;

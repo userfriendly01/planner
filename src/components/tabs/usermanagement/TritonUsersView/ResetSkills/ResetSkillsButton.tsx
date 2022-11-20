@@ -1,6 +1,6 @@
-import { Modal } from "@mui/material";
+import { DefaultResetInformation } from "./";
 import {
-  ResultsModal,
+  ResetSkillsResultModal,
   StyledButton
 } from "components";
 import {
@@ -13,8 +13,9 @@ import {
   mapWorkerFromDbWorker,
   myAxios
 } from "utils";
+import { Modal } from "@mui/material";
 
-const defaultResetInformation = {
+const defaultResetInformation: DefaultResetInformation = {
   open: false,
   error: null,
   successfulResets: [],
@@ -31,7 +32,7 @@ const ResetSkillsButton = () => {
   const [resultsModalOpts, setResultsModalOpts] = useState(defaultResetInformation);
 
   const resetWorkers = () => {
-    const dispatchResettingSkills = bool => dispatch({
+    const dispatchResettingSkills = (bool: boolean) => dispatch({
       type: "resettingSkills",
       payload: bool
     });
@@ -39,9 +40,9 @@ const ResetSkillsButton = () => {
     const workerSids = selectedWorkers.map(worker => worker.sid);
     myAxios
       .post(apiPaths.RESET_WORKER_SKILLS, { workerSids }).then(response => {
-        const failedWorkers = [];
-        const passedWorkers = [];
-        response.data.forEach(result => {
+        const failedWorkers: any[] = [];
+        const passedWorkers: any[] = [];
+        response.data.forEach((result: any) => {
           if (result.updated){
             result.worker.workerSid = result.workerSid;
             result.worker.attributes = JSON.parse(result.worker.attributes);
@@ -58,17 +59,18 @@ const ResetSkillsButton = () => {
               payload: updatedWorker
             });
             passedWorkers.push({
-              name: selectedWorkers.find(worker => result.workerSid === worker.sid).name
+              name: selectedWorkers.find((worker: any) => result.workerSid === worker.sid).sid
             });
           } else {
             failedWorkers.push({
               reason: result.reason,
-              name: selectedWorkers.find(worker => result.workerSid === worker.sid).name
+              name: selectedWorkers.find((worker: any) => result.workerSid === worker.sid).sid
             });
           }
         });
         dispatchResettingSkills(false);
         setResultsModalOpts({
+          ...resultsModalOpts,
           open: true,
           successfulResets: passedWorkers,
           unsuccessfulResets: failedWorkers
@@ -81,6 +83,7 @@ const ResetSkillsButton = () => {
         });
         dispatchResettingSkills(false);
         setResultsModalOpts({
+          ...resultsModalOpts,
           open: true,
           error: "An unexpected error occurred when trying to reset worker skills"
         });
@@ -93,7 +96,7 @@ const ResetSkillsButton = () => {
       marginRight: "10px"
     }}>
       <Modal open={resultsModalOpts.open}>
-        <ResultsModal
+        <ResetSkillsResultModal
           error={resultsModalOpts.error}
           handleClose={() => setResultsModalOpts(defaultResetInformation)}
           successfulWorkers={resultsModalOpts.successfulResets}

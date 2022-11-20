@@ -2,10 +2,12 @@ import {
   Header,
   HeaderAndCloseButtonWrapper,
   LeftDiv,
-  ModalContainer
-} from "./ManagerDelete.Styles";
-import { CloseRounded } from "@mui/icons-material";
+  ModalContainer,
+  ManagerDeleteProps
+} from "./";
 import {
+  ConfirmationForm,
+  ErrorForm,
   ModalOverlay,
   PaperContainer
 } from "components";
@@ -13,15 +15,10 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context";
-import React, { useState } from "react";
-import { deleteManager } from "services";
 import { ModalOverlayStatuses } from "globals";
-import ConfirmationForm from "./ConfirmationForm";
-import ErrorForm from "./ErrorForm";
-export interface ManagerDeleteProps {
-  handleClose: () => void,
-  selectedManager: any
-}
+import React from "react";
+import { deleteManager } from "services";
+import { CloseRounded } from "@mui/icons-material";
 
 const ManagerDelete = (props: ManagerDeleteProps): any => {
   const {
@@ -32,8 +29,8 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
   const state = useAdminState();
   const workers = useAdminState().workerContext.workers;
   const dispatch = useAdminDispatch();
-  const [errorMessage, setErrorMessage] = useState<string>(null);
-  const [saveStatus, setSaveStatus] = useState<ModalOverlayStatuses>(null);
+  const [errorMessage, setErrorMessage] = React.useState<string>(null);
+  const [saveStatus, setSaveStatus] = React.useState<ModalOverlayStatuses>(null);
 
   const buildTeamMembersList = () => {
     if (workers.length === 0) {

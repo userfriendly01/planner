@@ -1,11 +1,11 @@
-import React from "react";
-import { FormControlsPane } from "../UserEntryFormWrapper.Styles";
+import { FormControlsPane } from "../../";
 import { DefaultSkillSelector } from "components";
 import {
   useFormState,
   useFormDispatch,
   userFormActions
 } from "context";
+import React from "react";
 
 const SkillsFormInfo = () => {
 

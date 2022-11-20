@@ -1,21 +1,13 @@
-import React, {
-  useState, useEffect
-} from "react";
-import { getAuthenticationProfileTemplates } from "authentication";
 import {
-  CallflowWrapper,
-  MessageWrapper
-} from "./CallFlowManagement.Styles";
-import {
+  ConfirmationModalOptsProps,
+  SaveResultProps,
   SkillProfile,
   TableState,
   View,
-  views
-} from "./CallFlowManagement.Interfaces";
-import {
-  ConfirmationModalOptsProps,
-  SaveResultProps
-} from "../CallFlowConfirmationModal/CallFlowConfirmationModal.Interfaces";
+  views,
+  CallflowWrapper,
+  MessageWrapper
+} from "../";
 import {
   CallFlowConfirmationModal,
   Dropdown,
@@ -24,10 +16,13 @@ import {
   TfnActivation
 } from "components";
 import { useAdminState } from "context";
-import { filterSkillsByName } from "utils";
 import {
-  Skill, TritonProfile
+  Skill,
+  TritonProfile
 } from "globals";
+import React from "react";
+import { getAuthenticationProfileTemplates } from "authentication";
+import { filterSkillsByName } from "utils";
 import { Modal } from "@mui/material";
 
 const CallFlowContainer = () => {
@@ -60,13 +55,13 @@ const CallFlowContainer = () => {
   const tritonProfile = state.userContext.authenticationProfiles.find((p: any) => p.name === getAuthenticationProfileTemplates().TRITON.name);
   const isAdmin = tritonProfile.isAdmin;
   const userProfileId = tritonProfile.profileId;
-  const [ tableState, setTableState ] = useState(defaultTableState);
-  const [ confirmationModalOpts, setConfirmationModalOpts ] = useState(defaultConfirmationModalOpts);
-  const [ saveResult, setSaveResult ] = useState(defaultSaveResult);
+  const [ tableState, setTableState ] = React.useState(defaultTableState);
+  const [ confirmationModalOpts, setConfirmationModalOpts ] = React.useState(defaultConfirmationModalOpts);
+  const [ saveResult, setSaveResult ] = React.useState(defaultSaveResult);
   const [ view, setView ] = React.useState(views.SKILLS);
   console.log("Filtered State: ", tableState);
 
-  useEffect(() => {
+  React.useEffect(() => {
     let filteredList = state.skillContext.skills.slice();
     //filter by profile
     if(isAdmin) {

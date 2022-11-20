@@ -10,7 +10,7 @@ import {
 import {
   UserManagementWrapper,
   ProfileSettingsContainer,
-  CallflowManagementWrapper,
+  CallFlowManagementWrapper,
   AlohaRoutingContainer,
   AlohaFlowContainer
 } from "components";
@@ -158,7 +158,7 @@ export const getTabs = () => {
     TRITON_CALL_FLOW_MANAGEMENT: {
       value: "triton-callflow-management",
       label: "Call Flow Management",
-      component: CallflowManagementWrapper
+      component: CallFlowManagementWrapper
     },
     ALOHA_CALL_FLOW_MANAGEMENT: {
       value: "aloha-callflow-management",

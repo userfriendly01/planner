@@ -1,16 +1,14 @@
 import React from "react";
-import { CallflowWrapper } from "./UserManagement.Styles";
 import {
-  View,
-  views
-} from "./UserManagement.Interfaces";
-import {
+  CallflowWrapper,
+  TritonUsersViewWrapper,
   UserAction,
+  View,
+  views,
   WorkerOpts
-} from "../OnboardNewUser/UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
+} from "../";
 import {
   UserEntryForm,
-  TritonUserManagementWrapper,
   Dropdown
 } from "components";
 import {
@@ -71,7 +69,7 @@ const UserManagementWrapper = () => {
           workerOpts={selectedWorkerOpts}
           setWorkerOpts={setSelectedWorkerOpts}
         />}
-        {view === views.TRITON_USERS && <TritonUserManagementWrapper
+        {view === views.TRITON_USERS && <TritonUsersViewWrapper
           setView={setView}
           workerOpts={selectedWorkerOpts}
           setWorkerOpts={setSelectedWorkerOpts}
