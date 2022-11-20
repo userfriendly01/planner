@@ -11,7 +11,7 @@ import {
 import {
   formatE164PhoneNumber,
   removeNonNumericCharacters
-} from "utils";
+} from "./formatNumberUtils";
 import { views } from "components/tabs/usermanagement/UserManagementWrapper/UserManagement.Interfaces";
 
 // For a DID user, the outgoing number is tied to the directDialNum, if you change one you must change both in order for the form to be valid

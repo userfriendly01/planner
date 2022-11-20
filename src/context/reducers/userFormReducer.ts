@@ -5,13 +5,12 @@ import {
 } from "../../globals";
 import { UserFormState } from "components/tabs/usermanagement/OnboardNewUser/UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 import { ExtensionSearchStatuses } from "components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionInput/ExtensionInput.Interfaces";
-import {
-  formatE164PhoneNumber,
-  calabrioTimeZones,
-  getValidSkillsObject,
-  getZeroOutEnabledFromProfile
-} from "utils";
 import { SearchParams } from "components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionSearchParams";
+import { formatE164PhoneNumber } from "utils/formatNumberUtils";
+import { calabrioTimeZones } from "utils/calabrioUtils";
+import { getValidSkillsObject } from "utils/skillsUtils";
+import { getZeroOutEnabledFromProfile } from "utils/userManagementUtils";
+
 const searchParams = SearchParams.getValues();
 
 export const userFormActions = {

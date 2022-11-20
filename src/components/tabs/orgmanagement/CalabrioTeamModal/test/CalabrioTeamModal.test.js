@@ -1,4 +1,3 @@
-import React from "react";
 import CalabrioTeamModal from "../CalabrioTeamModal";
 import { CloseButton } from "../CalabrioTeamModal.Styles";
 import { TextField } from "@mui/material";
@@ -12,6 +11,7 @@ import {
   useAdminState,
   useAdminDispatch
 } from "context";
+import React from "react";
 import { createCalabrioTeam } from "services";
 import {
   act,
