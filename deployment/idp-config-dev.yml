@@ -1,6 +1,0 @@
-idp:
-  type: oauth
-  resources:
-    # client configuration
-    - type: client
-      name: cicctsoftphoneadminui

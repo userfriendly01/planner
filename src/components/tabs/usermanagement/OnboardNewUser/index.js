@@ -1,9 +1,9 @@
 export { default as CallRecordingForm } from "./CallRecording/CallRecordingForm";
 export { default as DeleteTritonUser } from "./DeleteTritonUser/DeleteTritonUser";
-export { default as BasicFormInfo } from "./TritonFields/BasicFormInfo";
-export { default as DidFormInfo } from "./TritonFields/DidFormInfo";
-export { default as ForwardToEntryForm } from "./TritonFields/ForwardToEntryForm";
-export { default as SkillsFormInfo } from "./Skills/SkillsFormInfo";
+export { default as BasicFormInfo } from "./BasicFormInfo/BasicFormInfo";
+export { default as DidFormInfo } from "./DidFormInfo/DidFormInfo";
+export { default as ForwardToEntryForm } from "./DidFormInfo/ForwardToEntryForm";
+export { default as SkillsFormInfo } from "./Skills/SkillsFormInfo/SkillsFormInfo";
 export { default as SkillDropDown } from "./Skills/SkillDropDown/SkillDropDown";
 export { default as PriorityDropDown } from "./Skills/PriorityDropDown/PriorityDropDown";
 export { default as DefaultSkillSelector } from "./Skills/DefaultSkillSelector/DefaultSkillSelector";

@@ -3,7 +3,7 @@ import {
   Manager,
   formModes
 } from "../../globals";
-import { UserFormState } from "components/tabs/usermanagement/OnboardNewUser/UserEntryFormWrapper.Interfaces";
+import { UserFormState } from "components/tabs/usermanagement/OnboardNewUser/UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 import { ExtensionSearchStatuses } from "components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionInput/ExtensionInput.Interfaces";
 import {
   formatE164PhoneNumber,

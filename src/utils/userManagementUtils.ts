@@ -7,7 +7,7 @@ import {
 import {
   UserFormState,
   WorkerOpts
-} from "components/tabs/usermanagement/OnboardNewUser/UserEntryFormWrapper.Interfaces";
+} from "components/tabs/usermanagement/OnboardNewUser/UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 import {
   formatE164PhoneNumber,
   removeNonNumericCharacters

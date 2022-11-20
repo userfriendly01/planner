@@ -1,4 +1,4 @@
-import { WorkerOpts } from "../UserEntryFormWrapper.Interfaces";
+import { WorkerOpts } from "../UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 
 export interface DeleteTritonUserProps {
   handleClose: () => void,

@@ -1,4 +1,4 @@
-import { UserFormButtonsProps } from "../UserEntryFormWrapper.Interfaces";
+import { UserFormButtonsProps } from "../UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 import {
   ButtonWrapper,
   UserFormButton

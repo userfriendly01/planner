@@ -7,7 +7,7 @@ import {
 import {
   UserAction,
   WorkerOpts
-} from "../OnboardNewUser/UserEntryFormWrapper.Interfaces";
+} from "../OnboardNewUser/UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 import {
   UserEntryForm,
   TritonUserManagementWrapper,
