@@ -24,7 +24,19 @@ import {
   getAccessToken,
   getGraphQLEndpoint
 } from "utils";
-createTheme("gridTheme", { ...GridTheme }, "gridTheme");
+import CustomToast from "../../../core/CustomToast/CustomToast";
+import AddFlow from "../CustomActions/AddFlow/AddFlow";
+import { CctSharedCallFlowDb } from "../AlohaFlow.Interfaces";
+import "./Grid.scss";
+import FlowGridColumnDef from "./GridColumnDef";
+import {
+  clearGridMasterData,getGridMasterData
+} from "./GridMaster";
+import GridSpinner from "./GridSpinner";
+import CustomFlowGridToolBar from "../CustomActions/CustomFlowGridToolBar";
+import AdvanceSearchFlow from "../CustomActions/AdvanceSearch/AdvanceSearch";
+const CACHE_FILTER_FLOW = "SEARCH_FILTER_FLOW";
+
 const DataGridFlow = () => {
   const accessToken: string = getAccessToken();
   const graphQlApiUrl: string = getGraphQLEndpoint();
@@ -32,6 +44,7 @@ const DataGridFlow = () => {
     data: [],
     filteredItems: [],
     advanceFilter: [],
+    masterData: [],
     fetching: true,
     selectedRow: undefined,
     isEditModalOpen: false,
@@ -90,6 +103,13 @@ const DataGridFlow = () => {
     }));
   };
 
+  const handleSearchDDChange = (event: any) => {
+    setDataFlow(dataFlowProps=> ({
+      ...dataFlowProps,
+      [event.target.name]: event.target.value
+    }));
+  };
+
   const openAddModal = (flag: boolean, ruleType?: number) => {
     if (!flag && ruleType) {
       setAlertBar(alertBarProps => ({
@@ -103,6 +123,93 @@ const DataGridFlow = () => {
     setDataFlow(dataFlowProps => ({
       ...dataFlowProps,
       isAddModalOpen: flag
+    }));
+  };
+
+  const openAdvanceSearchModal = (flag:boolean, advanceFilter?:any)=> {
+    console.log("advance", dataFlow?.advanceFilter);
+    if (advanceFilter) {
+      localStorage.setItem(CACHE_FILTER_FLOW, JSON.stringify(dataFlow?.advanceFilter));
+      setDataFlow(dataFlowProps => ({
+        ...dataFlowProps,
+        "advanceFilter": advanceFilter
+      }));
+    }
+    setDataFlow(dataFlowProps => ({
+      ...dataFlowProps,
+      "isAdvanceSearchModalOpen": flag
+    }));
+  };
+
+  const getAdvanceFilter = () => {
+    let advanceFilter: { [key: string]: string|number; };
+    try {
+      const cachedFilter:any = localStorage.getItem(CACHE_FILTER_FLOW);
+      advanceFilter = JSON.parse(cachedFilter) || {};
+      Object.keys(advanceFilter).forEach(key => {
+        if (advanceFilter[key] === "") {
+          delete advanceFilter[key];
+        }
+      });
+    } catch (e) {
+      advanceFilter = {};
+    }
+    return advanceFilter;
+  };
+
+  const filterRecords =()=> {
+    const {
+      data, idStart, idEnd
+    } = dataFlow;
+    const result = data.filter(
+      (item:any) => item.id >= idStart && item.id <= idEnd
+    );
+    console.log("result", result);
+    const advanceFilter = getAdvanceFilter();
+    const advanceFilterLength = Object.keys(advanceFilter).length;
+    if (advanceFilterLength > 0) {
+      let advanceFilteredArray: any[];
+      result.forEach(item=> {
+        let matched = 0;
+        Object.keys(advanceFilter).forEach(key => {
+          let tempItem = item;
+          if (key === "callFlowRoute") {
+            tempItem = tempItem.content;
+          }
+          if (key === "pkey" && tempItem) {
+            if (tempItem[key].includes(advanceFilter[key])) {
+              matched += 1;
+            }
+          } else if (tempItem && tempItem[key] === advanceFilter[key]) {
+            matched += 1;
+          }
+        });
+        if (advanceFilterLength === matched) {
+          advanceFilteredArray.push(item);
+        }
+      });
+      setDataFlow(dataFlowProps => ({
+        ...dataFlowProps,
+        "filteredItems": advanceFilteredArray
+      }));
+    } else {
+      setDataFlow(dataFlowProps => ({
+        ...dataFlowProps,
+        "filteredItems": result
+      }));
+    }
+  };
+
+  const resetFilterRecords =()=> {
+    const  data:any = dataFlow["data"];
+    const maxId = data[data.length - 1].id;
+    setDataFlow((dataFlowProps:any) => ({
+      ...dataFlowProps,
+      "filteredItems": data,
+      "idStart": data[0].id,
+      "idEnd": maxId,
+      "maxId": maxId,
+      "advanceFilter": {}
     }));
   };
 
@@ -133,7 +240,7 @@ const DataGridFlow = () => {
       const masterData = getGridMasterData(result);
       setDataFlow(dataFlowProps => ({
         ...dataFlowProps,
-        masterData: masterData
+        "masterData": masterData
       }));
     } else {
       setDataFlow((dataFlowProps: any) => ({
@@ -155,6 +262,7 @@ const DataGridFlow = () => {
     <div className="data-grid-wrapper">
       <div className="data-grid-wrapper">
         <div className="data-grid-wrapper">
+<<<<<<< Updated upstream
           <DataTable
             actions={
               <GridTopHeader
@@ -162,6 +270,29 @@ const DataGridFlow = () => {
                 handleFilterInputChange={handleFilterInputChange}
                 openAddModal={openAddModal}
               />
+=======
+          <CustomFlowGridToolBar
+            openAddModal = {openAddModal}
+            openAdvanceSearchModal={openAdvanceSearchModal} ></CustomFlowGridToolBar>
+          <DataGrid
+            rows={dataFlow.filteredItems}
+            columns={FlowGridColumnDef}
+            page={dataFlow.page}
+            pageSize={dataFlow.perPage}
+            onPageChange={(newPage: number) => setPage(newPage)}
+            onPageSizeChange={(newPageSize: number) => setPerPage(newPageSize)}
+            rowsPerPageOptions={[5, 10, 20, 50, 100]}
+            paginationMode="client"
+            pagination
+            loading={dataFlow.fetching}
+            checkboxSelection
+            autoHeight
+            components={
+              {
+                Toolbar: GridToolbar,
+                LoadingOverlay: GridSpinner
+              }
+>>>>>>> Stashed changes
             }
             columns={GridColumnDef}
             customStyles={GridStyle}
@@ -212,20 +343,20 @@ const DataGridFlow = () => {
           }}
         />*/}
 
-      {/*<AdvanceSearchModal
-          isOpen={dataFlow["isAdvanceSearchModalOpen"]}
-          className="data-grid-modal"
-          selection={dataFlow["advanceFilter"]}
-          openModal={openAdvanceSearchModal}
-          handleChange={handleSearchDDChange}
-          masterData={dataFlow["masterData"]}
-          applyFilter={filterRecords}
-          resetMasterData={clearGridMasterData}
-          onClose={() => {
-            openAdvanceSearchModal(false);
-            return true;
-          }}
-        />*/}
+      <AdvanceSearchFlow
+        isOpen={dataFlow.isAdvanceSearchModalOpen}
+        className="data-grid-modal"
+        selection={dataFlow.advanceFilter}
+        openModal={openAdvanceSearchModal}
+        handleChange={handleSearchDDChange}
+        masterData={dataFlow.masterData}
+        applyFilter={filterRecords}
+        resetMasterData={clearGridMasterData}
+        onClose={() => {
+          openAdvanceSearchModal(false);
+          return true;
+        }}
+      />
 
       <CustomToast
         open={alertBar.open}
@@ -238,3 +369,7 @@ const DataGridFlow = () => {
 };
 
 export default DataGridFlow;
+function CACHE_FILTER_FLOW(CACHE_FILTER_FLOW: any, arg1: string) {
+  throw new Error("Function not implemented.");
+}
+
