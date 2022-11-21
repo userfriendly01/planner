@@ -1,24 +1,24 @@
 interface FlowContent {
-    callerType: String
-    callFlowRoute: String
-    dataRequests: [String]
-    greetingMessages: String
-    languageOffer: String
-    transferNumber: String
+    callerType: string
+    callFlowRoute: string
+    dataRequests: [string]
+    greetingMessages: string
+    languageOffer: string
+    transferNumber: string
 }
 
 interface DRCFlow {
-    accountManager: String;
-    affinityVDN: String;
-    keycode: String;
-    transferCode: String;
-    internetPlacement: String;
-    internetType: String;
-    campaignType: String;
-    lineOfBusiness: String;
-    marketingChannel: String;
-    whisper: String;
-    requestID: String;
+    accountManager: string;
+    affinityVDN: string;
+    keycode: string;
+    transferCode: string;
+    internetPlacement: string;
+    internetType: string;
+    campaignType: string;
+    lineOfBusiness: string;
+    marketingChannel: string;
+    whisper: string;
+    requestID: string;
 }
 
 export interface FlowAdvanceFilter {
@@ -32,16 +32,16 @@ export interface FlowAdvanceFilter {
 }
 export interface CctSharedCallFlowDb {
     id:number,
-    pkey: String;
-    agentId?: String;
-    brand?: String;
-    callFlowTemplate?: String;
-    channel?: String;
+    pkey: string;
+    agentId?: string;
+    brand?: string;
+    callFlowTemplate?: string;
+    channel?: string;
     content?: FlowContent;
-    createTime?: String;
-    dialedDescription?: String;
-    employeeId?: String;
-    userDestination?: String;
+    createTime?: string;
+    dialedDescription?: string;
+    employeeId?: string;
+    userDestination?: string;
     DRC?: DRCFlow;
 }
 
@@ -61,4 +61,39 @@ export interface FlowInitState {
     page?: number;
     perPage?: number;
     advanceFilter?: Array<FlowAdvanceFilter>
+}
+
+export interface FlowKeys{
+    pkey?: string,
+    dialedDescription?: string,
+    callFlowTemplate?: string,
+    channel?: string,
+    brand?: string,
+    languageOffer?: string,
+    dataRequests: [string],
+    callerType: string,
+    transferNumber: string,
+    callFlowRoute: string,
+    greetingMessages: string,
+    agentId: string,
+    employeeId: string,
+    accountManager: string,
+    affinityVDN: string,
+    keycode: string,
+    transferCode: string,
+    internetPlacement: string,
+    internetType: string,
+    campaignType: string,
+    lineOfBusiness: string,
+    marketingChannel: string,
+    whisper: string,
+    requestID: string,
+    userDestination: string
+}
+
+export interface dropDownList{
+    brand: string[],
+    channel: string[],
+    languageOffer: string[],
+    userDestination: string[]
 }

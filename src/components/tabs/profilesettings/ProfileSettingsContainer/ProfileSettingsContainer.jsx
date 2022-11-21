@@ -31,7 +31,7 @@ import {
 import { ProfileEntryForm } from "components";
 
 const ProfileSettingsContainer = () => {
-  const [ view, setView ] = React.useState(profileSettingsViews[0]);
+  const [view, setView] = React.useState(profileSettingsViews[0]);
 
   const initialProfileState = {
     dialList: [],
@@ -47,7 +47,7 @@ const ProfileSettingsContainer = () => {
   const [profileSettingsState, setProfileSettingsState] = useState(initialProfileState);
   const [profileModalState, setProfileModalState] = useState(initialProfileModalState);
 
-  const profilesFromContextMinusGoP = useAdminState().profileContext.profiles.filter(({ profile_id }) => profile_id !== 0);
+  const profilesFromContext = useAdminState().profileContext.profiles;
   const loggedInRepNNumber = useAdminState().userContext.pingIdentity.sub;
 
   const fetchProfileInformation = profileId => {
@@ -85,7 +85,7 @@ const ProfileSettingsContainer = () => {
     open: true
   });
 
-  return(
+  return (
     <ProfileEntryFormStateProvider>
       <ProfileSettingsContainerDiv>
         <Modal onClose={() => { return; }} open={profileModalState.open}>
@@ -112,7 +112,7 @@ const ProfileSettingsContainer = () => {
             ?
             <div>
               <ProfileDropDown
-                availableProfiles={profilesFromContextMinusGoP}
+                availableProfiles={profilesFromContext}
                 profileId={profileId}
                 updateProfile={fetchProfileInformation}
               />
@@ -158,7 +158,7 @@ const ProfileSettingsContainer = () => {
                   : null
               }
               <ProfileSettingsTable
-                profileList={profilesFromContextMinusGoP}
+                profileList={profilesFromContext}
                 loggedInRep={loggedInRepNNumber}
                 setProfileModalState={setProfileModalState}
               />
