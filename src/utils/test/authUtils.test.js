@@ -61,18 +61,18 @@ describe("adminUtils", () => {
   describe("checkIfPO", () => {
     describe("n# is a GOP PO", () => {
       test("should return true for n0183277", () => {
-        expect(checkIfPO('n0183277')).toBe(true);
+        expect(checkIfPO("n0183277")).toBe(true);
       });
       test("should return true for n0116796", () => {
-        expect(checkIfPO('n0116796')).toBe(true);
+        expect(checkIfPO("n0116796")).toBe(true);
       });
       test("should return true for N0116796", () => {
-        expect(checkIfPO('N0116796')).toBe(true);
+        expect(checkIfPO("N0116796")).toBe(true);
       });
     });
     describe("n# is not a GOP PO", () => {
       test("should return false", () => {
-        expect(checkIfPO('n0288362')).toBe(false);
+        expect(checkIfPO("n0288362")).toBe(false);
       });
     });
   });

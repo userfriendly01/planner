@@ -73,7 +73,7 @@ describe("formatWorkerResponse", () => {
     const unformattedResponseCapNNumber = [
       {
         attributes: {
-          manager_n_number: "N1111111",
+          manager_n_number: "N1111111"
         },
         workerSid: "WK8b0da13d2eca675babceedb76d7a15eb"
       }
@@ -81,7 +81,7 @@ describe("formatWorkerResponse", () => {
     const formattedWorker = [
       {
         attributes: {
-          manager_n_number: "n1111111",
+          manager_n_number: "n1111111"
         },
         sid: "WK8b0da13d2eca675babceedb76d7a15eb",
         skillsDifferent: false
