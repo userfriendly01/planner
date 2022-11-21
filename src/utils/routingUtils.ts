@@ -11,10 +11,6 @@ export const CACHED_CALL_ROUTING_PER_PAGE: string = "CALL_ROUTING_PER_PAGE";
 
 export const numbersOnlyFields: string[] = ["percentOfCallers"];
 
-export const mandatoryFields: string[] = [
-    "channel", "brand", "callerType", "callIntent", "callerState", "dayOfWeek", "startTime", "endTime", "percentOfCallers", "policyType",
-];
-
 export const emptyInitFields: string[] = ["transferMessage", "twilioSkill", "dayOfWeek", "transferDestination"];
 
 export const dayOfWeek: string[] = ["ALL", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY", "WEEKDAY", "WEEKEND", "HOLIDAY"];
@@ -50,7 +46,8 @@ export const routeFields: AddRoutingFieldConfigProps[] = [
     {
         label: "ID",
         key: "id",
-        control: "input"
+        control: "input",
+        required: true
     },
     {
         label: "Partition Key",
@@ -69,31 +66,37 @@ export const routeFields: AddRoutingFieldConfigProps[] = [
         label: "Brand",
         key: "brand",
         control: "select",
+        required: true
     },
     {
         label: "Caller State",
         key: "callerState",
-        control: "input"
+        control: "input",
+        required: true
     },
     {
         label: "Caller Type",
         key: "callerType",
-        control: "input"
+        control: "input",
+        required: true
     },
     {
         label: "Call Intent",
         key: "callIntent",
-        control: "input"
+        control: "input",
+        required: true
     },
     {
         label: "Channel",
         key: "channel",
         control: "select",
+        required: true
     },
     {
         label: "Day Of Week",
         key: "dayOfWeek",
         control: "select",
+        required: true
     },
     {
         label: "Transfer Destination",
@@ -113,22 +116,26 @@ export const routeFields: AddRoutingFieldConfigProps[] = [
     {
         label: "Percent Of Callers",
         key: "percentOfCallers",
-        control: "input"
+        control: "input",
+        required: true
     },
     {
         label: "Start Time - EST",
         key: "startTime",
         control: "timePicker",
+        required: true
     },
     {
         label: "End Time",
         key: "endTime",
         control: "timePicker",
+        required: true
     },
     {
         label: "Policy Type",
         key: "policyType",
         control: "select",
+        required: true
     },
     {
         label: "Transfer Message",

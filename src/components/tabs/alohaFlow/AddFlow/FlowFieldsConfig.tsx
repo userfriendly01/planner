@@ -1,13 +1,5 @@
 import { AddFlowFieldsConfigProps } from "../AlohaFlow.Interfaces";
 
-const mandatoryFields: string[] = [
-  "brand",
-  "channel",
-  "dataRequests",
-  "dialedDescription",
-  "pkey"
-];
-
 const flowFields: AddFlowFieldsConfigProps[] = [
   {
     label: "Dialed Phone Number",
@@ -153,6 +145,5 @@ const initRule: any = flowFields.reduce((a, v) => ({
 
 export {
   flowFields,
-  initRule,
-  mandatoryFields
+  initRule
 };

@@ -1,18 +1,20 @@
+import React, { useState } from "react";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import React, { useState } from "react";
 
-interface CustomFlowGridToolBarProps {
-  openAddModal: (flag: boolean, ruleType?: number) => void;
+
+interface CustomRoutingGridToolBarProps {
+  openAddModal: (flag: boolean) => void;
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const CustomFlowGridToolBar = ({ openAddModal }: CustomFlowGridToolBarProps) => {
-  const [dropDownOptions, setDropDownOptions] = useState({ "addFlow": false });
+export const CustomFlowRoutingToolBar = ({ openAddModal }: CustomRoutingGridToolBarProps) => {
+
+  const [dropDownOptions, setDropDownOptions] = useState({ "addRouting": false });
+
   const handleChange = (event: any) => {
-    if (event.target.value === "addFlow") {
+    if (event.target.value === "addRouting") {
       openAddModal(true);
     }
 
@@ -37,8 +39,8 @@ const CustomFlowGridToolBar = ({ openAddModal }: CustomFlowGridToolBarProps) => 
           variant="outlined"
           size="small"
         >
-          <MenuItem key="addFlow" value="addFlow">
-            Add Flow +
+          <MenuItem key="addRouting" value="addRouting">
+            Add Routing +
           </MenuItem>
           <MenuItem key="Filter" value="Filter">
             Advance Search
@@ -49,5 +51,3 @@ const CustomFlowGridToolBar = ({ openAddModal }: CustomFlowGridToolBarProps) => 
     </div>
   );
 };
-
-export default CustomFlowGridToolBar;

@@ -88,5 +88,5 @@ export interface AddRoutingModalProps {
     isOpen: boolean;
     newId: number;
     onClose: (flag: boolean) => void;
-    openModal: (flag: boolean, flagType: string) => void;
+    openModal: (flag: boolean) => void;
 }

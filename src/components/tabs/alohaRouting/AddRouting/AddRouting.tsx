@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "@lmig/lmds-react-modal";
-import { Heading } from "@lmig/lmds-react-typography";
+import { Modal, ModalHeader } from "@lmig/lmds-react-modal";
 import { routingDropDownList, getAccessToken, getGraphQLEndpoint, routingInitRule, routeFields } from "utils";
 import { getGridMasterData } from "../DataGridRouting/GridMaster";
 import { retrieveRoutingData, addRoutingRule } from "services"
 import { CctSharedCallRoutingGlobalDb, RoutingMasterData, RoutingDropDownList, RoutingInitRule, AddRoutingModalProps } from "../AlohaRouting.Interfaces";
 import ComponentControl from "../../../core/SharedComponents/ComponentControl";
+import { ModalBodyStyled, ModalFooterStyled, HeadingStyled } from "../AlohaRouting.Styles";
 
 
 
@@ -70,7 +70,7 @@ export const AddRouting = (props: AddRoutingModalProps) => {
         if (isValidForm) {
             addRoutingRule(routingRule, accessToken, graphQlApiUrl).then((apiResponse) => {
                 if (!apiResponse.errors) {
-                    openModal(false, 'ADD_ROUTE_RULE');
+                    openModal(false);
                     setRoutingRule({ ...routingInitRule });
                     return true;
                 }
@@ -90,6 +90,10 @@ export const AddRouting = (props: AddRoutingModalProps) => {
         return timePicked.toISOString();
     };
 
+    const removeAllWhiteSpace = (value: string): string => {
+        return value.split(" ").join("")
+    }
+
     const handleInputChange = (event: any, key: string, disableEdit: boolean) => {
         let value: string;
         let skey: string;
@@ -102,25 +106,25 @@ export const AddRouting = (props: AddRoutingModalProps) => {
             value = event.target.value;
         }
 
-        if (key === 'callIntent' && value) {
-            value = value.replace(' ', '').toLowerCase();
-        }
-
         if (key === 'channel' && value) {
-            skey = routingRule.brand ? `${routingRule.brand}__` : '__';
+            skey = routingRule.brand.value ? `${routingRule.brand.value}__` : '__';
             skey += `${value}__${newId}`;
         }
 
         if (key === 'brand' && value) {
             skey = `${value}__`;
-            skey += routingRule.channel ? `${routingRule.channel}__${newId}` : `__${newId}`;
-        }
-
-        if (skey) {
-            value = skey.replace(' ', '').toLocaleLowerCase();
+            skey += routingRule.channel.value ? `${routingRule.channel.value}__${newId}` : `__${newId}`;
         }
 
         const newRoutingRule: RoutingInitRule = { [key]: { value } };
+
+        if (skey) {
+            newRoutingRule["skey"] = { value: removeAllWhiteSpace(skey).toLocaleLowerCase() };
+        }
+
+        if (key === 'callIntent' && value) {
+            newRoutingRule["pkey"] = { value: removeAllWhiteSpace(value).toLowerCase() };
+        }
 
         setRoutingRule((rule: RoutingInitRule) => ({
             ...rule,
@@ -129,68 +133,67 @@ export const AddRouting = (props: AddRoutingModalProps) => {
     }
 
     return (
-        <div>
-            <Modal
-                size="large"
-                className="route-table-modal-wrapper"
-                takeover={['base', 'sm', 'md', 'lg']}
-                isOpen={isOpen}
-                onClose={() => {
-                    resetRoutingRule();
-                }}
-            >
-                <ModalHeader><Heading type="h4-light">{`Add Routing Rule (Rule ID #${newId})`}</Heading></ModalHeader>
-                <ModalBody className="route-table-modal-body">
-                    <Grid container rowSpacing={3}>
-                        {
-                            routeFields.map(({
-                                label, key, control, required = false, disableEdit = false
-                            }) => {
-                                let dropDownOptions: string[] = [];
-                                if (control === 'select') {
-                                    dropDownOptions = dropDownValues[key as keyof RoutingDropDownList];
-                                }
+        <Modal
+            size="large"
+            className="route-table-modal-wrapper"
+            takeover={['base', 'sm', 'md', 'lg']}
+            isOpen={isOpen}
+            onClose={() => {
+                resetRoutingRule();
+            }}
+        >
+            <ModalHeader><HeadingStyled type="h4-light">{`Add Routing Rule (Rule ID #${newId})`}</HeadingStyled></ModalHeader>
+            <ModalBodyStyled>
+                <Grid container rowSpacing={3}>
+                    {
+                        routeFields.map(({
+                            label, key, control, required = false, disableEdit = false
+                        }) => {
+                            let dropDownOptions: string[] = [];
+                            if (control === 'select') {
+                                dropDownOptions = dropDownValues[key as keyof RoutingDropDownList];
+                            }
 
-                                return (
-                                    <Grid key={key} item xs={4}>
-                                        <ComponentControl
-                                            control={control}
-                                            name={key}
-                                            label={label}
-                                            type="text"
-                                            value={routingRule[key].value}
-                                            error={routingRule[key].error}
-                                            disabled={disableEdit}
-                                            dropDownOptions={dropDownOptions}
-                                            onChange={(event: any) => handleInputChange(event, key, disableEdit)}
-                                            required={required}
-                                        />
-                                    </Grid>
-                                );
-                            })
-                        }
-                    </Grid>
-                </ModalBody>
-                <ModalFooter className="flow-modal-footer">
-                    <Button
-                        type="submit"
-                        value="Save"
-                        variant="contained"
-                        color="primary"
-                        sx={{ marginRight: 2 }}
-                        onClick={() => handleOnCreateRoute()}
-                    >
-                        Create Rule
-                    </Button>
-                    <Button
-                        value="Cancel"
-                        variant="outlined"
-                        color="primary"
-                        onClick={() => resetRoutingRule()}
-                    >
-                        Cancel
-                    </Button>
-                </ModalFooter>
-            </Modal>
-        </div>)
+                            return (
+                                <Grid key={key} item xs={4}>
+                                    <ComponentControl
+                                        control={control}
+                                        name={key}
+                                        label={label}
+                                        type="text"
+                                        value={routingRule[key].value}
+                                        error={routingRule[key].error}
+                                        disabled={disableEdit}
+                                        dropDownOptions={dropDownOptions}
+                                        onChange={(event: any) => handleInputChange(event, key, disableEdit)}
+                                        required={required}
+                                    />
+                                </Grid>
+                            );
+                        })
+                    }
+                </Grid>
+            </ModalBodyStyled>
+            <ModalFooterStyled className="flow-modal-footer">
+                <Button
+                    type="submit"
+                    value="Save"
+                    variant="contained"
+                    color="primary"
+                    sx={{ marginRight: 2 }}
+                    onClick={() => handleOnCreateRoute()}
+                >
+                    Create Rule
+                </Button>
+                <Button
+                    value="Cancel"
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => resetRoutingRule()}
+                >
+                    Cancel
+                </Button>
+            </ModalFooterStyled>
+        </Modal>
+    )
 }
