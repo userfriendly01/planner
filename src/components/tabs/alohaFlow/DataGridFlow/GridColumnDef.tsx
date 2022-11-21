@@ -1,104 +1,117 @@
-import { CctSharedCallFlowDb } from "../AlohaFlow.Interfaces";
-const GridColumnDef = [
-  {
-    name: "Dialed#",
-    selector: (row:any) => row.pkey,
-    sortable: true
-  },
-  {
-    name: "Description",
-    selector: (row:any) => row.dialedDescription,
-    sortable: true,
-    reorder: true
-  },
-  {
-    name: "Template",
-    selector: (row:any) => row.callFlowTemplate,
-    sortable: true,
-    reorder: true
-  },
-  {
-    name: "Channel",
-    selector: (row:any) => row.channel,
-    sortable: true,
-    reorder: true
-  },
-  {
-    name: "Brand",
-    selector: (row:any) => row.brand,
-    sortable: true,
-    reorder: true
-  },
-  {
-    name: "Language Offer",
-    selector: (row:any) => row.content?.languageOffer,
-    sortable: true,
-    reorder: true
-  },
-  {
-    name: "Data Requests",
-    selector: (row:any) => {
-      if (row.content?.dataRequests) {
-        return row.content?.dataRequests?.join(",");
-      }
+import { GridColDef } from "@mui/x-data-grid";
 
-      return "";
-    },
+export const FlowGridColumnDef: GridColDef[] = [
+  {
+    headerName: "Dialed",
+    field: "pkey",
     sortable: true,
-    reorder: true
+    width: 110,
+    align: "left"
   },
   {
-    name: "Caller Type",
-    selector: (row:any) => row.content?.callerType,
+    headerName: "Description",
+    field: "dialedDescription",
     sortable: true,
-    reorder: true,
-    grow: 2
+    width: 110,
+    align: "left"
   },
   {
-    name: "Transfer#",
-    selector: (row:any) => row.content?.transferNumber,
+    headerName: "Template",
+    field: "callFlowTemplate",
     sortable: true,
-    reorder: true
+    width: 110,
+    align: "left"
   },
   {
-    name: "Route",
-    selector: (row:any) => row.content?.callFlowRoute,
+    headerName: "Channel",
+    field: "channel",
     sortable: true,
-    reorder: true,
-    grow: 2
+    width: 110,
+    align: "left"
   },
   {
-    name: "Greeting",
-    selector: (row:any) => row.content?.greetingMessages,
+    headerName: "Brand",
+    field: "brand",
     sortable: true,
-    reorder: true
+    width: 110,
+    align: "left"
   },
   {
-    name: "Agent ID",
-    selector: (row:any) => row.agentId,
+    headerName: "Language Offer",
+    field: "languageOffer",
     sortable: true,
-    reorder: true
+    width: 110,
+    align: "left",
+    valueGetter: params=>`${params.row.content?.languageOffer || ""}`
   },
   {
-    name: "Employee ID",
-    selector: (row:any) => row.employeeId,
-    sortable: false,
-    reorder: true,
-    grow: 3
-  },
-  {
-    name: "Create Time",
-    selector: (row:any) => row.createTime,
-    sortable: false,
-    reorder: true,
-    grow: 3
-  },
-  {
-    name: "User Destination",
-    selector: (row:any) => row.userDestination,
+    headerName: "Data Requests",
+    field: "dataRequests",
     sortable: true,
-    reorder: true
+    width: 110,
+    align: "left",
+    valueGetter: params=>`${params.row.content?.dataRequests || ""}`
+  },
+  {
+    headerName: "Caller Type",
+    field: "callerType",
+    sortable: true,
+    width: 110,
+    align: "left",
+    valueGetter: params=>`${params.row.content?.callerType || ""}`
+  },
+  {
+    headerName: "Transfer#",
+    field: "transferNumber",
+    sortable: true,
+    width: 110,
+    align: "left",
+    valueGetter: params=>`${params.row.content?.transferNumber || ""}`
+  },
+  {
+    headerName: "Route",
+    field: "callFlowRoute",
+    sortable: true,
+    width: 110,
+    align: "left",
+    valueGetter: params=>`${params.row.content?.callFlowRoute || ""}`
+  },
+  {
+    headerName: "Greeting",
+    field: "greetingMessages",
+    sortable: true,
+    width: 110,
+    align: "left",
+    valueGetter: params=>`${params.row.content?.greetingMessages || ""}`
+  },
+  {
+    headerName: "Agent Id",
+    field: "agentId",
+    sortable: true,
+    width: 110,
+    align: "left"
+  },
+  {
+    headerName: "Employee ID",
+    field: "employeeId",
+    sortable: true,
+    width: 110,
+    align: "left"
+  },
+  {
+    headerName: "Create Time",
+    field: "createTime",
+    sortable: true,
+    width: 110,
+    align: "left"
+  },
+  {
+    headerName: "User Destination",
+    field: "userDestination",
+    sortable: true,
+    width: 110,
+    align: "left"
   }
 ];
 
-export default GridColumnDef;
+export default FlowGridColumnDef;

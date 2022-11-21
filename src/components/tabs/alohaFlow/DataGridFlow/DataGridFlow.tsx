@@ -4,27 +4,27 @@
    react/jsx-props-no-spreading
 */
 
-import "./Grid.scss";
-import DataTable, { createTheme } from "react-data-table-component";
+import {
+  DataGrid,
+  GridToolbar
+} from "@mui/x-data-grid";
 import React, {
-  useState,
-  useEffect
+  useEffect, useState
 } from "react";
-import { getGridMasterData } from "./GridMaster";
-import GridColumnDef from "./GridColumnDef";
-import GridSpinner from "./GridSpinner";
-import { GridStyle } from "./GridStyle";
-import GridTheme from "./GridTheme";
-import GridTopHeader from "./GridTopHeader";
 import { retrieveFlowData } from "services";
-import CustomToast from "../../../core/CustomToast/CustomToast";
-import AddFlow from "../AddFlow/AddFlow";
-import { CctSharedCallFlowDb } from "../AlohaFlow.Interfaces";
 import {
   getAccessToken,
   getGraphQLEndpoint
 } from "utils";
-createTheme("gridTheme", { ...GridTheme }, "gridTheme");
+import CustomToast from "../../../core/CustomToast/CustomToast";
+import AddFlow from "../AddFlow/AddFlow";
+import { CctSharedCallFlowDb } from "../AlohaFlow.Interfaces";
+import "./Grid.scss";
+import FlowGridColumnDef from "./GridColumnDef";
+import { getGridMasterData } from "./GridMaster";
+import GridSpinner from "./GridSpinner";
+import CustomFlowGridToolBar from "./CustomFlowGridToolBar";
+
 const DataGridFlow = () => {
   const accessToken: string = getAccessToken();
   const graphQlApiUrl: string = getGraphQLEndpoint();
@@ -59,13 +59,6 @@ const DataGridFlow = () => {
       perPage: sessionStorage.getItem("CALL_FLOW_PER_PAGE") || 10
     }));
   }, []);
-
-  const handleFilterInputChange = (event: any) => {
-    setDataFlow(dataFlowProps => ({
-      ...dataFlowProps,
-      [event.target.name]: event.target.value
-    }));
-  };
 
   const setPage = (newPage: number) => {
     sessionStorage.setItem("CALL_FLOW_PAGE_NO", newPage.toString());
@@ -155,37 +148,31 @@ const DataGridFlow = () => {
     <div className="data-grid-wrapper">
       <div className="data-grid-wrapper">
         <div className="data-grid-wrapper">
-          <DataTable
-            actions={
-              <GridTopHeader
-                {...dataFlow}
-                handleFilterInputChange={handleFilterInputChange}
-                openAddModal={openAddModal}
-              />
-            }
-            columns={GridColumnDef}
-            customStyles={GridStyle}
-            data={dataFlow.filteredItems.slice(
-              (dataFlow.page - 1) * dataFlow.perPage,
-              dataFlow.page * dataFlow.perPage
-            )}
-            defaultSortFieldId={1}
-            highlightOnHover
-            expandableRows
-            onColumnOrderChange={(): void => console.log(GridColumnDef)}
+          <CustomFlowGridToolBar openAddModal = {openAddModal}></CustomFlowGridToolBar>
+          <DataGrid
+            rows={dataFlow.filteredItems}
+            columns={FlowGridColumnDef}
+            page={dataFlow.page}
+            pageSize={dataFlow.perPage}
+            onPageChange={(newPage: number) => setPage(newPage)}
+            onPageSizeChange={(newPageSize: number) => setPerPage(newPageSize)}
+            rowsPerPageOptions={[5, 10, 20, 50, 100]}
+            paginationMode="client"
             pagination
-            paginationServer
-            paginationDefaultPage={dataFlow.page}
-            paginationPerPage={dataFlow.perPage}
-            paginationTotalRows={dataFlow.filteredItems.length}
-            paginationRowsPerPageOptions={[10, 20, 50, 100]}
-            persistTableHead
-            pointerOnHover
-            progressComponent={<GridSpinner />}
-            progressPending={dataFlow.fetching}
-            theme="gridTheme"
-            onChangePage={(newPage: number) => setPage(newPage)}
-            onChangeRowsPerPage={(newPerPage: number) => setPerPage(newPerPage)}
+            loading={dataFlow.fetching}
+            checkboxSelection
+            autoHeight
+            components={
+              {
+                Toolbar: GridToolbar,
+                LoadingOverlay: GridSpinner
+              }
+            }
+            sx={{
+              "& .MuiDataGrid-columnHeaderTitle": {
+                fontWeight: 600
+              }
+            }}
           />
         </div>
       </div>
