@@ -58,3 +58,27 @@ export interface RoutingInitState {
     perPage?: number;
     masterData?: RoutingMasterData;
 }
+
+export interface RoutingDropDownList {
+    brand?: string[];
+    language?: string[];
+    dayOfWeek?: string[];
+    channel?: string[];
+    policyType?: string[];
+}
+
+export interface AddPageFieldConfigProps {
+    label: string;
+    key: string;
+    control: string;
+    required?: boolean;
+}
+
+export interface RoutingFormValidationProps {
+    error: boolean;
+    value: string;
+    required: boolean;
+}
+export interface RoutingInitRule {
+    [key: string]: RoutingFormValidationProps
+}
