@@ -9,6 +9,7 @@ import {
 } from "testUtils";
 import { profileEntryFormDispatch } from "context";
 import { ProfileEntryForm } from "components"
+import { getWorkerTaskInfo } from "services";
 
 jest.mock("context", () => ({
   __esModule: true,
@@ -31,6 +32,12 @@ describe("<ProfileSettingsTable />", () => {
     });
     jest.clearAllMocks();
     profileEntryFormDispatch.mockReturnValue(mockSetForm);
+    getWorkerTaskInfo.mockResolvedValue([{
+      profile_id: 1,
+      wrkr_tsk_info_id: 3,
+      display_nme: "Call Type",
+      options_id: 1
+    }]);
   });
 
   const validNid = "n0138110"
@@ -57,7 +64,7 @@ describe("<ProfileSettingsTable />", () => {
         data: [1]
       },
       acw_data_entry_i: {
-        data: [0]
+        data: [1]
       },
       manual_record_inbound_i: {
         data: [1]
@@ -65,7 +72,7 @@ describe("<ProfileSettingsTable />", () => {
       agent_assisted_pay_i: {
         data: [1]
       },
-      overflow_skill: "Overflow Skill",
+      overflow_skill: "Test Overflow Skill",
       policy_number_edit_i: {
         data: [0]
       },
@@ -74,54 +81,12 @@ describe("<ProfileSettingsTable />", () => {
       },
       click_to_dial_i: {
         data: [1]
-      },
-      activities: "[{\"id\": 1, \"name\": \"Offline\", \"availability\": 0}]"
-    },
-    {
-      profile_id: 2,
-      profile_nme: "Game of Gnomes",
-      recorded_i: {
-        data: [1]
-      },
-      auto_answd_i: {
-        data: [1]
-      },
-      pmt_prcsg_i: {
-        data: [1]
-      },
-      otbnd_recorded_i: {
-        data: [1]
-      },
-      acw_option_i: {
-        data: [1]
-      },
-      manual_recorded_i: {
-        data: [1]
-      },
-      acw_data_entry_i: {
-        data: [0]
-      },
-      manual_record_inbound_i: {
-        data: [1]
-      },
-      agent_assisted_pay_i: {
-        data: [1]
-      },
-      overflow_skill: "Overflow Skill 2",
-      policy_number_edit_i: {
-        data: [0]
-      },
-      voice_mail_transcription_i: {
-        data: [0]
-      },
-      click_to_dial_i: {
-        data: [0]
       },
       activities: "[{\"id\": 1, \"name\": \"Offline\", \"availability\": 0}]"
     }
   ];
 
-  describe("profile has entries in its profile list", () => {
+  describe("profile settings table", () => {
     test("should render correct column headers and number of rows", async () => {
       const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={validNid} setProfileModalState={setProfileModalState}/>)
       expect(rendered.getByText("ID", { selector: "th" })).toBeInTheDocument();
@@ -142,7 +107,7 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByText("Activities", { selector: "th" })).toBeInTheDocument();
       const tableRows = rendered.getAllByTestId("table-row");
       const tableHeaders = rendered.getAllByTestId("table-header");
-      expect(tableRows.length).toBe(2);
+      expect(tableRows.length).toBe(1);
       expect(tableHeaders.length).toBe(17);
     });
 
@@ -165,6 +130,13 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByLabelText("Enable click-to-dial/transfer from external application")).toBeInTheDocument();
       expect(rendered.getByLabelText("Profile Activities")).toBeInTheDocument();
     });
+
+    test("should render row data", async () => {
+      const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={validNid} setProfileModalState={setProfileModalState}/>)
+      expect(rendered.container).toHaveTextContent("1");
+      expect(rendered.container).toHaveTextContent("Game of Phones");
+      expect(rendered.container).toHaveTextContent("Test Overflow Skill");
+    });
   });
 
   describe("Edit icon", () => {
@@ -172,7 +144,7 @@ describe("<ProfileSettingsTable />", () => {
       const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={validNid} setProfileModalState={setProfileModalState}/>)
       const editButtons = rendered.getAllByTestId("edit-button");
       expectMockedComponent(rendered, { ProfileEntryForm }, 0);
-      const indexClicked = 1;
+      const indexClicked = 0;
       act(() => fireEvent.click(editButtons[indexClicked]));
       expect(setProfileModalState).toHaveBeenCalledWith({
         open: true
@@ -185,7 +157,20 @@ describe("<ProfileSettingsTable />", () => {
     });
     test("renders an edit icon per profile for a validNid", () => {
       const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={validNid} setProfileModalState={setProfileModalState}/>)
-      expect(rendered.queryAllByTestId("edit-button")).toHaveLength(2);
+      expect(rendered.queryAllByTestId("edit-button")).toHaveLength(1);
+    });
+  });
+
+  describe("getWorkerTaskInfo", () => {
+    test("service call returns success", async () => {
+      const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={validNid} setProfileModalState={setProfileModalState}/>)
+      expect(rendered.container).toHaveTextContent("Options not configured but feature enabled");
+    });
+    test("service call returned an error", async () => {
+      getWorkerTaskInfo.mockRejectedValue({ who: "cares? but this is bad wahhhh" });
+
+      render(<ProfileSettingsTable profileList={profiles} loggedInRep={validNid} setProfileModalState={setProfileModalState}/>)
+      expect(console.error).toBeCalledTimes(1);
     });
   });
 });

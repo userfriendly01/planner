@@ -180,7 +180,7 @@ describe("profileEntryFormReducer", () => {
           data: [1]
         },
         activities: "[{\"id\": 1, \"name\": \"Offline\", \"availability\": 0}]"
-      }
+      };
 
       const expectedState = {
         ...initialProfileEntryFormState,
@@ -189,10 +189,10 @@ describe("profileEntryFormReducer", () => {
           activity_nme: "Offline",
           available_i: {
             data: [
-              0,
+              0
             ],
-            type: "Buffer",
-          },
+            type: "Buffer"
+          }
         }],
         formMode: formModes.UPDATE,
         autoAnswered: {

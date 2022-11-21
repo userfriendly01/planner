@@ -33,6 +33,9 @@ export const CustomTableHeader = styled.th`
   &:nth-child(2) {
     width: 10%;
   }
+  &:nth-child(9) {
+    width: 8%;
+  }
   &:nth-child(16) {
     width: 15%;
   }
@@ -79,7 +82,7 @@ export const TableDataFlex = styled.div`
    flex-wrap: wrap;
  `;
 
-export const ActivitiesDiv = styled.div`
+export const BubbleDiv = styled.div`
   border-color: #C0BFC0;
   border-style: solid;
   border-radius: 5px;
@@ -88,6 +91,10 @@ export const ActivitiesDiv = styled.div`
   font-weight: 800;
   margin: 2;
   padding: 1 3;
+`;
+
+export const HighlightRed = styled.span`
+  color: #ff0000;
 `;
 
 export const IconWrapper = styled.div`

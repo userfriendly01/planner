@@ -1,8 +1,7 @@
 import {
   Action,
   Manager,
-  formModes,
-  discrepancyType
+  formModes
 } from "../../globals";
 import {
   UserFormState,
