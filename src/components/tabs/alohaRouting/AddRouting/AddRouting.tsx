@@ -8,6 +8,7 @@ import { retrieveRoutingData, addRoutingRule } from "services"
 import { CctSharedCallRoutingGlobalDb, RoutingMasterData, RoutingDropDownList, RoutingInitRule, AddRoutingModalProps } from "../AlohaRouting.Interfaces";
 import ComponentControl from "../../../core/SharedComponents/ComponentControl";
 import { ModalBodyStyled, ModalFooterStyled, HeadingStyled } from "../AlohaRouting.Styles";
+import CustomToast from "../../../core/CustomToast/CustomToast";
 
 
 
@@ -18,6 +19,11 @@ export const AddRouting = (props: AddRoutingModalProps) => {
 
     const [routingRule, setRoutingRule] = useState({ ...routingInitRule });
     const [dropDownValues, setDropDownValues] = useState(routingDropDownList);
+    const [alertBar, setAlertBar] = useState({
+        "open": false,
+        "msg": "",
+        "severityType": ""
+    });
 
     const accessToken: string = getAccessToken();
     const graphQlApiUrl: string = getGraphQLEndpoint();
@@ -53,11 +59,11 @@ export const AddRouting = (props: AddRoutingModalProps) => {
         let isValidForm: boolean = true;
         Object.keys(routingRule).map((key) => {
             if (routingRule[key].required && [undefined, '', null].includes(routingRule[key].value)) {
-                const newFlowRule = { [key]: { ...routingRule[key], error: true } };
+                const newRoutingRule = { [key]: { ...routingRule[key], error: true } };
                 isValidForm = false;
                 setRoutingRule((rule) => ({
                     ...rule,
-                    ...newFlowRule,
+                    ...newRoutingRule,
                 }));
             }
             return true;
@@ -72,10 +78,20 @@ export const AddRouting = (props: AddRoutingModalProps) => {
                 if (!apiResponse.errors) {
                     openModal(false);
                     setRoutingRule({ ...routingInitRule });
+                    setAlertBar(alertBarProps => ({
+                        ...alertBarProps,
+                        "open": true,
+                        "severityType": "success",
+                        "msg": "New Routing Rule has been successfully added!!"
+                    }));
                     return true;
                 }
-                // showToastMessage(apiResponse.errors[0].message);
-                return false;
+                setAlertBar(alertBarProps => ({
+                    ...alertBarProps,
+                    "open": true,
+                    "severityType": "error",
+                    "msg": apiResponse.errors[0].message
+                }));
             });
         }
         return false;
@@ -132,68 +148,83 @@ export const AddRouting = (props: AddRoutingModalProps) => {
         }));
     }
 
-    return (
-        <Modal
-            size="large"
-            className="route-table-modal-wrapper"
-            takeover={['base', 'sm', 'md', 'lg']}
-            isOpen={isOpen}
-            onClose={() => {
-                resetRoutingRule();
-            }}
-        >
-            <ModalHeader><HeadingStyled type="h4-light">{`Add Routing Rule (Rule ID #${newId})`}</HeadingStyled></ModalHeader>
-            <ModalBodyStyled>
-                <Grid container rowSpacing={3}>
-                    {
-                        routeFields.map(({
-                            label, key, control, required = false, disableEdit = false
-                        }) => {
-                            let dropDownOptions: string[] = [];
-                            if (control === 'select') {
-                                dropDownOptions = dropDownValues[key as keyof RoutingDropDownList];
-                            }
+    const handleClose = (flag: boolean) => {
+        setAlertBar(alertBarProps => ({
+            ...alertBarProps,
+            "open": flag
+        }));
+    };
 
-                            return (
-                                <Grid key={key} item xs={4}>
-                                    <ComponentControl
-                                        control={control}
-                                        name={key}
-                                        label={label}
-                                        type="text"
-                                        value={routingRule[key].value}
-                                        error={routingRule[key].error}
-                                        disabled={disableEdit}
-                                        dropDownOptions={dropDownOptions}
-                                        onChange={(event: any) => handleInputChange(event, key, disableEdit)}
-                                        required={required}
-                                    />
-                                </Grid>
-                            );
-                        })
-                    }
-                </Grid>
-            </ModalBodyStyled>
-            <ModalFooterStyled className="flow-modal-footer">
-                <Button
-                    type="submit"
-                    value="Save"
-                    variant="contained"
-                    color="primary"
-                    sx={{ marginRight: 2 }}
-                    onClick={() => handleOnCreateRoute()}
-                >
-                    Create Rule
-                </Button>
-                <Button
-                    value="Cancel"
-                    variant="outlined"
-                    color="primary"
-                    onClick={() => resetRoutingRule()}
-                >
-                    Cancel
-                </Button>
-            </ModalFooterStyled>
-        </Modal>
+    return (
+        <div>
+            <Modal
+                size="large"
+                className="route-table-modal-wrapper"
+                takeover={['base', 'sm', 'md', 'lg']}
+                isOpen={isOpen}
+                onClose={() => {
+                    resetRoutingRule();
+                }}
+            >
+                <ModalHeader><HeadingStyled type="h4-light">{`Add Routing Rule (Rule ID #${newId})`}</HeadingStyled></ModalHeader>
+                <ModalBodyStyled>
+                    <Grid container rowSpacing={3}>
+                        {
+                            routeFields.map(({
+                                label, key, control, required = false, disableEdit = false
+                            }) => {
+                                let dropDownOptions: string[] = [];
+                                if (control === 'select') {
+                                    dropDownOptions = dropDownValues[key as keyof RoutingDropDownList];
+                                }
+
+                                return (
+                                    <Grid key={key} item xs={4}>
+                                        <ComponentControl
+                                            control={control}
+                                            name={key}
+                                            label={label}
+                                            type="text"
+                                            value={routingRule[key].value}
+                                            error={routingRule[key].error}
+                                            disabled={disableEdit}
+                                            dropDownOptions={dropDownOptions}
+                                            onChange={(event: any) => handleInputChange(event, key, disableEdit)}
+                                            required={required}
+                                        />
+                                    </Grid>
+                                );
+                            })
+                        }
+                    </Grid>
+                </ModalBodyStyled>
+                <ModalFooterStyled>
+                    <Button
+                        type="submit"
+                        value="Save"
+                        variant="contained"
+                        color="primary"
+                        sx={{ marginRight: 2 }}
+                        onClick={() => handleOnCreateRoute()}
+                    >
+                        Create Rule
+                    </Button>
+                    <Button
+                        value="Cancel"
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => resetRoutingRule()}
+                    >
+                        Cancel
+                    </Button>
+                </ModalFooterStyled>
+            </Modal>
+            <CustomToast
+                open={alertBar.open}
+                onClose={handleClose}
+                msg={alertBar.msg}
+                severityType={alertBar.severityType}
+            />
+        </div>
     )
 }

@@ -163,6 +163,7 @@ async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
  */
 async function addRoutingRule(item, accessToken, graphQlApiUrl) {
   let response;
+  console.log("item:", item);
   try {
     const fetchResponse = await fetch(graphQlApiUrl, {
       method: "POST",
@@ -174,23 +175,23 @@ async function addRoutingRule(item, accessToken, graphQlApiUrl) {
         query: `
           mutation AddOne {
             createCctSharedCallRoutingGlobalDb(input: {
-                all: "${item.all}"
-                pkey: "${item.pkey}",
-                skey: "${item.skey}",
-                brand: "${item.brand}",
-                channel: "${item.channel}",
-                callIntent:"${item.callIntent}",
-                dayOfWeek: "${item.dayOfWeek}",
-                callerState: "${item.callerState}",
-                callerType: "${item.callerType}",
-                twilioSkill: "${item.twilioSkill || ""}",
-                transferDestination: "${item.transferDestination || ""}",
-                percentOfCallers: "${item.percentOfCallers}",
-                transferMessage: "${item.transferMessage || ""}",
-                policyType: "${item.policyType}",
-                startTime: "${item.startTime}",
-                endTime: "${item.endTime}",
-                crcSkill: "${item.crcSkill || ""}",
+                all: "ALL"
+                pkey: "${item.pkey.value}",
+                skey: "${item.skey.value}",
+                brand: "${item.brand.value}",
+                channel: "${item.channel.value}",
+                callIntent:"${item.callIntent.value}",
+                dayOfWeek: "${item.dayOfWeek.value}",
+                callerState: "${item.callerState.value}",
+                callerType: "${item.callerType.value}",
+                twilioSkill: "${item.twilioSkill.value || ""}",
+                transferDestination: "${item.transferDestination.value || ""}",
+                percentOfCallers: "${item.percentOfCallers.value}",
+                transferMessage: "${item.transferMessage.value || ""}",
+                policyType: "${item.policyType.value}",
+                startTime: "${item.startTime.value}",
+                endTime: "${item.endTime.value}",
+                crcSkill: "${item.crcSkill.value || ""}"
               }) {
               pkey
               skey
