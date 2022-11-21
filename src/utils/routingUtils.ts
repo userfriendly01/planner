@@ -1,4 +1,4 @@
-import { RoutingInitState, RoutingDropDownList, AddPageFieldConfigProps, RoutingInitRule } from "../components/tabs/alohaRouting/AlohaRouting.Interfaces";
+import { RoutingInitState, RoutingDropDownList, AddPageFieldConfigProps as AddRoutingFieldConfigProps, RoutingInitRule } from "../components/tabs/alohaRouting/AlohaRouting.Interfaces";
 
 export const ROUTING_CACHE_MASTER_DATA: string = "ROUTING_MASTER_DATA";
 
@@ -8,7 +8,6 @@ export const CACHED_CALL_ROUTING_PAGE_NO: string = "CALL_ROUTING_PAGE_NO";
 
 export const CACHED_CALL_ROUTING_PER_PAGE: string = "CALL_ROUTING_PER_PAGE";
 
-export const readOnlyFields: string[] = ["pkey", "skey"];
 
 export const numbersOnlyFields: string[] = ["percentOfCallers"];
 
@@ -47,7 +46,7 @@ export const routingInitState: RoutingInitState = {
     perPage: sessionStorage.getItem(CACHED_CALL_ROUTING_PER_PAGE) ? +sessionStorage.getItem(CACHED_CALL_ROUTING_PER_PAGE) : 10,
 }
 
-export const routeFields: AddPageFieldConfigProps[] = [
+export const routeFields: AddRoutingFieldConfigProps[] = [
     {
         label: "ID",
         key: "id",
@@ -56,12 +55,15 @@ export const routeFields: AddPageFieldConfigProps[] = [
     {
         label: "Partition Key",
         key: "pkey",
-        control: "input"
+        control: "input",
+        disableEdit: true
+
     },
     {
         label: "Sort Key",
         key: "skey",
-        control: "input"
+        control: "input",
+        disableEdit: true
     },
     {
         label: "Brand",
@@ -137,5 +139,5 @@ export const routeFields: AddPageFieldConfigProps[] = [
 
 
 
-export const routeInitRule: RoutingInitRule = routeFields.reduce((a: RoutingInitRule, v: AddPageFieldConfigProps) => ({ ...a, [v.key]: { error: false, value: '', required: v.required || false } }), {});
+export const routingInitRule: RoutingInitRule = routeFields.reduce((a: RoutingInitRule, v: AddRoutingFieldConfigProps) => ({ ...a, [v.key]: { error: false, value: '', required: v.required || false } }), {});
 

@@ -8,7 +8,7 @@ export interface SelectContainerProps{
   dropDownOptions: string[],
   name: string,
   label: string,
-  value: any,
+  value: unknown,
   onChange: any,
   disabled: boolean,
   error: boolean,

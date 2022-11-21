@@ -68,17 +68,25 @@ export interface RoutingDropDownList {
 }
 
 export interface AddPageFieldConfigProps {
-    label: string;
-    key: string;
-    control: string;
-    required?: boolean;
+    label: string,
+    key: string,
+    control: string,
+    required?: boolean,
+    disableEdit?: boolean
 }
 
 export interface RoutingFormValidationProps {
-    error: boolean;
+    error?: boolean;
     value: string;
-    required: boolean;
+    required?: boolean;
 }
 export interface RoutingInitRule {
-    [key: string]: RoutingFormValidationProps
+    [key: string]: RoutingFormValidationProps;
+}
+
+export interface AddRoutingModalProps {
+    isOpen: boolean;
+    newId: number;
+    onClose: (flag: boolean) => void;
+    openModal: (flag: boolean, flagType: string) => void;
 }

@@ -6,10 +6,12 @@ import { Heading } from "@lmig/lmds-react-typography";
 import { routingDropDownList, getAccessToken, getGraphQLEndpoint, routingInitRule, routeFields } from "utils";
 import { getGridMasterData } from "../DataGridRouting/GridMaster";
 import { retrieveRoutingData, addRoutingRule } from "services"
-import { CctSharedCallRoutingGlobalDb, RoutingMasterData, RoutingDropDownList, RoutingInitRule } from "../AlohaRouting.Interfaces";
+import { CctSharedCallRoutingGlobalDb, RoutingMasterData, RoutingDropDownList, RoutingInitRule, AddRoutingModalProps } from "../AlohaRouting.Interfaces";
+import ComponentControl from "../../../core/SharedComponents/ComponentControl";
 
 
-export const AddRouting = (props: any) => {
+
+export const AddRouting = (props: AddRoutingModalProps) => {
     const {
         onClose, isOpen = false, newId, openModal
     } = props;
@@ -79,25 +81,29 @@ export const AddRouting = (props: any) => {
         return false;
     }
 
-    const handleInputChange = (event: any, keyType: string) => {
-        let timeEvaluator;
-        let key;
-        let value;
-        if (keyType === 'startTime' || keyType === 'endTime') {
-            timeEvaluator = TimeEvaluator(event, keyType);
-            key = timeEvaluator.key;
-            value = timeEvaluator.value;
+    const TimeEvaluator = (event: any, keyType: string): string => {
+        const timePicked = new Date(event.$d.toString());
+        timePicked.setSeconds(0);
+        if (keyType === 'endTime') {
+            timePicked.setSeconds(timePicked.getSeconds() - 1);
+        }
+        return timePicked.toISOString();
+    };
+
+    const handleInputChange = (event: any, key: string, disableEdit: boolean) => {
+        let value: string;
+        let skey: string;
+
+        if (disableEdit) return;
+
+        if (key === 'startTime' || key === 'endTime') {
+            value = TimeEvaluator(event, key);
         } else {
-            key = event.target.name;
             value = event.target.value;
         }
-        if (isReadOnly(key)) return;
-
-        let skey;
-        const newRoutingRule = { [key]: value, id: newId };
 
         if (key === 'callIntent' && value) {
-            newRoutingRule.pkey = value.replaceAll(' ', '').toLowerCase();
+            value = value.replace(' ', '').toLowerCase();
         }
 
         if (key === 'channel' && value) {
@@ -111,8 +117,10 @@ export const AddRouting = (props: any) => {
         }
 
         if (skey) {
-            newRoutingRule.skey = skey.replaceAll(' ', '').toLocaleLowerCase();
+            value = skey.replace(' ', '').toLocaleLowerCase();
         }
+
+        const newRoutingRule: RoutingInitRule = { [key]: { value } };
 
         setRoutingRule((rule: RoutingInitRule) => ({
             ...rule,
@@ -136,7 +144,7 @@ export const AddRouting = (props: any) => {
                     <Grid container rowSpacing={3}>
                         {
                             routeFields.map(({
-                                label, key, control, required = false,
+                                label, key, control, required = false, disableEdit = false
                             }) => {
                                 let dropDownOptions: string[] = [];
                                 if (control === 'select') {
@@ -152,8 +160,9 @@ export const AddRouting = (props: any) => {
                                             type="text"
                                             value={routingRule[key].value}
                                             error={routingRule[key].error}
+                                            disabled={disableEdit}
                                             dropDownOptions={dropDownOptions}
-                                            onChange={(event: any) => handleInputChange(event, key)}
+                                            onChange={(event: any) => handleInputChange(event, key, disableEdit)}
                                             required={required}
                                         />
                                     </Grid>

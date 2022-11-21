@@ -1,8 +1,6 @@
-const readOnlyFields = [
-  "pkey"
-];
+import { AddFlowFieldsConfigProps } from "../AlohaFlow.Interfaces";
 
-const mandatoryFields = [
+const mandatoryFields: string[] = [
   "brand",
   "channel",
   "dataRequests",
@@ -10,7 +8,7 @@ const mandatoryFields = [
   "pkey"
 ];
 
-const flowFields = [
+const flowFields: AddFlowFieldsConfigProps[] = [
   {
     label: "Dialed Phone Number",
     key: "pkey",
@@ -144,7 +142,7 @@ const flowFields = [
   }
 ];
 
-const initRule:any = flowFields.reduce((a, v) => ({
+const initRule: any = flowFields.reduce((a, v) => ({
   ...a,
   [v.key]: {
     error: false,
@@ -156,6 +154,5 @@ const initRule:any = flowFields.reduce((a, v) => ({
 export {
   flowFields,
   initRule,
-  mandatoryFields,
-  readOnlyFields
+  mandatoryFields
 };

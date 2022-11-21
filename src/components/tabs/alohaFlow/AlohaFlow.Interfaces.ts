@@ -31,7 +31,7 @@ export interface FlowAdvanceFilter {
 
 }
 export interface CctSharedCallFlowDb {
-    id:number,
+    id: number,
     pkey: string;
     agentId?: string;
     brand?: string;
@@ -63,7 +63,7 @@ export interface FlowInitState {
     advanceFilter?: Array<FlowAdvanceFilter>
 }
 
-export interface FlowKeys{
+export interface FlowKeys {
     pkey?: string,
     dialedDescription?: string,
     callFlowTemplate?: string,
@@ -91,9 +91,17 @@ export interface FlowKeys{
     userDestination: string
 }
 
-export interface dropDownList{
+export interface dropDownList {
     brand: string[],
     channel: string[],
     languageOffer: string[],
     userDestination: string[]
+}
+
+export interface AddFlowFieldsConfigProps {
+    label: string,
+    key: string,
+    control: string,
+    required?: boolean,
+    disableEdit?: boolean
 }
