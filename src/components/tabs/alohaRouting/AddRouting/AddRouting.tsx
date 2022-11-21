@@ -123,7 +123,7 @@ export const AddRouting = (props: AddRoutingModalProps) => {
         }
 
         if (key === 'callIntent' && value) {
-            newRoutingRule["pkey"] = { value: removeAllWhiteSpace(value).toLowerCase() };
+            newRoutingRule["pkey"] = { value: removeAllWhiteSpace(value).toLocaleLowerCase() };
         }
 
         setRoutingRule((rule: RoutingInitRule) => ({

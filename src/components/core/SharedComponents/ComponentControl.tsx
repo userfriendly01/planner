@@ -3,17 +3,17 @@ import TextField from "@mui/material/TextField";
 import SelectContainer from "./SelectContainer";
 import TimePickerComponent from "./TimepickerComponent";
 
-export interface ComponentControlProps{
-    control: string,
-    dropDownOptions: string[],
-    name: string,
-    label: string,
-    type: string,
-    value: any,
-    onChange: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>,
-    disabled?: boolean,
-    error: boolean,
-    required: boolean
+export interface ComponentControlProps {
+  control: string,
+  dropDownOptions: string[],
+  name: string,
+  label: string,
+  type: string,
+  value: any,
+  onChange: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>,
+  disabled?: boolean,
+  error: boolean,
+  required: boolean
 }
 function ComponentControl({
   control,
@@ -26,7 +26,7 @@ function ComponentControl({
   disabled,
   error,
   required
-}:ComponentControlProps) {
+}: ComponentControlProps) {
   switch (control) {
     case "input":
       return (
@@ -63,6 +63,9 @@ function ComponentControl({
           value={value}
           onChange={onChange}
           name={name}
+          error={error}
+          required={required}
+          disabled={disabled}
         />
       );
     default:
