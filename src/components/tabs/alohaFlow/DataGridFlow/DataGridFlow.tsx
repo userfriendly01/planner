@@ -4,37 +4,28 @@
    react/jsx-props-no-spreading
 */
 
-import "./Grid.scss";
-import DataTable, { createTheme } from "react-data-table-component";
 import React, {
-  useState,
-  useEffect
+  useEffect, useState
 } from "react";
-import { getGridMasterData } from "./GridMaster";
-import GridColumnDef from "./GridColumnDef";
-import GridSpinner from "./GridSpinner";
-import { GridStyle } from "./GridStyle";
-import GridTheme from "./GridTheme";
-import GridTopHeader from "./GridTopHeader";
 import { retrieveFlowData } from "services";
-import CustomToast from "../../../core/CustomToast/CustomToast";
-import AddFlow from "../AddFlow/AddFlow";
-import { CctSharedCallFlowDb } from "../AlohaFlow.Interfaces";
 import {
   getAccessToken,
   getGraphQLEndpoint
 } from "utils";
 import CustomToast from "../../../core/CustomToast/CustomToast";
-import AddFlow from "../CustomActions/AddFlow/AddFlow";
 import { CctSharedCallFlowDb } from "../AlohaFlow.Interfaces";
+import AddFlow from "../CustomActions/AddFlow/AddFlow";
+import AdvanceSearchFlow from "../CustomActions/AdvanceSearch/AdvanceSearch";
+import CustomFlowGridToolBar from "../CustomActions/CustomFlowGridToolBar";
 import "./Grid.scss";
 import FlowGridColumnDef from "./GridColumnDef";
 import {
-  clearGridMasterData,getGridMasterData
+  clearGridMasterData, getGridMasterData
 } from "./GridMaster";
 import GridSpinner from "./GridSpinner";
-import CustomFlowGridToolBar from "../CustomActions/CustomFlowGridToolBar";
-import AdvanceSearchFlow from "../CustomActions/AdvanceSearch/AdvanceSearch";
+import {
+  DataGrid, GridToolbar
+} from "@mui/x-data-grid";
 const CACHE_FILTER_FLOW = "SEARCH_FILTER_FLOW";
 
 const DataGridFlow = () => {
@@ -262,15 +253,6 @@ const DataGridFlow = () => {
     <div className="data-grid-wrapper">
       <div className="data-grid-wrapper">
         <div className="data-grid-wrapper">
-<<<<<<< Updated upstream
-          <DataTable
-            actions={
-              <GridTopHeader
-                {...dataFlow}
-                handleFilterInputChange={handleFilterInputChange}
-                openAddModal={openAddModal}
-              />
-=======
           <CustomFlowGridToolBar
             openAddModal = {openAddModal}
             openAdvanceSearchModal={openAdvanceSearchModal} ></CustomFlowGridToolBar>
@@ -292,31 +274,7 @@ const DataGridFlow = () => {
                 Toolbar: GridToolbar,
                 LoadingOverlay: GridSpinner
               }
->>>>>>> Stashed changes
             }
-            columns={GridColumnDef}
-            customStyles={GridStyle}
-            data={dataFlow.filteredItems.slice(
-              (dataFlow.page - 1) * dataFlow.perPage,
-              dataFlow.page * dataFlow.perPage
-            )}
-            defaultSortFieldId={1}
-            highlightOnHover
-            expandableRows
-            onColumnOrderChange={(): void => console.log(GridColumnDef)}
-            pagination
-            paginationServer
-            paginationDefaultPage={dataFlow.page}
-            paginationPerPage={dataFlow.perPage}
-            paginationTotalRows={dataFlow.filteredItems.length}
-            paginationRowsPerPageOptions={[10, 20, 50, 100]}
-            persistTableHead
-            pointerOnHover
-            progressComponent={<GridSpinner />}
-            progressPending={dataFlow.fetching}
-            theme="gridTheme"
-            onChangePage={(newPage: number) => setPage(newPage)}
-            onChangeRowsPerPage={(newPerPage: number) => setPerPage(newPerPage)}
           />
         </div>
       </div>
@@ -369,7 +327,4 @@ const DataGridFlow = () => {
 };
 
 export default DataGridFlow;
-function CACHE_FILTER_FLOW(CACHE_FILTER_FLOW: any, arg1: string) {
-  throw new Error("Function not implemented.");
-}
 
