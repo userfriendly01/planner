@@ -1,0 +1,53 @@
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import React, { useState } from "react";
+
+interface CustomFlowGridToolBarProps{
+    openAddModal:any
+}
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const CustomFlowGridToolBar = ({ openAddModal }:CustomFlowGridToolBarProps) =>{
+  const[dropDownOptions, setDropDownOptions]=useState({ "addFlow": false });
+  const handleChange=(event:any)=> {
+    if(event.target.value === "addFlow"){
+      openAddModal(true);
+    }
+
+  };
+  return (
+    <div>
+      <FormControl sx={{
+        minWidth: 120,
+        marginLeft: "calc(70%)",
+        marginTop: 1
+      }}>
+        <InputLabel>Actions</InputLabel>
+        <Select
+          inputProps={{
+            sx: {
+              width: 120
+            }
+          }}
+          label="Actions"
+          value={dropDownOptions}
+          onChange={handleChange}
+          variant="outlined"
+          size="small"
+        >
+          <MenuItem key = "addFlow" value ="addFlow">
+            Add Flow +
+          </MenuItem>
+          <MenuItem key = "Filter" value ="Filter">
+            Advance Search
+          </MenuItem>
+
+        </Select>
+      </FormControl>
+    </div>
+  );
+};
+
+export default CustomFlowGridToolBar;
