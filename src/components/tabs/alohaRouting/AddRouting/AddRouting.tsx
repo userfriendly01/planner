@@ -7,7 +7,7 @@ import { getGridMasterData } from "../DataGridRouting/GridMaster";
 import { retrieveRoutingData, addRoutingRule } from "services"
 import { CctSharedCallRoutingGlobalDb, RoutingMasterData, RoutingDropDownList, RoutingInitRule, AddRoutingModalProps } from "../AlohaRouting.Interfaces";
 import ComponentControl from "../../../core/SharedComponents/ComponentControl";
-import { ModalBodyStyled, ModalFooterStyled, HeadingStyled } from "../AlohaRouting.Styles";
+import { RoutingModalBodyStyled, RoutingModalFooterStyled, RoutingHeadingStyled } from "../AlohaRouting.Styles";
 import CustomToast from "../../../core/CustomToast/CustomToast";
 
 
@@ -166,8 +166,8 @@ export const AddRouting = (props: AddRoutingModalProps) => {
                     resetRoutingRule();
                 }}
             >
-                <ModalHeader><HeadingStyled type="h4-light">{`Add Routing Rule (Rule ID #${newId})`}</HeadingStyled></ModalHeader>
-                <ModalBodyStyled>
+                <ModalHeader><RoutingHeadingStyled type="h4-light">{`Add Routing Rule (Rule ID #${newId})`}</RoutingHeadingStyled></ModalHeader>
+                <RoutingModalBodyStyled>
                     <Grid container rowSpacing={3}>
                         {
                             routeFields.map(({
@@ -197,8 +197,8 @@ export const AddRouting = (props: AddRoutingModalProps) => {
                             })
                         }
                     </Grid>
-                </ModalBodyStyled>
-                <ModalFooterStyled>
+                </RoutingModalBodyStyled>
+                <RoutingModalFooterStyled>
                     <Button
                         type="submit"
                         value="Save"
@@ -217,7 +217,7 @@ export const AddRouting = (props: AddRoutingModalProps) => {
                     >
                         Cancel
                     </Button>
-                </ModalFooterStyled>
+                </RoutingModalFooterStyled>
             </Modal>
             <CustomToast
                 open={alertBar.open}

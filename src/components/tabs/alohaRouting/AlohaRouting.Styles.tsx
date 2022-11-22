@@ -10,19 +10,19 @@ width: 100%;
 `
 
 
-export const ModalBodyStyled = styled(ModalBody)`
+export const RoutingModalBodyStyled = styled(ModalBody)`
   margin-top: 10px !important;
   overflow: auto;
   padding-top: 5px;
 `;
 
-export const ModalFooterStyled = styled(ModalFooter)`
+export const RoutingModalFooterStyled = styled(ModalFooter)`
   margin-top: 5px !important;
   margin-bottom: 5px !important;
   margin-left: 40%;
   padding-top: 10px !important;
 `;
 
-export const HeadingStyled = styled(Heading)`
+export const RoutingHeadingStyled = styled(Heading)`
   margin-top:50px !important
 `;
