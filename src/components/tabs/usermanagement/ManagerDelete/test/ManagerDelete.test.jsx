@@ -5,7 +5,8 @@ import {
   ModalNNumber,
   ModalOverlay,
   PaperContainer,
-  StyledButton
+  StyledButton,
+  CustomToast
 } from "components";
 import { useAdminState } from "context";
 import React from "react";
@@ -44,6 +45,7 @@ jest.mock("context", () => ({
 
 jest.mock("components", () => ({
   __esModule: true,
+  CustomToast: jest.fn(),
   Dropdown: jest.fn(),
   ModalNNumber: jest.fn(),
   ModalOverlay: jest.fn(),
