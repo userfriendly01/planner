@@ -9,6 +9,9 @@ import {
   HeadingStyled
 } from "../../AlohaFlow.Styles";
 import "./index.scss";
+import {
+  CctSharedCallFlowDb, FlowAdvanceFilter
+} from "../../AlohaFlow.Interfaces";
 
 const CACHE_FILTER_FLOW = "SEARCH_FILTER_FLOW";
 
@@ -18,9 +21,6 @@ const AdvanceSearchModal = (props:any) => {
   } = props;
 
   const saveFilter = (search:any) => {
-    console.log("search", search);
-    console.log("sele", selection);
-    console.log("master", masterData);
     localStorage.setItem(CACHE_FILTER_FLOW, JSON.stringify(search));
     applyFilter();
     openModal(false, search);
@@ -43,7 +43,7 @@ const AdvanceSearchModal = (props:any) => {
           <HeadingStyled type="h4-light"> Advance Search Selection </HeadingStyled>
         </ModalHeader>
 
-        <div className="route-table-advance-search-modal-wrapper">
+        <div >
           <ModalBody>
             <div className="advance-search-container">
               <div className="heading">
@@ -89,7 +89,6 @@ const AdvanceSearchModal = (props:any) => {
                   </select>
                 </div>
               </div>
-
               <div className="drop-down-item" id="route" key="route">
                 <div className="drop-down-label">Route</div>
                 <div className="select-container">

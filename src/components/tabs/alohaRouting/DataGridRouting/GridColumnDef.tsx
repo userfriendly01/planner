@@ -48,7 +48,7 @@ export const RoutingGridColumnDef: GridColDef[] = [
     field: "dayOfWeek",
     sortable: true,
     align: "center",
-    width: 80,
+    width: 80
   },
   {
     headerName: "Transfer Dest.",
@@ -98,5 +98,5 @@ export const RoutingGridColumnDef: GridColDef[] = [
     field: "transferMessage",
     sortable: false,
     width: 110
-  },
+  }
 ];

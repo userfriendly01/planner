@@ -3,7 +3,6 @@
    no-console,
    react/jsx-props-no-spreading
 */
-
 import React, {
   useEffect, useState
 } from "react";
@@ -13,7 +12,9 @@ import {
   getGraphQLEndpoint
 } from "utils";
 import CustomToast from "../../../core/CustomToast/CustomToast";
-import { CctSharedCallFlowDb } from "../AlohaFlow.Interfaces";
+import {
+  CctSharedCallFlowDb, FlowAdvanceFilter
+} from "../AlohaFlow.Interfaces";
 import AddFlow from "../CustomActions/AddFlow/AddFlow";
 import AdvanceSearchFlow from "../CustomActions/AdvanceSearch/AdvanceSearch";
 import CustomFlowGridToolBar from "../CustomActions/CustomFlowGridToolBar";
@@ -28,13 +29,14 @@ import {
 } from "@mui/x-data-grid";
 const CACHE_FILTER_FLOW = "SEARCH_FILTER_FLOW";
 
+
 const DataGridFlow = () => {
   const accessToken: string = getAccessToken();
   const graphQlApiUrl: string = getGraphQLEndpoint();
   const [dataFlow, setDataFlow] = useState({
     data: [],
     filteredItems: [],
-    advanceFilter: [],
+    advanceFilter: Array<FlowAdvanceFilter>,
     masterData: [],
     fetching: true,
     selectedRow: undefined,
@@ -64,13 +66,6 @@ const DataGridFlow = () => {
     }));
   }, []);
 
-  const handleFilterInputChange = (event: any) => {
-    setDataFlow(dataFlowProps => ({
-      ...dataFlowProps,
-      [event.target.name]: event.target.value
-    }));
-  };
-
   const setPage = (newPage: number) => {
     sessionStorage.setItem("CALL_FLOW_PAGE_NO", newPage.toString());
     setDataFlow(dataFlowProps => ({
@@ -95,9 +90,16 @@ const DataGridFlow = () => {
   };
 
   const handleSearchDDChange = (event: any) => {
-    setDataFlow(dataFlowProps=> ({
+    console.log("event", event);
+    console.log("event- name", event.target.name);
+    console.log("value", event.target.value);
+    console.log("dataFlow", dataFlow);
+    setDataFlow((dataFlowProps:any)=> ({
       ...dataFlowProps,
-      [event.target.name]: event.target.value
+      advanceFilter: {
+        ...dataFlowProps.advanceFilter,
+        [event.target.name]: event.target.value
+      }
     }));
   };
 
@@ -159,7 +161,7 @@ const DataGridFlow = () => {
     const advanceFilter = getAdvanceFilter();
     const advanceFilterLength = Object.keys(advanceFilter).length;
     if (advanceFilterLength > 0) {
-      let advanceFilteredArray: any[];
+      const advanceFilteredArray: any[] = [];
       result.forEach(item=> {
         let matched = 0;
         Object.keys(advanceFilter).forEach(key => {
@@ -275,6 +277,11 @@ const DataGridFlow = () => {
                 LoadingOverlay: GridSpinner
               }
             }
+            sx={{
+              "& .MuiDataGrid-columnHeaderTitle": {
+                fontWeight: 600
+              }
+            }}
           />
         </div>
       </div>

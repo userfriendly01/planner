@@ -22,12 +22,12 @@ interface DRCFlow {
 }
 
 export interface FlowAdvanceFilter {
-    channel?: Array<string>;
-    brand?: Array<string>;
-    callerType?: Array<string>;
-    callFlowTemplate?: Array<string>;
-    callFlowRoute?: Array<string>;
-    pkey?: Array<string>
+    channel?: string;
+    brand?: string;
+    callerType?: string;
+    callFlowTemplate?: string;
+    callFlowRoute?: string;
+    pkey?: string
 
 }
 export interface CctSharedCallFlowDb {
