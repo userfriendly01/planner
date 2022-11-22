@@ -89,8 +89,10 @@ const getCalabrioRoles = async (dispatch: any) => {
   }
 };
 
+console.log("rz before getProfiles");
 const getProfiles = (dispatch: any) => new Promise((resolve, reject) => myAxios.get(apiPaths.PROFILES)
   .then(res => {
+    console.log("rz getProfiles=", res.data);
     dispatch({
       type: "loadProfiles",
       payload: res.data

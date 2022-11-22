@@ -21,8 +21,10 @@ import {
 import { Tooltip } from "@mui/material";
 import { myAxios } from "utils";
 
+console.log("rz before getACWOptions");
 const getACWOptions = () => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_PROFILE_WORKER_TASK_INFO)
   .then(res => {
+    console.log("rz getACWOptions=", res.data);
     resolve(res.data);
   })
   .catch(error => {

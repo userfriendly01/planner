@@ -30,6 +30,7 @@ import {
 
 const ProfileSettingsTable = props => {
   const { profileList, loggedInRep, setProfileModalState } = props;
+  console.log("rz profileList=", profileList);
   const setForm = profileEntryFormDispatch();
 
   const editButtonOnClick = (profile) => event => {
