@@ -8,7 +8,7 @@ export interface SelectContainerProps{
   dropDownOptions: string[],
   name: string,
   label: string,
-  value: any,
+  value: unknown,
   onChange: any,
   disabled: boolean,
   error: boolean,
@@ -26,14 +26,10 @@ export default function SelectContainer({
 }:SelectContainerProps){
   return (
     <div>
-      <FormControl sx={{ minWidth: 120 }} error={error} required={required}>
+      <FormControl sx={{ width: "calc(95%)" }} error={error} required={required}>
         <InputLabel id={`select-helper-label-${name}`}>{label}</InputLabel>
         <Select
-          inputProps={{
-            sx: {
-              width: 280
-            }
-          }}
+          fullWidth
           name={name}
           labelId={`select-helper-label-${name}`}
           label={label}

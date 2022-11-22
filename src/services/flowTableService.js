@@ -74,7 +74,6 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
  * @returns {flowData} list of data contain all the result present in DB
  */
 async function retrieveFlowData(accessToken, graphQlApiUrl) {
-  console.log("retrieveFlowData Token:", accessToken);
   let flowData = [];
   let isFirstTime = true;
   let result = {};

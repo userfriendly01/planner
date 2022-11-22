@@ -34,7 +34,7 @@ import { retrieveFlowData } from "services";
 import { CctSharedCallFlowDb } from "../AlohaFlow.Interfaces";
 import { getGridMasterData } from "../DataGridFlow/GridMaster";
 
-export default (props:any) => {
+export default (props: any) => {
   const {
     onClose, isOpen = false, newId, openModal
   } = props;
@@ -59,11 +59,11 @@ export default (props:any) => {
   useEffect(() => {
     async function fetchData() {
       const masterData = localStorage.getItem("FLOW_MASTER_DATA");
-      let masterDataObject:any;
+      let masterDataObject: any;
       if (masterData !== undefined && masterData !== null) {
         masterDataObject = JSON.parse(masterData);
       } else {
-        const result:CctSharedCallFlowDb[] = await retrieveFlowData(accessToken,graphQlApiUrl);
+        const result: CctSharedCallFlowDb[] = await retrieveFlowData(accessToken, graphQlApiUrl);
         masterDataObject = await getGridMasterData(result);
       }
       setDropDownValues(dropDownValuesProps => ({
@@ -76,16 +76,16 @@ export default (props:any) => {
     }
     fetchData();
 
-  },[]);
+  }, []);
 
-  const handleClose = (flag:boolean)=>{
+  const handleClose = (flag: boolean) => {
     setAlertBar(alertBarProps => ({
       ...alertBarProps,
       "open": flag
     }));
   };
 
-  function handleInputChange(event:any) {
+  function handleInputChange(event: any) {
     const key = event.target.name;
     let { value } = event.target;
     value = (key === "pkey" && !value.startsWith("+")) ? `+1${value}` : value;
@@ -94,7 +94,7 @@ export default (props:any) => {
       id: newId
     };
 
-    setFlowRule((rule:any) => ({
+    setFlowRule((rule: any) => ({
       ...rule,
       ...newFlowRule
     }));
@@ -111,7 +111,7 @@ export default (props:any) => {
           }
         };
         isValidForm = false;
-        setFlowRule((rule:any) => ({
+        setFlowRule((rule: any) => ({
           ...rule,
           ...newFlowRule
         }));
@@ -129,7 +129,7 @@ export default (props:any) => {
   function handleOnCreateRoute() {
     const isValidForm = validateRoute();
     if (isValidForm) {
-      addFlowRule(flowRule, accessToken,graphQlApiUrl).then(apiResponse => {
+      addFlowRule(flowRule, accessToken, graphQlApiUrl).then(apiResponse => {
         if (!apiResponse.errors) {
           openModal(true, "ADD_ROUTE_RULE");
           setAlertBar(alertBarProps => ({
@@ -185,7 +185,7 @@ export default (props:any) => {
                       value={flowRule[key as keyof FlowKeys].value}
                       error={flowRule[key as keyof FlowKeys].error}
                       dropDownOptions={dropDownOptions}
-                      onChange={(event:any) => handleInputChange(event)}
+                      onChange={(event: any) => handleInputChange(event)}
                       required={required}
                     />
                   </Grid>
@@ -216,10 +216,10 @@ export default (props:any) => {
         </ModalFooterStyled>
       </Modal>
       <CustomToast
-        open = {alertBar.open}
-        onClose ={handleClose}
-        msg = {alertBar.msg}
-        severityType = {alertBar.severityType}
+        open={alertBar.open}
+        onClose={handleClose}
+        msg={alertBar.msg}
+        severityType={alertBar.severityType}
       />
     </div>
   );

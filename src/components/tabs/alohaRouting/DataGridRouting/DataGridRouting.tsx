@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { RoutingGridColumnDef } from "./GridColumnDef";
 import { CctSharedCallRoutingGlobalDb, RoutingFilter, RoutingInitState, RoutingMasterData } from "../AlohaRouting.Interfaces";
@@ -7,6 +7,9 @@ import { CACHED_CALL_ROUTING_PAGE_NO, CACHED_CALL_ROUTING_PER_PAGE, CACHE_FILTER
 import { getGridMasterData } from "./GridMaster";
 import { RoutingTableBox } from "../AlohaRouting.Styles";
 import GridSpinner from "./GridSpinner";
+import { CustomFlowRoutingToolBar } from "./CustomRoutingGridToolBar";
+import { AddRouting } from "../AddRouting/AddRouting";
+import { CustomToast } from "components";
 
 export const DataGridRouting = () => {
     const accessToken: string = getAccessToken();
@@ -16,10 +19,17 @@ export const DataGridRouting = () => {
     }
     const [state, dispatch] = React.useReducer(reducer, routingInitState);
 
+    const [alertBar, setAlertBar] = useState({
+        open: false,
+        msg: "",
+        severityType: ""
+    });
+
+
     const getAdvanceFilter = (): RoutingFilter => {
         try {
-            const cachedFilter: string = localStorage.getItem(CACHE_FILTER_ROUTING);
-            const advanceFilter: RoutingFilter = JSON.parse(cachedFilter);
+            const cachedFilter: string | undefined = localStorage.getItem(CACHE_FILTER_ROUTING);
+            const advanceFilter: RoutingFilter = JSON.parse(cachedFilter) || {};
             Object.keys(advanceFilter).forEach((key: keyof RoutingFilter) => {
                 if (advanceFilter[key] === '') {
                     delete advanceFilter[key];
@@ -91,6 +101,21 @@ export const DataGridRouting = () => {
             // this.showToastMessage('error', 'Error in retriving Routing Rule. Please check the API Key ');
         }
     }
+
+
+    const openAddModal = (flag: boolean) => {
+        if (!flag) {
+            setAlertBar(alertBarProps => ({
+                ...alertBarProps,
+                open: flag,
+                severityType: "success",
+                msg: "New flow has been successfully added!! "
+            }));
+            loadDataTable();
+        }
+        dispatch({ isAddModalOpen: flag })
+    };
+
     const setPerPage = (newPageSize: number) => {
         sessionStorage.setItem(CACHED_CALL_ROUTING_PER_PAGE, newPageSize.toString());
         dispatch({ perPage: newPageSize });
@@ -107,33 +132,55 @@ export const DataGridRouting = () => {
         });
     }, [dispatch])
 
+    const handleClose = (flag: boolean) => {
+        setAlertBar(alertBarProps => ({
+            ...alertBarProps,
+            open: flag
+        }));
+    };
+
     return (
-        <RoutingTableBox>
-            <DataGrid
-                rows={state.filteredItems}
-                columns={RoutingGridColumnDef}
-                page={state.page}
-                pageSize={state.perPage}
-                onPageChange={(newPage: number) => setPage(newPage)}
-                onPageSizeChange={(newPageSize: number) => setPerPage(newPageSize)}
-                rowsPerPageOptions={[10, 20, 50, 100]}
-                paginationMode="client"
-                pagination
-                loading={state.fetching}
-                checkboxSelection
-                autoHeight
-                components={
-                    {
-                        Toolbar: GridToolbar,
-                        LoadingOverlay: GridSpinner
+        <div>
+            <CustomFlowRoutingToolBar openAddModal={openAddModal} />
+            <RoutingTableBox>
+                <DataGrid
+                    rows={state.filteredItems}
+                    columns={RoutingGridColumnDef}
+                    page={state.page}
+                    pageSize={state.perPage}
+                    onPageChange={(newPage: number) => setPage(newPage)}
+                    onPageSizeChange={(newPageSize: number) => setPerPage(newPageSize)}
+                    rowsPerPageOptions={[10, 20, 50, 100]}
+                    paginationMode="client"
+                    pagination
+                    loading={state.fetching}
+                    checkboxSelection
+                    autoHeight
+                    components={
+                        {
+                            Toolbar: GridToolbar,
+                            LoadingOverlay: GridSpinner
+                        }
                     }
-                }
-                sx={{
-                    '& .MuiDataGrid-columnHeaderTitle': {
-                        fontWeight: 600
-                    }
-                }}
+                    sx={{
+                        '& .MuiDataGrid-columnHeaderTitle': {
+                            fontWeight: 600
+                        }
+                    }}
+                />
+            </RoutingTableBox>
+            <AddRouting
+                isOpen={state.isAddModalOpen}
+                newId={state.maxId + 1}
+                openModal={openAddModal}
+                onClose={() => openAddModal(false)}
             />
-        </RoutingTableBox>
+            <CustomToast
+                open={alertBar.open}
+                onClose={handleClose}
+                msg={alertBar.msg}
+                severityType={alertBar.severityType}
+            />
+        </div>
     )
 }
