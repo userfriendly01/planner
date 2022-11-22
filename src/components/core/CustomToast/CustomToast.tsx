@@ -1,10 +1,10 @@
-import * as React  from "react";
+import * as React from "react";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
-import MuiAlert,{
+import MuiAlert, {
   AlertProps
 } from "@mui/material/Alert";
-import{
+import {
   useEffect,
   useState
 } from "react";
@@ -17,10 +17,10 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 });
 
 export interface CustomToastProps {
-  open:boolean,
-  onClose:any,
-  msg:string,
-  severityType:any
+  open: boolean,
+  onClose: any,
+  msg: string,
+  severityType: any
 }
 
 export default ({
@@ -28,13 +28,13 @@ export default ({
   onClose,
   msg,
   severityType
-}:CustomToastProps) => {
+}: CustomToastProps) => {
   const [alertFlag, setAlertFlag] = useState(open);
-  const ChangeHandleClose = ()=> {
+  const changeHandleClose = () => {
     setAlertFlag(false);
     onClose(false);
   };
-  useEffect(()=>{
+  useEffect(() => {
     setAlertFlag(open);
   });
   return (
@@ -42,12 +42,12 @@ export default ({
       <Snackbar
         open={alertFlag}
         autoHideDuration={6000}
-        onClose={ChangeHandleClose}
+        onClose={changeHandleClose}
         anchorOrigin={{
           vertical: "top",
           horizontal: "right"
         }} >
-        <Alert onClose={ChangeHandleClose} severity={severityType} sx={{ width: "100%" }}>
+        <Alert onClose={changeHandleClose} severity={severityType} sx={{ width: "100%" }}>
           {msg}
         </Alert>
       </Snackbar>
