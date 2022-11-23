@@ -35,8 +35,8 @@ const DataGridFlow = () => {
   const graphQlApiUrl: string = getGraphQLEndpoint();
   const [dataFlow, setDataFlow] = useState({
     data: [],
-    filteredItems: [],
-    advanceFilter: Array<FlowAdvanceFilter>,
+    filteredItems: [] ,
+    advanceFilter: [],
     masterData: [],
     fetching: true,
     selectedRow: undefined,
@@ -90,10 +90,6 @@ const DataGridFlow = () => {
   };
 
   const handleSearchDDChange = (event: any) => {
-    console.log("event", event);
-    console.log("event- name", event.target.name);
-    console.log("value", event.target.value);
-    console.log("dataFlow", dataFlow);
     setDataFlow((dataFlowProps:any)=> ({
       ...dataFlowProps,
       advanceFilter: {
@@ -119,11 +115,10 @@ const DataGridFlow = () => {
     }));
   };
 
-  const openAdvanceSearchModal = (flag:boolean, advanceFilter?:any)=> {
-    console.log("advance", dataFlow?.advanceFilter);
+  const openAdvanceSearchModal = (flag:boolean, advanceFilter?:FlowAdvanceFilter)=> {
     if (advanceFilter) {
       localStorage.setItem(CACHE_FILTER_FLOW, JSON.stringify(dataFlow?.advanceFilter));
-      setDataFlow(dataFlowProps => ({
+      setDataFlow((dataFlowProps:any) => ({
         ...dataFlowProps,
         "advanceFilter": advanceFilter
       }));
@@ -135,9 +130,9 @@ const DataGridFlow = () => {
   };
 
   const getAdvanceFilter = () => {
-    let advanceFilter: { [key: string]: string|number; };
+    let advanceFilter: { [key: string]: undefined; };
     try {
-      const cachedFilter:any = localStorage.getItem(CACHE_FILTER_FLOW);
+      const cachedFilter = localStorage.getItem(CACHE_FILTER_FLOW);
       advanceFilter = JSON.parse(cachedFilter) || {};
       Object.keys(advanceFilter).forEach(key => {
         if (advanceFilter[key] === "") {
@@ -157,11 +152,10 @@ const DataGridFlow = () => {
     const result = data.filter(
       (item:any) => item.id >= idStart && item.id <= idEnd
     );
-    console.log("result", result);
     const advanceFilter = getAdvanceFilter();
     const advanceFilterLength = Object.keys(advanceFilter).length;
     if (advanceFilterLength > 0) {
-      const advanceFilteredArray: any[] = [];
+      const advanceFilteredArray: FlowAdvanceFilter[] = [];
       result.forEach(item=> {
         let matched = 0;
         Object.keys(advanceFilter).forEach(key => {
@@ -193,18 +187,6 @@ const DataGridFlow = () => {
     }
   };
 
-  const resetFilterRecords =()=> {
-    const  data:any = dataFlow["data"];
-    const maxId = data[data.length - 1].id;
-    setDataFlow((dataFlowProps:any) => ({
-      ...dataFlowProps,
-      "filteredItems": data,
-      "idStart": data[0].id,
-      "idEnd": maxId,
-      "maxId": maxId,
-      "advanceFilter": {}
-    }));
-  };
 
   const loadDataTable = async () => {
     let result: CctSharedCallFlowDb[] = await retrieveFlowData(
@@ -310,13 +292,11 @@ const DataGridFlow = () => {
 
       <AdvanceSearchFlow
         isOpen={dataFlow.isAdvanceSearchModalOpen}
-        className="data-grid-modal"
         selection={dataFlow.advanceFilter}
         openModal={openAdvanceSearchModal}
         handleChange={handleSearchDDChange}
         masterData={dataFlow.masterData}
         applyFilter={filterRecords}
-        resetMasterData={clearGridMasterData}
         onClose={() => {
           openAdvanceSearchModal(false);
           return true;

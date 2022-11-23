@@ -43,6 +43,7 @@ export default function SelectContainer({
           disabled={disabled}
           variant="outlined"
         >
+          <MenuItem key = "null_value" value= "">{label}</MenuItem>
           {dropDownOptions?.map(options => (
             <MenuItem key={options} value={options}>
               {options}

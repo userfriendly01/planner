@@ -3,24 +3,29 @@
 
 import React from "react";
 import {
-  Modal, ModalHeader, ModalBody, ModalFooter
+  ModalHeader, ModalBody, ModalFooter
 } from "@lmig/lmds-react-modal";
 import {
-  HeadingStyled
+  HeadingStyled, ModalSearchStyled
 } from "../../AlohaFlow.Styles";
-import "./index.scss";
-import {
-  CctSharedCallFlowDb, FlowAdvanceFilter
-} from "../../AlohaFlow.Interfaces";
+import SelectContainer from "../../../../core/SharedComponents/SelectContainer";
+import TextField from "@mui/material/TextField";
+import Grid from "@mui/material/Grid";
+import Button from "@mui/material/Button";
 
 const CACHE_FILTER_FLOW = "SEARCH_FILTER_FLOW";
 
-const AdvanceSearchModal = (props:any) => {
-  const {
-    isOpen, onClose, handleChange, masterData = [], selection, openModal, applyFilter
-  } = props;
-
-  const saveFilter = (search:any) => {
+interface AdvanceSearchModalProps{
+  isOpen:boolean,
+  onClose:(flag:boolean)=>boolean,
+  handleChange:(event:any)=>void,
+  masterData:any,
+  selection: any,
+  openModal:(flag:boolean, search:any)=>void,
+  applyFilter:()=>void
+}
+const AdvanceSearchModal = ({isOpen, onClose, handleChange, masterData = [], selection, openModal, applyFilter}:AdvanceSearchModalProps) => {
+  const saveFilter = (search: any) => {
     localStorage.setItem(CACHE_FILTER_FLOW, JSON.stringify(search));
     applyFilter();
     openModal(false, search);
@@ -38,91 +43,90 @@ const AdvanceSearchModal = (props:any) => {
 
   return (
     <div>
-      <Modal isOpen={isOpen} onClose={() => onClose(false)}>
-        <ModalHeader id="my-awesome-header">
+      <ModalSearchStyled isOpen={isOpen} onClose={() => onClose(false)}>
+        <ModalHeader id="my-search-header">
           <HeadingStyled type="h4-light"> Advance Search Selection </HeadingStyled>
         </ModalHeader>
-
-        <div >
-          <ModalBody>
-            <div className="advance-search-container">
-              <div className="heading">
-                <div>Please select search items to filter Routing Rules</div>
-              </div>
-              <div className="drop-down-item" id="brand" key="brand">
-                <div className="drop-down-label">Brand</div>
-                <div className="select-container">
-                  <select value={selection.brand} onChange={e => handleChange(e)} name="brand">
-                    <option value="">Select Brand</option>
-                    {masterData.brand.map((option:any) => (
-                      <option value={option} key={option}>{option}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="drop-down-item" id="channel" key="channel">
-                <div className="drop-down-label">Channel</div>
-                <div className="select-container">
-                  <select value={selection.channel} onChange={e => handleChange(e)} name="channel">
-                    <option value="">Select Channel</option>
-                    {masterData.channel.map((option:string|number) => (
-                      <option value={option} key={option}>{option}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <div className="drop-down-item" id="dialed" key="dialed">
-                <div className="drop-down-label">Dialed#</div>
-                <div className="input-container">
-                  <input value={selection.pkey} onChange={e => handleChange(e)} name="pkey" />
-                </div>
-              </div>
-              <div className="drop-down-item" id="template" key="template">
-                <div className="drop-down-label">Template</div>
-                <div className="select-container">
-                  <select value={selection.callFlowTemplate} onChange={e => handleChange(e)} name="callFlowTemplate">
-                    <option value="">Select Template</option>
-                    {masterData?.callFlowTemplate?.map((option:string|number) => (
-                      <option value={option} key={option}>{option}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <div className="drop-down-item" id="route" key="route">
-                <div className="drop-down-label">Route</div>
-                <div className="select-container">
-                  <select value={selection.callFlowRoute} onChange={e => handleChange(e)} name="callFlowRoute">
-                    <option value="">Select Template</option>
-                    {masterData?.callFlowRoute?.map((option:string|number) => (
-                      <option value={option} key={option}>{option}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
-          </ModalBody>
-          <ModalFooter >
-            <div className="modal-item buttons search-item-modal">
-              <button
-                type="button"
-                value="Save Filter"
-                onClick={() => saveFilter(selection)}
-              >
-                Save Filter
-              </button>
-
-              <button
-                type="button"
-                value="Save"
-                onClick={() => resetSavedFilter()}
-              >
-                Reset Filter
-              </button>
-            </div>
-          </ModalFooter>
-        </div>
-      </Modal>
+        <ModalBody>
+          <Grid container rowSpacing={3}>
+            <Grid item xs={10}>
+              <SelectContainer
+                dropDownOptions = {masterData?.brand}
+                name= "brand"
+                label= "Choose Brand"
+                value= {selection?.brand}
+                onChange= {handleChange}
+                disabled= {false}
+                error = {false}
+                required = {false}/>
+            </Grid>
+            <Grid item xs={10}>
+              <SelectContainer
+                dropDownOptions = {masterData?.channel}
+                name= "channel"
+                label= "Choose Channel"
+                value= {selection?.channel}
+                onChange= {handleChange}
+                disabled= {false}
+                error = {false}
+                required = {false}/>
+            </Grid>
+            <Grid item xs={8}>
+              <TextField
+                variant="outlined"
+                label= "#Dialed"
+                name="pkey"
+                type="text"
+                value={selection?.pkey}
+                onChange={handleChange}
+                sx={{ width: "Calc(100%)" }}
+              />
+            </Grid>
+            <Grid item xs={10}>
+              <SelectContainer
+                dropDownOptions = {masterData?.callFlowTemplate}
+                name= "callFlowTemplate"
+                label= "Choose Call Flow Template"
+                value= {selection.callFlowTemplate}
+                onChange= {handleChange}
+                disabled= {false}
+                error = {false}
+                required = {false}/>
+            </Grid>
+            <Grid item xs={10}>
+              <SelectContainer
+                dropDownOptions = {masterData?.callFlowRoute}
+                name= "callFlowRoute"
+                label= "Choose Call Flow Route"
+                value= {selection.callFlowRoute}
+                onChange= {handleChange}
+                disabled= {false}
+                error = {false}
+                required = {false}/>
+            </Grid>
+          </Grid>
+        </ModalBody>
+        <ModalFooter >
+          <Button
+            type="submit"
+            value="Save Filter"
+            variant="contained"
+            color="primary"
+            sx={{ marginRight: 1 }}
+            onClick={() => saveFilter(selection)}
+          >
+            Save Filter
+          </Button>
+          <Button
+            value="Cancel"
+            variant="outlined"
+            color="primary"
+            onClick={() => resetSavedFilter()}
+          >
+            Reset Filter
+          </Button>
+        </ModalFooter>
+      </ModalSearchStyled>
     </div>
   );
 };
