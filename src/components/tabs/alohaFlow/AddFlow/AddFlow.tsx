@@ -17,7 +17,7 @@ import {
 import ComponentControl from "../../../core/SharedComponents/ComponentControl";
 import {
   FlowKeys,
-  dropDownList
+  FlowDropDownList
 } from "../AlohaFlow.Interfaces";
 import { addFlowRule } from "services";
 import {
@@ -27,6 +27,8 @@ import {
 } from "../AlohaFlow.Styles";
 import CustomToast from "../../../core/CustomToast/CustomToast";
 import {
+  flowDropDownList,
+  FLOW_MASTER_DATA,
   getAccessToken,
   getGraphQLEndpoint
 } from "utils";
@@ -43,22 +45,17 @@ export default (props: any) => {
   const languageOffer = ["English", "Spanish"];
   const userDestination = ["Avaya", "Twilio"];
   const [flowRule, setFlowRule] = useState({ ...initRule });
-  const [dropDownValues, setDropDownValues] = useState({
-    "brand": [],
-    "languageOffer": [],
-    "channel": [],
-    "userDestination": []
-  });
+  const [dropDownValues, setDropDownValues] = useState(flowDropDownList);
   const [alertBar, setAlertBar] = useState({
     "open": false,
     "msg": "",
     "severityType": ""
   });
 
-  let dropDownOptions;
+
   useEffect(() => {
     async function fetchData() {
-      const masterData = localStorage.getItem("FLOW_MASTER_DATA");
+      const masterData = localStorage.getItem(FLOW_MASTER_DATA);
       let masterDataObject: any;
       if (masterData !== undefined && masterData !== null) {
         masterDataObject = JSON.parse(masterData);
@@ -170,11 +167,6 @@ export default (props: any) => {
               flowFields.map(({
                 label, key, control, required = false
               }) => {
-                if (control === "select") {
-                  dropDownOptions = dropDownValues[key as keyof dropDownList];
-                } else {
-                  dropDownOptions = [];
-                }
                 return (
                   <Grid key={key} item xs={4}>
                     <ComponentControl
@@ -184,7 +176,7 @@ export default (props: any) => {
                       type="text"
                       value={flowRule[key as keyof FlowKeys].value}
                       error={flowRule[key as keyof FlowKeys].error}
-                      dropDownOptions={dropDownOptions}
+                      dropDownOptions={dropDownValues[key as keyof FlowDropDownList] || []}
                       onChange={(event: any) => handleInputChange(event)}
                       required={required}
                     />

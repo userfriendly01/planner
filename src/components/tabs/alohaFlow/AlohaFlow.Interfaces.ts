@@ -91,7 +91,7 @@ export interface FlowKeys {
     userDestination: string
 }
 
-export interface dropDownList {
+export interface FlowDropDownList {
     brand: string[],
     channel: string[],
     languageOffer: string[],
