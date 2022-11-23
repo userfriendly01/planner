@@ -13,7 +13,7 @@ import {
 } from "utils";
 import CustomToast from "../../../core/CustomToast/CustomToast";
 import {
-  CctSharedCallFlowDb, FlowAdvanceFilter
+  CctSharedCallFlowDb, FlowAdvanceFilter, FlowStateVariables
 } from "../AlohaFlow.Interfaces";
 import AddFlow from "../CustomActions/AddFlow/AddFlow";
 import AdvanceSearchFlow from "../CustomActions/AdvanceSearch/AdvanceSearch";
@@ -21,23 +21,23 @@ import CustomFlowGridToolBar from "../CustomActions/CustomFlowGridToolBar";
 import "./Grid.scss";
 import FlowGridColumnDef from "./GridColumnDef";
 import {
-  clearGridMasterData, getGridMasterData
+  getGridMasterData
 } from "./GridMaster";
 import GridSpinner from "./GridSpinner";
 import {
   DataGrid, GridToolbar
 } from "@mui/x-data-grid";
-const CACHE_FILTER_FLOW = "SEARCH_FILTER_FLOW";
+import { CACHE_FILTER_FLOW } from "../../../../utils/flowUtils";
 
 
-const DataGridFlow = () => {
+const DataGridFlow = ():JSX.Element => {
   const accessToken: string = getAccessToken();
   const graphQlApiUrl: string = getGraphQLEndpoint();
-  const [dataFlow, setDataFlow] = useState({
+  const flowInitState: FlowStateVariables = {
     data: [],
     filteredItems: [] ,
-    advanceFilter: [],
-    masterData: [],
+    advanceFilter: {},
+    masterData: getGridMasterData(),
     fetching: true,
     selectedRow: undefined,
     isEditModalOpen: false,
@@ -50,7 +50,8 @@ const DataGridFlow = () => {
     saveSuccess: 0,
     page: 1,
     perPage: 10
-  });
+  };
+  const [dataFlow, setDataFlow] = useState(flowInitState);
   const [alertBar, setAlertBar] = useState({
     open: false,
     msg: "",
@@ -159,7 +160,7 @@ const DataGridFlow = () => {
       result.forEach(item=> {
         let matched = 0;
         Object.keys(advanceFilter).forEach(key => {
-          let tempItem = item;
+          let tempItem: any = item;
           if (key === "callFlowRoute") {
             tempItem = tempItem.content;
           }

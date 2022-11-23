@@ -1,4 +1,4 @@
-interface FlowContent {
+export interface FlowContent {
     callerType: string
     callFlowRoute: string
     dataRequests: [string]
@@ -41,26 +41,26 @@ export interface FlowAdvanceFilter {
 
 }
 export interface FlowStateVariables {
-    data?: Array<CctSharedCallFlowDb>,
-    filteredItems?: Array<FlowAdvanceFilter>,
-    advanceFilter?: any,
-    masterData?: Array<CctSharedCallFlowDb>,
-    fetching?: boolean,
-    selectedRow?: undefined,
-    isEditModalOpen?: boolean,
-    isAddModalOpen?: boolean,
-    isAdvanceSearchModalOpen?: boolean,
-    idStart?: number,
-    idEnd?: number,
-    maxId?: number,
-    minId?: number,
-    saveSuccess?: number,
-    page?: number,
+    data?: Array<CctSharedCallFlowDb>;
+    filteredItems?: Array<FlowAdvanceFilter>;
+    advanceFilter?: FlowAdvanceFilter;
+    masterData?: FlowAdvanceFilterMasterData;
+    fetching?: boolean;
+    selectedRow?: undefined;
+    isEditModalOpen?: boolean;
+    isAddModalOpen?: boolean;
+    isAdvanceSearchModalOpen?: boolean;
+    idStart?: number;
+    idEnd?: number;
+    maxId?: number;
+    minId?: number;
+    saveSuccess?: number;
+    page?: number;
     perPage?: number
 }
 
 export interface CctSharedCallFlowDb {
-    id: number,
+    id: number;
     pkey: string;
     agentId?: string;
     brand?: string;

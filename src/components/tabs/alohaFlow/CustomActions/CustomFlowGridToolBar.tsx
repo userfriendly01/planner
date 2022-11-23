@@ -4,6 +4,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import React, { useState } from "react";
 import { FlowAdvanceFilter } from "../AlohaFlow.Interfaces";
+import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
+import SearchIcon from "@mui/icons-material/Search";
 
 interface CustomFlowGridToolBarProps{
     openAddModal:(flag:boolean, ruleType?:number)=>void,
@@ -14,10 +16,7 @@ interface CustomFlowGridToolBarProps{
 const CustomFlowGridToolBar = ({
   openAddModal, openAdvanceSearchModal
 }:CustomFlowGridToolBarProps) =>{
-  const[dropDownOptions, setDropDownOptions]=useState({
-    "addFlow": false,
-    "Filter": false
-  });
+  const[dropDownOptions, setDropDownOptions]=useState("");
   const handleChange=(event:any)=> {
     if(event.target.value === "addFlow"){
       openAddModal(true);
@@ -25,35 +24,33 @@ const CustomFlowGridToolBar = ({
     else if(event.target.value === "Filter"){
       openAdvanceSearchModal(true);
     }
-    else{
-      console.log("here");
-    }
   };
   return (
     <div>
       <FormControl sx={{
         minWidth: 120,
-        marginLeft: "calc(75%)",
+        marginLeft: "calc(85%)",
         marginTop: 1
       }}>
         <InputLabel>Actions</InputLabel>
         <Select
           inputProps={{
             sx: {
-              width: "calc(25%)"
+              width: "calc(35%)"
             }
           }}
           label="Actions"
           value={dropDownOptions}
           onChange={handleChange}
-          variant="outlined"
+          variant="filled"
           size="small"
+          displayEmpty
         >
           <MenuItem key = "addFlow" value = "addFlow">
-            Add Flow +
+            <PlaylistAddIcon/>&nbsp;&nbsp; Add Flow
           </MenuItem>
           <MenuItem key = "Filter" value = "Filter">
-            Advance Search
+            <SearchIcon/> &nbsp;&nbsp; Advance Search
           </MenuItem>
         </Select>
       </FormControl>

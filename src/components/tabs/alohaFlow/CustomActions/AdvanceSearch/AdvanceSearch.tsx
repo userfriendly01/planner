@@ -10,20 +10,21 @@ import SelectContainer from "../../../../core/SharedComponents/SelectContainer";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
-
-const CACHE_FILTER_FLOW = "SEARCH_FILTER_FLOW";
-
+import { CACHE_FILTER_FLOW } from "../../../../../utils/flowUtils";
+import {
+  FlowAdvanceFilter, FlowAdvanceFilterMasterData
+} from "../../AlohaFlow.Interfaces";
 interface AdvanceSearchModalProps{
-  isOpen:boolean,
-  onClose:(flag:boolean)=>boolean,
-  handleChange:(event:any)=>void,
-  masterData:any,
-  selection: any,
-  openModal:(flag:boolean, search:any)=>void,
-  applyFilter:()=>void
+  isOpen:boolean;
+  onClose:(flag:boolean)=>boolean;
+  handleChange:(event:any)=>void;
+  masterData:FlowAdvanceFilterMasterData;
+  selection: FlowAdvanceFilter;
+  openModal:(flag:boolean, search:FlowAdvanceFilter)=>void;
+  applyFilter:()=>void;
 }
-const AdvanceSearchModal = ({isOpen, onClose, handleChange, masterData = [], selection, openModal, applyFilter}:AdvanceSearchModalProps) => {
-  const saveFilter = (search: any) => {
+const AdvanceSearchModal = ({isOpen, onClose, handleChange, masterData, selection, openModal, applyFilter}:AdvanceSearchModalProps) => {
+  const saveFilter = (search: FlowAdvanceFilter) => {
     localStorage.setItem(CACHE_FILTER_FLOW, JSON.stringify(search));
     applyFilter();
     openModal(false, search);
@@ -34,10 +35,6 @@ const AdvanceSearchModal = ({isOpen, onClose, handleChange, masterData = [], sel
     applyFilter();
     openModal(false, null);
   };
-
-  if (masterData.length === 0) {
-    return null;
-  }
 
   return (
     <div>
@@ -56,6 +53,7 @@ const AdvanceSearchModal = ({isOpen, onClose, handleChange, masterData = [], sel
                 onChange= {handleChange}
                 disabled= {false}
                 error = {false}
+                isBlankFirstValue = {true}
                 required = {false}/>
             </Grid>
             <Grid item xs={10}>
@@ -67,9 +65,10 @@ const AdvanceSearchModal = ({isOpen, onClose, handleChange, masterData = [], sel
                 onChange= {handleChange}
                 disabled= {false}
                 error = {false}
+                isBlankFirstValue = {true}
                 required = {false}/>
             </Grid>
-            <Grid item xs={8}>
+            <Grid item xs={10}>
               <TextField
                 variant="outlined"
                 label= "#Dialed"
@@ -77,7 +76,7 @@ const AdvanceSearchModal = ({isOpen, onClose, handleChange, masterData = [], sel
                 type="text"
                 value={selection?.pkey}
                 onChange={handleChange}
-                sx={{ width: "Calc(100%)" }}
+                sx={{ width: "Calc(96%)" }}
               />
             </Grid>
             <Grid item xs={10}>
@@ -89,6 +88,7 @@ const AdvanceSearchModal = ({isOpen, onClose, handleChange, masterData = [], sel
                 onChange= {handleChange}
                 disabled= {false}
                 error = {false}
+                isBlankFirstValue = {true}
                 required = {false}/>
             </Grid>
             <Grid item xs={10}>
@@ -100,6 +100,7 @@ const AdvanceSearchModal = ({isOpen, onClose, handleChange, masterData = [], sel
                 onChange= {handleChange}
                 disabled= {false}
                 error = {false}
+                isBlankFirstValue = {true}
                 required = {false}/>
             </Grid>
           </Grid>
