@@ -14,25 +14,25 @@ import {
   initRule,
   flowFields
 } from "./FlowFieldsConfig";
-import ComponentControl from "../../../core/SharedComponents/ComponentControl";
+import ComponentControl from "../../../../core/SharedComponents/ComponentControl";
 import {
   FlowKeys,
   dropDownList
-} from "../AlohaFlow.Interfaces";
+} from "../../AlohaFlow.Interfaces";
 import { addFlowRule } from "services";
 import {
   ModalBodyStyled,
   ModalFooterStyled,
   HeadingStyled
-} from "../AlohaFlow.Styles";
-import CustomToast from "../../../core/CustomToast/CustomToast";
+} from "../../AlohaFlow.Styles";
+import CustomToast from "../../../../core/CustomToast/CustomToast";
 import {
   getAccessToken,
   getGraphQLEndpoint
 } from "utils";
 import { retrieveFlowData } from "services";
-import { CctSharedCallFlowDb } from "../AlohaFlow.Interfaces";
-import { getGridMasterData } from "../DataGridFlow/GridMaster";
+import { CctSharedCallFlowDb } from "../../AlohaFlow.Interfaces";
+import { getGridMasterData } from "../../DataGridFlow/GridMaster";
 
 export default (props: any) => {
   const {

@@ -2,7 +2,8 @@ import styled from "styled-components";
 import {
   ModalBody,
   ModalFooter,
-  Heading
+  Heading,
+  Modal
 } from "@lmig/lmds-react";
 
 export const ModalBodyStyled = styled(ModalBody)`
@@ -20,4 +21,7 @@ export const ModalFooterStyled = styled(ModalFooter)`
 
 export const HeadingStyled = styled(Heading)`
   margin-top:50px !important
+`;
+export const ModalSearchStyled = styled(Modal)`
+  width:60%
 `;

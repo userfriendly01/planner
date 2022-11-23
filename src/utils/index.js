@@ -4,7 +4,7 @@ export * from "./calabrioUtils";
 export * from "./formatManagersResponse";
 export * from "./formatOfficesResponse";
 export * from "./profileUtils";
-export * from "./flowUtils";
+export * from "./configUtils";
 export * from "./formatNumberUtils";
 export * from "./formatWorkerResponse";
 export * from "./formatWorkerAttributeSkillsToHTML";

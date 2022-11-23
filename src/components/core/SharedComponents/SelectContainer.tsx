@@ -12,7 +12,8 @@ export interface SelectContainerProps{
   onChange: any,
   disabled: boolean,
   error: boolean,
-  required: boolean
+  required: boolean;
+  isBlankFirstValue?: boolean
 }
 export default function SelectContainer({
   dropDownOptions,
@@ -22,7 +23,8 @@ export default function SelectContainer({
   onChange,
   disabled,
   error,
-  required
+  required,
+  isBlankFirstValue
 }:SelectContainerProps){
   return (
     <div>
@@ -39,6 +41,7 @@ export default function SelectContainer({
           disabled={disabled}
           variant="outlined"
         >
+          {isBlankFirstValue?(<MenuItem key = "null_value" value= {null}>{label}</MenuItem>):null}
           {dropDownOptions?.map(options => (
             <MenuItem key={options} value={options}>
               {options}
