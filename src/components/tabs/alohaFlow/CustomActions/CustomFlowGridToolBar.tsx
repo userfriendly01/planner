@@ -3,10 +3,11 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import React, { useState } from "react";
+import { FlowAdvanceFilter } from "../AlohaFlow.Interfaces";
 
 interface CustomFlowGridToolBarProps{
-    openAddModal:any,
-    openAdvanceSearchModal:any
+    openAddModal:(flag:boolean, ruleType?:number)=>void,
+    openAdvanceSearchModal:(flag:boolean,advanceFilter?:FlowAdvanceFilter)=>void
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
