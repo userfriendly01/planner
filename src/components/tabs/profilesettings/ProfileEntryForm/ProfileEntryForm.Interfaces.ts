@@ -1,7 +1,7 @@
 import {
   ModalOverlayStatuses,
   Activity,
-  ACWOption
+  ACWWorkerTaskInfo
 } from "globals";
 
 export interface ProfileEntryFormProps {
@@ -36,9 +36,9 @@ export interface ProfileActivitiesSelectFieldProps {
   setActivitiesList: (activitiesList: Activity[]) => void;
 }
 
-export interface ProfileACWOptionsSelectFieldProps {
-  acwOptionsList: ACWOption[]
-  setACWOptionsList: (acwOptionsList: ACWOption[]) => void;
+export interface ProfileACWWorkerTaskInfosSelectFieldProps {
+  acwWorkerTaskInfosList: ACWWorkerTaskInfo[]
+  setACWWorkerTaskInfosList: (acwWorkerTaskInfosList: ACWWorkerTaskInfo[]) => void;
 }
 
 export interface ProfileEntryFormState {
@@ -48,11 +48,11 @@ export interface ProfileEntryFormState {
   profileName: FieldState,
   overflowSkill: FieldState,
   activitiesList: Activity[],
-  acwOptionsList: ACWOption[],
+  acwWorkerTaskInfosList: ACWWorkerTaskInfo[],
   autoAnswered: FieldState,
   inboundRecorded: FieldState,
   outboundRecorded: FieldState,
-  acwOption: FieldState,
+  acwWorkerTaskInfo: FieldState,
   manualRecorded: FieldState,
   acwDataEntry: FieldState,
   manualRecordedInbound: FieldState,

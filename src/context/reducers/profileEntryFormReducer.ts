@@ -24,7 +24,7 @@ export const profileEntryFormActions = {
 export const initialProfileEntryFormState: ProfileEntryFormState = {
   profileId: null,
   activitiesList: [],
-  acwOptionsList: [],
+  acwWorkerTaskInfosList: [],
   formMode: formModes.INSERT,
   autoAnswered: {
     value: true
@@ -35,7 +35,7 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
   outboundRecorded: {
     value: true
   },
-  acwOption: {
+  acwWorkerTaskInfo: {
     value: false
   },
   manualRecorded: {
@@ -113,21 +113,21 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
     case profileEntryFormActions.UPDATE_ACW_OPTIONS_LIST: {
       return {
         ...state,
-        acwOptionsList: action.payload,
-        acwOptionsUpdated: true
+        acwWorkerTaskInfosList: action.payload,
+        acwWorkerTaskInfosUpdated: true
       };
     }
     case profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE: {
       const profile = action.payload.profile;
       
-      const acwOptionsList = JSON.parse(profile.acwOptions).map((acwOption: { display_nme: string; options_id: number; profile_id: number; row_crtn_dtm: string; row_updt_dtm:string; wrkr_tsk_info_id:number}) => {
+      const acwWorkerTaskInfosList = JSON.parse(profile.acwWorkerTaskInfos).map((acwWorkerTaskInfo: { display_nme: string; options_id: number; profile_id: number; row_crtn_dtm: string; row_updt_dtm:string; wrkr_tsk_info_id:number}) => {
         return {
-          display_nme: acwOption.display_nme,
-          options_id: acwOption.options_id,
-          profile_id: acwOption.profile_id,
-          row_crtn_dtm: acwOption.row_crtn_dtm,
-          row_updt_dtm: acwOption.row_updt_dtm,
-          wrkr_tsk_info_id: acwOption.wrkr_tsk_info_id
+          display_nme: acwWorkerTaskInfo.display_nme,
+          options_id: acwWorkerTaskInfo.options_id,
+          profile_id: acwWorkerTaskInfo.profile_id,
+          row_crtn_dtm: acwWorkerTaskInfo.row_crtn_dtm,
+          row_updt_dtm: acwWorkerTaskInfo.row_updt_dtm,
+          wrkr_tsk_info_id: acwWorkerTaskInfo.wrkr_tsk_info_id
         }
       });
       
@@ -148,11 +148,11 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         profileId: profile.profile_id,
         formMode: action.payload.formMode,
         activitiesList,
-        acwOptionsList,
+        acwWorkerTaskInfosList,
         autoAnswered: formatProfileBooleanDataTrueFalse(profile.auto_answd_i.data[0]),
         inboundRecorded: formatProfileBooleanDataTrueFalse(profile.recorded_i.data[0]),
         outboundRecorded: formatProfileBooleanDataTrueFalse(profile.otbnd_recorded_i.data[0]),
-        acwOption: formatProfileBooleanDataTrueFalse(profile.acw_option_i.data[0]),
+        acwWorkerTaskInfo: formatProfileBooleanDataTrueFalse(profile.acw_option_i.data[0]),
         manualRecorded: formatProfileBooleanDataTrueFalse(profile.manual_recorded_i.data[0]),
         acwDataEntry: formatProfileBooleanDataTrueFalse(profile.acw_data_entry_i.data[0]),
         manualRecordedInbound: formatProfileBooleanDataTrueFalse(profile.manual_record_inbound_i.data[0]),

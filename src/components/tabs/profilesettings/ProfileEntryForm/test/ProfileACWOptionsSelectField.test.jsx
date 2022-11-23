@@ -1,4 +1,4 @@
-import ProfileACWOptionsSelectField from "../ProfileACWOptionsSelectField";
+import ProfileACWWorkerTaskInfosSelectField from "../ProfileACWWorkerTaskInfosSelectField";
 import {
   Add,
   Delete
@@ -14,7 +14,7 @@ import {
   fireEvent,
   getMockedComponentProps,
   initialTestState,
-  mockACWOptions
+  mockACWWorkerTaskInfos
 } from "testUtils";
 import { apiPaths } from "globals";
 import { Tooltip } from "@mui/material";
@@ -39,17 +39,17 @@ jest.mock("components", () => ({
 
 const statusCode = 500;
 const axiosMock = new MockAdapter(myAxios);
-const acwOptionsEndpoint = apiPaths.GET_PROFILE_WORKER_TASK_INFO;
-const mockSetACWOptionsList = jest.fn();
-const renderComponent = mockACWOptionsList => render(<ProfileACWOptionsSelectField
-  acwOptionsList={mockACWOptionsList}
-  setACWOptionsList={mockSetACWOptionsList}
+const acwWorkerTaskInfosEndpoint = apiPaths.GET_PROFILE_WORKER_TASK_INFO;
+const mockSetACWWorkerTaskInfosList = jest.fn();
+const renderComponent = mockACWWorkerTaskInfosList => render(<ProfileACWWorkerTaskInfosSelectField
+  acwWorkerTaskInfosList={mockACWWorkerTaskInfosList}
+  setACWWorkerTaskInfosList={mockSetACWWorkerTaskInfosList}
 />, initialTestState);
 
-const getAddACWOptionButton = rendered => rendered.getByTestId("add-profileACWOption-button");
-const getDeleteACWOptionButton = (rendered, instance) => rendered.getAllByTestId("delete-acwOption-button")[instance];
+const getAddACWWorkerTaskInfoButton = rendered => rendered.getByTestId("add-profileACWWorkerTaskInfo-button");
+const getDeleteACWWorkerTaskInfoButton = (rendered, instance) => rendered.getAllByTestId("delete-acwWorkerTaskInfo-button")[instance];
 
-describe("<ProfileACWOptionsSelectField />", () => {
+describe("<ProfileACWWorkerTaskInfosSelectField />", () => {
 
   beforeEach(() => {
     setupMockedComponents({
@@ -58,12 +58,12 @@ describe("<ProfileACWOptionsSelectField />", () => {
       Dropdown,
       Tooltip
     });
-    mockSetACWOptionsList.mockClear();
-    axiosMock.onGet(acwOptionsEndpoint).reply(200, mockACWOptions);
+    mockSetACWWorkerTaskInfosList.mockClear();
+    axiosMock.onGet(acwWorkerTaskInfosEndpoint).reply(200, mockACWWorkerTaskInfos);
   });
 
   describe("initial state", () => {
-    test("should render acwOptions select component with no acwOptions selected", async () => {
+    test("should render acwWorkerTaskInfos select component with no acwWorkerTaskInfos selected", async () => {
       const rendered = renderComponent([]);
       expectMockedComponent(rendered, { Dropdown });
       expectMockedComponent(rendered, { Add });
@@ -71,24 +71,24 @@ describe("<ProfileACWOptionsSelectField />", () => {
     });
   });
 
-  describe(acwOptionsEndpoint, () => {
-    describe("acwOptions service call returned an error", () => {
+  describe(acwWorkerTaskInfosEndpoint, () => {
+    describe("acwWorkerTaskInfos service call returned an error", () => {
       beforeEach(() => {
-        axiosMock.onGet(acwOptionsEndpoint).reply(statusCode, { fail: "oh the horror" });
+        axiosMock.onGet(acwWorkerTaskInfosEndpoint).reply(statusCode, { fail: "oh the horror" });
       });
       test("should return 'An error occurred while logging in.'", async () => {
         try {
           renderComponent([]);
         } catch(err) {
-          expect(err.msg).toBe("Failed to fetch acwOptions from service");
+          expect(err.msg).toBe("Failed to fetch acwWorkerTaskInfos from service");
         }
       });
     });
   });
 
-  describe("changes made to the add acwOptions drop down", () => {
+  describe("changes made to the add acwWorkerTaskInfos drop down", () => {
     beforeEach(() => {
-      const mockNewACWOption = [   {
+      const mockNewACWWorkerTaskInfo = [   {
         display_nme: "Call Type",
         options_id: 1,
         profile_id: 15,
@@ -97,11 +97,11 @@ describe("<ProfileACWOptionsSelectField />", () => {
         wrkr_tsk_info_id: 1
       }];
       React.useState = jest.fn()
-        .mockReturnValueOnce([mockNewACWOption, jest.fn()])
-        .mockReturnValueOnce([mockACWOptions, jest.fn()]);
+        .mockReturnValueOnce([mockNewACWWorkerTaskInfo, jest.fn()])
+        .mockReturnValueOnce([mockACWWorkerTaskInfos, jest.fn()]);
     });
 
-    test("should render acwOptions drop down with correct options", () => {
+    test("should render acwWorkerTaskInfos drop down with correct options", () => {
       const rendered = renderComponent([  {
         display_nme: "Call Type",
         options_id: 1,
@@ -116,9 +116,9 @@ describe("<ProfileACWOptionsSelectField />", () => {
         updateValue("", [{ value: 1 }] );
       });
       act(() => {
-        fireEvent.click(getAddACWOptionButton(rendered));
+        fireEvent.click(getAddACWWorkerTaskInfoButton(rendered));
       });
-      expect(mockSetACWOptionsList).toHaveBeenCalledWith([
+      expect(mockSetACWWorkerTaskInfosList).toHaveBeenCalledWith([
         {
           display_nme: "Call Type",
           options_id: 1,
@@ -141,7 +141,7 @@ describe("<ProfileACWOptionsSelectField />", () => {
 
   describe("remove button", () => {
     beforeEach(() => {
-      const mockNewACWOption = [  {
+      const mockNewACWWorkerTaskInfo = [  {
         display_nme: "Call Type",
         options_id: 1,
         profile_id: 15,
@@ -150,11 +150,11 @@ describe("<ProfileACWOptionsSelectField />", () => {
         wrkr_tsk_info_id: 1
       }];
       React.useState = jest.fn()
-        .mockReturnValueOnce([mockNewACWOption, jest.fn()])
-        .mockReturnValueOnce([mockACWOptions, jest.fn()]);
+        .mockReturnValueOnce([mockNewACWWorkerTaskInfo, jest.fn()])
+        .mockReturnValueOnce([mockACWWorkerTaskInfos, jest.fn()]);
     });
 
-    test("should display once for each acwOption; when clicked, acwOption should be removed", () => {
+    test("should display once for each acwWorkerTaskInfo; when clicked, acwWorkerTaskInfo should be removed", () => {
       const rendered = renderComponent([
         {
           display_nme: "Call Type",
@@ -175,9 +175,9 @@ describe("<ProfileACWOptionsSelectField />", () => {
       ]);
       expectMockedComponent(rendered, { Delete }, 2);
       act(() => {
-        fireEvent.click(getDeleteACWOptionButton(rendered, 1));
+        fireEvent.click(getDeleteACWWorkerTaskInfoButton(rendered, 1));
       });
-      expect(mockSetACWOptionsList).toHaveBeenCalledWith([
+      expect(mockSetACWWorkerTaskInfosList).toHaveBeenCalledWith([
         
       ]);
     });

@@ -237,7 +237,7 @@ export const mockActivities = [
   }
 ];
 
-export const mockACWOptions = [
+export const mockACWWorkerTaskInfos = [
   {
     display_nme: "Call Type",
     options_id: 1,
@@ -265,8 +265,8 @@ export const initialTestState = {
   activitiesContext: {
     activities: mockActivities
   },
-  acwOptionsContext: {
-    acwOptions: mockACWOptions
+  acwWorkerTaskInfosContext: {
+    acwWorkerTaskInfos: mockACWWorkerTaskInfos
   },
   userContext: {
     pingIdentity: {

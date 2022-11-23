@@ -121,7 +121,7 @@ export interface TritonProfile {
   row_updt_dtm: string,
   overflow_skill: string,
   activities: string,
-  acwOptions: string
+  acwWorkerTaskInfos: string
 }
 
 export interface ProfilePayload {
@@ -151,7 +151,7 @@ export interface Activity {
   }
 }
 
-export interface ACWOption {
+export interface ACWWorkerTaskInfo {
   profile_id: number,
   wrkr_tsk_info_id: number,
   display_nme: string,
