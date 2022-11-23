@@ -1,7 +1,6 @@
 import { useAdminState } from "context";
 import { FlowDropDownList } from "components/tabs/alohaFlow/AlohaFlow.Interfaces";
 
-export const FLOW_MASTER_DATA = "FLOW_MASTER_DATA";
 /**
  *  This function return graphQL endpoint based on running environment  
  * @returns string: GraphQL Endpoint
@@ -22,3 +21,7 @@ export const flowDropDownList: FlowDropDownList = {
     "channel": [],
     "userDestination": []
 }
+export const CACHE_FILTER_FLOW = "SEARCH_FILTER_FLOW";
+export const FLOW_MASTER_DATA = "FLOW_MASTER_DATA";
+export const languageOffer = ["English", "Spanish"];
+export const userDestination = ["Avaya", "Twilio"];

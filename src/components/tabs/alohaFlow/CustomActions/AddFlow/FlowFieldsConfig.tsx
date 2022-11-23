@@ -1,4 +1,4 @@
-import { AddFlowFieldsConfigProps } from "../AlohaFlow.Interfaces";
+import { AddFlowFieldsConfigProps } from "../../AlohaFlow.Interfaces";
 
 const flowFields: AddFlowFieldsConfigProps[] = [
   {

@@ -14,27 +14,29 @@ import {
   initRule,
   flowFields
 } from "./FlowFieldsConfig";
-import ComponentControl from "../../../core/SharedComponents/ComponentControl";
+import ComponentControl from "../../../../core/SharedComponents/ComponentControl";
 import {
   FlowKeys,
   FlowDropDownList
-} from "../AlohaFlow.Interfaces";
+} from "../../AlohaFlow.Interfaces";
 import { addFlowRule } from "services";
 import {
   ModalBodyStyled,
   ModalFooterStyled,
   HeadingStyled
-} from "../AlohaFlow.Styles";
-import CustomToast from "../../../core/CustomToast/CustomToast";
+} from "../../AlohaFlow.Styles";
+import CustomToast from "../../../../core/CustomToast/CustomToast";
 import {
   flowDropDownList,
   FLOW_MASTER_DATA,
   getAccessToken,
-  getGraphQLEndpoint
+  getGraphQLEndpoint,
+  languageOffer,
+  userDestination
 } from "utils";
 import { retrieveFlowData } from "services";
-import { CctSharedCallFlowDb } from "../AlohaFlow.Interfaces";
-import { getGridMasterData } from "../DataGridFlow/GridMaster";
+import { CctSharedCallFlowDb, FlowMasterData } from "../../AlohaFlow.Interfaces";
+import { getGridMasterData } from "../../DataGridFlow/GridMaster";
 
 export default (props: any) => {
   const {
@@ -42,8 +44,6 @@ export default (props: any) => {
   } = props;
   const accessToken: string = getAccessToken();
   const graphQlApiUrl: string = getGraphQLEndpoint();
-  const languageOffer = ["English", "Spanish"];
-  const userDestination = ["Avaya", "Twilio"];
   const [flowRule, setFlowRule] = useState({ ...initRule });
   const [dropDownValues, setDropDownValues] = useState(flowDropDownList);
   const [alertBar, setAlertBar] = useState({
@@ -56,14 +56,14 @@ export default (props: any) => {
   useEffect(() => {
     async function fetchData() {
       const masterData = localStorage.getItem(FLOW_MASTER_DATA);
-      let masterDataObject: any;
+      let masterDataObject: FlowMasterData;
       if (masterData !== undefined && masterData !== null) {
         masterDataObject = JSON.parse(masterData);
       } else {
         const result: CctSharedCallFlowDb[] = await retrieveFlowData(accessToken, graphQlApiUrl);
         masterDataObject = await getGridMasterData(result);
       }
-      setDropDownValues(dropDownValuesProps => ({
+      setDropDownValues((dropDownValuesProps: FlowDropDownList) => ({
         ...dropDownValuesProps,
         "brand": masterDataObject.brand,
         "channel": masterDataObject.channel,

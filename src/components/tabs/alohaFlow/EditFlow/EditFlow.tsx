@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Modal, ModalHeader } from "@lmig/lmds-react-modal";
 import { Button, Grid } from "@mui/material";
 import { HeadingStyled, ModalBodyStyled, ModalFooterStyled } from "../AlohaFlow.Styles";
-import { FlowDropDownList, FlowInitState, FlowKeys } from "../AlohaFlow.Interfaces";
-import { flowFields, initRule } from "../AddFlow/FlowFieldsConfig";
+import { FlowDropDownList, FlowInitState, FlowKeys, FlowMasterData } from "../AlohaFlow.Interfaces";
+import { flowFields, initRule } from "../CustomActions/AddFlow/FlowFieldsConfig";
 import { CustomToast } from "components";
-import { flowDropDownList, FLOW_MASTER_DATA, getAccessToken } from "utils";
+import { flowDropDownList, FLOW_MASTER_DATA, getAccessToken, languageOffer, userDestination } from "utils";
 import ComponentControl from "components/core/SharedComponents/ComponentControl";
 
 interface EditFlowComponentProps {
@@ -33,7 +33,16 @@ export const EditFlow = ({ onClose, isOpen = false, selectedRow, openModal }: Ed
         setUpdateDataReq('');
         setDisplayRecords(false);
         const masterDataStorage: string = localStorage.getItem(FLOW_MASTER_DATA);
-        const masterData = JSON.parse(masterDataStorage);
+        const masterData: FlowMasterData = JSON.parse(masterDataStorage);
+        setDropDownValues((dropDownOptions: FlowDropDownList) => (
+            {
+                ...dropDownOptions,
+                "brand": masterData.brand,
+                "channel": masterData.channel,
+                "languageOffer": languageOffer,
+                "userDestinaton": userDestination
+            })
+        )
     }, [selectedRow]);
 
     const handleOnSave = () => {
@@ -49,6 +58,10 @@ export const EditFlow = ({ onClose, isOpen = false, selectedRow, openModal }: Ed
     }
 
     const handleClose = () => {
+
+    }
+
+    const handleInputChange = (event: any) => {
 
     }
 

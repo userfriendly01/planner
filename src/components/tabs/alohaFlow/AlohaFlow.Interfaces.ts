@@ -1,4 +1,4 @@
-interface FlowContent {
+export interface FlowContent {
     callerType: string
     callFlowRoute: string
     dataRequests: [string]
@@ -21,7 +21,7 @@ interface DRCFlow {
     requestID: string;
 }
 
-export interface FlowAdvanceFilter {
+export interface FlowMasterData {
     channel?: Array<string>;
     brand?: Array<string>;
     callerType?: Array<string>;
@@ -30,8 +30,37 @@ export interface FlowAdvanceFilter {
     pkey?: Array<string>
 
 }
+
+export interface FlowAdvanceFilter {
+    channel?: string;
+    brand?: string;
+    callerType?: string;
+    callFlowTemplate?: string;
+    callFlowRoute?: string;
+    pkey?: string
+
+}
+export interface FlowStateVariables {
+    data?: Array<CctSharedCallFlowDb>;
+    filteredItems?: Array<FlowAdvanceFilter>;
+    advanceFilter?: FlowAdvanceFilter;
+    masterData?: FlowMasterData;
+    fetching?: boolean;
+    selectedRow?: undefined;
+    isEditModalOpen?: boolean;
+    isAddModalOpen?: boolean;
+    isAdvanceSearchModalOpen?: boolean;
+    idStart?: number;
+    idEnd?: number;
+    maxId?: number;
+    minId?: number;
+    saveSuccess?: number;
+    page?: number;
+    perPage?: number
+}
+
 export interface CctSharedCallFlowDb {
-    id: number,
+    id: number;
     pkey: string;
     agentId?: string;
     brand?: string;
