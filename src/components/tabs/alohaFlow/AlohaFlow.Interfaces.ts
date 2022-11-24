@@ -1,24 +1,24 @@
 export interface FlowContent {
-    callerType: string
-    callFlowRoute: string
-    dataRequests: [string]
-    greetingMessages: string
-    languageOffer: string
-    transferNumber: string
+    callerType?: string;
+    callFlowRoute?: string;
+    dataRequests?: [string];
+    greetingMessages?: string;
+    languageOffer?: string;
+    transferNumber?: string;
 }
 
-interface DRCFlow {
-    accountManager: string;
-    affinityVDN: string;
-    keycode: string;
-    transferCode: string;
-    internetPlacement: string;
-    internetType: string;
-    campaignType: string;
-    lineOfBusiness: string;
-    marketingChannel: string;
-    whisper: string;
-    requestID: string;
+export interface DRCFlow {
+    accountManager?: string;
+    affinityVDN?: string;
+    keycode?: string;
+    transferCode?: string;
+    internetPlacement?: string;
+    internetType?: string;
+    campaignType?: string;
+    lineOfBusiness?: string;
+    marketingChannel?: string;
+    whisper?: string;
+    requestID?: string;
 }
 
 export interface FlowMasterData {
@@ -27,7 +27,7 @@ export interface FlowMasterData {
     callerType?: Array<string>;
     callFlowTemplate?: Array<string>;
     callFlowRoute?: Array<string>;
-    pkey?: Array<string>
+    pkey?: Array<string>;
 
 }
 
@@ -37,7 +37,7 @@ export interface FlowAdvanceFilter {
     callerType?: string;
     callFlowTemplate?: string;
     callFlowRoute?: string;
-    pkey?: string
+    pkey?: string;
 
 }
 export interface FlowStateVariables {
@@ -56,12 +56,12 @@ export interface FlowStateVariables {
     minId?: number;
     saveSuccess?: number;
     page?: number;
-    perPage?: number
+    perPage?: number;
 }
 
 export interface CctSharedCallFlowDb {
-    id: number;
-    pkey: string;
+    id?: number;
+    pkey?: string;
     agentId?: string;
     brand?: string;
     callFlowTemplate?: string;
@@ -89,48 +89,50 @@ export interface FlowInitState {
     saveSuccess?: number;
     page?: number;
     perPage?: number;
-    advanceFilter?: Array<FlowAdvanceFilter>
+    advanceFilter?: Array<FlowAdvanceFilter>;
 }
 
 export interface FlowKeys {
-    pkey?: string,
-    dialedDescription?: string,
-    callFlowTemplate?: string,
-    channel?: string,
-    brand?: string,
-    languageOffer?: string,
-    dataRequests: [string],
-    callerType: string,
-    transferNumber: string,
-    callFlowRoute: string,
-    greetingMessages: string,
-    agentId: string,
-    employeeId: string,
-    accountManager: string,
-    affinityVDN: string,
-    keycode: string,
-    transferCode: string,
-    internetPlacement: string,
-    internetType: string,
-    campaignType: string,
-    lineOfBusiness: string,
-    marketingChannel: string,
-    whisper: string,
-    requestID: string,
-    userDestination: string
+    pkey?: string;
+    dialedDescription?: string;
+    callFlowTemplate?: string;
+    channel?: string;
+    brand?: string;
+    languageOffer?: string;
+    dataRequests: [string];
+    callerType: string;
+    transferNumber: string;
+    callFlowRoute: string;
+    greetingMessages: string;
+    agentId: string;
+    employeeId: string;
+    accountManager: string;
+    affinityVDN: string;
+    keycode: string;
+    transferCode: string;
+    internetPlacement: string;
+    internetType: string;
+    campaignType: string;
+    lineOfBusiness: string;
+    marketingChannel: string;
+    whisper: string;
+    requestID: string;
+    userDestination: string;
 }
 
 export interface FlowDropDownList {
-    brand: string[],
-    channel: string[],
-    languageOffer: string[],
-    userDestination: string[]
+    brand: string[];
+    channel: string[];
+    languageOffer: string[];
+    userDestination: string[];
 }
 
 export interface AddFlowFieldsConfigProps {
-    label: string,
-    key: string,
-    control: string,
-    required?: boolean,
-    disableEdit?: boolean
+    label: string;
+    key: string;
+    control: string;
+    required?: boolean;
+    disableEdit?: boolean;
+    valueGetter?: (params: CctSharedCallFlowDb) => string;
+    valueSetter?: (currentValue: CctSharedCallFlowDb, newValue: any) => CctSharedCallFlowDb;
 }

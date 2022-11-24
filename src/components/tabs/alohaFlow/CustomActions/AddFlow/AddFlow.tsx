@@ -31,6 +31,7 @@ import {
   FLOW_MASTER_DATA,
   getAccessToken,
   getGraphQLEndpoint,
+  initializedAlertBar,
   languageOffer,
   userDestination
 } from "utils";
@@ -47,11 +48,7 @@ export default (props: any) => {
   const graphQlApiUrl: string = getGraphQLEndpoint();
   const [flowRule, setFlowRule] = useState({ ...initRule });
   const [dropDownValues, setDropDownValues] = useState(flowDropDownList);
-  const [alertBar, setAlertBar] = useState({
-    "open": false,
-    "msg": "",
-    "severityType": ""
-  });
+  const [alertBar, setAlertBar] = useState(initializedAlertBar);
 
 
   useEffect(() => {
@@ -66,10 +63,10 @@ export default (props: any) => {
       }
       setDropDownValues((dropDownValuesProps: FlowDropDownList) => ({
         ...dropDownValuesProps,
-        "brand": masterDataObject.brand,
-        "channel": masterDataObject.channel,
-        "languageOffer": languageOffer,
-        "userDestinaton": userDestination
+        brand: masterDataObject.brand,
+        channel: masterDataObject.channel,
+        languageOffer: languageOffer,
+        userDestination: userDestination
       }));
     }
     fetchData();
@@ -129,7 +126,7 @@ export default (props: any) => {
     if (isValidForm) {
       addFlowRule(flowRule, accessToken, graphQlApiUrl).then(apiResponse => {
         if (!apiResponse.errors) {
-          openModal(true, "ADD_ROUTE_RULE");
+          openModal(false, "ADD_ROUTE_RULE");
           setAlertBar((alertBarProps: AlertBarProps) => ({
             ...alertBarProps,
             "open": true,

@@ -3,9 +3,9 @@ import { Modal, ModalHeader } from "@lmig/lmds-react-modal";
 import { Button, Grid } from "@mui/material";
 import { HeadingStyled, ModalBodyStyled, ModalFooterStyled } from "../AlohaFlow.Styles";
 import {
+    AddFlowFieldsConfigProps,
     CctSharedCallFlowDb,
     FlowDropDownList,
-    FlowInitState,
     FlowKeys,
     FlowMasterData
 } from "../AlohaFlow.Interfaces";
@@ -15,20 +15,25 @@ import {
     flowDropDownList,
     FLOW_MASTER_DATA,
     getAccessToken,
+    getGraphQLEndpoint,
     initializedAlertBar,
     languageOffer,
     userDestination
 } from "utils";
 import ComponentControl from "components/core/SharedComponents/ComponentControl";
+import { AlertBarProps, FormValidationRule } from "utils/interfaces/core.Interface";
+import { deleteFlowRule, updateFlowDB } from "services";
 
 interface EditFlowComponentProps {
     isOpen: boolean;
     selectedRow: CctSharedCallFlowDb;
-    openEditModal: (flag: boolean) => void;
+    openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallFlowDb, message?: string) => void;
 }
 export const EditFlow = ({ isOpen = false, selectedRow, openEditModal }: EditFlowComponentProps) => {
     const accessToken: string = getAccessToken();
-    const [selectedRowLocal, setSelectedRowLocal] = useState({});
+    const graphQLEndPoint: string = getGraphQLEndpoint()
+
+    const [selectedRowLocal, setSelectedRowLocal] = useState({} as CctSharedCallFlowDb);
     const [updateDataReq, setUpdateDataReq] = useState('');
     const [displayRecords, setDisplayRecords] = useState(false);
     const [flowRule, setFlowRule] = useState({ ...initRule });
@@ -45,52 +50,88 @@ export const EditFlow = ({ isOpen = false, selectedRow, openEditModal }: EditFlo
         setDropDownValues((dropDownOptions: FlowDropDownList) => (
             {
                 ...dropDownOptions,
-                "brand": masterData.brand,
-                "channel": masterData.channel,
-                "languageOffer": languageOffer,
-                "userDestinaton": userDestination
+                brand: masterData.brand,
+                channel: masterData.channel,
+                languageOffer: languageOffer,
+                userDestination: userDestination
             })
         )
     }, [selectedRow]);
 
-    const handleOnSave = () => {
-
+    const validateFlow = async (): Promise<boolean> => {
+        let isValidForm: boolean = true;
+        Object.keys(flowRule).map((key) => {
+            const fieldValue: string = findFieldValue(key);
+            if (flowRule[key].required && [undefined, '', null].includes(fieldValue)) {
+                const newFlowRule: FormValidationRule = { [key]: { ...flowRule[key], error: true } };
+                isValidForm = false;
+                setFlowRule((flowRule) => ({
+                    ...flowRule,
+                    ...newFlowRule,
+                }));
+            }
+            return true;
+        });
+        return isValidForm;
     }
 
-    const handleOnDelete = () => {
-
+    const findFieldValue = (key: string): string => {
+        let fieldValue: string = "";
+        flowFields.map((value: AddFlowFieldsConfigProps) => {
+            if (value.key == key) {
+                fieldValue = value.valueGetter(selectedRowLocal)
+            }
+        })
+        return fieldValue
     }
+
+    const handleOnSave = async () => {
+        const isValidForm = await validateFlow();
+        if (isValidForm) {
+            const response = await updateFlowDB(selectedRowLocal, accessToken, graphQLEndPoint);
+            let isSubmitted: boolean = true;
+            if (response?.errors) {
+                isSubmitted = false;
+                setAlertBar((alertBarProps: AlertBarProps) => ({
+                    ...alertBarProps,
+                    open: true,
+                    msg: response.errors[0]?.message,
+                    severityType: "error"
+                }));
+                return;
+            }
+            openEditModal(false, isSubmitted, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully updated!! `);
+            setFlowRule({ ...initRule });
+        }
+    };
+
+    const handleOnDelete = async () => {
+        const response = await deleteFlowRule(selectedRowLocal, accessToken, graphQLEndPoint);
+        if (response) {
+            openEditModal(false, true, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully deleted!! `);
+            return true;
+        }
+        setFlowRule({ ...initRule });
+    };
 
     const handleCancel = () => {
-
+        setFlowRule({ ...initRule });
         openEditModal(false);
     }
 
-    const handleClose = () => {
-
-    }
-
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const fieldName = event.target.name;
-        setSelectedRowLocal((selectRowLocal: CctSharedCallFlowDb) => ({
-            ...selectRowLocal,
-            DRC: {
-                ...selectRowLocal.DRC,
-                [event.target.name]: event.target.value,
-            },
+    const handleClose = (flag: boolean) => {
+        setAlertBar((alertBarProps: AlertBarProps) => ({
+            ...alertBarProps,
+            "open": flag
         }));
-        setSelectedRowLocal((selectRowLocal: CctSharedCallFlowDb) => ({
-            ...selectRowLocal,
-            content: {
-                ...selectRowLocal.content,
-                [event.target.name]: event.target.value,
-            },
-        }));
-        setSelectedRowLocal((selectRowLocal: CctSharedCallFlowDb) => ({
-            ...selectRowLocal,
-            [event.target.name]: event.target.value,
-        }));
+    };
 
+    const handleInputChange = (
+        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => CctSharedCallFlowDb
+    ) => {
+        const updatedSelectedValue: CctSharedCallFlowDb = valueSetter(selectedRowLocal, { [event.target.name]: event.target.value })
+        setSelectedRowLocal(updatedSelectedValue);
     }
 
     return (
@@ -109,7 +150,7 @@ export const EditFlow = ({ isOpen = false, selectedRow, openEditModal }: EditFlo
                     <Grid container rowSpacing={3}>
                         {
                             flowFields.map(({
-                                label, key, control, required = false
+                                label, key, control, required = false, disableEdit = false, valueGetter, valueSetter
                             }) => {
                                 return (
                                     <Grid key={key} item xs={4}>
@@ -118,11 +159,12 @@ export const EditFlow = ({ isOpen = false, selectedRow, openEditModal }: EditFlo
                                             name={key}
                                             label={label}
                                             type="text"
-                                            value={flowRule[key as keyof FlowKeys].value}
+                                            value={valueGetter(selectedRowLocal)}
                                             error={flowRule[key as keyof FlowKeys].error}
                                             dropDownOptions={dropDownValues[key as keyof FlowDropDownList] || []}
-                                            onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => handleInputChange(event)}
+                                            onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => handleInputChange(event, valueSetter)}
                                             required={required}
+                                            disabled={disableEdit}
                                         />
                                     </Grid>
                                 );

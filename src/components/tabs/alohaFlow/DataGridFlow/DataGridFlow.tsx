@@ -163,7 +163,7 @@ const DataGridFlow = (): JSX.Element => {
           if (key === "callFlowRoute") {
             tempItem = tempItem.content;
           }
-          if (key === "pkey" && tempItem) {
+          if (key === "pkey" && tempItem && tempItem[key]) {
             if (tempItem[key].includes(advanceFilter[key])) {
               matched += 1;
             }
@@ -268,6 +268,7 @@ const DataGridFlow = (): JSX.Element => {
             pagination
             loading={dataFlow.fetching}
             checkboxSelection
+            disableSelectionOnClick
             autoHeight
             components={
               {
