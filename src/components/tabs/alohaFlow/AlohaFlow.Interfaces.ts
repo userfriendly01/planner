@@ -46,7 +46,7 @@ export interface FlowStateVariables {
     advanceFilter?: FlowAdvanceFilter;
     masterData?: FlowMasterData;
     fetching?: boolean;
-    selectedRow?: undefined;
+    selectedRow?: CctSharedCallFlowDb;
     isEditModalOpen?: boolean;
     isAddModalOpen?: boolean;
     isAdvanceSearchModalOpen?: boolean;

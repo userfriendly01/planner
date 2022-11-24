@@ -1,4 +1,5 @@
 import { useAdminState } from "context";
+import { AlertBarProps } from "./interfaces";
 /**
  *  This function return graphQL endpoint based on running environment  
  * @returns string: GraphQL Endpoint
@@ -13,3 +14,8 @@ export const getGraphQLEndpoint = (): string => {
 
 };
 
+export const initializedAlertBar: AlertBarProps = {
+  open: false,
+  msg: "",
+  severityType: ""
+}

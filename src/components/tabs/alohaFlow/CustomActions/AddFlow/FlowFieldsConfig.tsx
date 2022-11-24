@@ -1,3 +1,4 @@
+import { FormValidationRule } from "utils/interfaces";
 import { AddFlowFieldsConfigProps } from "../../AlohaFlow.Interfaces";
 
 const flowFields: AddFlowFieldsConfigProps[] = [
@@ -134,7 +135,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
   }
 ];
 
-const initRule: any = flowFields.reduce((a, v) => ({
+const initRule: FormValidationRule = flowFields.reduce((a: FormValidationRule, v: AddFlowFieldsConfigProps) => ({
   ...a,
   [v.key]: {
     error: false,

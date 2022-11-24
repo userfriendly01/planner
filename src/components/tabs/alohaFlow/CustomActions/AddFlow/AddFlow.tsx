@@ -37,6 +37,7 @@ import {
 import { retrieveFlowData } from "services";
 import { CctSharedCallFlowDb, FlowMasterData } from "../../AlohaFlow.Interfaces";
 import { getGridMasterData } from "../../DataGridFlow/GridMaster";
+import { AlertBarProps, FormValidationRule } from "utils/interfaces";
 
 export default (props: any) => {
   const {
@@ -55,7 +56,7 @@ export default (props: any) => {
 
   useEffect(() => {
     async function fetchData() {
-      const masterData = localStorage.getItem(FLOW_MASTER_DATA);
+      const masterData: string = localStorage.getItem(FLOW_MASTER_DATA);
       let masterDataObject: FlowMasterData;
       if (masterData !== undefined && masterData !== null) {
         masterDataObject = JSON.parse(masterData);
@@ -91,7 +92,7 @@ export default (props: any) => {
       id: newId
     };
 
-    setFlowRule((rule: any) => ({
+    setFlowRule((rule: FormValidationRule) => ({
       ...rule,
       ...newFlowRule
     }));
@@ -108,7 +109,7 @@ export default (props: any) => {
           }
         };
         isValidForm = false;
-        setFlowRule((rule: any) => ({
+        setFlowRule((rule: FormValidationRule) => ({
           ...rule,
           ...newFlowRule
         }));
@@ -124,12 +125,12 @@ export default (props: any) => {
   }
 
   function handleOnCreateRoute() {
-    const isValidForm = validateRoute();
+    const isValidForm: boolean = validateRoute();
     if (isValidForm) {
       addFlowRule(flowRule, accessToken, graphQlApiUrl).then(apiResponse => {
         if (!apiResponse.errors) {
           openModal(true, "ADD_ROUTE_RULE");
-          setAlertBar(alertBarProps => ({
+          setAlertBar((alertBarProps: AlertBarProps) => ({
             ...alertBarProps,
             "open": true,
             "severityType": "success",
@@ -138,7 +139,7 @@ export default (props: any) => {
           setFlowRule({ ...initRule });
           return true;
         }
-        setAlertBar(alertBarProps => ({
+        setAlertBar((alertBarProps: AlertBarProps) => ({
           ...alertBarProps,
           "open": true,
           "severityType": "error",
