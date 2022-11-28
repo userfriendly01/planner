@@ -13,7 +13,7 @@ export const initialProfileEntryFormState = {
   outboundRecorded: {
     value: true
   },
-  acwWorkerTaskInfo: {
+  callTag: {
     value: false
   },
   manualRecorded: {
@@ -62,7 +62,7 @@ export const validProfileEntryFormState = {
   outboundRecorded: {
     value: true
   },
-  acwWorkerTaskInfo: {
+  callTag: {
     value: false
   },
   manualRecorded: {
@@ -112,7 +112,7 @@ export const invalidProfileEntryFormState = {
   outboundRecorded: {
     value: true
   },
-  acwWorkerTaskInfo: {
+  callTag: {
     value: false
   },
   manualRecorded: {
@@ -162,7 +162,7 @@ export const initialProfileEditEntryFormState = {
   outboundRecorded: {
     value: true
   },
-  acwWorkerTaskInfo: {
+  callTag: {
     value: false
   },
   manualRecorded: {

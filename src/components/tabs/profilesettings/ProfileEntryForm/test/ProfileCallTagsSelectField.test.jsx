@@ -1,4 +1,4 @@
-import ProfileACWWorkerTaskInfosSelectField from "../ProfileACWWorkerTaskInfosSelectField";
+import ProfileCallTagsSelectField from "../ProfileCallTagsSelectField";
 import {
   Add,
   Delete
@@ -14,7 +14,7 @@ import {
   fireEvent,
   getMockedComponentProps,
   initialTestState,
-  mockACWWorkerTaskInfos
+  mockCallTags
 } from "testUtils";
 import { apiPaths } from "globals";
 import { Tooltip } from "@mui/material";
@@ -39,17 +39,17 @@ jest.mock("components", () => ({
 
 const statusCode = 500;
 const axiosMock = new MockAdapter(myAxios);
-const acwWorkerTaskInfosEndpoint = apiPaths.GET_PROFILE_WORKER_TASK_INFO;
-const mockSetACWWorkerTaskInfosList = jest.fn();
-const renderComponent = mockACWWorkerTaskInfosList => render(<ProfileACWWorkerTaskInfosSelectField
-  acwWorkerTaskInfosList={mockACWWorkerTaskInfosList}
-  setACWWorkerTaskInfosList={mockSetACWWorkerTaskInfosList}
+const callTagsEndpoint = apiPaths.GET_PROFILE_WORKER_TASK_INFO;
+const mockSetCallTagsList = jest.fn();
+const renderComponent = mockCallTagsList => render(<ProfileCallTagsSelectField
+  callTagsList={mockCallTagsList}
+  setCallTagsList={mockSetCallTagsList}
 />, initialTestState);
 
-const getAddACWWorkerTaskInfoButton = rendered => rendered.getByTestId("add-profileACWWorkerTaskInfo-button");
-const getDeleteACWWorkerTaskInfoButton = (rendered, instance) => rendered.getAllByTestId("delete-acwWorkerTaskInfo-button")[instance];
+const getAddCallTagButton = rendered => rendered.getByTestId("add-profileCallTag-button");
+const getDeleteCallTagButton = (rendered, instance) => rendered.getAllByTestId("delete-callTag-button")[instance];
 
-describe("<ProfileACWWorkerTaskInfosSelectField />", () => {
+describe("<ProfileCallTagsSelectField />", () => {
 
   beforeEach(() => {
     setupMockedComponents({
@@ -58,12 +58,12 @@ describe("<ProfileACWWorkerTaskInfosSelectField />", () => {
       Dropdown,
       Tooltip
     });
-    mockSetACWWorkerTaskInfosList.mockClear();
-    axiosMock.onGet(acwWorkerTaskInfosEndpoint).reply(200, mockACWWorkerTaskInfos);
+    mockSetCallTagsList.mockClear();
+    axiosMock.onGet(callTagsEndpoint).reply(200, mockCallTags);
   });
 
   describe("initial state", () => {
-    test("should render acwWorkerTaskInfos select component with no acwWorkerTaskInfos selected", async () => {
+    test("should render callTags select component with no callTags selected", async () => {
       const rendered = renderComponent([]);
       expectMockedComponent(rendered, { Dropdown });
       expectMockedComponent(rendered, { Add });
@@ -71,24 +71,24 @@ describe("<ProfileACWWorkerTaskInfosSelectField />", () => {
     });
   });
 
-  describe(acwWorkerTaskInfosEndpoint, () => {
-    describe("acwWorkerTaskInfos service call returned an error", () => {
+  describe(callTagsEndpoint, () => {
+    describe("callTags service call returned an error", () => {
       beforeEach(() => {
-        axiosMock.onGet(acwWorkerTaskInfosEndpoint).reply(statusCode, { fail: "oh the horror" });
+        axiosMock.onGet(callTagsEndpoint).reply(statusCode, { fail: "oh the horror" });
       });
       test("should return 'An error occurred while logging in.'", async () => {
         try {
           renderComponent([]);
         } catch(err) {
-          expect(err.msg).toBe("Failed to fetch acwWorkerTaskInfos from service");
+          expect(err.msg).toBe("Failed to fetch callTags from service");
         }
       });
     });
   });
   
-  describe("changes made to the add acwWorkerTaskInfos drop down", () => {
+  describe("changes made to the add callTags drop down", () => {
     beforeEach(() => {
-      const mockNewACWWorkerTaskInfo = [   {
+      const mockNewCallTag = [   {
         display_nme: "Call Type",
         options_id: 1,
         profile_id: 15,
@@ -97,11 +97,11 @@ describe("<ProfileACWWorkerTaskInfosSelectField />", () => {
         wrkr_tsk_info_id: 1
       }];
       React.useState = jest.fn()
-        .mockReturnValueOnce([mockNewACWWorkerTaskInfo, jest.fn()])
-        .mockReturnValueOnce([mockACWWorkerTaskInfos, jest.fn()]);
+        .mockReturnValueOnce([mockNewCallTag, jest.fn()])
+        .mockReturnValueOnce([mockCallTags, jest.fn()]);
     });
 
-    test("should render acwWorkerTaskInfos drop down with correct options", () => {
+    test("should render callTags drop down with correct options", () => {
       const rendered = renderComponent([  {
         display_nme: "Call Type",
         options_id: 1,
@@ -116,9 +116,9 @@ describe("<ProfileACWWorkerTaskInfosSelectField />", () => {
         updateValue("", [{ value: 1 }] );
       });
       act(() => {
-        fireEvent.click(getAddACWWorkerTaskInfoButton(rendered));
+        fireEvent.click(getAddCallTagButton(rendered));
       });
-      expect(mockSetACWWorkerTaskInfosList).toHaveBeenCalledWith([
+      expect(mockSetCallTagsList).toHaveBeenCalledWith([
         {
           display_nme: "Call Type",
           options_id: 1,
@@ -141,7 +141,7 @@ describe("<ProfileACWWorkerTaskInfosSelectField />", () => {
 
   describe("remove button", () => {
     beforeEach(() => {
-      const mockNewACWWorkerTaskInfo = [  {
+      const mockNewCallTag = [  {
         display_nme: "Call Type",
         options_id: 1,
         profile_id: 15,
@@ -150,11 +150,11 @@ describe("<ProfileACWWorkerTaskInfosSelectField />", () => {
         wrkr_tsk_info_id: 1
       }];
       React.useState = jest.fn()
-        .mockReturnValueOnce([mockNewACWWorkerTaskInfo, jest.fn()])
-        .mockReturnValueOnce([mockACWWorkerTaskInfos, jest.fn()]);
+        .mockReturnValueOnce([mockNewCallTag, jest.fn()])
+        .mockReturnValueOnce([mockCallTags, jest.fn()]);
     });
 
-    test("should display once for each acwWorkerTaskInfo; when clicked, acwWorkerTaskInfo should be removed", () => {
+    test("should display once for each callTag; when clicked, callTag should be removed", () => {
       const rendered = renderComponent([
         {
           display_nme: "Call Type",
@@ -175,9 +175,9 @@ describe("<ProfileACWWorkerTaskInfosSelectField />", () => {
       ]);
       expectMockedComponent(rendered, { Delete }, 2);
       act(() => {
-        fireEvent.click(getDeleteACWWorkerTaskInfoButton(rendered, 1));
+        fireEvent.click(getDeleteCallTagButton(rendered, 1));
       });
-      expect(mockSetACWWorkerTaskInfosList).toHaveBeenCalledWith([
+      expect(mockSetCallTagsList).toHaveBeenCalledWith([
         
       ]);
     });

@@ -180,7 +180,7 @@ describe("profileEntryFormReducer", () => {
           data: [1]
         },
         activities: "[{\"id\": 1, \"name\": \"Offline\", \"availability\": 0}]",
-        acwWorkerTaskInfos: "[{\"display_nme\": \"Call Type\", \"options_id\": 1, \"profile_id\": 15, \"row_crtn_dtm\": \"2019-10-24T12:58:48.000Z\", \"row_updt_dtm\": \"2019-10-24T12:58:48.000Z\", \"wrkr_tsk_info_id\": 1}]"
+        callTags: "[{\"display_nme\": \"Call Type\", \"options_id\": 1, \"profile_id\": 15, \"row_crtn_dtm\": \"2019-10-24T12:58:48.000Z\", \"row_updt_dtm\": \"2019-10-24T12:58:48.000Z\", \"wrkr_tsk_info_id\": 1}]"
       }
 
       const expectedState = {
@@ -195,7 +195,7 @@ describe("profileEntryFormReducer", () => {
             type: "Buffer",
           },
         }],
-        acwWorkerTaskInfosList: [{
+        callTagsList: [{
           display_nme: "Call Type", 
           options_id: 1,
           profile_id: 15,
@@ -213,7 +213,7 @@ describe("profileEntryFormReducer", () => {
         outboundRecorded: {
           value: false
         },
-        acwWorkerTaskInfo: {
+        callTag: {
           value: false
         },
         manualRecorded: {

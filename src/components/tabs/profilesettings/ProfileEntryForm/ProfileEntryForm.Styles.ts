@@ -93,7 +93,7 @@ export const ProfileActivitiesControlWrapper = styled.div`
   margin-top: 20px;
 `;
 
-export const ProfileACWWorkerTaskInfosControlWrapper = styled.div`
+export const ProfileCallTagsControlWrapper = styled.div`
   display: flex;
   flex-direction: column;
   font-size: 0.9em;
@@ -126,7 +126,7 @@ export const ProfileActivityRow = styled.div`
   }
 `;
 
-export const ProfileACWWorkerTaskInfoRow = styled.div`
+export const ProfileCallTagRow = styled.div`
   align-items: center;
   display: flex;
   &:hover { ${/* @ts-ignore */""}
@@ -152,7 +152,7 @@ export const ProfileActivityRowItem = styled.div`
   }
 `;
 
-export const ProfileACWWorkerTaskInfoRowItem = styled.div`
+export const ProfileCallTagRowItem = styled.div`
   &:nth-child(1) {
     display: flex;
     padding-right: 8px;
@@ -175,7 +175,7 @@ export const ProfileActivityRowSeperator = styled.div`
   margin-top: 8px;
 `;
 
-export const ProfileACWWorkerTaskInfoRowSeperator = styled.div`
+export const ProfileCallTagRowSeperator = styled.div`
   border-bottom: 1px solid ${props => props.theme.lineSeperatorColor};
   margin-top: 8px;
 `;
@@ -203,7 +203,7 @@ export const ProfileActivitiesWrapper = styled.div`
   }
 `;
 
-export const ProfileACWWorkerTaskInfosWrapper = styled.div`
+export const ProfileCallTagsWrapper = styled.div`
   max-height: 50vh;
   overflow-y: auto;
   padding: 15px 10px;

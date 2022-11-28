@@ -22,7 +22,7 @@ import { profileEntryFormActions } from "context/reducers/profileEntryFormReduce
 import {
   ProfileNameTextField,
   ProfileActivitiesSelectField,
-  ProfileACWWorkerTaskInfosSelectField,
+  ProfileCallTagsSelectField,
   OverflowSkillTextField
 } from "components";
 
@@ -41,7 +41,7 @@ const ProfileFormFields = () => {
       label: "Payment Processing"
     },
     {
-      fieldKey: "acwWorkerTaskInfo",
+      fieldKey: "callTag",
       label: "ACW Option"
     },
     {
@@ -114,12 +114,12 @@ const ProfileFormFields = () => {
             });
           }}
         />
-        <ProfileACWWorkerTaskInfosSelectField
-          acwWorkerTaskInfosList={form.acwWorkerTaskInfosList}
-          setACWWorkerTaskInfosList={acwWorkerTaskInfosList => {
+        <ProfileCallTagsSelectField
+          callTagsList={form.callTagsList}
+          setCallTagsList={callTagsList => {
             setForm({
               type: profileEntryFormActions.UPDATE_ACW_OPTIONS_LIST,
-              payload: acwWorkerTaskInfosList
+              payload: callTagsList
             });
           }}
         />
