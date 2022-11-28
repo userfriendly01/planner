@@ -247,7 +247,6 @@ async function addFlowRule(item, accessToken, graphQlApiUrl) {
                     whisper: "${item.whisper?.value || ""}",
                     requestID: "${item.requestID?.value || ""}"
                   },
-
                   userDestination: "${item.userDestination||""}"
               }
           ) {

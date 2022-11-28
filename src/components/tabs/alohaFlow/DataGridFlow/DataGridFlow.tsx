@@ -6,19 +6,20 @@
 import React, {
   useEffect, useState
 } from "react";
+import {
+  DataGrid, GridRenderCellParams, GridToolbar
+} from "@mui/x-data-grid";
 import { retrieveFlowData } from "services";
 import {
   getAccessToken,
   CACHE_FILTER_FLOW,
-  getGraphQLEndpoint
+  getGraphQLEndpoint,
+  initializedAlertBar
 } from "utils";
-import CustomToast from "../../../core/CustomToast/CustomToast";
+import { CustomToast } from "../../../core/index";
 import {
   CctSharedCallFlowDb, FlowAdvanceFilter, FlowStateVariables
 } from "../AlohaFlow.Interfaces";
-import AddFlow from "../CustomActions/AddFlow/AddFlow";
-import AdvanceSearchFlow from "../CustomActions/AdvanceSearch/AdvanceSearch";
-import CustomFlowGridToolBar from "../CustomActions/CustomFlowGridToolBar";
 import "./Grid.scss";
 import FlowGridColumnDef from "./GridColumnDef";
 import {
@@ -26,11 +27,15 @@ import {
 } from "./GridMaster";
 import GridSpinner from "./GridSpinner";
 import {
-  DataGrid, GridToolbar
-} from "@mui/x-data-grid";
-const DataGridFlow = ():JSX.Element => {
+  AddFlow, AdvanceSearchModal, CustomFlowGridToolBar, EditFlow
+} from "../CustomActions";
+import { AlertBarProps } from "utils/interfaces";
+
+
+const DataGridFlow = (): JSX.Element => {
   const accessToken: string = getAccessToken();
   const graphQlApiUrl: string = getGraphQLEndpoint();
+
   const getAdvanceFilter = () => {
     let advanceFilter: { [key: string]: undefined; };
     try {
@@ -65,24 +70,20 @@ const DataGridFlow = ():JSX.Element => {
     perPage: 10
   };
   const [dataFlow, setDataFlow] = useState(flowInitState);
-  const [alertBar, setAlertBar] = useState({
-    open: false,
-    msg: "",
-    severityType: ""
-  });
+  const [alertBar, setAlertBar] = useState(initializedAlertBar);
 
   useEffect(() => {
     loadDataTable();
-    setDataFlow((dataFlowProps: any) => ({
+    setDataFlow((dataFlowProps: FlowStateVariables) => ({
       ...dataFlowProps,
-      page: sessionStorage.getItem("CALL_FLOW_PAGE_NO") || 1,
-      perPage: sessionStorage.getItem("CALL_FLOW_PER_PAGE") || 10
+      page: +sessionStorage.getItem("CALL_FLOW_PAGE_NO") || 1,
+      perPage: +sessionStorage.getItem("CALL_FLOW_PER_PAGE") || 10
     }));
   }, []);
 
   const setPage = (newPage: number) => {
     sessionStorage.setItem("CALL_FLOW_PAGE_NO", newPage.toString());
-    setDataFlow(dataFlowProps => ({
+    setDataFlow((dataFlowProps: FlowStateVariables) => ({
       ...dataFlowProps,
       page: newPage
     }));
@@ -90,21 +91,21 @@ const DataGridFlow = ():JSX.Element => {
 
   const setPerPage = (newPerPage: number) => {
     sessionStorage.setItem("CALL_FLOW_PER_PAGE", newPerPage.toString());
-    setDataFlow(dataFlowProps => ({
+    setDataFlow((dataFlowProps: FlowStateVariables) => ({
       ...dataFlowProps,
       perPage: newPerPage
     }));
   };
 
   const handleClose = (flag: boolean) => {
-    setAlertBar(alertBarProps => ({
+    setAlertBar((alertBarProps: AlertBarProps) => ({
       ...alertBarProps,
       open: flag
     }));
   };
 
   const handleSearchDDChange = (event: any) => {
-    setDataFlow((dataFlowProps:any)=> ({
+    setDataFlow((dataFlowProps: FlowStateVariables) => ({
       ...dataFlowProps,
       advanceFilter: {
         ...dataFlowProps.advanceFilter,
@@ -113,9 +114,9 @@ const DataGridFlow = ():JSX.Element => {
     }));
   };
 
-  const openAddModal = (flag: boolean, ruleType?: number) => {
-    if (!flag && ruleType) {
-      setAlertBar(alertBarProps => ({
+  const openAddModal = (flag: boolean, isSubmitted?: boolean) => {
+    if (!flag && isSubmitted) {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: flag,
         severityType: "success",
@@ -123,45 +124,45 @@ const DataGridFlow = ():JSX.Element => {
       }));
       loadDataTable();
     }
-    setDataFlow(dataFlowProps => ({
+    setDataFlow((dataFlowProps: FlowStateVariables) => ({
       ...dataFlowProps,
       isAddModalOpen: flag
     }));
   };
 
-  const openAdvanceSearchModal = (flag:boolean, advanceFilter?:FlowAdvanceFilter)=> {
+  const openAdvanceSearchModal = (flag: boolean, advanceFilter?: FlowAdvanceFilter) => {
     if (advanceFilter) {
       localStorage.setItem(CACHE_FILTER_FLOW, JSON.stringify(dataFlow?.advanceFilter));
-      setDataFlow((dataFlowProps:any) => ({
+      setDataFlow((dataFlowProps: FlowStateVariables) => ({
         ...dataFlowProps,
-        "advanceFilter": advanceFilter
+        advanceFilter
       }));
     }
-    setDataFlow(dataFlowProps => ({
+    setDataFlow((dataFlowProps: FlowStateVariables) => ({
       ...dataFlowProps,
-      "isAdvanceSearchModalOpen": flag
+      isAdvanceSearchModalOpen: flag
     }));
   };
 
-  const filterRecords =()=> {
+  const filterRecords = () => {
     const {
       data, idStart, idEnd
     } = dataFlow;
     const result = data.filter(
-      (item:any) => item.id >= idStart && item.id <= idEnd
+      (item: CctSharedCallFlowDb) => item.id >= idStart && item.id <= idEnd
     );
     const advanceFilter = getAdvanceFilter();
-    const advanceFilterLength = Object.keys(advanceFilter).length;
+    const advanceFilterLength: number = Object.keys(advanceFilter).length;
     if (advanceFilterLength > 0) {
       const advanceFilteredArray: FlowAdvanceFilter[] = [];
-      result.forEach(item=> {
+      result.forEach(item => {
         let matched = 0;
         Object.keys(advanceFilter).forEach(key => {
           let tempItem: any = item;
           if (key === "callFlowRoute") {
             tempItem = tempItem.content;
           }
-          if (key === "pkey" && tempItem) {
+          if (key === "pkey" && tempItem && tempItem[key]) {
             if (tempItem[key].includes(advanceFilter[key])) {
               matched += 1;
             }
@@ -173,14 +174,14 @@ const DataGridFlow = ():JSX.Element => {
           advanceFilteredArray.push(item);
         }
       });
-      setDataFlow(dataFlowProps => ({
+      setDataFlow((dataFlowProps: FlowStateVariables) => ({
         ...dataFlowProps,
-        "filteredItems": advanceFilteredArray
+        filteredItems: advanceFilteredArray
       }));
     } else {
-      setDataFlow(dataFlowProps => ({
+      setDataFlow((dataFlowProps: FlowStateVariables) => ({
         ...dataFlowProps,
-        "filteredItems": result
+        filteredItems: result
       }));
     }
   };
@@ -192,37 +193,35 @@ const DataGridFlow = ():JSX.Element => {
       graphQlApiUrl
     );
     if (result.length > 0) {
-      result = result.sort((a: any, b: any) => a.pkey - b.pkey);
-      result = result.map((item: any, index: any) => ({
+      result = result.sort((a: CctSharedCallFlowDb, b: CctSharedCallFlowDb) => (a.id - b.id));
+      result = result.map((item: CctSharedCallFlowDb, index: number) => ({
         ...item,
         id: index + 1
       }));
-      const minId = result[0].id;
-      const maxId = result[result.length - 1].id;
+      const minId: number = result[0].id;
+      const maxId: number = result[result.length - 1].id;
 
-      setDataFlow((dataFlowProps: any) => ({
+      const masterData = getGridMasterData(result);
+      setDataFlow((dataFlowProps: FlowStateVariables) => ({
         ...dataFlowProps,
         data: result,
         filteredItems: result,
         fetching: false,
         idStart: minId,
         idEnd: maxId,
-        maxId: maxId,
-        minId: minId
+        maxId,
+        minId,
+        masterData
       }));
-      const masterData = getGridMasterData(result);
-      setDataFlow(dataFlowProps => ({
-        ...dataFlowProps,
-        "masterData": masterData
-      }));
+
     } else {
-      setDataFlow((dataFlowProps: any) => ({
+      setDataFlow((dataFlowProps: FlowStateVariables) => ({
         ...dataFlowProps,
         data: result,
         filteredItems: result,
         fetching: false
       }));
-      setAlertBar(alertBarProps => ({
+      setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
         msg: "Error in retrieving Flow record. Please check the API Key",
@@ -231,13 +230,35 @@ const DataGridFlow = ():JSX.Element => {
     }
   };
 
+  const openEditModal = (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallFlowDb, message?: string) => {
+    if (!flag && isSubmitted) {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: message,
+        severityType: "success"
+      }));
+      loadDataTable();
+    }
+    setDataFlow((currentDataFlow: FlowStateVariables) => (
+      {
+        ...currentDataFlow,
+        isEditModalOpen: flag,
+        selectedRow: row
+      }
+    ));
+  };
+
+  FlowGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallFlowDb>) => (<a href="#" onClick={() => openEditModal(true, false, params.row)}>{`${params.value}`}</a>);
+
+
   return (
     <div className="data-grid-wrapper">
       <div className="data-grid-wrapper">
         <div className="data-grid-wrapper">
           <CustomFlowGridToolBar
-            openAddModal = {openAddModal}
-            openAdvanceSearchModal={openAdvanceSearchModal} ></CustomFlowGridToolBar>
+            openAddModal={openAddModal}
+            openAdvanceSearchModal={openAdvanceSearchModal} />
           <DataGrid
             rows={dataFlow.filteredItems}
             columns={FlowGridColumnDef}
@@ -250,6 +271,7 @@ const DataGridFlow = ():JSX.Element => {
             pagination
             loading={dataFlow.fetching}
             checkboxSelection
+            disableSelectionOnClick
             autoHeight
             components={
               {
@@ -269,13 +291,16 @@ const DataGridFlow = ():JSX.Element => {
       <AddFlow
         isOpen={dataFlow.isAddModalOpen}
         newId={dataFlow.maxId + 1}
-        openModal={openAddModal}
-        onClose={() => {
-          openAddModal(false);
-          return true;
-        }}
+        openAddModal={openAddModal}
       />
-      <AdvanceSearchFlow
+
+      <EditFlow
+        isOpen={dataFlow.isEditModalOpen}
+        selectedRow={dataFlow.selectedRow}
+        openEditModal={openEditModal}
+      />
+
+      <AdvanceSearchModal
         isOpen={dataFlow.isAdvanceSearchModalOpen}
         selection={dataFlow.advanceFilter}
         openModal={openAdvanceSearchModal}

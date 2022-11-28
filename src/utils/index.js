@@ -1,10 +1,11 @@
 export * from "./authUtils";
 export * from "./filterTable";
 export * from "./calabrioUtils";
+export * from "./configUtils";
 export * from "./formatManagersResponse";
 export * from "./formatOfficesResponse";
 export * from "./profileUtils";
-export * from "./configUtils";
+export * from "./flowUtils";
 export * from "./formatNumberUtils";
 export * from "./formatWorkerResponse";
 export * from "./formatWorkerAttributeSkillsToHTML";
@@ -17,7 +18,6 @@ export * from "./timeUtils";
 export * from "./userFormUtils";
 export * from "./profileFormUtils";
 export * from "./userTokenUtils";
-export * from "./flowUtils";
 
 export const escapeQuotes = payload => {
   const replaceAll = (string, search, replace) => {
