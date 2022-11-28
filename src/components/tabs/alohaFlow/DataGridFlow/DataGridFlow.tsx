@@ -9,6 +9,7 @@ import React, {
 import { retrieveFlowData } from "services";
 import {
   getAccessToken,
+  CACHE_FILTER_FLOW,
   getGraphQLEndpoint
 } from "utils";
 import CustomToast from "../../../core/CustomToast/CustomToast";
@@ -27,16 +28,28 @@ import GridSpinner from "./GridSpinner";
 import {
   DataGrid, GridToolbar
 } from "@mui/x-data-grid";
-import { CACHE_FILTER_FLOW } from "../../../../utils/flowUtils";
-
-
 const DataGridFlow = ():JSX.Element => {
   const accessToken: string = getAccessToken();
   const graphQlApiUrl: string = getGraphQLEndpoint();
+  const getAdvanceFilter = () => {
+    let advanceFilter: { [key: string]: undefined; };
+    try {
+      const cachedFilter = localStorage.getItem(CACHE_FILTER_FLOW);
+      advanceFilter = JSON.parse(cachedFilter) || {};
+      Object.keys(advanceFilter).forEach(key => {
+        if (advanceFilter[key] === "") {
+          delete advanceFilter[key];
+        }
+      });
+    } catch (e) {
+      advanceFilter = {};
+    }
+    return advanceFilter;
+  };
   const flowInitState: FlowStateVariables = {
     data: [],
     filteredItems: [] ,
-    advanceFilter: {},
+    advanceFilter: getAdvanceFilter(),
     masterData: getGridMasterData(),
     fetching: true,
     selectedRow: undefined,
@@ -128,22 +141,6 @@ const DataGridFlow = ():JSX.Element => {
       ...dataFlowProps,
       "isAdvanceSearchModalOpen": flag
     }));
-  };
-
-  const getAdvanceFilter = () => {
-    let advanceFilter: { [key: string]: undefined; };
-    try {
-      const cachedFilter = localStorage.getItem(CACHE_FILTER_FLOW);
-      advanceFilter = JSON.parse(cachedFilter) || {};
-      Object.keys(advanceFilter).forEach(key => {
-        if (advanceFilter[key] === "") {
-          delete advanceFilter[key];
-        }
-      });
-    } catch (e) {
-      advanceFilter = {};
-    }
-    return advanceFilter;
   };
 
   const filterRecords =()=> {
@@ -278,19 +275,6 @@ const DataGridFlow = ():JSX.Element => {
           return true;
         }}
       />
-
-      {/*<EditModal
-          accessToken={props.accessToken}
-          isOpen={dataFlow["isEditModalOpen"]}
-          className="data-grid-modal"
-          selectedRow={dataFlow["selectedRow"]}
-          openModal={openEditModal}
-          onClose={() => {
-            openEditModal(false);
-            return true;
-          }}
-        />*/}
-
       <AdvanceSearchFlow
         isOpen={dataFlow.isAdvanceSearchModalOpen}
         selection={dataFlow.advanceFilter}
@@ -303,7 +287,6 @@ const DataGridFlow = ():JSX.Element => {
           return true;
         }}
       />
-
       <CustomToast
         open={alertBar.open}
         onClose={handleClose}

@@ -17,6 +17,7 @@ export * from "./timeUtils";
 export * from "./userFormUtils";
 export * from "./profileFormUtils";
 export * from "./userTokenUtils";
+export * from "./flowUtils";
 
 export const escapeQuotes = payload => {
   const replaceAll = (string, search, replace) => {

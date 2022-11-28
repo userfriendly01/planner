@@ -10,7 +10,7 @@ import SelectContainer from "../../../../core/SharedComponents/SelectContainer";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
-import { CACHE_FILTER_FLOW } from "../../../../../utils/flowUtils";
+import { CACHE_FILTER_FLOW } from "utils";
 import {
   FlowAdvanceFilter, FlowAdvanceFilterMasterData
 } from "../../AlohaFlow.Interfaces";
@@ -23,7 +23,9 @@ interface AdvanceSearchModalProps{
   openModal:(flag:boolean, search:FlowAdvanceFilter)=>void;
   applyFilter:()=>void;
 }
-const AdvanceSearchModal = ({isOpen, onClose, handleChange, masterData, selection, openModal, applyFilter}:AdvanceSearchModalProps) => {
+const AdvanceSearchModal = ({
+  isOpen, onClose, handleChange, masterData, selection, openModal, applyFilter
+}:AdvanceSearchModalProps):JSX.Element => {
   const saveFilter = (search: FlowAdvanceFilter) => {
     localStorage.setItem(CACHE_FILTER_FLOW, JSON.stringify(search));
     applyFilter();
@@ -40,7 +42,7 @@ const AdvanceSearchModal = ({isOpen, onClose, handleChange, masterData, selectio
     <div>
       <ModalSearchStyled isOpen={isOpen} onClose={() => onClose(false)}>
         <ModalHeader id="my-search-header">
-          <HeadingStyled type="h4-light"> Advance Search Selection </HeadingStyled>
+          <HeadingStyled type="h4-light"> Advance Flow Search Selection </HeadingStyled>
         </ModalHeader>
         <ModalBody>
           <Grid container rowSpacing={3}>

@@ -2,7 +2,7 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import React, { useState } from "react";
+import React from "react";
 import { FlowAdvanceFilter } from "../AlohaFlow.Interfaces";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import SearchIcon from "@mui/icons-material/Search";
@@ -16,13 +16,17 @@ interface CustomFlowGridToolBarProps{
 const CustomFlowGridToolBar = ({
   openAddModal, openAdvanceSearchModal
 }:CustomFlowGridToolBarProps) =>{
-  const[dropDownOptions, setDropDownOptions]=useState("");
-  const handleChange=(event:any)=> {
-    if(event.target.value === "addFlow"){
-      openAddModal(true);
-    }
-    else if(event.target.value === "Filter"){
-      openAdvanceSearchModal(true);
+  const handleChange=(event:any):void=> {
+    const { value } = event.target;
+    switch (value) {
+      case "addFlow":
+        openAddModal(true);
+        break;
+      case "Filter":
+        openAdvanceSearchModal(true);
+        break;
+      default:
+        break;
     }
   };
   return (
@@ -36,11 +40,11 @@ const CustomFlowGridToolBar = ({
         <Select
           inputProps={{
             sx: {
-              width: "calc(35%)"
+              width: 120
             }
           }}
           label="Actions"
-          value={dropDownOptions}
+          value=""
           onChange={handleChange}
           variant="filled"
           size="small"

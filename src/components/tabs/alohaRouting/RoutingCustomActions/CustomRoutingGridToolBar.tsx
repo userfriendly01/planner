@@ -1,23 +1,32 @@
-import React, { useState } from "react";
+import React from "react";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-
+import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
+import SearchIcon from "@mui/icons-material/Search";
 
 interface CustomRoutingGridToolBarProps {
   openAddModal: (flag: boolean) => void;
+  openAdvanceSearchModal:(flag: boolean)=>void;
 }
 
-export const CustomFlowRoutingToolBar = ({ openAddModal }: CustomRoutingGridToolBarProps) => {
+export const CustomFlowRoutingToolBar = ({
+  openAddModal, openAdvanceSearchModal
+}: CustomRoutingGridToolBarProps):JSX.Element => {
 
-  const [dropDownOptions, setDropDownOptions] = useState({ "addRouting": false });
-
-  const handleChange = (event: any) => {
-    if (event.target.value === "addRouting") {
-      openAddModal(true);
+  const handleChange = (event: any):void => {
+    const { value } = event.target;
+    switch (value) {
+      case "addRouting":
+        openAddModal(true);
+        break;
+      case "Filter":
+        openAdvanceSearchModal(true);
+        break;
+      default:
+        break;
     }
-
   };
   return (
     <div>
@@ -34,16 +43,16 @@ export const CustomFlowRoutingToolBar = ({ openAddModal }: CustomRoutingGridTool
             }
           }}
           label="Actions"
-          value={dropDownOptions}
+          value=""
           onChange={handleChange}
-          variant="outlined"
+          variant="filled"
           size="small"
         >
           <MenuItem key="addRouting" value="addRouting">
-            Add Routing +
+            <PlaylistAddIcon/> &nbsp;&nbsp;Add Routing
           </MenuItem>
           <MenuItem key="Filter" value="Filter">
-            Advance Search
+            <SearchIcon/> &nbsp;&nbsp;Advance Search
           </MenuItem>
 
         </Select>

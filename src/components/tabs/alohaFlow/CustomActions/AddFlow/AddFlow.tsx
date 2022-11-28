@@ -33,8 +33,13 @@ import {
 import { retrieveFlowData } from "services";
 import { CctSharedCallFlowDb } from "../../AlohaFlow.Interfaces";
 import { getGridMasterData } from "../../DataGridFlow/GridMaster";
-
-export default (props: any) => {
+interface AddFlowProps{
+  isOpen: boolean;
+  newId: number;
+  onClose: (flag: boolean) => void;
+  openModal: (flag: boolean, ruleType?:number|string) => void;
+}
+export default (props: AddFlowProps):JSX.Element => {
   const {
     onClose, isOpen = false, newId, openModal
   } = props;
@@ -71,7 +76,7 @@ export default (props: any) => {
         "brand": masterDataObject.brand,
         "channel": masterDataObject.channel,
         "languageOffer": languageOffer,
-        "userDestinaton": userDestination
+        "userDestination": userDestination
       }));
     }
     fetchData();
