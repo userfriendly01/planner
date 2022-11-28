@@ -89,7 +89,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
 
   return (
     <ProfileCallTagsControlWrapper>
-      <Label>Add ACW Options</Label>
+      <Label>Add Call Tags</Label>
       <ProfileCallTagRow>
         <ProfileCallTagRowItem>
           <Dropdown
