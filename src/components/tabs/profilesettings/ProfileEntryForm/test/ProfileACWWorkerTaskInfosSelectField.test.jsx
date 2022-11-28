@@ -85,7 +85,7 @@ describe("<ProfileACWWorkerTaskInfosSelectField />", () => {
       });
     });
   });
-
+  
   describe("changes made to the add acwWorkerTaskInfos drop down", () => {
     beforeEach(() => {
       const mockNewACWWorkerTaskInfo = [   {
