@@ -5,6 +5,7 @@ export * from "./formatManagersResponse";
 export * from "./formatOfficesResponse";
 export * from "./profileUtils";
 export * from "./configUtils";
+export * from "./flowUtils";
 export * from "./formatNumberUtils";
 export * from "./formatWorkerResponse";
 export * from "./formatWorkerAttributeSkillsToHTML";

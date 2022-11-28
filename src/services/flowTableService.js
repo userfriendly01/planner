@@ -246,7 +246,8 @@ async function addFlowRule(item, accessToken, graphQlApiUrl) {
                     marketingChannel: "${item.marketingChannel?.value || ""}",
                     whisper: "${item.whisper?.value || ""}",
                     requestID: "${item.requestID?.value || ""}"
-                  }
+                  },
+                  userDestination: "${item.userDestination}"
               }
           ) {
               agentId
@@ -278,6 +279,7 @@ async function addFlowRule(item, accessToken, graphQlApiUrl) {
                 whisper
                 requestID
               }
+              userDestination
             }
           }
         `,

@@ -12,18 +12,18 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import { CACHE_FILTER_FLOW } from "../../../../../utils/flowUtils";
 import {
-  FlowAdvanceFilter, FlowAdvanceFilterMasterData
+  FlowAdvanceFilter, FlowMasterData
 } from "../../AlohaFlow.Interfaces";
-interface AdvanceSearchModalProps{
-  isOpen:boolean;
-  onClose:(flag:boolean)=>boolean;
-  handleChange:(event:any)=>void;
-  masterData:FlowAdvanceFilterMasterData;
+interface AdvanceSearchModalProps {
+  isOpen: boolean;
+  onClose: (flag: boolean) => boolean;
+  handleChange: (event: any) => void;
+  masterData: FlowMasterData;
   selection: FlowAdvanceFilter;
-  openModal:(flag:boolean, search:FlowAdvanceFilter)=>void;
-  applyFilter:()=>void;
+  openModal: (flag: boolean, search: FlowAdvanceFilter) => void;
+  applyFilter: () => void;
 }
-const AdvanceSearchModal = ({isOpen, onClose, handleChange, masterData, selection, openModal, applyFilter}:AdvanceSearchModalProps) => {
+export const AdvanceSearchModal = ({ isOpen, onClose, handleChange, masterData, selection, openModal, applyFilter }: AdvanceSearchModalProps) => {
   const saveFilter = (search: FlowAdvanceFilter) => {
     localStorage.setItem(CACHE_FILTER_FLOW, JSON.stringify(search));
     applyFilter();
@@ -46,32 +46,32 @@ const AdvanceSearchModal = ({isOpen, onClose, handleChange, masterData, selectio
           <Grid container rowSpacing={3}>
             <Grid item xs={10}>
               <SelectContainer
-                dropDownOptions = {masterData?.brand}
-                name= "brand"
-                label= "Choose Brand"
-                value= {selection?.brand}
-                onChange= {handleChange}
-                disabled= {false}
-                error = {false}
-                isBlankFirstValue = {true}
-                required = {false}/>
+                dropDownOptions={masterData?.brand}
+                name="brand"
+                label="Choose Brand"
+                value={selection?.brand}
+                onChange={handleChange}
+                disabled={false}
+                error={false}
+                isBlankFirstValue={true}
+                required={false} />
             </Grid>
             <Grid item xs={10}>
               <SelectContainer
-                dropDownOptions = {masterData?.channel}
-                name= "channel"
-                label= "Choose Channel"
-                value= {selection?.channel}
-                onChange= {handleChange}
-                disabled= {false}
-                error = {false}
-                isBlankFirstValue = {true}
-                required = {false}/>
+                dropDownOptions={masterData?.channel}
+                name="channel"
+                label="Choose Channel"
+                value={selection?.channel}
+                onChange={handleChange}
+                disabled={false}
+                error={false}
+                isBlankFirstValue={true}
+                required={false} />
             </Grid>
             <Grid item xs={10}>
               <TextField
                 variant="outlined"
-                label= "#Dialed"
+                label="#Dialed"
                 name="pkey"
                 type="text"
                 value={selection?.pkey}
@@ -81,27 +81,27 @@ const AdvanceSearchModal = ({isOpen, onClose, handleChange, masterData, selectio
             </Grid>
             <Grid item xs={10}>
               <SelectContainer
-                dropDownOptions = {masterData?.callFlowTemplate}
-                name= "callFlowTemplate"
-                label= "Choose Call Flow Template"
-                value= {selection.callFlowTemplate}
-                onChange= {handleChange}
-                disabled= {false}
-                error = {false}
-                isBlankFirstValue = {true}
-                required = {false}/>
+                dropDownOptions={masterData?.callFlowTemplate}
+                name="callFlowTemplate"
+                label="Choose Call Flow Template"
+                value={selection.callFlowTemplate}
+                onChange={handleChange}
+                disabled={false}
+                error={false}
+                isBlankFirstValue={true}
+                required={false} />
             </Grid>
             <Grid item xs={10}>
               <SelectContainer
-                dropDownOptions = {masterData?.callFlowRoute}
-                name= "callFlowRoute"
-                label= "Choose Call Flow Route"
-                value= {selection.callFlowRoute}
-                onChange= {handleChange}
-                disabled= {false}
-                error = {false}
-                isBlankFirstValue = {true}
-                required = {false}/>
+                dropDownOptions={masterData?.callFlowRoute}
+                name="callFlowRoute"
+                label="Choose Call Flow Route"
+                value={selection.callFlowRoute}
+                onChange={handleChange}
+                disabled={false}
+                error={false}
+                isBlankFirstValue={true}
+                required={false} />
             </Grid>
           </Grid>
         </ModalBody>
@@ -129,4 +129,3 @@ const AdvanceSearchModal = ({isOpen, onClose, handleChange, masterData, selectio
     </div>
   );
 };
-export default AdvanceSearchModal;
