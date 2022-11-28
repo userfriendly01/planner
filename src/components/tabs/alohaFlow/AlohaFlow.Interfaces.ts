@@ -1,7 +1,7 @@
 export interface FlowContent {
     callerType?: string;
     callFlowRoute?: string;
-    dataRequests?: [string];
+    dataRequests?: Array<string>;
     greetingMessages?: string;
     languageOffer?: string;
     transferNumber?: string;

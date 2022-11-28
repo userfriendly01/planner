@@ -19,9 +19,6 @@ import CustomToast from "../../../core/CustomToast/CustomToast";
 import {
   CctSharedCallFlowDb, FlowAdvanceFilter, FlowStateVariables
 } from "../AlohaFlow.Interfaces";
-import AddFlow from "../CustomActions/AddFlow/AddFlow";
-import AdvanceSearchFlow from "../CustomActions/AdvanceSearch/AdvanceSearch";
-import CustomFlowGridToolBar from "../CustomActions/CustomFlowGridToolBar";
 import "./Grid.scss";
 import FlowGridColumnDef from "./GridColumnDef";
 import {
@@ -29,7 +26,7 @@ import {
 } from "./GridMaster";
 import GridSpinner from "./GridSpinner";
 import { CACHE_FILTER_FLOW } from "../../../../utils/flowUtils";
-import { EditFlow } from "../EditFlow"
+import { AddFlow, AdvanceSearchModal, CustomFlowGridToolBar, EditFlow } from "../CustomActions";
 import { AlertBarProps } from "utils/interfaces";
 
 
@@ -99,8 +96,8 @@ const DataGridFlow = (): JSX.Element => {
     }));
   };
 
-  const openAddModal = (flag: boolean, ruleType?: number) => {
-    if (!flag && ruleType) {
+  const openAddModal = (flag: boolean, isSubmitted?: boolean) => {
+    if (!flag && isSubmitted) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: flag,
@@ -255,7 +252,7 @@ const DataGridFlow = (): JSX.Element => {
         <div className="data-grid-wrapper">
           <CustomFlowGridToolBar
             openAddModal={openAddModal}
-            openAdvanceSearchModal={openAdvanceSearchModal} ></CustomFlowGridToolBar>
+            openAdvanceSearchModal={openAdvanceSearchModal} />
           <DataGrid
             rows={dataFlow.filteredItems}
             columns={FlowGridColumnDef}
@@ -288,10 +285,7 @@ const DataGridFlow = (): JSX.Element => {
       <AddFlow
         isOpen={dataFlow.isAddModalOpen}
         newId={dataFlow.maxId + 1}
-        openModal={openAddModal}
-        onClose={() => {
-          openAddModal(false);
-        }}
+        openAddModal={openAddModal}
       />
 
       <EditFlow
@@ -300,7 +294,7 @@ const DataGridFlow = (): JSX.Element => {
         openEditModal={openEditModal}
       />
 
-      <AdvanceSearchFlow
+      <AdvanceSearchModal
         isOpen={dataFlow.isAdvanceSearchModalOpen}
         selection={dataFlow.advanceFilter}
         openModal={openAdvanceSearchModal}

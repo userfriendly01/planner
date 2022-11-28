@@ -1,5 +1,5 @@
 import { FormValidationRule } from "utils/interfaces";
-import { AddFlowFieldsConfigProps, CctSharedCallFlowDb } from "../../AlohaFlow.Interfaces";
+import { AddFlowFieldsConfigProps, CctSharedCallFlowDb } from "../AlohaFlow.Interfaces";
 
 const flowFields: AddFlowFieldsConfigProps[] = [
   {

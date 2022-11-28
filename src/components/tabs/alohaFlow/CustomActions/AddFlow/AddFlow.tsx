@@ -13,7 +13,7 @@ import Button from "@mui/material/Button";
 import {
   initRule,
   flowFields
-} from "./FlowFieldsConfig";
+} from "../FlowFieldsConfig";
 import ComponentControl from "../../../../core/SharedComponents/ComponentControl";
 import {
   FlowKeys,
@@ -40,10 +40,14 @@ import { CctSharedCallFlowDb, FlowMasterData } from "../../AlohaFlow.Interfaces"
 import { getGridMasterData } from "../../DataGridFlow/GridMaster";
 import { AlertBarProps, FormValidationRule } from "utils/interfaces";
 
-export default (props: any) => {
-  const {
-    onClose, isOpen = false, newId, openModal
-  } = props;
+export interface AddFlowModalProps {
+  isOpen: boolean;
+  newId: number;
+  openAddModal: (flag: boolean, isSubmitted?: boolean) => void;
+}
+
+export const AddFlow = ({ isOpen = false, newId, openAddModal }: AddFlowModalProps) => {
+
   const accessToken: string = getAccessToken();
   const graphQlApiUrl: string = getGraphQLEndpoint();
   const [flowRule, setFlowRule] = useState({ ...initRule });
@@ -74,19 +78,18 @@ export default (props: any) => {
   }, []);
 
   const handleClose = (flag: boolean) => {
-    setAlertBar(alertBarProps => ({
+    setAlertBar((alertBarProps: AlertBarProps) => ({
       ...alertBarProps,
       "open": flag
     }));
   };
 
-  function handleInputChange(event: any) {
-    const key = event.target.name;
-    let { value } = event.target;
+  function handleInputChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+    const key: string = event.target.name;
+    let value: string = event.target.value;
     value = (key === "pkey" && !value.startsWith("+")) ? `+1${value}` : value;
-    const newFlowRule = {
+    const newFlowRule: FormValidationRule = {
       [key]: { value },
-      id: newId
     };
 
     setFlowRule((rule: FormValidationRule) => ({
@@ -118,7 +121,7 @@ export default (props: any) => {
 
   function resetFlowRule() {
     setFlowRule({ ...initRule });
-    onClose(false);
+    openAddModal(false);
   }
 
   function handleOnCreateRoute() {
@@ -126,7 +129,7 @@ export default (props: any) => {
     if (isValidForm) {
       addFlowRule(flowRule, accessToken, graphQlApiUrl).then(apiResponse => {
         if (!apiResponse.errors) {
-          openModal(false, "ADD_ROUTE_RULE");
+          openAddModal(false, true);
           setAlertBar((alertBarProps: AlertBarProps) => ({
             ...alertBarProps,
             "open": true,
@@ -175,7 +178,7 @@ export default (props: any) => {
                       value={flowRule[key as keyof FlowKeys].value}
                       error={flowRule[key as keyof FlowKeys].error}
                       dropDownOptions={dropDownValues[key as keyof FlowDropDownList] || []}
-                      onChange={(event: any) => handleInputChange(event)}
+                      onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => handleInputChange(event)}
                       required={required}
                     />
                   </Grid>

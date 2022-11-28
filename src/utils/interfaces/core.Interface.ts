@@ -5,11 +5,11 @@ export interface AlertBarProps {
 }
 
 export interface FormValidationProps {
-    error: boolean;
+    error?: boolean;
     value: string;
-    required: boolean;
+    required?: boolean;
 }
 
 export interface FormValidationRule {
-    [key: string]: FormValidationProps
+    [key: string]: FormValidationProps;
 }

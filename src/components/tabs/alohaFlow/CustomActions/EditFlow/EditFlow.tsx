@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Modal, ModalHeader } from "@lmig/lmds-react-modal";
-import { Button, Grid } from "@mui/material";
-import { HeadingStyled, ModalBodyStyled, ModalFooterStyled } from "../AlohaFlow.Styles";
+import { Button, FormControl, Grid, IconButton, InputLabel, ListItemText, MenuItem, Select } from "@mui/material";
+import ViewListIcon from '@mui/icons-material/ViewList';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { HeadingStyled, ModalBodyStyled, ModalFooterStyled } from "../../AlohaFlow.Styles";
 import {
     AddFlowFieldsConfigProps,
     CctSharedCallFlowDb,
     FlowDropDownList,
     FlowKeys,
     FlowMasterData
-} from "../AlohaFlow.Interfaces";
-import { flowFields, initRule } from "../CustomActions/AddFlow/FlowFieldsConfig";
+} from "../../AlohaFlow.Interfaces";
+import { flowFields, initRule } from "../FlowFieldsConfig";
 import { CustomToast } from "components";
 import {
     flowDropDownList,
@@ -21,7 +24,7 @@ import {
     userDestination
 } from "utils";
 import ComponentControl from "components/core/SharedComponents/ComponentControl";
-import { AlertBarProps, FormValidationRule } from "utils/interfaces/core.Interface";
+import { AlertBarProps, FormValidationRule } from "utils/interfaces";
 import { deleteFlowRule, updateFlowDB } from "services";
 
 interface EditFlowComponentProps {
@@ -134,6 +137,36 @@ export const EditFlow = ({ isOpen = false, selectedRow, openEditModal }: EditFlo
         setSelectedRowLocal(updatedSelectedValue);
     }
 
+    const removeItem = (index: number) => {
+        setSelectedRowLocal((selectRowLocal: CctSharedCallFlowDb) => ({
+            ...selectRowLocal,
+            content: {
+                ...selectRowLocal.content,
+                dataRequests: [
+                    ...selectRowLocal.content.dataRequests.filter((_, i) => i !== index),
+                ],
+            },
+        }));
+    };
+
+    const addItem = () => {
+        setDisplayRecords(true);
+        if (updateDataReq && updateDataReq !== '') {
+            setSelectedRowLocal((selectRowLocal: CctSharedCallFlowDb) => ({
+                ...selectRowLocal,
+                content: {
+                    ...selectRowLocal.content,
+                    dataRequests: [
+                        ...selectRowLocal.content.dataRequests,
+                        updateDataReq,
+                    ],
+                },
+            }));
+        }
+        setUpdateDataReq('');
+    };
+
+
     return (
         <div>
             <Modal
@@ -154,18 +187,73 @@ export const EditFlow = ({ isOpen = false, selectedRow, openEditModal }: EditFlo
                             }) => {
                                 return (
                                     <Grid key={key} item xs={4}>
-                                        <ComponentControl
-                                            control={control}
-                                            name={key}
-                                            label={label}
-                                            type="text"
-                                            value={valueGetter(selectedRowLocal)}
-                                            error={flowRule[key as keyof FlowKeys].error}
-                                            dropDownOptions={dropDownValues[key as keyof FlowDropDownList] || []}
-                                            onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => handleInputChange(event, valueSetter)}
-                                            required={required}
-                                            disabled={disableEdit}
-                                        />
+                                        {(key === "dataRequests") ? (
+                                            <Grid container>
+                                                {displayRecords ? (
+                                                    <Grid item xs={10}>
+                                                        <ComponentControl
+                                                            label="Data Request"
+                                                            name="dataRequests"
+                                                            type="text"
+                                                            control="input"
+                                                            value={updateDataReq || ''}
+                                                            onChange={(event) => { setUpdateDataReq(event.target.value); }}
+                                                            dropDownOptions={dropDownValues[key as keyof FlowDropDownList] || []}
+                                                            required
+                                                            error={flowRule.dataRequests.error}
+                                                        />
+                                                    </Grid>
+                                                ) : (
+                                                    <Grid item xs={10}>
+                                                        <FormControl required error={flowRule.dataRequests.error}>
+                                                            <InputLabel id="data-request-select-input">View Data Requests</InputLabel>
+                                                            <Select
+                                                                inputProps={{
+                                                                    'aria-label': 'Without label',
+                                                                    sx: {
+                                                                        width: 270,
+                                                                        maxHeight: 15,
+                                                                    },
+                                                                }}
+                                                                size="medium"
+                                                                labelId="data-request-select-input"
+                                                                label="View Data Requests"
+                                                            >
+                                                                {selectedRowLocal?.content?.dataRequests?.map((option: string, index: number) => (
+                                                                    <MenuItem sx={{ maxHeight: 35 }} key={option}>
+                                                                        <ListItemText primary={option} key={option} />
+                                                                        <IconButton onClick={() => { removeItem(index); }} edge="end">
+                                                                            <RemoveIcon> </RemoveIcon>
+                                                                        </IconButton>
+                                                                    </MenuItem>
+                                                                ))}
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Grid>
+                                                )}
+                                                <Grid item xs={2}>
+                                                    {!displayRecords && (<IconButton onClick={addItem} edge="end">
+                                                        <AddIcon> </AddIcon>
+                                                    </IconButton>)}
+                                                    {displayRecords && (<IconButton onClick={() => { setDisplayRecords(false); }} edge="end">
+                                                        <ViewListIcon />
+                                                    </IconButton>)}
+                                                </Grid>
+                                            </Grid>
+                                        ) :
+                                            (<ComponentControl
+                                                control={control}
+                                                name={key}
+                                                label={label}
+                                                type="text"
+                                                value={valueGetter(selectedRowLocal)}
+                                                error={flowRule[key as keyof FlowKeys].error}
+                                                dropDownOptions={dropDownValues[key as keyof FlowDropDownList] || []}
+                                                onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => handleInputChange(event, valueSetter)}
+                                                required={required}
+                                                disabled={disableEdit}
+                                            />)
+                                        }
                                     </Grid>
                                 );
                             })
