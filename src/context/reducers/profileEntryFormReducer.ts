@@ -120,7 +120,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
     case profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE: {
       const profile = action.payload.profile;
       
-      const callTagsList = JSON.parse(profile.callTags).map((callTag: { display_nme: string; options_id: number; profile_id: number; row_crtn_dtm: string; row_updt_dtm:string; wrkr_tsk_info_id:number}) => {
+      const callTagsList = JSON.parse(profile.worker_task_info).map((callTag: { display_nme: string; options_id: number; profile_id: number; row_crtn_dtm: string; row_updt_dtm:string; wrkr_tsk_info_id:number}) => {
         return {
           display_nme: callTag.display_nme,
           options_id: callTag.options_id,
