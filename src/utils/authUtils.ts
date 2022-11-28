@@ -17,6 +17,7 @@ export const checkIfPO = (nNumber: string): boolean => {
     "n0088625",
     "n0183277",
     "n0196231",
+    "n1589476",
     "n1589476"
   ];
 
