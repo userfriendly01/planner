@@ -136,13 +136,7 @@ export default (props: AddFlowProps):JSX.Element => {
     if (isValidForm) {
       addFlowRule(flowRule, accessToken, graphQlApiUrl).then(apiResponse => {
         if (!apiResponse.errors) {
-          openModal(true, "ADD_ROUTE_RULE");
-          setAlertBar(alertBarProps => ({
-            ...alertBarProps,
-            "open": true,
-            "severityType": "success",
-            "msg": "New flow has been successfully added!!"
-          }));
+          openModal(false, "ADD_ROUTE_RULE");
           setFlowRule({ ...initRule });
           return true;
         }
