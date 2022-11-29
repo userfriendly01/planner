@@ -28,6 +28,6 @@ export const RoutingHeadingStyled = styled(Heading)`
   margin-top:50px !important
 `;
 
-export const ModalSearchStyled = styled(Modal)`
+export const RoutingModalSearchStyled = styled(Modal)`
   width:60%
 `;

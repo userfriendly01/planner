@@ -8,7 +8,7 @@ import {
   ModalHeader, ModalBody, ModalFooter
 } from "@lmig/lmds-react-modal";
 import {
-  RoutingHeadingStyled, ModalSearchStyled
+  RoutingHeadingStyled, RoutingModalSearchStyled
 } from "../../AlohaRouting.Styles";
 import SelectContainer from "../../../../core/SharedComponents/SelectContainer";
 import Grid from "@mui/material/Grid";
@@ -44,7 +44,7 @@ const RoutingAdvanceSearchModal = (props:AdvanceSearchModalProps):JSX.Element =>
 
   return (
     <div>
-      <ModalSearchStyled isOpen={isOpen} onClose={() => onClose(false)}>
+      <RoutingModalSearchStyled isOpen={isOpen} onClose={() => onClose(false)}>
         <ModalHeader id="my-search-header">
           <RoutingHeadingStyled type="h4-light"> Advance Routing Search Selection </RoutingHeadingStyled>
         </ModalHeader>
@@ -163,7 +163,7 @@ const RoutingAdvanceSearchModal = (props:AdvanceSearchModalProps):JSX.Element =>
             Reset Filter
           </Button>
         </ModalFooter>
-      </ModalSearchStyled>
+      </RoutingModalSearchStyled>
     </div>
   );
 };
