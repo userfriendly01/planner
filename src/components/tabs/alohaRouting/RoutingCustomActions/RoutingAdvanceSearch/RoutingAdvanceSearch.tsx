@@ -14,6 +14,7 @@ import SelectContainer from "../../../../core/SharedComponents/SelectContainer";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import { CACHE_FILTER_ROUTING } from "utils";
+import TextField from "@mui/material/TextField";
 
 interface AdvanceSearchModalProps{
   isOpen:boolean;
@@ -24,7 +25,7 @@ interface AdvanceSearchModalProps{
   openModal:(flag:boolean, search:RoutingFilter)=>void;
   applyFilter:()=>void;
 }
-const RoutingAdvanceSearchModal = (props:AdvanceSearchModalProps) => {
+const RoutingAdvanceSearchModal = (props:AdvanceSearchModalProps):JSX.Element => {
   const {
     isOpen, onClose, handleChange, masterData, selection, openModal, applyFilter
   } = props;
@@ -126,7 +127,8 @@ const RoutingAdvanceSearchModal = (props:AdvanceSearchModalProps) => {
               <Autocomplete
                 id="callIntent-autocomplete"
                 options={masterData?.callIntent}
-                value={selection.callIntent}
+                getOptionLabel={option => option || ""}
+                value={selection.callIntent || ""}
                 onChange={(event, value) => {
                   const tempEvent = {
                     target: {
@@ -136,13 +138,7 @@ const RoutingAdvanceSearchModal = (props:AdvanceSearchModalProps) => {
                   };
                   handleChange(tempEvent);
                 }}
-                renderInput={params => (
-                  <div ref={params.InputProps.ref}>
-                    {
-                      <input type="text" {...params.inputProps} placeholder="Select Call Intent" />
-                    }
-                  </div>
-                )}
+                renderInput={params => <TextField {...params} label="callIntent" />}
               />
             </Grid>
           </Grid>
