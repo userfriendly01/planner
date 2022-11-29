@@ -59,7 +59,8 @@ export interface ProfileEntryFormState {
   paymentProcessing: FieldState,
   policyNumberEdit: FieldState,
   voiceMailTranscription: FieldState,
-  clickToDial: FieldState
+  clickToDial: FieldState,
+  queuesList: Queue[],
 }
 
 export interface ToggleFormField {
