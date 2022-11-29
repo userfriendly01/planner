@@ -49,7 +49,8 @@ export const initialProfileEntryFormState = {
     value: "",
     updated: false,
     valid: false
-  }
+  },
+  queuesList: []
 };
 
 export const validProfileEntryFormState = {
@@ -102,7 +103,8 @@ export const validProfileEntryFormState = {
     value: "Valid profile name",
     updated: true,
     valid: true
-  }
+  },
+  queuesList: [3, 4]
 };
 
 export const invalidProfileEntryFormState = {
@@ -155,7 +157,8 @@ export const invalidProfileEntryFormState = {
     value: "",
     updated: true,
     valid: false
-  }
+  },
+  queuesList: [3, 4]
 };
 
 export const initialProfileEditEntryFormState = {
@@ -207,5 +210,6 @@ export const initialProfileEditEntryFormState = {
     value: "Test Profile",
     updated: false,
     valid: true
-  }
+  },
+  queuesList: [3, 4]
 };

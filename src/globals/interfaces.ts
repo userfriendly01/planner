@@ -92,6 +92,8 @@ export interface Office {
 
 export interface Skill {
   [key: string]: any
+  skillId: number,
+  skillName: string,
   name: string,
   profiles: any[],
   closedMessage: string,
@@ -152,14 +154,6 @@ export interface Activity {
   }
 }
 
-export interface Queue {
-  activity_id: number,
-  activity_nme: string,
-  available_i: {
-    data?: number[],
-    type?: string
-  }
-}
 
 export interface Worker {
   attributes: {

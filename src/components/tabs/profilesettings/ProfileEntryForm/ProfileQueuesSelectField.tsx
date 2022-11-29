@@ -1,5 +1,8 @@
 import React from "react";
 import { ProfileQueuesSelectFieldProps } from "./ProfileEntryForm.Interfaces";
+import { Dropdown } from "components";
+import { useAdminState } from "context";
+import { Skill } from "globals";
 import {
   IconButtonWrapper,
   ProfileActivitiesControlWrapper,
@@ -9,28 +12,10 @@ import {
   Label,
   ProfileActivitiesWrapper
 } from "./ProfileEntryForm.Styles";
-import { Dropdown } from "components";
 import {
   Add,
   Delete
 } from "@mui/icons-material";
-import {
-  Queue,
-  apiPaths
-} from "globals";
-import { myAxios } from "utils";
-
-const getQueues = () => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_ACTIVITIES)
-  .then(res => {
-    resolve(res.data);
-  })
-  .catch(error => {
-    reject({
-      msg: "Failed to fetch queues from service",
-      error
-    });
-  })
-);
 
 const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
   const {
@@ -38,23 +23,13 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
     setQueuesList
   } = props;
 
-  const defaultNewQueue: Queue[] = [];
-  const [newProfileQueue, setNewProfileQueue] = React.useState<Queue[]>(defaultNewQueue);
-  const [queues, setQueues] = React.useState([]);
-
-  React.useEffect(() => {
-    if(!queues.length) {
-      getQueues()
-        .then((allQueues: Queue[]) => {
-          setQueues(allQueues);
-        })
-        .catch(error => console.error(error.msg));
-    }
-  }, []);
+  const defaultNewQueue: Skill[] = [];
+  const [newProfileQueue, setNewProfileQueue] = React.useState<Skill[]>(defaultNewQueue);
+  const queues = useAdminState().skillContext.skills;
 
   const profileQueuesForDropDown = queues.filter(queue => {
     return !queuesList.find(item => {
-      return item.activity_id === queue.activity_id;
+      return item.skillId === queue.skillId;
     });
   });
 
@@ -62,7 +37,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
     [index: string]: any,
     value: number
   }>) => {
-    const selectedQueues = profileQueue.map(selectedQueue => queues.find(queue => selectedQueue.value === queue.activity_id));
+    const selectedQueues = profileQueue.map(selectedQueue => queues.find(queue => selectedQueue.value === queue.skillId));
     setNewProfileQueue(selectedQueues);
   };
 
@@ -72,15 +47,15 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
     setNewProfileQueue(defaultNewQueue);
   };
 
-  const removeProfileQueueClicked = (queueToBeRemoved: Queue) => {
-    const updatedQueueList = queuesList.filter(queues => queues.activity_id !== queueToBeRemoved.activity_id);
+  const removeProfileQueueClicked = (queueToBeRemoved: Skill) => {
+    const updatedQueueList = queuesList.filter(queues => queues.skillId !== queueToBeRemoved.skillId);
     setQueuesList(updatedQueueList);
   };
 
-  const getDropDownOptions = (optionsList: Queue[]) => {
+  const getDropDownOptions = (optionsList: Skill[]) => {
     return optionsList.map(option => ({
-      value: option.activity_id,
-      label: option.activity_nme
+      value: option.skillId,
+      label: option.name
     }));
   };
 
@@ -103,15 +78,15 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
           <IconButtonWrapper disabled={!newProfileQueue.length} onClick={addProfileQueueClicked} data-testid="add-queue-button">
             <Add fontSize={"inherit"}/>
           </IconButtonWrapper>
-        </ProfileActivityRowItem>s
+        </ProfileActivityRowItem>
       </ProfileActivityRow>
       <ProfileActivityRowSeperator/>
       <ProfileActivitiesWrapper>
-        {queuesList.map((queue: Queue, index: number) => {
+        {queuesList.map((queue: Skill, index: number) => {
           return (
             // @ts-ignore
             <ProfileActivityRow highlightOnHover={true} key={`queue-row-${index}`}>
-              <ProfileActivityRowItem>{queue.activity_nme}</ProfileActivityRowItem>
+              <ProfileActivityRowItem>{queue.name}</ProfileActivityRowItem>
               <ProfileActivityRowItem>
                 <IconButtonWrapper onClick={() => removeProfileQueueClicked(queue)} data-testid="delete-queue-button">
                   <Delete fontSize="inherit"/>
