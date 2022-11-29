@@ -118,7 +118,6 @@ const ProfileFormFields = () => {
             });
           }}
         />
-
         <ProfileQueuesSelectField
           queuesList={form.queuesList}
           setQueuesList={queuesList => {
