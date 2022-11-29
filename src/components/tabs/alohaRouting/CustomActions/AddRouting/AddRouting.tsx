@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import { Modal, ModalHeader } from "@lmig/lmds-react-modal";
-import { routingDropDownList, getAccessToken, getGraphQLEndpoint, routingInitRule, routeFields } from "utils";
-import { getGridMasterData } from "../DataGridRouting/GridMaster";
+import { routingDropDownList, getAccessToken, getGraphQLEndpoint, routingInitRule, routingFields } from "utils";
+import { getGridMasterData } from "../../DataGridRouting/GridMaster";
 import { retrieveRoutingData, addRoutingRule } from "services"
-import { CctSharedCallRoutingGlobalDb, RoutingMasterData, RoutingDropDownList, RoutingInitRule, AddRoutingModalProps } from "../AlohaRouting.Interfaces";
-import ComponentControl from "../../../core/SharedComponents/ComponentControl";
-import { RoutingModalBodyStyled, RoutingModalFooterStyled, RoutingHeadingStyled } from "../AlohaRouting.Styles";
-import CustomToast from "../../../core/CustomToast/CustomToast";
+import { CctSharedCallRoutingDb, RoutingMasterData, RoutingDropDownList, AddRoutingModalProps } from "../../AlohaRouting.Interfaces";
+import ComponentControl from "../../../../core/SharedComponents/ComponentControl";
+import { RoutingModalBodyStyled, RoutingModalFooterStyled, RoutingHeadingStyled } from "../../AlohaRouting.Styles";
+import CustomToast from "../../../../core/CustomToast/CustomToast";
+import { FormValidationRule } from "utils/interfaces/core.Interface";
 
 
 
@@ -34,7 +35,7 @@ export const AddRouting = (props: AddRoutingModalProps) => {
         if (cachedMasterData !== undefined && cachedMasterData !== null) {
             masterData = JSON.parse(cachedMasterData);
         } else {
-            const result: CctSharedCallRoutingGlobalDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl);
+            const result: CctSharedCallRoutingDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl);
             masterData = getGridMasterData(result);
         }
         routingDropDownList.brand = masterData.brand;
@@ -132,7 +133,7 @@ export const AddRouting = (props: AddRoutingModalProps) => {
             skey += routingRule.channel.value ? `${routingRule.channel.value}__${newId}` : `__${newId}`;
         }
 
-        const newRoutingRule: RoutingInitRule = { [key]: { value } };
+        const newRoutingRule: FormValidationRule = { [key]: { value } };
 
         if (skey) {
             newRoutingRule["skey"] = { value: removeAllWhiteSpace(skey).toLocaleLowerCase() };
@@ -142,7 +143,7 @@ export const AddRouting = (props: AddRoutingModalProps) => {
             newRoutingRule["pkey"] = { value: removeAllWhiteSpace(value).toLocaleLowerCase() };
         }
 
-        setRoutingRule((rule: RoutingInitRule) => ({
+        setRoutingRule((rule: FormValidationRule) => ({
             ...rule,
             ...newRoutingRule,
         }));
@@ -170,8 +171,8 @@ export const AddRouting = (props: AddRoutingModalProps) => {
                 <RoutingModalBodyStyled>
                     <Grid container rowSpacing={3}>
                         {
-                            routeFields.map(({
-                                label, key, control, required = false, disableEdit = false
+                            routingFields.map(({
+                                label, key, control, required = false, disableAdd = false
                             }) => {
                                 let dropDownOptions: string[] = [];
                                 if (control === 'select') {
@@ -187,9 +188,9 @@ export const AddRouting = (props: AddRoutingModalProps) => {
                                             type="text"
                                             value={routingRule[key].value}
                                             error={routingRule[key].error}
-                                            disabled={disableEdit}
+                                            disabled={disableAdd}
                                             dropDownOptions={dropDownOptions}
-                                            onChange={(event: any) => handleInputChange(event, key, disableEdit)}
+                                            onChange={(event: any) => handleInputChange(event, key, disableAdd)}
                                             required={required}
                                         />
                                     </Grid>

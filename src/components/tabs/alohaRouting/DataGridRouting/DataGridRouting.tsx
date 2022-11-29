@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridRenderCellParams, GridToolbar } from "@mui/x-data-grid";
 import { RoutingGridColumnDef } from "./GridColumnDef";
-import { CctSharedCallRoutingGlobalDb, RoutingFilter, RoutingInitState, RoutingMasterData } from "../AlohaRouting.Interfaces";
+import { CctSharedCallRoutingDb, RoutingFilter, RoutingInitState, RoutingMasterData } from "../AlohaRouting.Interfaces";
 import { retrieveRoutingData } from "services";
-import { CACHED_CALL_ROUTING_PAGE_NO, CACHED_CALL_ROUTING_PER_PAGE, CACHE_FILTER_ROUTING, getAccessToken, routingInitState, getGraphQLEndpoint } from "utils";
+import { CACHED_CALL_ROUTING_PAGE_NO, CACHED_CALL_ROUTING_PER_PAGE, CACHE_FILTER_ROUTING, getAccessToken, routingInitState, getGraphQLEndpoint, initializedAlertBar } from "utils";
 import { getGridMasterData } from "./GridMaster";
 import { RoutingTableBox } from "../AlohaRouting.Styles";
 import GridSpinner from "./GridSpinner";
 import { CustomFlowRoutingToolBar } from "./CustomRoutingGridToolBar";
-import { AddRouting } from "../AddRouting/AddRouting";
+import { AddRouting, EditRouting } from "../CustomActions";
 import { CustomToast } from "components";
+import { AlertBarProps } from "utils/interfaces/core.Interface";
 
 export const DataGridRouting = () => {
     const accessToken: string = getAccessToken();
@@ -19,11 +20,7 @@ export const DataGridRouting = () => {
     }
     const [state, dispatch] = React.useReducer(reducer, routingInitState);
 
-    const [alertBar, setAlertBar] = useState({
-        open: false,
-        msg: "",
-        severityType: ""
-    });
+    const [alertBar, setAlertBar] = useState(initializedAlertBar);
 
 
     const getAdvanceFilter = (): RoutingFilter => {
@@ -46,11 +43,11 @@ export const DataGridRouting = () => {
         const {
             data, idStart, idEnd,
         } = state;
-        const result: CctSharedCallRoutingGlobalDb[] = data.filter((item) => item.id >= idStart && item.id <= idEnd);
+        const result: CctSharedCallRoutingDb[] = data.filter((item) => item.id >= idStart && item.id <= idEnd);
         const advanceFilter: RoutingFilter = getAdvanceFilter();
         const advanceFilterLength: number = Object.keys(advanceFilter).length;
         if (advanceFilterLength > 0) {
-            const advanceFilteredArray: Array<CctSharedCallRoutingGlobalDb> = [];
+            const advanceFilteredArray: Array<CctSharedCallRoutingDb> = [];
             result.forEach((item) => {
                 let matched: number = 0;
                 Object.keys(advanceFilter).forEach((key: keyof RoutingFilter) => {
@@ -62,8 +59,6 @@ export const DataGridRouting = () => {
                     advanceFilteredArray.push(item);
                 }
             });
-            console.log('filterRecords>', advanceFilteredArray);
-
             dispatch({ filteredItems: advanceFilteredArray });
         } else {
             dispatch({ filteredItems: result });
@@ -71,9 +66,9 @@ export const DataGridRouting = () => {
     }
 
     const loadDataTable = async () => {
-        const result: CctSharedCallRoutingGlobalDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl);
+        const result: CctSharedCallRoutingDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl);
         if (result.length > 0) {
-            const sortedResult: CctSharedCallRoutingGlobalDb[] = result.sort(((a: CctSharedCallRoutingGlobalDb, b: CctSharedCallRoutingGlobalDb) => a.id - b.id));
+            const sortedResult: CctSharedCallRoutingDb[] = result.sort(((a: CctSharedCallRoutingDb, b: CctSharedCallRoutingDb) => a.id - b.id));
             const minId: number = sortedResult[0].id;
             const maxId: number = sortedResult[result.length - 1].id;
             dispatch({
@@ -98,14 +93,21 @@ export const DataGridRouting = () => {
                 filteredItems: result,
                 fetching: false,
             });
-            // this.showToastMessage('error', 'Error in retriving Routing Rule. Please check the API Key ');
+            setAlertBar((alertBarProps: AlertBarProps) => (
+                {
+                    ...alertBarProps,
+                    open: true,
+                    severityType: "error",
+                    msg: "Error in retrieving Routing Rule. Please check the API Key"
+                }
+            ))
         }
     }
 
 
     const openAddModal = (flag: boolean) => {
         if (!flag) {
-            setAlertBar(alertBarProps => ({
+            setAlertBar((alertBarProps: AlertBarProps) => ({
                 ...alertBarProps,
                 open: flag,
                 severityType: "success",
@@ -115,6 +117,19 @@ export const DataGridRouting = () => {
         }
         dispatch({ isAddModalOpen: flag })
     };
+
+    const openEditModal = (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string) => {
+        if (!flag && isSubmitted) {
+            setAlertBar((alertBarProps: AlertBarProps) => ({
+                ...alertBarProps,
+                open: true,
+                msg: message,
+                severityType: "success"
+            }));
+            loadDataTable();
+        }
+        dispatch({ isEditModalOpen: flag, selectedRow: row });
+    }
 
     const setPerPage = (newPageSize: number) => {
         sessionStorage.setItem(CACHED_CALL_ROUTING_PER_PAGE, newPageSize.toString());
@@ -133,11 +148,13 @@ export const DataGridRouting = () => {
     }, [dispatch])
 
     const handleClose = (flag: boolean) => {
-        setAlertBar(alertBarProps => ({
+        setAlertBar((alertBarProps: AlertBarProps) => ({
             ...alertBarProps,
             open: flag
         }));
     };
+
+    RoutingGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (<a href="#" onClick={() => openEditModal(true, false, params.row)}>{`${params.value}`}</a>);
 
     return (
         <div>
@@ -174,6 +191,11 @@ export const DataGridRouting = () => {
                 newId={state.maxId + 1}
                 openModal={openAddModal}
                 onClose={() => openAddModal(false)}
+            />
+            <EditRouting
+                isOpen={state.isEditModalOpen}
+                selectedRow={state.selectedRow}
+                openEditModal={openEditModal}
             />
             <CustomToast
                 open={alertBar.open}

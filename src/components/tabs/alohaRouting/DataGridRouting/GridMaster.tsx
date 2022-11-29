@@ -1,13 +1,13 @@
 /* eslint-disable no-console, max-len,  no-return-assign */
 
 import { ROUTING_CACHE_MASTER_DATA } from "utils";
-import { CctSharedCallRoutingGlobalDb, RoutingMasterData } from "../AlohaRouting.Interfaces"
+import { CctSharedCallRoutingDb, RoutingMasterData } from "../AlohaRouting.Interfaces"
 
 const masterDataItems: string[] = ['channel', 'brand', 'callerType', 'callerState', 'transferDestination', 'twilioSkill', 'callIntent', 'policyType'];
 
 const clearGridMasterData = (): void => localStorage.removeItem(ROUTING_CACHE_MASTER_DATA);
 
-const getGridMasterData = (data: CctSharedCallRoutingGlobalDb[]): RoutingMasterData => {
+const getGridMasterData = (data: CctSharedCallRoutingDb[]): RoutingMasterData => {
   try {
     const localStorageMasterData: string = localStorage.getItem(ROUTING_CACHE_MASTER_DATA);
     if (localStorageMasterData) {

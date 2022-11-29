@@ -247,7 +247,7 @@ export const EditFlow = ({ isOpen = false, selectedRow, openEditModal }: EditFlo
                                                 label={label}
                                                 type="text"
                                                 value={valueGetter(selectedRowLocal)}
-                                                error={flowRule[key as keyof FlowKeys].error}
+                                                error={flowRule[key].error}
                                                 dropDownOptions={dropDownValues[key as keyof FlowDropDownList] || []}
                                                 onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => handleInputChange(event, valueSetter)}
                                                 required={required}

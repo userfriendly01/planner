@@ -33,7 +33,7 @@ export default function TimePickerComponent({
           label={label}
           disabled={disabled}
           // eslint-disable-next-line react/jsx-props-no-spreading
-          renderInput={(params: TextFieldProps) => <TextField error={error} required={required} {...params} />}
+          renderInput={(params: TextFieldProps) => <TextField error={value!==null && error} required={required} {...params} />}
         />
       </FormControl>
     </LocalizationProvider>

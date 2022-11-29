@@ -1,4 +1,4 @@
-export interface CctSharedCallRoutingGlobalDb {
+export interface CctSharedCallRoutingDb {
     id: number;
     all?: string;
     brand?: string;
@@ -41,11 +41,11 @@ export interface RoutingFilter {
 }
 
 export interface RoutingInitState {
-    data?: Array<CctSharedCallRoutingGlobalDb>;
-    filteredItems?: Array<CctSharedCallRoutingGlobalDb>;
+    data?: Array<CctSharedCallRoutingDb>;
+    filteredItems?: Array<CctSharedCallRoutingDb>;
     advanceFilter?: RoutingFilter;
     fetching?: boolean;
-    selectedRow?: undefined;
+    selectedRow?: CctSharedCallRoutingDb;
     isEditModalOpen?: boolean;
     isAddModalOpen?: boolean;
     isAdvanceSearchModalOpen?: boolean;
@@ -72,18 +72,11 @@ export interface AddPageFieldConfigProps {
     key: string,
     control: string,
     required?: boolean,
+    disableAdd?: boolean,
     disableEdit?: boolean
+    valueGetter?: (params: CctSharedCallRoutingDb, defaultValue?: any) => string;
+    valueSetter?: (currentValue: CctSharedCallRoutingDb, newValue: any) => CctSharedCallRoutingDb;
 }
-
-export interface RoutingFormValidationProps {
-    error?: boolean;
-    value: string;
-    required?: boolean;
-}
-export interface RoutingInitRule {
-    [key: string]: RoutingFormValidationProps;
-}
-
 export interface AddRoutingModalProps {
     isOpen: boolean;
     newId: number;
