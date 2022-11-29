@@ -23,7 +23,7 @@ export const routingDropDownList: RoutingDropDownList = {
     dayOfWeek,
     channel: [],
     policyType: []
-}
+};
 
 export const routingInitState: RoutingInitState = {
     data: [],
@@ -40,8 +40,8 @@ export const routingInitState: RoutingInitState = {
     minId: 0,
     saveSuccess: false,
     page: sessionStorage.getItem(CACHED_CALL_ROUTING_PAGE_NO) ? +sessionStorage.getItem(CACHED_CALL_ROUTING_PAGE_NO) : 1,
-    perPage: sessionStorage.getItem(CACHED_CALL_ROUTING_PER_PAGE) ? +sessionStorage.getItem(CACHED_CALL_ROUTING_PER_PAGE) : 10,
-}
+    perPage: sessionStorage.getItem(CACHED_CALL_ROUTING_PER_PAGE) ? +sessionStorage.getItem(CACHED_CALL_ROUTING_PER_PAGE) : 10
+};
 
 export const routingFields: AddRoutingFieldConfigProps[] = [
     {

@@ -36,9 +36,13 @@ import {
   userDestination
 } from "utils";
 import { retrieveFlowData } from "services";
-import { CctSharedCallFlowDb, FlowMasterData } from "../../AlohaFlow.Interfaces";
+import {
+  CctSharedCallFlowDb, FlowMasterData
+} from "../../AlohaFlow.Interfaces";
 import { getGridMasterData } from "../../DataGridFlow/GridMaster";
-import { AlertBarProps, FormValidationRule } from "utils/interfaces";
+import {
+  AlertBarProps, FormValidationRule
+} from "utils/interfaces";
 
 export interface AddFlowModalProps {
   isOpen: boolean;
@@ -46,7 +50,9 @@ export interface AddFlowModalProps {
   openAddModal: (flag: boolean, isSubmitted?: boolean) => void;
 }
 
-export const AddFlow = ({ isOpen = false, newId, openAddModal }: AddFlowModalProps) => {
+export const AddFlow = ({
+  isOpen = false, newId, openAddModal
+}: AddFlowModalProps):JSX.Element => {
 
   const accessToken: string = getAccessToken();
   const graphQlApiUrl: string = getGraphQLEndpoint();
@@ -89,7 +95,7 @@ export const AddFlow = ({ isOpen = false, newId, openAddModal }: AddFlowModalPro
     let value: string = event.target.value;
     value = (key === "pkey" && !value.startsWith("+")) ? `+1${value}` : value;
     const newFlowRule: FormValidationRule = {
-      [key]: { value },
+      [key]: { value }
     };
 
     setFlowRule((rule: FormValidationRule) => ({
@@ -132,9 +138,9 @@ export const AddFlow = ({ isOpen = false, newId, openAddModal }: AddFlowModalPro
           openAddModal(false, true);
           setAlertBar((alertBarProps: AlertBarProps) => ({
             ...alertBarProps,
-            "open": true,
-            "severityType": "success",
-            "msg": "New flow has been successfully added!!"
+            open: true,
+            severityType: "success",
+            msg: "New flow has been successfully added!! "
           }));
           setFlowRule({ ...initRule });
           return true;

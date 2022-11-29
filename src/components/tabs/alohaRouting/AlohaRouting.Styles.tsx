@@ -1,13 +1,14 @@
 import styled from "styled-components";
 import {
-    ModalBody,
-    ModalFooter,
-    Heading
-  } from "@lmig/lmds-react";
+  ModalBody,
+  ModalFooter,
+  Heading,
+  Modal
+} from "@lmig/lmds-react";
 
 export const RoutingTableBox = styled.div`
 width: 100%;
-`
+`;
 
 
 export const RoutingModalBodyStyled = styled(ModalBody)`
@@ -25,4 +26,8 @@ export const RoutingModalFooterStyled = styled(ModalFooter)`
 
 export const RoutingHeadingStyled = styled(Heading)`
   margin-top:50px !important
+`;
+
+export const RoutingModalSearchStyled = styled(Modal)`
+  width:60%
 `;
