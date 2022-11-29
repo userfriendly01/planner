@@ -10,6 +10,7 @@ import {
 import {
   ProfileNameTextField,
   ProfileActivitiesSelectField,
+  ProfileQueuesSelectField,
   OverflowSkillTextField,
   StyledButton
 } from "components";
@@ -27,6 +28,7 @@ jest.mock("components", () => ({
   __esModule: true,
   ProfileNameTextField: jest.fn(),
   ProfileActivitiesSelectField: jest.fn(),
+  ProfileQueuesSelectField: jest.fn(),
   OverflowSkillTextField: jest.fn(),
   StyledButton: jest.fn()
 }));
@@ -50,6 +52,7 @@ describe("<ProfileFormFields />", () => {
     setupMockedComponents({
       ProfileNameTextField,
       ProfileActivitiesSelectField,
+      ProfileQueuesSelectField,
       OverflowSkillTextField,
       FormControlLabel,
       Switch,
@@ -73,6 +76,7 @@ describe("<ProfileFormFields />", () => {
       expect(rendered.container).toHaveTextContent(/^ProfileNameTextField/i);
       expectMockedComponent(rendered, { OverflowSkillTextField });
       expectMockedComponent(rendered, { ProfileActivitiesSelectField });
+      expectMockedComponent(rendered, { ProfileQueuesSelectField });
     });
     test("Few switch are on by default, like auto answered", () => {
       renderComponent();
