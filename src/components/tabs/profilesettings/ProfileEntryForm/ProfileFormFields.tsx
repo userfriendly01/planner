@@ -22,6 +22,7 @@ import { profileEntryFormActions } from "context/reducers/profileEntryFormReduce
 import {
   ProfileNameTextField,
   ProfileActivitiesSelectField,
+  ProfileQueuesSelectField,
   OverflowSkillTextField
 } from "components";
 
@@ -114,6 +115,16 @@ const ProfileFormFields = () => {
             setForm({
               type: profileEntryFormActions.UPDATE_ACTIVITIES_LIST,
               payload: activitiesList
+            });
+          }}
+        />
+
+        <ProfileQueuesSelectField
+          queuesList={form.queuesList}
+          setQueuesList={queuesList => {
+            setForm({
+              type: profileEntryFormActions.UPDATE_ACTIVITIES_LIST,
+              payload: queuesList
             });
           }}
         />

@@ -1,6 +1,7 @@
 import {
   ModalOverlayStatuses,
-  Activity
+  Activity,
+  Queue
 } from "globals";
 
 export interface ProfileEntryFormProps {
@@ -33,6 +34,11 @@ export interface TextFieldProps {
 export interface ProfileActivitiesSelectFieldProps {
   activitiesList: Activity[]
   setActivitiesList: (activitiesList: Activity[]) => void;
+}
+
+export interface ProfileQueuesSelectFieldProps {
+  queuesList: Queue[]
+  setQueuesList: (queuesList: Queue[]) => void;
 }
 
 export interface ProfileEntryFormState {
