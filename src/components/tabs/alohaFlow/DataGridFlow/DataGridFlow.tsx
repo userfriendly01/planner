@@ -12,10 +12,11 @@ import {
 import { retrieveFlowData } from "services";
 import {
   getAccessToken,
+  CACHE_FILTER_FLOW,
   getGraphQLEndpoint,
   initializedAlertBar
 } from "utils";
-import CustomToast from "../../../core/CustomToast/CustomToast";
+import { CustomToast } from "../../../core/index";
 import {
   CctSharedCallFlowDb, FlowAdvanceFilter, FlowStateVariables
 } from "../AlohaFlow.Interfaces";
@@ -25,18 +26,35 @@ import {
   getGridMasterData
 } from "./GridMaster";
 import GridSpinner from "./GridSpinner";
-import { CACHE_FILTER_FLOW } from "../../../../utils/flowUtils";
-import { AddFlow, AdvanceSearchModal, CustomFlowGridToolBar, EditFlow } from "../CustomActions";
+import {
+  AddFlow, AdvanceSearchModal, CustomFlowGridToolBar, EditFlow
+} from "../CustomActions";
 import { AlertBarProps } from "utils/interfaces";
 
 
 const DataGridFlow = (): JSX.Element => {
   const accessToken: string = getAccessToken();
   const graphQlApiUrl: string = getGraphQLEndpoint();
+
+  const getAdvanceFilter = () => {
+    let advanceFilter: { [key: string]: undefined; };
+    try {
+      const cachedFilter = localStorage.getItem(CACHE_FILTER_FLOW);
+      advanceFilter = JSON.parse(cachedFilter) || {};
+      Object.keys(advanceFilter).forEach(key => {
+        if (advanceFilter[key] === "") {
+          delete advanceFilter[key];
+        }
+      });
+    } catch (e) {
+      advanceFilter = {};
+    }
+    return advanceFilter;
+  };
   const flowInitState: FlowStateVariables = {
     data: [],
-    filteredItems: [],
-    advanceFilter: {},
+    filteredItems: [] ,
+    advanceFilter: getAdvanceFilter(),
     masterData: getGridMasterData(),
     fetching: true,
     selectedRow: undefined,
@@ -126,22 +144,6 @@ const DataGridFlow = (): JSX.Element => {
     }));
   };
 
-  const getAdvanceFilter = () => {
-    let advanceFilter: { [key: string]: undefined; };
-    try {
-      const cachedFilter: string = localStorage.getItem(CACHE_FILTER_FLOW);
-      advanceFilter = JSON.parse(cachedFilter) || {};
-      Object.keys(advanceFilter).forEach(key => {
-        if (advanceFilter[key] === "") {
-          delete advanceFilter[key];
-        }
-      });
-    } catch (e) {
-      advanceFilter = {};
-    }
-    return advanceFilter;
-  };
-
   const filterRecords = () => {
     const {
       data, idStart, idEnd
@@ -154,7 +156,7 @@ const DataGridFlow = (): JSX.Element => {
     if (advanceFilterLength > 0) {
       const advanceFilteredArray: FlowAdvanceFilter[] = [];
       result.forEach(item => {
-        let matched: number = 0;
+        let matched = 0;
         Object.keys(advanceFilter).forEach(key => {
           let tempItem: any = item;
           if (key === "callFlowRoute") {
@@ -239,9 +241,13 @@ const DataGridFlow = (): JSX.Element => {
       loadDataTable();
     }
     setDataFlow((currentDataFlow: FlowStateVariables) => (
-      { ...currentDataFlow, isEditModalOpen: flag, selectedRow: row }
+      {
+        ...currentDataFlow,
+        isEditModalOpen: flag,
+        selectedRow: row
+      }
     ));
-  }
+  };
 
   FlowGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallFlowDb>) => (<a href="#" onClick={() => openEditModal(true, false, params.row)}>{`${params.value}`}</a>);
 
@@ -306,7 +312,6 @@ const DataGridFlow = (): JSX.Element => {
           return true;
         }}
       />
-
       <CustomToast
         open={alertBar.open}
         onClose={handleClose}
