@@ -7,4 +7,4 @@ idp:
         email_address: Cloud_Contact_Center_Tech@LibertyMutual.com
         oidc: true
         reply_urls:
-          - https://cicct-softphone-admin-ui-development.us-east-1.np.paas.lmig.com/azure/auth-callback
+          - https://localhost:8443/auth-callback
