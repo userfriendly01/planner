@@ -158,7 +158,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         autoAnswered: formatProfileBooleanDataTrueFalse(profile.auto_answd_i.data[0]),
         inboundRecorded: formatProfileBooleanDataTrueFalse(profile.recorded_i.data[0]),
         outboundRecorded: formatProfileBooleanDataTrueFalse(profile.otbnd_recorded_i.data[0]),
-        callTag: formatProfileBooleanDataTrueFalse(profile.acw_option_i.data[0]),
+        acwOption: formatProfileBooleanDataTrueFalse(profile.acw_option_i.data[0]),
         manualRecorded: formatProfileBooleanDataTrueFalse(profile.manual_recorded_i.data[0]),
         acwDataEntry: formatProfileBooleanDataTrueFalse(profile.acw_data_entry_i.data[0]),
         manualRecordedInbound: formatProfileBooleanDataTrueFalse(profile.manual_record_inbound_i.data[0]),

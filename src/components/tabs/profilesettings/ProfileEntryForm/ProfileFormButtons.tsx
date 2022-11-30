@@ -113,7 +113,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     form.autoAnswered.updated ? payload.auto_answd_i = form.autoAnswered.value : null
     form.paymentProcessing.updated ? payload.pmt_prcsg_i = form.paymentProcessing.value : null
     form.outboundRecorded.updated ? payload.otbnd_recorded_i = form.outboundRecorded.value : null
-    form.callTag.updated ? payload.callTag = form.callTag.value : null
+    form.callTagsUpdated ? payload.callTag = form.callTagsList.map(callTag => callTag.wrkr_tsk_info_id) : null
     form.acwOption.updated ? payload.acw_option_i = form.acwOption.value : null
     form.manualRecorded.updated ? payload.manual_recorded_i = form.manualRecorded.value : null
     form.acwDataEntry.updated ? payload.acw_data_entry_i = form.acwDataEntry.value : null
