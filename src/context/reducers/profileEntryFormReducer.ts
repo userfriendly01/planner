@@ -38,6 +38,9 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
   callTag: {
     value: false
   },
+  acwOption: {
+    value: false
+  },
   manualRecorded: {
     value: false
   },
