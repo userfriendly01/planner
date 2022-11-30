@@ -1,0 +1,10 @@
+# Learn more about IDP configuration: https://forge.lmig.com/wiki/display/CLOUDFORGE/Identity+%28IDP%29+Pipeline+Automation
+---
+idp:
+  - provider: azure
+    applications:
+      - name: cicct-softphone-admin-ui
+        email_address: Cloud_Contact_Center_Tech@LibertyMutual.com
+        oidc: true
+        reply_urls:
+          - https://localhost:8443/auth-callback
