@@ -67,6 +67,7 @@
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@lmig/lmds-react-accordion": "^1.4.11",
+    "@lmig/pkce-authentication-utilities": "0.0.13",
     "@mui/icons-material": "^5.8.0",
     "@mui/material": "^5.8.1",
     "@progress/kendo-licensing": "^1.2.2",
