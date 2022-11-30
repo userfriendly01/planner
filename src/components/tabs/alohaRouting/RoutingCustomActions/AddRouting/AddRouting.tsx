@@ -7,35 +7,31 @@ import {
   Modal, ModalHeader
 } from "@lmig/lmds-react-modal";
 import {
-  routingDropDownList, getAccessToken, routingInitRule, routeFields
+  routingDropDownList, getAccessToken, routingInitRule, routingFields, initializedAlertBar, getGraphQLEndpoint
 } from "utils";
 import { getGridMasterData } from "../../DataGridRouting/GridMaster";
 import {
   retrieveRoutingData, addRoutingRule
 } from "services";
 import {
-  CctSharedCallRoutingGlobalDb, RoutingMasterData, RoutingDropDownList, RoutingInitRule, AddRoutingModalProps
+  CctSharedCallRoutingDb, RoutingMasterData, RoutingDropDownList, AddRoutingModalProps
 } from "../../AlohaRouting.Interfaces";
 import ComponentControl from "../../../../core/SharedComponents/ComponentControl";
 import {
   RoutingModalBodyStyled, RoutingModalFooterStyled, RoutingHeadingStyled
 } from "../../AlohaRouting.Styles";
 import CustomToast from "../../../../core/CustomToast/CustomToast";
-import { getGraphQLEndpoint } from "../../../../../utils/configUtils";
+import { FormValidationRule } from "utils/interfaces";
 
 
-export const AddRouting = (props: AddRoutingModalProps):JSX.Element => {
+export const AddRouting = (props: AddRoutingModalProps): JSX.Element => {
   const {
     onClose, isOpen = false, newId, openModal
   } = props;
 
   const [routingRule, setRoutingRule] = useState({ ...routingInitRule });
   const [dropDownValues, setDropDownValues] = useState(routingDropDownList);
-  const [alertBar, setAlertBar] = useState({
-    "open": false,
-    "msg": "",
-    "severityType": ""
-  });
+  const [alertBar, setAlertBar] = useState(initializedAlertBar);
 
   const accessToken: string = getAccessToken();
   const graphQlApiUrl: string = getGraphQLEndpoint();
@@ -46,7 +42,7 @@ export const AddRouting = (props: AddRoutingModalProps):JSX.Element => {
     if (cachedMasterData !== undefined && cachedMasterData !== null) {
       masterData = JSON.parse(cachedMasterData);
     } else {
-      const result: CctSharedCallRoutingGlobalDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl);
+      const result: CctSharedCallRoutingDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl);
       masterData = getGridMasterData(result);
     }
     routingDropDownList.brand = masterData.brand;
@@ -148,7 +144,7 @@ export const AddRouting = (props: AddRoutingModalProps):JSX.Element => {
       skey += routingRule.channel.value ? `${routingRule.channel.value}__${newId}` : `__${newId}`;
     }
 
-    const newRoutingRule: RoutingInitRule = { [key]: { value }};
+    const newRoutingRule: FormValidationRule = { [key]: { value }};
 
     if (skey) {
       newRoutingRule["skey"] = { value: removeAllWhiteSpace(skey).toLocaleLowerCase() };
@@ -158,7 +154,7 @@ export const AddRouting = (props: AddRoutingModalProps):JSX.Element => {
       newRoutingRule["pkey"] = { value: removeAllWhiteSpace(value).toLocaleLowerCase() };
     }
 
-    setRoutingRule((rule: RoutingInitRule) => ({
+    setRoutingRule((rule: FormValidationRule) => ({
       ...rule,
       ...newRoutingRule
     }));
@@ -186,8 +182,8 @@ export const AddRouting = (props: AddRoutingModalProps):JSX.Element => {
         <RoutingModalBodyStyled>
           <Grid container rowSpacing={3}>
             {
-              routeFields.map(({
-                label, key, control, required = false, disableEdit = false
+              routingFields.map(({
+                label, key, control, required = false, disableAdd = false
               }) => {
                 let dropDownOptions: string[] = [];
                 if (control === "select") {
@@ -203,9 +199,9 @@ export const AddRouting = (props: AddRoutingModalProps):JSX.Element => {
                       type="text"
                       value={routingRule[key].value}
                       error={routingRule[key].error}
-                      disabled={disableEdit}
+                      disabled={disableAdd}
                       dropDownOptions={dropDownOptions}
-                      onChange={(event: any) => handleInputChange(event, key, disableEdit)}
+                      onChange={(event: any) => handleInputChange(event, key, disableAdd)}
                       required={required}
                     />
                   </Grid>
@@ -223,7 +219,7 @@ export const AddRouting = (props: AddRoutingModalProps):JSX.Element => {
             sx={{ marginRight: 2 }}
             onClick={() => handleOnCreateRoute()}
           >
-                        Create Rule
+            Create Rule
           </Button>
           <Button
             value="Cancel"
@@ -231,7 +227,7 @@ export const AddRouting = (props: AddRoutingModalProps):JSX.Element => {
             color="primary"
             onClick={() => resetRoutingRule()}
           >
-                        Cancel
+            Cancel
           </Button>
         </RoutingModalFooterStyled>
       </Modal>
