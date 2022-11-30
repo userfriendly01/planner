@@ -16,6 +16,9 @@ export const initialProfileEntryFormState = {
   callTag: {
     value: false
   },
+  acwOption: {
+    value: false
+  },
   manualRecorded: {
     value: false
   },
@@ -63,6 +66,9 @@ export const validProfileEntryFormState = {
     value: true
   },
   callTag: {
+    value: false
+  },
+  acwOption: {
     value: false
   },
   manualRecorded: {
@@ -115,6 +121,9 @@ export const invalidProfileEntryFormState = {
   callTag: {
     value: false
   },
+  acwOption: {
+    value: false
+  },
   manualRecorded: {
     value: false
   },
@@ -163,6 +172,9 @@ export const initialProfileEditEntryFormState = {
     value: true
   },
   callTag: {
+    value: false
+  },
+  acwOption: {
     value: false
   },
   manualRecorded: {
