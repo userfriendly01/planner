@@ -73,6 +73,7 @@ export const AddRouting = (props: AddRoutingModalProps): JSX.Element => {
           }
         };
         isValidForm = false;
+        console.log("RoutingRule: ", newRoutingRule);
         setRoutingRule(rule => ({
           ...rule,
           ...newRoutingRule

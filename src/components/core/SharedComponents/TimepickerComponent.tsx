@@ -23,17 +23,17 @@ export default function TimePickerComponent({
   disabled,
   error,
   required
-}: TimePickerComponentProps) {
+}: TimePickerComponentProps): JSX.Element {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <FormControl sx={{ width: "calc(95%)" }} error={value !== null && error}>
+      <FormControl sx={{ width: "calc(95%)" }}>
         <TimePicker
           value={value || null}
           onChange={onChange}
           label={label}
           disabled={disabled}
           // eslint-disable-next-line react/jsx-props-no-spreading
-          renderInput={(params: TextFieldProps) => <TextField required={required} {...params} />}
+          renderInput={(params: TextFieldProps) => <TextField error={error} required={required} {...params} />}
         />
       </FormControl>
     </LocalizationProvider>
