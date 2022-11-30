@@ -154,8 +154,8 @@ export const runTritonAdminStartup = (dispatch: any) => {
   the existing order is important */
   return Promise.all([
     Promise.resolve(getStartupProfiles().TRITON.name),
-    callCalabrioService(),
     getWorkers(dispatch),
+    callCalabrioService(),
     getManagers(dispatch),
     getOffices(dispatch),
     getProfiles(dispatch),
