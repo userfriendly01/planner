@@ -50,7 +50,8 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       auto_answd_i: form.autoAnswered.value,
       pmt_prcsg_i: form.paymentProcessing.value,
       otbnd_recorded_i: form.outboundRecorded.value,
-      acw_option_i: form.callTag.value,
+      callTag: form.callTag.value,
+      acw_option_i: form.acwOption.value,
       manual_recorded_i: form.manualRecorded.value,
       acw_data_entry_i: form.acwDataEntry.value,
       manual_record_inbound_i: form.manualRecordedInbound.value,
@@ -112,7 +113,8 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     form.autoAnswered.updated ? payload.auto_answd_i = form.autoAnswered.value : null
     form.paymentProcessing.updated ? payload.pmt_prcsg_i = form.paymentProcessing.value : null
     form.outboundRecorded.updated ? payload.otbnd_recorded_i = form.outboundRecorded.value : null
-    form.callTag.updated ? payload.acw_option_i = form.callTag.value : null
+    form.callTag.updated ? payload.callTag = form.callTag.value : null
+    form.acwOption.updated ? payload.acw_option_i = form.acwOption.value : null
     form.manualRecorded.updated ? payload.manual_recorded_i = form.manualRecorded.value : null
     form.acwDataEntry.updated ? payload.acw_data_entry_i = form.acwDataEntry.value : null
     form.manualRecordedInbound.updated ? payload.manual_record_inbound_i = form.manualRecordedInbound.value : null
@@ -121,6 +123,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     form.voiceMailTranscription.updated ? payload.voice_mail_transcription_i = form.voiceMailTranscription.value : null
 
     editProfile(payload).then(() => {
+      console.log("rz payload=", payload);
       updateLoading({
         ...loading,
         overlayMessage: `Successfully updated profile with ID ${form.profileId}`,

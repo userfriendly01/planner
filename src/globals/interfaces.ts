@@ -133,6 +133,7 @@ export interface ProfilePayload {
   pmt_prcsg_i: boolean,
   otbnd_recorded_i: boolean,
   acw_option_i: boolean,
+  callTag: boolean,
   manual_recorded_i: boolean,
   acw_data_entry_i: boolean,
   manual_record_inbound_i: boolean,
