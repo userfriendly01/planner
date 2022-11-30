@@ -55,6 +55,7 @@ export interface ProfileEntryFormState {
   callTag: FieldState,
   manualRecorded: FieldState,
   acwDataEntry: FieldState,
+  acwOption: FieldState,
   manualRecordedInbound: FieldState,
   agentAssistedPay: FieldState,
   paymentProcessing: FieldState,
