@@ -139,11 +139,22 @@ const getWorkers = async (dispatch: any) => {
   }
 };
 
+const callCalabrioService = async () => {
+  try {
+    const response = await myAxios.get("https://q3g1awzosi.execute-api.us-east-1.amazonaws.com/development/wfm/users");
+    console.log("***No Freakin way", response);
+    return;
+  } catch (error) {
+    console.error("***Failed to Call Calabrio Service", error);
+  }
+};
+
 export const runTritonAdminStartup = (dispatch: any) => {
   /* Please add new service calls to the end of this Promise.all,
   the existing order is important */
   return Promise.all([
     Promise.resolve(getStartupProfiles().TRITON.name),
+    callCalabrioService(),
     getWorkers(dispatch),
     getManagers(dispatch),
     getOffices(dispatch),
