@@ -26,7 +26,7 @@ function ComponentControl({
   disabled,
   error,
   required
-}: ComponentControlProps) {
+}: ComponentControlProps): JSX.Element {
   switch (control) {
     case "input":
       return (

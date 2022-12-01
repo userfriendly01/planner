@@ -18,4 +18,4 @@ export const initializedAlertBar: AlertBarProps = {
   open: false,
   msg: "",
   severityType: ""
-}
+};

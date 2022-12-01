@@ -2,15 +2,15 @@ import React, {
   useEffect, useState
 } from "react";
 import {
-  DataGrid, GridToolbar
+  DataGrid, GridRenderCellParams, GridToolbar
 } from "@mui/x-data-grid";
 import { RoutingGridColumnDef } from "./GridColumnDef";
 import {
-  CctSharedCallRoutingGlobalDb, RoutingFilter, RoutingInitState, RoutingMasterData
+  CctSharedCallRoutingDb, RoutingFilter, RoutingInitState, RoutingMasterData
 } from "../AlohaRouting.Interfaces";
 import { retrieveRoutingData } from "services";
 import {
-  CACHED_CALL_ROUTING_PAGE_NO, CACHED_CALL_ROUTING_PER_PAGE, CACHE_FILTER_ROUTING, getAccessToken, routingInitState, getGraphQLEndpoint
+  CACHED_CALL_ROUTING_PAGE_NO, CACHED_CALL_ROUTING_PER_PAGE, CACHE_FILTER_ROUTING, getAccessToken, routingInitState, getGraphQLEndpoint, initializedAlertBar
 } from "utils";
 import {
   getGridMasterData
@@ -20,10 +20,11 @@ import GridSpinner from "./GridSpinner";
 import { CustomFlowRoutingToolBar } from "../RoutingCustomActions/CustomRoutingGridToolBar";
 import { CustomToast } from "components";
 import {
-  RoutingAdvanceSearch, AddRouting
+  RoutingAdvanceSearch, AddRouting, EditRouting
 } from "../RoutingCustomActions";
+import { AlertBarProps } from "utils/interfaces";
 
-export const DataGridRouting = ():JSX.Element => {
+export const DataGridRouting = (): JSX.Element => {
   const accessToken: string = getAccessToken();
   const graphQlApiUrl: string = getGraphQLEndpoint();
   const reducer = (state: RoutingInitState, updatedState: RoutingInitState): RoutingInitState => {
@@ -33,18 +34,12 @@ export const DataGridRouting = ():JSX.Element => {
     };
   };
   const [state, dispatch] = React.useReducer(reducer, routingInitState);
+  const [alertBar, setAlertBar] = useState(initializedAlertBar);
 
-  const [alertBar, setAlertBar] = useState({
-    open: false,
-    msg: "",
-    severityType: ""
-  });
-  useEffect(()=>{
-    dispatch({ advanceFilter: getAdvanceFilter() });
-  },[]);
   useEffect(() => {
+    dispatch({ advanceFilter: getAdvanceFilter() });
     loadDataTable().then(() => {
-      console.log("Data Table:", state.filteredItems);
+      // nothing
     });
   }, []);
 
@@ -65,7 +60,7 @@ export const DataGridRouting = ():JSX.Element => {
     return {};
   };
 
-  const handleSearchDDChange = (event:any)=> {
+  const handleSearchDDChange = (event: any) => {
     dispatch({
       advanceFilter: {
         ...state.advanceFilter,
@@ -74,20 +69,20 @@ export const DataGridRouting = ():JSX.Element => {
     });
   };
 
-  const filterRecords = (dataRec?:CctSharedCallRoutingGlobalDb[], minId?:number, maxId?:number) => {
+  const filterRecords = (dataRec?: CctSharedCallRoutingDb[], minId?: number, maxId?: number) => {
     let {
       data, idStart, idEnd
     } = state;
-    if(dataRec && dataRec !== undefined) {
+    if (dataRec && dataRec !== undefined) {
       data = dataRec;
       idStart = minId;
       idEnd = maxId;
     }
-    const result: CctSharedCallRoutingGlobalDb[] = data.filter(item => item.id >= idStart && item.id <= idEnd);
+    const result: CctSharedCallRoutingDb[] = data.filter(item => item.id >= idStart && item.id <= idEnd);
     const advanceFilter: RoutingFilter = getAdvanceFilter();
     const advanceFilterLength: number = Object.keys(advanceFilter).length;
     if (advanceFilterLength > 0) {
-      const advanceFilteredArray: Array<CctSharedCallRoutingGlobalDb> = [];
+      const advanceFilteredArray: Array<CctSharedCallRoutingDb> = [];
       result.forEach(item => {
         let matched = 0;
         Object.keys(advanceFilter).forEach((key: keyof RoutingFilter) => {
@@ -99,7 +94,6 @@ export const DataGridRouting = ():JSX.Element => {
           advanceFilteredArray.push(item);
         }
       });
-      console.log("filterRecords>", advanceFilteredArray);
       dispatch({ filteredItems: advanceFilteredArray });
     } else {
       dispatch({ filteredItems: result });
@@ -107,9 +101,9 @@ export const DataGridRouting = ():JSX.Element => {
   };
 
   const loadDataTable = async () => {
-    const result: CctSharedCallRoutingGlobalDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl);
+    const result: CctSharedCallRoutingDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl);
     if (result.length > 0) {
-      const sortedResult: CctSharedCallRoutingGlobalDb[] = result.sort(((a: CctSharedCallRoutingGlobalDb, b: CctSharedCallRoutingGlobalDb) => a.id - b.id));
+      const sortedResult: CctSharedCallRoutingDb[] = result.sort(((a: CctSharedCallRoutingDb, b: CctSharedCallRoutingDb) => a.id - b.id));
       const minId: number = sortedResult[0].id;
       const maxId: number = sortedResult[result.length - 1].id;
       dispatch({
@@ -168,16 +162,34 @@ export const DataGridRouting = ():JSX.Element => {
     }));
   };
 
-  const openAdvanceSearchModal = (flag:boolean)=> {
+  const openAdvanceSearchModal = (flag: boolean) => {
     if (state.advanceFilter && flag) {
       localStorage.setItem(CACHE_FILTER_ROUTING, JSON.stringify(state.advanceFilter));
     }
     dispatch({ isAdvanceSearchModalOpen: flag });
   };
 
+  const openEditModal = (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string) => {
+    if (!flag && isSubmitted) {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: message,
+        severityType: "success"
+      }));
+      loadDataTable();
+    }
+    dispatch({
+      isEditModalOpen: flag,
+      selectedRow: row
+    });
+  };
+
+  RoutingGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (<a href="#" onClick={() => openEditModal(true, false, params.row)}>{`${params.value}`}</a>);
+
   return (
     <div>
-      <CustomFlowRoutingToolBar openAddModal={openAddModal} openAdvanceSearchModal ={openAdvanceSearchModal} />
+      <CustomFlowRoutingToolBar openAddModal={openAddModal} openAdvanceSearchModal={openAdvanceSearchModal} />
       <RoutingTableBox>
         <DataGrid
           rows={state.filteredItems}
@@ -191,6 +203,7 @@ export const DataGridRouting = ():JSX.Element => {
           pagination
           loading={state.fetching}
           checkboxSelection
+          disableSelectionOnClick
           autoHeight
           components={
             {
@@ -210,6 +223,11 @@ export const DataGridRouting = ():JSX.Element => {
         newId={state.maxId + 1}
         openModal={openAddModal}
         onClose={() => openAddModal(false)}
+      />
+      <EditRouting
+        isOpen={state.isEditModalOpen}
+        selectedRow={state.selectedRow}
+        openEditModal={openEditModal}
       />
       <RoutingAdvanceSearch
         isOpen={state.isAdvanceSearchModalOpen}

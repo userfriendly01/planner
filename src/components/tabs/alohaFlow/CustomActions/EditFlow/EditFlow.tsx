@@ -48,7 +48,8 @@ interface EditFlowComponentProps {
 }
 export const EditFlow = ({
   isOpen = false, selectedRow, openEditModal
-}: EditFlowComponentProps)=> {
+}: EditFlowComponentProps): JSX.Element => {
+
   const accessToken: string = getAccessToken();
   const graphQLEndPoint: string = getGraphQLEndpoint();
 
@@ -255,6 +256,7 @@ export const EditFlow = ({
                         )}
                         <Grid item xs={2}>
                           {!displayRecords && (<IconButton onClick={addItem} id= "addItemId" edge="end">
+
                             <AddIcon> </AddIcon>
                           </IconButton>)}
                           {displayRecords && (<IconButton onClick={() => { setDisplayRecords(false); }} edge="end">
@@ -288,6 +290,7 @@ export const EditFlow = ({
             value="Save"
             color="primary"
             sx={{ marginRight: 2 }}
+
             id ="saveRuleId"
             onClick={() => handleOnSave()}
           >

@@ -1,6 +1,6 @@
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes } from "styled-components";
 
-import React from 'react';
+import React from "react";
 
 const rotate360 = keyframes`
   from {
@@ -27,7 +27,7 @@ border-radius: 50%;
 `;
 
 const GridSpinner = (): JSX.Element => (
-  <div style={{ padding: '250px' }}>
+  <div style={{ padding: "250px" }}>
     <Spinner />
     <div />
   </div>
