@@ -36,7 +36,7 @@ describe("Edit Flow Component", () => {
   });
   const EditFlowInputProps= {
     isOpen: false,
-    selectedRow: jest.fn(),
+    selectedRow: CctSharedCallFlowDbProps,
     openEditModal: jest.fn()
   };
   const mockValue = {
