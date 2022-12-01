@@ -148,14 +148,9 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
             data: [activity.availability],
             type: "Buffer"
           }
-<<<<<<< HEAD
         }
       });
 
-=======
-        };
-      });
->>>>>>> origin/CCT-5017-add-idp-files-for-azure-oidc-authentication
 
       return {
         ...state,
