@@ -78,6 +78,10 @@ const ProfileFormFields = () => {
     {
       fieldKey: "policyNumberEdit",
       label: "Policy Number Edit"
+    },
+    {
+      fieldKey: "clickToDial",
+      label: "Click To Dial"
     }
   ];
 

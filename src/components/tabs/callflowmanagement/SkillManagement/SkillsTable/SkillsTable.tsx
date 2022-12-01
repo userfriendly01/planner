@@ -28,9 +28,9 @@ const SkillsTable = (props: SkillsTableProps) => {
     const profileDivs: ReactElement[] = [];
     skill.profiles?.map((p: any, index: number) => {
       if(index !== skill.profiles.length - 1){
-        profileDivs.push(<div>{p.profileName} - {p.profileId}, </div>);
+        profileDivs.push(<div key={p.profileId}>{p.profileName} - {p.profileId}, </div>);
       } else {
-        profileDivs.push(<div>{p.profileName} - {p.profileId}</div>);
+        profileDivs.push(<div key={p.profileId}>{p.profileName} - {p.profileId}</div>);
       }
     });
     return profileDivs;

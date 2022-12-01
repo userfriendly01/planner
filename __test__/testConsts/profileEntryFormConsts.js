@@ -40,6 +40,9 @@ export const initialProfileEntryFormState = {
   policyNumberEdit: {
     value: false
   },
+  clickToDial: {
+    value: false
+  },
   overflowSkill: {
     value: "",
     updated: false,
@@ -91,6 +94,9 @@ export const validProfileEntryFormState = {
     value: false
   },
   policyNumberEdit: {
+    value: false
+  },
+  clickToDial: {
     value: false
   },
   overflowSkill: {
@@ -146,6 +152,9 @@ export const invalidProfileEntryFormState = {
   policyNumberEdit: {
     value: false
   },
+  clickToDial: {
+    value: false
+  },
   overflowSkill: {
     value: "validskill$$",
     updated: true,
@@ -196,6 +205,9 @@ export const initialProfileEditEntryFormState = {
     value: false
   },
   policyNumberEdit: {
+    value: false
+  },
+  clickToDial: {
     value: false
   },
   overflowSkill: {

@@ -31,7 +31,7 @@ import {
 import { ProfileEntryForm } from "components";
 
 const ProfileSettingsContainer = () => {
-  const [ view, setView ] = React.useState(profileSettingsViews[0]);
+  const [view, setView] = React.useState(profileSettingsViews[0]);
 
   const initialProfileState = {
     dialList: [],
@@ -39,7 +39,7 @@ const ProfileSettingsContainer = () => {
     message: "Please select a profile",
     profileId: null
   };
-  
+
   const initialProfileModalState = {
     open: false
   };
@@ -47,10 +47,7 @@ const ProfileSettingsContainer = () => {
   const [profileSettingsState, setProfileSettingsState] = useState(initialProfileState);
   const [profileModalState, setProfileModalState] = useState(initialProfileModalState);
 
-  const profilesFromContextMinusGoP = useAdminState().profileContext.profiles.filter(({ profile_id }) => profile_id !== 0);
-  // TODO: rz - remove hardcoding
-  //profilesFromContextMinusGoP.push({ display_nme: "Call Type", options_id: 1, profile_id: 15, row_crtn_dtm: "2019-10-24T12:58:48.000Z", row_updt_dtm:"2019-10-24T12:58:48.000Z", wrkr_tsk_info_id:1});
-  // console.log("rz profilesFromContextMinusGoP=", profilesFromContextMinusGoP);
+  const profilesFromContext = useAdminState().profileContext.profiles;
   const loggedInRepNNumber = useAdminState().userContext.pingIdentity.sub;
 
   const fetchProfileInformation = profileId => {
@@ -88,13 +85,15 @@ const ProfileSettingsContainer = () => {
     open: true
   });
 
-  return(
+  return (
     <ProfileEntryFormStateProvider>
       <ProfileSettingsContainerDiv>
         <Modal onClose={() => { return; }} open={profileModalState.open}>
-          <ProfileEntryForm
-            handleClose={() => setProfileModalState(initialProfileModalState)}
-          />
+          <>
+            <ProfileEntryForm
+              handleClose={() => setProfileModalState(initialProfileModalState)}
+            />
+          </>
         </Modal>
         <ProfileSettingsDropdownWrapper>
           <Dropdown
@@ -113,7 +112,7 @@ const ProfileSettingsContainer = () => {
             ?
             <div>
               <ProfileDropDown
-                availableProfiles={profilesFromContextMinusGoP}
+                availableProfiles={profilesFromContext}
                 profileId={profileId}
                 updateProfile={fetchProfileInformation}
               />
@@ -156,10 +155,10 @@ const ProfileSettingsContainer = () => {
                       </AddProfileButton>
                     </ControlItem>
                   </ControlsWrapper>
-                : null
+                  : null
               }
               <ProfileSettingsTable
-                profileList={profilesFromContextMinusGoP}
+                profileList={profilesFromContext}
                 loggedInRep={loggedInRepNNumber}
                 setProfileModalState={setProfileModalState}
               />

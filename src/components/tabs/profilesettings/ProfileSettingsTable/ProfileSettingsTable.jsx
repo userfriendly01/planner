@@ -13,6 +13,7 @@ import {
 import {
   checkIfPO,
   formatProfileBooleanData,
+  formatProfileACWDataEntry,
   formatOverflowSkillData,
   formatActivityData,
   sortProfilesById
@@ -27,13 +28,26 @@ import {
   profileEntryFormDispatch,
   profileEntryFormActions
 } from "context";
+import { getWorkerTaskInfo as getWorkerTaskInfoServiceCall } from "services";
+
+const getWorkerTaskInfo = async () => {
+  try {
+    return await getWorkerTaskInfoServiceCall();
+  } catch (error) {
+    throw ({
+      msg: "Failed to fetch worker task info from service",
+      error
+    });
+  }
+};
 
 const ProfileSettingsTable = props => {
   const { profileList, loggedInRep, setProfileModalState } = props;
   console.log("rz profileList=", profileList);
   const setForm = profileEntryFormDispatch();
+  const [workerTaskInfo, setWorkerTaskInfo] = React.useState([]);
 
-  const editButtonOnClick = (profile) => event => {
+  const editButtonOnClick = profile => event => {
     event.stopPropagation();
     setForm({
       type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
@@ -47,6 +61,16 @@ const ProfileSettingsTable = props => {
     });
   };
 
+  React.useEffect(() => {
+    if(!workerTaskInfo.length) {
+      getWorkerTaskInfo()
+        .then((allWorkerTaskInfo) => {
+          setWorkerTaskInfo(allWorkerTaskInfo);
+        })
+        .catch(error => console.error("ERROR:", error.msg));
+    }
+  }, []);
+
   return(
     <TableContainer>
       <StyledPaper elevation={3}>
@@ -56,10 +80,10 @@ const ProfileSettingsTable = props => {
               {
                 profileTableColumnHeader.map(entry => {
                   return(
-                    <Tooltip placement="top" title={entry.TOOLTIP}>
+                    <Tooltip key={entry.COLUMN_NAME} placement="top" title={entry.TOOLTIP}>
                       <CustomTableHeader data-testid="table-header">{entry.COLUMN_NAME}</CustomTableHeader>
                     </Tooltip>
-                  )
+                  );
                 })
               }
             </tr>
@@ -94,7 +118,7 @@ const ProfileSettingsTable = props => {
                       <TableText>{formatProfileBooleanData(profile.manual_recorded_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(profile.acw_data_entry_i.data[0])}</TableText>
+                      <TableText>{formatProfileACWDataEntry(profile.acw_data_entry_i.data[0], workerTaskInfo.filter(data => data.profile_id === profile.profile_id))}</TableText>
                     </CustomTableData>
                     <CustomTableData>
                       <TableText>{formatProfileBooleanData(profile.manual_record_inbound_i.data[0])}</TableText>
@@ -112,10 +136,13 @@ const ProfileSettingsTable = props => {
                       <TableText>{formatProfileBooleanData(profile.voice_mail_transcription_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
+                      <TableText>{formatProfileBooleanData(profile.click_to_dial_i.data[0])}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
                       <TableDataFlex>
                         {
                           JSON.parse(profile.activities).map(activity => {
-                            return formatActivityData(activity.name)
+                            return <div key={`${activity.name}`}>{formatActivityData(activity.name)}</div>;
                           })
                         }
                       </TableDataFlex>
@@ -127,7 +154,7 @@ const ProfileSettingsTable = props => {
                             <Edit fontSize={"inherit"}/>
                           </IconWrapper>
                         </CustomTableData>
-                      : <CustomTableData />
+                        : <CustomTableData />
                     }
                   </CustomTableRow>
                 );
@@ -137,7 +164,7 @@ const ProfileSettingsTable = props => {
         </CustomTable>
       </StyledPaper>
     </TableContainer>
-  )
+  );
 };
 
 export default ProfileSettingsTable;

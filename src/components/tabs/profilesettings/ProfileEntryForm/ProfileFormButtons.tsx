@@ -58,7 +58,8 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       agent_assisted_pay_i: form.agentAssistedPay.value,
       overflow_skill: form.overflowSkill.value || null,
       policy_number_edit_i: form.policyNumberEdit.value,
-      voice_mail_transcription_i: form.voiceMailTranscription.value
+      voice_mail_transcription_i: form.voiceMailTranscription.value,
+      click_to_dial_i: form.clickToDial.value
     };
 
     createProfile(payload).then(response => {
@@ -103,7 +104,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     });
 
     const payload: Partial<ProfilePayload> = {
-      profile_id: form.profileId,
+      profile_id: form.profileId
     };
 
     form.profileName.updated ? payload.profile_nme = form.profileName.value : null

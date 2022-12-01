@@ -190,10 +190,10 @@ describe("profileEntryFormReducer", () => {
           activity_nme: "Offline",
           available_i: {
             data: [
-              0,
+              0
             ],
-            type: "Buffer",
-          },
+            type: "Buffer"
+          }
         }],
         callTagsList: [{
           display_nme: "Call Type", 
@@ -237,18 +237,17 @@ describe("profileEntryFormReducer", () => {
         voiceMailTranscription: {
           value: false
         },
+        clickToDial: {
+          value: true
+        },
         overflowSkill: {
           value: "",
           valid: true
         },
-        profileName: {
-          value: "",
-          valid: false
-        },
         profileId: 0,
         profileName: {
           valid: true,
-          value: "Game of Phones",
+          value: "Game of Phones"
         }
       };
       const action = {

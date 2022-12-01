@@ -101,11 +101,13 @@ const App = () => {
           <Header/>
           <NavTabs/>
           <Modal onClose={() => { return; }} open={showModal === true}>
-            <NotificationModal
-              buttonText={"Reload"}
-              handleClick={() => window.location.reload()}
-              text={"Your session has expired. Please reload the page."}
-            />
+            <>
+              <NotificationModal
+                buttonText={"Reload"}
+                handleClick={() => window.location.reload()}
+                text={"Your session has expired. Please reload the page."}
+              />
+            </>
           </Modal>
         </AppWrapper>
       );

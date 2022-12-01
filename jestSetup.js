@@ -51,5 +51,6 @@ jest.mock("services", () => ({
   updateDirectory: jest.fn(),
   updateFlashMessage: jest.fn(),
   updateTfn: jest.fn(),
-  updateUser: jest.fn()
+  updateUser: jest.fn(),
+  getWorkerTaskInfo: jest.fn()
 }));
