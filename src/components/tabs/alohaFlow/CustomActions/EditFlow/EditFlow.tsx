@@ -17,6 +17,7 @@ import {
   AddFlowFieldsConfigProps,
   CctSharedCallFlowDb,
   FlowDropDownList,
+  FlowKeys,
   FlowMasterData
 } from "../../AlohaFlow.Interfaces";
 import {
@@ -48,6 +49,7 @@ interface EditFlowComponentProps {
 export const EditFlow = ({
   isOpen = false, selectedRow, openEditModal
 }: EditFlowComponentProps): JSX.Element => {
+
   const accessToken: string = getAccessToken();
   const graphQLEndPoint: string = getGraphQLEndpoint();
 
@@ -197,6 +199,7 @@ export const EditFlow = ({
         onClose={() => {
           openEditModal(false);
         }}
+        id ="modalId"
       >
         <ModalHeader><HeadingStyled type="h4-light">{`Update Flow Rule ${selectedRow && selectedRow.pkey}`}</HeadingStyled></ModalHeader>
         <ModalBodyStyled>
@@ -252,7 +255,8 @@ export const EditFlow = ({
                           </Grid>
                         )}
                         <Grid item xs={2}>
-                          {!displayRecords && (<IconButton onClick={addItem} edge="end">
+                          {!displayRecords && (<IconButton onClick={addItem} id= "addItemId" edge="end">
+
                             <AddIcon> </AddIcon>
                           </IconButton>)}
                           {displayRecords && (<IconButton onClick={() => { setDisplayRecords(false); }} edge="end">
@@ -267,7 +271,7 @@ export const EditFlow = ({
                         label={label}
                         type="text"
                         value={valueGetter(selectedRowLocal)}
-                        error={flowRule[key].error}
+                        error={flowRule[key as keyof FlowKeys].error}
                         dropDownOptions={dropDownValues[key as keyof FlowDropDownList] || []}
                         onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => handleInputChange(event, valueSetter)}
                         required={required}
@@ -286,6 +290,8 @@ export const EditFlow = ({
             value="Save"
             color="primary"
             sx={{ marginRight: 2 }}
+
+            id ="saveRuleId"
             onClick={() => handleOnSave()}
           >
                         Save Rule
@@ -295,6 +301,7 @@ export const EditFlow = ({
             color="error"
             value="Delete"
             sx={{ marginRight: 2 }}
+            id="deleteRuleId"
             onClick={() => handleOnDelete()}
           >
                         Delete Rule
@@ -303,6 +310,7 @@ export const EditFlow = ({
             value="Cancel"
             variant="outlined"
             color="primary"
+            id="cancelId"
             onClick={() => handleCancel()}
           >
                         Cancel
