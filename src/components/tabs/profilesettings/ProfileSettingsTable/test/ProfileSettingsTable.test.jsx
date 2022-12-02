@@ -60,6 +60,10 @@ describe("<ProfileSettingsTable />", () => {
       acw_option_i: {
         data: [0]
       },
+      click_to_dial_i: {
+        type: "Buffer",
+        data: [1]
+      },
       manual_recorded_i: {
         data: [1]
       },
@@ -89,7 +93,7 @@ describe("<ProfileSettingsTable />", () => {
         data: [1]
       },
       activities: "[{\"id\": 1, \"name\": \"Offline\", \"availability\": 0}]"
-    }
+    },
   ];
 
   describe("profile settings table", () => {

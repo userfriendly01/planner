@@ -3,7 +3,8 @@ import {
   Directory,
   Dropdown,
   ProfileDropDown,
-  ProfileSettingsTable
+  ProfileSettingsTable,
+  ProfileEntryForm
 } from "components";
 import {
   useAdminState,
@@ -28,7 +29,6 @@ import {
   ControlItem,
   AddProfileButton
 } from "./ProfileSettingsContainer.Styles";
-import { ProfileEntryForm } from "components";
 
 const ProfileSettingsContainer = () => {
   const [view, setView] = React.useState(profileSettingsViews[0]);
