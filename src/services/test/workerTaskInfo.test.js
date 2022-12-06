@@ -1,4 +1,4 @@
-import { getWorkerTaskInfo } from "../workerTaskInfo";
+import { getWorkerTaskInfo, getProfileWorkerTaskInfo } from "../workerTaskInfo";
 import MockAdapter from "axios-mock-adapter";
 import { myAxios } from "utils";
 
