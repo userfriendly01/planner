@@ -257,7 +257,8 @@ export const initialTestState = {
   userContext: {
     pingIdentity: {
       sub: "n0263786",
-      groups: []
+      groups: [],
+      aud: "ciciccttritondev1"
     },
     authenticationProfiles: [
       {

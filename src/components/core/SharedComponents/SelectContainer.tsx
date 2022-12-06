@@ -25,7 +25,7 @@ export default function SelectContainer({
   error,
   required,
   isBlankFirstValue
-}:SelectContainerProps){
+}:SelectContainerProps): JSX.Element{
   return (
     <div>
       <FormControl sx={{ width: "calc(95%)" }} error={error} required={required}>
