@@ -248,6 +248,13 @@ export const mockCallTags = [
   }
 ];
 
+export const mockWorkerTaskInfo = [
+  {
+    wrkr_tsk_info_id: 1, 
+    wrkr_tsk_info_nme: 'call_type'
+  }
+];
+
 export const initialTestState = {
   ...initialState,
   officeContext: {

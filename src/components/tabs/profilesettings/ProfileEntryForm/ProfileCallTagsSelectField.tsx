@@ -59,7 +59,8 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const defaultNewCallTag: CallTag[] = [];
   const [newProfileCallTag, setNewProfileCallTag] = React.useState<CallTag[]>(defaultNewCallTag);
   const [callTags, setCallTags] = React.useState([]);
-  //const [workerTaskInfo, setWorkerTaskInfo] = React.useState([]);
+  const defaultNewWorkerTaskInfo: WorkerTaskInfo[] = [];
+  const [workerTaskInfo, setWorkerTaskInfo] = React.useState([]);
 
   React.useEffect(() => {
     if(!callTags.length) {
@@ -68,9 +69,11 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
           setCallTags(allCallTags);
         })
         .catch(error => console.error(error.msg));
+    }
+    if(!workerTaskInfo.length) {
       getWorkerTaskInfo()
       .then((workerTaskInfo: WorkerTaskInfo[]) => {
-        //setWorkerTaskInfo(workerTaskInfo);
+       setWorkerTaskInfo(workerTaskInfo);
         console.log("rz workerTaskInfo=", workerTaskInfo);
       })
       .catch(error => console.error(error.msg));

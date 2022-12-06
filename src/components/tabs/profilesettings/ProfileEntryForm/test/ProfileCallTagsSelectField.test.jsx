@@ -14,7 +14,8 @@ import {
   fireEvent,
   getMockedComponentProps,
   initialTestState,
-  mockCallTags
+  mockCallTags,
+  mockWorkerTaskInfo
 } from "testUtils";
 import { apiPaths } from "globals";
 import { Tooltip } from "@mui/material";
@@ -40,9 +41,11 @@ jest.mock("components", () => ({
 const statusCode = 500;
 const axiosMock = new MockAdapter(myAxios);
 const callTagsEndpoint = apiPaths.GET_PROFILE_WORKER_TASK_INFO;
+const workerTaskInfoEndpoint = apiPaths.GET_WORKER_TASK_INFO;
 const mockSetCallTagsList = jest.fn();
 const renderComponent = mockCallTagsList => render(<ProfileCallTagsSelectField
   callTagsList={mockCallTagsList}
+  workerTaskInfo={mockWorkerTaskInfo}
   setCallTagsList={mockSetCallTagsList}
 />, initialTestState);
 
@@ -60,6 +63,7 @@ describe("<ProfileCallTagsSelectField />", () => {
     });
     mockSetCallTagsList.mockClear();
     axiosMock.onGet(callTagsEndpoint).reply(200, mockCallTags);
+    axiosMock.onGet(workerTaskInfoEndpoint).reply(200, mockWorkerTaskInfo);
   });
 
   describe("initial state", () => {
@@ -98,7 +102,8 @@ describe("<ProfileCallTagsSelectField />", () => {
       }];
       React.useState = jest.fn()
         .mockReturnValueOnce([mockNewCallTag, jest.fn()])
-        .mockReturnValueOnce([mockCallTags, jest.fn()]);
+        .mockReturnValueOnce([mockCallTags, jest.fn()])
+        .mockReturnValueOnce([mockWorkerTaskInfo, jest.fn()]);
     });
 
     test("should render callTags drop down with correct options", () => {
@@ -151,7 +156,8 @@ describe("<ProfileCallTagsSelectField />", () => {
       }];
       React.useState = jest.fn()
         .mockReturnValueOnce([mockNewCallTag, jest.fn()])
-        .mockReturnValueOnce([mockCallTags, jest.fn()]);
+        .mockReturnValueOnce([mockCallTags, jest.fn()])
+        .mockReturnValueOnce([mockWorkerTaskInfo, jest.fn()]);
     });
 
     test("should display once for each callTag; when clicked, callTag should be removed", () => {

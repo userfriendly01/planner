@@ -163,7 +163,8 @@ export interface CallTag {
 }
 
 export interface WorkerTaskInfo {
-  wrkr_tsk_info_id: number
+  wrkr_tsk_info_id: number,
+  wrkr_tsk_info_nme: string
 }
 
 export interface Worker {

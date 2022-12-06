@@ -38,6 +38,7 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
   callTag: {
     value: false
   },
+  workerTaskInfo: [],
   acwOption: {
     value: false
   },

@@ -1,7 +1,8 @@
 import {
   ModalOverlayStatuses,
   Activity,
-  CallTag
+  CallTag,
+  WorkerTaskInfo
 } from "globals";
 
 export interface ProfileEntryFormProps {
@@ -38,6 +39,7 @@ export interface ProfileActivitiesSelectFieldProps {
 
 export interface ProfileCallTagsSelectFieldProps {
   callTagsList: CallTag[]
+  workerTaskInfo: WorkerTaskInfo[]
   setCallTagsList: (callTagsList: CallTag[]) => void;
 }
 
@@ -50,6 +52,7 @@ export interface ProfileEntryFormState {
   activitiesList: Activity[],
   callTagsList: CallTag[],
   autoAnswered: FieldState,
+  workerTaskInfo: WorkerTaskInfo[],
   inboundRecorded: FieldState,
   outboundRecorded: FieldState,
   callTag: FieldState,
