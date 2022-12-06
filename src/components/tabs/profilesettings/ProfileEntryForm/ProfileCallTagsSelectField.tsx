@@ -35,6 +35,20 @@ const getCallTags = () => new Promise((resolve, reject) => myAxios.get(apiPaths.
   })
 );
 
+console.log("rz before getWorkerTaskInfo");
+const getWorkerTaskInfo = () => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_WORKER_TASK_INFO)
+  .then(res => {
+    console.log("rz getWorkerTaskInfo=", res.data);
+    resolve(res.data);
+  })
+  .catch(error => {
+    reject({
+      msg: "Failed to fetch workerTaskInfo from service",
+      error
+    });
+  })
+);
+
 const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const {
     callTagsList,
@@ -44,6 +58,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const defaultNewCallTag: CallTag[] = [];
   const [newProfileCallTag, setNewProfileCallTag] = React.useState<CallTag[]>(defaultNewCallTag);
   const [callTags, setCallTags] = React.useState([]);
+  const [workerTaskInfo, setWorkerTaskInfo] = React.useState([]);
 
   React.useEffect(() => {
     if(!callTags.length) {
@@ -52,6 +67,11 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
           setCallTags(allCallTags);
         })
         .catch(error => console.error(error.msg));
+      getWorkerTaskInfo()
+      .then((workerTaskInfo: CallTag[]) => {
+        setWorkerTaskInfo(workerTaskInfo);
+      })
+      .catch(error => console.error(error.msg));
     }
   }, []);
 

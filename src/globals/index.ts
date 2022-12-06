@@ -116,6 +116,7 @@ export const apiPaths = {
   GET_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-get-user/${personId}`,
   GET_PROFILE_DATA: (profileId: string | number): string => `${CONTACT_MANAGER_BASE_URI}/triton/${profileId}`,
   GET_PROFILE_WORKER_TASK_INFO: `${CONTACT_MANAGER_BASE_URI}/profileworkertaskinfo`,
+  GET_WORKER_TASK_INFO: `${CONTACT_MANAGER_BASE_URI}/workertaskinfo`,
   GET_ACTIVITIES: `${CONTACT_MANAGER_BASE_URI}/activities`,
   GET_SKILLS: `${SERVICE_BASE_URI}/consolidatedskills`,
   GET_WORKERS: `${SERVICE_BASE_URI}/workers`,
