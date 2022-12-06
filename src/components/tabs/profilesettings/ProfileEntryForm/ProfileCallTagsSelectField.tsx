@@ -16,6 +16,7 @@ import {
 } from "@mui/icons-material";
 import {
   CallTag,
+  WorkerTaskInfo,
   apiPaths
 } from "globals";
 import { Tooltip } from "@mui/material";
@@ -58,7 +59,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const defaultNewCallTag: CallTag[] = [];
   const [newProfileCallTag, setNewProfileCallTag] = React.useState<CallTag[]>(defaultNewCallTag);
   const [callTags, setCallTags] = React.useState([]);
-  const [workerTaskInfo, setWorkerTaskInfo] = React.useState([]);
+  //const [workerTaskInfo, setWorkerTaskInfo] = React.useState([]);
 
   React.useEffect(() => {
     if(!callTags.length) {
@@ -68,8 +69,9 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
         })
         .catch(error => console.error(error.msg));
       getWorkerTaskInfo()
-      .then((workerTaskInfo: CallTag[]) => {
-        setWorkerTaskInfo(workerTaskInfo);
+      .then((workerTaskInfo: WorkerTaskInfo[]) => {
+        //setWorkerTaskInfo(workerTaskInfo);
+        console.log("rz workerTaskInfo=", workerTaskInfo);
       })
       .catch(error => console.error(error.msg));
     }

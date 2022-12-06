@@ -155,12 +155,15 @@ export interface Activity {
 }
 
 export interface CallTag {
-  profile_id: number,
   wrkr_tsk_info_id: number,
   display_nme: string,
   options_id: number,
   row_crtn_dtm: string,
   row_updt_dtm: string,
+}
+
+export interface WorkerTaskInfo {
+  wrkr_tsk_info_id: number
 }
 
 export interface Worker {
