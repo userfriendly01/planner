@@ -53,6 +53,7 @@ const getWorkerTaskInfo = () => new Promise((resolve, reject) => myAxios.get(api
 const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const {
     callTagsList,
+    workerTaskInfo,
     setCallTagsList
   } = props;
 
@@ -60,8 +61,8 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const [newProfileCallTag, setNewProfileCallTag] = React.useState<CallTag[]>(defaultNewCallTag);
   const [callTags, setCallTags] = React.useState([]);
   const defaultNewWorkerTaskInfo: WorkerTaskInfo[] = [];
-  const [workerTaskInfo, setWorkerTaskInfo] = React.useState([]);
-
+  const [newWorkerTaskInfo, setNewWorkerTaskInfo] = React.useState<WorkerTaskInfo[]>(defaultNewWorkerTaskInfo);
+  
   React.useEffect(() => {
     if(!callTags.length) {
       getCallTags()
@@ -73,7 +74,6 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     if(!workerTaskInfo.length) {
       getWorkerTaskInfo()
       .then((workerTaskInfo: WorkerTaskInfo[]) => {
-       setWorkerTaskInfo(workerTaskInfo);
         console.log("rz workerTaskInfo=", workerTaskInfo);
       })
       .catch(error => console.error(error.msg));
@@ -94,6 +94,14 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     setNewProfileCallTag(selectedCallTags);
   };
 
+  const newWorkerTaskInfoChanged = (workerTaskInfo: Array<{
+    wrkr_tsk_info_id: number,
+    wrkr_tsk_info_nme: string
+  }>) => {
+    const selectedWorkerTaskInfos = workerTaskInfo.map(selectedWorkerTaskInfo => workerTaskInfo.find(workerTaskInfoOption => selectedWorkerTaskInfo.wrkr_tsk_info_id === workerTaskInfoOption.wrkr_tsk_info_id));
+    setNewWorkerTaskInfo(selectedWorkerTaskInfos);
+  };
+
   const addProfileCallTagClicked = () => {
     const updatedCallTagsList = [ ...callTagsList, ...newProfileCallTag ];
     setCallTagsList(updatedCallTagsList);
@@ -109,6 +117,13 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     return optionsList.map(option => ({
       value: option.options_id,
       label: option.display_nme
+    }));
+  };
+
+  const getworkerTaskInfoDropDownOptions = (optionsList: WorkerTaskInfo[]) => {
+    return optionsList.map(option => ({
+      value: option.wrkr_tsk_info_id,
+      label: option.wrkr_tsk_info_nme
     }));
   };
 
@@ -145,6 +160,16 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
               >
                 <ProfileCallTagRowItem>{callTag.display_nme}</ProfileCallTagRowItem>
               </Tooltip>
+              <ProfileCallTagRowItem>
+                    <Dropdown
+                      styles={{
+                        "max-width": "380px"
+                      }}
+                      options={getworkerTaskInfoDropDownOptions}
+                      multiple={false}
+                      updateValue={(event: any, newInputValue: Array<{ wrkr_tsk_info_id: number; wrkr_tsk_info_nme: string; }>) => newWorkerTaskInfoChanged(newInputValue)}
+                    />  
+              </ProfileCallTagRowItem>
               <ProfileCallTagRowItem>
                 <IconButtonWrapper onClick={() => removeProfileCallTagClicked(callTag)} data-testid="delete-callTag-button">
                   <Delete fontSize="inherit"/>
