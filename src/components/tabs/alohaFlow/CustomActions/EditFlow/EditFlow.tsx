@@ -47,7 +47,7 @@ interface EditFlowComponentProps {
     openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallFlowDb, message?: string) => void;
 }
 export const EditFlow = ({
-  isOpen = false, selectedRow, openEditModal
+  isOpen, selectedRow, openEditModal
 }: EditFlowComponentProps): JSX.Element => {
 
   const accessToken: string = getAccessToken();
@@ -183,6 +183,7 @@ export const EditFlow = ({
           ]
         }
       }));
+      setDisplayRecords(false);
     }
     setUpdateDataReq("");
   };
@@ -244,7 +245,7 @@ export const EditFlow = ({
                                 {selectedRowLocal?.content?.dataRequests?.map((option: string, index: number) => (
                                   <MenuItem sx={{ maxHeight: 35 }} key={option}>
                                     <ListItemText primary={option} key={option} />
-                                    <IconButton onClick={() => { removeItem(index); }} aria-label="removeDataRequest" edge="end">
+                                    <IconButton onClick={() => { removeItem(index); }} aria-label={`removeDataRequest-${index.toString()}`} edge="end">
                                       <RemoveIcon> </RemoveIcon>
                                     </IconButton>
                                   </MenuItem>
@@ -254,13 +255,12 @@ export const EditFlow = ({
                           </Grid>
                         )}
                         <Grid item xs={2}>
-                          {!displayRecords && (<IconButton onClick={addItem} aria-label="addDataRequestButton" edge="end">
-
+                          <IconButton onClick={addItem} aria-label="addDataRequestButton" edge="end">
                             <AddIcon> </AddIcon>
-                          </IconButton>)}
-                          {displayRecords && (<IconButton onClick={() => { setDisplayRecords(false); }} aria-label="displayDataRequestButton" edge="end">
+                          </IconButton>
+                          <IconButton onClick={() => { setDisplayRecords(false); }} aria-label="displayDataRequestButton" edge="end">
                             <ViewListIcon />
-                          </IconButton>)}
+                          </IconButton>
                         </Grid>
                       </Grid>
                     ) :
