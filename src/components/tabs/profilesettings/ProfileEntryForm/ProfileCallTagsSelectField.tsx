@@ -87,6 +87,12 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
       });
   });
 
+  const workerTaskInfoForDropDown = workerTaskInfo.filter(workerTaskInfoOption => {
+    return !workerTaskInfo.find(item => {
+      return item.wrkr_tsk_info_id === workerTaskInfoOption.wrkr_tsk_info_id;
+    });
+});
+
   const newProfileCallTagChanged = (profileCallTag: Array<{
     [index: string]: any,
     value: number
@@ -96,11 +102,11 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   };
 
   const newWorkerTaskInfoChanged = (workerTaskInfo: Array<{
-    wrkr_tsk_info_id: number,
-    wrkr_tsk_info_nme: string
+    [index: string]: any,
+    value: number
   }>) => {
-    const selectedWorkerTaskInfos = workerTaskInfo.map(selectedWorkerTaskInfo => workerTaskInfo.find(workerTaskInfoOption => selectedWorkerTaskInfo.wrkr_tsk_info_id === workerTaskInfoOption.wrkr_tsk_info_id));
-    setNewWorkerTaskInfo(selectedWorkerTaskInfos);
+    const selectedWorkerTaskInfo = workerTaskInfo.map(selectedWorkerTaskInfo => callTags.find(callTag => selectedWorkerTaskInfo.value === callTag.options_id));
+    setNewProfileCallTag(selectedWorkerTaskInfo);
   };
 
   const addProfileCallTagClicked = () => {
@@ -122,6 +128,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   };
 
   const getworkerTaskInfoDropDownOptions = (optionsList: WorkerTaskInfo[]) => {
+    console.log("rz getworkerTaskInfoDropDownOptions optionsList=", optionsList);
     return optionsList.map(option => ({
       value: option.wrkr_tsk_info_id,
       label: option.wrkr_tsk_info_nme
@@ -166,10 +173,10 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
                       styles={{
                         "max-width": "380px"
                       }}
-                      options={getworkerTaskInfoDropDownOptions(workerTaskInfo)}
+                      options={getworkerTaskInfoDropDownOptions(workerTaskInfoForDropDown)}
                       multiple={false}
-                      updateValue={(event: any, newInputValue: Array<{ wrkr_tsk_info_id: number; wrkr_tsk_info_nme: string; }>) => newWorkerTaskInfoChanged(newInputValue)}
-                    />  
+                      updateValue={(event: any, newInputValue: Array<{ [index: string]: any; value: number; }>) => newWorkerTaskInfoChanged(newInputValue)}
+                    />                      
               </ProfileCallTagRowItem>
               <ProfileCallTagRowItem>
                 <IconButtonWrapper onClick={() => removeProfileCallTagClicked(callTag)} data-testid="delete-callTag-button">
