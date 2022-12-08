@@ -57,6 +57,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     setCallTagsList
   } = props;
 
+
   const defaultNewCallTag: CallTag[] = [];
   const [newProfileCallTag, setNewProfileCallTag] = React.useState<CallTag[]>(defaultNewCallTag);
   const [callTags, setCallTags] = React.useState([]);
@@ -165,7 +166,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
                       styles={{
                         "max-width": "380px"
                       }}
-                      options={getworkerTaskInfoDropDownOptions}
+                      options={getworkerTaskInfoDropDownOptions(workerTaskInfo)}
                       multiple={false}
                       updateValue={(event: any, newInputValue: Array<{ wrkr_tsk_info_id: number; wrkr_tsk_info_nme: string; }>) => newWorkerTaskInfoChanged(newInputValue)}
                     />  
