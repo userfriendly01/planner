@@ -47,7 +47,7 @@ interface EditFlowComponentProps {
     openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallFlowDb, message?: string) => void;
 }
 export const EditFlow = ({
-  isOpen = false, selectedRow, openEditModal
+  isOpen, selectedRow, openEditModal
 }: EditFlowComponentProps): JSX.Element => {
 
   const accessToken: string = getAccessToken();
@@ -134,7 +134,6 @@ export const EditFlow = ({
     const response = await deleteFlowRule(selectedRowLocal, accessToken, graphQLEndPoint);
     if (response) {
       openEditModal(false, true, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully deleted!! `);
-      return true;
     }
     setFlowRule({ ...initRule });
   };
@@ -184,6 +183,7 @@ export const EditFlow = ({
           ]
         }
       }));
+      setDisplayRecords(false);
     }
     setUpdateDataReq("");
   };
@@ -245,7 +245,7 @@ export const EditFlow = ({
                                 {selectedRowLocal?.content?.dataRequests?.map((option: string, index: number) => (
                                   <MenuItem sx={{ maxHeight: 35 }} key={option}>
                                     <ListItemText primary={option} key={option} />
-                                    <IconButton onClick={() => { removeItem(index); }} edge="end">
+                                    <IconButton onClick={() => { removeItem(index); }} aria-label={`removeDataRequest-${index.toString()}`} edge="end">
                                       <RemoveIcon> </RemoveIcon>
                                     </IconButton>
                                   </MenuItem>
@@ -255,13 +255,12 @@ export const EditFlow = ({
                           </Grid>
                         )}
                         <Grid item xs={2}>
-                          {!displayRecords && (<IconButton onClick={addItem} id= "addItemId" edge="end">
-
+                          <IconButton onClick={addItem} aria-label="addDataRequestButton" edge="end">
                             <AddIcon> </AddIcon>
-                          </IconButton>)}
-                          {displayRecords && (<IconButton onClick={() => { setDisplayRecords(false); }} edge="end">
+                          </IconButton>
+                          <IconButton onClick={() => { setDisplayRecords(false); }} aria-label="displayDataRequestButton" edge="end">
                             <ViewListIcon />
-                          </IconButton>)}
+                          </IconButton>
                         </Grid>
                       </Grid>
                     ) :
@@ -290,8 +289,7 @@ export const EditFlow = ({
             value="Save"
             color="primary"
             sx={{ marginRight: 2 }}
-
-            id ="saveRuleId"
+            aria-label="saveFlowRuleButton"
             onClick={() => handleOnSave()}
           >
                         Save Rule
@@ -301,7 +299,7 @@ export const EditFlow = ({
             color="error"
             value="Delete"
             sx={{ marginRight: 2 }}
-            id="deleteRuleId"
+            aria-label="deleteFlowRuleButton"
             onClick={() => handleOnDelete()}
           >
                         Delete Rule
@@ -310,7 +308,7 @@ export const EditFlow = ({
             value="Cancel"
             variant="outlined"
             color="primary"
-            id="cancelId"
+            aria-label="cancelEditFlowButton"
             onClick={() => handleCancel()}
           >
                         Cancel
