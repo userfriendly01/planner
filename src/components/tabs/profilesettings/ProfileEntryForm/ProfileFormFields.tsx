@@ -120,7 +120,6 @@ const ProfileFormFields = () => {
         />
         <ProfileCallTagsSelectField
           callTagsList={form.callTagsList}
-          workerTaskInfo={form.workerTaskInfo}
           setCallTagsList={callTagsList => {
             setForm({
               type: profileEntryFormActions.UPDATE_ACW_OPTIONS_LIST,

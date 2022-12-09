@@ -15,7 +15,7 @@ import {
   getMockedComponentProps,
   initialTestState,
   mockCallTags,
-  mockWorkerTaskInfo
+  mockWorkerTaskInfoOptions
 } from "testUtils";
 import { apiPaths } from "globals";
 import { Tooltip } from "@mui/material";
@@ -43,6 +43,7 @@ const axiosMock = new MockAdapter(myAxios);
 const callTagsEndpoint = apiPaths.GET_PROFILE_WORKER_TASK_INFO;
 const workerTaskInfoEndpoint = apiPaths.GET_WORKER_TASK_INFO;
 const mockSetCallTagsList = jest.fn();
+const mockWorkerTaskInfo = jest.fn();
 const renderComponent = mockCallTagsList => render(<ProfileCallTagsSelectField
   callTagsList={mockCallTagsList}
   workerTaskInfo={mockWorkerTaskInfo}
@@ -63,7 +64,7 @@ describe("<ProfileCallTagsSelectField />", () => {
     });
     mockSetCallTagsList.mockClear();
     axiosMock.onGet(callTagsEndpoint).reply(200, mockCallTags);
-    axiosMock.onGet(workerTaskInfoEndpoint).reply(200, mockWorkerTaskInfo);
+    axiosMock.onGet(workerTaskInfoEndpoint).reply(200, mockWorkerTaskInfoOptions);
   });
 
   describe("initial state", () => {
@@ -100,10 +101,15 @@ describe("<ProfileCallTagsSelectField />", () => {
         row_updt_dtm: "2019-10-24T12:58:48.000Z",
         wrkr_tsk_info_id: 1
       }];
+      const mockNewWorkerTaskInfo = [    {
+        wrkr_tsk_info_id: 2, 
+        wrkr_tsk_info_nme: 'claim_number'
+      }];
       React.useState = jest.fn()
         .mockReturnValueOnce([mockNewCallTag, jest.fn()])
         .mockReturnValueOnce([mockCallTags, jest.fn()])
-        .mockReturnValueOnce([mockWorkerTaskInfo, jest.fn()]);
+        .mockReturnValueOnce([mockNewWorkerTaskInfo, jest.fn()])
+        .mockReturnValueOnce([mockWorkerTaskInfoOptions, jest.fn()]);
     });
 
     test("should render callTags drop down with correct options", () => {
@@ -154,10 +160,15 @@ describe("<ProfileCallTagsSelectField />", () => {
         row_updt_dtm: "2019-10-24T12:58:48.000Z",
         wrkr_tsk_info_id: 1
       }];
+      const mockNewWorkerTaskInfo = [    {
+        wrkr_tsk_info_id: 2, 
+        wrkr_tsk_info_nme: 'claim_number'
+      }];
       React.useState = jest.fn()
         .mockReturnValueOnce([mockNewCallTag, jest.fn()])
         .mockReturnValueOnce([mockCallTags, jest.fn()])
-        .mockReturnValueOnce([mockWorkerTaskInfo, jest.fn()]);
+        .mockReturnValueOnce([mockNewWorkerTaskInfo, jest.fn()])
+        .mockReturnValueOnce([mockWorkerTaskInfoOptions, jest.fn()]);
     });
 
     test("should display once for each callTag; when clicked, callTag should be removed", () => {

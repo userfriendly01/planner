@@ -53,16 +53,15 @@ const getWorkerTaskInfo = () => new Promise((resolve, reject) => myAxios.get(api
 const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const {
     callTagsList,
-    workerTaskInfo,
     setCallTagsList
   } = props;
-
 
   const defaultNewCallTag: CallTag[] = [];
   const [newProfileCallTag, setNewProfileCallTag] = React.useState<CallTag[]>(defaultNewCallTag);
   const [callTags, setCallTags] = React.useState([]);
   const defaultNewWorkerTaskInfo: WorkerTaskInfo[] = [];
   const [newWorkerTaskInfo, setNewWorkerTaskInfo] = React.useState<WorkerTaskInfo[]>(defaultNewWorkerTaskInfo);
+  const [workerTaskInfo, setWorkerTaskInfo] = React.useState([]);
   
   React.useEffect(() => {
     if(!callTags.length) {
@@ -75,6 +74,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     if(!workerTaskInfo.length) {
       getWorkerTaskInfo()
       .then((workerTaskInfo: WorkerTaskInfo[]) => {
+        setWorkerTaskInfo(workerTaskInfo);
         console.log("rz workerTaskInfo=", workerTaskInfo);
       })
       .catch(error => console.error(error.msg));
@@ -110,13 +110,19 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     value: number
   }>) => {
     const selectedWorkerTaskInfo = workerTaskInfo.map(selectedWorkerTaskInfo => callTags.find(callTag => selectedWorkerTaskInfo.value === callTag.options_id));
-    setNewProfileCallTag(selectedWorkerTaskInfo);
+    setNewWorkerTaskInfo(selectedWorkerTaskInfo);
   };
 
   const addProfileCallTagClicked = () => {
     const updatedCallTagsList = [ ...callTagsList, ...newProfileCallTag ];
     setCallTagsList(updatedCallTagsList);
     setNewProfileCallTag(defaultNewCallTag);
+  };
+
+  const addWorkerTaskInfoClicked = () => {
+    const updatedWorkerTaskInfo = [ ...workerTaskInfo, ...newWorkerTaskInfo ];
+    setCallTagsList(updatedWorkerTaskInfo);
+    setNewWorkerTaskInfo(defaultNewWorkerTaskInfo);
   };
 
   const removeProfileCallTagClicked = (callTagToBeRemoved: CallTag) => {
