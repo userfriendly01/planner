@@ -82,18 +82,20 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   }, []);
 
   const profileCallTagsForDropDown = callTags.filter(callTag => {
-      return !callTagsList.find(item => {
+    console.log("rz profileCallTagsForDropDown=", workerTaskInfo);
+    return !callTagsList.find(item => {
         return item.options_id === callTag.options_id;
       });
   });
 
+  console.log("rz workerTaskInfo before workerTaskInfoForDropDown=", workerTaskInfo);
   const workerTaskInfoForDropDown = workerTaskInfo.filter(workerTaskInfoOption => {
     console.log("rz workerTaskInfoForDropDown workerTaskInfo=", workerTaskInfo);
     console.log("rz workerTaskInfoForDropDown workerTaskInfoOption=", workerTaskInfoOption);
     return !workerTaskInfo.find(item => {
       return item.wrkr_tsk_info_id === workerTaskInfoOption.wrkr_tsk_info_id;
     });
-});
+  });
 
   const newProfileCallTagChanged = (profileCallTag: Array<{
     [index: string]: any,
