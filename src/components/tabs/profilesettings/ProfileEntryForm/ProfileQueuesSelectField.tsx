@@ -19,8 +19,8 @@ import {
 
 const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
   const {
-    queuesList,
-    setQueuesList
+    queueList,
+    setQueueList
   } = props;
 
   const defaultNewQueue: Skill[] = [];
@@ -28,7 +28,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
   const queues = useAdminState().skillContext.skills;
 
   const profileQueuesForDropDown = queues.filter(queue => {
-    return !queuesList.find(item => {
+    return !queueList.find(item => {
       return item.skillId === queue.skillId;
     });
   });
@@ -42,14 +42,14 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
   };
 
   const addProfileQueueClicked = () => {
-    const updatedQueuesList = [ ...queuesList, ...newProfileQueue ];
-    setQueuesList(updatedQueuesList);
+    const updatedQueuesList = [ ...queueList, ...newProfileQueue ];
+    setQueueList(updatedQueuesList);
     setNewProfileQueue(defaultNewQueue);
   };
 
   const removeProfileQueueClicked = (queueToBeRemoved: Skill) => {
-    const updatedQueueList = queuesList.filter(queues => queues.skillId !== queueToBeRemoved.skillId);
-    setQueuesList(updatedQueueList);
+    const updatedQueueList = queueList.filter(queues => queues.skillId !== queueToBeRemoved.skillId);
+    setQueueList(updatedQueueList);
   };
 
   const getDropDownOptions = (optionsList: Skill[]) => {
@@ -82,7 +82,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
       </ProfileActivityRow>
       <ProfileActivityRowSeperator/>
       <ProfileActivitiesWrapper>
-        {queuesList.map((queue: Skill, index: number) => {
+        {queueList.map((queue: Skill, index: number) => {
           return (
             // @ts-ignore
             <ProfileActivityRow highlightOnHover={true} key={`queue-row-${index}`}>

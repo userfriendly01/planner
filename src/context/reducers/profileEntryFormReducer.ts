@@ -68,7 +68,7 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
     value: "",
     valid: false
   },
-  queuesList: []
+  queueList: []
 };
 
 export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Action): ProfileEntryFormState => {

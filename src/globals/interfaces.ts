@@ -92,8 +92,8 @@ export interface Office {
 
 export interface Skill {
   [key: string]: any
-  skillId: number,
-  skillName: string,
+  ctmSkillId: number,
+  ctmSkillDisplayName: string,
   name: string,
   profiles: any[],
   closedMessage: string,
@@ -153,7 +153,6 @@ export interface Activity {
     type?: string
   }
 }
-
 
 export interface Worker {
   attributes: {
