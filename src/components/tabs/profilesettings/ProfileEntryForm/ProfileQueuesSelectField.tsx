@@ -29,7 +29,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
 
   const profileQueuesForDropDown = queues.filter(queue => {
     return !queueList.find(item => {
-      return item.skillId === queue.skillId;
+      return item.ctmSkillId === queue.ctmSkillId;
     });
   });
 
@@ -37,7 +37,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
     [index: string]: any,
     value: number
   }>) => {
-    const selectedQueues = profileQueue.map(selectedQueue => queues.find(queue => selectedQueue.value === queue.skillId));
+    const selectedQueues = profileQueue.map(selectedQueue => queues.find(queue => selectedQueue.value === queue.ctmSkillId));
     setNewProfileQueue(selectedQueues);
   };
 
@@ -48,14 +48,14 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
   };
 
   const removeProfileQueueClicked = (queueToBeRemoved: Skill) => {
-    const updatedQueueList = queueList.filter(queues => queues.skillId !== queueToBeRemoved.skillId);
+    const updatedQueueList = queueList.filter(queues => queues.ctmSkillId !== queueToBeRemoved.ctmSkillId);
     setQueueList(updatedQueueList);
   };
 
   const getDropDownOptions = (optionsList: Skill[]) => {
     return optionsList.map(option => ({
-      value: option.skillId,
-      label: option.name
+      value: option.ctmSkillId,
+      label: option.ctmSkillDisplayName
     }));
   };
 
@@ -86,7 +86,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
           return (
             // @ts-ignore
             <ProfileActivityRow highlightOnHover={true} key={`queue-row-${index}`}>
-              <ProfileActivityRowItem>{queue.name}</ProfileActivityRowItem>
+              <ProfileActivityRowItem>{queue.ctmSkillDisplayName}</ProfileActivityRowItem>
               <ProfileActivityRowItem>
                 <IconButtonWrapper onClick={() => removeProfileQueueClicked(queue)} data-testid="delete-queue-button">
                   <Delete fontSize="inherit"/>
