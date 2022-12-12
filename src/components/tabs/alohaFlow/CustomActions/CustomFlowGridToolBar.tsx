@@ -6,15 +6,17 @@ import React from "react";
 import { FlowAdvanceFilter } from "../AlohaFlow.Interfaces";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import SearchIcon from "@mui/icons-material/Search";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 
 interface CustomFlowGridToolBarProps {
   openAddModal: (flag: boolean, isSubmitted?: boolean) => void,
   openAdvanceSearchModal: (flag: boolean, advanceFilter?: FlowAdvanceFilter) => void
+  exportDataFile: ()=> void;
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const CustomFlowGridToolBar = ({
-  openAddModal, openAdvanceSearchModal
+  openAddModal, openAdvanceSearchModal, exportDataFile
 }:CustomFlowGridToolBarProps) =>{
   const handleChange=(event:any):void=> {
     const { value } = event.target;
@@ -24,6 +26,9 @@ export const CustomFlowGridToolBar = ({
         break;
       case "Filter":
         openAdvanceSearchModal(true);
+        break;
+      case "Export":
+        exportDataFile();
         break;
       default:
         break;
@@ -55,6 +60,9 @@ export const CustomFlowGridToolBar = ({
           </MenuItem>
           <MenuItem key="Filter" value="Filter">
             <SearchIcon /> &nbsp;&nbsp; Advance Search
+          </MenuItem>
+          <MenuItem key="Export" value="Export">
+            <FileDownloadIcon /> &nbsp;&nbsp; Export
           </MenuItem>
         </Select>
       </FormControl>

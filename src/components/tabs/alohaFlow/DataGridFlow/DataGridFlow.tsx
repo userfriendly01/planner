@@ -14,7 +14,9 @@ import {
   getAccessToken,
   CACHE_FILTER_FLOW,
   getGraphQLEndpoint,
-  initializedAlertBar
+  initializedAlertBar,
+  downloadCSV,
+  EXPORT_FILE_PREFIX
 } from "utils";
 import { CustomToast } from "../../../core/index";
 import {
@@ -230,6 +232,10 @@ const DataGridFlow = (): JSX.Element => {
     }
   };
 
+  const exportDataFile = () =>{
+    downloadCSV(EXPORT_FILE_PREFIX.FLOW, dataFlow.filteredItems);
+  };
+
   const openEditModal = (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallFlowDb, message?: string) => {
     if (!flag && isSubmitted) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
@@ -258,7 +264,9 @@ const DataGridFlow = (): JSX.Element => {
         <div className="data-grid-wrapper">
           <CustomFlowGridToolBar
             openAddModal={openAddModal}
-            openAdvanceSearchModal={openAdvanceSearchModal} />
+            openAdvanceSearchModal={openAdvanceSearchModal}
+            exportDataFile={exportDataFile}
+          />
           <DataGrid
             rows={dataFlow.filteredItems}
             columns={FlowGridColumnDef}

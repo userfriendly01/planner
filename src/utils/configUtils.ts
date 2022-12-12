@@ -1,3 +1,6 @@
+import {
+  CctSharedCallFlowDb, CctSharedCallRoutingDb
+} from "components";
 import { useAdminState } from "context";
 import { AlertBarProps } from "./interfaces";
 /**
@@ -18,4 +21,45 @@ export const initializedAlertBar: AlertBarProps = {
   open: false,
   msg: "",
   severityType: ""
+};
+
+export const EXPORT_FILE_PREFIX: {
+  ROUTING: string;
+  FLOW: string;
+} ={
+  ROUTING: "routing-rules",
+  FLOW: "call-flow"
+};
+
+const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCallRoutingDb>): string => {
+  let result: string;
+  const columnDelimiter = ",";
+  const lineDelimiter = "\n";
+  const keys: string[] = Object.keys(array[0]);
+  result = "";
+  result += keys.join(columnDelimiter);
+  result += lineDelimiter;
+  array.forEach((item: CctSharedCallFlowDb | CctSharedCallRoutingDb) => {
+    let ctr = 0;
+    keys.forEach(key => {
+      if (ctr > 0) { result += columnDelimiter; }
+      result += item[key as keyof (CctSharedCallFlowDb | CctSharedCallRoutingDb)];
+      ctr += 1;
+    });
+    result += lineDelimiter;
+  });
+  return result;
+};
+
+export const  downloadCSV = (prefix: string, array: Array<CctSharedCallFlowDb | CctSharedCallRoutingDb>): JSX.Element => {
+  const link: HTMLAnchorElement = document.createElement("a");
+  let csv: string = convertArrayOfObjectsToCSV(array);
+  if (csv === null) { return; }
+  const filename = `${prefix}-${Date.now()}.csv`;
+  if (!csv.match(/^data:text\/csv/i)) {
+    csv = `data:text/csv;charset=utf-8,${csv}`;
+  }
+  link.setAttribute("href", encodeURI(csv));
+  link.setAttribute("download", filename);
+  link.click();
 };
