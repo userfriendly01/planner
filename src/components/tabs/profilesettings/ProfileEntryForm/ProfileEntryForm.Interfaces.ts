@@ -39,7 +39,7 @@ export interface ProfileActivitiesSelectFieldProps {
 
 export interface ProfileCallTagsSelectFieldProps {
   callTagsList: CallTag[]
-  workerTaskInfo: WorkerTaskInfo[]
+  workerTaskInfoList: WorkerTaskInfo[]
   setCallTagsList: (callTagsList: CallTag[]) => void;
 }
 

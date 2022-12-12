@@ -53,6 +53,7 @@ const getWorkerTaskInfo = () => new Promise((resolve, reject) => myAxios.get(api
 const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const {
     callTagsList,
+    workerTaskInfoList,
     setCallTagsList
   } = props;
 
@@ -82,7 +83,9 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   }, []);
 
   const profileCallTagsForDropDown = callTags.filter(callTag => {
-    console.log("rz profileCallTagsForDropDown=", workerTaskInfo);
+    console.log("rz callTagsList=", callTagsList);
+    console.log("rz workerTaskInfo=", workerTaskInfo);
+    console.log("rz workerTaskInfoList=", workerTaskInfoList);
     return !callTagsList.find(item => {
         return item.options_id === callTag.options_id;
       });
