@@ -142,7 +142,8 @@ export interface ProfilePayload {
   overflow_skill: string | null,
   policy_number_edit_i: boolean,
   voice_mail_transcription_i: boolean,
-  click_to_dial_i: boolean
+  click_to_dial_i: boolean,
+  queueList: Array<number>
 }
 
 export interface Activity {
