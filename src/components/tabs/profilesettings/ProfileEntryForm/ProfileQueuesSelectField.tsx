@@ -29,7 +29,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
 
   const profileQueuesForDropDown = queues.filter(queue => {
     return !queueList.find(item => {
-      return item.ctmSkillId === queue.ctmSkillId && queue.ctmSkillId !== null;
+      return item.ctmSkillId === queue.ctmSkillId && queue.ctmSkillId === null;
     });
   });
 
