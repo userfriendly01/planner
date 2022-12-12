@@ -92,6 +92,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     console.log("rz workerTaskInfoForDropDown workerTaskInfo=", workerTaskInfo);
     console.log("rz workerTaskInfoForDropDown workerTaskInfoOption=", workerTaskInfoOption);
     return !workerTaskInfo.find(item => {
+      console.log(`rz workerTaskInfoForDropDown item=${item}, workerTaskInfoOption=${workerTaskInfoOption}`);
       return item.wrkr_tsk_info_id === workerTaskInfoOption.wrkr_tsk_info_id;
     });
   });
