@@ -88,7 +88,6 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
       });
   });
 
-  console.log("rz workerTaskInfo before workerTaskInfoForDropDown=", workerTaskInfo);
   const workerTaskInfoForDropDown = workerTaskInfo.filter(workerTaskInfoOption => {
     console.log("rz workerTaskInfoForDropDown workerTaskInfo=", workerTaskInfo);
     console.log("rz workerTaskInfoForDropDown workerTaskInfoOption=", workerTaskInfoOption);
@@ -96,6 +95,8 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
       return item.wrkr_tsk_info_id === workerTaskInfoOption.wrkr_tsk_info_id;
     });
   });
+
+  console.log("rz workerTaskInfoForDropDown=", workerTaskInfoForDropDown);
 
   const newProfileCallTagChanged = (profileCallTag: Array<{
     [index: string]: any,
@@ -144,6 +145,8 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
       label: option.wrkr_tsk_info_nme
     }));
   };
+
+  console.log("rz getworkerTaskInfoDropDownOptions(workerTaskInfoForDropDown)=", workerTaskInfoForDropDown);
 
   return (
     <ProfileCallTagsControlWrapper>
