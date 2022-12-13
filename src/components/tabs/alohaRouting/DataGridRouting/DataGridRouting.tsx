@@ -10,7 +10,15 @@ import {
 } from "../AlohaRouting.Interfaces";
 import { retrieveRoutingData } from "services";
 import {
-  CACHED_CALL_ROUTING_PAGE_NO, CACHED_CALL_ROUTING_PER_PAGE, CACHE_FILTER_ROUTING, getAccessToken, routingInitState, getGraphQLEndpoint, initializedAlertBar
+  CACHED_CALL_ROUTING_PAGE_NO,
+  CACHED_CALL_ROUTING_PER_PAGE,
+  CACHE_FILTER_ROUTING,
+  getAccessToken,
+  routingInitState,
+  getGraphQLEndpoint,
+  initializedAlertBar,
+  downloadCSV,
+  EXPORT_FILE_PREFIX
 } from "utils";
 import {
   getGridMasterData
@@ -185,11 +193,19 @@ export const DataGridRouting = (): JSX.Element => {
     });
   };
 
+  const exportDataFile = () =>{
+    downloadCSV(EXPORT_FILE_PREFIX.ROUTING, state.filteredItems);
+  };
+
   RoutingGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (<a href="#" onClick={() => openEditModal(true, false, params.row)}>{`${params.value}`}</a>);
 
   return (
     <div>
-      <CustomFlowRoutingToolBar openAddModal={openAddModal} openAdvanceSearchModal={openAdvanceSearchModal} />
+      <CustomFlowRoutingToolBar
+        openAddModal={openAddModal}
+        openAdvanceSearchModal={openAdvanceSearchModal}
+        exportDataFile={exportDataFile}
+      />
       <RoutingTableBox>
         <DataGrid
           rows={state.filteredItems}
