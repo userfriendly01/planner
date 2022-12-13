@@ -156,8 +156,9 @@ const ProfileSettingsTable = props => {
                     </CustomTableData>
                     <CustomTableData>
                       <TableDataFlex>
+                      {console.log("rz profile.activities=", profile.activities)}
                         {
-                          JSON.parse(profile.activities).map(activity => {
+                          profile.activities.map(activity => {
                             return <div key={`${activity.name}`}>{formatActivityData(activity.name)}</div>;
                           })
                         }
