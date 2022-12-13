@@ -63,6 +63,10 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     };
 
     createProfile(payload).then(response => {
+      console.log('response.data', response.data);
+      console.log('response', response);
+      console.log('insertID', response.data.profile.insertId);
+
       updateLoading({
         ...loading,
         overlayMessage: `Successfully added new profile with ID ${response.data?.profile_id}`,
