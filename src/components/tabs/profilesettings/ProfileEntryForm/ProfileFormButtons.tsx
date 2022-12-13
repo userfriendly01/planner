@@ -59,7 +59,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       policy_number_edit_i: form.policyNumberEdit.value,
       voice_mail_transcription_i: form.voiceMailTranscription.value,
       click_to_dial_i: form.clickToDial.value,
-      queueList: form.queueList.map(queue => queue.ctmSkillId),
+      transferQueues: form.queueList.map(queue => queue.ctmSkillId)
     };
 
     createProfile(payload).then(response => {
@@ -110,7 +110,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     form.profileName.updated ? payload.profile_nme = form.profileName.value : null;
     form.overflowSkill.updated ? payload.overflow_skill = form.overflowSkill.value || null : null;
     form.activitiesUpdated ? payload.activity_id = form.activitiesList.map(activity => activity.activity_id) : null;
-    form.queuesupdated ? payload.queueList = form.queueList.map(queue => queue.ctmSkillId) : null;
+    form.queuesupdated ? payload.transferQueues = form.queueList.map(queue => queue.ctmSkillId) : null;
     form.inboundRecorded.updated ? payload.recorded_i = form.inboundRecorded.value : null;
     form.autoAnswered.updated ? payload.auto_answd_i = form.autoAnswered.value : null;
     form.paymentProcessing.updated ? payload.pmt_prcsg_i = form.paymentProcessing.value : null;

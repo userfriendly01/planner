@@ -143,7 +143,7 @@ export interface ProfilePayload {
   policy_number_edit_i: boolean,
   voice_mail_transcription_i: boolean,
   click_to_dial_i: boolean,
-  queueList: Array<number>
+  transferQueues: Array<number>
 }
 
 export interface Activity {
