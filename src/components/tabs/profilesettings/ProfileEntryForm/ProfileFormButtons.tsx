@@ -59,13 +59,18 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       policy_number_edit_i: form.policyNumberEdit.value,
       voice_mail_transcription_i: form.voiceMailTranscription.value,
       click_to_dial_i: form.clickToDial.value,
-      transferQueues: form.transferQueues.map(queue => queue.ctmSkillId)
+      transferQueues: form.transferQueues.map(queue => {
+        return {
+          skill_id: queue.ctmSkillId,
+          skill_nme: queue.ctmSkillDisplayName
+        }
+      })
     };
 
     createProfile(payload).then(response => {
       updateLoading({
         ...loading,
-        overlayMessage: `Successfully added new profile with ID ${response.data?.profile.insertId}`,
+        overlayMessage: `Successfully added new profile with ID ${response.data}`,
         saveStatus: ModalOverlayStatuses.SUCCESS,
         saveProfile: true
       });
@@ -110,7 +115,12 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     form.profileName.updated ? payload.profile_nme = form.profileName.value : null;
     form.overflowSkill.updated ? payload.overflow_skill = form.overflowSkill.value || null : null;
     form.activitiesUpdated ? payload.activity_id = form.activitiesList.map(activity => activity.activity_id) : null;
-    form.queuesupdated ? payload.transferQueues = form.transferQueues.map(queue => queue.ctmSkillId) : null;
+    form.queuesUpdated ? payload.transferQueues = form.transferQueues.map(queue => {
+      return {
+        skill_id: queue.ctmSkillId,
+        skill_nme: queue.ctmSkillDisplayName
+      }
+    }) : null;
     form.inboundRecorded.updated ? payload.recorded_i = form.inboundRecorded.value : null;
     form.autoAnswered.updated ? payload.auto_answd_i = form.autoAnswered.value : null;
     form.paymentProcessing.updated ? payload.pmt_prcsg_i = form.paymentProcessing.value : null;

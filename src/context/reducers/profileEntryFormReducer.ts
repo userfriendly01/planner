@@ -114,7 +114,6 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
       };
     }
     case profileEntryFormActions.UPDATE_TRANSFER_QUEUES: {
-      console.log('action.payload', action.payload);
       return {
         ...state,
         transferQueues: action.payload,
