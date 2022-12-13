@@ -26,10 +26,11 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
   const defaultNewQueue: Skill[] = [];
   const [newProfileQueue, setNewProfileQueue] = React.useState<Skill[]>(defaultNewQueue);
   const queues = useAdminState().skillContext.skills;
+  const filteredQueues = queues.filter(queue => queue.ctmSkillId !== null)
 
-  const profileQueuesForDropDown = queues.filter(queue => {
+  const profileQueuesForDropDown = filteredQueues.filter(queue => {
     return !queueList.find(item => {
-      return item.ctmSkillId === queue.ctmSkillId && queue.ctmSkillId === null;
+      return item.ctmSkillId === queue.ctmSkillId;
     });
   });
 
@@ -37,7 +38,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
     [index: string]: any,
     value: number
   }>) => {
-    const selectedQueues = profileQueue.map(selectedQueue => queues.find(queue => selectedQueue.value === queue.ctmSkillId));
+    const selectedQueues = profileQueue.map(selectedQueue => filteredQueues.find(queue => selectedQueue.value === queue.ctmSkillId));
     setNewProfileQueue(selectedQueues);
   };
 
