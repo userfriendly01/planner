@@ -5,12 +5,12 @@ import { useAdminState } from "context";
 import { Skill } from "globals";
 import {
   IconButtonWrapper,
-  ProfileActivitiesControlWrapper,
-  ProfileActivityRow,
-  ProfileActivityRowItem,
-  ProfileActivityRowSeperator,
+  ProfileDropdownControlWrapper,
+  ProfileDropdownRow,
+  ProfileDropdownRowItem,
+  ProfileDropdownRowSeperator,
   Label,
-  ProfileActivitiesWrapper
+  ProfileDropdownWrapper
 } from "./ProfileEntryForm.Styles";
 import {
   Add,
@@ -61,10 +61,10 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
   };
 
   return (
-    <ProfileActivitiesControlWrapper>
+    <ProfileDropdownControlWrapper>
       <Label>Add Transfer Queues</Label>
-      <ProfileActivityRow>
-        <ProfileActivityRowItem>
+      <ProfileDropdownRow>
+        <ProfileDropdownRowItem>
           <Dropdown
             styles={{
               "max-width": "380px"
@@ -74,30 +74,30 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
             value={getDropDownOptions(newProfileQueue)}
             updateValue={(event: any, newInputValue: Array<{ [index: string]: any; value: number; }>) => newProfileQueueChanged(newInputValue)}
           />
-        </ProfileActivityRowItem>
-        <ProfileActivityRowItem>
+        </ProfileDropdownRowItem>
+        <ProfileDropdownRowItem>
           <IconButtonWrapper disabled={!newProfileQueue.length} onClick={addProfileQueueClicked} data-testid="add-queue-button">
             <Add fontSize={"inherit"}/>
           </IconButtonWrapper>
-        </ProfileActivityRowItem>
-      </ProfileActivityRow>
-      <ProfileActivityRowSeperator/>
-      <ProfileActivitiesWrapper>
+        </ProfileDropdownRowItem>
+      </ProfileDropdownRow>
+      <ProfileDropdownRowSeperator/>
+      <ProfileDropdownWrapper>
         {transferQueues.map((queue: Skill, index: number) => {
           return (
             // @ts-ignore
-            <ProfileActivityRow highlightOnHover={true} key={`queue-row-${index}`}>
-              <ProfileActivityRowItem>{queue.ctmSkillDisplayName}</ProfileActivityRowItem>
-              <ProfileActivityRowItem>
+            <ProfileDropdownRow highlightOnHover={true} key={`queue-row-${index}`}>
+              <ProfileDropdownRowItem>{queue.ctmSkillDisplayName}</ProfileDropdownRowItem>
+              <ProfileDropdownRowItem>
                 <IconButtonWrapper onClick={() => removeProfileQueueClicked(queue)} data-testid="delete-queue-button">
                   <Delete fontSize="inherit"/>
                 </IconButtonWrapper>
-              </ProfileActivityRowItem>
-            </ProfileActivityRow>
+              </ProfileDropdownRowItem>
+            </ProfileDropdownRow>
           );
         })}
-      </ProfileActivitiesWrapper>
-    </ProfileActivitiesControlWrapper>
+      </ProfileDropdownWrapper>
+    </ProfileDropdownControlWrapper>
   );
 };
 

@@ -2,12 +2,12 @@ import React from "react";
 import { ProfileActivitiesSelectFieldProps } from "./ProfileEntryForm.Interfaces";
 import {
   IconButtonWrapper,
-  ProfileActivitiesControlWrapper,
-  ProfileActivityRow,
-  ProfileActivityRowItem,
-  ProfileActivityRowSeperator,
+  ProfileDropdownControlWrapper,
+  ProfileDropdownRow,
+  ProfileDropdownRowItem,
+  ProfileDropdownRowSeperator,
   Label,
-  ProfileActivitiesWrapper
+  ProfileDropdownWrapper
 } from "./ProfileEntryForm.Styles";
 import { Dropdown } from "components";
 import {
@@ -86,10 +86,10 @@ const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectFieldProps) 
   };
 
   return (
-    <ProfileActivitiesControlWrapper>
+    <ProfileDropdownControlWrapper>
       <Label>Add Activities</Label>
-      <ProfileActivityRow>
-        <ProfileActivityRowItem>
+      <ProfileDropdownRow>
+        <ProfileDropdownRowItem>
           <Dropdown
             styles={{
               "max-width": "380px"
@@ -99,35 +99,35 @@ const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectFieldProps) 
             value={getDropDownOptions(newProfileActivity)}
             updateValue={(event: any, newInputValue: Array<{ [index: string]: any; value: number; }>) => newProfileActivityChanged(newInputValue)}
           />
-        </ProfileActivityRowItem>
-        <ProfileActivityRowItem>
+        </ProfileDropdownRowItem>
+        <ProfileDropdownRowItem>
           <IconButtonWrapper disabled={!newProfileActivity.length} onClick={addProfileActivityClicked} data-testid="add-profileActivity-button">
             <Add fontSize={"inherit"}/>
           </IconButtonWrapper>
-        </ProfileActivityRowItem>
-      </ProfileActivityRow>
-      <ProfileActivityRowSeperator/>
-      <ProfileActivitiesWrapper>
+        </ProfileDropdownRowItem>
+      </ProfileDropdownRow>
+      <ProfileDropdownRowSeperator/>
+      <ProfileDropdownWrapper>
         {activitiesList.map((activity: Activity, index: number) => {
           return (
             // @ts-ignore
-            <ProfileActivityRow highlightOnHover={true} key={`activity-row-${index}`}>
+            <ProfileDropdownRow highlightOnHover={true} key={`activity-row-${index}`}>
               <Tooltip
                 title={activity.available_i.data[0]? "Available": "Unavailable"}
                 placement={"bottom"}
               >
-                <ProfileActivityRowItem>{activity.activity_nme}</ProfileActivityRowItem>
+                <ProfileDropdownRowItem>{activity.activity_nme}</ProfileDropdownRowItem>
               </Tooltip>
-              <ProfileActivityRowItem>
+              <ProfileDropdownRowItem>
                 <IconButtonWrapper onClick={() => removeProfileActivityClicked(activity)} data-testid="delete-activity-button">
                   <Delete fontSize="inherit"/>
                 </IconButtonWrapper>
-              </ProfileActivityRowItem>
-            </ProfileActivityRow>
+              </ProfileDropdownRowItem>
+            </ProfileDropdownRow>
           );
         })}
-      </ProfileActivitiesWrapper>
-    </ProfileActivitiesControlWrapper>
+      </ProfileDropdownWrapper>
+    </ProfileDropdownControlWrapper>
   );
 };
 
