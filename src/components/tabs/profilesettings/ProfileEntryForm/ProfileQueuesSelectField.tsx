@@ -2,7 +2,7 @@ import React from "react";
 import { ProfileQueuesSelectFieldProps } from "./ProfileEntryForm.Interfaces";
 import { Dropdown } from "components";
 import { useAdminState } from "context";
-import { sortSkillByName } from "utils";
+import { sortQueueByName } from "utils";
 import { Skill } from "globals";
 import {
   IconButtonWrapper,
@@ -27,7 +27,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
   const defaultNewQueue: Skill[] = [];
   const [newProfileQueue, setNewProfileQueue] = React.useState<Skill[]>(defaultNewQueue);
   const queues = useAdminState().skillContext.skills;
-  const filteredQueues = queues.filter(queue => queue.ctmSkillId !== null).sort(sortSkillByName)
+  const filteredQueues = queues.filter(queue => queue.ctmSkillId !== null).sort(sortQueueByName)
 
   const profileQueuesForDropDown = filteredQueues.filter(queue => {
     return !transferQueues.find(item => {
@@ -56,7 +56,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
 
   const getDropDownOptions = (optionsList: Skill[]) => {
     return optionsList.map(option => ({
-      value: { skill_id: option.ctmSkillId, skill_nme: option.ctmSkillDisplayName },
+      value: option.ctmSkillId,
       label: option.ctmSkillDisplayName
     }));
   };
