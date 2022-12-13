@@ -70,7 +70,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     createProfile(payload).then(response => {
       updateLoading({
         ...loading,
-        overlayMessage: `Successfully added new profile with ID ${response.data?.profile.insertId}`,
+        overlayMessage: `Successfully added new profile with ID ${response.data?.results.profile[0].insertId}`,
         saveStatus: ModalOverlayStatuses.SUCCESS,
         saveProfile: true
       });
