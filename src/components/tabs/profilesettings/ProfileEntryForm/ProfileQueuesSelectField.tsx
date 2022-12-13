@@ -19,7 +19,7 @@ import {
 
 const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
   const {
-    queueList,
+    transferQueues,
     setQueueList
   } = props;
 
@@ -29,7 +29,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
   const filteredQueues = queues.filter(queue => queue.ctmSkillId !== null)
 
   const profileQueuesForDropDown = filteredQueues.filter(queue => {
-    return !queueList.find(item => {
+    return !transferQueues.find(item => {
       return item.ctmSkillId === queue.ctmSkillId;
     });
   });
@@ -43,13 +43,13 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
   };
 
   const addProfileQueueClicked = () => {
-    const updatedQueuesList = [ ...queueList, ...newProfileQueue ];
+    const updatedQueuesList = [ ...transferQueues, ...newProfileQueue ];
     setQueueList(updatedQueuesList);
     setNewProfileQueue(defaultNewQueue);
   };
 
   const removeProfileQueueClicked = (queueToBeRemoved: Skill) => {
-    const updatedQueueList = queueList.filter(queues => queues.ctmSkillId !== queueToBeRemoved.ctmSkillId);
+    const updatedQueueList = transferQueues.filter(queues => queues.ctmSkillId !== queueToBeRemoved.ctmSkillId);
     setQueueList(updatedQueueList);
   };
 
@@ -83,7 +83,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
       </ProfileActivityRow>
       <ProfileActivityRowSeperator/>
       <ProfileActivitiesWrapper>
-        {queueList.map((queue: Skill, index: number) => {
+        {transferQueues.map((queue: Skill, index: number) => {
           return (
             // @ts-ignore
             <ProfileActivityRow highlightOnHover={true} key={`queue-row-${index}`}>

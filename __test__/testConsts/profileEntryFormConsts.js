@@ -50,7 +50,7 @@ export const initialProfileEntryFormState = {
     updated: false,
     valid: false
   },
-  queueList: []
+  transferQueues: []
 };
 
 export const validProfileEntryFormState = {
@@ -104,7 +104,7 @@ export const validProfileEntryFormState = {
     updated: true,
     valid: true
   },
-  queueList: [3, 4]
+  transferQueues: [3, 4]
 };
 
 export const invalidProfileEntryFormState = {
@@ -158,7 +158,7 @@ export const invalidProfileEntryFormState = {
     updated: true,
     valid: false
   },
-  queueList: [3, 4]
+  transferQueues: [3, 4]
 };
 
 export const initialProfileEditEntryFormState = {
@@ -211,5 +211,5 @@ export const initialProfileEditEntryFormState = {
     updated: false,
     valid: true
   },
-  queueList: [3, 4]
+  transferQueues: [3, 4]
 };

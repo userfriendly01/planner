@@ -16,7 +16,7 @@ export const profileEntryFormActions = {
   SET_PROFILE_ID: "SET_PROFILE_ID",
   SET_PROFILE_NAME: "SET_PROFILE_NAME",
   SET_OVERFLOW_SKILL: "SET_OVERFLOW_SKILL",
-  UPDATE_QUEUE_LIST: "UPDATE_QUEUE_LIST",
+  UPDATE_TRANSFER_QUEUES: "UPDATE_TRANSFER_QUEUES",
   UPDATE_ACTIVITIES_LIST: "UPDATE_ACTIVITIES_LIST",
   SET_UPDATE_PROFILE_FORM_STATE: "SET_UPDATE_PROFILE_FORM_STATE"
 };
@@ -69,7 +69,7 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
     value: "",
     valid: false
   },
-  queueList: []
+  transferQueues: []
 };
 
 export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Action): ProfileEntryFormState => {
@@ -113,10 +113,10 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         activitiesUpdated: true
       };
     }
-    case profileEntryFormActions.UPDATE_QUEUE_LIST: {
+    case profileEntryFormActions.UPDATE_TRANSFER_QUEUES: {
       return {
         ...state,
-        queueList: action.payload,
+        transferQueues: action.payload,
         queuesUpdated: true
       };
     }

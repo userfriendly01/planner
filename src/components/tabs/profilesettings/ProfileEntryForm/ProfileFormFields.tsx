@@ -119,11 +119,11 @@ const ProfileFormFields = () => {
           }}
         />
         <ProfileQueuesSelectField
-          queueList={form.queueList}
-          setQueueList={queueList => {
+          transferQueues={form.transferQueues}
+          setQueueList={transferQueues => {
             setForm({
-              type: profileEntryFormActions.UPDATE_QUEUE_LIST,
-              payload: queueList
+              type: profileEntryFormActions.UPDATE_TRANSFER_QUEUES,
+              payload: transferQueues
             });
           }}
         />

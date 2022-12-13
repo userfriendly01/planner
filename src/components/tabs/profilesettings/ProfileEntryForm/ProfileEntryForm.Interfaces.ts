@@ -37,8 +37,8 @@ export interface ProfileActivitiesSelectFieldProps {
 }
 
 export interface ProfileQueuesSelectFieldProps {
-  queueList: Skill[]
-  setQueueList: (queueList: Skill[]) => void;
+  transferQueues: Skill[]
+  setQueueList: (transferQueues: Skill[]) => void;
 }
 
 export interface ProfileEntryFormState {
@@ -60,7 +60,7 @@ export interface ProfileEntryFormState {
   policyNumberEdit: FieldState,
   voiceMailTranscription: FieldState,
   clickToDial: FieldState,
-  queueList: Skill[],
+  transferQueues: Skill[],
 }
 
 export interface ToggleFormField {
