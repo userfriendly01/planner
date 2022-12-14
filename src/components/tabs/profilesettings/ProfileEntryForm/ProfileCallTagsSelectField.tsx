@@ -76,7 +76,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
       getWorkerTaskInfo()
       .then((workerTaskInfo: WorkerTaskInfo[]) => {
         setWorkerTaskInfo(workerTaskInfo);
-        console.log("rz workerTaskInfo=", workerTaskInfo);
+        console.log(" in useEffect=", workerTaskInfo);
       })
       .catch(error => console.error(error.msg));
     }
