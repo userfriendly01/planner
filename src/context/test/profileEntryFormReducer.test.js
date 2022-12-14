@@ -306,7 +306,7 @@ describe("profileEntryFormReducer", () => {
           valid: true,
           value: "Game of Phones"
         },
-        aggregateQueues: [
+        transferQueues: [
           {
             id: 0,
             name: "PGS Gold",
