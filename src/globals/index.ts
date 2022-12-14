@@ -91,6 +91,10 @@ export const profileTableColumnHeader = [
     TOOLTIP: "Profile Activities"
   },
   {
+    COLUMN_NAME: "Transfer Queues",
+    TOOLTIP: "Transfer Queues"
+  },
+  {
     COLUMN_NAME: "",
     TOOLTIP: ""
   }
