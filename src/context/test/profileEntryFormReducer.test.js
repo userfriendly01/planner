@@ -308,18 +308,8 @@ describe("profileEntryFormReducer", () => {
         },
         transferQueues: [
           {
-            id: 0,
-            name: "PGS Gold",
-            ownerType: "profile",
-            workerSid: null,
-            queues: [
-              {
-                id: 106,
-                skillName: "pgsGoldSpanish",
-                taskQueueName: "PGS - Gold Spanish",
-                taskQueueSid: "WQaae7385a70e4c4ef8d74f1f93ebd5c33"
-              }
-            ]
+            ctmSkillId: 106,
+            ctmSkillDisplayName: "pgsGoldSpanish",
           }
         ]
       };
