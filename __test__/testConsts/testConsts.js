@@ -129,6 +129,8 @@ export const calabrioContext = {
 export const skillsList = [
   {
     name: "lscOBDialer1",
+    ctmSkillId: 1,
+    ctmSkillDisplayName: "lsc OB Dialer 1",
     profiles: [{
       profileName: "Licensed Sales Center",
       profileId: 32
@@ -143,6 +145,8 @@ export const skillsList = [
   },
   {
     name: "aisgL1",
+    ctmSkillId: 2,
+    ctmSkillDisplayName: "aisg L1",
     profiles: [{
       profileName: "AISG",
       profileId: 4
@@ -157,6 +161,8 @@ export const skillsList = [
   },
   {
     name: "bscCommisssions",
+    ctmSkillId: 3,
+    ctmSkillDisplayName: "bsc Commisssions",
     profiles: [{
       profileName: "BSC",
       profileId: 10
@@ -171,6 +177,8 @@ export const skillsList = [
   },
   {
     name: "bscCbsL2",
+    ctmSkillId: 4,
+    ctmSkillDisplayName: "bsc Cbs L2",
     profiles: [
       {
         profileName: "BSC",
@@ -191,6 +199,8 @@ export const skillsList = [
   },
   {
     name: "lscUSAA",
+    ctmSkillId: 5,
+    ctmSkillDisplayName: "lsc USAA",
     profiles: [],
     flashMessage: "",
     closedMessage: "",

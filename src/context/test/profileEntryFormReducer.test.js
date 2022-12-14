@@ -125,6 +125,56 @@ describe("profileEntryFormReducer", () => {
     });
   });
 
+  describe("UPDATE_TRANSFER_QUEUES", () => {
+    test("should set transferQueues to payload passed", () => {
+      const expectedState = {
+        ...initialProfileEntryFormState,
+        transferQueues: {
+          name: "466",
+          timeOfDays: [],
+          flashMessage: "Oh no! Something went wrong..",
+          closedMessage: null,
+          vhThreshold: 0,
+          vhCallerId: null,
+          vhCallTarget: null,
+          levels: [],
+          ctmSkillDisplayName: "NI Billing & Collections",
+          ctmSkillId: 7,
+          profiles: [
+              {
+                  profileId: 1,
+                  profileName: "NI Billing & Collections"
+              }
+          ]
+        },
+        queuesUpdated: true
+      };
+      const action = {
+        type: profileEntryFormActions.UPDATE_TRANSFER_QUEUES,
+        payload: {
+          name: "466",
+          timeOfDays: [],
+          flashMessage: "Oh no! Something went wrong..",
+          closedMessage: null,
+          vhThreshold: 0,
+          vhCallerId: null,
+          vhCallTarget: null,
+          levels: [],
+          ctmSkillDisplayName: "NI Billing & Collections",
+          ctmSkillId: 7,
+          profiles: [
+              {
+                  profileId: 1,
+                  profileName: "NI Billing & Collections"
+              }
+          ]
+        }
+      };
+      const result = profileEntryFormReducer(initialProfileEntryFormState, action);
+      expect(result).toStrictEqual(expectedState);
+    });
+  });
+
   describe("SET_UPDATE_PROFILE_FORM_STATE", () => {
     test("should set edit prepopulated fields to state", () => {
       const profile = {
