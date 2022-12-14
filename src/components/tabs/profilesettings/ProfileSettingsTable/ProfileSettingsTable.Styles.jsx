@@ -32,13 +32,13 @@ export const CustomTableHeader = styled.th`
     width: 10%;
   }
   &:nth-child(9) {
-    width: 8%;
+    width: 7%;
   }
   &:nth-child(16) {
-    width: 15%;
+    width: 14%;
   }
   &:nth-child(17) {
-    width: 15%;
+    width: 14%;
   }
   &:nth-child(18) {
     width: 2%;
