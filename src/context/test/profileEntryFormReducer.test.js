@@ -179,7 +179,7 @@ describe("profileEntryFormReducer", () => {
           type: "Buffer",
           data: [1]
         },
-        activities: "[{\"id\": 1, \"name\": \"Offline\", \"availability\": 0}]",
+        activities: activities: [{"id": 1, "name": "Offline", "availability": 0}],
         worker_task_info: "[{\"display_nme\": \"Call Type\", \"options_id\": 1, \"profile_id\": 15, \"row_crtn_dtm\": \"2019-10-24T12:58:48.000Z\", \"row_updt_dtm\": \"2019-10-24T12:58:48.000Z\", \"wrkr_tsk_info_id\": 1}]"
       }
 
