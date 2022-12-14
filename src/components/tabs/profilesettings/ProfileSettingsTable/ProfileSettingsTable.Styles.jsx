@@ -4,9 +4,7 @@ import { Paper } from "@mui/material";
 export const CustomTable = styled.table`
   border-spacing: 0;
   font-size: 14px;
-  table-layout: fixed;
-  width: 100%;
-  padding-left: 10px;
+  min-width: 1500px;
 `;
 
 export const CustomTableData = styled.td`
@@ -25,7 +23,7 @@ export const CustomTableHeader = styled.th`
   padding: 10px 4px;
   text-align: center;
   position: sticky;
-  top: 95px;
+  top: 0px;
   background-color: white;
   &:nth-child(1) {
     width: 2%;
@@ -40,6 +38,9 @@ export const CustomTableHeader = styled.th`
     width: 15%;
   }
   &:nth-child(17) {
+    width: 15%;
+  }
+  &:nth-child(18) {
     width: 2%;
   }
 `;
@@ -61,10 +62,13 @@ export const TableText = styled.div`
 `;
 
 export const StyledPaper = styled(Paper)`
-  align-items: center;
+  align-items: baseline;
   display: flex;
-  justify-content: center;
   width: 100%;
+  overflow-x: scroll;
+  justify-content: left;
+  overflow-y: auto;
+  height: calc(100vh - 106px);
 `;
 
 export const TableContainer = styled.div`
@@ -73,6 +77,7 @@ export const TableContainer = styled.div`
   flex: 1 1 auto;
   flex-direction: column;
   padding: 2%;
+  padding-bottom: 0;
   position: relative;
 `;
 

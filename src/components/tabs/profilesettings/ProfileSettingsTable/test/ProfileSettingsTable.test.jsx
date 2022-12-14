@@ -82,7 +82,23 @@ describe("<ProfileSettingsTable />", () => {
       click_to_dial_i: {
         data: [1]
       },
-      activities: "[{\"id\": 1, \"name\": \"Offline\", \"availability\": 0}]"
+      activities: "[{\"id\": 1, \"name\": \"Offline\", \"availability\": 0}]",
+      aggregateQueues: [
+        {
+          "id": 0,
+          "name": "PGS Gold",
+          "ownerType": "profile",
+          "workerSid": null,
+          "queues": [
+            {
+              "id": 106,
+              "skillName": "pgsGoldSpanish",
+              "taskQueueName": "PGS - Gold Spanish",
+              "taskQueueSid": "WQaae7385a70e4c4ef8d74f1f93ebd5c33"
+            }
+          ]
+        }
+      ]
     }
   ];
 
@@ -105,10 +121,11 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByText("Voice Mail Transcription", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Click To Dial", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Activities", { selector: "th" })).toBeInTheDocument();
+      expect(rendered.getByText("Transfer Queues", { selector: "th" })).toBeInTheDocument();
       const tableRows = rendered.getAllByTestId("table-row");
       const tableHeaders = rendered.getAllByTestId("table-header");
       expect(tableRows.length).toBe(1);
-      expect(tableHeaders.length).toBe(17);
+      expect(tableHeaders.length).toBe(18);
     });
 
     test("should render correct tooltips", async () => {
@@ -129,6 +146,7 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByLabelText("Voice mail will be transcribed and sent within the notification email to the user")).toBeInTheDocument();
       expect(rendered.getByLabelText("Enable click-to-dial/transfer from external application")).toBeInTheDocument();
       expect(rendered.getByLabelText("Profile Activities")).toBeInTheDocument();
+      expect(rendered.getByLabelText("Transfer Queues")).toBeInTheDocument();
     });
 
     test("should render row data", async () => {
