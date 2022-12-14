@@ -229,7 +229,7 @@ describe("profileEntryFormReducer", () => {
           type: "Buffer",
           data: [1]
         },
-        activities: "[{\"id\": 1, \"name\": \"Offline\", \"availability\": 0}]"
+        activities: [{id: 1, name: "Offline", availability: 0}]
       };
 
       const expectedState = {
