@@ -82,19 +82,19 @@ describe("<ProfileSettingsTable />", () => {
       click_to_dial_i: {
         data: [1]
       },
-      activities: "[{\"id\": 1, \"name\": \"Offline\", \"availability\": 0}]",
+      activities: [{id: 1, name: "Offline", availability: 0}],
       aggregateQueues: [
         {
-          "id": 0,
-          "name": "PGS Gold",
-          "ownerType": "profile",
-          "workerSid": null,
-          "queues": [
+          id: 0,
+          name: "PGS Gold",
+          ownerType: "profile",
+          workerSid: null,
+          queues: [
             {
-              "id": 106,
-              "skillName": "pgsGoldSpanish",
-              "taskQueueName": "PGS - Gold Spanish",
-              "taskQueueSid": "WQaae7385a70e4c4ef8d74f1f93ebd5c33"
+              id: 106,
+              skillName: "pgsGoldSpanish",
+              taskQueueName: "PGS - Gold Spanish",
+              taskQueueSid: "WQaae7385a70e4c4ef8d74f1f93ebd5c33"
             }
           ]
         }
