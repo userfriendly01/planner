@@ -12,7 +12,7 @@ import {
   fireEvent,
   getMockedComponentProps,
   initialTestState,
-  mockActivities
+  skillsList
 } from "testUtils";
 import { act } from "react-dom/test-utils";
 
@@ -56,123 +56,171 @@ describe("<ProfileQueuesSelectField />", () => {
     });
   });
 
-  // describe("changes made to the add activities drop down", () => {
-  //   beforeEach(() => {
-  //     const mockNewActivity = [{
-  //       activity_id: 1,
-  //       activity_nme: "Offline",
-  //       available_i: {
-  //         "data": [
-  //           0
-  //         ],
-  //         "type": "Buffer"
-  //       }
-  //     }];
-  //     React.useState = jest.fn()
-  //       .mockReturnValueOnce([mockNewActivity, jest.fn()])
-  //       .mockReturnValueOnce([mockActivities, jest.fn()]);
-  //   });
+  describe("changes made to the add transfer queue drop down", () => {
+    beforeEach(() => {
+      const mockNewSkill = [{
+        name: "lscOBDialer1",
+        ctmSkillId: 1,
+        ctmSkillDisplayName: "lsc OB Dialer 1",
+        profiles: [{
+          profileName: "Licensed Sales Center",
+          profileId: 32
+        }],
+        flashMessage: "",
+        closedMessage: "",
+        levels: [ 1, 2, 3],
+        timeOfDays: [],
+        vhCallTarget: null,
+        vhCallerId: null,
+        vhThreshold: null
+      }];
+      React.useState = jest.fn()
+        .mockReturnValueOnce([mockNewSkill, jest.fn()])
+        .mockReturnValueOnce([skillsList, jest.fn()]);
+    });
 
-  //   test("should render activities drop down with correct options", () => {
-  //     const rendered = renderComponent([{
-  //       "activity_id": 2,
-  //       "activity_nme": "Available",
-  //       "available_i": {
-  //         "type": "Buffer",
-  //         "data": [
-  //           1
-  //         ]
-  //       }
-  //     }]);
-  //     expect(rendered.container).not.toHaveTextContent("Offline");
-  //     act(() => {
-  //       const { updateValue } = getMockedComponentProps(Dropdown);
-  //       updateValue("", [{ value: 1 }] );
-  //     });
-  //     act(() => {
-  //       fireEvent.click(getAddTransferQueuesButton(rendered));
-  //     });
-  //     expect(mockSetActivitiesList).toHaveBeenCalledWith([
-  //       {
-  //         "activity_id": 2,
-  //         "activity_nme": "Available",
-  //         "available_i": {
-  //           "data": [
-  //             1
-  //           ],
-  //           "type": "Buffer"
-  //         }
-  //       },
-  //       {
-  //         "activity_id": 1,
-  //         "activity_nme": "Offline",
-  //         "available_i": {
-  //           "data": [
-  //             0
-  //           ],
-  //           "type": "Buffer"
-  //         }
-  //       }
-  //     ]);
-  //   });
-  // });
+    test("should render activities drop down with correct options", () => {
+      const rendered = renderComponent([{
+        name: "aisgL1",
+        ctmSkillId: 2,
+        ctmSkillDisplayName: "aisg L1",
+        profiles: [{
+          profileName: "AISG",
+          profileId: 4
+        }],
+        flashMessage: "",
+        closedMessage: "Sorry, we're closed.",
+        levels: [],
+        timeOfDays: [],
+        vhCallTarget: null,
+        vhCallerId: null,
+        vhThreshold: null
+      }]);
+      expect(rendered.container).not.toHaveTextContent("lsc OB Dialer 1");
+      act(() => {
+        const { updateValue } = getMockedComponentProps(Dropdown);
+        updateValue("", [{ value: 1 }] );
+      });
+      act(() => {
+        fireEvent.click(getAddTransferQueuesButton(rendered));
+      });
+      expect(mockSetQueueList).toHaveBeenCalledWith([
+        {
+          name: "aisgL1",
+          ctmSkillId: 2,
+          ctmSkillDisplayName: "aisg L1",
+          profiles: [{
+            profileName: "AISG",
+            profileId: 4
+          }],
+          flashMessage: "",
+          closedMessage: "Sorry, we're closed.",
+          levels: [],
+          timeOfDays: [],
+          vhCallTarget: null,
+          vhCallerId: null,
+          vhThreshold: null
+        },
+        {
+          name: "lscOBDialer1",
+          ctmSkillId: 1,
+          ctmSkillDisplayName: "lsc OB Dialer 1",
+          profiles: [{
+            profileName: "Licensed Sales Center",
+            profileId: 32
+          }],
+          flashMessage: "",
+          closedMessage: "",
+          levels: [ 1, 2, 3],
+          timeOfDays: [],
+          vhCallTarget: null,
+          vhCallerId: null,
+          vhThreshold: null
+        }
+      ]);
+    });
+  });
 
-  // describe("remove button", () => {
-  //   beforeEach(() => {
-  //     const mockNewActivity = [{
-  //       activity_id: 1,
-  //       activity_nme: "Offline",
-  //       available_i: {
-  //         "data": [
-  //           0
-  //         ],
-  //         "type": "Buffer"
-  //       }
-  //     }];
-  //     React.useState = jest.fn()
-  //       .mockReturnValueOnce([mockNewActivity, jest.fn()])
-  //       .mockReturnValueOnce([mockActivities, jest.fn()]);
-  //   });
+  describe("remove button", () => {
+    beforeEach(() => {
+      const mockNewSkill = [{
+        name: "lscOBDialer1",
+        ctmSkillId: 1,
+        ctmSkillDisplayName: "lsc OB Dialer 1",
+        profiles: [{
+          profileName: "Licensed Sales Center",
+          profileId: 32
+        }],
+        flashMessage: "",
+        closedMessage: "",
+        levels: [ 1, 2, 3],
+        timeOfDays: [],
+        vhCallTarget: null,
+        vhCallerId: null,
+        vhThreshold: null
+      }];
+      React.useState = jest.fn()
+        .mockReturnValueOnce([mockNewSkill, jest.fn()])
+        .mockReturnValueOnce([skillsList, jest.fn()]);
+    });
 
-  //   test("should display once for each activity; when clicked, activity should be removed", () => {
-  //     const rendered = renderComponent([
-  //       {
-  //         "activity_id": 2,
-  //         "activity_nme": "Available",
-  //         "available_i": {
-  //           "data": [
-  //             1
-  //           ],
-  //           "type": "Buffer"
-  //         }
-  //       },
-  //       {
-  //         "activity_id": 1,
-  //         "activity_nme": "Offline",
-  //         "available_i": {
-  //           "data": [
-  //             0
-  //           ],
-  //           "type": "Buffer"
-  //         }
-  //       }
-  //     ]);
-  //     expectMockedComponent(rendered, { Delete }, 2);
-  //     act(() => {
-  //       fireEvent.click(getDeleteTransferQueuesButton(rendered, 1));
-  //     });
-  //     expect(mockSetActivitiesList).toHaveBeenCalledWith([
-  //       {
-  //         "activity_id": 2,
-  //         "activity_nme": "Available",
-  //         "available_i": {
-  //           "data": [
-  //             1
-  //           ],
-  //           "type": "Buffer"
-  //         }
-  //       }
-  //     ]);
-  //   });
-  // });
+    test("should display once for each transfer queue; when clicked, activity should be removed", () => {
+      const rendered = renderComponent([
+        {
+          name: "aisgL1",
+          ctmSkillId: 2,
+          ctmSkillDisplayName: "aisg L1",
+          profiles: [{
+            profileName: "AISG",
+            profileId: 4
+          }],
+          flashMessage: "",
+          closedMessage: "Sorry, we're closed.",
+          levels: [],
+          timeOfDays: [],
+          vhCallTarget: null,
+          vhCallerId: null,
+          vhThreshold: null
+        },
+        {
+          name: "lscOBDialer1",
+          ctmSkillId: 1,
+          ctmSkillDisplayName: "lsc OB Dialer 1",
+          profiles: [{
+            profileName: "Licensed Sales Center",
+            profileId: 32
+          }],
+          flashMessage: "",
+          closedMessage: "",
+          levels: [ 1, 2, 3],
+          timeOfDays: [],
+          vhCallTarget: null,
+          vhCallerId: null,
+          vhThreshold: null
+        }
+      ]);
+      expectMockedComponent(rendered, { Delete }, 2);
+      act(() => {
+        fireEvent.click(getDeleteTransferQueuesButton(rendered, 1));
+      });
+      expect(mockSetQueueList).toHaveBeenCalledWith([
+        {
+          name: "aisgL1",
+          ctmSkillId: 2,
+          ctmSkillDisplayName: "aisg L1",
+          profiles: [{
+            profileName: "AISG",
+            profileId: 4
+          }],
+          flashMessage: "",
+          closedMessage: "Sorry, we're closed.",
+          levels: [],
+          timeOfDays: [],
+          vhCallTarget: null,
+          vhCallerId: null,
+          vhThreshold: null
+        }
+      ]);
+    });
+  });
 });
