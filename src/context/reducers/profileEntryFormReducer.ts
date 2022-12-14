@@ -133,6 +133,13 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         };
       });
 
+      const transferQueues = profile.aggregateQueues.map((queue: { queues: { id: number; skillName: string; }[]; }) => {
+        return {
+          ctmSkillId: queue.queues[0].id,
+          ctmSkillDisplayName: queue.queues[0].skillName,
+        };
+      });
+
       return {
         ...state,
         profileId: profile.profile_id,
@@ -158,7 +165,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
           value: profile.profile_nme,
           valid: true
         },
-        transferQueues: profile.aggregateQueues
+        transferQueues
       };
     }
     default:
