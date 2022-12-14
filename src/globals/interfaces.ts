@@ -123,7 +123,7 @@ export interface TritonProfile {
   row_crtn_dtm: string,
   row_updt_dtm: string,
   overflow_skill: string,
-  activities: string
+  activities: Array<object>,
 }
 
 export interface ProfilePayload {

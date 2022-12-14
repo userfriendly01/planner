@@ -82,7 +82,7 @@ describe("<ProfileSettingsTable />", () => {
       click_to_dial_i: {
         data: [1]
       },
-      activities: [{id: 1, name: "Offline", availability: 0}],
+      activities: [{profile_id: 1, activity_nme: "Offline", availability: 0, activity_id: 1}],
       aggregateQueues: [
         {
           id: 0,

@@ -79,7 +79,7 @@ describe("<ProfileQueuesSelectField />", () => {
         .mockReturnValueOnce([skillsList, jest.fn()]);
     });
 
-    test("should render activities drop down with correct options", () => {
+    test("should render transfer queue drop down with correct options", () => {
       const rendered = renderComponent([{
         name: "aisgL1",
         ctmSkillId: 2,
@@ -164,7 +164,7 @@ describe("<ProfileQueuesSelectField />", () => {
         .mockReturnValueOnce([skillsList, jest.fn()]);
     });
 
-    test("should display once for each transfer queue; when clicked, activity should be removed", () => {
+    test("should display once for each transfer queue; when clicked, queue should be removed", () => {
       const rendered = renderComponent([
         {
           name: "aisgL1",

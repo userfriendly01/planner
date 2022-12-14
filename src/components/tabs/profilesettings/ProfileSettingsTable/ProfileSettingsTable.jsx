@@ -142,7 +142,7 @@ const ProfileSettingsTable = props => {
                       <TableDataFlex>
                         {
                           profile.activities.map(activity => {
-                            return <div key={`${activity.name}`}>{formatActivityData(activity.name)}</div>;
+                            return <div key={`${activity.activity_nme}`}>{formatActivityData(activity.activity_nme)}</div>;
                           })
                         }
                       </TableDataFlex>
