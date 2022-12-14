@@ -230,6 +230,22 @@ describe("profileEntryFormReducer", () => {
           data: [1]
         },
         activities: [{profile_id: 1, activity_nme: "Offline", availability: 0, activity_id: 1}],
+        aggregateQueues: [
+          {
+            id: 0,
+            name: "PGS Gold",
+            ownerType: "profile",
+            workerSid: null,
+            queues: [
+              {
+                id: 106,
+                skillName: "pgsGoldSpanish",
+                taskQueueName: "PGS - Gold Spanish",
+                taskQueueSid: "WQaae7385a70e4c4ef8d74f1f93ebd5c33"
+              }
+            ]
+          }
+        ]
       };
 
       const expectedState = {
@@ -289,7 +305,23 @@ describe("profileEntryFormReducer", () => {
         profileName: {
           valid: true,
           value: "Game of Phones"
-        }
+        },
+        aggregateQueues: [
+          {
+            id: 0,
+            name: "PGS Gold",
+            ownerType: "profile",
+            workerSid: null,
+            queues: [
+              {
+                id: 106,
+                skillName: "pgsGoldSpanish",
+                taskQueueName: "PGS - Gold Spanish",
+                taskQueueSid: "WQaae7385a70e4c4ef8d74f1f93ebd5c33"
+              }
+            ]
+          }
+        ]
       };
       const action = {
         type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
