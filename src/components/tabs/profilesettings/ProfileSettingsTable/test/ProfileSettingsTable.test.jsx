@@ -146,7 +146,7 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByLabelText("Voice mail will be transcribed and sent within the notification email to the user")).toBeInTheDocument();
       expect(rendered.getByLabelText("Enable click-to-dial/transfer from external application")).toBeInTheDocument();
       expect(rendered.getByLabelText("Profile Activities")).toBeInTheDocument();
-      expect(rendered.getByLabelText("Transfer Queues")).toBeInTheDocument();
+      expect(rendered.getByLabelText("UI Feature: Additional transfer queues that will appear in the Triton queue ticker")).toBeInTheDocument();
     });
 
     test("should render row data", async () => {

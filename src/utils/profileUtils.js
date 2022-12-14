@@ -64,7 +64,7 @@ export const profileSettingsViews = [
 
 export const formatAggregateQueues = aggregateQueues => {
   return aggregateQueues.map(queue => {
-    if(queue.queues.length >1) {
+    if (queue.queues.length > 1) {
       return <BubbleDiv key={queue.name}>{queue.name} <AutoAwesomeMotion fontSize="1 rem"/></BubbleDiv>;
     } else {
       return <BubbleDiv key={`${queue.name}`}>{queue.name}</BubbleDiv>;

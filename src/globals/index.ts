@@ -92,7 +92,7 @@ export const profileTableColumnHeader = [
   },
   {
     COLUMN_NAME: "Transfer Queues",
-    TOOLTIP: "Transfer Queues"
+    TOOLTIP: "UI Feature: Additional transfer queues that will appear in the Triton queue ticker"
   },
   {
     COLUMN_NAME: "",
