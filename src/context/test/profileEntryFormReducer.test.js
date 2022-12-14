@@ -309,7 +309,7 @@ describe("profileEntryFormReducer", () => {
         transferQueues: [
           {
             ctmSkillId: 106,
-            ctmSkillDisplayName: "pgsGoldSpanish",
+            ctmSkillDisplayName: "PGS - Gold Spanish",
           }
         ]
       };
