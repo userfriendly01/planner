@@ -157,7 +157,8 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         profileName: {
           value: profile.profile_nme,
           valid: true
-        }
+        },
+        transferQueues: profile.aggregateQueues
       };
     }
     default:
