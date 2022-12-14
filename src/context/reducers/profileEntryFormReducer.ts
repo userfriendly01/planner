@@ -141,7 +141,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         }
       });
       
-      const activitiesList = JSON.parse(profile.activities).map((activity: { id: number; name: string; availability: number; }) => {
+      const activitiesList = profile.activities.map((activity: { id: number; name: string; availability: number; }) => {
         return {
           activity_id: activity.id,
           activity_nme: activity.name,
