@@ -4,9 +4,13 @@ import {
   fireEvent,
   initialTestState,
   render,
-  waitFor
+  waitFor,
+  within
 } from "testUtils";
 import { retrieveRoutingData } from "services";
+import {
+  CACHED_CALL_ROUTING_PER_PAGE, CACHED_CALL_ROUTING_PAGE_NO
+} from "utils";
 
 const createSampleTestRoutingDataList = numberOfData =>{
   const dataList = [];
@@ -36,10 +40,12 @@ const createSampleTestRoutingDataList = numberOfData =>{
   return dataList;
 };
 
-const validRoutingDataList = createSampleTestRoutingDataList(15);
+
 
 describe("<DataGridRouting />", ()=>{
-  beforeAll(()=>{
+  beforeEach(()=>{
+    jest.clearAllMocks();
+    retrieveRoutingData.mockResolvedValue([]);
     Object.defineProperty(window.document, "cookie", {
       writable: true,
       value: "PA.ciciccttritondev1=1234.5678.uytghh"
@@ -57,60 +63,69 @@ describe("<DataGridRouting />", ()=>{
         dispatchEvent: jest.fn()
       }))
     });
+    sessionStorage.removeItem(CACHED_CALL_ROUTING_PER_PAGE);
+    sessionStorage.removeItem(CACHED_CALL_ROUTING_PAGE_NO);
   });
-  beforeEach(()=>{
-    jest.clearAllMocks();
-    retrieveRoutingData.mockResolvedValue([]);
-  });
+
   describe("Data Table Footer", ()=>{
-    test("Simulate Change Rows Per Page", () => {
-      retrieveRoutingData.mockResolvedValue(validRoutingDataList);
-      const {
-        getByText, getByRole
-      } = render(<DataGridRouting/>, initialTestState);
-      waitFor(()=>{
-        expect(getByText("1-10 of 15")).toBeInTheDocument();
-        const rowsPerPageDropDown = getByRole("button", { name: "Rows per page: 10" });
-        fireEvent.click(rowsPerPageDropDown);
-        fireEvent.change(rowsPerPageDropDown, { target: { value: 5 }});
-        expect(getByRole("button",{ name: "Rows per page: 5" })).toBeInTheDocument();
-      });
-    });
-    test("Simulate Data Table Pagination",()=>{
+    test("Simulate Data Table Pagination", ()=>{
+      const validRoutingDataList = createSampleTestRoutingDataList(15);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       const { getByText } = render(<DataGridRouting/>, initialTestState);
       waitFor(()=>{
-        expect(getByText("1-10 of 15")).toBeInTheDocument();
+        expect(getByText(/1-10 of 15/i)).toBeInTheDocument();
+      });
+    });
+
+    test("Simulate Change Rows Per Page", ()=> {
+      const validRoutingDataList = createSampleTestRoutingDataList(15);
+      retrieveRoutingData.mockResolvedValue(validRoutingDataList);
+      const {
+        getByRole, queryByRole
+      } = render(<DataGridRouting/>, initialTestState);
+
+      const rowsPerPageDropDown = getByRole("button", { name: /Rows per page: 10/i });
+      fireEvent.mouseDown(rowsPerPageDropDown);
+      const listBox = within(getByRole("listbox"));
+      fireEvent.click(listBox.getByRole("option", {
+        name: "20",
+        hidden: true
+      }));
+      waitFor(()=>{
+        expect(queryByRole("listbox")).toEqual(null);
+        expect(getByRole("button",{ name: /Rows per page: 20/i })).toBeInTheDocument();
       });
     });
 
     test("Simulate Change Go to Next Page", ()=>{
+      const validRoutingDataList = createSampleTestRoutingDataList(15);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       const {
         getByText, getByRole
       } = render(<DataGridRouting/>, initialTestState);
       waitFor(()=>{
-        expect(getByText("1-10 of 15")).toBeInTheDocument();
-        const gotoNextPage = getByRole("button", { name: "Go to next page" });
+        const gotoNextPage = getByRole("button", { name: /Go to next page/i });
         fireEvent.click(gotoNextPage);
-        expect(getByText("11-15 of 15")).toBeInTheDocument();
+        expect(getByText(/11-15 of 15/i)).toBeInTheDocument();
       });
 
     });
 
-    test("Simulate Change Go to previous Page", ()=>{
+    test("Simulate Change Go to previous Page",  ()=>{
+      const validRoutingDataList = createSampleTestRoutingDataList(15);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       const {
         getByText, getByRole
-      } = render(<DataGridRouting/>, initialTestState);
+      } =render(<DataGridRouting/>, initialTestState);
       waitFor(()=>{
-        expect(getByText("1-10 of 15")).toBeInTheDocument();
-        const gotoNextPage = getByRole("button", { name: "Go to next page" });
+        const gotoNextPage = getByRole("button", { name: /Go to next page/i });
         fireEvent.click(gotoNextPage);
-        expect(getByText("11-15 of 15")).toBeInTheDocument();
-        const gotoPreviousPage = getByRole("button", { name: "Go to previous page" });
-        fireEvent.click(gotoPreviousPage);
-        expect(getByText("1-10 of 15")).toBeInTheDocument();
+        expect(getByText(/11-15 of 15/i)).toBeInTheDocument();
+      });
+      const gotoPreviousPage = getByRole("button", { name: /Go to previous page/i });
+      fireEvent.click(gotoPreviousPage);
+      waitFor(()=>{
+        expect(getByText(/1-10 of 15/i)).toBeInTheDocument();
       });
     });
   });

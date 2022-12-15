@@ -258,7 +258,8 @@ export const initialTestState = {
     pingIdentity: {
       sub: "n0263786",
       groups: [],
-      aud: "ciciccttritondev1"
+      aud: "ciciccttritondev1",
+      environment: "development"
     },
     authenticationProfiles: [
       {
