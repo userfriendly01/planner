@@ -141,6 +141,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     [index: string]: any,
     value: number
   }>) => {
+    console.log("rz newWorkerTaskInfoOptionsChanged() workerTaskInfoOptions=", workerTaskInfoOptions);
     const selectedWorkerTaskInfoOptions = workerTaskInfoOptions.map(selectedWorkerTaskInfo => callTags.find(callTag => selectedWorkerTaskInfo.value === callTag.options_id));
     setNewWorkerTaskInfoOptions(selectedWorkerTaskInfoOptions);
   };
