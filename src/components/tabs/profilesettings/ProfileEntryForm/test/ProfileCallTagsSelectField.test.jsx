@@ -46,7 +46,7 @@ const mockSetCallTagsList = jest.fn();
 const mockWorkerTaskInfo = jest.fn();
 const renderComponent = mockCallTagsList => render(<ProfileCallTagsSelectField
   callTagsList={mockCallTagsList}
-  workerTaskInfo={mockWorkerTaskInfo}
+  workerTaskInfoOptionsList={mockWorkerTaskInfoOptionsList}
   setCallTagsList={mockSetCallTagsList}
 />, initialTestState);
 

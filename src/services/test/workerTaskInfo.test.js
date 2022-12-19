@@ -1,4 +1,4 @@
-import { getWorkerTaskInfo, getProfileWorkerTaskInfo } from "../workerTaskInfo";
+import { getWorkerTaskInfo } from "../workerTaskInfo";
 import MockAdapter from "axios-mock-adapter";
 import { myAxios } from "utils";
 
@@ -16,7 +16,7 @@ describe("getProfileWorkerTaskInfo", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onGet(profileWorkerTaskInfoEndpoint).replyOnce(200, data));
     test("should resolve with any successful response", done => {
-      getProfileWorkerTaskInfo()
+      getWorkerTaskInfo()
         .then(resolvedValue => {
           expect(resolvedValue).toEqual(data);
           done();
@@ -27,7 +27,7 @@ describe("getProfileWorkerTaskInfo", () => {
     const badResponse = { wahh: "boo" };
     beforeEach(() => axiosMock.onGet(profileWorkerTaskInfoEndpoint).replyOnce(500, badResponse));
     test("should reject with error", done => {
-      getProfileWorkerTaskInfo().catch(rejectedVal => {
+      getWorkerTaskInfo().catch(rejectedVal => {
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();
       });
