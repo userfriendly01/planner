@@ -16,35 +16,35 @@ import {
 } from "@mui/icons-material";
 import {
   CallTag,
-  WorkerTaskInfo,
+  WorkerTaskInfoOptions,
   apiPaths
 } from "globals";
 import { Tooltip } from "@mui/material";
 import { myAxios } from "utils";
 
 console.log("rz before getCallTags");
-const getCallTags = () => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_PROFILE_WORKER_TASK_INFO)
+const getCallTagOptions = () => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_WORKER_TASK_INFO_OPTIONS)
+  .then(res => {
+    console.log("rz getCallTagOptions=", res.data);
+    resolve(res.data);
+  })
+  .catch(error => {
+    reject({
+      msg: "Failed to fetch getCallTagOptions from service",
+      error
+    });
+  })
+);
+
+console.log("rz before getCallTags");
+const getCallTags = () => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_WORKER_TASK_INFO)
   .then(res => {
     console.log("rz getCallTags=", res.data);
     resolve(res.data);
   })
   .catch(error => {
     reject({
-      msg: "Failed to fetch CallTags from service",
-      error
-    });
-  })
-);
-
-console.log("rz before getWorkerTaskInfo");
-const getWorkerTaskInfo = () => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_WORKER_TASK_INFO)
-  .then(res => {
-    console.log("rz getWorkerTaskInfo=", res.data);
-    resolve(res.data);
-  })
-  .catch(error => {
-    reject({
-      msg: "Failed to fetch workerTaskInfo from service",
+      msg: "Failed to fetch getCallTags from service",
       error
     });
   })
@@ -53,16 +53,16 @@ const getWorkerTaskInfo = () => new Promise((resolve, reject) => myAxios.get(api
 const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const {
     callTagsList,
-    workerTaskInfoList,
+    workerTaskInfoOptionsList,
     setCallTagsList
   } = props;
 
   const defaultNewCallTag: CallTag[] = [];
   const [newProfileCallTag, setNewProfileCallTag] = React.useState<CallTag[]>(defaultNewCallTag);
   const [callTags, setCallTags] = React.useState([]);
-  const defaultNewWorkerTaskInfo: WorkerTaskInfo[] = [];
-  const [newWorkerTaskInfo, setNewWorkerTaskInfo] = React.useState<WorkerTaskInfo[]>(defaultNewWorkerTaskInfo);
-  const [workerTaskInfo, setWorkerTaskInfo] = React.useState([]);
+  const defaultNewWorkerTaskInfoOptions: WorkerTaskInfoOptions[] = [];
+  const [newWorkerTaskInfoOptions, setNewWorkerTaskInfoOptions] = React.useState<WorkerTaskInfoOptions[]>(defaultNewWorkerTaskInfoOptions);
+  const [workerTaskInfoOptions, setWorkerTaskInfoOptions] = React.useState([]);
   
   React.useEffect(() => {
     if(!callTags.length) {
@@ -72,11 +72,10 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
         })
         .catch(error => console.error(error.msg));
     }
-    if(!workerTaskInfo.length) {
-      getWorkerTaskInfo()
-      .then((workerTaskInfo: WorkerTaskInfo[]) => {
-        setWorkerTaskInfo(workerTaskInfo);
-        console.log(" in useEffect=", workerTaskInfo);
+    if(!workerTaskInfoOptions.length) {
+      getCallTagOptions()
+      .then((workerTaskInfoOptions: WorkerTaskInfoOptions[]) => {
+        setWorkerTaskInfoOptions(workerTaskInfoOptions);
       })
       .catch(error => console.error(error.msg));
     }
@@ -84,24 +83,24 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
 
   const profileCallTagsForDropDown = callTags.filter(callTag => {
     console.log("rz callTagsList=", callTagsList);
-    console.log("rz workerTaskInfo=", workerTaskInfo);
-    console.log("rz workerTaskInfoList=", workerTaskInfoList);
+    console.log("rz workerTaskInfoOptions=", workerTaskInfoOptions);
+    console.log("rz workerTaskInfoList=", workerTaskInfoOptionsList);
     return !callTagsList.find(item => {
-        return item.options_id === callTag.options_id;
+        return item.wrkr_tsk_info_id === callTag.wrkr_tsk_info_id;
       });
   });
 
-  const workerTaskInfoForDropDown = workerTaskInfo.filter(workerTaskInfoOption => {
-    console.log("rz workerTaskInfoForDropDown workerTaskInfo=", workerTaskInfo);
-    console.log("rz workerTaskInfoForDropDown workerTaskInfoOption=", workerTaskInfoOption);
-    return !workerTaskInfo.find(item => {
-      console.log(`rz workerTaskInfoForDropDown item=${item}, workerTaskInfoOption=${workerTaskInfoOption}`);
-      console.log("rz workerTaskInfoForDropDown item.wrkr_tsk_info_id === workerTaskInfoOption.wrkr_tsk_info_id=", item.wrkr_tsk_info_id === workerTaskInfoOption.wrkr_tsk_info_id);
-      return item.wrkr_tsk_info_id === workerTaskInfoOption.wrkr_tsk_info_id;
+  const callTagOptions = workerTaskInfoOptions.filter(workerTaskInfoOption => {
+    console.log("rz callTagOptions workerTaskInfoOptions=", workerTaskInfoOptions);
+    console.log("rz callTagOptions workerTaskInfoOption=", workerTaskInfoOption);
+    return !workerTaskInfoOptionsList.find(item => {
+      console.log(`rz callTagOptions item=${item}, workerTaskInfoOption=${workerTaskInfoOption}`);
+      console.log("rz callTagOptions item.wrkr_tsk_info_id === workerTaskInfoOption.wrkr_tsk_info_id=", item.options_id === workerTaskInfoOption.options_id);
+      return item.options_id === workerTaskInfoOption.options_id;
     });
   });
 
-  console.log("rz workerTaskInfoForDropDown=", workerTaskInfoForDropDown);
+  console.log("rz callTagOptions=", callTagOptions);
 
   const newProfileCallTagChanged = (profileCallTag: Array<{
     [index: string]: any,
@@ -111,12 +110,12 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     setNewProfileCallTag(selectedCallTags);
   };
 
-  const newWorkerTaskInfoChanged = (workerTaskInfo: Array<{
+  const newWorkerTaskInfoOptionsChanged = (workerTaskInfoOptions: Array<{
     [index: string]: any,
     value: number
   }>) => {
-    const selectedWorkerTaskInfo = workerTaskInfo.map(selectedWorkerTaskInfo => callTags.find(callTag => selectedWorkerTaskInfo.value === callTag.options_id));
-    setNewWorkerTaskInfo(selectedWorkerTaskInfo);
+    const selectedWorkerTaskInfoOptions = workerTaskInfoOptions.map(selectedWorkerTaskInfo => callTags.find(callTag => selectedWorkerTaskInfo.value === callTag.options_id));
+    setNewWorkerTaskInfoOptions(selectedWorkerTaskInfoOptions);
   };
 
   const addProfileCallTagClicked = () => {
@@ -125,10 +124,10 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     setNewProfileCallTag(defaultNewCallTag);
   };
 
-  const addWorkerTaskInfoClicked = () => {
-    const updatedWorkerTaskInfo = [ ...workerTaskInfo, ...newWorkerTaskInfo ];
-    setCallTagsList(updatedWorkerTaskInfo);
-    setNewWorkerTaskInfo(defaultNewWorkerTaskInfo);
+  const addWorkerTaskInfoOptionsClicked = () => {
+    const updatedWorkerTaskInfoOptions = [ ...workerTaskInfoOptions, ...newWorkerTaskInfoOptions ];
+    setCallTagsList(updatedWorkerTaskInfoOptions);
+    setNewWorkerTaskInfoOptions(defaultNewWorkerTaskInfoOptions);
   };
 
   const removeProfileCallTagClicked = (callTagToBeRemoved: CallTag) => {
@@ -143,15 +142,15 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     }));
   };
 
-  const getworkerTaskInfoDropDownOptions = (optionsList: WorkerTaskInfo[]) => {
-    console.log("rz getworkerTaskInfoDropDownOptions optionsList=", optionsList);
+  const getCallTagOptionsDropDownOptions = (optionsList: WorkerTaskInfoOptions[]) => {
+    console.log("rz getCallTagOptionsDropDownOptions optionsList=", optionsList);
     return optionsList.map(option => ({
-      value: option.wrkr_tsk_info_id,
-      label: option.wrkr_tsk_info_nme
+      value: option.options_id,
+      label: option.options
     }));
   };
 
-  console.log("rz getworkerTaskInfoDropDownOptions(workerTaskInfoForDropDown)=", workerTaskInfoForDropDown);
+  console.log("rz getCallTagOptionsDropDownOptions(callTagOptions)=", callTagOptions);
 
   return (
     <ProfileCallTagsControlWrapper>
@@ -191,9 +190,9 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
                       styles={{
                         "max-width": "380px"
                       }}
-                      options={getworkerTaskInfoDropDownOptions(workerTaskInfoForDropDown)}
+                      options={getCallTagOptionsDropDownOptions(callTagOptions)}
                       multiple={false}
-                      updateValue={(event: any, newInputValue: Array<{ [index: string]: any; value: number; }>) => newWorkerTaskInfoChanged(newInputValue)}
+                      updateValue={(event: any, newInputValue: Array<{ [index: string]: any; value: number; }>) => newWorkerTaskInfoOptionsChanged(newInputValue)}
                     />                      
               </ProfileCallTagRowItem>
               <ProfileCallTagRowItem>

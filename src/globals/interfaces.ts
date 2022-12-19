@@ -162,9 +162,9 @@ export interface CallTag {
   row_updt_dtm: string,
 }
 
-export interface WorkerTaskInfo {
-  wrkr_tsk_info_id: number,
-  wrkr_tsk_info_nme: string
+export interface WorkerTaskInfoOptions {
+  options_id: number,
+  options: string
 }
 
 export interface Worker {
