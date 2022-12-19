@@ -19,7 +19,6 @@ import {
   WorkerTaskInfoOptions,
   apiPaths
 } from "globals";
-import { Tooltip } from "@mui/material";
 import {
   myAxios,
   formatCallTagsName
@@ -61,6 +60,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const defaultNewCallTag: CallTag[] = [];
   const [newProfileCallTag, setNewProfileCallTag] = React.useState<CallTag[]>(defaultNewCallTag);
   const [callTags, setCallTags] = React.useState([]);
+
   const defaultNewWorkerTaskInfoOptions: WorkerTaskInfoOptions[] = [];
   const [newWorkerTaskInfoOptions, setNewWorkerTaskInfoOptions] = React.useState<WorkerTaskInfoOptions[]>(defaultNewWorkerTaskInfoOptions);
   const [workerTaskInfoOptions, setWorkerTaskInfoOptions] = React.useState([]);
@@ -172,12 +172,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
           return (
             // @ts-ignore
             <ProfileCallTagRow highlightOnHover={true} key={`callTag-row-${index}`}>
-              <Tooltip
-                title={callTag.wrkr_tsk_info_nme}
-                placement={"bottom"}
-              >
-                <ProfileCallTagRowItem>{callTag.wrkr_tsk_info_nme}</ProfileCallTagRowItem>
-              </Tooltip>
+                <ProfileCallTagRowItem>{formatCallTagsName(callTag.wrkr_tsk_info_nme)}</ProfileCallTagRowItem>
               <ProfileCallTagRowItem>
                     <Dropdown
                       styles={{
