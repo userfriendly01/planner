@@ -123,7 +123,7 @@ const ProfileFormFields = () => {
           workerTaskInfoOptionsList={form.workerTaskInfoOptions}
           setCallTagsList={callTagsList => {
             setForm({
-              type: profileEntryFormActions.UPDATE_ACW_OPTIONS_LIST,
+              type: profileEntryFormActions.UPDATE_CALL_TAGS_LIST,
               payload: callTagsList
             });
           }}

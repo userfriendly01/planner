@@ -17,7 +17,7 @@ export const profileEntryFormActions = {
   SET_PROFILE_NAME: "SET_PROFILE_NAME",
   SET_OVERFLOW_SKILL: "SET_OVERFLOW_SKILL",
   UPDATE_ACTIVITIES_LIST: "UPDATE_ACTIVITIES_LIST",
-  UPDATE_ACW_OPTIONS_LIST: "UPDATE_ACW_OPTIONS_LIST",
+  UPDATE_CALL_TAGS_LIST: "UPDATE_CALL_TAGS_LIST",
   SET_UPDATE_PROFILE_FORM_STATE: "SET_UPDATE_PROFILE_FORM_STATE",
 };
 
@@ -35,10 +35,6 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
   outboundRecorded: {
     value: true
   },
-  callTag: {
-    value: false
-  },
-  workerTaskInfoOptions: [],
   acwOption: {
     value: false
   },
@@ -117,7 +113,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         activitiesUpdated: true
       };
     }
-    case profileEntryFormActions.UPDATE_ACW_OPTIONS_LIST: {
+    case profileEntryFormActions.UPDATE_CALL_TAGS_LIST: {
       return {
         ...state,
         callTagsList: action.payload,
