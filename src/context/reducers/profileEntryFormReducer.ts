@@ -25,6 +25,7 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
   profileId: null,
   activitiesList: [],
   callTagsList: [],
+  workerTaskInfoOptions: [],
   formMode: formModes.INSERT,
   autoAnswered: {
     value: true
