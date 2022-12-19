@@ -10,7 +10,7 @@ beforeEach(() => {
   axiosMock.reset();
 });
 
-describe("getProfileWorkerTaskInfo", () => {
+describe("getWorkerTaskInfo", () => {
   describe("call succeeds", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onGet(profileWorkerTaskInfoEndpoint).replyOnce(200, data));

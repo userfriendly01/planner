@@ -18,7 +18,8 @@ export const checkIfPO = (nNumber: string): boolean => {
     "n0183277",
     "n0196231",
     "n1589476",
-    "n1589476"
+    "n1589476",
+    "n0288363"
   ];
 
   return productOwners.includes(nNumber.toLowerCase());

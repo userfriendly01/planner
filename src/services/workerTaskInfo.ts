@@ -2,7 +2,7 @@ import { myAxios } from "utils";
 import { apiPaths } from "globals";
 
 export interface DbWorkerTaskInfoResponse {
-  profile_id: number;
+  profile_id: number;  
   wrkr_tsk_info_id: number;
   display_nme: string;
   options_id: number;

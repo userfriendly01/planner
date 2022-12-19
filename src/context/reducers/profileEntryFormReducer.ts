@@ -38,7 +38,7 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
   callTag: {
     value: false
   },
-  workerTaskInfo: [],
+  workerTaskInfoOptions: [],
   acwOption: {
     value: false
   },
@@ -83,7 +83,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         ...initialProfileEntryFormState
       };
     }
-    case profileEntryFormActions.TOGGLE: {
+    case profileEntryFormActions.TOGGLE: {  
       return {
         ...state,
         [action.fieldKey]: {

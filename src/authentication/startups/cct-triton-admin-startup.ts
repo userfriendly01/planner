@@ -89,10 +89,8 @@ const getCalabrioRoles = async (dispatch: any) => {
   }
 };
 
-console.log("rz before getProfiles");
 const getProfiles = (dispatch: any) => new Promise((resolve, reject) => myAxios.get(apiPaths.PROFILES)
   .then(res => {
-    console.log("rz getProfiles=", res.data);
     dispatch({
       type: "loadProfiles",
       payload: res.data
@@ -141,23 +139,12 @@ const getWorkers = async (dispatch: any) => {
   }
 };
 
-const callCalabrioService = async () => {
-  try {
-    const response = await myAxios.get("https://q3g1awzosi.execute-api.us-east-1.amazonaws.com/development/wfm/users");
-    console.log("***No Freakin way", response);
-    return;
-  } catch (error) {
-    console.error("***Failed to Call Calabrio Service", error);
-  }
-};
-
 export const runTritonAdminStartup = (dispatch: any) => {
   /* Please add new service calls to the end of this Promise.all,
   the existing order is important */
   return Promise.all([
     Promise.resolve(getStartupProfiles().TRITON.name),
     getWorkers(dispatch),
-    callCalabrioService(),
     getManagers(dispatch),
     getOffices(dispatch),
     getProfiles(dispatch),
