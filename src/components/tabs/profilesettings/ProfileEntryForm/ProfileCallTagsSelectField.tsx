@@ -20,7 +20,10 @@ import {
   apiPaths
 } from "globals";
 import { Tooltip } from "@mui/material";
-import { myAxios } from "utils";
+import {
+  myAxios,
+  formatCallTagsName
+} from "utils";
 
 const getCallTags = () => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_WORKER_TASK_INFO)
   .then(res => {
@@ -122,7 +125,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const getCallTagDropDownOptions = (optionsList: CallTag[]) => {
     return optionsList.map(option => ({
       value: option.wrkr_tsk_info_id,
-      label: option.wrkr_tsk_info_nme
+      label: formatCallTagsName(option.wrkr_tsk_info_nme)
     }));
   };
 
@@ -130,7 +133,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     console.log("rz getCallTagOptionsDropDownOptions optionsList=", optionsList);
     return optionsList.map(option => ({
       value: option.options_id,
-      label: option.options
+      label: option.options_id
     }));
   };
 

@@ -1,4 +1,5 @@
 import React from "react";
+import _ from "lodash";  
 import { Check } from "@mui/icons-material";
 import {
   BubbleDiv,
@@ -47,6 +48,10 @@ export const formatActivityData = activity => {
   }
   return <BubbleDiv>{activity}</BubbleDiv>;
 };
+
+export const formatCallTagsName = name => {
+  return _.startCase(name);
+}
 
 export const profileSettingsViews = [
   {

@@ -5,7 +5,8 @@ import {
   formatProfileBooleanDataTrueFalse,
   formatProfileACWDataEntry,
   formatOverflowSkillData,
-  formatActivityData
+  formatActivityData,
+  formatCallTagsName
 } from "../profileUtils";
 import {
   BubbleDiv,
@@ -99,6 +100,18 @@ describe("profileUtils", () => {
     });
     test("should return empty string for null activity", () => {
       expect(formatActivityData(null)).toBe("");
+    });
+  });
+
+  describe("formatCallTagsName", () => {
+    test("should return a formatted call tag with one underscore", () => {
+      expect(formatCallTagsName("claim_number")).toStrictEqual("Claim Number");
+    });
+    test("should return a formatted call tag with multiple underscores", () => {
+      expect(formatCallTagsName("aces_claim_number")).toStrictEqual("Aces Claim Number");
+    });
+    test("should return a formatted call tag with no underscores", () => {
+      expect(formatCallTagsName("notes")).toStrictEqual("Notes");
     });
   });
 });
