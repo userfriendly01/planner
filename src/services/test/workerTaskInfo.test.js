@@ -4,7 +4,6 @@ import { myAxios } from "utils";
 
 const axiosMock = new MockAdapter(myAxios);
 const profileWorkerTaskInfoEndpoint = "/contact-manager/profileworkertaskinfo";
-const workerTaskInfoEndpoint = "/contact-manager/workertaskinfo";
 
 beforeEach(() => {
   jest.clearAllMocks();

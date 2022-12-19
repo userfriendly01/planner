@@ -1,81 +1,81 @@
-// import ProfileCallTagsSelectField from "../ProfileCallTagsSelectField";
-// import {
-//   Add,
-//   Delete
-// } from "@mui/icons-material";
-// import MockAdapter from "axios-mock-adapter";
-// import { Dropdown } from "components";
-// import React from "react";
-// import { myAxios } from "utils";
-// import {
-//   expectMockedComponent,
-//   render,
-//   setupMockedComponents,
-//   fireEvent,
-//   getMockedComponentProps,
-//   initialTestState,
-//   mockCallTags,
-//   mockWorkerTaskInfoOptions
-// } from "testUtils";
-// import { apiPaths } from "globals";
-// import { Tooltip } from "@mui/material";
-// import { act } from "react-dom/test-utils";
+import ProfileCallTagsSelectField from "../ProfileCallTagsSelectField";
+import {
+  Add,
+  Delete
+} from "@mui/icons-material";
+import MockAdapter from "axios-mock-adapter";
+import { Dropdown } from "components";
+import React from "react";
+import { myAxios } from "utils";
+import {
+  expectMockedComponent,
+  render,
+  setupMockedComponents,
+  fireEvent,
+  getMockedComponentProps,
+  initialTestState,
+  mockCallTags,
+  mockWorkerTaskInfoOptions
+} from "testUtils";
+import { apiPaths } from "globals";
+import { Tooltip } from "@mui/material";
+import { act } from "react-dom/test-utils";
 
-// jest.mock("@mui/icons-material", () => ({
-//   __esModule: true,
-//   Add: jest.fn(),
-//   Delete: jest.fn()
-// }));
+jest.mock("@mui/icons-material", () => ({
+  __esModule: true,
+  Add: jest.fn(),
+  Delete: jest.fn()
+}));
 
-// jest.mock("@mui/material", () => ({
-//   __esModule: true,
-//   Tooltip: jest.fn()
-// }));
+jest.mock("@mui/material", () => ({
+  __esModule: true,
+  Tooltip: jest.fn()
+}));
 
-// jest.mock("components", () => ({
-//   __esModule: true,
-//   Dropdown: jest.fn(),
-//   StyledButton: jest.fn()
-// }));
+jest.mock("components", () => ({
+  __esModule: true,
+  Dropdown: jest.fn(),
+  StyledButton: jest.fn()
+}));
 
-// const statusCode = 500;
-// const axiosMock = new MockAdapter(myAxios);
-// const callTagsEndpoint = apiPaths.GET_PROFILE_WORKER_TASK_INFO;
-// const workerTaskInfoOptionsEndpoint = apiPaths.GET_WORKER_TASK_INFO_OPTIONS;
-// const mockSetCallTagsList = jest.fn();
-// const mockWorkerTaskInfoOptionsList = jest.fn();
-// const renderComponent = mockCallTagsList => render(<ProfileCallTagsSelectField
-//   callTagsList={mockCallTagsList}
-//   workerTaskInfoOptionsList={mockWorkerTaskInfoOptionsList}
-//   setCallTagsList={mockSetCallTagsList}
-// />, initialTestState);
+const statusCode = 500;
+const axiosMock = new MockAdapter(myAxios);
+const callTagsEndpoint = apiPaths.GET_PROFILE_WORKER_TASK_INFO;
+const workerTaskInfoOptionsEndpoint = apiPaths.GET_WORKER_TASK_INFO_OPTIONS;
+const mockSetCallTagsList = jest.fn();
+const mockWorkerTaskInfoOptionsList = jest.fn();
+const renderComponent = mockCallTagsList => render(<ProfileCallTagsSelectField
+  callTagsList={mockCallTagsList}
+  workerTaskInfoOptionsList={mockWorkerTaskInfoOptionsList}
+  setCallTagsList={mockSetCallTagsList}
+/>, initialTestState);
 
-// const getAddCallTagButton = rendered => rendered.getByTestId("add-profileCallTag-button");
-// const getDeleteCallTagButton = (rendered, instance) => rendered.getAllByTestId("delete-callTag-button")[instance];
+const getAddCallTagButton = rendered => rendered.getByTestId("add-profileCallTag-button");
+const getDeleteCallTagButton = (rendered, instance) => rendered.getAllByTestId("delete-callTag-button")[instance];
 
-// describe("<ProfileCallTagsSelectField />", () => {
+describe("<ProfileCallTagsSelectField />", () => {
 
-//   beforeEach(() => {
-//     setupMockedComponents({
-//       Add,
-//       Delete,
-//       Dropdown,
-//       Tooltip
-//     });
-//     mockSetCallTagsList.mockClear();
-//     mockWorkerTaskInfoOptionsList.mockClear();
-//     axiosMock.onGet(callTagsEndpoint).reply(200, mockCallTags);
-//     axiosMock.onGet(workerTaskInfoOptionsEndpoint).reply(200, mockWorkerTaskInfoOptionsList);
-//   });
+  beforeEach(() => {
+    setupMockedComponents({
+      Add,
+      Delete,
+      Dropdown,
+      Tooltip
+    });
+    mockSetCallTagsList.mockClear();
+    mockWorkerTaskInfoOptionsList.mockClear();
+    axiosMock.onGet(callTagsEndpoint).reply(200, mockCallTags);
+    axiosMock.onGet(workerTaskInfoOptionsEndpoint).reply(200, mockWorkerTaskInfoOptionsList);
+  });
 
-//   describe("initial state", () => {
-//     test("should render callTags select component with no callTags selected", async () => {
-//       const rendered = renderComponent([]);
-//       expectMockedComponent(rendered, { Dropdown });
-//       expectMockedComponent(rendered, { Add });
-//       expectMockedComponent(rendered, { Delete }, 0);
-//     });
-//   });
+  describe("initial state", () => {
+    test("should render callTags select component with no callTags selected", async () => {
+      const rendered = renderComponent([]);
+      expectMockedComponent(rendered, { Dropdown });
+      expectMockedComponent(rendered, { Add });
+      expectMockedComponent(rendered, { Delete }, 0);
+    });
+  });
 
 //   describe(callTagsEndpoint, () => {
 //     describe("callTags service call returned an error", () => {
@@ -200,4 +200,4 @@
 //       ]);
 //     });
 //   });
-// });
+});

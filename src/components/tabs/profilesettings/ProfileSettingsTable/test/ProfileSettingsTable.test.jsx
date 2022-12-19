@@ -10,7 +10,6 @@ import {
 import { profileEntryFormDispatch } from "context";
 import { ProfileEntryForm } from "components"
 import { getWorkerTaskInfo } from "services";
-import { RecentActorsOutlined } from "@mui/icons-material";
 
 jest.mock("context", () => ({
   __esModule: true,
