@@ -50,7 +50,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       auto_answd_i: form.autoAnswered.value,
       pmt_prcsg_i: form.paymentProcessing.value,
       otbnd_recorded_i: form.outboundRecorded.value,
-      callTag: form.callTag.value,
+      callTag: form.callTagsList,
       acw_option_i: form.acwOption.value,
       manual_recorded_i: form.manualRecorded.value,
       acw_data_entry_i: form.acwDataEntry.value,
@@ -114,7 +114,14 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     form.autoAnswered.updated ? payload.auto_answd_i = form.autoAnswered.value : null
     form.paymentProcessing.updated ? payload.pmt_prcsg_i = form.paymentProcessing.value : null
     form.outboundRecorded.updated ? payload.otbnd_recorded_i = form.outboundRecorded.value : null
-    form.callTagsUpdated ? payload.callTag = form.callTagsList.map(callTag => callTag.wrkr_tsk_info_id) : null
+    form.callTagsUpdated ? payload.callTag = form.callTagsListmap(callTag => {
+      return {
+        profileId: callTag.profile_id,
+        wrkr_tsk_info_id: callTag.wrkr_tsk_info_id,
+        display_nme: callTag.display_nme,
+        options_id: callTag.options_id
+      }
+    }) : null;
     form.acwOption.updated ? payload.acw_option_i = form.acwOption.value : null
     form.manualRecorded.updated ? payload.manual_recorded_i = form.manualRecorded.value : null
     form.acwDataEntry.updated ? payload.acw_data_entry_i = form.acwDataEntry.value : null

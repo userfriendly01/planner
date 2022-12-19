@@ -45,8 +45,8 @@ const jestConfig = {
     "<rootDir>/src/**/test/**/*.test.ts?(x)"
   ],
   testPathIgnorePatterns: [
-    "<rootDir>/src/__test__",
     "<rootDir>/node_modules/",
+    "<rootDir>/src/__test__",
     "<rootDir>/src/assets"
   ],
   transform: {

@@ -270,9 +270,6 @@ export const initialTestState = {
   activitiesContext: {
     activities: mockActivities
   },
-  callTagsContext: {
-    callTags: mockCallTags
-  },
   userContext: {
     pingIdentity: {
       sub: "n0263786",
