@@ -9,7 +9,6 @@ import {
 } from "testUtils";
 import { profileEntryFormDispatch } from "context";
 import { ProfileEntryForm } from "components"
-import { getWorkerTaskInfo } from "services";
 
 jest.mock("context", () => ({
   __esModule: true,
@@ -32,59 +31,89 @@ describe("<ProfileSettingsTable />", () => {
     });
     jest.clearAllMocks();
     profileEntryFormDispatch.mockReturnValue(mockSetForm);
-    getWorkerTaskInfo.mockResolvedValue([{
-      profile_id: 1,
-      wrkr_tsk_info_id: 3,
-      display_nme: "Call Type",
-      options_id: 1
-    }]);
   });
 
   const validNid = "n0138110"
   const profiles = [
     {
+      activities: [{
+        profile_id: 0,
+        activity_id: 1,
+        activity_nme: "Offline",
+        availability: 0
+      }],
+      acw_data_entry_i: {
+        data: [1],
+        type: "Buffer"
+      },
+      acw_option_i: {
+        data: [0],
+        type: "Buffer"
+      },
+      agent_assisted_pay_i: {
+        data: [1],
+        type: "Buffer"
+      },
+      aggregateQueues: [],
+      auto_answd_i: {
+        data: [0],
+        type: "Buffer"
+      },
+      callTags: [{
+        profile_id: 15,
+        display_nme: "Negotiation Type",
+        wrkr_tsk_info_id: 3,
+        wrkr_tsk_info_nme: "negotiation_type",
+        options_id: 1,
+        options: [
+          "Info Exchange",
+          "Bargaining",
+          "Closing",
+          "N/A",
+          "Offer"
+        ]
+      }],
+      click_to_dial_i: {
+        data: [1],
+        type: "Buffer"
+      },
+      manual_record_inbound_i: {
+        data: [1],
+        type: "Buffer"
+      },
+      manual_recorded_i: {
+        data: [1],
+        type: "Buffer"
+      },
+      otbnd_recorded_i: {
+        data: [1],
+        type: "Buffer"
+      },
+      overflow_skill: "Test Overflow Skill",
+      pmt_prcsg_i: {
+        data: [0],
+        type: "Buffer"
+      },
+      policy_number_edit_i: {
+        data: [0],
+        type: "Buffer"
+      },
       profile_id: 1,
       profile_nme: "Game of Phones",
       recorded_i: {
-        data: [0]
+        data: [0],
+        type: "Buffer"
       },
-      auto_answd_i: {
-        data: [0]
-      },
-      pmt_prcsg_i: {
-        data: [0]
-      },
-      otbnd_recorded_i: {
-        data: [1]
-      },
-      acw_option_i: {
-        data: [0]
-      },
-      click_to_dial_i: {
-        type: "Buffer",
-        data: [1]
-      },
-      manual_recorded_i: {
-        data: [1]
-      },
-      acw_data_entry_i: {
-        data: [1]
-      },
-      manual_record_inbound_i: {
-        data: [1]
-      },
-      agent_assisted_pay_i: {
-        data: [1]
-      },
-      overflow_skill: "Test Overflow Skill",
-      policy_number_edit_i: {
-        data: [0]
-      },
+      skills: [{
+        profile_id: 12,
+        skill_id: 21,
+        skill_num: "bscCbs",
+        skill_nme: "BSC - CBS"
+      }],
       voice_mail_transcription_i: {
-        data: [0]
-      },
-      activities: [{"id": 1, "name": "Offline", "availability": 0}],
-      callTags: [{"display_nme": "Call Type", "options_id": 1, "profile_id": 15, "row_crtn_dtm": "2019-10-24T12:58:48.000Z", "row_updt_dtm": "2019-10-24T12:58:48.000Z", "wrkr_tsk_info_id": 1}]
+        data: [0],
+        type: "Buffer"
+      }
     }
   ];
 

@@ -104,7 +104,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     [index: string]: any,
     value: number
   }>) => {
-    const selectedCallTags = profileCallTag.map(selectedCallTag => callTags.find(callTag => selectedCallTag.value === callTag.options_id));
+    const selectedCallTags = profileCallTag.map(selectedCallTag => callTags.find(callTag => selectedCallTag.value === callTag.wrkr_tsk_info_id));
     setNewProfileCallTag(selectedCallTags);
   };
 
