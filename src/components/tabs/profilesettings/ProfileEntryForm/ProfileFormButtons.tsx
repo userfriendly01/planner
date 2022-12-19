@@ -45,7 +45,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     const payload: ProfilePayload = {
       profile_id: form.profileId,
       profile_nme: form.profileName.value,
-      activity_id: form.activitiesList.map(activity => activity.activity_id),
+      activities: form.activitiesList.map(activity => activity.activity_id),
       recorded_i: form.inboundRecorded.value,
       auto_answd_i: form.autoAnswered.value,
       pmt_prcsg_i: form.paymentProcessing.value,
@@ -109,12 +109,12 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
 
     form.profileName.updated ? payload.profile_nme = form.profileName.value : null
     form.overflowSkill.updated ? payload.overflow_skill = form.overflowSkill.value || null : null
-    form.activitiesUpdated ? payload.activity_id = form.activitiesList.map(activity => activity.activity_id) : null
+    form.activitiesUpdated ? payload.activities = form.activitiesList.map(activity => activity.activity_id) : null
     form.inboundRecorded.updated ? payload.recorded_i = form.inboundRecorded.value : null
     form.autoAnswered.updated ? payload.auto_answd_i = form.autoAnswered.value : null
     form.paymentProcessing.updated ? payload.pmt_prcsg_i = form.paymentProcessing.value : null
     form.outboundRecorded.updated ? payload.otbnd_recorded_i = form.outboundRecorded.value : null
-    form.callTagsUpdated ? payload.callTag = form.callTagsListmap(callTag => {
+    form.callTagsUpdated ? payload.callTag = form.callTagsList.map(callTag => {
       return {
         profileId: callTag.profile_id,
         wrkr_tsk_info_id: callTag.wrkr_tsk_info_id,

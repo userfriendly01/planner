@@ -128,7 +128,7 @@ export interface TritonProfile {
 export interface ProfilePayload {
   profile_id: null | number,
   profile_nme: string,
-  activity_id: Array<number>,
+  activities: Array<number>,
   recorded_i: boolean,
   auto_answd_i: boolean,
   pmt_prcsg_i: boolean,
@@ -156,6 +156,9 @@ export interface Activity {
 
 export interface CallTag {
   wrkr_tsk_info_id: number,
+  profile_id: number,
+  display_nme: string,
+  options_id: number,
   wrkr_tsk_info_nme: string
 }
 
