@@ -22,21 +22,6 @@ import {
 import { Tooltip } from "@mui/material";
 import { myAxios } from "utils";
 
-console.log("rz before getCallTags");
-const getCallTagOptions = () => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_WORKER_TASK_INFO_OPTIONS)
-  .then(res => {
-    console.log("rz getCallTagOptions=", res.data);
-    resolve(res.data);
-  })
-  .catch(error => {
-    reject({
-      msg: "Failed to fetch getCallTagOptions from service",
-      error
-    });
-  })
-);
-
-console.log("rz before getCallTags");
 const getCallTags = () => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_WORKER_TASK_INFO)
   .then(res => {
     console.log("rz getCallTags=", res.data);
@@ -45,6 +30,19 @@ const getCallTags = () => new Promise((resolve, reject) => myAxios.get(apiPaths.
   .catch(error => {
     reject({
       msg: "Failed to fetch getCallTags from service",
+      error
+    });
+  })
+);
+
+const getCallTagOptions = () => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_WORKER_TASK_INFO_OPTIONS)
+  .then(res => {
+    console.log("rz getCallTagOptions=", res.data);
+    resolve(res.data);
+  })
+  .catch(error => {
+    reject({
+      msg: "Failed to fetch getCallTagOptions from service",
       error
     });
   })
@@ -125,14 +123,14 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   };
 
   const removeProfileCallTagClicked = (callTagToBeRemoved: CallTag) => {
-    const updatedCallTagsList = callTagsList.filter(callTag => callTag.options_id !== callTagToBeRemoved.options_id);
+    const updatedCallTagsList = callTagsList.filter(callTag => callTag.wrkr_tsk_info_id !== callTagToBeRemoved.wrkr_tsk_info_id);
     setCallTagsList(updatedCallTagsList);
   };
 
   const getDropDownOptions = (optionsList: CallTag[]) => {
     return optionsList.map(option => ({
-      value: option.options_id,
-      label: option.display_nme
+      value: option.wrkr_tsk_info_id,
+      label: option.wrkr_tsk_info_nme
     }));
   };
 
@@ -174,10 +172,10 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
             // @ts-ignore
             <ProfileCallTagRow highlightOnHover={true} key={`callTag-row-${index}`}>
               <Tooltip
-                title={callTag.display_nme}
+                title={callTag.wrkr_tsk_info_nme}
                 placement={"bottom"}
               >
-                <ProfileCallTagRowItem>{callTag.display_nme}</ProfileCallTagRowItem>
+                <ProfileCallTagRowItem>{callTag.wrkr_tsk_info_nme}</ProfileCallTagRowItem>
               </Tooltip>
               <ProfileCallTagRowItem>
                     <Dropdown
