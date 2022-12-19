@@ -229,9 +229,6 @@ describe("profileEntryFormReducer", () => {
         outboundRecorded: {
           value: false
         },
-        callTag: {
-          value: false
-        },
         manualRecorded: {
           value: false
         },

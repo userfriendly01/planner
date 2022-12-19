@@ -125,7 +125,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
       
       console.log("rz profile.worker_task_info=", profile.callTags);
 
-      const callTagsList = profile.callTags.map((callTag: { display_nme: string; options_id: number; profile_id: number; row_crtn_dtm: string; row_updt_dtm:string; wrkr_tsk_info_id:number}) => {
+      const callTagsList = profile.callTags.map((callTag: { display_nme: string; options_id: number; profile_id: number; wrkr_tsk_info_id:number}) => {
         console.log("rz callTag=", callTag);
         return {
           display_nme: callTag.display_nme,
