@@ -1,6 +1,7 @@
 import {
   ModalOverlayStatuses,
-  Activity
+  Activity,
+  Skill
 } from "globals";
 
 export interface ProfileEntryFormProps {
@@ -35,6 +36,11 @@ export interface ProfileActivitiesSelectFieldProps {
   setActivitiesList: (activitiesList: Activity[]) => void;
 }
 
+export interface ProfileQueuesSelectFieldProps {
+  transferQueues: Skill[]
+  setQueueList: (transferQueues: Skill[]) => void;
+}
+
 export interface ProfileEntryFormState {
   [index: string]: any;
   profileId: number | null,
@@ -53,7 +59,8 @@ export interface ProfileEntryFormState {
   paymentProcessing: FieldState,
   policyNumberEdit: FieldState,
   voiceMailTranscription: FieldState,
-  clickToDial: FieldState
+  clickToDial: FieldState,
+  transferQueues: Skill[],
 }
 
 export interface ToggleFormField {

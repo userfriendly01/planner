@@ -49,7 +49,8 @@ export const initialProfileEntryFormState = {
     value: "",
     updated: false,
     valid: false
-  }
+  },
+  transferQueues: []
 };
 
 export const validProfileEntryFormState = {
@@ -102,7 +103,8 @@ export const validProfileEntryFormState = {
     value: "Valid profile name",
     updated: true,
     valid: true
-  }
+  },
+  transferQueues: [{skill_id: 1, skill_nme: "PSU Claims - Level 1"},{skill_id: 2, skill_nme: "PSU Claims - Level 2"}]
 };
 
 export const invalidProfileEntryFormState = {
@@ -155,7 +157,8 @@ export const invalidProfileEntryFormState = {
     value: "",
     updated: true,
     valid: false
-  }
+  },
+  transferQueues: [{skill_id: 1, skill_nme: "PSU Claims - Level 1"},{skill_id: 2, skill_nme: "PSU Claims - Level 2"}]
 };
 
 export const initialProfileEditEntryFormState = {
@@ -207,5 +210,6 @@ export const initialProfileEditEntryFormState = {
     value: "Test Profile",
     updated: false,
     valid: true
-  }
+  },
+  transferQueues: [{skill_id: 1, skill_nme: "PSU Claims - Level 1"},{skill_id: 2, skill_nme: "PSU Claims - Level 2"}]
 };

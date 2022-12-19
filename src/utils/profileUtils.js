@@ -1,5 +1,8 @@
 import React from "react";
-import { Check } from "@mui/icons-material";
+import {
+  Check,
+  AutoAwesomeMotion
+} from "@mui/icons-material";
 import {
   BubbleDiv,
   HighlightRed
@@ -58,3 +61,13 @@ export const profileSettingsViews = [
     label: "Profile Settings"
   }
 ];
+
+export const formatAggregateQueues = aggregateQueues => {
+  return aggregateQueues.map(queue => {
+    if (queue.queues.length > 1) {
+      return <BubbleDiv key={queue.name}>{queue.name} <AutoAwesomeMotion fontSize="1 rem"/></BubbleDiv>;
+    } else {
+      return <BubbleDiv key={`${queue.name}`}>{queue.name}</BubbleDiv>;
+    }
+  });
+};

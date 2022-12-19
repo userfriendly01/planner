@@ -125,6 +125,56 @@ describe("profileEntryFormReducer", () => {
     });
   });
 
+  describe("UPDATE_TRANSFER_QUEUES", () => {
+    test("should set transferQueues to payload passed", () => {
+      const expectedState = {
+        ...initialProfileEntryFormState,
+        transferQueues: {
+          name: "466",
+          timeOfDays: [],
+          flashMessage: "Oh no! Something went wrong..",
+          closedMessage: null,
+          vhThreshold: 0,
+          vhCallerId: null,
+          vhCallTarget: null,
+          levels: [],
+          ctmSkillDisplayName: "NI Billing & Collections",
+          ctmSkillId: 7,
+          profiles: [
+              {
+                  profileId: 1,
+                  profileName: "NI Billing & Collections"
+              }
+          ]
+        },
+        queuesUpdated: true
+      };
+      const action = {
+        type: profileEntryFormActions.UPDATE_TRANSFER_QUEUES,
+        payload: {
+          name: "466",
+          timeOfDays: [],
+          flashMessage: "Oh no! Something went wrong..",
+          closedMessage: null,
+          vhThreshold: 0,
+          vhCallerId: null,
+          vhCallTarget: null,
+          levels: [],
+          ctmSkillDisplayName: "NI Billing & Collections",
+          ctmSkillId: 7,
+          profiles: [
+              {
+                  profileId: 1,
+                  profileName: "NI Billing & Collections"
+              }
+          ]
+        }
+      };
+      const result = profileEntryFormReducer(initialProfileEntryFormState, action);
+      expect(result).toStrictEqual(expectedState);
+    });
+  });
+
   describe("SET_UPDATE_PROFILE_FORM_STATE", () => {
     test("should set edit prepopulated fields to state", () => {
       const profile = {
@@ -179,7 +229,23 @@ describe("profileEntryFormReducer", () => {
           type: "Buffer",
           data: [1]
         },
-        activities: "[{\"id\": 1, \"name\": \"Offline\", \"availability\": 0}]"
+        activities: [{profile_id: 1, activity_nme: "Offline", availability: 0, activity_id: 1}],
+        aggregateQueues: [
+          {
+            id: 0,
+            name: "PGS Gold",
+            ownerType: "profile",
+            workerSid: null,
+            queues: [
+              {
+                id: 106,
+                skillName: "pgsGoldSpanish",
+                taskQueueName: "PGS - Gold Spanish",
+                taskQueueSid: "WQaae7385a70e4c4ef8d74f1f93ebd5c33"
+              }
+            ]
+          }
+        ]
       };
 
       const expectedState = {
@@ -239,7 +305,13 @@ describe("profileEntryFormReducer", () => {
         profileName: {
           valid: true,
           value: "Game of Phones"
-        }
+        },
+        transferQueues: [
+          {
+            ctmSkillId: 106,
+            ctmSkillDisplayName: "PGS - Gold Spanish",
+          }
+        ]
       };
       const action = {
         type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,

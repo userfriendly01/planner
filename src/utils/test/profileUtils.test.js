@@ -1,11 +1,15 @@
 import React from "react";
-import { Check } from "@mui/icons-material";
+import {
+  Check,
+  AutoAwesomeMotion
+} from "@mui/icons-material";
 import {
   formatProfileBooleanData,
   formatProfileBooleanDataTrueFalse,
   formatProfileACWDataEntry,
   formatOverflowSkillData,
-  formatActivityData
+  formatActivityData,
+  formatAggregateQueues
 } from "../profileUtils";
 import {
   BubbleDiv,
@@ -99,6 +103,59 @@ describe("profileUtils", () => {
     });
     test("should return empty string for null activity", () => {
       expect(formatActivityData(null)).toBe("");
+    });
+  });
+
+  describe("formatAggregateQueues", () => {
+    test("test should return single queue ", () => {
+      const aggrQueue = [
+        {
+          id: 0,
+          name: "PGS Gold",
+          ownerType: "profile",
+          workerSid: null,
+          queues: [
+            {
+              id: 106,
+              skillName: "pgsGoldSpanish",
+              taskQueueName: "PGS - Gold Spanish",
+              taskQueueSid: "WQaae7385a70e4c4ef8d74f1f93ebd5c33"
+            }
+          ]
+        }
+      ];
+      expect(formatAggregateQueues(aggrQueue)).toStrictEqual([<BubbleDiv key={"PGS Gold"}>{"PGS Gold"}</BubbleDiv>]);
+    });
+
+    test("test should return aggregated queue with icon", () => {
+      const aggrQueue = [
+        {
+          id: 0,
+          name: "PGS Gold",
+          ownerType: "profile",
+          workerSid: null,
+          queues: [
+            {
+              id: 106,
+              skillName: "pgsGoldSpanish",
+              taskQueueName: "PGS - Gold Spanish",
+              taskQueueSid: "WQaae7385a70e4c4ef8d74f1f93ebd5c33"
+            },
+            {
+              id: 107,
+              skillName: "pgsGold Service Testing",
+              taskQueueName: "PGS - Gold Spanish",
+              taskQueueSid: "WQaae7385a70e4c4ef8d74f1f93ebd5c33"
+            }
+          ]
+        }
+      ];
+      expect(formatAggregateQueues(aggrQueue)).toStrictEqual([<BubbleDiv key={"PGS Gold"}>{"PGS Gold"} <AutoAwesomeMotion fontSize="1 rem"/></BubbleDiv>]);
+    });
+
+    test("no queues, test should be empty array", () => {
+      const aggrQueue = [];
+      expect(formatAggregateQueues(aggrQueue)).toStrictEqual([]);
     });
   });
 });
