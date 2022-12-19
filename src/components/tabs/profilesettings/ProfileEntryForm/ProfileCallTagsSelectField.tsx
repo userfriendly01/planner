@@ -124,12 +124,6 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     setNewProfileCallTag(defaultNewCallTag);
   };
 
-  const addWorkerTaskInfoOptionsClicked = () => {
-    const updatedWorkerTaskInfoOptions = [ ...workerTaskInfoOptions, ...newWorkerTaskInfoOptions ];
-    setCallTagsList(updatedWorkerTaskInfoOptions);
-    setNewWorkerTaskInfoOptions(defaultNewWorkerTaskInfoOptions);
-  };
-
   const removeProfileCallTagClicked = (callTagToBeRemoved: CallTag) => {
     const updatedCallTagsList = callTagsList.filter(callTag => callTag.options_id !== callTagToBeRemoved.options_id);
     setCallTagsList(updatedCallTagsList);

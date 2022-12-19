@@ -28,7 +28,7 @@ import {
   profileEntryFormDispatch,
   profileEntryFormActions
 } from "context";
-import { getWorkerTaskInfo as getWorkerTaskInfoServiceCall, getProfileWorkerTaskInfo as getProfileWorkerTaskInfoServiceCall} from "services";
+import { getWorkerTaskInfo as getWorkerTaskInfoServiceCall} from "services";
 
 const getWorkerTaskInfo = async () => {
   try {
@@ -36,17 +36,6 @@ const getWorkerTaskInfo = async () => {
   } catch (error) {
     throw ({
       msg: "Failed to fetch worker task info from service",
-      error
-    });
-  }
-};
-
-const getProfileWorkerTaskInfo = async () => {
-  try {
-    return await getProfileWorkerTaskInfoServiceCall();
-  } catch (error) {
-    throw ({
-      msg: "Failed to fetch profile worker task info from service",
       error
     });
   }
@@ -79,11 +68,6 @@ const ProfileSettingsTable = props => {
           setWorkerTaskInfo(allWorkerTaskInfo);
         })
         .catch(error => console.error("ERROR:", error.msg));
-      getProfileWorkerTaskInfo()
-      .then((allWorkerTaskInfo) => {
-        setProfileWorkerTaskInfo(allWorkerTaskInfo);
-      })
-      .catch(error => console.error("ERROR:", error.msg));
     }
   }, []);
 
