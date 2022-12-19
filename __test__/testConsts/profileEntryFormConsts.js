@@ -3,6 +3,7 @@ import { formModes } from "globals";
 export const initialProfileEntryFormState = {
   profileId: null,
   activitiesList: [],
+  callTagsList: [],
   formMode: formModes.INSERT,
   autoAnswered: {
     value: true
@@ -12,9 +13,6 @@ export const initialProfileEntryFormState = {
   },
   outboundRecorded: {
     value: true
-  },
-  callTag: {
-    value: false
   },
   acwOption: {
     value: false
@@ -58,6 +56,7 @@ export const initialProfileEntryFormState = {
 export const validProfileEntryFormState = {
   profileId: 40,
   activitiesList: [5, 6],
+  callTagsList: [],
   formMode: formModes.INSERT,
   autoAnswered: {
     value: true
@@ -67,9 +66,6 @@ export const validProfileEntryFormState = {
   },
   outboundRecorded: {
     value: true
-  },
-  callTag: {
-    value: false
   },
   acwOption: {
     value: false
@@ -114,6 +110,7 @@ export const validProfileEntryFormState = {
 export const invalidProfileEntryFormState = {
   profileId: 40,
   activitiesList: [5, 6],
+  callTagsList: [],
   formMode: formModes.INSERT,
   autoAnswered: {
     value: true
@@ -123,9 +120,6 @@ export const invalidProfileEntryFormState = {
   },
   outboundRecorded: {
     value: true
-  },
-  callTag: {
-    value: false
   },
   acwOption: {
     value: false
@@ -170,6 +164,7 @@ export const invalidProfileEntryFormState = {
 export const initialProfileEditEntryFormState = {
   profileId: 1,
   activitiesList: [],
+  callTagsList: [],
   formMode: formModes.UPDATE,
   autoAnswered: {
     value: true
@@ -179,9 +174,6 @@ export const initialProfileEditEntryFormState = {
   },
   outboundRecorded: {
     value: true
-  },
-  callTag: {
-    value: false
   },
   acwOption: {
     value: false
