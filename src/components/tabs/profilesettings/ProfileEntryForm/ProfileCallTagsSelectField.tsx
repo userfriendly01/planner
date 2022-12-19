@@ -79,7 +79,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     }
   }, []);
 
-  const profileCallTagsForDropDown = callTags.filter(callTag => {
+  const callTagsForDropDown = callTags.filter(callTag => {
     console.log("rz callTagsList=", callTagsList);
     console.log("rz workerTaskInfoOptions=", workerTaskInfoOptions);
     console.log("rz workerTaskInfoList=", workerTaskInfoOptionsList);
@@ -100,7 +100,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
 
   console.log("rz callTagOptions=", callTagOptions);
 
-  const newProfileCallTagChanged = (profileCallTag: Array<{
+  const newCallTagChanged = (profileCallTag: Array<{
     [index: string]: any,
     value: number
   }>) => {
@@ -108,26 +108,18 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     setNewProfileCallTag(selectedCallTags);
   };
 
-  const newWorkerTaskInfoOptionsChanged = (workerTaskInfoOptions: Array<{
-    [index: string]: any,
-    value: number
-  }>) => {
-    const selectedWorkerTaskInfoOptions = workerTaskInfoOptions.map(selectedWorkerTaskInfo => callTags.find(callTag => selectedWorkerTaskInfo.value === callTag.options_id));
-    setNewWorkerTaskInfoOptions(selectedWorkerTaskInfoOptions);
-  };
-
-  const addProfileCallTagClicked = () => {
+  const addCallTagClicked = () => {
     const updatedCallTagsList = [ ...callTagsList, ...newProfileCallTag ];
     setCallTagsList(updatedCallTagsList);
     setNewProfileCallTag(defaultNewCallTag);
   };
 
-  const removeProfileCallTagClicked = (callTagToBeRemoved: CallTag) => {
+  const removeCallTagClicked = (callTagToBeRemoved: CallTag) => {
     const updatedCallTagsList = callTagsList.filter(callTag => callTag.wrkr_tsk_info_id !== callTagToBeRemoved.wrkr_tsk_info_id);
     setCallTagsList(updatedCallTagsList);
   };
 
-  const getDropDownOptions = (optionsList: CallTag[]) => {
+  const getCallTagDropDownOptions = (optionsList: CallTag[]) => {
     return optionsList.map(option => ({
       value: option.wrkr_tsk_info_id,
       label: option.wrkr_tsk_info_nme
@@ -142,7 +134,13 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     }));
   };
 
-  console.log("rz getCallTagOptionsDropDownOptions(callTagOptions)=", callTagOptions);
+  const newWorkerTaskInfoOptionsChanged = (workerTaskInfoOptions: Array<{
+    [index: string]: any,
+    value: number
+  }>) => {
+    const selectedWorkerTaskInfoOptions = workerTaskInfoOptions.map(selectedWorkerTaskInfo => callTags.find(callTag => selectedWorkerTaskInfo.value === callTag.options_id));
+    setNewWorkerTaskInfoOptions(selectedWorkerTaskInfoOptions);
+  };
 
   return (
     <ProfileCallTagsControlWrapper>
@@ -153,14 +151,14 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
             styles={{
               "max-width": "380px"
             }}
-            options={getDropDownOptions(profileCallTagsForDropDown)}
+            options={getCallTagDropDownOptions(callTagsForDropDown)}
             multiple={true}
-            value={getDropDownOptions(newProfileCallTag)}
-            updateValue={(event: any, newInputValue: Array<{ [index: string]: any; value: number; }>) => newProfileCallTagChanged(newInputValue)}
+            value={getCallTagDropDownOptions(newProfileCallTag)}
+            updateValue={(event: any, newInputValue: Array<{ [index: string]: any; value: number; }>) => newCallTagChanged(newInputValue)}
           />
         </ProfileCallTagRowItem>
         <ProfileCallTagRowItem>
-          <IconButtonWrapper disabled={!newProfileCallTag.length} onClick={addProfileCallTagClicked} data-testid="add-profileCallTag-button">
+          <IconButtonWrapper disabled={!newProfileCallTag.length} onClick={addCallTagClicked} data-testid="add-profileCallTag-button">
             <Add fontSize={"inherit"}/>
           </IconButtonWrapper>
         </ProfileCallTagRowItem>
@@ -188,7 +186,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
                     />                      
               </ProfileCallTagRowItem>
               <ProfileCallTagRowItem>
-                <IconButtonWrapper onClick={() => removeProfileCallTagClicked(callTag)} data-testid="delete-callTag-button">
+                <IconButtonWrapper onClick={() => removeCallTagClicked(callTag)} data-testid="delete-callTag-button">
                   <Delete fontSize="inherit"/>
                 </IconButtonWrapper>
               </ProfileCallTagRowItem>
