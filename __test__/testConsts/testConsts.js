@@ -248,8 +248,8 @@ export const mockCallTags = [
 
 export const mockWorkerTaskInfoOptions = [
   {
-    wrkr_tsk_info_id: 1, 
-    wrkr_tsk_info_nme: 'call_type'
+    options_id: 1, 
+    options: ["Info Exchange", "Bargaining", "Closing", "N/A", "Offer"]
   }
 ];
 

@@ -164,7 +164,7 @@ export interface CallTag {
 
 export interface WorkerTaskInfoOptions {
   options_id: number,
-  options: string
+  options: Array<string>
 }
 
 export interface Worker {
