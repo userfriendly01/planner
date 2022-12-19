@@ -191,17 +191,4 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.queryAllByTestId("edit-button")).toHaveLength(1);
     });
   });
-
-  describe("getWorkerTaskInfo", () => {
-    test("service call returns success", async () => {
-      const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={validNid} setProfileModalState={setProfileModalState}/>)
-      expect(rendered.container).toHaveTextContent("Options not configured but feature enabled");
-    });
-    test("service call returned an error", async () => {
-      getWorkerTaskInfo.mockRejectedValue({ who: "cares? but this is bad wahhhh" });
-
-      render(<ProfileSettingsTable profileList={profiles} loggedInRep={validNid} setProfileModalState={setProfileModalState}/>)
-      expect(console.error).toBeCalledTimes(1);
-    });
-  });
 });
