@@ -135,23 +135,20 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
           display_nme: callTag.display_nme,
           options_id: callTag.options_id,
           profile_id: callTag.profile_id,
-          row_crtn_dtm: callTag.row_crtn_dtm,
-          row_updt_dtm: callTag.row_updt_dtm,
           wrkr_tsk_info_id: callTag.wrkr_tsk_info_id
         }
       });
       
-      const activitiesList = profile.activities.map((activity: { id: number; name: string; availability: number; }) => {
+      const activitiesList = profile.activities.map((activity: { activity_id: number; activity_nme: string; availability: number; }) => {
         return {
-          activity_id: activity.id,
-          activity_nme: activity.name,
+          activity_id: activity.activity_id,
+          activity_nme: activity.activity_nme,
           available_i: {
             data: [activity.availability],
             type: "Buffer"
           }
-        }
+        };
       });
-
 
       return {
         ...state,

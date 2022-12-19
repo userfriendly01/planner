@@ -179,8 +179,26 @@ describe("profileEntryFormReducer", () => {
           type: "Buffer",
           data: [1]
         },
-        activities:[{"id": 1, "name": "Offline", "availability": 0}],
-        callTags: [{"display_nme": "Call Type", "options_id": 1, "profile_id": 15, "row_crtn_dtm": "2019-10-24T12:58:48.000Z", "row_updt_dtm": "2019-10-24T12:58:48.000Z", "wrkr_tsk_info_id": 1}]
+        activities: [{
+          profile_id: 0,
+          activity_id: 1,
+          activity_nme: "Offline",
+          availability: 0
+        }],
+        callTags: [{
+          profile_id: 15,
+          display_nme: "Negotiation Type",
+          wrkr_tsk_info_id: 3,
+          wrkr_tsk_info_nme: "negotiation_type",
+          options_id: 1,
+          options: [
+            "Info Exchange",
+            "Bargaining",
+            "Closing",
+            "N/A",
+            "Offer"
+          ]
+        }]
       }
 
       const expectedState = {
@@ -196,12 +214,10 @@ describe("profileEntryFormReducer", () => {
           }
         }],
         callTagsList: [{
-          display_nme: "Call Type", 
+          display_nme: "Negotiation Type", 
           options_id: 1,
           profile_id: 15,
-          row_crtn_dtm: "2019-10-24T12:58:48.000Z",
-          row_updt_dtm: "2019-10-24T12:58:48.000Z", 
-          wrkr_tsk_info_id: 1
+          wrkr_tsk_info_id: 3
         }],
         formMode: formModes.UPDATE,
         autoAnswered: {
