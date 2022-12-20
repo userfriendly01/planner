@@ -141,7 +141,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     console.log("rz newWorkerTaskInfoOptionsChanged() workerTaskInfoOptions=", inputWorkerTaskInfoOptions);
     console.log("rz newWorkerTaskInfoOptionsChanged() workerTaskInfoOptions is map?=", [inputWorkerTaskInfoOptions] instanceof Map);
     const selectedWorkerTaskInfoOptions = workerTaskInfoOptions.find(options => inputWorkerTaskInfoOptions.value === options.options_id);
-    setNewWorkerTaskInfoOptions(selectedWorkerTaskInfoOptions);
+    setNewWorkerTaskInfoOptions([selectedWorkerTaskInfoOptions]);
 
     const updatedCallTagsList = callTagsList.map(callTag => {
       if (callTag.wrkr_tsk_info_id === wrkr_tsk_info_id) {
