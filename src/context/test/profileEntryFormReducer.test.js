@@ -218,11 +218,13 @@ describe("profileEntryFormReducer", () => {
           wrkr_tsk_info_id: 3
         }],
         workerTaskInfoOptions: [{
-          options: ["Info Exchange",
+          options: [
+            "Info Exchange",
             "Bargaining",
             "Closing",
             "N/A",
-            "Offer"], 
+            "Offer"
+          ],
           options_id: 1
         }],
         formMode: formModes.UPDATE,

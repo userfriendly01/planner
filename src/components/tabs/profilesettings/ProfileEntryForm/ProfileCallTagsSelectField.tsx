@@ -150,13 +150,12 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     setNewWorkerTaskInfoOptions(selectedWorkerTaskInfoOptions);
 
     const updatedCallTagsList = callTagsList.map(callTag => {
-      if(callTag.wrkr_tsk_info_id !== wrkr_tsk_info_id){
-        callTag.options_id = inputWorkerTaskInfoOptions[0].value;
+      if (callTag.wrkr_tsk_info_id === wrkr_tsk_info_id) {
+        callTag.options_id = inputWorkerTaskInfoOptions.value;
         return callTag;
       }
       callTag.options_id = null
       return callTag
-
     });
     setCallTagsList(updatedCallTagsList);
   };
@@ -197,8 +196,8 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
                       value={getCallTagOptionsDropDownOptions(newWorkerTaskInfoOptions)}
                       options={getCallTagOptionsDropDownOptions(callTagOptions)}
                       multiple={false}
-                      updateValue={(event: any, newInputValue: Array<{ [index: string]: any; value: number; }>) => newWorkerTaskInfoOptionsChanged(newInputValue, callTag.wrkr_tsk_info_id)}
-                    />                      
+                      updateValue={(event: any, newInputValue: { value: number; }) => newWorkerTaskInfoOptionsChanged(newInputValue, callTag.wrkr_tsk_info_id)}
+                    />
               </ProfileCallTagRowItem>
               <ProfileCallTagRowItem>
                 <IconButtonWrapper onClick={() => removeCallTagClicked(callTag)} data-testid="delete-callTag-button">
