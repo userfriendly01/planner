@@ -145,7 +145,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   ) => {
     console.log("rz newWorkerTaskInfoOptionsChanged() workerTaskInfoOptions=", inputWorkerTaskInfoOptions);
     console.log("rz newWorkerTaskInfoOptionsChanged() workerTaskInfoOptions is map?=", inputWorkerTaskInfoOptions instanceof Map);
-    const selectedWorkerTaskInfoOptions = inputWorkerTaskInfoOptions.map(selectedWorkerTaskInfo => workerTaskInfoOptions.find(options => selectedWorkerTaskInfo.value === options.options_id));
+    const selectedWorkerTaskInfoOptions = [inputWorkerTaskInfoOptions].map(selectedWorkerTaskInfo => workerTaskInfoOptions.find(options => selectedWorkerTaskInfo.value === options.options_id));
     setNewWorkerTaskInfoOptions(selectedWorkerTaskInfoOptions);
 
     const updatedCallTagsList = callTagsList.map(callTag => {
@@ -155,7 +155,6 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
       }
       callTag.options_id = null
       return callTag
-
     });
     setCallTagsList(updatedCallTagsList);
   };
