@@ -214,9 +214,7 @@ describe("profileEntryFormReducer", () => {
           }
         }],
         callTagsList: [{
-          display_nme: "Negotiation Type", 
-          options_id: 1,
-          profile_id: 15,
+          wrkr_tsk_info_nme: "Negotiation Type", 
           wrkr_tsk_info_id: 3
         }],
         formMode: formModes.UPDATE,
