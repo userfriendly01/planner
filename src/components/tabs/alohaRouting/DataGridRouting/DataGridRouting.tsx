@@ -46,9 +46,10 @@ export const DataGridRouting = (): JSX.Element => {
 
   useEffect(() => {
     dispatch({ advanceFilter: getAdvanceFilter() });
-    loadDataTable().then(() => {
-      // nothing
-    });
+    const getTableData = async () =>{
+      await loadDataTable();
+    };
+    getTableData();
   }, []);
 
   const getAdvanceFilter = (): RoutingFilter => {
@@ -86,7 +87,7 @@ export const DataGridRouting = (): JSX.Element => {
       idStart = minId;
       idEnd = maxId;
     }
-    const result: CctSharedCallRoutingDb[] = data.filter(item => item.id >= idStart && item.id <= idEnd);
+    const result: CctSharedCallRoutingDb[] = data.filter((item: CctSharedCallRoutingDb) => item.id >= idStart && item.id <= idEnd);
     const advanceFilter: RoutingFilter = getAdvanceFilter();
     const advanceFilterLength: number = Object.keys(advanceFilter).length;
     if (advanceFilterLength > 0) {

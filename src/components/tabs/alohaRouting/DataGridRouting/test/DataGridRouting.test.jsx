@@ -5,12 +5,23 @@ import {
   initialTestState,
   render,
   waitFor,
-  within
+  within,
+  mockStore
 } from "testUtils";
 import { retrieveRoutingData } from "services";
 import {
-  CACHED_CALL_ROUTING_PER_PAGE, CACHED_CALL_ROUTING_PAGE_NO
+  CACHED_CALL_ROUTING_PER_PAGE, CACHED_CALL_ROUTING_PAGE_NO, CACHE_FILTER_ROUTING
 } from "utils";
+
+
+jest.mock("@mui/x-data-grid",()=>({
+  __esModule: true,
+  DataGrid: jest.fn(),
+  GridToolbar: jest.fn(),
+  GridRenderCellParams: jest.fn()
+}));
+
+jest.useFakeTimers();
 
 const createSampleTestRoutingDataList = numberOfData =>{
   const dataList = [];
@@ -40,15 +51,21 @@ const createSampleTestRoutingDataList = numberOfData =>{
   return dataList;
 };
 
+const filteredItems = {
+  channel: "TestChannel1"
+};
 
 
 describe("<DataGridRouting />", ()=>{
+  const initialCookie = window.document.cookie;
+  const matchMedia = window.matchMedia;
   beforeEach(()=>{
     jest.clearAllMocks();
-    retrieveRoutingData.mockResolvedValue([]);
+    retrieveRoutingData.mockReset();
+    mockStore.reset();
     Object.defineProperty(window.document, "cookie", {
       writable: true,
-      value: "PA.ciciccttritondev1=1234.5678.uytghh"
+      value: (initialCookie + ";" + "PA.ciciccttritondev1=1234.5678.uytghh")
     });
     Object.defineProperty(window, "matchMedia", {
       writable: true,
@@ -63,8 +80,27 @@ describe("<DataGridRouting />", ()=>{
         dispatchEvent: jest.fn()
       }))
     });
+    // Object.defineProperty(window, "localStorage", {
+    //   value: {
+    //     getItem: jest.fn(() => null),
+    //     setItem: jest.fn(() => null),
+    //     removeItem: jest.fn(() => null)
+    //   },
+    //   writable: true
+    // });
     sessionStorage.removeItem(CACHED_CALL_ROUTING_PER_PAGE);
     sessionStorage.removeItem(CACHED_CALL_ROUTING_PAGE_NO);
+  });
+
+  afterEach(()=>{
+    Object.defineProperty(window.document, "cookie", {
+      writable: true,
+      value: initialCookie
+    });
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      value: matchMedia
+    });
   });
 
   describe("Data Table Footer", ()=>{
@@ -72,8 +108,9 @@ describe("<DataGridRouting />", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       const { getByText } = render(<DataGridRouting/>, initialTestState);
+      jest.runAllTimers();
       waitFor(()=>{
-        expect(getByText(/1-10 of 15/i)).toBeInTheDocument();
+        expect(getByText(/1-10000 of 15/i)).toBeInTheDocument();
       });
     });
 
@@ -83,14 +120,16 @@ describe("<DataGridRouting />", ()=>{
       const {
         getByRole, queryByRole
       } = render(<DataGridRouting/>, initialTestState);
-
-      const rowsPerPageDropDown = getByRole("button", { name: /Rows per page: 10/i });
-      fireEvent.mouseDown(rowsPerPageDropDown);
-      const listBox = within(getByRole("listbox"));
-      fireEvent.click(listBox.getByRole("option", {
-        name: "20",
-        hidden: true
-      }));
+      jest.runAllTimers();
+      waitFor(()=>{
+        const rowsPerPageDropDown = getByRole("button", { name: /Rows per page: 10/i });
+        fireEvent.mouseDown(rowsPerPageDropDown);
+        const listBox = within(getByRole("listbox"));
+        fireEvent.click(listBox.getByRole("option", {
+          name: "20",
+          hidden: true
+        }));
+      });
       waitFor(()=>{
         expect(queryByRole("listbox")).toEqual(null);
         expect(getByRole("button",{ name: /Rows per page: 20/i })).toBeInTheDocument();
@@ -103,6 +142,7 @@ describe("<DataGridRouting />", ()=>{
       const {
         getByText, getByRole
       } = render(<DataGridRouting/>, initialTestState);
+      jest.runAllTimers();
       waitFor(()=>{
         const gotoNextPage = getByRole("button", { name: /Go to next page/i });
         fireEvent.click(gotoNextPage);
@@ -115,19 +155,32 @@ describe("<DataGridRouting />", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       const {
-        getByText, getByRole
+        getByRole, getByText
       } =render(<DataGridRouting/>, initialTestState);
+      jest.runAllTimers();
       waitFor(()=>{
         const gotoNextPage = getByRole("button", { name: /Go to next page/i });
         fireEvent.click(gotoNextPage);
         expect(getByText(/11-15 of 15/i)).toBeInTheDocument();
+        const gotoPreviousPage = getByRole("button", { name: /Go to previous page/i });
+        fireEvent.click(gotoPreviousPage);
       });
-      const gotoPreviousPage = getByRole("button", { name: /Go to previous page/i });
-      fireEvent.click(gotoPreviousPage);
       waitFor(()=>{
         expect(getByText(/1-10 of 15/i)).toBeInTheDocument();
       });
     });
   });
+  // describe("Check Filter",()=>{
+  //   test("Simulate Chanel in Existing Filtered Item", ()=>{
+  //     const validRoutingDataList = createSampleTestRoutingDataList(15);
+  //     retrieveRoutingData.mockResolvedValue(validRoutingDataList);
+  //     const {
+  //       getByText
+  //     } =render(<DataGridRouting/>, initialTestState);
+  //     waitFor(()=>{
+  //       expect(getByText(/1-1 of 1/i)).toBeInTheDocument();
+  //     });
+  //   });
+  // });
 
 });

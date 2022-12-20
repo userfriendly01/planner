@@ -76,7 +76,6 @@
     "@mui/x-date-pickers": "^5.0.8",
     "@progress/kendo-licensing": "^1.2.2",
     "@progress/kendo-react-excel-export": "^5.5.0",
-    "@types/jsdom": "^20.0.1",
     "css-loader": "^2.1.1",
     "dayjs": "^1.11.6",
     "express": "^4.16.4",
