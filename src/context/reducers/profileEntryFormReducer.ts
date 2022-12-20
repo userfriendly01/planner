@@ -127,7 +127,14 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
       const callTagsList = profile.callTags.map((callTag: { display_nme: string; wrkr_tsk_info_id: number}) => {
         return {
           wrkr_tsk_info_nme: callTag.display_nme,
-          wrkr_tsk_info_id: callTag.wrkr_tsk_info_id
+          wrkr_tsk_info_id: callTag.wrkr_tsk_info_id,
+        }
+      });
+
+      const workerTaskInfoOptions = profile.callTags.map((callTag: { options_id: number; options: Array<string>}) => {
+        return {
+          options_id: callTag.options_id,
+          options: callTag.options,
         }
       });
 
@@ -147,6 +154,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         profileId: profile.profile_id,
         formMode: action.payload.formMode,
         activitiesList,
+        workerTaskInfoOptions,
         callTagsList,
         autoAnswered: formatProfileBooleanDataTrueFalse(profile.auto_answd_i.data[0]),
         inboundRecorded: formatProfileBooleanDataTrueFalse(profile.recorded_i.data[0]),
