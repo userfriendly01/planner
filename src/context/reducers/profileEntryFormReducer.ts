@@ -123,19 +123,14 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
     }
     case profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE: {
       const profile = action.payload.profile;
-      
-      console.log("rz profile.worker_task_info=", profile.callTags);
 
-      const callTagsList = profile.callTags.map((callTag: { display_nme: string; options_id: number; profile_id: number; wrkr_tsk_info_id:number}) => {
-        console.log("rz callTag=", callTag);
+      const callTagsList = profile.callTags.map((callTag: { display_nme: string; wrkr_tsk_info_id: number}) => {
         return {
-          display_nme: callTag.display_nme,
-          options_id: callTag.options_id,
-          profile_id: callTag.profile_id,
+          wrkr_tsk_info_nme: callTag.display_nme,
           wrkr_tsk_info_id: callTag.wrkr_tsk_info_id
         }
       });
-      
+
       const activitiesList = profile.activities.map((activity: { activity_id: number; activity_nme: string; availability: number; }) => {
         return {
           activity_id: activity.activity_id,
