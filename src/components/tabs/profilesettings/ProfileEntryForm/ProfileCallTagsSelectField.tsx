@@ -137,13 +137,13 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     }));
   };
 
-  const newWorkerTaskInfoOptionsChanged = (workerTaskInfoOptions: Array<{
+  const newWorkerTaskInfoOptionsChanged = (inputWorkerTaskInfoOptions: Array<{
     [index: string]: any,
     value: number
   }>) => {
-    console.log("rz newWorkerTaskInfoOptionsChanged() workerTaskInfoOptions=", workerTaskInfoOptions);
-    console.log("rz newWorkerTaskInfoOptionsChanged() workerTaskInfoOptions is map?=", workerTaskInfoOptions instanceof Map);
-    const selectedWorkerTaskInfoOptions = workerTaskInfoOptions.map(selectedWorkerTaskInfo => callTags.find(callTag => selectedWorkerTaskInfo.value === callTag.options_id));
+    console.log("rz newWorkerTaskInfoOptionsChanged() workerTaskInfoOptions=", inputWorkerTaskInfoOptions);
+    console.log("rz newWorkerTaskInfoOptionsChanged() workerTaskInfoOptions is map?=", inputWorkerTaskInfoOptions instanceof Map);
+    const selectedWorkerTaskInfoOptions = inputWorkerTaskInfoOptions.map(selectedWorkerTaskInfo => workerTaskInfoOptions.find(options => selectedWorkerTaskInfo.value === options.options_id));
     setNewWorkerTaskInfoOptions(selectedWorkerTaskInfoOptions);
   };
 
