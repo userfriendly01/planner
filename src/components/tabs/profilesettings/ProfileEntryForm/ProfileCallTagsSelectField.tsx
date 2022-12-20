@@ -137,20 +137,15 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     }));
   };
 
-  const newWorkerTaskInfoOptionsChanged = (inputWorkerTaskInfoOptions: Array<{
-    [index: string]: any,
-    value: number
-  }>,
-  wrkr_tsk_info_id: number
-  ) => {
+  const newWorkerTaskInfoOptionsChanged = (inputWorkerTaskInfoOptions: { value: number; }, wrkr_tsk_info_id: number) => {
     console.log("rz newWorkerTaskInfoOptionsChanged() workerTaskInfoOptions=", inputWorkerTaskInfoOptions);
-    console.log("rz newWorkerTaskInfoOptionsChanged() workerTaskInfoOptions is map?=", inputWorkerTaskInfoOptions instanceof Map);
+    console.log("rz newWorkerTaskInfoOptionsChanged() workerTaskInfoOptions is map?=", [inputWorkerTaskInfoOptions] instanceof Map);
     const selectedWorkerTaskInfoOptions = [inputWorkerTaskInfoOptions].map(selectedWorkerTaskInfo => workerTaskInfoOptions.find(options => selectedWorkerTaskInfo.value === options.options_id));
     setNewWorkerTaskInfoOptions(selectedWorkerTaskInfoOptions);
 
     const updatedCallTagsList = callTagsList.map(callTag => {
       if(callTag.wrkr_tsk_info_id !== wrkr_tsk_info_id){
-        callTag.options_id = inputWorkerTaskInfoOptions[0].value;
+        callTag.options_id = inputWorkerTaskInfoOptions.value;
         return callTag;
       }
       callTag.options_id = null
@@ -195,8 +190,8 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
                       value={getCallTagOptionsDropDownOptions(newWorkerTaskInfoOptions)}
                       options={getCallTagOptionsDropDownOptions(callTagOptions)}
                       multiple={false}
-                      updateValue={(event: any, newInputValue: Array<{ [index: string]: any; value: number; }>) => newWorkerTaskInfoOptionsChanged(newInputValue, callTag.wrkr_tsk_info_id)}
-                    />                      
+                      updateValue={(event: any, newInputValue: { value: number; }) => newWorkerTaskInfoOptionsChanged(newInputValue, callTag.wrkr_tsk_info_id)}
+                    />
               </ProfileCallTagRowItem>
               <ProfileCallTagRowItem>
                 <IconButtonWrapper onClick={() => removeCallTagClicked(callTag)} data-testid="delete-callTag-button">
