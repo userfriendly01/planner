@@ -153,10 +153,10 @@ describe("profileUtils", () => {
           worker_sid: null,
           queues: [
             {
-              "skill_id": 1,
-              "skill_num": "psu-l1",
-              "skill_nme": "PSU Claims - Level 1",
-              "tsk_que_sid": "WQ9e7f40c067bb9006022f43266122a257"
+              skill_id: 1,
+              skill_num: "psu-l1",
+              skill_nme: "PSU Claims - Level 1",
+              tsk_que_sid: "WQ9e7f40c067bb9006022f43266122a257"
             }
           ]
         }

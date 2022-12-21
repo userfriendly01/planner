@@ -122,7 +122,6 @@ const ProfileSettingsTable = props => {
                             return <div key={`${activity.activity_nme}`}>{formatActivityData(activity.activity_nme)}</div>;
                           })
                         }
-                         
                       </TableDataFlex>
                     </CustomTableData>
                     <CustomTableData>

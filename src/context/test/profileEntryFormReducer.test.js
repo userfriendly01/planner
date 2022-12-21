@@ -251,21 +251,23 @@ describe("profileEntryFormReducer", () => {
         }],
         aggregateQueues: [
           {
-            id: 0,
-            name: "PGS Gold",
-            ownerType: "profile",
-            workerSid: null,
+            aggregate_queues_id: 0,
+            aggregate_queues_nme: "PGS Gold",
+            aggregate_queues_type: "single",
+            owner_type: "profile",
+            profile_id: 0,
             queues: [
               {
-                id: 106,
-                skillName: "pgsGoldSpanish",
-                taskQueueName: "PGS - Gold Spanish",
-                taskQueueSid: "WQaae7385a70e4c4ef8d74f1f93ebd5c33"
+                skill_id: 106,
+                skill_nme: "pgsGoldSpanish",
+                skill_num: "PGS - Gold Spanish",
+                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c33"
               }
-            ]
+            ],
+            workerSid: null
           }
         ]
-    };
+      };
 
       const expectedState = {
         ...initialProfileEntryFormState,

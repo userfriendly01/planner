@@ -158,10 +158,10 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         };
       });
 
-      const transferQueues = profile.aggregateQueues.map((queue: { queues: { id: number; taskQueueName: string; }[]; }) => {
+      const transferQueues = profile.aggregateQueues.map((queue: { queues: { skill_id: number; skill_nme: string; }[]; }) => {
         return {
-          ctmSkillId: queue.queues[0].id,
-          ctmSkillDisplayName: queue.queues[0].taskQueueName,
+          ctmSkillId: queue.queues[0].skill_id,
+          ctmSkillDisplayName: queue.queues[0].skill_nme
         };
       });
 
