@@ -34,9 +34,6 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const defaultNewCallTag: CallTag[] = [];
   const [newProfileCallTag, setNewProfileCallTag] = React.useState<CallTag[]>(defaultNewCallTag);
   const [callTags, setCallTags] = React.useState([]);
-
-  const defaultNewCallTagOptions: CallTagOptions[] = [];
-  // const [newCallTagOptions, setNewCallTagOptions] = React.useState<CallTagOptions[]>(defaultNewCallTagOptions);
   const [callTagOptions, setCallTagOptions] = React.useState([]);
 
   React.useEffect(() => {
@@ -63,9 +60,6 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   });
 
   const callTagOptionsForDropdown = callTagOptions.filter(callTagOption => {
-    console.log('callTagOptions', callTagOptions);
-    console.log('callTagOption', callTagOption);
-
     return !callTagOptionsList.find(item => {
       return item.options_id === callTagOption.options_id;
     });
@@ -95,7 +89,6 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   };
 
   const getCallTagOptionsDropDownOptions = (optionsList: CallTagOptions[]) => {
-    console.log('optionsList', optionsList);
     return optionsList.map(option => ({
       value: option.options_id,
       label: option.options_id
@@ -103,10 +96,6 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   };
 
   const newCallTagOptionsChanged = (inputCallTagOptions: { value: number; }, wrkr_tsk_info_id: number) => {
-    // const selectedCallTagOptions = callTagOptions.find(options => inputCallTagOptions.value === options.options_id);
-    // console.log('selectedCallTagOptions', selectedCallTagOptions);
-    // setNewCallTagOptions([selectedCallTagOptions]);
-
     const updatedCallTagsList = callTagsList.map(callTag => {
       if (callTag.wrkr_tsk_info_id === wrkr_tsk_info_id) {
         callTag.options_id = inputCallTagOptions.value;
