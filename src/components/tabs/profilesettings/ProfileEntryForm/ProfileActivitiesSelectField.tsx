@@ -59,10 +59,7 @@ const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectFieldProps) 
     });
   });
 
-  const newProfileActivityChanged = (profileActivity: Array<{
-    [index: string]: any,
-    value: number
-  }>) => {
+  const newProfileActivityChanged = (profileActivity: Array<{[index: string]: any, value: number}>) => {
     const selectedActivities = profileActivity.map(selectedActivity => activities.find(activity => selectedActivity.value === activity.activity_id));
     setNewProfileActivity(selectedActivities);
   };

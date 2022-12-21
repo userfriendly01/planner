@@ -71,10 +71,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     });
   });
 
-  const newCallTagChanged = (profileCallTag: Array<{
-    [index: string]: any,
-    value: number
-  }>) => {
+  const newCallTagChanged = (profileCallTag: Array<{[index: string]: any, value: number}>) => {
     const selectedCallTags = profileCallTag.map(selectedCallTag => callTags.find(callTag => selectedCallTag.value === callTag.wrkr_tsk_info_id));
     setNewProfileCallTag(selectedCallTags);
   };

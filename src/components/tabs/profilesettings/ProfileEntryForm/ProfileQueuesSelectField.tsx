@@ -35,10 +35,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
     });
   });
 
-  const newProfileQueueChanged = (profileQueue: Array<{
-    [index: string]: any,
-    value: number
-  }>) => {
+  const newProfileQueueChanged = (profileQueue: Array<{[index: string]: any, value: number}>) => {
     const selectedQueues = profileQueue.map(selectedQueue => filteredQueues.find(queue => selectedQueue.value === queue.ctmSkillId));
     setNewProfileQueue(selectedQueues);
   };
