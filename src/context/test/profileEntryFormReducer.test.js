@@ -217,7 +217,7 @@ describe("profileEntryFormReducer", () => {
           wrkr_tsk_info_nme: "Negotiation Type", 
           wrkr_tsk_info_id: 3
         }],
-        workerTaskInfoOptions: [{
+        callTagOptions: [{
           options: [
             "Info Exchange",
             "Bargaining",

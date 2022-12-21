@@ -246,7 +246,7 @@ export const mockCallTags = [
   }
 ];
 
-export const mockWorkerTaskInfoOptions = [
+export const mockCallTagOptions = [
   {
     options_id: 1, 
     options: ["Info Exchange", "Bargaining", "Closing", "N/A", "Offer"]

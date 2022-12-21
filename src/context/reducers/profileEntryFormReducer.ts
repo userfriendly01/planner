@@ -25,7 +25,7 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
   profileId: null,
   activitiesList: [],
   callTagsList: [],
-  workerTaskInfoOptions: [],
+  callTagOptions: [],
   formMode: formModes.INSERT,
   autoAnswered: {
     value: true
@@ -131,7 +131,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         }
       });
 
-      const workerTaskInfoOptions = profile.callTags.map((callTag: { options_id: number; options: Array<string>}) => {
+      const callTagOptions = profile.callTags.map((callTag: { options_id: number; options: Array<string>}) => {
         return {
           options_id: callTag.options_id,
           options: callTag.options,
@@ -154,7 +154,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         profileId: profile.profile_id,
         formMode: action.payload.formMode,
         activitiesList,
-        workerTaskInfoOptions,
+        callTagOptions,
         callTagsList,
         autoAnswered: formatProfileBooleanDataTrueFalse(profile.auto_answd_i.data[0]),
         inboundRecorded: formatProfileBooleanDataTrueFalse(profile.recorded_i.data[0]),

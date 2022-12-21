@@ -82,18 +82,7 @@ export const RightColumn = styled(FormControlsPane)`
   margin-top: -20px;
 `;
 
-// profile activities control
-
-export const ProfileActivitiesControlWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  font-size: 0.9em;
-  min-height: 350px;
-  z-index: 2;
-  margin-top: 20px;
-`;
-
-export const ProfileCallTagsControlWrapper = styled.div`
+export const ProfileControlWrapper = styled.div`
   display: flex;
   flex-direction: column;
   font-size: 0.9em;
@@ -118,7 +107,7 @@ export const IconButtonWrapper = styled.button`
   }
 `;
 
-export const ProfileActivityRow = styled.div`
+export const ProfileRow = styled.div`
   align-items: center;
   display: flex;
   &:hover { ${/* @ts-ignore */""}
@@ -126,15 +115,7 @@ export const ProfileActivityRow = styled.div`
   }
 `;
 
-export const ProfileCallTagRow = styled.div`
-  align-items: center;
-  display: flex;
-  &:hover { ${/* @ts-ignore */""}
-    background-color: ${props => props.highlightOnHover ? props.theme.tableRow.hoverColor : null}
-  }
-`;
-
-export const ProfileActivityRowItem = styled.div`
+export const ProfileRowItem = styled.div`
   &:nth-child(1) {
     display: flex;
     padding-right: 8px;
@@ -152,58 +133,12 @@ export const ProfileActivityRowItem = styled.div`
   }
 `;
 
-export const ProfileCallTagRowItem = styled.div`
-  &:nth-child(1) {
-    display: flex;
-    padding-right: 8px;
-    width: 60%;
-  }
-  &:nth-child(2) {
-    display: flex;
-    justify-content: center;
-    width: 20%;
-  }
-  &:nth-child(3) {
-    display: flex;
-    justify-content: flex-end;
-    width: 20%;
-  }
-`;
-
-export const ProfileActivityRowSeperator = styled.div`
+export const ProfileRowSeperator = styled.div`
   border-bottom: 1px solid ${props => props.theme.lineSeperatorColor};
   margin-top: 8px;
 `;
 
-export const ProfileCallTagRowSeperator = styled.div`
-  border-bottom: 1px solid ${props => props.theme.lineSeperatorColor};
-  margin-top: 8px;
-`;
-
-export const ProfileActivitiesWrapper = styled.div`
-  max-height: 50vh;
-  overflow-y: auto;
-  padding: 15px 10px;
-
-  &::-webkit-scrollbar {
-    background-color: #F5F5F5;
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-track {
-    border-radius: 6px;
-    background: rgba(0,0,0,0.1);
-    border: 1px solid #ccc;
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    border-radius: 6px;
-    background: #aaa;
-    border: 1px solid #aaa;
-  }
-`;
-
-export const ProfileCallTagsWrapper = styled.div`
+export const ProfileWrapper = styled.div`
   max-height: 50vh;
   overflow-y: auto;
   padding: 15px 10px;

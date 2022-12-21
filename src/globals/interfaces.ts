@@ -162,7 +162,7 @@ export interface CallTag {
   wrkr_tsk_info_nme: string
 }
 
-export interface WorkerTaskInfoOptions {
+export interface CallTagOptions {
   options_id: number,
   options: string
 }

@@ -40,8 +40,8 @@ jest.mock("components", () => ({
 
 const statusCode = 500;
 const axiosMock = new MockAdapter(myAxios);
-const callTagsEndpoint = apiPaths.GET_WORKER_TASK_INFO;
-const workerTaskInfoOptionsEndpoint = apiPaths.GET_WORKER_TASK_INFO_OPTIONS;
+const callTagsEndpoint = apiPaths.GET_CALL_TAGS;
+const workerTaskInfoOptionsEndpoint = apiPaths.GET_CALL_TAGS_OPTIONS;
 const mockSetCallTagsList = jest.fn();
 const mockWorkerTaskInfoOptionsList = jest.fn();
 const renderComponent = mockCallTagsList => render(<ProfileCallTagsSelectField

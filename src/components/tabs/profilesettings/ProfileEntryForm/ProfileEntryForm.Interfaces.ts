@@ -2,7 +2,7 @@ import {
   ModalOverlayStatuses,
   Activity,
   CallTag,
-  WorkerTaskInfoOptions
+  CallTagOptions
 } from "globals";
 
 export interface ProfileEntryFormProps {
@@ -39,7 +39,7 @@ export interface ProfileActivitiesSelectFieldProps {
 
 export interface ProfileCallTagsSelectFieldProps {
   callTagsList: CallTag[]
-  workerTaskInfoOptionsList: WorkerTaskInfoOptions[]
+  callTagOptionsList: CallTagOptions[]
   setCallTagsList: (callTagsList: CallTag[]) => void;
 }
 
@@ -51,7 +51,7 @@ export interface ProfileEntryFormState {
   overflowSkill: FieldState,
   activitiesList: Activity[],
   callTagsList: CallTag[],
-  workerTaskInfoOptions: WorkerTaskInfoOptions[],
+  callTagOptions: CallTagOptions[],
   autoAnswered: FieldState,
   inboundRecorded: FieldState,
   outboundRecorded: FieldState,
