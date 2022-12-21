@@ -54,7 +54,7 @@ describe("profileUtils", () => {
           options_id: null
         },
         {
-          display_nme: "Call Type'",
+          display_nme: "Call Type",
           wrkr_tsk_info_id: 1,
           profile_id: 15,
           options_id: null
