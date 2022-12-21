@@ -249,17 +249,15 @@ export const mockActivities = [
 
 export const mockCallTags = [
   {
-    display_nme: "Call Type",
-    options_id: 1,
-    profile_id: 15,
-    wrkr_tsk_info_id: 1
+    wrkr_tsk_info_id: 1,
+    wrkr_tsk_info_nme: "claim_number"
   }
 ];
 
 export const mockCallTagOptions = [
   {
-    options_id: 1, 
-    options: ["Info Exchange", "Bargaining", "Closing", "N/A", "Offer"]
+    options_id: 1,
+    options: "[\"Info Exchange\", \"Bargaining\", \"Closing\", \"N/A\", \"Offer\"]"
   }
 ];
 
