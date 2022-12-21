@@ -15,7 +15,7 @@ import {
   getMockedComponentProps,
   initialTestState,
   mockCallTags,
-  mockWorkerTaskInfoOptions
+  mockCallTagOptions
 } from "testUtils";
 import { apiPaths } from "globals";
 import { Tooltip } from "@mui/material";
@@ -41,12 +41,12 @@ jest.mock("components", () => ({
 const statusCode = 500;
 const axiosMock = new MockAdapter(myAxios);
 const callTagsEndpoint = apiPaths.GET_CALL_TAGS;
-const workerTaskInfoOptionsEndpoint = apiPaths.GET_CALL_TAGS_OPTIONS;
+const callTagOptionsEndpoint = apiPaths.GET_CALL_TAGS_OPTIONS;
 const mockSetCallTagsList = jest.fn();
-const mockWorkerTaskInfoOptionsList = jest.fn();
+const mockCallTagOptionsList = jest.fn();
 const renderComponent = mockCallTagsList => render(<ProfileCallTagsSelectField
   callTagsList={mockCallTagsList}
-  workerTaskInfoOptionsList={mockWorkerTaskInfoOptionsList}
+  callTagOptionsList={mockCallTagOptionsList}
   setCallTagsList={mockSetCallTagsList}
 />, initialTestState);
 
@@ -63,9 +63,9 @@ describe("<ProfileCallTagsSelectField />", () => {
       Tooltip
     });
     mockSetCallTagsList.mockClear();
-    mockWorkerTaskInfoOptionsList.mockClear();
+    mockCallTagOptionsList.mockClear();
     axiosMock.onGet(callTagsEndpoint).reply(200, mockCallTags);
-    axiosMock.onGet(workerTaskInfoOptionsEndpoint).reply(200, mockWorkerTaskInfoOptionsList);
+    axiosMock.onGet(callTagOptionsEndpoint).reply(200, mockCallTagOptionsList);
   });
 
   describe("initial state", () => {
@@ -102,15 +102,15 @@ describe("<ProfileCallTagsSelectField />", () => {
 //         row_updt_dtm: "2019-10-24T12:58:48.000Z",
 //         wrkr_tsk_info_id: 1
 //       }];
-//       const mockNewWorkerTaskInfo = [    {
+//       const mockNewCallTag = [    {
 //         wrkr_tsk_info_id: 2, 
 //         wrkr_tsk_info_nme: 'claim_number'
 //       }];
 //       React.useState = jest.fn()
 //         .mockReturnValueOnce([mockNewCallTag, jest.fn()])
 //         .mockReturnValueOnce([mockCallTags, jest.fn()])
-//         .mockReturnValueOnce([mockNewWorkerTaskInfo, jest.fn()])
-//         .mockReturnValueOnce([mockWorkerTaskInfoOptions, jest.fn()]);
+//         .mockReturnValueOnce([mockNewCallTag, jest.fn()])
+//         .mockReturnValueOnce([mockCallTagOptions, jest.fn()]);
 //     });
 
 //     test("should render callTags drop down with correct options", () => {
@@ -161,15 +161,15 @@ describe("<ProfileCallTagsSelectField />", () => {
 //         row_updt_dtm: "2019-10-24T12:58:48.000Z",
 //         wrkr_tsk_info_id: 1
 //       }];
-//       const mockNewWorkerTaskInfo = [    {
+//       const mockNewCallTag = [    {
 //         wrkr_tsk_info_id: 2, 
 //         wrkr_tsk_info_nme: 'claim_number'
 //       }];
 //       React.useState = jest.fn()
 //         .mockReturnValueOnce([mockNewCallTag, jest.fn()])
 //         .mockReturnValueOnce([mockCallTags, jest.fn()])
-//         .mockReturnValueOnce([mockNewWorkerTaskInfo, jest.fn()])
-//         .mockReturnValueOnce([mockWorkerTaskInfoOptions, jest.fn()]);
+//         .mockReturnValueOnce([mockNewCallTag, jest.fn()])
+//         .mockReturnValueOnce([mockCallTagOptions, jest.fn()]);
 //     });
 
 //     test("should display once for each callTag; when clicked, callTag should be removed", () => {
