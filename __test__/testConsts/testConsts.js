@@ -250,7 +250,35 @@ export const mockActivities = [
 export const mockCallTags = [
   {
     wrkr_tsk_info_id: 1,
+    wrkr_tsk_info_nme: "call_type"
+  },
+  {
+    wrkr_tsk_info_id: 2,
     wrkr_tsk_info_nme: "claim_number"
+  },
+  {
+    wrkr_tsk_info_id: 3,
+    wrkr_tsk_info_nme: "negotiation_type"
+  },
+  {
+    wrkr_tsk_info_id: 4,
+    wrkr_tsk_info_nme: "claimant_name"
+  },
+  {
+    wrkr_tsk_info_id: 5,
+    wrkr_tsk_info_nme: "event_number"
+  },
+  {
+    wrkr_tsk_info_id: 6,
+    wrkr_tsk_info_nme: "aces_claim_number"
+  },
+  {
+    wrkr_tsk_info_id: 7,
+    wrkr_tsk_info_nme: "claim_id"
+  },
+  {
+    wrkr_tsk_info_id: 8,
+    wrkr_tsk_info_nme: "notes"
   }
 ];
 
@@ -258,6 +286,10 @@ export const mockCallTagOptions = [
   {
     options_id: 1,
     options: "[\"Info Exchange\", \"Bargaining\", \"Closing\", \"N/A\", \"Offer\"]"
+  },
+  {
+    options_id: 2,
+    options: "[\"Recorded Interview\", \"Injured Worker\", \"Provider\", \"Customer\", \"Other\"]"
   }
 ];
 
