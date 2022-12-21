@@ -141,10 +141,10 @@ describe("profileEntryFormReducer", () => {
           ctmSkillDisplayName: "NI Billing & Collections",
           ctmSkillId: 7,
           profiles: [
-              {
-                  profileId: 1,
-                  profileName: "NI Billing & Collections"
-              }
+            {
+              profileId: 1,
+              profileName: "NI Billing & Collections"
+            }
           ]
         },
         queuesUpdated: true
@@ -163,10 +163,10 @@ describe("profileEntryFormReducer", () => {
           ctmSkillDisplayName: "NI Billing & Collections",
           ctmSkillId: 7,
           profiles: [
-              {
-                  profileId: 1,
-                  profileName: "NI Billing & Collections"
-              }
+            {
+              profileId: 1,
+              profileName: "NI Billing & Collections"
+            }
           ]
         }
       };
@@ -282,7 +282,7 @@ describe("profileEntryFormReducer", () => {
           }
         }],
         callTagsList: [{
-          wrkr_tsk_info_nme: "Negotiation Type", 
+          wrkr_tsk_info_nme: "Negotiation Type",
           wrkr_tsk_info_id: 3
         }],
         callTagOptions: [{
@@ -344,7 +344,7 @@ describe("profileEntryFormReducer", () => {
         transferQueues: [
           {
             ctmSkillId: 106,
-            ctmSkillDisplayName: "PGS - Gold Spanish",
+            ctmSkillDisplayName: "PGS - Gold Spanish"
           }
         ]
       };

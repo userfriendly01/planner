@@ -22,7 +22,7 @@ import { formatCallTagsName } from "utils";
 import {
   getCallTags,
   getCallTagOptions
-} from "services"
+} from "services";
 
 const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const {
@@ -43,7 +43,6 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     if(!callTags.length) {
       getCallTags()
         .then((allCallTags: CallTag[]) => {
-          console.log('allCallTags', allCallTags)
           setCallTags(allCallTags);
         })
         .catch(error => console.error(error.msg));
@@ -51,7 +50,6 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     if(!callTagOptions.length) {
       getCallTagOptions()
         .then((allCallTagOptions: CallTagOptions[]) => {
-          console.log('allCallTagOptions', allCallTagOptions)
           setCallTagOptions(allCallTagOptions);
         })
         .catch(error => console.error(error.msg));
@@ -60,8 +58,8 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
 
   const callTagsForDropDown = callTags.filter(callTag => {
     return !callTagsList.find(item => {
-        return item.wrkr_tsk_info_id === callTag.wrkr_tsk_info_id;
-      });
+      return item.wrkr_tsk_info_id === callTag.wrkr_tsk_info_id;
+    });
   });
 
   const callTagOptionsForDropdown = callTagOptions.filter(callTagOption => {
@@ -112,8 +110,8 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
         callTag.options_id = inputCallTagOptions.value;
         return callTag;
       }
-      callTag.options_id = null
-      return callTag
+      callTag.options_id = null;
+      return callTag;
     });
     setCallTagsList(updatedCallTagsList);
   };
@@ -147,15 +145,15 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
             <ProfileDropdownRow highlightOnHover={true} key={`callTag-row-${index}`}>
               <ProfileDropdownRowItem>{formatCallTagsName(callTag.wrkr_tsk_info_nme)}</ProfileDropdownRowItem>
               <ProfileDropdownRowItem>
-                    <Dropdown
-                      styles={{
-                        "max-width": "380px"
-                      }}
-                      value={getCallTagOptionsDropDownOptions(newCallTagOptions)}
-                      options={getCallTagOptionsDropDownOptions(callTagOptionsForDropdown)}
-                      multiple={false}
-                      updateValue={(event: any, newInputValue: { value: number; }) => newCallTagOptionsChanged(newInputValue, callTag.wrkr_tsk_info_id)}
-                    />
+                <Dropdown
+                  styles={{
+                    "max-width": "380px"
+                  }}
+                  value={getCallTagOptionsDropDownOptions(newCallTagOptions)}
+                  options={getCallTagOptionsDropDownOptions(callTagOptionsForDropdown)}
+                  multiple={false}
+                  updateValue={(event: any, newInputValue: { value: number; }) => newCallTagOptionsChanged(newInputValue, callTag.wrkr_tsk_info_id)}
+                />
               </ProfileDropdownRowItem>
               <ProfileDropdownRowItem>
                 <IconButtonWrapper onClick={() => removeCallTagClicked(callTag)} data-testid="delete-callTag-button">

@@ -48,24 +48,24 @@ describe("profileUtils", () => {
     test("should return multiple BubbleDivs with display names inside", () => {
       const options = [
         {
-          display_nme: 'Claim Number',
+          display_nme: "Claim Number",
           wrkr_tsk_info_id: 2,
           profile_id: 15,
           options_id: null
         },
         {
-          display_nme: 'Call Type',
+          display_nme: "Call Type'",
           wrkr_tsk_info_id: 1,
           profile_id: 15,
           options_id: null
         },
         {
-          display_nme: 'Negotiation Type',
+          display_nme: "Negotiation Type",
           wrkr_tsk_info_id: 3,
           profile_id: 15,
           options_id: 1
         }
-      ]
+      ];
       expect(formatProfileACWDataEntry(1, options)).toStrictEqual(
         [
           <BubbleDiv key={2}>{"Claim Number"}</BubbleDiv>,
@@ -80,7 +80,7 @@ describe("profileUtils", () => {
     });
     test("should return a highlighted red error when feature is disabled and options are not empty", () => {
       const options = [{
-        display_nme: 'Claim Number',
+        display_nme: "Claim Number",
         wrkr_tsk_info_id: 2,
         profile_id: 15,
         options_id: null

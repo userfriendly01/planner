@@ -136,15 +136,15 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
       const callTagsList = profile.callTags.map((callTag: { display_nme: string; wrkr_tsk_info_id: number}) => {
         return {
           wrkr_tsk_info_nme: callTag.display_nme,
-          wrkr_tsk_info_id: callTag.wrkr_tsk_info_id,
-        }
+          wrkr_tsk_info_id: callTag.wrkr_tsk_info_id
+        };
       });
 
       const callTagOptions = profile.callTags.map((callTag: { options_id: number; options: Array<string>}) => {
         return {
           options_id: callTag.options_id,
-          options: callTag.options,
-        }
+          options: callTag.options
+        };
       });
 
       const activitiesList = profile.activities.map((activity: { activity_id: number; activity_nme: string; availability: number; }) => {

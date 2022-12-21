@@ -27,7 +27,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
   const defaultNewQueue: Skill[] = [];
   const [newProfileQueue, setNewProfileQueue] = React.useState<Skill[]>(defaultNewQueue);
   const queues = useAdminState().skillContext.skills;
-  const filteredQueues = queues.filter(queue => queue.ctmSkillId !== null).sort(sortQueueByName)
+  const filteredQueues = queues.filter(queue => queue.ctmSkillId !== null).sort(sortQueueByName);
 
   const profileQueuesForDropDown = filteredQueues.filter(queue => {
     return !transferQueues.find(item => {

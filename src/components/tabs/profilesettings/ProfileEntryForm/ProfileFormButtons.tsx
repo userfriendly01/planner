@@ -56,7 +56,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
           wrkr_tsk_info_id: callTag.wrkr_tsk_info_id,
           display_nme: formatCallTagsName(callTag.wrkr_tsk_info_nme),
           options_id: callTag.options_id
-        }
+        };
       }),
       acw_option_i: form.acwOption.value,
       manual_recorded_i: form.manualRecorded.value,
@@ -71,7 +71,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
         return {
           skill_id: queue.ctmSkillId,
           skill_nme: queue.ctmSkillDisplayName
-        }
+        };
       })
     };
 
@@ -127,7 +127,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       return {
         skill_id: queue.ctmSkillId,
         skill_nme: queue.ctmSkillDisplayName
-      }
+      };
     }) : null;
     form.inboundRecorded.updated ? payload.recorded_i = form.inboundRecorded.value : null;
     form.autoAnswered.updated ? payload.auto_answd_i = form.autoAnswered.value : null;
@@ -146,7 +146,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
         wrkr_tsk_info_id: callTag.wrkr_tsk_info_id,
         display_nme: callTag.display_nme,
         options_id: callTag.options_id
-      }
+      };
     }) : null;
 
     editProfile(payload).then(() => {
