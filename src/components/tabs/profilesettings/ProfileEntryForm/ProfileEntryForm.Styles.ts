@@ -82,7 +82,9 @@ export const RightColumn = styled(FormControlsPane)`
   margin-top: -20px;
 `;
 
-export const ProfileControlWrapper = styled.div`
+// profile activities control
+
+export const ProfileDropdownControlWrapper = styled.div`
   display: flex;
   flex-direction: column;
   font-size: 0.9em;
@@ -107,7 +109,7 @@ export const IconButtonWrapper = styled.button`
   }
 `;
 
-export const ProfileRow = styled.div`
+export const ProfileDropdownRow = styled.div`
   align-items: center;
   display: flex;
   &:hover { ${/* @ts-ignore */""}
@@ -115,7 +117,7 @@ export const ProfileRow = styled.div`
   }
 `;
 
-export const ProfileRowItem = styled.div`
+export const ProfileDropdownRowItem = styled.div`
   &:nth-child(1) {
     display: flex;
     padding-right: 8px;
@@ -133,12 +135,12 @@ export const ProfileRowItem = styled.div`
   }
 `;
 
-export const ProfileRowSeperator = styled.div`
+export const ProfileDropdownRowSeperator = styled.div`
   border-bottom: 1px solid ${props => props.theme.lineSeperatorColor};
   margin-top: 8px;
 `;
 
-export const ProfileWrapper = styled.div`
+export const ProfileDropdownWrapper = styled.div`
   max-height: 50vh;
   overflow-y: auto;
   padding: 15px 10px;

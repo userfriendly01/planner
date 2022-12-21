@@ -42,6 +42,11 @@ export const sortSkillByName = (a: any, b: any) => {
   return sortStrings(aName, bName);
 };
 
+export const sortQueueByName = (a: any, b: any) => {
+  const [aName, bName] = [a.ctmSkillDisplayName, b.ctmSkillDisplayName];
+  return sortStrings(aName, bName);
+};
+
 export const sortWorkersByFullName = (a: Worker, b: Worker) => {
   const [aName, bName] = [a.attributes.full_name || sortLast, b.attributes.full_name || sortLast];
   return sortStrings(aName, bName);

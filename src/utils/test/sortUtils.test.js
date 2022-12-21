@@ -3,6 +3,7 @@ import {
   sortDirectoryListEntriesByName,
   sortManagersByName,
   sortSkillByName,
+  sortQueueByName,
   sortProfilesById,
   sortProfilesByName
 } from "../sortUtils";
@@ -176,6 +177,25 @@ describe("sortSkillsByName", () => {
       { name: "bee" },
       { name: "cee" },
       { name: "dee" }
+    ]);
+  });
+});
+
+describe("sortQueueByName", () => {
+  const arr = [
+    { ctmSkillDisplayName: "bee" },
+    { ctmSkillDisplayName: "dee" },
+    { ctmSkillDisplayName: "cee" },
+    { ctmSkillDisplayName: "ay" },
+    { ctmSkillDisplayName: "ay" }
+  ];
+  test("should return array in alphabetical order", () => {
+    expect(arr.sort(sortQueueByName)).toEqual([
+      { ctmSkillDisplayName: "ay" },
+      { ctmSkillDisplayName: "ay" },
+      { ctmSkillDisplayName: "bee" },
+      { ctmSkillDisplayName: "cee" },
+      { ctmSkillDisplayName: "dee" }
     ]);
   });
 });

@@ -92,6 +92,8 @@ export interface Office {
 
 export interface Skill {
   [key: string]: any
+  ctmSkillId: number,
+  ctmSkillDisplayName: string,
   name: string,
   profiles: any[],
   closedMessage: string,
@@ -121,7 +123,7 @@ export interface TritonProfile {
   row_crtn_dtm: string,
   row_updt_dtm: string,
   overflow_skill: string,
-  activities: string,
+  activities: Array<object>,
   callTags: string
 }
 
@@ -142,7 +144,8 @@ export interface ProfilePayload {
   overflow_skill: string | null,
   policy_number_edit_i: boolean,
   voice_mail_transcription_i: boolean,
-  click_to_dial_i: boolean
+  click_to_dial_i: boolean,
+  transferQueues: Array<object>
 }
 
 export interface Activity {

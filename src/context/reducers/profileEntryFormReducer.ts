@@ -16,6 +16,7 @@ export const profileEntryFormActions = {
   SET_PROFILE_ID: "SET_PROFILE_ID",
   SET_PROFILE_NAME: "SET_PROFILE_NAME",
   SET_OVERFLOW_SKILL: "SET_OVERFLOW_SKILL",
+  UPDATE_TRANSFER_QUEUES: "UPDATE_TRANSFER_QUEUES",
   UPDATE_ACTIVITIES_LIST: "UPDATE_ACTIVITIES_LIST",
   UPDATE_CALL_TAGS_LIST: "UPDATE_CALL_TAGS_LIST",
   SET_UPDATE_PROFILE_FORM_STATE: "SET_UPDATE_PROFILE_FORM_STATE",
@@ -70,7 +71,8 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
   profileName: {
     value: "",
     valid: false
-  }
+  },
+  transferQueues: []
 };
 
 export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Action): ProfileEntryFormState => {
@@ -121,6 +123,13 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         callTagsUpdated: true
       };
     }
+    case profileEntryFormActions.UPDATE_TRANSFER_QUEUES: {
+      return {
+        ...state,
+        transferQueues: action.payload,
+        queuesUpdated: true
+      };
+    }
     case profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE: {
       const profile = action.payload.profile;
 
@@ -146,6 +155,13 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
             data: [activity.availability],
             type: "Buffer"
           }
+        };
+      });
+
+      const transferQueues = profile.aggregateQueues.map((queue: { queues: { id: number; taskQueueName: string; }[]; }) => {
+        return {
+          ctmSkillId: queue.queues[0].id,
+          ctmSkillDisplayName: queue.queues[0].taskQueueName,
         };
       });
 
@@ -175,7 +191,8 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         profileName: {
           value: profile.profile_nme,
           valid: true
-        }
+        },
+        transferQueues
       };
     }
     default:

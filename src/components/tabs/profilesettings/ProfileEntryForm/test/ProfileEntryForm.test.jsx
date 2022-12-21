@@ -50,7 +50,6 @@ describe("<ProfileEntryForm />", () => {
     });
   });
 
-
   const renderComponent = () => {
     return render(
       <ProfileEntryForm
@@ -103,5 +102,4 @@ describe("<ProfileEntryForm />", () => {
       expect(rendered.container).not.toHaveTextContent("ModalOverlay");
     });
   });
-
 });

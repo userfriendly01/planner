@@ -1,12 +1,16 @@
 import React from "react";
-import { Check } from "@mui/icons-material";
+import {
+  Check,
+  AutoAwesomeMotion
+} from "@mui/icons-material";
 import {
   formatProfileBooleanData,
   formatProfileBooleanDataTrueFalse,
   formatProfileACWDataEntry,
   formatOverflowSkillData,
   formatActivityData,
-  formatCallTagsName
+  formatCallTagsName,
+  formatAggregateQueues
 } from "../profileUtils";
 import {
   BubbleDiv,
@@ -112,6 +116,57 @@ describe("profileUtils", () => {
     });
     test("should return a formatted call tag with no underscores", () => {
       expect(formatCallTagsName("notes")).toStrictEqual("Notes");
+    });
+  });
+
+  describe("formatAggregateQueues", () => {
+    test("test should return single queue ", () => {
+      const aggrQueue = [
+        {
+          profile_id: 0,
+          aggregate_queues_id: 1,
+          aggregate_queues_nme: "PSU Claims - Level 1",
+          aggregate_queues_type: "single",
+          owner_type: "profile",
+          worker_sid: null,
+          queues: [
+            {
+              skill_id: 1,
+              skill_num: "psu-l1",
+              skill_nme: "PSU Claims - Level 1",
+              tsk_que_sid: "WQ9e7f40c067bb9006022f43266122a257"
+            }
+          ]
+        }
+      ];
+      expect(formatAggregateQueues(aggrQueue)).toStrictEqual([<BubbleDiv key={"PSU Claims - Level 1"}>{"PSU Claims - Level 1"}</BubbleDiv>]);
+    });
+
+    test("test should return aggregated queue with icon", () => {
+      const aggrQueue = [
+        {
+          profile_id: 0,
+          aggregate_queues_id: 1,
+          aggregate_queues_nme: "PSU Claims - Level 1",
+          aggregate_queues_type: "aggregate",
+          owner_type: "profile",
+          worker_sid: null,
+          queues: [
+            {
+              "skill_id": 1,
+              "skill_num": "psu-l1",
+              "skill_nme": "PSU Claims - Level 1",
+              "tsk_que_sid": "WQ9e7f40c067bb9006022f43266122a257"
+            }
+          ]
+        }
+      ];
+      expect(formatAggregateQueues(aggrQueue)).toStrictEqual([<BubbleDiv key={"PSU Claims - Level 1"}>{"PSU Claims - Level 1"} <AutoAwesomeMotion fontSize="1 rem"/></BubbleDiv>]);
+    });
+
+    test("no queues, test should be empty array", () => {
+      const aggrQueue = [];
+      expect(formatAggregateQueues(aggrQueue)).toStrictEqual([]);
     });
   });
 });

@@ -59,12 +59,12 @@ describe("<ProfileNameTextField />", () => {
       const profileName = "New Profile";
       customInputProps.updateValue(profileName);
       const setFormArgs = {
-        "payload": {
-          "updated": true,
-          "valid": true,
-          "value": profileName
+        payload: {
+          updated: true,
+          valid: true,
+          value: profileName
         },
-        "type": "SET_PROFILE_NAME"
+        type: "SET_PROFILE_NAME"
       };
       expect(mockSetForm).toHaveBeenCalledTimes(1);
       expect(mockSetForm).toHaveBeenCalledWith(setFormArgs);
@@ -76,12 +76,12 @@ describe("<ProfileNameTextField />", () => {
       const customInputProps = getMockedComponentProps(CustomInput);
       const profileNameInvalid = "";
       const setFormArgsInvalid = {
-        "payload": {
-          "updated": true,
-          "valid": false,
-          "value": profileNameInvalid
+        payload: {
+          updated: true,
+          valid: false,
+          value: profileNameInvalid
         },
-        "type": "SET_PROFILE_NAME"
+        type: "SET_PROFILE_NAME"
       };
       customInputProps.updateValue(profileNameInvalid);
       expect(mockSetForm).toHaveBeenCalledTimes(1);

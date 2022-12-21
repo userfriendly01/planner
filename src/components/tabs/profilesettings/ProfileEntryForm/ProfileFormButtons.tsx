@@ -59,13 +59,19 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       overflow_skill: form.overflowSkill.value || null,
       policy_number_edit_i: form.policyNumberEdit.value,
       voice_mail_transcription_i: form.voiceMailTranscription.value,
-      click_to_dial_i: form.clickToDial.value
+      click_to_dial_i: form.clickToDial.value,
+      transferQueues: form.transferQueues.map(queue => {
+        return {
+          skill_id: queue.ctmSkillId,
+          skill_nme: queue.ctmSkillDisplayName
+        }
+      })
     };
 
     createProfile(payload).then(response => {
       updateLoading({
         ...loading,
-        overlayMessage: `Successfully added new profile with ID ${response.data?.profile_id}`,
+        overlayMessage: `Successfully added new profile with ID ${response.data?.profile[0].insertId}`,
         saveStatus: ModalOverlayStatuses.SUCCESS,
         saveProfile: true
       });
@@ -107,13 +113,27 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       profile_id: form.profileId
     };
 
-    form.profileName.updated ? payload.profile_nme = form.profileName.value : null
-    form.overflowSkill.updated ? payload.overflow_skill = form.overflowSkill.value || null : null
-    form.activitiesUpdated ? payload.activities = form.activitiesList.map(activity => activity.activity_id) : null
-    form.inboundRecorded.updated ? payload.recorded_i = form.inboundRecorded.value : null
-    form.autoAnswered.updated ? payload.auto_answd_i = form.autoAnswered.value : null
-    form.paymentProcessing.updated ? payload.pmt_prcsg_i = form.paymentProcessing.value : null
-    form.outboundRecorded.updated ? payload.otbnd_recorded_i = form.outboundRecorded.value : null
+    form.profileName.updated ? payload.profile_nme = form.profileName.value : null;
+    form.overflowSkill.updated ? payload.overflow_skill = form.overflowSkill.value || null : null;
+    form.activitiesUpdated ? payload.activity_id = form.activitiesList.map(activity => activity.activity_id) : null;
+    form.queuesUpdated ? payload.transferQueues = form.transferQueues.map(queue => {
+      return {
+        skill_id: queue.ctmSkillId,
+        skill_nme: queue.ctmSkillDisplayName
+      }
+    }) : null;
+    form.inboundRecorded.updated ? payload.recorded_i = form.inboundRecorded.value : null;
+    form.autoAnswered.updated ? payload.auto_answd_i = form.autoAnswered.value : null;
+    form.paymentProcessing.updated ? payload.pmt_prcsg_i = form.paymentProcessing.value : null;
+    form.outboundRecorded.updated ? payload.otbnd_recorded_i = form.outboundRecorded.value : null;
+    form.acwOption.updated ? payload.acw_option_i = form.acwOption.value : null;
+    form.manualRecorded.updated ? payload.manual_recorded_i = form.manualRecorded.value : null;
+    form.acwDataEntry.updated ? payload.acw_data_entry_i = form.acwDataEntry.value : null;
+    form.manualRecordedInbound.updated ? payload.manual_record_inbound_i = form.manualRecordedInbound.value : null;
+    form.agentAssistedPay.updated ? payload.agent_assisted_pay_i = form.agentAssistedPay.value : null;
+    form.policyNumberEdit.updated ? payload.policy_number_edit_i = form.policyNumberEdit.value : null;
+    form.voiceMailTranscription.updated ? payload.voice_mail_transcription_i = form.voiceMailTranscription.value : null;
+    form.clickToDial.updated ? payload.click_to_dial_i = form.clickToDial.value : null;
     form.callTagsUpdated ? payload.callTag = form.callTagsList.map(callTag => {
       return {
         profileId: callTag.profile_id,
@@ -122,13 +142,6 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
         options_id: callTag.options_id
       }
     }) : null;
-    form.acwOption.updated ? payload.acw_option_i = form.acwOption.value : null
-    form.manualRecorded.updated ? payload.manual_recorded_i = form.manualRecorded.value : null
-    form.acwDataEntry.updated ? payload.acw_data_entry_i = form.acwDataEntry.value : null
-    form.manualRecordedInbound.updated ? payload.manual_record_inbound_i = form.manualRecordedInbound.value : null
-    form.agentAssistedPay.updated ? payload.agent_assisted_pay_i = form.agentAssistedPay.value : null
-    form.policyNumberEdit.updated ? payload.policy_number_edit_i = form.policyNumberEdit.value : null
-    form.voiceMailTranscription.updated ? payload.voice_mail_transcription_i = form.voiceMailTranscription.value : null
 
     editProfile(payload).then(() => {
       console.log("rz payload=", payload);

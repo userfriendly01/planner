@@ -23,6 +23,7 @@ import {
   ProfileNameTextField,
   ProfileActivitiesSelectField,
   ProfileCallTagsSelectField,
+  ProfileQueuesSelectField,
   OverflowSkillTextField
 } from "components";
 
@@ -115,6 +116,15 @@ const ProfileFormFields = () => {
             setForm({
               type: profileEntryFormActions.UPDATE_ACTIVITIES_LIST,
               payload: activitiesList
+            });
+          }}
+        />
+        <ProfileQueuesSelectField
+          transferQueues={form.transferQueues}
+          setQueueList={transferQueues => {
+            setForm({
+              type: profileEntryFormActions.UPDATE_TRANSFER_QUEUES,
+              payload: transferQueues
             });
           }}
         />

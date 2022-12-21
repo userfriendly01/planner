@@ -12,6 +12,7 @@ import {
 } from "./ProfileSettingsTable.Styles";
 import {
   checkIfPO,
+  formatAggregateQueues,
   formatProfileBooleanData,
   formatProfileACWDataEntry,
   formatOverflowSkillData,
@@ -122,6 +123,11 @@ const ProfileSettingsTable = props => {
                           })
                         }
                          
+                      </TableDataFlex>
+                    </CustomTableData>
+                    <CustomTableData>
+                      <TableDataFlex>
+                        {formatAggregateQueues(profile.aggregateQueues)}
                       </TableDataFlex>
                     </CustomTableData>
                     {

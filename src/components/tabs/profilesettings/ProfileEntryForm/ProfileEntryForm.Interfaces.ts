@@ -1,6 +1,7 @@
 import {
   ModalOverlayStatuses,
   Activity,
+  Skill
   CallTag,
   CallTagOptions
 } from "globals";
@@ -37,6 +38,11 @@ export interface ProfileActivitiesSelectFieldProps {
   setActivitiesList: (activitiesList: Activity[]) => void;
 }
 
+export interface ProfileQueuesSelectFieldProps {
+  transferQueues: Skill[]
+  setQueueList: (transferQueues: Skill[]) => void;
+}
+
 export interface ProfileCallTagsSelectFieldProps {
   callTagsList: CallTag[]
   callTagOptionsList: CallTagOptions[]
@@ -63,7 +69,8 @@ export interface ProfileEntryFormState {
   paymentProcessing: FieldState,
   policyNumberEdit: FieldState,
   voiceMailTranscription: FieldState,
-  clickToDial: FieldState
+  clickToDial: FieldState,
+  transferQueues: Skill[],
 }
 
 export interface ToggleFormField {

@@ -136,10 +136,11 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByText("Voice Mail Transcription", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Click To Dial", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Activities", { selector: "th" })).toBeInTheDocument();
+      expect(rendered.getByText("Transfer Queues", { selector: "th" })).toBeInTheDocument();
       const tableRows = rendered.getAllByTestId("table-row");
       const tableHeaders = rendered.getAllByTestId("table-header");
       expect(tableRows.length).toBe(1);
-      expect(tableHeaders.length).toBe(17);
+      expect(tableHeaders.length).toBe(18);
     });
 
     test("should render correct tooltips", async () => {
@@ -160,6 +161,7 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByLabelText("Voice mail will be transcribed and sent within the notification email to the user")).toBeInTheDocument();
       expect(rendered.getByLabelText("Enable click-to-dial/transfer from external application")).toBeInTheDocument();
       expect(rendered.getByLabelText("Profile Activities")).toBeInTheDocument();
+      expect(rendered.getByLabelText("UI Feature: Additional transfer queues that will appear in the Triton queue ticker")).toBeInTheDocument();
     });
 
     test("should render row data", async () => {
