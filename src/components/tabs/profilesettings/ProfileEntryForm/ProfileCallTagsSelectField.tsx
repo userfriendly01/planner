@@ -36,7 +36,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const [callTags, setCallTags] = React.useState([]);
 
   const defaultNewCallTagOptions: CallTagOptions[] = [];
-  const [newCallTagOptions, setNewCallTagOptions] = React.useState<CallTagOptions[]>(defaultNewCallTagOptions);
+  // const [newCallTagOptions, setNewCallTagOptions] = React.useState<CallTagOptions[]>(defaultNewCallTagOptions);
   const [callTagOptions, setCallTagOptions] = React.useState([]);
 
   React.useEffect(() => {
@@ -103,16 +103,15 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   };
 
   const newCallTagOptionsChanged = (inputCallTagOptions: { value: number; }, wrkr_tsk_info_id: number) => {
-    const selectedCallTagOptions = callTagOptions.find(options => inputCallTagOptions.value === options.options_id);
-    console.log('selectedCallTagOptions', selectedCallTagOptions);
-    setNewCallTagOptions([selectedCallTagOptions]);
+    // const selectedCallTagOptions = callTagOptions.find(options => inputCallTagOptions.value === options.options_id);
+    // console.log('selectedCallTagOptions', selectedCallTagOptions);
+    // setNewCallTagOptions([selectedCallTagOptions]);
 
     const updatedCallTagsList = callTagsList.map(callTag => {
       if (callTag.wrkr_tsk_info_id === wrkr_tsk_info_id) {
         callTag.options_id = inputCallTagOptions.value;
         return callTag;
       }
-      callTag.options_id = null;
       return callTag;
     });
     setCallTagsList(updatedCallTagsList);
@@ -151,7 +150,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
                   styles={{
                     "max-width": "380px"
                   }}
-                  value={JSON.stringify(getCallTagOptionsDropDownOptions(newCallTagOptions))}
+                  value={callTag.options_id}
                   options={getCallTagOptionsDropDownOptions(callTagOptionsForDropdown)}
                   multiple={false}
                   updateValue={(event: any, newInputValue: { value: number; }) => newCallTagOptionsChanged(newInputValue, callTag.wrkr_tsk_info_id)}
