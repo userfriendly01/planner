@@ -50,7 +50,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       auto_answd_i: form.autoAnswered.value,
       pmt_prcsg_i: form.paymentProcessing.value,
       otbnd_recorded_i: form.outboundRecorded.value,
-      callTag: form.callTagsList,
+      callTags: form.callTagsList,
       acw_option_i: form.acwOption.value,
       manual_recorded_i: form.manualRecorded.value,
       acw_data_entry_i: form.acwDataEntry.value,
@@ -134,7 +134,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     form.policyNumberEdit.updated ? payload.policy_number_edit_i = form.policyNumberEdit.value : null;
     form.voiceMailTranscription.updated ? payload.voice_mail_transcription_i = form.voiceMailTranscription.value : null;
     form.clickToDial.updated ? payload.click_to_dial_i = form.clickToDial.value : null;
-    form.callTagsUpdated ? payload.callTag = form.callTagsList.map(callTag => {
+    form.callTagsUpdated ? payload.callTags = form.callTagsList.map(callTag => {
       return {
         profileId: callTag.profile_id,
         wrkr_tsk_info_id: callTag.wrkr_tsk_info_id,

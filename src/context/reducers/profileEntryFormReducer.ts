@@ -19,7 +19,7 @@ export const profileEntryFormActions = {
   UPDATE_TRANSFER_QUEUES: "UPDATE_TRANSFER_QUEUES",
   UPDATE_ACTIVITIES_LIST: "UPDATE_ACTIVITIES_LIST",
   UPDATE_CALL_TAGS_LIST: "UPDATE_CALL_TAGS_LIST",
-  SET_UPDATE_PROFILE_FORM_STATE: "SET_UPDATE_PROFILE_FORM_STATE",
+  SET_UPDATE_PROFILE_FORM_STATE: "SET_UPDATE_PROFILE_FORM_STATE"
 };
 
 export const initialProfileEntryFormState: ProfileEntryFormState = {
@@ -82,7 +82,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         ...initialProfileEntryFormState
       };
     }
-    case profileEntryFormActions.TOGGLE: {  
+    case profileEntryFormActions.TOGGLE: {
       return {
         ...state,
         [action.fieldKey]: {

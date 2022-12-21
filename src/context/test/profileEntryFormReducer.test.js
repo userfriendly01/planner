@@ -303,6 +303,9 @@ describe("profileEntryFormReducer", () => {
         outboundRecorded: {
           value: false
         },
+        acwOption: {
+          value: false
+        },
         manualRecorded: {
           value: false
         },
