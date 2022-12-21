@@ -110,47 +110,45 @@ describe("profileUtils", () => {
     test("test should return single queue ", () => {
       const aggrQueue = [
         {
-          id: 0,
-          name: "PGS Gold",
-          ownerType: "profile",
-          workerSid: null,
+          profile_id: 0,
+          aggregate_queues_id: 1,
+          aggregate_queues_nme: "PSU Claims - Level 1",
+          aggregate_queues_type: "single",
+          owner_type: "profile",
+          worker_sid: null,
           queues: [
             {
-              id: 106,
-              skillName: "pgsGoldSpanish",
-              taskQueueName: "PGS - Gold Spanish",
-              taskQueueSid: "WQaae7385a70e4c4ef8d74f1f93ebd5c33"
+              skill_id: 1,
+              skill_num: "psu-l1",
+              skill_nme: "PSU Claims - Level 1",
+              tsk_que_sid: "WQ9e7f40c067bb9006022f43266122a257"
             }
           ]
         }
       ];
-      expect(formatAggregateQueues(aggrQueue)).toStrictEqual([<BubbleDiv key={"PGS Gold"}>{"PGS Gold"}</BubbleDiv>]);
+      expect(formatAggregateQueues(aggrQueue)).toStrictEqual([<BubbleDiv key={"PSU Claims - Level 1"}>{"PSU Claims - Level 1"}</BubbleDiv>]);
     });
 
     test("test should return aggregated queue with icon", () => {
       const aggrQueue = [
         {
-          id: 0,
-          name: "PGS Gold",
-          ownerType: "profile",
-          workerSid: null,
+          profile_id: 0,
+          aggregate_queues_id: 1,
+          aggregate_queues_nme: "PSU Claims - Level 1",
+          aggregate_queues_type: "aggregate",
+          owner_type: "profile",
+          worker_sid: null,
           queues: [
             {
-              id: 106,
-              skillName: "pgsGoldSpanish",
-              taskQueueName: "PGS - Gold Spanish",
-              taskQueueSid: "WQaae7385a70e4c4ef8d74f1f93ebd5c33"
-            },
-            {
-              id: 107,
-              skillName: "pgsGold Service Testing",
-              taskQueueName: "PGS - Gold Spanish",
-              taskQueueSid: "WQaae7385a70e4c4ef8d74f1f93ebd5c33"
+              "skill_id": 1,
+              "skill_num": "psu-l1",
+              "skill_nme": "PSU Claims - Level 1",
+              "tsk_que_sid": "WQ9e7f40c067bb9006022f43266122a257"
             }
           ]
         }
       ];
-      expect(formatAggregateQueues(aggrQueue)).toStrictEqual([<BubbleDiv key={"PGS Gold"}>{"PGS Gold"} <AutoAwesomeMotion fontSize="1 rem"/></BubbleDiv>]);
+      expect(formatAggregateQueues(aggrQueue)).toStrictEqual([<BubbleDiv key={"PSU Claims - Level 1"}>{"PSU Claims - Level 1"} <AutoAwesomeMotion fontSize="1 rem"/></BubbleDiv>]);
     });
 
     test("no queues, test should be empty array", () => {
