@@ -1,7 +1,7 @@
 import {
   ModalOverlayStatuses,
   Activity,
-  Skill
+  Skill,
   CallTag,
   CallTagOptions
 } from "globals";

@@ -115,7 +115,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
 
     form.profileName.updated ? payload.profile_nme = form.profileName.value : null;
     form.overflowSkill.updated ? payload.overflow_skill = form.overflowSkill.value || null : null;
-    form.activitiesUpdated ? payload.activity_id = form.activitiesList.map(activity => activity.activity_id) : null;
+    form.activitiesUpdated ? payload.activities = form.activitiesList.map(activity => activity.activity_id) : null;
     form.queuesUpdated ? payload.transferQueues = form.transferQueues.map(queue => {
       return {
         skill_id: queue.ctmSkillId,
