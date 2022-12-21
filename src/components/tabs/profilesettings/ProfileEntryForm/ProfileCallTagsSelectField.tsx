@@ -2,12 +2,12 @@ import React from "react";
 import { ProfileCallTagsSelectFieldProps } from "./ProfileEntryForm.Interfaces";
 import {
   IconButtonWrapper,
-  ProfileControlWrapper,
-  ProfileRow,
-  ProfileRowItem,
-  ProfileRowSeperator,
+  ProfileDropdownControlWrapper,
+  ProfileDropdownRow,
+  ProfileDropdownRowItem,
+  ProfileDropdownRowSeperator,
   Label,
-  ProfileWrapper
+  ProfileDropdownWrapper
 } from "./ProfileEntryForm.Styles";
 import { Dropdown } from "components";
 import {
@@ -49,10 +49,10 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     }
     if(!callTagOptions.length) {
       getCallTagOptions()
-      .then((callTagOptions: CallTagOptions[]) => {
-        setCallTagOptions(callTagOptions);
-      })
-      .catch(error => console.error(error.msg));
+        .then((callTagOptions: CallTagOptions[]) => {
+          setCallTagOptions(callTagOptions);
+        })
+        .catch(error => console.error(error.msg));
     }
   }, []);
 
@@ -101,12 +101,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     }));
   };
 
-  const newCallTagOptionsChanged = (inputCallTagOptions: {
-    [index: string]: any,
-    value: number
-  },
-  wrkr_tsk_info_id: number
-  ) => {
+  const newCallTagOptionsChanged = (inputCallTagOptions: {[index: string]: any, value: number}, wrkr_tsk_info_id: number) => {
     const selectedCallTagOptions = callTagOptions.find(options => inputCallTagOptions.value === options.options_id);
     setNewCallTagOptions([selectedCallTagOptions]);
 
@@ -122,10 +117,10 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   };
 
   return (
-    <ProfileControlWrapper>
+    <ProfileDropdownControlWrapper>
       <Label>Add Call Tags</Label>
-      <ProfileRow>
-        <ProfileRowItem>
+      <ProfileDropdownRow>
+        <ProfileDropdownRowItem>
           <Dropdown
             styles={{
               "max-width": "380px"
@@ -135,21 +130,21 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
             value={getCallTagDropDownOptions(newProfileCallTag)}
             updateValue={(event: any, newInputValue: Array<{ [index: string]: any; value: number; }>) => newCallTagChanged(newInputValue)}
           />
-        </ProfileRowItem>
-        <ProfileRowItem>
+        </ProfileDropdownRowItem>
+        <ProfileDropdownRowItem>
           <IconButtonWrapper disabled={!newProfileCallTag.length} onClick={addCallTagClicked} data-testid="add-profileCallTag-button">
             <Add fontSize={"inherit"}/>
           </IconButtonWrapper>
-        </ProfileRowItem>
-      </ProfileRow>
-      <ProfileRowSeperator/>
-      <ProfileWrapper>
+        </ProfileDropdownRowItem>
+      </ProfileDropdownRow>
+      <ProfileDropdownRowSeperator/>
+      <ProfileDropdownWrapper>
         {callTagsList.map((callTag: CallTag, index: number) => {
           return (
             // @ts-ignore
-            <ProfileRow highlightOnHover={true} key={`callTag-row-${index}`}>
-              <ProfileRowItem>{formatCallTagsName(callTag.wrkr_tsk_info_nme)}</ProfileRowItem>
-              <ProfileRowItem>
+            <ProfileDropdownRow highlightOnHover={true} key={`callTag-row-${index}`}>
+              <ProfileDropdownRowItem>{formatCallTagsName(callTag.wrkr_tsk_info_nme)}</ProfileDropdownRowItem>
+              <ProfileDropdownRowItem>
                     <Dropdown
                       styles={{
                         "max-width": "380px"
@@ -159,17 +154,17 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
                       multiple={false}
                       updateValue={(event: any, newInputValue: { value: number; }) => newCallTagOptionsChanged(newInputValue, callTag.wrkr_tsk_info_id)}
                     />
-              </ProfileRowItem>
-              <ProfileRowItem>
+              </ProfileDropdownRowItem>
+              <ProfileDropdownRowItem>
                 <IconButtonWrapper onClick={() => removeCallTagClicked(callTag)} data-testid="delete-callTag-button">
                   <Delete fontSize="inherit"/>
                 </IconButtonWrapper>
-              </ProfileRowItem>
-            </ProfileRow>
+              </ProfileDropdownRowItem>
+            </ProfileDropdownRow>
           );
         })}
-      </ProfileWrapper>
-    </ProfileControlWrapper>
+      </ProfileDropdownWrapper>
+    </ProfileDropdownControlWrapper>
   );
 };
 

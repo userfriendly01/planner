@@ -248,8 +248,7 @@ describe("profileEntryFormReducer", () => {
             "N/A",
             "Offer"
           ]
-        }]
-      }
+        }],
         aggregateQueues: [
           {
             id: 0,
