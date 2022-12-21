@@ -63,6 +63,9 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   });
 
   const callTagOptionsForDropdown = callTagOptions.filter(callTagOption => {
+    console.log('callTagOptions', callTagOptions);
+    console.log('callTagOption', callTagOption);
+
     return !callTagOptionsList.find(item => {
       return item.options_id === callTagOption.options_id;
     });
@@ -103,6 +106,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
 
   const newCallTagOptionsChanged = (inputCallTagOptions: {[index: string]: any, value: number}, wrkr_tsk_info_id: number) => {
     const selectedCallTagOptions = callTagOptions.find(options => inputCallTagOptions.value === options.options_id);
+    console.log('selectedCallTagOptions', selectedCallTagOptions);
     setNewCallTagOptions([selectedCallTagOptions]);
 
     const updatedCallTagsList = callTagsList.map(callTag => {
