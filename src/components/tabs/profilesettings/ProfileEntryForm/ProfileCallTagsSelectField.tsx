@@ -151,7 +151,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
                   styles={{
                     "max-width": "380px"
                   }}
-                  value={newCallTagOptions}
+                  value={JSON.stringify(getCallTagOptionsDropDownOptions(newCallTagOptions))}
                   options={getCallTagOptionsDropDownOptions(callTagOptionsForDropdown)}
                   multiple={false}
                   updateValue={(event: any, newInputValue: { value: number; }) => newCallTagOptionsChanged(newInputValue, callTag.wrkr_tsk_info_id)}
