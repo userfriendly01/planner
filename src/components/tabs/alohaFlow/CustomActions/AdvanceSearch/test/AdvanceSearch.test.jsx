@@ -29,7 +29,7 @@ const mockSelectionAll = {
 };
 
 const renderComponent = () => render(
-  <AdvanceSearchModal isOpen = {true} onClose = {mockClose} handleChange = {mockChange} applyFilter = {mockApplyFilter} masterData = {mockMasterData} selection = {  mockSelectionAll}/>, initialTestState
+  <AdvanceSearchModal isOpen={true} onClose={mockClose} handleChange={mockChange} applyFilter={mockApplyFilter} masterData={mockMasterData} selection={mockSelectionAll}/>, initialTestState
 );
 
 jest.mock("@mui/material/Button", () => ({
