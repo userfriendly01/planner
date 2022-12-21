@@ -95,6 +95,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   };
 
   const getCallTagOptionsDropDownOptions = (optionsList: CallTagOptions[]) => {
+    console.log('optionsList', optionsList);
     return optionsList.map(option => ({
       value: option.options_id,
       label: option.options_id
