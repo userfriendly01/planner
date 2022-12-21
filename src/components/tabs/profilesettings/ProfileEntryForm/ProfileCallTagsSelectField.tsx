@@ -38,19 +38,21 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const defaultNewCallTagOptions: CallTagOptions[] = [];
   const [newCallTagOptions, setNewCallTagOptions] = React.useState<CallTagOptions[]>(defaultNewCallTagOptions);
   const [callTagOptions, setCallTagOptions] = React.useState([]);
-  
+
   React.useEffect(() => {
     if(!callTags.length) {
       getCallTags()
         .then((allCallTags: CallTag[]) => {
+          console.log('allCallTags', allCallTags)
           setCallTags(allCallTags);
         })
         .catch(error => console.error(error.msg));
     }
     if(!callTagOptions.length) {
       getCallTagOptions()
-        .then((callTagOptions: CallTagOptions[]) => {
-          setCallTagOptions(callTagOptions);
+        .then((allCallTagOptions: CallTagOptions[]) => {
+          console.log('allCallTagOptions', allCallTagOptions)
+          setCallTagOptions(allCallTagOptions);
         })
         .catch(error => console.error(error.msg));
     }
