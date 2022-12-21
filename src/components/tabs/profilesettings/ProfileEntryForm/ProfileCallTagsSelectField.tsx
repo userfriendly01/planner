@@ -102,7 +102,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     }));
   };
 
-  const newCallTagOptionsChanged = (inputCallTagOptions: {[index: string]: any, value: number}, wrkr_tsk_info_id: number) => {
+  const newCallTagOptionsChanged = (inputCallTagOptions: { value: number; }, wrkr_tsk_info_id: number) => {
     const selectedCallTagOptions = callTagOptions.find(options => inputCallTagOptions.value === options.options_id);
     console.log('selectedCallTagOptions', selectedCallTagOptions);
     setNewCallTagOptions([selectedCallTagOptions]);
