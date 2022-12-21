@@ -252,15 +252,15 @@ describe("profileEntryFormReducer", () => {
         aggregateQueues: [
           {
             aggregate_queues_id: 0,
-            aggregate_queues_nme: "PGS Gold",
+            aggregate_queues_nme: "PGS - Gold Spanish",
             aggregate_queues_type: "single",
             owner_type: "profile",
             profile_id: 0,
             queues: [
               {
                 skill_id: 106,
-                skill_nme: "pgsGoldSpanish",
-                skill_num: "PGS - Gold Spanish",
+                skill_nme: "PGS - Gold Spanish",
+                skill_num: "pgsGoldSpanish",
                 tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c33"
               }
             ],
