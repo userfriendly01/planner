@@ -132,8 +132,6 @@ export const EditRouting = ({
     let value: string;
     if (["startTime", "endTime"].includes(key)) {
       value = await handleTimeEvalChange(event, key);
-      console.log("key: ", key);
-      console.log("value: ", value);
     } else {
       value = event.target.value;
     }
@@ -187,6 +185,7 @@ export const EditRouting = ({
             value="Save"
             color="primary"
             sx={{ marginRight: 2 }}
+            aria-label="saveRoutingRuleButton"
             onClick={() => handleOnSave()}
           >
                         Save Rule
@@ -196,6 +195,7 @@ export const EditRouting = ({
             color="error"
             value="Delete"
             sx={{ marginRight: 2 }}
+            aria-label="deleteRoutingRuleButton"
             onClick={() => handleOnDelete()}
           >
                         Delete Rule
@@ -204,6 +204,7 @@ export const EditRouting = ({
             value="Cancel"
             variant="outlined"
             color="primary"
+            aria-label="cancelRoutingRuleButton"
             onClick={() => handleCancel()}
           >
                         Cancel
