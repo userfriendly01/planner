@@ -7,6 +7,7 @@ import {
 import { AdvanceSearchModal } from "../../index";
 import React from "react";
 import SelectContainer from "../../../../../core/SharedComponents/SelectContainer";
+import TextField from "@mui/material/TextField";
 
 const mockMasterData = {
   brand: ["brand1"],
@@ -52,6 +53,17 @@ jest.mock("../../../../../core/SharedComponents/SelectContainer", () => {
   };
 });
 
+jest.mock("@mui/material/TextField", () => {
+  const originalModule = jest.requireActual("@mui/material/TextField");
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    default: jest.fn()
+  };
+});
+
+
 describe("<AdvanceSearch />", () => {
   beforeAll(() => {
     Object.defineProperty(window, "matchMedia", {
@@ -74,20 +86,7 @@ describe("<AdvanceSearch />", () => {
   });
 
   it("renders", () => {
-  });
-  it("<Button>Reset Filter</Button>", () => {
-    const {
-      getByRole
-    } = renderComponent(true);
-    const buttonToClick = getByRole("button", {
-      name: "Reset Filter"
-    });
-    act(() => {
-      fireEvent.click(buttonToClick);
-    });
-    expect(mockOpenModal).toBeCalledTimes(1);
-    expect(mockApplyFilter).toBeCalledTimes(1);
-    expect(localStorage.removeItem).toBeCalledTimes(1);
+    renderComponent(true);
     expect(SelectContainer).toBeCalledTimes(4);
     expect(SelectContainer.mock.calls[0][0]).toStrictEqual({
       "disabled": false,
@@ -133,7 +132,32 @@ describe("<AdvanceSearch />", () => {
       "required": false,
       "value": "route1"
     });
+    expect(TextField.mock.calls[0][0]).toStrictEqual({
+      "label": "#Dialed",
+      "name": "pkey",
+      "onChange": mockChange,
+      "sx": {
+        "width": "Calc(96%)"
+      },
+      "type": "text",
+      "value": "pkey1",
+      "variant": "outlined"
+    });
 
+  });
+  it("<Button>Reset Filter</Button>", () => {
+    const {
+      getByRole
+    } = renderComponent(true);
+    const buttonToClick = getByRole("button", {
+      name: "Reset Filter"
+    });
+    act(() => {
+      fireEvent.click(buttonToClick);
+    });
+    expect(mockOpenModal).toBeCalledTimes(1);
+    expect(mockApplyFilter).toBeCalledTimes(1);
+    expect(localStorage.removeItem).toBeCalledTimes(1);
   });
   it("<Button>Save Filter</Button>", () => {
     const {
@@ -149,7 +173,19 @@ describe("<AdvanceSearch />", () => {
     expect(mockApplyFilter).toBeCalledTimes(1);
     expect(localStorage.setItem).toBeCalledTimes(1);
   });
+  it("<Button>Close</Button>", () => {
+    const {
+      getByRole
+    } = renderComponent(true);
+    const buttonToClick = getByRole("button", {
+      name: "Close"
+    });
+    act(() => {
+      fireEvent.click(buttonToClick);
+    });
+    expect(mockClose).toBeCalledTimes(1);
 
+  });
   /** If you do mock the SelectContainer, this should get you started...
            *  dropDownOptions: mockMasterData.brand,
               name: "brand",
