@@ -12,8 +12,10 @@ import {
 import { Dropdown } from "components";
 import {
   Add,
-  Delete
+  Delete,
+  Info
 } from "@mui/icons-material";
+import { Tooltip } from "@mui/material";
 import {
   CallTag,
   CallTagOptions
@@ -91,7 +93,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const getCallTagOptionsDropDownOptions = (optionsList: CallTagOptions[]) => {
     return optionsList.map(option => ({
       value: option.options_id,
-      label: option.options_id
+      label: option.options.toString()
     }));
   };
 
@@ -125,6 +127,11 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
           <IconButtonWrapper disabled={!newProfileCallTag.length} onClick={addCallTagClicked} data-testid="add-profileCallTag-button">
             <Add fontSize={"inherit"}/>
           </IconButtonWrapper>
+          {/* <IconButtonWrapper data-testid="tooltip-profileCallTag-button">
+            <Tooltip key={"callTagTooltip"} placement="top" title={callTagOptions.map(option => option['options']).toString()}>
+              <Info fontSize={"inherit"}/>
+            </Tooltip>
+          </IconButtonWrapper> */}
         </ProfileDropdownRowItem>
       </ProfileDropdownRow>
       <ProfileDropdownRowSeperator/>
