@@ -144,7 +144,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     form.callTagsUpdated ? payload.callTags = form.callTagsList.map(callTag => {
       return {
         wrkr_tsk_info_id: callTag.wrkr_tsk_info_id,
-        display_nme: callTag.display_nme,
+        display_nme: formatCallTagsName(callTag.wrkr_tsk_info_nme),
         options_id: callTag.options_id
       };
     }) : null;
