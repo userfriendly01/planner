@@ -93,7 +93,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const getCallTagOptionsDropDownOptions = (optionsList: CallTagOptions[]) => {
     return optionsList.map(option => ({
       value: option.options_id,
-      label: option.options.toString()
+      label: option.options_id
     }));
   };
 
@@ -127,11 +127,11 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
           <IconButtonWrapper disabled={!newProfileCallTag.length} onClick={addCallTagClicked} data-testid="add-profileCallTag-button">
             <Add fontSize={"inherit"}/>
           </IconButtonWrapper>
-          {/* <IconButtonWrapper data-testid="tooltip-profileCallTag-button">
-            <Tooltip key={"callTagTooltip"} placement="top" title={callTagOptions.map(option => option['options']).toString()}>
+          <IconButtonWrapper data-testid="tooltip-profileCallTag-button">
+            <Tooltip key={"callTagTooltip"} placement="top" title={callTagOptions.map(option => option['options_id'] + ': ' + option['options'].toString())}>
               <Info fontSize={"inherit"}/>
             </Tooltip>
-          </IconButtonWrapper> */}
+          </IconButtonWrapper>
         </ProfileDropdownRowItem>
       </ProfileDropdownRow>
       <ProfileDropdownRowSeperator/>
