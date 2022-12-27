@@ -27,9 +27,9 @@ export const formatProfileBooleanDataTrueFalse = value => {
 export const formatProfileACWDataEntry = (value, options) => {
   if (value === 1 && options.length) {
     return options.map(option => {
-      return <Tooltip key={option.wrkr_tsk_info_id} placement="top" title={option.options ? option.options.toString() : ''}>
-      <BubbleDiv key={option.wrkr_tsk_info_id}>{option.display_nme}</BubbleDiv>;
-      </Tooltip>
+      return <Tooltip key={option.wrkr_tsk_info_id} placement="top" title={option.options ? option.options.toString() : ""}>
+        <BubbleDiv key={option.wrkr_tsk_info_id}>{option.display_nme}</BubbleDiv>
+      </Tooltip>;
     });
   }
   if (value === 1 && !options.length) {
