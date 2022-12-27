@@ -123,7 +123,7 @@ describe("<ProfileFormButtons />", () => {
             expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
             expect(mockUpdateLoading).toHaveBeenCalledWith({
               "saveStatus": ModalOverlayStatuses.FAIL,
-              "overlayMessage": "Error creating new profile GRS Claims",
+              "overlayMessage": "Error creating GRS Claims",
               "saveProfile": true
             });
             expect(mockHandleClose).toHaveBeenCalledTimes(0);
