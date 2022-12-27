@@ -3,6 +3,7 @@ import {
   Check,
   AutoAwesomeMotion
 } from "@mui/icons-material";
+import { Tooltip } from "@mui/material";
 import {
   formatProfileBooleanData,
   formatProfileBooleanDataTrueFalse,
@@ -39,38 +40,63 @@ describe("profileUtils", () => {
   describe("formatProfileACWDataEntry", () => {
     test("should return a single BubbleDivs with display name inside", () => {
       const options = [{
-        display_nme: "Claim Number",
-        wrkr_tsk_info_id: 2,
-        profile_id: 15
-      }];
-      expect(formatProfileACWDataEntry(1, options)).toStrictEqual([<BubbleDiv key={2}>{"Claim Number"}</BubbleDiv>]);
+        profile_id: 1,
+        display_nme: "Negotiation Type",
+        wrkr_tsk_info_id: 3,
+        wrkr_tsk_info_nme: "negotiation_type",
+        options_id: 1,
+        options: null
+    }];
+      expect(formatProfileACWDataEntry(1, options)).toStrictEqual([
+        <Tooltip key={2} placement="top" title={''}>
+          <BubbleDiv key={2}>{"Negotiation Type"}</BubbleDiv>;
+        </Tooltip>
+      ]);
     });
     test("should return multiple BubbleDivs with display names inside", () => {
       const options = [
         {
           display_nme: "Claim Number",
           wrkr_tsk_info_id: 2,
+          wrkr_tsk_info_nme: "claim_number",
           profile_id: 15,
-          options_id: null
+          options_id: null,
+          options: null
         },
         {
           display_nme: "Call Type",
           wrkr_tsk_info_id: 1,
+          wrkr_tsk_info_nme: "call_type",
           profile_id: 15,
-          options_id: null
+          options_id: null,
+          options: null
         },
         {
           display_nme: "Negotiation Type",
+          wrkr_tsk_info_nme: "negotiation_type",
           wrkr_tsk_info_id: 3,
           profile_id: 15,
-          options_id: 1
+          options_id: 1,
+          options: [
+            "Info Exchange",
+            "Bargaining",
+            "Closing",
+            "N/A",
+            "Offer"
+          ]
         }
       ];
       expect(formatProfileACWDataEntry(1, options)).toStrictEqual(
         [
-          <BubbleDiv key={2}>{"Claim Number"}</BubbleDiv>,
-          <BubbleDiv key={1}>{"Call Type"}</BubbleDiv>,
-          <BubbleDiv key={3}>{"Negotiation Type"}</BubbleDiv>
+          <Tooltip key={2} placement="top" title={''}>
+            <BubbleDiv key={2}>{"Claim Number"}</BubbleDiv>;
+          </Tooltip>,
+          <Tooltip key={1} placement="top" title={''}>
+            <BubbleDiv key={1}>{"Call Type"}</BubbleDiv>;
+          </Tooltip>,
+          <Tooltip key={3} placement="top" title={'Info Exchange,Bargaining,Closing,N/A,Offer'}>
+            <BubbleDiv key={3}>{"Negotiation Type"}</BubbleDiv>;
+          </Tooltip>
         ]
       );
     });
