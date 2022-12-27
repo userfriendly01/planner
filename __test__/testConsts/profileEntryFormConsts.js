@@ -4,6 +4,7 @@ export const initialProfileEntryFormState = {
   profileId: null,
   activitiesList: [],
   callTagsList: [],
+  callTagOptions: [],
   formMode: formModes.INSERT,
   autoAnswered: {
     value: true
@@ -58,6 +59,7 @@ export const validProfileEntryFormState = {
   profileId: 40,
   activitiesList: [5, 6],
   callTagsList: [],
+  callTagOptions: [],
   formMode: formModes.INSERT,
   autoAnswered: {
     value: true
@@ -113,6 +115,7 @@ export const invalidProfileEntryFormState = {
   profileId: 40,
   activitiesList: [5, 6],
   callTagsList: [],
+  callTagOptions: [],
   formMode: formModes.INSERT,
   autoAnswered: {
     value: true
@@ -168,6 +171,7 @@ export const initialProfileEditEntryFormState = {
   profileId: 1,
   activitiesList: [],
   callTagsList: [],
+  callTagOptions: [],
   formMode: formModes.UPDATE,
   autoAnswered: {
     value: true
