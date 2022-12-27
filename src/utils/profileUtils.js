@@ -4,6 +4,7 @@ import {
   Check,
   AutoAwesomeMotion
 } from "@mui/icons-material";
+import { Tooltip } from "@mui/material";
 import {
   BubbleDiv,
   HighlightRed
@@ -26,7 +27,9 @@ export const formatProfileBooleanDataTrueFalse = value => {
 export const formatProfileACWDataEntry = (value, options) => {
   if (value === 1 && options.length) {
     return options.map(option => {
-      return <BubbleDiv key={option.wrkr_tsk_info_id}>{option.display_nme}</BubbleDiv>;
+      return <Tooltip key={option.wrkr_tsk_info_id} placement="top" title={option.options ? option.options.toString() : null}>
+      <BubbleDiv key={option.wrkr_tsk_info_id}>{option.display_nme}</BubbleDiv>;
+      </Tooltip>
     });
   }
   if (value === 1 && !options.length) {
