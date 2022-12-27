@@ -26,7 +26,6 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
   profileId: null,
   activitiesList: [],
   callTagsList: [],
-  callTagOptions: [],
   formMode: formModes.INSERT,
   autoAnswered: {
     value: true
@@ -133,17 +132,11 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
     case profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE: {
       const profile = action.payload.profile;
 
-      const callTagsList = profile.callTags.map((callTag: { display_nme: string; wrkr_tsk_info_id: number}) => {
+      const callTagsList = profile.callTags.map((callTag: { display_nme: string; wrkr_tsk_info_id: number; options_id: number;}) => {
         return {
           wrkr_tsk_info_nme: callTag.display_nme,
-          wrkr_tsk_info_id: callTag.wrkr_tsk_info_id
-        };
-      });
-
-      const callTagOptions = profile.callTags.map((callTag: { options_id: number; options: Array<string>}) => {
-        return {
-          options_id: callTag.options_id,
-          options: callTag.options
+          wrkr_tsk_info_id: callTag.wrkr_tsk_info_id,
+          options_id: callTag.options_id
         };
       });
 
@@ -170,7 +163,6 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         profileId: profile.profile_id,
         formMode: action.payload.formMode,
         activitiesList,
-        callTagOptions,
         callTagsList,
         autoAnswered: formatProfileBooleanDataTrueFalse(profile.auto_answd_i.data[0]),
         inboundRecorded: formatProfileBooleanDataTrueFalse(profile.recorded_i.data[0]),

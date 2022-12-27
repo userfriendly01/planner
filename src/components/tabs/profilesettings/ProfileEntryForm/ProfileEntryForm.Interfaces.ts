@@ -57,7 +57,6 @@ export interface ProfileEntryFormState {
   overflowSkill: FieldState,
   activitiesList: Activity[],
   callTagsList: CallTag[],
-  callTagOptions: CallTagOptions[],
   autoAnswered: FieldState,
   inboundRecorded: FieldState,
   outboundRecorded: FieldState,

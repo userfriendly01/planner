@@ -285,16 +285,6 @@ describe("profileEntryFormReducer", () => {
           wrkr_tsk_info_nme: "Negotiation Type",
           wrkr_tsk_info_id: 3
         }],
-        callTagOptions: [{
-          options: [
-            "Info Exchange",
-            "Bargaining",
-            "Closing",
-            "N/A",
-            "Offer"
-          ],
-          options_id: 1
-        }],
         formMode: formModes.UPDATE,
         autoAnswered: {
           value: true
