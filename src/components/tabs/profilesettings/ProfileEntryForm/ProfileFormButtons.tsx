@@ -78,7 +78,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     createProfile(payload).then(response => {
       updateLoading({
         ...loading,
-        overlayMessage: `Successfully added new profile with ID ${response.data?.profile[0].insertId}`,
+        overlayMessage: `Successfully added new profile ${form.profileName.value}`,
         saveStatus: ModalOverlayStatuses.SUCCESS,
         saveProfile: true
       });
@@ -95,7 +95,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     }).catch(e => {
       updateLoading({
         ...loading,
-        overlayMessage: "Error creating new profile",
+        overlayMessage: `Error creating new profile ${form.profileName.value}`,
         saveStatus: ModalOverlayStatuses.FAIL,
         saveProfile: true
       });
@@ -111,7 +111,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   const doUpdateProfile = () => {
     updateLoading({
       ...loading,
-      overlayMessage: `Editing profile ${form.profileId}...`,
+      overlayMessage: `Editing profile ${form.profileName.value}...`,
       saveStatus: ModalOverlayStatuses.SAVING,
       saveProfile: true
     });
@@ -153,7 +153,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       console.log("rz payload=", payload);
       updateLoading({
         ...loading,
-        overlayMessage: `Successfully updated profile with ID ${form.profileId}`,
+        overlayMessage: `Successfully updated profile ${form.profileName.value}`,
         saveStatus: ModalOverlayStatuses.SUCCESS,
         saveProfile: true
       });
@@ -170,7 +170,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     }).catch(e => {
       updateLoading({
         ...loading,
-        overlayMessage: `Error updating profile with ID ${form.profileId}`,
+        overlayMessage: `Error updating profile ${form.profileName.value}`,
         saveStatus: ModalOverlayStatuses.FAIL,
         saveProfile: true
       });

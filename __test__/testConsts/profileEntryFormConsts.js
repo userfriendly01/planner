@@ -104,7 +104,7 @@ export const validProfileEntryFormState = {
     valid: true
   },
   profileName: {
-    value: "Valid profile name",
+    value: "GRS Claims",
     updated: true,
     valid: true
   },
