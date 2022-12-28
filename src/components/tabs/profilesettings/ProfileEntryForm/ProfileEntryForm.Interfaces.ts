@@ -50,7 +50,7 @@ export interface ProfileCallTagsSelectFieldProps {
 }
 
 export interface ProfileEntryFormState {
-  [index: string]: any
+  [index: string]: any,
   profileId: number | null,
   formMode: string,
   profileName: FieldState,

@@ -82,8 +82,6 @@ export const RightColumn = styled(FormControlsPane)`
   margin-top: -20px;
 `;
 
-// profile activities control
-
 export const ProfileDropdownControlWrapper = styled.div`
   display: flex;
   flex-direction: column;
