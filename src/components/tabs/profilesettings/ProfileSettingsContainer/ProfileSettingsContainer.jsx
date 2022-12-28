@@ -27,7 +27,7 @@ import {
   SettingsContainer,
   ControlsWrapper,
   ControlItem,
-  AddProfileButton
+  CreateProfileButton
 } from "./ProfileSettingsContainer.Styles";
 
 const ProfileSettingsContainer = () => {
@@ -81,7 +81,7 @@ const ProfileSettingsContainer = () => {
     profileId
   } = profileSettingsState;
 
-  const addProfileOnClick = () => setProfileModalState({
+  const createProfileOnClick = () => setProfileModalState({
     open: true
   });
 
@@ -150,9 +150,9 @@ const ProfileSettingsContainer = () => {
                 checkIfPO(loggedInRepNNumber) ?
                   <ControlsWrapper>
                     <ControlItem>
-                      <AddProfileButton onClick={addProfileOnClick} data-testid={"add-profile-button"}>
-                        Add Profile
-                      </AddProfileButton>
+                      <CreateProfileButton onClick={createProfileOnClick} data-testid={"create-profile-button"}>
+                        Create Profile
+                      </CreateProfileButton>
                     </ControlItem>
                   </ControlsWrapper>
                   : null

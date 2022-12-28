@@ -38,7 +38,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   const doCreateProfile = () => {
     updateLoading({
       ...loading,
-      overlayMessage: "Adding new profile...",
+      overlayMessage: "Creating new profile...",
       saveStatus: ModalOverlayStatuses.SAVING,
       saveProfile: true
     });
@@ -75,10 +75,10 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       })
     };
 
-    createProfile(payload).then(response => {
+    createProfile(payload).then(() => {
       updateLoading({
         ...loading,
-        overlayMessage: `Successfully added ${form.profileName.value}`,
+        overlayMessage: `Successfully created ${form.profileName.value}`,
         saveStatus: ModalOverlayStatuses.SUCCESS,
         saveProfile: true
       });
@@ -92,7 +92,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
           type: profileEntryFormActions.RESET_FORM
         });
       }, timeouts.MODAL_OVERLAY);
-    }).catch(e => {
+    }).catch(() => {
       updateLoading({
         ...loading,
         overlayMessage: `Error creating ${form.profileName.value}`,
@@ -150,7 +150,6 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     }) : null;
 
     editProfile(payload).then(() => {
-      console.log("rz payload=", payload);
       updateLoading({
         ...loading,
         overlayMessage: `Successfully updated ${form.profileName.value}`,
@@ -167,7 +166,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
           type: profileEntryFormActions.RESET_FORM
         });
       }, timeouts.MODAL_OVERLAY);
-    }).catch(e => {
+    }).catch(() => {
       updateLoading({
         ...loading,
         overlayMessage: `Error updating ${form.profileName.value}`,
@@ -197,7 +196,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
         disabled={!isProfileFormValid(form)}
         onClick={form.formMode === formModes.INSERT ? doCreateProfile : doUpdateProfile}
       >
-        {form.formMode === formModes.INSERT ? "Add Profile" : "Save Profile"}
+        {form.formMode === formModes.INSERT ? "Create Profile" : "Update Profile"}
       </FormButton>
     </ButtonWrapper>
   );

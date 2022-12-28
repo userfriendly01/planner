@@ -61,7 +61,7 @@ describe("<ProfileFormButtons />", () => {
     );
   };
 
-  describe("Add Profile Button", () => {
+  describe("Create Profile Button", () => {
     beforeEach(() => {
       setupMockedComponents({
         StyledButton,
@@ -74,16 +74,16 @@ describe("<ProfileFormButtons />", () => {
 
     describe(`form.formMode === ${formModes.INSERT}`, () => {
       describe("Initial State", () => {
-        test("ProfileFormButtons should be called 'Add Profile'", () => {
+        test("ProfileFormButtons should be called 'Create Profile'", () => {
           renderComponent();
-          expect(StyledButton.mock.calls[1][0].children).toBe("Add Profile");
+          expect(StyledButton.mock.calls[1][0].children).toBe("Create Profile");
         });
-        test("When form is valid, Add Profile Button is enabled", () => {
+        test("When form is valid, Create Profile Button is enabled", () => {
           isProfileFormValid.mockReturnValue(true);
           renderComponent();
           expect(StyledButton.mock.calls[1][0].disabled).toBe(false);
         });
-        test("When form is invalid, Add Profile Button is disabled", () => {
+        test("When form is invalid, Create Profile Button is disabled", () => {
           isProfileFormValid.mockReturnValue(false);
           renderComponent();
           expect(StyledButton.mock.calls[1][0].disabled).toBe(true);
@@ -148,7 +148,7 @@ describe("<ProfileFormButtons />", () => {
     });
   });
 
-  describe("Edit Profile Button", () => {
+  describe("Update Profile Button", () => {
     beforeEach(() => {
       setupMockedComponents({
         StyledButton,
@@ -161,16 +161,16 @@ describe("<ProfileFormButtons />", () => {
 
     describe(`form.formMode === ${formModes.UPDATE}`, () => {
       describe("Initial State", () => {
-        test("ProfileFormButtons should be called 'Save Profile'", () => {
+        test("ProfileFormButtons should be called 'Update Profile'", () => {
           renderComponent();
-          expect(StyledButton.mock.calls[1][0].children).toBe("Save Profile");
+          expect(StyledButton.mock.calls[1][0].children).toBe("Update Profile");
         });
-        test("When form is valid, Save Profile Button is enabled", () => {
+        test("When form is valid, Update Profile Button is enabled", () => {
           isProfileFormValid.mockReturnValue(true);
           renderComponent();
           expect(StyledButton.mock.calls[1][0].disabled).toBe(false);
         });
-        test("When form is invalid, Save Profile Button is disabled", () => {
+        test("When form is invalid, Update Profile Button is disabled", () => {
           isProfileFormValid.mockReturnValue(false);
           renderComponent();
           expect(StyledButton.mock.calls[1][0].disabled).toBe(true);
