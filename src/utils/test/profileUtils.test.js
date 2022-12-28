@@ -79,7 +79,7 @@ describe("profileUtils", () => {
           <Tooltip key={1} placement="top" title={""}>
             <BubbleDiv key={1}>{"Call Type"}</BubbleDiv>
           </Tooltip>,
-          <Tooltip key={3} placement="top" title={"Info Exchange,Bargaining,Closing,N/A,Offer"}>
+          <Tooltip key={3} placement="top" title={"Info Exchange, Bargaining, Closing, N/A, Offer"}>
             <BubbleDiv key={3}>{"Negotiation Type"}</BubbleDiv>
           </Tooltip>
         ]

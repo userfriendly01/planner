@@ -49,6 +49,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     if(!callTagOptions.length) {
       getCallTagOptions()
         .then((allCallTagOptions: CallTagOptions[]) => {
+          console.log('allCallTagOptions', allCallTagOptions);
           setCallTagOptions(allCallTagOptions);
         })
         .catch(error => console.error(error.msg));
@@ -128,7 +129,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
             <Add fontSize={"inherit"}/>
           </IconButtonWrapper>
           <IconButtonWrapper data-testid="tooltip-profileCallTag-button">
-            <Tooltip key={"callTagTooltip"} placement="top" title={callTagOptions.map(option => '\n' + option['options_id'] + ') ' + option['options'].toString())}>
+            <Tooltip key={"callTagTooltip"} placement="top" title={callTagOptions.map(option => option['options_id'] + ') ' + option['options'].toString())}>
               <Info fontSize={"inherit"}/>
             </Tooltip>
           </IconButtonWrapper>
