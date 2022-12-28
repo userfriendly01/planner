@@ -175,6 +175,30 @@ describe("profileEntryFormReducer", () => {
     });
   });
 
+  describe("UPDATE_CALL_TAGS_LIST", () => {
+    test("should set callTagsList to payload passed", () => {
+      const expectedState = {
+        ...initialProfileEntryFormState,
+        callTagsList: {
+          wrkr_tsk_info_id: 2,
+          display_nme: "Claim Number",
+          options_id: 1
+        },
+        callTagsUpdated: true
+      };
+      const action = {
+        type: profileEntryFormActions.UPDATE_CALL_TAGS_LIST,
+        payload: {
+          wrkr_tsk_info_id: 2,
+          display_nme: "Claim Number",
+          options_id: 1
+        }
+      };
+      const result = profileEntryFormReducer(initialProfileEntryFormState, action);
+      expect(result).toStrictEqual(expectedState);
+    });
+  });
+
   describe("SET_UPDATE_PROFILE_FORM_STATE", () => {
     test("should set edit prepopulated fields to state", () => {
       const profile = {
