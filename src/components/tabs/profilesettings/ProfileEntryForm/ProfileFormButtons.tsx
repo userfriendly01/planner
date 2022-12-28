@@ -111,7 +111,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   const doUpdateProfile = () => {
     updateLoading({
       ...loading,
-      overlayMessage: `Editing ${form.profileName.value}...`,
+      overlayMessage: `Updating ${form.profileName.value}...`,
       saveStatus: ModalOverlayStatuses.SAVING,
       saveProfile: true
     });
