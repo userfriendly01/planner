@@ -128,7 +128,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
             <Add fontSize={"inherit"} />
           </IconButtonWrapper>
           <IconButtonWrapper data-testid="tooltip-profileCallTag-button">
-            <Tooltip key={"callTagTooltip"} placement="top" title={<span style={{ whiteSpace: 'pre-line' }}>{callTagOptions.map(option => option.option + ') ' + option.options + "\n")}</span>}>
+            <Tooltip key={"callTagTooltip"} placement="top" title={<span style={{ whiteSpace: 'pre-line' }}>{callTagOptions.map(option => option.options_id + ') ' + option.options + "\n")}</span>}>
               <Info fontSize={"inherit"} />
             </Tooltip>
           </IconButtonWrapper>
