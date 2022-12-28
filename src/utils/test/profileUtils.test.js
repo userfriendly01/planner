@@ -87,7 +87,7 @@ describe("profileUtils", () => {
     });
     test("should return a highlighted red error when feature is enabled and options are empty", () => {
       const options = [];
-      expect(formatProfileACWDataEntry(1, options)).toStrictEqual(<HighlightRed>{"Options not configured but feature enabled"}</HighlightRed>);
+      expect(formatProfileACWDataEntry(1, options)).toStrictEqual(<HighlightRed>{"Call tags not configured but feature enabled"}</HighlightRed>);
     });
     test("should return a highlighted red error when feature is disabled and options are not empty", () => {
       const options = [{
@@ -98,7 +98,7 @@ describe("profileUtils", () => {
         options_id: null,
         options: null
       }];
-      expect(formatProfileACWDataEntry(0, options)).toStrictEqual(<HighlightRed>{"Options configured but feature disabled"}</HighlightRed>);
+      expect(formatProfileACWDataEntry(0, options)).toStrictEqual(<HighlightRed>{"Call tags configured but feature disabled"}</HighlightRed>);
     });
   });
 

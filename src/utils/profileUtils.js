@@ -33,10 +33,10 @@ export const formatProfileACWDataEntry = (value, options) => {
     });
   }
   if (value === 1 && !options.length) {
-    return  <HighlightRed>{"Options not configured but feature enabled"}</HighlightRed>;
+    return  <HighlightRed>{"Call tags not configured but feature enabled"}</HighlightRed>;
   }
   if (value === 0 && options.length) {
-    return  <HighlightRed>{"Options configured but feature disabled"}</HighlightRed>;
+    return  <HighlightRed>{"Call tags configured but feature disabled"}</HighlightRed>;
   }
   return "";
 };
