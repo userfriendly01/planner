@@ -121,21 +121,20 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
             options={getCallTagDropDownOptions(callTagsForDropDown)}
             multiple={true}
             value={getCallTagDropDownOptions(newProfileCallTag)}
-            updateValue={(event: any, newInputValue: Array<{ [index: string]: any; value: number; }>) => newCallTagChanged(newInputValue)}
-          />
+            updateValue={(event: any, newInputValue: Array<{ [index: string]: any; value: number; }>) => newCallTagChanged(newInputValue)} />
         </ProfileDropdownRowItem>
         <ProfileDropdownRowItem>
           <IconButtonWrapper disabled={!newProfileCallTag.length} onClick={addCallTagClicked} data-testid="add-profileCallTag-button">
-            <Add fontSize={"inherit"}/>
+            <Add fontSize={"inherit"} />
           </IconButtonWrapper>
           <IconButtonWrapper data-testid="tooltip-profileCallTag-button">
-            <Tooltip key={"callTagTooltip"} placement="top" title={callTagOptions.map(option => option.options_id + ') ' + option.options.toString())}>
-              <Info fontSize={"inherit"}/>
+            <Tooltip key={"callTagTooltip"} placement="top" title={<span style={{ whiteSpace: 'pre-line' }}>{callTagOptions.map(option => "\n" + option + ') ' + option.options.toString())}</span>}>
+              <Info fontSize={"inherit"} />
             </Tooltip>
           </IconButtonWrapper>
         </ProfileDropdownRowItem>
       </ProfileDropdownRow>
-      <ProfileDropdownRowSeperator/>
+      <ProfileDropdownRowSeperator />
       <ProfileDropdownWrapper>
         {callTagsList.map((callTag: CallTag, index: number) => {
           return (
@@ -150,12 +149,11 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
                   value={callTag.options_id}
                   options={getCallTagOptionsDropDownOptions(callTagOptionsForDropdown)}
                   multiple={false}
-                  updateValue={(event: any, newInputValue: { value: number; }) => callTagOptionsChanged(newInputValue, callTag.wrkr_tsk_info_id)}
-                />
+                  updateValue={(event: any, newInputValue: { value: number; }) => callTagOptionsChanged(newInputValue, callTag.wrkr_tsk_info_id)} />
               </ProfileDropdownRowItem>
               <ProfileDropdownRowItem>
                 <IconButtonWrapper onClick={() => removeCallTagClicked(callTag)} data-testid="delete-callTag-button">
-                  <Delete fontSize="inherit"/>
+                  <Delete fontSize="inherit" />
                 </IconButtonWrapper>
               </ProfileDropdownRowItem>
             </ProfileDropdownRow>
