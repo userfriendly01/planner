@@ -45,7 +45,7 @@ export const DataGridRouting = (): JSX.Element => {
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
 
   useEffect(() => {
-    dispatch({ advanceFilter: getAdvanceFilter() });
+    getAdvanceFilter();
     const getTableData = async () =>{
       await loadDataTable();
     };
@@ -88,14 +88,13 @@ export const DataGridRouting = (): JSX.Element => {
       idEnd = maxId;
     }
     const result: CctSharedCallRoutingDb[] = data.filter((item: CctSharedCallRoutingDb) => item.id >= idStart && item.id <= idEnd);
-    const advanceFilter: RoutingFilter = getAdvanceFilter();
-    const advanceFilterLength: number = Object.keys(advanceFilter).length;
+    const advanceFilterLength: number = Object.keys(state.advanceFilter).length;
     if (advanceFilterLength > 0) {
       const advanceFilteredArray: Array<CctSharedCallRoutingDb> = [];
       result.forEach(item => {
         let matched = 0;
-        Object.keys(advanceFilter).forEach((key: keyof RoutingFilter) => {
-          if (item[key] === advanceFilter[key]) {
+        Object.keys(state.advanceFilter).forEach((key: keyof RoutingFilter) => {
+          if (item[key] === state.advanceFilter[key]) {
             matched += 1;
           }
         });
@@ -125,8 +124,7 @@ export const DataGridRouting = (): JSX.Element => {
         minId
       });
       const masterData: RoutingMasterData = getGridMasterData(result);
-      const advanceFilter: RoutingFilter = getAdvanceFilter();
-      const advanceFilterLength: number = Object.keys(advanceFilter).length;
+      const advanceFilterLength: number = Object.keys(state.advanceFilter).length;
       if (advanceFilterLength > 0) {
         filterRecords(result, minId, maxId);
       }
