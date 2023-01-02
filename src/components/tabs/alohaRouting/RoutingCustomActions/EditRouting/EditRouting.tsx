@@ -53,7 +53,7 @@ export const EditRouting = ({
       const flagStartTime = !Date.parse(selectedRow.startTime);
       const flagEndTime = !Date.parse(selectedRow.endTime);
       const curDate: Date = new Date();
-      const todayDate = `${curDate.getFullYear()}-${String(curDate.getMonth()).padStart(2, "0")}-${String(curDate.getDate()).padStart(2, "0")}`;
+      const todayDate = `${curDate.getFullYear()}-${String(curDate.getMonth()+1).padStart(2, "0")}-${String(curDate.getDate()).padStart(2, "0")}`;
 
       if (flagStartTime) {
         const hmsStartTime: string = convertTime12to24(selectedRow.startTime);
