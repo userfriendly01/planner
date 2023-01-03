@@ -52,7 +52,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     if(!callTagOptions.length) {
       getCallTagOptions()
         .then((allCallTagOptions: CallTagOptions[]) => {
-          allCallTagOptions.unshift({options_id: null, options: null})
+          allCallTagOptions.unshift({options_id: '', options: ''})
           setCallTagOptions(allCallTagOptions);
         })
         .catch(error => console.error(error.msg));

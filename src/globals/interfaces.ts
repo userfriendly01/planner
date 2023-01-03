@@ -167,7 +167,7 @@ export interface CallTag {
 }
 
 export interface CallTagOptions {
-  options_id: number,
+  options_id: any,
   options: string
 }
 
