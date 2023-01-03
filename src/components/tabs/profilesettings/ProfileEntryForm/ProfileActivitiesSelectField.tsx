@@ -19,7 +19,10 @@ import {
   apiPaths
 } from "globals";
 import { Tooltip } from "@mui/material";
-import { myAxios } from "utils";
+import { 
+  myAxios,
+  sortActivityByName
+} from "utils";
 
 const getActivities = () => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_ACTIVITIES)
   .then(res => {
@@ -76,7 +79,7 @@ const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectFieldProps) 
   };
 
   const getDropDownOptions = (optionsList: Activity[]) => {
-    return optionsList.map(option => ({
+    return optionsList.sort(sortActivityByName).map(option => ({
       value: option.activity_id,
       label: option.activity_nme
     }));

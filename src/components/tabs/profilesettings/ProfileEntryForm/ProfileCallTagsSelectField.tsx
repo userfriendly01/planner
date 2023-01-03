@@ -20,7 +20,10 @@ import {
   CallTag,
   CallTagOptions
 } from "globals";
-import { formatCallTagsName } from "utils";
+import { 
+  formatCallTagsName,
+  sortCallTagByName
+} from "utils";
 import {
   getCallTags,
   getCallTagOptions
@@ -84,7 +87,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   };
 
   const getCallTagDropDownOptions = (optionsList: CallTag[]) => {
-    return optionsList.map(option => ({
+    return optionsList.sort(sortCallTagByName).map(option => ({
       value: option.wrkr_tsk_info_id,
       label: formatCallTagsName(option.wrkr_tsk_info_nme)
     }));
