@@ -128,16 +128,19 @@ const ProfileFormFields = () => {
             });
           }}
         />
-        <ProfileCallTagsSelectField
-          callTagsList={form.callTagsList}
-          callTagOptionsList={form.callTagOptions}
-          setCallTagsList={callTagsList => {
-            setForm({
-              type: profileEntryFormActions.UPDATE_CALL_TAGS_LIST,
-              payload: callTagsList
-            });
-          }}
-        />
+        {
+          form["acwDataEntry"].value === false ? "" :
+            <ProfileCallTagsSelectField
+              callTagsList={form.callTagsList}
+              callTagOptionsList={form.callTagOptions}
+              setCallTagsList={callTagsList => {
+                setForm({
+                  type: profileEntryFormActions.UPDATE_CALL_TAGS_LIST,
+                  payload: callTagsList
+                });
+              }}
+            />
+        }
       </FormControlsPane>
       <RightColumn>
         <div style={form.formMode === formModes.INSERT ? { height: "95px" } : { height: "125px" }}></div>
