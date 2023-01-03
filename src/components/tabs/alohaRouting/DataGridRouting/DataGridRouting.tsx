@@ -32,26 +32,9 @@ import {
 } from "../RoutingCustomActions";
 import { AlertBarProps } from "utils/interfaces";
 
-const getAdvanceFilter = (): RoutingFilter => {
-  try {
-    const cachedFilter: string | undefined = localStorage.getItem(CACHE_FILTER_ROUTING);
-    const advanceFilter: RoutingFilter = JSON.parse(cachedFilter) || {};
-    Object.keys(advanceFilter).forEach((key: keyof RoutingFilter) => {
-      if (advanceFilter[key] === "") {
-        delete advanceFilter[key];
-      }
-    });
-    return advanceFilter;
-  } catch (e) {
-    console.log(e);
-  }
-  return {};
-};
-
 export const DataGridRouting = (): JSX.Element => {
   const accessToken: string = getAccessToken();
   const graphQlApiUrl: string = getGraphQLEndpoint();
-  routingInitState.advanceFilter= getAdvanceFilter();
   const [state, setState] = useState<RoutingInitState>(routingInitState);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
 
@@ -61,6 +44,22 @@ export const DataGridRouting = (): JSX.Element => {
     };
     getTableData();
   }, []);
+
+  const getAdvanceFilter = (): RoutingFilter => {
+    try {
+      const cachedFilter: string | undefined = localStorage.getItem(CACHE_FILTER_ROUTING);
+      const advanceFilter: RoutingFilter = JSON.parse(cachedFilter) || {};
+      Object.keys(advanceFilter).forEach((key: keyof RoutingFilter) => {
+        if (advanceFilter[key] === "") {
+          delete advanceFilter[key];
+        }
+      });
+      return advanceFilter;
+    } catch (e) {
+      console.log(e);
+    }
+    return {};
+  };
 
   const handleSearchDDChange = (event: any) => {
     setState(
@@ -73,7 +72,7 @@ export const DataGridRouting = (): JSX.Element => {
       });
   };
 
-  const filterRecords = (dataRec?: CctSharedCallRoutingDb[], minId?: number, maxId?: number) => {
+  const filterRecords = (dataRec?: CctSharedCallRoutingDb[], minId?: number, maxId?: number, advanceFilter?: RoutingFilter) => {
     let {
       data, idStart, idEnd
     } = state;
@@ -83,13 +82,13 @@ export const DataGridRouting = (): JSX.Element => {
       idEnd = maxId;
     }
     const result: CctSharedCallRoutingDb[] = data.filter((item: CctSharedCallRoutingDb) => item.id >= idStart && item.id <= idEnd);
-    const advanceFilterLength: number = Object.keys(state.advanceFilter).length;
+    const advanceFilterLength: number = Object.keys(advanceFilter).length;
     if (advanceFilterLength > 0) {
       const advanceFilteredArray: Array<CctSharedCallRoutingDb> = [];
       result.forEach(item => {
         let matched = 0;
-        Object.keys(state.advanceFilter).forEach((key: keyof RoutingFilter) => {
-          if (item[key] === state.advanceFilter[key]) {
+        Object.keys(advanceFilter).forEach((key: keyof RoutingFilter) => {
+          if (item[key] === advanceFilter[key]) {
             matched += 1;
           }
         });
@@ -115,23 +114,22 @@ export const DataGridRouting = (): JSX.Element => {
       const sortedResult: CctSharedCallRoutingDb[] = result.sort(((a: CctSharedCallRoutingDb, b: CctSharedCallRoutingDb) => a.id - b.id));
       const minId: number = sortedResult[0].id;
       const maxId: number = sortedResult[result.length - 1].id;
+      const masterData: RoutingMasterData = getGridMasterData(result);
+      const advanceFilter: RoutingFilter = getAdvanceFilter();
+      const advanceFilterLength: number = Object.keys(advanceFilter).length;
+      if (advanceFilterLength > 0) {
+        filterRecords(result, minId, maxId,advanceFilter);
+      }
       setState({
         ...state,
+        advanceFilter,
         data: result,
         filteredItems: result,
         fetching: false,
         idStart: minId,
         idEnd: maxId,
         maxId,
-        minId
-      });
-      const masterData: RoutingMasterData = getGridMasterData(result);
-      const advanceFilterLength: number = Object.keys(state.advanceFilter).length;
-      if (advanceFilterLength > 0) {
-        filterRecords(result, minId, maxId);
-      }
-      setState({
-        ...state,
+        minId,
         masterData
       });
     } else {
