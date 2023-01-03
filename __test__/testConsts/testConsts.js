@@ -307,8 +307,11 @@ export const initialTestState = {
   skillContext: {
     skills: skillsList
   },
-  activitiesContext: {
-    activities: mockActivities
+  callTagsContext: {
+    callTags: mockCallTags
+  },
+  callTagOptionsContext: {
+    callTagOptions: mockCallTagOptions
   },
   userContext: {
     pingIdentity: {

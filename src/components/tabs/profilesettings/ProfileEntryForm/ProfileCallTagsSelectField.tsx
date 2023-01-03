@@ -25,9 +25,32 @@ import {
   sortCallTagByName
 } from "utils";
 import {
-  getCallTags,
-  getCallTagOptions
-} from "services";
+  apiPaths
+} from "globals";
+
+const getCallTags = () => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_CALL_TAGS)
+  .then(res => {
+    resolve(res.data);
+  })
+  .catch(error => {
+    reject({
+      msg: "Failed to fetch callTags from service",
+      error
+    });
+  })
+);
+
+const getCallTagOptions = () => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_CALL_TAGS_OPTIONS)
+  .then(res => {
+    resolve(res.data);
+  })
+  .catch(error => {
+    reject({
+      msg: "Failed to fetch callTags from service",
+      error
+    });
+  })
+);
 
 const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const {
