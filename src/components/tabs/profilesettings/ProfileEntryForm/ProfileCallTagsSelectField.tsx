@@ -52,7 +52,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     if(!callTagOptions.length) {
       getCallTagOptions()
         .then((allCallTagOptions: CallTagOptions[]) => {
-          allCallTagOptions.unshift({options_id: '', options: ''})
+          allCallTagOptions.unshift({options_id: null, options: null})
           setCallTagOptions(allCallTagOptions);
         })
         .catch(error => console.error(error.msg));
@@ -66,7 +66,6 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   });
 
   const callTagOptionsForDropdown = callTagOptions.filter(callTagOption => {
-    console.log("callTagOptions", callTagOptions);
     return !callTagOptionsList.find(item => {
       return item.options_id === callTagOption.options_id;
     });
@@ -98,7 +97,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const getCallTagOptionsDropDownOptions = (optionsList: CallTagOptions[]) => {
     return optionsList.map(option => ({
       value: option.options_id,
-      label: option.options_id
+      label: option.options_id === null ? '' : option.options_id
     }));
   };
 
@@ -132,7 +131,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
             <Add fontSize={"inherit"} />
           </IconButtonWrapper>
           <IconButtonWrapper data-testid="tooltip-profileCallTag-button">
-            <Tooltip key={"callTagTooltip"} placement="top" title={<span style={{ whiteSpace: "pre-line" }}>{callTagOptions.map(option => option.options_id + ") " + option.options + "\n\n")}</span>}>
+            <Tooltip key={"callTagTooltip"} placement="top" title={<span style={{ whiteSpace: "pre-line" }}>{callTagOptions.filter(option => option.options_id !== null).map(option => option.options_id + ") " + option.options + "\n\n")}</span>}>
               <Info fontSize={"inherit"} />
             </Tooltip>
           </IconButtonWrapper>
