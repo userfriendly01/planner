@@ -22,7 +22,7 @@ export const initialProfileEntryFormState = {
     value: false
   },
   acwDataEntry: {
-    value: false
+    value: true
   },
   manualRecordedInbound: {
     value: false
@@ -189,7 +189,7 @@ export const initialProfileEditEntryFormState = {
     value: false
   },
   acwDataEntry: {
-    value: false
+    value: true
   },
   manualRecordedInbound: {
     value: false
