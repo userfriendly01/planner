@@ -36,8 +36,6 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     setCallTagsList
   } = props;
 
-  callTagOptionsList.unshift({options_id: null, options: null})
-
   const defaultNewCallTag: CallTag[] = [];
   const [newProfileCallTag, setNewProfileCallTag] = React.useState<CallTag[]>(defaultNewCallTag);
   const [callTags, setCallTags] = React.useState([]);
@@ -54,6 +52,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     if(!callTagOptions.length) {
       getCallTagOptions()
         .then((allCallTagOptions: CallTagOptions[]) => {
+          allCallTagOptions.unshift({options_id: null, options: null})
           setCallTagOptions(allCallTagOptions);
         })
         .catch(error => console.error(error.msg));
@@ -67,7 +66,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   });
 
   const callTagOptionsForDropdown = callTagOptions.filter(callTagOption => {
-    console.log("callTagOptionsList", callTagOptionsList);
+    console.log("callTagOptions", callTagOptions);
     return !callTagOptionsList.find(item => {
       return item.options_id === callTagOption.options_id;
     });
