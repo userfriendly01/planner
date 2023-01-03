@@ -37,11 +37,6 @@ export const sortNumbers = (a: number, b: number) => {
   return a - b;
 };
 
-export const sortSkillByName = (a: any, b: any) => {
-  const [aName, bName] = [a.name, b.name];
-  return sortStrings(aName, bName);
-};
-
 export const sortActivityByName = (a: any, b: any) => {
   const [aName, bName] = [a.activity_nme, b.activity_nme];
   return sortStrings(aName, bName);

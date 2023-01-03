@@ -2,7 +2,8 @@ import {
   sortDialListEntriesByName,
   sortDirectoryListEntriesByName,
   sortManagersByName,
-  sortSkillByName,
+  sortActivityByName,
+  sortCallTagByName,
   sortQueueByName,
   sortProfilesById,
   sortProfilesByName
@@ -162,21 +163,40 @@ describe("sortManagersByName", () => {
   });
 });
 
-describe("sortSkillsByName", () => {
+describe("sortActivityByName", () => {
   const arr = [
-    { name: "bee" },
-    { name: "dee" },
-    { name: "cee" },
-    { name: "ay" },
-    { name: "ay" }
+    { activity_nme: "bee" },
+    { activity_nme: "dee" },
+    { activity_nme: "cee" },
+    { activity_nme: "ay" },
+    { activity_nme: "ay" }
   ];
   test("should return array in alphabetical order", () => {
-    expect(arr.sort(sortSkillByName)).toEqual([
-      { name: "ay" },
-      { name: "ay" },
-      { name: "bee" },
-      { name: "cee" },
-      { name: "dee" }
+    expect(arr.sort(sortActivityByName)).toEqual([
+      { activity_nme: "ay" },
+      { activity_nme: "ay" },
+      { activity_nme: "bee" },
+      { activity_nme: "cee" },
+      { activity_nme: "dee" }
+    ]);
+  });
+});
+
+describe("sortCallTagByName", () => {
+  const arr = [
+    { wrkr_tsk_info_nme: "bee" },
+    { wrkr_tsk_info_nme: "dee" },
+    { wrkr_tsk_info_nme: "cee" },
+    { wrkr_tsk_info_nme: "ay" },
+    { wrkr_tsk_info_nme: "ay" }
+  ];
+  test("should return array in alphabetical order", () => {
+    expect(arr.sort(sortCallTagByName)).toEqual([
+      { wrkr_tsk_info_nme: "ay" },
+      { wrkr_tsk_info_nme: "ay" },
+      { wrkr_tsk_info_nme: "bee" },
+      { wrkr_tsk_info_nme: "cee" },
+      { wrkr_tsk_info_nme: "dee" }
     ]);
   });
 });
