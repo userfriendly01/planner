@@ -36,7 +36,6 @@ export const DataGridRouting = (): JSX.Element => {
   const graphQlApiUrl: string = getGraphQLEndpoint();
   const [state, setState] = useState<RoutingInitState>(routingInitState);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
-  console.log("state :", state);
 
   useEffect(() => {
     const getTableData = async () =>{
@@ -133,7 +132,6 @@ export const DataGridRouting = (): JSX.Element => {
         minId,
         masterData
       });
-      console.log("state 111", state);
     } else {
       setState({
         ...state,
@@ -212,7 +210,6 @@ export const DataGridRouting = (): JSX.Element => {
   };
 
   const exportDataFile = () =>{
-    console.log("State Inside ", state);
     downloadCSV(EXPORT_FILE_PREFIX.ROUTING, state.filteredItems);
   };
 
