@@ -86,7 +86,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           });
         }
       } catch (err) {
-        console.error("Failed to fetch user from peoples database.");
+        console.error("Failed to fetch user from peoples database.", err);
       }
     };
     if(!form.nNumberFetchedUser && form.nNumber.value && form.formMode === formModes.UPDATE){

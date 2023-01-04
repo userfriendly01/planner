@@ -23,7 +23,7 @@ export const fetchUser = (nNumber: string): Promise<FetchUserResponse> => myAxio
         officeNumber: res.data[0].person.data.OfficeNumber,
         departmentName: res.data[0].person.data.DepartmentName,
         departmentNumber: res.data[0].person.data.DepartmentNumber,
-        manager: `${res.data[0].manager.data.FirstName} ${res.data[0].manager.data.LastName}`
+        manager: res.data[0].manager?.data && `${res.data[0].manager?.data?.FirstName} ${res.data[0].manager?.data?.LastName}`
       };
     } else {
       throw "fetchUser employee lookup did not return any data";
