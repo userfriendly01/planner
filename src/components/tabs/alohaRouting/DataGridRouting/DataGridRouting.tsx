@@ -25,10 +25,9 @@ import {
 } from "./GridMaster";
 import { RoutingTableBox } from "../AlohaRouting.Styles";
 import GridSpinner from "./GridSpinner";
-import { CustomFlowRoutingToolBar } from "../RoutingCustomActions/CustomRoutingGridToolBar";
 import { CustomToast } from "components";
 import {
-  RoutingAdvanceSearch, AddRouting, EditRouting
+  RoutingAdvanceSearch, AddRouting, EditRouting, CustomFlowRoutingToolBar
 } from "../RoutingCustomActions";
 import { AlertBarProps } from "utils/interfaces";
 
@@ -37,6 +36,7 @@ export const DataGridRouting = (): JSX.Element => {
   const graphQlApiUrl: string = getGraphQLEndpoint();
   const [state, setState] = useState<RoutingInitState>(routingInitState);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
+  console.log("state :", state);
 
   useEffect(() => {
     const getTableData = async () =>{
@@ -133,6 +133,7 @@ export const DataGridRouting = (): JSX.Element => {
         minId,
         masterData
       });
+      console.log("state 111", state);
     } else {
       setState({
         ...state,
@@ -211,6 +212,7 @@ export const DataGridRouting = (): JSX.Element => {
   };
 
   const exportDataFile = () =>{
+    console.log("State Inside ", state);
     downloadCSV(EXPORT_FILE_PREFIX.ROUTING, state.filteredItems);
   };
 
