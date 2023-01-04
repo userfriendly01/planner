@@ -72,7 +72,7 @@ export const DataGridRouting = (): JSX.Element => {
       });
   };
 
-  const filterRecords = (dataRec?: CctSharedCallRoutingDb[], minId?: number, maxId?: number, advanceFilter?: RoutingFilter) => {
+  const filterRecords = (dataRec?: CctSharedCallRoutingDb[], minId?: number, maxId?: number) => {
     let {
       data, idStart, idEnd
     } = state;
@@ -82,6 +82,7 @@ export const DataGridRouting = (): JSX.Element => {
       idEnd = maxId;
     }
     const result: CctSharedCallRoutingDb[] = data.filter((item: CctSharedCallRoutingDb) => item.id >= idStart && item.id <= idEnd);
+    const advanceFilter: RoutingFilter = getAdvanceFilter();
     const advanceFilterLength: number = Object.keys(advanceFilter).length;
     if (advanceFilterLength > 0) {
       const advanceFilteredArray: Array<CctSharedCallRoutingDb> = [];
@@ -118,7 +119,7 @@ export const DataGridRouting = (): JSX.Element => {
       const advanceFilter: RoutingFilter = getAdvanceFilter();
       const advanceFilterLength: number = Object.keys(advanceFilter).length;
       if (advanceFilterLength > 0) {
-        filterRecords(result, minId, maxId,advanceFilter);
+        filterRecords(result, minId, maxId);
       }
       setState({
         ...state,

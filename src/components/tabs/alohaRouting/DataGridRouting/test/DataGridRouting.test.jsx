@@ -210,10 +210,10 @@ describe("<DataGridRouting />", ()=>{
   });
 
   describe("Check Existing Filter", ()=>{
-    beforeAll(()=>{
+    beforeEach(()=>{
       localStorage.setItem(CACHE_FILTER_ROUTING, JSON.stringify(filteredItems));
     });
-    afterAll(()=>{
+    afterEach(()=>{
       localStorage.removeItem(CACHE_FILTER_ROUTING);
     });
     test("Simulate Channel in Existing Filtered Item",()=>{
@@ -236,6 +236,14 @@ describe("<DataGridRouting />", ()=>{
       const openModal = RoutingAdvanceSearch.mock.calls[0][0].openModal;
       act(()=>{ openModal(true); });
       expect(RoutingAdvanceSearch.mock.calls[1][0].isOpen).toBe(true);
+    });
+    test("Simulate openAdvanceSearchModal applyFilter props", ()=>{
+      const validRoutingDataList = createSampleTestRoutingDataList(15);
+      retrieveRoutingData.mockResolvedValue(validRoutingDataList);
+      renderDataGridRouting();
+      const applyFilter = RoutingAdvanceSearch.mock.calls[0][0].applyFilter;
+      act(()=>{ applyFilter(); });
+      expect(RoutingAdvanceSearch.mock.calls[1][0].isOpen).toBe(false);
     });
     test("Simulate openAdvanceSearchModal handleChange", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
