@@ -14,6 +14,7 @@ export interface ComponentControlProps {
   disabled?: boolean,
   error: boolean,
   required: boolean
+  key?: string
 }
 function ComponentControl({
   control,
@@ -25,7 +26,8 @@ function ComponentControl({
   onChange,
   disabled,
   error,
-  required
+  required,
+  key
 }: ComponentControlProps): JSX.Element {
   switch (control) {
     case "input":
@@ -66,6 +68,7 @@ function ComponentControl({
           error={error}
           required={required}
           disabled={disabled}
+          key = {key}
         />
       );
     default:

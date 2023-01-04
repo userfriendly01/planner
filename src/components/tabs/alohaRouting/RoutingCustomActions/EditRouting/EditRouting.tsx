@@ -172,6 +172,7 @@ export const EditRouting = ({
                       onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => handleInputChange(event, key, valueSetter)}
                       required={required}
                       disabled={disableEdit}
+                      key = {key}
                     />
                   </Grid>
                 );

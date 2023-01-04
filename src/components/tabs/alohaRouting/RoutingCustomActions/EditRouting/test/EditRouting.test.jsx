@@ -1,14 +1,16 @@
 import React from "react";
-import { EditRouting } from "../index";
+import  { EditRouting }  from "../index";
 import {
   ROUTING_CACHE_MASTER_DATA
 } from "utils";
 import {
-  fireEvent, render, initialTestState, waitFor, act, within
+  fireEvent, render, initialTestState, waitFor, act, setupMockedComponents, expectOnlyPassedProps
 } from "testUtils";
 import {
   updateRoutingDB, deleteRoutingRule
 } from "services";
+import { TextField } from "@mui/material";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 const validRoutingData = {
   id: 1,
   all: "test",
@@ -40,7 +42,25 @@ const validStartTime =  {
 const openEditModal = jest.fn();
 
 const handleInputChange = jest.fn();
+jest.mock("@mui/material", () => ({
+  __esModule: true,
+  TextField: jest.fn(),
+  Button: jest.fn(),
+  Tabs: jest.fn(),
+  Tab: jest.fn(),
+  Paper: jest.fn(),
+  Checkbox: jest.fn()
+}));
 
+jest.mock("@mui/x-data-grid", () => ({
+  __esModule: true,
+  DataGrid: jest.fn(),
+  GridToolbar: jest.fn()
+}));
+
+jest.mock("@mui/x-date-pickers/TimePicker", () => ({
+  TimePicker: jest.fn()
+}));
 const mockMasterData = {
   brand: ["Test Brand"],
   channel: ["Test1 Channel", "Test2 Channel"]
@@ -72,6 +92,10 @@ describe("<EditRouting />", () => {
         removeEventListener: jest.fn(),
         dispatchEvent: jest.fn()
       }))
+    });
+    setupMockedComponents({
+      TextField,
+      TimePicker
     });
     localStorage.setItem(ROUTING_CACHE_MASTER_DATA, JSON.stringify(mockMasterData));
   });
@@ -188,44 +212,14 @@ describe("<EditRouting />", () => {
         expect(openEditModal).toBeCalledTimes(0);
       });
       test("Simulate the Start Time Input Change ", async() => {
-        const {
-          queryAllByLabelText, queryAllByRole
-        } = renderEditRouting(true, validRoutingData);
-        const timeInput = queryAllByLabelText(/Choose time, selected time is 12:00 AM/i ,{ hidden: true });
-        act(()=>{
-          fireEvent.click(timeInput[0]);
+        renderEditRouting(true, validRoutingData);
+        expectOnlyPassedProps(TimePicker, {
+          value: jest.fn(),
+          onChange: jest.fn(),
+          label: "Start time - EST",
+          disabled: true,
+          key: "startTime"
         });
-        //const sideButtonNav = getByLabelText(/open next view/i ,{ hidden: true });
-        const timeInputHours = queryAllByRole("listbox", {
-          name: /Select Hours./i ,
-          hidden: true
-        });
-
-        const { getAllByRole } = within(timeInputHours[0]);
-
-        const listBoxHoursOptions = getAllByRole("option", {
-          name: /11 hours/i,
-          hidden: true
-        });
-
-        act(()=>{
-          fireEvent.click(listBoxHoursOptions[0]);
-        });
-        expect(timeInput).toBeCalled;
-        expect(listBoxHoursOptions[0]).toHaveTextContent("11");
-        { /*const timeInputMinutes = queryAllByRole("listbox", {
-          name: /Select minutes./i ,
-          hidden: true
-        });
-        const { queryByRole } = within(timeInputMinutes[0]);
-        const listBoxMinutesOptions = queryByRole("option", {
-          name: /10 minutes/i,
-          hidden: true
-        });
-        await waitFor(()=>{
-          fireEvent.click(listBoxMinutesOptions[0]);
-        });
-      expect(listBoxMinutesOptions[0]).toHaveTextContent("05");*/ }
       });
     });
   });
