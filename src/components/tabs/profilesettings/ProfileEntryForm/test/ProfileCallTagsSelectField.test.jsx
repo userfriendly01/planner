@@ -3,6 +3,8 @@ import {
   Add,
   Delete
 } from "@mui/icons-material";
+
+import { getCallTags, getCallTagOptions } from "services";
 import MockAdapter from "axios-mock-adapter";
 import { Dropdown } from "components";
 import React from "react";
@@ -37,6 +39,9 @@ jest.mock("components", () => ({
   Dropdown: jest.fn(),
   StyledButton: jest.fn()
 }));
+
+getCallTags.mockImplementation(() => { return Promise.resolve(200, { response: "success" } ); });
+getCallTagOptions.mockImplementation(() => { return Promise.resolve(200, { response: "success" } ); });
 
 const statusCode = 500;
 const axiosMock = new MockAdapter(myAxios);
