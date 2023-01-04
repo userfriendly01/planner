@@ -20,7 +20,7 @@ import {
   CallTag,
   CallTagOptions
 } from "globals";
-import { 
+import {
   formatCallTagsName,
   sortCallTagByName
 } from "utils";
@@ -28,8 +28,6 @@ import {
   getCallTags,
   getCallTagOptions
 } from "services";
-
-
 
 const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const {
@@ -54,7 +52,10 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     if(!callTagOptions.length) {
       getCallTagOptions()
         .then((allCallTagOptions: CallTagOptions[]) => {
-          allCallTagOptions.unshift({options_id: null, options: null})
+          allCallTagOptions.unshift({
+            options_id: null,
+            options: null
+          });
           setCallTagOptions(allCallTagOptions);
         })
         .catch(error => console.error(error.msg));
@@ -99,7 +100,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const getCallTagOptionsDropDownOptions = (optionsList: CallTagOptions[]) => {
     return optionsList.map(option => ({
       value: option.options_id,
-      label: option.options_id === null ? '' : option.options_id
+      label: option.options_id === null ? "" : option.options_id
     }));
   };
 

@@ -19,7 +19,7 @@ import {
   apiPaths
 } from "globals";
 import { Tooltip } from "@mui/material";
-import { 
+import {
   myAxios,
   sortActivityByName
 } from "utils";
