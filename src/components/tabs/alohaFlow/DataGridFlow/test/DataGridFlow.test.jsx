@@ -139,10 +139,10 @@ describe.only("<DataGridFlow />", () => {
       value: matchMedia
     });
   });
-  describe.only("Data Table Footer", ()=>{
+  describe("Data Table Footer", ()=>{
     test.only("Simulate Data Table Pagination", async () =>{
-      const validRoutingDataList = createFlowDataList(15);
-      retrieveFlowData.mockResolvedValue(validRoutingDataList);
+      const validFlowDataList = createFlowDataList(15);
+      retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
       expect(DataGrid.mock.calls[0][0].page).toBe(1);
       expect(DataGrid.mock.calls[0][0].pageSize).toBe(10);

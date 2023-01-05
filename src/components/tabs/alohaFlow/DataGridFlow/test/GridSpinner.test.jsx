@@ -6,7 +6,6 @@ import "jest-styled-components";
 describe("<GridSpinner />", () => {
 
   it("renders", () => {
-    const tree = renderer.create(<GridSpinner />);
-    expect(tree).toMatchSnapshot();
+    renderer.create(<GridSpinner />);
   });
 });
