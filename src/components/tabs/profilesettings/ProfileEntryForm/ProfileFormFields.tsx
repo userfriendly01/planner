@@ -22,6 +22,8 @@ import { profileEntryFormActions } from "context/reducers/profileEntryFormReduce
 import {
   ProfileNameTextField,
   ProfileActivitiesSelectField,
+  ProfileCallTagsSelectField,
+  ProfileQueuesSelectField,
   OverflowSkillTextField
 } from "components";
 
@@ -117,6 +119,28 @@ const ProfileFormFields = () => {
             });
           }}
         />
+        <ProfileQueuesSelectField
+          transferQueues={form.transferQueues}
+          setQueueList={transferQueues => {
+            setForm({
+              type: profileEntryFormActions.UPDATE_TRANSFER_QUEUES,
+              payload: transferQueues
+            });
+          }}
+        />
+        {
+          form["acwDataEntry"].value === false ? "" :
+            <ProfileCallTagsSelectField
+              callTagsList={form.callTagsList}
+              callTagOptionsList={form.callTagOptions}
+              setCallTagsList={callTagsList => {
+                setForm({
+                  type: profileEntryFormActions.UPDATE_CALL_TAGS_LIST,
+                  payload: callTagsList
+                });
+              }}
+            />
+        }
       </FormControlsPane>
       <RightColumn>
         <div style={form.formMode === formModes.INSERT ? { height: "95px" } : { height: "125px" }}></div>

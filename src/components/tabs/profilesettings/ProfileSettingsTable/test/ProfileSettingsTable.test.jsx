@@ -9,7 +9,6 @@ import {
 } from "testUtils";
 import { profileEntryFormDispatch } from "context";
 import { ProfileEntryForm } from "components"
-import { getWorkerTaskInfo } from "services";
 
 jest.mock("context", () => ({
   __esModule: true,
@@ -32,57 +31,106 @@ describe("<ProfileSettingsTable />", () => {
     });
     jest.clearAllMocks();
     profileEntryFormDispatch.mockReturnValue(mockSetForm);
-    getWorkerTaskInfo.mockResolvedValue([{
-      profile_id: 1,
-      wrkr_tsk_info_id: 3,
-      display_nme: "Call Type",
-      options_id: 1
-    }]);
   });
 
   const validNid = "n0138110"
   const profiles = [
     {
+      activities: [{
+        profile_id: 0,
+        activity_id: 1,
+        activity_nme: "Offline",
+        availability: 0
+      }],
+      acw_data_entry_i: {
+        data: [1],
+        type: "Buffer"
+      },
+      acw_option_i: {
+        data: [0],
+        type: "Buffer"
+      },
+      agent_assisted_pay_i: {
+        data: [1],
+        type: "Buffer"
+      },
+      aggregateQueues: [
+        {
+          aggregate_queues_id: 0,
+          aggregate_queues_nme: "PGS - Gold Spanish",
+          aggregate_queues_type: "single",
+          owner_type: "profile",
+          profile_id: 0,
+          queues: [
+            {
+              skill_id: 106,
+              skill_nme: "PGS - Gold Spanish",
+              skill_num: "pgsGoldSpanish",
+              tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c33"
+            }
+          ],
+          workerSid: null
+        }
+      ],
+      auto_answd_i: {
+        data: [0],
+        type: "Buffer"
+      },
+      callTags: [{
+        profile_id: 15,
+        display_nme: "Negotiation Type",
+        wrkr_tsk_info_id: 3,
+        wrkr_tsk_info_nme: "negotiation_type",
+        options_id: 1,
+        options: [
+          "Info Exchange",
+          "Bargaining",
+          "Closing",
+          "N/A",
+          "Offer"
+        ]
+      }],
+      click_to_dial_i: {
+        data: [1],
+        type: "Buffer"
+      },
+      manual_record_inbound_i: {
+        data: [1],
+        type: "Buffer"
+      },
+      manual_recorded_i: {
+        data: [1],
+        type: "Buffer"
+      },
+      otbnd_recorded_i: {
+        data: [1],
+        type: "Buffer"
+      },
+      overflow_skill: "Test Overflow Skill",
+      pmt_prcsg_i: {
+        data: [0],
+        type: "Buffer"
+      },
+      policy_number_edit_i: {
+        data: [0],
+        type: "Buffer"
+      },
       profile_id: 1,
       profile_nme: "Game of Phones",
       recorded_i: {
-        data: [0]
+        data: [0],
+        type: "Buffer"
       },
-      auto_answd_i: {
-        data: [0]
-      },
-      pmt_prcsg_i: {
-        data: [0]
-      },
-      otbnd_recorded_i: {
-        data: [1]
-      },
-      acw_option_i: {
-        data: [0]
-      },
-      manual_recorded_i: {
-        data: [1]
-      },
-      acw_data_entry_i: {
-        data: [1]
-      },
-      manual_record_inbound_i: {
-        data: [1]
-      },
-      agent_assisted_pay_i: {
-        data: [1]
-      },
-      overflow_skill: "Test Overflow Skill",
-      policy_number_edit_i: {
-        data: [0]
-      },
+      skills: [{
+        profile_id: 12,
+        skill_id: 21,
+        skill_num: "bscCbs",
+        skill_nme: "BSC - CBS"
+      }],
       voice_mail_transcription_i: {
-        data: [0]
-      },
-      click_to_dial_i: {
-        data: [1]
-      },
-      activities: "[{\"id\": 1, \"name\": \"Offline\", \"availability\": 0}]"
+        data: [0],
+        type: "Buffer"
+      }
     }
   ];
 
@@ -105,10 +153,11 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByText("Voice Mail Transcription", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Click To Dial", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Activities", { selector: "th" })).toBeInTheDocument();
+      expect(rendered.getByText("Transfer Queues", { selector: "th" })).toBeInTheDocument();
       const tableRows = rendered.getAllByTestId("table-row");
       const tableHeaders = rendered.getAllByTestId("table-header");
       expect(tableRows.length).toBe(1);
-      expect(tableHeaders.length).toBe(17);
+      expect(tableHeaders.length).toBe(18);
     });
 
     test("should render correct tooltips", async () => {
@@ -129,6 +178,7 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByLabelText("Voice mail will be transcribed and sent within the notification email to the user")).toBeInTheDocument();
       expect(rendered.getByLabelText("Enable click-to-dial/transfer from external application")).toBeInTheDocument();
       expect(rendered.getByLabelText("Profile Activities")).toBeInTheDocument();
+      expect(rendered.getByLabelText("UI Feature: Additional transfer queues that will appear in the Triton queue ticker")).toBeInTheDocument();
     });
 
     test("should render row data", async () => {
@@ -158,19 +208,6 @@ describe("<ProfileSettingsTable />", () => {
     test("renders an edit icon per profile for a validNid", () => {
       const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={validNid} setProfileModalState={setProfileModalState}/>)
       expect(rendered.queryAllByTestId("edit-button")).toHaveLength(1);
-    });
-  });
-
-  describe("getWorkerTaskInfo", () => {
-    test("service call returns success", async () => {
-      const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={validNid} setProfileModalState={setProfileModalState}/>)
-      expect(rendered.container).toHaveTextContent("Options not configured but feature enabled");
-    });
-    test("service call returned an error", async () => {
-      getWorkerTaskInfo.mockRejectedValue({ who: "cares? but this is bad wahhhh" });
-
-      render(<ProfileSettingsTable profileList={profiles} loggedInRep={validNid} setProfileModalState={setProfileModalState}/>)
-      expect(console.error).toBeCalledTimes(1);
     });
   });
 });
