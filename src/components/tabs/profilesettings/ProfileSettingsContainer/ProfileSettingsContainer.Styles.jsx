@@ -46,6 +46,6 @@ export const ControlItem = styled.div`
   }
 `;
 
-export const AddProfileButton = styled(StyledButton)`
+export const CreateProfileButton = styled(StyledButton)`
   width: 17%;
 `;

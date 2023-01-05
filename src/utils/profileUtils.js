@@ -1,5 +1,10 @@
 import React from "react";
-import { Check } from "@mui/icons-material";
+import _ from "lodash";
+import {
+  Check,
+  AutoAwesomeMotion
+} from "@mui/icons-material";
+import { Tooltip } from "@mui/material";
 import {
   BubbleDiv,
   HighlightRed
@@ -22,14 +27,16 @@ export const formatProfileBooleanDataTrueFalse = value => {
 export const formatProfileACWDataEntry = (value, options) => {
   if (value === 1 && options.length) {
     return options.map(option => {
-      return <BubbleDiv key={option.wrkr_tsk_info_id}>{option.display_nme}</BubbleDiv>;
+      return <Tooltip key={option.wrkr_tsk_info_id} placement="top" title={option.options ? option.options.toString().replace(/,/g,", ") : ""}>
+        <BubbleDiv key={option.wrkr_tsk_info_id}>{option.display_nme}</BubbleDiv>
+      </Tooltip>;
     });
   }
   if (value === 1 && !options.length) {
-    return  <HighlightRed>{"Options not configured but feature enabled"}</HighlightRed>;
+    return  <HighlightRed>{"Call tags not configured but feature enabled"}</HighlightRed>;
   }
   if (value === 0 && options.length) {
-    return  <HighlightRed>{"Options configured but feature disabled"}</HighlightRed>;
+    return  <HighlightRed>{"Call tags configured but feature disabled"}</HighlightRed>;
   }
   return "";
 };
@@ -48,6 +55,10 @@ export const formatActivityData = activity => {
   return <BubbleDiv>{activity}</BubbleDiv>;
 };
 
+export const formatCallTagsName = name => {
+  return _.startCase(name);
+};
+
 export const profileSettingsViews = [
   {
     value: "PROFILE_DIRECTORY",
@@ -58,3 +69,13 @@ export const profileSettingsViews = [
     label: "Profile Settings"
   }
 ];
+
+export const formatAggregateQueues = aggregateQueues => {
+  return aggregateQueues.map(queue => {
+    if (queue.aggregate_queues_type === "aggregate") {
+      return <BubbleDiv key={queue.aggregate_queues_nme}>{queue.aggregate_queues_nme} <AutoAwesomeMotion fontSize="1 rem"/></BubbleDiv>;
+    } else {
+      return <BubbleDiv key={`${queue.aggregate_queues_nme}`}>{queue.aggregate_queues_nme}</BubbleDiv>;
+    }
+  });
+};

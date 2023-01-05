@@ -40,7 +40,7 @@ const ProfileEntryForm = (props: ProfileEntryFormProps) => {
             });
           }}
         /> : null}
-      <Header1>{form.formMode === formModes.INSERT ? "Add a Profile" : "Edit Profile"}</Header1>
+      <Header1>{form.formMode === formModes.INSERT ? "Create Profile" : "Update Profile"}</Header1>
       <ProfileFormFields />
       <ProfileFormButtons
         handleClose={handleClose}

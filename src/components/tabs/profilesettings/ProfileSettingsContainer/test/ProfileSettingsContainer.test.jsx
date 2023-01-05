@@ -241,7 +241,7 @@ describe("<ProfileSettingsContainer />", () => {
       const rendered = render(<ProfileSettingsContainer />, initialTestState);
       expectMockedComponent(rendered, { ProfileEntryForm }, 0);
     });
-    test("add profile button and profile settings table is shown when dropdown is changed to PROFILE_SETTINGS", () => {
+    test("create profile button and profile settings table is shown when dropdown is changed to PROFILE_SETTINGS", () => {
       const rendered = render(<ProfileSettingsContainer />, initialTestState);
       act(() => {
         const updateValue = Dropdown.mock.calls[0][0].updateValue;
@@ -263,7 +263,7 @@ describe("<ProfileSettingsContainer />", () => {
           label: "Profile Settings"
         });
       });
-      expect(StyledButton.mock.calls[0][0].children).toBe("Add Profile");
+      expect(StyledButton.mock.calls[0][0].children).toBe("Create Profile");
       act(() => {
         const onClick = StyledButton.mock.calls[0][0].onClick;
         onClick();

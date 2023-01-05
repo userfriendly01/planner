@@ -59,12 +59,12 @@ describe("<OverflowSkillTextField />", () => {
       const skillName = "validskill";
       customInputProps.updateValue(skillName);
       const setFormArgs = {
-        "payload": {
-          "updated": true,
-          "valid": true,
-          "value": skillName
+        payload: {
+          updated: true,
+          valid: true,
+          value: skillName
         },
-        "type": "SET_OVERFLOW_SKILL"
+        type: "SET_OVERFLOW_SKILL"
       };
       expect(mockSetForm).toHaveBeenCalledTimes(1);
       expect(mockSetForm).toHaveBeenCalledWith(setFormArgs);
@@ -76,12 +76,12 @@ describe("<OverflowSkillTextField />", () => {
       const customInputProps = getMockedComponentProps(CustomInput);
       const skillBlank = "";
       const setFormArgsInvalid = {
-        "payload": {
-          "updated": true,
-          "valid": true,
-          "value": skillBlank
+        payload: {
+          updated: true,
+          valid: true,
+          value: skillBlank
         },
-        "type": "SET_OVERFLOW_SKILL"
+        type: "SET_OVERFLOW_SKILL"
       };
       customInputProps.updateValue(skillBlank);
       expect(mockSetForm).toHaveBeenCalledTimes(1);
@@ -94,12 +94,12 @@ describe("<OverflowSkillTextField />", () => {
       const customInputProps = getMockedComponentProps(CustomInput);
       const skillInvalid = "te$t";
       const setFormArgsInvalid = {
-        "payload": {
-          "updated": true,
-          "valid": false,
-          "value": skillInvalid
+        payload: {
+          updated: true,
+          valid: false,
+          value: skillInvalid
         },
-        "type": "SET_OVERFLOW_SKILL"
+        type: "SET_OVERFLOW_SKILL"
       };
       customInputProps.updateValue(skillInvalid);
       expect(mockSetForm).toHaveBeenCalledTimes(1);
@@ -107,5 +107,4 @@ describe("<OverflowSkillTextField />", () => {
       expect(customInputProps.error).toBe(true);
     });
   });
-
 });
