@@ -9,7 +9,6 @@ import {
 //   getValidSkillsObject
 // } from "utils";
 import {
-  act,
   initialTestState,
   render,
   setupMockedComponents
@@ -39,24 +38,6 @@ jest.mock("../../CustomActions", () => ({
   EditFlow: jest.fn()
 }));
 
-// jest.mock("utils", () => {
-//   const originalModule = jest.requireActual("utils");
-
-//   return {
-//     __esModule: true,
-//     ...originalModule,
-//     default: jest.fn(),
-//     getAccessToken: jest.fn(),
-//     getValidSkillsObject: jest.fn(() => {
-//       return {
-//         levels: {},
-//         skills: []
-//       };
-//     }
-//     )
-//   };
-// });
-
 const createFlowDataList = numberOfData =>{
   const dataList = [];
   for (let num=1; num<=numberOfData; num++) {
@@ -83,10 +64,6 @@ const createFlowDataList = numberOfData =>{
     dataList.push(flowData);
   }
   return dataList;
-};
-
-const filteredItems = {
-  channel: "channel1"
 };
 
 const renderComponent = () => render(
