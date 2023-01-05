@@ -26,7 +26,7 @@ import { FormValidationRule } from "utils/interfaces";
 
 export const AddRouting = (props: AddRoutingModalProps): JSX.Element => {
   const {
-    onClose, isOpen = false, newId, openModal
+    isOpen = false, newId, openModal
   } = props;
 
   const [routingRule, setRoutingRule] = useState({ ...routingInitRule });
@@ -53,7 +53,7 @@ export const AddRouting = (props: AddRoutingModalProps): JSX.Element => {
 
   const resetRoutingRule = () => {
     setRoutingRule({ ...routingInitRule });
-    onClose(false);
+    openModal(false);
   };
 
   useEffect(() => {
