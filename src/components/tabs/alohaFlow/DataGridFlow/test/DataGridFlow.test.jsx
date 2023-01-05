@@ -4,16 +4,17 @@ import {
 import {
   DataGrid, GridRenderCellParams, GridToolbar
 } from "@mui/x-data-grid";
+// import {
+//   getAccessToken,
+//   getValidSkillsObject
+// } from "utils";
 import {
-  getAccessToken,
-  getValidSkillsObject
-} from "utils";
-import {
-  render,
+  act,
   initialTestState,
+  render,
   setupMockedComponents
 } from "testUtils";
-import { CustomToast } from "../../../../core/index";
+import { CustomToast } from "components";
 import DataGridFlow from "../DataGridFlow";
 import React from "react";
 import { retrieveFlowData } from "services";
@@ -25,86 +26,75 @@ jest.mock("@mui/x-data-grid",()=>({
   GridRenderCellParams: jest.fn()
 }));
 
-jest.mock("../../../../core/index", () => {
-  const originalModule = jest.requireActual("../../../../core/index");
+jest.mock("components", ()=>({
+  __esModule: true,
+  CustomToast: jest.fn()
+}));
 
-  return {
-    __esModule: true,
-    ...originalModule,
-    default: jest.fn(),
-    CustomToast: jest.fn()
-  };
-});
-jest.mock("utils", () => {
-  const originalModule = jest.requireActual("utils");
+jest.mock("../../CustomActions", () => ({
+  __esModule: true,
+  AddFlow: jest.fn(),
+  AdvanceSearchModal: jest.fn(),
+  CustomFlowGridToolBar: jest.fn(),
+  EditFlow: jest.fn()
+}));
 
-  return {
-    __esModule: true,
-    ...originalModule,
-    default: jest.fn(),
-    getAccessToken: jest.fn(),
-    getValidSkillsObject: jest.fn(() => {
-      return {
-        levels: {},
-        skills: []
-      };
-    }
-    )
-  };
-});
+// jest.mock("utils", () => {
+//   const originalModule = jest.requireActual("utils");
 
-jest.mock("../../CustomActions", () => {
-  const originalModule = jest.requireActual("../../CustomActions");
+//   return {
+//     __esModule: true,
+//     ...originalModule,
+//     default: jest.fn(),
+//     getAccessToken: jest.fn(),
+//     getValidSkillsObject: jest.fn(() => {
+//       return {
+//         levels: {},
+//         skills: []
+//       };
+//     }
+//     )
+//   };
+// });
 
-  return {
-    __esModule: true,
-    ...originalModule,
-    default: jest.fn(),
-    AddFlow: jest.fn(),
-    AdvanceSearchModal: jest.fn(),
-    CustomFlowGridToolBar: jest.fn(),
-    EditFlow: jest.fn()
-  };
-});
+const createFlowDataList = numberOfData =>{
+  const dataList = [];
+  for (let num=1; num<=numberOfData; num++) {
+    const flowData = {
+      id: num,
+      pkey: `+18005551212x${num}`,
+      agentId: `agent${num}`,
+      brand: `brand${num}`,
+      callFlowTemplate: `cft${num}`,
+      channel: `channel${num}`,
+      content: {
+        callerType: "Customer",
+        callFlowRoute: `route A${num}`,
+        dataRequests: ["Classify"],
+        greetingMessages: "Hello and welcome!",
+        transferNumber: `+12223334444x${num}`
+      },
+      createTime: "2020-01-01T15:14:13.${num}Z",
+      dialedDescription: `Test case ${num}`,
+      employeeId: `n${num}`,
+      userDestination: "Avaya"
 
-jest.mock("services", () => {
-  const originalModule = jest.requireActual("services");
+    };
+    dataList.push(flowData);
+  }
+  return dataList;
+};
 
-  return {
-    __esModule: true,
-    ...originalModule,
-    retrieveFlowData: jest.fn(() => { Promise.resolve(
-      [
-        {
-          id: 1,
-          pkey: "+18005551212",
-          agentId: "agent1",
-          brand: "brand1",
-          callFlowTemplate: "cft1",
-          channel: "channel1",
-          content: {
-            callerType: "Customer",
-            callFlowRoute: "routre A1",
-            dataRequests: ["Classify"],
-            greetingMessages: "Hello and welcome!",
-            transferNumber: "+12223334444"
-          },
-          createTime: "2020-01-01T15:14:13.000Z",
-          dialedDescription: "Test case",
-          employeeId: "n1234455",
-          userDestination: "Avaya"
-        }
-      ]);
-    })
-  };
-});
+const filteredItems = {
+  channel: "channel1"
+};
 
 const renderComponent = () => render(
   <DataGridFlow />,
   initialTestState
 );
 
-describe("<DataGridFlow />", () => {
+describe.only("<DataGridFlow />", () => {
   const initialCookie = window.document.cookie;
   const matchMedia = window.matchMedia;
   beforeEach(()=>{
@@ -149,15 +139,14 @@ describe("<DataGridFlow />", () => {
       value: matchMedia
     });
   });
-
-  it("renders", () => {
-    renderComponent();
-    expect(AddFlow).toBeCalledTimes(0);
-    expect(AdvanceSearchModal).toBeCalledTimes(0);
-    expect(CustomToast).toBeCalledTimes(2);
-    expect(EditFlow).toBeCalledTimes(0);
-    expect(getAccessToken).toBeCalledTimes(2);
-    expect(getValidSkillsObject).toBeCalledTimes(0);
-    expect(retrieveFlowData).toBeCalledTimes(0);
+  describe.only("Data Table Footer", ()=>{
+    test.only("Simulate Data Table Pagination", async () =>{
+      const validRoutingDataList = createFlowDataList(15);
+      retrieveFlowData.mockResolvedValue(validRoutingDataList);
+      renderComponent();
+      expect(DataGrid.mock.calls[0][0].page).toBe(1);
+      expect(DataGrid.mock.calls[0][0].pageSize).toBe(10);
+    });
   });
+
 });

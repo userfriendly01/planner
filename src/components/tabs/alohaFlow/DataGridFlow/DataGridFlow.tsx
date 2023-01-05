@@ -18,7 +18,7 @@ import {
   downloadCSV,
   EXPORT_FILE_PREFIX
 } from "utils";
-import { CustomToast } from "../../../core/index";
+import { CustomToast } from "components";
 import {
   CctSharedCallFlowDb, FlowAdvanceFilter, FlowStateVariables
 } from "../AlohaFlow.Interfaces";
