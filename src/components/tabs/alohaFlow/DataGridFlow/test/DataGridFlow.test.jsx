@@ -227,7 +227,7 @@ describe("<DataGridFlow />", () => {
       act(()=>{ openEditModal(true, false); });
       expect(EditFlow.mock.calls[1][0].openEditModal).toBeTruthy;
     });
-    // test.only("Simulate the CustomFlowGridToolBar Custom Routing Toolbar", async()=>{
+    // test("Simulate the CustomFlowGridToolBar Custom Routing Toolbar", async()=>{
     //   const validFlowDataList = createFlowDataList(15);
     //   retrieveFlowData.mockResolvedValue(validFlowDataList);
     //   renderComponent();
@@ -244,7 +244,7 @@ describe("<DataGridFlow />", () => {
     afterEach(()=>{
       localStorage.removeItem(CACHE_FILTER_FLOW);
     });
-    test("Simulate Channel in Existing Filtered Item", async()=>{
+    test("Simulate Channel in Existing Filtered Item", ()=>{
       const validFlowDataList = createFlowDataList(15);
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
@@ -315,10 +315,34 @@ describe("<DataGridFlow />", () => {
       const localStorageValue = JSON.parse(localStorage.getItem(CACHE_FILTER_FLOW));
       expect(localStorageValue[brandKey]).toBeUndefined;
     });
+    test("Simulate advanceFilter idStart idEnd", () => {
+      //TODO, this is adding to code coverage - can we validate anything about the filteredItems min max range?
+      const validFlowDataList = createFlowDataList(15);
+      retrieveFlowData.mockResolvedValue(validFlowDataList);
+      localStorage.setItem(CACHE_FILTER_FLOW, {
+        ...filteredItems,
+        callFlowRoute: "route A1",
+        idEnd: 5,
+        idStart: 1,
+        pkey: "+18005551212x1"
+      });
+      renderComponent();
+      expect(DataGrid.mock.calls[0][0].page).toBe(1);
+    });
     test("Simulate advanceFilter error", () => {
       const validFlowDataList = createFlowDataList(15);
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       localStorage.setItem(CACHE_FILTER_FLOW, "");
+      renderComponent();
+      expect(DataGrid.mock.calls[0][0].page).toBe(1);
+    });
+    test("Simulate advanceFilter empty result", () => {
+      const validFlowDataList = createFlowDataList(15);
+      retrieveFlowData.mockResolvedValue(validFlowDataList);
+      localStorage.setItem(CACHE_FILTER_FLOW, {
+        ...filteredItems,
+        brand: "brandXYZ not in list"
+      });
       renderComponent();
       expect(DataGrid.mock.calls[0][0].page).toBe(1);
     });
