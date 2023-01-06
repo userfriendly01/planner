@@ -18,33 +18,32 @@ import TextField from "@mui/material/TextField";
 
 interface AdvanceSearchModalProps{
   isOpen:boolean;
-  onClose:(flag:boolean)=>boolean;
   handleChange:(event:any)=>void;
   masterData:RoutingMasterData;
   selection: RoutingFilter;
-  openModal:(flag:boolean, search:RoutingFilter)=>void;
+  openModal:(flag:boolean)=>void;
   applyFilter:()=>void;
 }
 const RoutingAdvanceSearchModal = (props:AdvanceSearchModalProps):JSX.Element => {
   const {
-    isOpen, onClose, handleChange, masterData, selection, openModal, applyFilter
+    isOpen, handleChange, masterData, selection, openModal, applyFilter
   } = props;
 
   const saveFilter = (search:RoutingFilter) => {
     localStorage.setItem(CACHE_FILTER_ROUTING, JSON.stringify(search));
     applyFilter();
-    openModal(false, search);
+    openModal(false);
   };
 
   const resetSavedFilter = () => {
     localStorage.removeItem(CACHE_FILTER_ROUTING);
     applyFilter();
-    openModal(false, null);
+    openModal(false);
   };
 
   return (
     <div>
-      <RoutingModalSearchStyled isOpen={isOpen} onClose={() => onClose(false)}>
+      <RoutingModalSearchStyled isOpen={isOpen} onClose={() => openModal(false)}>
         <ModalHeader id="my-search-header">
           <RoutingHeadingStyled type="h4-light"> Advance Routing Search Selection </RoutingHeadingStyled>
         </ModalHeader>
