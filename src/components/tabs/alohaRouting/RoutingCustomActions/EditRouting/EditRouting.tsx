@@ -8,13 +8,14 @@ import React, {
   useState, useRef, useEffect
 } from "react";
 import {
-  convertTime12to24, getAccessToken, getGraphQLEndpoint, initializedAlertBar, routingFields, routingInitRule, routingDropDownList, dayOfWeek
+  convertTime12to24, getAccessToken, getGraphQLEndpoint, routingFields, routingInitRule, initializedAlertBar, routingDropDownList, dayOfWeek
 } from "utils";
 import {
   CctSharedCallRoutingDb, RoutingDropDownList
 } from "../../AlohaRouting.Interfaces";
-import { CustomToast } from "components";
-import ComponentControl from "components/core/SharedComponents/ComponentControl";
+import {
+  CustomToast, ComponentControl
+} from "components";
 import {
   Button, Grid
 } from "@mui/material";
@@ -52,16 +53,13 @@ export const EditRouting = ({
     if (selectedRow && selectedRow.startTime) {
       const flagStartTime = !Date.parse(selectedRow.startTime);
       const flagEndTime = !Date.parse(selectedRow.endTime);
-      const curDate: Date = new Date();
-      const todayDate = `${curDate.getFullYear()}-${String(curDate.getMonth()).padStart(2, "0")}-${String(curDate.getDate()).padStart(2, "0")}`;
-
+      const todayDate = new Date().toISOString().split("T")[0];
       if (flagStartTime) {
         const hmsStartTime: string = convertTime12to24(selectedRow.startTime);
         const targetStartTime: Date = new Date(`${todayDate}T${hmsStartTime}`);
         startTime.current = targetStartTime.toISOString();
         defaultValue["startTime"] = startTime.current;
       }
-
       if (flagEndTime) {
         const hmsEndTime = convertTime12to24(selectedRow.endTime);
         const targetEndTime = new Date(`${todayDate}T${hmsEndTime}`);
@@ -126,14 +124,12 @@ export const EditRouting = ({
 
   const handleInputChange = async (
     event: any,
-    key: string,
-    valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => CctSharedCallRoutingDb
+    key?: string,
+    valueSetter?: (currentValue: CctSharedCallRoutingDb, newValue: any) => CctSharedCallRoutingDb
   ) => {
     let value: string;
     if (["startTime", "endTime"].includes(key)) {
       value = await handleTimeEvalChange(event, key);
-      console.log("key: ", key);
-      console.log("value: ", value);
     } else {
       value = event.target.value;
     }
@@ -162,6 +158,7 @@ export const EditRouting = ({
                 label, key, control, required = false, disableEdit = false, valueGetter, valueSetter
               }) => {
                 return (
+                  // eslint-disable-next-line react/jsx-key
                   <Grid key={key} item xs={4}>
                     <ComponentControl
                       control={control}

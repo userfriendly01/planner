@@ -36,6 +36,7 @@ jest.mock("services", () => ({
   deleteDirectory: jest.fn(),
   deleteFlowRule: jest.fn(),
   deleteManager: jest.fn(),
+  deleteRoutingRule: jest.fn(),
   deleteUser: jest.fn(),
   editManager: jest.fn(),
   fetchUser: jest.fn(),
@@ -53,6 +54,7 @@ jest.mock("services", () => ({
   updateDirectory: jest.fn(),
   updateFlowDB: jest.fn(),
   updateFlashMessage: jest.fn(),
+  updateRoutingDB: jest.fn(),
   updateTfn: jest.fn(),
   updateUser: jest.fn(),
   getWorkerTaskInfo: jest.fn()
