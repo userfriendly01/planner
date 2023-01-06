@@ -13,6 +13,8 @@ import { retrieveFlowData } from "services";
 import {
   getAccessToken,
   CACHE_FILTER_FLOW,
+  CALL_FLOW_PAGE_NO,
+  CALL_FLOW_PER_PAGE,
   getGraphQLEndpoint,
   initializedAlertBar,
   downloadCSV,
@@ -75,16 +77,19 @@ const DataGridFlow = (): JSX.Element => {
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
 
   useEffect(() => {
-    loadDataTable();
-    setDataFlow((dataFlowProps: FlowStateVariables) => ({
-      ...dataFlowProps,
-      page: +sessionStorage.getItem("CALL_FLOW_PAGE_NO") || 1,
-      perPage: +sessionStorage.getItem("CALL_FLOW_PER_PAGE") || 10
-    }));
+    const getTableData = async () =>{
+      await loadDataTable();
+      setDataFlow((dataFlowProps: FlowStateVariables) => ({
+        ...dataFlowProps,
+        page: +sessionStorage.getItem(CALL_FLOW_PAGE_NO) || 1,
+        perPage: +sessionStorage.getItem(CALL_FLOW_PER_PAGE) || 10
+      }));
+    };
+    getTableData();
   }, []);
 
   const setPage = (newPage: number) => {
-    sessionStorage.setItem("CALL_FLOW_PAGE_NO", newPage.toString());
+    sessionStorage.setItem(CALL_FLOW_PAGE_NO, newPage.toString());
     setDataFlow((dataFlowProps: FlowStateVariables) => ({
       ...dataFlowProps,
       page: newPage
@@ -92,7 +97,7 @@ const DataGridFlow = (): JSX.Element => {
   };
 
   const setPerPage = (newPerPage: number) => {
-    sessionStorage.setItem("CALL_FLOW_PER_PAGE", newPerPage.toString());
+    sessionStorage.setItem(CALL_FLOW_PER_PAGE, newPerPage.toString());
     setDataFlow((dataFlowProps: FlowStateVariables) => ({
       ...dataFlowProps,
       perPage: newPerPage
