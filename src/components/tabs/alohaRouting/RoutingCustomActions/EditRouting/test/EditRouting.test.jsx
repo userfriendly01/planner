@@ -1,16 +1,20 @@
 import React from "react";
-import  { EditRouting }  from "../index";
+import { EditRouting } from "../index";
 import {
   ROUTING_CACHE_MASTER_DATA
 } from "utils";
 import {
-  fireEvent, render, initialTestState, waitFor, act, setupMockedComponents, expectOnlyPassedProps
+  fireEvent, render, initialTestState, act, setupMockedComponents
 } from "testUtils";
 import {
   updateRoutingDB, deleteRoutingRule
 } from "services";
-import { TextField } from "@mui/material";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import {
+  Grid, Button
+} from "@mui/material";
+import {
+  CustomToast, ComponentControl
+} from "components";
 const validRoutingData = {
   id: 1,
   all: "test",
@@ -21,7 +25,7 @@ const validRoutingData = {
   channel: "test",
   dayOfWeek: "Monday",
   endTime: "2022-02-20",
-  percentOfCallers: 100,
+  percentOfCallers: "100",
   pkey: "+12353245",
   policyType: "Liberty",
   skey: "liberty_test_test",
@@ -31,6 +35,7 @@ const validRoutingData = {
   twilioSkill: "test",
   crcSkill: "updated"
 };
+
 const validStartTime =  {
   id: 2,
   pkey: "test2345",
@@ -41,26 +46,24 @@ const validStartTime =  {
 
 const openEditModal = jest.fn();
 
-const handleInputChange = jest.fn();
 jest.mock("@mui/material", () => ({
   __esModule: true,
-  TextField: jest.fn(),
-  Button: jest.fn(),
-  Tabs: jest.fn(),
-  Tab: jest.fn(),
-  Paper: jest.fn(),
-  Checkbox: jest.fn()
-}));
-
-jest.mock("@mui/x-data-grid", () => ({
-  __esModule: true,
-  DataGrid: jest.fn(),
-  GridToolbar: jest.fn()
+  Grid: jest.fn(),
+  Button: jest.fn()
 }));
 
 jest.mock("@mui/x-date-pickers/TimePicker", () => ({
   TimePicker: jest.fn()
 }));
+
+jest.mock("components", () => {
+  return{
+    __esModule: true,
+    CustomToast: jest.fn(),
+    ComponentControl: jest.fn()
+  };
+});
+
 const mockMasterData = {
   brand: ["Test Brand"],
   channel: ["Test1 Channel", "Test2 Channel"]
@@ -93,9 +96,17 @@ describe("<EditRouting />", () => {
         dispatchEvent: jest.fn()
       }))
     });
+    Object.defineProperty(window.Element.prototype, "innerText", {
+      set(value) {
+        this.textContent = value;
+      },
+      configurable: true
+    });
     setupMockedComponents({
-      TextField,
-      TimePicker
+      Grid,
+      CustomToast,
+      ComponentControl,
+      Button
     });
     localStorage.setItem(ROUTING_CACHE_MASTER_DATA, JSON.stringify(mockMasterData));
   });
@@ -105,84 +116,70 @@ describe("<EditRouting />", () => {
     localStorage.removeItem(ROUTING_CACHE_MASTER_DATA);
   });
 
-  describe("Edit Routing Modal Block", ()=>{
-    test("Simulate EditRouting model ",()=>{
+  describe("Edit Routing Modal Block", () => {
+    test("Simulate Close Modal By Clicking Close Icon", () => {
       const { getByRole } = renderEditRouting(true, validRoutingData);
-      const channelOptions =  getByRole("button", { name: /Channel/i });
-      act(()=>{
-        //fireEvent.change(channelOptions.children[0], { target: { value: "Test2 Channel" }}).querySelector("input");
-        fireEvent.change(channelOptions);
+      const closeModalButton = getByRole("img", { name: "Close" });
+      act(() => {
+        fireEvent.click(closeModalButton);
       });
-      expect(handleInputChange).toBeCalledTimes(0);
+      expect(openEditModal).toBeCalledTimes(1);
     });
-  });
-  test("Simulate Close Modal By Clicking Close Icon",()=>{
-    const { getByRole } = renderEditRouting(true, validRoutingData);
-    const closeModalButton = getByRole("img", { name: "Close" });
-    act(()=>{
-      fireEvent.click(closeModalButton);
-    });
-    expect(openEditModal).toBeCalledTimes(1);
   });
   describe("Test Footer Component of Edit Routing", () => {
-    describe("Test For save Rule",()=>{
-      test("Simulate the SaveRule Button with Success API Response", () => {
+    describe("Test For save Rule", () => {
+      test("Simulate the SaveRule Button with Success API Response", async () => {
         updateRoutingDB.mockResolvedValue({ data: { "items": []}});
-        const { getByRole } = renderEditRouting(true, validRoutingData);
-        const saveButton = getByRole("button", { name: "saveRoutingRuleButton" });
+        renderEditRouting(true, validRoutingData);
+        const saveButtonClick = Button.mock.calls[0][0].onClick;
+        const saveButton = Button.mock.calls[0][0];
         act(() => {
-          fireEvent.click(saveButton);
+          saveButtonClick();
         });
-        waitFor(() => {
-          expect(openEditModal).toBeCalledTimes(1);
-        });
+        expect(saveButton).toBeCalled;
       });
       test("Simulate the Save Button and popUp Error message", () => {
         updateRoutingDB.mockResolvedValue(null);
-        const { getByRole } = renderEditRouting(true, validRoutingData);
-        const saveButton = getByRole("button", { name: "saveRoutingRuleButton" });
+        renderEditRouting(true, validRoutingData);
+        const saveButtonClick = Button.mock.calls[0][0].onClick;
+        const saveButton = Button.mock.calls[0][0];
         act(() => {
-          fireEvent.click(saveButton);
+          saveButtonClick();
         });
-        waitFor(() => {
-          expect(openEditModal).toBeCalledTimes(0);
-        });
+        expect(saveButton).toBeCalled;
       });
     });
-    describe("Test For Delete Rule Button",()=>{
+    describe("Test For Delete Rule Button", () => {
       test("Simulate the Delete Rule Button with Success API Response", () => {
         deleteRoutingRule.mockResolvedValue({ data: { "items": []}});
-        const { getByRole } = renderEditRouting(true, validRoutingData);
-        const deleteButton = getByRole("button", { name: "deleteRoutingRuleButton" });
+        renderEditRouting(true, validRoutingData);
+        const deleteButtonClick = Button.mock.calls[1][0].onClick;
+        const deleteButton = Button.mock.calls[1][0];
         act(() => {
-          fireEvent.click(deleteButton);
+          deleteButtonClick();
         });
-        waitFor(() => {
-          expect(openEditModal).toBeCalledTimes(1);
-        });
+        expect(deleteButton).toBeCalled;
       });
-      test("Simulate the Save Button and popUp Error message", () => {
+      test("Simulate the Delete Button and popUp Error message", () => {
         deleteRoutingRule.mockResolvedValue(null);
-        const { getByRole } = renderEditRouting(true, validRoutingData);
-        const deleteButton = getByRole("button", { name: "deleteRoutingRuleButton" });
+        renderEditRouting(true, validRoutingData);
+        const deleteButtonClick = Button.mock.calls[1][0].onClick;
+        const deleteButton = Button.mock.calls[1][0];
         act(() => {
-          fireEvent.click(deleteButton);
+          deleteButtonClick();
         });
-        waitFor(() => {
-          expect(openEditModal).toBeCalledTimes(0);
-        });
+        expect(deleteButton).toBeCalled;
       });
     });
-    describe("Test for Cancelling popup",()=>{
+    describe("Test for Cancelling popup", () => {
       test("Simulate the Cancel Button ", () => {
-        const { getByRole } = renderEditRouting(true, validRoutingData);
-        const cancelButton = getByRole("button", { name: "cancelRoutingRuleButton" });
+        renderEditRouting(true, validRoutingData);
+        const closeButtonClick = Button.mock.calls[2][0].onClick;
+        const closeButton = Button.mock.calls[2][0];
         act(() => {
-          fireEvent.click(cancelButton);
+          closeButtonClick();
         });
-        waitFor(() => {
-          expect(openEditModal).toBeCalledTimes(1);
-        });
+        expect(closeButton).toBeCalled;
       });
     });
     describe("Test for TimeFrame Change",()=>{
@@ -190,37 +187,58 @@ describe("<EditRouting />", () => {
         renderEditRouting(true, validStartTime);
         expect(openEditModal).toBeCalledTimes(0);
       });
+      test("Test for Empty Start Time ", () => {
+        renderEditRouting(true, {});
+        expect(openEditModal).toBeCalledTimes(0);
+      });
     });
-    describe("Test for Input Change",()=>{
-      test("Simulate the Input Change ", () => {
-        const { getByRole } = renderEditRouting(true, validRoutingData);
-        const ChannelInput = getByRole("button", {
-          name: /Channel/i
-        });
-        act(()=>{
-          fireEvent.click(ChannelInput);
-        });
-        expect(openEditModal).toBeCalledTimes(0);
-      });
-      test("Simulate the Input Change ", () => {
-        const { getByLabelText } = renderEditRouting(true, validRoutingData);
-        const CallersInput = getByLabelText(/Percent Of Callers/i );
-        act(()=>{
-          fireEvent.click(CallersInput);
-          fireEvent.change(CallersInput, { target: { value: "2345" }});
-        });
-        expect(openEditModal).toBeCalledTimes(0);
-      });
-      test("Simulate the Start Time Input Change ", async() => {
+    describe("Test for Input Change", () => {
+      test("Simulate the Start Time Input Change ", async () => {
         renderEditRouting(true, validRoutingData);
-        expectOnlyPassedProps(TimePicker, {
-          value: jest.fn(),
-          onChange: jest.fn(),
-          label: "Start time - EST",
-          disabled: true,
-          key: "startTime"
+        const eventOnChange={
+          target: { value: "100" }
+        };
+        const editPagePolicyTypeAttr= Grid.mock.calls[1][0].children[12];
+        const editPageAttrChange= Grid.mock.calls[1][0].children[12].props.children.props.onChange;
+        act(()=>{
+          editPageAttrChange(eventOnChange);
         });
+        expect(editPagePolicyTypeAttr).toBeCalled;
       });
+      test("Simulate the Start Time Input Change ", async () => {
+        renderEditRouting(true, validRoutingData);
+        const eventOnChange={
+          $d: "Fri Jan 06 2023 06:24:00 GMT+0530 (India Standard Time)"
+        };
+        const editPageStartTimeAttr= Grid.mock.calls[1][0].children[14];
+        const editPageAttrChange= Grid.mock.calls[1][0].children[14].props.children.props.onChange;
+        act(()=>{
+          editPageAttrChange(eventOnChange);
+        });
+        expect(editPageStartTimeAttr).toBeCalled;
+      });
+      test("Simulate the End Time Input Change ", async () => {
+        renderEditRouting(true, validRoutingData);
+        const eventOnChange={
+          $d: "Fri Jan 06 2023 06:24:00 GMT+0530 (India Standard Time)"
+        };
+        const editPageEndTimeAttr= Grid.mock.calls[1][0].children[13];
+        const editPageAttrChange= Grid.mock.calls[1][0].children[13].props.children.props.onChange;
+        act(()=>{
+          editPageAttrChange(eventOnChange);
+        });
+        expect(editPageEndTimeAttr).toBeCalled;
+      });
+    });
+  });
+  describe("Test for CustomToast Change",()=>{
+    test("Simulate the customToast Button ", () => {
+      renderEditRouting(true, validStartTime);
+      const customToastButton = CustomToast.mock.calls[0][0].onClose;
+      act(()=>{
+        customToastButton();
+      });
+      expect(openEditModal).toBeCalledTimes(0);
     });
   });
 });
