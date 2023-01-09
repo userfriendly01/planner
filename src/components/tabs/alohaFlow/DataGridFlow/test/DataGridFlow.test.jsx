@@ -328,6 +328,9 @@ describe("<DataGridFlow />", () => {
       });
       renderComponent();
       expect(DataGrid.mock.calls[0][0].page).toBe(1);
+      const applyFilter = AdvanceSearchModal.mock.calls[0][0].applyFilter;
+      act(()=>{ applyFilter(); });
+      expect(AdvanceSearchModal.mock.calls[1][0].isOpen).toBe(false);
     });
     test("Simulate advanceFilter error", () => {
       const validFlowDataList = createFlowDataList(15);

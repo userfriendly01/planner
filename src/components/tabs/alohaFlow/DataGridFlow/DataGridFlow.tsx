@@ -151,17 +151,22 @@ const DataGridFlow = (): JSX.Element => {
     }));
   };
 
-  const filterRecords = () => {
-    const {
+  const filterRecords = (dataRec?: CctSharedCallFlowDb[], minId?: number, maxId?: number) => {
+    let {
       data, idStart, idEnd
     } = dataFlow;
+    if (dataRec && dataRec !== undefined) {
+      data = dataRec;
+      idStart = minId;
+      idEnd = maxId;
+    }
     const result = data.filter(
       (item: CctSharedCallFlowDb) => item.id >= idStart && item.id <= idEnd
     );
     const advanceFilter = getAdvanceFilter();
     const advanceFilterLength: number = Object.keys(advanceFilter).length;
     if (advanceFilterLength > 0) {
-      const advanceFilteredArray: FlowAdvanceFilter[] = [];
+      const advanceFilteredArray: Array<FlowAdvanceFilter> = [];
       result.forEach(item => {
         let matched = 0;
         Object.keys(advanceFilter).forEach(key => {
@@ -209,6 +214,11 @@ const DataGridFlow = (): JSX.Element => {
       const maxId: number = result[result.length - 1].id;
 
       const masterData = getGridMasterData(result);
+      const advanceFilter: FlowAdvanceFilter = getAdvanceFilter();
+      const advanceFilterLength: number = Object.keys(advanceFilter).length;
+      if (advanceFilterLength > 0) {
+        filterRecords(result, minId, maxId);
+      }
       setDataFlow((dataFlowProps: FlowStateVariables) => ({
         ...dataFlowProps,
         data: result,
