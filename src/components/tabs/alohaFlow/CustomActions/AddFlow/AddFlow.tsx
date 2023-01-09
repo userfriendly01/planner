@@ -14,7 +14,9 @@ import {
   initRule,
   flowFields
 } from "../FlowFieldsConfig";
-import ComponentControl from "../../../../core/SharedComponents/ComponentControl";
+import {
+  ComponentControl, CustomToast
+} from "components";
 import {
   FlowKeys,
   FlowDropDownList
@@ -25,7 +27,6 @@ import {
   ModalFooterStyled,
   HeadingStyled
 } from "../../AlohaFlow.Styles";
-import CustomToast from "../../../../core/CustomToast/CustomToast";
 import {
   flowDropDownList,
   FLOW_MASTER_DATA,
@@ -200,6 +201,7 @@ export const AddFlow = ({
             variant="contained"
             color="primary"
             sx={{ marginRight: 2 }}
+            aria-label = "createRuleButton"
             onClick={() => handleOnCreateRoute()}
           >
             Create Rule
@@ -208,6 +210,7 @@ export const AddFlow = ({
             value="Cancel"
             variant="outlined"
             color="primary"
+            aria-label = "resetRuleButton"
             onClick={() => resetFlowRule()}
           >
             Cancel
