@@ -13,12 +13,14 @@ import { retrieveFlowData } from "services";
 import {
   getAccessToken,
   CACHE_FILTER_FLOW,
+  CALL_FLOW_PAGE_NO,
+  CALL_FLOW_PER_PAGE,
   getGraphQLEndpoint,
   initializedAlertBar,
   downloadCSV,
   EXPORT_FILE_PREFIX
 } from "utils";
-import { CustomToast } from "../../../core/index";
+import { CustomToast } from "components";
 import {
   CctSharedCallFlowDb, FlowAdvanceFilter, FlowStateVariables
 } from "../AlohaFlow.Interfaces";
@@ -75,16 +77,19 @@ const DataGridFlow = (): JSX.Element => {
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
 
   useEffect(() => {
-    loadDataTable();
-    setDataFlow((dataFlowProps: FlowStateVariables) => ({
-      ...dataFlowProps,
-      page: +sessionStorage.getItem("CALL_FLOW_PAGE_NO") || 1,
-      perPage: +sessionStorage.getItem("CALL_FLOW_PER_PAGE") || 10
-    }));
+    const getTableData = async () =>{
+      await loadDataTable();
+      setDataFlow((dataFlowProps: FlowStateVariables) => ({
+        ...dataFlowProps,
+        page: +sessionStorage.getItem(CALL_FLOW_PAGE_NO) || 1,
+        perPage: +sessionStorage.getItem(CALL_FLOW_PER_PAGE) || 10
+      }));
+    };
+    getTableData();
   }, []);
 
   const setPage = (newPage: number) => {
-    sessionStorage.setItem("CALL_FLOW_PAGE_NO", newPage.toString());
+    sessionStorage.setItem(CALL_FLOW_PAGE_NO, newPage.toString());
     setDataFlow((dataFlowProps: FlowStateVariables) => ({
       ...dataFlowProps,
       page: newPage
@@ -92,7 +97,7 @@ const DataGridFlow = (): JSX.Element => {
   };
 
   const setPerPage = (newPerPage: number) => {
-    sessionStorage.setItem("CALL_FLOW_PER_PAGE", newPerPage.toString());
+    sessionStorage.setItem(CALL_FLOW_PER_PAGE, newPerPage.toString());
     setDataFlow((dataFlowProps: FlowStateVariables) => ({
       ...dataFlowProps,
       perPage: newPerPage
@@ -146,17 +151,22 @@ const DataGridFlow = (): JSX.Element => {
     }));
   };
 
-  const filterRecords = () => {
-    const {
+  const filterRecords = (dataRec?: CctSharedCallFlowDb[], minId?: number, maxId?: number) => {
+    let {
       data, idStart, idEnd
     } = dataFlow;
+    if (dataRec && dataRec !== undefined) {
+      data = dataRec;
+      idStart = minId;
+      idEnd = maxId;
+    }
     const result = data.filter(
       (item: CctSharedCallFlowDb) => item.id >= idStart && item.id <= idEnd
     );
     const advanceFilter = getAdvanceFilter();
     const advanceFilterLength: number = Object.keys(advanceFilter).length;
     if (advanceFilterLength > 0) {
-      const advanceFilteredArray: FlowAdvanceFilter[] = [];
+      const advanceFilteredArray: Array<FlowAdvanceFilter> = [];
       result.forEach(item => {
         let matched = 0;
         Object.keys(advanceFilter).forEach(key => {
@@ -204,6 +214,11 @@ const DataGridFlow = (): JSX.Element => {
       const maxId: number = result[result.length - 1].id;
 
       const masterData = getGridMasterData(result);
+      const advanceFilter: FlowAdvanceFilter = getAdvanceFilter();
+      const advanceFilterLength: number = Object.keys(advanceFilter).length;
+      if (advanceFilterLength > 0) {
+        filterRecords(result, minId, maxId);
+      }
       setDataFlow((dataFlowProps: FlowStateVariables) => ({
         ...dataFlowProps,
         data: result,
