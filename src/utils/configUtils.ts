@@ -35,6 +35,9 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
   let result: string;
   const columnDelimiter = ",";
   const lineDelimiter = "\n";
+  if(array.length ===0){
+    return;
+  }
   const keys: string[] = Object.keys(array[0]);
   result = "";
   result += keys.join(columnDelimiter);
@@ -54,12 +57,12 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
 export const  downloadCSV = (prefix: string, array: Array<CctSharedCallFlowDb | CctSharedCallRoutingDb>): JSX.Element => {
   const link: HTMLAnchorElement = document.createElement("a");
   let csv: string = convertArrayOfObjectsToCSV(array);
-  if (csv === null) { return; }
+  if (csv === null || csv===undefined) { return; }
   const filename = `${prefix}-${Date.now()}.csv`;
   if (!csv.match(/^data:text\/csv/i)) {
     csv = `data:text/csv;charset=utf-8,${csv}`;
   }
-  link.setAttribute("href", encodeURI(csv));
-  link.setAttribute("download", filename);
+  link.href = encodeURI(csv);
+  link.download = filename;
   link.click();
 };
