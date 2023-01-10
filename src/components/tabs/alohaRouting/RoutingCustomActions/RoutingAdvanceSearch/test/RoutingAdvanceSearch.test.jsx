@@ -4,42 +4,46 @@ import {
   render,
   initialTestState
 } from "testUtils";
-import { AdvanceSearchModal } from "../../index";
+import { RoutingAdvanceSearch } from "../../index";
 import React from "react";
 import SelectContainer from "../../../../../core/SharedComponents/SelectContainer";
-import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
 
-const mockMasterData = {
-  brand: ["brand1"],
-  callFlowRoute: ["route1", "route2"],
-  callFlowTemplate: ["template1", "template2"],
-  callerType: ["callerType1", "callerType2", "callerType3"],
-  channel: ["channel1", "channel2"],
-  pkey: ["pkey1", "pkey2", "pkey3", "pkey4", "pkey5"]
-};
 const mockChange = jest.fn();
-const mockClose = jest.fn();
 const mockApplyFilter = jest.fn();
 const mockOpenModal = jest.fn();
+const mockMasterData = {
+  channel: ["channel1", "channel2"],
+  brand: ["brand1"],
+  callerType: ["callerType1", "callerType2", "callerType3"],
+  callerState: ["callerState1", "callerState2", "callerState3"],
+  callIntent: ["callIntent1", "callIntent2", "callIntent3"],
+  policyType: ["policyType1", "policyType2", "policyType3"],
+  transferDestination: ["transferDestination1", "transferDestination2", "transferDestination3"],
+  twilioSkill: ["twilioSkill1", "twilioSkill2", "twilioSkill3"]
+};
 const mockSelectionAll = {
-  brand: "brand1",
-  callFlowRoute: "route1",
-  callFlowTemplate: "template1",
-  callerType: "callerType1",
   channel: "channel1",
-  pkey: "pkey1"
+  brand: "brand1",
+  callerType: "callerType1",
+  callerState: "callerState1",
+  callIntent: "callIntent1",
+  policyType: "policyType1",
+  transferDestination: "transferDestination1",
+  twilioSkill: "twilioSkill1"
 };
 const renderComponent = isOpen => render(
-  <AdvanceSearchModal
-    isOpen={isOpen}
-    onClose={mockClose}
-    handleChange={mockChange}
+  <RoutingAdvanceSearch
     applyFilter={mockApplyFilter}
+    handleChange={mockChange}
+    isOpen={isOpen}
     masterData={mockMasterData}
     openModal={mockOpenModal}
-    selection={mockSelectionAll}/>,
+    selection={mockSelectionAll}
+  />,
   initialTestState
 );
+
 Storage.prototype.setItem = jest.fn();
 Storage.prototype.removeItem = jest.fn();
 
@@ -53,8 +57,8 @@ jest.mock("../../../../../core/SharedComponents/SelectContainer", () => {
   };
 });
 
-jest.mock("@mui/material/TextField", () => {
-  const originalModule = jest.requireActual("@mui/material/TextField");
+jest.mock("@mui/material/Autocomplete", () => {
+  const originalModule = jest.requireActual("@mui/material/Autocomplete");
 
   return {
     __esModule: true,
@@ -63,8 +67,7 @@ jest.mock("@mui/material/TextField", () => {
   };
 });
 
-
-describe("<AdvanceSearch />", () => {
+describe("<RoutingAdvanceSearch />", () => {
   beforeAll(() => {
     Object.defineProperty(window, "matchMedia", {
       writable: true,
@@ -87,7 +90,7 @@ describe("<AdvanceSearch />", () => {
 
   it("renders", () => {
     renderComponent(true);
-    expect(SelectContainer).toBeCalledTimes(4);
+    expect(SelectContainer).toBeCalledTimes(6);
     expect(SelectContainer.mock.calls[0][0]).toStrictEqual({
       "disabled": false,
       "dropDownOptions": ["brand1"],
@@ -112,38 +115,58 @@ describe("<AdvanceSearch />", () => {
     });
     expect(SelectContainer.mock.calls[2][0]).toStrictEqual({
       "disabled": false,
-      "dropDownOptions": ["template1", "template2"],
+      "dropDownOptions": ["callerType1", "callerType2", "callerType3"],
       "error": false,
       "isBlankFirstValue": true,
-      "label": "Choose Call Flow Template",
-      "name": "callFlowTemplate",
+      "label": "Choose Caller Type",
+      "name": "callerType",
       "onChange": mockChange,
       "required": false,
-      "value": "template1"
+      "value": "callerType1"
     });
     expect(SelectContainer.mock.calls[3][0]).toStrictEqual({
       "disabled": false,
-      "dropDownOptions": ["route1", "route2"],
+      "dropDownOptions": ["callerState1", "callerState2", "callerState3"],
       "error": false,
       "isBlankFirstValue": true,
-      "label": "Choose Call Flow Route",
-      "name": "callFlowRoute",
+      "label": "Choose Caller State",
+      "name": "callerState",
       "onChange": mockChange,
       "required": false,
-      "value": "route1"
+      "value": "callerState1"
     });
-    expect(TextField.mock.calls[0][0]).toStrictEqual({
-      "label": "#Dialed",
-      "name": "pkey",
+    expect(SelectContainer.mock.calls[4][0]).toStrictEqual({
+      "disabled": false,
+      "dropDownOptions": ["transferDestination1", "transferDestination2", "transferDestination3"],
+      "error": false,
+      "isBlankFirstValue": true,
+      "label": "Choose Transfer Destination",
+      "name": "transferDestination",
       "onChange": mockChange,
-      "sx": {
-        "width": "Calc(96%)"
-      },
-      "type": "text",
-      "value": "pkey1",
-      "variant": "outlined"
+      "required": false,
+      "value": "transferDestination1"
+    });
+    expect(SelectContainer.mock.calls[5][0]).toStrictEqual({
+      "disabled": false,
+      "dropDownOptions": ["twilioSkill1", "twilioSkill2", "twilioSkill3"],
+      "error": false,
+      "isBlankFirstValue": true,
+      "label": "Choose Twilio Skill",
+      "name": "twilioSkill",
+      "onChange": mockChange,
+      "required": false,
+      "value": "twilioSkill1"
     });
 
+    expect(Autocomplete.mock.calls[0][0]).toEqual(expect.objectContaining({
+      "id": "callIntent-autocomplete",
+      "options": [
+        "callIntent1",
+        "callIntent2",
+        "callIntent3"
+      ],
+      "value": "callIntent1"
+    }));
   });
   it("<Button>Reset Filter</Button>", () => {
     const {
@@ -183,7 +206,7 @@ describe("<AdvanceSearch />", () => {
     act(() => {
       fireEvent.click(buttonToClick);
     });
-    expect(mockClose).toBeCalledTimes(1);
-
+    expect(mockOpenModal).toBeCalledTimes(1);
   });
+
 });
