@@ -26,6 +26,7 @@ If you need to use the real file in your test, use jest.requireActual for the fu
 */
 
 jest.mock("services", () => ({
+  addFlowRule: jest.fn(),
   addManager: jest.fn(),
   addOffice: jest.fn(),
   checkExtension: jest.fn(),
@@ -36,6 +37,7 @@ jest.mock("services", () => ({
   deleteDirectory: jest.fn(),
   deleteFlowRule: jest.fn(),
   deleteManager: jest.fn(),
+  deleteRoutingRule: jest.fn(),
   deleteUser: jest.fn(),
   editManager: jest.fn(),
   fetchUser: jest.fn(),
@@ -48,11 +50,13 @@ jest.mock("services", () => ({
   getTfn: jest.fn(),
   insertDirectory: jest.fn(),
   retrieveRoutingData: jest.fn(),
+  retrieveFlowData: jest.fn(),
   updateCalabrioUser: jest.fn(),
   updateClosedMessage: jest.fn(),
   updateDirectory: jest.fn(),
   updateFlowDB: jest.fn(),
   updateFlashMessage: jest.fn(),
+  updateRoutingDB: jest.fn(),
   updateTfn: jest.fn(),
   updateUser: jest.fn(),
   getWorkerTaskInfo: jest.fn()
