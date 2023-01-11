@@ -6,7 +6,7 @@ dist/*
 .DS_Store
 node_modules
 .vscode
-
+__snapshots__
 # IntelliJ IDEA #
 .idea
 *.iws
