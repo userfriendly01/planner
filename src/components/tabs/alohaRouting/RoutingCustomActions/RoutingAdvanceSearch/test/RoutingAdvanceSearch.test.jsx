@@ -27,19 +27,21 @@ const mockSelectionAll = {
   brand: "brand1",
   callerType: "callerType1",
   callerState: "callerState1",
-  callIntent: "callIntent1",
   policyType: "policyType1",
   transferDestination: "transferDestination1",
   twilioSkill: "twilioSkill1"
 };
-const renderComponent = isOpen => render(
+const renderComponent = (isOpen, callIntent = "callIntent1") => render(
   <RoutingAdvanceSearch
     applyFilter={mockApplyFilter}
     handleChange={mockChange}
     isOpen={isOpen}
     masterData={mockMasterData}
     openModal={mockOpenModal}
-    selection={mockSelectionAll}
+    selection={{
+      ...mockSelectionAll,
+      callIntent
+    }}
   />,
   initialTestState
 );
@@ -57,13 +59,18 @@ jest.mock("../../../../../core/SharedComponents/SelectContainer", () => {
   };
 });
 
+const mockRender = jest.fn();
+const mockGetOptionLabel = jest.fn();
+
 jest.mock("@mui/material/Autocomplete", () => {
   const originalModule = jest.requireActual("@mui/material/Autocomplete");
 
   return {
     __esModule: true,
     ...originalModule,
-    default: jest.fn()
+    default: jest.fn(),
+    getOptionLabel: mockGetOptionLabel,
+    renderInput: mockRender
   };
 });
 
@@ -167,6 +174,41 @@ describe("<RoutingAdvanceSearch />", () => {
       ],
       "value": "callIntent1"
     }));
+  });
+  it("changes AutoComplete text", () => {
+    renderComponent(true);
+    const textOnChangeAttr = Autocomplete.mock.calls[0][0].onChange;
+    const textOnChangeEvent = { target: { value: "callIntent2" }};
+
+    act(()=>{
+      textOnChangeAttr(textOnChangeEvent);
+    });
+
+    expect(mockChange).toBeCalledTimes(1);
+  });
+  it("calls renderInput", () => {
+    renderComponent(true);
+    const renderAttr = Autocomplete.mock.calls[0][0].renderInput;
+    const renderParams = { color: "blue" };
+
+    act(()=>{
+      renderAttr(renderParams);
+    });
+
+  });
+  it("calls getOptionLabel", () => {
+    renderComponent(true, "");
+    const attr = Autocomplete.mock.calls[0][0].getOptionLabel;
+    const params = "test";
+
+    act(()=>{
+      attr(params);
+    });
+
+    act(()=>{
+      attr(undefined);
+    });
+
   });
   it("<Button>Reset Filter</Button>", () => {
     const {
