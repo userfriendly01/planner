@@ -16,11 +16,12 @@ import {
 import {
   CctSharedCallRoutingDb, RoutingMasterData, RoutingDropDownList, AddRoutingModalProps
 } from "../../AlohaRouting.Interfaces";
-import ComponentControl from "../../../../core/SharedComponents/ComponentControl";
 import {
   RoutingModalBodyStyled, RoutingModalFooterStyled, RoutingHeadingStyled
 } from "../../AlohaRouting.Styles";
-import CustomToast from "../../../../core/CustomToast/CustomToast";
+import {
+  CustomToast, ComponentControl
+} from "components";
 import { FormValidationRule } from "utils/interfaces";
 
 
@@ -134,7 +135,6 @@ export const AddRouting = (props: AddRoutingModalProps): JSX.Element => {
     } else {
       value = event.target.value;
     }
-
     if (key === "channel" && value) {
       skey = routingRule.brand.value ? `${routingRule.brand.value}__` : "__";
       skey += `${value}__${newId}`;
@@ -144,7 +144,6 @@ export const AddRouting = (props: AddRoutingModalProps): JSX.Element => {
       skey = `${value}__`;
       skey += routingRule.channel.value ? `${routingRule.channel.value}__${newId}` : `__${newId}`;
     }
-
     const newRoutingRule: FormValidationRule = { [key]: { value }};
 
     if (skey) {
@@ -218,6 +217,7 @@ export const AddRouting = (props: AddRoutingModalProps): JSX.Element => {
             variant="contained"
             color="primary"
             sx={{ marginRight: 2 }}
+            aria-label = "createRuleButton"
             onClick={() => handleOnCreateRoute()}
           >
             Create Rule
@@ -226,6 +226,7 @@ export const AddRouting = (props: AddRoutingModalProps): JSX.Element => {
             value="Cancel"
             variant="outlined"
             color="primary"
+            aria-label = "resetRuleButton"
             onClick={() => resetRoutingRule()}
           >
             Cancel
