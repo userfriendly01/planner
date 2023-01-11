@@ -1,34 +1,8 @@
 import React from "react";
-import {
-  InputLabel, MenuItem, Select
-} from "@mui/material";
 import { CustomFlowRoutingToolBar } from "../CustomRoutingGridToolBar";
 import {
-  render, initialTestState, setupMockedComponents
+  render, initialTestState, act, fireEvent, within
 } from "testUtils";
-
-jest.mock("@mui/material", ()=>({
-  __esModule: true,
-  InputLabel: jest.fn(),
-  Select: jest.fn(),
-  TextField: jest.fn(),
-  Button: jest.fn(),
-  Tabs: jest.fn(),
-  Tab: jest.fn(),
-  Paper: jest.fn(),
-  Checkbox: jest.fn()
-}));
-
-jest.mock("@mui/x-date-pickers/TimePicker", () => ({
-  TimePicker: jest.fn()
-}));
-
-jest.mock("@mui/x-data-grid", ()=>({
-  __esModule: true,
-  DataGrid: jest.fn(),
-  GridRenderCellParams: jest.fn(),
-  GridToolbar: jest.fn()
-}));
 
 const openAddModal=jest.fn();
 const openAdvanceSearchModal = jest.fn();
@@ -49,8 +23,43 @@ describe("<CustomFlowRoutingToolBar />", ()=>{
   beforeEach(()=>{
     jest.clearAllMocks();
   });
-  test("Simulate Custom Routing Toolbar",()=>{
-    renderCustomToolBar();
-    expect(Select.mock).toBe("Rendered Container?");
+  test("Simulate Custom Routing Toolbar Add Routing",()=>{
+    const { getByRole } = renderCustomToolBar();
+    const actionsDropdown = getByRole("button");
+    act(()=>{ fireEvent.mouseDown(actionsDropdown); });
+    const listBox = within(getByRole("listbox"));
+    act(() => {
+      fireEvent.click(listBox.getByRole("option", {
+        name: /Add Routing/i,
+        hidden: true
+      }));
+    });
+    expect(openAddModal).toBeCalledTimes(1);
+  });
+  test("Simulate Custom Routing Toolbar Advance Search",()=>{
+    const { getByRole } = renderCustomToolBar();
+    const actionsDropdown = getByRole("button");
+    act(()=>{ fireEvent.mouseDown(actionsDropdown); });
+    const listBox = within(getByRole("listbox"));
+    act(() => {
+      fireEvent.click(listBox.getByRole("option", {
+        name: /Advance Search/i,
+        hidden: true
+      }));
+    });
+    expect(openAdvanceSearchModal).toBeCalledTimes(1);
+  });
+  test("Simulate Custom Routing Toolbar Export",()=>{
+    const { getByRole } = renderCustomToolBar();
+    const actionsDropdown = getByRole("button");
+    act(()=>{ fireEvent.mouseDown(actionsDropdown); });
+    const listBox = within(getByRole("listbox"));
+    act(() => {
+      fireEvent.click(listBox.getByRole("option", {
+        name: /Export/i,
+        hidden: true
+      }));
+    });
+    expect(exportDataFile).toBeCalledTimes(1);
   });
 });
