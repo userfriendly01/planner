@@ -51,13 +51,14 @@ const renderCustomToolBar = () =>{
 describe("<CustomFlowGridToolBar/>",()=>{
   beforeEach(()=>{
     jest.clearAllMocks();
+    setupMockedComponents({
+      FormControl,
+      InputLabel,
+      MenuItem,
+      Select
+    });
   });
-  setupMockedComponents({
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Select
-  });
+
   test("render component for AddFlow",()=>{
     renderCustomToolBar();
     const FlowControlMock = FormControl.mock.calls[0][0];
