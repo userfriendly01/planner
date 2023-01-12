@@ -58,7 +58,7 @@ describe("<CustomFlowGridToolBar/>",()=>{
     MenuItem,
     Select
   });
-  test("render component",()=>{
+  test("render component for AddFlow",()=>{
     renderCustomToolBar();
     const FlowControlMock = FormControl.mock.calls[0][0];
     const ActionsAttr = FormControl.mock.calls[0][0].children[1].props.onChange;
@@ -67,25 +67,55 @@ describe("<CustomFlowGridToolBar/>",()=>{
         value: "addFlow"
       }
     };
+
+
+
+    act(()=>{
+      ActionsAttr(eventAddFlowValue);
+    });
+    expect(FlowControlMock).toBeCalled;
+    expect(openAddModal).toBeCalledTimes(1);
+  });
+  test("render component for Filter",()=>{
+    renderCustomToolBar();
+    const FlowControlMock = FormControl.mock.calls[0][0];
+    const ActionsAttr = FormControl.mock.calls[0][0].children[1].props.onChange;
     const eventFilterFlowValue = {
       target: {
         value: "Filter"
       }
     };
+    act(()=>{
+      ActionsAttr(eventFilterFlowValue);
+    });
+    expect(FlowControlMock).toBeCalled;
+    expect(openAdvanceSearchModal).toBeCalledTimes(1);
+  });
+  test("render component for Filter",()=>{
+    renderCustomToolBar();
+    const FlowControlMock = FormControl.mock.calls[0][0];
+    const ActionsAttr = FormControl.mock.calls[0][0].children[1].props.onChange;
     const eventExportFlowValue = {
       target: {
         value: "Export"
       }
     };
+    act(()=>{
+      ActionsAttr(eventExportFlowValue);
+    });
+    expect(FlowControlMock).toBeCalled;
+    expect(exportDataFile).toBeCalledTimes(1);
+  });
+  test("render component for Filter",()=>{
+    renderCustomToolBar();
+    const FlowControlMock = FormControl.mock.calls[0][0];
+    const ActionsAttr = FormControl.mock.calls[0][0].children[1].props.onChange;
     const eventDefaultFlowValue = {
       target: {
         value: "defaultFlow"
       }
     };
     act(()=>{
-      ActionsAttr(eventAddFlowValue);
-      ActionsAttr(eventFilterFlowValue);
-      ActionsAttr(eventExportFlowValue);
       ActionsAttr(eventDefaultFlowValue);
     });
     expect(FlowControlMock).toBeCalled;
