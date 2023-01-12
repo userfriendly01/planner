@@ -1,7 +1,6 @@
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
+import {
+  FormControl, InputLabel, MenuItem, Select
+} from "@mui/material";
 import React from "react";
 import { FlowAdvanceFilter } from "../AlohaFlow.Interfaces";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
