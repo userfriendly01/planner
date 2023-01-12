@@ -67,9 +67,6 @@ describe("<CustomFlowGridToolBar/>",()=>{
         value: "addFlow"
       }
     };
-
-
-
     act(()=>{
       ActionsAttr(eventAddFlowValue);
     });
