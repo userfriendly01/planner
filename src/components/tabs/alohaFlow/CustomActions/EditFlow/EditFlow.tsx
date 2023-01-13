@@ -27,7 +27,6 @@ import { CustomToast } from "components";
 import {
   flowDropDownList,
   FLOW_MASTER_DATA,
-  getAccessToken,
   getGraphQLEndpoint,
   initializedAlertBar,
   languageOffer,

@@ -3,11 +3,11 @@ import React from "react";
 import { UserAgentApplication } from "msal";
 import { LoginError } from "./LoginError";
 import { LoginInProgress } from "./LoginInProgress";
-import { msalConfig } from "./msalConfig";
+//import { getAzureSPAClientId } from "utils";
 
 let authority;
 let clientId;
-let msalInstance;
+let msalInstance: UserAgentApplication;
 const allDone = "DONE";
 const PERMISSIONS = {
   // Read access to flow config in all environments
@@ -23,8 +23,32 @@ const PERMISSIONS = {
   // Read-write access to routing config in PRODUCTION environments
   READ_WRITE_GROUP_ROUTING_PROD: "gpi-cct-config-route-readwrite-prod"
 };
+interface MsalEnvironment {
+  authority: string;
+  clientId: string;
+}
+interface TokenRequest {
+  scopes: string[];
+}
+interface CallbackComponent {
+  setState: any;
+}
+interface GraphObject {
+  displayName: string;
+}
+interface AuthProps {
+  foo?: string;
 
-function createUap(envObject) {
+}
+interface AuthState {
+  accessToken?: string;
+  authenticated: boolean;
+  errorMessage: string;
+  hasError: boolean;
+  matchedGroups?: string[];
+  renewIframe: boolean;
+}
+function createUap(envObject: MsalEnvironment) {
   authority = envObject.authority;
   clientId = envObject.clientId;
 
@@ -36,17 +60,14 @@ function createUap(envObject) {
   });
 }
 
-export function getEnv() {
-  return msalConfig;
-}
-
 export function authWrapper(
-  WrappedComponent
-) {
-  return class Auth extends React.Component {
-    constructor(props) {
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  WrappedComponent: any
+): any {
+  return class Auth extends React.Component<AuthProps, AuthState> {
+    constructor(props: any) {
       super(props);
-      this.props = props;
+      //this.props = props;
       this.state = {
         authenticated: false,
         renewIframe: false,
@@ -54,7 +75,9 @@ export function authWrapper(
         errorMessage: "null"
       };
     }
-    acquireToken(tokenRequest) {
+    azureSPAClientId = "74b1f79e-23b7-4ed7-abba-3c6cb147fcd4";//getAzureSPAClientId();
+
+    acquireToken(tokenRequest: TokenRequest) {
       msalInstance.acquireTokenPopup(tokenRequest)
         .then(response => {
           console.info("acquireTokenSilent response");
@@ -77,9 +100,15 @@ export function authWrapper(
         });
     }
 
+    getEnv() {
+      return {
+        authority: "https://login.microsoftonline.com/08a83339-90e7-49bf-9075-957ccd561bf1",
+        clientId: this.azureSPAClientId
+      };
+    }
 
     componentDidMount() {
-      createUap(getEnv());
+      createUap(this.getEnv());
 
       // action to perform on authentication
       msalInstance.handleRedirectCallback(() => { // on success
@@ -136,7 +165,10 @@ export function authWrapper(
      * @returns an array of AD groups
      */
     // eslint-disable-next-line class-methods-use-this
-    getMembershipValues(accessToken, accumulator = [], graphEndpoint = "https://graph.microsoft.com/v1.0/me/memberOf?$select=displayName") {
+    getMembershipValues(
+      accessToken: string,
+      accumulator: GraphObject[] = [],
+      graphEndpoint = "https://graph.microsoft.com/v1.0/me/memberOf?$select=displayName"): GraphObject[] {
       console.info("getMembershipValues");
       if (graphEndpoint && graphEndpoint !== allDone) {
         const xmlHttp = new XMLHttpRequest();
@@ -159,7 +191,9 @@ export function authWrapper(
     }
 
     // eslint-disable-next-line class-methods-use-this
-    checkMembership(accessToken, callback, membershipArray) {
+    checkMembership(accessToken: string,
+      callback: CallbackComponent,
+      membershipArray: string[]) {
       console.info("checkMembership");
       const graphData = this.getMembershipValues(accessToken);
 

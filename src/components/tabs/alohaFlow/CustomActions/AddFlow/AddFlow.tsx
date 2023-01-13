@@ -30,7 +30,6 @@ import {
 import {
   flowDropDownList,
   FLOW_MASTER_DATA,
-  getAccessToken,
   getGraphQLEndpoint,
   initializedAlertBar,
   languageOffer,
