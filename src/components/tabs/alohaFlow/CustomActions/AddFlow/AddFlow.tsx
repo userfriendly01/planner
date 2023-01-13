@@ -44,6 +44,7 @@ import { getGridMasterData } from "../../DataGridFlow/GridMaster";
 import {
   AlertBarProps, FormValidationRule
 } from "utils/interfaces";
+import { AzureSPA } from "globals";
 
 export interface AddFlowModalProps {
   isOpen: boolean;
@@ -52,10 +53,9 @@ export interface AddFlowModalProps {
 }
 
 export const AddFlow = ({
-  isOpen = false, newId, openAddModal
-}: AddFlowModalProps):JSX.Element => {
+  accessToken, matchedGroups, isOpen = false, newId, openAddModal
+}: AddFlowModalProps & AzureSPA):JSX.Element => {
 
-  const accessToken: string = getAccessToken();
   const graphQlApiUrl: string = getGraphQLEndpoint();
   const [flowRule, setFlowRule] = useState({ ...initRule });
   const [dropDownValues, setDropDownValues] = useState(flowDropDownList);

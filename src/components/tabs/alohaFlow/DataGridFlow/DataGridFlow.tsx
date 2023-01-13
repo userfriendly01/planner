@@ -11,7 +11,6 @@ import {
 } from "@mui/x-data-grid";
 import { retrieveFlowData } from "services";
 import {
-  getAccessToken,
   CACHE_FILTER_FLOW,
   CALL_FLOW_PAGE_NO,
   CALL_FLOW_PER_PAGE,
@@ -34,10 +33,13 @@ import {
   AddFlow, AdvanceSearchModal, CustomFlowGridToolBar, EditFlow
 } from "../CustomActions";
 import { AlertBarProps } from "utils/interfaces";
+import { AzureSPA } from "globals";
 
-
-const DataGridFlow = (): JSX.Element => {
-  const accessToken: string = getAccessToken();
+const DataGridFlow = (props: AzureSPA): JSX.Element => {
+  const {
+    accessToken,
+    matchedGroups
+  } = props;
   const graphQlApiUrl: string = getGraphQLEndpoint();
 
   const getAdvanceFilter = () => {
@@ -312,12 +314,16 @@ const DataGridFlow = (): JSX.Element => {
       </div>
 
       <AddFlow
+        accessToken={accessToken}
+        matchedGroups={matchedGroups}
         isOpen={dataFlow.isAddModalOpen}
         newId={dataFlow.maxId + 1}
         openAddModal={openAddModal}
       />
 
       <EditFlow
+        accessToken={accessToken}
+        matchedGroups={matchedGroups}
         isOpen={dataFlow.isEditModalOpen}
         selectedRow={dataFlow.selectedRow}
         openEditModal={openEditModal}

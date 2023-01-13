@@ -198,3 +198,8 @@ export interface WorkerAttributeSkills {
   },
   skills: string[]
 }
+
+export interface AzureSPA {
+  accessToken: string;
+  matchedGroups: string;
+}
