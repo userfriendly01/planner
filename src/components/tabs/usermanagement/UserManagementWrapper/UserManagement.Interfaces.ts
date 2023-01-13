@@ -16,12 +16,16 @@ export const views = {
     value: "CALABRIO_WFM_USERS",
     label: "Calabrio WFM Users"
   },
-  COMPARE_PROFILES: {
-    value: "COMPARE_USER_PROFILES",
-    label: "Compare User Profiles"
-  },
+  // COMPARE_PROFILES: {
+  //   value: "COMPARE_USER_PROFILES",
+  //   label: "Compare User Profiles"
+  // },
   ONBOARD_NEW_USER: {
     value: "ONBOARD_NEW_USER",
     label: "Onboard New User"
+  },
+  BULK_CHANGES: {
+    value: "BULK_CHANGES",
+    label: "Bulk Changes"
   }
 };

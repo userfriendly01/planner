@@ -8,6 +8,7 @@ import {
   WorkerOpts
 } from "../";
 import {
+  BulkUpload,
   UserEntryForm,
   Dropdown
 } from "components";
@@ -74,6 +75,7 @@ const UserManagementWrapper = () => {
           workerOpts={selectedWorkerOpts}
           setWorkerOpts={setSelectedWorkerOpts}
         />}
+        {view === views.BULK_CHANGES && <BulkUpload />}
       </CallflowWrapper>
     </FormStateProvider>
   );
