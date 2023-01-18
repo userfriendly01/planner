@@ -46,7 +46,7 @@ export const DataGridRouting = (): JSX.Element => {
 
   const getAdvanceFilter = (): RoutingFilter => {
     try {
-      const cachedFilter: string | undefined = localStorage.getItem(CACHE_FILTER_ROUTING);
+      const cachedFilter: string | null = localStorage.getItem(CACHE_FILTER_ROUTING);
       const advanceFilter: RoutingFilter = JSON.parse(cachedFilter) || {};
       Object.keys(advanceFilter).forEach((key: keyof RoutingFilter) => {
         if (advanceFilter[key] === "") {
