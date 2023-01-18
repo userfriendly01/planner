@@ -1,5 +1,6 @@
 import { CalabrioGroup } from "../components/tabs/usermanagement/CallRecording/CallRecording.Interfaces";
 import { AuthenticationProfile } from "authentication";
+
 export interface Action {
   type: string,
   [key: string]: any
@@ -93,6 +94,8 @@ export interface Office {
 
 export interface Skill {
   [key: string]: any
+  ctmSkillId: number,
+  ctmSkillDisplayName: string,
   name: string,
   profiles: any[],
   closedMessage: string,
@@ -122,18 +125,20 @@ export interface TritonProfile {
   row_crtn_dtm: string,
   row_updt_dtm: string,
   overflow_skill: string,
-  activities: string
+  activities: Array<object>,
+  callTags: string
 }
 
 export interface ProfilePayload {
   profile_id: null | number,
   profile_nme: string,
-  activity_id: Array<number>,
+  activities: Array<number>,
   recorded_i: boolean,
   auto_answd_i: boolean,
   pmt_prcsg_i: boolean,
   otbnd_recorded_i: boolean,
   acw_option_i: boolean,
+  callTags: Array<object>,
   manual_recorded_i: boolean,
   acw_data_entry_i: boolean,
   manual_record_inbound_i: boolean,
@@ -141,7 +146,8 @@ export interface ProfilePayload {
   overflow_skill: string | null,
   policy_number_edit_i: boolean,
   voice_mail_transcription_i: boolean,
-  click_to_dial_i: boolean
+  click_to_dial_i: boolean,
+  transferQueues: Array<object>
 }
 
 export interface Activity {
@@ -151,6 +157,19 @@ export interface Activity {
     data?: number[],
     type?: string
   }
+}
+
+export interface CallTag {
+  wrkr_tsk_info_id: number,
+  profile_id: number,
+  display_nme: string,
+  options_id: number,
+  wrkr_tsk_info_nme: string
+}
+
+export interface CallTagOptions {
+  options_id: number,
+  options: string
 }
 
 export interface Worker {
