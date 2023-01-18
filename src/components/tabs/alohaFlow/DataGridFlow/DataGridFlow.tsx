@@ -40,7 +40,8 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     accessToken,
     matchedGroups
   } = props;
-  const graphQlApiUrl: string = getGraphQLEndpoint();
+  const graphQLEndpoint = getGraphQLEndpoint();
+  console.info("accessToken from DGF: %o", accessToken);
 
   const getAdvanceFilter = () => {
     let advanceFilter: { [key: string]: undefined; };
@@ -80,7 +81,8 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
 
   useEffect(() => {
     const getTableData = async () =>{
-      await loadDataTable();
+      console.info("accessToken from useEffect: %o", accessToken);
+      await loadDataTable(accessToken, graphQLEndpoint);
       setDataFlow((dataFlowProps: FlowStateVariables) => ({
         ...dataFlowProps,
         page: +sessionStorage.getItem(CALL_FLOW_PAGE_NO) || 1,
@@ -131,7 +133,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         severityType: "success",
         msg: "New flow has been successfully added!! "
       }));
-      loadDataTable();
+      loadDataTable(accessToken, graphQLEndpoint);
     }
     setDataFlow((dataFlowProps: FlowStateVariables) => ({
       ...dataFlowProps,
@@ -201,10 +203,10 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   };
 
 
-  const loadDataTable = async () => {
+  const loadDataTable = async (token: string, url: string) => {
     let result: CctSharedCallFlowDb[] = await retrieveFlowData(
-      accessToken,
-      graphQlApiUrl
+      token,
+      url
     );
     if (result.length > 0) {
       result = result.sort((a: CctSharedCallFlowDb, b: CctSharedCallFlowDb) => (a.id - b.id));
@@ -261,7 +263,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         msg: message,
         severityType: "success"
       }));
-      loadDataTable();
+      loadDataTable(accessToken, graphQLEndpoint);
     }
     setDataFlow((currentDataFlow: FlowStateVariables) => (
       {

@@ -3,7 +3,6 @@ import DataGridFlow from "./DataGridFlow/DataGridFlow";
 import { authWrapper } from "../../core/AzureAuth";
 import { AzureSPA } from "globals";
 
-
 const AlohaFlowContainer = (props:AzureSPA) => {
   const {
     accessToken,
@@ -14,6 +13,5 @@ const AlohaFlowContainer = (props:AzureSPA) => {
     <DataGridFlow accessToken={accessToken} matchedGroups={matchedGroups} />
   );
 };
-
 
 export default authWrapper(AlohaFlowContainer);

@@ -3,7 +3,6 @@ import React from "react";
 import { UserAgentApplication } from "msal";
 import { LoginError } from "./LoginError";
 import { LoginInProgress } from "./LoginInProgress";
-//import { getAzureSPAClientId } from "utils";
 
 let authority;
 let clientId;
@@ -23,6 +22,7 @@ const PERMISSIONS = {
   // Read-write access to routing config in PRODUCTION environments
   READ_WRITE_GROUP_ROUTING_PROD: "gpi-cct-config-route-readwrite-prod"
 };
+
 interface MsalEnvironment {
   authority: string;
   clientId: string;
@@ -75,7 +75,6 @@ export function authWrapper(
         errorMessage: "null"
       };
     }
-    azureSPAClientId = "74b1f79e-23b7-4ed7-abba-3c6cb147fcd4";//getAzureSPAClientId();
 
     acquireToken(tokenRequest: TokenRequest) {
       msalInstance.acquireTokenPopup(tokenRequest)
@@ -103,7 +102,7 @@ export function authWrapper(
     getEnv() {
       return {
         authority: "https://login.microsoftonline.com/08a83339-90e7-49bf-9075-957ccd561bf1",
-        clientId: this.azureSPAClientId
+        clientId: "5d895d11-5151-4805-9d28-471c4020731f"
       };
     }
 
