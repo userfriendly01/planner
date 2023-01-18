@@ -36,6 +36,9 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
     accessToken,
     matchedGroups
   } = props;
+  if(!accessToken) {
+    return (<div/>);
+  }
   const graphQlApiUrl: string = getGraphQLEndpoint();
   const [state, setState] = useState<RoutingInitState>(routingInitState);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);

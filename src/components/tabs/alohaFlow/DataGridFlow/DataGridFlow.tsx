@@ -40,8 +40,10 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     accessToken,
     matchedGroups
   } = props;
+  if(!accessToken) {
+    return (<div/>);
+  }
   const graphQLEndpoint = getGraphQLEndpoint();
-  console.info("accessToken from DGF: %o", accessToken);
 
   const getAdvanceFilter = () => {
     let advanceFilter: { [key: string]: undefined; };
@@ -81,7 +83,6 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
 
   useEffect(() => {
     const getTableData = async () =>{
-      console.info("accessToken from useEffect: %o", accessToken);
       await loadDataTable(accessToken, graphQLEndpoint);
       setDataFlow((dataFlowProps: FlowStateVariables) => ({
         ...dataFlowProps,
