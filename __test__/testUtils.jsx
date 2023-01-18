@@ -1,56 +1,6 @@
-import {
-  DispatchContext,
-  StateContext,
-  initialState,
-  reducer
-} from "context";
-import { theme }from "globals";
-import PropTypes from "prop-types";
 import React from "react";
-import { ThemeProvider } from "styled-components";
-import {
-  render,
-  waitFor
-} from "@testing-library/react";
+import { waitFor } from "@testing-library/react";
 export * from "@testing-library/react";
-
-let dispatchedActions = [];
-
-export const mockStore = {
-  getActions: () => [ ...dispatchedActions ],
-  reset: () => dispatchedActions = []
-};
-
-const mockReducer = (state, action) => {
-  dispatchedActions.push(action);
-  return reducer(state, action);
-};
-
-const customRender = (childElements, initialState) => {
-  const TestStateProvider = ({ children }) => {
-    const [state, dispatch] = React.useReducer(mockReducer, initialState || getTestState());
-    return (
-      <StateContext.Provider value={state}>
-        <ThemeProvider theme={theme}>
-          <DispatchContext.Provider value={dispatch}>
-            {children}
-          </DispatchContext.Provider>
-        </ThemeProvider>
-      </StateContext.Provider>
-    );
-  };
-
-  TestStateProvider.propTypes = {
-    children: PropTypes.any
-  };
-
-  return render(
-    <TestStateProvider>
-      {childElements}
-    </TestStateProvider>
-  );
-};
-export { customRender as render };
 
 export const expectMockedComponent = (rendered, component, numExpected = 1) => {
   let componentStr;
@@ -98,8 +48,6 @@ export const setupMockedComponents = (objOfMockedComponents, maxCalls = 20) => {
     jestFn.mockReturnValue(<div>{componentName}</div>);
   });
 };
-
-export const getTestState = () => ({ ...initialState });
 
 export const waitForMockedComponent = (rendered, componentName, instanceCalled) => {
   return waitFor(() => rendered.queryByTestId(getDataTestIdWithInstanceCalled(componentName, instanceCalled)) !== undefined);

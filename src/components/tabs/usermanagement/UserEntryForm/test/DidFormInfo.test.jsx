@@ -26,7 +26,6 @@ import {
   initialTestState,
   managerList,
   mockSkills,
-  mockStore,
   mockWorkers,
   profileList,
   render,
@@ -93,7 +92,6 @@ describe("<DidFormInfo />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockStore.reset();
     useFormDispatch.mockReturnValue(mockSetForm);
     getOverflowSkillFromProfile.mockReturnValue("466");
     useFormState.mockReturnValue({

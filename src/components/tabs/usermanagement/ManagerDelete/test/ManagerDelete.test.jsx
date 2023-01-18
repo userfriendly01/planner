@@ -16,7 +16,6 @@ import {
   expectOnlyPassedProps,
   getLastInstanceCalled,
   getMockedComponentProps,
-  mockStore,
   render,
   setupMockedComponents,
   waitFor
@@ -104,7 +103,6 @@ const defaultAdminState = {
 
 describe("<ManagerDelete />", () => {
   beforeEach(() => {
-    mockStore.reset();
     jest.clearAllMocks();
     setupMockedComponents({
       Dropdown,

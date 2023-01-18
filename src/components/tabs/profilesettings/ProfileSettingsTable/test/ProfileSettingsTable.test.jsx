@@ -8,7 +8,7 @@ import {
   setupMockedComponents
 } from "testUtils";
 import { profileEntryFormDispatch } from "context";
-import { ProfileEntryForm } from "components"
+import { ProfileEntryForm } from "components";
 
 jest.mock("context", () => ({
   __esModule: true,
@@ -26,14 +26,14 @@ const setProfileModalState = jest.fn();
 
 describe("<ProfileSettingsTable />", () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     setupMockedComponents({
       ProfileEntryForm
     });
-    jest.clearAllMocks();
     profileEntryFormDispatch.mockReturnValue(mockSetForm);
   });
 
-  const validNid = "n0138110"
+  const validNid = "n0138110";
   const profiles = [
     {
       activities: [{
@@ -134,9 +134,14 @@ describe("<ProfileSettingsTable />", () => {
     }
   ];
 
+  const renderComponent = Nid => {
+    const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={Nid} setProfileModalState={setProfileModalState}/>);
+    return rendered;
+  };
+
   describe("profile settings table", () => {
     test("should render correct column headers and number of rows", async () => {
-      const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={validNid} setProfileModalState={setProfileModalState}/>)
+      const rendered = renderComponent(validNid);
       expect(rendered.getByText("ID", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Name", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Inbound Recorded", { selector: "th" })).toBeInTheDocument();
@@ -161,7 +166,7 @@ describe("<ProfileSettingsTable />", () => {
     });
 
     test("should render correct tooltips", async () => {
-      const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={validNid} setProfileModalState={setProfileModalState}/>)
+      const rendered = renderComponent(validNid);
       expect(rendered.getByLabelText("Unique Profile Identification")).toBeInTheDocument();
       expect(rendered.getByLabelText("Profile Name")).toBeInTheDocument();
       expect(rendered.getByLabelText("All inbound calls are automatically recorded")).toBeInTheDocument();
@@ -182,7 +187,7 @@ describe("<ProfileSettingsTable />", () => {
     });
 
     test("should render row data", async () => {
-      const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={validNid} setProfileModalState={setProfileModalState}/>)
+      const rendered = renderComponent(validNid);
       expect(rendered.container).toHaveTextContent("1");
       expect(rendered.container).toHaveTextContent("Game of Phones");
       expect(rendered.container).toHaveTextContent("Test Overflow Skill");
@@ -191,7 +196,7 @@ describe("<ProfileSettingsTable />", () => {
 
   describe("Edit icon", () => {
     test("when clicked in row should show ProfileEntryForm for corresponding profile", () => {
-      const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={validNid} setProfileModalState={setProfileModalState}/>)
+      const rendered = renderComponent(validNid);
       const editButtons = rendered.getAllByTestId("edit-button");
       expectMockedComponent(rendered, { ProfileEntryForm }, 0);
       const indexClicked = 0;
@@ -202,11 +207,11 @@ describe("<ProfileSettingsTable />", () => {
     });
     test("does not render any edit icons for an invalidNid", () => {
       const invalidNid = "n0288362";
-      const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={invalidNid} setProfileModalState={setProfileModalState}/>)
+      const rendered = renderComponent(invalidNid);
       expect(rendered.queryAllByTestId("edit-button")).toHaveLength(0);
     });
     test("renders an edit icon per profile for a validNid", () => {
-      const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={validNid} setProfileModalState={setProfileModalState}/>)
+      const rendered = renderComponent(validNid);
       expect(rendered.queryAllByTestId("edit-button")).toHaveLength(1);
     });
   });
