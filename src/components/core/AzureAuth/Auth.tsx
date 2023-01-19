@@ -79,7 +79,6 @@ export function authWrapper(
     acquireToken(tokenRequest: TokenRequest) {
       msalInstance.acquireTokenPopup(tokenRequest)
         .then(response => {
-          console.info("acquireTokenSilent response");
           this.checkMembership(response.accessToken, this, [
             PERMISSIONS.READ_GROUP_FLOW,
             PERMISSIONS.READ_GROUP_ROUTING,
@@ -111,7 +110,6 @@ export function authWrapper(
 
       // action to perform on authentication
       msalInstance.handleRedirectCallback(() => { // on success
-        console.info("handleRedirectCallback");
         this.getAccessToken();
         this.setState({
           authenticated: true
@@ -134,10 +132,8 @@ export function authWrapper(
 
       // not logged in, perform full page redirect
       if (!msalInstance.getAccount()) {
-        console.info("getAccount() was false");
         msalInstance.loginRedirect({});
       } else { // logged in, set authenticated state
-        console.info("getAccount() was true");
         this.getAccessToken();
         this.setState({
           authenticated: true
@@ -146,7 +142,6 @@ export function authWrapper(
     }
 
     getAccessToken() {
-      console.info("getAccessToken");
       const tokenRequest = {
         scopes: [
           "user.read",
@@ -168,7 +163,6 @@ export function authWrapper(
       accessToken: string,
       accumulator: GraphObject[] = [],
       graphEndpoint = "https://graph.microsoft.com/v1.0/me/memberOf?$select=displayName"): GraphObject[] {
-      console.info("getMembershipValues");
       if (graphEndpoint && graphEndpoint !== allDone) {
         const xmlHttp = new XMLHttpRequest();
 
@@ -193,7 +187,6 @@ export function authWrapper(
     checkMembership(accessToken: string,
       callback: CallbackComponent,
       membershipArray: string[]) {
-      console.info("checkMembership");
       const graphData = this.getMembershipValues(accessToken);
 
       const matchedGroups = graphData
