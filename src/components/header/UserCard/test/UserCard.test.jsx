@@ -1,5 +1,6 @@
 import UserCard from "../UserCard";
 import { AccountBox } from "@mui/icons-material";
+import { useAdminState } from "context";
 import React from "react";
 import {
   expectMockedComponent,
@@ -17,18 +18,24 @@ jest.mock("@mui/icons-material", () => ({
   Close: jest.fn()
 }));
 
-describe("<UserCard />", () => {
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
+}));
 
+const state = initialTestState;
+state.userContext.pingIdentity.displayName = "John Doe";
+
+describe("<UserCard />", () => {
   beforeEach(() => {
+    jest.clearAllMocks();
+    useAdminState.mockReturnValue(state);
     setupMockedComponents({
       AccountBox
     });
   });
 
   test("should render a div with correct name and Account Box icon.", () => {
-    const state = initialTestState;
-    state.userContext.pingIdentity.displayName = "John Doe";
-    const rendered = render(<UserCard />, state);
+    const rendered = render(<UserCard />);
     expectMockedComponent(rendered, { AccountBox });
     expect(rendered.getByText("John Doe")).toBeInTheDocument();
   });

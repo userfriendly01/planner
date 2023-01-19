@@ -1,9 +1,12 @@
+import { checkIfPO } from "authentication";
 import React from "react";
 import {
+  BubbleDiv,
   CustomTable,
   CustomTableData,
   CustomTableHeader,
   CustomTableRow,
+  HighlightRed,
   TableText,
   StyledPaper,
   TableContainer,
@@ -11,7 +14,6 @@ import {
   IconWrapper
 } from "./ProfileSettingsTable.Styles";
 import {
-  checkIfPO,
   formatAggregateQueues,
   formatProfileBooleanData,
   formatProfileACWDataEntry,
@@ -95,7 +97,7 @@ const ProfileSettingsTable = props => {
                       <TableText>{formatProfileBooleanData(profile.manual_recorded_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileACWDataEntry(profile.acw_data_entry_i.data[0], profile.callTags.filter(data => data.profile_id === profile.profile_id))}</TableText>
+                      <TableText>{formatProfileACWDataEntry(profile.acw_data_entry_i.data[0], profile.callTags.filter(data => data.profile_id === profile.profile_id), BubbleDiv, HighlightRed)}</TableText>
                     </CustomTableData>
                     <CustomTableData>
                       <TableText>{formatProfileBooleanData(profile.manual_record_inbound_i.data[0])}</TableText>
@@ -119,14 +121,14 @@ const ProfileSettingsTable = props => {
                       <TableDataFlex>
                         {
                           profile.activities.map(activity => {
-                            return <div key={`${activity.activity_nme}`}>{formatActivityData(activity.activity_nme)}</div>;
+                            return <div key={`${activity.activity_nme}`}>{formatActivityData(activity.activity_nme, BubbleDiv)}</div>;
                           })
                         }
                       </TableDataFlex>
                     </CustomTableData>
                     <CustomTableData>
                       <TableDataFlex>
-                        {formatAggregateQueues(profile.aggregateQueues)}
+                        {formatAggregateQueues(profile.aggregateQueues, BubbleDiv)}
                       </TableDataFlex>
                     </CustomTableData>
                     {

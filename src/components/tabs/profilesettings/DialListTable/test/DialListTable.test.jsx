@@ -9,6 +9,7 @@ import {
   apiPaths,
   formModes,
   ModalOverlayStatuses,
+  theme,
   timeouts
 } from "globals";
 import React from "react";
@@ -24,6 +25,7 @@ import {
   waitFor,
   within
 } from "testUtils";
+import { ThemeProvider } from "styled-components";
 import { myAxios } from "utils";
 import { Modal } from "@mui/material";
 
@@ -48,7 +50,9 @@ const profileId = "89";
 const refreshProfileData = jest.fn();
 
 const renderComponent = ({ dialList }) => render(
-  <DialListTable dialList={dialList} profileId={profileId} refreshProfileData={refreshProfileData} />
+  <ThemeProvider theme={theme}>{
+    <DialListTable dialList={dialList} profileId={profileId} refreshProfileData={refreshProfileData} />
+  }</ThemeProvider>
 );
 
 describe("<DialListTable />", () => {

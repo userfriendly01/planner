@@ -8,7 +8,6 @@ import {
 import React from "react";
 import {
   act,
-  mockStore,
   render,
   setupMockedComponents,
   initialFormState
@@ -47,7 +46,6 @@ describe("<SkillsFormInfo />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockStore.reset();
     useFormDispatch.mockReturnValue(mockSetForm);
     useFormState.mockReturnValue(formState);
     setupMockedComponents({

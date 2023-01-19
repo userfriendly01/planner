@@ -4,7 +4,6 @@ import {
 import React from "react";
 import {
   expectMockedComponent,
-  mockStore,
   render,
   setupMockedComponents
 } from "testUtils";
@@ -27,7 +26,6 @@ const renderComponent = selectedManager => render(
 
 describe("<ConfirmationForm />", () => {
   beforeEach(() => {
-    mockStore.reset();
     jest.clearAllMocks();
     setupMockedComponents({
       StyledButton

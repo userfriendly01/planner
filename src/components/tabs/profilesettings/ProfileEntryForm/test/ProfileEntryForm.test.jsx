@@ -1,7 +1,6 @@
 import ProfileEntryForm from "../ProfileEntryForm";
 import React from "react";
 import {
-  mockStore,
   render,
   expectMockedComponent,
   setupMockedComponents,
@@ -41,7 +40,6 @@ describe("<ProfileEntryForm />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockStore.reset();
     profileEntryFormState.mockReturnValue(initialFormState);
     setupMockedComponents({
       ModalOverlay,
