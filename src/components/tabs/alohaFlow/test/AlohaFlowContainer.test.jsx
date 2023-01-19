@@ -6,18 +6,19 @@ import { AlohaFlowContainer } from "../index";
 import DataGridFlow from "../DataGridFlow/DataGridFlow";
 import React from "react";
 
-jest.mock("msal",()=>({
+jest.mock("msal", () => ({
   __esModule: true,
-  UserAgentApplication: jest.fn().mockImplementation(() => { return {
-    acquireTokenPopup: jest.fn().mockResolvedValue({
-      accessToken: "mockt-test-token-1234"
-    }),
-    handleRedirectCallback: jest.fn(),
-    isCallback: jest.fn().mockReturnValue(false),
-    getAccount: jest.fn().mockReturnValue(true),
-    loginRedirect: jest.fn()
-  };
-})
+  UserAgentApplication: jest.fn().mockImplementation(() => {
+    return {
+      acquireTokenPopup: jest.fn().mockResolvedValue({
+        accessToken: "mockt-test-token-1234"
+      }),
+      handleRedirectCallback: jest.fn(),
+      isCallback: jest.fn().mockReturnValue(false),
+      getAccount: jest.fn().mockReturnValue(true),
+      loginRedirect: jest.fn()
+    };
+  })
 }));
 
 const xhrMockClass = () => ({

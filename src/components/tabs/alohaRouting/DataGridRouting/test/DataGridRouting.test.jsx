@@ -72,9 +72,10 @@ const filteredItems = {
   channel: "TestChannel1"
 };
 
-const renderDataGridRouting = () =>{
-  return render(<DataGridRouting/>, initialTestState);
-};
+const renderDataGridRouting = () => render(
+  <DataGridRouting accessToken="Token123" matchedGroups="[]"/>,
+  initialTestState
+);
 
 describe("<DataGridRouting />", ()=>{
   const initialCookie = window.document.cookie;

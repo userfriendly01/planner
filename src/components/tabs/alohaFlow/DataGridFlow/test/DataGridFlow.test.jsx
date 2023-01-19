@@ -74,7 +74,7 @@ const filteredItems = {
 };
 
 const renderComponent = () => render(
-  <DataGridFlow />,
+  <DataGridFlow accessToken="Token123" matchedGroups="[]"/>,
   initialTestState
 );
 
