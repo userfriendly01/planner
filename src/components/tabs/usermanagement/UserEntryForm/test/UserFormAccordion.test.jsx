@@ -12,7 +12,6 @@ import {
 import React from "react";
 import {
   expectOnlyPassedProps,
-  mockStore,
   render,
   setupMockedComponents,
   profileList,
@@ -43,7 +42,6 @@ describe("<UserFormAccordion />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockStore.reset();
     setupMockedComponents({
       BasicFormInfo,
       CallRecordingForm,

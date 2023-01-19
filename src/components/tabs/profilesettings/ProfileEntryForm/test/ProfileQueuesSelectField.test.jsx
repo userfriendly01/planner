@@ -4,6 +4,7 @@ import {
   Delete
 } from "@mui/icons-material";
 import { Dropdown } from "components";
+import { useAdminState } from "context";
 import React from "react";
 import {
   expectMockedComponent,
@@ -14,6 +15,8 @@ import {
   initialTestState,
   skillsList
 } from "testUtils";
+import { theme } from "globals";
+import { ThemeProvider } from "styled-components";
 import { act } from "react-dom/test-utils";
 
 jest.mock("@mui/icons-material", () => ({
@@ -28,17 +31,27 @@ jest.mock("components", () => ({
   StyledButton: jest.fn()
 }));
 
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
+}));
+
 const mockSetQueueList = jest.fn();
-const renderComponent = mockTransferQueues => render(<ProfileQueuesSelectField
-  transferQueues={mockTransferQueues}
-  setQueueList={mockSetQueueList}
-/>, initialTestState);
+const renderComponent = mockTransferQueues => render(
+  <ThemeProvider theme={theme}>
+    <ProfileQueuesSelectField
+      transferQueues={mockTransferQueues}
+      setQueueList={mockSetQueueList}
+    />
+  </ThemeProvider>
+);
 
 const getAddTransferQueuesButton = rendered => rendered.getByTestId("add-queue-button");
 const getDeleteTransferQueuesButton = (rendered, instance) => rendered.getAllByTestId("delete-queue-button")[instance];
 
 describe("<ProfileQueuesSelectField />", () => {
   beforeEach(() => {
+    jest.clearAllMocks();
+    useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       Add,
       Delete,

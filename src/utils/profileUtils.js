@@ -5,10 +5,6 @@ import {
   AutoAwesomeMotion
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
-import {
-  BubbleDiv,
-  HighlightRed
-} from "../components/tabs/profilesettings/ProfileSettingsTable/ProfileSettingsTable.Styles";
 
 export const formatProfileBooleanData = value => {
   if (value === 1) {
@@ -24,7 +20,7 @@ export const formatProfileBooleanDataTrueFalse = value => {
   return { value: false };
 };
 
-export const formatProfileACWDataEntry = (value, options) => {
+export const formatProfileACWDataEntry = (value, options, BubbleDiv, HighlightRed) => {
   if (value === 1 && options.length) {
     return options.map(option => {
       return <Tooltip key={option.wrkr_tsk_info_id} placement="top" title={option.options ? option.options.toString().replace(/,/g,", ") : ""}>
@@ -48,7 +44,7 @@ export const formatOverflowSkillData = overflowSkill => {
   return overflowSkill;
 };
 
-export const formatActivityData = activity => {
+export const formatActivityData = (activity, BubbleDiv) => {
   if (activity === null) {
     return "";
   }
@@ -70,7 +66,7 @@ export const profileSettingsViews = [
   }
 ];
 
-export const formatAggregateQueues = aggregateQueues => {
+export const formatAggregateQueues = (aggregateQueues, BubbleDiv) => {
   return aggregateQueues.map(queue => {
     if (queue.aggregate_queues_type === "aggregate") {
       return <BubbleDiv key={queue.aggregate_queues_nme}>{queue.aggregate_queues_nme} <AutoAwesomeMotion fontSize="1 rem"/></BubbleDiv>;
