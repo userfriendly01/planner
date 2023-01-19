@@ -1,3 +1,4 @@
+import { checkIfPO } from "authentication";
 import {
   DialListTable,
   Directory,
@@ -17,8 +18,7 @@ import {
   myAxios,
   sortDialListEntriesByName,
   sortDirectoryListEntriesByName,
-  profileSettingsViews,
-  checkIfPO
+  profileSettingsViews
 } from "utils";
 import {
   ProfileSettingsDropdownWrapper,

@@ -5,7 +5,7 @@ import {
   getPermissions,
   getStartups,
   getWorkerProfileId
-} from "utils";
+} from "../authUtils";
 import {
   initialTestState,
   startups,

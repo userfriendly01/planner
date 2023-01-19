@@ -14,6 +14,8 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
+import { theme } from "globals";
+import { ThemeProvider } from "styled-components";
 
 const setPageFunc = jest.fn();
 
@@ -30,12 +32,16 @@ jest.mock("@mui/icons-material", () => ({
 }));
 
 const renderComponent = page => {
-  return render(<ManagementPagination
-    end={workersPerPage}
-    length={65}
-    page={page}
-    setPage={setPageFunc}
-    start={1} />);
+  return render(
+    <ThemeProvider theme={theme}>
+      <ManagementPagination
+        end={workersPerPage}
+        length={65}
+        page={page}
+        setPage={setPageFunc}
+        start={1} />
+    </ThemeProvider>
+  );
 };
 
 describe("<ManagementPagination />", () => {

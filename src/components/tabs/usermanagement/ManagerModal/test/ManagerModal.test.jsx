@@ -8,7 +8,10 @@ import {
   StyledButton,
   CalabrioTeamModal
 } from "components";
-import { useAdminState } from "context";
+import {
+  useAdminState,
+  useAdminDispatch
+} from "context";
 import React from "react";
 import { act } from "react-dom/test-utils";
 import { Modal } from "@mui/material";
@@ -21,7 +24,6 @@ import {
   expectOnlyPassedProps,
   getLastInstanceCalled,
   getMockedComponentProps,
-  mockStore,
   render,
   setupMockedComponents,
   waitFor
@@ -35,16 +37,19 @@ jest.mock("@mui/icons-material", () => ({
 }));
 
 jest.mock("@mui/material", () => ({
-  Modal: jest.fn()
+  Modal: jest.fn(),
+  Paper: jest.fn()
 }));
 
 jest.mock("services", () => ({
-  FetchUserResponse: jest.requireActual("services").FetchUserResponse
+  FetchUserResponse: jest.requireActual("services").FetchUserResponse,
+  addManager: jest.fn(),
+  editManager: jest.fn()
 }));
 
 jest.mock("context", () => ({
   useAdminState: jest.fn(),
-  useAdminDispatch: jest.requireActual("context").useAdminDispatch
+  useAdminDispatch: jest.fn()
 }));
 
 jest.mock("components", () => ({
@@ -59,9 +64,9 @@ jest.mock("components", () => ({
 
 describe("<ManagerModal />", () => {
   const mockHandleClose = jest.fn();
+  const mockSetForm = jest.fn();
   const renderComponent = () => render(<ManagerModal handleClose={mockHandleClose} selectedManager={null}/>);
   beforeEach(() => {
-    mockStore.reset();
     jest.clearAllMocks();
     setupMockedComponents({
       Dropdown,
@@ -72,6 +77,7 @@ describe("<ManagerModal />", () => {
       CalabrioTeamModal,
       Modal
     });
+    useAdminDispatch.mockReturnValue(mockSetForm);
     PaperContainer.mockClear();
     PaperContainer.mockImplementation(props => <div>{props.children}</div>);
     mockHandleClose.mockClear();
@@ -185,19 +191,18 @@ describe("<ManagerModal />", () => {
                   status: "success",
                   message: "Manager saved successfully"
                 });
-                expect(mockStore.getActions()).toEqual([
-                  {
-                    type: "addManager",
-                    payload: {
-                      calabrio_team_ids: [215],
-                      manager_id: undefined,
-                      manager_first_name: "B'ob",
-                      manager_last_name: "Bob'son",
-                      manager_n_number: "n0000000",
-                      profile_id: 4
-                    }
+                expect(mockSetForm).toHaveBeenCalledTimes(1);
+                expect(mockSetForm).toHaveBeenCalledWith({
+                  type: "addManager",
+                  payload: {
+                    calabrio_team_ids: [215],
+                    manager_id: undefined,
+                    manager_first_name: "B'ob",
+                    manager_last_name: "Bob'son",
+                    manager_n_number: "n0000000",
+                    profile_id: 4
                   }
-                ]);
+                });
                 expect(mockHandleClose).toHaveBeenCalledTimes(1);
               });
             });
@@ -365,25 +370,24 @@ describe("<ManagerModal />", () => {
                 profile_id: 4
               });
               expect(mockHandleClose).toHaveBeenCalledTimes(1);
-              expect(mockStore.getActions()).toEqual([
-                {
-                  type: "editManager",
-                  payload: [
-                    {
-                      calabrio_team_ids: [215, 225],
-                      manager_id: 10,
-                      manager_first_name: "Faith",
-                      manager_last_name: "Cuneo",
-                      manager_n_number: "n0263786",
-                      profile_id: 4
-                    },
-                    {
-                      manager_id: 3,
-                      manager_n_number: "n0262226"
-                    }
-                  ]
-                }
-              ]);
+              expect(mockSetForm).toHaveBeenCalledTimes(1);
+              expect(mockSetForm).toHaveBeenCalledWith({
+                type: "editManager",
+                payload: [
+                  {
+                    calabrio_team_ids: [215, 225],
+                    manager_id: 10,
+                    manager_first_name: "Faith",
+                    manager_last_name: "Cuneo",
+                    manager_n_number: "n0263786",
+                    profile_id: 4
+                  },
+                  {
+                    manager_id: 3,
+                    manager_n_number: "n0262226"
+                  }
+                ]
+              });
               expect(ModalOverlay.mock.calls[1][0]).toStrictEqual({
                 message: "Manager saved successfully",
                 status: "success"
@@ -410,7 +414,7 @@ describe("<ManagerModal />", () => {
                 profile_id: 4
               });
               expect(mockHandleClose).toHaveBeenCalledTimes(0);
-              expect(mockStore.getActions().length).toEqual(0);
+              expect(mockSetForm).toHaveBeenCalledTimes(0);
               expect(ModalOverlay.mock.calls[2][0]).toStrictEqual({
                 message: "Failed to update Manager",
                 status: "fail"

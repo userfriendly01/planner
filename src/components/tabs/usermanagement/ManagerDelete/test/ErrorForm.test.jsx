@@ -4,7 +4,6 @@ import {
 import React from "react";
 import {
   expectMockedComponent,
-  mockStore,
   render,
   setupMockedComponents
 } from "testUtils";
@@ -23,7 +22,6 @@ const renderComponent = teamMembers => render(
 
 describe("<ErrorForm />", () => {
   beforeEach(() => {
-    mockStore.reset();
     jest.clearAllMocks();
     setupMockedComponents({
       StyledButton

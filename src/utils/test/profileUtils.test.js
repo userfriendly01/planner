@@ -71,7 +71,7 @@ describe("profileUtils", () => {
           ]
         }
       ];
-      expect(formatProfileACWDataEntry(1, options)).toStrictEqual(
+      expect(formatProfileACWDataEntry(1, options, BubbleDiv, HighlightRed)).toStrictEqual(
         [
           <Tooltip key={2} placement="top" title={""}>
             <BubbleDiv key={2}>{"Claim Number"}</BubbleDiv>
@@ -87,7 +87,7 @@ describe("profileUtils", () => {
     });
     test("should return a highlighted red error when feature is enabled and options are empty", () => {
       const options = [];
-      expect(formatProfileACWDataEntry(1, options)).toStrictEqual(<HighlightRed>{"Call tags not configured but feature enabled"}</HighlightRed>);
+      expect(formatProfileACWDataEntry(1, options, BubbleDiv, HighlightRed)).toStrictEqual(<HighlightRed>{"Call tags not configured but feature enabled"}</HighlightRed>);
     });
     test("should return a highlighted red error when feature is disabled and options are not empty", () => {
       const options = [{
@@ -98,7 +98,7 @@ describe("profileUtils", () => {
         options_id: null,
         options: null
       }];
-      expect(formatProfileACWDataEntry(0, options)).toStrictEqual(<HighlightRed>{"Call tags configured but feature disabled"}</HighlightRed>);
+      expect(formatProfileACWDataEntry(0, options, BubbleDiv, HighlightRed)).toStrictEqual(<HighlightRed>{"Call tags configured but feature disabled"}</HighlightRed>);
     });
   });
 
@@ -113,10 +113,10 @@ describe("profileUtils", () => {
 
   describe("formatActivityData", () => {
     test("should return activity within a BubbleDiv", () => {
-      expect(formatActivityData("Busy")).toStrictEqual(<BubbleDiv>{"Busy"}</BubbleDiv>);
+      expect(formatActivityData("Busy", BubbleDiv)).toStrictEqual(<BubbleDiv>{"Busy"}</BubbleDiv>);
     });
     test("should return empty string for null activity", () => {
-      expect(formatActivityData(null)).toBe("");
+      expect(formatActivityData(null, BubbleDiv)).toBe("");
     });
   });
 
@@ -152,7 +152,7 @@ describe("profileUtils", () => {
           ]
         }
       ];
-      expect(formatAggregateQueues(aggrQueue)).toStrictEqual([<BubbleDiv key={"PSU Claims - Level 1"}>{"PSU Claims - Level 1"}</BubbleDiv>]);
+      expect(formatAggregateQueues(aggrQueue, BubbleDiv)).toStrictEqual([<BubbleDiv key={"PSU Claims - Level 1"}>{"PSU Claims - Level 1"}</BubbleDiv>]);
     });
 
     test("test should return aggregated queue with icon", () => {
@@ -174,12 +174,12 @@ describe("profileUtils", () => {
           ]
         }
       ];
-      expect(formatAggregateQueues(aggrQueue)).toStrictEqual([<BubbleDiv key={"PSU Claims - Level 1"}>{"PSU Claims - Level 1"} <AutoAwesomeMotion fontSize="1 rem"/></BubbleDiv>]);
+      expect(formatAggregateQueues(aggrQueue, BubbleDiv)).toStrictEqual([<BubbleDiv key={"PSU Claims - Level 1"}>{"PSU Claims - Level 1"} <AutoAwesomeMotion fontSize="1 rem"/></BubbleDiv>]);
     });
 
     test("no queues, test should be empty array", () => {
       const aggrQueue = [];
-      expect(formatAggregateQueues(aggrQueue)).toStrictEqual([]);
+      expect(formatAggregateQueues(aggrQueue, BubbleDiv)).toStrictEqual([]);
     });
   });
 });
