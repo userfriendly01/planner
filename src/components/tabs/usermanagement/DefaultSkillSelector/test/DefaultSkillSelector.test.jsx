@@ -7,7 +7,7 @@ import {
   PriorityDropDown,
   SkillDropDown
 } from "components";
-import { initialState } from "context";
+import { useAdminState } from "context";
 import React from "react";
 import { act } from "react-dom/test-utils";
 import {
@@ -16,8 +16,11 @@ import {
   getMockedComponentProps,
   fireEvent,
   render,
+  initialTestState as initialState,
   setupMockedComponents
 } from "testUtils";
+import { theme } from "globals";
+import { ThemeProvider } from "styled-components";
 
 jest.mock("@mui/icons-material", () => ({
   __esModule: true,
@@ -30,6 +33,10 @@ jest.mock("components", () => ({
   PriorityDropDown: jest.fn(),
   SkillDropDown: jest.fn(),
   DefaultPriorityDropDown: jest.fn()
+}));
+
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
 }));
 
 const mockSetDefaultSkills = jest.fn();
@@ -62,8 +69,13 @@ const getAddSkillButton = rendered => rendered.getByTestId("add-skill-button");
 const getDeleteSkillButton = (rendered, instance) => rendered.getAllByTestId("delete-skill-button")[instance];
 
 describe("<DefaultSkillSelector />", () => {
-  const renderComponent = defaultSkills => render(<DefaultSkillSelector defaultSkills={defaultSkills} setDefaultSkills={mockSetDefaultSkills} />, initialTestState);
+  const renderComponent = defaultSkills => render(
+    <ThemeProvider theme={theme}>
+      <DefaultSkillSelector defaultSkills={defaultSkills} setDefaultSkills={mockSetDefaultSkills} />
+    </ThemeProvider>
+  );
   beforeEach(() => {
+    useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       Add,
       Delete,

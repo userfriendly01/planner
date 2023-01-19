@@ -16,14 +16,16 @@ import {
   useFormState,
   userFormActions
 } from "context";
-import { formModes } from "globals";
+import {
+  formModes,
+  theme
+} from "globals";
 import React from "react";
 import {
   act,
   expectMockedComponent,
   expectOnlyPassedProps,
   initialFormState,
-  initialTestState,
   managerList,
   mockSkills,
   mockWorkers,
@@ -31,6 +33,7 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
+import { ThemeProvider } from "styled-components";
 import { getOverflowSkillFromProfile } from "utils";
 
 jest.useFakeTimers();
@@ -73,7 +76,11 @@ jest.mock("utils", () => ({
   isProfileIdValid: jest.fn(),
   sortProfilesByName: jest.requireActual("utils").sortProfilesByName,
   sortManagersByName: jest.fn("utils").sortManagersByName,
-  getOverflowSkillFromProfile: jest.fn()
+  getOverflowSkillFromProfile: jest.fn(),
+  calabrioTimeZones: jest.requireActual("utils").calabrioTimeZones,
+  getValidSkillsObject: jest.fn(),
+  formatE164PhoneNumber: jest.fn(),
+  getZeroOutEnabledFromProfile: jest.fn()
 }));
 
 jest.mock("globals", () => ({
@@ -81,7 +88,8 @@ jest.mock("globals", () => ({
   extensionMatcher: {
     test: jest.fn()
   },
-  formModes: jest.requireActual("globals").formModes
+  formModes: jest.requireActual("globals").formModes,
+  theme: jest.requireActual("globals").theme
 }));
 
 const mockSetForm = jest.fn();
@@ -112,16 +120,17 @@ describe("<DidFormInfo />", () => {
 
   const renderComponent = forwardToToggle => {
     return render(
-      <DidFormInfo
-        skills={mockSkills}
-        worker={mockWorkers[2]}
-        workers={mockWorkers}
-        profiles={profileList}
-        managers={managerList}
-        forwardToToggle={forwardToToggle}
-        setForwardToToggle={mockSetForwardToToggle}
-      />,
-      initialTestState
+      <ThemeProvider theme={theme}>
+        <DidFormInfo
+          skills={mockSkills}
+          worker={mockWorkers[2]}
+          workers={mockWorkers}
+          profiles={profileList}
+          managers={managerList}
+          forwardToToggle={forwardToToggle}
+          setForwardToToggle={mockSetForwardToToggle}
+        />
+      </ThemeProvider>
     );
   };
   describe("Initial State", () => {
@@ -212,8 +221,16 @@ describe("<DidFormInfo />", () => {
       });
       test("StyledIcon is rendered with the correct props", () => {
         renderComponent(true);
-        render(PhoneNumberInput.mock.calls[0][0].icon);
-        render(InputAdornment.mock.calls[0][0].children);
+        render(
+          <ThemeProvider theme={theme}>{
+            PhoneNumberInput.mock.calls[0][0].icon
+          }</ThemeProvider>
+        );
+        render(
+          <ThemeProvider theme={theme}>{
+            InputAdornment.mock.calls[0][0].children
+          }</ThemeProvider>
+        );
 
         const expectedStyledIconProps = {
           fontSize: "large"
@@ -222,8 +239,16 @@ describe("<DidFormInfo />", () => {
       });
       test("forwardToToggle === true", () => {
         renderComponent(true);
-        render(PhoneNumberInput.mock.calls[0][0].icon);
-        render(InputAdornment.mock.calls[0][0].children);
+        render(
+          <ThemeProvider theme={theme}>{
+            PhoneNumberInput.mock.calls[0][0].icon
+          }</ThemeProvider>
+        );
+        render(
+          <ThemeProvider theme={theme}>{
+            InputAdornment.mock.calls[0][0].children
+          }</ThemeProvider>
+        );
         act(() => {
           const onClick = Edit.mock.calls[0][0].onClick;
           onClick();
@@ -237,8 +262,16 @@ describe("<DidFormInfo />", () => {
       });
       test("forwardToToggle === false", () => {
         renderComponent(false);
-        render(PhoneNumberInput.mock.calls[0][0].icon);
-        render(InputAdornment.mock.calls[0][0].children);
+        render(
+          <ThemeProvider theme={theme}>{
+            PhoneNumberInput.mock.calls[0][0].icon
+          }</ThemeProvider>
+        );
+        render(
+          <ThemeProvider theme={theme}>{
+            InputAdornment.mock.calls[0][0].children
+          }</ThemeProvider>
+        );
         act(() => {
           const onClick = Edit.mock.calls[0][0].onClick;
           onClick();

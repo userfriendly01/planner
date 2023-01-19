@@ -1,4 +1,5 @@
 import ProfileSettingsTable from "../ProfileSettingsTable";
+import { checkIfPO } from "authentication";
 import React from "react";
 import {
   act,
@@ -9,6 +10,10 @@ import {
 } from "testUtils";
 import { profileEntryFormDispatch } from "context";
 import { ProfileEntryForm } from "components";
+
+jest.mock("authentication", () => ({
+  checkIfPO: jest.fn()
+}));
 
 jest.mock("context", () => ({
   __esModule: true,
@@ -27,6 +32,7 @@ const setProfileModalState = jest.fn();
 describe("<ProfileSettingsTable />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    checkIfPO.mockReturnValue(false);
     setupMockedComponents({
       ProfileEntryForm
     });
@@ -195,24 +201,31 @@ describe("<ProfileSettingsTable />", () => {
   });
 
   describe("Edit icon", () => {
-    test("when clicked in row should show ProfileEntryForm for corresponding profile", () => {
-      const rendered = renderComponent(validNid);
-      const editButtons = rendered.getAllByTestId("edit-button");
-      expectMockedComponent(rendered, { ProfileEntryForm }, 0);
-      const indexClicked = 0;
-      act(() => fireEvent.click(editButtons[indexClicked]));
-      expect(setProfileModalState).toHaveBeenCalledWith({
-        open: true
+    describe("invalid NNumber", () => {
+      test("does not render any edit icons for an invalidNid", () => {
+        const invalidNid = "n0288362";
+        const rendered = renderComponent(invalidNid);
+        expect(rendered.queryAllByTestId("edit-button")).toHaveLength(0);
       });
     });
-    test("does not render any edit icons for an invalidNid", () => {
-      const invalidNid = "n0288362";
-      const rendered = renderComponent(invalidNid);
-      expect(rendered.queryAllByTestId("edit-button")).toHaveLength(0);
-    });
-    test("renders an edit icon per profile for a validNid", () => {
-      const rendered = renderComponent(validNid);
-      expect(rendered.queryAllByTestId("edit-button")).toHaveLength(1);
+    describe("valid NNumber", () => {
+      beforeEach(() => {
+        checkIfPO.mockReturnValue(true);
+      });
+      test("when clicked in row should show ProfileEntryForm for corresponding profile", () => {
+        const rendered = renderComponent(validNid);
+        const editButtons = rendered.getAllByTestId("edit-button");
+        expectMockedComponent(rendered, { ProfileEntryForm }, 0);
+        const indexClicked = 0;
+        act(() => fireEvent.click(editButtons[indexClicked]));
+        expect(setProfileModalState).toHaveBeenCalledWith({
+          open: true
+        });
+      });
+      test("renders an edit icon per profile for a validNid", () => {
+        const rendered = renderComponent(validNid);
+        expect(rendered.queryAllByTestId("edit-button")).toHaveLength(1);
+      });
     });
   });
 });

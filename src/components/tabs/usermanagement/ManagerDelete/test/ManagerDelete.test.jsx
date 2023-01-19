@@ -7,7 +7,10 @@ import {
   PaperContainer,
   StyledButton
 } from "components";
-import { useAdminState } from "context";
+import {
+  useAdminDispatch,
+  useAdminState
+} from "context";
 import React from "react";
 import { act } from "react-dom/test-utils";
 import { deleteManager } from "services";
@@ -28,17 +31,17 @@ jest.mock("@mui/icons-material", () => ({
   CloseRounded: jest.fn()
 }));
 
+jest.mock("context", () => ({
+  useAdminState: jest.fn(),
+  useAdminDispatch: jest.fn()
+}));
+
 jest.mock("services", () => ({
   __esModule: true,
   addManager: jest.fn(),
   editManager: jest.fn(),
   deleteManager: jest.fn(),
   FetchUserResponse: jest.requireActual("services").FetchUserResponse
-}));
-
-jest.mock("context", () => ({
-  useAdminState: jest.fn(),
-  useAdminDispatch: jest.requireActual("context").useAdminDispatch
 }));
 
 jest.mock("components", () => ({
@@ -50,6 +53,7 @@ jest.mock("components", () => ({
   StyledButton: jest.fn()
 }));
 
+const mockDispatch = jest.fn();
 const mockHandleClose = jest.fn();
 const renderComponent = selectedManager => render(
   <ManagerDelete handleClose={mockHandleClose}
@@ -114,6 +118,7 @@ describe("<ManagerDelete />", () => {
     PaperContainer.mockClear();
     PaperContainer.mockImplementation(props => <div>{props.children}</div>);
     mockHandleClose.mockClear();
+    useAdminDispatch.mockReturnValue(mockDispatch);
     useAdminState.mockReturnValue(defaultAdminState);
   });
 

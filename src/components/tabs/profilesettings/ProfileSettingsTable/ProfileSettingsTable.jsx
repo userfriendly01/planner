@@ -1,3 +1,4 @@
+import { checkIfPO } from "authentication";
 import React from "react";
 import {
   BubbleDiv,
@@ -13,7 +14,6 @@ import {
   IconWrapper
 } from "./ProfileSettingsTable.Styles";
 import {
-  checkIfPO,
   formatAggregateQueues,
   formatProfileBooleanData,
   formatProfileACWDataEntry,
