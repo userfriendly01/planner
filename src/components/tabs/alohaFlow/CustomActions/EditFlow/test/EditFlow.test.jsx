@@ -2,11 +2,19 @@ import React from "react";
 import { EditFlow } from "../index";
 import { FLOW_MASTER_DATA } from "utils";
 import {
-  fireEvent, render, initialTestState, waitFor, act, within
+  fireEvent, render, initialTestState, waitFor, act, within, setupMockedComponents
 } from "testUtils";
 import {
   deleteFlowRule, updateFlowDB
 } from "services";
+import { CustomToast } from "components";
+
+jest.mock("components", () => {
+  return{
+    __esModule: true,
+    CustomToast: jest.fn()
+  };
+});
 
 const validFlowData = {
   id: 1,
@@ -222,6 +230,7 @@ describe("<EditFlow />", () => {
     });
 
     test("Simulate the Delete Button with Failed API Response", () => {
+      deleteFlowRule.mockResolvedValue(undefined);
       const { getByRole } = renderEditFlow(true, validFlowData);
       const deleteButton = getByRole("button", { name: "deleteFlowRuleButton" });
       act(() => {
@@ -255,6 +264,21 @@ describe("<EditFlow />", () => {
         expect(openEditModal).toBeCalledTimes(0);
 
       });
+    });
+  });
+
+  describe("Individual Components", ()=>{
+    beforeEach(()=>{
+      setupMockedComponents({
+        CustomToast
+      });
+    });
+
+    test("Simulate CustomToast Close Button",()=>{
+      renderEditFlow(true, validFlowData);
+      const customToastOnClose = CustomToast.mock.calls[0][0].onClose;
+      act(()=>{ customToastOnClose(); });
+      expect(CustomToast.mock.calls[0][0].open).toBe(false);
     });
   });
 });
