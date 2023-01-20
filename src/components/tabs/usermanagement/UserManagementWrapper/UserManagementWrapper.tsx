@@ -2,7 +2,8 @@ import React from "react";
 import { CallflowWrapper } from "./UserManagement.Styles";
 import {
   View,
-  views } from "./UserManagement.Interfaces";
+  views
+} from "./UserManagement.Interfaces";
 import {
   UserAction,
   WorkerOpts
