@@ -16,7 +16,11 @@ import {
   initialTestState,
   mockActivities
 } from "testUtils";
-import { apiPaths } from "globals";
+import { ThemeProvider } from "styled-components";
+import {
+  apiPaths,
+  theme
+} from "globals";
 import { Tooltip } from "@mui/material";
 import { act } from "react-dom/test-utils";
 
@@ -41,10 +45,14 @@ const statusCode = 500;
 const axiosMock = new MockAdapter(myAxios);
 const activitiesEndpoint = apiPaths.GET_ACTIVITIES;
 const mockSetActivitiesList = jest.fn();
-const renderComponent = mockActivitiesList => render(<ProfileActivitiesSelectField
-  activitiesList={mockActivitiesList}
-  setActivitiesList={mockSetActivitiesList}
-/>, initialTestState);
+const renderComponent = mockActivitiesList => render(
+  <ThemeProvider theme={theme}>
+    <ProfileActivitiesSelectField
+      activitiesList={mockActivitiesList}
+      setActivitiesList={mockSetActivitiesList}
+    />
+  </ThemeProvider>, initialTestState
+);
 
 const getAddActivityButton = rendered => rendered.getByTestId("add-profileActivity-button");
 const getDeleteActivityButton = (rendered, instance) => rendered.getAllByTestId("delete-activity-button")[instance];

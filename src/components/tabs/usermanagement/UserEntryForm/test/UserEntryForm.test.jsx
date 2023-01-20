@@ -17,7 +17,6 @@ import {
   act,
   expectMockedComponent,
   expectOnlyPassedProps,
-  mockStore,
   render,
   setupMockedComponents,
   mockWorkers,
@@ -52,7 +51,6 @@ describe("<UserEntryForm />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockStore.reset();
     useFormDispatch.mockReturnValue(mockSetForm);
     useFormState.mockReturnValue(initialFormState);
     useAdminState.mockReturnValue(initialTestState);

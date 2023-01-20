@@ -12,6 +12,8 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
+import { theme } from "globals";
+import { ThemeProvider } from "styled-components";
 
 jest.mock("@mui/material", () => ({
   Checkbox: jest.fn(),
@@ -46,15 +48,19 @@ const teams = calabrioContext.teams.map(g => {
 });
 
 const renderComponent = (customGroups, customTeams) => {
-  return render(<CallRecordingScope
-    calabrioUser={{
-      scope: {
-        groups: customGroups ? customGroups : groups,
-        teams: customTeams ? customTeams : teams
-      }
-    }}
-    setForm={mockSetForm}
-  />);
+  return render (
+    <ThemeProvider theme={theme}>
+      <CallRecordingScope
+        calabrioUser={{
+          scope: {
+            groups: customGroups ? customGroups : groups,
+            teams: customTeams ? customTeams : teams
+          }
+        }}
+        setForm={mockSetForm}
+      />
+    </ThemeProvider>
+  );
 };
 
 describe("<CallRecordingScope", () => {
@@ -75,23 +81,27 @@ describe("<CallRecordingScope", () => {
     });
     describe("groups.length > 0", () => {
       test("setSelectedGroup and checkIfPartial was called for the first row", () => {
-        const rendered = render(<CallRecordingScope
-          calabrioUser={{
-            scope: {
-              groups: [
-                ...groups,
-                {
-                  groupId: 300,
-                  name: "Trigger Group",
-                  checked: false,
-                  partial: true
+        const rendered = render(
+          <ThemeProvider theme={theme}>
+            <CallRecordingScope
+              calabrioUser={{
+                scope: {
+                  groups: [
+                    ...groups,
+                    {
+                      groupId: 300,
+                      name: "Trigger Group",
+                      checked: false,
+                      partial: true
+                    }
+                  ],
+                  teams
                 }
-              ],
-              teams
-            }
-          }}
-          setForm={mockSetForm}
-        />);
+              }}
+              setForm={mockSetForm}
+            />
+          </ThemeProvider>
+        );
         expect(rendered.getByTestId("group-row-100").selected).toBe(true);
         expect(rendered.getByTestId("group-row-200").selected).toBe(false);
         expect(mockSetForm).toBeCalledTimes(1);

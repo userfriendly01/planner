@@ -4,14 +4,17 @@ import {
   ResultsModal,
   StyledButton
 } from "components";
+import {
+  initialState,
+  useAdminState,
+  useAdminDispatch
+} from "context";
 import { apiPaths } from "globals";
 import React from "react";
 import {
   act,
   expectMockedComponent,
   getMockedComponentProps,
-  getTestState,
-  mockStore,
   render,
   setupMockedComponents
 } from "testUtils";
@@ -21,11 +24,17 @@ import {
 } from "utils";
 
 jest.mock("components", () => ({
-  __esModule: true,
   ResultsModal: jest.fn(),
   StyledButton: jest.fn()
 }));
 
+jest.mock("context", () => ({
+  initialState: jest.requireActual("context").initialState,
+  useAdminDispatch: jest.fn(),
+  useAdminState: jest.fn()
+}));
+
+const setMockForm = jest.fn();
 const axiosMock = new MockAdapter(myAxios);
 
 const selectedWorkers = [
@@ -52,14 +61,16 @@ const convertedWorkers = [
     name: selectedWorkers[1].name,
     attributes: JSON.parse(selectedWorkers[1].attributes)
   }
-]
+];
 
 describe("ResetSkillsButton", () => {
 
   const renderComponent = state => render(<ResetSkillsButton/>, state);
 
   beforeEach(() => {
-    mockStore.reset();
+    jest.clearAllMocks();
+    useAdminState.mockReturnValue(initialState);
+    useAdminDispatch.mockReturnValue(setMockForm);
     setupMockedComponents({
       ResultsModal,
       StyledButton
@@ -90,43 +101,42 @@ describe("ResetSkillsButton", () => {
         ]);
       });
       test("we should dispatch the correct actions, results modal should recieve an empty array.", done => {
-        const state = getTestState();
+        const state = { ...initialState };
         state.workerContext.selectedWorkers = [ ...selectedWorkers ];
         renderComponent(state);
         act(() => {
           getMockedComponentProps(StyledButton).onClick();
           return Promise.resolve();
         }).then(() => {
-          expect(mockStore.getActions()).toEqual([
-            {
-              type: "resettingSkills",
-              payload: true
-            },
-            {
-              type: "toggleWorkerSelected",
-              payload: {
-                sid: selectedWorkers[0].sid
-              }
-            },
-            {
-              type: "updateWorker",
-              payload: mapWorkerFromDbWorker(convertedWorkers[0])
-            },
-            {
-              type: "toggleWorkerSelected",
-              payload: {
-                sid: selectedWorkers[1].sid
-              }
-            },
-            {
-              type: "updateWorker",
-              payload: mapWorkerFromDbWorker(convertedWorkers[1])
-            },
-            {
-              type: "resettingSkills",
-              payload: false
+          expect(setMockForm).toHaveBeenCalledTimes(6);
+          expect(setMockForm).toHaveBeenCalledWith({
+            type: "resettingSkills",
+            payload: true
+          });
+          expect(setMockForm).toHaveBeenCalledWith({
+            type: "toggleWorkerSelected",
+            payload: {
+              sid: selectedWorkers[0].sid
             }
-          ]);
+          });
+          expect(setMockForm).toHaveBeenCalledWith({
+            type: "updateWorker",
+            payload: mapWorkerFromDbWorker(convertedWorkers[0])
+          });
+          expect(setMockForm).toHaveBeenCalledWith({
+            type: "toggleWorkerSelected",
+            payload: {
+              sid: selectedWorkers[1].sid
+            }
+          });
+          expect(setMockForm).toHaveBeenCalledWith({
+            type: "updateWorker",
+            payload: mapWorkerFromDbWorker(convertedWorkers[1])
+          });
+          expect(setMockForm).toHaveBeenCalledWith({
+            type: "resettingSkills",
+            payload: false
+          });
           expect(ResultsModal.mock.calls[0][0].unsuccessfulWorkers).toEqual([]);
           done();
         });
@@ -149,7 +159,7 @@ describe("ResetSkillsButton", () => {
         ]);
       });
       test("we should dispatch only dispatch actions on the passed worker resets. Results modal should recieve the failed worker reset.", done => {
-        const state = getTestState();
+        const state = { ...initialState };
         state.workerContext.selectedWorkers = [ ...selectedWorkers ];
         const rendered = renderComponent();
         act(() => {
@@ -157,26 +167,25 @@ describe("ResetSkillsButton", () => {
           return Promise.resolve();
         }).then(() => {
           expectMockedComponent(rendered, { ResultsModal }, 1);
-          expect(mockStore.getActions()).toEqual([
-            {
-              type: "resettingSkills",
-              payload: true
-            },
-            {
-              type: "toggleWorkerSelected",
-              payload: {
-                sid: selectedWorkers[0].sid
-              }
-            },
-            {
-              type: "updateWorker",
-              payload: mapWorkerFromDbWorker(convertedWorkers[0])
-            },
-            {
-              type: "resettingSkills",
-              payload: false
+          expect(setMockForm).toHaveBeenCalledTimes(4);
+          expect(setMockForm).toHaveBeenCalledWith({
+            type: "resettingSkills",
+            payload: true
+          });
+          expect(setMockForm).toHaveBeenCalledWith({
+            type: "toggleWorkerSelected",
+            payload: {
+              sid: selectedWorkers[0].sid
             }
-          ]);
+          });
+          expect(setMockForm).toHaveBeenCalledWith({
+            type: "updateWorker",
+            payload: mapWorkerFromDbWorker(convertedWorkers[0])
+          });
+          expect(setMockForm).toHaveBeenCalledWith({
+            type: "resettingSkills",
+            payload: false
+          });
           expect(ResultsModal.mock.calls[0][0].unsuccessfulWorkers).toEqual([
             {
               name: "Test2",
@@ -194,7 +203,7 @@ describe("ResetSkillsButton", () => {
         axiosMock.onPost(apiPaths.RESET_WORKER_SKILLS).reply(500, "wahhhhhh");
       });
       test("we should dispatch only resettingWorkers actions. Results modal should recieve the error message", done => {
-        const state = getTestState();
+        const state = { ...initialState };
         state.workerContext.selectedWorkers = [ ...selectedWorkers ];
         const rendered = renderComponent();
         act(() => {
@@ -202,16 +211,15 @@ describe("ResetSkillsButton", () => {
           return Promise.resolve();
         }).then(() => {
           expectMockedComponent(rendered, { ResultsModal }, 1);
-          expect(mockStore.getActions()).toEqual([
-            {
-              type: "resettingSkills",
-              payload: true
-            },
-            {
-              type: "resettingSkills",
-              payload: false
-            }
-          ]);
+          expect(setMockForm).toHaveBeenCalledTimes(2);
+          expect(setMockForm).toHaveBeenCalledWith({
+            type: "resettingSkills",
+            payload: true
+          });
+          expect(setMockForm).toHaveBeenCalledWith({
+            type: "resettingSkills",
+            payload: false
+          });
           expect(ResultsModal.mock.calls[0][0].error).toBe("An unexpected error occurred when trying to reset worker skills");
           act(() => ResultsModal.mock.calls[0][0].handleClose());
           expectMockedComponent(rendered, { ResultsModal }, 0);
