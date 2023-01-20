@@ -1,4 +1,4 @@
-import PriorityDropdown from "../PriorityDropDown";
+import PriorityDropDownButt from "../PriorityDropDownButt";
 import { Dropdown } from "components";
 import React from "react";
 import {
@@ -14,11 +14,11 @@ jest.mock("components", () => ({
   Dropdown: jest.fn()
 }));
 
-describe("<PriorityDropdown />", () => {
+describe("<PriorityDropDownButt />", () => {
   const priorities = [1, 2, 3];
   const mockUpdatePriority = jest.fn();
   const renderComponent = () => {
-    return render(<PriorityDropdown
+    return render(<PriorityDropDownButt
       availablePriorities={priorities}
       priorityValue={1}
       updatePriority={mockUpdatePriority}

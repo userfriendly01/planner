@@ -2,7 +2,7 @@ import { PriorityDropdownProps } from "./";
 import { Dropdown } from "components";
 import React from "react";
 
-const PriorityDropdown = (props: PriorityDropdownProps) => {
+const PriorityDropDownButt = (props: PriorityDropdownProps) => {
   const {
     availablePriorities,
     priorityValue,
@@ -29,4 +29,4 @@ const PriorityDropdown = (props: PriorityDropdownProps) => {
   );
 };
 
-export default PriorityDropdown;
+export default PriorityDropDownButt;

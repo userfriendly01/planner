@@ -13,7 +13,7 @@ import {
   NewTwilioWorkerSkill
 } from "./DefaultSkillSelector.Interfaces";
 import {
-  PriorityDropdown,
+  PriorityDropDownButt,
   SkillDropdown
 } from "components";
 import { useAdminState } from "context";
@@ -105,7 +105,7 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
         </SkillRowItem>
         <SkillRowItem>
           {skillHasPriorities ?
-            <PriorityDropdown
+            <PriorityDropDownButt
               availablePriorities={newSkill.levels}
               priorityValue={newSkill.levelSelected}
               updatePriority={newSkillLevelChanged}
@@ -129,7 +129,7 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
               <SkillRowItem>{skill}</SkillRowItem>
               <SkillRowItem>
                 {defaultSkills.levels[skill] ?
-                  <PriorityDropdown
+                  <PriorityDropDownButt
                     availablePriorities={taskrouterSkill.levels}
                     priorityValue={defaultSkills.levels[skill]}
                     updatePriority={existingSkillLevelChanged(skill)}
