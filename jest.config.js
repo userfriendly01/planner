@@ -9,7 +9,7 @@ const jestConfig = {
     "<rootDir>/src/globals",
     "<rootDir>/jestSetup.js",
     "/index.js",
-    "<rootDir>/src/**/*.Styles.ts?(x)"
+    // "<rootDir>/src/**/*.Styles.ts?(x)"
   ],
   collectCoverageFrom: [
     "src/**/*.{js,jsx,ts,tsx}"
