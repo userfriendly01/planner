@@ -4,7 +4,7 @@ import {
   Delete
 } from "@mui/icons-material";
 import {
-  PriorityDropDownButt,
+  PriorityDropDownButts,
   SkillDropdown
 } from "components";
 import { useAdminState } from "context";
@@ -30,7 +30,7 @@ jest.mock("@mui/icons-material", () => ({
 
 jest.mock("components", () => ({
   __esModule: true,
-  PriorityDropDownButt: jest.fn(),
+  PriorityDropDownButts: jest.fn(),
   SkillDropdown: jest.fn()
 }));
 
@@ -78,7 +78,7 @@ describe("<DefaultSkillSelector />", () => {
     setupMockedComponents({
       Add,
       Delete,
-      PriorityDropDownButt,
+      PriorityDropDownButts,
       SkillDropdown
     });
     mockSetDefaultSkills.mockClear();
@@ -86,7 +86,7 @@ describe("<DefaultSkillSelector />", () => {
 
   describe("initial state", () => {
     describe("worker has no default skills", () => {
-      test("should render header and correct components with correct props; should not render PriorityDropDownButt", () => {
+      test("should render header and correct components with correct props; should not render PriorityDropDownButts", () => {
         const defaultSkills = {
           skills: [],
           levels: {}
@@ -94,7 +94,7 @@ describe("<DefaultSkillSelector />", () => {
         const rendered = renderComponent(defaultSkills);
         expectMockedComponent(rendered, { SkillDropdown });
         expectMockedComponent(rendered, { Add });
-        expectMockedComponent(rendered, { PriorityDropDownButt }, 0);
+        expectMockedComponent(rendered, { PriorityDropDownButts }, 0);
         expectOnlyPassedProps(SkillDropdown, {
           skills: initialTestState.skillContext.skills
         });
@@ -113,8 +113,8 @@ describe("<DefaultSkillSelector />", () => {
         expect(rendered.container).not.toHaveTextContent("skillA");
         expect(rendered.container).not.toHaveTextContent("skillC");
         expect(rendered.container).not.toHaveTextContent("skillD");
-        expectMockedComponent(rendered, { PriorityDropDownButt });
-        expectOnlyPassedProps(PriorityDropDownButt, {
+        expectMockedComponent(rendered, { PriorityDropDownButts });
+        expectOnlyPassedProps(PriorityDropDownButts, {
           availablePriorities: [ 1, 2, 3, 4 ]
         });
         expectMockedComponent(rendered, { Delete });
@@ -133,7 +133,7 @@ describe("<DefaultSkillSelector />", () => {
         expect(rendered.container).not.toHaveTextContent("skillB");
         expect(rendered.container).not.toHaveTextContent("skillC");
         expect(rendered.container).not.toHaveTextContent("skillD");
-        expectMockedComponent(rendered, { PriorityDropDownButt }, 0);
+        expectMockedComponent(rendered, { PriorityDropDownButts }, 0);
         expectMockedComponent(rendered, { Delete });
       });
     });
@@ -158,13 +158,13 @@ describe("<DefaultSkillSelector />", () => {
           fireEvent.click(getAddSkillButton(rendered));
         });
         expect(mockSetDefaultSkills).toHaveBeenCalledTimes(0);
-        expectMockedComponent(rendered, { PriorityDropDownButt });
-        expectOnlyPassedProps(PriorityDropDownButt, {
+        expectMockedComponent(rendered, { PriorityDropDownButts });
+        expectOnlyPassedProps(PriorityDropDownButts, {
           availablePriorities: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
         });
         expectMockedComponent(rendered, { Add });
         act(() => {
-          const { updatePriority } = getMockedComponentProps(PriorityDropDownButt);
+          const { updatePriority } = getMockedComponentProps(PriorityDropDownButts);
           updatePriority(6);
         });
         act(() => {
@@ -172,7 +172,7 @@ describe("<DefaultSkillSelector />", () => {
         });
         expect(rendered.container).toHaveTextContent("skillA");
         expect(rendered.container).toHaveTextContent("skillC");
-        expectOnlyPassedProps(PriorityDropDownButt, {
+        expectOnlyPassedProps(PriorityDropDownButts, {
           availablePriorities: [ 0, 1, 2, 3, 4, 5, 6, 7 ],
           priorityValue: 6
         });
@@ -201,7 +201,7 @@ describe("<DefaultSkillSelector />", () => {
         });
         expect(rendered.container).toHaveTextContent("skillA");
         expect(rendered.container).toHaveTextContent("skillD");
-        expectMockedComponent(rendered, { PriorityDropDownButt }, 0);
+        expectMockedComponent(rendered, { PriorityDropDownButts }, 0);
         expectMockedComponent(rendered, { Delete }, 2);
         expect(mockSetDefaultSkills).toHaveBeenCalledWith({
           skills: [ "skillA", "skillD" ],
@@ -237,7 +237,7 @@ describe("<DefaultSkillSelector />", () => {
       };
       renderComponent(defaultSkills);
       act(() => {
-        const updatePriority = PriorityDropDownButt.mock.calls[0][0].updatePriority;
+        const updatePriority = PriorityDropDownButts.mock.calls[0][0].updatePriority;
         updatePriority(2);
       });
       expect(mockSetDefaultSkills).toHaveBeenCalledWith({
