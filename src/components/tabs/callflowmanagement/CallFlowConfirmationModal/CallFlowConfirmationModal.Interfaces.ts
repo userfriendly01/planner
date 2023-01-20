@@ -10,6 +10,7 @@ export interface ConfirmationModalOptsProps {
     handleClose: () => void
   }
 }
+
 export interface SaveResultProps {
   status: ModalOverlayStatuses,
   message: string | null,

@@ -10,6 +10,7 @@ import {
   updateFlashMessage
 } from "services";
 import { AxiosResponse } from "axios";
+
 export interface MessageContainerProps {
   action: ActionType,
   confirmationModalOpts: ConfirmationModalOptsProps,
@@ -20,6 +21,7 @@ export interface MessageContainerProps {
   setConfirmationModalOpts: (props: ConfirmationModalOptsProps) => void,
   setSaveResult: (props: SaveResultProps) => void,
 }
+
 export interface MessageBoxProps {
   action: ActionType,
   tableState: TableState,

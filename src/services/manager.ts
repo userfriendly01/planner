@@ -1,5 +1,6 @@
 import { apiPaths }from "globals";
 import { myAxios } from "utils";
+
 export interface DbAddManagerRequest {
   manager_first_nme: string;
   manager_last_nme: string;

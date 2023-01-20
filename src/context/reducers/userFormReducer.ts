@@ -13,8 +13,8 @@ import {
   getValidSkillsObject,
   getZeroOutEnabledFromProfile
 } from "utils";
-
 import { SearchParams } from "components/tabs/usermanagement/UserEntryForm/ExtensionSearchParams";
+
 const searchParams = SearchParams.getValues();
 
 export const userFormActions = {

@@ -24,7 +24,6 @@ import React, {
   useState
 } from "react";
 
-
 const DashDiv = <div>-</div>;
 interface DefaultSkillSelectorProps {
   defaultSkills: WorkerAttributeSkills,

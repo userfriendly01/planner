@@ -18,6 +18,7 @@ import { deleteManager } from "services";
 import { ModalOverlayStatuses } from "globals";
 import ConfirmationForm from "./ConfirmationForm";
 import ErrorForm from "./ErrorForm";
+
 export interface ManagerDeleteProps {
   handleClose: () => void,
   selectedManager: any

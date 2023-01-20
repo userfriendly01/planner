@@ -7,6 +7,7 @@ export interface SkillProfile {
   profileId: number,
   profileName: string
 }
+
 export interface TableState {
   [key: string]: any
   closedFilter: boolean,
