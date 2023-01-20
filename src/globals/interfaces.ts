@@ -95,6 +95,7 @@ export interface Skill {
   [key: string]: any
   ctmSkillId: number,
   ctmSkillDisplayName: string,
+  isAggregateSkill: boolean,
   name: string,
   profiles: any[],
   closedMessage: string,
@@ -156,6 +157,16 @@ export interface Activity {
     data?: number[],
     type?: string
   }
+}
+
+export interface AggregateQueue {
+  aggregate_queues_id: number,
+  aggregate_queues_nme: string,
+  aggregate_queues_type: string,
+  owner_type: string,
+  worker_sid: string | null,
+  row_crtn_dtm: string | null,
+  row_updt_dtm: string | null
 }
 
 export interface CallTag {

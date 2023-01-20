@@ -3,7 +3,10 @@ import { ProfileQueuesSelectFieldProps } from "./ProfileEntryForm.Interfaces";
 import { Dropdown } from "components";
 import { useAdminState } from "context";
 import { sortQueueByName } from "utils";
-import { Skill } from "globals";
+import {
+  AggregateQueue,
+  Skill
+} from "globals";
 import {
   IconButtonWrapper,
   ProfileDropdownControlWrapper,
@@ -17,6 +20,7 @@ import {
   Add,
   Delete
 } from "@mui/icons-material";
+import { getAggregateQueuesType } from "services";
 
 const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
   const {
@@ -28,6 +32,21 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
   const [newProfileQueue, setNewProfileQueue] = React.useState<Skill[]>(defaultNewQueue);
   const queues = useAdminState().skillContext.skills;
   const filteredQueues = queues.filter(queue => queue.ctmSkillId !== null).sort(sortQueueByName);
+  const [aggregateQueues, setAggregateQueues] = React.useState([]);
+  const aggregateQueuesType = 'aggregate';
+
+  React.useEffect(() => {
+    if(!aggregateQueues.length) {
+      getAggregateQueuesType(aggregateQueuesType)
+        .then((allAggregateQueues: AggregateQueue[]) => {
+          console.log('allAggregateQueues', allAggregateQueues);
+          console.log('transferQueues', transferQueues);
+          setAggregateQueues(allAggregateQueues);
+          console.log('aggregateQueues', aggregateQueues);
+        })
+        .catch((error: { msg: any; }) => console.error(error.msg));
+    }
+  }, []);
 
   const profileQueuesForDropDown = filteredQueues.filter(queue => {
     return !transferQueues.find(item => {
