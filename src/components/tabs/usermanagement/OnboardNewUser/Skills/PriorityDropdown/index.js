@@ -1,2 +1,2 @@
-export { default as PriorityDropdown } from "./PriorityDropdown";
+export { default as PriorityDropdown } from "./PriorityDropDown";
 export * from "./ProrityDropdown.Interfaces";
