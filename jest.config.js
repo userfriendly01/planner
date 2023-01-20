@@ -8,7 +8,8 @@ const jestConfig = {
     "<rootDir>/src/context/appContext.js",
     "<rootDir>/src/globals",
     "<rootDir>/jestSetup.js",
-    "/index.js"
+    "/index.js",
+    "<rootDir>/src/**/*.Styles.ts?(x)"
   ],
   collectCoverageFrom: [
     "src/**/*.{js,jsx,ts,tsx}"
