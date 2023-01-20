@@ -1,6 +1,7 @@
 import {
   Worker,
-  WorkerAttributeSkills
+  WorkerAttributeSkills,
+  Skill
 } from "globals";
 import _ from "lodash";
 
@@ -34,4 +35,27 @@ export const getValidSkillsObject = (skillsObject?: WorkerAttributeSkills): Work
     }
   }
   return validObject;
+};
+
+export const formatSkillGroups = (skillsArray: Skill[]): any[] => {
+  // filter through the skills that have skillGroups (and levels so they are legit in twilio)
+  // and group them by skillGroup
+  const skillsWithGroups = skillsArray.filter(s => s.ctmSkillGroups.length > 0 && s.levels);
+  const groups: any[] = [];
+  skillsWithGroups.forEach(sk => {
+    sk.ctmSkillGroups.forEach(group => {
+      const groupInGroupsArray = groups.find(g => g.skillGroupId === group.skillGroupId);
+      if (groupInGroupsArray) {
+        groupInGroupsArray.skills.push(sk);
+      } else {
+        const newGroup = group;
+        const skillCopy = JSON.parse(JSON.stringify(sk));
+        delete skillCopy.ctmSkillGroups;  // take of the skillGroups from this layer or we'll have neverending data
+        newGroup.skills = [skillCopy];
+        groups.push(newGroup);
+      }
+    });
+  });
+  console.log("***** groups", groups);
+  return groups;
 };

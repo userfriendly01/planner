@@ -8,6 +8,8 @@ import {
   propertyOptions,
   ActionContainerProps
 } from "../Skills.Interfaces";
+import SkillGroupInputContainer from "../DefaultSkillGroups/SkillGroupInputContainer/SkillGroupInputContainer";
+
 
 const ActionContainer = (props: ActionContainerProps) => {
   const {
@@ -45,6 +47,20 @@ const ActionContainer = (props: ActionContainerProps) => {
           setConfirmationModalOpts={setConfirmationModalOpts}
           setSaveResult={setSaveResult}
         />;
+      case propertyOptions.SKILL_GROUP.label:
+        if (action && action.value) {
+          return <SkillGroupInputContainer
+            action={action}
+            setTableState={setTableState}
+            confirmationModalOpts={confirmationModalOpts}
+            messageType={propertySelection.value}
+            setAction={setAction}
+            tableState={tableState}
+            setConfirmationModalOpts={setConfirmationModalOpts}
+            setSaveResult={setSaveResult}
+          />;
+        }
+        return <div></div>;
       default:
         return null;
     }

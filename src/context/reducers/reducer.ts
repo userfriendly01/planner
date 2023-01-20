@@ -6,7 +6,8 @@ import {
   formatCalabrioTeams,
   formatCalabrioTenant,
   formatCalabrioGroups,
-  formatCalabrioRoles
+  formatCalabrioRoles,
+  formatSkillGroups
 } from "utils";
 
 export const initialState: AppState = {
@@ -20,7 +21,8 @@ export const initialState: AppState = {
     profiles: []
   },
   skillContext: {
-    skills: []
+    skills: [],
+    skillGroups: []
   },
   userContext: {
     pingIdentity: null,
@@ -147,6 +149,14 @@ export const reducer = (state: AppState, action: Action): AppState => {
         skillContext: {
           ...state.skillContext,
           skills: action.payload
+        }
+      };
+    case "loadSkillGroups":
+      return {
+        ...state,
+        skillContext: {
+          ...state.skillContext,
+          skillGroups: formatSkillGroups(action.payload)
         }
       };
     case "loadUserData":

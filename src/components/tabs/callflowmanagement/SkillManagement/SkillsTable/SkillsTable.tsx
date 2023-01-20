@@ -24,17 +24,42 @@ const SkillsTable = (props: SkillsTableProps) => {
 
   const allSkillsSelected = tableState.selected.length === tableState.filteredList.length && tableState.filteredList.length > 0;
 
-  const getProfilesForSkill = (skill: Skill) => {
-    const profileDivs: ReactElement[] = [];
-    skill.profiles?.map((p: any, index: number) => {
-      if(index !== skill.profiles.length - 1){
-        profileDivs.push(<div key={p.profileId}>{p.profileName} - {p.profileId}, </div>);
+  const getItemsDisplayForSkill = (skill: Skill, field: string, id: string, displayName: string, displayId: boolean) => {
+    const itemDivs: ReactElement[] = [];
+    skill[field]?.map((p: any, index: number) => {
+      if(index !== skill[field].length - 1){
+        itemDivs.push(<div key={parseInt(p[id])}>{p[displayName]}{displayId ? ` - ${p[id]}, ` : ", "}</div>);
       } else {
-        profileDivs.push(<div key={p.profileId}>{p.profileName} - {p.profileId}</div>);
+        itemDivs.push(<div key={parseInt(p[id])}>{p[displayName]}{displayId ? ` - ${p[id]}` : ""}</div>);
       }
     });
-    return profileDivs;
+    return itemDivs;
   };
+
+  // const getProfilesForSkill = (skill: Skill) => {
+  //   const profileDivs: ReactElement[] = [];
+  //   skill.profiles?.map((p: any, index: number) => {
+  //     if(index !== skill.profiles.length - 1){
+  //       profileDivs.push(<div key={p.profileId}>{p.profileName} - {p.profileId}, </div>);
+  //     } else {
+  //       profileDivs.push(<div key={p.profileId}>{p.profileName} - {p.profileId}</div>);
+  //     }
+  //   });
+  //   return profileDivs;
+  // };
+
+  // const getSkillGroupsForSkill = (skill: Skill) => {
+  //   const skillGroupDivs: ReactElement[] = [];
+  //   skill.ctmSkillGroups?.map((s: any, i: number) => {
+  //     if (i !== skill.ctmSkillGroups.length - 1) {
+  //       skillGroupDivs.push(<div key={s.skillGroupId}>{s.skillGroupNme}, </div>);
+  //     } else {
+
+  //       skillGroupDivs.push(<div key={s.skillGroupId}>{s.skillGroupNme}</div>);
+  //     }
+  //   });
+  //   return skillGroupDivs;
+  // };
 
   const handleSetSelected = (skill: Skill, isSelected: boolean) => {
     if(isSelected){
@@ -79,6 +104,7 @@ const SkillsTable = (props: SkillsTableProps) => {
             </CustomTableHeader>
             <CustomTableHeader>SKILL NAME</CustomTableHeader>
             <CustomTableHeader>PROFILES</CustomTableHeader>
+            <CustomTableHeader>Skill Grouping</CustomTableHeader>
             <CustomTableHeader
               onClick={() => setTableState({
                 ...tableState,
@@ -110,7 +136,9 @@ const SkillsTable = (props: SkillsTableProps) => {
                   />
                 </TableText></CustomTableData>
                 <CustomTableData><TableText>{skill.name}</TableText></CustomTableData>
-                <CustomTableData><TableText>{getProfilesForSkill(skill).map((d: ReactElement) => d)}</TableText></CustomTableData>
+                <CustomTableData><TableText>{getItemsDisplayForSkill(skill, "profiles", "profileId", "profileName", true).map((d: ReactElement) => d)}</TableText></CustomTableData>
+                {/* TODO MAKE THIS BETTER */}
+                <CustomTableData><TableText>{getItemsDisplayForSkill(skill, "ctmSkillGroups", "skillGroupId", "skillGroupNme", false).map((d: ReactElement) => d)}</TableText></CustomTableData>
                 <CustomTableData>
                   {skill.flashMessage &&
                     <Tooltip

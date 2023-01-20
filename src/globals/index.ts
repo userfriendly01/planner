@@ -128,6 +128,7 @@ export const apiPaths = {
   OFFICES: `${CONTACT_MANAGER_BASE_URI}/offices`,
   PROFILES: `${CONTACT_MANAGER_BASE_URI}/profiles`,
   RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
+  SKILL_GROUPS: `${CONTACT_MANAGER_BASE_URI}/skillgroups`,
   TFN_DATA: `${SERVICE_BASE_URI}/tfn`,
   UPDATE_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-update-user/${personId}`,
   UPDATE_WORKER: (workerSid: string): string => `${SERVICE_BASE_URI}/updateworker/${workerSid}`
