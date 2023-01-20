@@ -4,11 +4,9 @@ import { UserAgentApplication } from "msal";
 import { LoginError } from "./LoginError";
 import { LoginInProgress } from "./LoginInProgress";
 
-let authority;
-let clientId;
 let msalInstance: UserAgentApplication;
 const allDone = "DONE";
-const PERMISSIONS = {
+export const PERMISSIONS = {
   // Read access to flow config in all environments
   READ_GROUP_FLOW: "gpi-cct-config-flow-read",
   // Read access to routing config in all environments
@@ -38,7 +36,6 @@ interface GraphObject {
 }
 interface AuthProps {
   azureClientId?: string;
-
 }
 interface AuthState {
   accessToken?: string;
@@ -47,17 +44,6 @@ interface AuthState {
   hasError: boolean;
   matchedGroups?: string[];
   renewIframe: boolean;
-}
-function createUap(envObject: MsalEnvironment) {
-  authority = envObject.authority;
-  clientId = envObject.clientId;
-
-  msalInstance = new UserAgentApplication({
-    auth: {
-      authority,
-      clientId
-    }
-  });
 }
 
 export function authWrapper(
@@ -98,15 +84,13 @@ export function authWrapper(
         });
     }
 
-    getEnv() {
-      return {
-        authority: "https://login.microsoftonline.com/08a83339-90e7-49bf-9075-957ccd561bf1",
-        clientId: this.props.azureClientId
-      };
-    }
-
     componentDidMount() {
-      createUap(this.getEnv());
+      msalInstance = new UserAgentApplication({
+        auth: {
+          authority: "https://login.microsoftonline.com/08a83339-90e7-49bf-9075-957ccd561bf1",
+          clientId: this.props.azureClientId
+        }
+      });
 
       // action to perform on authentication
       msalInstance.handleRedirectCallback(() => { // on success
