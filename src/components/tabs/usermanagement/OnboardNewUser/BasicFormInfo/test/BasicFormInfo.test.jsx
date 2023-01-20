@@ -31,7 +31,6 @@ import {
   initialTestState,
   managerList,
   mockSkills,
-  mockStore,
   mockWorkers,
   profileList,
   render,
@@ -94,7 +93,11 @@ jest.mock("utils", () => ({
   sortProfilesByName: jest.requireActual("utils").sortProfilesByName,
   sortManagersByName: jest.fn("utils").sortManagersByName,
   getOverflowSkillFromProfile: jest.fn(),
-  removeProfileZeroIfAdminNotInProfileZero: jest.fn()
+  removeProfileZeroIfAdminNotInProfileZero: jest.fn(),
+  calabrioTimeZones: jest.requireActual("utils").calabrioTimeZones,
+  getValidSkillsObject: jest.fn(),
+  formatE164PhoneNumber: jest.fn(),
+  getZeroOutEnabledFromProfile: jest.fn()
 }));
 
 jest.mock("globals", () => ({
@@ -113,7 +116,6 @@ describe("<BasicFormInfo />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockStore.reset();
     useFormDispatch.mockReturnValue(mockSetForm);
     getOverflowSkillFromProfile.mockReturnValue("466");
     useFormState.mockReturnValue(initialFormState);

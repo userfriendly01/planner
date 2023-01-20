@@ -84,8 +84,16 @@ export const profileTableColumnHeader = [
     TOOLTIP: "Voice mail will be transcribed and sent within the notification email to the user"
   },
   {
+    COLUMN_NAME: "Click To Dial",
+    TOOLTIP: "Enable click-to-dial/transfer from external application"
+  },
+  {
     COLUMN_NAME: "Activities",
     TOOLTIP: "Profile Activities"
+  },
+  {
+    COLUMN_NAME: "Transfer Queues",
+    TOOLTIP: "UI Feature: Additional transfer queues that will appear in the Triton queue ticker"
   },
   {
     COLUMN_NAME: "",
@@ -112,6 +120,8 @@ export const apiPaths = {
   GET_CALABRIO_ROLES: `${SERVICE_BASE_URI}/calabrio-get-roles`,
   GET_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-get-user/${personId}`,
   GET_PROFILE_DATA: (profileId: string | number): string => `${CONTACT_MANAGER_BASE_URI}/triton/${profileId}`,
+  GET_CALL_TAGS_OPTIONS: `${CONTACT_MANAGER_BASE_URI}/workertaskinfooptions`,
+  GET_CALL_TAGS: `${CONTACT_MANAGER_BASE_URI}/workertaskinfo`,
   GET_ACTIVITIES: `${CONTACT_MANAGER_BASE_URI}/activities`,
   GET_SKILLS: `${SERVICE_BASE_URI}/consolidatedskills`,
   GET_WORKERS: `${SERVICE_BASE_URI}/workers`,

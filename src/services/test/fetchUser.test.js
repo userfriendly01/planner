@@ -7,7 +7,8 @@ jest.mock("globals", () => ({
   __esModule: true,
   apiPaths: {
     EMPLOYEE_LOOKUP: jest.fn()
-  }
+  },
+  formModes: jest.requireActual("globals").formModes
 }));
 
 const axiosMock = new MockAdapter(myAxios);
@@ -25,8 +26,8 @@ describe("fetchUser", () => {
         person: {
           data: {
             Email: "email",
-            FirstName: "FirstName",
-            LastName: "LastName",
+            FirstName: "FirstName  ",
+            LastName: "LastName  ",
             OfficeName: "OfficeName",
             OfficeNumber: "OfficeNumber",
             DepartmentName: "DepartmentName",
@@ -51,8 +52,8 @@ describe("fetchUser", () => {
         expect(axiosMock.history.get[0].url).toBe("/service/employeelookup/01234567");
         expect(resolvedVal).toEqual({
           email: fetchUserRes[0].person.data.Email,
-          firstName: fetchUserRes[0].person.data.FirstName,
-          lastName: fetchUserRes[0].person.data.LastName,
+          firstName: fetchUserRes[0].person.data.FirstName.trim(),
+          lastName: fetchUserRes[0].person.data.LastName.trim(),
           officeName: fetchUserRes[0].person.data.OfficeName,
           officeNumber: fetchUserRes[0].person.data.OfficeNumber,
           departmentName: fetchUserRes[0].person.data.DepartmentName,

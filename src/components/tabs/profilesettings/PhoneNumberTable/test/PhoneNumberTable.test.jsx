@@ -11,6 +11,8 @@ import {
   setupMockedComponents,
   within
 } from "testUtils";
+import { theme } from "globals";
+import { ThemeProvider } from "styled-components";
 
 jest.mock("components", () => ({
   DirectoryEntryForm: jest.fn(),
@@ -21,13 +23,17 @@ const mockEditButtonOnClick = jest.fn();
 const mockGetDeleteButtonOnClick = jest.fn();
 const emptyListMsg = "yes, we have no directory blah blah blah";
 
-const renderComponent = (directory, saveState = "whatever") => render(<PhoneNumberTable
-  editFunction={mockEditButtonOnClick}
-  deleteFunction={mockGetDeleteButtonOnClick}
-  emptyListMsg={emptyListMsg}
-  phoneNumberList={directory}
-  saveState={saveState}
-/>);
+const renderComponent = (directory, saveState = "whatever") => render(
+  <ThemeProvider theme={theme}>
+    <PhoneNumberTable
+      editFunction={mockEditButtonOnClick}
+      deleteFunction={mockGetDeleteButtonOnClick}
+      emptyListMsg={emptyListMsg}
+      phoneNumberList={directory}
+      saveState={saveState}
+    />
+  </ThemeProvider>
+);
 
 describe("<PhoneNumberTable />", () => {
 

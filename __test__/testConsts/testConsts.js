@@ -1,5 +1,3 @@
-import { initialState } from "context";
-
 export const managerList = [
   {
     manager_first_name: "John",
@@ -94,15 +92,15 @@ export const calabrioContext = {
   roles: [
     {
       id: 1,
-      name: "Administrator"
+      name: "Supervisor"
     },
     {
       id: 2,
-      name: "Agent"
+      name: "QM Agent"
     },
     {
       id: 3,
-      name: "QM Only"
+      name: "WFM_QM_Agent_NT"
     }
   ],
   users: [
@@ -129,6 +127,8 @@ export const calabrioContext = {
 export const skillsList = [
   {
     name: "lscOBDialer1",
+    ctmSkillId: 1,
+    ctmSkillDisplayName: "lsc OB Dialer 1",
     profiles: [{
       profileName: "Licensed Sales Center",
       profileId: 32
@@ -143,6 +143,8 @@ export const skillsList = [
   },
   {
     name: "aisgL1",
+    ctmSkillId: 2,
+    ctmSkillDisplayName: "aisg L1",
     profiles: [{
       profileName: "AISG",
       profileId: 4
@@ -157,6 +159,8 @@ export const skillsList = [
   },
   {
     name: "bscCommisssions",
+    ctmSkillId: 3,
+    ctmSkillDisplayName: "bsc Commisssions",
     profiles: [{
       profileName: "BSC",
       profileId: 10
@@ -171,6 +175,8 @@ export const skillsList = [
   },
   {
     name: "bscCbsL2",
+    ctmSkillId: 4,
+    ctmSkillDisplayName: "bsc Cbs L2",
     profiles: [
       {
         profileName: "BSC",
@@ -191,6 +197,8 @@ export const skillsList = [
   },
   {
     name: "lscUSAA",
+    ctmSkillId: 5,
+    ctmSkillDisplayName: "lsc USAA",
     profiles: [],
     flashMessage: "",
     closedMessage: "",
@@ -237,8 +245,53 @@ export const mockActivities = [
   }
 ];
 
+export const mockCallTags = [
+  {
+    wrkr_tsk_info_id: 1,
+    wrkr_tsk_info_nme: "call_type"
+  },
+  {
+    wrkr_tsk_info_id: 2,
+    wrkr_tsk_info_nme: "claim_number"
+  },
+  {
+    wrkr_tsk_info_id: 3,
+    wrkr_tsk_info_nme: "negotiation_type"
+  },
+  {
+    wrkr_tsk_info_id: 4,
+    wrkr_tsk_info_nme: "claimant_name"
+  },
+  {
+    wrkr_tsk_info_id: 5,
+    wrkr_tsk_info_nme: "event_number"
+  },
+  {
+    wrkr_tsk_info_id: 6,
+    wrkr_tsk_info_nme: "aces_claim_number"
+  },
+  {
+    wrkr_tsk_info_id: 7,
+    wrkr_tsk_info_nme: "claim_id"
+  },
+  {
+    wrkr_tsk_info_id: 8,
+    wrkr_tsk_info_nme: "notes"
+  }
+];
+
+export const mockCallTagOptions = [
+  {
+    options_id: 1,
+    options: "[\"Info Exchange\", \"Bargaining\", \"Closing\", \"N/A\", \"Offer\"]"
+  },
+  {
+    options_id: 2,
+    options: "[\"Recorded Interview\", \"Injured Worker\", \"Provider\", \"Customer\", \"Other\"]"
+  }
+];
+
 export const initialTestState = {
-  ...initialState,
   officeContext: {
     offices: officeMap
   },
@@ -250,9 +303,6 @@ export const initialTestState = {
   },
   skillContext: {
     skills: skillsList
-  },
-  activitiesContext: {
-    activities: mockActivities
   },
   userContext: {
     pingIdentity: {
@@ -296,5 +346,6 @@ export const initialTestState = {
       }
     ]
   },
-  calabrioContext
+  calabrioContext,
+  resettingSkills: false
 };

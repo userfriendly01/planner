@@ -1,12 +1,6 @@
 require("@testing-library/jest-dom/extend-expect");
 require("jest-styled-components");
 
-const { mockStore } = require("./__test__/testUtils");
-
-beforeEach(() => {
-  mockStore.reset();
-});
-
 beforeAll(() => {
   console.log = jest.fn();
   console.error = jest.fn();
@@ -51,5 +45,7 @@ jest.mock("services", () => ({
   updateDirectory: jest.fn(),
   updateFlashMessage: jest.fn(),
   updateTfn: jest.fn(),
-  updateUser: jest.fn()
+  updateUser: jest.fn(),
+  getCallTagOptions: jest.fn(),
+  getCallTags: jest.fn()
 }));

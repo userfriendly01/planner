@@ -183,8 +183,20 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
     }
   };
 
+  const allowedRoles = [
+    "Supervisor",
+    "Agent-Sync Only",
+    "No Screen",
+    "QM Agent",
+    "WFM_QM_Agent",
+    "WFM_QM_Supervisor_TT",
+    "WFM_QM_Supervisor",
+    "WFM_QM_Agent_NT"
+  ];
+
   const getRoleOptions = () => {
-    return roles.map((role: any) => {
+    const allowed = roles.filter(role => allowedRoles.includes(role.name));
+    return allowed.map(role => {
       return {
         ...role,
         label: role.name,
@@ -192,6 +204,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
       };
     });
   };
+
   const getTeamOptions = () => {
     const managerTeams = form.manager.value && form.manager.value.calabrio_team_ids ? form.manager.value.calabrio_team_ids: [];
     const availableTeams = teams.filter(team => managerTeams.includes(team.groupId));

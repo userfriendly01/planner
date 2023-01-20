@@ -33,7 +33,6 @@ import {
   fetchedUser,
   initialFormState,
   initialTestState,
-  mockStore,
   officeMap,
   profileList,
   render,
@@ -49,6 +48,7 @@ import {
   isDidDifferentValid,
   isFormUpdated,
   isFormValid,
+  mapWorkerFromDbWorker,
   workerHasOverFlowSkill
 } from "utils";
 
@@ -74,15 +74,19 @@ jest.mock("context", () => ({
 }));
 
 jest.mock("utils", () => ({
+  calabrioTimeZones: jest.requireActual("utils").calabrioTimeZones,
   checkConflictingUsers: jest.fn(),
   isFormValid: jest.fn(),
   isFormUpdated: jest.fn(),
   isDidDifferentValid: jest.fn(),
   getOverflowSkillFromProfile: jest.fn(),
-  mapWorkerFromDbWorker: jest.requireActual("utils").mapWorkerFromDbWorker,
+  mapWorkerFromDbWorker: jest.fn(),
   wait: jest.requireActual("utils").wait,
   workerHasOverFlowSkill: jest.fn(),
-  getNonOverflowSkills: jest.fn()
+  getNonOverflowSkills: jest.fn(),
+  getValidSkillsObject: jest.fn(),
+  formatE164PhoneNumber: jest.fn(),
+  getZeroOutEnabledFromProfile: jest.fn()
 }));
 
 export const worker = {
@@ -121,17 +125,32 @@ const workerAttributesAfterFormValid = {
   unique_id: validFormOptions.nNumber.toLowerCase()
 };
 
+const rawDbWorker = {
+  attributes: {
+    ...workerAttributesAfterFormValid,
+    office_location_number: "newOffice"
+  },
+  workerSid: "WK1234"
+};
+
+const formattedWorker = {
+  attributes: {
+    ...workerAttributesAfterFormValid,
+    office_location_number: "newOffice"
+  },
+  sid: rawDbWorker.workerSid,
+  skillsDifferent: true
+};
+
 const mockHandleClose = jest.fn();
 const mockSetForm = jest.fn();
 const mockDispatch = jest.fn();
 const mockUpdateLoading = jest.fn();
 
 describe("<UserFormButtons />", () => {
-
   beforeEach(() => {
     addOffice.mockResolvedValue("Override me later");
     jest.clearAllMocks();
-    mockStore.reset();
     useFormDispatch.mockReturnValue(mockSetForm);
     getOverflowSkillFromProfile.mockReturnValue("466");
     useAdminDispatch.mockReturnValue(mockDispatch);
@@ -140,6 +159,7 @@ describe("<UserFormButtons />", () => {
         users: []
       }
     });
+    mapWorkerFromDbWorker.mockReturnValue(formattedWorker);
     checkConflictingUsers.mockResolvedValue({ yay: "woot!" });
     createCalabrioUser.mockResolvedValue({ yay: "woot!" });
     fetchUser.mockResolvedValue({ yay: "woot!" });
@@ -213,21 +233,6 @@ describe("<UserFormButtons />", () => {
     });
   });
   describe("Add/Save User Button", () => {
-    const rawDbWorker = {
-      attributes: {
-        ...workerAttributesAfterFormValid,
-        office_location_number: "newOffice"
-      },
-      workerSid: "WK1234"
-    };
-    const formattedWorker = {
-      attributes: {
-        ...workerAttributesAfterFormValid,
-        office_location_number: "newOffice"
-      },
-      sid: rawDbWorker.workerSid,
-      skillsDifferent: true
-    };
     const resetFormAfterAddExpectedAction = {
       type: "RESET_FORM_AFTER_ADD",
       payload: {
@@ -345,14 +350,6 @@ describe("<UserFormButtons />", () => {
               ...rawDbWorker.attributes,
               office_location_number: "ABC123"
             }
-          };
-          const formattedWorker = {
-            attributes: {
-              ...createWorkerAttributesAfterFormValid,
-              office_location_number: "ABC123"
-            },
-            sid: rawDbWorker.workerSid,
-            skillsDifferent: true
           };
           const form = {
             ...validFormState,

@@ -30,34 +30,38 @@ const StyledTextField = styled(TextField)`
   ${props => props.value ? ".MuiFormLabel-root { transform: translate(14px, -9px) scale(.75); background-color: white; padding: 0 5; }" : null}
 `;
 
-const SevenDigitInputMask = (inputProps: any) => {
+const SevenDigitInputMask = React.forwardRef((inputProps: any, ref: React.ForwardedRef<HTMLDivElement> ) => {
   const {
     ...other
   } = inputProps;
   return (
-    <MaskedInput
-      {...other}
-      guide={false}
-      mask={sevenDigitMask}
-      placeholderChar={"\u2000"}
-      showMask />
+    <div ref={ref}>
+      <MaskedInput
+        {...other}
+        guide={false}
+        mask={sevenDigitMask}
+        placeholderChar={"\u2000"}
+        showMask />
+    </div>
   );
-};
+});
 
 
-const TenDigitInputMask = (inputProps: any) => {
+const TenDigitInputMask = React.forwardRef((inputProps: any, ref: React.ForwardedRef<HTMLDivElement>) => {
   const {
     ...other
   } = inputProps;
   return (
-    <MaskedInput
-      {...other}
-      guide={false}
-      mask={tenDigitMask}
-      placeholderChar={"\u2000"}
-      showMask />
+    <div ref={ref}>
+      <MaskedInput
+        {...other}
+        guide={false}
+        mask={tenDigitMask}
+        placeholderChar={"\u2000"}
+        showMask />
+    </div>
   );
-};
+});
 
 export interface PhoneNumberInputProps {
   allowSevenDigitVdn?: boolean,

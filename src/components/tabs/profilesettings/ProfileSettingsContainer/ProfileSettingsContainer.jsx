@@ -1,9 +1,11 @@
+import { checkIfPO } from "authentication";
 import {
   DialListTable,
   Directory,
   Dropdown,
   ProfileDropDown,
-  ProfileSettingsTable
+  ProfileSettingsTable,
+  ProfileEntryForm
 } from "components";
 import {
   useAdminState,
@@ -16,8 +18,7 @@ import {
   myAxios,
   sortDialListEntriesByName,
   sortDirectoryListEntriesByName,
-  profileSettingsViews,
-  checkIfPO
+  profileSettingsViews
 } from "utils";
 import {
   ProfileSettingsDropdownWrapper,
@@ -26,12 +27,11 @@ import {
   SettingsContainer,
   ControlsWrapper,
   ControlItem,
-  AddProfileButton
+  CreateProfileButton
 } from "./ProfileSettingsContainer.Styles";
-import { ProfileEntryForm } from "components";
 
 const ProfileSettingsContainer = () => {
-  const [ view, setView ] = React.useState(profileSettingsViews[0]);
+  const [view, setView] = React.useState(profileSettingsViews[0]);
 
   const initialProfileState = {
     dialList: [],
@@ -39,7 +39,7 @@ const ProfileSettingsContainer = () => {
     message: "Please select a profile",
     profileId: null
   };
-  
+
   const initialProfileModalState = {
     open: false
   };
@@ -47,7 +47,7 @@ const ProfileSettingsContainer = () => {
   const [profileSettingsState, setProfileSettingsState] = useState(initialProfileState);
   const [profileModalState, setProfileModalState] = useState(initialProfileModalState);
 
-  const profilesFromContextMinusGoP = useAdminState().profileContext.profiles.filter(({ profile_id }) => profile_id !== 0);
+  const profilesFromContext = useAdminState().profileContext.profiles;
   const loggedInRepNNumber = useAdminState().userContext.pingIdentity.sub;
 
   const fetchProfileInformation = profileId => {
@@ -81,17 +81,19 @@ const ProfileSettingsContainer = () => {
     profileId
   } = profileSettingsState;
 
-  const addProfileOnClick = () => setProfileModalState({
+  const createProfileOnClick = () => setProfileModalState({
     open: true
   });
 
-  return(
+  return (
     <ProfileEntryFormStateProvider>
       <ProfileSettingsContainerDiv>
         <Modal onClose={() => { return; }} open={profileModalState.open}>
-          <ProfileEntryForm
-            handleClose={() => setProfileModalState(initialProfileModalState)}
-          />
+          <>
+            <ProfileEntryForm
+              handleClose={() => setProfileModalState(initialProfileModalState)}
+            />
+          </>
         </Modal>
         <ProfileSettingsDropdownWrapper>
           <Dropdown
@@ -110,7 +112,7 @@ const ProfileSettingsContainer = () => {
             ?
             <div>
               <ProfileDropDown
-                availableProfiles={profilesFromContextMinusGoP}
+                availableProfiles={profilesFromContext}
                 profileId={profileId}
                 updateProfile={fetchProfileInformation}
               />
@@ -148,15 +150,15 @@ const ProfileSettingsContainer = () => {
                 checkIfPO(loggedInRepNNumber) ?
                   <ControlsWrapper>
                     <ControlItem>
-                      <AddProfileButton onClick={addProfileOnClick} data-testid={"add-profile-button"}>
-                        Add Profile
-                      </AddProfileButton>
+                      <CreateProfileButton onClick={createProfileOnClick} data-testid={"create-profile-button"}>
+                        Create Profile
+                      </CreateProfileButton>
                     </ControlItem>
                   </ControlsWrapper>
-                : null
+                  : null
               }
               <ProfileSettingsTable
-                profileList={profilesFromContextMinusGoP}
+                profileList={profilesFromContext}
                 loggedInRep={loggedInRepNNumber}
                 setProfileModalState={setProfileModalState}
               />

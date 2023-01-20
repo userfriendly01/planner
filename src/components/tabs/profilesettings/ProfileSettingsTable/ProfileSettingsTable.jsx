@@ -1,9 +1,12 @@
+import { checkIfPO } from "authentication";
 import React from "react";
 import {
+  BubbleDiv,
   CustomTable,
   CustomTableData,
   CustomTableHeader,
   CustomTableRow,
+  HighlightRed,
   TableText,
   StyledPaper,
   TableContainer,
@@ -11,8 +14,9 @@ import {
   IconWrapper
 } from "./ProfileSettingsTable.Styles";
 import {
-  checkIfPO,
+  formatAggregateQueues,
   formatProfileBooleanData,
+  formatProfileACWDataEntry,
   formatOverflowSkillData,
   formatActivityData,
   sortProfilesById
@@ -32,7 +36,7 @@ const ProfileSettingsTable = props => {
   const { profileList, loggedInRep, setProfileModalState } = props;
   const setForm = profileEntryFormDispatch();
 
-  const editButtonOnClick = (profile) => event => {
+  const editButtonOnClick = profile => event => {
     event.stopPropagation();
     setForm({
       type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
@@ -55,10 +59,10 @@ const ProfileSettingsTable = props => {
               {
                 profileTableColumnHeader.map(entry => {
                   return(
-                    <Tooltip placement="top" title={entry.TOOLTIP}>
+                    <Tooltip key={entry.COLUMN_NAME} placement="top" title={entry.TOOLTIP}>
                       <CustomTableHeader data-testid="table-header">{entry.COLUMN_NAME}</CustomTableHeader>
                     </Tooltip>
-                  )
+                  );
                 })
               }
             </tr>
@@ -93,7 +97,7 @@ const ProfileSettingsTable = props => {
                       <TableText>{formatProfileBooleanData(profile.manual_recorded_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(profile.acw_data_entry_i.data[0])}</TableText>
+                      <TableText>{formatProfileACWDataEntry(profile.acw_data_entry_i.data[0], profile.callTags.filter(data => data.profile_id === profile.profile_id), BubbleDiv, HighlightRed)}</TableText>
                     </CustomTableData>
                     <CustomTableData>
                       <TableText>{formatProfileBooleanData(profile.manual_record_inbound_i.data[0])}</TableText>
@@ -111,12 +115,20 @@ const ProfileSettingsTable = props => {
                       <TableText>{formatProfileBooleanData(profile.voice_mail_transcription_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
+                      <TableText>{formatProfileBooleanData(profile.click_to_dial_i.data[0])}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
                       <TableDataFlex>
                         {
-                          JSON.parse(profile.activities).map(activity => {
-                            return formatActivityData(activity.name)
+                          profile.activities.map(activity => {
+                            return <div key={`${activity.activity_nme}`}>{formatActivityData(activity.activity_nme, BubbleDiv)}</div>;
                           })
                         }
+                      </TableDataFlex>
+                    </CustomTableData>
+                    <CustomTableData>
+                      <TableDataFlex>
+                        {formatAggregateQueues(profile.aggregateQueues, BubbleDiv)}
                       </TableDataFlex>
                     </CustomTableData>
                     {
@@ -126,7 +138,7 @@ const ProfileSettingsTable = props => {
                             <Edit fontSize={"inherit"}/>
                           </IconWrapper>
                         </CustomTableData>
-                      : <CustomTableData />
+                        : <CustomTableData />
                     }
                   </CustomTableRow>
                 );
@@ -136,7 +148,7 @@ const ProfileSettingsTable = props => {
         </CustomTable>
       </StyledPaper>
     </TableContainer>
-  )
+  );
 };
 
 export default ProfileSettingsTable;

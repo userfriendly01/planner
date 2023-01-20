@@ -122,10 +122,14 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
         CustomRender={DropdownOption}
       />
       <Modal onClose={() => { return; }} open={isManagerModalOpen}>
-        <ManagerModal handleClose={handleCloseManager} selectedManager={selectedManager}/>
+        <>
+          <ManagerModal handleClose={handleCloseManager} selectedManager={selectedManager}/>
+        </>
       </Modal>
       <Modal onClose={() => { return; }} open={isManagerDeleteOpen}>
-        <ManagerDelete handleClose={handleCloseManagerDelete} selectedManager={selectedManager}/>
+        <>
+          <ManagerDelete handleClose={handleCloseManagerDelete} selectedManager={selectedManager}/>
+        </>
       </Modal>
     </Wrapper>
   );

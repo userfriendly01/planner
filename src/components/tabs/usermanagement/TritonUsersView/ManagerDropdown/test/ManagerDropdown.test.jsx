@@ -3,7 +3,7 @@ import {
   Dropdown,
   ManagerModal
 } from "components";
-import { initialState } from "context";
+import { useAdminState } from "context";
 import { Modal } from "@mui/material";
 import React from "react";
 import { sortManagersByName } from "utils";
@@ -11,12 +11,19 @@ import {
   act,
   fireEvent,
   render,
-  setupMockedComponents
+  setupMockedComponents,
+  initialTestState as initialState
 } from "testUtils";
+import { theme } from "globals";
+import { ThemeProvider } from "styled-components";
 
 jest.mock("components", () => ({
   Dropdown: jest.fn(),
   ManagerModal: jest.fn()
+}));
+
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
@@ -61,11 +68,15 @@ const initialTestState  = {
 };
 
 const renderComponent = () => render(
-  <ManagerDropdown filterBy={filterBy} setFilter={setFilter} />, initialTestState
+  <ThemeProvider theme={theme}>
+    <ManagerDropdown filterBy={filterBy} setFilter={setFilter} />
+  </ThemeProvider>
 );
 
-describe("<ManagementFilter />", () => {
+describe("<ManagerDropdown />", () => {
   beforeEach(() => {
+    jest.clearAllMocks();
+    useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       Dropdown,
       ManagerModal,
@@ -133,13 +144,17 @@ describe("<ManagementFilter />", () => {
     act(() => {
       Dropdown.mock.calls[0][0].updateValue(null, selection);
     });
-    expect(setFilter).toHaveBeenCalledTimes(0);
-    render(Modal.mock.calls[2][0].children);
+    expect(setFilter).toHaveBeenCalledWith(selection.value);
+    render(
+      <ThemeProvider theme={theme}>
+        { Modal.mock.calls[2][0].children }
+      </ThemeProvider>
+    );
     act(() => {
       ManagerModal.mock.calls[0][0].handleClose();
     });
-    expect(setFilter.mock.calls[0][0]).toBe("show-all");
-    expect(Modal.mock.calls[3][0].open).toBe(false);
+    expect(setFilter.mock.calls[1][0]).toBe("show-all");
+    expect(Modal.mock.calls[1][0].open).toBe(false);
   });
 
   describe("Custom Render", () => {
@@ -184,24 +199,32 @@ describe("<ManagementFilter />", () => {
     describe("Manager Option is passed through", () => {
       test("The Custom Render Options is rendered as expected", () => {
         renderComponent();
-        const rendered = render(Dropdown.mock.calls[0][0].CustomRender({
-          option: {
-            label: `${mockManagerData[0].manager_first_name} ${mockManagerData[0].manager_last_name}`,
-            value: mockManagerData[0].manager_n_number
-          }
-        }));
+        const rendered = render(
+          <ThemeProvider theme={theme}>{
+            Dropdown.mock.calls[0][0].CustomRender({
+              option: {
+                label: `${mockManagerData[0].manager_first_name} ${mockManagerData[0].manager_last_name}`,
+                value: mockManagerData[0].manager_n_number
+              }
+            })}
+          </ThemeProvider>
+        );
         const button = rendered.getByTestId("edit-button");
         expect(button);
         expect(rendered.container).toHaveTextContent("Faith Cuneo");
       });
       test("Clicking the edit Icon on the custom render will open the manager Modal", () => {
         renderComponent();
-        const rendered = render(Dropdown.mock.calls[0][0].CustomRender({
-          option: {
-            label: `${mockManagerData[0].manager_first_name} ${mockManagerData[0].manager_last_name}`,
-            value: mockManagerData[0].manager_n_number
-          }
-        }));
+        const rendered = render(
+          <ThemeProvider theme={theme}>{
+            Dropdown.mock.calls[0][0].CustomRender({
+              option: {
+                label: `${mockManagerData[0].manager_first_name} ${mockManagerData[0].manager_last_name}`,
+                value: mockManagerData[0].manager_n_number
+              }
+            })}
+          </ThemeProvider>
+        );
         const button = rendered.getByTestId("edit-button");
         expect(button);
         fireEvent.click(button);

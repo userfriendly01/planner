@@ -136,15 +136,17 @@ const Directory = props => {
         onClose={() => { return; }}
         open={directoryState.isDirectoryEntryFormOpen}
       >
-        <DirectoryEntryForm
-          closeModal={() => setDirectoryState({
-            ...directoryState,
-            isDirectoryEntryFormOpen: false
-          })}
-          directoryState={directoryState}
-          profileId={profileId}
-          refreshProfileData={refreshProfileData}
-        />
+        <>
+          <DirectoryEntryForm
+            closeModal={() => setDirectoryState({
+              ...directoryState,
+              isDirectoryEntryFormOpen: false
+            })}
+            directoryState={directoryState}
+            profileId={profileId}
+            refreshProfileData={refreshProfileData}
+          />
+        </>
       </Modal>
       <PhoneNumberTable
         editFunction={editButtonOnClick}
@@ -159,7 +161,7 @@ const Directory = props => {
 
 Directory.propTypes = {
   directory: PropTypes.array.isRequired,
-  profileId: PropTypes.string.isRequired,
+  profileId: PropTypes.number.isRequired,
   refreshProfileData: PropTypes.func.isRequired
 };
 

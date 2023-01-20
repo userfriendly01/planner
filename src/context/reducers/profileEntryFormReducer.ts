@@ -16,13 +16,17 @@ export const profileEntryFormActions = {
   SET_PROFILE_ID: "SET_PROFILE_ID",
   SET_PROFILE_NAME: "SET_PROFILE_NAME",
   SET_OVERFLOW_SKILL: "SET_OVERFLOW_SKILL",
+  UPDATE_TRANSFER_QUEUES: "UPDATE_TRANSFER_QUEUES",
   UPDATE_ACTIVITIES_LIST: "UPDATE_ACTIVITIES_LIST",
+  UPDATE_CALL_TAGS_LIST: "UPDATE_CALL_TAGS_LIST",
   SET_UPDATE_PROFILE_FORM_STATE: "SET_UPDATE_PROFILE_FORM_STATE"
 };
 
 export const initialProfileEntryFormState: ProfileEntryFormState = {
   profileId: null,
   activitiesList: [],
+  callTagsList: [],
+  callTagOptions: [],
   formMode: formModes.INSERT,
   autoAnswered: {
     value: true
@@ -57,6 +61,9 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
   voiceMailTranscription: {
     value: false
   },
+  clickToDial: {
+    value: false
+  },
   overflowSkill: {
     value: "",
     valid: true
@@ -64,7 +71,8 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
   profileName: {
     value: "",
     valid: false
-  }
+  },
+  transferQueues: []
 };
 
 export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Action): ProfileEntryFormState => {
@@ -108,16 +116,46 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         activitiesUpdated: true
       };
     }
+    case profileEntryFormActions.UPDATE_CALL_TAGS_LIST: {
+      return {
+        ...state,
+        callTagsList: action.payload,
+        callTagsUpdated: true
+      };
+    }
+    case profileEntryFormActions.UPDATE_TRANSFER_QUEUES: {
+      return {
+        ...state,
+        transferQueues: action.payload,
+        queuesUpdated: true
+      };
+    }
     case profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE: {
       const profile = action.payload.profile;
-      const activitiesList = JSON.parse(profile.activities).map((activity: { id: number; name: string; availability: number; }) => {
+
+      const callTagsList = profile.callTags.map((callTag: { display_nme: string; wrkr_tsk_info_id: number; options_id: number;}) => {
         return {
-          activity_id: activity.id,
-          activity_nme: activity.name,
+          wrkr_tsk_info_nme: callTag.display_nme,
+          wrkr_tsk_info_id: callTag.wrkr_tsk_info_id,
+          options_id: callTag.options_id
+        };
+      });
+
+      const activitiesList = profile.activities.map((activity: { activity_id: number; activity_nme: string; availability: number; }) => {
+        return {
+          activity_id: activity.activity_id,
+          activity_nme: activity.activity_nme,
           available_i: {
             data: [activity.availability],
             type: "Buffer"
           }
+        };
+      });
+
+      const transferQueues = profile.aggregateQueues.map((queue: { queues: { skill_id: number; skill_nme: string; }[]; }) => {
+        return {
+          ctmSkillId: queue.queues[0].skill_id,
+          ctmSkillDisplayName: queue.queues[0].skill_nme
         };
       });
 
@@ -126,6 +164,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         profileId: profile.profile_id,
         formMode: action.payload.formMode,
         activitiesList,
+        callTagsList,
         autoAnswered: formatProfileBooleanDataTrueFalse(profile.auto_answd_i.data[0]),
         inboundRecorded: formatProfileBooleanDataTrueFalse(profile.recorded_i.data[0]),
         outboundRecorded: formatProfileBooleanDataTrueFalse(profile.otbnd_recorded_i.data[0]),
@@ -137,6 +176,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         paymentProcessing: formatProfileBooleanDataTrueFalse(profile.pmt_prcsg_i.data[0]),
         policyNumberEdit: formatProfileBooleanDataTrueFalse(profile.policy_number_edit_i.data[0]),
         voiceMailTranscription: formatProfileBooleanDataTrueFalse(profile.voice_mail_transcription_i.data[0]),
+        clickToDial: formatProfileBooleanDataTrueFalse(profile.click_to_dial_i.data[0]),
         overflowSkill: {
           value: formatOverflowSkillData(profile.overflow_skill),
           valid: true
@@ -144,7 +184,8 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         profileName: {
           value: profile.profile_nme,
           valid: true
-        }
+        },
+        transferQueues
       };
     }
     default:

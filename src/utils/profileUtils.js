@@ -1,6 +1,10 @@
 import React from "react";
-import { Check } from "@mui/icons-material";
-import { ActivitiesDiv } from "../components/tabs/profilesettings/ProfileSettingsTable/ProfileSettingsTable.Styles";
+import _ from "lodash";
+import {
+  Check,
+  AutoAwesomeMotion
+} from "@mui/icons-material";
+import { Tooltip } from "@mui/material";
 
 export const formatProfileBooleanData = value => {
   if (value === 1) {
@@ -16,6 +20,23 @@ export const formatProfileBooleanDataTrueFalse = value => {
   return { value: false };
 };
 
+export const formatProfileACWDataEntry = (value, options, BubbleDiv, HighlightRed) => {
+  if (value === 1 && options.length) {
+    return options.map(option => {
+      return <Tooltip key={option.wrkr_tsk_info_id} placement="top" title={option.options ? option.options.toString().replace(/,/g,", ") : ""}>
+        <BubbleDiv key={option.wrkr_tsk_info_id}>{option.display_nme}</BubbleDiv>
+      </Tooltip>;
+    });
+  }
+  if (value === 1 && !options.length) {
+    return  <HighlightRed>{"Call tags not configured but feature enabled"}</HighlightRed>;
+  }
+  if (value === 0 && options.length) {
+    return  <HighlightRed>{"Call tags configured but feature disabled"}</HighlightRed>;
+  }
+  return "";
+};
+
 export const formatOverflowSkillData = overflowSkill => {
   if (overflowSkill === null) {
     return  "";
@@ -23,11 +44,15 @@ export const formatOverflowSkillData = overflowSkill => {
   return overflowSkill;
 };
 
-export const formatActivityData = activity => {
+export const formatActivityData = (activity, BubbleDiv) => {
   if (activity === null) {
     return "";
   }
-  return <ActivitiesDiv>{activity}</ActivitiesDiv>;
+  return <BubbleDiv>{activity}</BubbleDiv>;
+};
+
+export const formatCallTagsName = name => {
+  return _.startCase(name);
 };
 
 export const profileSettingsViews = [
@@ -40,3 +65,13 @@ export const profileSettingsViews = [
     label: "Profile Settings"
   }
 ];
+
+export const formatAggregateQueues = (aggregateQueues, BubbleDiv) => {
+  return aggregateQueues.map(queue => {
+    if (queue.aggregate_queues_type === "aggregate") {
+      return <BubbleDiv key={queue.aggregate_queues_nme}>{queue.aggregate_queues_nme} <AutoAwesomeMotion fontSize="1 rem"/></BubbleDiv>;
+    } else {
+      return <BubbleDiv key={`${queue.aggregate_queues_nme}`}>{queue.aggregate_queues_nme}</BubbleDiv>;
+    }
+  });
+};

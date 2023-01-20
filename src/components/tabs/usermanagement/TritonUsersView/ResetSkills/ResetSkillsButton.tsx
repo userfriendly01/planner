@@ -96,11 +96,13 @@ const ResetSkillsButton = () => {
       marginRight: "10px"
     }}>
       <Modal open={resultsModalOpts.open}>
-        <ResetSkillsResultModal
-          error={resultsModalOpts.error}
-          handleClose={() => setResultsModalOpts(defaultResetInformation)}
-          successfulWorkers={resultsModalOpts.successfulResets}
-          unsuccessfulWorkers={resultsModalOpts.unsuccessfulResets} />
+        <>
+          <ResultsModal
+            error={resultsModalOpts.error}
+            handleClose={() => setResultsModalOpts(defaultResetInformation)}
+            successfulWorkers={resultsModalOpts.successfulResets}
+            unsuccessfulWorkers={resultsModalOpts.unsuccessfulResets} />
+        </>
       </Modal>
       <StyledButton style={{ width: "100%" }} disabled={selectedWorkers.length === 0} onClick={() => resetWorkers()}>
         Reset Skills

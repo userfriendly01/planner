@@ -12,6 +12,8 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
+import { theme } from "globals";
+import { ThemeProvider } from "styled-components";
 
 jest.mock("components", () => ({
   __esModule: true,
@@ -29,13 +31,16 @@ const setUserModalState = jest.fn();
 
 const renderComponent = () => {
   return render(
-    <ManagementHeader
-      filterBy={filterBy}
-      searchBy={searchBy}
-      setFilter={setFilter}
-      setSearch={setSearch}
-      setUserModalState={setUserModalState}
-    />);
+    <ThemeProvider theme={theme}>
+      <ManagementHeader
+        filterBy={filterBy}
+        searchBy={searchBy}
+        setFilter={setFilter}
+        setSearch={setSearch}
+        setUserModalState={setUserModalState}
+      />
+    </ThemeProvider>
+  );
 };
 
 describe("<ManagementHeader />", () => {

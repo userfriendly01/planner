@@ -47,11 +47,28 @@ describe("isOverflowSkillValid", () => {
 });
 
 describe("isProfileFormValid", () => {
-  test("should return true when all three activitiesList, profileName and overflowSkill are valid", () => {
+  test("should return true when activitiesList, profileName, overflowSkill, acwDataEntry(disabled) and callTagsList(empty) are valid", () => {
     const form = {
       activitiesList: [2,3],
       profileName: { valid: true },
-      overflowSkill: { valid: true }
+      overflowSkill: { valid: true },
+      acwDataEntry: { value: false },
+      callTagsList: []
+    };
+    const result = isProfileFormValid(form);
+    expect(result).toBe(true);
+  });
+  test("should return true when activitiesList, profileName, overflowSkill, acwDataEntry(enabled) and callTagsList(not empty) are valid", () => {
+    const form = {
+      activitiesList: [2,3],
+      profileName: { valid: true },
+      overflowSkill: { valid: true },
+      acwDataEntry: { value: true },
+      callTagsList: [{
+        options_id: 1,
+        wrkr_tsk_info_nme: "Negotiation Type",
+        wrkr_tsk_info_id: 3
+      }]
     };
     const result = isProfileFormValid(form);
     expect(result).toBe(true);
@@ -61,7 +78,9 @@ describe("isProfileFormValid", () => {
       profileId: null,
       activitiesList: [2,3],
       profileName: { valid: true },
-      overflowSkill: { valid: true }
+      overflowSkill: { valid: true },
+      acwDataEntry: { value: false },
+      callTagsList: []
     };
     const result = isProfileFormValid(form);
     expect(result).toBe(true);
@@ -70,7 +89,9 @@ describe("isProfileFormValid", () => {
     const form = {
       activitiesList: [2,3],
       profileName: { valid: false },
-      overflowSkill: { valid: true }
+      overflowSkill: { valid: true },
+      acwDataEntry: { value: false },
+      callTagsList: []
     };
     const result = isProfileFormValid(form);
     expect(result).toBe(false);
@@ -79,18 +100,48 @@ describe("isProfileFormValid", () => {
     const form = {
       activitiesList: [2,3],
       profileName: { valid: true },
-      overflowSkill: { valid: false }
+      overflowSkill: { valid: false },
+      acwDataEntry: { value: false },
+      callTagsList: []
     };
     const result = isProfileFormValid(form);
     expect(result).toBe(false);
   });
-  test("should return 0 (form invalid) when no activities added / activitiesList is enpty", () => {
+  test("should return false when no activities added / activitiesList is empty", () => {
     const form = {
       activitiesList: [],
       profileName: { valid: true },
-      overflowSkill: { valid: false }
+      overflowSkill: { valid: false },
+      acwDataEntry: { value: false },
+      callTagsList: []
     };
     const result = isProfileFormValid(form);
-    expect(result).toBe(0);
+    expect(result).toBe(false);
+  });
+  test("should return false when acwDataEntry is enabled and callTagsList is empty", () => {
+    const form = {
+      activitiesList: [2,3],
+      profileName: { valid: true },
+      overflowSkill: { valid: true },
+      acwDataEntry: { value: true },
+      callTagsList: []
+    };
+    const result = isProfileFormValid(form);
+    expect(result).toBe(false);
+  });
+  test("should return false when acwDataEntry is disbaled and callTagsList is not empty", () => {
+    const form = {
+      activitiesList: [2,3],
+      profileName: { valid: true },
+      overflowSkill: { valid: true },
+      acwDataEntry: { value: false },
+      callTagsList: [{
+        options_id: 1,
+        wrkr_tsk_info_nme: "Negotiation Type",
+        wrkr_tsk_info_id: 3
+      }]
+    };
+    const result = isProfileFormValid(form);
+    expect(result).toBe(false);
   });
 });
