@@ -1,4 +1,4 @@
-import PriorityDropdown from "../PriorityDropdown";
+import PriorityDropdown from "../PriorityDropDown";
 import { Dropdown } from "components";
 import React from "react";
 import {
