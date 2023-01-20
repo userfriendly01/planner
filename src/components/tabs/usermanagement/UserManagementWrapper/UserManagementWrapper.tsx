@@ -1,16 +1,18 @@
 import React from "react";
+import { CallflowWrapper } from "./UserManagement.Styles";
 import {
-  CallflowWrapper,
-  TritonUsersViewWrapper,
-  UserAction,
   View,
-  views,
+  views
+} from "./UserManagement.Interfaces";
+import {
+  UserAction,
   WorkerOpts
-} from "../";
+} from "../OnboardNewUser/UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 import {
   BulkUpload,
   UserEntryForm,
-  Dropdown
+  Dropdown,
+  TritonUsersViewWrapper
 } from "components";
 import {
   FormStateProvider,

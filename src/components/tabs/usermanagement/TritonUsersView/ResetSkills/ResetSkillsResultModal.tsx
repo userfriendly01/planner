@@ -3,9 +3,9 @@ import {
   FlexRowMax,
   Header,
   ModalContainer,
-  ResultsContainer,
-  ResultsModalProps
+  ResultsContainer
 } from "./ResetSkills.Styles";
+import { ResultsModalProps } from "./ResetSkills.Interfaces";
 import {
   PaperContainer,
   StyledButton
@@ -42,7 +42,7 @@ const ResetSkillsResultsModal = (props: ResultsModalProps) => {
 
   const warnOnWorkers: any[] = [];
   const failOnWorkers: any[] = [];
-  unsuccessfulWorkers.forEach((worker, index) => {
+  unsuccessfulWorkers.forEach((worker: any, index: number) => {
     const display =
       <FlexRowMax key={index}>
         <b>{worker.name}</b> &nbsp;was not updated: [{worker.reason}]
