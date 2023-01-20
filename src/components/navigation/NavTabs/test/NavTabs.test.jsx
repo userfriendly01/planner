@@ -18,7 +18,11 @@ import {
   setupMockedComponents,
   tabs
 } from "testUtils";
+import { getAzureSPAClientId } from "utils";
 
+jest.mock("utils", () => ({
+  getAzureSPAClientId: jest.fn(),
+}));
 jest.mock("components", () => ({
   CallflowManagementWrapper: jest.fn(),
   ManagementWrapper: jest.fn(),
@@ -80,6 +84,7 @@ describe("<NavTabs />", () => {
     expect(rendered.getAllByText("CallflowManagementWrapper")[0]).not.toBeVisible();
     expect(rendered.getByText("ProfileSettingsContainer")).not.toBeVisible();
     expect(rendered.getByText("AlohaFlowContainer")).not.toBeVisible();
+    expect(getAzureSPAClientId).toBeCalled();
   });
 
   test("when we click on the 'Call Flow Management' link, only CallflowManagementWrapper should be visible", () => {

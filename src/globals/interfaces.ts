@@ -202,4 +202,5 @@ export interface WorkerAttributeSkills {
 export interface AzureSPA {
   accessToken: string;
   matchedGroups: string;
+  azureClientId?: string;
 }
