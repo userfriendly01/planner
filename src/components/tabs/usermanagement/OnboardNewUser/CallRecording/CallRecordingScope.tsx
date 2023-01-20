@@ -7,7 +7,7 @@ import {
   ScopeRow,
   FormControlsPane,
   FullAccessWrapper
-} from "./";
+} from "./CallRecording.Styles";
 import { userFormActions } from "context";
 import { Checkbox } from "@mui/material";
 

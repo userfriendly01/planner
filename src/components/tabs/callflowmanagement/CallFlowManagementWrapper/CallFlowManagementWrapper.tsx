@@ -1,13 +1,17 @@
 import {
-  ConfirmationModalOptsProps,
-  SaveResultProps,
+  CallflowWrapper,
+  MessageWrapper
+} from "./CallFlowManagement.Styles";
+import {
   SkillProfile,
   TableState,
   View,
-  views,
-  CallflowWrapper,
-  MessageWrapper
-} from "../";
+  views
+} from "../CallFlowManagementWrapper/CallFlowManagement.Interfaces";
+import {
+  ConfirmationModalOptsProps,
+  SaveResultProps
+} from "../CallFlowConfirmationModal/CallFlowConfirmationModal.Interfaces";
 import {
   CallFlowConfirmationModal,
   Dropdown,

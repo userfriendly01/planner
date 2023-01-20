@@ -1,11 +1,13 @@
+import { DeleteTritonUserProps } from "./DeleteTritonUser.Interfaces";
 import {
   ButtonWrapper,
-  CheckboxWrapper,
-  DeleteTritonUserProps,
-  DeleteTritonUserWrapper,
-  Text,
   UserFormButton
-} from "../";
+} from "../UserEntryFormWrapper/UserEntryFormWrapper.Styles";
+import {
+  CheckboxWrapper,
+  DeleteTritonUserWrapper,
+  Text
+} from "./DeleteTritonUser.Styles";
 import { ForwardToEntryForm } from "components";
 import { useAdminDispatch } from "context";
 import {

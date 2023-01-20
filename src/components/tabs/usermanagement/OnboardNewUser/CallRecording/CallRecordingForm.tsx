@@ -1,9 +1,9 @@
 import React from "react";
+import { CallRecordingScope } from "./";
 import {
-  CallRecordingScope,
   FormControlsContainer,
   FormControlsPane
-} from "./";
+} from "./CallRecording.Styles";
 import { Dropdown } from "components";
 import {
   useAdminState,

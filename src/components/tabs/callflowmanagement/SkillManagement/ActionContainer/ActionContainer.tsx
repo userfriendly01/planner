@@ -5,9 +5,9 @@ import {
 import React from "react";
 import {
   propertyOptions,
-  ActionContainerProps,
-  FormControlsContainer
-} from "../";
+  ActionContainerProps
+} from "../Skills.Interfaces";
+import { FormControlsContainer } from "../Skills.Styles";
 
 const ActionContainer = (props: ActionContainerProps) => {
   const {

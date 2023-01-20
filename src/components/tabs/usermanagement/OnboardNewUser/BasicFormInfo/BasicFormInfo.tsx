@@ -1,11 +1,11 @@
+import { BasicFormInfoProps } from "../UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 import {
-  BasicFormInfoProps,
   FormControlsContainer,
   FormControlsPane,
   RightColumn,
   ToggleContainer,
   ToggleLabel
-} from "..";
+} from "../UserEntryFormWrapper/UserEntryFormWrapper.Styles";
 import {
   Switch,
   Tooltip
@@ -36,9 +36,7 @@ import {
 const BasicFormInfo = (props: BasicFormInfoProps) => {
 
   const {
-    skills,
     worker,
-    workers,
     profiles,
     managers,
     forwardToToggle,

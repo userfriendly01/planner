@@ -1,8 +1,6 @@
 
-import {
-  StyledExportButton,
-  SkillsExportButtonProps
-} from "../";
+import { StyledExportButton } from "../Skills.Styles";
+import { SkillsExportButtonProps } from "../Skills.Interfaces";
 import React from "react";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
 

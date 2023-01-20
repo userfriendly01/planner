@@ -1,4 +1,4 @@
-import { FormControlsPane } from "../../";
+import { FormControlsPane } from "../../UserEntryFormWrapper/UserEntryFormWrapper.Styles";
 import { DefaultSkillSelector } from "components";
 import {
   useFormState,

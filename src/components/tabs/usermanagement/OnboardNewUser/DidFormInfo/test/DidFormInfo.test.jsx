@@ -26,10 +26,7 @@ import {
   expectMockedComponent,
   expectOnlyPassedProps,
   initialFormState,
-  managerList,
-  mockSkills,
   mockWorkers,
-  profileList,
   render,
   setupMockedComponents
 } from "testUtils";
@@ -53,6 +50,7 @@ jest.mock("@mui/material", () => ({
   __esModule: true,
   InputAdornment: jest.fn(),
   Tabs: jest.fn(),
+  Divider: jest.fn(),
   Switch: jest.fn(),
   Tooltip: jest.fn()
 }));
@@ -122,11 +120,7 @@ describe("<DidFormInfo />", () => {
     return render(
       <ThemeProvider theme={theme}>
         <DidFormInfo
-          skills={mockSkills}
           worker={mockWorkers[2]}
-          workers={mockWorkers}
-          profiles={profileList}
-          managers={managerList}
           forwardToToggle={forwardToToggle}
           setForwardToToggle={mockSetForwardToToggle}
         />
@@ -292,9 +286,7 @@ describe("<DidFormInfo />", () => {
         const rendered = renderComponent(true);
         expectMockedComponent(rendered, { ForwardToEntryForm }, 1);
         const expectedForwardToEntryProps = {
-          label: "Please choose a forward to option for the existing outgoing number",
-          skills: mockSkills,
-          workers: mockWorkers
+          label: "Please choose a forward to option for the existing outgoing number"
         };
         expectOnlyPassedProps(ForwardToEntryForm, expectedForwardToEntryProps, 0);
       });

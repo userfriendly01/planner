@@ -1,8 +1,8 @@
 import {
-  DidFormInfoProps,
   FormControlsPane,
   StyledIcon
-} from "..";
+} from "../UserEntryFormWrapper/UserEntryFormWrapper.Styles";
+import { DidFormInfoProps } from "../UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 import {
   ForwardToEntryForm,
   PhoneNumberInput
