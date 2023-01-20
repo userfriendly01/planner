@@ -1,4 +1,4 @@
-import { PriorityDropdownProps } from ".";
+import { PriorityDropdownProps } from "./";
 import { Dropdown } from "components";
 import React from "react";
 
