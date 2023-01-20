@@ -18,6 +18,7 @@ import {
 import { theme } from "globals";
 import { ThemeProvider } from "styled-components";
 import { act } from "react-dom/test-utils";
+import { getAggregateQueuesType } from "services";
 
 jest.mock("@mui/icons-material", () => ({
   __esModule: true,
@@ -44,6 +45,8 @@ const renderComponent = mockTransferQueues => render(
     />
   </ThemeProvider>
 );
+
+getAggregateQueuesType.mockImplementation(() => { return Promise.resolve(200, { response: "success" } ); });
 
 const getAddTransferQueuesButton = rendered => rendered.getByTestId("add-queue-button");
 const getDeleteTransferQueuesButton = (rendered, instance) => rendered.getAllByTestId("delete-queue-button")[instance];
