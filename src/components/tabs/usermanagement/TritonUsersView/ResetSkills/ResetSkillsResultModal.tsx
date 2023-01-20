@@ -5,7 +5,7 @@ import {
   ModalContainer,
   ResultsContainer,
   ResultsModalProps
-} from "./";
+} from "./ResetSkills.Styles";
 import {
   PaperContainer,
   StyledButton
@@ -16,7 +16,7 @@ import {
 } from "globals";
 import React from "react";
 
-const ResultsModal = (props: ResultsModalProps) => {
+const ResetSkillsResultsModal = (props: ResultsModalProps) => {
   const {
     error,
     handleClose,
@@ -84,4 +84,4 @@ const ResultsModal = (props: ResultsModalProps) => {
   );
 };
 
-export default ResultsModal;
+export default ResetSkillsResultsModal;

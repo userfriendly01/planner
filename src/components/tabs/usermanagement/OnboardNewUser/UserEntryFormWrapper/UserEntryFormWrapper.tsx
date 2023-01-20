@@ -1,16 +1,18 @@
 import {
+  UserAction,
+  LoadingState,
+  UserEntryFormProps
+} from "./UserEntryFormWrapper.Interfaces";
+import {
   DiscrepancyContainer,
   Header1,
   Header2,
   Header4,
   HeaderRow,
-  LoadingState,
   ModalContainer,
   StyledDivider,
-  Text,
-  UserAction,
-  UserEntryFormProps
-} from "./";
+  Text
+} from "./UserEntryFormWrapper.Styles";
 import {
   DeleteTritonUser,
   ModalOverlay,

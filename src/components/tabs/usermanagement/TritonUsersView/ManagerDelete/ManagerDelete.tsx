@@ -2,9 +2,9 @@ import {
   Header,
   HeaderAndCloseButtonWrapper,
   LeftDiv,
-  ModalContainer,
-  ManagerDeleteProps
-} from "./";
+  ModalContainer
+} from "./ManagerDelete.Styles";
+import { ManagerDeleteProps } from "./ManagerDelete.Interfaces";
 import {
   ConfirmationForm,
   ErrorForm,

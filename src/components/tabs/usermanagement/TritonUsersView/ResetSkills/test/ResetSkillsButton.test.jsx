@@ -1,7 +1,7 @@
 import ResetSkillsButton from "../ResetSkillsButton";
 import MockAdapter from "axios-mock-adapter";
 import {
-  ResultsModal,
+  ResetSkillsResultsModal,
   StyledButton
 } from "components";
 import {
@@ -24,7 +24,7 @@ import {
 } from "utils";
 
 jest.mock("components", () => ({
-  ResultsModal: jest.fn(),
+  ResetSkillsResultsModal: jest.fn(),
   StyledButton: jest.fn()
 }));
 
@@ -72,12 +72,13 @@ describe("ResetSkillsButton", () => {
     useAdminState.mockReturnValue(initialState);
     useAdminDispatch.mockReturnValue(setMockForm);
     setupMockedComponents({
-      ResultsModal,
+      ResetSkillsResultsModal,
       StyledButton
     });
   });
 
-  test("StyledButton is passed Reset Skills text", () => {
+  //Faith
+  test.only("StyledButton is passed Reset Skills text", () => {
     renderComponent();
     const { children } = getMockedComponentProps(StyledButton);
     const rendered = render(children);
@@ -137,7 +138,7 @@ describe("ResetSkillsButton", () => {
             type: "resettingSkills",
             payload: false
           });
-          expect(ResultsModal.mock.calls[0][0].unsuccessfulWorkers).toEqual([]);
+          expect(ResetSkillsResultsModal.mock.calls[0][0].unsuccessfulWorkers).toEqual([]);
           done();
         });
       });
@@ -166,7 +167,7 @@ describe("ResetSkillsButton", () => {
           getMockedComponentProps(StyledButton).onClick();
           return Promise.resolve();
         }).then(() => {
-          expectMockedComponent(rendered, { ResultsModal }, 1);
+          expectMockedComponent(rendered, { ResetSkillsResultsModal }, 1);
           expect(setMockForm).toHaveBeenCalledTimes(4);
           expect(setMockForm).toHaveBeenCalledWith({
             type: "resettingSkills",
@@ -186,14 +187,14 @@ describe("ResetSkillsButton", () => {
             type: "resettingSkills",
             payload: false
           });
-          expect(ResultsModal.mock.calls[0][0].unsuccessfulWorkers).toEqual([
+          expect(ResetSkillsResultsModal.mock.calls[0][0].unsuccessfulWorkers).toEqual([
             {
               name: "Test2",
               reason: "bad stuff happened"
             }
           ]);
-          act(() => ResultsModal.mock.calls[0][0].handleClose());
-          expectMockedComponent(rendered, { ResultsModal }, 0);
+          act(() => ResetSkillsResultsModal.mock.calls[0][0].handleClose());
+          expectMockedComponent(rendered, { ResetSkillsResultsModal }, 0);
           done();
         });
       });
@@ -210,7 +211,7 @@ describe("ResetSkillsButton", () => {
           getMockedComponentProps(StyledButton).onClick();
           return Promise.resolve();
         }).then(() => {
-          expectMockedComponent(rendered, { ResultsModal }, 1);
+          expectMockedComponent(rendered, { ResetSkillsResultsModal }, 1);
           expect(setMockForm).toHaveBeenCalledTimes(2);
           expect(setMockForm).toHaveBeenCalledWith({
             type: "resettingSkills",
@@ -220,9 +221,9 @@ describe("ResetSkillsButton", () => {
             type: "resettingSkills",
             payload: false
           });
-          expect(ResultsModal.mock.calls[0][0].error).toBe("An unexpected error occurred when trying to reset worker skills");
-          act(() => ResultsModal.mock.calls[0][0].handleClose());
-          expectMockedComponent(rendered, { ResultsModal }, 0);
+          expect(ResetSkillsResultsModal.mock.calls[0][0].error).toBe("An unexpected error occurred when trying to reset worker skills");
+          act(() => ResetSkillsResultsModal.mock.calls[0][0].handleClose());
+          expectMockedComponent(rendered, { ResetSkillsResultsModal }, 0);
           done();
         });
       });

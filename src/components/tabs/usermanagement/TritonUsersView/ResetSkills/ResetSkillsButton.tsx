@@ -1,4 +1,4 @@
-import { DefaultResetInformation } from "./";
+import { DefaultResetInformation } from "./ResetSkills.Interfaces";
 import {
   ResetSkillsResultModal,
   StyledButton

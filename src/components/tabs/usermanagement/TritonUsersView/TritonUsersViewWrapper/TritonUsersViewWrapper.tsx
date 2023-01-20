@@ -1,8 +1,8 @@
 import {
   ManagementContainer,
-  StyledPaper,
-  TritonUserManagementWrapperProps
-} from "./";
+  StyledPaper
+} from "./TritonUsersViewWrapper.Styles";
+import { TritonUserManagementWrapperProps } from "./TritonUsersViewWrapper.Interfaces";
 import {
   TritonUsersHeader,
   Pagination,

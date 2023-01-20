@@ -18,7 +18,6 @@ import {
   render,
   setupMockedComponents,
   mockWorkers,
-  mockSkills,
   initialFormState,
   initialTestState
 } from "testUtils";

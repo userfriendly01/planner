@@ -14,10 +14,7 @@ import {
 } from "context";
 import React from "react";
 import { act } from "react-dom/test-utils";
-import {
-  Modal,
-  Paper
-} from "@mui/material";
+import { Modal } from "@mui/material";
 import {
   addManager,
   editManager
@@ -45,7 +42,13 @@ jest.mock("@mui/icons-material", () => ({
 
 jest.mock("@mui/material", () => ({
   Modal: jest.fn(),
-  Paper: jest.fn()
+  Paper: jest.fn(),
+  TextField: jest.fn(),
+  Button: jest.fn(),
+  Tab: jest.fn(),
+  Tabs: jest.fn(),
+  Divider: jest.fn(),
+  Checkbox: jest.fn()
 }));
 
 jest.mock("services", () => ({
@@ -69,16 +72,7 @@ jest.mock("components", () => ({
   CalabrioTeamModal: jest.fn()
 }));
 
-const mockHandleClose = jest.fn();
-
-const renderComponent = () => {
-  return render(
-    <ManagerModal
-      handleClose={mockHandleClose}
-      selectedManager={null}
-    />);
-  // return render(PaperContainer.mock.calls[0][0].children);
-};
+//Faith
 
 describe("<ManagerModal />", () => {
   const mockHandleClose = jest.fn();

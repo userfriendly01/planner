@@ -1,6 +1,5 @@
-import ResultsModal from "../ResetSkillsResultModal";
+import ResetSkillsResultsModal from "../ResetSkillsResultModal";
 import {
-  ModalHeader,
   PaperContainer,
   StyledButton
 } from "components";
@@ -13,7 +12,6 @@ import {
 
 jest.mock("components", () => ({
   __esModule: true,
-  ModalHeader: jest.fn(),
   PaperContainer: jest.fn(),
   StyledButton: jest.fn()
 }));
@@ -44,13 +42,12 @@ const warningWorkersMock = [
 const handleClose = jest.fn();
 
 const renderModal = (successfulWorkers, unsuccessfulWorkers) => {
-  return render(<ResultsModal handleClose={handleClose} successfulWorkers={successfulWorkers} unsuccessfulWorkers={unsuccessfulWorkers} />);
+  return render(<ResetSkillsResultsModal handleClose={handleClose} successfulWorkers={successfulWorkers} unsuccessfulWorkers={unsuccessfulWorkers} />);
 };
 
 describe("<ResultsModal />", () => {
   beforeEach(() => {
     setupMockedComponents({
-      ModalHeader,
       StyledButton
     });
     handleClose.mockClear();
@@ -103,7 +100,7 @@ describe("<ResultsModal />", () => {
   describe("modal where there was an error", () => {
     test("should display error message", () => {
       const error = "Oh noooooo";
-      const rendered = render(<ResultsModal error={error} handleClose={handleClose} />);
+      const rendered = render(<ResetSkillsResultsModal error={error} handleClose={handleClose} />);
       expect(rendered.queryAllByTestId("successContainer")).toHaveLength(0);
       expect(rendered.queryAllByTestId("warningContainer")).toHaveLength(0);
       expect(rendered.queryAllByTestId("failureContainer")).toHaveLength(1);

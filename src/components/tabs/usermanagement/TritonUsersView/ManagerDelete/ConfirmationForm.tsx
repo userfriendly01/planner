@@ -1,7 +1,7 @@
 import {
   ManagerDeleteButtonWrapper,
   TextBox
-} from "./";
+} from "./ManagerDelete.Styles";
 import {
   StyledButton
 } from "components";

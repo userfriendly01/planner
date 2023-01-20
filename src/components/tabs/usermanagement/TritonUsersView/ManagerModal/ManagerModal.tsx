@@ -1,14 +1,16 @@
 import {
   ManagerModalButtonWrapper,
-  defaultNNumber,
-  DropdownOption,
   Header,
   HeaderAndCloseButtonWrapper,
   LeftDiv,
-  ManagerModalProps,
   ModalContainer,
   Wrapper
-} from "./";
+} from "./ManagerModal.Styles";
+import {
+  defaultNNumber,
+  DropdownOption,
+  ManagerModalProps
+} from "./ManagerModal.Interfaces";
 import {
   Dropdown,
   NNumberInput,

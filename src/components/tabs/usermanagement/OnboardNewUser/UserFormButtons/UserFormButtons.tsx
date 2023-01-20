@@ -1,8 +1,10 @@
 import {
   ButtonWrapper,
-  UserFormButton,
+  UserFormButton
+} from "../UserEntryFormWrapper/UserEntryFormWrapper.Styles";
+import {
   UserFormButtonsProps
-} from "../";
+} from "../UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 import {
   useAdminDispatch,
   useAdminState,

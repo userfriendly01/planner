@@ -1,10 +1,10 @@
 import {
   ManagerDeleteButtonWrapper,
-  FlexColumn,
   TextBox,
   PenaltyBox
-} from "./";
+} from "./ManagerDelete.Styles";
 import { StyledButton } from "components";
+import { FlexColumn } from "globals";
 import React from "react";
 
 export interface ErrorFormProps {

@@ -1,8 +1,8 @@
 import {
   ControlItem,
-  ControlsWrapper,
-  ManagementHeaderProps
-} from "./";
+  ControlsWrapper
+} from "./TritonUsersHeader.Styles";
+import { ManagementHeaderProps } from "./TritonUsersHeader.Interfaces";
 import {
   ManagerDropdown,
   ResetSkillsButton,

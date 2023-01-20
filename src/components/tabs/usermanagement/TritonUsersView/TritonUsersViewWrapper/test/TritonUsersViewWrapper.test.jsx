@@ -1,28 +1,21 @@
 import TritonUserManagementWrapper from "../TritonUsersViewWrapper";
 import {
-  ManagementHeader,
+  TritonUsersHeader,
   Pagination,
   TritonUserTable
 } from "components";
-import {
-  initialState,
-  useAdminState
-} from "context";
-import { workersPerPage } from "globals";
+import { useAdminState } from "context";
 import React from "react";
 import {
-  act,
-  expectMockedComponent,
   expectOnlyPassedProps,
   getLastInstanceCalled,
-  getMockedComponentProps,
   initialTestState,
   render,
   setupMockedComponents
 } from "testUtils";
 
 jest.mock("components", () => ({
-  ManagementHeader: jest.fn(),
+  TritonUsersHeader: jest.fn(),
   Pagination: jest.fn(),
   ManagementTable: jest.fn(),
   TritonUserTable: jest.fn(),
@@ -67,7 +60,7 @@ describe("TritonUserManagementWrapper", () => {
 
   beforeEach(() => {
     setupMockedComponents({
-      ManagementHeader,
+      TritonUsersHeader,
       Pagination,
       TritonUserTable
     });
@@ -76,8 +69,8 @@ describe("TritonUserManagementWrapper", () => {
   describe("initial render", () => {
     test("ManagementHeader, TritonUserTable, Pagination are rendered with expected props", () => {
       doRender();
-      expect(ManagementHeader).toHaveBeenCalledTimes(2);
-      expectOnlyPassedProps(ManagementHeader, {
+      expect(TritonUsersHeader).toHaveBeenCalledTimes(2);
+      expectOnlyPassedProps(TritonUsersHeader, {
         tableState: {
           ...defaultTableState,
           pagination: {
@@ -88,7 +81,7 @@ describe("TritonUserManagementWrapper", () => {
           },
           filteredList: initialTestState.workerContext.workers
         }
-      }, getLastInstanceCalled(ManagementHeader));
+      }, getLastInstanceCalled(TritonUsersHeader));
     });
   });
 });

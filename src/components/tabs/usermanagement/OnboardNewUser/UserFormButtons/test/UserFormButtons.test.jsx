@@ -1,4 +1,4 @@
-import UserFormButtons from "../UserEntryForm/UserFormButtons";
+import UserFormButtons from "../UserFormButtons";
 import {
   Modal,
   Tooltip
@@ -62,7 +62,8 @@ jest.mock("components", () => ({
 jest.mock("@mui/material", () => ({
   Tooltip: jest.fn(),
   Tabs: jest.fn(),
-  Modal: jest.fn()
+  Modal: jest.fn(),
+  Divider: jest.fn()
 }));
 
 jest.mock("context", () => ({

@@ -1,10 +1,12 @@
 import {
   DropdownOption,
+  ManagerDropDownProps
+} from "./ManagerDropdown.Interfaces";
+import {
   Label,
   IconWrapper,
-  ManagerDropDownProps,
   Wrapper
-} from "./";
+} from "./ManagerDropdown.Styles";
 import {
   ManagerModal,
   ManagerDelete,
