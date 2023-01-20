@@ -43,7 +43,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
 
           console.log('allAggregateQueues', allAggregateQueues)
 
-          filteredQueues.concat(allAggregateQueues.map(queue => {
+          const test = filteredQueues.concat(allAggregateQueues.map(queue => {
             return {
               name: "",
               timeOfDays: [],
@@ -54,11 +54,11 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
               vhCallTarget: null,
               levels: [],
               ctmSkillDisplayName: queue.aggregate_queues_nme,
-              ctmSkillId: queue.aggregate_queues_id + 1000, //adding 1000 here as a hack around in order to not have duplicate skill ids.
+              ctmSkillId: queue.aggregate_queues_id + 1000, //adding 1000 here as a hack around in order to not have duplicate ctmSkillIds.
               profiles: []
             }
           }));
-          console.log('filteredQueues', filteredQueues);
+          console.log('test', test);
         })
         .catch((error: { msg: any; }) => console.error(error.msg));
     }
