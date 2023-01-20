@@ -39,10 +39,26 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
     if(!aggregateQueues.length) {
       getAggregateQueuesType(aggregateQueuesType)
         .then((allAggregateQueues: AggregateQueue[]) => {
-          console.log('allAggregateQueues', allAggregateQueues);
-          console.log('transferQueues', transferQueues);
           setAggregateQueues(allAggregateQueues);
-          console.log('aggregateQueues', aggregateQueues);
+
+          console.log('allAggregateQueues', allAggregateQueues)
+
+          filteredQueues.concat(allAggregateQueues.map(queue => {
+            return {
+              name: "",
+              timeOfDays: [],
+              flashMessage: null,
+              closedMessage: null,
+              vhThreshold: 0,
+              vhCallerId: null,
+              vhCallTarget: null,
+              levels: [],
+              ctmSkillDisplayName: queue.aggregate_queues_nme,
+              ctmSkillId: queue.aggregate_queues_id + 1000, //adding 1000 here as a hack around in order to not have duplicate skill ids.
+              profiles: []
+            }
+          }));
+          console.log('filteredQueues', filteredQueues);
         })
         .catch((error: { msg: any; }) => console.error(error.msg));
     }

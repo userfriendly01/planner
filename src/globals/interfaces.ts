@@ -95,7 +95,6 @@ export interface Skill {
   [key: string]: any
   ctmSkillId: number,
   ctmSkillDisplayName: string,
-  isAggregateSkill: boolean,
   name: string,
   profiles: any[],
   closedMessage: string,
