@@ -13,7 +13,7 @@ export const FlexRow = styled.div`
   flex: 1 1 auto;
 `;
 
-export const ButtonWrapper = styled(FlexRow)`
+export const ResetSkillsButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
   padding: 1%;
 `;

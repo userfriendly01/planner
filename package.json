@@ -23,7 +23,6 @@
     "@babel/preset-env": "^7.4.4",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.10.4",
-    "@lmig/phone-number-utils": "^1.0.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^10.4.8",
     "@testing-library/user-event": "^13.2.1",
@@ -54,7 +53,7 @@
     "lodash": "^4.17.15",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-text-mask": "5.4.3",
+    "react-text-mask": "5.5.0",
     "styled-components": "^5.3.6",
     "typescript": "^4.0.2",
     "webpack": "^4.31.0",
@@ -71,14 +70,16 @@
     "@mui/material": "^5.8.1",
     "@progress/kendo-licensing": "^1.2.2",
     "@progress/kendo-react-excel-export": "^5.5.0",
+    "@types/google-libphonenumber": "^7.4.23",
     "css-loader": "^2.1.1",
     "express": "^4.16.4",
     "express-healthcheck": "^0.1.0",
+    "google-libphonenumber": "^3.2.31",
     "style-loader": "^0.23.1",
     "ts-loader": "^8.0.3",
     "url-loader": "^4.1.1"
   },
   "engines": {
-    "node": "^14.20.0"
+    "node": "^16.17.1"
   }
 }

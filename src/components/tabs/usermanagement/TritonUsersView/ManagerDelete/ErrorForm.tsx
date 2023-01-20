@@ -1,5 +1,5 @@
 import {
-  ButtonWrapper,
+  ManagerDeleteButtonWrapper,
   FlexColumn,
   TextBox,
   PenaltyBox
@@ -28,11 +28,11 @@ const ErrorForm = (props:ErrorFormProps) : any => {
           {TeamMembers}
         </PenaltyBox>
       </FlexColumn>
-      <ButtonWrapper>
+      <ManagerDeleteButtonWrapper>
         <StyledButton onClick={HandleClose} data-testid={"delete-manager-button"}>
           Close
         </StyledButton>
-      </ButtonWrapper>
+      </ManagerDeleteButtonWrapper>
     </div>
   );
 };

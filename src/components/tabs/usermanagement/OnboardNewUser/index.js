@@ -6,5 +6,4 @@ export * from "./UserEntryFormWrapper";
 export * from "./DeleteTritonUser";
 export * from "./DidFormInfo";
 export * from "./Skills";
-export * from "./UserEntryFormWrapper";
 export * from "./Extension";

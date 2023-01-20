@@ -1,5 +1,5 @@
 import {
-  ButtonWrapper,
+  ResetSkillsButtonWrapper,
   FlexRowMax,
   Header,
   ModalContainer,
@@ -32,9 +32,9 @@ const ResultsModal = (props: ResultsModalProps) => {
           <ResultsContainer backgroundColor={theme.resultsModal.fadedError} borderColor={theme.errorColor} data-testid="failureContainer">
             {error}
           </ResultsContainer>
-          <ButtonWrapper>
+          <ResetSkillsButtonWrapper>
             <StyledButton onClick={handleClose}>OK</StyledButton>
-          </ButtonWrapper>
+          </ResetSkillsButtonWrapper>
         </PaperContainer>
       </ModalContainer>
     );
@@ -76,9 +76,9 @@ const ResultsModal = (props: ResultsModalProps) => {
             <ResultsContainer backgroundColor={theme.resultsModal.fadedError} borderColor={theme.errorColor} data-testid="failureContainer">{failOnWorkers}</ResultsContainer> :
             null
         }
-        <ButtonWrapper>
+        <ResetSkillsButtonWrapper>
           <StyledButton onClick={handleClose}>OK</StyledButton>
-        </ButtonWrapper>
+        </ResetSkillsButtonWrapper>
       </PaperContainer>
     </ModalContainer>
   );

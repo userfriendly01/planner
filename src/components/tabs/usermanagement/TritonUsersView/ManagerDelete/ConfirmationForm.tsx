@@ -1,5 +1,5 @@
 import {
-  ButtonWrapper,
+  ManagerDeleteButtonWrapper,
   TextBox
 } from "./";
 import {
@@ -28,7 +28,7 @@ const ConfirmationForm = (props:ConfirmationFormProps) : any => {
           Are you sure you want to delete this manager?
         </TextBox>
       </FlexColumn>
-      <ButtonWrapper>
+      <ManagerDeleteButtonWrapper>
         <StyledButton
           disabled={!SelectedManager}
           onClick={DeleteManagerClicked}
@@ -36,7 +36,7 @@ const ConfirmationForm = (props:ConfirmationFormProps) : any => {
         >
           Delete
         </StyledButton>
-      </ButtonWrapper>
+      </ManagerDeleteButtonWrapper>
     </div>
   );
 };

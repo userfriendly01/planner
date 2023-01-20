@@ -16,7 +16,7 @@ export const PenaltyBox = styled.div`
   font-weight: bold;
 `;
 
-export const ButtonWrapper = styled(FlexRow)`
+export const ManagerDeleteButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
   padding: 1%;
 `;

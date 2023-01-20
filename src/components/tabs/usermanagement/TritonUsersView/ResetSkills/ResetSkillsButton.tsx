@@ -97,7 +97,7 @@ const ResetSkillsButton = () => {
     }}>
       <Modal open={resultsModalOpts.open}>
         <>
-          <ResultsModal
+          <ResetSkillsResultModal
             error={resultsModalOpts.error}
             handleClose={() => setResultsModalOpts(defaultResetInformation)}
             successfulWorkers={resultsModalOpts.successfulResets}

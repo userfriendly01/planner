@@ -1,5 +1,5 @@
 import {
-  ButtonWrapper,
+  ManagerModalButtonWrapper,
   defaultNNumber,
   DropdownOption,
   Header,
@@ -36,7 +36,7 @@ import { sortProfilesByName } from "utils";
 import { Modal } from "@mui/material";
 import { CloseRounded } from "@mui/icons-material";
 
-const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any) => {
+const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any => {
   const {
     handleClose,
     selectedManager
@@ -176,97 +176,95 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any) => {
   }
 
   return (
-    <div ref={ref}>
-      <ModalContainer>
-        <PaperContainer>
-          {saveStatus ?
-            <ModalOverlay
-              message={overlayMessage}
-              status={saveStatus}
-            /> : null}
-          <HeaderAndCloseButtonWrapper>
-            <LeftDiv></LeftDiv>
-            { selectedManager ?
-              <Header>Edit {manager.manager_first_name} {manager.manager_last_name}</Header>
-              : <Header>Add a Manager</Header>
-            }
-            <CloseRounded data-testid={"close-button"} onClick={handleClose}/>
-          </HeaderAndCloseButtonWrapper>
-          <FlexColumn>
-            <ModalNNumber
-              disabled={saveStatus || selectedManager ? true : false}
-              fetchedUser={fetchedUser}
-              label="N Number"
-              onComplete={(fetchedUser, nNumber) => {
-                setNNumber(nNumber);
-                setManager({
-                  manager_n_number: nNumber.toLowerCase(),
-                  manager_first_name: fetchedUser.firstName,
-                  manager_last_name: fetchedUser.lastName
-                });
-                setFetchedUser(fetchedUser);
-              }}
-              onClear={() => {
-                setNNumber(defaultNNumber);
-                setManager(null);
-              }}
-              onUpdate={nNumber => {
-                setNNumber(nNumber);
-              }}
-              value={nNumber}
-            />
+    <ModalContainer ref={ref}>
+      <PaperContainer>
+        {saveStatus ?
+          <ModalOverlay
+            message={overlayMessage}
+            status={saveStatus}
+          /> : null}
+        <HeaderAndCloseButtonWrapper>
+          <LeftDiv></LeftDiv>
+          { selectedManager ?
+            <Header>Edit {manager.manager_first_name} {manager.manager_last_name}</Header>
+            : <Header>Add a Manager</Header>
+          }
+          <CloseRounded data-testid={"close-button"} onClick={handleClose}/>
+        </HeaderAndCloseButtonWrapper>
+        <FlexColumn>
+          <NNumberInput
+            disabled={saveStatus || selectedManager ? true : false}
+            fetchedUser={fetchedUser}
+            label="N Number"
+            onComplete={(fetchedUser, nNumber) => {
+              setNNumber(nNumber);
+              setManager({
+                manager_n_number: nNumber.toLowerCase(),
+                manager_first_name: fetchedUser.firstName,
+                manager_last_name: fetchedUser.lastName
+              });
+              setFetchedUser(fetchedUser);
+            }}
+            onClear={() => {
+              setNNumber(defaultNNumber);
+              setManager(null);
+            }}
+            onUpdate={nNumber => {
+              setNNumber(nNumber);
+            }}
+            value={nNumber}
+          />
+          <Dropdown
+            label={"Team *"}
+            styles={{
+              width: "400px",
+              margin: "10px 0px"
+            }}
+            options={state.profileContext.profiles.sort(sortProfilesByName).map((profile: any) => ({
+              label: profile.profile_nme,
+              value: profile.profile_id,
+              ...profile
+            }))}
+            value={profile && profile.profile_nme ? profile.profile_nme : ""}
+            updateValue={(event: any, newValue: any) => setProfile(newValue)}
+          />
+          <Wrapper>
             <Dropdown
-              label={"Team *"}
+              multiple={true}
+              label={"Calabrio Team Options *"}
               styles={{
                 width: "400px",
                 margin: "10px 0px"
               }}
-              options={state.profileContext.profiles.sort(sortProfilesByName).map((profile: any) => ({
-                label: profile.profile_nme,
-                value: profile.profile_id,
-                ...profile
-              }))}
-              value={profile && profile.profile_nme ? profile.profile_nme : ""}
-              updateValue={(event: any, newValue: any) => setProfile(newValue)}
+              options={options}
+              value={selectedCalabrioTeams.map((teamId:any) => getCalabrioOption(teamId))}
+              updateValue={(event: any, newInputValue: any) => {
+                if(newInputValue.some((t: any) => t.value === "add-team")){
+                  handleOpenTeam();
+                } else {
+                  setSelectedCalabrioTeams(newInputValue.map((team:any) => team.value));
+                }
+              }}
             />
-            <Wrapper>
-              <Dropdown
-                multiple={true}
-                label={"Calabrio Team Options *"}
-                styles={{
-                  width: "400px",
-                  margin: "10px 0px"
-                }}
-                options={options}
-                value={selectedCalabrioTeams.map((teamId:any) => getCalabrioOption(teamId))}
-                updateValue={(event: any, newInputValue: any) => {
-                  if(newInputValue.some((t: any) => t.value === "add-team")){
-                    handleOpenTeam();
-                  } else {
-                    setSelectedCalabrioTeams(newInputValue.map((team:any) => team.value));
-                  }
-                }}
-              />
-              <Modal onClose={() => { return; }} open={isTeamModalOpen}>
-                <>
-                  <CalabrioTeamModal handleClose={handleCloseTeam}/>
-                </>
-              </Modal>
-            </Wrapper>
-          </FlexColumn>
-          <ButtonWrapper>
-            { selectedManager ?
-              <StyledButton disabled={!manager || !profile || selectedCalabrioTeams.length === 0} onClick={editManagerClicked} data-testid={"edit-manager-button"}>
+            <Modal onClose={() => { return; }} open={isTeamModalOpen}>
+              <>
+                <CalabrioTeamModal handleClose={handleCloseTeam}/>
+              </>
+            </Modal>
+          </Wrapper>
+        </FlexColumn>
+        <ManagerModalButtonWrapper>
+          { selectedManager ?
+            <StyledButton disabled={!manager || !profile || selectedCalabrioTeams.length === 0} onClick={editManagerClicked} data-testid={"edit-manager-button"}>
                 Save
-              </StyledButton>
-              : <StyledButton disabled={!manager || !profile || selectedCalabrioTeams.length === 0} onClick={addManagerClicked} data-testid={"add-manager-button"}>
+            </StyledButton>
+            : <StyledButton disabled={!manager || !profile || selectedCalabrioTeams.length === 0} onClick={addManagerClicked} data-testid={"add-manager-button"}>
                 Add Manager
-              </StyledButton>
-            }
-          </ButtonWrapper>
-        </PaperContainer>
-      </ModalContainer>
-    </div>
+            </StyledButton>
+          }
+        </ManagerModalButtonWrapper>
+      </PaperContainer>
+    </ModalContainer>
   );
 });
 

@@ -11,7 +11,7 @@ export const Wrapper = styled.div`
   position: relative;
 `;
 
-export const ButtonWrapper = styled(FlexRow)`
+export const ManagerModalButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
   padding: 1%;
 `;
