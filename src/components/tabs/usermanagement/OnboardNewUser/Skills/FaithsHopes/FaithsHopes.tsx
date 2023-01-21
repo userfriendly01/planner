@@ -2,7 +2,7 @@ import { SkillDropdownProps } from "./";
 import { Dropdown } from "components";
 import React from "react";
 
-const SkillDropdown = (props: SkillDropdownProps) => {
+const FaithsHopes = (props: SkillDropdownProps) => {
   const {
     skills,
     updateSkill,
@@ -33,4 +33,4 @@ const SkillDropdown = (props: SkillDropdownProps) => {
   );
 };
 
-export default SkillDropdown;
+export default FaithsHopes;

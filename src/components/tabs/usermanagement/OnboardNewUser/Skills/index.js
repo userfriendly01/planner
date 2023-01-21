@@ -1,4 +1,4 @@
 export * from "./DefaultSkillSelector";
-export * from "./SkillDropDown";
-export { default as PriorityDropDownButts } from "./PriorityDropdownButts/PriorityDropdownButts";
+export * from "./FaithsHopes";
+export { default as FaithsSanity } from "./FaithsSanity/FaithsSanity";
 export { default as SkillsFormInfo } from "./SkillsFormInfo/SkillsFormInfo";

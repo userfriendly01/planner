@@ -13,8 +13,8 @@ import {
   NewTwilioWorkerSkill
 } from "./DefaultSkillSelector.Interfaces";
 import {
-  PriorityDropDownButts,
-  SkillDropdown
+  FaithsSanity,
+  FaithsHopes
 } from "components";
 import { useAdminState } from "context";
 import { Skill } from "globals";
@@ -98,14 +98,14 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
       <SkillHeaderText>Default Skill Profile (Optional)</SkillHeaderText>
       <SkillRow>
         <SkillRowItem>
-          <SkillDropdown
+          <FaithsHopes
             skills={skillsForDropDown}
             skill={newSkill.skill}
             updateSkill={newSkillChanged} />
         </SkillRowItem>
         <SkillRowItem>
           {skillHasPriorities ?
-            <PriorityDropDownButts
+            <FaithsSanity
               availablePriorities={newSkill.levels}
               priorityValue={newSkill.levelSelected}
               updatePriority={newSkillLevelChanged}
@@ -129,7 +129,7 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
               <SkillRowItem>{skill}</SkillRowItem>
               <SkillRowItem>
                 {defaultSkills.levels[skill] ?
-                  <PriorityDropDownButts
+                  <FaithsSanity
                     availablePriorities={taskrouterSkill.levels}
                     priorityValue={defaultSkills.levels[skill]}
                     updatePriority={existingSkillLevelChanged(skill)}
