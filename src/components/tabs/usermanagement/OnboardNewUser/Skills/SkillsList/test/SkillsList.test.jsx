@@ -1,4 +1,4 @@
-import FaithsHopes from "../FaithsHopes";
+import SkillsList from "../SkillsList";
 import { Dropdown } from "components";
 import React from "react";
 import { act } from "react-dom/test-utils";
@@ -14,7 +14,7 @@ jest.mock("components", () => ({
   Dropdown: jest.fn()
 }));
 
-describe("<FaithsHopes />", () => {
+describe("<SkillsList />", () => {
   const skills = [
     { name: "skill3" },
     { name: "skill2" },
@@ -42,7 +42,7 @@ describe("<FaithsHopes />", () => {
   ];
 
   const mockUpdateSkill = jest.fn();
-  const renderComponent = () => render(<FaithsHopes skills={skills} skillValue={"skill3"} updateSkill={mockUpdateSkill} />);
+  const renderComponent = () => render(<SkillsList skills={skills} skillValue={"skill3"} updateSkill={mockUpdateSkill} />);
   beforeEach(() => {
     setupMockedComponents({ Dropdown });
     mockUpdateSkill.mockClear();

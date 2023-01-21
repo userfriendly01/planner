@@ -1,4 +1,4 @@
-import FaithsSanity from "../FaithsSanity";
+import SkillLevels from "../SkillLevels";
 import { Dropdown } from "components";
 import React from "react";
 import {
@@ -14,11 +14,11 @@ jest.mock("components", () => ({
   Dropdown: jest.fn()
 }));
 
-describe("<FaithsSanity />", () => {
+describe("<SkillLevels />", () => {
   const priorities = [1, 2, 3];
   const mockUpdatePriority = jest.fn();
   const renderComponent = () => {
-    return render(<FaithsSanity
+    return render(<SkillLevels
       availablePriorities={priorities}
       priorityValue={1}
       updatePriority={mockUpdatePriority}

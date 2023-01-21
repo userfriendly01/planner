@@ -1,4 +1,4 @@
 export * from "./DefaultSkillSelector";
-export * from "./FaithsHopes";
-export { default as FaithsSanity } from "./FaithsSanity/FaithsSanity";
+export { default as SkillsList } from "./SkillsList/SkillsList";
+export { default as SkillLevels } from "./SkillLevels/SkillLevels";
 export { default as SkillsFormInfo } from "./SkillsFormInfo/SkillsFormInfo";

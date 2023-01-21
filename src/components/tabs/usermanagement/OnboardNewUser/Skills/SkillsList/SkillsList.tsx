@@ -1,8 +1,8 @@
-import { SkillDropdownProps } from "./";
+import { SkillDropdownProps } from "./SkillsList.Interfaces";
 import { Dropdown } from "components";
 import React from "react";
 
-const FaithsHopes = (props: SkillDropdownProps) => {
+const SkillsList = (props: SkillDropdownProps) => {
   const {
     skills,
     updateSkill,
@@ -33,4 +33,4 @@ const FaithsHopes = (props: SkillDropdownProps) => {
   );
 };
 
-export default FaithsHopes;
+export default SkillsList;

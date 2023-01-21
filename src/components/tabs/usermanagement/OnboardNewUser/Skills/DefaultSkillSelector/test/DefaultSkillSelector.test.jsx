@@ -4,8 +4,8 @@ import {
   Delete
 } from "@mui/icons-material";
 import {
-  FaithsSanity,
-  FaithsHopes
+  SkillLevels,
+  SkillsList
 } from "components";
 import { useAdminState } from "context";
 import React from "react";
@@ -30,8 +30,8 @@ jest.mock("@mui/icons-material", () => ({
 
 jest.mock("components", () => ({
   __esModule: true,
-  FaithsSanity: jest.fn(),
-  FaithsHopes: jest.fn()
+  SkillLevels: jest.fn(),
+  SkillsList: jest.fn()
 }));
 
 jest.mock("context", () => ({
@@ -78,24 +78,24 @@ describe("<DefaultSkillSelector />", () => {
     setupMockedComponents({
       Add,
       Delete,
-      FaithsSanity,
-      FaithsHopes
+      SkillLevels,
+      SkillsList
     });
     mockSetDefaultSkills.mockClear();
   });
 
   describe("initial state", () => {
     describe("worker has no default skills", () => {
-      test("should render header and correct components with correct props; should not render FaithsSanity", () => {
+      test("should render header and correct components with correct props; should not render SkillLevels", () => {
         const defaultSkills = {
           skills: [],
           levels: {}
         };
         const rendered = renderComponent(defaultSkills);
-        expectMockedComponent(rendered, { FaithsHopes });
+        expectMockedComponent(rendered, { SkillsList });
         expectMockedComponent(rendered, { Add });
-        expectMockedComponent(rendered, { FaithsSanity }, 0);
-        expectOnlyPassedProps(FaithsHopes, {
+        expectMockedComponent(rendered, { SkillLevels }, 0);
+        expectOnlyPassedProps(SkillsList, {
           skills: initialTestState.skillContext.skills
         });
       });
@@ -107,14 +107,14 @@ describe("<DefaultSkillSelector />", () => {
       };
       test("should render the skill drop down, the priority drop down (with current priority displayed), and remove icon", () => {
         const rendered = renderComponent(defaultSkills);
-        expectMockedComponent(rendered, { FaithsHopes });
+        expectMockedComponent(rendered, { SkillsList });
         expectMockedComponent(rendered, { Add });
         expect(rendered.container).toHaveTextContent("skillB");
         expect(rendered.container).not.toHaveTextContent("skillA");
         expect(rendered.container).not.toHaveTextContent("skillC");
         expect(rendered.container).not.toHaveTextContent("skillD");
-        expectMockedComponent(rendered, { FaithsSanity });
-        expectOnlyPassedProps(FaithsSanity, {
+        expectMockedComponent(rendered, { SkillLevels });
+        expectOnlyPassedProps(SkillLevels, {
           availablePriorities: [ 1, 2, 3, 4 ]
         });
         expectMockedComponent(rendered, { Delete });
@@ -127,13 +127,13 @@ describe("<DefaultSkillSelector />", () => {
       };
       test("should render the skill and remove icon but not the priority drop down", () => {
         const rendered = renderComponent(defaultSkills);
-        expectMockedComponent(rendered, { FaithsHopes });
+        expectMockedComponent(rendered, { SkillsList });
         expectMockedComponent(rendered, { Add });
         expect(rendered.container).toHaveTextContent("skillA");
         expect(rendered.container).not.toHaveTextContent("skillB");
         expect(rendered.container).not.toHaveTextContent("skillC");
         expect(rendered.container).not.toHaveTextContent("skillD");
-        expectMockedComponent(rendered, { FaithsSanity }, 0);
+        expectMockedComponent(rendered, { SkillLevels }, 0);
         expectMockedComponent(rendered, { Delete });
       });
     });
@@ -151,20 +151,20 @@ describe("<DefaultSkillSelector />", () => {
         const rendered = renderComponent(defaultSkills);
         expect(rendered.container).not.toHaveTextContent("skillC");
         act(() => {
-          const { updateSkill } = getMockedComponentProps(FaithsHopes);
+          const { updateSkill } = getMockedComponentProps(SkillsList);
           updateSkill({ value: "skillC" } );
         });
         act(() => {
           fireEvent.click(getAddSkillButton(rendered));
         });
         expect(mockSetDefaultSkills).toHaveBeenCalledTimes(0);
-        expectMockedComponent(rendered, { FaithsSanity });
-        expectOnlyPassedProps(FaithsSanity, {
+        expectMockedComponent(rendered, { SkillLevels });
+        expectOnlyPassedProps(SkillLevels, {
           availablePriorities: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
         });
         expectMockedComponent(rendered, { Add });
         act(() => {
-          const { updatePriority } = getMockedComponentProps(FaithsSanity);
+          const { updatePriority } = getMockedComponentProps(SkillLevels);
           updatePriority(6);
         });
         act(() => {
@@ -172,7 +172,7 @@ describe("<DefaultSkillSelector />", () => {
         });
         expect(rendered.container).toHaveTextContent("skillA");
         expect(rendered.container).toHaveTextContent("skillC");
-        expectOnlyPassedProps(FaithsSanity, {
+        expectOnlyPassedProps(SkillLevels, {
           availablePriorities: [ 0, 1, 2, 3, 4, 5, 6, 7 ],
           priorityValue: 6
         });
@@ -193,7 +193,7 @@ describe("<DefaultSkillSelector />", () => {
         };
         const rendered = renderComponent(defaultSkills);
         act(() => {
-          const updateSkill = FaithsHopes.mock.calls[0][0].updateSkill;
+          const updateSkill = SkillsList.mock.calls[0][0].updateSkill;
           updateSkill({ value: "skillD" });
         });
         act(() => {
@@ -201,7 +201,7 @@ describe("<DefaultSkillSelector />", () => {
         });
         expect(rendered.container).toHaveTextContent("skillA");
         expect(rendered.container).toHaveTextContent("skillD");
-        expectMockedComponent(rendered, { FaithsSanity }, 0);
+        expectMockedComponent(rendered, { SkillLevels }, 0);
         expectMockedComponent(rendered, { Delete }, 2);
         expect(mockSetDefaultSkills).toHaveBeenCalledWith({
           skills: [ "skillA", "skillD" ],
@@ -237,7 +237,7 @@ describe("<DefaultSkillSelector />", () => {
       };
       renderComponent(defaultSkills);
       act(() => {
-        const updatePriority = FaithsSanity.mock.calls[0][0].updatePriority;
+        const updatePriority = SkillLevels.mock.calls[0][0].updatePriority;
         updatePriority(2);
       });
       expect(mockSetDefaultSkills).toHaveBeenCalledWith({

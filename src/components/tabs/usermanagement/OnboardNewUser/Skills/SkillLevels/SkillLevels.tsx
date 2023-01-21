@@ -1,8 +1,8 @@
-import { PriorityDropdownProps } from "./FaithsSanity.Interfaces";
+import { PriorityDropdownProps } from "./SkillLevels.Interfaces";
 import { Dropdown } from "components";
 import React from "react";
 
-const FaithsSanity = (props: PriorityDropdownProps) => {
+const SkillLevels = (props: PriorityDropdownProps) => {
   const {
     availablePriorities,
     priorityValue,
@@ -29,4 +29,4 @@ const FaithsSanity = (props: PriorityDropdownProps) => {
   );
 };
 
-export default FaithsSanity;
+export default SkillLevels;
