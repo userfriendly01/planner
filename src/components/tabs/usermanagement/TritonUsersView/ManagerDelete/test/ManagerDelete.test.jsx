@@ -55,11 +55,18 @@ jest.mock("components", () => ({
 
 const mockDispatch = jest.fn();
 const mockHandleClose = jest.fn();
-const renderComponent = selectedManager => render(
-  <ManagerDelete handleClose={mockHandleClose}
-    selectedManager={selectedManager}
-  />
-);
+const renderComponent = selectedManager => {
+  let rendered;
+  rendered = render(
+    <ManagerDelete handleClose={mockHandleClose}
+      selectedManager={selectedManager}
+    />
+  );
+  if(selectedManager){
+    rendered = render(PaperContainer.mock.calls[0][0].children);
+  }
+  return rendered;
+};
 
 const defaultAdminState = {
   profileContext: {
@@ -109,14 +116,13 @@ describe("<ManagerDelete />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     setupMockedComponents({
+      CloseRounded,
       ConfirmationForm,
       ErrorForm,
       ModalOverlay,
       PaperContainer,
       StyledButton
     });
-    PaperContainer.mockClear();
-    PaperContainer.mockImplementation(props => <div>{props.children}</div>);
     mockHandleClose.mockClear();
     useAdminDispatch.mockReturnValue(mockDispatch);
     useAdminState.mockReturnValue(defaultAdminState);
@@ -126,61 +132,87 @@ describe("<ManagerDelete />", () => {
     return { manager_n_number: manager };
   };
 
-  describe("initial state of the confirmation modal", () => {
-    test("should render StyledButton and CloseRounded once each, but not ModalOverlay", () => {
-      const rendered = renderComponent(managerObject("n0263786"));
-    });
-  });
-  describe("should render with empty data sets", () => {
-    test("should render empty divs when there's no manager", () => {
-      renderComponent(null);
-    });
-    test("should render with no workers", () => {
-      useAdminState.mockReturnValue({
-        ...defaultAdminState,
-        workerContext: {
-          workers: []
-        }
+  describe("initial state of ManagerDelete", () => {
+    describe("No manager is passed through", () => {
+      test("should render Confirmation Form", () => {
+        renderComponent(null);
+        expect(PaperContainer.mock.calls.length).toBe(0);
       });
-      renderComponent(managerObject("n0262226"));
     });
-  });
-  describe("manager does not have any workers on their team", () => {
-    test("confirmation dialog is displayed", () => {
-    });
-    describe("'Delete Manager' button is clicked", () => {
-      describe("call to delete the manager succeeds", () => {
-        beforeEach(() => {
-          deleteManager.mockResolvedValue({ good: "to go" });
+    describe("No workers are assigned to the manager", () => {
+      test.only("should render Confirmation Form", () => {
+        const rendered = renderComponent(managerObject("n0263786"));
+        expect(rendered.container).toHaveTextContent("Delete Manager");
+        expect(ConfirmationForm.mock.calls.length).toBe(1);
+        expect(CloseRounded.mock.calls.length).toBe(1);
+        expect(ErrorForm.mock.calls.length).toBe(0);
+        expect(ModalOverlay.mock.calls.length).toBe(0);
+        expectOnlyPassedProps(CloseRounded, {
+          onClick: mockHandleClose
         });
-        test("modalOverlay should render with 'Manager deleted successfully' & modal should close after 2 seconds (handleClose should be called)", async () => {
-          // const rendered = renderComponent(managerObject("n0263786"));
-          // act(() => jest.runAllTimers());
-          // await waitFor(() => {
-          //   expectMockedComponent(rendered, { ModalOverlay });
-          //   expectOnlyPassedProps(ModalOverlay, {
-          //     status: "success",
-          //     message: "Manager deleted successfully"
-          //   });
-          //   expect(mockHandleClose).toHaveBeenCalledTimes(1);
-          // });
+        expectOnlyPassedProps(ConfirmationForm, {
+          SelectedManager: {
+            manager_n_number: "n0263786"
+          }
         });
       });
-      describe("call to delete the manager fails", () => {
-        const errorResp = { nope: "2 minutes for elbowing!" };
-        beforeEach(() => deleteManager.mockRejectedValue(errorResp));
-        test("modalOverlay should render with 'Failed to delete Manager' & modal should close after 2 seconds (handleClose should be called)", async () => {
-          // const rendered = renderComponent(managerObject("n0263786"));
-          // act(() => jest.runAllTimers());
-          // await waitFor(() => {
-          //   expectOnlyPassedProps(ModalOverlay, {
-          //     status: "fail",
-          //     message: "Failed to delete Manager"
-          //   });
-          //   expect(mockHandleClose).toHaveBeenCalledTimes(0);
-          //   expectMockedComponent(rendered, { ModalOverlay }, 0);
-          // });
+    });
+    describe("Workers are assigned to the manager", () => {
+      test("should render Error Form", () => {
+        const rendered = renderComponent(managerObject("n0262226"));
+        expect(rendered.container).toHaveTextContent("Delete Manager");
+        expect(ConfirmationForm.mock.calls.length).toBe(0);
+        expect(ErrorForm.mock.calls.length).toBe(1);
+        expectOnlyPassedProps(ErrorForm, {
+          TeamMembers: "Warren Spencer, Calista Flockhart",
+          HandleClose: mockHandleClose
         });
+      });
+    });
+
+  });
+
+  describe("'Delete Manager' button is clicked", () => {
+    describe("call to delete the manager succeeds", () => {
+      beforeEach(() => {
+        deleteManager.mockResolvedValue({ good: "to go" });
+      });
+      test("modalOverlay should render with 'Manager deleted successfully' & modal should close after 2 seconds (handleClose should be called)", async () => {
+        renderComponent(managerObject("n0263786"));
+        const handleDeleteManager = ConfirmationForm.mock.calls[0][0].DeleteManagerClicked;
+        act(() => handleDeleteManager());
+        await waitFor(() => {
+          expect(mockDispatch).toHaveBeenCalledTimes(1);
+          expect(mockDispatch).toHaveBeenCalledWith({
+            type: "editManager",
+            payload: [ defaultAdminState.managerContext.managers[0] ]
+          });
+        });
+        act(() => jest.runAllTimers());
+        await waitFor(() => {
+          expect(ModalOverlay.mock.calls.length).toBe(1);
+          expectOnlyPassedProps(ModalOverlay, {
+            status: "success",
+            message: "Manager deleted successfully"
+          });
+          expect(mockHandleClose).toHaveBeenCalledTimes(1);
+        });
+      });
+    });
+    describe("call to delete the manager fails", () => {
+      const errorResp = { nope: "2 minutes for elbowing!" };
+      beforeEach(() => deleteManager.mockRejectedValue(errorResp));
+      test("modalOverlay should render with 'Failed to delete Manager' & modal should close after 2 seconds (handleClose should be called)", async () => {
+        // const rendered = renderComponent(managerObject("n0263786"));
+        // act(() => jest.runAllTimers());
+        // await waitFor(() => {
+        //   expectOnlyPassedProps(ModalOverlay, {
+        //     status: "fail",
+        //     message: "Failed to delete Manager"
+        //   });
+        //   expect(mockHandleClose).toHaveBeenCalledTimes(0);
+        //   expectMockedComponent(rendered, { ModalOverlay }, 0);
+        // });
       });
     });
   });

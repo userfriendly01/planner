@@ -96,7 +96,7 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
           <HeaderAndCloseButtonWrapper>
             <LeftDiv></LeftDiv>
             <Header>Delete Manager {selectedManager.manager_first_name} {selectedManager.manager_last_name}</Header>
-            <CloseRounded data-testid={"close-button"} onClick={handleClose}/>
+            <CloseRounded onClick={handleClose}/>
           </HeaderAndCloseButtonWrapper>
           { teamMembers.length ?
             <ErrorForm TeamMembers={teamMembers} HandleClose={handleClose}/>
