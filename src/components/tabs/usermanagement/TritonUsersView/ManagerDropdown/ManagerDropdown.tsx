@@ -93,10 +93,10 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
             <Label>
               {option.label}
             </Label>
-            <IconWrapper onClick={() => handleEditManager(option)} data-testid="edit-button">
+            <IconWrapper onClick={() => handleEditManager(option)}>
               <Edit fontSize={"inherit"}/>
             </IconWrapper>
-            <IconWrapper onClick={() => handleOpenDeleteManager(option)} data-testid="delete-button">
+            <IconWrapper onClick={() => handleOpenDeleteManager(option)}>
               <Delete fontSize={"inherit"}/>
             </IconWrapper>
           </Wrapper>

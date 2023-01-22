@@ -1,18 +1,20 @@
 import ManagerDropdown from "../ManagerDropdown";
 import {
   Dropdown,
+  ManagerDelete,
   ManagerModal
 } from "components";
+import { IconWrapper } from "../ManagerDropdown.Styles";
 import { useAdminState } from "context";
 import { Modal } from "@mui/material";
 import React from "react";
 import { sortManagersByName } from "utils";
 import {
   act,
-  fireEvent,
   render,
   setupMockedComponents,
-  initialTestState as initialState
+  initialTestState as initialState,
+  waitFor
 } from "testUtils";
 import { theme } from "globals";
 import { ThemeProvider } from "styled-components";
@@ -25,6 +27,12 @@ jest.mock("components", () => ({
 
 jest.mock("context", () => ({
   useAdminState: jest.fn()
+}));
+
+jest.mock("../ManagerDropdown.Styles", () => ({
+  Label: jest.requireActual("../ManagerDropdown.Styles").Label,
+  IconWrapper: jest.fn(),
+  Wrapper: jest.requireActual("../ManagerDropdown.Styles").Wrapper
 }));
 
 jest.mock("@mui/material", () => ({
@@ -80,6 +88,8 @@ describe("<ManagerDropdown />", () => {
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       Dropdown,
+      IconWrapper,
+      ManagerDelete,
       ManagerModal,
       Modal
     });
@@ -123,52 +133,53 @@ describe("<ManagerDropdown />", () => {
     });
     expect(setFilter).toHaveBeenCalledWith(selection.value);
   });
-
-  test("When filterBy is add-manager, the Add Manager Modal is set to open", () => {
-    const selection = {
-      label: "Add Manager",
-      value: "add-manager"
-    };
-    renderComponent();
-    act(() => {
-      Dropdown.mock.calls[0][0].updateValue(null, selection);
+  describe("Add Manger Modal", () => {
+    test("When filterBy is add-manager, the Add Manager Modal is set to open", () => {
+      const selection = {
+        label: "Add Manager",
+        value: "add-manager"
+      };
+      renderComponent();
+      act(() => {
+        Dropdown.mock.calls[0][0].updateValue(null, selection);
+      });
+      expect(Modal.mock.calls[2][0].open).toBe(true);
     });
-    expect(Modal.mock.calls[2][0].open).toBe(true);
-  });
-
-  test("When the Modal is closed, the handle close function is called", () => {
-    const selection = {
-      label: "Add Manager",
-      value: "add-manager"
-    };
-    renderComponent();
-    act(() => {
-      Dropdown.mock.calls[0][0].updateValue(null, selection);
+    test("When the Modal is closed, the handle close function is called", () => {
+      const selection = {
+        label: "Add Manager",
+        value: "add-manager"
+      };
+      renderComponent();
+      act(() => {
+        Dropdown.mock.calls[0][0].updateValue(null, selection);
+      });
+      render(
+        <ThemeProvider theme={theme}>
+          { Modal.mock.calls[2][0].children }
+        </ThemeProvider>
+      );
+      act(() => {
+        Modal.mock.calls[2][0].onClose();
+        Modal.mock.calls[3][0].onClose();
+        ManagerModal.mock.calls[0][0].handleClose();
+      });
+      expect(setFilter.mock.calls[0][0]).toBe("show-all");
+      expect(Modal.mock.calls[1][0].open).toBe(false);
     });
-    //Faith
-    // expect(setFilter).toHaveBeenCalledWith(selection.value);
-    // render(
-    //   <ThemeProvider theme={theme}>
-    //     { Modal.mock.calls[2][0].children }
-    //   </ThemeProvider>
-    // );
-    // act(() => {
-    //   ManagerModal.mock.calls[0][0].handleClose();
-    // });
-    // expect(setFilter.mock.calls[1][0]).toBe("show-all");
-    // expect(Modal.mock.calls[1][0].open).toBe(false);
   });
-
   describe("Custom Render", () => {
     describe("Non Manager Option is passed through", () => {
       test("show-all renders as expected", () => {
+        const option = {
+          label: "Show All",
+          value: "show-all"
+        };
         renderComponent();
-        const rendered = render(Dropdown.mock.calls[0][0].CustomRender({
-          option: {
-            label: "Show All",
-            value: "show-all"
-          }
-        }));
+        act(() => Dropdown.mock.calls[0][0].updateValue(null, option));
+        expect(setFilter).toHaveBeenCalledTimes(1);
+        expect(setFilter).toHaveBeenCalledWith(null);
+        const rendered = render(Dropdown.mock.calls[0][0].CustomRender({ option }));
         const button = rendered.queryByTestId("edit-button");
         expect(button).toBe(null);
         expect(rendered.container).toHaveTextContent("Show All");
@@ -186,51 +197,86 @@ describe("<ManagerDropdown />", () => {
         expect(rendered.container).toHaveTextContent("Add Manager");
       });
       test("divider renders as expected", () => {
+        const option = {
+          label: "divider",
+          value: "divider"
+        };
         renderComponent();
-        const rendered = render(Dropdown.mock.calls[0][0].CustomRender({
-          option: {
-            label: "divider",
-            value: "divider"
-          }
-        }));
+        const rendered = render(Dropdown.mock.calls[0][0].CustomRender({ option }));
+        act(() => Dropdown.mock.calls[0][0].updateValue(null, option));
         const button = rendered.queryByTestId("edit-button");
         expect(button).toBe(null);
         expect(rendered.container).toHaveTextContent("divider");
       });
     });
-    describe("Manager Option is passed through", () => {
-      test("The Custom Render Options is rendered as expected", () => {
+    describe("Delete Manger Modal", () => {
+      test("When delete icon is clicked, delete Manager Modal Is opened", async () => {
+        const managerOption = {
+          value: "n0555555",
+          label: "Michael Nieman"
+        };
         renderComponent();
-        const rendered = render(
-          <ThemeProvider theme={theme}>{
-            Dropdown.mock.calls[0][0].CustomRender({
-              option: {
-                label: `${mockManagerData[0].manager_first_name} ${mockManagerData[0].manager_last_name}`,
-                value: mockManagerData[0].manager_n_number
-              }
-            })}
-          </ThemeProvider>
-        );
-        const button = rendered.getByTestId("edit-button");
-        expect(button);
-        expect(rendered.container).toHaveTextContent("Faith Cuneo");
+        const customRender = Dropdown.mock.calls[0][0].CustomRender({ option: managerOption });
+        render(customRender);
+        const deleteOnClick = IconWrapper.mock.calls[1][0].onClick;
+        act(() => deleteOnClick(managerOption));
+        act(() => render(Modal.mock.calls[3][0].children));
+        await waitFor(() => {
+          expect(ManagerDelete.mock.calls[0][0].selectedManager).toBe(initialTestState.managerContext.managers[2]);
+        });
       });
-      test("Clicking the edit Icon on the custom render will open the manager Modal", () => {
+      test("When delete manager handleClose is called, modal is closed", async () => {
+        const managerOption = {
+          value: "n0555555",
+          label: "Michael Nieman"
+        };
         renderComponent();
-        const rendered = render(
-          <ThemeProvider theme={theme}>{
-            Dropdown.mock.calls[0][0].CustomRender({
-              option: {
-                label: `${mockManagerData[0].manager_first_name} ${mockManagerData[0].manager_last_name}`,
-                value: mockManagerData[0].manager_n_number
-              }
-            })}
-          </ThemeProvider>
-        );
-        const button = rendered.getByTestId("edit-button");
-        expect(button);
-        fireEvent.click(button);
-        expect(Modal.mock.calls[2][0].open).toBe(true);
+        const customRender = Dropdown.mock.calls[0][0].CustomRender({ option: managerOption });
+        render(customRender);
+        const deleteOnClick = IconWrapper.mock.calls[1][0].onClick;
+        act(() => deleteOnClick(managerOption));
+        act(() => render(Modal.mock.calls[3][0].children));
+        await waitFor(() => {
+          expect(ManagerDelete.mock.calls[0][0].selectedManager).toBe(initialTestState.managerContext.managers[2]);
+        });
+        act(() => ManagerDelete.mock.calls[0][0].handleClose());
+        expect(Modal.mock.calls.length).toBe(6);
+        expect(Modal.mock.calls[5][0].open).toBe(false);
+      });
+    });
+    describe("Edit Manger Modal", () => {
+      test("When edit icon is clicked, ManagerModal Is opened", async () => {
+        const managerOption = {
+          value: "n0555555",
+          label: "Michael Nieman"
+        };
+        renderComponent();
+        const customRender = Dropdown.mock.calls[0][0].CustomRender({ option: managerOption });
+        render(customRender);
+        const editOnClick = IconWrapper.mock.calls[0][0].onClick;
+        act(() => editOnClick(managerOption));
+        act(() => render(Modal.mock.calls[2][0].children));
+        await waitFor(() => {
+          expect(ManagerModal.mock.calls[0][0].selectedManager).toBe(initialTestState.managerContext.managers[2]);
+        });
+      });
+      test("When edit manager handleClose is called, modal is closed", async () => {
+        const managerOption = {
+          value: "n0555555",
+          label: "Michael Nieman"
+        };
+        renderComponent();
+        const customRender = Dropdown.mock.calls[0][0].CustomRender({ option: managerOption });
+        render(customRender);
+        const editOnClick = IconWrapper.mock.calls[0][0].onClick;
+        act(() => editOnClick(managerOption));
+        act(() => render(Modal.mock.calls[2][0].children));
+        await waitFor(() => {
+          expect(ManagerModal.mock.calls[0][0].selectedManager).toBe(initialTestState.managerContext.managers[2]);
+        });
+        act(() => ManagerModal.mock.calls[0][0].handleClose());
+        expect(Modal.mock.calls.length).toBe(6);
+        expect(Modal.mock.calls[5][0].open).toBe(false);
       });
     });
   });

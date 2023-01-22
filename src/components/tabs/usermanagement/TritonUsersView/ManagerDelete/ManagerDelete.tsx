@@ -68,9 +68,9 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
         console.log("deleteManager() successful", res);
       })
       .catch((err: any) => {
+        setErrorMessage("Failed to delete Manager");
         setSaveStatus(ModalOverlayStatuses.FAIL);
         setTimeout(() => setSaveStatus(null), 2000);
-        setErrorMessage("Failed to delete Manager");
         console.error("deleteManager() failed:", err);
       });
   };

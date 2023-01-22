@@ -15,10 +15,7 @@ import React from "react";
 import { act } from "react-dom/test-utils";
 import { deleteManager } from "services";
 import {
-  expectMockedComponent,
   expectOnlyPassedProps,
-  getLastInstanceCalled,
-  getMockedComponentProps,
   render,
   setupMockedComponents,
   waitFor
@@ -134,13 +131,39 @@ describe("<ManagerDelete />", () => {
 
   describe("initial state of ManagerDelete", () => {
     describe("No manager is passed through", () => {
-      test("should render Confirmation Form", () => {
+      test("should render empty div", () => {
         renderComponent(null);
         expect(PaperContainer.mock.calls.length).toBe(0);
       });
     });
+    describe("No workers are in context", () => {
+      beforeEach(() => {
+        useAdminState.mockReturnValue({
+          ...defaultAdminState,
+          workerContext: {
+            workers: []
+          }
+        });
+      });
+      test("should render Confirmation Form", () => {
+        const rendered = renderComponent(managerObject("n0263786"));
+        expect(rendered.container).toHaveTextContent("Delete Manager");
+        expect(ConfirmationForm.mock.calls.length).toBe(1);
+        expect(CloseRounded.mock.calls.length).toBe(1);
+        expect(ErrorForm.mock.calls.length).toBe(0);
+        expect(ModalOverlay.mock.calls.length).toBe(0);
+        expectOnlyPassedProps(CloseRounded, {
+          onClick: mockHandleClose
+        });
+        expectOnlyPassedProps(ConfirmationForm, {
+          SelectedManager: {
+            manager_n_number: "n0263786"
+          }
+        });
+      });
+    });
     describe("No workers are assigned to the manager", () => {
-      test.only("should render Confirmation Form", () => {
+      test("should render Confirmation Form", () => {
         const rendered = renderComponent(managerObject("n0263786"));
         expect(rendered.container).toHaveTextContent("Delete Manager");
         expect(ConfirmationForm.mock.calls.length).toBe(1);
@@ -169,7 +192,6 @@ describe("<ManagerDelete />", () => {
         });
       });
     });
-
   });
 
   describe("'Delete Manager' button is clicked", () => {
@@ -188,13 +210,24 @@ describe("<ManagerDelete />", () => {
             payload: [ defaultAdminState.managerContext.managers[0] ]
           });
         });
-        act(() => jest.runAllTimers());
+        act(() => render(PaperContainer.mock.calls[1][0].children));
         await waitFor(() => {
           expect(ModalOverlay.mock.calls.length).toBe(1);
+          expectOnlyPassedProps(ModalOverlay, {
+            status: "saving",
+            message: "Deleting..."
+          });
+        });
+        act(() => render(PaperContainer.mock.calls[2][0].children));
+        await waitFor(() => {
+          expect(ModalOverlay.mock.calls.length).toBe(2);
           expectOnlyPassedProps(ModalOverlay, {
             status: "success",
             message: "Manager deleted successfully"
           });
+        });
+        act(() => jest.runAllTimers());
+        await waitFor(() => {
           expect(mockHandleClose).toHaveBeenCalledTimes(1);
         });
       });
@@ -203,26 +236,32 @@ describe("<ManagerDelete />", () => {
       const errorResp = { nope: "2 minutes for elbowing!" };
       beforeEach(() => deleteManager.mockRejectedValue(errorResp));
       test("modalOverlay should render with 'Failed to delete Manager' & modal should close after 2 seconds (handleClose should be called)", async () => {
-        // const rendered = renderComponent(managerObject("n0263786"));
-        // act(() => jest.runAllTimers());
-        // await waitFor(() => {
-        //   expectOnlyPassedProps(ModalOverlay, {
-        //     status: "fail",
-        //     message: "Failed to delete Manager"
-        //   });
-        //   expect(mockHandleClose).toHaveBeenCalledTimes(0);
-        //   expectMockedComponent(rendered, { ModalOverlay }, 0);
-        // });
+        renderComponent(managerObject("n0263786"));
+        const handleDeleteManager = ConfirmationForm.mock.calls[0][0].DeleteManagerClicked;
+        act(() => handleDeleteManager());
+        act(() => render(PaperContainer.mock.calls[1][0].children));
+        await waitFor(() => {
+          expect(ModalOverlay.mock.calls.length).toBe(1);
+          expectOnlyPassedProps(ModalOverlay, {
+            status: "saving",
+            message: "Deleting..."
+          });
+        });
+        expect(PaperContainer.mock.calls.length).toBe(4);
+        act(() => render(PaperContainer.mock.calls[3][0].children));
+        await waitFor(() => {
+          expect(ModalOverlay.mock.calls.length).toBe(2);
+          expectOnlyPassedProps(ModalOverlay, {
+            status: "fail",
+            message: "Failed to delete Manager"
+          });
+        });
+        act(() => jest.runAllTimers());
+        await waitFor(() => {
+          expect(PaperContainer.mock.calls.length).toBe(5);
+          expect(ModalOverlay.mock.calls.length).toBe(2);
+        });
       });
-    });
-  });
-  describe("manager has existing workers on their team", () => {
-    test("the error dialog is displayed", async () => {
-      const rendered = renderComponent(managerObject("n0262226"));
-      // const textBox = rendered.getByTestId("team-members-error-textbox");
-      // expect(textBox).toHaveTextContent("Sorry, this manager cannot be deleted until these team members are re-assigned:");
-      // const penaltyBox = rendered.getByTestId("team-members-error-penaltybox");
-      // expect(penaltyBox).toHaveTextContent("Warren Spencer, Calista Flockhart");
     });
   });
 });

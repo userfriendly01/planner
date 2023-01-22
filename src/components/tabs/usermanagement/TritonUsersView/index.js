@@ -1,5 +1,5 @@
 export * from "./ManagerDelete";
-export * from "./ManagerDropdown";
+export { default as ManagerDropdown } from "./ManagerDropdown/ManagerDropdown";
 export * from "./ManagerModal";
 export * from "./ResetSkills";
 export * from "./TritonUserTable";
