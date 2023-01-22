@@ -300,6 +300,7 @@ describe("<ManagerModal />", () => {
           Dropdown.mock.calls[1][0].updateValue(null, [selection]);
           const grandchild = Modal.mock.calls[0][0].children;
           render(grandchild);
+          Modal.mock.calls[1][0].onClose();
         });
         expect(Modal.mock.calls[1][0].open).toBe(true);
       });
@@ -315,7 +316,23 @@ describe("<ManagerModal />", () => {
           Dropdown.mock.calls[1][0].updateValue(null, [selection]);
           const grandchild = Modal.mock.calls[0][0].children;
           render(grandchild);
-          CalabrioTeamModal.mock.calls[0][0].handleClose({ data: { groupId: 300 }});
+          CalabrioTeamModal.mock.calls[0][0].handleClose({ groupId: 300 });
+        });
+        expect(Modal.mock.calls[2][0].open).toBe(false);
+      });
+    });
+    describe("the calabrio team modal closes with no new team", () => {
+      test("changing the open attribute to false closes the modal", async () => {
+        const selection = {
+          label: "Add Calabrio Team",
+          value: "add-team"
+        };
+        renderComponent();
+        act(() => {
+          Dropdown.mock.calls[1][0].updateValue(null, [selection]);
+          const grandchild = Modal.mock.calls[0][0].children;
+          render(grandchild);
+          CalabrioTeamModal.mock.calls[0][0].handleClose(null);
         });
         expect(Modal.mock.calls[2][0].open).toBe(false);
       });
