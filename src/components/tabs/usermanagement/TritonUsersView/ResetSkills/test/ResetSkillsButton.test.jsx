@@ -77,8 +77,7 @@ describe("ResetSkillsButton", () => {
     });
   });
 
-  //Faith
-  test.only("StyledButton is passed Reset Skills text", () => {
+  test("StyledButton is passed Reset Skills text", () => {
     renderComponent();
     const { children } = getMockedComponentProps(StyledButton);
     const rendered = render(children);
@@ -189,7 +188,7 @@ describe("ResetSkillsButton", () => {
           });
           expect(ResetSkillsResultsModal.mock.calls[0][0].unsuccessfulWorkers).toEqual([
             {
-              name: "Test2",
+              name: selectedWorkers[1].sid,
               reason: "bad stuff happened"
             }
           ]);

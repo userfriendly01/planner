@@ -1,6 +1,6 @@
 import { DefaultResetInformation } from "./ResetSkills.Interfaces";
 import {
-  ResetSkillsResultModal,
+  ResetSkillsResultsModal,
   StyledButton
 } from "components";
 import {
@@ -29,7 +29,7 @@ const ResetSkillsButton = () => {
 
   const selectedWorkers = state.workerContext.selectedWorkers;
 
-  const [resultsModalOpts, setResultsModalOpts] = useState(defaultResetInformation);
+  const [ resultsModalOpts, setResultsModalOpts ] = useState(defaultResetInformation);
 
   const resetWorkers = () => {
     const dispatchResettingSkills = (bool: boolean) => dispatch({
@@ -96,15 +96,13 @@ const ResetSkillsButton = () => {
       marginRight: "10px"
     }}>
       <Modal open={resultsModalOpts.open}>
-        <>
-          <ResetSkillsResultModal
-            error={resultsModalOpts.error}
-            handleClose={() => setResultsModalOpts(defaultResetInformation)}
-            successfulWorkers={resultsModalOpts.successfulResets}
-            unsuccessfulWorkers={resultsModalOpts.unsuccessfulResets} />
-        </>
+        <ResetSkillsResultsModal
+          error={resultsModalOpts.error}
+          handleClose={() => setResultsModalOpts(defaultResetInformation)}
+          successfulWorkers={resultsModalOpts.successfulResets}
+          unsuccessfulWorkers={resultsModalOpts.unsuccessfulResets} />
       </Modal>
-      <StyledButton style={{ width: "100%" }} disabled={selectedWorkers.length === 0} onClick={() => resetWorkers()}>
+      <StyledButton style={{ width: "100%" }} disabled={selectedWorkers.length === 0} onClick={resetWorkers}>
         Reset Skills
       </StyledButton>
     </div>

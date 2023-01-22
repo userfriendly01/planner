@@ -1,4 +1,4 @@
-import ResetSkillsResultsModal from "../ResetSkillsResultModal";
+import ResetSkillsResultsModal from "../ResetSkillsResultsModal";
 import {
   PaperContainer,
   StyledButton
