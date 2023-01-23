@@ -47,7 +47,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
       saveUser: true
     });
     let resultMessage;
-    const tritonPromise = deleteUser(deletedWorker)
+    deleteUser(deletedWorker)
       .then(() => {
         resultMessage = `Successfully deleted Triton worker with sid ${deletedWorker.sid}`;
         console.log(resultMessage);

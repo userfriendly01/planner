@@ -23,7 +23,7 @@ const CallRecordingScope = (props:any) => {
     teams
   } = calabrioUser.scope;
 
-  const [ selectedGroup, setSelectedGroup ] = React.useState(null);
+  const [ selectedGroup, setSelectedGroup ] = React.useState(groups.length > 0 ? groups[0] : null);
 
   React.useEffect(() => {
     if(groups.length > 0) {
@@ -193,7 +193,7 @@ const CallRecordingScope = (props:any) => {
             </TableBody>
             <TableBody>
               {
-                identifyChildrenTeams(selectedGroup.groupId).map((teamIndex: any) => (
+                identifyChildrenTeams(selectedGroup?.groupId).map((teamIndex: any) => (
                   <ScopeRow
                     data-testid={`team-row-${teams[teamIndex].groupId}`}
                     selected={false}
