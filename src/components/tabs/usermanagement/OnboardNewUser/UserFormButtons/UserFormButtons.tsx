@@ -226,7 +226,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
                 ...loading,
                 saveUser: false
               });
-              handleClose(true);
             }, timeouts.MODAL_OVERLAY);
           }).catch(err => {
             console.error("Error Creating Calabrio User", err);
@@ -435,19 +434,10 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
   return (
     <ButtonWrapper>
-      <UserFormButton onClick={() => {
-        handleClose();
-        setForm({
-          type: userFormActions.RESET_FORM
-        });
-      }}>
+      <UserFormButton onClick={() => handleClose()}>
           Close
       </UserFormButton>
-      <UserFormButton onClick={() => {
-        setForm({
-          type: userFormActions.RESET_FORM
-        });
-      }}>
+      <UserFormButton onClick={() => setForm({ type: userFormActions.RESET_FORM })}>
           Clear
       </UserFormButton>
       <Tooltip

@@ -48,12 +48,13 @@ export const userFormActions = {
   UPDATE_TEAM: "UPDATE_TEAM"
 };
 
-const initialDefaultSkills = getValidSkillsObject();
-
 export const initialUserFormState: UserFormState = {
   formMode: formModes.INSERT,
   discrepancies: [],
-  defaultSkills: initialDefaultSkills,
+  defaultSkills: {
+    skills: [],
+    levels: {}
+  },
   defaultSkillsUpdated: false,
   didUser: false,
   extension: {

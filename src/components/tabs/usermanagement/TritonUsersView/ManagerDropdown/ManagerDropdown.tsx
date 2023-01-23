@@ -33,6 +33,7 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
   const [isManagerModalOpen, setIsManagerModalOpen] = useState(false);
   const [isManagerDeleteOpen, setIsManagerDeleteOpen] = useState(false);
   const [ selectedManager, setSelectedManager ] = useState(null);
+  console.log("Manager Dropdown filterBy", filterBy);
 
   const handleOpenManager = () => {
     setIsManagerModalOpen(true);
@@ -50,14 +51,14 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
 
   const handleCloseManager = () => {
     setSelectedManager(null);
-    setFilter("show-all");
+    setFilter(null);
     setIsManagerModalOpen(false);
     setIsManagerDeleteOpen(false);
   };
 
   const handleCloseManagerDelete = () => {
     setSelectedManager(null);
-    setFilter("show-all");
+    setFilter(null);
     setIsManagerDeleteOpen(false);
   };
 

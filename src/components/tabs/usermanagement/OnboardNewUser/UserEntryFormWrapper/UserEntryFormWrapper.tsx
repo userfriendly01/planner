@@ -60,25 +60,8 @@ const UserEntryForm = (props: UserEntryFormProps) => {
   });
 
   const handleResetForm = () => {
-    if(workerOpts.action === UserAction.ADD) {
-      setForm({
-        type: userFormActions.RESET_FORM_AFTER_ADD,
-        payload: {
-          managerValue: form.manager.value,
-          outgoing: {
-            value: form.outgoing.value,
-            e164: form.outgoing.e164
-          },
-          profileIdValue: form.profileId.value,
-          didUser: form.didUser
-        }
-      });
-    } else {
-      setForm({
-        type: userFormActions.RESET_FORM
-      });
-      handleClose();
-    }
+    setForm({ type: userFormActions.RESET_FORM });
+    handleClose();
   };
 
   const handleCheckbox = (checked: boolean, system: string) => {

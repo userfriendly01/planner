@@ -73,8 +73,8 @@ const UserManagementWrapper = () => {
         />}
         {view === views.ONBOARD_NEW_USER && <UserEntryForm
           handleClose={() => {
-            setSelectedWorkerOpts(defaultWorkerOpts);
             setView(selectedWorkerOpts.routedFrom);
+            setSelectedWorkerOpts(defaultWorkerOpts);
           }}
           workerOpts={selectedWorkerOpts}
           setWorkerOpts={setSelectedWorkerOpts}
