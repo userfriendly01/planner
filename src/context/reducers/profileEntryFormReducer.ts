@@ -152,10 +152,10 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         };
       });
 
-      const transferQueues = profile.aggregateQueues.map((queue: { queues: { skill_id: number; skill_nme: string; }[]; }) => {
+      const transferQueues = profile.aggregateQueues.map((queue: { aggregate_queues_id: number; aggregate_queues_nme: string; aggregate_queues_type: string; }) => {
         return {
-          ctmSkillId: queue.queues[0].skill_id,
-          ctmSkillDisplayName: queue.queues[0].skill_nme
+          ctmSkillId: queue.aggregate_queues_type === 'aggregate' ? -Math.abs(queue.aggregate_queues_id) : queue.aggregate_queues_id,
+          ctmSkillDisplayName: queue.aggregate_queues_nme
         };
       });
 
