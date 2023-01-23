@@ -35,54 +35,54 @@ const Pagination = (props: PaginationProps) => {
       </ShowingSection>
       <NavArrowsWrapper>
         <NavArrow
-          data-testid="first"
+          data-testid="nav"
           disabled={onFirstPage}
-          onClick={!onFirstPage ? () => setTableState({
+          onClick={() => setTableState({
             ...tableState,
             pagination: {
               ...tableState.pagination,
               pageNumber: 1
             }
-          }) : null}
+          })}
         >
           <Tooltip title="First page"><SkipPreviousOutlined/></Tooltip>
         </NavArrow>
         <NavArrow
-          data-testid="previous"
+          data-testid="nav"
           disabled={onFirstPage}
-          onClick={!onFirstPage ? () => setTableState({
+          onClick={() => setTableState({
             ...tableState,
             pagination: {
               ...tableState.pagination,
               pageNumber: tableState.pagination.pageNumber - 1
             }
-          }) : null}
+          })}
         >
           <Tooltip title="Previous page"><NavigateBeforeOutlined /></Tooltip>
         </NavArrow>
         <NavArrow
-          data-testid="next"
+          data-testid="nav"
           disabled={onLastPage}
-          onClick={!onLastPage ? () => setTableState({
+          onClick={() => setTableState({
             ...tableState,
             pagination: {
               ...tableState.pagination,
               pageNumber: tableState.pagination.pageNumber + 1
             }
-          }) : null}
+          })}
         >
           <Tooltip title="Next page"><NavigateNextOutlined /></Tooltip>
         </NavArrow>
         <NavArrow
-          data-testid="last"
+          data-testid="nav"
           disabled={onLastPage}
-          onClick={!onLastPage ? () => setTableState({
+          onClick={() => setTableState({
             ...tableState,
             pagination: {
               ...tableState.pagination,
               pageNumber: numPages - 1
             }
-          }) : null}
+          })}
         >
           <Tooltip title="Last page"><SkipNextOutlined /></Tooltip>
         </NavArrow>

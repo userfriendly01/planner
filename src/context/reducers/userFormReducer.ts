@@ -446,7 +446,6 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         zeroOutEnabled: worker.zeroOutEnabled || false,
         editDisabled: worker.directDialNum ? true : false
       };
-      console.log("FINAL", finalObj);
       return finalObj;
     }
     case userFormActions.SET_DELETE_FORM_STATE: {
