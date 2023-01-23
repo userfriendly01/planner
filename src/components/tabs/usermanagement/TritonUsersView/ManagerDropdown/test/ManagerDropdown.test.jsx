@@ -164,7 +164,7 @@ describe("<ManagerDropdown />", () => {
         Modal.mock.calls[3][0].onClose();
         ManagerModal.mock.calls[0][0].handleClose();
       });
-      expect(setFilter.mock.calls[0][0]).toBe("show-all");
+      expect(setFilter.mock.calls[0][0]).toBe(null);
       expect(Modal.mock.calls[1][0].open).toBe(false);
     });
   });

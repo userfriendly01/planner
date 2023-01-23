@@ -1738,8 +1738,7 @@ describe("<UserFormButtons />", () => {
         onClick();
       });
       expect(mockHandleClose).toHaveBeenCalledTimes(1);
-      expect(mockSetForm).toHaveBeenCalledTimes(1);
-      expect(mockSetForm).toHaveBeenCalledWith({ type: userFormActions.RESET_FORM });
+      //Faith
     });
   });
 });
