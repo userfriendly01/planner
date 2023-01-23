@@ -1,10 +1,12 @@
+import React from "react";
 import {
   render,
   initialTestState
 } from "testUtils";
+import { useAdminState } from "context";
 import { AlohaFlowContainer } from "../index";
 import DataGridFlow from "../DataGridFlow/DataGridFlow";
-import React from "react";
+
 
 jest.mock("../DataGridFlow/DataGridFlow", () => {
   const originalModule = jest.requireActual("../DataGridFlow/DataGridFlow");
@@ -16,12 +18,20 @@ jest.mock("../DataGridFlow/DataGridFlow", () => {
   };
 });
 
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
+}));
+
 const renderComponent = () => render(
   <AlohaFlowContainer />,
   initialTestState
 );
 
 describe("<AlohaFlowContainer />", () => {
+  beforeEach(()=>{
+    jest.clearAllMocks();
+    useAdminState.mockReturnValue(initialTestState);
+  });
   it("renders", () => {
     renderComponent();
     expect(DataGridFlow).toBeCalledTimes(1);

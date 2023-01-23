@@ -18,6 +18,7 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
+import { useAdminState } from "context";
 import { CustomToast } from "components";
 import DataGridFlow from "../DataGridFlow";
 import { retrieveFlowData } from "services";
@@ -40,6 +41,10 @@ jest.mock("../../CustomActions", () => ({
   AdvanceSearchModal: jest.fn(),
   CustomFlowGridToolBar: jest.fn(),
   EditFlow: jest.fn()
+}));
+
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
 }));
 
 const createFlowDataList = numberOfData =>{
@@ -76,8 +81,7 @@ const filteredItems = {
 };
 
 const renderComponent = () => render(
-  <DataGridFlow />,
-  initialTestState
+  <DataGridFlow />
 );
 
 describe("<DataGridFlow />", () => {
@@ -86,6 +90,7 @@ describe("<DataGridFlow />", () => {
   beforeEach(()=>{
     jest.clearAllMocks();
     retrieveFlowData.mockReset();
+    useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       DataGrid,
       GridToolbar,
@@ -95,7 +100,7 @@ describe("<DataGridFlow />", () => {
       AddFlow,
       CustomToast,
       CustomFlowGridToolBar
-    }),
+    });
     Object.defineProperty(window.document, "cookie", {
       writable: true,
       value: (initialCookie + ";" + "PA.ciciccttritondev1=1234.5678.uytghh")

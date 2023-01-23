@@ -9,6 +9,7 @@ import {
 import {
   updateRoutingDB, deleteRoutingRule
 } from "services";
+import { useAdminState } from "context";
 import {
   Grid, Button
 } from "@mui/material";
@@ -64,6 +65,10 @@ jest.mock("components", () => {
   };
 });
 
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
+}));
+
 const mockMasterData = {
   brand: ["Test Brand"],
   channel: ["Test1 Channel", "Test2 Channel"]
@@ -71,7 +76,7 @@ const mockMasterData = {
 
 const renderEditRouting = (isOpen, data) => {
   return render(
-    <EditRouting openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} />, initialTestState
+    <EditRouting openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} />
   );
 };
 
@@ -79,6 +84,7 @@ const renderEditRouting = (isOpen, data) => {
 describe("<EditRouting />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useAdminState.mockReturnValue(initialTestState);
     Object.defineProperty(window.document, "cookie", {
       writable: true,
       value: "PA.ciciccttritondev1=1234.5678.uytghh"
