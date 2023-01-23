@@ -98,7 +98,7 @@ const TritonUserTable = (props: TritonUserTableProps) => {
             const deleteButtonOnClick = (event: any) => {
               event.stopPropagation();
               setForm({
-                type: userFormActions.SET_UPDATE_FORM_STATE,
+                type: userFormActions.SET_DELETE_FORM_STATE,
                 payload: {
                   worker,
                   managers: state.managerContext.managers,
