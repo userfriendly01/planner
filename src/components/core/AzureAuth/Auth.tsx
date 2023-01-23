@@ -95,9 +95,6 @@ export function authWrapper(
       // action to perform on authentication
       msalInstance.handleRedirectCallback(() => { // on success
         this.getAccessToken();
-        this.setState({
-          authenticated: true
-        });
       }, authErr => { // on fail
         this.setState({
           hasError: true,
@@ -119,9 +116,6 @@ export function authWrapper(
         msalInstance.loginRedirect({});
       } else { // logged in, set authenticated state
         this.getAccessToken();
-        this.setState({
-          authenticated: true
-        });
       }
     }
 
@@ -150,7 +144,7 @@ export function authWrapper(
       if (graphEndpoint && graphEndpoint !== allDone) {
         const xmlHttp = new XMLHttpRequest();
 
-        xmlHttp.open("GET", graphEndpoint, false); // true for asynchronous
+        xmlHttp.open("GET", graphEndpoint, false); //3rd param is false so 2 tabs loading simultaneously don't race for login
         xmlHttp.setRequestHeader("Authorization", `Bearer ${accessToken}`);
         xmlHttp.send();
         const graphData = JSON.parse(xmlHttp.responseText);
@@ -179,6 +173,7 @@ export function authWrapper(
 
       callback.setState({
         accessToken,
+        authenticated: true,
         matchedGroups
       });
     }

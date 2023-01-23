@@ -40,9 +40,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     accessToken,
     matchedGroups
   } = props;
-  if(!accessToken) {
-    return (<div/>);
-  }
+
   const graphQLEndpoint = getGraphQLEndpoint();
 
   const getAdvanceFilter = () => {
