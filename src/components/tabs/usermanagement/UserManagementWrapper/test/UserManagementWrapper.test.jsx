@@ -31,7 +31,7 @@ jest.mock("context", () => ({
 const defaultWorkerOpts = {
   worker: {},
   action: "add",
-  routedFrom: null,
+  routedFrom: views.TRITON_USERS,
   systems: {
     triton: true,
     calabrio_qm: true,
@@ -82,6 +82,11 @@ describe("", () => {
       act(() => setWorkerOpts({
         ...defaultWorkerOpts,
         action: "edit",
+        systems: {
+          triton: true,
+          calabrio_qm: false,
+          calabrio_wfm: false
+        },
         worker: initialTestState.workerContext.workers[1]
       }));
       expect(UserEntryForm).toHaveBeenCalledTimes(1);
@@ -89,6 +94,11 @@ describe("", () => {
         workerOpts: {
           ...defaultWorkerOpts,
           action: "edit",
+          systems: {
+            triton: true,
+            calabrio_qm: false,
+            calabrio_wfm: false
+          },
           worker: initialTestState.workerContext.workers[1]
         }
       });
