@@ -21,6 +21,7 @@ import { identifyUserProfiles } from "utils";
 
 const UserManagementWrapper = () => {
 
+
   const defaultWorkerOpts: WorkerOpts = {
     worker: {},
     action: UserAction.ADD,

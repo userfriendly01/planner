@@ -24,7 +24,7 @@ import {
   useFormState,
   useAdminState,
   useFormDispatch,
-  profileEntryFormActions
+  userFormActions
 } from "context";
 import React from "react";
 import { sortWorkersByFullName } from "utils";
@@ -52,20 +52,25 @@ const UserEntryForm = (props: UserEntryFormProps) => {
 
   console.log("FORM", form);
 
-  React.useEffect(() => {
-    if(workerOpts.action === UserAction.ADD) {
-      setForm({
-        type: profileEntryFormActions.RESET_FORM
-      });
-    }
-  }, [ workerOpts.action]);
-
   const [loading, updateLoading] = React.useState<LoadingState>({
     lookupUser: false,
     overlayMessage: "",
     saveStatus: null,
     saveUser: false
   });
+
+  const handleResetForm = () => {
+    if(workerOpts.action === UserAction.ADD) {
+      setForm({
+        type: userFormActions.RESET_FORM_AFTER_ADD
+      });
+    } else {
+      setForm({
+        type: userFormActions.RESET_FORM
+      });
+      handleClose();
+    }
+  };
 
   const handleCheckbox = (checked: boolean, system: string) => {
     if(!checked && system === "calabrio_qm"){
@@ -107,7 +112,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       { workerOpts.action !== UserAction.ADD && <Header2>{worker.attributes.full_name}</Header2> }
       { workerOpts.action === UserAction.DELETE &&
         <DeleteTritonUser
-          handleClose={handleClose}
+          handleClose={handleResetForm}
           loading={loading}
           workerOpts={workerOpts}
           setWorkerOpts={setWorkerOpts}
@@ -162,7 +167,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       <StyledDivider />
       { workerOpts.action !== UserAction.DELETE && <UserFormButtons
         forwardToToggle={forwardToToggle}
-        handleClose={handleClose}
+        handleClose={handleResetForm}
         loading={loading}
         offices={offices}
         profiles={profiles}
