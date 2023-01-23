@@ -263,19 +263,19 @@ describe("<UserFormButtons />", () => {
         test("UserFormButton should be called 'Add User'", () => {
           renderComponent(true);
           render(Tooltip.mock.calls[0][0].children);
-          expect(StyledButton.mock.calls[1][0].children).toBe("Add User");
+          expect(StyledButton.mock.calls[2][0].children).toBe("Add User");
         });
         test("When form is valid, Add User Button is enabled", () => {
           isFormValid.mockReturnValue(true);
           renderComponent(true);
           render(Tooltip.mock.calls[0][0].children);
-          expect(StyledButton.mock.calls[1][0].disabled).toBe(false);
+          expect(StyledButton.mock.calls[2][0].disabled).toBe(false);
         });
         test("When form is invalid, Add User Button is disabled", () => {
           isFormValid.mockReturnValue(false);
           renderComponent(true);
           render(Tooltip.mock.calls[0][0].children);
-          expect(StyledButton.mock.calls[1][0].disabled).toBe(true);
+          expect(StyledButton.mock.calls[2][0].disabled).toBe(true);
         });
       });
       describe("createUser service call, add office service call, and createCalabruioUser service call are successful", () => {
@@ -295,7 +295,7 @@ describe("<UserFormButtons />", () => {
             renderComponent(true);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
-              const onClick = StyledButton.mock.calls[1][0].onClick;
+              const onClick = StyledButton.mock.calls[2][0].onClick;
               onClick();
             });
             await waitFor(() => {
@@ -364,7 +364,7 @@ describe("<UserFormButtons />", () => {
             renderComponent(true);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
-              const onClick = StyledButton.mock.calls[1][0].onClick;
+              const onClick = StyledButton.mock.calls[2][0].onClick;
               onClick();
             });
             await waitFor(() => {
@@ -424,7 +424,7 @@ describe("<UserFormButtons />", () => {
             renderComponent(true);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
-              const onClick = StyledButton.mock.calls[1][0].onClick;
+              const onClick = StyledButton.mock.calls[2][0].onClick;
               onClick();
             });
             await waitFor(() => {
@@ -488,7 +488,7 @@ describe("<UserFormButtons />", () => {
               renderComponent(true);
               render(Tooltip.mock.calls[0][0].children);
               act(() => {
-                const onClick = StyledButton.mock.calls[1][0].onClick;
+                const onClick = StyledButton.mock.calls[2][0].onClick;
                 onClick();
               });
               await waitFor(() => {
@@ -564,7 +564,7 @@ describe("<UserFormButtons />", () => {
             renderComponent(true);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
-              const onClick = StyledButton.mock.calls[1][0].onClick;
+              const onClick = StyledButton.mock.calls[2][0].onClick;
               onClick();
             });
             await waitFor(() => {
@@ -625,7 +625,7 @@ describe("<UserFormButtons />", () => {
             renderComponent(true);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
-              const onClick = StyledButton.mock.calls[1][0].onClick;
+              const onClick = StyledButton.mock.calls[2][0].onClick;
               onClick();
             });
             await waitFor(() => {
@@ -659,7 +659,7 @@ describe("<UserFormButtons />", () => {
             renderComponent(true);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
-              const onClick = StyledButton.mock.calls[1][0].onClick;
+              const onClick = StyledButton.mock.calls[2][0].onClick;
               onClick();
             });
             await waitFor(() => {
@@ -701,7 +701,7 @@ describe("<UserFormButtons />", () => {
           renderComponent(true);
           render(Tooltip.mock.calls[0][0].children);
           act(() => {
-            const onClick = StyledButton.mock.calls[1][0].onClick;
+            const onClick = StyledButton.mock.calls[2][0].onClick;
             onClick();
           });
           await waitFor(() => {
@@ -738,7 +738,7 @@ describe("<UserFormButtons />", () => {
           renderComponent(true);
           render(Tooltip.mock.calls[0][0].children);
           act(() => {
-            const onClick = StyledButton.mock.calls[1][0].onClick;
+            const onClick = StyledButton.mock.calls[2][0].onClick;
             onClick();
           });
           await waitFor(() => {
@@ -774,7 +774,7 @@ describe("<UserFormButtons />", () => {
           renderComponent(true);
           render(Tooltip.mock.calls[0][0].children);
           act(() => {
-            const onClick = StyledButton.mock.calls[1][0].onClick;
+            const onClick = StyledButton.mock.calls[2][0].onClick;
             onClick();
           });
           await waitFor(() => {
@@ -907,19 +907,19 @@ describe("<UserFormButtons />", () => {
         test("UserFormButton should be called 'Save User'", () => {
           renderComponent(true);
           render(Tooltip.mock.calls[0][0].children);
-          expect(StyledButton.mock.calls[1][0].children).toBe("Save User");
+          expect(StyledButton.mock.calls[2][0].children).toBe("Save User");
         });
         test("When form is valid, Add Save Button is enabled", () => {
           isFormValid.mockReturnValue(true);
           renderComponent(true);
           render(Tooltip.mock.calls[0][0].children);
-          expect(StyledButton.mock.calls[1][0].disabled).toBe(false);
+          expect(StyledButton.mock.calls[2][0].disabled).toBe(false);
         });
         test("When form is invalid, Add Save Button is disabled", () => {
           isFormValid.mockReturnValue(false);
           renderComponent(true);
           render(Tooltip.mock.calls[0][0].children);
-          expect(StyledButton.mock.calls[1][0].disabled).toBe(true);
+          expect(StyledButton.mock.calls[2][0].disabled).toBe(true);
         });
       });
       describe("updateUser service call, add office service call, and createCalabrioUser service call are successful", () => {
@@ -978,7 +978,7 @@ describe("<UserFormButtons />", () => {
             renderComponent(true, updateWorker);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
-              const onClick = StyledButton.mock.calls[1][0].onClick;
+              const onClick = StyledButton.mock.calls[2][0].onClick;
               onClick();
             });
             await waitFor(() => {
@@ -1060,7 +1060,7 @@ describe("<UserFormButtons />", () => {
             renderComponent(true, updateWorker);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
-              const onClick = StyledButton.mock.calls[1][0].onClick;
+              const onClick = StyledButton.mock.calls[2][0].onClick;
               onClick();
             });
             await waitFor(() => {
@@ -1106,7 +1106,7 @@ describe("<UserFormButtons />", () => {
               renderComponent(true, updateWorker);
               render(Tooltip.mock.calls[0][0].children);
               act(() => {
-                const onClick = StyledButton.mock.calls[1][0].onClick;
+                const onClick = StyledButton.mock.calls[2][0].onClick;
                 onClick();
               });
               await waitFor(() => {
@@ -1210,7 +1210,7 @@ describe("<UserFormButtons />", () => {
             renderComponent(true, updateWorker);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
-              const onClick = StyledButton.mock.calls[1][0].onClick;
+              const onClick = StyledButton.mock.calls[2][0].onClick;
               onClick();
             });
             await waitFor(() => {
@@ -1296,7 +1296,7 @@ describe("<UserFormButtons />", () => {
             renderComponent(true, updateWorker);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
-              const onClick = StyledButton.mock.calls[1][0].onClick;
+              const onClick = StyledButton.mock.calls[2][0].onClick;
               onClick();
             });
             await waitFor(() => {
@@ -1380,7 +1380,7 @@ describe("<UserFormButtons />", () => {
             renderComponent(true, updateWorker);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
-              const onClick = StyledButton.mock.calls[1][0].onClick;
+              const onClick = StyledButton.mock.calls[2][0].onClick;
               onClick();
             });
             await waitFor(() => {
@@ -1472,7 +1472,7 @@ describe("<UserFormButtons />", () => {
           renderComponent(true);
           render(Tooltip.mock.calls[0][0].children);
           act(() => {
-            const onClick = StyledButton.mock.calls[1][0].onClick;
+            const onClick = StyledButton.mock.calls[2][0].onClick;
             onClick();
           });
           await waitFor(() => {
@@ -1507,7 +1507,7 @@ describe("<UserFormButtons />", () => {
           renderComponent(true);
           render(Tooltip.mock.calls[0][0].children);
           act(() => {
-            const onClick = StyledButton.mock.calls[1][0].onClick;
+            const onClick = StyledButton.mock.calls[2][0].onClick;
             onClick();
           });
           await waitFor(() => {
@@ -1542,7 +1542,7 @@ describe("<UserFormButtons />", () => {
           renderComponent(true);
           render(Tooltip.mock.calls[0][0].children);
           act(() => {
-            const onClick = StyledButton.mock.calls[1][0].onClick;
+            const onClick = StyledButton.mock.calls[2][0].onClick;
             onClick();
           });
           await waitFor(() => {
@@ -1572,7 +1572,7 @@ describe("<UserFormButtons />", () => {
           renderComponent(true);
           render(Tooltip.mock.calls[0][0].children);
           act(() => {
-            const onClick = StyledButton.mock.calls[1][0].onClick;
+            const onClick = StyledButton.mock.calls[2][0].onClick;
             onClick();
           });
           await waitFor(() => {
@@ -1613,7 +1613,7 @@ describe("<UserFormButtons />", () => {
           renderComponent(true);
           render(Tooltip.mock.calls[0][0].children);
           act(() => {
-            const onClick = StyledButton.mock.calls[1][0].onClick;
+            const onClick = StyledButton.mock.calls[2][0].onClick;
             onClick();
           });
           await waitFor(() => {
@@ -1656,7 +1656,7 @@ describe("<UserFormButtons />", () => {
           renderComponent(true);
           render(Tooltip.mock.calls[0][0].children);
           act(() => {
-            const onClick = StyledButton.mock.calls[1][0].onClick;
+            const onClick = StyledButton.mock.calls[2][0].onClick;
             onClick();
           });
           await waitFor(() => {
@@ -1694,7 +1694,7 @@ describe("<UserFormButtons />", () => {
           renderComponent(true);
           render(Tooltip.mock.calls[0][0].children);
           act(() => {
-            const onClick = StyledButton.mock.calls[1][0].onClick;
+            const onClick = StyledButton.mock.calls[2][0].onClick;
             onClick();
           });
           await waitFor(() => {

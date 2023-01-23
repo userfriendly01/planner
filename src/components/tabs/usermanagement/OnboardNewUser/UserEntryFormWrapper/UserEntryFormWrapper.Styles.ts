@@ -95,7 +95,7 @@ export const ModalContainer = styled.div<{theme: any}>`
   padding: 0 8px;
   width: 100%;
   min-height: 600px;
-  postition: relative;
+  position: relative;
 `;
 
 export const TabContainer = styled.div`

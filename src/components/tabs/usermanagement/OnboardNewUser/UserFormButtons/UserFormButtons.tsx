@@ -443,6 +443,13 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       }}>
           Close
       </UserFormButton>
+      <UserFormButton onClick={() => {
+        setForm({
+          type: userFormActions.RESET_FORM
+        });
+      }}>
+          Clear
+      </UserFormButton>
       <Tooltip
         title={
           form.didUser && !isDidDifferentValid(form, worker, forwardToToggle) ?
