@@ -173,7 +173,7 @@ export function authWrapper(
 
       callback.setState({
         accessToken,
-        authenticated: true,
+        authenticated: matchedGroups.length > 0,
         matchedGroups
       });
     }

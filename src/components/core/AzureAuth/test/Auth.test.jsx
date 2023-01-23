@@ -31,6 +31,13 @@ const xhrMockClass = () => ({
   setRequestHeader: jest.fn()
 });
 
+const xhrMockClassUnauthenticated = () => ({
+  open: jest.fn(),
+  send: jest.fn().mockReturnValue({
+    value: []
+  }),
+  setRequestHeader: jest.fn()
+});
 window.XMLHttpRequest = jest.fn().mockImplementation(xhrMockClass);
 
 const Component = "Component";
@@ -48,7 +55,6 @@ describe("<Auth />", () => {
     });
   });
   describe("Error", () => {
-
     beforeEach(() => {
       jest.mock("msal", () => ({
         __esModule: true,
@@ -68,6 +74,19 @@ describe("<Auth />", () => {
     it("renders", () => {
       renderComponent();
       expect(LoginError.mock.calls.length).toBe(1);
+    });
+  });
+  describe("Error No Auth", () => {
+    beforeEach(() => {
+      jest.resetAllMocks();
+      window.XMLHttpRequest = jest.fn().mockImplementation(xhrMockClassUnauthenticated);
+    });
+    afterEach(() => {
+      window.XMLHttpRequest = jest.fn().mockImplementation(xhrMockClass);
+    });
+    it("renders", () => {
+      renderComponent();
+      expect(LoginInProgress.mock.calls.length).toBe(1);
     });
   });
 });
