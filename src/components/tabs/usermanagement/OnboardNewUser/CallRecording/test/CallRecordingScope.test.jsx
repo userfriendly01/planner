@@ -2,6 +2,10 @@ import React from "react";
 import CallRecordingScope from "../CallRecordingScope";
 import { StyledButton } from "components";
 import {
+  useFormState,
+  useFormDispatch
+} from "context";
+import {
   Checkbox,
   TextField
 } from "@mui/material";
@@ -57,7 +61,6 @@ const renderComponent = (customGroups, customTeams) => {
             teams: customTeams ? customTeams : teams
           }
         }}
-        setForm={mockSetForm}
       />
     </ThemeProvider>
   );
@@ -66,6 +69,8 @@ const renderComponent = (customGroups, customTeams) => {
 describe("<CallRecordingScope", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useFormState.mockReturnValue({ formMode: "update" });
+    useFormDispatch.mockReturnValue(mockSetForm);
     setupMockedComponents({
       Checkbox,
       TextField,

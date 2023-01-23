@@ -1,5 +1,6 @@
 import SkillsList from "../SkillsList";
 import { Dropdown } from "components";
+import { useFormState } from "context";
 import React from "react";
 import { act } from "react-dom/test-utils";
 import {
@@ -12,6 +13,10 @@ import {
 jest.mock("components", () => ({
   __esModule: true,
   Dropdown: jest.fn()
+}));
+
+jest.mock("context", () => ({
+  useFormState: jest.fn()
 }));
 
 describe("<SkillsList />", () => {
@@ -45,6 +50,7 @@ describe("<SkillsList />", () => {
   const renderComponent = () => render(<SkillsList skills={skills} skillValue={"skill3"} updateSkill={mockUpdateSkill} />);
   beforeEach(() => {
     setupMockedComponents({ Dropdown });
+    useFormState.mockReturnValue({ formMode: "insert" });
     mockUpdateSkill.mockClear();
   });
   describe("initial state", () => {

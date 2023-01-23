@@ -167,7 +167,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
         >
           <ToggleContainer>
             <Switch
-              disabled={form.formMode === formModes.UPDATE && worker?.directDialNum ? true : false}
+              disabled={form.formMode === formModes.UPDATE && worker?.directDialNum ? true : false || form.formMode === formModes.DELETE}
               checked={form.didUser}
               onChange={() => {
                 setForm({ type: userFormActions.INITIATE_DID_FIELDS });

@@ -8,20 +8,25 @@ import {
   FormControlsPane,
   FullAccessWrapper
 } from "./CallRecording.Styles";
+import {
+  useFormState,
+  useFormDispatch
+} from "context";
 import { userFormActions } from "context";
+import { formModes } from "globals";
 import { Checkbox } from "@mui/material";
 
-const CallRecordingScope = (props:any) => {
+const CallRecordingScope = (props: any) => {
 
-  const {
-    calabrioUser,
-    setForm
-  } = props;
+  const { calabrioUser } = props;
 
   const {
     groups,
     teams
   } = calabrioUser.scope;
+
+  const form = useFormState();
+  const setForm = useFormDispatch();
 
   const [ selectedGroup, setSelectedGroup ] = React.useState(groups.length > 0 ? groups[0] : null);
 
@@ -166,6 +171,7 @@ const CallRecordingScope = (props:any) => {
             <CustomTableData><TableText>Full Admin Access</TableText></CustomTableData>
             <CustomTableData>
               <Checkbox
+                disabled={form.formMode === formModes.DELETE}
                 data-testid="admin-checkbox"
                 onChange={e => handleCheckAdmin(e.target.checked)}
                 checked={checkIfAdmin()}
@@ -184,6 +190,7 @@ const CallRecordingScope = (props:any) => {
                   >
                     <CustomTableData>
                       <Checkbox
+                        disabled={form.formMode === formModes.DELETE}
                         data-testid={`group-checkbox-${groups[index].groupId}`}
                         checked={groups[index] ? groups[index].checked : false}
                         indeterminate={groups[index] ? groups[index].partial : false}
@@ -204,6 +211,7 @@ const CallRecordingScope = (props:any) => {
                     key={teams[teamIndex].groupId}>
                     <CustomTableData>
                       <Checkbox
+                        disabled={form.formMode === formModes.DELETE}
                         data-testid={`team-checkbox-${teams[teamIndex].groupId}`}
                         checked={teams[teamIndex].checked}
                         onChange={e => handleCheckTeam(teamIndex, e.target.checked)}

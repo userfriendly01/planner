@@ -1,5 +1,7 @@
 import { SkillDropdownProps } from "./SkillsList.Interfaces";
 import { Dropdown } from "components";
+import { useFormState } from "context";
+import { formModes } from "globals";
 import React from "react";
 
 const SkillsList = (props: SkillDropdownProps) => {
@@ -8,6 +10,8 @@ const SkillsList = (props: SkillDropdownProps) => {
     updateSkill,
     skill
   } = props;
+
+  const form = useFormState();
 
   const getSkillOptions = (optionsList: any) => {
     return optionsList.map((option: any) => ({
@@ -18,6 +22,7 @@ const SkillsList = (props: SkillDropdownProps) => {
 
   return (
     <Dropdown
+      disabled={form.formMode === formModes.DELETE}
       styles={{
         small: true,
         height: "40px",

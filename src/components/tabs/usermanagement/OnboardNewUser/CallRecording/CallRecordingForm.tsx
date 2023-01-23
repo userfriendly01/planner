@@ -230,6 +230,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
     <FormControlsContainer>
       <FormControlsPane>
         <Dropdown
+          disabled={form.formMode === formModes.DELETE}
           label="Roles"
           multiple={true}
           options={getRoleOptions()}
@@ -241,6 +242,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
           styles={{ width: "300px" }}
         />
         <Dropdown
+          disabled={form.formMode === formModes.DELETE}
           label="Team"
           options={getTeamOptions()}
           value={form.calabrioUser.team ?{
@@ -255,6 +257,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
           styles={{ width: "300px" }}
         />
         <Dropdown
+          disabled={form.formMode === formModes.DELETE}
           label="Time Zone"
           options={calabrioTimeZones}
           value={form.calabrioUser.timezone}
