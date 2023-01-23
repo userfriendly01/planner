@@ -31,7 +31,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
   const defaultNewQueue: Skill[] = [];
   const [newProfileQueue, setNewProfileQueue] = React.useState<Skill[]>(defaultNewQueue);
   const queues = useAdminState().skillContext.skills;
-  let filteredQueues = queues.filter(queue => queue.ctmSkillId !== null).sort(sortQueueByName);
+  const [filteredQueues, setFilteredQueues] = React.useState<Skill[]>(defaultNewQueue);
   const [aggregateQueues, setAggregateQueues] = React.useState([]);
   const aggregateQueuesType = 'aggregate';
 
@@ -42,7 +42,9 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
           console.log('allAggregateQueues', allAggregateQueues);
           console.log('filteredQueues', filteredQueues);
 
-          filteredQueues.unshift.apply(filteredQueues, allAggregateQueues.map(queue => {
+          let allQueues = queues.filter(queue => queue.ctmSkillId !== null).sort(sortQueueByName);
+
+          allQueues.unshift.apply(allQueues, allAggregateQueues.map(queue => {
             return {
               name: "",
               timeOfDays: [],
@@ -57,7 +59,9 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
               profiles: []
             }
           }));
-          console.log('filteredQueues', filteredQueues);
+          console.log('allQueues', allQueues);
+
+          setFilteredQueues(allQueues);
           setAggregateQueues(allAggregateQueues);
         })
         .catch((error: { msg: any; }) => console.error(error.msg));
