@@ -278,7 +278,11 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
     case userFormActions.RESET_FORM: {
       console.log("initialUserFormState should have empty skill object", initialUserFormState);
       return {
-        ...initialUserFormState
+        ...initialUserFormState,
+        defaultSkills: {
+          skills: [],
+          levels: {}
+        }
       };
     }
     case userFormActions.RESET_FORM_AFTER_ADD: {
@@ -289,6 +293,10 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
 
       return {
         ...initialUserFormState,
+        defaultSkills: {
+          skills: [],
+          levels: {}
+        },
         didUser,
         manager: {
           value: manager,

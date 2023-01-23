@@ -40,11 +40,13 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
   };
 
   const handleEditManager = async (option: DropdownOption) => {
+    setFilter(option.value);
     setSelectedManager(managers.find(manager => manager.manager_n_number === option.value));
     setIsManagerModalOpen(true);
   };
 
   const handleOpenDeleteManager = async (option: DropdownOption) => {
+    setFilter(option.value);
     setSelectedManager(managers.find(manager => manager.manager_n_number === option.value));
     setIsManagerDeleteOpen(true);
   };

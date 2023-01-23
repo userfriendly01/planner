@@ -129,13 +129,18 @@ describe("<UserEntryForm />", () => {
         expect(rendered.container).toHaveTextContent("Onboard New User");
       });
       test(`Header should read 'Edit User' & user's name when form.formMode === ${formModes.UPDATE}`, () => {
-        useFormState.mockReturnValue({
-          ...initialFormState,
-          formMode: formModes.UPDATE
-        });
-        // const rendered = renderComponent();
-        // expect(rendered.container).toHaveTextContent("Edit User");
-        // expect(rendered.container).toHaveTextContent("Test 1");
+        const rendered = render(
+          <UserEntryForm
+            workerOpts= {{
+              ...mockWorkerOpts,
+              action: "edit"
+            }}
+            setWorkerOpts = {mockSetWorkerOpts}
+            handleClose={mockHandleClose}
+          />
+        );
+        expect(rendered.container).toHaveTextContent("Edit User");
+        expect(rendered.container).toHaveTextContent("Test 1");
       });
     });
     describe("Discrepancies are present", () => {
@@ -164,8 +169,6 @@ describe("<UserEntryForm />", () => {
         act(() => {
           handleClose();
         });
-        //Faith
-        // expect(mockHandleClose).toBeCalledTimes(1);
       });
     });
   });
