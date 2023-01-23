@@ -80,6 +80,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
     <FormControlsContainer>
       <FormControlsPane>
         <Dropdown
+          disabled={form.formMode === formModes.DELETE}
           error={form.manager.blurred && !isManagerValid(form)}
           label={"Manager *"}
           styles={{
@@ -114,6 +115,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           value={form.manager.value ? `${form.manager.value.manager_first_name} ${form.manager.value.manager_last_name} - ${form.manager.value.manager_n_number}`: ""}
         />
         <Dropdown
+          disabled={form.formMode === formModes.DELETE}
           error={form.profileId.blurred && !isProfileIdValid(form)}
           label={"Team *"}
           styles={{
@@ -132,7 +134,11 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           value={profiles.find(p => p.profile_id === form.profileId.value)?.profile_nme || ""}
         />
         <NNumberInput
-          disabled={(form.formMode === formModes.UPDATE) || (form.nNumberFetchedUser ? true : false)}
+          disabled={
+            (form.formMode === formModes.UPDATE) ||
+            (form.nNumberFetchedUser ? true : false) ||
+            form.formMode === formModes.DELETE
+          }
           fetchedUser={form.nNumberFetchedUser}
           label="N Number *"
           onBlur={() => handleOnBlur("nNumber")}
@@ -187,7 +193,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
               <Switch
                 checked={form.zeroOutEnabled}
                 value={form.zeroOutEnabled}
-                disabled={getOverflowSkillFromProfile(profiles, form.profileId.value) === undefined}
+                disabled={getOverflowSkillFromProfile(profiles, form.profileId.value) === undefined || form.formMode === formModes.DELETE}
                 onChange={() => setForm({ type: userFormActions.INITIATE_ZERO_OUT_FIELDS })}
                 inputProps={{ "aria-label": "toggle-zero-out" }}
               />
@@ -198,6 +204,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
         }
         {form.didUser ? (
           <ExtensionInput
+            disabled={form.formMode === formModes.DELETE}
             extension={form.extension.value}
             message={form.extensionStatus.message}
             isError={form.extensionStatus.isError}
@@ -208,7 +215,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
       <RightColumn>
         {!form.didUser ?
           <PhoneNumberInput
-            disabled={isOutgoingDisabled()}
+            disabled={isOutgoingDisabled() || form.formMode === formModes.DELETE}
             allowSevenDigitVdn={false}
             id="outgoing-number"
             number={form.outgoing.value}

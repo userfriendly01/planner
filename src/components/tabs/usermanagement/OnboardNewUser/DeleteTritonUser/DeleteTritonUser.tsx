@@ -87,51 +87,9 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
       });
   };
 
-  const wtf = () => {
-    console.log("**WWHHHAATTT TFF");
-  };
-
   return (
     <DeleteTritonUserWrapper>
-      <Text>This user will be deleted/deactivated from the checked systems.</Text>
-      <CheckboxWrapper>
-        { workerOpts.systems.triton && <>
-          <FormControlLabel
-            control={
-              <Radio
-                checked={deleteTriton}
-                value="triton"
-                onClick={() => setDeleteTriton(!deleteTriton)}
-              />}
-            label="Triton"
-            labelPlacement="bottom"
-          />
-        </>}
-        { workerOpts.systems.calabrio_qm && <>
-          <FormControlLabel
-            control={
-              <Radio
-                checked={deleteCalabrioQm}
-                onChange={event => setDeleteClabrioQm(event.target.checked)}
-                value="calabrio-qm"
-              />}
-            label="Calabrio QM"
-            labelPlacement="bottom"
-          />
-        </>}
-        { workerOpts.systems.calabrio_wfm && <>
-          <FormControlLabel
-            control={
-              <Radio
-                checked={deleteCalabrioWfm}
-                onChange={event => setDeleteCalabrioWfm(event.target.checked)}
-                value="calabrio-wfm"
-              />}
-            label="Calabrio WFM"
-            labelPlacement="bottom"
-          />
-        </>}
-      </CheckboxWrapper>
+      <Text>This user will be deactivated in Triton.</Text>
       { isWorkerDid ?
         <ForwardToEntryForm
           label={"This user has a direct dial number. Please choose a forward to option before confirming."}

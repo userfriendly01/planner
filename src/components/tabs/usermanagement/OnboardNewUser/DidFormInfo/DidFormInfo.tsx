@@ -55,7 +55,7 @@ const DidFormInfo = (props: DidFormInfoProps) => {
   return(
     <FormControlsPane>
       <PhoneNumberInput
-        disabled={form.editDisabled}
+        disabled={form.editDisabled || form.formMode === formModes.DELETE}
         allowSevenDigitVdn={false}
         id="direct-dial-number"
         number={form.directDialNum.value}
@@ -104,7 +104,11 @@ const DidFormInfo = (props: DidFormInfoProps) => {
         />
       )}
       <PhoneNumberInput
-        disabled={!worker?.alternateDid || form.formMode === formModes.INSERT ? false : true}
+        disabled={
+          !worker?.alternateDid ||
+          form.formMode === formModes.INSERT ? false : true ||
+          form.formMode === formModes.DELETE
+        }
         allowSevenDigitVdn={false}
         id="skype-teams-did"
         number={form.alternateDid.value}
