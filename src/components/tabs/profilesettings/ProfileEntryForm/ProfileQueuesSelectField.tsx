@@ -66,6 +66,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
   }, []);
 
   const profileQueuesForDropDown = filteredQueues.filter(queue => {
+    console.log(profileQueuesForDropDown, filteredQueues);
     return !transferQueues.find(item => {
       return item.ctmSkillId === queue.ctmSkillId;
     });
