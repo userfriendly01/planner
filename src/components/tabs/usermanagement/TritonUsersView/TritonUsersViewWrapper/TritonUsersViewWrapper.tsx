@@ -42,15 +42,11 @@ const TritonUserManagementWrapper: any = (props: TritonUserManagementWrapperProp
 
   React.useEffect(() => {
     let filteredList = state.workerContext.workers.slice().sort(sortWorkersByFullName);
-    console.log("**Starting FL", filteredList);
     console.log("tableState", tableState);
 
     //filter by manager
     if(tableState.managerFilter){
-      // const managerFound = state.managerContext.managers.find((manager: Manager) => manager.manager_n_number === tableState.manager);
-      // if(managerFound){
       filteredList = filteredList.filter((worker: Worker) => worker.attributes.manager_n_number === tableState.managerFilter);
-      // }
     }
     console.log("**Manager FL", filteredList);
 
