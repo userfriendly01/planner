@@ -36,6 +36,8 @@ const UserManagementWrapper = () => {
   const [ view, setView ] = React.useState(views.TRITON_USERS);
   const state = useAdminState();
 
+  console.log("User Management details, workerOpts, view", selectedWorkerOpts, view);
+
   React.useEffect(() => {
     if(selectedWorkerOpts.action !== UserAction.ADD && selectedWorkerOpts.worker){
       setSelectedWorkerOpts({
@@ -70,7 +72,10 @@ const UserManagementWrapper = () => {
           setWorkerOpts={setSelectedWorkerOpts}
         />}
         {view === views.ONBOARD_NEW_USER && <UserEntryForm
-          handleClose={() => setView(selectedWorkerOpts.routedFrom)}
+          handleClose={() => {
+            setSelectedWorkerOpts(defaultWorkerOpts);
+            setView(selectedWorkerOpts.routedFrom);
+          }}
           workerOpts={selectedWorkerOpts}
           setWorkerOpts={setSelectedWorkerOpts}
         />}

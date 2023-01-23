@@ -159,10 +159,6 @@ const CallRecordingScope = (props: any) => {
     return !groups.some((group: any) => group.checked === false) && !teams.some((team: any) => team.checked === false);
   };
 
-  console.log("Call Recording Scope = Groups", groups);
-  console.log("Call Recording Scope = selectedGroup", selectedGroup);
-
-
   return(
     <>
       { groups.length > 0 && selectedGroup ?
