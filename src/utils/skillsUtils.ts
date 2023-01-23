@@ -45,17 +45,17 @@ export const formatSkillGroups = (skillsArray: Skill[]): any[] => {
   skillsWithGroups.forEach(sk => {
     sk.ctmSkillGroups.forEach(group => {
       const groupInGroupsArray = groups.find(g => g.skillGroupId === group.skillGroupId);
+      const skillCopy = JSON.parse(JSON.stringify(sk));
+      delete skillCopy.ctmSkillGroups; // take of the skillGroups from this layer or we'll have neverending data
       if (groupInGroupsArray) {
-        groupInGroupsArray.skills.push(sk);
+        groupInGroupsArray.skills.push(skillCopy);
       } else {
         const newGroup = group;
-        const skillCopy = JSON.parse(JSON.stringify(sk));
-        delete skillCopy.ctmSkillGroups;  // take of the skillGroups from this layer or we'll have neverending data
         newGroup.skills = [skillCopy];
         groups.push(newGroup);
       }
     });
   });
-  console.log("***** groups", groups);
+
   return groups;
 };

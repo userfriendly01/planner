@@ -8,8 +8,7 @@ import {
   propertyOptions,
   ActionContainerProps
 } from "../Skills.Interfaces";
-import SkillGroupInputContainer from "../DefaultSkillGroups/SkillGroupInputContainer/SkillGroupInputContainer";
-
+import { SkillGroupInputContainer } from "../DefaultSkillGroups";
 
 const ActionContainer = (props: ActionContainerProps) => {
   const {

@@ -17,7 +17,7 @@ import {
 import {
   ConfirmationSkillGroupsDiv,
   ConfirmationSkillList
-} from "../DefaultSkillGroup.Styles";
+} from "../";
 
 
 const SkillGroupInputContainer = (props: any) => {
@@ -74,7 +74,7 @@ const SkillGroupInputContainer = (props: any) => {
       return !skillGroupExists;
     }
     return true;
-  }
+  };
 
   const handleAddSkillGroup = async () => {
 
