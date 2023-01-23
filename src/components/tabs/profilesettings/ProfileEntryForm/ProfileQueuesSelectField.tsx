@@ -31,7 +31,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
   const defaultNewQueue: Skill[] = [];
   const [newProfileQueue, setNewProfileQueue] = React.useState<Skill[]>(defaultNewQueue);
   const queues = useAdminState().skillContext.skills;
-  const [filteredQueues, setFilteredQueues] = React.useState(queues.filter(queue => queue.ctmSkillId !== null).sort(sortQueueByName));
+  let filteredQueues = queues.filter(queue => queue.ctmSkillId !== null).sort(sortQueueByName);
   const [aggregateQueues, setAggregateQueues] = React.useState([]);
   const aggregateQueuesType = 'aggregate';
 
@@ -42,7 +42,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
           console.log('allAggregateQueues', allAggregateQueues);
           console.log('filteredQueues', filteredQueues);
 
-          setFilteredQueues(filteredQueues.unshift.apply(filteredQueues, allAggregateQueues.map(queue => {
+          filteredQueues.unshift.apply(filteredQueues, allAggregateQueues.map(queue => {
             return {
               name: "",
               timeOfDays: [],
@@ -56,7 +56,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
               ctmSkillId: -queue.aggregate_queues_id,
               profiles: []
             }
-          })));
+          }));
           console.log('filteredQueues', filteredQueues);
           setAggregateQueues(allAggregateQueues);
         })
