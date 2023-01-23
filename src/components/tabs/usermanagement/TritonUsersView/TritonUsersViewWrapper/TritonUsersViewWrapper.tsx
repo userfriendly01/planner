@@ -45,7 +45,7 @@ const TritonUserManagementWrapper: any = (props: TritonUserManagementWrapperProp
     console.log("tableState", tableState);
 
     //filter by manager
-    if(tableState.managerFilter){
+    if(tableState.managerFilter && tableState.managerFilter !== "show-all"){
       filteredList = filteredList.filter((worker: Worker) => worker.attributes.manager_n_number === tableState.managerFilter);
     }
     console.log("**Manager FL", filteredList);

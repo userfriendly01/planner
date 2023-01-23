@@ -25,7 +25,7 @@ const UserManagementWrapper = () => {
   const defaultWorkerOpts: WorkerOpts = {
     worker: {},
     action: UserAction.ADD,
-    routedFrom: null,
+    routedFrom: views.TRITON_USERS,
     systems: {
       triton: true,
       calabrio_qm: true,

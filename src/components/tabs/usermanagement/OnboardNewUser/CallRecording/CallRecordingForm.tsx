@@ -42,7 +42,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
       setScopeOnNewUser();
     }
 
-  }, []);
+  }, [form]);
 
   React.useEffect(() => {
     if(form.nNumberFetchedUser && form.formMode === formModes.UPDATE) {
