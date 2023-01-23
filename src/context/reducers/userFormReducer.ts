@@ -276,6 +276,7 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
       };
     }
     case userFormActions.RESET_FORM: {
+      console.log("initialUserFormState should have empty skill object", initialUserFormState);
       return {
         ...initialUserFormState
       };
