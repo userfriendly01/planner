@@ -44,7 +44,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
           console.log('allAggregateQueues', allAggregateQueues);
           console.log('filteredQueues', filteredQueues);
 
-          filteredQueues.unshift.apply(allAggregateQueues.map(queue => {
+          filteredQueues.unshift.apply(filteredQueues, allAggregateQueues.map(queue => {
             return {
               name: "",
               timeOfDays: [],
@@ -55,7 +55,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
               vhCallTarget: null,
               levels: [],
               ctmSkillDisplayName: queue.aggregate_queues_nme,
-              ctmSkillId: -Math.abs(queue.aggregate_queues_id),
+              ctmSkillId: -queue.aggregate_queues_id,
               profiles: []
             }
           }));
