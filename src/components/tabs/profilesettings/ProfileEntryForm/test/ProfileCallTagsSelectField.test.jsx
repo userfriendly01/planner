@@ -3,7 +3,9 @@ import {
   Add,
   Delete
 } from "@mui/icons-material";
-import { getCallTags, getCallTagOptions } from "services";
+import {
+  getCallTags, getCallTagOptions
+} from "services";
 import MockAdapter from "axios-mock-adapter";
 import { Dropdown } from "components";
 import React from "react";
@@ -18,7 +20,11 @@ import {
   mockCallTags,
   mockCallTagOptions
 } from "testUtils";
-import { apiPaths } from "globals";
+import { ThemeProvider } from "styled-components";
+import {
+  apiPaths,
+  theme
+} from "globals";
 import { Tooltip } from "@mui/material";
 import { act } from "react-dom/test-utils";
 
@@ -48,11 +54,15 @@ const callTagsEndpoint = apiPaths.GET_CALL_TAGS;
 const callTagOptionsEndpoint = apiPaths.GET_CALL_TAGS_OPTIONS;
 const mockSetCallTagsList = jest.fn();
 const mockCallTagOptionsList = jest.fn();
-const renderComponent = (mockCallTagsList, mockCallTagOptionsList, mockSetCallTagsList) => render(<ProfileCallTagsSelectField
-  callTagsList={mockCallTagsList}
-  callTagOptionsList={mockCallTagOptionsList}
-  setCallTagsList={mockSetCallTagsList}
-/>, initialTestState);
+const renderComponent = (mockCallTagsList, mockCallTagOptionsList, mockSetCallTagsList) => render(
+  <ThemeProvider theme={theme}>
+    <ProfileCallTagsSelectField
+      callTagsList={mockCallTagsList}
+      callTagOptionsList={mockCallTagOptionsList}
+      setCallTagsList={mockSetCallTagsList}
+    />
+  </ThemeProvider>
+  , initialTestState);
 
 const getAddCallTagButton = rendered => rendered.getByTestId("add-profileCallTag-button");
 const getDeleteCallTagButton = (rendered, instance) => rendered.getAllByTestId("delete-callTag-button")[instance];
@@ -96,7 +106,7 @@ describe("<ProfileCallTagsSelectField />", () => {
       });
     });
   });
-  
+
   describe("changes made to the add callTags drop down", () => {
     beforeEach(() => {
       const mockNewCallTag = [   {

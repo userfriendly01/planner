@@ -1,5 +1,3 @@
-import { initialState } from "context";
-
 export const managerList = [
   {
     manager_first_name: "John",
@@ -294,7 +292,6 @@ export const mockCallTagOptions = [
 ];
 
 export const initialTestState = {
-  ...initialState,
   officeContext: {
     offices: officeMap
   },
@@ -306,12 +303,6 @@ export const initialTestState = {
   },
   skillContext: {
     skills: skillsList
-  },
-  callTagsContext: {
-    callTags: mockCallTags
-  },
-  callTagOptionsContext: {
-    callTagOptions: mockCallTagOptions
   },
   userContext: {
     pingIdentity: {
@@ -355,5 +346,6 @@ export const initialTestState = {
       }
     ]
   },
-  calabrioContext
+  calabrioContext,
+  resettingSkills: false
 };
