@@ -22,7 +22,6 @@ import {
 } from "globals";
 import React, { useState } from "react";
 import { createCalabrioTeam } from "services";
-
 export interface TeamModalProps {
   handleClose: (res: any) => void
 }

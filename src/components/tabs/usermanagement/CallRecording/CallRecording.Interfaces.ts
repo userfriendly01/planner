@@ -4,6 +4,7 @@ export const calabrioGroupLevels: any = {
   TEAM: "TEAM"
 };
 
+
 export const searchByOptions = {
   NAME: "name",
   N_NUMBER: "nNumber",
@@ -16,7 +17,6 @@ export interface ConflictingUserResult {
   scenario?: number,
   searchBy?: string,
 }
-
 export interface CalabrioFetchedUser {
   [key: string]: any,
   acdId: string,
@@ -41,7 +41,6 @@ export interface CalabrioFetchedUser {
     teams: number[]
   }
 }
-
 export interface CalabrioGroup {
   groupId: number,
   name: string,
@@ -51,7 +50,6 @@ export interface CalabrioGroup {
   groupLevel: string,
   agents?: CalabrioUser[]
 }
-
 export interface CalabrioGroupLevel {
   GROUP: string,
   TEAM: string
