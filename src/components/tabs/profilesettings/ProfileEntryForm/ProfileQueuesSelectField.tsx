@@ -30,19 +30,19 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
 
   const defaultNewQueue: Skill[] = [];
   const [newProfileQueue, setNewProfileQueue] = React.useState<Skill[]>(defaultNewQueue);
+  const queues = useAdminState().skillContext.skills;
+  const [filteredQueues, setFilteredQueues] = React.useState(queues.filter(queue => queue.ctmSkillId !== null).sort(sortQueueByName));
   const [aggregateQueues, setAggregateQueues] = React.useState([]);
   const aggregateQueuesType = 'aggregate';
-  let sortedTransferQueues = useAdminState().skillContext.skills.filter(queue => queue.ctmSkillId !== null).sort(sortQueueByName);
-  let allQueues: Skill[] = [];
 
   React.useEffect(() => {
     if(!aggregateQueues.length) {
       getAggregateQueuesType(aggregateQueuesType)
         .then((allAggregateQueues: AggregateQueue[]) => {
           console.log('allAggregateQueues', allAggregateQueues);
-          console.log('sortedTransferQueues', sortedTransferQueues);
+          console.log('filteredQueues', filteredQueues);
 
-          allQueues = sortedTransferQueues.unshift.apply(sortedTransferQueues, allAggregateQueues.map(queue => {
+          setFilteredQueues(filteredQueues.unshift.apply(filteredQueues, allAggregateQueues.map(queue => {
             return {
               name: "",
               timeOfDays: [],
@@ -56,22 +56,22 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
               ctmSkillId: -queue.aggregate_queues_id,
               profiles: []
             }
-          }));
-          console.log('allQueues', allQueues);
+          })));
+          console.log('filteredQueues', filteredQueues);
           setAggregateQueues(allAggregateQueues);
         })
         .catch((error: { msg: any; }) => console.error(error.msg));
     }
   }, []);
 
-  const profileQueuesForDropDown = allQueues.filter(queue => {
+  const profileQueuesForDropDown = filteredQueues.filter(queue => {
     return !transferQueues.find(item => {
       return item.ctmSkillId === queue.ctmSkillId;
     });
   });
 
   const newProfileQueueChanged = (profileQueue: Array<{[index: string]: any, value: number}>) => {
-    const selectedQueues = profileQueue.map(selectedQueue => allQueues.find(queue => selectedQueue.value === queue.ctmSkillId));
+    const selectedQueues = profileQueue.map(selectedQueue => filteredQueues.find(queue => selectedQueue.value === queue.ctmSkillId));
     setNewProfileQueue(selectedQueues);
   };
 
