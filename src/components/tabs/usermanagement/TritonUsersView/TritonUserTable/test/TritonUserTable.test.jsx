@@ -114,8 +114,8 @@ describe("<TritonUserTable />", () => {
       expect(Switch.mock.calls.length).toBe(1);
       expect(Switch.mock.calls[0][0].checked).toBe(false);
       expect(ChangeHistoryRounded.mock.calls.length).toBe(1);
-      expect(Edit.mock.calls.length).toBe(4);
-      expect(Delete.mock.calls.length).toBe(4);
+      expect(Edit.mock.calls.length).toBe(initialTestState.workerContext.workers.length);
+      expect(Delete.mock.calls.length).toBe(initialTestState.workerContext.workers.length);
     });
     describe("resettingSkills === true", () => {
       beforeEach(() => {

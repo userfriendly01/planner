@@ -111,18 +111,18 @@ export const identifyUserProfiles = (state: AppState, workerOpts: WorkerOpts) =>
       systems.calabrio_wfm = false;
       return systems;
     }
-    case views.CALABRIO_QM_USERS: {
-      const acdId = worker.acdId.toLowerCase();
-      const calabrioQmUser = state.workerContext.workers.find(worker => worker.sid?.toLowerCase() === acdId);
+    // case views.CALABRIO_QM_USERS: {
+    //   const acdId = worker.acdId.toLowerCase();
+    //   const calabrioQmUser = state.workerContext.workers.find(worker => worker.sid?.toLowerCase() === acdId);
 
-      systems.triton = true,
-      systems.calabrio_qm = calabrioQmUser ? true : false;
-      systems.calabrio_wfm = false;
-      return systems;
-    }
-    case views.CALABRIO_WFM_USERS:
-      //future enhancement
-      return systems;
+    //   systems.triton = true,
+    //   systems.calabrio_qm = calabrioQmUser ? true : false;
+    //   systems.calabrio_wfm = false;
+    //   return systems;
+    // }
+    // case views.CALABRIO_WFM_USERS:
+    //   //future enhancement
+    //   return systems;
     default:
       console.log("**Hit default switch", routedFrom);
 
