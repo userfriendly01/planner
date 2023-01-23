@@ -46,17 +46,8 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
 
           allQueues.unshift.apply(allQueues, allAggregateQueues.map(queue => {
             return {
-              name: "",
-              timeOfDays: [],
-              flashMessage: null,
-              closedMessage: null,
-              vhThreshold: 0,
-              vhCallerId: null,
-              vhCallTarget: null,
-              levels: [],
               ctmSkillDisplayName: queue.aggregate_queues_nme,
-              ctmSkillId: -queue.aggregate_queues_id,
-              profiles: []
+              ctmSkillId: -Math.abs(queue.aggregate_queues_id)
             }
           }));
           console.log('allQueues', allQueues);
