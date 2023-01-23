@@ -9,7 +9,6 @@ import {
   WorkerOpts
 } from "../OnboardNewUser/UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 import {
-  BulkUpload,
   UserEntryForm,
   Dropdown,
   TritonUsersViewWrapper
@@ -22,9 +21,6 @@ import { identifyUserProfiles } from "utils";
 
 const UserManagementWrapper = () => {
 
-  const [ view, setView ] = React.useState(views.TRITON_USERS);
-  const state = useAdminState();
-
   const defaultWorkerOpts: WorkerOpts = {
     worker: {},
     action: UserAction.ADD,
@@ -36,6 +32,8 @@ const UserManagementWrapper = () => {
     }
   };
   const [ selectedWorkerOpts, setSelectedWorkerOpts ] = React.useState(defaultWorkerOpts);
+  const [ view, setView ] = React.useState(views.TRITON_USERS);
+  const state = useAdminState();
 
   React.useEffect(() => {
     if(selectedWorkerOpts.action !== UserAction.ADD && selectedWorkerOpts.worker){
@@ -55,9 +53,7 @@ const UserManagementWrapper = () => {
           value={view}
           options={Object.values(views)}
           updateValue={(event: any, view: View) => {
-            console.log("**wtf is happeneing", view);
             if(view === views.ONBOARD_NEW_USER){
-              console.log("**I should be setting this shit", defaultWorkerOpts);
               setSelectedWorkerOpts(defaultWorkerOpts);
             }
             setView(view);
@@ -67,17 +63,16 @@ const UserManagementWrapper = () => {
             width: "500px"
           }}
         />
-        {view === views.ONBOARD_NEW_USER && <UserEntryForm
-          handleClose={() => setView(selectedWorkerOpts.routedFrom)}
-          workerOpts={selectedWorkerOpts}
-          setWorkerOpts={setSelectedWorkerOpts}
-        />}
         {view === views.TRITON_USERS && <TritonUsersViewWrapper
           setView={setView}
           workerOpts={selectedWorkerOpts}
           setWorkerOpts={setSelectedWorkerOpts}
         />}
-        {view === views.BULK_CHANGES && <BulkUpload />}
+        {view === views.ONBOARD_NEW_USER && <UserEntryForm
+          handleClose={() => setView(selectedWorkerOpts.routedFrom)}
+          workerOpts={selectedWorkerOpts}
+          setWorkerOpts={setSelectedWorkerOpts}
+        />}
       </CallflowWrapper>
     </FormStateProvider>
   );

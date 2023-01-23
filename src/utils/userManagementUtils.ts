@@ -106,7 +106,6 @@ export const identifyUserProfiles = (state: AppState, workerOpts: WorkerOpts) =>
       const workerSid = worker.sid?.toLowerCase();
       const email = worker.attributes?.email?.toLowerCase();
       const calabrioQmUser = state.calabrioContext.users.find(user => user.acdId?.toLowerCase() === workerSid) || state.calabrioContext.users.find((user: any) => user.email?.toLowerCase() === email);
-      console.log("**Hit Triton switch", systems);
       systems.triton = true,
       systems.calabrio_qm = calabrioQmUser ? true : false;
       systems.calabrio_wfm = false;
