@@ -152,9 +152,9 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         };
       });
 
-      const transferQueues = profile.aggregateQueues.map((queue: { aggregate_queues_id: number; aggregate_queues_nme: string; aggregate_queues_type: string; }) => {
+      const transferQueues = profile.aggregateQueues.map((queue: { aggregate_queues_id: number; aggregate_queues_nme: string; aggregate_queues_type: string; queues: { skill_id: number; }[] }) => {
         return {
-          ctmSkillId: queue.aggregate_queues_type === 'aggregate' ? -Math.abs(queue.aggregate_queues_id) : queue.aggregate_queues_id,
+          ctmSkillId: queue.aggregate_queues_type === 'aggregate' ? -Math.abs(queue.aggregate_queues_id) : queue.queues[0].skill_id,
           ctmSkillDisplayName: queue.aggregate_queues_nme
         };
       });

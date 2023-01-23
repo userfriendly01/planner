@@ -39,19 +39,13 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
     if(!aggregateQueues.length) {
       getAggregateQueuesType(aggregateQueuesType)
         .then((allAggregateQueues: AggregateQueue[]) => {
-          console.log('allAggregateQueues', allAggregateQueues);
-          console.log('filteredQueues', filteredQueues);
-
           let allQueues = queues.filter(queue => queue.ctmSkillId !== null).sort(sortQueueByName);
-
           allQueues.unshift.apply(allQueues, allAggregateQueues.map(queue => {
             return {
               ctmSkillDisplayName: queue.aggregate_queues_nme,
               ctmSkillId: -Math.abs(queue.aggregate_queues_id)
             }
           }));
-          console.log('allQueues', allQueues);
-
           setFilteredQueues(allQueues);
           setAggregateQueues(allAggregateQueues);
         })
