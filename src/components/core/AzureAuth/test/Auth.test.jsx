@@ -1,5 +1,8 @@
-import { authWrapper, PERMISSIONS } from "../Auth";
+import {
+  authWrapper, PERMISSIONS
+} from "../Auth";
 import { LoginInProgress } from "../LoginInProgress";
+import { LoginError } from "../LoginError";
 import React from "react";
 import {
   render,
@@ -11,27 +14,20 @@ jest.mock("../LoginInProgress", () => ({
   LoginInProgress: jest.fn()
 }));
 
-// jest.mock("msal", () => ({
-//   __esModule: true,
-//   UserAgentApplication: jest.fn().mockImplementation(() => {
-//     return {
-//       acquireTokenPopup: jest.fn().mockResolvedValue({
-//         accessToken: "mockt-test-token-1234"
-//       }),
-//       handleRedirectCallback: jest.fn((success, error)=> {}),
-//       isCallback: jest.fn().mockReturnValue(false),
-//       getAccount: jest.fn().mockReturnValue(true),
-//       loginRedirect: jest.fn()
-//     };
-//   })
-// }));
+jest.mock("../LoginError", () => ({
+  __esModule: true,
+  LoginError: jest.fn()
+}));
+
 const xhrMockClass = () => ({
   open: jest.fn(),
-  send: jest.fn().mockReturnValue({value: [
-    {
-      displayName: PERMISSIONS.READ_GROUP_FLOW
-    }
-  ]}),
+  send: jest.fn().mockReturnValue({
+    value: [
+      {
+        displayName: PERMISSIONS.READ_GROUP_FLOW
+      }
+    ]
+  }),
   setRequestHeader: jest.fn()
 });
 
@@ -45,9 +41,33 @@ const renderComponent = () => render(
 );
 
 describe("<Auth />", () => {
+  describe("Success", () => {
+    it("renders", () => {
+      renderComponent();
+      expect(LoginInProgress.mock.calls.length).toBe(1);
+    });
+  });
+  describe("Error", () => {
 
-  it("renders", () => {
-    renderComponent();
-    expect(LoginInProgress.mock.calls.length).toBe(1);
+    beforeEach(() => {
+      jest.mock("msal", () => ({
+        __esModule: true,
+        UserAgentApplication: jest.fn().mockImplementation(() => {
+          return {
+            acquireTokenPopup: jest.fn()
+              .mockRejectedValueOnce(new Error("login is already in progress"))
+              .mockRejectedValueOnce(new Error("bad error")),
+            handleRedirectCallback: jest.fn((success, err) => err("mock error")),
+            isCallback: jest.fn().mockReturnValue(false),
+            getAccount: jest.fn().mockReturnValue(true),
+            loginRedirect: jest.fn()
+          };
+        })
+      }));
+    });
+    it("renders", () => {
+      renderComponent();
+      expect(LoginError.mock.calls.length).toBe(1);
+    });
   });
 });

@@ -4,7 +4,13 @@ import {
 } from "testUtils";
 import { AlohaFlowContainer } from "../index";
 import DataGridFlow from "../DataGridFlow/DataGridFlow";
+import { LoginInProgress } from "../../../core/AzureAuth/LoginInProgress";
 import React from "react";
+
+jest.mock("../../../core/AzureAuth/LoginInProgress", () => ({
+  __esModule: true,
+  LoginInProgress: jest.fn()
+}));
 
 jest.mock("msal", () => ({
   __esModule: true,
@@ -47,7 +53,6 @@ const renderComponent = () => render(
 describe("<AlohaFlowContainer />", () => {
   it("renders", () => {
     renderComponent();
-    expect(DataGridFlow).toBeCalledTimes(1);
-
+    expect(LoginInProgress.mock.calls.length).toBe(1);
   });
 });
