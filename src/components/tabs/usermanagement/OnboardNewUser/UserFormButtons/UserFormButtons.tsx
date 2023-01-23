@@ -434,7 +434,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
   return (
     <ButtonWrapper>
-      <UserFormButton onClick={() => handleClose()}>
+      <UserFormButton onClick={handleClose}>
           Close
       </UserFormButton>
       <UserFormButton onClick={() => setForm({ type: userFormActions.RESET_FORM })}>

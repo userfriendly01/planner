@@ -41,7 +41,7 @@ export interface WorkerOpts {
 export interface UserEntryFormProps {
   workerOpts: WorkerOpts,
   setWorkerOpts: (opts: WorkerOpts) => void,
-  handleClose: (reopen: boolean | void) => void
+  handleClose: () => void
 }
 
 export interface UserFormAccordionProps {
@@ -71,7 +71,7 @@ export interface DidFormInfoProps {
 }
 export interface UserFormButtonsProps {
   forwardToToggle: boolean,
-  handleClose: (reopen: boolean | void) => void,
+  handleClose: () => void,
   loading: LoadingState,
   offices: Map<string, Office>,
   profiles: TritonProfile[],
