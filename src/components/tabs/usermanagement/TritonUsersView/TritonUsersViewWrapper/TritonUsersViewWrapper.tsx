@@ -87,7 +87,7 @@ const TritonUserManagementWrapper: any = (props: TritonUserManagementWrapperProp
       }
     });
     console.log("final filtered list", filteredList);
-  }, [tableState.searchBy, tableState.managerFilter, tableState.pagination.pageNumber, state.workerContext]);
+  }, [tableState.searchBy, tableState.deltaFilter, tableState.managerFilter, tableState.pagination.pageNumber, state.workerContext]);
 
   return (
     <ManagementContainer>
