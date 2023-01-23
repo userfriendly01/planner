@@ -1,5 +1,4 @@
 import { Worker } from "globals";
-
 export interface ManagementWrapperState {
   deltaToggle: boolean,
   pageSelected: number,
