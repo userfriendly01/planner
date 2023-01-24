@@ -2,12 +2,10 @@ import {
   Dropdown,
   ExportButton
 } from "components";
-import {
-  StyledHeader,
-  SkillsHeaderProps
-} from "../";
+import { SkillsHeaderProps } from "../Skills.Interfaces";
+import { StyledHeader } from "../Skills.Styles";
 import { getAuthenticationProfileTemplates } from "authentication";
-import { SearchBox } from "components/tabs/usermanagement";
+import { SearchBox } from "components";
 import { useAdminState } from "context";
 import { TritonProfile } from "globals";
 import React from "react";

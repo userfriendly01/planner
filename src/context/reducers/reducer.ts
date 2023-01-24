@@ -7,7 +7,7 @@ import {
   formatCalabrioTenant,
   formatCalabrioGroups,
   formatCalabrioRoles
-} from "utils";
+} from "utils/calabrioUtils";
 
 export const initialState: AppState = {
   managerContext: {

@@ -1,4 +1,4 @@
-import { CalabrioGroup } from "../components/tabs/usermanagement/CallRecording/CallRecording.Interfaces";
+import { CalabrioGroup } from "../components/tabs/usermanagement/OnboardNewUser/CallRecording/CallRecording.Interfaces";
 import { AuthenticationProfile } from "authentication";
 
 export interface Action {
@@ -65,7 +65,8 @@ export interface PingIdentity {
 
 export interface FormModes {
   INSERT: string,
-  UPDATE: string
+  UPDATE: string,
+  DELETE: string
 }
 
 export interface Manager {
@@ -226,4 +227,37 @@ export interface WorkerAttributeSkills {
     [key: string]: number
   },
   skills: string[]
+}
+
+export interface CalabrioQmUser {
+  acdId: string,
+  acdServerId: number,
+  activated: number,
+  adLogin: string,
+  deactivated: number,
+  displayId: string,
+  email: string,
+  firstName: string,
+  groupId: number,
+  id: number,
+  isHotdeskDefaultUser: boolean,
+  isReconcileOnly: boolean,
+  isSynchronized: boolean,
+  isSystemUser: boolean,
+  lastName: string,
+  timeZone: number
+}
+
+export interface TableStateProps {
+  [key: string]: any,
+  searchBy: string,
+  selected: any,
+  pagination: {
+    usersPerPage: number,
+    pageNumber: number,
+    length: number,
+    startingUserIndex: number | null,
+    endingUserIndex: number | null
+  },
+  filteredList: any[]
 }

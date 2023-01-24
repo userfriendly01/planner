@@ -21,6 +21,14 @@ import {
   getStartupProfiles
 } from "authentication";
 
+jest.mock("components", () => ({
+  UserManagementWrapper: jest.fn(),
+  ProfileSettingsContainer: jest.fn(),
+  CallFlowManagementWrapper: jest.fn(),
+  AlohaRoutingContainer: jest.fn(),
+  AlohaFlowContainer: jest.fn()
+}));
+
 const unformattedAdGroups = [
   "CN=gpi-cct-config-flow-read,OU=Infrastructure,OU=Security,OU=LM Groups,DC=lm,DC=lmig,DC=com",
   "CN=gci-cct-triton-dev-tritonadmin,OU=Infrastructure,OU=Security,OU=LM Groups,DC=lm,DC=lmig,DC=com"

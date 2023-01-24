@@ -1,7 +1,12 @@
 export const filterByNameAndSkills = (worker, searchValue) => {
-  if (!worker || !worker.attributes || !searchValue) {
+  if (!worker || !worker.attributes) {
     return false;
   }
+
+  if (!searchValue) {
+    return true;
+  }
+
   const name = worker.attributes.full_name?.toLowerCase() || "";
   const appliedSkills = worker.attributes.routing?.skills?.toString() || "";
   const defaultSkills = worker.attributes.default_skills?.skills?.toString() || "";
