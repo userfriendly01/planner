@@ -24,13 +24,17 @@ const BulkUpload = () => {
   };
 
   enum LoadingStatus {
-    LOADING = "loading"
+    LOADING = "loading",
+    VALIDATION_COMPLETE = "",
+    PROCESSING_COMPLETE = ""
   }
 
   const uploadButtonRef = React.useRef<HTMLInputElement>();
   const [ view, setView ] = React.useState(views.BULK_CREATE_USERS);
   const [ selectedTemplates, setSelectedTemplates ] = React.useState([]);
   const [ consolidatedTemplate, setConsolidatedTemplates ] = React.useState([]);
+  const [ uploadedForm, setUploadedForm ] = React.useState(null);
+  const [ validationErrors, setValidationErrors ] = React.useState(null);
   const [ loading, setLoading ] = React.useState(null);
 
   React.useEffect(() => {
@@ -43,7 +47,7 @@ const BulkUpload = () => {
 
   const updateSelectedTemplates = (checked: boolean, template: any) => {
     const templates = selectedTemplates.slice();
-    console.log("updateSelectedTemplates", templates);
+    console.log("updateSelectedTemplates", templates.slice());
     const templateFound = templates.some((t: any) => t.name === template.name);
     console.log("templateFound", templateFound);
 
@@ -58,9 +62,9 @@ const BulkUpload = () => {
   const consolidateTemplates = () => {
     const beginningArray: any = [];
     console.log("consolidateTemplates - selectedTemplates", selectedTemplates);
-    selectedTemplates.forEach((t: any) => beginningArray.push(t));
+    selectedTemplates.forEach((t: any) => beginningArray.push(...t.fields));
     const consolidatedFieldsList: any = [];
-    console.log("consolidateTemplates - beginningArray", beginningArray);
+    console.log("consolidateTemplates - beginningArray", beginningArray.slice());
     beginningArray.forEach((t: any) => {
       const duplicateField = consolidatedFieldsList.some((field: any) => field.field === t.fields.field);
       if(!duplicateField){
@@ -82,10 +86,19 @@ const BulkUpload = () => {
         const worksheet = workbook.Sheets[sheetName];
         const json = XLSX.utils.sheet_to_json(worksheet);
         console.log(json);
+        setUploadedForm(json);
         console.log("More Es", e);
       };
       reader.readAsArrayBuffer(e.target.files[0]);
     }
+  };
+
+  const validateFields = () => {
+    //Loop through consolidated fields
+    //Make sure they are all present, in the right format, and within the options where applicable
+    //collect errors
+    //forward errors to validation export button
+    //Confirmation is shown when process upload is clicked and validation is done
   };
 
   return (
@@ -117,10 +130,6 @@ const BulkUpload = () => {
           Step 3: Upload completed Spreadsheet
         </StepWrapper>
         <ImportButton onClick={() => uploadButtonRef.current.click()} >Upload Spreadsheet</ImportButton>
-        <input type="file" ref={uploadButtonRef} style={{
-          visibility: "hidden",
-          height: "0px"
-        }} onChange={readUploadFile} />
       </Row>
       <Row>
         <StepWrapper>
@@ -128,6 +137,10 @@ const BulkUpload = () => {
         </StepWrapper>
         <ImportButton>Process</ImportButton>
       </Row>
+      <input type="file" ref={uploadButtonRef} style={{
+        visibility: "hidden",
+        height: "0px"
+      }} onChange={readUploadFile} />
     </BulkChangesWrapper>
   );
 };
