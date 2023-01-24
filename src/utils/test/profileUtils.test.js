@@ -11,7 +11,8 @@ import {
   formatOverflowSkillData,
   formatActivityData,
   formatCallTagsName,
-  formatAggregateQueues
+  formatAggregateQueues,
+  createProfilePayload
 } from "../profileUtils";
 import {
   BubbleDiv,
@@ -154,7 +155,6 @@ describe("profileUtils", () => {
       ];
       expect(formatAggregateQueues(aggrQueue, BubbleDiv)).toStrictEqual([<BubbleDiv key={"PSU Claims - Level 1"}>{"PSU Claims - Level 1"}</BubbleDiv>]);
     });
-
     test("test should return aggregated queue with icon", () => {
       const aggrQueue = [
         {
@@ -176,10 +176,144 @@ describe("profileUtils", () => {
       ];
       expect(formatAggregateQueues(aggrQueue, BubbleDiv)).toStrictEqual([<BubbleDiv key={"PSU Claims - Level 1"}>{"PSU Claims - Level 1"} <AutoAwesomeMotion fontSize="1 rem"/></BubbleDiv>]);
     });
-
     test("no queues, test should be empty array", () => {
       const aggrQueue = [];
       expect(formatAggregateQueues(aggrQueue, BubbleDiv)).toStrictEqual([]);
+    });
+  });
+
+  describe("createProfilePayload", () => {
+    const form = {
+      profileId: 1,
+      activitiesList: [
+        {
+          activity_id: 1
+        },
+        {
+          activity_id: 7
+        },
+        {
+          activity_id: 12
+        },
+      ],
+      callTagsList: [
+        {
+          wrkr_tsk_info_id: 1,
+          wrkr_tsk_info_nme:'claim_number',
+          options_id: 1
+        },
+        {
+          wrkr_tsk_info_id: 2,
+          wrkr_tsk_info_nme:'aces_claim_number',
+          options_id: 1
+        }
+      ],
+      autoAnswered: {
+        value: true
+      },
+      inboundRecorded: {
+        value: true
+      },
+      outboundRecorded: {
+        value: true
+      },
+      acwOption: {
+        value: false
+      },
+      manualRecorded: {
+        value: false
+      },
+      acwDataEntry: {
+        value: true
+      },
+      manualRecordedInbound: {
+        value: true
+      },
+      agentAssistedPay: {
+        value: true
+      },
+      voiceMailTranscription: {
+        value: false
+      },
+      paymentProcessing: {
+        value: true
+      },
+      policyNumberEdit: {
+        value: false
+      },
+      clickToDial: {
+        value: false
+      },
+      overflowSkill: {
+        value: "OverflowTestSKill",
+        updated: false,
+        valid: true
+      },
+      profileName: {
+        value: "UnitTestProfile",
+        updated: false,
+        valid: false
+      },
+      transferQueues: [
+        {
+          ctmSkillId: 1,
+          ctmSkillDisplayName: "AISG"
+        },
+        {
+          ctmSkillId: 5,
+          ctmSkillDisplayName: "Gold"
+        },
+        {
+          ctmSkillId: -10,
+          ctmSkillDisplayName: "Licensed Sales Center"
+        }
+      ]
+    };
+
+    const expected = {
+      activities: [1,7,12],
+      acw_data_entry_i: true,
+      acw_option_i: false,
+      agent_assisted_pay_i: true,
+      aggregateQueues: [10],
+      auto_answd_i: true,
+      callTags: [
+        {
+          display_nme: "Claim Number",
+          options_id: 1,
+          wrkr_tsk_info_id: 1
+        },
+        {
+          display_nme: "Aces Claim Number",
+          options_id: 1,
+          wrkr_tsk_info_id: 2
+        }
+      ],
+      click_to_dial_i: false,
+      manual_record_inbound_i: true,
+      manual_recorded_i: false,
+      otbnd_recorded_i: true,
+      overflow_skill: "OverflowTestSKill",
+      pmt_prcsg_i: true,
+      policy_number_edit_i: false,
+      profile_id: 1,
+      profile_nme: "UnitTestProfile",
+      recorded_i: true,
+      transferQueues: [
+        {
+          skill_id: 1,
+          skill_nme: "AISG"
+        },
+        {
+          skill_id: 5,
+          skill_nme: "Gold"
+        }
+      ],
+      voice_mail_transcription_i: false
+    }
+
+    test("should return a formatted call tag with one underscore", () => {
+      expect(createProfilePayload(form)).toStrictEqual(expected);
     });
   });
 });

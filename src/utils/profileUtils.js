@@ -75,3 +75,38 @@ export const formatAggregateQueues = (aggregateQueues, BubbleDiv) => {
     }
   });
 };
+
+export const createProfilePayload = (form) => {
+  return {
+    profile_id: form.profileId,
+    profile_nme: form.profileName.value,
+    activities: form.activitiesList.map(activity => activity.activity_id),
+    recorded_i: form.inboundRecorded.value,
+    auto_answd_i: form.autoAnswered.value,
+    pmt_prcsg_i: form.paymentProcessing.value,
+    otbnd_recorded_i: form.outboundRecorded.value,
+    callTags: form.callTagsList.map(callTag => {
+      return {
+        wrkr_tsk_info_id: callTag.wrkr_tsk_info_id,
+        display_nme: formatCallTagsName(callTag.wrkr_tsk_info_nme),
+        options_id: callTag.options_id
+      };
+    }),
+    acw_option_i: form.acwOption.value,
+    manual_recorded_i: form.manualRecorded.value,
+    acw_data_entry_i: form.acwDataEntry.value,
+    manual_record_inbound_i: form.manualRecordedInbound.value,
+    agent_assisted_pay_i: form.agentAssistedPay.value,
+    overflow_skill: form.overflowSkill.value || null,
+    policy_number_edit_i: form.policyNumberEdit.value,
+    voice_mail_transcription_i: form.voiceMailTranscription.value,
+    click_to_dial_i: form.clickToDial.value,
+    transferQueues: form.transferQueues.filter(queue => queue.ctmSkillId > 0).map(queue => {
+      return {
+        skill_id: queue.ctmSkillId,
+        skill_nme: queue.ctmSkillDisplayName
+      };
+    }),
+    aggregateQueues: form.transferQueues.filter(queue => queue.ctmSkillId < 0).map(queue => Math.abs(queue.ctmSkillId))
+  };
+}
