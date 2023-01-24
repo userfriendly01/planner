@@ -28,6 +28,7 @@ const BulkUpload = () => {
     }
   };
 
+  const uploadButtonRef = React.useRef();
   const [ view, setView ] = React.useState(views.BULK_UPLOAD);
   const [ selectedTemplates, setSelectedTemplates ] = React.useState([]);
   const [ consolidatedTemplates, setConsolidatedTemplates ] = React.useState([]);
@@ -69,16 +70,17 @@ const BulkUpload = () => {
     e.preventDefault();
     if (e.target.files) {
       console.log("EEEE", e);
-      // const reader = new FileReader();
-      // reader.onload = e => {
+      const reader = new FileReader();
+      reader.onload = e => {
       //   const data = e.target.result;
       //   const workbook = xlsx.read(data, { type: "array" });
       //   const sheetName = workbook.SheetNames[0];
       //   const worksheet = workbook.Sheets[sheetName];
       //   const json = xlsx.utils.sheet_to_json(worksheet);
-      //   console.log(json);
-      // };
-      // reader.readAsArrayBuffer(e.target.files[0]);
+        // console.log(json);
+        console.log("More Es", e);
+      };
+      reader.readAsArrayBuffer(e.target.files[0]);
     }
   };
 
@@ -128,12 +130,11 @@ const BulkUpload = () => {
           label="Export Template"
           styles={{ width: "200px" }}
         />
-        <input
-          type="file"
-          name="upload"
-          id="upload"
-          onChange={readUploadFile}
-        />
+        <ImportButton onClick={() => uploadButtonRef.current.click()} >Upload Spreadsheet</ImportButton>
+        <input type="file" ref={uploadButtonRef} style={{
+          visibility: "hidden",
+          height: "0px"
+        }} onChange={readUploadFile} />
       </ButtonWrapper>
     </BulkChangesWrapper>
   );
