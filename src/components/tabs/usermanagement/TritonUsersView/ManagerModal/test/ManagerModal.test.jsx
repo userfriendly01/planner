@@ -51,6 +51,10 @@ jest.mock("@mui/material", () => ({
   Checkbox: jest.fn()
 }));
 
+jest.mock("@mui/x-date-pickers/TimePicker", () => ({
+  TimePicker: jest.fn()
+}));
+
 jest.mock("services", () => ({
   FetchUserResponse: jest.requireActual("services").FetchUserResponse,
   addManager: jest.fn(),
