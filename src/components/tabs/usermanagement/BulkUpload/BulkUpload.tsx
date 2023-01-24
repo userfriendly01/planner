@@ -1,15 +1,11 @@
 import React from "react";
 import {
   BulkChangesWrapper,
-  ButtonWrapper,
   ImportButton,
   Row,
   StepWrapper
 } from "./BulkUpload.Styles";
-import {
-  Dropdown,
-  StyledButton
-} from "components";
+import { Dropdown } from "components";
 import BulkCreateForm from "./BulkCreateForm";
 import ExportButtons from "./ExportButtons/ExportButtons";
 import * as XLSX from "xlsx";
@@ -58,15 +54,15 @@ const BulkUpload = () => {
     const beginningArray: any = [];
     console.log("consolidateTemplates - selectedTemplates", selectedTemplates);
     selectedTemplates.forEach((t: any) => beginningArray.push(...t));
-    const finalArray: any = [];
+    const consolidatedFieldsList: any = [];
     beginningArray.forEach((t: any) => {
-      const duplicateField = finalArray.some((caf: any) => caf.field === t.field);
+      const duplicateField = consolidatedFieldsList.some((field: any) => field === t.fields.field);
       if(!duplicateField){
-        finalArray.push(t);
+        consolidatedFieldsList.push(t.fields);
       }
     });
-    console.log("consolidateTemplates - finalArray", finalArray);
-    return finalArray;
+    console.log("consolidateTemplates - consolidatedFieldsList", consolidatedFieldsList);
+    return consolidatedFieldsList;
   };
 
   const readUploadFile = (e: any) => {
