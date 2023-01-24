@@ -2,7 +2,7 @@ require("@testing-library/jest-dom/extend-expect");
 require("jest-styled-components");
 
 beforeAll(() => {
-  // console.log = jest.fn();
+  console.log = jest.fn();
   console.error = jest.fn();
   console.warn = jest.fn();
 });
@@ -46,7 +46,6 @@ jest.mock("services", () => ({
   insertDirectory: jest.fn(),
   retrieveFlowData: jest.fn(),
   retrieveRoutingData: jest.fn(),
-  retrieveFlowData: jest.fn(),
   updateCalabrioUser: jest.fn(),
   updateClosedMessage: jest.fn(),
   updateDirectory: jest.fn(),

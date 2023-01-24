@@ -8,6 +8,7 @@ import {
   RoutingAdvanceSearch, EditRouting, AddRouting, CustomFlowRoutingToolBar
 } from "../../RoutingCustomActions";
 import { CustomToast } from "components";
+import { useAdminState } from "context";
 import {
   act,
   initialTestState,
@@ -39,6 +40,10 @@ jest.mock("../../RoutingCustomActions", ()=>({
   AddRouting: jest.fn(),
   EditRouting: jest.fn(),
   CustomFlowRoutingToolBar: jest.fn()
+}));
+
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
 }));
 
 
@@ -75,7 +80,7 @@ const filteredItems = {
 };
 
 const renderDataGridRouting = () =>{
-  return render(<DataGridRouting/>, initialTestState);
+  return render(<DataGridRouting/>);
 };
 
 describe("<DataGridRouting />", ()=>{
@@ -84,6 +89,7 @@ describe("<DataGridRouting />", ()=>{
   beforeEach(()=>{
     jest.clearAllMocks();
     retrieveRoutingData.mockReset();
+    useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       DataGrid,
       GridToolbar,

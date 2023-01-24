@@ -7,6 +7,7 @@ import {
 import {
   deleteFlowRule, updateFlowDB
 } from "services";
+import { useAdminState } from "context";
 import { CustomToast } from "components";
 
 jest.mock("components", () => {
@@ -15,6 +16,10 @@ jest.mock("components", () => {
     CustomToast: jest.fn()
   };
 });
+
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
+}));
 
 const validFlowData = {
   id: 1,
@@ -70,7 +75,7 @@ const openEditModal = jest.fn();
 
 const renderEditFlow = (isOpen, data) => {
   return render(
-    <EditFlow openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} />, initialTestState
+    <EditFlow openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} />
   );
 };
 
@@ -78,6 +83,7 @@ describe("<EditFlow />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    useAdminState.mockReturnValue(initialTestState);
     Object.defineProperty(window.document, "cookie", {
       writable: true,
       value: "PA.ciciccttritondev1=1234.5678.uytghh"

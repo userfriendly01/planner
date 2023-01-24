@@ -12,7 +12,9 @@ import {
 import {
   retrieveRoutingData, addRoutingRule
 } from "services";
-import { initialState } from "context";
+import {
+  useAdminState
+} from "context";
 const validRoutingData = {
   id: 1,
   all: "test",
@@ -48,6 +50,10 @@ jest.mock("components", () => {
   };
 });
 
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
+}));
+
 const mockMasterData = {
   brand: ["Test Brand"],
   channel: ["Test1 Channel", "Test2 Channel"]
@@ -55,13 +61,13 @@ const mockMasterData = {
 
 const renderAddRouting = isOpen => {
   return render(
-    <AddRouting openModal={openModal} newId={1} isOpen={isOpen} />, initialTestState
+    <AddRouting openModal={openModal} newId={1} isOpen={isOpen} />
   );
 };
 
-const renderAddRoutingdefOpen =() => {
+const renderAddRoutingDefOpen =() => {
   return render(
-    <AddRouting openModal={openModal} newId={1} />, initialTestState
+    <AddRouting openModal={openModal} newId={1} />
   );
 };
 describe("<AddFlow/>",()=>{
@@ -91,6 +97,7 @@ describe("<AddFlow/>",()=>{
       },
       configurable: true
     });
+    useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       CustomToast,
       ComponentControl
@@ -102,7 +109,7 @@ describe("<AddFlow/>",()=>{
   });
   describe("AddFlow ModalBlock",()=>{
     test("Simulate Close Modal By Clicking Close Icon",()=>{
-      const { getByRole } = renderAddRouting(true, validRoutingData);
+      const { getByRole } = renderAddRouting(true);
       const closeModalButton = getByRole("img", { name: "Close" });
       act(()=>{
         fireEvent.click(closeModalButton);
@@ -110,13 +117,13 @@ describe("<AddFlow/>",()=>{
       expect(openModal).toBeCalledTimes(1);
     });
     test("pass open modal as false ",()=>{
-      renderAddRoutingdefOpen( validRoutingData);
+      renderAddRoutingDefOpen( validRoutingData);
       expect(openModal).toBeCalledTimes(0);
     });
     test("Simulate Close Modal By removing masterData",()=>{
       localStorage.removeItem(ROUTING_CACHE_MASTER_DATA);
       retrieveRoutingData.mockResolvedValue({ data: { "items": validRoutingData }});
-      const { getByRole } = renderAddRouting(true, validRoutingData);
+      const { getByRole } = renderAddRouting(true);
       const closeModalButton = getByRole("img", { name: "Close" });
       act(()=>{
         fireEvent.click(closeModalButton);
@@ -128,7 +135,7 @@ describe("<AddFlow/>",()=>{
     test("handle create rule button",()=>{
       const {
         getByRole, getByLabelText
-      } = renderAddRouting(validRoutingData,initialState);
+      } = renderAddRouting(true);
       addRoutingRule.mockResolvedValue({ data: { "items": []}});
       const saveButton = getByRole("button", { name: "createRuleButton" });
       act(() => {
@@ -143,7 +150,7 @@ describe("<AddFlow/>",()=>{
     test("Validate Fields",()=>{
       const {
         getByRole
-      } = renderAddRouting(validRoutingData,initialState);
+      } = renderAddRouting(true);
       const ComponentControlMock= ComponentControl.mock;
       const idAttr = ComponentControl.mock.calls[0][0].onChange;
       const channelAttr = ComponentControl.mock.calls[7][0].onChange;
@@ -165,17 +172,17 @@ describe("<AddFlow/>",()=>{
       };
       const idOnChange = { target: { value: 1234 }};
       act(()=>{
-        channelAttr(channelOnChange);
-        brandAttr(brandOnChange);
-        callerTypeAttr(commonOnChange);
-        callerIntentAttr(commonOnChange);
-        dayOfWeekAttr(dayOfWeekOnChange);
-        startTimeAttr(timeOnChange);
-        percentAttr(commonOnChange);
-        callerStateAttr(commonOnChange);
-        endTimeAttr(timeOnChange);
-        policyTypeAttr(commonOnChange);
-        idAttr(idOnChange);
+        channelAttr(channelOnChange, "channel", false);
+        brandAttr(brandOnChange, "brand", false);
+        callerTypeAttr(commonOnChange, "callerType", false);
+        callerIntentAttr(commonOnChange, "callerIntent", false);
+        dayOfWeekAttr(dayOfWeekOnChange, "dayOfWeek", false);
+        startTimeAttr(timeOnChange, "startTime", false);
+        percentAttr(commonOnChange, "percentOfCallers",false);
+        callerStateAttr(commonOnChange,"callerState",false);
+        endTimeAttr(timeOnChange, "endTime",false);
+        policyTypeAttr(commonOnChange,"policyType",false);
+        idAttr(idOnChange,"id",false);
       });
       addRoutingRule.mockResolvedValue({ data: { "items": []}});
       const saveButton = getByRole("button", { name: "createRuleButton" });
@@ -192,7 +199,7 @@ describe("<AddFlow/>",()=>{
       });
     });
     test("Validate Reset Flow Rule ",()=>{
-      const { getByRole } = renderAddRouting(true, validRoutingData);
+      const { getByRole } = renderAddRouting(true);
       const resetButton = getByRole("button", { name: "resetRuleButton" });
       act(() => {
         fireEvent.click(resetButton);
@@ -213,7 +220,7 @@ describe("<AddFlow/>",()=>{
   });
   describe("Test for CustomToast Change",()=>{
     test("Simulate the customToast Button ", () => {
-      renderAddRouting(true, validRoutingData);
+      renderAddRouting(true);
       const customToastButton = CustomToast.mock.calls[0][0].onClose;
       act(()=>{
         customToastButton();

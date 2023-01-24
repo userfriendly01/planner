@@ -8,6 +8,7 @@ import { RoutingAdvanceSearch } from "../../index";
 import React from "react";
 import SelectContainer from "../../../../../core/SharedComponents/SelectContainer";
 import Autocomplete from "@mui/material/Autocomplete";
+import { useAdminState } from "context";
 
 const mockChange = jest.fn();
 const mockApplyFilter = jest.fn();
@@ -31,6 +32,11 @@ const mockSelectionAll = {
   transferDestination: "transferDestination1",
   twilioSkill: "twilioSkill1"
 };
+
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
+}));
+
 const renderComponent = (isOpen, callIntent = "callIntent1") => render(
   <RoutingAdvanceSearch
     applyFilter={mockApplyFilter}
@@ -42,8 +48,7 @@ const renderComponent = (isOpen, callIntent = "callIntent1") => render(
       ...mockSelectionAll,
       callIntent
     }}
-  />,
-  initialTestState
+  />
 );
 
 Storage.prototype.setItem = jest.fn();
@@ -76,6 +81,7 @@ jest.mock("@mui/material/Autocomplete", () => {
 
 describe("<RoutingAdvanceSearch />", () => {
   beforeAll(() => {
+    useAdminState.mockReturnValue(initialTestState);
     Object.defineProperty(window, "matchMedia", {
       writable: true,
       value: jest.fn().mockImplementation(query => ({
