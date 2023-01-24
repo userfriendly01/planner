@@ -30,7 +30,9 @@ const BulkUpload = () => {
 
   React.useEffect(() => {
     console.log("Bulk Upload UseEffect");
-    setConsolidatedTemplates(consolidateTemplates());
+    const final = consolidateTemplates();
+    setConsolidatedTemplates(final);
+    console.log("Bulk Upload UseEffect", final);
   }, [selectedTemplates]);
 
   const updateSelectedTemplates = (checked: boolean, template: any) => {
@@ -102,7 +104,7 @@ const BulkUpload = () => {
       </Row>
       <ButtonWrapper>
         <ExportTemplateButton
-          templates={consolidatedTemplates}
+          template={consolidatedTemplates}
           label="Export Template"
           styles={{ width: "200px" }}
         />
