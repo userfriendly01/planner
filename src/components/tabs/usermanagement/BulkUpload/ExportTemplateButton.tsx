@@ -2,9 +2,7 @@
 import { StyledExportButton } from "./BulkUpload.Styles";
 import React from "react";
 import {
-  ExcelExport,
-  ExcelExportColumn,
-  ExcelExportColumnGroup
+  ExcelExport
 } from "@progress/kendo-react-excel-export";
 
 const ExportTemplateButton = (props: any) => {
@@ -23,15 +21,14 @@ const ExportTemplateButton = (props: any) => {
     const description: any = {};
     const example: any = {};
     template.forEach((t: any) => {
-      columns.push(
-        <ExcelExportColumn
+      columns.push({
           field={t.field}
           title={t.name}
           cellOptions={{
             wrap: true,
             textAlign: "center"
           }}
-        />);
+        });
       columns.push({
         width: t.width,
         wrap: true,

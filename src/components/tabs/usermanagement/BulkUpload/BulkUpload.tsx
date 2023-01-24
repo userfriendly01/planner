@@ -6,14 +6,17 @@ import {
   ButtonWrapper,
   ImportButton
 } from "./BulkUpload.Styles";
-import { createTemplates } from "./templates";
+import { getCreateTemplates } from "./templates";
 import { Dropdown } from "components";
+import { useAdminState } from "context";
 import ExportTemplateButton from "./ExportTemplateButton";
 import { Checkbox } from "@mui/material";
 import xlsx from "xlsx";
 
 const BulkUpload = () => {
 
+  const state = useAdminState();
+  const createTemplates = getCreateTemplates(state);
   const views: any = {
     BULK_UPLOAD: {
       value: "CREATE_USERS",
