@@ -11,7 +11,7 @@ import { Dropdown } from "components";
 import { useAdminState } from "context";
 import ExportTemplateButton from "./ExportTemplateButton";
 import { Checkbox } from "@mui/material";
-import xlsx from "xlsx";
+import XLSX from "xlsx";
 
 const BulkUpload = () => {
 
@@ -27,6 +27,8 @@ const BulkUpload = () => {
       label: "Bulk Update"
     }
   };
+
+  console.log("XLSX", XLSX);
 
   const uploadButtonRef = React.useRef<HTMLInputElement>();
   const [ view, setView ] = React.useState(views.BULK_UPLOAD);
@@ -73,10 +75,10 @@ const BulkUpload = () => {
       const reader = new FileReader();
       reader.onload = e => {
         const data = e.target.result;
-        const workbook = xlsx.read(data, { type: "array" });
+        const workbook = XLSX.read(data, { type: "array" });
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
-        const json = xlsx.utils.sheet_to_json(worksheet);
+        const json = XLSX.utils.sheet_to_json(worksheet);
         console.log(json);
         console.log("More Es", e);
       };
