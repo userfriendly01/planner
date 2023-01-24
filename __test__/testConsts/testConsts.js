@@ -129,6 +129,17 @@ export const skillsList = [
     name: "lscOBDialer1",
     ctmSkillId: 1,
     ctmSkillDisplayName: "lsc OB Dialer 1",
+    ctmSkillGroups: [{
+      skillGroupId: 1,
+      skillGroupNme: "skillgroup1",
+      skills: [{
+        name: "lscOBDialer1",
+        ctmSkillId: 1
+      }, {
+        name: "aisgL1",
+        ctmSkillId: 2
+      }]
+    }],
     profiles: [{
       profileName: "Licensed Sales Center",
       profileId: 32
@@ -145,6 +156,17 @@ export const skillsList = [
     name: "aisgL1",
     ctmSkillId: 2,
     ctmSkillDisplayName: "aisg L1",
+    ctmSkillGroups: [{
+      skillGroupId: 1,
+      skillGroupNme: "skillgroup1",
+      skills: [{
+        name: "lscOBDialer1",
+        ctmSkillId: 1
+      }, {
+        name: "aisgL1",
+        ctmSkillId: 2
+      }]
+    }],
     profiles: [{
       profileName: "AISG",
       profileId: 4
@@ -161,6 +183,7 @@ export const skillsList = [
     name: "bscCommisssions",
     ctmSkillId: 3,
     ctmSkillDisplayName: "bsc Commisssions",
+    ctmSkillGroups: [],
     profiles: [{
       profileName: "BSC",
       profileId: 10
@@ -177,6 +200,7 @@ export const skillsList = [
     name: "bscCbsL2",
     ctmSkillId: 4,
     ctmSkillDisplayName: "bsc Cbs L2",
+    ctmSkillGroups: [],
     profiles: [
       {
         profileName: "BSC",
@@ -199,6 +223,7 @@ export const skillsList = [
     name: "lscUSAA",
     ctmSkillId: 5,
     ctmSkillDisplayName: "lsc USAA",
+    ctmSkillGroups: [],
     profiles: [],
     flashMessage: "",
     closedMessage: "",
@@ -209,6 +234,68 @@ export const skillsList = [
     vhThreshold: null
   }
 ];
+
+export const skillGroups = [
+  {
+    skillGroupId: 1,
+    skillGroupNme: "skillgroup1",
+    skills: [{
+      name: "lscOBDialer1",
+      ctmSkillId: 1,
+      ctmSkillDisplayName: "lsc OB Dialer 1",
+      ctmSkillGroups: [],
+      profiles: [{
+        profileName: "Licensed Sales Center",
+        profileId: 32
+      }],
+      flashMessage: "",
+      closedMessage: "",
+      levels: [ 1, 2, 3],
+      timeOfDays: [],
+      vhCallTarget: null,
+      vhCallerId: null,
+      vhThreshold: null
+    }]
+  },
+  {
+    skillGroupId: 2,
+    skillGroupNme: "skillgroup2",
+    skills: [  {
+      name: "aisgL1",
+      ctmSkillId: 2,
+      ctmSkillDisplayName: "aisg L1",
+      ctmSkillGroups: [],
+      profiles: [{
+        profileName: "AISG",
+        profileId: 4
+      }],
+      flashMessage: "",
+      closedMessage: "Sorry, we're closed.",
+      levels: [],
+      timeOfDays: [],
+      vhCallTarget: null,
+      vhCallerId: null,
+      vhThreshold: null
+    },
+    {
+      name: "bscCommisssions",
+      ctmSkillId: 3,
+      ctmSkillDisplayName: "bsc Commisssions",
+      ctmSkillGroups: [],
+      profiles: [{
+        profileName: "BSC",
+        profileId: 10
+      }],
+      flashMessage: "OH NO WE'RE EXPLODING!! ",
+      closedMessage: "Sorry, we're closed.",
+      levels: [1, 2, 3, 4, 5, 6, 7],
+      timeOfDays: [],
+      vhCallTarget: null,
+      vhCallerId: null,
+      vhThreshold: null
+    },]
+  }
+]
 
 export const mockActivities = [
   {
@@ -302,7 +389,8 @@ export const initialTestState = {
     managers: managerList
   },
   skillContext: {
-    skills: skillsList
+    skills: skillsList,
+    skillGroups: skillGroups
   },
   userContext: {
     pingIdentity: {

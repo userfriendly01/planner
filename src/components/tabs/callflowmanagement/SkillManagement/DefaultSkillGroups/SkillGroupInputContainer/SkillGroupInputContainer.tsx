@@ -6,18 +6,18 @@ import {
 import { TextField } from "@mui/material";
 import {
   UserFormButton
-} from "../../ClosedFlashMessage";
+} from "../../ClosedFlashMessage/ClosedFlashMessage.Styles";
 import { ActionTypes } from "../../Skills.Interfaces";
 import {
   addSkillGroup, addSkillGroupsSkill
-} from "services/skillgroup";
+} from "services";
 import {
   Skill, timeouts, ModalOverlayStatuses
 } from "globals";
 import {
   ConfirmationSkillGroupsDiv,
   ConfirmationSkillList
-} from "../";
+} from "../DefaultSkillGroup.Styles";
 
 
 const SkillGroupInputContainer = (props: any) => {
@@ -29,7 +29,6 @@ const SkillGroupInputContainer = (props: any) => {
     action,
     tableState,
     setTableState,
-    messageType,
     confirmationModalOpts,
     setConfirmationModalOpts,
     setSaveResult,
@@ -84,12 +83,14 @@ const SkillGroupInputContainer = (props: any) => {
         status: ModalOverlayStatuses.SAVING
       });
       try {
+        console.log("HERE")
         const addGroupNameResponse = await addSkillGroup(skillGroupName);
         setSkillGroupId(addGroupNameResponse.insertId);
         const results = await Promise.allSettled(tableState.selected.map((skill: Skill) => {
+          console.log("Hello?")
           return addSkillGroupsSkill(addGroupNameResponse.insertId, skill.ctmSkillId);
         }));
-
+        console.log(results, "RESULTS")
         handleResults(results);
       } catch (err) {
         console.error("Unable to add skill grouping");
@@ -133,6 +134,7 @@ const SkillGroupInputContainer = (props: any) => {
         rejectedPromiseSkills.push(tableState.selected[index]);
       }
     });
+    // console.log("successful promises", successfulPromiseSkills)
     if(rejectedPromiseSkills.length === 0){
       setSaveResult({
         message: "Request Successfully Processed",
@@ -144,6 +146,7 @@ const SkillGroupInputContainer = (props: any) => {
         setAction(null);
       }, timeouts.MODAL_OVERLAY);
     } else if (successfulPromiseSkills.length === 0){
+      console.log("HUH DID WE FAIL???")
       setSaveResult({
         message: "Request Failed",
         status: ModalOverlayStatuses.FAIL
@@ -166,6 +169,7 @@ const SkillGroupInputContainer = (props: any) => {
   };
 
   const updateStateOnResolvedPromises = (fulfilledSkills: Skill[])=> {
+    console.log("updateStateOnResolvedPromises", fulfilledSkills)
     const skills = state.skillContext.skills.slice();
     const updatedSkills = skills.map(s => {
       let updatedSkill = s;
@@ -183,6 +187,7 @@ const SkillGroupInputContainer = (props: any) => {
       });
       return updatedSkill;
     });
+    console.log("here before the dispatch...")
     dispatch({
       type: "updateSkills",
       payload: updatedSkills
@@ -192,6 +197,7 @@ const SkillGroupInputContainer = (props: any) => {
       type: "loadSkillGroups",
       payload: updatedSkills
     });
+    console.log("here after the dispatch...")
     setTableState({
       ...tableState,
       selected: []
@@ -214,7 +220,7 @@ const SkillGroupInputContainer = (props: any) => {
       <UserFormButton
         onClick={handleOnSave}
         disabled={skillGroupName === "" || tableState.selected.length < 1}
-      >Save {messageType.variable}</UserFormButton>
+      >Save Skill Group</UserFormButton>
       <div>
         Select skills to add to default skill grouping
       </div>

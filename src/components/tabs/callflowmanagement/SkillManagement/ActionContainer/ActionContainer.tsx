@@ -52,7 +52,6 @@ const ActionContainer = (props: ActionContainerProps) => {
             action={action}
             setTableState={setTableState}
             confirmationModalOpts={confirmationModalOpts}
-            messageType={propertySelection.value}
             setAction={setAction}
             tableState={tableState}
             setConfirmationModalOpts={setConfirmationModalOpts}
