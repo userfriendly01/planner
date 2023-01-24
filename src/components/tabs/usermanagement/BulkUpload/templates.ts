@@ -1,3 +1,5 @@
+import { calabrioTimeZones } from "utils";
+
 export const getCreateTemplates: any = (state: any): any => {
   return {
     CREATE_TRITON_USER: [
@@ -28,7 +30,7 @@ export const getCreateTemplates: any = (state: any): any => {
         description: "Agents N Number",
         required: "Y",
         example: "n0263786",
-        options: []
+        options: null
       },
       {
         field: "calabrioGroup",
@@ -37,7 +39,7 @@ export const getCreateTemplates: any = (state: any): any => {
         description: "Parent Group (Must already be created in Calabrio)",
         required: "Y",
         example: "Default Group",
-        options: []
+        options: state.calabrioContext.groups.map((g: any) => g.name)
       },
       {
         field: "calabrioTeam",
@@ -46,7 +48,7 @@ export const getCreateTemplates: any = (state: any): any => {
         description: "Team (Must already be created in Calabrio)",
         required: "Y",
         example: "Default Team",
-        options: []
+        options: state.calabrioContext.teams.map((t: any) => t.name)
       },
       {
         field: "timeZone",
@@ -55,7 +57,7 @@ export const getCreateTemplates: any = (state: any): any => {
         description: "Time Zone of the Calabrio User",
         required: "Y",
         example: "America/New_York",
-        options: []
+        options: calabrioTimeZones.map((t: any) => t.label);
       }
     ]
   };

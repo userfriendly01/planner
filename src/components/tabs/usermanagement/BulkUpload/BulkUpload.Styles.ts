@@ -12,10 +12,13 @@ export const Row = styled.div`
   display: flex;
   width: 60%;
   margin: 40px;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 export const StepWrapper = styled.div`
   display: flex;
+  width: 100%
 `;
 
 export const SelectionWrapper = styled.div`
@@ -35,10 +38,11 @@ export const ButtonWrapper = styled.div`
 `;
 
 export const ImportButton = styled(StyledButton)`
-  width: 200px
+  width: 250px;
+  height: 50px;
 `;
 
 export const StyledExportButton = styled(StyledButton)<{ styles?: any }>`
-  height: 40px;
-  width: ${props => props.styles && props.styles.width ? props.styles.width : "100px"};
+  height: 50px;
+  width: ${props => props.styles && props.styles.width ? props.styles.width : "250px"};
 `;
