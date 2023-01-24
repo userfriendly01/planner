@@ -184,7 +184,7 @@ describe("profileUtils", () => {
 
   describe("createProfilePayload", () => {
     const form = {
-      profileId: 1,
+      profileId: null,
       activitiesList: [
         {
           activity_id: 1
