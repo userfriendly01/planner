@@ -28,7 +28,7 @@ const BulkUpload = () => {
     }
   };
 
-  const uploadButtonRef = React.useRef();
+  const uploadButtonRef = React.useRef<HTMLInputElement>();
   const [ view, setView ] = React.useState(views.BULK_UPLOAD);
   const [ selectedTemplates, setSelectedTemplates ] = React.useState([]);
   const [ consolidatedTemplates, setConsolidatedTemplates ] = React.useState([]);
