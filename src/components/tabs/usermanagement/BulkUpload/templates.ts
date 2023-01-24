@@ -1,4 +1,4 @@
-export const getCreateTemplates: any = (state: any) => {
+export const getCreateTemplates: any = (state: any): any => {
   return {
     CREATE_TRITON_USER: [
       {
@@ -17,7 +17,7 @@ export const getCreateTemplates: any = (state: any) => {
         description: "Profile Id",
         required: "Y",
         example: 3,
-        options: state.profileContext.profiles.map(p => p.profile_id)
+        options: state.profileContext.profiles.map((p: any) => p.profile_id)
       }
     ],
     CREATE_CALABRIO_QM_USER: [

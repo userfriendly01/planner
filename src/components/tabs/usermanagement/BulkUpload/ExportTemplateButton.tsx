@@ -22,14 +22,8 @@ const ExportTemplateButton = (props: any) => {
     const example: any = {};
     template.forEach((t: any) => {
       columns.push({
-          field={t.field}
-          title={t.name}
-          cellOptions={{
-            wrap: true,
-            textAlign: "center"
-          }}
-        });
-      columns.push({
+        field: t.field,
+        title: t.name,
         width: t.width,
         wrap: true,
         textAlign: "center"
