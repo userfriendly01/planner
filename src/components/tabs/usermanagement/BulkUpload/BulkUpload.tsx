@@ -26,6 +26,12 @@ const BulkUpload = () => {
 
   const [ view, setView ] = React.useState(views.BULK_UPLOAD);
   const [ selectedTemplates, setSelectedTemplates ] = React.useState([]);
+  const [ consolidatedTemplates, setConsolidatedTemplates ] = React.useState([]);
+
+  React.useEffect(() => {
+    console.log("Bulk Upload UseEffect");
+    setConsolidatedTemplates(consolidateTemplates());
+  }, [selectedTemplates]);
 
   const updateSelectedTemplates = (checked: boolean, template: any) => {
     if(checked) {
@@ -40,6 +46,7 @@ const BulkUpload = () => {
 
   const consolidateTemplates = () => {
     const beginningArray: any = [];
+    console.log("consolidateTemplates - selectedTemplates", selectedTemplates);
     selectedTemplates.forEach((t: any) => beginningArray.push(...t));
     const finalArray: any = [];
     beginningArray.forEach((t: any) => {
@@ -48,6 +55,8 @@ const BulkUpload = () => {
         finalArray.push(t);
       }
     });
+    console.log("consolidateTemplates - finalArray", finalArray);
+    return finalArray;
   };
 
 
@@ -72,6 +81,7 @@ const BulkUpload = () => {
             checked={selectedTemplates.some((t: any) => t === createTemplates.CREATE_TRITON_USER)}
             onChange={(event: any) => {
               const checked = event.target.checked;
+              console.log("Triton onChange", checked, createTemplates.CREATE_CALABRIO_QM_USER);
               updateSelectedTemplates(checked, createTemplates.CREATE_TRITON_USER);
             }}
             style={{ padding: "0px" }}
@@ -83,6 +93,7 @@ const BulkUpload = () => {
             checked={selectedTemplates.some((t: any) => t === createTemplates.CREATE_CALABRIO_QM_USER)}
             onChange={(event: any) => {
               const checked = event.target.checked;
+              console.log("QM onChange", checked, createTemplates.CREATE_CALABRIO_QM_USER);
               updateSelectedTemplates(checked, createTemplates.CREATE_CALABRIO_QM_USER);
             }}
             style={{ padding: "0px" }}
@@ -91,7 +102,7 @@ const BulkUpload = () => {
       </Row>
       <ButtonWrapper>
         <ExportTemplateButton
-          templates={consolidateTemplates()}
+          templates={consolidatedTemplates}
           label="Export Template"
           styles={{ width: "200px" }}
         />
