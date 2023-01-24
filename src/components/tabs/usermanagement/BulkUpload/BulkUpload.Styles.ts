@@ -11,14 +11,14 @@ export const BulkChangesWrapper = styled.div`
 export const Row = styled.div`
   display: flex;
   width: 60%;
-  margin-top: 50px;
+  margin-top: 70px;
   align-items: center;
   justify-content: space-between;
 `;
 
 export const StepWrapper = styled.div`
   display: flex;
-  width: 100%
+  width: 760px;
 `;
 
 export const SelectionWrapper = styled.div`

@@ -42,7 +42,9 @@ const BulkUpload = () => {
 
   const updateSelectedTemplates = (checked: boolean, template: any) => {
     const templates = selectedTemplates.slice();
-    const templateFound = selectedTemplates.some((t: any) => t.name !== template.name);
+    console.log("updateSelectedTemplates", templates);
+    const templateFound = templates.some((t: any) => t.name === template.name);
+    console.log("templateFound", templateFound);
 
     if(checked && !templateFound) {
       templates.push(template);
@@ -110,7 +112,7 @@ const BulkUpload = () => {
       </Row>
       <Row>
         <StepWrapper>
-          Step 3: Import completed Spreadsheet
+          Step 3: Upload completed Spreadsheet
         </StepWrapper>
         <ImportButton onClick={() => uploadButtonRef.current.click()} >Upload Spreadsheet</ImportButton>
         <input type="file" ref={uploadButtonRef} style={{
@@ -122,7 +124,7 @@ const BulkUpload = () => {
         <StepWrapper>
           Step 4: Process Bulk Create
         </StepWrapper>
-        <StyledButton>Process</StyledButton>
+        <ImportButton>Process</ImportButton>
       </Row>
     </BulkChangesWrapper>
   );
