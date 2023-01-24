@@ -25,15 +25,12 @@ const BulkUpload = () => {
     }
   };
 
-  console.log("XLSX", XLSX);
-
   const uploadButtonRef = React.useRef<HTMLInputElement>();
   const [ view, setView ] = React.useState(views.BULK_UPLOAD);
   const [ selectedTemplates, setSelectedTemplates ] = React.useState([]);
   const [ consolidatedTemplates, setConsolidatedTemplates ] = React.useState([]);
 
   React.useEffect(() => {
-    console.log("Bulk Upload UseEffect");
     const final = consolidateTemplates();
     setConsolidatedTemplates(final);
     console.log("Bulk Upload UseEffect", final);
@@ -96,10 +93,10 @@ const BulkUpload = () => {
           width: "500px"
         }}
       />
-      { view === views.BULK_CREATE && <BulkCreateForm
+      <BulkCreateForm
         selectedTemplates = {selectedTemplates}
         updateSelectedTemplates={updateSelectedTemplates}
-      /> }
+      />
       <ButtonWrapper>
         Step 2: Export Template & Template Options
         <ExportButtons template={consolidatedTemplates} />
