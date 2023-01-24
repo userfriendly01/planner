@@ -1,12 +1,13 @@
 import React from "react";
 
-const ConfirmationForm = () => {
+const ConfirmationModal = () => {
   //if there are validation errors, show export validation button and provide options to cancel or proceed with valid rows
+  //if user selects proceed - hide confirmation form and show progress bar
   return (
     <div>
-      Confirmation Form!
+      Confirmation Modal!
     </div>
   );
 };
 
-export default ConfirmationForm;
+export default ConfirmationModal;

@@ -3,7 +3,8 @@ import {
   BulkChangesWrapper,
   ImportButton,
   Row,
-  StepWrapper
+  StepWrapper,
+  Wrapper
 } from "./BulkUpload.Styles";
 import { Dropdown } from "components";
 import BulkCreateForm from "./BulkCreateForm";
@@ -66,7 +67,7 @@ const BulkUpload = () => {
     const consolidatedFieldsList: any = [];
     console.log("consolidateTemplates - beginningArray", beginningArray.slice());
     beginningArray.forEach((t: any) => {
-      const duplicateField = consolidatedFieldsList.some((field: any) => field.field === t.fields.field);
+      const duplicateField = consolidatedFieldsList.some((field: any) => field.field === t.field);
       if(!duplicateField){
         consolidatedFieldsList.push(t.fields);
       }
@@ -123,19 +124,25 @@ const BulkUpload = () => {
         <StepWrapper>
           Step 2: Export Template & Template Options
         </StepWrapper>
-        <ExportButtons template={consolidatedTemplate} />
+        <Wrapper>
+          <ExportButtons template={consolidatedTemplate} />
+        </Wrapper>
       </Row>
       <Row>
         <StepWrapper>
           Step 3: Upload completed Spreadsheet
         </StepWrapper>
-        <ImportButton onClick={() => uploadButtonRef.current.click()} >Upload Spreadsheet</ImportButton>
+        <Wrapper>
+          <ImportButton onClick={() => uploadButtonRef.current.click()} >Upload Spreadsheet</ImportButton>
+        </Wrapper>
       </Row>
       <Row>
         <StepWrapper>
           Step 4: Process Bulk Create
         </StepWrapper>
-        <ImportButton>Process</ImportButton>
+        <Wrapper>
+          <ImportButton>Process</ImportButton>
+        </Wrapper>
       </Row>
       <input type="file" ref={uploadButtonRef} style={{
         visibility: "hidden",

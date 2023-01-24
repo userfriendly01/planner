@@ -21,6 +21,12 @@ export const StepWrapper = styled.div`
   width: 40%;
 `;
 
+export const Wrapper = styled.div`
+  display: flex;
+  width: 60%;
+  align-items: center;
+`;
+
 export const SelectionWrapper = styled.div`
   display: flex;
   flex-direction: column;
