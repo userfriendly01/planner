@@ -1,24 +1,21 @@
 import React from "react";
 import {
   BulkChangesWrapper,
-  Row,
-  SelectionWrapper,
   ButtonWrapper,
   ImportButton
 } from "./BulkUpload.Styles";
-import { getCreateTemplates } from "./templates";
-import { Dropdown } from "components";
-import { useAdminState } from "context";
-import ExportTemplateButton from "./ExportTemplateButton";
-import { Checkbox } from "@mui/material";
+import {
+  Dropdown,
+  StyledButton
+} from "components";
+import BulkCreateForm from "./BulkCreateForm";
+import ExportButtons from "./ExportButtons/ExportButtons";
 import * as XLSX from "xlsx";
 
 const BulkUpload = () => {
 
-  const state = useAdminState();
-  const createTemplates = getCreateTemplates(state);
   const views: any = {
-    BULK_UPLOAD: {
+    BULK_CREATE: {
       value: "CREATE_USERS",
       label: "Create Users"
     },
@@ -71,7 +68,6 @@ const BulkUpload = () => {
   const readUploadFile = (e: any) => {
     e.preventDefault();
     if (e.target.files) {
-      console.log("EEEE", e);
       const reader = new FileReader();
       reader.onload = e => {
         const data = e.target.result;
@@ -100,44 +96,24 @@ const BulkUpload = () => {
           width: "500px"
         }}
       />
-      <Row>
-        <SelectionWrapper>
-        Twilio
-          <Checkbox
-            checked={selectedTemplates.some((t: any) => t === createTemplates.CREATE_TRITON_USER)}
-            onChange={(event: any) => {
-              const checked = event.target.checked;
-              console.log("Triton onChange", checked, createTemplates.CREATE_CALABRIO_QM_USER);
-              updateSelectedTemplates(checked, createTemplates.CREATE_TRITON_USER);
-            }}
-            style={{ padding: "0px" }}
-          />
-        </SelectionWrapper>
-        <SelectionWrapper>
-        Calabrio QM
-          <Checkbox
-            checked={selectedTemplates.some((t: any) => t === createTemplates.CREATE_CALABRIO_QM_USER)}
-            onChange={(event: any) => {
-              const checked = event.target.checked;
-              console.log("QM onChange", checked, createTemplates.CREATE_CALABRIO_QM_USER);
-              updateSelectedTemplates(checked, createTemplates.CREATE_CALABRIO_QM_USER);
-            }}
-            style={{ padding: "0px" }}
-          />
-        </SelectionWrapper>
-      </Row>
+      { view === views.BULK_CREATE && <BulkCreateForm
+        selectedTemplates = {selectedTemplates}
+        updateSelectedTemplates={updateSelectedTemplates}
+      /> }
       <ButtonWrapper>
-        <ExportTemplateButton
-          template={consolidatedTemplates}
-          label="Export Template"
-          styles={{ width: "200px" }}
-        />
-        <ImportButton onClick={() => uploadButtonRef.current.click()} >Upload Spreadsheet</ImportButton>
-        <input type="file" ref={uploadButtonRef} style={{
-          visibility: "hidden",
-          height: "0px"
-        }} onChange={readUploadFile} />
+        Step 2: Export Template & Template Options
+        <ExportButtons template={consolidatedTemplates} />
       </ButtonWrapper>
+      <ButtonWrapper>
+        Step 3: Import completed Spreadsheet
+        <ImportButton onClick={() => uploadButtonRef.current.click()} >Upload Spreadsheet</ImportButton>
+      </ButtonWrapper>
+      Step 4: Process Bulk Create
+      <StyledButton>Process</StyledButton>
+      <input type="file" ref={uploadButtonRef} style={{
+        visibility: "hidden",
+        height: "0px"
+      }} onChange={readUploadFile} />
     </BulkChangesWrapper>
   );
 };

@@ -1,19 +1,15 @@
 
-import { StyledExportButton } from "./BulkUpload.Styles";
+import { StyledExportButton } from "../BulkUpload.Styles";
 import React from "react";
 import {
   ExcelExport
 } from "@progress/kendo-react-excel-export";
 
 const ExportTemplateButton = (props: any) => {
-  const {
-    template,
-    label,
-    styles
-  } = props;
+  const { template } = props;
 
   const _export = React.useRef(null);
-  console.log("Template", template);
+  console.log("ExportTemplateButton Template", template);
 
   const handleExport = () => {
     const rows: any = [];
@@ -52,7 +48,7 @@ const ExportTemplateButton = (props: any) => {
   };
 
   return (
-    <StyledExportButton onClick={handleExport} styles={styles}><ExcelExport ref={_export}/>{label ? label : "Export Template"}</StyledExportButton>
+    <StyledExportButton onClick={handleExport}><ExcelExport ref={_export}/>Export Template</StyledExportButton>
   );
 };
 

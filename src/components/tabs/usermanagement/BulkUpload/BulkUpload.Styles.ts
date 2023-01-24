@@ -34,7 +34,7 @@ export const ImportButton = styled(StyledButton)`
   width: 200px
 `;
 
-export const StyledExportButton = styled(StyledButton)<{ styles: any }>`
+export const StyledExportButton = styled(StyledButton)<{ styles?: any }>`
   height: 40px;
   width: ${props => props.styles && props.styles.width ? props.styles.width : "100px"};
 `;
