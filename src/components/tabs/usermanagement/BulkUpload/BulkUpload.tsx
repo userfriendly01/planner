@@ -41,13 +41,14 @@ const BulkUpload = () => {
   console.log("view component logic", view, views, view === views.BULK_CREATE_USERS);
 
   const updateSelectedTemplates = (checked: boolean, template: any) => {
-    if(checked) {
-      const templates = selectedTemplates.slice();
+    const templates = selectedTemplates.slice();
+    const templateFound = selectedTemplates.some((t: any) => t.name !== template.name);
+
+    if(checked && !templateFound) {
       templates.push(template);
       setSelectedTemplates(templates);
-    } else {
-      const templates = selectedTemplates.filter((t: any) => t !== template);
-      setSelectedTemplates(templates);
+    } else if(!checked && templateFound) {
+      setSelectedTemplates(templates.filter((t: any) => t.name !== template.name));
     }
   };
 

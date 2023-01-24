@@ -19,7 +19,7 @@ const BulkCreateForm = (props: any) => {
   const createTemplates = getCreateTemplates(state);
 
   console.log("BulkCreateForm - selectedTemplates", selectedTemplates);
-  console.log("Logic Validation", selectedTemplates.some((t: any) => t === createTemplates.CREATE_TRITON_USER));
+  console.log("Logic Validation", selectedTemplates.some((t: any) => t.name === "CREATE_TRITON_USER"));
 
   return (
     <Row>
@@ -29,7 +29,7 @@ const BulkCreateForm = (props: any) => {
       <SelectionWrapper>
         Twilio
         <Checkbox
-          checked={selectedTemplates.some((t: any) => t === createTemplates.CREATE_TRITON_USER)}
+          checked={selectedTemplates.some((t: any) => t.name === "CREATE_TRITON_USER")}
           onChange={(event: any) => {
             const checked = event.target.checked;
             console.log("Triton onChange", checked, createTemplates.CREATE_TRITON_USER);
@@ -41,7 +41,7 @@ const BulkCreateForm = (props: any) => {
       <SelectionWrapper>
         Calabrio QM
         <Checkbox
-          checked={selectedTemplates.some((t: any) => t === createTemplates.CREATE_CALABRIO_QM_USER)}
+          checked={selectedTemplates.some((t: any) => t.name === "CREATE_CALABRIO_QM_USER")}
           onChange={(event: any) => {
             const checked = event.target.checked;
             console.log("QM onChange", checked, createTemplates.CREATE_CALABRIO_QM_USER);
