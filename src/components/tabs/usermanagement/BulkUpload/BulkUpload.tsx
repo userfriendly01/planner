@@ -25,21 +25,31 @@ const BulkUpload = () => {
   };
 
   const [ view, setView ] = React.useState(views.BULK_UPLOAD);
-  const [ selectedTemplates, setSelectedTemplates ] = React.useState(null);
-  const [ checked, setChecked ] = React.useState({
-    TWILIO: true,
-    WORKER_DATABASE: true,
-    CALABRIO_QM: true,
-    CALABRIO_WFM: true
-  });
+  const [ selectedTemplates, setSelectedTemplates ] = React.useState([]);
 
-  const addToSelectedTemplates = (template: any) => {
-    const templates = selectedTemplates.slice();
-    templates.push(template);
+  const updateSelectedTemplates = (checked: boolean, template: any) => {
+    if(checked) {
+      const templates = selectedTemplates.slice();
+      templates.push(template);
+      setSelectedTemplates(templates);
+    } else {
+      const templates = selectedTemplates.filter((t: any) => t !== template);
+      setSelectedTemplates(templates);
+    }
   };
-  // const removeFromSelectedTemplates = () => {
 
-  // };
+  const consolidateTemplates = () => {
+    const beginningArray: any = [];
+    selectedTemplates.forEach((t: any) => beginningArray.push(...t));
+    const finalArray: any = [];
+    beginningArray.forEach((t: any) => {
+      const duplicateField = finalArray.some((caf: any) => caf.field === t.field);
+      if(!duplicateField){
+        finalArray.push(t);
+      }
+    });
+  };
+
 
   return (
     <BulkChangesWrapper>
@@ -60,8 +70,9 @@ const BulkUpload = () => {
         Twilio
           <Checkbox
             checked={selectedTemplates.some((t: any) => t === createTemplates.CREATE_TRITON_USER)}
-            onChange={(param1: any, param2: any) => {
-              console.log("params on check", param1, param2);
+            onChange={(event: any) => {
+              const checked = event.target.checked;
+              updateSelectedTemplates(checked, createTemplates.CREATE_TRITON_USER);
             }}
             style={{ padding: "0px" }}
           />
@@ -69,18 +80,18 @@ const BulkUpload = () => {
         <SelectionWrapper>
         Calabrio QM
           <Checkbox
-            checked={checked.CALABRIO_QM}
-            onChange={() => setChecked({
-              ...checked,
-              CALABRIO_QM: !checked.CALABRIO_QM
-            })}
+            checked={selectedTemplates.some((t: any) => t === createTemplates.CREATE_CALABRIO_QM_USER)}
+            onChange={(event: any) => {
+              const checked = event.target.checked;
+              updateSelectedTemplates(checked, createTemplates.CREATE_CALABRIO_QM_USER);
+            }}
             style={{ padding: "0px" }}
           />
         </SelectionWrapper>
       </Row>
       <ButtonWrapper>
         <ExportTemplateButton
-          templates={selectedTemplates}
+          templates={consolidateTemplates()}
           label="Export Template"
           styles={{ width: "200px" }}
         />
