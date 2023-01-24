@@ -16,10 +16,19 @@ const ExportOptionsButton = (props: any) => {
     const columns: any = [];
     template.forEach((t: any) => {
       if(t.options && t.options.length > 0) {
+        console.log("Pushing onto options column", {
+          field: t.field,
+          title: t.name,
+          width: t.width,
+          options: t.options,
+          wrap: true,
+          textAlign: "center"
+        });
         columns.push({
           field: t.field,
           title: t.name,
           width: t.width,
+          options: t.options,
           wrap: true,
           textAlign: "center"
         });

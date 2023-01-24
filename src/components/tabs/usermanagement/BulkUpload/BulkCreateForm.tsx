@@ -17,6 +17,9 @@ const BulkCreateForm = (props: any) => {
   const state = useAdminState();
   const createTemplates = getCreateTemplates(state);
 
+  console.log("BulkCreateForm - selectedTemplates", selectedTemplates);
+  console.log("Logic Validation", selectedTemplates.some((t: any) => t === createTemplates.CREATE_TRITON_USER));
+
   return (
     <div>
       Step 1: Choose the applicable systems
@@ -27,7 +30,7 @@ const BulkCreateForm = (props: any) => {
             checked={selectedTemplates.some((t: any) => t === createTemplates.CREATE_TRITON_USER)}
             onChange={(event: any) => {
               const checked = event.target.checked;
-              console.log("Triton onChange", checked, createTemplates.CREATE_CALABRIO_QM_USER);
+              console.log("Triton onChange", checked, createTemplates.CREATE_TRITON_USER);
               updateSelectedTemplates(checked, createTemplates.CREATE_TRITON_USER);
             }}
             style={{ padding: "0px" }}
