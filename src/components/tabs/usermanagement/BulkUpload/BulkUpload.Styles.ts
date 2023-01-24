@@ -10,8 +10,12 @@ export const BulkChangesWrapper = styled.div`
 
 export const Row = styled.div`
   display: flex;
-  width: 80%;
-  margin: 20px;
+  width: 60%;
+  margin: 40px;
+`;
+
+export const StepWrapper = styled.div`
+  display: flex;
 `;
 
 export const SelectionWrapper = styled.div`

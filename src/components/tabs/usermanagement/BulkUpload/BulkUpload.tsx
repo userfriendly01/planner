@@ -2,7 +2,9 @@ import React from "react";
 import {
   BulkChangesWrapper,
   ButtonWrapper,
-  ImportButton
+  ImportButton,
+  Row,
+  StepWrapper
 } from "./BulkUpload.Styles";
 import {
   Dropdown,
@@ -35,6 +37,8 @@ const BulkUpload = () => {
     setConsolidatedTemplates(final);
     console.log("Bulk Upload UseEffect", final);
   }, [selectedTemplates]);
+
+  console.log("view component logic", view, views, view === views.BULK_CREATE);
 
   const updateSelectedTemplates = (checked: boolean, template: any) => {
     if(checked) {
@@ -97,20 +101,28 @@ const BulkUpload = () => {
         selectedTemplates = {selectedTemplates}
         updateSelectedTemplates={updateSelectedTemplates}
       />
-      <ButtonWrapper>
-        Step 2: Export Template & Template Options
+      <Row>
+        <StepWrapper>
+          Step 2: Export Template & Template Options
+        </StepWrapper>
         <ExportButtons template={consolidatedTemplate} />
-      </ButtonWrapper>
-      <ButtonWrapper>
-        Step 3: Import completed Spreadsheet
+      </Row>
+      <Row>
+        <StepWrapper>
+          Step 3: Import completed Spreadsheet
+        </StepWrapper>
         <ImportButton onClick={() => uploadButtonRef.current.click()} >Upload Spreadsheet</ImportButton>
-      </ButtonWrapper>
-      Step 4: Process Bulk Create
-      <StyledButton>Process</StyledButton>
-      <input type="file" ref={uploadButtonRef} style={{
-        visibility: "hidden",
-        height: "0px"
-      }} onChange={readUploadFile} />
+        <input type="file" ref={uploadButtonRef} style={{
+          visibility: "hidden",
+          height: "0px"
+        }} onChange={readUploadFile} />
+      </Row>
+      <Row>
+        <StepWrapper>
+          Step 4: Process Bulk Create
+        </StepWrapper>
+        <StyledButton>Process</StyledButton>
+      </Row>
     </BulkChangesWrapper>
   );
 };
