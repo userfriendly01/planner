@@ -14,7 +14,7 @@ export * from "./routingUtils";
 export * from "./skillsUtils";
 export * from "./sortUtils";
 export * from "./timeUtils";
-export * from "./userFormUtils";
+export * from "./userManagementUtils";
 export * from "./profileFormUtils";
 export * from "./userTokenUtils";
 

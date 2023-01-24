@@ -5,14 +5,8 @@ import React, {
 } from "react";
 import styled from "styled-components";
 
-const FlexRow = styled.div`
-  align-items: center;
-  display: flex;
-  flex: 1 1 auto;
-`;
-
-const StyledTextField = styled(TextField)`
-  flex-grow: 1;
+const StyledTextField = styled(TextField)<{styles?: any}>`
+  width: ${props => props.styles?.width || "385px"};
   && {
     margin: 8px 0;
   }
@@ -24,6 +18,7 @@ export interface CustomInputProps {
   label: string,
   maxLength: string,
   name: string,
+  styles?: any,
   onBlur?: () => void,
   updateValue: (value: string) => void,
   validator?: (value: string) => boolean,
@@ -38,6 +33,7 @@ export const CustomInput = (props: CustomInputProps) => {
     label,
     maxLength,
     name,
+    styles,
     onBlur,
     updateValue,
     validator,
@@ -60,7 +56,7 @@ export const CustomInput = (props: CustomInputProps) => {
   };
 
   return (
-    <FlexRow>
+    <>
       <StyledTextField
         disabled={disabled || loading}
         error={error}
@@ -68,6 +64,7 @@ export const CustomInput = (props: CustomInputProps) => {
         inputProps={maxLength ? { maxLength } : {}}
         label={label}
         margin="normal"
+        styles={styles}
         name={name}
         onBlur={onBlur}
         onChange={event => changeValidator(event.target.value)}
@@ -75,6 +72,6 @@ export const CustomInput = (props: CustomInputProps) => {
         value={value}
       />
       {loading ? <ModalFetchingRing data-testid="loading" /> : null}
-    </FlexRow>
+    </>
   );
 };

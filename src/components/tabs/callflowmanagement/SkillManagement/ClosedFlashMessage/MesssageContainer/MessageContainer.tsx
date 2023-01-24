@@ -6,7 +6,7 @@ import {
   MessageBoxWrapper,
   TextField
 } from "../";
-import { ActionTypes } from "../../";
+import { ActionTypes } from "../../Skills.Interfaces";
 
 const MessageContainer = (props: MessageContainerProps) => {
   const {

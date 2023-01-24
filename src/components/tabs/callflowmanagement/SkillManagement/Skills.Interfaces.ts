@@ -68,7 +68,9 @@ export interface SkillsContainerProps {
 }
 
 export interface SkillsExportButtonProps {
-  selected: Skill[]
+  selected: Skill[],
+  label?: string
+  styles?: any
 }
 export interface SkillsHeaderProps {
   tableState: TableState,

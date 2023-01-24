@@ -14,8 +14,8 @@ import {
   formatE164PhoneNumber,
   getValidSkillsObject
 } from "utils";
-import { ExtensionSearchStatuses } from "../../components/tabs/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
-import { SearchParams } from "../../components/tabs/usermanagement/UserEntryForm/ExtensionSearchParams";
+import { ExtensionSearchStatuses } from "components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionInput/ExtensionInput.Interfaces";
+import { SearchParams } from "components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionSearchParams";
 const searchParams = SearchParams.getValues();
 
 describe("userFormReducer", () => {
@@ -861,6 +861,66 @@ describe("userFormReducer", () => {
       const expectedFormState = {
         ...initialUserFormState,
         formMode: formModes.UPDATE,
+        defaultSkills: getValidSkillsObject(worker.attributes.default_skills),
+        extension: {
+          ...initialUserFormState.extension,
+          value: worker.attributes.extension,
+          valid: true
+        },
+        extensionStatus: {
+          ...initialUserFormState.extensionStatus,
+          originalExtension: worker.attributes.extension || ""
+        },
+        manager: {
+          ...initialUserFormState.manager,
+          value: managerList.find(m => m.manager_n_number === worker.attributes.manager_n_number)
+        },
+        nNumber: {
+          ...initialUserFormState.nNumber,
+          value: "n"
+        },
+        outgoing: {
+          ...initialUserFormState.outgoing,
+          value: formatE164PhoneNumber(worker.attributes.did),
+          valid: true
+        },
+        profileId: {
+          ...initialUserFormState.profileId,
+          value: worker.attributes.profile_id
+        },
+        alternateDid: {
+          ...initialUserFormState.alternateDid,
+          value: formatE164PhoneNumber(worker.alternateDid),
+          valid: true
+        },
+        directDialNum: {
+          ...initialUserFormState.directDialNum,
+          value: formatE164PhoneNumber(worker.directDialNum),
+          valid: true
+        },
+        didUser: true,
+        zeroOutEnabled: worker.zeroOutEnabled,
+        editDisabled: true
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
+  describe("SET_DELETE_FORM_STATE", () => {
+    test("should reset form to update state", () => {
+      const worker = mockWorkers[2];
+      const payload = {
+        worker,
+        managers: managerList
+      };
+      const action = {
+        type: userFormActions.SET_DELETE_FORM_STATE,
+        payload
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        formMode: formModes.DELETE,
         defaultSkills: getValidSkillsObject(worker.attributes.default_skills),
         extension: {
           ...initialUserFormState.extension,
