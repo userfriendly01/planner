@@ -6,17 +6,17 @@ import {
 import ExportTemplateButton from "./ExportTemplateButton";
 import ExportOptionsButton from "./ExportOptionsButton";
 
-const BulkUpload = (props: any) => {
-  const { consolidatedTemplates } = props;
+const ExportButtons = (props: any) => {
+  const { template } = props;
 
   return (
     <Row>
       <ButtonWrapper>
-        <ExportTemplateButton template={consolidatedTemplates} />
-        <ExportOptionsButton template={consolidatedTemplates} />
+        <ExportTemplateButton template={template} />
+        <ExportOptionsButton template={template} />
       </ButtonWrapper>
     </Row>
   );
 };
 
-export default BulkUpload;
+export default ExportButtons;

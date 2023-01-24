@@ -28,7 +28,7 @@ const BulkUpload = () => {
   const uploadButtonRef = React.useRef<HTMLInputElement>();
   const [ view, setView ] = React.useState(views.BULK_UPLOAD);
   const [ selectedTemplates, setSelectedTemplates ] = React.useState([]);
-  const [ consolidatedTemplates, setConsolidatedTemplates ] = React.useState([]);
+  const [ consolidatedTemplate, setConsolidatedTemplates ] = React.useState([]);
 
   React.useEffect(() => {
     const final = consolidateTemplates();
@@ -99,7 +99,7 @@ const BulkUpload = () => {
       />
       <ButtonWrapper>
         Step 2: Export Template & Template Options
-        <ExportButtons template={consolidatedTemplates} />
+        <ExportButtons template={consolidatedTemplate} />
       </ButtonWrapper>
       <ButtonWrapper>
         Step 3: Import completed Spreadsheet
