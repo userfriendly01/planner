@@ -12,10 +12,8 @@ import {
   setupMockedComponents
 } from "testUtils";
 import { propertyOptions } from "../../Skills.Interfaces";
-import {
-  ActionTypes,
-  messageTypes
-} from "../../../";
+import { messageTypes } from "../../ClosedFlashMessage/ClosedFlashMessage.Interfaces";
+import { ActionTypes } from "../../Skills.Interfaces";
 
 jest.mock("components", () => ({
   Dropdown: jest.fn(),
@@ -108,11 +106,7 @@ describe("<ActionContainer/>", () => {
         expect(MessageContainer.mock.calls.length).toBe(1);
         expect(SkillGroupInputContainer.mock.calls.length).toBe(1);
         expectOnlyPassedProps(SkillGroupInputContainer, {
-          messageType: {
-            name: "Default Skill Group",
-            filter: "skillGroup",
-            variable: "skillGroup"
-          }
+          action: ActionTypes.ADD
         }, 0);
       });
     });
