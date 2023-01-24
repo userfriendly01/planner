@@ -8,10 +8,8 @@ import {
   setupMockedComponents,
   skillsList
 } from "testUtils";
-import {
-  messageTypes,
-  TextField
-} from "../../";
+import { TextField } from "../../ClosedFlashMessage.Styles";
+import { messageTypes } from "../../ClosedFlashMessage.Interfaces";
 import { ActionTypes } from "../../../Skills.Interfaces";
 
 jest.mock("components", () => ({
@@ -20,11 +18,16 @@ jest.mock("components", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("../../", () => ({
-  MessageContainerProps: jest.requireActual("../../").MessageContainerProps,
-  MessageContainerWrapper: jest.requireActual("../../").MessageContainerWrapper,
-  MessageBoxWrapper: jest.requireActual("../../").MessageBoxWrapper,
-  messageTypes: jest.requireActual("../../").messageTypes,
+
+jest.mock("../../ClosedFlashMessage.Interfaces", () => ({
+  MessageContainerProps: jest.requireActual("../../ClosedFlashMessage.Interfaces").MessageContainerProps,
+  messageTypes: jest.requireActual("../../ClosedFlashMessage.Interfaces").messageTypes
+}));
+
+
+jest.mock("../../ClosedFlashMessage.Styles", () => ({
+  MessageContainerWrapper: jest.requireActual("../../ClosedFlashMessage.Styles").MessageContainerWrapper,
+  MessageBoxWrapper: jest.requireActual("../../ClosedFlashMessage.Styles").MessageBoxWrapper,
   TextField: jest.fn()
 }));
 

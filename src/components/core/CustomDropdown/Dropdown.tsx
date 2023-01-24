@@ -16,11 +16,6 @@ import styled from "styled-components";
 */
 
 
-// const ListItem = styled.li`
-// width: 250px,
-// font-size: 15px;
-// `;
-
 export const Dropdown = (props: any) => {
   const {
     CustomRender,

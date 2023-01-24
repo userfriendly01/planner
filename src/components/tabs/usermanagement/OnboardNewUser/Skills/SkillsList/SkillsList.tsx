@@ -5,6 +5,10 @@ import { formModes } from "globals";
 import React from "react";
 import styled from "styled-components";
 
+const SubText = styled.div`
+  font-size: 10px;
+  font-weight: bold
+`;
 
 const SkillsList = (props: SkillDropdownProps) => {
   const {
@@ -16,10 +20,6 @@ const SkillsList = (props: SkillDropdownProps) => {
 
   const form = useFormState();
 
-  const SubText = styled.div`
-  font-size: 10px;
-  font-weight: bold
-`;
 
   const getSkillAndSkillGroupOptions = () => {
     const optionsList = [];
