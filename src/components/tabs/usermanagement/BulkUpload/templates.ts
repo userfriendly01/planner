@@ -57,7 +57,7 @@ export const getCreateTemplates: any = (state: any): any => {
         description: "Time Zone of the Calabrio User",
         required: "Y",
         example: "America/New_York",
-        options: calabrioTimeZones.map((t: any) => t.label);
+        options: calabrioTimeZones.map((t: any) => t.label)
       }
     ]
   };

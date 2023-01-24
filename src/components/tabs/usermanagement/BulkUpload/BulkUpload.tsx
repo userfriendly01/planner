@@ -17,8 +17,8 @@ import * as XLSX from "xlsx";
 const BulkUpload = () => {
 
   const views: any = {
-    BULK_CREATE: {
-      value: "CREATE_USERS",
+    BULK_CREATE_USERS: {
+      value: "BULK_CREATE_USERS",
       label: "Create Users"
     },
     BULK_UPDATE: {
@@ -28,7 +28,7 @@ const BulkUpload = () => {
   };
 
   const uploadButtonRef = React.useRef<HTMLInputElement>();
-  const [ view, setView ] = React.useState(views.BULK_UPLOAD);
+  const [ view, setView ] = React.useState(views.BULK_CREATE_USERS);
   const [ selectedTemplates, setSelectedTemplates ] = React.useState([]);
   const [ consolidatedTemplate, setConsolidatedTemplates ] = React.useState([]);
 
@@ -38,7 +38,7 @@ const BulkUpload = () => {
     console.log("Bulk Upload UseEffect", final);
   }, [selectedTemplates]);
 
-  console.log("view component logic", view, views, view === views.BULK_CREATE);
+  console.log("view component logic", view, views, view === views.BULK_CREATE_USERS);
 
   const updateSelectedTemplates = (checked: boolean, template: any) => {
     if(checked) {
