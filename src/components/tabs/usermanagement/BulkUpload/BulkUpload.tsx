@@ -1,44 +1,15 @@
 import React from "react";
 import {
-  Dropdown,
-  ExportButton,
-  StyledButton
-} from "components";
+  BulkChangesWrapper,
+  Row,
+  SelectionWrapper,
+  ButtonWrapper,
+  ImportButton
+} from "./BulkUpload.Styles";
+import { createTemplates } from "./templates";
+import { Dropdown } from "components";
+import ExportTemplateButton from "./ExportTemplateButton";
 import { Checkbox } from "@mui/material";
-import styled from "styled-components";
-
-const BulkChangesWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  align-items: center;
-`;
-
-const FlexRow = styled.div`
-  display: flex;
-  width: 80%;
-  margin: 20px;
-`;
-
-const SelectionWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  align-items: center;
-  justify-content: space-between;
-  height: 60px;
-`;
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: space-evenly;
-  margin: 20px;
-`;
-
-const ImportButton = styled(StyledButton)`
-  width: 200px
-`;
 
 const BulkUpload = () => {
 
@@ -50,20 +21,25 @@ const BulkUpload = () => {
     BULK_UPDATE: {
       value: "BULK_UPDATE",
       label: "Bulk Update"
-    },
-    BULK_DELETE: {
-      value: "BULK_DELETE",
-      label: "Bulk Delete"
     }
   };
 
   const [ view, setView ] = React.useState(views.BULK_UPLOAD);
+  const [ selectedTemplates, setSelectedTemplates ] = React.useState(null);
   const [ checked, setChecked ] = React.useState({
     TWILIO: true,
     WORKER_DATABASE: true,
     CALABRIO_QM: true,
     CALABRIO_WFM: true
   });
+
+  const addToSelectedTemplates = (template: any) => {
+    const templates = selectedTemplates.slice();
+    templates.push(template);
+  };
+  // const removeFromSelectedTemplates = () => {
+
+  // };
 
   return (
     <BulkChangesWrapper>
@@ -79,26 +55,14 @@ const BulkUpload = () => {
           width: "500px"
         }}
       />
-      <FlexRow>
+      <Row>
         <SelectionWrapper>
         Twilio
           <Checkbox
-            checked={checked.TWILIO}
-            onChange={() => setChecked({
-              ...checked,
-              TWILIO: !checked.TWILIO
-            })}
-            style={{ padding: "0px" }}
-          />
-        </SelectionWrapper>
-        <SelectionWrapper>
-        Worker Database
-          <Checkbox
-            checked={checked.WORKER_DATABASE}
-            onChange={() => setChecked({
-              ...checked,
-              WORKER_DATABASE: !checked.WORKER_DATABASE
-            })}
+            checked={selectedTemplates.some((t: any) => t === createTemplates.CREATE_TRITON_USER)}
+            onChange={(param1: any, param2: any) => {
+              console.log("params on check", param1, param2);
+            }}
             style={{ padding: "0px" }}
           />
         </SelectionWrapper>
@@ -113,21 +77,10 @@ const BulkUpload = () => {
             style={{ padding: "0px" }}
           />
         </SelectionWrapper>
-        <SelectionWrapper>
-        Calabrio WFM
-          <Checkbox
-            checked={checked.CALABRIO_WFM}
-            onChange={() => setChecked({
-              ...checked,
-              CALABRIO_WFM: !checked.CALABRIO_WFM
-            })}
-            style={{ padding: "0px" }}
-          />
-        </SelectionWrapper>
-      </FlexRow>
+      </Row>
       <ButtonWrapper>
-        <ExportButton
-          selected={[]}
+        <ExportTemplateButton
+          templates={selectedTemplates}
           label="Export Template"
           styles={{ width: "200px" }}
         />

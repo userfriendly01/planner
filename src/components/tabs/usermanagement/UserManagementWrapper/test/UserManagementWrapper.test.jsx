@@ -20,6 +20,7 @@ import {
 jest.mock("components", () => ({
   UserEntryForm: jest.fn(),
   Dropdown: jest.fn(),
+  BulkUpload: jest.fn(),
   TritonUsersViewWrapper: jest.fn()
 }));
 
