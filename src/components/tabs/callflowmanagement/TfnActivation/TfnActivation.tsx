@@ -209,7 +209,7 @@ export const TfnActivation = (props: TfnActivationProps) => {
           <DisplayNameField
             label= "Display Name"
             value={tfnState.displayName}
-            onChange={e => setTfnState({
+            onChange={(e: any) => setTfnState({
               ...tfnState,
               displayName: e.target.value
             })}
@@ -220,7 +220,7 @@ export const TfnActivation = (props: TfnActivationProps) => {
             multiline={true}
             minRows={4}
             value={tfnState.entryMessage}
-            onChange={e => setTfnState({
+            onChange={(e: any) => setTfnState({
               ...tfnState,
               entryMessage: e.target.value
             })}

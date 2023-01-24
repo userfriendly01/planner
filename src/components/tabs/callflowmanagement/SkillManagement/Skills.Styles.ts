@@ -137,7 +137,7 @@ export const SkillsWrapper = styled.div`
   width: 60%;
 `;
 
-export const StyledExportButton = styled(StyledButton)`
+export const StyledExportButton = styled(StyledButton)<{ styles: any }>`
   height: 40px;
-  width: 100px;
+  width: ${props => props.styles && props.styles.width ? props.styles.width : "100px"};
 `;

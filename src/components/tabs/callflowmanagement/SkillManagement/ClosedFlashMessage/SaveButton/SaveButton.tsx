@@ -8,13 +8,13 @@ import {
   Skill,
   timeouts
 } from "globals";
+import { SaveButtonProps } from "../ClosedFlashMessage.Interfaces";
 import {
   ConfirmationDiv,
   ConfirmationExportDiv,
-  SaveButtonProps,
   UserFormButton
-} from "../";
-import { ActionTypes } from "../../";
+} from "../ClosedFlashMessage.Styles";
+import { ActionTypes } from "../../Skills.Interfaces";
 
 const SaveButton = (props: SaveButtonProps) => {
   const {

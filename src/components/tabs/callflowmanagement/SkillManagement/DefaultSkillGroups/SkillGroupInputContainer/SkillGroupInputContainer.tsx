@@ -10,7 +10,7 @@ import {
 import { ActionTypes } from "../../Skills.Interfaces";
 import {
   addSkillGroup, addSkillGroupsSkill
-} from "services";
+} from "services/skillgroup";
 import {
   Skill, timeouts, ModalOverlayStatuses
 } from "globals";
@@ -83,14 +83,14 @@ const SkillGroupInputContainer = (props: any) => {
         status: ModalOverlayStatuses.SAVING
       });
       try {
-        console.log("HERE")
+        console.log("HERE");
         const addGroupNameResponse = await addSkillGroup(skillGroupName);
         setSkillGroupId(addGroupNameResponse.insertId);
         const results = await Promise.allSettled(tableState.selected.map((skill: Skill) => {
           console.log("Hello?")
           return addSkillGroupsSkill(addGroupNameResponse.insertId, skill.ctmSkillId);
         }));
-        console.log(results, "RESULTS")
+        console.log(results, "RESULTS");
         handleResults(results);
       } catch (err) {
         console.error("Unable to add skill grouping");
@@ -146,7 +146,6 @@ const SkillGroupInputContainer = (props: any) => {
         setAction(null);
       }, timeouts.MODAL_OVERLAY);
     } else if (successfulPromiseSkills.length === 0){
-      console.log("HUH DID WE FAIL???")
       setSaveResult({
         message: "Request Failed",
         status: ModalOverlayStatuses.FAIL
@@ -187,7 +186,6 @@ const SkillGroupInputContainer = (props: any) => {
       });
       return updatedSkill;
     });
-    console.log("here before the dispatch...")
     dispatch({
       type: "updateSkills",
       payload: updatedSkills
@@ -197,7 +195,6 @@ const SkillGroupInputContainer = (props: any) => {
       type: "loadSkillGroups",
       payload: updatedSkills
     });
-    console.log("here after the dispatch...")
     setTableState({
       ...tableState,
       selected: []

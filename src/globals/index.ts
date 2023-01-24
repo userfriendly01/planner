@@ -13,7 +13,8 @@ export const workersPerPage = 15;
 
 export const formModes: FormModes = {
   INSERT: "insert",
-  UPDATE: "update"
+  UPDATE: "update",
+  DELETE: "delete"
 };
 
 export const timeouts = {

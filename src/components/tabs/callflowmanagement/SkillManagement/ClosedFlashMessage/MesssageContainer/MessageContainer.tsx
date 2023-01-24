@@ -1,12 +1,12 @@
 import * as React from "react";
 import { SaveButton } from "components";
+import { MessageContainerProps } from "../ClosedFlashMessage.Interfaces";
 import {
-  MessageContainerProps,
   MessageContainerWrapper,
   MessageBoxWrapper,
   TextField
-} from "../";
-import { ActionTypes } from "../../";
+} from "../ClosedFlashMessage.Styles";
+import { ActionTypes } from "../../Skills.Interfaces";
 
 const MessageContainer = (props: MessageContainerProps) => {
   const {

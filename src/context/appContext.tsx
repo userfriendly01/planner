@@ -11,9 +11,7 @@ import {
   Action,
   AppState
 } from "globals";
-import {
-  UserFormState
-} from "components/tabs/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
+import { UserFormState } from "components/tabs/usermanagement/OnboardNewUser/UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 import React, { ReactElement } from "react";
 import { ProfileEntryFormState } from "components/tabs/profilesettings/ProfileEntryForm/ProfileEntryForm.Interfaces";
 

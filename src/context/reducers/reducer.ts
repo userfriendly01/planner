@@ -6,9 +6,9 @@ import {
   formatCalabrioTeams,
   formatCalabrioTenant,
   formatCalabrioGroups,
-  formatCalabrioRoles,
-  formatSkillGroups
-} from "utils";
+  formatCalabrioRoles
+} from "utils/calabrioUtils";
+import { formatSkillGroups } from "utils/skillsUtils";
 
 export const initialState: AppState = {
   managerContext: {

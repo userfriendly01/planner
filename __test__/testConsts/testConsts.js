@@ -410,26 +410,48 @@ export const initialTestState = {
   workerContext: {
     workers: [
       {
+        skillsDifferent: true,
         attributes: {
+          full_name: "Faith Cuneo",
           n_number: "N0263786",
-          profile_id: 12
+          extension: "1234",
+          profile_id: 12,
+          manager_n_number: "n023356"
         }
       },
       {
         attributes: {
+          full_name: "Gloria Sake",
           n_number: "n0000000",
-          profile_id: "12"
+          extension: "2345",
+          profile_id: "12",
+          manager_n_number: "n0263786"
         }
       },
       {
         attributes: {
-          n_number: "n1111111"
+          full_name: "Bree Hodge",
+          extension: "3456",
+          n_number: "n1111111",
+          manager_n_number: "n0263512"
         }
       },
       {
         attributes: {
+          full_name: "Andrew VandeKamp",
+          extension: "7891",
           n_number: "n2222222",
-          profile_id: 0
+          profile_id: 0,
+          manager_n_number: "n0260000"
+        }
+      },
+      {
+        attributes: {
+          full_name: "Susan Delfino",
+          extension: "7833",
+          n_number: "n222354",
+          profile_id: 0,
+          manager_n_number: "n0260000"
         }
       }
     ]
