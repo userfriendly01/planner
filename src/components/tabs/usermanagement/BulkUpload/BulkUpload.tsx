@@ -33,6 +33,13 @@ const BulkUpload = () => {
 
   console.log("view component logic", view, views, view === views.BULK_CREATE_USERS);
 
+  const resetBulkUpload = () => {
+    setSelectedTemplates([]);
+    setConsolidatedTemplates([]);
+    setValidationErrors(null);
+    setUploadedForm(null);
+    setLoading(null);
+  };
   const updateSelectedTemplates = (checked: boolean, template: any) => {
     const templates = selectedTemplates.slice();
     console.log("updateSelectedTemplates", templates.slice());
@@ -83,9 +90,13 @@ const BulkUpload = () => {
   };
 
   const validateFields = () => {
+    console.log("entered valite fields");
     uploadedForm.forEach((row: any, index: number) => {
+      console.log("validateFields", row);
       consolidatedTemplate.forEach((field: any) => {
+        console.log("field", field);
         const expectedField = field.field;
+        console.log("row[expectedField]", row[expectedField]);
         if(!row[expectedField]){
           console.log(`Expected Field ${expectedField} is missing from row ${index + 1}`);
         }
@@ -107,40 +118,49 @@ const BulkUpload = () => {
         options={Object.values(views)}
         updateValue={(event: any, view: any) => {
           setView(view);
+          resetBulkUpload();
         }}
         styles={{
           margin: "40 0 30 0",
           width: "500px"
         }}
       />
-      <BulkCreateForm
-        selectedTemplates = {selectedTemplates}
-        updateSelectedTemplates={updateSelectedTemplates}
-      />
-      <Row>
-        <StepWrapper>
-          Step 2: Export Template & Template Options
-        </StepWrapper>
-        <Wrapper>
-          <ExportButtons template={consolidatedTemplate} />
-        </Wrapper>
-      </Row>
-      <Row>
-        <StepWrapper>
-          Step 3: Upload completed Spreadsheet
-        </StepWrapper>
-        <Wrapper center={true}>
-          <ImportButton onClick={() => uploadButtonRef.current.click()} >Upload Spreadsheet</ImportButton>
-        </Wrapper>
-      </Row>
-      <Row>
-        <StepWrapper>
-          Step 4: Process Bulk Create
-        </StepWrapper>
-        <Wrapper center={true}>
-          <ImportButton onClick={validateFields}>Process</ImportButton>
-        </Wrapper>
-      </Row>
+      { view === views.BULK_CREATE_USERS &&
+        <BulkCreateForm
+          selectedTemplates = {selectedTemplates}
+          updateSelectedTemplates={updateSelectedTemplates}
+        />
+      }
+      { selectedTemplates &&
+        <>
+          <Row>
+            <StepWrapper>
+              Step 2: Export Template & Template Options
+            </StepWrapper>
+            <Wrapper>
+              <ExportButtons template={consolidatedTemplate} />
+            </Wrapper>
+          </Row>
+          <Row>
+            <StepWrapper>
+              Step 3: Upload completed Spreadsheet
+            </StepWrapper>
+            <Wrapper center={true}>
+              <ImportButton onClick={() => uploadButtonRef.current.click()} >Upload Spreadsheet</ImportButton>
+            </Wrapper>
+          </Row>
+        </>
+      }
+      { uploadedForm &&
+        <Row>
+          <StepWrapper>
+            Step 4: Process Bulk Create
+          </StepWrapper>
+          <Wrapper center={true}>
+            <ImportButton onClick={validateFields}>Process</ImportButton>
+          </Wrapper>
+        </Row>
+      }
       <input type="file" ref={uploadButtonRef} style={{
         visibility: "hidden",
         height: "0px"

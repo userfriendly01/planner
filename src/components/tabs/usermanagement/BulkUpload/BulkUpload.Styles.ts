@@ -45,9 +45,11 @@ export const ButtonWrapper = styled.div`
 export const ImportButton = styled(StyledButton)`
   width: 350px;
   height: 50px;
+  font-weight: bold;
 `;
 
 export const StyledExportButton = styled(StyledButton)<{ styles?: any }>`
   height: 50px;
-  width: ${props => props.styles && props.styles.width ? props.styles.width : "200px"};
+  font-weight: bold;
+  width: ${props => props.styles && props.styles.width ? props.styles.width : "250px"};
 `;
