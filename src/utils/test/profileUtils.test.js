@@ -296,7 +296,7 @@ describe("profileUtils", () => {
       overflow_skill: "OverflowTestSKill",
       pmt_prcsg_i: true,
       policy_number_edit_i: false,
-      profile_id: 1,
+      profile_id: null,
       profile_nme: "UnitTestProfile",
       recorded_i: true,
       transferQueues: [
