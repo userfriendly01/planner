@@ -23,10 +23,15 @@ const BulkUpload = () => {
     }
   };
 
+  enum LoadingStatus {
+    LOADING = "loading"
+  }
+
   const uploadButtonRef = React.useRef<HTMLInputElement>();
   const [ view, setView ] = React.useState(views.BULK_CREATE_USERS);
   const [ selectedTemplates, setSelectedTemplates ] = React.useState([]);
   const [ consolidatedTemplate, setConsolidatedTemplates ] = React.useState([]);
+  const [ loading, setLoading ] = React.useState(null);
 
   React.useEffect(() => {
     const final = consolidateTemplates();
@@ -53,10 +58,11 @@ const BulkUpload = () => {
   const consolidateTemplates = () => {
     const beginningArray: any = [];
     console.log("consolidateTemplates - selectedTemplates", selectedTemplates);
-    selectedTemplates.forEach((t: any) => beginningArray.push(...t));
+    selectedTemplates.forEach((t: any) => beginningArray.push(t));
     const consolidatedFieldsList: any = [];
+    console.log("consolidateTemplates - beginningArray", beginningArray);
     beginningArray.forEach((t: any) => {
-      const duplicateField = consolidatedFieldsList.some((field: any) => field === t.fields.field);
+      const duplicateField = consolidatedFieldsList.some((field: any) => field.field === t.fields.field);
       if(!duplicateField){
         consolidatedFieldsList.push(t.fields);
       }

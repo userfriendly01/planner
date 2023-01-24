@@ -18,13 +18,13 @@ export const Row = styled.div`
 
 export const StepWrapper = styled.div`
   display: flex;
-  width: 760px;
+  width: 40%;
 `;
 
 export const SelectionWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 25%;
   align-items: center;
   justify-content: space-between;
   height: 60px;
@@ -32,7 +32,7 @@ export const SelectionWrapper = styled.div`
 
 export const ButtonWrapper = styled.div`
   display: flex;
-  width: 100%;
+  width: 60%;
   justify-content: space-evenly;
 `;
 
