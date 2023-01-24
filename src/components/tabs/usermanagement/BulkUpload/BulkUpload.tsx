@@ -91,26 +91,9 @@ const BulkUpload = () => {
     }
   };
 
-  const validateFields = () => {
-    console.log("entered valite fields");
-    uploadedForm.forEach((row: any, index: number) => {
-      console.log("validateFields", row);
-      console.log("consolidatedTemplate", consolidatedTemplate.slice());
-      consolidatedTemplate.forEach((field: any) => {
-        console.log("field", field);
-        const expectedField = field.name;
-        console.log("row[expectedField]", row[expectedField]);
-        if(!row[expectedField]){
-          console.log(`Expected Field ${expectedField} is missing from row ${index + 1}`);
-        }
-      });
-    });
-
-    //Loop through consolidated fields
-    //Make sure they are all present, in the right format, and within the options where applicable
-    //collect errors
-    //forward errors to validation export button
-    //Confirmation is shown when process upload is clicked and validation is done
+  const performValidations = async () => {
+    const validationPromises = await Promise.allSettled(selectedTemplates.map((t: any) => t.validateFunction(uploadedForm)));
+    console.log("Validation Promised: ", validationPromises);
   };
 
   return (
@@ -160,7 +143,7 @@ const BulkUpload = () => {
             Step 4: Process Bulk Create
           </StepWrapper>
           <Wrapper center={true}>
-            <ImportButton onClick={validateFields}>Process</ImportButton>
+            <ImportButton onClick={performValidations}>Process</ImportButton>
           </Wrapper>
         </Row>
       }

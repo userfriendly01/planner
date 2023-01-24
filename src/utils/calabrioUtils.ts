@@ -13,6 +13,17 @@ export const calabrioTenants = {
   NP: "LibertyMutual"
 };
 
+export const calabrioAllowedRoles = [
+  "Supervisor",
+  "Agent-Sync Only",
+  "No Screen",
+  "QM Agent",
+  "WFM_QM_Agent",
+  "WFM_QM_Supervisor_TT",
+  "WFM_QM_Supervisor",
+  "WFM_QM_Agent_NT"
+];
+
 //Calabrio doesnt offer an API for this, only PST, MNT, CST, and EST were requested so we hardcoded them here as they are unlikely to change
 //They are also the same through environments
 export const calabrioTimeZones =  [
