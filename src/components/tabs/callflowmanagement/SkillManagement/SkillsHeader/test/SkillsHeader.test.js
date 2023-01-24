@@ -1,6 +1,6 @@
 import SkillsHeader from "../SkillsHeader";
 import { getAuthenticationProfileTemplates } from "authentication";
-import { SearchBox } from "components/tabs/usermanagement";
+import { SearchBox } from "components";
 import React from "react";
 import {
   Dropdown,
@@ -18,11 +18,8 @@ import {
   profileList
 } from "testUtils";
 
-jest.mock("components/tabs/usermanagement", () => ({
-  SearchBox: jest.fn()
-}));
-
 jest.mock("components", () => ({
+  SearchBox: jest.fn(),
   Dropdown: jest.fn(),
   ExportButton: jest.fn(),
   StyledButton: jest.fn()

@@ -14,7 +14,7 @@ import {
   getNonOverflowSkills,
   isFormUpdated,
   isFormValid
-} from "../userFormUtils";
+} from "../userManagementUtils";
 
 const adminStateIsAdmin = {
   userContext: {

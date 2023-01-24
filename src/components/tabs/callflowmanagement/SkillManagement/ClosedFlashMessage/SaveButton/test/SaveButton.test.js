@@ -1,13 +1,12 @@
 import SaveButton from "../SaveButton";
-import {
-  UserFormButton,
-  messageTypes
-} from "../../";
-import { ActionTypes } from "../../../";
+import { messageTypes } from "../../ClosedFlashMessage.Interfaces";
+import { UserFormButton } from "../../ClosedFlashMessage.Styles";
+import { ActionTypes } from "../../../Skills.Interfaces";
 import {
   useAdminState,
   useAdminDispatch
 } from "context";
+import { StyledButton } from "components";
 import {
   ModalOverlayStatuses,
   timeouts
@@ -25,22 +24,18 @@ import {
   skillsList,
   waitFor
 } from "testUtils";
+import { theme } from "globals";
+import { ThemeProvider } from "styled-components";
 
 jest.mock("context", () => ({
   useAdminState: jest.fn(),
   useAdminDispatch: jest.fn()
 }));
 
-jest.mock("../../../", () => ({
-  ActionTypes: jest.requireActual("../../../").ActionTypes
+jest.mock("components", () => ({
+  StyledButton: jest.fn()
 }));
 
-jest.mock("../../", () => ({
-  UserFormButton: jest.fn(),
-  messageTypes: jest.requireActual("../../").messageTypes,
-  ConfirmationDiv: jest.requireActual("../../").ConfirmationDiv,
-  ConfirmationExportDiv: jest.requireActual("../../").ConfirmationExportDiv
-}));
 jest.useFakeTimers();
 
 const mockDispatch = jest.fn();
@@ -55,19 +50,23 @@ const confirmationModalOpts = {
 };
 
 const renderComponent = (action, selected, messageType) => {
-  return render(<SaveButton
-    action={action}
-    confirmationModalOpts={confirmationModalOpts}
-    messageType={messageType}
-    tableState={{
-      selected: selected || []
-    }}
-    text={text}
-    setAction={mockSetAction}
-    setConfirmationModalOpts={mockSetConfirmationModalOpts}
-    setSaveResult={mockSetSaveResult}
-    setTableState={mockSetTableState}
-  />);
+  return render(
+    <ThemeProvider theme={theme}>{
+      <SaveButton
+        action={action}
+        confirmationModalOpts={confirmationModalOpts}
+        messageType={messageType}
+        tableState={{
+          selected: selected || []
+        }}
+        text={text}
+        setAction={mockSetAction}
+        setConfirmationModalOpts={mockSetConfirmationModalOpts}
+        setSaveResult={mockSetSaveResult}
+        setTableState={mockSetTableState}
+      />
+    }</ThemeProvider>
+  );
 };
 
 
@@ -77,7 +76,7 @@ describe("<SaveButton /> ", () => {
     useAdminDispatch.mockReturnValue(mockDispatch);
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
-      UserFormButton
+      StyledButton
     });
   });
   describe("initial render", () => {

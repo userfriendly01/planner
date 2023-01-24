@@ -1,13 +1,13 @@
-import * as React from "react";
 import {
   Dropdown,
   MessageContainer
 } from "components";
-import { FormControlsContainer } from "../Skills.Styles";
+import React from "react";
 import {
   propertyOptions,
   ActionContainerProps
 } from "../Skills.Interfaces";
+import { FormControlsContainer } from "../Skills.Styles";
 
 const ActionContainer = (props: ActionContainerProps) => {
   const {
