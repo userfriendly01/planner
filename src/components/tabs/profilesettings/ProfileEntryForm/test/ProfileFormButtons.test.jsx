@@ -44,6 +44,7 @@ jest.mock("@mui/material", () => ({
 jest.mock("utils", () => ({
   isProfileFormValid: jest.fn(),
   createProfilePayload: jest.fn(),
+  updateProfilePayload: jest.fn(),
   wait: jest.requireActual("utils").wait
 }));
 
