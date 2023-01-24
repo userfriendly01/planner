@@ -10,13 +10,14 @@ import { createTemplates } from "./templates";
 import { Dropdown } from "components";
 import ExportTemplateButton from "./ExportTemplateButton";
 import { Checkbox } from "@mui/material";
+import xlsx from "xlsx";
 
 const BulkUpload = () => {
 
   const views: any = {
     BULK_UPLOAD: {
-      value: "BULK_CREATE",
-      label: "Bulk Create"
+      value: "CREATE_USERS",
+      label: "Create Users"
     },
     BULK_UPDATE: {
       value: "BULK_UPDATE",
@@ -61,6 +62,21 @@ const BulkUpload = () => {
     return finalArray;
   };
 
+  const readUploadFile = (e: any) => {
+    e.preventDefault();
+    if (e.target.files) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const data = e.target.result;
+        const workbook = xlsx.read(data, { type: "array" });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const json = xlsx.utils.sheet_to_json(worksheet);
+        console.log(json);
+      };
+      reader.readAsArrayBuffer(e.target.files[0]);
+    }
+  };
 
   return (
     <BulkChangesWrapper>
@@ -108,7 +124,12 @@ const BulkUpload = () => {
           label="Export Template"
           styles={{ width: "200px" }}
         />
-        <ImportButton>Import CSV</ImportButton>
+        <input
+          type="file"
+          name="upload"
+          id="upload"
+          onChange={readUploadFile}
+        >Import CSV</input>
       </ButtonWrapper>
     </BulkChangesWrapper>
   );

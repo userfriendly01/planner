@@ -7,10 +7,7 @@ export const createTemplates: any = {
       description: "Agents N Number",
       required: "Y",
       example: "n0263786",
-      width: "50px",
-      options: [],
-      wrap: true,
-      textAlign: "center"
+      options: []
     },
     {
       field: "profileId",
@@ -19,10 +16,7 @@ export const createTemplates: any = {
       description: "Profile Id",
       required: "Y",
       example: 3,
-      width: "50px",
-      options: [],
-      wrap: true,
-      textAlign: "center"
+      options: []
     }
   ],
   CREATE_CALABRIO_QM_USER: [
@@ -33,10 +27,7 @@ export const createTemplates: any = {
       description: "Agents N Number",
       required: "Y",
       example: "n0263786",
-      width: "50px",
-      options: [],
-      wrap: true,
-      textAlign: "center"
+      options: []
     },
     {
       field: "calabrioGroup",
@@ -45,10 +36,7 @@ export const createTemplates: any = {
       description: "Parent Group (Must already be created in Calabrio)",
       required: "Y",
       example: "Default Group",
-      width: "50px",
-      options: [],
-      wrap: true,
-      textAlign: "center"
+      options: []
     },
     {
       field: "calabrioTeam",
@@ -57,10 +45,16 @@ export const createTemplates: any = {
       description: "Team (Must already be created in Calabrio)",
       required: "Y",
       example: "Default Team",
-      width: "50px",
-      options: [],
-      wrap: true,
-      textAlign: "center"
+      options: []
+    },
+    {
+      field: "timeZone",
+      name: "Time Zone",
+      type: "string",
+      description: "Time Zone of the Calabrio User",
+      required: "Y",
+      example: "America/New_York",
+      options: []
     }
   ]
 };
