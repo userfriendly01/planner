@@ -11,7 +11,7 @@ import { Dropdown } from "components";
 import { useAdminState } from "context";
 import ExportTemplateButton from "./ExportTemplateButton";
 import { Checkbox } from "@mui/material";
-import XLSX from "xlsx";
+import * as XLSX from "xlsx";
 
 const BulkUpload = () => {
 
