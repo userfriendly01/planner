@@ -7,7 +7,7 @@ import {
 } from "globals";
 
 export interface ProfileEntryFormProps {
-  handleClose: (reopen: boolean | void) => void
+  handleClose: () => void
 }
 
 export interface LoadingState {
@@ -18,7 +18,7 @@ export interface LoadingState {
 }
 
 export interface ProfileFormButtonsProps {
-  handleClose: (reopen: boolean | void) => void,
+  handleClose: () => void,
   loading: LoadingState,
   updateLoading: (payload: any) => void
 }

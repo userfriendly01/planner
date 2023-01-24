@@ -3,18 +3,14 @@ import {
   Manager,
   formModes
 } from "../../globals";
-import {
-  UserFormState,
-  ExtensionSearchStatuses
-} from "components/tabs/usermanagement/UserEntryForm/UserEntryForm.Interfaces";
-import {
-  formatE164PhoneNumber,
-  calabrioTimeZones,
-  getValidSkillsObject,
-  getZeroOutEnabledFromProfile
-} from "utils";
+import { UserFormState } from "components/tabs/usermanagement/OnboardNewUser/UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
+import { ExtensionSearchStatuses } from "components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionInput/ExtensionInput.Interfaces";
+import { SearchParams } from "components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionSearchParams";
+import { formatE164PhoneNumber } from "utils/formatNumberUtils";
+import { calabrioTimeZones } from "utils/calabrioUtils";
+import { getValidSkillsObject } from "utils/skillsUtils";
+import { getZeroOutEnabledFromProfile } from "utils/userManagementUtils";
 
-import { SearchParams } from "components/tabs/usermanagement/UserEntryForm/ExtensionSearchParams";
 const searchParams = SearchParams.getValues();
 
 export const userFormActions = {
@@ -41,6 +37,7 @@ export const userFormActions = {
   SET_EXTENSION_RETRIES: "SET_EXTENSION_RETRIES",
   SET_EXTENSION_VERIFIED: "EXTENSION_VERIFIED",
   SET_UPDATE_FORM_STATE: "SET_UPDATE_FORM_STATE",
+  SET_DELETE_FORM_STATE: "SET_DELETE_FORM_STATE",
   SET_USER_PREVIOUSLY_ADDED_TRUE: "SET_USER_PREVIOUSLY_ADDED_TRUE",
   UPDATE_DEFAULT_SKILLS: "UPDATE_DEFAULT_SKILLS",
   UPDATE_EXTENSION: "UPDATE_EXTENSION",
@@ -51,12 +48,13 @@ export const userFormActions = {
   UPDATE_TEAM: "UPDATE_TEAM"
 };
 
-const initialDefaultSkills = getValidSkillsObject();
-
 export const initialUserFormState: UserFormState = {
   formMode: formModes.INSERT,
   discrepancies: [],
-  defaultSkills: initialDefaultSkills,
+  defaultSkills: {
+    skills: [],
+    levels: {}
+  },
   defaultSkillsUpdated: false,
   didUser: false,
   extension: {
@@ -278,8 +276,13 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
       };
     }
     case userFormActions.RESET_FORM: {
+      console.log("initialUserFormState should have empty skill object", initialUserFormState);
       return {
-        ...initialUserFormState
+        ...initialUserFormState,
+        defaultSkills: {
+          skills: [],
+          levels: {}
+        }
       };
     }
     case userFormActions.RESET_FORM_AFTER_ADD: {
@@ -290,6 +293,10 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
 
       return {
         ...initialUserFormState,
+        defaultSkills: {
+          skills: [],
+          levels: {}
+        },
         didUser,
         manager: {
           value: manager,
@@ -403,7 +410,7 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
     case userFormActions.SET_UPDATE_FORM_STATE: {
       const worker = action.payload.worker;
       const managers = action.payload.managers;
-      return {
+      const finalObj = {
         ...state,
         formMode: formModes.UPDATE,
         defaultSkills: getValidSkillsObject(worker.attributes.default_skills),
@@ -449,6 +456,59 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         zeroOutEnabled: worker.zeroOutEnabled || false,
         editDisabled: worker.directDialNum ? true : false
       };
+      return finalObj;
+    }
+    case userFormActions.SET_DELETE_FORM_STATE: {
+      const worker = action.payload.worker;
+      const managers = action.payload.managers;
+      const finalObj = {
+        ...state,
+        formMode: formModes.DELETE,
+        defaultSkills: getValidSkillsObject(worker.attributes.default_skills),
+        extension: {
+          ...state.extension,
+          value: worker.attributes.extension || "",
+          valid: true
+        },
+        extensionStatus: {
+          ...state.extensionStatus,
+          originalExtension: worker.attributes.extension || "",
+          isError: false,
+          message: ""
+        },
+        manager: {
+          ...state.manager,
+          value: managers.find((m: Manager) => m.manager_n_number === worker.attributes.manager_n_number)
+        },
+        nNumber: {
+          ...state.nNumber,
+          value: worker.attributes.n_number || "n"
+        },
+        outgoing: {
+          ...state.outgoing,
+          value: worker.attributes.did ? formatE164PhoneNumber(worker.attributes.did) : "",
+          valid: worker.attributes.did ? true : false
+        },
+        profileId: {
+          ...state.profileId,
+          value: worker.attributes.profile_id
+        },
+        alternateDid: {
+          ...state.alternateDid,
+          value: worker.alternateDid ? formatE164PhoneNumber(worker.alternateDid) : "",
+          valid: worker.alternateDid ? true : false
+        },
+        directDialNum: {
+          ...state.directDialNum,
+          value: worker.directDialNum ? formatE164PhoneNumber(worker.directDialNum) : "",
+          valid: worker.directDialNum ? true : false
+        },
+        didUser: worker.directDialNum ? true : false,
+        zeroOutEnabled: worker.zeroOutEnabled || false,
+        editDisabled: worker.directDialNum ? true : false
+      };
+      console.log("FINAL", finalObj);
+      return finalObj;
     }
     case userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE: {
       return {

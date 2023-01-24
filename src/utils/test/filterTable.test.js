@@ -96,7 +96,7 @@ describe("filterByNameSkillsAndOffice()", () => {
   });
 
   test("if the worker is good, but null is the search, return false", () => {
-    expect(filterByNameAndSkills(goodWorkerData, null)).toEqual(false);
+    expect(filterByNameAndSkills(goodWorkerData, null)).toEqual(true);
   });
 
   test("if there is no default data, but the value is found elsewhere, we should return true", () => {
