@@ -22,6 +22,42 @@ export const getCreateTemplates: any = (state: any): any => {
           required: "Y",
           example: 3,
           options: state.profileContext.profiles.map((p: any) => p.profile_id)
+        },
+        {
+          field: "managerNNumber",
+          name: "Manager N Number",
+          type: "string",
+          description: "N Number of the Manager",
+          required: "Y",
+          example: "n0088625",
+          options: state.managerContext.managers.map((m: any) => m.manager_n_number)
+        },
+        {
+          field: "defaultSkills",
+          name: "Default Skills",
+          type: "string",
+          description: "Comma delimited list of skills assigned as the Defauls Skill profile for the user. If left blank, no skills will be assigned",
+          required: "N",
+          example: "bscCommissions, aisgl1, blSalesL1",
+          options: state.skillContext.skills.map((s: any) => s.name)
+        },
+        {
+          field: "defaultSkillLevels",
+          name: "Default Skill Levels",
+          type: "string",
+          description: "Comma delimited list of skill/level pairings. Skills should have a colon before the level. If left blank, skills with levels will default to 1",
+          required: "N",
+          example: "bscCommissions: 3, blSalesL1: 2",
+          options: null
+        },
+        {
+          field: "extension",
+          name: "Extension",
+          type: "string",
+          description: "Comma delimited list of skill/level pairings. Skills should have a colon before the level. If left blank, skills with levels will default to 1",
+          required: "N",
+          example: "bscCommissions: 3, blSalesL1: 2",
+          options: null
         }
       ]
     },
@@ -54,6 +90,15 @@ export const getCreateTemplates: any = (state: any): any => {
           required: "Y",
           example: "Default Team",
           options: state.calabrioContext.teams.map((t: any) => t.name)
+        },
+        {
+          field: "roles",
+          name: "Calabrio Team",
+          type: "string",
+          description: "Team (Must already be created in Calabrio)",
+          required: "Y",
+          example: "Default Team",
+          options: state.calabrioContext.roles.map((r: any) => r.name)
         },
         {
           field: "timeZone",

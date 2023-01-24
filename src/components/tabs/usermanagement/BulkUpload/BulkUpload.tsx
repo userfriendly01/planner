@@ -17,6 +17,8 @@ import * as XLSX from "xlsx";
 
 const BulkUpload = () => {
 
+  //Define prerequisites somewhere, managers and calabrio teams added before hand
+
   const uploadButtonRef = React.useRef<HTMLInputElement>();
   const [ view, setView ] = React.useState(views.BULK_CREATE_USERS);
   const [ selectedTemplates, setSelectedTemplates ] = React.useState([]);
@@ -93,9 +95,10 @@ const BulkUpload = () => {
     console.log("entered valite fields");
     uploadedForm.forEach((row: any, index: number) => {
       console.log("validateFields", row);
+      console.log("consolidatedTemplate", consolidatedTemplate.slice());
       consolidatedTemplate.forEach((field: any) => {
         console.log("field", field);
-        const expectedField = field.field;
+        const expectedField = field.name;
         console.log("row[expectedField]", row[expectedField]);
         if(!row[expectedField]){
           console.log(`Expected Field ${expectedField} is missing from row ${index + 1}`);
@@ -131,7 +134,7 @@ const BulkUpload = () => {
           updateSelectedTemplates={updateSelectedTemplates}
         />
       }
-      { selectedTemplates &&
+      { selectedTemplates.length > 0 &&
         <>
           <Row>
             <StepWrapper>
