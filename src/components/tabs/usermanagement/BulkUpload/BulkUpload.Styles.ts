@@ -21,10 +21,10 @@ export const StepWrapper = styled.div`
   width: 40%;
 `;
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{center?: boolean}>`
   display: flex;
   width: 60%;
-  align-items: center;
+  justify-content: ${props => props.center? "center" : "space-between"};
 `;
 
 export const SelectionWrapper = styled.div`
@@ -38,7 +38,7 @@ export const SelectionWrapper = styled.div`
 
 export const ButtonWrapper = styled.div`
   display: flex;
-  width: 60%;
+  width: 100%;
   justify-content: space-evenly;
 `;
 

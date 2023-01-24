@@ -66,11 +66,12 @@ const BulkUpload = () => {
     selectedTemplates.forEach((t: any) => beginningArray.push(...t.fields));
     const consolidatedFieldsList: any = [];
     console.log("consolidateTemplates - beginningArray", beginningArray.slice());
-    beginningArray.forEach((t: any) => {
-      const duplicateField = consolidatedFieldsList.some((field: any) => field.field === t.field);
+    beginningArray.forEach((bt: any) => {
+      const duplicateField = consolidatedFieldsList.some((field: any) => field.field === bt.field);
       if(!duplicateField){
-        consolidatedFieldsList.push(t.fields);
+        consolidatedFieldsList.push(t);
       }
+      console.log("consolidatedFieldsList", consolidatedFieldsList);
     });
     console.log("consolidateTemplates - consolidatedFieldsList", consolidatedFieldsList);
     return consolidatedFieldsList;
@@ -132,7 +133,7 @@ const BulkUpload = () => {
         <StepWrapper>
           Step 3: Upload completed Spreadsheet
         </StepWrapper>
-        <Wrapper>
+        <Wrapper center={true}>
           <ImportButton onClick={() => uploadButtonRef.current.click()} >Upload Spreadsheet</ImportButton>
         </Wrapper>
       </Row>
@@ -140,7 +141,7 @@ const BulkUpload = () => {
         <StepWrapper>
           Step 4: Process Bulk Create
         </StepWrapper>
-        <Wrapper>
+        <Wrapper center={true}>
           <ImportButton>Process</ImportButton>
         </Wrapper>
       </Row>
