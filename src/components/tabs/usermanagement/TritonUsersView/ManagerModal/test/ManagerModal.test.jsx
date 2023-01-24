@@ -51,6 +51,13 @@ jest.mock("@mui/material", () => ({
   Checkbox: jest.fn()
 }));
 
+jest.mock("@mui/x-data-grid",()=>({
+  __esModule: true,
+  DataGrid: jest.fn(),
+  GridToolbar: jest.fn(),
+  GridRenderCellParams: jest.fn()
+}));
+
 jest.mock("@mui/x-date-pickers/TimePicker", () => ({
   TimePicker: jest.fn()
 }));
