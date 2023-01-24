@@ -1,5 +1,9 @@
 import React from "react";
 import {
+  views,
+  LoadingStatus
+} from "./BulkUpload.Interfaces";
+import {
   BulkChangesWrapper,
   ImportButton,
   Row,
@@ -12,23 +16,6 @@ import ExportButtons from "./ExportButtons/ExportButtons";
 import * as XLSX from "xlsx";
 
 const BulkUpload = () => {
-
-  const views: any = {
-    BULK_CREATE_USERS: {
-      value: "BULK_CREATE_USERS",
-      label: "Create Users"
-    },
-    BULK_UPDATE: {
-      value: "BULK_UPDATE",
-      label: "Bulk Update"
-    }
-  };
-
-  enum LoadingStatus {
-    LOADING = "loading",
-    VALIDATION_COMPLETE = "",
-    PROCESSING_COMPLETE = ""
-  }
 
   const uploadButtonRef = React.useRef<HTMLInputElement>();
   const [ view, setView ] = React.useState(views.BULK_CREATE_USERS);
@@ -96,6 +83,15 @@ const BulkUpload = () => {
   };
 
   const validateFields = () => {
+    uploadedForm.forEach((row: any, index: number) => {
+      consolidatedTemplate.forEach((field: any) => {
+        const expectedField = field.field;
+        if(!row[expectedField]){
+          console.log(`Expected Field ${expectedField} is missing from row ${index + 1}`);
+        }
+      });
+    });
+
     //Loop through consolidated fields
     //Make sure they are all present, in the right format, and within the options where applicable
     //collect errors
@@ -142,7 +138,7 @@ const BulkUpload = () => {
           Step 4: Process Bulk Create
         </StepWrapper>
         <Wrapper center={true}>
-          <ImportButton>Process</ImportButton>
+          <ImportButton onClick={validateFields}>Process</ImportButton>
         </Wrapper>
       </Row>
       <input type="file" ref={uploadButtonRef} style={{
