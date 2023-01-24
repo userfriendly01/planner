@@ -69,7 +69,7 @@ const BulkUpload = () => {
     beginningArray.forEach((bt: any) => {
       const duplicateField = consolidatedFieldsList.some((field: any) => field.field === bt.field);
       if(!duplicateField){
-        consolidatedFieldsList.push(t);
+        consolidatedFieldsList.push(bt);
       }
       console.log("consolidatedFieldsList", consolidatedFieldsList);
     });
