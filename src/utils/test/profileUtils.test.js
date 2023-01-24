@@ -12,7 +12,8 @@ import {
   formatActivityData,
   formatCallTagsName,
   formatAggregateQueues,
-  createProfilePayload
+  createProfilePayload,
+  updateProfilePayload
 } from "../profileUtils";
 import {
   BubbleDiv,
@@ -297,6 +298,156 @@ describe("profileUtils", () => {
       pmt_prcsg_i: true,
       policy_number_edit_i: false,
       profile_id: null,
+      profile_nme: "UnitTestProfile",
+      recorded_i: true,
+      transferQueues: [
+        {
+          skill_id: 1,
+          skill_nme: "AISG"
+        },
+        {
+          skill_id: 5,
+          skill_nme: "Gold"
+        }
+      ],
+      voice_mail_transcription_i: false
+    }
+
+    test("should return a formatted call tag with one underscore", () => {
+      expect(createProfilePayload(form)).toStrictEqual(expected);
+    });
+  });
+
+  describe("updateProfilePayload", () => {
+    const form = {
+      profileId: 1,
+      activitiesList: [
+        {
+          activity_id: 1
+        },
+        {
+          activity_id: 7
+        },
+        {
+          activity_id: 12
+        },
+      ],
+      activitiesUpdated: true,
+      callTagsList: [
+        {
+          wrkr_tsk_info_id: 1,
+          wrkr_tsk_info_nme:'claim_number',
+          options_id: 1
+        },
+        {
+          wrkr_tsk_info_id: 2,
+          wrkr_tsk_info_nme:'aces_claim_number',
+          options_id: 1
+        }
+      ],
+      callTagsUpdated: true,
+      autoAnswered: {
+        value: true,
+        updated: true
+      },
+      inboundRecorded: {
+        value: true,
+        updated: true
+      },
+      outboundRecorded: {
+        value: true,
+        updated: true
+      },
+      acwOption: {
+        value: false,
+        updated: true
+      },
+      manualRecorded: {
+        value: false,
+        updated: true
+      },
+      acwDataEntry: {
+        value: true,
+        updated: true
+      },
+      manualRecordedInbound: {
+        value: true,
+        updated: true
+      },
+      agentAssistedPay: {
+        value: true,
+        updated: true
+      },
+      voiceMailTranscription: {
+        value: false,
+        updated: true
+      },
+      paymentProcessing: {
+        value: true,
+        updated: true
+      },
+      policyNumberEdit: {
+        value: false,
+        updated: true
+      },
+      clickToDial: {
+        value: false,
+        updated: true
+      },
+      overflowSkill: {
+        value: "OverflowTestSKill",
+        updated: true,
+        valid: true
+      },
+      profileName: {
+        value: "UnitTestProfile",
+        updated: true,
+        valid: false
+      },
+      transferQueues: [
+        {
+          ctmSkillId: 1,
+          ctmSkillDisplayName: "AISG"
+        },
+        {
+          ctmSkillId: 5,
+          ctmSkillDisplayName: "Gold"
+        },
+        {
+          ctmSkillId: -10,
+          ctmSkillDisplayName: "Licensed Sales Center"
+        }
+      ],
+      queuesUpdated: true
+    };
+
+    const expected = {
+      activities: [1,7,12],
+      acw_data_entry_i: true,
+      acw_option_i: false,
+      agent_assisted_pay_i: true,
+      aggregateQueues: [10],
+      auto_answd_i: true,
+      callTags: [
+        {
+          display_nme: "Claim Number",
+          options_id: 1,
+          wrkr_tsk_info_id: 1
+        },
+        {
+          display_nme: "Aces Claim Number",
+          options_id: 1,
+          wrkr_tsk_info_id: 2
+        }
+      ],
+      click_to_dial_i: false,
+      manual_record_inbound_i: true,
+      manual_recorded_i: false,
+      otbnd_recorded_i: true,
+      overflow_skill: "OverflowTestSKill",
+      pmt_prcsg_i: true,
+      policy_number_edit_i: false,
+      profile_id: 1,
       profile_nme: "UnitTestProfile",
       recorded_i: true,
       transferQueues: [
