@@ -94,6 +94,9 @@ const BulkUpload = () => {
   const performValidations = async () => {
     const validationPromises = await Promise.allSettled(selectedTemplates.map((t: any) => t.validateFunction(uploadedForm)));
     console.log("Validation Promised: ", validationPromises);
+    //collect errors
+    //forward errors to validation export button
+    //Confirmation is shown when process upload is clicked and validation is done
   };
 
   return (

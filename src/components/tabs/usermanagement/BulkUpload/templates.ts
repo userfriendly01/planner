@@ -157,14 +157,14 @@ const validateTritonFields = async (uploadedForm: any, state: any): Promise<any>
     //N Number
     const nNumber = fields[0];
     const fieldName0 = nNumber.name;
-    if(!uploadedForm[fieldName0]){
+    if(!row[fieldName0]){
       errors.push(`${fieldName0} is missing from row ${index + 1}`);
     }
 
     //Profile Id
     const profileId = fields[1];
     const fieldName1 = profileId.name;
-    if(!uploadedForm[fieldName1]){
+    if(!row[fieldName1]){
       errors.push(`${fieldName1} is missing from row ${index + 1}`);
     }
 
@@ -172,7 +172,7 @@ const validateTritonFields = async (uploadedForm: any, state: any): Promise<any>
     const managerNNumber = fields[2];
     const fieldName2 = managerNNumber.name;
 
-    if(!uploadedForm[fieldName2]){
+    if(!row[fieldName2]){
       errors.push(`${fieldName2} is missing from row ${index + 1}`);
     }
 
@@ -180,7 +180,7 @@ const validateTritonFields = async (uploadedForm: any, state: any): Promise<any>
     const defaultSkills = fields[3];
     const fieldName3 = defaultSkills.name;
 
-    if(!uploadedForm[fieldName3]){
+    if(!row[fieldName3]){
       errors.push(`${fieldName3} is missing from row ${index + 1}`);
     }
 
@@ -188,7 +188,7 @@ const validateTritonFields = async (uploadedForm: any, state: any): Promise<any>
     const defaultSkillLevels = fields[4];
     const fieldName4 = defaultSkillLevels.name;
 
-    if(!uploadedForm[fieldName4]){
+    if(!row[fieldName4]){
       errors.push(`${fieldName4} is missing from row ${index + 1}`);
     }
 
@@ -196,7 +196,7 @@ const validateTritonFields = async (uploadedForm: any, state: any): Promise<any>
     const extension = fields[5];
     const fieldName5 = extension.name;
 
-    if(!uploadedForm[fieldName5]){
+    if(!row[fieldName5]){
       errors.push(`${fieldName5} is missing from row ${index + 1}`);
     }
 
@@ -204,7 +204,7 @@ const validateTritonFields = async (uploadedForm: any, state: any): Promise<any>
     const didUser = fields[6];
     const fieldName6 = didUser.name;
 
-    if(!uploadedForm[fieldName6]){
+    if(!row[fieldName6]){
       errors.push(`${fieldName6} is missing from row ${index + 1}`);
     }
 
@@ -212,7 +212,7 @@ const validateTritonFields = async (uploadedForm: any, state: any): Promise<any>
     const directDialNumber = fields[7];
     const fieldName7 = directDialNumber.name;
 
-    if(!uploadedForm[fieldName7]){
+    if(!row[fieldName7]){
       errors.push(`${fieldName7} is missing from row ${index + 1}`);
     }
 
@@ -220,7 +220,7 @@ const validateTritonFields = async (uploadedForm: any, state: any): Promise<any>
     const zeroOutEnabled = fields[8];
     const fieldName8 = zeroOutEnabled.name;
 
-    if(!uploadedForm[fieldName8]){
+    if(!row[fieldName8]){
       errors.push(`${fieldName8} is missing from row ${index + 1}`);
     }
 
@@ -228,23 +228,20 @@ const validateTritonFields = async (uploadedForm: any, state: any): Promise<any>
     const alternateOutgoingNumber = fields[9];
     const fieldName9 = alternateOutgoingNumber.name;
 
-    if(!uploadedForm[fieldName9]){
+    if(!row[fieldName9]){
       errors.push(`${fieldName9} is missing from row ${index + 1}`);
     }
 
     if(errors.length > 0){
-      Promise.reject(errors);
+      console.error("Validation Error", errors);
+      return Promise.reject(errors);
     } else {
-      Promise.resolve();
+      return Promise.resolve();
     }
   }));
 
+  console.log("tritonPromises", tritonPromises);
   return tritonPromises;
-  //Loop through consolidated fields
-  //Make sure they are all present, in the right format, and within the options where applicable
-  //collect errors
-  //forward errors to validation export button
-  //Confirmation is shown when process upload is clicked and validation is done
 };
 
 
