@@ -8,7 +8,7 @@ import {
 import {
   formatProfileBooleanDataTrueFalse,
   formatOverflowSkillData
-} from "utils";
+} from "utils/profileUtils";
 
 export const profileEntryFormActions = {
   RESET_FORM: "RESET_FORM",

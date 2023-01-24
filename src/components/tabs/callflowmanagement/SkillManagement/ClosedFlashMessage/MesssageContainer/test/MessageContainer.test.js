@@ -12,7 +12,7 @@ import {
   messageTypes,
   TextField
 } from "../../";
-import { ActionTypes } from "../../../";
+import { ActionTypes } from "../../../Skills.Interfaces";
 
 jest.mock("components", () => ({
   MessageBox: jest.fn(),

@@ -10,11 +10,11 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import { propertyOptions } from "../../Skills.Interfaces";
 import {
   ActionTypes,
-  messageTypes
-} from "../../../";
+  propertyOptions
+} from "../../Skills.Interfaces";
+import { messageTypes } from "../../ClosedFlashMessage/ClosedFlashMessage.Interfaces";
 
 jest.mock("components", () => ({
   Dropdown: jest.fn(),

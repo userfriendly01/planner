@@ -2,7 +2,7 @@ import {
   getE164Number,
   isNumberValid,
   unMaskPhoneNumber
-} from "@lmig/phone-number-utils";
+} from "utils";
 import {
   Switch,
   TextField
