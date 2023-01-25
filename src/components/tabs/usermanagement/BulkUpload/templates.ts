@@ -166,7 +166,19 @@ const getTritonFields = (state: any): any => [
     description: "Y/N indicator to represent if user has a Direcr Dial Number",
     required: true,
     example: "Y",
-    options: null
+    options: null,
+    validateFunction: async (row: any, rowNumber: number): Promise<any> => {
+      const fieldName = "Did User";
+      const field = row[fieldName];
+
+      if(typeof field !== "string"){
+        return Promise.reject(`${fieldName} needs to be 'Y' or 'N' for row ${rowNumber}`);
+      } else if(field.toLowerCase() !== "y" && field.toLowerCase() !== "n"){
+        return Promise.reject(`${fieldName} needs to be 'Y' or 'N' for row ${rowNumber}`);
+      } else {
+        return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+      }
+    }
   },
   {
     field: "directDialNumber",
@@ -175,7 +187,23 @@ const getTritonFields = (state: any): any => [
     description: "10 digit Direct Dial Phone Number, will be prepended with +1. Only required when DID User is true",
     required: true,
     example: "6038518200",
-    options: null
+    options: null,
+    validateFunction: async (row: any, rowNumber: number): Promise<any> => {
+      const fieldName = "Direct Dial Number";
+      const field = row[fieldName];
+      const didFieldName = "Did User";
+      const didField = row[fieldName];
+
+      if(typeof didField !== "string"){
+        return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
+      } else if(didField.toLowerCase() !== "y" && didField.toLowerCase() !== "n"){
+        return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
+      } else {
+        const didUser = field.toLowerCase() === "y";
+
+        return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+      }
+    }
   },
   {
     field: "zeroOutEnabled",

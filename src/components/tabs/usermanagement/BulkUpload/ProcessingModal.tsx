@@ -32,6 +32,7 @@ const ProcessingModal = (props: any) => {
   console.log("we're in the processing modal! consolidatedFieldsList", consolidatedFieldsList );
 
   React.useEffect(() => {
+    console.log("within Processing Modal useEffect");
     performValidations();
   }, []);
 
@@ -39,22 +40,22 @@ const ProcessingModal = (props: any) => {
     setShowProgressBar(true);
     const finalErrors: any = [];
     const validationPromises = await Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {
-      return await Promise.allSettled(consolidatedFieldsList.map((field: any) => {
+      console.log("field promises");
+      const fieldPromises = await Promise.allSettled(consolidatedFieldsList.map((field: any) => {
         return field.validateFunction(row, index);
       }));
+      return fieldPromises;
     }));
     console.log("Validation Promises: ", validationPromises);
-    await validationPromises.map(async (rowPromise: any, index: number) => {
+    validationPromises.forEach((rowPromise: any, index: number) => {
       const rowErrors: any = [];
       console.log("rowPromise", rowPromise);
-      await rowPromise;
-      await rowPromise.value.map(async (fieldPromise: any) => {
+      rowPromise.value.map((fieldPromise: any) => {
         console.log("fieldPromise: ", fieldPromise);
         if(fieldPromise.status === "rejected"){
           console.log("Adding fieldPromise.reason to row Errors", fieldPromise.reason);
           rowErrors.push(fieldPromise.reason);
         }
-        return Promise.resolve();
       });
       if(rowErrors.length !== 0){
         console.log("pushing rowError onto Validation Error");
@@ -63,7 +64,6 @@ const ProcessingModal = (props: any) => {
           errors: rowErrors
         });
       }
-      return Promise.resolve();
     });
     console.log("finalErrors.length", finalErrors.length);
     if(finalErrors.length === 0){
@@ -171,7 +171,7 @@ const ProcessingModal = (props: any) => {
         </div>
       }
       { showProgressBar && <ProgressBar /> }
-      Modal!
+      Modal - changes made!
     </ModalWrapper>
   );
 };
