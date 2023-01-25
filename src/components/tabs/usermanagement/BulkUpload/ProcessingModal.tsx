@@ -35,7 +35,7 @@ const ProcessingModal = (props: any) => {
   React.useEffect(() => {
     console.log("within Processing Modal [] useEffect");
     setShowProgressBar(true);
-    return performValidations;
+    performValidations();
   }, []);
 
   // React.useEffect(() => {
@@ -58,7 +58,6 @@ const ProcessingModal = (props: any) => {
       const rowErrors: any = [];
       console.log("rowPromise", rowPromise);
       rowPromise.value.map((fieldPromise: any) => {
-        console.log("fieldPromise: ", fieldPromise);
         if(fieldPromise.status === "rejected"){
           console.log("Adding fieldPromise.reason to row Errors", fieldPromise.reason);
           rowErrors.push(fieldPromise.reason);
@@ -83,6 +82,7 @@ const ProcessingModal = (props: any) => {
   };
 
   const initiateCalls = () => {
+    //identify successful records;
     setShowProgressBar(true);
     if(identifyProcessingDependencies()){
       //kick off api calls in order of dependency tree using template concurrency limit
@@ -129,9 +129,9 @@ const ProcessingModal = (props: any) => {
     const rows: any = [];
     const columns: any = [
       {
-        title: "Original Row Number",
+        title: "Row",
         field: "row",
-        width: "20px"
+        width: "50px"
       },
       {
         title: "Errors",
@@ -171,13 +171,14 @@ const ProcessingModal = (props: any) => {
             <StyledExportButton onClick={handleExport}><ExcelExport ref={_export}/>
               Export Validation Errors
             </StyledExportButton>
-            <StyledExportButton styles={{ width: "200px" }} onClick={performValidations}>
+            <StyledExportButton styles={{ width: "200px" }} onClick={initiateCalls}>
               Process {totalSuccessCount} out of {totalRowCount} rows
             </StyledExportButton>
           </ButtonWrapper>
         </div>
       }
       { showProgressBar && <ProgressBar progress={processedRows}/> }
+      <ProgressBar progress={processedRows}/>
       Modal - changes made!
     </ModalWrapper>
   );
