@@ -19,6 +19,13 @@ export const checkIfPO = (nNumber: string): boolean => {
     "n0196231"
   ];
 
+  console.log('process.env', process.env);
+  console.log('process.env.APP_ENV', process.env.APP_ENV);
+
+  if (process.env.APP_ENV != 'production'){
+    return true;
+  }
+
   return productOwners.includes(nNumber.toLowerCase());
 };
 
