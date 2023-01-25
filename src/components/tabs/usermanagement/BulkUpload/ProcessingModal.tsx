@@ -80,7 +80,7 @@ const ProcessingModal = (props: any) => {
 
   const initiateCalls = () => {
     //identify successful records;
-    showValidationErrors(false);
+    setShowValidationErrors(false);
     setShowProgressBar(true);
     const dependencies = identifyProcessingDependencies();
     if(dependencies){
