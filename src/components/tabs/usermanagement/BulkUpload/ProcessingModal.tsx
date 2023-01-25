@@ -1,7 +1,8 @@
 import React from "react";
 import {
   ButtonWrapper,
-  StyledExportButton
+  StyledExportButton,
+  ModalWrapper
 } from "./BulkUpload.Styles";
 import ProgressBar from "./ProgressBar";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
@@ -44,13 +45,16 @@ const ProcessingModal = (props: any) => {
 
     //if theres only one template, just return it
     if(selectedTemplates.length === 1){
+      console.log("identifyProcessingDependencies - selectedTemplates.length === 1");
       return false;
     }
 
     selectedTemplates.forEach((t: any, index: number) => {
       if(t.multiRunDependencies){
+        console.log("identifyProcessingDependencies - t.multiRunDependencies", t.multiRunDependencies);
         t.multiRunDependencies.forEach((d: any) => {
           const requiredTemplateIndex = dependencyTree.findIndex((t:any) => t.name === d.name);
+          console.log("identifyProcessingDependencies - requiredTemplateIndex", requiredTemplateIndex);
           //if dependencies arent in the selected templates list, return it. Form validation accounts for this
           if(requiredTemplateIndex === -1){
             return false;
@@ -62,6 +66,7 @@ const ProcessingModal = (props: any) => {
               dependencyTree[index] = requiredObject;
               dependencyTree[requiredTemplateIndex] = dependentObject;
             }
+            console.log("identifyProcessingDependencies - dependencyTree", dependencyTree.slice());
           }
         });
       }
@@ -79,7 +84,7 @@ const ProcessingModal = (props: any) => {
   };
 
   return (
-    <div>
+    <ModalWrapper>
       { validationErrors.length > 0 &&
         <div>
           {totalErrorCount} Validation Errors have been found for this template.
@@ -97,7 +102,8 @@ const ProcessingModal = (props: any) => {
         </div>
       }
       { showProgressBar && <ProgressBar /> }
-    </div>
+      Modal!
+    </ModalWrapper>
   );
 };
 

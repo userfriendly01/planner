@@ -1,6 +1,15 @@
 import styled from "styled-components";
 import { StyledButton } from "components";
+import { Paper } from "@mui/material";
 
+
+export const ModalWrapper = styled(Paper)`
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  width: 650px;
+  height: 650px;
+`;
 export const BulkChangesWrapper = styled.div`
   display: flex;
   flex-direction: column;
