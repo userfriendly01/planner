@@ -32,7 +32,8 @@ export const ModalWrapper = styled(Paper)`
 `;
 
 export const TextWrapper = styled.div<{styles: string}>`
-
+  font-weight: ${props => props.styles && props.styles.weight ? props.styles.weight : "normal"}
+  font-size: ${props => props.styles && props.styles.size ? props.styles.size : "20px"}
 `;
 
 export const ValidationErrorWrapper = styled(Paper)`

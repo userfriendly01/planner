@@ -2,7 +2,8 @@ import React from "react";
 import {
   ButtonWrapper,
   StyledExportButton,
-  ModalWrapper
+  ModalWrapper,
+  TextWrapper
 } from "./BulkUpload.Styles";
 import ProgressBar from "./ProgressBar";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
@@ -39,9 +40,9 @@ const ProcessingModal = (props: any) => {
   const performValidations = async () => {
 
     const validationPromises = await Promise.allSettled(uploadedForm.map((row: any, index: number) => {
-      return consolidatedFieldsList.map((field: any) => {
+      return Promise.allSettled(consolidatedFieldsList.map((field: any) => {
         return field.validateFunction(row, index);
-      });
+      }));
     }));
     console.log("Validation Promises: ", validationPromises);
     const validationErrors: any = [];
@@ -51,8 +52,8 @@ const ProcessingModal = (props: any) => {
       console.log("promise.value: ", rowPromise.value);
       rowPromise.value.forEach(async (fieldPromise: any) => {
         console.log("fieldPromise: ", fieldPromise);
-        await fieldPromise;
-        console.log("fieldPromise after await is added: ", fieldPromise);
+        // await fieldPromise;
+        // console.log("fieldPromise after await is added: ", fieldPromise);
         if(fieldPromise){
           console.log("fieldPromise.status: ", fieldPromise.status);
           console.log("fieldPromise.reason: ", fieldPromise.reason);
@@ -129,7 +130,11 @@ const ProcessingModal = (props: any) => {
     <ModalWrapper>
       { validationErrors.length > 0 &&
         <div>
-          {totalErrorCount} Validation Errors have been found for this template.
+          <TextWrapper styles ={{
+            size: "26px"
+          }}>
+            {totalErrorCount} Validation Errors have been found for this template.
+          </TextWrapper>
           <ButtonWrapper>
             <StyledExportButton onClick={handleClose}>
               Cancel
