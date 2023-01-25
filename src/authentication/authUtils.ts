@@ -19,9 +19,9 @@ export const checkIfPO = (nNumber: string): boolean => {
     "n0196231"
   ];
 
-  console.log('process.env', process.env);
-  console.log('process.env.APP_ENV', process.env.APP_ENV);
-  console.log('process.env.NODE_ENV', process.env.NODE_ENV);
+  console.log('process.environment', process.env);
+  console.log('process.environment.APP_ENV', process.env.APP_ENV);
+  console.log('process.environment.NODE_ENV', process.env.NODE_ENV);
 
   if (process.env.APP_ENV != 'production'){
     return true;
