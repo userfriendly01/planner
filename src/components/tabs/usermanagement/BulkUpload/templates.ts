@@ -85,7 +85,7 @@ const getTritonFields = (state: any): any => [
       console.log("skillsArray", skillsArray);
 
       skillsArray.forEach((skill: any) => {
-        if(!state.skillContext.skills.some((s:any) => m.name.toLowerCase() === field.toLowerCase())){
+        if(!state.skillContext.skills.some((s:any) => s.name.toLowerCase() === field.toLowerCase())){
           return Promise.reject(`${skill} is not a valid option for row ${rowNumber}`);
         }
       });

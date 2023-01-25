@@ -45,21 +45,27 @@ const ProcessingModal = (props: any) => {
     }));
     console.log("Validation Promises: ", validationPromises);
     const validationErrors: any = [];
-    validationPromises.forEach((promise: any) => {
-      console.log("promise/row: ", promise);
-      console.log("promise.value: ", promise.value);
-      promise.value.forEach(async (innerPromise: any) => {
-        console.log("innerPromise: ", innerPromise);
-        await innerPromise;
-        console.log("innerPromise after await is added: ", innerPromise);
-        if(innerPromise){
-          console.log("innerPromise.status: ", innerPromise.status);
-          console.log("innerPromise.reason: ", innerPromise.reason);
-          console.log("innerPromise.value: ", innerPromise.value);
+    validationPromises.forEach((rowPromise: any, index: number) => {
+      const rowErrors: any = [];
+      console.log("promise/row: ", rowPromise);
+      console.log("promise.value: ", rowPromise.value);
+      rowPromise.value.forEach(async (fieldPromise: any) => {
+        console.log("fieldPromise: ", fieldPromise);
+        await fieldPromise;
+        console.log("fieldPromise after await is added: ", fieldPromise);
+        if(fieldPromise){
+          console.log("fieldPromise.status: ", fieldPromise.status);
+          console.log("fieldPromise.reason: ", fieldPromise.reason);
+          console.log("fieldPromise.value: ", fieldPromise.value);
         }
-        validationErrors.push(innerPromise);
+        rowErrors.push(fieldPromise);
+      });
+      validationErrors.push({
+        row: index + 1,
+        errors: rowErrors
       });
     });
+
     if(validationErrors.length === 0){
       initiateCalls();
     } else {
