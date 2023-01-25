@@ -38,7 +38,7 @@ const ProcessingModal = (props: any) => {
   const performValidations = async () => {
     setShowProgressBar(true);
     const finalErrors: any = [];
-    const validationPromises = await Promise.allSettled(uploadedForm.map((row: any, index: number) => {
+    const validationPromises = await Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {
       return await Promise.allSettled(consolidatedFieldsList.map((field: any) => {
         return field.validateFunction(row, index);
       }));
