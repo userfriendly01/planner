@@ -6,8 +6,8 @@ import {
 import { TextField } from "@mui/material";
 import {
   UserFormButton
-} from "../../ClosedFlashMessage/ClosedFlashMessage.Styles";
-import { ActionTypes } from "../../Skills.Interfaces";
+} from "../ClosedFlashMessage/ClosedFlashMessage.Styles";
+import { ActionTypes } from "../Skills.Interfaces";
 import {
   addSkillGroup, addSkillGroupsSkill
 } from "services/skillgroup";
@@ -17,7 +17,7 @@ import {
 import {
   ConfirmationSkillGroupsDiv,
   ConfirmationSkillList
-} from "../DefaultSkillGroup.Styles";
+} from "./DefaultSkillGroup.Styles";
 
 
 const SkillGroupInputContainer = (props: any) => {
@@ -41,6 +41,8 @@ const SkillGroupInputContainer = (props: any) => {
 
   const handleOnSave = () => {
     const isNameValid = validateSkillGroupName();
+    console.log("handle on save, name is valid", isNameValid)
+    console.log("groupname", skillGroupName)
     if (!isNameValid) {
       setErrorText("Skill group names must be unique");
     } else {
@@ -85,6 +87,7 @@ const SkillGroupInputContainer = (props: any) => {
       try {
         console.log("HERE");
         const addGroupNameResponse = await addSkillGroup(skillGroupName);
+        console.log(addGroupNameResponse, "asdkjfhalskdfhj")
         setSkillGroupId(addGroupNameResponse.insertId);
         const results = await Promise.allSettled(tableState.selected.map((skill: Skill) => {
           console.log("Hello?")
@@ -147,11 +150,11 @@ const SkillGroupInputContainer = (props: any) => {
       }, timeouts.MODAL_OVERLAY);
     } else if (successfulPromiseSkills.length === 0){
       setSaveResult({
-        message: "Request Failed",
+        message: "Skill Grouping was created, but all selected skills failed to add",
         status: ModalOverlayStatuses.FAIL
       });
     } else {
-      let message = `Skill group ${skillGroupName} was created, but the following skills failed to be added: `;
+      let message = "Skill group was created, but the following skills failed to be added: ";
       rejectedPromiseSkills.forEach((skill: any, index: number) => {
         if(index !== rejectedPromiseSkills.length - 1){
           message = message + skill.name + ", ";

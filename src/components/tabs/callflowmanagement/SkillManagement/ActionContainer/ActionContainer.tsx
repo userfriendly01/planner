@@ -7,7 +7,7 @@ import {
   propertyOptions,
   ActionContainerProps
 } from "../Skills.Interfaces";
-import { SkillGroupInputContainer } from "../DefaultSkillGroups";
+import SkillGroupInputContainer from "../DefaultSkillGroups/SkillGroupInputContainer";
 import { FormControlsContainer } from "../Skills.Styles";
 
 const ActionContainer = (props: ActionContainerProps) => {
