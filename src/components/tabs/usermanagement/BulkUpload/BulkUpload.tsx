@@ -98,11 +98,9 @@ const BulkUpload = () => {
     validationPromises.forEach((promise: any) => {
       console.log("promise: ", promise);
       if(promise.status === "rejected"){
-        promise.reason.forEach((innerPromise: any) => {
-          console.log("innerPromise: ", innerPromise);
-          if(innerPromise.reason === "rejected"){
-            validationErrors.push(innerPromise);
-          }
+        promise.reason.forEach((error: any) => {
+          console.log("innerPromise: ", error);
+          validationErrors.push(error);
         });
       }
     });
