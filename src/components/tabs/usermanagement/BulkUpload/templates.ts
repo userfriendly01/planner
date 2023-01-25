@@ -12,7 +12,17 @@ const getTritonFields = (state: any): any => [
     description: "Agents N Number",
     required: "Y",
     example: "n0263786",
-    options: null
+    options: null,
+    validateFunction: (row: any, rowNumber: number): Promise<any> => {
+      console.log("entering validate nNumber function");
+      const fieldName = "N Number";
+      const field = row[fieldName];
+      if(!field){
+        return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
+      } else {
+        return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+      }
+    }
   },
   {
     field: "profileId",
@@ -21,7 +31,17 @@ const getTritonFields = (state: any): any => [
     description: "Profile Id",
     required: "Y",
     example: 3,
-    options: state.profileContext.profiles.map((p: any) => p.profile_id)
+    options: state.profileContext.profiles.map((p: any) => p.profile_id),
+    validateFunction: (row: any, rowNumber: number): Promise<any> => {
+      console.log("entering validate nNumber function");
+      const fieldName = "Profile Id";
+      const field = row[fieldName];
+      if(!field){
+        return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
+      } else {
+        return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+      }
+    }
   },
   {
     field: "managerNNumber",
@@ -30,7 +50,19 @@ const getTritonFields = (state: any): any => [
     description: "N Number of the Manager",
     required: "Y",
     example: "n0088625",
-    options: state.managerContext.managers.map((m: any) => m.manager_n_number)
+    options: state.managerContext.managers.map((m: any) => m.manager_n_number),
+    validateFunction: (row: any, rowNumber: number): Promise<any> => {
+      console.log("entering validate nNumber function");
+      const fieldName = "Profile Id";
+      const field = row[fieldName];
+      if(!field){
+        return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
+      } else if(!state.managerContext.managers.some((m:any) => m.manager_n_number.toLowerCase() === field.toLowerCase())){
+        return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
+      } else {
+        return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+      }
+    }
   },
   {
     field: "defaultSkills",
@@ -392,7 +424,6 @@ const validateCalabrioFields = async (uploadedForm: any, state: any): Promise<an
     return Promise.resolve();
   }
 };
-
 
 //Templates
 export const getCreateTemplates: any = (state: any): any => {

@@ -50,9 +50,9 @@ const ProcessingModal = (props: any) => {
       console.log("promise.value: ", promise.value);
       promise.value.forEach((error: any) => {
         console.log("innerPromise: ", error);
-        console.log("innerPromise.status: ", innerPromise.status);
-        console.log("innerPromise.reason: ", innerPromise.reason);
-        console.log("innerPromise.value: ", innerPromise.value);
+        console.log("innerPromise.status: ", error.status);
+        console.log("innerPromise.reason: ", error.reason);
+        console.log("innerPromise.value: ", error.value);
         validationErrors.push(error);
       });
     });
