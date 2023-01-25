@@ -1,3 +1,4 @@
+import { checkExtension } from "services";
 import {
   calabrioAllowedRoles,
   calabrioTimeZones
@@ -71,7 +72,7 @@ const getTritonFields = (state: any): any => [
     description: "Comma delimited list of skill/level pairings. Skills can be on their own or have a ':level' to represent the level. If left blank, no skills will be added to the user",
     required: "N",
     example: "bscCommissions:3, blSalesL1:2, aisl1",
-    options: state.skillContext.skills.map((s: any) => `${s.name}${s.levels.length > 0 ? ` : Available levels: ${s.levels.toString()}` : null}`),
+    options: state.skillContext.skills.map((s: any) => `${s.name}${s.levels?.length > 0 ? ` : Available levels: ${s.levels.toString()}` : null}`),
     validateFunction: (row: any, rowNumber: number): Promise<any> => {
       /*
         skills object: {
@@ -133,7 +134,30 @@ const getTritonFields = (state: any): any => [
     description: "Enter a number for the users extension or type Y for a randomly generated extension. Enter N for no extension",
     required: false,
     example: "65214",
-    options: null
+    options: null,
+    validateFunction: async (row: any, rowNumber: number): Promise<any> => {
+      console.log("entering validate nNumber function");
+      const fieldName = "Extension";
+      const field = row[fieldName];
+      const generateExtension = field.toLowerCase() === "y";
+
+      if(!field){
+        return Promise.resolve(`No ${fieldName} set for row ${rowNumber}`);
+      } else if(generateExtension){
+        //generate extension
+        //update form and set
+        //export extensions needed as enhancement?
+      } else if(typeof field !== "number"){
+        return Promise.reject(`${fieldName} must be a number or 'Y' for row ${rowNumber}. If you do not want an extension for this user, leave the field blank`);
+      } else {
+        const isExtensionValid = await checkExtension(field);
+        if(isExtensionValid){
+          return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+        } else {
+          return Promise.reject(`${fieldName} ${field} is already taken for row ${rowNumber}`);
+        }
+      }
+    }
   },
   {
     field: "didUser",
