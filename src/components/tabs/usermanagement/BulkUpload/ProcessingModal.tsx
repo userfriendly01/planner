@@ -32,6 +32,9 @@ const ProcessingModal = (props: any) => {
   console.log("we're in the processing modal! selectedTemplates", selectedTemplates );
   console.log("we're in the processing modal! uploadedForm", uploadedForm );
   console.log("we're in the processing modal! consolidatedFieldsList", consolidatedFieldsList );
+  console.log("we're in the processing modal! showProgressBar", showProgressBar );
+  console.log("we're in the processing modal! processedRows", processedRows );
+
 
   console.log(processedRows);
   React.useEffect(() => {
@@ -47,16 +50,13 @@ const ProcessingModal = (props: any) => {
         return field.validateFunction(row, index);
       }));
       setProcessedRows(previousCount => (previousCount + 1));
-      console.log("field promises", fieldPromises);
       return fieldPromises;
     }));
     console.log("Validation Promises: ", validationPromises);
     validationPromises.forEach((rowPromise: any, index: number) => {
       const rowErrors: any = [];
-      console.log("rowPromise", rowPromise);
       rowPromise.value.map((fieldPromise: any) => {
         if(fieldPromise.status === "rejected"){
-          console.log("Adding fieldPromise.reason to row Errors", fieldPromise.reason);
           rowErrors.push(fieldPromise.reason);
         }
       });
@@ -80,8 +80,11 @@ const ProcessingModal = (props: any) => {
 
   const initiateCalls = () => {
     //identify successful records;
+    showValidationErrors(false);
     setShowProgressBar(true);
-    if(identifyProcessingDependencies()){
+    const dependencies = identifyProcessingDependencies();
+    if(dependencies){
+      console.log("dependencies", dependencies);
       //kick off api calls in order of dependency tree using template concurrency limit
     } else {
     //kick off api calls asyncronously using template concurrency limit
@@ -175,8 +178,6 @@ const ProcessingModal = (props: any) => {
         </ValidationErrorWrapper>
       }
       { showProgressBar && <ProgressBar progress={processedRows}/> }
-      <ProgressBar progress={processedRows}/>
-      Modal - changes made!
     </ModalWrapper>
   );
 };
