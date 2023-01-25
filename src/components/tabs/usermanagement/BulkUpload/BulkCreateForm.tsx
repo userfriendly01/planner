@@ -19,7 +19,6 @@ const BulkCreateForm = (props: any) => {
   const createTemplates = getCreateTemplates(state);
 
   console.log("BulkCreateForm - selectedTemplates", selectedTemplates);
-  console.log("Logic Validation", selectedTemplates.some((t: any) => t.name === "CREATE_TRITON_USER"));
 
   return (
     <Row>

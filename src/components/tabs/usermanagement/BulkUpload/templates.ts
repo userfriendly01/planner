@@ -257,6 +257,89 @@ const validateTritonFields = async (uploadedForm: any, state: any): Promise<any>
   }
 };
 
+const validateCalabrioFields = async (uploadedForm: any, state: any): Promise<any> => {
+  const fields: any = getCalabrioQmFields(state);
+  const validationErrors: any = [];
+
+  console.log("validateTritonFields");
+  const calabrioPromises = await Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {
+    console.log("validateFields", row);
+    const rowErrors = [];
+
+    //N Number
+    const nNumber = fields[0];
+    const fieldName0 = nNumber.name;
+    if(!row[fieldName0]){
+      rowErrors.push(`${fieldName0} is missing from row ${index + 1}`);
+    }
+
+    //Calabrio Group
+    const profileId = fields[1];
+    const fieldName1 = profileId.name;
+    if(!row[fieldName1]){
+      rowErrors.push(`${fieldName1} is missing from row ${index + 1}`);
+    }
+
+    //Calabrio Team
+    const managerNNumber = fields[2];
+    const fieldName2 = managerNNumber.name;
+
+    if(!row[fieldName2]){
+      rowErrors.push(`${fieldName2} is missing from row ${index + 1}`);
+    }
+
+    //Calabrio Roles
+    const defaultSkills = fields[3];
+    const fieldName3 = defaultSkills.name;
+
+    if(!row[fieldName3]){
+      rowErrors.push(`${fieldName3} is missing from row ${index + 1}`);
+    }
+
+    //Time Zones
+    const defaultSkillLevels = fields[4];
+    const fieldName4 = defaultSkillLevels.name;
+
+    if(!row[fieldName4]){
+      rowErrors.push(`${fieldName4} is missing from row ${index + 1}`);
+    }
+
+    if(!row[fieldName8]){
+      rowErrors.push(`${fieldName8} is missing from row ${index + 1}`);
+    }
+
+    //Alternate/Outgoing Number
+    const alternateOutgoingNumber = fields[9];
+    const fieldName9 = alternateOutgoingNumber.name;
+
+    if(!row[fieldName9]){
+      rowErrors.push(`${fieldName9} is missing from row ${index + 1}`);
+    }
+
+    if(rowErrors.length > 0){
+      console.error(`Errors thrown for row ${index + 1}`, rowErrors);
+      validationErrors.push({
+        template: "Calabrio QM User",
+        row_number: index + 1,
+        errors: rowErrors
+      });
+      return Promise.reject(rowErrors);
+    } else {
+      return Promise.resolve();
+    }
+  }));
+
+  console.log("calabrioPromises", calabrioPromises);
+  if(validationErrors.length > 0){
+    const errors: any = [];
+    validationErrors.forEach((row: any) => errors.push(row));
+    console.error("Validation Errors found for Calabrio Validation", validationErrors);
+    return Promise.reject(errors);
+  } else {
+    return Promise.resolve();
+  }
+};
+
 
 //Templates
 export const getCreateTemplates: any = (state: any): any => {
@@ -271,7 +354,7 @@ export const getCreateTemplates: any = (state: any): any => {
     },
     CREATE_CALABRIO_QM_USER: {
       name: "CREATE_CALABRIO_QM_USER",
-      validateFunction: () => Promise.resolve(),
+      validateFunction: () => (uploadedForm: any) => validateCalabrioFields(uploadedForm, state),
       processFunction: () => Promise.resolve(),
       multiRunDependencies: [{
         name: "CREATE_TRITON_USER",
