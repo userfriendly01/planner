@@ -148,24 +148,25 @@ const getCalabrioQmFields = (state: any): any => [
 //Validation Steps
 const validateTritonFields = async (uploadedForm: any, state: any): Promise<any> => {
   const fields = getTritonFields(state);
+  const validationErrors = [];
 
   console.log("validateTritonFields");
   const tritonPromises = await Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {
     console.log("validateFields", row);
-    const errors = [];
+    const rowErrors = [];
 
     //N Number
     const nNumber = fields[0];
     const fieldName0 = nNumber.name;
     if(!row[fieldName0]){
-      errors.push(`${fieldName0} is missing from row ${index + 1}`);
+      rowErrors.push(`${fieldName0} is missing from row ${index + 1}`);
     }
 
     //Profile Id
     const profileId = fields[1];
     const fieldName1 = profileId.name;
     if(!row[fieldName1]){
-      errors.push(`${fieldName1} is missing from row ${index + 1}`);
+      rowErrors.push(`${fieldName1} is missing from row ${index + 1}`);
     }
 
     //Manager nNumber
@@ -173,7 +174,7 @@ const validateTritonFields = async (uploadedForm: any, state: any): Promise<any>
     const fieldName2 = managerNNumber.name;
 
     if(!row[fieldName2]){
-      errors.push(`${fieldName2} is missing from row ${index + 1}`);
+      rowErrors.push(`${fieldName2} is missing from row ${index + 1}`);
     }
 
     //Default Skills
@@ -181,7 +182,7 @@ const validateTritonFields = async (uploadedForm: any, state: any): Promise<any>
     const fieldName3 = defaultSkills.name;
 
     if(!row[fieldName3]){
-      errors.push(`${fieldName3} is missing from row ${index + 1}`);
+      rowErrors.push(`${fieldName3} is missing from row ${index + 1}`);
     }
 
     //Default Skill Levels
@@ -189,7 +190,7 @@ const validateTritonFields = async (uploadedForm: any, state: any): Promise<any>
     const fieldName4 = defaultSkillLevels.name;
 
     if(!row[fieldName4]){
-      errors.push(`${fieldName4} is missing from row ${index + 1}`);
+      rowErrors.push(`${fieldName4} is missing from row ${index + 1}`);
     }
 
     //Extension
@@ -197,7 +198,7 @@ const validateTritonFields = async (uploadedForm: any, state: any): Promise<any>
     const fieldName5 = extension.name;
 
     if(!row[fieldName5]){
-      errors.push(`${fieldName5} is missing from row ${index + 1}`);
+      rowErrors.push(`${fieldName5} is missing from row ${index + 1}`);
     }
 
     //DID User
@@ -205,7 +206,7 @@ const validateTritonFields = async (uploadedForm: any, state: any): Promise<any>
     const fieldName6 = didUser.name;
 
     if(!row[fieldName6]){
-      errors.push(`${fieldName6} is missing from row ${index + 1}`);
+      rowErrors.push(`${fieldName6} is missing from row ${index + 1}`);
     }
 
     //Direct Dial Number
@@ -213,7 +214,7 @@ const validateTritonFields = async (uploadedForm: any, state: any): Promise<any>
     const fieldName7 = directDialNumber.name;
 
     if(!row[fieldName7]){
-      errors.push(`${fieldName7} is missing from row ${index + 1}`);
+      rowErrors.push(`${fieldName7} is missing from row ${index + 1}`);
     }
 
     //Zero Out Enabled
@@ -221,7 +222,7 @@ const validateTritonFields = async (uploadedForm: any, state: any): Promise<any>
     const fieldName8 = zeroOutEnabled.name;
 
     if(!row[fieldName8]){
-      errors.push(`${fieldName8} is missing from row ${index + 1}`);
+      rowErrors.push(`${fieldName8} is missing from row ${index + 1}`);
     }
 
     //Alternate/Outgoing Number
@@ -229,18 +230,28 @@ const validateTritonFields = async (uploadedForm: any, state: any): Promise<any>
     const fieldName9 = alternateOutgoingNumber.name;
 
     if(!row[fieldName9]){
-      errors.push(`${fieldName9} is missing from row ${index + 1}`);
+      rowErrors.push(`${fieldName9} is missing from row ${index + 1}`);
     }
 
-    if(errors.length > 0){
-      console.error("Validation Error", errors);
-      return Promise.reject(errors);
+    if(rowErrors.length > 0){
+      console.error(`Errors thrown for row ${index + 1}`, rowErrors);
+      validationErrors.push({
+        row_number: index + 1,
+        errors: rowErrors
+      });
+      return Promise.reject(rowErrors);
     } else {
       return Promise.resolve();
     }
   }));
 
   console.log("tritonPromises", tritonPromises);
+  if(validationErrors.length > 0){
+    console.error("Validation Errors found for Triton Validation", rowErrors);
+    Promise.reject(validationErrors);
+  } else {
+    Promise.resolve;
+  }
   return tritonPromises;
 };
 
