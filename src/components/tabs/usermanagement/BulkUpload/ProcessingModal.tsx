@@ -26,6 +26,8 @@ const ProcessingModal = (props: any) => {
   const totalErrorCount = validationErrors.length;
   const totalSuccessCount = totalRowCount - totalErrorCount;
 
+  let processedRows = 0;
+
   console.log("we're in the processing modal! validationErrors", validationErrors );
   console.log("we're in the processing modal! selectedTemplates", selectedTemplates );
   console.log("we're in the processing modal! uploadedForm", uploadedForm );
@@ -43,6 +45,7 @@ const ProcessingModal = (props: any) => {
       const fieldPromises = await Promise.allSettled(consolidatedFieldsList.map((field: any) => {
         return field.validateFunction(row, index);
       }));
+      processedRows = processedRows + 1;
       console.log("field promises", fieldPromises);
       return fieldPromises;
     }));
@@ -170,7 +173,7 @@ const ProcessingModal = (props: any) => {
           </ButtonWrapper>
         </div>
       }
-      { showProgressBar && <ProgressBar /> }
+      { showProgressBar && <ProgressBar progress={processedRows}/> }
       Modal - changes made!
     </ModalWrapper>
   );

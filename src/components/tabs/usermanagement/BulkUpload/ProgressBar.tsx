@@ -7,13 +7,14 @@ import {
 
 const ProgressBar = (props: any) => {
   const {
-    percentageComplete
+    progress
   } = props;
 
+  console.log("in progressbar", progress);
   return (
     <ProgressBarContainer>
       <ProgressBarWrapper>
-        <ProgressBarFiller progress={percentageComplete || "34%"}/>
+        <ProgressBarFiller progress={`${progress}%` || "34%"}/>
       </ProgressBarWrapper>
     </ProgressBarContainer>
   );
