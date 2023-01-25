@@ -258,10 +258,11 @@ const validateTritonFields = async (uploadedForm: any, state: any): Promise<any>
 };
 
 const validateCalabrioFields = async (uploadedForm: any, state: any): Promise<any> => {
+  console.log("what the heck");
   const fields: any = getCalabrioQmFields(state);
   const validationErrors: any = [];
 
-  console.log("validateTritonFields");
+  console.log("validateCalabrioFields");
   const calabrioPromises = await Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {
     console.log("validateFields", row);
     const rowErrors = [];
@@ -350,7 +351,7 @@ export const getCreateTemplates: any = (state: any): any => {
     },
     CREATE_CALABRIO_QM_USER: {
       name: "CREATE_CALABRIO_QM_USER",
-      validateFunction: () => (uploadedForm: any) => validateCalabrioFields(uploadedForm, state),
+      validateFunction: (uploadedForm: any) => validateCalabrioFields(uploadedForm, state),
       processFunction: () => Promise.resolve(),
       multiRunDependencies: [{
         name: "CREATE_TRITON_USER",
