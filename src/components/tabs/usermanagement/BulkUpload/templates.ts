@@ -248,7 +248,7 @@ const validateTritonFields = async (uploadedForm: any, state: any): Promise<any>
 
   console.log("tritonPromises", tritonPromises);
   if(validationErrors.length > 0){
-    const errors = [];
+    const errors: any = [];
     validationErrors.forEach((row: any) => errors.push(row));
     console.error("Validation Errors found for Triton Validation", validationErrors);
     return Promise.reject(errors);
