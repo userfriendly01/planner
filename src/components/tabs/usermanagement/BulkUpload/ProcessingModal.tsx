@@ -52,15 +52,19 @@ const ProcessingModal = (props: any) => {
         // await fieldPromise;
         // console.log("fieldPromise after await is added: ", fieldPromise);
         if(fieldPromise.status === "rejected"){
+          console.log("Adding fieldPromise.reason to row Errors", fieldPromise.reason);
           rowErrors.push(fieldPromise.reason);
         }
+        return Promise.resolve();
       });
       if(rowErrors.length !== 0){
+        console.log("pushing rowError onto Validation Error");
         validationErrors.push({
           row: index + 1,
           errors: rowErrors
         });
       }
+      return Promise.resolve(); // is this necessary
     });
 
     if(validationErrors.length === 0){
