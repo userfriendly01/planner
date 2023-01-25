@@ -107,6 +107,7 @@ export const createProfilePayload = form => {
         skill_nme: queue.ctmSkillDisplayName
       };
     }),
+    // Aggregate queues need to be set to a negative ID in order to not clash with single transfer queues / skills. In the payload we need to change that back to a positive integer
     aggregateQueues: form.transferQueues.filter(queue => queue.ctmSkillId < 0).map(queue => Math.abs(queue.ctmSkillId))
   };
 };
@@ -125,6 +126,7 @@ export const updateProfilePayload = form => {
       skill_nme: queue.ctmSkillDisplayName
     };
   }) : null;
+  // Aggregate queues need to be set to a negative ID in order to not clash with single transfer queues / skills. In the payload we need to change that back to a positive integer
   form.queuesUpdated ? payload.aggregateQueues = form.transferQueues.filter(queue => queue.ctmSkillId < 0).map(queue => Math.abs(queue.ctmSkillId)) : null;
   form.inboundRecorded.updated ? payload.recorded_i = form.inboundRecorded.value : null;
   form.autoAnswered.updated ? payload.auto_answd_i = form.autoAnswered.value : null;

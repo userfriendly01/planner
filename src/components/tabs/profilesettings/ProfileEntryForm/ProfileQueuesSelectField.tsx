@@ -43,6 +43,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
           allQueues.unshift.apply(allQueues, allAggregateQueues.map(queue => {
             return {
               ctmSkillDisplayName: queue.aggregate_queues_nme,
+              // Aggregate queues need to be set to a negative ID in order to not clash with single transfer queues / skills
               ctmSkillId: -Math.abs(queue.aggregate_queues_id)
             }
           }));
