@@ -31,7 +31,7 @@ export const ModalWrapper = styled(Paper)`
   top: 30vh;
 `;
 
-export const TextWrapper = styled.div<{styles: string}>`
+export const TextWrapper = styled.div<{styles: any}>`
   font-weight: ${props => props.styles && props.styles.weight ? props.styles.weight : "normal"}
   font-size: ${props => props.styles && props.styles.size ? props.styles.size : "20px"}
 `;

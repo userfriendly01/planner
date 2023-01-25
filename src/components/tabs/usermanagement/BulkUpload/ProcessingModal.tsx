@@ -46,11 +46,13 @@ const ProcessingModal = (props: any) => {
     }));
     console.log("Validation Promises: ", validationPromises);
     const validationErrors: any = [];
-    validationPromises.forEach((rowPromise: any, index: number) => {
+    validationPromises.map(async (rowPromise: any, index: number) => {
       const rowErrors: any = [];
       console.log("promise/row: ", rowPromise);
+      await rowPromise;
+      console.log("promise/row: after await", rowPromise);
       console.log("promise.value: ", rowPromise.value);
-      rowPromise.value.forEach(async (fieldPromise: any) => {
+      rowPromise.value.forEach((fieldPromise: any) => {
         console.log("fieldPromise: ", fieldPromise);
         // await fieldPromise;
         // console.log("fieldPromise after await is added: ", fieldPromise);
