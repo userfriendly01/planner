@@ -19,6 +19,7 @@ const ProcessingModal = (props: any) => {
 
 
   const [ validationErrors, setValidationErrors ] = React.useState([]);
+  const [ showValidationErrors, setShowValidationErrors ] = React.useState(false);
   const [ showProgressBar, setShowProgressBar ] = React.useState(false);
   const _export = React.useRef(null);
   const totalRowCount = uploadedForm.length;
@@ -35,6 +36,7 @@ const ProcessingModal = (props: any) => {
   }, []);
 
   const performValidations = async () => {
+    setShowProgressBar(true);
     const finalErrors: any = [];
     const validationPromises = await Promise.allSettled(uploadedForm.map((row: any, index: number) => {
       return Promise.allSettled(consolidatedFieldsList.map((field: any) => {
@@ -56,18 +58,19 @@ const ProcessingModal = (props: any) => {
       });
       if(rowErrors.length !== 0){
         console.log("pushing rowError onto Validation Error");
-        validationErrors.push({
+        setValidationErrors(validationErrors.concat({
           row: index + 1,
           errors: rowErrors
-        });
+        }));
       }
       return Promise.resolve();
     });
     console.log("finalErrors.length", finalErrors.length);
-    if(finalErrors.length === 0){
+    if(validationErrors.length === 0){
       initiateCalls();
     } else {
-      setValidationErrors(validationErrors);
+      setShowProgressBar(false);
+      setShowValidationErrors(true);
     }
   };
 
@@ -146,7 +149,7 @@ const ProcessingModal = (props: any) => {
 
   return (
     <ModalWrapper>
-      { validationErrors.length > 0 &&
+      { showValidationErrors &&
         <div>
           <TextWrapper styles ={{
             size: "26px"
@@ -160,7 +163,7 @@ const ProcessingModal = (props: any) => {
             <StyledExportButton onClick={handleExport}><ExcelExport ref={_export}/>
               Export Validation Errors
             </StyledExportButton>
-            <StyledExportButton styles={{ width: "200px" }} onClick={initiateCalls}>
+            <StyledExportButton styles={{ width: "200px" }} onClick={performValidations}>
               Process {totalSuccessCount} out of {totalRowCount} rows
             </StyledExportButton>
           </ButtonWrapper>
