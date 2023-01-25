@@ -121,7 +121,7 @@ describe("SkillsTable", () => {
     test("should render expected headers", () => {
       renderComponent();
 
-      expect(CustomTableHeader.mock.calls.length).toBe(5);
+      expect(CustomTableHeader.mock.calls.length).toBe(6);
 
       const checkboxClick = Checkbox.mock.calls[4][0].onClick;
       act(() => {
@@ -131,6 +131,7 @@ describe("SkillsTable", () => {
       expect(Checkbox.mock.calls[0][0].checked).toBe(false);
       expect(CustomTableHeader.mock.calls[1][0].children).toBe("SKILL NAME");
       expect(CustomTableHeader.mock.calls[2][0].children).toBe("PROFILES");
+      expect(CustomTableHeader.mock.calls[3][0].children).toBe("SKILL GROUP");
       expect(FilterWrapper.mock.calls[0][0].children).toBe("FLASH");
       expect(FilterWrapper.mock.calls[0][0].active).toBe(false);
       expect(FilterWrapper.mock.calls[1][0].children).toBe("CLOSED");
@@ -213,7 +214,7 @@ describe("SkillsTable", () => {
   describe("flash filter is clicked", () => {
     test("setTableState is called with flashFilter === true", () => {
       renderComponent();
-      const setFlashFilter = CustomTableHeader.mock.calls[3][0].onClick;
+      const setFlashFilter = CustomTableHeader.mock.calls[4][0].onClick;
       act(() => {
         setFlashFilter();
       });
@@ -227,7 +228,7 @@ describe("SkillsTable", () => {
   describe("close filter is clicked", () => {
     test("setTableState is called with closeFilter === true", () => {
       renderComponent();
-      const setClosedFilter = CustomTableHeader.mock.calls[4][0].onClick;
+      const setClosedFilter = CustomTableHeader.mock.calls[5][0].onClick;
       act(() => {
         setClosedFilter();
       });

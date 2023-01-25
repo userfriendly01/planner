@@ -29,6 +29,22 @@ describe("<SkillsList />", () => {
 
   const options = [
     {
+      value: 1,
+      label: "skillgroupA",
+      isSkillGroup: true,
+      skills: [{ name: "skill1"  }]
+    },
+    {
+      value: 2,
+      label: "skillgroupB",
+      isSkillGroup: true,
+      skills: [{ name: "skill2" }, { name: "skill1" }]
+    },
+    {
+      label: "divider",
+      value: "divider"
+    },
+    {
       label: "skill3",
       value: "skill3"
     },
@@ -46,8 +62,26 @@ describe("<SkillsList />", () => {
     }
   ];
 
+  const skillGroups = [
+    {
+      skillGroupId: 1,
+      skillGroupNme: "skillgroupA",
+      skills: [
+        { name: "skill1" }
+      ]
+    },
+    {
+      skillGroupId: 2,
+      skillGroupNme: "skillgroupB",
+      skills: [
+        { name: "skill2" },
+        { name: "skill1" }
+      ]
+    }
+  ];
+
   const mockUpdateSkill = jest.fn();
-  const renderComponent = () => render(<SkillsList skills={skills} skillValue={"skill3"} updateSkill={mockUpdateSkill} />);
+  const renderComponent = () => render(<SkillsList skills={skills} skillGroups={skillGroups} skillValue={"skill3"} updateSkill={mockUpdateSkill} />);
   beforeEach(() => {
     setupMockedComponents({ Dropdown });
     useFormState.mockReturnValue({ formMode: "insert" });

@@ -4,13 +4,16 @@ import {
   Delete
 } from "@mui/icons-material";
 import {
-  SkillLevels,
-  SkillsList
+  SkillsList,
+  SkillLevels
 } from "components";
-import { useAdminState } from "context";
-import React from "react";
-import { act } from "react-dom/test-utils";
 import {
+  useAdminState
+} from "context";
+import React from "react";
+
+import {
+  act,
   expectMockedComponent,
   expectOnlyPassedProps,
   getMockedComponentProps,
@@ -60,6 +63,22 @@ const initialTestState = {
         name: "skillD",
         levels: []
       }
+    ],
+    skillGroups: [
+      {
+        skillGroupId: 1,
+        skillGroupNme: "skillGroupA",
+        skills: [
+          {
+            name: "skillA",
+            levels: []
+          },
+          {
+            name: "skillB",
+            levels: [ 1, 2, 3, 4 ]
+          }
+        ]
+      }
     ]
   }
 };
@@ -96,7 +115,8 @@ describe("<DefaultSkillSelector />", () => {
         expectMockedComponent(rendered, { Add });
         expectMockedComponent(rendered, { SkillLevels }, 0);
         expectOnlyPassedProps(SkillsList, {
-          skills: initialTestState.skillContext.skills
+          skills: initialTestState.skillContext.skills,
+          skillGroups: initialTestState.skillContext.skillGroups
         });
       });
     });
@@ -206,6 +226,40 @@ describe("<DefaultSkillSelector />", () => {
         expect(mockSetDefaultSkills).toHaveBeenCalledWith({
           skills: [ "skillA", "skillD" ],
           levels: {}
+        });
+      });
+    });
+    describe("new skill group is selected", () => {
+      test(`should not render priority dropdown, add button enabled, 
+        should add rows for each skill within skill group when add is clicked with priority dropdown defaulted to 1
+        and remove button and should update default skills`, () => {
+        const defaultSkills = {
+          skills: [],
+          levels: {}
+        };
+        const rendered = renderComponent(defaultSkills);
+        act(() => {
+          const updateSkill = SkillsList.mock.calls[0][0].updateSkill;
+          updateSkill({
+            label: "skillGroupA",
+            value: 1,
+            isSkillGroup: true,
+            skills: initialTestState.skillContext.skillGroups[0].skills
+          });
+        });
+        act(() => {
+          fireEvent.click(getAddSkillButton(rendered));
+        });
+        expect(rendered.container).toHaveTextContent("skillA");
+        expect(rendered.container).toHaveTextContent("skillB");
+        expectOnlyPassedProps(SkillLevels, {
+          availablePriorities: [ 1, 2, 3, 4 ],
+          priorityValue: 1
+        });
+        expectMockedComponent(rendered, { Delete }, 2);
+        expect(mockSetDefaultSkills).toHaveBeenCalledWith({
+          skills: [ "skillA", "skillB" ],
+          levels: { "skillB": 1 }
         });
       });
     });

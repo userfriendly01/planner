@@ -104,7 +104,7 @@ const SkillsTable = (props: SkillsTableProps) => {
             </CustomTableHeader>
             <CustomTableHeader>SKILL NAME</CustomTableHeader>
             <CustomTableHeader>PROFILES</CustomTableHeader>
-            <CustomTableHeader>Skill Grouping</CustomTableHeader>
+            <CustomTableHeader>SKILL GROUP</CustomTableHeader>
             <CustomTableHeader
               onClick={() => setTableState({
                 ...tableState,

@@ -260,7 +260,7 @@ export const skillGroups = [
   {
     skillGroupId: 2,
     skillGroupNme: "skillgroup2",
-    skills: [  {
+    skills: [{
       name: "aisgL1",
       ctmSkillId: 2,
       ctmSkillDisplayName: "aisg L1",
@@ -293,9 +293,9 @@ export const skillGroups = [
       vhCallTarget: null,
       vhCallerId: null,
       vhThreshold: null
-    },]
+    }]
   }
-]
+];
 
 export const mockActivities = [
   {

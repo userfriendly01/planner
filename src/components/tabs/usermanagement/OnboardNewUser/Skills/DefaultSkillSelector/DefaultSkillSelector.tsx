@@ -12,13 +12,13 @@ import {
   DefaultSkillSelectorProps,
   NewTwilioWorkerSkill
 } from "./DefaultSkillSelector.Interfaces";
-import SkillLevels from "../SkillLevels/SkillLevels";
-import SkillsList from "../SkillsList/SkillsList";
+import {
+  SkillsList,
+  SkillLevels
+} from "components";
 import { useAdminState } from "context";
 import { Skill } from "globals";
-import React, {
-  useState
-} from "react";
+import React from "react";
 import {
   Add,
   Delete
@@ -37,8 +37,8 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
 
   const skillGroupsForDropDown = skillGroups.filter((skillGr: any) => {
     // if all skills in a skill group are in the defaultSkills, remove the skillGr from the dropdown list
-    const shouldRemoveFromList = skillGr.skills.every((sk: Skill) => defaultSkills.skills.includes(sk.name));
-    if (shouldRemoveFromList) {
+    const allSkillsInGroupSelected = skillGr.skills.every((sk: Skill) => defaultSkills.skills.includes(sk.name));
+    if (allSkillsInGroupSelected) {
       return false;
     }
     return true;
@@ -50,16 +50,14 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
     skill: ""
   };
 
-  const [newSkill, setNewSkill] = useState<NewTwilioWorkerSkill>(defaultNewSkill);
+  const [newSkill, setNewSkill] = React.useState<NewTwilioWorkerSkill>(defaultNewSkill);
 
   const newSkillChanged = (skill: {
     [index: string]: any,
     value: string
   }) => {
-    console.log("SKILL IN NEWSKILLCHANGED", skill);
     const skillObj = skills.find(skillObj => skillObj.name === skill.value);
     if (skill.isSkillGroup) {
-      // find the skill group, match up the skills and fill in?
       setNewSkill({
         levels: [],
         levelSelected: null,
@@ -92,7 +90,6 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
       skill,
       skills
     } = newSkill;
-    console.log("addSkillClicked newSkill", newSkill);
     const updatedDefaultSkills = { ...defaultSkills };
     // a skill group will have multiple skills to add, loop through those skills and add each
     if (skills) {
