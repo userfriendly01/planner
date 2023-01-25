@@ -67,6 +67,7 @@ describe("adminUtils", () => {
     });
   });
   describe("checkIfPO", () => {
+    process.env.APP_ENV = 'production';
     describe("n# is a GOP PO", () => {
       test("should return true for n0183277", () => {
         expect(checkIfPO("n0183277")).toBe(true);
