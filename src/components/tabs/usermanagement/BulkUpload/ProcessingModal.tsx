@@ -40,10 +40,10 @@ const ProcessingModal = (props: any) => {
     setShowProgressBar(true);
     const finalErrors: any = [];
     const validationPromises = await Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {
-      console.log("field promises");
       const fieldPromises = await Promise.allSettled(consolidatedFieldsList.map((field: any) => {
         return field.validateFunction(row, index);
       }));
+      console.log("field promises", fieldPromises);
       return fieldPromises;
     }));
     console.log("Validation Promises: ", validationPromises);
