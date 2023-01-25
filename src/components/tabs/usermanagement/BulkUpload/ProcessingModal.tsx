@@ -48,7 +48,7 @@ const ProcessingModal = (props: any) => {
     validationPromises.forEach((promise: any) => {
       console.log("promise/row: ", promise);
       console.log("promise.value: ", promise.value);
-      promise.value.forEach((innerPromise: any) => {
+      promise.value.forEach(async (innerPromise: any) => {
         console.log("innerPromise: ", innerPromise);
         await innerPromise;
         console.log("innerPromise after await is added: ", innerPromise);

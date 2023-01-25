@@ -71,7 +71,26 @@ const getTritonFields = (state: any): any => [
     description: "Comma delimited list of skills assigned as the Defauls Skill profile for the user. If left blank, no skills will be assigned",
     required: "N",
     example: "bscCommissions, aisgl1, blSalesL1",
-    options: state.skillContext.skills.map((s: any) => s.name)
+    options: state.skillContext.skills.map((s: any) => s.name),
+    validateFunction: (row: any, rowNumber: number): Promise<any> => {
+      const fieldName = "Default Skills";
+      const field = row[fieldName];
+      let skillsArray;
+      console.log("entering validate skills function", field);
+      try {
+        skillsArray = field.split(",");
+      } catch(err){
+        return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}. Must be a comma delimited list of skills.`);
+      }
+      console.log("skillsArray", skillsArray);
+
+      skillsArray.forEach((skill: any) => {
+        if(!state.skillContext.skills.some((s:any) => m.name.toLowerCase() === field.toLowerCase())){
+          return Promise.reject(`${skill} is not a valid option for row ${rowNumber}`);
+        }
+      });
+      return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+    }
   },
   {
     field: "defaultSkillLevels",
