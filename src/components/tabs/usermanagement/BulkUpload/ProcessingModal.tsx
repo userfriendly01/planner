@@ -115,11 +115,32 @@ const ProcessingModal = (props: any) => {
   };
 
   const handleExport = () => {
-    const rows: any = validationErrors;
+    const rows: any = [];
+    const columns: any = [
+      {
+        title: "Original Row Number",
+        field: "row",
+        width: "20px"
+      },
+      {
+        title: "Errors",
+        field: "errors",
+        width: "400px"
+      }
+    ];
+
+    validationErrors.forEach((error: any) => {
+      rows.push({
+        row: error.row,
+        errors: error.errors.toString()
+      });
+    });
+
     console.log("rows", rows);
+    console.log("columns", columns);
 
     if (_export.current !== null) {
-      _export.current.save(rows);
+      _export.current.save(rows, columns);
     }
   };
 
