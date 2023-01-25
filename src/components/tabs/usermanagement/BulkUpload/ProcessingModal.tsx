@@ -17,7 +17,6 @@ const ProcessingModal = (props: any) => {
   } = props;
 
 
-
   const [ validationErrors, setValidationErrors ] = React.useState([]);
   const [ showValidationErrors, setShowValidationErrors ] = React.useState(false);
   const [ showProgressBar, setShowProgressBar ] = React.useState(false);
@@ -35,8 +34,13 @@ const ProcessingModal = (props: any) => {
 
   React.useEffect(() => {
     console.log("within Processing Modal useEffect");
-    performValidations();
+    setShowProgressBar(true);
   }, []);
+
+  React.useEffect(() => {
+    console.log("within Processing Modal useEffect");
+    performValidations();
+  }, showProgressBar);
 
   const performValidations = async () => {
     setShowProgressBar(true);
