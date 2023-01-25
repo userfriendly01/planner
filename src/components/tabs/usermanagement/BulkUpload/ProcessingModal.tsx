@@ -52,12 +52,12 @@ const ProcessingModal = (props: any) => {
         console.log("innerPromise: ", innerPromise);
         await innerPromise;
         console.log("innerPromise after await is added: ", innerPromise);
-        if(error){
+        if(innerPromise){
           console.log("innerPromise.status: ", innerPromise.status);
           console.log("innerPromise.reason: ", innerPromise.reason);
           console.log("innerPromise.value: ", innerPromise.value);
         }
-        validationErrors.push(error);
+        validationErrors.push(innerPromise);
       });
     });
     if(validationErrors.length === 0){
