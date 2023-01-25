@@ -58,18 +58,19 @@ const ProcessingModal = (props: any) => {
       });
       if(rowErrors.length !== 0){
         console.log("pushing rowError onto Validation Error");
-        setValidationErrors(validationErrors.concat({
+        finalErrors.push({
           row: index + 1,
           errors: rowErrors
-        }));
+        });
       }
       return Promise.resolve();
     });
     console.log("finalErrors.length", finalErrors.length);
-    if(validationErrors.length === 0){
+    if(finalErrors.length === 0){
       initiateCalls();
     } else {
       setShowProgressBar(false);
+      setValidationErrors(finalErrors);
       setShowValidationErrors(true);
     }
   };
