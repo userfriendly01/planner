@@ -147,8 +147,8 @@ const getCalabrioQmFields = (state: any): any => [
 
 //Validation Steps
 const validateTritonFields = async (uploadedForm: any, state: any): Promise<any> => {
-  const fields = getTritonFields(state);
-  const validationErrors = [];
+  const fields: any = getTritonFields(state);
+  const validationErrors: any = [];
 
   console.log("validateTritonFields");
   const tritonPromises = await Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {
@@ -247,7 +247,7 @@ const validateTritonFields = async (uploadedForm: any, state: any): Promise<any>
 
   console.log("tritonPromises", tritonPromises);
   if(validationErrors.length > 0){
-    console.error("Validation Errors found for Triton Validation", rowErrors);
+    console.error("Validation Errors found for Triton Validation", validationErrors);
     Promise.reject(validationErrors);
   } else {
     Promise.resolve;
