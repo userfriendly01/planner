@@ -27,20 +27,14 @@ const BulkUpload = () => {
   const [ consolidatedTemplate, setConsolidatedTemplates ] = React.useState([]);
   const [ uploadedForm, setUploadedForm ] = React.useState(null);
 
-  const [ processingModal , setProcessingModal ] = React.useState({
-    open: false,
-    errors: []
-  });
+  const [ showProcessingModal , setShowProcessingModal ] = React.useState(false);
 
   React.useEffect(() => {
     consolidateTemplates();
   }, [selectedTemplates]);
 
   const resetBulkUpload = () => {
-    setProcessingModal({
-      open: false,
-      errors: []
-    });
+    setShowProcessingModal(false);
     setSelectedTemplates([]);
     setConsolidatedTemplates([]);
     setUploadedForm(null);
@@ -91,23 +85,8 @@ const BulkUpload = () => {
     }
   };
 
-  const performValidations = async () => {
-    const validationPromises = await Promise.allSettled(selectedTemplates.map((t: any) => t.validateFunction(uploadedForm)));
-    console.log("Validation Promises: ", validationPromises);
-    const validationErrors: any = [];
-    validationPromises.forEach((promise: any) => {
-      console.log("promise: ", promise);
-      if(promise.status === "rejected"){
-        promise.reason.forEach((error: any) => {
-          console.log("innerPromise: ", error);
-          validationErrors.push(error);
-        });
-      }
-    });
-    setProcessingModal({
-      open: true,
-      errors: validationErrors
-    });
+  const initiateUpload = () => {
+    setShowProcessingModal(true);
   };
 
   return (
@@ -125,12 +104,12 @@ const BulkUpload = () => {
           width: "500px"
         }}
       />
-      <Modal onClose={() => { return; }} open={processingModal.open}>
+      <Modal onClose={() => { return; }} open={showProcessingModal}>
         <ProcessingModal
           selectedTemplates={selectedTemplates}
           handleClose={resetBulkUpload}
           uploadedForm={uploadedForm}
-          validationErrors={processingModal.errors}
+          consolidatedFieldsList={consolidatedTemplate}
         />
       </Modal>
       { view === views.BULK_CREATE_USERS &&
@@ -166,7 +145,7 @@ const BulkUpload = () => {
           </StepWrapper>
           <Wrapper center={true}>
             <ImportButton
-              onClick={performValidations}>Process</ImportButton>
+              onClick={initiateUpload}>Process</ImportButton>
           </Wrapper>
         </Row>
       }

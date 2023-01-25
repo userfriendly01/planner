@@ -11,25 +11,55 @@ const ProcessingModal = (props: any) => {
   const {
     selectedTemplates,
     handleClose,
-    validationErrors,
+    consolidatedFieldsList,
     uploadedForm
   } = props;
 
+
+
+  const [ validationErrors, setValidationErrors ] = React.useState([]);
+  const [ showProgressBar, setShowProgressBar ] = React.useState(false);
   const _export = React.useRef(null);
   const totalRowCount = uploadedForm.length;
   const totalErrorCount = validationErrors.length;
   const totalSuccessCount = totalRowCount - totalErrorCount;
 
-  const [ showProgressBar, setShowProgressBar ] = React.useState(false);
-
   console.log("we're in the processing modal! validationErrors", validationErrors );
   console.log("we're in the processing modal! selectedTemplates", selectedTemplates );
   console.log("we're in the processing modal! uploadedForm", uploadedForm );
+  console.log("we're in the processing modal! consolidatedFieldsList", consolidatedFieldsList );
+
   React.useEffect(() => {
+    performValidations();
+    // if(validationErrors.length === 0){
+    //   initiateCalls();
+    // }
+  }, []);
+
+  const performValidations = async () => {
+
+    const validationPromises = await Promise.allSettled(uploadedForm.map((row: any, index: number) => {
+      return consolidatedFieldsList.map((field: any) => {
+        return field.validateFunction(row, index);
+      });
+    }));
+    console.log("Validation Promises: ", validationPromises);
+    const validationErrors: any = [];
+    validationPromises.forEach((promise: any) => {
+      console.log("promise: ", promise);
+      if(promise.status === "rejected"){
+        promise.reason.forEach((error: any) => {
+          console.log("innerPromise: ", error);
+          validationErrors.push(error);
+        });
+      }
+    });
     if(validationErrors.length === 0){
       initiateCalls();
+    } else {
+      setValidationErrors(validationErrors);
     }
-  }, []);
+  };
 
   const initiateCalls = () => {
     setShowProgressBar(true);

@@ -105,7 +105,19 @@ const getCalabrioQmFields = (state: any): any => [
     description: "Agents N Number",
     required: "Y",
     example: "n0263786",
-    options: null
+    options: null,
+    validateFunction: (row: any, rowNumber: number) => {
+      console.log("entering validate nNumber function");
+      const fieldName = "N Number";
+      const field = row[fieldName];
+      if(!field){
+        Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
+      } else if(!state.calabrioContext.groups.some((g:any) => g.name.toLowerCase() === field.toLowerCase())){
+        //maybe validate format?
+      } else {
+        Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+      }
+    }
   },
   {
     field: "calabrioGroup",
@@ -114,7 +126,18 @@ const getCalabrioQmFields = (state: any): any => [
     description: "Parent Group (Must already be created in Calabrio)",
     required: "Y",
     example: "Default Group",
-    options: state.calabrioContext.groups.map((g: any) => g.name)
+    options: state.calabrioContext.groups.map((g: any) => g.name),
+    validateFunction: (row: any, rowNumber: number) => {
+      const fieldName = "Calabrio Group";
+      const field = row[fieldName];
+      if(!field){
+        Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
+      } else if(!state.calabrioContext.groups.some((g:any) => g.name.toLowerCase() === field.toLowerCase())){
+        Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
+      } else {
+        Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+      }
+    }
   },
   {
     field: "calabrioTeam",
@@ -123,7 +146,18 @@ const getCalabrioQmFields = (state: any): any => [
     description: "Team (Must already be created in Calabrio)",
     required: "Y",
     example: "Default Team",
-    options: state.calabrioContext.teams.map((t: any) => t.name)
+    options: state.calabrioContext.teams.map((t: any) => t.name),
+    validateFunction: (row: any, rowNumber: number) => {
+      const fieldName = "Calabrio Team";
+      const field = row[fieldName];
+      if(!field){
+        Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
+      } else if(!state.calabrioContext.teams.some((t:any) => t.name.toLowerCase() === field.toLowerCase())){
+        Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
+      } else {
+        Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+      }
+    }
   },
   {
     field: "roles",
@@ -132,16 +166,37 @@ const getCalabrioQmFields = (state: any): any => [
     description: "Must be an approved role to add by management and already exist in Calabrio",
     required: "Y",
     example: "QM Agent",
-    options: calabrioAllowedRoles
+    options: calabrioAllowedRoles,
+    validateFunction: (row: any, rowNumber: number) => {
+      const fieldName = "Calabrio Role";
+      const field = row[fieldName];
+      if(!field){
+        Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
+      } else if(!calabrioAllowedRoles.some((r:any) => r.toLowerCase() === field.toLowerCase())){
+        Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
+      } else {
+        Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+      }
+    }
   },
   {
     field: "timeZone",
     name: "Time Zone",
     type: "string",
     description: "Time Zone of the Calabrio User",
-    required: "Y",
     example: "America/New_York",
-    options: calabrioTimeZones.map((t: any) => t.label)
+    options: calabrioTimeZones.map((t: any) => t.label),
+    validateFunction: (row: any, rowNumber: number) => {
+      const fieldName = "Time Zone";
+      const field = row[fieldName];
+      if(!field){
+        Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
+      } else if(!calabrioTimeZones.some((t:any) => t.label.toLowerCase() === field.toLowerCase())){
+        Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
+      } else {
+        Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+      }
+    }
   }
 ];
 
@@ -261,6 +316,7 @@ const validateCalabrioFields = async (uploadedForm: any, state: any): Promise<an
   console.log("what the heck");
   const fields: any = getCalabrioQmFields(state);
   const validationErrors: any = [];
+  //Bug need to search for field not use array index
 
   console.log("validateCalabrioFields");
   const calabrioPromises = await Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {

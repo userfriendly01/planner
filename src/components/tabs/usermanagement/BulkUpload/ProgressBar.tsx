@@ -1,10 +1,21 @@
 import React from "react";
+import {
+  ProgressBarContainer,
+  ProgressBarWrapper,
+  ProgressBarFiller
+} from "./BulkUpload.Styles";
 
-const ProgressBar = () => {
+const ProgressBar = (props: any) => {
+  const {
+    percentageComplete
+  } = props;
+
   return (
-    <div>
-
-    </div>
+    <ProgressBarContainer>
+      <ProgressBarWrapper>
+        <ProgressBarFiller progress={percentageComplete || "34%"}/>
+      </ProgressBarWrapper>
+    </ProgressBarContainer>
   );
 };
 

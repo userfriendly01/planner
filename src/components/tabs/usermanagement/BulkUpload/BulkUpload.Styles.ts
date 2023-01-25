@@ -2,6 +2,23 @@ import styled from "styled-components";
 import { StyledButton } from "components";
 import { Paper } from "@mui/material";
 
+export const ProgressBarContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+export const ProgressBarWrapper = styled.div`
+  width: 500px;
+  height: 40px;
+  border: 1px solid black;
+  border-radius: 30px;
+`;
+
+export const ProgressBarFiller = styled.div<{progress: string}>`
+  height: inherit;
+  width: ${props => props.progress};
+  background-color: grey;
+  border-radius: inherit;
+`;
 
 export const ModalWrapper = styled(Paper)`
   align-items: center;
