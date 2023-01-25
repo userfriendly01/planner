@@ -5,6 +5,11 @@ import {
 } from "@mui/material";
 import MockAdapter from "axios-mock-adapter";
 import {
+  getAuthenticationProfiles,
+  getPermissions,
+  getStartups
+} from "authentication";
+import {
   Header,
   NavTabs,
   NotificationModal
@@ -27,12 +32,7 @@ import {
   startups,
   waitFor
 } from "testUtils";
-import {
-  getAuthenticationProfiles,
-  getPermissions,
-  getStartups,
-  myAxios
-} from "utils";
+import { myAxios } from "utils";
 
 const authEndpoint = apiPaths.AUTH;
 const axiosMock = new MockAdapter(myAxios);
@@ -51,6 +51,12 @@ jest.useFakeTimers();
 jest.mock("@mui/material", () => ({
   CircularProgress: jest.fn(),
   Modal: jest.fn()
+}));
+
+jest.mock("authentication", () => ({
+  getAuthenticationProfiles: jest.fn(),
+  getPermissions: jest.fn(),
+  getStartups: jest.fn()
 }));
 
 jest.mock("components", () => ({

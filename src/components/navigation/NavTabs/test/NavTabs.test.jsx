@@ -1,27 +1,24 @@
-import NavTabs from "../NavTabs";
 import {
-  CallflowManagementWrapper,
-  ManagementWrapper,
-  ProfileSettingsContainer,
-  AlohaFlowContainer,
-  AlohaRoutingContainer
-} from "components";
+  Tab, Tabs, Typography
+} from "@mui/material";
 import {
-  useAdminState
-} from "context";
-import React from "react";
-import {
-  expectMockedComponent,
-  fireEvent,
   initialTestState,
   render,
   setupMockedComponents,
   tabs
 } from "testUtils";
+import NavTabs from "../NavTabs";
+import React from "react";
 import { getAzureSPAClientId } from "utils";
+import { useAdminState } from "context";
 
-jest.mock("utils", () => ({
-  getAzureSPAClientId: jest.fn(),
+jest.mock("@mui/material", () => ({
+  Tab: jest.fn(),
+  Tabs: jest.fn(),
+  Typography: jest.fn()
+}));
+jest.mock("authentication", () => ({
+  getTabs: jest.requireActual("authentication").getTabs
 }));
 jest.mock("components", () => ({
   CallflowManagementWrapper: jest.fn(),
@@ -30,13 +27,11 @@ jest.mock("components", () => ({
   AlohaFlowContainer: jest.fn(),
   AlohaRoutingContainer: jest.fn()
 }));
-
 jest.mock("context", () => ({
   useAdminState: jest.fn()
 }));
-
-jest.mock("authentication", () => ({
-  getTabs: jest.requireActual("authentication").getTabs
+jest.mock("utils", () => ({
+  getAzureSPAClientId: jest.fn()
 }));
 
 const state = {
@@ -60,66 +55,42 @@ const state = {
   }
 };
 
+const renderNavTabs = () => {
+  render(<NavTabs />);
+  render(Tabs.mock.calls[1][0].children);
+};
+
 describe("<NavTabs />", () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     useAdminState.mockReturnValue(state);
     setupMockedComponents({
-      ManagementWrapper,
-      ProfileSettingsContainer,
-      CallflowManagementWrapper,
-      AlohaFlowContainer,
-      AlohaRoutingContainer
+      Tab,
+      Tabs,
+      Typography
     });
   });
 
   test("we should load the links, as well as default to showing the Management Pane", () => {
-    const rendered = render(<NavTabs />);
-    expect(rendered.getByText("User Management")).toBeInTheDocument();
-    expectMockedComponent(rendered, { ManagementWrapper }, 1);
-    expectMockedComponent(rendered, { CallflowManagementWrapper }, 1);
-    expectMockedComponent(rendered, { ProfileSettingsContainer }, 1);
-    expectMockedComponent(rendered, { AlohaFlowContainer }, 1);
-    expectMockedComponent(rendered, { AlohaRoutingContainer }, 0);
-    expect(rendered.getByText("ManagementWrapper")).toBeVisible();
-    expect(rendered.getAllByText("CallflowManagementWrapper")[0]).not.toBeVisible();
-    expect(rendered.getByText("ProfileSettingsContainer")).not.toBeVisible();
-    expect(rendered.getByText("AlohaFlowContainer")).not.toBeVisible();
+    renderNavTabs(<NavTabs />);
+    Typography.mock.calls.forEach(m => {
+      render(m[0].children);
+    });
+    expect(Tabs.mock.calls[1][0].value).toBe(0);
+    expect(tabs.TRITON_USER_MANAGEMENT.component).toHaveBeenCalledTimes(1);
+    expect(tabs.TRITON_PROFILE_SETTINGS.component).toHaveBeenCalledTimes(1);
+    expect(tabs.TRITON_CALL_FLOW_MANAGEMENT.component).toHaveBeenCalledTimes(1);
+    expect(tabs.ALOHA_CALL_FLOW_MANAGEMENT.component).toHaveBeenCalledTimes(1);
+    expect(tabs.ALOHA_ROUTING_RULES.component).toHaveBeenCalledTimes(0);
     expect(getAzureSPAClientId).toBeCalled();
   });
 
   test("when we click on the 'Call Flow Management' link, only CallflowManagementWrapper should be visible", () => {
-    const rendered = render(<NavTabs />);
-    fireEvent.click(rendered.getAllByText("Call Flow Management")[0]);
-    expect(rendered.getAllByText("CallflowManagementWrapper")[0]).toBeVisible();
-    expect(rendered.getByText("ManagementWrapper")).not.toBeVisible();
-    expect(rendered.getByText("ProfileSettingsContainer")).not.toBeVisible();
-    expect(rendered.getByText("AlohaFlowContainer")).not.toBeVisible();
-  });
-
-  test("when we click on the 'Profile Settings' link, only ProfileSettingsContainer should be visible", () => {
-    const rendered = render(<NavTabs />);
-    fireEvent.click(rendered.getByText("Profile Settings"));
-    expect(rendered.getByText("ProfileSettingsContainer")).toBeVisible();
-    expect(rendered.getByText("ManagementWrapper")).not.toBeVisible();
-    expect(rendered.getAllByText("CallflowManagementWrapper")[0]).not.toBeVisible();
-    expect(rendered.getByText("AlohaFlowContainer")).not.toBeVisible();
-  });
-
-  test("when we click on the 'Aloha Flow Container' link, only AlohaFlowContainer should be visible", () => {
-    const rendered = render(<NavTabs />);
-    fireEvent.click(rendered.getByText("Call Flow DB Management"));
-    expect(rendered.getByText("ProfileSettingsContainer")).not.toBeVisible();
-    expect(rendered.getByText("ManagementWrapper")).not.toBeVisible();
-    expect(rendered.getAllByText("CallflowManagementWrapper")[0]).not.toBeVisible();
-    expect(rendered.getByText("AlohaFlowContainer")).toBeVisible();
-  });
-
-  test("when we click on the already clicked link, nothing should change", () => {
-    const rendered = render(<NavTabs />);
-    fireEvent.click(rendered.getByText("User Management"));
-    expect(rendered.getByText("ManagementWrapper")).toBeVisible();
-    expect(rendered.getAllByText("CallflowManagementWrapper")[0]).not.toBeVisible();
-    expect(rendered.getByText("ProfileSettingsContainer")).not.toBeVisible();
-    expect(rendered.getByText("AlohaFlowContainer")).not.toBeVisible();
+    renderNavTabs(<NavTabs />);
+    expect(Tabs.mock.calls.length).toBe(2);
+    expect(Tabs.mock.calls[1][0].value).toBe(0);
+    Tabs.mock.calls[1][0].onChange(null, 1);
+    expect(Tabs.mock.calls.length).toBe(3);
+    expect(Tabs.mock.calls[2][0].value).toBe(1);
   });
 });

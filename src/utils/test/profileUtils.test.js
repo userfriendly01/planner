@@ -1,11 +1,17 @@
 import React from "react";
-import { Check } from "@mui/icons-material";
+import {
+  Check,
+  AutoAwesomeMotion
+} from "@mui/icons-material";
+import { Tooltip } from "@mui/material";
 import {
   formatProfileBooleanData,
   formatProfileBooleanDataTrueFalse,
   formatProfileACWDataEntry,
   formatOverflowSkillData,
-  formatActivityData
+  formatActivityData,
+  formatCallTagsName,
+  formatAggregateQueues
 } from "../profileUtils";
 import {
   BubbleDiv,
@@ -32,55 +38,67 @@ describe("profileUtils", () => {
   });
 
   describe("formatProfileACWDataEntry", () => {
-    test("should return a single BubbleDivs with display name inside", () => {
-      const options = [{
-        display_nme: "Claim Number",
-        wrkr_tsk_info_id: 2,
-        profile_id: 15
-      }];
-      expect(formatProfileACWDataEntry(1, options)).toStrictEqual([<BubbleDiv key={2}>{"Claim Number"}</BubbleDiv>]);
-    });
-    test("should return multiple BubbleDivs with display names inside", () => {
+    test("should return multiple BubbleDivs with display names / tooltips inside", () => {
       const options = [
         {
-          display_nme: 'Claim Number',
+          display_nme: "Claim Number",
           wrkr_tsk_info_id: 2,
+          wrkr_tsk_info_nme: "claim_number",
           profile_id: 15,
-          options_id: null
+          options_id: null,
+          options: null
         },
         {
-          display_nme: 'Call Type',
+          display_nme: "Call Type",
           wrkr_tsk_info_id: 1,
+          wrkr_tsk_info_nme: "call_type",
           profile_id: 15,
-          options_id: null
+          options_id: null,
+          options: null
         },
         {
-          display_nme: 'Negotiation Type',
+          display_nme: "Negotiation Type",
+          wrkr_tsk_info_nme: "negotiation_type",
           wrkr_tsk_info_id: 3,
           profile_id: 15,
-          options_id: 1
+          options_id: 1,
+          options: [
+            "Info Exchange",
+            "Bargaining",
+            "Closing",
+            "N/A",
+            "Offer"
+          ]
         }
-      ]
-      expect(formatProfileACWDataEntry(1, options)).toStrictEqual(
+      ];
+      expect(formatProfileACWDataEntry(1, options, BubbleDiv, HighlightRed)).toStrictEqual(
         [
-          <BubbleDiv key={2}>{"Claim Number"}</BubbleDiv>,
-          <BubbleDiv key={1}>{"Call Type"}</BubbleDiv>,
-          <BubbleDiv key={3}>{"Negotiation Type"}</BubbleDiv>
+          <Tooltip key={2} placement="top" title={""}>
+            <BubbleDiv key={2}>{"Claim Number"}</BubbleDiv>
+          </Tooltip>,
+          <Tooltip key={1} placement="top" title={""}>
+            <BubbleDiv key={1}>{"Call Type"}</BubbleDiv>
+          </Tooltip>,
+          <Tooltip key={3} placement="top" title={"Info Exchange, Bargaining, Closing, N/A, Offer"}>
+            <BubbleDiv key={3}>{"Negotiation Type"}</BubbleDiv>
+          </Tooltip>
         ]
       );
     });
     test("should return a highlighted red error when feature is enabled and options are empty", () => {
       const options = [];
-      expect(formatProfileACWDataEntry(1, options)).toStrictEqual(<HighlightRed>{"Options not configured but feature enabled"}</HighlightRed>);
+      expect(formatProfileACWDataEntry(1, options, BubbleDiv, HighlightRed)).toStrictEqual(<HighlightRed>{"Call tags not configured but feature enabled"}</HighlightRed>);
     });
     test("should return a highlighted red error when feature is disabled and options are not empty", () => {
       const options = [{
-        display_nme: 'Claim Number',
+        display_nme: "Claim Number",
         wrkr_tsk_info_id: 2,
+        wrkr_tsk_info_nme: "claim_number",
         profile_id: 15,
-        options_id: null
+        options_id: null,
+        options: null
       }];
-      expect(formatProfileACWDataEntry(0, options)).toStrictEqual(<HighlightRed>{"Options configured but feature disabled"}</HighlightRed>);
+      expect(formatProfileACWDataEntry(0, options, BubbleDiv, HighlightRed)).toStrictEqual(<HighlightRed>{"Call tags configured but feature disabled"}</HighlightRed>);
     });
   });
 
@@ -95,10 +113,73 @@ describe("profileUtils", () => {
 
   describe("formatActivityData", () => {
     test("should return activity within a BubbleDiv", () => {
-      expect(formatActivityData("Busy")).toStrictEqual(<BubbleDiv>{"Busy"}</BubbleDiv>);
+      expect(formatActivityData("Busy", BubbleDiv)).toStrictEqual(<BubbleDiv>{"Busy"}</BubbleDiv>);
     });
     test("should return empty string for null activity", () => {
-      expect(formatActivityData(null)).toBe("");
+      expect(formatActivityData(null, BubbleDiv)).toBe("");
+    });
+  });
+
+  describe("formatCallTagsName", () => {
+    test("should return a formatted call tag with one underscore", () => {
+      expect(formatCallTagsName("claim_number")).toStrictEqual("Claim Number");
+    });
+    test("should return a formatted call tag with multiple underscores", () => {
+      expect(formatCallTagsName("aces_claim_number")).toStrictEqual("Aces Claim Number");
+    });
+    test("should return a formatted call tag with no underscores", () => {
+      expect(formatCallTagsName("notes")).toStrictEqual("Notes");
+    });
+  });
+
+  describe("formatAggregateQueues", () => {
+    test("test should return single queue ", () => {
+      const aggrQueue = [
+        {
+          profile_id: 0,
+          aggregate_queues_id: 1,
+          aggregate_queues_nme: "PSU Claims - Level 1",
+          aggregate_queues_type: "single",
+          owner_type: "profile",
+          worker_sid: null,
+          queues: [
+            {
+              skill_id: 1,
+              skill_num: "psu-l1",
+              skill_nme: "PSU Claims - Level 1",
+              tsk_que_sid: "WQ9e7f40c067bb9006022f43266122a257"
+            }
+          ]
+        }
+      ];
+      expect(formatAggregateQueues(aggrQueue, BubbleDiv)).toStrictEqual([<BubbleDiv key={"PSU Claims - Level 1"}>{"PSU Claims - Level 1"}</BubbleDiv>]);
+    });
+
+    test("test should return aggregated queue with icon", () => {
+      const aggrQueue = [
+        {
+          profile_id: 0,
+          aggregate_queues_id: 1,
+          aggregate_queues_nme: "PSU Claims - Level 1",
+          aggregate_queues_type: "aggregate",
+          owner_type: "profile",
+          worker_sid: null,
+          queues: [
+            {
+              skill_id: 1,
+              skill_num: "psu-l1",
+              skill_nme: "PSU Claims - Level 1",
+              tsk_que_sid: "WQ9e7f40c067bb9006022f43266122a257"
+            }
+          ]
+        }
+      ];
+      expect(formatAggregateQueues(aggrQueue, BubbleDiv)).toStrictEqual([<BubbleDiv key={"PSU Claims - Level 1"}>{"PSU Claims - Level 1"} <AutoAwesomeMotion fontSize="1 rem"/></BubbleDiv>]);
+    });
+
+    test("no queues, test should be empty array", () => {
+      const aggrQueue = [];
+      expect(formatAggregateQueues(aggrQueue, BubbleDiv)).toStrictEqual([]);
     });
   });
 });

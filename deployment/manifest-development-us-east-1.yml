@@ -6,7 +6,7 @@ applications:
   command: node server.js
   instances: 1
   memory: 512M
-  timeout: 180
+  timeout: 600
   env:
     NODE_ENV: production
   services:

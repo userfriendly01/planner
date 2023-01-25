@@ -1,6 +1,12 @@
 import {
-  downloadCSV
+  downloadCSV, getGraphQLEndpoint
 } from "utils";
+import { useAdminState } from "context";
+import { initialTestState } from "testUtils";
+
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
+}));
 
 const createSampleTestRoutingDataList = numberOfData =>{
   const dataList = [];
@@ -34,6 +40,7 @@ describe("configUtils.js", ()=>{
   const routingPrefix = "TEST_ROUTING";
   beforeEach(()=>{
     jest.clearAllMocks();
+    useAdminState.mockReturnValue(initialTestState);
   });
   test("Simulate Download the Routing Data",()=>{
     const link = {
@@ -55,5 +62,9 @@ describe("configUtils.js", ()=>{
     const routingDataList = createSampleTestRoutingDataList(0);
     downloadCSV(routingPrefix, routingDataList);
     expect(link.download).toBeNull;
+  });
+  test("Simulate getGraphQLEndpoint", ()=>{
+    const endpoint = getGraphQLEndpoint();
+    expect(endpoint).toBe("https://2yooyvouuzeq7evpxtv5ojad3m.appsync-api.us-east-1.amazonaws.com/graphql");
   });
 });

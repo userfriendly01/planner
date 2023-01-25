@@ -7,6 +7,7 @@ import {
 import {
   addFlowRule, retrieveFlowData
 } from "services";
+import { useAdminState } from "context";
 import {
   Grid, Button
 } from "@mui/material";
@@ -74,17 +75,21 @@ jest.mock("components", () => {
   };
 });
 
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
+}));
+
 const openAddModal = jest.fn();
 
 const renderAddFlow = isOpen => {
   return render(
-    <AddFlow openAddModal={openAddModal} newID={1} isOpen={isOpen} />, initialTestState
+    <AddFlow openAddModal={openAddModal} newID={1} isOpen={isOpen} />
   );
 };
 
 const renderAddFlowDefaultOpen = () => {
   return render(
-    <AddFlow openAddModal={openAddModal} newID={1} />, initialTestState
+    <AddFlow openAddModal={openAddModal} newID={1} />
   );
 };
 
@@ -109,6 +114,7 @@ describe("<AddFlow />", () => {
         dispatchEvent: jest.fn()
       }))
     });
+    useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       Grid,
       Button,
@@ -123,7 +129,7 @@ describe("<AddFlow />", () => {
   });
   describe("AddFlow ModalBlock",()=>{
     test("Simulate Close Modal By Clicking Close Icon",()=>{
-      const { getByRole } = renderAddFlow(true, validFlowData);
+      const { getByRole } = renderAddFlow(true);
       const closeModalButton = getByRole("img", { name: "Close" });
       act(()=>{
         fireEvent.click(closeModalButton);
@@ -131,13 +137,13 @@ describe("<AddFlow />", () => {
       expect(openAddModal).toBeCalledTimes(1);
     });
     test("pass open modal as false ",()=>{
-      renderAddFlowDefaultOpen(false, validFlowData);
+      renderAddFlowDefaultOpen();
       expect(openAddModal).toBeCalledTimes(0);
     });
     test("Simulate Close Modal By removing masterData",()=>{
       localStorage.removeItem(FLOW_MASTER_DATA);
       retrieveFlowData.mockResolvedValue({ data: { "items": validFlowData }});
-      const { getByRole } = renderAddFlow(true, validFlowData);
+      const { getByRole } = renderAddFlow(true);
       const closeModalButton = getByRole("img", { name: "Close" });
       act(()=>{
         fireEvent.click(closeModalButton);
@@ -164,7 +170,7 @@ describe("<AddFlow />", () => {
     test("Validate Flow Rule with null",()=>{
       const {
         getByRole, getByLabelText
-      } = renderAddFlow(true, validFlowData);
+      } = renderAddFlow(true);
       addFlowRule.mockResolvedValue({ data: { "items": []}});
       const saveButton = getByRole("button", { name: "createRuleButton" });
       act(() => {
@@ -179,7 +185,7 @@ describe("<AddFlow />", () => {
     test("Validate fields and create flow",()=>{
       const {
         getByRole
-      } = renderAddFlow(true, validFlowData);
+      } = renderAddFlow(true);
       const ComponentControlMock = ComponentControl.mock;
       const dialedPhoneNumberAttr = ComponentControl.mock.calls[0][0].onChange;
       const descriptionAttr = ComponentControl.mock.calls[1][0].onChange;
@@ -238,7 +244,7 @@ describe("<AddFlow />", () => {
       });
     });
     test("Validate Reset Flow Rule ",()=>{
-      const { getByRole } = renderAddFlow(true, validFlowData);
+      const { getByRole } = renderAddFlow(true);
       const resetButton = getByRole("button", { name: "resetRuleButton" });
       act(() => {
         fireEvent.click(resetButton);
@@ -250,7 +256,7 @@ describe("<AddFlow />", () => {
   });
   describe("Test for CustomToast Change",()=>{
     test("Simulate the customToast Button ", () => {
-      renderAddFlow(true, validFlowData);
+      renderAddFlow(true);
       const customToastButton = CustomToast.mock.calls[0][0].onClose;
       act(()=>{
         customToastButton();

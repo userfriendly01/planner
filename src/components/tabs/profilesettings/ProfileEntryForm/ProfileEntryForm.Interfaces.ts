@@ -1,21 +1,24 @@
 import {
   ModalOverlayStatuses,
-  Activity
+  Activity,
+  Skill,
+  CallTag,
+  CallTagOptions
 } from "globals";
 
 export interface ProfileEntryFormProps {
-  handleClose: (reopen: boolean | void) => void
+  handleClose: () => void
 }
 
 export interface LoadingState {
-  lookupProfile: boolean;
-  overlayMessage: string;
-  saveStatus: ModalOverlayStatuses;
-  saveProfile: boolean;
+  lookupProfile: boolean,
+  overlayMessage: string,
+  saveStatus: ModalOverlayStatuses,
+  saveProfile: boolean
 }
 
 export interface ProfileFormButtonsProps {
-  handleClose: (reopen: boolean | void) => void,
+  handleClose: () => void,
   loading: LoadingState,
   updateLoading: (payload: any) => void
 }
@@ -27,21 +30,34 @@ export interface FieldState {
 }
 
 export interface TextFieldProps {
-  label: string,
+  label: string
 }
 
 export interface ProfileActivitiesSelectFieldProps {
-  activitiesList: Activity[]
-  setActivitiesList: (activitiesList: Activity[]) => void;
+  activitiesList: Activity[],
+  setActivitiesList: (activitiesList: Activity[]) => void
+}
+
+export interface ProfileQueuesSelectFieldProps {
+  transferQueues: Skill[],
+  setQueueList: (transferQueues: Skill[]) => void
+}
+
+export interface ProfileCallTagsSelectFieldProps {
+  callTagsList: CallTag[],
+  callTagOptionsList: CallTagOptions[],
+  setCallTagsList: (callTagsList: CallTag[]) => void
 }
 
 export interface ProfileEntryFormState {
-  [index: string]: any;
+  [index: string]: any,
   profileId: number | null,
   formMode: string,
   profileName: FieldState,
   overflowSkill: FieldState,
   activitiesList: Activity[],
+  callTagsList: CallTag[],
+  callTagOptions: CallTagOptions[],
   autoAnswered: FieldState,
   inboundRecorded: FieldState,
   outboundRecorded: FieldState,
@@ -53,7 +69,8 @@ export interface ProfileEntryFormState {
   paymentProcessing: FieldState,
   policyNumberEdit: FieldState,
   voiceMailTranscription: FieldState,
-  clickToDial: FieldState
+  clickToDial: FieldState,
+  transferQueues: Skill[]
 }
 
 export interface ToggleFormField {

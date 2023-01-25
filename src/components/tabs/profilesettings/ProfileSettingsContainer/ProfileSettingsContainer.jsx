@@ -1,9 +1,11 @@
+import { checkIfPO } from "authentication";
 import {
   DialListTable,
   Directory,
   Dropdown,
   ProfileDropDown,
-  ProfileSettingsTable
+  ProfileSettingsTable,
+  ProfileEntryForm
 } from "components";
 import {
   useAdminState,
@@ -16,8 +18,7 @@ import {
   myAxios,
   sortDialListEntriesByName,
   sortDirectoryListEntriesByName,
-  profileSettingsViews,
-  checkIfPO
+  profileSettingsViews
 } from "utils";
 import {
   ProfileSettingsDropdownWrapper,
@@ -26,9 +27,8 @@ import {
   SettingsContainer,
   ControlsWrapper,
   ControlItem,
-  AddProfileButton
+  CreateProfileButton
 } from "./ProfileSettingsContainer.Styles";
-import { ProfileEntryForm } from "components";
 
 const ProfileSettingsContainer = () => {
   const [view, setView] = React.useState(profileSettingsViews[0]);
@@ -81,7 +81,7 @@ const ProfileSettingsContainer = () => {
     profileId
   } = profileSettingsState;
 
-  const addProfileOnClick = () => setProfileModalState({
+  const createProfileOnClick = () => setProfileModalState({
     open: true
   });
 
@@ -150,9 +150,9 @@ const ProfileSettingsContainer = () => {
                 checkIfPO(loggedInRepNNumber) ?
                   <ControlsWrapper>
                     <ControlItem>
-                      <AddProfileButton onClick={addProfileOnClick} data-testid={"add-profile-button"}>
-                        Add Profile
-                      </AddProfileButton>
+                      <CreateProfileButton onClick={createProfileOnClick} data-testid={"create-profile-button"}>
+                        Create Profile
+                      </CreateProfileButton>
                     </ControlItem>
                   </ControlsWrapper>
                   : null

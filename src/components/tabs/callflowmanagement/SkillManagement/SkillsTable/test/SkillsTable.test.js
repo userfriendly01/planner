@@ -35,7 +35,8 @@ jest.mock("@mui/material", () => ({
   Paper: jest.fn(),
   Tabs: jest.fn(),
   Tab: jest.fn(),
-  Tooltip: jest.fn()
+  Tooltip: jest.fn(),
+  Divider: jest.fn()
 }));
 
 jest.mock("@mui/x-data-grid", () => ({

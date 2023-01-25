@@ -1,14 +1,8 @@
 require("@testing-library/jest-dom/extend-expect");
 require("jest-styled-components");
 
-const { mockStore } = require("./__test__/testUtils");
-
-beforeEach(() => {
-  mockStore.reset();
-});
-
 beforeAll(() => {
-  // console.log = jest.fn();
+  console.log = jest.fn();
   console.error = jest.fn();
   console.warn = jest.fn();
 });
@@ -52,7 +46,6 @@ jest.mock("services", () => ({
   insertDirectory: jest.fn(),
   retrieveFlowData: jest.fn(),
   retrieveRoutingData: jest.fn(),
-  retrieveFlowData: jest.fn(),
   updateCalabrioUser: jest.fn(),
   updateClosedMessage: jest.fn(),
   updateDirectory: jest.fn(),
@@ -61,5 +54,6 @@ jest.mock("services", () => ({
   updateRoutingDB: jest.fn(),
   updateTfn: jest.fn(),
   updateUser: jest.fn(),
-  getWorkerTaskInfo: jest.fn()
+  getCallTagOptions: jest.fn(),
+  getCallTags: jest.fn()
 }));

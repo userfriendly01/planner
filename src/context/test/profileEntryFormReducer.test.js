@@ -125,6 +125,80 @@ describe("profileEntryFormReducer", () => {
     });
   });
 
+  describe("UPDATE_TRANSFER_QUEUES", () => {
+    test("should set transferQueues to payload passed", () => {
+      const expectedState = {
+        ...initialProfileEntryFormState,
+        transferQueues: {
+          name: "466",
+          timeOfDays: [],
+          flashMessage: "Oh no! Something went wrong..",
+          closedMessage: null,
+          vhThreshold: 0,
+          vhCallerId: null,
+          vhCallTarget: null,
+          levels: [],
+          ctmSkillDisplayName: "NI Billing & Collections",
+          ctmSkillId: 7,
+          profiles: [
+            {
+              profileId: 1,
+              profileName: "NI Billing & Collections"
+            }
+          ]
+        },
+        queuesUpdated: true
+      };
+      const action = {
+        type: profileEntryFormActions.UPDATE_TRANSFER_QUEUES,
+        payload: {
+          name: "466",
+          timeOfDays: [],
+          flashMessage: "Oh no! Something went wrong..",
+          closedMessage: null,
+          vhThreshold: 0,
+          vhCallerId: null,
+          vhCallTarget: null,
+          levels: [],
+          ctmSkillDisplayName: "NI Billing & Collections",
+          ctmSkillId: 7,
+          profiles: [
+            {
+              profileId: 1,
+              profileName: "NI Billing & Collections"
+            }
+          ]
+        }
+      };
+      const result = profileEntryFormReducer(initialProfileEntryFormState, action);
+      expect(result).toStrictEqual(expectedState);
+    });
+  });
+
+  describe("UPDATE_CALL_TAGS_LIST", () => {
+    test("should set callTagsList to payload passed", () => {
+      const expectedState = {
+        ...initialProfileEntryFormState,
+        callTagsList: {
+          wrkr_tsk_info_id: 2,
+          display_nme: "Claim Number",
+          options_id: 1
+        },
+        callTagsUpdated: true
+      };
+      const action = {
+        type: profileEntryFormActions.UPDATE_CALL_TAGS_LIST,
+        payload: {
+          wrkr_tsk_info_id: 2,
+          display_nme: "Claim Number",
+          options_id: 1
+        }
+      };
+      const result = profileEntryFormReducer(initialProfileEntryFormState, action);
+      expect(result).toStrictEqual(expectedState);
+    });
+  });
+
   describe("SET_UPDATE_PROFILE_FORM_STATE", () => {
     test("should set edit prepopulated fields to state", () => {
       const profile = {
@@ -179,7 +253,44 @@ describe("profileEntryFormReducer", () => {
           type: "Buffer",
           data: [1]
         },
-        activities: "[{\"id\": 1, \"name\": \"Offline\", \"availability\": 0}]"
+        activities: [{
+          profile_id: 0,
+          activity_id: 1,
+          activity_nme: "Offline",
+          availability: 0
+        }],
+        callTags: [{
+          profile_id: 15,
+          display_nme: "Negotiation Type",
+          wrkr_tsk_info_id: 3,
+          wrkr_tsk_info_nme: "negotiation_type",
+          options_id: 1,
+          options: [
+            "Info Exchange",
+            "Bargaining",
+            "Closing",
+            "N/A",
+            "Offer"
+          ]
+        }],
+        aggregateQueues: [
+          {
+            aggregate_queues_id: 0,
+            aggregate_queues_nme: "PGS - Gold Spanish",
+            aggregate_queues_type: "single",
+            owner_type: "profile",
+            profile_id: 0,
+            queues: [
+              {
+                skill_id: 106,
+                skill_nme: "PGS - Gold Spanish",
+                skill_num: "pgsGoldSpanish",
+                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c33"
+              }
+            ],
+            workerSid: null
+          }
+        ]
       };
 
       const expectedState = {
@@ -194,6 +305,12 @@ describe("profileEntryFormReducer", () => {
             type: "Buffer"
           }
         }],
+        callTagsList: [{
+          options_id: 1,
+          wrkr_tsk_info_nme: "Negotiation Type",
+          wrkr_tsk_info_id: 3
+        }],
+        callTagOptions: [],
         formMode: formModes.UPDATE,
         autoAnswered: {
           value: true
@@ -239,7 +356,13 @@ describe("profileEntryFormReducer", () => {
         profileName: {
           valid: true,
           value: "Game of Phones"
-        }
+        },
+        transferQueues: [
+          {
+            ctmSkillId: 106,
+            ctmSkillDisplayName: "PGS - Gold Spanish"
+          }
+        ]
       };
       const action = {
         type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,

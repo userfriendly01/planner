@@ -1,4 +1,5 @@
 import ProfileSettingsContainer from "../ProfileSettingsContainer";
+import { checkIfPO } from "authentication";
 import MockAdapter from "axios-mock-adapter";
 import {
   DialListTable,
@@ -10,7 +11,7 @@ import {
   ProfileEntryForm
 } from "components";
 import { Modal } from "@mui/material";
-import { initialState } from "context";
+import { useAdminState } from "context";
 import { apiPaths } from "globals";
 import React from "react";
 import { act } from "react-dom/test-utils";
@@ -21,7 +22,8 @@ import {
   getMockedComponentProps,
   render,
   setupMockedComponents,
-  waitFor
+  waitFor,
+  initialTestState as initialState
 } from "testUtils";
 import { myAxios } from "utils";
 
@@ -38,8 +40,17 @@ jest.mock("components", () => ({
   ProfileEntryForm: jest.fn()
 }));
 
+jest.mock("context", () => ({
+  useAdminState: jest.fn(),
+  ProfileEntryFormStateProvider: jest.requireActual("context").ProfileEntryFormStateProvider
+}));
+
 jest.mock("@mui/material", () => ({
   Modal: jest.fn()
+}));
+
+jest.mock("authentication", () => ({
+  checkIfPO: jest.fn()
 }));
 
 const profileList = [
@@ -76,6 +87,8 @@ describe("<ProfileSettingsContainer />", () => {
   beforeEach(() => {
     axiosMock.reset();
     jest.clearAllMocks();
+    useAdminState.mockReturnValue(initialTestState);
+    checkIfPO.mockReturnValue(true);
     setupMockedComponents({
       DialListTable,
       Directory,
@@ -88,9 +101,13 @@ describe("<ProfileSettingsContainer />", () => {
     });
   });
 
+  const renderComponent = () => {
+    return render(<ProfileSettingsContainer />);
+  };
+
   describe("profile.profileId is null (initial state)", () => {
     test("should render ProfileDropDown with correct props and 'Please select a profile'", () => {
-      const rendered = render(<ProfileSettingsContainer />, initialTestState);
+      const rendered = renderComponent();
       expectMockedComponent(rendered, { DialListTable }, 0);
       expectMockedComponent(rendered, { Directory }, 0);
       expectMockedComponent(rendered, { ProfileDropDown }, 1);
@@ -141,7 +158,7 @@ describe("<ProfileSettingsContainer />", () => {
       };
       beforeEach(() => axiosMock.onGet(apiPaths.GET_PROFILE_DATA(profileId)).reply(200, getProfileDataResponse));
       test("should render ProfileDropDown and DialListTable with correct props", async () => {
-        const rendered = render(<ProfileSettingsContainer />, initialTestState);
+        const rendered = renderComponent();
         const { updateProfile } = getMockedComponentProps(ProfileDropDown);
         act(() => {
           updateProfile(profileId);
@@ -219,7 +236,7 @@ describe("<ProfileSettingsContainer />", () => {
       const error = { badNews: "boooo" };
       beforeEach(() => axiosMock.onGet(apiPaths.GET_PROFILE_DATA(profileId)).reply(500, error));
       test("should display drop down & error message", async () => {
-        const rendered = render(<ProfileSettingsContainer />, initialTestState);
+        const rendered = renderComponent();
         const { updateProfile } = getMockedComponentProps(ProfileDropDown);
         act(() => {
           updateProfile(profileId);
@@ -238,11 +255,11 @@ describe("<ProfileSettingsContainer />", () => {
 
   describe("Profile Entry Form Modal", () => {
     test("form should not render on initial state", () => {
-      const rendered = render(<ProfileSettingsContainer />, initialTestState);
+      const rendered = renderComponent();
       expectMockedComponent(rendered, { ProfileEntryForm }, 0);
     });
-    test("add profile button and profile settings table is shown when dropdown is changed to PROFILE_SETTINGS", () => {
-      const rendered = render(<ProfileSettingsContainer />, initialTestState);
+    test("create profile button and profile settings table is shown when dropdown is changed to PROFILE_SETTINGS", () => {
+      const rendered = renderComponent();
       act(() => {
         const updateValue = Dropdown.mock.calls[0][0].updateValue;
         updateValue(null, {
@@ -254,7 +271,7 @@ describe("<ProfileSettingsContainer />", () => {
       expectMockedComponent(rendered, { ProfileSettingsTable }, 1);
     });
     test("When ProfileEntryForm handleClose is called, setProfileEntryFormState is set to open === false", () => {
-      const rendered = render(<ProfileSettingsContainer />, initialTestState);
+      const rendered = renderComponent();
       expectMockedComponent(rendered, { ProfileEntryForm }, 0);
       act(() => {
         const updateValue = Dropdown.mock.calls[0][0].updateValue;
@@ -263,7 +280,7 @@ describe("<ProfileSettingsContainer />", () => {
           label: "Profile Settings"
         });
       });
-      expect(StyledButton.mock.calls[0][0].children).toBe("Add Profile");
+      expect(StyledButton.mock.calls[0][0].children).toBe("Create Profile");
       act(() => {
         const onClick = StyledButton.mock.calls[0][0].onClick;
         onClick();

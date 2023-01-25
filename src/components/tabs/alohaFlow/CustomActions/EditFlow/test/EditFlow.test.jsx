@@ -2,11 +2,24 @@ import React from "react";
 import { EditFlow } from "../index";
 import { FLOW_MASTER_DATA } from "utils";
 import {
-  fireEvent, render, initialTestState, waitFor, act, within
+  fireEvent, render, initialTestState, waitFor, act, within, setupMockedComponents
 } from "testUtils";
 import {
   deleteFlowRule, updateFlowDB
 } from "services";
+import { useAdminState } from "context";
+import { CustomToast } from "components";
+
+jest.mock("components", () => {
+  return{
+    __esModule: true,
+    CustomToast: jest.fn()
+  };
+});
+
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
+}));
 
 const validFlowData = {
   id: 1,
@@ -62,7 +75,7 @@ const openEditModal = jest.fn();
 
 const renderEditFlow = (isOpen, data) => {
   return render(
-    <EditFlow openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} />, initialTestState
+    <EditFlow openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} />
   );
 };
 
@@ -70,6 +83,7 @@ describe("<EditFlow />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    useAdminState.mockReturnValue(initialTestState);
     Object.defineProperty(window.document, "cookie", {
       writable: true,
       value: "PA.ciciccttritondev1=1234.5678.uytghh"
@@ -222,6 +236,7 @@ describe("<EditFlow />", () => {
     });
 
     test("Simulate the Delete Button with Failed API Response", () => {
+      deleteFlowRule.mockResolvedValue(undefined);
       const { getByRole } = renderEditFlow(true, validFlowData);
       const deleteButton = getByRole("button", { name: "deleteFlowRuleButton" });
       act(() => {
@@ -255,6 +270,21 @@ describe("<EditFlow />", () => {
         expect(openEditModal).toBeCalledTimes(0);
 
       });
+    });
+  });
+
+  describe("Individual Components", ()=>{
+    beforeEach(()=>{
+      setupMockedComponents({
+        CustomToast
+      });
+    });
+
+    test("Simulate CustomToast Close Button",()=>{
+      renderEditFlow(true, validFlowData);
+      const customToastOnClose = CustomToast.mock.calls[0][0].onClose;
+      act(()=>{ customToastOnClose(); });
+      expect(CustomToast.mock.calls[0][0].open).toBe(false);
     });
   });
 });

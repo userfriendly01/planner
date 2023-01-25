@@ -1,3 +1,5 @@
+import React from "react";
+import { render as quickRender } from "@testing-library/react";
 import {
   AddFlow, AdvanceSearchModal, CustomFlowGridToolBar, EditFlow
 } from "../../CustomActions";
@@ -11,13 +13,14 @@ import {
 } from "@mui/x-data-grid";
 import {
   act,
+  fireEvent,
   initialTestState,
   render,
   setupMockedComponents
 } from "testUtils";
+import { useAdminState } from "context";
 import { CustomToast } from "components";
 import DataGridFlow from "../DataGridFlow";
-import React from "react";
 import { retrieveFlowData } from "services";
 
 jest.mock("@mui/x-data-grid",()=>({
@@ -38,6 +41,10 @@ jest.mock("../../CustomActions", () => ({
   AdvanceSearchModal: jest.fn(),
   CustomFlowGridToolBar: jest.fn(),
   EditFlow: jest.fn()
+}));
+
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
 }));
 
 const createFlowDataList = numberOfData =>{
@@ -84,6 +91,7 @@ describe("<DataGridFlow />", () => {
   beforeEach(()=>{
     jest.clearAllMocks();
     retrieveFlowData.mockReset();
+    useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       DataGrid,
       GridToolbar,
@@ -93,7 +101,7 @@ describe("<DataGridFlow />", () => {
       AddFlow,
       CustomToast,
       CustomFlowGridToolBar
-    }),
+    });
     Object.defineProperty(window.document, "cookie", {
       writable: true,
       value: (initialCookie + ";" + "PA.ciciccttritondev1=1234.5678.uytghh")
@@ -227,14 +235,14 @@ describe("<DataGridFlow />", () => {
       act(()=>{ openEditModal(true, false); });
       expect(EditFlow.mock.calls[1][0].openEditModal).toBeTruthy;
     });
-    // test("Simulate the CustomFlowGridToolBar Custom Routing Toolbar", async()=>{
-    //   const validFlowDataList = createFlowDataList(15);
-    //   retrieveFlowData.mockResolvedValue(validFlowDataList);
-    //   renderComponent();
-    //   const exportDataFile = CustomFlowGridToolBar.mock.calls[0][0].exportDataFile;
-    //   act(()=>{ exportDataFile(); });
-    //   expect(CustomFlowGridToolBar.mock.calls.length).toBe(2);
-    // });
+    test("Simulate the CustomFlowGridToolBar Custom Routing Toolbar", async()=>{
+      const validFlowDataList = createFlowDataList(15);
+      retrieveFlowData.mockResolvedValue(validFlowDataList);
+      renderComponent();
+      const exportDataFile = CustomFlowGridToolBar.mock.calls[0][0].exportDataFile;
+      act(()=>{ exportDataFile(); });
+      expect(CustomFlowGridToolBar.mock.calls.length).toBe(1);
+    });
   });
 
   describe("Check Existing Filter", ()=>{
@@ -315,17 +323,15 @@ describe("<DataGridFlow />", () => {
       const localStorageValue = JSON.parse(localStorage.getItem(CACHE_FILTER_FLOW));
       expect(localStorageValue[brandKey]).toBeUndefined;
     });
-    test("Simulate advanceFilter idStart idEnd", () => {
+    test("Simulate advanceFilter", () => {
       //TODO, this is adding to code coverage - can we validate anything about the filteredItems min max range?
       const validFlowDataList = createFlowDataList(15);
       retrieveFlowData.mockResolvedValue(validFlowDataList);
-      localStorage.setItem(CACHE_FILTER_FLOW, {
+      localStorage.setItem(CACHE_FILTER_FLOW, JSON.stringify({
         ...filteredItems,
         callFlowRoute: "route A1",
-        idEnd: 5,
-        idStart: 1,
         pkey: "+18005551212x1"
-      });
+      }));
       renderComponent();
       expect(DataGrid.mock.calls[0][0].page).toBe(1);
       const applyFilter = AdvanceSearchModal.mock.calls[0][0].applyFilter;
@@ -342,10 +348,10 @@ describe("<DataGridFlow />", () => {
     test("Simulate advanceFilter empty result", () => {
       const validFlowDataList = createFlowDataList(15);
       retrieveFlowData.mockResolvedValue(validFlowDataList);
-      localStorage.setItem(CACHE_FILTER_FLOW, {
+      localStorage.setItem(CACHE_FILTER_FLOW, JSON.stringify({
         ...filteredItems,
         brand: "brandXYZ not in list"
-      });
+      }));
       renderComponent();
       expect(DataGrid.mock.calls[0][0].page).toBe(1);
     });
@@ -358,6 +364,14 @@ describe("<DataGridFlow />", () => {
       renderComponent();
       expect(DataGrid.mock.calls[0][0].page).toBe(1);
     });
+    test("Simulate AdvanceSearchModal applyFilter with no filter", ()=>{
+      const validRoutingDataList = createFlowDataList(15);
+      retrieveFlowData.mockResolvedValue(validRoutingDataList);
+      renderComponent();
+      const applyFilter = AdvanceSearchModal.mock.calls[0][0].applyFilter;
+      act(()=>{ applyFilter(); });
+      expect(AdvanceSearchModal.mock.calls[1][0].isOpen).toBe(false);
+    });
     test("Simulate CustomToast",()=>{
       const validFlowDataList = createFlowDataList(1);
       retrieveFlowData.mockResolvedValue(validFlowDataList);
@@ -365,6 +379,20 @@ describe("<DataGridFlow />", () => {
       const handleClose = CustomToast.mock.calls[0][0].onClose;
       act(()=>{ handleClose(true); });
       expect(CustomToast.mock.calls[1][0].open).toBe(true);
+    });
+    test("Simulate click on hyperlink",()=>{
+      const validRoutingDataList = createFlowDataList(15);
+      retrieveFlowData.mockResolvedValue(validRoutingDataList);
+      renderComponent();
+      const hyperLinkFunction = DataGrid.mock.calls[0][0].columns[0].renderCell;
+      const hyperLinkParams = {
+        row: validRoutingDataList[0],
+        value: validRoutingDataList[0].id
+      };
+      const hyperlink = hyperLinkFunction(hyperLinkParams);
+      const renderedHyperLink = quickRender(hyperlink);
+      fireEvent.click(renderedHyperLink.getByRole("link"));
+      expect(EditFlow.mock.calls[0][0].isOpen).toBe(false);
     });
   });
 });

@@ -1,14 +1,14 @@
 
-import {
-  StyledExportButton,
-  SkillsExportButtonProps
-} from "../";
+import { StyledExportButton } from "../Skills.Styles";
+import { SkillsExportButtonProps } from "../Skills.Interfaces";
 import React from "react";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
 
 const ExportButton = (props: SkillsExportButtonProps) => {
   const {
-    selected
+    selected,
+    label,
+    styles
   } = props;
 
   const _export = React.useRef(null);
@@ -37,7 +37,7 @@ const ExportButton = (props: SkillsExportButtonProps) => {
   };
 
   return (
-    <StyledExportButton onClick={handleExport}><ExcelExport ref={_export}/>Export</StyledExportButton>
+    <StyledExportButton onClick={handleExport} styles={styles}><ExcelExport ref={_export}/>{label ? label : "Export"}</StyledExportButton>
   );
 };
 

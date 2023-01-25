@@ -16,7 +16,11 @@ import {
   initialTestState,
   mockActivities
 } from "testUtils";
-import { apiPaths } from "globals";
+import { ThemeProvider } from "styled-components";
+import {
+  apiPaths,
+  theme
+} from "globals";
 import { Tooltip } from "@mui/material";
 import { act } from "react-dom/test-utils";
 
@@ -41,10 +45,14 @@ const statusCode = 500;
 const axiosMock = new MockAdapter(myAxios);
 const activitiesEndpoint = apiPaths.GET_ACTIVITIES;
 const mockSetActivitiesList = jest.fn();
-const renderComponent = mockActivitiesList => render(<ProfileActivitiesSelectField
-  activitiesList={mockActivitiesList}
-  setActivitiesList={mockSetActivitiesList}
-/>, initialTestState);
+const renderComponent = mockActivitiesList => render(
+  <ThemeProvider theme={theme}>
+    <ProfileActivitiesSelectField
+      activitiesList={mockActivitiesList}
+      setActivitiesList={mockSetActivitiesList}
+    />
+  </ThemeProvider>, initialTestState
+);
 
 const getAddActivityButton = rendered => rendered.getByTestId("add-profileActivity-button");
 const getDeleteActivityButton = (rendered, instance) => rendered.getAllByTestId("delete-activity-button")[instance];
@@ -92,10 +100,10 @@ describe("<ProfileActivitiesSelectField />", () => {
         activity_id: 1,
         activity_nme: "Offline",
         available_i: {
-          "data": [
+          data: [
             0
           ],
-          "type": "Buffer"
+          type: "Buffer"
         }
       }];
       React.useState = jest.fn()
@@ -105,11 +113,11 @@ describe("<ProfileActivitiesSelectField />", () => {
 
     test("should render activities drop down with correct options", () => {
       const rendered = renderComponent([{
-        "activity_id": 2,
-        "activity_nme": "Available",
-        "available_i": {
-          "type": "Buffer",
-          "data": [
+        activity_id: 2,
+        activity_nme: "Available",
+        available_i: {
+          type: "Buffer",
+          data: [
             1
           ]
         }
@@ -124,23 +132,23 @@ describe("<ProfileActivitiesSelectField />", () => {
       });
       expect(mockSetActivitiesList).toHaveBeenCalledWith([
         {
-          "activity_id": 2,
-          "activity_nme": "Available",
-          "available_i": {
-            "data": [
+          activity_id: 2,
+          activity_nme: "Available",
+          available_i: {
+            data: [
               1
             ],
-            "type": "Buffer"
+            type: "Buffer"
           }
         },
         {
-          "activity_id": 1,
-          "activity_nme": "Offline",
-          "available_i": {
-            "data": [
+          activity_id: 1,
+          activity_nme: "Offline",
+          available_i: {
+            data: [
               0
             ],
-            "type": "Buffer"
+            type: "Buffer"
           }
         }
       ]);
@@ -153,10 +161,10 @@ describe("<ProfileActivitiesSelectField />", () => {
         activity_id: 1,
         activity_nme: "Offline",
         available_i: {
-          "data": [
+          data: [
             0
           ],
-          "type": "Buffer"
+          type: "Buffer"
         }
       }];
       React.useState = jest.fn()
@@ -167,23 +175,23 @@ describe("<ProfileActivitiesSelectField />", () => {
     test("should display once for each activity; when clicked, activity should be removed", () => {
       const rendered = renderComponent([
         {
-          "activity_id": 2,
-          "activity_nme": "Available",
-          "available_i": {
-            "data": [
+          activity_id: 2,
+          activity_nme: "Available",
+          available_i: {
+            data: [
               1
             ],
-            "type": "Buffer"
+            type: "Buffer"
           }
         },
         {
-          "activity_id": 1,
-          "activity_nme": "Offline",
-          "available_i": {
-            "data": [
+          activity_id: 1,
+          activity_nme: "Offline",
+          available_i: {
+            data: [
               0
             ],
-            "type": "Buffer"
+            type: "Buffer"
           }
         }
       ]);
@@ -193,13 +201,13 @@ describe("<ProfileActivitiesSelectField />", () => {
       });
       expect(mockSetActivitiesList).toHaveBeenCalledWith([
         {
-          "activity_id": 2,
-          "activity_nme": "Available",
-          "available_i": {
-            "data": [
+          activity_id: 2,
+          activity_nme: "Available",
+          available_i: {
+            data: [
               1
             ],
-            "type": "Buffer"
+            type: "Buffer"
           }
         }
       ]);

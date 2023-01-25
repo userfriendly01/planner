@@ -1,0 +1,218 @@
+import TritonUserTable from "../TritonUserTable";
+import { ModalOverlay } from "components";
+import {
+  useAdminDispatch,
+  useAdminState,
+  useFormDispatch,
+  userFormActions
+} from "context";
+import React from "react";
+import {
+  act,
+  fireEvent,
+  initialTestState,
+  render,
+  setupMockedComponents
+} from "testUtils";
+import { theme } from "globals";
+import { ThemeProvider } from "styled-components";
+import { formatWorkerAttributeSkillsToHTML } from "utils";
+import {
+  Delete,
+  Edit,
+  ChangeHistoryRounded
+} from "@mui/icons-material";
+import { Switch } from "@mui/material";
+
+jest.mock("components", () => ({
+  ModalOverlay: jest.fn()
+}));
+
+jest.mock("context", () => ({
+  useAdminDispatch: jest.fn(),
+  useAdminState: jest.fn(),
+  useFormDispatch: jest.fn(),
+  userFormActions: jest.requireActual("context").userFormActions
+}));
+
+jest.mock("utils", () => ({
+  formatWorkerAttributeSkillsToHTML: jest.fn()
+}));
+
+jest.mock("@mui/icons-material", () => ({
+  Delete: jest.fn(),
+  Edit: jest.fn(),
+  ChangeHistoryRounded: jest.fn()
+}));
+
+jest.mock("@mui/material", () => ({
+  Switch: jest.fn()
+}));
+
+const mockSetForm = jest.fn();
+const mockDispatch = jest.fn();
+const mockSetTableState = jest.fn();
+const mockSetWorkerOpts = jest.fn();
+const workerOpts = {};
+const tableState = {
+  deltaFilter: false,
+  filteredList: initialTestState.workerContext.workers
+};
+const renderComponent = () => {
+  return render(
+    <ThemeProvider theme={theme}>
+      <TritonUserTable tableState={tableState} workerOpts={workerOpts} setWorkerOpts={mockSetWorkerOpts} setTableState={mockSetTableState} />
+    </ThemeProvider>
+  );
+};
+
+describe("<TritonUserTable />", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    setupMockedComponents({
+      ModalOverlay,
+      Delete,
+      Edit,
+      ChangeHistoryRounded,
+      Switch
+    });
+    formatWorkerAttributeSkillsToHTML.mockReturnValue("Skill1, Skill2");
+    useAdminState.mockReturnValue({
+      ...initialTestState,
+      workerContext: {
+        ...initialTestState.workerContext,
+        selectedWorkers: []
+      }
+    });
+    useFormDispatch.mockReturnValue(mockSetForm);
+    useAdminDispatch.mockReturnValue(mockDispatch);
+  });
+
+  describe("Initial State", () => {
+    test("Table Renders as expected", () => {
+      const rendered = renderComponent();
+      expect(rendered.container).toHaveTextContent("NAME");
+      expect(rendered.container).toHaveTextContent("N NUMBER");
+      expect(rendered.container).toHaveTextContent("EXTENSION");
+      expect(rendered.container).toHaveTextContent("OFFICE");
+      expect(rendered.container).toHaveTextContent("SKILLS (Current)");
+      expect(rendered.container).toHaveTextContent("SKILLS (Default)");
+      initialTestState.workerContext.workers.forEach(w => {
+        expect(rendered.container).toHaveTextContent(w.attributes.full_name);
+        expect(rendered.container).toHaveTextContent(w.attributes.n_number);
+        expect(rendered.container).toHaveTextContent(w.attributes.extension);
+        if(w.attributes.office_location_name){
+          expect(rendered.container).toHaveTextContent(w.attributes.office_location_name);
+        }
+        if(w.attributes.routing){
+          expect(rendered.container).toHaveTextContent(w.attributes.routing);
+        }
+        if(w.attributes.default_skills){
+          expect(rendered.container).toHaveTextContent(w.attributes.default_skills);
+        }
+      });
+      expect(Switch.mock.calls.length).toBe(1);
+      expect(Switch.mock.calls[0][0].checked).toBe(false);
+      expect(ChangeHistoryRounded.mock.calls.length).toBe(1);
+      expect(Edit.mock.calls.length).toBe(initialTestState.workerContext.workers.length);
+      expect(Delete.mock.calls.length).toBe(initialTestState.workerContext.workers.length);
+    });
+    describe("resettingSkills === true", () => {
+      beforeEach(() => {
+        useAdminState.mockReturnValue({
+          ...initialTestState,
+          resettingSkills: true,
+          workerContext: {
+            ...initialTestState.workerContext,
+            selectedWorkers: []
+          }
+        });
+      });
+      test("ModalOverlay is rendered", () => {
+        renderComponent();
+        expect(ModalOverlay.mock.calls.length).toBe(1);
+        expect(ModalOverlay.mock.calls[0][0]).toStrictEqual({
+          message: "Resetting Worker Skills",
+          status: "saving"
+        });
+      });
+    });
+  });
+  describe("Reset Skills Toggle is clicked", () => {
+    test("setTableState is updated ", () => {
+      renderComponent();
+      const toggleWorkers = Switch.mock.calls[0][0].onChange;
+      act(() => toggleWorkers());
+      expect(mockSetTableState).toHaveBeenCalledTimes(1);
+      expect(mockSetTableState).toHaveBeenCalledWith({
+        ...tableState,
+        deltaFilter: true
+      });
+    });
+  });
+  describe("Worker row is selected", () => {
+    test("setDispatch is called for the worker", () => {
+      const rendered = renderComponent();
+      const rows = rendered.getAllByTestId("table-row");
+      act(() => fireEvent.click(rows[1]));
+      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: "toggleWorkerSelected",
+        payload: {
+          name: initialTestState.workerContext.workers[1].attributes.full_name,
+          sid: initialTestState.workerContext.workers[1].sid
+        }
+      });
+    });
+  });
+  describe("Edit Button is clicked on worker row", () => {
+    test("setForm and setWorkerOpts is called for the worker", () => {
+      const rendered = renderComponent();
+      const editButtons = rendered.getAllByTestId("edit-button");
+      act(() => fireEvent.click(editButtons[0]));
+      expect(mockSetForm).toHaveBeenCalledTimes(1);
+      expect(mockSetForm).toHaveBeenCalledWith({
+        type: userFormActions.SET_UPDATE_FORM_STATE,
+        payload: {
+          managers: initialTestState.managerContext.managers,
+          formMode: "update",
+          worker: initialTestState.workerContext.workers[0]
+        }
+      });
+      expect(mockSetWorkerOpts).toHaveBeenCalledTimes(1);
+      expect(mockSetWorkerOpts).toHaveBeenCalledWith({
+        action: "edit",
+        routedFrom: {
+          label: "Triton Users",
+          value: "TRITON_USERS"
+        },
+        worker: initialTestState.workerContext.workers[0]
+      });
+    });
+  });
+  describe("Delete Button is clicked on worker row", () => {
+    test("setForm and setWorkerOpts is called for the worker", () => {
+      const rendered = renderComponent();
+      const deleteButtons = rendered.getAllByTestId("delete-button");
+      act(() => fireEvent.click(deleteButtons[0]));
+      expect(mockSetForm).toHaveBeenCalledTimes(1);
+      expect(mockSetForm).toHaveBeenCalledWith({
+        type: userFormActions.SET_DELETE_FORM_STATE,
+        payload: {
+          managers: initialTestState.managerContext.managers,
+          formMode: "delete",
+          worker: initialTestState.workerContext.workers[0]
+        }
+      });
+      expect(mockSetWorkerOpts).toHaveBeenCalledTimes(1);
+      expect(mockSetWorkerOpts).toHaveBeenCalledWith({
+        action: "delete",
+        routedFrom: {
+          label: "Triton Users",
+          value: "TRITON_USERS"
+        },
+        worker: initialTestState.workerContext.workers[0]
+      });
+    });
+  });
+});

@@ -7,7 +7,8 @@ jest.mock("globals", () => ({
   __esModule: true,
   apiPaths: {
     EMPLOYEE_LOOKUP: jest.fn()
-  }
+  },
+  formModes: jest.requireActual("globals").formModes
 }));
 
 const axiosMock = new MockAdapter(myAxios);

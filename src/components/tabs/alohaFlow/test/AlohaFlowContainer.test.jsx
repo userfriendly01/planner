@@ -1,11 +1,11 @@
+import React from "react";
 import {
   render,
   initialTestState
 } from "testUtils";
+import { useAdminState } from "context";
 import { AlohaFlowContainer } from "../index";
-import DataGridFlow from "../DataGridFlow/DataGridFlow";
 import { LoginInProgress } from "../../../core/AzureAuth/LoginInProgress";
-import React from "react";
 
 jest.mock("../../../core/AzureAuth/LoginInProgress", () => ({
   __esModule: true,
@@ -45,12 +45,20 @@ jest.mock("../DataGridFlow/DataGridFlow", () => {
   };
 });
 
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
+}));
+
 const renderComponent = () => render(
   <AlohaFlowContainer />,
   initialTestState
 );
 
 describe("<AlohaFlowContainer />", () => {
+  beforeEach(()=>{
+    jest.clearAllMocks();
+    useAdminState.mockReturnValue(initialTestState);
+  });
   it("renders", () => {
     renderComponent();
     expect(LoginInProgress.mock.calls.length).toBe(1);

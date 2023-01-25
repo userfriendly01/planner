@@ -13,7 +13,8 @@ export const workersPerPage = 15;
 
 export const formModes: FormModes = {
   INSERT: "insert",
-  UPDATE: "update"
+  UPDATE: "update",
+  DELETE: "delete"
 };
 
 export const timeouts = {
@@ -91,6 +92,10 @@ export const profileTableColumnHeader = [
     TOOLTIP: "Profile Activities"
   },
   {
+    COLUMN_NAME: "Transfer Queues",
+    TOOLTIP: "UI Feature: Additional transfer queues that will appear in the Triton queue ticker"
+  },
+  {
     COLUMN_NAME: "",
     TOOLTIP: ""
   }
@@ -115,7 +120,8 @@ export const apiPaths = {
   GET_CALABRIO_ROLES: `${SERVICE_BASE_URI}/calabrio-get-roles`,
   GET_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-get-user/${personId}`,
   GET_PROFILE_DATA: (profileId: string | number): string => `${CONTACT_MANAGER_BASE_URI}/triton/${profileId}`,
-  GET_PROFILE_WORKER_TASK_INFO: `${CONTACT_MANAGER_BASE_URI}/profileworkertaskinfo`,
+  GET_CALL_TAGS_OPTIONS: `${CONTACT_MANAGER_BASE_URI}/workertaskinfooptions`,
+  GET_CALL_TAGS: `${CONTACT_MANAGER_BASE_URI}/workertaskinfo`,
   GET_ACTIVITIES: `${CONTACT_MANAGER_BASE_URI}/activities`,
   GET_SKILLS: `${SERVICE_BASE_URI}/consolidatedskills`,
   GET_WORKERS: `${SERVICE_BASE_URI}/workers`,
