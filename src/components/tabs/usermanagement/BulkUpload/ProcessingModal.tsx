@@ -32,9 +32,6 @@ const ProcessingModal = (props: any) => {
 
   React.useEffect(() => {
     performValidations();
-    // if(validationErrors.length === 0){
-    //   initiateCalls();
-    // }
   }, []);
 
   const performValidations = async () => {
@@ -46,27 +43,24 @@ const ProcessingModal = (props: any) => {
     }));
     console.log("Validation Promises: ", validationPromises);
     const validationErrors: any = [];
-    validationPromises.map(async (rowPromise: any, index: number) => {
+    await validationPromises.map(async (rowPromise: any, index: number) => {
       const rowErrors: any = [];
-      console.log("promise/row: ", rowPromise);
+      console.log("rowPromise", rowPromise);
       await rowPromise;
-      console.log("promise/row: after await", rowPromise);
-      console.log("promise.value: ", rowPromise.value);
-      rowPromise.value.forEach((fieldPromise: any) => {
+      await rowPromise.value.map((fieldPromise: any) => {
         console.log("fieldPromise: ", fieldPromise);
         // await fieldPromise;
         // console.log("fieldPromise after await is added: ", fieldPromise);
-        if(fieldPromise){
-          console.log("fieldPromise.status: ", fieldPromise.status);
-          console.log("fieldPromise.reason: ", fieldPromise.reason);
-          console.log("fieldPromise.value: ", fieldPromise.value);
+        if(fieldPromise.status === "rejected"){
+          rowErrors.push(fieldPromise.reason);
         }
-        rowErrors.push(fieldPromise);
       });
-      validationErrors.push({
-        row: index + 1,
-        errors: rowErrors
-      });
+      if(rowErrors.length !== 0){
+        validationErrors.push({
+          row: index + 1,
+          errors: rowErrors
+        });
+      }
     });
 
     if(validationErrors.length === 0){
