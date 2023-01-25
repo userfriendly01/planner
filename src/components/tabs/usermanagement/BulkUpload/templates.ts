@@ -131,11 +131,11 @@ const getCalabrioQmFields = (state: any): any => [
       const fieldName = "Calabrio Group";
       const field = row[fieldName];
       if(!field){
-        Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
+        return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
       } else if(!state.calabrioContext.groups.some((g:any) => g.name.toLowerCase() === field.toLowerCase())){
-        Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
+        return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
       } else {
-        Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+        return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
       }
     }
   },
@@ -151,11 +151,11 @@ const getCalabrioQmFields = (state: any): any => [
       const fieldName = "Calabrio Team";
       const field = row[fieldName];
       if(!field){
-        Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
+        return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
       } else if(!state.calabrioContext.teams.some((t:any) => t.name.toLowerCase() === field.toLowerCase())){
-        Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
+        return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
       } else {
-        Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+        return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
       }
     }
   },
@@ -171,11 +171,11 @@ const getCalabrioQmFields = (state: any): any => [
       const fieldName = "Calabrio Role";
       const field = row[fieldName];
       if(!field){
-        Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
+        return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
       } else if(!calabrioAllowedRoles.some((r:any) => r.toLowerCase() === field.toLowerCase())){
-        Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
+        return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
       } else {
-        Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+        return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
       }
     }
   },
@@ -190,11 +190,11 @@ const getCalabrioQmFields = (state: any): any => [
       const fieldName = "Time Zone";
       const field = row[fieldName];
       if(!field){
-        Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
+        return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
       } else if(!calabrioTimeZones.some((t:any) => t.label.toLowerCase() === field.toLowerCase())){
-        Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
+        return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
       } else {
-        Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+        return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
       }
     }
   }
