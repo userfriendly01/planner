@@ -1,6 +1,7 @@
 import {
-  Tab, Tabs, Typography
-} from "@mui/material";
+  useAdminState
+} from "context";
+import React from "react";
 import {
   initialTestState,
   render,
@@ -8,9 +9,10 @@ import {
   tabs
 } from "testUtils";
 import NavTabs from "../NavTabs";
-import React from "react";
 import { getAzureSPAClientId } from "utils";
-import { useAdminState } from "context";
+import {
+  Tab, Tabs, Typography
+} from "@mui/material";
 
 jest.mock("@mui/material", () => ({
   Tab: jest.fn(),
