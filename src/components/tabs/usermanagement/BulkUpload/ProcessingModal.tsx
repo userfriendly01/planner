@@ -48,12 +48,14 @@ const ProcessingModal = (props: any) => {
     validationPromises.forEach((promise: any) => {
       console.log("promise/row: ", promise);
       console.log("promise.value: ", promise.value);
-      promise.value.forEach((error: any) => {
-        console.log("innerPromise: ", error);
+      promise.value.forEach((innerPromise: any) => {
+        console.log("innerPromise: ", innerPromise);
+        await innerPromise;
+        console.log("innerPromise after await is added: ", innerPromise);
         if(error){
-          console.log("innerPromise.status: ", error.status);
-          console.log("innerPromise.reason: ", error.reason);
-          console.log("innerPromise.value: ", error.value);
+          console.log("innerPromise.status: ", innerPromise.status);
+          console.log("innerPromise.reason: ", innerPromise.reason);
+          console.log("innerPromise.value: ", innerPromise.value);
         }
         validationErrors.push(error);
       });
