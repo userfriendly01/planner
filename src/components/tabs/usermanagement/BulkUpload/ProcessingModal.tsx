@@ -37,12 +37,8 @@ const ProcessingModal = (props: any) => {
   React.useEffect(() => {
     console.log("within Processing Modal [] useEffect");
     setShowProgressBar(true);
+    setTimeout(performValidations, 3000);
   }, []);
-
-  React.useEffect(() => {
-    console.log("within Processing Modal showProgressBar useEffect");
-    performValidations();
-  }, [showProgressBar]);
 
   const performValidations = async () => {
     const finalErrors: any = [];
