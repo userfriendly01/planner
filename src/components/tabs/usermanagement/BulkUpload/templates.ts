@@ -304,10 +304,6 @@ const validateCalabrioFields = async (uploadedForm: any, state: any): Promise<an
       rowErrors.push(`${fieldName4} is missing from row ${index + 1}`);
     }
 
-    if(!row[fieldName8]){
-      rowErrors.push(`${fieldName8} is missing from row ${index + 1}`);
-    }
-
     //Alternate/Outgoing Number
     const alternateOutgoingNumber = fields[9];
     const fieldName9 = alternateOutgoingNumber.name;
