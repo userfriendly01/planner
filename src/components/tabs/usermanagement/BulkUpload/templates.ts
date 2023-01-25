@@ -407,7 +407,6 @@ export const getCreateTemplates: any = (state: any): any => {
     },
     CREATE_CALABRIO_QM_USER: {
       name: "CREATE_CALABRIO_QM_USER",
-      validateFunction: (uploadedForm: any) => validateCalabrioFields(uploadedForm, state),
       processFunction: () => Promise.resolve(),
       multiRunDependencies: [{
         name: "CREATE_TRITON_USER",

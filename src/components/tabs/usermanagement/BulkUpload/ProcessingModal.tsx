@@ -46,13 +46,15 @@ const ProcessingModal = (props: any) => {
     console.log("Validation Promises: ", validationPromises);
     const validationErrors: any = [];
     validationPromises.forEach((promise: any) => {
-      console.log("promise: ", promise);
-      if(promise.status === "rejected"){
-        promise.reason.forEach((error: any) => {
-          console.log("innerPromise: ", error);
-          validationErrors.push(error);
-        });
-      }
+      console.log("promise/row: ", promise);
+      console.log("promise.value: ", promise.value);
+      promise.value.forEach((error: any) => {
+        console.log("innerPromise: ", error);
+        console.log("innerPromise.status: ", innerPromise.status);
+        console.log("innerPromise.reason: ", innerPromise.reason);
+        console.log("innerPromise.value: ", innerPromise.value);
+        validationErrors.push(error);
+      });
     });
     if(validationErrors.length === 0){
       initiateCalls();

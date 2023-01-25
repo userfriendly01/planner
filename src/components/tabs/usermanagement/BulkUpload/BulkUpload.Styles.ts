@@ -26,6 +26,9 @@ export const ModalWrapper = styled(Paper)`
   justify-content: center;
   width: 650px;
   height: 650px;
+  position: absolute;
+  left: 32vw;
+  top: 20vh;
 `;
 export const BulkChangesWrapper = styled.div`
   display: flex;
