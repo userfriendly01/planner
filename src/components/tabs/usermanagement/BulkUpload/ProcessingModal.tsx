@@ -33,6 +33,7 @@ const ProcessingModal = (props: any) => {
   console.log("we're in the processing modal! uploadedForm", uploadedForm );
   console.log("we're in the processing modal! consolidatedFieldsList", consolidatedFieldsList );
 
+  console.log(processedRows);
   React.useEffect(() => {
     console.log("within Processing Modal [] useEffect");
     setShowProgressBar(true);
