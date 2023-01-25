@@ -1,13 +1,13 @@
 import {
   Dropdown,
-  MessageContainer
+  MessageContainer,
+  SkillGroupInputContainer
 } from "components";
 import React from "react";
 import {
   propertyOptions,
   ActionContainerProps
 } from "../Skills.Interfaces";
-import SkillGroupInputContainer from "../DefaultSkillGroups/SkillGroupInputContainer";
 import { FormControlsContainer } from "../Skills.Styles";
 
 const ActionContainer = (props: ActionContainerProps) => {

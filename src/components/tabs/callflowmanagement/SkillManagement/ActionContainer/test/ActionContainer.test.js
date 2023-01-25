@@ -1,9 +1,9 @@
 import ActionContainer from "../ActionContainer";
 import {
   Dropdown,
-  MessageContainer
+  MessageContainer,
+  SkillGroupInputContainer
 } from "components";
-import { SkillGroupInputContainer } from "../../DefaultSkillGroups";
 import React from "react";
 import {
   act,
@@ -20,10 +20,7 @@ import { messageTypes } from "../../ClosedFlashMessage/ClosedFlashMessage.Interf
 jest.mock("components", () => ({
   Dropdown: jest.fn(),
   MessageContainer: jest.fn(),
-  StyledButton: jest.fn()
-}));
-
-jest.mock("../../DefaultSkillGroups", () => ({
+  StyledButton: jest.fn(),
   SkillGroupInputContainer: jest.fn()
 }));
 
@@ -92,7 +89,7 @@ describe("<ActionContainer/>", () => {
       });
     });
     describe("propertySelection.label === propertyOptions.SKILL_GROUP.label and ", () => {
-      test("should render Skill group View", () => {
+      test("should render Skill group View", async () => {
         renderComponent();
         const updateProperty = Dropdown.mock.calls[0][0].updateValue;
         act(() => {
@@ -105,6 +102,7 @@ describe("<ActionContainer/>", () => {
         expect(Dropdown.mock.calls.length).toBe(6);
         expect(Dropdown.mock.calls[2][0].value).toBe(propertyOptions.SKILL_GROUP);
         expect(Dropdown.mock.calls[3][0].options).toBe(propertyOptions.SKILL_GROUP.actions);
+        expect(Dropdown.mock.calls[5][0].value).toBe(ActionTypes.ADD);
         expect(MessageContainer.mock.calls.length).toBe(1);
         expect(SkillGroupInputContainer.mock.calls.length).toBe(1);
         expectOnlyPassedProps(SkillGroupInputContainer, {

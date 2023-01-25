@@ -18,8 +18,6 @@ import {
   expectOnlyPassedProps,
   skillsList,
   waitFor,
-  getMockedComponentProps,
-  getLastInstanceCalled,
   act
 } from "testUtils";
 import { ActionTypes } from "../../Skills.Interfaces";
@@ -167,7 +165,11 @@ describe("<SkillGroupInputContainer />", () => {
     const tableState = {
       selected: [skillsList[0], skillsList[1]]
     };
-    // test("Name is not unique, error message shows", async () => {
+    // test.only("Name is not unique, error message shows", async () => {
+    //   // React.useState = jest.fn()
+    //   //   .mockReturnValueOnce(["", jest.fn()])
+    //   //   .mockReturnValueOnce(["", jest.fn()])
+    //   //   .mockReturnValueOnce(["", jest.fn()]).mockReturnValueOnce(["skillgroup1", jest.fn()]);
     //   renderComponent(tableState);
     //   const onChange = TextField.mock.calls[0][0].onChange;
     //   const groupName = "skillgroup1";
@@ -189,6 +191,13 @@ describe("<SkillGroupInputContainer />", () => {
     //   });
     //   await waitFor(() => {
     //     expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(0);
+    //     expectOnlyPassedProps(TextField, {
+    //       // TODO: WHY CAN'T I GET THIS?  button doesn't have name to grab value from...
+    //       // Think I need to separate the text field and button to separate components to test this
+    //       // helperText: "Skill group names must be unique",
+    //       // error: true,
+    //       value: ""
+    //     }, );
     //     expectOnlyPassedProps(TextField, {
     //       // TODO: WHY CAN'T I GET THIS?  button doesn't have name to grab value from...
     //       // Think I need to separate the text field and button to separate components to test this
