@@ -34,6 +34,8 @@ const xhrMockClass = () => ({
 });
 
 window.XMLHttpRequest = jest.fn().mockImplementation(xhrMockClass);
+import DataGridFlow from "../DataGridFlow/DataGridFlow";
+
 
 jest.mock("../DataGridFlow/DataGridFlow", () => {
   const originalModule = jest.requireActual("../DataGridFlow/DataGridFlow");
