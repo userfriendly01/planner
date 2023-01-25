@@ -11,10 +11,22 @@ export const getGraphQLEndpoint = (): string => {
   const env: string = useAdminState().userContext.pingIdentity.environment;
   return {
     "development": "https://2yooyvouuzeq7evpxtv5ojad3m.appsync-api.us-east-1.amazonaws.com/graphql",
-    "test": "TBD",
+    "test": "https://molg2ylkqrhtpniyfncvue57ha.appsync-api.us-east-1.amazonaws.com/graphql",
     "prod": "TBD"
   }[env];
+};
 
+/**
+ *  This function return Azure SPA client ID on running environment  
+ * @returns string: GraphQL client ID
+ */
+export const getAzureSPAClientId = (): string => {
+  const env: string = useAdminState().userContext.pingIdentity.environment;
+  return {
+    "development": "74b1f79e-23b7-4ed7-abba-3c6cb147fcd4",
+    "test": "5d895d11-5151-4805-9d28-471c4020731f",
+    "prod": ""
+  }[env];
 };
 
 export const initializedAlertBar: AlertBarProps = {

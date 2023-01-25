@@ -27,7 +27,6 @@ import { CustomToast } from "components";
 import {
   flowDropDownList,
   FLOW_MASTER_DATA,
-  getAccessToken,
   getGraphQLEndpoint,
   initializedAlertBar,
   languageOffer,
@@ -40,6 +39,7 @@ import {
 import {
   deleteFlowRule, updateFlowDB
 } from "services";
+import { AzureSPA } from "globals";
 
 interface EditFlowComponentProps {
     isOpen: boolean;
@@ -47,10 +47,9 @@ interface EditFlowComponentProps {
     openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallFlowDb, message?: string) => void;
 }
 export const EditFlow = ({
-  isOpen, selectedRow, openEditModal
-}: EditFlowComponentProps): JSX.Element => {
+  accessToken, matchedGroups, isOpen, selectedRow, openEditModal
+}: EditFlowComponentProps & AzureSPA): JSX.Element => {
 
-  const accessToken: string = getAccessToken();
   const graphQLEndPoint: string = getGraphQLEndpoint();
 
   const [selectedRowLocal, setSelectedRowLocal] = useState({} as CctSharedCallFlowDb);

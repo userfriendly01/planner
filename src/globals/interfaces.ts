@@ -219,6 +219,12 @@ export interface WorkerAttributeSkills {
   skills: string[]
 }
 
+export interface AzureSPA {
+  accessToken: string;
+  matchedGroups: string;
+  azureClientId?: string;
+}
+
 export interface CalabrioQmUser {
   acdId: string,
   acdServerId: number,

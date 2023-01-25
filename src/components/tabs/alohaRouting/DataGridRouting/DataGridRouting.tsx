@@ -13,7 +13,6 @@ import {
   CACHED_CALL_ROUTING_PAGE_NO,
   CACHED_CALL_ROUTING_PER_PAGE,
   CACHE_FILTER_ROUTING,
-  getAccessToken,
   routingInitState,
   getGraphQLEndpoint,
   initializedAlertBar,
@@ -30,9 +29,14 @@ import {
   RoutingAdvanceSearch, AddRouting, EditRouting, CustomFlowRoutingToolBar
 } from "../RoutingCustomActions";
 import { AlertBarProps } from "utils/interfaces";
+import { AzureSPA } from "globals";
 
-export const DataGridRouting = (): JSX.Element => {
-  const accessToken: string = getAccessToken();
+export const DataGridRouting = (props: AzureSPA): JSX.Element => {
+  const {
+    accessToken,
+    matchedGroups
+  } = props;
+
   const graphQlApiUrl: string = getGraphQLEndpoint();
   const [state, setState] = useState<RoutingInitState>(routingInitState);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
@@ -251,11 +255,15 @@ export const DataGridRouting = (): JSX.Element => {
         />
       </RoutingTableBox>
       <AddRouting
+        accessToken={accessToken}
+        matchedGroups={matchedGroups}
         isOpen={state.isAddModalOpen}
         newId={state.maxId + 1}
         openModal={openAddModal}
       />
       <EditRouting
+        accessToken={accessToken}
+        matchedGroups={matchedGroups}
         isOpen={state.isEditModalOpen}
         selectedRow={state.selectedRow}
         openEditModal={openEditModal}
