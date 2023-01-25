@@ -68,38 +68,10 @@ const getTritonFields = (state: any): any => [
     field: "defaultSkills",
     name: "Default Skills",
     type: "string",
-    description: "Comma delimited list of skills assigned as the Defauls Skill profile for the user. If left blank, no skills will be assigned",
+    description: "Comma delimited list of skill/level pairings. Skills can be on their own or have a ':level' to represent the level. If left blank, no skills will be added to the user",
     required: "N",
-    example: "bscCommissions, aisgl1, blSalesL1",
-    options: state.skillContext.skills.map((s: any) => s.name),
-    validateFunction: (row: any, rowNumber: number): Promise<any> => {
-      const fieldName = "Default Skills";
-      const field = row[fieldName];
-      let skillsArray;
-      console.log("entering validate skills function", field);
-      try {
-        skillsArray = field.split(",");
-      } catch(err){
-        return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}. Must be a comma delimited list of skills.`);
-      }
-      console.log("skillsArray", skillsArray);
-
-      skillsArray.forEach((skill: any) => {
-        if(!state.skillContext.skills.some((s:any) => s.name.toLowerCase() === skill.toLowerCase())){
-          return Promise.reject(`${skill} is not a valid option for row ${rowNumber}`);
-        }
-      });
-      return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
-    }
-  },
-  {
-    field: "defaultSkillLevels",
-    name: "Default Skill Levels",
-    type: "string",
-    description: "Comma delimited list of skill/level pairings. Skills should have a colon before the level. If left blank, skills with levels will default to 1",
-    required: "N",
-    example: "bscCommissions: 3, blSalesL1: 2",
-    options: null,
+    example: "bscCommissions:3, blSalesL1:2, aisl1",
+    options: state.skillContext.skills.map((s: any) => `${s.name}${s.levels.length > 0 ? ` : Available levels: ${s.levels.toString()}` : null}`),
     validateFunction: (row: any, rowNumber: number): Promise<any> => {
       /*
         skills object: {
@@ -108,38 +80,50 @@ const getTritonFields = (state: any): any => [
         }
       */
       const fieldName = "Default Skills";
-      const field = row[fieldName];
-      const finalSkillsObject = {};
-      let skillsLevelArray;
-      console.log("entering validate skills function", field);
-      // try {
-      //   const array = field.replace(" ","").split(",")
-      //   const obj = {};
-      //   array.forEach((arrstr) => {
-      //   const objArray = arrstr.replace(" ","").split(":")
-      //   obj[objArray[0]] = objArray[1];
-      //   });
-      //   skillsLevelArray = field.split(",");
-      // } catch(err){
-      //   return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}. Must be a comma delimited list of skills.`);
-      // }
-      // console.log("skillsLevelArray", skillsLevelArray);
+      const field: any = row[fieldName];
+      const defaultSkills: any = {
+        skills: [],
+        levels: {}
+      };
+      try {
+        const fieldArray = field.replace(" ","").split(",");
+        fieldArray.forEach((objString: string) => {
+          const objKeyValueArray = objString.replace(" ","").split(":");
+          const key: any = objKeyValueArray[0];
+          const value: any = objKeyValueArray[1];
+          if(value){
+            defaultSkills.levels[key] = value;
+          }
+          defaultSkills.skills.push({ key: parseInt(value) });
 
-      // skillsLevelArray.forEach((skill: any) => {
-      //   const matchingSkill = state.skillContext.skills.some((s:any) => s.name.toLowerCase() === skill.toLowerCase());
-      //   const availableLevels = matchingSkill.levels;
-      //   const level = parseIn
-      //   if(!matchingSkill){
-      //     return Promise.reject(`Skill ${skill} is not a valid option for row ${rowNumber}`);
-      //   } else if(availableLevels.length === 0){
-      //     return Promise.reject(`Levels are not available for Skill ${skill} on row ${rowNumber}`);
-      //   } else if() {
-      //     //update form with proper format
-      //   } else {
-      //     //update form with proper format
-      //   }
-      // });
-      return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+        });
+      } catch(err){
+        return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}. Must be a comma delimited list of skills. If a skill has a level it must be separated by a :`);
+      }
+
+      const availableSkills = state.skillContext.skills;
+      const skillErrors: any = [];
+
+      defaultSkills.skills.forEach((ds: any) => {
+        if(!availableSkills.some((as: any) => as.name === ds)){
+          skillErrors.push(`${ds} is not an available skill `);
+        }
+      });
+
+      Object.keys(defaultSkills.levels).forEach((skill: any) => {
+        const matchingSkill = availableSkills.find((as: any) => as.name === skill);
+        const level = defaultSkills.levels[skill];
+        if(!matchingSkill){
+          skillErrors.push(`${skill} is not an available skill `);
+        } else if(!matchingSkill.levels.includes(level)){
+          skillErrors.push(`${skill} does not support Level ${level} `);
+        }
+      });
+      if(skillErrors.length !== 0){
+        return Promise.resolve(`${fieldName} Errors found for row ${rowNumber} ${skillErrors.toString()}`);
+      } else {
+        return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+      }
     }
   },
   {

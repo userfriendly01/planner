@@ -48,8 +48,6 @@ const ProcessingModal = (props: any) => {
       await rowPromise;
       await rowPromise.value.map(async (fieldPromise: any) => {
         console.log("fieldPromise: ", fieldPromise);
-        // await fieldPromise;
-        // console.log("fieldPromise after await is added: ", fieldPromise);
         if(fieldPromise.status === "rejected"){
           console.log("Adding fieldPromise.reason to row Errors", fieldPromise.reason);
           rowErrors.push(fieldPromise.reason);
@@ -63,7 +61,7 @@ const ProcessingModal = (props: any) => {
           errors: rowErrors
         });
       }
-      return Promise.resolve(); // is this necessary
+      return Promise.resolve();
     });
     console.log("finalErrors.length", finalErrors.length);
     if(finalErrors.length === 0){
