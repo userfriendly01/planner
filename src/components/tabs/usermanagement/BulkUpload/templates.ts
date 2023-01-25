@@ -106,16 +106,16 @@ const getCalabrioQmFields = (state: any): any => [
     required: "Y",
     example: "n0263786",
     options: null,
-    validateFunction: (row: any, rowNumber: number) => {
+    validateFunction: (row: any, rowNumber: number): Promise<any> => {
       console.log("entering validate nNumber function");
       const fieldName = "N Number";
       const field = row[fieldName];
       if(!field){
-        Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
+        return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
       } else if(!state.calabrioContext.groups.some((g:any) => g.name.toLowerCase() === field.toLowerCase())){
         //maybe validate format?
       } else {
-        Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+        return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
       }
     }
   },
@@ -127,7 +127,7 @@ const getCalabrioQmFields = (state: any): any => [
     required: "Y",
     example: "Default Group",
     options: state.calabrioContext.groups.map((g: any) => g.name),
-    validateFunction: (row: any, rowNumber: number) => {
+    validateFunction: (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "Calabrio Group";
       const field = row[fieldName];
       if(!field){
@@ -147,7 +147,7 @@ const getCalabrioQmFields = (state: any): any => [
     required: "Y",
     example: "Default Team",
     options: state.calabrioContext.teams.map((t: any) => t.name),
-    validateFunction: (row: any, rowNumber: number) => {
+    validateFunction: (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "Calabrio Team";
       const field = row[fieldName];
       if(!field){
@@ -167,7 +167,7 @@ const getCalabrioQmFields = (state: any): any => [
     required: "Y",
     example: "QM Agent",
     options: calabrioAllowedRoles,
-    validateFunction: (row: any, rowNumber: number) => {
+    validateFunction: (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "Calabrio Role";
       const field = row[fieldName];
       if(!field){
@@ -186,7 +186,7 @@ const getCalabrioQmFields = (state: any): any => [
     description: "Time Zone of the Calabrio User",
     example: "America/New_York",
     options: calabrioTimeZones.map((t: any) => t.label),
-    validateFunction: (row: any, rowNumber: number) => {
+    validateFunction: (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "Time Zone";
       const field = row[fieldName];
       if(!field){
