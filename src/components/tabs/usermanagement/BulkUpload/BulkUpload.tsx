@@ -69,6 +69,7 @@ const BulkUpload = () => {
   };
 
   const readUploadFile = (e: any) => {
+    console.log("UPLOAD FILED", e);
     e.preventDefault();
     if (e.target.files) {
       const reader = new FileReader();
@@ -151,10 +152,11 @@ const BulkUpload = () => {
           </Wrapper>
         </Row>
       }
-      <input type="file" ref={uploadButtonRef} style={{
-        visibility: "hidden",
-        height: "0px"
-      }} onChange={readUploadFile}
+      <input
+        type="file"
+        ref={uploadButtonRef}
+        hidden={true}
+        onChange={readUploadFile}
       />
     </BulkChangesWrapper>
   );
