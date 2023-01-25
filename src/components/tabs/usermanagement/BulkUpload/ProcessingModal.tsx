@@ -98,6 +98,7 @@ const ProcessingModal = (props: any) => {
       // });
       //kick off api calls in order of dependency tree using template concurrency limit
     } else {
+      console.log("no dependencies needed");
     //kick off api calls asyncronously using template concurrency limit
     }
   };
@@ -182,7 +183,7 @@ const ProcessingModal = (props: any) => {
             <StyledExportButton onClick={handleExport}><ExcelExport ref={_export}/>
               Export Validation Errors
             </StyledExportButton>
-            <StyledExportButton styles={{ width: "200px" }} onClick={initiateCalls}>
+            <StyledExportButton styles={{ width: "250px" }} onClick={initiateCalls}>
               Process {totalSuccessCount} out of {totalRowCount} rows
             </StyledExportButton>
           </ButtonWrapper>

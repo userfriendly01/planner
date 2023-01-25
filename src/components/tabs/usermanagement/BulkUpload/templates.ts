@@ -51,7 +51,6 @@ const getTritonFields = (state: any): any => [
     example: "n0088625",
     options: state.managerContext.managers.map((m: any) => m.manager_n_number),
     validateFunction: (row: any, rowNumber: number): Promise<any> => {
-      console.log("entering validate nNumber function");
       const fieldName = "Profile Id";
       const field = row[fieldName];
       if(!field){
@@ -134,7 +133,6 @@ const getTritonFields = (state: any): any => [
     example: "65214",
     options: null,
     validateFunction: async (row: any, rowNumber: number): Promise<any> => {
-      console.log("entering validate nNumber function");
       const fieldName = "Extension";
       const field = row[fieldName];
       const generateExtension = field.toLowerCase() === "y";
@@ -211,7 +209,8 @@ const getTritonFields = (state: any): any => [
     description: "Y/N Indicator to represent if the zero out skill aligned to the profile ID should be added to the users current skills. Only required when DID User is true",
     required: true,
     example: "Y",
-    options: null
+    options: null,
+    validateFunction: () => Promise.resolve()
   },
   {
     field: "alternateNumber",
@@ -220,7 +219,8 @@ const getTritonFields = (state: any): any => [
     description: "If the user is a DID user, this is the Teams/Alternate DID. If The User is not a DID user, this is populated as the Outgoing number",
     required: true,
     example: "6038518288",
-    options: null
+    options: null,
+    validateFunction: () => Promise.resolve()
   }
 ];
 
@@ -234,12 +234,11 @@ const getCalabrioQmFields = (state: any): any => [
     example: "n0263786",
     options: null,
     validateFunction: (row: any, rowNumber: number): Promise<any> => {
-      console.log("entering validate nNumber function");
       const fieldName = "N Number";
       const field = row[fieldName];
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
-      } else if(!state.calabrioContext.groups.some((g:any) => g.name.toLowerCase() === field.toLowerCase())){
+      } else if(!state.calabrioContext.groups.some((g:any) => g.name?.toLowerCase() === field?.toLowerCase())){
         //maybe validate format?
       } else {
         return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
@@ -259,7 +258,7 @@ const getCalabrioQmFields = (state: any): any => [
       const field = row[fieldName];
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
-      } else if(!state.calabrioContext.groups.some((g:any) => g.name.toLowerCase() === field.toLowerCase())){
+      } else if(!state.calabrioContext.groups.some((g:any) => g.name?.toLowerCase() === field?.toLowerCase())){
         return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
       } else {
         return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
@@ -279,7 +278,7 @@ const getCalabrioQmFields = (state: any): any => [
       const field = row[fieldName];
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
-      } else if(!state.calabrioContext.teams.some((t:any) => t.name.toLowerCase() === field.toLowerCase())){
+      } else if(!state.calabrioContext.teams.some((t:any) => t.name?.toLowerCase() === field?.toLowerCase())){
         return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
       } else {
         return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
@@ -299,7 +298,7 @@ const getCalabrioQmFields = (state: any): any => [
       const field = row[fieldName];
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
-      } else if(!calabrioAllowedRoles.some((r:any) => r.toLowerCase() === field.toLowerCase())){
+      } else if(!calabrioAllowedRoles.some((r:any) => r?.toLowerCase() === field?.toLowerCase())){
         return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
       } else {
         return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
@@ -318,7 +317,7 @@ const getCalabrioQmFields = (state: any): any => [
       const field = row[fieldName];
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
-      } else if(!calabrioTimeZones.some((t:any) => t.label.toLowerCase() === field.toLowerCase())){
+      } else if(!calabrioTimeZones.some((t:any) => t.label?.toLowerCase() === field?.toLowerCase())){
         return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
       } else {
         return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);

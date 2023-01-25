@@ -25,7 +25,7 @@ export const ModalWrapper = styled(Paper)`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 800px;
+  width: 900px;
   height: 400px;
   position: absolute;
   left: 32vw;
