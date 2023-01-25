@@ -24,11 +24,20 @@ export const ModalWrapper = styled(Paper)`
   align-items: center;
   display: flex;
   justify-content: center;
-  width: 650px;
-  height: 650px;
+  width: 800px;
+  height: 400px;
   position: absolute;
   left: 32vw;
-  top: 20vh;
+  top: 30vh;
+`;
+
+export const TextWrapper = styled.div<{styles: string}>`
+
+`;
+
+export const ValidationErrorWrapper = styled(Paper)`
+  align-items: center;
+  display: flex;
 `;
 export const BulkChangesWrapper = styled.div`
   display: flex;

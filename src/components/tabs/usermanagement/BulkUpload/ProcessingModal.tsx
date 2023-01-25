@@ -137,7 +137,7 @@ const ProcessingModal = (props: any) => {
             <StyledExportButton onClick={handleExport}><ExcelExport ref={_export}/>
               Export Validation Errors
             </StyledExportButton>
-            <StyledExportButton onClick={initiateCalls}>
+            <StyledExportButton styles={{ width: "200px" }} onClick={initiateCalls}>
               Process {totalSuccessCount} out of {totalRowCount} rows
             </StyledExportButton>
           </ButtonWrapper>
