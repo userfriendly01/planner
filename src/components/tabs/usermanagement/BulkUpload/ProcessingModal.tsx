@@ -35,19 +35,18 @@ const ProcessingModal = (props: any) => {
   }, []);
 
   const performValidations = async () => {
-
+    const finalErrors: any = [];
     const validationPromises = await Promise.allSettled(uploadedForm.map((row: any, index: number) => {
       return Promise.allSettled(consolidatedFieldsList.map((field: any) => {
         return field.validateFunction(row, index);
       }));
     }));
     console.log("Validation Promises: ", validationPromises);
-    const validationErrors: any = [];
     await validationPromises.map(async (rowPromise: any, index: number) => {
       const rowErrors: any = [];
       console.log("rowPromise", rowPromise);
       await rowPromise;
-      await rowPromise.value.map((fieldPromise: any) => {
+      await rowPromise.value.map(async (fieldPromise: any) => {
         console.log("fieldPromise: ", fieldPromise);
         // await fieldPromise;
         // console.log("fieldPromise after await is added: ", fieldPromise);
@@ -66,8 +65,8 @@ const ProcessingModal = (props: any) => {
       }
       return Promise.resolve(); // is this necessary
     });
-
-    if(validationErrors.length === 0){
+    console.log("finalErrors.length", finalErrors.length);
+    if(finalErrors.length === 0){
       initiateCalls();
     } else {
       setValidationErrors(validationErrors);

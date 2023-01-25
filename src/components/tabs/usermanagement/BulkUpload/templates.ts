@@ -101,24 +101,44 @@ const getTritonFields = (state: any): any => [
     example: "bscCommissions: 3, blSalesL1: 2",
     options: null,
     validateFunction: (row: any, rowNumber: number): Promise<any> => {
+      /*
+        skills object: {
+         levels: {asig: 2},
+         skills: [466, aisg]   
+        }
+      */
       const fieldName = "Default Skills";
       const field = row[fieldName];
+      const finalSkillsObject = {};
       let skillsLevelArray;
       console.log("entering validate skills function", field);
-      try {
-        skillsLevelArray = field.split(",");
-      } catch(err){
-        return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}. Must be a comma delimited list of skills.`);
-      }
-      console.log("skillsLevelArray", skillsLevelArray);
+      // try {
+      //   const array = field.replace(" ","").split(",")
+      //   const obj = {};
+      //   array.forEach((arrstr) => {
+      //   const objArray = arrstr.replace(" ","").split(":")
+      //   obj[objArray[0]] = objArray[1];
+      //   });
+      //   skillsLevelArray = field.split(",");
+      // } catch(err){
+      //   return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}. Must be a comma delimited list of skills.`);
+      // }
+      // console.log("skillsLevelArray", skillsLevelArray);
 
-      skillsLevelArray.forEach((skill: any) => {
-        const matchingSkill = state.skillContext.skills.some((s:any) => s.name.toLowerCase() === skill.toLowerCase());
-        const availableLevels = matchingSkill.levels;
-        if(!matchingSkill){
-          return Promise.reject(`${skill} is not a valid option for row ${rowNumber}`);
-        }
-      });
+      // skillsLevelArray.forEach((skill: any) => {
+      //   const matchingSkill = state.skillContext.skills.some((s:any) => s.name.toLowerCase() === skill.toLowerCase());
+      //   const availableLevels = matchingSkill.levels;
+      //   const level = parseIn
+      //   if(!matchingSkill){
+      //     return Promise.reject(`Skill ${skill} is not a valid option for row ${rowNumber}`);
+      //   } else if(availableLevels.length === 0){
+      //     return Promise.reject(`Levels are not available for Skill ${skill} on row ${rowNumber}`);
+      //   } else if() {
+      //     //update form with proper format
+      //   } else {
+      //     //update form with proper format
+      //   }
+      // });
       return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
     }
   },
