@@ -7,14 +7,17 @@ import {
 
 const ProgressBar = (props: any) => {
   const {
-    progress
+    totalRowCount,
+    completedRows
   } = props;
 
-  console.log("in progressbar", progress);
+  const percentageComplete =  Math.floor((completedRows/totalRowCount) * 100);
+  console.log("in progressbar", percentageComplete);
+
   return (
     <ProgressBarContainer>
       <ProgressBarWrapper>
-        <ProgressBarFiller progress={`${progress}%` || "34%"}/>
+        <ProgressBarFiller progress={`${percentageComplete}%` || "34%"}/>
       </ProgressBarWrapper>
     </ProgressBarContainer>
   );

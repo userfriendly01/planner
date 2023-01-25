@@ -26,6 +26,7 @@ const ProcessingModal = (props: any) => {
   const totalErrorCount = validationErrors.length;
   const totalSuccessCount = totalRowCount - totalErrorCount;
 
+
   const [ processedRows, setProcessedRows ] = React.useState(0);
 
   console.log("we're in the processing modal! validationErrors", validationErrors );
@@ -78,13 +79,23 @@ const ProcessingModal = (props: any) => {
     }
   };
 
-  const initiateCalls = () => {
+  const initiateCalls = async () => {
     //identify successful records;
     setShowValidationErrors(false);
     setShowProgressBar(true);
+    const successfulRows: any = [];
+    uploadedForm.forEach((row: any, index: number) => {
+      if(validationErrors.some((e: any) => e.row !== index)){
+        successfulRows.push(row);
+      }
+    });
+    console.log("successfulRows", successfulRows);
     const dependencies = identifyProcessingDependencies();
     if(dependencies){
       console.log("dependencies", dependencies);
+      // dependencies.map(async (d: any) => {
+      //   d.processFunction();
+      // });
       //kick off api calls in order of dependency tree using template concurrency limit
     } else {
     //kick off api calls asyncronously using template concurrency limit
@@ -177,7 +188,7 @@ const ProcessingModal = (props: any) => {
           </ButtonWrapper>
         </ValidationErrorWrapper>
       }
-      { showProgressBar && <ProgressBar progress={processedRows}/> }
+      { showProgressBar && <ProgressBar completedRows={processedRows} totalRowCount={totalRowCount}/> }
     </ModalWrapper>
   );
 };

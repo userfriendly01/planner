@@ -23,6 +23,7 @@ export const ProgressBarFiller = styled.div<{progress: string}>`
 export const ModalWrapper = styled(Paper)`
   align-items: center;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   width: 800px;
   height: 400px;
@@ -40,6 +41,7 @@ export const ValidationErrorWrapper = styled(Paper)`
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 100%;
   align-items: center;
   justify-content: space-evenly;
   

@@ -33,7 +33,6 @@ const getTritonFields = (state: any): any => [
     example: 3,
     options: state.profileContext.profiles.map((p: any) => p.profile_id),
     validateFunction: (row: any, rowNumber: number): Promise<any> => {
-      console.log("entering validate nNumber function");
       const fieldName = "Profile Id";
       const field = row[fieldName];
       if(!field){
@@ -334,14 +333,14 @@ export const getCreateTemplates: any = (state: any): any => {
   return {
     CREATE_TRITON_USER: {
       name: "CREATE_TRITON_USER",
-      processFunction: () => Promise.resolve(),
+      processFunction: () => Promise.resolve(Date.now()),
       multiRunDependencies: null,
       concurrencyLimit: 10,
       fields: getTritonFields(state)
     },
     CREATE_CALABRIO_QM_USER: {
       name: "CREATE_CALABRIO_QM_USER",
-      processFunction: () => Promise.resolve(),
+      processFunction: () => Promise.resolve(Date.now()),
       multiRunDependencies: [{
         name: "CREATE_TRITON_USER",
         variable: "workerSid"
