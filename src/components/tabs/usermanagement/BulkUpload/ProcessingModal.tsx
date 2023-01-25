@@ -33,17 +33,17 @@ const ProcessingModal = (props: any) => {
   console.log("we're in the processing modal! consolidatedFieldsList", consolidatedFieldsList );
 
   React.useEffect(() => {
-    console.log("within Processing Modal useEffect");
+    console.log("within Processing Modal [] useEffect");
     setShowProgressBar(true);
+    return performValidations;
   }, []);
 
-  React.useEffect(() => {
-    console.log("within Processing Modal useEffect");
-    performValidations();
-  }, showProgressBar);
+  // React.useEffect(() => {
+  //   console.log("within Processing Modal showProgressBar useEffect");
+  //   performValidations();
+  // }, [showProgressBar]);
 
   const performValidations = async () => {
-    setShowProgressBar(true);
     const finalErrors: any = [];
     const validationPromises = await Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {
       const fieldPromises = await Promise.allSettled(consolidatedFieldsList.map((field: any) => {
