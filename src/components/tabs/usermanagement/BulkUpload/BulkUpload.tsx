@@ -13,6 +13,8 @@ import {
 import { Dropdown } from "components";
 import BulkCreateForm from "./BulkCreateForm";
 import ExportButtons from "./ExportButtons/ExportButtons";
+import ProcessingModal from "./ProcessingModal";
+import { Modal } from "@mui/material";
 import * as XLSX from "xlsx";
 
 const BulkUpload = () => {
@@ -24,29 +26,30 @@ const BulkUpload = () => {
   const [ selectedTemplates, setSelectedTemplates ] = React.useState([]);
   const [ consolidatedTemplate, setConsolidatedTemplates ] = React.useState([]);
   const [ uploadedForm, setUploadedForm ] = React.useState(null);
-  const [ validationErrors, setValidationErrors ] = React.useState(null);
-  const [ loading, setLoading ] = React.useState(null);
+
+  const [ processingModal , setProcessingModal ] = React.useState({
+    open: false,
+    errors: []
+  });
 
   React.useEffect(() => {
     const final = consolidateTemplates();
     setConsolidatedTemplates(final);
-    console.log("Bulk Upload UseEffect", final);
   }, [selectedTemplates]);
 
-  console.log("view component logic", view, views, view === views.BULK_CREATE_USERS);
-
   const resetBulkUpload = () => {
+    setProcessingModal({
+      open: false,
+      errors: []
+    });
     setSelectedTemplates([]);
     setConsolidatedTemplates([]);
-    setValidationErrors(null);
     setUploadedForm(null);
-    setLoading(null);
   };
+
   const updateSelectedTemplates = (checked: boolean, template: any) => {
     const templates = selectedTemplates.slice();
-    console.log("updateSelectedTemplates", templates.slice());
     const templateFound = templates.some((t: any) => t.name === template.name);
-    console.log("templateFound", templateFound);
 
     if(checked && !templateFound) {
       templates.push(template);
@@ -58,18 +61,14 @@ const BulkUpload = () => {
 
   const consolidateTemplates = () => {
     const beginningArray: any = [];
-    console.log("consolidateTemplates - selectedTemplates", selectedTemplates);
     selectedTemplates.forEach((t: any) => beginningArray.push(...t.fields));
     const consolidatedFieldsList: any = [];
-    console.log("consolidateTemplates - beginningArray", beginningArray.slice());
     beginningArray.forEach((bt: any) => {
       const duplicateField = consolidatedFieldsList.some((field: any) => field.field === bt.field);
       if(!duplicateField){
         consolidatedFieldsList.push(bt);
       }
-      console.log("consolidatedFieldsList", consolidatedFieldsList);
     });
-    console.log("consolidateTemplates - consolidatedFieldsList", consolidatedFieldsList);
     return consolidatedFieldsList;
   };
 
@@ -85,7 +84,6 @@ const BulkUpload = () => {
         const json = XLSX.utils.sheet_to_json(worksheet);
         console.log(json);
         setUploadedForm(json);
-        console.log("More Es", e);
       };
       reader.readAsArrayBuffer(e.target.files[0]);
     }
@@ -93,10 +91,23 @@ const BulkUpload = () => {
 
   const performValidations = async () => {
     const validationPromises = await Promise.allSettled(selectedTemplates.map((t: any) => t.validateFunction(uploadedForm)));
-    console.log("Validation Promised: ", validationPromises);
-    //collect errors
-    //forward errors to validation export button
-    //Confirmation is shown when process upload is clicked and validation is done
+    console.log("Validation Promises: ", validationPromises);
+    const validationErrors: any = [];
+    validationPromises.forEach((promise: any) => {
+      console.log("promise: ", promise);
+      if(promise.status === "rejected"){
+        promise.reason.forEach((innerPromise: any) => {
+          console.log("innerPromise: ", innerPromise);
+          if(innerPromise.reason === "rejected"){
+            validationErrors.push(innerPromise);
+          }
+        });
+      }
+    });
+    setProcessingModal({
+      open: true,
+      errors: validationErrors
+    });
   };
 
   return (
@@ -114,6 +125,14 @@ const BulkUpload = () => {
           width: "500px"
         }}
       />
+      <Modal onClose={() => { return; }} open={processingModal.open}>
+        <ProcessingModal
+          selectedTemplates={selectedTemplates}
+          handleClose={resetBulkUpload}
+          uploadedForm={uploadedForm}
+          validationErrors={processingModal.errors}
+        />
+      </Modal>
       { view === views.BULK_CREATE_USERS &&
         <BulkCreateForm
           selectedTemplates = {selectedTemplates}
@@ -146,14 +165,16 @@ const BulkUpload = () => {
             Step 4: Process Bulk Create
           </StepWrapper>
           <Wrapper center={true}>
-            <ImportButton onClick={performValidations}>Process</ImportButton>
+            <ImportButton
+              onClick={performValidations}>Process</ImportButton>
           </Wrapper>
         </Row>
       }
       <input type="file" ref={uploadButtonRef} style={{
         visibility: "hidden",
         height: "0px"
-      }} onChange={readUploadFile} />
+      }} onChange={readUploadFile}
+      />
     </BulkChangesWrapper>
   );
 };

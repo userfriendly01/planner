@@ -10,8 +10,14 @@ export const views: any = {
   }
 };
 
+export enum ErrorTypes {
+  NO_ERRORS = "No Errors",
+  VALIDATION = "Validation",
+  PROCESSING = "Processing"
+}
+
 export enum LoadingStatus {
   LOADING = "loading",
-  VALIDATION_COMPLETE = "",
-  PROCESSING_COMPLETE = ""
+  FAILED = "failed",
+  SUCCESS = "success"
 }

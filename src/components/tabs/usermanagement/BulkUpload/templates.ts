@@ -236,6 +236,7 @@ const validateTritonFields = async (uploadedForm: any, state: any): Promise<any>
     if(rowErrors.length > 0){
       console.error(`Errors thrown for row ${index + 1}`, rowErrors);
       validationErrors.push({
+        template: "Triton User",
         row_number: index + 1,
         errors: rowErrors
       });
@@ -262,11 +263,17 @@ export const getCreateTemplates: any = (state: any): any => {
     CREATE_TRITON_USER: {
       name: "CREATE_TRITON_USER",
       validateFunction: (uploadedForm: any) => validateTritonFields(uploadedForm, state),
+      processFunction: () => Promise.resolve(),
+      multiRunDependencies: null,
+      concurrencyLimit: 10,
       fields: getTritonFields(state)
     },
     CREATE_CALABRIO_QM_USER: {
       name: "CREATE_CALABRIO_QM_USER",
       validateFunction: () => Promise.resolve(),
+      processFunction: () => Promise.resolve(),
+      multiRunDependencies: "CREATE_TRITON_USER",
+      concurrencyLimit: null,
       fields: getCalabrioQmFields(state)
     }
   };
