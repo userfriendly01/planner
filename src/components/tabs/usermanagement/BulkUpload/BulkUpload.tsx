@@ -105,12 +105,14 @@ const BulkUpload = () => {
         }}
       />
       <Modal onClose={() => { return; }} open={showProcessingModal}>
-        <ProcessingModal
-          selectedTemplates={selectedTemplates}
-          handleClose={resetBulkUpload}
-          uploadedForm={uploadedForm}
-          consolidatedFieldsList={consolidatedTemplate}
-        />
+        <>
+          <ProcessingModal
+            selectedTemplates={selectedTemplates}
+            handleClose={resetBulkUpload}
+            uploadedForm={uploadedForm}
+            consolidatedFieldsList={consolidatedTemplate}
+          />
+        </>
       </Modal>
       { view === views.BULK_CREATE_USERS &&
         <BulkCreateForm

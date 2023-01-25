@@ -3,7 +3,8 @@ import {
   ButtonWrapper,
   StyledExportButton,
   ModalWrapper,
-  TextWrapper
+  TextWrapper,
+  ValidationErrorWrapper
 } from "./BulkUpload.Styles";
 import ProgressBar from "./ProgressBar";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
@@ -25,7 +26,7 @@ const ProcessingModal = (props: any) => {
   const totalErrorCount = validationErrors.length;
   const totalSuccessCount = totalRowCount - totalErrorCount;
 
-  let processedRows = 0;
+  const [ processedRows, setProcessedRows ] = React.useState(0);
 
   console.log("we're in the processing modal! validationErrors", validationErrors );
   console.log("we're in the processing modal! selectedTemplates", selectedTemplates );
@@ -49,7 +50,7 @@ const ProcessingModal = (props: any) => {
       const fieldPromises = await Promise.allSettled(consolidatedFieldsList.map((field: any) => {
         return field.validateFunction(row, index);
       }));
-      processedRows = processedRows + 1;
+      setProcessedRows(previousCount => (previousCount + 1));
       console.log("field promises", fieldPromises);
       return fieldPromises;
     }));
@@ -158,8 +159,8 @@ const ProcessingModal = (props: any) => {
   return (
     <ModalWrapper>
       { showValidationErrors &&
-        <div>
-          <TextWrapper styles ={{
+        <ValidationErrorWrapper>
+          <TextWrapper styles={{
             size: "26px"
           }}>
             {totalErrorCount} Validation Errors have been found for this template.
@@ -175,7 +176,7 @@ const ProcessingModal = (props: any) => {
               Process {totalSuccessCount} out of {totalRowCount} rows
             </StyledExportButton>
           </ButtonWrapper>
-        </div>
+        </ValidationErrorWrapper>
       }
       { showProgressBar && <ProgressBar progress={processedRows}/> }
       <ProgressBar progress={processedRows}/>

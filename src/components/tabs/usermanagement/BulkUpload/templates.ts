@@ -198,9 +198,10 @@ const getTritonFields = (state: any): any => [
         return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
       } else if(didField.toLowerCase() !== "y" && didField.toLowerCase() !== "n"){
         return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
+      } else if(didField.toLowerCase() === "n"){
+        return Promise.reject(`Did User field is 'N', ${fieldName} is not applicable for row ${rowNumber}`);
       } else {
-        const didUser = field.toLowerCase() === "y";
-
+        //Validate number format
         return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
       }
     }
