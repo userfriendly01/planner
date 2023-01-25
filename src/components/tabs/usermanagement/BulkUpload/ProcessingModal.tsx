@@ -21,6 +21,9 @@ const ProcessingModal = (props: any) => {
 
   const [ showProgressBar, setShowProgressBar ] = React.useState(false);
 
+  console.log("we're in the processing modal! validationErrors", validationErrors );
+  console.log("we're in the processing modal! selectedTemplates", selectedTemplates );
+  console.log("we're in the processing modal! uploadedForm", uploadedForm );
   React.useEffect(() => {
     if(validationErrors.length === 0){
       initiateCalls();
@@ -37,11 +40,33 @@ const ProcessingModal = (props: any) => {
   };
 
   const identifyProcessingDependencies = () => {
+    const dependencyTree = selectedTemplates.slice();
+
     //if theres only one template, just return it
-    //if no dependencies, return it
-    //if dependencies that arent in the selected template, return it
-    //if there's more than one, return to dependency tree 
-    return false;
+    if(selectedTemplates.length === 1){
+      return false;
+    }
+
+    selectedTemplates.forEach((t: any, index: number) => {
+      if(t.multiRunDependencies){
+        t.multiRunDependencies.forEach((d: any) => {
+          const requiredTemplateIndex = dependencyTree.findIndex((t:any) => t.name === d.name);
+          //if dependencies arent in the selected templates list, return it. Form validation accounts for this
+          if(requiredTemplateIndex === -1){
+            return false;
+          } else {
+            //If the dependency is lower in the array, swap the index's so they are processed in the right order
+            if(requiredTemplateIndex > index){
+              const dependentObject = dependencyTree[index];
+              const requiredObject = dependencyTree[requiredTemplateIndex];
+              dependencyTree[index] = requiredObject;
+              dependencyTree[requiredTemplateIndex] = dependentObject;
+            }
+          }
+        });
+      }
+    });
+    return dependencyTree;
   };
 
   const handleExport = () => {

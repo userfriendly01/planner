@@ -248,12 +248,13 @@ const validateTritonFields = async (uploadedForm: any, state: any): Promise<any>
 
   console.log("tritonPromises", tritonPromises);
   if(validationErrors.length > 0){
+    const errors = [];
+    validationErrors.forEach((row: any) => errors.push(row));
     console.error("Validation Errors found for Triton Validation", validationErrors);
-    Promise.reject(validationErrors);
+    return Promise.reject(errors);
   } else {
-    Promise.resolve;
+    return Promise.resolve();
   }
-  return tritonPromises;
 };
 
 
@@ -272,7 +273,10 @@ export const getCreateTemplates: any = (state: any): any => {
       name: "CREATE_CALABRIO_QM_USER",
       validateFunction: () => Promise.resolve(),
       processFunction: () => Promise.resolve(),
-      multiRunDependencies: "CREATE_TRITON_USER",
+      multiRunDependencies: [{
+        name: "CREATE_TRITON_USER",
+        variable: "workerSid"
+      }],
       concurrencyLimit: null,
       fields: getCalabrioQmFields(state)
     }

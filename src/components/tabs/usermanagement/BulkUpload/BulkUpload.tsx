@@ -33,8 +33,7 @@ const BulkUpload = () => {
   });
 
   React.useEffect(() => {
-    const final = consolidateTemplates();
-    setConsolidatedTemplates(final);
+    consolidateTemplates();
   }, [selectedTemplates]);
 
   const resetBulkUpload = () => {
@@ -50,6 +49,8 @@ const BulkUpload = () => {
   const updateSelectedTemplates = (checked: boolean, template: any) => {
     const templates = selectedTemplates.slice();
     const templateFound = templates.some((t: any) => t.name === template.name);
+    console.log("updateSelectedTemplates- templates", templates);
+    console.log("updateSelectedTemplates- templateFound", templateFound);
 
     if(checked && !templateFound) {
       templates.push(template);
@@ -69,7 +70,8 @@ const BulkUpload = () => {
         consolidatedFieldsList.push(bt);
       }
     });
-    return consolidatedFieldsList;
+    console.log("consolidatedFieldsList", consolidatedFieldsList);
+    setConsolidatedTemplates(consolidatedFieldsList);
   };
 
   const readUploadFile = (e: any) => {
