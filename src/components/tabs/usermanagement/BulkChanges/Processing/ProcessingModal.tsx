@@ -85,8 +85,8 @@ const ProcessingModal = (props: any) => {
     setShowProgressBar(true);
     const successfulRows: any = [];
     uploadedForm.forEach((row: any, index: number) => {
-      const rowEquivalent = index - 1;
-      if(validationErrors.some((e: any) => e.row === rowEquivalent)){
+      const rowEquivalent = index + 1;
+      if(!validationErrors.some((e: any) => e.row === rowEquivalent)){
         successfulRows.push(row);
       }
     });
