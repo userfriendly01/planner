@@ -105,12 +105,11 @@ export const handleConcurrentCalls = async (
     const processingRows = successfulRows.slice(currentIndex, endingIndex);
     console.log("***Processing: ", processingRows);
 
-    const results = await Promise.allSettled(processingRows.map((r: any) => {
-      return apiCall(r);
+    const results = await Promise.allSettled(processingRows.map((row: any, index: number) => {
+      return apiCall(row, index, progressCallback);
     }));
-    console.log("***results should be settled promises", results);
+    console.log("***results should be settled promises", results.slice());
     results.forEach((p: any) => processingResults.push(p));
-    progressCallback(currentIndex);
     currentIndex = currentIndex + concurrencyMax;
     console.log("*** sectioned Processing Results", processingResults.slice());
     if(currentIndex < totalCalls){
@@ -121,9 +120,8 @@ export const handleConcurrentCalls = async (
     }
   };
 
-  console.log("***Final Processing Results", processingResults.slice());
-
   await processApiCall();
+  console.log("***Final Processing Results", processingResults.slice());
   return processingResults;
 };
 
@@ -166,20 +164,20 @@ export const performValidations = async (
     }
   }));
 
-  const processValidationsOnRows = async (progressCallback: any): Promise<any> => {
-    return await Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {
-      const fieldPromises = await Promise.allSettled(consolidatedFieldsList.map((field: any) => {
-        return field.validateFunction(row, index);
-      }));
-      progressCallback((previousCount: number) => (previousCount + 1));
-      return fieldPromises;
+  const processValidationsOnRows = async (row: any, rowIndex: number, progressCallback: any): Promise<any> => {
+    const fieldPromises = await Promise.allSettled(consolidatedFieldsList.map((field: any) => {
+      return field.validateFunction(row, rowIndex);
     }));
+    progressCallback((previousCount: number) => (previousCount + 1));
+    return fieldPromises;
   };
 
   if(concurrencyLimit){
     validationPromises = await handleConcurrentCalls(concurrencyLimit, processValidationsOnRows, uploadedForm, setProcessedRows);
   } else {
-    validationPromises = await processValidationsOnRows(setProcessedRows);
+    validationPromises = await Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {
+      return processValidationsOnRows(row, index, setProcessedRows);
+    }));
   }
 
   console.log("Validation Promises: ", validationPromises);
