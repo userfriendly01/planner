@@ -178,7 +178,8 @@ export const performValidations = async (
     validationPromises = await handleConcurrentCalls(concurrencyLimit, processValidationsOnRows, uploadedForm, setProcessedRows);
   } else {
     validationPromises = await Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {
-      return processValidationsOnRows(row, index, setProcessedRows);
+      const rowNumber = index + 1;
+      return processValidationsOnRows(row, rowNumber, setProcessedRows);
     }));
   }
 

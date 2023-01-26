@@ -118,7 +118,13 @@ const getTritonFields = (state: any): any => [
     description: "Comma delimited list of skill/level pairings. Skills can be on their own or have a ':level' to represent the level. If left blank, no skills will be added to the user",
     required: "N",
     example: "bscCommissions:3, blSalesL1:2, aisl1",
-    options: state.skillContext.skills.map((s: any) => `${s.name}${s.levels?.length > 0 ? ` : Available levels: ${s.levels.toString()}` : null}`),
+    options: state.skillContext.skills.map((s: any) => {
+      if(s.levels?.length > 0){
+        return `${s.name} Available levels: ${s.levels.toString()}`;
+      } else {
+        return s.name;
+      }
+    }),
     validateFunction: (row: any, rowNumber: number): Promise<any> => {
       /*
         skills object: {
@@ -471,7 +477,7 @@ export const getCreateTemplates: any = (state: any): any => {
       name: "CREATE_TRITON_USER",
       processFunction: () => Promise.resolve(Date.now()),
       multiRunDependencies: null,
-      validationConcurrencyLimit: 5,
+      validationConcurrencyLimit: 1,
       processingConcurrencyLimit: 10,
       fields: getTritonFields(state)
     },
