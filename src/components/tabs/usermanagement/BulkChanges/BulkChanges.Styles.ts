@@ -8,6 +8,7 @@ export const ProgressBarContainer = styled.div`
   height: 100%;
   width: 100%;
   align-items: center;
+  justify-content: space-evenly;
 `;
 export const ProgressBarWrapper = styled.div`
   width: 500px;
