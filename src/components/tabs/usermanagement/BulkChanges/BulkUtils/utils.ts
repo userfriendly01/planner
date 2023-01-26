@@ -103,10 +103,10 @@ export const handleConcurrentCalls = async (
   const processApiCall = async (): Promise<any> => {
     const endingIndex = currentIndex + concurrencyMax;
     const processingRows = successfulRows.slice(currentIndex, endingIndex);
-    console.log("***Processing: processingRows");
+    console.log("***Processing: ", processingRows);
 
     const results = await Promise.all([processingRows.map((r: any) => {
-      apiCall(r);
+      return apiCall(r);
     })]);
 
     results.forEach((p: any) => processingResults.push(p));
@@ -156,14 +156,12 @@ export const performValidations = async (
   const concurrencyLimit = 10;
   let validationPromises;
 
-  const processValidationsOnRows = async (): Promise<any> => {
+  const processValidationsOnRows = async (progressCallback: any): Promise<any> => {
     return Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {
       const fieldPromises = await Promise.allSettled(consolidatedFieldsList.map((field: any) => {
         return field.validateFunction(row, index);
       }));
-      if(!concurrencyLimit){
-        setProcessedRows((previousCount: number) => (previousCount + 1));
-      }
+      progressCallback((previousCount: number) => (previousCount + 1));
       return fieldPromises;
     }));
   };
@@ -171,7 +169,7 @@ export const performValidations = async (
   if(concurrencyLimit){
     validationPromises = await handleConcurrentCalls(concurrencyLimit, processValidationsOnRows, uploadedForm, setProcessedRows);
   } else {
-    validationPromises = await processValidationsOnRows();
+    validationPromises = await processValidationsOnRows(setProcessedRows);
   }
 
   console.log("Validation Promises: ", validationPromises);
