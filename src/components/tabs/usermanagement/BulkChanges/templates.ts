@@ -4,7 +4,8 @@ import {
   generateExtension
 } from "services";
 import {
-  getE164Number
+  getE164Number,
+  getOverflowSkillFromProfile
 } from "utils";
 import {
   calabrioAllowedRoles,
@@ -252,7 +253,7 @@ const getTritonFields = (state: any): any => [
         return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
       } else if(didField?.toLowerCase() !== "y" && didField?.toLowerCase() !== "n"){
         return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
-      } else if(didField?.toLowerCase() === "n"){
+      } else if(didField?.toLowerCase() === "n" && field){
         return Promise.reject(`Did User field is 'N', ${fieldName} is not applicable for row ${rowNumber}`);
       } else {
         try {
@@ -275,7 +276,48 @@ const getTritonFields = (state: any): any => [
     required: true,
     example: "Y",
     options: null,
-    validateFunction: () => Promise.resolve()
+    validateFunction: async (row: any, rowNumber: number) => {
+      const fieldName = "Zero Out Enabled";
+      const field = row[fieldName];
+      const didFieldName = "Did User";
+      const didField = row[didFieldName];
+
+      if(typeof didField !== "string"){
+        return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
+      } else if(didField?.toLowerCase() !== "y" && didField?.toLowerCase() !== "n"){
+        return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
+      } else if(didField?.toLowerCase() === "n" && field){
+        return Promise.reject(`Did User field is 'N', ${fieldName} is not applicable for row ${rowNumber}`);
+      } else {
+        if(typeof field !== "string"){
+          return Promise.reject(`${fieldName} should be 'Y' or 'N' for row ${rowNumber}`);
+        } else if(field?.toLowerCase() !== "y" && field?.toLowerCase() !== "n"){
+          return Promise.reject(`${fieldName} should be 'Y' or 'N' for row ${rowNumber}`);
+        } else if(field?.toLowerCase() === "n"){
+          row.zeroOutEnabled = false;
+          return Promise.resolve(`${fieldName} set to false for row ${rowNumber}`);
+        } else {
+          try {
+            const profileFieldName = "Profile Id";
+            const profiles = state.profileContext.profiles;
+            const profileId = row[profileFieldName] ? profiles.find((p:any) => p.profile_id === row[profileFieldName]) : row.profile_id;
+            const overflowSkill = getOverflowSkillFromProfile(profiles, profileId);
+            if(overflowSkill){
+              row.routing = {
+                skills: [overflowSkill],
+                levels: {}
+              };
+            }
+            row.zeroOutEnabled = true;
+
+            //remove original
+          } catch(err) {
+            return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
+          }
+          return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+        }
+      }
+    }
   },
   {
     field: "alternateNumber",
