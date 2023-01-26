@@ -16,7 +16,7 @@ export const ProgressBarWrapper = styled.div`
 export const ProgressBarFiller = styled.div<{progress: string}>`
   height: inherit;
   width: ${props => props.progress};
-  background-color: grey;
+  background-color: #99E5EA;
   border-radius: inherit;
 `;
 
