@@ -14,7 +14,6 @@ const ProgressBar = (props: any) => {
   } = props;
 
   const [ jokes, setJokes ] = React.useState(null);
-  const [ activeJoke, setActiveJokes ] = React.useState(jokes ? jokes[0] : null);
   const percentageComplete =  Math.floor((completedRows/totalRowCount) * 100);
   console.log("in progressbar", percentageComplete);
 
@@ -23,6 +22,7 @@ const ProgressBar = (props: any) => {
       try {
         const jokes = getJokes();
         setJokes(jokes);
+        console.log("Jokes", jokes);
       } catch(err){
         console.error("Aww no jokes", err);
       }
@@ -33,7 +33,7 @@ const ProgressBar = (props: any) => {
     <ProgressBarContainer>
       { jokes && <TextWrapper styles={{
         size: "26px"
-      }}> {jokes[0].joke} </TextWrapper>
+      }}> We&apos;re working on it </TextWrapper>
       }
       <ProgressBarWrapper>
         <ProgressBarFiller progress={`${percentageComplete}%` || "34%"}/>

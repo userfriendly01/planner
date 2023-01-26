@@ -410,7 +410,7 @@ const getCalabrioQmFields = (state: any): any => [
     field: "calabrioScope",
     name: "Calabrio Scope",
     type: "string",
-    description: "Comma delimited list of groups or teams to represent a supervisor or evaluators scope",
+    description: "Comma delimited list of groups or teams to represent a supervisor or evaluators scope. (Must already exist in Calabrio)",
     required: "Y",
     example: "Default Group",
     options: state.calabrioContext.groups.map((g: any) => g.name),
@@ -465,7 +465,13 @@ const getCalabrioQmFields = (state: any): any => [
       } else if(!state.calabrioContext.teams.some((t:any) => t.name?.toLowerCase() === field?.toLowerCase())){
         return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
       } else {
-        return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+        const team = state.calabrioContext.teams.find((t:any) => t.name?.toLowerCase() === field?.toLowerCase());
+        if(!team || !team.groupId){
+          return Promise.reject(`${fieldName} is not a valid option from row ${rowNumber}`);
+        } else {
+          row.groupId = team.groupId;
+          return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+        }
       }
     }
   },
@@ -473,19 +479,36 @@ const getCalabrioQmFields = (state: any): any => [
     field: "roles",
     name: "Calabrio Role",
     type: "string",
-    description: "Must be an approved role to add by management and already exist in Calabrio",
+    description: "Comma delimited list of approved roles that already exist in Calabrio",
     required: "Y",
     example: "QM Agent",
     options: calabrioAllowedRoles,
     validateFunction: (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "Calabrio Role";
       const field = row[fieldName];
+
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
-      } else if(!calabrioAllowedRoles.some((r:any) => r?.toLowerCase() === field?.toLowerCase())){
-        return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
       } else {
-        return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+        try {
+          const fieldArray = field.replace(" ","").split(",");
+          if(fieldArray.length === 0){
+            return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
+          } else {
+            fieldArray.forEach((role: any) => {
+              const foundInRoles = calabrioAllowedRoles.some((r:any) => r.toLowerCase() === role?.toLowerCase());
+              row.roles = [];
+              if(!foundInRoles){
+                return Promise.reject(`${role} is not a valid group or team for row ${rowNumber}`);
+              } else {
+                row.roles.push(role);
+                return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+              }
+            });
+          }
+        } catch(err) {
+          return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
+        }
       }
     }
   },
@@ -504,6 +527,7 @@ const getCalabrioQmFields = (state: any): any => [
       } else if(!calabrioTimeZones.some((t:any) => t.label?.toLowerCase() === field?.toLowerCase())){
         return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
       } else {
+        row.timeZone = field;
         return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
       }
     }
