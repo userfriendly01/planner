@@ -189,7 +189,7 @@ const getTritonFields = (state: any): any => [
       const fieldName = "Direct Dial Number";
       const field = row[fieldName];
       const didFieldName = "Did User";
-      const didField = row[fieldName];
+      const didField = row[didFieldName];
 
       if(typeof didField !== "string"){
         return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);

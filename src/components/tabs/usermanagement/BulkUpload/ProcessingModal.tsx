@@ -86,7 +86,7 @@ const ProcessingModal = (props: any) => {
     const successfulRows: any = [];
     uploadedForm.forEach((row: any, index: number) => {
       const rowEquivalent = index - 1;
-      if(!validationErrors.some((e: any) => e.row === rowEquivalent)){
+      if(validationErrors.some((e: any) => e.row === rowEquivalent)){
         successfulRows.push(row);
       }
     });
