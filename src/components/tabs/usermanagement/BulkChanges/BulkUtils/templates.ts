@@ -367,35 +367,85 @@ const getCalabrioQmFields = (state: any): any => [
     required: "Y",
     example: "n0263786",
     options: null,
-    validateFunction: (row: any, rowNumber: number): Promise<any> => {
+    validateFunction: async (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "N Number";
       const field = row[fieldName];
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
-      } else if(!state.calabrioContext.groups.some((g:any) => g.name?.toLowerCase() === field?.toLowerCase())){
-        //maybe validate format?
+      } else if(typeof field !== "string" || field.length !== 8) {
+        return Promise.reject(`${fieldName} is not in the valid n number format for row ${rowNumber}`);
       } else {
-        return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+        try {
+          const fetchedUser = await fetchUser(field);
+
+          row.contact_uri = `client:${field.toLowerCase()}`;
+          row.department_id = fetchedUser.departmentNumber;
+          row.department_name = fetchedUser.departmentName;
+          row.email = fetchedUser.email;
+          row.email_address = fetchedUser.email;
+          row.emp_first_name = fetchedUser.firstName;
+          row.emp_last_name = fetchedUser.lastName;
+          row.full_name = `${fetchedUser.firstName} ${fetchedUser.lastName}`;
+          row.location = fetchedUser.officeName;
+          row.n_number = field.toLowerCase();
+          row.office_location_name = fetchedUser.officeName;
+          row.office_location_number = fetchedUser.officeNumber;
+          row.primary_dept_name = fetchedUser.departmentName;
+          row.primary_dept_number = fetchedUser.departmentNumber;
+          row.unique_id = field.toLowerCase();
+          row.adLogin = `LM\\${field.toLowerCase()}`;
+          row.firstName = fetchedUser.firstName;
+          row.lastName = fetchedUser.lastName;
+
+          delete row[fieldName];
+
+          return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+        } catch(err) {
+          return Promise.reject(`Error thrown fetching ${fieldName} from HR Database for row ${rowNumber}`);
+        }
       }
     }
   },
   {
-    field: "calabrioGroup",
-    name: "Calabrio Group",
+    field: "calabrioScope",
+    name: "Calabrio Scope",
     type: "string",
-    description: "Parent Group (Must already be created in Calabrio)",
+    description: "Comma delimited list of groups or teams to represent a supervisor or evaluators scope",
     required: "Y",
     example: "Default Group",
     options: state.calabrioContext.groups.map((g: any) => g.name),
     validateFunction: (row: any, rowNumber: number): Promise<any> => {
-      const fieldName = "Calabrio Group";
+      const fieldName = "Calabrio Scope";
       const field = row[fieldName];
+      const availableGroups = state.calabrioContext.groups;
+      const availableTeams = state.calabrioContext.teams;
+
       if(!field){
-        return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
-      } else if(!state.calabrioContext.groups.some((g:any) => g.name?.toLowerCase() === field?.toLowerCase())){
-        return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
+        return Promise.resolve(`${fieldName} skipped for row ${rowNumber}`);
       } else {
-        return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+        try {
+          const fieldArray = field.replace(" ","").split(",");
+          if(fieldArray.length === 0){
+            return Promise.resolve(`${fieldName} skipped for row ${rowNumber}`);
+          } else {
+            fieldArray.forEach((scope: any) => {
+              const foundInGroups = availableGroups.some((g:any) => g.name?.toLowerCase() === scope?.toLowerCase());
+              const foundInTeams = availableTeams.some((t:any) => t.name?.toLowerCase() === scope?.toLowerCase());
+              row.scope.groups = [];
+              row.scope.teams = [];
+              if(!foundInGroups && !foundInTeams){
+                return Promise.reject(`${scope} is not a valid group or team for row ${rowNumber}`);
+              } else if(foundInGroups) {
+                row.scope.groups.push(scope);
+              } else {
+                row.scope.teams.push(scope);
+              }
+            });
+            return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+          }
+        } catch(err) {
+          return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
+        }
       }
     }
   },
@@ -468,7 +518,7 @@ export const getCreateTemplates: any = (state: any): any => {
       name: "CREATE_TRITON_USER",
       processFunction: () => Promise.resolve(Date.now()),
       multiRunDependencies: null,
-      validationConcurrencyLimit: 10,
+      validationConcurrencyLimit: 5,
       processingConcurrencyLimit: 10,
       fields: getTritonFields(state)
     },
