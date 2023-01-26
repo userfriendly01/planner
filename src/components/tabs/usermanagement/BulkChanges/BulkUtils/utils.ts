@@ -138,9 +138,9 @@ export const performValidations = async (
   });
   console.log("finalErrors.length", finalErrors.length);
   if(finalErrors.length === 0){
-    Promise.resolve();
+    return Promise.resolve();
   } else {
-    Promise.reject(finalErrors);
+    return Promise.reject(finalErrors);
   }
 };
 
