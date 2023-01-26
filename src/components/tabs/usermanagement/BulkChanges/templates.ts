@@ -151,7 +151,7 @@ const getTritonFields = (state: any): any => [
           return Promise.reject(`Unable to generate ${fieldName} for row ${rowNumber}.`);
         }
         row.extension = extension;
-        return Promise.resolve(`${fieldName} ${extension || field} set for row ${rowNumber}`);
+        return Promise.resolve(`${fieldName} ${extension} set for row ${rowNumber}`);
       } else if(typeof field !== "number"){
         return Promise.reject(`${fieldName} must be a number or 'Y' for row ${rowNumber}. If you do not want an extension for this user, leave the field blank`);
       } else {
