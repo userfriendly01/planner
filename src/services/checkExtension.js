@@ -34,5 +34,5 @@ export const generateExtension = () => {
     }
   };
 
-  validateGeneratedNumber(1);
+  return validateGeneratedNumber(1);
 };

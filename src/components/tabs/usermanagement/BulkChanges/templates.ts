@@ -1,5 +1,6 @@
 import {
   checkExtension,
+  fetchUser,
   generateExtension
 } from "services";
 import {
@@ -17,13 +18,41 @@ const getTritonFields = (state: any): any => [
     required: "Y",
     example: "n0263786",
     options: null,
-    validateFunction: (row: any, rowNumber: number): Promise<any> => {
+    validateFunction: async (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "N Number";
       const field = row[fieldName];
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
+      } else if(typeof field !== "string" || field.length !== 8) {
+        return Promise.reject(`${fieldName} is not in the valid n number format for row ${rowNumber}`);
       } else {
-        return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+        try {
+          const fetchedUser = await fetchUser(field);
+
+          row.contact_uri = `client:${field.toLowerCase()}`;
+          row.department_id = fetchedUser.departmentNumber;
+          row.department_name = fetchedUser.departmentName;
+          row.email = fetchedUser.email;
+          row.email_address = fetchedUser.email;
+          row.emp_first_name = fetchedUser.firstName;
+          row.emp_last_name = fetchedUser.lastName;
+          row.full_name = `${fetchedUser.firstName} ${fetchedUser.lastName}`;
+          row.location = fetchedUser.officeName;
+          row.manager = fetchedUser.manager;
+          row.n_number = field.toLowerCase();
+          row.office_location_name = fetchedUser.officeName;
+          row.office_location_number = fetchedUser.officeNumber;
+          row.primary_dept_name = fetchedUser.departmentName;
+          row.primary_dept_number = fetchedUser.departmentNumber;
+          row.unique_id = field.toLowerCase();
+          row.adLogin = `LM\\${field.toLowerCase()}`;
+          row.firstName = fetchedUser.firstName;
+          row.lastName = fetchedUser.lastName;
+
+          return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+        } catch(err) {
+          return Promise.reject(`Error thrown fetching ${fieldName} from HR Database for row ${rowNumber}`);
+        }
       }
     }
   },
@@ -147,10 +176,10 @@ const getTritonFields = (state: any): any => [
         let extension;
         try {
           extension = await generateExtension();
+          row.extension = extension;
         } catch (err) {
           return Promise.reject(`Unable to generate ${fieldName} for row ${rowNumber}.`);
         }
-        row.extension = extension;
         return Promise.resolve(`${fieldName} ${extension} set for row ${rowNumber}`);
       } else if(typeof field !== "number"){
         return Promise.reject(`${fieldName} must be a number or 'Y' for row ${rowNumber}. If you do not want an extension for this user, leave the field blank`);
