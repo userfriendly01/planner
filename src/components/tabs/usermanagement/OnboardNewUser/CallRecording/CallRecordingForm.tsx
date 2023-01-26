@@ -206,8 +206,30 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   };
 
   const getTeamOptions = () => {
-    const managerTeams = form.manager.value && form.manager.value.calabrio_team_ids ? form.manager.value.calabrio_team_ids: [];
-    const availableTeams = teams.filter(team => managerTeams.includes(team.groupId));
+    let parentTeams: number[] = [];
+    if (form.manager.value && form.manager.value.calabrio_team_ids) {
+      parentTeams = form.manager.value.calabrio_team_ids.map(
+        (teamId: number) => {
+          const targetTeam = state.calabrioContext.teams.find((team: any) => team.groupId === teamId);
+          return targetTeam.parentGroupId; // Array will have duplicates, but it doesn't hurt anything
+        }
+      );
+    }
+    // console.log("wsx form.manager", form.manager);
+    // console.log("wsxx state.calabrioContext.teams", state.calabrioContext.teams);
+    // console.log("wsxx form.manager.value.calabrio_team_ids", form.manager.value.calabrio_team_ids);
+    // console.log("wsxx state.calabrioContext.teams[teamId]", state.calabrioContext.teams[teamId]);
+    // console.log("wsxx state.calabrioContext.teams[teamId].parentGroupId", state.calabrioContext.teams[teamId].parentGroupId);
+
+    // const managerTeams = form.manager.value && form.manager.value.calabrio_team_ids ? form.manager.value.calabrio_team_ids: [];
+    // const availableTeams = teams.filter(team => parentTeams.includes(team.groupId));  // wsx filter out all teams except the ones the manager is on
+    // const managerTeams = form.manager.value && form.manager.value.calabrio_team_ids ? form.manager.value.calabrio_team_ids: [];
+    // const availableTeams = teams.filter(team => managerTeams.includes(team.groupId));  // wsx filter out all teams except the ones the manager is on
+    // console.log("wsx availableTeams", availableTeams);
+
+    const availableTeams = teams.filter(team => parentTeams.includes(team.groupId));  // wsx filter out all teams except the ones the manager is on
+    console.log("wsxx teams and parentTeams and availableTeams", teams, parentTeams, availableTeams);
+
     if(availableTeams.length > 0){
       return availableTeams.map(team => {
         return {
@@ -226,6 +248,8 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
       });
     }
   };
+  console.log("wsx state", state);
+  console.log("wsx form", form);
   return (
     <FormControlsContainer>
       <FormControlsPane>
@@ -243,7 +267,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         />
         <Dropdown
           disabled={form.formMode === formModes.DELETE}
-          label="Team"
+          label="Teamxxx"
           options={getTeamOptions()}
           value={form.calabrioUser.team ?{
             ...form.calabrioUser.team,
