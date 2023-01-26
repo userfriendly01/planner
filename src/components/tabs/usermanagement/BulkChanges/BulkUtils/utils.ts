@@ -99,11 +99,15 @@ export const handleConcurrentCalls = async (
   const totalCalls = successfulRows.length;
   let currentIndex = 0;
   const processingResults: any = [];
+  const delay = () => {
+    return new Promise(resolve => setTimeout(resolve, 1000));
+  };
 
   const processApiCall = async (): Promise<any> => {
     const endingIndex = currentIndex + concurrencyMax;
     const processingRows = successfulRows.slice(currentIndex, endingIndex);
     console.log("***Processing: ", processingRows);
+    await delay();
 
     const results = await Promise.allSettled(processingRows.map((row: any, index: number) => {
       const originalRowIndex = currentIndex + index;
@@ -116,7 +120,7 @@ export const handleConcurrentCalls = async (
     console.log("*** sectioned Processing Results", processingResults.slice());
     if(currentIndex < totalCalls){
       console.log("***current index: ", currentIndex);
-      return setTimeout(processApiCall, 1000);
+      return processApiCall();
     } else {
       Promise.resolve();
     }

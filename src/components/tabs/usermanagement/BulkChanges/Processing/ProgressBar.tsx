@@ -2,7 +2,8 @@ import React from "react";
 import {
   ProgressBarContainer,
   ProgressBarWrapper,
-  ProgressBarFiller
+  ProgressBarFiller,
+  TextWrapper
 } from "../BulkChanges.Styles";
 
 const ProgressBar = (props: any) => {
@@ -16,6 +17,11 @@ const ProgressBar = (props: any) => {
 
   return (
     <ProgressBarContainer>
+      <TextWrapper styles={{
+        size: "26px"
+      }}>
+          Were working on it
+      </TextWrapper>
       <ProgressBarWrapper>
         <ProgressBarFiller progress={`${percentageComplete}%` || "34%"}/>
       </ProgressBarWrapper>
