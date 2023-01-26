@@ -24,6 +24,7 @@ export const generateExtension = () => {
 
   const validateGeneratedNumber = async attemptNumber => {
     const extension = pickANumber();
+    //update this to be checed from state
     const validExtension = await checkExtension(extension);
     if(validExtension){
       return Promise.resolve(extension);

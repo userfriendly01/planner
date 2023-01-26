@@ -43,6 +43,7 @@ export const consolidateTemplates = (selectedTemplates: any, setConsolidatedTemp
   console.log("consolidatedFieldsList", consolidatedFieldsList);
   setConsolidatedTemplates(consolidatedFieldsList);
 };
+
 const identifySuccessfulRecords = (uploadedForm: any, validationErrors: any) => {
   const successfulRows: any = [];
   uploadedForm.forEach((row: any, index: number) => {
@@ -89,12 +90,50 @@ const identifyProcessingDependencies = (selectedTemplates: any) => {
   return dependencyTree;
 };
 
+export const handleConcurrentCalls = async (
+  concurrencyMax: number,
+  apiCall: any,
+  successfulRows: any,
+  progressCallback: any
+) => {
+  const totalCalls = successfulRows.length;
+  let currentIndex = 0;
+  const processingResults: any = [];
+
+  const processApiCall = async (): Promise<any> => {
+    const endingIndex = currentIndex + concurrencyMax;
+    const processingRows = successfulRows.slice(currentIndex, endingIndex);
+    console.log("***Processing: processingRows");
+
+    const results = await Promise.all([processingRows.map((r: any) => {
+      apiCall(r);
+    })]);
+
+    results.forEach((p: any) => processingResults.push(p));
+    progressCallback(currentIndex);
+    currentIndex = currentIndex + concurrencyMax;
+    if(currentIndex < totalCalls){
+      console.log("***current index: ", currentIndex);
+      return processApiCall();
+    } else {
+      Promise.resolve();
+    }
+  };
+
+  await processApiCall();
+  return processingResults;
+};
+
 export const initiateCalls = async (
   uploadedForm: any,
   validationErrors: any,
   selectedTemplates: any
 ) => {
-  const successfulRecords = identifySuccessfulRecords(uploadedForm, validationErrors);
+  //Add in concurrency limit
+  const totalCalls = uploadedForm.length;
+  const concurrencyMax = 10;
+  const currentIndex = 0;
+  const successfulRows = identifySuccessfulRecords(uploadedForm, validationErrors);
   const dependencies = identifyProcessingDependencies(selectedTemplates);
   if(dependencies){
     console.log("dependencies", dependencies);
@@ -114,13 +153,27 @@ export const performValidations = async (
   setProcessedRows: any
 ): Promise<any> => {
   const finalErrors: any = [];
-  const validationPromises = await Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {
-    const fieldPromises = await Promise.allSettled(consolidatedFieldsList.map((field: any) => {
-      return field.validateFunction(row, index);
+  const concurrencyLimit = 10;
+  let validationPromises;
+
+  const processValidationsOnRows = async (): Promise<any> => {
+    return Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {
+      const fieldPromises = await Promise.allSettled(consolidatedFieldsList.map((field: any) => {
+        return field.validateFunction(row, index);
+      }));
+      if(!concurrencyLimit){
+        setProcessedRows((previousCount: number) => (previousCount + 1));
+      }
+      return fieldPromises;
     }));
-    setProcessedRows((previousCount: number) => (previousCount + 1));
-    return fieldPromises;
-  }));
+  };
+
+  if(concurrencyLimit){
+    validationPromises = await handleConcurrentCalls(concurrencyLimit, processValidationsOnRows, uploadedForm, setProcessedRows);
+  } else {
+    validationPromises = await processValidationsOnRows();
+  }
+
   console.log("Validation Promises: ", validationPromises);
   validationPromises.forEach((rowPromise: any, index: number) => {
     const rowErrors: any = [];

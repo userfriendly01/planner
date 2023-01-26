@@ -56,7 +56,7 @@ const ProcessingModal = (props: any) => {
         setValidationErrors(err);
         setShowValidationErrors(true);
       }
-    }, 3000);
+    }, 1000);
   }, []);
 
   const handleStartProcessing = () => {

@@ -22,8 +22,6 @@ import { Modal } from "@mui/material";
 
 const BulkChanges = () => {
 
-  //Define prerequisites somewhere, managers and calabrio teams added before hand
-
   const uploadButtonRef = React.useRef<HTMLInputElement>();
   const [ view, setView ] = React.useState(views.BULK_CREATE_USERS);
   const [ selectedTemplates, setSelectedTemplates ] = React.useState([]);
