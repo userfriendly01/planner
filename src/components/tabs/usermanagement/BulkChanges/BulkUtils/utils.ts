@@ -107,7 +107,7 @@ export const handleConcurrentCalls = async (
 
     const results = await Promise.allSettled(processingRows.map((row: any, index: number) => {
       const originalRowIndex = currentIndex + index;
-      const originalRowNumber = originalRowIndex+ 1;
+      const originalRowNumber = originalRowIndex + 2; //When original spreadsheet has header this is 2 vs 1
       return apiCall(row, originalRowNumber, progressCallback);
     }));
     console.log("***results should be settled promises", results.slice());
@@ -193,7 +193,7 @@ export const performValidations = async (
     });
     if(rowErrors.length !== 0){
       finalErrors.push({
-        row: index + 1,
+        row: index + 2, //When original spreadsheet has header this is 2 vs 1
         errors: rowErrors
       });
     }
