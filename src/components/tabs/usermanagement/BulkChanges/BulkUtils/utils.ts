@@ -106,7 +106,9 @@ export const handleConcurrentCalls = async (
     console.log("***Processing: ", processingRows);
 
     const results = await Promise.allSettled(processingRows.map((row: any, index: number) => {
-      return apiCall(row, index, progressCallback);
+      const originalRowIndex = currentIndex + index;
+      const originalRowNumber = originalRowIndex+ 1;
+      return apiCall(row, originalRowNumber, progressCallback);
     }));
     console.log("***results should be settled promises", results.slice());
     results.forEach((p: any) => processingResults.push(p));
