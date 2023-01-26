@@ -105,7 +105,7 @@ export const handleConcurrentCalls = async (
     const processingRows = successfulRows.slice(currentIndex, endingIndex);
     console.log("***Processing: ", processingRows);
 
-    const results = await Promise.all([processingRows.map((r: any) => {
+    const results = await Promise.allSettled([processingRows.map((r: any) => {
       return apiCall(r);
     })]);
 
