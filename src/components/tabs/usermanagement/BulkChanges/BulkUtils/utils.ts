@@ -116,7 +116,7 @@ export const handleConcurrentCalls = async (
     console.log("*** sectioned Processing Results", processingResults.slice());
     if(currentIndex < totalCalls){
       console.log("***current index: ", currentIndex);
-      return processApiCall();
+      return setTimeout(processApiCall, 1000);
     } else {
       Promise.resolve();
     }
