@@ -105,10 +105,10 @@ export const handleConcurrentCalls = async (
     const processingRows = successfulRows.slice(currentIndex, endingIndex);
     console.log("***Processing: ", processingRows);
 
-    const results = await Promise.allSettled([processingRows.map((r: any) => {
+    const results = await Promise.allSettled(processingRows.map((r: any) => {
       return apiCall(r);
-    })]);
-
+    }));
+    console.log("***results should be settled promises", results);
     results.forEach((p: any) => processingResults.push(p));
     progressCallback(currentIndex);
     currentIndex = currentIndex + concurrencyMax;
@@ -152,12 +152,19 @@ export const initiateCalls = async (
 
 export const performValidations = async (
   uploadedForm: any,
+  selectedTemplates: any,
   consolidatedFieldsList: any,
   setProcessedRows: any
 ): Promise<any> => {
   const finalErrors: any = [];
-  const concurrencyLimit = 10;
   let validationPromises;
+  let concurrencyLimit: any = null;
+  selectedTemplates.forEach(((t: any) => {
+    //if false or if true & less than this one
+    if(t.validationConcurrencyLimit && (!concurrencyLimit || (concurrencyLimit && concurrencyLimit > t.validationConcurrencyLimit))){
+      concurrencyLimit = t.validationConcurrencyLimit;
+    }
+  }));
 
   const processValidationsOnRows = async (progressCallback: any): Promise<any> => {
     return await Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {

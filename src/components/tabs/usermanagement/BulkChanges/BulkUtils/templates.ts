@@ -471,7 +471,8 @@ export const getCreateTemplates: any = (state: any): any => {
       name: "CREATE_TRITON_USER",
       processFunction: () => Promise.resolve(Date.now()),
       multiRunDependencies: null,
-      concurrencyLimit: 10,
+      validationConcurrencyLimit: 10,
+      processingConcurrencyLimit: 10,
       fields: getTritonFields(state)
     },
     CREATE_CALABRIO_QM_USER: {
@@ -481,7 +482,8 @@ export const getCreateTemplates: any = (state: any): any => {
         name: "CREATE_TRITON_USER",
         variable: "workerSid"
       }],
-      concurrencyLimit: null,
+      validationConcurrencyLimit: null,
+      processingConcurrencyLimit: null,
       fields: getCalabrioQmFields(state)
     }
   };

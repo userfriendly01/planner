@@ -47,9 +47,8 @@ const ProcessingModal = (props: any) => {
     setShowProgressBar(true);
     setTimeout(async () => {
       try {
-        await performValidations(uploadedForm, consolidatedFieldsList, setProcessedRows);
+        await performValidations(uploadedForm, selectedTemplates, consolidatedFieldsList, setProcessedRows);
         handleStartProcessing();
-        initiateCalls(uploadedForm, validationErrors, selectedTemplates);
       } catch (err) {
         console.log("FINAL ERRORS LOG", err);
         setShowProgressBar(false);
@@ -62,6 +61,7 @@ const ProcessingModal = (props: any) => {
   const handleStartProcessing = () => {
     setShowValidationErrors(false);
     setShowProgressBar(true);
+    initiateCalls(uploadedForm, validationErrors, selectedTemplates);
   };
 
   return (
@@ -80,10 +80,7 @@ const ProcessingModal = (props: any) => {
             <StyledExportButton onClick={() => handleExportErrors(validationErrors, _export)}><ExcelExport ref={_export}/>
               Export Validation Errors
             </StyledExportButton>
-            <StyledExportButton styles={{ width: "250px" }} onClick={() => {
-              handleStartProcessing();
-              initiateCalls(uploadedForm, validationErrors, selectedTemplates);
-            }}>
+            <StyledExportButton styles={{ width: "250px" }} onClick={handleStartProcessing}>
               Process {totalSuccessCount} out of {totalRowCount} rows
             </StyledExportButton>
           </ButtonWrapper>
