@@ -11,5 +11,4 @@ export const createUser = (worker: Partial<DbWorker>): Promise<DbWorker> =>
 
 export const getJokes = (): Promise<any> =>
   myAxios.get(apiPaths.GET_JOKES)
-    .then(response => response.data)
-    .catch(err => console.error("Aww no jokes", err));
+    .then(response => response.data);

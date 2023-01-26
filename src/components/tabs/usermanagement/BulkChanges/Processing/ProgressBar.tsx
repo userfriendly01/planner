@@ -20,8 +20,12 @@ const ProgressBar = (props: any) => {
 
   React.useEffect(() => {
     if(!jokes){
-      const jokes = getJokes();
-      setJokes(jokes);
+      try {
+        const jokes = getJokes();
+        setJokes(jokes);
+      } catch(err){
+        console.error("Aww no jokes", err);
+      }
     }
   }, []);
 
