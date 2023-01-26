@@ -2,8 +2,8 @@ import {
   Row,
   SelectionWrapper,
   StepWrapper
-} from "./BulkUpload.Styles";
-import { getCreateTemplates } from "./templates";
+} from "../BulkChanges.Styles";
+import { getCreateTemplates } from "../templates";
 import { useAdminState } from "context";
 import React from "react";
 import { Checkbox } from "@mui/material";

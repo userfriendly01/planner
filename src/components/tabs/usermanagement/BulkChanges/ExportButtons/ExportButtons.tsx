@@ -1,5 +1,5 @@
 import React from "react";
-import { ButtonWrapper } from "../BulkUpload.Styles";
+import { ButtonWrapper } from "../BulkChanges.Styles";
 import ExportTemplateButton from "./ExportTemplateButton";
 import ExportOptionsButton from "./ExportOptionsButton";
 

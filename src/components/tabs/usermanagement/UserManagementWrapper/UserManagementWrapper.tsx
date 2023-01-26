@@ -9,7 +9,7 @@ import {
   WorkerOpts
 } from "../OnboardNewUser/UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 import {
-  BulkUpload,
+  BulkChanges,
   UserEntryForm,
   Dropdown,
   TritonUsersViewWrapper
@@ -80,7 +80,7 @@ const UserManagementWrapper = () => {
           workerOpts={selectedWorkerOpts}
           setWorkerOpts={setSelectedWorkerOpts}
         />}
-        {view === views.BULK_CHANGES && <BulkUpload />}
+        {view === views.BULK_CHANGES && <BulkChanges />}
       </CallflowWrapper>
     </FormStateProvider>
   );

@@ -3,7 +3,7 @@ import {
   ProgressBarContainer,
   ProgressBarWrapper,
   ProgressBarFiller
-} from "./BulkUpload.Styles";
+} from "../BulkChanges.Styles";
 
 const ProgressBar = (props: any) => {
   const {

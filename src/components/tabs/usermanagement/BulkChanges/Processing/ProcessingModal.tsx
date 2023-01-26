@@ -5,7 +5,7 @@ import {
   ModalWrapper,
   TextWrapper,
   ValidationErrorWrapper
-} from "./BulkUpload.Styles";
+} from "../BulkChanges.Styles";
 import ProgressBar from "./ProgressBar";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
 

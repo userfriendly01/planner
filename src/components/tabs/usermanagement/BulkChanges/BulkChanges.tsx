@@ -2,22 +2,22 @@ import React from "react";
 import {
   views,
   LoadingStatus
-} from "./BulkUpload.Interfaces";
+} from "./BulkChanges.Interfaces";
 import {
   BulkChangesWrapper,
   ImportButton,
   Row,
   StepWrapper,
   Wrapper
-} from "./BulkUpload.Styles";
+} from "./BulkChanges.Styles";
 import { Dropdown } from "components";
-import BulkCreateForm from "./BulkCreateForm";
+import BulkCreateForm from "./BulkActions/BulkCreateForm";
 import ExportButtons from "./ExportButtons/ExportButtons";
-import ProcessingModal from "./ProcessingModal";
+import ProcessingModal from "./Processing/ProcessingModal";
 import { Modal } from "@mui/material";
 import * as XLSX from "xlsx";
 
-const BulkUpload = () => {
+const BulkChanges = () => {
 
   //Define prerequisites somewhere, managers and calabrio teams added before hand
 
@@ -33,7 +33,7 @@ const BulkUpload = () => {
     consolidateTemplates();
   }, [selectedTemplates]);
 
-  const resetBulkUpload = () => {
+  const resetBulkChanges = () => {
     setShowProcessingModal(false);
     setSelectedTemplates([]);
     setConsolidatedTemplates([]);
@@ -98,7 +98,7 @@ const BulkUpload = () => {
         options={Object.values(views)}
         updateValue={(event: any, view: any) => {
           setView(view);
-          resetBulkUpload();
+          resetBulkChanges();
         }}
         styles={{
           margin: "40 0 30 0",
@@ -109,7 +109,7 @@ const BulkUpload = () => {
         <>
           <ProcessingModal
             selectedTemplates={selectedTemplates}
-            handleClose={resetBulkUpload}
+            handleClose={resetBulkChanges}
             uploadedForm={uploadedForm}
             consolidatedFieldsList={consolidatedTemplate}
           />
@@ -162,4 +162,4 @@ const BulkUpload = () => {
   );
 };
 
-export default BulkUpload;
+export default BulkChanges;

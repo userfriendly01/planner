@@ -1,5 +1,5 @@
 
-import { StyledExportButton } from "../BulkUpload.Styles";
+import { StyledExportButton } from "../BulkChanges.Styles";
 import React from "react";
 import {
   ExcelExport
