@@ -327,7 +327,37 @@ const getTritonFields = (state: any): any => [
     required: true,
     example: "6038518288",
     options: null,
-    validateFunction: () => Promise.resolve()
+    validateFunction: async (row: any, rowNumber: number): Promise<any> => {
+      const fieldName = "Alternate/Outgoing Number";
+      const field = row[fieldName];
+      const didFieldName = "Did User";
+      const didField = row[didFieldName];
+
+      if(typeof didField !== "string"){
+        return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
+      } else if(didField?.toLowerCase() !== "y" && didField?.toLowerCase() !== "n"){
+        return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
+      } else if(didField?.toLowerCase() === "n" && field){
+        try {
+          const directDialNum = getE164Number(field);
+          row.did = directDialNum;
+          //remove original
+        } catch(err) {
+          return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
+        }
+        return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+      } else {
+        try {
+          const directDialNum = getE164Number(field);
+          row.did = directDialNum;
+          row.directDialNum = directDialNum;
+          //remove original
+        } catch(err) {
+          return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
+        }
+        return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+      }
+    }
   }
 ];
 

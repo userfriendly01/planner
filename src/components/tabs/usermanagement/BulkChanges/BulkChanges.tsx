@@ -10,12 +10,15 @@ import {
   StepWrapper,
   Wrapper
 } from "./BulkChanges.Styles";
+import {
+  readUploadFile,
+  consolidateTemplates
+} from "./BulkUtils/utils";
 import { Dropdown } from "components";
 import BulkCreateForm from "./BulkActions/BulkCreateForm";
 import ExportButtons from "./ExportButtons/ExportButtons";
 import ProcessingModal from "./Processing/ProcessingModal";
 import { Modal } from "@mui/material";
-import * as XLSX from "xlsx";
 
 const BulkChanges = () => {
 
@@ -30,7 +33,7 @@ const BulkChanges = () => {
   const [ showProcessingModal , setShowProcessingModal ] = React.useState(false);
 
   React.useEffect(() => {
-    consolidateTemplates();
+    consolidateTemplates(selectedTemplates, setConsolidatedTemplates);
   }, [selectedTemplates]);
 
   const resetBulkChanges = () => {
@@ -38,56 +41,6 @@ const BulkChanges = () => {
     setSelectedTemplates([]);
     setConsolidatedTemplates([]);
     setUploadedForm(null);
-  };
-
-  const updateSelectedTemplates = (checked: boolean, template: any) => {
-    const templates = selectedTemplates.slice();
-    const templateFound = templates.some((t: any) => t.name === template.name);
-    console.log("updateSelectedTemplates- templates", templates);
-    console.log("updateSelectedTemplates- templateFound", templateFound);
-
-    if(checked && !templateFound) {
-      templates.push(template);
-      setSelectedTemplates(templates);
-    } else if(!checked && templateFound) {
-      setSelectedTemplates(templates.filter((t: any) => t.name !== template.name));
-    }
-  };
-
-  const consolidateTemplates = () => {
-    const beginningArray: any = [];
-    selectedTemplates.forEach((t: any) => beginningArray.push(...t.fields));
-    const consolidatedFieldsList: any = [];
-    beginningArray.forEach((bt: any) => {
-      const duplicateField = consolidatedFieldsList.some((field: any) => field.field === bt.field);
-      if(!duplicateField){
-        consolidatedFieldsList.push(bt);
-      }
-    });
-    console.log("consolidatedFieldsList", consolidatedFieldsList);
-    setConsolidatedTemplates(consolidatedFieldsList);
-  };
-
-  const readUploadFile = (e: any) => {
-    console.log("UPLOAD FILED", e);
-    e.preventDefault();
-    if (e.target.files) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        const data = e.target.result;
-        const workbook = XLSX.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const json = XLSX.utils.sheet_to_json(worksheet);
-        console.log(json); // missing 1 row?
-        setUploadedForm(json);
-      };
-      reader.readAsArrayBuffer(e.target.files[0]);
-    }
-  };
-
-  const initiateUpload = () => {
-    setShowProcessingModal(true);
   };
 
   return (
@@ -118,7 +71,7 @@ const BulkChanges = () => {
       { view === views.BULK_CREATE_USERS &&
         <BulkCreateForm
           selectedTemplates = {selectedTemplates}
-          updateSelectedTemplates={updateSelectedTemplates}
+          setSelectedTemplates={setSelectedTemplates}
         />
       }
       { selectedTemplates.length > 0 &&
@@ -148,7 +101,7 @@ const BulkChanges = () => {
           </StepWrapper>
           <Wrapper center={true}>
             <ImportButton
-              onClick={initiateUpload}>Process</ImportButton>
+              onClick={() => setShowProcessingModal(true)}>Process</ImportButton>
           </Wrapper>
         </Row>
       }
@@ -156,7 +109,7 @@ const BulkChanges = () => {
         type="file"
         ref={uploadButtonRef}
         hidden={true}
-        onChange={readUploadFile}
+        onChange={(e: any) => readUploadFile(e, setUploadedForm)}
       />
     </BulkChangesWrapper>
   );

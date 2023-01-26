@@ -6,6 +6,11 @@ import {
   TextWrapper,
   ValidationErrorWrapper
 } from "../BulkChanges.Styles";
+import {
+  performValidations,
+  initiateCalls,
+  handleExportErrors
+} from "../BulkUtils/utils";
 import ProgressBar from "./ProgressBar";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
 
@@ -16,7 +21,6 @@ const ProcessingModal = (props: any) => {
     consolidatedFieldsList,
     uploadedForm
   } = props;
-
 
   const [ validationErrors, setValidationErrors ] = React.useState([]);
   const [ showValidationErrors, setShowValidationErrors ] = React.useState(false);
@@ -41,131 +45,23 @@ const ProcessingModal = (props: any) => {
   React.useEffect(() => {
     console.log("within Processing Modal [] useEffect");
     setShowProgressBar(true);
-    setTimeout(performValidations, 3000);
+    setTimeout(async () => {
+      try {
+        await performValidations(uploadedForm, consolidatedFieldsList, setProcessedRows);
+        handleStartProcessing();
+        initiateCalls(uploadedForm, validationErrors, selectedTemplates);
+      } catch (err) {
+        console.log("FINAL ERRORS LOG", err);
+        setShowProgressBar(false);
+        setValidationErrors(err);
+        setShowValidationErrors(true);
+      }
+    }, 3000);
   }, []);
 
-  const performValidations = async () => {
-    const finalErrors: any = [];
-    const validationPromises = await Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {
-      const fieldPromises = await Promise.allSettled(consolidatedFieldsList.map((field: any) => {
-        return field.validateFunction(row, index);
-      }));
-      setProcessedRows(previousCount => (previousCount + 1));
-      return fieldPromises;
-    }));
-    console.log("Validation Promises: ", validationPromises);
-    validationPromises.forEach((rowPromise: any, index: number) => {
-      const rowErrors: any = [];
-      rowPromise.value.map((fieldPromise: any) => {
-        if(fieldPromise.status === "rejected"){
-          rowErrors.push(fieldPromise.reason);
-        }
-      });
-      if(rowErrors.length !== 0){
-        console.log("pushing rowError onto Validation Error");
-        finalErrors.push({
-          row: index + 1,
-          errors: rowErrors
-        });
-      }
-    });
-    console.log("finalErrors.length", finalErrors.length);
-    if(finalErrors.length === 0){
-      initiateCalls();
-    } else {
-      setShowProgressBar(false);
-      setValidationErrors(finalErrors);
-      setShowValidationErrors(true);
-    }
-  };
-
-  const initiateCalls = async () => {
-    //identify successful records;
+  const handleStartProcessing = () => {
     setShowValidationErrors(false);
     setShowProgressBar(true);
-    const successfulRows: any = [];
-    uploadedForm.forEach((row: any, index: number) => {
-      const rowEquivalent = index + 1;
-      if(!validationErrors.some((e: any) => e.row === rowEquivalent)){
-        successfulRows.push(row);
-      }
-    });
-    console.log("successfulRows", successfulRows);
-    const dependencies = identifyProcessingDependencies();
-    if(dependencies){
-      console.log("dependencies", dependencies);
-      // dependencies.map(async (d: any) => {
-      //   d.processFunction();
-      // });
-      //kick off api calls in order of dependency tree using template concurrency limit
-    } else {
-      console.log("no dependencies needed");
-    //kick off api calls asyncronously using template concurrency limit
-    }
-  };
-
-  const identifyProcessingDependencies = () => {
-    const dependencyTree = selectedTemplates.slice();
-
-    //if theres only one template, just return it
-    if(selectedTemplates.length === 1){
-      console.log("identifyProcessingDependencies - selectedTemplates.length === 1");
-      return false;
-    }
-
-    selectedTemplates.forEach((t: any, index: number) => {
-      if(t.multiRunDependencies){
-        console.log("identifyProcessingDependencies - t.multiRunDependencies", t.multiRunDependencies);
-        t.multiRunDependencies.forEach((d: any) => {
-          const requiredTemplateIndex = dependencyTree.findIndex((t:any) => t.name === d.name);
-          console.log("identifyProcessingDependencies - requiredTemplateIndex", requiredTemplateIndex);
-          //if dependencies arent in the selected templates list, return it. Form validation accounts for this
-          if(requiredTemplateIndex === -1){
-            return false;
-          } else {
-            //If the dependency is lower in the array, swap the index's so they are processed in the right order
-            if(requiredTemplateIndex > index){
-              const dependentObject = dependencyTree[index];
-              const requiredObject = dependencyTree[requiredTemplateIndex];
-              dependencyTree[index] = requiredObject;
-              dependencyTree[requiredTemplateIndex] = dependentObject;
-            }
-            console.log("identifyProcessingDependencies - dependencyTree", dependencyTree.slice());
-          }
-        });
-      }
-    });
-    return dependencyTree;
-  };
-
-  const handleExport = () => {
-    const rows: any = [];
-    const columns: any = [
-      {
-        title: "Row",
-        field: "row",
-        width: "50px"
-      },
-      {
-        title: "Errors",
-        field: "errors",
-        width: "400px"
-      }
-    ];
-
-    validationErrors.forEach((error: any) => {
-      rows.push({
-        row: error.row,
-        errors: error.errors.toString()
-      });
-    });
-
-    console.log("rows", rows);
-    console.log("columns", columns);
-
-    if (_export.current !== null) {
-      _export.current.save(rows, columns);
-    }
   };
 
   return (
@@ -181,10 +77,13 @@ const ProcessingModal = (props: any) => {
             <StyledExportButton onClick={handleClose}>
               Cancel
             </StyledExportButton>
-            <StyledExportButton onClick={handleExport}><ExcelExport ref={_export}/>
+            <StyledExportButton onClick={() => handleExportErrors(validationErrors, _export)}><ExcelExport ref={_export}/>
               Export Validation Errors
             </StyledExportButton>
-            <StyledExportButton styles={{ width: "250px" }} onClick={initiateCalls}>
+            <StyledExportButton styles={{ width: "250px" }} onClick={() => {
+              handleStartProcessing();
+              initiateCalls(uploadedForm, validationErrors, selectedTemplates);
+            }}>
               Process {totalSuccessCount} out of {totalRowCount} rows
             </StyledExportButton>
           </ButtonWrapper>

@@ -3,7 +3,8 @@ import {
   SelectionWrapper,
   StepWrapper
 } from "../BulkChanges.Styles";
-import { getCreateTemplates } from "../templates";
+import { updateSelectedTemplates } from "../BulkUtils/utils";
+import { getCreateTemplates } from "../BulkUtils/templates";
 import { useAdminState } from "context";
 import React from "react";
 import { Checkbox } from "@mui/material";
@@ -12,7 +13,7 @@ import { Checkbox } from "@mui/material";
 const BulkCreateForm = (props: any) => {
   const {
     selectedTemplates,
-    updateSelectedTemplates
+    setSelectedTemplates
   } = props;
 
   const state = useAdminState();
@@ -31,8 +32,7 @@ const BulkCreateForm = (props: any) => {
           checked={selectedTemplates.some((t: any) => t.name === "CREATE_TRITON_USER")}
           onChange={(event: any) => {
             const checked = event.target.checked;
-            console.log("Triton onChange", checked, createTemplates.CREATE_TRITON_USER);
-            updateSelectedTemplates(checked, createTemplates.CREATE_TRITON_USER);
+            updateSelectedTemplates(checked, createTemplates.CREATE_TRITON_USER, selectedTemplates, setSelectedTemplates);
           }}
           style={{ padding: "0px" }}
         />
@@ -43,8 +43,7 @@ const BulkCreateForm = (props: any) => {
           checked={selectedTemplates.some((t: any) => t.name === "CREATE_CALABRIO_QM_USER")}
           onChange={(event: any) => {
             const checked = event.target.checked;
-            console.log("QM onChange", checked, createTemplates.CREATE_CALABRIO_QM_USER);
-            updateSelectedTemplates(checked, createTemplates.CREATE_CALABRIO_QM_USER);
+            updateSelectedTemplates(checked, createTemplates.CREATE_CALABRIO_QM_USER, selectedTemplates, setSelectedTemplates);
           }}
           style={{ padding: "0px" }}
         />
