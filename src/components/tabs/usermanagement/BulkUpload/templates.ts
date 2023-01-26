@@ -38,6 +38,7 @@ const getTritonFields = (state: any): any => [
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
       } else {
+        //check in allowed list
         return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
       }
     }
@@ -55,7 +56,7 @@ const getTritonFields = (state: any): any => [
       const field = row[fieldName];
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
-      } else if(!state.managerContext.managers.some((m:any) => m.manager_n_number.toLowerCase() === field.toLowerCase())){
+      } else if(!state.managerContext.managers.some((m:any) => m.manager_n_number?.toLowerCase() === field.toLowerCase())){
         return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
       } else {
         return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
@@ -135,7 +136,7 @@ const getTritonFields = (state: any): any => [
     validateFunction: async (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "Extension";
       const field = row[fieldName];
-      const generateExtension = field.toLowerCase() === "y";
+      const generateExtension = typeof field === "string" ? field.toLowerCase() === "y" : false;
 
       if(!field){
         return Promise.resolve(`No ${fieldName} set for row ${rowNumber}`);
@@ -192,9 +193,9 @@ const getTritonFields = (state: any): any => [
 
       if(typeof didField !== "string"){
         return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
-      } else if(didField.toLowerCase() !== "y" && didField.toLowerCase() !== "n"){
+      } else if(didField?.toLowerCase() !== "y" && didField?.toLowerCase() !== "n"){
         return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
-      } else if(didField.toLowerCase() === "n"){
+      } else if(didField?.toLowerCase() === "n"){
         return Promise.reject(`Did User field is 'N', ${fieldName} is not applicable for row ${rowNumber}`);
       } else {
         //Validate number format
