@@ -1,4 +1,7 @@
-import { checkExtension } from "services";
+import {
+  checkExtension,
+  generateExtension
+} from "services";
 import {
   calabrioAllowedRoles,
   calabrioTimeZones
@@ -136,14 +139,19 @@ const getTritonFields = (state: any): any => [
     validateFunction: async (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "Extension";
       const field = row[fieldName];
-      const generateExtension = typeof field === "string" ? field.toLowerCase() === "y" : false;
+      const newExtension = typeof field === "string" ? field.toLowerCase() === "y" : false;
 
       if(!field){
         return Promise.resolve(`No ${fieldName} set for row ${rowNumber}`);
-      } else if(generateExtension){
-        //generate extension
-        //update form and set
-        //export extensions needed as enhancement?
+      } else if(newExtension){
+        let extension;
+        try {
+          extension = await generateExtension();
+        } catch (err) {
+          return Promise.reject(`Unable to generate ${fieldName} for row ${rowNumber}.`);
+        }
+        row.extension = extension;
+        return Promise.resolve(`${fieldName} ${extension || field} set for row ${rowNumber}`);
       } else if(typeof field !== "number"){
         return Promise.reject(`${fieldName} must be a number or 'Y' for row ${rowNumber}. If you do not want an extension for this user, leave the field blank`);
       } else {
@@ -311,7 +319,7 @@ const getCalabrioQmFields = (state: any): any => [
     name: "Time Zone",
     type: "string",
     description: "Time Zone of the Calabrio User",
-    example: "America/New_York",
+    example: "America/New_York (EST/EDT)",
     options: calabrioTimeZones.map((t: any) => t.label),
     validateFunction: (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "Time Zone";
