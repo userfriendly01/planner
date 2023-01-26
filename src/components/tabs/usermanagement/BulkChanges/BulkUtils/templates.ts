@@ -315,7 +315,6 @@ const getTritonFields = (state: any): any => [
               };
             }
             row.zeroOutEnabled = true;
-
             //remove original
           } catch(err) {
             return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
@@ -326,15 +325,15 @@ const getTritonFields = (state: any): any => [
     }
   },
   {
-    field: "alternateNumber",
-    name: "Alternate/Outgoing Number",
+    field: "outgoingNumber",
+    name: "Outgoing Number",
     type: "string",
-    description: "If the user is a DID user, this is the Teams/Alternate DID. If The User is not a DID user, this is populated as the Outgoing number",
+    description: "If the user is not a DID user this is their Outgoing number",
     required: true,
     example: "6038518288",
     options: null,
     validateFunction: async (row: any, rowNumber: number): Promise<any> => {
-      const fieldName = "Alternate/Outgoing Number";
+      const fieldName = "Outgoing Number";
       const field = row[fieldName];
       const didFieldName = "Did User";
       const didField = row[didFieldName];
@@ -343,20 +342,12 @@ const getTritonFields = (state: any): any => [
         return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
       } else if(didField?.toLowerCase() !== "y" && didField?.toLowerCase() !== "n"){
         return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
-      } else if(didField?.toLowerCase() === "n" && field){
-        try {
-          const directDialNum = getE164Number(field);
-          row.did = directDialNum;
-          //remove original
-        } catch(err) {
-          return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
-        }
-        return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+      } else if(didField?.toLowerCase() === "y" && field){
+        return Promise.reject(`${fieldName} is not applicable for ${didFieldName} for row ${rowNumber}`);
       } else {
         try {
-          const directDialNum = getE164Number(field);
-          row.did = directDialNum;
-          row.directDialNum = directDialNum;
+          const outgoing = getE164Number(field);
+          row.did = outgoing;
           //remove original
         } catch(err) {
           return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
