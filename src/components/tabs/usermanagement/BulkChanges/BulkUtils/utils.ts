@@ -112,6 +112,7 @@ export const handleConcurrentCalls = async (
     results.forEach((p: any) => processingResults.push(p));
     progressCallback(currentIndex);
     currentIndex = currentIndex + concurrencyMax;
+    console.log("*** sectioned Processing Results", processingResults.slice());
     if(currentIndex < totalCalls){
       console.log("***current index: ", currentIndex);
       return processApiCall();
@@ -119,6 +120,8 @@ export const handleConcurrentCalls = async (
       Promise.resolve();
     }
   };
+
+  console.log("***Final Processing Results", processingResults.slice());
 
   await processApiCall();
   return processingResults;
@@ -157,7 +160,7 @@ export const performValidations = async (
   let validationPromises;
 
   const processValidationsOnRows = async (progressCallback: any): Promise<any> => {
-    return Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {
+    return await Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {
       const fieldPromises = await Promise.allSettled(consolidatedFieldsList.map((field: any) => {
         return field.validateFunction(row, index);
       }));
