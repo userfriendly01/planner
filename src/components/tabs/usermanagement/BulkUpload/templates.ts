@@ -52,7 +52,7 @@ const getTritonFields = (state: any): any => [
     example: "n0088625",
     options: state.managerContext.managers.map((m: any) => m.manager_n_number),
     validateFunction: (row: any, rowNumber: number): Promise<any> => {
-      const fieldName = "Profile Id";
+      const fieldName = "Manager N Number";
       const field = row[fieldName];
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
