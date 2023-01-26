@@ -5,7 +5,7 @@ import {
   ProgressBarFiller,
   TextWrapper
 } from "../BulkChanges.Styles";
-// import { getJokes } from "services";
+import { getJokes } from "services";
 
 const ProgressBar = (props: any) => {
   const {
@@ -20,8 +20,8 @@ const ProgressBar = (props: any) => {
 
   React.useEffect(() => {
     if(!jokes){
-      // const jokes = getJokes();
-      // setJokes(jokes);
+      const jokes = getJokes();
+      setJokes(jokes);
     }
   }, []);
 

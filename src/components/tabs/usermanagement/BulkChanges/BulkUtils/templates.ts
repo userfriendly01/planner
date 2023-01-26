@@ -468,7 +468,7 @@ export const getCreateTemplates: any = (state: any): any => {
       name: "CREATE_TRITON_USER",
       processFunction: () => Promise.resolve(Date.now()),
       multiRunDependencies: null,
-      validationConcurrencyLimit: 5,
+      validationConcurrencyLimit: 10,
       processingConcurrencyLimit: 10,
       fields: getTritonFields(state)
     },
