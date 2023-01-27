@@ -58,10 +58,15 @@ const ProcessingModal = (props: any) => {
     }, 1000);
   }, []);
 
-  const handleStartProcessing = () => {
+  const handleStartProcessing = async () => {
     setShowValidationErrors(false);
     setShowProgressBar(true);
-    initiateCalls(uploadedForm, validationErrors, selectedTemplates);
+    try {
+      const results = await initiateCalls(uploadedForm, validationErrors, selectedTemplates, setProcessedRows);
+      console.log("PROCESSING IS DONE!!", results);
+    } catch(err){
+      console.log("PROCESSING IS DONE BUT FAILED!!", err);
+    }
   };
 
   return (

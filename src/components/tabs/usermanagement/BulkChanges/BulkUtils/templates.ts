@@ -208,7 +208,7 @@ const getTritonFields = (state: any): any => [
           return Promise.reject(`Unable to generate ${fieldName} for row ${rowNumber}.`);
         }
         return Promise.resolve(`${fieldName} ${extension} set for row ${rowNumber}`);
-      } else if(typeof field !== "number"){
+      } else if(typeof field !== "number" && typeof field !== "string"){
         return Promise.reject(`${fieldName} must be a number or 'Y' for row ${rowNumber}. If you do not want an extension for this user, leave the field blank`);
       } else {
         const isExtensionValid = workers.some((w: any) => w.attributes.extension.toString() === field.toString());
@@ -428,21 +428,21 @@ const getCalabrioQmFields = (state: any): any => [
         return Promise.resolve(`${fieldName} skipped for row ${rowNumber}`);
       } else {
         try {
-          const fieldArray = field.replace(" ","").split(",");
+          const fieldArray = field.replace.split(",");
           if(fieldArray.length === 0){
             return Promise.resolve(`${fieldName} skipped for row ${rowNumber}`);
           } else {
             fieldArray.forEach((scope: any) => {
-              const foundInGroups = availableGroups.some((g:any) => g.name?.toLowerCase() === scope?.toLowerCase());
-              const foundInTeams = availableTeams.some((t:any) => t.name?.toLowerCase() === scope?.toLowerCase());
+              const foundInGroups = availableGroups.some((g:any) => g.name?.toLowerCase() === scope?.trim().toLowerCase());
+              const foundInTeams = availableTeams.some((t:any) => t.name?.toLowerCase() === scope?.trim().toLowerCase());
               row.scope.groups = [];
               row.scope.teams = [];
               if(!foundInGroups && !foundInTeams){
-                return Promise.reject(`${scope} is not a valid group or team for row ${rowNumber}`);
+                return Promise.reject(`${scope.trim()} is not a valid group or team for row ${rowNumber}`);
               } else if(foundInGroups) {
-                row.scope.groups.push(scope);
+                row.scope.groups.push(scope.trim());
               } else {
-                row.scope.teams.push(scope);
+                row.scope.teams.push(scope.trim());
               }
             });
             return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);

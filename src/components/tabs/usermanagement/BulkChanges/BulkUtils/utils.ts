@@ -135,13 +135,30 @@ export const handleConcurrentCalls = async (
   return processingResults;
 };
 
+export const getLowestConcurrencyLimit = (selectedTemplates: any) => {
+  let concurrencyLimit: any = null;
+  selectedTemplates.forEach(((t: any) => {
+    //if false or if true & less than this one
+    if(t.validationConcurrencyLimit && (!concurrencyLimit || (concurrencyLimit && concurrencyLimit > t.validationConcurrencyLimit))){
+      concurrencyLimit = t.validationConcurrencyLimit;
+    }
+  }));
+  return concurrencyLimit;
+};
+
 export const initiateCalls = async (
   uploadedForm: any,
   validationErrors: any,
-  selectedTemplates: any
+  selectedTemplates: any,
+  setProcessedRows: any
 ) => {
   const successfulRows = identifySuccessfulRecords(uploadedForm, validationErrors);
   const templateTree = identifyProcessingDependencies(selectedTemplates);
+  const concurrencyLimit: any = getLowestConcurrencyLimit(selectedTemplates);
+
+  const finalErrors: any = [];
+  let processingPromises;
+
   console.log("Successful rows", successfulRows);
 
   const processRow = async (row: any, rowNumber: number, progressCallback: any) => {
@@ -150,7 +167,7 @@ export const initiateCalls = async (
       const storedPromiseData: any = [];
 
       console.log("templateTree", templateTree);
-      return await Promise.allSettled(templateTree.map(async (t: any) => {
+      const rowPromise = await Promise.allSettled(templateTree.map(async (t: any) => {
         console.log("processing template", t.name);
 
         if(t.multiRunDependencies && t.multiRunDependencies.length > 0){
@@ -171,13 +188,46 @@ export const initiateCalls = async (
         });
         console.log("storedPromiseData: ", storedPromiseData);
       }));
+      progressCallback((previousCount: number) => (previousCount + 1));
+      return rowPromise;
     } else {
-      return await Promise.allSettled(selectedTemplates.map((t: any) => {
+      const rowPromise = await Promise.allSettled(selectedTemplates.map((t: any) => {
         return t.processFunction();
       }));
+      progressCallback((previousCount: number) => (previousCount + 1));
+      return rowPromise;
     }
   };
-  processRow({}, 1, () => console.log("Logs"));
+
+  if(concurrencyLimit){
+    processingPromises = await handleConcurrentCalls(concurrencyLimit, processRow, uploadedForm, setProcessedRows);
+  } else {
+    processingPromises = await Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {
+      const rowNumber = index + 1;
+      return processRow(row, rowNumber, setProcessedRows);
+    }));
+  }
+
+  processingPromises.forEach((rowPromise: any, index: number) => {
+    const rowErrors: any = [];
+    rowPromise.value.map((fieldPromise: any) => {
+      if(fieldPromise.status === "rejected"){
+        rowErrors.push(fieldPromise.reason);
+      }
+    });
+    if(rowErrors.length !== 0){
+      finalErrors.push({
+        row: index + 2, //When original spreadsheet has header this is 2 vs 1
+        errors: rowErrors
+      });
+    }
+  });
+  console.log("finalErrors.length", finalErrors.length);
+  if(finalErrors.length === 0){
+    return Promise.resolve();
+  } else {
+    return Promise.reject(finalErrors);
+  }
 };
 
 export const performValidations = async (
@@ -188,13 +238,7 @@ export const performValidations = async (
 ): Promise<any> => {
   const finalErrors: any = [];
   let validationPromises;
-  let concurrencyLimit: any = null;
-  selectedTemplates.forEach(((t: any) => {
-    //if false or if true & less than this one
-    if(t.validationConcurrencyLimit && (!concurrencyLimit || (concurrencyLimit && concurrencyLimit > t.validationConcurrencyLimit))){
-      concurrencyLimit = t.validationConcurrencyLimit;
-    }
-  }));
+  const concurrencyLimit: any = getLowestConcurrencyLimit(selectedTemplates);
 
   const processValidationsOnRows = async (row: any, rowIndex: number, progressCallback: any): Promise<any> => {
     const fieldPromises = await Promise.allSettled(consolidatedFieldsList.map((field: any) => {
@@ -267,30 +311,33 @@ export const handleExportErrors = (validationErrors: any, _export: any) => {
 };
 
 export const checkConflictingUsers = async (user: any, users: any[]): Promise<any> => {
-  try {
-    const acdId = user.acdId ? toLowerCaseString(user.acdId) : null;
-    const email = toLowerCaseString(user.email);
-    const adLogin = toLowerCaseString(user.adLogin);
+  if(user){
+    try {
+      const acdId = user.workerSid ? toLowerCaseString(user.workerSid) : null;
+      const email = toLowerCaseString(user.email);
+      const adLogin = toLowerCaseString(user.adLogin);
 
-    return Promise.allSettled(users.map(async u => {
-      const dupUserAcdId = toLowerCaseString(u.acdId);
-      const dupUserAdLogin = toLowerCaseString(u.adLogin);
-      const dupUserEmail = toLowerCaseString(u.email);
+      return Promise.allSettled(users.map(async u => {
+        const dupUserAcdId = toLowerCaseString(u.acdId);
+        const dupUserAdLogin = toLowerCaseString(u.adLogin);
+        const dupUserEmail = toLowerCaseString(u.email);
 
-      if (acdId && dupUserAcdId === acdId) {
-        return Promise.reject("Calabrio Record already exists with this users nNumber in the AdLogin field.");
-      }
+        if (acdId && dupUserAcdId === acdId) {
+          return Promise.reject("Calabrio Record already exists with this users nNumber in the AdLogin field.");
+        }
 
-      if (dupUserAdLogin === adLogin) {
-        return Promise.reject("Calabrio Record already exists with this users nNumber in the AdLogin field.");
-      }
+        if (dupUserAdLogin === adLogin) {
+          return Promise.reject("Calabrio Record already exists with this users nNumber in the AdLogin field.");
+        }
 
-      if (dupUserEmail === email) {
-        return Promise.reject("Calabrio Record already exists with this users email.");
-      }
-    }));
-  } catch(err) {
-    console.error("Error thrown trying to fetch and validate Conflicting Users", err);
-    return Promise.reject(err);
+        if (dupUserEmail === email) {
+          return Promise.reject("Calabrio Record already exists with this users email.");
+        }
+      }));
+    } catch(err) {
+      console.error("Error thrown trying to fetch and validate Conflicting Users", err);
+      return Promise.reject(err);
+    }
   }
+  return Promise.reject("No user passed to calabrio processing");
 };
