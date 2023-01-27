@@ -20,7 +20,7 @@ import {
 
 
 const isDidUser = (didField: any, rowNumber: number) => {
-  console.log("isDidUser", isDidUser);
+  console.log("isDidUser", didField);
   if(typeof didField !== "string"){
     return Promise.reject(`Did User field needs to be 'Y' or 'N' for row ${rowNumber}`);
   } else if(didField !== "y" && didField !== "n"){
@@ -271,6 +271,7 @@ const getTritonFields = (state: any): any => [
       const field = cleanupField(row[fieldName], "string");
       const didFieldName = "Did User";
       const didField = cleanupField(row[didFieldName], "string");
+      console.log("didFieldName in directDialNumber", didField);
 
       try {
         const didUser = isDidUser(didField, rowNumber);
@@ -348,6 +349,9 @@ const getTritonFields = (state: any): any => [
       const didFieldName = "Did User";
       const didField = cleanupField(row[didFieldName], "string");
       console.log("outgoing number", field);
+      console.log("row", row);
+      console.log("didFieldName in Outgoing", didField);
+
       try {
         const didUser = isDidUser(didField, rowNumber);
         if(!didUser){
