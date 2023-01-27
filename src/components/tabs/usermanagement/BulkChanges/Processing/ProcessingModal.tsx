@@ -77,6 +77,7 @@ const ProcessingModal = (props: any) => {
       console.log("PROCESSING IS DONE!!", results);
     } catch(err){
       setErrors(err);
+      setShowProgressBar(false);
       setShowSummary(true);
       console.log("PROCESSING IS DONE BUT FAILED!!", err);
     }
@@ -110,7 +111,7 @@ const ProcessingModal = (props: any) => {
           <TextWrapper styles={{
             size: "26px"
           }}>
-            {totalErrorCount} Validation Errors have been found for this template.
+            {totalErrorCount} Processing Errors have been found for this template.
           </TextWrapper>
           <ButtonWrapper>
             { errors.length > 0 &&
@@ -122,7 +123,7 @@ const ProcessingModal = (props: any) => {
               Export Successful Rows
             </ExportSuccessButton>
             <StyledExportButton  onClick={handleClose}>
-              Close {totalSuccessCount} out of {totalRowCount} rows
+              Close
             </StyledExportButton>
           </ButtonWrapper>
         </ValidationErrorWrapper>

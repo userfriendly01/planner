@@ -176,8 +176,7 @@ export const initiateCalls = async (
           });
         }
 
-        const promiseResponse = await t.processFunction(row, rowNumber);
-        console.log("PROCESS PROMISE COMPLETE: ", promiseResponse);
+        return await t.processFunction(row, rowNumber);
       }));
       progressCallback((previousCount: number) => (previousCount + 1));
       return rowPromise;
@@ -198,6 +197,8 @@ export const initiateCalls = async (
       return processRow(row, rowNumber, setProcessedRows);
     }));
   }
+
+  console.log("***processingPromises", processingPromises);
 
   processingPromises.forEach((rowPromise: any, index: number) => {
     const rowErrors: any = [];

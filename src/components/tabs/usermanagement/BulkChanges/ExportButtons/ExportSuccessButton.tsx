@@ -13,18 +13,7 @@ const ExportSuccessButton = (props: any) => {
 
   const handleExport = () => {
     const rows: any = successfulRows;
-    const columns: any = [
-      {
-        title: "Row",
-        field: "row",
-        width: "50px"
-      },
-      {
-        title: "Errors",
-        field: "errors",
-        width: "400px"
-      }
-    ];
+    const columns: any = [];
 
     if(successfulRows.length > 0){
       Object.keys(successfulRows[0]).forEach((key: string) => {
