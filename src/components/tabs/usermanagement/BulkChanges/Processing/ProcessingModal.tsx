@@ -72,7 +72,7 @@ const ProcessingModal = (props: any) => {
     const successfulRows = identifySuccessfulRecords(uploadedForm, byPassedValidationErrors);
     try {
       setTotalRowCount(successfulRows);
-      const results = await initiateCalls(successfulRows, errors, selectedTemplates, setProcessedRows);
+      const results = await initiateCalls(successfulRows, selectedTemplates, setProcessedRows);
       setShowSummary(true);
       console.log("PROCESSING IS DONE!!", results);
     } catch(err){

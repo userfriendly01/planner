@@ -148,7 +148,6 @@ export const getLowestConcurrencyLimit = (selectedTemplates: any) => {
 
 export const initiateCalls = async (
   successfulRows: any,
-  validationErrors: any,
   selectedTemplates: any,
   setProcessedRows: any
 ) => {
@@ -275,7 +274,7 @@ export const performValidations = async (
   }
 };
 
-export const handleExportErrors = (validationErrors: any, _export: any) => {
+export const handleExportErrors = (validationErrors: any, _error_export: any) => {
   const rows: any = [];
   const columns: any = [
     {
@@ -305,7 +304,7 @@ export const handleExportErrors = (validationErrors: any, _export: any) => {
   }
 };
 
-export const handleExportSuccessfulRecords = (successfulRows: any, _export: any) => {
+export const handleExportSuccessfulRecords = (successfulRows: any, _success_export: any) => {
   const rows: any = successfulRows;
   const columns: any = [
     {
