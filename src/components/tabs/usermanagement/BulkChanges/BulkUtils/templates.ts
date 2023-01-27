@@ -211,8 +211,8 @@ const getTritonFields = (state: any): any => [
       } else if(typeof field !== "number" && typeof field !== "string"){
         return Promise.reject(`${fieldName} must be a number or 'Y' for row ${rowNumber}. If you do not want an extension for this user, leave the field blank`);
       } else {
-        const isExtensionValid = workers.some((w: any) => w.attributes.extension === field);
-        if(isExtensionValid){
+        const isExtensionTaken = workers.some((w: any) => w.attributes.extension === field);
+        if(!isExtensionTaken){
           row.extension = field;
           delete row[fieldName];
           return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
@@ -423,6 +423,10 @@ const getCalabrioQmFields = (state: any): any => [
       const field = row[fieldName];
       const availableGroups = state.calabrioContext.groups;
       const availableTeams = state.calabrioContext.teams;
+      row.scope = {
+        groups: [],
+        teams: []
+      };
 
       if(!field){
         return Promise.resolve(`${fieldName} skipped for row ${rowNumber}`);
@@ -435,8 +439,6 @@ const getCalabrioQmFields = (state: any): any => [
             fieldArray.forEach((scope: any) => {
               const foundInGroups = availableGroups.some((g:any) => g.name?.toLowerCase() === scope?.trim().toLowerCase());
               const foundInTeams = availableTeams.some((t:any) => t.name?.toLowerCase() === scope?.trim().toLowerCase());
-              row.scope.groups = [];
-              row.scope.teams = [];
               if(!foundInGroups && !foundInTeams){
                 return Promise.reject(`${scope.trim()} is not a valid group or team for row ${rowNumber}`);
               } else if(foundInGroups) {
