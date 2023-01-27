@@ -28,7 +28,7 @@ const ProcessingModal = (props: any) => {
   const [ showValidationErrors, setShowValidationErrors ] = React.useState(false);
   const [ showSummary, setShowSummary ] = React.useState(false);
   const [ showProgressBar, setShowProgressBar ] = React.useState(false);
-  const [ successfulRows, setSuccessfulRows ] = React.useRef([]);
+  const [ successfulRows, setSuccessfulRows ] = React.useState([]);
 
   const [ totalRowCount, setTotalRowCount ] = React.useState(uploadedForm.length);
   const totalErrorCount = errors.length;
