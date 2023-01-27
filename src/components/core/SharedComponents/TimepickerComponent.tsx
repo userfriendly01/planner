@@ -8,7 +8,7 @@ import FormControl from "@mui/material/FormControl";
 
 export interface TimePickerComponentProps {
   label: string;
-  value: string;
+  value?: string;
   onChange: any;
   name: string;
   disabled?: boolean;
