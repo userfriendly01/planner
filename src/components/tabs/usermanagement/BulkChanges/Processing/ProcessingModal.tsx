@@ -28,8 +28,7 @@ const ProcessingModal = (props: any) => {
   const [ showValidationErrors, setShowValidationErrors ] = React.useState(false);
   const [ showSummary, setShowSummary ] = React.useState(false);
   const [ showProgressBar, setShowProgressBar ] = React.useState(false);
-  const _error_export = React.useRef(null);
-  const _success_export = React.useRef(null);
+  const [ successfulRows, setSuccessfulRows ] = React.useRef([]);
 
   const [ totalRowCount, setTotalRowCount ] = React.useState(uploadedForm.length);
   const totalErrorCount = errors.length;
@@ -70,8 +69,9 @@ const ProcessingModal = (props: any) => {
     setShowProgressBar(true);
     setProcessedRows(0);
     const successfulRows = identifySuccessfulRecords(uploadedForm, byPassedValidationErrors);
+    setSuccessfulRows(successfulRows);
     try {
-      setTotalRowCount(successfulRows);
+      setTotalRowCount(successfulRows.length);
       const results = await initiateCalls(successfulRows, selectedTemplates, setProcessedRows);
       setShowSummary(true);
       console.log("PROCESSING IS DONE!!", results);
