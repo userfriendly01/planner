@@ -191,7 +191,7 @@ const getTritonFields = (state: any): any => [
     options: null,
     validateFunction: async (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "Extension";
-      const field = row[fieldName];
+      const field = typeof row[fieldName] === "number" ? row[fieldName].toString() : row[fieldName];
       const newExtension = typeof field === "string" ? field.toLowerCase() === "y" : false;
       const workers = state.workerContext.workers;
 
@@ -211,7 +211,7 @@ const getTritonFields = (state: any): any => [
       } else if(typeof field !== "number" && typeof field !== "string"){
         return Promise.reject(`${fieldName} must be a number or 'Y' for row ${rowNumber}. If you do not want an extension for this user, leave the field blank`);
       } else {
-        const isExtensionValid = workers.some((w: any) => w.attributes.extension.toString() === field.toString());
+        const isExtensionValid = workers.some((w: any) => w.attributes.extension === field);
         if(isExtensionValid){
           row.extension = field;
           delete row[fieldName];
@@ -428,7 +428,7 @@ const getCalabrioQmFields = (state: any): any => [
         return Promise.resolve(`${fieldName} skipped for row ${rowNumber}`);
       } else {
         try {
-          const fieldArray = field.replace.split(",");
+          const fieldArray = field.split(",");
           if(fieldArray.length === 0){
             return Promise.resolve(`${fieldName} skipped for row ${rowNumber}`);
           } else {
@@ -448,7 +448,8 @@ const getCalabrioQmFields = (state: any): any => [
             return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
           }
         } catch(err) {
-          return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
+          console.error("Error Thrown validating extension", err);
+          return Promise.reject(`${field} is not in the correct format for row ${rowNumber}`);
         }
       }
     }
