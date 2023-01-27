@@ -291,6 +291,6 @@ export const checkConflictingUsers = async (user: any, users: any[]): Promise<an
     }));
   } catch(err) {
     console.error("Error thrown trying to fetch and validate Conflicting Users", err);
-    return Promise.reject("Error thrown trying to fetch and validate Conflicting Users.", err);
+    return Promise.reject(err);
   }
 };
