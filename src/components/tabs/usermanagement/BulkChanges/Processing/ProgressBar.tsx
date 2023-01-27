@@ -18,8 +18,12 @@ const ProgressBar = (props: any) => {
   console.log("in progressbar", percentageComplete);
 
   React.useEffect(() => {
-    //set interval and update selected joke
-    console.log(Math.floor((Math.random() * jokes.length)));
+    const updateJoke = () => {
+      const newJoke = Math.floor((Math.random() * jokes.length));
+      setSelectedJokeIndex(newJoke);
+    };
+    setInterval(updateJoke, 60000);
+
   }, []);
 
   return (

@@ -203,6 +203,7 @@ const getTritonFields = (state: any): any => [
           row.extension = extension;
           delete row[fieldName];
         } catch (err) {
+          console.error("Error generating extension", err);
           return Promise.reject(`Unable to generate ${fieldName} for row ${rowNumber}.`);
         }
         return Promise.resolve(`${fieldName} ${extension} set for row ${rowNumber}`);

@@ -24,11 +24,14 @@ export const generateExtension = workers => {
 
   const validateGeneratedNumber = async attemptNumber => {
     const extension = pickANumber();
-    const validExtension = workers.some(w => w.attributes.extension.toString() === extension.toString());
+    const validExtension = workers.some(w => {
+      w.attributes.extension === extension.toString();
+    });
     if(validExtension){
       return Promise.resolve(extension);
     } else if(attemptNumber === maxAttempts) {
-      return Promise.reject("Enable to generate extension");
+      console.log("Extension Max number reached");
+      return Promise.reject("Unable to generate extension");
     } else {
       return validateGeneratedNumber(attemptNumber + 1 );
     }
