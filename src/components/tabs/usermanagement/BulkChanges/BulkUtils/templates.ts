@@ -494,17 +494,17 @@ const getCalabrioQmFields = (state: any): any => [
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
       } else {
         try {
-          const fieldArray = field.replace(" ","").split(",");
+          const fieldArray = field.split(",");
           if(fieldArray.length === 0){
             return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
           } else {
             fieldArray.forEach((role: any) => {
-              const foundInRoles = calabrioAllowedRoles.some((r:any) => r.toLowerCase() === role?.toLowerCase());
+              const foundInRoles = calabrioAllowedRoles.some((r:any) => r.toLowerCase() === role?.trim().toLowerCase());
               row.roles = [];
               if(!foundInRoles){
-                return Promise.reject(`${role} is not a valid group or team for row ${rowNumber}`);
+                return Promise.reject(`${role.trim()} is not a valid role for row ${rowNumber}`);
               } else {
-                row.roles.push(role);
+                row.roles.push(role.trim());
                 return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
               }
             });

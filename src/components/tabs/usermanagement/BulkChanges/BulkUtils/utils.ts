@@ -137,29 +137,35 @@ export const initiateCalls = async (
   selectedTemplates: any
 ) => {
   const successfulRows = identifySuccessfulRecords(uploadedForm, validationErrors);
-  const dependencies = identifyProcessingDependencies(selectedTemplates);
+  const templateTree = identifyProcessingDependencies(selectedTemplates);
   console.log("Successful rows", successfulRows);
-  if(dependencies){
-    console.log("dependencies", dependencies);
-    const dependencyPromises: any = [];
-    dependencies.map(async (t: any) => {
-      console.log("processing dependency", t.name);
+  let finalPromises: any = [];
+
+  if(templateTree){
+    console.log("templateTree", templateTree);
+
+    templateTree.map(async (t: any) => {
+      console.log("processing template", t.name);
       const requestData = {};
-      if(t.multiRunDependencies){
-        dependencyPromises.find(((d: any) => d.name === t.multiRunDependencies.name));
-        const variable = t.multiRunDependencies.variable;
-        console.log("looking in dependency promises for ", variable);
+
+      if(t.multiRunDependencies && t.multiRunDependencies.length > 0){
+        t.multiRunDependencies.forEach((dependency: any) => {
+          console.log(`Looking for ${dependency.name}`, templateTree);
+          const foundDependency = finalPromises.find(((t: any) => t.name === dependency.name));
+          const variable = dependency.variable;
+          console.log("looking in final promises for ", foundDependency, variable);
+        });
       }
 
       try {
         const promiseResponse = await t.processFunction();
-        dependencyPromises.push({
+        finalPromises.push({
           name: t.name,
           status: "SUCCEEDED",
           data: promiseResponse.value
         });
       } catch(err) {
-        dependencyPromises.push({
+        finalPromises.push({
           name: t.name,
           status: "FAILED",
           data: err
@@ -167,11 +173,12 @@ export const initiateCalls = async (
       }
     });
   } else {
-    const promises = await Promise.allSettled(selectedTemplates.map((t: any) => {
+    finalPromises = await Promise.allSettled(selectedTemplates.map((t: any) => {
       return t.processFunction();
     }));
-    console.log("no dependencies needed: final promises", promises);
   }
+  console.log("no dependencies needed: final promises", finalPromises.slice());
+
 };
 
 export const performValidations = async (
