@@ -200,9 +200,9 @@ export const initiateCalls = async (
   };
 
   if(concurrencyLimit){
-    processingPromises = await handleConcurrentCalls(concurrencyLimit, processRow, uploadedForm, setProcessedRows);
+    processingPromises = await handleConcurrentCalls(concurrencyLimit, processRow, successfulRows, setProcessedRows);
   } else {
-    processingPromises = await Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {
+    processingPromises = await Promise.allSettled(successfulRows.map(async (row: any, index: number) => {
       const rowNumber = index + 1;
       return processRow(row, rowNumber, setProcessedRows);
     }));
