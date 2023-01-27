@@ -24,7 +24,7 @@ export const generateExtension = workers => {
 
   const validateGeneratedNumber = async attemptNumber => {
     const extension = pickANumber();
-    const validExtension = workers.some(w => {
+    const validExtension = !workers.some(w => {
       w.attributes.extension === extension.toString();
     });
     if(validExtension){

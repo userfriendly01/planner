@@ -136,20 +136,23 @@ export const initiateCalls = async (
   validationErrors: any,
   selectedTemplates: any
 ) => {
-  //Add in concurrency limit
-  const totalCalls = uploadedForm.length;
-  const concurrencyMax = 10;
-  const currentIndex = 0;
   const successfulRows = identifySuccessfulRecords(uploadedForm, validationErrors);
   const dependencies = identifyProcessingDependencies(selectedTemplates);
+  console.log("Successful rows", successfulRows);
   if(dependencies){
     console.log("dependencies", dependencies);
-    // dependencies.map(async (d: any) => {
-    //   d.processFunction();
-    // });
+    const dependencyPromises = [];
+    dependencies.map(async (d: any) => {
+      console.log("processing dependency", d.name);
+      const promiseResponse = await t.processFunction();
+    });
+
     //kick off api calls in order of dependency tree using template concurrency limit
   } else {
-    console.log("no dependencies needed");
+    const promises = await Promise.allSettled(selectedTemplates.map((t: any) => {
+      return t.processFunction();
+    }));
+    console.log("no dependencies needed: final promises", promises);
   //kick off api calls asyncronously using template concurrency limit
   }
 };
