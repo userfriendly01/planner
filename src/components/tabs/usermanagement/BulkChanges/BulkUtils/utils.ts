@@ -147,7 +147,7 @@ export const initiateCalls = async (
       const requestData = {};
       if(t.multiRunDependencies){
         dependencyPromises.find(((d: any) => d.name === t.multiRunDependencies.name));
-        const variable = d.multiRunDependencies.variable;
+        const variable = t.multiRunDependencies.variable;
         console.log("looking in dependency promises for ", variable);
       }
 
