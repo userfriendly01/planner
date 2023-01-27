@@ -24,102 +24,107 @@ const ProcessingModal = (props: any) => {
     uploadedForm
   } = props;
 
-  const [ errors, setErrors ] = React.useState([]);
-  const [ showValidationErrors, setShowValidationErrors ] = React.useState(false);
-  const [ showSummary, setShowSummary ] = React.useState(false);
-  const [ showProgressBar, setShowProgressBar ] = React.useState(false);
-  const [ successfulRows, setSuccessfulRows ] = React.useState([]);
+  enum STATES {
+    VALIDATING = "validating",
+    VALIDATED = "validated",
+    PROCESSING = "processing",
+    PROCESSED = "processed"
+  }
 
-  const [ totalRowCount, setTotalRowCount ] = React.useState(uploadedForm.length);
-  const totalErrorCount = errors.length;
-  const totalSuccessCount = totalRowCount - totalErrorCount;
+  const [ results, setResults ] = React.useState({
+    validationErrors: [],
+    processingErrors: [],
+    successfullyValidatedRows: [],
+    successfullyProcessedRows: []
+  });
 
+  const [ status, setStatus ] = React.useState(null);
+  const [ processedRows, setProcessedRows ] = React.useState(null);
 
-  const [ processedRows, setProcessedRows ] = React.useState(0);
-
-  console.log("we're in the processing modal! errors", errors );
-  console.log("we're in the processing modal! selectedTemplates", selectedTemplates );
-  console.log("we're in the processing modal! uploadedForm", uploadedForm );
-  console.log("we're in the processing modal! consolidatedFieldsList", consolidatedFieldsList );
-  console.log("we're in the processing modal! showProgressBar", showProgressBar );
+  console.log("we're in the processing modal! results", results );
+  console.log("we're in the processing modal! status", status );
   console.log("we're in the processing modal! processedRows", processedRows );
 
-
-  console.log(processedRows);
   React.useEffect(() => {
-    console.log("within Processing Modal [] useEffect");
-    setShowProgressBar(true);
+    setStatus(STATES.VALIDATING);
     setTimeout(async () => {
       try {
         await performValidations(uploadedForm, selectedTemplates, consolidatedFieldsList, setProcessedRows);
         handleStartProcessing();
       } catch (err) {
-        console.log("FINAL ERRORS LOG", err);
-        setShowProgressBar(false);
-        setErrors(err);
-        setShowValidationErrors(true);
+        console.log("Validation Errors Log", err);
+        setResults({
+          ...results,
+          validationErrors: [err],
+          successfullyProcessedRows: [err.success]
+        });
+        setStatus(STATES.PROCESSED);
       }
     }, 1000);
   }, []);
 
   const handleStartProcessing = async () => {
-    const byPassedValidationErrors = errors.slice();
-    setErrors([]);
-    setShowValidationErrors(false);
-    setShowProgressBar(true);
     setProcessedRows(0);
-    const successfulRows = identifySuccessfulRecords(uploadedForm, byPassedValidationErrors);
-    setSuccessfulRows(successfulRows);
+    const successfulRows = identifySuccessfulRecords(uploadedForm, results.validationErrors.slice());
     try {
-      setTotalRowCount(successfulRows.length);
       const results = await initiateCalls(successfulRows, selectedTemplates, setProcessedRows);
-      setShowSummary(true);
+      setResults({
+        ...results,
+        successfullyProcessedRows: results
+      });
+      setStatus(STATES.PROCESSED);
       console.log("PROCESSING IS DONE!!", results);
     } catch(err){
-      setErrors(err);
-      setShowProgressBar(false);
-      setShowSummary(true);
       console.log("PROCESSING IS DONE BUT FAILED!!", err);
+      setResults({
+        ...results,
+        processingErrors: [err.errors],
+        successfullyProcessedRows: [err.success]
+      });
+      setStatus(STATES.PROCESSED);
     }
   };
 
   return (
     <ModalWrapper>
-      { showValidationErrors &&
+      { status === STATES.VALIDATED &&
         <ValidationErrorWrapper>
           <TextWrapper styles={{
             size: "26px"
           }}>
-            {totalErrorCount} Validation Errors have been found for this template.
+            {results.validationErrors.length} Validation Errors have been found for this template.
           </TextWrapper>
           <ButtonWrapper>
             <StyledExportButton onClick={handleClose}>
               Cancel
             </StyledExportButton>
-            <ExportErrorsButton errors={errors}><ExcelExport/>
-              Export Validation Errors
-            </ExportErrorsButton>
+            { results.validationErrors.length > 0 &&
+              <ExportErrorsButton errors={results.validationErrors}><ExcelExport/>
+                Export Validation Errors
+              </ExportErrorsButton>
+            }
             <StyledExportButton onClick={handleStartProcessing}>
-              Process {totalSuccessCount} out of {totalRowCount} rows
+              Process {results.successfullyValidatedRows.length} out of {uploadedForm.length} rows
             </StyledExportButton>
           </ButtonWrapper>
         </ValidationErrorWrapper>
       }
-      { showProgressBar && <ProgressBar completedRows={processedRows} totalRowCount={totalRowCount}/> }
-      { showSummary &&
+      { status === STATES.VALIDATING && <ProgressBar completedRows={processedRows} totalRowCount={uploadedForm.length}/> }
+      { status === STATES.PROCESSING && <ProgressBar completedRows={processedRows} totalRowCount={results.successfullyValidatedRows.length}/> }
+      { status === STATES.PROCESSED &&
         <ValidationErrorWrapper>
-          <TextWrapper styles={{
-            size: "26px"
-          }}>
-            {totalErrorCount} Processing Errors have been found for this template.
-          </TextWrapper>
+          { results.processingErrors.length > 0 &&
+            <TextWrapper styles={{ size: "26px" }}>
+              Processing Errors have been found for this template.
+            </TextWrapper>
+          }
           <ButtonWrapper>
-            { errors.length > 0 &&
-              <ExportErrorsButton errors={errors}><ExcelExport/>
-                Export Processing Errors
-              </ExportErrorsButton>
+            { results.processingErrors.length > 0 &&
+            <ExportErrorsButton errors={results.processingErrors}><ExcelExport/>
+            Export Processing Errors
+            </ExportErrorsButton>
             }
-            <ExportSuccessButton successfulRows={successfulRows}><ExcelExport/>
+            <ExportSuccessButton successfulRows={results.successfullyProcessedRows}><ExcelExport/>
               Export Successful Rows
             </ExportSuccessButton>
             <StyledExportButton  onClick={handleClose}>

@@ -182,7 +182,7 @@ export const initiateCalls = async (
       return rowPromise;
     } else {
       const rowPromise = await Promise.allSettled(selectedTemplates.map((t: any) => {
-        return t.processFunction();
+        return t.processFunction(row, rowNumber);
       }));
       progressCallback((previousCount: number) => (previousCount + 1));
       return rowPromise;
