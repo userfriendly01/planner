@@ -20,6 +20,7 @@ import {
 
 
 const isDidUser = (didField: any, rowNumber: number) => {
+  console.log("isDidUser", isDidUser);
   if(typeof didField !== "string"){
     return Promise.reject(`Did User field needs to be 'Y' or 'N' for row ${rowNumber}`);
   } else if(didField !== "y" && didField !== "n"){
@@ -346,7 +347,7 @@ const getTritonFields = (state: any): any => [
       const field = cleanupField(row[fieldName], "string");
       const didFieldName = "Did User";
       const didField = cleanupField(row[didFieldName], "string");
-
+      console.log("outgoing number", field);
       try {
         const didUser = isDidUser(didField, rowNumber);
         if(!didUser){
@@ -354,13 +355,13 @@ const getTritonFields = (state: any): any => [
             try {
               const outgoing = getE164Number(field);
               row.did = outgoing;
+              return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
             } catch(err) {
               return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
             }
           } else {
             return Promise.resolve(`${fieldName} skipped for DID user for row ${rowNumber}`);
           }
-          return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
         } else {
           return Promise.reject(`Did User field is 'N', ${fieldName} is not applicable for row ${rowNumber}`);
         }
