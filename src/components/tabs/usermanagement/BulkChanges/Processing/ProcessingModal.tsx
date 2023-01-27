@@ -50,13 +50,18 @@ const ProcessingModal = (props: any) => {
     setTimeout(async () => {
       try {
         await performValidations(uploadedForm, selectedTemplates, consolidatedFieldsList, setProcessedRows);
+        setResults({
+          ...results,
+          successfullyValidatedRows: uploadedForm
+        });
         handleStartProcessing();
       } catch (err) {
         console.log("Validation Errors Log", err);
+        const successfullyValidatedRows = identifySuccessfulRecords(uploadedForm, err.slice());
         setResults({
           ...results,
-          validationErrors: [err],
-          successfullyProcessedRows: [err.success]
+          validationErrors: err,
+          successfullyValidatedRows
         });
         setStatus(STATES.VALIDATED);
       }
@@ -65,12 +70,12 @@ const ProcessingModal = (props: any) => {
 
   const handleStartProcessing = async () => {
     setProcessedRows(0);
-    const successfulRows = identifySuccessfulRecords(uploadedForm, results.validationErrors.slice());
+    const rowsToProcess = results.successfullyValidatedRows;
     try {
-      const results = await initiateCalls(successfulRows, selectedTemplates, setProcessedRows);
+      const successfullyProcessedRows = await initiateCalls(rowsToProcess, selectedTemplates, setProcessedRows);
       setResults({
         ...results,
-        successfullyProcessedRows: results
+        successfullyProcessedRows
       });
       setStatus(STATES.PROCESSED);
       console.log("PROCESSING IS DONE!!", results);
@@ -78,8 +83,8 @@ const ProcessingModal = (props: any) => {
       console.log("PROCESSING IS DONE BUT FAILED!!", err);
       setResults({
         ...results,
-        processingErrors: [err.errors],
-        successfullyProcessedRows: [err.success]
+        processingErrors: err.errors,
+        successfullyProcessedRows: err.success
       });
       setStatus(STATES.PROCESSED);
     }
@@ -118,6 +123,9 @@ const ProcessingModal = (props: any) => {
               Processing Errors have been found for this template.
             </TextWrapper>
           }
+          <TextWrapper styles={{ size: "26px" }}>
+              Processing Errors have been found for this template.
+          </TextWrapper>
           <ButtonWrapper>
             { results.processingErrors.length > 0 &&
             <ExportErrorsButton errors={results.processingErrors}><ExcelExport/>

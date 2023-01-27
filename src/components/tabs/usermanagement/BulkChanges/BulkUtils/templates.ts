@@ -1,4 +1,6 @@
 import {
+  createUser,
+  createCalabrioUser,
   fetchUser,
   generateExtension
 } from "services";
@@ -138,46 +140,50 @@ const getTritonFields = (state: any): any => [
         skills: [],
         levels: {}
       };
-      try {
-        const fieldArray = field.replace(" ","").split(",");
-        fieldArray.forEach((objString: string) => {
-          const objKeyValueArray = objString.replace(" ","").split(":");
-          const key: any = objKeyValueArray[0];
-          const value: any = objKeyValueArray[1];
-          if(value){
-            defaultSkills.levels[key] = value;
+      if(field){
+        try {
+          const fieldArray = field.replace(" ","").split(",");
+          fieldArray.forEach((objString: string) => {
+            const objKeyValueArray = objString.replace(" ","").split(":");
+            const key: any = objKeyValueArray[0];
+            const value: any = objKeyValueArray[1];
+            if(value){
+              defaultSkills.levels[key] = value;
+            }
+            defaultSkills.skills.push({ key: parseInt(value) });
+
+          });
+        } catch(err){
+          return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}. Must be a comma delimited list of skills. If a skill has a level it must be separated by a :`);
+        }
+
+        const availableSkills = state.skillContext.skills;
+        const skillErrors: any = [];
+
+        defaultSkills.skills.forEach((ds: any) => {
+          if(!availableSkills.some((as: any) => as.name === ds)){
+            skillErrors.push(`${ds} is not an available skill `);
           }
-          defaultSkills.skills.push({ key: parseInt(value) });
-
         });
-      } catch(err){
-        return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}. Must be a comma delimited list of skills. If a skill has a level it must be separated by a :`);
-      }
 
-      const availableSkills = state.skillContext.skills;
-      const skillErrors: any = [];
-
-      defaultSkills.skills.forEach((ds: any) => {
-        if(!availableSkills.some((as: any) => as.name === ds)){
-          skillErrors.push(`${ds} is not an available skill `);
+        Object.keys(defaultSkills.levels).forEach((skill: any) => {
+          const matchingSkill = availableSkills.find((as: any) => as.name === skill);
+          const level = defaultSkills.levels[skill];
+          if(!matchingSkill){
+            skillErrors.push(`${skill} is not an available skill `);
+          } else if(!matchingSkill.levels.includes(level)){
+            skillErrors.push(`${skill} does not support Level ${level} `);
+          }
+        });
+        if(skillErrors.length !== 0){
+          row.defaultSkills = defaultSkills;
+          //delete row[fieldName];
+          return Promise.resolve(`${fieldName} Errors found for row ${rowNumber} ${skillErrors.toString()}`);
+        } else {
+          return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
         }
-      });
-
-      Object.keys(defaultSkills.levels).forEach((skill: any) => {
-        const matchingSkill = availableSkills.find((as: any) => as.name === skill);
-        const level = defaultSkills.levels[skill];
-        if(!matchingSkill){
-          skillErrors.push(`${skill} is not an available skill `);
-        } else if(!matchingSkill.levels.includes(level)){
-          skillErrors.push(`${skill} does not support Level ${level} `);
-        }
-      });
-      if(skillErrors.length !== 0){
-        row.defaultSkills = defaultSkills;
-        //delete row[fieldName];
-        return Promise.resolve(`${fieldName} Errors found for row ${rowNumber} ${skillErrors.toString()}`);
       } else {
-        return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+        return Promise.resolve(`${fieldName} is empty but not required. Skipping validation`);
       }
     }
   },
@@ -232,7 +238,7 @@ const getTritonFields = (state: any): any => [
     options: null,
     validateFunction: async (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "Did User";
-      const field = row[fieldName];
+      const field = row[fieldName].trim();
 
       if(typeof field !== "string"){
         return Promise.reject(`${fieldName} needs to be 'Y' or 'N' for row ${rowNumber}`);
@@ -255,7 +261,7 @@ const getTritonFields = (state: any): any => [
       const fieldName = "Direct Dial Number";
       const field = row[fieldName];
       const didFieldName = "Did User";
-      const didField = row[didFieldName];
+      const didField = row[didFieldName].trim();
 
       if(typeof didField !== "string"){
         return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
@@ -288,7 +294,7 @@ const getTritonFields = (state: any): any => [
       const fieldName = "Zero Out Enabled";
       const field = row[fieldName];
       const didFieldName = "Did User";
-      const didField = row[didFieldName];
+      const didField = row[didFieldName].trim();
 
       if(typeof didField !== "string"){
         return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
@@ -338,7 +344,7 @@ const getTritonFields = (state: any): any => [
       const fieldName = "Outgoing Number";
       const field = row[fieldName];
       const didFieldName = "Did User";
-      const didField = row[didFieldName];
+      const didField = row[didFieldName].trim();
 
       if(typeof didField !== "string"){
         return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
@@ -542,8 +548,10 @@ const getCalabrioQmFields = (state: any): any => [
 ];
 
 const processCreateTritonUser = async (row: any, rowNumber: number, state: any) => {
-  console.log("**** TRITON RECORD PROCESSING", Date.now());
-  row.workerSid = "WK123456";
+  console.log("**** TRITON RECORD PROCESSING", row);
+  const workerSid = "WK123456";
+  // const workerSid = await createUser(row);
+  row.workerSid = workerSid;
   Promise.resolve({ workerSid: "WK123456" });
 };
 
