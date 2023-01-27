@@ -5,7 +5,7 @@ import {
   ProgressBarFiller,
   TextWrapper
 } from "../BulkChanges.Styles";
-import { getJokes } from "services";
+import { jokes } from "../BulkUtils/jokes";
 
 const ProgressBar = (props: any) => {
   const {
@@ -13,28 +13,20 @@ const ProgressBar = (props: any) => {
     completedRows
   } = props;
 
-  const [ jokes, setJokes ] = React.useState(null);
+  const [ selectedJokeIndex, setSelectedJokeIndex ] = React.useState(0);
   const percentageComplete =  Math.floor((completedRows/totalRowCount) * 100);
   console.log("in progressbar", percentageComplete);
 
   React.useEffect(() => {
-    if(!jokes){
-      try {
-        const jokes = getJokes();
-        setJokes(jokes);
-        console.log("Jokes", jokes);
-      } catch(err){
-        console.error("Aww no jokes", err);
-      }
-    }
+    //set interval and update selected joke
+    console.log(Math.floor((Math.random() * jokes.length)));
   }, []);
 
   return (
     <ProgressBarContainer>
-      { jokes && <TextWrapper styles={{
+      <TextWrapper styles={{
         size: "26px"
-      }}> We&apos;re working on it </TextWrapper>
-      }
+      }}> {jokes[selectedJokeIndex]} </TextWrapper>
       <ProgressBarWrapper>
         <ProgressBarFiller progress={`${percentageComplete}%` || "34%"}/>
       </ProgressBarWrapper>

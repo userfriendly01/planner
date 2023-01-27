@@ -1,5 +1,4 @@
 import {
-  checkExtension,
   fetchUser,
   generateExtension
 } from "services";
@@ -193,13 +192,14 @@ const getTritonFields = (state: any): any => [
       const fieldName = "Extension";
       const field = row[fieldName];
       const newExtension = typeof field === "string" ? field.toLowerCase() === "y" : false;
+      const workers = state.workerContext.workers;
 
       if(!field){
         return Promise.resolve(`No ${fieldName} set for row ${rowNumber}`);
       } else if(newExtension){
         let extension;
         try {
-          extension = await generateExtension();
+          extension = await generateExtension(workers);
           row.extension = extension;
           delete row[fieldName];
         } catch (err) {
@@ -209,7 +209,7 @@ const getTritonFields = (state: any): any => [
       } else if(typeof field !== "number"){
         return Promise.reject(`${fieldName} must be a number or 'Y' for row ${rowNumber}. If you do not want an extension for this user, leave the field blank`);
       } else {
-        const isExtensionValid = await checkExtension(field);
+        const isExtensionValid = workers.some((w: any) => w.attributes.extension.toString() === field.toString());
         if(isExtensionValid){
           row.extension = field;
           delete row[fieldName];
@@ -344,6 +344,8 @@ const getTritonFields = (state: any): any => [
         return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
       } else if(didField?.toLowerCase() === "y" && field){
         return Promise.reject(`${fieldName} is not applicable for ${didFieldName} for row ${rowNumber}`);
+      } else if(didField?.toLowerCase() === "y" && !field){
+        return Promise.resolve(`${fieldName} skipped for DID user for row ${rowNumber}`);
       } else {
         try {
           const outgoing = getE164Number(field);
@@ -542,7 +544,7 @@ export const getCreateTemplates: any = (state: any): any => {
       name: "CREATE_TRITON_USER",
       processFunction: () => Promise.resolve(Date.now()),
       multiRunDependencies: null,
-      validationConcurrencyLimit: 5,
+      validationConcurrencyLimit: null,
       processingConcurrencyLimit: 10,
       fields: getTritonFields(state)
     },
