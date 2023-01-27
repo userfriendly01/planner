@@ -13,7 +13,8 @@ export interface ComponentControlProps {
   onChange: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>,
   disabled?: boolean,
   error: boolean,
-  required: boolean
+  required: boolean,
+  isBlankFirstValue?: boolean
 }
 function ComponentControl({
   control,
@@ -25,7 +26,8 @@ function ComponentControl({
   onChange,
   disabled,
   error,
-  required
+  required,
+  isBlankFirstValue
 }: ComponentControlProps): JSX.Element {
   switch (control) {
     case "input":
@@ -54,6 +56,7 @@ function ComponentControl({
           disabled={disabled}
           error={error}
           required={required}
+          isBlankFirstValue={isBlankFirstValue}
         />
       );
     case "timePicker":
