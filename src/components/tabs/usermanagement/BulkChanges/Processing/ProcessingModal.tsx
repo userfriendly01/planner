@@ -6,8 +6,8 @@ import {
   TextWrapper,
   ValidationErrorWrapper
 } from "../BulkChanges.Styles";
-import { ExportSuccessButton } from "../ExportButtons/ExportSuccessButton";
-import { ExportErrorsButton } from "../ExportButtons/ExportErrorsButton";
+import ExportSuccessButton from "../ExportButtons/ExportSuccessButton";
+import ExportErrorsButton from "../ExportButtons/ExportErrorsButton";
 import {
   performValidations,
   initiateCalls,
