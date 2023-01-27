@@ -543,26 +543,26 @@ export const getCreateTemplates: any = (state: any): any => {
   return {
     CREATE_TRITON_USER: {
       name: "CREATE_TRITON_USER",
-      processFunction: () => {
+      processFunction: (row: any, rowNumber: number, data: any) => {
         console.log("**** TRITON RECORD PROCESSING", Date.now());
         Promise.resolve({ workerSid: "WK123456" });
       },
       multiRunDependencies: null,
-      validationConcurrencyLimit: null,
-      processingConcurrencyLimit: 10,
+      validationConcurrencyLimit: 1000,
+      processingConcurrencyLimit: 5,
       fields: getTritonFields(state)
     },
     CREATE_CALABRIO_QM_USER: {
       name: "CREATE_CALABRIO_QM_USER",
-      processFunction: ((workerSid: any) => {
-        console.log("****CALABRIO RECORD PROCESSING for", workerSid);
+      processFunction: ((row: any, rowNumber: number, data: any) => {
+        console.log("****CALABRIO RECORD PROCESSING for", data);
         Promise.resolve();
       }),
       multiRunDependencies: [{
         name: "CREATE_TRITON_USER",
         variable: "workerSid"
       }],
-      validationConcurrencyLimit: null,
+      validationConcurrencyLimit: 1000,
       processingConcurrencyLimit: null,
       fields: getCalabrioQmFields(state)
     }

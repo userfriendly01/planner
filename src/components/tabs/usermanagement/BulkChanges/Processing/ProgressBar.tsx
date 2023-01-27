@@ -13,7 +13,7 @@ const ProgressBar = (props: any) => {
     completedRows
   } = props;
 
-  const [ selectedJokeIndex, setSelectedJokeIndex ] = React.useState(0);
+  const [ selectedJokeIndex, setSelectedJokeIndex ] = React.useState(Math.floor((Math.random() * jokes.length)));
   const percentageComplete =  Math.floor((completedRows/totalRowCount) * 100);
   console.log("in progressbar", percentageComplete);
 
@@ -23,7 +23,6 @@ const ProgressBar = (props: any) => {
       setSelectedJokeIndex(newJoke);
     };
     setInterval(updateJoke, 60000);
-
   }, []);
 
   return (

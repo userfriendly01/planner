@@ -141,12 +141,30 @@ export const initiateCalls = async (
   console.log("Successful rows", successfulRows);
   if(dependencies){
     console.log("dependencies", dependencies);
-    const dependencyPromises = [];
+    const dependencyPromises: any = [];
     dependencies.map(async (t: any) => {
       console.log("processing dependency", t.name);
-      const promiseResponse = await t.processFunction();
+      const requestData = {};
+      if(t.multiRunDependencies){
+        dependencyPromises.find(((d: any) => d.name === d.multiRunDependencies.name));
+        const variable = d.multiRunDependencies.variable;
+        console.log("looking in dependency promises for ", variable);
+      }
+      try {
+        const promiseResponse = await t.processFunction();
+        dependencyPromises.push({
+          name: t.name,
+          status: "SUCCEEDED",
+          data: promiseResponse.value
+        });
+      } catch(err) {
+        dependencyPromises.push({
+          name: t.name,
+          status: "FAILED",
+          data: promiseResponse.reason
+        });
+      }
     });
-
   } else {
     const promises = await Promise.allSettled(selectedTemplates.map((t: any) => {
       return t.processFunction();
