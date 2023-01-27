@@ -10,6 +10,7 @@ import {
   performValidations,
   initiateCalls,
   handleExportErrors,
+  handleExportSuccessfulRecords,
   identifySuccessfulRecords
 } from "../BulkUtils/utils";
 import ProgressBar from "./ProgressBar";
@@ -27,7 +28,9 @@ const ProcessingModal = (props: any) => {
   const [ showValidationErrors, setShowValidationErrors ] = React.useState(false);
   const [ showSummary, setShowSummary ] = React.useState(false);
   const [ showProgressBar, setShowProgressBar ] = React.useState(false);
-  const _export = React.useRef(null);
+  const _error_export = React.useRef(null);
+  const _success_export = React.useRef(null);
+
   const [ totalRowCount, setTotalRowCount ] = React.useState(uploadedForm.length);
   const totalErrorCount = errors.length;
   const totalSuccessCount = totalRowCount - totalErrorCount;
@@ -92,7 +95,7 @@ const ProcessingModal = (props: any) => {
             <StyledExportButton onClick={handleClose}>
               Cancel
             </StyledExportButton>
-            <StyledExportButton onClick={() => handleExportErrors(errors, _export)}><ExcelExport ref={_export}/>
+            <StyledExportButton onClick={() => handleExportErrors(errors, _error_export)}><ExcelExport ref={_error_export}/>
               Export Validation Errors
             </StyledExportButton>
             <StyledExportButton onClick={handleStartProcessing}>
@@ -111,11 +114,11 @@ const ProcessingModal = (props: any) => {
           </TextWrapper>
           <ButtonWrapper>
             { errors.length > 0 &&
-              <StyledExportButton onClick={() => handleExportErrors(errors, _export)}><ExcelExport ref={_export}/>
+              <StyledExportButton onClick={() => handleExportErrors(errors, _error_export)}><ExcelExport ref={_error_export}/>
                 Export Processing Errors
               </StyledExportButton>
             }
-            <StyledExportButton onClick={() => handleExportErrors(errors, _export)}><ExcelExport ref={_export}/>
+            <StyledExportButton onClick={() => handleExportSuccessfulRecords(errors, _success_export)}><ExcelExport ref={_success_export}/>
               Export Successful Rows
             </StyledExportButton>
             <StyledExportButton  onClick={handleClose}>

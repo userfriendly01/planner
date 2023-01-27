@@ -300,8 +300,8 @@ export const handleExportErrors = (validationErrors: any, _export: any) => {
   console.log("rows", rows);
   console.log("columns", columns);
 
-  if (_export.current !== null) {
-    _export.current.save(rows, columns);
+  if (_error_export.current !== null) {
+    _error_export.current.save(rows, columns);
   }
 };
 
@@ -334,8 +334,8 @@ export const handleExportSuccessfulRecords = (successfulRows: any, _export: any)
   console.log("rows", rows);
   console.log("columns", columns);
 
-  if (_export.current !== null) {
-    _export.current.save(rows, columns);
+  if (_success_export.current !== null) {
+    _success_export.current.save(rows, columns);
   }
 };
 
