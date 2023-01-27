@@ -48,7 +48,7 @@ export const consolidateTemplates = (selectedTemplates: any, setConsolidatedTemp
   setConsolidatedTemplates(consolidatedFieldsList);
 };
 
-const identifySuccessfulRecords = (uploadedForm: any, validationErrors: any) => {
+export const identifySuccessfulRecords = (uploadedForm: any, validationErrors: any) => {
   const successfulRows: any = [];
   uploadedForm.forEach((row: any, index: number) => {
     const rowEquivalent = index + 1;
@@ -147,12 +147,11 @@ export const getLowestConcurrencyLimit = (selectedTemplates: any) => {
 };
 
 export const initiateCalls = async (
-  uploadedForm: any,
+  successfulRows: any,
   validationErrors: any,
   selectedTemplates: any,
   setProcessedRows: any
 ) => {
-  const successfulRows = identifySuccessfulRecords(uploadedForm, validationErrors);
   const templateTree = identifyProcessingDependencies(selectedTemplates);
   const concurrencyLimit: any = getLowestConcurrencyLimit(selectedTemplates);
 
@@ -217,9 +216,12 @@ export const initiateCalls = async (
   });
   console.log("finalErrors.length", finalErrors.length);
   if(finalErrors.length === 0){
-    return Promise.resolve();
+    return Promise.resolve(successfulRows);
   } else {
-    return Promise.reject(finalErrors);
+    return Promise.reject({
+      success: identifySuccessfulRecords(successfulRows, finalErrors),
+      errors: finalErrors
+    });
   }
 };
 
@@ -294,6 +296,40 @@ export const handleExportErrors = (validationErrors: any, _export: any) => {
       errors: error.errors.toString()
     });
   });
+
+  console.log("rows", rows);
+  console.log("columns", columns);
+
+  if (_export.current !== null) {
+    _export.current.save(rows, columns);
+  }
+};
+
+export const handleExportSuccessfulRecords = (successfulRows: any, _export: any) => {
+  const rows: any = successfulRows;
+  const columns: any = [
+    {
+      title: "Row",
+      field: "row",
+      width: "50px"
+    },
+    {
+      title: "Errors",
+      field: "errors",
+      width: "400px"
+    }
+  ];
+
+  if(successfulRows.length > 0){
+    Object.keys(successfulRows[0]).forEach((key: string) => {
+      columns.push({
+        title: key,
+        field: key,
+        width: "50px"
+      });
+    });
+  }
+
 
   console.log("rows", rows);
   console.log("columns", columns);
