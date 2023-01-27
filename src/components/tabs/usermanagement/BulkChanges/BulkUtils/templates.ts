@@ -537,16 +537,23 @@ const getCalabrioQmFields = (state: any): any => [
   }
 ];
 
+const processCreateTritonUser = (row: any, rowNumber: number, data: any) => {
+  console.log("**** TRITON RECORD PROCESSING", Date.now());
+  Promise.resolve({ workerSid: "WK123456" });
+};
+
+const processCreateCalabrioUser = (row: any, rowNumber: number, data: any) => {
+  console.log("****CALABRIO RECORD PROCESSING for", data);
+  //if worker sid isnt in data - we do the validations to look for existing calabrio users before moving on
+  Promise.resolve();
+};
 
 //Templates
 export const getCreateTemplates: any = (state: any): any => {
   return {
     CREATE_TRITON_USER: {
       name: "CREATE_TRITON_USER",
-      processFunction: (row: any, rowNumber: number, data: any) => {
-        console.log("**** TRITON RECORD PROCESSING", Date.now());
-        Promise.resolve({ workerSid: "WK123456" });
-      },
+      processFunction: processCreateTritonUser,
       multiRunDependencies: null,
       validationConcurrencyLimit: 1000,
       processingConcurrencyLimit: 5,
@@ -554,10 +561,7 @@ export const getCreateTemplates: any = (state: any): any => {
     },
     CREATE_CALABRIO_QM_USER: {
       name: "CREATE_CALABRIO_QM_USER",
-      processFunction: ((row: any, rowNumber: number, data: any) => {
-        console.log("****CALABRIO RECORD PROCESSING for", data);
-        Promise.resolve();
-      }),
+      processFunction: processCreateCalabrioUser,
       multiRunDependencies: [{
         name: "CREATE_TRITON_USER",
         variable: "workerSid"

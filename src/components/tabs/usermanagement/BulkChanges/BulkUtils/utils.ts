@@ -146,10 +146,11 @@ export const initiateCalls = async (
       console.log("processing dependency", t.name);
       const requestData = {};
       if(t.multiRunDependencies){
-        dependencyPromises.find(((d: any) => d.name === d.multiRunDependencies.name));
+        dependencyPromises.find(((d: any) => d.name === t.multiRunDependencies.name));
         const variable = d.multiRunDependencies.variable;
         console.log("looking in dependency promises for ", variable);
       }
+
       try {
         const promiseResponse = await t.processFunction();
         dependencyPromises.push({
@@ -161,7 +162,7 @@ export const initiateCalls = async (
         dependencyPromises.push({
           name: t.name,
           status: "FAILED",
-          data: promiseResponse.reason
+          data: err
         });
       }
     });
