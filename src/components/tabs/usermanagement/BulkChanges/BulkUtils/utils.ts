@@ -5,25 +5,30 @@ export const toLowerCaseString = (variable: any) => {
 };
 
 export const cleanupField = (field: any, requiredType: string) => {
-  switch(requiredType){
-    case "string":
-      if(typeof field === "string"){
-        return field.trim().toLowerCase();
-      } else {
-        return field.toString().trim().toLowerCase();
-      }
-    case "number":
-      if(typeof field === "number"){
-        return field;
-      } else {
-        try {
-          return parseInt(field);
-        } catch(err){
-          return field;
+  if(field){
+    switch(requiredType){
+      case "string":
+        if(typeof field === "string"){
+          return field.trim().toLowerCase();
+        } else {
+          return field.toString().trim().toLowerCase();
         }
-      }
-    default:
-      return field;
+
+      case "number":
+        if(typeof field === "number"){
+          return field;
+        } else {
+          try {
+            return parseInt(field);
+          } catch(err){
+            return field;
+          }
+        }
+      default:
+        return field;
+    }
+  } else {
+    return field;
   }
 };
 export const readUploadFile = (e: any, setUploadedForm: any): void => {
