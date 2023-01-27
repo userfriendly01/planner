@@ -10,6 +10,7 @@ import {
   calabrioAllowedRoles,
   calabrioTimeZones
 } from "utils";
+import { checkConflictingUsers } from "./utils";
 
 //Fields
 const getTritonFields = (state: any): any => [
@@ -537,14 +538,20 @@ const getCalabrioQmFields = (state: any): any => [
   }
 ];
 
-const processCreateTritonUser = (row: any, rowNumber: number, data: any) => {
+const processCreateTritonUser = async (row: any, rowNumber: number, state: any) => {
   console.log("**** TRITON RECORD PROCESSING", Date.now());
+  row.workerSid = "WK123456";
   Promise.resolve({ workerSid: "WK123456" });
 };
 
-const processCreateCalabrioUser = (row: any, rowNumber: number, data: any) => {
-  console.log("****CALABRIO RECORD PROCESSING for", data);
-  //if worker sid isnt in data - we do the validations to look for existing calabrio users before moving on
+const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any) => {
+  console.log("****CALABRIO RECORD PROCESSING for", row);
+  try {
+    await checkConflictingUsers(row, state.calabrioContext.users);
+    //create calabrio user
+  } catch(err) {
+    Promise.reject(err);
+  }
   Promise.resolve();
 };
 
@@ -553,7 +560,7 @@ export const getCreateTemplates: any = (state: any): any => {
   return {
     CREATE_TRITON_USER: {
       name: "CREATE_TRITON_USER",
-      processFunction: processCreateTritonUser,
+      processFunction: (row: any, rowNumber: number) => processCreateTritonUser(row, rowNumber, state),
       multiRunDependencies: null,
       validationConcurrencyLimit: 1000,
       processingConcurrencyLimit: 5,
@@ -561,7 +568,7 @@ export const getCreateTemplates: any = (state: any): any => {
     },
     CREATE_CALABRIO_QM_USER: {
       name: "CREATE_CALABRIO_QM_USER",
-      processFunction: processCreateCalabrioUser,
+      processFunction: (row: any, rowNumber: number) => processCreateCalabrioUser(row, rowNumber, state),
       multiRunDependencies: [{
         name: "CREATE_TRITON_USER",
         variable: "workerSid"

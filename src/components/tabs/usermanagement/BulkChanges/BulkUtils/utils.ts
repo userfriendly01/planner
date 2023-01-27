@@ -1,5 +1,9 @@
 import * as XLSX from "xlsx";
 
+export const toLowerCaseString = (variable: any) => {
+  return typeof variable === "string" ? variable.toLowerCase() : variable;
+};
+
 export const readUploadFile = (e: any, setUploadedForm: any): void => {
   console.log("UPLOAD FILED", e);
   e.preventDefault();
@@ -148,18 +152,18 @@ export const initiateCalls = async (
       console.log("templateTree", templateTree);
       return await Promise.allSettled(templateTree.map(async (t: any) => {
         console.log("processing template", t.name);
-        const data = {};
 
         if(t.multiRunDependencies && t.multiRunDependencies.length > 0){
           t.multiRunDependencies.forEach((dependency: any) => {
-            console.log(`Looking for ${dependency.name}`, templateTree);
-            const foundDependency = storedPromiseData.find(((t: any) => t.name === dependency.name));
+            console.log(`Looking for ${dependency.variable} in`, row);
             const variable = dependency.variable;
-            console.log("looking in final promises for ", foundDependency, variable);
+            if(!row[variable]){
+              Promise.reject(`${t.name} failed due to missing ${variable} from ${dependency.name}`);
+            }
           });
         }
 
-        const promiseResponse = await t.processFunction(row, rowNumber, data);
+        const promiseResponse = await t.processFunction(row, rowNumber);
         console.log("PROCESS PROMISE COMPLETE: ", promiseResponse);
         storedPromiseData.push({
           name: t.name,
@@ -262,71 +266,31 @@ export const handleExportErrors = (validationErrors: any, _export: any) => {
   }
 };
 
-export const checkConflictingUsers = async (user: any, users: CalabrioUser[], roles: any[], teams: any[]): Promise<void> => {
+export const checkConflictingUsers = async (user: any, users: any[]): Promise<any> => {
   try {
-    const {
-      acdId
-    } = user;
-
-    const firstName = toLowerCaseString(user.firstName);
-    const lastName = toLowerCaseString(user.lastName);
+    const acdId = user.acdId ? toLowerCaseString(user.acdId) : null;
     const email = toLowerCaseString(user.email);
     const adLogin = toLowerCaseString(user.adLogin);
 
-    await Promise.all(users.map(async u => {
-      if(acdId && u.acdId === acdId){
-        return;
-      }
-
+    return Promise.allSettled(users.map(async u => {
+      const dupUserAcdId = toLowerCaseString(u.acdId);
       const dupUserAdLogin = toLowerCaseString(u.adLogin);
       const dupUserEmail = toLowerCaseString(u.email);
-      const dupUserFirstName = toLowerCaseString(u.firstName);
-      const dupUserLastName = toLowerCaseString(u.lastName);
 
-      if (dupUserAdLogin === adLogin || dupUserEmail === email) {
-        const res: CalabrioUser = await getCalabrioUser(u.id);
-        const dupUser = res.data;
-        console.warn("Conflicting User Found with Duplicate Email or Windows Login: ", dupUser);
-
-        dupUser.deactivated = Date.now();
-        dupUser.adLogin = `xx-${dupUser.id}-${dupUser.adLogin}`;
-        dupUser.email = `xx-${dupUser.id}-${dupUser.email}`;
-        dupUser.acdId = `xx-${dupUser.acdId}`;
-
-        if(dupUser.roles.length === 0){
-          dupUser.roles = roles.filter(role => role.name.toLowerCase().includes("agent-sync"));
-        }
-        if(!dupUser.team){
-          console.warn("do we get in here?", teams.find(team => team.name.toLowerCase().includes("default")));
-          dupUser.team = teams.find(team => team.name.toLowerCase().includes("default"))?.groupId;
-        }
-
-        await updateCalabrioUser(dupUser.id, dupUser);
-        return;
+      if (acdId && dupUserAcdId === acdId) {
+        return Promise.reject("Calabrio Record already exists with this users nNumber in the AdLogin field.");
       }
 
-      if (!dupUserEmail && acdId && firstName === dupUserFirstName && lastName === dupUserLastName) {
-        const res: CalabrioUser = await getCalabrioUser(u.id);
-        const dupUser = res.data;
-        console.warn("Conflicting User Found with First and Last Name: ", dupUser);
+      if (dupUserAdLogin === adLogin) {
+        return Promise.reject("Calabrio Record already exists with this users nNumber in the AdLogin field.");
+      }
 
-        dupUser.deactivated = Date.now();
-        dupUser.adLogin = `SHELLUSER-${dupUser.id}`;
-        dupUser.email = `SHELLUSER-${dupUser.id}@libertymutual.com`;
-        dupUser.acdId = `SH-${dupUser.acdId}`;
-
-        if(dupUser.roles.length === 0){
-          dupUser.roles = roles.filter(role => role.name.toLowerCase().includes("agent-sync"));
-        }
-        if(!dupUser.team){
-          dupUser.team = teams.find(team => team.name.toLowerCase().includes("default"))?.groupId;
-        }
-        await updateCalabrioUser(dupUser.id, dupUser);
-        return;
+      if (dupUserEmail === email) {
+        return Promise.reject("Calabrio Record already exists with this users email.");
       }
     }));
   } catch(err) {
     console.error("Error thrown trying to fetch and validate Conflicting Users", err);
+    return Promise.reject("Error thrown trying to fetch and validate Conflicting Users.", err);
   }
-  return;
 };
