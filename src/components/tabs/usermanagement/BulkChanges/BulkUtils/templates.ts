@@ -1,3 +1,4 @@
+import { NumbersOutlined } from "@mui/icons-material";
 import {
   createUser,
   createCalabrioUser,
@@ -12,7 +13,23 @@ import {
   calabrioAllowedRoles,
   calabrioTimeZones
 } from "utils";
-import { checkConflictingUsers } from "./utils";
+import {
+  checkConflictingUsers,
+  cleanupField
+} from "./utils";
+
+
+const isDidUser = (didField: any, rowNumber: number) => {
+  if(typeof didField !== "string"){
+    return Promise.reject(`Did User field needs to be 'Y' or 'N' for row ${rowNumber}`);
+  } else if(didField !== "y" && didField !== "n"){
+    return Promise.reject(`Did User field needs to be 'Y' or 'N' for row ${rowNumber}`);
+  } else if(didField === "y") {
+    return true;
+  } else {
+    return false;
+  }
+};
 
 //Fields
 const getTritonFields = (state: any): any => [
@@ -26,7 +43,7 @@ const getTritonFields = (state: any): any => [
     options: null,
     validateFunction: async (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "N Number";
-      const field = row[fieldName];
+      const field = cleanupField(row[fieldName], "string");
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
       } else if(typeof field !== "string" || field.length !== 8) {
@@ -53,9 +70,6 @@ const getTritonFields = (state: any): any => [
           row.adLogin = `LM\\${field.toLowerCase()}`;
           row.firstName = fetchedUser.firstName;
           row.lastName = fetchedUser.lastName;
-
-          delete row[fieldName];
-
           return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
         } catch(err) {
           return Promise.reject(`Error thrown fetching ${fieldName} from HR Database for row ${rowNumber}`);
@@ -73,16 +87,15 @@ const getTritonFields = (state: any): any => [
     options: state.profileContext.profiles.map((p: any) => p.profile_id),
     validateFunction: (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "Profile Id";
-      const field = row[fieldName];
+      const field = cleanupField(row[fieldName], "number");
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
       } else if(typeof field !== "number"){
         return Promise.reject(`${fieldName} must be a number for row ${rowNumber}`);
-      } else if(!state.profileContext.profiles.some((p:any) => p.profile_id === field)){
+      } else if(!state.profileContext.profiles.some((p:any) => cleanupField(p.profile_id, "number") === field)){
         return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
       } else {
         row.profile_id = field;
-        delete row[fieldName];
         return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
       }
     }
@@ -97,8 +110,9 @@ const getTritonFields = (state: any): any => [
     options: state.managerContext.managers.map((m: any) => m.manager_n_number),
     validateFunction: (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "Manager N Number";
-      const field = row[fieldName];
-      const managerObject = state.managerContext.managers.find((m:any) => m.manager_n_number?.toLowerCase() === field.toLowerCase());
+      const field = cleanupField(row[fieldName], "string");
+
+      const managerObject = state.managerContext.managers.find((m:any) => cleanupField(m.manager_n_number, "string") === field);
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
       } else if(!managerObject){
@@ -108,7 +122,6 @@ const getTritonFields = (state: any): any => [
         row.manager_last_name = managerObject.manager_last_name;
         row.manager_n_number = managerObject.manager_n_number;
         row.manager = `${managerObject.manager_first_name} ${managerObject.manager_last_name}`;
-        delete row[fieldName];
         return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
       }
     }
@@ -145,13 +158,12 @@ const getTritonFields = (state: any): any => [
           const fieldArray = field.replace(" ","").split(",");
           fieldArray.forEach((objString: string) => {
             const objKeyValueArray = objString.replace(" ","").split(":");
-            const key: any = objKeyValueArray[0];
-            const value: any = objKeyValueArray[1];
+            const key: any = cleanupField(objKeyValueArray[0], "string");
+            const value: any = cleanupField(objKeyValueArray[1], "number");
             if(value){
               defaultSkills.levels[key] = value;
             }
-            defaultSkills.skills.push({ key: parseInt(value) });
-
+            defaultSkills.skills.push(key);
           });
         } catch(err){
           return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}. Must be a comma delimited list of skills. If a skill has a level it must be separated by a :`);
@@ -161,13 +173,13 @@ const getTritonFields = (state: any): any => [
         const skillErrors: any = [];
 
         defaultSkills.skills.forEach((ds: any) => {
-          if(!availableSkills.some((as: any) => as.name === ds)){
+          if(!availableSkills.some((as: any) => cleanupField(as.name, "string") === ds)){
             skillErrors.push(`${ds} is not an available skill `);
           }
         });
 
         Object.keys(defaultSkills.levels).forEach((skill: any) => {
-          const matchingSkill = availableSkills.find((as: any) => as.name === skill);
+          const matchingSkill = availableSkills.find((as: any) => cleanupField(as.name, "string") === skill);
           const level = defaultSkills.levels[skill];
           if(!matchingSkill){
             skillErrors.push(`${skill} is not an available skill `);
@@ -177,7 +189,6 @@ const getTritonFields = (state: any): any => [
         });
         if(skillErrors.length !== 0){
           row.defaultSkills = defaultSkills;
-          //delete row[fieldName];
           return Promise.resolve(`${fieldName} Errors found for row ${rowNumber} ${skillErrors.toString()}`);
         } else {
           return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
@@ -197,8 +208,8 @@ const getTritonFields = (state: any): any => [
     options: null,
     validateFunction: async (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "Extension";
-      const field = typeof row[fieldName] === "number" ? row[fieldName].toString() : row[fieldName];
-      const newExtension = typeof field === "string" ? field.toLowerCase() === "y" : false;
+      const field = cleanupField(row[fieldName], "string");
+      const newExtension = field === "y";
       const workers = state.workerContext.workers;
 
       if(!field){
@@ -208,19 +219,17 @@ const getTritonFields = (state: any): any => [
         try {
           extension = await generateExtension(workers);
           row.extension = extension;
-          delete row[fieldName];
         } catch (err) {
           console.error("Error generating extension", err);
           return Promise.reject(`Unable to generate ${fieldName} for row ${rowNumber}.`);
         }
         return Promise.resolve(`${fieldName} ${extension} set for row ${rowNumber}`);
-      } else if(typeof field !== "number" && typeof field !== "string"){
+      } else if(typeof field !== "string"){
         return Promise.reject(`${fieldName} must be a number or 'Y' for row ${rowNumber}. If you do not want an extension for this user, leave the field blank`);
       } else {
-        const isExtensionTaken = workers.some((w: any) => w.attributes.extension === field);
+        const isExtensionTaken = workers.some((w: any) => cleanupField(w.attributes.extension, "string") === field);
         if(!isExtensionTaken){
           row.extension = field;
-          delete row[fieldName];
           return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
         } else {
           return Promise.reject(`${fieldName} ${field} is already taken for row ${rowNumber}`);
@@ -238,14 +247,13 @@ const getTritonFields = (state: any): any => [
     options: null,
     validateFunction: async (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "Did User";
-      const field = row[fieldName].trim();
+      const field = cleanupField(row[fieldName], "string");
 
-      if(typeof field !== "string"){
-        return Promise.reject(`${fieldName} needs to be 'Y' or 'N' for row ${rowNumber}`);
-      } else if(field.toLowerCase() !== "y" && field.toLowerCase() !== "n"){
-        return Promise.reject(`${fieldName} needs to be 'Y' or 'N' for row ${rowNumber}`);
-      } else {
+      try {
+        isDidUser(field, rowNumber);
         return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+      } catch(err) {
+        return Promise.reject(`${fieldName} needs to be 'Y' or 'N' for row ${rowNumber}`);
       }
     }
   },
@@ -259,26 +267,22 @@ const getTritonFields = (state: any): any => [
     options: null,
     validateFunction: async (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "Direct Dial Number";
-      const field = row[fieldName];
+      const field = cleanupField(row[fieldName], "string");
       const didFieldName = "Did User";
-      const didField = row[didFieldName].trim();
+      const didField = cleanupField(row[didFieldName], "string");
 
-      if(typeof didField !== "string"){
-        return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
-      } else if(didField?.toLowerCase() !== "y" && didField?.toLowerCase() !== "n"){
-        return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
-      } else if(didField?.toLowerCase() === "n" && field){
-        return Promise.reject(`Did User field is 'N', ${fieldName} is not applicable for row ${rowNumber}`);
-      } else {
-        try {
+      try {
+        const didUser = isDidUser(didField, rowNumber);
+        if(didUser){
           const directDialNum = getE164Number(field);
           row.did = directDialNum;
           row.directDialNum = directDialNum;
-          //remove original
-        } catch(err) {
-          return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
+          return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+        } else {
+          return Promise.reject(`Did User field is 'N', ${fieldName} is not applicable for row ${rowNumber}`);
         }
-        return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+      } catch(err) {
+        return Promise.reject(`${didFieldName} needs to be 'Y' or 'N' for row ${rowNumber}`);
       }
     }
   },
@@ -292,43 +296,40 @@ const getTritonFields = (state: any): any => [
     options: null,
     validateFunction: async (row: any, rowNumber: number) => {
       const fieldName = "Zero Out Enabled";
-      const field = row[fieldName];
+      const field = cleanupField(row[fieldName], "string");
       const didFieldName = "Did User";
-      const didField = row[didFieldName].trim();
+      const didField = cleanupField(row[didFieldName], "string");
 
-      if(typeof didField !== "string"){
-        return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
-      } else if(didField?.toLowerCase() !== "y" && didField?.toLowerCase() !== "n"){
-        return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
-      } else if(didField?.toLowerCase() === "n" && field){
-        return Promise.reject(`Did User field is 'N', ${fieldName} is not applicable for row ${rowNumber}`);
-      } else {
-        if(typeof field !== "string"){
-          return Promise.reject(`${fieldName} should be 'Y' or 'N' for row ${rowNumber}`);
-        } else if(field?.toLowerCase() !== "y" && field?.toLowerCase() !== "n"){
-          return Promise.reject(`${fieldName} should be 'Y' or 'N' for row ${rowNumber}`);
-        } else if(field?.toLowerCase() === "n"){
-          row.zeroOutEnabled = false;
-          return Promise.resolve(`${fieldName} set to false for row ${rowNumber}`);
-        } else {
-          try {
-            const profileFieldName = "Profile Id";
-            const profiles = state.profileContext.profiles;
-            const profileId = row[profileFieldName] ? profiles.find((p:any) => p.profile_id === row[profileFieldName]) : row.profile_id;
-            const overflowSkill = getOverflowSkillFromProfile(profiles, profileId);
-            if(overflowSkill){
-              row.routing = {
-                skills: [overflowSkill],
-                levels: {}
-              };
+      try {
+        const didUser = isDidUser(didField, rowNumber);
+        if(didUser){
+          if(field === "y"){
+            try {
+              const profileFieldName = "Profile Id";
+              const profiles = state.profileContext.profiles;
+              const profileId = cleanupField(row[profileFieldName], "number");
+              const overflowSkill = getOverflowSkillFromProfile(profiles, profileId);
+              if(overflowSkill){
+                row.routing = {
+                  skills: [cleanupField(overflowSkill, "string")],
+                  levels: {}
+                };
+              }
+              row.zeroOutEnabled = true;
+            } catch(err) {
+              return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
             }
-            row.zeroOutEnabled = true;
-            //remove original
-          } catch(err) {
-            return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
+          } else if(field === "n"){
+            row.zeroOutEnabled = false;
+          } else {
+            return Promise.reject(`${fieldName} needs to be 'Y' or 'N' for row ${rowNumber}`);
           }
           return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+        } else {
+          return Promise.reject(`Did User field is 'N', ${fieldName} is not applicable for row ${rowNumber}`);
         }
+      } catch(err) {
+        return Promise.reject(`${didFieldName} needs to be 'Y' or 'N' for row ${rowNumber}`);
       }
     }
   },
@@ -342,27 +343,29 @@ const getTritonFields = (state: any): any => [
     options: null,
     validateFunction: async (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "Outgoing Number";
-      const field = row[fieldName];
+      const field = cleanupField(row[fieldName], "string");
       const didFieldName = "Did User";
-      const didField = row[didFieldName].trim();
+      const didField = cleanupField(row[didFieldName], "string");
 
-      if(typeof didField !== "string"){
-        return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
-      } else if(didField?.toLowerCase() !== "y" && didField?.toLowerCase() !== "n"){
-        return Promise.reject(`Did User field is incorrect ${fieldName} cannot be validated for row ${rowNumber}`);
-      } else if(didField?.toLowerCase() === "y" && field){
-        return Promise.reject(`${fieldName} is not applicable for ${didFieldName} for row ${rowNumber}`);
-      } else if(didField?.toLowerCase() === "y" && !field){
-        return Promise.resolve(`${fieldName} skipped for DID user for row ${rowNumber}`);
-      } else {
-        try {
-          const outgoing = getE164Number(field);
-          row.did = outgoing;
-          //remove original
-        } catch(err) {
-          return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
+      try {
+        const didUser = isDidUser(didField, rowNumber);
+        if(!didUser){
+          if(field){
+            try {
+              const outgoing = getE164Number(field);
+              row.did = outgoing;
+            } catch(err) {
+              return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
+            }
+          } else {
+            return Promise.resolve(`${fieldName} skipped for DID user for row ${rowNumber}`);
+          }
+          return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+        } else {
+          return Promise.reject(`Did User field is 'N', ${fieldName} is not applicable for row ${rowNumber}`);
         }
-        return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+      } catch(err) {
+        return Promise.reject(`${didFieldName} needs to be 'Y' or 'N' for row ${rowNumber}`);
       }
     }
   }
@@ -379,7 +382,7 @@ const getCalabrioQmFields = (state: any): any => [
     options: null,
     validateFunction: async (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "N Number";
-      const field = row[fieldName];
+      const field = cleanupField(row[fieldName], "string");
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
       } else if(typeof field !== "string" || field.length !== 8) {
@@ -407,8 +410,6 @@ const getCalabrioQmFields = (state: any): any => [
           row.firstName = fetchedUser.firstName;
           row.lastName = fetchedUser.lastName;
 
-          delete row[fieldName];
-
           return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
         } catch(err) {
           return Promise.reject(`Error thrown fetching ${fieldName} from HR Database for row ${rowNumber}`);
@@ -426,7 +427,7 @@ const getCalabrioQmFields = (state: any): any => [
     options: state.calabrioContext.groups.map((g: any) => g.name),
     validateFunction: (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "Calabrio Scope";
-      const field = row[fieldName];
+      const field = cleanupField(row[fieldName], "string");
       const availableGroups = state.calabrioContext.groups;
       const availableTeams = state.calabrioContext.teams;
       row.scope = {
@@ -443,14 +444,15 @@ const getCalabrioQmFields = (state: any): any => [
             return Promise.resolve(`${fieldName} skipped for row ${rowNumber}`);
           } else {
             fieldArray.forEach((scope: any) => {
-              const foundInGroups = availableGroups.some((g:any) => g.name?.toLowerCase() === scope?.trim().toLowerCase());
-              const foundInTeams = availableTeams.some((t:any) => t.name?.toLowerCase() === scope?.trim().toLowerCase());
+              const cleanScope = cleanupField(scope, "string");
+              const foundInGroups = availableGroups.some((g:any) => cleanupField(g.name, "string") === cleanScope);
+              const foundInTeams = availableTeams.some((t:any) => cleanupField(t.name, "string") === cleanScope);
               if(!foundInGroups && !foundInTeams){
-                return Promise.reject(`${scope.trim()} is not a valid group or team for row ${rowNumber}`);
+                return Promise.reject(`${cleanScope} is not a valid group or team for row ${rowNumber}`);
               } else if(foundInGroups) {
-                row.scope.groups.push(scope.trim());
+                row.scope.groups.push(cleanScope);
               } else {
-                row.scope.teams.push(scope.trim());
+                row.scope.teams.push(cleanScope);
               }
             });
             return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
@@ -472,13 +474,13 @@ const getCalabrioQmFields = (state: any): any => [
     options: state.calabrioContext.teams.map((t: any) => t.name),
     validateFunction: (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "Calabrio Team";
-      const field = row[fieldName];
+      const field = cleanupField(row[fieldName], "string");
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
-      } else if(!state.calabrioContext.teams.some((t:any) => t.name?.toLowerCase() === field?.toLowerCase())){
+      } else if(!state.calabrioContext.teams.some((t:any) => cleanupField(t.name, "string") === field)){
         return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
       } else {
-        const team = state.calabrioContext.teams.find((t:any) => t.name?.toLowerCase() === field?.toLowerCase());
+        const team = state.calabrioContext.teams.find((t:any) => cleanupField(t.name, "string") === field);
         if(!team || !team.groupId){
           return Promise.reject(`${fieldName} is not a valid option from row ${rowNumber}`);
         } else {
@@ -498,7 +500,7 @@ const getCalabrioQmFields = (state: any): any => [
     options: calabrioAllowedRoles,
     validateFunction: (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "Calabrio Role";
-      const field = row[fieldName];
+      const field = cleanupField(row[fieldName], "string");
 
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
@@ -509,12 +511,13 @@ const getCalabrioQmFields = (state: any): any => [
             return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
           } else {
             fieldArray.forEach((role: any) => {
-              const foundInRoles = calabrioAllowedRoles.some((r:any) => r.toLowerCase() === role?.trim().toLowerCase());
+              const cleanRole = cleanupField(role, "string");
+              const foundInRoles = calabrioAllowedRoles.some((r:any) => cleanupField(r, "string") === cleanRole);
               row.roles = [];
               if(!foundInRoles){
-                return Promise.reject(`${role.trim()} is not a valid role for row ${rowNumber}`);
+                return Promise.reject(`${cleanRole} is not a valid role for row ${rowNumber}`);
               } else {
-                row.roles.push(role.trim());
+                row.roles.push(cleanRole);
                 return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
               }
             });
@@ -534,10 +537,10 @@ const getCalabrioQmFields = (state: any): any => [
     options: calabrioTimeZones.map((t: any) => t.label),
     validateFunction: (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "Time Zone";
-      const field = row[fieldName];
+      const field = cleanupField(row[fieldName], "string");
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
-      } else if(!calabrioTimeZones.some((t:any) => t.label?.toLowerCase() === field?.toLowerCase())){
+      } else if(!calabrioTimeZones.some((t:any) => cleanupField(t.label, "string") === field)){
         return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
       } else {
         row.timeZone = field;

@@ -4,6 +4,28 @@ export const toLowerCaseString = (variable: any) => {
   return typeof variable === "string" ? variable.toLowerCase() : variable;
 };
 
+export const cleanupField = (field: any, requiredType: string) => {
+  switch(requiredType){
+    case "string":
+      if(typeof field === "string"){
+        return field.trim().toLowerCase();
+      } else {
+        return field.toString().trim().toLowerCase();
+      }
+    case "number":
+      if(typeof field === "number"){
+        return field;
+      } else {
+        try {
+          return parseInt(field);
+        } catch(err){
+          return field;
+        }
+      }
+    default:
+      return field;
+  }
+};
 export const readUploadFile = (e: any, setUploadedForm: any): void => {
   console.log("UPLOAD FILED", e);
   e.preventDefault();
