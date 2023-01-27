@@ -142,18 +142,16 @@ export const initiateCalls = async (
   if(dependencies){
     console.log("dependencies", dependencies);
     const dependencyPromises = [];
-    dependencies.map(async (d: any) => {
-      console.log("processing dependency", d.name);
+    dependencies.map(async (t: any) => {
+      console.log("processing dependency", t.name);
       const promiseResponse = await t.processFunction();
     });
 
-    //kick off api calls in order of dependency tree using template concurrency limit
   } else {
     const promises = await Promise.allSettled(selectedTemplates.map((t: any) => {
       return t.processFunction();
     }));
     console.log("no dependencies needed: final promises", promises);
-  //kick off api calls asyncronously using template concurrency limit
   }
 };
 
