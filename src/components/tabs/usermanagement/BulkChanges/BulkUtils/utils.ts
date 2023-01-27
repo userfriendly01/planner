@@ -164,8 +164,6 @@ export const initiateCalls = async (
   const processRow = async (row: any, rowNumber: number, progressCallback: any) => {
 
     if(templateTree){
-      const storedPromiseData: any = [];
-
       console.log("templateTree", templateTree);
       const rowPromise = await Promise.allSettled(templateTree.map(async (t: any) => {
         console.log("processing template", t.name);
@@ -182,11 +180,6 @@ export const initiateCalls = async (
 
         const promiseResponse = await t.processFunction(row, rowNumber);
         console.log("PROCESS PROMISE COMPLETE: ", promiseResponse);
-        storedPromiseData.push({
-          name: t.name,
-          data: promiseResponse.value
-        });
-        console.log("storedPromiseData: ", storedPromiseData);
       }));
       progressCallback((previousCount: number) => (previousCount + 1));
       return rowPromise;
