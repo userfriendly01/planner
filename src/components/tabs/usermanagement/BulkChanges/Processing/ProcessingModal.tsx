@@ -58,7 +58,7 @@ const ProcessingModal = (props: any) => {
           validationErrors: [err],
           successfullyProcessedRows: [err.success]
         });
-        setStatus(STATES.PROCESSED);
+        setStatus(STATES.VALIDATED);
       }
     }, 1000);
   }, []);
