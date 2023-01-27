@@ -8,6 +8,7 @@ import {
 import { TabPanelProps } from "./NavTabs.Interfaces";
 import React from "react";
 import { useAdminState } from "context";
+import { getAzureSPAClientId } from "utils";
 
 const TabPanel = (props: TabPanelProps) => {
   const {
@@ -38,6 +39,7 @@ const NavTabs = () => {
   const [value, setValue] = React.useState(0);
   const [ tabs, setTabs ] = React.useState([]);
   console.log("STATE", state);
+  const azureClientId = getAzureSPAClientId();
 
   React.useEffect(() => {
     const allowedTabs: any[] = [];
@@ -69,7 +71,7 @@ const NavTabs = () => {
           tabs.map((t: any, index: number) => {
             const Component = t.component;
             return <TabPanel key={t.value} value={value} tabName={t.label} index={index}>
-              <Component/>
+              <Component azureClientId={azureClientId}/>
             </TabPanel>;
           })
         }

@@ -7,7 +7,7 @@ import {
   Modal, ModalHeader
 } from "@lmig/lmds-react-modal";
 import {
-  routingDropDownList, getAccessToken, routingInitRule, routingFields, initializedAlertBar, getGraphQLEndpoint
+  routingDropDownList, routingInitRule, routingFields, initializedAlertBar, getGraphQLEndpoint
 } from "utils";
 import { getGridMasterData } from "../../DataGridRouting/GridMaster";
 import {
@@ -23,18 +23,22 @@ import {
   CustomToast, ComponentControl
 } from "components";
 import { FormValidationRule } from "utils/interfaces";
+import { AzureSPA } from "globals";
 
 
-export const AddRouting = (props: AddRoutingModalProps): JSX.Element => {
+export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element => {
   const {
-    isOpen = false, newId, openModal
+    accessToken,
+    isOpen = false,
+    matchedGroups,
+    newId,
+    openModal
   } = props;
 
   const [routingRule, setRoutingRule] = useState({ ...routingInitRule });
   const [dropDownValues, setDropDownValues] = useState(routingDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
 
-  const accessToken: string = getAccessToken();
   const graphQlApiUrl: string = getGraphQLEndpoint();
 
   const masterDataValues = async (): Promise<RoutingDropDownList> => {

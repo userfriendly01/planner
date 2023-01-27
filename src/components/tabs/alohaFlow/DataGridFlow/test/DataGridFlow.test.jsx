@@ -81,7 +81,8 @@ const filteredItems = {
 };
 
 const renderComponent = () => render(
-  <DataGridFlow />
+  <DataGridFlow accessToken="Token123" matchedGroups="[]"/>,
+  initialTestState
 );
 
 describe("<DataGridFlow />", () => {
@@ -395,3 +396,4 @@ describe("<DataGridFlow />", () => {
     });
   });
 });
+

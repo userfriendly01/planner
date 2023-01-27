@@ -23,6 +23,7 @@ import { AlertBarProps } from "utils/interfaces";
 import {
   deleteRoutingRule, updateRoutingDB
 } from "services";
+import { AzureSPA } from "globals";
 
 interface EditRoutingComponentProps {
     isOpen: boolean;
@@ -32,9 +33,8 @@ interface EditRoutingComponentProps {
 
 
 export const EditRouting = ({
-  isOpen, selectedRow, openEditModal
-}: EditRoutingComponentProps): JSX.Element => {
-  const accessToken: string = getAccessToken();
+  accessToken, matchedGroups, isOpen, selectedRow, openEditModal
+}: EditRoutingComponentProps & AzureSPA): JSX.Element => {
   const graphQLEndPoint: string = getGraphQLEndpoint();
   const [selectedRowLocal, setSelectedRowLocal] = useState({} as CctSharedCallRoutingDb);
   const startTime: React.MutableRefObject<string> = useRef();

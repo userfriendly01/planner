@@ -11,7 +11,6 @@ import {
 } from "@mui/x-data-grid";
 import { retrieveFlowData } from "services";
 import {
-  getAccessToken,
   CACHE_FILTER_FLOW,
   CALL_FLOW_PAGE_NO,
   CALL_FLOW_PER_PAGE,
@@ -34,11 +33,15 @@ import {
   AddFlow, AdvanceSearchModal, CustomFlowGridToolBar, EditFlow
 } from "../CustomActions";
 import { AlertBarProps } from "utils/interfaces";
+import { AzureSPA } from "globals";
 
+const DataGridFlow = (props: AzureSPA): JSX.Element => {
+  const {
+    accessToken,
+    matchedGroups
+  } = props;
 
-const DataGridFlow = (): JSX.Element => {
-  const accessToken: string = getAccessToken();
-  const graphQlApiUrl: string = getGraphQLEndpoint();
+  const graphQLEndpoint = getGraphQLEndpoint();
 
   const getAdvanceFilter = () => {
     let advanceFilter: { [key: string]: undefined; };
@@ -78,7 +81,7 @@ const DataGridFlow = (): JSX.Element => {
 
   useEffect(() => {
     const getTableData = async () =>{
-      await loadDataTable();
+      await loadDataTable(accessToken, graphQLEndpoint);
       setDataFlow((dataFlowProps: FlowStateVariables) => ({
         ...dataFlowProps,
         page: +sessionStorage.getItem(CALL_FLOW_PAGE_NO) || 1,
@@ -129,7 +132,7 @@ const DataGridFlow = (): JSX.Element => {
         severityType: "success",
         msg: "New flow has been successfully added!! "
       }));
-      loadDataTable();
+      loadDataTable(accessToken, graphQLEndpoint);
     }
     setDataFlow((dataFlowProps: FlowStateVariables) => ({
       ...dataFlowProps,
@@ -199,10 +202,10 @@ const DataGridFlow = (): JSX.Element => {
   };
 
 
-  const loadDataTable = async () => {
+  const loadDataTable = async (token: string, url: string) => {
     let result: CctSharedCallFlowDb[] = await retrieveFlowData(
-      accessToken,
-      graphQlApiUrl
+      token,
+      url
     );
     if (result.length > 0) {
       result = result.sort((a: CctSharedCallFlowDb, b: CctSharedCallFlowDb) => (a.id - b.id));
@@ -259,7 +262,7 @@ const DataGridFlow = (): JSX.Element => {
         msg: message,
         severityType: "success"
       }));
-      loadDataTable();
+      loadDataTable(accessToken, graphQLEndpoint);
     }
     setDataFlow((currentDataFlow: FlowStateVariables) => (
       {
@@ -312,12 +315,16 @@ const DataGridFlow = (): JSX.Element => {
       </div>
 
       <AddFlow
+        accessToken={accessToken}
+        matchedGroups={matchedGroups}
         isOpen={dataFlow.isAddModalOpen}
         newId={dataFlow.maxId + 1}
         openAddModal={openAddModal}
       />
 
       <EditFlow
+        accessToken={accessToken}
+        matchedGroups={matchedGroups}
         isOpen={dataFlow.isEditModalOpen}
         selectedRow={dataFlow.selectedRow}
         openEditModal={openEditModal}
