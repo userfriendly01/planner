@@ -23,7 +23,7 @@ const ProgressBar = (props: any) => {
       const newJoke = Math.floor((Math.random() * jokesIndexLength));
       setSelectedJokeIndex(newJoke);
     };
-    setInterval(updateJoke, 60000);
+    setInterval(updateJoke, 45000);
   }, []);
 
   return (

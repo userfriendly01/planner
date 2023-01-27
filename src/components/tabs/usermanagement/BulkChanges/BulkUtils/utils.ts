@@ -139,44 +139,40 @@ export const initiateCalls = async (
   const successfulRows = identifySuccessfulRecords(uploadedForm, validationErrors);
   const templateTree = identifyProcessingDependencies(selectedTemplates);
   console.log("Successful rows", successfulRows);
-  let finalPromises: any = [];
 
-  if(templateTree){
-    console.log("templateTree", templateTree);
+  const processRow = async (row: any, rowNumber: number, progressCallback: any) => {
 
-    templateTree.map(async (t: any) => {
-      console.log("processing template", t.name);
-      const requestData = {};
+    let finalPromises: any = [];
 
-      if(t.multiRunDependencies && t.multiRunDependencies.length > 0){
-        t.multiRunDependencies.forEach((dependency: any) => {
-          console.log(`Looking for ${dependency.name}`, templateTree);
-          const foundDependency = finalPromises.find(((t: any) => t.name === dependency.name));
-          const variable = dependency.variable;
-          console.log("looking in final promises for ", foundDependency, variable);
-        });
-      }
+    if(templateTree){
+      console.log("templateTree", templateTree);
+      return await Promise.allSettled(templateTree.map(async (t: any) => {
+        console.log("processing template", t.name);
+        const data = {};
 
-      try {
-        const promiseResponse = await t.processFunction();
+        if(t.multiRunDependencies && t.multiRunDependencies.length > 0){
+          t.multiRunDependencies.forEach((dependency: any) => {
+            console.log(`Looking for ${dependency.name}`, templateTree);
+            const foundDependency = finalPromises.find(((t: any) => t.name === dependency.name));
+            const variable = dependency.variable;
+            console.log("looking in final promises for ", foundDependency, variable);
+          });
+        }
+
+        const promiseResponse = await t.processFunction(row, rowNumber, data);
+        console.log("PROCESS PROMISE COMPLETE: ", promiseResponse);
         finalPromises.push({
           name: t.name,
-          status: "SUCCEEDED",
           data: promiseResponse.value
         });
-      } catch(err) {
-        finalPromises.push({
-          name: t.name,
-          status: "FAILED",
-          data: err
-        });
-      }
-    });
-  } else {
-    finalPromises = await Promise.allSettled(selectedTemplates.map((t: any) => {
-      return t.processFunction();
-    }));
-  }
+      }));
+    } else {
+      finalPromises = await Promise.allSettled(selectedTemplates.map((t: any) => {
+        return t.processFunction();
+      }));
+    }
+  };
+
   console.log("no dependencies needed: final promises", finalPromises.slice());
 
 };
@@ -265,4 +261,73 @@ export const handleExportErrors = (validationErrors: any, _export: any) => {
   if (_export.current !== null) {
     _export.current.save(rows, columns);
   }
+};
+
+export const checkConflictingUsers = async (user: any, users: CalabrioUser[], roles: any[], teams: any[]): Promise<void> => {
+  try {
+    const {
+      acdId
+    } = user;
+
+    const firstName = toLowerCaseString(user.firstName);
+    const lastName = toLowerCaseString(user.lastName);
+    const email = toLowerCaseString(user.email);
+    const adLogin = toLowerCaseString(user.adLogin);
+
+    await Promise.all(users.map(async u => {
+      if(acdId && u.acdId === acdId){
+        return;
+      }
+
+      const dupUserAdLogin = toLowerCaseString(u.adLogin);
+      const dupUserEmail = toLowerCaseString(u.email);
+      const dupUserFirstName = toLowerCaseString(u.firstName);
+      const dupUserLastName = toLowerCaseString(u.lastName);
+
+      if (dupUserAdLogin === adLogin || dupUserEmail === email) {
+        const res: CalabrioUser = await getCalabrioUser(u.id);
+        const dupUser = res.data;
+        console.warn("Conflicting User Found with Duplicate Email or Windows Login: ", dupUser);
+
+        dupUser.deactivated = Date.now();
+        dupUser.adLogin = `xx-${dupUser.id}-${dupUser.adLogin}`;
+        dupUser.email = `xx-${dupUser.id}-${dupUser.email}`;
+        dupUser.acdId = `xx-${dupUser.acdId}`;
+
+        if(dupUser.roles.length === 0){
+          dupUser.roles = roles.filter(role => role.name.toLowerCase().includes("agent-sync"));
+        }
+        if(!dupUser.team){
+          console.warn("do we get in here?", teams.find(team => team.name.toLowerCase().includes("default")));
+          dupUser.team = teams.find(team => team.name.toLowerCase().includes("default"))?.groupId;
+        }
+
+        await updateCalabrioUser(dupUser.id, dupUser);
+        return;
+      }
+
+      if (!dupUserEmail && acdId && firstName === dupUserFirstName && lastName === dupUserLastName) {
+        const res: CalabrioUser = await getCalabrioUser(u.id);
+        const dupUser = res.data;
+        console.warn("Conflicting User Found with First and Last Name: ", dupUser);
+
+        dupUser.deactivated = Date.now();
+        dupUser.adLogin = `SHELLUSER-${dupUser.id}`;
+        dupUser.email = `SHELLUSER-${dupUser.id}@libertymutual.com`;
+        dupUser.acdId = `SH-${dupUser.acdId}`;
+
+        if(dupUser.roles.length === 0){
+          dupUser.roles = roles.filter(role => role.name.toLowerCase().includes("agent-sync"));
+        }
+        if(!dupUser.team){
+          dupUser.team = teams.find(team => team.name.toLowerCase().includes("default"))?.groupId;
+        }
+        await updateCalabrioUser(dupUser.id, dupUser);
+        return;
+      }
+    }));
+  } catch(err) {
+    console.error("Error thrown trying to fetch and validate Conflicting Users", err);
+  }
+  return;
 };
