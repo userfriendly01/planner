@@ -6,11 +6,11 @@ import {
   TextWrapper,
   ValidationErrorWrapper
 } from "../BulkChanges.Styles";
+import { ExportSuccessButton } from "../ExportButtons/ExportSuccessButton";
+import { ExportErrorsButton } from "../ExportButtons/ExportErrorsButton";
 import {
   performValidations,
   initiateCalls,
-  handleExportErrors,
-  handleExportSuccessfulRecords,
   identifySuccessfulRecords
 } from "../BulkUtils/utils";
 import ProgressBar from "./ProgressBar";
@@ -95,9 +95,9 @@ const ProcessingModal = (props: any) => {
             <StyledExportButton onClick={handleClose}>
               Cancel
             </StyledExportButton>
-            <StyledExportButton onClick={() => handleExportErrors(errors, _error_export)}><ExcelExport ref={_error_export}/>
+            <ExportErrorsButton errors={errors}><ExcelExport/>
               Export Validation Errors
-            </StyledExportButton>
+            </ExportErrorsButton>
             <StyledExportButton onClick={handleStartProcessing}>
               Process {totalSuccessCount} out of {totalRowCount} rows
             </StyledExportButton>
@@ -114,13 +114,13 @@ const ProcessingModal = (props: any) => {
           </TextWrapper>
           <ButtonWrapper>
             { errors.length > 0 &&
-              <StyledExportButton onClick={() => handleExportErrors(errors, _error_export)}><ExcelExport ref={_error_export}/>
+              <ExportErrorsButton errors={errors}><ExcelExport/>
                 Export Processing Errors
-              </StyledExportButton>
+              </ExportErrorsButton>
             }
-            <StyledExportButton onClick={() => handleExportSuccessfulRecords(errors, _success_export)}><ExcelExport ref={_success_export}/>
+            <ExportSuccessButton successfulRows={successfulRows}><ExcelExport/>
               Export Successful Rows
-            </StyledExportButton>
+            </ExportSuccessButton>
             <StyledExportButton  onClick={handleClose}>
               Close {totalSuccessCount} out of {totalRowCount} rows
             </StyledExportButton>
