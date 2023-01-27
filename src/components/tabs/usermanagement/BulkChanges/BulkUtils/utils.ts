@@ -142,9 +142,9 @@ export const initiateCalls = async (
 
   const processRow = async (row: any, rowNumber: number, progressCallback: any) => {
 
-    let finalPromises: any = [];
-
     if(templateTree){
+      const storedPromiseData: any = [];
+
       console.log("templateTree", templateTree);
       return await Promise.allSettled(templateTree.map(async (t: any) => {
         console.log("processing template", t.name);
@@ -153,7 +153,7 @@ export const initiateCalls = async (
         if(t.multiRunDependencies && t.multiRunDependencies.length > 0){
           t.multiRunDependencies.forEach((dependency: any) => {
             console.log(`Looking for ${dependency.name}`, templateTree);
-            const foundDependency = finalPromises.find(((t: any) => t.name === dependency.name));
+            const foundDependency = storedPromiseData.find(((t: any) => t.name === dependency.name));
             const variable = dependency.variable;
             console.log("looking in final promises for ", foundDependency, variable);
           });
@@ -161,20 +161,19 @@ export const initiateCalls = async (
 
         const promiseResponse = await t.processFunction(row, rowNumber, data);
         console.log("PROCESS PROMISE COMPLETE: ", promiseResponse);
-        finalPromises.push({
+        storedPromiseData.push({
           name: t.name,
           data: promiseResponse.value
         });
+        console.log("storedPromiseData: ", storedPromiseData);
       }));
     } else {
-      finalPromises = await Promise.allSettled(selectedTemplates.map((t: any) => {
+      return await Promise.allSettled(selectedTemplates.map((t: any) => {
         return t.processFunction();
       }));
     }
   };
-
-  console.log("no dependencies needed: final promises", finalPromises.slice());
-
+  processRow({}, 1, () => console.log("Logs"));
 };
 
 export const performValidations = async (
