@@ -22,9 +22,11 @@ import {
 const isDidUser = (didField: any, rowNumber: number) => {
   console.log("isDidUser", didField);
   if(typeof didField !== "string"){
-    return Promise.reject(`Did User field needs to be 'Y' or 'N' for row ${rowNumber}`);
+    console.log("typeof didField !== string", typeof didField);
+    Promise.reject(`Did User field needs to be 'Y' or 'N' for row ${rowNumber}`);
   } else if(didField !== "y" && didField !== "n"){
-    return Promise.reject(`Did User field needs to be 'Y' or 'N' for row ${rowNumber}`);
+    console.log("didField !== y && didField !== n", typeof didField);
+    Promise.reject(`Did User field needs to be 'Y' or 'N' for row ${rowNumber}`);
   } else if(didField === "y") {
     return true;
   } else {
@@ -354,6 +356,7 @@ const getTritonFields = (state: any): any => [
 
       try {
         const didUser = isDidUser(didField, rowNumber);
+        console.log("DID USER RIGHT BEFFORE OUTGOING NUMBER", didUser);
         if(!didUser){
           if(field){
             try {
