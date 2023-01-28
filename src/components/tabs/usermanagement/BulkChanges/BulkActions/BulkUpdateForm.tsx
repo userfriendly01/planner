@@ -26,10 +26,7 @@ const BulkUpdateForm = (props: any) => {
 
   const state = useAdminState();
   const updateTemplates = getUpdateTemplates(state);
-  const [ action, setAction ] = React.useState({
-    label: "Update Worker Attributes",
-    value: updateTemplates.UPDATE_WORKER_ATTRIBUTE
-  });
+  const [ action, setAction ] = React.useState(updateTemplates.UPDATE_WORKER_ATTRIBUTE);
   const [ updateAttributes, setUpdateAttributes ] = React.useState({
     key: "",
     value: "",
@@ -91,8 +88,8 @@ const BulkUpdateForm = (props: any) => {
 
   const constructDropdownOption = (template: any) => {
     return {
-      label: template.name,
-      value: template.name
+      label: template.name.replace("_", " ").toProperCase(),
+      value: template
     };
   };
 
@@ -101,15 +98,11 @@ const BulkUpdateForm = (props: any) => {
       <StepWrapper>
         <Dropdown
           label="Choose a field to update"
-          value={action}
+          value={constructDropdownOption(action)}
           options={Object.values(updateTemplates).map((t: any) => constructDropdownOption(t))}
           updateValue={(event: any, template: any) => {
-            if(template.name === updateTemplates.UPDATE_WORKER_ATTRIBUTE){
-              setAction({
-                label: "Update Worker Attributes",
-                value: updateTemplates.UPDATE_WORKER_ATTRIBUTE
-              });
-            }
+            console.log("TEMPLATE", template);
+            setAction(template);
           }}
           styles={{
             margin: "40 0 30 0",
