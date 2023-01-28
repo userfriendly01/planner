@@ -1,4 +1,3 @@
-import { NumbersOutlined } from "@mui/icons-material";
 import {
   createUser,
   createCalabrioUser,
@@ -271,17 +270,24 @@ const getTritonFields = (state: any): any => [
       const didFieldName = "Did User";
       const didField = cleanupField(row[didFieldName], "string");
 
+
       try {
         const didUser = isDidUser(didField, rowNumber);
-        console.warn("Bullshit Summary - Direct Dial Number: ", rowNumber, field, didField, didUser);
-        if(didUser){
-          console.warn("Bullshit subsummary - Direct Dial Number: got into the didUser block: ", rowNumber);
-          const directDialNum = getE164Number(field);
-          row.did = directDialNum;
-          row.directDialNum = directDialNum;
-          return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+        console.warn("Bullshit Summary - Zero Out Enabled: ", rowNumber, field, didField, didUser);
+        if(didUser && field){
+          try {
+            const directDialNum = getE164Number(field);
+            row.did = directDialNum;
+            row.directDialNum = directDialNum;
+            return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+          } catch(err) {
+            return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
+          }
+        } else if(didUser && !field) {
+          return Promise.reject(`${fieldName} is required when DID user is 'Y' ${rowNumber}`);
+        } else if(!didUser && !field) {
+          return Promise.resolve(`${fieldName} skipped for Non DID user for row ${rowNumber}`);
         } else {
-          console.warn("Bullshit subsummary - Direct Dial Number: got into the else block: ", rowNumber);
           return Promise.reject(`Did User field is 'N', ${fieldName} is not applicable for row ${rowNumber}`);
         }
       } catch(err) {
@@ -306,32 +312,31 @@ const getTritonFields = (state: any): any => [
       try {
         const didUser = isDidUser(didField, rowNumber);
         console.warn("Bullshit Summary - Zero Out Enabled: ", rowNumber, field, didField, didUser);
-        if(didUser){
-          console.warn("Bullshit subsummary - Zero Out Enabled - got into the didUser block: ", rowNumber);
-          if(field === "y"){
-            try {
-              const profileFieldName = "Profile Id";
-              const profiles = state.profileContext.profiles;
-              const profileId = cleanupField(row[profileFieldName], "number");
-              const overflowSkill = getOverflowSkillFromProfile(profiles, profileId);
-              if(overflowSkill){
-                row.routing = {
-                  skills: [cleanupField(overflowSkill, "string")],
-                  levels: {}
-                };
-              }
-              row.zeroOutEnabled = true;
-            } catch(err) {
-              return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
+        if(didUser && field){
+          try {
+            const profileFieldName = "Profile Id";
+            const profiles = state.profileContext.profiles;
+            const profileId = cleanupField(row[profileFieldName], "number");
+            const overflowSkill = getOverflowSkillFromProfile(profiles, profileId);
+            if(overflowSkill){
+              row.routing = {
+                skills: [cleanupField(overflowSkill, "string")],
+                levels: {}
+              };
             }
-          } else if(field === "n"){
-            row.zeroOutEnabled = false;
-          } else {
-            return Promise.reject(`${fieldName} needs to be 'Y' or 'N' for row ${rowNumber}`);
+            row.zeroOutEnabled = true;
+            return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+          } catch(err) {
+            return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
           }
+        } else if(didUser && field === false) {
+          row.zeroOutEnabled = false;
           return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+        } else if(didUser && !field) {
+          return Promise.reject(`${fieldName} is required when DID user is 'Y' ${rowNumber}`);
+        } else if(!didUser && !field) {
+          return Promise.resolve(`${fieldName} skipped for Non DID user for row ${rowNumber}`);
         } else {
-          console.warn("Bullshit subsummary - Outgoing Number - got into the else block: ", rowNumber);
           return Promise.reject(`Did User field is 'N', ${fieldName} is not applicable for row ${rowNumber}`);
         }
       } catch(err) {
@@ -356,25 +361,22 @@ const getTritonFields = (state: any): any => [
       try {
         const didUser = isDidUser(didField, rowNumber);
         console.warn("Bullshit Summary - Outgoing Number: ", rowNumber, field, didField, didUser);
-        if(!didUser){
-          console.warn("Bullshit subsummary - Outgoing Number - got into the !didUser block: ", rowNumber);
-          if(field){
-            try {
-              const outgoing = getE164Number(field);
-              row.did = outgoing;
-              return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
-            } catch(err) {
-              return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
-            }
-          } else {
-            console.warn("Bullshit subsummary - Outgoing Number - got into the else block: ", rowNumber);
-            return Promise.resolve(`${fieldName} skipped for DID user for row ${rowNumber}`);
-          }
-        } else {
+        if(didUser && field){
           return Promise.reject(`Did User field is 'Y', ${fieldName} is not applicable for row ${rowNumber}`);
+        } else if(didUser && !field) {
+          return Promise.resolve(`${fieldName} skipped for DID user for row ${rowNumber}`);
+        } else if(!didUser && !field) {
+          return Promise.reject(`${fieldName} is required when DID user is 'N' ${rowNumber}`);
+        } else {
+          try {
+            const outgoing = getE164Number(field);
+            row.did = outgoing;
+            return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+          } catch(err) {
+            return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
+          }
         }
       } catch(err) {
-        console.log("WHATS THE ERROR", err);
         return Promise.reject(`${didFieldName} needs to be 'Y' or 'N' for row ${rowNumber}`);
       }
     }
@@ -560,12 +562,62 @@ const getCalabrioQmFields = (state: any): any => [
   }
 ];
 
+const getUpdateWorkerAttributeFields = (state: any): any => [
+  {
+    field: "nNumber",
+    name: "N Number",
+    type: "string",
+    description: "Agents N Number",
+    required: "Y",
+    example: "n0263786",
+    options: null,
+    validateFunction: async (row: any, rowNumber: number): Promise<any> => {
+      const fieldName = "N Number";
+      const field = cleanupField(row[fieldName], "string");
+      if(!field){
+        return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
+      } else if(typeof field !== "string" || field.length !== 8) {
+        return Promise.reject(`${fieldName} is not in the valid n number format for row ${rowNumber}`);
+      } else {
+        try {
+          const fetchedUser = await fetchUser(field);
+          //fetch user from worker state - throw error if they're not a triton worker
+          //add current triton attributes to object
+
+          row.contact_uri = `client:${field.toLowerCase()}`;
+          row.department_id = fetchedUser.departmentNumber;
+          row.department_name = fetchedUser.departmentName;
+          row.email = fetchedUser.email;
+          row.email_address = fetchedUser.email;
+          row.emp_first_name = fetchedUser.firstName;
+          row.emp_last_name = fetchedUser.lastName;
+          row.full_name = `${fetchedUser.firstName} ${fetchedUser.lastName}`;
+          row.location = fetchedUser.officeName;
+          row.n_number = field.toLowerCase();
+          row.office_location_name = fetchedUser.officeName;
+          row.office_location_number = fetchedUser.officeNumber;
+          row.primary_dept_name = fetchedUser.departmentName;
+          row.primary_dept_number = fetchedUser.departmentNumber;
+          row.unique_id = field.toLowerCase();
+          row.adLogin = `LM\\${field.toLowerCase()}`;
+          row.firstName = fetchedUser.firstName;
+          row.lastName = fetchedUser.lastName;
+          return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+        } catch(err) {
+          return Promise.reject(`Error thrown fetching ${fieldName} from HR Database for row ${rowNumber}`);
+        }
+      }
+    }
+  }
+];
+
 const processCreateTritonUser = async (row: any, rowNumber: number, state: any) => {
   console.log("**** TRITON RECORD PROCESSING", row);
   const workerSid = "WK123456";
   // const workerSid = await createUser(row);
   row.workerSid = workerSid;
   Promise.resolve({ workerSid: "WK123456" });
+  //call set state
 };
 
 const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any) => {
@@ -573,10 +625,19 @@ const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any
   try {
     await checkConflictingUsers(row, state.calabrioContext.users);
     //create calabrio user
+    //call set state
   } catch(err) {
     Promise.reject(err);
   }
   Promise.resolve();
+};
+
+const processUpdateWorkerAttribute = async (row: any, rowNumber: number, state: any) => {
+  console.log("**** TRITON RECORD PROCESSING", row);
+  const workerSid = "WK123456";
+  // const workerSid = await createUser(row);
+  row.workerSid = workerSid;
+  Promise.resolve({ workerSid: "WK123456" });
 };
 
 //Templates
@@ -597,9 +658,22 @@ export const getCreateTemplates: any = (state: any): any => {
         name: "CREATE_TRITON_USER",
         variable: "workerSid"
       }],
-      validationConcurrencyLimit: 1000,
+      validationConcurrencyLimit: 500,
       processingConcurrencyLimit: null,
       fields: getCalabrioQmFields(state)
+    }
+  };
+};
+
+export const getUpdateTemplates: any = (state: any): any => {
+  return {
+    UPDATE_WORKER_ATTRIBUTE: {
+      name: "CREATE_TRITON_USER",
+      processFunction: (row: any, rowNumber: number) => processUpdateWorkerAttribute(row, rowNumber, state),
+      multiRunDependencies: null,
+      validationConcurrencyLimit: 500,
+      processingConcurrencyLimit: 5,
+      fields: getTritonFields(state)
     }
   };
 };
