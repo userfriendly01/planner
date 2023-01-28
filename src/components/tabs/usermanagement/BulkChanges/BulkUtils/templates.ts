@@ -270,16 +270,18 @@ const getTritonFields = (state: any): any => [
       const field = cleanupField(row[fieldName], "string");
       const didFieldName = "Did User";
       const didField = cleanupField(row[didFieldName], "string");
-      console.log("didFieldName in directDialNumber", didField);
 
       try {
         const didUser = isDidUser(didField, rowNumber);
+        console.warn("Bullshit Summary - Direct Dial Number: ", rowNumber, field, didField, didUser);
         if(didUser){
+          console.warn("Bullshit subsummary - Direct Dial Number: got into the didUser block: ", rowNumber);
           const directDialNum = getE164Number(field);
           row.did = directDialNum;
           row.directDialNum = directDialNum;
           return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
         } else {
+          console.warn("Bullshit subsummary - Direct Dial Number: got into the else block: ", rowNumber);
           return Promise.reject(`Did User field is 'N', ${fieldName} is not applicable for row ${rowNumber}`);
         }
       } catch(err) {
@@ -303,7 +305,9 @@ const getTritonFields = (state: any): any => [
 
       try {
         const didUser = isDidUser(didField, rowNumber);
+        console.warn("Bullshit Summary - Zero Out Enabled: ", rowNumber, field, didField, didUser);
         if(didUser){
+          console.warn("Bullshit subsummary - Zero Out Enabled - got into the didUser block: ", rowNumber);
           if(field === "y"){
             try {
               const profileFieldName = "Profile Id";
@@ -327,6 +331,7 @@ const getTritonFields = (state: any): any => [
           }
           return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
         } else {
+          console.warn("Bullshit subsummary - Outgoing Number - got into the else block: ", rowNumber);
           return Promise.reject(`Did User field is 'N', ${fieldName} is not applicable for row ${rowNumber}`);
         }
       } catch(err) {
@@ -350,9 +355,9 @@ const getTritonFields = (state: any): any => [
 
       try {
         const didUser = isDidUser(didField, rowNumber);
-        console.warn("Bullshit Summary: ", rowNumber, field, didField, didUser);
+        console.warn("Bullshit Summary - Outgoing Number: ", rowNumber, field, didField, didUser);
         if(!didUser){
-          console.warn("Bullshit subsummary - got into the !didUser block: ", rowNumber);
+          console.warn("Bullshit subsummary - Outgoing Number - got into the !didUser block: ", rowNumber);
           if(field){
             try {
               const outgoing = getE164Number(field);
@@ -362,7 +367,7 @@ const getTritonFields = (state: any): any => [
               return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
             }
           } else {
-            console.warn("Bullshit subsummary - got into the else block: ", rowNumber);
+            console.warn("Bullshit subsummary - Outgoing Number - got into the else block: ", rowNumber);
             return Promise.resolve(`${fieldName} skipped for DID user for row ${rowNumber}`);
           }
         } else {
