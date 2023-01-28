@@ -34,8 +34,44 @@ const BulkUpdateForm = (props: any) => {
   });
 
   console.log("BulkUpdateForm - selectedTemplates", selectedTemplates);
-  const keyValidator = () => true;
-  const objectValidator = () => true;
+  const keyValidator = (key: string) => key.length > 0 && key.indexOf(" ") === -1;
+  const objectValidator = (value: string) => {
+    switch(updateAttributes.type){
+      case valueTypes.STRING:
+        return true;
+      case valueTypes.NUMBER:
+        try {
+          parseInt(value);
+          return true;
+        } catch(err){
+          return false;
+        }
+      case valueTypes.BOOLEAN: {
+        const cleanValue = value.replace(" ", "").toLowerCase();
+        if(cleanValue === "true" || cleanValue === "false"){
+          return true;
+        } else {
+          return false;
+        }
+      }
+      case valueTypes.OBJECT:
+        try {
+          JSON.parse(value);
+          return true;
+        } catch(err){
+          return false;
+        }
+      case valueTypes.ARRAY:
+        try {
+          JSON.parse(value);
+          return true;
+        } catch(err){
+          return false;
+        }
+      default:
+        return false;
+    }
+  };
 
   React.useEffect(() => {
     //enhance to check if they are valid & if they arent, unselect the template to hide the follow up fields
@@ -50,15 +86,22 @@ const BulkUpdateForm = (props: any) => {
     }
   }, [updateAttributes]);
 
+  const constructDropdownOption = (template: any) => {
+    return {
+      label: t.name,
+      value: t
+    };
+  };
+
   return (
     <Row>
       <StepWrapper>
         <Dropdown
           label="Choose a field to update"
-          value={action}
-          options={Object.values(updateTemplates)}
-          updateValue={(event: any, action: any) => {
-            setAction(action);
+          value={constructDropdownOption(action)}
+          options={Object.values(updateTemplates).map((t: any) => constructDropdownOption(t))}
+          updateValue={(event: any, template: any) => {
+            setAction(template);
           }}
           styles={{
             margin: "40 0 30 0",
