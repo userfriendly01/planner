@@ -88,8 +88,8 @@ const BulkUpdateForm = (props: any) => {
 
   const constructDropdownOption = (template: any) => {
     return {
-      label: t.name,
-      value: t
+      label: template.name,
+      value: template
     };
   };
 
