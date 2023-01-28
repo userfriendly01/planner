@@ -87,11 +87,11 @@ export const identifySuccessfulRecords = (uploadedForm: any, validationErrors: a
   return successfulRows;
 };
 
-const identifyProcessingDependencies = (selectedTemplates: any) => {
+export const identifyProcessingDependencies = (selectedTemplates: any) => {
   const dependencyTree = selectedTemplates.slice();
 
   //if theres only one template, just return it
-  if(selectedTemplates.length === 1){
+  if(selectedTemplates.length <= 1 ){
     console.log("identifyProcessingDependencies - selectedTemplates.length === 1");
     return false;
   }
@@ -315,15 +315,15 @@ export const checkConflictingUsers = async (user: any, users: any[]): Promise<an
         const dupUserEmail = toLowerCaseString(u.email);
 
         if (acdId && dupUserAcdId === acdId) {
-          return Promise.reject("Calabrio Record already exists with this users nNumber in the AdLogin field.");
+          return Promise.reject("Calabrio Record already exists with this user's acdId.");
         }
 
         if (dupUserAdLogin === adLogin) {
-          return Promise.reject("Calabrio Record already exists with this users nNumber in the AdLogin field.");
+          return Promise.reject("Calabrio Record already exists with this user's nNumber in the AdLogin field.");
         }
 
         if (dupUserEmail === email) {
-          return Promise.reject("Calabrio Record already exists with this users email.");
+          return Promise.reject("Calabrio Record already exists with this user's email.");
         }
       }));
     } catch(err) {

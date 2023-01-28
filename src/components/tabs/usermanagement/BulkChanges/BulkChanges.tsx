@@ -88,8 +88,9 @@ const BulkChanges = () => {
             <StepWrapper>
               Step 3: Upload completed Spreadsheet
             </StepWrapper>
-            <Wrapper center={true}>
+            <Wrapper center={true} column={true} centrallyAlign={true}>
               <ImportButton onClick={() => uploadButtonRef.current.click()} >Upload Spreadsheet</ImportButton>
+              <FileNameWrapper> {filenameText} </FileNameWrapper>
             </Wrapper>
           </Row>
         </>

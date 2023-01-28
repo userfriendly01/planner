@@ -233,7 +233,7 @@ export const jokes: string[] = [
   "What’s more unbelievable than a talking dog? A spelling bee.",
   "How many tickles does it take to make an octopus laugh? Ten tickles.",
   "What’s that Nevada city where all the dentists visit? Floss Vegas.",
-  "An invisible man married and invisable women. The kids were nothing to look at.",
+  "An invisible man married and invisible women. The kids were nothing to look at.",
   "Struggling to think of what to buy someone for Christmas? Get theme a fridge and watch their face light up when they open it.",
   "What time did the man go to the dentist? Tooth hurt-y!",
   "My therapist told me I have problems expressing my emotions. Can’t say I’m surprised.",

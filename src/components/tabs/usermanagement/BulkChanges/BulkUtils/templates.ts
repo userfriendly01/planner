@@ -20,12 +20,9 @@ import {
 
 
 const isDidUser = (didField: any, rowNumber: number) => {
-  console.log("isDidUser", didField);
   if(typeof didField !== "string"){
-    console.log("typeof didField !== string", typeof didField);
     Promise.reject(`Did User field needs to be 'Y' or 'N' for row ${rowNumber}`);
   } else if(didField !== "y" && didField !== "n"){
-    console.log("didField !== y && didField !== n", typeof didField);
     Promise.reject(`Did User field needs to be 'Y' or 'N' for row ${rowNumber}`);
   } else if(didField === "y") {
     return true;
@@ -224,7 +221,7 @@ const getTritonFields = (state: any): any => [
           row.extension = extension;
         } catch (err) {
           console.error("Error generating extension", err);
-          return Promise.reject(`Unable to generate ${fieldName} for row ${rowNumber}.`);
+          return Promise.reject(`Unable to generate ${fieldName} for row ${rowNumber}`);
         }
         return Promise.resolve(`${fieldName} ${extension} set for row ${rowNumber}`);
       } else if(typeof field !== "string"){
@@ -350,14 +347,12 @@ const getTritonFields = (state: any): any => [
       const field = cleanupField(row[fieldName], "string");
       const didFieldName = "Did User";
       const didField = cleanupField(row[didFieldName], "string");
-      console.log("outgoing number", field);
-      console.log("row", row);
-      console.log("didFieldName in Outgoing", didField);
 
       try {
         const didUser = isDidUser(didField, rowNumber);
-        console.log("DID USER RIGHT BEFFORE OUTGOING NUMBER", didUser);
+        console.warn("Bullshit Summary: ", rowNumber, field, didField, didUser);
         if(!didUser){
+          console.warn("Bullshit subsummary - got into the !didUser block: ", rowNumber);
           if(field){
             try {
               const outgoing = getE164Number(field);
@@ -367,10 +362,11 @@ const getTritonFields = (state: any): any => [
               return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
             }
           } else {
+            console.warn("Bullshit subsummary - got into the else block: ", rowNumber);
             return Promise.resolve(`${fieldName} skipped for DID user for row ${rowNumber}`);
           }
         } else {
-          return Promise.reject(`Did User field is 'N', ${fieldName} is not applicable for row ${rowNumber}`);
+          return Promise.reject(`Did User field is 'Y', ${fieldName} is not applicable for row ${rowNumber}`);
         }
       } catch(err) {
         console.log("WHATS THE ERROR", err);
