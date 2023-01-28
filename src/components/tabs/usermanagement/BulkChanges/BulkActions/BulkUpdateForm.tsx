@@ -98,7 +98,7 @@ const BulkUpdateForm = (props: any) => {
       <StepWrapper>
         <Dropdown
           label="Choose a field to update"
-          value={constructDropdownOption(action)}
+          value={action}
           options={Object.values(updateTemplates).map((t: any) => constructDropdownOption(t))}
           updateValue={(event: any, template: any) => {
             console.log("TEMPLATE", template);
@@ -110,7 +110,7 @@ const BulkUpdateForm = (props: any) => {
           }}
         />
       </StepWrapper>
-      { action === updateActions.WORKER_ATTRIBUTES &&
+      { action === updateTemplates.UPDATE_WORKER_ATTRIBUTE &&
         <SelectionWrapper>
           <Tooltip title="Must be a string with no spaces">
             <CustomInput
