@@ -227,8 +227,10 @@ export const initiateCalls = async (
   };
 
   if(concurrencyLimit){
+    console.log("Concurrency Limit found", concurrencyLimit);
     processingPromises = await handleConcurrentCalls(concurrencyLimit, processRow, successfulRows, setProcessedRows);
   } else {
+    console.log("No Concurrency Limit found");
     processingPromises = await Promise.allSettled(successfulRows.map(async (row: any, index: number) => {
       const rowNumber = index + 1;
       return processRow(row, rowNumber, setProcessedRows);

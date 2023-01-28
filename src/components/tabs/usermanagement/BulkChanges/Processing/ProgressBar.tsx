@@ -17,7 +17,7 @@ const ProgressBar = (props: any) => {
   const [ selectedJokeIndex, setSelectedJokeIndex ] = React.useState(Math.floor((Math.random() * jokesIndexLength)));
   const percentageComplete =  Math.floor((completedRows/totalRowCount) * 100);
 
-  console.log("***why arent I progressing?", totalRowCount, completedRows);
+  console.log("***Progress Bar", percentageComplete, totalRowCount, completedRows);
 
   React.useEffect(() => {
     const updateJoke = () => {
@@ -33,7 +33,7 @@ const ProgressBar = (props: any) => {
         size: "26px"
       }}> {jokes[selectedJokeIndex]} </TextWrapper>
       <ProgressBarWrapper>
-        <ProgressBarFiller progress={`${percentageComplete}%` || "34%"}/>
+        <ProgressBarFiller progress={`${percentageComplete}%`}/>
       </ProgressBarWrapper>
     </ProgressBarContainer>
   );

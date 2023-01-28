@@ -635,10 +635,7 @@ const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any
 };
 
 const processUpdateWorkerAttribute = async (row: any, rowNumber: number, state: any) => {
-  console.log("**** TRITON RECORD PROCESSING", row);
-  const workerSid = "WK123456";
-  // const workerSid = await createUser(row);
-  row.workerSid = workerSid;
+  console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", row);
   Promise.resolve({ workerSid: "WK123456" });
 };
 
@@ -675,7 +672,7 @@ export const getUpdateTemplates: any = (state: any): any => {
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,
-      fields: getTritonFields(state)
+      fields: getUpdateWorkerAttributeFields(state)
     }
   };
 };
