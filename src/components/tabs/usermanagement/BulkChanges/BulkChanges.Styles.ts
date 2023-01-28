@@ -72,11 +72,20 @@ export const StepWrapper = styled.div`
   width: 40%;
 `;
 
-export const Wrapper = styled.div<{center?: boolean}>`
+export const Wrapper = styled.div<{center?: boolean, column?: boolean, centrallyAlign?: boolean}>`
   display: flex;
   width: 60%;
   justify-content: ${props => props.center? "center" : "space-between"};
+  flex-direction: ${props => props.column? "column": "row"};
+  align-items: ${props => props.centrallyAlign? "center" : "baseline"};
 `;
+
+export const FileNameWrapper = styled.div`
+  font-size: "14px",
+  font-style: "italic",
+  margin: "2 0 2 0"
+`;
+
 
 export const SelectionWrapper = styled.div`
   display: flex;

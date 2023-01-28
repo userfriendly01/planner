@@ -373,6 +373,7 @@ const getTritonFields = (state: any): any => [
           return Promise.reject(`Did User field is 'N', ${fieldName} is not applicable for row ${rowNumber}`);
         }
       } catch(err) {
+        console.log("WHATS THE ERROR", err);
         return Promise.reject(`${didFieldName} needs to be 'Y' or 'N' for row ${rowNumber}`);
       }
     }

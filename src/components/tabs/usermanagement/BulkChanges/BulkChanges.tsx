@@ -5,6 +5,7 @@ import {
 } from "./BulkChanges.Interfaces";
 import {
   BulkChangesWrapper,
+  FileNameWrapper,
   ImportButton,
   Row,
   StepWrapper,
@@ -27,7 +28,7 @@ const BulkChanges = () => {
   const [ selectedTemplates, setSelectedTemplates ] = React.useState([]);
   const [ consolidatedTemplate, setConsolidatedTemplates ] = React.useState([]);
   const [ uploadedForm, setUploadedForm ] = React.useState(null);
-
+  const [ filenameText, setFilenameText ] = React.useState(null);
   const [ showProcessingModal , setShowProcessingModal ] = React.useState(false);
 
   React.useEffect(() => {
@@ -39,6 +40,7 @@ const BulkChanges = () => {
     setSelectedTemplates([]);
     setConsolidatedTemplates([]);
     setUploadedForm(null);
+    setFilenameText(null);
   };
 
   return (
@@ -107,7 +109,15 @@ const BulkChanges = () => {
         type="file"
         ref={uploadButtonRef}
         hidden={true}
-        onChange={(e: any) => readUploadFile(e, setUploadedForm)}
+        onChange={(e: any) => {
+          readUploadFile(e, setUploadedForm);
+          if(e.target.files && e.target.files.length){
+            setFilenameText(`${e.target.files[0].name} has been uploaded`);
+          }
+        }}
+        onClick={(e: any) => {
+          e.target.value=null;
+        }}
       />
     </BulkChangesWrapper>
   );
