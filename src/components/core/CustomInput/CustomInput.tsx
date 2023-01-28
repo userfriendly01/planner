@@ -16,7 +16,7 @@ export interface CustomInputProps {
   disabled?: boolean,
   error?: boolean,
   label: string,
-  maxLength: string,
+  maxLength?: string,
   name: string,
   styles?: any,
   onBlur?: () => void,

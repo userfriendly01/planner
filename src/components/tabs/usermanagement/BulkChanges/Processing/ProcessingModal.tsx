@@ -4,7 +4,7 @@ import {
   StyledExportButton,
   ModalWrapper,
   TextWrapper,
-  ValidationErrorWrapper
+  ProcessingResultsWrapper
 } from "../BulkChanges.Styles";
 import ExportSuccessButton from "../ExportButtons/ExportSuccessButton";
 import ExportErrorsButton from "../ExportButtons/ExportErrorsButton";
@@ -70,6 +70,7 @@ const ProcessingModal = (props: any) => {
   }, []);
 
   const handleStartProcessing = async () => {
+    setStatus(STATES.PROCESSING);
     setProcessedRows(0);
     const rowsToProcess = results.successfullyValidatedRows;
     try {
@@ -94,7 +95,7 @@ const ProcessingModal = (props: any) => {
   return (
     <ModalWrapper>
       { status === STATES.VALIDATED &&
-        <ValidationErrorWrapper>
+        <ProcessingResultsWrapper>
           <TextWrapper styles={{
             size: "26px"
           }}>
@@ -113,19 +114,19 @@ const ProcessingModal = (props: any) => {
               Process {results.successfullyValidatedRows.length} out of {uploadedForm.length} rows
             </StyledExportButton>
           </ButtonWrapper>
-        </ValidationErrorWrapper>
+        </ProcessingResultsWrapper>
       }
       { status === STATES.VALIDATING && <ProgressBar completedRows={processedRows} totalRowCount={uploadedForm.length}/> }
       { status === STATES.PROCESSING && <ProgressBar completedRows={processedRows} totalRowCount={results.successfullyValidatedRows.length}/> }
       { status === STATES.PROCESSED &&
-        <ValidationErrorWrapper>
+        <ProcessingResultsWrapper>
           { results.processingErrors.length > 0 &&
             <TextWrapper styles={{ size: "26px" }}>
               Processing Errors have been found for this template. Use the options below to see failed and successful rows.
             </TextWrapper>
           }
           <TextWrapper styles={{ size: "26px" }}>
-              All rows were processed successfully!! Export success columns to see the details used in the requests.
+              All rows were processed successfully!! Export success columns to see worker details.
           </TextWrapper>
           <ButtonWrapper>
             { results.processingErrors.length > 0 &&
@@ -140,7 +141,7 @@ const ProcessingModal = (props: any) => {
               Close
             </StyledExportButton>
           </ButtonWrapper>
-        </ValidationErrorWrapper>
+        </ProcessingResultsWrapper>
       }
     </ModalWrapper>
   );

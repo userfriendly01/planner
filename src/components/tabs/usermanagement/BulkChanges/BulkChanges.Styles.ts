@@ -43,7 +43,7 @@ export const TextWrapper = styled.div<{styles: any}>`
   padding: 0 50;
 `;
 
-export const ValidationErrorWrapper = styled(Paper)`
+export const ProcessingResultsWrapper = styled(Paper)`
   display: flex;
   flex-direction: column;
   height: 100%;
