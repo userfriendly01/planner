@@ -31,6 +31,7 @@ export const cleanupField = (field: any, requiredType: string) => {
     return field;
   }
 };
+
 export const readUploadFile = (e: any, setUploadedForm: any): void => {
   console.log("UPLOAD FILED", e);
   e.preventDefault();
@@ -162,14 +163,24 @@ export const handleConcurrentCalls = async (
   return processingResults;
 };
 
-export const getLowestConcurrencyLimit = (selectedTemplates: any) => {
+export const getLowestConcurrencyLimit = (selectedTemplates: any, type: string) => {
   let concurrencyLimit: any = null;
-  selectedTemplates.forEach(((t: any) => {
-    //if false or if true & less than this one
-    if(t.validationConcurrencyLimit && (!concurrencyLimit || (concurrencyLimit && concurrencyLimit > t.validationConcurrencyLimit))){
-      concurrencyLimit = t.validationConcurrencyLimit;
-    }
-  }));
+  if(type === "validation"){
+    selectedTemplates.forEach(((t: any) => {
+      //if false or if true & less than this one
+      if(t.validationConcurrencyLimit && (!concurrencyLimit || (concurrencyLimit && concurrencyLimit > t.validationConcurrencyLimit))){
+        concurrencyLimit = t.validationConcurrencyLimit;
+      }
+    }));
+  } else {
+    selectedTemplates.forEach(((t: any) => {
+      //if false or if true & less than this one
+      if(t.processingConcurrencyLimit && (!concurrencyLimit || (concurrencyLimit && concurrencyLimit > t.processingConcurrencyLimit))){
+        concurrencyLimit = t.processingConcurrencyLimit;
+      }
+    }));
+  }
+
   return concurrencyLimit;
 };
 
@@ -179,7 +190,7 @@ export const initiateCalls = async (
   setProcessedRows: any
 ) => {
   const templateTree = identifyProcessingDependencies(selectedTemplates);
-  const concurrencyLimit: any = getLowestConcurrencyLimit(selectedTemplates);
+  const concurrencyLimit: any = getLowestConcurrencyLimit(selectedTemplates, "processing");
 
   const finalErrors: any = [];
   let processingPromises;
@@ -202,7 +213,6 @@ export const initiateCalls = async (
             }
           });
         }
-
         return await t.processFunction(row, rowNumber);
       }));
       progressCallback((previousCount: number) => (previousCount + 1));
@@ -260,7 +270,7 @@ export const performValidations = async (
 ): Promise<any> => {
   const finalErrors: any = [];
   let validationPromises;
-  const concurrencyLimit: any = getLowestConcurrencyLimit(selectedTemplates);
+  const concurrencyLimit: any = getLowestConcurrencyLimit(selectedTemplates, "validation");
 
   const processValidationsOnRows = async (row: any, rowIndex: number, progressCallback: any): Promise<any> => {
     const fieldPromises = await Promise.allSettled(consolidatedFieldsList.map((field: any) => {

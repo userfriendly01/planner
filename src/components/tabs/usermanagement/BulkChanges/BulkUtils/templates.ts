@@ -649,7 +649,7 @@ export const getCreateTemplates: any = (state: any): any => {
       name: "CREATE_TRITON_USER",
       processFunction: (row: any, rowNumber: number) => processCreateTritonUser(row, rowNumber, state),
       multiRunDependencies: null,
-      validationConcurrencyLimit: 1000,
+      validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,
       fields: getTritonFields(state)
     },
@@ -661,7 +661,7 @@ export const getCreateTemplates: any = (state: any): any => {
         variable: "workerSid"
       }],
       validationConcurrencyLimit: 500,
-      processingConcurrencyLimit: null,
+      processingConcurrencyLimit: 25,
       fields: getCalabrioQmFields(state)
     }
   };

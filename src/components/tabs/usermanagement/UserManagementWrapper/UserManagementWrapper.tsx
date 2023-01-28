@@ -36,7 +36,17 @@ const UserManagementWrapper = () => {
   const [ selectedWorkerOpts, setSelectedWorkerOpts ] = React.useState(defaultWorkerOpts);
   const [ view, setView ] = React.useState(views.TRITON_USERS);
   const state = useAdminState();
-
+  const loggedInUser = state.userContext.pingIdentity.sub.toLowerCase();
+  const temporaryBulkViewAllowedUsers = [
+    "n0263786",
+    "n0196231",
+    "n0088625",
+    "n0183277",
+    "n0194977",
+    "n0217643",
+    "n0147198",
+    "n0197784"
+  ];
   console.log("User Management details, workerOpts, view", selectedWorkerOpts, view);
 
   React.useEffect(() => {
@@ -80,7 +90,8 @@ const UserManagementWrapper = () => {
           workerOpts={selectedWorkerOpts}
           setWorkerOpts={setSelectedWorkerOpts}
         />}
-        {view === views.BULK_CHANGES && <BulkChanges />}
+        {view === views.BULK_CHANGES && temporaryBulkViewAllowedUsers.includes(loggedInUser) && <BulkChanges />}
+        {view === views.BULK_CHANGES && !temporaryBulkViewAllowedUsers.includes(loggedInUser) && "This view is temporarily restricted to Game of Phones Product Owners and Admins"}
       </CallflowWrapper>
     </FormStateProvider>
   );

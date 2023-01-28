@@ -55,7 +55,7 @@ const ProcessingModal = (props: any) => {
           ...results,
           successfullyValidatedRows: uploadedForm
         });
-        handleStartProcessing();
+        setStatus(STATES.VALIDATED);
       } catch (err) {
         console.log("Validation Errors Log", err);
         const successfullyValidatedRows = identifySuccessfulRecords(uploadedForm, err.slice());
