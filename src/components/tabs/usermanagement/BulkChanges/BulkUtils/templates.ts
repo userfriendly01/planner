@@ -312,7 +312,7 @@ const getTritonFields = (state: any): any => [
       try {
         const didUser = isDidUser(didField, rowNumber);
         console.warn("Bullshit Summary - Zero Out Enabled: ", rowNumber, field, didField, didUser);
-        if(didUser && field){
+        if(didUser && field === "y"){
           try {
             const profileFieldName = "Profile Id";
             const profiles = state.profileContext.profiles;
@@ -329,12 +329,14 @@ const getTritonFields = (state: any): any => [
           } catch(err) {
             return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
           }
-        } else if(didUser && field === false) {
+        } else if(didUser && field === "n") {
           row.zeroOutEnabled = false;
           return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
         } else if(didUser && !field) {
           return Promise.reject(`${fieldName} is required when DID user is 'Y' ${rowNumber}`);
         } else if(!didUser && !field) {
+          return Promise.resolve(`${fieldName} skipped for Non DID user for row ${rowNumber}`);
+        } else if(!didUser && field === "n") {
           return Promise.resolve(`${fieldName} skipped for Non DID user for row ${rowNumber}`);
         } else {
           return Promise.reject(`Did User field is 'N', ${fieldName} is not applicable for row ${rowNumber}`);

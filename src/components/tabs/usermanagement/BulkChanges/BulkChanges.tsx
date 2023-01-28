@@ -17,6 +17,7 @@ import {
 } from "./BulkUtils/utils";
 import { Dropdown } from "components";
 import BulkCreateForm from "./BulkActions/BulkCreateForm";
+import BulkUpdateForm from "./BulkActions/BulkUpdateForm";
 import ExportButtons from "./ExportButtons/ExportButtons";
 import ProcessingModal from "./Processing/ProcessingModal";
 import { Modal } from "@mui/material";
@@ -70,8 +71,14 @@ const BulkChanges = () => {
       </Modal>
       { view === views.BULK_CREATE_USERS &&
         <BulkCreateForm
-          selectedTemplates = {selectedTemplates}
-          setSelectedTemplates={setSelectedTemplates}
+          selectedTemplates= {selectedTemplates}
+          setSelectedTemplates= {setSelectedTemplates}
+        />
+      }
+      { view === views.BULK_UPDATE &&
+        <BulkUpdateForm
+          selectedTemplates= {selectedTemplates}
+          setSelectedTemplates= {setSelectedTemplates}
         />
       }
       { selectedTemplates.length > 0 &&
