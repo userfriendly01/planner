@@ -54,6 +54,9 @@ const getTritonFields = (state: any): any => [
       const fieldName = "N Number";
       const field = cleanupField(row[fieldName], "string");
       const worker = state.workerContext.workers.find((w: any) => cleanupField(w.attributes.n_number, "string") === field);
+      if(!row.attributes){
+        row.attributes = {};
+      }
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
       } else if(typeof field !== "string" || field.length !== 8) {
@@ -100,6 +103,9 @@ const getTritonFields = (state: any): any => [
     validateFunction: (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "Profile Id";
       const field = cleanupField(row[fieldName], "number");
+      if(!row.attributes){
+        row.attributes = {};
+      }
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
       } else if(typeof field !== "number"){
@@ -123,7 +129,9 @@ const getTritonFields = (state: any): any => [
     validateFunction: (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "Manager N Number";
       const field = cleanupField(row[fieldName], "string");
-
+      if(!row.attributes){
+        row.attributes = {};
+      }
       const managerObject = state.managerContext.managers.find((m:any) => cleanupField(m.manager_n_number, "string") === field);
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
@@ -161,6 +169,9 @@ const getTritonFields = (state: any): any => [
       */
       const fieldName = "Default Skills";
       const field: any = row[fieldName];
+      if(!row.attributes){
+        row.attributes = {};
+      }
       const defaultSkills: any = {
         skills: [],
         levels: {}
@@ -223,6 +234,9 @@ const getTritonFields = (state: any): any => [
       const field = cleanupField(row[fieldName], "string");
       const newExtension = field === "y";
       const workers = state.workerContext.workers;
+      if(!row.attributes){
+        row.attributes = {};
+      }
 
       if(!field){
         return Promise.resolve(`No ${fieldName} set for row ${rowNumber}`);
@@ -292,7 +306,9 @@ const getTritonFields = (state: any): any => [
       const field = cleanupField(row[fieldName], "string");
       const didFieldName = "Did User";
       const didField = cleanupField(row[didFieldName], "string");
-
+      if(!row.attributes){
+        row.attributes = {};
+      }
 
       try {
         const didUser = isDidUser(didField, rowNumber);
@@ -333,6 +349,9 @@ const getTritonFields = (state: any): any => [
       const field = cleanupField(row[fieldName], "string");
       const didFieldName = "Did User";
       const didField = cleanupField(row[didFieldName], "string");
+      if(!row.attributes){
+        row.attributes = {};
+      }
 
       try {
         const didUser = isDidUser(didField, rowNumber);
@@ -384,6 +403,9 @@ const getTritonFields = (state: any): any => [
       const field = cleanupField(row[fieldName], "string");
       const didFieldName = "Did User";
       const didField = cleanupField(row[didFieldName], "string");
+      if(!row.attributes){
+        row.attributes = {};
+      }
 
       try {
         const didUser = isDidUser(didField, rowNumber);
@@ -422,6 +444,9 @@ const getCalabrioQmFields = (state: any): any => [
     validateFunction: async (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "N Number";
       const field = cleanupField(row[fieldName], "string");
+      if(!row.attributes){
+        row.attributes = {};
+      }
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
       } else if(typeof field !== "string" || field.length !== 8) {
