@@ -551,7 +551,7 @@ const getCalabrioQmFields = (state: any): any => [
             fieldArray.forEach((role: any) => {
               const cleanRole = cleanupField(role, "string");
               const foundInRoles = calabrioAllowedRoles.some((r:any) => cleanupField(r, "string") === cleanRole);
-              const roleObject = state.calabrioContext.roles.find((r:any) => cleanupField(r.name) === cleanRole);
+              const roleObject = state.calabrioContext.roles.find((r:any) => cleanupField(r.name, "string") === cleanRole);
               row.roles = [];
               if(!foundInRoles || !roleObject){
                 return Promise.reject(`${cleanRole} is not a valid role for row ${rowNumber}`);
