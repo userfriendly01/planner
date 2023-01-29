@@ -59,7 +59,7 @@ const ProcessingModal = (props: any) => {
       } catch (err) {
         console.log("Validation Errors Log", err);
         const errors = typeof err === "object" ? err : [];
-        const successfullyValidatedRows = identifySuccessfulRecords(uploadedForm, errors.slice());
+        const successfullyValidatedRows = identifySuccessfulRecords(uploadedForm, errors);
         setResults({
           ...results,
           validationErrors: err,
