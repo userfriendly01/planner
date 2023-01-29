@@ -36,53 +36,58 @@ const BulkUpdateForm = (props: any) => {
   console.log("BulkUpdateForm - selectedTemplates", selectedTemplates);
   const keyValidator = (key: string) => key.length > 0 && key.indexOf(" ") === -1;
   const valueValidator = (value: string) => {
-    switch(updateAttributes.type){
-      case valueTypes.STRING:
-        return true;
-      case valueTypes.NUMBER:
-        try {
-          const parsedValue = parseInt(value);
-          if(parsedValue && typeof parsedValue === "number"){
-            return true;
-          } else {
-            return false;
-          }
-        } catch(err){
-          return false;
-        }
-      case valueTypes.BOOLEAN: {
-        const cleanValue = value.replace(" ", "").toLowerCase();
-        if(cleanValue === "true" || cleanValue === "false"){
+    if(value){
+      switch(updateAttributes.type){
+        case valueTypes.STRING:
           return true;
-        } else {
-          return false;
+        case valueTypes.NUMBER:
+          try {
+            const parsedValue = parseInt(value);
+            if(parsedValue && typeof parsedValue === "number"){
+              return true;
+            } else {
+              return false;
+            }
+          } catch(err){
+            return false;
+          }
+        case valueTypes.BOOLEAN: {
+          const cleanValue = value.replace(" ", "").toLowerCase();
+          if(cleanValue === "true" || cleanValue === "false"){
+            return true;
+          } else {
+            return false;
+          }
         }
+        case valueTypes.OBJECT:
+          try {
+            const parsedValue = JSON.parse(value);
+            if(parsedValue && typeof parsedValue === "object" && parsedValue.charAt(0) === "{"){
+              return true;
+            } else {
+              return false;
+            }
+          } catch(err){
+            return false;
+          }
+        case valueTypes.ARRAY:
+          try {
+            const parsedValue = JSON.parse(value);
+            if(parsedValue && typeof parsedValue === "object" && parsedValue.charAt(0) === "["){
+              return true;
+            } else {
+              return false;
+            }
+          } catch(err){
+            return false;
+          }
+        default:
+          return false;
       }
-      case valueTypes.OBJECT:
-        try {
-          const parsedValue = JSON.parse(value);
-          if(parsedValue && typeof parsedValue === "object"){
-            return true;
-          } else {
-            return false;
-          }
-        } catch(err){
-          return false;
-        }
-      case valueTypes.ARRAY:
-        try {
-          const parsedValue = JSON.parse(value);
-          if(parsedValue && typeof parsedValue === "object"){
-            return true;
-          } else {
-            return false;
-          }
-        } catch(err){
-          return false;
-        }
-      default:
-        return false;
+    } else {
+      return false;
     }
+
   };
 
   React.useEffect(() => {

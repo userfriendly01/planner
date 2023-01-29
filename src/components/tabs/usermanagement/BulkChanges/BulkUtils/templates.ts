@@ -228,7 +228,10 @@ const getTritonFields = (state: any): any => [
         return Promise.reject(`${fieldName} must be a number or 'Y' for row ${rowNumber}. If you do not want an extension for this user, leave the field blank`);
       } else {
         try {
-          parseInt(field);
+          const isInt = parseInt(field);
+          if(typeof isInt !== "number"){
+            return Promise.reject(`${fieldName} ${field} is in the wrong format for row ${rowNumber}`);
+          }
           const isExtensionTaken = workers.some((w: any) => cleanupField(w.attributes.extension, "string") === field);
           if(!isExtensionTaken){
             row.extension = field;
@@ -640,13 +643,13 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
   const key = template.data.key;
   const value = template.data.value;
   const attributes = { [key]: value };
-  const worker = {
-    ...row,
-    attributes
-  };
-  console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", worker);
+
+  const isWorkerFound = state.workerContext.workers((w:any) => w.attributes.n_number === row.n_number);
+  row.attributes = attributes;
+  row.workerSid = isWorkerFound.sid;
+  console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", row);
   // updateUser(row.workerSid, worker);
-  Promise.resolve({ worker });
+  Promise.resolve(`${row.workerSid} - Worker Attributes updated for row ${rowNumber}`);
 };
 
 //Templates

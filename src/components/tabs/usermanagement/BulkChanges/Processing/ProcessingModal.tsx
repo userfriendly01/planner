@@ -126,7 +126,7 @@ const ProcessingModal = (props: any) => {
             </TextWrapper>
             :
             <TextWrapper styles={{ size: "26px" }}>
-                    All rows were processed successfully!! Export success columns to see worker details.
+              All rows were processed successfully!! Export success columns to see worker details.
             </TextWrapper>
           }
           <ButtonWrapper>
