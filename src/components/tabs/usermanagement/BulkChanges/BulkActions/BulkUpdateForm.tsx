@@ -43,7 +43,7 @@ const BulkUpdateForm = (props: any) => {
         case valueTypes.NUMBER:
           try {
             const parsedValue = parseInt(value);
-            if(parsedValue && typeof parsedValue === "number"){
+            if(parsedValue && typeof parsedValue === "number" && parsedValue > 0){
               return true;
             } else {
               return false;
@@ -71,7 +71,7 @@ const BulkUpdateForm = (props: any) => {
               object[key] = keyValue;
             });
             const parsedValue = JSON.parse(JSON.stringify(object));
-            if(typeof parsedValue === "object" && value.charAt(0) === "{"){
+            if(typeof parsedValue === "object" && value.charAt(0) === "{" && value.charAt(value.length -1) === "}"){
               return true;
             } else {
               return false;
@@ -83,7 +83,7 @@ const BulkUpdateForm = (props: any) => {
           try {
             const fieldArray = value.replace(" ","").replace("[","").replace("]","").split(",");
 
-            if(typeof fieldArray === "object" && value.charAt(0) === "["){
+            if(typeof fieldArray === "object" && value.charAt(0) === "[" && value.charAt(value.length -1) === "]"){
               return true;
             } else {
               return false;

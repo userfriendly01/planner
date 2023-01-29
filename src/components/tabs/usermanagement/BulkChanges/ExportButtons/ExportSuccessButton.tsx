@@ -27,6 +27,14 @@ const ExportSuccessButton = (props: any) => {
       });
     });
 
+    rows.forEach((row: any) => {
+      Object.keys(row).forEach((key: any) => {
+        if(typeof row[key] !== "string"){
+          [key] = row[key].toString();
+        }
+      });
+    });
+
     console.log("rows", rows);
     console.log("columns", columns);
 

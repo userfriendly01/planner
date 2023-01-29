@@ -17,6 +17,7 @@ import {
   checkConflictingUsers,
   cleanupField
 } from "./utils";
+import { valueTypes } from "../BulkChanges.Interfaces";
 
 const toProperCase = (field: any) => {
   const fieldArray = field.split(" ").map((w: string) => {
@@ -675,14 +676,49 @@ const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any
 
 const processUpdateWorkerAttribute = async (row: any, rowNumber: number, template: any, state: any) => {
   const key = template.data.key;
-  const value = template.data.value;
+  let value = template.data.value;
+  const type = template.data.value;
+  switch(type){
+    case valueTypes.STRING:
+      break;
+    case valueTypes.NUMBER:
+      value = parseInt(value);
+      break;
+    case valueTypes.BOOLEAN: {
+      const cleanValue = value.replace(" ", "").toLowerCase();
+      if(cleanValue === "true" || cleanValue === "false"){
+        value = true;
+      } else {
+        value = false;
+      }
+      break;
+    }
+    case valueTypes.OBJECT: {
+      const object: any = {};
+      const fieldArray = value.replace(" ","").replace("{","").replace("}","").split(",");
+
+      fieldArray.forEach((f: any) => {
+        const objKeyValueArray = f.replace(" ","").split(":");
+        const key = objKeyValueArray[0].trim();
+        const keyValue = objKeyValueArray[1].trim();
+        object[key] = keyValue;
+      });
+      value = JSON.parse(JSON.stringify(object));
+      break;
+    }
+    case valueTypes.ARRAY:
+      value = value.replace(" ","").replace("[","").replace("]","").split(",");
+      break;
+    default:
+      break;
+  }
   const attributes = { [key]: value };
 
   const isWorkerFound = state.workerContext.workers.find((w:any) => w.attributes.n_number === row.n_number);
   row.attributes = attributes;
   row.workerSid = isWorkerFound.sid;
   console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", row);
-  // updateUser(row.workerSid, row);
+  updateUser(row.workerSid, row);
   Promise.resolve(`${row.workerSid} - Worker Attributes updated for row ${rowNumber}`);
 };
 
