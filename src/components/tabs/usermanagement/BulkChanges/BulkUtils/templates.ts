@@ -18,6 +18,14 @@ import {
   cleanupField
 } from "./utils";
 
+const toProperCase = (field: any) => {
+  const fieldArray = field.split(" ").map((w: string) => {
+    const word = w.toLowerCase();
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  });
+  return fieldArray.join(" ");
+};
+
 
 const isDidUser = (didField: any, rowNumber: number) => {
   if(typeof didField !== "string"){
@@ -473,9 +481,9 @@ const getCalabrioQmFields = (state: any): any => [
               if(!foundInGroups && !foundInTeams){
                 return Promise.reject(`${cleanScope} is not a valid group or team for row ${rowNumber}`);
               } else if(foundInGroups) {
-                row.scope.groups.push(cleanScope);
+                row.scope.groups.push(toProperCase(cleanScope));
               } else {
-                row.scope.teams.push(cleanScope);
+                row.scope.teams.push(toProperCase(cleanScope));
               }
             });
             return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
@@ -540,7 +548,7 @@ const getCalabrioQmFields = (state: any): any => [
               if(!foundInRoles){
                 return Promise.reject(`${cleanRole} is not a valid role for row ${rowNumber}`);
               } else {
-                row.roles.push(cleanRole);
+                row.roles.push(toProperCase(cleanRole));
                 return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
               }
             });
@@ -566,7 +574,7 @@ const getCalabrioQmFields = (state: any): any => [
       } else if(!calabrioTimeZones.some((t:any) => cleanupField(t.label, "string") === field)){
         return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
       } else {
-        row.timeZone = field;
+        row.timeZone = row[fieldName];
         return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
       }
     }
@@ -581,7 +589,7 @@ const getUpdateWorkerAttributeFields = (state: any): any => [
     description: "Agents N Number",
     required: "Y",
     example: "n0263786",
-    options: state.workerContext.workers.map((w: any) => w.n_number),
+    options: state.workerContext.workers.map((w: any) => w.attributes.n_number),
     validateFunction: async (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "N Number";
       const field = cleanupField(row[fieldName], "string");
@@ -591,7 +599,7 @@ const getUpdateWorkerAttributeFields = (state: any): any => [
         return Promise.reject(`${fieldName} is not in the valid n number format for row ${rowNumber}`);
       } else {
         try {
-          const worker = state.workerContext.workers.find((w: any) => cleanupField(w.n_number, "string") === field);
+          const worker = state.workerContext.workers.find((w: any) => cleanupField(w.attributes.n_number, "string") === field);
 
           if(worker){
             row.workerSid = worker.sid;

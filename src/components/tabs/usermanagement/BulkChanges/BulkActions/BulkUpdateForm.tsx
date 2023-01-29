@@ -61,9 +61,17 @@ const BulkUpdateForm = (props: any) => {
         }
         case valueTypes.OBJECT:
           try {
-            const parsedValue = JSON.parse(value);
-            console.log("parsedValueObject", typeof parsedValue, parsedValue, parsedValue.charAt(0));
-            if(typeof parsedValue === "object" && parsedValue.charAt(0) === "{"){
+            const object = {};
+            const fieldArray = field.replace(" ","").replace("{","").replace("}","").split(",");
+
+            fieldArray.forEach((value: any) => {
+              const objKeyValueArray = value.replace(" ","").split(":");
+              const key = objKeyValueArray[0].trim();
+              const value = objKeyValueArray[1].trim();
+              object[key] = value;
+            });
+            const parsedValue = JSON.parse(JSON.stringify(object));
+            if(typeof parsedValue === "object" && value.charAt(0) === "{"){
               return true;
             } else {
               return false;
@@ -73,9 +81,9 @@ const BulkUpdateForm = (props: any) => {
           }
         case valueTypes.ARRAY:
           try {
-            const parsedValue = JSON.parse(value);
-            console.log("parsedValueArray", typeof parsedValue, parsedValue, parsedValue.charAt(0));
-            if(typeof parsedValue === "object" && parsedValue.charAt(0) === "["){
+            const fieldArray = value.replace(" ","").replace("[","").replace("]","").split(",");
+
+            if(typeof fieldArray === "object" && value.charAt(0) === "["){
               return true;
             } else {
               return false;
