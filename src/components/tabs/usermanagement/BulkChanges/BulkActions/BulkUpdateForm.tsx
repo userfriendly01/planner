@@ -120,47 +120,49 @@ const BulkUpdateForm = (props: any) => {
           }}
         />
       </StepWrapper>
-      <SelectionWrapper>
-        <Tooltip title="Must be a string with no spaces">
-          <CustomInput
-            label="Attribute Key"
-            name="attribute-key"
-            validator={keyValidator}
-            value={updateAttributes.key}
-            updateValue={(key: string) => setUpdateAttributes({
+      { action.name === updateTemplates.UPDATE_WORKER_ATTRIBUTE.name &&
+        <SelectionWrapper>
+          <Tooltip title="Must be a string with no spaces">
+            <CustomInput
+              label="Attribute Key"
+              name="attribute-key"
+              validator={keyValidator}
+              value={updateAttributes.key}
+              updateValue={(key: string) => setUpdateAttributes({
+                ...updateAttributes,
+                key
+              })}
+              styles={{ width: "250px" }}
+            />
+          </Tooltip>
+          <Tooltip title="Must align with selected Value Type">
+            <CustomInput
+              label="Attribute Value"
+              name="attribute-value"
+              validator={objectValidator}
+              value={updateAttributes.value}
+              updateValue={(value: string) => setUpdateAttributes({
+                ...updateAttributes,
+                value
+              })}
+              styles={{ width: "250px" }}
+            />
+          </Tooltip>
+          <Dropdown
+            label="Value Type"
+            value={updateAttributes.type}
+            options={Object.values(valueTypes)}
+            updateValue={(event: any, type: any) => setUpdateAttributes({
               ...updateAttributes,
-              key
+              type
             })}
-            styles={{ width: "250px" }}
+            styles={{
+              margin: "40 0 30 0",
+              width: "150px"
+            }}
           />
-        </Tooltip>
-        <Tooltip title="Must align with selected Value Type">
-          <CustomInput
-            label="Attribute Value"
-            name="attribute-value"
-            validator={objectValidator}
-            value={updateAttributes.value}
-            updateValue={(value: string) => setUpdateAttributes({
-              ...updateAttributes,
-              value
-            })}
-            styles={{ width: "250px" }}
-          />
-        </Tooltip>
-        <Dropdown
-          label="Value Type"
-          value={updateAttributes.type}
-          options={Object.values(valueTypes)}
-          updateValue={(event: any, type: any) => setUpdateAttributes({
-            ...updateAttributes,
-            type
-          })}
-          styles={{
-            margin: "40 0 30 0",
-            width: "150px"
-          }}
-        />
-      </SelectionWrapper>
+        </SelectionWrapper>
+      }
     </Row>
   );
 };

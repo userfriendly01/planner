@@ -619,19 +619,16 @@ const processCreateTritonUser = async (row: any, rowNumber: number, state: any) 
   const workerSid = "WK123456";
   // const workerSid = await createUser(row);
   row.workerSid = workerSid;
-  Promise.resolve({ workerSid: "WK123456" });
+  Promise.resolve(`${workerSid} created for ${row.n_number}`);
   //call set state
 };
 
 const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any) => {
   console.log("****CALABRIO RECORD PROCESSING for", row);
-  try {
-    await checkConflictingUsers(row, state.calabrioContext.users);
-    //create calabrio user
-    //call set state
-  } catch(err) {
-    Promise.reject(err);
-  }
+  await checkConflictingUsers(row, state.calabrioContext.users);
+
+  //await create calabrio user
+  //call set state
   Promise.resolve();
 };
 

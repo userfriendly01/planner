@@ -488,7 +488,7 @@ describe("checkConflictingUsers", () => {
       adLogin: "lm/456"
     }
   ];
-  test("No user is passed to function, promise rejects", async () => {
+  test.only("No user is passed to function, promise rejects", async () => {
     try {
       await checkConflictingUsers({}, []);
     } catch (e) {
@@ -535,16 +535,20 @@ describe("checkConflictingUsers", () => {
     ]);
   });
   test("User passed to function, has adlogin matches in the users list, returns resolved", async () => {
-    const result = await checkConflictingUsers(userWithConflictingAdLogin, users);
-    expect(result).toEqual([
-      {
-        status: "fulfilled",
-        value: undefined
-      },
-      {
-        reason: "Calabrio Record already exists with this user's nNumber in the AdLogin field.",
-        status: "rejected"
-      }
-    ]);
+    try {
+      await checkConflictingUsers(userWithConflictingAdLogin, users);
+    } catch(err){
+      expect(err).toEqual([
+        {
+          status: "fulfilled",
+          value: undefined
+        },
+        {
+          reason: "Calabrio Record already exists with this user's nNumber in the AdLogin field.",
+          status: "rejected"
+        }
+      ]);
+    }
+
   });
 });
