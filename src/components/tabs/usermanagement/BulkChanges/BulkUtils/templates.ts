@@ -187,10 +187,10 @@ const getTritonFields = (state: any): any => [
             skillErrors.push(`${skill} does not support Level ${level} `);
           }
         });
-        if(skillErrors.length !== 0){
-          row.defaultSkills = defaultSkills;
-          return Promise.resolve(`${fieldName} Errors found for row ${rowNumber} ${skillErrors.toString()}`);
+        if(skillErrors.length > 0){
+          return Promise.reject(`${fieldName} Errors found for row ${rowNumber} ${skillErrors.toString()}`);
         } else {
+          row.defaultSkills = defaultSkills;
           return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
         }
       } else {
