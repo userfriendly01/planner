@@ -112,7 +112,7 @@ const BulkUpdateForm = (props: any) => {
           options={Object.values(updateTemplates).map((t: any) => constructDropdownOption(t))}
           updateValue={(event: any, template: any) => {
             console.log("TEMPLATE", template);
-            setAction(template);
+            setAction(template.value);
           }}
           styles={{
             margin: "40 0 30 0",
