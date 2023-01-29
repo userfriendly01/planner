@@ -635,10 +635,17 @@ const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any
   Promise.resolve();
 };
 
-const processUpdateWorkerAttribute = async (row: any, rowNumber: number, state: any) => {
-  console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", row);
-  //updateUser(row.workerSid, row);
-  Promise.resolve({ workerSid: "WK123456" });
+const processUpdateWorkerAttribute = async (row: any, rowNumber: number, template: any, state: any) => {
+  const key = template.data.key;
+  const value = template.data.value;
+  const attributes = { [key]: value };
+  const worker = {
+    ...row,
+    attributes
+  };
+  console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", worker);
+  // updateUser(row.workerSid, worker);
+  Promise.resolve({ worker });
 };
 
 //Templates
@@ -670,7 +677,7 @@ export const getUpdateTemplates: any = (state: any): any => {
   return {
     UPDATE_WORKER_ATTRIBUTE: {
       name: "UPDATE_WORKER_ATTRIBUTE",
-      processFunction: (row: any, rowNumber: number) => processUpdateWorkerAttribute(row, rowNumber, state),
+      processFunction: (row: any, rowNumber: number, template: any) => processUpdateWorkerAttribute(row, rowNumber, template, state),
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,
