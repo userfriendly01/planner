@@ -1,6 +1,7 @@
 import {
   createUser,
   createCalabrioUser,
+  updateUser,
   fetchUser,
   generateExtension
 } from "services";
@@ -636,6 +637,7 @@ const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any
 
 const processUpdateWorkerAttribute = async (row: any, rowNumber: number, state: any) => {
   console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", row);
+  //updateUser(row.workerSid, row);
   Promise.resolve({ workerSid: "WK123456" });
 };
 

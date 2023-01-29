@@ -76,8 +76,14 @@ const BulkUpdateForm = (props: any) => {
   React.useEffect(() => {
     //enhance to check if they are valid & if they arent, unselect the template to hide the follow up fields
     if(updateAttributes.key && updateAttributes.value){
-      if(!selectedTemplates.find((t: any) => t.name === action.name)){
-        updateSelectedTemplates(true, action, selectedTemplates, setSelectedTemplates);
+      const templateFound = selectedTemplates.find((t: any) => t.name === action.name);
+      if(!templateFound){
+        updateSelectedTemplates(true, {
+          ...action,
+          data: updateAttributes
+        }, selectedTemplates, setSelectedTemplates);
+      } else {
+        templateFound.data = updateAttributes;
       }
     } else {
       if(selectedTemplates.find((t: any) => t.name === action.name)){
@@ -88,7 +94,7 @@ const BulkUpdateForm = (props: any) => {
 
   const constructDropdownOption = (template: any) => {
     return {
-      label: template.name.replace("_", " ").toProperCase(),
+      label: template.name.replace("_", " ").toLowerCase(),
       value: template
     };
   };
