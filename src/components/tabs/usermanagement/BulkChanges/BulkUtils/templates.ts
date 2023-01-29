@@ -677,7 +677,7 @@ const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any
 const processUpdateWorkerAttribute = async (row: any, rowNumber: number, template: any, state: any) => {
   const key = template.data.key;
   let value = template.data.value;
-  const type = template.data.value;
+  const type = template.data.type;
   switch(type){
     case valueTypes.STRING:
       break;
@@ -718,7 +718,7 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
   row.attributes = attributes;
   row.workerSid = isWorkerFound.sid;
   console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", row);
-  updateUser(row.workerSid, row);
+  updateUser(row.workerSid, { attributes: row.attributes });
   Promise.resolve(`${row.workerSid} - Worker Attributes updated for row ${rowNumber}`);
 };
 

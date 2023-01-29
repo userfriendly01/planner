@@ -76,10 +76,10 @@ export const consolidateTemplates = (selectedTemplates: any, setConsolidatedTemp
   setConsolidatedTemplates(consolidatedFieldsList);
 };
 
-export const identifySuccessfulRecords = (uploadedForm: any, validationErrors: any) => {
+export const identifySuccessfulRecords = (totalRows: any, validationErrors: any) => {
   const successfulRows: any = [];
-  uploadedForm.forEach((row: any, index: number) => {
-    const rowEquivalent = index + 1;
+  totalRows.forEach((row: any, index: number) => {
+    const rowEquivalent = index + 2; // +2 for the header?
     if(!validationErrors.some((e: any) => e.row === rowEquivalent)){
       successfulRows.push(row);
     }

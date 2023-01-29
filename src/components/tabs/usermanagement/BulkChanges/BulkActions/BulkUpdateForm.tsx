@@ -101,7 +101,6 @@ const BulkUpdateForm = (props: any) => {
   };
 
   React.useEffect(() => {
-    //enhance to check if they are valid & if they arent, unselect the template to hide the follow up fields
     if(keyValidator(updateAttributes.key) && valueValidator(updateAttributes.value)){
       const templateFound = selectedTemplates.find((t: any) => t.name === action.name);
       if(!templateFound){
@@ -118,6 +117,14 @@ const BulkUpdateForm = (props: any) => {
       }
     }
   }, [updateAttributes]);
+
+  React.useEffect(() => {
+    setUpdateAttributes({
+      key: "",
+      value: "",
+      type: valueTypes.STRING
+    });
+  }, []);
 
   const constructDropdownOption = (template: any) => {
     const name = template.name.split("_").map((w: string) => {
@@ -159,7 +166,10 @@ const BulkUpdateForm = (props: any) => {
                 ...updateAttributes,
                 key
               })}
-              styles={{ width: "200px" }}
+              styles={{
+                width: "200px",
+                margin: "0px 20px"
+              }}
             />
           </Tooltip>
           <Tooltip title="Must align with selected Value Type">
@@ -172,7 +182,10 @@ const BulkUpdateForm = (props: any) => {
                 ...updateAttributes,
                 value
               })}
-              styles={{ width: "200px" }}
+              styles={{
+                width: "200px",
+                margin: "0px 20px"
+              }}
             />
           </Tooltip>
           <Dropdown
@@ -183,7 +196,10 @@ const BulkUpdateForm = (props: any) => {
               ...updateAttributes,
               type
             })}
-            styles={{ width: "150px" }}
+            styles={{
+              width: "150px",
+              margin: "0px 20px"
+            }}
           />
         </UpdateWrapper>
       }

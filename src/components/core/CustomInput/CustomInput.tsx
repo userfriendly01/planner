@@ -8,7 +8,7 @@ import styled from "styled-components";
 const StyledTextField = styled(TextField)<{styles?: any}>`
   width: ${props => props.styles?.width || "385px"};
   && {
-    margin: 8px 0;
+    margin: ${props => props.styles?.margin || "8px 0"};
   }
 `;
 
