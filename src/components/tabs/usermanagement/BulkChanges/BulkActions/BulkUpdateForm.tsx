@@ -61,14 +61,14 @@ const BulkUpdateForm = (props: any) => {
         }
         case valueTypes.OBJECT:
           try {
-            const object = {};
-            const fieldArray = field.replace(" ","").replace("{","").replace("}","").split(",");
+            const object: any = {};
+            const fieldArray = value.replace(" ","").replace("{","").replace("}","").split(",");
 
-            fieldArray.forEach((value: any) => {
-              const objKeyValueArray = value.replace(" ","").split(":");
+            fieldArray.forEach((f: any) => {
+              const objKeyValueArray = f.replace(" ","").split(":");
               const key = objKeyValueArray[0].trim();
-              const value = objKeyValueArray[1].trim();
-              object[key] = value;
+              const keyValue = objKeyValueArray[1].trim();
+              object[key] = keyValue;
             });
             const parsedValue = JSON.parse(JSON.stringify(object));
             if(typeof parsedValue === "object" && value.charAt(0) === "{"){
