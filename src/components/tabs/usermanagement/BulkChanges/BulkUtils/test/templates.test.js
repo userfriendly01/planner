@@ -20,7 +20,7 @@ describe("templates", () => {
 
     describe("Field: N Number", () => {
       const NNumberValidateFunction = tritonFields.find(f => f.field === "nNumber").validateFunction;
-      test("No matching N number field, rejects with N Number is missing from row message", async () => {
+      test.only("No matching N number field, rejects with N Number is missing from row message", async () => {
         try {
           await NNumberValidateFunction({ "boo": "ya" }, 1);
         } catch (e) {
