@@ -96,6 +96,16 @@ export const SelectionWrapper = styled.div`
   height: 60px;
 `;
 
+
+export const UpdateWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  margin: 0px 50px 0px 150px;
+`;
+
 export const ButtonWrapper = styled.div`
   display: flex;
   width: 100%;

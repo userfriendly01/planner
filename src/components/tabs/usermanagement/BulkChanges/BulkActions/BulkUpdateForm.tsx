@@ -1,6 +1,6 @@
 import {
   Row,
-  SelectionWrapper,
+  UpdateWrapper,
   StepWrapper
 } from "../BulkChanges.Styles";
 import {
@@ -116,12 +116,12 @@ const BulkUpdateForm = (props: any) => {
           }}
           styles={{
             margin: "40 0 30 0",
-            width: "400px"
+            width: "300px"
           }}
         />
       </StepWrapper>
       { action.name === updateTemplates.UPDATE_WORKER_ATTRIBUTE.name &&
-        <SelectionWrapper>
+        <UpdateWrapper>
           <Tooltip title="Must be a string with no spaces">
             <CustomInput
               label="Attribute Key"
@@ -132,7 +132,7 @@ const BulkUpdateForm = (props: any) => {
                 ...updateAttributes,
                 key
               })}
-              styles={{ width: "250px" }}
+              styles={{ width: "200px" }}
             />
           </Tooltip>
           <Tooltip title="Must align with selected Value Type">
@@ -145,7 +145,7 @@ const BulkUpdateForm = (props: any) => {
                 ...updateAttributes,
                 value
               })}
-              styles={{ width: "250px" }}
+              styles={{ width: "200px" }}
             />
           </Tooltip>
           <Dropdown
@@ -156,12 +156,9 @@ const BulkUpdateForm = (props: any) => {
               ...updateAttributes,
               type
             })}
-            styles={{
-              margin: "40 0 30 0",
-              width: "150px"
-            }}
+            styles={{ width: "150px" }}
           />
-        </SelectionWrapper>
+        </UpdateWrapper>
       }
     </Row>
   );
