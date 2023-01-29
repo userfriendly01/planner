@@ -581,7 +581,7 @@ const getUpdateWorkerAttributeFields = (state: any): any => [
     description: "Agents N Number",
     required: "Y",
     example: "n0263786",
-    options: null,
+    options: state.workerContext.workers.map((w: any) => w.n_number),
     validateFunction: async (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "N Number";
       const field = cleanupField(row[fieldName], "string");
@@ -591,31 +591,17 @@ const getUpdateWorkerAttributeFields = (state: any): any => [
         return Promise.reject(`${fieldName} is not in the valid n number format for row ${rowNumber}`);
       } else {
         try {
-          const fetchedUser = await fetchUser(field);
-          //fetch user from worker state - throw error if they're not a triton worker
-          //add current triton attributes to object
+          const worker = state.workerContext.workers.find((w: any) => cleanupField(w.n_number, "string") === field);
 
-          row.contact_uri = `client:${field.toLowerCase()}`;
-          row.department_id = fetchedUser.departmentNumber;
-          row.department_name = fetchedUser.departmentName;
-          row.email = fetchedUser.email;
-          row.email_address = fetchedUser.email;
-          row.emp_first_name = fetchedUser.firstName;
-          row.emp_last_name = fetchedUser.lastName;
-          row.full_name = `${fetchedUser.firstName} ${fetchedUser.lastName}`;
-          row.location = fetchedUser.officeName;
-          row.n_number = field.toLowerCase();
-          row.office_location_name = fetchedUser.officeName;
-          row.office_location_number = fetchedUser.officeNumber;
-          row.primary_dept_name = fetchedUser.departmentName;
-          row.primary_dept_number = fetchedUser.departmentNumber;
-          row.unique_id = field.toLowerCase();
-          row.adLogin = `LM\\${field.toLowerCase()}`;
-          row.firstName = fetchedUser.firstName;
-          row.lastName = fetchedUser.lastName;
-          return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+          if(worker){
+            row.workerSid = worker.sid;
+            row.n_number = field;
+            return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+          } else {
+            return Promise.reject(`${field} is not an existing setup worker in Triton ${rowNumber}`);
+          }
         } catch(err) {
-          return Promise.reject(`Error thrown fetching ${fieldName} from HR Database for row ${rowNumber}`);
+          return Promise.reject(`Error thrown fetching ${fieldName} from state for row ${rowNumber}`);
         }
       }
     }
@@ -644,7 +630,7 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
   const value = template.data.value;
   const attributes = { [key]: value };
 
-  const isWorkerFound = state.workerContext.workers((w:any) => w.attributes.n_number === row.n_number);
+  const isWorkerFound = state.workerContext.workers.find((w:any) => w.attributes.n_number === row.n_number);
   row.attributes = attributes;
   row.workerSid = isWorkerFound.sid;
   console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", row);
@@ -686,7 +672,7 @@ export const getUpdateTemplates: any = (state: any): any => {
       data: {},
       processFunction: (row: any, rowNumber: number, template: any) => processUpdateWorkerAttribute(row, rowNumber, template, state),
       multiRunDependencies: null,
-      validationConcurrencyLimit: 500,
+      validationConcurrencyLimit: null,
       processingConcurrencyLimit: 5,
       fields: getUpdateWorkerAttributeFields(state)
     }

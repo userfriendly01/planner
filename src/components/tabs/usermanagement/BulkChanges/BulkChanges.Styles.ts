@@ -99,7 +99,7 @@ export const SelectionWrapper = styled.div`
 
 export const UpdateWrapper = styled.div`
   display: flex;
-  width: 100%;
+  width: 800px;
   align-items: center;
   justify-content: space-between;
   height: 60px;
