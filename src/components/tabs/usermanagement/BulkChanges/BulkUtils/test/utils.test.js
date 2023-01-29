@@ -26,7 +26,7 @@ describe("readUploadFile", () => {
   });
   const mockSetUploadedForm = jest.fn();
   const readAsArrayBufferMock = jest.fn();
-  test("if no e.target.files, does nothing", () => {
+  test.only("if no e.target.files, does nothing", () => {
     const event = {
       target: {
         nope: "no"
@@ -488,7 +488,7 @@ describe("checkConflictingUsers", () => {
       adLogin: "lm/456"
     }
   ];
-  test.only("No user is passed to function, promise rejects", async () => {
+  test("No user is passed to function, promise rejects", async () => {
     try {
       await checkConflictingUsers({}, []);
     } catch (e) {
