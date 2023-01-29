@@ -17,7 +17,7 @@ const ExportSuccessButton = (props: any) => {
 
     successfulRows.forEach((r: any) => {
       Object.keys(r).forEach((key: string) => {
-        if(!columns.find((c:any) => c.field === key)) {
+        if(!columns.find((c:any) => c.title === key)) {
           columns.push({
             title: key,
             field: key,
