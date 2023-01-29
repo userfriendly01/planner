@@ -327,20 +327,20 @@ export const checkConflictingUsers = async (user: any, users: any[]): Promise<an
         const dupUserEmail = toLowerCaseString(u.email);
 
         if (acdId && dupUserAcdId === acdId) {
-          return Promise.reject("Calabrio Record already exists with this user's acdId.");
+          Promise.reject("Calabrio Record already exists with this user's acdId.");
         }
 
         if (dupUserAdLogin === adLogin) {
-          return Promise.reject("Calabrio Record already exists with this user's nNumber in the AdLogin field.");
+          Promise.reject("Calabrio Record already exists with this user's nNumber in the AdLogin field.");
         }
 
         if (dupUserEmail === email) {
-          return Promise.reject("Calabrio Record already exists with this user's email.");
+          Promise.reject("Calabrio Record already exists with this user's email.");
         }
       }));
     } catch(err) {
       console.error("Error thrown trying to fetch and validate Conflicting Users", err);
-      return Promise.reject(err);
+      Promise.reject(err);
     }
   }
   return Promise.reject("No user passed to calabrio processing");
