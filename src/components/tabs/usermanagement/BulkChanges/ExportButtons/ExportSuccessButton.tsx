@@ -15,15 +15,17 @@ const ExportSuccessButton = (props: any) => {
     const rows: any = successfulRows;
     const columns: any = [];
 
-    if(successfulRows.length > 0){
-      Object.keys(successfulRows[0]).forEach((key: string) => {
-        columns.push({
-          title: key,
-          field: key,
-          width: "50px"
-        });
+    successfulRows.forEach((r: any) => {
+      Object.keys(r).forEach((key: string) => {
+        if(!columns.find((c:any) => c.field === key)) {
+          columns.push({
+            title: key,
+            field: key,
+            width: "50px"
+          });
+        }
       });
-    }
+    });
 
     console.log("rows", rows);
     console.log("columns", columns);
