@@ -213,13 +213,13 @@ export const initiateCalls = async (
             }
           });
         }
-        return await t.processFunction(row, rowNumber);
+        return await t.processFunction(row, rowNumber, t);
       }));
       progressCallback((previousCount: number) => (previousCount + 1));
       return rowPromise;
     } else {
       const rowPromise = await Promise.allSettled(selectedTemplates.map((t: any) => {
-        return t.processFunction(row, rowNumber);
+        return t.processFunction(row, rowNumber, t);
       }));
       progressCallback((previousCount: number) => (previousCount + 1));
       return rowPromise;

@@ -654,6 +654,7 @@ export const getCreateTemplates: any = (state: any): any => {
   return {
     CREATE_TRITON_USER: {
       name: "CREATE_TRITON_USER",
+      data: {},
       processFunction: (row: any, rowNumber: number) => processCreateTritonUser(row, rowNumber, state),
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
@@ -662,6 +663,7 @@ export const getCreateTemplates: any = (state: any): any => {
     },
     CREATE_CALABRIO_QM_USER: {
       name: "CREATE_CALABRIO_QM_USER",
+      data: {},
       processFunction: (row: any, rowNumber: number) => processCreateCalabrioUser(row, rowNumber, state),
       multiRunDependencies: [{
         name: "CREATE_TRITON_USER",
@@ -678,6 +680,7 @@ export const getUpdateTemplates: any = (state: any): any => {
   return {
     UPDATE_WORKER_ATTRIBUTE: {
       name: "UPDATE_WORKER_ATTRIBUTE",
+      data: {},
       processFunction: (row: any, rowNumber: number, template: any) => processUpdateWorkerAttribute(row, rowNumber, template, state),
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,

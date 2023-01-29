@@ -41,8 +41,12 @@ const BulkUpdateForm = (props: any) => {
         return true;
       case valueTypes.NUMBER:
         try {
-          parseInt(value);
-          return true;
+          const parsedValue = parseInt(value);
+          if(parsedValue && typeof parsedValue === "number"){
+            return true;
+          } else {
+            return false;
+          }
         } catch(err){
           return false;
         }
@@ -56,15 +60,23 @@ const BulkUpdateForm = (props: any) => {
       }
       case valueTypes.OBJECT:
         try {
-          JSON.parse(value);
-          return true;
+          const parsedValue = JSON.parse(value);
+          if(parsedValue && typeof parsedValue === "object"){
+            return true;
+          } else {
+            return false;
+          }
         } catch(err){
           return false;
         }
       case valueTypes.ARRAY:
         try {
-          JSON.parse(value);
-          return true;
+          const parsedValue = JSON.parse(value);
+          if(parsedValue && typeof parsedValue === "object"){
+            return true;
+          } else {
+            return false;
+          }
         } catch(err){
           return false;
         }

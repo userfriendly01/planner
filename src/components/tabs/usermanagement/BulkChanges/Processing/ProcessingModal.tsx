@@ -120,14 +120,15 @@ const ProcessingModal = (props: any) => {
       { status === STATES.PROCESSING && <ProgressBar completedRows={processedRows} totalRowCount={results.successfullyValidatedRows.length}/> }
       { status === STATES.PROCESSED &&
         <ProcessingResultsWrapper>
-          { results.processingErrors.length > 0 &&
+          { results.processingErrors.length > 0 ?
             <TextWrapper styles={{ size: "26px" }}>
               Processing Errors have been found for this template. Use the options below to see failed and successful rows.
             </TextWrapper>
+            :
+            <TextWrapper styles={{ size: "26px" }}>
+                    All rows were processed successfully!! Export success columns to see worker details.
+            </TextWrapper>
           }
-          <TextWrapper styles={{ size: "26px" }}>
-              All rows were processed successfully!! Export success columns to see worker details.
-          </TextWrapper>
           <ButtonWrapper>
             { results.processingErrors.length > 0 &&
             <ExportErrorsButton errors={results.processingErrors}><ExcelExport/>
