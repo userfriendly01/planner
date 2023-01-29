@@ -227,12 +227,17 @@ const getTritonFields = (state: any): any => [
       } else if(typeof field !== "string"){
         return Promise.reject(`${fieldName} must be a number or 'Y' for row ${rowNumber}. If you do not want an extension for this user, leave the field blank`);
       } else {
-        const isExtensionTaken = workers.some((w: any) => cleanupField(w.attributes.extension, "string") === field);
-        if(!isExtensionTaken){
-          row.extension = field;
-          return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
-        } else {
-          return Promise.reject(`${fieldName} ${field} is already taken for row ${rowNumber}`);
+        try {
+          parseInt(field);
+          const isExtensionTaken = workers.some((w: any) => cleanupField(w.attributes.extension, "string") === field);
+          if(!isExtensionTaken){
+            row.extension = field;
+            return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+          } else {
+            return Promise.reject(`${fieldName} ${field} is already taken for row ${rowNumber}`);
+          }
+        } catch(err) {
+          return Promise.reject(`${fieldName} ${field} is in the wrong format for row ${rowNumber}`);
         }
       }
     }
@@ -625,8 +630,7 @@ const processCreateTritonUser = async (row: any, rowNumber: number, state: any) 
 
 const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any) => {
   console.log("****CALABRIO RECORD PROCESSING for", row);
-  await checkConflictingUsers(row, state.calabrioContext.users);
-
+  await checkConflictingUsers(row, rowNumber, state.calabrioContext.users);
   //await create calabrio user
   //call set state
   Promise.resolve();

@@ -35,7 +35,7 @@ const BulkUpdateForm = (props: any) => {
 
   console.log("BulkUpdateForm - selectedTemplates", selectedTemplates);
   const keyValidator = (key: string) => key.length > 0 && key.indexOf(" ") === -1;
-  const objectValidator = (value: string) => {
+  const valueValidator = (value: string) => {
     switch(updateAttributes.type){
       case valueTypes.STRING:
         return true;
@@ -75,7 +75,7 @@ const BulkUpdateForm = (props: any) => {
 
   React.useEffect(() => {
     //enhance to check if they are valid & if they arent, unselect the template to hide the follow up fields
-    if(updateAttributes.key && updateAttributes.value){
+    if(keyValidator(updateAttributes.key) && valueValidator(updateAttributes.value)){
       const templateFound = selectedTemplates.find((t: any) => t.name === action.name);
       if(!templateFound){
         updateSelectedTemplates(true, {
@@ -139,7 +139,7 @@ const BulkUpdateForm = (props: any) => {
             <CustomInput
               label="Attribute Value"
               name="attribute-value"
-              validator={objectValidator}
+              validator={valueValidator}
               value={updateAttributes.value}
               updateValue={(value: string) => setUpdateAttributes({
                 ...updateAttributes,

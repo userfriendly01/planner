@@ -314,33 +314,37 @@ export const performValidations = async (
   }
 };
 
-export const checkConflictingUsers = async (user: any, users: any[]): Promise<any> => {
+export const checkConflictingUsers = async (user: any, rowNumber: number, users: any[]): Promise<any> => {
   if(user){
     try {
       const acdId = user.workerSid ? toLowerCaseString(user.workerSid) : null;
       const email = toLowerCaseString(user.email);
       const adLogin = toLowerCaseString(user.adLogin);
 
-      return Promise.allSettled(users.map(async u => {
+      await Promise.all(users.map(async u => {
         const dupUserAcdId = toLowerCaseString(u.acdId);
         const dupUserAdLogin = toLowerCaseString(u.adLogin);
         const dupUserEmail = toLowerCaseString(u.email);
 
         if (acdId && dupUserAcdId === acdId) {
-          Promise.reject("Calabrio Record already exists with this user's acdId.");
+          console.log("CALABRIO CONFLICTING USERS: ", acdId, dupUserAcdId);
+          Promise.reject(`Calabrio Record already exists with this user's acdId for row ${rowNumber}`);
         }
 
         if (dupUserAdLogin === adLogin) {
-          Promise.reject("Calabrio Record already exists with this user's nNumber in the AdLogin field.");
+          console.log("CALABRIO CONFLICTING USERS: ", dupUserAdLogin, adLogin);
+          Promise.reject(`Calabrio Record already exists with this user's nNumber in the AdLogin field for row ${rowNumber}.`);
         }
 
         if (dupUserEmail === email) {
-          Promise.reject("Calabrio Record already exists with this user's email.");
+          console.log("CALABRIO CONFLICTING USERS: ", dupUserEmail, email);
+          Promise.reject(`Calabrio Record already exists with this user's email for row ${rowNumber}.`);
         }
       }));
+      return Promise.resolve(`Calabrio Checks passed for ${rowNumber}`);
     } catch(err) {
       console.error("Error thrown trying to fetch and validate Conflicting Users", err);
-      Promise.reject(err);
+      return Promise.reject(err);
     }
   }
   return Promise.reject("No user passed to calabrio processing");
