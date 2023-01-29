@@ -714,9 +714,13 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
   }
   const attributes = { [key]: value };
 
-  const isWorkerFound = state.workerContext.workers.find((w:any) => w.attributes.n_number === row.n_number);
+  const worker = state.workerContext.workers.find((w:any) => w.attributes.n_number === row.n_number);
+  row = {
+    ...row,
+    ...worker
+  };
   row.attributes = attributes;
-  row.workerSid = isWorkerFound.sid;
+  row.workerSid = worker.sid;
   console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", row);
   updateUser(row.workerSid, { attributes: row.attributes });
   Promise.resolve(`${row.workerSid} - Worker Attributes updated for row ${rowNumber}`);
