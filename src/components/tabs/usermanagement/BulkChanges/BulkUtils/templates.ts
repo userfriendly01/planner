@@ -52,32 +52,35 @@ const getTritonFields = (state: any): any => [
     validateFunction: async (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "N Number";
       const field = cleanupField(row[fieldName], "string");
+      const worker = state.workerContext.workers.find((w: any) => cleanupField(w.attributes.n_number, "string") === field);
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
       } else if(typeof field !== "string" || field.length !== 8) {
         return Promise.reject(`${fieldName} is not in the valid n number format for row ${rowNumber}`);
+      } else if(worker){
+        return Promise.reject(`${field} already has a record in Twilio/Worker Database ${rowNumber}`);
       } else {
         try {
           const fetchedUser = await fetchUser(field);
 
-          row.contact_uri = `client:${field.toLowerCase()}`;
-          row.department_id = fetchedUser.departmentNumber;
-          row.department_name = fetchedUser.departmentName;
-          row.email = fetchedUser.email;
-          row.email_address = fetchedUser.email;
-          row.emp_first_name = fetchedUser.firstName;
-          row.emp_last_name = fetchedUser.lastName;
-          row.full_name = `${fetchedUser.firstName} ${fetchedUser.lastName}`;
-          row.location = fetchedUser.officeName;
-          row.n_number = field.toLowerCase();
-          row.office_location_name = fetchedUser.officeName;
-          row.office_location_number = fetchedUser.officeNumber;
-          row.primary_dept_name = fetchedUser.departmentName;
-          row.primary_dept_number = fetchedUser.departmentNumber;
-          row.unique_id = field.toLowerCase();
-          row.adLogin = `LM\\${field.toLowerCase()}`;
-          row.firstName = fetchedUser.firstName;
-          row.lastName = fetchedUser.lastName;
+          row.attributes.contact_uri = `client:${field.toLowerCase()}`;
+          row.attributes.department_id = fetchedUser.departmentNumber;
+          row.attributes.department_name = fetchedUser.departmentName;
+          row.attributes.email = fetchedUser.email;
+          row.attributes.email_address = fetchedUser.email;
+          row.attributes.emp_first_name = fetchedUser.firstName;
+          row.attributes.emp_last_name = fetchedUser.lastName;
+          row.attributes.full_name = `${fetchedUser.firstName} ${fetchedUser.lastName}`;
+          row.attributes.location = fetchedUser.officeName;
+          row.attributes.n_number = field.toLowerCase();
+          row.attributes.office_location_name = fetchedUser.officeName;
+          row.attributes.office_location_number = fetchedUser.officeNumber;
+          row.attributes.primary_dept_name = fetchedUser.departmentName;
+          row.attributes.primary_dept_number = fetchedUser.departmentNumber;
+          row.attributes.unique_id = field.toLowerCase();
+          row.attributes.adLogin = `LM\\${field.toLowerCase()}`;
+          row.attributes.firstName = fetchedUser.firstName;
+          row.attributes.lastName = fetchedUser.lastName;
           return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
         } catch(err) {
           return Promise.reject(`Error thrown fetching ${fieldName} from HR Database for row ${rowNumber}`);
@@ -103,7 +106,7 @@ const getTritonFields = (state: any): any => [
       } else if(!state.profileContext.profiles.some((p:any) => cleanupField(p.profile_id, "number") === field)){
         return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
       } else {
-        row.profile_id = field;
+        row.attributes.profile_id = field;
         return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
       }
     }
@@ -126,10 +129,10 @@ const getTritonFields = (state: any): any => [
       } else if(!managerObject){
         return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
       } else {
-        row.manager_first_name = managerObject.manager_first_name;
-        row.manager_last_name = managerObject.manager_last_name;
-        row.manager_n_number = managerObject.manager_n_number;
-        row.manager = `${managerObject.manager_first_name} ${managerObject.manager_last_name}`;
+        row.attributes.manager_first_name = managerObject.manager_first_name;
+        row.attributes.manager_last_name = managerObject.manager_last_name;
+        row.attributes.manager_n_number = managerObject.manager_n_number;
+        row.attributes.manager = `${managerObject.manager_first_name} ${managerObject.manager_last_name}`;
         return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
       }
     }
@@ -198,7 +201,7 @@ const getTritonFields = (state: any): any => [
         if(skillErrors.length > 0){
           return Promise.reject(`${fieldName} Errors found for row ${rowNumber} ${skillErrors.toString()}`);
         } else {
-          row.defaultSkills = defaultSkills;
+          row.attributes.defaultSkills = defaultSkills;
           return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
         }
       } else {
@@ -226,7 +229,7 @@ const getTritonFields = (state: any): any => [
         let extension;
         try {
           extension = await generateExtension(workers);
-          row.extension = extension;
+          row.attributes.extension = extension;
         } catch (err) {
           console.error("Error generating extension", err);
           return Promise.reject(`Unable to generate ${fieldName} for row ${rowNumber}`);
@@ -234,15 +237,17 @@ const getTritonFields = (state: any): any => [
         return Promise.resolve(`${fieldName} ${extension} set for row ${rowNumber}`);
       } else if(typeof field !== "string"){
         return Promise.reject(`${fieldName} must be a number or 'Y' for row ${rowNumber}. If you do not want an extension for this user, leave the field blank`);
+      } else if(field === "n"){
+        return Promise.resolve(`${fieldName} skipped for row ${rowNumber}. `);
       } else {
         try {
           const isInt = parseInt(field);
-          if(typeof isInt !== "number"){
+          if(typeof isInt !== "number" && isInt > 0){
             return Promise.reject(`${fieldName} ${field} is in the wrong format for row ${rowNumber}`);
           }
           const isExtensionTaken = workers.some((w: any) => cleanupField(w.attributes.extension, "string") === field);
           if(!isExtensionTaken){
-            row.extension = field;
+            row.attributes.extension = field;
             return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
           } else {
             return Promise.reject(`${fieldName} ${field} is already taken for row ${rowNumber}`);
@@ -294,8 +299,10 @@ const getTritonFields = (state: any): any => [
         if(didUser && field){
           try {
             const directDialNum = getE164Number(field);
-            row.did = directDialNum;
+            row.attributes.did = directDialNum;
             row.directDialNum = directDialNum;
+            row.activateEp = true;
+            row.alternateDid = directDialNum;
             return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
           } catch(err) {
             return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
@@ -336,7 +343,7 @@ const getTritonFields = (state: any): any => [
             const profileId = cleanupField(row[profileFieldName], "number");
             const overflowSkill = getOverflowSkillFromProfile(profiles, profileId);
             if(overflowSkill){
-              row.routing = {
+              row.attributes.routing = {
                 skills: [cleanupField(overflowSkill, "string")],
                 levels: {}
               };
@@ -389,7 +396,7 @@ const getTritonFields = (state: any): any => [
         } else {
           try {
             const outgoing = getE164Number(field);
-            row.did = outgoing;
+            row.attributes.did = outgoing;
             return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
           } catch(err) {
             return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
@@ -422,24 +429,24 @@ const getCalabrioQmFields = (state: any): any => [
         try {
           const fetchedUser = await fetchUser(field);
 
-          row.contact_uri = `client:${field.toLowerCase()}`;
-          row.department_id = fetchedUser.departmentNumber;
-          row.department_name = fetchedUser.departmentName;
-          row.email = fetchedUser.email;
-          row.email_address = fetchedUser.email;
-          row.emp_first_name = fetchedUser.firstName;
-          row.emp_last_name = fetchedUser.lastName;
-          row.full_name = `${fetchedUser.firstName} ${fetchedUser.lastName}`;
-          row.location = fetchedUser.officeName;
-          row.n_number = field.toLowerCase();
-          row.office_location_name = fetchedUser.officeName;
-          row.office_location_number = fetchedUser.officeNumber;
-          row.primary_dept_name = fetchedUser.departmentName;
-          row.primary_dept_number = fetchedUser.departmentNumber;
-          row.unique_id = field.toLowerCase();
-          row.adLogin = `LM\\${field.toLowerCase()}`;
-          row.firstName = fetchedUser.firstName;
-          row.lastName = fetchedUser.lastName;
+          row.attributes.contact_uri = `client:${field.toLowerCase()}`;
+          row.attributes.department_id = fetchedUser.departmentNumber;
+          row.attributes.department_name = fetchedUser.departmentName;
+          row.attributes.email = fetchedUser.email;
+          row.attributes.email_address = fetchedUser.email;
+          row.attributes.emp_first_name = fetchedUser.firstName;
+          row.attributes.emp_last_name = fetchedUser.lastName;
+          row.attributes.full_name = `${fetchedUser.firstName} ${fetchedUser.lastName}`;
+          row.attributes.location = fetchedUser.officeName;
+          row.attributes.n_number = field.toLowerCase();
+          row.attributes.office_location_name = fetchedUser.officeName;
+          row.attributes.office_location_number = fetchedUser.officeNumber;
+          row.attributes.primary_dept_name = fetchedUser.departmentName;
+          row.attributes.primary_dept_number = fetchedUser.departmentNumber;
+          row.attributes.unique_id = field.toLowerCase();
+          row.attributes.adLogin = `LM\\${field.toLowerCase()}`;
+          row.attributes.firstName = fetchedUser.firstName;
+          row.attributes.lastName = fetchedUser.lastName;
 
           return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
         } catch(err) {
@@ -476,14 +483,14 @@ const getCalabrioQmFields = (state: any): any => [
           } else {
             fieldArray.forEach((scope: any) => {
               const cleanScope = cleanupField(scope, "string");
-              const foundInGroups = availableGroups.some((g:any) => cleanupField(g.name, "string") === cleanScope);
-              const foundInTeams = availableTeams.some((t:any) => cleanupField(t.name, "string") === cleanScope);
-              if(!foundInGroups && !foundInTeams){
+              const group = availableGroups.find((g:any) => cleanupField(g.name, "string") === cleanScope);
+              const team = availableTeams.find((t:any) => cleanupField(t.name, "string") === cleanScope);
+              if(!group && !team){
                 return Promise.reject(`${cleanScope} is not a valid group or team for row ${rowNumber}`);
-              } else if(foundInGroups) {
-                row.scope.groups.push(toProperCase(cleanScope));
+              } else if(group) {
+                row.scope.groups.push(group.groupId);
               } else {
-                row.scope.teams.push(toProperCase(cleanScope));
+                row.scope.teams.push(team.teamId);
               }
             });
             return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
@@ -544,11 +551,12 @@ const getCalabrioQmFields = (state: any): any => [
             fieldArray.forEach((role: any) => {
               const cleanRole = cleanupField(role, "string");
               const foundInRoles = calabrioAllowedRoles.some((r:any) => cleanupField(r, "string") === cleanRole);
+              const roleObject = state.calabrioContext.roles.find((r:any) => cleanupField(r.name) === cleanRole);
               row.roles = [];
-              if(!foundInRoles){
+              if(!foundInRoles || !roleObject){
                 return Promise.reject(`${cleanRole} is not a valid role for row ${rowNumber}`);
               } else {
-                row.roles.push(toProperCase(cleanRole));
+                row.roles.push(roleObject);
                 return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
               }
             });
@@ -620,7 +628,25 @@ const processCreateTritonUser = async (row: any, rowNumber: number, state: any) 
   console.log("**** TRITON RECORD PROCESSING", row);
   const workerSid = "WK123456";
   // const workerSid = await createUser(row);
+  const didFieldName = "Did User";
+  const didField = cleanupField(row[didFieldName], "string");
+  const didUser = isDidUser(didField, rowNumber);
+  const body: any = {};
+  if(didUser) {
+    body.attributes = row.attributes;
+    body.activateEp = true;
+    body.alternateDid = row.directDialNum;
+    body.directDialNum = row.directDialNum;
+    body.zeroOutEnabled = row.zeroOutEnabled;
+  } else {
+    body.attributes = row.attributes;
+    body.activateEp = false;
+  }
+
   row.workerSid = workerSid;
+  row.acdId = workerSid;
+
+  console.log("FINAL TRITON BODY: ", body);
   Promise.resolve(`${workerSid} created for ${row.n_number}`);
   //call set state
 };
@@ -628,6 +654,20 @@ const processCreateTritonUser = async (row: any, rowNumber: number, state: any) 
 const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any) => {
   console.log("****CALABRIO RECORD PROCESSING for", row);
   await checkConflictingUsers(row, rowNumber, state.calabrioContext.users);
+  const existingTritonWorker = state.workerContext.workers.find((w:any) => w.attributes.n_number === row.n_number);
+  const acdId = row.acdId || existingTritonWorker.sid || undefined;
+  const body: any = {};
+
+  body.acdId = acdId;
+  body.adLogin = `LM\\${row.n_number.toLowerCase()}`;
+  body.email = row.email;
+  body.firstName = row.firstName;
+  body.lastName = row.lastName;
+  body.groupId = row.groupId;
+  body.timeZone = row.timezone;
+  body.roles = row.roles;
+  body.scope = row.scope;
+
   //await create calabrio user
   //call set state
   Promise.resolve();
@@ -642,7 +682,7 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
   row.attributes = attributes;
   row.workerSid = isWorkerFound.sid;
   console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", row);
-  // updateUser(row.workerSid, worker);
+  // updateUser(row.workerSid, row);
   Promise.resolve(`${row.workerSid} - Worker Attributes updated for row ${rowNumber}`);
 };
 
