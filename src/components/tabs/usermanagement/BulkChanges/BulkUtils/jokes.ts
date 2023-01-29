@@ -243,7 +243,6 @@ export const jokes: string[] = [
   "Who were the greenest Presidents in US history? The bushes.",
   "Why do seagulls fly over the sea? If they flew over the bay they would be bagels.",
   "Did you hear about the outlet who got in a fight with the power cord? He thought he could socket to him.",
-  "My wife wanted to spice up our sex life so she asked if we could play doctor tonight. It seemed like a weird idea but I’m eager to please.",
   "Where do armies belong? In your sleeves.",
   "What do dogs and phones have in common? Both have collar ID.",
   "Does anybody know where a guy can find a person to hang out with talk to and enjoy spending time with? I'm just asking for a friend.",

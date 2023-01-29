@@ -712,14 +712,17 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
     default:
       break;
   }
-  const attributes = { [key]: value };
+  const newAttribute = { [key]: value };
 
   const worker = state.workerContext.workers.find((w:any) => w.attributes.n_number === row.n_number);
   row = {
     ...row,
     ...worker
   };
-  row.attributes = attributes;
+  row.attributes = {
+    ...row.attributes,
+    ...newAttribute
+  };
   row.workerSid = worker.sid;
   console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", row);
   updateUser(row.workerSid, { attributes: row.attributes });
