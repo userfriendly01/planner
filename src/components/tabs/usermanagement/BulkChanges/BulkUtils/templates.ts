@@ -685,10 +685,10 @@ const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any
   const body: any = {};
 
   body.acdId = acdId;
-  body.adLogin = `LM\\${row.n_number.toLowerCase()}`;
-  body.email = row.email;
-  body.firstName = row.firstName;
-  body.lastName = row.lastName;
+  body.adLogin = `LM\\${row.attributes.n_number}`;
+  body.email = row.attributes.email;
+  body.firstName = row.attributes.firstName;
+  body.lastName = row.attributes.lastName;
   body.groupId = row.groupId;
   body.timeZone = row.timezone;
   body.roles = row.roles;
