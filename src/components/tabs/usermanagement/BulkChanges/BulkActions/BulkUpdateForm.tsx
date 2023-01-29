@@ -93,8 +93,12 @@ const BulkUpdateForm = (props: any) => {
   }, [updateAttributes]);
 
   const constructDropdownOption = (template: any) => {
+    const name = template.name.split("_").map((w: string) => {
+      const word = w.toLowerCase();
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    });
     return {
-      label: template.name.replace("_", " ").toLowerCase(),
+      label: name.join(" "),
       value: template
     };
   };
@@ -104,7 +108,7 @@ const BulkUpdateForm = (props: any) => {
       <StepWrapper>
         <Dropdown
           label="Choose a field to update"
-          value={action}
+          value={constructDropdownOption(action)}
           options={Object.values(updateTemplates).map((t: any) => constructDropdownOption(t))}
           updateValue={(event: any, template: any) => {
             console.log("TEMPLATE", template);

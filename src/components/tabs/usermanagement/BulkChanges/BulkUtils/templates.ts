@@ -669,7 +669,7 @@ export const getCreateTemplates: any = (state: any): any => {
 export const getUpdateTemplates: any = (state: any): any => {
   return {
     UPDATE_WORKER_ATTRIBUTE: {
-      name: "CREATE_TRITON_USER",
+      name: "UPDATE_WORKER_ATTRIBUTE",
       processFunction: (row: any, rowNumber: number) => processUpdateWorkerAttribute(row, rowNumber, state),
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
