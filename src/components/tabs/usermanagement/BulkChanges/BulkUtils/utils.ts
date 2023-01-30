@@ -203,16 +203,6 @@ export const initiateCalls = async (
       console.log("templateTree", templateTree);
       const rowPromise = await Promise.allSettled(templateTree.map(async (t: any) => {
         console.log("processing template", t.name);
-
-        if(t.multiRunDependencies && t.multiRunDependencies.length > 0){
-          t.multiRunDependencies.forEach((dependency: any) => {
-            console.log(`Looking for ${dependency.variable} in`, row);
-            const variable = dependency.variable;
-            if(!row[variable]){
-              Promise.reject(`${t.name} failed due to missing ${variable} from ${dependency.name}`);
-            }
-          });
-        }
         return await t.processFunction(row, rowNumber, t);
       }));
       progressCallback((previousCount: number) => (previousCount + 1));
