@@ -243,7 +243,6 @@ export const skillGroups = [
       name: "lscOBDialer1",
       ctmSkillId: 1,
       ctmSkillDisplayName: "lsc OB Dialer 1",
-      ctmSkillGroups: [],
       profiles: [{
         profileName: "Licensed Sales Center",
         profileId: 32
@@ -264,7 +263,6 @@ export const skillGroups = [
       name: "aisgL1",
       ctmSkillId: 2,
       ctmSkillDisplayName: "aisg L1",
-      ctmSkillGroups: [],
       profiles: [{
         profileName: "AISG",
         profileId: 4
@@ -281,7 +279,6 @@ export const skillGroups = [
       name: "bscCommisssions",
       ctmSkillId: 3,
       ctmSkillDisplayName: "bsc Commisssions",
-      ctmSkillGroups: [],
       profiles: [{
         profileName: "BSC",
         profileId: 10

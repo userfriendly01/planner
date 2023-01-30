@@ -121,7 +121,7 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
 
   const skillHasPriorities = newSkill.levels.length > 0;
   const addSkillButtonDisabled = newSkill.skill === "" || (skillHasPriorities && !newSkill.levelSelected);
-  console.log("defaultSkills", defaultSkills);
+
   return (
     <DefaultSkillsWrapper>
       <SkillHeaderText>Default Skill Profile (Optional)</SkillHeaderText>

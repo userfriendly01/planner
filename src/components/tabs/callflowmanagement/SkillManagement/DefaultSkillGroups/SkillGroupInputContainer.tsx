@@ -17,7 +17,7 @@ import {
 import {
   ConfirmationSkillGroupsDiv,
   ConfirmationSkillList
-} from "./DefaultSkillGroup.Styles";
+} from "./SkillGroup.Styles";
 
 
 const SkillGroupInputContainer = (props: any) => {

@@ -49,23 +49,6 @@ const SkillsList = (props: SkillDropdownProps) => {
     return optionsList;
   };
 
-  // const getSkillOptions = optionsList => {
-  //   return optionsList.map(option => ({
-  //     value: option.name,
-  //     label: option.name
-  //   }));
-  // };
-
-  // const getSkillGroupOptions = optionsList => {
-  //   return optionsList.map(option => {
-  //     return {
-  //       value: option.skillGroupId,
-  //       label: option.skillGroupNme,
-  //       isSkillGroup: true,
-  //       skills: option.skills
-  //     }; });
-  // };
-
   const DropdownOption = (props: any) => {
     const {
       option
@@ -104,10 +87,6 @@ const SkillsList = (props: SkillDropdownProps) => {
         width: "210px"
       }}
       CustomRender={DropdownOption}
-      // options={[...getSkillGroupOptions(skillGroups), {
-      //   label: "divider",
-      //   value: "divider"
-      // }, ...getSkillOptions(skills)]}
       options={[...getSkillAndSkillGroupOptions()]}
       value={{
         label: skill,
