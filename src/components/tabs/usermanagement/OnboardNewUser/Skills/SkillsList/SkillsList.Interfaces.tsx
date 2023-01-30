@@ -1,4 +1,6 @@
-import { Skill } from "globals";
+import {
+  Skill, SkillGroup
+} from "globals";
 
 export interface SkillDropdownProps {
   skill: {
@@ -6,6 +8,6 @@ export interface SkillDropdownProps {
     value: string
   } | string,
   skills: Skill[],
-  skillGroups: any[],  // TODO make a skillGroup Interface
+  skillGroups: SkillGroup[],
   updateSkill: (skill: any) => void
 }

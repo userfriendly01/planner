@@ -18,7 +18,8 @@ import {
   expectOnlyPassedProps,
   skillsList,
   waitFor,
-  act
+  act,
+  getMockedComponentProps
 } from "testUtils";
 import { ActionTypes } from "../../Skills.Interfaces";
 
@@ -165,54 +166,35 @@ describe("<SkillGroupInputContainer />", () => {
     const tableState = {
       selected: [skillsList[0], skillsList[1]]
     };
-    // test.only("Name is not unique, error message shows", async () => {
-    //   // React.useState = jest.fn()
-    //   //   .mockReturnValueOnce(["", jest.fn()])
-    //   //   .mockReturnValueOnce(["", jest.fn()])
-    //   //   .mockReturnValueOnce(["", jest.fn()]).mockReturnValueOnce(["skillgroup1", jest.fn()]);
-    //   renderComponent(tableState);
-    //   const onChange = TextField.mock.calls[0][0].onChange;
-    //   const groupName = "skillgroup1";
-    //   act(() => {
-    //     onChange({
-    //       target: {
-    //         value: groupName
-    //       }
-    //     });
-    //   });
-    //   expect(TextField.mock.calls.length).toBe(2);
-    //   expect(TextField.mock.calls[1][0].value).toBe(groupName);
-    //   expectOnlyPassedProps(UserFormButton, {
-    //     disabled: false
-    //   });
-    //   const onClick = UserFormButton.mock.calls[0][0].onClick;
-    //   act(() => {
-    //     onClick();
-    //   });
-    //   await waitFor(() => {
-    //     expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(0);
-    //     expectOnlyPassedProps(TextField, {
-    //       // TODO: WHY CAN'T I GET THIS?  button doesn't have name to grab value from...
-    //       // Think I need to separate the text field and button to separate components to test this
-    //       // helperText: "Skill group names must be unique",
-    //       // error: true,
-    //       value: ""
-    //     }, );
-    //     expectOnlyPassedProps(TextField, {
-    //       // TODO: WHY CAN'T I GET THIS?  button doesn't have name to grab value from...
-    //       // Think I need to separate the text field and button to separate components to test this
-    //       // helperText: "Skill group names must be unique",
-    //       // error: true,
-    //       value: groupName
-    //     }, 1);
-    //   });
-    //   console.log(initialTestState.skillContext.skillGroups);
-    //   // expectOnlyPassedProps(TextField, {
-    //   //   helperText: "Skill group names must be unique",
-    //   //   error: true,
-    //   //   value: groupName
-    //   // }, 2);
-    // });
+    test("Name is not unique, error message shows", async () => {
+      renderComponent(tableState);
+      const textFieldProps = getMockedComponentProps(TextField);
+      const change = textFieldProps.onChange;
+      const groupName = "skillgroup1";  // already exists
+      change({
+        target: {
+          value: groupName
+        }
+      });
+      expect(TextField.mock.calls.length).toBe(2);
+      expect(TextField.mock.calls[1][0].value).toBe(groupName);
+      expectOnlyPassedProps(UserFormButton, {
+        disabled: false
+      });
+      const buttonProps = getMockedComponentProps(UserFormButton);
+      const onClick = buttonProps.onClick;
+      act(() => {
+        onClick();
+      });
+      await waitFor(() => {
+        expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(0);
+        expectOnlyPassedProps(TextField, {
+          helperText: "Skill group names must be unique",
+          error: true,
+          value: groupName
+        } );
+      });
+    });
     test("Add button is clicked, but transaction is cancelled", () => {
       renderComponent(tableState);
       const onChange = TextField.mock.calls[0][0].onChange;

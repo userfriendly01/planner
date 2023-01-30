@@ -22,7 +22,7 @@ import {
 
 const SkillGroupInputContainer = (props: any) => {
   const [ skillGroupName, setSkillGroupName ] = React.useState("");
-  const [ skillGroupId, setSkillGroupId ] = React.useState("");
+  const [ skillGroupId, setSkillGroupId ] = React.useState();
   const [ errorText, setErrorText ] = React.useState("");
 
   const {
@@ -41,8 +41,6 @@ const SkillGroupInputContainer = (props: any) => {
 
   const handleOnSave = () => {
     const isNameValid = validateSkillGroupName();
-    console.log("handle on save, name is valid", isNameValid)
-    console.log("groupname", skillGroupName)
     if (!isNameValid) {
       setErrorText("Skill group names must be unique");
     } else {
@@ -71,7 +69,7 @@ const SkillGroupInputContainer = (props: any) => {
 
   const validateSkillGroupName = () => {
     if (action === ActionTypes.ADD) {
-      const skillGroupExists = skillGroups.find((sg: any) => sg.skillGroupNme === skillGroupName);
+      const skillGroupExists = skillGroups.find((sg: any) => sg.skillGroupNme.toLowerCase() === skillGroupName.toLowerCase());
       return !skillGroupExists;
     }
     return true;
@@ -85,15 +83,11 @@ const SkillGroupInputContainer = (props: any) => {
         status: ModalOverlayStatuses.SAVING
       });
       try {
-        console.log("HERE");
         const addGroupNameResponse = await addSkillGroup(skillGroupName);
-        console.log(addGroupNameResponse, "asdkjfhalskdfhj")
         setSkillGroupId(addGroupNameResponse.insertId);
         const results = await Promise.allSettled(tableState.selected.map((skill: Skill) => {
-          console.log("Hello?")
           return addSkillGroupsSkill(addGroupNameResponse.insertId, skill.ctmSkillId);
         }));
-        console.log(results, "RESULTS");
         handleResults(results);
       } catch (err) {
         console.error("Unable to add skill grouping");
@@ -137,7 +131,6 @@ const SkillGroupInputContainer = (props: any) => {
         rejectedPromiseSkills.push(tableState.selected[index]);
       }
     });
-    // console.log("successful promises", successfulPromiseSkills)
     if(rejectedPromiseSkills.length === 0){
       setSaveResult({
         message: "Request Successfully Processed",
@@ -171,7 +164,6 @@ const SkillGroupInputContainer = (props: any) => {
   };
 
   const updateStateOnResolvedPromises = (fulfilledSkills: Skill[])=> {
-    console.log("updateStateOnResolvedPromises", fulfilledSkills)
     const skills = state.skillContext.skills.slice();
     const updatedSkills = skills.map(s => {
       let updatedSkill = s;
