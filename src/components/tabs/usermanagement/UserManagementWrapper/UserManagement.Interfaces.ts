@@ -11,5 +11,9 @@ export const views = {
   ONBOARD_NEW_USER: {
     value: "ONBOARD_NEW_USER",
     label: "Onboard New User"
+  },
+  BULK_CHANGES: {
+    value: "BULK_CHANGES",
+    label: "Bulk Changes"
   }
 };
