@@ -208,7 +208,7 @@ export const initiateCalls = async (
 
         const processTree = (attempt: number) => {
           if(t.multiRunDependencies && t.multiRunDependencies.length > 0){
-            return t.multiRunDependencies.map(async (dependency: any) => {
+            return Promise.all(t.multiRunDependencies.map(async (dependency: any) => {
               console.log(`Looking for ${dependency.variable} in`, row);
               const variable = dependency.variable;
               if(attempt === maxAttempts && !row[variable]) {
@@ -217,11 +217,11 @@ export const initiateCalls = async (
                 await delay();
                 return processTree(attempt +1 );
               } else {
-                return;
+                return Promise.resolve();
               }
-            });
+            }));
           } else {
-            return;
+            return Promise.resolve();
           }
         };
 
