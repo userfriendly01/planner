@@ -712,6 +712,8 @@ const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any
 const processUpdateWorkerAttribute = async (row: any, rowNumber: number, template: any, state: any) => {
   const key = template.data.key;
   let value = template.data.value;
+  console.log("VALUE 1", value);
+  console.log("VALUE 2", cleanupField(value, "string"));
   const type = template.data.type;
   switch(type){
     case valueTypes.STRING:
@@ -720,7 +722,7 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
       value = parseInt(value);
       break;
     case valueTypes.BOOLEAN: {
-      const cleanValue = value.replace(" ", "").toLowerCase();
+      const cleanValue = cleanupField(value, "string");
       if(cleanValue === "true" || cleanValue === "false"){
         value = true;
       } else {
@@ -757,7 +759,7 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
     body.attributes = newAttribute;
   }
 
-  console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", row);
+  console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", row), body, value;
   try {
     await updateUser(row.workerSid, body);
     return Promise.resolve(`${row.workerSid} - Worker Attributes updated for row ${rowNumber}`);
