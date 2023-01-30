@@ -748,20 +748,18 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
       break;
   }
   const newAttribute = { [key]: value };
+  const dbValuesOnly: string[] = ["zerooutenabled", "directdialnum", "inactivedate", "alternatedid", "selfserviceind", "inactiveforwardto"];
 
-  const worker = state.workerContext.workers.find((w:any) => w.attributes?.n_number && w.attributes.n_number === row.n_number);
-  row = {
-    ...row,
-    ...worker
-  };
-  row.attributes = {
-    ...row.attributes,
-    ...newAttribute
-  };
-  row.workerSid = worker.sid;
+  const body: any = {};
+  if(dbValuesOnly.includes(cleanupField(key, "string"))){
+    body[key] = value;
+  } else {
+    body.attributes = newAttribute;
+  }
+
   console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", row);
   try {
-    await updateUser(row.workerSid, { attributes: row.attributes });
+    await updateUser(row.workerSid, body);
     return Promise.resolve(`${row.workerSid} - Worker Attributes updated for row ${rowNumber}`);
   } catch(err){
     console.error(`Failed to update Triton Worker Attributes user for row ${rowNumber}.`, err);
