@@ -93,7 +93,7 @@ const BulkUpdateForm = (props: any) => {
           <Dropdown
             label="Attribute"
             value={selectedAttribute}
-            options={Object.values(selectedAttribute)}
+            options={Object.values(availableAttributes)}
             updateValue={(event: any, attribute: any) => setSelectedAttribute(attribute)}
             styles={{
               width: "200px",
