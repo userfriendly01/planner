@@ -603,12 +603,13 @@ const getCalabrioQmFields = (state: any): any => [
     validateFunction: (row: any, rowNumber: number): Promise<any> => {
       const fieldName = "Time Zone";
       const field = cleanupField(row[fieldName], "string");
+      const timeZone = calabrioTimeZones.find((t:any) => cleanupField(t.label, "string") === field);
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
-      } else if(!calabrioTimeZones.some((t:any) => cleanupField(t.label, "string") === field)){
+      } else if(!timeZone){
         return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
       } else {
-        row.timeZone = row[fieldName];
+        row.timeZone = timeZone.value;
         return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
       }
     }
