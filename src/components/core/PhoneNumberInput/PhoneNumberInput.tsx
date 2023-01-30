@@ -71,7 +71,7 @@ export interface PhoneNumberInputProps {
   id: string,
   label: string,
   number: string,
-  onBlur: () => void,
+  onBlur?: () => void,
   showError?: boolean,
   updateValue: (maskedValue: string, unmaskedValue: string, isNumberValid: boolean, e164Number: string) => void,
   icon?: JSX.Element

@@ -312,7 +312,6 @@ const getTritonFields = (state: any): any => [
 
       try {
         const didUser = isDidUser(didField, rowNumber);
-        console.warn("Bullshit Summary - Zero Out Enabled: ", rowNumber, field, didField, didUser);
         if(didUser && field){
           try {
             const directDialNum = getE164Number(field);
@@ -355,7 +354,6 @@ const getTritonFields = (state: any): any => [
 
       try {
         const didUser = isDidUser(didField, rowNumber);
-        console.warn("Bullshit Summary - Zero Out Enabled: ", rowNumber, field, didField, didUser);
         if(didUser && field === "y"){
           try {
             const profileFieldName = "Profile Id";
@@ -409,7 +407,6 @@ const getTritonFields = (state: any): any => [
 
       try {
         const didUser = isDidUser(didField, rowNumber);
-        console.warn("Bullshit Summary - Outgoing Number: ", rowNumber, field, didField, didUser);
         if(didUser && field){
           return Promise.reject(`Did User field is 'Y', ${fieldName} is not applicable for row ${rowNumber}`);
         } else if(didUser && !field) {
@@ -711,52 +708,16 @@ const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any
 
 const processUpdateWorkerAttribute = async (row: any, rowNumber: number, template: any, state: any) => {
   const key = template.data.key;
-  let value = template.data.value;
-  console.log("VALUE 1", value);
-  console.log("VALUE 2", cleanupField(value, "string"));
-  const type = template.data.type;
-  switch(type){
-    case valueTypes.STRING:
-      break;
-    case valueTypes.NUMBER:
-      value = parseInt(value);
-      break;
-    case valueTypes.BOOLEAN: {
-      const cleanValue = cleanupField(value, "string");
-      if(cleanValue === "true" || cleanValue === "false"){
-        value = true;
-      } else {
-        value = false;
-      }
-      break;
-    }
-    case valueTypes.OBJECT: {
-      const object: any = {};
-      const fieldArray = value.replace(" ","").replace("{","").replace("}","").split(",");
+  const value = template.data.value;
+  const location = template.data.value;
 
-      fieldArray.forEach((f: any) => {
-        const objKeyValueArray = f.replace(" ","").split(":");
-        const key = objKeyValueArray[0].trim();
-        const keyValue = objKeyValueArray[1].trim();
-        object[key] = keyValue;
-      });
-      value = JSON.parse(JSON.stringify(object));
-      break;
-    }
-    case valueTypes.ARRAY:
-      value = value.replace(" ","").replace("[","").replace("]","").split(",");
-      break;
-    default:
-      break;
-  }
   const newAttribute = { [key]: value };
-  const dbValuesOnly: string[] = ["zerooutenabled", "directdialnum", "inactivedate", "alternatedid", "selfserviceind", "inactiveforwardto"];
 
-  const body: any = {};
-  if(dbValuesOnly.includes(cleanupField(key, "string"))){
-    body[key] = value;
+  let body: any = {};
+  if(location){
+    body[location] = newAttribute;
   } else {
-    body.attributes = newAttribute;
+    body = newAttribute;
   }
 
   console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", row), body, value;
