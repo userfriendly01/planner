@@ -286,7 +286,7 @@ export const performValidations = async (
     validationPromises = await handleConcurrentCalls(concurrencyLimit, processValidationsOnRows, uploadedForm, setProcessedRows);
   } else {
     validationPromises = await Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {
-      const rowNumber = index + 1;
+      const rowNumber = index + 2;
       return processValidationsOnRows(row, rowNumber, setProcessedRows);
     }));
   }

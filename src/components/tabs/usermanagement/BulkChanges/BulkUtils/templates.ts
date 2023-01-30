@@ -640,7 +640,7 @@ const getUpdateWorkerAttributeFields = (state: any): any => [
             row.n_number = field;
             return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
           } else {
-            return Promise.reject(`${field} is not an existing setup worker in Triton ${rowNumber}`);
+            return Promise.reject(`${field} is not an existing setup worker in Triton for row ${rowNumber}`);
           }
         } catch(err) {
           return Promise.reject(`Error thrown fetching ${fieldName} from state for row ${rowNumber}`);
@@ -652,11 +652,10 @@ const getUpdateWorkerAttributeFields = (state: any): any => [
 
 const processCreateTritonUser = async (row: any, rowNumber: number, state: any) => {
   console.log("**** TRITON RECORD PROCESSING", row);
-  const workerSid = "WK123456";
-  // const workerSid = await createUser(row);
   const didFieldName = "Did User";
   const didField = cleanupField(row[didFieldName], "string");
   const didUser = isDidUser(didField, rowNumber);
+  let workerSid;
   const body: any = {};
   if(didUser) {
     body.attributes = row.attributes;
@@ -669,12 +668,17 @@ const processCreateTritonUser = async (row: any, rowNumber: number, state: any) 
     body.activateEp = false;
   }
 
-  row.workerSid = workerSid;
-  row.acdId = workerSid;
+  try {
+    workerSid = await createUser(row);
+    row.workerSid = workerSid;
+    row.acdId = workerSid;
+    console.log(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
+    Promise.resolve(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
 
-  console.log("FINAL TRITON BODY: ", body);
-  Promise.resolve(`${workerSid} created for ${row.n_number}`);
-  //call set state
+  } catch(err) {
+    console.error(`Failed to create Triton user for row ${rowNumber}.`, err);
+    Promise.reject(`Failed to create Triton user for row ${rowNumber}.`);
+  }
 };
 
 const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any) => {
@@ -694,9 +698,14 @@ const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any
   body.roles = row.roles;
   body.scope = row.scope;
 
-  //await create calabrio user
-  //call set state
-  Promise.resolve();
+  try {
+    await createCalabrioUser(body);
+    console.log(`User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`);
+    Promise.resolve(`User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`);
+  } catch(err) {
+    console.error(`Failed to create Calabrio user for row ${rowNumber}.`, err);
+    Promise.reject(`Failed to create Calabrio user for row ${rowNumber}.`);
+  }
 };
 
 const processUpdateWorkerAttribute = async (row: any, rowNumber: number, template: any, state: any) => {
