@@ -1,15 +1,6 @@
-import { cleanupField } from "./utils";
 import { isNumberValid } from "utils";
 
 const validator = {
-  MANAGER: (managerNNumber: string, state: any) => {
-    const manager = state.managerContext.managers.find((m: any) => cleanupField(m, "string") === cleanupField(managerNNumber, "string"));
-    if(manager){
-      return true;
-    } else {
-      return false;
-    }
-  },
   NUMBER: (value: any) => {
     try {
       const parsedValue = parseInt(value);
@@ -72,7 +63,6 @@ export const availableAttributes: any = {
     label: "manager_n_number",
     value: "manager_n_number",
     type: "string",
-    validator: validator.MANAGER,
     location: null // Add tooltip that it will also update other manager fields
   },
   PROFILE: {
@@ -86,7 +76,7 @@ export const availableAttributes: any = {
     label: "did",
     value: "did",
     type: "phone number",
-    validator: isNumberValid,
+    validator: (value: any) => isNumberValid(value.toString(), false),
     location: "attributes"// add tooltip that this is alone will not update someone's direct dial number, bulk update direct didal is not supported, this field also represents outgoing number for non DID users
   }
 };

@@ -132,7 +132,7 @@ const getTritonFields = (state: any): any => [
       if(!row.attributes){
         row.attributes = {};
       }
-      const managerObject = state.managerContext.managers.find((m:any) => cleanupField(m.manager_n_number, "string") === field);
+      const managerObject = state.managerContext.managers.find((m:any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === field);
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
       } else if(!managerObject){
@@ -713,9 +713,22 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
 
   const newAttribute = { [key]: value };
 
-  let body: any = {};
+  let body: any = {
+    attributes: {}
+  };
+
   if(location){
     body[location] = newAttribute;
+  } else if(key === "manager_n_number") {
+    const managerObject = state.managerContext.managers.find((m:any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === value);
+    if(!managerObject){
+      return Promise.reject(`${value} is not a valid option for row ${rowNumber}`);
+    } else {
+      body.attributes.manager_first_name = managerObject.manager_first_name;
+      body.attributes.manager_last_name = managerObject.manager_last_name;
+      body.attributes.manager_n_number = managerObject.manager_n_number;
+      body.attributes.manager = `${managerObject.manager_first_name} ${managerObject.manager_last_name}`;
+    }
   } else {
     body = newAttribute;
   }
