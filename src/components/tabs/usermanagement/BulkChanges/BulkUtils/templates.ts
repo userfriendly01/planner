@@ -674,11 +674,11 @@ const processCreateTritonUser = async (row: any, rowNumber: number, state: any) 
     row.workerSid = workerSid;
     row.acdId = workerSid;
     console.log(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
-    Promise.resolve(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
+    return Promise.resolve(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
 
   } catch(err) {
     console.error(`Failed to create Triton user for row ${rowNumber}.`, err);
-    Promise.reject(`Failed to create Triton user for row ${rowNumber}.`);
+    return Promise.reject(`Failed to create Triton user for row ${rowNumber}.`);
   }
 };
 
@@ -702,10 +702,10 @@ const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any
   try {
     await createCalabrioUser(body);
     console.log(`User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`);
-    Promise.resolve(`User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`);
+    return Promise.resolve(`User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`);
   } catch(err) {
     console.error(`Failed to create Calabrio user for row ${rowNumber}.`, err);
-    Promise.reject(`Failed to create Calabrio user for row ${rowNumber}.`);
+    return Promise.reject(`Failed to create Calabrio user for row ${rowNumber}.`);
   }
 };
 
@@ -760,8 +760,13 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
   };
   row.workerSid = worker.sid;
   console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", row);
-  updateUser(row.workerSid, { attributes: row.attributes });
-  Promise.resolve(`${row.workerSid} - Worker Attributes updated for row ${rowNumber}`);
+  try {
+    await updateUser(row.workerSid, { attributes: row.attributes });
+    return Promise.resolve(`${row.workerSid} - Worker Attributes updated for row ${rowNumber}`);
+  } catch(err){
+    console.error(`Failed to update Triton Worker Attributes user for row ${rowNumber}.`, err);
+    return Promise.reject(`Failed to create Calabrio user for row ${rowNumber}.`);
+  }
 };
 
 //Templates
