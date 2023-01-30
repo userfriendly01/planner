@@ -40,19 +40,17 @@ const validFlowData = {
     languageOffer: "English",
     transferNumber: "123456789"
   },
-  DRC: {
-    accountManager: "test",
-    affinityVDN: "test",
-    campaignType: "test",
-    internetPlacement: "test",
-    internetType: "test",
-    keycode: "test",
-    lineOfBusiness: "test",
-    marketingChannel: "test",
-    requestID: "test",
-    transferCode: "test",
-    whisper: "test"
-  }
+  accountManager: "test",
+  affinityVDN: "test",
+  campaignType: "test",
+  internetPlacement: "test",
+  internetType: "test",
+  keycode: "test",
+  lineOfBusiness: "test",
+  marketingChannel: "test",
+  requestID: "test",
+  transferCode: "test",
+  whisper: "test"
 };
 
 const invalidFlowData={
