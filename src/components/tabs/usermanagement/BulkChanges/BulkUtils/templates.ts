@@ -655,7 +655,6 @@ const processCreateTritonUser = async (row: any, rowNumber: number, state: any) 
   const didFieldName = "Did User";
   const didField = cleanupField(row[didFieldName], "string");
   const didUser = isDidUser(didField, rowNumber);
-  let workerSid;
   const body: any = {};
   if(didUser) {
     body.attributes = row.attributes;
@@ -669,7 +668,9 @@ const processCreateTritonUser = async (row: any, rowNumber: number, state: any) 
   }
 
   try {
-    workerSid = await createUser(row);
+    const res = await createUser(row);
+    const workerSid = res.workerSid;
+    console.log("TRITON RESPONSE", res);
     row.workerSid = workerSid;
     row.acdId = workerSid;
     console.log(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
