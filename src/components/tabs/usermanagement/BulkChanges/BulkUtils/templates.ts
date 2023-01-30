@@ -683,7 +683,7 @@ const processCreateTritonUser = async (row: any, rowNumber: number, state: any) 
 };
 
 const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any) => {
-  console.log("****CALABRIO RECORD PROCESSING for", row);
+  console.log("****CALABRIO RECORD PROCESSING for", row.slice());
   await checkConflictingUsers(row, rowNumber, state.calabrioContext.users);
   const existingTritonWorker = state.workerContext.workers.find((w:any) => w.attributes.n_number && w.attributes.n_number === row.n_number);
   const acdId = row.acdId || existingTritonWorker.sid || undefined;
