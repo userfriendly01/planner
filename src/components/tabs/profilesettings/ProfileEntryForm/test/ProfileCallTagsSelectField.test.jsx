@@ -4,7 +4,8 @@ import {
   Delete
 } from "@mui/icons-material";
 import {
-  getCallTags, getCallTagOptions
+  getCallTags,
+  getCallTagOptions
 } from "services";
 import MockAdapter from "axios-mock-adapter";
 import { Dropdown } from "components";

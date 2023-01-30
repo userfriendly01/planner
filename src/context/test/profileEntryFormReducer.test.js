@@ -289,6 +289,56 @@ describe("profileEntryFormReducer", () => {
               }
             ],
             workerSid: null
+          },
+          {
+            aggregate_queues_id: 1,
+            aggregate_queues_nme: "Liscensed Sales Center",
+            aggregate_queues_type: "aggregate",
+            owner_type: "profile",
+            profile_id: 0,
+            queues: [
+              {
+                skill_id: 106,
+                skill_nme: "Sales Queue",
+                skill_num: "salesQueue",
+                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c43"
+              },
+              {
+                skill_id: 134,
+                skill_nme: "Another Sales Queue",
+                skill_num: "anotherSalesQueue",
+                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c53"
+              }
+            ],
+            workerSid: null
+          },
+          {
+            aggregate_queues_id: 2,
+            aggregate_queues_nme: "Safeco Underwriting",
+            aggregate_queues_type: "aggregate",
+            owner_type: "profile",
+            profile_id: 0,
+            queues: [
+              {
+                skill_id: 44,
+                skill_nme: "PGS - Gold English",
+                skill_num: "pgsGoldEnglish",
+                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c32"
+              },
+              {
+                skill_id: 49,
+                skill_nme: "PGS - Gold Spanish",
+                skill_num: "pgsGoldSpanish",
+                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c31"
+              },
+              {
+                skill_id: 170,
+                skill_nme: "PGS - Gold French",
+                skill_num: "pgsGoldFrench",
+                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c30"
+              }
+            ],
+            workerSid: null
           }
         ]
       };
@@ -361,6 +411,14 @@ describe("profileEntryFormReducer", () => {
           {
             ctmSkillId: 106,
             ctmSkillDisplayName: "PGS - Gold Spanish"
+          },
+          {
+            ctmSkillId: -1,
+            ctmSkillDisplayName: "Liscensed Sales Center"
+          },
+          {
+            ctmSkillId: -2,
+            ctmSkillDisplayName: "Safeco Underwriting"
           }
         ]
       };
