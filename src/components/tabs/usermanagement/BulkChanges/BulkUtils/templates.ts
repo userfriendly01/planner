@@ -695,7 +695,7 @@ const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any
   body.firstName = row.attributes.firstName;
   body.lastName = row.attributes.lastName;
   body.groupId = row.groupId;
-  body.timeZone = row.timezone;
+  body.timeZone = row.timeZone;
   body.roles = row.roles;
   body.scope = row.scope;
 
