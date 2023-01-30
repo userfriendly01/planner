@@ -86,6 +86,7 @@ export const isValidPhoneNumber = (number: string) => {
  */
 // when true user is able to perform transfers using this number
 export const isNumberValid = (number: string, allowSevenDigitVdn: boolean) => {
+  console.log("wtf validator", number, typeof number);
   if (allowSevenDigitVdn && isNumberVdn(number)) {
     return true;
   } else if (isNumberTenDigits(number) && isValidPhoneNumber(number)) {

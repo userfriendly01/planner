@@ -35,7 +35,7 @@ const BulkUpdateForm = (props: any) => {
   console.log("BulkUpdateForm - selectedTemplates", selectedTemplates);
 
   React.useEffect(() => {
-    if(updatedAttributeValue && (selectedAttribute.validator(updatedAttributeValue) || !selectedAttribute.validator)){
+    if(updatedAttributeValue && (!selectedAttribute.validator || selectedAttribute.validator(updatedAttributeValue))){
       const templateFound = selectedTemplates.find((t: any) => t.name === action.name);
       if(!templateFound){
         updateSelectedTemplates(true, {
@@ -100,7 +100,19 @@ const BulkUpdateForm = (props: any) => {
               margin: "0px 20px"
             }}
           />
-          { selectedAttribute.type === "string" || selectedAttribute.type === "number" &&
+          { selectedAttribute.type === "string" &&
+            <CustomInput
+              label="Attribute Value"
+              name="attribute-value"
+              value={updatedAttributeValue}
+              updateValue={(value: string) => setUpdatedAttributeValue(value)}
+              styles={{
+                width: "200px",
+                margin: "0px 20px"
+              }}
+            />
+          }
+          { selectedAttribute.type === "number" &&
             <CustomInput
               label="Attribute Value"
               name="attribute-value"
