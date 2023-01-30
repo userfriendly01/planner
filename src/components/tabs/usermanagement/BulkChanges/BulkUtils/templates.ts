@@ -634,7 +634,7 @@ const getUpdateWorkerAttributeFields = (state: any): any => [
         return Promise.reject(`${fieldName} is not in the valid n number format for row ${rowNumber}`);
       } else {
         try {
-          const worker = state.workerContext.workers.find((w: any) => cleanupField(w.attributes.n_number, "string") === field);
+          const worker = state.workerContext.workers.find((w: any) => w.attributes?.n_number && cleanupField(w.attributes.n_number, "string") === field);
 
           if(worker){
             row.workerSid = worker.sid;
@@ -685,8 +685,8 @@ const processCreateTritonUser = async (row: any, rowNumber: number, state: any) 
 const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any) => {
   console.log("****CALABRIO RECORD PROCESSING for", row.slice());
   await checkConflictingUsers(row, rowNumber, state.calabrioContext.users);
-  const existingTritonWorker = state.workerContext.workers.find((w:any) => w.attributes.n_number && w.attributes.n_number === row.n_number);
-  const acdId = row.acdId || existingTritonWorker.sid || undefined;
+  const existingTritonWorker = state.workerContext.workers.find((w:any) => w.attributes?.n_number && w.attributes.n_number === row.n_number);
+  const acdId = row.acdId || existingTritonWorker?.sid || undefined;
   const body: any = {};
 
   body.acdId = acdId;
@@ -749,7 +749,7 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
   }
   const newAttribute = { [key]: value };
 
-  const worker = state.workerContext.workers.find((w:any) => w.attributes.n_number === row.n_number);
+  const worker = state.workerContext.workers.find((w:any) => w.attributes?.n_number && w.attributes.n_number === row.n_number);
   row = {
     ...row,
     ...worker
