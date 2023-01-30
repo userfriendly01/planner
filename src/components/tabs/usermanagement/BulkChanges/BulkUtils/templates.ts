@@ -669,14 +669,13 @@ const processCreateTritonUser = async (row: any, rowNumber: number, state: any) 
   }
 
   try {
-    const res = await createUser(row);
+    const res = await createUser(body);
     const workerSid = res.workerSid;
     console.log("TRITON RESPONSE", res);
     row.workerSid = workerSid;
     row.acdId = workerSid;
     console.log(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
     return Promise.resolve(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
-
   } catch(err) {
     console.error(`Failed to create Triton user for row ${rowNumber}.`, err);
     return Promise.reject(`Failed to create Triton user for row ${rowNumber}.`);

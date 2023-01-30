@@ -123,7 +123,7 @@ const ProcessingModal = (props: any) => {
         <ProcessingResultsWrapper>
           { results.processingErrors.length > 0 ?
             <TextWrapper styles={{ size: "26px" }}>
-              Processing Errors have been found for this template. Use the options below to see failed and successful rows.
+              {results.processingErrors.length} processing errors were thrown for this template. {results.successfullyProcessedRows.length} successful rows.
             </TextWrapper>
             :
             <TextWrapper styles={{ size: "26px" }}>
