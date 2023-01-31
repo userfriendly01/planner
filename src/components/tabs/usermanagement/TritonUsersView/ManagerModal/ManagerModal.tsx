@@ -71,15 +71,8 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
   const [ selectedCalabrioTeams, setSelectedCalabrioTeams ] = useState<number[]>(selectedManager ? selectedManager.calabrio_team_ids :[]);
   const [isTeamModalOpen, setIsTeamModalOpen] = useState<boolean>(false);
 
-  console.log("wsx state", state);
-  console.log("wsx ManagerModalProps", props);
-  console.log("wsx manager", manager);
-  console.log("wsx calabrioTeams", calabrioTeams);
-
   const getCalabrioOption = (teamId: number): any => {
-    console.log("wsx getCalabrioOption teamId", teamId);
     const team = calabrioTeams.find(team => team.groupId === teamId);
-    console.log("wsx getCalabrioOption team", team);
     return team ? {
       ...team,
       value: team.groupId,

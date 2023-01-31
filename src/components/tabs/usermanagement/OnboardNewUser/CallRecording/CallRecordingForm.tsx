@@ -206,20 +206,18 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   };
 
   const getTeamOptions = () => {
+    // Gather up the parents of all the teams in the manager's scope
     let parentTeams: number[] = [];
     if (form.manager.value && form.manager.value.calabrio_team_ids) {
       parentTeams = form.manager.value.calabrio_team_ids.map(
         (teamId: number) => {
           const targetTeam = state.calabrioContext.teams.find((team: any) => team.groupId === teamId);
-          return targetTeam.parentGroupId; // Array will have duplicates, but it doesn't hurt anything
+          return targetTeam.parentGroupId; // Array may have some duplicates, but that doesn't hurt anything
         }
       );
     }
-
-    const availableTeams = teams.filter(team => parentTeams.includes(team.parentGroupId));//team.groupId));  // wsx filter out all teams except the ones the manager is on
-    console.log("wsxx teams and parentTeams and availableTeams", teams, parentTeams, availableTeams);
-    // const difference = teams.filter(t1 => !availableTeams.includes(t1));
-    // console.log("wsx difference", difference);
+    // Include any teams that have any of the same parents
+    const availableTeams = teams.filter(team => parentTeams.includes(team.parentGroupId));
     if(availableTeams.length > 0){
       return availableTeams.map(team => {
         return {
@@ -229,7 +227,6 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         };
       });
     } else {
-      console.log("wsx bummer, using default teams list");
       return teams.map(team => {
         return {
           ...team,
@@ -239,8 +236,6 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
       });
     }
   };
-  console.log("wsx state", state);
-  console.log("wsx form", form);
   return (
     <FormControlsContainer>
       <FormControlsPane>
