@@ -63,7 +63,7 @@ export const availableAttributes: any = {
     label: "manager_n_number",
     value: "manager_n_number",
     type: "string",
-    location: null // Add tooltip that it will also update other manager fields
+    location: "attributes"// Add tooltip that it will also update other manager fields
   },
   PROFILE: {
     label: "profile_id",

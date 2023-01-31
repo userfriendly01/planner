@@ -711,9 +711,7 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
   const newAttribute = { [key]: value };
   console.log("Whats all this", key, value, location);
 
-  let body: any = {
-    attributes: {}
-  };
+  let body: any = {};
 
   if(location){
     body[location] = newAttribute;
@@ -722,10 +720,12 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
     if(!managerObject){
       return Promise.reject(`${value} is not a valid option for row ${rowNumber}`);
     } else {
-      body.attributes.manager_first_name = managerObject.manager_first_name;
-      body.attributes.manager_last_name = managerObject.manager_last_name;
-      body.attributes.manager_n_number = managerObject.manager_n_number;
-      body.attributes.manager = `${managerObject.manager_first_name} ${managerObject.manager_last_name}`;
+      body.location = {
+        manager_first_name: managerObject.manager_first_name,
+        manager_last_name: managerObject.manager_last_name,
+        manager_n_number: managerObject.manager_n_number,
+        manager: `${managerObject.manager_first_name} ${managerObject.manager_last_name}`
+      };
     }
   } else {
     body = newAttribute;
