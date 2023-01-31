@@ -7,17 +7,14 @@ import {
 } from "services";
 import {
   getE164Number,
-  getOverflowSkillFromProfile
-} from "utils";
-import {
   calabrioAllowedRoles,
-  calabrioTimeZones
+  calabrioTimeZones,
+  getOverflowSkillFromProfile
 } from "utils";
 import {
   checkConflictingUsers,
   cleanupField
 } from "./utils";
-import { valueTypes } from "../BulkChanges.Interfaces";
 
 const toProperCase = (field: any) => {
   const fieldArray = field.split(" ").map((w: string) => {
@@ -132,7 +129,7 @@ const getTritonFields = (state: any): any => [
       if(!row.attributes){
         row.attributes = {};
       }
-      const managerObject = state.managerContext.managers.find((m:any) => cleanupField(m.manager_n_number, "string") === field);
+      const managerObject = state.managerContext.managers.find((m:any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === field);
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
       } else if(!managerObject){
@@ -312,7 +309,6 @@ const getTritonFields = (state: any): any => [
 
       try {
         const didUser = isDidUser(didField, rowNumber);
-        console.warn("Bullshit Summary - Zero Out Enabled: ", rowNumber, field, didField, didUser);
         if(didUser && field){
           try {
             const directDialNum = getE164Number(field);
@@ -355,7 +351,6 @@ const getTritonFields = (state: any): any => [
 
       try {
         const didUser = isDidUser(didField, rowNumber);
-        console.warn("Bullshit Summary - Zero Out Enabled: ", rowNumber, field, didField, didUser);
         if(didUser && field === "y"){
           try {
             const profileFieldName = "Profile Id";
@@ -409,7 +404,6 @@ const getTritonFields = (state: any): any => [
 
       try {
         const didUser = isDidUser(didField, rowNumber);
-        console.warn("Bullshit Summary - Outgoing Number: ", rowNumber, field, didField, didUser);
         if(didUser && field){
           return Promise.reject(`Did User field is 'Y', ${fieldName} is not applicable for row ${rowNumber}`);
         } else if(didUser && !field) {
@@ -711,53 +705,37 @@ const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any
 
 const processUpdateWorkerAttribute = async (row: any, rowNumber: number, template: any, state: any) => {
   const key = template.data.key;
-  let value = template.data.value;
-  const type = template.data.type;
-  switch(type){
-    case valueTypes.STRING:
-      break;
-    case valueTypes.NUMBER:
-      value = parseInt(value);
-      break;
-    case valueTypes.BOOLEAN: {
-      const cleanValue = value.replace(" ", "").toLowerCase();
-      if(cleanValue === "true" || cleanValue === "false"){
-        value = true;
-      } else {
-        value = false;
-      }
-      break;
-    }
-    case valueTypes.OBJECT: {
-      const object: any = {};
-      const fieldArray = value.replace(" ","").replace("{","").replace("}","").split(",");
+  const value = template.data.value;
+  const location = template.data.location;
 
-      fieldArray.forEach((f: any) => {
-        const objKeyValueArray = f.replace(" ","").split(":");
-        const key = objKeyValueArray[0].trim();
-        const keyValue = objKeyValueArray[1].trim();
-        object[key] = keyValue;
-      });
-      value = JSON.parse(JSON.stringify(object));
-      break;
-    }
-    case valueTypes.ARRAY:
-      value = value.replace(" ","").replace("[","").replace("]","").split(",");
-      break;
-    default:
-      break;
-  }
   const newAttribute = { [key]: value };
-  const dbValuesOnly: string[] = ["zerooutenabled", "directdialnum", "inactivedate", "alternatedid", "selfserviceind", "inactiveforwardto"];
 
-  const body: any = {};
-  if(dbValuesOnly.includes(cleanupField(key, "string"))){
-    body[key] = value;
+  let body: any = {};
+
+  if(key === "manager_n_number") {
+    const managerObject = state.managerContext.managers.find((m:any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === value);
+    if(!managerObject){
+      return Promise.reject(`${value} is not a valid option for row ${rowNumber}`);
+    } else {
+      body[location] = {
+        manager_first_name: managerObject.manager_first_name,
+        manager_last_name: managerObject.manager_last_name,
+        manager_n_number: managerObject.manager_n_number,
+        manager: `${managerObject.manager_first_name} ${managerObject.manager_last_name}`
+      };
+    }
+  } else if(key === "profile_id"){
+    body[location] = {
+      agent_attribute_1: value,
+      profile_id: value
+    };
+  } else if(location){
+    body[location] = newAttribute;
   } else {
-    body.attributes = newAttribute;
+    body = newAttribute;
   }
 
-  console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", row);
+  console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", row, body, value);
   try {
     await updateUser(row.workerSid, body);
     return Promise.resolve(`${row.workerSid} - Worker Attributes updated for row ${rowNumber}`);
