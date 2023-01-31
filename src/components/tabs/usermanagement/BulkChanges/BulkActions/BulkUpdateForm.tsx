@@ -26,7 +26,7 @@ const BulkUpdateForm = (props: any) => {
   const updateTemplates = getUpdateTemplates(state);
   const [ action, setAction ] = React.useState(updateTemplates.UPDATE_WORKER_ATTRIBUTE);
   const [ selectedAttribute, setSelectedAttribute ] = React.useState(availableAttributes.SELF_SERVICE_INDICATOR);
-  const [ updatedAttributeValue, setUpdatedAttributeValue ] = React.useState(null);
+  const [ updatedAttributeValue, setUpdatedAttributeValue ] = React.useState<any>("");
 
   console.log("BulkUpdateForm - selectedTemplates", selectedTemplates);
 
@@ -80,7 +80,7 @@ const BulkUpdateForm = (props: any) => {
           }}
           styles={{
             margin: "40 0 30 0",
-            width: "230px"
+            width: "300px"
           }}
         />
       </StepWrapper>
@@ -91,7 +91,7 @@ const BulkUpdateForm = (props: any) => {
             value={selectedAttribute}
             options={Object.values(availableAttributes)}
             updateValue={(event: any, attribute: any) => {
-              setUpdatedAttributeValue(null);
+              setUpdatedAttributeValue("");
               setSelectedAttribute(attribute);
             }}
             styles={{
