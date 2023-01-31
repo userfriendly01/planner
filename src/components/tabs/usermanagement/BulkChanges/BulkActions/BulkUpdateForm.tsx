@@ -3,19 +3,17 @@ import {
   UpdateWrapper,
   StepWrapper
 } from "../BulkChanges.Styles";
-import {
-  updateActions,
-  valueTypes
-} from "../BulkChanges.Interfaces";
 import { updateSelectedTemplates } from "../BulkUtils/utils";
 import { getUpdateTemplates } from "../BulkUtils/templates";
+import { availableAttributes } from "../BulkUtils/consts";
 import {
   CustomInput,
-  Dropdown
+  Dropdown,
+  PhoneNumberInput
 } from "components";
 import { useAdminState } from "context";
 import React from "react";
-import { Tooltip } from "@mui/material";
+import { getE164Number } from "utils";
 
 
 const BulkUpdateForm = (props: any) => {
@@ -27,104 +25,36 @@ const BulkUpdateForm = (props: any) => {
   const state = useAdminState();
   const updateTemplates = getUpdateTemplates(state);
   const [ action, setAction ] = React.useState(updateTemplates.UPDATE_WORKER_ATTRIBUTE);
-  const [ updateAttributes, setUpdateAttributes ] = React.useState({
-    key: "",
-    value: "",
-    type: valueTypes.STRING
-  });
+  const [ selectedAttribute, setSelectedAttribute ] = React.useState(availableAttributes.SELF_SERVICE_INDICATOR);
+  const [ updatedAttributeValue, setUpdatedAttributeValue ] = React.useState<any>("");
 
   console.log("BulkUpdateForm - selectedTemplates", selectedTemplates);
-  const keyValidator = (key: string) => key.length > 0 && key.indexOf(" ") === -1;
-  const valueValidator = (value: string) => {
-    if(value){
-      switch(updateAttributes.type){
-        case valueTypes.STRING:
-          return true;
-        case valueTypes.NUMBER:
-          try {
-            const parsedValue = parseInt(value);
-            if(parsedValue && typeof parsedValue === "number" && parsedValue > 0){
-              return true;
-            } else {
-              return false;
-            }
-          } catch(err){
-            return false;
-          }
-        case valueTypes.BOOLEAN: {
-          const cleanValue = value.replace(" ", "").toLowerCase();
-          if(cleanValue === "true" || cleanValue === "false"){
-            return true;
-          } else {
-            return false;
-          }
-        }
-        case valueTypes.OBJECT:
-          try {
-            const object: any = {};
-            const fieldArray = value.replace(" ","").replace("{","").replace("}","").split(",");
-
-            fieldArray.forEach((f: any) => {
-              const objKeyValueArray = f.replace(" ","").split(":");
-              const key = objKeyValueArray[0].trim();
-              const keyValue = objKeyValueArray[1].trim();
-              object[key] = keyValue;
-            });
-            const parsedValue = JSON.parse(JSON.stringify(object));
-            if(typeof parsedValue === "object" && value.charAt(0) === "{" && value.charAt(value.length -1) === "}"){
-              return true;
-            } else {
-              return false;
-            }
-          } catch(err){
-            return false;
-          }
-        case valueTypes.ARRAY:
-          try {
-            const fieldArray = value.replace(" ","").replace("[","").replace("]","").split(",");
-
-            if(typeof fieldArray === "object" && value.charAt(0) === "[" && value.charAt(value.length -1) === "]"){
-              return true;
-            } else {
-              return false;
-            }
-          } catch(err){
-            return false;
-          }
-        default:
-          return false;
-      }
-    } else {
-      return false;
-    }
-
-  };
 
   React.useEffect(() => {
-    if(keyValidator(updateAttributes.key) && valueValidator(updateAttributes.value)){
+    if((updatedAttributeValue || updatedAttributeValue === false || updatedAttributeValue === 0) && (!selectedAttribute.validator || selectedAttribute.validator(updatedAttributeValue))){
       const templateFound = selectedTemplates.find((t: any) => t.name === action.name);
       if(!templateFound){
         updateSelectedTemplates(true, {
           ...action,
-          data: updateAttributes
+          data: {
+            key: selectedAttribute.label,
+            value: selectedAttribute.type === "phone number" && updatedAttributeValue ? getE164Number(updatedAttributeValue) : updatedAttributeValue,
+            location: selectedAttribute.location
+          }
         }, selectedTemplates, setSelectedTemplates);
       } else {
-        templateFound.data = updateAttributes;
+        templateFound.data = {
+          key: selectedAttribute.label,
+          value: selectedAttribute.type === "phone number" && updatedAttributeValue ? getE164Number(updatedAttributeValue) : updatedAttributeValue,
+          location: selectedAttribute.location
+        };
       }
     } else {
       if(selectedTemplates.find((t: any) => t.name === action.name)){
         updateSelectedTemplates(false, action, selectedTemplates, setSelectedTemplates);
       }
     }
-  }, [updateAttributes]);
-
-  React.useEffect(() => {
-    setUpdateAttributes({
-      key: "",
-      value: "",
-      type: valueTypes.STRING
-    });
-  }, []);
+  }, [updatedAttributeValue]);
 
   const constructDropdownOption = (template: any) => {
     const name = template.name.split("_").map((w: string) => {
@@ -145,7 +75,6 @@ const BulkUpdateForm = (props: any) => {
           value={constructDropdownOption(action)}
           options={Object.values(updateTemplates).map((t: any) => constructDropdownOption(t))}
           updateValue={(event: any, template: any) => {
-            console.log("TEMPLATE", template);
             setAction(template.value);
           }}
           styles={{
@@ -156,51 +85,78 @@ const BulkUpdateForm = (props: any) => {
       </StepWrapper>
       { action.name === updateTemplates.UPDATE_WORKER_ATTRIBUTE.name &&
         <UpdateWrapper>
-          <Tooltip title="Must be a string with no spaces">
-            <CustomInput
-              label="Attribute Key"
-              name="attribute-key"
-              validator={keyValidator}
-              value={updateAttributes.key}
-              updateValue={(key: string) => setUpdateAttributes({
-                ...updateAttributes,
-                key
-              })}
-              styles={{
-                width: "200px",
-                margin: "0px 20px"
-              }}
-            />
-          </Tooltip>
-          <Tooltip title="Must align with selected Value Type">
+          <Dropdown
+            label="Attribute"
+            value={selectedAttribute}
+            options={Object.values(availableAttributes)}
+            updateValue={(event: any, attribute: any) => {
+              setUpdatedAttributeValue("");
+              setSelectedAttribute(attribute);
+            }}
+            styles={{
+              width: "230px",
+              margin: "10px 20px 0px 20px"
+            }}
+          />
+          { selectedAttribute.type === "string" &&
             <CustomInput
               label="Attribute Value"
               name="attribute-value"
-              validator={valueValidator}
-              value={updateAttributes.value}
-              updateValue={(value: string) => setUpdateAttributes({
-                ...updateAttributes,
-                value
-              })}
+              value={updatedAttributeValue}
+              updateValue={(value: string) => setUpdatedAttributeValue(value)}
               styles={{
-                width: "200px",
-                margin: "0px 20px"
+                width: "230px",
+                margin: "10px 20px 0px 20px"
               }}
             />
-          </Tooltip>
-          <Dropdown
-            label="Value Type"
-            value={updateAttributes.type}
-            options={Object.values(valueTypes)}
-            updateValue={(event: any, type: any) => setUpdateAttributes({
-              ...updateAttributes,
-              type
-            })}
-            styles={{
-              width: "150px",
-              margin: "0px 20px"
-            }}
-          />
+          }
+          { selectedAttribute.type === "number" &&
+            <CustomInput
+              label="Attribute Value"
+              name="attribute-value"
+              value={updatedAttributeValue}
+              updateValue={(value: string) => setUpdatedAttributeValue(value)}
+              styles={{
+                width: "230px",
+                margin: "10px 20px 0px 20px"
+              }}
+            />
+          }
+          { selectedAttribute.type === "boolean" &&
+            <Dropdown
+              label="Boolean"
+              value={updatedAttributeValue}
+              options={[
+                {
+                  label: "true",
+                  value: true
+                },
+                {
+                  label: "false",
+                  value: false
+                }
+              ]}
+              updateValue={(event: any, option: any) => {
+                console.log("Boolean Value: ", option);
+                setUpdatedAttributeValue(option.value);
+              }}
+              styles={{
+                width: "230px",
+                margin: "10px 20px 0px 20px"
+              }}
+            />
+          }
+          { selectedAttribute.type === "phone number" &&
+            <PhoneNumberInput
+              id="Phone Number"
+              label="Phone Number"
+              number={updatedAttributeValue}
+              updateValue={(maskedValue: string, unmaskedValue: string, isValid: boolean, e164Number: string) => {
+                console.log(`maskedValue: ${maskedValue} - "unmaskedValue: ${unmaskedValue} - isValid: ${isValid} - e164Number: ${e164Number}`);
+                setUpdatedAttributeValue(unmaskedValue);
+              }}
+            />
+          }
         </UpdateWrapper>
       }
     </Row>
