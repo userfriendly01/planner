@@ -91,8 +91,8 @@ const BulkUpdateForm = (props: any) => {
             value={selectedAttribute}
             options={Object.values(availableAttributes)}
             updateValue={(event: any, attribute: any) => {
-              setSelectedAttribute(attribute);
               setUpdatedAttributeValue(null);
+              setSelectedAttribute(attribute);
             }}
             styles={{
               width: "300px",

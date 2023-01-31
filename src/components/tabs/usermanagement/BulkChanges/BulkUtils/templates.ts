@@ -706,7 +706,7 @@ const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any
 const processUpdateWorkerAttribute = async (row: any, rowNumber: number, template: any, state: any) => {
   const key = template.data.key;
   const value = template.data.value;
-  const location = template.data.value;
+  const location = template.data.location;
 
   const newAttribute = { [key]: value };
   console.log("Whats all this", key, value, location);

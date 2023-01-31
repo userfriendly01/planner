@@ -15,6 +15,7 @@ const getPhoneNumber = (number: string) => phoneNumberUtil.parseAndKeepRawInput(
  * @param number Number to convert
  */
 export const getE164Number = (number: string) => {
+  console.log("getE164Number", getE164Number);
   const phoneNumber = getPhoneNumber(number);
   if (!phoneNumberUtil.isValidNumber(phoneNumber)) {
     throw new Error("number failed validation by phoneNumberUtil.isValidNumber()");
