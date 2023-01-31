@@ -75,7 +75,6 @@ const BulkUpdateForm = (props: any) => {
           value={constructDropdownOption(action)}
           options={Object.values(updateTemplates).map((t: any) => constructDropdownOption(t))}
           updateValue={(event: any, template: any) => {
-            console.log("TEMPLATE", template);
             setAction(template.value);
           }}
           styles={{

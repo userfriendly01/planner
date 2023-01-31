@@ -709,7 +709,6 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
   const location = template.data.location;
 
   const newAttribute = { [key]: value };
-  console.log("Whats all this", key, value, location);
 
   let body: any = {};
 
