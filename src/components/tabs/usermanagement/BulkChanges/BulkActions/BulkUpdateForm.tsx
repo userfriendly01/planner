@@ -38,14 +38,14 @@ const BulkUpdateForm = (props: any) => {
           ...action,
           data: {
             key: selectedAttribute.label,
-            value: selectedAttribute.type === "phone number" ? getE164Number(updatedAttributeValue) : updatedAttributeValue,
+            value: selectedAttribute.type === "phone number" && updatedAttributeValue ? getE164Number(updatedAttributeValue) : updatedAttributeValue,
             location: selectedAttribute.location
           }
         }, selectedTemplates, setSelectedTemplates);
       } else {
         templateFound.data = {
           key: selectedAttribute.label,
-          value: selectedAttribute.type === "phone number" ? getE164Number(updatedAttributeValue) : updatedAttributeValue,
+          value: selectedAttribute.type === "phone number" && updatedAttributeValue ? getE164Number(updatedAttributeValue) : updatedAttributeValue,
           location: selectedAttribute.location
         };
       }

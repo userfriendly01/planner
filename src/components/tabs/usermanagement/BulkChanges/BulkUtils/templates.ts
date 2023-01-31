@@ -709,6 +709,7 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
   const location = template.data.value;
 
   const newAttribute = { [key]: value };
+  console.log("Whats all this", key, value, location);
 
   let body: any = {
     attributes: {}
@@ -730,7 +731,7 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
     body = newAttribute;
   }
 
-  console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", row), body, value;
+  console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", row, body, value);
   try {
     await updateUser(row.workerSid, body);
     return Promise.resolve(`${row.workerSid} - Worker Attributes updated for row ${rowNumber}`);
