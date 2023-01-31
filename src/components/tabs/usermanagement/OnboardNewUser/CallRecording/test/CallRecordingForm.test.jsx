@@ -342,7 +342,7 @@ describe("CallRecordingForm", () => {
         useFormState.mockReturnValue(form);
       });
       describe("manager's'calabrio teams is not null", () => {
-        test("The dropdown should only show the managers teams", () => {
+        test("The dropdown should show only the manager's teams", () => {
           render(<CallRecordingForm twilioWorker={twilioWorker} />);
           expect(Dropdown.mock.calls[1][0].label).toBe("Team");
           expect(Dropdown.mock.calls[1][0].options.length).toBe(2);

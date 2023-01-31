@@ -215,21 +215,11 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         }
       );
     }
-    // console.log("wsx form.manager", form.manager);
-    // console.log("wsxx state.calabrioContext.teams", state.calabrioContext.teams);
-    // console.log("wsxx form.manager.value.calabrio_team_ids", form.manager.value.calabrio_team_ids);
-    // console.log("wsxx state.calabrioContext.teams[teamId]", state.calabrioContext.teams[teamId]);
-    // console.log("wsxx state.calabrioContext.teams[teamId].parentGroupId", state.calabrioContext.teams[teamId].parentGroupId);
 
-    // const managerTeams = form.manager.value && form.manager.value.calabrio_team_ids ? form.manager.value.calabrio_team_ids: [];
-    // const availableTeams = teams.filter(team => parentTeams.includes(team.groupId));  // wsx filter out all teams except the ones the manager is on
-    // const managerTeams = form.manager.value && form.manager.value.calabrio_team_ids ? form.manager.value.calabrio_team_ids: [];
-    // const availableTeams = teams.filter(team => managerTeams.includes(team.groupId));  // wsx filter out all teams except the ones the manager is on
-    // console.log("wsx availableTeams", availableTeams);
-
-    const availableTeams = teams.filter(team => parentTeams.includes(team.groupId));  // wsx filter out all teams except the ones the manager is on
+    const availableTeams = teams.filter(team => parentTeams.includes(team.parentGroupId));//team.groupId));  // wsx filter out all teams except the ones the manager is on
     console.log("wsxx teams and parentTeams and availableTeams", teams, parentTeams, availableTeams);
-
+    // const difference = teams.filter(t1 => !availableTeams.includes(t1));
+    // console.log("wsx difference", difference);
     if(availableTeams.length > 0){
       return availableTeams.map(team => {
         return {
@@ -239,6 +229,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         };
       });
     } else {
+      console.log("wsx bummer, using default teams list");
       return teams.map(team => {
         return {
           ...team,
@@ -267,7 +258,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         />
         <Dropdown
           disabled={form.formMode === formModes.DELETE}
-          label="Teamxxx"
+          label="Team"
           options={getTeamOptions()}
           value={form.calabrioUser.team ?{
             ...form.calabrioUser.team,
