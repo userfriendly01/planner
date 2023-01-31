@@ -31,7 +31,7 @@ const BulkUpdateForm = (props: any) => {
   console.log("BulkUpdateForm - selectedTemplates", selectedTemplates);
 
   React.useEffect(() => {
-    if((updatedAttributeValue || updatedAttributeValue === false) && (!selectedAttribute.validator || selectedAttribute.validator(updatedAttributeValue))){
+    if((updatedAttributeValue || updatedAttributeValue === false || updatedAttributeValue === 0) && (!selectedAttribute.validator || selectedAttribute.validator(updatedAttributeValue))){
       const templateFound = selectedTemplates.find((t: any) => t.name === action.name);
       if(!templateFound){
         updateSelectedTemplates(true, {
@@ -80,7 +80,7 @@ const BulkUpdateForm = (props: any) => {
           }}
           styles={{
             margin: "40 0 30 0",
-            width: "300px"
+            width: "230px"
           }}
         />
       </StepWrapper>
@@ -95,8 +95,8 @@ const BulkUpdateForm = (props: any) => {
               setSelectedAttribute(attribute);
             }}
             styles={{
-              width: "300px",
-              margin: "0px 20px"
+              width: "230px",
+              margin: "10px 20px 0px 20px"
             }}
           />
           { selectedAttribute.type === "string" &&
@@ -106,8 +106,8 @@ const BulkUpdateForm = (props: any) => {
               value={updatedAttributeValue}
               updateValue={(value: string) => setUpdatedAttributeValue(value)}
               styles={{
-                width: "200px",
-                margin: "0px 20px"
+                width: "230px",
+                margin: "10px 20px 0px 20px"
               }}
             />
           }
@@ -118,8 +118,8 @@ const BulkUpdateForm = (props: any) => {
               value={updatedAttributeValue}
               updateValue={(value: string) => setUpdatedAttributeValue(value)}
               styles={{
-                width: "200px",
-                margin: "0px 20px"
+                width: "230px",
+                margin: "10px 20px 0px 20px"
               }}
             />
           }
@@ -142,8 +142,8 @@ const BulkUpdateForm = (props: any) => {
                 setUpdatedAttributeValue(option.value);
               }}
               styles={{
-                width: "200px",
-                margin: "0px 20px"
+                width: "230px",
+                margin: "10px 20px 0px 20px"
               }}
             />
           }

@@ -118,13 +118,17 @@ const PhoneNumberInput = (props: PhoneNumberInputProps) => {
           value: maskedValue
         }
       }) => {
-        const unmaskedValue = unMaskPhoneNumber(maskedValue);
-        let e164Number = "";
-        try {
-          e164Number = getE164Number(unmaskedValue);
-        // eslint-disable-next-line no-empty
-        } catch (e) {}
-        updateValue(maskedValue, unmaskedValue, isNumberValid(unmaskedValue, useSevenDigitMask), e164Number);
+        if(maskedValue){
+          const unmaskedValue = unMaskPhoneNumber(maskedValue);
+          let e164Number = "";
+          try {
+            e164Number = getE164Number(unmaskedValue);
+          // eslint-disable-next-line no-empty
+          } catch (e) {}
+          updateValue(maskedValue, unmaskedValue, isNumberValid(unmaskedValue, useSevenDigitMask), e164Number);
+        } else {
+          updateValue(maskedValue, undefined, false, undefined);
+        }
       }}
       margin="normal"
       variant="outlined"

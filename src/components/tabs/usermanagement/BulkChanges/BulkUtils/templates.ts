@@ -713,20 +713,25 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
 
   let body: any = {};
 
-  if(location){
-    body[location] = newAttribute;
-  } else if(key === "manager_n_number") {
+  if(key === "manager_n_number") {
     const managerObject = state.managerContext.managers.find((m:any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === value);
     if(!managerObject){
       return Promise.reject(`${value} is not a valid option for row ${rowNumber}`);
     } else {
-      body.location = {
+      body[location] = {
         manager_first_name: managerObject.manager_first_name,
         manager_last_name: managerObject.manager_last_name,
         manager_n_number: managerObject.manager_n_number,
         manager: `${managerObject.manager_first_name} ${managerObject.manager_last_name}`
       };
     }
+  } else if(key === "profile_id"){
+    body[location] = {
+      agent_attribute_1: value,
+      profile_id: value
+    };
+  } else if(location){
+    body[location] = newAttribute;
   } else {
     body = newAttribute;
   }
