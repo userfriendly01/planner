@@ -7,17 +7,14 @@ import {
 } from "services";
 import {
   getE164Number,
-  getOverflowSkillFromProfile
-} from "utils";
-import {
   calabrioAllowedRoles,
-  calabrioTimeZones
+  calabrioTimeZones,
+  getOverflowSkillFromProfile
 } from "utils";
 import {
   checkConflictingUsers,
   cleanupField
 } from "./utils";
-import { valueTypes } from "../BulkChanges.Interfaces";
 
 const toProperCase = (field: any) => {
   const fieldArray = field.split(" ").map((w: string) => {

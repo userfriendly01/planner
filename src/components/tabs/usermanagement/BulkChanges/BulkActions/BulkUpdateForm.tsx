@@ -3,10 +3,6 @@ import {
   UpdateWrapper,
   StepWrapper
 } from "../BulkChanges.Styles";
-import {
-  updateActions,
-  valueTypes
-} from "../BulkChanges.Interfaces";
 import { updateSelectedTemplates } from "../BulkUtils/utils";
 import { getUpdateTemplates } from "../BulkUtils/templates";
 import { availableAttributes } from "../BulkUtils/consts";
@@ -17,7 +13,7 @@ import {
 } from "components";
 import { useAdminState } from "context";
 import React from "react";
-import { Tooltip } from "@mui/material";
+import { getE164Number } from "utils";
 
 
 const BulkUpdateForm = (props: any) => {
@@ -35,21 +31,21 @@ const BulkUpdateForm = (props: any) => {
   console.log("BulkUpdateForm - selectedTemplates", selectedTemplates);
 
   React.useEffect(() => {
-    if(updatedAttributeValue && (!selectedAttribute.validator || selectedAttribute.validator(updatedAttributeValue))){
+    if((updatedAttributeValue || updatedAttributeValue === false) && (!selectedAttribute.validator || selectedAttribute.validator(updatedAttributeValue))){
       const templateFound = selectedTemplates.find((t: any) => t.name === action.name);
       if(!templateFound){
         updateSelectedTemplates(true, {
           ...action,
           data: {
             key: selectedAttribute.label,
-            value: updatedAttributeValue,
+            value: selectedAttribute.type === "phone number" ? getE164Number(updatedAttributeValue) : updatedAttributeValue,
             location: selectedAttribute.location
           }
         }, selectedTemplates, setSelectedTemplates);
       } else {
         templateFound.data = {
           key: selectedAttribute.label,
-          value: updatedAttributeValue,
+          value: selectedAttribute.type === "phone number" ? getE164Number(updatedAttributeValue) : updatedAttributeValue,
           location: selectedAttribute.location
         };
       }
@@ -94,9 +90,12 @@ const BulkUpdateForm = (props: any) => {
             label="Attribute"
             value={selectedAttribute}
             options={Object.values(availableAttributes)}
-            updateValue={(event: any, attribute: any) => setSelectedAttribute(attribute)}
+            updateValue={(event: any, attribute: any) => {
+              setSelectedAttribute(attribute);
+              setUpdatedAttributeValue(null);
+            }}
             styles={{
-              width: "200px",
+              width: "300px",
               margin: "0px 20px"
             }}
           />
@@ -155,7 +154,7 @@ const BulkUpdateForm = (props: any) => {
               number={updatedAttributeValue}
               updateValue={(maskedValue: string, unmaskedValue: string, isValid: boolean, e164Number: string) => {
                 console.log(`maskedValue: ${maskedValue} - "unmaskedValue: ${unmaskedValue} - isValid: ${isValid} - e164Number: ${e164Number}`);
-                setUpdatedAttributeValue(e164Number);
+                setUpdatedAttributeValue(unmaskedValue);
               }}
             />
           }
