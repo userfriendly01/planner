@@ -1,4 +1,7 @@
-import { addFlowRule } from "../flowTableService";
+import  {
+  retrieveFlowData,addFlowRule
+}  from "../flowTableService";
+
 
 describe("flowTableService",()=>{
   describe("AddFlow", ()=>{
@@ -11,6 +14,9 @@ describe("flowTableService",()=>{
           })
         })
       );
+    });
+    afterEach(()=>{
+      fetch.mockClear();
     });
     test("Simulate Add Flow Rule", async()=>{
       const validAddFlowData = {
@@ -61,5 +67,78 @@ describe("flowTableService",()=>{
       expect(addFlow).toBeUndefined;
     });
   });
+  describe("CallFlow List",()=>{
+    afterEach(()=>{
+      fetch.mockClear();
+    });
+    test("CallFlow list",async()=>{
+      const jsonFlowData = [
+        {
+          id: 1,
+          pkey: "12345",
+          agentId: "123455",
+          brand: "LM",
+          callFlowTemplate: "temp",
+          channel: "Test1 Channel",
+          createTime: "2022-24-08",
+          dialedDescription: "test",
+          employeeId: "n1234567",
+          userDestination: "dest",
+          skey: "1234_brand_brr"
+        }
+        ,{
+          id: 2,
+          pkey: "12345",
+          agentId: "123455",
+          brand: "LM",
+          callFlowTemplate: "temp",
+          channel: "Test1 Channel",
+          createTime: "2022-24-08",
+          dialedDescription: "test",
+          employeeId: "n1234567",
+          userDestination: "dest",
+          skey: 12345
+        }
+      ];
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: {
+              listCctSharedCallFlowDbs: {
+                items: jsonFlowData
+              }
+            }
+          })
+        })
+      );
+      const listFlow = await retrieveFlowData("1234-5678","TEST");
+      expect(listFlow).toBeCalled;
+    });
+    test("pass null in list",async()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: []
+          })
+        })
+      );
+      const listFlow = await retrieveFlowData("1234-5678","TEST");
+      expect(listFlow).toBeCalled;
+    });
+    test("Error scenario ",async()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: []
+          })
+        })
+      );
+      jest.spyOn(JSON, "stringify").mockImplementation(()=>{
+        throw new Error();
+      });
+      const listFlow = await retrieveFlowData("1234-5678","TEST");
+      expect(listFlow).toBeCalled;
 
+    });
+  });
 });
