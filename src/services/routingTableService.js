@@ -39,6 +39,9 @@ async function queryRoutingData(accessToken, nextToken = null, graphQlApiUrl) {
                         startTime
                         endTime
                         crcSkill
+                        priority
+                        occupancyCheck
+                        routingSteps
                     }
                 }
             }
