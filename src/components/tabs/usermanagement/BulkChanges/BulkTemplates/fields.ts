@@ -1,7 +1,7 @@
 import {
-  createUser,
-  createCalabrioUser,
-  updateUser,
+  cleanupField
+} from "../BulkUtils";
+import {
   fetchUser,
   generateExtension
 } from "services";
@@ -12,20 +12,10 @@ import {
   getOverflowSkillFromProfile
 } from "utils";
 import {
-  checkConflictingUsers,
-  cleanupField
-} from "./utils";
+  Fields
+} from "../BulkChanges.Interfaces";
 
-const toProperCase = (field: any) => {
-  const fieldArray = field.split(" ").map((w: string) => {
-    const word = w.toLowerCase();
-    return word.charAt(0).toUpperCase() + word.slice(1);
-  });
-  return fieldArray.join(" ");
-};
-
-
-const isDidUser = (didField: any, rowNumber: number) => {
+export const isDidUser = (didField: any, rowNumber: number) => {
   if(typeof didField !== "string"){
     Promise.reject(`Did User field needs to be 'Y' or 'N' for row ${rowNumber}`);
   } else if(didField !== "y" && didField !== "n"){
@@ -37,17 +27,15 @@ const isDidUser = (didField: any, rowNumber: number) => {
   }
 };
 
-//Fields
-const getTritonFields = (state: any): any => [
-  {
+export const FIELDS: Fields = {
+  N_NUMBER_CREATE: {
     field: "nNumber",
     name: "N Number",
     type: "string",
     description: "Agents N Number",
-    required: "Y",
     example: "n0263786",
     options: null,
-    validateFunction: async (row: any, rowNumber: number): Promise<any> => {
+    validateFunction: async (row: any, rowNumber: number, state: any): Promise<any> => {
       const fieldName = "N Number";
       const field = cleanupField(row[fieldName], "string");
       const worker = state.workerContext.workers.find((w: any) => cleanupField(w.attributes.n_number, "string") === field);
@@ -89,15 +77,45 @@ const getTritonFields = (state: any): any => [
       }
     }
   },
-  {
+  N_NUMBER_UPDATE: {
+    field: "nNumber",
+    name: "N Number",
+    type: "string",
+    description: "Agents N Number",
+    example: "n0263786",
+    options: null,
+    validateFunction: async (row: any, rowNumber: number, state: any): Promise<any> => {
+      const fieldName = "N Number";
+      const field = cleanupField(row[fieldName], "string");
+      if(!field){
+        return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
+      } else if(typeof field !== "string" || field.length !== 8) {
+        return Promise.reject(`${fieldName} is not in the valid n number format for row ${rowNumber}`);
+      } else {
+        try {
+          const worker = state.workerContext.workers.find((w: any) => w.attributes?.n_number && cleanupField(w.attributes.n_number, "string") === field);
+
+          if(worker){
+            row.workerSid = worker.sid;
+            row.n_number = field;
+            return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+          } else {
+            return Promise.reject(`${field} is not an existing setup worker in Triton for row ${rowNumber}`);
+          }
+        } catch(err) {
+          return Promise.reject(`Error thrown fetching ${fieldName} from state for row ${rowNumber}`);
+        }
+      }
+    }
+  },
+  PROFILE_ID: {
     field: "profileId",
     name: "Profile Id",
     type: "number",
     description: "Profile Id",
-    required: "Y",
     example: 3,
-    options: state.profileContext.profiles.map((p: any) => p.profile_id),
-    validateFunction: (row: any, rowNumber: number): Promise<any> => {
+    options: (state: any) => state.profileContext.profiles.map((p: any) => p.profile_id),
+    validateFunction: (row: any, rowNumber: number, state: any): Promise<any> => {
       const fieldName = "Profile Id";
       const field = cleanupField(row[fieldName], "number");
       if(!row.attributes){
@@ -115,15 +133,14 @@ const getTritonFields = (state: any): any => [
       }
     }
   },
-  {
+  MANAGER_N_NUMBER: {
     field: "managerNNumber",
     name: "Manager N Number",
     type: "string",
     description: "N Number of the Manager",
-    required: "Y",
     example: "n0088625",
-    options: state.managerContext.managers.map((m: any) => m.manager_n_number),
-    validateFunction: (row: any, rowNumber: number): Promise<any> => {
+    options: (state: any) => state.managerContext.managers.map((m: any) => m.manager_n_number),
+    validateFunction: (row: any, rowNumber: number, state: any): Promise<any> => {
       const fieldName = "Manager N Number";
       const field = cleanupField(row[fieldName], "string");
       if(!row.attributes){
@@ -143,21 +160,14 @@ const getTritonFields = (state: any): any => [
       }
     }
   },
-  {
+  DEFAULT_SKILLS: {
     field: "defaultSkills",
     name: "Default Skills",
     type: "string",
     description: "Comma delimited list of skill/level pairings. Skills can be on their own or have a ':level' to represent the level. If left blank, no skills will be added to the user",
-    required: "N",
     example: "bscCommissions:3, blSalesL1:2, aisl1",
-    options: state.skillContext.skills.map((s: any) => {
-      if(s.levels?.length > 0){
-        return `${s.name} Available levels: ${s.levels.toString()}`;
-      } else {
-        return s.name;
-      }
-    }),
-    validateFunction: (row: any, rowNumber: number): Promise<any> => {
+    options: (state: any) => state.skillContext.skills.map((s: any) => s.levels?.length > 0 ? `${s.name} Available levels: ${s.levels.toString()}` : s.name),
+    validateFunction: (row: any, rowNumber: number, state: any): Promise<any> => {
       /*
         skills object: {
          levels: {asig: 2},
@@ -218,15 +228,14 @@ const getTritonFields = (state: any): any => [
       }
     }
   },
-  {
+  EXTENSION: {
     field: "extension",
     name: "Extension",
     type: "string",
     description: "Enter a number for the users extension or type Y for a randomly generated extension. Enter N for no extension",
-    required: false,
     example: "65214",
     options: null,
-    validateFunction: async (row: any, rowNumber: number): Promise<any> => {
+    validateFunction: async (row: any, rowNumber: number, state: any): Promise<any> => {
       const fieldName = "Extension";
       const field = cleanupField(row[fieldName], "string");
       const newExtension = field === "y";
@@ -270,15 +279,14 @@ const getTritonFields = (state: any): any => [
       }
     }
   },
-  {
+  DID_USER: {
     field: "didUser",
     name: "Did User",
     type: "boolean",
     description: "Y/N indicator to represent if user has a Direcr Dial Number",
-    required: true,
     example: "Y",
     options: null,
-    validateFunction: async (row: any, rowNumber: number): Promise<any> => {
+    validateFunction: async (row: any, rowNumber: number, state: any): Promise<any> => {
       const fieldName = "Did User";
       const field = cleanupField(row[fieldName], "string");
 
@@ -290,15 +298,14 @@ const getTritonFields = (state: any): any => [
       }
     }
   },
-  {
+  DIRECT_DIAL_NUMBER: {
     field: "directDialNumber",
     name: "Direct Dial Number",
     type: "string",
     description: "10 digit Direct Dial Phone Number, will be prepended with +1. Only required when DID User is true",
-    required: true,
     example: "6038518200",
     options: null,
-    validateFunction: async (row: any, rowNumber: number): Promise<any> => {
+    validateFunction: async (row: any, rowNumber: number, state: any): Promise<any> => {
       const fieldName = "Direct Dial Number";
       const field = cleanupField(row[fieldName], "string");
       const didFieldName = "Did User";
@@ -332,15 +339,14 @@ const getTritonFields = (state: any): any => [
       }
     }
   },
-  {
+  ZERO_OUT_ENABLED: {
     field: "zeroOutEnabled",
     name: "Zero Out Enabled",
     type: "boolean",
     description: "Y/N Indicator to represent if the zero out skill aligned to the profile ID should be added to the users current skills. Only required when DID User is true",
-    required: true,
     example: "Y",
     options: null,
-    validateFunction: async (row: any, rowNumber: number) => {
+    validateFunction: async (row: any, rowNumber: number, state: any) => {
       const fieldName = "Zero Out Enabled";
       const field = cleanupField(row[fieldName], "string");
       const didFieldName = "Did User";
@@ -385,15 +391,14 @@ const getTritonFields = (state: any): any => [
       }
     }
   },
-  {
+  OUTGOING_NUMBER: {
     field: "outgoingNumber",
     name: "Outgoing Number",
     type: "string",
     description: "If the user is not a DID user this is their Outgoing number",
-    required: true,
     example: "6038518288",
     options: null,
-    validateFunction: async (row: any, rowNumber: number): Promise<any> => {
+    validateFunction: async (row: any, rowNumber: number, state: any): Promise<any> => {
       const fieldName = "Outgoing Number";
       const field = cleanupField(row[fieldName], "string");
       const didFieldName = "Did User";
@@ -423,67 +428,15 @@ const getTritonFields = (state: any): any => [
         return Promise.reject(`${didFieldName} needs to be 'Y' or 'N' for row ${rowNumber}`);
       }
     }
-  }
-];
-
-const getCalabrioQmFields = (state: any): any => [
-  {
-    field: "nNumber",
-    name: "N Number",
-    type: "string",
-    description: "Agents N Number",
-    required: "Y",
-    example: "n0263786",
-    options: null,
-    validateFunction: async (row: any, rowNumber: number): Promise<any> => {
-      const fieldName = "N Number";
-      const field = cleanupField(row[fieldName], "string");
-      if(!row.attributes){
-        row.attributes = {};
-      }
-      if(!field){
-        return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
-      } else if(typeof field !== "string" || field.length !== 8) {
-        return Promise.reject(`${fieldName} is not in the valid n number format for row ${rowNumber}`);
-      } else {
-        try {
-          const fetchedUser = await fetchUser(field);
-
-          row.attributes.contact_uri = `client:${field.toLowerCase()}`;
-          row.attributes.department_id = fetchedUser.departmentNumber;
-          row.attributes.department_name = fetchedUser.departmentName;
-          row.attributes.email = fetchedUser.email;
-          row.attributes.email_address = fetchedUser.email;
-          row.attributes.emp_first_name = fetchedUser.firstName;
-          row.attributes.emp_last_name = fetchedUser.lastName;
-          row.attributes.full_name = `${fetchedUser.firstName} ${fetchedUser.lastName}`;
-          row.attributes.location = fetchedUser.officeName;
-          row.attributes.n_number = field.toLowerCase();
-          row.attributes.office_location_name = fetchedUser.officeName;
-          row.attributes.office_location_number = fetchedUser.officeNumber;
-          row.attributes.primary_dept_name = fetchedUser.departmentName;
-          row.attributes.primary_dept_number = fetchedUser.departmentNumber;
-          row.attributes.unique_id = field.toLowerCase();
-          row.attributes.adLogin = `LM\\${field.toLowerCase()}`;
-          row.attributes.firstName = fetchedUser.firstName;
-          row.attributes.lastName = fetchedUser.lastName;
-
-          return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
-        } catch(err) {
-          return Promise.reject(`Error thrown fetching ${fieldName} from HR Database for row ${rowNumber}`);
-        }
-      }
-    }
   },
-  {
+  CALABRIO_SCOPE: {
     field: "calabrioScope",
     name: "Calabrio Scope",
     type: "string",
     description: "Comma delimited list of groups or teams to represent a supervisor or evaluators scope. (Must already exist in Calabrio)",
-    required: "Y",
     example: "Default Group",
-    options: state.calabrioContext.groups.map((g: any) => g.name),
-    validateFunction: (row: any, rowNumber: number): Promise<any> => {
+    options: (state: any) => state.calabrioContext.groups.map((g: any) => g.name),
+    validateFunction: (row: any, rowNumber: number, state: any): Promise<any> => {
       const fieldName = "Calabrio Scope";
       const field = cleanupField(row[fieldName], "string");
       const availableGroups = state.calabrioContext.groups;
@@ -522,15 +475,14 @@ const getCalabrioQmFields = (state: any): any => [
       }
     }
   },
-  {
+  CALABRIO_TEAM: {
     field: "calabrioTeam",
     name: "Calabrio Team",
     type: "string",
     description: "Team (Must already be created in Calabrio)",
-    required: "Y",
     example: "Default Team",
-    options: state.calabrioContext.teams.map((t: any) => t.name),
-    validateFunction: (row: any, rowNumber: number): Promise<any> => {
+    options: (state: any) => state.calabrioContext.teams.map((t: any) => t.name),
+    validateFunction: (row: any, rowNumber: number, state: any): Promise<any> => {
       const fieldName = "Calabrio Team";
       const field = cleanupField(row[fieldName], "string");
       if(!field){
@@ -548,15 +500,14 @@ const getCalabrioQmFields = (state: any): any => [
       }
     }
   },
-  {
+  CALABRIO_ROLES: {
     field: "roles",
     name: "Calabrio Role",
     type: "string",
     description: "Comma delimited list of approved roles that already exist in Calabrio",
-    required: "Y",
     example: "QM Agent",
-    options: calabrioAllowedRoles,
-    validateFunction: (row: any, rowNumber: number): Promise<any> => {
+    options: () => calabrioAllowedRoles,
+    validateFunction: (row: any, rowNumber: number, state: any): Promise<any> => {
       const fieldName = "Calabrio Role";
       const field = cleanupField(row[fieldName], "string");
 
@@ -587,14 +538,14 @@ const getCalabrioQmFields = (state: any): any => [
       }
     }
   },
-  {
+  CALABRIO_TIME_ZONE: {
     field: "timeZone",
     name: "Time Zone",
     type: "string",
     description: "Time Zone of the Calabrio User",
     example: "America/New_York (EST/EDT)",
-    options: calabrioTimeZones.map((t: any) => t.label),
-    validateFunction: (row: any, rowNumber: number): Promise<any> => {
+    options: () => calabrioTimeZones.map((t: any) => t.label),
+    validateFunction: (row: any, rowNumber: number, state: any ): Promise<any> => {
       const fieldName = "Time Zone";
       const field = cleanupField(row[fieldName], "string");
       const timeZone = calabrioTimeZones.find((t:any) => cleanupField(t.label, "string") === field);
@@ -608,180 +559,4 @@ const getCalabrioQmFields = (state: any): any => [
       }
     }
   }
-];
-
-const getUpdateWorkerAttributeFields = (state: any): any => [
-  {
-    field: "nNumber",
-    name: "N Number",
-    type: "string",
-    description: "Agents N Number",
-    required: "Y",
-    example: "n0263786",
-    options: state.workerContext.workers.map((w: any) => w.attributes.n_number),
-    validateFunction: async (row: any, rowNumber: number): Promise<any> => {
-      const fieldName = "N Number";
-      const field = cleanupField(row[fieldName], "string");
-      if(!field){
-        return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
-      } else if(typeof field !== "string" || field.length !== 8) {
-        return Promise.reject(`${fieldName} is not in the valid n number format for row ${rowNumber}`);
-      } else {
-        try {
-          const worker = state.workerContext.workers.find((w: any) => w.attributes?.n_number && cleanupField(w.attributes.n_number, "string") === field);
-
-          if(worker){
-            row.workerSid = worker.sid;
-            row.n_number = field;
-            return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
-          } else {
-            return Promise.reject(`${field} is not an existing setup worker in Triton for row ${rowNumber}`);
-          }
-        } catch(err) {
-          return Promise.reject(`Error thrown fetching ${fieldName} from state for row ${rowNumber}`);
-        }
-      }
-    }
-  }
-];
-
-const processCreateTritonUser = async (row: any, rowNumber: number, state: any) => {
-  console.log("**** TRITON RECORD PROCESSING", row);
-  const didFieldName = "Did User";
-  const didField = cleanupField(row[didFieldName], "string");
-  const didUser = isDidUser(didField, rowNumber);
-  const body: any = {};
-  if(didUser) {
-    body.attributes = row.attributes;
-    body.activateEp = true;
-    body.alternateDid = row.directDialNum;
-    body.directDialNum = row.directDialNum;
-    body.zeroOutEnabled = row.zeroOutEnabled;
-  } else {
-    body.attributes = row.attributes;
-    body.activateEp = false;
-  }
-
-  try {
-    const res = await createUser(body);
-    const workerSid = res.workerSid;
-    console.log("TRITON RESPONSE", res);
-    row.workerSid = workerSid;
-    row.acdId = workerSid;
-    console.log(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
-    return Promise.resolve(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
-  } catch(err) {
-    console.error(`Failed to create Triton user for row ${rowNumber}.`, err);
-    return Promise.reject(`Failed to create Triton user for row ${rowNumber}.`);
-  }
-};
-
-const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any) => {
-  console.log("****CALABRIO RECORD PROCESSING for", row);
-  await checkConflictingUsers(row, rowNumber, state.calabrioContext.users);
-  const existingTritonWorker = state.workerContext.workers.find((w:any) => w.attributes?.n_number && w.attributes.n_number === row.n_number);
-  const acdId = row.acdId || existingTritonWorker?.sid || undefined;
-  const body: any = {};
-
-  body.acdId = acdId;
-  body.adLogin = `LM\\${row.attributes.n_number}`;
-  body.email = row.attributes.email;
-  body.firstName = row.attributes.firstName;
-  body.lastName = row.attributes.lastName;
-  body.groupId = row.groupId;
-  body.timeZone = row.timeZone;
-  body.roles = row.roles;
-  body.scope = row.scope;
-
-  try {
-    await createCalabrioUser(body);
-    console.log(`User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`);
-    return Promise.resolve(`User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`);
-  } catch(err) {
-    console.error(`Failed to create Calabrio user for row ${rowNumber}.`, err);
-    return Promise.reject(`Failed to create Calabrio user for row ${rowNumber}.`);
-  }
-};
-
-const processUpdateWorkerAttribute = async (row: any, rowNumber: number, template: any, state: any) => {
-  const key = template.data.key;
-  const value = template.data.value;
-  const location = template.data.location;
-
-  const newAttribute = { [key]: value };
-
-  let body: any = {};
-
-  if(key === "manager_n_number") {
-    const managerObject = state.managerContext.managers.find((m:any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === value);
-    if(!managerObject){
-      return Promise.reject(`${value} is not a valid option for row ${rowNumber}`);
-    } else {
-      body[location] = {
-        manager_first_name: managerObject.manager_first_name,
-        manager_last_name: managerObject.manager_last_name,
-        manager_n_number: managerObject.manager_n_number,
-        manager: `${managerObject.manager_first_name} ${managerObject.manager_last_name}`
-      };
-    }
-  } else if(key === "profile_id"){
-    body[location] = {
-      agent_attribute_1: value,
-      profile_id: value
-    };
-  } else if(location){
-    body[location] = newAttribute;
-  } else {
-    body = newAttribute;
-  }
-
-  console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", row, body, value);
-  try {
-    await updateUser(row.workerSid, body);
-    return Promise.resolve(`${row.workerSid} - Worker Attributes updated for row ${rowNumber}`);
-  } catch(err){
-    console.error(`Failed to update Triton Worker Attributes user for row ${rowNumber}.`, err);
-    return Promise.reject(`Failed to create Calabrio user for row ${rowNumber}.`);
-  }
-};
-
-//Templates
-export const getCreateTemplates: any = (state: any): any => {
-  return {
-    CREATE_TRITON_USER: {
-      name: "CREATE_TRITON_USER",
-      data: {},
-      processFunction: (row: any, rowNumber: number) => processCreateTritonUser(row, rowNumber, state),
-      multiRunDependencies: null,
-      validationConcurrencyLimit: 500,
-      processingConcurrencyLimit: 5,
-      fields: getTritonFields(state)
-    },
-    CREATE_CALABRIO_QM_USER: {
-      name: "CREATE_CALABRIO_QM_USER",
-      data: {},
-      processFunction: (row: any, rowNumber: number) => processCreateCalabrioUser(row, rowNumber, state),
-      multiRunDependencies: [{
-        name: "CREATE_TRITON_USER",
-        variable: "workerSid"
-      }],
-      validationConcurrencyLimit: 500,
-      processingConcurrencyLimit: 25,
-      fields: getCalabrioQmFields(state)
-    }
-  };
-};
-
-export const getUpdateTemplates: any = (state: any): any => {
-  return {
-    UPDATE_WORKER_ATTRIBUTE: {
-      name: "UPDATE_WORKER_ATTRIBUTE",
-      data: {},
-      processFunction: (row: any, rowNumber: number, template: any) => processUpdateWorkerAttribute(row, rowNumber, template, state),
-      multiRunDependencies: null,
-      validationConcurrencyLimit: null,
-      processingConcurrencyLimit: 5,
-      fields: getUpdateWorkerAttributeFields(state)
-    }
-  };
 };

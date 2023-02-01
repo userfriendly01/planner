@@ -1,6 +1,6 @@
 import {
   getCreateTemplates
-} from "../templates";
+} from "../../BulkTemplates/templates";
 import {
   fetchUser,
   generateExtension

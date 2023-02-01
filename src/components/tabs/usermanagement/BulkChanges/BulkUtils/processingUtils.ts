@@ -1,44 +1,16 @@
 import * as XLSX from "xlsx";
 
-export const toLowerCaseString = (variable: any) => {
-  return typeof variable === "string" ? variable.toLowerCase() : variable;
-};
-
-export const cleanupField = (field: any, requiredType: string) => {
-  if(field){
-    switch(requiredType){
-      case "string":
-        if(typeof field === "string"){
-          return field.trim().toLowerCase();
-        } else {
-          return field.toString().trim().toLowerCase();
-        }
-
-      case "number":
-        if(typeof field === "number"){
-          return field;
-        } else {
-          try {
-            return parseInt(field);
-          } catch(err){
-            return field;
-          }
-        }
-      default:
-        return field;
-    }
-  } else {
-    return field;
-  }
-};
-
+/**
+ * Triggers a file upload from an input onChange. onload of the file, the first tab within an excel will be converted to a JSON.
+ * @param e input object that holds the uploaded file
+ * @param setUploadedForm function to update target with json conversion of the file
+ */
 export const readUploadFile = (e: any, setUploadedForm: any): void => {
-  console.log("UPLOAD FILED", e);
   e.preventDefault();
   if (e.target.files) {
     const reader = new FileReader();
     reader.onload = e => {
-      const data = e.target.result;
+      const data = e.target?.result;
       const workbook = XLSX.read(data, { type: "array" });
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
@@ -50,6 +22,13 @@ export const readUploadFile = (e: any, setUploadedForm: any): void => {
   }
 };
 
+/**
+ * Selected Templates is an array of templates to be processed on a bulk upload.
+ * @param checked boolean to represent if a template should be added or removed from the array of selected templates
+ * @param template the template to be added or removed
+ * @param selectedTemplates the current list of selected templates
+ * @param setSelectedTemplates React.useState hook to update the selectedTemplates
+ */
 export const updateSelectedTemplates = (checked: boolean, template: any, selectedTemplates: any, setSelectedTemplates: any): void => {
   const templates = selectedTemplates.slice();
   const templateFound = templates.some((t: any) => t.name === template.name);
@@ -62,6 +41,11 @@ export const updateSelectedTemplates = (checked: boolean, template: any, selecte
   }
 };
 
+/**
+ * Maps through all of the selected templates to generate a complete list of fields to validate with no duplicates.
+ * @param selectedTemplates the current list of selected templates
+ * @param setConsolidatedTemplates React.useState hook to update the consolidated spreadsheets
+ */
 export const consolidateTemplates = (selectedTemplates: any, setConsolidatedTemplates: any): void => {
   const beginningArray: any = [];
   selectedTemplates.forEach((t: any) => beginningArray.push(...t.fields));
@@ -72,37 +56,43 @@ export const consolidateTemplates = (selectedTemplates: any, setConsolidatedTemp
       consolidatedFieldsList.push(bt);
     }
   });
-  console.log("consolidatedFieldsList", consolidatedFieldsList);
   setConsolidatedTemplates(consolidatedFieldsList);
 };
 
+/**
+ * Identifies successful records by eliminating the errors from the original list of rows.
+ * @param totalRows array representing the original list of rows validated/processed
+ * @param validationErrors array representing the list of errors for the total rows
+ */
 export const identifySuccessfulRecords = (totalRows: any, validationErrors: any) => {
   const successfulRows: any = [];
   totalRows.forEach((row: any, index: number) => {
-    const rowEquivalent = index + 2; // +2 for the header?
+    const rowEquivalent = index + 2;  //When original spreadsheet has header this is 2 vs 1
     if(!validationErrors.some((e: any) => e.row === rowEquivalent)){
       successfulRows.push(row);
     }
   });
-  console.log("successfulRows", successfulRows);
   return successfulRows;
 };
 
+/**
+ * Loops through the selected templates to identify if there are dependencies to other templates being processed, it returns
+ * a dependency tree in the order it needs to be processed.
+ * 
+ * If only 1 template is being processed or there are no dependencies found, false is returned to indicate templates can be run asyncronously.
+ * @param selectedTemplates array of the selected templates
+ */
 export const identifyProcessingDependencies = (selectedTemplates: any) => {
   const dependencyTree = selectedTemplates.slice();
 
-  //if theres only one template, just return it
   if(selectedTemplates.length <= 1 ){
-    console.log("identifyProcessingDependencies - selectedTemplates.length === 1");
     return false;
   }
 
   selectedTemplates.forEach((t: any, index: number) => {
     if(t.multiRunDependencies){
-      console.log("identifyProcessingDependencies - t.multiRunDependencies", t.multiRunDependencies);
       t.multiRunDependencies.forEach((d: any) => {
         const requiredTemplateIndex = dependencyTree.findIndex((t:any) => t.name === d.name);
-        console.log("identifyProcessingDependencies - requiredTemplateIndex", requiredTemplateIndex);
         //if dependencies arent in the selected templates list, return it. Form validation accounts for this
         if(requiredTemplateIndex === -1){
           return false;
@@ -122,59 +112,65 @@ export const identifyProcessingDependencies = (selectedTemplates: any) => {
   return dependencyTree;
 };
 
+/**
+ * Templates may have an asyncronous concurrency max. You can pass any function into this method to drive how many are run at once
+ * using a recursive function. It will return a consolidated array of promises representing each calls' results.
+ * 
+ * @param concurrencyMax how many calls should be run at once
+ * @param functionToCall the function to call in batches
+ * @param rows rows to process
+ * @param progressCallback updates each time a record is processed, used to drive the progress bar
+ */
 export const handleConcurrentCalls = async (
   concurrencyMax: number,
-  apiCall: any,
-  successfulRows: any,
+  functionToCall: any,
+  rows: any,
   progressCallback: any
 ) => {
-  const totalCalls = successfulRows.length;
   let currentIndex = 0;
+  const totalCalls = rows.length;
   const processingResults: any = [];
-  const delay = () => {
-    return new Promise(resolve => setTimeout(resolve, 1500));
-  };
+  const delay = () => new Promise(resolve => setTimeout(resolve, 1500));
 
-  const processApiCall = async (): Promise<any> => {
+  const processBatch = async (): Promise<any> => {
     const endingIndex = currentIndex + concurrencyMax;
-    const processingRows = successfulRows.slice(currentIndex, endingIndex);
-    console.log("***Processing: ", processingRows);
+    const processingRows = rows.slice(currentIndex, endingIndex);
     await delay();
 
     const results = await Promise.allSettled(processingRows.map((row: any, index: number) => {
       const originalRowIndex = currentIndex + index;
       const originalRowNumber = originalRowIndex + 2; //When original spreadsheet has header this is 2 vs 1
-      return apiCall(row, originalRowNumber, progressCallback);
+      return functionToCall(row, originalRowNumber, progressCallback);
     }));
-    console.log("***results should be settled promises", results.slice());
+
     results.forEach((p: any) => processingResults.push(p));
     currentIndex = currentIndex + concurrencyMax;
-    console.log("*** sectioned Processing Results", processingResults.slice());
     if(currentIndex < totalCalls){
-      console.log("***current index: ", currentIndex);
-      return processApiCall();
+      return processBatch();
     } else {
       Promise.resolve();
     }
   };
 
-  await processApiCall();
-  console.log("***Final Processing Results", processingResults.slice());
+  await processBatch();
+  console.log("***handleConcurrentCalls - processingResults", processingResults.slice());
   return processingResults;
 };
 
+/**
+ * Loops through the selected templates and returns the lowest validation or processing concurreny limit.
+ * @param selectedTemplates selected templates to be processed
+ */
 export const getLowestConcurrencyLimit = (selectedTemplates: any, type: string) => {
   let concurrencyLimit: any = null;
   if(type === "validation"){
     selectedTemplates.forEach(((t: any) => {
-      //if false or if true & less than this one
       if(t.validationConcurrencyLimit && (!concurrencyLimit || (concurrencyLimit && concurrencyLimit > t.validationConcurrencyLimit))){
         concurrencyLimit = t.validationConcurrencyLimit;
       }
     }));
   } else {
     selectedTemplates.forEach(((t: any) => {
-      //if false or if true & less than this one
       if(t.processingConcurrencyLimit && (!concurrencyLimit || (concurrencyLimit && concurrencyLimit > t.processingConcurrencyLimit))){
         concurrencyLimit = t.processingConcurrencyLimit;
       }
@@ -184,8 +180,14 @@ export const getLowestConcurrencyLimit = (selectedTemplates: any, type: string) 
   return concurrencyLimit;
 };
 
+/**
+ * Uses the template tree and concurrency limits to intitiate the processing of the rows for each template selected.
+ * @param rows rows to be processed
+ * @param selectedTemplates selected templates to be processed
+ * @param setProcessedRows React.useState hook to update the number of processed rows that drive the progress bar
+ */
 export const initiateCalls = async (
-  successfulRows: any,
+  rows: any,
   selectedTemplates: any,
   setProcessedRows: any
 ) => {
@@ -195,21 +197,19 @@ export const initiateCalls = async (
   const finalErrors: any = [];
   let processingPromises;
 
-  console.log("Successful rows", successfulRows);
-
   const processRow = async (row: any, rowNumber: number, progressCallback: any) => {
 
     if(templateTree){
-      console.log("templateTree", templateTree);
       const rowPromise = await Promise.allSettled(templateTree.map(async (t: any) => {
-        console.log("processing template", t.name);
         const delay = () => new Promise(resolve => setTimeout(resolve, 500));
         const maxAttempts = 5;
 
+        /* Calls template processFuntions in the order identified by the dependency tree. It then uses a recursive function 
+          to try & wait until the variable is set on the row from the dependent template to process the next template
+        */
         const processTree = (attempt: number) => {
           if(t.multiRunDependencies && t.multiRunDependencies.length > 0){
             return Promise.all(t.multiRunDependencies.map(async (dependency: any) => {
-              console.log(`Looking for ${dependency.variable} in`, row);
               const variable = dependency.variable;
               if(attempt === maxAttempts && !row[variable]) {
                 return Promise.reject(`${t.name} failed due to missing ${variable} from ${dependency.name}. If ${dependency.name} was successful it could have just taken too long and should be reprocessed.`);
@@ -241,16 +241,14 @@ export const initiateCalls = async (
 
   if(concurrencyLimit){
     console.log("Concurrency Limit found", concurrencyLimit);
-    processingPromises = await handleConcurrentCalls(concurrencyLimit, processRow, successfulRows, setProcessedRows);
+    processingPromises = await handleConcurrentCalls(concurrencyLimit, processRow, rows, setProcessedRows);
   } else {
     console.log("No Concurrency Limit found");
-    processingPromises = await Promise.allSettled(successfulRows.map(async (row: any, index: number) => {
+    processingPromises = await Promise.allSettled(rows.map(async (row: any, index: number) => {
       const rowNumber = index + 1;
       return processRow(row, rowNumber, setProcessedRows);
     }));
   }
-
-  console.log("***processingPromises", processingPromises);
 
   processingPromises.forEach((rowPromise: any, index: number) => {
     const rowErrors: any = [];
@@ -266,99 +264,12 @@ export const initiateCalls = async (
       });
     }
   });
-  console.log("finalErrors.length", finalErrors.length);
   if(finalErrors.length === 0){
-    return Promise.resolve(successfulRows);
+    return Promise.resolve(rows);
   } else {
     return Promise.reject({
-      success: identifySuccessfulRecords(successfulRows, finalErrors),
+      success: identifySuccessfulRecords(rows, finalErrors),
       errors: finalErrors
     });
   }
-};
-
-export const performValidations = async (
-  uploadedForm: any,
-  selectedTemplates: any,
-  consolidatedFieldsList: any,
-  setProcessedRows: any
-): Promise<any> => {
-  const finalErrors: any = [];
-  let validationPromises;
-  const concurrencyLimit: any = getLowestConcurrencyLimit(selectedTemplates, "validation");
-
-  const processValidationsOnRows = async (row: any, rowIndex: number, progressCallback: any): Promise<any> => {
-    const fieldPromises = await Promise.allSettled(consolidatedFieldsList.map((field: any) => {
-      return field.validateFunction(row, rowIndex);
-    }));
-    progressCallback((previousCount: number) => (previousCount + 1));
-    return fieldPromises;
-  };
-
-  if(concurrencyLimit){
-    validationPromises = await handleConcurrentCalls(concurrencyLimit, processValidationsOnRows, uploadedForm, setProcessedRows);
-  } else {
-    validationPromises = await Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {
-      const rowNumber = index + 2;
-      return processValidationsOnRows(row, rowNumber, setProcessedRows);
-    }));
-  }
-
-  console.log("Validation Promises: ", validationPromises);
-  validationPromises.forEach((rowPromise: any, index: number) => {
-    const rowErrors: any = [];
-    rowPromise.value.map((fieldPromise: any) => {
-      if(fieldPromise.status === "rejected"){
-        rowErrors.push(fieldPromise.reason);
-      }
-    });
-    if(rowErrors.length !== 0){
-      finalErrors.push({
-        row: index + 2, //When original spreadsheet has header this is 2 vs 1
-        errors: rowErrors
-      });
-    }
-  });
-  console.log("finalErrors.length", finalErrors.length);
-  if(finalErrors.length === 0){
-    return Promise.resolve();
-  } else {
-    return Promise.reject(finalErrors);
-  }
-};
-
-export const checkConflictingUsers = async (user: any, rowNumber: number, users: any[]): Promise<any> => {
-  if(user){
-    try {
-      const acdId = user.workerSid ? toLowerCaseString(user.workerSid) : null;
-      const email = toLowerCaseString(user.email);
-      const adLogin = toLowerCaseString(user.adLogin);
-
-      await Promise.all(users.map(async u => {
-        const dupUserAcdId = toLowerCaseString(u.acdId);
-        const dupUserAdLogin = toLowerCaseString(u.adLogin);
-        const dupUserEmail = toLowerCaseString(u.email);
-
-        if (acdId && dupUserAcdId === acdId) {
-          console.log("CALABRIO CONFLICTING USERS: ", acdId, dupUserAcdId);
-          Promise.reject(`Calabrio Record already exists with this user's acdId for row ${rowNumber}`);
-        }
-
-        if (dupUserAdLogin === adLogin) {
-          console.log("CALABRIO CONFLICTING USERS: ", dupUserAdLogin, adLogin);
-          Promise.reject(`Calabrio Record already exists with this user's nNumber in the AdLogin field for row ${rowNumber}.`);
-        }
-
-        if (dupUserEmail === email) {
-          console.log("CALABRIO CONFLICTING USERS: ", dupUserEmail, email);
-          Promise.reject(`Calabrio Record already exists with this user's email for row ${rowNumber}.`);
-        }
-      }));
-      return Promise.resolve(`Calabrio Checks passed for ${rowNumber}`);
-    } catch(err) {
-      console.error("Error thrown trying to fetch and validate Conflicting Users", err);
-      return Promise.reject(err);
-    }
-  }
-  return Promise.reject("No user passed to calabrio processing");
 };

@@ -1,11 +1,11 @@
-import React from "react";
 import {
   ProgressBarContainer,
   ProgressBarWrapper,
   ProgressBarFiller,
   TextWrapper
 } from "../BulkChanges.Styles";
-import { jokes } from "../BulkUtils/jokes";
+import { jokes } from "../BulkTemplates";
+import React from "react";
 
 const ProgressBar = (props: any) => {
   const {

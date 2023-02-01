@@ -1,10 +1,15 @@
-import React from "react";
 import {
-  views,
-  LoadingStatus
-} from "./BulkChanges.Interfaces";
+  BulkCreateForm,
+  BulkUpdateForm
+} from "./BulkActions";
+import {
+  readUploadFile,
+  consolidateTemplates
+} from "./BulkUtils";
+import { views } from "./BulkChanges.Interfaces";
 import {
   BulkChangesWrapper,
+  ButtonWrapper,
   FileNameWrapper,
   ImportButton,
   Row,
@@ -12,18 +17,18 @@ import {
   Wrapper
 } from "./BulkChanges.Styles";
 import {
-  readUploadFile,
-  consolidateTemplates
-} from "./BulkUtils/utils";
+  ExportTemplateButton,
+  ExportOptionsButton
+} from "./ExportButtons";
+import { ProcessingModal } from "./Processing";
 import { Dropdown } from "components";
-import BulkCreateForm from "./BulkActions/BulkCreateForm";
-import BulkUpdateForm from "./BulkActions/BulkUpdateForm";
-import ExportButtons from "./ExportButtons/ExportButtons";
-import ProcessingModal from "./Processing/ProcessingModal";
+import { useAdminState } from "context";
+import React from "react";
 import { Modal } from "@mui/material";
 
 const BulkChanges = () => {
 
+  const state = useAdminState();
   const uploadButtonRef = React.useRef<HTMLInputElement>();
   const [ view, setView ] = React.useState(views.BULK_CREATE_USERS);
   const [ selectedTemplates, setSelectedTemplates ] = React.useState([]);
@@ -87,9 +92,10 @@ const BulkChanges = () => {
             <StepWrapper>
               Step 2: Export Template & Template Options
             </StepWrapper>
-            <Wrapper>
-              <ExportButtons template={consolidatedTemplate} />
-            </Wrapper>
+            <ButtonWrapper>
+              <ExportTemplateButton template={consolidatedTemplate} />
+              <ExportOptionsButton template={consolidatedTemplate} state={state}/>
+            </ButtonWrapper>
           </Row>
           <Row>
             <StepWrapper>

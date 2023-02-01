@@ -3,9 +3,11 @@ import {
   UpdateWrapper,
   StepWrapper
 } from "../BulkChanges.Styles";
-import { updateSelectedTemplates } from "../BulkUtils/utils";
-import { getUpdateTemplates } from "../BulkUtils/templates";
-import { availableAttributes } from "../BulkUtils/consts";
+import { updateSelectedTemplates } from "../BulkUtils";
+import {
+  availableAttributes,
+  getUpdateTemplates
+} from "../BulkTemplates";
 import {
   CustomInput,
   Dropdown,

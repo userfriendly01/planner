@@ -12,9 +12,11 @@ import {
   performValidations,
   initiateCalls,
   identifySuccessfulRecords
-} from "../BulkUtils/utils";
+} from "../BulkUtils";
 import ProgressBar from "./ProgressBar";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
+import { useAdminState } from "context";
+
 
 const ProcessingModal = (props: any) => {
   const {
@@ -38,6 +40,7 @@ const ProcessingModal = (props: any) => {
     successfullyProcessedRows: []
   });
 
+  const state = useAdminState();
   const [ status, setStatus ] = React.useState(null);
   const [ processedRows, setProcessedRows ] = React.useState(null);
 
@@ -50,7 +53,7 @@ const ProcessingModal = (props: any) => {
     setStatus(STATES.VALIDATING);
     setTimeout(async () => {
       try {
-        await performValidations(uploadedForm, selectedTemplates, consolidatedFieldsList, setProcessedRows);
+        await performValidations(uploadedForm, selectedTemplates, consolidatedFieldsList, setProcessedRows, state);
         setResults({
           ...results,
           successfullyValidatedRows: uploadedForm

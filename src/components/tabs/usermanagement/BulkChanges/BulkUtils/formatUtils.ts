@@ -1,0 +1,50 @@
+/**
+ * Formats a string to Proper Case;
+ * @param field Field to format
+ */
+export const toProperCase = (field: any) => {
+  const fieldArray = field.split(" ").map((w: string) => {
+    const word = w.toLowerCase();
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  });
+  return fieldArray.join(" ");
+};
+
+/**
+ * When doing equality checks, this takes in a field param and a required type and makes sure that field
+ * is compatible to that type. 
+ * 
+ * If it requires a string, it converts it to a string if necessary and trims off any extra space and 
+ * transforms it  to lowercase to ensure we're always comparing like formats
+ * 
+ * If it requires a number, it makes sure to parse it into an int if possible
+ * @param field Field to validate and clean
+ * @param requiredType What type the field should be in
+ */
+export const cleanupField = (field: any, requiredType: string) => {
+  if(field){
+    switch(requiredType){
+      case "string":
+        if(typeof field === "string"){
+          return field.trim().toLowerCase();
+        } else {
+          return field.toString().trim().toLowerCase();
+        }
+
+      case "number":
+        if(typeof field === "number"){
+          return field;
+        } else {
+          try {
+            return parseInt(field);
+          } catch(err){
+            return field;
+          }
+        }
+      default:
+        return field;
+    }
+  } else {
+    return field;
+  }
+};

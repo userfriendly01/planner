@@ -5,7 +5,7 @@ import {
   ExcelExport
 } from "@progress/kendo-react-excel-export";
 
-const ExportOptionsButton = (props: any) => {
+const ExportOptionsButton = (props: any, state: any) => {
   const { template } = props;
 
   const _export = React.useRef(null);
@@ -15,7 +15,7 @@ const ExportOptionsButton = (props: any) => {
     const rows: any = [];
     const columns: any = [];
     template.forEach((t: any) => {
-      if(t.options && t.options.length > 0) {
+      if(t.options && t.options(state).length > 0) {
         console.log("Pushing onto options column", {
           field: t.field,
           title: t.name,
