@@ -50,7 +50,8 @@ const UserManagementWrapper = () => {
     "n1576460",
     "n1576461",
     "n1541381",
-    "n1610258"
+    "n1610258",
+    "n0169879"
   ];
   console.log("User Management details, workerOpts, view", selectedWorkerOpts, view);
 
