@@ -98,5 +98,26 @@ export const RoutingGridColumnDef: GridColDef[] = [
     field: "transferMessage",
     sortable: false,
     width: 110
+  },
+  {
+    headerName: "Priority",
+    field: "priority",
+    sortable: true,
+    width: 110,
+    align: "center"
+  },
+  {
+    headerName: "Occupancy Check",
+    field: "occupancyCheck",
+    sortable: true,
+    width: 110,
+    align: "center"
+  },
+  {
+    headerName: "Routing Steps",
+    field: "routingSteps",
+    sortable: false,
+    width: 110,
+    align: "center"
   }
 ];

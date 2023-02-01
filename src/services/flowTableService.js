@@ -49,7 +49,7 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
                     marketingChannel
                     whisper
                     requestID
-                  userDestination
+                    userDestination
                 }
               }
             }
@@ -80,7 +80,7 @@ async function retrieveFlowData(accessToken, graphQlApiUrl) {
       // eslint-disable-next-line no-shadow
       result = await queryFlowData(accessToken, result.data?.listCctSharedCallFlowDbs.nextToken, graphQlApiUrl);
       const listItems = result.data?.listCctSharedCallFlowDbs?.items || [];
-      const tempFlowData = listItems.map(elem => ({
+      const tempFlowData = listItems?.map(elem => ({
         ...elem,
         id: elem && elem.skey && parseInt(elem.skey.split("__")[2], 10)
       })) || [];
@@ -140,7 +140,7 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
                 marketingChannel: "${item.marketingChannel || ""}",
                 whisper: "${item.whisper || ""}",
                 requestID: "${item.requestID || ""}",
-               userDestination: "${item.userDestination}"
+                userDestination: "${item.userDestination}"
               }) {
               pkey
               agentId
@@ -158,18 +158,18 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
               createTime
               dialedDescription
               employeeId
-                accountManager
-                affinityVDN
-                keycode
-                transferCode
-                internetPlacement
-                internetType
-                campaignType
-                lineOfBusiness
-                marketingChannel
-                whisper
-                requestID
-             userDestination
+              accountManager
+              affinityVDN
+              keycode
+              transferCode
+              internetPlacement
+              internetType
+              campaignType
+              lineOfBusiness
+              marketingChannel
+              whisper
+              requestID
+              userDestination
       }
           }
       `,
@@ -214,20 +214,21 @@ async function addFlowRule(item, accessToken, graphQlApiUrl) {
               input: {
                   pkey: "${item.pkey.value}"
                   content: {
-                      callFlowRoute: "${item.callFlowRoute.value || ""}",
-                      callerType: "${item.callerType.value || ""}",
-                      greetingMessages: "${item.greetingMessages.value || ""}",
-                      transferNumber: "${item.transferNumber.value || ""}",
-                      languageOffer: "${item.languageOffer.value || ""}",
+                      callFlowRoute: "${item.callFlowRoute?.value || ""}",
+                      callerType: "${item.callerType?.value || ""}",
+                      greetingMessages: "${item.greetingMessages?.value || ""}",
+                      transferNumber: "${item.transferNumber?.value || ""}",
+                      languageOffer: "${item.languageOffer?.value || ""}",
                       dataRequests: ${JSON.stringify(dataRequests)},
                     },
                   createTime: "${curTime}",
-                  agentId: "${item.agentId.value || ""}",
+                  agentId: "${item.agentId?.value || ""}",
                   brand: "${item.brand.value}",
-                  callFlowTemplate: "${item.callFlowTemplate.value || ""}",
+                  callFlowTemplate: "${item.callFlowTemplate?.value || ""}",
                   channel: "${item.channel.value}",
                   dialedDescription: "${item.dialedDescription.value}",
-                  employeeId: "${item.employeeId.value || ""}",
+                  employeeId: "${item.employeeId?.value || ""}",
+                 
                   accountManager: "${item.accountManager?.value || ""}",
                   affinityVDN: "${item.affinityVDN?.value || ""}",
                   keycode: "${item.keycode?.value || ""}",

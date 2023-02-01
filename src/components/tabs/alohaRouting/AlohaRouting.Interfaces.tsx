@@ -17,6 +17,9 @@ export interface CctSharedCallRoutingDb {
     transferMessage?: string;
     twilioSkill?: string;
     crcSkill?: string;
+    priority?: string;
+    occupancyCheck?: string;
+    routingSteps?: Array<string>;
 }
 export interface RoutingMasterData {
     channel?: Array<string>;
