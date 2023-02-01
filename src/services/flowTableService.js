@@ -228,7 +228,6 @@ async function addFlowRule(item, accessToken, graphQlApiUrl) {
                   channel: "${item.channel.value}",
                   dialedDescription: "${item.dialedDescription.value}",
                   employeeId: "${item.employeeId?.value || ""}",
-                 
                   accountManager: "${item.accountManager?.value || ""}",
                   affinityVDN: "${item.affinityVDN?.value || ""}",
                   keycode: "${item.keycode?.value || ""}",
@@ -259,17 +258,17 @@ async function addFlowRule(item, accessToken, graphQlApiUrl) {
               dialedDescription
               employeeId
               pkey
-                accountManager
-                affinityVDN
-                keycode
-                transferCode
-                internetPlacement
-                internetType
-                campaignType
-                lineOfBusiness
-                marketingChannel
-                whisper
-                requestID
+              accountManager
+              affinityVDN
+              keycode
+              transferCode
+              internetPlacement
+              internetType
+              campaignType
+              lineOfBusiness
+              marketingChannel
+              whisper
+              requestID
               userDestination
             }
           }
@@ -324,17 +323,17 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
               createTime
               dialedDescription
               employeeId
-                accountManager
-                affinityVDN
-                keycode
-                transferCode
-                internetPlacement
-                internetType
-                campaignType
-                lineOfBusiness
-                marketingChannel
-                whisper
-                requestID
+              accountManager
+              affinityVDN
+              keycode
+              transferCode
+              internetPlacement
+              internetType
+              campaignType
+              lineOfBusiness
+              marketingChannel
+              whisper
+              requestID
             }
           }
       `,
