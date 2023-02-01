@@ -346,16 +346,8 @@ describe("CallRecordingForm", () => {
           render(<CallRecordingForm twilioWorker={twilioWorker} />);
           expect(Dropdown.mock.calls[1][0].label).toBe("Team");
           expect(Dropdown.mock.calls[1][0].options.length).toBe(2);
-          // expect(Dropdown.mock.calls[1][0].options).toBe(1);
         });
       });
-      // describe("manager's'calabrio teams is not null", () => { ORIGINAL TEST
-      //   test("The dropdown should show only the manager's teams", () => {
-      //     render(<CallRecordingForm twilioWorker={twilioWorker} />);
-      //     expect(Dropdown.mock.calls[1][0].label).toBe("Team");
-      //     expect(Dropdown.mock.calls[1][0].options.length).toBe(2);
-      //   });
-      // });
       describe("updateValue is called", () => {
         beforeEach(() => {
           useFormState.mockReturnValue(initialFormState);
