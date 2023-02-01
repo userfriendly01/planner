@@ -1,0 +1,17 @@
+import React from "react";
+import { ButtonWrapper } from "../BulkChanges.Styles";
+import ExportTemplateButton from "./ExportTemplateButton";
+import ExportOptionsButton from "./ExportOptionsButton";
+
+const ExportButtons = (props: any) => {
+  const { template } = props;
+
+  return (
+    <ButtonWrapper>
+      <ExportTemplateButton template={template} />
+      <ExportOptionsButton template={template} />
+    </ButtonWrapper>
+  );
+};
+
+export default ExportButtons;
