@@ -82,7 +82,7 @@ async function retrieveFlowData(accessToken, graphQlApiUrl) {
       // eslint-disable-next-line no-shadow
       result = await queryFlowData(accessToken, result.data?.listCctSharedCallFlowDbs.nextToken, graphQlApiUrl);
       const listItems = result.data?.listCctSharedCallFlowDbs?.items || [];
-      const tempFlowData = listItems.map(elem => ({
+      const tempFlowData = listItems?.map(elem => ({
         ...elem,
         id: elem && elem.skey && parseInt(elem.skey.split("__")[2], 10)
       })) || [];
