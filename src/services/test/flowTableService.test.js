@@ -68,6 +68,9 @@ describe("flowTableService",()=>{
     });
   });
   describe("CallFlow List",()=>{
+    afterEach(()=>{
+      fetch.mockClear();
+    });
     test("CallFlow list",async()=>{
       const jsonFlowData = [
         {
@@ -110,7 +113,6 @@ describe("flowTableService",()=>{
       );
       const listFlow = await retrieveFlowData("1234-5678","TEST");
       expect(listFlow).toBeCalled;
-      fetch.mockClear();
     });
     test("pass null in list",async()=>{
       window.fetch = jest.fn(() =>
@@ -122,7 +124,6 @@ describe("flowTableService",()=>{
       );
       const listFlow = await retrieveFlowData("1234-5678","TEST");
       expect(listFlow).toBeCalled;
-      fetch.mockClear();
     });
     test("Error scenario ",async()=>{
       window.fetch = jest.fn(() =>
@@ -137,7 +138,7 @@ describe("flowTableService",()=>{
       });
       const listFlow = await retrieveFlowData("1234-5678","TEST");
       expect(listFlow).toBeCalled;
-      fetch.mockClear();
+
     });
   });
 });
