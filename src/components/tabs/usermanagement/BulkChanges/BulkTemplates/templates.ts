@@ -172,6 +172,17 @@ export const getUpdateTemplates = (state: any): Templates => {
       fields: [
         FIELDS.N_NUMBER_UPDATE
       ]
+    },
+    UPDATE_USERS_MANAGER: {
+      name: "UPDATE_USERS_MANAGER",
+      data: {},
+      processFunction: (row: any, rowNumber: number, template: Template) => processUpdateWorkerAttribute(row, rowNumber, template, state),
+      multiRunDependencies: null,
+      validationConcurrencyLimit: 500,
+      processingConcurrencyLimit: 5,
+      fields: [
+        FIELDS.N_NUMBER_UPDATE
+      ]
     }
   };
 };

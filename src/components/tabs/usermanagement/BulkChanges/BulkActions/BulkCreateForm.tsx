@@ -5,7 +5,7 @@ import {
 } from "../BulkChanges.Styles";
 import {
   Template,
-  BulkCreateFormProps
+  BulkActionFormProps
 } from "../BulkChanges.Interfaces";
 import { updateSelectedTemplates } from "../BulkUtils";
 import { getCreateTemplates } from "../BulkTemplates";
@@ -14,7 +14,7 @@ import React from "react";
 import { Checkbox } from "@mui/material";
 
 
-const BulkCreateForm = (props: BulkCreateFormProps) => {
+const BulkCreateForm = (props: BulkActionFormProps) => {
   const {
     selectedTemplates,
     setSelectedTemplates

@@ -6,7 +6,10 @@ import {
   readUploadFile,
   consolidateTemplates
 } from "./BulkUtils";
-import { views } from "./BulkChanges.Interfaces";
+import {
+  Template,
+  views
+} from "./BulkChanges.Interfaces";
 import {
   BulkChangesWrapper,
   ButtonWrapper,
@@ -31,7 +34,7 @@ const BulkChanges = () => {
   const state = useAdminState();
   const uploadButtonRef = React.useRef<HTMLInputElement>();
   const [ view, setView ] = React.useState(views.BULK_CREATE_USERS);
-  const [ selectedTemplates, setSelectedTemplates ] = React.useState([]);
+  const [ selectedTemplates, setSelectedTemplates ] = React.useState<Template[]>([]);
   const [ consolidatedTemplate, setConsolidatedTemplates ] = React.useState([]);
   const [ uploadedForm, setUploadedForm ] = React.useState(null);
   const [ filenameText, setFilenameText ] = React.useState(null);

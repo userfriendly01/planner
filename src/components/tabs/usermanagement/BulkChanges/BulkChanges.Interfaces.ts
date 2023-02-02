@@ -30,16 +30,38 @@ export interface Template {
   multiRunDependencies: MultiRunDependency[] | null,
   validationConcurrencyLimit: number,
   processingConcurrencyLimit: number,
-  fields: Field[]
+  fields: Field[],
+  [key: string]: any
 }
+
 
 export interface Templates {
   [key: string]: Template
 }
 
-export interface BulkCreateFormProps {
+export interface BulkActionFormProps {
   selectedTemplates: Template[],
-  setSelectedTemplates: () => 
+  setSelectedTemplates: (template: Template[]) => void;
+}
+
+export interface BulkUpdateProps {
+  template: Template,
+  selectedTemplates: Template[],
+  replaceTemplate: (template: Template) => void;
+  updateTemplate: (template: Template, data: any) => void;
+  removeTemplate: (template: Template) => void;
+}
+
+export interface WorkerAttribute {
+  label: string,
+  value: string,
+  type: string,
+  validator?: () => boolean;
+  location: null | string
+}
+
+export interface WorkerAttributes {
+  [key: string] : WorkerAttribute
 }
 
 export const views: any = {

@@ -45,7 +45,8 @@ const validator = {
   }
 };
 
-//Not all worker attribute fields would logically be bulk updated. Future stories will bulk update routing and default skills in addition to inactive fields to bulk disable users
+//Not all worker attribute fields would logically be bulk updated. 
+//Future stories will bulk update routing and default skills in addition to inactive fields to bulk disable users
 export const availableAttributes: any = {
   ZERO_OUT_ENABLED: {
     label: "zeroOutEnabled",

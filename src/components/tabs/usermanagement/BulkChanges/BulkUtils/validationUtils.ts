@@ -5,6 +5,43 @@ import {
 } from "../BulkUtils";
 
 /**
+ * Selected Templates is an array of templates to be processed on a bulk upload.
+ * @param checked boolean to represent if a template should be added or removed from the array of selected templates
+ * @param template the template to be added or removed
+ * @param selectedTemplates the current list of selected templates
+ * @param setSelectedTemplates React.useState hook to update the selectedTemplates
+ */
+export const updateSelectedTemplates = (checked: boolean, template: any, selectedTemplates: any, setSelectedTemplates: any): void => {
+  const templates = selectedTemplates.slice();
+  const templateFound = templates.some((t: any) => t.name === template.name);
+
+  if(checked && !templateFound) {
+    templates.push(template);
+    setSelectedTemplates(templates);
+  } else if(!checked && templateFound) {
+    setSelectedTemplates(templates.filter((t: any) => t.name !== template.name));
+  }
+};
+
+/**
+ * Maps through all of the selected templates to generate a complete list of fields to validate with no duplicates.
+ * @param selectedTemplates the current list of selected templates
+ * @param setConsolidatedTemplates React.useState hook to update the consolidated spreadsheets
+ */
+export const consolidateTemplates = (selectedTemplates: any, setConsolidatedTemplates: any): void => {
+  const beginningArray: any = [];
+  selectedTemplates.forEach((t: any) => beginningArray.push(...t.fields));
+  const consolidatedFieldsList: any = [];
+  beginningArray.forEach((bt: any) => {
+    const duplicateField = consolidatedFieldsList.some((field: any) => field.field === bt.field);
+    if(!duplicateField){
+      consolidatedFieldsList.push(bt);
+    }
+  });
+  setConsolidatedTemplates(consolidatedFieldsList);
+};
+
+/**
  * Loops through each row in the uploaded form and processes field validations on each row given the
  * consolidated fields list.
  * @param uploadedForm Original uploaded form to be validated

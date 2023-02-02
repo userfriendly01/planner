@@ -283,7 +283,7 @@ export const FIELDS: Fields = {
     field: "didUser",
     name: "Did User",
     type: "boolean",
-    description: "Y/N indicator to represent if user has a Direcr Dial Number",
+    description: "Y/N indicator to represent if user has a DirecT Dial Number",
     example: "Y",
     options: null,
     validateFunction: async (row: any, rowNumber: number, state: any): Promise<any> => {

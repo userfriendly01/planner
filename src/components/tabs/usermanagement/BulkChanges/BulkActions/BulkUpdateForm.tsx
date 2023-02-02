@@ -3,22 +3,23 @@ import {
   UpdateWrapper,
   StepWrapper
 } from "../BulkChanges.Styles";
+import {
+  Template,
+  BulkActionFormProps,
+  WorkerAttribute
+} from "../BulkChanges.Interfaces";
 import { updateSelectedTemplates } from "../BulkUtils";
 import {
-  availableAttributes,
-  getUpdateTemplates
-} from "../BulkTemplates";
-import {
-  CustomInput,
-  Dropdown,
-  PhoneNumberInput
-} from "components";
+  BulkUpdateAttributes,
+  BulkUpdateManager
+} from "./";
+import { getUpdateTemplates } from "../BulkTemplates";
+import { Dropdown } from "components";
 import { useAdminState } from "context";
 import React from "react";
-import { getE164Number } from "utils";
 
 
-const BulkUpdateForm = (props: any) => {
+const BulkUpdateForm = (props: BulkActionFormProps) => {
   const {
     selectedTemplates,
     setSelectedTemplates
@@ -26,46 +27,23 @@ const BulkUpdateForm = (props: any) => {
 
   const state = useAdminState();
   const updateTemplates = getUpdateTemplates(state);
-  const [ action, setAction ] = React.useState(updateTemplates.UPDATE_WORKER_ATTRIBUTE);
-  const [ selectedAttribute, setSelectedAttribute ] = React.useState(availableAttributes.SELF_SERVICE_INDICATOR);
-  const [ updatedAttributeValue, setUpdatedAttributeValue ] = React.useState<any>("");
+  const [ template, setTemplate ] = React.useState(selectedTemplates.length === 1 ? selectedTemplates[0] : null);
 
+  const replaceTemplate = (template: Template) => updateSelectedTemplates(true, template, [], setSelectedTemplates);
+  const updateTemplate = (template: Template, data: any) => template.data = data;
+  const removeTemplate = (template: Template) => updateSelectedTemplates(false, template, selectedTemplates, setSelectedTemplates);
+
+  //Update Functionality should only have one selected template in the array
   console.log("BulkUpdateForm - selectedTemplates", selectedTemplates);
 
-  React.useEffect(() => {
-    if((updatedAttributeValue || updatedAttributeValue === false || updatedAttributeValue === 0) && (!selectedAttribute.validator || selectedAttribute.validator(updatedAttributeValue))){
-      const templateFound = selectedTemplates.find((t: any) => t.name === action.name);
-      if(!templateFound){
-        updateSelectedTemplates(true, {
-          ...action,
-          data: {
-            key: selectedAttribute.label,
-            value: selectedAttribute.type === "phone number" && updatedAttributeValue ? getE164Number(updatedAttributeValue) : updatedAttributeValue,
-            location: selectedAttribute.location
-          }
-        }, selectedTemplates, setSelectedTemplates);
-      } else {
-        templateFound.data = {
-          key: selectedAttribute.label,
-          value: selectedAttribute.type === "phone number" && updatedAttributeValue ? getE164Number(updatedAttributeValue) : updatedAttributeValue,
-          location: selectedAttribute.location
-        };
-      }
-    } else {
-      if(selectedTemplates.find((t: any) => t.name === action.name)){
-        updateSelectedTemplates(false, action, selectedTemplates, setSelectedTemplates);
-      }
-    }
-  }, [updatedAttributeValue]);
-
-  const constructDropdownOption = (template: any) => {
-    const name = template.name.split("_").map((w: string) => {
+  const constructDropdownOption = (t: Template) => {
+    const name = t.name.split("_").map((w: string) => {
       const word = w.toLowerCase();
       return word.charAt(0).toUpperCase() + word.slice(1);
     });
     return {
       label: name.join(" "),
-      value: template
+      value: t
     };
   };
 
@@ -74,10 +52,10 @@ const BulkUpdateForm = (props: any) => {
       <StepWrapper>
         <Dropdown
           label="Choose a field to update"
-          value={constructDropdownOption(action)}
-          options={Object.values(updateTemplates).map((t: any) => constructDropdownOption(t))}
-          updateValue={(event: any, template: any) => {
-            setAction(template.value);
+          value={template ? constructDropdownOption(template) : ""}
+          options={Object.values(updateTemplates).map((t: Template) => constructDropdownOption(t))}
+          updateValue={(event: any, t: Template) => {
+            setTemplate(t.value);
           }}
           styles={{
             margin: "40 0 30 0",
@@ -85,81 +63,23 @@ const BulkUpdateForm = (props: any) => {
           }}
         />
       </StepWrapper>
-      { action.name === updateTemplates.UPDATE_WORKER_ATTRIBUTE.name &&
-        <UpdateWrapper>
-          <Dropdown
-            label="Attribute"
-            value={selectedAttribute}
-            options={Object.values(availableAttributes)}
-            updateValue={(event: any, attribute: any) => {
-              setUpdatedAttributeValue("");
-              setSelectedAttribute(attribute);
-            }}
-            styles={{
-              width: "230px",
-              margin: "10px 20px 0px 20px"
-            }}
-          />
-          { selectedAttribute.type === "string" &&
-            <CustomInput
-              label="Attribute Value"
-              name="attribute-value"
-              value={updatedAttributeValue}
-              updateValue={(value: string) => setUpdatedAttributeValue(value)}
-              styles={{
-                width: "230px",
-                margin: "10px 20px 0px 20px"
-              }}
-            />
-          }
-          { selectedAttribute.type === "number" &&
-            <CustomInput
-              label="Attribute Value"
-              name="attribute-value"
-              value={updatedAttributeValue}
-              updateValue={(value: string) => setUpdatedAttributeValue(value)}
-              styles={{
-                width: "230px",
-                margin: "10px 20px 0px 20px"
-              }}
-            />
-          }
-          { selectedAttribute.type === "boolean" &&
-            <Dropdown
-              label="Boolean"
-              value={updatedAttributeValue}
-              options={[
-                {
-                  label: "true",
-                  value: true
-                },
-                {
-                  label: "false",
-                  value: false
-                }
-              ]}
-              updateValue={(event: any, option: any) => {
-                console.log("Boolean Value: ", option);
-                setUpdatedAttributeValue(option.value);
-              }}
-              styles={{
-                width: "230px",
-                margin: "10px 20px 0px 20px"
-              }}
-            />
-          }
-          { selectedAttribute.type === "phone number" &&
-            <PhoneNumberInput
-              id="Phone Number"
-              label="Phone Number"
-              number={updatedAttributeValue}
-              updateValue={(maskedValue: string, unmaskedValue: string, isValid: boolean, e164Number: string) => {
-                console.log(`maskedValue: ${maskedValue} - "unmaskedValue: ${unmaskedValue} - isValid: ${isValid} - e164Number: ${e164Number}`);
-                setUpdatedAttributeValue(unmaskedValue);
-              }}
-            />
-          }
-        </UpdateWrapper>
+      { template && template.name === updateTemplates.UPDATE_WORKER_ATTRIBUTE.name &&
+        <BulkUpdateAttributes
+          template={updateTemplates.UPDATE_WORKER_ATTRIBUTE}
+          selectedTemplates={selectedTemplates}
+          replaceTemplate={replaceTemplate}
+          updateTemplate={updateTemplate}
+          removeTemplate={removeTemplate}
+        />
+      }
+      { template && template.name === updateTemplates.UPDATE_USERS_MANAGER.name &&
+        <BulkUpdateManager
+          template={updateTemplates.UPDATE_USERS_MANAGER}
+          selectedTemplates={selectedTemplates}
+          replaceTemplate={replaceTemplate}
+          updateTemplate={updateTemplate}
+          removeTemplate={removeTemplate}
+        />
       }
     </Row>
   );
