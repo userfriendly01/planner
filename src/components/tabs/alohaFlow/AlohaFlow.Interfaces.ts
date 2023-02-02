@@ -7,19 +7,6 @@ export interface FlowContent {
     transferNumber?: string;
 }
 
-export interface DRCFlow {
-    accountManager?: string;
-    affinityVDN?: string;
-    keycode?: string;
-    transferCode?: string;
-    internetPlacement?: string;
-    internetType?: string;
-    campaignType?: string;
-    lineOfBusiness?: string;
-    marketingChannel?: string;
-    whisper?: string;
-    requestID?: string;
-}
 
 export interface FlowMasterData {
     channel?: Array<string>;
@@ -71,7 +58,17 @@ export interface CctSharedCallFlowDb {
     dialedDescription?: string;
     employeeId?: string;
     userDestination?: string;
-    DRC?: DRCFlow;
+    accountManager?: string;
+    affinityVDN?: string;
+    keycode?: string;
+    transferCode?: string;
+    internetPlacement?: string;
+    internetType?: string;
+    campaignType?: string;
+    lineOfBusiness?: string;
+    marketingChannel?: string;
+    whisper?: string;
+    requestID?: string;
 }
 
 export interface FlowInitState {

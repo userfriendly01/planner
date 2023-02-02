@@ -38,7 +38,6 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
                   createTime
                   dialedDescription
                   employeeId
-                  DRC {
                     accountManager
                     affinityVDN
                     keycode
@@ -50,8 +49,7 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
                     marketingChannel
                     whisper
                     requestID
-                  }
-                  userDestination
+                    userDestination
                 }
               }
             }
@@ -70,7 +68,7 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
  * This is the function to use to call queryFlowData function multiple time
  * until nextToken become null
  * @param {String} accessToken OAuth Access Token
- * @param {String} graphQlApiUrl Endpoint URL 
+ * @param {String} graphQlApiUrl Endpoint URL
  * @returns {flowData} list of data contain all the result present in DB
  */
 async function retrieveFlowData(accessToken, graphQlApiUrl) {
@@ -98,9 +96,9 @@ async function retrieveFlowData(accessToken, graphQlApiUrl) {
 /**
  * This is the Function to update the Flow Object ]to the DB
  * @param {flowData} item Flow object that need to update
- * @param {String} accessToken token to use while calling graphql query 
- * @param {String} graphQlApiUrl Endpoint URL 
- * @returns 
+ * @param {String} accessToken token to use while calling graphql query
+ * @param {String} graphQlApiUrl Endpoint URL
+ * @returns
  */
 async function updateFlowDB(item, accessToken, graphQlApiUrl) {
   let response;
@@ -131,20 +129,18 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
                 createTime: "${item.createTime}",
                 dialedDescription: "${item.dialedDescription}",
                 employeeId: "${item.employeeId || ""}",
-                DRC: {
-                  accountManager: "${item.DRC?.accountManager || ""}",
-                  affinityVDN: "${item.DRC?.affinityVDN || ""}",
-                  keycode: "${item.DRC?.keycode || ""}",
-                  transferCode: "${item.DRC?.transferCode || ""}",
-                  internetPlacement: "${item.DRC?.internetPlacement || ""}",
-                  internetType: "${item.DRC?.internetType || ""}",
-                  campaignType: "${item.DRC?.campaignType || ""}",
-                  lineOfBusiness: "${item.DRC?.lineOfBusiness || ""}",
-                  marketingChannel: "${item.DRC?.marketingChannel || ""}",
-                  whisper: "${item.DRC?.whisper || ""}",
-                  requestID: "${item.DRC?.requestID || ""}",
-                },
-               userDestination: "${item.userDestination}"
+                accountManager: "${item.accountManager || ""}",
+                affinityVDN: "${item.affinityVDN || ""}",
+                keycode: "${item.keycode || ""}",
+                transferCode: "${item.transferCode || ""}",
+                internetPlacement: "${item.internetPlacement || ""}",
+                internetType: "${item.internetType || ""}",
+                campaignType: "${item.campaignType || ""}",
+                lineOfBusiness: "${item.lineOfBusiness || ""}",
+                marketingChannel: "${item.marketingChannel || ""}",
+                whisper: "${item.whisper || ""}",
+                requestID: "${item.requestID || ""}",
+                userDestination: "${item.userDestination}"
               }) {
               pkey
               agentId
@@ -162,20 +158,18 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
               createTime
               dialedDescription
               employeeId
-              DRC {
-                accountManager
-                affinityVDN
-                keycode
-                transferCode
-                internetPlacement
-                internetType
-                campaignType
-                lineOfBusiness
-                marketingChannel
-                whisper
-                requestID
-              }
-             userDestination
+              accountManager
+              affinityVDN
+              keycode
+              transferCode
+              internetPlacement
+              internetType
+              campaignType
+              lineOfBusiness
+              marketingChannel
+              whisper
+              requestID
+              userDestination
       }
           }
       `,
@@ -193,9 +187,9 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
 /**
  * This is the Function to add the Flow Object ]to the DB
  * @param {flowData} item Flow object that need to add
- * @param {String} accessToken token to use while calling graphql query 
- * @param {String} graphQlApiUrl Endpoint URL 
- * @returns 
+ * @param {String} accessToken token to use while calling graphql query
+ * @param {String} graphQlApiUrl Endpoint URL
+ * @returns
  */
 async function addFlowRule(item, accessToken, graphQlApiUrl) {
   let response;
@@ -234,20 +228,18 @@ async function addFlowRule(item, accessToken, graphQlApiUrl) {
                   channel: "${item.channel.value}",
                   dialedDescription: "${item.dialedDescription.value}",
                   employeeId: "${item.employeeId?.value || ""}",
-                  DRC: {
-                    accountManager: "${item.accountManager?.value || ""}",
-                    affinityVDN: "${item.affinityVDN?.value || ""}",
-                    keycode: "${item.keycode?.value || ""}",
-                    transferCode: "${item.transferCode?.value || ""}",
-                    internetPlacement: "${item.internetPlacement?.value || ""}",
-                    internetType: "${item.internetType?.value || ""}",
-                    campaignType: "${item.campaignType?.value || ""}",
-                    lineOfBusiness: "${item.lineOfBusiness?.value || ""}",
-                    marketingChannel: "${item.marketingChannel?.value || ""}",
-                    whisper: "${item.whisper?.value || ""}",
-                    requestID: "${item.requestID?.value || ""}"
-                  },
-                  userDestination: "${item.userDestination?.value || ""}"
+                  accountManager: "${item.accountManager?.value || ""}",
+                  affinityVDN: "${item.affinityVDN?.value || ""}",
+                  keycode: "${item.keycode?.value || ""}",
+                  transferCode: "${item.transferCode?.value || ""}",
+                  internetPlacement: "${item.internetPlacement?.value || ""}",
+                  internetType: "${item.internetType?.value || ""}",
+                  campaignType: "${item.campaignType?.value || ""}",
+                  lineOfBusiness: "${item.lineOfBusiness?.value || ""}",
+                  marketingChannel: "${item.marketingChannel?.value || ""}",
+                  whisper: "${item.whisper?.value || ""}",
+                  requestID: "${item.requestID?.value || ""}"
+                  userDestination: "${item.userDestination||""}"
               }
           ) {
               agentId
@@ -266,19 +258,17 @@ async function addFlowRule(item, accessToken, graphQlApiUrl) {
               dialedDescription
               employeeId
               pkey
-              DRC {
-                accountManager
-                affinityVDN
-                keycode
-                transferCode
-                internetPlacement
-                internetType
-                campaignType
-                lineOfBusiness
-                marketingChannel
-                whisper
-                requestID
-              }
+              accountManager
+              affinityVDN
+              keycode
+              transferCode
+              internetPlacement
+              internetType
+              campaignType
+              lineOfBusiness
+              marketingChannel
+              whisper
+              requestID
               userDestination
             }
           }
@@ -298,9 +288,9 @@ async function addFlowRule(item, accessToken, graphQlApiUrl) {
 /**
  * This is the Function to delete the Flow Object from the DB
  * @param {flowData} item Flow object that need to delete
- * @param {String} accessToken token to use while calling graphql query 
- * @param {String} graphQlApiUrl Endpoint URL 
- * @returns 
+ * @param {String} accessToken token to use while calling graphql query
+ * @param {String} graphQlApiUrl Endpoint URL
+ * @returns
  */
 async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
   let response;
@@ -333,19 +323,17 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
               createTime
               dialedDescription
               employeeId
-              DRC {
-                accountManager
-                affinityVDN
-                keycode
-                transferCode
-                internetPlacement
-                internetType
-                campaignType
-                lineOfBusiness
-                marketingChannel
-                whisper
-                requestID
-              }
+              accountManager
+              affinityVDN
+              keycode
+              transferCode
+              internetPlacement
+              internetType
+              campaignType
+              lineOfBusiness
+              marketingChannel
+              whisper
+              requestID
             }
           }
       `,

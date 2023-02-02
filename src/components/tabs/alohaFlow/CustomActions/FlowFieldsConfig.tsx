@@ -162,143 +162,110 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     label: "Account Manager",
     key: "accountManager",
     control: "input",
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.DRC?.accountManager || ""}`,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.accountManager || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
-      DRC: {
-        ...currentValue.DRC || {},
-        ...newValue
-      }
+      ...newValue
     })
   },
   {
     label: "Affinity VDN",
     key: "affinityVDN",
     control: "input",
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.DRC?.affinityVDN || ""}`,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.affinityVDN || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
-      DRC: {
-        ...currentValue.DRC || {},
-        ...newValue
-      }
+      ...newValue
     })
   },
   {
     label: "Keycode",
     key: "keycode",
     control: "input",
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.DRC?.keycode || ""}`,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.keycode || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
-      DRC: {
-        ...currentValue.DRC || {},
-        ...newValue
-      }
+      ...newValue
     })
   },
   {
     label: "Transfer Code",
     key: "transferCode",
     control: "input",
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.DRC?.transferCode || ""}`,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.transferCode || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
-      DRC: {
-        ...currentValue.DRC || {},
-        ...newValue
-      }
+      ...newValue
     })
   },
   {
     label: "Internet Placement",
     key: "internetPlacement",
     control: "input",
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.DRC?.internetPlacement || ""}`,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.internetPlacement || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
-      DRC: {
-        ...currentValue.DRC || {},
-        ...newValue
-      }
+      ...newValue
     })
   },
   {
     label: "Internet Type",
     key: "internetType",
     control: "input",
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.DRC?.internetType || ""}`,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.internetType || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
-      DRC: {
-        ...currentValue.DRC || {},
-        ...newValue
-      }
+      ...newValue
     })
   },
   {
     label: "Campaign Type",
     key: "campaignType",
     control: "input",
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.DRC?.campaignType || ""}`,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.campaignType || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
-      DRC: {
-        ...currentValue.DRC || {},
-        ...newValue
-      }
+      ...newValue
     })
   },
   {
     label: "Line Of Business",
     key: "lineOfBusiness",
     control: "input",
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.DRC?.lineOfBusiness || ""}`,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.lineOfBusiness || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
-      DRC: {
-        ...currentValue.DRC || {},
-        ...newValue
-      }
+      ...newValue
     })
   },
   {
     label: "Marketing Channel",
     key: "marketingChannel",
     control: "input",
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.DRC?.marketingChannel || ""}`,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.marketingChannel || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
-      DRC: {
-        ...currentValue.DRC || {},
-        ...newValue
-      }
+      ...newValue
     })
   },
   {
     label: "Whisper",
     key: "whisper",
     control: "input",
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.DRC?.whisper || ""}`,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.whisper || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
-      DRC: {
-        ...currentValue.DRC || {},
-        ...newValue
-      }
+      ...newValue
     })
   },
   {
     label: "Request ID",
     key: "requestID",
     control: "input",
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.DRC?.requestID || ""}`,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.requestID || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
-      DRC: {
-        ...currentValue.DRC || {},
-        ...newValue
-      }
+      ...newValue
     })
   },
   {
