@@ -68,6 +68,7 @@ export interface RoutingDropDownList {
     dayOfWeek?: string[];
     channel?: string[];
     policyType?: string[];
+    priority?: string[];
 }
 
 export interface AddPageFieldConfigProps {

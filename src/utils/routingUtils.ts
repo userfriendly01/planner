@@ -17,13 +17,15 @@ export const emptyInitFields: string[] = ["transferMessage", "twilioSkill", "day
 
 export const dayOfWeek: string[] = ["ALL", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY", "WEEKDAY", "WEEKEND", "HOLIDAY"];
 
+export const priority: string[] = ["1", "2", "3", "4"];
 
 export const routingDropDownList: RoutingDropDownList = {
   brand: [],
   language: [],
   dayOfWeek,
   channel: [],
-  policyType: []
+  policyType: [],
+  priority
 };
 
 export const routingInitState: RoutingInitState = {
@@ -232,6 +234,36 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
     key: "transferMessage",
     control: "input",
     valueGetter: (params: CctSharedCallRoutingDb) => `${params?.transferMessage || ""}`,
+    valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => ({
+      ...currentValue,
+      ...newValue
+    })
+  },
+  {
+    label: "Priority",
+    key: "priority",
+    control: "select",
+    valueGetter: (params: CctSharedCallRoutingDb) => `${params?.priority || ""}`,
+    valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => ({
+      ...currentValue,
+      ...newValue
+    })
+  },
+  {
+    label: "Occupancy Check",
+    key: "occupancyCheck",
+    control: "input",
+    valueGetter: (params: CctSharedCallRoutingDb) => `${params?.occupancyCheck || ""}`,
+    valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => ({
+      ...currentValue,
+      ...newValue
+    })
+  },
+  {
+    label: "Routing Steps",
+    key: "routingSteps",
+    control: "input",
+    valueGetter: (params: CctSharedCallRoutingDb) => `${params?.routingSteps || ""}`,
     valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => ({
       ...currentValue,
       ...newValue
