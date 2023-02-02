@@ -19,12 +19,6 @@ jest.mock("components", () => ({
 }));
 
 
-jest.mock("../../ClosedFlashMessage.Interfaces", () => ({
-  MessageContainerProps: jest.requireActual("../../ClosedFlashMessage.Interfaces").MessageContainerProps,
-  messageTypes: jest.requireActual("../../ClosedFlashMessage.Interfaces").messageTypes
-}));
-
-
 jest.mock("../../ClosedFlashMessage.Styles", () => ({
   MessageContainerWrapper: jest.requireActual("../../ClosedFlashMessage.Styles").MessageContainerWrapper,
   MessageBoxWrapper: jest.requireActual("../../ClosedFlashMessage.Styles").MessageBoxWrapper,

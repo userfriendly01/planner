@@ -88,7 +88,7 @@ describe("<ActionContainer/>", () => {
         }, 1);
       });
     });
-    describe("propertySelection.label === propertyOptions.SKILL_GROUP.label and ", () => {
+    describe("propertySelection.label === propertyOptions.SKILL_GROUP.label", () => {
       test("should render Skill group View", async () => {
         renderComponent();
         const updateProperty = Dropdown.mock.calls[0][0].updateValue;

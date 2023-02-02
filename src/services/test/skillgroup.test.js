@@ -1,4 +1,3 @@
-// TODO - WRITE ME
 import MockAdapter from "axios-mock-adapter";
 import { myAxios } from "utils";
 import {
