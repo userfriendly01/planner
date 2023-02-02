@@ -125,6 +125,9 @@ async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
                 startTime: "${item.startTime}",
                 endTime: "${item.endTime}",
                 crcSkill: "${item.crcSkill || ""}",
+                priority: "${item?.priority || ""}",
+                occupancyCheck: "${item?.occupancyCheck || ""}",
+                routingSteps: "${item?.routingSteps || ""}"
               }) {
               pkey
               skey
@@ -142,6 +145,9 @@ async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
               transferMessage
               twilioSkill
               crcSkill
+              priority
+              occupancyCheck
+              routingSteps
             }
           }
       `,
@@ -166,7 +172,6 @@ async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
  */
 async function addRoutingRule(item, accessToken, graphQlApiUrl) {
   let response;
-  console.log("item:", item);
   try {
     const fetchResponse = await fetch(graphQlApiUrl, {
       method: "POST",
@@ -194,7 +199,10 @@ async function addRoutingRule(item, accessToken, graphQlApiUrl) {
                 policyType: "${item.policyType.value}",
                 startTime: "${item.startTime.value}",
                 endTime: "${item.endTime.value}",
-                crcSkill: "${item.crcSkill.value || ""}"
+                crcSkill: "${item.crcSkill.value || ""}",
+                priority: "${item.priority.value || ""}",
+                occupancyCheck: "${item.occupancyCheck.value || ""}",
+                routingSteps: "${item.routingSteps.value || ""}"
               }) {
               pkey
               skey
@@ -212,6 +220,9 @@ async function addRoutingRule(item, accessToken, graphQlApiUrl) {
               transferMessage
               twilioSkill
               crcSkill
+              priority
+              occupancyCheck
+              routingSteps
             }
           }
       `,
@@ -265,6 +276,9 @@ async function deleteRoutingRule(item, accessToken, graphQlApiUrl) {
               transferMessage
               twilioSkill
               crcSkill
+              priority
+              occupancyCheck
+              routingSteps
             }
           }
       `,
