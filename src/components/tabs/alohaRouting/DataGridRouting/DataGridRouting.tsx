@@ -40,7 +40,6 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
   const graphQlApiUrl: string = getGraphQLEndpoint();
   const [state, setState] = useState<RoutingInitState>(routingInitState);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
-
   useEffect(() => {
     const getTableData = async () =>{
       await loadDataTable();
@@ -134,14 +133,20 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
         idEnd: maxId,
         maxId,
         minId,
-        masterData
+        masterData,
+        isAddModalOpen: false,
+        isEditModalOpen: false,
+        isAdvanceSearchModalOpen: false
       });
     } else {
       setState({
         ...state,
         data: result,
         filteredItems: result,
-        fetching: false
+        fetching: false,
+        isAddModalOpen: false,
+        isEditModalOpen: false,
+        isAdvanceSearchModalOpen: false
       });
     }
   };

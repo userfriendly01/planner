@@ -243,6 +243,7 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
     label: "Priority",
     key: "priority",
     control: "select",
+    isBlankFirstValue: true,
     valueGetter: (params: CctSharedCallRoutingDb) => `${params?.priority || ""}`,
     valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => ({
       ...currentValue,
