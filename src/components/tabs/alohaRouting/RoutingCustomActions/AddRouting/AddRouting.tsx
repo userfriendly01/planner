@@ -187,7 +187,7 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
           <Grid container rowSpacing={3}>
             {
               routingFields.map(({
-                label, key, control, required = false, disableAdd = false
+                label, key, control, required = false, disableAdd = false, isBlankFirstValue = false
               }) => {
                 let dropDownOptions: string[] = [];
                 if (control === "select") {
@@ -207,6 +207,7 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
                       dropDownOptions={dropDownOptions}
                       onChange={(event: any) => handleInputChange(event, key, disableAdd)}
                       required={required}
+                      isBlankFirstValue={isBlankFirstValue}
                     />
                   </Grid>
                 );

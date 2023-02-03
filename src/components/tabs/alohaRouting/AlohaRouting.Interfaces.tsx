@@ -77,7 +77,8 @@ export interface AddPageFieldConfigProps {
     control: string,
     required?: boolean,
     disableAdd?: boolean,
-    disableEdit?: boolean
+    disableEdit?: boolean,
+    isBlankFirstValue?: boolean
     valueGetter?: (params: CctSharedCallRoutingDb, defaultValue?: any) => string;
     valueSetter?: (currentValue: CctSharedCallRoutingDb, newValue: any) => CctSharedCallRoutingDb;
 }

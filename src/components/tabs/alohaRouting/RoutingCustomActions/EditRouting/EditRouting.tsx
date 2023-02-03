@@ -155,7 +155,7 @@ export const EditRouting = ({
           <Grid container rowSpacing={3}>
             {
               routingFields.map(({
-                label, key, control, required = false, disableEdit = false, valueGetter, valueSetter
+                label, key, control, required = false, disableEdit = false, valueGetter, valueSetter, isBlankFirstValue = false
               }) => {
                 return (
                   // eslint-disable-next-line react/jsx-key
@@ -171,6 +171,7 @@ export const EditRouting = ({
                       onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => handleInputChange(event, key, valueSetter)}
                       required={required}
                       disabled={disableEdit}
+                      isBlankFirstValue = {isBlankFirstValue}
                     />
                   </Grid>
                 );
