@@ -70,25 +70,6 @@ export interface CctSharedCallFlowDb {
     whisper?: string;
     requestID?: string;
 }
-
-export interface FlowInitState {
-    data?: [];
-    filteredItems?: [];
-    fetching?: boolean;
-    selectedRow?: undefined;
-    isEditModalOpen?: boolean;
-    isAddModalOpen?: boolean;
-    isAdvanceSearchModalOpen?: boolean;
-    idStart?: number;
-    idEnd?: number;
-    maxId?: number;
-    minId?: number;
-    saveSuccess?: number;
-    page?: number;
-    perPage?: number;
-    advanceFilter?: Array<FlowAdvanceFilter>;
-}
-
 export interface FlowKeys {
     pkey?: string;
     dialedDescription?: string;

@@ -43,7 +43,7 @@ export interface RoutingFilter {
     twilioSkill?: string;
 }
 
-export interface RoutingInitState {
+export interface RoutingStateVariables {
     data?: Array<CctSharedCallRoutingDb>;
     filteredItems?: Array<CctSharedCallRoutingDb>;
     advanceFilter?: RoutingFilter;
