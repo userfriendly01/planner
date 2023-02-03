@@ -191,7 +191,7 @@ describe("cct-triton-admin-startup", () => {
           "should render Header & NavTabs, should dispatch appropriate actions, Modal should not be open",
           async () => {
             await runTritonAdminStartup(mockAdminDispatch);
-            expect(mockAdminDispatch).toHaveBeenCalledTimes(8);
+            expect(mockAdminDispatch).toHaveBeenCalledTimes(9);
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadManagers",
               payload: formatManagersResponse(dbManagers)
@@ -218,6 +218,10 @@ describe("cct-triton-admin-startup", () => {
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadSkills",
+              payload: skills.consolidatedSkills
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadSkillGroups",
               payload: skills.consolidatedSkills
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
@@ -306,7 +310,7 @@ describe("cct-triton-admin-startup", () => {
           });
           test("should still load triton admin", async () => {
             await runTritonAdminStartup(mockAdminDispatch);
-            expect(mockAdminDispatch).toHaveBeenCalledTimes(7);
+            expect(mockAdminDispatch).toHaveBeenCalledTimes(8);
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadManagers",
               payload: formatManagersResponse(dbManagers)
@@ -329,6 +333,10 @@ describe("cct-triton-admin-startup", () => {
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadSkills",
+              payload: skills.consolidatedSkills
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadSkillGroups",
               payload: skills.consolidatedSkills
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
@@ -345,7 +353,7 @@ describe("cct-triton-admin-startup", () => {
           });
           test("should still load triton admin", async () => {
             await runTritonAdminStartup(mockAdminDispatch);
-            expect(mockAdminDispatch).toHaveBeenCalledTimes(7);
+            expect(mockAdminDispatch).toHaveBeenCalledTimes(8);
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadManagers",
               payload: formatManagersResponse(dbManagers)
@@ -371,6 +379,10 @@ describe("cct-triton-admin-startup", () => {
               payload: skills.consolidatedSkills
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadSkillGroups",
+              payload: skills.consolidatedSkills
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "addWorkers",
               payload: filteredWorkers
             });
@@ -384,7 +396,7 @@ describe("cct-triton-admin-startup", () => {
           });
           test("should still load triton admin", async () => {
             await runTritonAdminStartup(mockAdminDispatch);
-            expect(mockAdminDispatch).toHaveBeenCalledTimes(7);
+            expect(mockAdminDispatch).toHaveBeenCalledTimes(8);
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadManagers",
               payload: formatManagersResponse(dbManagers)
@@ -407,6 +419,10 @@ describe("cct-triton-admin-startup", () => {
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadSkills",
+              payload: skills.consolidatedSkills
+            });
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadSkillGroups",
               payload: skills.consolidatedSkills
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
