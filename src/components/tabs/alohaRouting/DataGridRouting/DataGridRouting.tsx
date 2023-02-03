@@ -6,7 +6,7 @@ import {
 } from "@mui/x-data-grid";
 import { RoutingGridColumnDef } from "./GridColumnDef";
 import {
-  CctSharedCallRoutingDb, RoutingFilter, RoutingInitState, RoutingMasterData
+  CctSharedCallRoutingDb, RoutingFilter, RoutingStateVariables, RoutingMasterData
 } from "../AlohaRouting.Interfaces";
 import { retrieveRoutingData } from "services";
 import {
@@ -38,7 +38,7 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
   } = props;
 
   const graphQlApiUrl: string = getGraphQLEndpoint();
-  const [state, setState] = useState<RoutingInitState>(routingInitState);
+  const [state, setState] = useState<RoutingStateVariables>(routingInitState);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   useEffect(() => {
     const getTableData = async () =>{
@@ -211,11 +211,11 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
       }));
       loadDataTable();
     }
-    setState({
-      ...state,
+    setState((currentDataRouting: RoutingStateVariables)=>({
+      ...currentDataRouting,
       isEditModalOpen: flag,
       selectedRow: row
-    });
+    }));
   };
 
   const exportDataFile = () =>{

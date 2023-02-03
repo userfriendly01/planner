@@ -1,5 +1,5 @@
 import {
-  RoutingInitState, RoutingDropDownList, AddPageFieldConfigProps as AddRoutingFieldConfigProps, CctSharedCallRoutingDb
+  RoutingStateVariables, RoutingDropDownList, AddPageFieldConfigProps as AddRoutingFieldConfigProps, CctSharedCallRoutingDb
 } from "../components/tabs/alohaRouting/AlohaRouting.Interfaces";
 import { FormValidationRule } from "./interfaces";
 
@@ -28,7 +28,7 @@ export const routingDropDownList: RoutingDropDownList = {
   priority
 };
 
-export const routingInitState: RoutingInitState = {
+export const routingInitState: RoutingStateVariables = {
   data: [],
   filteredItems: [],
   advanceFilter: {},
