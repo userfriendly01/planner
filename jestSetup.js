@@ -55,5 +55,6 @@ jest.mock("services", () => ({
   updateTfn: jest.fn(),
   updateUser: jest.fn(),
   getCallTagOptions: jest.fn(),
-  getCallTags: jest.fn()
+  getCallTags: jest.fn(),
+  getAggregateQueuesType: jest.fn()
 }));

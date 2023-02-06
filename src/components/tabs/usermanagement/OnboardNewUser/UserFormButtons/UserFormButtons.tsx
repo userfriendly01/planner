@@ -111,7 +111,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       default_skills: form.defaultSkills,
       department_id: form.nNumberFetchedUser.departmentNumber,// need this value otherwise the department_name will not appear in flex insights,
       department_name: form.nNumberFetchedUser.departmentName,
-      did: form.outgoing.e164,
+      did: form.outgoing.e164, //if this is a did user it should be the direct dial num
       email: form.nNumberFetchedUser.email,
       email_address: form.nNumberFetchedUser.email,
       emp_first_name: form.nNumberFetchedUser.firstName,
@@ -122,7 +122,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       manager_first_name: form.manager.value.manager_first_name,
       manager_last_name: form.manager.value.manager_last_name,
       manager_n_number: form.manager.value.manager_n_number,
-      manager: form.nNumberFetchedUser.manager,
+      manager: `${form.manager.value.manager_first_name} ${form.manager.value.manager_last_name}`,
       n_number: form.nNumber.value.toLowerCase(),
       office_location_name: form.nNumberFetchedUser.officeName,
       office_location_number: form.nNumberFetchedUser.officeNumber,

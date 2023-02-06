@@ -6,18 +6,25 @@ import {
 import { Dropdown } from "components";
 import { useAdminState } from "context";
 import React from "react";
+import MockAdapter from "axios-mock-adapter";
+import { myAxios } from "utils";
 import {
   expectMockedComponent,
   render,
   setupMockedComponents,
   fireEvent,
   getMockedComponentProps,
+  mockAggregateQueues,
   initialTestState,
   skillsList
 } from "testUtils";
-import { theme } from "globals";
+import {
+  theme,
+  apiPaths
+} from "globals";
 import { ThemeProvider } from "styled-components";
 import { act } from "react-dom/test-utils";
+import { getAggregateQueuesType } from "services";
 
 jest.mock("@mui/icons-material", () => ({
   __esModule: true,
@@ -45,6 +52,12 @@ const renderComponent = mockTransferQueues => render(
   </ThemeProvider>
 );
 
+getAggregateQueuesType.mockImplementation(() => { return Promise.resolve(200, { response: "success" } ); });
+
+const statusCode = 500;
+const axiosMock = new MockAdapter(myAxios);
+const aggregateQueueTypeEndpoint = apiPaths.GET_AGGREGATE_QUEUES_TYPE;
+
 const getAddTransferQueuesButton = rendered => rendered.getByTestId("add-queue-button");
 const getDeleteTransferQueuesButton = (rendered, instance) => rendered.getAllByTestId("delete-queue-button")[instance];
 
@@ -57,6 +70,7 @@ describe("<ProfileQueuesSelectField />", () => {
       Delete,
       Dropdown
     });
+    axiosMock.onGet(aggregateQueueTypeEndpoint).reply(200, mockAggregateQueues);
     mockSetQueueList.mockClear();
   });
 
@@ -66,6 +80,21 @@ describe("<ProfileQueuesSelectField />", () => {
       expectMockedComponent(rendered, { Dropdown });
       expectMockedComponent(rendered, { Add });
       expectMockedComponent(rendered, { Delete }, 0);
+    });
+  });
+
+  describe(aggregateQueueTypeEndpoint, () => {
+    describe("aggregateQueueTypeEndpoint service call returned an error", () => {
+      beforeEach(() => {
+        axiosMock.onGet(aggregateQueueTypeEndpoint).reply(statusCode, { fail: "oh the horror" });
+      });
+      test("should return 'An error occurred while logging in.'", async () => {
+        try {
+          renderComponent([]);
+        } catch(err) {
+          expect(err.msg).toBe("Failed to fetch callTags from service");
+        }
+      });
     });
   });
 
@@ -88,6 +117,7 @@ describe("<ProfileQueuesSelectField />", () => {
         vhThreshold: null
       }];
       React.useState = jest.fn()
+        .mockReturnValueOnce([mockAggregateQueues, jest.fn()])
         .mockReturnValueOnce([mockNewSkill, jest.fn()])
         .mockReturnValueOnce([skillsList, jest.fn()]);
     });
@@ -135,20 +165,13 @@ describe("<ProfileQueuesSelectField />", () => {
           vhThreshold: null
         },
         {
-          name: "lscOBDialer1",
-          ctmSkillId: 1,
-          ctmSkillDisplayName: "lsc OB Dialer 1",
-          profiles: [{
-            profileName: "Licensed Sales Center",
-            profileId: 32
-          }],
-          flashMessage: "",
-          closedMessage: "",
-          levels: [ 1, 2, 3],
-          timeOfDays: [],
-          vhCallTarget: null,
-          vhCallerId: null,
-          vhThreshold: null
+          aggregate_queues_id: 4,
+          aggregate_queues_nme: 'Licensed Sales Center',
+          aggregate_queues_type: 'aggregate',
+          owner_type: 'profile',
+          worker_sid: null,
+          row_crtn_dtm: '',
+          row_updt_dtm: null
         }
       ]);
     });
@@ -173,6 +196,7 @@ describe("<ProfileQueuesSelectField />", () => {
         vhThreshold: null
       }];
       React.useState = jest.fn()
+        .mockReturnValueOnce([mockAggregateQueues, jest.fn()])
         .mockReturnValueOnce([mockNewSkill, jest.fn()])
         .mockReturnValueOnce([skillsList, jest.fn()]);
     });

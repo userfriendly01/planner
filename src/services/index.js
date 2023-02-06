@@ -13,3 +13,4 @@ export * from "./tfnActivation";
 export * from "./updateUser";
 export * from "./profile";
 export * from "./callTags";
+export * from "./aggregateQueues";
