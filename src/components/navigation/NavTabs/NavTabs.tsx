@@ -63,7 +63,7 @@ const NavTabs = () => {
         <StyledTabContainer>
           <StyledTabs variant="fullWidth" value={value} onChange={handleChange}>
             { tabs.map((t: any) => (
-              <StyledTab label={t.label} key={t.value} id={`nav-tab-${t.value}`} aria-controls={`nav-tabpanel-${t.value}`} onClick={event => event.preventDefault()}/>
+              <StyledTab label={t.label} key={t.value} id={`nav-tab-${t.value}`} aria-controls={`nav-tabpanel-${t.value}`} onClick={(event: any) => event.preventDefault()}/>
             )) }
           </StyledTabs>
         </StyledTabContainer>

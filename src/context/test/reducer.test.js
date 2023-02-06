@@ -3,6 +3,7 @@ import {
   reducer
 } from "context";
 import { skillsList } from "testUtils";
+import { formatSkillGroups } from "utils";
 
 describe("reducer", () => {
   describe("invalid action", () => {
@@ -361,6 +362,72 @@ describe("reducer", () => {
       expect(result.skillContext.skills).toEqual(payload);
     });
   });
+  describe("loadSkillGroupss", () => {
+    test("should update skilContext.skillGroups to payload", () => {
+      const payload = [
+        {
+          name: "lscOBDialer1",
+          ctmSkillId: 1,
+          ctmSkillDisplayName: "lsc OB Dialer 1",
+          ctmSkillGroups: [{
+            skillGroupId: 1,
+            skillGroupNme: "skillgroup1",
+            skills: [{
+              name: "lscOBDialer1",
+              ctmSkillId: 1
+            }, {
+              name: "aisgL1",
+              ctmSkillId: 2
+            }]
+          }],
+          profiles: [{
+            profileName: "Licensed Sales Center",
+            profileId: 32
+          }],
+          flashMessage: "",
+          closedMessage: "",
+          levels: [ 1, 2, 3],
+          timeOfDays: [],
+          vhCallTarget: null,
+          vhCallerId: null,
+          vhThreshold: null
+        },
+        {
+          name: "aisgL1",
+          ctmSkillId: 2,
+          ctmSkillDisplayName: "aisg L1",
+          ctmSkillGroups: [{
+            skillGroupId: 1,
+            skillGroupNme: "skillgroup1",
+            skills: [{
+              name: "lscOBDialer1",
+              ctmSkillId: 1
+            }, {
+              name: "aisgL1",
+              ctmSkillId: 2
+            }]
+          }],
+          profiles: [{
+            profileName: "AISG",
+            profileId: 4
+          }],
+          flashMessage: "",
+          closedMessage: "Sorry, we're closed.",
+          levels: [],
+          timeOfDays: [],
+          vhCallTarget: null,
+          vhCallerId: null,
+          vhThreshold: null
+        }
+      ];
+      const action = {
+        type: "loadSkillGroups",
+        payload
+      };
+      const result = reducer(initialState, action);
+      expect(result.skillContext.skillGroups).toEqual(formatSkillGroups(payload));
+    });
+  });
   describe("loadUserData", () => {
     test("should initialize or reinitialize the user data", () => {
       const payload = {
@@ -506,6 +573,7 @@ describe("reducer", () => {
       expect(result).toEqual({
         ...initialState,
         skillContext: {
+          ...initialState.skillContext,
           skills: skillsList
         }
       });
