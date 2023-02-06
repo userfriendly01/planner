@@ -7,5 +7,6 @@ export interface DefaultSkillSelectorProps {
 export interface NewTwilioWorkerSkill {
   levels: number[],
   levelSelected: number,
-  skill: string
+  skill: string,
+  skills?: any[]
 }

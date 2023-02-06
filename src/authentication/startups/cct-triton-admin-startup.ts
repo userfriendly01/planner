@@ -111,6 +111,10 @@ const getSkills = (dispatch: any) => new Promise((resolve, reject) => myAxios.ge
       type: "loadSkills",
       payload: res.data.consolidatedSkills
     });
+    dispatch({
+      type: "loadSkillGroups",
+      payload: res.data.consolidatedSkills
+    });
     resolve(true);
   })
   .catch(error => {

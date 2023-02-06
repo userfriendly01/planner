@@ -52,6 +52,17 @@ export const propertyOptions = {
       ActionTypes.EDIT,
       ActionTypes.DELETE
     ]
+  },
+  SKILL_GROUP: {
+    label: "Default Skill Group",
+    value: {
+      name: "Default Skill Group",
+      filter: "skillGroup",
+      variable: "skillGroup"
+    },
+    actions: [
+      ActionTypes.ADD
+    ]
   }
 };
 export interface ActionContainerProps {
