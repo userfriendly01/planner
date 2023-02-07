@@ -44,22 +44,22 @@ export interface RoutingFilter {
 }
 
 export interface RoutingStateVariables {
-    advanceFilter?: RoutingFilter;
     data?: Array<CctSharedCallRoutingDb>;
-    fetching?: boolean;
     filteredItems?: Array<CctSharedCallRoutingDb>;
-    idEnd?: number;
-    idStart?: number;
+    advanceFilter?: RoutingFilter;
+    fetching?: boolean;
+    selectedRow?: CctSharedCallRoutingDb;
+    isEditModalOpen?: boolean;
     isAddModalOpen?: boolean;
     isAdvanceSearchModalOpen?: boolean;
-    isEditModalOpen?: boolean;
-    masterData?: RoutingMasterData;
+    idStart?: number;
+    idEnd?: number;
     maxId?: number;
     minId?: number;
+    saveSuccess?: boolean;
     page?: number;
     perPage?: number;
-    saveSuccess?: boolean;
-    selectedRow?: CctSharedCallRoutingDb;
+    masterData?: RoutingMasterData;
 }
 
 export interface RoutingDropDownList {
@@ -85,5 +85,5 @@ export interface AddPageFieldConfigProps {
 export interface AddRoutingModalProps {
     isOpen: boolean;
     newId: number;
-    openModal: (flag: boolean, row?: CctSharedCallRoutingDb) => void;
+    openModal: (flag: boolean) => void;
 }
