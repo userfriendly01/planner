@@ -81,7 +81,13 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
 
   useEffect(() => {
     const getTableData = async () =>{
-      await loadDataTable(accessToken, graphQLEndpoint);
+      const result: CctSharedCallFlowDb[] = await retrieveFlowData(
+        accessToken,
+        graphQLEndpoint);
+      await loadDataTable(
+        accessToken,
+        graphQLEndpoint,
+        result);
       setDataFlow((dataFlowProps: FlowStateVariables) => ({
         ...dataFlowProps,
         page: +sessionStorage.getItem(CALL_FLOW_PAGE_NO) || 1,
@@ -202,12 +208,8 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   };
 
 
-  const loadDataTable = async (token: string, url: string) => {
-    let result: CctSharedCallFlowDb[] = await retrieveFlowData(
-      token,
-      url
-    );
-    if (result.length > 0) {
+  const loadDataTable = async (token: string, url: string, result?: CctSharedCallFlowDb[]) => {
+    if (result?.length > 0) {
       result = result.sort((a: CctSharedCallFlowDb, b: CctSharedCallFlowDb) => (a.id - b.id));
       result = result.map((item: CctSharedCallFlowDb, index: number) => ({
         ...item,
@@ -237,7 +239,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     } else {
       setDataFlow((dataFlowProps: FlowStateVariables) => ({
         ...dataFlowProps,
-        data: result,
+        ...(result) && { data: result },
         filteredItems: result,
         fetching: false
       }));
