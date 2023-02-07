@@ -94,30 +94,7 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
     if (isValidForm) {
       addRoutingRule(routingRule, accessToken, graphQlApiUrl).then(apiResponse => {
         if (!apiResponse.errors) {
-          const newRoutingRule: CctSharedCallRoutingDb = {
-            id: Number(routingRule.id.value),
-            pkey: routingRule.pkey.value,
-            skey: routingRule.skey.value,
-            all: "ALL",
-            brand: routingRule.brand.value,
-            callerState: routingRule.callerState.value,
-            callerType: routingRule.callerType.value,
-            callIntent: routingRule.callIntent.value,
-            channel: routingRule.channel.value,
-            crcSkill: routingRule.crcSkill.value,
-            dayOfWeek: routingRule.dayOfWeek.value,
-            endTime: routingRule.endTime.value,
-            occupancyCheck: routingRule.occupancyCheck.value,
-            percentOfCallers: routingRule.percentOfCallers.value,
-            policyType: routingRule.policyType.value,
-            priority: routingRule.priority.value,
-            routingSteps: routingRule.routingSteps.value.split(","),
-            startTime: routingRule.startTime.value,
-            transferDestination: routingRule.transferDestination.value,
-            transferMessage: routingRule.transferMessage.value,
-            twilioSkill: routingRule.twilioSkill.value
-          };
-          openModal(false, newRoutingRule);
+          openModal(false);
           setRoutingRule({ ...routingInitRule });
           setAlertBar(alertBarProps => ({
             ...alertBarProps,

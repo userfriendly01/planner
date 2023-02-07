@@ -28,7 +28,7 @@ import { AzureSPA } from "globals";
 interface EditRoutingComponentProps {
     isOpen: boolean;
     selectedRow: CctSharedCallRoutingDb;
-    openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string, deleteRow?: boolean) => void;
+    openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string) => void;
 }
 
 
@@ -84,7 +84,7 @@ export const EditRouting = ({
   const handleOnDelete = async () => {
     const response = await deleteRoutingRule(selectedRowLocal, accessToken, graphQLEndPoint);
     if (response) {
-      openEditModal(false, true, selectedRowLocal, `Routing Rule ID ${selectedRow.id} has been successfully deleted!! `, true);
+      openEditModal(false, true, selectedRowLocal, `Routing Rule ID ${selectedRow.id} has been successfully deleted!! `);
       return true;
     }
     setRoutingRule({ ...routingInitRule });
@@ -92,21 +92,21 @@ export const EditRouting = ({
       ...alertBarProps,
       open: true,
       severityType: "error",
-      msg: `Failed to delete Routing ID ${selectedRow.id}`
+      msg: `Failed to Save Routing ID ${selectedRow.id}`
     }));
   };
 
   const handleOnSave = async () => {
     const response = await updateRoutingDB(selectedRowLocal, accessToken, graphQLEndPoint);
     if (response) {
-      openEditModal(false, true, selectedRowLocal, `Routing Rule ID ${selectedRow.id} has been successfully updated!! `, false);
+      openEditModal(false, true, selectedRowLocal, `Routing Rule ID ${selectedRow.id} has been successfully updated!! `);
       return true;
     }
     setAlertBar((alertBarProps: AlertBarProps) => ({
       ...alertBarProps,
       open: true,
       severityType: "error",
-      msg: `Failed to save Routing ID ${selectedRow.id}`
+      msg: `Failed to Delete Routing ID ${selectedRow.id}`
     }));
   };
 

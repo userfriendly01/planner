@@ -42,9 +42,7 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   useEffect(() => {
     const getTableData = async () =>{
-      const result: CctSharedCallRoutingDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl);
-
-      await loadDataTable(result);
+      await loadDataTable();
     };
     getTableData();
   }, []);
@@ -113,8 +111,9 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
     }
   };
 
-  const loadDataTable = async (result?: CctSharedCallRoutingDb[]) => {
-    if (result?.length > 0) {
+  const loadDataTable = async () => {
+    const result: CctSharedCallRoutingDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl);
+    if (result.length > 0) {
       const sortedResult: CctSharedCallRoutingDb[] = result.sort(((a: CctSharedCallRoutingDb, b: CctSharedCallRoutingDb) => a.id - b.id));
       const minId: number = sortedResult[0].id;
       const maxId: number = sortedResult[result.length - 1].id;
@@ -142,10 +141,8 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
     } else {
       setState({
         ...state,
-        ...(result) && {
-          data: result,
-          filteredItems: result
-        },
+        data: result,
+        filteredItems: result,
         fetching: false,
         isAddModalOpen: false,
         isEditModalOpen: false,
@@ -155,24 +152,18 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
   };
 
 
-  const openAddModal = (flag: boolean, row?: CctSharedCallRoutingDb) => {
-    let newData;
+  const openAddModal = (flag: boolean) => {
     if (!flag) {
-      newData = row? state.data.concat(row) : undefined;
-
       setAlertBar(alertBarProps => ({
         ...alertBarProps,
         open: flag,
         severityType: "success",
         msg: "New flow has been successfully added!! "
       }));
+      loadDataTable();
     }
     setState({
       ...state,
-      ...(newData) && {
-        data: newData,
-        filteredItems: newData
-      },
       isAddModalOpen: flag
     });
   };
@@ -210,27 +201,15 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
     });
   };
 
-  const openEditModal = (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string, deleteRow?: boolean) => {
-    let newData;
+  const openEditModal = (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string) => {
     if (!flag && isSubmitted) {
-      if(deleteRow) {
-        newData = state.data.filter(x=> x.skey !== row.skey);
-      } else {
-        newData = row ? state.data.map(x=> x.skey === row.skey ? row : x) : undefined;
-      }
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
         msg: message,
         severityType: "success"
       }));
-      setState({
-        ...state,
-        ...(newData) && {
-          data: newData,
-          filteredItems: newData
-        }
-      });
+      loadDataTable();
     }
     setState((currentDataRouting: RoutingStateVariables)=>({
       ...currentDataRouting,
