@@ -65,6 +65,6 @@ describe("configUtils.js", ()=>{
   });
   test("Simulate getGraphQLEndpoint", ()=>{
     const endpoint = getGraphQLEndpoint();
-    expect(endpoint).toBe("https://2yooyvouuzeq7evpxtv5ojad3m.appsync-api.us-east-1.amazonaws.com/graphql");
+    expect(endpoint).toBe("https://flyyckd74fauthoxf5fj23ko6m.appsync-api.us-east-1.amazonaws.com/graphql");
   });
 });
