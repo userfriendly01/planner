@@ -21,6 +21,10 @@ export const PERMISSIONS = {
   READ_WRITE_GROUP_ROUTING_PROD: "gpi-cct-config-route-readwrite-prod"
 };
 
+interface MsalEnvironment {
+  authority: string;
+  clientId: string;
+}
 interface TokenRequest {
   scopes: string[];
 }
@@ -93,7 +97,6 @@ export function authWrapper(
         this.getAccessToken();
       }, authErr => { // on fail
         this.setState({
-          ...this.state,
           hasError: true,
           errorMessage: authErr.errorMessage
         });
@@ -103,7 +106,6 @@ export function authWrapper(
       if (msalInstance.isCallback(window.location.hash)) {
         console.info("is a callback");
         this.setState({
-          ...this.state,
           renewIframe: true
         });
         return;
