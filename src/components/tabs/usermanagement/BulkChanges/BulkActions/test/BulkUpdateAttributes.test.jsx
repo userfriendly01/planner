@@ -1,5 +1,4 @@
-import BulkUpdateForm from "../BulkUpdateForm";
-import { updateSelectedTemplates } from "../../BulkUtils";
+import BulkUpdateAttributes from "../BulkUpdateAttributes";
 import {
   getUpdateTemplates,
   availableAttributes
@@ -12,15 +11,9 @@ import {
 import React from "react";
 import {
   act,
-  expectOnlyPassedProps,
   render,
   setupMockedComponents
 } from "testUtils";
-import { Checkbox } from "@mui/material";
-
-jest.mock("../../BulkUtils", () => ({
-  updateSelectedTemplates: jest.fn()
-}));
 
 jest.mock("components", () => ({
   CustomInput: jest.fn(),
@@ -33,16 +26,16 @@ jest.mock("context", () => ({
   useAdminState: jest.fn()
 }));
 
-jest.mock("@mui/material", () => ({
-  Paper: jest.fn()
-}));
+const mockReplaceTemplates = jest.fn();
+const mockUpdateTemplates = jest.fn();
+const mockRemoveTemplates = jest.fn();
 
-const mockSetSelectedTemplates = jest.fn();
 const updateTemplates = getUpdateTemplates();
 
-describe("<BulkUpdateForm />", () => {
+describe("<BulkUpdateAttributes />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.resetAllMocks();
     setupMockedComponents({
       CustomInput,
       Dropdown,
@@ -52,9 +45,12 @@ describe("<BulkUpdateForm />", () => {
 
   const renderComponent = selectedTemplates => {
     return render(
-      <BulkUpdateForm
-        selectedTemplates={selectedTemplates}
-        setSelectedTemplates={mockSetSelectedTemplates}
+      <BulkUpdateAttributes
+        template={updateTemplates.UPDATE_WORKER_ATTRIBUTE}
+        selectedTemplates={selectedTemplates || []}
+        replaceTemplate={mockReplaceTemplates}
+        updateTemplate={mockUpdateTemplates}
+        removeTemplate={mockRemoveTemplates}
       />
     );
   };
@@ -63,33 +59,22 @@ describe("<BulkUpdateForm />", () => {
     describe("component is rendered as expected", () => {
       test("should render options in default state", () => {
         renderComponent([]);
-        expect(Dropdown.mock.calls.length).toBe(3);
+        expect(Dropdown.mock.calls.length).toBe(2);
         expect(PhoneNumberInput.mock.calls.length).toBe(0);
         expect(CustomInput.mock.calls.length).toBe(0);
-        //Choose a Template Dropdown
-        expect(Dropdown.mock.calls[0][0].label).toBe("Choose a field to update");
-        expect(Dropdown.mock.calls[0][0].value.toString()).toBe({
-          label: "Update Worker Attribute",
-          value: updateTemplates.UPDATE_WORKER_ATTRIBUTE
-        }.toString());
-        expect(Dropdown.mock.calls[0][0].options.toString()).toBe([{
-          label: "Update Worker Attribute",
-          value: updateTemplates.UPDATE_WORKER_ATTRIBUTE
-        }].toString());
         //Choose an attribute Dropdown
-        expect(Dropdown.mock.calls[1][0].label).toBe("Attribute");
-        expect(Dropdown.mock.calls[1][0].value.toString()).toBe(availableAttributes.SELF_SERVICE_INDICATOR.toString());
-        expect(Dropdown.mock.calls[1][0].options.toString()).toBe([
+        expect(Dropdown.mock.calls[0][0].label).toBe("Attribute");
+        expect(Dropdown.mock.calls[0][0].value.toString()).toBe(availableAttributes.SELF_SERVICE_INDICATOR.toString());
+        expect(Dropdown.mock.calls[0][0].options).toStrictEqual([
           availableAttributes.ZERO_OUT_ENABLED,
           availableAttributes.SELF_SERVICE_INDICATOR,
-          availableAttributes.MANAGER,
           availableAttributes.PROFILE,
           availableAttributes.DID
-        ].toString());
+        ]);
         //Choose an value Dropdown
-        expect(Dropdown.mock.calls[2][0].label).toBe("Boolean");
-        expect(Dropdown.mock.calls[2][0].value.toString()).toBe("");
-        expect(Dropdown.mock.calls[2][0].options.toString()).toBe([
+        expect(Dropdown.mock.calls[1][0].label).toBe("Boolean");
+        expect(Dropdown.mock.calls[1][0].value.toString()).toBe("");
+        expect(Dropdown.mock.calls[1][0].options.toString()).toBe([
           {
             label: "true",
             value: true
@@ -101,48 +86,461 @@ describe("<BulkUpdateForm />", () => {
         ].toString());
       });
     });
-    describe("Template Dropdown is updated", () => {
-      test.only("Should update dropdown with updated value", () => {
-        renderComponent([]);
-        expect(Dropdown.mock.calls.length).toBe(3);
-        expect(Dropdown.mock.calls[0][0].value.toString()).toBe({
-          label: "Update Worker Attribute",
-          value: updateTemplates.UPDATE_WORKER_ATTRIBUTE
-        }.toString());
-        const onTemplateChange = Dropdown.mock.calls[0][0].updateValue;
-        act(() => onTemplateChange(null, { value: updateTemplates.UPDATE_WORKER_ATTRIBUTE }));
-        expect(Dropdown.mock.calls.length).toBe(6);
-        expect(Dropdown.mock.calls[3][0].value.toString()).toBe({
-          label: "Update Worker Attribute",
-          value: updateTemplates.UPDATE_WORKER_ATTRIBUTE
-        }.toString());
-        //enhance this test in the future to update to a different option when we have them
-      });
-    });
     describe("UpdateWorker Attributes", () => {
+      describe("Currently we dont have any options for a string but the logic is ready", () => {
+        //should update this test if we ever have a string example
+        const dummyFutureOption = {
+          label: "string",
+          value: "string",
+          type: "string",
+          location: "attributes"
+        };
+        test("CustomInput is rendered", () => {
+          renderComponent([]);
+          expect(Dropdown.mock.calls.length).toBe(2);
+          expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+          const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+          act(() => onAttributeChange(null, dummyFutureOption));
+          expect(Dropdown.mock.calls.length).toBe(3);
+          expect(Dropdown.mock.calls[2][0].value).toBe(dummyFutureOption);
+          expect(CustomInput.mock.calls.length).toBe(1);
+          expect(CustomInput.mock.calls[0][0].value).toBe("");
+        });
+        describe("attribute value is updated to an invalid value", () => {
+          describe("template is not already in the selected Templates list", () => {
+            test("no template update function is called", () => {
+              renderComponent([]);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+              act(() => onAttributeChange(null, dummyFutureOption));
+              const onValueChange = CustomInput.mock.calls[0][0].updateValue;
+              act(() => onValueChange(null, ""));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(0);
+            });
+          });
+          describe("template is already in the selected Templates list", () => {
+            test("removeTemplate function is called", () => {
+              const template = { ...updateTemplates.UPDATE_WORKER_ATTRIBUTE };
+              renderComponent([template]);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(1);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+              act(() => onAttributeChange(null, dummyFutureOption));
+              const onValueChange = CustomInput.mock.calls[0][0].updateValue;
+              act(() => onValueChange(""));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(1);
+              expect(mockRemoveTemplates).toHaveBeenCalledWith(updateTemplates.UPDATE_WORKER_ATTRIBUTE);
+            });
+          });
+        });
+        describe("attribute value is updated to a valid value", () => {
+          describe("template is not already in the selected Templates list", () => {
+            test("replaceTemplate is called", () => {
+              renderComponent([]);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+              act(() => onAttributeChange(null, dummyFutureOption));
+              const onValueChange = CustomInput.mock.calls[0][0].updateValue;
+              act(() => onValueChange("Snowball"));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(1);
+              expect(mockReplaceTemplates).toHaveBeenCalledWith({
+                ...updateTemplates.UPDATE_WORKER_ATTRIBUTE,
+                data: {
+                  key: "string",
+                  value: "Snowball",
+                  location: "attributes"
+                }
+              });
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(0);
+            });
+          });
+          describe("template is already in the selected Templates list", () => {
+            test("updateTemplate function is called", () => {
+              const selectedTemplate = { ...updateTemplates.UPDATE_WORKER_ATTRIBUTE };
+              renderComponent([selectedTemplate]);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+              act(() => onAttributeChange(null, dummyFutureOption));
+              const onValueChange = CustomInput.mock.calls[0][0].updateValue;
+              act(() => onValueChange("Comet"));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(1);
+              expect(mockUpdateTemplates).toHaveBeenCalledWith(selectedTemplate, {
+                key: "string",
+                value: "Comet",
+                location: "attributes"
+              });
+              //remove is run upon first render since the initial value is not valid
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(1);
+            });
+          });
+        });
+
+      });
       describe("Attribute Dropdown is updated to availableAttributes.ZERO_OUT_ENABLED", () => {
         test("Boolean Dropdown is rendered", () => {
-
+          renderComponent([]);
+          expect(Dropdown.mock.calls.length).toBe(2);
+          expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+          const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+          act(() => onAttributeChange(null, availableAttributes.ZERO_OUT_ENABLED));
+          expect(Dropdown.mock.calls.length).toBe(4);
+          expect(Dropdown.mock.calls[2][0].value).toBe(availableAttributes.ZERO_OUT_ENABLED);
+          expect(Dropdown.mock.calls[3][0].value).toBe("");
+        });
+        describe("attribute value is updated to an invalid value", () => {
+          describe("template is not already in the selected Templates list", () => {
+            test("no template update function is called", () => {
+              renderComponent([]);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+              act(() => onAttributeChange(null, availableAttributes.ZERO_OUT_ENABLED));
+              const onValueChange = Dropdown.mock.calls[3][0].updateValue;
+              act(() => onValueChange(null, ""));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(0);
+            });
+          });
+          describe("template is already in the selected Templates list", () => {
+            test("removeTemplate function is called", () => {
+              const template = { ...updateTemplates.UPDATE_WORKER_ATTRIBUTE };
+              renderComponent([template]);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(1);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+              act(() => onAttributeChange(null, availableAttributes.ZERO_OUT_ENABLED));
+              const onValueChange = Dropdown.mock.calls[3][0].updateValue;
+              act(() => onValueChange(null, ""));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(2);
+              expect(mockRemoveTemplates).toHaveBeenCalledWith(updateTemplates.UPDATE_WORKER_ATTRIBUTE);
+            });
+          });
+        });
+        describe("attribute value is updated to a valid value", () => {
+          describe("template is not already in the selected Templates list", () => {
+            test("replaceTemplate is called", () => {
+              renderComponent([]);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+              act(() => onAttributeChange(null, availableAttributes.ZERO_OUT_ENABLED));
+              const onValueChange = Dropdown.mock.calls[3][0].updateValue;
+              act(() => onValueChange(null, { value: false }));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(1);
+              expect(mockReplaceTemplates).toHaveBeenCalledWith({
+                ...updateTemplates.UPDATE_WORKER_ATTRIBUTE,
+                data: {
+                  key: "zeroOutEnabled",
+                  value: false,
+                  location: null
+                }
+              });
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(0);
+            });
+          });
+          describe("template is already in the selected Templates list", () => {
+            test("updateTemplate function is called", () => {
+              const selectedTemplate = { ...updateTemplates.UPDATE_WORKER_ATTRIBUTE };
+              renderComponent([selectedTemplate]);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+              act(() => onAttributeChange(null, availableAttributes.ZERO_OUT_ENABLED));
+              const onValueChange = Dropdown.mock.calls[3][0].updateValue;
+              act(() => onValueChange(null, { value: true }));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(1);
+              expect(mockUpdateTemplates).toHaveBeenCalledWith(selectedTemplate, {
+                key: "zeroOutEnabled",
+                value: true,
+                location: null
+              });
+              //remove is run upon first render since the initial value is not valid
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(1);
+            });
+          });
         });
       });
       describe("Attribute Dropdown is updated to availableAttributes.SELF_SERVICE_INDICATOR", () => {
         test("Boolean Dropdown is rendered", () => {
-
+          renderComponent([]);
+          expect(Dropdown.mock.calls.length).toBe(2);
+          expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+          const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+          act(() => onAttributeChange(null, availableAttributes.ZERO_OUT_ENABLED));
+          expect(Dropdown.mock.calls.length).toBe(4);
+          const onAttributeRevert = Dropdown.mock.calls[2][0].updateValue;
+          act(() => onAttributeRevert(null, availableAttributes.SELF_SERVICE_INDICATOR));
+          expect(Dropdown.mock.calls.length).toBe(6);
+          expect(Dropdown.mock.calls[4][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+          expect(Dropdown.mock.calls[5][0].value).toBe("");
         });
-      });
-      describe("Attribute Dropdown is updated to availableAttributes.MANAGER", () => {
-        test("CustomInput is rendered is rendered", () => {
-
+        describe("attribute value is updated to an invalid value", () => {
+          describe("template is not already in the selected Templates list", () => {
+            test("no template update function is called", () => {
+              renderComponent([]);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onValueChange = Dropdown.mock.calls[1][0].updateValue;
+              act(() => onValueChange(null, ""));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(0);
+            });
+          });
+          describe("template is already in the selected Templates list", () => {
+            test("removeTemplate function is called", () => {
+              const template = { ...updateTemplates.UPDATE_WORKER_ATTRIBUTE };
+              renderComponent([template]);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(1);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onValueChange = Dropdown.mock.calls[1][0].updateValue;
+              act(() => onValueChange(null, ""));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(2);
+              expect(mockRemoveTemplates).toHaveBeenCalledWith(updateTemplates.UPDATE_WORKER_ATTRIBUTE);
+            });
+          });
+        });
+        describe("attribute value is updated to a valid value", () => {
+          describe("template is not already in the selected Templates list", () => {
+            test("replaceTemplate is called", () => {
+              renderComponent([]);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onValueChange = Dropdown.mock.calls[1][0].updateValue;
+              act(() => onValueChange(null, { value: false }));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(1);
+              expect(mockReplaceTemplates).toHaveBeenCalledWith({
+                ...updateTemplates.UPDATE_WORKER_ATTRIBUTE,
+                data: {
+                  key: "selfServiceInd",
+                  value: false,
+                  location: null
+                }
+              });
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(0);
+            });
+          });
+          describe("template is already in the selected Templates list", () => {
+            test("updateTemplate function is called", () => {
+              const selectedTemplate = { ...updateTemplates.UPDATE_WORKER_ATTRIBUTE };
+              renderComponent([selectedTemplate]);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onValueChange = Dropdown.mock.calls[1][0].updateValue;
+              act(() => onValueChange(null, { value: true }));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(1);
+              expect(mockUpdateTemplates).toHaveBeenCalledWith(selectedTemplate, {
+                key: "selfServiceInd",
+                value: true,
+                location: null
+              });
+              //remove is run upon first render since the initial value is not valid
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(1);
+            });
+          });
         });
       });
       describe("Attribute Dropdown is updated to availableAttributes.PROFILE", () => {
         test("CustomInput is rendered", () => {
-
+          renderComponent([]);
+          expect(Dropdown.mock.calls.length).toBe(2);
+          expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+          const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+          act(() => onAttributeChange(null, availableAttributes.PROFILE));
+          expect(Dropdown.mock.calls.length).toBe(3);
+          expect(Dropdown.mock.calls[2][0].value).toBe(availableAttributes.PROFILE);
+          expect(CustomInput.mock.calls.length).toBe(1);
+          expect(CustomInput.mock.calls[0][0].value).toBe("");
+        });
+        describe("attribute value is updated to an invalid value", () => {
+          describe("template is not already in the selected Templates list", () => {
+            test("no template update function is called", () => {
+              renderComponent([]);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+              act(() => onAttributeChange(null, availableAttributes.PROFILE));
+              const onValueChange = CustomInput.mock.calls[0][0].updateValue;
+              act(() => onValueChange(null, "B3"));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(0);
+            });
+          });
+          describe("template is already in the selected Templates list", () => {
+            test("removeTemplate function is called", () => {
+              const template = { ...updateTemplates.UPDATE_WORKER_ATTRIBUTE };
+              renderComponent([template]);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(1);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+              act(() => onAttributeChange(null, availableAttributes.PROFILE));
+              const onValueChange = CustomInput.mock.calls[0][0].updateValue;
+              act(() => onValueChange("B4"));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(2);
+              expect(mockRemoveTemplates).toHaveBeenCalledWith(updateTemplates.UPDATE_WORKER_ATTRIBUTE);
+            });
+          });
+        });
+        describe("attribute value is updated to a valid value", () => {
+          describe("template is not already in the selected Templates list", () => {
+            test("replaceTemplate is called", () => {
+              renderComponent([]);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+              act(() => onAttributeChange(null, availableAttributes.PROFILE));
+              const onValueChange = CustomInput.mock.calls[0][0].updateValue;
+              act(() => onValueChange("32"));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(1);
+              expect(mockReplaceTemplates).toHaveBeenCalledWith({
+                ...updateTemplates.UPDATE_WORKER_ATTRIBUTE,
+                data: {
+                  key: "profile_id",
+                  value: "32",
+                  location: "attributes"
+                }
+              });
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(0);
+            });
+          });
+          describe("template is already in the selected Templates list", () => {
+            test("updateTemplate function is called", () => {
+              const selectedTemplate = { ...updateTemplates.UPDATE_WORKER_ATTRIBUTE };
+              renderComponent([selectedTemplate]);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+              act(() => onAttributeChange(null, availableAttributes.PROFILE));
+              const onValueChange = CustomInput.mock.calls[0][0].updateValue;
+              act(() => onValueChange("3"));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(1);
+              expect(mockUpdateTemplates).toHaveBeenCalledWith(selectedTemplate, {
+                key: "profile_id",
+                value: "3",
+                location: "attributes"
+              });
+              //remove is run upon first render since the initial value is not valid
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(1);
+            });
+          });
         });
       });
       describe("Attribute Dropdown is updated to availableAttributes.DID", () => {
         test("PhoneNumberInput is rendered", () => {
-
+          renderComponent([]);
+          expect(Dropdown.mock.calls.length).toBe(2);
+          expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+          const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+          act(() => onAttributeChange(null, availableAttributes.DID));
+          expect(Dropdown.mock.calls.length).toBe(3);
+          expect(Dropdown.mock.calls[2][0].value).toBe(availableAttributes.DID);
+          expect(PhoneNumberInput.mock.calls.length).toBe(1);
+          expect(PhoneNumberInput.mock.calls[0][0].number).toBe("");
+        });
+        describe("attribute value is updated to an invalid value", () => {
+          describe("template is not already in the selected Templates list", () => {
+            test("no template update function is called", () => {
+              renderComponent([]);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+              act(() => onAttributeChange(null, availableAttributes.DID));
+              const onValueChange = PhoneNumberInput.mock.calls[0][0].updateValue;
+              act(() => onValueChange(null, "60385182"));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(0);
+            });
+          });
+          describe("template is already in the selected Templates list", () => {
+            test("removeTemplate function is called", () => {
+              const template = { ...updateTemplates.UPDATE_WORKER_ATTRIBUTE };
+              renderComponent([template]);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(1);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+              act(() => onAttributeChange(null, availableAttributes.DID));
+              const onValueChange = PhoneNumberInput.mock.calls[0][0].updateValue;
+              act(() => onValueChange(null, "60385182"));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(2);
+              expect(mockRemoveTemplates).toHaveBeenCalledWith(updateTemplates.UPDATE_WORKER_ATTRIBUTE);
+            });
+          });
+        });
+        describe("attribute value is updated to a valid value", () => {
+          describe("template is not already in the selected Templates list", () => {
+            test("replaceTemplate is called", () => {
+              renderComponent([]);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+              act(() => onAttributeChange(null, availableAttributes.DID));
+              const onValueChange = PhoneNumberInput.mock.calls[0][0].updateValue;
+              act(() => onValueChange(null, "6038518200"));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(1);
+              expect(mockReplaceTemplates).toHaveBeenCalledWith({
+                ...updateTemplates.UPDATE_WORKER_ATTRIBUTE,
+                data: {
+                  key: "did",
+                  value: "+16038518200",
+                  location: "attributes"
+                }
+              });
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(0);
+            });
+          });
+          describe("template is already in the selected Templates list", () => {
+            test("updateTemplate function is called", () => {
+              const selectedTemplate = { ...updateTemplates.UPDATE_WORKER_ATTRIBUTE };
+              renderComponent([selectedTemplate]);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+              act(() => onAttributeChange(null, availableAttributes.DID));
+              const onValueChange = PhoneNumberInput.mock.calls[0][0].updateValue;
+              act(() => onValueChange(null, "6038518200"));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(1);
+              expect(mockUpdateTemplates).toHaveBeenCalledWith(selectedTemplate, {
+                key: "did",
+                value: "+16038518200",
+                location: "attributes"
+              });
+              //remove is run upon first render since the initial value is not valid
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(1);
+            });
+          });
         });
       });
     });

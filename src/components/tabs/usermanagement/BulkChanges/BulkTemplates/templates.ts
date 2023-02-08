@@ -98,8 +98,8 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
     }
   } else if(key === "profile_id"){
     body[location] = {
-      agent_attribute_1: value,
-      profile_id: value
+      agent_attribute_1: parseInt(value),
+      profile_id: parseInt(value)
     };
   } else if(location){
     body[location] = newAttribute;

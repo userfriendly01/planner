@@ -29,6 +29,7 @@ const BulkUpdateAttributes = (props: BulkUpdateProps) => {
   console.log("BulkUpdateForm - selectedTemplates", selectedTemplates);
 
   React.useEffect(() => {
+    console.warn("selectedTemplates", selectedTemplates);
     //If the entries are valid, update/add the template to the selected templates.
     //If they arent valid, remove the template from the selected templates
     //Valid templates will drive the display of the processing buttons
@@ -51,6 +52,8 @@ const BulkUpdateAttributes = (props: BulkUpdateProps) => {
         });
       }
     } else {
+      console.warn("in the else statement", template);
+
       if(selectedTemplates.find((t: Template) => t.name === template.name)){
         removeTemplate(template);
       }

@@ -60,12 +60,6 @@ export const availableAttributes: any = {
     type: "boolean",
     location: null
   },
-  MANAGER: {
-    label: "manager_n_number",
-    value: "manager_n_number",
-    type: "string",
-    location: "attributes"// Add tooltip that it will also update other manager fields
-  },
   PROFILE: {
     label: "profile_id",
     value: "profile_id",
