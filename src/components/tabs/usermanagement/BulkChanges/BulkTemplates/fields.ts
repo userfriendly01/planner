@@ -17,9 +17,9 @@ import {
 
 export const isDidUser = (didField: any, rowNumber: number) => {
   if(typeof didField !== "string"){
-    Promise.reject(`Did User field needs to be 'Y' or 'N' for row ${rowNumber}`);
+    throw new Error(`Did User field needs to be 'Y' or 'N' for row ${rowNumber}`);
   } else if(didField !== "y" && didField !== "n"){
-    Promise.reject(`Did User field needs to be 'Y' or 'N' for row ${rowNumber}`);
+    throw new Error(`Did User field needs to be 'Y' or 'N' for row ${rowNumber}`);
   } else if(didField === "y") {
     return true;
   } else {
@@ -47,7 +47,7 @@ export const FIELDS: Fields = {
       } else if(typeof field !== "string" || field.length !== 8) {
         return Promise.reject(`${fieldName} is not in the valid n number format for row ${rowNumber}`);
       } else if(worker){
-        return Promise.reject(`${field} already has a record in Twilio/Worker Database ${rowNumber}`);
+        return Promise.reject(`${field} already has a record in Twilio/Worker Database row ${rowNumber}`);
       } else {
         try {
           const fetchedUser = await fetchUser(field);
@@ -117,14 +117,13 @@ export const FIELDS: Fields = {
     options: (state: any) => state.profileContext.profiles.map((p: any) => p.profile_id),
     validateFunction: (row: any, rowNumber: number, state: any): Promise<any> => {
       const fieldName = "Profile Id";
+      // cleanupField will return NaN if not a number, which is falsy
       const field = cleanupField(row[fieldName], "number");
       if(!row.attributes){
         row.attributes = {};
       }
       if(!field){
-        return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
-      } else if(typeof field !== "number"){
-        return Promise.reject(`${fieldName} must be a number for row ${rowNumber}`);
+        return Promise.reject(`${fieldName} is either missing or is not a number for row ${rowNumber}`);
       } else if(!state.profileContext.profiles.some((p:any) => cleanupField(p.profile_id, "number") === field)){
         return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
       } else {
@@ -259,7 +258,7 @@ export const FIELDS: Fields = {
       } else if(typeof field !== "string"){
         return Promise.reject(`${fieldName} must be a number or 'Y' for row ${rowNumber}. If you do not want an extension for this user, leave the field blank`);
       } else if(field === "n"){
-        return Promise.resolve(`${fieldName} skipped for row ${rowNumber}. `);
+        return Promise.resolve(`${fieldName} skipped for row ${rowNumber}.`);
       } else {
         try {
           const isInt = parseInt(field);
@@ -328,7 +327,7 @@ export const FIELDS: Fields = {
             return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
           }
         } else if(didUser && !field) {
-          return Promise.reject(`${fieldName} is required when DID user is 'Y' ${rowNumber}`);
+          return Promise.reject(`${fieldName} is required when DID user is 'Y' for row ${rowNumber}`);
         } else if(!didUser && !field) {
           return Promise.resolve(`${fieldName} skipped for Non DID user for row ${rowNumber}`);
         } else {
@@ -362,6 +361,9 @@ export const FIELDS: Fields = {
             const profileFieldName = "Profile Id";
             const profiles = state.profileContext.profiles;
             const profileId = cleanupField(row[profileFieldName], "number");
+            if (!profileId) {
+              return Promise.reject(`Unable to set ${fieldName}. Incorrect format for ${profileFieldName} for row ${rowNumber}`);
+            }
             const overflowSkill = getOverflowSkillFromProfile(profiles, profileId);
             if(overflowSkill){
               row.attributes.routing = {
@@ -377,7 +379,9 @@ export const FIELDS: Fields = {
         } else if(didUser && field === "n") {
           row.zeroOutEnabled = false;
           return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
-        } else if(didUser && !field) {
+        } else if(didUser && field && field !== "y" && field !== "n") {
+          return Promise.reject(`${fieldName} needs to be needs to be 'Y' or 'N' if DID user is 'Y' for ${rowNumber}`);
+        }  else if(didUser && !field) {
           return Promise.reject(`${fieldName} is required when DID user is 'Y' ${rowNumber}`);
         } else if(!didUser && !field) {
           return Promise.resolve(`${fieldName} skipped for Non DID user for row ${rowNumber}`);
@@ -414,7 +418,7 @@ export const FIELDS: Fields = {
         } else if(didUser && !field) {
           return Promise.resolve(`${fieldName} skipped for DID user for row ${rowNumber}`);
         } else if(!didUser && !field) {
-          return Promise.reject(`${fieldName} is required when DID user is 'N' ${rowNumber}`);
+          return Promise.reject(`${fieldName} is required when DID user is 'N' for row ${rowNumber}`);
         } else {
           try {
             const outgoing = getE164Number(field);
@@ -459,7 +463,7 @@ export const FIELDS: Fields = {
               const group = availableGroups.find((g:any) => cleanupField(g.name, "string") === cleanScope);
               const team = availableTeams.find((t:any) => cleanupField(t.name, "string") === cleanScope);
               if(!group && !team){
-                return Promise.reject(`${cleanScope} is not a valid group or team for row ${rowNumber}`);
+                throw new Error(`${cleanScope} is not a valid group or team for row ${rowNumber}`)
               } else if(group) {
                 row.scope.groups.push(group.groupId);
               } else {
@@ -469,8 +473,8 @@ export const FIELDS: Fields = {
             return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
           }
         } catch(err) {
-          console.error("Error Thrown validating extension", err);
-          return Promise.reject(`${field} is not in the correct format for row ${rowNumber}`);
+          console.error("Error Thrown validating calabrio scope", err);
+          return Promise.reject(err.message);
         }
       }
     }
@@ -495,7 +499,7 @@ export const FIELDS: Fields = {
           return Promise.reject(`${fieldName} is not a valid option from row ${rowNumber}`);
         } else {
           row.groupId = team.groupId;
-          return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
         }
       }
     }
@@ -525,15 +529,15 @@ export const FIELDS: Fields = {
               const roleObject = state.calabrioContext.roles.find((r:any) => cleanupField(r.name, "string") === cleanRole);
               row.roles = [];
               if(!foundInRoles || !roleObject){
-                return Promise.reject(`${cleanRole} is not a valid role for row ${rowNumber}`);
+                throw new Error(`${cleanRole} is not a valid role for row ${rowNumber}`)
               } else {
                 row.roles.push(roleObject);
-                return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
               }
             });
+            return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
           }
         } catch(err) {
-          return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
+          return Promise.reject(err.message);
         }
       }
     }
@@ -555,7 +559,7 @@ export const FIELDS: Fields = {
         return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
       } else {
         row.timeZone = timeZone.value;
-        return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+        return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
       }
     }
   }
