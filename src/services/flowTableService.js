@@ -40,11 +40,11 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
                   employeeId
                     accountManager
                     affinityVDN
-                    keycode
+                    callTypeDescription
                     transferCode
                     internetPlacement
-                    internetType
-                    campaignType
+                    callDetails1
+                    callDetails2
                     lineOfBusiness
                     marketingChannel
                     whisper
@@ -131,11 +131,11 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
                 employeeId: "${item.employeeId || ""}",
                 accountManager: "${item.accountManager || ""}",
                 affinityVDN: "${item.affinityVDN || ""}",
-                keycode: "${item.keycode || ""}",
+                callTypeDescription: "${item.callTypeDescription || ""}",
                 transferCode: "${item.transferCode || ""}",
                 internetPlacement: "${item.internetPlacement || ""}",
-                internetType: "${item.internetType || ""}",
-                campaignType: "${item.campaignType || ""}",
+                callDetails1: "${item.callDetails1 || ""}",
+                callDetails2: "${item.callDetails2 || ""}",
                 lineOfBusiness: "${item.lineOfBusiness || ""}",
                 marketingChannel: "${item.marketingChannel || ""}",
                 whisper: "${item.whisper || ""}",
@@ -160,11 +160,11 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
               employeeId
               accountManager
               affinityVDN
-              keycode
+              callTypeDescription
               transferCode
               internetPlacement
-              internetType
-              campaignType
+              callDetails1
+              callDetails2
               lineOfBusiness
               marketingChannel
               whisper
@@ -230,11 +230,11 @@ async function addFlowRule(item, accessToken, graphQlApiUrl) {
                   employeeId: "${item.employeeId?.value || ""}",
                   accountManager: "${item.accountManager?.value || ""}",
                   affinityVDN: "${item.affinityVDN?.value || ""}",
-                  keycode: "${item.keycode?.value || ""}",
+                  callTypeDescription: "${item.callTypeDescription?.value || ""}",
                   transferCode: "${item.transferCode?.value || ""}",
                   internetPlacement: "${item.internetPlacement?.value || ""}",
-                  internetType: "${item.internetType?.value || ""}",
-                  campaignType: "${item.campaignType?.value || ""}",
+                  callDetails1: "${item.callDetails1?.value || ""}",
+                  callDetails2: "${item.callDetails2?.value || ""}",
                   lineOfBusiness: "${item.lineOfBusiness?.value || ""}",
                   marketingChannel: "${item.marketingChannel?.value || ""}",
                   whisper: "${item.whisper?.value || ""}",
@@ -260,11 +260,11 @@ async function addFlowRule(item, accessToken, graphQlApiUrl) {
               pkey
               accountManager
               affinityVDN
-              keycode
+              callTypeDescription
               transferCode
               internetPlacement
-              internetType
-              campaignType
+              callDetails1
+              callDetails2
               lineOfBusiness
               marketingChannel
               whisper
@@ -325,11 +325,11 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
               employeeId
               accountManager
               affinityVDN
-              keycode
+              callTypeDescription
               transferCode
               internetPlacement
-              internetType
-              campaignType
+              callDetails1
+              callDetails2
               lineOfBusiness
               marketingChannel
               whisper
