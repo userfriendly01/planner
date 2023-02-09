@@ -18,10 +18,15 @@ import {
   ComponentControl, CustomToast
 } from "components";
 import {
+  CctSharedCallFlowDb,
+  FlowDropDownList,
   FlowKeys,
-  FlowDropDownList
+  FlowMasterData
 } from "../../AlohaFlow.Interfaces";
-import { addFlowRule } from "services";
+import {
+  addFlowRule,
+  retrieveFlowData
+} from "services";
 import {
   ModalBodyStyled,
   ModalFooterStyled,
@@ -35,10 +40,6 @@ import {
   languageOffer,
   userDestination
 } from "utils";
-import { retrieveFlowData } from "services";
-import {
-  CctSharedCallFlowDb, FlowMasterData
-} from "../../AlohaFlow.Interfaces";
 import { getGridMasterData } from "../../DataGridFlow/GridMaster";
 import {
   AlertBarProps, FormValidationRule
@@ -48,7 +49,7 @@ import { AzureSPA } from "globals";
 export interface AddFlowModalProps {
   isOpen: boolean;
   newId: number;
-  openAddModal: (flag: boolean, isSubmitted?: boolean) => void;
+  openAddModal: (flag: boolean, isSubmitted?: boolean, row?:CctSharedCallFlowDb, deleteRow?: boolean) => void;
 }
 
 export const AddFlow = ({
@@ -129,13 +130,56 @@ export const AddFlow = ({
     setFlowRule({ ...initRule });
     openAddModal(false);
   }
+  function stringValue(obj: {[index: string]:any}, prop: string, defaultValue: string) {
+    if(obj[prop]) {
+      return obj[prop].value;
+    }
+    return defaultValue;
+  }
 
   function handleOnCreateRoute() {
     const isValidForm: boolean = validateRoute();
     if (isValidForm) {
-      addFlowRule(flowRule, accessToken, graphQlApiUrl).then(apiResponse => {
+      const curTime = new Date().toISOString();
+      const dataRequests = flowRule.dataRequests.value
+        ?.split(",")
+        ?.map(a => a.trim())
+        ?.filter(a => a.length > 0)
+      || [];
+
+      addFlowRule(flowRule, accessToken, graphQlApiUrl, curTime, dataRequests).then(apiResponse => {
         if (!apiResponse.errors) {
-          openAddModal(false, true);
+          const newFlowRule: CctSharedCallFlowDb = {
+            pkey: "${flowRule.pkey.value}",
+            content: {
+              callFlowRoute: stringValue(flowRule,"callFlowRoute", ""),
+              callerType: stringValue(flowRule,"callerType", ""),
+              greetingMessages: stringValue(flowRule,"greetingMessages", ""),
+              transferNumber: stringValue(flowRule,"transferNumber", ""),
+              languageOffer: stringValue(flowRule,"languageOffer", ""),
+              dataRequests: dataRequests
+            },
+            createTime: curTime,
+            agentId: stringValue(flowRule,"agentId", ""),
+            brand: flowRule.brand.value,
+            callFlowTemplate: stringValue(flowRule,"callFlowTemplate", ""),
+            channel: flowRule.channel.value,
+            dialedDescription: flowRule.dialedDescription.value,
+            employeeId: stringValue(flowRule,"employeeId", ""),
+            accountManager: stringValue(flowRule,"accountManager", ""),
+            affinityVDN: stringValue(flowRule,"affinityVDN", ""),
+            callTypeDescription: stringValue(flowRule,"callTypeDescription", ""),
+            transferCode: stringValue(flowRule,"transferCode", ""),
+            internetPlacement: stringValue(flowRule,"internetPlacement", ""),
+            callDetails1: stringValue(flowRule,"callDetails1", ""),
+            callDetails2: stringValue(flowRule,"callDetails2", ""),
+            lineOfBusiness: stringValue(flowRule,"lineOfBusiness", ""),
+            marketingChannel: stringValue(flowRule,"marketingChannel", ""),
+            whisper: stringValue(flowRule,"whisper", ""),
+            requestID: stringValue(flowRule,"requestID", ""),
+            userDestination: flowRule.userDestination.value || ""
+          };
+          openAddModal(false, true, newFlowRule);
           setAlertBar((alertBarProps: AlertBarProps) => ({
             ...alertBarProps,
             open: true,
