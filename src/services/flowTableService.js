@@ -189,17 +189,11 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
  * @param {flowData} item Flow object that need to add
  * @param {String} accessToken token to use while calling graphql query
  * @param {String} graphQlApiUrl Endpoint URL
+ * @param {String} curTime the current time, for the db record's create time
  * @returns
  */
-async function addFlowRule(item, accessToken, graphQlApiUrl) {
+async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date().toISOString(), dataRequests=[]) {
   let response;
-  const curTime = new Date().toISOString();
-  const dataRequests = item.dataRequests.value
-    ?.split(",")
-    ?.map(a => a.trim())
-    ?.filter(a => a.length > 0)
-    || [];
-
   try {
     const fetchResponse = await fetch(graphQlApiUrl, {
       method: "POST",
