@@ -44,7 +44,7 @@ import { AzureSPA } from "globals";
 interface EditFlowComponentProps {
     isOpen: boolean;
     selectedRow: CctSharedCallFlowDb;
-    openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallFlowDb, message?: string) => void;
+    openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallFlowDb, message?: string, deleteRow?: boolean) => void;
 }
 export const EditFlow = ({
   accessToken, matchedGroups, isOpen, selectedRow, openEditModal
@@ -124,7 +124,7 @@ export const EditFlow = ({
         }));
         return;
       }
-      openEditModal(false, isSubmitted, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully updated!! `);
+      openEditModal(false, isSubmitted, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully updated!!`, false);
       setFlowRule({ ...initRule });
     }
   };
@@ -132,7 +132,7 @@ export const EditFlow = ({
   const handleOnDelete = async () => {
     const response = await deleteFlowRule(selectedRowLocal, accessToken, graphQLEndPoint);
     if (response) {
-      openEditModal(false, true, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully deleted!! `);
+      openEditModal(false, true, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully deleted!!`, true);
     }
     setFlowRule({ ...initRule });
   };

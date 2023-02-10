@@ -73,20 +73,20 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     maxId: 0,
     minId: 0,
     saveSuccess: 0,
-    page: 1,
-    perPage: 10
+    page: sessionStorage.getItem(CALL_FLOW_PAGE_NO) ? +sessionStorage.getItem(CALL_FLOW_PAGE_NO) : 1,
+    perPage: sessionStorage.getItem(CALL_FLOW_PER_PAGE) ? +sessionStorage.getItem(CALL_FLOW_PER_PAGE) : 10
   };
   const [dataFlow, setDataFlow] = useState(flowInitState);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
 
   useEffect(() => {
     const getTableData = async () =>{
-      await loadDataTable(accessToken, graphQLEndpoint);
-      setDataFlow((dataFlowProps: FlowStateVariables) => ({
-        ...dataFlowProps,
-        page: +sessionStorage.getItem(CALL_FLOW_PAGE_NO) || 1,
-        perPage: +sessionStorage.getItem(CALL_FLOW_PER_PAGE) || 10
-      }));
+      const result: CctSharedCallFlowDb[] = await retrieveFlowData(
+        accessToken,
+        graphQLEndpoint
+      );
+
+      await loadDataTable(result);
     };
     getTableData();
   }, []);
@@ -124,18 +124,22 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     }));
   };
 
-  const openAddModal = (flag: boolean, isSubmitted?: boolean) => {
+  const openAddModal = (flag: boolean, isSubmitted?: boolean, row?:CctSharedCallFlowDb) => {
     if (!flag && isSubmitted) {
+
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: flag,
         severityType: "success",
         msg: "New flow has been successfully added!! "
       }));
-      loadDataTable(accessToken, graphQLEndpoint);
     }
     setDataFlow((dataFlowProps: FlowStateVariables) => ({
       ...dataFlowProps,
+      ...(!flag && isSubmitted && row) && {
+        data: dataFlowProps.data.map(x=> x.id === row.id ? row : x),
+        filteredItems: dataFlowProps.data.map(x=> x.id === row.id ? row : x)
+      },
       isAddModalOpen: flag
     }));
   };
@@ -202,12 +206,8 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   };
 
 
-  const loadDataTable = async (token: string, url: string) => {
-    let result: CctSharedCallFlowDb[] = await retrieveFlowData(
-      token,
-      url
-    );
-    if (result.length > 0) {
+  const loadDataTable = async (result?: CctSharedCallFlowDb[]) => {
+    if (result?.length > 0) {
       result = result.sort((a: CctSharedCallFlowDb, b: CctSharedCallFlowDb) => (a.id - b.id));
       result = result.map((item: CctSharedCallFlowDb, index: number) => ({
         ...item,
@@ -237,8 +237,10 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     } else {
       setDataFlow((dataFlowProps: FlowStateVariables) => ({
         ...dataFlowProps,
-        data: result,
-        filteredItems: result,
+        ...(result) && {
+          data: result,
+          filteredItems: result
+        },
         fetching: false
       }));
       setAlertBar((alertBarProps: AlertBarProps) => ({
@@ -254,7 +256,8 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     downloadCSV(EXPORT_FILE_PREFIX.FLOW, dataFlow.filteredItems);
   };
 
-  const openEditModal = (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallFlowDb, message?: string) => {
+  const openEditModal = (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallFlowDb, message?: string, deleteRow?: boolean) => {
+
     if (!flag && isSubmitted) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -262,11 +265,18 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         msg: message,
         severityType: "success"
       }));
-      loadDataTable(accessToken, graphQLEndpoint);
     }
     setDataFlow((currentDataFlow: FlowStateVariables) => (
       {
         ...currentDataFlow,
+        ...(!flag && isSubmitted && deleteRow) && {
+          data: currentDataFlow.data.filter(x=> x.id !== row.id),
+          filteredItems: currentDataFlow.data.filter(x=> x.id !== row.id)
+        },
+        ...(!flag && isSubmitted && !deleteRow && row) && {
+          data: currentDataFlow.data.map(x=> x.id === row.id ? row : x),
+          filteredItems: currentDataFlow.data.map(x=> x.id === row.id ? row : x)
+        },
         isEditModalOpen: flag,
         selectedRow: row
       }

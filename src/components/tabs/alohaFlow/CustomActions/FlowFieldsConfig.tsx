@@ -179,10 +179,10 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     })
   },
   {
-    label: "Keycode",
-    key: "keycode",
+    label: "Call Type",
+    key: "callTypeDescription",
     control: "input",
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.keycode || ""}`,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.callTypeDescription || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
@@ -209,20 +209,20 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     })
   },
   {
-    label: "Internet Type",
-    key: "internetType",
+    label: "Call Details 1",
+    key: "callDetails1",
     control: "input",
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.internetType || ""}`,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.callDetails1 || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
     })
   },
   {
-    label: "Campaign Type",
-    key: "campaignType",
+    label: "Call Details 2",
+    key: "callDetails2",
     control: "input",
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.campaignType || ""}`,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.callDetails2 || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
