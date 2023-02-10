@@ -35,7 +35,6 @@ const updateTemplates = getUpdateTemplates();
 describe("<BulkUpdateAttributes />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.resetAllMocks();
     setupMockedComponents({
       CustomInput,
       Dropdown,

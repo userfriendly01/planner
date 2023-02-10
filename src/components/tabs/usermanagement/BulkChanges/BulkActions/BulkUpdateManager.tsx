@@ -7,7 +7,7 @@ import { Dropdown } from "components";
 import { useAdminState } from "context";
 import React from "react";
 
-const BulkUpdateForm = (props: BulkUpdateProps) => {
+const BulkUpdateManager = (props: BulkUpdateProps) => {
   const {
     template,
     selectedTemplates,
@@ -19,7 +19,7 @@ const BulkUpdateForm = (props: BulkUpdateProps) => {
   const state = useAdminState();
   const [ newManager, setNewManager ] = React.useState({
     nNumber: "",
-    calabrioTeam: ""
+    calabrioTeamId: ""
   });
 
   console.log("BulkUpdateForm - selectedTemplates", selectedTemplates);
@@ -28,7 +28,7 @@ const BulkUpdateForm = (props: BulkUpdateProps) => {
     //If the entries are valid, update/add the template to the selected templates.
     //If they arent valid, remove the template from the selected templates
     //Valid templates will drive the display of the processing buttons
-    if(newManager.nNumber && newManager.calabrioTeam){
+    if(newManager.nNumber && newManager.calabrioTeamId){
       const templateFound = selectedTemplates.find((t: Template) => t.name === template.name);
       if(!templateFound){
         replaceTemplate({
@@ -59,7 +59,7 @@ const BulkUpdateForm = (props: BulkUpdateProps) => {
         })}
         updateValue={(event: any, manager: any) => setNewManager({
           ...newManager,
-          nNumber: manager
+          nNumber: manager.manager_n_number
         })}
         styles={{
           width: "230px",
@@ -68,7 +68,7 @@ const BulkUpdateForm = (props: BulkUpdateProps) => {
       />
       <Dropdown
         label="Calabrio Team"
-        value={newManager.calabrioTeam}
+        value={newManager.calabrioTeamId}
         options={state.calabrioContext.teams.map((t: any) => {
           return {
             label: t.name,
@@ -78,7 +78,7 @@ const BulkUpdateForm = (props: BulkUpdateProps) => {
         })}
         updateValue={(event: any, team: any) => setNewManager({
           ...newManager,
-          calabrioTeam: team
+          calabrioTeamId: team.groupId
         })}
         styles={{
           width: "230px",
@@ -89,4 +89,4 @@ const BulkUpdateForm = (props: BulkUpdateProps) => {
   );
 };
 
-export default BulkUpdateForm;
+export default BulkUpdateManager;

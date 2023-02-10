@@ -1,6 +1,7 @@
 import {
   createUser,
   createCalabrioUser,
+  updateCalabrioUser,
   updateUser
 } from "services";
 import {
@@ -84,19 +85,7 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
 
   let body: any = {};
 
-  if(key === "manager_n_number") {
-    const managerObject = state.managerContext.managers.find((m:any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === value);
-    if(!managerObject){
-      return Promise.reject(`${value} is not a valid option for row ${rowNumber}`);
-    } else {
-      body[location] = {
-        manager_first_name: managerObject.manager_first_name,
-        manager_last_name: managerObject.manager_last_name,
-        manager_n_number: managerObject.manager_n_number,
-        manager: `${managerObject.manager_first_name} ${managerObject.manager_last_name}`
-      };
-    }
-  } else if(key === "profile_id"){
+  if(key === "profile_id"){
     body[location] = {
       agent_attribute_1: parseInt(value),
       profile_id: parseInt(value)
@@ -114,6 +103,54 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
   } catch(err){
     console.error(`Failed to update Triton Worker Attributes user for row ${rowNumber}.`, err);
     return Promise.reject(`Failed to update Triton Worker Attributes for row ${rowNumber}.`);
+  }
+};
+
+const processUpdateManager = async (row: any, rowNumber: number, template: Template, state: any) => {
+  const userNNumber = row.n_number;
+  const managerNNumber = template.data.nNumber;
+  const calabrioTeamId = template.data.calabrioTeamId;
+
+  const tritonBody: any = {};
+  let calabrioBody: any = {};
+
+  const userTritonRecord = state.workerContext.workers.find((w: any) => w.attributes.n_number === userNNumber);
+  const userCalabrioRecord = state.calabrioContext.users.find((u: any) => cleanupField(u.acdId, "string") === cleanupField(userTritonRecord.sid, "string") || cleanupField(u.email, "string") === cleanupField(userTritonRecord.attributes.email, "string"));
+  const managerObject = state.managerContext.managers.find((m:any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === managerNNumber);
+
+  if(!managerObject){
+    return Promise.reject(`${managerNNumber} is not a valid manager nNumber for row ${rowNumber}`);
+  } else if(!userCalabrioRecord){
+    return Promise.reject(`${userNNumber} is not a valid calabrio user for row ${rowNumber}`);
+  } else {
+    tritonBody.attributes = {
+      manager_first_name: managerObject.manager_first_name,
+      manager_last_name: managerObject.manager_last_name,
+      manager_n_number: managerObject.manager_n_number,
+      manager: `${managerObject.manager_first_name} ${managerObject.manager_last_name}`
+    };
+    calabrioBody = {
+      ...userCalabrioRecord,
+      groupId: calabrioTeamId
+    };
+  }
+
+  console.log("**** UPDATE MANAGER RECORD PROCESSING", row, tritonBody, calabrioBody);
+  try {
+    const results = await Promise.allSettled([
+      updateUser(row.workerSid, tritonBody),
+      updateCalabrioUser(userCalabrioRecord.id, calabrioBody)
+    ]);
+
+    const errors: string[] = [];
+    results.forEach((p: any) => p.status === "rejected" && errors.push(p.reason));
+    if(errors.length > 0){
+      return Promise.reject(`Failed to update for row ${rowNumber}. ${errors.toString()}`);
+    }
+    return Promise.resolve(`${userNNumber} - Manager & Calabrio Team updated for row ${rowNumber}`);
+  } catch(err){
+    console.error(`Failed to update Triton Worker Attributes user for row ${rowNumber}.`, err);
+    return Promise.reject(`Failed to update for row ${rowNumber}. ${err.toString()}`);
   }
 };
 
@@ -176,7 +213,7 @@ export const getUpdateTemplates = (state: any): Templates => {
     UPDATE_USERS_MANAGER: {
       name: "UPDATE_USERS_MANAGER",
       data: {},
-      processFunction: (row: any, rowNumber: number, template: Template) => processUpdateWorkerAttribute(row, rowNumber, template, state),
+      processFunction: (row: any, rowNumber: number, template: Template) => processUpdateManager(row, rowNumber, template, state),
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,
