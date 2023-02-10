@@ -1,4 +1,19 @@
-import { GridColDef } from "@mui/x-data-grid";
+import {
+  GridColDef, GridRenderCellParams
+} from "@mui/x-data-grid";
+import { CctSharedCallRoutingDb } from "../AlohaRouting.Interfaces";
+
+const formatDateTime = (dateTime: string) => {
+  if(dateTime.includes("AM") || dateTime.includes("PM")){
+    const [time, modifier] = dateTime.split(" ");
+    const timeSplit: string[] = time.split(":");
+    return `${timeSplit[0]}:${timeSplit[1]} ${modifier}`;
+  }
+  else{
+    return "";
+  }
+
+};
 
 export const RoutingGridColumnDef: GridColDef[] = [
   {
@@ -84,7 +99,8 @@ export const RoutingGridColumnDef: GridColDef[] = [
     headerName: "Start Time",
     field: "startTime",
     sortable: true,
-    align: "center"
+    align: "center",
+    valueGetter: (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (formatDateTime(params.row.startTime))
   },
   {
     headerName: "End Time",

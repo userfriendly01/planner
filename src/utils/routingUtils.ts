@@ -295,3 +295,18 @@ export const convertTime12to24 = (time12h: string): string => {
   }
   return `${timeSplit[0]}:${timeSplit[1]}:${timeSplit[2]}`;
 };
+
+export const convertTime24to12 = (time24h: Date): string =>{
+  let hours = time24h.getHours();
+  const minutes = time24h.getMinutes();
+  let ampm = "AM";
+  if (hours === 12) {
+    ampm = "PM";
+  } else if (hours === 0) {
+    hours = 12;
+  } else if (hours > 12) {
+    hours -= 12;
+    ampm = "PM";
+  }
+  return `${hours}:${minutes} ${ampm}`;
+};

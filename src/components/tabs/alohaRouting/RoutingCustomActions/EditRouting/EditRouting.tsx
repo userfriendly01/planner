@@ -8,7 +8,7 @@ import React, {
   useState, useRef, useEffect
 } from "react";
 import {
-  convertTime12to24, getAccessToken, getGraphQLEndpoint, routingFields, routingInitRule, initializedAlertBar, routingDropDownList, dayOfWeek
+  convertTime12to24,convertTime24to12, getGraphQLEndpoint, routingFields, routingInitRule, initializedAlertBar, routingDropDownList, dayOfWeek
 } from "utils";
 import {
   CctSharedCallRoutingDb, RoutingDropDownList
@@ -51,6 +51,7 @@ export const EditRouting = ({
     }));
     setSelectedRowLocal(selectedRow);
     if (selectedRow && selectedRow.startTime) {
+      console.log("startTime",selectedRow.startTime);
       const flagStartTime = !Date.parse(selectedRow.startTime);
       const flagEndTime = !Date.parse(selectedRow.endTime);
       const todayDate = new Date().toISOString().split("T")[0];
@@ -114,12 +115,13 @@ export const EditRouting = ({
     event: any,
     key: string
   ) => {
+    console.log("Date:",event.$d);
     const timePicked = new Date(event.$d.toString());
     timePicked.setSeconds(0);
     if (key === "endTime") {
       timePicked.setSeconds(timePicked.getSeconds() - 1);
     }
-    return timePicked.toISOString();
+    return convertTime24to12(timePicked);
   };
 
   const handleInputChange = async (

@@ -24,6 +24,7 @@ export default function TimePickerComponent({
   error,
   required
 }: TimePickerComponentProps): JSX.Element {
+  console.log(`Timepicker label: ${label} value ${value}`);
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <FormControl sx={{ width: "calc(95%)" }}>
