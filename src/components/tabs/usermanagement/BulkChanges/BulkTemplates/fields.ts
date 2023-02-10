@@ -220,10 +220,10 @@ export const FIELDS: Fields = {
           return Promise.reject(`${fieldName} Errors found for row ${rowNumber} ${skillErrors.toString()}`);
         } else {
           row.attributes.defaultSkills = defaultSkills;
-          return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
         }
       } else {
-        return Promise.resolve(`${fieldName} is empty but not required. Skipping validation`);
+        return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
       }
     }
   },
@@ -467,7 +467,7 @@ export const FIELDS: Fields = {
               } else if(group) {
                 row.scope.groups.push(group.groupId);
               } else {
-                row.scope.teams.push(team.teamId);
+                row.scope.teams.push(team.groupId);
               }
             });
             return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
@@ -523,13 +523,13 @@ export const FIELDS: Fields = {
           if(fieldArray.length === 0){
             return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
           } else {
+            row.roles = [];
             fieldArray.forEach((role: any) => {
               const cleanRole = cleanupField(role, "string");
               const foundInRoles = calabrioAllowedRoles.some((r:any) => cleanupField(r, "string") === cleanRole);
               const roleObject = state.calabrioContext.roles.find((r:any) => cleanupField(r.name, "string") === cleanRole);
-              row.roles = [];
               if(!foundInRoles || !roleObject){
-                throw new Error(`${cleanRole} is not a valid role for row ${rowNumber}`)
+                throw new Error(`${cleanRole} is not a valid role for row ${rowNumber}`);
               } else {
                 row.roles.push(roleObject);
               }
