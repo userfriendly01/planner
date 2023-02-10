@@ -261,8 +261,8 @@ export const FIELDS: Fields = {
         return Promise.resolve(`${fieldName} skipped for row ${rowNumber}.`);
       } else {
         try {
-          const isInt = parseInt(field);
-          if(typeof isInt !== "number" && isInt > 0){
+          const isNotNum: boolean = isNaN(field as any);
+          if(isNotNum){
             return Promise.reject(`${fieldName} ${field} is in the wrong format for row ${rowNumber}`);
           }
           const isExtensionTaken = workers.some((w: any) => cleanupField(w.attributes.extension, "string") === field);

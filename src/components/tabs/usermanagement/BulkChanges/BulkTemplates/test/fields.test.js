@@ -167,7 +167,7 @@ describe("fields.js", () => {
             await nNumUpdateValidation(row, 2, initialTestState);
           } catch (err) {
             expect(err).toEqual("n9999999 is not an existing setup worker in Triton for row 2");
-            expect(row).toEqual({ "N Number": "n9999999" })
+            expect(row).toEqual({ "N Number": "n9999999" });
           }
         });
         test("the field is 8 character string, has a worker match, resolves", async () => {
@@ -229,6 +229,15 @@ describe("fields.js", () => {
           });
         });
       });
+      describe("options", () => {
+        const optionsFunction = FIELDS.PROFILE_ID.options;
+        test("returns the profile id options", () => {
+          const options = optionsFunction(initialTestState);
+          expect(options).toEqual([
+            1, 2, 3
+          ]);
+        });
+      });
 
     });
     describe("MANAGER_N_NUMBER", () => {
@@ -268,7 +277,16 @@ describe("fields.js", () => {
           });
         });
       });
-
+      describe("options", () => {
+        const optionsFunction = FIELDS.MANAGER_N_NUMBER.options;
+        test("returns the profile id options", () => {
+          const options = optionsFunction(initialTestState);
+          expect(options).toEqual([
+            "n1234567",
+            "n7454853"
+          ]);
+        });
+      });
     });
 
     describe("DEFAULT_SKILLS", () => {
@@ -325,17 +343,28 @@ describe("fields.js", () => {
           });
         });
       });
-
+      describe("options", () => {
+        const optionsFunction = FIELDS.DEFAULT_SKILLS.options;
+        test("returns the profile id options", () => {
+          const options = optionsFunction(initialTestState);
+          expect(options).toEqual([
+            "lscOBDialer1 Available levels: 1,2,3",
+            "aisgL1",
+            "bscCommisssions Available levels: 1,2,3,4,5,6,7",
+            "bscCbsL2",
+            "lscUSAA"
+          ]);
+        });
+      });
     });
     describe("EXTENSION", () => {
       describe("validateFunction", () => {
         const exetensionValidateFunction = FIELDS.EXTENSION.validateFunction;
         test("No matching extension field, rejects with message", async () => {
-          try {
-            await exetensionValidateFunction({}, 6, initialTestState);
-          } catch (e) {
-            expect(e).toEqual("No extension is set for row 6");
-          }
+          const row = {}
+          const result = await exetensionValidateFunction(row, 6, initialTestState);
+          expect(result).toEqual("No Extension set for row 6");
+          expect(row).toEqual({ attributes: {}});
         });
         // 
         test("New extension is true, generate Extension fails, rejects with message", async () => {
@@ -374,11 +403,11 @@ describe("fields.js", () => {
             attributes: {}
           });
         });
-        test("New extension is false, field returns NaN on parseInt, resolves with skip message", async () => {
+        test("New extension is false, field returns NaN on parseInt, rejects with format message", async () => {
           try {
-            await exetensionValidateFunction({ "Extension": "boo" }, 6, initialTestState);
+            await exetensionValidateFunction({ "Extension": "345H" }, 6, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Extension is in the wrong format for row 6.");
+            expect(e).toEqual("Extension 345h is in the wrong format for row 6");
           }
         });
         test("New extension is false, extension is taken, rejects with message", async () => {
@@ -389,11 +418,8 @@ describe("fields.js", () => {
           }
         });
         test("New extension is false, extension is not taken, resolves with message", async () => {
-          try {
-            await exetensionValidateFunction({ "Extension": 876 }, 6, initialTestState);
-          } catch (e) {
-            expect(e).toEqual("Extension 876 set for row 6");
-          }
+          const result = await exetensionValidateFunction({ "Extension": 876 }, 6, initialTestState);
+          expect(result).toEqual("Extension 876 set for row 6");
         });
       });
     });
@@ -566,6 +592,16 @@ describe("fields.js", () => {
             expect(e).toEqual("Zero Out Enabled needs to be needs to be 'Y' or 'N' if DID user is 'Y' for 4");
           }
         });
+        test("didField field is Y, zero out enabled is not provided, rejects with required message", async () => {
+          try {
+            await ZeroOutEnabledValidateFunction({
+              "Did User": "Y",
+              "Zero Out Enabled": ""
+            }, 4, initialTestState);
+          } catch (e) {
+            expect(e).toEqual("Zero Out Enabled is required when DID user is 'Y' 4");
+          }
+        });
         test("didField field is Y, zero out enabled is not a Y or N, rejects with message", async () => {
           const row = {
             "Did User": "Y",
@@ -626,6 +662,36 @@ describe("fields.js", () => {
                 levels: {}
               }
             }
+          });
+        });
+        test("didField field is N, zero out enabled is not provided, resolves with skip message", async () => {
+          const row = {
+            "Did User": "N",
+            "Zero Out Enabled": "",
+            "Profile Id": 2
+          };
+          const result = await ZeroOutEnabledValidateFunction(row, 4, initialTestState);
+          expect(result).toEqual("Zero Out Enabled skipped for Non DID user for row 4");
+          expect(row).toEqual({
+            "Did User": "N",
+            "Zero Out Enabled": "",
+            "Profile Id": 2,
+            attributes: {}
+          });
+        });
+        test("didField field is N, zero out enabled is N, resolves with skip message", async () => {
+          const row = {
+            "Did User": "N",
+            "Zero Out Enabled": "N",
+            "Profile Id": 2
+          };
+          const result = await ZeroOutEnabledValidateFunction(row, 4, initialTestState);
+          expect(result).toEqual("Zero Out Enabled skipped for Non DID user for row 4");
+          expect(row).toEqual({
+            "Did User": "N",
+            "Zero Out Enabled": "N",
+            "Profile Id": 2,
+            attributes: {}
           });
         });
       });
@@ -816,7 +882,17 @@ describe("fields.js", () => {
           }
         });
       });
-
+      describe("options", () => {
+        const optionsFunction = FIELDS.CALABRIO_SCOPE.options;
+        test("returns the profile id options", () => {
+          const options = optionsFunction(initialTestState);
+          expect(options).toEqual([
+            "Hawaii 50 Group",
+            "FNOL Group",
+            "No Teams Group"
+          ]);
+        });
+      });
     });
     describe("CALABRIO_TEAM", () => {
       describe("validateFunction", () => {
@@ -862,7 +938,17 @@ describe("fields.js", () => {
           });
         });
       });
-
+      describe("options", () => {
+        const optionsFunction = FIELDS.CALABRIO_TEAM.options;
+        test("returns the profile id options", () => {
+          const options = optionsFunction(initialTestState);
+          expect(options).toEqual([
+            "Hawaii Team 50",
+            "Hawaii Specialty Team",
+            "FNOL Team"
+          ]);
+        });
+      });
     });
     describe("CALABRIO_ROLES", () => {
       describe("validateFunction", () => {
@@ -945,7 +1031,22 @@ describe("fields.js", () => {
           }
         });
       });
-
+      describe("options", () => {
+        const optionsFunction = FIELDS.CALABRIO_ROLES.options;
+        test("returns the profile id options", () => {
+          const options = optionsFunction();
+          expect(options).toEqual([
+            "Supervisor",
+            "Agent-Sync Only",
+            "No Screen",
+            "QM Agent",
+            "WFM_QM_Agent",
+            "WFM_QM_Supervisor_TT",
+            "WFM_QM_Supervisor",
+            "WFM_QM_Agent_NT"
+          ]);
+        });
+      });
     });
     describe("CALABRIO_TIME_ZONE", () => {
       describe("validateFunction", () => {
@@ -978,7 +1079,18 @@ describe("fields.js", () => {
           });
         });
       });
-
+      describe("options", () => {
+        const optionsFunction = FIELDS.CALABRIO_TIME_ZONE.options;
+        test("returns the profile id options", () => {
+          const options = optionsFunction();
+          expect(options).toEqual([
+            "America/New_York (EST/EDT)",
+            "America/Los_Angeles (PST/PDT)",
+            "America/Denver (MST/MDT)",
+            "America/Chicago (CST/CDT)"
+          ]);
+        });
+      });
     });
   });
 });
