@@ -123,6 +123,7 @@ const BulkChanges = () => {
         </Row>
       }
       <input
+        data-testid="file-upload"
         type="file"
         ref={uploadButtonRef}
         hidden={true}
