@@ -1,7 +1,25 @@
 import  {
-  retrieveFlowData,addFlowRule
+  retrieveFlowData,addFlowRule, deleteFlowRule
 }  from "../flowTableService";
 
+
+const jsonFlowData = {
+  pkey: { value: "12345" },
+  agentId: { value: "123455" },
+  brand: { value: "LM" },
+  callFlowTemplate: { value: "temp" },
+  channel: { value: "Test1 Channel" },
+  createTime: { value: "2022-24-08" },
+  dialedDescription: { value: "test" },
+  employeeId: { value: "n1234567" },
+  userDestination: { value: "dest" },
+  callerType: { value: "test" },
+  callFlowRoute: { value: "test" },
+  dataRequests: { value: "test1,test2" },
+  greetingMessages: { value: "Hello Test Message" },
+  languageOffer: { value: "English" },
+  transferNumber: { value: "123456789" }
+};
 
 describe("flowTableService",()=>{
   describe("AddFlow", ()=>{
@@ -139,6 +157,41 @@ describe("flowTableService",()=>{
       const listFlow = await retrieveFlowData("1234-5678","TEST");
       expect(listFlow).toBeCalled;
 
+    });
+  });
+  describe("Delete Flow", ()=>{
+    beforeEach(()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: {
+              listCctSharedCallFlowDbs: {
+                items: jsonFlowData
+              }
+            }
+          })
+        })
+      );
+    });
+    afterEach(()=>{
+
+    });
+    test("Testing the Delete Flow",async()=>{
+      const item = {
+        pkey: 1
+      };
+      const delFlow = await deleteFlowRule(item,"1233-3245","http://localhost:3000");
+      expect(delFlow).toBeDefined;
+    });
+    test("Testing the Delete FlowRule error",async()=>{
+      const item = {
+        pkey: 1
+      };
+      jest.spyOn(JSON, "stringify").mockImplementation(()=>{
+        throw new Error();
+      });
+      const delFlow = await deleteFlowRule(item,"1233-3245","http://localhost:3000");
+      expect(delFlow).toBeDefined;
     });
   });
 });
