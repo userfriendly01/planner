@@ -1,5 +1,5 @@
 import  {
-  retrieveFlowData,addFlowRule, deleteFlowRule
+  retrieveFlowData,addFlowRule, deleteFlowRule, updateFlowDB
 }  from "../flowTableService";
 
 
@@ -34,7 +34,7 @@ describe("flowTableService",()=>{
       );
     });
     afterEach(()=>{
-      fetch.mockClear();
+      jest.restoreAllMocks();
     });
     test("Simulate Add Flow Rule", async()=>{
       const validAddFlowData = {
@@ -87,7 +87,7 @@ describe("flowTableService",()=>{
   });
   describe("CallFlow List",()=>{
     afterEach(()=>{
-      fetch.mockClear();
+      jest.restoreAllMocks();
     });
     test("CallFlow list",async()=>{
       const jsonFlowData = [
@@ -174,7 +174,7 @@ describe("flowTableService",()=>{
       );
     });
     afterEach(()=>{
-
+      jest.restoreAllMocks();
     });
     test("Testing the Delete Flow",async()=>{
       const item = {
@@ -192,6 +192,41 @@ describe("flowTableService",()=>{
       });
       const delFlow = await deleteFlowRule(item,"1233-3245","http://localhost:3000");
       expect(delFlow).toBeDefined;
+    });
+  });
+  describe("Update Flow", ()=>{
+    beforeEach(()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: {
+              listCctSharedCallFlowDbs: {
+                items: jsonFlowData
+              }
+            }
+          })
+        })
+      );
+    });
+    afterEach(()=>{
+      jest.restoreAllMocks();
+    });
+    test("Testing the Update Flow",async()=>{
+      const item = {
+        pkey: 1
+      };
+      const updateFlow = await updateFlowDB(item,"1233-3245","http://localhost:3000");
+      expect(updateFlow).toBeDefined;
+    });
+    test("Testing the Update FlowRule error",async()=>{
+      const item = {
+        pkey: 1
+      };
+      jest.spyOn(JSON, "stringify").mockImplementation(()=>{
+        throw new Error();
+      });
+      const updateFlow = await updateFlowDB(item,"1233-3245","http://localhost:3000");
+      expect(updateFlow).toBeDefined;
     });
   });
 });
