@@ -7,7 +7,7 @@ import {
   Modal, ModalHeader
 } from "@lmig/lmds-react-modal";
 import {
-  routingDropDownList, routingInitRule, routingFields, initializedAlertBar, getGraphQLEndpoint
+  routingDropDownList, routingInitRule, routingFields, initializedAlertBar, getGraphQLEndpoint, convertTime24to12
 } from "utils";
 import { getGridMasterData } from "../../DataGridRouting/GridMaster";
 import {
@@ -78,7 +78,6 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
           }
         };
         isValidForm = false;
-        console.log("RoutingRule: ", newRoutingRule);
         setRoutingRule(rule => ({
           ...rule,
           ...newRoutingRule
@@ -92,6 +91,8 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
   const handleOnCreateRoute = () => {
     const isValidForm = validateRoute();
     if (isValidForm) {
+      routingRule["startTime"].value = convertTime24to12(routingRule["startTime"].value);
+      routingRule["endTime"].value = convertTime24to12(routingRule["endTime"].value);
       addRoutingRule(routingRule, accessToken, graphQlApiUrl).then(apiResponse => {
         if (!apiResponse.errors) {
           const newRoutingRule: CctSharedCallRoutingDb = {
@@ -144,7 +145,7 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
     if (keyType === "endTime") {
       timePicked.setSeconds(timePicked.getSeconds() - 1);
     }
-    return timePicked.toISOString();
+    return timePicked.toLocaleString();
   };
 
   const removeAllWhiteSpace = (value: string): string => {
