@@ -106,7 +106,8 @@ export const RoutingGridColumnDef: GridColDef[] = [
     headerName: "End Time",
     field: "endTime",
     sortable: true,
-    align: "center"
+    align: "center",
+    valueGetter: (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (formatDateTime(params.row.endTime))
   },
 
   {

@@ -200,7 +200,7 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
     key: "startTime",
     control: "timePicker",
     required: true,
-    valueGetter: (params: CctSharedCallRoutingDb, defaultValue: any) => `${Date.parse(params?.startTime) ? params.startTime : defaultValue}`,
+    valueGetter: (params: CctSharedCallRoutingDb, defaultValue: any) => `${params?.startTime ? params.startTime : defaultValue}`,
     valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => ({
       ...currentValue,
       ...newValue
@@ -211,7 +211,7 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
     key: "endTime",
     control: "timePicker",
     required: true,
-    valueGetter: (params: CctSharedCallRoutingDb, defaultValue: any) => `${Date.parse(params?.endTime) ? params.endTime : defaultValue}`,
+    valueGetter: (params: CctSharedCallRoutingDb, defaultValue: any) => `${params?.endTime ? params.endTime : defaultValue}`,
     valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => ({
       ...currentValue,
       ...newValue
@@ -293,12 +293,17 @@ export const convertTime12to24 = (time12h: string): string => {
   if (modifier === "PM") {
     timeSplit[0] = (parseInt(timeSplit[0], 10) + 12).toString();
   }
-  return `${timeSplit[0]}:${timeSplit[1]}:${timeSplit[2]}`;
+  const todayDate = new Date().toISOString().split("T")[0];
+  const hmsTime = `${timeSplit[0]}:${timeSplit[1]}:${timeSplit[2]}`;
+  const targetStartTime: Date = new Date(`${todayDate}T${hmsTime}`);
+  return targetStartTime.toISOString();
 };
 
-export const convertTime24to12 = (time24h: Date): string =>{
-  let hours = time24h.getHours();
-  const minutes = time24h.getMinutes();
+export const convertTime24to12 = (time24h: string): string =>{
+  const time = new Date(time24h);
+  let hours:number = time.getHours();
+  let minutes:string = time.getMinutes().toString();
+  let seconds: string = time.getSeconds().toString();
   let ampm = "AM";
   if (hours === 12) {
     ampm = "PM";
@@ -308,5 +313,7 @@ export const convertTime24to12 = (time24h: Date): string =>{
     hours -= 12;
     ampm = "PM";
   }
-  return `${hours}:${minutes} ${ampm}`;
+  minutes = minutes.padStart(2, "0");
+  seconds = seconds.padStart(2, "0");
+  return `${hours}:${minutes}:${seconds} ${ampm}`;
 };

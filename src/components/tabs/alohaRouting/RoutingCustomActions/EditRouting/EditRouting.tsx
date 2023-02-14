@@ -37,8 +37,8 @@ export const EditRouting = ({
 }: EditRoutingComponentProps & AzureSPA): JSX.Element => {
   const graphQLEndPoint: string = getGraphQLEndpoint();
   const [selectedRowLocal, setSelectedRowLocal] = useState({} as CctSharedCallRoutingDb);
-  const startTime: React.MutableRefObject<string> = useRef();
-  const endTime: React.MutableRefObject<string> = useRef();
+  // const startTime: React.MutableRefObject<string> = useRef();
+  // const endTime: React.MutableRefObject<string> = useRef();
   const [routingRule, setRoutingRule] = useState({ ...routingInitRule });
   const [dropDownValues, setDropDownValues] = useState(routingDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
@@ -49,25 +49,26 @@ export const EditRouting = ({
       ...dropDownOptions,
       dayOfWeek
     }));
-    setSelectedRowLocal(selectedRow);
+    let startTime: string;
+    let endTime: string;
     if (selectedRow && selectedRow.startTime) {
-      console.log("startTime",selectedRow.startTime);
       const flagStartTime = !Date.parse(selectedRow.startTime);
       const flagEndTime = !Date.parse(selectedRow.endTime);
-      const todayDate = new Date().toISOString().split("T")[0];
+
       if (flagStartTime) {
-        const hmsStartTime: string = convertTime12to24(selectedRow.startTime);
-        const targetStartTime: Date = new Date(`${todayDate}T${hmsStartTime}`);
-        startTime.current = targetStartTime.toISOString();
-        defaultValue["startTime"] = startTime.current;
+        startTime = convertTime12to24(selectedRow.startTime);
+        defaultValue["startTime"] = startTime;
       }
       if (flagEndTime) {
-        const hmsEndTime = convertTime12to24(selectedRow.endTime);
-        const targetEndTime = new Date(`${todayDate}T${hmsEndTime}`);
-        endTime.current = targetEndTime.toISOString();
-        defaultValue["endTime"] = endTime.current;
+        endTime = convertTime12to24(selectedRow.endTime);
+        defaultValue["endTime"] = endTime;
       }
     }
+    setSelectedRowLocal({
+      ...selectedRow,
+      startTime,
+      endTime
+    });
   }, [selectedRow]);
 
   const handleCancel = () => {
@@ -98,9 +99,14 @@ export const EditRouting = ({
   };
 
   const handleOnSave = async () => {
-    const response = await updateRoutingDB(selectedRowLocal, accessToken, graphQLEndPoint);
+    const updatedRow: CctSharedCallRoutingDb = {
+      ...selectedRowLocal,
+      startTime: convertTime24to12(selectedRowLocal.startTime),
+      endTime: convertTime24to12(selectedRowLocal.endTime)
+    };
+    const response = await updateRoutingDB(updatedRow, accessToken, graphQLEndPoint);
     if (response) {
-      openEditModal(false, true, selectedRowLocal, `Routing Rule ID ${selectedRow.id} has been successfully updated!! `, false);
+      openEditModal(false, true, updatedRow, `Routing Rule ID ${selectedRow.id} has been successfully updated!! `, false);
       return true;
     }
     setAlertBar((alertBarProps: AlertBarProps) => ({
@@ -121,7 +127,7 @@ export const EditRouting = ({
     if (key === "endTime") {
       timePicked.setSeconds(timePicked.getSeconds() - 1);
     }
-    return convertTime24to12(timePicked);
+    return timePicked.toLocaleString();
   };
 
   const handleInputChange = async (
