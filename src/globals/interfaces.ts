@@ -134,7 +134,9 @@ export interface TritonProfile {
   row_updt_dtm: string,
   overflow_skill: string,
   activities: Array<object>,
-  callTags: string
+  callTags: string,
+  operating_unit_nme: string,
+  operating_unit_sid: string
 }
 
 export interface ProfilePayload {
