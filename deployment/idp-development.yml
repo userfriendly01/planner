@@ -1,0 +1,15 @@
+---
+idp:
+  - provider: azure
+    applications:
+      - name: cicct-softphone-admin-ui
+        client: true
+        email_address: AlohaTeam@libertymutual.com
+        home_page_url: https://triton-dev.lmig.com/triton-admin
+        oidc: true
+        platforms:
+          - type: spa
+            reply_urls:
+              - http://localhost:8082/triton-admin
+              - https://triton-dev.lmig.com/triton-admin
+        rotate_secret_enabled: true
