@@ -121,7 +121,6 @@ export const EditRouting = ({
     event: any,
     key: string
   ) => {
-    console.log("Date:",event.$d);
     const timePicked = new Date(event.$d.toString());
     timePicked.setSeconds(0);
     if (key === "endTime") {
