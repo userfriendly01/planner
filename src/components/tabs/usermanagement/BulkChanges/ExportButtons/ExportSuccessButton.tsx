@@ -1,5 +1,5 @@
 
-import { StyledExportButton } from "../BulkChanges.Styles";
+import { Button } from "../BulkChanges.Styles";
 import React from "react";
 import {
   ExcelExport
@@ -44,7 +44,7 @@ const ExportSuccessButton = (props: any) => {
   };
 
   return (
-    <StyledExportButton onClick={handleExport}><ExcelExport ref={_export}/>Export Successful Rows</StyledExportButton>
+    <Button onClick={handleExport}><ExcelExport ref={_export}/>Export Successful Rows</Button>
   );
 };
 

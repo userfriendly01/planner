@@ -1,5 +1,5 @@
 
-import { StyledExportButton } from "../BulkChanges.Styles";
+import { Button } from "../BulkChanges.Styles";
 import React from "react";
 import {
   ExcelExport
@@ -58,10 +58,10 @@ const ExportOptionsButton = (props: any, state: any) => {
   };
 
   return (
-    <StyledExportButton onClick={handleExport}>
+    <Button onClick={handleExport}>
       <ExcelExport ref={_export}/>
       Export Template Options
-    </StyledExportButton>
+    </Button>
   );
 };
 
