@@ -69,8 +69,8 @@ export const EditFlow = ({
     setDropDownValues((dropDownOptions: FlowDropDownList) => (
       {
         ...dropDownOptions,
-        brand: masterData.brand,
-        channel: masterData.channel,
+        brand: masterData?.brand,
+        channel: masterData?.channel,
         languageOffer: languageOffer,
         userDestination: userDestination
       })
