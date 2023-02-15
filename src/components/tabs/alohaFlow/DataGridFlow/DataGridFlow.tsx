@@ -49,7 +49,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       const cachedFilter = localStorage.getItem(CACHE_FILTER_FLOW);
       advanceFilter = JSON.parse(cachedFilter) || {};
       Object.keys(advanceFilter).forEach(key => {
-        if (advanceFilter[key] === "") {
+        if (advanceFilter[key] === "" || advanceFilter[key] === null) {
           delete advanceFilter[key];
         }
       });
