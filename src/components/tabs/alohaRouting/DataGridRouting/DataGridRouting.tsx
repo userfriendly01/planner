@@ -40,11 +40,11 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
   const graphQlApiUrl: string = getGraphQLEndpoint();
   const [state, setState] = useState<RoutingStateVariables>(routingInitState);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
+  console.log("Filtered data", state.filteredItems);
   useEffect(() => {
     const getTableData = async () =>{
       const result: CctSharedCallRoutingDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl);
-
-      await loadDataTable(result);
+      loadDataTable(result);
     };
     getTableData();
   }, []);
@@ -76,7 +76,8 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
       });
   };
 
-  const filterRecords = (dataRec?: CctSharedCallRoutingDb[], minId?: number, maxId?: number) => {
+
+  const filterRecords = (dataRec?: CctSharedCallRoutingDb[], minId?: number, maxId?: number): CctSharedCallRoutingDb[] => {
     let {
       data, idStart, idEnd
     } = state;
@@ -101,34 +102,36 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
           advanceFilteredArray.push(item);
         }
       });
-      setState({
-        ...state,
-        filteredItems: advanceFilteredArray
-      });
+      return advanceFilteredArray;
     } else {
-      setState({
-        ...state,
-        filteredItems: result
-      });
+      return result;
     }
   };
 
-  const loadDataTable = async (result?: CctSharedCallRoutingDb[]) => {
+  const applyFilter = (): void =>{
+    const filteredItems: CctSharedCallRoutingDb[] = filterRecords();
+    console.log("filteredItems",filteredItems);
+    setState({
+      ...state,
+      filteredItems,
+      isAdvanceSearchModalOpen: false,
+      advanceFilter: getAdvanceFilter()
+    });
+  };
+
+  const loadDataTable = (result?: CctSharedCallRoutingDb[]) => {
     if (result?.length > 0) {
       const sortedResult: CctSharedCallRoutingDb[] = result.sort(((a: CctSharedCallRoutingDb, b: CctSharedCallRoutingDb) => a.id - b.id));
       const minId: number = sortedResult[0].id;
       const maxId: number = sortedResult[result.length - 1].id;
       const masterData: RoutingMasterData = getGridMasterData(result);
       const advanceFilter: RoutingFilter = getAdvanceFilter();
-      const advanceFilterLength: number = Object.keys(advanceFilter).length;
-      if (advanceFilterLength > 0) {
-        filterRecords(result, minId, maxId);
-      }
+      const filteredItems: CctSharedCallRoutingDb[] = filterRecords(result, minId, maxId);
       setState({
         ...state,
         advanceFilter,
+        filteredItems,
         data: result,
-        filteredItems: result,
         fetching: false,
         idStart: minId,
         idEnd: maxId,
@@ -167,12 +170,9 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
         msg: "New flow has been successfully added!! "
       }));
     }
+    loadDataTable(newData);
     setState({
       ...state,
-      ...(newData) && {
-        data: newData,
-        filteredItems: newData
-      },
       isAddModalOpen: flag
     });
   };
@@ -224,13 +224,7 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
         msg: message,
         severityType: "success"
       }));
-      setState({
-        ...state,
-        ...(newData) && {
-          data: newData,
-          filteredItems: newData
-        }
-      });
+      loadDataTable(newData);
     }
     setState((currentDataRouting: RoutingStateVariables)=>({
       ...currentDataRouting,
@@ -300,7 +294,7 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
         openModal={openAdvanceSearchModal}
         handleChange={handleSearchDDChange}
         masterData={state.masterData}
-        applyFilter={filterRecords}
+        applyFilter={applyFilter}
       />
       <CustomToast
         open={alertBar.open}

@@ -32,13 +32,11 @@ const RoutingAdvanceSearchModal = (props:AdvanceSearchModalProps):JSX.Element =>
   const saveFilter = (search:RoutingFilter) => {
     localStorage.setItem(CACHE_FILTER_ROUTING, JSON.stringify(search));
     applyFilter();
-    openModal(false);
   };
 
   const resetSavedFilter = () => {
     localStorage.removeItem(CACHE_FILTER_ROUTING);
     applyFilter();
-    openModal(false);
   };
 
   return (
