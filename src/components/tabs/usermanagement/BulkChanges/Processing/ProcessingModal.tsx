@@ -1,4 +1,3 @@
-import React from "react";
 import {
   ButtonWrapper,
   StyledExportButton,
@@ -6,32 +5,31 @@ import {
   TextWrapper,
   ProcessingResultsWrapper
 } from "../BulkChanges.Styles";
-import ExportSuccessButton from "../ExportButtons/ExportSuccessButton";
-import ExportErrorsButton from "../ExportButtons/ExportErrorsButton";
+import {
+  ProcessingModalProps,
+  PROCESSING_STATES
+} from "../BulkChanges.Interfaces";
+import {
+  ExportErrorsButton,
+  ExportSuccessButton
+} from "../ExportButtons";
 import {
   performValidations,
   initiateCalls,
   identifySuccessfulRecords
 } from "../BulkUtils";
 import ProgressBar from "./ProgressBar";
-import { ExcelExport } from "@progress/kendo-react-excel-export";
 import { useAdminState } from "context";
+import React from "react";
+import { ExcelExport } from "@progress/kendo-react-excel-export";
 
-
-const ProcessingModal = (props: any) => {
+const ProcessingModal = (props: ProcessingModalProps) => {
   const {
     selectedTemplates,
     handleClose,
     consolidatedFieldsList,
     uploadedForm
   } = props;
-
-  enum STATES {
-    VALIDATING = "validating",
-    VALIDATED = "validated",
-    PROCESSING = "processing",
-    PROCESSED = "processed"
-  }
 
   const [ results, setResults ] = React.useState({
     validationErrors: [],
@@ -41,7 +39,7 @@ const ProcessingModal = (props: any) => {
   });
 
   const state = useAdminState();
-  const [ status, setStatus ] = React.useState(null);
+  const [ status, setStatus ] = React.useState<PROCESSING_STATES>(null);
   const [ processedRows, setProcessedRows ] = React.useState(null);
 
   console.log("we're in the processing modal! results", results );
@@ -50,7 +48,7 @@ const ProcessingModal = (props: any) => {
   console.log("we're in the processing modal! uploadedForm", uploadedForm );
 
   React.useEffect(() => {
-    setStatus(STATES.VALIDATING);
+    setStatus(PROCESSING_STATES.VALIDATING);
     setTimeout(async () => {
       try {
         await performValidations(uploadedForm, selectedTemplates, consolidatedFieldsList, setProcessedRows, state);
@@ -58,7 +56,7 @@ const ProcessingModal = (props: any) => {
           ...results,
           successfullyValidatedRows: uploadedForm
         });
-        setStatus(STATES.VALIDATED);
+        setStatus(PROCESSING_STATES.VALIDATED);
       } catch (err) {
         console.log("Validation Errors Log", err);
         const errors = typeof err === "object" ? err : [];
@@ -68,13 +66,13 @@ const ProcessingModal = (props: any) => {
           validationErrors: err,
           successfullyValidatedRows
         });
-        setStatus(STATES.VALIDATED);
+        setStatus(PROCESSING_STATES.VALIDATED);
       }
     }, 1000);
   }, []);
 
   const handleStartProcessing = async () => {
-    setStatus(STATES.PROCESSING);
+    setStatus(PROCESSING_STATES.PROCESSING);
     setProcessedRows(0);
     const rowsToProcess = results.successfullyValidatedRows;
     try {
@@ -83,7 +81,7 @@ const ProcessingModal = (props: any) => {
         ...results,
         successfullyProcessedRows
       });
-      setStatus(STATES.PROCESSED);
+      setStatus(PROCESSING_STATES.PROCESSED);
       console.log("PROCESSING IS DONE!!", results);
     } catch(err){
       console.log("PROCESSING IS DONE BUT FAILED!!", err);
@@ -92,13 +90,13 @@ const ProcessingModal = (props: any) => {
         processingErrors: err.errors,
         successfullyProcessedRows: err.success
       });
-      setStatus(STATES.PROCESSED);
+      setStatus(PROCESSING_STATES.PROCESSED);
     }
   };
 
   return (
     <ModalWrapper>
-      { status === STATES.VALIDATED &&
+      { status === PROCESSING_STATES.VALIDATED &&
         <ProcessingResultsWrapper>
           <TextWrapper styles={{
             size: "26px"
@@ -120,9 +118,9 @@ const ProcessingModal = (props: any) => {
           </ButtonWrapper>
         </ProcessingResultsWrapper>
       }
-      { status === STATES.VALIDATING && <ProgressBar completedRows={processedRows} totalRowCount={uploadedForm.length}/> }
-      { status === STATES.PROCESSING && <ProgressBar completedRows={processedRows} totalRowCount={results.successfullyValidatedRows.length}/> }
-      { status === STATES.PROCESSED &&
+      { status === PROCESSING_STATES.VALIDATING && <ProgressBar completedRows={processedRows} totalRowCount={uploadedForm.length}/> }
+      { status === PROCESSING_STATES.PROCESSING && <ProgressBar completedRows={processedRows} totalRowCount={results.successfullyValidatedRows.length}/> }
+      { status === PROCESSING_STATES.PROCESSED &&
         <ProcessingResultsWrapper>
           { results.processingErrors.length > 0 ?
             <TextWrapper styles={{ size: "26px" }}>

@@ -52,6 +52,19 @@ export interface BulkUpdateProps {
   removeTemplate: (template: Template) => void;
 }
 
+export enum PROCESSING_STATES {
+  VALIDATING = "validating",
+  VALIDATED = "validated",
+  PROCESSING = "processing",
+  PROCESSED = "processed"
+}
+
+export interface ProcessingModalProps {
+  selectedTemplates: Template[],
+  handleClose: () => void;
+  consolidatedFieldsList: Field[],
+  uploadedForm: any[]
+}
 export interface WorkerAttribute {
   label: string,
   value: string,
@@ -62,6 +75,13 @@ export interface WorkerAttribute {
 
 export interface WorkerAttributes {
   [key: string] : WorkerAttribute
+}
+
+export interface View {
+  [key: string] : {
+    value: string,
+    label: string
+  }
 }
 
 export const views: any = {

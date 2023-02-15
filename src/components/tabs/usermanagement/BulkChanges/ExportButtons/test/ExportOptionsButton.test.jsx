@@ -43,7 +43,7 @@ describe("ExportOptionsButton", () => {
     });
   });
   describe("initial render", () => {
-    test("should render as expected", () => {
+    test.only("should render as expected", () => {
       render(<ExportOptionsButton />);
       render(StyledExportButton.mock.calls[0][0].children);
       expect(StyledExportButton.mock.calls.length).toBe(1);

@@ -8,6 +8,7 @@ import {
 } from "./BulkUtils";
 import {
   Template,
+  View,
   views
 } from "./BulkChanges.Interfaces";
 import {
@@ -58,7 +59,7 @@ const BulkChanges = () => {
         label="Select a change type"
         value={view}
         options={Object.values(views)}
-        updateValue={(event: any, view: any) => {
+        updateValue={(event: any, view: View) => {
           setView(view);
           resetBulkChanges();
         }}
