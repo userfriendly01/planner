@@ -1,6 +1,6 @@
 import {
   ButtonWrapper,
-  StyledExportButton,
+  Button,
   ModalWrapper,
   TextWrapper,
   ProcessingResultsWrapper
@@ -39,8 +39,8 @@ const ProcessingModal = (props: ProcessingModalProps) => {
   });
 
   const state = useAdminState();
-  const [ status, setStatus ] = React.useState<PROCESSING_STATES>(null);
-  const [ processedRows, setProcessedRows ] = React.useState(null);
+  const [ status, setStatus ] = React.useState<PROCESSING_STATES>(PROCESSING_STATES.VALIDATING);
+  const [ processedRows, setProcessedRows ] = React.useState(0);
 
   console.log("we're in the processing modal! results", results );
   console.log("we're in the processing modal! status", status );
@@ -48,10 +48,8 @@ const ProcessingModal = (props: ProcessingModalProps) => {
   console.log("we're in the processing modal! uploadedForm", uploadedForm );
 
   React.useEffect(() => {
-    setStatus(PROCESSING_STATES.VALIDATING);
-    // setTimeout(async () => {
-    const initiateValidations = async () =>
-    {
+    const initiateValidations = async () => {
+      console.warn("we get in here", status);
       try {
         await performValidations(uploadedForm, selectedTemplates, consolidatedFieldsList, setProcessedRows, state);
         setResults({
@@ -61,7 +59,7 @@ const ProcessingModal = (props: ProcessingModalProps) => {
         setStatus(PROCESSING_STATES.VALIDATED);
       } catch (err) {
         console.log("Validation Errors Log", err);
-        const errors = typeof err === "object" ? err : [];
+        const errors = typeof err === "object" ? err : [ { error: "unexpected error response" }];
         const successfullyValidatedRows = identifySuccessfulRecords(uploadedForm, errors);
         setResults({
           ...results,
@@ -72,7 +70,6 @@ const ProcessingModal = (props: ProcessingModalProps) => {
       }
     };
     initiateValidations();
-    // }, 1000);
   }, []);
 
   const handleStartProcessing = async () => {
@@ -100,6 +97,7 @@ const ProcessingModal = (props: ProcessingModalProps) => {
 
   return (
     <ModalWrapper>
+      { status === PROCESSING_STATES.VALIDATING && <ProgressBar completedRows={processedRows} totalRowCount={uploadedForm.length}/> }
       { status === PROCESSING_STATES.VALIDATED &&
         <ProcessingResultsWrapper>
           <TextWrapper styles={{
@@ -108,21 +106,20 @@ const ProcessingModal = (props: ProcessingModalProps) => {
             {results.validationErrors.length} Validation Errors have been found for this template.
           </TextWrapper>
           <ButtonWrapper>
-            <StyledExportButton onClick={handleClose}>
+            <Button onClick={handleClose}>
               Cancel
-            </StyledExportButton>
+            </Button>
             { results.validationErrors.length > 0 &&
-              <ExportErrorsButton errors={results.validationErrors}><ExcelExport/>
+              <ExportErrorsButton errors={results.validationErrors}>
                 Export Validation Errors
               </ExportErrorsButton>
             }
-            <StyledExportButton onClick={handleStartProcessing}>
+            <Button onClick={handleStartProcessing}>
               Process {results.successfullyValidatedRows.length} out of {uploadedForm.length} rows
-            </StyledExportButton>
+            </Button>
           </ButtonWrapper>
         </ProcessingResultsWrapper>
       }
-      { status === PROCESSING_STATES.VALIDATING && <ProgressBar completedRows={processedRows} totalRowCount={uploadedForm.length}/> }
       { status === PROCESSING_STATES.PROCESSING && <ProgressBar completedRows={processedRows} totalRowCount={results.successfullyValidatedRows.length}/> }
       { status === PROCESSING_STATES.PROCESSED &&
         <ProcessingResultsWrapper>
@@ -137,16 +134,18 @@ const ProcessingModal = (props: ProcessingModalProps) => {
           }
           <ButtonWrapper>
             { results.processingErrors.length > 0 &&
-            <ExportErrorsButton errors={results.processingErrors}><ExcelExport/>
-            Export Processing Errors
-            </ExportErrorsButton>
+              <ExportErrorsButton errors={results.processingErrors}><ExcelExport/>
+                Export Processing Errors
+              </ExportErrorsButton>
             }
-            <ExportSuccessButton successfulRows={results.successfullyProcessedRows}><ExcelExport/>
-              Export Successful Rows
-            </ExportSuccessButton>
-            <StyledExportButton  onClick={handleClose}>
+            { results.successfullyProcessedRows.length > 0 &&
+              <ExportSuccessButton successfulRows={results.successfullyProcessedRows}><ExcelExport/>
+                Export Successful Rows
+              </ExportSuccessButton>
+            }
+            <Button onClick={handleClose}>
               Close
-            </StyledExportButton>
+            </Button>
           </ButtonWrapper>
         </ProcessingResultsWrapper>
       }

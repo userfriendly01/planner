@@ -118,7 +118,7 @@ export const ImportButton = styled(StyledButton)`
   font-weight: bold;
 `;
 
-export const StyledExportButton = styled(StyledButton)<{ styles?: any }>`
+export const Button = styled(StyledButton)<{ styles?: any }>`
   height: 50px;
   font-weight: bold;
   width: ${props => props.styles && props.styles.width ? props.styles.width : "250px"};
