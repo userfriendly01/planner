@@ -40,7 +40,6 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
   const graphQlApiUrl: string = getGraphQLEndpoint();
   const [state, setState] = useState<RoutingStateVariables>(routingInitState);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
-  console.log("Filtered data", state.filteredItems);
   useEffect(() => {
     const getTableData = async () =>{
       const result: CctSharedCallRoutingDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl);
@@ -110,7 +109,6 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
 
   const applyFilter = (): void =>{
     const filteredItems: CctSharedCallRoutingDb[] = filterRecords();
-    console.log("filteredItems",filteredItems);
     setState({
       ...state,
       filteredItems,
