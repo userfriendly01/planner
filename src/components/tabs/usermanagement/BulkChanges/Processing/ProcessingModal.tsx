@@ -47,27 +47,31 @@ const ProcessingModal = (props: ProcessingModalProps) => {
   console.log("we're in the processing modal! processedRows", processedRows );
   console.log("we're in the processing modal! uploadedForm", uploadedForm );
 
-  React.useEffect(async () => {
+  React.useEffect(() => {
     setStatus(PROCESSING_STATES.VALIDATING);
     // setTimeout(async () => {
-    try {
-      await performValidations(uploadedForm, selectedTemplates, consolidatedFieldsList, setProcessedRows, state);
-      setResults({
-        ...results,
-        successfullyValidatedRows: uploadedForm
-      });
-      setStatus(PROCESSING_STATES.VALIDATED);
-    } catch (err) {
-      console.log("Validation Errors Log", err);
-      const errors = typeof err === "object" ? err : [];
-      const successfullyValidatedRows = identifySuccessfulRecords(uploadedForm, errors);
-      setResults({
-        ...results,
-        validationErrors: err,
-        successfullyValidatedRows
-      });
-      setStatus(PROCESSING_STATES.VALIDATED);
-    }
+    const initiateValidations = async () =>
+    {
+      try {
+        await performValidations(uploadedForm, selectedTemplates, consolidatedFieldsList, setProcessedRows, state);
+        setResults({
+          ...results,
+          successfullyValidatedRows: uploadedForm
+        });
+        setStatus(PROCESSING_STATES.VALIDATED);
+      } catch (err) {
+        console.log("Validation Errors Log", err);
+        const errors = typeof err === "object" ? err : [];
+        const successfullyValidatedRows = identifySuccessfulRecords(uploadedForm, errors);
+        setResults({
+          ...results,
+          validationErrors: err,
+          successfullyValidatedRows
+        });
+        setStatus(PROCESSING_STATES.VALIDATED);
+      }
+    };
+    initiateValidations();
     // }, 1000);
   }, []);
 
