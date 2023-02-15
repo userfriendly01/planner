@@ -24,16 +24,17 @@ const SkillsTable = (props: SkillsTableProps) => {
 
   const allSkillsSelected = tableState.selected.length === tableState.filteredList.length && tableState.filteredList.length > 0;
 
-  const getProfilesForSkill = (skill: Skill) => {
-    const profileDivs: ReactElement[] = [];
-    skill.profiles?.map((p: any, index: number) => {
-      if(index !== skill.profiles.length - 1){
-        profileDivs.push(<div key={p.profileId}>{p.profileName} - {p.profileId}, </div>);
+  // field is the key in the skills object to use  (ie, ctmSkillGroups, or profiles)
+  const getItemsDisplayForSkill = (skill: Skill, field: string, id: string, displayName: string, displayId: boolean) => {
+    const itemDivs: ReactElement[] = [];
+    skill[field]?.map((p: any, index: number) => {
+      if(index !== skill[field].length - 1){
+        itemDivs.push(<div key={parseInt(p[id])}>{p[displayName]}{displayId ? ` - ${p[id]}, ` : ", "}</div>);
       } else {
-        profileDivs.push(<div key={p.profileId}>{p.profileName} - {p.profileId}</div>);
+        itemDivs.push(<div key={parseInt(p[id])}>{p[displayName]}{displayId ? ` - ${p[id]}` : ""}</div>);
       }
     });
-    return profileDivs;
+    return itemDivs;
   };
 
   const handleSetSelected = (skill: Skill, isSelected: boolean) => {
@@ -79,6 +80,7 @@ const SkillsTable = (props: SkillsTableProps) => {
             </CustomTableHeader>
             <CustomTableHeader>SKILL NAME</CustomTableHeader>
             <CustomTableHeader>PROFILES</CustomTableHeader>
+            <CustomTableHeader>SKILL GROUP</CustomTableHeader>
             <CustomTableHeader
               onClick={() => setTableState({
                 ...tableState,
@@ -110,7 +112,8 @@ const SkillsTable = (props: SkillsTableProps) => {
                   />
                 </TableText></CustomTableData>
                 <CustomTableData><TableText>{skill.name}</TableText></CustomTableData>
-                <CustomTableData><TableText>{getProfilesForSkill(skill).map((d: ReactElement) => d)}</TableText></CustomTableData>
+                <CustomTableData><TableText>{getItemsDisplayForSkill(skill, "profiles", "profileId", "profileName", true).map((d: ReactElement) => d)}</TableText></CustomTableData>
+                <CustomTableData><TableText>{getItemsDisplayForSkill(skill, "ctmSkillGroups", "skillGroupId", "skillGroupNme", false).map((d: ReactElement) => d)}</TableText></CustomTableData>
                 <CustomTableData>
                   {skill.flashMessage &&
                     <Tooltip

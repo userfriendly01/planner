@@ -25,7 +25,8 @@ export interface AppState {
     profiles: TritonProfile[]
   },
   skillContext: {
-    skills: Skill[]
+    skills: Skill[],
+    skillGroups: SkillGroup[]
   },
   userContext: {
     pingIdentity: PingIdentity,
@@ -96,6 +97,7 @@ export interface Skill {
   [key: string]: any
   ctmSkillId: number,
   ctmSkillDisplayName: string,
+  ctmSkillGroups: SkillGroup[],
   name: string,
   profiles: any[],
   closedMessage: string,
@@ -105,6 +107,12 @@ export interface Skill {
   vhCallTarget: string,
   vhCallerId: string,
   vhThreshold: number
+}
+
+export interface SkillGroup {
+  skillGroupId: number,
+  skillGroupNme: string,
+  skills: Skill[],
 }
 
 export interface TritonProfile {

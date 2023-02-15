@@ -1,6 +1,7 @@
 import {
   Dropdown,
-  MessageContainer
+  MessageContainer,
+  SkillGroupInputContainer
 } from "components";
 import React from "react";
 import {
@@ -45,6 +46,19 @@ const ActionContainer = (props: ActionContainerProps) => {
           setConfirmationModalOpts={setConfirmationModalOpts}
           setSaveResult={setSaveResult}
         />;
+      case propertyOptions.SKILL_GROUP.label:
+        if (action && action.value) {
+          return <SkillGroupInputContainer
+            action={action}
+            setTableState={setTableState}
+            confirmationModalOpts={confirmationModalOpts}
+            setAction={setAction}
+            tableState={tableState}
+            setConfirmationModalOpts={setConfirmationModalOpts}
+            setSaveResult={setSaveResult}
+          />;
+        }
+        return <div></div>;
       default:
         return null;
     }

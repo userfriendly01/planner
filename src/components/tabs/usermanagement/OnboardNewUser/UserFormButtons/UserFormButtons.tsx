@@ -122,7 +122,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       manager_first_name: form.manager.value.manager_first_name,
       manager_last_name: form.manager.value.manager_last_name,
       manager_n_number: form.manager.value.manager_n_number,
-      manager: form.nNumberFetchedUser.manager,
+      manager: `${form.manager.value.manager_first_name} ${form.manager.value.manager_last_name}`,
       n_number: form.nNumber.value.toLowerCase(),
       office_location_name: form.nNumberFetchedUser.officeName,
       office_location_number: form.nNumberFetchedUser.officeNumber,
