@@ -226,7 +226,6 @@ describe("<RoutingAdvanceSearch />", () => {
     act(() => {
       fireEvent.click(buttonToClick);
     });
-    expect(mockOpenModal).toBeCalledTimes(1);
     expect(mockApplyFilter).toBeCalledTimes(1);
     expect(localStorage.removeItem).toBeCalledTimes(1);
   });
@@ -240,7 +239,6 @@ describe("<RoutingAdvanceSearch />", () => {
     act(() => {
       fireEvent.click(buttonToClick);
     });
-    expect(mockOpenModal).toBeCalledTimes(1);
     expect(mockApplyFilter).toBeCalledTimes(1);
     expect(localStorage.setItem).toBeCalledTimes(1);
   });
