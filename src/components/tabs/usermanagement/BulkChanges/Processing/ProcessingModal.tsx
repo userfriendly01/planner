@@ -47,7 +47,7 @@ const ProcessingModal = (props: ProcessingModalProps) => {
   console.log("we're in the processing modal! processedRows", processedRows );
   console.log("we're in the processing modal! uploadedForm", uploadedForm );
 
-  React.useEffect(() => {
+  React.useEffect(async () => {
     setStatus(PROCESSING_STATES.VALIDATING);
     // setTimeout(async () => {
     try {
