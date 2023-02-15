@@ -61,8 +61,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   const flowInitState: FlowStateVariables = {
     data: [],
     filteredItems: [] ,
-    advanceFilter: getAdvanceFilter(),
-    masterData: getGridMasterData(),
+    advanceFilter: {},
     fetching: true,
     selectedRow: undefined,
     isEditModalOpen: false,
