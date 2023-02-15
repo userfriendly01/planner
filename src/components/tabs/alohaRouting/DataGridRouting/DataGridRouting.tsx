@@ -54,7 +54,7 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
       const cachedFilter: string | null = localStorage.getItem(CACHE_FILTER_ROUTING);
       const advanceFilter: RoutingFilter = JSON.parse(cachedFilter) || {};
       Object.keys(advanceFilter).forEach((key: keyof RoutingFilter) => {
-        if (advanceFilter[key] === "") {
+        if (advanceFilter[key] === "" || advanceFilter[key] === null) {
           delete advanceFilter[key];
         }
       });
