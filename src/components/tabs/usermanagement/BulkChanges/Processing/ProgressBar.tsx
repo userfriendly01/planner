@@ -31,7 +31,7 @@ const ProgressBar = (props: any) => {
     <ProgressBarContainer>
       <TextWrapper styles={{
         size: "26px"
-      }}> {jokes[selectedJokeIndex]} </TextWrapper>
+      }}>{jokes[selectedJokeIndex]}</TextWrapper>
       <ProgressBarWrapper>
         <ProgressBarFiller progress={`${percentageComplete}%`}/>
       </ProgressBarWrapper>

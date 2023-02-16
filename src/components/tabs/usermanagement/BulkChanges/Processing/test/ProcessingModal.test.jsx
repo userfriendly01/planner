@@ -11,17 +11,13 @@ import {
 } from "../../BulkUtils";
 import { getUpdateTemplates } from "../../BulkTemplates";
 import { StyledButton } from "components";
-import { useAdminState } from "context";
 import React from "react";
 import {
   act,
-  expectOnlyPassedProps,
-  fireEvent,
   render,
   setupMockedComponents,
   waitFor
 } from "testUtils";
-import { Paper } from "@mui/material";
 
 jest.mock("../ProgressBar", () => ({
   __esModule: true,
