@@ -117,7 +117,6 @@ export const FIELDS: Fields = {
     options: (state: any) => state.profileContext.profiles.map((p: any) => p.profile_id),
     validateFunction: (row: any, rowNumber: number, state: any): Promise<any> => {
       const fieldName = "Profile Id";
-      // cleanupField will return NaN if not a number, which is falsy
       const field = cleanupField(row[fieldName], "number");
       if(!row.attributes){
         row.attributes = {};
@@ -183,20 +182,16 @@ export const FIELDS: Fields = {
         levels: {}
       };
       if(field){
-        try {
-          const fieldArray = field.replace(" ","").split(",");
-          fieldArray.forEach((objString: string) => {
-            const objKeyValueArray = objString.replace(" ","").split(":");
-            const key: any = cleanupField(objKeyValueArray[0], "string");
-            const value: any = cleanupField(objKeyValueArray[1], "number");
-            if(value){
-              defaultSkills.levels[key] = value;
-            }
-            defaultSkills.skills.push(key);
-          });
-        } catch(err){
-          return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}. Must be a comma delimited list of skills. If a skill has a level it must be separated by a :`);
-        }
+        const fieldArray = field.replace(" ","").split(",");
+        fieldArray.forEach((objString: string) => {
+          const objKeyValueArray = objString.replace(" ","").split(":");
+          const key: any = cleanupField(objKeyValueArray[0], "string");
+          const value: any = cleanupField(objKeyValueArray[1], "number");
+          if(value){
+            defaultSkills.levels[key] = value;
+          }
+          defaultSkills.skills.push(key);
+        });
 
         const availableSkills = state.skillContext.skills;
         const skillErrors: any = [];
@@ -210,9 +205,7 @@ export const FIELDS: Fields = {
         Object.keys(defaultSkills.levels).forEach((skill: any) => {
           const matchingSkill = availableSkills.find((as: any) => cleanupField(as.name, "string") === skill);
           const level = defaultSkills.levels[skill];
-          if(!matchingSkill){
-            skillErrors.push(`${skill} is not an available skill `);
-          } else if(!matchingSkill.levels.includes(level)){
+          if(!matchingSkill.levels.includes(level)){
             skillErrors.push(`${skill} does not support Level ${level} `);
           }
         });
@@ -255,8 +248,6 @@ export const FIELDS: Fields = {
           return Promise.reject(`Unable to generate ${fieldName} for row ${rowNumber}`);
         }
         return Promise.resolve(`${fieldName} ${extension} set for row ${rowNumber}`);
-      } else if(typeof field !== "string"){
-        return Promise.reject(`${fieldName} must be a number or 'Y' for row ${rowNumber}. If you do not want an extension for this user, leave the field blank`);
       } else if(field === "n"){
         return Promise.resolve(`${fieldName} skipped for row ${rowNumber}.`);
       } else {
@@ -273,7 +264,7 @@ export const FIELDS: Fields = {
             return Promise.reject(`${fieldName} ${field} is already taken for row ${rowNumber}`);
           }
         } catch(err) {
-          return Promise.reject(`${fieldName} ${field} is in the wrong format for row ${rowNumber}`);
+          return Promise.reject(`${fieldName} ${field} error thrown validating extention for row ${rowNumber}`);
         }
       }
     }
@@ -350,10 +341,6 @@ export const FIELDS: Fields = {
       const field = cleanupField(row[fieldName], "string");
       const didFieldName = "Did User";
       const didField = cleanupField(row[didFieldName], "string");
-      if(!row.attributes){
-        row.attributes = {};
-      }
-
       try {
         const didUser = isDidUser(didField, rowNumber);
         if(didUser && field === "y"){
@@ -366,15 +353,21 @@ export const FIELDS: Fields = {
             }
             const overflowSkill = getOverflowSkillFromProfile(profiles, profileId);
             if(overflowSkill){
+              if(!row.attributes){
+                row.attributes = {};
+              }
               row.attributes.routing = {
                 skills: [cleanupField(overflowSkill, "string")],
                 levels: {}
               };
+              row.zeroOutEnabled = true;
+              return Promise.resolve(`${fieldName} ${overflowSkill} set for row ${rowNumber}`);
+            } else{
+              row.zeroOutEnabled = true;
+              return Promise.resolve(`${fieldName} set to true but no overflow skill found on profile for row ${rowNumber}`);
             }
-            row.zeroOutEnabled = true;
-            return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
           } catch(err) {
-            return Promise.reject(`${fieldName} is not in the correct format for row ${rowNumber}`);
+            return Promise.reject(`Error thrown setting ${fieldName} for row ${rowNumber}`);
           }
         } else if(didUser && field === "n") {
           row.zeroOutEnabled = false;
@@ -455,23 +448,19 @@ export const FIELDS: Fields = {
       } else {
         try {
           const fieldArray = field.split(",");
-          if(fieldArray.length === 0){
-            return Promise.resolve(`${fieldName} skipped for row ${rowNumber}`);
-          } else {
-            fieldArray.forEach((scope: any) => {
-              const cleanScope = cleanupField(scope, "string");
-              const group = availableGroups.find((g:any) => cleanupField(g.name, "string") === cleanScope);
-              const team = availableTeams.find((t:any) => cleanupField(t.name, "string") === cleanScope);
-              if(!group && !team){
-                throw new Error(`${cleanScope} is not a valid group or team for row ${rowNumber}`)
-              } else if(group) {
-                row.scope.groups.push(group.groupId);
-              } else {
-                row.scope.teams.push(team.groupId);
-              }
-            });
-            return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
-          }
+          fieldArray.forEach((scope: any) => {
+            const cleanScope = cleanupField(scope, "string");
+            const group = availableGroups.find((g:any) => cleanupField(g.name, "string") === cleanScope);
+            const team = availableTeams.find((t:any) => cleanupField(t.name, "string") === cleanScope);
+            if(!group && !team){
+              throw new Error(`${cleanScope} is not a valid group or team for row ${rowNumber}`);
+            } else if(group) {
+              row.scope.groups.push(group.groupId);
+            } else {
+              row.scope.teams.push(team.groupId);
+            }
+          });
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
         } catch(err) {
           console.error("Error Thrown validating calabrio scope", err);
           return Promise.reject(err.message);
@@ -491,12 +480,10 @@ export const FIELDS: Fields = {
       const field = cleanupField(row[fieldName], "string");
       if(!field){
         return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
-      } else if(!state.calabrioContext.teams.some((t:any) => cleanupField(t.name, "string") === field)){
-        return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
       } else {
         const team = state.calabrioContext.teams.find((t:any) => cleanupField(t.name, "string") === field);
         if(!team || !team.groupId){
-          return Promise.reject(`${fieldName} is not a valid option from row ${rowNumber}`);
+          return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
         } else {
           row.groupId = team.groupId;
           return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
@@ -520,22 +507,18 @@ export const FIELDS: Fields = {
       } else {
         try {
           const fieldArray = field.split(",");
-          if(fieldArray.length === 0){
-            return Promise.reject(`${fieldName} is missing from row ${rowNumber}`);
-          } else {
-            row.roles = [];
-            fieldArray.forEach((role: any) => {
-              const cleanRole = cleanupField(role, "string");
-              const foundInRoles = calabrioAllowedRoles.some((r:any) => cleanupField(r, "string") === cleanRole);
-              const roleObject = state.calabrioContext.roles.find((r:any) => cleanupField(r.name, "string") === cleanRole);
-              if(!foundInRoles || !roleObject){
-                throw new Error(`${cleanRole} is not a valid role for row ${rowNumber}`);
-              } else {
-                row.roles.push(roleObject);
-              }
-            });
-            return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
-          }
+          row.roles = [];
+          fieldArray.forEach((role: any) => {
+            const cleanRole = cleanupField(role, "string");
+            const foundInRoles = calabrioAllowedRoles.some((r:any) => cleanupField(r, "string") === cleanRole);
+            const roleObject = state.calabrioContext.roles.find((r:any) => cleanupField(r.name, "string") === cleanRole);
+            if(!foundInRoles || !roleObject){
+              throw new Error(`${cleanRole} is not a valid role for row ${rowNumber}`);
+            } else {
+              row.roles.push(roleObject);
+            }
+          });
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
         } catch(err) {
           return Promise.reject(err.message);
         }

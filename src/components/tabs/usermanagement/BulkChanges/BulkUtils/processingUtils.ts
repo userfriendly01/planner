@@ -25,13 +25,13 @@ export const readUploadFile = (e: any, setUploadedForm: any): void => {
 /**
  * Identifies successful records by eliminating the errors from the original list of rows.
  * @param totalRows array representing the original list of rows validated/processed
- * @param validationErrors array representing the list of errors for the total rows
+ * @param errors array representing the list of errors for the total rows
  */
-export const identifySuccessfulRecords = (totalRows: any, validationErrors: any) => {
+export const identifySuccessfulRecords = (totalRows: any, errors: any) => {
   const successfulRows: any = [];
   totalRows.forEach((row: any, index: number) => {
-    const rowEquivalent = index + 1;  //When original spreadsheet has header this is 2 vs 1
-    if(!validationErrors.some((e: any) => e.row === rowEquivalent)){
+    const rowEquivalent = index + 1;  //Look into header & row count
+    if(!errors.some((e: any) => e.row === rowEquivalent)){
       successfulRows.push(row);
     }
   });

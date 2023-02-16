@@ -135,6 +135,27 @@ describe("fields.js", () => {
             }
           });
         });
+        test("attributes is already on successful row, returns successful response, resolves with field is valid message", async () => {
+          const existingAttributes = {
+            did: "16038518200"
+          };
+          fetchUser.mockResolvedValue({
+            departmentNumber: "123"
+          });
+          const row = {
+            "N Number": "n1234567",
+            attributes: existingAttributes
+          };
+          const result = await NNumberValidateFunction(row, 1, initialTestState);
+          expect(result).toEqual("N Number Valid for row 1");
+          expect(row).toEqual({
+            "N Number": "n1234567",
+            attributes: {
+              department_id: "123",
+              ...existingAttributes
+            }
+          });
+        });
       });
     });
     describe("N_NUMBER_UPDATE", () => {
@@ -167,6 +188,15 @@ describe("fields.js", () => {
             await nNumUpdateValidation(row, 2, initialTestState);
           } catch (err) {
             expect(err).toEqual("n9999999 is not an existing setup worker in Triton for row 2");
+            expect(row).toEqual({ "N Number": "n9999999" });
+          }
+        });
+        test("error thrown fetching from state, reject with message", async () => {
+          const row = { "N Number": "n9999999" };
+          try {
+            await nNumUpdateValidation(row, 2, { workerContext: null });
+          } catch (err) {
+            expect(err).toEqual("Error thrown fetching N Number from state for row 2");
             expect(row).toEqual({ "N Number": "n9999999" });
           }
         });
@@ -228,6 +258,24 @@ describe("fields.js", () => {
             }
           });
         });
+        test("attributes is already on successful row, returns successful response, resolves with field is valid message", async () => {
+          const existingAttributes = {
+            did: "16038518200"
+          };
+          const row = {
+            "Profile Id": 1,
+            attributes: existingAttributes
+          };
+          const result = await profileValidateFunction(row, 3, initialTestState);
+          expect(result).toEqual("Profile Id Valid for row 3");
+          expect(row).toEqual({
+            "Profile Id": 1,
+            attributes: {
+              profile_id: 1,
+              ...existingAttributes
+            }
+          });
+        });
       });
       describe("options", () => {
         const optionsFunction = FIELDS.PROFILE_ID.options;
@@ -276,6 +324,27 @@ describe("fields.js", () => {
             }
           });
         });
+        test("attributes is already on successful row, returns successful response, resolves with field is valid message", async () => {
+          const existingAttributes = {
+            did: "16038518200"
+          };
+          const row = {
+            "Manager N Number": "n1234567",
+            attributes: existingAttributes
+          };
+          const result = await managerValidateFunction(row, 3, initialTestState);
+          expect(result).toEqual("Manager N Number Valid for row 3");
+          expect(row).toEqual({
+            "Manager N Number": "n1234567",
+            attributes: {
+              manager_first_name: "John",
+              manager_last_name: "Wick",
+              manager_n_number: "n1234567",
+              manager: "John Wick",
+              ...existingAttributes
+            }
+          });
+        });
       });
       describe("options", () => {
         const optionsFunction = FIELDS.MANAGER_N_NUMBER.options;
@@ -288,7 +357,6 @@ describe("fields.js", () => {
         });
       });
     });
-
     describe("DEFAULT_SKILLS", () => {
       describe("validateFunction", () => {
         const defaultSkillValidation = FIELDS.DEFAULT_SKILLS.validateFunction;
@@ -342,6 +410,29 @@ describe("fields.js", () => {
             }
           });
         });
+        test("attributes is already on successful row, returns successful response, resolves with field is valid message", async () => {
+          const existingAttributes = {
+            did: "16038518200"
+          };
+          const row = {
+            "Default Skills": "aisgL1, lscOBDialer1:2",
+            attributes: existingAttributes
+          };
+          const result = await defaultSkillValidation(row, 3, initialTestState);
+          expect(result).toEqual("Default Skills valid for row 3");
+          expect(row).toEqual({
+            "Default Skills": "aisgL1, lscOBDialer1:2",
+            attributes: {
+              defaultSkills: {
+                levels: { lscobdialer1: 2 },
+                skills: [
+                  "aisgl1", "lscobdialer1"
+                ]
+              },
+              ...existingAttributes
+            }
+          });
+        });
       });
       describe("options", () => {
         const optionsFunction = FIELDS.DEFAULT_SKILLS.options;
@@ -361,12 +452,11 @@ describe("fields.js", () => {
       describe("validateFunction", () => {
         const exetensionValidateFunction = FIELDS.EXTENSION.validateFunction;
         test("No matching extension field, rejects with message", async () => {
-          const row = {}
+          const row = {};
           const result = await exetensionValidateFunction(row, 6, initialTestState);
           expect(result).toEqual("No Extension set for row 6");
           expect(row).toEqual({ attributes: {}});
         });
-        // 
         test("New extension is true, generate Extension fails, rejects with message", async () => {
           generateExtension.mockRejectedValueOnce("boo");
           try {
@@ -387,12 +477,24 @@ describe("fields.js", () => {
             }
           });
         });
-        test("New extension is false, field is not string, rejects with message", async () => {
-          try {
-            await exetensionValidateFunction({ "Extension": 5 }, 6, initialTestState);
-          } catch (e) {
-            expect(e).toEqual("Extension must be a number or 'Y' for row 6. If you do not want an extension for this user, leave the field blank");
-          }
+        test("attributes is already on successful row, returns successful response, resolves with field is valid message", async () => {
+          generateExtension.mockResolvedValueOnce("123");
+          const existingAttributes = {
+            did: "16038518200"
+          };
+          const row = {
+            "Extension": "Y",
+            attributes: existingAttributes
+          };
+          const result = await exetensionValidateFunction(row, 6, initialTestState);
+          expect(result).toEqual("Extension 123 set for row 6");
+          expect(row).toEqual({
+            "Extension": "Y",
+            attributes: {
+              extension: "123",
+              ...existingAttributes
+            }
+          });
         });
         test("New extension is false, field is n, resolves with skip message", async () => {
           const row = { "Extension": "n" };
@@ -417,6 +519,13 @@ describe("fields.js", () => {
             expect(e).toEqual("Extension 1234 is already taken for row 6");
           }
         });
+        test("New extension is false, error is thrown searching state, rejects with message", async () => {
+          try {
+            await exetensionValidateFunction({ "Extension": 1234 }, 6, { workerContext: { workers: null }});
+          } catch (e) {
+            expect(e).toEqual("Extension 1234 error thrown validating extention for row 6");
+          }
+        });
         test("New extension is false, extension is not taken, resolves with message", async () => {
           const result = await exetensionValidateFunction({ "Extension": 876 }, 6, initialTestState);
           expect(result).toEqual("Extension 876 set for row 6");
@@ -427,7 +536,8 @@ describe("fields.js", () => {
       describe("validateFunction", () => {
         const DIDUserValidateFunction = FIELDS.DID_USER.validateFunction;
         test("Did user field is 'Y', resolves", async () => {
-          const result = await DIDUserValidateFunction({ "Did User": "Y" }, 7, initialTestState);
+          const row = { "Did User": "Y" };
+          const result = await DIDUserValidateFunction(row, 7, initialTestState);
           expect(result).toEqual("Did User y set for row 7");
         });
         test("Did user field is 'N', resolves", async () => {
@@ -527,6 +637,29 @@ describe("fields.js", () => {
             });
           }
         });
+        test("attributes is already on successful row, returns successful response, resolves with field is valid message", async () => {
+          const existingAttributes = {
+            manager: "bob hill"
+          };
+          const row = {
+            "Did User": "Y",
+            "Direct Dial Number": "6035556565",
+            attributes: existingAttributes
+          };
+          const result = await DIDNumberValidateFunction(row, 6, initialTestState);
+          expect(result).toEqual("Direct Dial Number 6035556565 set for row 6");
+          expect(row).toEqual({
+            "Did User": "Y",
+            "Direct Dial Number": "6035556565",
+            directDialNum: "+16035556565",
+            activateEp: true,
+            alternateDid: "+16035556565",
+            attributes: {
+              did: "+16035556565",
+              ...existingAttributes
+            }
+          });
+        });
         test("didField field is Y, direct dial number in correct format, resolves with message", async () => {
           const row = {
             "Did User": "Y",
@@ -613,8 +746,7 @@ describe("fields.js", () => {
             expect(e).toEqual("Zero Out Enabled needs to be needs to be 'Y' or 'N' if DID user is 'Y' for 4");
             expect(row).toEqual({
               "Did User": "Y",
-              "Zero Out Enabled": "hi",
-              attributes: {}
+              "Zero Out Enabled": "hi"
             });
           }
         });
@@ -628,8 +760,7 @@ describe("fields.js", () => {
           expect(row).toEqual({
             "Did User": "Y",
             "Zero Out Enabled": "N",
-            zeroOutEnabled: false,
-            attributes: {}
+            zeroOutEnabled: false
           });
         });
         test("didField field is Y, zero out enabled is Y, profile id is wrong format, rejects with message", async () => {
@@ -643,6 +774,17 @@ describe("fields.js", () => {
             expect(e).toEqual("Unable to set Zero Out Enabled. Incorrect format for Profile Id for row 4");
           }
         });
+        test("didField field is Y, zero out enabled is Y, error is thrown, rejects with message", async () => {
+          try {
+            await ZeroOutEnabledValidateFunction({
+              "Did User": "Y",
+              "Zero Out Enabled": "Y",
+              "Profile Id": "boo"
+            }, 4, { profileContext: null });
+          } catch (e) {
+            expect(e).toEqual("Error thrown setting Zero Out Enabled for row 4");
+          }
+        });
         test("didField field is Y, zero out enabled is Y, resolves with message", async () => {
           const row = {
             "Did User": "Y",
@@ -650,7 +792,7 @@ describe("fields.js", () => {
             "Profile Id": 2
           };
           const result = await ZeroOutEnabledValidateFunction(row, 4, initialTestState);
-          expect(result).toEqual("Zero Out Enabled y set for row 4");
+          expect(result).toEqual("Zero Out Enabled whateverOverflowSkill set for row 4");
           expect(row).toEqual({
             "Did User": "Y",
             "Zero Out Enabled": "Y",
@@ -661,6 +803,47 @@ describe("fields.js", () => {
                 skills: ["whateveroverflowskill"],
                 levels: {}
               }
+            }
+          });
+        });
+        test("didField field is Y, zero out enabled is Y, profile has no overflow skill, resolves with message", async () => {
+          const row = {
+            "Did User": "Y",
+            "Zero Out Enabled": "Y",
+            "Profile Id": 1
+          };
+          const result = await ZeroOutEnabledValidateFunction(row, 4, initialTestState);
+          expect(result).toEqual("Zero Out Enabled set to true but no overflow skill found on profile for row 4");
+          expect(row).toEqual({
+            "Did User": "Y",
+            "Zero Out Enabled": "Y",
+            "Profile Id": 1,
+            zeroOutEnabled: true
+          });
+        });
+        test("attributes is already on successful row, returns successful response, resolves with field is valid message", async () => {
+          const existingAttributes = {
+            manager: "bob hill"
+          };
+          const row = {
+            "Did User": "Y",
+            "Zero Out Enabled": "Y",
+            "Profile Id": 2,
+            attributes: existingAttributes
+          };
+          const result = await ZeroOutEnabledValidateFunction(row, 6, initialTestState);
+          expect(result).toEqual("Zero Out Enabled whateverOverflowSkill set for row 6");
+          expect(row).toEqual({
+            "Did User": "Y",
+            "Zero Out Enabled": "Y",
+            "Profile Id": 2,
+            zeroOutEnabled: true,
+            attributes: {
+              routing: {
+                skills: ["whateveroverflowskill"],
+                levels: {}
+              },
+              ...existingAttributes
             }
           });
         });
@@ -675,8 +858,7 @@ describe("fields.js", () => {
           expect(row).toEqual({
             "Did User": "N",
             "Zero Out Enabled": "",
-            "Profile Id": 2,
-            attributes: {}
+            "Profile Id": 2
           });
         });
         test("didField field is N, zero out enabled is N, resolves with skip message", async () => {
@@ -690,8 +872,7 @@ describe("fields.js", () => {
           expect(row).toEqual({
             "Did User": "N",
             "Zero Out Enabled": "N",
-            "Profile Id": 2,
-            attributes: {}
+            "Profile Id": 2
           });
         });
       });
@@ -761,6 +942,26 @@ describe("fields.js", () => {
             "Outgoing Number": "6035554545",
             attributes: {
               did: "+16035554545"
+            }
+          });
+        });
+        test("attributes is already on successful row, returns successful response, resolves with field is valid message", async () => {
+          const existingAttributes = {
+            manager: "bob hill"
+          };
+          const row = {
+            "Did User": "N",
+            "Outgoing Number": "6035554545",
+            attributes: existingAttributes
+          };
+          const result = await outgoingNumberValidateFunction(row, 6, initialTestState);
+          expect(result).toEqual("Outgoing Number 6035554545 set for row 6");
+          expect(row).toEqual({
+            "Did User": "N",
+            "Outgoing Number": "6035554545",
+            attributes: {
+              did: "+16035554545",
+              ...existingAttributes
             }
           });
         });
