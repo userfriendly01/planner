@@ -21,7 +21,6 @@ import {
   setupMockedComponents,
   waitFor
 } from "testUtils";
-import { ExcelExport } from "@progress/kendo-react-excel-export";
 import { Paper } from "@mui/material";
 
 jest.mock("../ProgressBar", () => ({
@@ -45,36 +44,29 @@ jest.mock("components", () => ({
 }));
 
 jest.mock("@mui/material", () => ({
-  Paper: jest.fn()
+  Paper: jest.requireActual("@mui/material").Paper
 }));
 
 jest.mock("context", () => ({
   useAdminState: jest.fn()
 }));
 
-jest.mock("@progress/kendo-react-excel-export", () => ({
-  ExcelExport: jest.fn()
-}));
-
 const updateTemplates = getUpdateTemplates();
 const uploadedForm = [
-  {
-    n_number: "n0263786"
-  },
-  {
-    n_number: "n0263700"
-  }
+  { n_number: "n0263786" },
+  { n_number: "n0263700" },
+  { n_number: "n0266600" },
+  { n_number: "n0212700" }
 ];
 const mockHandleClose = jest.fn();
 
 const renderComponent = () => {
-  render(<ProcessingModal
+  return render(<ProcessingModal
     selectedTemplates={[updateTemplates.UPDATE_USERS_MANAGER]}
     handleClose={mockHandleClose}
     consolidatedFieldsList={updateTemplates.UPDATE_USERS_MANAGER.fields}
     uploadedForm={uploadedForm}
   />);
-  render(Paper.mock.calls[0][0].children);
 };
 
 describe("<BulkUpdateAttributes />", () => {
@@ -84,28 +76,26 @@ describe("<BulkUpdateAttributes />", () => {
     setupMockedComponents({
       ExportErrorsButton,
       ExportSuccessButton,
-      ExcelExport,
-      Paper,
       ProgressBar,
       StyledButton
     });
   });
   describe("initial render", () => {
     describe("Perform Validations was successful", () => {
-      test.only("should render expected components", async () => {
-        renderComponent();
+      test("should render expected components", async () => {
+        const rendered = renderComponent();
         expect(ProgressBar.mock.calls.length).toBe(1);
         expect(ProgressBar.mock.calls[0][0]).toStrictEqual({
           completedRows: 0,
-          totalRowCount: 2
+          totalRowCount: 4
         });
-        await waitFor(() => expect(Paper.mock.calls.length).toBe(3));
-        const validationResultsWrapper = render(Paper.mock.calls[2][0].children);
-        expect(validationResultsWrapper.container).toHaveTextContent("0 Validation Errors have been found for this template.");
-        expect(ExportErrorsButton.mock.calls.length).toBe(0);
-        expect(StyledButton.mock.calls.length).toBe(2);
-        expect(StyledButton.mock.calls[0][0].children).toBe("Cancel");
-        expect(StyledButton.mock.calls[1][0].children).toStrictEqual(["Process ", 2, " out of ", 2, " rows"]);
+        await waitFor(() => {
+          expect(rendered.container).toHaveTextContent("0 Validation Errors have been found for this template.");
+          expect(ExportErrorsButton.mock.calls.length).toBe(0);
+          expect(StyledButton.mock.calls.length).toBe(2);
+          expect(StyledButton.mock.calls[0][0].children).toBe("Cancel");
+          expect(StyledButton.mock.calls[1][0].children).toStrictEqual(["Process ", 4, " out of ", 4, " rows"]);
+        });
       });
     });
     describe("Perform Validations threw an error", () => {
@@ -122,53 +112,94 @@ describe("<BulkUpdateAttributes />", () => {
         performValidations.mockRejectedValue([ errorRow ]);
       });
       test("should render expected components", async () => {
-        renderComponent();
+        const rendered = renderComponent();
         expect(ProgressBar.mock.calls.length).toBe(1);
         expect(ProgressBar.mock.calls[0][0]).toStrictEqual({
           completedRows: 0,
-          totalRowCount: 2
+          totalRowCount: 4
         });
-        await waitFor(() => expect(Paper.mock.calls.length).toBe(3));
-        const validationResultsWrapper = render(Paper.mock.calls[2][0].children);
-        expect(validationResultsWrapper.container).toHaveTextContent("1 Validation Errors have been found for this template.");
-        expect(ExportErrorsButton.mock.calls.length).toBe(1);
-        expect(ExportErrorsButton.mock.calls[0][0].errors).toStrictEqual([errorRow]);
-        expect(ExportErrorsButton.mock.calls[0][0].children).toBe("Export Validation Errors");
-        expect(StyledButton.mock.calls.length).toBe(2);
-        expect(StyledButton.mock.calls[0][0].children).toBe("Cancel");
-        expect(StyledButton.mock.calls[1][0].children).toStrictEqual(["Process ", 1, " out of ", 2, " rows"]);
-      });
-      describe("error is not an object", () => {
-        beforeEach(() => {
-          performValidations.mockRejectedValue("boo");
-        });
-        test("validationErrors should be empty array", () => {
-          renderComponent();
+        await waitFor(() => {
+          expect(rendered.container).toHaveTextContent("1 Validation Errors have been found for this template.");
+          expect(ExportErrorsButton.mock.calls.length).toBe(1);
+          expect(ExportErrorsButton.mock.calls[0][0].errors).toStrictEqual([errorRow]);
+          expect(ExportErrorsButton.mock.calls[0][0].children).toBe("Export Validation Errors");
+          expect(StyledButton.mock.calls.length).toBe(2);
+          expect(StyledButton.mock.calls[0][0].children).toBe("Cancel");
+          expect(StyledButton.mock.calls[1][0].children).toStrictEqual(["Process ", 1, " out of ", 4, " rows"]);
         });
       });
     });
-
   });
   describe("Cancel Button is clicked", () => {
-    test("handleClose should be called", () => {
+    test("handleClose should be called", async () => {
       renderComponent();
+      await waitFor(() => {
+        expect(StyledButton.mock.calls.length).toBe(2);
+        const cancel = StyledButton.mock.calls[0][0].onClick;
+        act(() => cancel());
+        expect(mockHandleClose).toHaveBeenCalledTimes(1);
+      });
     });
   });
   describe("Process Button is clicked", () => {
+    beforeEach(() => {
+      initiateCalls.mockResolvedValue(uploadedForm);
+    });
     describe("Process was successful", () => {
-      test("Should ", () => {
+      test("Should render progress bar and processing results", async () => {
         renderComponent();
+        await waitFor(() => expect(StyledButton.mock.calls.length).toBe(2));
+        const process = StyledButton.mock.calls[1][0].onClick;
+        act(() => process());
+        expect(initiateCalls).toHaveBeenCalledTimes(1);
+        await waitFor(() => expect(ProgressBar.mock.calls.length).toBe(4));
+        expect(ProgressBar.mock.calls[3][0]).toStrictEqual({
+          completedRows: 0,
+          totalRowCount: 4
+        });
+        expect(ExportErrorsButton.mock.calls.length).toBe(0);
+        expect(ExportSuccessButton.mock.calls.length).toBe(1);
+        expect(ExportSuccessButton.mock.calls[0][0].successfulRows).toStrictEqual(uploadedForm);
       });
     });
     describe("Process Errors were thrown", () => {
-      test("", () => {
+      beforeEach(() => {
+        initiateCalls.mockRejectedValue({
+          errors: [ uploadedForm[1] ],
+          success: [ uploadedForm[0], uploadedForm[2], uploadedForm[3] ]
+        });
+      });
+      test("Should render progress bar and processing results", async () => {
         renderComponent();
+        await waitFor(() => expect(StyledButton.mock.calls.length).toBe(2));
+        const process = StyledButton.mock.calls[1][0].onClick;
+        act(() => process());
+        expect(initiateCalls).toHaveBeenCalledTimes(1);
+        await waitFor(() => expect(ProgressBar.mock.calls.length).toBe(4));
+        expect(ProgressBar.mock.calls[3][0]).toStrictEqual({
+          completedRows: 0,
+          totalRowCount: 4
+        });
+        expect(ExportErrorsButton.mock.calls.length).toBe(1);
+        expect(ExportErrorsButton.mock.calls[0][0].errors).toStrictEqual([ uploadedForm[1] ]);
+        expect(ExportSuccessButton.mock.calls.length).toBe(1);
+        expect(ExportSuccessButton.mock.calls[0][0].successfulRows).toStrictEqual([ uploadedForm[0], uploadedForm[2], uploadedForm[3] ]);
+      });
+    });
+    describe("Close Button is clicked", () => {
+      test("handleClose should be called", async () => {
+        renderComponent();
+        await waitFor(() => expect(StyledButton.mock.calls.length).toBe(2));
+        const process = StyledButton.mock.calls[1][0].onClick;
+        act(() => process());
+        expect(initiateCalls).toHaveBeenCalledTimes(1);
+        await waitFor(() => expect(ProgressBar.mock.calls.length).toBe(4));
+        await waitFor(() => expect(StyledButton.mock.calls.length).toBe(3));
+        const close = StyledButton.mock.calls[2][0].onClick;
+        act(() => close());
+        expect(mockHandleClose).toHaveBeenCalledTimes(1);
       });
     });
   });
-  describe("Close Button is clicked", () => {
-    test("handleClose should be called", () => {
-      renderComponent();
-    });
-  });
+
 });

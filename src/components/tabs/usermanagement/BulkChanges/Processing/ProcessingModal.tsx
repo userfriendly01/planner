@@ -21,7 +21,6 @@ import {
 import ProgressBar from "./ProgressBar";
 import { useAdminState } from "context";
 import React from "react";
-import { ExcelExport } from "@progress/kendo-react-excel-export";
 
 const ProcessingModal = (props: ProcessingModalProps) => {
   const {
@@ -58,9 +57,8 @@ const ProcessingModal = (props: ProcessingModalProps) => {
         });
         setStatus(PROCESSING_STATES.VALIDATED);
       } catch (err) {
-        console.log("Validation Errors Log", err);
-        const errors = typeof err === "object" ? err : [ { error: "unexpected error response" }];
-        const successfullyValidatedRows = identifySuccessfulRecords(uploadedForm, errors);
+        console.warn("Validation Errors Log", err);
+        const successfullyValidatedRows = identifySuccessfulRecords(uploadedForm, err);
         setResults({
           ...results,
           validationErrors: err,
@@ -134,12 +132,12 @@ const ProcessingModal = (props: ProcessingModalProps) => {
           }
           <ButtonWrapper>
             { results.processingErrors.length > 0 &&
-              <ExportErrorsButton errors={results.processingErrors}><ExcelExport/>
+              <ExportErrorsButton errors={results.processingErrors}>
                 Export Processing Errors
               </ExportErrorsButton>
             }
             { results.successfullyProcessedRows.length > 0 &&
-              <ExportSuccessButton successfulRows={results.successfullyProcessedRows}><ExcelExport/>
+              <ExportSuccessButton successfulRows={results.successfullyProcessedRows}>
                 Export Successful Rows
               </ExportSuccessButton>
             }
