@@ -38,7 +38,7 @@ const ExportSuccessButton = (props: any) => {
     console.log("rows", rows);
     console.log("columns", columns);
 
-    if (_export.current !== null) {
+    if (_export !== null) {
       _export.current.save(rows, columns);
     }
   };
