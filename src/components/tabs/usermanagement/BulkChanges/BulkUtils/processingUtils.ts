@@ -30,7 +30,7 @@ export const readUploadFile = (e: any, setUploadedForm: any): void => {
 export const identifySuccessfulRecords = (totalRows: any, validationErrors: any) => {
   const successfulRows: any = [];
   totalRows.forEach((row: any, index: number) => {
-    const rowEquivalent = index + 2;  //When original spreadsheet has header this is 2 vs 1
+    const rowEquivalent = index + 1;  //When original spreadsheet has header this is 2 vs 1
     if(!validationErrors.some((e: any) => e.row === rowEquivalent)){
       successfulRows.push(row);
     }

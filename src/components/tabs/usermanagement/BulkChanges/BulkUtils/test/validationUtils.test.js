@@ -1,0 +1,288 @@
+import {
+  updateSelectedTemplates,
+  consolidateTemplates,
+  performValidations,
+  checkConflictingCalabrioUsers
+} from "../validationUtils";
+
+describe("updateSelectedTemplates", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+  });
+  const mockSetSelectedTemplates = jest.fn();
+  test("Checked is true and template is already in selected templates, do nothing", () => {
+    const newTemplate = {
+      name: "CREATE_TRITON_USER"
+    };
+    const selectedTemplates = [newTemplate];
+    updateSelectedTemplates(true, newTemplate, selectedTemplates, mockSetSelectedTemplates);
+    expect(mockSetSelectedTemplates).toBeCalledTimes(0);
+  });
+  test("Checked is true and template is not in selected templates, add the template and setSelectedTemplates", () => {
+    const newTemplate = {
+      name: "CREATE_TRITON_USER"
+    };
+    updateSelectedTemplates(true, newTemplate, [], mockSetSelectedTemplates);
+    expect(mockSetSelectedTemplates).toBeCalledTimes(1);
+    expect(mockSetSelectedTemplates).toBeCalledWith([newTemplate]);
+  });
+  test("Checked is false and template is not in selected templates, do nothing", () => {
+    const newTemplate = {
+      name: "CREATE_TRITON_USER"
+    };
+    updateSelectedTemplates(false, newTemplate, [], mockSetSelectedTemplates);
+    expect(mockSetSelectedTemplates).toBeCalledTimes(0);
+  });
+  test("Checked is false and template is in selected templates, remove the template and setSelectedTemplates", () => {
+    const newTemplate = {
+      name: "CREATE_TRITON_USER"
+    };
+    const selectedTemplates = [newTemplate];
+    updateSelectedTemplates(false, newTemplate, selectedTemplates, mockSetSelectedTemplates);
+    expect(mockSetSelectedTemplates).toBeCalledTimes(1);
+    expect(mockSetSelectedTemplates).toBeCalledWith([]);
+  });
+});
+
+describe("consolidateTemplates", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+  });
+  const mockSetConsolidatedTemplates = jest.fn();
+  const template1 = {
+    fields: [
+      {
+        field: "nNumber",
+        type: "string"
+      },
+      {
+        field: "profileId",
+        type: "number"
+      }
+    ]
+  };
+  const template2 = {
+    fields: [
+      {
+        field: "nNumber",
+        type: "string"
+      },
+      {
+        field: "what?",
+        type: "string"
+      },
+      {
+        field: "cool beans",
+        type: "bean"
+      }
+    ]
+  };
+  test("Single template selected, all fields are added", () => {
+    consolidateTemplates([template1], mockSetConsolidatedTemplates);
+    expect(mockSetConsolidatedTemplates).toBeCalledTimes(1);
+    expect(mockSetConsolidatedTemplates).toBeCalledWith(template1.fields);
+  });
+  test("Multiple templates selected, all fields are added, except for duplicate fields", () => {
+    const expectedResult = [
+      {
+        field: "nNumber",
+        type: "string"
+      },
+      {
+        field: "profileId",
+        type: "number"
+      },
+      {
+        field: "what?",
+        type: "string"
+      },
+      {
+        field: "cool beans",
+        type: "bean"
+      }
+    ];
+    consolidateTemplates([template1, template2], mockSetConsolidatedTemplates);
+    expect(mockSetConsolidatedTemplates).toBeCalledTimes(1);
+    expect(mockSetConsolidatedTemplates).toBeCalledWith(expectedResult);
+  });
+  test("No template selected, no fields are added to setConsolidateFields", () => {
+    consolidateTemplates([], mockSetConsolidatedTemplates);
+    expect(mockSetConsolidatedTemplates).toBeCalledTimes(1);
+    expect(mockSetConsolidatedTemplates).toBeCalledWith([]);
+  });
+});
+
+describe("performValidations", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+  });
+  const mockSetProcessedRows = jest.fn();
+  const form = [
+    {
+      nNumber: "something"
+    },
+    {
+      nNumber: "something else"
+    }
+  ];
+
+  // TODO: These need more beefing
+  test("Performs validations of fields, resolves for no errors", async () => {
+    const fieldListNoErrors = [    {
+      field: "nNumber",
+      validateFunction: () => true
+    }];
+    const template1 = {
+      name: "CREATE_TRITON_USER"
+    };
+    const selectedTemplates = [template1];
+    const validationResult = await performValidations(form, selectedTemplates, fieldListNoErrors, mockSetProcessedRows);
+    expect(mockSetProcessedRows).toBeCalledTimes(2);
+    expect(validationResult).toBe(undefined);
+  });
+  test("Performs validations of fields, validations fail, rejects with error", async () => {
+    const fieldList = [    {
+      field: "nNumber",
+      validateFunction: () => Promise.reject("nNumber is too long")
+    }];
+    const template1 = {
+      name: "CREATE_TRITON_USER"
+    };
+    try {
+      await performValidations(form, [template1], fieldList, mockSetProcessedRows);
+    } catch (e) {
+      expect(e).toEqual([
+        {
+          "errors": [
+            "nNumber is too long"
+          ],
+          "row": 2
+        },
+        {
+          "errors": [
+            "nNumber is too long"
+          ],
+          "row": 3
+        }
+      ]);
+      expect(mockSetProcessedRows).toBeCalledTimes(2);
+    }
+  });
+  test("Performs validations of fields, some validations fail, some pass, rejects with appropriate errors", async () => {
+    const fieldList = [{
+      field: "nNumber",
+      validateFunction: jest.fn().mockRejectedValueOnce("Boo you stink!").mockResolvedValueOnce("yay").mockRejectedValueOnce("Boo you stink!")
+    },
+    {
+      field: "someCoolField",
+      validateFunction: jest.fn().mockResolvedValueOnce("yay").mockResolvedValueOnce("yay").mockRejectedValueOnce("nope!")
+    }];
+    const longerForm = [
+      {
+        nNumber: "something",
+        someCoolField: "butts"
+      },
+      {
+        nNumber: "something else",
+        someCoolField: "hi mom"
+      },
+      {
+        nNumber: "12345",
+        someCoolField: "wahooooo"
+      }
+    ];
+    const template1 = {
+      name: "CREATE_TRITON_USER"
+    };
+    try {
+      await performValidations(longerForm, [template1], fieldList, mockSetProcessedRows);
+    } catch (e) {
+      expect(e).toEqual([
+        {
+          "errors": [
+            "Boo you stink!"
+          ],
+          "row": 2
+        },
+        {
+          "errors": [
+            "Boo you stink!",
+            "nope!"
+          ],
+          "row": 4
+        }
+      ]);
+      expect(mockSetProcessedRows).toBeCalledTimes(3);
+    }
+  });
+});
+
+describe("checkConflictingCalabrioUsers", () => {
+  const cleanUser = {
+    workerSid: "9876",
+    email: "email@lm.com",
+    adLogin: "lm/9876"
+  };
+  const userWithConflictingEmail = {
+    workerSid: "7474",
+    email: "dude@libertymutual.com",
+    adLogin: "lm/7474"
+  };
+  const userWithConflictingAcdId = {
+    workerSid: "123",
+    email: "dudette@libertymutual.com",
+    adLogin: "lm/123234"
+  };
+  const userWithConflictingAdLogin = {
+    workerSid: "555",
+    email: "person@libertymutual.com",
+    adLogin: "lm/456"
+  };
+  const users = [
+    {
+      acdId: "123",
+      email: "dude@libertymutual.com",
+      adLogin: "lm/123"
+    },
+    {
+      acdId: "456",
+      email: "someone@libertymutual.com",
+      adLogin: "lm/456"
+    }
+  ];
+  test("No user is passed to function, promise rejects", async () => {
+    try {
+      await checkConflictingCalabrioUsers({}, 1, []);
+    } catch (e) {
+      expect(e).toEqual("No user passed to calabrio processing");
+    }
+  });
+  test("User passed to function, has no matches in the users list, returns resolved", async () => {
+    const result = await checkConflictingCalabrioUsers(cleanUser, 1, users);
+    expect(result).toEqual("Calabrio Checks passed for 1");
+  });
+  test("User passed to function, has acdId matches in the users list, returns resolved", async () => {
+    try {
+      await checkConflictingCalabrioUsers(userWithConflictingAcdId, 1, users);
+    } catch(err){
+      expect(err).toEqual("Calabrio Record already exists with this user's acdId for row 1.");
+    }
+  });
+  test("User passed to function, has email matches in the users list, returns resolved", async () => {
+    try {
+      await checkConflictingCalabrioUsers(userWithConflictingEmail, 1, users);
+    } catch(err){
+      expect(err).toEqual("Calabrio Record already exists with this user's email for row 1.");
+    }
+  });
+  test("User passed to function, has adlogin matches in the users list, returns resolved", async () => {
+    try {
+      await checkConflictingCalabrioUsers(userWithConflictingAdLogin, 1, users);
+    } catch(err){
+      expect(err).toEqual("Calabrio Record already exists with this user's nNumber in the AdLogin field for row 1.");
+    }
+  });
+});

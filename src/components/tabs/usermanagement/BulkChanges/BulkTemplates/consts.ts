@@ -1,50 +1,5 @@
 import { isNumberValid } from "utils";
 
-const validator = {
-  NUMBER: (value: any) => {
-    try {
-      const parsedValue = parseInt(value);
-      if(parsedValue && typeof parsedValue === "number" && parsedValue > 0){
-        return true;
-      } else {
-        return false;
-      }
-    } catch(err){
-      return false;
-    }
-  },
-  OBJECT: (value: any) => {
-    const object: any = {};
-    const fieldArray = value.replace(" ","").replace("{","").replace("}","").split(",");
-
-    fieldArray.forEach((f: any) => {
-      const objKeyValueArray = f.replace(" ","").split(":");
-      const key = objKeyValueArray[0].trim();
-      const keyValue = objKeyValueArray[1].trim();
-      object[key] = keyValue;
-    });
-    const parsedValue = JSON.parse(JSON.stringify(object));
-    if(typeof parsedValue === "object" && value.charAt(0) === "{" && value.charAt(value.length -1) === "}"){
-      return true;
-    } else {
-      return false;
-    }
-  },
-  ARRAY: (value: any) => {
-    try {
-      const fieldArray = value.replace(" ","").replace("[","").replace("]","").split(",");
-
-      if(typeof fieldArray === "object" && value.charAt(0) === "[" && value.charAt(value.length -1) === "]"){
-        return true;
-      } else {
-        return false;
-      }
-    } catch(err){
-      return false;
-    }
-  }
-};
-
 //Not all worker attribute fields would logically be bulk updated. 
 //Future stories will bulk update routing and default skills in addition to inactive fields to bulk disable users
 export const availableAttributes: any = {
@@ -64,7 +19,7 @@ export const availableAttributes: any = {
     label: "profile_id",
     value: "profile_id",
     type: "number",
-    validator: validator.NUMBER,
+    validator: (value: any) => !isNaN(value as any),
     location: "attributes" // Add tooltip that it will also update agentAttribute1
   },
   DID: {
@@ -75,7 +30,6 @@ export const availableAttributes: any = {
     location: "attributes"// add tooltip that this is alone will not update someone's direct dial number, bulk update direct didal is not supported, this field also represents outgoing number for non DID users
   }
 };
-
 
 export const jokes: string[] = [
   "What do you call a sleeping bull? A bulldozer.",

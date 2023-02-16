@@ -122,17 +122,17 @@ export const checkConflictingCalabrioUsers = async (user: any, rowNumber: number
 
         if (acdId && dupUserAcdId === acdId) {
           console.log("CALABRIO CONFLICTING USERS: ", acdId, dupUserAcdId);
-          Promise.reject(`Calabrio Record already exists with this user's acdId for row ${rowNumber}`);
+          throw(`Calabrio Record already exists with this user's acdId for row ${rowNumber}.`);
         }
 
         if (dupUserAdLogin === adLogin) {
           console.log("CALABRIO CONFLICTING USERS: ", dupUserAdLogin, adLogin);
-          Promise.reject(`Calabrio Record already exists with this user's nNumber in the AdLogin field for row ${rowNumber}.`);
+          throw(`Calabrio Record already exists with this user's nNumber in the AdLogin field for row ${rowNumber}.`);
         }
 
         if (dupUserEmail === email) {
           console.log("CALABRIO CONFLICTING USERS: ", dupUserEmail, email);
-          Promise.reject(`Calabrio Record already exists with this user's email for row ${rowNumber}.`);
+          throw(`Calabrio Record already exists with this user's email for row ${rowNumber}.`);
         }
       }));
       return Promise.resolve(`Calabrio Checks passed for ${rowNumber}`);
