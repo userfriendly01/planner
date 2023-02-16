@@ -1,9 +1,7 @@
 
 import { Button } from "../BulkChanges.Styles";
 import React from "react";
-import {
-  ExcelExport
-} from "@progress/kendo-react-excel-export";
+import { ExcelExport } from "@progress/kendo-react-excel-export";
 
 const ExportErrorsButton = (props: any) => {
   const { errors } = props;
@@ -35,7 +33,6 @@ const ExportErrorsButton = (props: any) => {
 
     console.log("rows", rows);
     console.log("columns", columns);
-
     if (_export !== null) {
       _export.current.save(rows, columns);
     }
