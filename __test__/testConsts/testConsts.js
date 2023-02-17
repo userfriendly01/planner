@@ -434,9 +434,9 @@ export const initialTestState = {
           n_number: "n0000000",
           extension: "2345",
           profile_id: "12",
-          manager_n_number: "n0263786",
+          manager_n_number: "n0263786"
         },
-        sid: "W123"
+        sid: "WK1234"
       },
       {
         attributes: {

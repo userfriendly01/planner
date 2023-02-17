@@ -17,25 +17,23 @@ import {
   isDidUser
 } from "../BulkTemplates";
 
-
 const processCreateTritonUser = async (row: any, rowNumber: number, state: any) => {
   console.log("**** TRITON RECORD PROCESSING", row);
-  const didFieldName = "Did User";
-  const didField = cleanupField(row[didFieldName], "string");
-  const didUser = isDidUser(didField, rowNumber);
-  const body: any = {};
-  if(didUser) {
-    body.attributes = row.attributes;
-    body.activateEp = true;
-    body.alternateDid = row.directDialNum;
-    body.directDialNum = row.directDialNum;
-    body.zeroOutEnabled = row.zeroOutEnabled;
-  } else {
-    body.attributes = row.attributes;
-    body.activateEp = false;
-  }
-
   try {
+    const didFieldName = "Did User";
+    const didField = cleanupField(row[didFieldName], "string");
+    const didUser = isDidUser(didField, rowNumber);
+    const body: any = {};
+    if(didUser) {
+      body.attributes = row.attributes;
+      body.activateEp = true;
+      body.alternateDid = row.directDialNum;
+      body.directDialNum = row.directDialNum;
+      body.zeroOutEnabled = row.zeroOutEnabled;
+    } else {
+      body.attributes = row.attributes;
+      body.activateEp = false;
+    }
     const res = await createUser(body);
     const workerSid = res.workerSid;
     console.log("TRITON RESPONSE", res);
@@ -45,15 +43,18 @@ const processCreateTritonUser = async (row: any, rowNumber: number, state: any) 
     return Promise.resolve(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
   } catch(err) {
     console.error(`Failed to create Triton user for row ${rowNumber}.`, err);
-    return Promise.reject(`Failed to create Triton user for row ${rowNumber}.`);
+    return Promise.reject(`Failed to create Triton user for row ${rowNumber}. ${err.toString()}`);
   }
 };
 
 const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any) => {
-  console.log("****CALABRIO RECORD PROCESSING for", row);
+  console.warn("****CALABRIO RECORD PROCESSING for", row);
   await checkConflictingCalabrioUsers(row, rowNumber, state.calabrioContext.users);
-  const existingTritonWorker = state.workerContext.workers.find((w:any) => w.attributes?.n_number && w.attributes.n_number === row.n_number);
+  const existingTritonWorker = state.workerContext.workers.find((w:any) => w.attributes?.n_number && w.attributes.n_number === row.attributes.n_number);
   const acdId = row.acdId || existingTritonWorker?.sid || undefined;
+  if(!acdId){
+    return Promise.reject(`Failed to create Calabrio user for row ${rowNumber}. Missing ACD Id, validate this user already exists in Triton`);
+  }
   const body: any = {};
 
   body.acdId = acdId;
@@ -72,7 +73,7 @@ const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any
     return Promise.resolve(`User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`);
   } catch(err) {
     console.error(`Failed to create Calabrio user for row ${rowNumber}.`, err);
-    return Promise.reject(`Failed to create Calabrio user for row ${rowNumber}.`);
+    return Promise.reject(`Failed to create Calabrio user for row ${rowNumber}. ${err.toString()}`);
   }
 };
 
@@ -107,39 +108,44 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
 };
 
 const processUpdateManager = async (row: any, rowNumber: number, template: Template, state: any) => {
-  const userNNumber = row.n_number;
-  const managerNNumber = template.data.nNumber;
-  const calabrioTeamId = template.data.calabrioTeamId;
-
-  const tritonBody: any = {};
-  let calabrioBody: any = {};
-
-  const userTritonRecord = state.workerContext.workers.find((w: any) => w.attributes.n_number === userNNumber);
-  const userCalabrioRecord = state.calabrioContext.users.find((u: any) => cleanupField(u.acdId, "string") === cleanupField(userTritonRecord.sid, "string") || cleanupField(u.email, "string") === cleanupField(userTritonRecord.attributes.email, "string"));
-  const managerObject = state.managerContext.managers.find((m:any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === managerNNumber);
-
-  if(!managerObject){
-    return Promise.reject(`${managerNNumber} is not a valid manager nNumber for row ${rowNumber}`);
-  } else if(!userCalabrioRecord){
-    return Promise.reject(`${userNNumber} is not a valid calabrio user for row ${rowNumber}`);
-  } else {
-    tritonBody.attributes = {
-      manager_first_name: managerObject.manager_first_name,
-      manager_last_name: managerObject.manager_last_name,
-      manager_n_number: managerObject.manager_n_number,
-      manager: `${managerObject.manager_first_name} ${managerObject.manager_last_name}`
-    };
-    calabrioBody = {
-      ...userCalabrioRecord,
-      groupId: calabrioTeamId
-    };
-  }
-
-  console.log("**** UPDATE MANAGER RECORD PROCESSING", row, tritonBody, calabrioBody);
   try {
+    const userNNumber = row.n_number;
+    const managerNNumber = template.data.nNumber;
+    const calabrioTeamId = template.data.calabrioTeamId;
+
+    const tritonBody: any = {};
+    let calabrioBody: any = {};
+    let calabrioFunction: any = () => Promise.resolve("Bypassing Calabrio Team Change, not selected");
+
+    const managerObject = state.managerContext.managers.find((m:any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === managerNNumber);
+    if(!managerObject){
+      return Promise.reject(`${managerNNumber} is not a valid manager nNumber for row ${rowNumber}`);
+    } else {
+      tritonBody.attributes = {
+        manager_first_name: managerObject.manager_first_name,
+        manager_last_name: managerObject.manager_last_name,
+        manager_n_number: managerObject.manager_n_number,
+        manager: `${managerObject.manager_first_name} ${managerObject.manager_last_name}`
+      };
+    }
+
+    if(calabrioTeamId){
+      const userTritonRecord = state.workerContext.workers.find((w: any) => w.attributes?.n_number && w.attributes?.n_number === userNNumber);
+      console.warn("CHECK", userTritonRecord);
+      const userCalabrioRecord = state.calabrioContext.users.find((u: any) => cleanupField(u?.acdId, "string") === cleanupField(userTritonRecord?.sid, "string") || cleanupField(u?.email, "string") === cleanupField(userTritonRecord?.attributes?.email, "string"));
+      console.warn("CHECK", userCalabrioRecord);
+      if(userCalabrioRecord){
+        calabrioBody = {
+          ...userCalabrioRecord,
+          groupId: calabrioTeamId
+        };
+        calabrioFunction = updateCalabrioUser;
+      }
+    }
+
     const results = await Promise.allSettled([
       updateUser(row.workerSid, tritonBody),
-      updateCalabrioUser(userCalabrioRecord.id, calabrioBody)
+      calabrioFunction(calabrioBody.id, calabrioBody)
     ]);
 
     const errors: string[] = [];
@@ -149,8 +155,8 @@ const processUpdateManager = async (row: any, rowNumber: number, template: Templ
     }
     return Promise.resolve(`${userNNumber} - Manager & Calabrio Team updated for row ${rowNumber}`);
   } catch(err){
-    console.error(`Failed to update Triton Worker Attributes user for row ${rowNumber}.`, err);
-    return Promise.reject(`Failed to update for row ${rowNumber}. ${err.toString()}`);
+    console.error(`Failed to update Manager and Calabrio Team for user for row ${rowNumber}.`, err);
+    return Promise.reject(`Failed to update Manager and Calabrio Team for user for row ${rowNumber}. ${err.toString()}`);
   }
 };
 
