@@ -227,16 +227,9 @@ export const EditFlow = ({
                           </Grid>
                         ) : (
                           <Grid item xs={10}>
-                            <FormControl required error={flowRule.dataRequests.error}>
+                            <FormControl required error={flowRule.dataRequests.error} sx={{ width: "calc(95%)" }}>
                               <InputLabel id="data-request-select-input">View Data Requests</InputLabel>
                               <Select
-                                inputProps={{
-                                  "aria-label": "Without label",
-                                  sx: {
-                                    width: 270,
-                                    maxHeight: 15
-                                  }
-                                }}
                                 size="medium"
                                 labelId="data-request-select-input"
                                 label="View Data Requests"
@@ -254,10 +247,10 @@ export const EditFlow = ({
                           </Grid>
                         )}
                         <Grid item xs={2}>
-                          <IconButton onClick={addItem} aria-label="addDataRequestButton" edge="end">
+                          <IconButton onClick={addItem} aria-label="addDataRequestButton" edge="start">
                             <AddIcon> </AddIcon>
                           </IconButton>
-                          <IconButton onClick={() => { setDisplayRecords(false); }} aria-label="displayDataRequestButton" edge="end">
+                          <IconButton onClick={() => { setDisplayRecords(false); }} aria-label="displayDataRequestButton" edge="start">
                             <ViewListIcon />
                           </IconButton>
                         </Grid>
