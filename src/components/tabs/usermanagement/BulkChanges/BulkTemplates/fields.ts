@@ -258,7 +258,7 @@ export const FIELDS: Fields = {
           }
           const isExtensionTaken = workers.some((w: any) => cleanupField(w.attributes.extension, "string") === field);
           if(!isExtensionTaken){
-            row.attributes.extension = field;
+            row.attributes.extension = parseInt(field);
             return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
           } else {
             return Promise.reject(`${fieldName} ${field} is already taken for row ${rowNumber}`);

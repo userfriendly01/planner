@@ -35,10 +35,11 @@ export const cleanupField = (field: any, requiredType: string) => {
         if(typeof field === "number"){
           return field;
         } else {
-          try {
-            return parseInt(field);
-          } catch(err){
+          const isNotNum: boolean = isNaN(field as any);
+          if(isNotNum){
             return field;
+          } else {
+            return parseInt(field);
           }
         }
       default:
