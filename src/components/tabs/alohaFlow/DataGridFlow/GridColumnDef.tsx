@@ -13,7 +13,7 @@ export const FlowGridColumnDef: GridColDef[] = [
     headerName: "Description",
     field: "dialedDescription",
     sortable: true,
-    width: 110,
+    width: 150,
     align: "left",
     renderCell: (params: any) =>  (
       <Tooltip title={params.row.dialedDescription} >

@@ -102,7 +102,7 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
     key: "callerState",
     control: "input",
     required: true,
-    valueGetter: (params: CctSharedCallRoutingDb) => `${params?.pkey || ""}`,
+    valueGetter: (params: CctSharedCallRoutingDb) => `${params?.callerState || ""}`,
     valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => ({
       ...currentValue,
       ...newValue

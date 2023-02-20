@@ -67,10 +67,13 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
     });
   }, []);
 
+  const isInvalidField = (key: string, value: string):boolean =>{
+    return routingRule[key].required && [undefined, "", null].includes(value);
+  };
   const validateRoute = () => {
     let isValidForm = true;
     Object.keys(routingRule).map(key => {
-      if (routingRule[key].required && [undefined, "", null].includes(routingRule[key].value)) {
+      if (isInvalidField(key, routingRule[key].value)) {
         const newRoutingRule = {
           [key]: {
             ...routingRule[key],
@@ -172,7 +175,13 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
       skey = `${value}__`;
       skey += routingRule.channel.value ? `${routingRule.channel.value}__${newId}` : `__${newId}`;
     }
-    const newRoutingRule: FormValidationRule = { [key]: { value }};
+    const newRoutingRule: FormValidationRule = {
+      [key]: {
+        ...routingRule[key],
+        value,
+        error: isInvalidField(key, value)
+      }
+    };
 
     if (skey) {
       newRoutingRule["skey"] = { value: removeAllWhiteSpace(skey).toLocaleLowerCase() };

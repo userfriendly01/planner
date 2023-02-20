@@ -301,7 +301,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
             pageSize={dataFlow.perPage}
             onPageChange={(newPage: number) => setPage(newPage)}
             onPageSizeChange={(newPageSize: number) => setPerPage(newPageSize)}
-            rowsPerPageOptions={[5, 10, 20, 50, 100]}
+            rowsPerPageOptions={[10, 20, 50, 100]}
             paginationMode="client"
             pagination
             loading={dataFlow.fetching}
