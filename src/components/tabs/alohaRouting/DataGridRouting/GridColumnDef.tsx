@@ -59,7 +59,7 @@ export const RoutingGridColumnDef: GridColDef[] = [
     headerName: "Caller Intent",
     field: "callIntent",
     sortable: true,
-    width: 110,
+    width: 130,
     align: "left",
     renderCell: (params: any) =>  (
       <Tooltip title={params.row.callIntent || ""} >
