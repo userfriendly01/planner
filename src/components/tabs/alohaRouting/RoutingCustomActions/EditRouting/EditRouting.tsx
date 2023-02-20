@@ -11,7 +11,7 @@ import {
   convertTime12to24,convertTime24to12, getGraphQLEndpoint, routingFields, routingInitRule, initializedAlertBar, routingDropDownList, dayOfWeek
 } from "utils";
 import {
-  CctSharedCallRoutingDb, RoutingDropDownList
+  CctSharedCallRoutingDb, RoutingDropDownList, AddPageFieldConfigProps
 } from "../../AlohaRouting.Interfaces";
 import {
   CustomToast, ComponentControl
@@ -19,7 +19,9 @@ import {
 import {
   Button, Grid
 } from "@mui/material";
-import { AlertBarProps } from "utils/interfaces";
+import {
+  AlertBarProps, FormValidationRule
+} from "utils/interfaces";
 import {
   deleteRoutingRule, updateRoutingDB
 } from "services";
@@ -98,23 +100,61 @@ export const EditRouting = ({
     }));
   };
 
-  const handleOnSave = async () => {
-    const updatedRow: CctSharedCallRoutingDb = {
-      ...selectedRowLocal,
-      startTime: convertTime24to12(selectedRowLocal.startTime),
-      endTime: convertTime24to12(selectedRowLocal.endTime)
-    };
-    const response = await updateRoutingDB(updatedRow, accessToken, graphQLEndPoint);
-    if (response) {
-      openEditModal(false, true, updatedRow, `Routing Rule ID ${selectedRow.id} has been successfully updated!! `, false);
+  const isInvalidField = (key: string, value: string):boolean =>{
+    return routingRule[key].required && [undefined, "", null].includes(value);
+  };
+  const findFieldValue = (key: string): string => {
+    let fieldValue = "";
+    routingFields.map((value: AddPageFieldConfigProps) => {
+      if (value.key === key) {
+        fieldValue = value.valueGetter(selectedRowLocal);
+      }
+    });
+    return fieldValue;
+  };
+
+  const validateRoute = () => {
+    let isValidForm = true;
+    Object.keys(routingRule).map(key => {
+      const fieldValue: string = findFieldValue(key);
+      if (isInvalidField(key, fieldValue)) {
+        const newRoutingRule = {
+          [key]: {
+            ...routingRule[key],
+            error: true
+          }
+        };
+        isValidForm = false;
+        setRoutingRule(rule => ({
+          ...rule,
+          ...newRoutingRule
+        }));
+      }
       return true;
+    });
+    return isValidForm;
+  };
+
+  const handleOnSave = async () => {
+    const isValidForm = await validateRoute();
+    if(isValidForm){
+      const updatedRow: CctSharedCallRoutingDb = {
+        ...selectedRowLocal,
+        startTime: convertTime24to12(selectedRowLocal.startTime),
+        endTime: convertTime24to12(selectedRowLocal.endTime)
+      };
+      const response = await updateRoutingDB(updatedRow, accessToken, graphQLEndPoint);
+      if (response) {
+        openEditModal(false, true, updatedRow, `Routing Rule ID ${selectedRow.id} has been successfully updated!! `, false);
+        return true;
+      }
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        severityType: "error",
+        msg: `Failed to save Routing ID ${selectedRow.id}`
+      }));
     }
-    setAlertBar((alertBarProps: AlertBarProps) => ({
-      ...alertBarProps,
-      open: true,
-      severityType: "error",
-      msg: `Failed to save Routing ID ${selectedRow.id}`
-    }));
   };
 
   const handleTimeEvalChange = async (
@@ -142,6 +182,18 @@ export const EditRouting = ({
     }
     const updatedSelectedValue: CctSharedCallRoutingDb = valueSetter(selectedRowLocal, { [key]: value });
     setSelectedRowLocal(updatedSelectedValue);
+    const newFlowRule: FormValidationRule = {
+      [key]: {
+        ...routingRule[key],
+        value: value,
+        error: isInvalidField(key, value)
+      }
+    };
+
+    setRoutingRule((rule: FormValidationRule) => ({
+      ...rule,
+      ...newFlowRule
+    }));
 
   };
 

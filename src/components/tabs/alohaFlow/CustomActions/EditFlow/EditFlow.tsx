@@ -77,11 +77,15 @@ export const EditFlow = ({
     );
   }, [selectedRow]);
 
+  const isInvalidField =(key: string, value: string): boolean =>{
+    return flowRule[key].required && [undefined, "", null].includes(value);
+  };
+
   const validateFlow = async (): Promise<boolean> => {
     let isValidForm = true;
     Object.keys(flowRule).map(key => {
       const fieldValue: string = findFieldValue(key);
-      if (flowRule[key].required && [undefined, "", null].includes(fieldValue)) {
+      if (isInvalidField(key, fieldValue)) {
         const newFlowRule: FormValidationRule = {
           [key]: {
             ...flowRule[key],
@@ -153,8 +157,22 @@ export const EditFlow = ({
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => CctSharedCallFlowDb
   ) => {
-    const updatedSelectedValue: CctSharedCallFlowDb = valueSetter(selectedRowLocal, { [event.target.name]: event.target.value });
+    const key:string = event.target.name;
+    const value: string = event.target.value;
+    const updatedSelectedValue: CctSharedCallFlowDb = valueSetter(selectedRowLocal, { [key]: value });
     setSelectedRowLocal(updatedSelectedValue);
+    const newFlowRule: FormValidationRule = {
+      [key]: {
+        ...flowRule[key],
+        value: value,
+        error: isInvalidField(key, value)
+      }
+    };
+
+    setFlowRule((rule: FormValidationRule) => ({
+      ...rule,
+      ...newFlowRule
+    }));
   };
 
   const removeItem = (index: number) => {

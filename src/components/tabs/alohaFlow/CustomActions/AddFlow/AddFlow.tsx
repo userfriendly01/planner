@@ -96,7 +96,11 @@ export const AddFlow = ({
     let value: string = event.target.value;
     value = (key === "pkey" && !value.startsWith("+")) ? `+1${value}` : value;
     const newFlowRule: FormValidationRule = {
-      [key]: { value }
+      [key]: {
+        ...flowRule[key],
+        value,
+        error: isInvalidField(key, value)
+      }
     };
 
     setFlowRule((rule: FormValidationRule) => ({
@@ -105,10 +109,14 @@ export const AddFlow = ({
     }));
   }
 
+  const isInvalidField =(key: string, value: string): boolean =>{
+    return flowRule[key].required && [undefined, "", null].includes(value);
+  };
+
   function validateRoute() {
     let isValidForm = true;
-    Object.keys(flowRule).map(key => {
-      if (flowRule[key as keyof FlowKeys].required && [undefined, "", null].includes(flowRule[key].value)) {
+    Object.keys(flowRule).map((key: string) => {
+      if (isInvalidField(key, flowRule[key].value)) {
         const newFlowRule = {
           [key]: {
             ...flowRule[key],
