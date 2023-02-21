@@ -4,11 +4,26 @@ import {
   performValidations,
   checkConflictingCalabrioUsers
 } from "../validationUtils";
+import {
+  getLowestConcurrencyLimit,
+  handleConcurrentCalls
+} from "../processingUtils";
+
+jest.mock("../processingUtils",() => ({
+  handleConcurrentCalls: jest.fn(),
+  getLowestConcurrencyLimit: jest.fn()
+}));
 
 describe("updateSelectedTemplates", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.resetAllMocks();
+    jest.mock("../validationUtils",() => ({
+      consolidateTemplates: jest.fn(),
+      performValidations: jest.fn(),
+      checkConflictingCalabrioUsers: jest.fn(),
+      updateSelectedTemplates: jest.requireActual("validationUtils").updateSelectedTemplates
+    }));
   });
   const mockSetSelectedTemplates = jest.fn();
   test("Checked is true and template is already in selected templates, do nothing", () => {
@@ -49,6 +64,12 @@ describe("consolidateTemplates", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.resetAllMocks();
+    jest.mock("../validationUtils",() => ({
+      consolidateTemplates: jest.requireActual("validationUtils").consolidateTemplates,
+      performValidations: jest.fn(),
+      checkConflictingCalabrioUsers: jest.fn(),
+      updateSelectedTemplates: jest.fn()
+    }));
   });
   const mockSetConsolidatedTemplates = jest.fn();
   const template1 = {
@@ -118,6 +139,13 @@ describe("performValidations", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.resetAllMocks();
+    jest.mock("../validationUtils",() => ({
+      consolidateTemplates: jest.fn(),
+      performValidations: jest.requireActual("validationUtils").performValidations,
+      checkConflictingCalabrioUsers: jest.fn(),
+      updateSelectedTemplates: jest.fn()
+    }));
+    getLowestConcurrencyLimit.mockReturnValue(null);
   });
   const mockSetProcessedRows = jest.fn();
   const form = [
@@ -129,7 +157,6 @@ describe("performValidations", () => {
     }
   ];
 
-  // TODO: These need more beefing
   test("Performs validations of fields, resolves for no errors", async () => {
     const fieldListNoErrors = [    {
       field: "nNumber",
@@ -141,6 +168,30 @@ describe("performValidations", () => {
     const selectedTemplates = [template1];
     const validationResult = await performValidations(form, selectedTemplates, fieldListNoErrors, mockSetProcessedRows);
     expect(mockSetProcessedRows).toBeCalledTimes(2);
+    expect(validationResult).toBe(undefined);
+  });
+  test("Performs validations of fields with concurrency limit, resolves for no errors", async () => {
+    const validationResults = [{
+      status: "fulfilled",
+      value: [
+        {
+          status: "fulfilled",
+          value: "we did it!!"
+        }
+      ]
+    }];
+    getLowestConcurrencyLimit.mockReturnValue(2);
+    handleConcurrentCalls.mockResolvedValue(validationResults);
+    const fieldListNoErrors = [    {
+      field: "nNumber",
+      validateFunction: () => true
+    }];
+    const template1 = {
+      name: "CREATE_TRITON_USER"
+    };
+    const selectedTemplates = [template1];
+    const validationResult = await performValidations(form, selectedTemplates, fieldListNoErrors, mockSetProcessedRows);
+    expect(mockSetProcessedRows).toBeCalledTimes(0);
     expect(validationResult).toBe(undefined);
   });
   test("Performs validations of fields, validations fail, rejects with error", async () => {
@@ -221,6 +272,16 @@ describe("performValidations", () => {
 });
 
 describe("checkConflictingCalabrioUsers", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+    jest.mock("../validationUtils",() => ({
+      consolidateTemplates: jest.fn(),
+      performValidations: jest.fn(),
+      checkConflictingCalabrioUsers: jest.requireActual("validationUtils").checkConflictingCalabrioUsers,
+      updateSelectedTemplates: jest.fn()
+    }));
+  });
   const cleanUser = {
     workerSid: "9876",
     email: "email@lm.com",
@@ -237,7 +298,6 @@ describe("checkConflictingCalabrioUsers", () => {
     adLogin: "lm/123234"
   };
   const userWithConflictingAdLogin = {
-    workerSid: "555",
     email: "person@libertymutual.com",
     adLogin: "lm/456"
   };
@@ -255,7 +315,7 @@ describe("checkConflictingCalabrioUsers", () => {
   ];
   test("No user is passed to function, promise rejects", async () => {
     try {
-      await checkConflictingCalabrioUsers({}, 1, []);
+      await checkConflictingCalabrioUsers(null, 1, []);
     } catch (e) {
       expect(e).toEqual("No user passed to calabrio processing");
     }

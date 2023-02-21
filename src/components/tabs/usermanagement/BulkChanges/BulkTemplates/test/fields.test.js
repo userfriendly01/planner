@@ -473,7 +473,7 @@ describe("fields.js", () => {
           expect(row).toEqual({
             "Extension": "Y",
             attributes: {
-              extension: "123"
+              extension: 123
             }
           });
         });
@@ -491,7 +491,7 @@ describe("fields.js", () => {
           expect(row).toEqual({
             "Extension": "Y",
             attributes: {
-              extension: "123",
+              extension: 123,
               ...existingAttributes
             }
           });
