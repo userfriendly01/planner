@@ -281,7 +281,7 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
       } catch(err){
         expect(updateUser).toHaveBeenCalledTimes(1);
         expect(updateUser).toHaveBeenCalledWith("WK1234", {});
-        expect(err).toBe("Failed to update Triton Worker Attributes for row 4.");
+        expect(err).toBe("Failed to update Triton Worker Attributes for row 4. Aww");
       }
     });
   });
