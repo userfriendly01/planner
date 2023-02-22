@@ -85,7 +85,6 @@ const renderDataGridRouting = () => render(
 );
 
 describe("<DataGridRouting />", ()=>{
-  const initialCookie = window.document.cookie;
   const matchMedia = window.matchMedia;
   beforeEach(()=>{
     jest.clearAllMocks();
@@ -101,10 +100,6 @@ describe("<DataGridRouting />", ()=>{
       CustomToast,
       CustomFlowRoutingToolBar
     }),
-    Object.defineProperty(window.document, "cookie", {
-      writable: true,
-      value: (initialCookie + ";" + "PA.ciciccttritondev1=1234.5678.uytghh")
-    });
     Object.defineProperty(window, "matchMedia", {
       writable: true,
       value: jest.fn().mockImplementation(query => ({
@@ -123,10 +118,6 @@ describe("<DataGridRouting />", ()=>{
   });
 
   afterEach(()=>{
-    Object.defineProperty(window.document, "cookie", {
-      writable: true,
-      value: initialCookie
-    });
     Object.defineProperty(window, "matchMedia", {
       writable: true,
       value: matchMedia
