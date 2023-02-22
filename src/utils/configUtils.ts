@@ -1,5 +1,5 @@
 import {
-  CctSharedCallFlowDb, CctSharedCallRoutingDb
+  CctSharedCallFlowDb, CctSharedCallRoutingDb, FlowContent
 } from "components";
 import { useAdminState } from "context";
 import { AlertBarProps } from "./interfaces";
@@ -52,12 +52,15 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
   }
   let keys: string[] = Object.keys(array[0]);
   const contentStore : string[] =[];
+  let contentKeys: string[] = [];
   let flag = false;
   for( let i=0; i<keys.length; i++){
     if(keys[i] === "content"){
       const arrayStore:CctSharedCallFlowDb = array[0];
-      const contentKeys: string[] = Object.keys(arrayStore.content);
-      contentStore.concat(contentKeys);
+      contentKeys= Object.keys(arrayStore.content);
+      contentKeys.forEach(key=>{
+        contentStore.push(key);
+      });
       flag = true;
     }
     else{
@@ -70,11 +73,18 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
   result = "";
   result += keys.join(columnDelimiter);
   result += lineDelimiter;
-  array.forEach((item:CctSharedCallFlowDb | CctSharedCallRoutingDb) => {
+  array.forEach((item:CctSharedCallFlowDb & CctSharedCallRoutingDb) => {
     let ctr = 0;
     keys.forEach(key => {
       if (ctr > 0) { result += columnDelimiter; }
       let itemValue = item[key as keyof (CctSharedCallFlowDb | CctSharedCallRoutingDb)];
+      if(contentKeys.includes(key)){
+        let contentItemVal:string|string[];
+        if(item.content){
+          contentItemVal = item.content[key as keyof FlowContent];
+          itemValue = contentItemVal?contentItemVal.toString():null;
+        }
+      }
       if(itemValue){
         itemValue = itemValue.toString();
         itemValue = itemValue.replace(","," ");
