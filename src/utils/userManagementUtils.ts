@@ -64,7 +64,6 @@ export const getOverflowSkills = (profiles: TritonProfile[]): string[] => {
 
 export const getOverflowSkillFromProfile = (profiles: TritonProfile[], profileValue: string): string | undefined => {
   const profile = getTargetProfile(profiles, profileValue);
-  console.warn("wtf", profile);
   if(!profile || profile?.overflow_skill === null || profile?.overflow_skill === ""){
     return undefined;
   } else {
