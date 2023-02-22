@@ -82,11 +82,16 @@ export const performValidations = async (
   console.log("***performValidations results: ", validationPromises);
   validationPromises.forEach((rowPromise: any, index: number) => {
     const rowErrors: any = [];
-    rowPromise.value.map((fieldPromise: any) => {
-      if(fieldPromise.status === "rejected"){
-        rowErrors.push(fieldPromise.reason);
-      }
-    });
+    if(!rowPromise.value){
+      rowErrors.push(rowPromise.reason);
+    } else {
+      rowPromise.value.map((fieldPromise: any) => {
+        if(fieldPromise.status === "rejected"){
+          rowErrors.push(fieldPromise.reason);
+        }
+      });
+    }
+
     if(rowErrors.length !== 0){
       finalErrors.push({
         row: index + 2, //When original spreadsheet has header this is 2 vs 1
