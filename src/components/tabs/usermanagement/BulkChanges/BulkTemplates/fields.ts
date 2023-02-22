@@ -164,7 +164,7 @@ export const FIELDS: Fields = {
     type: "string",
     description: "Comma delimited list of skill/level pairings. Skills can be on their own or have a ':level' to represent the level. If left blank, no skills will be added to the user",
     example: "bscCommissions:3, blSalesL1:2, aisl1",
-    options: (state: any) => state.skillContext.skills.map((s: any) => s.levels?.length > 0 ? `${s.name} Available levels: ${s.levels.toString()}` : s.name),
+    options: (state: any) => state.skillContext.skills.map((s: any) => s.levels?.length > 0 ? `${s.name} Available levels: ${s.levels?.toString()}` : s.name),
     validateFunction: (row: any, rowNumber: number, state: any): Promise<any> => {
       /*
         skills object: {
@@ -182,38 +182,42 @@ export const FIELDS: Fields = {
         levels: {}
       };
       if(field){
-        const fieldArray = field.replace(" ","").split(",");
-        fieldArray.forEach((objString: string) => {
-          const objKeyValueArray = objString.replace(" ","").split(":");
-          const key: any = cleanupField(objKeyValueArray[0], "string");
-          const value: any = cleanupField(objKeyValueArray[1], "number");
-          if(value){
-            defaultSkills.levels[key] = value;
-          }
-          defaultSkills.skills.push(key);
-        });
+        try {
+          const fieldArray = field.replace(" ","").split(",");
+          fieldArray.forEach((objString: string) => {
+            const objKeyValueArray = objString.replace(" ","").split(":");
+            const key: any = cleanupField(objKeyValueArray[0], "string");
+            const value: any = cleanupField(objKeyValueArray[1], "number");
+            if(value){
+              defaultSkills.levels[key] = value;
+            }
+            defaultSkills.skills.push(key);
+          });
 
-        const availableSkills = state.skillContext.skills;
-        const skillErrors: any = [];
+          const availableSkills = state.skillContext.skills;
+          const skillErrors: any = [];
 
-        defaultSkills.skills.forEach((ds: any) => {
-          if(!availableSkills.some((as: any) => cleanupField(as.name, "string") === ds)){
-            skillErrors.push(`${ds} is not an available skill `);
-          }
-        });
+          defaultSkills.skills.forEach((ds: any) => {
+            if(!availableSkills.some((as: any) => cleanupField(as.name, "string") === ds)){
+              skillErrors.push(`${ds} is not an available skill `);
+            }
+          });
 
-        Object.keys(defaultSkills.levels).forEach((skill: any) => {
-          const matchingSkill = availableSkills.find((as: any) => cleanupField(as.name, "string") === skill);
-          const level = defaultSkills.levels[skill];
-          if(!matchingSkill.levels.includes(level)){
-            skillErrors.push(`${skill} does not support Level ${level}.`);
+          Object.keys(defaultSkills.levels).forEach((skill: any) => {
+            const matchingSkill = availableSkills.find((as: any) => cleanupField(as.name, "string") === skill);
+            const level = defaultSkills.levels[skill];
+            if(!matchingSkill.levels.includes(level)){
+              skillErrors.push(`${skill} does not support Level ${level}.`);
+            }
+          });
+          if(skillErrors.length > 0){
+            return Promise.reject(`${fieldName} Errors found for row ${rowNumber} ${skillErrors.toString()}`);
+          } else {
+            row.attributes.defaultSkills = defaultSkills;
+            return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
           }
-        });
-        if(skillErrors.length > 0){
-          return Promise.reject(`${fieldName} Errors found for row ${rowNumber} ${skillErrors.toString()}`);
-        } else {
-          row.attributes.defaultSkills = defaultSkills;
-          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } catch(err){
+          return Promise.reject(`${fieldName} Error thrown found for row ${rowNumber} ${err.toString()}`);
         }
       } else {
         return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
