@@ -50,15 +50,36 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
   if(array.length ===0){
     return;
   }
-  const keys: string[] = Object.keys(array[0]);
+  let keys: string[] = Object.keys(array[0]);
+  const contentStore : string[] =[];
+  let flag = false;
+  for( let i=0; i<keys.length; i++){
+    if(keys[i] === "content"){
+      const arrayStore:CctSharedCallFlowDb = array[0];
+      const contentKeys: string[] = Object.keys(arrayStore.content);
+      contentStore.concat(contentKeys);
+      flag = true;
+    }
+    else{
+      contentStore.push(keys[i]);
+    }
+  }
+  if(flag){
+    keys = contentStore;
+  }
   result = "";
   result += keys.join(columnDelimiter);
   result += lineDelimiter;
-  array.forEach((item:CctSharedCallFlowDb | CctSharedCallRoutingDb) => {
+  array.forEach((item:(CctSharedCallFlowDb | CctSharedCallRoutingDb)) => {
     let ctr = 0;
     keys.forEach(key => {
       if (ctr > 0) { result += columnDelimiter; }
-      result += item[key as keyof (CctSharedCallFlowDb | CctSharedCallRoutingDb)];
+      let itemValue = item[key as keyof (CctSharedCallFlowDb | CctSharedCallRoutingDb)];
+      if(itemValue){
+        itemValue = itemValue.toString();
+        itemValue = itemValue.replace(","," ");
+      }
+      result += itemValue;
       ctr += 1;
     });
     result += lineDelimiter;
@@ -66,7 +87,7 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
   return result;
 };
 
-export const  downloadCSV = (prefix: string, array: Array<CctSharedCallFlowDb | CctSharedCallRoutingDb>): JSX.Element => {
+export const  downloadCSV = (prefix: string, array:Array<CctSharedCallFlowDb |CctSharedCallRoutingDb>): JSX.Element => {
   const link: HTMLAnchorElement = document.createElement("a");
   let csv: string = convertArrayOfObjectsToCSV(array);
   if (csv === null || csv===undefined) { return; }
