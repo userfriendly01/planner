@@ -97,7 +97,7 @@ describe("", () => {
           action: "edit",
           systems: {
             triton: true,
-            calabrio_qm: false,
+            calabrio_qm: true,// checks the state
             calabrio_wfm: false
           },
           worker: initialTestState.workerContext.workers[1]

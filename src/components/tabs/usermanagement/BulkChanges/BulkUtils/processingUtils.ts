@@ -9,14 +9,22 @@ export const readUploadFile = (e: any, setUploadedForm: any): void => {
   e.preventDefault();
   if (e.target.files) {
     const reader = new FileReader();
+    //Can enhance to check for additional headers if wanted - to do so we'd want to add 
+    const headerCount = 1;
     reader.onload = e => {
       const data = e.target?.result;
       const workbook = XLSX.read(data, { type: "array" });
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
-      const json = XLSX.utils.sheet_to_json(worksheet);
-      console.log(json);
-      setUploadedForm(json);
+      const json = XLSX.utils.sheet_to_json(worksheet, { header: headerCount });
+      console.warn(json);
+      console.warn(typeof json);
+      setUploadedForm(json.map((r: any, index: number) => {
+        return {
+          ...r,
+          rowNumber: index + headerCount
+        };
+      }));
     };
     reader.readAsArrayBuffer(e.target.files[0]);
   }
@@ -28,10 +36,10 @@ export const readUploadFile = (e: any, setUploadedForm: any): void => {
  * @param errors array representing the list of errors for the total rows
  */
 export const identifySuccessfulRecords = (totalRows: any, errors: any) => {
+  console.warn("BITCH");
   const successfulRows: any = [];
-  totalRows.forEach((row: any, index: number) => {
-    const rowEquivalent = index + 1;  //Look into header & row count
-    if(!errors.some((e: any) => e.row === rowEquivalent)){
+  totalRows.forEach((row: any) => {
+    if(!errors.some((e: any) => e.rowNumber === row.rowNumber)){
       successfulRows.push(row);
     }
   });
@@ -100,10 +108,8 @@ export const handleConcurrentCalls = async (
     const processingRows = rows.slice(currentIndex, endingIndex);
     await delay();
 
-    const results = await Promise.allSettled(processingRows.map((row: any, index: number) => {
-      const originalRowIndex = currentIndex + index;
-      const originalRowNumber = originalRowIndex + 2; //When original spreadsheet has header this is 2 vs 1
-      return functionToCall(row, originalRowNumber, progressCallback);
+    const results = await Promise.allSettled(processingRows.map((row: any) => {
+      return functionToCall(row, row.rowNumber, progressCallback);
     }));
 
     results.forEach((p: any) => processingResults.push(p));
@@ -123,10 +129,12 @@ export const handleConcurrentCalls = async (
 /**
  * Loops through the selected templates and returns the lowest validation or processing concurreny limit.
  * @param selectedTemplates selected templates to be processed
+ * @param type validation/process limit indicator
  */
 export const getLowestConcurrencyLimit = (selectedTemplates: any, type: string) => {
   let concurrencyLimit: any = null;
   if(type === "validation"){
+    console.warn("hmm", selectedTemplates);
     selectedTemplates.forEach(((t: any) => {
       if(t.validationConcurrencyLimit && (!concurrencyLimit || (concurrencyLimit && concurrencyLimit > t.validationConcurrencyLimit))){
         concurrencyLimit = t.validationConcurrencyLimit;
@@ -159,7 +167,6 @@ export const initiateCalls = async (
 
   const finalErrors: any = [];
   let processingPromises;
-
   const processRow = async (row: any, rowNumber: number, progressCallback: any) => {
 
     if(templateTree){
@@ -201,15 +208,15 @@ export const initiateCalls = async (
       return rowPromise;
     }
   };
-
+  console.warn("concurrencyLimit", concurrencyLimit);
+  console.warn("handleConcurrentCalls", handleConcurrentCalls);
   if(concurrencyLimit){
-    console.log("Concurrency Limit found", concurrencyLimit);
+    console.warn("Concurrency Limit found", concurrencyLimit);
     processingPromises = await handleConcurrentCalls(concurrencyLimit, processRow, rows, setProcessedRows);
   } else {
-    console.log("No Concurrency Limit found");
-    processingPromises = await Promise.allSettled(rows.map(async (row: any, index: number) => {
-      const rowNumber = index + 1;
-      return processRow(row, rowNumber, setProcessedRows);
+    console.warn("No Concurrency Limit found");
+    processingPromises = await Promise.allSettled(rows.map(async (row: any) => {
+      return processRow(row, row.rowNumber, setProcessedRows);
     }));
   }
 
@@ -222,7 +229,7 @@ export const initiateCalls = async (
     });
     if(rowErrors.length !== 0){
       finalErrors.push({
-        row: index + 2, //When original spreadsheet has header this is 2 vs 1
+        rowNumber: index + 1,
         errors: rowErrors
       });
     }

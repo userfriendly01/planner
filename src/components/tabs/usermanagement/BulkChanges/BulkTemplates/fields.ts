@@ -122,9 +122,9 @@ export const FIELDS: Fields = {
         row.attributes = {};
       }
       if(!field){
-        return Promise.reject(`${fieldName} is either missing or is not a number for row ${rowNumber}`);
+        return Promise.reject(`${fieldName} is missing for row ${rowNumber}`);
       } else if(!state.profileContext.profiles.some((p:any) => cleanupField(p.profile_id, "number") === field)){
-        return Promise.reject(`${fieldName} is not a valid option for row ${rowNumber}`);
+        return Promise.reject(`${fieldName} is not a valid option or is not a number for row ${rowNumber}`);
       } else {
         row.attributes.profile_id = field;
         return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
@@ -206,7 +206,7 @@ export const FIELDS: Fields = {
           const matchingSkill = availableSkills.find((as: any) => cleanupField(as.name, "string") === skill);
           const level = defaultSkills.levels[skill];
           if(!matchingSkill.levels.includes(level)){
-            skillErrors.push(`${skill} does not support Level ${level} `);
+            skillErrors.push(`${skill} does not support Level ${level}.`);
           }
         });
         if(skillErrors.length > 0){
@@ -242,7 +242,7 @@ export const FIELDS: Fields = {
         let extension;
         try {
           extension = await generateExtension(workers);
-          row.attributes.extension = extension;
+          row.attributes.extension = cleanupField(extension, "number");
         } catch (err) {
           console.error("Error generating extension", err);
           return Promise.reject(`Unable to generate ${fieldName} for row ${rowNumber}`);
@@ -367,7 +367,7 @@ export const FIELDS: Fields = {
               return Promise.resolve(`${fieldName} set to true but no overflow skill found on profile for row ${rowNumber}`);
             }
           } catch(err) {
-            return Promise.reject(`Error thrown setting ${fieldName} for row ${rowNumber}`);
+            return Promise.reject(`Error thrown setting ${fieldName} for row ${rowNumber}. ${err.toString()}`);
           }
         } else if(didUser && field === "n") {
           row.zeroOutEnabled = false;

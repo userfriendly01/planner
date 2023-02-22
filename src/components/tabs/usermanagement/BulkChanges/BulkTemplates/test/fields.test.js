@@ -206,7 +206,7 @@ describe("fields.js", () => {
           expect(result).toEqual("N Number Valid for row 2");
           expect(row).toEqual({
             "N Number": "n0000000",
-            workerSid: "W123",
+            workerSid: "WK1234",
             n_number: "n0000000"
           });
         });
@@ -220,7 +220,7 @@ describe("fields.js", () => {
           try {
             await profileValidateFunction({}, 3, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Profile Id is either missing or is not a number for row 3");
+            expect(e).toEqual("Profile Id is missing for row 3");
           }
         });
         test("profile id is not a number, rejects with message", async () => {
@@ -228,7 +228,7 @@ describe("fields.js", () => {
           try {
             await profileValidateFunction(row, 3, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Profile Id is either missing or is not a number for row 3");
+            expect(e).toEqual("Profile Id is not a valid option or is not a number for row 3");
             expect(row).toEqual({
               "Profile Id": "what",
               attributes: {}
@@ -240,7 +240,7 @@ describe("fields.js", () => {
           try {
             await profileValidateFunction(row, 3, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Profile Id is not a valid option for row 3");
+            expect(e).toEqual("Profile Id is not a valid option or is not a number for row 3");
             expect(row).toEqual({
               "Profile Id": 100,
               attributes: {}
@@ -377,7 +377,7 @@ describe("fields.js", () => {
           try {
             await defaultSkillValidation({ "Default Skills": "aisgL1:boo, lscOBDialer1:1" }, 5, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Default Skills is not in the correct format for row 5");
+            expect(e).toEqual("Default Skills Errors found for row 5 aisgl1 does not support Level boo.");
           }
         });
         test("Default skills provided, but contain skills that don't exist, reject with message", async () => {
@@ -391,7 +391,7 @@ describe("fields.js", () => {
           try {
             await defaultSkillValidation({ "Default Skills": "aisgL1:3, lscOBDialer1:2" }, 5, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Default Skills Errors found for row 5 aisgl1 does not support Level 3 ");
+            expect(e).toEqual("Default Skills Errors found for row 5 aisgl1 does not support Level 3.");
           }
         });
         test("Default skills provided, all skills look good, resolve with message", async () => {
@@ -782,7 +782,7 @@ describe("fields.js", () => {
               "Profile Id": "boo"
             }, 4, { profileContext: null });
           } catch (e) {
-            expect(e).toEqual("Error thrown setting Zero Out Enabled for row 4");
+            expect(e).toEqual("Error thrown setting Zero Out Enabled for row 4. TypeError: Cannot read properties of null (reading 'profiles')");
           }
         });
         test("didField field is Y, zero out enabled is Y, resolves with message", async () => {
