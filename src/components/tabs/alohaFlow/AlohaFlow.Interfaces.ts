@@ -29,7 +29,7 @@ export interface FlowAdvanceFilter {
 }
 export interface FlowStateVariables {
     data?: Array<CctSharedCallFlowDb>;
-    filteredItems?: Array<FlowAdvanceFilter>;
+    filteredItems?: Array<CctSharedCallFlowDb>;
     advanceFilter?: FlowAdvanceFilter;
     masterData?: FlowMasterData;
     fetching?: boolean;
