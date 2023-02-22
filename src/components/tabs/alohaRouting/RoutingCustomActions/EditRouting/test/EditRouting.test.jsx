@@ -142,7 +142,7 @@ describe("<EditRouting />", () => {
         act(() => {
           saveButtonClick();
         });
-        expect(saveButton).toBeCalled;
+        expect(saveButton).toBeCalled();
       });
       test("Simulate the Save Button and popUp Error message", () => {
         updateRoutingDB.mockResolvedValue(null);
@@ -152,7 +152,7 @@ describe("<EditRouting />", () => {
         act(() => {
           saveButtonClick();
         });
-        expect(saveButton).toBeCalled;
+        expect(saveButton).toBeCalled();
       });
     });
     describe("Test For Delete Rule Button", () => {
@@ -164,7 +164,7 @@ describe("<EditRouting />", () => {
         act(() => {
           deleteButtonClick();
         });
-        expect(deleteButton).toBeCalled;
+        expect(deleteButton).toBeCalled();
       });
       test("Simulate the Delete Button and popUp Error message", () => {
         deleteRoutingRule.mockResolvedValue(null);
@@ -174,7 +174,7 @@ describe("<EditRouting />", () => {
         act(() => {
           deleteButtonClick();
         });
-        expect(deleteButton).toBeCalled;
+        expect(deleteButton).toBeCalled();
       });
     });
     describe("Test for Cancelling popup", () => {
@@ -185,7 +185,7 @@ describe("<EditRouting />", () => {
         act(() => {
           closeButtonClick();
         });
-        expect(closeButton).toBeCalled;
+        expect(closeButton).toBeCalled();
       });
     });
     describe("Test for TimeFrame Change",()=>{
@@ -209,7 +209,7 @@ describe("<EditRouting />", () => {
         act(()=>{
           editPageAttrChange(eventOnChange);
         });
-        expect(editPagePolicyTypeAttr).toBeCalled;
+        expect(editPagePolicyTypeAttr).toBeCalled();
       });
       test("Simulate the Start Time Input Change ", async () => {
         renderEditRouting(true, validRoutingData);
@@ -221,7 +221,7 @@ describe("<EditRouting />", () => {
         act(()=>{
           editPageAttrChange(eventOnChange);
         });
-        expect(editPageStartTimeAttr).toBeCalled;
+        expect(editPageStartTimeAttr).toBeCalled();
       });
       test("Simulate the End Time Input Change ", async () => {
         renderEditRouting(true, validRoutingData);
@@ -233,7 +233,7 @@ describe("<EditRouting />", () => {
         act(()=>{
           editPageAttrChange(eventOnChange);
         });
-        expect(editPageEndTimeAttr).toBeCalled;
+        expect(editPageEndTimeAttr).toBeCalled();
       });
     });
   });

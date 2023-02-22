@@ -2,7 +2,6 @@ import  {
   retrieveFlowData,addFlowRule, deleteFlowRule, updateFlowDB
 }  from "../flowTableService";
 
-
 const jsonFlowData = {
   pkey: { value: "12345" },
   agentId: { value: "123455" },
@@ -86,51 +85,70 @@ describe("flowTableService",()=>{
     });
   });
   describe("CallFlow List",()=>{
-    afterEach(()=>{
+    const jsonFlowData = [
+      {
+        id: 1,
+        pkey: "12345",
+        agentId: "123455",
+        brand: "LM",
+        callFlowTemplate: "temp",
+        channel: "Test1 Channel",
+        createTime: "2022-24-08",
+        dialedDescription: "test",
+        employeeId: "n1234567",
+        userDestination: "dest",
+      }
+      ,{
+        id: 2,
+        pkey: "23456",
+        agentId: "123455",
+        brand: "LM",
+        callFlowTemplate: "temp",
+        channel: "Test1 Channel",
+        createTime: "2022-24-08",
+        dialedDescription: "test",
+        employeeId: "n1234567",
+        userDestination: "dest",
+      }
+    ];
+
+    beforeEach(()=>{
       jest.restoreAllMocks();
     });
-    test("CallFlow list",async()=>{
-      const jsonFlowData = [
-        {
-          id: 1,
-          pkey: "12345",
-          agentId: "123455",
-          brand: "LM",
-          callFlowTemplate: "temp",
-          channel: "Test1 Channel",
-          createTime: "2022-24-08",
-          dialedDescription: "test",
-          employeeId: "n1234567",
-          userDestination: "dest",
-          skey: "1234_brand_brr"
-        }
-        ,{
-          id: 2,
-          pkey: "12345",
-          agentId: "123455",
-          brand: "LM",
-          callFlowTemplate: "temp",
-          channel: "Test1 Channel",
-          createTime: "2022-24-08",
-          dialedDescription: "test",
-          employeeId: "n1234567",
-          userDestination: "dest",
-          skey: 12345
-        }
-      ];
+    afterEach(()=>{
+      jest.resetAllMocks();
+    });
+    test("CallFlow list finds 1",async()=>{
       window.fetch = jest.fn(() =>
         Promise.resolve({
           json: () => Promise.resolve({
             data: {
               listCctSharedCallFlowDbs: {
-                items: jsonFlowData
+                items: jsonFlowData,
+                nextToken: undefined
+              }
+            }
+          })
+        })
+      );
+      const listFlow = await retrieveFlowData("12345");
+      expect(listFlow).toEqual(jsonFlowData);
+    });
+    test("CallFlow list not found",async()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: {
+              listCctSharedCallFlowDbs: {
+                items: [],
+                nextToken: undefined
               }
             }
           })
         })
       );
       const listFlow = await retrieveFlowData("1234-5678","TEST");
-      expect(listFlow).toBeCalled;
+      expect(listFlow).toEqual([]);
     });
     test("pass null in list",async()=>{
       window.fetch = jest.fn(() =>
@@ -141,7 +159,7 @@ describe("flowTableService",()=>{
         })
       );
       const listFlow = await retrieveFlowData("1234-5678","TEST");
-      expect(listFlow).toBeCalled;
+      expect(listFlow).toEqual([]);
     });
     test("Error scenario ",async()=>{
       window.fetch = jest.fn(() =>
@@ -155,7 +173,7 @@ describe("flowTableService",()=>{
         throw new Error();
       });
       const listFlow = await retrieveFlowData("1234-5678","TEST");
-      expect(listFlow).toBeCalled;
+      expect(listFlow).toEqual([]);
 
     });
   });

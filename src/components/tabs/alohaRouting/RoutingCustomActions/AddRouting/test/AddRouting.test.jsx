@@ -195,7 +195,7 @@ describe("<AddFlow/>",()=>{
         fireEvent.click(saveButtonError);
       });
       waitFor(() => {
-        expect(ComponentControlMock).toBeCalled;
+        expect(ComponentControlMock).toBeCalled();
       });
     });
     test("Validate Reset Flow Rule ",()=>{

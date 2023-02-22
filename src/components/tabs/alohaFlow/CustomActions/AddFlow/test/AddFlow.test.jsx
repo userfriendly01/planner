@@ -161,7 +161,7 @@ describe("<AddFlow />", () => {
       act(()=>{
         addFlowPageAttrChange(eventOnChange);
       });
-      expect(addFlowPagePolicyTypeAttr).toBeCalled;
+      expect(addFlowPagePolicyTypeAttr).toBeCalled();
     });
   });
   describe("Add flow Bottom down",()=>{
@@ -238,7 +238,7 @@ describe("<AddFlow />", () => {
         fireEvent.click(saveButtonError);
       });
       waitFor(() => {
-        expect(ComponentControlMock).toBeCalled;
+        expect(ComponentControlMock).toBeCalled();
       });
     });
     test("Validate Reset Flow Rule ",()=>{

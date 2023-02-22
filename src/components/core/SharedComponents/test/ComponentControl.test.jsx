@@ -41,26 +41,26 @@ describe(" <ComponentControl />",()=>{
   });
   test(" Test timePicker Component",()=>{
     renderComponentControl("timePicker","testTime");
-    expect(eventOnChange).toBeCalled;
+    expect(eventOnChange).toBeCalled();
   });
   test(" Test timePicker Component",()=>{
     renderComponentControlNullVal("timePicker");
-    expect(eventOnChange).toBeCalled;
+    expect(eventOnChange).toBeCalled();
   });
   test(" Test default Component",()=>{
     renderComponentControl("default","default");
-    expect(eventOnChange).toBeCalled;
+    expect(eventOnChange).toBeCalled();
   });
   test(" Test input Component",()=>{
     renderComponentControl("input","testInput");
-    expect(eventOnChange).toBeCalled;
+    expect(eventOnChange).toBeCalled();
   });
   test(" Test select Component",()=>{
     renderComponentControl("select","testSelect");
-    expect(eventOnChange).toBeCalled;
+    expect(eventOnChange).toBeCalled();
   });
   test(" Test select Component for blank field",()=>{
     renderComponentControl("select","testSelect", false);
-    expect(eventOnChange).toBeCalled;
+    expect(eventOnChange).toBeCalled();
   });
 });
