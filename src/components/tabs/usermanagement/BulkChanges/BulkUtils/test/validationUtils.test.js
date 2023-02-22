@@ -210,13 +210,13 @@ describe("performValidations", () => {
           "errors": [
             "nNumber is too long"
           ],
-          "row": 2
+          "rowNumber": 2
         },
         {
           "errors": [
             "nNumber is too long"
           ],
-          "row": 3
+          "rowNumber": 3
         }
       ]);
       expect(mockSetProcessedRows).toBeCalledTimes(2);
@@ -256,14 +256,14 @@ describe("performValidations", () => {
           "errors": [
             "Boo you stink!"
           ],
-          "row": 2
+          "rowNumber": 2
         },
         {
           "errors": [
             "Boo you stink!",
             "nope!"
           ],
-          "row": 4
+          "rowNumber": 4
         }
       ]);
       expect(mockSetProcessedRows).toBeCalledTimes(3);
