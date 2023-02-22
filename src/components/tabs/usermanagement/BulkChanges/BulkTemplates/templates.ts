@@ -103,7 +103,7 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
     return Promise.resolve(`${row.workerSid} - Worker Attributes updated for row ${rowNumber}`);
   } catch(err){
     console.error(`Failed to update Triton Worker Attributes user for row ${rowNumber}.`, err);
-    return Promise.reject(`Failed to update Triton Worker Attributes for row ${rowNumber}.`);
+    return Promise.reject(`Failed to update Triton Worker Attributes for row ${rowNumber}. ${err.toString()}`);
   }
 };
 
