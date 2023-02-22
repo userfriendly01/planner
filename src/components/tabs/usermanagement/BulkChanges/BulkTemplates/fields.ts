@@ -121,7 +121,7 @@ export const FIELDS: Fields = {
       if(!row.attributes){
         row.attributes = {};
       }
-      if(!field){
+      if(!field && field !== 0){
         return Promise.reject(`${fieldName} is missing for row ${rowNumber}`);
       } else if(!state.profileContext.profiles.some((p:any) => cleanupField(p.profile_id, "number") === field)){
         return Promise.reject(`${fieldName} is not a valid option or is not a number for row ${rowNumber}`);

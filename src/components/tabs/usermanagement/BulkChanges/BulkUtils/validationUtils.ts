@@ -62,9 +62,9 @@ export const performValidations = async (
   let validationPromises;
   const concurrencyLimit: any = getLowestConcurrencyLimit(selectedTemplates, "validation");
 
-  const processValidationsOnRows = async (row: any, rowIndex: number, progressCallback: any): Promise<any> => {
+  const processValidationsOnRows = async (row: any, rowNumber: number, progressCallback: any): Promise<any> => {
     const fieldPromises = await Promise.allSettled(consolidatedFieldsList.map((field: any) => {
-      return field.validateFunction(row, rowIndex, state);
+      return field.validateFunction(row, rowNumber, state);
     }));
     progressCallback((previousCount: number) => (previousCount + 1));
     return fieldPromises;
@@ -73,9 +73,8 @@ export const performValidations = async (
   if(concurrencyLimit){
     validationPromises = await handleConcurrentCalls(concurrencyLimit, processValidationsOnRows, uploadedForm, setProcessedRows);
   } else {
-    validationPromises = await Promise.allSettled(uploadedForm.map(async (row: any, index: number) => {
-      const rowNumber = index + 2;
-      return processValidationsOnRows(row, rowNumber, setProcessedRows);
+    validationPromises = await Promise.allSettled(uploadedForm.map(async (row: any) => {
+      return processValidationsOnRows(row, row.rowNumber, setProcessedRows);
     }));
   }
 
