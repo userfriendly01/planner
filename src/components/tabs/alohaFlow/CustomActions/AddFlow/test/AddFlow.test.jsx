@@ -95,10 +95,6 @@ describe("<AddFlow />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    Object.defineProperty(window.document, "cookie", {
-      writable: true,
-      value: "PA.ciciccttritondev1=1234.5678.uytghh"
-    });
     Object.defineProperty(window, "matchMedia", {
       writable: true,
       value: jest.fn().mockImplementation(query => ({

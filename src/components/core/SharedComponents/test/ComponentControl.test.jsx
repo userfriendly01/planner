@@ -34,10 +34,6 @@ const renderComponentControlNullVal  = control => {
 describe(" <ComponentControl />",()=>{
   beforeEach(() => {
     jest.clearAllMocks();
-    Object.defineProperty(window.document, "cookie", {
-      writable: true,
-      value: "PA.ciciccttritondev1=1234.5678.uytghh"
-    });
   });
   test(" Test timePicker Component",()=>{
     renderComponentControl("timePicker","testTime");

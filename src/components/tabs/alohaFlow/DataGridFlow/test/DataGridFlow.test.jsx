@@ -86,7 +86,6 @@ const renderComponent = () => render(
 );
 
 describe("<DataGridFlow />", () => {
-  const initialCookie = window.document.cookie;
   const matchMedia = window.matchMedia;
   beforeEach(()=>{
     jest.clearAllMocks();
@@ -101,10 +100,6 @@ describe("<DataGridFlow />", () => {
       AddFlow,
       CustomToast,
       CustomFlowGridToolBar
-    });
-    Object.defineProperty(window.document, "cookie", {
-      writable: true,
-      value: (initialCookie + ";" + "PA.ciciccttritondev1=1234.5678.uytghh")
     });
     Object.defineProperty(window, "matchMedia", {
       writable: true,
@@ -124,10 +119,6 @@ describe("<DataGridFlow />", () => {
   });
 
   afterEach(()=>{
-    Object.defineProperty(window.document, "cookie", {
-      writable: true,
-      value: initialCookie
-    });
     Object.defineProperty(window, "matchMedia", {
       writable: true,
       value: matchMedia
