@@ -155,15 +155,19 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       };
     }
 
+    const operatingUnitSid = profiles.find(profile => profile.profile_id === form.profileId.value).operating_unit_sid;
+
     const createUserReqBody = form.directDialNum.value ?
       {
         attributes,
         activateEp: true,
         alternateDid: form.alternateDid.e164,
         directDialNum: form.directDialNum.e164,
+        operatingUnitSid: operatingUnitSid,
         zeroOutEnabled: form.zeroOutEnabled
       } : {
         attributes,
+        operatingUnitSid: operatingUnitSid,
         activateEp: false
       };
 
@@ -264,6 +268,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       saveUser: true
     });
     const attributes: Partial<Worker["attributes"]> = {};
+    let operatingUnitSid: string;
     const nNumberFetchedUser = form.nNumberFetchedUser;
 
     attributes.email = nNumberFetchedUser?.email;
@@ -280,6 +285,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     }
     if (form.profileId.updated) {
       attributes.profile_id = form.profileId.value;
+      operatingUnitSid = profiles.find(profile => profile.profile_id === form.profileId.value).operating_unit_sid;
     }
     if (form.outgoing.updated) {
       attributes.did = form.outgoing.e164;
@@ -322,6 +328,9 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       zeroOutEnabled: form.zeroOutEnabled
     };
 
+    if(operatingUnitSid){
+      payload.operatingUnitSid = operatingUnitSid;
+    }
     if (form.alternateDid.updated) {
       payload.alternateDid = form.alternateDid.e164;
     }
