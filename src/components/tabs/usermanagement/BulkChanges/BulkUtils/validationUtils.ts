@@ -93,7 +93,7 @@ export const performValidations = async (
 
     if(rowErrors.length !== 0){
       finalErrors.push({
-        rowNumber: index + 2, //When original spreadsheet has header this is 2 vs 1
+        rowNumber: index + 1,
         errors: rowErrors
       });
     }

@@ -352,7 +352,7 @@ export const FIELDS: Fields = {
             const profileFieldName = "Profile Id";
             const profiles = state.profileContext.profiles;
             const profileId = cleanupField(row[profileFieldName], "number");
-            if (!profileId) {
+            if (!profileId && field !== 0) {
               return Promise.reject(`Unable to set ${fieldName}. Incorrect format for ${profileFieldName} for row ${rowNumber}`);
             }
             const overflowSkill = getOverflowSkillFromProfile(profiles, profileId);
