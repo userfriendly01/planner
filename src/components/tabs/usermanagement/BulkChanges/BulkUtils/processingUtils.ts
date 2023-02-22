@@ -9,20 +9,17 @@ export const readUploadFile = (e: any, setUploadedForm: any): void => {
   e.preventDefault();
   if (e.target.files) {
     const reader = new FileReader();
-    //Can enhance to check for additional headers if wanted - to do so we'd want to add 
-    const headerCount = 1;
     reader.onload = e => {
       const data = e.target?.result;
       const workbook = XLSX.read(data, { type: "array" });
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
-      const json = XLSX.utils.sheet_to_json(worksheet, { header: headerCount });
+      const json = XLSX.utils.sheet_to_json(worksheet);
       console.warn(json);
-      console.warn(typeof json);
       setUploadedForm(json.map((r: any, index: number) => {
         return {
           ...r,
-          rowNumber: index + headerCount
+          rowNumber: index + 1
         };
       }));
     };
