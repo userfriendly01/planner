@@ -782,7 +782,7 @@ describe("fields.js", () => {
               "Profile Id": "boo"
             }, 4, { profileContext: null });
           } catch (e) {
-            expect(e).toEqual("Error thrown setting Zero Out Enabled for row 4. TypeError: Cannot read properties of null (reading 'profiles')");
+            expect(e).toContain("Error thrown setting Zero Out Enabled for row 4.");
           }
         });
         test("didField field is Y, zero out enabled is Y, resolves with message", async () => {

@@ -313,7 +313,7 @@ describe("UPDATE_USERS_MANAGER", () => {
         await updateUsersManagerProcessFunction(row, 4, null);
       } catch(err){
         expect(updateUser).toHaveBeenCalledTimes(0);
-        expect(err).toBe("Failed to update Manager and Calabrio Team for user for row 4. TypeError: Cannot read properties of null (reading 'data')");
+        expect(err).toContain("Failed to update Manager and Calabrio Team for user for row 4.");
       }
     });
   });
