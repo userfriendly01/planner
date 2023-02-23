@@ -43,8 +43,8 @@ const processCreateTritonUser = async (row: any, rowNumber: number, state: any) 
     console.log(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
     return Promise.resolve(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
   } catch(err) {
-    console.error(`Failed to create Triton user for row ${rowNumber}.`, err);
-    return Promise.reject(`Failed to create Triton user for row ${rowNumber}. ${err.message?.toString() || err.toString()}`);
+    console.error(`Failed to create Triton user for row ${rowNumber}.`, err, err.response);
+    return Promise.reject(`Failed to create Triton user for row ${rowNumber}. ${err.response?.toString() || err.toString()}`);
   }
 };
 
@@ -74,7 +74,7 @@ const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any
     return Promise.resolve(`User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`);
   } catch(err) {
     console.error(`Failed to create Calabrio user for row ${rowNumber}.`, err);
-    return Promise.reject(`Failed to create Calabrio user for row ${rowNumber}. ${err.toString()}`);
+    return Promise.reject(`Failed to create Calabrio user for row ${rowNumber}. ${err.response?.toString() || err.toString()}`);
   }
 };
 
@@ -104,7 +104,7 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
     return Promise.resolve(`${row.workerSid} - Worker Attributes updated for row ${rowNumber}`);
   } catch(err){
     console.error(`Failed to update Triton Worker Attributes user for row ${rowNumber}.`, err);
-    return Promise.reject(`Failed to update Triton Worker Attributes for row ${rowNumber}. ${err.toString()}`);
+    return Promise.reject(`Failed to update Triton Worker Attributes for row ${rowNumber}. ${err.response?.toString() || err.toString()}`);
   }
 };
 
@@ -137,9 +137,10 @@ const processUpdateManager = async (row: any, rowNumber: number, template: Templ
       if(userCalabrioRecord){
         let fetchedCalabrioUser;
         try {
-          fetchedCalabrioUser = await getCalabrioUser(userCalabrioRecord.id);
+          const res = await getCalabrioUser(userCalabrioRecord.id);
+          fetchedCalabrioUser = res.data;
         } catch(err){
-          return Promise.reject(`No updates made, Failed to fetch calabrio user for row ${rowNumber}. ${err.toString()}`);
+          return Promise.reject(`No updates made, Failed to fetch calabrio user for row ${rowNumber}. ${err.response?.toString() || err.toString()}`);
         }
         console.warn("CHECK", fetchedCalabrioUser);
         calabrioBody = {
