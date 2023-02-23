@@ -29,8 +29,8 @@ const ExportSuccessButton = (props: any) => {
 
     rows.forEach((row: any) => {
       Object.keys(row).forEach((key: any) => {
-        if(typeof row[key] !== "string"){
-          [key] = row[key].toString();
+        if(typeof row[key] === "object"){
+          JSON.stringify([key] = row[key]);
         }
       });
     });

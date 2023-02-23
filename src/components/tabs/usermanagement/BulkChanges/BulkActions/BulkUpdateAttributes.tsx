@@ -52,13 +52,17 @@ const BulkUpdateAttributes = (props: BulkUpdateProps) => {
         });
       }
     } else {
-      console.warn("in the else statement", template);
-
       if(selectedTemplates.find((t: Template) => t.name === template.name)){
         removeTemplate(template);
       }
     }
   }, [updatedAttributeValue]);
+
+  React.useEffect(() => {
+    if(selectedTemplates.length === 0){
+      setUpdatedAttributeValue("");
+    }
+  }, [selectedTemplates]);
 
   return (
     <UpdateWrapper>

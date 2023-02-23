@@ -45,17 +45,39 @@ const BulkUpdateManager = (props: BulkUpdateProps) => {
     }
   }, [newManager]);
 
+  React.useEffect(() => {
+    if(selectedTemplates.length === 0){
+      setNewManager({
+        nNumber: "",
+        calabrioTeamId: ""
+      });
+    }
+  }, [selectedTemplates]);
+
+
+  const formatManagerDropdownEntry = (m: any) => {
+    return {
+      label: `${m.manager_first_name} ${m.manager_last_name}`,
+      value: m.manager_n_number,
+      ...m
+    };
+  };
+
+  const formatTeamDropdownEntry = (t: any) => {
+    return {
+      label: t.name,
+      value: t.groupId,
+      ...t
+    };
+  };
+
   return (
     <UpdateWrapper>
       <Dropdown
         label="Triton Team Manager"
-        value={newManager.nNumber}
+        value={formatManagerDropdownEntry(state.managerContext.managers.find((m: any) => m.manager_n_number === newManager.nNumber))}
         options={state.managerContext.managers.map((m: any) => {
-          return {
-            label: `${m.manager_first_name} ${m.manager_first_name}`,
-            value: m.manager_n_number,
-            ...m
-          };
+          return formatManagerDropdownEntry(m);
         })}
         updateValue={(event: any, manager: any) => setNewManager({
           ...newManager,
@@ -68,13 +90,9 @@ const BulkUpdateManager = (props: BulkUpdateProps) => {
       />
       <Dropdown
         label="Calabrio Team"
-        value={newManager.calabrioTeamId}
+        value={formatTeamDropdownEntry(state.calabrioContext.teams.find((t: any) => t.groupId === newManager.calabrioTeamId))}
         options={state.calabrioContext.teams.map((t: any) => {
-          return {
-            label: t.name,
-            value: t.groupId,
-            ...t
-          };
+          return formatTeamDropdownEntry(t);
         })}
         updateValue={(event: any, team: any) => setNewManager({
           ...newManager,
