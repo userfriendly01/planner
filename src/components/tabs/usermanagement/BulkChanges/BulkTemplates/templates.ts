@@ -199,7 +199,7 @@ export const getCreateTemplates = (state: any): Templates => {
       name: "CREATE_CALABRIO_QM_USER",
       data: {},
       processFunction: (row: any, rowNumber: number) => processCreateCalabrioUser(row, rowNumber, state),
-      stateUpdateFunction: [updateCalabrioUserState],
+      stateUpdateFunctions: [updateCalabrioUserState],
       multiRunDependencies: [{
         name: "CREATE_TRITON_USER",
         variable: "workerSid"
