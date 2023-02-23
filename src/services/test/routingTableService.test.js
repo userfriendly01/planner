@@ -1,4 +1,9 @@
-import { retrieveRoutingData } from "../routingTableService";
+import {
+  addRoutingRule,
+  deleteRoutingRule,
+  retrieveRoutingData,
+  updateRoutingDB
+} from "../routingTableService";
 const jsonRouteData =[
   {
     id: 1,
@@ -41,27 +46,28 @@ const jsonRouteData =[
     crcSkill: "updated"
   }
 ];
-describe("",()=>{
+describe("routingTableService",()=>{
   describe("ListRouting", ()=>{
     afterEach(()=>{
       jest.restoreAllMocks();
     });
-    test("CallRouting List",async()=>{
+    test("Success",async()=>{
       window.fetch = jest.fn(() =>
         Promise.resolve({
           json: () => Promise.resolve({
             data: {
               listCctSharedCallRoutingGlobalDbs: {
-                items: jsonRouteData
+                items: jsonRouteData,
+                nextToken: undefined
               }
             }
           })
         })
       );
-      const listRoute = await retrieveRoutingData("1234-5678","TEST");
-      expect(listRoute).toBeCalled;
+      const response = await retrieveRoutingData("1234-5678","TEST");
+      expect(response).toBeTruthy();
     });
-    test("Error scenario ",async()=>{
+    test("Error",async()=>{
       window.fetch = jest.fn(() =>
         Promise.resolve({
           json: () => Promise.resolve({
@@ -72,8 +78,116 @@ describe("",()=>{
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
       });
-      const listRoute = await retrieveRoutingData("1234-5678","TEST");
-      expect(listRoute).toBeCalled;
+      const response = await retrieveRoutingData("1234-5678","TEST");
+      expect(response).toBeTruthy();
+    });
+  });
+  describe("Update Routing", ()=>{
+    beforeEach(()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: {
+              listCctSharedCallRoutingGlobalDbs: {
+                items: jsonRouteData,
+                nextToken: undefined
+              }
+            }
+          })
+        })
+      );
+    });
+    afterEach(()=>{
+      jest.restoreAllMocks();
+    });
+    test("Success",async()=>{
+      const item = {
+        ...jsonRouteData[0]
+      };
+      const response = await updateRoutingDB(item,"1233-3245","http://localhost:3000");
+      expect(response).toBeDefined;
+    });
+    test("Error",async()=>{
+      const item = {
+        ...jsonRouteData[0]
+      };
+      jest.spyOn(JSON, "stringify").mockImplementation(()=>{
+        throw new Error();
+      });
+      const response = await updateRoutingDB(item,"1233-3245","http://localhost:3000");
+      expect(response).toBeDefined;
+    });
+  });
+  describe("Add Routing", ()=>{
+    beforeEach(()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: {
+              listCctSharedCallRoutingGlobalDbs: {
+                items: jsonRouteData,
+                nextToken: undefined
+              }
+            }
+          })
+        })
+      );
+    });
+    afterEach(()=>{
+      jest.restoreAllMocks();
+    });
+    test("Success",async()=>{
+      const item = {
+        ...jsonRouteData[0]
+      };
+      const response = await addRoutingRule(item,"1233-3245","http://localhost:3000");
+      expect(response).toBeDefined;
+    });
+    test("Error",async()=>{
+      const item = {
+        ...jsonRouteData[0]
+      };
+      jest.spyOn(JSON, "stringify").mockImplementation(()=>{
+        throw new Error();
+      });
+      const response = await addRoutingRule(item,"1233-3245","http://localhost:3000");
+      expect(response).toBeDefined;
+    });
+  });
+  describe("Delete Routing", ()=>{
+    beforeEach(()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: {
+              listCctSharedCallRoutingGlobalDbs: {
+                items: jsonRouteData,
+                nextToken: undefined
+              }
+            }
+          })
+        })
+      );
+    });
+    afterEach(()=>{
+      jest.restoreAllMocks();
+    });
+    test("Success",async()=>{
+      const item = {
+        ...jsonRouteData[0]
+      };
+      const response = await deleteRoutingRule(item,"1233-3245","http://localhost:3000");
+      expect(response).toBeDefined;
+    });
+    test("Error",async()=>{
+      const item = {
+        ...jsonRouteData[0]
+      };
+      jest.spyOn(JSON, "stringify").mockImplementation(()=>{
+        throw new Error();
+      });
+      const response = await deleteRoutingRule(item,"1233-3245","http://localhost:3000");
+      expect(response).toBeDefined;
     });
   });
 });

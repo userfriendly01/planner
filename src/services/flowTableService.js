@@ -38,18 +38,18 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
                   createTime
                   dialedDescription
                   employeeId
-                    accountManager
-                    affinityVDN
-                    callTypeDescription
-                    transferCode
-                    internetPlacement
-                    callDetails1
-                    callDetails2
-                    lineOfBusiness
-                    marketingChannel
-                    whisper
-                    requestID
-                    userDestination
+                  accountManager
+                  affinityVDN
+                  callTypeDescription
+                  transferCode
+                  internetPlacement
+                  callDetails1
+                  callDetails2
+                  lineOfBusiness
+                  marketingChannel
+                  whisper
+                  requestID
+                  userDestination
                 }
               }
             }
@@ -72,19 +72,19 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
  * @returns {flowData} list of data contain all the result present in DB
  */
 async function retrieveFlowData(accessToken, graphQlApiUrl) {
-  let flowData = [];
+  const flowData = [];
   let isFirstTime = true;
   let result = {};
+  let counter = 1;
   try {
     while (isFirstTime || result.data?.listCctSharedCallFlowDbs.nextToken) {
       // eslint-disable-next-line no-shadow
       result = await queryFlowData(accessToken, result.data?.listCctSharedCallFlowDbs.nextToken, graphQlApiUrl);
       const listItems = result.data?.listCctSharedCallFlowDbs?.items || [];
-      const tempFlowData = listItems?.map(elem => ({
-        ...elem,
-        id: elem && elem.skey && parseInt(elem.skey.split("__")[2], 10)
-      })) || [];
-      flowData = flowData.concat(tempFlowData);
+      listItems.forEach(item => flowData.push({
+        id: counter++,
+        ...item
+      }));
       isFirstTime = false;
     }
   } catch (error) {
