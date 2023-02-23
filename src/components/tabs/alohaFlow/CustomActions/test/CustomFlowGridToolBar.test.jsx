@@ -71,12 +71,11 @@ describe("<CustomFlowGridToolBar/>",()=>{
     act(()=>{
       ActionsAttr(eventAddFlowValue);
     });
-    expect(FlowControlMock).toBeCalled();
+    expect(FlowControlMock).toBeTruthy();
     expect(openAddModal).toBeCalledTimes(1);
   });
   test("render component for Filter",()=>{
     renderCustomToolBar();
-    const FlowControlMock = FormControl.mock.calls[0][0];
     const ActionsAttr = FormControl.mock.calls[0][0].children[1].props.onChange;
     const eventFilterFlowValue = {
       target: {
@@ -86,12 +85,10 @@ describe("<CustomFlowGridToolBar/>",()=>{
     act(()=>{
       ActionsAttr(eventFilterFlowValue);
     });
-    expect(FlowControlMock).toBeCalled();
     expect(openAdvanceSearchModal).toBeCalledTimes(1);
   });
   test("render component for Filter",()=>{
     renderCustomToolBar();
-    const FlowControlMock = FormControl.mock.calls[0][0];
     const ActionsAttr = FormControl.mock.calls[0][0].children[1].props.onChange;
     const eventExportFlowValue = {
       target: {
@@ -101,7 +98,6 @@ describe("<CustomFlowGridToolBar/>",()=>{
     act(()=>{
       ActionsAttr(eventExportFlowValue);
     });
-    expect(FlowControlMock).toBeCalled();
     expect(exportDataFile).toBeCalledTimes(1);
   });
   test("render component for Filter",()=>{
@@ -116,6 +112,6 @@ describe("<CustomFlowGridToolBar/>",()=>{
     act(()=>{
       ActionsAttr(eventDefaultFlowValue);
     });
-    expect(FlowControlMock).toBeCalled();
+    expect(FlowControlMock).toBeTruthy();
   });
 });

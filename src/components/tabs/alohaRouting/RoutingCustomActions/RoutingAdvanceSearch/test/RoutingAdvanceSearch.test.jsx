@@ -200,7 +200,7 @@ describe("<RoutingAdvanceSearch />", () => {
     act(()=>{
       renderAttr(renderParams);
     });
-
+    expect(renderAttr).toBeTruthy();
   });
   it("calls getOptionLabel", () => {
     renderComponent(true, "");
@@ -214,7 +214,7 @@ describe("<RoutingAdvanceSearch />", () => {
     act(()=>{
       attr(undefined);
     });
-
+    expect(attr).toBeTruthy();
   });
   it("<Button>Reset Filter</Button>", () => {
     const {

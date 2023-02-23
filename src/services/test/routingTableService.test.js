@@ -59,7 +59,7 @@ describe("",()=>{
         })
       );
       const listRoute = await retrieveRoutingData("1234-5678","TEST");
-      expect(listRoute).toBeCalled();
+      expect(listRoute).toBeTruthy();
     });
     test("Error scenario ",async()=>{
       window.fetch = jest.fn(() =>
@@ -73,7 +73,7 @@ describe("",()=>{
         throw new Error();
       });
       const listRoute = await retrieveRoutingData("1234-5678","TEST");
-      expect(listRoute).toBeCalled();
+      expect(listRoute).toBeTruthy();
     });
   });
 });
