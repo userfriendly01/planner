@@ -29,7 +29,7 @@ const ExportSuccessButton = (props: any) => {
 
     rows.forEach((row: any) => {
       Object.keys(row).forEach((key: any) => {
-        console.log("SuccessExport - Row", typeof row[key], [key] = row[key]);
+        console.log("SuccessExport - Row", typeof row[key], row[key]);
         if(typeof row[key] === "object"){
           rows[key] = JSON.stringify([key] = row[key]);
         }

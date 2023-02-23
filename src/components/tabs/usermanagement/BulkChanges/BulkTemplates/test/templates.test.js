@@ -293,7 +293,7 @@ describe("UPDATE_USERS_MANAGER", () => {
   const updateUsersManagerProcessFunction = updateTemplates.UPDATE_USERS_MANAGER.processFunction;
   beforeEach(() => {
     jest.clearAllMocks();
-    getCalabrioUser.mockResolvedValue(initialTestState.calabrioContext.users[0]);
+    getCalabrioUser.mockResolvedValue({ data: initialTestState.calabrioContext.users[0] });
   });
   describe("managerObject is null", () => {
     test("should reject", async () => {
