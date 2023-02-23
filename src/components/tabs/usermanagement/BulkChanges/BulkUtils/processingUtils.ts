@@ -1,4 +1,41 @@
+import { apiPaths } from "globals";
+import { getCalabrioUsers } from "services";
+import {
+  formatWorkerResponse,
+  myAxios
+} from "utils";
 import * as XLSX from "xlsx";
+
+/**
+ * Refreshes the triton user state after a bulk update on users
+ */
+export const updateTritonUserState = async (dispatch: any): Promise<void> => {
+  try {
+    const response = await myAxios.get(apiPaths.GET_WORKERS);
+    const filteredWorkers = formatWorkerResponse(response.data).filter(worker => !worker.inactiveInd && worker.attributes);
+    dispatch(({
+      type: "addWorkers",
+      payload: filteredWorkers
+    }));
+  } catch (error) {
+    console.error("Failed to update triton user state after bulk upload");
+  }
+};
+
+/**
+ * Refreshes the calabrio user state after a bulk update on users
+ */
+export const updateCalabrioUserState = async (dispatch: any): Promise<void> => {
+  try {
+    const agents: any = await getCalabrioUsers();
+    dispatch({
+      type: "loadCalabrioUsers",
+      payload: agents.data
+    });
+  } catch (error) {
+    console.error("Failed to update calabrio user state after bulk upload");
+  }
+};
 
 /**
  * Triggers a file upload from an input onChange. onload of the file, the first tab within an excel will be converted to a JSON.
@@ -16,12 +53,14 @@ export const readUploadFile = (e: any, setUploadedForm: any): void => {
       const worksheet = workbook.Sheets[sheetName];
       const json = XLSX.utils.sheet_to_json(worksheet);
       console.warn(json);
-      setUploadedForm(json.map((r: any, index: number) => {
-        return {
-          ...r,
-          rowNumber: index + 1
-        };
-      }));
+      if(typeof json ==="object"){
+        setUploadedForm(json.map((r: any, index: number) => {
+          return {
+            ...r,
+            rowNumber: index + 1
+          };
+        }));
+      }
     };
     reader.readAsArrayBuffer(e.target.files[0]);
   }
@@ -157,7 +196,8 @@ export const getLowestConcurrencyLimit = (selectedTemplates: any, type: string) 
 export const initiateCalls = async (
   rows: any,
   selectedTemplates: any,
-  setProcessedRows: any
+  setProcessedRows: any,
+  dispatch: any
 ) => {
   const templateTree = identifyProcessingDependencies(selectedTemplates);
   const concurrencyLimit: any = getLowestConcurrencyLimit(selectedTemplates, "processing");
@@ -216,6 +256,10 @@ export const initiateCalls = async (
       return processRow(row, row.rowNumber, setProcessedRows);
     }));
   }
+
+  await Promise.all(selectedTemplates.map((t: any) => {
+    return Promise.allSettled(t.stateUpdateFunctions.map((f: any) => f(dispatch)));
+  }));
 
   processingPromises.forEach((rowPromise: any, index: number) => {
     const rowErrors: any = [];

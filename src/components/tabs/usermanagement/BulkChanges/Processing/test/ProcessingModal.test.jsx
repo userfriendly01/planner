@@ -18,6 +18,7 @@ import {
   setupMockedComponents,
   waitFor
 } from "testUtils";
+import { useAdminDispatch } from "context";
 
 jest.mock("../ProgressBar", () => ({
   __esModule: true,
@@ -44,9 +45,11 @@ jest.mock("@mui/material", () => ({
 }));
 
 jest.mock("context", () => ({
-  useAdminState: jest.fn()
+  useAdminState: jest.fn(),
+  useAdminDispatch: jest.fn()
 }));
 
+const mockDispatch = jest.fn();
 const updateTemplates = getUpdateTemplates();
 const uploadedForm = [
   { n_number: "n0263786" },
@@ -65,8 +68,9 @@ const renderComponent = () => {
   />);
 };
 
-describe("<BulkUpdateAttributes />", () => {
+describe("<ProcessingModal />", () => {
   beforeEach(() => {
+    useAdminDispatch.mockReturnValue(mockDispatch);
     performValidations.mockResolvedValue("yay!");
     jest.clearAllMocks();
     setupMockedComponents({

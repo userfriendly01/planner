@@ -71,7 +71,7 @@ const mockSelectedTemplate = {
 };
 
 
-describe("<BulkUpdateAttributes />", () => {
+describe("<BulkChanges />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     setupMockedComponents({
@@ -86,7 +86,7 @@ describe("<BulkUpdateAttributes />", () => {
     });
   });
   describe("initial render", () => {
-    test.only("should render as expected", () => {
+    test("should render as expected", () => {
       const rendered = render(<BulkChanges />);
       expect(rendered.container).not.toHaveTextContent("Step 2: Export Template & Template Options");
       expect(rendered.container).not.toHaveTextContent("Step 3: Upload completed Spreadsheet");
@@ -153,7 +153,7 @@ describe("<BulkUpdateAttributes />", () => {
   describe("Form is uploaded", () => {
     const readAsArrayBufferMock = jest.fn();
     const mockFile = new File(["yo"], "yo.xlsx");
-    const sheetData = { boo: "hi" };
+    const sheetData = [{ boo: "hi" }];
     const event = {
       target: {
         files: [mockFile],
@@ -281,11 +281,14 @@ describe("<BulkUpdateAttributes />", () => {
         expect(ProcessingModal.mock.calls.length).toBe(1);
         expectOnlyPassedProps(ProcessingModal, {
           selectedTemplates: [mockSelectedTemplate],
-          uploadedForm: sheetData,
+          uploadedForm: [{
+            ...sheetData[0],
+            rowNumber: 1
+          }],
           consolidatedFieldsList: mockSelectedTemplate.fields
         });
       });
-      describe("handleClose si called", () => {
+      describe("handleClose is called", () => {
         test("resetBulkChanges is called", async () => {
           const rendered = render(<BulkChanges />);
           expect(BulkCreateForm.mock.calls.length).toBe(2);

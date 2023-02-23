@@ -19,7 +19,10 @@ import {
   identifySuccessfulRecords
 } from "../BulkUtils";
 import ProgressBar from "./ProgressBar";
-import { useAdminState } from "context";
+import {
+  useAdminState,
+  useAdminDispatch
+} from "context";
 import React from "react";
 
 const ProcessingModal = (props: ProcessingModalProps) => {
@@ -38,6 +41,7 @@ const ProcessingModal = (props: ProcessingModalProps) => {
   });
 
   const state = useAdminState();
+  const dispatch = useAdminDispatch();
   const [ status, setStatus ] = React.useState<PROCESSING_STATES>(PROCESSING_STATES.VALIDATING);
   const [ processedRows, setProcessedRows ] = React.useState(0);
 
@@ -75,7 +79,7 @@ const ProcessingModal = (props: ProcessingModalProps) => {
     setProcessedRows(0);
     const rowsToProcess = results.successfullyValidatedRows;
     try {
-      const successfullyProcessedRows = await initiateCalls(rowsToProcess, selectedTemplates, setProcessedRows);
+      const successfullyProcessedRows = await initiateCalls(rowsToProcess, selectedTemplates, setProcessedRows, dispatch);
       setResults({
         ...results,
         successfullyProcessedRows

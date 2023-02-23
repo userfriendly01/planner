@@ -11,7 +11,9 @@ import {
 } from "../BulkChanges.Interfaces";
 import {
   cleanupField,
-  checkConflictingCalabrioUsers
+  checkConflictingCalabrioUsers,
+  updateCalabrioUserState,
+  updateTritonUserState
 } from "../BulkUtils";
 import {
   FIELDS,
@@ -177,6 +179,7 @@ export const getCreateTemplates = (state: any): Templates => {
       name: "CREATE_TRITON_USER",
       data: {},
       processFunction: (row: any, rowNumber: number) => processCreateTritonUser(row, rowNumber, state),
+      stateUpdateFunctions: [updateTritonUserState],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,
@@ -196,6 +199,7 @@ export const getCreateTemplates = (state: any): Templates => {
       name: "CREATE_CALABRIO_QM_USER",
       data: {},
       processFunction: (row: any, rowNumber: number) => processCreateCalabrioUser(row, rowNumber, state),
+      stateUpdateFunction: [updateCalabrioUserState],
       multiRunDependencies: [{
         name: "CREATE_TRITON_USER",
         variable: "workerSid"
@@ -219,6 +223,7 @@ export const getUpdateTemplates = (state: any): Templates => {
       name: "UPDATE_WORKER_ATTRIBUTE",
       data: {},
       processFunction: (row: any, rowNumber: number, template: Template) => processUpdateWorkerAttribute(row, rowNumber, template, state),
+      stateUpdateFunctions: [updateTritonUserState],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,
@@ -230,6 +235,7 @@ export const getUpdateTemplates = (state: any): Templates => {
       name: "UPDATE_USERS_MANAGER",
       data: {},
       processFunction: (row: any, rowNumber: number, template: Template) => processUpdateManager(row, rowNumber, template, state),
+      stateUpdateFunctions: [updateTritonUserState, updateCalabrioUserState],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,
