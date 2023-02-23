@@ -75,15 +75,14 @@ async function retrieveFlowData(accessToken, graphQlApiUrl) {
   const flowData = [];
   let isFirstTime = true;
   let result = {};
-  let counter = 0;
+  let counter = 1;
   try {
     while (isFirstTime || result.data?.listCctSharedCallFlowDbs.nextToken) {
       // eslint-disable-next-line no-shadow
       result = await queryFlowData(accessToken, result.data?.listCctSharedCallFlowDbs.nextToken, graphQlApiUrl);
       const listItems = result.data?.listCctSharedCallFlowDbs?.items || [];
-      counter+= 1;
       listItems.forEach(item => flowData.push({
-        id: counter,
+        id: counter++,
         ...item
       }));
       isFirstTime = false;
