@@ -56,19 +56,27 @@ const BulkUpdateManager = (props: BulkUpdateProps) => {
 
 
   const formatManagerDropdownEntry = (m: any) => {
-    return {
-      label: `${m.manager_first_name} ${m.manager_last_name}`,
-      value: m.manager_n_number,
-      ...m
-    };
+    if(m){
+      return {
+        label: `${m.manager_first_name} ${m.manager_last_name}`,
+        value: m.manager_n_number,
+        ...m
+      };
+    } else {
+      return "";
+    }
   };
 
   const formatTeamDropdownEntry = (t: any) => {
-    return {
-      label: t.name,
-      value: t.groupId,
-      ...t
-    };
+    if(t) {
+      return {
+        label: t.name,
+        value: t.groupId,
+        ...t
+      };
+    } else {
+      return "";
+    }
   };
 
   return (

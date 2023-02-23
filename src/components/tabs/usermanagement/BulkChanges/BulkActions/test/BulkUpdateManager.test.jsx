@@ -25,7 +25,7 @@ const mockRemoveTemplates = jest.fn();
 
 const updateTemplates = getUpdateTemplates();
 
-describe("<BulkUpdateForm />", () => {
+describe("<BulkUpdateManager />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useAdminState.mockReturnValue(initialTestState);
@@ -50,19 +50,19 @@ describe("<BulkUpdateForm />", () => {
     describe("component is rendered as expected", () => {
       test("should render options in default state", () => {
         renderComponent([]);
-        expect(Dropdown.mock.calls.length).toBe(2);
-        expect(Dropdown.mock.calls[0][0].label).toBe("Triton Team Manager");
-        expect(Dropdown.mock.calls[0][0].value).toBe("");
-        expect(Dropdown.mock.calls[0][0].options).toStrictEqual(initialTestState.managerContext.managers.map(m => {
+        expect(Dropdown.mock.calls.length).toBe(4);
+        expect(Dropdown.mock.calls[2][0].label).toBe("Triton Team Manager");
+        expect(Dropdown.mock.calls[2][0].value).toBe("");
+        expect(Dropdown.mock.calls[2][0].options).toStrictEqual(initialTestState.managerContext.managers.map(m => {
           return {
-            label: `${m.manager_first_name} ${m.manager_first_name}`,
+            label: `${m.manager_first_name} ${m.manager_last_name}`,
             value: m.manager_n_number,
             ...m
           };
         }));
-        expect(Dropdown.mock.calls[1][0].label).toBe("Calabrio Team");
-        expect(Dropdown.mock.calls[1][0].value).toBe("");
-        expect(Dropdown.mock.calls[1][0].options).toStrictEqual(initialTestState.calabrioContext.teams.map(t => {
+        expect(Dropdown.mock.calls[3][0].label).toBe("Calabrio Team");
+        expect(Dropdown.mock.calls[3][0].value).toBe("");
+        expect(Dropdown.mock.calls[3][0].options).toStrictEqual(initialTestState.calabrioContext.teams.map(t => {
           return {
             label: t.name,
             value: t.groupId,
@@ -75,23 +75,31 @@ describe("<BulkUpdateForm />", () => {
   describe("Manager Dropdown updateValue is called", () => {
     test("new Manager n# should be updated", () => {
       renderComponent([]);
-      expect(Dropdown.mock.calls.length).toBe(2);
-      expect(Dropdown.mock.calls[0][0].value).toBe("");
+      expect(Dropdown.mock.calls.length).toBe(4);
+      expect(Dropdown.mock.calls[2][0].value).toBe("");
       const onNNumberChange = Dropdown.mock.calls[0][0].updateValue;
       act(() => onNNumberChange(null, initialTestState.managerContext.managers[1]));
-      expect(Dropdown.mock.calls.length).toBe(4);
-      expect(Dropdown.mock.calls[2][0].value).toStrictEqual("n7454853");
+      expect(Dropdown.mock.calls.length).toBe(6);
+      expect(Dropdown.mock.calls[4][0].value).toStrictEqual({
+        ...initialTestState.managerContext.managers[1],
+        label: "Test Manager",
+        value: "n7454853"
+      });
     });
   });
   describe("Calabrio Dropdown updateValue is called", () => {
     test("new Manager calabrio Team should be updated", () => {
       renderComponent([]);
-      expect(Dropdown.mock.calls.length).toBe(2);
-      expect(Dropdown.mock.calls[0][0].value).toBe("");
-      const onTeamChange = Dropdown.mock.calls[1][0].updateValue;
-      act(() => onTeamChange(null, initialTestState.calabrioContext.teams[1]));
       expect(Dropdown.mock.calls.length).toBe(4);
-      expect(Dropdown.mock.calls[3][0].value).toStrictEqual(102);
+      expect(Dropdown.mock.calls[0][0].value).toBe("");
+      const onTeamChange = Dropdown.mock.calls[3][0].updateValue;
+      act(() => onTeamChange(null, initialTestState.calabrioContext.teams[1]));
+      expect(Dropdown.mock.calls.length).toBe(6);
+      expect(Dropdown.mock.calls[5][0].value).toStrictEqual({
+        ...initialTestState.calabrioContext.teams[1],
+        label: "Hawaii Specialty Team",
+        value: 102
+      });
     });
   });
   describe("New Manager is not valid", () => {
@@ -109,10 +117,10 @@ describe("<BulkUpdateForm />", () => {
     describe("Template is not found in selected tempaltes", () => {
       test("no template changes should be made", () => {
         renderComponent([]);
-        expect(Dropdown.mock.calls.length).toBe(2);
-        const onNNumberChange = Dropdown.mock.calls[0][0].updateValue;
-        act(() => onNNumberChange(null, initialTestState.managerContext.managers[1]));
         expect(Dropdown.mock.calls.length).toBe(4);
+        const onNNumberChange = Dropdown.mock.calls[2][0].updateValue;
+        act(() => onNNumberChange(null, initialTestState.managerContext.managers[1]));
+        expect(Dropdown.mock.calls.length).toBe(6);
         expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
         expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
         expect(mockRemoveTemplates).toHaveBeenCalledTimes(0);
@@ -139,10 +147,10 @@ describe("<BulkUpdateForm />", () => {
     describe("Template is not found in selected tempaltes", () => {
       test("replaceTemplate should be called", () => {
         renderComponent([]);
-        expect(Dropdown.mock.calls.length).toBe(2);
-        const onNNumberChange = Dropdown.mock.calls[0][0].updateValue;
+        expect(Dropdown.mock.calls.length).toBe(4);
+        const onNNumberChange = Dropdown.mock.calls[2][0].updateValue;
         act(() => onNNumberChange(null, initialTestState.managerContext.managers[1]));
-        const onTeamChange = Dropdown.mock.calls[3][0].updateValue;
+        const onTeamChange = Dropdown.mock.calls[5][0].updateValue;
         act(() => onTeamChange(null, initialTestState.calabrioContext.teams[1]));
         expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
         expect(mockReplaceTemplates).toHaveBeenCalledTimes(1);
