@@ -80,6 +80,7 @@ export const reducer = (state: AppState, action: Action): AppState => {
       return {
         ...state,
         workerContext: {
+          selectedWorkers: state.workerContext.selectedWorkers,
           workers: action.payload
         }
       };
