@@ -105,8 +105,8 @@ describe("CREATE_CALABRIO_QM_USER", () => {
     attributes: {
       n_number: "n0263445",
       email: "e.mail@lm.com",
-      firstName: "Michael",
-      lastName: "Scott"
+      emp_first_name: "Michael",
+      emp_last_name: "Scott"
     },
     groupId: 109,
     timeZone: "Americas",
