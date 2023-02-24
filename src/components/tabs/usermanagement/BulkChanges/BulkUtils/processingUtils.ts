@@ -72,7 +72,6 @@ export const readUploadFile = (e: any, setUploadedForm: any): void => {
  * @param errors array representing the list of errors for the total rows
  */
 export const identifySuccessfulRecords = (totalRows: any, errors: any) => {
-  console.warn("BITCH");
   const successfulRows: any = [];
   totalRows.forEach((row: any) => {
     if(!errors.some((e: any) => e.rowNumber === row.rowNumber)){

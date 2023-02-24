@@ -1,7 +1,8 @@
 import {
   cleanupField,
   getLowestConcurrencyLimit,
-  handleConcurrentCalls
+  handleConcurrentCalls,
+  identifyProcessingDependencies
 } from "../BulkUtils";
 
 /**
@@ -30,7 +31,12 @@ export const updateSelectedTemplates = (checked: boolean, template: any, selecte
  */
 export const consolidateTemplates = (selectedTemplates: any, setConsolidatedTemplates: any): void => {
   const beginningArray: any = [];
-  selectedTemplates.forEach((t: any) => beginningArray.push(...t.fields));
+  let templates = selectedTemplates;
+  const templateTree = identifyProcessingDependencies(selectedTemplates);
+  if(templateTree){
+    templates = templateTree;
+  }
+  templates.forEach((t: any) => beginningArray.push(...t.fields));
   const consolidatedFieldsList: any = [];
   beginningArray.forEach((bt: any) => {
     const duplicateField = consolidatedFieldsList.some((field: any) => field.field === bt.field);

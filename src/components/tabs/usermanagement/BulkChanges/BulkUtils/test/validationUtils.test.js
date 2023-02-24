@@ -11,7 +11,8 @@ import {
 
 jest.mock("../processingUtils",() => ({
   handleConcurrentCalls: jest.fn(),
-  getLowestConcurrencyLimit: jest.fn()
+  getLowestConcurrencyLimit: jest.fn(),
+  identifyProcessingDependencies: jest.requireActual("../processingUtils").identifyProcessingDependencies
 }));
 
 describe("updateSelectedTemplates", () => {
