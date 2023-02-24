@@ -207,7 +207,9 @@ describe("fields.js", () => {
           expect(row).toEqual({
             "N Number": "n0000000",
             workerSid: "WK1234",
-            n_number: "n0000000"
+            attributes: {
+              n_number: "n0000000"
+            }
           });
         });
       });

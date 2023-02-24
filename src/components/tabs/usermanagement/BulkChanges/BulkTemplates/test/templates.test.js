@@ -297,7 +297,12 @@ describe("UPDATE_USERS_MANAGER", () => {
   });
   describe("managerObject is null", () => {
     test("should reject", async () => {
-      const row = { workerSid: "WK1234" };
+      const row = {
+        attributes: {
+          nNumber: "n0399982"
+        },
+        workerSid: "WK1234"
+      };
       const template = {
         data: {
           nNumber: "n2222224"
@@ -330,7 +335,9 @@ describe("UPDATE_USERS_MANAGER", () => {
     describe("userTritonRecord is null", () => {
       test("manager will be updated, calabrio team will not", async () => {
         const row = {
-          n_number: "n13548",
+          attributes: {
+            n_number: "n13548"
+          },
           workerSid: "WK1234"
         };
         const template = {
@@ -356,7 +363,9 @@ describe("UPDATE_USERS_MANAGER", () => {
     describe("userCalabrioRecord is null", () => {
       test("manager will be updated, calabrio team will not", async () => {
         const row = {
-          n_number: "n1111111",
+          attributes: {
+            n_number: "n1111111"
+          },
           workerSid: "WK1234"
         };
         const template = {
@@ -382,7 +391,9 @@ describe("UPDATE_USERS_MANAGER", () => {
     describe("calabrioTeamId is null", () => {
       test("manager will be updated, calabrio team will not", async () => {
         const row = {
-          n_number: "n1111111",
+          attributes: {
+            n_number: "n1111111"
+          },
           workerSid: "WK1234"
         };
         const template = {
@@ -407,7 +418,9 @@ describe("UPDATE_USERS_MANAGER", () => {
     describe("userTritonRecord && userCalabrioRecord are not null", () => {
       test("manager will be updated, calabrio team will not", async () => {
         const row = {
-          n_number: "n0000000",
+          attributes: {
+            n_number: "n0000000"
+          },
           workerSid: "WK1234"
         };
         const template = {
@@ -447,7 +460,9 @@ describe("UPDATE_USERS_MANAGER", () => {
     });
     test("should reject", async () => {
       const row = {
-        n_number: "n0000000",
+        attributes: {
+          n_number: "n0000000"
+        },
         workerSid: "WK1234"
       };
       const template = {
@@ -489,7 +504,9 @@ describe("UPDATE_USERS_MANAGER", () => {
     });
     test("should reject", async () => {
       const row = {
-        n_number: "n0000000",
+        attributes: {
+          n_number: "n0000000"
+        },
         workerSid: "WK1234"
       };
       const template = {
