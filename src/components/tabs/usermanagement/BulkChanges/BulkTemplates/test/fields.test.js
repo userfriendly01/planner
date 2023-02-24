@@ -208,6 +208,10 @@ describe("fields.js", () => {
             "N Number": "n0000000",
             workerSid: "WK1234",
             attributes: {
+              extension: "2345",
+              full_name: "Gloria Sake",
+              manager_n_number: "n0263786",
+              profile_id: "12",
               n_number: "n0000000"
             }
           });
