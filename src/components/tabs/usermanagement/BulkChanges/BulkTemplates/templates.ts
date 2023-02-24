@@ -207,7 +207,7 @@ export const getCreateTemplates = (state: any): Templates => {
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 25,
       fields: [
-        FIELDS.N_NUMBER_CREATE,
+        FIELDS.N_NUMBER_UPDATE,
         FIELDS.CALABRIO_SCOPE,
         FIELDS.CALABRIO_TEAM,
         FIELDS.CALABRIO_ROLES,
