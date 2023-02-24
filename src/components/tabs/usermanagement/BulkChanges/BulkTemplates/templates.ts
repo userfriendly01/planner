@@ -112,7 +112,7 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
 
 const processUpdateManager = async (row: any, rowNumber: number, template: Template, state: any) => {
   try {
-    const userNNumber = row.n_number;
+    const userNNumber = row.attributes.n_number;
     const managerNNumber = template.data.nNumber;
     const calabrioTeamId = template.data.calabrioTeamId;
 

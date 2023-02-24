@@ -97,7 +97,9 @@ export const FIELDS: Fields = {
 
           if(worker){
             row.workerSid = worker.sid;
-            row.n_number = field;
+            row.attributes = {
+              n_number: field
+            };
             return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
           } else {
             return Promise.reject(`${field} is not an existing setup worker in Triton for row ${rowNumber}`);
