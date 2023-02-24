@@ -14,7 +14,7 @@ export const updateTritonUserState = async (dispatch: any): Promise<void> => {
     const response = await myAxios.get(apiPaths.GET_WORKERS);
     const filteredWorkers = formatWorkerResponse(response.data).filter(worker => !worker.inactiveInd && worker.attributes);
     dispatch(({
-      type: "addWorkers",
+      type: "loadWorkers",
       payload: filteredWorkers
     }));
   } catch (error) {

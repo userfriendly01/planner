@@ -131,7 +131,7 @@ const getWorkers = async (dispatch: any) => {
     // filter out workers with "inactiveInd": true or no attributes
     const filteredWorkers = formatWorkerResponse(response.data).filter(worker => !worker.inactiveInd && worker.attributes);
     dispatch(({
-      type: "addWorkers",
+      type: "loadWorkers",
       payload: filteredWorkers
     }));
     return filteredWorkers;
