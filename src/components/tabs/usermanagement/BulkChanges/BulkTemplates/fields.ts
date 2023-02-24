@@ -213,7 +213,7 @@ export const FIELDS: Fields = {
           if(skillErrors.length > 0){
             return Promise.reject(`${fieldName} Errors found for row ${rowNumber} ${skillErrors.toString()}`);
           } else {
-            row.attributes.defaultSkills = defaultSkills;
+            row.attributes.default_skills = defaultSkills;
             return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
           }
         } catch(err){

@@ -401,7 +401,7 @@ describe("fields.js", () => {
           expect(row).toEqual({
             "Default Skills": "aisgL1, lscOBDialer1:2",
             attributes: {
-              defaultSkills: {
+              default_skills: {
                 levels: { lscobdialer1: 2 },
                 skills: [
                   "aisgl1", "lscobdialer1"
@@ -423,7 +423,7 @@ describe("fields.js", () => {
           expect(row).toEqual({
             "Default Skills": "aisgL1, lscOBDialer1:2",
             attributes: {
-              defaultSkills: {
+              default_skills: {
                 levels: { lscobdialer1: 2 },
                 skills: [
                   "aisgl1", "lscobdialer1"
