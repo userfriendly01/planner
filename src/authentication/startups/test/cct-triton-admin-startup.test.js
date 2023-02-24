@@ -225,7 +225,7 @@ describe("cct-triton-admin-startup", () => {
               payload: skills.consolidatedSkills
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
-              type: "addWorkers",
+              type: "loadWorkers",
               payload: filteredWorkers
             });
           });
@@ -340,7 +340,7 @@ describe("cct-triton-admin-startup", () => {
               payload: skills.consolidatedSkills
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
-              type: "addWorkers",
+              type: "loadWorkers",
               payload: filteredWorkers
             });
           });
@@ -383,7 +383,7 @@ describe("cct-triton-admin-startup", () => {
               payload: skills.consolidatedSkills
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
-              type: "addWorkers",
+              type: "loadWorkers",
               payload: filteredWorkers
             });
           });
@@ -426,7 +426,7 @@ describe("cct-triton-admin-startup", () => {
               payload: skills.consolidatedSkills
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
-              type: "addWorkers",
+              type: "loadWorkers",
               payload: filteredWorkers
             });
           });
