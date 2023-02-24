@@ -63,8 +63,8 @@ const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any
   body.acdId = acdId;
   body.adLogin = `LM\\${row.attributes.n_number}`;
   body.email = row.attributes.email;
-  body.firstName = row.attributes.firstName;
-  body.lastName = row.attributes.lastName;
+  body.firstName = row.attributes.emp_first_name;
+  body.lastName = row.attributes.emp_last_name;
   body.groupId = row.groupId;
   body.timeZone = row.timeZone;
   body.roles = row.roles;
@@ -75,8 +75,8 @@ const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any
     console.log(`User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`);
     return Promise.resolve(`User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`);
   } catch(err) {
-    console.error(`Failed to create Calabrio user for row ${rowNumber}.`, err);
-    return Promise.reject(`Failed to create Calabrio user for row ${rowNumber}. ${err?.response?.data?.message || err.toString()}`);
+    console.error(`Failed to create Calabrio user for row ${rowNumber}.`, err.response);
+    return Promise.reject(`Failed to create Calabrio user for row ${rowNumber}. ${err?.response?.data?.message || err?.response?.data?.errors?.toString() || err.toString()}`);
   }
 };
 
