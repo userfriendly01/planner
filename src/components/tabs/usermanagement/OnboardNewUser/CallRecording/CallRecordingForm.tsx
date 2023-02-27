@@ -17,7 +17,10 @@ import {
   formModes
 } from "globals";
 import { getCalabrioUser } from "services";
-import { calabrioTimeZones, calabrioAllowedRoles } from "utils";
+import {
+  calabrioTimeZones,
+  calabrioAllowedRoles
+} from "utils";
 
 interface CallRecordingFormInterface {
   twilioWorker: any
