@@ -17,7 +17,7 @@ import {
   formModes
 } from "globals";
 import { getCalabrioUser } from "services";
-import { calabrioTimeZones } from "utils";
+import { calabrioTimeZones, calabrioAllowedRoles } from "utils";
 
 interface CallRecordingFormInterface {
   twilioWorker: any
@@ -183,19 +183,8 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
     }
   };
 
-  const allowedRoles = [
-    "Supervisor",
-    "Agent-Sync Only",
-    "No Screen",
-    "QM Agent",
-    "WFM_QM_Agent",
-    "WFM_QM_Supervisor_TT",
-    "WFM_QM_Supervisor",
-    "WFM_QM_Agent_NT"
-  ];
-
   const getRoleOptions = () => {
-    const allowed = roles.filter(role => allowedRoles.includes(role.name));
+    const allowed = roles.filter(role => calabrioAllowedRoles.includes(role.name));
     return allowed.map(role => {
       return {
         ...role,
