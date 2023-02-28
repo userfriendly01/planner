@@ -21,7 +21,7 @@ const useRefSpy = jest.spyOn(React, "useRef");
 const mockSave = jest.fn();
 
 const errors = [{
-  row: 1,
+  rowNumber: 1,
   errors: "oh no"
 }];
 
@@ -61,7 +61,10 @@ describe("ExportErrorsButton", () => {
         const onClick = Button.mock.calls[0][0].onClick;
         act(() => onClick());
         expect(mockSave).toHaveBeenCalledTimes(1);
-        expect(mockSave).toHaveBeenCalledWith(errors, expectedColumns);
+        expect(mockSave).toHaveBeenCalledWith([{
+          row: 1,
+          errors: "oh no"
+        }], expectedColumns);
       });
       describe("_export is null", () => {
         beforeEach(() => {
