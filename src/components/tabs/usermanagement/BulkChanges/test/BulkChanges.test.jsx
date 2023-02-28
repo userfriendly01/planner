@@ -153,7 +153,10 @@ describe("<BulkChanges />", () => {
   describe("Form is uploaded", () => {
     const readAsArrayBufferMock = jest.fn();
     const mockFile = new File(["yo"], "yo.xlsx");
-    const sheetData = [{ boo: "hi" }];
+    const sheetData = [{
+      boo: "hi",
+      "__rowNum__": 1
+    }];
     const event = {
       target: {
         files: [mockFile],

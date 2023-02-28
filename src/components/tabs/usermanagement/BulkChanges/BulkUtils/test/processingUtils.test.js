@@ -155,7 +155,10 @@ describe("readUploadFile", () => {
     expect(mockSetUploadedForm).toBeCalledTimes(0);
   });
   test("if e.target.files, it reads the files and sets uploaded form", () => {
-    const sheetData = [{ boo: "hi" }];
+    const sheetData = [{
+      boo: "hi",
+      "__rowNum__": 1
+    }];
     XLSX.read.mockReturnValue({
       SheetNames: ["thing1"],
       Sheets: {
