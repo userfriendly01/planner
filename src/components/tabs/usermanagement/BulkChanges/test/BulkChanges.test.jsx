@@ -286,7 +286,7 @@ describe("<BulkChanges />", () => {
           selectedTemplates: [mockSelectedTemplate],
           uploadedForm: [{
             ...sheetData[0],
-            rowNumber: 1
+            rowNumber: 2
           }],
           consolidatedFieldsList: mockSelectedTemplate.fields
         });

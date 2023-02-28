@@ -195,7 +195,7 @@ describe("readUploadFile", () => {
     expect(mockSetUploadedForm).toHaveBeenCalledWith([
       {
         ...sheetData[0],
-        rowNumber: 1
+        rowNumber: 2
       }
     ]);
   });

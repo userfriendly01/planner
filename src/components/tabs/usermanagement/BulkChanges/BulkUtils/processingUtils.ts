@@ -57,11 +57,12 @@ export const readUploadFile = (e: any, setUploadedForm: any): void => {
       const json: UploadedRow[] = XLSX.utils.sheet_to_json(worksheet);
       console.warn(json);
       const rowNum = "__rowNum__";
+      const headerRows = 1;
       if(typeof json ==="object"){
         setUploadedForm(json.map((r: UploadedRow) => {
           return {
             ...r,
-            rowNumber: r[rowNum]
+            rowNumber: r[rowNum] + headerRows
           };
         }));
       }
