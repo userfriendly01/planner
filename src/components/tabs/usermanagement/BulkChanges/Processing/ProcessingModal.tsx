@@ -52,7 +52,6 @@ const ProcessingModal = (props: ProcessingModalProps) => {
 
   React.useEffect(() => {
     const initiateValidations = async () => {
-      console.warn("we get in here", status);
       try {
         await performValidations(uploadedForm, selectedTemplates, consolidatedFieldsList, setProcessedRows, state);
         setResults({
@@ -61,7 +60,6 @@ const ProcessingModal = (props: ProcessingModalProps) => {
         });
         setStatus(PROCESSING_STATES.VALIDATED);
       } catch (err) {
-        console.warn("Validation Errors Log", err);
         const successfullyValidatedRows = identifySuccessfulRecords(uploadedForm, err);
         setResults({
           ...results,

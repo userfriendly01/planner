@@ -5,36 +5,26 @@ import {
 } from "../../BulkUtils";
 
 describe("formatErrorMessage", () => {
-  test("err?.response?.data?.message", () => {
+  test("err?.response?.data", () => {
     const error = {
       response: {
         data: {
-          message: "WOOHOO"
-        }
-      }
-    };
-    const result = formatErrorMessage(error);
-    expect(result).toBe("WOOHOO");
-  });
-  test("err?.response?.data?.errors", () => {
-    const error = {
-      response: {
-        data: {
+          message: "WOOHOO",
           errors: ["WOOHOO", "BOOHOO"]
         }
       }
     };
     const result = formatErrorMessage(error);
-    expect(result).toBe("WOOHOO,BOOHOO");
+    expect(result).toBe(JSON.stringify(error.response.data));
   });
-  test("err?.response?.message", () => {
+  test("err?.response", () => {
     const error = {
       response: {
-        message: "WOOHOO"
+        other: "information"
       }
     };
     const result = formatErrorMessage(error);
-    expect(result).toBe("WOOHOO");
+    expect(result).toStrictEqual(JSON.stringify(error.response));
   });
   test("err.toString();", () => {
     const result = formatErrorMessage(new Error("Hmmm"));

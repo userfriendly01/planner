@@ -100,6 +100,7 @@ export const performValidations = async (
       });
     }
   });
+
   if(finalErrors.length === 0){
     return Promise.resolve();
   } else {

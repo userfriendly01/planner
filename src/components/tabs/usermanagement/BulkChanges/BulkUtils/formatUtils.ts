@@ -3,18 +3,16 @@
  * @param field Field to format
  */
 export const formatErrorMessage = (err: any) => {
-  if(err?.response?.data?.message){
-    return err.response.data.message.toString();
-  } else if(err?.response?.data?.errors){
-    return err.response.data.errors.toString();
-  } else if(err?.response?.message){
-    return err.response.message.toString();
-  } else {
-    try {
+  try {
+    if(err?.response?.data){
+      return JSON.stringify(err.response.data);
+    } else if(err?.response) {
+      return JSON.stringify(err.response);
+    } else {
       return err.toString();
-    } catch(error){
-      return err;
     }
+  } catch(error){
+    return err;
   }
 };
 
