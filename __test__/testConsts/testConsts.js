@@ -43,17 +43,20 @@ export const profileList = [
   {
     profile_nme: "test1",
     profile_id: 1,
-    overflow_skill: null
+    overflow_skill: null,
+    operating_unit_sid: "operatingUnitSid1"
   },
   {
     profile_nme: "test2",
     profile_id: 2,
-    overflow_skill: "whateverOverflowSkill"
+    overflow_skill: "whateverOverflowSkill",
+    operating_unit_sid: "operatingUnitSid1"
   },
   {
     profile_nme: "test3",
     profile_id: 3,
-    overflow_skill: "anotherOverflowSkill"
+    overflow_skill: "anotherOverflowSkill",
+    operating_unit_sid: "operatingUnitSid2"
   }
 ];
 
@@ -100,7 +103,7 @@ export const calabrioContext = {
     },
     {
       id: 3,
-      name: "WFM_QM_Agent_NT"
+      name: "WFM_Agent_NT_Dashboards"
     }
   ],
   users: [
