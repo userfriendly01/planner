@@ -350,7 +350,7 @@ export const FIELDS: Fields = {
             if (!profileId && profileId !== 0 || typeof profileId !== "number" ) {
               return Promise.reject(`Unable to set ${fieldName}. Incorrect format for ${profileFieldName} for row ${rowNumber}`);
             }
-            const overflowSkill = getOverflowSkillFromProfile(profiles, profileId);
+            const overflowSkill = getOverflowSkillFromProfile(profiles, profileId.toString());
             if(overflowSkill){
               if(!row.attributes){
                 row.attributes = {};
