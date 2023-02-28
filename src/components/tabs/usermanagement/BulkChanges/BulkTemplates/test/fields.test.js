@@ -1258,10 +1258,13 @@ describe("fields.js", () => {
             "Agent-Sync Only",
             "No Screen",
             "QM Agent",
-            "WFM_QM_Agent",
-            "WFM_QM_Supervisor_TT",
-            "WFM_QM_Supervisor",
-            "WFM_QM_Agent_NT"
+            "WFM_Agent_TT_Dashboards",
+            "WFM_Supervisor_TT_Dashboards",
+            "WFM_Supervisor_NT_Dashboards",
+            "WFM_Agent_NT_Dashboards",
+            "Live Monitoring",
+            "Recording Access",
+            "EXL_Genpact"
           ]);
         });
       });
