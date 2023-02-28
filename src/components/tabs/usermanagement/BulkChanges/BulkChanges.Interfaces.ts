@@ -13,8 +13,12 @@ export interface Fields {
   [key: string]: Field
 }
 
-
 export interface Row {
+  [key: string]: any
+}
+
+export interface UploadedRow {
+  "__rowNum__": string,
   [key: string]: any
 }
 
