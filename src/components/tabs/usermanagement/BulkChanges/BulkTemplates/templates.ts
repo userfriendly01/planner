@@ -134,17 +134,17 @@ const processUpdateManager = async (row: any, rowNumber: number, template: Templ
 
     if(calabrioTeamId){
       const userTritonRecord = state.workerContext.workers.find((w: any) => w.attributes?.n_number && w.attributes?.n_number === userNNumber);
-      console.warn("CHECK", userTritonRecord);
       const userCalabrioRecord = state.calabrioContext.users.find((u: any) => cleanupField(u?.acdId, "string") === cleanupField(userTritonRecord?.sid, "string") || cleanupField(u?.email, "string") === cleanupField(userTritonRecord?.attributes?.email, "string"));
       if(userCalabrioRecord){
         let fetchedCalabrioUser;
         try {
           const res = await getCalabrioUser(userCalabrioRecord.id);
+          console.warn("dowegethere?");
           fetchedCalabrioUser = res.data;
         } catch(err){
+          console.warn("dowegethere?", err);
           return Promise.reject(`No updates made, Failed to fetch calabrio user for row ${rowNumber}. ${err?.response?.data?.message || err.toString()}`);
         }
-        console.warn("CHECK", fetchedCalabrioUser);
         calabrioBody = {
           ...fetchedCalabrioUser,
           groupId: calabrioTeamId

@@ -23,10 +23,13 @@ const mockSave = jest.fn();
 const successfulRows = [
   {
     Row: 1,
-    nNumber: "n0263786"
+    nNumber: "n0263786",
+    attributes: {
+      email: "e.mail"
+    }
   },
   {
-    Row: 1,
+    Row: 2,
     nNumber: "n0260006"
   }
 ];
@@ -40,6 +43,11 @@ const expectedColumns = [
   {
     field: "nNumber",
     title: "nNumber",
+    width: "50px"
+  },
+  {
+    field: "attributes",
+    title: "attributes",
     width: "50px"
   }
 ];

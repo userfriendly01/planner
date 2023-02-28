@@ -780,6 +780,17 @@ describe("fields.js", () => {
             expect(e).toEqual("Unable to set Zero Out Enabled. Incorrect format for Profile Id for row 4");
           }
         });
+        test("didField field is Y, zero out enabled is Y, profile id is null, rejects with message", async () => {
+          try {
+            await ZeroOutEnabledValidateFunction({
+              "Did User": "Y",
+              "Zero Out Enabled": "Y",
+              "Profile Id": null
+            }, 4, initialTestState);
+          } catch (e) {
+            expect(e).toEqual("Unable to set Zero Out Enabled. Incorrect format for Profile Id for row 4");
+          }
+        });
         test("didField field is Y, zero out enabled is Y, error is thrown, rejects with message", async () => {
           try {
             await ZeroOutEnabledValidateFunction({

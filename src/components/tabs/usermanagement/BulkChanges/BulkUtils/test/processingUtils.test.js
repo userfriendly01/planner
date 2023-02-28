@@ -1,29 +1,20 @@
-import {
-  readUploadFile,
-  identifySuccessfulRecords,
-  identifyProcessingDependencies,
-  handleConcurrentCalls,
-  getLowestConcurrencyLimit,
-  initiateCalls
-} from "../processingUtils";
 import * as utils from "../processingUtils";
-import * as XLSX from "xlsx";
+import { getCalabrioUsers } from "services";
+import { act } from "testUtils";
 import {
-  act
-} from "testUtils";
+  formatWorkerResponse,
+  myAxios
+} from "utils";
+import * as XLSX from "xlsx";
 
-//This file calls functions within itself, mocking those and requiring the actual implementation when creating tests
-jest.mock("../processingUtils", () => ({
-  readUploadFile: jest.requireActual("../processingUtils").readUploadFile,
-  handleConcurrentCalls: jest.fn(),
-  identifyProcessingDependencies: jest.fn(),
-  identifySuccessfulRecords: jest.fn(),
-  getLowestConcurrencyLimit: jest.fn(),
-  initiateCalls: jest.requireActual("../processingUtils").initiateCalls
+// const axiosMock = new MockAdapter(myAxios);
+
+jest.mock("utils",() => ({
+  formatWorkerResponse: jest.fn(),
+  myAxios: {
+    get: jest.fn()
+  }
 }));
-
-jest.spyOn(utils, "identifyProcessingDependencies");
-jest.spyOn(utils, "getLowestConcurrencyLimit");
 
 jest.mock("xlsx",() => ({
   read: jest.fn(),
@@ -31,6 +22,76 @@ jest.mock("xlsx",() => ({
     sheet_to_json: jest.fn()
   }
 }));
+
+describe("updateTritonUserState", () => {
+  const mockDispatch = jest.fn();
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+  });
+  describe("get workers succeeds", () => {
+    const response = {
+      data: [{
+        attributes: {
+          yas: "girl"
+        }
+      }]
+    };
+    test("dispatch is called, promise resolves", async () => {
+      myAxios.get.mockResolvedValue(response);
+      formatWorkerResponse.mockReturnValue(response.data);
+      await utils.updateTritonUserState(mockDispatch);
+      expect(myAxios.get).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: "loadWorkers",
+        payload: response.data
+      });
+    });
+  });
+  describe("get workers fails", () => {
+    myAxios.get.mockRejectedValue("Aww");
+    test("dispatch is not called, promise resolves", async () => {
+      await utils.updateTritonUserState(mockDispatch);
+      expect(console.error).toHaveBeenCalledTimes(1);
+      expect(console.error.mock.calls[0][0]).toContain("Failed to update triton user state after bulk upload");
+    });
+  });
+});
+
+describe("updateCalabrioUserState", () => {
+  const mockDispatch = jest.fn();
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+  });
+  describe("get users succeeds", () => {
+    test("dispatch is called, promise resolves", async () => {
+      const response = {
+        data: [{
+          attributes: {
+            yas: "girl"
+          }
+        }]
+      };
+      getCalabrioUsers.mockResolvedValue(response);
+      await utils.updateCalabrioUserState(mockDispatch);
+      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: "loadCalabrioUsers",
+        payload: response.data
+      });
+    });
+  });
+  describe("get users fails", () => {
+    test("dispatch is not called, promise resolves", async () => {
+      getCalabrioUsers.mockRejectedValue("Aww");
+      await utils.updateCalabrioUserState(mockDispatch);
+      expect(console.error).toHaveBeenCalledTimes(1);
+      expect(console.error.mock.calls[0][0]).toContain("Failed to update calabrio user state after bulk upload");
+    });
+  });
+});
 
 describe("readUploadFile", () => {
   beforeEach(() => {
@@ -52,9 +113,45 @@ describe("readUploadFile", () => {
         self.onload(event);
       });
     });
-    readUploadFile(event, mockSetUploadedForm);
+    utils.readUploadFile(event, mockSetUploadedForm);
     expect(event.preventDefault).toBeCalledTimes(1);
     expect(readAsArrayBufferMock).toBeCalledTimes(0);
+    expect(mockSetUploadedForm).toBeCalledTimes(0);
+  });
+  test("json is not an object - form is not set", () => {
+    const sheetData = "boo";
+    XLSX.read.mockReturnValue({
+      SheetNames: ["thing1"],
+      Sheets: {
+        thing1: { boo: "hi" }
+      }
+    });
+    XLSX.utils.sheet_to_json.mockReturnValue(sheetData);
+    const mockFile = new File(["yo"], "yo.xlsx");
+
+    const event = {
+      target: {
+        files: [mockFile],
+        result: {
+          SheetNames: ["stuff"],
+          Sheets: {
+            stuff: sheetData
+          }
+        }
+      },
+      preventDefault: jest.fn()
+    };
+    jest.spyOn(window, "FileReader").mockImplementation(function () {
+      const self = this;
+      this.readAsArrayBuffer = readAsArrayBufferMock.mockImplementation(() => {
+        self.onload(event);
+      });
+    });
+    utils.readUploadFile(event, mockSetUploadedForm);
+
+    expect(event.preventDefault).toBeCalledTimes(1);
+    expect(readAsArrayBufferMock).toBeCalledTimes(1);
+    expect(readAsArrayBufferMock).toBeCalledWith(mockFile);
     expect(mockSetUploadedForm).toBeCalledTimes(0);
   });
   test("if e.target.files, it reads the files and sets uploaded form", () => {
@@ -86,7 +183,7 @@ describe("readUploadFile", () => {
         self.onload(event);
       });
     });
-    readUploadFile(event, mockSetUploadedForm);
+    utils.readUploadFile(event, mockSetUploadedForm);
 
     expect(event.preventDefault).toBeCalledTimes(1);
     expect(readAsArrayBufferMock).toBeCalledTimes(1);
@@ -102,14 +199,11 @@ describe("readUploadFile", () => {
 });
 
 describe("identifySuccessfulRecords", () => {
-  beforeEach(() => {
-    identifySuccessfulRecords.mockImplementation(jest.requireActual("../processingUtils").identifySuccessfulRecords);
-  });
   test("No errors in form, returns all rows", () => {
     const form = [
       { stuff: "things" }
     ];
-    const result = identifySuccessfulRecords(form, []);
+    const result = utils.identifySuccessfulRecords(form, []);
     expect(result).toEqual(form);
   });
   test("Errors in form, returns only rows with no errors", () => {
@@ -128,7 +222,7 @@ describe("identifySuccessfulRecords", () => {
       }
     ];
     const validationErrors = [{ rowNumber: 1 }, { rowNumber: 3 }];
-    const result = identifySuccessfulRecords(form, validationErrors);
+    const result = utils.identifySuccessfulRecords(form, validationErrors);
     expect(result).toEqual([{
       rowNumber: 2,
       morestuff: "more things"
@@ -136,15 +230,12 @@ describe("identifySuccessfulRecords", () => {
   });
   test("No values in form, returns back empty form rows", () => {
     const form = [];
-    const result = identifySuccessfulRecords(form, []);
+    const result = utils.identifySuccessfulRecords(form, []);
     expect(result).toEqual(form);
   });
 });
 
 describe("identifyProcessingDependencies", () => {
-  beforeEach(() => {
-    identifyProcessingDependencies.mockImplementation(jest.requireActual("../processingUtils").identifyProcessingDependencies);
-  });
   const template1 = {
     name: "CREATE_TRITON_USER",
     multiRunDependencies: null
@@ -171,27 +262,31 @@ describe("identifyProcessingDependencies", () => {
   };
 
   test("0 selected templates, returns false", () => {
-    const processingDependencyResults = identifyProcessingDependencies([]);
+    const processingDependencyResults = utils.identifyProcessingDependencies([]);
     expect(processingDependencyResults).toEqual(false);
   });
   test("Only 1 selected templates, returns false", () => {
-    const processingDependencyResults = identifyProcessingDependencies([{ template: "yea" }]);
+    const processingDependencyResults = utils.identifyProcessingDependencies([{ template: "yea" }]);
     expect(processingDependencyResults).toEqual(false);
   });
   test("Two selected templates, returns appropriate dependency order", () => {
-    const processingDependencyResults = identifyProcessingDependencies([template2, template1]);
+    const processingDependencyResults = utils.identifyProcessingDependencies([template2, template1]);
+    expect(processingDependencyResults).toEqual([template1, template2]);
+  });
+  test("Two selected templates, already in order, returns appropriate dependency order", () => {
+    const processingDependencyResults = utils.identifyProcessingDependencies([template1, template2]);
     expect(processingDependencyResults).toEqual([template1, template2]);
   });
   test("multiple selected templates, returns appropriate dependency order", () => {
-    const processingDependencyResults = identifyProcessingDependencies([template2, template3, template1]);
+    const processingDependencyResults = utils.identifyProcessingDependencies([template2, template3, template1]);
     expect(processingDependencyResults).toEqual([template1, template2, template3]);
   });
   test("multiple selected templates, returns appropriate dependency order, where order doesn't matter it stays put", () => {
-    const processingDependencyResults = identifyProcessingDependencies([template2, orderDoesNotMatterTemplate, template3, template1]);
+    const processingDependencyResults = utils.identifyProcessingDependencies([template2, orderDoesNotMatterTemplate, template3, template1]);
     expect(processingDependencyResults).toEqual([template1, orderDoesNotMatterTemplate, template2, template3]);
   });
   test("one of the mulitRunDependencies not in selected templates list, returns in same order", () => {
-    const processingDependencyResults = identifyProcessingDependencies([template2, orderDoesNotMatterTemplate]);
+    const processingDependencyResults = utils.identifyProcessingDependencies([template2, orderDoesNotMatterTemplate]);
     expect(processingDependencyResults).toEqual([template2, orderDoesNotMatterTemplate]);
   });
 });
@@ -203,7 +298,6 @@ describe("handleConcurrentCalls", () => {
   beforeEach(() => {
     jest.clearAllMocks;
     jest.resetAllMocks;
-    handleConcurrentCalls.mockImplementation(jest.requireActual("../processingUtils").handleConcurrentCalls);
   });
   test("should call function in batches of concurrency max", async () => {
     jest.useFakeTimers();
@@ -216,7 +310,7 @@ describe("handleConcurrentCalls", () => {
       { rowNumber: 6 },
       { rowNumber: 7 }
     ];
-    handleConcurrentCalls(3, functionToCall, rows, progressCallback);
+    utils.handleConcurrentCalls(3, functionToCall, rows, progressCallback);
     await act(() => jest.advanceTimersByTime(1500));
     expect(functionToCall).toHaveBeenCalledTimes(3);
     await act(() => jest.advanceTimersByTime(1500));
@@ -234,7 +328,7 @@ describe("handleConcurrentCalls", () => {
       { rowNumber: 2 },
       { rowNumber: 3 }
     ];
-    const results = await handleConcurrentCalls(3, functionToCall, rows, progressCallback);
+    const results = await utils.handleConcurrentCalls(3, functionToCall, rows, progressCallback);
     expect(results).toStrictEqual([
       {
         status: "fulfilled",
@@ -253,9 +347,6 @@ describe("handleConcurrentCalls", () => {
 });
 
 describe("getLowestConcurrencyLimit", () => {
-  beforeEach(() => {
-    getLowestConcurrencyLimit.mockImplementation(jest.requireActual("../processingUtils").getLowestConcurrencyLimit);
-  });
   const template1 = {
     validationConcurrencyLimit: null,
     processingConcurrencyLimit: 3
@@ -270,21 +361,21 @@ describe("getLowestConcurrencyLimit", () => {
   };
   describe("type === validation", () => {
     test("lowest validationConcurrencyLimit is returned", () => {
-      const result = getLowestConcurrencyLimit([ template1, template2, template3 ], "validation");
+      const result = utils.getLowestConcurrencyLimit([ template1, template2, template3 ], "validation");
       expect(result).toBe(5);
     });
     test("when no concurrency limit, null is returned", () => {
-      const result = getLowestConcurrencyLimit([template1], "validation");
+      const result = utils.getLowestConcurrencyLimit([template1], "validation");
       expect(result).toBe(null);
     });
   });
   describe("type !== validation", () => {
     test("lowest processingConcurrencyLimit is returned", () => {
-      const result = getLowestConcurrencyLimit([ template1, template2, template3 ], "process");
+      const result = utils.getLowestConcurrencyLimit([ template1, template2, template3 ], "process");
       expect(result).toBe(1);
     });
     test("when no concurrency limit, null is returned", () => {
-      const result = getLowestConcurrencyLimit([template3], "process");
+      const result = utils.getLowestConcurrencyLimit([template3], "process");
       expect(result).toBe(null);
     });
   });
@@ -301,10 +392,12 @@ describe("initiateCalls", () => {
     {
       name: "CREATE_TRITON_USER",
       processFunction: jest.fn(),
+      stateUpdateFunctions: [jest.fn()],
       multiRunDependencies: null
     },
     {
       name: "CREATE_CALABRIO_USER",
+      stateUpdateFunctions: [jest.fn()],
       processFunction: jest.fn(),
       multiRunDependencies: [
         {
@@ -321,9 +414,9 @@ describe("initiateCalls", () => {
   describe("concurrency limit is null", () => {
     describe("template tree is null", () => {
       test("should call process function for each row", async () => {
-        identifyProcessingDependencies.mockReturnValue(null);
-        getLowestConcurrencyLimit.mockReturnValue(null);
-        const result = await initiateCalls(rows, [templates[1]], setProcessedRows);
+        jest.spyOn(utils, "identifyProcessingDependencies").mockReturnValue(null);
+        jest.spyOn(utils, "getLowestConcurrencyLimit").mockReturnValue(null);
+        const result = await utils.initiateCalls(rows, [templates[1]], setProcessedRows);
         expect(result).toStrictEqual(rows);
         expect(setProcessedRows).toHaveBeenCalledTimes(3);
         expect(templates[0].processFunction).toHaveBeenCalledTimes(0);
@@ -335,9 +428,8 @@ describe("initiateCalls", () => {
     });
     describe("template tree is not null", () => {
       beforeEach(() => {
-        identifyProcessingDependencies.mockReturnValue(templates);
-        getLowestConcurrencyLimit.mockReturnValue(null);
-        identifySuccessfulRecords.mockReturnValue("wtf");
+        jest.spyOn(utils, "identifyProcessingDependencies").mockReturnValue(templates);
+        jest.spyOn(utils, "getLowestConcurrencyLimit").mockReturnValue(null);
       });
       describe("dependency tree processes successfully", () => {
         beforeEach(() => {
@@ -359,7 +451,7 @@ describe("initiateCalls", () => {
               workerSid: "WK3456"
             }
           ];
-          const result = await initiateCalls(rows, templates, setProcessedRows);
+          const result = await utils.initiateCalls(rows, templates, setProcessedRows);
           expect(result).toStrictEqual(rows);
           expect(setProcessedRows).toHaveBeenCalledTimes(3);
           expect(templates[0].processFunction).toHaveBeenCalledTimes(3);
@@ -392,7 +484,7 @@ describe("initiateCalls", () => {
             }
           ];
           try {
-            await initiateCalls(rows, templates, setProcessedRows);
+            await utils.initiateCalls(rows, templates, setProcessedRows);
           } catch(err) {
             expect(setProcessedRows).toHaveBeenCalledTimes(3);
             expect(templates[0].processFunction).toHaveBeenCalledTimes(3);
@@ -423,42 +515,33 @@ describe("initiateCalls", () => {
       });
     });
   });
-
-});
-
-describe("concurrenct limit is not null", () => {
-  const setProcessedRows = jest.fn();
-  const rows = [
-    { rowNumber: 1 },
-    { rowNumber: 2 },
-    { rowNumber: 3 }
-  ];
-  const templates = [
-    {
-      name: "CREATE_TRITON_USER",
-      processFunction: jest.fn(),
-      multiRunDependencies: null
-    },
-    {
-      name: "CREATE_CALABRIO_USER",
-      processFunction: jest.fn(),
-      multiRunDependencies: [
-        {
-          name: "CREATE_TRITON_USER",
-          variable: "workerSid"
-        }
-      ]
-    }
-  ];
-  beforeEach(() => {
-    jest.spyOn(utils, "getLowestConcurrencyLimit").mockImplementation(() => 1);
-    identifyProcessingDependencies.mockReturnValue(templates);
-    // getLowestConcurrencyLimit.mockReturnValue(1);
-    // handleConcurrentCalls.mockResolvedValue("YAY");
-  });
-  test.only("should call handleConcurrentCalls", async () => {
-    expect(getLowestConcurrencyLimit()).toBe(1);
-    // await utils.initiateCalls(rows, templates, setProcessedRows);
-    // expect(handleConcurrentCalls).toHaveBeenCalledTimes(1);
+  describe("concurrenct limit is not null", () => {
+    const setProcessedRows = jest.fn();
+    const updateStateFunction = jest.fn();
+    const rows = [
+      { rowNumber: 1 },
+      { rowNumber: 2 },
+      { rowNumber: 3 }
+    ];
+    const templates = [
+      {
+        name: "CREATE_TRITON_USER",
+        processFunction: jest.fn(),
+        stateUpdateFunctions: [updateStateFunction]
+      }
+    ];
+    beforeEach(() => {
+      updateStateFunction.mockResolvedValue();
+      jest.spyOn(utils, "identifyProcessingDependencies").mockReturnValue(templates);
+      jest.spyOn(utils, "identifySuccessfulRecords").mockReturnValue([]);
+      jest.spyOn(utils, "getLowestConcurrencyLimit").mockReturnValue(1);
+      jest.spyOn(utils, "handleConcurrentCalls").mockResolvedValue([]);
+    });
+    test("should call handleConcurrentCalls", async () => {
+      await utils.initiateCalls(rows, templates, setProcessedRows);
+      expect(utils.handleConcurrentCalls).toHaveBeenCalledTimes(1);
+      expect(updateStateFunction).toHaveBeenCalledTimes(1);
+    });
   });
 });
+

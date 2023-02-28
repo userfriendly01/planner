@@ -327,6 +327,29 @@ describe("UPDATE_USERS_MANAGER", () => {
       }
     });
   });
+  describe("error is thrown from getCalabrioUser", () => {
+    const row = {
+      attributes: {
+        n_number: "n0000000"
+      },
+      workerSid: "WK1234"
+    };
+    const template = {
+      data: {
+        nNumber: "n1234567",
+        calabrioTeamId: 105
+      }
+    };
+    test("should reject", async () => {
+      getCalabrioUser.mockRejectedValue("Aww");
+      try {
+        await updateUsersManagerProcessFunction(row, 4, template);
+      } catch(err){
+        expect(updateUser).toHaveBeenCalledTimes(0);
+        expect(err).toContain("No updates made, Failed to fetch calabrio user for row 4. Aww");
+      }
+    });
+  });
   describe("service calls are all successful", () => {
     beforeEach(() => {
       updateUser.mockResolvedValue("yay!");

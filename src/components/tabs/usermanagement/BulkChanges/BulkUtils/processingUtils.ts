@@ -18,8 +18,9 @@ export const updateTritonUserState = async (dispatch: any): Promise<void> => {
       payload: filteredWorkers
     }));
   } catch (error) {
-    console.error("Failed to update triton user state after bulk upload");
+    console.error("Failed to update triton user state after bulk upload", error);
   }
+  return Promise.resolve();
 };
 
 /**
@@ -33,8 +34,9 @@ export const updateCalabrioUserState = async (dispatch: any): Promise<void> => {
       payload: agents.data
     });
   } catch (error) {
-    console.error("Failed to update calabrio user state after bulk upload");
+    console.error("Failed to update calabrio user state after bulk upload", error);
   }
+  return Promise.resolve();
 };
 
 /**
@@ -169,7 +171,6 @@ export const handleConcurrentCalls = async (
 export const getLowestConcurrencyLimit = (selectedTemplates: any, type: string) => {
   let concurrencyLimit: any = null;
   if(type === "validation"){
-    console.warn("hmm", selectedTemplates);
     selectedTemplates.forEach(((t: any) => {
       if(t.validationConcurrencyLimit && (!concurrencyLimit || (concurrencyLimit && concurrencyLimit > t.validationConcurrencyLimit))){
         concurrencyLimit = t.validationConcurrencyLimit;
@@ -198,8 +199,8 @@ export const initiateCalls = async (
   setProcessedRows: any,
   dispatch: any
 ) => {
-  const templateTree = identifyProcessingDependencies(selectedTemplates);
-  const concurrencyLimit: any = getLowestConcurrencyLimit(selectedTemplates, "processing");
+  const templateTree = exports.identifyProcessingDependencies(selectedTemplates);
+  const concurrencyLimit: any = exports.getLowestConcurrencyLimit(selectedTemplates, "processing");
 
   const finalErrors: any = [];
   let processingPromises;
@@ -244,11 +245,10 @@ export const initiateCalls = async (
       return rowPromise;
     }
   };
-  console.warn("concurrencyLimit", concurrencyLimit);
-  console.warn("handleConcurrentCalls", handleConcurrentCalls);
+
   if(concurrencyLimit){
     console.warn("Concurrency Limit found", concurrencyLimit);
-    processingPromises = await handleConcurrentCalls(concurrencyLimit, processRow, rows, setProcessedRows);
+    processingPromises = await exports.handleConcurrentCalls(concurrencyLimit, processRow, rows, setProcessedRows);
   } else {
     console.warn("No Concurrency Limit found");
     processingPromises = await Promise.allSettled(rows.map(async (row: any) => {
@@ -278,7 +278,7 @@ export const initiateCalls = async (
     return Promise.resolve(rows);
   } else {
     return Promise.reject({
-      success: identifySuccessfulRecords(rows, finalErrors),
+      success: exports.identifySuccessfulRecords(rows, finalErrors),
       errors: finalErrors
     });
   }

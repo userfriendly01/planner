@@ -87,15 +87,11 @@ export const performValidations = async (
   console.log("***performValidations results: ", validationPromises);
   validationPromises.forEach((rowPromise: any, index: number) => {
     const rowErrors: any = [];
-    if(!rowPromise.value){
-      rowErrors.push(rowPromise.reason);
-    } else {
-      rowPromise.value.map((fieldPromise: any) => {
-        if(fieldPromise.status === "rejected"){
-          rowErrors.push(fieldPromise.reason);
-        }
-      });
-    }
+    rowPromise.value.map((fieldPromise: any) => {
+      if(fieldPromise.status === "rejected"){
+        rowErrors.push(fieldPromise.reason);
+      }
+    });
 
     if(rowErrors.length !== 0){
       finalErrors.push({

@@ -196,10 +196,12 @@ describe("performValidations", () => {
     expect(validationResult).toBe(undefined);
   });
   test("Performs validations of fields, validations fail, rejects with error", async () => {
-    const fieldList = [    {
-      field: "nNumber",
-      validateFunction: () => Promise.reject("nNumber is too long")
-    }];
+    const fieldList = [
+      {
+        field: "nNumber",
+        validateFunction: () => Promise.reject("nNumber is too long")
+      }
+    ];
     const template1 = {
       name: "CREATE_TRITON_USER"
     };
