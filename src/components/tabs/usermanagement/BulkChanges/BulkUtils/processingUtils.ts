@@ -53,11 +53,12 @@ export const readUploadFile = (e: any, setUploadedForm: any): void => {
       const workbook = XLSX.read(data, { type: "array" });
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
-      const json = XLSX.utils.sheet_to_json(worksheet);
+      const json: any[] = XLSX.utils.sheet_to_json(worksheet);
       console.warn(json);
+      const rowNum = "__rowNum__";
+      console.log("***rowNum", json[0].rowNum);
+      console.log("***__rowNum__", json[0][rowNum]);
       if(typeof json ==="object"){
-        console.log("***rowNum", json[0].rowNum);
-        console.log("***__rowNum__", json[0]["__rowNum__"]);
         console.log("***json[0]", json[0]);
         setUploadedForm(json.map((r: any, index: number) => {
           return {
