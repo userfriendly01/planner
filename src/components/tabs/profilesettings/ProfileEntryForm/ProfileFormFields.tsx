@@ -2,7 +2,10 @@ import React from "react";
 import {
   ToggleFormField
 } from "./ProfileEntryForm.Interfaces";
-import { formModes } from "globals";
+import {
+  formModes,
+  OperatingUnit
+} from "globals";
 import {
   FormControlsContainer,
   FormControlsPane,
@@ -26,6 +29,7 @@ import {
   ProfileQueuesSelectField,
   OverflowSkillTextField
 } from "components";
+import ProfileOperatingUnitField from "./ProfileOperatingUnitField";
 
 const ProfileFormFields = () => {
 
@@ -109,6 +113,7 @@ const ProfileFormFields = () => {
             </ToggleContainer>
           ))
         }
+        ou = {process.env.enviroment}
         <OverflowSkillTextField label="Overflow Skill" />
         <ProfileActivitiesSelectField
           activitiesList={form.activitiesList}

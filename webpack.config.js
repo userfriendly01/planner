@@ -1,11 +1,17 @@
 const ESLintPlugin = require("eslint-webpack-plugin");
 const path = require("path");
+const webpack = require('webpack');
+// const dotenv = require('dotenv');
+const fs = require('fs');
 
 const resolvePathInSrc = resourceInSrc => {
   return resourceInSrc
     ? path.resolve(__dirname, "src", resourceInSrc)
     : path.resolve(__dirname, "src");
 };
+
+const envKeys = {};
+envKeys["process.env.enviroment"] = JSON.stringify(process.env.ENVIRONMENT);
 
 const config = {
   entry: resolvePathInSrc("index"),
@@ -15,7 +21,8 @@ const config = {
     // publicPath: "/triton-admin/"
   },
   plugins: [
-    new ESLintPlugin({ failOnWarning: true })
+    new ESLintPlugin({ failOnWarning: true }),
+    new webpack.DefinePlugin(envKeys)
   ],
   module: {
     rules: [
