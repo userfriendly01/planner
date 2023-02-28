@@ -3,8 +3,7 @@ import {
   ToggleFormField
 } from "./ProfileEntryForm.Interfaces";
 import {
-  formModes,
-  OperatingUnit
+  formModes
 } from "globals";
 import {
   FormControlsContainer,
