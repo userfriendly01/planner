@@ -28,7 +28,6 @@ import {
   ProfileQueuesSelectField,
   OverflowSkillTextField
 } from "components";
-import ProfileOperatingUnitField from "./ProfileOperatingUnitField";
 
 const ProfileFormFields = () => {
 
