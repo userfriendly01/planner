@@ -2,6 +2,26 @@
  * Formats a string to Proper Case;
  * @param field Field to format
  */
+export const formatErrorMessage = (err: any) => {
+  if(err?.response?.data?.message){
+    return err.response.data.message.toString();
+  } else if(err?.response?.data?.errors){
+    return err.response.data.errors.toString();
+  } else if(err?.response?.message){
+    return err.response.message.toString();
+  } else {
+    try {
+      return err.toString();
+    } catch(error){
+      return err;
+    }
+  }
+};
+
+/**
+ * Formats a string to Proper Case;
+ * @param field Field to format
+ */
 export const toProperCase = (field: any) => {
   const fieldArray = field.split(" ").map((w: string) => {
     const word = w.toLowerCase();

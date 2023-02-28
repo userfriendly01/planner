@@ -12,6 +12,7 @@ import {
 import {
   cleanupField,
   checkConflictingCalabrioUsers,
+  formatErrorMessage,
   updateCalabrioUserState,
   updateTritonUserState
 } from "../BulkUtils";
@@ -45,8 +46,9 @@ const processCreateTritonUser = async (row: any, rowNumber: number, state: any) 
     console.log(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
     return Promise.resolve(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
   } catch(err) {
-    console.error(`Failed to create Triton user for row ${rowNumber}.`, err, err.response);
-    return Promise.reject(`Failed to create Triton user for row ${rowNumber}. ${err?.response?.data?.message || err.toString()}`);
+    const errorMessage = `Failed to create Triton user for row ${rowNumber}. ${formatErrorMessage(err)}`;
+    console.error(errorMessage, err);
+    return Promise.reject(errorMessage);
   }
 };
 
@@ -75,8 +77,9 @@ const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any
     console.log(`User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`);
     return Promise.resolve(`User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`);
   } catch(err) {
-    console.error(`Failed to create Calabrio user for row ${rowNumber}.`, err.response);
-    return Promise.reject(`Failed to create Calabrio user for row ${rowNumber}. ${err?.response?.data?.message || err?.response?.data?.errors?.toString() || err.toString()}`);
+    const errorMessage = `Failed to create Calabrio user for row ${rowNumber}. ${formatErrorMessage(err)}`;
+    console.error(errorMessage, err);
+    return Promise.reject(errorMessage);
   }
 };
 
@@ -105,8 +108,9 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
     await updateUser(row.workerSid, body);
     return Promise.resolve(`${row.workerSid} - Worker Attributes updated for row ${rowNumber}`);
   } catch(err){
-    console.error(`Failed to update Triton Worker Attributes user for row ${rowNumber}.`, err);
-    return Promise.reject(`Failed to update Triton Worker Attributes for row ${rowNumber}. ${err?.response?.data?.message || err.toString()}`);
+    const errorMessage = `Failed to update Triton Worker Attributes for row ${rowNumber}. ${formatErrorMessage(err)}`;
+    console.error(errorMessage, err);
+    return Promise.reject(errorMessage);
   }
 };
 
@@ -139,11 +143,11 @@ const processUpdateManager = async (row: any, rowNumber: number, template: Templ
         let fetchedCalabrioUser;
         try {
           const res = await getCalabrioUser(userCalabrioRecord.id);
-          console.warn("dowegethere?");
           fetchedCalabrioUser = res.data;
         } catch(err){
-          console.warn("dowegethere?", err);
-          return Promise.reject(`No updates made, Failed to fetch calabrio user for row ${rowNumber}. ${err?.response?.data?.message || err.toString()}`);
+          const errorMessage = `No updates made, Failed to fetch calabrio user for row ${rowNumber}. ${formatErrorMessage(err)}`;
+          console.error(errorMessage, err);
+          return Promise.reject(errorMessage);
         }
         calabrioBody = {
           ...fetchedCalabrioUser,
@@ -167,8 +171,9 @@ const processUpdateManager = async (row: any, rowNumber: number, template: Templ
     }
     return Promise.resolve(`${userNNumber} - Manager & Calabrio Team updated for row ${rowNumber}`);
   } catch(err){
-    console.error(`Failed to update Manager and Calabrio Team for user for row ${rowNumber}.`, err);
-    return Promise.reject(`Failed to update Manager and Calabrio Team for user for row ${rowNumber}. ${err.response?.data?.message || err.toString()}`);
+    const errorMessage = `Failed to update Manager and Calabrio Team for user for row ${rowNumber}. ${formatErrorMessage(err)}`;
+    console.error(errorMessage, err);
+    return Promise.reject(errorMessage);
   }
 };
 

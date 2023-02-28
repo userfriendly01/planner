@@ -1,7 +1,50 @@
 import {
-  toProperCase,
-  cleanupField
+  cleanupField,
+  formatErrorMessage,
+  toProperCase
 } from "../../BulkUtils";
+
+describe("formatErrorMessage", () => {
+  test("err?.response?.data?.message", () => {
+    const error = {
+      response: {
+        data: {
+          message: "WOOHOO"
+        }
+      }
+    };
+    const result = formatErrorMessage(error);
+    expect(result).toBe("WOOHOO");
+  });
+  test("err?.response?.data?.errors", () => {
+    const error = {
+      response: {
+        data: {
+          errors: ["WOOHOO", "BOOHOO"]
+        }
+      }
+    };
+    const result = formatErrorMessage(error);
+    expect(result).toBe("WOOHOO,BOOHOO");
+  });
+  test("err?.response?.message", () => {
+    const error = {
+      response: {
+        message: "WOOHOO"
+      }
+    };
+    const result = formatErrorMessage(error);
+    expect(result).toBe("WOOHOO");
+  });
+  test("err.toString();", () => {
+    const result = formatErrorMessage(new Error("Hmmm"));
+    expect(result).toBe("Error: Hmmm");
+  });
+  test("err", () => {
+    const result = formatErrorMessage(null);
+    expect(result).toBe(null);
+  });
+});
 
 describe("toProperCase", () => {
   test("should return proper case", () => {

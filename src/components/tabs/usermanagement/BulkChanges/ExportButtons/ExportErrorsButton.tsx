@@ -26,7 +26,7 @@ const ExportErrorsButton = (props: any) => {
 
     errors.forEach((error: any) => {
       rows.push({
-        row: error.row,
+        row: error.rowNumber,
         errors: error.errors.toString()
       });
     });
