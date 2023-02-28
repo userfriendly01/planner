@@ -103,7 +103,7 @@ export const calabrioContext = {
     },
     {
       id: 3,
-      name: "WFM_QM_Agent_NT"
+      name: "WFM_Agent_NT_Dashboards"
     }
   ],
   users: [
@@ -381,11 +381,11 @@ export const mockCallTagOptions = [
 export const mockAggregateQueues = [
   {
     aggregate_queues_id: 4,
-    aggregate_queues_nme: 'Licensed Sales Center',
-    aggregate_queues_type: 'aggregate',
-    owner_type: 'profile',
+    aggregate_queues_nme: "Licensed Sales Center",
+    aggregate_queues_type: "aggregate",
+    owner_type: "profile",
     worker_sid: null,
-    row_crtn_dtm: '',
+    row_crtn_dtm: "",
     row_updt_dtm: null
   }
 ];
