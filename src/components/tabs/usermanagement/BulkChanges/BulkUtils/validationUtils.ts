@@ -2,7 +2,8 @@ import {
   cleanupField,
   getLowestConcurrencyLimit,
   handleConcurrentCalls,
-  identifyProcessingDependencies
+  identifyProcessingDependencies,
+  formatErrorMessage,
 } from "../BulkUtils";
 
 /**
@@ -151,9 +152,15 @@ export const checkConflictingCalabrioUsers = async (user: any, rowNumber: number
       return Promise.resolve(`Calabrio Checks passed for ${rowNumber}`);
     } catch(err) {
       console.error("Error thrown trying to fetch and validate Conflicting Users", err);
-      return Promise.reject(err);
+      return Promise.reject(JSON.stringify({
+        rowNumber: rowNumber,
+        error: formatErrorMessage(err)
+      }));
     }
   } else {
-    return Promise.reject("No user passed to calabrio processing");
+    return Promise.reject(JSON.stringify({
+      rowNumber: rowNumber,
+      error: "No user passed to calabrio processing"
+    }));
   }
 };

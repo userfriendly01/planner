@@ -8,6 +8,8 @@ export const formatErrorMessage = (err: any) => {
       return JSON.stringify(err.response.data);
     } else if(err?.response) {
       return JSON.stringify(err.response);
+    } else if(err?.message){
+      return err.message.toString();
     } else {
       return err.toString();
     }

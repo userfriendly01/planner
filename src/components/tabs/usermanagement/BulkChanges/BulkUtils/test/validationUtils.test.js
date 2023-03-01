@@ -350,8 +350,11 @@ describe("checkConflictingCalabrioUsers", () => {
   test("No user is passed to function, promise rejects", async () => {
     try {
       await checkConflictingCalabrioUsers(null, 1, []);
-    } catch (e) {
-      expect(e).toEqual("No user passed to calabrio processing");
+    } catch (err) {
+      expect(err).toEqual(JSON.stringify({
+        rowNumber: 1,
+        error: "No user passed to calabrio processing"
+      }));
     }
   });
   test("User passed to function, has no matches in the users list, returns resolved", async () => {
@@ -362,21 +365,30 @@ describe("checkConflictingCalabrioUsers", () => {
     try {
       await checkConflictingCalabrioUsers(userWithConflictingAcdId, 1, users);
     } catch(err){
-      expect(err).toEqual("Calabrio Record already exists with this user's acdId for row 1.");
+      expect(err).toEqual(JSON.stringify({
+        rowNumber: 1,
+        error: "Calabrio Record already exists with this user's acdId for row 1."
+      }));
     }
   });
   test("User passed to function, has email matches in the users list, returns resolved", async () => {
     try {
       await checkConflictingCalabrioUsers(userWithConflictingEmail, 1, users);
     } catch(err){
-      expect(err).toEqual("Calabrio Record already exists with this user's email for row 1.");
+      expect(err).toEqual(JSON.stringify({
+        rowNumber: 1,
+        error: "Calabrio Record already exists with this user's email for row 1."
+      }));
     }
   });
   test("User passed to function, has adlogin matches in the users list, returns resolved", async () => {
     try {
       await checkConflictingCalabrioUsers(userWithConflictingAdLogin, 1, users);
     } catch(err){
-      expect(err).toEqual("Calabrio Record already exists with this user's nNumber in the AdLogin field for row 1.");
+      expect(err).toEqual(JSON.stringify({
+        rowNumber: 1,
+        error: "Calabrio Record already exists with this user's nNumber in the AdLogin field for row 1."
+      }));
     }
   });
 });

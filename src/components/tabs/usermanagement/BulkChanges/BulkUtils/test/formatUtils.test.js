@@ -26,9 +26,9 @@ describe("formatErrorMessage", () => {
     const result = formatErrorMessage(error);
     expect(result).toStrictEqual(JSON.stringify(error.response));
   });
-  test("err.toString();", () => {
+  test("err?.message;", () => {
     const result = formatErrorMessage(new Error("Hmmm"));
-    expect(result).toBe("Error: Hmmm");
+    expect(result).toBe("Hmmm");
   });
   test("err", () => {
     const result = formatErrorMessage(null);
