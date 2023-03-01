@@ -53,42 +53,72 @@ describe("fields.js", () => {
         const NNumberValidateFunction = FIELDS.N_NUMBER_CREATE.validateFunction;
         test("No matching N number field, rejects with N Number is missing from row message", async () => {
           try {
-            await NNumberValidateFunction({ "boo": "ya" }, 1, initialTestState);
+            await NNumberValidateFunction({
+              boo: "ya",
+              rowNumber: 1
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("N Number is missing from row 1");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 1,
+              error: "N Number is missing from row 1"
+            }));
             expect(fetchUser).toHaveBeenCalledTimes(0);
           }
         });
         test("N Number is not a string, rejects with invalid n nubmer message", async () => {
           try {
-            await NNumberValidateFunction({ "N Number": 12 }, 1, initialTestState);
+            await NNumberValidateFunction({
+              rowNumber: 1,
+              "N Number": 12
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("N Number is not in the valid n number format for row 1");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 1,
+              error: "N Number is not in the valid n number format for row 1"
+            }));
             expect(fetchUser).toHaveBeenCalledTimes(0);
           }
         });
         test("N Number is not 8 characters, rejects with invalid n nubmer message", async () => {
           try {
-            await NNumberValidateFunction({ "N Number": "superlongnnumber" }, 1, initialTestState);
+            await NNumberValidateFunction({
+              rowNumber: 1,
+              "N Number": "superlongnnumber"
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("N Number is not in the valid n number format for row 1");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 1,
+              error: "N Number is not in the valid n number format for row 1"
+            }));
             expect(fetchUser).toHaveBeenCalledTimes(0);
           }
         });
         test("Error while calling fetchUser, rejects with Error message", async () => {
           fetchUser.mockRejectedValue("nope");
           try {
-            await NNumberValidateFunction({ "N Number": "n1234567" }, 4, initialTestState);
+            await NNumberValidateFunction({
+              rowNumber: 4,
+              "N Number": "n1234567"
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Error thrown fetching N Number from HR Database for row 4");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Error thrown fetching N Number from HR Database for row 4"
+            }));
             expect(fetchUser).toHaveBeenCalledTimes(1);
           }
         });
         test("worker already exists, reject with error", async () => {
           try {
-            await NNumberValidateFunction({ "N Number": "n0000000" }, 4, initialTestState);
+            await NNumberValidateFunction({
+              rowNumber: 4,
+              "N Number": "n0000000"
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("n0000000 already has a record in Twilio/Worker Database row 4");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "n0000000 already has a record in Twilio/Worker Database row 4"
+            }));
             expect(fetchUser).toHaveBeenCalledTimes(0);
           }
         });
@@ -107,12 +137,13 @@ describe("fields.js", () => {
             lastName: "Smith"
           });
           const row = {
+            rowNumber: 1,
             "N Number": "n1234567"
           };
-          const result = await NNumberValidateFunction(row, 1, initialTestState);
+          const result = await NNumberValidateFunction(row, initialTestState);
           expect(result).toEqual("N Number Valid for row 1");
           expect(row).toEqual({
-            "N Number": "n1234567",
+            ...row,
             attributes: {
               contact_uri: "client:n1234567",
               department_id: "123",
@@ -143,13 +174,14 @@ describe("fields.js", () => {
             departmentNumber: "123"
           });
           const row = {
+            rowNumber: 1,
             "N Number": "n1234567",
             attributes: existingAttributes
           };
-          const result = await NNumberValidateFunction(row, 1, initialTestState);
+          const result = await NNumberValidateFunction(row, initialTestState);
           expect(result).toEqual("N Number Valid for row 1");
           expect(row).toEqual({
-            "N Number": "n1234567",
+            ...row,
             attributes: {
               department_id: "123",
               ...existingAttributes
@@ -163,49 +195,80 @@ describe("fields.js", () => {
         const nNumUpdateValidation = FIELDS.N_NUMBER_UPDATE.validateFunction;
         test("field is missing from the row data, rejects with message", async () => {
           try {
-            await nNumUpdateValidation({ "no n number field": "what?" }, 2, initialTestState);
+            await nNumUpdateValidation({
+              rowNumber: 2,
+              "no n number field": "what?"
+            }, initialTestState);
           } catch (err) {
-            expect(err).toEqual("N Number is missing from row 2");
+            expect(err).toEqual(JSON.stringify({
+              rowNumber: 2,
+              error: "N Number is missing from row 2"
+            }));
           }
         });
         test("the field is not a string, reject with message", async () => {
           try {
-            await nNumUpdateValidation({ "N Number": 16 }, 2, initialTestState);
+            await nNumUpdateValidation({
+              rowNumber: 2,
+              "N Number": 16
+            }, initialTestState);
           } catch (err) {
-            expect(err).toEqual("N Number is not in the valid n number format for row 2");
+            expect(err).toEqual(JSON.stringify({
+              rowNumber: 2,
+              error: "N Number is not in the valid n number format for row 2"
+            }));
           }
         });
         test("the field is not 8 characters long, reject with message", async () => {
           try {
-            await nNumUpdateValidation({ "N Number": "long string" }, 2, initialTestState);
+            await nNumUpdateValidation({
+              rowNumber: 2,
+              "N Number": "long string"
+            }, 2, initialTestState);
           } catch (err) {
-            expect(err).toEqual("N Number is not in the valid n number format for row 2");
+            expect(err).toEqual(JSON.stringify({
+              rowNumber: 2,
+              error: "N Number is not in the valid n number format for row 2"
+            }));
           }
         });
         test("the field is an 8 character string, but doesn't match a worker, reject with message", async () => {
-          const row = { "N Number": "n9999999" };
+          const row = {
+            rowNumber: 2,
+            "N Number": "n9999999"
+          };
           try {
-            await nNumUpdateValidation(row, 2, initialTestState);
+            await nNumUpdateValidation(row, initialTestState);
           } catch (err) {
-            expect(err).toEqual("n9999999 is not an existing setup worker in Triton for row 2");
-            expect(row).toEqual({ "N Number": "n9999999" });
+            expect(err).toEqual(JSON.stringify({
+              rowNumber: 2,
+              error: "n9999999 is not an existing setup worker in Triton for row 2"
+            }));
           }
         });
         test("error thrown fetching from state, reject with message", async () => {
-          const row = { "N Number": "n9999999" };
+          const row = {
+            rowNumber: 2,
+            "N Number": "n9999999"
+          };
           try {
-            await nNumUpdateValidation(row, 2, { workerContext: null });
+            await nNumUpdateValidation(row, { workerContext: null });
           } catch (err) {
-            expect(err).toEqual("Error thrown fetching N Number from state for row 2");
-            expect(row).toEqual({ "N Number": "n9999999" });
+            expect(err).toEqual(JSON.stringify({
+              rowNumber: 2,
+              error: "Error thrown fetching N Number from state for row 2"
+            }));
           }
         });
         test("the field is 8 character string, has a worker match, resolves", async () => {
-          const row = { "N Number": "n0000000" };
-          const result = await nNumUpdateValidation(row, 2, initialTestState);
+          const row = {
+            rowNumber: 2,
+            "N Number": "n0000000"
+          };
+          const result = await nNumUpdateValidation(row, initialTestState);
           expect(result).toEqual("N Number Valid for row 2");
           expect(row).toEqual({
-            "N Number": "n0000000",
+            ...row,
             workerSid: "WK1234",
             attributes: {
               extension: "2345",
@@ -224,41 +287,59 @@ describe("fields.js", () => {
         const profileValidateFunction = FIELDS.PROFILE_ID.validateFunction;
         test("No matching profile id field, rejects with message", async () => {
           try {
-            await profileValidateFunction({}, 3, initialTestState);
+            await profileValidateFunction({ rowNumber: 3 }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Profile Id is missing for row 3");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "Profile Id is missing for row 3"
+            }));
           }
         });
         test("profile id is not a number, rejects with message", async () => {
-          const row = { "Profile Id": "what" };
+          const row = {
+            rowNumber: 3,
+            "Profile Id": "what"
+          };
           try {
-            await profileValidateFunction(row, 3, initialTestState);
+            await profileValidateFunction(row, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Profile Id is not a valid option or is not a number for row 3");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "Profile Id is not a valid option or is not a number for row 3"
+            }));
             expect(row).toEqual({
-              "Profile Id": "what",
+              ...row,
               attributes: {}
             });
           }
         });
         test("profile id does not exist in the profiles, rejects with message", async () => {
-          const row = { "Profile Id": 100 };
+          const row = {
+            rowNumber: 3,
+            "Profile Id": 100
+          };
           try {
-            await profileValidateFunction(row, 3, initialTestState);
+            await profileValidateFunction(row, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Profile Id is not a valid option or is not a number for row 3");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "Profile Id is not a valid option or is not a number for row 3"
+            }));
             expect(row).toEqual({
-              "Profile Id": 100,
+              ...row,
               attributes: {}
             });
           }
         });
         test("Profile id is valid, resolves with message", async () => {
-          const row = { "Profile Id": 1 };
-          const result = await profileValidateFunction(row, 3, initialTestState);
+          const row = {
+            rowNumber: 3,
+            "Profile Id": 1
+          };
+          const result = await profileValidateFunction(row, initialTestState);
           expect(result).toEqual("Profile Id Valid for row 3");
           expect(row).toEqual({
-            "Profile Id": 1,
+            ...row,
             attributes: {
               profile_id: 1
             }
@@ -269,13 +350,14 @@ describe("fields.js", () => {
             did: "16038518200"
           };
           const row = {
+            rowNumber: 3,
             "Profile Id": 1,
             attributes: existingAttributes
           };
-          const result = await profileValidateFunction(row, 3, initialTestState);
+          const result = await profileValidateFunction(row, initialTestState);
           expect(result).toEqual("Profile Id Valid for row 3");
           expect(row).toEqual({
-            "Profile Id": 1,
+            ...row,
             attributes: {
               profile_id: 1,
               ...existingAttributes
@@ -299,29 +381,44 @@ describe("fields.js", () => {
         const managerValidateFunction = FIELDS.MANAGER_N_NUMBER.validateFunction;
         test("No matching manager n number field, rejects with message", async () => {
           try {
-            await managerValidateFunction({ "boo": "no" }, 9, initialTestState);
+            await managerValidateFunction({
+              rowNumber: 9,
+              "boo": "no"
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Manager N Number is missing from row 9");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 9,
+              error: "Manager N Number is missing from row 9"
+            }));
           }
         });
         test("No matching manager object, rejects with message", async () => {
-          const row = { "Manager N Number": "n1111111" };
+          const row = {
+            rowNumber: 9,
+            "Manager N Number": "n1111111"
+          };
           try {
-            await managerValidateFunction(row, 9, initialTestState);
+            await managerValidateFunction(row, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Manager N Number is not a valid option for row 9");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 9,
+              error: "Manager N Number is not a valid option for row 9"
+            }));
             expect(row).toEqual({
-              "Manager N Number": "n1111111",
+              ...row,
               attributes: {}
             });
           }
         });
         test("Good manager match, resolves with message", async () => {
-          const row = { "Manager N Number": "n1234567" };
-          const results = await managerValidateFunction(row, 7, initialTestState);
+          const row = {
+            rowNumber: 7,
+            "Manager N Number": "n1234567"
+          };
+          const results = await managerValidateFunction(row, initialTestState);
           expect(results).toEqual("Manager N Number Valid for row 7");
           expect(row).toEqual({
-            "Manager N Number": "n1234567",
+            ...row,
             attributes: {
               manager_first_name: "John",
               manager_last_name: "Wick",
@@ -335,13 +432,14 @@ describe("fields.js", () => {
             did: "16038518200"
           };
           const row = {
+            rowNumber: 3,
             "Manager N Number": "n1234567",
             attributes: existingAttributes
           };
-          const result = await managerValidateFunction(row, 3, initialTestState);
+          const result = await managerValidateFunction(row, initialTestState);
           expect(result).toEqual("Manager N Number Valid for row 3");
           expect(row).toEqual({
-            "Manager N Number": "n1234567",
+            ...row,
             attributes: {
               manager_first_name: "John",
               manager_last_name: "Wick",
@@ -367,45 +465,69 @@ describe("fields.js", () => {
       describe("validateFunction", () => {
         const defaultSkillValidation = FIELDS.DEFAULT_SKILLS.validateFunction;
         test("No default skill field provided, resolve with skipping message", async () => {
-          const result = await defaultSkillValidation({}, 5, initialTestState);
+          const result = await defaultSkillValidation({ rowNumber: 5 }, initialTestState);
           expect(result).toEqual("Default Skills is empty but not required. Skipping validation for row 5");
         });
         test("No default skills provided, resolve with skipping message", async () => {
-          const row = { "Default Skills": "" };
-          const result = await defaultSkillValidation(row, 5, initialTestState);
+          const row = {
+            rowNumber: 5,
+            "Default Skills": ""
+          };
+          const result = await defaultSkillValidation(row, initialTestState);
           expect(result).toEqual("Default Skills is empty but not required. Skipping validation for row 5");
           expect(row).toEqual({
-            "Default Skills": "",
+            ...row,
             attributes: {}
           });
         });
         test("Default skills provided, but contain skill in wrong format with level not a number, reject with message", async () => {
           try {
-            await defaultSkillValidation({ "Default Skills": "aisgL1:boo, lscOBDialer1:1" }, 5, initialTestState);
+            await defaultSkillValidation({
+              rowNumber: 5,
+              "Default Skills": "aisgL1:boo, lscOBDialer1:1"
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Default Skills Errors found for row 5 aisgl1 does not support Level boo.");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 5,
+              error: "Default Skills Errors found for row 5 aisgl1 does not support Level boo."
+            }));
           }
         });
         test("Default skills provided, but contain skills that don't exist, reject with message", async () => {
           try {
-            await defaultSkillValidation({ "Default Skills": "aisgL1, fakeSkill" }, 5, initialTestState);
+            await defaultSkillValidation({
+              rowNumber: 5,
+              "Default Skills": "aisgL1, fakeSkill"
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Default Skills Errors found for row 5 fakeskill is not an available skill ");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 5,
+              error: "Default Skills Errors found for row 5 fakeskill is not an available skill "
+            }));
           }
         });
         test("Default skills provided, but contain skills with levels that don't exist, reject with message", async () => {
           try {
-            await defaultSkillValidation({ "Default Skills": "aisgL1:3, lscOBDialer1:2" }, 5, initialTestState);
+            await defaultSkillValidation({
+              rowNumber: 5,
+              "Default Skills": "aisgL1:3, lscOBDialer1:2"
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Default Skills Errors found for row 5 aisgl1 does not support Level 3.");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 5,
+              error: "Default Skills Errors found for row 5 aisgl1 does not support Level 3."
+            }));
           }
         });
         test("Default skills provided, all skills look good, resolve with message", async () => {
-          const row = { "Default Skills": "aisgL1, lscOBDialer1:2" };
-          const result = await defaultSkillValidation(row, 5, initialTestState);
+          const row = {
+            rowNumber: 5,
+            "Default Skills": "aisgL1, lscOBDialer1:2"
+          };
+          const result = await defaultSkillValidation(row, initialTestState);
           expect(result).toEqual("Default Skills valid for row 5");
           expect(row).toEqual({
-            "Default Skills": "aisgL1, lscOBDialer1:2",
+            ...row,
             attributes: {
               default_skills: {
                 levels: { lscobdialer1: 2 },
@@ -421,13 +543,14 @@ describe("fields.js", () => {
             did: "16038518200"
           };
           const row = {
+            rowNumber: 3,
             "Default Skills": "aisgL1, lscOBDialer1:2",
             attributes: existingAttributes
           };
-          const result = await defaultSkillValidation(row, 3, initialTestState);
+          const result = await defaultSkillValidation(row, initialTestState);
           expect(result).toEqual("Default Skills valid for row 3");
           expect(row).toEqual({
-            "Default Skills": "aisgL1, lscOBDialer1:2",
+            ...row,
             attributes: {
               default_skills: {
                 levels: { lscobdialer1: 2 },
@@ -458,26 +581,38 @@ describe("fields.js", () => {
       describe("validateFunction", () => {
         const exetensionValidateFunction = FIELDS.EXTENSION.validateFunction;
         test("No matching extension field, rejects with message", async () => {
-          const row = {};
-          const result = await exetensionValidateFunction(row, 6, initialTestState);
+          const row = { rowNumber: 6 };
+          const result = await exetensionValidateFunction(row, initialTestState);
           expect(result).toEqual("No Extension set for row 6");
-          expect(row).toEqual({ attributes: {}});
+          expect(row).toEqual({
+            ...row,
+            attributes: {}
+          });
         });
         test("New extension is true, generate Extension fails, rejects with message", async () => {
           generateExtension.mockRejectedValueOnce("boo");
           try {
-            await exetensionValidateFunction({ "Extension": "Y" }, 6, initialTestState);
+            await exetensionValidateFunction({
+              rowNumber: 6,
+              "Extension": "Y"
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Unable to generate Extension for row 6");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 6,
+              error: "Unable to generate Extension for row 6"
+            }));
           }
         });
         test("New extension is true, generate Extension succeeds, resolves with message", async () => {
           generateExtension.mockResolvedValueOnce("123");
-          const row = { "Extension": "Y" };
-          const result = await exetensionValidateFunction(row, 6, initialTestState);
+          const row = {
+            rowNumber: 6,
+            "Extension": "Y"
+          };
+          const result = await exetensionValidateFunction(row, initialTestState);
           expect(result).toEqual("Extension 123 set for row 6");
           expect(row).toEqual({
-            "Extension": "Y",
+            ...row,
             attributes: {
               extension: 123
             }
@@ -489,13 +624,14 @@ describe("fields.js", () => {
             did: "16038518200"
           };
           const row = {
+            rowNumber: 6,
             "Extension": "Y",
             attributes: existingAttributes
           };
-          const result = await exetensionValidateFunction(row, 6, initialTestState);
+          const result = await exetensionValidateFunction(row, initialTestState);
           expect(result).toEqual("Extension 123 set for row 6");
           expect(row).toEqual({
-            "Extension": "Y",
+            ...row,
             attributes: {
               extension: 123,
               ...existingAttributes
@@ -503,37 +639,61 @@ describe("fields.js", () => {
           });
         });
         test("New extension is false, field is n, resolves with skip message", async () => {
-          const row = { "Extension": "n" };
-          const result = await exetensionValidateFunction(row, 6, initialTestState);
+          const row = {
+            rowNumber: 6,
+            "Extension": "n"
+          };
+          const result = await exetensionValidateFunction(row, initialTestState);
           expect(result).toEqual("Extension skipped for row 6.");
           expect(row).toEqual({
-            "Extension": "n",
+            ...row,
             attributes: {}
           });
         });
         test("New extension is false, field returns NaN on parseInt, rejects with format message", async () => {
           try {
-            await exetensionValidateFunction({ "Extension": "345H" }, 6, initialTestState);
+            await exetensionValidateFunction({
+              rowNumber: 6,
+              "Extension": "345H"
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Extension 345h is in the wrong format for row 6");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 6,
+              error: "Extension 345h is in the wrong format for row 6"
+            }));
           }
         });
         test("New extension is false, extension is taken, rejects with message", async () => {
           try {
-            await exetensionValidateFunction({ "Extension": 1234 }, 6, initialTestState);
+            await exetensionValidateFunction({
+              rowNumber: 6,
+              "Extension": 1234
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Extension 1234 is already taken for row 6");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 6,
+              error: "Extension 1234 is already taken for row 6"
+            }));
           }
         });
         test("New extension is false, error is thrown searching state, rejects with message", async () => {
           try {
-            await exetensionValidateFunction({ "Extension": 1234 }, 6, { workerContext: { workers: null }});
+            await exetensionValidateFunction({
+              rowNumber: 6,
+              "Extension": 1234
+            }, { workerContext: { workers: null }});
           } catch (e) {
-            expect(e).toEqual("Extension 1234 error thrown validating extention for row 6");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 6,
+              error: "Extension 1234 error thrown validating extention for row 6"
+            }));
           }
         });
         test("New extension is false, extension is not taken, resolves with message", async () => {
-          const result = await exetensionValidateFunction({ "Extension": 876 }, 6, initialTestState);
+          const result = await exetensionValidateFunction({
+            rowNumber: 6,
+            "Extension": 876
+          }, initialTestState);
           expect(result).toEqual("Extension 876 set for row 6");
         });
       });
@@ -542,19 +702,31 @@ describe("fields.js", () => {
       describe("validateFunction", () => {
         const DIDUserValidateFunction = FIELDS.DID_USER.validateFunction;
         test("Did user field is 'Y', resolves", async () => {
-          const row = { "Did User": "Y" };
-          const result = await DIDUserValidateFunction(row, 7, initialTestState);
+          const row = {
+            rowNumber: 7,
+            "Did User": "Y"
+          };
+          const result = await DIDUserValidateFunction(row, initialTestState);
           expect(result).toEqual("Did User y set for row 7");
         });
         test("Did user field is 'N', resolves", async () => {
-          const result = await DIDUserValidateFunction({ "Did User": "N" }, 7, initialTestState);
+          const result = await DIDUserValidateFunction({
+            rowNumber: 7,
+            "Did User": "N"
+          }, initialTestState);
           expect(result).toEqual("Did User n set for row 7");
         });
         test("Field is not a valid string", async () => {
           try {
-            await DIDUserValidateFunction({ "Did User": 56 }, 7, initialTestState);
+            await DIDUserValidateFunction({
+              rowNumber: 7,
+              "Did User": 56
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Did User needs to be 'Y' or 'N' for row 7");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 7,
+              error: "Did User needs to be 'Y' or 'N' for row 7"
+            }));
           }
         });
       });
@@ -565,80 +737,110 @@ describe("fields.js", () => {
         const DIDNumberValidateFunction = FIELDS.DIRECT_DIAL_NUMBER.validateFunction;
         test("No matching didField field, rejects with message", async () => {
           try {
-            await DIDNumberValidateFunction({ "boo": "what" }, 4);
+            await DIDNumberValidateFunction({
+              rowNumber: 4,
+              "boo": "what"
+            });
           } catch (e) {
-            expect(e).toEqual("Did User needs to be 'Y' or 'N' for row 4");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Did User needs to be 'Y' or 'N' for row 4"
+            }));
           }
         });
         test("didField field is not a string, rejects with message", async () => {
           try {
-            await DIDNumberValidateFunction({ "Did User": 12 }, 4);
+            await DIDNumberValidateFunction({
+              rowNumber: 4,
+              "Did User": 12
+            });
           } catch (e) {
-            expect(e).toEqual("Did User needs to be 'Y' or 'N' for row 4");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Did User needs to be 'Y' or 'N' for row 4"
+            }));
           }
         });
         test("didField field is not a Y or N, rejects with message", async () => {
           try {
-            await DIDNumberValidateFunction({ "Did User": "boo" }, 4);
+            await DIDNumberValidateFunction({
+              rowNumber: 4,
+              "Did User": "boo"
+            });
           } catch (e) {
-            expect(e).toEqual("Did User needs to be 'Y' or 'N' for row 4");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Did User needs to be 'Y' or 'N' for row 4"
+            }));
           }
         });
         test("didField field is N, rejects with message", async () => {
           try {
             await DIDNumberValidateFunction({
+              rowNumber: 4,
               "Did User": "N",
               "Direct Dial Number": "1231231234"
-            }, 4);
+            });
           } catch (e) {
-            expect(e).toEqual("Did User field is 'N', Direct Dial Number is not applicable for row 4");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Did User field is 'N', Direct Dial Number is not applicable for row 4"
+            }));
           }
         });
         test("didField field is N, No DID Number provided resolves with skip mesesage", async () => {
           const result = await DIDNumberValidateFunction({
+            rowNumber: 4,
             "Did User": "N"
-          }, 4);
+          });
           expect(result).toEqual("Direct Dial Number skipped for Non DID user for row 4");
         });
         test("didField field is N, DID Number is empty resolves with skip mesesage", async () => {
           const row = {
+            rowNumber: 4,
             "Did User": "N",
             "Direct Dial Number": ""
           };
-          const result = await DIDNumberValidateFunction(row, 4);
+          const result = await DIDNumberValidateFunction(row);
           expect(result).toEqual("Direct Dial Number skipped for Non DID user for row 4");
           expect(row).toEqual({
-            "Did User": "N",
-            "Direct Dial Number": "",
+            ...row,
             attributes: {}
           });
         });
         test("didField field is Y but direct dial number not provided, rejects with message", async () => {
           const row = {
+            rowNumber: 4,
             "Did User": "Y"
           };
           try {
-            await DIDNumberValidateFunction(row, 4);
+            await DIDNumberValidateFunction(row);
           } catch (e) {
-            expect(e).toEqual("Direct Dial Number is required when DID user is 'Y' for row 4");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Direct Dial Number is required when DID user is 'Y' for row 4"
+            }));
             expect(row).toEqual({
-              "Did User": "Y",
+              ...row,
               attributes: {}
             });
           }
         });
         test("didField field is Y but direct dial number in wrong format, rejects with message", async () => {
           const row = {
+            rowNumber: 4,
             "Did User": "Y",
             "Direct Dial Number": "31234"
           };
           try {
-            await DIDNumberValidateFunction(row, 4);
+            await DIDNumberValidateFunction(row);
           } catch (e) {
-            expect(e).toEqual("Direct Dial Number is not in the correct format for row 4");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Direct Dial Number is not in the correct format for row 4"
+            }));
             expect(row).toEqual({
-              "Did User": "Y",
-              "Direct Dial Number": "31234",
+              ...row,
               attributes: {}
             });
           }
@@ -648,15 +850,15 @@ describe("fields.js", () => {
             manager: "bob hill"
           };
           const row = {
+            rowNumber: 6,
             "Did User": "Y",
             "Direct Dial Number": "6035556565",
             attributes: existingAttributes
           };
-          const result = await DIDNumberValidateFunction(row, 6, initialTestState);
+          const result = await DIDNumberValidateFunction(row, initialTestState);
           expect(result).toEqual("Direct Dial Number 6035556565 set for row 6");
           expect(row).toEqual({
-            "Did User": "Y",
-            "Direct Dial Number": "6035556565",
+            ...row,
             directDialNum: "+16035556565",
             activateEp: true,
             alternateDid: "+16035556565",
@@ -668,14 +870,14 @@ describe("fields.js", () => {
         });
         test("didField field is Y, direct dial number in correct format, resolves with message", async () => {
           const row = {
+            rowNumber: 4,
             "Did User": "Y",
             "Direct Dial Number": "6035556565"
           };
-          const results = await DIDNumberValidateFunction(row, 4);
+          const results = await DIDNumberValidateFunction(row);
           expect(results).toEqual("Direct Dial Number 6035556565 set for row 4");
           expect(row).toEqual({
-            "Did User": "Y",
-            "Direct Dial Number": "6035556565",
+            ...row,
             directDialNum: "+16035556565",
             activateEp: true,
             alternateDid: "+16035556565",
@@ -692,128 +894,165 @@ describe("fields.js", () => {
         const ZeroOutEnabledValidateFunction = FIELDS.ZERO_OUT_ENABLED.validateFunction;
         test("No matching didField field, rejects with message", async () => {
           try {
-            await ZeroOutEnabledValidateFunction({ "boo": "what" }, 4, initialTestState);
+            await ZeroOutEnabledValidateFunction({
+              rowNumber: 4,
+              "boo": "what"
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Did User needs to be 'Y' or 'N' for row 4");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Did User needs to be 'Y' or 'N' for row 4"
+            }));
           }
         });
         test("didField field is not a string, rejects with message", async () => {
           try {
-            await ZeroOutEnabledValidateFunction({ "Did User": 12 }, 4, initialTestState);
+            await ZeroOutEnabledValidateFunction({
+              rowNumber: 4,
+              "Did User": 12
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Did User needs to be 'Y' or 'N' for row 4");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Did User needs to be 'Y' or 'N' for row 4"
+            }));
           }
         });
         test("didField field is not a Y or N, rejects with message", async () => {
           try {
-            await ZeroOutEnabledValidateFunction({ "Did User": "boo" }, 4, initialTestState);
+            await ZeroOutEnabledValidateFunction({
+              rowNumber: 4,
+              "Did User": "boo"
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Did User needs to be 'Y' or 'N' for row 4");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Did User needs to be 'Y' or 'N' for row 4"
+            }));
           }
         });
         test("didField field is N, rejects with message", async () => {
           try {
             await ZeroOutEnabledValidateFunction({
+              rowNumber: 4,
               "Did User": "N",
               "Zero Out Enabled": "Y"
-            }, 4, initialTestState);
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Did User field is 'N', Zero Out Enabled is not applicable for row 4");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Did User field is 'N', Zero Out Enabled is not applicable for row 4"
+            }));
           }
         });
         test("didField field is Y, zero out enabled is not a string, rejects with message", async () => {
           try {
             await ZeroOutEnabledValidateFunction({
+              rowNumber: 4,
               "Did User": "Y",
               "Zero Out Enabled": 3
-            }, 4, initialTestState);
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Zero Out Enabled needs to be needs to be 'Y' or 'N' if DID user is 'Y' for 4");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Zero Out Enabled needs to be needs to be 'Y' or 'N' if DID user is 'Y' for 4"
+            }));
           }
         });
         test("didField field is Y, zero out enabled is not provided, rejects with required message", async () => {
           try {
             await ZeroOutEnabledValidateFunction({
+              rowNumber: 4,
               "Did User": "Y",
               "Zero Out Enabled": ""
-            }, 4, initialTestState);
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Zero Out Enabled is required when DID user is 'Y' 4");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Zero Out Enabled is required when DID user is 'Y' for row 4"
+            }));
           }
         });
         test("didField field is Y, zero out enabled is not a Y or N, rejects with message", async () => {
           const row = {
+            rowNumber: 4,
             "Did User": "Y",
             "Zero Out Enabled": "hi"
           };
           try {
-            await ZeroOutEnabledValidateFunction(row, 4, initialTestState);
+            await ZeroOutEnabledValidateFunction(row, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Zero Out Enabled needs to be needs to be 'Y' or 'N' if DID user is 'Y' for 4");
-            expect(row).toEqual({
-              "Did User": "Y",
-              "Zero Out Enabled": "hi"
-            });
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Zero Out Enabled needs to be needs to be 'Y' or 'N' if DID user is 'Y' for 4"
+            }));
           }
         });
         test("didField field is Y, zero out enabled is N, resolves with message", async () => {
           const row = {
+            rowNumber: 4,
             "Did User": "Y",
             "Zero Out Enabled": "N"
           };
-          const result = await ZeroOutEnabledValidateFunction(row, 4, initialTestState);
+          const result = await ZeroOutEnabledValidateFunction(row, initialTestState);
           expect(result).toEqual("Zero Out Enabled n set for row 4");
           expect(row).toEqual({
-            "Did User": "Y",
-            "Zero Out Enabled": "N",
+            ...row,
             zeroOutEnabled: false
           });
         });
         test("didField field is Y, zero out enabled is Y, profile id is wrong format, rejects with message", async () => {
           try {
             await ZeroOutEnabledValidateFunction({
+              rowNumber: 4,
               "Did User": "Y",
               "Zero Out Enabled": "Y",
               "Profile Id": "boo"
-            }, 4, initialTestState);
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Unable to set Zero Out Enabled. Incorrect format for Profile Id for row 4");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Unable to set Zero Out Enabled. Incorrect format for Profile Id for row 4"
+            }));
           }
         });
         test("didField field is Y, zero out enabled is Y, profile id is null, rejects with message", async () => {
           try {
             await ZeroOutEnabledValidateFunction({
+              rowNumber: 4,
               "Did User": "Y",
               "Zero Out Enabled": "Y",
               "Profile Id": null
-            }, 4, initialTestState);
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Unable to set Zero Out Enabled. Incorrect format for Profile Id for row 4");
+            expect(JSON.parse(e).rowNumber).toEqual(4);
+            expect(JSON.parse(e).error).toContain("Unable to set Zero Out Enabled. Incorrect format for Profile Id for row 4");
           }
         });
         test("didField field is Y, zero out enabled is Y, error is thrown, rejects with message", async () => {
           try {
             await ZeroOutEnabledValidateFunction({
+              rowNumber: 4,
               "Did User": "Y",
               "Zero Out Enabled": "Y",
               "Profile Id": "boo"
-            }, 4, { profileContext: null });
+            }, { profileContext: null });
           } catch (e) {
-            expect(e).toContain("Error thrown setting Zero Out Enabled for row 4.");
+            expect(JSON.parse(e).rowNumber).toEqual(4);
+            expect(JSON.parse(e).error).toContain("Error thrown setting Zero Out Enabled for row 4.");
           }
         });
         test("didField field is Y, zero out enabled is Y, resolves with message", async () => {
           const row = {
+            rowNumber: 4,
             "Did User": "Y",
             "Zero Out Enabled": "Y",
             "Profile Id": 2
           };
-          const result = await ZeroOutEnabledValidateFunction(row, 4, initialTestState);
+          const result = await ZeroOutEnabledValidateFunction(row, initialTestState);
           expect(result).toEqual("Zero Out Enabled whateverOverflowSkill set for row 4");
           expect(row).toEqual({
-            "Did User": "Y",
-            "Zero Out Enabled": "Y",
-            "Profile Id": 2,
+            ...row,
             zeroOutEnabled: true,
             attributes: {
               routing: {
@@ -825,16 +1064,15 @@ describe("fields.js", () => {
         });
         test("didField field is Y, zero out enabled is Y, profile has no overflow skill, resolves with message", async () => {
           const row = {
+            rowNumber: 4,
             "Did User": "Y",
             "Zero Out Enabled": "Y",
             "Profile Id": 1
           };
-          const result = await ZeroOutEnabledValidateFunction(row, 4, initialTestState);
+          const result = await ZeroOutEnabledValidateFunction(row, initialTestState);
           expect(result).toEqual("Zero Out Enabled set to true but no overflow skill found on profile for row 4");
           expect(row).toEqual({
-            "Did User": "Y",
-            "Zero Out Enabled": "Y",
-            "Profile Id": 1,
+            ...row,
             zeroOutEnabled: true
           });
         });
@@ -843,17 +1081,16 @@ describe("fields.js", () => {
             manager: "bob hill"
           };
           const row = {
+            rowNumber: 6,
             "Did User": "Y",
             "Zero Out Enabled": "Y",
             "Profile Id": 2,
             attributes: existingAttributes
           };
-          const result = await ZeroOutEnabledValidateFunction(row, 6, initialTestState);
+          const result = await ZeroOutEnabledValidateFunction(row, initialTestState);
           expect(result).toEqual("Zero Out Enabled whateverOverflowSkill set for row 6");
           expect(row).toEqual({
-            "Did User": "Y",
-            "Zero Out Enabled": "Y",
-            "Profile Id": 2,
+            ...row,
             zeroOutEnabled: true,
             attributes: {
               routing: {
@@ -866,13 +1103,15 @@ describe("fields.js", () => {
         });
         test("didField field is N, zero out enabled is not provided, resolves with skip message", async () => {
           const row = {
+            rowNumber: 4,
             "Did User": "N",
             "Zero Out Enabled": "",
             "Profile Id": 2
           };
-          const result = await ZeroOutEnabledValidateFunction(row, 4, initialTestState);
+          const result = await ZeroOutEnabledValidateFunction(row, initialTestState);
           expect(result).toEqual("Zero Out Enabled skipped for Non DID user for row 4");
           expect(row).toEqual({
+            rowNumber: 4,
             "Did User": "N",
             "Zero Out Enabled": "",
             "Profile Id": 2
@@ -880,13 +1119,15 @@ describe("fields.js", () => {
         });
         test("didField field is N, zero out enabled is N, resolves with skip message", async () => {
           const row = {
+            rowNumber: 4,
             "Did User": "N",
             "Zero Out Enabled": "N",
             "Profile Id": 2
           };
-          const result = await ZeroOutEnabledValidateFunction(row, 4, initialTestState);
+          const result = await ZeroOutEnabledValidateFunction(row, initialTestState);
           expect(result).toEqual("Zero Out Enabled skipped for Non DID user for row 4");
           expect(row).toEqual({
+            rowNumber: 4,
             "Did User": "N",
             "Zero Out Enabled": "N",
             "Profile Id": 2
@@ -900,16 +1141,19 @@ describe("fields.js", () => {
         const outgoingNumberValidateFunction = FIELDS.OUTGOING_NUMBER.validateFunction;
         test("Invalid value provided for Did User field, rejects with message", async () => {
           const row = {
+            rowNumber: 9,
             "Did User": "booya",
             "Outgoing Number": "1231231234"
           };
           try {
-            await outgoingNumberValidateFunction(row, 9, initialTestState);
+            await outgoingNumberValidateFunction(row, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Did User needs to be 'Y' or 'N' for row 9");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 9,
+              error: "Did User needs to be 'Y' or 'N' for row 9"
+            }));
             expect(row).toEqual({
-              "Did User": "booya",
-              "Outgoing Number": "1231231234",
+              ...row,
               attributes: {}
             });
           }
@@ -917,46 +1161,54 @@ describe("fields.js", () => {
         test("DidUser is true, Outgoing number is provided, reject with message", async () => {
           try {
             await outgoingNumberValidateFunction({
+              rowNumber: 9,
               "Did User": "Y",
               "Outgoing Number": "1231231234"
-            }, 9, initialTestState);
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Did User field is 'Y', Outgoing Number is not applicable for row 9");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 9,
+              error: "Did User field is 'Y', Outgoing Number is not applicable for row 9"
+            }));
           }
         });
         test("DidUser is true, Outgoing number is not provided, resolve with message", async () => {
           const row = {
+            rowNumber: 9,
             "Did User": "Y",
             "Outgoing Number": ""
           };
-          const result = await outgoingNumberValidateFunction(row, 9, initialTestState);
+          const result = await outgoingNumberValidateFunction(row, initialTestState);
           expect(result).toEqual("Outgoing Number skipped for DID user for row 9");
           expect(row).toEqual({
-            "Did User": "Y",
-            "Outgoing Number": "",
+            ...row,
             attributes: {}
           });
         });
         test("Did User is false, no Outgoing number provided, rejects with message", async () => {
           try {
             await outgoingNumberValidateFunction({
+              rowNumber: 9,
               "Did User": "N",
               "Outgoing Number": ""
-            }, 9, initialTestState);
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Outgoing Number is required when DID user is 'N' for row 9");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 9,
+              error: "Outgoing Number is required when DID user is 'N' for row 9"
+            }));
           }
         });
         test("DidUser is false, and Outgoing number is provided, getE164Number is successful, resolves with message", async () => {
           const row = {
+            rowNumber: 9,
             "Did User": "N",
             "Outgoing Number": "6035554545"
           };
-          const result = await outgoingNumberValidateFunction(row, 9, initialTestState);
+          const result = await outgoingNumberValidateFunction(row, initialTestState);
           expect(result).toEqual("Outgoing Number 6035554545 set for row 9");
           expect(row).toEqual({
-            "Did User": "N",
-            "Outgoing Number": "6035554545",
+            ...row,
             attributes: {
               did: "+16035554545"
             }
@@ -967,15 +1219,15 @@ describe("fields.js", () => {
             manager: "bob hill"
           };
           const row = {
+            rowNumber: 6,
             "Did User": "N",
             "Outgoing Number": "6035554545",
             attributes: existingAttributes
           };
-          const result = await outgoingNumberValidateFunction(row, 6, initialTestState);
+          const result = await outgoingNumberValidateFunction(row, initialTestState);
           expect(result).toEqual("Outgoing Number 6035554545 set for row 6");
           expect(row).toEqual({
-            "Did User": "N",
-            "Outgoing Number": "6035554545",
+            ...row,
             attributes: {
               did: "+16035554545",
               ...existingAttributes
@@ -985,11 +1237,15 @@ describe("fields.js", () => {
         test("DidUser is false, Outgoing number is provided, but is not valid, rejects with message", async () => {
           try {
             await outgoingNumberValidateFunction({
+              rowNumber: 9,
               "Did User": "N",
               "Outgoing Number": "74"
-            }, 9, initialTestState);
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Outgoing Number is not in the correct format for row 9");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 9,
+              error: "Outgoing Number is not in the correct format for row 9"
+            }));
           }
         });
       });
@@ -1000,12 +1256,13 @@ describe("fields.js", () => {
         const calabrioScopeValidation = FIELDS.CALABRIO_SCOPE.validateFunction;
         test("No Calabrio Scope provided, resolve with skipped message", async () => {
           const row = {
+            rowNumber: 9,
             "stuff": "boo"
           };
-          const result = await calabrioScopeValidation(row, 9, initialTestState);
+          const result = await calabrioScopeValidation(row, initialTestState);
           expect(result).toEqual("Calabrio Scope skipped for row 9");
           expect(row).toEqual({
-            "stuff": "boo",
+            ...row,
             scope: {
               groups: [],
               teams: []
@@ -1013,11 +1270,14 @@ describe("fields.js", () => {
           });
         });
         test("Calabrio scope .split is empty array, resolve with skipped message", async () => {
-          const row = { "Calabrio Scope": "" };
-          const result = await calabrioScopeValidation(row, 9, initialTestState);
+          const row = {
+            rowNumber: 9,
+            "Calabrio Scope": ""
+          };
+          const result = await calabrioScopeValidation(row, initialTestState);
           expect(result).toEqual("Calabrio Scope skipped for row 9");
           expect(row).toEqual({
-            "Calabrio Scope": "",
+            ...row,
             scope: {
               groups: [],
               teams: []
@@ -1026,14 +1286,18 @@ describe("fields.js", () => {
         });
         test("Calabrio scope has a value, no group or team found, rejects with message", async () => {
           const row = {
+            rowNumber: 9,
             "Calabrio Scope": "notReal"
           };
           try {
-            await calabrioScopeValidation(row, 9, initialTestState);
+            await calabrioScopeValidation(row, initialTestState);
           } catch (e) {
-            expect(e).toEqual("notreal is not a valid group or team for row 9");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 9,
+              error: "notreal is not a valid group or team for row 9"
+            }));
             expect(row).toEqual({
-              "Calabrio Scope": "notReal",
+              ...row,
               scope: {
                 groups: [],
                 teams: []
@@ -1042,11 +1306,14 @@ describe("fields.js", () => {
           }
         });
         test("Calabrio scope has value, 1 group, resolves with message", async () => {
-          const row = { "Calabrio Scope": "Hawaii 50 Group" };
-          const result = await calabrioScopeValidation(row, 9, initialTestState);
+          const row = {
+            rowNumber: 9,
+            "Calabrio Scope": "Hawaii 50 Group"
+          };
+          const result = await calabrioScopeValidation(row, initialTestState);
           expect(result).toEqual("Calabrio Scope valid for row 9");
           expect(row).toEqual({
-            "Calabrio Scope": "Hawaii 50 Group",
+            ...row,
             scope: {
               groups: [100],
               teams: []
@@ -1054,11 +1321,14 @@ describe("fields.js", () => {
           });
         });
         test("Calabrio scope has multiple good values, resolves with message", async () => {
-          const row = { "Calabrio Scope": "Hawaii 50 Group, Hawaii Team 50" };
-          const result = await calabrioScopeValidation(row, 9, initialTestState);
+          const row = {
+            rowNumber: 9,
+            "Calabrio Scope": "Hawaii 50 Group, Hawaii Team 50"
+          };
+          const result = await calabrioScopeValidation(row, initialTestState);
           expect(result).toEqual("Calabrio Scope valid for row 9");
           expect(row).toEqual({
-            "Calabrio Scope": "Hawaii 50 Group, Hawaii Team 50",
+            ...row,
             scope: {
               groups: [100],
               teams: [101]
@@ -1067,14 +1337,18 @@ describe("fields.js", () => {
         });
         test("Calabrio scope has multiple values, 1 bad value group, rejects with message", async () => {
           const row = {
+            rowNumber: 9,
             "Calabrio Scope": "Hawaii 50 Group,fakefake"
           };
           try {
-            await calabrioScopeValidation(row, 9, initialTestState);
+            await calabrioScopeValidation(row, initialTestState);
           } catch (e) {
-            expect(e).toEqual("fakefake is not a valid group or team for row 9");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 9,
+              error: "fakefake is not a valid group or team for row 9"
+            }));
             expect(row).toEqual({
-              "Calabrio Scope": "Hawaii 50 Group,fakefake",
+              ...row,
               scope: {
                 groups: [100],
                 teams: []
@@ -1084,12 +1358,16 @@ describe("fields.js", () => {
         });
         test("Bad value for Calabrio scope, rejects with message", async () => {
           const row = {
+            rowNumber: 9,
             "Calabrio Scope": 12
           };
           try {
-            await calabrioScopeValidation(row, 9, initialTestState);
+            await calabrioScopeValidation(row, initialTestState);
           } catch (e) {
-            expect(e).toEqual("12 is not a valid group or team for row 9");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 9,
+              error: "12 is not a valid group or team for row 9"
+            }));
             expect(row).toEqual({
               "Calabrio Scope": 12,
               scope: {
@@ -1117,16 +1395,25 @@ describe("fields.js", () => {
         const calabrioTeamValidation = FIELDS.CALABRIO_TEAM.validateFunction;
         test("No Calabrio Team provided, reject with message", async () => {
           try {
-            await calabrioTeamValidation({}, 9, initialTestState);
+            await calabrioTeamValidation({ rowNumber: 9 }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Calabrio Team is missing from row 9");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 9,
+              error: "Calabrio Team is missing from row 9"
+            }));
           }
         });
         test("Bad value for calabrio team, reject with message", async () => {
           try {
-            await calabrioTeamValidation({ "Calabrio Team": "fake team" }, 9, initialTestState);
+            await calabrioTeamValidation({
+              rowNumber: 9,
+              "Calabrio Team": "fake team"
+            }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Calabrio Team is not a valid option for row 9");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 9,
+              error: "Calabrio Team is not a valid option for row 9"
+            }));
           }
         });
         test("No teamGroupId is found on the team, reject with message", async () => {
@@ -1141,17 +1428,26 @@ describe("fields.js", () => {
             }
           };
           try {
-            await calabrioTeamValidation({ "Calabrio Team": "fake team" }, 9, stateWithBadTeam);
+            await calabrioTeamValidation({
+              rowNumber: 9,
+              "Calabrio Team": "fake team"
+            }, stateWithBadTeam);
           } catch (e) {
-            expect(e).toEqual("Calabrio Team is not a valid option for row 9");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 9,
+              error: "Calabrio Team is not a valid option for row 9"
+            }));
           }
         });
         test("Good Calabrio Team value, resolves with message", async () => {
-          const row = { "Calabrio Team": "Hawaii Team 50" };
-          const result = await calabrioTeamValidation(row, 9, initialTestState);
+          const row = {
+            rowNumber: 9,
+            "Calabrio Team": "Hawaii Team 50"
+          };
+          const result = await calabrioTeamValidation(row, initialTestState);
           expect(result).toEqual("Calabrio Team valid for row 9");
           expect(row).toEqual({
-            "Calabrio Team": "Hawaii Team 50",
+            ...row,
             groupId: 101
           });
         });
@@ -1173,26 +1469,37 @@ describe("fields.js", () => {
         const calabrioRolesValidation = FIELDS.CALABRIO_ROLES.validateFunction;
         test("No Calabrio Role provided, rejects with message", async () => {
           try {
-            await calabrioRolesValidation({}, 1, initialTestState);
+            await calabrioRolesValidation({ rowNumber: 1 }, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Calabrio Role is missing from row 1");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 1,
+              error: "Calabrio Role is missing from row 1"
+            }));
           }
         });
         test("Value for Calabrio Role .split has 0 length, reject with message", async () => {
-          const row = { "Calabrio Role": "" };
+          const row = {
+            rowNumber: 1,
+            "Calabrio Role": ""
+          };
           try {
-            await calabrioRolesValidation(row, 1, initialTestState);
+            await calabrioRolesValidation(row, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Calabrio Role is missing from row 1");
-            expect(row).toEqual({ "Calabrio Role": "" });
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 1,
+              error: "Calabrio Role is missing from row 1"
+            }));
           }
         });
         test("Multiple roles provided, all are good, resolve with message", async () => {
-          const row = { "Calabrio Role": "Supervisor, QM Agent" };
-          const result = await calabrioRolesValidation(row, 1, initialTestState);
+          const row = {
+            rowNumber: 1,
+            "Calabrio Role": "Supervisor, QM Agent"
+          };
+          const result = await calabrioRolesValidation(row, initialTestState);
           expect(result).toEqual("Calabrio Role valid for row 1");
           expect(row).toEqual({
-            "Calabrio Role": "Supervisor, QM Agent",
+            ...row,
             roles: [
               {
                 id: 1,
@@ -1206,13 +1513,19 @@ describe("fields.js", () => {
           });
         });
         test("Multiple roles provided, 1 is bad, reject with message", async () => {
-          const row = { "Calabrio Role": "Supervisor,fake" };
+          const row = {
+            rowNumber: 1,
+            "Calabrio Role": "Supervisor,fake"
+          };
           try {
-            await calabrioRolesValidation(row, 1, initialTestState);
+            await calabrioRolesValidation(row, initialTestState);
           } catch (e) {
-            expect(e).toEqual("fake is not a valid role for row 1");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 1,
+              error: "fake is not a valid role for row 1"
+            }));
             expect(row).toEqual({
-              "Calabrio Role": "Supervisor,fake",
+              ...row,
               roles: [
                 {
                   id: 1,
@@ -1223,11 +1536,14 @@ describe("fields.js", () => {
           }
         });
         test("1 good role provided, resolves with message", async () => {
-          const row = { "Calabrio Role": "Supervisor" };
-          const result = await calabrioRolesValidation(row, 1, initialTestState);
+          const row = {
+            rowNumber: 1,
+            "Calabrio Role": "Supervisor"
+          };
+          const result = await calabrioRolesValidation(row, initialTestState);
           expect(result).toEqual("Calabrio Role valid for row 1");
           expect(row).toEqual({
-            "Calabrio Role": "Supervisor",
+            ...row,
             roles: [
               {
                 id: 1,
@@ -1237,13 +1553,19 @@ describe("fields.js", () => {
           });
         });
         test("1 bad role provided, rejects with message", async () => {
-          const row = { "Calabrio Role": "fake" };
+          const row = {
+            rowNumber: 1,
+            "Calabrio Role": "fake"
+          };
           try {
-            await calabrioRolesValidation(row, 1, initialTestState);
+            await calabrioRolesValidation(row, initialTestState);
           } catch (e) {
-            expect(e).toEqual("fake is not a valid role for row 1");
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 1,
+              error: "fake is not a valid role for row 1"
+            }));
             expect(row).toEqual({
-              "Calabrio Role": "fake",
+              ...row,
               roles: []
             });
           }
@@ -1273,29 +1595,39 @@ describe("fields.js", () => {
       describe("validateFunction", () => {
         const timezoneValidation = FIELDS.CALABRIO_TIME_ZONE.validateFunction;
         test("No timezone provided, reject with missing message", async () => {
-          const row = {};
+          const row = { rowNumber: 1 };
           try {
-            await timezoneValidation(row, 1, initialTestState);
+            await timezoneValidation(row, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Time Zone is missing from row 1");
-            expect(row).toEqual({});
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 1,
+              error: "Time Zone is missing from row 1"
+            }));
           }
         });
         test("Timezone is not a valid timezone, reject with message", async () => {
-          const row = { "Time Zone": "fake" };
+          const row = {
+            rowNumber: 1,
+            "Time Zone": "fake"
+          };
           try {
-            await timezoneValidation(row, 1, initialTestState);
+            await timezoneValidation(row, initialTestState);
           } catch (e) {
-            expect(e).toEqual("Time Zone is not a valid option for row 1");
-            expect(row).toEqual({ "Time Zone": "fake" });
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 1,
+              error: "Time Zone is not a valid option for row 1"
+            }));
           }
         });
         test("Timezone is valid, resolve with message", async () => {
-          const row = { "Time Zone": "America/New_York (EST/EDT)" };
-          const result = await timezoneValidation(row, 1, initialTestState);
+          const row = {
+            rowNumber: 1,
+            "Time Zone": "America/New_York (EST/EDT)"
+          };
+          const result = await timezoneValidation(row, initialTestState);
           expect(result).toEqual("Time Zone valid for row 1");
           expect(row).toEqual({
-            "Time Zone": "America/New_York (EST/EDT)",
+            ...row,
             timeZone: "America/New_York"
           });
         });

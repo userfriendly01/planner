@@ -86,16 +86,21 @@ export const performValidations = async (
 
   console.log("***performValidations results: ", validationPromises);
   validationPromises.forEach((rowPromise: any, index: number) => {
+    let rowNumber: any;
     const rowErrors: any = [];
     rowPromise.value.map((fieldPromise: any) => {
       if(fieldPromise.status === "rejected"){
-        rowErrors.push(fieldPromise.reason);
+        const error = JSON.parse(fieldPromise.reason).error;
+        if(!rowNumber){
+          rowNumber = JSON.parse(fieldPromise.reason).rowNumber;
+        }
+        rowErrors(error);
       }
     });
 
     if(rowErrors.length !== 0){
       finalErrors.push({
-        rowNumber: index + 1,
+        rowNumber: rowNumber,
         errors: rowErrors
       });
     }
