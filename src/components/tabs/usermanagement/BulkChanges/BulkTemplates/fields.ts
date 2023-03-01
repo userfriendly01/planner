@@ -470,7 +470,7 @@ export const FIELDS: Fields = {
             const group = availableGroups.find((g:any) => cleanupField(g.name, "string") === cleanScope);
             const team = availableTeams.find((t:any) => cleanupField(t.name, "string") === cleanScope);
             if(!group && !team){
-              return rejectPromise(`${cleanScope} is not a valid group or team for row ${rowNumber}`, rowNumber);
+              throw new Error(`${cleanScope} is not a valid group or team for row ${rowNumber}`);
             } else if(group) {
               row.scope.groups.push(group.groupId);
             } else {
@@ -480,7 +480,7 @@ export const FIELDS: Fields = {
           return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
         } catch(err) {
           console.error("Error Thrown validating calabrio scope", err);
-          return rejectPromise(err, rowNumber);
+          return rejectPromise(err.message, rowNumber);
         }
       }
     }

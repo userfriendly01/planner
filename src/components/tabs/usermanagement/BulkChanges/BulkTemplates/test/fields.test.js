@@ -1369,7 +1369,7 @@ describe("fields.js", () => {
               error: "12 is not a valid group or team for row 9"
             }));
             expect(row).toEqual({
-              "Calabrio Scope": 12,
+              ...row,
               scope: {
                 groups: [],
                 teams: []
