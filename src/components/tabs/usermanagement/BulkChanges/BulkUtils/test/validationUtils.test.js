@@ -151,9 +151,11 @@ describe("performValidations", () => {
   const mockSetProcessedRows = jest.fn();
   const form = [
     {
+      rowNumber: 1,
       nNumber: "something"
     },
     {
+      rowNumber: 2,
       nNumber: "something else"
     }
   ];
@@ -196,10 +198,19 @@ describe("performValidations", () => {
     expect(validationResult).toBe(undefined);
   });
   test("Performs validations of fields, validations fail, rejects with error", async () => {
+    const validateFunction = jest.fn();
+    validateFunction.mockRejectedValueOnce(JSON.stringify({
+      rowNumber: 1,
+      error: "nNumber is too long"
+    }));
+    validateFunction.mockRejectedValueOnce(JSON.stringify({
+      rowNumber: 2,
+      error: "nNumber is too long"
+    }));
     const fieldList = [
       {
         field: "nNumber",
-        validateFunction: () => Promise.reject("nNumber is too long")
+        validateFunction
       }
     ];
     const template1 = {
@@ -226,24 +237,44 @@ describe("performValidations", () => {
     }
   });
   test("Performs validations of fields, some validations fail, some pass, rejects with appropriate errors", async () => {
+    const nNumberValidateFunction = jest.fn();
+    nNumberValidateFunction.mockRejectedValueOnce(JSON.stringify({
+      rowNumber: 1,
+      error: "Boo you stink!"
+    }));
+    nNumberValidateFunction.mockResolvedValueOnce("yay");
+    nNumberValidateFunction.mockRejectedValueOnce(JSON.stringify({
+      rowNumber: 3,
+      error: "Boo you stink!"
+    }));
+    const otherValidateFunction = jest.fn();
+    otherValidateFunction.mockResolvedValueOnce("yay");
+    otherValidateFunction.mockResolvedValueOnce("yay");
+    otherValidateFunction.mockRejectedValueOnce(JSON.stringify({
+      rowNumber: 3,
+      error: "nope!"
+    }));
     const fieldList = [{
       field: "nNumber",
-      validateFunction: jest.fn().mockRejectedValueOnce("Boo you stink!").mockResolvedValueOnce("yay").mockRejectedValueOnce("Boo you stink!")
+      validateFunction: nNumberValidateFunction
     },
     {
       field: "someCoolField",
-      validateFunction: jest.fn().mockResolvedValueOnce("yay").mockResolvedValueOnce("yay").mockRejectedValueOnce("nope!")
+      validateFunction: otherValidateFunction
     }];
     const longerForm = [
       {
+        rowNumber: 1,
         nNumber: "something",
         someCoolField: "butts"
       },
       {
+        rowNumber: 2,
         nNumber: "something else",
         someCoolField: "hi mom"
       },
       {
+        rowNumber: 3,
         nNumber: "12345",
         someCoolField: "wahooooo"
       }

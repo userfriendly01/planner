@@ -85,7 +85,7 @@ export const performValidations = async (
   }
 
   console.log("***performValidations results: ", validationPromises);
-  validationPromises.forEach((rowPromise: any, index: number) => {
+  validationPromises.forEach((rowPromise: any) => {
     let rowNumber: any;
     const rowErrors: any = [];
     rowPromise.value.map((fieldPromise: any) => {
@@ -94,7 +94,7 @@ export const performValidations = async (
         if(!rowNumber){
           rowNumber = JSON.parse(fieldPromise.reason).rowNumber;
         }
-        rowErrors(error);
+        rowErrors.push(error);
       }
     });
 

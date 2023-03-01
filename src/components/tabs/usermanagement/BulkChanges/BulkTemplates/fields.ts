@@ -465,12 +465,12 @@ export const FIELDS: Fields = {
       } else {
         try {
           const fieldArray = field.split(",");
-          fieldArray.forEach((scope: any) => {
+          fieldArray.map((scope: any) => {
             const cleanScope = cleanupField(scope, "string");
             const group = availableGroups.find((g:any) => cleanupField(g.name, "string") === cleanScope);
             const team = availableTeams.find((t:any) => cleanupField(t.name, "string") === cleanScope);
             if(!group && !team){
-              // return rejectPromise(`${cleanScope} is not a valid group or team for row ${rowNumber}`, rowNumber);
+              return rejectPromise(`${cleanScope} is not a valid group or team for row ${rowNumber}`, rowNumber);
             } else if(group) {
               row.scope.groups.push(group.groupId);
             } else {
