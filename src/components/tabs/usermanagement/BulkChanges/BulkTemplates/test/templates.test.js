@@ -29,6 +29,7 @@ describe("CREATE_TRITON_USER", () => {
     beforeEach(() => createUser.mockResolvedValue({ workerSid: "WK123456" }));
     describe("user is DID user", () => {
       const row = {
+        rowNumber: 2,
         "Did User": "y",
         attributes: {
           n_number: "n0263445",
@@ -38,7 +39,7 @@ describe("CREATE_TRITON_USER", () => {
         zeroOutEnabled: true
       };
       test("should populate with DID body", async () => {
-        const results = await createTritonProcessFunction(row, 2, initialTestState);
+        const results = await createTritonProcessFunction(row, initialTestState);
         expect(createUser).toHaveBeenCalledTimes(1);
         expect(createUser).toHaveBeenCalledWith({
           activateEp: true,
@@ -55,13 +56,14 @@ describe("CREATE_TRITON_USER", () => {
     });
     describe("user is not DID user", () => {
       const row = {
+        rowNumber: 2,
         "Did User": "n",
         attributes: {
           n_number: "n0263445"
         }
       };
       test("should populate with non DID body", async () => {
-        const results = await createTritonProcessFunction(row, 2, initialTestState);
+        const results = await createTritonProcessFunction(row, initialTestState);
         expect(createUser).toHaveBeenCalledTimes(1);
         expect(createUser).toHaveBeenCalledWith({
           activateEp: false,
@@ -76,6 +78,7 @@ describe("CREATE_TRITON_USER", () => {
   describe("error is thrown on createUser", () => {
     beforeEach(() => createUser.mockRejectedValue("aww"));
     const row = {
+      rowNumber: 4,
       "Did User": "n",
       attributes: {
         n_number: "n0263445"
@@ -83,7 +86,7 @@ describe("CREATE_TRITON_USER", () => {
     };
     test("should reject with err", async () => {
       try {
-        await createTritonProcessFunction(row, 2, initialTestState);
+        await createTritonProcessFunction(row, initialTestState);
       } catch(err){
         expect(createUser).toHaveBeenCalledTimes(1);
         expect(createUser).toHaveBeenCalledWith({
@@ -92,7 +95,10 @@ describe("CREATE_TRITON_USER", () => {
             n_number: "n0263445"
           }
         });
-        expect(err).toBe("Failed to create Triton user for row 2. aww");
+        expect(err).toBe(JSON.stringify({
+          rowNumber: 4,
+          error: "Failed to create Triton user for row 4. aww"
+        }));
       }
     });
   });
@@ -101,6 +107,7 @@ describe("CREATE_CALABRIO_QM_USER", () => {
   const createCalabrioProcessFunction = createTemplates.CREATE_CALABRIO_QM_USER.processFunction;
   beforeEach(() => jest.clearAllMocks());
   const row = {
+    rowNumber: 2,
     acdId: "WK13248",
     attributes: {
       n_number: "n0263445",
@@ -121,17 +128,20 @@ describe("CREATE_CALABRIO_QM_USER", () => {
       const missingAcdId = { ...row };
       delete missingAcdId.acdId;
       try {
-        await createCalabrioProcessFunction(missingAcdId, 2, initialTestState);
+        await createCalabrioProcessFunction(missingAcdId, initialTestState);
       } catch(err){
         expect(createCalabrioUser).toHaveBeenCalledTimes(0);
-        expect(err).toBe("Failed to create Calabrio user for row 2. Missing ACD Id, validate this user already exists in Triton");
+        expect(err).toBe(JSON.stringify({
+          rowNumber: 2,
+          error: "Failed to create Calabrio user for row 2. Missing ACD Id, validate this user already exists in Triton"
+        }));
       }
     });
   });
   describe("createUser is successful", () => {
     beforeEach(() => createUser.mockResolvedValue({ workerSid: "WK123456" }));
     test("should resolve", async () => {
-      const results = await createCalabrioProcessFunction(row, 2, initialTestState);
+      const results = await createCalabrioProcessFunction(row, initialTestState);
       expect(createCalabrioUser).toHaveBeenCalledTimes(1);
       expect(createCalabrioUser).toHaveBeenCalledWith({
         acdId: "WK13248",
@@ -160,7 +170,7 @@ describe("CREATE_CALABRIO_QM_USER", () => {
           }
         };
         delete missingAcdId.acdId;
-        const results = await createCalabrioProcessFunction(missingAcdId, 2, initialTestState);
+        const results = await createCalabrioProcessFunction(missingAcdId, initialTestState);
         expect(createCalabrioUser).toHaveBeenCalledTimes(1);
         expect(createCalabrioUser).toHaveBeenCalledWith({
           acdId: "WK1234",
@@ -184,7 +194,7 @@ describe("CREATE_CALABRIO_QM_USER", () => {
     beforeEach(() => createCalabrioUser.mockRejectedValue("aww"));
     test("should reject with err", async () => {
       try {
-        await createCalabrioProcessFunction(row, 2, initialTestState);
+        await createCalabrioProcessFunction(row, initialTestState);
       } catch(err){
         expect(createCalabrioUser).toHaveBeenCalledTimes(1);
         expect(createCalabrioUser).toHaveBeenCalledWith({
@@ -201,7 +211,10 @@ describe("CREATE_CALABRIO_QM_USER", () => {
             teams: [102]
           }
         });
-        expect(err).toBe("Failed to create Calabrio user for row 2. aww");
+        expect(err).toBe(JSON.stringify({
+          rowNumber: 2,
+          error: "Failed to create Calabrio user for row 2. aww"
+        }));
       }
     });
   });
@@ -219,9 +232,12 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
           location: "attributes"
         }
       };
-      const row = { workerSid: "WK1234" };
+      const row = {
+        rowNumber: 4,
+        workerSid: "WK1234"
+      };
       test("should call update user with correct body", async () => {
-        const result = await updateWorkerAttributesProcessFunction(row, 4, template);
+        const result = await updateWorkerAttributesProcessFunction(row, template);
         expect(updateUser).toHaveBeenCalledTimes(1);
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
           attributes: {
@@ -240,9 +256,12 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
           location: "attributes"
         }
       };
-      const row = { workerSid: "WK1234" };
+      const row = {
+        rowNumber: 4,
+        workerSid: "WK1234"
+      };
       test("should call update user with correct body", async () => {
-        const result = await updateWorkerAttributesProcessFunction(row, 4, template);
+        const result = await updateWorkerAttributesProcessFunction(row, template);
         expect(updateUser).toHaveBeenCalledTimes(1);
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
           attributes: {
@@ -260,9 +279,12 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
           location: null
         }
       };
-      const row = { workerSid: "WK1234" };
+      const row = {
+        rowNumber: 4,
+        workerSid: "WK1234"
+      };
       test("should call update user with correct body", async () => {
-        const result = await updateWorkerAttributesProcessFunction(row, 4, template);
+        const result = await updateWorkerAttributesProcessFunction(row, template);
         expect(updateUser).toHaveBeenCalledTimes(1);
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
           selfServiceAtt: true
@@ -274,16 +296,22 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
   describe("updateUser throws an error", () => {
     beforeEach(() => updateUser.mockRejectedValue("Aww"));
     test("should reject", async () => {
-      const row = { workerSid: "WK1234" };
+      const row = {
+        rowNumber: 4,
+        workerSid: "WK1234"
+      };
       const template = {
         data: {}
       };
       try {
-        await updateWorkerAttributesProcessFunction(row, 4, template);
+        await updateWorkerAttributesProcessFunction(row, template);
       } catch(err){
         expect(updateUser).toHaveBeenCalledTimes(1);
         expect(updateUser).toHaveBeenCalledWith("WK1234", {});
-        expect(err).toBe("Failed to update Triton Worker Attributes for row 4. Aww");
+        expect(err).toBe(JSON.stringify({
+          rowNumber: 4,
+          error: "Failed to update Triton Worker Attributes for row 4. Aww"
+        }));
       }
     });
   });
@@ -298,6 +326,7 @@ describe("UPDATE_USERS_MANAGER", () => {
   describe("managerObject is null", () => {
     test("should reject", async () => {
       const row = {
+        rowNumber: 4,
         attributes: {
           nNumber: "n0399982"
         },
@@ -309,26 +338,34 @@ describe("UPDATE_USERS_MANAGER", () => {
         }
       };
       try {
-        await updateUsersManagerProcessFunction(row, 4, template, initialTestState);
+        await updateUsersManagerProcessFunction(row, template, initialTestState);
       } catch(err){
         expect(updateUser).toHaveBeenCalledTimes(0);
-        expect(err).toBe("n2222224 is not a valid manager nNumber for row 4");
+        expect(err).toBe(JSON.stringify({
+          rowNumber: 4,
+          error: "n2222224 is not a valid manager nNumber for row 4"
+        }));
       }
     });
   });
   describe("error is thrown", () => {
     test("should reject", async () => {
-      const row = { workerSid: "WK1234" };
+      const row = {
+        rowNumber: 4,
+        workerSid: "WK1234"
+      };
       try {
-        await updateUsersManagerProcessFunction(row, 4, null);
+        await updateUsersManagerProcessFunction(row, null);
       } catch(err){
         expect(updateUser).toHaveBeenCalledTimes(0);
-        expect(err).toContain("Failed to update Manager and Calabrio Team for user for row 4.");
+        expect(JSON.parse(err).rowNumber).toBe(4);
+        expect(JSON.parse(err).error).toContain("Failed to update Manager and Calabrio Team for user for row 4.");
       }
     });
   });
   describe("error is thrown from getCalabrioUser", () => {
     const row = {
+      rowNumber: 4,
       attributes: {
         n_number: "n0000000"
       },
@@ -343,10 +380,11 @@ describe("UPDATE_USERS_MANAGER", () => {
     test("should reject", async () => {
       getCalabrioUser.mockRejectedValue("Aww");
       try {
-        await updateUsersManagerProcessFunction(row, 4, template);
+        await updateUsersManagerProcessFunction(row, template);
       } catch(err){
         expect(updateUser).toHaveBeenCalledTimes(0);
-        expect(err).toContain("No updates made, Failed to fetch calabrio user for row 4. Aww");
+        expect(JSON.parse(err).rowNumber).toBe(4);
+        expect(JSON.parse(err).error).toContain("No updates made, Failed to fetch calabrio user for row 4. Aww");
       }
     });
   });
@@ -358,6 +396,7 @@ describe("UPDATE_USERS_MANAGER", () => {
     describe("userTritonRecord is null", () => {
       test("manager will be updated, calabrio team will not", async () => {
         const row = {
+          rowNumber: 4,
           attributes: {
             n_number: "n13548"
           },
@@ -369,7 +408,7 @@ describe("UPDATE_USERS_MANAGER", () => {
             calabrioTeamId: 105
           }
         };
-        const results = await updateUsersManagerProcessFunction(row, 4, template, initialTestState);
+        const results = await updateUsersManagerProcessFunction(row, template, initialTestState);
         expect(updateUser).toHaveBeenCalledTimes(1);
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
           attributes: {
@@ -386,6 +425,7 @@ describe("UPDATE_USERS_MANAGER", () => {
     describe("userCalabrioRecord is null", () => {
       test("manager will be updated, calabrio team will not", async () => {
         const row = {
+          rowNumber: 4,
           attributes: {
             n_number: "n1111111"
           },
@@ -397,7 +437,7 @@ describe("UPDATE_USERS_MANAGER", () => {
             calabrioTeamId: 105
           }
         };
-        const results = await updateUsersManagerProcessFunction(row, 4, template, initialTestState);
+        const results = await updateUsersManagerProcessFunction(row, template, initialTestState);
         expect(updateUser).toHaveBeenCalledTimes(1);
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
           attributes: {
@@ -414,6 +454,7 @@ describe("UPDATE_USERS_MANAGER", () => {
     describe("calabrioTeamId is null", () => {
       test("manager will be updated, calabrio team will not", async () => {
         const row = {
+          rowNumber: 4,
           attributes: {
             n_number: "n1111111"
           },
@@ -424,7 +465,7 @@ describe("UPDATE_USERS_MANAGER", () => {
             nNumber: "n1234567"
           }
         };
-        const results = await updateUsersManagerProcessFunction(row, 4, template, initialTestState);
+        const results = await updateUsersManagerProcessFunction(row, template, initialTestState);
         expect(updateUser).toHaveBeenCalledTimes(1);
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
           attributes: {
@@ -441,6 +482,7 @@ describe("UPDATE_USERS_MANAGER", () => {
     describe("userTritonRecord && userCalabrioRecord are not null", () => {
       test("manager will be updated, calabrio team will not", async () => {
         const row = {
+          rowNumber: 4,
           attributes: {
             n_number: "n0000000"
           },
@@ -452,7 +494,7 @@ describe("UPDATE_USERS_MANAGER", () => {
             calabrioTeamId: 105
           }
         };
-        const results = await updateUsersManagerProcessFunction(row, 4, template, initialTestState);
+        const results = await updateUsersManagerProcessFunction(row, template, initialTestState);
         expect(updateUser).toHaveBeenCalledTimes(1);
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
           attributes: {
@@ -483,6 +525,7 @@ describe("UPDATE_USERS_MANAGER", () => {
     });
     test("should reject", async () => {
       const row = {
+        rowNumber: 4,
         attributes: {
           n_number: "n0000000"
         },
@@ -495,7 +538,7 @@ describe("UPDATE_USERS_MANAGER", () => {
         }
       };
       try {
-        await updateUsersManagerProcessFunction(row, 4, template, initialTestState);
+        await updateUsersManagerProcessFunction(row, template, initialTestState);
       } catch(err){
         expect(updateUser).toHaveBeenCalledTimes(1);
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
@@ -516,7 +559,10 @@ describe("UPDATE_USERS_MANAGER", () => {
           adLogin: "LM\\n0222444",
           email: "Brittany.Magee@libertymutual.com"
         });
-        expect(err).toBe("Failed to update for row 4. boo");
+        expect(err).toBe(JSON.stringify({
+          rowNumber: 4,
+          error: "Failed to update for row 4. boo"
+        }));
       }
     });
   });
@@ -527,6 +573,7 @@ describe("UPDATE_USERS_MANAGER", () => {
     });
     test("should reject", async () => {
       const row = {
+        rowNumber: 4,
         attributes: {
           n_number: "n0000000"
         },
@@ -539,7 +586,7 @@ describe("UPDATE_USERS_MANAGER", () => {
         }
       };
       try {
-        await updateUsersManagerProcessFunction(row, 4, template, initialTestState);
+        await updateUsersManagerProcessFunction(row, template, initialTestState);
       } catch(err){
         expect(updateUser).toHaveBeenCalledTimes(1);
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
@@ -560,7 +607,10 @@ describe("UPDATE_USERS_MANAGER", () => {
           adLogin: "LM\\n0222444",
           email: "Brittany.Magee@libertymutual.com"
         });
-        expect(err).toBe("Failed to update for row 4. boo");
+        expect(err).toBe(JSON.stringify({
+          rowNumber: 4,
+          error: "Failed to update for row 4. boo"
+        }));
       }
     });
   });

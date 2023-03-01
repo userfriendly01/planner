@@ -424,9 +424,9 @@ describe("initiateCalls", () => {
         expect(setProcessedRows).toHaveBeenCalledTimes(3);
         expect(templates[0].processFunction).toHaveBeenCalledTimes(0);
         expect(templates[1].processFunction).toHaveBeenCalledTimes(3);
-        expect(templates[1].processFunction).toHaveBeenCalledWith(rows[0], rows[0].rowNumber, templates[1]);
-        expect(templates[1].processFunction).toHaveBeenCalledWith(rows[1], rows[1].rowNumber, templates[1]);
-        expect(templates[1].processFunction).toHaveBeenCalledWith(rows[2], rows[2].rowNumber, templates[1]);
+        expect(templates[1].processFunction).toHaveBeenCalledWith(rows[0], templates[1]);
+        expect(templates[1].processFunction).toHaveBeenCalledWith(rows[1], templates[1]);
+        expect(templates[1].processFunction).toHaveBeenCalledWith(rows[2], templates[1]);
       });
     });
     describe("template tree is not null", () => {
@@ -458,13 +458,13 @@ describe("initiateCalls", () => {
           expect(result).toStrictEqual(rows);
           expect(setProcessedRows).toHaveBeenCalledTimes(3);
           expect(templates[0].processFunction).toHaveBeenCalledTimes(3);
-          expect(templates[0].processFunction).toHaveBeenCalledWith(rows[0], rows[0].rowNumber, templates[0]);
-          expect(templates[0].processFunction).toHaveBeenCalledWith(rows[1], rows[1].rowNumber, templates[0]);
-          expect(templates[0].processFunction).toHaveBeenCalledWith(rows[2], rows[2].rowNumber, templates[0]);
+          expect(templates[0].processFunction).toHaveBeenCalledWith(rows[0], templates[0]);
+          expect(templates[0].processFunction).toHaveBeenCalledWith(rows[1], templates[0]);
+          expect(templates[0].processFunction).toHaveBeenCalledWith(rows[2], templates[0]);
           expect(templates[1].processFunction).toHaveBeenCalledTimes(3);
-          expect(templates[1].processFunction).toHaveBeenCalledWith(rows[0], rows[0].rowNumber, templates[1]);
-          expect(templates[1].processFunction).toHaveBeenCalledWith(rows[1], rows[1].rowNumber, templates[1]);
-          expect(templates[1].processFunction).toHaveBeenCalledWith(rows[2], rows[2].rowNumber, templates[1]);
+          expect(templates[1].processFunction).toHaveBeenCalledWith(rows[0], templates[1]);
+          expect(templates[1].processFunction).toHaveBeenCalledWith(rows[1], templates[1]);
+          expect(templates[1].processFunction).toHaveBeenCalledWith(rows[2], templates[1]);
         });
       });
       describe("dependency tree fails to fully processes", () => {
@@ -491,12 +491,12 @@ describe("initiateCalls", () => {
           } catch(err) {
             expect(setProcessedRows).toHaveBeenCalledTimes(3);
             expect(templates[0].processFunction).toHaveBeenCalledTimes(3);
-            expect(templates[0].processFunction).toHaveBeenCalledWith(rows[0], rows[0].rowNumber, templates[0]);
-            expect(templates[0].processFunction).toHaveBeenCalledWith(rows[1], rows[1].rowNumber, templates[0]);
-            expect(templates[0].processFunction).toHaveBeenCalledWith(rows[2], rows[2].rowNumber, templates[0]);
+            expect(templates[0].processFunction).toHaveBeenCalledWith(rows[0], templates[0]);
+            expect(templates[0].processFunction).toHaveBeenCalledWith(rows[1], templates[0]);
+            expect(templates[0].processFunction).toHaveBeenCalledWith(rows[2], templates[0]);
             expect(templates[1].processFunction).toHaveBeenCalledTimes(2);
-            expect(templates[1].processFunction).toHaveBeenCalledWith(rows[0], rows[0].rowNumber, templates[1]);
-            expect(templates[1].processFunction).toHaveBeenCalledWith(rows[1], rows[1].rowNumber, templates[1]);
+            expect(templates[1].processFunction).toHaveBeenCalledWith(rows[0], templates[1]);
+            expect(templates[1].processFunction).toHaveBeenCalledWith(rows[1], templates[1]);
             expect(err).toStrictEqual({
               errors: [{
                 errors: ["CREATE_CALABRIO_USER failed due to missing workerSid from CREATE_TRITON_USER. If CREATE_TRITON_USER was successful it could have just taken too long and should be reprocessed."],

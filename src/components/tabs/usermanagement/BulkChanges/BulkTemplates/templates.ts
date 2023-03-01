@@ -21,8 +21,16 @@ import {
   isDidUser
 } from "../BulkTemplates";
 
-const processCreateTritonUser = async (row: any, rowNumber: number, state: any) => {
+const rejectPromise = (error: string, rowNumber: number) => {
+  return Promise.reject(JSON.stringify({
+    rowNumber: rowNumber,
+    error
+  }));
+};
+
+const processCreateTritonUser = async (row: any, state: any) => {
   console.log("**** TRITON RECORD PROCESSING", row);
+  const rowNumber = row.rowNumber;
   try {
     const didFieldName = "Did User";
     const didField = cleanupField(row[didFieldName], "string");
@@ -48,17 +56,18 @@ const processCreateTritonUser = async (row: any, rowNumber: number, state: any) 
   } catch(err) {
     const errorMessage = `Failed to create Triton user for row ${rowNumber}. ${formatErrorMessage(err)}`;
     console.error(errorMessage, err);
-    return Promise.reject(errorMessage);
+    return rejectPromise(errorMessage, rowNumber);
   }
 };
 
-const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any) => {
+const processCreateCalabrioUser = async (row: any, state: any) => {
   console.warn("****CALABRIO RECORD PROCESSING for", row);
+  const rowNumber = row.rowNumber;
   await checkConflictingCalabrioUsers(row, rowNumber, state.calabrioContext.users);
   const existingTritonWorker = state.workerContext.workers.find((w:any) => w.attributes?.n_number && w.attributes.n_number === row.attributes.n_number);
   const acdId = row.acdId || existingTritonWorker?.sid || undefined;
   if(!acdId){
-    return Promise.reject(`Failed to create Calabrio user for row ${rowNumber}. Missing ACD Id, validate this user already exists in Triton`);
+    return rejectPromise(`Failed to create Calabrio user for row ${rowNumber}. Missing ACD Id, validate this user already exists in Triton`, rowNumber);
   }
   const body: any = {};
 
@@ -79,11 +88,12 @@ const processCreateCalabrioUser = async (row: any, rowNumber: number, state: any
   } catch(err) {
     const errorMessage = `Failed to create Calabrio user for row ${rowNumber}. ${formatErrorMessage(err)}`;
     console.error(errorMessage, err);
-    return Promise.reject(errorMessage);
+    return rejectPromise(errorMessage, rowNumber);
   }
 };
 
-const processUpdateWorkerAttribute = async (row: any, rowNumber: number, template: Template, state: any) => {
+const processUpdateWorkerAttribute = async (row: any, template: Template, state: any) => {
+  const rowNumber = row.rowNumber;
   const key = template.data.key;
   const value = template.data.value;
   const location = template.data.location;
@@ -110,11 +120,12 @@ const processUpdateWorkerAttribute = async (row: any, rowNumber: number, templat
   } catch(err){
     const errorMessage = `Failed to update Triton Worker Attributes for row ${rowNumber}. ${formatErrorMessage(err)}`;
     console.error(errorMessage, err);
-    return Promise.reject(errorMessage);
+    return rejectPromise(errorMessage, rowNumber);
   }
 };
 
-const processUpdateManager = async (row: any, rowNumber: number, template: Template, state: any) => {
+const processUpdateManager = async (row: any, template: Template, state: any) => {
+  const rowNumber = row.rowNumber;
   try {
     const userNNumber = row.attributes.n_number;
     const managerNNumber = template.data.nNumber;
@@ -126,7 +137,7 @@ const processUpdateManager = async (row: any, rowNumber: number, template: Templ
 
     const managerObject = state.managerContext.managers.find((m:any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === managerNNumber);
     if(!managerObject){
-      return Promise.reject(`${managerNNumber} is not a valid manager nNumber for row ${rowNumber}`);
+      return rejectPromise(`${managerNNumber} is not a valid manager nNumber for row ${rowNumber}`, rowNumber);
     } else {
       tritonBody.attributes = {
         manager_first_name: managerObject.manager_first_name,
@@ -147,7 +158,7 @@ const processUpdateManager = async (row: any, rowNumber: number, template: Templ
         } catch(err){
           const errorMessage = `No updates made, Failed to fetch calabrio user for row ${rowNumber}. ${formatErrorMessage(err)}`;
           console.error(errorMessage, err);
-          return Promise.reject(errorMessage);
+          return rejectPromise(errorMessage, rowNumber);
         }
         calabrioBody = {
           ...fetchedCalabrioUser,
@@ -167,13 +178,13 @@ const processUpdateManager = async (row: any, rowNumber: number, template: Templ
     const errors: string[] = [];
     results.forEach((p: any) => p.status === "rejected" && errors.push(p.reason));
     if(errors.length > 0){
-      return Promise.reject(`Failed to update for row ${rowNumber}. ${errors.toString()}`);
+      return rejectPromise(`Failed to update for row ${rowNumber}. ${errors.toString()}`, rowNumber);
     }
     return Promise.resolve(`${userNNumber} - Manager & Calabrio Team updated for row ${rowNumber}`);
   } catch(err){
     const errorMessage = `Failed to update Manager and Calabrio Team for user for row ${rowNumber}. ${formatErrorMessage(err)}`;
     console.error(errorMessage, err);
-    return Promise.reject(errorMessage);
+    return rejectPromise(errorMessage, rowNumber);
   }
 };
 
@@ -183,7 +194,7 @@ export const getCreateTemplates = (state: any): Templates => {
     CREATE_TRITON_USER: {
       name: "CREATE_TRITON_USER",
       data: {},
-      processFunction: (row: any, rowNumber: number) => processCreateTritonUser(row, rowNumber, state),
+      processFunction: (row: any) => processCreateTritonUser(row, state),
       stateUpdateFunctions: [updateTritonUserState],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
@@ -203,7 +214,7 @@ export const getCreateTemplates = (state: any): Templates => {
     CREATE_CALABRIO_QM_USER: {
       name: "CREATE_CALABRIO_QM_USER",
       data: {},
-      processFunction: (row: any, rowNumber: number) => processCreateCalabrioUser(row, rowNumber, state),
+      processFunction: (row: any) => processCreateCalabrioUser(row, state),
       stateUpdateFunctions: [updateCalabrioUserState],
       multiRunDependencies: [{
         name: "CREATE_TRITON_USER",
@@ -227,7 +238,7 @@ export const getUpdateTemplates = (state: any): Templates => {
     UPDATE_WORKER_ATTRIBUTE: {
       name: "UPDATE_WORKER_ATTRIBUTE",
       data: {},
-      processFunction: (row: any, rowNumber: number, template: Template) => processUpdateWorkerAttribute(row, rowNumber, template, state),
+      processFunction: (row: any, template: Template) => processUpdateWorkerAttribute(row, template, state),
       stateUpdateFunctions: [updateTritonUserState],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
@@ -239,7 +250,7 @@ export const getUpdateTemplates = (state: any): Templates => {
     UPDATE_USERS_MANAGER: {
       name: "UPDATE_USERS_MANAGER",
       data: {},
-      processFunction: (row: any, rowNumber: number, template: Template) => processUpdateManager(row, rowNumber, template, state),
+      processFunction: (row: any, template: Template) => processUpdateManager(row, template, state),
       stateUpdateFunctions: [updateTritonUserState, updateCalabrioUserState],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,

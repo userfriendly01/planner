@@ -68,9 +68,9 @@ export const performValidations = async (
   let validationPromises;
   const concurrencyLimit: any = getLowestConcurrencyLimit(selectedTemplates, "validation");
 
-  const processValidationsOnRows = async (row: any, rowNumber: number, progressCallback: any): Promise<any> => {
+  const processValidationsOnRows = async (row: any, progressCallback: any): Promise<any> => {
     const fieldPromises = await Promise.allSettled(consolidatedFieldsList.map((field: any) => {
-      return field.validateFunction(row, rowNumber, state);
+      return field.validateFunction(row, state);
     }));
     progressCallback((previousCount: number) => (previousCount + 1));
     return fieldPromises;
@@ -80,7 +80,7 @@ export const performValidations = async (
     validationPromises = await handleConcurrentCalls(concurrencyLimit, processValidationsOnRows, uploadedForm, setProcessedRows);
   } else {
     validationPromises = await Promise.allSettled(uploadedForm.map(async (row: any) => {
-      return processValidationsOnRows(row, row.rowNumber, setProcessedRows);
+      return processValidationsOnRows(row, setProcessedRows);
     }));
   }
 
@@ -90,7 +90,8 @@ export const performValidations = async (
     const rowErrors: any = [];
     rowPromise.value.map((fieldPromise: any) => {
       if(fieldPromise.status === "rejected"){
-        const error = JSON.parse(fieldPromise.reason).error;
+        const reason = JSON.parse(fieldPromise.reason);
+        const error = reason.error || reason;
         if(!rowNumber){
           rowNumber = JSON.parse(fieldPromise.reason).rowNumber;
         }
@@ -100,7 +101,7 @@ export const performValidations = async (
 
     if(rowErrors.length !== 0){
       finalErrors.push({
-        rowNumber: rowNumber,
+        rowNumber,
         errors: rowErrors
       });
     }

@@ -149,7 +149,7 @@ export const handleConcurrentCalls = async (
     await delay();
 
     const results = await Promise.allSettled(processingRows.map((row: any) => {
-      return functionToCall(row, row.rowNumber, progressCallback);
+      return functionToCall(row, progressCallback);
     }));
 
     results.forEach((p: any) => processingResults.push(p));
@@ -207,7 +207,7 @@ export const initiateCalls = async (
 
   const finalErrors: any = [];
   let processingPromises;
-  const processRow = async (row: any, rowNumber: number, progressCallback: any) => {
+  const processRow = async (row: any, progressCallback: any) => {
 
     if(templateTree){
       const rowPromise = await Promise.allSettled(templateTree.map(async (t: any) => {
@@ -222,7 +222,10 @@ export const initiateCalls = async (
             return Promise.all(t.multiRunDependencies.map(async (dependency: any) => {
               const variable = dependency.variable;
               if(attempt === maxAttempts && !row[variable]) {
-                return Promise.reject(`${t.name} failed due to missing ${variable} from ${dependency.name}. If ${dependency.name} was successful it could have just taken too long and should be reprocessed.`);
+                return Promise.reject(JSON.stringify({
+                  rowNumber: row.rowNumber,
+                  error: `${t.name} failed due to missing ${variable} from ${dependency.name}. If ${dependency.name} was successful it could have just taken too long and should be reprocessed.`
+                }));
               } else if(!row[variable]){
                 await delay();
                 return processTree(attempt +1 );
@@ -236,13 +239,13 @@ export const initiateCalls = async (
         };
 
         await processTree(1);
-        return await t.processFunction(row, rowNumber, t);
+        return await t.processFunction(row, t);
       }));
       progressCallback((previousCount: number) => (previousCount + 1));
       return rowPromise;
     } else {
       const rowPromise = await Promise.allSettled(selectedTemplates.map((t: any) => {
-        return t.processFunction(row, rowNumber, t);
+        return t.processFunction(row, t);
       }));
       progressCallback((previousCount: number) => (previousCount + 1));
       return rowPromise;
@@ -255,7 +258,7 @@ export const initiateCalls = async (
   } else {
     console.warn("No Concurrency Limit found");
     processingPromises = await Promise.allSettled(rows.map(async (row: any) => {
-      return processRow(row, row.rowNumber, setProcessedRows);
+      return processRow(row, setProcessedRows);
     }));
   }
 
@@ -263,16 +266,24 @@ export const initiateCalls = async (
     return Promise.allSettled(t.stateUpdateFunctions.map((f: any) => f(dispatch)));
   }));
 
-  processingPromises.forEach((rowPromise: any, index: number) => {
+  processingPromises.forEach((rowPromise: any) => {
+    let rowNumber: any;
     const rowErrors: any = [];
-    rowPromise.value.map((fieldPromise: any) => {
-      if(fieldPromise.status === "rejected"){
-        rowErrors.push(fieldPromise.reason);
+
+    rowPromise.value.map((processPromise: any) => {
+      if(processPromise.status === "rejected"){
+        const reason = JSON.parse(processPromise.reason);
+        const error = reason.error || reason;
+        if(!rowNumber){
+          rowNumber = JSON.parse(processPromise.reason).rowNumber;
+        }
+        rowErrors.push(error);
       }
     });
+
     if(rowErrors.length !== 0){
       finalErrors.push({
-        rowNumber: index + 1,
+        rowNumber,
         errors: rowErrors
       });
     }

@@ -6,7 +6,7 @@ export interface Field {
   description: string,
   example: any,
   options: null | ((state?: any) => any[]),
-  validateFunction: (row: any, rowNumber: number, state?: any) => Promise<string>
+  validateFunction: (row: any, state?: any) => Promise<string>
 }
 
 export interface Fields {
@@ -30,7 +30,7 @@ export interface MultiRunDependency {
 export interface Template {
   name: string,
   data?: { [key: string]: any }
-  processFunction: (row: Row, rowNumber: number, template?: Template) => Promise<string>,
+  processFunction: (row: Row, template?: Template) => Promise<string>,
   stateUpdateFunctions: ((dispatch: any) => Promise<void>)[],
   multiRunDependencies: MultiRunDependency[] | null,
   validationConcurrencyLimit: number,
