@@ -80,6 +80,7 @@ export const FIELDS: Fields = {
           row.attributes.lastName = fetchedUser.lastName;
           return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
         } catch(err) {
+          console.error(err.message, err);
           return rejectPromise(`Error thrown fetching ${fieldName} from HR Database for row ${rowNumber}`, rowNumber);
         }
       }
@@ -111,6 +112,7 @@ export const FIELDS: Fields = {
             return rejectPromise(`${field} is not an existing setup worker in Triton for row ${rowNumber}`, rowNumber);
           }
         } catch(err) {
+          console.error(err.message, err);
           return rejectPromise(`Error thrown fetching ${fieldName} from state for row ${rowNumber}`, rowNumber);
         }
       }
@@ -465,7 +467,7 @@ export const FIELDS: Fields = {
       } else {
         try {
           const fieldArray = field.split(",");
-          fieldArray.map((scope: any) => {
+          fieldArray.forEach((scope: any) => {
             const cleanScope = cleanupField(scope, "string");
             const group = availableGroups.find((g:any) => cleanupField(g.name, "string") === cleanScope);
             const team = availableTeams.find((t:any) => cleanupField(t.name, "string") === cleanScope);
