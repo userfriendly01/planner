@@ -51,7 +51,9 @@ const UserManagementWrapper = () => {
     "n1576461",
     "n1541381",
     "n1610258",
-    "n0169879"
+    "n0169879",
+    "n0116796",
+    "n0251975"
   ];
   console.log("User Management details, workerOpts, view", selectedWorkerOpts, view);
 
@@ -68,6 +70,7 @@ const UserManagementWrapper = () => {
   return (
     <FormStateProvider>
       <CallflowWrapper>
+        {view !== views.ONBOARD_NEW_USER &&
         <Dropdown
           label="What would you like to do?"
           value={view}
@@ -83,6 +86,7 @@ const UserManagementWrapper = () => {
             width: "500px"
           }}
         />
+        }
         {view === views.TRITON_USERS && <TritonUsersViewWrapper
           setView={setView}
           workerOpts={selectedWorkerOpts}

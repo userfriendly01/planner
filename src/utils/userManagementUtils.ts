@@ -64,7 +64,7 @@ export const getOverflowSkills = (profiles: TritonProfile[]): string[] => {
 
 export const getOverflowSkillFromProfile = (profiles: TritonProfile[], profileValue: string): string | undefined => {
   const profile = getTargetProfile(profiles, profileValue);
-  if(profile.overflow_skill === null || profile.overflow_skill === ""){
+  if(!profile || profile?.overflow_skill === null || profile?.overflow_skill === ""){
     return undefined;
   } else {
     return profile.overflow_skill;
@@ -88,7 +88,7 @@ export const removeProfileZeroIfAdminNotInProfileZero = (adminState: AppState, p
   return profiles;
 };
 
-export const getTargetProfile = (profiles: TritonProfile[], newProfileValue: string): TritonProfile => profiles.find((profile: TritonProfile) => profile.profile_id === +newProfileValue);
+export const getTargetProfile = (profiles: TritonProfile[], newProfileValue: string): TritonProfile => profiles.find((profile: TritonProfile) => profile.profile_id.toString() === newProfileValue.toString());
 
 export const getZeroOutEnabledFromProfile = (profiles: TritonProfile[], newProfileValue: string): boolean => getTargetProfile(profiles, newProfileValue).overflow_skill !== null;
 
