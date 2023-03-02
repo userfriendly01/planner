@@ -185,7 +185,8 @@ export const AddFlow = ({
             marketingChannel: stringValue(flowRule,"marketingChannel", ""),
             whisper: stringValue(flowRule,"whisper", ""),
             requestID: stringValue(flowRule,"requestID", ""),
-            userDestination: flowRule.userDestination.value || ""
+            userDestination: flowRule.userDestination.value || "",
+            rangeIndicator: stringValue(flowRule,"rangeIndicator", "")
           };
           openAddModal(false, true, newFlowRule);
           setAlertBar((alertBarProps: AlertBarProps) => ({
