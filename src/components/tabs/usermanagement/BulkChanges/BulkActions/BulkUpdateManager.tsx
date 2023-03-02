@@ -28,7 +28,7 @@ const BulkUpdateManager = (props: BulkUpdateProps) => {
     //If the entries are valid, update/add the template to the selected templates.
     //If they arent valid, remove the template from the selected templates
     //Valid templates will drive the display of the processing buttons
-    if(newManager.nNumber){
+    if(newManager.nNumber && newManager.calabrioTeamId){
       const templateFound = selectedTemplates.find((t: Template) => t.name === template.name);
       if(!templateFound){
         replaceTemplate({
