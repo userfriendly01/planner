@@ -50,6 +50,7 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
                   whisper
                   requestID
                   userDestination
+                  rangeIndicator
                 }
               }
             }
@@ -140,7 +141,8 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
                 marketingChannel: "${item.marketingChannel || ""}",
                 whisper: "${item.whisper || ""}",
                 requestID: "${item.requestID || ""}",
-                userDestination: "${item.userDestination}"
+                userDestination: "${item.userDestination}",
+                rangeIndicator:"${item.rangeIndicator}"
               }) {
               pkey
               agentId
@@ -170,6 +172,7 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
               whisper
               requestID
               userDestination
+              rangeIndicator
       }
           }
       `,
@@ -232,8 +235,9 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
                   lineOfBusiness: "${item.lineOfBusiness?.value || ""}",
                   marketingChannel: "${item.marketingChannel?.value || ""}",
                   whisper: "${item.whisper?.value || ""}",
-                  requestID: "${item.requestID?.value || ""}"
-                  userDestination: "${item.userDestination||""}"
+                  requestID: "${item.requestID?.value || ""}",
+                  userDestination: "${item.userDestination||""}",
+                  rangeIndicator: "${item.rangeIndicator || ""}"
               }
           ) {
               agentId
@@ -264,6 +268,7 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
               whisper
               requestID
               userDestination
+              rangeIndicator
             }
           }
         `,
@@ -328,6 +333,7 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
               marketingChannel
               whisper
               requestID
+              rangeIndicator
             }
           }
       `,

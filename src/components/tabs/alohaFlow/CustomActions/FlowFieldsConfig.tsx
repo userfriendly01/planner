@@ -278,6 +278,17 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...currentValue,
       ...newValue
     })
+  },
+  {
+    label: "Range Indicator",
+    key: "rangeIndicator",
+    control: "input",
+    required: false,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.rangeIndicator || ""}`,
+    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
+      ...currentValue,
+      ...newValue
+    })
   }
 ];
 

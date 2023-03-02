@@ -69,6 +69,7 @@ export interface CctSharedCallFlowDb {
     marketingChannel?: string;
     whisper?: string;
     requestID?: string;
+    rangeIndicator?: string;
 }
 export interface FlowKeys {
     pkey?: string;
@@ -96,6 +97,7 @@ export interface FlowKeys {
     whisper: string;
     requestID: string;
     userDestination: string;
+    rangeIndicator: string;
 }
 
 export interface FlowDropDownList {
