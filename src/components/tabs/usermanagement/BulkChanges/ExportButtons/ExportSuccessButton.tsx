@@ -1,5 +1,5 @@
 
-import { StyledExportButton } from "../BulkChanges.Styles";
+import { Button } from "../BulkChanges.Styles";
 import React from "react";
 import {
   ExcelExport
@@ -29,8 +29,8 @@ const ExportSuccessButton = (props: any) => {
 
     rows.forEach((row: any) => {
       Object.keys(row).forEach((key: any) => {
-        if(typeof row[key] !== "string"){
-          [key] = row[key].toString();
+        if(typeof row[key] === "object"){
+          row[key] = JSON.stringify(row[key]);
         }
       });
     });
@@ -38,13 +38,13 @@ const ExportSuccessButton = (props: any) => {
     console.log("rows", rows);
     console.log("columns", columns);
 
-    if (_export.current !== null) {
+    if (_export !== null) {
       _export.current.save(rows, columns);
     }
   };
 
   return (
-    <StyledExportButton onClick={handleExport}><ExcelExport ref={_export}/>Export Successful Rows</StyledExportButton>
+    <Button onClick={handleExport}><ExcelExport ref={_export}/>Export Successful Rows</Button>
   );
 };
 

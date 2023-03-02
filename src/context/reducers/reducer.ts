@@ -76,6 +76,14 @@ export const reducer = (state: AppState, action: Action): AppState => {
           workers: state.workerContext.workers.concat(action.payload)
         }
       };
+    case "loadWorkers":
+      return {
+        ...state,
+        workerContext: {
+          selectedWorkers: state.workerContext.selectedWorkers,
+          workers: action.payload
+        }
+      };
     case "deleteWorker":
       return {
         ...state,
