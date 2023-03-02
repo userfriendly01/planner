@@ -408,18 +408,24 @@ describe("UPDATE_USERS_MANAGER", () => {
             calabrioTeamId: 105
           }
         };
-        const results = await updateUsersManagerProcessFunction(row, template, initialTestState);
-        expect(updateUser).toHaveBeenCalledTimes(1);
-        expect(updateUser).toHaveBeenCalledWith("WK1234", {
-          attributes: {
-            manager_first_name: "John",
-            manager_last_name: "Wick",
-            manager_n_number: "n1234567",
-            manager: "John Wick"
-          }
-        });
-        expect(updateCalabrioUser).toHaveBeenCalledTimes(0);
-        expect(results).toBe("n13548 - Manager & Calabrio Team updated for row 4");
+        try {
+          await updateUsersManagerProcessFunction(row, template, initialTestState);
+        } catch(err){
+          expect(updateUser).toHaveBeenCalledTimes(1);
+          expect(updateUser).toHaveBeenCalledWith("WK1234", {
+            attributes: {
+              manager_first_name: "John",
+              manager_last_name: "Wick",
+              manager_n_number: "n1234567",
+              manager: "John Wick"
+            }
+          });
+          expect(updateCalabrioUser).toHaveBeenCalledTimes(0);
+          expect(err).toBe(JSON.stringify({
+            rowNumber: 4,
+            error: "Errors thrown for row 4. No Calabrio record found."
+          }));
+        }
       });
     });
     describe("userCalabrioRecord is null", () => {
@@ -437,46 +443,24 @@ describe("UPDATE_USERS_MANAGER", () => {
             calabrioTeamId: 105
           }
         };
-        const results = await updateUsersManagerProcessFunction(row, template, initialTestState);
-        expect(updateUser).toHaveBeenCalledTimes(1);
-        expect(updateUser).toHaveBeenCalledWith("WK1234", {
-          attributes: {
-            manager_first_name: "John",
-            manager_last_name: "Wick",
-            manager_n_number: "n1234567",
-            manager: "John Wick"
-          }
-        });
-        expect(updateCalabrioUser).toHaveBeenCalledTimes(0);
-        expect(results).toBe("n1111111 - Manager & Calabrio Team updated for row 4");
-      });
-    });
-    describe("calabrioTeamId is null", () => {
-      test("manager will be updated, calabrio team will not", async () => {
-        const row = {
-          rowNumber: 4,
-          attributes: {
-            n_number: "n1111111"
-          },
-          workerSid: "WK1234"
-        };
-        const template = {
-          data: {
-            nNumber: "n1234567"
-          }
-        };
-        const results = await updateUsersManagerProcessFunction(row, template, initialTestState);
-        expect(updateUser).toHaveBeenCalledTimes(1);
-        expect(updateUser).toHaveBeenCalledWith("WK1234", {
-          attributes: {
-            manager_first_name: "John",
-            manager_last_name: "Wick",
-            manager_n_number: "n1234567",
-            manager: "John Wick"
-          }
-        });
-        expect(updateCalabrioUser).toHaveBeenCalledTimes(0);
-        expect(results).toBe("n1111111 - Manager & Calabrio Team updated for row 4");
+        try {
+          await updateUsersManagerProcessFunction(row, template, initialTestState);
+        } catch(err){
+          expect(updateUser).toHaveBeenCalledTimes(1);
+          expect(updateUser).toHaveBeenCalledWith("WK1234", {
+            attributes: {
+              manager_first_name: "John",
+              manager_last_name: "Wick",
+              manager_n_number: "n1234567",
+              manager: "John Wick"
+            }
+          });
+          expect(updateCalabrioUser).toHaveBeenCalledTimes(0);
+          expect(err).toBe(JSON.stringify({
+            rowNumber: 4,
+            error: "Errors thrown for row 4. No Calabrio record found."
+          }));
+        }
       });
     });
     describe("userTritonRecord && userCalabrioRecord are not null", () => {
@@ -561,7 +545,7 @@ describe("UPDATE_USERS_MANAGER", () => {
         });
         expect(err).toBe(JSON.stringify({
           rowNumber: 4,
-          error: "Failed to update for row 4. boo"
+          error: "Errors thrown for row 4. boo"
         }));
       }
     });
@@ -609,7 +593,7 @@ describe("UPDATE_USERS_MANAGER", () => {
         });
         expect(err).toBe(JSON.stringify({
           rowNumber: 4,
-          error: "Failed to update for row 4. boo"
+          error: "Errors thrown for row 4. boo"
         }));
       }
     });

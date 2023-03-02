@@ -3,7 +3,7 @@ import {
   getLowestConcurrencyLimit,
   handleConcurrentCalls,
   identifyProcessingDependencies,
-  formatErrorMessage,
+  formatErrorMessage
 } from "../BulkUtils";
 
 /**

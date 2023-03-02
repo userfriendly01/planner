@@ -147,28 +147,27 @@ const processUpdateManager = async (row: any, template: Template, state: any) =>
       };
     }
 
-    if(calabrioTeamId){
-      const userTritonRecord = state.workerContext.workers.find((w: any) => w.attributes?.n_number && w.attributes?.n_number === userNNumber);
-      const userCalabrioRecord = state.calabrioContext.users.find((u: any) => cleanupField(u?.acdId, "string") === cleanupField(userTritonRecord?.sid, "string") || cleanupField(u?.email, "string") === cleanupField(userTritonRecord?.attributes?.email, "string"));
-      if(userCalabrioRecord){
-        let fetchedCalabrioUser;
-        try {
-          const res = await getCalabrioUser(userCalabrioRecord.id);
-          fetchedCalabrioUser = res.data;
-        } catch(err){
-          const errorMessage = `No updates made, Failed to fetch calabrio user for row ${rowNumber}. ${formatErrorMessage(err)}`;
-          console.error(errorMessage, err);
-          return rejectPromise(errorMessage, rowNumber);
-        }
-        calabrioBody = {
-          ...fetchedCalabrioUser,
-          groupId: calabrioTeamId
-        };
-        calabrioFunction = updateCalabrioUser;
-      } else {
-        calabrioFunction = () => Promise.resolve(`No Calabrio record found. Bypassing Calabrio Team Change for row ${rowNumber}`);
+    const userTritonRecord = state.workerContext.workers.find((w: any) => w.attributes?.n_number && w.attributes?.n_number === userNNumber);
+    const userCalabrioRecord = state.calabrioContext.users.find((u: any) => cleanupField(u?.acdId, "string") === cleanupField(userTritonRecord?.sid, "string") || cleanupField(u?.email, "string") === cleanupField(userTritonRecord?.attributes?.email, "string"));
+    if(userCalabrioRecord){
+      let fetchedCalabrioUser;
+      try {
+        const res = await getCalabrioUser(userCalabrioRecord.id);
+        fetchedCalabrioUser = res.data;
+      } catch(err){
+        const errorMessage = `No updates made, Failed to fetch calabrio user for row ${rowNumber}. ${formatErrorMessage(err)}`;
+        console.error(errorMessage, err);
+        return rejectPromise(errorMessage, rowNumber);
       }
+      calabrioBody = {
+        ...fetchedCalabrioUser,
+        groupId: calabrioTeamId
+      };
+      calabrioFunction = updateCalabrioUser;
+    } else {
+      calabrioFunction = () => Promise.reject("No Calabrio record found.");
     }
+
 
     const results = await Promise.allSettled([
       updateUser(row.workerSid, tritonBody),
@@ -178,7 +177,7 @@ const processUpdateManager = async (row: any, template: Template, state: any) =>
     const errors: string[] = [];
     results.forEach((p: any) => p.status === "rejected" && errors.push(p.reason));
     if(errors.length > 0){
-      return rejectPromise(`Failed to update for row ${rowNumber}. ${errors.toString()}`, rowNumber);
+      return rejectPromise(`Errors thrown for row ${rowNumber}. ${errors.toString()}`, rowNumber);
     }
     return Promise.resolve(`${userNNumber} - Manager & Calabrio Team updated for row ${rowNumber}`);
   } catch(err){
