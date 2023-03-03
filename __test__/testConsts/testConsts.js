@@ -419,7 +419,6 @@ export const initialTestState = {
       }
     ]
   },
-  operatingUnitSid: "OU62ebf27818d7189aa76e17025c0d7301",
   workerContext: {
     workers: [
       {
