@@ -1,5 +1,6 @@
 import {
   checkIfAdmin,
+  checkIfLowerEnv,
   checkIfPO,
   getAuthenticationProfiles,
   getPermissions,
@@ -47,7 +48,7 @@ const startupResponses = [
   [startups.ALOHA_FLOW.name]
 ];
 
-describe("adminUtils", () => {
+describe("authUtils", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     getAuthenticationProfileTemplates.mockReturnValue(authenticationProfileTemplates);
@@ -66,8 +67,22 @@ describe("adminUtils", () => {
       });
     });
   });
+  describe("checkIfLowerEnv", () => {
+    test("should return true if APP_ENV=test", () => {
+      process.env.APP_ENV = "test";
+      expect(checkIfLowerEnv()).toBe(true);
+    });
+    test("should return false if APP_ENV=production", () => {
+      process.env.APP_ENV = "production";
+      expect(checkIfLowerEnv()).toBe(false);
+    });
+    test("should return false if APP_ENV=unknownenv", () => {
+      process.env.APP_ENV = "unknownenv";
+      expect(checkIfLowerEnv()).toBe(false);
+    });
+  });
   describe("checkIfPO", () => {
-    process.env.APP_ENV = 'production';
+    process.env.APP_ENV = "production";
     describe("n# is a GOP PO", () => {
       test("should return true for n0183277", () => {
         expect(checkIfPO("n0183277")).toBe(true);
@@ -82,6 +97,12 @@ describe("adminUtils", () => {
     describe("n# is not a GOP PO", () => {
       test("should return false", () => {
         expect(checkIfPO("n0288362")).toBe(false);
+      });
+    });
+    describe("n# is not a GOP PO, but it's a lower environment", () => {
+      test("should return true", () => {
+        process.env.APP_ENV = "test";
+        expect(checkIfPO("n0288362")).toBe(true);
       });
     });
   });

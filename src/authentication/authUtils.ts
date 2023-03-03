@@ -10,6 +10,10 @@ export const checkIfAdmin = (profileId: number): boolean => {
   return profileId === 0;
 };
 
+export const checkIfLowerEnv = (): boolean => {
+  return ["local", "development", "test", "staging"].includes(process.env.APP_ENV);
+};
+
 export const checkIfPO = (nNumber: string): boolean => {
   const productOwners = [
     "n0138110",
@@ -19,11 +23,7 @@ export const checkIfPO = (nNumber: string): boolean => {
     "n0196231"
   ];
 
-  console.log('process.environment', process.env);
-  console.log('process.environment.APP_ENV', process.env.APP_ENV);
-  console.log('process.environment.NODE_ENV', process.env.NODE_ENV);
-
-  if (process.env.APP_ENV != 'production'){
+  if (checkIfLowerEnv()){
     return true;
   }
 
