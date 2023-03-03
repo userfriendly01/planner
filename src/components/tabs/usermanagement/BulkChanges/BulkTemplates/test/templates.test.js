@@ -74,6 +74,21 @@ describe("CREATE_TRITON_USER", () => {
         expect(results).toBe("WK123456 created in Triton for n0263445 for row 2");
       });
     });
+
+    describe("operatingUnitSid", () => {
+      const validateFunction = tritonFields.find(f => f.field === "operatingUnitSid").validateFunction;
+      test("No matching operatingUnitSid object, rejects with message", async () => {
+        try {
+          await validateFunction({ "operatingUnitSid": "OU62ebf27818d7189aa76e17025c0d7301" }, 9);
+        } catch (e) {
+          expect(e).toEqual("operatingUnitSid is not a valid option for row 9");
+        }
+      });
+      test("Good operatingUnitSid match, resolves with message", async () => {
+        const results = await validateFunction({ "operatingUnitSid": "OU62ebf27818d7189aa76e17025c0d7301" }, 7);
+        expect(results).toEqual("operatingUnitSid Valid for row 7");
+      });
+    });
   });
   describe("error is thrown on createUser", () => {
     beforeEach(() => createUser.mockRejectedValue("aww"));
