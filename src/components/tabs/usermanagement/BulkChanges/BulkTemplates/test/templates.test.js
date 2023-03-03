@@ -74,7 +74,7 @@ describe("CREATE_TRITON_USER", () => {
         expect(results).toBe("WK123456 created in Triton for n0263445 for row 2");
       });
     });
-
+  });
   describe("error is thrown on createUser", () => {
     beforeEach(() => createUser.mockRejectedValue("aww"));
     const row = {
