@@ -1586,7 +1586,8 @@ describe("fields.js", () => {
             "WFM_Agent_NT_Dashboards",
             "Live Monitoring",
             "Recording Access",
-            "EXL_Genpact"
+            "EXL_Genpact",
+            "QM Agent_No Live Monitoring"
           ]);
         });
       });
