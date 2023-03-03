@@ -13,14 +13,12 @@ import {
   NewTwilioWorkerSkill
 } from "./DefaultSkillSelector.Interfaces";
 import {
-  SkillLevels,
-  SkillsList
+  SkillsList,
+  SkillLevels
 } from "components";
 import { useAdminState } from "context";
 import { Skill } from "globals";
-import React, {
-  useState
-} from "react";
+import React from "react";
 import {
   Add,
   Delete
@@ -33,8 +31,18 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
   } = props;
 
   const skills = useAdminState().skillContext.skills.slice().filter(s => s.levels);
+  const skillGroups = useAdminState().skillContext.skillGroups.slice();
 
   const skillsForDropDown = skills.filter((skillObj: Skill) => !defaultSkills.skills.includes(skillObj.name));
+
+  const skillGroupsForDropDown = skillGroups.filter((skillGr: any) => {
+    // if all skills in a skill group are in the defaultSkills, remove the skillGr from the dropdown list
+    const allSkillsInGroupSelected = skillGr.skills.every((sk: Skill) => defaultSkills.skills.includes(sk.name));
+    if (allSkillsInGroupSelected) {
+      return false;
+    }
+    return true;
+  });
 
   const defaultNewSkill: NewTwilioWorkerSkill = {
     levels: [],
@@ -42,14 +50,21 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
     skill: ""
   };
 
-  const [newSkill, setNewSkill] = useState<NewTwilioWorkerSkill>(defaultNewSkill);
+  const [newSkill, setNewSkill] = React.useState<NewTwilioWorkerSkill>(defaultNewSkill);
 
   const newSkillChanged = (skill: {
     [index: string]: any,
     value: string
   }) => {
     const skillObj = skills.find(skillObj => skillObj.name === skill.value);
-    if(skillObj){
+    if (skill.isSkillGroup) {
+      setNewSkill({
+        levels: [],
+        levelSelected: null,
+        skill: skill.label,
+        skills: skill.skills
+      });
+    } else if(skillObj){
       setNewSkill({
         levels: skillObj.levels,
         levelSelected: skillObj.levels.length > 0 ? skillObj.levels[0] : null,
@@ -72,10 +87,24 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
   const addSkillClicked = () => {
     const {
       levelSelected,
-      skill
+      skill,
+      skills
     } = newSkill;
     const updatedDefaultSkills = { ...defaultSkills };
-    updatedDefaultSkills.skills.push(skill);
+    // a skill group will have multiple skills to add, loop through those skills and add each
+    if (skills) {
+      skills.forEach((skill: any) => {
+        // don't add a duplicate skill
+        if (!updatedDefaultSkills.skills.find(s => s === skill.name)) {
+          updatedDefaultSkills.skills.push(skill.name);
+          if (skill.levels.length > 0) {
+            updatedDefaultSkills.levels[skill.name] = skill.levels[0];
+          }
+        }
+      });
+    } else {
+      updatedDefaultSkills.skills.push(skill);
+    }
     if (newSkill.levelSelected) {
       updatedDefaultSkills.levels[skill] = levelSelected;
     }
@@ -99,6 +128,7 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
       <SkillRow>
         <SkillRowItem>
           <SkillsList
+            skillGroups={skillGroupsForDropDown}
             skills={skillsForDropDown}
             skill={newSkill.skill}
             updateSkill={newSkillChanged} />

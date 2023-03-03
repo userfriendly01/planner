@@ -20,7 +20,8 @@ export const checkIfPO = (nNumber: string): boolean => {
     "n0116796",
     "n0088625",
     "n0183277",
-    "n0196231"
+    "n0196231",
+    "n0050481"
   ];
 
   if (checkIfLowerEnv()){

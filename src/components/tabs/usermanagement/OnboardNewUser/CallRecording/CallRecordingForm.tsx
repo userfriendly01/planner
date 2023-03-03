@@ -17,7 +17,10 @@ import {
   formModes
 } from "globals";
 import { getCalabrioUser } from "services";
-import { calabrioTimeZones } from "utils";
+import {
+  calabrioTimeZones,
+  calabrioAllowedRoles
+} from "utils";
 
 interface CallRecordingFormInterface {
   twilioWorker: any
@@ -183,19 +186,8 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
     }
   };
 
-  const allowedRoles = [
-    "Supervisor",
-    "Agent-Sync Only",
-    "No Screen",
-    "QM Agent",
-    "WFM_QM_Agent",
-    "WFM_QM_Supervisor_TT",
-    "WFM_QM_Supervisor",
-    "WFM_QM_Agent_NT"
-  ];
-
   const getRoleOptions = () => {
-    const allowed = roles.filter(role => allowedRoles.includes(role.name));
+    const allowed = roles.filter(role => calabrioAllowedRoles.includes(role.name));
     return allowed.map(role => {
       return {
         ...role,
@@ -206,8 +198,18 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   };
 
   const getTeamOptions = () => {
-    const managerTeams = form.manager.value && form.manager.value.calabrio_team_ids ? form.manager.value.calabrio_team_ids: [];
-    const availableTeams = teams.filter(team => managerTeams.includes(team.groupId));
+    // Gather up the parents of all the teams in the manager's scope
+    let parentTeams: number[] = [];
+    if (form.manager.value && form.manager.value.calabrio_team_ids) {
+      parentTeams = form.manager.value.calabrio_team_ids.map(
+        (teamId: number) => {
+          const targetTeam = state.calabrioContext.teams.find((team: any) => team.groupId === teamId);
+          return targetTeam.parentGroupId; // Array may have some duplicates, but that doesn't hurt anything
+        }
+      );
+    }
+    // Include any teams that have any of the same parents
+    const availableTeams = teams.filter(team => parentTeams.includes(team.parentGroupId));
     if(availableTeams.length > 0){
       return availableTeams.map(team => {
         return {

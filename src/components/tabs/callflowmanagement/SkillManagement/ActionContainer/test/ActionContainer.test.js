@@ -1,7 +1,8 @@
 import ActionContainer from "../ActionContainer";
 import {
   Dropdown,
-  MessageContainer
+  MessageContainer,
+  SkillGroupInputContainer
 } from "components";
 import React from "react";
 import {
@@ -19,7 +20,8 @@ import { messageTypes } from "../../ClosedFlashMessage/ClosedFlashMessage.Interf
 jest.mock("components", () => ({
   Dropdown: jest.fn(),
   MessageContainer: jest.fn(),
-  StyledButton: jest.fn()
+  StyledButton: jest.fn(),
+  SkillGroupInputContainer: jest.fn()
 }));
 
 const confirmationModalOpts = "opts";
@@ -45,7 +47,8 @@ describe("<ActionContainer/>", () => {
     jest.clearAllMocks();
     setupMockedComponents({
       Dropdown,
-      MessageContainer
+      MessageContainer,
+      SkillGroupInputContainer
     });
   });
   describe("initial render", () => {
@@ -58,7 +61,8 @@ describe("<ActionContainer/>", () => {
           value: propertyOptions.CLOSED_MESSAGE,
           options: [
             propertyOptions.CLOSED_MESSAGE,
-            propertyOptions.FLASH_MESSAGE
+            propertyOptions.FLASH_MESSAGE,
+            propertyOptions.SKILL_GROUP
           ]
         }, 0);
         expectOnlyPassedProps(MessageContainer, {
@@ -82,6 +86,28 @@ describe("<ActionContainer/>", () => {
         expectOnlyPassedProps(MessageContainer, {
           messageType: messageTypes.FLASH
         }, 1);
+      });
+    });
+    describe("propertySelection.label === propertyOptions.SKILL_GROUP.label", () => {
+      test("should render Skill group View", async () => {
+        renderComponent();
+        const updateProperty = Dropdown.mock.calls[0][0].updateValue;
+        act(() => {
+          updateProperty(null, propertyOptions.SKILL_GROUP);
+        });
+        const updateAction = Dropdown.mock.calls[3][0].updateValue;
+        act(() => {
+          updateAction(null, ActionTypes.ADD);
+        });
+        expect(Dropdown.mock.calls.length).toBe(6);
+        expect(Dropdown.mock.calls[2][0].value).toBe(propertyOptions.SKILL_GROUP);
+        expect(Dropdown.mock.calls[3][0].options).toBe(propertyOptions.SKILL_GROUP.actions);
+        expect(Dropdown.mock.calls[5][0].value).toBe(ActionTypes.ADD);
+        expect(MessageContainer.mock.calls.length).toBe(1);
+        expect(SkillGroupInputContainer.mock.calls.length).toBe(1);
+        expectOnlyPassedProps(SkillGroupInputContainer, {
+          action: ActionTypes.ADD
+        }, 0);
       });
     });
     describe("propertySelection.label === undefined option", () => {

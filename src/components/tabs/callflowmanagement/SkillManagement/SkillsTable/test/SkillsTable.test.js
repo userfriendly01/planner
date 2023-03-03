@@ -121,7 +121,7 @@ describe("SkillsTable", () => {
     test("should render expected headers", () => {
       renderComponent();
 
-      expect(CustomTableHeader.mock.calls.length).toBe(5);
+      expect(CustomTableHeader.mock.calls.length).toBe(6);
 
       const checkboxClick = Checkbox.mock.calls[4][0].onClick;
       act(() => {
@@ -131,6 +131,7 @@ describe("SkillsTable", () => {
       expect(Checkbox.mock.calls[0][0].checked).toBe(false);
       expect(CustomTableHeader.mock.calls[1][0].children).toBe("SKILL NAME");
       expect(CustomTableHeader.mock.calls[2][0].children).toBe("PROFILES");
+      expect(CustomTableHeader.mock.calls[3][0].children).toBe("SKILL GROUP");
       expect(FilterWrapper.mock.calls[0][0].children).toBe("FLASH");
       expect(FilterWrapper.mock.calls[0][0].active).toBe(false);
       expect(FilterWrapper.mock.calls[1][0].children).toBe("CLOSED");
@@ -147,6 +148,10 @@ describe("SkillsTable", () => {
       expect(rowOneSecondChild.container).toHaveTextContent("lscOBDialer1");
       const rowOneThirdChild = render(CustomTableRow.mock.calls[0][0].children[2]);
       expect(rowOneThirdChild.container).toHaveTextContent("Licensed Sales Center - 32");
+      const rowOneFourthChild = render(CustomTableRow.mock.calls[0][0].children[3]);
+      expect(rowOneFourthChild.container).toHaveTextContent("skillgroup1");
+
+
 
       expect(CustomTableRow.mock.calls[1][0].selected).toBe(false);
       expect(Checkbox.mock.calls[1][0].checked).toBe(false);
@@ -154,6 +159,8 @@ describe("SkillsTable", () => {
       expect(rowTwoSecondChild.container).toHaveTextContent("aisgL1");
       const rowTwoThirdChild = render(CustomTableRow.mock.calls[1][0].children[2]);
       expect(rowTwoThirdChild.container).toHaveTextContent("AISG - 4");
+      const rowTwoFourthChild = render(CustomTableRow.mock.calls[1][0].children[3]);
+      expect(rowTwoFourthChild.container).toHaveTextContent("skillgroup1");
 
       expect(CustomTableRow.mock.calls[2][0].selected).toBe(false);
       expect(Checkbox.mock.calls[2][0].checked).toBe(false);
@@ -161,6 +168,8 @@ describe("SkillsTable", () => {
       expect(rowThreeSecondChild.container).toHaveTextContent("bscCommisssions");
       const rowThreeThirdChild = render(CustomTableRow.mock.calls[2][0].children[2]);
       expect(rowThreeThirdChild.container).toHaveTextContent("BSC - 10");
+      const rowThreeFourthChild = render(CustomTableRow.mock.calls[2][0].children[3]);
+      expect(rowThreeFourthChild.container).toHaveTextContent("");
 
       expect(CustomTableRow.mock.calls[3][0].selected).toBe(false);
       expect(Checkbox.mock.calls[3][0].checked).toBe(false);
@@ -168,6 +177,8 @@ describe("SkillsTable", () => {
       expect(rowFourSecondChild.container).toHaveTextContent("bscCbsL2");
       const rowFourThirdChild = render(CustomTableRow.mock.calls[3][0].children[2]);
       expect(rowFourThirdChild.container).toHaveTextContent("BSC - 10, BLST Billing - 12");
+      const rowFourFourthChild = render(CustomTableRow.mock.calls[3][0].children[3]);
+      expect(rowFourFourthChild.container).toHaveTextContent("");
 
       expect(CustomTableRow.mock.calls[4][0].selected).toBe(false);
       expect(Checkbox.mock.calls[4][0].checked).toBe(false);
@@ -175,6 +186,8 @@ describe("SkillsTable", () => {
       expect(rowFiveSecondChild.container).toHaveTextContent("lscUSAA");
       const rowFiveThirdChild = render(CustomTableRow.mock.calls[4][0].children[2]);
       expect(rowFiveThirdChild.container).not.toHaveTextContent();
+      const rowFiveFourthChild = render(CustomTableRow.mock.calls[4][0].children[3]);
+      expect(rowFiveFourthChild.container).toHaveTextContent("");
 
       expect(Circle.mock.calls.length).toBe(3);
 
@@ -213,7 +226,7 @@ describe("SkillsTable", () => {
   describe("flash filter is clicked", () => {
     test("setTableState is called with flashFilter === true", () => {
       renderComponent();
-      const setFlashFilter = CustomTableHeader.mock.calls[3][0].onClick;
+      const setFlashFilter = CustomTableHeader.mock.calls[4][0].onClick;
       act(() => {
         setFlashFilter();
       });
@@ -227,7 +240,7 @@ describe("SkillsTable", () => {
   describe("close filter is clicked", () => {
     test("setTableState is called with closeFilter === true", () => {
       renderComponent();
-      const setClosedFilter = CustomTableHeader.mock.calls[4][0].onClick;
+      const setClosedFilter = CustomTableHeader.mock.calls[5][0].onClick;
       act(() => {
         setClosedFilter();
       });

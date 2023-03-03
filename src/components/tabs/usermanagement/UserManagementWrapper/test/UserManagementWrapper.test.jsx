@@ -20,6 +20,7 @@ import {
 jest.mock("components", () => ({
   UserEntryForm: jest.fn(),
   Dropdown: jest.fn(),
+  BulkChanges: jest.fn(),
   TritonUsersViewWrapper: jest.fn()
 }));
 
@@ -96,7 +97,7 @@ describe("", () => {
           action: "edit",
           systems: {
             triton: true,
-            calabrio_qm: false,
+            calabrio_qm: true,// checks the state
             calabrio_wfm: false
           },
           worker: initialTestState.workerContext.workers[1]

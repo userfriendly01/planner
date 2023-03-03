@@ -8,6 +8,7 @@ import {
   formatCalabrioGroups,
   formatCalabrioRoles
 } from "utils/calabrioUtils";
+import { formatSkillGroups } from "utils/skillsUtils";
 
 export const initialState: AppState = {
   managerContext: {
@@ -20,7 +21,8 @@ export const initialState: AppState = {
     profiles: []
   },
   skillContext: {
-    skills: []
+    skills: [],
+    skillGroups: []
   },
   userContext: {
     pingIdentity: null,
@@ -72,6 +74,14 @@ export const reducer = (state: AppState, action: Action): AppState => {
         workerContext: {
           ...state.workerContext,
           workers: state.workerContext.workers.concat(action.payload)
+        }
+      };
+    case "loadWorkers":
+      return {
+        ...state,
+        workerContext: {
+          selectedWorkers: state.workerContext.selectedWorkers,
+          workers: action.payload
         }
       };
     case "deleteWorker":
@@ -147,6 +157,14 @@ export const reducer = (state: AppState, action: Action): AppState => {
         skillContext: {
           ...state.skillContext,
           skills: action.payload
+        }
+      };
+    case "loadSkillGroups":
+      return {
+        ...state,
+        skillContext: {
+          ...state.skillContext,
+          skillGroups: formatSkillGroups(action.payload)
         }
       };
     case "loadUserData":

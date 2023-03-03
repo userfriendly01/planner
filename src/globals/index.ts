@@ -123,13 +123,16 @@ export const apiPaths = {
   GET_CALL_TAGS_OPTIONS: `${CONTACT_MANAGER_BASE_URI}/workertaskinfooptions`,
   GET_CALL_TAGS: `${CONTACT_MANAGER_BASE_URI}/workertaskinfo`,
   GET_ACTIVITIES: `${CONTACT_MANAGER_BASE_URI}/activities`,
+  GET_JOKES: `${SERVICE_BASE_URI}/getJokes`,
   GET_SKILLS: `${SERVICE_BASE_URI}/consolidatedskills`,
   GET_WORKERS: `${SERVICE_BASE_URI}/workers`,
   MANAGERS: `${CONTACT_MANAGER_BASE_URI}/managers`,
   OFFICES: `${CONTACT_MANAGER_BASE_URI}/offices`,
   PROFILES: `${CONTACT_MANAGER_BASE_URI}/profiles`,
   RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
+  SKILL_GROUPS: `${CONTACT_MANAGER_BASE_URI}/skillgroups`,
   TFN_DATA: `${SERVICE_BASE_URI}/tfn`,
   UPDATE_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-update-user/${personId}`,
-  UPDATE_WORKER: (workerSid: string): string => `${SERVICE_BASE_URI}/updateworker/${workerSid}`
+  UPDATE_WORKER: (workerSid: string): string => `${SERVICE_BASE_URI}/updateworker/${workerSid}`,
+  GET_AGGREGATE_QUEUES_TYPE: (aggregateQueueType: string): string => `${CONTACT_MANAGER_BASE_URI}/aggregatequeuestype/${aggregateQueueType}`,
 };

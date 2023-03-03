@@ -25,7 +25,8 @@ export interface AppState {
     profiles: TritonProfile[]
   },
   skillContext: {
-    skills: Skill[]
+    skills: Skill[],
+    skillGroups: SkillGroup[]
   },
   userContext: {
     pingIdentity: PingIdentity,
@@ -96,6 +97,7 @@ export interface Skill {
   [key: string]: any
   ctmSkillId: number,
   ctmSkillDisplayName: string,
+  ctmSkillGroups: SkillGroup[],
   name: string,
   profiles: any[],
   closedMessage: string,
@@ -105,6 +107,12 @@ export interface Skill {
   vhCallTarget: string,
   vhCallerId: string,
   vhThreshold: number
+}
+
+export interface SkillGroup {
+  skillGroupId: number,
+  skillGroupNme: string,
+  skills: Skill[],
 }
 
 export interface TritonProfile {
@@ -126,7 +134,9 @@ export interface TritonProfile {
   row_updt_dtm: string,
   overflow_skill: string,
   activities: Array<object>,
-  callTags: string
+  callTags: string,
+  operating_unit_nme: string,
+  operating_unit_sid: string
 }
 
 export interface ProfilePayload {
@@ -147,7 +157,8 @@ export interface ProfilePayload {
   policy_number_edit_i: boolean,
   voice_mail_transcription_i: boolean,
   click_to_dial_i: boolean,
-  transferQueues: Array<object>
+  transferQueues: Array<object>,
+  aggregateQueues: Array<number>
 }
 
 export interface Activity {
@@ -157,6 +168,16 @@ export interface Activity {
     data?: number[],
     type?: string
   }
+}
+
+export interface AggregateQueue {
+  aggregate_queues_id: number,
+  aggregate_queues_nme: string,
+  aggregate_queues_type: string,
+  owner_type: string,
+  worker_sid: string | null,
+  row_crtn_dtm: string | null,
+  row_updt_dtm: string | null
 }
 
 export interface CallTag {

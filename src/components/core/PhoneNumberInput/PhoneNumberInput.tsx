@@ -71,7 +71,7 @@ export interface PhoneNumberInputProps {
   id: string,
   label: string,
   number: string,
-  onBlur: () => void,
+  onBlur?: () => void,
   showError?: boolean,
   updateValue: (maskedValue: string, unmaskedValue: string, isNumberValid: boolean, e164Number: string) => void,
   icon?: JSX.Element
@@ -122,7 +122,7 @@ const PhoneNumberInput = (props: PhoneNumberInputProps) => {
         let e164Number = "";
         try {
           e164Number = getE164Number(unmaskedValue);
-        // eslint-disable-next-line no-empty
+          // eslint-disable-next-line no-empty
         } catch (e) {}
         updateValue(maskedValue, unmaskedValue, isNumberValid(unmaskedValue, useSevenDigitMask), e164Number);
       }}

@@ -8,6 +8,7 @@ export interface DbWorker {
   activateEp: boolean,
   alternateDid: string,
   directDialNum: string,
+  operatingUnitSid?: string,
   workerSid: string,
   zeroOutEnabled: boolean
   inactiveForwardTo?: string

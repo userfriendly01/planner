@@ -116,7 +116,7 @@ const workerAttributesAfterFormValid = {
   manager_first_name: validFormOptions.manager.manager_first_name,
   manager_last_name: validFormOptions.manager.manager_last_name,
   manager_n_number: validFormOptions.manager.manager_n_number,
-  manager: fetchedUser.manager,
+  manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
   n_number: validFormOptions.nNumber.toLowerCase(),
   office_location_name: fetchedUser.officeName,
   office_location_number: fetchedUser.officeNumber,
@@ -142,6 +142,8 @@ const formattedWorker = {
   sid: rawDbWorker.workerSid,
   skillsDifferent: true
 };
+
+export const validOperatingUnitId = "operatingUnitSid1";
 
 const mockHandleClose = jest.fn();
 const mockSetForm = jest.fn();
@@ -301,7 +303,8 @@ describe("<UserFormButtons />", () => {
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
                 activateEp: false, // false for non-DID workers
-                attributes: createWorkerAttributesAfterFormValid
+                attributes: createWorkerAttributesAfterFormValid,
+                operatingUnitSid: validOperatingUnitId
               });
               expect(mockSetForm).toHaveBeenCalledTimes(2);
               expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
@@ -373,7 +376,8 @@ describe("<UserFormButtons />", () => {
                 attributes: createWorkerAttributesAfterFormValid,
                 alternateDid: validFormState.alternateDid.e164,
                 directDialNum: validFormState.directDialNum.e164,
-                zeroOutEnabled: validFormState.zeroOutEnabled
+                zeroOutEnabled: validFormState.zeroOutEnabled,
+                operatingUnitSid: validOperatingUnitId
               });
               expect(mockSetForm).toHaveBeenCalledTimes(2);
               expect(mockSetForm).toHaveBeenCalledWith({
@@ -441,7 +445,8 @@ describe("<UserFormButtons />", () => {
                 },
                 alternateDid: validFormState.alternateDid.e164,
                 directDialNum: validFormState.directDialNum.e164,
-                zeroOutEnabled: true
+                zeroOutEnabled: true,
+                operatingUnitSid: validOperatingUnitId
               });
               expect(mockSetForm).toHaveBeenCalledTimes(2);
               expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
@@ -505,7 +510,8 @@ describe("<UserFormButtons />", () => {
                   },
                   alternateDid: validFormState.alternateDid.e164,
                   directDialNum: validFormState.directDialNum.e164,
-                  zeroOutEnabled: true
+                  zeroOutEnabled: true,
+                  operatingUnitSid: validOperatingUnitId
                 });
                 expect(mockSetForm).toHaveBeenCalledTimes(2);
                 expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
@@ -570,7 +576,8 @@ describe("<UserFormButtons />", () => {
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
                 activateEp: false, // false for non-DID workers
-                attributes: createWorkerAttributesAfterFormValid
+                attributes: createWorkerAttributesAfterFormValid,
+                operatingUnitSid: validOperatingUnitId
               });
               expect(mockSetForm).toHaveBeenCalledTimes(2);
               expect(mockSetForm).toHaveBeenCalledWith(resetFormAfterAddExpectedAction);
@@ -631,7 +638,8 @@ describe("<UserFormButtons />", () => {
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
                 activateEp: false, // false for non-DID workers
-                attributes: createWorkerAttributesAfterFormValid
+                attributes: createWorkerAttributesAfterFormValid,
+                operatingUnitSid: validOperatingUnitId
               });
               expect(mockSetForm).toHaveBeenCalledTimes(0);
               expect(mockDispatch).toHaveBeenCalledTimes(0);
@@ -665,7 +673,8 @@ describe("<UserFormButtons />", () => {
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
                 activateEp: false, // false for non-DID workers
-                attributes: createWorkerAttributesAfterFormValid
+                attributes: createWorkerAttributesAfterFormValid,
+                operatingUnitSid: validOperatingUnitId
               });
               expect(mockSetForm).toHaveBeenCalledTimes(0);
               expect(mockDispatch).toHaveBeenCalledTimes(0);
@@ -985,6 +994,7 @@ describe("<UserFormButtons />", () => {
               expect(updateUser).toHaveBeenCalledWith(worker.sid, {
                 alternateDid: updateFormState.alternateDid.e164,
                 attributes: updateWorkerAttributesAfterFormValid,
+                operatingUnitSid: validOperatingUnitId,
                 zeroOutEnabled: true
               });
               expect(checkConflictingUsers).toBeCalledTimes(1);
@@ -1069,7 +1079,8 @@ describe("<UserFormButtons />", () => {
                 attributes: updateWorkerAttributesAfterFormValid,
                 alternateDid: validFormState.alternateDid.e164,
                 directDialNum: validFormState.directDialNum.e164,
-                zeroOutEnabled: validFormState.zeroOutEnabled
+                zeroOutEnabled: validFormState.zeroOutEnabled,
+                operatingUnitSid: validOperatingUnitId
               });
               expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
@@ -1126,7 +1137,8 @@ describe("<UserFormButtons />", () => {
                   },
                   alternateDid: validFormState.alternateDid.e164,
                   directDialNum: validFormState.directDialNum.e164,
-                  zeroOutEnabled: validFormState.zeroOutEnabled
+                  zeroOutEnabled: validFormState.zeroOutEnabled,
+                  operatingUnitSid: validOperatingUnitId
                 });
                 expect(mockDispatch).toHaveBeenCalledTimes(2);
                 expect(mockDispatch.mock.calls[0][0]).toEqual({
@@ -1305,7 +1317,8 @@ describe("<UserFormButtons />", () => {
                 attributes: updateWorkerAttributesAfterFormValid,
                 alternateDid: validFormState.alternateDid.e164,
                 directDialNum: validFormState.directDialNum.e164,
-                zeroOutEnabled: validFormState.zeroOutEnabled
+                zeroOutEnabled: validFormState.zeroOutEnabled,
+                operatingUnitSid: validOperatingUnitId
               });
               expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
@@ -1389,7 +1402,8 @@ describe("<UserFormButtons />", () => {
                 attributes: updateWorkerAttributesAfterFormValid,
                 alternateDid: validFormState.alternateDid.e164,
                 directDialNum: validFormState.directDialNum.e164,
-                zeroOutEnabled: validFormState.zeroOutEnabled
+                zeroOutEnabled: validFormState.zeroOutEnabled,
+                operatingUnitSid: validOperatingUnitId
               });
               expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
@@ -1479,7 +1493,8 @@ describe("<UserFormButtons />", () => {
             expect(updateUser).toHaveBeenCalledWith(worker.sid, {
               zeroOutEnabled: false,
               inactiveForwardTo: validFormOptions.inactiveForwardTo,
-              attributes: updateWorkerAttributesAfterFormValid
+              attributes: updateWorkerAttributesAfterFormValid,
+              operatingUnitSid: validOperatingUnitId
             });
             expect(mockSetForm).toHaveBeenCalledTimes(0);
             expect(mockDispatch).toHaveBeenCalledTimes(0);
@@ -1514,7 +1529,8 @@ describe("<UserFormButtons />", () => {
             expect(updateUser).toHaveBeenCalledWith(worker.sid, {
               zeroOutEnabled: false,
               inactiveForwardTo: validFormOptions.inactiveForwardTo,
-              attributes: updateWorkerAttributesAfterFormValid
+              attributes: updateWorkerAttributesAfterFormValid,
+              operatingUnitSid: validOperatingUnitId
             });
             expect(mockSetForm).toHaveBeenCalledTimes(0);
             expect(mockDispatch).toHaveBeenCalledTimes(0);

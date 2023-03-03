@@ -111,7 +111,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       default_skills: form.defaultSkills,
       department_id: form.nNumberFetchedUser.departmentNumber,// need this value otherwise the department_name will not appear in flex insights,
       department_name: form.nNumberFetchedUser.departmentName,
-      did: form.outgoing.e164,
+      did: form.outgoing.e164, //if this is a did user it should be the direct dial num
       email: form.nNumberFetchedUser.email,
       email_address: form.nNumberFetchedUser.email,
       emp_first_name: form.nNumberFetchedUser.firstName,
@@ -122,7 +122,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       manager_first_name: form.manager.value.manager_first_name,
       manager_last_name: form.manager.value.manager_last_name,
       manager_n_number: form.manager.value.manager_n_number,
-      manager: form.nNumberFetchedUser.manager,
+      manager: `${form.manager.value.manager_first_name} ${form.manager.value.manager_last_name}`,
       n_number: form.nNumber.value.toLowerCase(),
       office_location_name: form.nNumberFetchedUser.officeName,
       office_location_number: form.nNumberFetchedUser.officeNumber,
@@ -155,15 +155,19 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       };
     }
 
+    const operatingUnitSid = profiles.find(profile => profile.profile_id === form.profileId.value).operating_unit_sid;
+
     const createUserReqBody = form.directDialNum.value ?
       {
         attributes,
         activateEp: true,
         alternateDid: form.alternateDid.e164,
         directDialNum: form.directDialNum.e164,
+        operatingUnitSid: operatingUnitSid,
         zeroOutEnabled: form.zeroOutEnabled
       } : {
         attributes,
+        operatingUnitSid: operatingUnitSid,
         activateEp: false
       };
 
@@ -264,6 +268,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       saveUser: true
     });
     const attributes: Partial<Worker["attributes"]> = {};
+    let operatingUnitSid: string;
     const nNumberFetchedUser = form.nNumberFetchedUser;
 
     attributes.email = nNumberFetchedUser?.email;
@@ -280,6 +285,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     }
     if (form.profileId.updated) {
       attributes.profile_id = form.profileId.value;
+      operatingUnitSid = profiles.find(profile => profile.profile_id === form.profileId.value).operating_unit_sid;
     }
     if (form.outgoing.updated) {
       attributes.did = form.outgoing.e164;
@@ -322,6 +328,9 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       zeroOutEnabled: form.zeroOutEnabled
     };
 
+    if(operatingUnitSid){
+      payload.operatingUnitSid = operatingUnitSid;
+    }
     if (form.alternateDid.updated) {
       payload.alternateDid = form.alternateDid.e164;
     }
