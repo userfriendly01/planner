@@ -5,13 +5,14 @@ import {
   Permissions,
   getStartupProfiles
 } from "authentication";
+import { APP_ENV } from "../constants";
 
 export const checkIfAdmin = (profileId: number): boolean => {
   return profileId === 0;
 };
 
 export const checkIfLowerEnv = (): boolean => {
-  return ["local", "development", "test", "staging"].includes(process.env.APP_ENV);
+  return ["local", "development", "test", "staging"].includes(APP_ENV);
 };
 
 export const checkIfPO = (nNumber: string): boolean => {

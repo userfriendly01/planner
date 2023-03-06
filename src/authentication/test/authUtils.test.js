@@ -1,7 +1,5 @@
 import {
   checkIfAdmin,
-  checkIfLowerEnv,
-  checkIfPO,
   getAuthenticationProfiles,
   getPermissions,
   getStartups,
@@ -68,21 +66,29 @@ describe("authUtils", () => {
     });
   });
   describe("checkIfLowerEnv", () => {
+    beforeEach(() => {
+      jest.resetModules();
+    });
     test("should return true if APP_ENV=test", () => {
-      process.env.APP_ENV = "test";
+      jest.mock("../../constants", () => ({ APP_ENV: "test" }));
+      const { checkIfLowerEnv } = require("../authUtils");
       expect(checkIfLowerEnv()).toBe(true);
     });
     test("should return false if APP_ENV=production", () => {
-      process.env.APP_ENV = "production";
+      jest.mock("../../constants", () => ({ APP_ENV: "production" }));
+      const { checkIfLowerEnv } = require("../authUtils");
       expect(checkIfLowerEnv()).toBe(false);
     });
     test("should return false if APP_ENV=unknownenv", () => {
-      process.env.APP_ENV = "unknownenv";
+      jest.mock("../../constants", () => ({ APP_ENV: "unknownenv" }));
+      const { checkIfLowerEnv } = require("../authUtils");
       expect(checkIfLowerEnv()).toBe(false);
     });
   });
   describe("checkIfPO", () => {
-    process.env.APP_ENV = "production";
+    jest.resetModules();
+    jest.mock("../../constants", () => ({ APP_ENV: "production" }));
+    const { checkIfPO } = require("../authUtils");
     describe("n# is a GOP PO", () => {
       test("should return true for n0183277", () => {
         expect(checkIfPO("n0183277")).toBe(true);
@@ -100,8 +106,10 @@ describe("authUtils", () => {
       });
     });
     describe("n# is not a GOP PO, but it's a lower environment", () => {
+      jest.resetModules();
+      jest.mock("../../constants", () => ({ APP_ENV: "test" }));
+      const { checkIfPO } = require("../authUtils");
       test("should return true", () => {
-        process.env.APP_ENV = "test";
         expect(checkIfPO("n0288362")).toBe(true);
       });
     });
