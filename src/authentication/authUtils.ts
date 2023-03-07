@@ -5,17 +5,16 @@ import {
   Permissions,
   getStartupProfiles
 } from "authentication";
-import { APP_ENV } from "../constants";
 
 export const checkIfAdmin = (profileId: number): boolean => {
   return profileId === 0;
 };
 
-export const checkIfLowerEnv = (): boolean => {
-  return ["local", "development", "test", "staging"].includes(APP_ENV);
+export const checkIfLowerEnv = (environment: string): boolean => {
+  return ["local", "development", "test", "staging"].includes(environment);
 };
 
-export const checkIfPO = (nNumber: string): boolean => {
+export const checkIfPO = (nNumber: string, environment: string): boolean => {
   const productOwners = [
     "n0138110",
     "n0116796",
@@ -25,7 +24,7 @@ export const checkIfPO = (nNumber: string): boolean => {
     "n0050481"
   ];
 
-  if (checkIfLowerEnv()){
+  if (checkIfLowerEnv(environment)){
     return true;
   }
 

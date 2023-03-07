@@ -16,11 +16,6 @@ const config = {
     // publicPath: "/triton-admin/"
   },
   plugins: [
-    new DefinePlugin({
-      // Only for running the app locally
-      // Environment variables are injected into bamboo builds at deploy time from deployment/manifest-*.yml
-      "process.env.APP_ENV": JSON.stringify(process.env.APP_ENV)
-    }),
     new ESLintPlugin({ failOnWarning: true })
   ],
   module: {

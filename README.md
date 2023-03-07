@@ -35,11 +35,6 @@ npm install
 ```
 
 ### Running the Admin UI Locally
-Use these environment variables:
-```
-export APP_ENV=local
-export NODE_ENV=development
-```
 
 Running locally requires that you also have locally running instances of two other repositories:
 * [cicct-user-gateway](https://github.com/lmigtech/cicct-user-gateway)
