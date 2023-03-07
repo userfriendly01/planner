@@ -9,7 +9,6 @@ applications:
   timeout: 600
   env:
     NODE_ENV: production
-    ENVIRONMENT: dev
   services:
     - everyday-curfew
   blue-green:
