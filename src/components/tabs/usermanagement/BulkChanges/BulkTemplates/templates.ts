@@ -51,7 +51,7 @@ const processCreateTritonUser = async (row: any, state: any) => {
     }
 
     const profile = getTargetProfile(state.profileContext.profiles, body.attributes.profile_id);
-    body.operatingUnitSid = profile.operating_unit_sid;
+    body.operatingUnitSid = profile?.operating_unit_sid;
 
     const res = await createUser(body);
     const workerSid = res.workerSid;
