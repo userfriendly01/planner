@@ -35,7 +35,6 @@ npm install
 ```
 
 ### Running the Admin UI Locally
-
 Running locally requires that you also have locally running instances of two other repositories:
 * [cicct-user-gateway](https://github.com/lmigtech/cicct-user-gateway)
 * [cicct-softphone-service](https://github.com/lmigtech/cicct-softphone-service)
