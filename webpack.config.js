@@ -1,7 +1,5 @@
 const ESLintPlugin = require("eslint-webpack-plugin");
 const path = require("path");
-const webpack = require('webpack');
-const dotenv = require('dotenv');
 
 const resolvePathInSrc = resourceInSrc => {
   return resourceInSrc
