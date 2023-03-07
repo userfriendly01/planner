@@ -22,7 +22,7 @@ describe("profileEntryFormReducer", () => {
         policyNumberEdit: {
           value: false
         },
-        activitiesList: [2,3]
+        activitiesList: [2, 3]
       };
       const action = { type: profileEntryFormActions.RESET_FORM };
       const result = profileEntryFormReducer(initialTestState, action);
@@ -113,12 +113,12 @@ describe("profileEntryFormReducer", () => {
     test("should set activitiesList to payload passed", () => {
       const expectedState = {
         ...initialProfileEntryFormState,
-        activitiesList: [2,3],
+        activitiesList: [2, 3],
         activitiesUpdated: true
       };
       const action = {
         type: profileEntryFormActions.UPDATE_ACTIVITIES_LIST,
-        payload: [2,3]
+        payload: [2, 3]
       };
       const result = profileEntryFormReducer(initialProfileEntryFormState, action);
       expect(result).toStrictEqual(expectedState);
@@ -340,7 +340,9 @@ describe("profileEntryFormReducer", () => {
             ],
             workerSid: null
           }
-        ]
+        ],
+        operating_unit_sid: "123",
+        operating_unit_nme: "hello"
       };
 
       const expectedState = {
@@ -420,7 +422,11 @@ describe("profileEntryFormReducer", () => {
             ctmSkillId: -2,
             ctmSkillDisplayName: "Safeco Underwriting"
           }
-        ]
+        ],
+        operatingUnit: {
+          ou_name: "hello",
+          ou_sid: "123"
+        }
       };
       const action = {
         type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,

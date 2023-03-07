@@ -1,7 +1,7 @@
 import { ProfileEntryFormState } from "components/tabs/profilesettings/ProfileEntryForm/ProfileEntryForm.Interfaces";
 
 export const isProfileFormValid = (form: ProfileEntryFormState): boolean => {
-  if (form.activitiesList.length && form.profileName.valid && form.overflowSkill.valid && ((form.acwDataEntry.value === true && form.callTagsList.length) || (form.acwDataEntry.value === false && !form.callTagsList.length))) {
+  if (form.operatingUnit.ou_name && form.activitiesList.length && form.profileName.valid && form.overflowSkill.valid && ((form.acwDataEntry.value === true && form.callTagsList.length) || (form.acwDataEntry.value === false && !form.callTagsList.length))) {
     return true;
   }
   return false;

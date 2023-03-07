@@ -125,6 +125,7 @@ export const apiPaths = {
   GET_ACTIVITIES: `${CONTACT_MANAGER_BASE_URI}/activities`,
   GET_JOKES: `${SERVICE_BASE_URI}/getJokes`,
   GET_SKILLS: `${SERVICE_BASE_URI}/consolidatedskills`,
+  GET_OU: `${SERVICE_BASE_URI}/operatingunit`,
   GET_WORKERS: `${SERVICE_BASE_URI}/workers`,
   MANAGERS: `${CONTACT_MANAGER_BASE_URI}/managers`,
   OFFICES: `${CONTACT_MANAGER_BASE_URI}/offices`,
