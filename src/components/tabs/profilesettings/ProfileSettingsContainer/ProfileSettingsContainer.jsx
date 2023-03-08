@@ -47,9 +47,10 @@ const ProfileSettingsContainer = () => {
   const [profileSettingsState, setProfileSettingsState] = useState(initialProfileState);
   const [profileModalState, setProfileModalState] = useState(initialProfileModalState);
 
-  const profilesFromContext = useAdminState().profileContext.profiles;
-  const userNNumber = useAdminState().userContext.pingIdentity.sub;
-  const environment = useAdminState().userContext.pingIdentity.environment;
+  const state = useAdminState();
+  const environment = state.userContext.pingIdentity.environment;
+  const loggedInUser = state.userContext.pingIdentity.sub.toLowerCase();
+  const profilesFromContext = state.profileContext.profiles;
 
   const fetchProfileInformation = profileId => {
     myAxios.get(apiPaths.GET_PROFILE_DATA(profileId))
@@ -148,7 +149,7 @@ const ProfileSettingsContainer = () => {
             :
             <SettingsContainer>
               {
-                checkIfPO(userNNumber, environment) ?
+                checkIfPO(loggedInUser, environment) ?
                   <ControlsWrapper>
                     <ControlItem>
                       <CreateProfileButton onClick={createProfileOnClick} data-testid={"create-profile-button"}>
@@ -162,7 +163,7 @@ const ProfileSettingsContainer = () => {
                 environment={environment}
                 profileList={profilesFromContext}
                 setProfileModalState={setProfileModalState}
-                userNNumber={userNNumber}
+                loggedInUser={loggedInUser}
               />
             </SettingsContainer>
         }

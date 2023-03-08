@@ -6,6 +6,21 @@ import {
   getStartupProfiles
 } from "authentication";
 
+const productOwners = [
+  "n0138110", // Keith Teeter
+  "n0116796", // Rebecca Miller
+  "n0088625", // Kimberly Haynes
+  "n0183277", // Jacob Radke
+  "n0196231"  // Michael Wilcox
+];
+
+const bulkAdmins = [
+  ...productOwners,
+  "n0197784", // Anthony Burke
+  "n0149889", // David Kahrer
+  "n0169879"  // Stephanie Miller
+];
+
 export const checkIfAdmin = (profileId: number): boolean => {
   return profileId === 0;
 };
@@ -14,16 +29,15 @@ export const checkIfLowerEnv = (environment: string): boolean => {
   return ["local", "development", "test", "staging"].includes(environment);
 };
 
-export const checkIfPO = (nNumber: string, environment: string): boolean => {
-  const productOwners = [
-    "n0138110",
-    "n0116796",
-    "n0088625",
-    "n0183277",
-    "n0196231",
-    "n0050481"
-  ];
+export const checkIfBulkAdmin = (nNumber: string, environment: string): boolean => {
+  if (checkIfLowerEnv(environment)){
+    return true;
+  }
 
+  return bulkAdmins.includes(nNumber.toLowerCase());
+};
+
+export const checkIfPO = (nNumber: string, environment: string): boolean => {
   if (checkIfLowerEnv(environment)){
     return true;
   }

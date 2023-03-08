@@ -37,7 +37,7 @@ const ProfileSettingsTable = props => {
     environment,
     profileList,
     setProfileModalState,
-    userNNumber
+    loggedInUser
   } = props;
   const setForm = profileEntryFormDispatch();
 
@@ -137,7 +137,7 @@ const ProfileSettingsTable = props => {
                       </TableDataFlex>
                     </CustomTableData>
                     {
-                      checkIfPO(userNNumber, environment) ?
+                      checkIfPO(loggedInUser, environment) ?
                         <CustomTableData>
                           <IconWrapper onClick={editButtonOnClick(profile)} data-testid="edit-button">
                             <Edit fontSize={"inherit"}/>
