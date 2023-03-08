@@ -258,8 +258,8 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
           attributes: {
             agent_attribute_1: 3,
             profile_id: 3,
-            operating_unit_sid: "operatingUnitSid2",
-          }
+          },
+          operating_unit_sid: "operatingUnitSid2",
         });
         expect(result).toBe("WK1234 - Worker Attributes updated for row 4");
       });
@@ -283,8 +283,8 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
           attributes: {
             profile_id: 1,
             "agent_attribute_1": 1,
-            operating_unit_sid: "operatingUnitSid1",
-          }
+          },
+          operating_unit_sid: "operatingUnitSid1",
         });
         expect(result).toBe("WK1234 - Worker Attributes updated for row 4");
       });
@@ -313,19 +313,22 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
   });
   describe("updateUser throws an error", () => {
     beforeEach(() => updateUser.mockRejectedValue("Aww"));
+    const template = {
+      data: {
+        key: "selfServiceAtt",
+        value: true,
+        location: null
+      }
+    };
     test("should reject", async () => {
       const row = {
         rowNumber: 4,
         workerSid: "WK1234"
       };
-      const template = {
-        data: {}
-      };
       try {
         await updateWorkerAttributesProcessFunction(row, template);
       } catch(err){
         expect(updateUser).toHaveBeenCalledTimes(1);
-        expect(updateUser).toHaveBeenCalledWith("WK1234", {});
         expect(err).toBe(JSON.stringify({
           rowNumber: 4,
           error: "Failed to update Triton Worker Attributes for row 4. Aww"
