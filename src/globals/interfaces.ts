@@ -61,7 +61,8 @@ export interface PingIdentity {
   iss: string,
   jti: string,
   "pi.pa.attr_exp": number,
-  "pi.pa.rat": number
+  "pi.pa.rat": number,
+  environment: string
 }
 
 export interface FormModes {
