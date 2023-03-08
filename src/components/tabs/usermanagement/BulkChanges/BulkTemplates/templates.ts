@@ -110,9 +110,11 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
   let body: any = {};
 
   if(key === "profile_id"){
+    const profile = getTargetProfile(state.profileContext.profiles, value);
     body[location] = {
       agent_attribute_1: parseInt(value),
-      profile_id: parseInt(value)
+      profile_id: parseInt(value),
+      operating_unit_sid: profile?.operating_unit_sid,
     };
   } else if(location){
     body[location] = newAttribute;
