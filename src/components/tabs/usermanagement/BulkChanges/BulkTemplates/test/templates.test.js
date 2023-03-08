@@ -32,9 +32,11 @@ describe("CREATE_TRITON_USER", () => {
         rowNumber: 2,
         "Did User": "y",
         attributes: {
+          profile_id: 1,
           n_number: "n0263445",
           did: "+16038518200"
         },
+        operatingUnitSid: "operatingUnitSid1",
         directDialNum: "+16038518200",
         zeroOutEnabled: true
       };
@@ -45,9 +47,11 @@ describe("CREATE_TRITON_USER", () => {
           activateEp: true,
           alternateDid: "+16038518200",
           attributes: {
+            profile_id: 1,
             did: "+16038518200",
             n_number: "n0263445"
           },
+          operatingUnitSid: "operatingUnitSid1",
           directDialNum: "+16038518200",
           zeroOutEnabled: true
         });
@@ -59,8 +63,10 @@ describe("CREATE_TRITON_USER", () => {
         rowNumber: 2,
         "Did User": "n",
         attributes: {
+          profile_id: 1,
           n_number: "n0263445"
-        }
+        },
+        operatingUnitSid: "operatingUnitSid1"
       };
       test("should populate with non DID body", async () => {
         const results = await createTritonProcessFunction(row, initialTestState);
@@ -68,8 +74,10 @@ describe("CREATE_TRITON_USER", () => {
         expect(createUser).toHaveBeenCalledWith({
           activateEp: false,
           attributes: {
+            profile_id: 1,
             n_number: "n0263445"
-          }
+          },
+          operatingUnitSid: "operatingUnitSid1"
         });
         expect(results).toBe("WK123456 created in Triton for n0263445 for row 2");
       });
@@ -81,8 +89,10 @@ describe("CREATE_TRITON_USER", () => {
       rowNumber: 4,
       "Did User": "n",
       attributes: {
+        profile_id: 1,
         n_number: "n0263445"
-      }
+      },
+      operatingUnitSid: "operatingUnitSid1"
     };
     test("should reject with err", async () => {
       try {
@@ -92,8 +102,10 @@ describe("CREATE_TRITON_USER", () => {
         expect(createUser).toHaveBeenCalledWith({
           activateEp: false,
           attributes: {
+            profile_id: 1,
             n_number: "n0263445"
-          }
+          },
+          operatingUnitSid: "operatingUnitSid1"
         });
         expect(err).toBe(JSON.stringify({
           rowNumber: 4,
@@ -110,11 +122,13 @@ describe("CREATE_CALABRIO_QM_USER", () => {
     rowNumber: 2,
     acdId: "WK13248",
     attributes: {
+      profile_id: 1,
       n_number: "n0263445",
       email: "e.mail@lm.com",
       emp_first_name: "Michael",
       emp_last_name: "Scott"
     },
+    operatingUnitSid: "operatingUnitSid1",
     groupId: 109,
     timeZone: "Americas",
     roles: [{ name: "role1" }],
@@ -165,6 +179,7 @@ describe("CREATE_CALABRIO_QM_USER", () => {
         const missingAcdId = {
           ...row,
           attributes: {
+            profile_id: 1,
             ...row.attributes,
             n_number: "n0000000"
           }
@@ -242,8 +257,9 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
           attributes: {
             agent_attribute_1: 3,
-            profile_id: 3
-          }
+            profile_id: 3,
+          },
+          operatingUnitSid: "operatingUnitSid2",
         });
         expect(result).toBe("WK1234 - Worker Attributes updated for row 4");
       });
@@ -251,8 +267,8 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
     describe("location === attributes", () => {
       const template = {
         data: {
-          key: "did",
-          value: "+16038518200",
+          key: "profile_id",
+          value: "1",
           location: "attributes"
         }
       };
@@ -265,8 +281,10 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
         expect(updateUser).toHaveBeenCalledTimes(1);
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
           attributes: {
-            did: "+16038518200"
-          }
+            profile_id: 1,
+            "agent_attribute_1": 1,
+          },
+          operatingUnitSid: "operatingUnitSid1",
         });
         expect(result).toBe("WK1234 - Worker Attributes updated for row 4");
       });
@@ -295,19 +313,22 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
   });
   describe("updateUser throws an error", () => {
     beforeEach(() => updateUser.mockRejectedValue("Aww"));
+    const template = {
+      data: {
+        key: "selfServiceAtt",
+        value: true,
+        location: null
+      }
+    };
     test("should reject", async () => {
       const row = {
         rowNumber: 4,
         workerSid: "WK1234"
       };
-      const template = {
-        data: {}
-      };
       try {
         await updateWorkerAttributesProcessFunction(row, template);
       } catch(err){
         expect(updateUser).toHaveBeenCalledTimes(1);
-        expect(updateUser).toHaveBeenCalledWith("WK1234", {});
         expect(err).toBe(JSON.stringify({
           rowNumber: 4,
           error: "Failed to update Triton Worker Attributes for row 4. Aww"
@@ -328,8 +349,10 @@ describe("UPDATE_USERS_MANAGER", () => {
       const row = {
         rowNumber: 4,
         attributes: {
+          profile_id: 1,
           nNumber: "n0399982"
         },
+        operatingUnitSid: "operatingUnitSid1",
         workerSid: "WK1234"
       };
       const template = {
@@ -367,8 +390,10 @@ describe("UPDATE_USERS_MANAGER", () => {
     const row = {
       rowNumber: 4,
       attributes: {
+        profile_id: 1,
         n_number: "n0000000"
       },
+      operatingUnitSid: "operatingUnitSid1",
       workerSid: "WK1234"
     };
     const template = {
@@ -468,8 +493,10 @@ describe("UPDATE_USERS_MANAGER", () => {
         const row = {
           rowNumber: 4,
           attributes: {
+            profile_id: 1,
             n_number: "n0000000"
           },
+          operatingUnitSid: "operatingUnitSid1",
           workerSid: "WK1234"
         };
         const template = {
