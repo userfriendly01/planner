@@ -17,6 +17,9 @@ import {
   updateTritonUserState
 } from "../BulkUtils";
 import {
+  getTargetProfile
+} from "utils";
+import {
   FIELDS,
   isDidUser
 } from "../BulkTemplates";
@@ -46,6 +49,10 @@ const processCreateTritonUser = async (row: any, state: any) => {
       body.attributes = row.attributes;
       body.activateEp = false;
     }
+
+    const profile = getTargetProfile(state.profileContext.profiles, body.attributes.profile_id);
+    body.operatingUnitSid = profile?.operating_unit_sid;
+
     const res = await createUser(body);
     const workerSid = res.workerSid;
     console.log("TRITON RESPONSE", res);
@@ -105,8 +112,10 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
   if(key === "profile_id"){
     body[location] = {
       agent_attribute_1: parseInt(value),
-      profile_id: parseInt(value)
+      profile_id: parseInt(value),
     };
+    const profile = getTargetProfile(state.profileContext.profiles, value);
+    body.operatingUnitSid = profile?.operating_unit_sid;
   } else if(location){
     body[location] = newAttribute;
   } else {

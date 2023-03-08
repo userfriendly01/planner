@@ -1,5 +1,7 @@
 import {
   checkIfAdmin,
+  checkIfLowerEnv,
+  checkIfBulkAdmin,
   checkIfPO,
   getAuthenticationProfiles,
   getPermissions,
@@ -47,7 +49,7 @@ const startupResponses = [
   [startups.ALOHA_FLOW.name]
 ];
 
-describe("adminUtils", () => {
+describe("authUtils", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     getAuthenticationProfileTemplates.mockReturnValue(authenticationProfileTemplates);
@@ -66,21 +68,71 @@ describe("adminUtils", () => {
       });
     });
   });
+  describe("checkIfLowerEnv", () => {
+    test("should return true if environment=test", () => {
+      expect(checkIfLowerEnv("test")).toBe(true);
+    });
+    test("should return false if APP_ENV=production", () => {
+      expect(checkIfLowerEnv("production")).toBe(false);
+    });
+    test("should return false if APP_ENV=unknownenv", () => {
+      expect(checkIfLowerEnv("unknownenv")).toBe(false);
+    });
+  });
   describe("checkIfPO", () => {
     describe("n# is a GOP PO", () => {
       test("should return true for n0183277", () => {
-        expect(checkIfPO("n0183277")).toBe(true);
+        expect(checkIfPO("n0183277", "production")).toBe(true);
       });
       test("should return true for n0116796", () => {
-        expect(checkIfPO("n0116796")).toBe(true);
+        expect(checkIfPO("n0116796", "production")).toBe(true);
       });
       test("should return true for N0116796", () => {
-        expect(checkIfPO("N0116796")).toBe(true);
+        expect(checkIfPO("N0116796", "production")).toBe(true);
       });
     });
     describe("n# is not a GOP PO", () => {
       test("should return false", () => {
-        expect(checkIfPO("n0288362")).toBe(false);
+        expect(checkIfPO("n0288362", "production")).toBe(false);
+      });
+    });
+    describe("n# is not a GOP PO, but it's a lower environment", () => {
+      test("should return true", () => {
+        expect(checkIfPO("n0288362", "test")).toBe(true);
+      });
+    });
+  });
+  describe("checkIfBulkAdmin", () => {
+    describe("n# is a GOP PO", () => {
+      test("should return true for n0183277", () => {
+        expect(checkIfBulkAdmin("n0183277", "production")).toBe(true);
+      });
+      test("should return true for n0116796", () => {
+        expect(checkIfBulkAdmin("n0116796", "production")).toBe(true);
+      });
+      test("should return true for N0116796 (All CAPS)", () => {
+        expect(checkIfBulkAdmin("N0116796", "production")).toBe(true);
+      });
+    });
+    describe("n# is a Bulk Admin", () => {
+      test("should return true for n0197784", () => {
+        expect(checkIfBulkAdmin("n0197784", "production")).toBe(true);
+      });
+      test("should return true for n0149889", () => {
+        expect(checkIfBulkAdmin("n0149889", "production")).toBe(true);
+      });
+      test("should return true for N0169879 (All CAPS)", () => {
+        expect(checkIfBulkAdmin("N0169879", "production")).toBe(true);
+      });
+    });
+    describe("n# is not a GOP PO or a Bulk Admin and it's a production environment", () => {
+      test("should return false", () => {
+        expect(checkIfBulkAdmin("n0288362", "production")).toBe(false);
+      });
+    });
+    describe("n# is not a GOP PO or a Bulk Admin, but it's a lower environment", () => {
+      test("should return true", () => {
+        expect(checkIfBulkAdmin("n0288362", "test")).toBe(true);
       });
     });
   });
