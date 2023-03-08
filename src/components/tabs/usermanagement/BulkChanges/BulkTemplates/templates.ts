@@ -114,14 +114,13 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
       agent_attribute_1: parseInt(value),
       profile_id: parseInt(value),
     };
+    const profile = getTargetProfile(state.profileContext.profiles, value);
+    body.operatingUnitSid = profile?.operating_unit_sid;
   } else if(location){
     body[location] = newAttribute;
   } else {
     body = newAttribute;
   }
-
-  const profile = getTargetProfile(state.profileContext.profiles, value);
-  body.operatingUnitSid = profile?.operating_unit_sid;
 
   console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", row, body, value);
   try {
