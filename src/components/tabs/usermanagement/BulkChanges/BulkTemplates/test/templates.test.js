@@ -259,7 +259,7 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
             agent_attribute_1: 3,
             profile_id: 3,
           },
-          operating_unit_sid: "operatingUnitSid2",
+          operatingUnitSid: "operatingUnitSid2",
         });
         expect(result).toBe("WK1234 - Worker Attributes updated for row 4");
       });
@@ -284,7 +284,7 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
             profile_id: 1,
             "agent_attribute_1": 1,
           },
-          operating_unit_sid: "operatingUnitSid1",
+          operatingUnitSid: "operatingUnitSid1",
         });
         expect(result).toBe("WK1234 - Worker Attributes updated for row 4");
       });

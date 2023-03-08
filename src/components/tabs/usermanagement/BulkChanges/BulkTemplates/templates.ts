@@ -121,7 +121,7 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
   }
 
   const profile = getTargetProfile(state.profileContext.profiles, value);
-  body.operating_unit_sid = profile?.operating_unit_sid;
+  body.operatingUnitSid = profile?.operating_unit_sid;
 
   console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", row, body, value);
   try {
