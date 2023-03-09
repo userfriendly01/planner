@@ -64,7 +64,12 @@ describe("configUtils.js", ()=>{
     expect(link.download).toBeNull;
   });
   test("Simulate getGraphQLEndpoint", ()=>{
+    const env = useAdminState().userContext.pingIdentity.environment;
     const endpoint = getGraphQLEndpoint();
-    expect(endpoint).toBe("https://molg2ylkqrhtpniyfncvue57ha.appsync-api.us-east-1.amazonaws.com/graphql");
+    const endPointURI = new Map();
+    endPointURI.set("development","https://flyyckd74fauthoxf5fj23ko6m.appsync-api.us-east-1.amazonaws.com/graphql");
+    endPointURI.set("test","https://molg2ylkqrhtpniyfncvue57ha.appsync-api.us-east-1.amazonaws.com/graphql");
+    endPointURI.set("prod", "https://23gxrcju6rfgvlzp6onvg2az5q.appsync-api.us-east-1.amazonaws.com/graphql");
+    expect(endpoint).toBe(endPointURI.get(env));
   });
 });

@@ -1,6 +1,8 @@
 import React from "react";
 import {
-  render
+  fireEvent,
+  render,
+  act
 } from "testUtils";
 import { ComponentControl } from "../../../index";
 
@@ -19,7 +21,7 @@ const ComponentControlProps = {
 
 const renderComponentControl  = (control, value, isBlankFirstValue = true) => {
   return render(
-    <ComponentControl {...ComponentControlProps} control={control} value={value} isBlankFirstValue = {isBlankFirstValue} />
+    <ComponentControl {...ComponentControlProps} control={control} value={value} isBlankFirstValue = {isBlankFirstValue}/>
   );
 };
 
@@ -36,27 +38,34 @@ describe(" <ComponentControl />",()=>{
     jest.clearAllMocks();
   });
   test(" Test timePicker Component",()=>{
-    renderComponentControl("timePicker","testTime");
-    expect(eventOnChange).toBeCalledTimes(0);
+    const { getByLabelText } = renderComponentControl("timePicker","testTime");
+    const timeEvent = getByLabelText("Choose time",{ hidden: true });
+    act(()=>{
+      fireEvent.click(timeEvent);
+    });
+    expect(timeEvent).toBeTruthy();
   });
-  test(" Test timePicker Component",()=>{
-    renderComponentControlNullVal("timePicker");
-    expect(eventOnChange).toBeCalledTimes(0);
+  test(" Test timePicker Component with null value",()=>{
+    const { getByLabelText } = renderComponentControlNullVal("timePicker");
+    const timeEvent = getByLabelText("Choose time",{ hidden: true });
+    act(()=>{
+      fireEvent.click(timeEvent);
+    });
+    expect(timeEvent).toBeTruthy();
   });
   test(" Test default Component",()=>{
     renderComponentControl("default","default");
     expect(eventOnChange).toBeCalledTimes(0);
   });
   test(" Test input Component",()=>{
-    renderComponentControl("input","testInput");
-    expect(eventOnChange).toBeCalledTimes(0);
+    const { getByDisplayValue } = renderComponentControl("input","testInput");
+    const inputEvent = getByDisplayValue("testInput",{ hidden: true });
+    expect(inputEvent).toBeTruthy();
   });
   test(" Test select Component",()=>{
-    renderComponentControl("select","testSelect");
-    expect(eventOnChange).toBeCalledTimes(0);
-  });
-  test(" Test select Component for blank field",()=>{
-    renderComponentControl("select","testSelect", false);
-    expect(eventOnChange).toBeCalledTimes(0);
+    const { getByDisplayValue } = renderComponentControl("select","testSelect");
+    renderComponentControl("select","testSelect2", false);
+    const selectEvent = getByDisplayValue("testSelect",{ hidden: true });
+    expect(selectEvent).toBeTruthy();
   });
 });
