@@ -34,7 +34,7 @@ interface AuthState {
 const authenticationProfiles =()=>{
   const authProfiles = getAdGroupPermissionMapping();
   const authGroups: string[] = [];
-  authProfiles.forEach(item=>{
+  authProfiles?.forEach(item=>{
     if(item.startup.name === "aloha-route" || item.startup.name === "aloha-flow"){
       // eslint-disable-next-line no-empty
       if (item.environments.includes(Environments.PROD) && item.permissionLevel ==="write" ){}
