@@ -10,9 +10,9 @@ import { AlertBarProps } from "./interfaces";
 export const getGraphQLEndpoint = (): string => {
   const env: string = useAdminState().userContext.pingIdentity.environment;
   return {
-    "development": "https://molg2ylkqrhtpniyfncvue57ha.appsync-api.us-east-1.amazonaws.com/graphql",
+    "development": "https://flyyckd74fauthoxf5fj23ko6m.appsync-api.us-east-1.amazonaws.com/graphql",
     "test": "https://molg2ylkqrhtpniyfncvue57ha.appsync-api.us-east-1.amazonaws.com/graphql",
-    "prod": "TBD"
+    "prod": "https://23gxrcju6rfgvlzp6onvg2az5q.appsync-api.us-east-1.amazonaws.com/graphql"
   }[env];
 };
 
