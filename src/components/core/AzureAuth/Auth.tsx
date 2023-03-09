@@ -3,23 +3,12 @@ import React from "react";
 import { UserAgentApplication } from "msal";
 import { LoginError } from "./LoginError";
 import { LoginInProgress } from "./LoginInProgress";
+import {
+  Environments,getAdGroupPermissionMapping
+} from "authentication";
 
 let msalInstance: UserAgentApplication;
 const allDone = "DONE";
-export const PERMISSIONS = {
-  // Read access to flow config in all environments
-  READ_GROUP_FLOW: "gpi-cct-config-flow-read",
-  // Read access to routing config in all environments
-  READ_GROUP_ROUTING: "gpi-cct-config-route-read",
-  // Read-write access to flow config in NON-PRODUCTION environments
-  READ_WRITE_GROUP_FLOW: "gpi-cct-config-flow-readwrite-np",
-  // Read-write access to routing config in NON-PRODUCTION environments
-  READ_WRITE_GROUP_ROUTING: "gpi-cct-config-route-readwrite-np",
-  // Read-write access to flow config in PRODUCTION environments
-  READ_WRITE_GROUP_FLOW_PROD: "gpi-cct-config-flow-readwrite-prod",
-  // Read-write access to routing config in PRODUCTION environments
-  READ_WRITE_GROUP_ROUTING_PROD: "gpi-cct-config-route-readwrite-prod"
-};
 
 interface TokenRequest {
   scopes: string[];
@@ -42,6 +31,20 @@ interface AuthState {
   renewIframe: boolean;
 }
 
+const authenticationProfiles =()=>{
+  const authProfiles = getAdGroupPermissionMapping();
+  const authGroups: string[] = [];
+  authProfiles.forEach(item=>{
+    if(item.startup.name === "aloha-route" || item.startup.name === "aloha-flow"){
+      // eslint-disable-next-line no-empty
+      if (item.environments.includes(Environments.PROD) && item.permissionLevel ==="write" ){}
+      else{
+        authGroups.push(item.adGroup.toLowerCase());
+      }
+    } });
+  return authGroups;
+};
+
 export function authWrapper(
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   WrappedComponent: any
@@ -49,6 +52,7 @@ export function authWrapper(
   return class Auth extends React.Component<AuthProps, AuthState> {
     constructor(props: any) {
       super(props);
+      authenticationProfiles();
       //this.props = props;
       this.state = {
         authenticated: false,
@@ -61,12 +65,7 @@ export function authWrapper(
     acquireToken(tokenRequest: TokenRequest) {
       msalInstance.acquireTokenPopup(tokenRequest)
         .then(response => {
-          this.checkMembership(response.accessToken, this, [
-            PERMISSIONS.READ_GROUP_FLOW,
-            PERMISSIONS.READ_GROUP_ROUTING,
-            PERMISSIONS.READ_WRITE_GROUP_FLOW,
-            PERMISSIONS.READ_WRITE_GROUP_ROUTING
-          ]);
+          this.checkMembership(response.accessToken, this, authenticationProfiles());
         }).catch(err => {
           if(err.message.indexOf("login is already in progress")) {
             console.warn("login already in progress, waiting 2 seconds and trying again");

@@ -4,7 +4,6 @@
     "baseUrl": "./src",
     "esModuleInterop": true,
     "jsx": "react",
-    //"module": "commonjs",
     "noImplicitAny": true,
     "outDir": "./dist/",
     "paths": {

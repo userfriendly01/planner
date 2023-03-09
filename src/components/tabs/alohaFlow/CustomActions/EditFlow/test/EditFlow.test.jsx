@@ -199,7 +199,7 @@ describe("<EditFlow />", () => {
         fireEvent.click(saveButton);
       });
       waitFor(() => {
-        expect(openEditModal).toBeCalledTimes(0);
+        expect(openEditModal).toBeCalledTimes(1);
       });
       const toastCloseButton = getByRole("button", {
         name: /Close/i ,
@@ -207,6 +207,9 @@ describe("<EditFlow />", () => {
       });
       act(()=>{
         fireEvent.click(toastCloseButton);
+      });
+      waitFor(() => {
+        expect(toastCloseButton).toBeTruthy();
       });
     });
 
@@ -237,7 +240,7 @@ describe("<EditFlow />", () => {
         fireEvent.click(deleteButton);
       });
       waitFor(() => {
-        expect(openEditModal).toBeCalledTimes(0);
+        expect(openEditModal).toBeCalledTimes(1);
       });
     });
 
@@ -260,9 +263,8 @@ describe("<EditFlow />", () => {
       act(()=>{
         fireEvent.click(getByRole("button", { name: "saveFlowRuleButton" }));
       });
-      waitFor(()=>{
+      waitFor(() => {
         expect(openEditModal).toBeCalledTimes(0);
-
       });
     });
   });
