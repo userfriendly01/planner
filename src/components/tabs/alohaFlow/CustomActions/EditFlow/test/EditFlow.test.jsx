@@ -208,9 +208,7 @@ describe("<EditFlow />", () => {
       act(()=>{
         fireEvent.click(toastCloseButton);
       });
-      waitFor(() => {
-        expect(toastCloseButton).toBeTruthy();
-      });
+      expect(toastCloseButton).toBeTruthy();
     });
 
     test("Simulate the Close Button", () => {
