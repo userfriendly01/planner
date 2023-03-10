@@ -73,8 +73,11 @@ export function authWrapper(
               this.acquireToken(tokenRequest);
             }, 2000);
           } else {
-          // eslint-disable-next-line no-console
-            console.error(err.message);
+            this.setState({
+              ...this.state,
+              hasError: true,
+              errorMessage: err.errorMessage
+            });
           }
         });
     }
@@ -100,7 +103,6 @@ export function authWrapper(
 
       // if we are inside renewal callback (hash contains access token), do nothing
       if (msalInstance.isCallback(window.location.hash)) {
-        console.info("is a callback");
         this.setState({
           ...this.state,
           renewIframe: true
