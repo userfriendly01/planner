@@ -41,7 +41,9 @@ export interface AppState {
     teams: CalabrioGroup[],
     groups: CalabrioGroup[],
     users: any[],
-    roles: any[]
+    roles: any[],
+    wfmOrg: any[],
+    wfmOptions: any[]
   },
   resettingSkills: false
 }
