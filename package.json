@@ -23,7 +23,6 @@
     "@babel/preset-env": "^7.4.4",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.21.0",
-    "@lmig/phone-number-utils": "1.0.5",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^10.4.8",
     "@testing-library/user-event": "^13.2.1",
