@@ -17,6 +17,14 @@ export const updateCalabrioUser = async (personId: number, payload: any): Promis
   return await myAxios.put(apiPaths.UPDATE_CALABRIO_USER(personId), payload);
 };
 
+export const getWfmOrg = async (): Promise<CalabrioGroup[]> => {
+  return await myAxios.get(apiPaths.GET_CALABRIO_WFM_ORG);
+};
+
+export const getWfmOptions = async (): Promise<CalabrioGroup[]> => {
+  return await myAxios.get(apiPaths.GET_CALABRIO_WFM_OPTIONS);
+};
+
 export const getCalabrioUsers = async (): Promise<any[]> => {
   return await myAxios.get(apiPaths.GET_CALABRIO_AGENTS);
 };
