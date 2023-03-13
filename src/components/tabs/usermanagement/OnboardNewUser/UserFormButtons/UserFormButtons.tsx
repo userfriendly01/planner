@@ -28,8 +28,7 @@ import {
   fetchUser as fetchUserServiceCall,
   getCalabrioUsers,
   updateUser,
-  updateCalabrioUser,
-  getWfmOptions
+  updateCalabrioUser
 } from "services";
 import {
   checkConflictingUsers,
@@ -68,7 +67,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
   const dispatch = useAdminDispatch();
 
   React.useEffect(() => {
-    getWfmOptions();
     const fetchUser = async () => {
       try {
         const fetchedUser = await fetchUserServiceCall(form.nNumber.value);
