@@ -82,7 +82,7 @@ const getCalabrioWfmOrg = async (dispatch: any) => {
     console.log("Calabrio WFM Org", org.data);
     dispatch({
       type: "loadWfmOrg",
-      payload: org.data
+      payload: org.data.organization.businessUnits
     });
   } catch (error) {
     console.error("Failed to fetch calabrio wfm org from service");
@@ -95,7 +95,7 @@ const getCalabrioWfmOptions = async (dispatch: any) => {
     console.log("Calabrio WFM Options", options.data);
     dispatch({
       type: "loadWfmOptions",
-      payload: options.data
+      payload: options.data.organization.businessUnits
     });
   } catch (error) {
     console.error("Failed to fetch calabrio wfm options from service");
