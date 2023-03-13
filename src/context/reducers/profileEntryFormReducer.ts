@@ -133,7 +133,6 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         queuesUpdated: true
       };
     }
-
     case profileEntryFormActions.SET_OPERATING_UINIT:{
       return {
         ...state,

@@ -175,6 +175,25 @@ describe("profileEntryFormReducer", () => {
     });
   });
 
+  describe("SET_OPERATING_UINIT", () => {
+    test("should set ou to payload passed", () => {
+      const expectedState = {
+        ...initialProfileEntryFormState,
+        operatingUnit: {
+          ou_sid: "abc"
+        }
+      };
+      const action = {
+        type: profileEntryFormActions.SET_OPERATING_UINIT,
+        payload: {
+          ou_sid: "abc"
+        }
+      };
+      const result = profileEntryFormReducer(initialProfileEntryFormState, action);
+      expect(result).toStrictEqual(expectedState);
+    });
+  });
+
   describe("UPDATE_CALL_TAGS_LIST", () => {
     test("should set callTagsList to payload passed", () => {
       const expectedState = {
