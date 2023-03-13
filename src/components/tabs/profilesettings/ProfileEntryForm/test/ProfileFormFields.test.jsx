@@ -124,5 +124,13 @@ describe("<ProfileFormFields />", () => {
       });
       expect(mockSetForm).toHaveBeenCalledTimes(1);
     });
+    test("When ou dropdown value is selected, setForm is called", () => {
+      renderComponent();
+      act(() => {
+        const setOperatingUnit = ProfileOperatingUnitField.mock.calls[0][0].setOperatingUnit;
+        setOperatingUnit();
+      });
+      expect(mockSetForm).toHaveBeenCalledTimes(1);
+    });
   });
 });

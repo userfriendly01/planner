@@ -17,7 +17,7 @@ const ProfileOperatingUnitField = (props: ProfileOperatingUnitFieldProps) => {
       getOperatingUnits().then((allOUs: OperatingUnit[])  => {
         setOperatingUnitList(allOUs);
         setOuDropDownOptions(getOperatingUnitDropDownOptions(allOUs));
-      });
+      }).catch(error => console.error(error.msg));
     }
   }, []);
 
