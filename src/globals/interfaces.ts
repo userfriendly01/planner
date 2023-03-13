@@ -41,7 +41,9 @@ export interface AppState {
     teams: CalabrioGroup[],
     groups: CalabrioGroup[],
     users: any[],
-    roles: any[]
+    roles: any[],
+    wfmOrg: any[],
+    wfmOptions: any[]
   },
   resettingSkills: false
 }
@@ -135,7 +137,9 @@ export interface TritonProfile {
   row_updt_dtm: string,
   overflow_skill: string,
   activities: Array<object>,
-  callTags: string
+  callTags: string,
+  operating_unit_nme: string,
+  operating_unit_sid: string
 }
 
 export interface ProfilePayload {

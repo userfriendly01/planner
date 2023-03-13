@@ -37,7 +37,9 @@ export const initialState: AppState = {
     teams: [],
     groups: [],
     users: [],
-    roles: []
+    roles: [],
+    wfmOrg: [],
+    wfmOptions: []
   },
   resettingSkills: false
 };
@@ -74,6 +76,30 @@ export const reducer = (state: AppState, action: Action): AppState => {
         workerContext: {
           ...state.workerContext,
           workers: state.workerContext.workers.concat(action.payload)
+        }
+      };
+    case "loadWorkers":
+      return {
+        ...state,
+        workerContext: {
+          selectedWorkers: state.workerContext.selectedWorkers,
+          workers: action.payload
+        }
+      };
+    case "loadWfmOrg":
+      return {
+        ...state,
+        calabrioContext: {
+          ...state.calabrioContext,
+          wfmOrg: action.payload
+        }
+      };
+    case "loadWfmOptions":
+      return {
+        ...state,
+        calabrioContext: {
+          ...state.calabrioContext,
+          wfmOptions: action.payload
         }
       };
     case "deleteWorker":

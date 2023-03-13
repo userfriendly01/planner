@@ -18,7 +18,10 @@ import {
   setupMockedComponents,
   waitFor
 } from "testUtils";
-import { calabrioTimeZones } from "utils";
+import {
+  calabrioTimeZones,
+  calabrioAllowedRoles 
+} from "utils";
 
 
 jest.mock("../CallRecordingScope", () => ({

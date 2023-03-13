@@ -43,17 +43,20 @@ export const profileList = [
   {
     profile_nme: "test1",
     profile_id: 1,
-    overflow_skill: null
+    overflow_skill: null,
+    operating_unit_sid: "operatingUnitSid1"
   },
   {
     profile_nme: "test2",
     profile_id: 2,
-    overflow_skill: "whateverOverflowSkill"
+    overflow_skill: "whateverOverflowSkill",
+    operating_unit_sid: "operatingUnitSid1"
   },
   {
     profile_nme: "test3",
     profile_id: 3,
-    overflow_skill: "anotherOverflowSkill"
+    overflow_skill: "anotherOverflowSkill",
+    operating_unit_sid: "operatingUnitSid2"
   }
 ];
 
@@ -100,7 +103,7 @@ export const calabrioContext = {
     },
     {
       id: 3,
-      name: "WFM_QM_Agent_NT"
+      name: "WFM_Agent_NT_Dashboards"
     }
   ],
   users: [
@@ -378,11 +381,11 @@ export const mockCallTagOptions = [
 export const mockAggregateQueues = [
   {
     aggregate_queues_id: 4,
-    aggregate_queues_nme: 'Licensed Sales Center',
-    aggregate_queues_type: 'aggregate',
-    owner_type: 'profile',
+    aggregate_queues_nme: "Licensed Sales Center",
+    aggregate_queues_type: "aggregate",
+    owner_type: "profile",
     worker_sid: null,
-    row_crtn_dtm: '',
+    row_crtn_dtm: "",
     row_updt_dtm: null
   }
 ];
@@ -437,7 +440,8 @@ export const initialTestState = {
           extension: "2345",
           profile_id: "12",
           manager_n_number: "n0263786"
-        }
+        },
+        sid: "WK1234"
       },
       {
         attributes: {

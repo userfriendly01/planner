@@ -76,6 +76,23 @@ npm run test
 ```
 
 ## Development Notes
+
+### Bamboo Environment Variables
+Environment Variables can be extracted from deployment/manifest-*.yml using the following legacy Bamboo deployment task command.
+
+YAML and JSON Properties Loader:
+```
+deployment/manifest-${bamboo.forge.environment.key}-us-east-1.yml
+```
+Environment variables can be injected through a legacy Bamboo Pipeline with the following deployment task command.
+
+Script:
+```
+sed -i.bak 's/${APP_ENV}/${bamboo.applications[0].env.APP_ENV}/' dist/admin-ui.js
+rm dist/admin-ui.js.bak
+```
+This environment variable setup would be different if the project were using Bamboo Specs for pipeline configuration.
+
 ### Icons
 Keep icons under 8KB in size in order to ensure they're embedded in the runtime code by Webpack.
 Larger images will break.

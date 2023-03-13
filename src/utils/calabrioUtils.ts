@@ -18,10 +18,14 @@ export const calabrioAllowedRoles = [
   "Agent-Sync Only",
   "No Screen",
   "QM Agent",
-  "WFM_QM_Agent",
-  "WFM_QM_Supervisor_TT",
-  "WFM_QM_Supervisor",
-  "WFM_QM_Agent_NT"
+  "WFM_Agent_TT_Dashboards",
+  "WFM_Supervisor_TT_Dashboards",
+  "WFM_Supervisor_NT_Dashboards",
+  "WFM_Agent_NT_Dashboards",
+  "Live Monitoring",
+  "Recording Access",
+  "EXL_Genpact",
+  "QM Agent_No Live Monitoring"
 ];
 
 //Calabrio doesnt offer an API for this, only PST, MNT, CST, and EST were requested so we hardcoded them here as they are unlikely to change
