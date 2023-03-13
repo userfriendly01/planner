@@ -1,5 +1,5 @@
-import styled from "styled-components";
 import { StyledButton } from "components";
+import styled from "styled-components";
 import { Paper } from "@mui/material";
 
 export const ProgressBarContainer = styled.div`
@@ -43,7 +43,7 @@ export const TextWrapper = styled.div<{styles: any}>`
   padding: 0 50;
 `;
 
-export const ProcessingResultsWrapper = styled(Paper)`
+export const ProcessingResultsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -118,7 +118,7 @@ export const ImportButton = styled(StyledButton)`
   font-weight: bold;
 `;
 
-export const StyledExportButton = styled(StyledButton)<{ styles?: any }>`
+export const Button = styled(StyledButton)<{ styles?: any }>`
   height: 50px;
   font-weight: bold;
   width: ${props => props.styles && props.styles.width ? props.styles.width : "250px"};

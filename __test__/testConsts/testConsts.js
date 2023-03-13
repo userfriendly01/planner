@@ -438,7 +438,8 @@ export const initialTestState = {
           extension: "2345",
           profile_id: "12",
           manager_n_number: "n0263786"
-        }
+        },
+        sid: "WK1234"
       },
       {
         attributes: {

@@ -33,7 +33,12 @@ import {
 } from "context";
 
 const ProfileSettingsTable = props => {
-  const { profileList, loggedInRep, setProfileModalState } = props;
+  const {
+    environment,
+    profileList,
+    setProfileModalState,
+    loggedInUser
+  } = props;
   const setForm = profileEntryFormDispatch();
 
   const editButtonOnClick = profile => event => {
@@ -132,7 +137,7 @@ const ProfileSettingsTable = props => {
                       </TableDataFlex>
                     </CustomTableData>
                     {
-                      checkIfPO(loggedInRep) ?
+                      checkIfPO(loggedInUser, environment) ?
                         <CustomTableData>
                           <IconWrapper onClick={editButtonOnClick(profile)} data-testid="edit-button">
                             <Edit fontSize={"inherit"}/>

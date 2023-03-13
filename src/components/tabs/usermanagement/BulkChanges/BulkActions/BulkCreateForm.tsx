@@ -3,14 +3,18 @@ import {
   SelectionWrapper,
   StepWrapper
 } from "../BulkChanges.Styles";
-import { updateSelectedTemplates } from "../BulkUtils/utils";
-import { getCreateTemplates } from "../BulkUtils/templates";
+import {
+  Template,
+  BulkActionFormProps
+} from "../BulkChanges.Interfaces";
+import { updateSelectedTemplates } from "../BulkUtils";
+import { getCreateTemplates } from "../BulkTemplates";
 import { useAdminState } from "context";
 import React from "react";
 import { Checkbox } from "@mui/material";
 
 
-const BulkCreateForm = (props: any) => {
+const BulkCreateForm = (props: BulkActionFormProps) => {
   const {
     selectedTemplates,
     setSelectedTemplates
@@ -29,7 +33,7 @@ const BulkCreateForm = (props: any) => {
       <SelectionWrapper>
         Twilio
         <Checkbox
-          checked={selectedTemplates.some((t: any) => t.name === "CREATE_TRITON_USER")}
+          checked={selectedTemplates.some((t: Template) => t.name === "CREATE_TRITON_USER")}
           onChange={(event: any) => {
             const checked = event.target.checked;
             updateSelectedTemplates(checked, createTemplates.CREATE_TRITON_USER, selectedTemplates, setSelectedTemplates);
@@ -40,7 +44,7 @@ const BulkCreateForm = (props: any) => {
       <SelectionWrapper>
         Calabrio QM
         <Checkbox
-          checked={selectedTemplates.some((t: any) => t.name === "CREATE_CALABRIO_QM_USER")}
+          checked={selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_QM_USER")}
           onChange={(event: any) => {
             const checked = event.target.checked;
             updateSelectedTemplates(checked, createTemplates.CREATE_CALABRIO_QM_USER, selectedTemplates, setSelectedTemplates);

@@ -41,7 +41,9 @@ export interface AppState {
     teams: CalabrioGroup[],
     groups: CalabrioGroup[],
     users: any[],
-    roles: any[]
+    roles: any[],
+    wfmOrg: any[],
+    wfmOptions: any[]
   },
   resettingSkills: false
 }
@@ -61,7 +63,8 @@ export interface PingIdentity {
   iss: string,
   jti: string,
   "pi.pa.attr_exp": number,
-  "pi.pa.rat": number
+  "pi.pa.rat": number,
+  environment: string
 }
 
 export interface FormModes {
