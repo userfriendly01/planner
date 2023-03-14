@@ -29,10 +29,10 @@ export const updateTritonUserState = async (dispatch: any): Promise<void> => {
  */
 export const updateCalabrioUserState = async (dispatch: any): Promise<void> => {
   try {
-    const agents: any = await getCalabrioUsers();
+    const users: any = await getCalabrioUsers();
     dispatch({
       type: "loadCalabrioUsers",
-      payload: agents.data
+      payload: users.data
     });
   } catch (error) {
     console.error("Failed to update calabrio user state after bulk upload", error);

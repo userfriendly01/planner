@@ -200,10 +200,10 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         checkConflictingUsers(calabrioAttributes, users, roles, teams).then(() => {
           console.log("Calabrio Attributes sent for create user", calabrioAttributes);
           createCalabrioUser(calabrioAttributes).then(() => {
-            getCalabrioUsers().then((agents: any) => {
+            getCalabrioUsers().then((users: any) => {
               dispatch({
                 type: "loadCalabrioUsers",
-                payload: agents.data
+                payload: users.data
               });
             }).catch(err => console.error("Failed to reset state after conflict check & calabrio user add", err));
             setForm({
@@ -368,10 +368,10 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             console.log("Calabrio Attributes sent for update user", calabrioAttributes);
             const calabrioCall = form.calabrioUser.id ? (attributes: any) => updateCalabrioUser(form.calabrioUser.id, attributes) : (attributes: any) => createCalabrioUser(attributes);
             calabrioCall(calabrioAttributes).then(() => {
-              getCalabrioUsers().then((agents: any) => {
+              getCalabrioUsers().then((users: any) => {
                 dispatch({
                   type: "loadCalabrioUsers",
-                  payload: agents.data
+                  payload: users.data
                 });
               }).catch(err => console.error("Failed to reset state after conflict check & calabrio user add", err));
               setForm({ type: userFormActions.RESET_FORM });
