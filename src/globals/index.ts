@@ -120,7 +120,7 @@ export const apiPaths = {
   GET_CALABRIO_USERS: `${SERVICE_BASE_URI}/calabrio-get-agents`,
   GET_CALABRIO_ORG: `${SERVICE_BASE_URI}/calabrio-get-org`,
   GET_CALABRIO_ROLES: `${SERVICE_BASE_URI}/calabrio-get-roles`,
-  GET_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-api/qm-user/${personId}`,
+  GET_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-get-agent/${personId}`,
   GET_PROFILE_DATA: (profileId: string | number): string => `${CONTACT_MANAGER_BASE_URI}/triton/${profileId}`,
   GET_CALL_TAGS_OPTIONS: `${CONTACT_MANAGER_BASE_URI}/workertaskinfooptions`,
   GET_CALL_TAGS: `${CONTACT_MANAGER_BASE_URI}/workertaskinfo`,
