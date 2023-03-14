@@ -52,7 +52,7 @@ export const calabrioTimeZones =  [
 export const formatCalabrioTeams = (groupsArray: CalabrioGroup[]): CalabrioGroup[] => {
   const teams = groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.TEAM);
   return teams.map(team => {
-    delete team.agents;
+    delete team.users;
     return team;
   });
 };
@@ -60,7 +60,7 @@ export const formatCalabrioTeams = (groupsArray: CalabrioGroup[]): CalabrioGroup
 export const formatCalabrioGroups = (groupsArray: CalabrioGroup[]): CalabrioGroup[] => {
   const groups = groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.GROUP);
   return groups.map(group => {
-    delete group.agents;
+    delete group.users;
     return group;
   });
 };

@@ -86,7 +86,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
     const acdId = twilioWorker.sid?.toLowerCase();
     let updated = false;
     const userRecord = users.find(user => user.acdId?.toLowerCase() === acdId) || users.find(user => user.email?.toLowerCase() === email);
-    console.log("User Record Found in Calabrio Agents", userRecord);
+    console.log("User Record Found in Calabrio Users", userRecord);
 
     if(userRecord){
       if(userRecord.adLogin?.toLowerCase() !== `lm\\${form.nNumber.value.toLowerCase()}`){
