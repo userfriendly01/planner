@@ -21,7 +21,7 @@ const axiosMock = new MockAdapter(myAxios);
 const profilesEndpoint = apiPaths.PROFILES;
 const skillsEndpoint = apiPaths.GET_SKILLS;
 const workersEndpoint = apiPaths.GET_WORKERS;
-const calabrioUsersEndpoint = apiPaths.GET_CALABRIO_AGENTS;
+const calabrioUsersEndpoint = apiPaths.GET_CALABRIO_USERS;
 const calabrioOrgEndpoint = apiPaths.getCalabrioOrg;
 const calabrioRolesEndpoint = apiPaths.getCalabrioRoles;
 

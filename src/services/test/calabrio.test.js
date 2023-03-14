@@ -128,10 +128,10 @@ describe("getWfmOptions", () => {
   });
 });
 
-describe("getCalabrioAgents", () => {
+describe("getCalabrioUsers", () => {
   describe("call succeeds", () => {
     const data = { huzzah: "you are winner" };
-    beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_AGENTS).replyOnce(200, data));
+    beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_USERS).replyOnce(200, data));
     test("should resolve with any successful response", done => {
       getCalabrioUsers()
         .then(resolvedValue => {
@@ -143,7 +143,7 @@ describe("getCalabrioAgents", () => {
   });
   describe("call fails", () => {
     const badResponse = { wahh: "boo" };
-    beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_AGENTS).replyOnce(500, badResponse));
+    beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_USERS).replyOnce(500, badResponse));
     test("should reject with error", done => {
       getCalabrioUsers().catch(rejectedVal => {
         expect(axiosMock.history.get.length).toEqual(1);

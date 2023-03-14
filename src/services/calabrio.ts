@@ -26,7 +26,7 @@ export const getWfmOptions = async (): Promise<CalabrioGroup[]> => {
 };
 
 export const getCalabrioUsers = async (): Promise<any[]> => {
-  return await myAxios.get(apiPaths.GET_CALABRIO_AGENTS);
+  return await myAxios.get(apiPaths.GET_CALABRIO_USERS);
 };
 
 export const getCalabrioOrg = async (): Promise<any[]> => {
