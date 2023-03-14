@@ -48,7 +48,7 @@ export interface CalabrioGroup {
   parentGroupId: number,
   parentGroupName: string,
   groupLevel: string,
-  agents?: CalabrioUser[]
+  users?: CalabrioUser[]
 }
 export interface CalabrioGroupLevel {
   GROUP: string,
