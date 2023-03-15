@@ -3,7 +3,8 @@ import {
   Activity,
   Skill,
   CallTag,
-  CallTagOptions
+  CallTagOptions,
+  OperatingUnit
 } from "globals";
 
 export interface ProfileEntryFormProps {
@@ -51,29 +52,34 @@ export interface ProfileCallTagsSelectFieldProps {
 
 export interface ProfileEntryFormState {
   [index: string]: any,
-  profileId: number | null,
-  formMode: string,
-  profileName: FieldState,
-  overflowSkill: FieldState,
   activitiesList: Activity[],
-  callTagsList: CallTag[],
-  callTagOptions: CallTagOptions[],
-  autoAnswered: FieldState,
-  inboundRecorded: FieldState,
-  outboundRecorded: FieldState,
-  acwOption: FieldState,
-  manualRecorded: FieldState,
   acwDataEntry: FieldState,
-  manualRecordedInbound: FieldState,
+  acwOption: FieldState,
   agentAssistedPay: FieldState,
+  autoAnswered: FieldState,
+  callTagOptions: CallTagOptions[],
+  callTagsList: CallTag[],
+  clickToDial: FieldState,
+  formMode: string,
+  inboundRecorded: FieldState,
+  manualRecorded: FieldState,
+  manualRecordedInbound: FieldState,
+  operatingUnit: OperatingUnit,
+  outboundRecorded: FieldState,
+  overflowSkill: FieldState,
   paymentProcessing: FieldState,
   policyNumberEdit: FieldState,
+  profileId: number | null,
+  profileName: FieldState,
+  transferQueues: Skill[],
   voiceMailTranscription: FieldState,
-  clickToDial: FieldState,
-  transferQueues: Skill[]
 }
 
 export interface ToggleFormField {
   fieldKey: string,
   label: string
+}
+
+export interface ProfileOperatingUnitFieldProps {
+  setOperatingUnit: (ou: OperatingUnit) => void
 }

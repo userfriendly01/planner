@@ -8,11 +8,12 @@ import {
   profileEntryFormState
 } from "context";
 import {
-  ProfileNameTextField,
-  ProfileActivitiesSelectField,
-  ProfileQueuesSelectField,
-  ProfileCallTagsSelectField,
   OverflowSkillTextField,
+  ProfileActivitiesSelectField,
+  ProfileCallTagsSelectField,
+  ProfileNameTextField,
+  ProfileOperatingUnitField,
+  ProfileQueuesSelectField,
   StyledButton
 } from "components";
 import {
@@ -29,6 +30,7 @@ jest.mock("components", () => ({
   __esModule: true,
   ProfileNameTextField: jest.fn(),
   ProfileActivitiesSelectField: jest.fn(),
+  ProfileOperatingUnitField: jest.fn(),
   ProfileQueuesSelectField: jest.fn(),
   ProfileCallTagsSelectField: jest.fn(),
   OverflowSkillTextField: jest.fn(),
@@ -55,6 +57,7 @@ describe("<ProfileFormFields />", () => {
       ProfileNameTextField,
       ProfileActivitiesSelectField,
       ProfileCallTagsSelectField,
+      ProfileOperatingUnitField,
       ProfileQueuesSelectField,
       OverflowSkillTextField,
       FormControlLabel,
@@ -79,6 +82,7 @@ describe("<ProfileFormFields />", () => {
       expect(rendered.container).toHaveTextContent(/^ProfileNameTextField/i);
       expectMockedComponent(rendered, { OverflowSkillTextField });
       expectMockedComponent(rendered, { ProfileActivitiesSelectField });
+      expectMockedComponent(rendered, { ProfileOperatingUnitField });
       expectMockedComponent(rendered, { ProfileQueuesSelectField });
       expectMockedComponent(rendered, { ProfileCallTagsSelectField });
     });
@@ -117,6 +121,14 @@ describe("<ProfileFormFields />", () => {
       act(() => {
         const setCallTagsList = ProfileCallTagsSelectField.mock.calls[0][0].setCallTagsList;
         setCallTagsList();
+      });
+      expect(mockSetForm).toHaveBeenCalledTimes(1);
+    });
+    test("When ou dropdown value is selected, setForm is called", () => {
+      renderComponent();
+      act(() => {
+        const setOperatingUnit = ProfileOperatingUnitField.mock.calls[0][0].setOperatingUnit;
+        setOperatingUnit();
       });
       expect(mockSetForm).toHaveBeenCalledTimes(1);
     });

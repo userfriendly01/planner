@@ -53,7 +53,10 @@ describe("isProfileFormValid", () => {
       profileName: { valid: true },
       overflowSkill: { valid: true },
       acwDataEntry: { value: false },
-      callTagsList: []
+      callTagsList: [],
+      operatingUnit: {
+        ou_name: "nothing"
+      }
     };
     const result = isProfileFormValid(form);
     expect(result).toBe(true);
@@ -68,7 +71,10 @@ describe("isProfileFormValid", () => {
         options_id: 1,
         wrkr_tsk_info_nme: "Negotiation Type",
         wrkr_tsk_info_id: 3
-      }]
+      }],
+      operatingUnit: {
+        ou_name: "nothing"
+      }
     };
     const result = isProfileFormValid(form);
     expect(result).toBe(true);
@@ -80,7 +86,10 @@ describe("isProfileFormValid", () => {
       profileName: { valid: true },
       overflowSkill: { valid: true },
       acwDataEntry: { value: false },
-      callTagsList: []
+      callTagsList: [],
+      operatingUnit: {
+        ou_name: "nothing"
+      }
     };
     const result = isProfileFormValid(form);
     expect(result).toBe(true);
@@ -91,7 +100,10 @@ describe("isProfileFormValid", () => {
       profileName: { valid: false },
       overflowSkill: { valid: true },
       acwDataEntry: { value: false },
-      callTagsList: []
+      callTagsList: [],
+      operatingUnit: {
+        ou_name: "nothing"
+      }
     };
     const result = isProfileFormValid(form);
     expect(result).toBe(false);
@@ -102,7 +114,10 @@ describe("isProfileFormValid", () => {
       profileName: { valid: true },
       overflowSkill: { valid: false },
       acwDataEntry: { value: false },
-      callTagsList: []
+      callTagsList: [],
+      operatingUnit: {
+        ou_name: "nothing"
+      }
     };
     const result = isProfileFormValid(form);
     expect(result).toBe(false);
@@ -113,7 +128,10 @@ describe("isProfileFormValid", () => {
       profileName: { valid: true },
       overflowSkill: { valid: false },
       acwDataEntry: { value: false },
-      callTagsList: []
+      callTagsList: [],
+      operatingUnit: {
+        ou_name: "nothing"
+      }
     };
     const result = isProfileFormValid(form);
     expect(result).toBe(false);
@@ -124,7 +142,10 @@ describe("isProfileFormValid", () => {
       profileName: { valid: true },
       overflowSkill: { valid: true },
       acwDataEntry: { value: true },
-      callTagsList: []
+      callTagsList: [],
+      operatingUnit: {
+        ou_name: "nothing"
+      }
     };
     const result = isProfileFormValid(form);
     expect(result).toBe(false);
@@ -139,7 +160,10 @@ describe("isProfileFormValid", () => {
         options_id: 1,
         wrkr_tsk_info_nme: "Negotiation Type",
         wrkr_tsk_info_id: 3
-      }]
+      }],
+      operatingUnit: {
+        ou_name: "nothing"
+      }
     };
     const result = isProfileFormValid(form);
     expect(result).toBe(false);
