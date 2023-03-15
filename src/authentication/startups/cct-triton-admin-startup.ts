@@ -3,6 +3,8 @@ import { apiPaths } from "globals";
 import {
   getManagers as getManagersServiceCall,
   getOffices as getOfficesServiceCall,
+  getWfmOptions,
+  getWfmOrg,
   getCalabrioUsers as getCalabrioUsersServiceCall,
   getCalabrioRoles as getCalabrioRolesServiceCall,
   getCalabrioOrg as getCalabrioOrgServiceCall
@@ -46,11 +48,11 @@ const getOffices = async (dispatch: any) => {
 
 const getCalabrioUsers = async (dispatch: any) => {
   try {
-    const agents: any = await getCalabrioUsersServiceCall();
-    console.log("Calabrio Agents", agents.data);
+    const users: any = await getCalabrioUsersServiceCall();
+    console.log("Calabrio Users", users);
     dispatch({
       type: "loadCalabrioUsers",
-      payload: agents.data
+      payload: users.data
     });
   } catch (error) {
     console.error("Failed to fetch calabrio org from service");
@@ -74,6 +76,31 @@ const getCalabrioOrg = async (dispatch: any) => {
   }
 };
 
+const getCalabrioWfmOrg = async (dispatch: any) => {
+  try {
+    const org: any = await getWfmOrg();
+    console.log("Calabrio WFM Org", org);
+    dispatch({
+      type: "loadWfmOrg",
+      payload: org.data.organization.businessUnits
+    });
+  } catch (error) {
+    console.error("Failed to fetch calabrio wfm org from service");
+  }
+};
+
+const getCalabrioWfmOptions = async (dispatch: any) => {
+  try {
+    const options: any = await getWfmOptions();
+    console.log("Calabrio WFM Options", options);
+    dispatch({
+      type: "loadWfmOptions",
+      payload: options.data.organization.businessUnits
+    });
+  } catch (error) {
+    console.error("Failed to fetch calabrio wfm options from service");
+  }
+};
 const getCalabrioRoles = async (dispatch: any) => {
   try {
     const roles: any = await getCalabrioRolesServiceCall();
@@ -155,6 +182,8 @@ export const runTritonAdminStartup = (dispatch: any) => {
     getSkills(dispatch),
     getCalabrioUsers(dispatch),
     getCalabrioOrg(dispatch),
-    getCalabrioRoles(dispatch)
+    getCalabrioRoles(dispatch),
+    getCalabrioWfmOptions(dispatch),
+    getCalabrioWfmOrg(dispatch)
   ]);
 };

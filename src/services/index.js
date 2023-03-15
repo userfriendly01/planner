@@ -1,4 +1,6 @@
+export * from "./aggregateQueues";
 export * from "./calabrio";
+export * from "./callTags";
 export * from "./checkExtension";
 export * from "./createUser";
 export * from "./deleteUser";
@@ -7,10 +9,8 @@ export * from "./fetchUser";
 export * from "./manager";
 export * from "./message";
 export * from "./office";
+export * from "./operatingUnits";
+export * from "./profile";
+export * from "./skillgroup";
 export * from "./tfnActivation";
 export * from "./updateUser";
-export * from "./profile";
-export * from "./callTags";
-export * from "./skillgroup";
-export * from "./aggregateQueues";
-

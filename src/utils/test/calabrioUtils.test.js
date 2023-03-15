@@ -19,24 +19,24 @@ const orgPayload = [
   {
     name: "Group 1",
     groupLevel: "GROUP",
-    agents: [
-      "agent1",
-      "agent2",
-      "agent3"
+    users: [
+      "user1",
+      "user2",
+      "user3"
     ]
   },
   {
     name: "Team 1",
     groupLevel: "TEAM",
-    agents: [
-      "agent1",
-      "agent2"
+    users: [
+      "user1",
+      "user2"
     ]
   },
   {
     name: "Team 2",
     groupLevel: "TEAM",
-    agents: []
+    users: []
   },
   {
     name: "Team 3",

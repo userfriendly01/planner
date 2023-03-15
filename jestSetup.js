@@ -32,12 +32,16 @@ jest.mock("services", () => ({
   deleteUser: jest.fn(),
   editManager: jest.fn(),
   fetchUser: jest.fn(),
+  getAggregateQueuesType: jest.fn(),
   getCalabrioOrg: jest.fn(),
   getCalabrioRoles: jest.fn(),
   getCalabrioUser: jest.fn(),
   getCalabrioUsers: jest.fn(),
-  getOffices: jest.fn(),
+  getCallTagOptions: jest.fn(),
+  getCallTags: jest.fn(),
   getManagers: jest.fn(),
+  getOffices: jest.fn(),
+  getOperatingUnits: jest.fn(),
   getTfn: jest.fn(),
   insertDirectory: jest.fn(),
   updateCalabrioUser: jest.fn(),
@@ -45,8 +49,5 @@ jest.mock("services", () => ({
   updateDirectory: jest.fn(),
   updateFlashMessage: jest.fn(),
   updateTfn: jest.fn(),
-  updateUser: jest.fn(),
-  getCallTagOptions: jest.fn(),
-  getCallTags: jest.fn(),
-  getAggregateQueuesType: jest.fn()
+  updateUser: jest.fn()
 }));

@@ -41,7 +41,9 @@ export interface AppState {
     teams: CalabrioGroup[],
     groups: CalabrioGroup[],
     users: any[],
-    roles: any[]
+    roles: any[],
+    wfmOrg: any[],
+    wfmOptions: any[]
   },
   resettingSkills: false
 }
@@ -271,4 +273,9 @@ export interface TableStateProps {
     endingUserIndex: number | null
   },
   filteredList: any[]
+}
+
+export interface OperatingUnit {
+  ou_sid: string,
+  ou_name: string
 }

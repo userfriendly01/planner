@@ -223,7 +223,7 @@ describe("reducer", () => {
         },
         {
           groupLevel: "TEAM",
-          agents: [
+          users: [
             {
               firstName: "Faith",
               lastName: "Cuneo"
@@ -246,7 +246,9 @@ describe("reducer", () => {
           groupLevel: "TENANT"
         },
         users: [],
-        roles: []
+        roles: [],
+        wfmOptions: [],
+        wfmOrg: []
       };
       const result = reducer(initialState, action);
       expect(result.calabrioContext).toEqual(expectedResults);
@@ -269,7 +271,9 @@ describe("reducer", () => {
         groups: [],
         tenant: {},
         users: [],
-        roles: []
+        roles: [],
+        wfmOptions: [],
+        wfmOrg: []
       };
       const result = reducer(initialState, action);
       expect(result.calabrioContext).toEqual(expectedResults);
@@ -296,7 +300,9 @@ describe("reducer", () => {
         groups: [],
         tenant: {},
         users: payload,
-        roles: []
+        roles: [],
+        wfmOptions: [],
+        wfmOrg: []
       };
       const result = reducer(initialState, action);
       expect(result.calabrioContext).toEqual(expectedResults);
@@ -320,6 +326,46 @@ describe("reducer", () => {
       };
       const result = reducer(initialState, action);
       expect(result.calabrioContext.roles).toEqual(payload);
+    });
+  });
+  describe("loadWfmOrg", () => {
+    test("should initialize a map from the offices map sent in", () => {
+      const payload = [
+        {
+          id: 1,
+          name: "Administrator"
+        },
+        {
+          id: 2,
+          name: "Agent"
+        }
+      ];
+      const action = {
+        type: "loadWfmOrg",
+        payload
+      };
+      const result = reducer(initialState, action);
+      expect(result.calabrioContext.wfmOrg).toEqual(payload);
+    });
+  });
+  describe("loadWfmOptions", () => {
+    test("should initialize a map from the offices map sent in", () => {
+      const payload = [
+        {
+          id: 1,
+          name: "Administrator"
+        },
+        {
+          id: 2,
+          name: "Agent"
+        }
+      ];
+      const action = {
+        type: "loadWfmOptions",
+        payload
+      };
+      const result = reducer(initialState, action);
+      expect(result.calabrioContext.wfmOptions).toEqual(payload);
     });
   });
   describe("loadProfiles", () => {
