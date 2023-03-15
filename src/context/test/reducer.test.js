@@ -223,7 +223,7 @@ describe("reducer", () => {
         },
         {
           groupLevel: "TEAM",
-          agents: [
+          users: [
             {
               firstName: "Faith",
               lastName: "Cuneo"

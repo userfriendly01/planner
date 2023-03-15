@@ -3,7 +3,8 @@ import {
 } from "components/tabs/profilesettings/ProfileEntryForm/ProfileEntryForm.Interfaces";
 import {
   Action,
-  formModes
+  formModes,
+  OperatingUnit
 } from "globals";
 import {
   formatProfileBooleanDataTrueFalse,
@@ -12,14 +13,15 @@ import {
 
 export const profileEntryFormActions = {
   RESET_FORM: "RESET_FORM",
-  TOGGLE: "TOGGLE",
+  SET_OPERATING_UINIT: "SET_OPERATING_UINIT",
+  SET_OVERFLOW_SKILL: "SET_OVERFLOW_SKILL",
   SET_PROFILE_ID: "SET_PROFILE_ID",
   SET_PROFILE_NAME: "SET_PROFILE_NAME",
-  SET_OVERFLOW_SKILL: "SET_OVERFLOW_SKILL",
-  UPDATE_TRANSFER_QUEUES: "UPDATE_TRANSFER_QUEUES",
+  SET_UPDATE_PROFILE_FORM_STATE: "SET_UPDATE_PROFILE_FORM_STATE",
+  TOGGLE: "TOGGLE",
   UPDATE_ACTIVITIES_LIST: "UPDATE_ACTIVITIES_LIST",
   UPDATE_CALL_TAGS_LIST: "UPDATE_CALL_TAGS_LIST",
-  SET_UPDATE_PROFILE_FORM_STATE: "SET_UPDATE_PROFILE_FORM_STATE"
+  UPDATE_TRANSFER_QUEUES: "UPDATE_TRANSFER_QUEUES"
 };
 
 export const initialProfileEntryFormState: ProfileEntryFormState = {
@@ -72,7 +74,8 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
     value: "",
     valid: false
   },
-  transferQueues: []
+  transferQueues: [],
+  operatingUnit: {} as OperatingUnit
 };
 
 export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Action): ProfileEntryFormState => {
@@ -130,6 +133,13 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         queuesUpdated: true
       };
     }
+    case profileEntryFormActions.SET_OPERATING_UINIT:{
+      return {
+        ...state,
+        operatingUnit: action.payload
+      };
+    }
+
     case profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE: {
       const profile = action.payload.profile;
 
@@ -155,7 +165,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
       const transferQueues = profile.aggregateQueues.map((queue: { aggregate_queues_id: number; aggregate_queues_nme: string; aggregate_queues_type: string; queues: { skill_id: number; }[] }) => {
         return {
           // Aggregate queues need to be set to a negative ID in order to not clash with single transfer queues / skills
-          ctmSkillId: queue.aggregate_queues_type === 'aggregate' ? -Math.abs(queue.aggregate_queues_id) : queue.queues[0].skill_id,
+          ctmSkillId: queue.aggregate_queues_type === "aggregate" ? -Math.abs(queue.aggregate_queues_id) : queue.queues[0].skill_id,
           ctmSkillDisplayName: queue.aggregate_queues_nme
         };
       });
@@ -186,7 +196,11 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
           value: profile.profile_nme,
           valid: true
         },
-        transferQueues
+        transferQueues,
+        operatingUnit: {
+          ou_name: profile.operating_unit_nme,
+          ou_sid: profile.operating_unit_sid
+        }
       };
     }
     default:

@@ -48,11 +48,11 @@ const getOffices = async (dispatch: any) => {
 
 const getCalabrioUsers = async (dispatch: any) => {
   try {
-    const agents: any = await getCalabrioUsersServiceCall();
-    console.log("Calabrio Agents", agents.data);
+    const users: any = await getCalabrioUsersServiceCall();
+    console.log("Calabrio Users", users);
     dispatch({
       type: "loadCalabrioUsers",
-      payload: agents.data
+      payload: users.data
     });
   } catch (error) {
     console.error("Failed to fetch calabrio org from service");
@@ -79,7 +79,7 @@ const getCalabrioOrg = async (dispatch: any) => {
 const getCalabrioWfmOrg = async (dispatch: any) => {
   try {
     const org: any = await getWfmOrg();
-    console.log("Calabrio WFM Org", org.data);
+    console.log("Calabrio WFM Org", org);
     dispatch({
       type: "loadWfmOrg",
       payload: org.data.organization.businessUnits
@@ -92,7 +92,7 @@ const getCalabrioWfmOrg = async (dispatch: any) => {
 const getCalabrioWfmOptions = async (dispatch: any) => {
   try {
     const options: any = await getWfmOptions();
-    console.log("Calabrio WFM Options", options.data);
+    console.log("Calabrio WFM Options", options);
     dispatch({
       type: "loadWfmOptions",
       payload: options.data.organization.businessUnits

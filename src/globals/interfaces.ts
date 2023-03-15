@@ -280,3 +280,7 @@ export interface TableStateProps {
   },
   filteredList: any[]
 }
+export interface OperatingUnit {
+  ou_sid: string,
+  ou_name: string
+}

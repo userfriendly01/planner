@@ -474,3 +474,14 @@ export const initialTestState = {
   calabrioContext,
   resettingSkills: false
 };
+
+export const mockOperatingUnits = [
+  {
+    ou_name: "testname",
+    ou_sid: "testsid"
+  },
+  {
+    ou_name: "testname1",
+    ou_sid: "testsid1"
+  }
+];

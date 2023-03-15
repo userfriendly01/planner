@@ -268,7 +268,11 @@ describe("profileUtils", () => {
           ctmSkillId: -10,
           ctmSkillDisplayName: "Licensed Sales Center"
         }
-      ]
+      ],
+      operatingUnit: {
+        ou_sid: "123",
+        ou_name: "hello"
+      }
     };
 
     const expected = {
@@ -293,6 +297,8 @@ describe("profileUtils", () => {
       click_to_dial_i: false,
       manual_record_inbound_i: true,
       manual_recorded_i: false,
+      operating_unit_nme: "hello",
+      operating_unit_sid: "123",
       otbnd_recorded_i: true,
       overflow_skill: "OverflowTestSKill",
       pmt_prcsg_i: true,
@@ -418,7 +424,11 @@ describe("profileUtils", () => {
           ctmSkillDisplayName: "Licensed Sales Center"
         }
       ],
-      queuesUpdated: true
+      queuesUpdated: true,
+      operatingUnit: {
+        ou_name: "hello",
+        ou_sid: "123"
+      }
     };
 
     const expected = {
@@ -460,8 +470,10 @@ describe("profileUtils", () => {
           skill_nme: "Gold"
         }
       ],
-      voice_mail_transcription_i: false
-    }
+      voice_mail_transcription_i: false,
+      operating_unit_sid: "123",
+      operating_unit_nme: "hello"
+    };
 
     test("should return a formatted call tag with one underscore", () => {
       expect(createProfilePayload(form)).toStrictEqual(expected);

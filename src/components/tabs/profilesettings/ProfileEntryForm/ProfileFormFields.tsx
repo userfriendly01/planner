@@ -2,7 +2,10 @@ import React from "react";
 import {
   ToggleFormField
 } from "./ProfileEntryForm.Interfaces";
-import { formModes } from "globals";
+import {
+  formModes,
+  OperatingUnit
+} from "globals";
 import {
   FormControlsContainer,
   FormControlsPane,
@@ -24,6 +27,7 @@ import {
   ProfileActivitiesSelectField,
   ProfileCallTagsSelectField,
   ProfileQueuesSelectField,
+  ProfileOperatingUnitField,
   OverflowSkillTextField
 } from "components";
 
@@ -90,9 +94,19 @@ const ProfileFormFields = () => {
     <FormControlsContainer>
       <FormControlsPane>
         {
-          form.formMode === formModes.INSERT ? "" :  <Label>Profile ID: { form.profileId }</Label>
+          form.formMode === formModes.INSERT ? "" :  <Label>Profile ID: { form.profileId } <br/> Operating Unit: { form.operatingUnit.ou_name }</Label>
         }
         <ProfileNameTextField label="Profile Name *" />
+
+        {
+          form.formMode === formModes.INSERT ? <ProfileOperatingUnitField  setOperatingUnit={(ou: OperatingUnit) => {
+            setForm({
+              type: profileEntryFormActions.SET_OPERATING_UINIT,
+              payload: ou
+            });
+          } }/> : ""
+        }
+
         {
           leftToggleControls.map((control, index) => (
             <ToggleContainer key={index}>
@@ -143,7 +157,7 @@ const ProfileFormFields = () => {
         }
       </FormControlsPane>
       <RightColumn>
-        <div style={form.formMode === formModes.INSERT ? { height: "95px" } : { height: "125px" }}></div>
+        <div style={form.formMode === formModes.INSERT ? { height: "159px" } : { height: "149px" }}></div>
         {
           rightToggleControls.map((control, index) => (
             <ToggleContainer key={index}>
