@@ -1,4 +1,3 @@
-import NavTabs from "../NavTabs";
 import {
   useAdminState
 } from "context";
@@ -9,6 +8,8 @@ import {
   setupMockedComponents,
   tabs
 } from "testUtils";
+import NavTabs from "../NavTabs";
+import { getAzureSPAClientId } from "utils";
 import {
   Tab, Tabs, Typography
 } from "@mui/material";
@@ -18,13 +19,21 @@ jest.mock("@mui/material", () => ({
   Tabs: jest.fn(),
   Typography: jest.fn()
 }));
-
+jest.mock("authentication", () => ({
+  getTabs: jest.requireActual("authentication").getTabs
+}));
+jest.mock("components", () => ({
+  CallflowManagementWrapper: jest.fn(),
+  ManagementWrapper: jest.fn(),
+  ProfileSettingsContainer: jest.fn(),
+  AlohaFlowContainer: jest.fn(),
+  AlohaRoutingContainer: jest.fn()
+}));
 jest.mock("context", () => ({
   useAdminState: jest.fn()
 }));
-
-jest.mock("authentication", () => ({
-  getTabs: jest.requireActual("authentication").getTabs
+jest.mock("utils", () => ({
+  getAzureSPAClientId: jest.fn()
 }));
 
 const state = {
@@ -75,6 +84,7 @@ describe("<NavTabs />", () => {
     expect(tabs.TRITON_CALL_FLOW_MANAGEMENT.component).toHaveBeenCalledTimes(1);
     expect(tabs.ALOHA_CALL_FLOW_MANAGEMENT.component).toHaveBeenCalledTimes(1);
     expect(tabs.ALOHA_ROUTING_RULES.component).toHaveBeenCalledTimes(0);
+    expect(getAzureSPAClientId).toBeCalled();
   });
 
   test("when we click on the 'Call Flow Management' link, only CallflowManagementWrapper should be visible", () => {

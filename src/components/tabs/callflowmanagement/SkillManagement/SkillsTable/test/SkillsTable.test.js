@@ -1,5 +1,6 @@
 import React from "react";
 import SkillsTable from "../SkillsTable";
+
 import {
   CustomTableHeader,
   CustomTableRow,
@@ -36,6 +37,16 @@ jest.mock("@mui/material", () => ({
   Tab: jest.fn(),
   Tooltip: jest.fn(),
   Divider: jest.fn()
+}));
+
+jest.mock("@mui/x-data-grid", () => ({
+  __esModule: true,
+  DataGrid: jest.fn(),
+  GridToolbar: jest.fn()
+}));
+
+jest.mock("@mui/x-date-pickers/TimePicker", () => ({
+  TimePicker: jest.fn()
 }));
 
 jest.mock("../../Skills.Styles", () => ({

@@ -1,9 +1,17 @@
 import React from "react";
+import { DataGridRouting } from "./DataGridRouting";
+import { authWrapper } from "../../core/AzureAuth";
+import { AzureSPA } from "globals";
 
-const AlohaRoutingContainer = () => {
+const AlohaRoutingContainer = (props: AzureSPA) => {
+  const {
+    accessToken,
+    matchedGroups
+  } = props;
+
   return (
-    <div>Aloha Routing Flow Tab Under Construction</div>
+    <DataGridRouting accessToken={accessToken} matchedGroups={matchedGroups} />
   );
 };
 
-export default AlohaRoutingContainer;
+export default authWrapper(AlohaRoutingContainer);

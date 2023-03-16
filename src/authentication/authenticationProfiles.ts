@@ -162,7 +162,7 @@ export const getTabs = () => {
     },
     ALOHA_CALL_FLOW_MANAGEMENT: {
       value: "aloha-callflow-management",
-      label: "Call Flow Management",
+      label: "Call Flow DB Management",
       component: AlohaFlowContainer
     },
     ALOHA_ROUTING_RULES: {

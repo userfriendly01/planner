@@ -20,7 +20,9 @@ If you need to use the real file in your test, use jest.requireActual for the fu
 */
 
 jest.mock("services", () => ({
+  addFlowRule: jest.fn(),
   addManager: jest.fn(),
+  addRoutingRule: jest.fn(),
   addOffice: jest.fn(),
   checkExtension: jest.fn(),
   createCalabrioTeam: jest.fn(),
@@ -28,7 +30,9 @@ jest.mock("services", () => ({
   createProfile: jest.fn(),
   createUser: jest.fn(),
   deleteDirectory: jest.fn(),
+  deleteFlowRule: jest.fn(),
   deleteManager: jest.fn(),
+  deleteRoutingRule: jest.fn(),
   deleteUser: jest.fn(),
   editManager: jest.fn(),
   fetchUser: jest.fn(),
@@ -37,17 +41,21 @@ jest.mock("services", () => ({
   getCalabrioRoles: jest.fn(),
   getCalabrioUser: jest.fn(),
   getCalabrioUsers: jest.fn(),
-  getCallTagOptions: jest.fn(),
-  getCallTags: jest.fn(),
-  getManagers: jest.fn(),
   getOffices: jest.fn(),
-  getOperatingUnits: jest.fn(),
+  getManagers: jest.fn(),
   getTfn: jest.fn(),
   insertDirectory: jest.fn(),
+  retrieveFlowData: jest.fn(),
+  retrieveRoutingData: jest.fn(),
   updateCalabrioUser: jest.fn(),
   updateClosedMessage: jest.fn(),
   updateDirectory: jest.fn(),
+  updateFlowDB: jest.fn(),
   updateFlashMessage: jest.fn(),
+  updateRoutingDB: jest.fn(),
   updateTfn: jest.fn(),
-  updateUser: jest.fn()
+  updateUser: jest.fn(),
+  getCallTagOptions: jest.fn(),
+  getCallTags: jest.fn(),
+  getOperatingUnits: jest.fn()
 }));
