@@ -99,6 +99,36 @@ const processCreateCalabrioUser = async (row: any, state: any) => {
   }
 };
 
+const processWFMCreateUser = async (row: any, state: any) => {
+  console.warn("****WFM RECORD PROCESSING for", row);
+  const rowNumber = row.rowNumber;
+
+  const body: any = {};
+
+  body.TimeZoneId = row.timeZone;
+  body.BusinessUnitId = row.businessUnitId;
+  body.FirstName = row.attributes.emp_first_name;
+  body.LastName = row.attributes.emp_last_name;
+  body.StartDate = row.wfmPersonStartDate;
+  body.Email = row.attributes.email;
+  body.NNumber = row.attributes.n_number;
+  body.ApplicationLogon = row.attributes.email;
+  body.TeamId = row.wfmTeamId;
+  body.ContractId = row.wfmContractId;
+  body.ContractScheduleId = row.wfmContractScheduleId;
+  body.PartTimePercentageId = row.wfmPartTimePercentageId;
+  body.RoleIds = row.wfmRoleIds;
+  body.WorkflowControlSetId = row.wfmWorkflowControlSetId;
+  body.ShiftBagId = row.wfmShiftBagId;
+  body.BudgetGroupId = row.wfmBudgetGroupId;
+  body.FirstDayOfWeek = row.wfmFirstDayOfWeek;
+  body.Culture = row.wfmCulture;
+  // ...more stuff ?
+
+  console.log("THIS IS WHAT IS GETTING SENT for WFM CREATE", body)
+  return Promise.resolve("yay");
+};
+
 const processUpdateWorkerAttribute = async (row: any, template: Template, state: any) => {
   const rowNumber = row.rowNumber;
   const key = template.data.key;
@@ -236,6 +266,45 @@ export const getCreateTemplates = (state: any): Templates => {
         FIELDS.CALABRIO_TEAM,
         FIELDS.CALABRIO_ROLES,
         FIELDS.CALABRIO_TIME_ZONE
+      ]
+    },
+    CREATE_CALABRIO_WFM_USER: {
+      name: "CREATE_CALABRIO_WFM_USER",
+      data: {},
+      processFunction: (row: any) => processWFMCreateUser(row, state),
+      stateUpdateFunctions: [], // TODO: DO THIS THING
+      multiRunDependencies: [
+      //   {
+      //   name: "CREATE_TRITON_USER",  // TODO: DO WE HAVE A MULTIRUN DEPENDENCY?  i THINK SO... 
+      //   variable: "workerSid"
+      // }
+    ],
+      validationConcurrencyLimit: 500,
+      processingConcurrencyLimit: 25,
+      fields: [
+        FIELDS.N_NUMBER_UPDATE,
+        FIELDS.CALABRIO_WFM_BUSINESS_UNIT,
+        FIELDS.CALABRIO_WFM_ROLES,
+        FIELDS.CALABRIO_TIME_ZONE,  // think we can use the same one qm uses?  Maybe Check with stephanie to see if there are any different ones..
+        FIELDS.CALABRIO_WFM_FIRST_DAY_OF_WEEK,
+        FIELDS.CALABRIO_WFM_CULTURE,
+        FIELDS.CALABRIO_WFM_WORKFLOW_CONTROL_SET,
+        FIELDS.CALABRIO_WFM_TEAM,
+        FIELDS.CALABRIO_WFM_CONTRACT,
+        FIELDS.CALABRIO_WFM_CONTRACT_SCHEDULE,
+        FIELDS.CALABRIO_WFM_PARTTIME_PERCENTAGE,
+        FIELDS.CALABRIO_WFM_SHIFTBAG,
+        FIELDS.CALABRIO_WFM_BUDGET_GROUP,
+        FIELDS.CALABRIO_WFM_PERSON_START_DATE,
+        FIELDS.CALABRIO_WFM_TEAM_START_DATE,
+        FIELDS.CALABRIO_WFM_SKILLS_START_DATE,
+        FIELDS.CALABRIO_WFM_SKILLS,
+        FIELDS.CALABRIO_WFM_ROTATION_START_DATE,
+        FIELDS.CALABRIO_WFM_ROTATION,
+        FIELDS.CALABRIO_WFM_ROTATION_START_WEEK,
+        FIELDS.CALABRIO_WFM_AVAILIBILITY_START_DATE,
+        FIELDS.CALABRIO_WFM_AVAILIBILITY,
+        FIELDS.CALABRIO_WFM_OPTIONAL_COLUMNS
       ]
     }
   };

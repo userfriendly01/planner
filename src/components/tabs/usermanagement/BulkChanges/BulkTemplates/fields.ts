@@ -567,5 +567,418 @@ export const FIELDS: Fields = {
         return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
       }
     }
+  },
+  CALABRIO_WFM_BUSINESS_UNIT: {
+    field: "wfmBusinessUnit",
+    name: "Business Unit",
+    type: "string",
+    description: "Business Unit of the Calabrio WFM person",
+    example: "GRM Safeco",
+    options: (state: any) => state.calabrioContext.wfmOptions.map((bu: any) => bu.Name),
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = "Business Unit";
+      const field = cleanupField(row[fieldName], "string");
+      console.log("HERE IN THE VALIDATION &&&", field);
+      if(!field){
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else {
+        console.log("before finding bu &&&", state.calabrioContext.wfmOptions);
+        const foundBusinessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Name.toLowerCase() === field.toLowerCase());
+        if (foundBusinessUnit) {
+          row.businessUnitId = foundBusinessUnit.Id;
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } else {
+          console.log("REJECTING BU &&&");
+          return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
+        }
+      }
+    }
+  },
+  CALABRIO_WFM_ROLES: {
+    field: "wfmRole",
+    name: "WFM Role",
+    type: "string",
+    description: "Comma delimited list of roles that already exist in Calabrio WFM",
+    example: "Fin_Ops_Agent, Fin_Ops_Team_Lead",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
+      if (businessUnit) {
+        return businessUnit.Roles.map((r: any) => r.Name);
+      }
+      return ["unable to generate options"];
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = "WFM Role";
+      const field = cleanupField(row[fieldName], "string");
+
+      if(!field){
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else {
+        try {
+          const fieldArray = field.split(",");
+          row.wfmRoleIds = [];
+          fieldArray.forEach((role: any) => {
+            const cleanRole = cleanupField(role, "string");
+            const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+            if (!businessUnitObj) {
+              throw new Error(`Unable to validate ${cleanRole}, due to invalid Business Unit for row ${rowNumber}`);
+            }
+
+            const roleObject = businessUnitObj.Roles.find((r:any) => cleanupField(r.Name, "string") === cleanRole);
+            if(!roleObject) {
+              throw new Error(`${cleanRole} is not a valid wfm role for row ${rowNumber}`);
+            } else {
+              row.wfmRoleIds.push(roleObject.Id);
+            }
+          });
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } catch(err) {
+          return rejectPromise(err.message, rowNumber);
+        }
+      }
+    }
+  },
+  // CALABRIO_WFM_TIMEZONE: {  //? are these the same timezones as QM?
+  //   field: "wfmTimezone",
+  //   name: "WFM Timezone",
+  //   type: "string",
+  //   description: "Timezone for the WFM Person",
+  //   example: "America/New_York",
+  //   options: null,
+  //   validateFunction: (row: any, state: any): Promise<any> => {
+  //     return Promise.resolve();
+  //   }
+  // },
+  CALABRIO_WFM_FIRST_DAY_OF_WEEK: {
+    field: "wfmFirstDayOfWeek",
+    name: "First Day of Week",
+    type: "number",
+    description: "Number (0-6) representing the day of the week that the work week begins on.  0 is Sunday",
+    example: "1",
+    options: () => [0, 1, 2, 3, 4, 5, 6],
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = "First Day of Week";
+      const field = cleanupField(row[fieldName], "number");
+      if(!field){
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else {
+        if ([0, 1, 2, 3, 4, 5, 6].includes(field)) {
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } else {
+          return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
+        }
+      }
+    }
+  },
+  CALABRIO_WFM_CULTURE: { // ? Is this required?  What are the options? Looks like its not required by calabrio...
+    field: "wfmCulture",
+    name: "Culture",
+    type: "string",
+    description: "Agent language and format",
+    example: "en-US",
+    options: null,  // Todo: how do I determine my options here?
+    validateFunction: (row: any, state: any): Promise<any> => {
+      return Promise.resolve();
+    }
+  },
+  CALABRIO_WFM_WORKFLOW_CONTROL_SET: {
+    field: "wfmWorkflowControlSet",
+    name: "Workflow Control Set",
+    type: "string",
+    description: "The rules that manage how and when a worker can request time off, OT, etc",
+    example: "",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
+      if (businessUnit) {
+        return businessUnit.Workflow_Control_Sets.map((wfc: any) => wfc.Name);
+      }
+      return ["unable to generate options"];
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = "Workflow Control Set";
+      const field = cleanupField(row[fieldName], "string");
+      if(!field){
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else {
+        const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+        if (!businessUnitObj) {
+          return rejectPromise(`Unable to validate ${fieldName}, due to invalid Business Unit for row ${rowNumber}`, rowNumber);
+        } else {
+          try {
+            const workflowControlSetObj = businessUnitObj.Workflow_Control_Sets.find((wfc: any) => cleanupField(wfc.Name, "string") === field);
+            if (workflowControlSetObj) {
+              row.wfmWorkflowControlSetId = workflowControlSetObj.Id;
+              return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+            } else {
+              return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
+            }
+          } catch (err) {  // ? Do I need this try catch?  Not sure.  What happens if workflow control sets doesn't exist?
+            return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+          }
+        }
+      }
+    }
+  },
+  CALABRIO_WFM_TEAM: {
+    field: "wfmTeam",
+    name: "WFM Team",
+    type: "string",
+    description: "The team of the WFM Person",
+    example: "",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOrg.find((bu: any) => bu.Id === businessUnitId);
+      if (businessUnit) {
+        return businessUnit.Teams.map((t: any) => t.Name);
+      }
+      return ["unable to generate options"];
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = "WFM Team";
+      const field = cleanupField(row[fieldName], "string");
+      if(!field){
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else {
+        const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+        if (!businessUnitObj) {
+          return rejectPromise(`Unable to validate ${fieldName}, due to invalid Business Unit for row ${rowNumber}`, rowNumber);
+        } else {
+          try {
+            const teamObj = businessUnitObj.Teamss.find((t: any) => cleanupField(t.Name, "string") === field);
+            if (teamObj) {
+              row.wfmWorkflowControlSetId = teamObj.Id;
+              return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+            } else {
+              return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
+            }
+          } catch (err) {  // ? Do I need this try catch?  Not sure.  What happens if Teams doesn't exist?
+            return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+          }
+        }
+      }
+    }
+  },
+  CALABRIO_WFM_CONTRACT: {
+    field: "wfmContract",
+    name: "contract",
+    type: "string",
+    description: "Represents the schedule of the agent",
+    example: "",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
+      if (businessUnit) {
+        return businessUnit.Contracts.map((c: any) => c.Name);
+      }
+      return ["unable to generate options"];
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      return Promise.resolve();
+    }
+  },
+  CALABRIO_WFM_CONTRACT_SCHEDULE: {
+    field: "wfmContractSchedule",
+    name: "Contract Schedule",
+    type: "string",
+    description: "User's 'hours per day' worked",
+    example: "",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
+      if (businessUnit) {
+        return businessUnit.Contract_Schedules.map((c: any) => c.Name);
+      }
+      return ["unable to generate options"];
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      return Promise.resolve();
+    }
+  },
+  CALABRIO_WFM_PARTTIME_PERCENTAGE: {
+    field: "wfmPartTimePercentage",
+    name: "Part Time Percentage",
+    type: "string",
+    description: "Represents the % of the day worked",
+    example: "",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
+      if (businessUnit) {
+        return businessUnit.Part_Time_Percentages.map((ptp: any) => ptp.Name);
+      }
+      return ["unable to generate options"];
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      return Promise.resolve();
+    }
+  },
+  CALABRIO_WFM_SHIFTBAG: {
+    field: "wfmShiftBag",
+    name: "Shift Bag",
+    type: "string",
+    description: "A bag of rules aligned to a shift",
+    example: "",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
+      if (businessUnit) {
+        return businessUnit.Shift_Bags.map((sb: any) => sb.Name);
+      }
+      return ["unable to generate options"];
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      return Promise.resolve();
+    }
+  },
+  CALABRIO_WFM_BUDGET_GROUP: {
+    field: "wfmBudgetGroup",
+    name: "Budget Group",
+    type: "string",
+    description: "",
+    example: "",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
+      if (businessUnit) {
+        return businessUnit.Budget_Groups.map((ptp: any) => ptp.Name);
+      }
+      return ["unable to generate options"];
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      return Promise.resolve();
+    }
+  },
+  CALABRIO_WFM_PERSON_START_DATE: {
+    field: "wfmPersonStartDate",
+    name: "Person Start Date",
+    type: "string",
+    description: "Start date for the WFM Person",
+    example: "",
+    options: null,
+    validateFunction: (row: any, state: any): Promise<any> => {
+      return Promise.resolve();
+    }
+  },
+  CALABRIO_WFM_TEAM_START_DATE: {
+    field: "wfmTeamStartDate",
+    name: "Team Start Date",
+    type: "string",
+    description: "The start date for the team",
+    example: "",
+    options: null,
+    validateFunction: (row: any, state: any): Promise<any> => {
+      return Promise.resolve();
+    }
+  },
+  CALABRIO_WFM_SKILLS_START_DATE: {
+    field: "wfmSkillsStartDate",
+    name: "Skills Start Date",
+    type: "string",
+    description: "The start date for the skills",
+    example: "",
+    options: null,
+    validateFunction: (row: any, state: any): Promise<any> => {
+      return Promise.resolve();
+    }
+  },
+  CALABRIO_WFM_SKILLS: {  // ARE THESE SKILLS DIFFERENT FROM TWILIO SKILLS?
+    field: "wfmSkills",
+    name: "WFM Skills",
+    type: "string",
+    description: "A comma deliminated list of skills for the WFM person",
+    example: "",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
+      if (businessUnit) {
+        return businessUnit.Skills.map((s: any) => s.Name);
+      }
+      return ["unable to generate options"];
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      return Promise.resolve();
+    }
+  },
+  CALABRIO_WFM_ROTATION_START_DATE: {
+    field: "wfmRotationStartDate",
+    name: "Rotation Start Date",
+    type: "string",
+    description: "The start date for rotation",
+    example: "",
+    options: null,
+    validateFunction: (row: any, state: any): Promise<any> => {
+      return Promise.resolve();
+    }
+  },
+  CALABRIO_WFM_ROTATION: {
+    field: "wfmRotation",
+    name: "Rotation",
+    type: "string",
+    description: "Sets the start time of the schedule",
+    example: "",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
+      return businessUnit.Rotations.map((r: any) => r.Name);
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      return Promise.resolve();
+    }
+  },
+  CALABRIO_WFM_ROTATION_START_WEEK: {
+    field: "wfmRotationStartWk",
+    name: "Rotation Start Week",
+    type: "number",
+    description: "Number that represents the week the persons rotation should start on",
+    example: "",
+    options: null,
+    validateFunction: (row: any, state: any): Promise<any> => {
+      return Promise.resolve();
+    }
+  },
+  CALABRIO_WFM_AVAILIBILITY_START_DATE: {
+    field: "wfmAvailabilityStartDate",
+    name: "Availilbity Start Date",
+    type: "string",
+    description: "The start date for availibilty",
+    example: "2023-03-20",
+    options: null,
+    validateFunction: (row: any, state: any): Promise<any> => {
+      return Promise.resolve();
+    }
+  },
+  CALABRIO_WFM_AVAILIBILITY: {
+    field: "wfmAvailibility",
+    name: "Availibility",
+    type: "string",
+    description: "Defines what days per week are scheduled days",
+    example: "",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
+      if (businessUnit) {
+        return businessUnit.Availabilities.map((a: any) => a.Name);
+      }
+      return ["unable to generate options"];
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      return Promise.resolve();
+    }
+  },
+  CALABRIO_WFM_OPTIONAL_COLUMNS: { // ???
+    field: "wfmOptional",
+    name: "Optional Columns",
+    type: "Comma deliminated list of optional columns",
+    description: "",
+    example: "",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
+      if (businessUnit) {
+        return businessUnit.Optional_Columns.map((oc: any) => oc.Name);
+      }
+      return ["unable to generate options"];
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      return Promise.resolve();
+    }
   }
 };

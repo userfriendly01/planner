@@ -1,5 +1,8 @@
 
 import { Button } from "../BulkChanges.Styles";
+import { Template } from "../BulkChanges.Interfaces";
+import BusinessUnitModal from "../BusinessUnitModal";
+import { Modal } from "@mui/material";
 import React from "react";
 import {
   ExcelExport
@@ -8,8 +11,14 @@ import {
 const ExportOptionsButton = (props: any) => {
   const {
     template,
-    state
+    state,
+    selectedTemplates
   } = props;
+
+  const [ wfmBusinessUnit, setWfmBusinessUnit ] = React.useState(null);
+  const [ showBusinessUnitModal, setShowBusinessUnitModal ] = React.useState(false);
+
+  const isWFMSelected: boolean = selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_USER");
 
   const _export = React.useRef(null);
   console.log("ExportOptionsButton Template", template);
@@ -19,7 +28,13 @@ const ExportOptionsButton = (props: any) => {
     const columns: any = [];
     template.forEach((t: any) => {
       if(t.options){
-        const options = t.options(state);
+        let options = [];
+        if (t.field.includes("wfm")) {
+          console.log("wfmBusinessUnit in export options: ", wfmBusinessUnit.value);
+          options = t.options(state, wfmBusinessUnit.value);
+        } else {
+          options = t.options(state);
+        }
         if(options.length > 0){
           columns.push({
             field: t.field,
@@ -55,11 +70,31 @@ const ExportOptionsButton = (props: any) => {
     }
   };
 
+  const handleClick = () => {
+    if (isWFMSelected) {
+      setShowBusinessUnitModal(true);
+    } else {
+      handleExport();
+    }
+  };
+
   return (
-    <Button onClick={handleExport}>
-      <ExcelExport ref={_export}/>
-      Export Template Options
-    </Button>
+    <>
+      { isWFMSelected && (
+        <Modal open={showBusinessUnitModal} onClose={() => { return; }} >
+          <BusinessUnitModal
+            setWfmBusinessUnit={setWfmBusinessUnit}
+            setShowBusinessUnitModal={setShowBusinessUnitModal}
+            wfmBusinessUnit={wfmBusinessUnit}
+            handleExport={handleExport}
+          />
+        </Modal>
+      )}
+      <Button onClick={handleClick}>
+        <ExcelExport ref={_export}/>
+        Export Template Options
+      </Button>
+    </>
   );
 };
 

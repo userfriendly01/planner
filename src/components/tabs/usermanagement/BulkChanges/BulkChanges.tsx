@@ -98,7 +98,11 @@ const BulkChanges = () => {
             </StepWrapper>
             <ButtonWrapper>
               <ExportTemplateButton template={consolidatedTemplate} />
-              <ExportOptionsButton template={consolidatedTemplate} state={state}/>
+              <ExportOptionsButton
+                template={consolidatedTemplate}
+                state={state}
+                selectedTemplates={selectedTemplates}
+              />
             </ButtonWrapper>
           </Row>
           <Row>
