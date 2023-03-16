@@ -105,6 +105,8 @@ const processWFMCreateUser = async (row: any, state: any) => {
 
   const body: any = {};
 
+  body.AvailabilityId = row.wfmAvailabilityId;
+  body.AvailabilityStartDate = row.wfmAvailabilityStartDate;
   body.TimeZoneId = row.timeZone;
   body.BusinessUnitId = row.businessUnitId;
   body.FirstName = row.attributes.emp_first_name;
@@ -114,6 +116,7 @@ const processWFMCreateUser = async (row: any, state: any) => {
   body.NNumber = row.attributes.n_number;
   body.ApplicationLogon = row.attributes.email;
   body.TeamId = row.wfmTeamId;
+  body.TeamStartDate = row.wfmTeamStartDate;
   body.ContractId = row.wfmContractId;
   body.ContractScheduleId = row.wfmContractScheduleId;
   body.PartTimePercentageId = row.wfmPartTimePercentageId;
@@ -122,10 +125,16 @@ const processWFMCreateUser = async (row: any, state: any) => {
   body.ShiftBagId = row.wfmShiftBagId;
   body.BudgetGroupId = row.wfmBudgetGroupId;
   body.FirstDayOfWeek = row.wfmFirstDayOfWeek;
-  body.Culture = row.wfmCulture;
+  body.Skills = row.wfmSkillIds;
+  body.SkillsStartDate = row.wfmSkillsStartDate;
+  body.RotationId = row.wfmRotationId;
+  body.RotationStartDate = row.wfmRotationStartDate;
+  body.RotationStartWeek = row.wfmRotationStartWk;
+  body.OptionalColumnId = row.wfmOptionalColumnIds;
+  // body.Culture = row.wfmCulture;
   // ...more stuff ?
 
-  console.log("THIS IS WHAT IS GETTING SENT for WFM CREATE", body)
+  console.log("THIS IS WHAT IS GETTING SENT for WFM CREATE", body);
   return Promise.resolve("yay");
 };
 
@@ -258,8 +267,8 @@ export const getCreateTemplates = (state: any): Templates => {
         name: "CREATE_TRITON_USER",
         variable: "workerSid"
       }],
-      validationConcurrencyLimit: 500,
-      processingConcurrencyLimit: 25,
+      validationConcurrencyLimit: 500,  // todo ? what will these be
+      processingConcurrencyLimit: 25,  // todo ? what will this be?
       fields: [
         FIELDS.N_NUMBER_UPDATE,
         FIELDS.CALABRIO_SCOPE,
@@ -273,12 +282,10 @@ export const getCreateTemplates = (state: any): Templates => {
       data: {},
       processFunction: (row: any) => processWFMCreateUser(row, state),
       stateUpdateFunctions: [], // TODO: DO THIS THING
-      multiRunDependencies: [
-      //   {
-      //   name: "CREATE_TRITON_USER",  // TODO: DO WE HAVE A MULTIRUN DEPENDENCY?  i THINK SO... 
-      //   variable: "workerSid"
-      // }
-    ],
+      multiRunDependencies: [{
+        name: "CREATE_TRITON_USER",
+        variable: "workerSid" // note: don't actually need the workersid, but I need the Triton user created first if running for 
+      }],
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 25,
       fields: [
@@ -287,7 +294,7 @@ export const getCreateTemplates = (state: any): Templates => {
         FIELDS.CALABRIO_WFM_ROLES,
         FIELDS.CALABRIO_TIME_ZONE,  // think we can use the same one qm uses?  Maybe Check with stephanie to see if there are any different ones..
         FIELDS.CALABRIO_WFM_FIRST_DAY_OF_WEEK,
-        FIELDS.CALABRIO_WFM_CULTURE,
+        // FIELDS.CALABRIO_WFM_CULTURE,
         FIELDS.CALABRIO_WFM_WORKFLOW_CONTROL_SET,
         FIELDS.CALABRIO_WFM_TEAM,
         FIELDS.CALABRIO_WFM_CONTRACT,

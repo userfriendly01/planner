@@ -12,6 +12,9 @@ import {
   getOverflowSkillFromProfile
 } from "utils";
 import {
+  formatDateFromExcelDate
+} from "../BulkUtils/formatUtils";
+import {
   Fields
 } from "../BulkChanges.Interfaces";
 
@@ -674,17 +677,17 @@ export const FIELDS: Fields = {
       }
     }
   },
-  CALABRIO_WFM_CULTURE: { // ? Is this required?  What are the options? Looks like its not required by calabrio...
-    field: "wfmCulture",
-    name: "Culture",
-    type: "string",
-    description: "Agent language and format",
-    example: "en-US",
-    options: null,  // Todo: how do I determine my options here?
-    validateFunction: (row: any, state: any): Promise<any> => {
-      return Promise.resolve();
-    }
-  },
+  // CALABRIO_WFM_CULTURE: { // ? Is this required?  What are the options? Looks like its not required by calabrio...
+  //   field: "wfmCulture",
+  //   name: "Culture",
+  //   type: "string",
+  //   description: "Agent language and format",
+  //   example: "en-US",
+  //   options: null,  // Todo: how do I determine my options here?
+  //   validateFunction: (row: any, state: any): Promise<any> => {
+  //     return Promise.resolve();
+  //   }
+  // },
   CALABRIO_WFM_WORKFLOW_CONTROL_SET: {
     field: "wfmWorkflowControlSet",
     name: "Workflow Control Set",
@@ -745,15 +748,15 @@ export const FIELDS: Fields = {
       if(!field){
         return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
       } else {
-        const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+        const businessUnitObj = state.calabrioContext.wfmOrg.find((bu: any) => bu.Id === row.businessUnitId);
 
         if (!businessUnitObj) {
           return rejectPromise(`Unable to validate ${fieldName}, due to invalid Business Unit for row ${rowNumber}`, rowNumber);
         } else {
           try {
-            const teamObj = businessUnitObj.Teamss.find((t: any) => cleanupField(t.Name, "string") === field);
+            const teamObj = businessUnitObj.Teams.find((t: any) => cleanupField(t.Name, "string") === field);
             if (teamObj) {
-              row.wfmWorkflowControlSetId = teamObj.Id;
+              row.wfmTeamId = teamObj.Id;
               return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
             } else {
               return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
@@ -767,7 +770,7 @@ export const FIELDS: Fields = {
   },
   CALABRIO_WFM_CONTRACT: {
     field: "wfmContract",
-    name: "contract",
+    name: "WFM Contract",
     type: "string",
     description: "Represents the schedule of the agent",
     example: "",
@@ -779,12 +782,35 @@ export const FIELDS: Fields = {
       return ["unable to generate options"];
     },
     validateFunction: (row: any, state: any): Promise<any> => {
-      return Promise.resolve();
+      const rowNumber = row.rowNumber;
+      const fieldName = "WFM Contract";
+      const field = cleanupField(row[fieldName], "string");
+      if(!field){
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else {
+        const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+        if (!businessUnitObj) {
+          return rejectPromise(`Unable to validate ${fieldName}, due to invalid Business Unit for row ${rowNumber}`, rowNumber);
+        } else {
+          try {
+            const contractObj = businessUnitObj.Contracts.find((c: any) => cleanupField(c.Name, "string") === field);
+            if (contractObj) {
+              row.wfmContractId = contractObj.Id;
+              return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+            } else {
+              return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
+            }
+          } catch (err) {  // ? Do I need this try catch?  Not sure.  What happens if Contracts doesn't exist?
+            return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+          }
+        }
+      }
     }
   },
   CALABRIO_WFM_CONTRACT_SCHEDULE: {
     field: "wfmContractSchedule",
-    name: "Contract Schedule",
+    name: "WFM Contract Schedule",
     type: "string",
     description: "User's 'hours per day' worked",
     example: "",
@@ -796,12 +822,35 @@ export const FIELDS: Fields = {
       return ["unable to generate options"];
     },
     validateFunction: (row: any, state: any): Promise<any> => {
-      return Promise.resolve();
+      const rowNumber = row.rowNumber;
+      const fieldName = "WFM Contract Schedule";
+      const field = cleanupField(row[fieldName], "string");
+      if(!field){
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else {
+        const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+        if (!businessUnitObj) {
+          return rejectPromise(`Unable to validate ${fieldName}, due to invalid Business Unit for row ${rowNumber}`, rowNumber);
+        } else {
+          try {
+            const contractScheduleObj = businessUnitObj.Contract_Schedules.find((c: any) => cleanupField(c.Name, "string") === field);
+            if (contractScheduleObj) {
+              row.wfmContractScheduleId = contractScheduleObj.Id;
+              return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+            } else {
+              return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
+            }
+          } catch (err) {  // ? Do I need this try catch?  Not sure.  What happens if Contracts doesn't exist?
+            return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+          }
+        }
+      }
     }
   },
   CALABRIO_WFM_PARTTIME_PERCENTAGE: {
     field: "wfmPartTimePercentage",
-    name: "Part Time Percentage",
+    name: "WFM Part Time Percentage",
     type: "string",
     description: "Represents the % of the day worked",
     example: "",
@@ -813,12 +862,35 @@ export const FIELDS: Fields = {
       return ["unable to generate options"];
     },
     validateFunction: (row: any, state: any): Promise<any> => {
-      return Promise.resolve();
+      const rowNumber = row.rowNumber;
+      const fieldName = "WFM Part Time Percentage";
+      const field = cleanupField(row[fieldName], "string");
+      if(!field){
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else {
+        const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+        if (!businessUnitObj) {
+          return rejectPromise(`Unable to validate ${fieldName}, due to invalid Business Unit for row ${rowNumber}`, rowNumber);
+        } else {
+          try {
+            const ptPercentageObj = businessUnitObj.Part_Time_Percentages.find((ptp: any) => cleanupField(ptp.Name, "string") === field);
+            if (ptPercentageObj) {
+              row.wfmPartTimePercentageId = ptPercentageObj.Id;
+              return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+            } else {
+              return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
+            }
+          } catch (err) {  // ? Do I need this try catch?  Not sure.  What happens if Contracts doesn't exist?
+            return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+          }
+        }
+      }
     }
   },
   CALABRIO_WFM_SHIFTBAG: {
     field: "wfmShiftBag",
-    name: "Shift Bag",
+    name: "c",
     type: "string",
     description: "A bag of rules aligned to a shift",
     example: "",
@@ -830,12 +902,35 @@ export const FIELDS: Fields = {
       return ["unable to generate options"];
     },
     validateFunction: (row: any, state: any): Promise<any> => {
-      return Promise.resolve();
+      const rowNumber = row.rowNumber;
+      const fieldName = "WFM Shift Bag";
+      const field = cleanupField(row[fieldName], "string");
+      if(!field){
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else {
+        const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+        if (!businessUnitObj) {
+          return rejectPromise(`Unable to validate ${fieldName}, due to invalid Business Unit for row ${rowNumber}`, rowNumber);
+        } else {
+          try {
+            const shiftBagObj = businessUnitObj.Shift_Bags.find((ptp: any) => cleanupField(ptp.Name, "string") === field);
+            if (shiftBagObj) {
+              row.wfmShiftBagId = shiftBagObj.Id;
+              return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+            } else {
+              return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
+            }
+          } catch (err) {  // ? Do I need this try catch?  Not sure.  What happens if Contracts doesn't exist?
+            return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+          }
+        }
+      }
     }
   },
   CALABRIO_WFM_BUDGET_GROUP: {
     field: "wfmBudgetGroup",
-    name: "Budget Group",
+    name: "WFM Budget Group",
     type: "string",
     description: "",
     example: "",
@@ -847,43 +942,106 @@ export const FIELDS: Fields = {
       return ["unable to generate options"];
     },
     validateFunction: (row: any, state: any): Promise<any> => {
-      return Promise.resolve();
+      const rowNumber = row.rowNumber;
+      const fieldName = "WFM Budget Group";
+      const field = cleanupField(row[fieldName], "string");
+      if(!field){
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else {
+        const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+        if (!businessUnitObj) {
+          return rejectPromise(`Unable to validate ${fieldName}, due to invalid Business Unit for row ${rowNumber}`, rowNumber);
+        } else {
+          try {
+            const budgetGroupObj = businessUnitObj.Budget_Groups.find((ptp: any) => cleanupField(ptp.Name, "string") === field);
+            if (budgetGroupObj) {
+              row.wfmBudgetGroupId = budgetGroupObj.Id;
+              return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+            } else {
+              return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
+            }
+          } catch (err) {  // ? Do I need this try catch?  Not sure.  What happens if Contracts doesn't exist?
+            return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+          }
+        }
+      }
     }
   },
-  CALABRIO_WFM_PERSON_START_DATE: {
+  CALABRIO_WFM_PERSON_START_DATE: { // Excel gives us a number that is "days since jan 1 1900"
     field: "wfmPersonStartDate",
-    name: "Person Start Date",
-    type: "string",
+    name: "WFM Person Start Date",
+    type: "number",
     description: "Start date for the WFM Person",
-    example: "",
+    example: "",  // hmmm if I put an example here, how will it look on the spreadsheet?
     options: null,
     validateFunction: (row: any, state: any): Promise<any> => {
-      return Promise.resolve();
+      const rowNumber = row.rowNumber;
+      const fieldName = "WFM Person Start Date";
+      const field = cleanupField(row[fieldName], "number");
+      if(!field){
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else {
+        try {
+          const formattedDate = formatDateFromExcelDate(field);  // throws error if day month or year is NaN
+          console.log("FORMATTED DATE?????", formattedDate)
+          row.wfmPersonStartDate = formattedDate;
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } catch (err) {
+          return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+        }
+      }
     }
   },
   CALABRIO_WFM_TEAM_START_DATE: {
     field: "wfmTeamStartDate",
-    name: "Team Start Date",
+    name: "WFM Team Start Date",
     type: "string",
     description: "The start date for the team",
     example: "",
     options: null,
     validateFunction: (row: any, state: any): Promise<any> => {
-      return Promise.resolve();
+      const rowNumber = row.rowNumber;
+      const fieldName = "WFM Team Start Date";
+      const field = cleanupField(row[fieldName], "number");
+      if(!field){
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else {
+        try {
+          const formattedDate = formatDateFromExcelDate(field); // will throw error if NaN
+          row.wfmTeamStartDate = formattedDate;
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } catch (err) {
+          return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+        }
+      }
     }
   },
   CALABRIO_WFM_SKILLS_START_DATE: {
     field: "wfmSkillsStartDate",
-    name: "Skills Start Date",
+    name: "WFM Skills Start Date",
     type: "string",
     description: "The start date for the skills",
     example: "",
     options: null,
     validateFunction: (row: any, state: any): Promise<any> => {
-      return Promise.resolve();
+      const rowNumber = row.rowNumber;
+      const fieldName = "WFM Skills Start Date";
+      const field = cleanupField(row[fieldName], "number");
+      if(!field){
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else {
+        try {
+          const formattedDate = formatDateFromExcelDate(field); // will throw error if NaN
+          row.wfmSkillsStartDate = formattedDate;
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } catch (err) {
+          return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+        }
+      }
     }
   },
-  CALABRIO_WFM_SKILLS: {  // ARE THESE SKILLS DIFFERENT FROM TWILIO SKILLS?
+  CALABRIO_WFM_SKILLS: {
     field: "wfmSkills",
     name: "WFM Skills",
     type: "string",
@@ -897,23 +1055,65 @@ export const FIELDS: Fields = {
       return ["unable to generate options"];
     },
     validateFunction: (row: any, state: any): Promise<any> => {
-      return Promise.resolve();
+      const rowNumber = row.rowNumber;
+      const fieldName = "WFM Skills";
+      const field = cleanupField(row[fieldName], "string");
+
+      if(!field){
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else {
+        try {
+          const fieldArray = field.split(",");
+          row.wfmSkillIds = [];
+          fieldArray.forEach((role: any) => {
+            const cleanSkill = cleanupField(role, "string");
+            const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+            if (!businessUnitObj) {
+              throw new Error(`Unable to validate ${cleanSkill}, due to invalid Business Unit for row ${rowNumber}`);
+            }
+
+            const skillsObj = businessUnitObj.Skills.find((r:any) => cleanupField(r.Name, "string") === cleanSkill);
+            if(!skillsObj) {
+              throw new Error(`${cleanSkill} is not a valid wfm skill for row ${rowNumber}`);
+            } else {
+              row.wfmSkillIds.push(skillsObj.Id);
+            }
+          });
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } catch(err) {
+          return rejectPromise(err.message, rowNumber);
+        }
+      }
     }
   },
   CALABRIO_WFM_ROTATION_START_DATE: {
     field: "wfmRotationStartDate",
-    name: "Rotation Start Date",
+    name: "WFM Rotation Start Date",
     type: "string",
     description: "The start date for rotation",
     example: "",
     options: null,
     validateFunction: (row: any, state: any): Promise<any> => {
-      return Promise.resolve();
+      const rowNumber = row.rowNumber;
+      const fieldName = "WFM Rotation Start Date";
+      const field = cleanupField(row[fieldName], "number");
+      if(!field){
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else {
+        try {
+          const formattedDate = formatDateFromExcelDate(field); // will throw error if NaN
+          row.wfmRotationStartDate = formattedDate;
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } catch (err) {
+          return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+        }
+      }
     }
   },
   CALABRIO_WFM_ROTATION: {
     field: "wfmRotation",
-    name: "Rotation",
+    name: "WFM Rotation",
     type: "string",
     description: "Sets the start time of the schedule",
     example: "",
@@ -922,12 +1122,35 @@ export const FIELDS: Fields = {
       return businessUnit.Rotations.map((r: any) => r.Name);
     },
     validateFunction: (row: any, state: any): Promise<any> => {
-      return Promise.resolve();
+      const rowNumber = row.rowNumber;
+      const fieldName = "WFM Rotation";
+      const field = cleanupField(row[fieldName], "string");
+      if(!field){
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else {
+        const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+        if (!businessUnitObj) {
+          return rejectPromise(`Unable to validate ${fieldName}, due to invalid Business Unit for row ${rowNumber}`, rowNumber);
+        } else {
+          try {
+            const rotationObj = businessUnitObj.Rotations.find((r: any) => cleanupField(r.Name, "string") === field);
+            if (rotationObj) {
+              row.wfmRotationId = rotationObj.Id;
+              return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+            } else {
+              return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
+            }
+          } catch (err) {  // ? Do I need this try catch?  Not sure.  What happens if Contracts doesn't exist?
+            return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+          }
+        }
+      }
     }
   },
-  CALABRIO_WFM_ROTATION_START_WEEK: {
+  CALABRIO_WFM_ROTATION_START_WEEK: { // ????  What is this value??? 1-52? something else??
     field: "wfmRotationStartWk",
-    name: "Rotation Start Week",
+    name: "WFM Rotation Start Week",
     type: "number",
     description: "Number that represents the week the persons rotation should start on",
     example: "",
@@ -938,18 +1161,31 @@ export const FIELDS: Fields = {
   },
   CALABRIO_WFM_AVAILIBILITY_START_DATE: {
     field: "wfmAvailabilityStartDate",
-    name: "Availilbity Start Date",
+    name: "WFM Availilbity Start Date",
     type: "string",
     description: "The start date for availibilty",
     example: "2023-03-20",
     options: null,
     validateFunction: (row: any, state: any): Promise<any> => {
-      return Promise.resolve();
+      const rowNumber = row.rowNumber;
+      const fieldName = "WFM Availilbity Start Date";
+      const field = cleanupField(row[fieldName], "number");
+      if(!field){
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else {
+        try {
+          const formattedDate = formatDateFromExcelDate(field); // will throw error if NaN
+          row.wfmAvailabilityStartDate = formattedDate;
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } catch (err) {
+          return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+        }
+      }
     }
   },
   CALABRIO_WFM_AVAILIBILITY: {
-    field: "wfmAvailibility",
-    name: "Availibility",
+    field: "wfmAvailability",
+    name: "WFM Availability",
     type: "string",
     description: "Defines what days per week are scheduled days",
     example: "",
@@ -961,12 +1197,35 @@ export const FIELDS: Fields = {
       return ["unable to generate options"];
     },
     validateFunction: (row: any, state: any): Promise<any> => {
-      return Promise.resolve();
+      const rowNumber = row.rowNumber;
+      const fieldName = "WFM Availability";
+      const field = cleanupField(row[fieldName], "string");
+      if(!field){
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else {
+        const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+        if (!businessUnitObj) {
+          return rejectPromise(`Unable to validate ${fieldName}, due to invalid Business Unit for row ${rowNumber}`, rowNumber);
+        } else {
+          try {
+            const availabilityObj = businessUnitObj.Availabilities.find((r: any) => cleanupField(r.Name, "string") === field);
+            if (availabilityObj) {
+              row.wfmAvailabilityId = availabilityObj.Id;
+              return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+            } else {
+              return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
+            }
+          } catch (err) {  // ? Do I need this try catch?  Not sure.  What happens if Contracts doesn't exist?
+            return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+          }
+        }
+      }
     }
   },
   CALABRIO_WFM_OPTIONAL_COLUMNS: { // ???
     field: "wfmOptional",
-    name: "Optional Columns",
+    name: "WFM Optional Columns",
     type: "Comma deliminated list of optional columns",
     description: "",
     example: "",
@@ -978,7 +1237,36 @@ export const FIELDS: Fields = {
       return ["unable to generate options"];
     },
     validateFunction: (row: any, state: any): Promise<any> => {
-      return Promise.resolve();
+      const rowNumber = row.rowNumber;
+      const fieldName = "WFM Optional Columns";
+      const field = cleanupField(row[fieldName], "string");
+
+      if(!field){
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else {
+        try {
+          const fieldArray = field.split(",");
+          row.wfmOptionalColumnIds = [];
+          fieldArray.forEach((role: any) => {
+            const cleanOptionalColumn = cleanupField(role, "string");
+            const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+            if (!businessUnitObj) {
+              throw new Error(`Unable to validate ${cleanOptionalColumn}, due to invalid Business Unit for row ${rowNumber}`);
+            }
+
+            const skillsObj = businessUnitObj.Optional_Columns.find((r:any) => cleanupField(r.Name, "string") === cleanOptionalColumn);
+            if(!skillsObj) {
+              throw new Error(`${cleanOptionalColumn} is not a valid wfm skill for row ${rowNumber}`);
+            } else {
+              row.wfmOptionalColumnIds.push(skillsObj.Id);
+            }
+          });
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } catch(err) {
+          return rejectPromise(err.message, rowNumber);
+        }
+      }
     }
   }
 };
