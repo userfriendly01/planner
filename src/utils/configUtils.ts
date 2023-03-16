@@ -23,9 +23,9 @@ export const getGraphQLEndpoint = (): string => {
 export const getAzureSPAClientId = (): string => {
   const env: string = useAdminState().userContext.pingIdentity.environment;
   return {
-    "development": "74b1f79e-23b7-4ed7-abba-3c6cb147fcd4",
-    "test": "5d895d11-5151-4805-9d28-471c4020731f",
-    "prod": ""
+    "development": "cc2d6284-c9c4-43fe-9164-4ee0cb8fac50",
+    "test": "0605f6ba-a953-4a8e-a663-12cc240e50ed",
+    "prod": "5e927376-81c5-498e-bc92-372aded461de"
   }[env];
 };
 
