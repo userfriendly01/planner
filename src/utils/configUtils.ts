@@ -12,7 +12,7 @@ export const getGraphQLEndpoint = (): string => {
   return {
     "development": "https://flyyckd74fauthoxf5fj23ko6m.appsync-api.us-east-1.amazonaws.com/graphql",
     "test": "https://molg2ylkqrhtpniyfncvue57ha.appsync-api.us-east-1.amazonaws.com/graphql",
-    "prod": "https://23gxrcju6rfgvlzp6onvg2az5q.appsync-api.us-east-1.amazonaws.com/graphql"
+    "production": "https://23gxrcju6rfgvlzp6onvg2az5q.appsync-api.us-east-1.amazonaws.com/graphql"
   }[env];
 };
 
@@ -25,7 +25,7 @@ export const getAzureSPAClientId = (): string => {
   return {
     "development": "cc2d6284-c9c4-43fe-9164-4ee0cb8fac50",
     "test": "0605f6ba-a953-4a8e-a663-12cc240e50ed",
-    "prod": "5e927376-81c5-498e-bc92-372aded461de"
+    "production": "5e927376-81c5-498e-bc92-372aded461de"
   }[env];
 };
 
