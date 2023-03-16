@@ -69,7 +69,7 @@ describe("configUtils.js", ()=>{
     const endPointURI = new Map();
     endPointURI.set("development","https://flyyckd74fauthoxf5fj23ko6m.appsync-api.us-east-1.amazonaws.com/graphql");
     endPointURI.set("test","https://molg2ylkqrhtpniyfncvue57ha.appsync-api.us-east-1.amazonaws.com/graphql");
-    endPointURI.set("prod", "https://23gxrcju6rfgvlzp6onvg2az5q.appsync-api.us-east-1.amazonaws.com/graphql");
+    endPointURI.set("production", "https://23gxrcju6rfgvlzp6onvg2az5q.appsync-api.us-east-1.amazonaws.com/graphql");
     expect(endpoint).toBe(endPointURI.get(env));
   });
 });
