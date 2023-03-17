@@ -5,6 +5,7 @@ import {
   identifyProcessingDependencies,
   formatErrorMessage
 } from "../BulkUtils";
+import { FIELDS } from "../BulkTemplates/fields";
 
 /**
  * Selected Templates is an array of templates to be processed on a bulk upload.
@@ -164,3 +165,45 @@ export const checkConflictingCalabrioUsers = async (user: any, rowNumber: number
     }));
   }
 };
+
+/**
+ * Checks to see if a wfm field related to scheduling is allowed to be empty.  There are some fields pertaining to scheduling with WFM that 
+ * either all need to be null, or all need to have a value.  This function will check a particular field name against the others
+ * to determine if the value is required
+ * @param row row to check
+ * @param fieldName the fieldname that has been determined to be empty
+ */
+export const allowedEmpty = (row: any, fieldName: string) => {
+  const allOrNothingFields = [
+    FIELDS.CALABRIO_WFM_PERSON_START_DATE.name,
+    FIELDS.CALABRIO_WFM_TEAM.name,
+    FIELDS.CALABRIO_WFM_TEAM_START_DATE.name,
+    FIELDS.CALABRIO_WFM_CONTRACT.name,
+    FIELDS.CALABRIO_WFM_CONTRACT_SCHEDULE.name,
+    FIELDS.CALABRIO_WFM_PARTTIME_PERCENTAGE.name
+  ];
+  const optionalScheduleFields = [
+    FIELDS.CALABRIO_WFM_SHIFTBAG.name,
+    FIELDS.CALABRIO_WFM_BUDGET_GROUP.name
+  ];
+
+  const isOptional = optionalScheduleFields.includes(fieldName);
+  if (isOptional) {
+    console.log("this field is totally optional, allowed to be empty");
+    return true;
+  } else {
+    let isValid = true;
+    allOrNothingFields.forEach((fieldName: string) => {
+      if (row[fieldName]) {
+        console.log("%%%% INVALID.  FIELD CANNOT BE EMPTY due to the following field being populated:", fieldName)
+        isValid = false;
+      }
+    });
+    optionalScheduleFields.forEach((fieldName: string) => {
+      if (row[fieldName]) {
+        isValid = false;
+      }
+    });
+    return isValid;
+  }
+}

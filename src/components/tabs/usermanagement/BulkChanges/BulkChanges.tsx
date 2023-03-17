@@ -25,6 +25,7 @@ import {
   ExportOptionsButton
 } from "./ExportButtons";
 import { ProcessingModal } from "./Processing";
+import WFMLoadOptionsModal from "./WFMLoadOptionsModal";
 import { Dropdown } from "components";
 import { useAdminState } from "context";
 import React from "react";
@@ -40,9 +41,19 @@ const BulkChanges = () => {
   const [ uploadedForm, setUploadedForm ] = React.useState(null);
   const [ filenameText, setFilenameText ] = React.useState(null);
   const [ showProcessingModal , setShowProcessingModal ] = React.useState(false);
+  const [ showWFMLoadModal, setShowWFMLoadModal ] = React.useState(false);
 
   React.useEffect(() => {
     consolidateTemplates(selectedTemplates, setConsolidatedTemplates);
+
+    // TODO: ALSO DISABLE THE EXPORT OPTIONS AND PROCESS BUTTONS IF WFM IS CHECKED, BUT OPTIONS AREN'T LOADED
+    // If wfm user template is selected, but the options failed to load, try to reload them in the modal
+    if(selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_USER")) {
+      const isLoaded = checkIfWFMOptionsLoaded();
+      if (!isLoaded) {
+        setShowWFMLoadModal(true);
+      }
+    }
   }, [selectedTemplates]);
 
   const resetBulkChanges = () => {
@@ -51,6 +62,12 @@ const BulkChanges = () => {
     setConsolidatedTemplates([]);
     setUploadedForm(null);
     setFilenameText(null);
+  };
+
+  const checkIfWFMOptionsLoaded = () => {
+    const areOptionsLoaded = state.calabrioContext.wfmOptions.length > 0;
+    const isOrgLoaded = state.calabrioContext.wfmOrg.length > 0;
+    return areOptionsLoaded && isOrgLoaded;
   };
 
   return (
@@ -77,6 +94,11 @@ const BulkChanges = () => {
             consolidatedFieldsList={consolidatedTemplate}
           />
         </>
+      </Modal>
+      <Modal open={showWFMLoadModal} onClose={() => { return; }} >
+        <WFMLoadOptionsModal
+          setShowWFMLoadModal={setShowWFMLoadModal}
+        />
       </Modal>
       { view === views.BULK_CREATE_USERS &&
         <BulkCreateForm

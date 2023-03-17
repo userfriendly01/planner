@@ -105,34 +105,45 @@ const processWFMCreateUser = async (row: any, state: any) => {
 
   const body: any = {};
 
-  body.AvailabilityId = row.wfmAvailabilityId;
-  body.AvailabilityStartDate = row.wfmAvailabilityStartDate;
-  body.TimeZoneId = row.timeZone;
-  body.BusinessUnitId = row.businessUnitId;
+  // TODO: what should we do with fields that we aren't requiring?
+  // And what should we do particularly with the ones pertaining to scheduling
+
+  // def required fields
   body.FirstName = row.attributes.emp_first_name;
   body.LastName = row.attributes.emp_last_name;
-  body.StartDate = row.wfmPersonStartDate;
+  body.BusinessUnitId = row.businessUnitId;
   body.Email = row.attributes.email;
-  body.NNumber = row.attributes.n_number;
+  body.TimeZoneId = row.timeZone;
   body.ApplicationLogon = row.attributes.email;
+  body.NNumber = row.attributes.n_number;
+  body.FirstDayOfWeek = row.wfmFirstDayOfWeek;
+
+  // schedule related parameters...  not required technically, but either all need to be null, or all need to be a value
+  body.StartDate = row.wfmPersonStartDate;
   body.TeamId = row.wfmTeamId;
   body.TeamStartDate = row.wfmTeamStartDate;
   body.ContractId = row.wfmContractId;
   body.ContractScheduleId = row.wfmContractScheduleId;
   body.PartTimePercentageId = row.wfmPartTimePercentageId;
+  // optional sheduling items
+  body.BudgetGroupId = row.wfmBudgetGroupId;
+  body.ShiftBagId = row.wfmShiftBagId;
+
+  // I think these are all optional as per Shannon?
+  body.AvailabilityId = row.wfmAvailabilityId;
+  body.AvailabilityStartDate = row.wfmAvailabilityStartDate;
   body.RoleIds = row.wfmRoleIds;
   body.WorkflowControlSetId = row.wfmWorkflowControlSetId;
-  body.ShiftBagId = row.wfmShiftBagId;
-  body.BudgetGroupId = row.wfmBudgetGroupId;
-  body.FirstDayOfWeek = row.wfmFirstDayOfWeek;
   body.Skills = row.wfmSkillIds;
   body.SkillsStartDate = row.wfmSkillsStartDate;
   body.RotationId = row.wfmRotationId;
   body.RotationStartDate = row.wfmRotationStartDate;
   body.RotationStartWeek = row.wfmRotationStartWk;
-  body.OptionalColumnId = row.wfmOptionalColumnIds;
+
+  // completely optional
+  body.OptionalColumns = row.wfmOptionalColumns;
   // body.Culture = row.wfmCulture;
-  // ...more stuff ?
+
 
   console.log("THIS IS WHAT IS GETTING SENT for WFM CREATE", body);
   return Promise.resolve("yay");
