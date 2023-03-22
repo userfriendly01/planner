@@ -202,8 +202,8 @@ export const initiateCalls = async (
   setProcessedRows: any,
   dispatch: any
 ) => {
-  const templateTree = exports.identifyProcessingDependencies(selectedTemplates);
-  const concurrencyLimit: any = exports.getLowestConcurrencyLimit(selectedTemplates, "processing");
+  const templateTree = identifyProcessingDependencies(selectedTemplates);
+  const concurrencyLimit: any = getLowestConcurrencyLimit(selectedTemplates, "processing");
 
   const finalErrors: any = [];
   let processingPromises;
@@ -254,7 +254,7 @@ export const initiateCalls = async (
 
   if(concurrencyLimit){
     console.warn("Concurrency Limit found", concurrencyLimit);
-    processingPromises = await exports.handleConcurrentCalls(concurrencyLimit, processRow, rows, setProcessedRows);
+    processingPromises = await handleConcurrentCalls(concurrencyLimit, processRow, rows, setProcessedRows);
   } else {
     console.warn("No Concurrency Limit found");
     processingPromises = await Promise.allSettled(rows.map(async (row: any) => {
@@ -292,7 +292,7 @@ export const initiateCalls = async (
     return Promise.resolve(rows);
   } else {
     return Promise.reject({
-      success: exports.identifySuccessfulRecords(rows, finalErrors),
+      success: identifySuccessfulRecords(rows, finalErrors),
       errors: finalErrors
     });
   }
