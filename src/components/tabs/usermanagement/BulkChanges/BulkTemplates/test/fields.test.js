@@ -2823,42 +2823,183 @@ describe("fields.js", () => {
     });
     describe("CALABRIO_WFM_ROTATION_START_WEEK", () => {
       describe("validateFunction", () => {
-        const timezoneValidation = FIELDS.CALABRIO_WFM_ROTATION_START_WEEK.validateFunction;
-        test("Rotation start week and Rotation fields both empty, resolve with empty but not required message", async () => {});
-        test("Rotation start week empty, but Rotation are not, reject with missing message", async () => {});
-        test("Both Rotation start week and Rotation are present, but week is invalid, reject with error message", async () => {});
-        test("Both Rotation start week and Rotation are present, week is good, resolve with message and add Rotation start date to row", async () => {});
-        test("Start week was provided, but no rotation, resolve with skipping message", async () => {});
-      });
-      describe("options", () => {
-        const optionsFunction = FIELDS.CALABRIO_WFM_ROTATION_START_WEEK.options;
-
+        const rotationStartWkValidation = FIELDS.CALABRIO_WFM_ROTATION_START_WEEK.validateFunction;
+        test("Rotation start week and Rotation fields both empty, resolve with empty but not required message", async () => {
+          const row = {
+            rowNumber: 5,
+            "WFM Rotation Start Week": "",
+            "WFM Rotation": ""
+          };
+          const result = await rotationStartWkValidation(row, initialTestState);
+          expect(result).toEqual("WFM Rotation Start Week is empty but not required. Skipping validation for row 5");
+        });
+        test("Rotation start week empty, but Rotation are not, reject with missing message", async () => {
+          const row = {
+            rowNumber: 5,
+            "WFM Rotation Start Week": "",
+            "WFM Rotation": "Rotation1",
+            businessUnitId: "123-321"
+          };
+          try {
+            await rotationStartWkValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 5,
+              error: "WFM Rotation Start Week is missing from row 5"
+            }));
+          }
+        });
+        test("Both Rotation start week and Rotation are present, but week is invalid, reject with error message", async () => {
+          const row = {
+            rowNumber: 5,
+            "WFM Rotation Start Week": "20",
+            "WFM Rotation": "Rotation1",
+            businessUnitId: "123-321"
+          };
+          try {
+            await rotationStartWkValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 5,
+              error: "WFM Rotation Start Week is invalid for row 5"
+            }));
+          }
+        });
+        test("Both Rotation start week and Rotation are present, week is good, resolve with message and add Rotation start date to row", async () => {
+          const row = {
+            rowNumber: 5,
+            "WFM Rotation Start Week": "3",
+            "WFM Rotation": "Rotation1",
+            businessUnitId: "123-321"
+          };
+          const result = await rotationStartWkValidation(row, initialTestState);
+          expect(result).toEqual("WFM Rotation Start Week valid for row 5");
+          expect(row).toEqual({
+            ...row,
+            wfmRotationStartWk: 3
+          });
+        });
+        test("Start week was provided, but no rotation, resolve with skipping message", async () => {
+          const row = {
+            rowNumber: 5,
+            "WFM Rotation Start Week": "3",
+            "WFM Rotation": "",
+            businessUnitId: "123-321"
+          };
+          const result = await rotationStartWkValidation(row, initialTestState);
+          expect(result).toEqual("No WFM Rotation was provided. Skipping validation for WFM Rotation Start Week for row 5");
+          expect(row).toEqual({
+            rowNumber: 5,
+            "WFM Rotation Start Week": "3",
+            "WFM Rotation": "",
+            businessUnitId: "123-321"
+          });
+        });
       });
     });
     describe("CALABRIO_WFM_AVAILABILITY_START_DATE", () => {
       describe("validateFunction", () => {
-        const timezoneValidation = FIELDS.CALABRIO_WFM_AVAILABILITY_START_DATE.validateFunction;
-
+        const availabilityStartDateValidation = FIELDS.CALABRIO_WFM_AVAILABILITY_START_DATE.validateFunction;
+        test("Availability and availability start date are empty, resolve with not required message", async () => {
+          const row = {
+            "WFM Availability Start Date": "",
+            "WFM Availability": "",
+            rowNumber: 2
+          };
+          const result = await availabilityStartDateValidation(row, initialTestState);
+          expect(result).toEqual("WFM Availability Start Date is empty but not required. Skipping validation for row 2");
+        });
+        test("Availability start date is empty, availability is not, reject with missing value message", async () => {
+          const row = {
+            "WFM Availability Start Date": null,
+            "WFM Availability": "Availability1",
+            rowNumber: 2
+          };
+          try {
+            await availabilityStartDateValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 2,
+              error: "WFM Availability Start Date is missing from row 2"
+            }));
+          }
+        });
+        test("Both Availability start date and Availability are provided, start date is bad format, reject with invalid message", async () => {
+          const row = {
+            "WFM Availability Start Date": "nope",
+            "WFM Availability": "Availability1",
+            rowNumber: 2
+          };
+          try {
+            await availabilityStartDateValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 2,
+              error: "Error encountered validating WFM Availability Start Date for row 2: Invalid date"
+            }));
+          }
+        });
+        test("Both Availability start date and Availability are provided, format is valid, resolve with message and add formatted availability start date to row ", async () => {
+          const row = {
+            "WFM Availability Start Date": 43321,
+            "WFM Availability": "Availability1",
+            rowNumber: 2
+          };
+          const result = await availabilityStartDateValidation(row, initialTestState);
+          expect(result).toEqual("WFM Availability Start Date valid for row 2");
+          expect(row).toEqual({
+            ...row,
+            wfmAvailabilityStartDate: "2018-08-09"
+          });
+        });
+        test("Start date was provided, but not availability, resolve with skipping message", async () => {
+          const row = {
+            "WFM Availability Start Date": 43321,
+            "WFM Availability": "",
+            rowNumber: 2
+          };
+          const result = await availabilityStartDateValidation(row, initialTestState);
+          expect(result).toEqual("No WFM Availability was provided. Skipping validation for WFM Availability Start Date for row 2");
+          expect(row).toEqual({
+            "WFM Availability Start Date": 43321,
+            "WFM Availability": "",
+            rowNumber: 2
+          });
+        });
       });
     });
     describe("CALABRIO_WFM_AVAILABILITY", () => {
       describe("validateFunction", () => {
-        const timezoneValidation = FIELDS.CALABRIO_WFM_AVAILABILITY.validateFunction;
-
+        const availabilityValidation = FIELDS.CALABRIO_WFM_AVAILABILITY.validateFunction;
+        // TODO: FINISH THESE
       });
       describe("options", () => {
         const optionsFunction = FIELDS.CALABRIO_WFM_AVAILABILITY.options;
-
+        test("State and BU Id are passed into function, returns options", () => {
+          const options = optionsFunction(initialTestState, "123-321");
+          expect(options).toEqual(["Availability1"]);
+        });
+        test("No Business unit id is passed into options function, returns unable to generate message", () => {
+          const options = optionsFunction(initialTestState);
+          expect(options).toEqual(["unable to generate options"]);
+        });
       });
     });
     describe("CALABRIO_WFM_OPTIONAL_COLUMNS", () => {
       describe("validateFunction", () => {
-        const timezoneValidation = FIELDS.CALABRIO_WFM_OPTIONAL_COLUMNS.validateFunction;
-
+        const optionalColsValidation = FIELDS.CALABRIO_WFM_OPTIONAL_COLUMNS.validateFunction;
+        // TODO: FINISH THESE
       });
       describe("options", () => {
         const optionsFunction = FIELDS.CALABRIO_WFM_OPTIONAL_COLUMNS.options;
-
+        test("State and BU Id are passed into function, returns options", () => {
+          const options = optionsFunction(initialTestState, "123-321");
+          expect(options).toEqual(["OptionalCol1"]);
+        });
+        test("No Business unit id is passed into options function, returns unable to generate message", () => {
+          const options = optionsFunction(initialTestState);
+          expect(options).toEqual(["unable to generate options"]);
+        });
       });
     });
   });

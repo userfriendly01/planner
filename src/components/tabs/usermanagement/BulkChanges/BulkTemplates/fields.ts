@@ -1194,7 +1194,10 @@ export const FIELDS: Fields = {
     example: "",
     options: (state: any, businessUnitId: string) => {
       const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
-      return businessUnit.Rotations.map((r: any) => r.Name);
+      if (businessUnit) {
+        return businessUnit.Rotations.map((r: any) => r.Name);
+      }
+      return ["unable to generate options"];
     },
     validateFunction: (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
@@ -1233,7 +1236,7 @@ export const FIELDS: Fields = {
     options: null,
     validateFunction: (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
-      const fieldName = "WFM Rotation Start Date";
+      const fieldName = FIELDS.CALABRIO_WFM_ROTATION_START_WEEK.name;
       const field = cleanupField(row[fieldName], "number");
 
       const rotationField = cleanupField(row[FIELDS.CALABRIO_WFM_ROTATION.name], "string");
@@ -1259,14 +1262,14 @@ export const FIELDS: Fields = {
   },
   CALABRIO_WFM_AVAILABILITY_START_DATE: { //HMMMM CHECK MORE ON THIS ONe. I think this can be empty if availability is?
     field: "wfmAvailabilityStartDate",
-    name: "WFM Availilbity Start Date",
+    name: "WFM Availability Start Date",
     type: "string",
     description: "The start date for availibilty",
     example: "",
     options: null,
     validateFunction: (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
-      const fieldName = "WFM Availability Start Date";
+      const fieldName = FIELDS.CALABRIO_WFM_AVAILABILITY_START_DATE.name;
       const field = cleanupField(row[fieldName], "number");
 
       const availabilityField = cleanupField(row[FIELDS.CALABRIO_WFM_AVAILABILITY.name], "string");
