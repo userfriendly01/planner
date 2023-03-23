@@ -124,6 +124,102 @@ export const calabrioContext = {
       groupId: 201,
       email: "Faith.Cuneo@libertymutual.com"
     }
+  ],
+  wfmOptions: [
+    {
+      Id: "123-321",
+      Name: "WFM Business Unit1",
+      Availabilities: [
+        {
+          Name: "Availability1",
+          Id: "123123"
+        }
+      ],
+      Budget_Groups: [
+        {
+          Name: "BudgetGroup1",
+          Id: "000"
+        }
+      ],
+      Contract_Schedules: [
+        {
+          Name: "ContractSchedule1",
+          Id: "111"
+        }
+      ],
+      Contracts: [
+        {
+          Name: "Contract1",
+          Id: "111"
+        }
+      ],
+      Optional_Columns: [
+        {
+          Name: "OptionalCol",
+          Id: "111"
+        }
+      ],
+      Part_Time_Percentages: [
+        {
+          Name: "ParttimePercent1",
+          Id: "111"
+        }
+      ],
+      Roles: [
+        {
+          Name: "Role1",
+          Id: "111"
+        },
+        {
+          Name: "Role2",
+          Id: "222"
+        }
+      ],
+      Rotations: [
+        {
+          Name: "Rotation1",
+          Id: "111"
+        }
+      ],
+      Shift_Bags: [
+        {
+          Name: "ShiftBag1",
+          Id: "111"
+        }
+      ],
+      Skills: [
+        {
+          Name: "Skill1",
+          Id: "111"
+        },
+        {
+          Name: "Skill2",
+          Id: "222"
+        }
+      ],
+      Workflow_Control_Sets: [
+        {
+          Name: "WFCSet1",
+          Id: "111"
+        }
+      ]
+    }
+  ],
+  wfmOrg: [
+    {
+      Id: "123-321",
+      Name: "Cool WFM Business Unit",
+      Teams: [
+        {
+          Name: "Team1",
+          Id: "111"
+        },
+        {
+          Name: "Team2",
+          Id: "222"
+        }
+      ]
+    }
   ]
 };
 
