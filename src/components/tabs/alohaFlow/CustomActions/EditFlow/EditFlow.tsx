@@ -72,7 +72,8 @@ export const EditFlow = ({
         brand: masterData?.brand,
         channel: masterData?.channel,
         languageOffer: languageOffer,
-        userDestination: userDestination
+        userDestination: userDestination,
+        callerType: masterData?.callerType
       })
     );
   }, [selectedRow]);

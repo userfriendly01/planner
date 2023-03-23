@@ -2,7 +2,7 @@ import React from "react";
 import TextField from "@mui/material/TextField";
 import SelectContainer from "./SelectContainer";
 import TimePickerComponent from "./TimepickerComponent";
-
+import { Dropdown } from "../index";
 export interface ComponentControlProps {
   control: string,
   dropDownOptions: string[],
@@ -69,6 +69,20 @@ function ComponentControl({
           error={error}
           required={required}
           disabled={disabled}
+        />
+      );
+    case "AutoComplete" :
+      return (
+        <Dropdown
+          CustomRender = { (props: { option: string  })=>{ return (<div>{props?.option}</div>); }}
+          label={label}
+          value={value}
+          options={dropDownOptions}
+          updateValue= {onChange}
+          styles={{
+            margin: "0 0 0 0",
+            width: "calc(95%)"
+          }}
         />
       );
     default:

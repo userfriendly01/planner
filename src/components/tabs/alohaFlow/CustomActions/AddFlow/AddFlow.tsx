@@ -77,7 +77,8 @@ export const AddFlow = ({
         brand: masterDataObject.brand,
         channel: masterDataObject.channel,
         languageOffer: languageOffer,
-        userDestination: userDestination
+        userDestination: userDestination,
+        callerType: masterDataObject?.callerType
       }));
     }
     fetchData();

@@ -105,6 +105,7 @@ export interface FlowDropDownList {
     channel: string[];
     languageOffer: string[];
     userDestination: string[];
+    callerType: string[];
 }
 
 export interface AddFlowFieldsConfigProps {
