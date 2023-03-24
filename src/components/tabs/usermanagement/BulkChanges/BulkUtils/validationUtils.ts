@@ -195,10 +195,11 @@ export const allowedEmpty = (row: any, fieldName: string) => {
     let isValid = true;
     allOrNothingFields.forEach((fieldName: string) => {
       if (row[fieldName]) {
-        console.log("%%%% INVALID.  FIELD CANNOT BE EMPTY due to the following field being populated:", fieldName)
+        console.log("%%%% INVALID.  FIELD CANNOT BE EMPTY due to the following field being populated:", fieldName);
         isValid = false;
       }
     });
+    // ???  Todo: Hmmmm - do we just ignore the two optional fields?
     optionalScheduleFields.forEach((fieldName: string) => {
       if (row[fieldName]) {
         isValid = false;
@@ -206,4 +207,4 @@ export const allowedEmpty = (row: any, fieldName: string) => {
     });
     return isValid;
   }
-}
+};

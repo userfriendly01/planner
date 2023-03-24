@@ -48,7 +48,7 @@ const BulkChanges = () => {
 
     // TODO: ALSO DISABLE THE EXPORT OPTIONS AND PROCESS BUTTONS IF WFM IS CHECKED, BUT OPTIONS AREN'T LOADED
     // If wfm user template is selected, but the options failed to load, try to reload them in the modal
-    if(selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_USER")) {
+    if(selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_PERSON")) {
       const isLoaded = checkIfWFMOptionsLoaded();
       if (!isLoaded) {
         setShowWFMLoadModal(true);

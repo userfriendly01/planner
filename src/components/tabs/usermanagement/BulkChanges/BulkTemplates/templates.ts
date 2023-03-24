@@ -1,6 +1,7 @@
 import {
   createUser,
   createCalabrioUser,
+  createCalabrioWFMPerson,
   getCalabrioUser,
   updateCalabrioUser,
   updateUser
@@ -103,12 +104,13 @@ const processWFMCreateUser = async (row: any, state: any) => {
   console.warn("****WFM RECORD PROCESSING for", row);
   const rowNumber = row.rowNumber;
 
+  // ? Should we check for an existing WFM user first? - Ask Steph
+
   const body: any = {};
 
   // TODO: what should we do with fields that we aren't requiring?
-  // And what should we do particularly with the ones pertaining to scheduling
 
-  // def required fields
+  // required fields
   body.FirstName = row.attributes.emp_first_name;
   body.LastName = row.attributes.emp_last_name;
   body.BusinessUnitId = row.businessUnitId;
@@ -147,6 +149,15 @@ const processWFMCreateUser = async (row: any, state: any) => {
 
   console.log("THIS IS WHAT IS GETTING SENT for WFM CREATE", body);
   return Promise.resolve("yay");
+  try {
+    // await createCalabrioWFMPerson(body);
+    console.log(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
+    return Promise.resolve(`Person created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`);
+  } catch(err) {
+    const errorMessage = `Failed to create Calabrio WFM person for row ${rowNumber}. ${formatErrorMessage(err)}`;
+    console.error(errorMessage, err);
+    return rejectPromise(errorMessage, rowNumber);
+  }
 };
 
 const processUpdateWorkerAttribute = async (row: any, template: Template, state: any) => {
@@ -288,8 +299,8 @@ export const getCreateTemplates = (state: any): Templates => {
         FIELDS.CALABRIO_TIME_ZONE
       ]
     },
-    CREATE_CALABRIO_WFM_USER: {
-      name: "CREATE_CALABRIO_WFM_USER",
+    CREATE_CALABRIO_WFM_PERSON: {
+      name: "CREATE_CALABRIO_WFM_PERSON",
       data: {},
       processFunction: (row: any) => processWFMCreateUser(row, state),
       stateUpdateFunctions: [], // TODO: DO THIS THING

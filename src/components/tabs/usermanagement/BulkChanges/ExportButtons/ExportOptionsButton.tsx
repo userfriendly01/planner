@@ -18,7 +18,7 @@ const ExportOptionsButton = (props: any) => {
   const [ wfmBusinessUnit, setWfmBusinessUnit ] = React.useState(null);
   const [ showBusinessUnitModal, setShowBusinessUnitModal ] = React.useState(false);
 
-  const isWFMSelected: boolean = selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_USER");
+  const isWFMSelected: boolean = selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_PERSON");
 
   const _export = React.useRef(null);
   console.log("ExportOptionsButton Template", template);

@@ -106,6 +106,7 @@ export const apiPaths = {
   CHECK_EXTENSION: `${SERVICE_BASE_URI}/checkextension`,
   CREATE_CALABRIO_TEAM: `${SERVICE_BASE_URI}/calabrio-add-team`,
   CREATE_CALABRIO_USER: `${SERVICE_BASE_URI}/calabrio-add-user`,
+  CREATE_CALABRIO_WFM_PERSON: `${SERVICE_BASE_URI}/calabrio-api/wfm/person`,
   CLOSED_MESSAGE: `${SERVICE_BASE_URI}/closedmessage`,
   CREATE_WORKER: `${SERVICE_BASE_URI}/createworker`,
   DELETE_WORKER: (workerSid: string): string => `${SERVICE_BASE_URI}/deleteworker/${workerSid}`,

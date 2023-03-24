@@ -49,25 +49,38 @@ describe("<BulkCreateForm />", () => {
         expect(rendered.container).toHaveTextContent("Step 1: Choose the applicable systems");
         expect(rendered.container).toHaveTextContent("Twilio");
         expect(rendered.container).toHaveTextContent("Calabrio QM");
-        expect(Checkbox.mock.calls.length).toBe(2);
+        expect(rendered.container).toHaveTextContent("Calabrio WFM");
+        expect(Checkbox.mock.calls.length).toBe(3);
         expect(Checkbox.mock.calls[0][0].checked).toBe(false);
         expect(Checkbox.mock.calls[1][0].checked).toBe(false);
+        expect(Checkbox.mock.calls[2][0].checked).toBe(false);
       });
     });
     describe("component is rendered with 1 selected templates", () => {
       test("should render options in default state", () => {
         renderComponent([createTemplates.CREATE_TRITON_USER]);
-        expect(Checkbox.mock.calls.length).toBe(2);
+        expect(Checkbox.mock.calls.length).toBe(3);
         expect(Checkbox.mock.calls[0][0].checked).toBe(true);
         expect(Checkbox.mock.calls[1][0].checked).toBe(false);
+        expect(Checkbox.mock.calls[2][0].checked).toBe(false);
+      });
+    });
+    describe("component is rendered with 2 selected templates", () => {
+      test("should render options in default state", () => {
+        renderComponent([createTemplates.CREATE_TRITON_USER, createTemplates.CREATE_CALABRIO_QM_USER]);
+        expect(Checkbox.mock.calls.length).toBe(3);
+        expect(Checkbox.mock.calls[0][0].checked).toBe(true);
+        expect(Checkbox.mock.calls[1][0].checked).toBe(true);
+        expect(Checkbox.mock.calls[2][0].checked).toBe(false);
       });
     });
     describe("component is rendered with multiple selected templates", () => {
       test("should render options in default state", () => {
-        renderComponent([createTemplates.CREATE_TRITON_USER, createTemplates.CREATE_CALABRIO_QM_USER]);
-        expect(Checkbox.mock.calls.length).toBe(2);
+        renderComponent([createTemplates.CREATE_TRITON_USER, createTemplates.CREATE_CALABRIO_QM_USER, createTemplates.CREATE_CALABRIO_WFM_PERSON]);
+        expect(Checkbox.mock.calls.length).toBe(3);
         expect(Checkbox.mock.calls[0][0].checked).toBe(true);
         expect(Checkbox.mock.calls[1][0].checked).toBe(true);
+        expect(Checkbox.mock.calls[2][0].checked).toBe(true);
       });
     });
   });
@@ -77,6 +90,7 @@ describe("<BulkCreateForm />", () => {
         renderComponent([]);
         expect(Checkbox.mock.calls[0][0].checked).toBe(false);
         expect(Checkbox.mock.calls[1][0].checked).toBe(false);
+        expect(Checkbox.mock.calls[2][0].checked).toBe(false);
         const onCheckTriton = Checkbox.mock.calls[0][0].onChange;
         act(() => onCheckTriton({
           target: {
@@ -95,6 +109,7 @@ describe("<BulkCreateForm />", () => {
         renderComponent([]);
         expect(Checkbox.mock.calls[0][0].checked).toBe(false);
         expect(Checkbox.mock.calls[1][0].checked).toBe(false);
+        expect(Checkbox.mock.calls[2][0].checked).toBe(false);
         const onCheckTriton = Checkbox.mock.calls[0][0].onChange;
         act(() => onCheckTriton({
           target: {
@@ -115,6 +130,7 @@ describe("<BulkCreateForm />", () => {
         renderComponent([]);
         expect(Checkbox.mock.calls[0][0].checked).toBe(false);
         expect(Checkbox.mock.calls[1][0].checked).toBe(false);
+        expect(Checkbox.mock.calls[2][0].checked).toBe(false);
         const onCheckTriton = Checkbox.mock.calls[1][0].onChange;
         act(() => onCheckTriton({
           target: {
@@ -133,6 +149,7 @@ describe("<BulkCreateForm />", () => {
         renderComponent([]);
         expect(Checkbox.mock.calls[0][0].checked).toBe(false);
         expect(Checkbox.mock.calls[1][0].checked).toBe(false);
+        expect(Checkbox.mock.calls[2][0].checked).toBe(false);
         const onCheckTriton = Checkbox.mock.calls[1][0].onChange;
         act(() => onCheckTriton({
           target: {
@@ -142,6 +159,46 @@ describe("<BulkCreateForm />", () => {
         expect(updateSelectedTemplates).toHaveBeenCalledTimes(1);
         expect(updateSelectedTemplates.mock.calls[0][0]).toBe(false);
         expect(updateSelectedTemplates.mock.calls[0][1].name).toBe("CREATE_CALABRIO_QM_USER");
+        expect(updateSelectedTemplates.mock.calls[0][2]).toStrictEqual([]);
+        expect(updateSelectedTemplates.mock.calls[0][3]).toBe(mockSetSelectedTemplates);
+      });
+    });
+  });
+  describe("Calabrio WFM checkbox is clicked", () => {
+    describe("checked === true", () => {
+      test("setSelectedTemplates should be called with true and the correct template", () => {
+        renderComponent([]);
+        expect(Checkbox.mock.calls[0][0].checked).toBe(false);
+        expect(Checkbox.mock.calls[1][0].checked).toBe(false);
+        expect(Checkbox.mock.calls[2][0].checked).toBe(false);
+        const onCheckTriton = Checkbox.mock.calls[2][0].onChange;
+        act(() => onCheckTriton({
+          target: {
+            checked: true
+          }
+        }));
+        expect(updateSelectedTemplates).toHaveBeenCalledTimes(1);
+        expect(updateSelectedTemplates.mock.calls[0][0]).toBe(true);
+        expect(updateSelectedTemplates.mock.calls[0][1].name).toBe("CREATE_CALABRIO_WFM_PERSON");
+        expect(updateSelectedTemplates.mock.calls[0][2]).toStrictEqual([]);
+        expect(updateSelectedTemplates.mock.calls[0][3]).toBe(mockSetSelectedTemplates);
+      });
+    });
+    describe("checked === false", () => {
+      test("setSelectedTemplates should be called with false and the correct template", () => {
+        renderComponent([]);
+        expect(Checkbox.mock.calls[0][0].checked).toBe(false);
+        expect(Checkbox.mock.calls[1][0].checked).toBe(false);
+        expect(Checkbox.mock.calls[2][0].checked).toBe(false);
+        const onCheckTriton = Checkbox.mock.calls[2][0].onChange;
+        act(() => onCheckTriton({
+          target: {
+            checked: false
+          }
+        }));
+        expect(updateSelectedTemplates).toHaveBeenCalledTimes(1);
+        expect(updateSelectedTemplates.mock.calls[0][0]).toBe(false);
+        expect(updateSelectedTemplates.mock.calls[0][1].name).toBe("CREATE_CALABRIO_WFM_PERSON");
         expect(updateSelectedTemplates.mock.calls[0][2]).toStrictEqual([]);
         expect(updateSelectedTemplates.mock.calls[0][3]).toBe(mockSetSelectedTemplates);
       });
