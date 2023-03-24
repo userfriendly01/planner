@@ -157,6 +157,10 @@ export const calabrioContext = {
         {
           Name: "OptionalCol1",
           Id: "111"
+        },
+        {
+          Name: "OptionalCol2",
+          Id: "222"
         }
       ],
       Part_Time_Percentages: [

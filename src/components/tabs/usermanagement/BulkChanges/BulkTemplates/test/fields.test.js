@@ -2971,7 +2971,81 @@ describe("fields.js", () => {
     describe("CALABRIO_WFM_AVAILABILITY", () => {
       describe("validateFunction", () => {
         const availabilityValidation = FIELDS.CALABRIO_WFM_AVAILABILITY.validateFunction;
-        // TODO: FINISH THESE
+        test("No availability provided, resolve with the empty but not required message", async () => {
+          const row = {
+            "WFM Availability": "",
+            businessUnitId: "123-321",
+            rowNumber: 2
+          };
+          const result = await availabilityValidation(row, initialTestState);
+          expect(result).toEqual("WFM Availability is empty but not required. Skipping validation for row 2");
+        });
+        test("Availability provided, but BU for the row is invalid, reject with unable to validate message", async () => {
+          const row = {
+            "WFM Availability": "Availability1",
+            businessUnitId: "fake bu",
+            rowNumber: 2
+          };
+          try {
+            await availabilityValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 2,
+              error: "Unable to validate WFM Availability due to invalid Business Unit for row 2"
+            }));
+          }
+        });
+        test("Availability provided but invalid, reject with invalid message ", async () => {
+          const row = {
+            "WFM Availability": "fake availability",
+            businessUnitId: "123-321",
+            rowNumber: 2
+          };
+          try {
+            await availabilityValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 2,
+              error: "WFM Availability is invalid for row 2"
+            }));
+          }
+        });
+        test("Availability and BU are both valid, resolve and add availability id to row", async () => {
+          const row = {
+            "WFM Availability": "Availability1",
+            businessUnitId: "123-321",
+            rowNumber: 2
+          };
+          const result = await availabilityValidation(row, initialTestState);
+          expect(result).toEqual("WFM Availability valid for row 2");
+          expect(row).toEqual({
+            ...row,
+            wfmAvailabilityId: "123123"
+          });
+        });
+        test("Error thrown for missing BU availibilities, reject", async () => {
+          const row = {
+            "WFM Availability": "Availability1",
+            businessUnitId: "123-321",
+            rowNumber: 2
+          };
+          try {
+            await availabilityValidation(row, {
+              calabrioContext: {
+                wfmOptions: [
+                  {
+                    Id: "123-321"
+                  }
+                ]
+              }
+            });
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 2,
+              error: "Error encountered validating WFM Availability for row 2: Cannot read property 'find' of undefined"
+            }));
+          }
+        });
       });
       describe("options", () => {
         const optionsFunction = FIELDS.CALABRIO_WFM_AVAILABILITY.options;
@@ -2988,13 +3062,87 @@ describe("fields.js", () => {
     describe("CALABRIO_WFM_OPTIONAL_COLUMNS", () => {
       describe("validateFunction", () => {
         const optionalColsValidation = FIELDS.CALABRIO_WFM_OPTIONAL_COLUMNS.validateFunction;
-        // TODO: FINISH THESE
+        test("No Optional Columns provided, resolve with empty but not required message", async () => {
+          const row = {
+            "WFM Optional Columns": "",
+            businessUnitId: "123-321",
+            rowNumber: 4
+          };
+          const result = await optionalColsValidation(row, initialTestState);
+          expect(result).toEqual("WFM Optional Columns is empty but not required. Skipping validation for row 4");
+        });
+        test("Optional columns provided, but BU is invalid for the row, reject with invalid bu message", async () => {
+          const row = {
+            "WFM Optional Columns": "OptionalCol1",
+            businessUnitId: "fake bu",
+            rowNumber: 4
+          };
+          try {
+            await optionalColsValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Unable to validate WFM Optional Columns due to invalid Business Unit for row 4"
+            }));
+          }
+        });
+        test("One optional column provided, is valid, resolve and add id to row", async () => {
+          const row = {
+            "WFM Optional Columns": "OptionalCol1",
+            businessUnitId: "123-321",
+            rowNumber: 4
+          };
+          const result = await optionalColsValidation(row, initialTestState);
+          expect(result).toEqual("WFM Optional Columns valid for row 4");
+          expect(row).toEqual({
+            ...row,
+            wfmOptionalColumns: [{
+              Id: "111",
+              Value: "OptionalCol1"
+            }]
+          });
+        });
+        test("Multiple op columns provided, one is bad, reject with invalid message", async () => {
+          const row = {
+            "WFM Optional Columns": "OptionalCol1, fakeCol",
+            businessUnitId: "123-321",
+            rowNumber: 4
+          };
+          try {
+            await optionalColsValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "fakecol is not a valid WFM Optional Column for row 4"
+            }));
+          }
+        });
+        test("Multiple op columns provided, all are valid, resolve with message and add ids to the row", async () => {
+          const row = {
+            "WFM Optional Columns": "OptionalCol1, OptionalCol2",
+            businessUnitId: "123-321",
+            rowNumber: 4
+          };
+          const result = await optionalColsValidation(row, initialTestState);
+          expect(result).toEqual("WFM Optional Columns valid for row 4");
+          expect(row).toEqual({
+            ...row,
+            wfmOptionalColumns: [{
+              Id: "111",
+              Value: "OptionalCol1"
+            },
+            {
+              Id: "222",
+              Value: "OptionalCol2"
+            }]
+          });
+        });
       });
       describe("options", () => {
         const optionsFunction = FIELDS.CALABRIO_WFM_OPTIONAL_COLUMNS.options;
         test("State and BU Id are passed into function, returns options", () => {
           const options = optionsFunction(initialTestState, "123-321");
-          expect(options).toEqual(["OptionalCol1"]);
+          expect(options).toEqual(["OptionalCol1", "OptionalCol2"]);
         });
         test("No Business unit id is passed into options function, returns unable to generate message", () => {
           const options = optionsFunction(initialTestState);

@@ -682,17 +682,6 @@ export const FIELDS: Fields = {
       }
     }
   },
-  // CALABRIO_WFM_CULTURE: { // ? Is this required?  What are the options? Looks like its not required by calabrio...
-  //   field: "wfmCulture",
-  //   name: "Culture",
-  //   type: "string",
-  //   description: "Agent language and format",
-  //   example: "en-US",
-  //   options: null,  // Todo: how do I determine my options here?
-  //   validateFunction: (row: any, state: any): Promise<any> => {
-  //     return Promise.resolve();
-  //   }
-  // },
   CALABRIO_WFM_WORKFLOW_CONTROL_SET: { // allowed to be empty
     field: "wfmWorkflowControlSet",
     name: "Workflow Control Set",
@@ -1173,17 +1162,6 @@ export const FIELDS: Fields = {
         // Do we just ignore and resolve?
         return Promise.resolve(`No ${FIELDS.CALABRIO_WFM_ROTATION.name} was provided. Skipping validation for ${fieldName} for row ${rowNumber}`);
       }
-      // if(!field){
-      //   return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
-      // } else {
-      //   try {
-      //     const formattedDate = formatDateFromExcelDate(field); // will throw error if NaN
-      //     row.wfmRotationStartDate = formattedDate;
-      //     return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
-      //   } catch (err) {
-      //     return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
-      //   }
-      // }
     }
   },
   CALABRIO_WFM_ROTATION: { // allowed to be empty
@@ -1293,17 +1271,6 @@ export const FIELDS: Fields = {
         // Do we just ignore and resolve?
         return Promise.resolve(`No ${FIELDS.CALABRIO_WFM_AVAILABILITY.name} was provided. Skipping validation for ${fieldName} for row ${rowNumber}`);
       }
-      // if(!field){
-      //   return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
-      // } else {
-      //   try {
-      //     const formattedDate = formatDateFromExcelDate(field); // will throw error if NaN
-      //     row.wfmAvailabilityStartDate = formattedDate;
-      //     return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
-      //   } catch (err) {
-      //     return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
-      //   }
-      // }
     }
   },
   CALABRIO_WFM_AVAILABILITY: { // check on this, but I think it can be empty?
@@ -1330,7 +1297,7 @@ export const FIELDS: Fields = {
         const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
 
         if (!businessUnitObj) {
-          return rejectPromise(`Unable to validate ${fieldName}, due to invalid Business Unit for row ${rowNumber}`, rowNumber);
+          return rejectPromise(`Unable to validate ${fieldName} due to invalid Business Unit for row ${rowNumber}`, rowNumber);
         } else {
           try {
             const availabilityObj = businessUnitObj.Availabilities.find((r: any) => cleanupField(r.Name, "string") === field);
@@ -1362,26 +1329,26 @@ export const FIELDS: Fields = {
     },
     validateFunction: (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
-      const fieldName = "WFM Optional Columns";
+      const fieldName = FIELDS.CALABRIO_WFM_OPTIONAL_COLUMNS.name;
       const field = cleanupField(row[fieldName], "string");
 
       if(!field){
         return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
       } else {
         try {
+          const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+          if (!businessUnitObj) {
+            return rejectPromise(`Unable to validate ${fieldName} due to invalid Business Unit for row ${rowNumber}`, rowNumber);
+          }
           const fieldArray = field.split(",");
           row.wfmOptionalColumns = [];
           fieldArray.forEach((oc: any) => {
             const cleanOptionalColumn = cleanupField(oc, "string");
-            const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
-
-            if (!businessUnitObj) {
-              throw new Error(`Unable to validate ${cleanOptionalColumn}, due to invalid Business Unit for row ${rowNumber}`);
-            }
 
             const optionalColumnObj = businessUnitObj.Optional_Columns.find((r:any) => cleanupField(r.Name, "string") === cleanOptionalColumn);
             if(!optionalColumnObj) {
-              throw new Error(`${cleanOptionalColumn} is not a valid wfm skill for row ${rowNumber}`);
+              throw new Error(`${cleanOptionalColumn} is not a valid WFM Optional Column for row ${rowNumber}`);
             } else {
               // reformat - Teleopti api wants Id and Value
               const optionalColumn = {
