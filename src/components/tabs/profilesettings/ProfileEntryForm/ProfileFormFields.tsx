@@ -15,7 +15,8 @@ import {
 } from "./ProfileEntryForm.Styles";
 import {
   FormControlLabel,
-  Switch
+  Switch,
+  Tooltip
 } from "@mui/material";
 import {
   profileEntryFormDispatch,
@@ -60,6 +61,10 @@ const ProfileFormFields = () => {
     {
       fieldKey: "voiceMailTranscription",
       label: "Voice Mail Transcription"
+    },
+    {
+      fieldKey: "selfServiceInd",
+      label: "Self Service Indicator"
     }
   ];
 
@@ -109,18 +114,32 @@ const ProfileFormFields = () => {
 
         {
           leftToggleControls.map((control, index) => (
-            <ToggleContainer key={index}>
-              <FormControlLabel
-                label={control.label}
-                labelPlacement="end"
-                control={<Switch
-                  inputProps={{ "aria-label": "toggle-zero-out" }}
-                  checked={form[control.fieldKey].value}
-                  onChange={() => setForm({
-                    type: profileEntryFormActions.TOGGLE,
-                    fieldKey: control.fieldKey
-                  })} />} />
-            </ToggleContainer>
+            control.fieldKey !== "selfServiceInd" ?
+              <ToggleContainer key={index}>
+                <FormControlLabel
+                  label={control.label}
+                  labelPlacement="end"
+                  control={<Switch
+                    inputProps={{ "aria-label": "toggle-zero-out" }}
+                    checked={form[control.fieldKey].value}
+                    onChange={() => setForm({
+                      type: profileEntryFormActions.TOGGLE,
+                      fieldKey: control.fieldKey
+                    })} />} />
+              </ToggleContainer> :
+              // TODO: figure out weirdness with KEY !
+              // eslint-disable-next-line react/jsx-key 
+              <Tooltip title={"Self service indicator is applicable to all profiles, but is actually set at the worker attribute level"}>
+                <ToggleContainer key={index}>
+                  <FormControlLabel
+                    label={control.label}
+                    labelPlacement="end"
+                    control={<Switch
+                      inputProps={{ "aria-label": "toggle-zero-out" }}
+                      checked={true}
+                      disabled />} />
+                </ToggleContainer>
+              </Tooltip>
           ))
         }
         <OverflowSkillTextField label="Overflow Skill" />
