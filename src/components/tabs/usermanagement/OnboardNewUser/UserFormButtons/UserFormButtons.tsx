@@ -164,11 +164,13 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         alternateDid: form.alternateDid.e164,
         directDialNum: form.directDialNum.e164,
         operatingUnitSid: operatingUnitSid,
-        zeroOutEnabled: form.zeroOutEnabled
+        zeroOutEnabled: form.zeroOutEnabled,
+        selfServiceIndicator: form.selfServiceIndicator
       } : {
         attributes,
         operatingUnitSid: operatingUnitSid,
-        activateEp: false
+        activateEp: false,
+        selfServiceIndicator: form.selfServiceIndicator
       };
 
     createUser(createUserReqBody)
@@ -340,6 +342,9 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     }
     if (form.inactiveForwardTo.value !== null && form.inactiveForwardTo.updated) {
       payload.inactiveForwardTo = form.inactiveForwardTo.value;
+    }
+    if(form.selfServiceIndicatorUpdated){
+      payload.selfServiceIndicator = form.selfServiceIndicator; // TODO do we need to swtich this to attributes ? 
     }
 
     updateUser(worker.sid, payload)
