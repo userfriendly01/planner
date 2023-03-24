@@ -444,6 +444,32 @@ export const FIELDS: Fields = {
       }
     }
   },
+  SELF_SERVICE_INDICATOR: {
+    field: "selfServiceIndicator",
+    name: "Self Service Indicator",
+    type: "boolean",
+    description: "Y/N indicator to represent if user has self-service attribute",
+    example: "Y",
+    options: null,
+    validateFunction: async (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = "Self Service Indicator";
+      const field = cleanupField(row[fieldName], "string");
+
+      try {
+        if(field !== "y" && field !== "n"){
+          throw new Error(`Self Service Indicator field needs to be 'Y' or 'N' for row ${rowNumber}`);
+        } else if( field === "y"){
+          row.selfServiceIndicator = true;
+          return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+        } else {
+          return Promise.resolve(`${fieldName} ${field} is skipped for row ${rowNumber}`);
+        }
+      } catch(err) {
+        return rejectPromise(`${fieldName} needs to be 'Y' or 'N' for row ${rowNumber}`, rowNumber);
+      }
+    }
+  },
   CALABRIO_SCOPE: {
     field: "calabrioScope",
     name: "Calabrio Scope",

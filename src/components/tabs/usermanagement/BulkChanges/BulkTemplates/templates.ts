@@ -216,7 +216,8 @@ export const getCreateTemplates = (state: any): Templates => {
         FIELDS.DID_USER,
         FIELDS.DIRECT_DIAL_NUMBER,
         FIELDS.ZERO_OUT_ENABLED,
-        FIELDS.OUTGOING_NUMBER
+        FIELDS.OUTGOING_NUMBER,
+        FIELDS.SELF_SERVICE_INDICATOR  //TODO check if this makes it a required field
       ]
     },
     CREATE_CALABRIO_QM_USER: {
