@@ -55,6 +55,10 @@ export const formatCallTagsName = name => {
   return _.startCase(name);
 };
 
+export const formatSelfServiceIndicatorData = () => {
+  return  <Check />;
+};
+
 export const profileSettingsViews = [
   {
     value: "PROFILE_DIRECTORY",

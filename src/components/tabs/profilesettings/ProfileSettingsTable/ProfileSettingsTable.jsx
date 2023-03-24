@@ -19,7 +19,8 @@ import {
   formatProfileACWDataEntry,
   formatOverflowSkillData,
   formatActivityData,
-  sortProfilesById
+  sortProfilesById,
+  formatSelfServiceIndicatorData
 } from "utils";
 import { Tooltip } from "@mui/material";
 import { Edit } from "@mui/icons-material";
@@ -121,6 +122,9 @@ const ProfileSettingsTable = props => {
                     </CustomTableData>
                     <CustomTableData>
                       <TableText>{formatProfileBooleanData(profile.click_to_dial_i.data[0])}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
+                      <TableText>{formatSelfServiceIndicatorData()}</TableText>
                     </CustomTableData>
                     <CustomTableData>
                       <TableDataFlex>

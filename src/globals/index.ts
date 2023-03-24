@@ -88,6 +88,10 @@ export const profileTableColumnHeader = [
     TOOLTIP: "Enable click-to-dial/transfer from external application"
   },
   {
+    COLUMN_NAME: "Self Service Indicator",
+    TOOLTIP: "Self Service indicator is available to all profiles but is set at worker level"
+  },
+  {
     COLUMN_NAME: "Activities",
     TOOLTIP: "Profile Activities"
   },
