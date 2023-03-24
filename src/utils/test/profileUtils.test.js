@@ -12,6 +12,7 @@ import {
   formatActivityData,
   formatCallTagsName,
   formatAggregateQueues,
+  formatSelfServiceIndicatorData,
   createProfilePayload,
   updateProfilePayload
 } from "../profileUtils";
@@ -133,6 +134,12 @@ describe("profileUtils", () => {
       expect(formatCallTagsName("notes")).toStrictEqual("Notes");
     });
   });
+
+  describe("formatSelfServiceIndicatorData", () => {
+    test("should return check no matter what", () => {
+      expect(formatSelfServiceIndicatorData()).toStrictEqual(<Check />)
+    })
+  })
 
   describe("formatAggregateQueues", () => {
     test("test should return single queue ", () => {
