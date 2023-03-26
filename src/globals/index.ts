@@ -89,7 +89,7 @@ export const profileTableColumnHeader = [
   },
   {
     COLUMN_NAME: "Self Service Indicator",
-    TOOLTIP: "Self Service indicator is available to all profiles but is set at worker level"
+    TOOLTIP: "Self service indicator is applicable to profiles with an id of 39 and above, but is actually set at the worker attribute level"
   },
   {
     COLUMN_NAME: "Activities",

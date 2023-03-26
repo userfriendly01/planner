@@ -233,7 +233,7 @@ export interface Worker {
   sid: string,
   skillsDifferent: boolean,
   zeroOutEnabled?: boolean,
-  selfServiceIndicator?: boolean
+  selfServiceInd?: boolean
 }
 
 export interface WorkerAttributeSkills {

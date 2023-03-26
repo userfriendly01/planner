@@ -11,7 +11,7 @@ export interface DbWorker {
   operatingUnitSid?: string,
   workerSid: string,
   zeroOutEnabled: boolean,
-  selfServiceIndicator?: boolean // TODO is this needed ? 
+  selfServiceInd?: boolean // TODO is this needed ? 
   inactiveForwardTo?: string
 }
 

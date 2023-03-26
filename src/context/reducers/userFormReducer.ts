@@ -128,8 +128,8 @@ export const initialUserFormState: UserFormState = {
   zeroOutEnabled: false,
   zeroOutEnabledUpdated: false,
   editDisabled: false,
-  selfServiceIndicator: false,
-  selfServiceIndicatorUpdated: false // TODO : Check if we need selfServiceIndicatorUpdated?
+  selfServiceInd: false,
+  selfServiceIndUpdated: false // TODO : Check if we need selfServiceIndicatorUpdated?
 };
 
 export const userFormReducer = (state: UserFormState, action: Action): UserFormState => {
@@ -283,8 +283,8 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
     case userFormActions.UPDATE_SELF_SERVICE_INDICATOR:{
       return {
         ...state,
-        selfServiceIndicator: !state.selfServiceIndicator,
-        selfServiceIndicatorUpdated: true
+        selfServiceInd: !state.selfServiceInd,
+        selfServiceIndUpdated: true
       };
     }
 
@@ -467,7 +467,7 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         },
         didUser: worker.directDialNum ? true : false,
         zeroOutEnabled: worker.zeroOutEnabled || false,
-        selfServiceIndicator: worker. selfServiceIndicator || false, // TODO check if this needs to be switched to attributes 
+        selfServiceInd: worker. selfServiceInd || false,
         editDisabled: worker.directDialNum ? true : false
       };
       return finalObj;
@@ -519,7 +519,7 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         },
         didUser: worker.directDialNum ? true : false,
         zeroOutEnabled: worker.zeroOutEnabled || false,
-        selfServiceIndicator: worker.selfServiceIndicator || false, // TODO check if this needs to be switched to attributes 
+        selfServiceInd: worker.selfServiceInd || false, // TODO check if this needs to be switched to attributes 
         editDisabled: worker.directDialNum ? true : false
       };
       console.log("FINAL", finalObj);

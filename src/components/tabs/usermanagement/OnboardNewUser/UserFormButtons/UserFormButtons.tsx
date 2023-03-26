@@ -165,12 +165,11 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         directDialNum: form.directDialNum.e164,
         operatingUnitSid: operatingUnitSid,
         zeroOutEnabled: form.zeroOutEnabled,
-        selfServiceIndicator: form.selfServiceIndicator
+        selfServiceInd: form.selfServiceInd
       } : {
         attributes,
         operatingUnitSid: operatingUnitSid,
-        activateEp: false,
-        selfServiceIndicator: form.selfServiceIndicator
+        activateEp: false
       };
 
     createUser(createUserReqBody)
@@ -327,7 +326,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
     const payload: Partial<DbWorker> = {
       attributes,
-      zeroOutEnabled: form.zeroOutEnabled
+      zeroOutEnabled: form.zeroOutEnabled,
+      selfServiceInd: form.selfServiceIndicator
     };
 
     if(operatingUnitSid){
@@ -343,8 +343,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     if (form.inactiveForwardTo.value !== null && form.inactiveForwardTo.updated) {
       payload.inactiveForwardTo = form.inactiveForwardTo.value;
     }
-    if(form.selfServiceIndicatorUpdated){
-      payload.selfServiceIndicator = form.selfServiceIndicator; // TODO do we need to swtich this to attributes ? 
+    if(form.selfServiceIndUpdated){
+      payload.selfServiceInd = form.selfServiceInd; // TODO do we need to swtich this to attributes ? 
     }
 
     updateUser(worker.sid, payload)

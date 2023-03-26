@@ -1,7 +1,8 @@
 import ProfileFormFields from "../ProfileFormFields";
 import {
   FormControlLabel,
-  Switch
+  Switch,
+  Toggle
 } from "@mui/material";
 import {
   profileEntryFormDispatch,
@@ -62,6 +63,7 @@ describe("<ProfileFormFields />", () => {
       OverflowSkillTextField,
       FormControlLabel,
       Switch,
+      Toggle,
       StyledButton
     });
     profileEntryFormDispatch.mockReturnValue(mockSetForm);

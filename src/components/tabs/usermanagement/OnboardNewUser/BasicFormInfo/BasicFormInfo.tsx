@@ -211,21 +211,21 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           />
         ) : null
         }
-        <Tooltip title={"enable to add self service indicator attribute to worker"} placement={"bottom-start"}>
+        {form.didUser ? (<Tooltip title={"enable to add self service indicator attribute to worker"} placement={"bottom-start"}>
           <ToggleContainer>
             <Switch
               //disabled={parseInt(form.profil_id) <= 39 ? true: false} / TODO : do we want to disable this option for certain profiles?
-              checked={form.selfServiceIndicator}
+              checked={form.selfServiceInd}
               onChange={() => {
                 console.log("FORM1!!!", form);
                 setForm({ type: userFormActions.UPDATE_SELF_SERVICE_INDICATOR });
                 console.log("FORM!!!", form); }
-              }// fix this
+              }
               inputProps={{ "aria-label": "toggle-did-user" }}
             />
             <ToggleLabel>Self Service Indicator</ToggleLabel>
           </ToggleContainer>
-        </Tooltip>
+        </Tooltip>) : null}
       </FormControlsPane>
       <RightColumn>
         {!form.didUser ?

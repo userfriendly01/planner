@@ -30,7 +30,7 @@ export const isFormUpdated = (form: UserFormState): boolean => form.defaultSkill
 form.profileId.updated || form.outgoing.updated ||
 form.alternateDid.updated || form.directDialNum.updated ||
 form.nNumber.updated || form.extension.updated ||
-form.inactiveForwardTo.updated || form.zeroOutEnabledUpdated || form.calabrioUser.updated || form.selfServiceIndicatorUpdated;
+form.inactiveForwardTo.updated || form.zeroOutEnabledUpdated || form.calabrioUser.updated || form.selfServiceIndUpdated;
 
 export const isFormValid = (form: UserFormState, worker: Worker, forwardToToggle: boolean): boolean =>
   (form.formMode === formModes.INSERT ? isNNumberValid(form) : true)
