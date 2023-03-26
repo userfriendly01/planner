@@ -124,7 +124,7 @@ const ProfileSettingsTable = props => {
                       <TableText>{formatProfileBooleanData(profile.click_to_dial_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatSelfServiceIndicatorData()}</TableText>
+                      <TableText>{formatSelfServiceIndicatorData(profile.profile_id)}</TableText>
                     </CustomTableData>
                     <CustomTableData>
                       <TableDataFlex>
