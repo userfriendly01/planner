@@ -34,7 +34,7 @@ const successfulRows = [
     outgoingNumber: "If the user is not a DID user this is their Outgoing number",
     profileId: "Profile Id",
     zeroOutEnabled: "Y/N Indicator to represent if the zero out skill aligned to the profile ID should be added to the users current skills. Only required when DID User is true",
-    selfServiceIndicator: "Y/N indicator to represent if user has self-service attribute"
+    selfServiceInd: "Y/N indicator to represent if user has self-service attribute"
   },
   {
     defaultSkills: "bscCommissions:3, blSalesL1:2, aisl1",
@@ -46,7 +46,7 @@ const successfulRows = [
     outgoingNumber: "6038518288",
     profileId: 3,
     zeroOutEnabled: "Y",
-    selfServiceIndicator: "Y"
+    selfServiceInd: "Y"
   }
 ];
 
