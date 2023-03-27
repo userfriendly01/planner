@@ -129,7 +129,7 @@ export const initialUserFormState: UserFormState = {
   zeroOutEnabledUpdated: false,
   editDisabled: false,
   selfServiceInd: false,
-  selfServiceIndUpdated: false // TODO : Check if we need selfServiceIndicatorUpdated?
+  selfServiceIndUpdated: false
 };
 
 export const userFormReducer = (state: UserFormState, action: Action): UserFormState => {

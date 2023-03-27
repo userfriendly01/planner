@@ -377,6 +377,7 @@ describe("<UserFormButtons />", () => {
                 alternateDid: validFormState.alternateDid.e164,
                 directDialNum: validFormState.directDialNum.e164,
                 zeroOutEnabled: validFormState.zeroOutEnabled,
+                selfServiceInd: validFormState.selfServiceInd,
                 operatingUnitSid: validOperatingUnitId
               });
               expect(mockSetForm).toHaveBeenCalledTimes(2);
@@ -419,7 +420,8 @@ describe("<UserFormButtons />", () => {
           const createWorkerAttributesAfterFormValid = workerAttributesAfterFormValid;
           const form = {
             ...validFormState,
-            zeroOutEnabled: true
+            zeroOutEnabled: true,
+            selfServiceInd: true //?
           };
           beforeEach(() => {
             useFormState.mockReturnValue(form);
@@ -446,6 +448,7 @@ describe("<UserFormButtons />", () => {
                 alternateDid: validFormState.alternateDid.e164,
                 directDialNum: validFormState.directDialNum.e164,
                 zeroOutEnabled: true,
+                selfServiceInd: true, //?,
                 operatingUnitSid: validOperatingUnitId
               });
               expect(mockSetForm).toHaveBeenCalledTimes(2);
@@ -511,6 +514,7 @@ describe("<UserFormButtons />", () => {
                   alternateDid: validFormState.alternateDid.e164,
                   directDialNum: validFormState.directDialNum.e164,
                   zeroOutEnabled: true,
+                  selfServiceInd: true,//?
                   operatingUnitSid: validOperatingUnitId
                 });
                 expect(mockSetForm).toHaveBeenCalledTimes(2);
@@ -945,6 +949,7 @@ describe("<UserFormButtons />", () => {
               updated: false
             },
             zeroOutEnabled: true
+            //selfServiceInd: true  ///?
           };
           beforeEach(() => {
             updateUser.mockResolvedValue(rawDbWorker);
@@ -996,6 +1001,7 @@ describe("<UserFormButtons />", () => {
                 attributes: updateWorkerAttributesAfterFormValid,
                 operatingUnitSid: validOperatingUnitId,
                 zeroOutEnabled: true
+                //selfServiceInd: false // ??
               });
               expect(checkConflictingUsers).toBeCalledTimes(1);
               expect(updateCalabrioUser).toBeCalledTimes(1);
@@ -1080,6 +1086,7 @@ describe("<UserFormButtons />", () => {
                 alternateDid: validFormState.alternateDid.e164,
                 directDialNum: validFormState.directDialNum.e164,
                 zeroOutEnabled: validFormState.zeroOutEnabled,
+                selfServiceInd: validFormState.selfServiceInd,
                 operatingUnitSid: validOperatingUnitId
               });
               expect(mockDispatch).toHaveBeenCalledTimes(2);
@@ -1138,6 +1145,7 @@ describe("<UserFormButtons />", () => {
                   alternateDid: validFormState.alternateDid.e164,
                   directDialNum: validFormState.directDialNum.e164,
                   zeroOutEnabled: validFormState.zeroOutEnabled,
+                  selfServiceInd: validFormState.selfServiceInd,  ///?
                   operatingUnitSid: validOperatingUnitId
                 });
                 expect(mockDispatch).toHaveBeenCalledTimes(2);
@@ -1201,7 +1209,8 @@ describe("<UserFormButtons />", () => {
             },
             defaultSkillsUpdated: false,
             zeroOutEnabledUpdated: false,
-            zeroOutEnabled: true
+            zeroOutEnabled: true,
+            selfServiceInd: false
           };
           beforeEach(() => {
             updateUser.mockResolvedValue(rawDbWorker);
@@ -1237,7 +1246,8 @@ describe("<UserFormButtons />", () => {
                   emp_last_name: "Rizzo",
                   full_name: "Frank Rizzo"
                 },
-                zeroOutEnabled: true
+                zeroOutEnabled: true,
+                selfServiceInd: true
               });
               expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
@@ -1318,6 +1328,7 @@ describe("<UserFormButtons />", () => {
                 alternateDid: validFormState.alternateDid.e164,
                 directDialNum: validFormState.directDialNum.e164,
                 zeroOutEnabled: validFormState.zeroOutEnabled,
+                selfServiceInd: validFormState.selfServiceInd,
                 operatingUnitSid: validOperatingUnitId
               });
               expect(mockDispatch).toHaveBeenCalledTimes(2);
@@ -1403,6 +1414,7 @@ describe("<UserFormButtons />", () => {
                 alternateDid: validFormState.alternateDid.e164,
                 directDialNum: validFormState.directDialNum.e164,
                 zeroOutEnabled: validFormState.zeroOutEnabled,
+                selfServiceInd: validFormState.selfServiceInd,
                 operatingUnitSid: validOperatingUnitId
               });
               expect(mockDispatch).toHaveBeenCalledTimes(2);
@@ -1447,6 +1459,7 @@ describe("<UserFormButtons />", () => {
             updated: false
           },
           zeroOutEnabled: false,
+          selfServiceInd: false, //>??
           inactiveForwardTo: {
             value: validFormOptions.inactiveForwardTo,
             updated: true
@@ -1492,6 +1505,7 @@ describe("<UserFormButtons />", () => {
           await waitFor(() => {
             expect(updateUser).toHaveBeenCalledWith(worker.sid, {
               zeroOutEnabled: false,
+              selfServiceInd: false,
               inactiveForwardTo: validFormOptions.inactiveForwardTo,
               attributes: updateWorkerAttributesAfterFormValid,
               operatingUnitSid: validOperatingUnitId
@@ -1528,6 +1542,7 @@ describe("<UserFormButtons />", () => {
           await waitFor(() => {
             expect(updateUser).toHaveBeenCalledWith(worker.sid, {
               zeroOutEnabled: false,
+              selfServiceInd: false,
               inactiveForwardTo: validFormOptions.inactiveForwardTo,
               attributes: updateWorkerAttributesAfterFormValid,
               operatingUnitSid: validOperatingUnitId

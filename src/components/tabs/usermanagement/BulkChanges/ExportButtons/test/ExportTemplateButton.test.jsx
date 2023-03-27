@@ -115,7 +115,7 @@ const expectedColumns = [
     wrap: true
   },
   {
-    field: "selfServiceIndicator",
+    field: "selfServiceInd",
     textAlign: "center",
     title: "Self Service Indicator",
     width: undefined,

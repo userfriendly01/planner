@@ -164,6 +164,7 @@ const mockWorkers = [
     alternateDid: validFormOptions.alternateDid.e164,
     directDialNum: validFormOptions.directDialNum.e164,
     zeroOutEnabled: true,
+    selfServiceInd: true,
     attributes: {
       default_skills: validFormOptions.defaultSkills,
       did: validFormOptions.didE164,
@@ -192,6 +193,7 @@ const mockWorkers = [
     alternateDid: validFormOptions.alternateDid.e164,
     directDialNum: validFormOptions.directDialNum.e164,
     zeroOutEnabled: true,
+    selfServiceInd: true,
     attributes: {
       default_skills: validFormOptions.defaultSkills,
       did: validFormOptions.didE164,
@@ -272,6 +274,8 @@ const validFormState = {
   },
   zeroOutEnabled: false,
   zeroOutEnabledUpdated: false,
+  selfServiceInd: false,
+  selfServiceIndUpdated: false,
   editDisabled: false
 };
 const initialFormState = {
@@ -331,6 +335,8 @@ const initialFormState = {
   },
   zeroOutEnabled: false,
   zeroOutEnabledUpdated: false,
+  selfServiceInd: false,
+  selfServiceIndUpdated: false,
   editDisabled: false
 };
 
@@ -684,6 +690,14 @@ describe("isFormUpdated", () => {
     const updatedForm = {
       ...initialFormState,
       zeroOutEnabledUpdated: true
+    };
+    const result = isFormUpdated(updatedForm);
+    expect(result).toBe(true);
+  });
+  test("form.selfServiceIndUpdated was updated", () => {
+    const updatedForm = {
+      ...initialFormState,
+      selfServiceIndUpdated: true
     };
     const result = isFormUpdated(updatedForm);
     expect(result).toBe(true);

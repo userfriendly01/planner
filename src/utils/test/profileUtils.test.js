@@ -136,10 +136,16 @@ describe("profileUtils", () => {
   });
 
   describe("formatSelfServiceIndicatorData", () => {
-    test("should return check no matter what", () => {
-      expect(formatSelfServiceIndicatorData()).toStrictEqual(<Check />)
-    })
-  })
+    test("should return check if profileId is 39 or above ", () => {
+      expect(formatSelfServiceIndicatorData(45)).toEqual(<Check />);
+    });
+    test("should return check if profileId is 39 or above ", () => {
+      expect(formatSelfServiceIndicatorData(20)).toEqual("");
+    });
+    test("should return check, if correct profile is a string", () => {
+      expect(formatSelfServiceIndicatorData("39")).toEqual(<Check />);
+    });
+  });
 
   describe("formatAggregateQueues", () => {
     test("test should return single queue ", () => {

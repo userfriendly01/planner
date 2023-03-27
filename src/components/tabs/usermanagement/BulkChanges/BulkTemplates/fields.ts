@@ -467,10 +467,10 @@ export const FIELDS: Fields = {
           if (!profileId || typeof profileId !== "number" || profileId < 39) {
             return rejectPromise(`Unable to set ${fieldName}. Incorrect format/value for ${profileFieldName} for row ${rowNumber}`, rowNumber);
           }*/
-          row.selfServiceIndicator = true;
+          row.selfServiceInd = true;
           return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
         } else if( didUser && field === "n"){
-          row.selfServiceIndicator = false;
+          row.selfServiceInd = false;
           return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`); // TODO do we need to anything if its false?
         } else if(didUser && field && field !== "y" && field !== "n") {
           return rejectPromise(`${fieldName} needs to be needs to be 'Y' or 'N' if DID user is 'Y' for ${rowNumber}`, rowNumber);

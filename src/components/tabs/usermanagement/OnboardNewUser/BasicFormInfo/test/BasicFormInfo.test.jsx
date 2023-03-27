@@ -140,6 +140,8 @@ describe("<BasicFormInfo />", () => {
     render(didToolTip.children);
     const overFlowToolTip = Tooltip.mock.calls[1][0];
     render(overFlowToolTip.children);
+    const selfServiceIndToolTip = Tooltip.mock.calls[2][0];
+    render(selfServiceIndToolTip.children);
   };
 
   describe("Manager dropdown", () => {
@@ -582,6 +584,12 @@ describe("<BasicFormInfo />", () => {
           const renderedOverflowTT = render(overFlowToolTip.children);
           expect(renderedOverflowTT.container).toHaveTextContent("Overflow Skill");
 
+          const selfServiceIndToolTip = Tooltip.mock.calls[2][0];
+          expect(selfServiceIndToolTip.title).toBe("enable to add self service indicator attribute to worker");
+          expect(selfServiceIndToolTip.placement).toBe("bottom-start");
+          const renderedSelfServiceIndTT = render(selfServiceIndToolTip.children);
+          expect(renderedSelfServiceIndTT.container).toHaveTextContent("Self Service Indicator");
+
           const expectedDidFormInfoProps = {
             worker: mockWorkers[2],
             forwardToToggle: false,
@@ -621,6 +629,12 @@ describe("<BasicFormInfo />", () => {
           expect(overFlowToolTip.placement).toBe("bottom-start");
           const renderedOverflowTT = render(overFlowToolTip.children);
           expect(renderedOverflowTT.container).toHaveTextContent("Overflow Skill");
+
+          const selfServiceIndToolTip = Tooltip.mock.calls[2][0];
+          expect(selfServiceIndToolTip.title).toBe("enable to add self service indicator attribute to worker");
+          expect(selfServiceIndToolTip.placement).toBe("bottom-start");
+          const renderedSelfServiceIndTT = render(selfServiceIndToolTip.children);
+          expect(renderedSelfServiceIndTT.container).toHaveTextContent("Self Service Indicator");
 
           const expectedDidFormInfoProps = {
             worker: mockWorkers[2],
@@ -665,6 +679,30 @@ describe("<BasicFormInfo />", () => {
           expect(mockSetForm).toBeCalledTimes(1);
           expect(mockSetForm).toBeCalledWith({
             type: userFormActions.INITIATE_ZERO_OUT_FIELDS
+          });
+        });
+      });
+      describe("Self Service Indicator Switch", () => {
+        beforeEach(() => {
+          //getOverflowSkillFromProfile.mockReturnValue(undefined);
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            formMode: formModes.INSERT,
+            didUser: true
+          });
+        });
+        test("When onChange is called, setForm is called", () => {
+          renderComponent(false);
+          renderChildComponents();
+
+          act(() => {
+            const onChange = Switch.mock.calls[2][0].onChange;
+            onChange();
+          });
+
+          expect(mockSetForm).toBeCalledTimes(1);
+          expect(mockSetForm).toBeCalledWith({
+            type: userFormActions.UPDATE_SELF_SERVICE_INDICATOR
           });
         });
       });

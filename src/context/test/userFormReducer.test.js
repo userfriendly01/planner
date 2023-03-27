@@ -450,6 +450,36 @@ describe("userFormReducer", () => {
     });
   });
 
+  describe("UPDATE_SELF_SERVICE_INDICATOR", () => {
+    describe("selfServiceInd === false", () => {
+      test("should set selfServiceInd to true", () => {
+        const action = { type: userFormActions.UPDATE_SELF_SERVICE_INDICATOR };
+        const result = userFormReducer(initialUserFormState, action);
+        const expectedFormState = {
+          ...initialUserFormState,
+          selfServiceInd: true,
+          selfServiceIndUpdated: true
+        };
+        expect(result).toStrictEqual(expectedFormState);
+      });
+    });
+    describe("selfServiceInd === true", () => {
+      test("should initiate selfService fields", () => {
+        const action = { type: userFormActions.UPDATE_SELF_SERVICE_INDICATOR  };
+        const result = userFormReducer({
+          ...initialUserFormState,
+          selfServiceInd: true
+        }, action);
+        const expectedFormState = {
+          ...initialUserFormState,
+          selfServiceInd: false,
+          selfServiceIndUpdated: true
+        };
+        expect(result).toStrictEqual(expectedFormState);
+      });
+    });
+  });
+
   describe("RESET_FORM", () => {
     test("should reset form to initial state", () => {
       const initialTestState = {
