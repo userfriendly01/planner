@@ -9,7 +9,8 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import { Modal } from "@mui/material";
+import BusinessUnitModal from "../../BusinessUnitModal";
+// import { Modal } from "@mui/material";
 
 jest.mock("../../BulkChanges.Styles", () => ({
   Button: jest.fn()
@@ -17,6 +18,10 @@ jest.mock("../../BulkChanges.Styles", () => ({
 
 jest.mock("@progress/kendo-react-excel-export", () => ({
   ExcelExport: jest.fn()
+}));
+
+jest.mock("../../BusinessUnitModal", () => ({
+  BusinessUnitModal: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
@@ -90,6 +95,8 @@ const expectedColumns = [
   }
 ];
 
+// TODO: update tests to include the WFM Business unit stuff
+
 describe("ExportOptionsButton", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -101,14 +108,14 @@ describe("ExportOptionsButton", () => {
   });
   describe("initial render", () => {
     test("component renders as expected", () => {
-      render(<ExportOptionsButton template={createTemplates.CREATE_TRITON_USER.fields} state={initialTestState}/>);
+      render(<ExportOptionsButton template={createTemplates.CREATE_TRITON_USER.fields} selectedTemplates={[]} state={initialTestState}/>);
       render(Button.mock.calls[0][0].children[0]);
       expect(Button.mock.calls.length).toBe(1);
       expect(ExcelExport.mock.calls.length).toBe(2);
     });
     describe("onClick", () => {
       test("handleExport is called", () => {
-        render(<ExportOptionsButton template={createTemplates.CREATE_TRITON_USER.fields} state={initialTestState}/>);
+        render(<ExportOptionsButton template={createTemplates.CREATE_TRITON_USER.fields} selectedTemplates={[]} state={initialTestState}/>);
         render(Button.mock.calls[0][0].children[0]);
         const onClick = Button.mock.calls[0][0].onClick;
         act(() => onClick());
@@ -126,7 +133,7 @@ describe("ExportOptionsButton", () => {
               field: "empty options",
               options: () => []
             }
-          ]} state={initialTestState}/>);
+          ]} selectedTemplates={[]} state={initialTestState}/>);
           render(Button.mock.calls[0][0].children);
           const onClick = Button.mock.calls[0][0].onClick;
           act(() => onClick());
