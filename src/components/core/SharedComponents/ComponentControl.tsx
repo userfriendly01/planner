@@ -10,7 +10,7 @@ export interface ComponentControlProps {
   label: string,
   type: string,
   value: any,
-  onChange: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>,
+  onChange: any,
   disabled?: boolean,
   error: boolean,
   required: boolean,
@@ -74,14 +74,13 @@ function ComponentControl({
     case "AutoComplete" :
       return (
         <Dropdown
-          CustomRender = { (props: { option: string  })=>{ return (<div>{props?.option}</div>); }}
           label={label}
           value={value}
-          options={dropDownOptions}
-          updateValue= {onChange}
+          options={dropDownOptions.sort()}
+          updateValue= {(event: any, value: any) =>onChange(event,value)}
           styles={{
-            margin: "0 0 0 0",
-            width: "calc(95%)"
+            width: "calc(95%)",
+            margin: "0 0 0 0"
           }}
         />
       );

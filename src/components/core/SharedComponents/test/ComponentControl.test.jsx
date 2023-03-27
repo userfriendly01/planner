@@ -68,4 +68,9 @@ describe(" <ComponentControl />",()=>{
     const selectEvent = getByDisplayValue("testSelect",{ hidden: true });
     expect(selectEvent).toBeTruthy();
   });
+  test(" Test AutoComplete Component",()=>{
+    const { getByDisplayValue } = renderComponentControl("AutoComplete","testInput");
+    const inputEvent = getByDisplayValue("testInput",{ hidden: true });
+    expect(inputEvent).toBeTruthy();
+  });
 });

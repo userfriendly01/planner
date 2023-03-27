@@ -92,9 +92,14 @@ export const AddFlow = ({
     }));
   };
 
-  function handleInputChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    const key: string = event.target.name;
-    let value: string = event.target.value;
+  function handleInputChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,valuePassed?:string,key?:string) {
+    let value: string;
+    if(key ==="callerType"){
+      value = valuePassed;
+    }
+    else{
+      value = event.target.value;
+    }
     value = (key === "pkey" && !value.startsWith("+")) ? `+1${value}` : value;
     const newFlowRule: FormValidationRule = {
       [key]: {
@@ -238,7 +243,7 @@ export const AddFlow = ({
                       value={flowRule[key as keyof FlowKeys].value}
                       error={flowRule[key as keyof FlowKeys].error}
                       dropDownOptions={dropDownValues[key as keyof FlowDropDownList] || []}
-                      onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => handleInputChange(event)}
+                      onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, value?:string) => handleInputChange(event,value,key)}
                       required={required}
                     />
                   </Grid>
