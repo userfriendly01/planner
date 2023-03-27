@@ -63,7 +63,7 @@ export function authWrapper(
     }
 
     acquireToken(tokenRequest: TokenRequest, counter=0) {
-      msalInstance.acquireTokenPopup(tokenRequest)
+      msalInstance.acquireTokenSilent(tokenRequest)
         .then(response => {
           this.checkMembership(response.accessToken, this, authenticationProfiles());
         }).catch(err => {
