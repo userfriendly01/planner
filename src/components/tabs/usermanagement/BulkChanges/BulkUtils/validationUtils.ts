@@ -167,14 +167,66 @@ export const checkConflictingCalabrioUsers = async (user: any, rowNumber: number
 };
 
 /**
+ * Checks to see if there are any records in the calabrio wfm people state with conflicting information that would cause 
+ * an error to be thrown in creating a Calabrio WFM person 
+ * @param user user being checked
+ * @param rowNumber rowNumber being processed for alignment of promise rejection comments
+ * @param wfmOrgs WFM Org in the state containing all People state
+ */
+export const checkConflictingWFMPeople = async (user: any, rowNumber: number, wfmOrgs: any[]): Promise<any> => {
+  if(user){
+    try {
+      const nNumber = cleanupField(user.attributes.n_number, "string");
+      const email = cleanupField(user.email, "string");
+
+      // create an array of all WFM people to use for comparison
+      const people = wfmOrgs[0].People_Without_Team;
+      console.log("LOOK", people)
+      wfmOrgs.forEach(bu => {
+        bu.Teams.forEach((team: any) => {
+          people.push(...team.People);
+        });
+      });
+
+      await Promise.all(people.map(async (p: any) => {
+        const dupUserNNumber = cleanupField(p.EmploymentNumber, "string");
+        const dupUserEmail = cleanupField(p.Email, "string");
+
+        if (nNumber && dupUserNNumber === nNumber) {
+          console.log("CALABRIO WFM CONFLICTING USERS: ", dupUserNNumber, nNumber);
+          throw(`Calabrio WFM Record already exists with this user's nNumber in the EmploymentNumber field for row ${rowNumber}.`);
+        }
+
+        if (email && dupUserEmail === email) {
+          console.log("CALABRIO WFM CONFLICTING USERS: ", dupUserEmail, email);
+          throw(`Calabrio WFM Record already exists with this user's email for row ${rowNumber}.`);
+        }
+      }));
+      return Promise.resolve(`Calabrio WFM Checks passed for ${rowNumber}`);
+    } catch(err) {
+      console.error("Error thrown trying to fetch and validate Conflicting Users", err);
+      return Promise.reject(JSON.stringify({
+        rowNumber: rowNumber,
+        error: formatErrorMessage(err)
+      }));
+    }
+  } else {
+    return Promise.reject(JSON.stringify({
+      rowNumber: rowNumber,
+      error: "No user passed to calabrio wfm processing"
+    }));
+  }
+};
+
+/**
  * Checks to see if a wfm field related to scheduling is allowed to be empty.  There are some fields pertaining to scheduling with WFM that 
- * either all need to be null, or all need to have a value.  This function will check a particular field name against the others
+ * either all need to be empty, or all need to have a value.  This function will check a particular field name against the others
  * to determine if the value is required
  * @param row row to check
  * @param fieldName the fieldname that has been determined to be empty
  */
-export const allowedEmpty = (row: any, fieldName: string) => {
-  const allOrNothingFields = [
+export const allowedEmptyScheduleField = (row: any, fieldName: string) => {
+  const allOrNothingFields = [ // if one of these fields is provided, then ALL of these fields must be provided
     FIELDS.CALABRIO_WFM_PERSON_START_DATE.name,
     FIELDS.CALABRIO_WFM_TEAM.name,
     FIELDS.CALABRIO_WFM_TEAM_START_DATE.name,
@@ -186,25 +238,20 @@ export const allowedEmpty = (row: any, fieldName: string) => {
     FIELDS.CALABRIO_WFM_SHIFTBAG.name,
     FIELDS.CALABRIO_WFM_BUDGET_GROUP.name
   ];
-
-  const isOptional = optionalScheduleFields.includes(fieldName);
-  if (isOptional) {
+// TODO: Check this logic more...
+  const fieldIsOptional = optionalScheduleFields.includes(fieldName);
+  if (fieldIsOptional) {
     console.log("this field is totally optional, allowed to be empty");
     return true;
   } else {
     let isValid = true;
-    allOrNothingFields.forEach((fieldName: string) => {
-      if (row[fieldName]) {
+    allOrNothingFields.forEach((field: string) => {
+      if (row[field]) {
         console.log("%%%% INVALID.  FIELD CANNOT BE EMPTY due to the following field being populated:", fieldName);
         isValid = false;
       }
     });
-    // ???  Todo: Hmmmm - do we just ignore the two optional fields?
-    optionalScheduleFields.forEach((fieldName: string) => {
-      if (row[fieldName]) {
-        isValid = false;
-      }
-    });
+
     return isValid;
   }
 };

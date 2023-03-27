@@ -13,9 +13,11 @@ import {
 import {
   cleanupField,
   checkConflictingCalabrioUsers,
+  checkConflictingWFMPeople,
   formatErrorMessage,
   updateCalabrioUserState,
-  updateTritonUserState
+  updateTritonUserState,
+  updateWFMPersonState
 } from "../BulkUtils";
 import {
   getTargetProfile
@@ -105,6 +107,7 @@ const processWFMCreateUser = async (row: any, state: any) => {
   const rowNumber = row.rowNumber;
 
   // ? Should we check for an existing WFM user first? - Ask Steph
+  await checkConflictingWFMPeople(row, rowNumber, state.calabrioContext.wfmOrg);
 
   const body: any = {};
 
@@ -121,7 +124,7 @@ const processWFMCreateUser = async (row: any, state: any) => {
   body.FirstDayOfWeek = row.wfmFirstDayOfWeek;
 
   // schedule related parameters...  not required technically, but either all need to be null, or all need to be a value
-  body.StartDate = row.wfmPersonStartDate;
+  body.PersonStartDate = row.wfmPersonStartDate;
   body.TeamId = row.wfmTeamId;
   body.TeamStartDate = row.wfmTeamStartDate;
   body.ContractId = row.wfmContractId;
@@ -303,7 +306,7 @@ export const getCreateTemplates = (state: any): Templates => {
       name: "CREATE_CALABRIO_WFM_PERSON",
       data: {},
       processFunction: (row: any) => processWFMCreateUser(row, state),
-      stateUpdateFunctions: [], // TODO: DO THIS THING
+      stateUpdateFunctions: [updateWFMPersonState], // TODO: DO THIS THING
       multiRunDependencies: [{
         name: "CREATE_TRITON_USER",
         variable: "workerSid" // note: don't actually need the workersid, but I need the Triton user created first if running for 
@@ -316,7 +319,6 @@ export const getCreateTemplates = (state: any): Templates => {
         FIELDS.CALABRIO_WFM_ROLES,
         FIELDS.CALABRIO_TIME_ZONE,  // think we can use the same one qm uses?  Maybe Check with stephanie to see if there are any different ones..
         FIELDS.CALABRIO_WFM_FIRST_DAY_OF_WEEK,
-        // FIELDS.CALABRIO_WFM_CULTURE,
         FIELDS.CALABRIO_WFM_WORKFLOW_CONTROL_SET,
         FIELDS.CALABRIO_WFM_TEAM,
         FIELDS.CALABRIO_WFM_CONTRACT,

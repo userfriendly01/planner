@@ -1,17 +1,17 @@
 import {
   ButtonWrapper,
   Button,
-  ModalWrapper,
-  TextWrapper
+  ModalWrapper
+  // TextWrapper
 } from "./BulkChanges.Styles";
 import {
-  useAdminState
+  useAdminState,
+  useAdminDispatch
 } from "context";
 import {
   getWfmOrg,
   getWfmOptions
 } from "services";
-import { useAdminDispatch } from "context";
 import React from "react";
 import { CircularProgress } from "@mui/material";
 import { theme } from "globals";

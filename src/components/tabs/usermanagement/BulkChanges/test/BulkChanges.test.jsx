@@ -18,12 +18,14 @@ import {
   act,
   expectOnlyPassedProps,
   fireEvent,
+  initialTestState,
   render,
   setupMockedComponents,
   waitFor
 } from "testUtils";
 import * as XLSX from "xlsx";
 import { Modal } from "@mui/material";
+import { useAdminState } from "context";
 
 jest.mock("../BulkActions", () => ({
   BulkCreateForm: jest.fn(),
@@ -45,7 +47,8 @@ jest.mock("components", () => ({
 }));
 
 jest.mock("context", () => ({
-  useAdminState: jest.fn()
+  useAdminState: jest.fn(),
+  useAdminDispatch: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
@@ -70,10 +73,12 @@ const mockSelectedTemplate = {
   }]
 };
 
+// TODO: Update tests to test for the WFMLoadOptionsModal
 
 describe("<BulkChanges />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       Dropdown,
       BulkCreateForm,
@@ -278,9 +283,10 @@ describe("<BulkChanges />", () => {
         expect(rendered.container).toHaveTextContent("Step 4: Process Bulk Create");
         const process = StyledButton.mock.calls[3][0].onClick;
         act(() => process());
-        expect(Modal.mock.calls[5][0].open).toBe(true);
-        render(Modal.mock.calls[5][0].children);
-        act(() => Modal.mock.calls[5][0].onClose()); //should do nothing
+        console.log(Modal.mock.calls);
+        expect(Modal.mock.calls[10][0].open).toBe(true);
+        render(Modal.mock.calls[10][0].children);
+        act(() => Modal.mock.calls[10][0].onClose()); //should do nothing
         expect(ProcessingModal.mock.calls.length).toBe(1);
         expectOnlyPassedProps(ProcessingModal, {
           selectedTemplates: [mockSelectedTemplate],
@@ -307,7 +313,7 @@ describe("<BulkChanges />", () => {
           });
           const process = StyledButton.mock.calls[3][0].onClick;
           act(() => process());
-          render(Modal.mock.calls[5][0].children);
+          render(Modal.mock.calls[10][0].children);
           const handleClose = ProcessingModal.mock.calls[0][0].handleClose;
           act(() => handleClose());
           await waitFor(() => {

@@ -2,12 +2,15 @@ import {
   updateSelectedTemplates,
   consolidateTemplates,
   performValidations,
-  checkConflictingCalabrioUsers
+  checkConflictingCalabrioUsers,
+  checkConflictingWFMPeople,
+  allowedEmptyScheduleField
 } from "../validationUtils";
 import {
   getLowestConcurrencyLimit,
   handleConcurrentCalls
 } from "../processingUtils";
+import { initialTestState } from "../../../../../../../__test__/testConsts";
 
 jest.mock("../processingUtils",() => ({
   handleConcurrentCalls: jest.fn(),
@@ -23,6 +26,8 @@ describe("updateSelectedTemplates", () => {
       consolidateTemplates: jest.fn(),
       performValidations: jest.fn(),
       checkConflictingCalabrioUsers: jest.fn(),
+      checkConflictingWFMPeople: jest.fn(),
+      allowedEmptyScheduleField: jest.fn(),
       updateSelectedTemplates: jest.requireActual("validationUtils").updateSelectedTemplates
     }));
   });
@@ -69,6 +74,8 @@ describe("consolidateTemplates", () => {
       consolidateTemplates: jest.requireActual("validationUtils").consolidateTemplates,
       performValidations: jest.fn(),
       checkConflictingCalabrioUsers: jest.fn(),
+      checkConflictingWFMPeople: jest.fn(),
+      allowedEmptyScheduleField: jest.fn(),
       updateSelectedTemplates: jest.fn()
     }));
   });
@@ -144,6 +151,8 @@ describe("performValidations", () => {
       consolidateTemplates: jest.fn(),
       performValidations: jest.requireActual("validationUtils").performValidations,
       checkConflictingCalabrioUsers: jest.fn(),
+      checkConflictingWFMPeople: jest.fn(),
+      allowedEmptyScheduleField: jest.fn(),
       updateSelectedTemplates: jest.fn()
     }));
     getLowestConcurrencyLimit.mockReturnValue(null);
@@ -313,6 +322,7 @@ describe("checkConflictingCalabrioUsers", () => {
       consolidateTemplates: jest.fn(),
       performValidations: jest.fn(),
       checkConflictingCalabrioUsers: jest.requireActual("validationUtils").checkConflictingCalabrioUsers,
+      checkConflictingWFMPeople: jest.fn(),
       updateSelectedTemplates: jest.fn()
     }));
   });
@@ -393,4 +403,89 @@ describe("checkConflictingCalabrioUsers", () => {
   });
 });
 
+describe("checkConflictingWFMPeople", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+    jest.mock("../validationUtils",() => ({
+      consolidateTemplates: jest.fn(),
+      performValidations: jest.fn(),
+      checkConflictingWFMPeople: jest.requireActual("validationUtils").checkConflictingWFMPeople,
+      checkConflictingCalabrioUsers: jest.fn(),
+      allowedEmptyScheduleField: jest.fn(),
+      updateSelectedTemplates: jest.fn()
+    }));
+  });
+  const cleanUser = {
+    email: "email@lm.com",
+    attributes: {
+      n_number: "n1234567"
+    }
+  };
+  const userWithConflictingEmail = {
+    email: "Person@libertymutual.com",
+    attributes: {
+      n_number: "n1234567"
+    }
+  };
+  const userWithConflictingNNumber = {
+    email: "dudette@libertymutual.com",
+    attributes: {
+      n_number: "n1111111"
+    }
+  };
+  test("No user is passed to function, promise rejects", async () => {
+    try {
+      await checkConflictingWFMPeople(null, 1, []);
+    } catch (err) {
+      expect(err).toEqual(JSON.stringify({
+        rowNumber: 1,
+        error: "No user passed to calabrio wfm processing"
+      }));
+    }
+  });
+  test("User passed to function, has no matches in the users list, returns resolved", async () => {
+    const result = await checkConflictingWFMPeople(cleanUser, 1, initialTestState.calabrioContext.wfmOrg);
+    expect(result).toEqual("Calabrio WFM Checks passed for 1");
+  });
+  test("User passed to function, has acdId matches in the users list, returns resolved", async () => {
+    try {
+      await checkConflictingWFMPeople(userWithConflictingNNumber, 1, initialTestState.calabrioContext.wfmOrg);
+    } catch(err){
+      expect(err).toEqual(JSON.stringify({
+        rowNumber: 1,
+        error: "Calabrio WFM Record already exists with this user's nNumber in the EmploymentNumber field for row 1."
+      }));
+    }
+  });
+  test("User passed to function, has email matches in the users list, returns resolved", async () => {
+    try {
+      await checkConflictingWFMPeople(userWithConflictingEmail, 1, initialTestState.calabrioContext.wfmOrg);
+    } catch(err){
+      expect(err).toEqual(JSON.stringify({
+        rowNumber: 1,
+        error: "Calabrio WFM Record already exists with this user's email for row 1."
+      }));
+    }
+  });
+});
+
 // TODO: Write tests for allowedEmpty function
+describe("allowedEmptyScheduleField", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+    jest.mock("../validationUtils",() => ({
+      consolidateTemplates: jest.fn(),
+      performValidations: jest.fn(),
+      checkConflictingWFMPeople: jest.fn(),
+      checkConflictingCalabrioUsers: jest.fn(),
+      updateSelectedTemplates: jest.fn(),
+      allowedEmptyScheduleField: jest.requireActual("validationUtils").allowedEmptyScheduleField
+    }));
+  });
+  test("FieldName does not exist in the schedule field lists, returns true", () => {});
+  test("FieldName is in the list, all other schedule fields are empty, returns true, allowed to be empty", () => {});
+  test("Fieldname is part of the optional fields and is empty, other schedule fields have values, still returns true because it is optional", () => {});
+  test("", () => {});
+});

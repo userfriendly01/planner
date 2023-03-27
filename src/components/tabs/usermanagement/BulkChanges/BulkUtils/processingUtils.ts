@@ -1,5 +1,5 @@
 import { apiPaths } from "globals";
-import { getCalabrioUsers } from "services";
+import { getCalabrioUsers, getWfmOrg } from "services";
 import { UploadedRow } from "../BulkChanges.Interfaces";
 import {
   formatWorkerResponse,
@@ -36,6 +36,22 @@ export const updateCalabrioUserState = async (dispatch: any): Promise<void> => {
     });
   } catch (error) {
     console.error("Failed to update calabrio user state after bulk upload", error);
+  }
+  return Promise.resolve();
+};
+
+/**
+ * Refreshes the calabrio WFM person state after a bulk update on users
+ */
+ export const updateWFMPersonState = async (dispatch: any): Promise<void> => {
+  try {
+    const org: any = await getWfmOrg();
+    dispatch({
+      type: "loadWfmOrg",
+      payload: org.data.organization.businessUnits
+    });
+  } catch (error) {
+    console.error("Failed to update calabrio WFM person state after bulk upload", error);
   }
   return Promise.resolve();
 };

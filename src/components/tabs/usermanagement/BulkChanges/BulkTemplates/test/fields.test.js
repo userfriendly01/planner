@@ -2344,11 +2344,127 @@ describe("fields.js", () => {
         });
       });
     });
-    // TODO: FIGURE THIS ONE OUT
     describe("CALABRIO_WFM_SHIFTBAG", () => {
       describe("validateFunction", () => {
         const shiftBagValidation = FIELDS.CALABRIO_WFM_SHIFTBAG.validateFunction;
-
+        test("No Shiftbag value is provided, resolves with empty but not required message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Shift Bag": "",
+            businessUnitId: "123-321"
+          };
+          const result = await shiftBagValidation(row, initialTestState);
+          expect(result).toEqual("WFM Shift Bag is empty but not required. Skipping validation for row 3");
+          expect(row).toEqual({
+            rowNumber: 3,
+            "WFM Shift Bag": "",
+            businessUnitId: "123-321"
+          });
+        });
+        test("Shiftbag provided, but no other scheduling fields have values on the row, rejects with message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Shift Bag": "ShiftBag1",
+            "WFM Team": "Team1",
+            businessUnitId: "123-321"
+          };
+          try {
+            await shiftBagValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "WFM Shift Bag is invalid.  WFM Shift Bag should only be provided when the following fields are also provided: WFM Person Start Date, WFM Team, WFM Team Start Date, WFM Contract, WFM Contract Schedule, WFM Part Time Percentage"
+            }));
+          }
+        });
+        test("Shiftbag has value, bad BU on the row, reject with invalid BU message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Shift Bag": "ShiftBag1",
+            "WFM Team": "Team1",
+            "WFM Team Start Date": "3/24/2023",
+            "WFM Contract": "Contract1",
+            "WFM Contract Schedule": "ContractSchedule1",
+            "WFM Part Time Percentage": "PartTimePercent1",
+            "WFM Person Start Date": "3/24/2023",
+            businessUnitId: "fake-boooooo"
+          };
+          try {
+            await shiftBagValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "Unable to validate WFM Shift Bag due to invalid Business Unit for row 3"
+            }));
+          }
+        });
+        test("Shiftbag has value, no matching shiftbag in the options, rejects with invalid message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Shift Bag": "fake-shift-bag-arooney",
+            "WFM Team": "Team1",
+            "WFM Team Start Date": "3/24/2023",
+            "WFM Contract": "Contract1",
+            "WFM Contract Schedule": "ContractSchedule1",
+            "WFM Part Time Percentage": "PartTimePercent1",
+            "WFM Person Start Date": "3/24/2023",
+            businessUnitId: "123-321"
+          };
+          try {
+            await shiftBagValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "WFM Shift Bag is invalid for row 3"
+            }));
+          }
+        });
+        test("Shiftbag has value, has a match in shiftbag options, resolves", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Shift Bag": "ShiftBag1",
+            "WFM Team": "Team1",
+            "WFM Team Start Date": "3/24/2023",
+            "WFM Contract": "Contract1",
+            "WFM Contract Schedule": "ContractSchedule1",
+            "WFM Part Time Percentage": "PartTimePercent1",
+            "WFM Person Start Date": "3/24/2023",
+            businessUnitId: "123-321"
+          };
+          const result = await shiftBagValidation(row, initialTestState);
+          expect(result).toEqual("WFM Shift Bag valid for row 3");
+          expect(row).toEqual({
+            ...row,
+            wfmShiftBagId: "111"
+          });
+        });
+        test("Error from no shiftbag options, rejects with error message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Shift Bag": "ShiftBag1",
+            "WFM Team": "Team1",
+            "WFM Team Start Date": "3/24/2023",
+            "WFM Contract": "Contract1",
+            "WFM Contract Schedule": "ContractSchedule1",
+            "WFM Part Time Percentage": "PartTimePercent1",
+            "WFM Person Start Date": "3/24/2023",
+            businessUnitId: "123-321"
+          };
+          try {
+            await shiftBagValidation(row, {
+              calabrioContext: {
+                wfmOptions: [{
+                  Id: "123-321"
+                }]
+              }
+            });
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "Error encountered validating WFM Shift Bag for row 3: Cannot read property 'find' of undefined"
+            }));
+          }
+        });
       });
       describe("options", () => {
         const optionsFunction = FIELDS.CALABRIO_WFM_SHIFTBAG.options;
@@ -2362,11 +2478,127 @@ describe("fields.js", () => {
         });
       });
     });
-    // TODO: FIGURE THIS ONE OUT
     describe("CALABRIO_WFM_BUDGET_GROUP", () => {
       describe("validateFunction", () => {
         const budgetGroupValidation = FIELDS.CALABRIO_WFM_BUDGET_GROUP.validateFunction;
-
+        test("No budget group value is provided, resolves with empty but not required message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Budget Group": "",
+            businessUnitId: "123-321"
+          };
+          const result = await budgetGroupValidation(row, initialTestState);
+          expect(result).toEqual("WFM Budget Group is empty but not required. Skipping validation for row 3");
+          expect(row).toEqual({
+            rowNumber: 3,
+            "WFM Budget Group": "",
+            businessUnitId: "123-321"
+          });
+        });
+        test("budget group provided, but no other scheduling fields have values on the row, rejects with message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Budget Group": "BudgetGroup1",
+            "WFM Team": "Team1",
+            businessUnitId: "123-321"
+          };
+          try {
+            await budgetGroupValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "WFM Budget Group is invalid.  WFM Budget Group should only be provided when the following fields are also provided: WFM Person Start Date, WFM Team, WFM Team Start Date, WFM Contract, WFM Contract Schedule, WFM Part Time Percentage"
+            }));
+          }
+        });
+        test("BudgetGroup has value, bad BU on the row, reject with invalid BU message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Budget Group": "BudgetGroup1",
+            "WFM Team": "Team1",
+            "WFM Team Start Date": "3/24/2023",
+            "WFM Contract": "Contract1",
+            "WFM Contract Schedule": "ContractSchedule1",
+            "WFM Part Time Percentage": "PartTimePercent1",
+            "WFM Person Start Date": "3/24/2023",
+            businessUnitId: "fake-boooooo"
+          };
+          try {
+            await budgetGroupValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "Unable to validate WFM Budget Group due to invalid Business Unit for row 3"
+            }));
+          }
+        });
+        test("Budget Group has value, no matching budget group in the options, rejects with invalid message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Budget Group": "fake-budget-group",
+            "WFM Team": "Team1",
+            "WFM Team Start Date": "3/24/2023",
+            "WFM Contract": "Contract1",
+            "WFM Contract Schedule": "ContractSchedule1",
+            "WFM Part Time Percentage": "PartTimePercent1",
+            "WFM Person Start Date": "3/24/2023",
+            businessUnitId: "123-321"
+          };
+          try {
+            await budgetGroupValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "WFM Budget Group is invalid for row 3"
+            }));
+          }
+        });
+        test("Budget Group has value, has a match in options, resolves", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Budget Group": "BudgetGroup1",
+            "WFM Team": "Team1",
+            "WFM Team Start Date": "3/24/2023",
+            "WFM Contract": "Contract1",
+            "WFM Contract Schedule": "ContractSchedule1",
+            "WFM Part Time Percentage": "PartTimePercent1",
+            "WFM Person Start Date": "3/24/2023",
+            businessUnitId: "123-321"
+          };
+          const result = await budgetGroupValidation(row, initialTestState);
+          expect(result).toEqual("WFM Budget Group valid for row 3");
+          expect(row).toEqual({
+            ...row,
+            wfmBudgetGroupId: "000"
+          });
+        });
+        test("Error from no shiftbag options, rejects with error message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Budget Group": "BudgetGroup1",
+            "WFM Team": "Team1",
+            "WFM Team Start Date": "3/24/2023",
+            "WFM Contract": "Contract1",
+            "WFM Contract Schedule": "ContractSchedule1",
+            "WFM Part Time Percentage": "PartTimePercent1",
+            "WFM Person Start Date": "3/24/2023",
+            businessUnitId: "123-321"
+          };
+          try {
+            await budgetGroupValidation(row, {
+              calabrioContext: {
+                wfmOptions: [{
+                  Id: "123-321"
+                }]
+              }
+            });
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "Error encountered validating WFM Budget Group for row 3: Cannot read property 'find' of undefined"
+            }));
+          }
+        });
       });
       describe("options", () => {
         const optionsFunction = FIELDS.CALABRIO_WFM_BUDGET_GROUP.options;

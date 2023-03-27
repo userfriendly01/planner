@@ -9,6 +9,7 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
+import { Modal } from "@mui/material";
 
 jest.mock("../../BulkChanges.Styles", () => ({
   Button: jest.fn()
@@ -16,6 +17,10 @@ jest.mock("../../BulkChanges.Styles", () => ({
 
 jest.mock("@progress/kendo-react-excel-export", () => ({
   ExcelExport: jest.fn()
+}));
+
+jest.mock("@mui/material", () => ({
+  Modal: jest.fn()
 }));
 
 jest.useFakeTimers();

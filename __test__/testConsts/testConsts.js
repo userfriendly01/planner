@@ -213,14 +213,20 @@ export const calabrioContext = {
     {
       Id: "123-321",
       Name: "Cool WFM Business Unit",
+      People_Without_Team: [],
       Teams: [
         {
           Name: "Team1",
-          Id: "111"
+          Id: "111",
+          People: [{
+            EmploymentNumber: "n1111111",
+            Email: "Person@libertymutual.com"
+          }]
         },
         {
           Name: "Team2",
-          Id: "222"
+          Id: "222",
+          People: []
         }
       ]
     }
