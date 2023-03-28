@@ -57,15 +57,7 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
   };
 
   const resetRoutingRule = () => {
-    const newRoutingRule:FormValidationRule = {
-      "id": {
-        value: newId.toString()
-      }
-    };
-    setRoutingRule({
-      ...routingInitRule,
-      ...newRoutingRule
-    });
+    setRoutingRule({ ...routingInitRule });
     openModal(false);
   };
 
