@@ -78,13 +78,21 @@ const ExportOptionsButton = (props: any) => {
     }
   };
 
+  const handleUpdate = (val: any) => {
+    setWfmBusinessUnit(val);
+  };
+
+  const handleClose = () => {
+    setShowBusinessUnitModal(false);
+  };
+
   return (
     <>
       { isWFMSelected && (
         <Modal open={showBusinessUnitModal} onClose={() => { return; }} >
           <BusinessUnitModal
-            setWfmBusinessUnit={setWfmBusinessUnit}
-            setShowBusinessUnitModal={setShowBusinessUnitModal}
+            handleUpdate={handleUpdate}
+            handleClose={handleClose}
             wfmBusinessUnit={wfmBusinessUnit}
             handleExport={handleExport}
           />

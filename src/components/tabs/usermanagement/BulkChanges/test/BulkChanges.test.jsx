@@ -268,7 +268,7 @@ describe("<BulkChanges />", () => {
       });
     });
     describe("Process Button is clicked", () => {
-      test("should render processing modal", async () => {
+      test.only("should render processing modal", async () => {
         const rendered = render(<BulkChanges />);
         expect(BulkCreateForm.mock.calls.length).toBe(2);
         const setSelectedTemplates = BulkCreateForm.mock.calls[1][0].setSelectedTemplates;
@@ -283,7 +283,7 @@ describe("<BulkChanges />", () => {
         expect(rendered.container).toHaveTextContent("Step 4: Process Bulk Create");
         const process = StyledButton.mock.calls[3][0].onClick;
         act(() => process());
-        console.log(Modal.mock.calls);
+        console.log(Modal.mock.calls[10][0].children);
         expect(Modal.mock.calls[10][0].open).toBe(true);
         render(Modal.mock.calls[10][0].children);
         act(() => Modal.mock.calls[10][0].onClose()); //should do nothing

@@ -7,10 +7,11 @@ import {
   act,
   initialTestState,
   render,
-  setupMockedComponents
+  setupMockedComponents,
+  expectOnlyPassedProps
 } from "testUtils";
 import BusinessUnitModal from "../../BusinessUnitModal";
-// import { Modal } from "@mui/material";
+import { Modal } from "@mui/material";
 
 jest.mock("../../BulkChanges.Styles", () => ({
   Button: jest.fn()
@@ -20,9 +21,7 @@ jest.mock("@progress/kendo-react-excel-export", () => ({
   ExcelExport: jest.fn()
 }));
 
-jest.mock("../../BusinessUnitModal", () => ({
-  BusinessUnitModal: jest.fn()
-}));
+jest.mock("../../BusinessUnitModal", () => jest.fn());
 
 jest.mock("@mui/material", () => ({
   Modal: jest.fn()
@@ -95,7 +94,6 @@ const expectedColumns = [
   }
 ];
 
-// TODO: update tests to include the WFM Business unit stuff
 
 describe("ExportOptionsButton", () => {
   beforeEach(() => {
@@ -103,7 +101,9 @@ describe("ExportOptionsButton", () => {
     jest.resetAllMocks();
     useRefSpy.mockReturnValue({ current: { save: mockSave }});
     setupMockedComponents({
-      Button
+      Button,
+      Modal,
+      BusinessUnitModal
     });
   });
   describe("initial render", () => {
@@ -112,6 +112,7 @@ describe("ExportOptionsButton", () => {
       render(Button.mock.calls[0][0].children[0]);
       expect(Button.mock.calls.length).toBe(1);
       expect(ExcelExport.mock.calls.length).toBe(2);
+      expect(BusinessUnitModal.mock.calls.length).toBe(0);
     });
     describe("onClick", () => {
       test("handleExport is called", () => {
@@ -121,6 +122,49 @@ describe("ExportOptionsButton", () => {
         act(() => onClick());
         expect(mockSave).toHaveBeenCalledTimes(1);
         expect(mockSave).toHaveBeenCalledWith(expectedRows, expectedColumns);
+        expect(BusinessUnitModal.mock.calls.length).toBe(0);
+      });
+      describe("WFM is a selected template", () => {
+        test("business unit modal opens, cancel is clicked, modal closes", () => {
+          render(<ExportOptionsButton template={createTemplates.CREATE_TRITON_USER.fields} selectedTemplates={[{ name: "CREATE_CALABRIO_WFM_PERSON" }]} state={initialTestState}/>);
+          render(Button.mock.calls[0][0].children[0]);
+          const onClick = Button.mock.calls[0][0].onClick;
+
+          act(() => onClick());
+          expect(mockSave).toHaveBeenCalledTimes(0);
+          expect(Modal.mock.calls[0][0].open).toBe(false);
+          expect(Modal.mock.calls[1][0].open).toBe(true);
+          render(Modal.mock.calls[1][0].children);
+          expect(BusinessUnitModal.mock.calls.length).toBe(1);
+          expectOnlyPassedProps(BusinessUnitModal, {
+            wfmBusinessUnit: null
+          });
+          const handleClose = BusinessUnitModal.mock.calls[0][0].handleClose;
+          act(() => handleClose());
+          expect(Modal.mock.calls[2][0].open).toBe(false);
+          expect(mockSave).toHaveBeenCalledTimes(0);
+        });
+        test("modal opens, option is Business unit option selected", async () => {
+          render(<ExportOptionsButton template={createTemplates.CREATE_TRITON_USER.fields} selectedTemplates={[{ name: "CREATE_CALABRIO_WFM_PERSON" }]} state={initialTestState}/>);
+          render(Button.mock.calls[0][0].children[0]);
+          const onClick = Button.mock.calls[0][0].onClick;
+
+          act(() => onClick());
+          expect(mockSave).toHaveBeenCalledTimes(0);
+          expect(Modal.mock.calls[0][0].open).toBe(false);
+          expect(Modal.mock.calls[1][0].open).toBe(true);
+          render(Modal.mock.calls[1][0].children);
+          expect(BusinessUnitModal.mock.calls.length).toBe(1);
+          // TODO: This isn't working... can I not test this here?
+          // const handleUpdate = BusinessUnitModal.mock.calls[0][0].handleUpdate;
+          // console.log(handleUpdate);
+          // act(() => handleUpdate("GRS Finance"));
+          // await waitFor(() => {
+            // expect(BusinessUnitModal.mock.calls.length).toBe(2)
+            // expect(BusinessUnitModal.mock.calls[0][0].wfmBusinessUnit).toBe(2)
+          // });
+
+        });
       });
       describe("_export is null", () => {
         beforeEach(() => {

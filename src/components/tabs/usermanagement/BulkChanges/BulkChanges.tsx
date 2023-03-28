@@ -97,7 +97,7 @@ const BulkChanges = () => {
       </Modal>
       <Modal open={showWFMLoadModal} onClose={() => { return; }} >
         <WFMLoadOptionsModal
-          setShowWFMLoadModal={setShowWFMLoadModal}
+          handleClose={() => setShowWFMLoadModal(false)}
         />
       </Modal>
       { view === views.BULK_CREATE_USERS &&
