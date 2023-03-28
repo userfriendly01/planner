@@ -241,20 +241,6 @@ export const FlowGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left"
-  },
-  {
-    headerName: "Call Intent",
-    field: "callIntent",
-    sortable: true,
-    width: 110,
-    align: "left"
-  },
-  {
-    headerName: "Identification Steps",
-    field: "identificationSteps",
-    sortable: true,
-    width: 110,
-    align: "left"
   }
 ];
 
