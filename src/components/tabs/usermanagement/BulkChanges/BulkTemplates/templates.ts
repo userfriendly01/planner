@@ -151,9 +151,9 @@ const processWFMCreateUser = async (row: any, state: any) => {
 
 
   console.log("THIS IS WHAT IS GETTING SENT for WFM CREATE", body);
-  return Promise.resolve("yay");
+  // return Promise.resolve("yay");
   try {
-    // await createCalabrioWFMPerson(body);
+    await createCalabrioWFMPerson(body);
     console.log(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
     return Promise.resolve(`Person created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`);
   } catch(err) {
