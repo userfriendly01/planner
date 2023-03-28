@@ -1,8 +1,8 @@
 import {
   ButtonWrapper,
   Button,
-  ModalWrapper
-  // TextWrapper
+  ModalWrapper,
+  TextWrapper
 } from "./BulkChanges.Styles";
 import {
   useAdminState,
@@ -19,10 +19,10 @@ import { theme } from "globals";
 
 const WFMLoadOptionsModal = (props: any) => {
   const {
-    setShowWFMLoadModal
+    handleClose
   } = props;
 
-  const [ loadingMessage, setLoadingMessage ] = React.useState("");
+  const [ loadFailedMessage, setLoadFailedMessage ] = React.useState("");
   const [ showLoading, setShowLoading ] = React.useState(true);
 
   const state = useAdminState();
@@ -38,7 +38,11 @@ const WFMLoadOptionsModal = (props: any) => {
     let successfulOptionsCall: boolean = areOptionsLoaded;
     let successfulOrgCall: boolean = isOrgLoaded;
 
-    if (attempt < 10) {
+    if (successfulOptionsCall && successfulOrgCall) {
+      handleClose();
+    }
+
+    if (attempt <= 10) {
 
       if (!successfulOptionsCall && !successfulOrgCall) {
         const optionsCallPromise = getCalabrioWfmOptions(dispatch);
@@ -65,11 +69,11 @@ const WFMLoadOptionsModal = (props: any) => {
         retryLoad(attempt + 1, successfulOptionsCall, successfulOrgCall);
       } else {
         console.log("We have options!");
-        setShowWFMLoadModal(false);
+        handleClose();
       }
     } else {
       setShowLoading(false);
-      setLoadingMessage("Max attempts to retrieve WFM Data reached.  Bulk Create for WFM is not available.  Please try again later...");
+      setLoadFailedMessage("Max attempts to retrieve WFM Data reached.  Bulk Create for WFM is not available.  Please try again later...");
     }
   };
 
@@ -106,11 +110,16 @@ const WFMLoadOptionsModal = (props: any) => {
   // TODO: Add some spacing and styling to the text/circle loadythingy
   return (
     <ModalWrapper>
-        WFM Options have not been successfully loaded into Triton admin.  Attempting to load WFM Data...
-      {showLoading && <CircularProgress size={theme.circularProgressSize} />}
-      <div>{loadingMessage}</div>
+      <TextWrapper
+        styles={{}}
+      >
+        WFM Options have not been successfully loaded into Triton admin but are needed for WFM Bulk Create operations.  
+        Attempting to load WFM Data...
+      </TextWrapper>
+      {showLoading && <CircularProgress style={{ margin: "15px" }} size={theme.circularProgressSize} />}
+      <TextWrapper styles={{ size: "16px" }}>{loadFailedMessage}</TextWrapper>
       <ButtonWrapper>
-        <Button onClick={() => setShowWFMLoadModal(false)}>
+        <Button onClick={() => handleClose()}>
             Cancel
         </Button>
       </ButtonWrapper>

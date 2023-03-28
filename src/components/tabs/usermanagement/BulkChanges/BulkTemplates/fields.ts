@@ -622,7 +622,6 @@ export const FIELDS: Fields = {
       row.wfmRoleIds = [];
       if(!field){
         return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
-        // return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
       } else {
         try {
           const fieldArray = field.split(",");
@@ -649,17 +648,6 @@ export const FIELDS: Fields = {
       }
     }
   },
-  // CALABRIO_WFM_TIMEZONE: {  //? are these the same timezones as QM?
-  //   field: "wfmTimezone",
-  //   name: "WFM Timezone",
-  //   type: "string",
-  //   description: "Timezone for the WFM Person",
-  //   example: "America/New_York",
-  //   options: null,
-  //   validateFunction: (row: any, state: any): Promise<any> => {
-  //     return Promise.resolve();
-  //   }
-  // },
   CALABRIO_WFM_FIRST_DAY_OF_WEEK: {
     field: "wfmFirstDayOfWeek",
     name: "First Day of Week",
@@ -702,7 +690,6 @@ export const FIELDS: Fields = {
       const field = cleanupField(row[fieldName], "string");
       if(!field){
         return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
-        // return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
       } else {
         const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
 
@@ -791,7 +778,6 @@ export const FIELDS: Fields = {
         } else {
           return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
         }
-        // return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
       } else {
         const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
 
@@ -836,7 +822,6 @@ export const FIELDS: Fields = {
         } else {
           return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
         }
-        // return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
       } else {
         const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
 
@@ -881,7 +866,6 @@ export const FIELDS: Fields = {
         } else {
           return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
         }
-        // return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
       } else {
         const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
 
@@ -1026,7 +1010,6 @@ export const FIELDS: Fields = {
         } else {
           return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
         }
-        // return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
       } else {
         try {
           const formattedDate = formatDateFromExcelDate(field);  // throws error if day month or year is NaN
@@ -1056,7 +1039,6 @@ export const FIELDS: Fields = {
         } else {
           return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
         }
-        // return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
       } else {
         try {
           const formattedDate = formatDateFromExcelDate(field); // will throw error if NaN
@@ -1098,9 +1080,7 @@ export const FIELDS: Fields = {
         }
       } else {
         // this would mean we have this skills start date field, but no skills field.  
-        // Do we just ignore and resolve?
-        // TODO: Check this case with someone... what should happen?
-        return Promise.resolve(`No ${FIELDS.CALABRIO_WFM_SKILLS.name} were provided. Skipping validation for ${fieldName} for row ${rowNumber}`);
+        return rejectPromise(`${fieldName} was provided but WFM Skills is empty.`, rowNumber);
       }
     }
   },
@@ -1181,10 +1161,8 @@ export const FIELDS: Fields = {
           return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
         }
       } else {
-        // this would mean we have this skills start date field, but no skills field.  
-        // Do we just ignore and resolve?
-        return Promise.resolve(`No ${FIELDS.CALABRIO_WFM_ROTATION.name} was provided. Skipping validation for ${fieldName} for row ${rowNumber}`);
-      }
+        // this would mean we have this rotation start date field, but no rotation field.  
+        return rejectPromise(`${fieldName} was provided but WFM Rotation is empty.`, rowNumber);      }
     }
   },
   CALABRIO_WFM_ROTATION: { // allowed to be empty
@@ -1255,9 +1233,8 @@ export const FIELDS: Fields = {
           return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
         }
       } else {
-        // this would mean we have this skills start date field, but no skills field.  
-        // Do we just ignore and resolve?
-        return Promise.resolve(`No ${FIELDS.CALABRIO_WFM_ROTATION.name} was provided. Skipping validation for ${fieldName} for row ${rowNumber}`);
+        // this would mean we have this Rotation start week field, but no rotation field.  
+        return rejectPromise(`${fieldName} was provided but WFM Rotation is empty.`, rowNumber);      
       }
     }
   },
@@ -1290,9 +1267,8 @@ export const FIELDS: Fields = {
           return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
         }
       } else {
-        // this would mean we have this skills start date field, but no skills field.  
-        // Do we just ignore and resolve?
-        return Promise.resolve(`No ${FIELDS.CALABRIO_WFM_AVAILABILITY.name} was provided. Skipping validation for ${fieldName} for row ${rowNumber}`);
+        // this would mean we have this availability start date field, but no availability field.  
+        return rejectPromise(`${fieldName} was provided but WFM Availability is empty.`, rowNumber);
       }
     }
   },

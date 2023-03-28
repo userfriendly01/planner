@@ -2777,19 +2777,20 @@ describe("fields.js", () => {
             wfmSkillsStartDate: "2023-05-27"
           });
         });
-        test("Start date was provided, but no skills, resolve with skipping message", async () => {
+        test("Start date was provided, but no skills, reject with message", async () => {
           const row = {
             rowNumber: 7,
             "WFM Skills Start Date": 45073,
             "WFM Skills": ""
           };
-          const result = await skillsStartDateValidation(row, initialTestState);
-          expect(result).toEqual("No WFM Skills were provided. Skipping validation for WFM Skills Start Date for row 7");
-          expect(row).toEqual({
-            rowNumber: 7,
-            "WFM Skills Start Date": 45073,
-            "WFM Skills": ""
-          });
+          try {
+            await skillsStartDateValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 7,
+              error: "WFM Skills Start Date was provided but WFM Skills is empty."
+            }));
+          }
         });
       });
     });
@@ -2949,13 +2950,14 @@ describe("fields.js", () => {
             "WFM Rotation Start Date": 45073,
             "WFM Rotation": ""
           };
-          const result = await rotationStartDateValidation(row, initialTestState);
-          expect(result).toEqual("No WFM Rotation was provided. Skipping validation for WFM Rotation Start Date for row 7");
-          expect(row).toEqual({
-            rowNumber: 7,
-            "WFM Rotation Start Date": 45073,
-            "WFM Rotation": ""
-          });
+          try {
+            await rotationStartDateValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 7,
+              error: "WFM Rotation Start Date was provided but WFM Rotation is empty."
+            }));
+          }
         });
       });
     });
@@ -3118,14 +3120,14 @@ describe("fields.js", () => {
             "WFM Rotation": "",
             businessUnitId: "123-321"
           };
-          const result = await rotationStartWkValidation(row, initialTestState);
-          expect(result).toEqual("No WFM Rotation was provided. Skipping validation for WFM Rotation Start Week for row 5");
-          expect(row).toEqual({
-            rowNumber: 5,
-            "WFM Rotation Start Week": "3",
-            "WFM Rotation": "",
-            businessUnitId: "123-321"
-          });
+          try {
+            await rotationStartWkValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 5,
+              error: "WFM Rotation Start Week was provided but WFM Rotation is empty."
+            }));
+          }
         });
       });
     });
@@ -3190,13 +3192,15 @@ describe("fields.js", () => {
             "WFM Availability": "",
             rowNumber: 2
           };
-          const result = await availabilityStartDateValidation(row, initialTestState);
-          expect(result).toEqual("No WFM Availability was provided. Skipping validation for WFM Availability Start Date for row 2");
-          expect(row).toEqual({
-            "WFM Availability Start Date": 43321,
-            "WFM Availability": "",
-            rowNumber: 2
-          });
+          try {
+
+            await availabilityStartDateValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 2,
+              error: "WFM Availability Start Date was provided but WFM Availability is empty."
+            }));
+          }
         });
       });
     });
