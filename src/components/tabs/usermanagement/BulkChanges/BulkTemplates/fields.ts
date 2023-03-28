@@ -911,11 +911,11 @@ export const FIELDS: Fields = {
         // If this field is provided, but no other scheduling fields are, throw an error saying 
         // shiftbag can only be provided if the other schedule fields are given
         if (
-          !cleanupField(row[FIELDS.CALABRIO_WFM_PERSON_START_DATE.name], "string") ||
-          !cleanupField(row[FIELDS.CALABRIO_WFM_TEAM.name], "string") ||
-          !cleanupField(row[FIELDS.CALABRIO_WFM_TEAM_START_DATE.name], "string") ||
-          !cleanupField(row[FIELDS.CALABRIO_WFM_CONTRACT.name], "string") ||
-          !cleanupField(row[FIELDS.CALABRIO_WFM_CONTRACT_SCHEDULE.name], "string") ||
+          !cleanupField(row[FIELDS.CALABRIO_WFM_PERSON_START_DATE.name], "string") &&
+          !cleanupField(row[FIELDS.CALABRIO_WFM_TEAM.name], "string") &&
+          !cleanupField(row[FIELDS.CALABRIO_WFM_TEAM_START_DATE.name], "string") &&
+          !cleanupField(row[FIELDS.CALABRIO_WFM_CONTRACT.name], "string") &&
+          !cleanupField(row[FIELDS.CALABRIO_WFM_CONTRACT_SCHEDULE.name], "string") &&
           !cleanupField(row[FIELDS.CALABRIO_WFM_PARTTIME_PERCENTAGE.name], "string")
         ) {
           return rejectPromise(`${fieldName} is invalid.  ${fieldName} should only be provided when the following fields are also provided: ${FIELDS.CALABRIO_WFM_PERSON_START_DATE.name}, ${FIELDS.CALABRIO_WFM_TEAM.name}, ${FIELDS.CALABRIO_WFM_TEAM_START_DATE.name}, ${FIELDS.CALABRIO_WFM_CONTRACT.name}, ${FIELDS.CALABRIO_WFM_CONTRACT_SCHEDULE.name}, ${FIELDS.CALABRIO_WFM_PARTTIME_PERCENTAGE.name}`, rowNumber);
@@ -964,11 +964,11 @@ export const FIELDS: Fields = {
         // If this field is provided, but no other scheduling fields are, throw an error saying 
         // budgetGroup can only be provided if the other schedule fields are given
         if (
-          !cleanupField(row[FIELDS.CALABRIO_WFM_PERSON_START_DATE.name], "string") ||
-          !cleanupField(row[FIELDS.CALABRIO_WFM_TEAM.name], "string") ||
-          !cleanupField(row[FIELDS.CALABRIO_WFM_TEAM_START_DATE.name], "string") ||
-          !cleanupField(row[FIELDS.CALABRIO_WFM_CONTRACT.name], "string") ||
-          !cleanupField(row[FIELDS.CALABRIO_WFM_CONTRACT_SCHEDULE.name], "string") ||
+          !cleanupField(row[FIELDS.CALABRIO_WFM_PERSON_START_DATE.name], "string") &&
+          !cleanupField(row[FIELDS.CALABRIO_WFM_TEAM.name], "string") &&
+          !cleanupField(row[FIELDS.CALABRIO_WFM_TEAM_START_DATE.name], "string") &&
+          !cleanupField(row[FIELDS.CALABRIO_WFM_CONTRACT.name], "string") &&
+          !cleanupField(row[FIELDS.CALABRIO_WFM_CONTRACT_SCHEDULE.name], "string") &&
           !cleanupField(row[FIELDS.CALABRIO_WFM_PARTTIME_PERCENTAGE.name], "string")
         ) {
           return rejectPromise(`${fieldName} is invalid.  ${fieldName} should only be provided when the following fields are also provided: ${FIELDS.CALABRIO_WFM_PERSON_START_DATE.name}, ${FIELDS.CALABRIO_WFM_TEAM.name}, ${FIELDS.CALABRIO_WFM_TEAM_START_DATE.name}, ${FIELDS.CALABRIO_WFM_CONTRACT.name}, ${FIELDS.CALABRIO_WFM_CONTRACT_SCHEDULE.name}, ${FIELDS.CALABRIO_WFM_PARTTIME_PERCENTAGE.name}`, rowNumber);

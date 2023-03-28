@@ -2365,7 +2365,6 @@ describe("fields.js", () => {
           const row = {
             rowNumber: 3,
             "WFM Shift Bag": "ShiftBag1",
-            "WFM Team": "Team1",
             businessUnitId: "123-321"
           };
           try {
@@ -2499,7 +2498,6 @@ describe("fields.js", () => {
           const row = {
             rowNumber: 3,
             "WFM Budget Group": "BudgetGroup1",
-            "WFM Team": "Team1",
             businessUnitId: "123-321"
           };
           try {
