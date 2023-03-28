@@ -7,16 +7,16 @@ import {
 import {
   useAdminState
 } from "context";
-import { Dropdown } from "components/core";
+import { Dropdown } from "components";
 import React from "react";
 import { BusinessUnitModalProps } from "./BulkChanges.Interfaces";
 
 
 const BusinessUnitModal = (props: BusinessUnitModalProps) => {
   const {
-    setShowBusinessUnitModal,
+    handleClose,
     wfmBusinessUnit,
-    setWfmBusinessUnit,
+    handleUpdate,
     handleExport
   } = props;
 
@@ -37,7 +37,7 @@ const BusinessUnitModal = (props: BusinessUnitModalProps) => {
   const handleConfirm = () => {
     if (wfmBusinessUnit) {
       handleExport();
-      setShowBusinessUnitModal(false);
+      handleClose();
     }
   };
 
@@ -49,7 +49,7 @@ const BusinessUnitModal = (props: BusinessUnitModalProps) => {
         value={wfmBusinessUnit}
         options={generateWFMBusinessUnitOptions()}
         updateValue={(event: any, businessUnit: any) => {
-          setWfmBusinessUnit(businessUnit);
+          handleUpdate(businessUnit);
         }}
         styles={{
           margin: "40 0 30 0",
@@ -57,10 +57,10 @@ const BusinessUnitModal = (props: BusinessUnitModalProps) => {
         }}
       />
       <ButtonWrapper>
-        <Button onClick={() => setShowBusinessUnitModal(false)}>
+        <Button onClick={() => handleClose()}>
           Cancel
         </Button>
-        <Button onClick={handleConfirm}>
+        <Button onClick={handleConfirm} disabled={!wfmBusinessUnit}>
           Confirm
         </Button>
       </ButtonWrapper>

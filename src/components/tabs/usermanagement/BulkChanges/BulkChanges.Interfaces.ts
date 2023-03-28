@@ -73,8 +73,8 @@ export interface ProcessingModalProps {
 
 export interface BusinessUnitModalProps {
   wfmBusinessUnit: string,
-  setShowBusinessUnitModal: (closeModal: boolean) => void;
-  setWfmBusinessUnit: (bu: any) => void,
+  handleClose: () => void;
+  handleUpdate: (bu: any) => void,
   handleExport: () => void
 }
 export interface WorkerAttribute {
