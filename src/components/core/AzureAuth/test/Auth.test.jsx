@@ -60,7 +60,7 @@ describe("<Auth />", () => {
         __esModule: true,
         UserAgentApplication: jest.fn().mockImplementation(() => {
           return {
-            acquireTokenPopup: jest.fn()
+            acquireTokenSilent: jest.fn()
               .mockRejectedValueOnce(new Error("login is already in progress"))
               .mockRejectedValueOnce(new Error("bad error")),
             handleRedirectCallback: jest.fn((success, err) => err("mock error")),
