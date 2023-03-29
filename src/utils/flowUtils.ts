@@ -5,6 +5,7 @@ export const flowDropDownList: FlowDropDownList = {
   "languageOffer": [],
   "channel": [],
   "userDestination": [],
+  "callFlowRoute": [],
   "callerType": []
 };
 export const CACHE_FILTER_FLOW = "SEARCH_FILTER_FLOW";

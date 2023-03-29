@@ -78,6 +78,7 @@ export const AddFlow = ({
         channel: masterDataObject.channel,
         languageOffer: languageOffer,
         userDestination: userDestination,
+        callFlowRoute: masterDataObject?.callFlowRoute,
         callerType: masterDataObject?.callerType
       }));
     }
@@ -94,7 +95,7 @@ export const AddFlow = ({
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,valuePassed?:string,key?:string) {
     let value: string;
-    if(key ==="callerType"){
+    if(key ==="callerType" || key ==="callFlowRoute"){
       value = valuePassed;
     }
     else{

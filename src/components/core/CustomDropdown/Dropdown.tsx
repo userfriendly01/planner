@@ -8,7 +8,7 @@ import styled from "styled-components";
 
 /*
   To use this shared dropdown:
-    options: an array of objects where the display text is named "label" within the object and the unique identifier set as "value". 
+    options: an array of objects where the display text is named "label" within the object and the unique identifier set as "value".
        The rest of the object structure doesnt matter
     multiple: Pass this boolean as "true" if you want the option to select multiple dropdown options
     divider: If you want to display a divider in your list, add an object to the array where the label is "divider"
@@ -75,6 +75,10 @@ export const Dropdown = (props: any) => {
             <CustomRender option={option}/>
           </ListItem>;
         } else if(label === "Caller Type"){
+          return <ListItem  {...props} key={props["data-option-index"]}>
+            {option}
+          </ListItem>;
+        }else if(label === "Call Flow Route"){
           return <ListItem  {...props} key={props["data-option-index"]}>
             {option}
           </ListItem>;

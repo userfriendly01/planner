@@ -73,6 +73,7 @@ export const EditFlow = ({
         channel: masterData?.channel,
         languageOffer: languageOffer,
         userDestination: userDestination,
+        callFlowRoute: masterData?.callFlowRoute,
         callerType: masterData?.callerType
       })
     );
@@ -161,7 +162,7 @@ export const EditFlow = ({
   ) => {
     let value: string;
     let key: string;
-    if(keyPassed === "callerType"){
+    if(keyPassed === "callerType" || keyPassed === "callFlowRoute"){
       value = valuePassed;
       key = keyPassed;
     }
