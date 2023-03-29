@@ -13,7 +13,7 @@ import {
 import {
   cleanupField,
   checkConflictingCalabrioUsers,
-  checkConflictingWFMPeople,
+  checkIfConflictingWFMPeople,
   formatErrorMessage,
   updateCalabrioUserState,
   updateTritonUserState,
@@ -107,8 +107,7 @@ const processWFMCreateUser = async (row: any, state: any) => {
   const rowNumber = row.rowNumber;
 
   try {
-  // TODO: FIX this check
-    const hasPersonConflict = checkConflictingWFMPeople(row, rowNumber, state.calabrioContext.wfmOrg);
+    const hasPersonConflict = checkIfConflictingWFMPeople(row, state.calabrioContext.wfmOrg);
     console.log("RESULTS OF hasPersonConflict!!!!", hasPersonConflict);
     if (hasPersonConflict) {
       throw (`Calabrio WFM Record already exists with either this user's email or nNumber for row ${rowNumber}`);
@@ -137,7 +136,7 @@ const processWFMCreateUser = async (row: any, state: any) => {
     body.BudgetGroupId = row.wfmBudgetGroupId;
     body.ShiftBagId = row.wfmShiftBagId;
 
-    // I think these are all optional as per Shannon?
+    // these are optional
     body.AvailabilityId = row.wfmAvailabilityId;
     body.AvailabilityStartDate = row.wfmAvailabilityStartDate;
     body.RoleIds = row.wfmRoleIds;
@@ -150,15 +149,13 @@ const processWFMCreateUser = async (row: any, state: any) => {
 
     // completely optional
     body.OptionalColumns = row.wfmOptionalColumns;
-    // body.Culture = row.wfmCulture;
 
 
     console.log("THIS IS WHAT IS GETTING SENT for WFM CREATE", body);
 
-    // TODO: COMMENT THIS BACK IN
-    // await createCalabrioWFMPerson(body);
+    await createCalabrioWFMPerson(body);
     console.log(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
-    return Promise.resolve(`Person created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`);
+    return Promise.resolve(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
   } catch(err) {
     const errorMessage = `Failed to create Calabrio WFM person for row ${rowNumber}. ${formatErrorMessage(err)}`;
     console.error(errorMessage, err);
@@ -309,7 +306,7 @@ export const getCreateTemplates = (state: any): Templates => {
       name: "CREATE_CALABRIO_WFM_PERSON",
       data: {},
       processFunction: (row: any) => processWFMCreateUser(row, state),
-      stateUpdateFunctions: [updateWFMPersonState], // TODO: DO THIS THING
+      stateUpdateFunctions: [updateWFMPersonState],
       multiRunDependencies: [{
         name: "CREATE_TRITON_USER",
         variable: "workerSid" // note: don't actually need the workersid, but I need the Triton user created first if running for 

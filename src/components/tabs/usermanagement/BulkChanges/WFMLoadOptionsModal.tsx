@@ -107,7 +107,6 @@ const WFMLoadOptionsModal = (props: any) => {
     }
   };
 
-  // TODO: Add some spacing and styling to the text/circle loadythingy
   return (
     <ModalWrapper>
       <TextWrapper

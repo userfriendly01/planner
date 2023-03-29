@@ -199,13 +199,9 @@ describe("<WFMLoadOptionsModal />", () => {
               //   todo: How do I test the loadFailed message showing up???
 
             });
-
           });
-
         });
       });
     });
-
   });
-
 });

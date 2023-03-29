@@ -168,21 +168,20 @@ export const checkConflictingCalabrioUsers = async (user: any, rowNumber: number
 
 /**
  * Checks to see if there are any records in the calabrio wfm people state with conflicting information that would cause 
- * an error to be thrown in creating a Calabrio WFM person 
+ * an error to be thrown in creating a Calabrio WFM person. Returns true if a conflict is found
  * @param user user being checked (the row)
- * @param rowNumber rowNumber being processed for alignment of promise rejection comments
- * @param wfmOrgs WFM Org in the state containing all People state
+ * @param wfmOrg WFM Org in the state containing all People state
  */
-export const checkConflictingWFMPeople = (user: any, rowNumber: number, wfmOrgs: any[]): boolean => {
+export const checkIfConflictingWFMPeople = (user: any, wfmOrg: any[]): boolean => {
   if(user){
     try {
       const nNumber = cleanupField(user.attributes.n_number, "string");
       const email = cleanupField(user.email, "string");
 
       // create an array of all WFM people to use for comparison
-      const people = wfmOrgs[0].People_Without_Team;
-      console.log("LOOK", people);
-      wfmOrgs.forEach(bu => {
+      const people = wfmOrg[0].People_Without_Team;
+
+      wfmOrg.forEach(bu => {
         bu.Teams.forEach((team: any) => {
           people.push(...team.People);
         });
@@ -190,7 +189,7 @@ export const checkConflictingWFMPeople = (user: any, rowNumber: number, wfmOrgs:
 
       let hasConflict = false;
 
-      for (let i = 0; i <= people.length; i++) {
+      for (let i = 0; i < people.length; i++) {
         const dupUserNNumber = cleanupField(people[i].EmploymentNumber, "string");
         const dupUserEmail = cleanupField(people[i].Email, "string");
 
@@ -206,35 +205,12 @@ export const checkConflictingWFMPeople = (user: any, rowNumber: number, wfmOrgs:
           break;
         }
       }
+
       return hasConflict;
-      // // TODO: NEED TO FIX THIS... do we need the resolve rejects??? I think we can just return true or false...
-      // people.map(async (p: any) => {
-      //   const dupUserNNumber = cleanupField(p.EmploymentNumber, "string");
-      //   const dupUserEmail = cleanupField(p.Email, "string");
 
-      //   if (nNumber && dupUserNNumber === nNumber) {
-      //     console.log("CALABRIO WFM CONFLICTING USERS: ", dupUserNNumber, nNumber);
-      //     throw(`Calabrio WFM Record already exists with this user's nNumber in the EmploymentNumber field for row ${rowNumber}.`);
-      //   }
-
-      //   if (email && dupUserEmail === email) {
-      //     console.log("CALABRIO WFM CONFLICTING USERS: ", dupUserEmail, email);
-      //     throw(`Calabrio WFM Record already exists with this user's email for row ${rowNumber}.`);
-      //   }
-      // });
-      // return Promise.resolve(`Calabrio WFM Checks passed for ${rowNumber}`);
     } catch(err) {
       console.error("Error thrown trying to fetch and validate Conflicting Users", err);
-      // return Promise.reject(JSON.stringify({
-      //   rowNumber: rowNumber,
-      //   error: formatErrorMessage(err)
-      // }));
     }
-  } else {
-    // return Promise.reject(JSON.stringify({
-    //   rowNumber: rowNumber,
-    //   error: "No user passed to calabrio wfm processing"
-    // }));
   }
 };
 
@@ -254,24 +230,19 @@ export const allowedEmptyScheduleField = (row: any, fieldName: string) => {
     FIELDS.CALABRIO_WFM_CONTRACT_SCHEDULE.name,
     FIELDS.CALABRIO_WFM_PARTTIME_PERCENTAGE.name
   ];
-  const optionalScheduleFields = [
-    FIELDS.CALABRIO_WFM_SHIFTBAG.name,
-    FIELDS.CALABRIO_WFM_BUDGET_GROUP.name
-  ];
-// TODO: Check this logic more...
-  const fieldIsOptional = optionalScheduleFields.includes(fieldName);
-  if (fieldIsOptional) {
-    console.log("this field is totally optional, allowed to be empty");
-    return true;
-  } else {
-    let isValid = true;
+
+  let isValid = true;
+
+  const fieldIsAllOrNothing = allOrNothingFields.includes(fieldName);
+
+  if (fieldIsAllOrNothing) {
     allOrNothingFields.forEach((field: string) => {
       if (row[field]) {
         console.log("%%%% INVALID.  FIELD CANNOT BE EMPTY due to the following field being populated:", fieldName);
         isValid = false;
       }
     });
-
-    return isValid;
   }
+  // shift bag and budget group are optional, so don't need to check those
+  return isValid;
 };
