@@ -194,6 +194,8 @@ describe("<AddFlow />", () => {
       const brandAttr = ComponentControl.mock.calls[4][0].onChange;
       const userDestAttr = ComponentControl.mock.calls[24][0].onChange;
       const callerTypeAttr = ComponentControl.mock.calls[7][0].onChange;
+      // Check Array indexes
+      const callFlowRouteAttr = ComponentControl.mock.calls[7][0].onChange;
       const eventPhoneNumValue = {
         target: {
           name: "pkey",
@@ -230,6 +232,7 @@ describe("<AddFlow />", () => {
         channelAttr(eventChannelValue);
         brandAttr(eventBrandValue);
         userDestAttr(eventDestValue);
+        callFlowRouteAttr(eventDestValue,"testing");
         callerTypeAttr(eventDestValue,"testing");
       });
       addFlowRule.mockResolvedValue({ data: { "items": []}});

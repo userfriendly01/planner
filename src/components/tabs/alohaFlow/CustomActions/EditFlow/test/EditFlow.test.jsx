@@ -67,6 +67,7 @@ const invalidFlowData={
 const mockMasterData = {
   brand: ["Test Brand"],
   channel: ["Test1 Channel", "Test2 Channel"],
+  callFlowRoute: ["TestCallFlowRoute"],
   callerType: ["TestCallerType"]
 };
 
@@ -273,6 +274,21 @@ describe("<EditFlow />", () => {
       act(() => {
         fireEvent.click(listBox.getByRole("option", {
           name: /TestCallerType/i,
+          hidden: true
+        }));
+      });
+      expect(callerDropdown).toBeDefined();
+    });
+    test("Simulate to callFlowRoute field",()=>{
+      const {
+        getByRole
+      } = renderEditFlow(true, validFlowData);
+      const callerDropdown = getByRole("combobox", { name: /Call Flow Route/i });
+      fireEvent.mouseDown(callerDropdown);
+      const listBox = within(getByRole("listbox", { name: /Call Flow Route/i }));
+      act(() => {
+        fireEvent.click(listBox.getByRole("option", {
+          name: /TestCallFlowRoute/i,
           hidden: true
         }));
       });
