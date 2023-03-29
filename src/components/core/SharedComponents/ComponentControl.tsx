@@ -2,9 +2,10 @@ import React from "react";
 import TextField from "@mui/material/TextField";
 import SelectContainer from "./SelectContainer";
 import TimePickerComponent from "./TimepickerComponent";
+import { Control } from "globals";
 
 export interface ComponentControlProps {
-  control: string,
+  control: Control,
   dropDownOptions: string[],
   name: string,
   label: string,
