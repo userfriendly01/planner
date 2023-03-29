@@ -3,7 +3,8 @@ import {
   createCalabrioUser,
   getCalabrioUser,
   updateCalabrioUser,
-  updateUser
+  updateUser,
+  addManager
 } from "services";
 import {
   Template,
@@ -97,6 +98,30 @@ const processCreateCalabrioUser = async (row: any, state: any) => {
     console.error(errorMessage, err);
     return rejectPromise(errorMessage, rowNumber);
   }
+};
+
+// TODO: write the actual code
+const processCreateManager = async (row: any, state: any) => {
+  console.warn("****MANAGER RECORD PROCESSING for", row);
+  const rowNumber = row.rowNumber;
+
+  const body: any = {};
+
+  body.manager_first_nme;
+  body.manager_last_nme;
+  body.manager_n_num;
+  body.profile_id;
+  body.calabrio_team_ids; // stringified 
+
+  try {
+    // await addManager(body);
+  } catch (err) {
+    const errorMessage = `Failed to create Manager for row ${rowNumber}. ${formatErrorMessage}`;
+    console.error(errorMessage, err);
+    return rejectPromise(errorMessage, rowNumber);
+  }
+
+  return "blep";
 };
 
 const processUpdateWorkerAttribute = async (row: any, template: Template, state: any) => {
@@ -236,6 +261,21 @@ export const getCreateTemplates = (state: any): Templates => {
         FIELDS.CALABRIO_TEAM,
         FIELDS.CALABRIO_ROLES,
         FIELDS.CALABRIO_TIME_ZONE
+      ]
+    },
+    CREATE_MANAGER: {
+      name: "CREATE_MANAGER",
+      data: {},
+      processFunction: (row: any) => processCreateManager(row, state),
+      stateUpdateFunctions: [], // todo: new update manager state function
+      multiRunDependencies: null, // should only be run alone
+      validationConcurrencyLimit: null, // no api calls in validation
+      processingConcurrencyLimit: 5, // todo: investigate the actual limits here for contact manager api
+      fields: [
+        FIELDS.PROFILE_ID,
+        FIELDS.MANAGER_N_NUMBER_CREATE,
+        FIELDS.CALABRIO_TEAM_CREATE,
+        FIELDS.CALABRIO_GROUP
       ]
     }
   };
