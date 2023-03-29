@@ -169,11 +169,11 @@ export const checkConflictingCalabrioUsers = async (user: any, rowNumber: number
 /**
  * Checks to see if there are any records in the calabrio wfm people state with conflicting information that would cause 
  * an error to be thrown in creating a Calabrio WFM person 
- * @param user user being checked
+ * @param user user being checked (the row)
  * @param rowNumber rowNumber being processed for alignment of promise rejection comments
  * @param wfmOrgs WFM Org in the state containing all People state
  */
-export const checkConflictingWFMPeople = async (user: any, rowNumber: number, wfmOrgs: any[]): Promise<any> => {
+export const checkConflictingWFMPeople = (user: any, rowNumber: number, wfmOrgs: any[]): boolean => {
   if(user){
     try {
       const nNumber = cleanupField(user.attributes.n_number, "string");
@@ -181,40 +181,60 @@ export const checkConflictingWFMPeople = async (user: any, rowNumber: number, wf
 
       // create an array of all WFM people to use for comparison
       const people = wfmOrgs[0].People_Without_Team;
-      console.log("LOOK", people)
+      console.log("LOOK", people);
       wfmOrgs.forEach(bu => {
         bu.Teams.forEach((team: any) => {
           people.push(...team.People);
         });
       });
 
-      await Promise.all(people.map(async (p: any) => {
-        const dupUserNNumber = cleanupField(p.EmploymentNumber, "string");
-        const dupUserEmail = cleanupField(p.Email, "string");
+      let hasConflict = false;
+
+      for (let i = 0; i <= people.length; i++) {
+        const dupUserNNumber = cleanupField(people[i].EmploymentNumber, "string");
+        const dupUserEmail = cleanupField(people[i].Email, "string");
 
         if (nNumber && dupUserNNumber === nNumber) {
           console.log("CALABRIO WFM CONFLICTING USERS: ", dupUserNNumber, nNumber);
-          throw(`Calabrio WFM Record already exists with this user's nNumber in the EmploymentNumber field for row ${rowNumber}.`);
+          hasConflict = true;
+          break;
         }
 
         if (email && dupUserEmail === email) {
           console.log("CALABRIO WFM CONFLICTING USERS: ", dupUserEmail, email);
-          throw(`Calabrio WFM Record already exists with this user's email for row ${rowNumber}.`);
+          hasConflict = true;
+          break;
         }
-      }));
-      return Promise.resolve(`Calabrio WFM Checks passed for ${rowNumber}`);
+      }
+      return hasConflict;
+      // // TODO: NEED TO FIX THIS... do we need the resolve rejects??? I think we can just return true or false...
+      // people.map(async (p: any) => {
+      //   const dupUserNNumber = cleanupField(p.EmploymentNumber, "string");
+      //   const dupUserEmail = cleanupField(p.Email, "string");
+
+      //   if (nNumber && dupUserNNumber === nNumber) {
+      //     console.log("CALABRIO WFM CONFLICTING USERS: ", dupUserNNumber, nNumber);
+      //     throw(`Calabrio WFM Record already exists with this user's nNumber in the EmploymentNumber field for row ${rowNumber}.`);
+      //   }
+
+      //   if (email && dupUserEmail === email) {
+      //     console.log("CALABRIO WFM CONFLICTING USERS: ", dupUserEmail, email);
+      //     throw(`Calabrio WFM Record already exists with this user's email for row ${rowNumber}.`);
+      //   }
+      // });
+      // return Promise.resolve(`Calabrio WFM Checks passed for ${rowNumber}`);
     } catch(err) {
       console.error("Error thrown trying to fetch and validate Conflicting Users", err);
-      return Promise.reject(JSON.stringify({
-        rowNumber: rowNumber,
-        error: formatErrorMessage(err)
-      }));
+      // return Promise.reject(JSON.stringify({
+      //   rowNumber: rowNumber,
+      //   error: formatErrorMessage(err)
+      // }));
     }
   } else {
-    return Promise.reject(JSON.stringify({
-      rowNumber: rowNumber,
-      error: "No user passed to calabrio wfm processing"
-    }));
+    // return Promise.reject(JSON.stringify({
+    //   rowNumber: rowNumber,
+    //   error: "No user passed to calabrio wfm processing"
+    // }));
   }
 };
 

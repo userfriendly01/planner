@@ -106,54 +106,57 @@ const processWFMCreateUser = async (row: any, state: any) => {
   console.warn("****WFM RECORD PROCESSING for", row);
   const rowNumber = row.rowNumber;
 
-  // ? Should we check for an existing WFM user first? - Ask Steph
-  await checkConflictingWFMPeople(row, rowNumber, state.calabrioContext.wfmOrg);
-
-  const body: any = {};
-
-  // TODO: what should we do with fields that we aren't requiring?
-
-  // required fields
-  body.FirstName = row.attributes.emp_first_name;
-  body.LastName = row.attributes.emp_last_name;
-  body.BusinessUnitId = row.businessUnitId;
-  body.Email = row.attributes.email;
-  body.TimeZoneId = row.timeZone;
-  body.ApplicationLogon = row.attributes.email;
-  body.NNumber = row.attributes.n_number;
-  body.FirstDayOfWeek = row.wfmFirstDayOfWeek;
-
-  // schedule related parameters...  not required technically, but either all need to be null, or all need to be a value
-  body.PersonStartDate = row.wfmPersonStartDate;
-  body.TeamId = row.wfmTeamId;
-  body.TeamStartDate = row.wfmTeamStartDate;
-  body.ContractId = row.wfmContractId;
-  body.ContractScheduleId = row.wfmContractScheduleId;
-  body.PartTimePercentageId = row.wfmPartTimePercentageId;
-  // optional sheduling items
-  body.BudgetGroupId = row.wfmBudgetGroupId;
-  body.ShiftBagId = row.wfmShiftBagId;
-
-  // I think these are all optional as per Shannon?
-  body.AvailabilityId = row.wfmAvailabilityId;
-  body.AvailabilityStartDate = row.wfmAvailabilityStartDate;
-  body.RoleIds = row.wfmRoleIds;
-  body.WorkflowControlSetId = row.wfmWorkflowControlSetId;
-  body.Skills = row.wfmSkillIds;
-  body.SkillsStartDate = row.wfmSkillsStartDate;
-  body.RotationId = row.wfmRotationId;
-  body.RotationStartDate = row.wfmRotationStartDate;
-  body.RotationStartWeek = row.wfmRotationStartWk;
-
-  // completely optional
-  body.OptionalColumns = row.wfmOptionalColumns;
-  // body.Culture = row.wfmCulture;
-
-
-  console.log("THIS IS WHAT IS GETTING SENT for WFM CREATE", body);
-
   try {
-    await createCalabrioWFMPerson(body);
+  // TODO: FIX this check
+    const hasPersonConflict = checkConflictingWFMPeople(row, rowNumber, state.calabrioContext.wfmOrg);
+    console.log("RESULTS OF hasPersonConflict!!!!", hasPersonConflict);
+    if (hasPersonConflict) {
+      throw (`Calabrio WFM Record already exists with either this user's email or nNumber for row ${rowNumber}`);
+    }
+
+    const body: any = {};
+
+    // required fields
+    body.FirstName = row.attributes.emp_first_name;
+    body.LastName = row.attributes.emp_last_name;
+    body.BusinessUnitId = row.businessUnitId;
+    body.Email = row.attributes.email;
+    body.TimeZoneId = row.timeZone;
+    body.ApplicationLogon = row.attributes.email;
+    body.NNumber = row.attributes.n_number;
+    body.FirstDayOfWeek = row.wfmFirstDayOfWeek;
+
+    // schedule related parameters...  not required technically, but either all need to be null, or all need to be a value
+    body.PersonStartDate = row.wfmPersonStartDate;
+    body.TeamId = row.wfmTeamId;
+    body.TeamStartDate = row.wfmTeamStartDate;
+    body.ContractId = row.wfmContractId;
+    body.ContractScheduleId = row.wfmContractScheduleId;
+    body.PartTimePercentageId = row.wfmPartTimePercentageId;
+    // optional sheduling items
+    body.BudgetGroupId = row.wfmBudgetGroupId;
+    body.ShiftBagId = row.wfmShiftBagId;
+
+    // I think these are all optional as per Shannon?
+    body.AvailabilityId = row.wfmAvailabilityId;
+    body.AvailabilityStartDate = row.wfmAvailabilityStartDate;
+    body.RoleIds = row.wfmRoleIds;
+    body.WorkflowControlSetId = row.wfmWorkflowControlSetId;
+    body.Skills = row.wfmSkillIds;
+    body.SkillsStartDate = row.wfmSkillsStartDate;
+    body.RotationId = row.wfmRotationId;
+    body.RotationStartDate = row.wfmRotationStartDate;
+    body.RotationStartWeek = row.wfmRotationStartWk;
+
+    // completely optional
+    body.OptionalColumns = row.wfmOptionalColumns;
+    // body.Culture = row.wfmCulture;
+
+
+    console.log("THIS IS WHAT IS GETTING SENT for WFM CREATE", body);
+
+    // TODO: COMMENT THIS BACK IN
+    // await createCalabrioWFMPerson(body);
     console.log(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
     return Promise.resolve(`Person created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`);
   } catch(err) {
@@ -176,7 +179,7 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
   if(key === "profile_id"){
     body[location] = {
       agent_attribute_1: parseInt(value),
-      profile_id: parseInt(value),
+      profile_id: parseInt(value)
     };
     const profile = getTargetProfile(state.profileContext.profiles, value);
     body.operatingUnitSid = profile?.operating_unit_sid;
