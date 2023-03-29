@@ -7,7 +7,7 @@ import {
 
 const CACHE_MASTER_DATA = "FLOW_MASTER_DATA";
 const masterDataItems = ["channel", "brand", "callerType", "callFlowTemplate", "callFlowRoute", "pkey"];
-const masterDataItemsFromContent = ["callFlowRoute"];
+const masterDataItemsFromContent = ["callFlowRoute", "callerType"];
 const filteredItems = [null, "null", ""];
 
 const clearGridMasterData = ():void => localStorage.removeItem(CACHE_MASTER_DATA);

@@ -66,7 +66,9 @@ const invalidFlowData={
 
 const mockMasterData = {
   brand: ["Test Brand"],
-  channel: ["Test1 Channel", "Test2 Channel"]
+  channel: ["Test1 Channel", "Test2 Channel"],
+  callFlowRoute: ["TestCallFlowRoute"],
+  callerType: ["TestCallerType"]
 };
 
 const openEditModal = jest.fn();
@@ -262,20 +264,50 @@ describe("<EditFlow />", () => {
         expect(openEditModal).toBeCalledTimes(0);
       });
     });
-  });
-
-  describe("Individual Components", ()=>{
-    beforeEach(()=>{
-      setupMockedComponents({
-        CustomToast
+    test("Simulate to callerType field",()=>{
+      const {
+        getByRole
+      } = renderEditFlow(true, validFlowData);
+      const callerDropdown = getByRole("combobox", { name: /Caller Type/i });
+      fireEvent.mouseDown(callerDropdown);
+      const listBox = within(getByRole("listbox", { name: /Caller Type/i }));
+      act(() => {
+        fireEvent.click(listBox.getByRole("option", {
+          name: /TestCallerType/i,
+          hidden: true
+        }));
       });
+      expect(callerDropdown).toBeDefined();
+    });
+    test("Simulate to callFlowRoute field",()=>{
+      const {
+        getByRole
+      } = renderEditFlow(true, validFlowData);
+      const callerDropdown = getByRole("combobox", { name: /Call Flow Route/i });
+      fireEvent.mouseDown(callerDropdown);
+      const listBox = within(getByRole("listbox", { name: /Call Flow Route/i }));
+      act(() => {
+        fireEvent.click(listBox.getByRole("option", {
+          name: /TestCallFlowRoute/i,
+          hidden: true
+        }));
+      });
+      expect(callerDropdown).toBeDefined();
     });
 
-    test("Simulate CustomToast Close Button",()=>{
-      renderEditFlow(true, validFlowData);
-      const customToastOnClose = CustomToast.mock.calls[0][0].onClose;
-      act(()=>{ customToastOnClose(); });
-      expect(CustomToast.mock.calls[0][0].open).toBe(false);
+    describe("Individual Components", ()=>{
+      beforeEach(()=>{
+        setupMockedComponents({
+          CustomToast
+        });
+      });
+
+      test("Simulate CustomToast Close Button",()=>{
+        renderEditFlow(true, validFlowData);
+        const customToastOnClose = CustomToast.mock.calls[0][0].onClose;
+        act(()=>{ customToastOnClose(); });
+        expect(CustomToast.mock.calls[0][0].open).toBe(false);
+      });
     });
   });
 });
