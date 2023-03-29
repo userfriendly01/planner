@@ -67,8 +67,8 @@ export function authWrapper(
         .then(response => {
           this.checkMembership(response.accessToken, this, authenticationProfiles());
         }).catch(err => {
-          if(err.message.indexOf("login is already in progress")) {
-            if(counter > 5 ) {
+          if(err.message.indexOf("login is already in progress")!== -1) {
+            if(counter >= 5 ) {
               this.setState({
                 ...this.state,
                 hasError: true,
