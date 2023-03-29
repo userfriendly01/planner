@@ -1,5 +1,7 @@
 import { apiPaths } from "globals";
-import { getCalabrioUsers, getWfmOrg } from "services";
+import {
+  getCalabrioUsers, getWfmOrg
+} from "services";
 import { UploadedRow } from "../BulkChanges.Interfaces";
 import {
   formatWorkerResponse,
@@ -43,7 +45,7 @@ export const updateCalabrioUserState = async (dispatch: any): Promise<void> => {
 /**
  * Refreshes the calabrio WFM person state after a bulk update on users
  */
- export const updateWFMPersonState = async (dispatch: any): Promise<void> => {
+export const updateWFMPersonState = async (dispatch: any): Promise<void> => {
   try {
     const org: any = await getWfmOrg();
     dispatch({

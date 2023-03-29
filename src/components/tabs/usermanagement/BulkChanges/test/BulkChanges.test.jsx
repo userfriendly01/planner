@@ -268,7 +268,7 @@ describe("<BulkChanges />", () => {
       });
     });
     describe("Process Button is clicked", () => {
-      test.only("should render processing modal", async () => {
+      test("should render processing modal", async () => {
         const rendered = render(<BulkChanges />);
         expect(BulkCreateForm.mock.calls.length).toBe(2);
         const setSelectedTemplates = BulkCreateForm.mock.calls[1][0].setSelectedTemplates;

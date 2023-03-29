@@ -1,5 +1,7 @@
 import * as utils from "../processingUtils";
-import { getCalabrioUsers } from "services";
+import {
+  getCalabrioUsers, getWfmOrg
+} from "services";
 import { act } from "testUtils";
 import {
   formatWorkerResponse,
@@ -21,6 +23,11 @@ jest.mock("xlsx",() => ({
   utils: {
     sheet_to_json: jest.fn()
   }
+}));
+
+jest.mock("services", () => ({
+  getWfmOrg: jest.fn(),
+  getCalabrioUsers: jest.fn()
 }));
 
 describe("updateTritonUserState", () => {
@@ -89,6 +96,46 @@ describe("updateCalabrioUserState", () => {
       await utils.updateCalabrioUserState(mockDispatch);
       expect(console.error).toHaveBeenCalledTimes(1);
       expect(console.error.mock.calls[0][0]).toContain("Failed to update calabrio user state after bulk upload");
+    });
+  });
+});
+
+describe("updateWFMPersonState", () => {
+  const mockDispatch = jest.fn();
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+  });
+  describe("getWfmOrg succeeds", () => {
+    test("dispatch is called, promise resolves", async () => {
+      const response = {
+        data: {
+          organization: {
+            businessUnits: [{
+              Id: "I'm a business unit",
+              otherStuff: "yo"
+            }]
+          }
+        }
+      };
+      getWfmOrg.mockResolvedValue(response);
+      await utils.updateWFMPersonState(mockDispatch);
+      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: "loadWfmOrg",
+        payload: [{
+          Id: "I'm a business unit",
+          otherStuff: "yo"
+        }]
+      });
+    });
+  });
+  describe("get users fails", () => {
+    test("dispatch is not called, promise resolves", async () => {
+      getWfmOrg.mockRejectedValue("Aww");
+      await utils.updateWFMPersonState(mockDispatch);
+      expect(console.error).toHaveBeenCalledTimes(1);
+      expect(console.error.mock.calls[0][0]).toContain("Failed to update calabrio WFM person state after bulk upload");
     });
   });
 });

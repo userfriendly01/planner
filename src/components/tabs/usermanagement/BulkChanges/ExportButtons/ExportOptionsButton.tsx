@@ -28,13 +28,7 @@ const ExportOptionsButton = (props: any) => {
     const columns: any = [];
     template.forEach((t: any) => {
       if(t.options){
-        let options = [];
-        if (t.field.includes("wfm")) {
-          console.log("wfmBusinessUnit in export options: ", wfmBusinessUnit.value);
-          options = t.options(state, wfmBusinessUnit.value);
-        } else {
-          options = t.options(state);
-        }
+        const options = t.options(state);
         if(options.length > 0){
           columns.push({
             field: t.field,
