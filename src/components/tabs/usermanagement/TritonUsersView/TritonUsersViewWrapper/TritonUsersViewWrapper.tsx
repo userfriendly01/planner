@@ -2,7 +2,6 @@ import {
   ManagementContainer,
   StyledPaper
 } from "./TritonUsersViewWrapper.Styles";
-import { TritonUserManagementWrapperProps } from "./TritonUsersViewWrapper.Interfaces";
 import {
   TritonUsersHeader,
   Pagination,
@@ -16,11 +15,7 @@ import {
   sortWorkersByFullName
 } from "utils";
 
-const TritonUserManagementWrapper: any = (props: TritonUserManagementWrapperProps) => {
-  const {
-    workerOpts,
-    setWorkerOpts
-  } = props;
+const TritonUserManagementWrapper: any = () => {
 
   const defaultTableState: any = {
     searchBy: "",
@@ -95,8 +90,6 @@ const TritonUserManagementWrapper: any = (props: TritonUserManagementWrapperProp
         <TritonUserTable
           tableState={tableState}
           setTableState={setTableState}
-          workerOpts={workerOpts}
-          setWorkerOpts={setWorkerOpts}
         />
       </StyledPaper>
       <Pagination

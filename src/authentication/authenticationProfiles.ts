@@ -8,11 +8,13 @@ import {
   runAlohaFlowStartup
 } from "authentication";
 import {
-  UserManagementWrapper,
   ProfileSettingsContainer,
   CallFlowManagementWrapper,
   AlohaRoutingContainer,
-  AlohaFlowContainer
+  AlohaFlowContainer,
+  UserEntryForm,
+  BulkChanges,
+  TritonUsersViewWrapper
 } from "components";
 
 export const getAuthenticationProfileTemplates = (): AuthenticationProfileOptions => {
@@ -143,32 +145,50 @@ export const getStartupProfiles = () => {
   };
 };
 
-export const getTabs = () => {
+export const getTabs = (): any => {
   return {
     TRITON_USER_MANAGEMENT: {
       value: "triton-user-management",
       label: "User Management",
-      component: UserManagementWrapper
+      component: TritonUsersViewWrapper,
+      dropdown: [
+        {
+          route: "triton-admin/triton-users",
+          label: "Triton User Management"
+        },
+        {
+          route: "triton-admin/user",
+          label: "Onboard New User"
+        },
+        {
+          route: "triton-admin/bulk",
+          label: "Bulk Changes"
+        }
+      ]
     },
     TRITON_PROFILE_SETTINGS: {
       value: "triton-profile-settings",
       label: "Profile Settings",
-      component: ProfileSettingsContainer
+      component: ProfileSettingsContainer,
+      dropdown: null
     },
     TRITON_CALL_FLOW_MANAGEMENT: {
       value: "triton-callflow-management",
       label: "Call Flow Management",
-      component: CallFlowManagementWrapper
+      component: CallFlowManagementWrapper,
+      dropdown: null
     },
     ALOHA_CALL_FLOW_MANAGEMENT: {
       value: "aloha-callflow-management",
       label: "Call Flow DB Management",
-      component: AlohaFlowContainer
+      component: AlohaFlowContainer,
+      dropdown: null
     },
     ALOHA_ROUTING_RULES: {
       value: "aloha-routing-rules",
       label: "Routing Rules",
-      component: AlohaRoutingContainer
+      component: AlohaRoutingContainer,
+      dropdown: null
     }
   };
 };

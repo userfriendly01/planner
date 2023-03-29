@@ -1,4 +1,5 @@
 import {
+  Button,
   Tab,
   Tabs
 } from "@mui/material";
@@ -21,8 +22,24 @@ export const StyledTab = styled(Tab)`
   }
 `;
 
+
+export const StyledTabNew = styled(Button)`
+  color: black !important;
+  && {
+    font-size: 1.1em;
+    margin: 5px;
+  }
+`;
 export const StyledTabContainer = styled.div`
+  display: flex;
+  justify-content: space-evenly;
   position: sticky;
   top: 48px;
   z-index: 99;
+  background-color: rgb(255, 226, 128);
+  margin-bottom: 40px;
+`;
+
+export const DropdownContainer = styled.div`
+
 `;

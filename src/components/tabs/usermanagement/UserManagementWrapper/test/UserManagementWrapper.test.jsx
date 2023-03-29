@@ -25,7 +25,6 @@ jest.mock("components", () => ({
 }));
 
 jest.mock("context", () => ({
-  FormStateProvider: jest.requireActual("context").FormStateProvider,
   useAdminState: jest.fn()
 }));
 

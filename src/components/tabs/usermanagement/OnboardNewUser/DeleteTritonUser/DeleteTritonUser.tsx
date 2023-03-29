@@ -4,12 +4,15 @@ import {
   UserFormButton
 } from "../UserEntryFormWrapper/UserEntryFormWrapper.Styles";
 import {
-  CheckboxWrapper,
   DeleteTritonUserWrapper,
   Text
 } from "./DeleteTritonUser.Styles";
 import { ForwardToEntryForm } from "components";
-import { useAdminDispatch } from "context";
+import {
+  useAdminState,
+  useFormState,
+  useAdminDispatch
+} from "context";
 import {
   ModalOverlayStatuses,
   timeouts
@@ -17,29 +20,30 @@ import {
 import React from "react";
 import { deleteUser } from "services";
 import { wait } from "utils";
-import {
-  FormControlLabel,
-  Radio
-} from "@mui/material";
 
 const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
   const {
     handleClose,
     loading,
-    setWorkerOpts,
     updateLoading,
     workerOpts
   } = props;
 
+  const state = useAdminState();
   const dispatch = useAdminDispatch();
-  const isWorkerDid = workerOpts.worker.directDialNum;
+  const form = useFormState();
+  const tritonWorker: any = state.workerContext.workers.find((w: any) => w.attributes.n_number === form.nNumber.value);;
+
+  console.log("TRITON WORKER", tritonWorker);
+
+  const isWorkerDid = form.didUser;
   const [deleteTriton, setDeleteTriton] = React.useState(workerOpts.systems.triton);
   const [deleteCalabrioQm, setDeleteClabrioQm] = React.useState(workerOpts.systems.calabrio_qm);
   const [deleteCalabrioWfm, setDeleteCalabrioWfm ] = React.useState(workerOpts.systems.calabrio_wfm);
 
   const handleDeleteUser = () => {
-    const deletedWorker = workerOpts.worker;
-    const workerName = deletedWorker.attributes?.full_name || deletedWorker.displayId || deletedWorker.DisplayName;
+    const tritonWorkerName =  tritonWorker.attributes ? `${tritonWorker.attributes?.emp_first_name} ${tritonWorker.attributes?.emp_last_name}` : null;
+    const workerName = tritonWorkerName  || tritonWorker.displayId || tritonWorker.DisplayName;
     updateLoading({
       ...loading,
       overlayMessage: `Deleting user: ${workerName}`,
@@ -47,13 +51,13 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
       saveUser: true
     });
     let resultMessage;
-    deleteUser(deletedWorker)
+    deleteUser(tritonWorker)
       .then(() => {
-        resultMessage = `Successfully deleted Triton worker with sid ${deletedWorker.sid}`;
+        resultMessage = `Successfully deleted Triton worker with sid ${tritonWorker.sid}`;
         console.log(resultMessage);
         dispatch({
           type: "deleteWorker",
-          payload: deletedWorker.sid
+          payload: tritonWorker.sid
         });
         updateLoading({
           ...loading,
@@ -71,7 +75,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
       })
       .catch(err => {
         if (typeof err.response.data.error === "object" ){
-          resultMessage = `Failed to delete worker ${deletedWorker.sid}`;
+          resultMessage = `Failed to delete worker ${tritonWorker.sid}`;
         } else {
           resultMessage = err.response.data.error;
         }
@@ -93,13 +97,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
       { isWorkerDid ?
         <ForwardToEntryForm
           label={"This user has a direct dial number. Please choose a forward to option before confirming."}
-          updateForwardTo={(inactiveForwardTo: string) => setWorkerOpts({
-            ...workerOpts,
-            worker: {
-              ...workerOpts.worker,
-              inactiveForwardTo
-            }
-          })}
+          updateForwardTo={(inactiveForwardTo: string) => tritonWorker.inactiveForwardTo = inactiveForwardTo}
         />
         : null
       }

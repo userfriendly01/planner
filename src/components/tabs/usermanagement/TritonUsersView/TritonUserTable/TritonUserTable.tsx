@@ -28,15 +28,13 @@ import {
   ModalOverlayStatuses
 } from "globals";
 import React from "react";
+import { useNavigate } from 'react-router-dom';
 import { formatWorkerAttributeSkillsToHTML } from "utils";
 import { TritonUserTableProps } from "./TritonUserTable.Interfaces";
-import { views } from "../../UserManagementWrapper/UserManagement.Interfaces";
 
 const TritonUserTable = (props: TritonUserTableProps) => {
   const {
     tableState,
-    workerOpts,
-    setWorkerOpts,
     setTableState
   } = props;
 
@@ -44,6 +42,7 @@ const TritonUserTable = (props: TritonUserTableProps) => {
   const selectedWorkers = state.workerContext.selectedWorkers;
   const dispatch = useAdminDispatch();
   const setForm = useFormDispatch();
+  const navigate = useNavigate();
 
   return (
     <TableContainer>
@@ -88,12 +87,7 @@ const TritonUserTable = (props: TritonUserTableProps) => {
                   formMode: formModes.UPDATE
                 }
               });
-              setWorkerOpts({
-                ...workerOpts,
-                action: UserAction.EDIT,
-                worker: worker,
-                routedFrom: views.TRITON_USERS
-              });
+              navigate(`/triton-admin/user`)
             };
             const deleteButtonOnClick = (event: any) => {
               event.stopPropagation();
@@ -105,12 +99,7 @@ const TritonUserTable = (props: TritonUserTableProps) => {
                   formMode: formModes.DELETE
                 }
               });
-              setWorkerOpts({
-                ...workerOpts,
-                action: UserAction.DELETE,
-                worker: worker,
-                routedFrom: views.TRITON_USERS
-              });
+              navigate(`/triton-admin/user`)
             };
             return (
               <CustomTableRow key={worker.sid} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">

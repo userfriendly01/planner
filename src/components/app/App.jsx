@@ -11,6 +11,7 @@ import {
   Overlay,
   LoadingMessage
 } from "./App.Styles";
+import ScrollToTop from "./ScrollToTop";
 import {
   getAuthenticationProfiles,
   getPermissions,
@@ -24,6 +25,7 @@ import {
 import { useAdminDispatch } from "context";
 import {
   apiPaths,
+  getRoutes,
   theme,
   timeouts
 } from "globals";
@@ -31,6 +33,7 @@ import React, {
   useEffect,
   useState
 } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import {
   isErrorIn400s,
   myAxios,
@@ -99,19 +102,28 @@ const App = () => {
   if (loadResult) {
     if (loadResult === success) {
       return (
-        <AppWrapper data-testid="app-wrapper">
-          <Header/>
-          <NavTabs/>
-          <Modal onClose={() => { return; }} open={showModal === true}>
-            <>
-              <NotificationModal
-                buttonText={"Reload"}
-                handleClick={() => window.location.reload()}
-                text={"Your session has expired. Please reload the page."}
-              />
-            </>
-          </Modal>
-        </AppWrapper>
+        <BrowserRouter>
+          <ScrollToTop />
+          <AppWrapper data-testid="app-wrapper">
+            <Header/>
+            <NavTabs/>
+              <Routes>
+                {getRoutes().map(r => {
+                  const Component = r.element;
+                  return <Route path={r.path} element={<Component/>}/>
+                })}
+              </Routes>
+            <Modal onClose={() => { return; }} open={showModal === true}>
+              <>
+                <NotificationModal
+                  buttonText={"Reload"}
+                  handleClick={() => window.location.reload()}
+                  text={"Your session has expired. Please reload the page."}
+                />
+              </>
+            </Modal>
+          </AppWrapper>
+        </BrowserRouter>
       );
     } else {
       return (
