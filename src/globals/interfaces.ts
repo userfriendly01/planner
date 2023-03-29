@@ -242,6 +242,12 @@ export interface WorkerAttributeSkills {
   skills: string[]
 }
 
+export interface AzureSPA {
+  accessToken: string;
+  matchedGroups: string;
+  azureClientId?: string;
+}
+
 export interface CalabrioQmUser {
   acdId: string,
   acdServerId: number,
@@ -273,4 +279,8 @@ export interface TableStateProps {
     endingUserIndex: number | null
   },
   filteredList: any[]
+}
+export interface OperatingUnit {
+  ou_sid: string,
+  ou_name: string
 }
