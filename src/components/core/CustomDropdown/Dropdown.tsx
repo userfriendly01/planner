@@ -74,11 +74,7 @@ export const Dropdown = (props: any) => {
           return <ListItem  {...props} key={props["data-option-index"]}>
             <CustomRender option={option}/>
           </ListItem>;
-        } else if(label === "Caller Type"){
-          return <ListItem  {...props} key={props["data-option-index"]}>
-            {option}
-          </ListItem>;
-        }else if(label === "Call Flow Route"){
+        } else if(!option.label){
           return <ListItem  {...props} key={props["data-option-index"]}>
             {option}
           </ListItem>;

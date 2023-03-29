@@ -162,7 +162,7 @@ export const EditFlow = ({
   ) => {
     let value: string;
     let key: string;
-    if(keyPassed === "callerType" || keyPassed === "callFlowRoute"){
+    if(valuePassed && typeof(valuePassed) === "string"){
       value = valuePassed;
       key = keyPassed;
     }

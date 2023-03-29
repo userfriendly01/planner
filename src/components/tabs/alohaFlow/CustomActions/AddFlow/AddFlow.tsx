@@ -95,7 +95,7 @@ export const AddFlow = ({
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,valuePassed?:string,key?:string) {
     let value: string;
-    if(key ==="callerType" || key ==="callFlowRoute"){
+    if(valuePassed && typeof(valuePassed) === "string" ){
       value = valuePassed;
     }
     else{
