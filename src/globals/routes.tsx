@@ -45,6 +45,6 @@ export const getRoutes = (state: AppState, azureClientId: string) => [
   },
   {
     path: "/triton-admin/aloha-routing",
-    element: AlohaRoutingContainer
+    render: (props: any) => <AlohaRoutingContainer { ...props } state={state} azureClientId={azureClientId}/>
   }
 ]

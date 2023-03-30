@@ -82,7 +82,6 @@ export function authWrapper(
     }
 
     componentDidMount() {
-      console.log("final answer", this.props.azureClientId);
       msalInstance = new UserAgentApplication({
         auth: {
           authority: "https://login.microsoftonline.com/08a83339-90e7-49bf-9075-957ccd561bf1",
