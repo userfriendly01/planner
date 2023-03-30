@@ -45,6 +45,7 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
                   internetPlacement
                   callDetails1
                   callDetails2
+                  tollFreeNumber
                   lineOfBusiness
                   marketingChannel
                   whisper
@@ -137,6 +138,7 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
                 internetPlacement: "${item.internetPlacement || ""}",
                 callDetails1: "${item.callDetails1 || ""}",
                 callDetails2: "${item.callDetails2 || ""}",
+                tollFreeNumber: "${item.tollFreeNumber || ""}",
                 lineOfBusiness: "${item.lineOfBusiness || ""}",
                 marketingChannel: "${item.marketingChannel || ""}",
                 whisper: "${item.whisper || ""}",
@@ -167,6 +169,7 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
               internetPlacement
               callDetails1
               callDetails2
+              tollFreeNumber
               lineOfBusiness
               marketingChannel
               whisper
@@ -232,6 +235,7 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
                   internetPlacement: "${item.internetPlacement?.value || ""}",
                   callDetails1: "${item.callDetails1?.value || ""}",
                   callDetails2: "${item.callDetails2?.value || ""}",
+                  tollFreeNumber: "${item.tollFreeNumber?.value || ""}",
                   lineOfBusiness: "${item.lineOfBusiness?.value || ""}",
                   marketingChannel: "${item.marketingChannel?.value || ""}",
                   whisper: "${item.whisper?.value || ""}",
@@ -263,6 +267,7 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
               internetPlacement
               callDetails1
               callDetails2
+              tollFreeNumber
               lineOfBusiness
               marketingChannel
               whisper
@@ -329,6 +334,7 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
               internetPlacement
               callDetails1
               callDetails2
+              tollFreeNumber
               lineOfBusiness
               marketingChannel
               whisper

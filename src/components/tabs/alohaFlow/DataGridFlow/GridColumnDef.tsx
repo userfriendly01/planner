@@ -241,6 +241,13 @@ export const FlowGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left"
+  },
+  {
+    headerName: "Toll Free Number",
+    field: "tollFreeNumber",
+    sortable: true,
+    width: 110,
+    align: "left"
   }
 ];
 
