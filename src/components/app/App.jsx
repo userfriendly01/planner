@@ -116,7 +116,7 @@ const App = () => {
             <Header/>
             <NavTabs/>
               <Routes>
-                {getRoutes({ state, azureClientId }).map(r => {
+                {getRoutes(state, azureClientId).map(r => {
                   const Component = r.element || r.render;
                   return <Route path={r.path} element={<Component/>}/>
                 })}
