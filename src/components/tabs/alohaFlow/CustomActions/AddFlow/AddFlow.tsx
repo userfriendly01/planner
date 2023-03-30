@@ -188,6 +188,7 @@ export const AddFlow = ({
             internetPlacement: stringValue(flowRule,"internetPlacement", ""),
             callDetails1: stringValue(flowRule,"callDetails1", ""),
             callDetails2: stringValue(flowRule,"callDetails2", ""),
+            tollFreeNumber: stringValue(flowRule,"tollFreeNumber", ""),
             lineOfBusiness: stringValue(flowRule,"lineOfBusiness", ""),
             marketingChannel: stringValue(flowRule,"marketingChannel", ""),
             whisper: stringValue(flowRule,"whisper", ""),

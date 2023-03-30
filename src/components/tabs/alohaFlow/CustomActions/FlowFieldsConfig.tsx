@@ -231,6 +231,16 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     })
   },
   {
+    label: "Toll Free Number",
+    key: "tollFreeNumber",
+    control: "input",
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.tollFreeNumber || ""}`,
+    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
+      ...currentValue,
+      ...newValue
+    })
+  },
+  {
     label: "Line Of Business",
     key: "lineOfBusiness",
     control: "input",

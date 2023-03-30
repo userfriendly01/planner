@@ -65,6 +65,7 @@ export interface CctSharedCallFlowDb {
     internetPlacement?: string;
     callDetails1?: string;
     callDetails2?: string;
+    tollFreeNumber?:string;
     lineOfBusiness?: string;
     marketingChannel?: string;
     whisper?: string;
@@ -92,6 +93,7 @@ export interface FlowKeys {
     internetPlacement: string;
     callDetails1: string;
     callDetails2: string;
+    tollFreeNumber:string;
     lineOfBusiness: string;
     marketingChannel: string;
     whisper: string;
