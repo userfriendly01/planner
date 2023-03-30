@@ -5,11 +5,12 @@ import {
 } from "./NavTabs.Styles";
 import React from "react";
 import { useAdminState } from "context";
- import { Link } from "react-router-dom";
+ import { Link, useNavigate } from "react-router-dom";
 
 
 const NavTabs = () => {
   const state = useAdminState();
+  const navigate = useNavigate();
   const authenticationProfiles = state.userContext.authenticationProfiles;
 
   const [ value, setValue ] = React.useState(0);
@@ -53,12 +54,6 @@ const NavTabs = () => {
     setDropdownOpen(tabsOpen)
   }, []);
 
-
-  function handleChange(newValue: number) {
-    setValue(newValue);
-    window.scrollTo(0, 0);
-  }
-
   return (
       <Content>
         <StyledTabContainer>
@@ -71,7 +66,7 @@ const NavTabs = () => {
                   key={t.value}
                   id={`nav-tab-${t.value}`}
                   aria-controls={`nav-tabpanel-${t.value}`}
-                  onClick={() => handleChange(t.value)}
+                  onClick={() => navigate(t.route)}
                 >
                   {t.label}
                 </StyledTabNew>

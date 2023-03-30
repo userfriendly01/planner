@@ -1,9 +1,7 @@
 import React from "react";
-
 import { UserAgentApplication } from "msal";
 import { LoginError } from "./LoginError";
 import { LoginInProgress } from "./LoginInProgress";
-import { getAzureSPAClientId } from "utils";
 import {
   Environments,getAdGroupPermissionMapping
 } from "authentication";
@@ -84,10 +82,11 @@ export function authWrapper(
     }
 
     componentDidMount() {
+      console.log("final answer", this.props.azureClientId);
       msalInstance = new UserAgentApplication({
         auth: {
           authority: "https://login.microsoftonline.com/08a83339-90e7-49bf-9075-957ccd561bf1",
-          clientId: getAzureSPAClientId()
+          clientId: this.props.azureClientId
         }
       });
 

@@ -150,7 +150,7 @@ export const getTabs = (): any => {
     TRITON_USER_MANAGEMENT: {
       value: "triton-user-management",
       label: "User Management",
-      component: TritonUsersViewWrapper,
+      route: "triton-admin/triton-users",
       dropdown: [
         {
           route: "triton-admin/triton-users",
@@ -169,25 +169,25 @@ export const getTabs = (): any => {
     TRITON_PROFILE_SETTINGS: {
       value: "triton-profile-settings",
       label: "Profile Settings",
-      component: ProfileSettingsContainer,
+      route: "/triton-admin/profile-settings",
       dropdown: null
     },
     TRITON_CALL_FLOW_MANAGEMENT: {
       value: "triton-callflow-management",
       label: "Call Flow Management",
-      component: CallFlowManagementWrapper,
+      route: "/triton-admin/callflow",
       dropdown: null
     },
     ALOHA_CALL_FLOW_MANAGEMENT: {
       value: "aloha-callflow-management",
       label: "Call Flow DB Management",
-      component: AlohaFlowContainer,
+      route: "/triton-admin/aloha-flow",
       dropdown: null
     },
     ALOHA_ROUTING_RULES: {
       value: "aloha-routing-rules",
       label: "Routing Rules",
-      component: AlohaRoutingContainer,
+      route: "/triton-admin/aloha-routing",
       dropdown: null
     }
   };

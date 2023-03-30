@@ -22,7 +22,10 @@ import {
   NavTabs,
   NotificationModal
 } from "components";
-import { useAdminDispatch } from "context";
+import {
+  useAdminState,
+  useAdminDispatch
+} from "context";
 import {
   apiPaths,
   getRoutes,
@@ -33,6 +36,7 @@ import React, {
   useEffect,
   useState
 } from "react";
+import { getAzureSPAClientId } from "utils";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import {
   isErrorIn400s,
@@ -82,6 +86,7 @@ const App = () => {
 
   const [loadResult, setLoadResult] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const state = useAdminState();
   const dispatch = useAdminDispatch();
 
   useEffect(() => {
@@ -101,6 +106,9 @@ const App = () => {
 
   if (loadResult) {
     if (loadResult === success) {
+      const azureClientId = getAzureSPAClientId();
+      console.log("AZURE ID", azureClientId);
+
       return (
         <BrowserRouter>
           <ScrollToTop />
@@ -108,8 +116,8 @@ const App = () => {
             <Header/>
             <NavTabs/>
               <Routes>
-                {getRoutes().map(r => {
-                  const Component = r.element;
+                {getRoutes({ state, azureClientId }).map(r => {
+                  const Component = r.element || r.render;
                   return <Route path={r.path} element={<Component/>}/>
                 })}
               </Routes>
