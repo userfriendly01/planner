@@ -112,7 +112,7 @@ const WFMLoadOptionsModal = (props: any) => {
       <TextWrapper
         styles={{}}
       >
-        WFM Options have not been successfully loaded into Triton admin but are needed for WFM Bulk Create operations.  
+        WFM Options have not been successfully loaded into Triton admin but are needed for WFM Bulk Create operations.
         Attempting to load WFM Data...
       </TextWrapper>
       {showLoading && <CircularProgress style={{ margin: "15px" }} size={theme.circularProgressSize} />}

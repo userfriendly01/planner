@@ -1,7 +1,6 @@
 import WFMLoadOptionsModal from "../WFMLoadOptionsModal";
 import React from "react";
 import {
-  act,
   render,
   setupMockedComponents,
   waitFor

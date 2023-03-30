@@ -1234,7 +1234,7 @@ export const FIELDS: Fields = {
         }
       } else {
         // this would mean we have this Rotation start week field, but no rotation field.  
-        return rejectPromise(`${fieldName} was provided but WFM Rotation is empty.`, rowNumber);      
+        return rejectPromise(`${fieldName} was provided but WFM Rotation is empty.`, rowNumber);
       }
     }
   },

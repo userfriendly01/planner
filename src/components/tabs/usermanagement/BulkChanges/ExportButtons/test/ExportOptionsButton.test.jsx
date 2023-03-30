@@ -7,8 +7,7 @@ import {
   act,
   initialTestState,
   render,
-  setupMockedComponents,
-  expectOnlyPassedProps
+  setupMockedComponents
 } from "testUtils";
 import BusinessUnitModal from "../../BusinessUnitModal";
 import { Modal } from "@mui/material";
@@ -308,16 +307,6 @@ describe("ExportOptionsButton", () => {
           expect(mockSave).toHaveBeenCalledTimes(0);
         });
         test("modal is open, option is Business unit option selected", async () => {
-          // const setWfmBusinessUnitMock = jest.fn();
-          // const setShowBusinessUnitModalMock = jest.fn();
-
-          // React.useState = jest.fn()
-          //   .mockReturnValueOnce([{
-          //     label: "WFM Business Unit1",
-          //     value: "123-321"
-          //   }, setWfmBusinessUnitMock])
-          //   .mockReturnValueOnce([true, setShowBusinessUnitModalMock]);
-          // TODO: FIX THIS!!! mocking react state messes with other tests in this file... Is there a way to do this without mocking useState???
           render(<ExportOptionsButton template={createTemplates.CREATE_CALABRIO_WFM_PERSON.fields} selectedTemplates={[{ name: "CREATE_CALABRIO_WFM_PERSON" }]} state={initialTestState}/>);
           render(Button.mock.calls[0][0].children[0]);
           const onClick = Button.mock.calls[0][0].onClick;

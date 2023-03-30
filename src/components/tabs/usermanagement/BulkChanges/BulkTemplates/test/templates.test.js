@@ -406,9 +406,9 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
           attributes: {
             agent_attribute_1: 3,
-            profile_id: 3,
+            profile_id: 3
           },
-          operatingUnitSid: "operatingUnitSid2",
+          operatingUnitSid: "operatingUnitSid2"
         });
         expect(result).toBe("WK1234 - Worker Attributes updated for row 4");
       });
@@ -431,9 +431,9 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
           attributes: {
             profile_id: 1,
-            "agent_attribute_1": 1,
+            "agent_attribute_1": 1
           },
-          operatingUnitSid: "operatingUnitSid1",
+          operatingUnitSid: "operatingUnitSid1"
         });
         expect(result).toBe("WK1234 - Worker Attributes updated for row 4");
       });

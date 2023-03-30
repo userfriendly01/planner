@@ -1,7 +1,7 @@
 import {
   ButtonWrapper,
   Button,
-  ModalWrapper,
+  ModalWrapper
 } from "./BulkChanges.Styles";
 import {
   useAdminState
