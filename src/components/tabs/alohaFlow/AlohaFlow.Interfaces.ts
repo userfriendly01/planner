@@ -81,10 +81,10 @@ export interface FlowKeys {
     brand?: string;
     callDetails1?: string;
     callDetails2?: string;
-    callFlowTemplate?: string;
-    callTypeDescription?: string;
     callerType?: string;
     callFlowRoute?: string;
+    callFlowTemplate?: string;
+    callTypeDescription?: string;
     channel?: string;
     content?: FlowContent;
     createTime?: string;
