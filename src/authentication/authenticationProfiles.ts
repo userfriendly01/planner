@@ -7,15 +7,6 @@ import {
   runAlohaRoutingStartup,
   runAlohaFlowStartup
 } from "authentication";
-import {
-  ProfileSettingsContainer,
-  CallFlowManagementWrapper,
-  AlohaRoutingContainer,
-  AlohaFlowContainer,
-  UserEntryForm,
-  BulkChanges,
-  TritonUsersViewWrapper
-} from "components";
 
 export const getAuthenticationProfileTemplates = (): AuthenticationProfileOptions => {
   const Tabs = getTabs();
@@ -170,13 +161,35 @@ export const getTabs = (): any => {
       value: "triton-profile-settings",
       label: "Profile Settings",
       route: "/triton-admin/profile-settings",
-      dropdown: null
+      dropdown: [
+        {
+          route: "triton-admin/profile-settings",
+          label: "Profile Settings"
+        },
+        {
+          route: "triton-admin/profile-dial-list",
+          label: "Profile Dial List"
+        },
+        {
+          route: "triton-admin/profile-directory",
+          label: "Profile Directory"
+        }
+      ]
     },
     TRITON_CALL_FLOW_MANAGEMENT: {
       value: "triton-callflow-management",
       label: "Call Flow Management",
-      route: "/triton-admin/callflow",
-      dropdown: null
+      route: "/triton-admin/skill-management",
+      dropdown: [
+        {
+          route: "triton-admin/skill-management",
+          label: "Skill Management"
+        },
+        {
+          route: "triton-admin/tfn-activation",
+          label: "TFN Activation"
+        }
+      ]
     },
     ALOHA_CALL_FLOW_MANAGEMENT: {
       value: "aloha-callflow-management",

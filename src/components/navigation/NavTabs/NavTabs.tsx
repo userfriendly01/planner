@@ -1,19 +1,19 @@
 import {
   Content,
+  DropdownContainer,
+  StyledLink,
   StyledTabNew,
   StyledTabContainer
 } from "./NavTabs.Styles";
 import React from "react";
 import { useAdminState } from "context";
- import { Link, useNavigate } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 
 const NavTabs = () => {
   const state = useAdminState();
   const navigate = useNavigate();
   const authenticationProfiles = state.userContext.authenticationProfiles;
 
-  const [ value, setValue ] = React.useState(0);
   const [ tabs, setTabs ] = React.useState([]);
   const [ dropdownOpen, setDropdownOpen ] = React.useState<any>({});
 
@@ -36,9 +36,6 @@ const NavTabs = () => {
   }
 
   console.log("STATE", state);
-  console.log("tabs", tabs);
-  console.log("dropdownOpen", dropdownOpen);
-  console.log("value", value);
 
   React.useEffect(() => {
     const allowedTabs: any[] = [];
@@ -71,12 +68,12 @@ const NavTabs = () => {
                   {t.label}
                 </StyledTabNew>
                 {t.dropdown && dropdownOpen[t.value] &&
-                <div>
+                <DropdownContainer>
                   { t.dropdown.map((d: any) => (
-                    <Link to={d.route}>{d.label}</Link>
+                    <StyledLink to={d.route}>{d.label}</StyledLink>
                   ))
                   }
-                </div>
+                </DropdownContainer>
                 }
               </div>
             )) }

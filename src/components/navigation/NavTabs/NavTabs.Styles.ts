@@ -4,6 +4,7 @@ import {
   Tabs
 } from "@mui/material";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 export const Content = styled.div`
   display: flex;
@@ -41,5 +42,16 @@ export const StyledTabContainer = styled.div`
 `;
 
 export const DropdownContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  margin-left: 10px;
+  padding: 0px 30px;
+  background: rgb(255, 226, 128);
+`;
 
+export const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: black;
+  margin: 10px 0px;
 `;
