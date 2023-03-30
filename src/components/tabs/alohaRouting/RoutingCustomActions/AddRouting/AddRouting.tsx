@@ -66,6 +66,17 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
       setDropDownValues(masterData);
     });
   }, []);
+  useEffect(()=>{
+    const newRoutingRule :FormValidationRule= {
+      "id": {
+        value: newId.toString()
+      }
+    };
+    setRoutingRule(rule => ({
+      ...rule,
+      ...newRoutingRule
+    }));
+  },[openModal]);
 
   const isInvalidField = (key: string, value: string):boolean =>{
     return routingRule[key].required && [undefined, "", null].includes(value);

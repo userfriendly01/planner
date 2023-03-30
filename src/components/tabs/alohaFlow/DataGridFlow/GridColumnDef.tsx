@@ -132,6 +132,115 @@ export const FlowGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left"
+  },
+  {
+    headerName: "Account Manager",
+    field: "accountManager",
+    sortable: true,
+    width: 110,
+    align: "left",
+    renderCell: (params: any) =>  (
+      <Tooltip title={params.row.accountManager || ""} >
+        <div className="table-cell-trucate">{params.row.accountManager || ""}</div>
+      </Tooltip>
+    )
+  },
+  {
+    headerName: "Affinity VDN",
+    field: "affinityVDN",
+    sortable: true,
+    width: 110,
+    align: "left"
+  },
+  {
+    headerName: "Transfer Code",
+    field: "transferCode",
+    sortable: true,
+    width: 110,
+    align: "left"
+  },
+  {
+    headerName: "Internet Placement",
+    field: "internetPlacement",
+    sortable: true,
+    width: 110,
+    align: "left",
+    renderCell: (params: any) =>  (
+      <Tooltip title={params.row.internetPlacement || ""} >
+        <div className="table-cell-trucate">{params.row.internetPlacement || ""}</div>
+      </Tooltip>
+    )
+  },
+  {
+    headerName: "Call Details1",
+    field: "callDetails1",
+    sortable: true,
+    width: 110,
+    align: "left",
+    renderCell: (params: any) =>  (
+      <Tooltip title={params.row.callDetails1 || ""} >
+        <div className="table-cell-trucate">{params.row.callDetails1 || ""}</div>
+      </Tooltip>
+    )
+  },
+  {
+    headerName: "Call Details2",
+    field: "callDetails2",
+    sortable: true,
+    width: 110,
+    align: "left",
+    renderCell: (params: any) =>  (
+      <Tooltip title={params.row.callDetails2 || ""} >
+        <div className="table-cell-trucate">{params.row.callDetails2 || ""}</div>
+      </Tooltip>
+    )
+  },
+  {
+    headerName: "Call Type Description",
+    field: "callTypeDescription",
+    sortable: true,
+    width: 110,
+    align: "left",
+    renderCell: (params: any) =>  (
+      <Tooltip title={params.row.callTypeDescription || ""} >
+        <div className="table-cell-trucate">{params.row.callTypeDescription || ""}</div>
+      </Tooltip>
+    )
+  },
+  {
+    headerName: "Line Of Business",
+    field: "lineOfBusiness",
+    sortable: true,
+    width: 110,
+    align: "left"
+  },
+  {
+    headerName: "Marketing Channel",
+    field: "marketingChannel",
+    sortable: true,
+    width: 110,
+    align: "left"
+  },
+  {
+    headerName: "Whisper",
+    field: "whisper",
+    sortable: true,
+    width: 110,
+    align: "left"
+  },
+  {
+    headerName: "Request ID",
+    field: "requestID",
+    sortable: true,
+    width: 110,
+    align: "left"
+  },
+  {
+    headerName: "Range Indicator",
+    field: "rangeIndicator",
+    sortable: true,
+    width: 110,
+    align: "left"
   }
 ];
 
