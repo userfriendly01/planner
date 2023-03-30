@@ -3,7 +3,6 @@ import { FormModes } from "globals";
 export * from "./interfaces";
 export * from "./theme";
 export * from "./styles";
-export * from "./routes";
 
 const CONTACT_MANAGER_BASE_URI = "/contact-manager";
 const SERVICE_BASE_URI = "/service";

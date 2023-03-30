@@ -463,6 +463,8 @@ export const initialTestState = {
       {
         attributes: {
           full_name: "Susan Delfino",
+          emp_first_name: "Susan",
+          emp_last_name: "Delfino",
           extension: "7833",
           n_number: "n222354",
           profile_id: 0,

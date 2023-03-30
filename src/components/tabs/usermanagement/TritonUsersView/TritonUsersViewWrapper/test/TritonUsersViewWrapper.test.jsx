@@ -26,11 +26,6 @@ jest.mock("context", () => ({
   useAdminState: jest.fn()
 }));
 
-const mockWorkerOpts = {
-  worker: "opts"
-};
-const setWorkerOpts = jest.fn();
-
 const defaultTableState = {
   searchBy: "",
   selected: [],
@@ -48,12 +43,9 @@ const defaultTableState = {
 
 const workersCopy = initialTestState.workerContext.workers.slice();
 
-describe("TritonUserManagementWrapper", () => {
+describe("TritonUsersViewWrapper", () => {
   const doRender = () => {
-    return render(<TritonUserManagementWrapper
-      workerOpts={mockWorkerOpts}
-      setWorkerOpts={setWorkerOpts}
-    />);
+    return render(<TritonUserManagementWrapper/>);
   };
 
   beforeEach(() => {
@@ -97,8 +89,7 @@ describe("TritonUserManagementWrapper", () => {
             endingUserIndex: 25
           },
           filteredList: initialTestState.workerContext.workers.sort(sortWorkersByFullName)
-        },
-        workerOpts: mockWorkerOpts
+        }
       }, getLastInstanceCalled(TritonUserTable));
       expect(Pagination).toHaveBeenCalledTimes(2);
       expectOnlyPassedProps(Pagination, {

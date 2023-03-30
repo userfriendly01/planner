@@ -15,6 +15,7 @@ import {
   setupMockedComponents
 } from "testUtils";
 import { theme } from "globals";
+import { useNavigate } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { formatWorkerAttributeSkillsToHTML } from "utils";
 import {
@@ -26,6 +27,10 @@ import { Switch } from "@mui/material";
 
 jest.mock("components", () => ({
   ModalOverlay: jest.fn()
+}));
+
+jest.mock("react-router-dom", () => ({
+  useNavigate: jest.fn()
 }));
 
 jest.mock("context", () => ({
@@ -49,11 +54,10 @@ jest.mock("@mui/material", () => ({
   Switch: jest.fn()
 }));
 
+const mockNavigate = jest.fn();
 const mockSetForm = jest.fn();
 const mockDispatch = jest.fn();
 const mockSetTableState = jest.fn();
-const mockSetWorkerOpts = jest.fn();
-const workerOpts = {};
 const tableState = {
   deltaFilter: false,
   filteredList: initialTestState.workerContext.workers
@@ -61,7 +65,7 @@ const tableState = {
 const renderComponent = () => {
   return render(
     <ThemeProvider theme={theme}>
-      <TritonUserTable tableState={tableState} workerOpts={workerOpts} setWorkerOpts={mockSetWorkerOpts} setTableState={mockSetTableState} />
+      <TritonUserTable tableState={tableState} setTableState={mockSetTableState} />
     </ThemeProvider>
   );
 };
@@ -69,6 +73,7 @@ const renderComponent = () => {
 describe("<TritonUserTable />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useNavigate.mockReturnValue(mockNavigate);
     setupMockedComponents({
       ModalOverlay,
       Delete,
@@ -179,15 +184,8 @@ describe("<TritonUserTable />", () => {
           worker: initialTestState.workerContext.workers[0]
         }
       });
-      expect(mockSetWorkerOpts).toHaveBeenCalledTimes(1);
-      expect(mockSetWorkerOpts).toHaveBeenCalledWith({
-        action: "edit",
-        routedFrom: {
-          label: "Triton Users",
-          value: "TRITON_USERS"
-        },
-        worker: initialTestState.workerContext.workers[0]
-      });
+      expect(mockNavigate).toHaveBeenCalledTimes(1);
+      expect(mockNavigate).toHaveBeenCalledWith("/triton-admin/user");
     });
   });
   describe("Delete Button is clicked on worker row", () => {
@@ -204,15 +202,8 @@ describe("<TritonUserTable />", () => {
           worker: initialTestState.workerContext.workers[0]
         }
       });
-      expect(mockSetWorkerOpts).toHaveBeenCalledTimes(1);
-      expect(mockSetWorkerOpts).toHaveBeenCalledWith({
-        action: "delete",
-        routedFrom: {
-          label: "Triton Users",
-          value: "TRITON_USERS"
-        },
-        worker: initialTestState.workerContext.workers[0]
-      });
+      expect(mockNavigate).toHaveBeenCalledTimes(1);
+      expect(mockNavigate).toHaveBeenCalledWith("/triton-admin/user");
     });
   });
 });

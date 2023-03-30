@@ -28,10 +28,10 @@ import {
 } from "context";
 import {
   apiPaths,
-  getRoutes,
   theme,
   timeouts
 } from "globals";
+import { getRoutes } from "globals/routes";
 import React, {
   useEffect,
   useState
