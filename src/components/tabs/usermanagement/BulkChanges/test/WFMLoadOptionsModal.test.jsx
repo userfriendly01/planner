@@ -195,9 +195,6 @@ describe("<WFMLoadOptionsModal />", () => {
               expect(mockDispatch).toBeCalledTimes(0);
 
               expect(mockHandleClose).toBeCalledTimes(0);
-
-              //   todo: How do I test the loadFailed message showing up???
-
             });
           });
         });

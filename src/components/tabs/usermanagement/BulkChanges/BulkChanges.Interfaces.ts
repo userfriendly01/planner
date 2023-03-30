@@ -72,10 +72,8 @@ export interface ProcessingModalProps {
 }
 
 export interface BusinessUnitModalProps {
-  wfmBusinessUnit: string,
   handleClose: () => void;
-  handleUpdate: (bu: any) => void,
-  handleExport: () => void
+  handleExport: (wfmBU: string | null) => void
 }
 export interface WorkerAttribute {
   label: string,

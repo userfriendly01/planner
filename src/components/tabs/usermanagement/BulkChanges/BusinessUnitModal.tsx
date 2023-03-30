@@ -2,7 +2,6 @@ import {
   ButtonWrapper,
   Button,
   ModalWrapper,
-  TextWrapper
 } from "./BulkChanges.Styles";
 import {
   useAdminState
@@ -15,10 +14,10 @@ import { BusinessUnitModalProps } from "./BulkChanges.Interfaces";
 const BusinessUnitModal = (props: BusinessUnitModalProps) => {
   const {
     handleClose,
-    wfmBusinessUnit,
-    handleUpdate,
     handleExport
   } = props;
+
+  const [ wfmBusinessUnit, setWfmBusinessUnit ] = React.useState(null);
 
   const state = useAdminState();
 
@@ -36,7 +35,7 @@ const BusinessUnitModal = (props: BusinessUnitModalProps) => {
 
   const handleConfirm = () => {
     if (wfmBusinessUnit) {
-      handleExport();
+      handleExport(wfmBusinessUnit.value);
       handleClose();
     }
   };
@@ -49,7 +48,7 @@ const BusinessUnitModal = (props: BusinessUnitModalProps) => {
         value={wfmBusinessUnit}
         options={generateWFMBusinessUnitOptions()}
         updateValue={(event: any, businessUnit: any) => {
-          handleUpdate(businessUnit);
+          setWfmBusinessUnit(businessUnit);
         }}
         styles={{
           margin: "40 0 30 0",

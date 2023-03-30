@@ -179,7 +179,7 @@ export const checkIfConflictingWFMPeople = (user: any, wfmOrg: any[]): boolean =
       const email = cleanupField(user.email, "string");
 
       // create an array of all WFM people to use for comparison
-      const people = wfmOrg[0].People_Without_Team;
+      const people = wfmOrg[0].People_Without_Team || [];
 
       wfmOrg.forEach(bu => {
         bu.Teams.forEach((team: any) => {

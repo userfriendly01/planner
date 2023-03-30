@@ -15,7 +15,6 @@ const ExportOptionsButton = (props: any) => {
     selectedTemplates
   } = props;
 
-  const [ wfmBusinessUnit, setWfmBusinessUnit ] = React.useState(null);
   const [ showBusinessUnitModal, setShowBusinessUnitModal ] = React.useState(false);
 
   const isWFMSelected: boolean = selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_PERSON");
@@ -23,18 +22,17 @@ const ExportOptionsButton = (props: any) => {
   const _export = React.useRef(null);
   console.log("ExportOptionsButton Template", template);
   console.warn("_export", _export);
-  const handleExport = () => {
+  const handleExport = (wfmBU: string | undefined) => {
     const rows: any = [];
     const columns: any = [];
     template.forEach((t: any) => {
       if(t.options){
         let options = [];
-        // To generate the wfm field options, the selected Business Unit needs to be passed in
+        // To generate the wfm field options, the selected Business Unit needs to be passed into the options function
         // in order to generate the appropriate list of options
         // all wfm fields are prefixed with wfm
         if (t.field.includes("wfm")) {
-          console.log("wfmBusinessUnit in export options: ", wfmBusinessUnit.value);
-          options = t.options(state, wfmBusinessUnit.value);
+          options = t.options(state, wfmBU);
         } else {
           options = t.options(state);
         }
@@ -77,13 +75,10 @@ const ExportOptionsButton = (props: any) => {
     if (isWFMSelected) {
       setShowBusinessUnitModal(true);
     } else {
-      handleExport();
+      handleExport(null);
     }
   };
 
-  const handleUpdate = (val: any) => {
-    setWfmBusinessUnit(val);
-  };
 
   const handleClose = () => {
     setShowBusinessUnitModal(false);
@@ -94,9 +89,7 @@ const ExportOptionsButton = (props: any) => {
       { isWFMSelected && (
         <Modal open={showBusinessUnitModal} onClose={() => { return; }} >
           <BusinessUnitModal
-            handleUpdate={handleUpdate}
             handleClose={handleClose}
-            wfmBusinessUnit={wfmBusinessUnit}
             handleExport={handleExport}
           />
         </Modal>

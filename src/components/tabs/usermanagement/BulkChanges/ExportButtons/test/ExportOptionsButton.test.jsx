@@ -94,6 +94,172 @@ const expectedColumns = [
   }
 ];
 
+const expectedWFMRows = [
+  {
+    wfmBusinessUnit: "WFM Business Unit1",
+    wfmRole: "Role1",
+    timeZone: "America/New_York (EST/EDT)",
+    wfmFirstDayOfWeek: 0,
+    wfmWorkflowControlSet: "WFCSet1",
+    wfmTeam: "Team1",
+    wfmContract: "Contract1",
+    wfmContractSchedule: "ContractSchedule1",
+    wfmPartTimePercentage: "ParttimePercent1",
+    wfmShiftBag: "ShiftBag1",
+    wfmBudgetGroup: "BudgetGroup1",
+    wfmSkills: "Skill1",
+    wfmRotation: "Rotation1",
+    wfmAvailability: "Availability1",
+    wfmOptionalCols: "OptionalCol1"
+  },
+  {
+    wfmRole: "Role2",
+    timeZone: "America/Los_Angeles (PST/PDT)",
+    wfmFirstDayOfWeek: 1,
+    wfmTeam: "Team2",
+    wfmSkills: "Skill2",
+    wfmOptionalCols: "OptionalCol2"
+  },
+  {
+    timeZone: "America/Denver (MST/MDT)",
+    wfmFirstDayOfWeek: 2
+  },
+  {
+    timeZone: "America/Chicago (CST/CDT)",
+    wfmFirstDayOfWeek: 3
+  },
+  { wfmFirstDayOfWeek: 4 },
+  { wfmFirstDayOfWeek: 5 },
+  { wfmFirstDayOfWeek: 6 }
+];
+const expectedWFMCols = [
+  {
+    field: "wfmBusinessUnit",
+    title: "WFM Business Unit",
+    width: undefined,
+    options: [ "WFM Business Unit1" ],
+    wrap: true,
+    textAlign: "center"
+  },
+  {
+    field: "wfmRole",
+    title: "WFM Role",
+    width: undefined,
+    options: [ "Role1", "Role2" ],
+    wrap: true,
+    textAlign: "center"
+  },
+  {
+    field: "timeZone",
+    title: "Time Zone",
+    width: undefined,
+    options: [
+      "America/New_York (EST/EDT)",
+      "America/Los_Angeles (PST/PDT)",
+      "America/Denver (MST/MDT)",
+      "America/Chicago (CST/CDT)"
+    ],
+    wrap: true,
+    textAlign: "center"
+  },
+  {
+    field: "wfmFirstDayOfWeek",
+    title: "First Day of Week",
+    width: undefined,
+    options: [0, 1, 2, 3, 4, 5, 6],
+    wrap: true,
+    textAlign: "center"
+  },
+  {
+    field: "wfmWorkflowControlSet",
+    title: "Workflow Control Set",
+    width: undefined,
+    options: [ "WFCSet1" ],
+    wrap: true,
+    textAlign: "center"
+  },
+  {
+    field: "wfmTeam",
+    title: "WFM Team",
+    width: undefined,
+    options: [ "Team1", "Team2" ],
+    wrap: true,
+    textAlign: "center"
+  },
+  {
+    field: "wfmContract",
+    title: "WFM Contract",
+    width: undefined,
+    options: [ "Contract1" ],
+    wrap: true,
+    textAlign: "center"
+  },
+  {
+    field: "wfmContractSchedule",
+    title: "WFM Contract Schedule",
+    width: undefined,
+    options: [ "ContractSchedule1" ],
+    wrap: true,
+    textAlign: "center"
+  },
+  {
+    field: "wfmPartTimePercentage",
+    title: "WFM Part Time Percentage",
+    width: undefined,
+    options: [ "ParttimePercent1" ],
+    wrap: true,
+    textAlign: "center"
+  },
+  {
+    field: "wfmShiftBag",
+    title: "WFM Shift Bag",
+    width: undefined,
+    options: [ "ShiftBag1" ],
+    wrap: true,
+    textAlign: "center"
+  },
+  {
+    field: "wfmBudgetGroup",
+    title: "WFM Budget Group",
+    width: undefined,
+    options: [ "BudgetGroup1" ],
+    wrap: true,
+    textAlign: "center"
+  },
+  {
+    field: "wfmSkills",
+    title: "WFM Skills",
+    width: undefined,
+    options: [ "Skill1", "Skill2" ],
+    wrap: true,
+    textAlign: "center"
+  },
+  {
+    field: "wfmRotation",
+    title: "WFM Rotation",
+    width: undefined,
+    options: [ "Rotation1" ],
+    wrap: true,
+    textAlign: "center"
+  },
+  {
+    field: "wfmAvailability",
+    title: "WFM Availability",
+    width: undefined,
+    options: [ "Availability1" ],
+    wrap: true,
+    textAlign: "center"
+  },
+  {
+    field: "wfmOptionalCols",
+    title: "WFM Optional Columns",
+    width: undefined,
+    options: [ "OptionalCol1", "OptionalCol2" ],
+    wrap: true,
+    textAlign: "center"
+  }
+];
+
 
 describe("ExportOptionsButton", () => {
   beforeEach(() => {
@@ -126,7 +292,7 @@ describe("ExportOptionsButton", () => {
       });
       describe("WFM is a selected template", () => {
         test("business unit modal opens, cancel is clicked, modal closes", () => {
-          render(<ExportOptionsButton template={createTemplates.CREATE_TRITON_USER.fields} selectedTemplates={[{ name: "CREATE_CALABRIO_WFM_PERSON" }]} state={initialTestState}/>);
+          render(<ExportOptionsButton template={createTemplates.CREATE_CALABRIO_WFM_PERSON.fields} selectedTemplates={[{ name: "CREATE_CALABRIO_WFM_PERSON" }]} state={initialTestState}/>);
           render(Button.mock.calls[0][0].children[0]);
           const onClick = Button.mock.calls[0][0].onClick;
 
@@ -136,33 +302,40 @@ describe("ExportOptionsButton", () => {
           expect(Modal.mock.calls[1][0].open).toBe(true);
           render(Modal.mock.calls[1][0].children);
           expect(BusinessUnitModal.mock.calls.length).toBe(1);
-          expectOnlyPassedProps(BusinessUnitModal, {
-            wfmBusinessUnit: null
-          });
           const handleClose = BusinessUnitModal.mock.calls[0][0].handleClose;
           act(() => handleClose());
           expect(Modal.mock.calls[2][0].open).toBe(false);
           expect(mockSave).toHaveBeenCalledTimes(0);
         });
-        test("modal opens, option is Business unit option selected", async () => {
-          render(<ExportOptionsButton template={createTemplates.CREATE_TRITON_USER.fields} selectedTemplates={[{ name: "CREATE_CALABRIO_WFM_PERSON" }]} state={initialTestState}/>);
+        test("modal is open, option is Business unit option selected", async () => {
+          // const setWfmBusinessUnitMock = jest.fn();
+          // const setShowBusinessUnitModalMock = jest.fn();
+
+          // React.useState = jest.fn()
+          //   .mockReturnValueOnce([{
+          //     label: "WFM Business Unit1",
+          //     value: "123-321"
+          //   }, setWfmBusinessUnitMock])
+          //   .mockReturnValueOnce([true, setShowBusinessUnitModalMock]);
+          // TODO: FIX THIS!!! mocking react state messes with other tests in this file... Is there a way to do this without mocking useState???
+          render(<ExportOptionsButton template={createTemplates.CREATE_CALABRIO_WFM_PERSON.fields} selectedTemplates={[{ name: "CREATE_CALABRIO_WFM_PERSON" }]} state={initialTestState}/>);
           render(Button.mock.calls[0][0].children[0]);
           const onClick = Button.mock.calls[0][0].onClick;
 
           act(() => onClick());
           expect(mockSave).toHaveBeenCalledTimes(0);
+          console.log(Modal.mock.calls);
           expect(Modal.mock.calls[0][0].open).toBe(false);
           expect(Modal.mock.calls[1][0].open).toBe(true);
           render(Modal.mock.calls[1][0].children);
           expect(BusinessUnitModal.mock.calls.length).toBe(1);
-          // TODO: This isn't working... can I not test this here?
-          // const handleUpdate = BusinessUnitModal.mock.calls[0][0].handleUpdate;
-          // console.log(handleUpdate);
-          // act(() => handleUpdate("GRS Finance"));
-          // await waitFor(() => {
-            // expect(BusinessUnitModal.mock.calls.length).toBe(2)
-            // expect(BusinessUnitModal.mock.calls[0][0].wfmBusinessUnit).toBe(2)
-          // });
+
+          console.log(BusinessUnitModal.mock.calls);
+          const modalHandleExport = BusinessUnitModal.mock.calls[0][0].handleExport;
+          act(() => modalHandleExport("123-321"));
+
+          expect(mockSave).toHaveBeenCalledTimes(1);
+          expect(mockSave).toHaveBeenCalledWith(expectedWFMRows, expectedWFMCols);
 
         });
       });

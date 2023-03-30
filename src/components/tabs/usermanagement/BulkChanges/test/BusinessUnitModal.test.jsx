@@ -32,15 +32,12 @@ jest.mock("../BulkChanges.Styles", () => ({
 }));
 
 const mockHandleClose = jest.fn();
-const mockHandleUpdate = jest.fn();
 const mockHandleExport = jest.fn();
 
-const renderComponent = wfmBusinessUnit => {
+const renderComponent = () => {
   return render(<BusinessUnitModal
     handleClose={mockHandleClose}
     handleExport={mockHandleExport}
-    handleUpdate={mockHandleUpdate}
-    wfmBusinessUnit={wfmBusinessUnit}
   />);
 };
 
@@ -56,7 +53,7 @@ describe("<BusinessUnitModal />", () => {
   });
   describe("initial render", () => {
     test("should render expected components", async () => {
-      renderComponent(null);
+      renderComponent();
       render(ModalWrapper.mock.calls[0][0].children);
       render(ButtonWrapper.mock.calls[0][0].children);
       expect(ModalWrapper.mock.calls.length).toBe(1);
@@ -66,7 +63,7 @@ describe("<BusinessUnitModal />", () => {
       expect(ModalWrapper.mock.calls[0][0].children[0]).toBe("Select a WFM Business unit to generate the template options.");
     });
     test("cancel is clicked, handleClose is called", async () => {
-      renderComponent(null);
+      renderComponent();
       render(ModalWrapper.mock.calls[0][0].children);
       render(ButtonWrapper.mock.calls[0][0].children);
       expect(ModalWrapper.mock.calls.length).toBe(1);
@@ -77,10 +74,13 @@ describe("<BusinessUnitModal />", () => {
       act(() => cancelClick());
       expect(mockHandleClose).toBeCalledTimes(1);
       expect(mockHandleExport).toBeCalledTimes(0);
-      expect(mockHandleUpdate).toBeCalledTimes(0);
     });
     test("business unit is selected", async () =>{
-      renderComponent(null);
+      const mockSetState = jest.fn();
+      React.useState = jest.fn()
+        .mockReturnValueOnce([null, mockSetState]);
+
+      renderComponent();
       render(ModalWrapper.mock.calls[0][0].children);
       render(ButtonWrapper.mock.calls[0][0].children);
       expect(ModalWrapper.mock.calls.length).toBe(1);
@@ -92,10 +92,17 @@ describe("<BusinessUnitModal />", () => {
         label: "bu",
         value: "bu"
       }));
-      expect(mockHandleUpdate).toBeCalledTimes(1);
+      expect(mockSetState).toBeCalledTimes(1);
+      expect(mockSetState).toBeCalledWith({
+        label: "bu",
+        value: "bu"
+      });
     });
     test("handleConfirm cannot be called if no wfmBusinessUnit", async () => {
-      renderComponent(null);
+      const mockSetState = jest.fn();
+      React.useState = jest.fn()
+        .mockReturnValueOnce([null, mockSetState]);
+      renderComponent();
       render(ModalWrapper.mock.calls[0][0].children);
       render(ButtonWrapper.mock.calls[0][0].children);
       expect(ModalWrapper.mock.calls.length).toBe(1);
@@ -106,11 +113,11 @@ describe("<BusinessUnitModal />", () => {
       expect(mockHandleExport).toBeCalledTimes(0);
       expect(mockHandleClose).toBeCalledTimes(0);
     });
-    test("confirm is clicked", async () => {
-      renderComponent({
-        label: "BU",
-        value: "BU"
-      });
+    test("confirm is clicked when there is a value for wfmBusinessUnit", async () => {
+      const mockSetState = jest.fn();
+      React.useState = jest.fn()
+        .mockReturnValueOnce([{ value: "123-321" }, mockSetState]);
+      renderComponent();
       render(ModalWrapper.mock.calls[0][0].children);
       render(ButtonWrapper.mock.calls[0][0].children);
       expect(ModalWrapper.mock.calls.length).toBe(1);
