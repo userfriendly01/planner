@@ -2,7 +2,6 @@ import {
   authWrapper, PERMISSIONS
 } from "../Auth";
 import { LoginInProgress } from "../LoginInProgress";
-import { LoginError } from "../LoginError";
 import React from "react";
 import {
   render,

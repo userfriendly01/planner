@@ -84,7 +84,7 @@ export function authWrapper(
             this.setState({
               ...this.state,
               hasError: true,
-              errorMessage: err.errorMessage
+              errorMessage: err.message
             });
           }
         });
