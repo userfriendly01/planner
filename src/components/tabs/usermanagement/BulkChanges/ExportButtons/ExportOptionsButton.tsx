@@ -12,7 +12,8 @@ const ExportOptionsButton = (props: any) => {
   const {
     template,
     state,
-    selectedTemplates
+    selectedTemplates,
+    disabled
   } = props;
 
   const [ showBusinessUnitModal, setShowBusinessUnitModal ] = React.useState(false);
@@ -94,7 +95,7 @@ const ExportOptionsButton = (props: any) => {
           />
         </Modal>
       )}
-      <Button onClick={handleClick}>
+      <Button onClick={handleClick} disabled={disabled}>
         <ExcelExport ref={_export}/>
         Export Template Options
       </Button>

@@ -1,6 +1,7 @@
 import WFMLoadOptionsModal from "../WFMLoadOptionsModal";
 import React from "react";
 import {
+  act,
   render,
   setupMockedComponents,
   waitFor
@@ -16,7 +17,6 @@ import {
   getWfmOptions
 } from "services";
 import {
-  useAdminState,
   useAdminDispatch
 } from "context";
 import { CircularProgress } from "@mui/material";
@@ -38,7 +38,6 @@ jest.mock("services", () => ({
 }));
 
 jest.mock("context", () => ({
-  useAdminState: jest.fn(),
   useAdminDispatch: jest.fn()
 }));
 
@@ -54,12 +53,6 @@ const renderComponent = () => {
 describe("<WFMLoadOptionsModal />", () => {
   beforeEach(() => {
     useAdminDispatch.mockReturnValue(mockDispatch);
-    useAdminState.mockReturnValue({
-      calabrioContext: {
-        wfmOptions: [],
-        wfmOrg: []
-      }
-    });
     jest.clearAllMocks();
     setupMockedComponents({
       Button,
@@ -70,6 +63,26 @@ describe("<WFMLoadOptionsModal />", () => {
   });
   describe("initial render", () => {
     describe("wfm data isn't properly loaded, calls retry to get wfmOrg and wfm Options", () => {
+      describe("cancel button is clicked stops retrying, calls handleClose", () => {
+        test("stops retrying, calls handleClose", async () => {
+          getWfmOptions.mockRejectedValue("nope");
+          getWfmOrg.mockRejectedValue("nope");
+          renderComponent();
+          render(ModalWrapper.mock.calls[0][0].children);
+          render(ButtonWrapper.mock.calls[0][0].children);
+          render(TextWrapper.mock.calls[0][0].children);
+          expect(Button.mock.calls.length).toBe(1);
+          expect(TextWrapper.mock.calls[0][0].children).toBe("WFM Options have not been successfully loaded into Triton admin but are needed for WFM Bulk Create operations. Attempting to load WFM Data...");
+
+          const cancelClick = Button.mock.calls[0][0].onClick;
+          act(() => cancelClick());
+          await waitFor(() => {
+            expect(getWfmOptions).toBeCalledTimes(1);
+            expect(getWfmOrg).toBeCalledTimes(1);
+            expect(mockHandleClose).toBeCalledTimes(1);
+          });
+        });
+      });
       describe("retry call succeeds", () => {
         beforeEach(() => {
           getWfmOptions.mockResolvedValueOnce({ data: { organization: { businessUnits: [ { Id: "123" }]}}});
@@ -95,7 +108,6 @@ describe("<WFMLoadOptionsModal />", () => {
               payload: [{ Id: "123" }],
               type: "loadWfmOrg"
             });
-            expect(mockHandleClose).toBeCalledTimes(1);
           });
         });
       });
@@ -113,6 +125,7 @@ describe("<WFMLoadOptionsModal />", () => {
                 .mockResolvedValueOnce({ data: { organization: { businessUnits: [ { Id: "123" }]}}});
               getWfmOrg
                 .mockResolvedValueOnce({ data: { organization: { businessUnits: [ { Id: "123" }]}}});
+
               renderComponent();
               render(ModalWrapper.mock.calls[0][0].children);
               render(ButtonWrapper.mock.calls[0][0].children);
@@ -120,6 +133,16 @@ describe("<WFMLoadOptionsModal />", () => {
               expect(Button.mock.calls.length).toBe(1);
               expect(TextWrapper.mock.calls[0][0].children).toBe("WFM Options have not been successfully loaded into Triton admin but are needed for WFM Bulk Create operations. Attempting to load WFM Data...");
 
+              await waitFor(() => {
+                expect(getWfmOptions).toBeCalledTimes(1);
+                expect(getWfmOrg).toBeCalledTimes(1);
+                expect(CircularProgress.mock.calls.length).toBe(1);
+                expect(mockDispatch).toBeCalledWith({
+                  payload: [{ Id: "123" }],
+                  type: "loadWfmOrg"
+                });
+
+              });
               await waitFor(() => {
                 expect(getWfmOptions).toBeCalledTimes(7);
                 expect(getWfmOrg).toBeCalledTimes(1);
@@ -129,11 +152,8 @@ describe("<WFMLoadOptionsModal />", () => {
                   payload: [{ Id: "123" }],
                   type: "loadWfmOptions"
                 });
-                expect(mockDispatch).toBeCalledWith({
-                  payload: [{ Id: "123" }],
-                  type: "loadWfmOrg"
-                });
                 expect(mockHandleClose).toBeCalledTimes(1);
+
               });
 
             });
@@ -155,13 +175,18 @@ describe("<WFMLoadOptionsModal />", () => {
 
               await waitFor(() => {
                 expect(getWfmOptions).toBeCalledTimes(1);
-                expect(getWfmOrg).toBeCalledTimes(5);
                 expect(CircularProgress.mock.calls.length).toBe(1);
-                expect(mockDispatch).toBeCalledTimes(2);
+                expect(mockDispatch).toBeCalledTimes(1);
                 expect(mockDispatch).toBeCalledWith({
                   payload: [{ Id: "123" }],
                   type: "loadWfmOptions"
                 });
+              });
+              await waitFor(() => {
+                expect(getWfmOptions).toBeCalledTimes(1);
+                expect(getWfmOrg).toBeCalledTimes(5);
+                expect(CircularProgress.mock.calls.length).toBe(1);
+                expect(mockDispatch).toBeCalledTimes(2);
                 expect(mockDispatch).toBeCalledWith({
                   payload: [{ Id: "123" }],
                   type: "loadWfmOrg"
@@ -189,10 +214,17 @@ describe("<WFMLoadOptionsModal />", () => {
 
             await waitFor(() => {
               expect(CircularProgress.mock.calls.length).toBe(1);
+              expect(getWfmOptions).toBeCalledTimes(1);
+              expect(getWfmOrg).toBeCalledTimes(1);
+              expect(mockDispatch).toBeCalledTimes(0);
+
+              expect(mockHandleClose).toBeCalledTimes(0);
+            });
+            await waitFor(() => {
+              expect(CircularProgress.mock.calls.length).toBe(1);
               expect(getWfmOptions).toBeCalledTimes(10);
               expect(getWfmOrg).toBeCalledTimes(10);
               expect(mockDispatch).toBeCalledTimes(0);
-
               expect(mockHandleClose).toBeCalledTimes(0);
             });
           });

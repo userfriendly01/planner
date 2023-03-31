@@ -123,6 +123,11 @@ const BulkChanges = () => {
                 template={consolidatedTemplate}
                 state={state}
                 selectedTemplates={selectedTemplates}
+                disabled={
+                  selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_PERSON") &&
+                  (!state.calabrioContext.wfmOptions.length ||
+                  !state.calabrioContext.wfmOrg.length)
+                }
               />
             </ButtonWrapper>
           </Row>
@@ -131,7 +136,14 @@ const BulkChanges = () => {
               Step 3: Upload completed Spreadsheet
             </StepWrapper>
             <Wrapper center={true} column={true} centrallyAlign={true}>
-              <ImportButton onClick={() => uploadButtonRef.current.click()} >Upload Spreadsheet</ImportButton>
+              <ImportButton
+                onClick={() => uploadButtonRef.current.click()}
+                disabled={
+                  selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_PERSON") &&
+                  (!state.calabrioContext.wfmOptions.length ||
+                    !state.calabrioContext.wfmOrg.length)
+                }
+              >Upload Spreadsheet</ImportButton>
               <FileNameWrapper> {filenameText} </FileNameWrapper>
             </Wrapper>
           </Row>
@@ -144,7 +156,13 @@ const BulkChanges = () => {
           </StepWrapper>
           <Wrapper center={true}>
             <ImportButton
-              onClick={() => setShowProcessingModal(true)}>Process</ImportButton>
+              onClick={() => setShowProcessingModal(true)}
+              disabled={
+                selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_PERSON") &&
+                !state.calabrioContext.wfmOptions.length &&
+                !state.calabrioContext.wfmOrg.length
+              }
+            >Process</ImportButton>
           </Wrapper>
         </Row>
       }
