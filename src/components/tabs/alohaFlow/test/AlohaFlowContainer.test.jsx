@@ -16,7 +16,7 @@ jest.mock("msal", () => ({
   __esModule: true,
   UserAgentApplication: jest.fn().mockImplementation(() => {
     return {
-      acquireTokenPopup: jest.fn().mockResolvedValue({
+      acquireTokenSilent: jest.fn().mockResolvedValue({
         accessToken: "mockt-test-token-1234"
       }),
       handleRedirectCallback: jest.fn(),
