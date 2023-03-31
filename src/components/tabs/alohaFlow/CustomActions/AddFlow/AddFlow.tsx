@@ -38,7 +38,8 @@ import {
   getGraphQLEndpoint,
   initializedAlertBar,
   languageOffer,
-  userDestination
+  userDestination,
+  flowType
 } from "utils";
 import { getGridMasterData } from "../../DataGridFlow/GridMaster";
 import {
@@ -49,7 +50,7 @@ import { AzureSPA } from "globals";
 export interface AddFlowModalProps {
   isOpen: boolean;
   newId: number;
-  openAddModal: (flag: boolean, isSubmitted?: boolean, row?:CctSharedCallFlowDb, deleteRow?: boolean) => void;
+  openAddModal: (flag: boolean, isSubmitted?: boolean, row?:CctSharedCallFlowDb) => void;
 }
 
 export const AddFlow = ({
@@ -79,7 +80,8 @@ export const AddFlow = ({
         languageOffer: languageOffer,
         userDestination: userDestination,
         callFlowRoute: masterDataObject?.callFlowRoute,
-        callerType: masterDataObject?.callerType
+        callerType: masterDataObject?.callerType,
+        type: flowType
       }));
     }
     fetchData();
@@ -165,7 +167,7 @@ export const AddFlow = ({
       addFlowRule(flowRule, accessToken, graphQlApiUrl, curTime, dataRequests).then(apiResponse => {
         if (!apiResponse.errors) {
           const newFlowRule: CctSharedCallFlowDb = {
-            pkey: "${flowRule.pkey.value}",
+            pkey: flowRule.pkey.value,
             content: {
               callFlowRoute: stringValue(flowRule,"callFlowRoute", ""),
               callerType: stringValue(flowRule,"callerType", ""),
@@ -193,7 +195,8 @@ export const AddFlow = ({
             whisper: stringValue(flowRule,"whisper", ""),
             requestID: stringValue(flowRule,"requestID", ""),
             userDestination: flowRule.userDestination.value || "",
-            rangeIndicator: stringValue(flowRule,"rangeIndicator", "")
+            rangeIndicator: stringValue(flowRule,"rangeIndicator", ""),
+            type: flowRule.type.value || ""
           };
           openAddModal(false, true, newFlowRule);
           setAlertBar((alertBarProps: AlertBarProps) => ({
