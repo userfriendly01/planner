@@ -134,6 +134,13 @@ export const FlowGridColumnDef: GridColDef[] = [
     align: "left"
   },
   {
+    headerName: "Type",
+    field: "type",
+    sortable: true,
+    width: 80,
+    align: "left"
+  },
+  {
     headerName: "Account Manager",
     field: "accountManager",
     sortable: true,

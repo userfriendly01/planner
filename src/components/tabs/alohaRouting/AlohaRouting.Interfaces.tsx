@@ -1,3 +1,4 @@
+import { Control } from "globals";
 export interface CctSharedCallRoutingDb {
     id: number;
     all?: string;
@@ -74,7 +75,7 @@ export interface RoutingDropDownList {
 export interface AddPageFieldConfigProps {
     label: string,
     key: string,
-    control: string,
+    control: Control,
     required?: boolean,
     disableAdd?: boolean,
     disableEdit?: boolean,
