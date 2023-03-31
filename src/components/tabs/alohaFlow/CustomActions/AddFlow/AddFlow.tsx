@@ -192,6 +192,7 @@ export const AddFlow = ({
             callDetails2: stringValue(flowRule,"callDetails2", ""),
             lineOfBusiness: stringValue(flowRule,"lineOfBusiness", ""),
             marketingChannel: stringValue(flowRule,"marketingChannel", ""),
+            tollFreeNumber: stringValue(flowRule,"tollFreeNumber", ""),
             whisper: stringValue(flowRule,"whisper", ""),
             requestID: stringValue(flowRule,"requestID", ""),
             userDestination: flowRule.userDestination.value || "",
