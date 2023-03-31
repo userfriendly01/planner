@@ -330,8 +330,8 @@ describe("FlowFieldsConfig", ()=>{
       expect(invalidPKey).toBe("");
     });
     it("type", ()=>{
-      const validPKey = flowFields[26].valueGetter(validFlowData);
-      const invalidPKey = flowFields[26].valueGetter({});
+      const validPKey = flowFields[27].valueGetter(validFlowData);
+      const invalidPKey = flowFields[27].valueGetter({});
       expect(validPKey).toBe("DID");
       expect(invalidPKey).toBe("");
     });
