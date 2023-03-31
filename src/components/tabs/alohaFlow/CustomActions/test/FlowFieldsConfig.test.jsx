@@ -30,6 +30,7 @@ const validFlowData = {
   marketingChannel: "test marketingChannel",
   requestID: "test requestID",
   rangeIndicator: "test rangeIndicator",
+  tollFreeNumber: "test tollFreeNumber",
   transferCode: "test transferCode",
   whisper: "test whisper"
 };
@@ -293,27 +294,33 @@ describe("FlowFieldsConfig", ()=>{
       expect(validPKey).toBe("test marketingChannel");
       expect(invalidPKey).toBe("");
     });
-    it("whisper", ()=>{
+    it("tollFreeNumber", ()=>{
       const validPKey = flowFields[22].valueGetter(validFlowData);
       const invalidPKey = flowFields[22].valueGetter({});
+      expect(validPKey).toBe("test tollFreeNumber");
+      expect(invalidPKey).toBe("");
+    });
+    it("whisper", ()=>{
+      const validPKey = flowFields[23].valueGetter(validFlowData);
+      const invalidPKey = flowFields[23].valueGetter({});
       expect(validPKey).toBe("test whisper");
       expect(invalidPKey).toBe("");
     });
     it("requestID", ()=>{
-      const validPKey = flowFields[23].valueGetter(validFlowData);
-      const invalidPKey = flowFields[23].valueGetter({});
+      const validPKey = flowFields[24].valueGetter(validFlowData);
+      const invalidPKey = flowFields[24].valueGetter({});
       expect(validPKey).toBe("test requestID");
       expect(invalidPKey).toBe("");
     });
     it("userDestination", ()=>{
-      const validPKey = flowFields[24].valueGetter(validFlowData);
-      const invalidPKey = flowFields[24].valueGetter({});
+      const validPKey = flowFields[25].valueGetter(validFlowData);
+      const invalidPKey = flowFields[25].valueGetter({});
       expect(validPKey).toBe("test userDestination");
       expect(invalidPKey).toBe("");
     });
     it("rangeIndicator", ()=>{
-      const validPKey = flowFields[25].valueGetter(validFlowData);
-      const invalidPKey = flowFields[25].valueGetter({});
+      const validPKey = flowFields[26].valueGetter(validFlowData);
+      const invalidPKey = flowFields[26].valueGetter({});
       expect(validPKey).toBe("test rangeIndicator");
       expect(invalidPKey).toBe("");
     });
