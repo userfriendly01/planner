@@ -89,8 +89,6 @@ const mockSelectedWFMTemplate = {
   }]
 };
 
-// TODO: Update tests to test for the WFMLoadOptionsModal
-
 describe("<BulkChanges />", () => {
   beforeEach(() => {
     jest.clearAllMocks();

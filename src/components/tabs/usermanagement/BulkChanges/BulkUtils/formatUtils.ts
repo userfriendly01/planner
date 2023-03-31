@@ -77,9 +77,6 @@ export const formatDateFromExcelDate = (excelDate: number) => {
   let day: string | number = date.getDate();
   let month: string | number = date.getMonth() + 1;
   const year = date.getFullYear();
-  console.log("day &&&&", day);
-  console.log("month &&&&", month);
-  console.log("year &&&&", year);
   if (isNaN(day) || isNaN(month) || isNaN(year)) {
     throw new Error("Invalid date");
   }

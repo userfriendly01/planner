@@ -704,7 +704,7 @@ export const FIELDS: Fields = {
             } else {
               return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
             }
-          } catch (err) {  // ? Do I need this try catch?  Not sure.  What happens if workflow control sets doesn't exist?
+          } catch (err) {
             return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
           }
         }
@@ -748,7 +748,7 @@ export const FIELDS: Fields = {
             } else {
               return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
             }
-          } catch (err) {  // ? Do I need this try catch?  Not sure.  What happens if Teams doesn't exist?
+          } catch (err) {
             return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
           }
         }
@@ -792,7 +792,7 @@ export const FIELDS: Fields = {
             } else {
               return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
             }
-          } catch (err) {  // ? Do I need this try catch?  Not sure.  What happens if Contracts doesn't exist?
+          } catch (err) {
             return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
           }
         }
@@ -836,7 +836,7 @@ export const FIELDS: Fields = {
             } else {
               return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
             }
-          } catch (err) {  // ? Do I need this try catch?  Not sure.  What happens if Contracts doesn't exist?
+          } catch (err) {
             return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
           }
         }
@@ -880,14 +880,14 @@ export const FIELDS: Fields = {
             } else {
               return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
             }
-          } catch (err) {  // ? Do I need this try catch?  Not sure.  What happens if Contracts doesn't exist?
+          } catch (err) {
             return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
           }
         }
       }
     }
   },
-  CALABRIO_WFM_SHIFTBAG: { // allowed to be empty, but can't have a value if no other schedule fields have a value...
+  CALABRIO_WFM_SHIFTBAG: {
     field: "wfmShiftBag",
     name: "WFM Shift Bag",
     type: "string",
@@ -934,14 +934,14 @@ export const FIELDS: Fields = {
             } else {
               return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
             }
-          } catch (err) {  // ? Do I need this try catch?  Not sure.  What happens if Contracts doesn't exist?
+          } catch (err) {
             return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
           }
         }
       }
     }
   },
-  CALABRIO_WFM_BUDGET_GROUP: {  // allowed to be empty, but can't have a value if no other schedule fields have a value...
+  CALABRIO_WFM_BUDGET_GROUP: {
     field: "wfmBudgetGroup",
     name: "WFM Budget Group",
     type: "string",
@@ -986,7 +986,7 @@ export const FIELDS: Fields = {
             } else {
               return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
             }
-          } catch (err) {  // ? Do I need this try catch?  Not sure.  What happens if Contracts doesn't exist?
+          } catch (err) {
             return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
           }
         }
@@ -1013,7 +1013,6 @@ export const FIELDS: Fields = {
       } else {
         try {
           const formattedDate = formatDateFromExcelDate(field);  // throws error if day month or year is NaN
-          console.log("FORMATTED DATE?????", formattedDate);
           row.wfmPersonStartDate = formattedDate;
           return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
         } catch (err) {
@@ -1199,7 +1198,7 @@ export const FIELDS: Fields = {
             } else {
               return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
             }
-          } catch (err) {  // ? Do I need this try catch?  Not sure.  What happens if Contracts doesn't exist?
+          } catch (err) {
             return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
           }
         }
@@ -1306,7 +1305,7 @@ export const FIELDS: Fields = {
             } else {
               return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
             }
-          } catch (err) {  // ? Do I need this try catch?  Not sure.  What happens if Contracts doesn't exist?
+          } catch (err) {
             return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
           }
         }

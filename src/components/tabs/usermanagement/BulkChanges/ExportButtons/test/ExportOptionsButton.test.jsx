@@ -313,13 +313,11 @@ describe("ExportOptionsButton", () => {
 
           act(() => onClick());
           expect(mockSave).toHaveBeenCalledTimes(0);
-          console.log(Modal.mock.calls);
           expect(Modal.mock.calls[0][0].open).toBe(false);
           expect(Modal.mock.calls[1][0].open).toBe(true);
           render(Modal.mock.calls[1][0].children);
           expect(BusinessUnitModal.mock.calls.length).toBe(1);
 
-          console.log(BusinessUnitModal.mock.calls);
           const modalHandleExport = BusinessUnitModal.mock.calls[0][0].handleExport;
           act(() => modalHandleExport("123-321"));
 

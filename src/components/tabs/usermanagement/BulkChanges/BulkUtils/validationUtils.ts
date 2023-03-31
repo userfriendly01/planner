@@ -238,7 +238,7 @@ export const allowedEmptyScheduleField = (row: any, fieldName: string) => {
   if (fieldIsAllOrNothing) {
     allOrNothingFields.forEach((field: string) => {
       if (row[field]) {
-        console.log("%%%% INVALID.  FIELD CANNOT BE EMPTY due to the following field being populated:", fieldName);
+        console.log(`INVALID EMPTY FIELD ${fieldName} cannot be empty due to the following field being populated: ${field}`);
         isValid = false;
       }
     });
