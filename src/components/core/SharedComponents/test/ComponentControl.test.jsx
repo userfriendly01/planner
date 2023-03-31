@@ -69,7 +69,7 @@ describe(" <ComponentControl />",()=>{
     expect(selectEvent).toBeTruthy();
   });
   test(" Test AutoComplete Component",()=>{
-    const { getByDisplayValue } = renderComponentControl("AutoComplete","testInput");
+    const { getByDisplayValue } = renderComponentControl("autoComplete","testInput");
     const inputEvent = getByDisplayValue("testInput",{ hidden: true });
     expect(inputEvent).toBeTruthy();
   });

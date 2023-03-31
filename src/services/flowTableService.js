@@ -22,10 +22,14 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
               listCctSharedCallFlowDbs(limit: 10000, nextToken: ${nextToken ? JSON.stringify(nextToken) : nextToken}) {
                 nextToken
                 items {
-                  pkey
+                  accountManager
+                  affinityVDN
                   agentId
                   brand
+                  callDetails1
+                  callDetails2
                   callFlowTemplate
+                  callTypeDescription
                   channel
                   content {
                     callerType
@@ -38,19 +42,17 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
                   createTime
                   dialedDescription
                   employeeId
-                  accountManager
-                  affinityVDN
-                  callTypeDescription
-                  transferCode
                   internetPlacement
-                  callDetails1
-                  callDetails2
                   lineOfBusiness
                   marketingChannel
-                  whisper
-                  requestID
-                  userDestination
+                  pkey
                   rangeIndicator
+                  requestID
+                  tollFreeNumber
+                  transferCode
+                  type
+                  userDestination
+                  whisper
                 }
               }
             }
