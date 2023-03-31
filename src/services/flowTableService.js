@@ -122,7 +122,7 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
                 callFlowTemplate: "${item.callFlowTemplate || ""}",
                 channel: "${item.channel}",
                 content: {
-                  callFlowRoute: "${item.agentId || ""}",
+                  callFlowRoute: "${item.content?.callFlowRoute || ""}",
                   callerType: "${item.content?.callerType || ""}",
                   greetingMessages: ${JSON.stringify(item.content?.greetingMessages)},
                   transferNumber: "${item.content?.transferNumber || ""}",
@@ -143,8 +143,9 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
                 marketingChannel: "${item.marketingChannel || ""}",
                 whisper: "${item.whisper || ""}",
                 requestID: "${item.requestID || ""}",
-                userDestination: "${item.userDestination}",
-                rangeIndicator:"${item.rangeIndicator}"
+                userDestination: "${item.userDestination || ""}",
+                rangeIndicator:"${item.rangeIndicator || ""}",
+                type: "${item.type || ""}"
               }) {
               pkey
               agentId
@@ -175,6 +176,7 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
               requestID
               userDestination
               rangeIndicator
+              type
       }
           }
       `,
@@ -238,8 +240,9 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
                   marketingChannel: "${item.marketingChannel?.value || ""}",
                   whisper: "${item.whisper?.value || ""}",
                   requestID: "${item.requestID?.value || ""}",
-                  userDestination: "${item.userDestination||""}",
-                  rangeIndicator: "${item.rangeIndicator || ""}"
+                  userDestination: "${item.userDestination?.value||""}",
+                  rangeIndicator: "${item.rangeIndicator?.value || ""}",
+                  type: "${item.type?.value || ""}"
               }
           ) {
               agentId
@@ -271,6 +274,7 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
               requestID
               userDestination
               rangeIndicator
+              type
             }
           }
         `,
@@ -336,6 +340,7 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
               whisper
               requestID
               rangeIndicator
+              type
             }
           }
       `,
