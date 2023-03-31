@@ -4,7 +4,7 @@ import { render } from "testUtils";
 describe("<FlowGridColumnDef />", () => {
 
   it("has 16 columns", () => {
-    expect(FlowGridColumnDef.length).toBe(28);
+    expect(FlowGridColumnDef.length).toBe(29);
   });
 
   describe("valueGetter", ()=>{
