@@ -62,21 +62,29 @@ export function authWrapper(
       };
     }
 
-    acquireToken(tokenRequest: TokenRequest) {
-      msalInstance.acquireTokenPopup(tokenRequest)
+    acquireToken(tokenRequest: TokenRequest, counter=0) {
+      msalInstance.acquireTokenSilent(tokenRequest)
         .then(response => {
           this.checkMembership(response.accessToken, this, authenticationProfiles());
         }).catch(err => {
-          if(err.message.indexOf("login is already in progress")) {
-            console.warn("login already in progress, waiting 2 seconds and trying again");
-            setTimeout(() => {
-              this.acquireToken(tokenRequest);
-            }, 2000);
+          if(err.message.indexOf("login is already in progress")!== -1) {
+            if(counter >= 5 ) {
+              this.setState({
+                ...this.state,
+                hasError: true,
+                errorMessage: "Login unsuccessful.  Make sure you are not blocking popups, and reload the window."
+              });
+            } else {
+              console.warn("login already in progress, waiting 2 seconds and trying again");
+              setTimeout(() => {
+                this.acquireToken(tokenRequest, counter+1);
+              }, 2000);
+            }
           } else {
             this.setState({
               ...this.state,
               hasError: true,
-              errorMessage: err.errorMessage
+              errorMessage: err.message
             });
           }
         });

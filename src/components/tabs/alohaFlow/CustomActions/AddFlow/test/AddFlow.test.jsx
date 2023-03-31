@@ -12,7 +12,7 @@ import {
   Grid, Button
 } from "@mui/material";
 import {
-  CustomToast, ComponentControl
+  CustomToast, ComponentControl, Dropdown
 } from "components";
 
 const validFlowData = {
@@ -57,7 +57,9 @@ const mockMasterData = {
 jest.mock("@mui/material", () => ({
   __esModule: true,
   Grid: jest.fn(),
-  Button: jest.fn()
+  Button: jest.fn(),
+  TextField: jest.fn(),
+  Paper: jest.fn()
 }));
 
 jest.mock("@mui/x-date-pickers/TimePicker", () => ({
@@ -69,7 +71,8 @@ jest.mock("components", () => {
   return{
     __esModule: true,
     CustomToast: jest.fn(),
-    ComponentControl: jest.fn()
+    ComponentControl: jest.fn(),
+    Dropdown: jest.fn()
   };
 });
 
@@ -113,7 +116,8 @@ describe("<AddFlow />", () => {
       Grid,
       Button,
       ComponentControl,
-      CustomToast
+      CustomToast,
+      Dropdown
     });
     localStorage.setItem(FLOW_MASTER_DATA, JSON.stringify(mockMasterData));
   });
@@ -189,6 +193,9 @@ describe("<AddFlow />", () => {
       const channelAttr = ComponentControl.mock.calls[3][0].onChange;
       const brandAttr = ComponentControl.mock.calls[4][0].onChange;
       const userDestAttr = ComponentControl.mock.calls[24][0].onChange;
+      const callerTypeAttr = ComponentControl.mock.calls[7][0].onChange;
+      // Check Array indexes
+      const callFlowRouteAttr = ComponentControl.mock.calls[7][0].onChange;
       const eventPhoneNumValue = {
         target: {
           name: "pkey",
@@ -225,6 +232,8 @@ describe("<AddFlow />", () => {
         channelAttr(eventChannelValue);
         brandAttr(eventBrandValue);
         userDestAttr(eventDestValue);
+        callFlowRouteAttr(eventDestValue,"testing");
+        callerTypeAttr(eventDestValue,"testing");
       });
       addFlowRule.mockResolvedValue({ data: { "items": []}});
       const saveButton = getByRole("button", { name: "createRuleButton" });
