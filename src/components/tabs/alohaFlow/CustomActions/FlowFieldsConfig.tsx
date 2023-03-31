@@ -89,7 +89,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
   {
     label: "Caller Type",
     key: "callerType",
-    control: "AutoComplete",
+    control: "autoComplete",
     required: false,
     valueGetter: (params: CctSharedCallFlowDb) => `${params?.content?.callerType || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
@@ -116,7 +116,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
   {
     label: "Call Flow Route",
     key: "callFlowRoute",
-    control: "AutoComplete",
+    control: "autoComplete",
     required: false,
     valueGetter: (params: CctSharedCallFlowDb) => `${params?.content?.callFlowRoute || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
@@ -154,7 +154,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     label: "Employee ID",
     key: "employeeId",
     control: "input",
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.employeeId || null}`,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.employeeId || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
