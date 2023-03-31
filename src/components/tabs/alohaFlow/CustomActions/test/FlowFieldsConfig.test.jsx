@@ -31,6 +31,7 @@ const validFlowData = {
   requestID: "test requestID",
   rangeIndicator: "test rangeIndicator",
   transferCode: "test transferCode",
+  type: "DID",
   whisper: "test whisper"
 };
 
@@ -158,6 +159,10 @@ describe("FlowFieldsConfig", ()=>{
     it("rangeIndicator", ()=>{
       const updatedFlowData = flowFields[25].valueSetter(validFlowData, { rangeIndicator: "99999999" });
       expect(updatedFlowData.rangeIndicator).toBe("99999999");
+    });
+    it("type", ()=>{
+      const updatedFlowData = flowFields[26].valueSetter(validFlowData, { type: "99999999" });
+      expect(updatedFlowData.type).toBe("99999999");
     });
   });
   describe("valueGetter", ()=>{
@@ -315,6 +320,12 @@ describe("FlowFieldsConfig", ()=>{
       const validPKey = flowFields[25].valueGetter(validFlowData);
       const invalidPKey = flowFields[25].valueGetter({});
       expect(validPKey).toBe("test rangeIndicator");
+      expect(invalidPKey).toBe("");
+    });
+    it("type", ()=>{
+      const validPKey = flowFields[26].valueGetter(validFlowData);
+      const invalidPKey = flowFields[26].valueGetter({});
+      expect(validPKey).toBe("DID");
       expect(invalidPKey).toBe("");
     });
   });

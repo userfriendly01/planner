@@ -291,6 +291,17 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...currentValue,
       ...newValue
     })
+  },
+  {
+    label: "Type",
+    key: "type",
+    control: "autoComplete",
+    required: false,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.type || ""}`,
+    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
+      ...currentValue,
+      ...newValue
+    })
   }
 ];
 

@@ -16,7 +16,6 @@ export interface FlowMasterData {
     callFlowTemplate?: Array<string>;
     callFlowRoute?: Array<string>;
     pkey?: Array<string>;
-
 }
 
 export interface FlowAdvanceFilter {
@@ -26,7 +25,6 @@ export interface FlowAdvanceFilter {
     callFlowTemplate?: string;
     callFlowRoute?: string;
     pkey?: string;
-
 }
 export interface FlowStateVariables {
     data?: Array<CctSharedCallFlowDb>;
@@ -114,6 +112,7 @@ export interface FlowDropDownList {
     userDestination: string[];
     callFlowRoute:string[];
     callerType: string[];
+    type: string[];
 }
 
 export interface AddFlowFieldsConfigProps {

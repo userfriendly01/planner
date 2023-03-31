@@ -10,11 +10,11 @@ describe("<GridMaster />", () => {
     masterData = getGridMasterData([{ brand: "safeco" }]);
     expect(masterData).toEqual({
       "brand": ["safeco"],
-      "callFlowRoute": [undefined],
-      "callFlowTemplate": [undefined],
-      "callerType": [undefined],
-      "channel": [undefined],
-      "pkey": [undefined]
+      "callFlowRoute": [],
+      "callFlowTemplate": [],
+      "callerType": [],
+      "channel": [],
+      "pkey": []
     });
   });
   it("ignores foo and does not return it", () => {
@@ -29,11 +29,11 @@ describe("<GridMaster />", () => {
     const masterData2 = getGridMasterData([null]);
     expect(masterData2).toEqual({
       "brand": ["safeco"],
-      "callFlowRoute": [null],
-      "callFlowTemplate": [null],
-      "callerType": [null],
-      "channel": [null],
-      "pkey": [null]
+      "callFlowRoute": [],
+      "callFlowTemplate": [],
+      "callerType": [],
+      "channel": [],
+      "pkey": []
     });
   });
 
@@ -41,7 +41,7 @@ describe("<GridMaster />", () => {
     let masterData2 = getGridMasterData([{ brand: "safeco" }]);
     clearGridMasterData();
     masterData2 = getGridMasterData([{ channel: "sales" }]);
-    expect(masterData2.brand).toEqual([undefined]);
+    expect(masterData2.brand).toEqual([]);
   });
 
 });

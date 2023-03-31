@@ -30,7 +30,8 @@ import {
   getGraphQLEndpoint,
   initializedAlertBar,
   languageOffer,
-  userDestination
+  userDestination,
+  flowType
 } from "utils";
 import ComponentControl from "components/core/SharedComponents/ComponentControl";
 import {
@@ -74,7 +75,8 @@ export const EditFlow = ({
         languageOffer: languageOffer,
         userDestination: userDestination,
         callFlowRoute: masterData?.callFlowRoute,
-        callerType: masterData?.callerType
+        callerType: masterData?.callerType,
+        type: flowType
       })
     );
   }, [selectedRow]);
