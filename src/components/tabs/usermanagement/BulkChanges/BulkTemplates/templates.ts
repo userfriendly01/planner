@@ -291,8 +291,8 @@ export const getCreateTemplates = (state: any): Templates => {
         name: "CREATE_TRITON_USER",
         variable: "workerSid"
       }],
-      validationConcurrencyLimit: 500,  // todo ? what will these be
-      processingConcurrencyLimit: 25,  // todo ? what will this be?
+      validationConcurrencyLimit: 500,
+      processingConcurrencyLimit: 25,
       fields: [
         FIELDS.N_NUMBER_UPDATE,
         FIELDS.CALABRIO_SCOPE,
@@ -308,7 +308,10 @@ export const getCreateTemplates = (state: any): Templates => {
       stateUpdateFunctions: [updateWFMPersonState],
       multiRunDependencies: [{
         name: "CREATE_TRITON_USER",
-        variable: "workerSid" // note: don't actually need the workersid, but I need the Triton user created first if running for 
+        variable: "workerSid" // note: don't actually need the workersid, but Triton user and QM users need to be created BEFORE WFM
+      }, {
+        name: "CREATE_CALABRIO_QM_USER",
+        variable: "groupId"
       }],
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 25,
@@ -316,7 +319,7 @@ export const getCreateTemplates = (state: any): Templates => {
         FIELDS.N_NUMBER_UPDATE,
         FIELDS.CALABRIO_WFM_BUSINESS_UNIT,
         FIELDS.CALABRIO_WFM_ROLES,
-        FIELDS.CALABRIO_TIME_ZONE,  // think we can use the same one qm uses?  Maybe Check with stephanie to see if there are any different ones..
+        FIELDS.CALABRIO_TIME_ZONE,
         FIELDS.CALABRIO_WFM_FIRST_DAY_OF_WEEK,
         FIELDS.CALABRIO_WFM_WORKFLOW_CONTROL_SET,
         FIELDS.CALABRIO_WFM_TEAM,

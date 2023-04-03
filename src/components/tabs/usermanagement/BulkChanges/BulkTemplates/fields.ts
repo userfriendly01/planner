@@ -579,7 +579,7 @@ export const FIELDS: Fields = {
     field: "wfmBusinessUnit",
     name: "WFM Business Unit",
     type: "string",
-    description: "Business Unit of the Calabrio WFM person",
+    description: "Business Unit of the Calabrio WFM person. Required",
     example: "GRM Safeco",
     options: (state: any) => state.calabrioContext.wfmOptions.map((bu: any) => bu.Name),
     validateFunction: (row: any, state: any): Promise<any> => {
@@ -760,7 +760,7 @@ export const FIELDS: Fields = {
     name: "WFM Contract",
     type: "string",
     description: "Represents the schedule of the agent",
-    example: "",
+    example: "SAF 8:00 Hour Day",
     options: (state: any, businessUnitId: string) => {
       const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
       if (businessUnit) {
@@ -804,7 +804,7 @@ export const FIELDS: Fields = {
     name: "WFM Contract Schedule",
     type: "string",
     description: "User's 'hours per day' worked",
-    example: "",
+    example: "SAF Mon-Fri",
     options: (state: any, businessUnitId: string) => {
       const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
       if (businessUnit) {
@@ -848,7 +848,7 @@ export const FIELDS: Fields = {
     name: "WFM Part Time Percentage",
     type: "string",
     description: "Represents the % of the day worked",
-    example: "",
+    example: "SAF 100%",
     options: (state: any, businessUnitId: string) => {
       const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
       if (businessUnit) {
@@ -945,8 +945,8 @@ export const FIELDS: Fields = {
     field: "wfmBudgetGroup",
     name: "WFM Budget Group",
     type: "string",
-    description: "",
-    example: "",
+    description: "Defines how many people are allowed to be FTO at once",
+    example: "Gold AM",
     options: (state: any, businessUnitId: string) => {
       const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
       if (businessUnit) {
@@ -1049,11 +1049,11 @@ export const FIELDS: Fields = {
       }
     }
   },
-  CALABRIO_WFM_SKILLS_START_DATE: {  // allowed to be empty if skills is??
+  CALABRIO_WFM_SKILLS_START_DATE: {  // allowed to be empty if skills is
     field: "wfmSkillsStartDate",
     name: "WFM Skills Start Date",
     type: "string",
-    description: "The start date for the skills",
+    description: "The start date for skills",
     example: "",
     options: null,
     validateFunction: (row: any, state: any): Promise<any> => {
@@ -1083,12 +1083,12 @@ export const FIELDS: Fields = {
       }
     }
   },
-  CALABRIO_WFM_SKILLS: { // allowed to be empty???
+  CALABRIO_WFM_SKILLS: { // allowed to be empty
     field: "wfmSkills",
     name: "WFM Skills",
     type: "string",
     description: "A comma deliminated list of skills for the WFM person",
-    example: "",
+    example: "Gold Spanish, Gold Policy",
     options: (state: any, businessUnitId: string) => {
       const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
       if (businessUnit) {
@@ -1103,8 +1103,6 @@ export const FIELDS: Fields = {
 
       if(!field){
         return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
-
-        // return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
       } else {
         try {
           const fieldArray = field.split(",");
@@ -1131,7 +1129,7 @@ export const FIELDS: Fields = {
       }
     }
   },
-  CALABRIO_WFM_ROTATION_START_DATE: {  // allowed to be empty if rotation is
+  CALABRIO_WFM_ROTATION_START_DATE: {  // allowed to be empty if rotation is empty
     field: "wfmRotationStartDate",
     name: "WFM Rotation Start Date",
     type: "string",
@@ -1169,7 +1167,7 @@ export const FIELDS: Fields = {
     name: "WFM Rotation",
     type: "string",
     description: "Sets the start time of the schedule",
-    example: "",
+    example: "SAF 07:00a start",
     options: (state: any, businessUnitId: string) => {
       const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
       if (businessUnit) {
@@ -1275,7 +1273,7 @@ export const FIELDS: Fields = {
     name: "WFM Availability",
     type: "string",
     description: "Defines what days per week are scheduled days",
-    example: "",
+    example: "SAF 5d 8h M-F",
     options: (state: any, businessUnitId: string) => {
       const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
       if (businessUnit) {
@@ -1314,8 +1312,8 @@ export const FIELDS: Fields = {
     field: "wfmOptionalCols",
     name: "WFM Optional Columns",
     type: "string",
-    description: "Comma deliminated list of optional columns",
-    example: "",
+    description: "Comma deliminated list of optional columns. Optional",
+    example: "SAF Agent Status, SAF Agent Location State",
     options: (state: any, businessUnitId: string) => {
       const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
       if (businessUnit) {
