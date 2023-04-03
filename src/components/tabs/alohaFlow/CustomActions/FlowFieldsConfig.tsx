@@ -89,7 +89,8 @@ const flowFields: AddFlowFieldsConfigProps[] = [
   {
     label: "Caller Type",
     key: "callerType",
-    control: "input",
+    control: "autoComplete",
+    required: false,
     valueGetter: (params: CctSharedCallFlowDb) => `${params?.content?.callerType || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
@@ -115,7 +116,8 @@ const flowFields: AddFlowFieldsConfigProps[] = [
   {
     label: "Call Flow Route",
     key: "callFlowRoute",
-    control: "input",
+    control: "autoComplete",
+    required: false,
     valueGetter: (params: CctSharedCallFlowDb) => `${params?.content?.callFlowRoute || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
@@ -152,7 +154,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     label: "Employee ID",
     key: "employeeId",
     control: "input",
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.employeeId || null}`,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.employeeId || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
@@ -249,6 +251,16 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     })
   },
   {
+    label: "Toll Free Number",
+    key: "tollFreeNumber",
+    control: "input",
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.tollFreeNumber || ""}`,
+    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
+      ...currentValue,
+      ...newValue
+    })
+  },
+  {
     label: "Whisper",
     key: "whisper",
     control: "input",
@@ -285,6 +297,17 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     control: "input",
     required: false,
     valueGetter: (params: CctSharedCallFlowDb) => `${params?.rangeIndicator || ""}`,
+    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
+      ...currentValue,
+      ...newValue
+    })
+  },
+  {
+    label: "Type",
+    key: "type",
+    control: "autoComplete",
+    required: false,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.type || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue

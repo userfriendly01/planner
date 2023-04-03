@@ -80,7 +80,8 @@ jest.mock("components", () => ({
   ModalOverlay: jest.fn(),
   PaperContainer: jest.requireActual("components").PaperContainer,
   StyledButton: jest.fn(),
-  CalabrioTeamModal: jest.fn()
+  CalabrioTeamModal: jest.fn(),
+  ComponentControl: jest.fn()
 }));
 
 //Faith

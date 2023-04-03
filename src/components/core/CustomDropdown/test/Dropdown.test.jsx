@@ -11,7 +11,6 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-
 jest.mock("@mui/material", () => ({
   __esModule: true,
   Autocomplete: jest.fn(),
@@ -504,6 +503,26 @@ describe("CustomDropdown", () => {
         expect(CustomRender.mock.calls[1][0].option.label).toBe("Option Two");
         expect(CustomRender.mock.calls[2][0].option.label).toBe("Option Three");
       });
+    });
+  });
+  describe("Dropdown with label CallerType", () => {
+    test("Dropdown should render with renderOptions and return List", () => {
+      const dropDownOptions = ["TestingCallerType", "Testing2CallerType"];
+      const value = "TestingCallerType";
+      const props = {
+        "data-option-index": 1
+      };
+      render(<Dropdown
+        options={dropDownOptions}
+        multiple={true}
+        label="Caller Type"
+        updateValue={mockUpdateValue}
+        value={value}
+        onBlur={mockOnBlur}
+      />);
+      const renderOptions = Autocomplete.mock.calls[0][0].renderOption;
+      const rendered = renderOptions(props,dropDownOptions);
+      expect(rendered).toBeTruthy();
     });
   });
 });

@@ -53,6 +53,7 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
     control: "input",
     required: true,
     disableEdit: true,
+    disableAdd: true,
     valueGetter: (params: CctSharedCallRoutingDb) => `${params?.id || ""}`,
     valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => ({
       ...currentValue,

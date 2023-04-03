@@ -30,7 +30,8 @@ import {
   getGraphQLEndpoint,
   initializedAlertBar,
   languageOffer,
-  userDestination
+  userDestination,
+  flowType
 } from "utils";
 import ComponentControl from "components/core/SharedComponents/ComponentControl";
 import {
@@ -72,7 +73,10 @@ export const EditFlow = ({
         brand: masterData?.brand,
         channel: masterData?.channel,
         languageOffer: languageOffer,
-        userDestination: userDestination
+        userDestination: userDestination,
+        callFlowRoute: masterData?.callFlowRoute,
+        callerType: masterData?.callerType,
+        type: flowType
       })
     );
   }, [selectedRow]);
@@ -155,10 +159,19 @@ export const EditFlow = ({
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => CctSharedCallFlowDb
+    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => CctSharedCallFlowDb,
+    valuePassed?:string, keyPassed?:string
   ) => {
-    const key:string = event.target.name;
-    const value: string = event.target.value;
+    let value: string;
+    let key: string;
+    if(valuePassed && typeof(valuePassed) === "string"){
+      value = valuePassed;
+      key = keyPassed;
+    }
+    else{
+      key = event.target.name;
+      value = event.target.value;
+    }
     const updatedSelectedValue: CctSharedCallFlowDb = valueSetter(selectedRowLocal, { [key]: value });
     setSelectedRowLocal(updatedSelectedValue);
     const newFlowRule: FormValidationRule = {
@@ -237,7 +250,7 @@ export const EditFlow = ({
                               type="text"
                               control="input"
                               value={updateDataReq || ""}
-                              onChange={event => { setUpdateDataReq(event.target.value); }}
+                              onChange={(event: { target: { value: React.SetStateAction<string>; }; }) => { setUpdateDataReq(event.target.value); }}
                               dropDownOptions={dropDownValues[key as keyof FlowDropDownList] || []}
                               required
                               error={flowRule.dataRequests.error}
@@ -282,7 +295,7 @@ export const EditFlow = ({
                         value={valueGetter(selectedRowLocal)}
                         error={flowRule[key as keyof FlowKeys].error}
                         dropDownOptions={dropDownValues[key as keyof FlowDropDownList] || []}
-                        onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => handleInputChange(event, valueSetter)}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,value?:string) => handleInputChange(event, valueSetter,value,key)}
                         required={required}
                         disabled={disableEdit}
                       />)

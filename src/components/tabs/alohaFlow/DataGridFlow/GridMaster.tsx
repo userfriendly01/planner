@@ -1,14 +1,12 @@
 /* eslint-disable no-console, max-len,  no-return-assign */
-
-import { keyBy } from "lodash";
 import {
   CctSharedCallFlowDb, FlowContent, FlowMasterData
 } from "../AlohaFlow.Interfaces";
 
 const CACHE_MASTER_DATA = "FLOW_MASTER_DATA";
 const masterDataItems = ["channel", "brand", "callerType", "callFlowTemplate", "callFlowRoute", "pkey"];
-const masterDataItemsFromContent = ["callFlowRoute"];
-const filteredItems = [null, "null", ""];
+const masterDataItemsFromContent = ["callFlowRoute", "callerType"];
+const filteredItems = [null, "null", "", undefined];
 
 const clearGridMasterData = ():void => localStorage.removeItem(CACHE_MASTER_DATA);
 

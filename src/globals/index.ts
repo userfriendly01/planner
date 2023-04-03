@@ -141,5 +141,5 @@ export const apiPaths = {
   TFN_DATA: `${SERVICE_BASE_URI}/tfn`,
   UPDATE_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-update-user/${personId}`,
   UPDATE_WORKER: (workerSid: string): string => `${SERVICE_BASE_URI}/updateworker/${workerSid}`,
-  GET_AGGREGATE_QUEUES_TYPE: (aggregateQueueType: string): string => `${CONTACT_MANAGER_BASE_URI}/aggregatequeuestype/${aggregateQueueType}`,
+  GET_AGGREGATE_QUEUES_TYPE: (aggregateQueueType: string): string => `${CONTACT_MANAGER_BASE_URI}/aggregatequeuestype/${aggregateQueueType}`
 };

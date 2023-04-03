@@ -285,3 +285,5 @@ export interface OperatingUnit {
   ou_sid: string,
   ou_name: string
 }
+
+export type Control = "input" | "select" | "autoComplete" | "timePicker";

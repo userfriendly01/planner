@@ -38,7 +38,8 @@ import {
   getGraphQLEndpoint,
   initializedAlertBar,
   languageOffer,
-  userDestination
+  userDestination,
+  flowType
 } from "utils";
 import { getGridMasterData } from "../../DataGridFlow/GridMaster";
 import {
@@ -49,7 +50,7 @@ import { AzureSPA } from "globals";
 export interface AddFlowModalProps {
   isOpen: boolean;
   newId: number;
-  openAddModal: (flag: boolean, isSubmitted?: boolean, row?:CctSharedCallFlowDb, deleteRow?: boolean) => void;
+  openAddModal: (flag: boolean, isSubmitted?: boolean, row?:CctSharedCallFlowDb) => void;
 }
 
 export const AddFlow = ({
@@ -77,7 +78,10 @@ export const AddFlow = ({
         brand: masterDataObject.brand,
         channel: masterDataObject.channel,
         languageOffer: languageOffer,
-        userDestination: userDestination
+        userDestination: userDestination,
+        callFlowRoute: masterDataObject?.callFlowRoute,
+        callerType: masterDataObject?.callerType,
+        type: flowType
       }));
     }
     fetchData();
@@ -91,9 +95,14 @@ export const AddFlow = ({
     }));
   };
 
-  function handleInputChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    const key: string = event.target.name;
-    let value: string = event.target.value;
+  function handleInputChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,valuePassed?:string,key?:string) {
+    let value: string;
+    if(valuePassed && typeof(valuePassed) === "string" ){
+      value = valuePassed;
+    }
+    else{
+      value = event.target.value;
+    }
     value = (key === "pkey" && !value.startsWith("+")) ? `+1${value}` : value;
     const newFlowRule: FormValidationRule = {
       [key]: {
@@ -158,7 +167,7 @@ export const AddFlow = ({
       addFlowRule(flowRule, accessToken, graphQlApiUrl, curTime, dataRequests).then(apiResponse => {
         if (!apiResponse.errors) {
           const newFlowRule: CctSharedCallFlowDb = {
-            pkey: "${flowRule.pkey.value}",
+            pkey: flowRule.pkey.value,
             content: {
               callFlowRoute: stringValue(flowRule,"callFlowRoute", ""),
               callerType: stringValue(flowRule,"callerType", ""),
@@ -183,10 +192,12 @@ export const AddFlow = ({
             callDetails2: stringValue(flowRule,"callDetails2", ""),
             lineOfBusiness: stringValue(flowRule,"lineOfBusiness", ""),
             marketingChannel: stringValue(flowRule,"marketingChannel", ""),
+            tollFreeNumber: stringValue(flowRule,"tollFreeNumber", ""),
             whisper: stringValue(flowRule,"whisper", ""),
             requestID: stringValue(flowRule,"requestID", ""),
             userDestination: flowRule.userDestination.value || "",
-            rangeIndicator: stringValue(flowRule,"rangeIndicator", "")
+            rangeIndicator: stringValue(flowRule,"rangeIndicator", ""),
+            type: flowRule.type.value || ""
           };
           openAddModal(false, true, newFlowRule);
           setAlertBar((alertBarProps: AlertBarProps) => ({
@@ -237,7 +248,7 @@ export const AddFlow = ({
                       value={flowRule[key as keyof FlowKeys].value}
                       error={flowRule[key as keyof FlowKeys].error}
                       dropDownOptions={dropDownValues[key as keyof FlowDropDownList] || []}
-                      onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => handleInputChange(event)}
+                      onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, value?:string) => handleInputChange(event,value,key)}
                       required={required}
                     />
                   </Grid>
