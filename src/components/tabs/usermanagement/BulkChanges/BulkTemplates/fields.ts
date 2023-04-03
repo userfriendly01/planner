@@ -475,7 +475,7 @@ export const FIELDS: Fields = {
           return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
         } else if( didUser && field === "n"){
           row.selfServiceInd = false;
-          return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`); // TODO do we need to anything if its false?
+          return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
         } else if(didUser && field && field !== "y" && field !== "n") {
           return rejectPromise(`${fieldName} needs to be needs to be 'Y' or 'N' if DID user is 'Y' for ${rowNumber}`, rowNumber);
         }  else if(didUser && !field) {
