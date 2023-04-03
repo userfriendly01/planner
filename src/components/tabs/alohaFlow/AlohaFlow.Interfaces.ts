@@ -126,7 +126,7 @@ export interface AddFlowFieldsConfigProps {
     disableEdit?: boolean;
     valueGetter?: (params: CctSharedCallFlowDb) => string;
     valueSetter?: (currentValue: CctSharedCallFlowDb, newValue: any) => CctSharedCallFlowDb;
-    flowType?: string;
+    fieldType?: "viewAndAdd";
     gridSize?: number;
 }
 

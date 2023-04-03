@@ -206,13 +206,13 @@ export const EditFlow = ({
           <Grid container rowSpacing={3}>
             {
               flowFields.map(({
-                label, key, control, required = false, flowType = "", gridSize = 12,
+                label, key, control, required = false, fieldType, gridSize = 12,
                 valueGetter, disableEdit, valueSetter
               }) => {
-                if(flowType &&displayRecords){
+                if(fieldType &&displayRecords){
                   control = "input";
                 }
-                else if (flowType && !displayRecords){
+                else if (fieldType && !displayRecords){
                   control = "autoComplete";
                 }
                 return (
@@ -232,7 +232,7 @@ export const EditFlow = ({
                       />
                     </Grid>
 
-                    {(flowType === "viewAndAdd")?(<Grid item xs={1}>
+                    {(fieldType === "viewAndAdd")?(<Grid item xs={1}>
                       <AddOrView navigateViewOrAdd = {navigateBtns}></AddOrView>
                     </Grid>):(<div></div>)}
                   </Grid>

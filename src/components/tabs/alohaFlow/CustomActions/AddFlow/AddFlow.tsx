@@ -98,12 +98,8 @@ export const AddFlow = ({
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,valuePassed?:string,key?:string) {
     let value: string;
-    if(valuePassed && typeof(valuePassed) === "string" ){
-      if(displayRecords){
-        value = event.target.value;
-      } else{
-        value = valuePassed;
-      }
+    if(valuePassed && typeof(valuePassed) === "string" && !displayRecords ){
+      value = valuePassed;
     } else{
       value = event.target.value;
     }
@@ -158,7 +154,7 @@ export const AddFlow = ({
     return defaultValue;
   }
 
-  function navigateBtns(display:boolean) {
+  function navigateButton(display:boolean) {
     setDisplayRecords(display);
   }
 
@@ -244,12 +240,12 @@ export const AddFlow = ({
           <Grid container rowSpacing={3}>
             {
               flowFields.map(({
-                label, key, control, required = false, flowType = "", gridSize = 12
+                label, key, control, required = false, fieldType, gridSize = 12
               }) => {
-                if(flowType &&displayRecords){
+                if(fieldType &&displayRecords){
                   control = "input";
                 }
-                else if (flowType && !displayRecords){
+                else if (fieldType && !displayRecords){
                   control = "autoComplete";
                 }
                 return (
@@ -268,8 +264,8 @@ export const AddFlow = ({
                       />
                     </Grid>
 
-                    {(flowType === "viewAndAdd")?(<Grid item xs={1}>
-                      <AddOrView navigateViewOrAdd = {navigateBtns}></AddOrView>
+                    {(fieldType === "viewAndAdd")?(<Grid item xs={1}>
+                      <AddOrView navigateViewOrAdd = {navigateButton}></AddOrView>
                     </Grid>):(<div></div>)}
                   </Grid>
                 );
