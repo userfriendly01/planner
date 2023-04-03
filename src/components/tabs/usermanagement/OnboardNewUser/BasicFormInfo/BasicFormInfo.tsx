@@ -215,7 +215,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           <Tooltip title={"enable to add self service indicator attribute to worker - needs to be DID user and profile 39 or above"} placement={"bottom-start"}>
             <ToggleContainer>
               <Switch
-                disabled={form.profileId.value >= 39 ? true : false}
+                disabled={form.profileId.value < 39 ? true : false}
                 checked={form.selfServiceInd}
                 onChange={() => {
                   setForm({ type: userFormActions.UPDATE_SELF_SERVICE_INDICATOR });

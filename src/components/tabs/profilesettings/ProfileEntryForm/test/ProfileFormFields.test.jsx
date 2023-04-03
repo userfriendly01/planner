@@ -98,14 +98,10 @@ describe("<ProfileFormFields />", () => {
       expect(Switch.mock.calls[0][0].checked).toBe(true);
       expect(Switch.mock.calls[1][0].checked).toBe(false);
     });
-    test.only("Disabled self serevice indicator switch with correct tooltip", () => {
+    test("Disabled self serevice indicator switch with correct tooltip", () => {
       renderComponent();
       render(Tooltip.mock.calls[0][0].children);
-      render(FormControlLabel.mock.calls[7][0].control);
       expect(Tooltip.mock.calls[0][0].title).toBe("Self service indicator is applicable to profiles with an id of 39 and above, but is actually set at the worker attribute level");
-      // how to get this to work
-      //expect(renderedTooltip.container).toBe("true");
-      // expect(Switch.mock.calls[0][0].disabled).toBe(true);
     });
   });
 
