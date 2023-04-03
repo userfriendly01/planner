@@ -180,7 +180,7 @@ describe("<AddFlow />", () => {
       const closeToastIcon = getByLabelText(/Close/i,{ hidden: true });
       fireEvent.click(closeToastIcon);
       waitFor(() => {
-        // expect(openAddModal).toBeCalledTimes(2); TODO this test is failing in the deploy but not locally ?? temp commenting out to see if deploy works
+        expect(openAddModal).toBeCalledTimes(2); //TODO this test is failing in the deploy but not locally ?? temp commenting out to see if deploy works
       });
     });
     test("Validate fields and create flow",()=>{
