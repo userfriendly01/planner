@@ -82,7 +82,7 @@ describe("<ProfileFormFields />", () => {
     test("Should render the correct initial state", () => {
       const rendered = renderComponent();
       expectMockedComponent(rendered, { ProfileNameTextField });
-      expectMockedComponent(rendered, { FormControlLabel }, 12); // todo : why not 13?
+      expectMockedComponent(rendered, { FormControlLabel }, 12);
       expect(rendered.container).toHaveTextContent(/^ProfileNameTextField/i);
       expectMockedComponent(rendered, { OverflowSkillTextField });
       expectMockedComponent(rendered, { ProfileActivitiesSelectField });
