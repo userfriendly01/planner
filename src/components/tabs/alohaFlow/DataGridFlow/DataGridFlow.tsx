@@ -124,20 +124,29 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   };
 
   const openAddModal = (flag: boolean, isSubmitted?: boolean, row?:CctSharedCallFlowDb) => {
-    if (!flag && isSubmitted) {
+    const newData: Array<CctSharedCallFlowDb> = [...dataFlow.data];
+    const newFilteredItems: Array<CctSharedCallFlowDb> = [...dataFlow.filteredItems];
 
+    if (!flag && isSubmitted) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: flag,
         severityType: "success",
         msg: "New flow has been successfully added!! "
       }));
+      const updatedRow: CctSharedCallFlowDb  = {
+        ...row,
+        id: dataFlow.data.length
+      };
+      newData.push(updatedRow);
+      newFilteredItems.push(updatedRow);
     }
+
     setDataFlow((dataFlowProps: FlowStateVariables) => ({
       ...dataFlowProps,
       ...(!flag && isSubmitted && row) && {
-        data: dataFlowProps.data.map(x=> x.id === row.id ? row : x),
-        filteredItems: dataFlowProps.data.map(x=> x.id === row.id ? row : x)
+        data: newData,
+        filteredItems: newFilteredItems
       },
       isAddModalOpen: flag
     }));

@@ -3,8 +3,8 @@ import { render } from "testUtils";
 
 describe("<FlowGridColumnDef />", () => {
 
-  it("has 15 columns", () => {
-    expect(FlowGridColumnDef.length).toBe(27);
+  it("has 16 columns", () => {
+    expect(FlowGridColumnDef.length).toBe(29);
   });
 
   describe("valueGetter", ()=>{
@@ -56,23 +56,23 @@ describe("<FlowGridColumnDef />", () => {
       expect(renderedCell.findByDisplayValue("Test Greeting")).toBeTruthy();
     });
     it("accountManager", ()=>{
-      const renderedCell = render(FlowGridColumnDef[15].renderCell({ row: { dialedDescription: "Test Account Manager" }}));
+      const renderedCell = render(FlowGridColumnDef[16].renderCell({ row: { dialedDescription: "Test Account Manager" }}));
       expect(renderedCell.findByDisplayValue("Test Account Manager")).toBeTruthy();
     });
     it("internetPlacement", ()=>{
-      const renderedCell = render(FlowGridColumnDef[18].renderCell({ row: { dialedDescription: "Test Internet Placement" }}));
+      const renderedCell = render(FlowGridColumnDef[19].renderCell({ row: { dialedDescription: "Test Internet Placement" }}));
       expect(renderedCell.findByDisplayValue("Test Internet Placement")).toBeTruthy();
     });
     it("callDetails1", ()=>{
-      const renderedCell = render(FlowGridColumnDef[19].renderCell({ row: { dialedDescription: "Test Call Details1" }}));
+      const renderedCell = render(FlowGridColumnDef[20].renderCell({ row: { dialedDescription: "Test Call Details1" }}));
       expect(renderedCell.findByDisplayValue("Test Call Details1")).toBeTruthy();
     });
     it("callDetails2", ()=>{
-      const renderedCell = render(FlowGridColumnDef[20].renderCell({ row: { dialedDescription: "Test Call Details2" }}));
+      const renderedCell = render(FlowGridColumnDef[21].renderCell({ row: { dialedDescription: "Test Call Details2" }}));
       expect(renderedCell.findByDisplayValue("Test Call Details1")).toBeTruthy();
     });
     it("callTypeDescription", ()=>{
-      const renderedCell = render(FlowGridColumnDef[21].renderCell({ row: { dialedDescription: "Test Call Type Description" }}));
+      const renderedCell = render(FlowGridColumnDef[22].renderCell({ row: { dialedDescription: "Test Call Type Description" }}));
       expect(renderedCell.findByDisplayValue("Test Call Type Description")).toBeTruthy();
     });
   });

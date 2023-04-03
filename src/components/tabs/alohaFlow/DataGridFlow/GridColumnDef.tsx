@@ -134,6 +134,13 @@ export const FlowGridColumnDef: GridColDef[] = [
     align: "left"
   },
   {
+    headerName: "Type",
+    field: "type",
+    sortable: true,
+    width: 80,
+    align: "left"
+  },
+  {
     headerName: "Account Manager",
     field: "accountManager",
     sortable: true,
@@ -238,6 +245,13 @@ export const FlowGridColumnDef: GridColDef[] = [
   {
     headerName: "Range Indicator",
     field: "rangeIndicator",
+    sortable: true,
+    width: 110,
+    align: "left"
+  },
+  {
+    headerName: "Toll Free Number",
+    field: "tollFreeNumber",
     sortable: true,
     width: 110,
     align: "left"

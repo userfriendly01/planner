@@ -38,7 +38,8 @@ import {
   getGraphQLEndpoint,
   initializedAlertBar,
   languageOffer,
-  userDestination
+  userDestination,
+  flowType
 } from "utils";
 import { getGridMasterData } from "../../DataGridFlow/GridMaster";
 import {
@@ -49,7 +50,7 @@ import { AddOrView } from "../CustomActionsCommon/AddOrView";
 export interface AddFlowModalProps {
   isOpen: boolean;
   newId: number;
-  openAddModal: (flag: boolean, isSubmitted?: boolean, row?:CctSharedCallFlowDb, deleteRow?: boolean) => void;
+  openAddModal: (flag: boolean, isSubmitted?: boolean, row?:CctSharedCallFlowDb) => void;
 }
 
 export const AddFlow = ({
@@ -80,7 +81,11 @@ export const AddFlow = ({
         userDestination: userDestination,
         callFlowRoute: masterDataObject?.callFlowRoute,
         callerType: masterDataObject?.callerType,
+<<<<<<< HEAD
         dataRequests: masterDataObject?.dataRequests
+=======
+        type: flowType
+>>>>>>> dev
       }));
     }
     fetchData();
@@ -173,7 +178,7 @@ export const AddFlow = ({
       addFlowRule(flowRule, accessToken, graphQlApiUrl, curTime, dataRequests).then(apiResponse => {
         if (!apiResponse.errors) {
           const newFlowRule: CctSharedCallFlowDb = {
-            pkey: "${flowRule.pkey.value}",
+            pkey: flowRule.pkey.value,
             content: {
               callFlowRoute: stringValue(flowRule,"callFlowRoute", ""),
               callerType: stringValue(flowRule,"callerType", ""),
@@ -198,10 +203,12 @@ export const AddFlow = ({
             callDetails2: stringValue(flowRule,"callDetails2", ""),
             lineOfBusiness: stringValue(flowRule,"lineOfBusiness", ""),
             marketingChannel: stringValue(flowRule,"marketingChannel", ""),
+            tollFreeNumber: stringValue(flowRule,"tollFreeNumber", ""),
             whisper: stringValue(flowRule,"whisper", ""),
             requestID: stringValue(flowRule,"requestID", ""),
             userDestination: flowRule.userDestination.value || "",
-            rangeIndicator: stringValue(flowRule,"rangeIndicator", "")
+            rangeIndicator: stringValue(flowRule,"rangeIndicator", ""),
+            type: flowRule.type.value || ""
           };
           openAddModal(false, true, newFlowRule);
           setAlertBar((alertBarProps: AlertBarProps) => ({

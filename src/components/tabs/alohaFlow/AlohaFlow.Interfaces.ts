@@ -1,3 +1,4 @@
+import { Control } from "globals";
 export interface FlowContent {
     callerType?: string;
     callFlowRoute?: string;
@@ -15,6 +16,7 @@ export interface FlowMasterData {
     callFlowTemplate?: Array<string>;
     callFlowRoute?: Array<string>;
     pkey?: Array<string>;
+
     dataRequests?: Array<string>;
 }
 
@@ -47,56 +49,62 @@ export interface FlowStateVariables {
 
 export interface CctSharedCallFlowDb {
     id?: number;
-    pkey?: string;
+    accountManager?: string;
+    affinityVDN?: string;
     agentId?: string;
     brand?: string;
+    callDetails1?: string;
+    callDetails2?: string;
     callFlowTemplate?: string;
+    callTypeDescription?: string;
     channel?: string;
     content?: FlowContent;
     createTime?: string;
     dialedDescription?: string;
     employeeId?: string;
-    userDestination?: string;
-    accountManager?: string;
-    affinityVDN?: string;
-    callTypeDescription?: string;
-    transferCode?: string;
     internetPlacement?: string;
-    callDetails1?: string;
-    callDetails2?: string;
     lineOfBusiness?: string;
     marketingChannel?: string;
-    whisper?: string;
-    requestID?: string;
+    pkey?: string;
     rangeIndicator?: string;
+    requestID?: string;
+    tollFreeNumber?: string;
+    transferCode?: string;
+    type?: string;
+    userDestination?: string;
+    whisper?: string;
 }
 export interface FlowKeys {
-    pkey?: string;
-    dialedDescription?: string;
-    callFlowTemplate?: string;
-    channel?: string;
+    accountManager?: string;
+    affinityVDN?: string;
+    agentId?: string;
     brand?: string;
+    callDetails1?: string;
+    callDetails2?: string;
+    callerType?: string;
+    callFlowRoute?: string;
+    callFlowTemplate?: string;
+    callTypeDescription?: string;
+    channel?: string;
+    content?: FlowContent;
+    createTime?: string;
+    dataRequests?: Array<string>;
+    dialedDescription?: string;
+    employeeId?: string;
+    greetingMessages?: string;
+    internetPlacement?: string;
     languageOffer?: string;
-    dataRequests: [string];
-    callerType: string;
-    transferNumber: string;
-    callFlowRoute: string;
-    greetingMessages: string;
-    agentId: string;
-    employeeId: string;
-    accountManager: string;
-    affinityVDN: string;
-    callTypeDescription: string;
-    transferCode: string;
-    internetPlacement: string;
-    callDetails1: string;
-    callDetails2: string;
-    lineOfBusiness: string;
-    marketingChannel: string;
-    whisper: string;
-    requestID: string;
-    userDestination: string;
-    rangeIndicator: string;
+    lineOfBusiness?: string;
+    marketingChannel?: string;
+    pkey?: string;
+    rangeIndicator?: string;
+    requestID?: string;
+    tollFreeNumber?: string;
+    transferCode?: string;
+    transferNumber?: string;
+    type?: string;
+    userDestination?: string;
+    whisper?: string;
 }
 
 export interface FlowDropDownList {
@@ -107,12 +115,13 @@ export interface FlowDropDownList {
     callFlowRoute:string[];
     callerType: string[];
     dataRequests: string[];
+    type: string[];
 }
 
 export interface AddFlowFieldsConfigProps {
     label: string;
     key: string;
-    control: string;
+    control: Control;
     required?: boolean;
     disableEdit?: boolean;
     valueGetter?: (params: CctSharedCallFlowDb) => string;
