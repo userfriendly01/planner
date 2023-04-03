@@ -14,6 +14,7 @@ import {
 import {
   CustomToast, ComponentControl, Dropdown
 } from "components";
+import { AddOrView } from "../../CustomActionsCommon/AddOrView";
 
 const validFlowData = {
   id: 1,
@@ -75,6 +76,12 @@ jest.mock("components", () => {
     Dropdown: jest.fn()
   };
 });
+jest.mock("../../CustomActionsCommon/AddOrView",()=>{
+  return{
+    __esModule: true,
+    AddOrView: jest.fn()
+  };
+});
 
 jest.mock("context", () => ({
   useAdminState: jest.fn()
@@ -117,7 +124,8 @@ describe("<AddFlow />", () => {
       Button,
       ComponentControl,
       CustomToast,
-      Dropdown
+      Dropdown,
+      AddOrView
     });
     localStorage.setItem(FLOW_MASTER_DATA, JSON.stringify(mockMasterData));
   });
@@ -164,6 +172,24 @@ describe("<AddFlow />", () => {
       expect(addFlowPagePolicyTypeAttr).toBeTruthy();
     });
   });
+  describe("Test for AddOrView Change",()=>{
+    test("Simulate the AddOrView Button ", () => {
+      renderAddFlow(true);
+      const navigateBtns = AddOrView.mock.calls[0][0].navigateViewOrAdd;
+      act(()=>{ navigateBtns(true); });
+      expect(navigateBtns).toBeTruthy();
+    });
+  });
+  describe("Test for CustomToast Change",()=>{
+    test("Simulate the customToast Button ", () => {
+      renderAddFlow(true);
+      const customToastButton = CustomToast.mock.calls[0][0].onClose;
+      act(()=>{
+        customToastButton();
+      });
+      expect(customToastButton).toBeTruthy();
+    });
+  });
   describe("Add flow Bottom down",()=>{
     test("Validate Flow Rule with null",()=>{
       const {
@@ -179,7 +205,7 @@ describe("<AddFlow />", () => {
       });
       const closeToastIcon = getByLabelText(/Close/i,{ hidden: true });
       fireEvent.click(closeToastIcon);
-      waitFor(() => {
+      waitFor(()=>{
         expect(openAddModal).toBeCalledTimes(2);
       });
     });
@@ -258,16 +284,6 @@ describe("<AddFlow />", () => {
       waitFor(() => {
         expect(openAddModal).toBeCalledTimes(0);
       });
-    });
-  });
-  describe("Test for CustomToast Change",()=>{
-    test("Simulate the customToast Button ", () => {
-      renderAddFlow(true);
-      const customToastButton = CustomToast.mock.calls[0][0].onClose;
-      act(()=>{
-        customToastButton();
-      });
-      expect(customToastButton).toBeTruthy();
     });
   });
 });

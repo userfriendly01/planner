@@ -1,14 +1,13 @@
 /* eslint-disable no-console, max-len,  no-return-assign */
-
-import { keyBy } from "lodash";
 import {
-  CctSharedCallFlowDb, FlowContent, FlowMasterData
+  CctSharedCallFlowDb, FlowContent, FlowMasterData, FlowListMasterData
 } from "../AlohaFlow.Interfaces";
 
 const CACHE_MASTER_DATA = "FLOW_MASTER_DATA";
-const masterDataItems = ["channel", "brand", "callerType", "callFlowTemplate", "callFlowRoute", "pkey"];
-const masterDataItemsFromContent = ["callFlowRoute", "callerType"];
-const filteredItems = [null, "null", ""];
+const masterDataItems = ["channel", "brand", "callerType", "callFlowTemplate", "callFlowRoute", "dataRequests", "pkey"];
+const masterDataItemsFromContent = ["callFlowRoute", "callerType", "dataRequests"];
+const masterDataItemsWithList = ["dataRequests"];
+const filteredItems = [null, "null", "", undefined];
 
 const clearGridMasterData = ():void => localStorage.removeItem(CACHE_MASTER_DATA);
 
@@ -29,13 +28,23 @@ const getGridMasterData = (data:CctSharedCallFlowDb[] = []):FlowMasterData  => {
       masterData = JSON.parse(masterDataStorage);
     } else {
       data.forEach((elem: CctSharedCallFlowDb) => masterDataItems.forEach((key: string) => {
-        const value: string = getValueFromKeyPath(elem, key) as string;
-        const isValueIsNull:boolean = filteredItems.includes(value);
+        const value: string|string[] = getValueFromKeyPath(elem, key) as string|string[];
+        let isValueIsNull:boolean;
         if (!masterData[key as keyof FlowMasterData]) {
           masterData[key as keyof FlowMasterData] = [];
         }
-        if (!isValueIsNull) {
-          masterData[key as keyof FlowMasterData].push(value);
+        if(masterDataItemsWithList.includes(key) && value) {
+          elem.content[key as keyof FlowListMasterData]?.forEach(item=>{
+            if(!filteredItems.includes(item)){
+              masterData[key as keyof FlowMasterData].push(item);
+            }
+          });
+        }
+        if(typeof(value) === "string" ){
+          isValueIsNull = filteredItems.includes(value);
+          if (!isValueIsNull) {
+            masterData[key as keyof FlowMasterData].push(value);
+          }
         }
       }));
       Object.keys(masterData).forEach(key => masterData[key as keyof FlowMasterData] = [...new Set(masterData[key as keyof FlowMasterData])].sort());

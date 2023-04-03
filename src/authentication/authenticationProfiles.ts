@@ -55,25 +55,25 @@ export const getAdGroupPermissionMapping = () => {
       adGroup: "GCI-CCT-TRITON-DEV-TRITONADMIN",
       environments: [Environments.DEV],
       permissionLevel: Permissions.WRITE,
-      startup: startupProfiles.TRITON,
-      description: descriptions.Triton,
-      authenticationProfile: authenticationProfileTemplates.TRITON
+      startup: startupProfiles.ALOHA_FLOW,
+      description: descriptions.Aloha_Flow,
+      authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
     },
     {
       adGroup: "GCI-CCT-TRITON-TEST-TRITONADMIN",
       environments: [Environments.TEST],
       permissionLevel: Permissions.WRITE,
-      startup: startupProfiles.TRITON,
-      description: descriptions.Triton,
-      authenticationProfile: authenticationProfileTemplates.TRITON
+      startup: startupProfiles.ALOHA_FLOW,
+      description: descriptions.Aloha_Flow,
+      authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
     },
     {
       adGroup: "GCI-CCT-TRITON-PROD-TRITONADMIN",
       environments: [Environments.PROD],
       permissionLevel: Permissions.WRITE,
-      startup: startupProfiles.TRITON,
-      description: descriptions.Triton,
-      authenticationProfile: authenticationProfileTemplates.TRITON
+      startup: startupProfiles.ALOHA_FLOW,
+      description: descriptions.Aloha_Flow,
+      authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
     },
     {
       adGroup: "GPI-CCT-CONFIG-FLOW-READ",

@@ -15,7 +15,7 @@ export interface FlowMasterData {
     callFlowTemplate?: Array<string>;
     callFlowRoute?: Array<string>;
     pkey?: Array<string>;
-
+    dataRequests?: Array<string>;
 }
 
 export interface FlowAdvanceFilter {
@@ -25,7 +25,6 @@ export interface FlowAdvanceFilter {
     callFlowTemplate?: string;
     callFlowRoute?: string;
     pkey?: string;
-
 }
 export interface FlowStateVariables {
     data?: Array<CctSharedCallFlowDb>;
@@ -107,6 +106,7 @@ export interface FlowDropDownList {
     userDestination: string[];
     callFlowRoute:string[];
     callerType: string[];
+    dataRequests: string[];
 }
 
 export interface AddFlowFieldsConfigProps {
@@ -117,4 +117,10 @@ export interface AddFlowFieldsConfigProps {
     disableEdit?: boolean;
     valueGetter?: (params: CctSharedCallFlowDb) => string;
     valueSetter?: (currentValue: CctSharedCallFlowDb, newValue: any) => CctSharedCallFlowDb;
+    flowType?: string;
+    gridSize?: number;
+}
+
+export interface FlowListMasterData{
+    dataRequests:Array<string>;
 }

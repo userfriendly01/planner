@@ -45,7 +45,7 @@ import {
   AlertBarProps, FormValidationRule
 } from "utils/interfaces";
 import { AzureSPA } from "globals";
-
+import { AddOrView } from "../CustomActionsCommon/AddOrView";
 export interface AddFlowModalProps {
   isOpen: boolean;
   newId: number;
@@ -60,7 +60,7 @@ export const AddFlow = ({
   const [flowRule, setFlowRule] = useState({ ...initRule });
   const [dropDownValues, setDropDownValues] = useState(flowDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
-
+  const [displayRecords, setDisplayRecords] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -79,11 +79,12 @@ export const AddFlow = ({
         languageOffer: languageOffer,
         userDestination: userDestination,
         callFlowRoute: masterDataObject?.callFlowRoute,
-        callerType: masterDataObject?.callerType
+        callerType: masterDataObject?.callerType,
+        dataRequests: masterDataObject?.dataRequests
       }));
     }
     fetchData();
-
+    setDisplayRecords(false);
   }, []);
 
   const handleClose = (flag: boolean) => {
@@ -96,9 +97,12 @@ export const AddFlow = ({
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,valuePassed?:string,key?:string) {
     let value: string;
     if(valuePassed && typeof(valuePassed) === "string" ){
-      value = valuePassed;
-    }
-    else{
+      if(displayRecords){
+        value = event.target.value;
+      } else{
+        value = valuePassed;
+      }
+    } else{
       value = event.target.value;
     }
     value = (key === "pkey" && !value.startsWith("+")) ? `+1${value}` : value;
@@ -150,6 +154,10 @@ export const AddFlow = ({
       return obj[prop].value;
     }
     return defaultValue;
+  }
+
+  function navigateBtns(display:boolean) {
+    setDisplayRecords(display);
   }
 
   function handleOnCreateRoute() {
@@ -232,21 +240,33 @@ export const AddFlow = ({
           <Grid container rowSpacing={3}>
             {
               flowFields.map(({
-                label, key, control, required = false
+                label, key, control, required = false, flowType = "", gridSize = 12
               }) => {
+                if(flowType &&displayRecords){
+                  control = "input";
+                }
+                else if (flowType && !displayRecords){
+                  control = "AutoComplete";
+                }
                 return (
-                  <Grid key={key} item xs={4}>
-                    <ComponentControl
-                      control={control}
-                      name={key}
-                      label={label}
-                      type="text"
-                      value={flowRule[key as keyof FlowKeys].value}
-                      error={flowRule[key as keyof FlowKeys].error}
-                      dropDownOptions={dropDownValues[key as keyof FlowDropDownList] || []}
-                      onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, value?:string) => handleInputChange(event,value,key)}
-                      required={required}
-                    />
+                  <Grid container key = {key} item xs = {4}>
+                    <Grid key = {key} item xs = {gridSize}>
+                      <ComponentControl
+                        control={control}
+                        name={key}
+                        label={label}
+                        type="text"
+                        value={flowRule[key as keyof FlowKeys].value}
+                        error={flowRule[key as keyof FlowKeys].error}
+                        dropDownOptions={dropDownValues[key as keyof FlowDropDownList] || []}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, value?:string) => handleInputChange(event,value,key)}
+                        required={required}
+                      />
+                    </Grid>
+
+                    {(flowType === "viewAndAdd")?(<Grid item xs={1}>
+                      <AddOrView navigateViewOrAdd = {navigateBtns}></AddOrView>
+                    </Grid>):(<div></div>)}
                   </Grid>
                 );
               })

@@ -84,7 +84,9 @@ const flowFields: AddFlowFieldsConfigProps[] = [
         ...currentValue.content || {},
         ...newValue
       }
-    })
+    }),
+    flowType: "viewAndAdd",
+    gridSize: 10
   },
   {
     label: "Caller Type",
@@ -98,7 +100,9 @@ const flowFields: AddFlowFieldsConfigProps[] = [
         ...currentValue.content || {},
         ...newValue
       }
-    })
+    }),
+    flowType: "viewAndAdd",
+    gridSize: 10
   },
   {
     label: "Transfer Number",
@@ -125,7 +129,9 @@ const flowFields: AddFlowFieldsConfigProps[] = [
         ...currentValue.content || {},
         ...newValue
       }
-    })
+    }),
+    flowType: "viewAndAdd",
+    gridSize: 10
   },
   {
     label: "Greeting",
