@@ -998,7 +998,7 @@ export const FIELDS: Fields = {
     name: "WFM Person Start Date",
     type: "number",
     description: "Start date for the WFM Person",
-    example: "",  // hmmm if I put an example here, how will it look on the spreadsheet?
+    example: "3/24/2023",
     options: null,
     validateFunction: (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
@@ -1183,7 +1183,6 @@ export const FIELDS: Fields = {
       const field = cleanupField(row[fieldName], "string");
       if(!field){
         return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
-        // return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
       } else {
         const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
 
@@ -1206,7 +1205,7 @@ export const FIELDS: Fields = {
     }
   },
   CALABRIO_WFM_ROTATION_START_WEEK: { // This field is a number from 1-10
-    field: "wfmRotationStartWk", // allowed to be empty if rotation is
+    field: "wfmRotationStartWk", // allowed to be empty if rotation is empty
     name: "WFM Rotation Start Week",
     type: "number",
     description: "Number that represents the week the persons rotation should start on. Must be an integer 1-10",
@@ -1237,7 +1236,7 @@ export const FIELDS: Fields = {
       }
     }
   },
-  CALABRIO_WFM_AVAILABILITY_START_DATE: { //HMMMM CHECK MORE ON THIS ONe. I think this can be empty if availability is?
+  CALABRIO_WFM_AVAILABILITY_START_DATE: { // allowed empty if availability is also empty
     field: "wfmAvailabilityStartDate",
     name: "WFM Availability Start Date",
     type: "string",
@@ -1290,7 +1289,6 @@ export const FIELDS: Fields = {
       const field = cleanupField(row[fieldName], "string");
       if(!field){
         return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
-        // return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
       } else {
         const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
 
