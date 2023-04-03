@@ -81,11 +81,8 @@ export const AddFlow = ({
         userDestination: userDestination,
         callFlowRoute: masterDataObject?.callFlowRoute,
         callerType: masterDataObject?.callerType,
-<<<<<<< HEAD
-        dataRequests: masterDataObject?.dataRequests
-=======
+        dataRequests: masterDataObject?.dataRequests,
         type: flowType
->>>>>>> dev
       }));
     }
     fetchData();
@@ -253,7 +250,7 @@ export const AddFlow = ({
                   control = "input";
                 }
                 else if (flowType && !displayRecords){
-                  control = "AutoComplete";
+                  control = "autoComplete";
                 }
                 return (
                   <Grid container key = {key} item xs = {4}>

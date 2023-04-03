@@ -72,11 +72,8 @@ export const EditFlow = ({
         userDestination: userDestination,
         callFlowRoute: masterData?.callFlowRoute,
         callerType: masterData?.callerType,
-<<<<<<< HEAD
-        dataRequests: masterData?.dataRequests
-=======
+        dataRequests: masterData?.dataRequests,
         type: flowType
->>>>>>> dev
       })
     );
   }, [selectedRow]);
@@ -216,7 +213,7 @@ export const EditFlow = ({
                   control = "input";
                 }
                 else if (flowType && !displayRecords){
-                  control = "AutoComplete";
+                  control = "autoComplete";
                 }
                 return (
                   <Grid container key = {key} item xs = {4}>
