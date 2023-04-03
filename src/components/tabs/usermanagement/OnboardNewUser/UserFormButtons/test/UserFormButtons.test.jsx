@@ -416,17 +416,17 @@ describe("<UserFormButtons />", () => {
             });
           });
         });
-        describe("Worker profile has overflowSkill, zeroOutEnabled and directDialNum", () => {
+        describe("Worker profile has overflowSkill, zeroOutEnabled, selfServiceInd and directDialNum", () => {
           const createWorkerAttributesAfterFormValid = workerAttributesAfterFormValid;
           const form = {
             ...validFormState,
             zeroOutEnabled: true,
-            selfServiceInd: true //?
+            selfServiceInd: true
           };
           beforeEach(() => {
             useFormState.mockReturnValue(form);
           });
-          test("should include overflow skill and save user with did worker request body when clicked", async () => {
+          test("should include overflow skill, self service indicator and save user with did worker request body when clicked", async () => {
             renderComponent(true);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
@@ -448,7 +448,7 @@ describe("<UserFormButtons />", () => {
                 alternateDid: validFormState.alternateDid.e164,
                 directDialNum: validFormState.directDialNum.e164,
                 zeroOutEnabled: true,
-                selfServiceInd: true, //?,
+                selfServiceInd: true,
                 operatingUnitSid: validOperatingUnitId
               });
               expect(mockSetForm).toHaveBeenCalledTimes(2);
@@ -514,7 +514,7 @@ describe("<UserFormButtons />", () => {
                   alternateDid: validFormState.alternateDid.e164,
                   directDialNum: validFormState.directDialNum.e164,
                   zeroOutEnabled: true,
-                  selfServiceInd: true,//?
+                  selfServiceInd: true,
                   operatingUnitSid: validOperatingUnitId
                 });
                 expect(mockSetForm).toHaveBeenCalledTimes(2);
@@ -948,8 +948,8 @@ describe("<UserFormButtons />", () => {
               value: "",
               updated: false
             },
-            zeroOutEnabled: true
-            //selfServiceInd: true  ///?
+            zeroOutEnabled: true,
+            selfServiceInd: false
           };
           beforeEach(() => {
             updateUser.mockResolvedValue(rawDbWorker);
@@ -1000,8 +1000,8 @@ describe("<UserFormButtons />", () => {
                 alternateDid: updateFormState.alternateDid.e164,
                 attributes: updateWorkerAttributesAfterFormValid,
                 operatingUnitSid: validOperatingUnitId,
-                zeroOutEnabled: true
-                //selfServiceInd: false // ??
+                zeroOutEnabled: true,
+                selfServiceInd: false
               });
               expect(checkConflictingUsers).toBeCalledTimes(1);
               expect(updateCalabrioUser).toBeCalledTimes(1);
@@ -1145,7 +1145,7 @@ describe("<UserFormButtons />", () => {
                   alternateDid: validFormState.alternateDid.e164,
                   directDialNum: validFormState.directDialNum.e164,
                   zeroOutEnabled: validFormState.zeroOutEnabled,
-                  selfServiceInd: validFormState.selfServiceInd,  ///?
+                  selfServiceInd: validFormState.selfServiceInd,
                   operatingUnitSid: validOperatingUnitId
                 });
                 expect(mockDispatch).toHaveBeenCalledTimes(2);
@@ -1210,7 +1210,7 @@ describe("<UserFormButtons />", () => {
             defaultSkillsUpdated: false,
             zeroOutEnabledUpdated: false,
             zeroOutEnabled: true,
-            selfServiceInd: false
+            selfServiceInd: true
           };
           beforeEach(() => {
             updateUser.mockResolvedValue(rawDbWorker);
@@ -1459,7 +1459,7 @@ describe("<UserFormButtons />", () => {
             updated: false
           },
           zeroOutEnabled: false,
-          selfServiceInd: false, //>??
+          selfServiceInd: false,
           inactiveForwardTo: {
             value: validFormOptions.inactiveForwardTo,
             updated: true

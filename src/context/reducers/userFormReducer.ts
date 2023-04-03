@@ -128,8 +128,8 @@ export const initialUserFormState: UserFormState = {
   zeroOutEnabled: false,
   zeroOutEnabledUpdated: false,
   editDisabled: false,
-  selfServiceInd: false,
-  selfServiceIndUpdated: false
+  selfServiceInd: false,   //TODO - is this messing the deployment?
+  selfServiceIndUpdated: false  //TODO - is this messing the deployment?
 };
 
 export const userFormReducer = (state: UserFormState, action: Action): UserFormState => {
@@ -519,7 +519,7 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         },
         didUser: worker.directDialNum ? true : false,
         zeroOutEnabled: worker.zeroOutEnabled || false,
-        selfServiceInd: worker.selfServiceInd || false, // TODO check if this needs to be switched to attributes 
+        selfServiceInd: worker.selfServiceInd || false,
         editDisabled: worker.directDialNum ? true : false
       };
       console.log("FINAL", finalObj);

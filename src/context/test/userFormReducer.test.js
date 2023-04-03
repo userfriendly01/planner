@@ -930,6 +930,7 @@ describe("userFormReducer", () => {
         },
         didUser: true,
         zeroOutEnabled: worker.zeroOutEnabled,
+        selfServiceInd: worker.selfServiceInd,
         editDisabled: true
       };
       expect(result).toStrictEqual(expectedFormState);
@@ -990,6 +991,7 @@ describe("userFormReducer", () => {
         },
         didUser: true,
         zeroOutEnabled: worker.zeroOutEnabled,
+        selfServiceInd: worker.selfServiceInd,
         editDisabled: true
       };
       expect(result).toStrictEqual(expectedFormState);

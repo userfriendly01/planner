@@ -585,7 +585,7 @@ describe("<BasicFormInfo />", () => {
           expect(renderedOverflowTT.container).toHaveTextContent("Overflow Skill");
 
           const selfServiceIndToolTip = Tooltip.mock.calls[2][0];
-          expect(selfServiceIndToolTip.title).toBe("enable to add self service indicator attribute to worker");
+          expect(selfServiceIndToolTip.title).toBe("enable to add self service indicator attribute to worker - needs to be DID user and profile 39 or above");
           expect(selfServiceIndToolTip.placement).toBe("bottom-start");
           const renderedSelfServiceIndTT = render(selfServiceIndToolTip.children);
           expect(renderedSelfServiceIndTT.container).toHaveTextContent("Self Service Indicator");
@@ -631,7 +631,7 @@ describe("<BasicFormInfo />", () => {
           expect(renderedOverflowTT.container).toHaveTextContent("Overflow Skill");
 
           const selfServiceIndToolTip = Tooltip.mock.calls[2][0];
-          expect(selfServiceIndToolTip.title).toBe("enable to add self service indicator attribute to worker");
+          expect(selfServiceIndToolTip.title).toBe("enable to add self service indicator attribute to worker - needs to be DID user and profile 39 or above");
           expect(selfServiceIndToolTip.placement).toBe("bottom-start");
           const renderedSelfServiceIndTT = render(selfServiceIndToolTip.children);
           expect(renderedSelfServiceIndTT.container).toHaveTextContent("Self Service Indicator");

@@ -448,7 +448,7 @@ export const FIELDS: Fields = {
     field: "selfServiceInd",
     name: "Self Service Indicator",
     type: "boolean",
-    description: "Y/N indicator to represent if user has self-service attribute",
+    description: "Y/N indicator to represent if user has self-service attribute. Only required when DID User is true.",
     example: "Y",
     options: null,
     validateFunction: async (row: any, state: any): Promise<any> => {
@@ -462,11 +462,15 @@ export const FIELDS: Fields = {
         const didUser = isDidUser(didField, rowNumber);
         if(didUser && field === "y"){
           // do we need profile validation ?
-          /*const profileFieldName = "Profile Id"; 
+          const profileFieldName = "Profile Id";
           const profileId = cleanupField(row[profileFieldName], "number");
-          if (!profileId || typeof profileId !== "number" || profileId < 39) {
-            return rejectPromise(`Unable to set ${fieldName}. Incorrect format/value for ${profileFieldName} for row ${rowNumber}`, rowNumber);
-          }*/
+          const profileThreshold = 39;
+          if (!profileId || typeof profileId !== "number") {
+            return rejectPromise(`Unable to set ${fieldName}. Incorrect format for ${profileFieldName} for row ${rowNumber}`, rowNumber);
+          }
+          if(profileId < profileThreshold){
+            return rejectPromise(`Unable to set ${fieldName}. Incorrect value for ${profileFieldName} for row ${rowNumber} - need ${profileFieldName} to be ${profileThreshold} or above` , rowNumber);
+          }
           row.selfServiceInd = true;
           return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
         } else if( didUser && field === "n"){

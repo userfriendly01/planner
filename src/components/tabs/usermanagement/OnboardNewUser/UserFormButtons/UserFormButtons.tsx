@@ -327,7 +327,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     const payload: Partial<DbWorker> = {
       attributes,
       zeroOutEnabled: form.zeroOutEnabled,
-      selfServiceInd: form.selfServiceIndicator
+      selfServiceInd: form.selfServiceInd
     };
 
     if(operatingUnitSid){
@@ -343,9 +343,9 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     if (form.inactiveForwardTo.value !== null && form.inactiveForwardTo.updated) {
       payload.inactiveForwardTo = form.inactiveForwardTo.value;
     }
-    if(form.selfServiceIndUpdated){
-      payload.selfServiceInd = form.selfServiceInd; // TODO do we need to swtich this to attributes ? 
-    }
+    // if(form.selfServiceIndUpdated){ // not specifying DID - because we want to update it to false even if did is removed 
+    //   payload.selfServiceInd = form.selfServiceInd;
+    // }
 
     updateUser(worker.sid, payload)
       .then(dbWorker => {

@@ -1216,7 +1216,7 @@ describe("fields.js", () => {
           } catch (e) {
             expect(e).toEqual(JSON.stringify({
               rowNumber: 4,
-              error: "Self Service Indicator is required when DID user is 'Y' for row 4"   // TODO how to make it not required !!
+              error: "Self Service Indicator is required when DID user is 'Y' for row 4"
             }));
           }
         });
@@ -1248,23 +1248,51 @@ describe("fields.js", () => {
             selfServiceInd: false
           });
         });
-        test("didField field is Y,self service indicator is Y, error is thrown, rejects with message", async () => {
+        test("didField field is Y,self service indicator is Y, profile id is valid format/value, error is thrown, rejects with message", async () => {
           try {
             await selfServiceIndValidateFunction({
               rowNumber: 4,
               "Did User": "Y",
-              "Self Service Indicator": "Y"
+              "Self Service Indicator": "Y",
+              "Profile Id": 40
             }, initialTestState);
           } catch (e) {
             expect(JSON.parse(e).rowNumber).toEqual(4);
             expect(JSON.parse(e).error).toContain("Error thrown setting Self Service Indicator for row 4.");
           }
         });
-        test("didField field is Y, self service Indicator is Y, resolves with message", async () => {
+        test("didField field is Y,self service indicator is Y, Profile Id is invalid format, rejects with message", async () => {
+          try {
+            await selfServiceIndValidateFunction({
+              rowNumber: 4,
+              "Did User": "Y",
+              "Self Service Indicator": "Y",
+              "Profile Id": "thirty nine"
+            }, initialTestState);
+          } catch (e) {
+            expect(JSON.parse(e).rowNumber).toEqual(4);
+            expect(JSON.parse(e).error).toContain("Unable to set Self Service Indicator. Incorrect format for Profile Id for row 4");
+          }
+        });
+        test("didField field is Y,self service indicator is Y, Profile Id is invalid value, rejects with message", async () => {
+          try {
+            await selfServiceIndValidateFunction({
+              rowNumber: 4,
+              "Did User": "Y",
+              "Self Service Indicator": "Y",
+              "Profile Id": 38
+            }, initialTestState);
+          } catch (e) {
+            expect(JSON.parse(e).rowNumber).toEqual(4);
+            expect(JSON.parse(e).error).toContain("Unable to set Self Service Indicator. Incorrect value for Profile Id for row 4 - need Profile Id to be 39 or above");
+          }
+        });
+        test("didField field is Y, self service Indicator is Y, profile id is valid format/value resolves with message", async () => {
           const row = {
             rowNumber: 4,
             "Did User": "Y",
-            "Self Service Indicator": "Y"
+            "Self Service Indicator": "Y",
+            "Profile Id": 39
           };
           const result = await selfServiceIndValidateFunction(row, initialTestState);
           expect(result).toEqual("Self Service Indicator y set for row 4");
