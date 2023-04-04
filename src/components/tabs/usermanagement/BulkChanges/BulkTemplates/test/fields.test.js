@@ -1674,7 +1674,7 @@ describe("fields.js", () => {
             }));
           }
         });
-        test("Business unit option found, id is added to row, resolve with successful message", async () => {
+        test("WFM Identity is provided, matches hr email, is added to row, resolve with successful message", async () => {
           const row = {
             rowNumber: 1,
             "WFM Identity": "person@lm.com",
@@ -1690,7 +1690,8 @@ describe("fields.js", () => {
               "WFM Identity": "person@lm.com",
               attributes: {
                 email: "person@lm.com"
-              }
+              },
+              wfmIdentity: "person@lm.com"
             }
           );
         });

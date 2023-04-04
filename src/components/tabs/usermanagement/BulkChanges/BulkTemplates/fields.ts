@@ -595,6 +595,7 @@ export const FIELDS: Fields = {
         if (field !== cleanupField(hrEmail, "string")) {
           return rejectPromise(`Invalid ${fieldName}.  The email provided does NOT match the email address in this user's HR data. This user needs to update their email so they match prior to being loaded into WFM for row ${rowNumber}`, rowNumber);
         } else {
+          row.wfmIdentity = field;
           return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
         }
       }

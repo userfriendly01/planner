@@ -136,6 +136,7 @@ const processWFMCreateUser = async (row: any, state: any) => {
     body.ShiftBagId = row.wfmShiftBagId;
 
     // these are optional
+    body.Identity = row.wfmIdentity;
     body.AvailabilityId = row.wfmAvailabilityId;
     body.AvailabilityStartDate = row.wfmAvailabilityStartDate;
     body.RoleIds = row.wfmRoleIds;
