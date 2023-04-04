@@ -30,6 +30,7 @@ export const calabrioAllowedRoles = [
 
 //Calabrio doesnt offer an API for this, only PST, MNT, CST, and EST were requested so we hardcoded them here as they are unlikely to change
 //They are also the same through environments
+//Update April 2023 : added in the MST, HST and  AKST/AKDT timeszones
 export const calabrioTimeZones =  [
   {
     label: "America/New_York (EST/EDT)",
@@ -46,6 +47,18 @@ export const calabrioTimeZones =  [
   {
     label: "America/Chicago (CST/CDT)",
     value: "America/Chicago"
+  },
+  {
+    label: "America/Phoenix (MST)",
+    value: "America/Pheonix"
+  },
+  {
+    label: "Pacific/Honolulu (HST)",
+    value: "Pacific/Honolulu"
+  },
+  {
+    label: "America/Anchorage (AKST/AKDT)",
+    value: "America/Anchorage"
   }
 ];
 
