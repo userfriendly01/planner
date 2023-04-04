@@ -119,7 +119,6 @@ export const FIELDS: Fields = {
       }
     }
   },
-  // todo: require this for template
   PROFILE_ID: {
     field: "profileId",
     name: "Profile Id",
@@ -524,25 +523,24 @@ export const FIELDS: Fields = {
       if(!field){
         return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
       } else {
-        // look for the team to see if it already exists
         const team = state.calabrioContext.teams.find((t:any) => cleanupField(t.name, "string") === field);
 
         if (team && team.groupId) {
-          // team does exist, dont need to verify parent group
+          // Team already exists, dont need to verify parent group
           row.groupId = team.groupId;
           return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
         } else {
-          // Creating a new team. Need to verify given parent group exists and add that parent group's id to row
+          // Creating a new team. Verify given parent group exists
           const fieldName = "Calabrio Group";
           const field = cleanupField(row[fieldName], "string");
 
           const parentGroup = state.calabrioContext.groups.find((g:any) => cleanupField(g.name, "string") === field);
 
           if (!parentGroup) {
-            // could not find parent group with given name. REJECT!
+            // Could not find parent group with given name. REJECT!
             return rejectPromise(`${fieldName} is not a valid option for row ${rowNumber}`, rowNumber);
           } else {
-            // found parent group. add parentGroupId and proper case name of team
+            // Found parent group. Add parentGroupId and proper case name of team
             row.parentGroupId = parentGroup.groupId;
             row.newTeam = true;
             row["Calabrio Team"] = toProperCase(row["Calabrio Team"]);

@@ -1,5 +1,6 @@
 import {
   createUser,
+  createCalabrioTeam,
   createCalabrioUser,
   getCalabrioUser,
   updateCalabrioUser,
@@ -15,7 +16,8 @@ import {
   checkConflictingCalabrioUsers,
   formatErrorMessage,
   updateCalabrioUserState,
-  updateTritonUserState
+  updateTritonUserState,
+  updateManagerUserState
 } from "../BulkUtils";
 import {
   getTargetProfile
@@ -105,23 +107,42 @@ const processCreateManager = async (row: any, state: any) => {
   console.warn("****MANAGER RECORD PROCESSING for", row);
   const rowNumber = row.rowNumber;
 
+  // grab manager n number... use to look up first/last name?
+  const managerNNumberFieldName = "Manager N Number";
+  const managerNNumberField = cleanupField(row[managerNNumberFieldName], "string");
+
+  // ? this wont work bc manager isnt in state yet. Do I need the first/last name??
+  const managerObject = state.managerContext.managers.find((m:any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === managerNNumberField);
+
+  // creating a new team
+  const isNewTeam = row.newTeam;
+  if (isNewTeam) {
+    const teamFieldName = "Calabrio Team";
+    const teamField = cleanupField(row[teamFieldName], "string");
+    await createCalabrioTeam({
+      name: teamField,
+      parentGroupId: row.parentGroupId
+    });
+  }
+
+  // add manager
   const body: any = {};
 
-  body.manager_first_nme;
-  body.manager_last_nme;
-  body.manager_n_num;
-  body.profile_id;
-  body.calabrio_team_ids; // stringified 
+  body.manager_first_nme = managerObject.manager_first_name; // todo: fix
+  body.manager_last_nme = managerObject.manager_last_name; // todo fix
+  body.manager_n_num = managerNNumberField;
+  body.profile_id = row.attributes.profile_id;
+  body.calabrio_team_ids; // stringified array of numbers - calabrio scope
 
   try {
-    // await addManager(body);
+    await addManager(body);
+    console.log(`Manager created for ${managerNNumberField} for row ${rowNumber}`);
+    return Promise.resolve(`Manager created for ${managerNNumberField} for row ${rowNumber}`);
   } catch (err) {
     const errorMessage = `Failed to create Manager for row ${rowNumber}. ${formatErrorMessage}`;
     console.error(errorMessage, err);
     return rejectPromise(errorMessage, rowNumber);
   }
-
-  return "blep";
 };
 
 const processUpdateWorkerAttribute = async (row: any, template: Template, state: any) => {
@@ -267,10 +288,10 @@ export const getCreateTemplates = (state: any): Templates => {
       name: "CREATE_MANAGER",
       data: {},
       processFunction: (row: any) => processCreateManager(row, state),
-      stateUpdateFunctions: [], // todo: new update manager state function
-      multiRunDependencies: null, // should only be run alone
-      validationConcurrencyLimit: null, // no api calls in validation
-      processingConcurrencyLimit: 5, // todo: investigate the actual limits here for contact manager api
+      stateUpdateFunctions: [updateManagerUserState],
+      multiRunDependencies: null,
+      validationConcurrencyLimit: null,
+      processingConcurrencyLimit: 8,
       fields: [
         FIELDS.PROFILE_ID,
         FIELDS.MANAGER_N_NUMBER_CREATE,
