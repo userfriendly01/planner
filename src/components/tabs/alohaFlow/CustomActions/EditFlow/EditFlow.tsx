@@ -176,14 +176,13 @@ export const EditFlow = ({
     valuePassed?:string, keyPassed?:string
   ) => {
     let value: string;
-    let key: string;
-    if(valuePassed && typeof(valuePassed) === "string"){
+    let key : string;
+    if(valuePassed && typeof(valuePassed) === "string" && !displayRecords[key as keyof ViewOrAddProps]){
       value = valuePassed;
       key = keyPassed;
-    }
-    else{
-      key = event.target.name;
+    } else{
       value = event.target.value;
+      key = event.target.name;
     }
     const updatedSelectedValue: CctSharedCallFlowDb = valueSetter(selectedRowLocal, { [key]: value });
     setSelectedRowLocal(updatedSelectedValue);
