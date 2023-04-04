@@ -1646,6 +1646,56 @@ describe("fields.js", () => {
         });
       });
     });
+    describe("CALABRIO_WFM_IDENTITY", () => {
+      describe("validateFunction", () => {
+        const identityValidation = FIELDS.CALABRIO_WFM_IDENTITY.validateFunction;
+        test("field is empty, resolve with skipping message", async () => {
+          const row = {
+            rowNumber: 1,
+            "WFM Identity": ""
+          };
+          const result = await identityValidation(row, initialTestState);
+          expect(result).toEqual("WFM Identity is missing but not required. Skipping validation for row 1");
+        });
+        test("WFM Identity does not match hr email, reject with invalid message", async () => {
+          const row = {
+            rowNumber: 1,
+            "WFM Identity": "wrongemail@lm.com",
+            attributes: {
+              email: "person@lm.com"
+            }
+          };
+          try {
+            await identityValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 1,
+              error: "Invalid WFM Identity.  The email provided does NOT match the email address in this user's HR data. This user needs to update their email so they match prior to being loaded into WFM for row 1"
+            }));
+          }
+        });
+        test("Business unit option found, id is added to row, resolve with successful message", async () => {
+          const row = {
+            rowNumber: 1,
+            "WFM Identity": "person@lm.com",
+            attributes: {
+              email: "person@lm.com"
+            }
+          };
+          const result = await identityValidation(row, initialTestState);
+          expect(result).toEqual("WFM Identity valid for row 1");
+          expect(row).toEqual(
+            {
+              rowNumber: 1,
+              "WFM Identity": "person@lm.com",
+              attributes: {
+                email: "person@lm.com"
+              }
+            }
+          );
+        });
+      });
+    });
     describe("CALABRIO_WFM_BUSINESS_UNIT", () => {
       describe("validateFunction", () => {
         const BUValidation = FIELDS.CALABRIO_WFM_BUSINESS_UNIT.validateFunction;

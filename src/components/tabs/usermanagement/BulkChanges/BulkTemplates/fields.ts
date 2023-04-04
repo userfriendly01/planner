@@ -575,6 +575,31 @@ export const FIELDS: Fields = {
       }
     }
   },
+  CALABRIO_WFM_IDENTITY: {  // this field is only for validation the HR email is the same as the user's ldap email.  It will not be added to the request body
+    field: "wfmIdentity",
+    name: "WFM Identity",
+    type: "string",
+    description: "LDAP Email address of the wfm person.  This field will show an error if the email provided does not match the email in HR. (optional)",
+    example: "",
+    options: null,
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = FIELDS.CALABRIO_WFM_IDENTITY.name;
+      const field = cleanupField(row[fieldName], "string");
+
+      if(!field){
+        return Promise.resolve(`${fieldName} is missing but not required. Skipping validation for row ${rowNumber}`);
+      } else {
+        const hrEmail = row.attributes.email;
+
+        if (field !== cleanupField(hrEmail, "string")) {
+          return rejectPromise(`Invalid ${fieldName}.  The email provided does NOT match the email address in this user's HR data. This user needs to update their email so they match prior to being loaded into WFM for row ${rowNumber}`, rowNumber);
+        } else {
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        }
+      }
+    }
+  },
   CALABRIO_WFM_BUSINESS_UNIT: { // required
     field: "wfmBusinessUnit",
     name: "WFM Business Unit",

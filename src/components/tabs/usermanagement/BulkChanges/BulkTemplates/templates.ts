@@ -317,6 +317,7 @@ export const getCreateTemplates = (state: any): Templates => {
       processingConcurrencyLimit: 25,
       fields: [
         FIELDS.N_NUMBER_UPDATE,
+        FIELDS.CALABRIO_WFM_IDENTITY,
         FIELDS.CALABRIO_WFM_BUSINESS_UNIT,
         FIELDS.CALABRIO_WFM_ROLES,
         FIELDS.CALABRIO_TIME_ZONE,
