@@ -123,10 +123,13 @@ const processCreateManager = async (row: any, state: any) => {
         name: teamField,
         parentGroupId: row.parentGroupId
       });
-      const newTeamId = response.data.groupId; // ?? wot even are responses... philosophically
-      if (newTeamId) {
-        row.groupId = newTeamId;
-      }
+
+      // debugging
+      console.log(response);
+      // const newTeamId = response.data.groupId; // ?? wot even are responses... philosophically
+      // if (newTeamId) {
+      //   row.groupId = newTeamId;
+      // }
 
       // 2 - this doesnt have red squigglies...
       // createCalabrioTeam({
