@@ -574,7 +574,6 @@ export const FIELDS: Fields = {
       }
     }
   },
-  // parent group validation field
   CALABRIO_GROUP: {
     field: "calabrioGroup",
     name: "Calabrio Group",
@@ -587,17 +586,17 @@ export const FIELDS: Fields = {
       const fieldName= "Calabrio Team";
       const field = cleanupField(row[fieldName], "string");
 
-      // checking team before group
+      // Checking team before group
       if (!field) {
         return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
       } else {
-        // does team exist in state?
+        // Does team exist in state?
         const team = state.calabrioContext.teams.find((t:any) => cleanupField(t.name, "string") === field);
         if (team && team.groupdId) {
-          // if yes - team already exists - can ignore calabrio group field - resolve
+          // Team already exists - can ignore calabrio group field - resolve
           return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
         } else {
-          // if no - team is new - make sure calabrio group is valid - resolve and add that group's id as parentGroupId to row
+          // Team is new - make sure calabrio group is valid - resolve
           const fieldName = "Calabrio Group";
           const field = cleanupField(row[fieldName], "string");
 
