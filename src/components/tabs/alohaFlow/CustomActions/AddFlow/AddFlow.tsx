@@ -106,12 +106,8 @@ export const AddFlow = ({
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,valuePassed?:string,key?:string) {
     let value: string;
-    if(valuePassed && typeof(valuePassed) === "string" ){
-      if(displayRecords){
-        value = event.target.value;
-      } else{
-        value = valuePassed;
-      }
+    if(valuePassed && typeof(valuePassed) === "string" && !displayRecords ){
+      value = valuePassed;
     } else{
       value = event.target.value;
     }
@@ -255,9 +251,9 @@ export const AddFlow = ({
           <Grid container rowSpacing={3}>
             {
               flowFields.map(({
-                label, key, control, required = false, flowType = "", gridSize = 12
+                label, key, control, required = false, fieldType, gridSize = 12
               }) => {
-                if(flowType &&displayRecords[key as keyof ViewOrAddProps] ) {
+                if(fieldType &&displayRecords[key as keyof ViewOrAddProps] ) {
                   control = "input";
                 }
                 return (
@@ -275,8 +271,7 @@ export const AddFlow = ({
                         required={required}
                       />
                     </Grid>
-
-                    {(flowType === "viewAndAdd")?(<Grid item xs={1}>
+                    {(fieldType === "viewAndAdd")?(<Grid item xs={1}>
                       <AddOrView navigateViewOrAdd = {navigateBtns} keys = {key}></AddOrView>
                     </Grid>):(<div></div>)}
                   </Grid>

@@ -218,10 +218,10 @@ export const EditFlow = ({
           <Grid container rowSpacing={3}>
             {
               flowFields.map(({
-                label, key, control, required = false, flowType = "", gridSize = 12,
+                label, key, control, required = false, fieldType, gridSize = 12,
                 valueGetter, disableEdit, valueSetter
               }) => {
-                if(flowType &&displayRecords[key as keyof ViewOrAddProps] ) {
+                if(fieldType &&displayRecords[key as keyof ViewOrAddProps] ) {
                   control = "input";
                 }
                 return (
@@ -240,8 +240,7 @@ export const EditFlow = ({
                         disabled={disableEdit}
                       />
                     </Grid>
-
-                    {(flowType === "viewAndAdd")?(<Grid item xs={1}>
+                    {(fieldType === "viewAndAdd")?(<Grid item xs={1}>
                       <AddOrView navigateViewOrAdd = {navigateBtns} keys = {key}></AddOrView>
                     </Grid>):(<div></div>)}
                   </Grid>

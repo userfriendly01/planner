@@ -85,7 +85,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
         ...newValue
       }
     }),
-    flowType: "viewAndAdd",
+    fieldType: "viewAndAdd",
     gridSize: 10
   },
   {
@@ -101,7 +101,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
         ...newValue
       }
     }),
-    flowType: "viewAndAdd",
+    fieldType: "viewAndAdd",
     gridSize: 10
   },
   {
@@ -130,7 +130,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
         ...newValue
       }
     }),
-    flowType: "viewAndAdd",
+    fieldType: "viewAndAdd",
     gridSize: 10
   },
   {
