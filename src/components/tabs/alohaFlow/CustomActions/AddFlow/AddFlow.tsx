@@ -236,8 +236,11 @@ export const AddFlow = ({
           <Grid container rowSpacing={3}>
             {
               flowFields.map(({
-                label, key, control, required = false
+                label, key, control, required = false, dynamicFieldConditionCheck
               }) => {
+                if(dynamicFieldConditionCheck && dynamicFieldConditionCheck(flowRule)){
+                  return;
+                }
                 return (
                   <Grid key={key} item xs={4}>
                     <ComponentControl

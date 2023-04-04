@@ -101,6 +101,17 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     })
   },
   {
+    label: "Type",
+    key: "type",
+    control: "autoComplete",
+    required: false,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.type || ""}`,
+    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
+      ...currentValue,
+      ...newValue
+    })
+  },
+  {
     label: "Transfer Number",
     key: "transferNumber",
     control: "input",
@@ -168,7 +179,10 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
-    })
+    }),
+    dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && ["TFN", "DRC"].includes(params["type"]?.value);
+    }
   },
   {
     label: "Affinity VDN",
@@ -181,7 +195,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     })
   },
   {
-    label: "Call Type",
+    label: "Call Type Description",
     key: "callTypeDescription",
     control: "input",
     valueGetter: (params: CctSharedCallFlowDb) => `${params?.callTypeDescription || ""}`,
@@ -297,17 +311,6 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     control: "input",
     required: false,
     valueGetter: (params: CctSharedCallFlowDb) => `${params?.rangeIndicator || ""}`,
-    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
-      ...currentValue,
-      ...newValue
-    })
-  },
-  {
-    label: "Type",
-    key: "type",
-    control: "autoComplete",
-    required: false,
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.type || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
