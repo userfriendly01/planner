@@ -238,7 +238,7 @@ export const AddFlow = ({
               flowFields.map(({
                 label, key, control, required = false, dynamicFieldConditionCheck
               }) => {
-                if(dynamicFieldConditionCheck && dynamicFieldConditionCheck(flowRule)){
+                if(dynamicFieldConditionCheck && !dynamicFieldConditionCheck(flowRule)){
                   return;
                 }
                 return (
