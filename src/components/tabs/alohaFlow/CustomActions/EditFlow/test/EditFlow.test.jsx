@@ -9,6 +9,7 @@ import {
 } from "services";
 import { useAdminState } from "context";
 import { CustomToast } from "components";
+import { AddOrView } from "../../CustomActionsCommon/AddOrView";
 
 jest.mock("components", () => {
   return{
@@ -16,6 +17,14 @@ jest.mock("components", () => {
     CustomToast: jest.fn()
   };
 });
+
+jest.mock("../../CustomActionsCommon/AddOrView", () => {
+  return{
+    __esModule: true,
+    AddOrView: jest.fn()
+  };
+});
+
 
 jest.mock("context", () => ({
   useAdminState: jest.fn()
@@ -116,71 +125,6 @@ describe("<EditFlow />", () => {
     });
   });
 
-  describe("Edit Flow Data Request Block", () => {
-    test("Simulate the addItem Button", () => {
-      const {
-        getByRole
-      } = renderEditFlow(true, validFlowData);
-      const addDataRequestButton = getByRole("button", { name: "addDataRequestButton" });
-      act(()=>{
-        fireEvent.click(addDataRequestButton);
-      });
-      const dataRequestInput = getByRole("textbox", {
-        name: /Data Request/i ,
-        hidden: true
-      });
-      act(()=>{
-        fireEvent.click(dataRequestInput);
-        fireEvent.change(dataRequestInput, { target: { value: "test3" }});
-        fireEvent.click(addDataRequestButton);
-      });
-      waitFor(()=>{
-        expect(dataRequestInput).toBeNull;
-      });
-
-    });
-
-    test("Simulate the View Data Request Button", () => {
-      const {
-        getByRole, getByText
-      } = renderEditFlow(true, validFlowData);
-      waitFor(() => {
-        const addDataRequestButton = getByRole("button", { name: "addDataRequestButton" });
-        fireEvent.click(addDataRequestButton);
-      });
-      const displayDataRequestButton = getByRole("button", { name: "displayDataRequestButton" });
-      fireEvent.click(displayDataRequestButton);
-      const dataRequestOption = getByText("View Data Requests");
-      expect(dataRequestOption).toBeVisible();
-    });
-
-    test("Simulate the Remove Data Request Icon Button", ()=>{
-      const {
-        getByRole, queryByRole
-      } = renderEditFlow(true, validFlowData);
-      const dataRequestOption = getByRole("button",{ name: /View Data Requests/i });
-      act(()=>{
-        fireEvent.mouseDown(dataRequestOption);
-      });
-      const listBox = within(getByRole("listbox", { name: /View Data Requests/i }));
-      const removeButton = listBox.getByRole("button", {
-        name: "removeDataRequest-0",
-        hidden: true
-      });
-      act(() => {
-        fireEvent.click(removeButton);
-        fireEvent.keyPress(dataRequestOption, {
-          key: "Tab",
-          code: 9,
-          charCode: 9
-        });
-      });
-      waitFor(()=>{
-        expect(queryByRole("listbox")).toEqual(null);
-      });
-    });
-  });
-
   describe("Test Footer Component of Edit Flow", () => {
     test("Simulate the SaveRule Button with Success API Response", () => {
       updateFlowDB.mockResolvedValue({ data: { "items": []}});
@@ -229,6 +173,17 @@ describe("<EditFlow />", () => {
       });
       waitFor(() => {
         expect(openEditModal).toBeCalledTimes(1);
+      });
+    });
+    test("Simulate the Delete Button  with null Response", () => {
+      deleteFlowRule.mockResolvedValue(null);
+      const { getByRole } = renderEditFlow(true, validFlowData);
+      const deleteButton = getByRole("button", { name: "deleteFlowRuleButton" });
+      act(() => {
+        fireEvent.click(deleteButton);
+      });
+      waitFor(() => {
+        expect(openEditModal).toBeCalledTimes(0);
       });
     });
 
@@ -298,7 +253,8 @@ describe("<EditFlow />", () => {
     describe("Individual Components", ()=>{
       beforeEach(()=>{
         setupMockedComponents({
-          CustomToast
+          CustomToast,
+          AddOrView
         });
       });
 
@@ -307,6 +263,12 @@ describe("<EditFlow />", () => {
         const customToastOnClose = CustomToast.mock.calls[0][0].onClose;
         act(()=>{ customToastOnClose(); });
         expect(CustomToast.mock.calls[0][0].open).toBe(false);
+      });
+      test("Simulate AddOrView ",()=>{
+        renderEditFlow(true, validFlowData);
+        const navigateBtns = AddOrView.mock.calls[0][0].navigateViewOrAdd;
+        act(()=>{ navigateBtns(true,"callerType"); });
+        expect(navigateBtns).toBeTruthy();
       });
     });
   });

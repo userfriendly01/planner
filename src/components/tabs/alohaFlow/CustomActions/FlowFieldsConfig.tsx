@@ -75,7 +75,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
   {
     label: "Data Requests",
     key: "dataRequests",
-    control: "input",
+    control: "autoComplete",
     required: false,
     valueGetter: (params: CctSharedCallFlowDb) => `${params?.content?.dataRequests || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
@@ -84,7 +84,9 @@ const flowFields: AddFlowFieldsConfigProps[] = [
         ...currentValue.content || {},
         ...newValue
       }
-    })
+    }),
+    fieldType: "viewAndAdd",
+    gridSize: 10
   },
   {
     label: "Caller Type",
@@ -98,7 +100,9 @@ const flowFields: AddFlowFieldsConfigProps[] = [
         ...currentValue.content || {},
         ...newValue
       }
-    })
+    }),
+    fieldType: "viewAndAdd",
+    gridSize: 10
   },
   {
     label: "Transfer Number",
@@ -125,7 +129,9 @@ const flowFields: AddFlowFieldsConfigProps[] = [
         ...currentValue.content || {},
         ...newValue
       }
-    })
+    }),
+    fieldType: "viewAndAdd",
+    gridSize: 10
   },
   {
     label: "Greeting",
