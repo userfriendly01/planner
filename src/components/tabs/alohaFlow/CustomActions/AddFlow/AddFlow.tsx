@@ -21,7 +21,8 @@ import {
   CctSharedCallFlowDb,
   FlowDropDownList,
   FlowKeys,
-  FlowMasterData
+  FlowMasterData,
+  ViewOrAddProps
 } from "../../AlohaFlow.Interfaces";
 import {
   addFlowRule,
@@ -61,8 +62,11 @@ export const AddFlow = ({
   const [flowRule, setFlowRule] = useState({ ...initRule });
   const [dropDownValues, setDropDownValues] = useState(flowDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
-  const [displayRecords, setDisplayRecords] = useState(false);
-
+  const [displayRecords, setDisplayRecords] = useState({
+    callerType: false,
+    dataRequests: false,
+    callFlowRoute: false
+  });
   useEffect(() => {
     async function fetchData() {
       const masterData: string = localStorage.getItem(FLOW_MASTER_DATA);
@@ -86,7 +90,11 @@ export const AddFlow = ({
       }));
     }
     fetchData();
-    setDisplayRecords(false);
+    setDisplayRecords({
+      callerType: false,
+      dataRequests: false,
+      callFlowRoute: false
+    });
   }, []);
 
   const handleClose = (flag: boolean) => {
@@ -158,8 +166,11 @@ export const AddFlow = ({
     return defaultValue;
   }
 
-  function navigateBtns(display:boolean) {
-    setDisplayRecords(display);
+  function navigateBtns(display:boolean,key:string) {
+    setDisplayRecords((records:ViewOrAddProps) => ({
+      ...records,
+      [key]: display
+    }));
   }
 
   function handleOnCreateRoute() {
@@ -246,11 +257,8 @@ export const AddFlow = ({
               flowFields.map(({
                 label, key, control, required = false, flowType = "", gridSize = 12
               }) => {
-                if(flowType &&displayRecords){
+                if(flowType &&displayRecords[key as keyof ViewOrAddProps] ) {
                   control = "input";
-                }
-                else if (flowType && !displayRecords){
-                  control = "autoComplete";
                 }
                 return (
                   <Grid container key = {key} item xs = {4}>
@@ -269,7 +277,7 @@ export const AddFlow = ({
                     </Grid>
 
                     {(flowType === "viewAndAdd")?(<Grid item xs={1}>
-                      <AddOrView navigateViewOrAdd = {navigateBtns}></AddOrView>
+                      <AddOrView navigateViewOrAdd = {navigateBtns} keys = {key}></AddOrView>
                     </Grid>):(<div></div>)}
                   </Grid>
                 );

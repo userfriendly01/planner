@@ -6,13 +6,16 @@ import ViewListIcon from "@mui/icons-material/ViewList";
 import React, { useState } from "react";
 
 export interface AddOrViewProps{
-  navigateViewOrAdd:(display:boolean)=>void
+  navigateViewOrAdd:(display:boolean,keys:string)=>void
+  keys?:string
 }
-export const AddOrView = ({ navigateViewOrAdd }:AddOrViewProps):JSX.Element => {
+export const AddOrView = ({
+  navigateViewOrAdd, keys
+}:AddOrViewProps):JSX.Element => {
   const [navButton, setNavButton] = useState(false);
   function navigateButton(display:boolean){
     setNavButton(display);
-    navigateViewOrAdd(display);
+    navigateViewOrAdd(display,keys);
   }
   return (
     <div>

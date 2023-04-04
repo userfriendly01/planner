@@ -75,7 +75,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
   {
     label: "Data Requests",
     key: "dataRequests",
-    control: "input",
+    control: "autoComplete",
     required: false,
     valueGetter: (params: CctSharedCallFlowDb) => `${params?.content?.dataRequests || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({

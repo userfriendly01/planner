@@ -176,7 +176,7 @@ describe("<AddFlow />", () => {
     test("Simulate the AddOrView Button ", () => {
       renderAddFlow(true);
       const navigateBtns = AddOrView.mock.calls[0][0].navigateViewOrAdd;
-      act(()=>{ navigateBtns(true); });
+      act(()=>{ navigateBtns(true,"callerType"); });
       expect(navigateBtns).toBeTruthy();
     });
   });

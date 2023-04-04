@@ -16,7 +16,8 @@ import {
   CctSharedCallFlowDb,
   FlowDropDownList,
   FlowKeys,
-  FlowMasterData
+  FlowMasterData,
+  ViewOrAddProps
 } from "../../AlohaFlow.Interfaces";
 import {
   flowFields, initRule
@@ -52,7 +53,11 @@ export const EditFlow = ({
   const graphQLEndPoint: string = getGraphQLEndpoint();
 
   const [selectedRowLocal, setSelectedRowLocal] = useState({} as CctSharedCallFlowDb);
-  const [displayRecords, setDisplayRecords] = useState(false);
+  const [displayRecords, setDisplayRecords] = useState({
+    callerType: false,
+    dataRequests: false,
+    callFlowRoute: false
+  });
   const [flowRule, setFlowRule] = useState({ ...initRule });
   const [dropDownValues, setDropDownValues] = useState(flowDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
@@ -60,7 +65,11 @@ export const EditFlow = ({
 
   useEffect(() => {
     setSelectedRowLocal(selectedRow);
-    setDisplayRecords(false);
+    setDisplayRecords({
+      callerType: false,
+      dataRequests: false,
+      callFlowRoute: false
+    });
     const masterDataStorage: string = localStorage.getItem(FLOW_MASTER_DATA);
     const masterData: FlowMasterData = JSON.parse(masterDataStorage);
     setDropDownValues((dropDownOptions: FlowDropDownList) => (
@@ -142,8 +151,11 @@ export const EditFlow = ({
     setFlowRule({ ...initRule });
   };
 
-  function navigateBtns(display:boolean) {
-    setDisplayRecords(display);
+  function navigateBtns(display:boolean,key:string) {
+    setDisplayRecords((records:ViewOrAddProps) => ({
+      ...records,
+      [key]: display
+    }));
   }
 
   const handleCancel = () => {
@@ -209,11 +221,8 @@ export const EditFlow = ({
                 label, key, control, required = false, flowType = "", gridSize = 12,
                 valueGetter, disableEdit, valueSetter
               }) => {
-                if(flowType &&displayRecords){
+                if(flowType &&displayRecords[key as keyof ViewOrAddProps] ) {
                   control = "input";
-                }
-                else if (flowType && !displayRecords){
-                  control = "autoComplete";
                 }
                 return (
                   <Grid container key = {key} item xs = {4}>
@@ -233,7 +242,7 @@ export const EditFlow = ({
                     </Grid>
 
                     {(flowType === "viewAndAdd")?(<Grid item xs={1}>
-                      <AddOrView navigateViewOrAdd = {navigateBtns}></AddOrView>
+                      <AddOrView navigateViewOrAdd = {navigateBtns} keys = {key}></AddOrView>
                     </Grid>):(<div></div>)}
                   </Grid>
                 );

@@ -16,7 +16,6 @@ export interface FlowMasterData {
     callFlowTemplate?: Array<string>;
     callFlowRoute?: Array<string>;
     pkey?: Array<string>;
-
     dataRequests?: Array<string>;
 }
 
@@ -132,4 +131,10 @@ export interface AddFlowFieldsConfigProps {
 
 export interface FlowListMasterData{
     dataRequests:Array<string>;
+}
+
+export interface ViewOrAddProps{
+    callerType:boolean;
+    dataRequests:boolean;
+    callFlowRoute:boolean;
 }

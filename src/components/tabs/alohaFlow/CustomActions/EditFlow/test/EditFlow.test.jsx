@@ -267,7 +267,7 @@ describe("<EditFlow />", () => {
       test("Simulate AddOrView ",()=>{
         renderEditFlow(true, validFlowData);
         const navigateBtns = AddOrView.mock.calls[0][0].navigateViewOrAdd;
-        act(()=>{ navigateBtns(true); });
+        act(()=>{ navigateBtns(true,"callerType"); });
         expect(navigateBtns).toBeTruthy();
       });
     });
