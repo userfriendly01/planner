@@ -1,6 +1,7 @@
 import {
   BulkCreateForm,
-  BulkUpdateForm
+  BulkUpdateForm,
+  BulkAddManagerForm
 } from "./BulkActions";
 import {
   readUploadFile,
@@ -86,6 +87,12 @@ const BulkChanges = () => {
       }
       { view === views.BULK_UPDATE &&
         <BulkUpdateForm
+          selectedTemplates= {selectedTemplates}
+          setSelectedTemplates= {setSelectedTemplates}
+        />
+      }
+      { view === views.BULK_ADD_MANAGER &&
+        <BulkAddManagerForm
           selectedTemplates= {selectedTemplates}
           setSelectedTemplates= {setSelectedTemplates}
         />
