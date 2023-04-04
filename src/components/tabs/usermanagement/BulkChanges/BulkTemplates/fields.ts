@@ -150,16 +150,29 @@ export const FIELDS: Fields = {
     description: "N Number of the Manager",
     example: "n0088625",
     options: null,
-    validateFunction: (row: any, state: any): Promise<any> => {
+    validateFunction: async (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
       const fieldName = "Manager N Number";
       const field = cleanupField(row[fieldName], "string");
+      if(!row.attributes){
+        row.attributes = {};
+      }
       const managerObject = state.managerContext.managers.some((m: any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === field); // m.man... grabbed from state
       if (!field) {
         return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
       } else if (managerObject) {
         return rejectPromise(`${fieldName} is already present for ${rowNumber}`, rowNumber);
       } else {
+        try {
+          // grab manager's name from HR database
+          const fetchedUser = await fetchUser(field);
+
+          row.attributes.manager_first_name = fetchedUser.firstName; // todo: is it ok to add this to attributes?
+          row.attribute.manager_last_name = fetchedUser.lastName;
+        } catch (err) {
+          console.error(err.message, err);
+          return rejectPromise(`Error thrown fetching ${fieldName} from HR Database for row ${rowNumber}`, rowNumber);
+        }
         return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
       }
     }
