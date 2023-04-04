@@ -106,7 +106,7 @@ export const AddFlow = ({
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,valuePassed?:string,key?:string) {
     let value: string;
-    if(valuePassed && typeof(valuePassed) === "string" && !displayRecords ){
+    if(valuePassed && typeof(valuePassed) === "string" && !displayRecords[key as keyof ViewOrAddProps]){
       value = valuePassed;
     } else{
       value = event.target.value;
