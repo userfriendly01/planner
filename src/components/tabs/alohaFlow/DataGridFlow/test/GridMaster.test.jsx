@@ -14,6 +14,7 @@ describe("<GridMaster />", () => {
       "callFlowTemplate": [],
       "callerType": [],
       "channel": [],
+      "dataRequests": [],
       "pkey": []
     });
   });
@@ -33,6 +34,7 @@ describe("<GridMaster />", () => {
       "callFlowTemplate": [],
       "callerType": [],
       "channel": [],
+      "dataRequests": [],
       "pkey": []
     });
   });

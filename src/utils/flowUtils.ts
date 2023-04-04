@@ -7,6 +7,7 @@ export const flowDropDownList: FlowDropDownList = {
   "userDestination": [],
   "callFlowRoute": [],
   "callerType": [],
+  "dataRequests": [],
   "type": []
 };
 export const CACHE_FILTER_FLOW = "SEARCH_FILTER_FLOW";
