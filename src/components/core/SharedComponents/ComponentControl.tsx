@@ -15,7 +15,8 @@ export interface ComponentControlProps {
   disabled?: boolean,
   error: boolean,
   required: boolean,
-  isBlankFirstValue?: boolean
+  isBlankFirstValue?: boolean,
+  multiple?: boolean
 }
 function ComponentControl({
   control,
