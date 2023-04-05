@@ -161,14 +161,13 @@ export const FIELDS: Fields = {
       if (!field) {
         return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
       } else if (managerObject) {
-        return rejectPromise(`${fieldName} is already present for ${rowNumber}`, rowNumber);
+        return rejectPromise(`${fieldName} is already present for row ${rowNumber}`, rowNumber);
       } else {
         try {
           // grab manager's name from HR database
           const fetchedUser = await fetchUser(field);
-
           row.attributes.manager_first_name = fetchedUser.firstName; // todo: is it ok to add this to attributes?
-          row.attribute.manager_last_name = fetchedUser.lastName;
+          row.attributes.manager_last_name = fetchedUser.lastName;
         } catch (err) {
           console.error(err.message, err);
           return rejectPromise(`Error thrown fetching ${fieldName} from HR Database for row ${rowNumber}`, rowNumber);
@@ -546,12 +545,11 @@ export const FIELDS: Fields = {
           // Creating a new team. Verify given parent group exists
           const fieldName = "Calabrio Group";
           const field = cleanupField(row[fieldName], "string");
-
           const parentGroup = state.calabrioContext.groups.find((g:any) => cleanupField(g.name, "string") === field);
 
           if (!parentGroup) {
             // Could not find parent group with given name. REJECT!
-            return rejectPromise(`${fieldName} is not a valid option for row ${rowNumber}`, rowNumber);
+            return rejectPromise(`New Teams require a valid ${fieldName} for row ${rowNumber}`, rowNumber);
           } else {
             // Found parent group. Add parentGroupId and proper case name of team
             row.parentGroupId = parentGroup.groupId;
@@ -605,7 +603,7 @@ export const FIELDS: Fields = {
       } else {
         // Does team exist in state?
         const team = state.calabrioContext.teams.find((t:any) => cleanupField(t.name, "string") === field);
-        if (team && team.groupdId) {
+        if (team && team.groupId) {
           // Team already exists - can ignore calabrio group field - resolve
           return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
         } else {
@@ -615,7 +613,7 @@ export const FIELDS: Fields = {
 
           const group = state.calabrioContext.groups.find((g:any) => cleanupField(g.name, "string") === field);
           if (!group) {
-            return rejectPromise(`${fieldName} is not a valid option for row ${rowNumber}`, rowNumber);
+            return rejectPromise(`New Teams require a valid ${fieldName} for row ${rowNumber}`, rowNumber);
           } else {
             return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
           }

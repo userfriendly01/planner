@@ -63,6 +63,9 @@ const BulkChanges = () => {
         updateValue={(event: any, view: View) => {
           setView(view);
           resetBulkChanges();
+          if(view === views.BULK_ADD_MANAGER){
+            setSelectedTemplates([views.BULK_ADD_MANAGER])
+          }
         }}
         styles={{
           margin: "40 0 30 0",
@@ -92,10 +95,11 @@ const BulkChanges = () => {
         />
       }
       { view === views.BULK_ADD_MANAGER &&
-        <BulkAddManagerForm
-          selectedTemplates= {selectedTemplates}
-          setSelectedTemplates= {setSelectedTemplates}
-        />
+        <Row>
+          <StepWrapper>
+            Step 1: Mentally Prepare
+          </StepWrapper>
+        </Row>
       }
       { selectedTemplates.length > 0 &&
         <>

@@ -49,13 +49,13 @@ export const updateCalabrioUserState = async (dispatch: any): Promise<void> => {
  */
 export const updateManagerUserState = async (dispatch: any): Promise<void> => {
   try {
-    const managers = await getManagers();
+    const managers: any = await getManagers();
     dispatch({
       type: "loadManagers",
-      payload: formatManagersResponse(managers)
+      payload: formatManagersResponse(managers.data)
     });
   } catch (error) {
-    console.error("Failed to updated manager user state after bulk upload", error);
+    console.error("Failed to update manager state after bulk upload", error);
   }
   return Promise.resolve();
 };

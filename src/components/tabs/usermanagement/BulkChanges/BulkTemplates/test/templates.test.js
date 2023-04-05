@@ -234,6 +234,30 @@ describe("CREATE_CALABRIO_QM_USER", () => {
     });
   });
 });
+describe("CREATE_MANAGER", () => {
+  const createManagerProcessFunction = createTemplates.CREATE_MANAGER.processFunction;
+  beforeEach(() => jest.clearAllMocks());
+  const row = {
+    rowNumber: 2,
+    acdId: "WK13248",
+    attributes: {
+      profile_id: 1,
+      n_number: "n0263445",
+      email: "e.mail@lm.com",
+      emp_first_name: "Michael",
+      emp_last_name: "Scott"
+    },
+    operatingUnitSid: "operatingUnitSid1",
+    groupId: 109,
+    timeZone: "Americas",
+    roles: [{ name: "role1" }],
+    scope: {
+      groups: [],
+      teams: [102]
+    }
+  };
+  //TODO When Julia is all set with the processing function
+});
 describe("UPDATE_WORKER_ATTRIBUTE", () => {
   const updateWorkerAttributesProcessFunction = updateTemplates.UPDATE_WORKER_ATTRIBUTE.processFunction;
   beforeEach(() => jest.clearAllMocks());

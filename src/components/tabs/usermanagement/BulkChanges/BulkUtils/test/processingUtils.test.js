@@ -1,15 +1,18 @@
 import * as utils from "../processingUtils";
-import { getCalabrioUsers } from "services";
+import {
+  getCalabrioUsers,
+  getManagers
+} from "services";
 import { act } from "testUtils";
 import {
+  formatManagersResponse,
   formatWorkerResponse,
   myAxios
 } from "utils";
 import * as XLSX from "xlsx";
 
-// const axiosMock = new MockAdapter(myAxios);
-
 jest.mock("utils",() => ({
+  formatManagersResponse: jest.fn(),
   formatWorkerResponse: jest.fn(),
   myAxios: {
     get: jest.fn()
@@ -22,6 +25,42 @@ jest.mock("xlsx",() => ({
     sheet_to_json: jest.fn()
   }
 }));
+
+describe("updateManagerUserState", () => {
+  const mockDispatch = jest.fn();
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+  });
+  describe("get managers succeeds", () => {
+    const response = {
+      data: [{
+        attributes: {
+          yas: "girl"
+        }
+      }]
+    };
+    test("dispatch is called, promise resolves", async () => {
+      getManagers.mockResolvedValue(response);
+      formatManagersResponse.mockReturnValue(response.data);
+      await utils.updateManagerUserState(mockDispatch);
+      expect(getManagers).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: "loadManagers",
+        payload: response.data
+      });
+    });
+  });
+  describe("get managers fails", () => {
+    getManagers.mockRejectedValue("Aww");
+    test("dispatch is not called, promise resolves", async () => {
+      await utils.updateManagerUserState(mockDispatch);
+      expect(console.error).toHaveBeenCalledTimes(1);
+      expect(console.error.mock.calls[0][0]).toContain("Failed to update manager state after bulk upload");
+    });
+  });
+});
 
 describe("updateTritonUserState", () => {
   const mockDispatch = jest.fn();
@@ -518,7 +557,7 @@ describe("initiateCalls", () => {
       });
     });
   });
-  describe("concurrenct limit is not null", () => {
+  describe("concurrency limit is not null", () => {
     const setProcessedRows = jest.fn();
     const updateStateFunction = jest.fn();
     const rows = [
