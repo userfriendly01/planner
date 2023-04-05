@@ -52,7 +52,7 @@ export const updateManagerUserState = async (dispatch: any): Promise<void> => {
     const managers: any = await getManagers();
     dispatch({
       type: "loadManagers",
-      payload: formatManagersResponse(managers.data)
+      payload: formatManagersResponse(managers)
     });
   } catch (error) {
     console.error("Failed to update manager state after bulk upload", error);

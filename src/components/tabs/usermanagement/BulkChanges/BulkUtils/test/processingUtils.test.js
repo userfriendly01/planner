@@ -33,28 +33,24 @@ describe("updateManagerUserState", () => {
     jest.resetAllMocks();
   });
   describe("get managers succeeds", () => {
-    const response = {
-      data: [{
-        attributes: {
-          yas: "girl"
-        }
-      }]
-    };
+    const response = [{
+        manager: "Bill"
+      }];
     test("dispatch is called, promise resolves", async () => {
       getManagers.mockResolvedValue(response);
-      formatManagersResponse.mockReturnValue(response.data);
+      formatManagersResponse.mockReturnValue(response);
       await utils.updateManagerUserState(mockDispatch);
       expect(getManagers).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenCalledWith({
         type: "loadManagers",
-        payload: response.data
+        payload: response
       });
     });
   });
   describe("get managers fails", () => {
-    getManagers.mockRejectedValue("Aww");
     test("dispatch is not called, promise resolves", async () => {
+      getManagers.mockRejectedValue("Aww");
       await utils.updateManagerUserState(mockDispatch);
       expect(console.error).toHaveBeenCalledTimes(1);
       expect(console.error.mock.calls[0][0]).toContain("Failed to update manager state after bulk upload");
