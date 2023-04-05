@@ -107,7 +107,6 @@ const App = () => {
   if (loadResult) {
     if (loadResult === success) {
       const azureClientId = getAzureSPAClientId();
-      console.log("AZURE ID", azureClientId);
 
       return (
         <BrowserRouter>
