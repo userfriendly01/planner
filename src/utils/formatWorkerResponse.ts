@@ -10,7 +10,8 @@ export interface DbWorker {
   directDialNum: string,
   operatingUnitSid?: string,
   workerSid: string,
-  zeroOutEnabled: boolean
+  zeroOutEnabled: boolean,
+  selfServiceInd?: boolean,
   inactiveForwardTo?: string
 }
 
@@ -32,6 +33,10 @@ export const mapWorkerFromDbWorker = (dbWorker: DbWorker): Worker => {
   delete worker.workerSid;
   if (worker.attributes?.manager_n_number) {
     worker.attributes.manager_n_number = worker.attributes.manager_n_number.toLowerCase();
+  }
+  //sometimes Twilio flops and cant populate full name - this will be more reliable
+  if(dbWorker.attributes?.emp_first_name && dbWorker.attributes?.emp_last_name){
+    worker.attributes.full_name = `${dbWorker.attributes?.emp_first_name} ${dbWorker.attributes?.emp_last_name}`
   }
   return worker;
 };

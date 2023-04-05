@@ -211,6 +211,20 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           />
         ) : null
         }
+        {form.didUser ? (
+          <Tooltip title={"enable to add self service indicator attribute to worker - needs to be DID user and profile 39 or above"} placement={"bottom-start"}>
+            <ToggleContainer>
+              <Switch
+                disabled={form.profileId.value < 39 ? true : false}
+                checked={form.selfServiceInd}
+                onChange={() => {
+                  setForm({ type: userFormActions.UPDATE_SELF_SERVICE_INDICATOR });
+                }}
+                inputProps={{ "aria-label": "toggle-did-user" }}
+              />
+              <ToggleLabel>Self Service Indicator</ToggleLabel>
+            </ToggleContainer>
+          </Tooltip>) : null}
       </FormControlsPane>
       <RightColumn>
         {!form.didUser ?

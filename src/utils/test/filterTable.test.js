@@ -1,6 +1,10 @@
-import { filterByNameAndSkills } from "utils";
+import {
+  filterSkillsByName,
+  filterWorkerSearch
+} from "utils";
+import { initialTestState } from "testUtils";
 
-describe("filterByNameSkillsAndOffice()", () => {
+describe("filterWorkerSearch", () => {
 
   const goodWorkerData = {
     attributes: {
@@ -8,8 +12,9 @@ describe("filterByNameSkillsAndOffice()", () => {
         skills: ["466", "psuUm"],
         levels: {
           "466": 3
-        }
+        },
       },
+      profile_id: 396,
       full_name: "Aldo the Apache",
       routing: {
         skills: ["test", "fake"],
@@ -88,58 +93,91 @@ describe("filterByNameSkillsAndOffice()", () => {
   const noAttributesData = {};
 
   test("if worker and search are null, should return false", () => {
-    expect(filterByNameAndSkills(null, null)).toEqual(false);
+    expect(filterWorkerSearch(null, null)).toEqual(false);
   });
 
   test("if there are no attributes on the worker we should return false", () => {
-    expect(filterByNameAndSkills(noAttributesData, "466")).toEqual(false);
+    expect(filterWorkerSearch(noAttributesData, "466", initialTestState)).toEqual(false);
   });
 
   test("if the worker is good, but null is the search, return false", () => {
-    expect(filterByNameAndSkills(goodWorkerData, null)).toEqual(true);
+    expect(filterWorkerSearch(goodWorkerData, null, initialTestState)).toEqual(true);
   });
 
   test("if there is no default data, but the value is found elsewhere, we should return true", () => {
-    expect(filterByNameAndSkills(noDefaultData, "Apache")).toEqual(true);
+    expect(filterWorkerSearch(noDefaultData, "Apache", initialTestState )).toEqual(true);
   });
 
   test("if there is no routing data, but the value is found elsewhere, we should return true", () => {
-    expect(filterByNameAndSkills(noRoutingData, "466")).toEqual(true);
+    expect(filterWorkerSearch(noRoutingData, "466", initialTestState)).toEqual(true);
   });
 
   test("if there is no name data, but the value is found elsewhere, we should return true", () => {
-    expect(filterByNameAndSkills(noNameData, "466")).toEqual(true);
+    expect(filterWorkerSearch(noNameData, "466", initialTestState)).toEqual(true);
   });
 
   test("if there is no office data, but the value is found elsewhere, we should return true", () => {
-    expect(filterByNameAndSkills(noOfficeData, "466")).toEqual(true);
+    expect(filterWorkerSearch(noOfficeData, "466", initialTestState)).toEqual(true);
   });
 
   test("should find a skill in the routing skill list", () => {
-    expect(filterByNameAndSkills(goodWorkerData, "466")).toEqual(true);
+    expect(filterWorkerSearch(goodWorkerData, "466", initialTestState)).toEqual(true);
   });
 
   test("should find a skill in the default skill list", () => {
-    expect(filterByNameAndSkills(goodWorkerData, "fake")).toEqual(true);
+    expect(filterWorkerSearch(goodWorkerData, "fake", initialTestState)).toEqual(true);
   });
 
   test("should find n_number", () => {
-    expect(filterByNameAndSkills(goodWorkerData, "N666")).toEqual(true);
+    expect(filterWorkerSearch(goodWorkerData, "N666", initialTestState)).toEqual(true);
   });
 
   test("should find n_number, caps should not matter", () => {
-    expect(filterByNameAndSkills(goodWorkerData, "n666")).toEqual(true);
+    expect(filterWorkerSearch(goodWorkerData, "n666", initialTestState)).toEqual(true);
   });
 
   test("should not find the ID", () => {
-    expect(filterByNameAndSkills(goodWorkerData, "N5666")).toEqual(false);
+    expect(filterWorkerSearch(goodWorkerData, "N5666", initialTestState)).toEqual(false);
   });
 
   test("should find the name", () => {
-    expect(filterByNameAndSkills(goodWorkerData, "Apache")).toEqual(true);
+    expect(filterWorkerSearch(goodWorkerData, "Apache", initialTestState)).toEqual(true);
   });
 
   test("should find the office", () => {
-    expect(filterByNameAndSkills(goodWorkerData, "Office")).toEqual(true);
+    expect(filterWorkerSearch(goodWorkerData, "Office", initialTestState)).toEqual(true);
+  });
+
+  test("should find the profile id", () => {
+    expect(filterWorkerSearch(goodWorkerData, "396", initialTestState)).toEqual(true);
+  });
+
+  test("should find the profile name", () => {
+    expect(filterWorkerSearch(goodWorkerData, "test4", initialTestState)).toEqual(true);
+  });
+
+  test("should find the ou name", () => {
+    expect(filterWorkerSearch(goodWorkerData, "operatingUnitName", initialTestState)).toEqual(true);
+  });
+});
+
+describe("filterSkillsByName", () => {
+  const skill = {
+    name: "skill1"
+  }
+  test("Skill is null", () => {
+    expect(filterSkillsByName(null, "search")).toEqual(false);
+  });
+  test("Search value is null", () => {
+    expect(filterSkillsByName(skill, null)).toEqual(true);
+  });
+  test("Search value is found", () => {
+    expect(filterSkillsByName(skill, "skil")).toEqual(true);
+  });
+  test("Search value is not found", () => {
+    expect(filterSkillsByName(skill, "butter")).toEqual(false);
+  });
+  test("Skill has no name", () => {
+    expect(filterSkillsByName({}, "butter")).toEqual(false);
   });
 });

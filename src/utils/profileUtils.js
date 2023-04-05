@@ -55,6 +55,15 @@ export const formatCallTagsName = name => {
   return _.startCase(name);
 };
 
+export const formatSelfServiceIndicatorData = profileId => {
+  const formattedProfileId = typeof profileId === "string" ? parseInt(profileId) : profileId; // do we need this extra step? 
+  console.log("formattted profile ID", formattedProfileId);
+  if(formattedProfileId >= 39){
+    return  <Check />;
+  }
+  return "";
+};
+
 export const profileSettingsViews = [
   {
     value: "PROFILE_DIRECTORY",

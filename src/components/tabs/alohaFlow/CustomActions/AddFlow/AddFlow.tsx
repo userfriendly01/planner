@@ -21,7 +21,8 @@ import {
   CctSharedCallFlowDb,
   FlowDropDownList,
   FlowKeys,
-  FlowMasterData
+  FlowMasterData,
+  ViewOrAddProps
 } from "../../AlohaFlow.Interfaces";
 import {
   addFlowRule,
@@ -38,18 +39,19 @@ import {
   getGraphQLEndpoint,
   initializedAlertBar,
   languageOffer,
-  userDestination
+  userDestination,
+  flowType
 } from "utils";
 import { getGridMasterData } from "../../DataGridFlow/GridMaster";
 import {
   AlertBarProps, FormValidationRule
 } from "utils/interfaces";
 import { AzureSPA } from "globals";
-
+import { AddOrView } from "../CustomActionsCommon/AddOrView";
 export interface AddFlowModalProps {
   isOpen: boolean;
   newId: number;
-  openAddModal: (flag: boolean, isSubmitted?: boolean, row?:CctSharedCallFlowDb, deleteRow?: boolean) => void;
+  openAddModal: (flag: boolean, isSubmitted?: boolean, row?:CctSharedCallFlowDb) => void;
 }
 
 export const AddFlow = ({
@@ -60,8 +62,11 @@ export const AddFlow = ({
   const [flowRule, setFlowRule] = useState({ ...initRule });
   const [dropDownValues, setDropDownValues] = useState(flowDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
-
-
+  const [displayRecords, setDisplayRecords] = useState({
+    callerType: false,
+    dataRequests: false,
+    callFlowRoute: false
+  });
   useEffect(() => {
     async function fetchData() {
       const masterData: string = localStorage.getItem(FLOW_MASTER_DATA);
@@ -77,11 +82,19 @@ export const AddFlow = ({
         brand: masterDataObject.brand,
         channel: masterDataObject.channel,
         languageOffer: languageOffer,
-        userDestination: userDestination
+        userDestination: userDestination,
+        callFlowRoute: masterDataObject?.callFlowRoute,
+        callerType: masterDataObject?.callerType,
+        dataRequests: masterDataObject?.dataRequests,
+        type: flowType
       }));
     }
     fetchData();
-
+    setDisplayRecords({
+      callerType: false,
+      dataRequests: false,
+      callFlowRoute: false
+    });
   }, []);
 
   const handleClose = (flag: boolean) => {
@@ -91,9 +104,13 @@ export const AddFlow = ({
     }));
   };
 
-  function handleInputChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    const key: string = event.target.name;
-    let value: string = event.target.value;
+  function handleInputChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,valuePassed?:string,key?:string) {
+    let value: string;
+    if(valuePassed && typeof(valuePassed) === "string" && !displayRecords[key as keyof ViewOrAddProps]){
+      value = valuePassed;
+    } else{
+      value = event.target.value;
+    }
     value = (key === "pkey" && !value.startsWith("+")) ? `+1${value}` : value;
     const newFlowRule: FormValidationRule = {
       [key]: {
@@ -145,6 +162,13 @@ export const AddFlow = ({
     return defaultValue;
   }
 
+  function navigateBtns(display:boolean,key:string) {
+    setDisplayRecords((records:ViewOrAddProps) => ({
+      ...records,
+      [key]: display
+    }));
+  }
+
   function handleOnCreateRoute() {
     const isValidForm: boolean = validateRoute();
     if (isValidForm) {
@@ -158,7 +182,7 @@ export const AddFlow = ({
       addFlowRule(flowRule, accessToken, graphQlApiUrl, curTime, dataRequests).then(apiResponse => {
         if (!apiResponse.errors) {
           const newFlowRule: CctSharedCallFlowDb = {
-            pkey: "${flowRule.pkey.value}",
+            pkey: flowRule.pkey.value,
             content: {
               callFlowRoute: stringValue(flowRule,"callFlowRoute", ""),
               callerType: stringValue(flowRule,"callerType", ""),
@@ -183,10 +207,12 @@ export const AddFlow = ({
             callDetails2: stringValue(flowRule,"callDetails2", ""),
             lineOfBusiness: stringValue(flowRule,"lineOfBusiness", ""),
             marketingChannel: stringValue(flowRule,"marketingChannel", ""),
+            tollFreeNumber: stringValue(flowRule,"tollFreeNumber", ""),
             whisper: stringValue(flowRule,"whisper", ""),
             requestID: stringValue(flowRule,"requestID", ""),
             userDestination: flowRule.userDestination.value || "",
-            rangeIndicator: stringValue(flowRule,"rangeIndicator", "")
+            rangeIndicator: stringValue(flowRule,"rangeIndicator", ""),
+            type: flowRule.type.value || ""
           };
           openAddModal(false, true, newFlowRule);
           setAlertBar((alertBarProps: AlertBarProps) => ({
@@ -225,21 +251,29 @@ export const AddFlow = ({
           <Grid container rowSpacing={3}>
             {
               flowFields.map(({
-                label, key, control, required = false
+                label, key, control, required = false, fieldType, gridSize = 12
               }) => {
+                if(fieldType &&displayRecords[key as keyof ViewOrAddProps] ) {
+                  control = "input";
+                }
                 return (
-                  <Grid key={key} item xs={4}>
-                    <ComponentControl
-                      control={control}
-                      name={key}
-                      label={label}
-                      type="text"
-                      value={flowRule[key as keyof FlowKeys].value}
-                      error={flowRule[key as keyof FlowKeys].error}
-                      dropDownOptions={dropDownValues[key as keyof FlowDropDownList] || []}
-                      onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => handleInputChange(event)}
-                      required={required}
-                    />
+                  <Grid container key = {key} item xs = {4}>
+                    <Grid key = {key} item xs = {gridSize}>
+                      <ComponentControl
+                        control={control}
+                        name={key}
+                        label={label}
+                        type="text"
+                        value={flowRule[key as keyof FlowKeys].value}
+                        error={flowRule[key as keyof FlowKeys].error}
+                        dropDownOptions={dropDownValues[key as keyof FlowDropDownList] || []}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, value?:string) => handleInputChange(event,value,key)}
+                        required={required}
+                      />
+                    </Grid>
+                    {(fieldType === "viewAndAdd")?(<Grid item xs={1}>
+                      <AddOrView navigateViewOrAdd = {navigateBtns} keys = {key}></AddOrView>
+                    </Grid>):(<div></div>)}
                   </Grid>
                 );
               })

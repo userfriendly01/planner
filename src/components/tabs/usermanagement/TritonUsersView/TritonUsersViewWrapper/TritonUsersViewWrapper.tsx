@@ -2,7 +2,6 @@ import {
   ManagementContainer,
   StyledPaper
 } from "./TritonUsersViewWrapper.Styles";
-import { TritonUserManagementWrapperProps } from "./TritonUsersViewWrapper.Interfaces";
 import {
   TritonUsersHeader,
   Pagination,
@@ -12,20 +11,17 @@ import { useAdminState } from "context";
 import { Worker } from "globals";
 import React from "react";
 import {
-  filterByNameAndSkills,
+  filterWorkerSearch,
   sortWorkersByFullName
 } from "utils";
 
-const TritonUserManagementWrapper: any = (props: TritonUserManagementWrapperProps) => {
-  const {
-    workerOpts,
-    setWorkerOpts
-  } = props;
+const TritonUserManagementWrapper: any = () => {
 
   const defaultTableState: any = {
     searchBy: "",
     selected: [],
     managerFilter: null,
+    searchResults: [],
     deltaFilter: false,
     pagination: {
       usersPerPage: 25,
@@ -60,8 +56,8 @@ const TritonUserManagementWrapper: any = (props: TritonUserManagementWrapperProp
 
     //filter by searchBy
     const trimmedSearch = tableState.searchBy.trim();
-    filteredList = filteredList.filter((worker: any) => filterByNameAndSkills(worker, trimmedSearch));
-
+    const searchResults = filteredList.filter((worker: any) => filterWorkerSearch(worker, trimmedSearch, state));
+    filteredList = searchResults;
     console.log("**Search FL", filteredList);
 
     const length = filteredList.slice().length;
@@ -75,6 +71,7 @@ const TritonUserManagementWrapper: any = (props: TritonUserManagementWrapperProp
     setTableState({
       ...tableState,
       filteredList,
+      searchResults,
       pagination: {
         ...tableState.pagination,
         length: length,
@@ -95,8 +92,6 @@ const TritonUserManagementWrapper: any = (props: TritonUserManagementWrapperProp
         <TritonUserTable
           tableState={tableState}
           setTableState={setTableState}
-          workerOpts={workerOpts}
-          setWorkerOpts={setWorkerOpts}
         />
       </StyledPaper>
       <Pagination

@@ -26,6 +26,7 @@ import {
   ExportOptionsButton
 } from "./ExportButtons";
 import { ProcessingModal } from "./Processing";
+import { checkIfBulkAdmin } from "authentication";
 import { Dropdown } from "components";
 import { useAdminState } from "context";
 import React from "react";
@@ -56,6 +57,8 @@ const BulkChanges = () => {
   };
 
   return (
+    <>
+    { checkIfBulkAdmin ?
     <BulkChangesWrapper>
       <Dropdown
         label="Select a change type"
@@ -151,6 +154,11 @@ const BulkChanges = () => {
         }}
       />
     </BulkChangesWrapper>
+    : <div>
+      This view is temporarily restricted to Game of Phones Product Owners and Admins
+    </div>
+    }
+    </>
   );
 };
 

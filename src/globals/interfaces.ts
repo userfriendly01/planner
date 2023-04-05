@@ -232,7 +232,8 @@ export interface Worker {
   inactiveForwardToType?: string,
   sid: string,
   skillsDifferent: boolean,
-  zeroOutEnabled?: boolean
+  zeroOutEnabled?: boolean,
+  selfServiceInd?: boolean
 }
 
 export interface WorkerAttributeSkills {
@@ -284,3 +285,5 @@ export interface OperatingUnit {
   ou_sid: string,
   ou_name: string
 }
+
+export type Control = "input" | "select" | "autoComplete" | "timePicker";

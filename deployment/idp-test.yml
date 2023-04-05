@@ -10,5 +10,5 @@ idp:
         platforms:
           - type: spa
             reply_urls:
-              - https://triton-test.lmig.com/triton-admin
+              - https://triton-test.lmig.com/triton-admin/*
         rotate_secret_enabled: true

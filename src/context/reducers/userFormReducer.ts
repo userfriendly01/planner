@@ -10,6 +10,7 @@ import { formatE164PhoneNumber } from "utils/formatNumberUtils";
 import { calabrioTimeZones } from "utils/calabrioUtils";
 import { getValidSkillsObject } from "utils/skillsUtils";
 import { getZeroOutEnabledFromProfile } from "utils/userManagementUtils";
+import { fabClasses } from "@mui/material";
 
 const searchParams = SearchParams.getValues();
 
@@ -45,7 +46,8 @@ export const userFormActions = {
   UPDATE_MANAGER: "UPDATE_MANAGER",
   UPDATE_N_NUMBER: "UPDATE_N_NUMBER",
   UPDATE_PHONE_NUMBER: "UPDATE_PHONE_NUMBER",
-  UPDATE_TEAM: "UPDATE_TEAM"
+  UPDATE_TEAM: "UPDATE_TEAM",
+  UPDATE_SELF_SERVICE_INDICATOR: "UPDATE_SELF_SERVICE_INDICATOR"
 };
 
 export const initialUserFormState: UserFormState = {
@@ -125,7 +127,9 @@ export const initialUserFormState: UserFormState = {
   userPreviouslyAdded: false,
   zeroOutEnabled: false,
   zeroOutEnabledUpdated: false,
-  editDisabled: false
+  editDisabled: false,
+  selfServiceInd: false,
+  selfServiceIndUpdated: false
 };
 
 export const userFormReducer = (state: UserFormState, action: Action): UserFormState => {
@@ -275,6 +279,15 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         zeroOutEnabledUpdated: true
       };
     }
+
+    case userFormActions.UPDATE_SELF_SERVICE_INDICATOR:{
+      return {
+        ...state,
+        selfServiceInd: !state.selfServiceInd,
+        selfServiceIndUpdated: true
+      };
+    }
+
     case userFormActions.RESET_FORM: {
       console.log("initialUserFormState should have empty skill object", initialUserFormState);
       return {
@@ -454,6 +467,7 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         },
         didUser: worker.directDialNum ? true : false,
         zeroOutEnabled: worker.zeroOutEnabled || false,
+        selfServiceInd: worker. selfServiceInd || false,
         editDisabled: worker.directDialNum ? true : false
       };
       return finalObj;
@@ -505,6 +519,7 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         },
         didUser: worker.directDialNum ? true : false,
         zeroOutEnabled: worker.zeroOutEnabled || false,
+        selfServiceInd: worker.selfServiceInd || false,
         editDisabled: worker.directDialNum ? true : false
       };
       console.log("FINAL", finalObj);
