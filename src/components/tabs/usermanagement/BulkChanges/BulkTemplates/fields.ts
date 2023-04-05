@@ -461,7 +461,6 @@ export const FIELDS: Fields = {
       try{
         const didUser = isDidUser(didField, rowNumber);
         if(didUser && field === "y"){
-          // do we need profile validation ?
           const profileFieldName = "Profile Id";
           const profileId = cleanupField(row[profileFieldName], "number");
           const profileThreshold = 39;

@@ -684,7 +684,7 @@ describe("<BasicFormInfo />", () => {
       });
       describe("Self Service Indicator Switch", () => {
         beforeEach(() => {
-          //getOverflowSkillFromProfile.mockReturnValue(undefined);
+          getOverflowSkillFromProfile.mockReturnValue(undefined);  // TODO this was commented out because of failing deploy
           useFormState.mockReturnValue({
             ...initialFormState,
             formMode: formModes.INSERT,

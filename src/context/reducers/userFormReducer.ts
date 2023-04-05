@@ -128,8 +128,8 @@ export const initialUserFormState: UserFormState = {
   zeroOutEnabled: false,
   zeroOutEnabledUpdated: false,
   editDisabled: false,
-  selfServiceInd: false,   //TODO - is this messing the deployment?
-  selfServiceIndUpdated: false  //TODO - is this messing the deployment?
+  selfServiceInd: false,
+  selfServiceIndUpdated: false
 };
 
 export const userFormReducer = (state: UserFormState, action: Action): UserFormState => {

@@ -343,9 +343,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     if (form.inactiveForwardTo.value !== null && form.inactiveForwardTo.updated) {
       payload.inactiveForwardTo = form.inactiveForwardTo.value;
     }
-    // if(form.selfServiceIndUpdated){ // not specifying DID - because we want to update it to false even if did is removed 
-    //   payload.selfServiceInd = form.selfServiceInd;
-    // }
 
     updateUser(worker.sid, payload)
       .then(dbWorker => {
