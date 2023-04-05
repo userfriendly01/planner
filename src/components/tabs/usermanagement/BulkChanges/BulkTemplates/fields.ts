@@ -167,7 +167,7 @@ export const FIELDS: Fields = {
           const fetchedUser = await fetchUser(field);
 
           row.attributes.manager_first_name = fetchedUser.firstName; // todo: is it ok to add this to attributes?
-          row.attribute.manager_last_name = fetchedUser.lastName;
+          row.attributes.manager_last_name = fetchedUser.lastName;
         } catch (err) {
           console.error(err.message, err);
           return rejectPromise(`Error thrown fetching ${fieldName} from HR Database for row ${rowNumber}`, rowNumber);

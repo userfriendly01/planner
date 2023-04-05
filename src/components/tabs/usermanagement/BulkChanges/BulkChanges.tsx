@@ -1,7 +1,6 @@
 import {
   BulkCreateForm,
-  BulkUpdateForm,
-  BulkAddManagerForm
+  BulkUpdateForm
 } from "./BulkActions";
 import {
   readUploadFile,
@@ -12,6 +11,7 @@ import {
   View,
   views
 } from "./BulkChanges.Interfaces";
+import { getCreateTemplates } from "./BulkTemplates";
 import {
   BulkChangesWrapper,
   ButtonWrapper,
@@ -41,6 +41,7 @@ const BulkChanges = () => {
   const [ uploadedForm, setUploadedForm ] = React.useState(null);
   const [ filenameText, setFilenameText ] = React.useState(null);
   const [ showProcessingModal , setShowProcessingModal ] = React.useState(false);
+  const createTemplates = getCreateTemplates(state);
 
   React.useEffect(() => {
     consolidateTemplates(selectedTemplates, setConsolidatedTemplates);
@@ -64,7 +65,7 @@ const BulkChanges = () => {
           setView(view);
           resetBulkChanges();
           if(view === views.BULK_ADD_MANAGER){
-            setSelectedTemplates([views.BULK_ADD_MANAGER])
+            setSelectedTemplates([createTemplates.CREATE_MANAGER])
           }
         }}
         styles={{

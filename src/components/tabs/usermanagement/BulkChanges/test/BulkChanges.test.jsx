@@ -1,6 +1,5 @@
 import BulkChanges from "../BulkChanges";
 import {
-  BulkAddManagerForm,
   BulkCreateForm,
   BulkUpdateForm
 } from "../BulkActions";
@@ -27,7 +26,6 @@ import * as XLSX from "xlsx";
 import { Modal } from "@mui/material";
 
 jest.mock("../BulkActions", () => ({
-  BulkAddManagerForm: jest.fn(),
   BulkCreateForm: jest.fn(),
   BulkUpdateForm: jest.fn()
 }));
@@ -78,7 +76,6 @@ describe("<BulkChanges />", () => {
     jest.clearAllMocks();
     setupMockedComponents({
       Dropdown,
-      BulkAddManagerForm,
       BulkCreateForm,
       BulkUpdateForm,
       ExportTemplateButton,
@@ -141,15 +138,14 @@ describe("<BulkChanges />", () => {
     });
   });
   describe("View is updated to views.BULK_ADD_MANAGER ", () => {
-    test("should update view and clear form", async () => {
+    test("should render with steps 1, 2 & 3 ", async () => {
       const rendered = render(<BulkChanges />);
       expect(BulkCreateForm.mock.calls.length).toBe(2);
-      expect(BulkAddManagerForm.mock.calls.length).toBe(0);
       const updateView = Dropdown.mock.calls[1][0].updateValue;
       act(() => updateView(null, views.BULK_ADD_MANAGER));
-      expect(BulkAddManagerForm.mock.calls.length).toBe(2);
-      expect(rendered.container).not.toHaveTextContent("Step 2: Export Template & Template Options");
-      expect(rendered.container).not.toHaveTextContent("Step 3: Upload completed Spreadsheet");
+      expect(rendered.container).toHaveTextContent("Step 1: Mentally Prepare");
+      expect(rendered.container).toHaveTextContent("Step 2: Export Template & Template Options");
+      expect(rendered.container).toHaveTextContent("Step 3: Upload completed Spreadsheet");
       expect(Dropdown.mock.calls[2][0].value).toBe(views.BULK_ADD_MANAGER);
     });
   });

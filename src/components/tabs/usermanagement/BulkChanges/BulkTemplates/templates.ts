@@ -109,7 +109,6 @@ const processCreateManager = async (row: any, state: any) => {
 
   const managerNNumberFieldName = "Manager N Number";
   const managerNNumberField = cleanupField(row[managerNNumberFieldName], "string");
-
   // creating a new team
   const isNewTeam = row.newTeam;
   if (isNewTeam) {
@@ -139,7 +138,7 @@ const processCreateManager = async (row: any, state: any) => {
   body.manager_last_nme = row.attributes.manager_last_name;
   body.manager_n_num = managerNNumberField;
   body.profile_id = row.attributes.profile_id;
-  body.calabrio_team_ids = row.groupId;
+  body.calabrio_team_ids = JSON.stringify([row.groupId]);
 
   try {
     await addManager(body);
