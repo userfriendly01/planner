@@ -18,6 +18,7 @@ const ExportButton = (props: ExportTritonUserProps) => {
     Object.keys(worker.attributes).forEach((key: any) => {
       workerObj[key] = worker.attributes[key]
     });
+    delete workerObj.attrbutes;
     return workerObj;
   })
 
