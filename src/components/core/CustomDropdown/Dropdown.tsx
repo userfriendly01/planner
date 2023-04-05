@@ -8,7 +8,7 @@ import styled from "styled-components";
 
 /*
   To use this shared dropdown:
-    options: an array of objects where the display text is named "label" within the object and the unique identifier set as "value". 
+    options: an array of objects where the display text is named "label" within the object and the unique identifier set as "value".
        The rest of the object structure doesnt matter
     multiple: Pass this boolean as "true" if you want the option to select multiple dropdown options
     divider: If you want to display a divider in your list, add an object to the array where the label is "divider"
@@ -68,11 +68,15 @@ export const Dropdown = (props: any) => {
       sx={stylesObject}
       renderInput={(params: any) => <TextField {...params} label={label} error={error} key={props["data-option-index"]} />}
       renderOption={(props: any, option: any) => {
-        if (option.label === "divider") {
+        if (option?.label === "divider") {
           return <Divider key={props["data-option-index"]} />;
         } else if (CustomRender){
           return <ListItem  {...props} key={props["data-option-index"]}>
             <CustomRender option={option}/>
+          </ListItem>;
+        } else if(!option?.label){
+          return <ListItem  {...props} key={props["data-option-index"]}>
+            {option}
           </ListItem>;
         } else {
           return <ListItem  {...props} key={props["data-option-index"]}>

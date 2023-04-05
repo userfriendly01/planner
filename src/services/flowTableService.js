@@ -22,10 +22,14 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
               listCctSharedCallFlowDbs(limit: 10000, nextToken: ${nextToken ? JSON.stringify(nextToken) : nextToken}) {
                 nextToken
                 items {
-                  pkey
+                  accountManager
+                  affinityVDN
                   agentId
                   brand
+                  callDetails1
+                  callDetails2
                   callFlowTemplate
+                  callTypeDescription
                   channel
                   content {
                     callerType
@@ -38,19 +42,17 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
                   createTime
                   dialedDescription
                   employeeId
-                  accountManager
-                  affinityVDN
-                  callTypeDescription
-                  transferCode
                   internetPlacement
-                  callDetails1
-                  callDetails2
                   lineOfBusiness
                   marketingChannel
-                  whisper
-                  requestID
-                  userDestination
+                  pkey
                   rangeIndicator
+                  requestID
+                  tollFreeNumber
+                  transferCode
+                  type
+                  userDestination
+                  whisper
                 }
               }
             }
@@ -120,7 +122,7 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
                 callFlowTemplate: "${item.callFlowTemplate || ""}",
                 channel: "${item.channel}",
                 content: {
-                  callFlowRoute: "${item.agentId || ""}",
+                  callFlowRoute: "${item.content?.callFlowRoute || ""}",
                   callerType: "${item.content?.callerType || ""}",
                   greetingMessages: ${JSON.stringify(item.content?.greetingMessages)},
                   transferNumber: "${item.content?.transferNumber || ""}",
@@ -137,12 +139,14 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
                 internetPlacement: "${item.internetPlacement || ""}",
                 callDetails1: "${item.callDetails1 || ""}",
                 callDetails2: "${item.callDetails2 || ""}",
+                tollFreeNumber: "${item.tollFreeNumber || ""}",
                 lineOfBusiness: "${item.lineOfBusiness || ""}",
                 marketingChannel: "${item.marketingChannel || ""}",
                 whisper: "${item.whisper || ""}",
                 requestID: "${item.requestID || ""}",
-                userDestination: "${item.userDestination}",
-                rangeIndicator:"${item.rangeIndicator}"
+                userDestination: "${item.userDestination || ""}",
+                rangeIndicator:"${item.rangeIndicator || ""}",
+                type: "${item.type || ""}"
               }) {
               pkey
               agentId
@@ -167,12 +171,14 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
               internetPlacement
               callDetails1
               callDetails2
+              tollFreeNumber
               lineOfBusiness
               marketingChannel
               whisper
               requestID
               userDestination
               rangeIndicator
+              type
       }
           }
       `,
@@ -232,12 +238,14 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
                   internetPlacement: "${item.internetPlacement?.value || ""}",
                   callDetails1: "${item.callDetails1?.value || ""}",
                   callDetails2: "${item.callDetails2?.value || ""}",
+                  tollFreeNumber: "${item.tollFreeNumber?.value || ""}",
                   lineOfBusiness: "${item.lineOfBusiness?.value || ""}",
                   marketingChannel: "${item.marketingChannel?.value || ""}",
                   whisper: "${item.whisper?.value || ""}",
                   requestID: "${item.requestID?.value || ""}",
-                  userDestination: "${item.userDestination||""}",
-                  rangeIndicator: "${item.rangeIndicator || ""}"
+                  userDestination: "${item.userDestination?.value||""}",
+                  rangeIndicator: "${item.rangeIndicator?.value || ""}",
+                  type: "${item.type?.value || ""}"
               }
           ) {
               agentId
@@ -263,12 +271,14 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
               internetPlacement
               callDetails1
               callDetails2
+              tollFreeNumber
               lineOfBusiness
               marketingChannel
               whisper
               requestID
               userDestination
               rangeIndicator
+              type
             }
           }
         `,
@@ -329,11 +339,13 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
               internetPlacement
               callDetails1
               callDetails2
+              tollFreeNumber
               lineOfBusiness
               marketingChannel
               whisper
               requestID
               rangeIndicator
+              type
             }
           }
       `,

@@ -12,8 +12,9 @@ import {
   Grid, Button
 } from "@mui/material";
 import {
-  CustomToast, ComponentControl
+  CustomToast, ComponentControl, Dropdown
 } from "components";
+import { AddOrView } from "../../CustomActionsCommon/AddOrView";
 
 const validFlowData = {
   id: 1,
@@ -57,7 +58,9 @@ const mockMasterData = {
 jest.mock("@mui/material", () => ({
   __esModule: true,
   Grid: jest.fn(),
-  Button: jest.fn()
+  Button: jest.fn(),
+  TextField: jest.fn(),
+  Paper: jest.fn()
 }));
 
 jest.mock("@mui/x-date-pickers/TimePicker", () => ({
@@ -69,7 +72,14 @@ jest.mock("components", () => {
   return{
     __esModule: true,
     CustomToast: jest.fn(),
-    ComponentControl: jest.fn()
+    ComponentControl: jest.fn(),
+    Dropdown: jest.fn()
+  };
+});
+jest.mock("../../CustomActionsCommon/AddOrView",()=>{
+  return{
+    __esModule: true,
+    AddOrView: jest.fn()
   };
 });
 
@@ -113,7 +123,9 @@ describe("<AddFlow />", () => {
       Grid,
       Button,
       ComponentControl,
-      CustomToast
+      CustomToast,
+      Dropdown,
+      AddOrView
     });
     localStorage.setItem(FLOW_MASTER_DATA, JSON.stringify(mockMasterData));
   });
@@ -160,6 +172,24 @@ describe("<AddFlow />", () => {
       expect(addFlowPagePolicyTypeAttr).toBeTruthy();
     });
   });
+  describe("Test for AddOrView Change",()=>{
+    test("Simulate the AddOrView Button ", () => {
+      renderAddFlow(true);
+      const navigateBtns = AddOrView.mock.calls[0][0].navigateViewOrAdd;
+      act(()=>{ navigateBtns(true,"callerType"); });
+      expect(navigateBtns).toBeTruthy();
+    });
+  });
+  describe("Test for CustomToast Change",()=>{
+    test("Simulate the customToast Button ", () => {
+      renderAddFlow(true);
+      const customToastButton = CustomToast.mock.calls[0][0].onClose;
+      act(()=>{
+        customToastButton();
+      });
+      expect(customToastButton).toBeTruthy();
+    });
+  });
   describe("Add flow Bottom down",()=>{
     // test("Validate Flow Rule with null",()=>{
     //   const {
@@ -189,6 +219,9 @@ describe("<AddFlow />", () => {
       const channelAttr = ComponentControl.mock.calls[3][0].onChange;
       const brandAttr = ComponentControl.mock.calls[4][0].onChange;
       const userDestAttr = ComponentControl.mock.calls[24][0].onChange;
+      const callerTypeAttr = ComponentControl.mock.calls[7][0].onChange;
+      // Check Array indexes
+      const callFlowRouteAttr = ComponentControl.mock.calls[7][0].onChange;
       const eventPhoneNumValue = {
         target: {
           name: "pkey",
@@ -225,6 +258,8 @@ describe("<AddFlow />", () => {
         channelAttr(eventChannelValue);
         brandAttr(eventBrandValue);
         userDestAttr(eventDestValue);
+        callFlowRouteAttr(eventDestValue,"testing");
+        callerTypeAttr(eventDestValue,"testing");
       });
       addFlowRule.mockResolvedValue({ data: { "items": []}});
       const saveButton = getByRole("button", { name: "createRuleButton" });
@@ -249,16 +284,6 @@ describe("<AddFlow />", () => {
       waitFor(() => {
         expect(openAddModal).toBeCalledTimes(0);
       });
-    });
-  });
-  describe("Test for CustomToast Change",()=>{
-    test("Simulate the customToast Button ", () => {
-      renderAddFlow(true);
-      const customToastButton = CustomToast.mock.calls[0][0].onClose;
-      act(()=>{
-        customToastButton();
-      });
-      expect(customToastButton).toBeTruthy();
     });
   });
 });
