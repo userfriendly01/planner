@@ -79,10 +79,26 @@ export const EditFlow = ({
         type: flowType
       })
     );
+    if(isOpen){
+      initializeFlowRule(selectedRow);
+    }
+
   }, [selectedRow]);
 
   const isInvalidField =(key: string, value: string): boolean =>{
-    return flowRule[key].required && [undefined, "", null].includes(value);
+    return flowRule[key].required && [undefined, "", null, "null"].includes(value);
+  };
+
+  const initializeFlowRule = (data: CctSharedCallFlowDb) =>{
+    const flowInitRule: FormValidationRule = flowFields.reduce((a: FormValidationRule, v: AddFlowFieldsConfigProps) => ({
+      ...a,
+      [v.key]: {
+        error: false,
+        value: v.valueGetter(data),
+        required: v.required || false
+      }
+    }), {});
+    setFlowRule({ ...flowInitRule });
   };
 
   const validateFlow = async (): Promise<boolean> => {
@@ -132,8 +148,8 @@ export const EditFlow = ({
         }));
         return;
       }
-      openEditModal(false, isSubmitted, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully updated!!`, false);
       setFlowRule({ ...initRule });
+      openEditModal(false, isSubmitted, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully updated!!`, false);
     }
   };
 
@@ -164,7 +180,7 @@ export const EditFlow = ({
   ) => {
     let value: string;
     let key: string;
-    if(valuePassed && typeof(valuePassed) === "string"){
+    if(valuePassed && typeof valuePassed === "string"){
       value = valuePassed;
       key = keyPassed;
     }
@@ -236,8 +252,11 @@ export const EditFlow = ({
           <Grid container rowSpacing={3}>
             {
               flowFields.map(({
-                label, key, control, required = false, disableEdit = false, valueGetter, valueSetter
+                label, key, control, required = false, disableEdit = false, valueGetter, valueSetter, dynamicFieldConditionCheck
               }) => {
+                if(dynamicFieldConditionCheck && !dynamicFieldConditionCheck(flowRule)){
+                  return;
+                }
                 return (
                   <Grid key={key} item xs={4}>
                     {(key === "dataRequests") ? (
