@@ -9,7 +9,9 @@ describe("formatWorkerResponse", () => {
     {
       attributes: {
         email_address: "Noone@libertymutual.com",
-        full_name: "Lemming",
+        full_name: "HMM",
+        emp_first_name: "Faith",
+        emp_last_name: "Cuneo",
         manager_last_name: "Doe",
         manager_n_number: "n1111111",
         n_number: "n1111111",
@@ -42,7 +44,9 @@ describe("formatWorkerResponse", () => {
       {
         attributes: {
           email_address: "Noone@libertymutual.com",
-          full_name: "Lemming",
+          full_name: "Faith Cuneo",
+          emp_first_name: "Faith",
+          emp_last_name: "Cuneo",
           manager_last_name: "Doe",
           manager_n_number: "n1111111",
           n_number: "n1111111",
@@ -73,7 +77,9 @@ describe("formatWorkerResponse", () => {
     const unformattedResponseCapNNumber = [
       {
         attributes: {
-          manager_n_number: "N1111111"
+          manager_n_number: "N1111111",
+          emp_first_name: "Faith",
+          emp_last_name: "Cuneo"
         },
         workerSid: "WK8b0da13d2eca675babceedb76d7a15eb"
       }
@@ -81,7 +87,10 @@ describe("formatWorkerResponse", () => {
     const formattedWorker = [
       {
         attributes: {
-          manager_n_number: "n1111111"
+          manager_n_number: "n1111111",
+          emp_first_name: "Faith",
+          emp_last_name: "Cuneo",
+          full_name: "Faith Cuneo"
         },
         sid: "WK8b0da13d2eca675babceedb76d7a15eb",
         skillsDifferent: false

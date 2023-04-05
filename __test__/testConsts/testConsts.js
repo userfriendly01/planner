@@ -50,12 +50,20 @@ export const profileList = [
     profile_nme: "test2",
     profile_id: 2,
     overflow_skill: "whateverOverflowSkill",
+    operating_unit_nme: "operatingUnitName",
     operating_unit_sid: "operatingUnitSid1"
   },
   {
     profile_nme: "test3",
     profile_id: 3,
     overflow_skill: "anotherOverflowSkill",
+    operating_unit_sid: "operatingUnitSid2"
+  },
+  {
+    profile_nme: "test4",
+    profile_id: 396,
+    overflow_skill: "weirdNumberSkill",
+    operating_unit_nme: "operatingUnitName",
     operating_unit_sid: "operatingUnitSid2"
   }
 ];
@@ -425,8 +433,11 @@ export const initialTestState = {
     workers: [
       {
         skillsDifferent: true,
+        sid: "wk049358",
         attributes: {
           full_name: "Faith Cuneo",
+          emp_first_name: "Faith",
+          emp_last_name: "Cuneo",
           n_number: "N0263786",
           extension: "1234",
           profile_id: 12,
@@ -436,6 +447,8 @@ export const initialTestState = {
       {
         attributes: {
           full_name: "Gloria Sake",
+          emp_first_name: "Gloria",
+          emp_last_name: "Sake",
           n_number: "n0000000",
           extension: "2345",
           profile_id: "12",
@@ -446,6 +459,8 @@ export const initialTestState = {
       {
         attributes: {
           full_name: "Bree Hodge",
+          emp_first_name: "Bree",
+          emp_last_name: "Hodge",
           extension: "3456",
           n_number: "n1111111",
           manager_n_number: "n0263512"
@@ -454,6 +469,8 @@ export const initialTestState = {
       {
         attributes: {
           full_name: "Andrew VandeKamp",
+          emp_first_name: "Andrew",
+          emp_last_name: "VandeKamp",
           extension: "7891",
           n_number: "n2222222",
           profile_id: 0,
@@ -463,9 +480,22 @@ export const initialTestState = {
       {
         attributes: {
           full_name: "Susan Delfino",
+          emp_first_name: "Susan",
+          emp_last_name: "Delfino",
           extension: "7833",
           n_number: "n222354",
           profile_id: 0,
+          manager_n_number: "n0260000"
+        }
+      },
+      {
+        attributes: {
+          full_name: "Snowball Jones",
+          emp_first_name: "Snowball",
+          emp_last_name: "Jones",
+          extension: "7891",
+          n_number: "n2222222",
+          profile_id: 2,
           manager_n_number: "n0260000"
         }
       }

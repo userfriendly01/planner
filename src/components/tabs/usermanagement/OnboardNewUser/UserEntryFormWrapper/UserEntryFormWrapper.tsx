@@ -1,7 +1,8 @@
 import {
   UserAction,
   LoadingState,
-  UserEntryFormProps
+  UserEntryFormProps,
+  WorkerOpts
 } from "./UserEntryFormWrapper.Interfaces";
 import {
   DiscrepancyContainer,
@@ -27,31 +28,36 @@ import {
   userFormActions
 } from "context";
 import React from "react";
+import { useNavigate } from 'react-router-dom';
 import { sortWorkersByFullName } from "utils";
+import { formModes } from "globals";
 import { Checkbox } from "@mui/material";
 
-const UserEntryForm = (props: UserEntryFormProps) => {
+const UserEntryForm = () => {
 
-  const {
-    handleClose,
-    setWorkerOpts,
-    workerOpts
-  } = props;
+  const defaultWorkerOpts: WorkerOpts = {
+    action: UserAction.ADD,
+    systems: {
+      triton: true,
+      calabrio_qm: true,
+      calabrio_wfm: false
+    }
+  };
 
   const state = useAdminState();
+  const form = useFormState();
+  const setForm = useFormDispatch();
+  const navigate = useNavigate();
+
   const skills = state.skillContext.skills;
-  const worker = workerOpts.worker;
   const workers = state.workerContext.workers.sort(sortWorkersByFullName);
+  const tritonWorker = workers.find((w: any) => w?.attributes.n_number === form.nNumber.value)
   const managers = state.managerContext.managers;
   const profiles = state.profileContext.profiles;
   const offices = state.officeContext.offices;
 
-  const form = useFormState();
-  const setForm = useFormDispatch();
-  const [forwardToToggle, setForwardToToggle] = React.useState(false);
-
-  console.log("FORM", form);
-
+  const [ workerOpts, setWorkerOpts ] = React.useState(defaultWorkerOpts);
+  const [ forwardToToggle, setForwardToToggle ] = React.useState(false);
   const [loading, updateLoading] = React.useState<LoadingState>({
     lookupUser: false,
     overlayMessage: "",
@@ -59,9 +65,11 @@ const UserEntryForm = (props: UserEntryFormProps) => {
     saveUser: false
   });
 
+  console.log("FORM", form);
+
   const handleResetForm = () => {
+    navigate(-1);
     setForm({ type: userFormActions.RESET_FORM });
-    handleClose();
   };
 
   const handleCheckbox = (checked: boolean, system: string) => {
@@ -98,16 +106,15 @@ const UserEntryForm = (props: UserEntryFormProps) => {
             });
           }}
         /> : null}
-      { workerOpts.action === UserAction.ADD && <Header1>Onboard New User</Header1> }
-      { workerOpts.action === UserAction.EDIT && <Header1>Edit User</Header1> }
-      { workerOpts.action === UserAction.DELETE && <Header1>Deactivate User</Header1> }
-      { workerOpts.action !== UserAction.ADD && <Header2>{worker.attributes.full_name}</Header2> }
-      { workerOpts.action === UserAction.DELETE &&
+      { form.formMode === formModes.INSERT && <Header1>Onboard New User</Header1> }
+      { form.formMode === formModes.UPDATE && <Header1>Edit User</Header1> }
+      { form.formMode === formModes.DELETE && <Header1>Deactivate User</Header1> }
+      { form.formMode !== formModes.INSERT && <Header2>{`${tritonWorker?.attributes.emp_first_name} ${tritonWorker?.attributes.emp_last_name}`}</Header2> }
+      { form.formMode === formModes.DELETE &&
         <DeleteTritonUser
           handleClose={handleResetForm}
           loading={loading}
           workerOpts={workerOpts}
-          setWorkerOpts={setWorkerOpts}
           updateLoading={updateLoading}
         />
       }
@@ -128,7 +135,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       <StyledDivider />
       <HeaderRow>
         <h2>Triton User Settings</h2>
-        { workerOpts.action !== UserAction.DELETE &&
+        { form.formMode !== formModes.DELETE &&
           <Checkbox
             checked={workerOpts.systems.triton}
             onChange={(event: any) => handleCheckbox(event.target.checked, "triton")}
@@ -137,7 +144,7 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       </HeaderRow>
       { workerOpts.systems.triton && <BasicFormInfo
         skills={skills}
-        worker={worker}
+        worker={tritonWorker}
         workers={workers}
         profiles={profiles}
         managers={managers}
@@ -148,23 +155,23 @@ const UserEntryForm = (props: UserEntryFormProps) => {
       <StyledDivider />
       <HeaderRow>
         <h2>Calabrio Quality Management User Settings</h2>
-        { workerOpts.action !== UserAction.DELETE &&
+        { form.formMode !== formModes.DELETE &&
           <Checkbox
             checked={workerOpts.systems.calabrio_qm}
             onChange={(event: any) => handleCheckbox(event.target.checked, "calabrio_qm")}
           />
         }
       </HeaderRow>
-      { workerOpts.systems.calabrio_qm && <CallRecordingForm twilioWorker={worker} /> }
+      { workerOpts.systems.calabrio_qm && <CallRecordingForm twilioWorker={tritonWorker} /> }
       <StyledDivider />
-      { workerOpts.action !== UserAction.DELETE && <UserFormButtons
+      { form.formMode !== formModes.DELETE && <UserFormButtons
         forwardToToggle={forwardToToggle}
         handleClose={handleResetForm}
         loading={loading}
         offices={offices}
         profiles={profiles}
         updateLoading={updateLoading}
-        worker={worker}
+        worker={tritonWorker}
       />
       }
     </ModalContainer>

@@ -18,5 +18,5 @@ export interface SaveResultProps {
 export interface CallFlowConfirmationModalProps {
   confirmationModalOpts: ConfirmationModalOptsProps,
   saveResult: SaveResultProps,
-  tableState: TableState
+  tableState?: TableState
 }

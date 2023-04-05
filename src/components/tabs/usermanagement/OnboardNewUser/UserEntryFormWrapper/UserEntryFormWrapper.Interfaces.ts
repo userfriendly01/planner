@@ -9,7 +9,6 @@ import {
   WorkerAttributeSkills
 } from "globals";
 import { FetchUserResponse } from "services";
-import { View } from "../../UserManagementWrapper/UserManagement.Interfaces";
 import { ExtensionStatusProps } from "../Extension/ExtensionInput/ExtensionInput.Interfaces";
 
 export interface LoadingState {
@@ -32,10 +31,8 @@ export interface UserSystem {
 }
 
 export interface WorkerOpts {
-  worker: any,
   action: UserAction,
-  systems: UserSystem,
-  routedFrom: View
+  systems: UserSystem
 }
 
 export interface UserEntryFormProps {
