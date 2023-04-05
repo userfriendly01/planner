@@ -239,24 +239,39 @@ describe("CREATE_MANAGER", () => {
   beforeEach(() => jest.clearAllMocks());
   const row = {
     rowNumber: 2,
-    acdId: "WK13248",
+    "Manager N Number": "n0003232",
+    parentGroupId: 200,
     attributes: {
       profile_id: 1,
-      n_number: "n0263445",
-      email: "e.mail@lm.com",
-      emp_first_name: "Michael",
-      emp_last_name: "Scott"
+      manager_first_name: "Michael",
+      manager_last_name: "Scott"
     },
-    operatingUnitSid: "operatingUnitSid1",
     groupId: 109,
-    timeZone: "Americas",
-    roles: [{ name: "role1" }],
-    scope: {
-      groups: [],
-      teams: [102]
-    }
   };
-  //TODO When Julia is all set with the processing function
+  describe("newTeam === true", () => {
+    describe("createCalabrioTeam throws an error", () => {
+      test("rejected promise is returned", () => {
+        createManagerProcessFunction();
+      });
+    });
+    describe("createCalabrioTeam is successful", () => {
+      test("addManager is called", () => {
+        createManagerProcessFunction();
+      });
+    });
+  });
+  describe("newTeam === false", () => {
+    describe("addManager throws an error", () => {
+      test("rejected promise is returned", () => {
+
+      });
+    });
+    describe("addManager is successful", () => {
+      test("promise resolves", () => {
+
+      });
+    });
+  });
 });
 describe("UPDATE_WORKER_ATTRIBUTE", () => {
   const updateWorkerAttributesProcessFunction = updateTemplates.UPDATE_WORKER_ATTRIBUTE.processFunction;
