@@ -1,8 +1,4 @@
-import {
-  Button,
-  Tab,
-  Tabs
-} from "@mui/material";
+import { Button } from "@mui/material";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
@@ -11,20 +7,7 @@ export const Content = styled.div`
   flex-direction: column;
 `;
 
-export const StyledTabs = styled(Tabs)`
-  background-color: ${props => props.theme.libertyLightYellow};
-  color: ${props => props.theme.textColor};
-`;
-
-export const StyledTab = styled(Tab)`
-  color: black !important;
-  && {
-    font-size: 1.1em;
-  }
-`;
-
-
-export const StyledTabNew = styled(Button)`
+export const StyledTab = styled(Button)`
   color: black !important;
   && {
     font-size: 1.1em;
@@ -45,7 +28,6 @@ export const DropdownContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: absolute;
-  margin-left: 10px;
   padding: 0px 30px;
   background: rgb(255, 226, 128);
 `;

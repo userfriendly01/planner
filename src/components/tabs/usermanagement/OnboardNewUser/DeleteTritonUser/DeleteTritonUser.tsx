@@ -74,7 +74,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
         }, timeouts.MODAL_OVERLAY);
       })
       .catch(err => {
-        if (typeof err.response.data.error === "object" ){
+        if (typeof err.response?.data?.error === "object" ){
           resultMessage = `Failed to delete worker ${tritonWorker.sid}`;
         } else {
           resultMessage = err.response.data.error;
@@ -84,7 +84,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
         });
         updateLoading({
           ...loading,
-          overlayMessage: "Error Deleting Triton User",
+          overlayMessage: `Error Deleting Triton User. ${resultMessage}`,
           saveStatus: ModalOverlayStatuses.FAIL,
           saveUser: true
         });
@@ -96,7 +96,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
       <Text>This user will be deactivated in Triton.</Text>
       { isWorkerDid ?
         <ForwardToEntryForm
-          label={"This user has a direct dial number. Please choose a forward to option before confirming."}
+          label="This user has a direct dial number. Please choose a forward to option before confirming."
           updateForwardTo={(inactiveForwardTo: string) => tritonWorker.inactiveForwardTo = inactiveForwardTo}
         />
         : null

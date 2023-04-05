@@ -93,6 +93,47 @@ describe("CallFlowManagementSkills", () => {
       }, getLastInstanceCalled(Modal));
     });
   });
+  describe("setTableState is called", () => {
+    describe("tablestate.profiles length > 0", () => {
+      test("initial form renders as expected", () => {
+        render(<CallFlowManagementSkills />);
+        const setTableState = ActionContainer.mock.calls[0][0].setTableState;
+        act(() => setTableState({
+          ...initialTableState,
+          profiles: [{ profile_id: 32}]
+        }))
+        expect(ActionContainer.mock.calls[3][0].tableState.filteredList).toStrictEqual([initialTestState.skillContext.skills[0]]);
+      });
+    });
+    describe("tablestate.closedFilter === true", () => {
+      test("initial form renders as expected", () => {
+        render(<CallFlowManagementSkills />);
+        const setTableState = ActionContainer.mock.calls[0][0].setTableState;
+        act(() => setTableState({
+          ...initialTableState,
+          closedFilter: true
+        }))
+        expect(ActionContainer.mock.calls[3][0].tableState.filteredList).toStrictEqual([
+          initialTestState.skillContext.skills[1],
+          initialTestState.skillContext.skills[2]
+        ]);
+      });
+    });
+    describe("tablestate.flashFilter === true", () => {
+      test("initial form renders as expected", () => {
+        render(<CallFlowManagementSkills />);
+        const setTableState = ActionContainer.mock.calls[0][0].setTableState;
+        act(() => setTableState({
+          ...initialTableState,
+          flashFilter: true
+        }))
+        expect(ActionContainer.mock.calls[3][0].tableState.filteredList).toStrictEqual([
+          initialTestState.skillContext.skills[2]
+        ]);
+      });
+    });
+  });
+
   describe("confirmationModalOpts.open === true", () => {
     test("CallFlowConfirmationModal should be rendered", () => {
       render(<CallFlowManagementSkills />);

@@ -9,7 +9,6 @@ import {
   TableDataFlex,
   TableText
 } from "./TableUserTable.Styles";
-import { UserAction } from "../../OnboardNewUser/UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 import { Switch } from "@mui/material";
 import {
   Delete,
@@ -53,7 +52,8 @@ const TritonUserTable = (props: TritonUserTableProps) => {
             <CustomTableHeader>NAME</CustomTableHeader>
             <CustomTableHeader>N NUMBER</CustomTableHeader>
             <CustomTableHeader>EXTENSION</CustomTableHeader>
-            <CustomTableHeader>OFFICE</CustomTableHeader>
+            <CustomTableHeader>TEAM/PROFILE</CustomTableHeader>
+            <CustomTableHeader>OU</CustomTableHeader>
             <CustomTableHeader>SKILLS (Current)</CustomTableHeader>
             <CustomTableHeader>SKILLS (Default)</CustomTableHeader>
             <CustomTableHeader>
@@ -101,12 +101,14 @@ const TritonUserTable = (props: TritonUserTableProps) => {
               });
               navigate(`/triton-admin/user`)
             };
+            const profile: any = state.profileContext.profiles.find((p: any) => p.profile_id === worker.attributes.profile_id) || {};
             return (
               <CustomTableRow key={worker.sid} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">
-                <CustomTableData><TableText>{worker.attributes.full_name}</TableText></CustomTableData>
+                <CustomTableData><TableText>{worker.attributes.emp_first_name} {worker.attributes.emp_last_name}</TableText></CustomTableData>
                 <CustomTableData><TableText>{worker.attributes.n_number}</TableText></CustomTableData>
                 <CustomTableData><TableText>{worker.attributes.extension}</TableText></CustomTableData>
-                <CustomTableData><TableText>{worker.attributes.office_location_name}</TableText></CustomTableData>
+                <CustomTableData><TableText>{profile.profile_nme} - {profile.profile_id}</TableText></CustomTableData>
+                <CustomTableData><TableText>{profile.operating_unit_nme}</TableText></CustomTableData>
                 <CustomTableData><TableDataFlex>{formatWorkerAttributeSkillsToHTML(worker.attributes.routing)}</TableDataFlex></CustomTableData>
                 <CustomTableData><TableDataFlex>{formatWorkerAttributeSkillsToHTML(worker.attributes.default_skills)}</TableDataFlex></CustomTableData>
                 <CustomTableData>

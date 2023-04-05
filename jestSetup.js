@@ -4,7 +4,7 @@ require("jest-styled-components");
 beforeAll(() => {
   console.log = jest.fn();
   console.error = jest.fn();
-  console.warn = jest.fn();
+  // console.warn = jest.fn();
 });
 
 jest.mock("authentication");
@@ -44,6 +44,8 @@ jest.mock("services", () => ({
   getOffices: jest.fn(),
   getManagers: jest.fn(),
   getTfn: jest.fn(),
+  getWfmOrg: jest.fn(),
+  getWfmOptions: jest.fn(),
   insertDirectory: jest.fn(),
   retrieveFlowData: jest.fn(),
   retrieveRoutingData: jest.fn(),

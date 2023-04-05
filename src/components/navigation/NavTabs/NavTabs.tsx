@@ -2,7 +2,7 @@ import {
   Content,
   DropdownContainer,
   StyledLink,
-  StyledTabNew,
+  StyledTab,
   StyledTabContainer
 } from "./NavTabs.Styles";
 import React from "react";
@@ -56,24 +56,25 @@ const NavTabs = () => {
         <StyledTabContainer>
           { tabs.map((t: any) => (
               <div
+                data-testid="dropdown-action"
                 onMouseEnter={() => handleDropdownOpen(t.value)}
                 onMouseLeave={() => handleDropdownClosed(t.value)}
               >
-                <StyledTabNew
+                <StyledTab
                   key={t.value}
                   id={`nav-tab-${t.value}`}
                   aria-controls={`nav-tabpanel-${t.value}`}
                   onClick={() => navigate(t.route)}
                 >
                   {t.label}
-                </StyledTabNew>
+                </StyledTab>
                 {t.dropdown && dropdownOpen[t.value] &&
-                <DropdownContainer>
-                  { t.dropdown.map((d: any) => (
-                    <StyledLink to={d.route}>{d.label}</StyledLink>
-                  ))
-                  }
-                </DropdownContainer>
+                  <DropdownContainer>
+                    { t.dropdown.map((d: any) => (
+                      <StyledLink to={d.route}>{d.label}</StyledLink>
+                    ))
+                    }
+                  </DropdownContainer>
                 }
               </div>
             )) }

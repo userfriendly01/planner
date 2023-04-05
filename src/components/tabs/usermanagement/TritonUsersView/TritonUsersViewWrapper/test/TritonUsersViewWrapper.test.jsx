@@ -28,6 +28,7 @@ jest.mock("context", () => ({
 
 const defaultTableState = {
   searchBy: "",
+  searchResults: initialTestState.workerContext.workers,
   selected: [],
   managerFilter: null,
   deltaFilter: false,
@@ -72,7 +73,7 @@ describe("TritonUsersViewWrapper", () => {
           pagination: {
             ...defaultTableState.pagination,
             startingUserIndex: 0,
-            length: 5,
+            length: 6,
             endingUserIndex: 25
           },
           filteredList: initialTestState.workerContext.workers.sort(sortWorkersByFullName)
@@ -85,7 +86,7 @@ describe("TritonUsersViewWrapper", () => {
           pagination: {
             ...defaultTableState.pagination,
             startingUserIndex: 0,
-            length: 5,
+            length: 6,
             endingUserIndex: 25
           },
           filteredList: initialTestState.workerContext.workers.sort(sortWorkersByFullName)
@@ -98,7 +99,7 @@ describe("TritonUsersViewWrapper", () => {
           pagination: {
             ...defaultTableState.pagination,
             startingUserIndex: 0,
-            length: 5,
+            length: 6,
             endingUserIndex: 25
           },
           filteredList: initialTestState.workerContext.workers.sort(sortWorkersByFullName)

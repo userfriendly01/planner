@@ -273,6 +273,8 @@ describe("fields.js", () => {
             attributes: {
               extension: "2345",
               full_name: "Gloria Sake",
+              emp_first_name: "Gloria",
+              emp_last_name: "Sake",
               manager_n_number: "n0263786",
               profile_id: "12",
               n_number: "n0000000"
@@ -370,7 +372,7 @@ describe("fields.js", () => {
         test("returns the profile id options", () => {
           const options = optionsFunction(initialTestState);
           expect(options).toEqual([
-            1, 2, 3
+            1, 2, 3, 396
           ]);
         });
       });

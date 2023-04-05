@@ -99,13 +99,20 @@ describe("<TritonUserTable />", () => {
       expect(rendered.container).toHaveTextContent("NAME");
       expect(rendered.container).toHaveTextContent("N NUMBER");
       expect(rendered.container).toHaveTextContent("EXTENSION");
-      expect(rendered.container).toHaveTextContent("OFFICE");
+      expect(rendered.container).toHaveTextContent("TEAM/PROFILE");
+      expect(rendered.container).toHaveTextContent("OU");
       expect(rendered.container).toHaveTextContent("SKILLS (Current)");
       expect(rendered.container).toHaveTextContent("SKILLS (Default)");
       initialTestState.workerContext.workers.forEach(w => {
-        expect(rendered.container).toHaveTextContent(w.attributes.full_name);
+        expect(rendered.container).toHaveTextContent(w.attributes.emp_first_name);
+        expect(rendered.container).toHaveTextContent(w.attributes.emp_last_name);
         expect(rendered.container).toHaveTextContent(w.attributes.n_number);
         expect(rendered.container).toHaveTextContent(w.attributes.extension);
+        const profile = initialTestState.profileContext.profiles.find(p => p.profile_id === w.attributes.profile_id)
+        if(profile){
+          expect(rendered.container).toHaveTextContent(`${profile.profile_nme} - ${profile.profile_id}`);
+          expect(rendered.container).toHaveTextContent(profile.operating_unit_nme);
+        }
         if(w.attributes.office_location_name){
           expect(rendered.container).toHaveTextContent(w.attributes.office_location_name);
         }

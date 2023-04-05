@@ -11,7 +11,7 @@ import { useAdminState } from "context";
 import { Worker } from "globals";
 import React from "react";
 import {
-  filterByNameAndSkills,
+  filterWorkerSearch,
   sortWorkersByFullName
 } from "utils";
 
@@ -21,6 +21,7 @@ const TritonUserManagementWrapper: any = () => {
     searchBy: "",
     selected: [],
     managerFilter: null,
+    searchResults: [],
     deltaFilter: false,
     pagination: {
       usersPerPage: 25,
@@ -55,8 +56,8 @@ const TritonUserManagementWrapper: any = () => {
 
     //filter by searchBy
     const trimmedSearch = tableState.searchBy.trim();
-    filteredList = filteredList.filter((worker: any) => filterByNameAndSkills(worker, trimmedSearch));
-
+    const searchResults = filteredList.filter((worker: any) => filterWorkerSearch(worker, trimmedSearch, state));
+    filteredList = searchResults;
     console.log("**Search FL", filteredList);
 
     const length = filteredList.slice().length;
@@ -70,6 +71,7 @@ const TritonUserManagementWrapper: any = () => {
     setTableState({
       ...tableState,
       filteredList,
+      searchResults,
       pagination: {
         ...tableState.pagination,
         length: length,

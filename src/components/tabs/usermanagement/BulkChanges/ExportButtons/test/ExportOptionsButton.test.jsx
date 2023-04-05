@@ -39,7 +39,8 @@ const expectedRows = [
     profileId: 3
   },
   {
-    defaultSkills: "bscCbsL2"
+    defaultSkills: "bscCbsL2",
+    profileId: 396
   },
   {
     defaultSkills: "lscUSAA"
@@ -51,7 +52,8 @@ const expectedColumns = [
     options: [
       1,
       2,
-      3
+      3,
+      396
     ],
     textAlign: "center",
     title: "Profile Id",
