@@ -1,7 +1,8 @@
 import ProfileFormFields from "../ProfileFormFields";
 import {
   FormControlLabel,
-  Switch
+  Switch,
+  Tooltip
 } from "@mui/material";
 import {
   profileEntryFormDispatch,
@@ -25,6 +26,7 @@ import {
   initialTestState
 } from "testUtils";
 import React from "react";
+import { ToggleContainer } from "../ProfileEntryForm.Styles";
 
 jest.mock("components", () => ({
   __esModule: true,
@@ -45,7 +47,8 @@ jest.mock("context", () => ({
 
 jest.mock("@mui/material", () => ({
   FormControlLabel: jest.fn(),
-  Switch: jest.fn()
+  Switch: jest.fn(),
+  Tooltip: jest.fn()
 }));
 
 const mockSetForm = jest.fn();
@@ -62,6 +65,7 @@ describe("<ProfileFormFields />", () => {
       OverflowSkillTextField,
       FormControlLabel,
       Switch,
+      Tooltip,
       StyledButton
     });
     profileEntryFormDispatch.mockReturnValue(mockSetForm);
@@ -85,6 +89,7 @@ describe("<ProfileFormFields />", () => {
       expectMockedComponent(rendered, { ProfileOperatingUnitField });
       expectMockedComponent(rendered, { ProfileQueuesSelectField });
       expectMockedComponent(rendered, { ProfileCallTagsSelectField });
+      expectMockedComponent(rendered, { Tooltip }, 1);
     });
     test("Few switch are on by default, like auto answered", () => {
       renderComponent();
@@ -92,6 +97,11 @@ describe("<ProfileFormFields />", () => {
       render(FormControlLabel.mock.calls[1][0].control);
       expect(Switch.mock.calls[0][0].checked).toBe(true);
       expect(Switch.mock.calls[1][0].checked).toBe(false);
+    });
+    test("Disabled self serevice indicator switch with correct tooltip", () => {
+      renderComponent();
+      render(Tooltip.mock.calls[0][0].children);
+      expect(Tooltip.mock.calls[0][0].title).toBe("Self service indicator is applicable to profiles with an id of 39 and above, but is actually set at the worker attribute level");
     });
   });
 

@@ -45,6 +45,7 @@ const processCreateTritonUser = async (row: any, state: any) => {
       body.alternateDid = row.directDialNum;
       body.directDialNum = row.directDialNum;
       body.zeroOutEnabled = row.zeroOutEnabled;
+      body.selfServiceInd = row.selfServiceInd;
     } else {
       body.attributes = row.attributes;
       body.activateEp = false;
@@ -216,7 +217,8 @@ export const getCreateTemplates = (state: any): Templates => {
         FIELDS.DID_USER,
         FIELDS.DIRECT_DIAL_NUMBER,
         FIELDS.ZERO_OUT_ENABLED,
-        FIELDS.OUTGOING_NUMBER
+        FIELDS.OUTGOING_NUMBER,
+        FIELDS.SELF_SERVICE_IND
       ]
     },
     CREATE_CALABRIO_QM_USER: {

@@ -1138,6 +1138,201 @@ describe("fields.js", () => {
       });
 
     });
+    describe("SELF_SERVICE_IND", () => {
+      describe("validateFunction", () => {
+        const selfServiceIndValidateFunction = FIELDS.SELF_SERVICE_IND.validateFunction;
+        test("No matching didField field, rejects with message", async () => {
+          try {
+            await selfServiceIndValidateFunction({
+              rowNumber: 4,
+              "boo": "what"
+            }, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Did User needs to be 'Y' or 'N' for row 4"
+            }));
+          }
+        });
+        test("didField field is not a string, rejects with message", async () => {
+          try {
+            await selfServiceIndValidateFunction({
+              rowNumber: 4,
+              "Did User": 12
+            }, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Did User needs to be 'Y' or 'N' for row 4"
+            }));
+          }
+        });
+        test("didField field is not a Y or N, rejects with message", async () => {
+          try {
+            await selfServiceIndValidateFunction({
+              rowNumber: 4,
+              "Did User": "boo"
+            }, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Did User needs to be 'Y' or 'N' for row 4"
+            }));
+          }
+        });
+        test("didField field is N, rejects with message", async () => {
+          try {
+            await selfServiceIndValidateFunction({
+              rowNumber: 4,
+              "Did User": "N",
+              "Self Service Indicator": "Y"
+            }, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Did User field is 'N', Self Service Indicator is not applicable for row 4"
+            }));
+          }
+        });
+        test("didField field is Y, self service indicator is not a string, rejects with message", async () => {
+          try {
+            await selfServiceIndValidateFunction({
+              rowNumber: 4,
+              "Did User": "Y",
+              "Self Service Indicator": 3
+            }, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Self Service Indicator needs to be needs to be 'Y' or 'N' if DID user is 'Y' for 4"
+            }));
+          }
+        });
+        test("didField field is Y, self service indicator is not provided, rejects with required message", async () => {
+          try {
+            await selfServiceIndValidateFunction({
+              rowNumber: 4,
+              "Did User": "Y",
+              "Self Service Indicator": ""
+            }, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Self Service Indicator is required when DID user is 'Y' for row 4"
+            }));
+          }
+        });
+        test("didField field is Y, self service indicator is not a Y or N, rejects with message", async () => {
+          const row = {
+            rowNumber: 4,
+            "Did User": "Y",
+            "Self Service Indicator": "hi"
+          };
+          try {
+            await selfServiceIndValidateFunction(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Self Service Indicator needs to be needs to be 'Y' or 'N' if DID user is 'Y' for 4"
+            }));
+          }
+        });
+        test("didField field is Y, self service indicator is N, resolves with message", async () => {
+          const row = {
+            rowNumber: 4,
+            "Did User": "Y",
+            "Self Service Indicator": "N"
+          };
+          const result = await selfServiceIndValidateFunction(row, initialTestState);
+          expect(result).toEqual("Self Service Indicator n set for row 4");
+          expect(row).toEqual({
+            ...row,
+            selfServiceInd: false
+          });
+        });
+        test("didField field is Y,self service indicator is Y, profile id is valid format/value, error is thrown, rejects with message", async () => {
+          try {
+            await selfServiceIndValidateFunction({
+              rowNumber: 4,
+              "Did User": "Y",
+              "Self Service Indicator": "Y",
+              "Profile Id": 40
+            }, initialTestState);
+          } catch (e) {
+            expect(JSON.parse(e).rowNumber).toEqual(4);
+            expect(JSON.parse(e).error).toContain("Error thrown setting Self Service Indicator for row 4.");
+          }
+        });
+        test("didField field is Y,self service indicator is Y, Profile Id is invalid format, rejects with message", async () => {
+          try {
+            await selfServiceIndValidateFunction({
+              rowNumber: 4,
+              "Did User": "Y",
+              "Self Service Indicator": "Y",
+              "Profile Id": "thirty nine"
+            }, initialTestState);
+          } catch (e) {
+            expect(JSON.parse(e).rowNumber).toEqual(4);
+            expect(JSON.parse(e).error).toContain("Unable to set Self Service Indicator. Incorrect format for Profile Id for row 4");
+          }
+        });
+        test("didField field is Y,self service indicator is Y, Profile Id is invalid value, rejects with message", async () => {
+          try {
+            await selfServiceIndValidateFunction({
+              rowNumber: 4,
+              "Did User": "Y",
+              "Self Service Indicator": "Y",
+              "Profile Id": 38
+            }, initialTestState);
+          } catch (e) {
+            expect(JSON.parse(e).rowNumber).toEqual(4);
+            expect(JSON.parse(e).error).toContain("Unable to set Self Service Indicator. Incorrect value for Profile Id for row 4 - need Profile Id to be 39 or above");
+          }
+        });
+        test("didField field is Y, self service Indicator is Y, profile id is valid format/value resolves with message", async () => {
+          const row = {
+            rowNumber: 4,
+            "Did User": "Y",
+            "Self Service Indicator": "Y",
+            "Profile Id": 39
+          };
+          const result = await selfServiceIndValidateFunction(row, initialTestState);
+          expect(result).toEqual("Self Service Indicator y set for row 4");
+          expect(row).toEqual({
+            ...row,
+            selfServiceInd: true
+          });
+        });
+        test("didField field is N, self service indicator is not provided, resolves with skip message", async () => {
+          const row = {
+            rowNumber: 4,
+            "Did User": "N",
+            "Self Service Indicator": ""
+          };
+          const result = await selfServiceIndValidateFunction(row, initialTestState);
+          expect(result).toEqual("Self Service Indicator skipped for Non DID user for row 4");
+          expect(row).toEqual({
+            rowNumber: 4,
+            "Did User": "N",
+            "Self Service Indicator": ""
+          });
+        });
+        test("didField field is N, self service indicator is N, resolves with skip message", async () => {
+          const row = {
+            rowNumber: 4,
+            "Did User": "N",
+            "Self Service Indicator": "N"
+          };
+          const result = await selfServiceIndValidateFunction(row, initialTestState);
+          expect(result).toEqual("Self Service Indicator skipped for Non DID user for row 4");
+          expect(row).toEqual({
+            rowNumber: 4,
+            "Did User": "N",
+            "Self Service Indicator": "N"
+          });
+        });
+      });
+    });
     describe("OUTGOING_NUMBER", () => {
       describe("validateFunction", () => {
         const outgoingNumberValidateFunction = FIELDS.OUTGOING_NUMBER.validateFunction;
@@ -1643,7 +1838,10 @@ describe("fields.js", () => {
             "America/New_York (EST/EDT)",
             "America/Los_Angeles (PST/PDT)",
             "America/Denver (MST/MDT)",
-            "America/Chicago (CST/CDT)"
+            "America/Chicago (CST/CDT)",
+            "America/Phoenix (MST)",
+            "Pacific/Honolulu (HST)",
+            "America/Anchorage (AKST/AKDT)"
           ]);
         });
       });

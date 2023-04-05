@@ -103,5 +103,7 @@ export interface UserFormState {
   profileId: FieldState,
   userPreviouslyAdded: boolean,
   zeroOutEnabled: boolean,
-  zeroOutEnabledUpdated: boolean
+  zeroOutEnabledUpdated: boolean,
+  selfServiceInd?: boolean,
+  selfServiceIndUpdated?: boolean
 }

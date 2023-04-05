@@ -12,6 +12,7 @@ import {
   formatActivityData,
   formatCallTagsName,
   formatAggregateQueues,
+  formatSelfServiceIndicatorData,
   createProfilePayload,
   updateProfilePayload
 } from "../profileUtils";
@@ -131,6 +132,18 @@ describe("profileUtils", () => {
     });
     test("should return a formatted call tag with no underscores", () => {
       expect(formatCallTagsName("notes")).toStrictEqual("Notes");
+    });
+  });
+
+  describe("formatSelfServiceIndicatorData", () => {
+    test("should return check if profileId is 39 or above ", () => {
+      expect(formatSelfServiceIndicatorData(45)).toEqual(<Check />);
+    });
+    test("should return check if profileId is 39 or above ", () => {
+      expect(formatSelfServiceIndicatorData(20)).toEqual("");
+    });
+    test("should return check, if correct profile is a string", () => {
+      expect(formatSelfServiceIndicatorData("39")).toEqual(<Check />);
     });
   });
 

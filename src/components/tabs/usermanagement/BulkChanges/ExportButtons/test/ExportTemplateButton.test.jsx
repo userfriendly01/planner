@@ -33,7 +33,8 @@ const successfulRows = [
     nNumber: "Agents N Number",
     outgoingNumber: "If the user is not a DID user this is their Outgoing number",
     profileId: "Profile Id",
-    zeroOutEnabled: "Y/N Indicator to represent if the zero out skill aligned to the profile ID should be added to the users current skills. Only required when DID User is true"
+    zeroOutEnabled: "Y/N Indicator to represent if the zero out skill aligned to the profile ID should be added to the users current skills. Only required when DID User is true",
+    selfServiceInd: "Y/N indicator to represent if user has self-service attribute. Only required when DID User is true."
   },
   {
     defaultSkills: "bscCommissions:3, blSalesL1:2, aisl1",
@@ -44,7 +45,8 @@ const successfulRows = [
     nNumber: "n0263786",
     outgoingNumber: "6038518288",
     profileId: 3,
-    zeroOutEnabled: "Y"
+    zeroOutEnabled: "Y",
+    selfServiceInd: "Y"
   }
 ];
 
@@ -109,6 +111,13 @@ const expectedColumns = [
     field: "outgoingNumber",
     textAlign: "center",
     title: "Outgoing Number",
+    width: undefined,
+    wrap: true
+  },
+  {
+    field: "selfServiceInd",
+    textAlign: "center",
+    title: "Self Service Indicator",
     width: undefined,
     wrap: true
   }

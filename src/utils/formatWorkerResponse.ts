@@ -10,7 +10,8 @@ export interface DbWorker {
   directDialNum: string,
   operatingUnitSid?: string,
   workerSid: string,
-  zeroOutEnabled: boolean
+  zeroOutEnabled: boolean,
+  selfServiceInd?: boolean,
   inactiveForwardTo?: string
 }
 
