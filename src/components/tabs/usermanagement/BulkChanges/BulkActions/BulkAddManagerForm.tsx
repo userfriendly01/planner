@@ -20,11 +20,12 @@ const BulkAddManagerForm = (props: BulkActionFormProps) => {
   } = props;
 
   const state = useAdminState();
-  const createTemplates = getCreateTemplates(state); // ?? am i going wrong here somewhere???
+  const createTemplates = getCreateTemplates(state);
 
   console.log("BulkAddManagerForm - selectedTemplates", selectedTemplates);
   const teamOptions = state.calabrioContext.teams.map((t: any) => t);
   const groupOptions = state.calabrioContext.groups.map((g: any) => g.name);
+  console.log(state);
   console.log("teams: ", teamOptions);
   console.log("one team: ", teamOptions[0]);
   console.log("groups: ", groupOptions);
@@ -32,7 +33,7 @@ const BulkAddManagerForm = (props: BulkActionFormProps) => {
   return (
     <Row>
       <StepWrapper>
-          Step 1: There is only 1 option
+          Step 1:
       </StepWrapper>
       <SelectionWrapper>
           Add Manager

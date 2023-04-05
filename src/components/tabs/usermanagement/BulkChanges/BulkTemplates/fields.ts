@@ -157,7 +157,7 @@ export const FIELDS: Fields = {
       if(!row.attributes){
         row.attributes = {};
       }
-      const managerObject = state.managerContext.managers.some((m: any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === field); // m.man... grabbed from state
+      const managerObject = state.managerContext.managers.some((m: any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === field);
       if (!field) {
         return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
       } else if (managerObject) {
@@ -165,10 +165,11 @@ export const FIELDS: Fields = {
       } else {
         try {
           // grab manager's name from HR database
+          console.log("MANAGER_N_NUMBER_CREATE n number field: ", field);
           const fetchedUser = await fetchUser(field);
 
           row.attributes.manager_first_name = fetchedUser.firstName; // todo: is it ok to add this to attributes?
-          row.attribute.manager_last_name = fetchedUser.lastName;
+          row.attributes.manager_last_name = fetchedUser.lastName;
         } catch (err) {
           console.error(err.message, err);
           return rejectPromise(`Error thrown fetching ${fieldName} from HR Database for row ${rowNumber}`, rowNumber);
