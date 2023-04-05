@@ -100,7 +100,7 @@ export const views: any = {
   },
   BULK_ADD_MANAGER: {
     value: "BULK_ADD_MANAGER",
-    label: "Create Manager"
+    label: "Create Managers"
   }
 };
 
