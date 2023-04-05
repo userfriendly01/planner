@@ -117,33 +117,13 @@ const processCreateManager = async (row: any, state: any) => {
     const teamField = toProperCase(cleanupField(row[teamFieldName], "string"));
 
     try {
-      // 1 - errors....
       const response: any = await createCalabrioTeam({
         name: teamField,
         parentGroupId: row.parentGroupId
       });
 
-      // debugging
-      console.log("1. response: ", response);
       const newTeamId = response.data.groupId;
-      if (newTeamId) {
-        row.groupId = newTeamId;
-      } else {
-        console.log("error - groupId missing after creating new team ", response);
-      }
-
-      // 2 - this doesnt have red squigglies...
-      // createCalabrioTeam({
-      //   name: teamField,
-      //   parentGroupId: row.parentGroupId
-      // }).then((res:any) => {
-      //   const newTeamId = res.data.groupId;
-      //   console.log("2. response: ", res);
-      //   console.log("new team id: ", newTeamId);
-      //   if (newTeamId) {
-      //     row.groupId = newTeamId;
-      //   }
-      // });
+      row.groupId = newTeamId;
 
     } catch (err) {
       const errorMessage = `Failed to create Team for row ${rowNumber}. ${formatErrorMessage(err)}`;

@@ -164,11 +164,9 @@ export const FIELDS: Fields = {
         return rejectPromise(`${fieldName} is already present for ${rowNumber}`, rowNumber);
       } else {
         try {
-          // grab manager's name from HR database
-          console.log("MANAGER_N_NUMBER_CREATE n number field: ", field);
           const fetchedUser = await fetchUser(field);
 
-          row.attributes.manager_first_name = fetchedUser.firstName; // todo: is it ok to add this to attributes?
+          row.attributes.manager_first_name = fetchedUser.firstName;
           row.attributes.manager_last_name = fetchedUser.lastName;
         } catch (err) {
           console.error(err.message, err);
@@ -551,10 +549,8 @@ export const FIELDS: Fields = {
           const parentGroup = state.calabrioContext.groups.find((g:any) => cleanupField(g.name, "string") === field);
 
           if (!parentGroup) {
-            // Could not find parent group with given name. REJECT!
             return rejectPromise(`${fieldName} is not a valid option for row ${rowNumber}`, rowNumber);
           } else {
-            // Found parent group. Add parentGroupId and proper case name of team
             row.parentGroupId = parentGroup.groupId;
             row.newTeam = true;
             row["Calabrio Team"] = toProperCase(row["Calabrio Team"]);
@@ -600,17 +596,15 @@ export const FIELDS: Fields = {
       const fieldName= "Calabrio Team";
       const field = cleanupField(row[fieldName], "string");
 
-      // Checking team before group
       if (!field) {
         return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
       } else {
-        // Does team exist in state?
         const team = state.calabrioContext.teams.find((t:any) => cleanupField(t.name, "string") === field);
         if (team && team.groupdId) {
-          // Team already exists - can ignore calabrio group field - resolve
+          // Team already exists - can ignore calabrio group field
           return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
         } else {
-          // Team is new - make sure calabrio group is valid - resolve
+          // Team is new - make sure calabrio group is valid
           const fieldName = "Calabrio Group";
           const field = cleanupField(row[fieldName], "string");
 

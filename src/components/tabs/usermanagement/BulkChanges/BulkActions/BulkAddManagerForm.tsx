@@ -23,12 +23,6 @@ const BulkAddManagerForm = (props: BulkActionFormProps) => {
   const createTemplates = getCreateTemplates(state);
 
   console.log("BulkAddManagerForm - selectedTemplates", selectedTemplates);
-  const teamOptions = state.calabrioContext.teams.map((t: any) => t);
-  const groupOptions = state.calabrioContext.groups.map((g: any) => g.name);
-  console.log(state);
-  console.log("teams: ", teamOptions);
-  console.log("one team: ", teamOptions[0]);
-  console.log("groups: ", groupOptions);
 
   return (
     <Row>
