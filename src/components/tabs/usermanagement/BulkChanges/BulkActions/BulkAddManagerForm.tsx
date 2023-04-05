@@ -20,14 +20,14 @@ const BulkAddManagerForm = (props: BulkActionFormProps) => {
   } = props;
 
   const state = useAdminState();
-  const createTemplates = getCreateTemplates(state); // ?? am i going wrong here somewhere???
+  const createTemplates = getCreateTemplates(state);
 
   console.log("BulkAddManagerForm - selectedTemplates", selectedTemplates);
 
   return (
     <Row>
       <StepWrapper>
-          Step 1: There is only 1 option
+          Step 1:
       </StepWrapper>
       <SelectionWrapper>
           Add Manager
