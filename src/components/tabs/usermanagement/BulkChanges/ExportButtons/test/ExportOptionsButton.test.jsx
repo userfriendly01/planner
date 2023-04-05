@@ -129,9 +129,18 @@ const expectedWFMRows = [
     timeZone: "America/Chicago (CST/CDT)",
     wfmFirstDayOfWeek: 3
   },
-  { wfmFirstDayOfWeek: 4 },
-  { wfmFirstDayOfWeek: 5 },
-  { wfmFirstDayOfWeek: 6 }
+  {
+    timeZone: "America/Phoenix (MST)",
+    wfmFirstDayOfWeek: 4
+  },
+  {
+    timeZone: "Pacific/Honolulu (HST)",
+    wfmFirstDayOfWeek: 5
+  },
+  {
+    timeZone: "America/Anchorage (AKST/AKDT)",
+    wfmFirstDayOfWeek: 6
+  }
 ];
 const expectedWFMCols = [
   {
@@ -158,7 +167,10 @@ const expectedWFMCols = [
       "America/New_York (EST/EDT)",
       "America/Los_Angeles (PST/PDT)",
       "America/Denver (MST/MDT)",
-      "America/Chicago (CST/CDT)"
+      "America/Chicago (CST/CDT)",
+      "America/Phoenix (MST)",
+      "Pacific/Honolulu (HST)",
+      "America/Anchorage (AKST/AKDT)"
     ],
     wrap: true,
     textAlign: "center"
