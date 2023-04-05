@@ -189,7 +189,7 @@ describe("Pagination", () => {
       expect(setTableState).toHaveBeenCalledWith({
         pagination: {
           ...defaultTableState.pagination,
-          pageNumber: 3
+          pageNumber: 4
         }
       });
     });

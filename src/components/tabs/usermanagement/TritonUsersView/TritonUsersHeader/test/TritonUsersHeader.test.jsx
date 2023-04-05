@@ -1,4 +1,5 @@
 import TritonUsersHeader from "../TritonUsersHeader";
+import ExportButton from "../ExportUsersButton";
 import {
   ManagerDropdown,
   ResetSkillsButton,
@@ -18,9 +19,15 @@ jest.mock("components", () => ({
   StyledButton: jest.fn()
 }));
 
+jest.mock("../ExportUsersButton", () => ({
+  __esModule: true,
+  default: jest.fn()
+}));
+
 const tableState = {
   manager: "Edie Britt",
-  searchBy: "Look out!"
+  searchBy: "Look out!",
+  searchResults: ["aww edie"]
 };
 
 const mockSetTableState = jest.fn();
@@ -35,7 +42,8 @@ describe("TritonUsersHeader", () => {
     setupMockedComponents({
       ManagerDropdown,
       ResetSkillsButton,
-      SearchBox
+      SearchBox,
+      ExportButton
     });
   });
   describe("initial render", () => {
@@ -43,6 +51,9 @@ describe("TritonUsersHeader", () => {
       renderComponent();
       expect(ManagerDropdown.mock.calls.length).toBe(1);
       expect(ManagerDropdown.mock.calls[0][0].filterBy).toBe(tableState.manager);
+      expect(ExportButton.mock.calls.length).toBe(1);
+      expect(ExportButton.mock.calls[0][0].selected).toBe(tableState.searchResults);
+      expect(ExportButton.mock.calls[0][0].label).toBe("Export");
       expect(SearchBox.mock.calls.length).toBe(1);
       expect(SearchBox.mock.calls[0][0].searchBy).toBe(tableState.searchBy);
       expect(ResetSkillsButton.mock.calls.length).toBe(1);

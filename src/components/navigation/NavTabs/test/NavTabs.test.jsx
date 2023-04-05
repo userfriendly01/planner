@@ -1,40 +1,48 @@
-import {
-  useAdminState
-} from "context";
 import React from "react";
-import {
-  initialTestState,
-  render,
-  setupMockedComponents,
-  tabs
-} from "testUtils";
 import NavTabs from "../NavTabs";
-import { getAzureSPAClientId } from "utils";
+import { StyledTab, DropdownContainer, StyledTabContainer } from "../NavTabs.Styles";
+import { useAdminState } from "context";
+import { Link, useNavigate } from "react-router-dom";
 import {
-  Tab, Tabs, Typography
+  render,
+  fireEvent,
+  expectOnlyPassedProps,
+  setupMockedComponents,
+  initialTestState,
+  tabs,
+  act,
+  waitFor
+} from "testUtils";
+import {
+  Button
 } from "@mui/material";
 
-jest.mock("@mui/material", () => ({
-  Tab: jest.fn(),
-  Tabs: jest.fn(),
-  Typography: jest.fn()
-}));
-jest.mock("authentication", () => ({
-  getTabs: jest.requireActual("authentication").getTabs
-}));
-jest.mock("components", () => ({
-  CallflowManagementWrapper: jest.fn(),
-  ManagementWrapper: jest.fn(),
-  ProfileSettingsContainer: jest.fn(),
-  AlohaFlowContainer: jest.fn(),
-  AlohaRoutingContainer: jest.fn()
-}));
 jest.mock("context", () => ({
   useAdminState: jest.fn()
 }));
-jest.mock("utils", () => ({
-  getAzureSPAClientId: jest.fn()
+
+jest.mock("@mui/material", () => ({
+  Button: jest.fn()
 }));
+
+jest.mock("../NavTabs.Styles", () => ({
+  Content: jest.requireActual("../NavTabs.Styles").Content,
+  DropdownContainer: jest.requireActual("../NavTabs.Styles").DropdownContainer,
+  StyledLink: jest.requireActual("../NavTabs.Styles").StyledLink,
+  StyledTab: jest.fn(),
+  StyledTabContainer: jest.requireActual("../NavTabs.Styles").StyledTabContainer
+}));
+
+jest.mock("authentication", () => ({
+  getTabs: jest.requireActual("authentication").getTabs
+}));
+
+jest.mock("react-router-dom", () => ({
+  Link: jest.fn(),
+  useNavigate: jest.fn()
+}));
+
+const mockNavigate = jest.fn();
 
 const state = {
   ...initialTestState,
@@ -57,42 +65,60 @@ const state = {
   }
 };
 
-const renderNavTabs = () => {
-  render(<NavTabs />);
-  render(Tabs.mock.calls[1][0].children);
-};
-
-describe("<NavTabs />", () => {
+describe("NavTabs", () => {
   beforeEach(() => {
+    useNavigate.mockReturnValue(mockNavigate);
     jest.clearAllMocks();
     useAdminState.mockReturnValue(state);
     setupMockedComponents({
-      Tab,
-      Tabs,
-      Typography
+      Link,
+      StyledTab,
+      Button
     });
   });
-
-  test("we should load the links, as well as default to showing the Management Pane", () => {
-    renderNavTabs(<NavTabs />);
-    Typography.mock.calls.forEach(m => {
-      render(m[0].children);
+  describe("initial render", () => {
+    test("renders Nav Tabs", () => {
+      render(<NavTabs />);
+      expect(StyledTab.mock.calls.length).toBe(4);
+      expect(StyledTab.mock.calls[0][0].children).toBe("User Management");
+      expect(StyledTab.mock.calls[1][0].children).toBe("Profile Settings");
+      expect(StyledTab.mock.calls[2][0].children).toBe("Call Flow Management");
+      expect(StyledTab.mock.calls[3][0].children).toBe("Aloha Flow Management");
+      expect(Link.mock.calls.length).toBe(0);
     });
-    expect(Tabs.mock.calls[1][0].value).toBe(0);
-    expect(tabs.TRITON_USER_MANAGEMENT.component).toHaveBeenCalledTimes(1);
-    expect(tabs.TRITON_PROFILE_SETTINGS.component).toHaveBeenCalledTimes(1);
-    expect(tabs.TRITON_CALL_FLOW_MANAGEMENT.component).toHaveBeenCalledTimes(1);
-    expect(tabs.ALOHA_CALL_FLOW_MANAGEMENT.component).toHaveBeenCalledTimes(1);
-    expect(tabs.ALOHA_ROUTING_RULES.component).toHaveBeenCalledTimes(0);
-    expect(getAzureSPAClientId).toBeCalled();
   });
-
-  test("when we click on the 'Call Flow Management' link, only CallflowManagementWrapper should be visible", () => {
-    renderNavTabs(<NavTabs />);
-    expect(Tabs.mock.calls.length).toBe(2);
-    expect(Tabs.mock.calls[1][0].value).toBe(0);
-    Tabs.mock.calls[1][0].onChange(null, 1);
-    expect(Tabs.mock.calls.length).toBe(3);
-    expect(Tabs.mock.calls[2][0].value).toBe(1);
+  describe("handleDropdown", () => {
+    describe("dropdown is array of routes", () => {
+      test("Links Render", async () => {
+        const rendered = render(<NavTabs />);
+        expect(StyledTab.mock.calls.length).toBe(4);
+        expect(Link.mock.calls.length).toBe(0);
+        const dropdownActionDivs = rendered.getAllByTestId("dropdown-action");
+        expect(dropdownActionDivs.length).toBe(4);
+        act(() => fireEvent.mouseEnter(dropdownActionDivs[0]));
+        expect(Link.mock.calls.length).toBe(3);
+        act(() => fireEvent.mouseLeave(dropdownActionDivs[0]));
+        expect(Link.mock.calls.length).toBe(3);
+      });
+    });
+    describe("dropdown is null", () => {
+      test("No Links Render", async () => {
+        const rendered = render(<NavTabs />);
+        expect(Link.mock.calls.length).toBe(0);
+        const dropdownActionDivs = rendered.getAllByTestId("dropdown-action");
+        expect(dropdownActionDivs.length).toBe(4);
+        act(() => fireEvent.mouseEnter(dropdownActionDivs[3]));
+        expect(Link.mock.calls.length).toBe(0);
+      });
+    });
+  });
+  describe("tab is clicked", () => {
+    test("navigates to route", () => {
+      const rendered = render(<NavTabs />);
+      expect(StyledTab.mock.calls.length).toBe(4);
+      const onClick = StyledTab.mock.calls[0][0].onClick;
+      act(() => onClick());
+      expect(mockNavigate).toHaveBeenCalledTimes(1);
+    });
   });
 });

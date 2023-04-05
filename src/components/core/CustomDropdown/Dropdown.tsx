@@ -74,13 +74,17 @@ export const Dropdown = (props: any) => {
           return <ListItem  {...props} key={props["data-option-index"]}>
             <CustomRender option={option}/>
           </ListItem>;
-        } else if(!option.label){
+        } else if(option.label){
           return <ListItem  {...props} key={props["data-option-index"]}>
-            {option}
+            {option.label}
+          </ListItem>;
+        } else if(option.value){
+          return <ListItem  {...props} key={props["data-option-index"]}>
+            {option.value}
           </ListItem>;
         } else {
           return <ListItem  {...props} key={props["data-option-index"]}>
-            {option.label}
+            {option}
           </ListItem>;
         }
       }}

@@ -17,7 +17,7 @@ jest.mock("msal", () => ({
   __esModule: true,
   UserAgentApplication: jest.fn().mockImplementation(() => {
     return {
-      acquireTokenSilent: jest.fn()
+      acquireTokenPopup: jest.fn()
         .mockRejectedValue(new Error(loginError)),
       handleRedirectCallback: jest.fn((success, err) => err("mock error")),
       isCallback: jest.fn().mockReturnValue(false),

@@ -10,6 +10,7 @@ import {
   useFormDispatch
 } from "context";
 import { formModes } from "globals";
+import { useNavigate } from "react-router-dom";
 import React from "react";
 import {
   act,
@@ -21,6 +22,10 @@ import {
   initialFormState,
   initialTestState
 } from "testUtils";
+
+jest.mock("react-router-dom", () => ({
+  useNavigate: jest.fn()
+}));
 
 jest.mock("components", () => ({
   __esModule: true,
@@ -43,19 +48,9 @@ jest.mock("context", () => ({
 }));
 
 jest.useFakeTimers();
+const mockNavigate = jest.fn();
 const mockSetForm = jest.fn();
 const mockHandleClose = jest.fn();
-const mockSetWorkerOpts = jest.fn();
-const mockWorkerOpts = {
-  worker: mockWorkers[0],
-  action: "add",
-  routedFrom: null,
-  systems: {
-    triton: true,
-    calabrio_qm: true,
-    calabrio_wfm: false
-  }
-};
 
 describe("<UserEntryForm />", () => {
 
@@ -64,6 +59,7 @@ describe("<UserEntryForm />", () => {
     useFormDispatch.mockReturnValue(mockSetForm);
     useFormState.mockReturnValue(initialFormState);
     useAdminState.mockReturnValue(initialTestState);
+    useNavigate.mockReturnValue(mockNavigate);
     setupMockedComponents({
       ModalOverlay,
       UserFormButtons,
@@ -74,8 +70,6 @@ describe("<UserEntryForm />", () => {
   const renderComponent = () => {
     return render(
       <UserEntryForm
-        workerOpts= {mockWorkerOpts}
-        setWorkerOpts = {mockSetWorkerOpts}
         handleClose={mockHandleClose}
       />, initialTestState
     );
@@ -129,18 +123,20 @@ describe("<UserEntryForm />", () => {
         expect(rendered.container).toHaveTextContent("Onboard New User");
       });
       test(`Header should read 'Edit User' & user's name when form.formMode === ${formModes.UPDATE}`, () => {
+        useFormState.mockReturnValue({
+          ...initialFormState,
+          formMode: formModes.UPDATE,
+          nNumber: {
+            value: "n222354"
+          }
+        });
         const rendered = render(
           <UserEntryForm
-            workerOpts= {{
-              ...mockWorkerOpts,
-              action: "edit"
-            }}
-            setWorkerOpts = {mockSetWorkerOpts}
             handleClose={mockHandleClose}
           />
         );
         expect(rendered.container).toHaveTextContent("Edit User");
-        expect(rendered.container).toHaveTextContent("Test 1");
+        expect(rendered.container).toHaveTextContent("Susan Delfino");
       });
     });
     describe("Discrepancies are present", () => {
@@ -169,6 +165,8 @@ describe("<UserEntryForm />", () => {
         act(() => {
           handleClose();
         });
+        expect(mockNavigate).toHaveBeenCalledTimes(1);
+        expect(mockNavigate).toHaveBeenCalledWith(-1);
       });
     });
   });
