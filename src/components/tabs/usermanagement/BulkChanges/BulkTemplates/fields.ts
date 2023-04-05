@@ -444,6 +444,53 @@ export const FIELDS: Fields = {
       }
     }
   },
+  SELF_SERVICE_IND: {
+    field: "selfServiceInd",
+    name: "Self Service Indicator",
+    type: "boolean",
+    description: "Y/N indicator to represent if user has self-service attribute. Only required when DID User is true.",
+    example: "Y",
+    options: null,
+    validateFunction: async (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = "Self Service Indicator";
+      const field = cleanupField(row[fieldName], "string");
+      const didFieldName = "Did User";
+      const didField = cleanupField(row[didFieldName], "string");
+
+      try{
+        const didUser = isDidUser(didField, rowNumber);
+        if(didUser && field === "y"){
+          const profileFieldName = "Profile Id";
+          const profileId = cleanupField(row[profileFieldName], "number");
+          const profileThreshold = 39;
+          if (!profileId || typeof profileId !== "number") {
+            return rejectPromise(`Unable to set ${fieldName}. Incorrect format for ${profileFieldName} for row ${rowNumber}`, rowNumber);
+          }
+          if(profileId < profileThreshold){
+            return rejectPromise(`Unable to set ${fieldName}. Incorrect value for ${profileFieldName} for row ${rowNumber} - need ${profileFieldName} to be ${profileThreshold} or above` , rowNumber);
+          }
+          row.selfServiceInd = true;
+          return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+        } else if( didUser && field === "n"){
+          row.selfServiceInd = false;
+          return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+        } else if(didUser && field && field !== "y" && field !== "n") {
+          return rejectPromise(`${fieldName} needs to be needs to be 'Y' or 'N' if DID user is 'Y' for ${rowNumber}`, rowNumber);
+        }  else if(didUser && !field) {
+          return rejectPromise(`${fieldName} is required when DID user is 'Y' for row ${rowNumber}`, rowNumber);
+        } else if(!didUser && !field) {
+          return Promise.resolve(`${fieldName} skipped for Non DID user for row ${rowNumber}`);
+        } else if(!didUser && field === "n") {
+          return Promise.resolve(`${fieldName} skipped for Non DID user for row ${rowNumber}`);
+        } else {
+          return rejectPromise(`Did User field is 'N', ${fieldName} is not applicable for row ${rowNumber}`, rowNumber);
+        }
+      } catch(err) {
+        return rejectPromise(`${didFieldName} needs to be 'Y' or 'N' for row ${rowNumber}`, rowNumber);
+      }
+    }
+  },
   CALABRIO_SCOPE: {
     field: "calabrioScope",
     name: "Calabrio Scope",
