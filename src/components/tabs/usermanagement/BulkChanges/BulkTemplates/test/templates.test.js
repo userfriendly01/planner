@@ -39,7 +39,7 @@ describe("CREATE_TRITON_USER", () => {
         operatingUnitSid: "operatingUnitSid1",
         directDialNum: "+16038518200",
         zeroOutEnabled: true,
-        //selfServiceInd: true ??
+        selfServiceInd: true
       };
       test("should populate with DID body", async () => {
         const results = await createTritonProcessFunction(row, initialTestState);
@@ -55,7 +55,7 @@ describe("CREATE_TRITON_USER", () => {
           operatingUnitSid: "operatingUnitSid1",
           directDialNum: "+16038518200",
           zeroOutEnabled: true,
-          //selfServiceInd: true ??
+          selfServiceInd: true
         });
         expect(results).toBe("WK123456 created in Triton for n0263445 for row 2");
       });
