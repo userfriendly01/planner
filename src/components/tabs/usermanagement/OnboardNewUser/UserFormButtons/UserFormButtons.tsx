@@ -164,7 +164,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         alternateDid: form.alternateDid.e164,
         directDialNum: form.directDialNum.e164,
         operatingUnitSid: operatingUnitSid,
-        zeroOutEnabled: form.zeroOutEnabled
+        zeroOutEnabled: form.zeroOutEnabled,
+        selfServiceInd: form.selfServiceInd
       } : {
         attributes,
         operatingUnitSid: operatingUnitSid,
@@ -325,7 +326,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
     const payload: Partial<DbWorker> = {
       attributes,
-      zeroOutEnabled: form.zeroOutEnabled
+      zeroOutEnabled: form.zeroOutEnabled,
+      selfServiceInd: form.selfServiceInd
     };
 
     if(operatingUnitSid){

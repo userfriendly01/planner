@@ -232,7 +232,8 @@ export interface Worker {
   inactiveForwardToType?: string,
   sid: string,
   skillsDifferent: boolean,
-  zeroOutEnabled?: boolean
+  zeroOutEnabled?: boolean,
+  selfServiceInd?: boolean
 }
 
 export interface WorkerAttributeSkills {
