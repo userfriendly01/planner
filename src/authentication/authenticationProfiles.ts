@@ -7,13 +7,6 @@ import {
   runAlohaRoutingStartup,
   runAlohaFlowStartup
 } from "authentication";
-import {
-  UserManagementWrapper,
-  ProfileSettingsContainer,
-  CallFlowManagementWrapper,
-  AlohaRoutingContainer,
-  AlohaFlowContainer
-} from "components";
 
 export const getAuthenticationProfileTemplates = (): AuthenticationProfileOptions => {
   const Tabs = getTabs();
@@ -143,32 +136,72 @@ export const getStartupProfiles = () => {
   };
 };
 
-export const getTabs = () => {
+export const getTabs = (): any => {
   return {
     TRITON_USER_MANAGEMENT: {
       value: "triton-user-management",
       label: "User Management",
-      component: UserManagementWrapper
+      route: "triton-admin/triton-users",
+      dropdown: [
+        {
+          route: "triton-admin/triton-users",
+          label: "Triton User Management"
+        },
+        {
+          route: "triton-admin/user",
+          label: "Onboard New User"
+        },
+        {
+          route: "triton-admin/bulk",
+          label: "Bulk Changes"
+        }
+      ]
     },
     TRITON_PROFILE_SETTINGS: {
       value: "triton-profile-settings",
       label: "Profile Settings",
-      component: ProfileSettingsContainer
+      route: "/triton-admin/profile-settings",
+      dropdown: [
+        {
+          route: "triton-admin/profile-settings",
+          label: "Profile Settings"
+        },
+        {
+          route: "triton-admin/profile-dial-list",
+          label: "Profile Dial List"
+        },
+        {
+          route: "triton-admin/profile-directory",
+          label: "Profile Directory"
+        }
+      ]
     },
     TRITON_CALL_FLOW_MANAGEMENT: {
       value: "triton-callflow-management",
       label: "Call Flow Management",
-      component: CallFlowManagementWrapper
+      route: "/triton-admin/skill-management",
+      dropdown: [
+        {
+          route: "triton-admin/skill-management",
+          label: "Skill Management"
+        },
+        {
+          route: "triton-admin/tfn-activation",
+          label: "TFN Activation"
+        }
+      ]
     },
     ALOHA_CALL_FLOW_MANAGEMENT: {
       value: "aloha-callflow-management",
       label: "Call Flow DB Management",
-      component: AlohaFlowContainer
+      route: "/triton-admin/aloha-flow",
+      dropdown: null
     },
     ALOHA_ROUTING_RULES: {
       value: "aloha-routing-rules",
       label: "Routing Rules",
-      component: AlohaRoutingContainer
+      route: "/triton-admin/aloha-routing",
+      dropdown: null
     }
   };
 };

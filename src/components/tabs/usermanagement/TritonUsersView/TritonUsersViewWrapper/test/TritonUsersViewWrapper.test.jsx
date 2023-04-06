@@ -26,13 +26,9 @@ jest.mock("context", () => ({
   useAdminState: jest.fn()
 }));
 
-const mockWorkerOpts = {
-  worker: "opts"
-};
-const setWorkerOpts = jest.fn();
-
 const defaultTableState = {
   searchBy: "",
+  searchResults: initialTestState.workerContext.workers,
   selected: [],
   managerFilter: null,
   deltaFilter: false,
@@ -48,12 +44,9 @@ const defaultTableState = {
 
 const workersCopy = initialTestState.workerContext.workers.slice();
 
-describe("TritonUserManagementWrapper", () => {
+describe("TritonUsersViewWrapper", () => {
   const doRender = () => {
-    return render(<TritonUserManagementWrapper
-      workerOpts={mockWorkerOpts}
-      setWorkerOpts={setWorkerOpts}
-    />);
+    return render(<TritonUserManagementWrapper/>);
   };
 
   beforeEach(() => {
@@ -80,7 +73,7 @@ describe("TritonUserManagementWrapper", () => {
           pagination: {
             ...defaultTableState.pagination,
             startingUserIndex: 0,
-            length: 5,
+            length: 6,
             endingUserIndex: 25
           },
           filteredList: initialTestState.workerContext.workers.sort(sortWorkersByFullName)
@@ -93,12 +86,11 @@ describe("TritonUserManagementWrapper", () => {
           pagination: {
             ...defaultTableState.pagination,
             startingUserIndex: 0,
-            length: 5,
+            length: 6,
             endingUserIndex: 25
           },
           filteredList: initialTestState.workerContext.workers.sort(sortWorkersByFullName)
-        },
-        workerOpts: mockWorkerOpts
+        }
       }, getLastInstanceCalled(TritonUserTable));
       expect(Pagination).toHaveBeenCalledTimes(2);
       expectOnlyPassedProps(Pagination, {
@@ -107,7 +99,7 @@ describe("TritonUserManagementWrapper", () => {
           pagination: {
             ...defaultTableState.pagination,
             startingUserIndex: 0,
-            length: 5,
+            length: 6,
             endingUserIndex: 25
           },
           filteredList: initialTestState.workerContext.workers.sort(sortWorkersByFullName)

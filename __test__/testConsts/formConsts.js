@@ -101,7 +101,9 @@ export const initialFormState = {
   },
   userPreviouslyAdded: false,
   zeroOutEnabled: false,
-  zeroOutEnabledUpdated: false
+  zeroOutEnabledUpdated: false,
+  selfServiceInd: false,
+  selfServiceIndUpdated: false
 };
 
 export const validFormOptions = {
@@ -240,6 +242,8 @@ export const validFormState = {
   },
   zeroOutEnabled: false,
   zeroOutEnabledUpdated: false,
+  selfServiceInd: false,
+  selfServiceIndUpdated: false,
   editDisabled: false
 };
 
@@ -287,6 +291,7 @@ export const mockWorkers = [
     alternateDid: validFormOptions.alternateDid.e164,
     directDialNum: validFormOptions.directDialNum.e164,
     zeroOutEnabled: true,
+    selfServiceInd: true,
     attributes: {
       default_skills: validFormOptions.defaultSkills,
       did: validFormOptions.didE164,
@@ -315,6 +320,7 @@ export const mockWorkers = [
     alternateDid: validFormOptions.alternateDid.e164,
     directDialNum: validFormOptions.directDialNum.e164,
     zeroOutEnabled: true,
+    selfServiceInd: true,
     attributes: {
       default_skills: validFormOptions.defaultSkills,
       did: validFormOptions.didE164,
@@ -341,6 +347,7 @@ export const mockWorkers = [
     alternateDid: validFormOptions.alternateDid.e164,
     directDialNum: validFormOptions.directDialNum.e164,
     zeroOutEnabled: true,
+    selfServiceInd: true,
     attributes: {
       default_skills: validFormOptions.defaultSkills,
       did: validFormOptions.didE164,

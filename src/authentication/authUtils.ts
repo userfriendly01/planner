@@ -20,7 +20,8 @@ const bulkAdmins = [
   ...productOwners,
   "n0197784", // Anthony Burke
   "n0149889", // David Kahrer
-  "n0169879"  // Stephanie Miller
+  "n0169879", // Stephanie Miller
+  "n0346287"  // Dustin Shumaker
 ];
 
 export const checkIfAdmin = (profileId: number): boolean => {

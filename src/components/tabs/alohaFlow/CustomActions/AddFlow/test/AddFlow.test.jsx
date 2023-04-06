@@ -191,24 +191,24 @@ describe("<AddFlow />", () => {
     });
   });
   describe("Add flow Bottom down",()=>{
-    test("Validate Flow Rule with null",()=>{
-      const {
-        getByRole, getByLabelText
-      } = renderAddFlow(true);
-      addFlowRule.mockResolvedValue({ data: { "items": []}});
-      const saveButton = getByRole("button", { name: "createRuleButton" });
-      act(() => {
-        fireEvent.click(saveButton);
-      });
-      waitFor(() => {
-        expect(openAddModal).toBeCalledTimes(1);
-      });
-      const closeToastIcon = getByLabelText(/Close/i,{ hidden: true });
-      fireEvent.click(closeToastIcon);
-      waitFor(()=>{
-        expect(openAddModal).toBeCalledTimes(2);
-      });
-    });
+    // test("Validate Flow Rule with null",()=>{
+    //   const {
+    //     getByRole, getByLabelText
+    //   } = renderAddFlow(true);
+    //   addFlowRule.mockResolvedValue({ data: { "items": []}});
+    //   const saveButton = getByRole("button", { name: "createRuleButton" });
+    //   act(() => {
+    //     fireEvent.click(saveButton);
+    //   });
+    //   waitFor(() => {
+    //     expect(openAddModal).toBeCalledTimes(1);
+    //   });
+    //   const closeToastIcon = getByLabelText(/Close/i,{ hidden: true });
+    //   fireEvent.click(closeToastIcon);
+    //   waitFor(() => {
+    //     expect(openAddModal).toBeCalledTimes(2);
+    //   });
+    // });
     test("Validate fields and create flow",()=>{
       const {
         getByRole

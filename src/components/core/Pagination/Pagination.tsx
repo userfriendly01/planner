@@ -80,7 +80,7 @@ const Pagination = (props: PaginationProps) => {
             ...tableState,
             pagination: {
               ...tableState.pagination,
-              pageNumber: numPages - 1
+              pageNumber: numPages
             }
           })}
         >
