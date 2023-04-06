@@ -58,54 +58,54 @@ const BulkChanges = () => {
 
   return (
     <>
-    { checkIfBulkAdmin ?
-    <BulkChangesWrapper>
-      <Dropdown
-        label="Select a change type"
-        value={view}
-        options={Object.values(views)}
-        updateValue={(event: any, view: View) => {
-          setView(view);
-          resetBulkChanges();
-          if(view === views.BULK_ADD_MANAGER){
-            setSelectedTemplates([createTemplates.CREATE_MANAGER])
-          }
-        }}
-        styles={{
-          margin: "40 0 30 0",
-          width: "500px"
-        }}
-      />
-      <Modal onClose={() => { return; }} open={showProcessingModal}>
-        <>
-          <ProcessingModal
-            selectedTemplates={selectedTemplates}
-            handleClose={resetBulkChanges}
-            uploadedForm={uploadedForm}
-            consolidatedFieldsList={consolidatedTemplate}
+      { checkIfBulkAdmin ?
+        <BulkChangesWrapper>
+          <Dropdown
+            label="Select a change type"
+            value={view}
+            options={Object.values(views)}
+            updateValue={(event: any, view: View) => {
+              setView(view);
+              resetBulkChanges();
+              if(view === views.BULK_ADD_MANAGER){
+                setSelectedTemplates([createTemplates.CREATE_MANAGER]);
+              }
+            }}
+            styles={{
+              margin: "40 0 30 0",
+              width: "500px"
+            }}
           />
-        </>
-      </Modal>
-      { view === views.BULK_CREATE_USERS &&
+          <Modal onClose={() => { return; }} open={showProcessingModal}>
+            <>
+              <ProcessingModal
+                selectedTemplates={selectedTemplates}
+                handleClose={resetBulkChanges}
+                uploadedForm={uploadedForm}
+                consolidatedFieldsList={consolidatedTemplate}
+              />
+            </>
+          </Modal>
+          { view === views.BULK_CREATE_USERS &&
         <BulkCreateForm
           selectedTemplates= {selectedTemplates}
           setSelectedTemplates= {setSelectedTemplates}
         />
-      }
-      { view === views.BULK_UPDATE &&
+          }
+          { view === views.BULK_UPDATE &&
         <BulkUpdateForm
           selectedTemplates= {selectedTemplates}
           setSelectedTemplates= {setSelectedTemplates}
         />
-      }
-      { view === views.BULK_ADD_MANAGER &&
+          }
+          { view === views.BULK_ADD_MANAGER &&
         <Row>
           <StepWrapper>
             Step 1: Mentally Prepare
           </StepWrapper>
         </Row>
-      }
-      { selectedTemplates.length > 0 &&
+          }
+          { selectedTemplates.length > 0 &&
         <>
           <Row>
             <StepWrapper>
@@ -126,8 +126,8 @@ const BulkChanges = () => {
             </Wrapper>
           </Row>
         </>
-      }
-      { uploadedForm &&
+          }
+          { uploadedForm &&
         <Row>
           <StepWrapper>
             Step 4: Process Bulk Create
@@ -137,27 +137,27 @@ const BulkChanges = () => {
               onClick={() => setShowProcessingModal(true)}>Process</ImportButton>
           </Wrapper>
         </Row>
-      }
-      <input
-        data-testid="file-upload"
-        type="file"
-        ref={uploadButtonRef}
-        hidden={true}
-        onChange={(e: any) => {
-          readUploadFile(e, setUploadedForm);
-          if(e.target.files && e.target.files.length){
-            setFilenameText(`${e.target.files[0].name} has been uploaded`);
           }
-        }}
-        onClick={(e: any) => {
-          e.target.value=null;
-        }}
-      />
-    </BulkChangesWrapper>
-    : <div>
+          <input
+            data-testid="file-upload"
+            type="file"
+            ref={uploadButtonRef}
+            hidden={true}
+            onChange={(e: any) => {
+              readUploadFile(e, setUploadedForm);
+              if(e.target.files && e.target.files.length){
+                setFilenameText(`${e.target.files[0].name} has been uploaded`);
+              }
+            }}
+            onClick={(e: any) => {
+              e.target.value=null;
+            }}
+          />
+        </BulkChangesWrapper>
+        : <div>
       This view is temporarily restricted to Game of Phones Product Owners and Admins
-    </div>
-    }
+        </div>
+      }
     </>
   );
 };
