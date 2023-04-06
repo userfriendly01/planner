@@ -112,32 +112,32 @@ export const identifySuccessfulRecords = (totalRows: any, errors: any) => {
  * @param selectedTemplates array of the selected templates
  */
 export const identifyProcessingDependencies = (selectedTemplates: any) => {
-  const dependencyTree = selectedTemplates.slice();
-
   if(selectedTemplates.length <= 1 ){
     return false;
   }
+  // start with just templates that have 0 dependencies, those can safely go first
+  const dependencyTree: any = selectedTemplates.filter((t: any) => !t.multiRunDependencies || t.multiRunDependencies.length === 0);
 
-  selectedTemplates.forEach((t: any, index: number) => {
-    if(t.multiRunDependencies){
+  const templatesWithDependencies = selectedTemplates.filter((t: any) => t.multiRunDependencies && t.multiRunDependencies.length > 0);
+
+  for (let i = 0; i < templatesWithDependencies.length; i++) {
+
+    templatesWithDependencies.forEach((t: any) => {
+      let canAddToTree = true;
       t.multiRunDependencies.forEach((d: any) => {
-        const requiredTemplateIndex = dependencyTree.findIndex((t:any) => t.name === d.name);
-        //if dependencies arent in the selected templates list, return it. Form validation accounts for this
-        if(requiredTemplateIndex === -1){
-          return false;
-        } else {
-          //If the dependency is lower in the array, swap the index's so they are processed in the right order
-          if(requiredTemplateIndex > index){
-            const dependentObject = dependencyTree[index];
-            const requiredObject = dependencyTree[requiredTemplateIndex];
-            dependencyTree[index] = requiredObject;
-            dependencyTree[requiredTemplateIndex] = dependentObject;
-          }
-          console.log("identifyProcessingDependencies - dependencyTree", dependencyTree.slice());
+        // if the required template is not already in the dependencyTree but is included in the selected templates, don't add the current template to the tree yet
+        if (!dependencyTree.find((dt:any) => dt.name === d.name) && selectedTemplates.find((st: any) => st.name === d.name)) {
+          canAddToTree = false;
         }
       });
-    }
-  });
+      // if its okay to add it, and it isn't already in the dependencyTree, add it
+      if (canAddToTree && !dependencyTree.find((dt: any) => dt.name === t.name)) {
+        dependencyTree.push(t);
+      }
+    });
+    console.log("updated dependencyTree", dependencyTree);
+  }
+
   return dependencyTree;
 };
 

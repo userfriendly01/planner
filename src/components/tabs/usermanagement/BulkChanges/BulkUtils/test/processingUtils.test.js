@@ -331,13 +331,25 @@ describe("identifyProcessingDependencies", () => {
     const processingDependencyResults = utils.identifyProcessingDependencies([template2, template3, template1]);
     expect(processingDependencyResults).toEqual([template1, template2, template3]);
   });
-  test("multiple selected templates, returns appropriate dependency order, where order doesn't matter it stays put", () => {
+  test("multiple selected templates, returns appropriate dependency order, where no multidependencies are first", () => {
     const processingDependencyResults = utils.identifyProcessingDependencies([template2, orderDoesNotMatterTemplate, template3, template1]);
-    expect(processingDependencyResults).toEqual([template1, orderDoesNotMatterTemplate, template2, template3]);
+    expect(processingDependencyResults).toEqual([orderDoesNotMatterTemplate, template1, template2, template3]);
   });
-  test("one of the mulitRunDependencies not in selected templates list, returns in same order", () => {
+  test("one of the mulitRunDependencies not in selected templates list, returns templates without dependencies first", () => {
     const processingDependencyResults = utils.identifyProcessingDependencies([template2, orderDoesNotMatterTemplate]);
-    expect(processingDependencyResults).toEqual([template2, orderDoesNotMatterTemplate]);
+    expect(processingDependencyResults).toEqual([orderDoesNotMatterTemplate, template2]);
+  });
+  test("So many templates, including one with multiple dependencies, returns in correct dependency order", () => {
+    const soManyDependencies = {
+      name: "CREATE_CALABRIO_WFM_PERSON",
+      multiRunDependencies: [{
+        name: "CREATE_TRITON_USER"
+      }, {
+        name: "CREATE_CALABRIO_QM_USER"
+      }]
+    };
+    const processingDependencyResults = utils.identifyProcessingDependencies([soManyDependencies, template2, orderDoesNotMatterTemplate, template1, template3]);
+    expect(processingDependencyResults).toEqual([orderDoesNotMatterTemplate, template1, template2, template3, soManyDependencies]);
   });
 });
 
