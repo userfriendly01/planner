@@ -61,7 +61,10 @@ const authenticateAndStartup = dispatch => new Promise((resolve, reject) => myAx
           authenticationProfiles
         }
       });
-      resolve(authenticationProfiles);
+      resolve({
+        ...authenticationProfiles,
+        azureClientId: getAzureSPAClientId(pingIdentity.environment)
+      });
     }).catch(error => {
       const msg = "An error occurred on startup";
       reject({
@@ -85,6 +88,7 @@ const authenticateAndStartup = dispatch => new Promise((resolve, reject) => myAx
 const App = () => {
 
   const [loadResult, setLoadResult] = useState({
+    azureClientId: null,
     home: null,
     status: null
   });
@@ -97,6 +101,7 @@ const App = () => {
       .then((authenticationProfiles) => {
         console.log("Auth Profile at startup", authenticationProfiles)
         setLoadResult({
+          azureClientId: authenticationProfiles.azureClientId,
           home: authenticationProfiles[0].home,
           status: success
         });
@@ -124,7 +129,7 @@ const App = () => {
             <Header/>
             <NavTabs/>
               <Routes>
-                {getRoutes(state, loadResult.home, azureClientId).map(r => {
+                {getRoutes(state, loadResult.home, loadResult.azureClientId).map(r => {
                   const Component = r.element || r.render;
                   return <Route path={r.path} element={<Component/>}/>
                 })}
