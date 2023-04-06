@@ -290,12 +290,15 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     label: "User Destination",
     key: "userDestination",
     control: "select",
-    required: true,
+    required: false,
     valueGetter: (params: CctSharedCallFlowDb) => `${params?.userDestination || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
-    })
+    }),
+    dynamicFieldConditionCheck: (params?: FormValidationRule): boolean=>{
+      return params["type"]?.value === "DID";
+    }
   },
   {
     label: "Range Indicator",
