@@ -110,7 +110,8 @@ const processCreateManager = async (row: any, state: any) => {
 
   const managerNNumberFieldName = "Manager N Number";
   const managerNNumberField = cleanupField(row[managerNNumberFieldName], "string");
-  // creating a new team
+
+  // create new team
   const isNewTeam = row.newTeam;
   if (isNewTeam) {
     const teamFieldName = "Calabrio Team";

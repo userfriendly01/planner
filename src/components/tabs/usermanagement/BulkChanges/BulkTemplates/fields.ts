@@ -166,7 +166,7 @@ export const FIELDS: Fields = {
         try {
           const fetchedUser = await fetchUser(field);
 
-          row.attributes.manager_first_name = fetchedUser.firstName; // todo: is it ok to add this to attributes?
+          row.attributes.manager_first_name = fetchedUser.firstName;
           row.attributes.manager_last_name = fetchedUser.lastName;
         } catch (err) {
           console.error(err.message, err);
@@ -647,10 +647,9 @@ export const FIELDS: Fields = {
       } else {
         const team = state.calabrioContext.teams.find((t:any) => cleanupField(t.name, "string") === field);
         if (team && team.groupId) {
-          // Team already exists - can ignore calabrio group field - resolve
           return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
         } else {
-          // Team is new - make sure calabrio group is valid
+          // Creating a new team. Verify given parent group exists
           const fieldName = "Calabrio Group";
           const field = cleanupField(row[fieldName], "string");
 
