@@ -17,11 +17,11 @@ export const CustomTableData = styled.td`
     text-align: -webkit-center;
     vertical-align: middle;
   }
-  &:nth-child(8) {
+  &:nth-child(9) {
     text-align: -webkit-center;
     vertical-align: middle;
   }
-  &:nth-child(9) {
+  &:nth-child(10) {
     text-align: -webkit-center;
     vertical-align: middle;
   }
@@ -44,13 +44,13 @@ export const CustomTableHeader = styled.th`
   &:nth-child(4) {
     width: 18%;
   }
-  &:nth-child(7) {
-    width: ${headerIconWidth};
-  }
   &:nth-child(8) {
     width: ${headerIconWidth};
   }
   &:nth-child(9) {
+    width: ${headerIconWidth};
+  }
+  &:nth-child(10) {
     width: ${headerIconWidth};
   }
 `;
