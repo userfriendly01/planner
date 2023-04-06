@@ -22,7 +22,6 @@ export const getGraphQLEndpoint = (): string => {
  * @returns string: GraphQL client ID
  */
 export const getAzureSPAClientId = (env: string): string => {
-  // const env: string = useAdminState().userContext.pingIdentity.environment;
   return {
     "development": "cc2d6284-c9c4-43fe-9164-4ee0cb8fac50",
     "test": "0605f6ba-a953-4a8e-a663-12cc240e50ed",

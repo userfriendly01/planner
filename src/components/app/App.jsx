@@ -99,7 +99,6 @@ const App = () => {
   useEffect(() => {
     authenticateAndStartup(dispatch)
       .then((authenticationProfiles) => {
-        console.log("Auth Profile at startup", authenticationProfiles)
         setLoadResult({
           azureClientId: authenticationProfiles.azureClientId,
           home: authenticationProfiles[0].home,
@@ -120,8 +119,6 @@ const App = () => {
 
   if (loadResult.status) {
     if (loadResult.status === success) {
-      const azureClientId = getAzureSPAClientId();
-      console.log("Load Result", loadResult);
       return (
         <BrowserRouter>
           <ScrollToTop />
