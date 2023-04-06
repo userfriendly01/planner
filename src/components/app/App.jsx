@@ -61,7 +61,7 @@ const authenticateAndStartup = dispatch => new Promise((resolve, reject) => myAx
           authenticationProfiles
         }
       });
-      resolve(true);
+      resolve(authenticationProfiles);
     }).catch(error => {
       const msg = "An error occurred on startup";
       reject({
@@ -84,19 +84,28 @@ const authenticateAndStartup = dispatch => new Promise((resolve, reject) => myAx
 
 const App = () => {
 
-  const [loadResult, setLoadResult] = useState(null);
+  const [loadResult, setLoadResult] = useState({
+    home: null,
+    status: null
+  });
   const [showModal, setShowModal] = useState(false);
   const state = useAdminState();
   const dispatch = useAdminDispatch();
 
   useEffect(() => {
     authenticateAndStartup(dispatch)
-      .then(() => {
-        setLoadResult(success);
+      .then((authenticationProfiles) => {
+        console.log("Auth Profile at startup", authenticationProfiles)
+        setLoadResult({
+          home: authenticationProfiles[0].home,
+          status: success
+        });
       })
       .catch(err => {
         console.error(err.msg, { error: err.error });
-        setLoadResult(err);
+        setLoadResult({
+          status: err
+        });
       });
   }, []);
 
@@ -104,10 +113,10 @@ const App = () => {
     wait(() => setShowModal(true), timeouts.AUTH);
   }, []);
 
-  if (loadResult) {
-    if (loadResult === success) {
+  if (loadResult.status) {
+    if (loadResult.status === success) {
       const azureClientId = getAzureSPAClientId();
-
+      console.log("Load Result", loadResult);
       return (
         <BrowserRouter>
           <ScrollToTop />
@@ -115,7 +124,7 @@ const App = () => {
             <Header/>
             <NavTabs/>
               <Routes>
-                {getRoutes(state, azureClientId).map(r => {
+                {getRoutes(state, loadResult.home, azureClientId).map(r => {
                   const Component = r.element || r.render;
                   return <Route path={r.path} element={<Component/>}/>
                 })}
@@ -136,9 +145,9 @@ const App = () => {
       return (
         <Overlay data-testid="error-overlay">
           <ErrorWrapper>
-            <ErrorStatus>{loadResult.error.response.status}</ErrorStatus>
-            <ErrorMessage>{loadResult.msg}</ErrorMessage>
-            <ErrorPayload>{JSON.stringify(loadResult.error.response.data)}</ErrorPayload>
+            <ErrorStatus>{loadResult.status.error.response.status}</ErrorStatus>
+            <ErrorMessage>{loadResult.status.msg}</ErrorMessage>
+            <ErrorPayload>{JSON.stringify(loadResult.status.error.response.data)}</ErrorPayload>
           </ErrorWrapper>
         </Overlay>
       );

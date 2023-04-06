@@ -13,10 +13,10 @@ import {
 } from "components";
 import { AppState } from "./interfaces";
 
-export const getRoutes = (state: AppState, azureClientId: string) => [
+export const getRoutes = (state: AppState, home: any, azureClientId: string) => [
   {
     path: "/triton-admin",
-    element: TritonUsersViewWrapper
+    element: home
   },
   {
     path: "/triton-admin/triton-users",

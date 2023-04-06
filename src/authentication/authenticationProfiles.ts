@@ -7,6 +7,11 @@ import {
   runAlohaRoutingStartup,
   runAlohaFlowStartup
 } from "authentication";
+import {
+  AlohaFlowContainer,
+  AlohaRoutingContainer,
+  TritonUsersViewWrapper
+} from "components";
 
 export const getAuthenticationProfileTemplates = (): AuthenticationProfileOptions => {
   const Tabs = getTabs();
@@ -16,6 +21,7 @@ export const getAuthenticationProfileTemplates = (): AuthenticationProfileOption
       permissionLevel: Permissions.READ,
       isAdmin: false,
       profileId: null,
+      home: TritonUsersViewWrapper,
       tabs: [
         Tabs.TRITON_USER_MANAGEMENT,
         Tabs.TRITON_PROFILE_SETTINGS,
@@ -24,6 +30,7 @@ export const getAuthenticationProfileTemplates = (): AuthenticationProfileOption
     },
     ALOHA_ROUTE: {
       name: "Aloha Route",
+      home: AlohaRoutingContainer,
       permissionLevel: Permissions.READ,
       tabs: [
         Tabs.ALOHA_ROUTING_RULES
@@ -31,6 +38,7 @@ export const getAuthenticationProfileTemplates = (): AuthenticationProfileOption
     },
     ALOHA_FLOW: {
       name: "Aloha Flow",
+      home: AlohaFlowContainer,
       permissionLevel: Permissions.READ,
       tabs: [
         Tabs.ALOHA_CALL_FLOW_MANAGEMENT

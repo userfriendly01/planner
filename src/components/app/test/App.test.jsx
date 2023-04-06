@@ -35,6 +35,8 @@ import {
 } from "testUtils";
 import { myAxios } from "utils";
 
+jest.useFakeTimers();
+
 const authEndpoint = apiPaths.AUTH;
 const axiosMock = new MockAdapter(myAxios);
 
@@ -48,7 +50,6 @@ delete window.location;
 window.location = { reload: jest.fn() };
 document.getElementById = jest.fn();
 
-jest.useFakeTimers();
 
 jest.mock("@mui/material", () => ({
   CircularProgress: jest.fn(),
@@ -83,7 +84,8 @@ jest.mock("utils", () => ({
 }));
 
 const mockAdminDispatch = jest.fn();
-const authenticationProfiles = ["profile 1"];
+const mockHome = jest.fn();
+const authenticationProfiles = [{ home: mockHome }];
 
 describe("<App />", () => {
 
