@@ -1,5 +1,4 @@
 import React from "react";
-
 import { UserAgentApplication } from "msal";
 import { LoginError } from "./LoginError";
 import { LoginInProgress } from "./LoginInProgress";

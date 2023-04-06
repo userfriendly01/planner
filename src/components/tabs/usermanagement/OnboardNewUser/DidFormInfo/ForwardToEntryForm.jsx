@@ -40,7 +40,7 @@ const ForwardToEntryForm = props => {
   const getWorkerOptions = () => {
     return workers.map(worker => {
       return {
-        label: worker.attributes.full_name,
+        label: `${worker.attributes.emp_first_name} ${worker.attributes.emp_last_name}`,
         value: worker.sid
       };
     });

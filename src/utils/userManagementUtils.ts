@@ -99,8 +99,9 @@ export const identifyUserProfiles = (state: AppState, workerOpts: WorkerOpts) =>
     ...workerOpts.systems
   };
 
-  const routedFrom = workerOpts.routedFrom;
-  const worker = workerOpts.worker;
+  const routedFrom = views.TRITON_USERS;
+  // const worker = workerOpts.worker;
+  const worker: any = workerOpts
   switch(routedFrom){
     case views.TRITON_USERS: {
       const workerSid = worker.sid?.toLowerCase();

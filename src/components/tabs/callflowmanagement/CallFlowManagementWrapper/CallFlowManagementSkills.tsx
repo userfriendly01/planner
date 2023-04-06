@@ -5,19 +5,15 @@ import {
 import {
   SkillProfile,
   TableState,
-  View,
-  views
-} from "../CallFlowManagementWrapper/CallFlowManagement.Interfaces";
+} from "./CallFlowManagement.Interfaces";
 import {
   ConfirmationModalOptsProps,
   SaveResultProps
 } from "../CallFlowConfirmationModal/CallFlowConfirmationModal.Interfaces";
 import {
   CallFlowConfirmationModal,
-  Dropdown,
   ActionContainer,
-  SkillsContainer,
-  TfnActivation
+  SkillsContainer
 } from "components";
 import { useAdminState } from "context";
 import {
@@ -29,7 +25,7 @@ import { getAuthenticationProfileTemplates } from "authentication";
 import { filterSkillsByName } from "utils";
 import { Modal } from "@mui/material";
 
-const CallFlowContainer = () => {
+const CallFlowManagementSkills = () => {
 
   const defaultTableState: TableState = {
     searchBy: "",
@@ -62,7 +58,6 @@ const CallFlowContainer = () => {
   const [ tableState, setTableState ] = React.useState(defaultTableState);
   const [ confirmationModalOpts, setConfirmationModalOpts ] = React.useState(defaultConfirmationModalOpts);
   const [ saveResult, setSaveResult ] = React.useState(defaultSaveResult);
-  const [ view, setView ] = React.useState(views.SKILLS);
   console.log("Filtered State: ", tableState);
 
   React.useEffect(() => {
@@ -109,41 +104,21 @@ const CallFlowContainer = () => {
     });
   }, [tableState.searchBy, tableState.profiles, tableState.closedFilter, tableState.flashFilter, state.skillContext.skills]);
 
-  const SkillsManagementView =
-    <MessageWrapper>
-      <SkillsContainer
-        tableState={tableState}
-        setTableState={setTableState}
-      />
-      <ActionContainer
-        confirmationModalOpts={confirmationModalOpts}
-        tableState={tableState}
-        setConfirmationModalOpts={setConfirmationModalOpts}
-        setSaveResult={setSaveResult}
-        setTableState={setTableState}
-      />
-    </MessageWrapper>;
-
-  const TfnActivationView = <TfnActivation
-    confirmationModalOpts={confirmationModalOpts}
-    setSaveResult={setSaveResult}
-    setConfirmationModalOpts={setConfirmationModalOpts}
-  />;
-
   return (
     <CallflowWrapper>
-      <Dropdown
-        label="What would you like to do?"
-        value={view}
-        options={Object.values(views)}
-        updateValue={(event: any, view: View) => setView(view)}
-        styles={{
-          margin: "40 0 60 0",
-          width: "500px"
-        }}
-      />
-      {view === views.SKILLS && SkillsManagementView}
-      {view === views.TFN && TfnActivationView}
+      <MessageWrapper>
+        <SkillsContainer
+          tableState={tableState}
+          setTableState={setTableState}
+        />
+        <ActionContainer
+          confirmationModalOpts={confirmationModalOpts}
+          tableState={tableState}
+          setConfirmationModalOpts={setConfirmationModalOpts}
+          setSaveResult={setSaveResult}
+          setTableState={setTableState}
+        />
+      </MessageWrapper>
       <Modal open={confirmationModalOpts.open}>
         <>
           <CallFlowConfirmationModal
@@ -157,4 +132,4 @@ const CallFlowContainer = () => {
   );
 };
 
-export default CallFlowContainer;
+export default CallFlowManagementSkills;

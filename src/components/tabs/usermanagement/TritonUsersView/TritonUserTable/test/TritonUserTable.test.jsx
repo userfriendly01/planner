@@ -15,6 +15,7 @@ import {
   setupMockedComponents
 } from "testUtils";
 import { theme } from "globals";
+import { useNavigate } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { formatWorkerAttributeSkillsToHTML } from "utils";
 import {
@@ -26,6 +27,10 @@ import { Switch } from "@mui/material";
 
 jest.mock("components", () => ({
   ModalOverlay: jest.fn()
+}));
+
+jest.mock("react-router-dom", () => ({
+  useNavigate: jest.fn()
 }));
 
 jest.mock("context", () => ({
@@ -49,11 +54,10 @@ jest.mock("@mui/material", () => ({
   Switch: jest.fn()
 }));
 
+const mockNavigate = jest.fn();
 const mockSetForm = jest.fn();
 const mockDispatch = jest.fn();
 const mockSetTableState = jest.fn();
-const mockSetWorkerOpts = jest.fn();
-const workerOpts = {};
 const tableState = {
   deltaFilter: false,
   filteredList: initialTestState.workerContext.workers
@@ -61,7 +65,7 @@ const tableState = {
 const renderComponent = () => {
   return render(
     <ThemeProvider theme={theme}>
-      <TritonUserTable tableState={tableState} workerOpts={workerOpts} setWorkerOpts={mockSetWorkerOpts} setTableState={mockSetTableState} />
+      <TritonUserTable tableState={tableState} setTableState={mockSetTableState} />
     </ThemeProvider>
   );
 };
@@ -69,6 +73,7 @@ const renderComponent = () => {
 describe("<TritonUserTable />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useNavigate.mockReturnValue(mockNavigate);
     setupMockedComponents({
       ModalOverlay,
       Delete,
@@ -94,13 +99,20 @@ describe("<TritonUserTable />", () => {
       expect(rendered.container).toHaveTextContent("NAME");
       expect(rendered.container).toHaveTextContent("N NUMBER");
       expect(rendered.container).toHaveTextContent("EXTENSION");
-      expect(rendered.container).toHaveTextContent("OFFICE");
+      expect(rendered.container).toHaveTextContent("TEAM/PROFILE");
+      expect(rendered.container).toHaveTextContent("OU");
       expect(rendered.container).toHaveTextContent("SKILLS (Current)");
       expect(rendered.container).toHaveTextContent("SKILLS (Default)");
       initialTestState.workerContext.workers.forEach(w => {
-        expect(rendered.container).toHaveTextContent(w.attributes.full_name);
+        expect(rendered.container).toHaveTextContent(w.attributes.emp_first_name);
+        expect(rendered.container).toHaveTextContent(w.attributes.emp_last_name);
         expect(rendered.container).toHaveTextContent(w.attributes.n_number);
         expect(rendered.container).toHaveTextContent(w.attributes.extension);
+        const profile = initialTestState.profileContext.profiles.find(p => p.profile_id === w.attributes.profile_id)
+        if(profile){
+          expect(rendered.container).toHaveTextContent(`${profile.profile_nme} - ${profile.profile_id}`);
+          expect(rendered.container).toHaveTextContent(profile.operating_unit_nme);
+        }
         if(w.attributes.office_location_name){
           expect(rendered.container).toHaveTextContent(w.attributes.office_location_name);
         }
@@ -179,15 +191,8 @@ describe("<TritonUserTable />", () => {
           worker: initialTestState.workerContext.workers[0]
         }
       });
-      expect(mockSetWorkerOpts).toHaveBeenCalledTimes(1);
-      expect(mockSetWorkerOpts).toHaveBeenCalledWith({
-        action: "edit",
-        routedFrom: {
-          label: "Triton Users",
-          value: "TRITON_USERS"
-        },
-        worker: initialTestState.workerContext.workers[0]
-      });
+      expect(mockNavigate).toHaveBeenCalledTimes(1);
+      expect(mockNavigate).toHaveBeenCalledWith("/triton-admin/user");
     });
   });
   describe("Delete Button is clicked on worker row", () => {
@@ -204,15 +209,8 @@ describe("<TritonUserTable />", () => {
           worker: initialTestState.workerContext.workers[0]
         }
       });
-      expect(mockSetWorkerOpts).toHaveBeenCalledTimes(1);
-      expect(mockSetWorkerOpts).toHaveBeenCalledWith({
-        action: "delete",
-        routedFrom: {
-          label: "Triton Users",
-          value: "TRITON_USERS"
-        },
-        worker: initialTestState.workerContext.workers[0]
-      });
+      expect(mockNavigate).toHaveBeenCalledTimes(1);
+      expect(mockNavigate).toHaveBeenCalledWith("/triton-admin/user");
     });
   });
 });
