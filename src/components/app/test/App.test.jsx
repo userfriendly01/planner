@@ -15,7 +15,8 @@ import {
   NotificationModal
 } from "components";
 import {
-  useAdminDispatch
+  useAdminDispatch,
+  useAdminState
 } from "context";
 import {
   apiPaths,
@@ -45,6 +46,7 @@ const auth = {
 
 delete window.location;
 window.location = { reload: jest.fn() };
+document.getElementById = jest.fn();
 
 jest.useFakeTimers();
 
@@ -66,6 +68,7 @@ jest.mock("components", () => ({
 }));
 
 jest.mock("context", () => ({
+  useAdminState: jest.fn(),
   useAdminDispatch: jest.fn()
 }));
 
@@ -73,6 +76,7 @@ jest.mock("utils", () => ({
   getAuthenticationProfiles: jest.fn(),
   getPermissions: jest.fn(),
   getStartups: jest.fn(),
+  getAzureSPAClientId: jest.fn(),
   myAxios: jest.requireActual("utils").myAxios,
   wait: jest.requireActual("utils").wait,
   isErrorIn400s: jest.requireActual("utils").isErrorIn400s
@@ -85,6 +89,8 @@ describe("<App />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    document.getElementById.mockReturnValue({scrollTo : jest.fn()});
+    useAdminState.mockReturnValue({});
     useAdminDispatch.mockReturnValue(mockAdminDispatch);
     axiosMock.onGet(authEndpoint).reply(200, auth);
     getPermissions.mockReturnValue("permissions");

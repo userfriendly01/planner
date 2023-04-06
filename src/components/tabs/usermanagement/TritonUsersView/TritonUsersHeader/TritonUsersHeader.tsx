@@ -3,6 +3,7 @@ import {
   ControlsWrapper
 } from "./TritonUsersHeader.Styles";
 import { ManagementHeaderProps } from "./TritonUsersHeader.Interfaces";
+import ExportButton from "./ExportUsersButton";
 import {
   ManagerDropdown,
   ResetSkillsButton,
@@ -33,6 +34,7 @@ const ManagementHeader = (props: ManagementHeaderProps) => {
         />
       </ControlItem>
       <ControlItem>
+        <ExportButton selected={tableState.searchResults} label="Export"/>
         <ResetSkillsButton />
       </ControlItem>
     </ControlsWrapper>
