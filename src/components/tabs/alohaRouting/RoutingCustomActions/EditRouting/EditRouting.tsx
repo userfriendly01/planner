@@ -1,6 +1,6 @@
 import {
   Modal, ModalHeader
-} from "@lmig/lmds-react-modal";
+} from "@lmig/lmds-react";
 import {
   RoutingHeadingStyled, RoutingModalBodyStyled, RoutingModalFooterStyled
 } from "../../AlohaRouting.Styles";
