@@ -69,3 +69,25 @@ export const cleanupField = (field: any, requiredType: string) => {
     return field;
   }
 };
+
+// returns a date in YYYY-MM-DD format
+export const formatDateFromExcelDate = (excelDate: number) => {
+  const date = new Date(Date.UTC(0, 0, excelDate));
+  console.log(date, "date")
+  let day: string | number = date.getDate();
+  let month: string | number = date.getMonth() + 1;
+  const year = date.getFullYear();
+  if (isNaN(day) || isNaN(month) || isNaN(year)) {
+    throw new Error("Invalid date");
+  }
+
+  if (day.toString().length === 1) {
+    day = `0${day}`;
+  }
+
+  if (month.toString().length === 1) {
+    month = `0${month}`;
+  }
+
+  return `${year}-${month}-${day}`;
+};

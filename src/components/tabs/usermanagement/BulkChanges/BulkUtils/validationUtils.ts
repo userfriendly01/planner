@@ -5,6 +5,7 @@ import {
   identifyProcessingDependencies,
   formatErrorMessage
 } from "../BulkUtils";
+import { FIELDS } from "../BulkTemplates/fields";
 
 /**
  * Selected Templates is an array of templates to be processed on a bulk upload.
@@ -163,4 +164,85 @@ export const checkConflictingCalabrioUsers = async (user: any, rowNumber: number
       error: "No user passed to calabrio processing"
     }));
   }
+};
+
+/**
+ * Checks to see if there are any records in the calabrio wfm people state with conflicting information that would cause 
+ * an error to be thrown in creating a Calabrio WFM person. Returns true if a conflict is found
+ * @param user user being checked (the row)
+ * @param wfmOrg WFM Org in the state containing all People state
+ */
+export const checkIfConflictingWFMPeople = (user: any, wfmOrg: any[]): boolean => {
+  if(user){
+    try {
+      const nNumber = cleanupField(user.attributes.n_number, "string");
+      const email = cleanupField(user.email, "string");
+
+      // create an array of all WFM people to use for comparison
+      const people = wfmOrg[0].People_Without_Team || [];
+
+      wfmOrg.forEach(bu => {
+        bu.Teams.forEach((team: any) => {
+          people.push(...team.People);
+        });
+      });
+
+      let hasConflict = false;
+
+      for (let i = 0; i < people.length; i++) {
+        const dupUserNNumber = cleanupField(people[i].EmploymentNumber, "string");
+        const dupUserEmail = cleanupField(people[i].Email, "string");
+
+        if (nNumber && dupUserNNumber === nNumber) {
+          console.log("CALABRIO WFM CONFLICTING USERS: ", dupUserNNumber, nNumber);
+          hasConflict = true;
+          break;
+        }
+
+        if (email && dupUserEmail === email) {
+          console.log("CALABRIO WFM CONFLICTING USERS: ", dupUserEmail, email);
+          hasConflict = true;
+          break;
+        }
+      }
+
+      return hasConflict;
+
+    } catch(err) {
+      console.error("Error thrown trying to fetch and validate Conflicting Users", err);
+    }
+  }
+};
+
+/**
+ * Checks to see if a wfm field related to scheduling is allowed to be empty.  There are some fields pertaining to scheduling with WFM that 
+ * either all need to be empty, or all need to have a value.  This function will check a particular field name against the others
+ * to determine if the value is required
+ * @param row row to check
+ * @param fieldName the fieldname that has been determined to be empty
+ */
+export const allowedEmptyScheduleField = (row: any, fieldName: string) => {
+  const allOrNothingFields = [ // if one of these fields is provided, then ALL of these fields must be provided
+    FIELDS.CALABRIO_WFM_PERSON_START_DATE.name,
+    FIELDS.CALABRIO_WFM_TEAM.name,
+    FIELDS.CALABRIO_WFM_TEAM_START_DATE.name,
+    FIELDS.CALABRIO_WFM_CONTRACT.name,
+    FIELDS.CALABRIO_WFM_CONTRACT_SCHEDULE.name,
+    FIELDS.CALABRIO_WFM_PARTTIME_PERCENTAGE.name
+  ];
+
+  let isValid = true;
+
+  const fieldIsAllOrNothing = allOrNothingFields.includes(fieldName);
+
+  if (fieldIsAllOrNothing) {
+    allOrNothingFields.forEach((field: string) => {
+      if (row[field]) {
+        console.log(`INVALID EMPTY FIELD ${fieldName} cannot be empty due to the following field being populated: ${field}`);
+        isValid = false;
+      }
+    });
+  }
+  // shift bag and budget group are optional, so don't need to check those
+  return isValid;
 };

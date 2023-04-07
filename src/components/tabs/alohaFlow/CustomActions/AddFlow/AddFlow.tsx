@@ -7,7 +7,7 @@ import React, {
 import {
   Modal,
   ModalHeader
-} from "@lmig/lmds-react";
+} from "@lmig/lmds-react-modal";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import {
