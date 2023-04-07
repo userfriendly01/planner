@@ -1176,7 +1176,7 @@ export const FIELDS: Fields = {
     name: "WFM Person Start Date",
     type: "number",
     description: "Start date for the WFM Person",
-    example: "3/24/2023 (cell must be in date format)",
+    example: "excel spreadsheet cell/column must be a DATE type (not text)",
     options: null,
     validateFunction: (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;

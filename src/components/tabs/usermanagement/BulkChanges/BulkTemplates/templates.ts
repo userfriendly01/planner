@@ -155,9 +155,6 @@ const processWFMCreateUser = async (row: any, state: any) => {
     // completely optional
     body.OptionalColumns = row.wfmOptionalColumns;
 
-
-    console.log("THIS IS WHAT IS GETTING SENT for WFM CREATE", body);
-
     await createCalabrioWFMPerson(body);
     console.log(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
     return Promise.resolve(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);

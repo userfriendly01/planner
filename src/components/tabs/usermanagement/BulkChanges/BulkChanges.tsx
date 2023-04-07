@@ -172,8 +172,7 @@ const BulkChanges = () => {
               onClick={() => setShowProcessingModal(true)}
               disabled={
                 selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_PERSON") &&
-                !state.calabrioContext.wfmOptions.length &&
-                !state.calabrioContext.wfmOrg.length
+                !checkIfWFMLoaded()
               }
             >Process</ImportButton>
           </Wrapper>
