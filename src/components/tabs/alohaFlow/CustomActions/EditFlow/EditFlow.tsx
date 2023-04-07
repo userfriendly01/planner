@@ -3,7 +3,7 @@ import React, {
 } from "react";
 import {
   Modal, ModalHeader
-} from "@lmig/lmds-react";
+} from "@lmig/lmds-react-modal";
 import {
   Button,Grid
 } from "@mui/material";

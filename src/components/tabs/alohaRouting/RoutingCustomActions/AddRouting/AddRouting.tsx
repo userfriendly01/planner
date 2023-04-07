@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import {
   Modal, ModalHeader
-} from "@lmig/lmds-react";
+} from "@lmig/lmds-react-modal";
 import {
   routingDropDownList, routingInitRule, routingFields, initializedAlertBar, getGraphQLEndpoint, convertTime24to12
 } from "utils";

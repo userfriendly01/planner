@@ -2,7 +2,7 @@
 import React from "react";
 import {
   ModalHeader, ModalBody, ModalFooter
-} from "@lmig/lmds-react";
+} from "@lmig/lmds-react-modal";
 import {
   HeadingStyled, ModalSearchStyled
 } from "../../AlohaFlow.Styles";

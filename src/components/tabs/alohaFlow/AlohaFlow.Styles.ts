@@ -2,9 +2,10 @@ import styled from "styled-components";
 import {
   ModalBody,
   ModalFooter,
-  Heading,
+  // Heading,
   Modal
-} from "@lmig/lmds-react";
+} from "@lmig/lmds-react-modal";
+import { Heading } from "@lmig/lmds-react-typography"
 
 export const ModalBodyStyled = styled(ModalBody)`
   margin-top: 10px !important;

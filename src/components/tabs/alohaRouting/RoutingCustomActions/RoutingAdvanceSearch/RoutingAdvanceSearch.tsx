@@ -6,7 +6,7 @@ import {
 } from "../../AlohaRouting.Interfaces";
 import {
   ModalHeader, ModalBody, ModalFooter
-} from "@lmig/lmds-react";
+} from "@lmig/lmds-react-modal";
 import {
   RoutingHeadingStyled, RoutingModalSearchStyled
 } from "../../AlohaRouting.Styles";

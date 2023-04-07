@@ -64,7 +64,7 @@
     "@babel/helper-module-transforms": "^7.21.2",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
-    "@lmig/lmds-react": "^3.5.0",
+    "@lmig/lmds-react-modal": "^2.3.10",
     "@lmig/lmds-react-typography": "^1.2.5",
     "@mui/icons-material": "^5.11.9",
     "@mui/material": "^5.11.10",
