@@ -3,6 +3,7 @@ import {
 } from "components";
 import { useAdminState } from "context";
 import { AlertBarProps } from "./interfaces";
+import { AppState } from "globals";
 /**
  *  This function return graphQL endpoint based on running environment  
  * @returns string: GraphQL Endpoint
@@ -20,8 +21,7 @@ export const getGraphQLEndpoint = (): string => {
  *  This function return Azure SPA client ID on running environment  
  * @returns string: GraphQL client ID
  */
-export const getAzureSPAClientId = (): string => {
-  const env: string = useAdminState().userContext.pingIdentity.environment;
+export const getAzureSPAClientId = (env: string): string => {
   return {
     "development": "cc2d6284-c9c4-43fe-9164-4ee0cb8fac50",
     "test": "0605f6ba-a953-4a8e-a663-12cc240e50ed",
