@@ -6,12 +6,14 @@ import {
   addManager,
   createUser,
   createCalabrioUser,
+  createCalabrioWFMPerson,
   createCalabrioTeam,
   getCalabrioUser,
   updateCalabrioUser,
   updateUser
 } from "services";
 import { initialTestState } from "testUtils";
+
 
 const createTemplates = getCreateTemplates(initialTestState);
 const updateTemplates = getUpdateTemplates(initialTestState);
@@ -230,6 +232,153 @@ describe("CREATE_CALABRIO_QM_USER", () => {
     });
   });
 });
+describe("CREATE_CALABRIO_WFM_PERSON", () => {
+  const createWFMProcessFunction = createTemplates.CREATE_CALABRIO_WFM_PERSON.processFunction;
+  beforeEach(() => jest.clearAllMocks());
+  const row = {
+    rowNumber: 10,
+    attributes: {
+      profile_id: 1,
+      n_number: "n0263445",
+      email: "e.mail@lm.com",
+      emp_first_name: "Michael",
+      emp_last_name: "Scott"
+    },
+    businessUnitId: "bu123",
+    timeZone: "Americas",
+    wfmFirstDayOfWeek: 1,
+    wfmPersonStartDate: "2023-03-29",
+    wfmTeamId: "T123",
+    wfmTeamStartDate: "2023-03-29",
+    wfmContractId: "C123",
+    wfmContractScheduleId: "CS123",
+    wfmPartTimePercentageId: "PTP123",
+    wfmBudgetGroupId: "",
+    wfmShiftBagId: "",
+    wfmAvailabilityId: "A123",
+    wfmAvailabilityStartDate: "2023-03-29",
+    wfmRoleIds: [],
+    wfmWorkflowControlSetId: "WFC123",
+    wfmSkillIds: ["S1", "S2"],
+    wfmSkillsStartDate: "2023-03-29",
+    wfmRotationId: "",
+    wfmRotationStartDate: "",
+    wfmRotationStartWk: "",
+    wfmOptionalColumns: []
+  };
+  describe("There is an existing WFM person with the same nnumber", () => {
+    test("should reject with err", async () => {
+      const nNumberDup = { ...row };
+      nNumberDup.attributes.n_number = "n1111111";
+      try {
+        await createWFMProcessFunction(nNumberDup, initialTestState);
+      } catch(err){
+        expect(createCalabrioWFMPerson).toHaveBeenCalledTimes(0);
+        expect(err).toBe(JSON.stringify({
+          rowNumber: 10,
+          error: "Failed to create Calabrio WFM person for row 10. Calabrio WFM Record already exists with either this user's email or nNumber for row 10"
+        }));
+      }
+    });
+  });
+  describe("There is an existing WFM person with the same email", () => {
+    test("should reject with err", async () => {
+      const emailDup = { ...row };
+      emailDup.attributes.email = "Person@libertymutual.com";
+      try {
+        await createWFMProcessFunction(emailDup, initialTestState);
+      } catch(err){
+        expect(createCalabrioWFMPerson).toHaveBeenCalledTimes(0);
+        expect(err).toBe(JSON.stringify({
+          rowNumber: 10,
+          error: "Failed to create Calabrio WFM person for row 10. Calabrio WFM Record already exists with either this user's email or nNumber for row 10"
+        }));
+      }
+    });
+  });
+  describe("createCalabrioWFMPerson succeeds", () => {
+    beforeEach(() => createCalabrioWFMPerson.mockResolvedValue("yay"));
+    test("should resolve", async () => {
+      row.attributes.email = "e.mail@lm.com";
+      row.attributes.n_number = "n0263445";
+      const result = await createWFMProcessFunction(row, initialTestState);
+      expect(createCalabrioWFMPerson).toHaveBeenCalledTimes(1);
+      expect(createCalabrioWFMPerson).toHaveBeenCalledWith({
+        Email: "e.mail@lm.com",
+        FirstName: "Michael",
+        LastName: "Scott",
+        BusinessUnitId: "bu123",
+        TimeZoneId: "Americas",
+        ApplicationLogon: "e.mail@lm.com",
+        NNumber: "n0263445",
+        FirstDayOfWeek: 1,
+        PersonStartDate: "2023-03-29",
+        TeamId: "T123",
+        TeamStartDate: "2023-03-29",
+        ContractId: "C123",
+        ContractScheduleId: "CS123",
+        PartTimePercentageId: "PTP123",
+        BudgetGroupId: "",
+        ShiftBagId: "",
+        AvailabilityId: "A123",
+        AvailabilityStartDate: "2023-03-29",
+        Skills: ["S1", "S2"],
+        SkillsStartDate: "2023-03-29",
+        RoleIds: [],
+        WorkflowControlSetId: "WFC123",
+        RotationId: "",
+        RotationStartDate: "",
+        RotationStartWeek: "",
+        OptionalColumns: []
+      });
+      expect(result).toEqual("Person created in Calabrio WFM for n0263445 for row 10");
+    });
+  });
+
+  describe("error is thrown on createCalabrioWFMPerson", () => {
+    beforeEach(() => createCalabrioWFMPerson.mockRejectedValue("boo"));
+    test("should reject with err", async () => {
+      try {
+        await createWFMProcessFunction(row, initialTestState);
+      } catch(err){
+        expect(createCalabrioWFMPerson).toHaveBeenCalledTimes(1);
+        expect(createCalabrioWFMPerson).toHaveBeenCalledWith({
+          Email: "e.mail@lm.com",
+          FirstName: "Michael",
+          LastName: "Scott",
+          BusinessUnitId: "bu123",
+          TimeZoneId: "Americas",
+          ApplicationLogon: "e.mail@lm.com",
+          NNumber: "n0263445",
+          FirstDayOfWeek: 1,
+          PersonStartDate: "2023-03-29",
+          TeamId: "T123",
+          TeamStartDate: "2023-03-29",
+          ContractId: "C123",
+          ContractScheduleId: "CS123",
+          PartTimePercentageId: "PTP123",
+          BudgetGroupId: "",
+          ShiftBagId: "",
+          AvailabilityId: "A123",
+          AvailabilityStartDate: "2023-03-29",
+          Skills: ["S1", "S2"],
+          SkillsStartDate: "2023-03-29",
+          RoleIds: [],
+          WorkflowControlSetId: "WFC123",
+          RotationId: "",
+          RotationStartDate: "",
+          RotationStartWeek: "",
+          OptionalColumns: []
+        });
+        expect(err).toBe(JSON.stringify({
+          rowNumber: 10,
+          error: "Failed to create Calabrio WFM person for row 10. boo"
+        }));
+      }
+    });
+  });
+});
+
 describe("CREATE_MANAGER", () => {
   const createManagerProcessFunction = createTemplates.CREATE_MANAGER.processFunction;
   beforeEach(() => jest.clearAllMocks());
@@ -242,18 +391,18 @@ describe("CREATE_MANAGER", () => {
       manager_first_name: "Michael",
       manager_last_name: "Scott"
     },
-    groupId: 109,
+    groupId: 109
   };
   describe("newTeam === true", () => {
     describe("createCalabrioTeam throws an error", () => {
       test("rejected promise is returned", async () => {
         createCalabrioTeam.mockRejectedValue("Aww");
         try {
-         await createManagerProcessFunction({
-          newTeam: true,
-          "Calabrio Team": "New Team",
-          ...row
-         });
+          await createManagerProcessFunction({
+            newTeam: true,
+            "Calabrio Team": "New Team",
+            ...row
+          });
         } catch(e){
           expect(e).toBe(JSON.stringify({
             rowNumber: 2,
@@ -274,7 +423,7 @@ describe("CREATE_MANAGER", () => {
           newTeam: true,
           "Calabrio Team": "New Team",
           ...row
-         });
+        });
         expect(addManager).toHaveBeenCalledTimes(1);
         expect(addManager).toHaveBeenCalledWith({
           manager_first_nme: "Michael",
@@ -355,9 +504,9 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
           attributes: {
             agent_attribute_1: 3,
-            profile_id: 3,
+            profile_id: 3
           },
-          operatingUnitSid: "operatingUnitSid2",
+          operatingUnitSid: "operatingUnitSid2"
         });
         expect(result).toBe("WK1234 - Worker Attributes updated for row 4");
       });
@@ -380,9 +529,9 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
           attributes: {
             profile_id: 1,
-            "agent_attribute_1": 1,
+            "agent_attribute_1": 1
           },
-          operatingUnitSid: "operatingUnitSid1",
+          operatingUnitSid: "operatingUnitSid1"
         });
         expect(result).toBe("WK1234 - Worker Attributes updated for row 4");
       });

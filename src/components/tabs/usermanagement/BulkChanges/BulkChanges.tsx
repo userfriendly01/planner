@@ -26,6 +26,7 @@ import {
   ExportOptionsButton
 } from "./ExportButtons";
 import { ProcessingModal } from "./Processing";
+import WFMLoadRetryModal from "./WFMLoadRetryModal";
 import { checkIfBulkAdmin } from "authentication";
 import { Dropdown } from "components";
 import { useAdminState } from "context";
@@ -42,10 +43,19 @@ const BulkChanges = () => {
   const [ uploadedForm, setUploadedForm ] = React.useState(null);
   const [ filenameText, setFilenameText ] = React.useState(null);
   const [ showProcessingModal , setShowProcessingModal ] = React.useState(false);
+  const [ showWFMLoadModal, setShowWFMLoadModal ] = React.useState(false);
   const createTemplates = getCreateTemplates(state);
 
   React.useEffect(() => {
     consolidateTemplates(selectedTemplates, setConsolidatedTemplates);
+
+    // If wfm user template is selected, but the options failed to load, try to reload them in the modal
+    if(selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_PERSON")) {
+      const isLoaded = checkIfWFMLoaded();
+      if (!isLoaded) {
+        setShowWFMLoadModal(true);
+      }
+    }
   }, [selectedTemplates]);
 
   const resetBulkChanges = () => {
@@ -54,6 +64,12 @@ const BulkChanges = () => {
     setConsolidatedTemplates([]);
     setUploadedForm(null);
     setFilenameText(null);
+  };
+
+  const checkIfWFMLoaded = () => {
+    const areOptionsLoaded = state.calabrioContext.wfmOptions.length > 0;
+    const isOrgLoaded = state.calabrioContext.wfmOrg.length > 0;
+    return areOptionsLoaded && isOrgLoaded;
   };
 
   return (
@@ -86,6 +102,11 @@ const BulkChanges = () => {
               />
             </>
           </Modal>
+          <Modal open={showWFMLoadModal} onClose={() => { return; }} >
+            <WFMLoadRetryModal
+              handleClose={() => setShowWFMLoadModal(false)}
+            />
+          </Modal>
           { view === views.BULK_CREATE_USERS &&
         <BulkCreateForm
           selectedTemplates= {selectedTemplates}
@@ -113,7 +134,15 @@ const BulkChanges = () => {
             </StepWrapper>
             <ButtonWrapper>
               <ExportTemplateButton template={consolidatedTemplate} />
-              <ExportOptionsButton template={consolidatedTemplate} state={state}/>
+              <ExportOptionsButton
+                template={consolidatedTemplate}
+                state={state}
+                selectedTemplates={selectedTemplates}
+                disabled={
+                  selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_PERSON") &&
+                  !checkIfWFMLoaded()
+                }
+              />
             </ButtonWrapper>
           </Row>
           <Row>
@@ -121,7 +150,13 @@ const BulkChanges = () => {
               Step 3: Upload completed Spreadsheet
             </StepWrapper>
             <Wrapper center={true} column={true} centrallyAlign={true}>
-              <ImportButton onClick={() => uploadButtonRef.current.click()} >Upload Spreadsheet</ImportButton>
+              <ImportButton
+                onClick={() => uploadButtonRef.current.click()}
+                disabled={
+                  selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_PERSON") &&
+                  !checkIfWFMLoaded()
+                }
+              >Upload Spreadsheet</ImportButton>
               <FileNameWrapper> {filenameText} </FileNameWrapper>
             </Wrapper>
           </Row>
@@ -134,7 +169,12 @@ const BulkChanges = () => {
           </StepWrapper>
           <Wrapper center={true}>
             <ImportButton
-              onClick={() => setShowProcessingModal(true)}>Process</ImportButton>
+              onClick={() => setShowProcessingModal(true)}
+              disabled={
+                selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_PERSON") &&
+                !checkIfWFMLoaded()
+              }
+            >Process</ImportButton>
           </Wrapper>
         </Row>
           }

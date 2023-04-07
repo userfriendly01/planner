@@ -52,6 +52,17 @@ const BulkCreateForm = (props: BulkActionFormProps) => {
           style={{ padding: "0px" }}
         />
       </SelectionWrapper>
+      <SelectionWrapper>
+        Calabrio WFM
+        <Checkbox
+          checked={selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_PERSON")}
+          onChange={(event: any) => {
+            const checked = event.target.checked;
+            updateSelectedTemplates(checked, createTemplates.CREATE_CALABRIO_WFM_PERSON, selectedTemplates, setSelectedTemplates);
+          }}
+          style={{ padding: "0px" }}
+        />
+      </SelectionWrapper>
     </Row>
   );
 };

@@ -1,6 +1,7 @@
 import * as utils from "../processingUtils";
 import {
   getCalabrioUsers,
+  getWfmOrg,
   getManagers
 } from "services";
 import { act } from "testUtils";
@@ -34,8 +35,8 @@ describe("updateManagerUserState", () => {
   });
   describe("get managers succeeds", () => {
     const response = [{
-        manager: "Bill"
-      }];
+      manager: "Bill"
+    }];
     test("dispatch is called, promise resolves", async () => {
       getManagers.mockResolvedValue(response);
       formatManagersResponse.mockReturnValue(response);
@@ -124,6 +125,46 @@ describe("updateCalabrioUserState", () => {
       await utils.updateCalabrioUserState(mockDispatch);
       expect(console.error).toHaveBeenCalledTimes(1);
       expect(console.error.mock.calls[0][0]).toContain("Failed to update calabrio user state after bulk upload");
+    });
+  });
+});
+
+describe("updateWFMPersonState", () => {
+  const mockDispatch = jest.fn();
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+  });
+  describe("getWfmOrg succeeds", () => {
+    test("dispatch is called, promise resolves", async () => {
+      const response = {
+        data: {
+          organization: {
+            businessUnits: [{
+              Id: "I'm a business unit",
+              otherStuff: "yo"
+            }]
+          }
+        }
+      };
+      getWfmOrg.mockResolvedValue(response);
+      await utils.updateWFMPersonState(mockDispatch);
+      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: "loadWfmOrg",
+        payload: [{
+          Id: "I'm a business unit",
+          otherStuff: "yo"
+        }]
+      });
+    });
+  });
+  describe("get users fails", () => {
+    test("dispatch is not called, promise resolves", async () => {
+      getWfmOrg.mockRejectedValue("Aww");
+      await utils.updateWFMPersonState(mockDispatch);
+      expect(console.error).toHaveBeenCalledTimes(1);
+      expect(console.error.mock.calls[0][0]).toContain("Failed to update calabrio WFM person state after bulk upload");
     });
   });
 });
@@ -319,13 +360,25 @@ describe("identifyProcessingDependencies", () => {
     const processingDependencyResults = utils.identifyProcessingDependencies([template2, template3, template1]);
     expect(processingDependencyResults).toEqual([template1, template2, template3]);
   });
-  test("multiple selected templates, returns appropriate dependency order, where order doesn't matter it stays put", () => {
+  test("multiple selected templates, returns appropriate dependency order, where no multidependencies are first", () => {
     const processingDependencyResults = utils.identifyProcessingDependencies([template2, orderDoesNotMatterTemplate, template3, template1]);
-    expect(processingDependencyResults).toEqual([template1, orderDoesNotMatterTemplate, template2, template3]);
+    expect(processingDependencyResults).toEqual([orderDoesNotMatterTemplate, template1, template2, template3]);
   });
-  test("one of the mulitRunDependencies not in selected templates list, returns in same order", () => {
+  test("one of the mulitRunDependencies not in selected templates list, returns templates without dependencies first", () => {
     const processingDependencyResults = utils.identifyProcessingDependencies([template2, orderDoesNotMatterTemplate]);
-    expect(processingDependencyResults).toEqual([template2, orderDoesNotMatterTemplate]);
+    expect(processingDependencyResults).toEqual([orderDoesNotMatterTemplate, template2]);
+  });
+  test("So many templates, including one with multiple dependencies, returns in correct dependency order", () => {
+    const soManyDependencies = {
+      name: "CREATE_CALABRIO_WFM_PERSON",
+      multiRunDependencies: [{
+        name: "CREATE_TRITON_USER"
+      }, {
+        name: "CREATE_CALABRIO_QM_USER"
+      }]
+    };
+    const processingDependencyResults = utils.identifyProcessingDependencies([soManyDependencies, template2, orderDoesNotMatterTemplate, template1, template3]);
+    expect(processingDependencyResults).toEqual([orderDoesNotMatterTemplate, template1, template2, template3, soManyDependencies]);
   });
 });
 

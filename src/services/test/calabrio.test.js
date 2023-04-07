@@ -1,6 +1,7 @@
 import {
   createCalabrioTeam,
   createCalabrioUser,
+  createCalabrioWFMPerson,
   getCalabrioUsers,
   getCalabrioOrg,
   getCalabrioRoles,
@@ -68,6 +69,32 @@ describe("createCalabrioTeam", () => {
     beforeEach(() => axiosMock.onPost(apiPaths.CREATE_CALABRIO_TEAM).replyOnce(500, badResponse));
     test("should reject with error", done => {
       createCalabrioTeam(user).catch(rejectedVal => {
+        expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(user);
+        expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
+        done();
+      });
+    });
+  });
+});
+
+describe("createCalabrioWFMPerson", () => {
+  describe("call succeeds", () => {
+    const data = { huzzah: "you are winner" };
+    beforeEach(() => axiosMock.onPost(apiPaths.CREATE_CALABRIO_WFM_PERSON).replyOnce(200, data));
+    test("should resolve with any successful response", done => {
+      createCalabrioWFMPerson(user)
+        .then(resolvedValue => {
+          expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(user);
+          expect(resolvedValue.data).toEqual(data);
+          done();
+        });
+    });
+  });
+  describe("call fails", () => {
+    const badResponse = { wahh: "boo" };
+    beforeEach(() => axiosMock.onPost(apiPaths.CREATE_CALABRIO_WFM_PERSON).replyOnce(500, badResponse));
+    test("should reject with error", done => {
+      createCalabrioWFMPerson(user).catch(rejectedVal => {
         expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(user);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();
