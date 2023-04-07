@@ -29,6 +29,7 @@ jest.mock("services", () => ({
   createCalabrioUser: jest.fn(),
   createProfile: jest.fn(),
   createUser: jest.fn(),
+  createCalabrioWFMPerson: jest.fn(),
   deleteDirectory: jest.fn(),
   deleteFlowRule: jest.fn(),
   deleteManager: jest.fn(),

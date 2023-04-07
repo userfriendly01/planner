@@ -1,10 +1,12 @@
 import {
   createUser,
+  createCalabrioTeam,
   createCalabrioUser,
   createCalabrioWFMPerson,
   getCalabrioUser,
   updateCalabrioUser,
-  updateUser
+  updateUser,
+  addManager
 } from "services";
 import {
   Template,
@@ -15,9 +17,11 @@ import {
   checkConflictingCalabrioUsers,
   checkIfConflictingWFMPeople,
   formatErrorMessage,
+  toProperCase,
   updateCalabrioUserState,
   updateTritonUserState,
-  updateWFMPersonState
+  updateWFMPersonState,
+  updateManagerUserState
 } from "../BulkUtils";
 import {
   getTargetProfile
@@ -159,6 +163,55 @@ const processWFMCreateUser = async (row: any, state: any) => {
     return Promise.resolve(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
   } catch(err) {
     const errorMessage = `Failed to create Calabrio WFM person for row ${rowNumber}. ${formatErrorMessage(err)}`;
+    console.error(errorMessage, err);
+    return rejectPromise(errorMessage, rowNumber);
+  }
+};
+
+const processCreateManager = async (row: any, state: any) => {
+  console.warn("****MANAGER RECORD PROCESSING for", row);
+  const rowNumber = row.rowNumber;
+
+  const managerNNumberFieldName = "Manager N Number";
+  const managerNNumberField = cleanupField(row[managerNNumberFieldName], "string");
+
+  // create new team
+  const isNewTeam = row.newTeam;
+  if (isNewTeam) {
+    const teamFieldName = "Calabrio Team";
+    const teamField = toProperCase(cleanupField(row[teamFieldName], "string"));
+
+    try {
+      const response: any = await createCalabrioTeam({
+        name: teamField,
+        parentGroupId: row.parentGroupId
+      });
+
+      const newTeamId = response.data.groupId;
+      row.groupId = newTeamId;
+
+    } catch (err) {
+      const errorMessage = `Failed to create Team for row ${rowNumber}. ${formatErrorMessage(err)}`;
+      console.error(errorMessage, err);
+      return rejectPromise(errorMessage, rowNumber);
+    }
+  }
+
+  // add manager
+  const body: any = {};
+
+  body.manager_first_nme = row.attributes.manager_first_name;
+  body.manager_last_nme = row.attributes.manager_last_name;
+  body.manager_n_num = managerNNumberField;
+  body.profile_id = row.attributes.profile_id;
+  body.calabrio_team_ids = JSON.stringify([row.groupId]);
+
+  try {
+    await addManager(body);
+    console.log(`Manager created for ${managerNNumberField} for row ${rowNumber}`);
+    return Promise.resolve(`Manager created for ${managerNNumberField} for row ${rowNumber}`);
+  } catch (err) {
+    const errorMessage = `Failed to create Manager for row ${rowNumber}. ${formatErrorMessage(err)}`;
     console.error(errorMessage, err);
     return rejectPromise(errorMessage, rowNumber);
   }
@@ -342,6 +395,21 @@ export const getCreateTemplates = (state: any): Templates => {
         FIELDS.CALABRIO_WFM_AVAILABILITY_START_DATE,
         FIELDS.CALABRIO_WFM_AVAILABILITY,
         FIELDS.CALABRIO_WFM_OPTIONAL_COLUMNS
+      ]
+    },
+    CREATE_MANAGER: {
+      name: "CREATE_MANAGER",
+      data: {},
+      processFunction: (row: any) => processCreateManager(row, state),
+      stateUpdateFunctions: [updateManagerUserState],
+      multiRunDependencies: null,
+      validationConcurrencyLimit: 500,
+      processingConcurrencyLimit: 8,
+      fields: [
+        FIELDS.PROFILE_ID,
+        FIELDS.MANAGER_N_NUMBER_CREATE,
+        FIELDS.CALABRIO_TEAM_CREATE,
+        FIELDS.CALABRIO_GROUP
       ]
     }
   };

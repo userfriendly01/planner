@@ -199,6 +199,18 @@ describe("<BulkChanges />", () => {
       expect(Dropdown.mock.calls[4][0].value).toBe(views.BULK_UPDATE);
     });
   });
+  describe("View is updated to views.BULK_ADD_MANAGER ", () => {
+    test("should render with steps 1, 2 & 3 ", async () => {
+      const rendered = render(<BulkChanges />);
+      expect(BulkCreateForm.mock.calls.length).toBe(2);
+      const updateView = Dropdown.mock.calls[1][0].updateValue;
+      act(() => updateView(null, views.BULK_ADD_MANAGER));
+      expect(rendered.container).toHaveTextContent("Step 1: Mentally Prepare");
+      expect(rendered.container).toHaveTextContent("Step 2: Export Template & Template Options");
+      expect(rendered.container).toHaveTextContent("Step 3: Upload completed Spreadsheet");
+      expect(Dropdown.mock.calls[2][0].value).toBe(views.BULK_ADD_MANAGER);
+    });
+  });
   describe("selected Templates Length > 0", () => {
     test("Component is re-rendered with Step 2 and step 3", () => {
       const rendered = render(<BulkChanges />);

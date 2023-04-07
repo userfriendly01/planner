@@ -378,6 +378,90 @@ describe("fields.js", () => {
       });
 
     });
+    describe("MANAGER_N_NUMBER_CREATE", () => {
+      describe("validateFunction", () => {
+        const managerValidateFunction = FIELDS.MANAGER_N_NUMBER_CREATE.validateFunction;
+        test("Field is null", async () => {
+          try {
+            await managerValidateFunction({
+              rowNumber: 9,
+              "boo": "no"
+            }, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 9,
+              error: "Manager N Number is missing from row 9"
+            }));
+          }
+        });
+        test("Manager already exists", async () => {
+          try {
+            await managerValidateFunction({
+              rowNumber: 9,
+              "Manager N Number": initialTestState.managerContext.managers[0].manager_n_number
+            }, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 9,
+              error: "Manager N Number is already present for row 9"
+            }));
+          }
+        });
+        test("n# fetch fails", async () => {
+          fetchUser.mockRejectedValue("Aww")
+          try {
+            await managerValidateFunction({
+              rowNumber: 9,
+              "Manager N Number": "n0002221"
+            }, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 9,
+              error: "Error thrown fetching Manager N Number from HR Database for row 9"
+            }));
+          }
+        });
+        test("n# fetch succeeds", async () => {
+          fetchUser.mockResolvedValue({
+            lastName: "Shatz",
+            firstName: "Carl"
+          })
+          const row = {
+            rowNumber: 9,
+            "Manager N Number": "n0002221"
+          };
+          await managerValidateFunction(row, initialTestState);
+          expect(row).toEqual({
+            ...row,
+            attributes: {
+              ...row.attributes,
+              manager_first_name: "Carl",
+              manager_last_name: "Shatz"
+            }
+          })
+        });
+        test("n# fetch succeeds, attributes are present", async () => {
+          fetchUser.mockResolvedValue({
+            lastName: "Shatz",
+            firstName: "Carl"
+          })
+          const row = {
+            rowNumber: 9,
+            "Manager N Number": "n0002221",
+            attributes: {}
+          };
+          await managerValidateFunction(row, initialTestState);
+          expect(row).toEqual({
+            ...row,
+            attributes: {
+              ...row.attributes,
+              manager_first_name: "Carl",
+              manager_last_name: "Shatz"
+            }
+          })
+        });
+      });
+    });
     describe("MANAGER_N_NUMBER", () => {
       describe("validateFunction", () => {
         const managerValidateFunction = FIELDS.MANAGER_N_NUMBER.validateFunction;
@@ -1587,6 +1671,92 @@ describe("fields.js", () => {
         });
       });
     });
+    describe("CALABRIO_TEAM_CREATE", () => {
+      describe("validateFunction", () => {
+        const calabrioTeamValidation = FIELDS.CALABRIO_TEAM_CREATE.validateFunction;
+        test("No Calabrio Team provided, reject with message", async () => {
+          try {
+            await calabrioTeamValidation({ rowNumber: 9 }, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 9,
+              error: "Calabrio Team is missing from row 9"
+            }));
+          }
+        });
+        test("Calabrio Team already exists with groupId, reject with message", async () => {
+          const row = {
+            rowNumber: 9,
+            "Calabrio Team": "Hawaii Team 50"
+          }
+          await calabrioTeamValidation(row, initialTestState);
+          expect(row).toEqual(row);
+        });
+        test("Calabrio Team already exists with no groupId, reject with message", async () => {
+          const row = {
+            rowNumber: 9,
+            "Calabrio Team": "Hawaii Team 50"
+          }
+          try {
+            await calabrioTeamValidation(row, {
+              ...initialTestState,
+              calabrioContext: {
+                groups: initialTestState.calabrioContext.groups,
+                teams: [{
+                  name: "Hawaii Team 50"
+                }]
+              }
+            });
+          } catch(e){
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 9,
+              error: "New Teams require a valid Calabrio Group for row 9"
+            }));
+          }
+        });
+        test("Calabrio Group is not a valid option", async () => {
+          const row = {
+            rowNumber: 9,
+            "Calabrio Team": "New Team",
+            "Calabrio Group": "Unknown Group"
+          }
+          try {
+            await calabrioTeamValidation(row, initialTestState);
+          } catch(e){
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 9,
+              error: "New Teams require a valid Calabrio Group for row 9"
+            }));
+          }
+        });
+        test("Calabrio Group is a valid option", async () => {
+          const row = {
+            rowNumber: 9,
+            "Calabrio Team": "new TEam",
+            "Calabrio Group": "FNOL Group"
+          }
+          await calabrioTeamValidation(row, initialTestState);
+          expect(row).toEqual({
+            rowNumber: 9,
+            parentGroupId: 200,
+            newTeam: true,
+            "Calabrio Team": "New Team",
+            "Calabrio Group": "FNOL Group"
+          });
+        });
+      });
+      describe("options", () => {
+        const optionsFunction = FIELDS.CALABRIO_TEAM_CREATE.options;
+        test("returns the profile id options", () => {
+          const options = optionsFunction(initialTestState);
+          expect(options).toEqual([
+            "Hawaii Team 50",
+            "Hawaii Specialty Team",
+            "FNOL Team"
+          ]);
+        });
+      });
+    });
     describe("CALABRIO_TEAM", () => {
       describe("validateFunction", () => {
         const calabrioTeamValidation = FIELDS.CALABRIO_TEAM.validateFunction;
@@ -1657,6 +1827,86 @@ describe("fields.js", () => {
             "Hawaii Team 50",
             "Hawaii Specialty Team",
             "FNOL Team"
+          ]);
+        });
+      });
+    });
+    describe("CALABRIO_GROUP", () => {
+      describe("validateFunction", () => {
+        const calabrioGroupValidation = FIELDS.CALABRIO_GROUP.validateFunction;
+        test("No Calabrio Team provided, reject with message", async () => {
+          try {
+            await calabrioGroupValidation({ rowNumber: 9 }, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 9,
+              error: "Calabrio Team is missing from row 9"
+            }));
+          }
+        });
+        test("Calabrio Team already exists with groupId, reject with message", async () => {
+          const row = {
+            rowNumber: 9,
+            "Calabrio Team": "Hawaii Team 50"
+          }
+          await calabrioGroupValidation(row, initialTestState);
+          expect(row).toEqual(row);
+        });
+        test("Calabrio Team already exists with no groupId, reject with message", async () => {
+          const row = {
+            rowNumber: 9,
+            "Calabrio Team": "Hawaii Team 50"
+          }
+          try {
+            await calabrioGroupValidation(row, {
+              ...initialTestState,
+              calabrioContext: {
+                groups: initialTestState.calabrioContext.groups,
+                teams: [{
+                  name: "Hawaii Team 50"
+                }]
+              }
+            });
+          } catch(e){
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 9,
+              error: "New Teams require a valid Calabrio Group for row 9"
+            }));
+          }
+        });
+        test("Calabrio Group is not a valid option", async () => {
+          const row = {
+            rowNumber: 9,
+            "Calabrio Team": "New Team",
+            "Calabrio Group": "Unknown Group"
+          }
+          try {
+            await calabrioGroupValidation(row, initialTestState);
+          } catch(e){
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 9,
+              error: "New Teams require a valid Calabrio Group for row 9"
+            }));
+          }
+        });
+        test("Calabrio Group is a valid option", async () => {
+          const row = {
+            rowNumber: 9,
+            "Calabrio Team": "New Team",
+            "Calabrio Group": "FNOL Group"
+          }
+          await calabrioGroupValidation(row, initialTestState);
+          expect(row).toEqual(row);
+        });
+      });
+      describe("options", () => {
+        const optionsFunction = FIELDS.CALABRIO_GROUP.options;
+        test("returns the profile id options", () => {
+          const options = optionsFunction(initialTestState);
+          expect(options).toEqual([
+            "Hawaii 50 Group",
+            "FNOL Group",
+            "No Teams Group"
           ]);
         });
       });

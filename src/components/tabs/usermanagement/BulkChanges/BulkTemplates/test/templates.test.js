@@ -3,23 +3,17 @@ import {
   getCreateTemplates
 } from "../../BulkTemplates";
 import {
+  addManager,
   createUser,
   createCalabrioUser,
   createCalabrioWFMPerson,
+  createCalabrioTeam,
   getCalabrioUser,
   updateCalabrioUser,
   updateUser
 } from "services";
 import { initialTestState } from "testUtils";
 
-jest.mock("services", () => ({
-  createUser: jest.fn(),
-  createCalabrioUser: jest.fn(),
-  createCalabrioWFMPerson: jest.fn(),
-  getCalabrioUser: jest.fn(),
-  updateCalabrioUser: jest.fn(),
-  updateUser: jest.fn()
-}));
 
 const createTemplates = getCreateTemplates(initialTestState);
 const updateTemplates = getUpdateTemplates(initialTestState);
@@ -385,6 +379,108 @@ describe("CREATE_CALABRIO_WFM_PERSON", () => {
   });
 });
 
+describe("CREATE_MANAGER", () => {
+  const createManagerProcessFunction = createTemplates.CREATE_MANAGER.processFunction;
+  beforeEach(() => jest.clearAllMocks());
+  const row = {
+    rowNumber: 2,
+    "Manager N Number": "n0003232",
+    parentGroupId: 200,
+    attributes: {
+      profile_id: 1,
+      manager_first_name: "Michael",
+      manager_last_name: "Scott"
+    },
+    groupId: 109
+  };
+  describe("newTeam === true", () => {
+    describe("createCalabrioTeam throws an error", () => {
+      test("rejected promise is returned", async () => {
+        createCalabrioTeam.mockRejectedValue("Aww");
+        try {
+          await createManagerProcessFunction({
+            newTeam: true,
+            "Calabrio Team": "New Team",
+            ...row
+          });
+        } catch(e){
+          expect(e).toBe(JSON.stringify({
+            rowNumber: 2,
+            error: "Failed to create Team for row 2. Aww"
+          }));
+        }
+      });
+    });
+    describe("createCalabrioTeam is successful", () => {
+      test("addManager is called", async () => {
+        addManager.mockResolvedValue("Yay!");
+        createCalabrioTeam.mockResolvedValue({
+          data: {
+            groupId: 300
+          }
+        });
+        await createManagerProcessFunction({
+          newTeam: true,
+          "Calabrio Team": "New Team",
+          ...row
+        });
+        expect(addManager).toHaveBeenCalledTimes(1);
+        expect(addManager).toHaveBeenCalledWith({
+          manager_first_nme: "Michael",
+          manager_last_nme: "Scott",
+          manager_n_num: "n0003232",
+          profile_id: 1,
+          calabrio_team_ids: JSON.stringify([300])
+        });
+      });
+    });
+  });
+  describe("newTeam === false", () => {
+    describe("addManager throws an error", () => {
+      test("rejected promise is returned", async() => {
+        addManager.mockRejectedValue("Aww!");
+        try {
+          await createManagerProcessFunction({
+            ...row,
+            newTeam: false,
+            groupId: 101
+          });
+        } catch(e) {
+          expect(addManager).toHaveBeenCalledTimes(1);
+          expect(addManager).toHaveBeenCalledWith({
+            manager_first_nme: "Michael",
+            manager_last_nme: "Scott",
+            manager_n_num: "n0003232",
+            profile_id: 1,
+            calabrio_team_ids: JSON.stringify([101])
+          });
+          expect(e).toBe(JSON.stringify({
+            rowNumber: 2,
+            error: "Failed to create Manager for row 2. Aww!"
+          }));
+        }
+      });
+    });
+    describe("addManager is successful", () => {
+      test("promise resolves", async () => {
+        addManager.mockResolvedValue("Yay!!");
+        await createManagerProcessFunction({
+          ...row,
+          newTeam: false,
+          groupId: 101
+        });
+        expect(addManager).toHaveBeenCalledTimes(1);
+        expect(addManager).toHaveBeenCalledWith({
+          manager_first_nme: "Michael",
+          manager_last_nme: "Scott",
+          manager_n_num: "n0003232",
+          profile_id: 1,
+          calabrio_team_ids: JSON.stringify([101])
+        });
+      });
+    });
+  });
+});
 describe("UPDATE_WORKER_ATTRIBUTE", () => {
   const updateWorkerAttributesProcessFunction = updateTemplates.UPDATE_WORKER_ATTRIBUTE.processFunction;
   beforeEach(() => jest.clearAllMocks());

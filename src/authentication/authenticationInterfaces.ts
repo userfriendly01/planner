@@ -18,6 +18,7 @@ export const enum Permissions {
 export interface AuthenticationProfile {
   name: string,
   permissionLevel: string,
+  home: any,
   tabs: any[],
   isAdmin?: boolean,
   profileId?: number | string | null

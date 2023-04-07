@@ -1,5 +1,6 @@
 import {
-  cleanupField
+  cleanupField,
+  toProperCase
 } from "../BulkUtils";
 import {
   fetchUser,
@@ -145,6 +146,39 @@ export const FIELDS: Fields = {
         return rejectPromise(`${fieldName} is not a valid option or is not a number for row ${rowNumber}`, rowNumber);
       } else {
         row.attributes.profile_id = field;
+        return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+      }
+    }
+  },
+  MANAGER_N_NUMBER_CREATE: {
+    field: "managerNNumberCreate",
+    name: "Manager N Number",
+    type: "string",
+    description: "N Number of the Manager",
+    example: "n0088625",
+    options: null,
+    validateFunction: async (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = "Manager N Number";
+      const field = cleanupField(row[fieldName], "string");
+      if(!row.attributes){
+        row.attributes = {};
+      }
+      const managerObject = state.managerContext.managers.some((m: any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === field);
+      if (!field) {
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else if (managerObject) {
+        return rejectPromise(`${fieldName} is already present for row ${rowNumber}`, rowNumber);
+      } else {
+        try {
+          const fetchedUser = await fetchUser(field);
+
+          row.attributes.manager_first_name = fetchedUser.firstName;
+          row.attributes.manager_last_name = fetchedUser.lastName;
+        } catch (err) {
+          console.error(err.message, err);
+          return rejectPromise(`Error thrown fetching ${fieldName} from HR Database for row ${rowNumber}`, rowNumber);
+        }
         return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
       }
     }
@@ -541,6 +575,44 @@ export const FIELDS: Fields = {
       }
     }
   },
+  CALABRIO_TEAM_CREATE: {
+    field: "calabrioTeamCreate",
+    name: "Calabrio Team",
+    type: "string",
+    description: "Team",
+    example: "Default Team",
+    options: (state: any) => state.calabrioContext.teams.map((t: any) => t.name),
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = "Calabrio Team";
+      const field = cleanupField(row[fieldName], "string");
+      if(!field){
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else {
+        const team = state.calabrioContext.teams.find((t:any) => cleanupField(t.name, "string") === field);
+
+        if (team && team.groupId) {
+          // Team already exists, dont need to verify parent group
+          row.groupId = team.groupId;
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } else {
+          // Creating a new team. Verify given parent group exists
+          const fieldName = "Calabrio Group";
+          const field = cleanupField(row[fieldName], "string");
+          const parentGroup = state.calabrioContext.groups.find((g:any) => cleanupField(g.name, "string") === field);
+
+          if (!parentGroup) {
+            return rejectPromise(`New Teams require a valid ${fieldName} for row ${rowNumber}`, rowNumber);
+          } else {
+            row.parentGroupId = parentGroup.groupId;
+            row.newTeam = true;
+            row["Calabrio Team"] = toProperCase(row["Calabrio Team"]);
+            return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+          }
+        }
+      }
+    }
+  },
   CALABRIO_TEAM: {
     field: "calabrioTeam",
     name: "Calabrio Team",
@@ -561,6 +633,39 @@ export const FIELDS: Fields = {
         } else {
           row.groupId = team.groupId;
           return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        }
+      }
+    }
+  },
+  CALABRIO_GROUP: {
+    field: "calabrioGroup",
+    name: "Calabrio Group",
+    type: "string",
+    description: "Group (Must already be created in Calabrio)",
+    example: "GRS Claims Services",
+    options: (state: any) => state.calabrioContext.groups.map((g:any) => g.name),
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName= "Calabrio Team";
+      const field = cleanupField(row[fieldName], "string");
+
+      if (!field) {
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else {
+        const team = state.calabrioContext.teams.find((t:any) => cleanupField(t.name, "string") === field);
+        if (team && team.groupId) {
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } else {
+          // Creating a new team. Verify given parent group exists
+          const fieldName = "Calabrio Group";
+          const field = cleanupField(row[fieldName], "string");
+
+          const group = state.calabrioContext.groups.find((g:any) => cleanupField(g.name, "string") === field);
+          if (!group) {
+            return rejectPromise(`New Teams require a valid ${fieldName} for row ${rowNumber}`, rowNumber);
+          } else {
+            return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+          }
         }
       }
     }

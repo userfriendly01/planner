@@ -11,6 +11,7 @@ import {
   View,
   views
 } from "./BulkChanges.Interfaces";
+import { getCreateTemplates } from "./BulkTemplates";
 import {
   BulkChangesWrapper,
   ButtonWrapper,
@@ -43,6 +44,7 @@ const BulkChanges = () => {
   const [ filenameText, setFilenameText ] = React.useState(null);
   const [ showProcessingModal , setShowProcessingModal ] = React.useState(false);
   const [ showWFMLoadModal, setShowWFMLoadModal ] = React.useState(false);
+  const createTemplates = getCreateTemplates(state);
 
   React.useEffect(() => {
     consolidateTemplates(selectedTemplates, setConsolidatedTemplates);
@@ -81,6 +83,9 @@ const BulkChanges = () => {
             updateValue={(event: any, view: View) => {
               setView(view);
               resetBulkChanges();
+              if(view === views.BULK_ADD_MANAGER){
+                setSelectedTemplates([createTemplates.CREATE_MANAGER]);
+              }
             }}
             styles={{
               margin: "40 0 30 0",
@@ -113,6 +118,13 @@ const BulkChanges = () => {
           selectedTemplates= {selectedTemplates}
           setSelectedTemplates= {setSelectedTemplates}
         />
+          }
+          { view === views.BULK_ADD_MANAGER &&
+        <Row>
+          <StepWrapper>
+            Step 1: Mentally Prepare
+          </StepWrapper>
+        </Row>
           }
           { selectedTemplates.length > 0 &&
         <>

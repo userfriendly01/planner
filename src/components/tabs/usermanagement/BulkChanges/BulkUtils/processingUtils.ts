@@ -1,10 +1,13 @@
 import { apiPaths } from "globals";
 import {
-  getCalabrioUsers, getWfmOrg
+  getCalabrioUsers,
+  getWfmOrg,
+  getManagers
 } from "services";
 import { UploadedRow } from "../BulkChanges.Interfaces";
 import {
   formatWorkerResponse,
+  formatManagersResponse,
   myAxios
 } from "utils";
 import * as XLSX from "xlsx";
@@ -54,6 +57,22 @@ export const updateWFMPersonState = async (dispatch: any): Promise<void> => {
     });
   } catch (error) {
     console.error("Failed to update calabrio WFM person state after bulk upload", error);
+  }
+  return Promise.resolve();
+};
+
+/** 
+ * Refreshes the manager user state after a bulk update on users
+ */
+export const updateManagerUserState = async (dispatch: any): Promise<void> => {
+  try {
+    const managers: any = await getManagers();
+    dispatch({
+      type: "loadManagers",
+      payload: formatManagersResponse(managers)
+    });
+  } catch (error) {
+    console.error("Failed to update manager state after bulk upload", error);
   }
   return Promise.resolve();
 };

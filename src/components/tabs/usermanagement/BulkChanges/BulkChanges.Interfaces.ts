@@ -102,6 +102,10 @@ export const views: any = {
   BULK_UPDATE: {
     value: "BULK_UPDATE",
     label: "Bulk Update"
+  },
+  BULK_ADD_MANAGER: {
+    value: "BULK_ADD_MANAGER",
+    label: "Create Managers"
   }
 };
 
