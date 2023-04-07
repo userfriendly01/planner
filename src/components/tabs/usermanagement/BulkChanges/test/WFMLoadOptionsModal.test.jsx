@@ -1,4 +1,4 @@
-import WFMLoadOptionsModal from "../WFMLoadOptionsModal";
+import WFMLoadRetryModal from "../WFMLoadRetryModal";
 import React from "react";
 import {
   act,
@@ -45,12 +45,12 @@ const mockDispatch = jest.fn();
 const mockHandleClose = jest.fn();
 
 const renderComponent = () => {
-  return render(<WFMLoadOptionsModal
+  return render(<WFMLoadRetryModal
     handleClose={mockHandleClose}
   />);
 };
 
-describe("<WFMLoadOptionsModal />", () => {
+describe("<WFMLoadRetryModal />", () => {
   beforeEach(() => {
     useAdminDispatch.mockReturnValue(mockDispatch);
     jest.clearAllMocks();

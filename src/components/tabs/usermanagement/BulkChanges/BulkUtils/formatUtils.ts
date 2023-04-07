@@ -73,7 +73,7 @@ export const cleanupField = (field: any, requiredType: string) => {
 // returns a date in YYYY-MM-DD format
 export const formatDateFromExcelDate = (excelDate: number) => {
   const date = new Date(Date.UTC(0, 0, excelDate));
-
+  console.log(date, "date")
   let day: string | number = date.getDate();
   let month: string | number = date.getMonth() + 1;
   const year = date.getFullYear();

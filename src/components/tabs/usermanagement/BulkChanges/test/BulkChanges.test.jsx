@@ -23,7 +23,7 @@ import {
   setupMockedComponents,
   waitFor
 } from "testUtils";
-import WFMLoadOptionsModal from "../WFMLoadOptionsModal";
+import WFMLoadRetryModal from "../WFMLoadRetryModal";
 import * as XLSX from "xlsx";
 import { Modal } from "@mui/material";
 import { useAdminState } from "context";
@@ -64,7 +64,7 @@ jest.mock("xlsx",() => ({
   }
 }));
 
-jest.mock("../WFMLoadOptionsModal", () => ({
+jest.mock("../WFMLoadRetryModal", () => ({
   __esModule: true,
   default: jest.fn()
 }));
@@ -159,7 +159,7 @@ describe("<BulkChanges />", () => {
         });
       });
       describe("wfm options and people are NOT loaded", () => {
-        test("should open the WFMLoadOptionsModal,  handleclose is clicked, modal closes", async () => {
+        test("should open the WFMLoadRetryModal,  handleclose is clicked, modal closes", async () => {
           const initialStateWithoutWFM = { ...initialTestState };
           initialStateWithoutWFM.calabrioContext.wfmOptions = [];
           useAdminState.mockReturnValue(initialStateWithoutWFM);
@@ -171,8 +171,8 @@ describe("<BulkChanges />", () => {
           expect(Modal.mock.calls.length).toBe(8);
           expect(Modal.mock.calls[7][0].open).toBe(true);
           render(Modal.mock.calls[7][0].children);
-          expect(WFMLoadOptionsModal.mock.calls.length).toBe(1);
-          const closeModal = WFMLoadOptionsModal.mock.calls[0][0].handleClose;
+          expect(WFMLoadRetryModal.mock.calls.length).toBe(1);
+          const closeModal = WFMLoadRetryModal.mock.calls[0][0].handleClose;
           act(() => closeModal());
           expect(ExportOptionsButton.mock.calls[0][0].disabled).toBe(true);
           expect(Modal.mock.calls.length).toBe(10);

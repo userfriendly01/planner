@@ -10,7 +10,7 @@ import {
   getLowestConcurrencyLimit,
   handleConcurrentCalls
 } from "../processingUtils";
-import { initialTestState } from "../../../../../../../__test__/testConsts";
+import { initialTestState } from "testUtils";
 
 jest.mock("../processingUtils",() => ({
   handleConcurrentCalls: jest.fn(),

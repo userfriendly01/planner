@@ -2,7 +2,6 @@ import styled from "styled-components";
 import {
   ModalBody,
   ModalFooter,
-  // Heading,
   Modal
 } from "@lmig/lmds-react-modal";
 import { Heading } from "@lmig/lmds-react-typography";

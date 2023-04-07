@@ -1,7 +1,8 @@
 import {
   cleanupField,
   formatErrorMessage,
-  toProperCase
+  toProperCase,
+  formatDateFromExcelDate
 } from "../../BulkUtils";
 
 describe("formatErrorMessage", () => {
@@ -75,5 +76,30 @@ describe("cleanupField", () => {
   describe("field is null", () => {
     const result = cleanupField(null, "boolean");
     expect(result).toBe(null);
+  });
+});
+
+describe("formatDateFromExcelDate", () => {
+  test("excelDate is a string word, throws error", () => {
+    try {
+      formatDateFromExcelDate("boo");
+    } catch (e) {
+      expect(e).toEqual(new Error("Invalid date"));
+    }
+  });
+  test("date is a string date, throws error", () => {
+    try {
+      formatDateFromExcelDate("3/24/2023");
+    } catch (e) {
+      expect(e).toEqual(new Error("Invalid date"));
+    }
+  });
+  test("excelDate is correct format, day and month are single digits, returns date in correct YYYY-MM-DD format", () => {
+    const result = formatDateFromExcelDate(39448);
+    expect(result).toEqual("2008-01-01");
+  });
+  test("excelDate is correct format, day and month are double digits, returns date in correct YYYY-MM-DD format", () => {
+    const result = formatDateFromExcelDate(40837);
+    expect(result).toEqual("2011-10-21");
   });
 });

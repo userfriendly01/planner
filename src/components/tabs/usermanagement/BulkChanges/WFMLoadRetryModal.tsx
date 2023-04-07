@@ -16,7 +16,7 @@ import { CircularProgress } from "@mui/material";
 import { theme } from "globals";
 
 
-const WFMLoadOptionsModal = (props: any) => {
+const WFMLoadRetryModal = (props: any) => {
   const {
     handleClose
   } = props;
@@ -132,4 +132,4 @@ const WFMLoadOptionsModal = (props: any) => {
   );
 };
 
-export default WFMLoadOptionsModal;
+export default WFMLoadRetryModal;

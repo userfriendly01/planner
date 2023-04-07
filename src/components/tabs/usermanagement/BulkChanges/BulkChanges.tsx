@@ -26,7 +26,7 @@ import {
   ExportOptionsButton
 } from "./ExportButtons";
 import { ProcessingModal } from "./Processing";
-import WFMLoadOptionsModal from "./WFMLoadOptionsModal";
+import WFMLoadRetryModal from "./WFMLoadRetryModal";
 import { checkIfBulkAdmin } from "authentication";
 import { Dropdown } from "components";
 import { useAdminState } from "context";
@@ -51,7 +51,7 @@ const BulkChanges = () => {
 
     // If wfm user template is selected, but the options failed to load, try to reload them in the modal
     if(selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_PERSON")) {
-      const isLoaded = checkIfWFMOptionsLoaded();
+      const isLoaded = checkIfWFMLoaded();
       if (!isLoaded) {
         setShowWFMLoadModal(true);
       }
@@ -66,7 +66,7 @@ const BulkChanges = () => {
     setFilenameText(null);
   };
 
-  const checkIfWFMOptionsLoaded = () => {
+  const checkIfWFMLoaded = () => {
     const areOptionsLoaded = state.calabrioContext.wfmOptions.length > 0;
     const isOrgLoaded = state.calabrioContext.wfmOrg.length > 0;
     return areOptionsLoaded && isOrgLoaded;
@@ -103,7 +103,7 @@ const BulkChanges = () => {
             </>
           </Modal>
           <Modal open={showWFMLoadModal} onClose={() => { return; }} >
-            <WFMLoadOptionsModal
+            <WFMLoadRetryModal
               handleClose={() => setShowWFMLoadModal(false)}
             />
           </Modal>
@@ -140,8 +140,7 @@ const BulkChanges = () => {
                 selectedTemplates={selectedTemplates}
                 disabled={
                   selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_PERSON") &&
-                  (!state.calabrioContext.wfmOptions.length ||
-                  !state.calabrioContext.wfmOrg.length)
+                  !checkIfWFMLoaded()
                 }
               />
             </ButtonWrapper>
@@ -155,8 +154,7 @@ const BulkChanges = () => {
                 onClick={() => uploadButtonRef.current.click()}
                 disabled={
                   selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_PERSON") &&
-                  (!state.calabrioContext.wfmOptions.length ||
-                    !state.calabrioContext.wfmOrg.length)
+                  !checkIfWFMLoaded()
                 }
               >Upload Spreadsheet</ImportButton>
               <FileNameWrapper> {filenameText} </FileNameWrapper>
