@@ -2,6 +2,7 @@ import {
   createUser,
   createCalabrioTeam,
   createCalabrioUser,
+  createCalabrioWFMPerson,
   getCalabrioUser,
   updateCalabrioUser,
   updateUser,
@@ -14,10 +15,12 @@ import {
 import {
   cleanupField,
   checkConflictingCalabrioUsers,
+  checkIfConflictingWFMPeople,
   formatErrorMessage,
   toProperCase,
   updateCalabrioUserState,
   updateTritonUserState,
+  updateWFMPersonState,
   updateManagerUserState
 } from "../BulkUtils";
 import {
@@ -104,6 +107,64 @@ const processCreateCalabrioUser = async (row: any, state: any) => {
   }
 };
 
+const processWFMCreateUser = async (row: any, state: any) => {
+  console.warn("****WFM RECORD PROCESSING for", row);
+  const rowNumber = row.rowNumber;
+
+  try {
+    const hasPersonConflict = checkIfConflictingWFMPeople(row, state.calabrioContext.wfmOrg);
+    if (hasPersonConflict) {
+      throw (`Calabrio WFM Record already exists with either this user's email or nNumber for row ${rowNumber}`);
+    }
+
+    const body: any = {};
+
+    // required fields
+    body.FirstName = row.attributes.emp_first_name;
+    body.LastName = row.attributes.emp_last_name;
+    body.BusinessUnitId = row.businessUnitId;
+    body.Email = row.attributes.email;
+    body.TimeZoneId = row.timeZone;
+    body.ApplicationLogon = row.attributes.email;
+    body.NNumber = row.attributes.n_number;
+    body.FirstDayOfWeek = row.wfmFirstDayOfWeek;
+
+    // schedule related parameters...  not required technically, but either all need to be null, or all need to be a value
+    body.PersonStartDate = row.wfmPersonStartDate;
+    body.TeamId = row.wfmTeamId;
+    body.TeamStartDate = row.wfmTeamStartDate;
+    body.ContractId = row.wfmContractId;
+    body.ContractScheduleId = row.wfmContractScheduleId;
+    body.PartTimePercentageId = row.wfmPartTimePercentageId;
+    // optional sheduling items
+    body.BudgetGroupId = row.wfmBudgetGroupId;
+    body.ShiftBagId = row.wfmShiftBagId;
+
+    // these are optional
+    body.Identity = row.wfmIdentity;
+    body.AvailabilityId = row.wfmAvailabilityId;
+    body.AvailabilityStartDate = row.wfmAvailabilityStartDate;
+    body.RoleIds = row.wfmRoleIds;
+    body.WorkflowControlSetId = row.wfmWorkflowControlSetId;
+    body.Skills = row.wfmSkillIds;
+    body.SkillsStartDate = row.wfmSkillsStartDate;
+    body.RotationId = row.wfmRotationId;
+    body.RotationStartDate = row.wfmRotationStartDate;
+    body.RotationStartWeek = row.wfmRotationStartWk;
+
+    // completely optional
+    body.OptionalColumns = row.wfmOptionalColumns;
+
+    await createCalabrioWFMPerson(body);
+    console.log(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
+    return Promise.resolve(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
+  } catch(err) {
+    const errorMessage = `Failed to create Calabrio WFM person for row ${rowNumber}. ${formatErrorMessage(err)}`;
+    console.error(errorMessage, err);
+    return rejectPromise(errorMessage, rowNumber);
+  }
+};
+
 const processCreateManager = async (row: any, state: any) => {
   console.warn("****MANAGER RECORD PROCESSING for", row);
   const rowNumber = row.rowNumber;
@@ -166,7 +227,7 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
   if(key === "profile_id"){
     body[location] = {
       agent_attribute_1: parseInt(value),
-      profile_id: parseInt(value),
+      profile_id: parseInt(value)
     };
     const profile = getTargetProfile(state.profileContext.profiles, value);
     body.operatingUnitSid = profile?.operating_unit_sid;
@@ -291,6 +352,46 @@ export const getCreateTemplates = (state: any): Templates => {
         FIELDS.CALABRIO_TEAM,
         FIELDS.CALABRIO_ROLES,
         FIELDS.CALABRIO_TIME_ZONE
+      ]
+    },
+    CREATE_CALABRIO_WFM_PERSON: {
+      name: "CREATE_CALABRIO_WFM_PERSON",
+      data: {},
+      processFunction: (row: any) => processWFMCreateUser(row, state),
+      stateUpdateFunctions: [updateWFMPersonState],
+      multiRunDependencies: [{
+        name: "CREATE_TRITON_USER",
+        variable: "workerSid" // note: don't actually need the workersid, but Triton user and QM users need to be created BEFORE WFM
+      }, {
+        name: "CREATE_CALABRIO_QM_USER",
+        variable: "groupId"
+      }],
+      validationConcurrencyLimit: 500,
+      processingConcurrencyLimit: 25,
+      fields: [
+        FIELDS.N_NUMBER_UPDATE,
+        FIELDS.CALABRIO_WFM_IDENTITY,
+        FIELDS.CALABRIO_WFM_BUSINESS_UNIT,
+        FIELDS.CALABRIO_WFM_ROLES,
+        FIELDS.CALABRIO_TIME_ZONE,
+        FIELDS.CALABRIO_WFM_FIRST_DAY_OF_WEEK,
+        FIELDS.CALABRIO_WFM_WORKFLOW_CONTROL_SET,
+        FIELDS.CALABRIO_WFM_TEAM,
+        FIELDS.CALABRIO_WFM_CONTRACT,
+        FIELDS.CALABRIO_WFM_CONTRACT_SCHEDULE,
+        FIELDS.CALABRIO_WFM_PARTTIME_PERCENTAGE,
+        FIELDS.CALABRIO_WFM_SHIFTBAG,
+        FIELDS.CALABRIO_WFM_BUDGET_GROUP,
+        FIELDS.CALABRIO_WFM_PERSON_START_DATE,
+        FIELDS.CALABRIO_WFM_TEAM_START_DATE,
+        FIELDS.CALABRIO_WFM_SKILLS_START_DATE,
+        FIELDS.CALABRIO_WFM_SKILLS,
+        FIELDS.CALABRIO_WFM_ROTATION_START_DATE,
+        FIELDS.CALABRIO_WFM_ROTATION,
+        FIELDS.CALABRIO_WFM_ROTATION_START_WEEK,
+        FIELDS.CALABRIO_WFM_AVAILABILITY_START_DATE,
+        FIELDS.CALABRIO_WFM_AVAILABILITY,
+        FIELDS.CALABRIO_WFM_OPTIONAL_COLUMNS
       ]
     },
     CREATE_MANAGER: {

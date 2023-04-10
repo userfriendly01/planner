@@ -7,7 +7,7 @@ import React, {
 import {
   Modal,
   ModalHeader
-} from "@lmig/lmds-react";
+} from "@lmig/lmds-react-modal";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import {
@@ -251,8 +251,11 @@ export const AddFlow = ({
           <Grid container rowSpacing={3}>
             {
               flowFields.map(({
-                label, key, control, required = false, fieldType, gridSize = 12
+                label, key, control, required = false, fieldType, gridSize = 12, dynamicFieldConditionCheck
               }) => {
+                if(dynamicFieldConditionCheck && !dynamicFieldConditionCheck(flowRule)){
+                  return;
+                }
                 if(fieldType &&displayRecords[key as keyof ViewOrAddProps] ) {
                   control = "input";
                 }

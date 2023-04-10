@@ -1,4 +1,5 @@
 import { Control } from "globals";
+import { FormValidationRule } from "utils/interfaces";
 export interface FlowContent {
     callerType?: string;
     callFlowRoute?: string;
@@ -125,6 +126,7 @@ export interface AddFlowFieldsConfigProps {
     disableEdit?: boolean;
     valueGetter?: (params: CctSharedCallFlowDb) => string;
     valueSetter?: (currentValue: CctSharedCallFlowDb, newValue: any) => CctSharedCallFlowDb;
+    dynamicFieldConditionCheck?: (params: FormValidationRule) => boolean
     fieldType?: "viewAndAdd";
     gridSize?: number;
 }
