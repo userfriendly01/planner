@@ -1,4 +1,13 @@
 import { Control } from "globals";
+
+interface RoutingOccupancyCheck {
+    team: string;
+    percentage: number;
+  }
+  interface RoutingStep {
+    team: string;
+    time: number;
+  }
 export interface CctSharedCallRoutingDb {
     id: number;
     all?: string;
@@ -19,8 +28,8 @@ export interface CctSharedCallRoutingDb {
     twilioSkill?: string;
     crcSkill?: string;
     priority?: string;
-    occupancyCheck?: string;
-    routingSteps?: Array<string>;
+    occupancyCheck?: Array<RoutingOccupancyCheck>;
+    routingSteps?: Array<RoutingStep>;
 }
 export interface RoutingMasterData {
     channel?: Array<string>;

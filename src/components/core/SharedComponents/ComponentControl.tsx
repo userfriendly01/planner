@@ -86,6 +86,9 @@ function ComponentControl({
           }}
         />
       );
+
+    case "multiField":
+      return (<></>);
     default:
       return null;
   }
