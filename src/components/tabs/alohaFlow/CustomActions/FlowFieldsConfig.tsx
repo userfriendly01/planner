@@ -116,7 +116,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     })
   },
   {
-    label: "Transfer Number",
+    label: "Transfer Destination",
     key: "transferNumber",
     control: "input",
     valueGetter: (params: CctSharedCallFlowDb) => `${params?.content?.transferNumber || ""}`,
