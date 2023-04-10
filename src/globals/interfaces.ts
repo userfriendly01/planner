@@ -196,6 +196,50 @@ export interface CallTagOptions {
   options: string
 }
 
+export interface WfmBusinessUnit {
+  Id: string,
+  Name: string,
+  People_Without_Team?: WfmUser[],
+  Teams?: WfmTeam[]
+}
+
+export interface WfmTeam {
+  Id: string,
+  Name: string,
+  TeamName: string
+  People: WfmUser[],
+  SiteId?: string,
+  SiteName?: string
+}
+
+export interface WfmUser {
+  OptionalColumns: any[],
+  Id: string,
+  Identity: string | null,
+  FirstName: string,
+  LastName: string,
+  EmploymentNumber: string,
+  Email: string,
+  DisplayName: string,
+  TerminationDate: string,
+  EmploymentStartDate: string,
+  TimeZoneId: string,
+  BusinessUnitId: string,
+  SiteId: string,
+  TeamId: string,
+  PersonSkills: any[],
+  WorkflowControlSetId: string,
+  ContractId: string,
+  ContractScheduleId: string,
+  BudgetGroupId: string,
+  PartTimePercentageId: string,
+  ShiftBagId: string,
+  Note: string | null,
+  Roles: any[],
+  FirstDayOfWeek: number,
+  ParentTeam?: string //something we add to verify the team Id listed on the worker aligns to the team they were found in
+}
+
 export interface Worker {
   attributes: {
     contact_uri?: string,

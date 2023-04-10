@@ -1,0 +1,131 @@
+import {
+  CustomTable,
+  CustomTableData,
+  CustomTableHeader,
+  CustomTableRow,
+  IconWrapper,
+  TableContainer,
+  TableText
+} from "./WfmUserTable.Styles";
+import {
+  Delete,
+  Edit
+} from "@mui/icons-material";
+import { ModalOverlay } from "components";
+import {
+  useAdminState,
+  useFormDispatch,
+  userFormActions
+} from "context";
+import {
+  formModes,
+  ModalOverlayStatuses,
+  WfmBusinessUnit,
+  WfmTeam,
+  WfmUser
+} from "globals";
+import React from "react";
+import { useNavigate } from 'react-router-dom';
+import {
+  getWfmBusinessUnits,
+  getWfmTeams,
+  findMatchingTritonWorker
+} from "utils";
+import { WfmUserTableProps } from "./WfmUserTable.Interfaces";
+
+const TritonUserTable = (props: WfmUserTableProps) => {
+  const {
+    tableState,
+    setTableState
+  } = props;
+
+  const state = useAdminState();
+  const [ selectedUsers, setSelectedUsers ] = React.useState<WfmUser[]>([]);
+  const setForm = useFormDispatch();
+  const navigate = useNavigate();
+
+  return (
+    <TableContainer>
+      <CustomTable>
+        <thead>
+          <tr>
+            <CustomTableHeader>NAME</CustomTableHeader>
+            <CustomTableHeader>BUSINESS UNIT</CustomTableHeader>
+            <CustomTableHeader>TEAM</CustomTableHeader>
+            <CustomTableHeader>EMAIL</CustomTableHeader>
+            <CustomTableHeader>IDENTITY</CustomTableHeader>
+            <CustomTableHeader/>
+            <CustomTableHeader/>
+          </tr>
+        </thead>
+        <tbody>
+          {tableState.filteredList.map((user: WfmUser) => {
+            const isSelected = selectedUsers.some(selectedUser => selectedUser.Id === user.Id);
+            const handleWorkerOnClick = () => setSelectedUsers([ ...selectedUsers, user ]);
+            const tritonWorker: Worker | {} = findMatchingTritonWorker(user, state) || {};
+            const editButtonOnClick = (event: any) => {
+              event.stopPropagation();
+              setForm({
+                type: userFormActions.SET_UPDATE_FORM_STATE,
+                payload: {
+                  worker: {
+                    ...tritonWorker,
+                    calabrioWfmUser: {
+                      updated: false,
+                      ...user
+                    }
+                  },
+                  managers: state.managerContext.managers,
+                  formMode: formModes.UPDATE
+                }
+              });
+              navigate(`/triton-admin/user`)
+            };
+            const deleteButtonOnClick = (event: any) => {
+              event.stopPropagation();
+              setForm({
+                type: userFormActions.SET_DELETE_FORM_STATE,
+                payload: {
+                  worker: {
+                    ...tritonWorker,
+                    calabrioWfmUser: {
+                      updated: false,
+                      ...user
+                    }
+                  },
+                  managers: state.managerContext.managers,
+                  formMode: formModes.DELETE
+                }
+              });
+              navigate(`/triton-admin/user`)
+            };
+            const businessUnit: WfmBusinessUnit | { Name: string } = getWfmBusinessUnits(state).find((bu: WfmBusinessUnit) => bu.Id === user.BusinessUnitId) || { Name: "Not Found" };
+            const team: WfmTeam | { Name: string } = getWfmTeams(state).find((team: WfmTeam) => team.Id === user.ParentTeam) || { Name: "Not Found" };
+
+            return (
+              <CustomTableRow key={user.Id} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">
+                <CustomTableData><TableText>{user.FirstName} {user.LastName}</TableText></CustomTableData>
+                <CustomTableData><TableText>{businessUnit.Name}</TableText></CustomTableData>
+                <CustomTableData><TableText>{team.Name}</TableText></CustomTableData>
+                <CustomTableData><TableText>{user.Email}</TableText></CustomTableData>
+                <CustomTableData><TableText>{user.Identity}</TableText></CustomTableData>
+                <CustomTableData>
+                  <IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
+                    <Edit fontSize={"inherit"}/>
+                  </IconWrapper>
+                </CustomTableData>
+                <CustomTableData>
+                  <IconWrapper onClick={deleteButtonOnClick} data-testid="delete-button">
+                    <Delete fontSize={"inherit"}/>
+                  </IconWrapper>
+                </CustomTableData>
+              </CustomTableRow>
+            );
+          })}
+        </tbody>
+      </CustomTable>
+    </TableContainer>
+  );
+};
+
+export default TritonUserTable;

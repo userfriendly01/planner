@@ -124,6 +124,9 @@ export const initialUserFormState: UserFormState = {
       teams: []
     }
   },
+  calabrioWfmUser: {
+    updated: false
+  },
   userPreviouslyAdded: false,
   zeroOutEnabled: false,
   zeroOutEnabledUpdated: false,
