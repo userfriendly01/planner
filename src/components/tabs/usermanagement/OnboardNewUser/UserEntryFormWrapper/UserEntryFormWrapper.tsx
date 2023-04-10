@@ -28,7 +28,7 @@ import {
   userFormActions
 } from "context";
 import React from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { sortWorkersByFullName } from "utils";
 import { formModes } from "globals";
 import { Checkbox } from "@mui/material";
@@ -64,6 +64,13 @@ const UserEntryForm = () => {
     saveStatus: null,
     saveUser: false
   });
+
+  React.useEffect(() => {
+
+    return () => {
+      setForm({ type: userFormActions.RESET_FORM });
+    };
+  }, []);
 
   console.log("FORM", form);
 

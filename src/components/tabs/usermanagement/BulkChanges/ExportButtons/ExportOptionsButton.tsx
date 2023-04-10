@@ -1,5 +1,8 @@
 
 import { Button } from "../BulkChanges.Styles";
+import { Template } from "../BulkChanges.Interfaces";
+import BusinessUnitModal from "../BusinessUnitModal";
+import { Modal } from "@mui/material";
 import React from "react";
 import {
   ExcelExport
@@ -8,18 +11,32 @@ import {
 const ExportOptionsButton = (props: any) => {
   const {
     template,
-    state
+    state,
+    selectedTemplates,
+    disabled
   } = props;
+
+  const [ showBusinessUnitModal, setShowBusinessUnitModal ] = React.useState(false);
+
+  const isWFMSelected: boolean = selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_PERSON");
 
   const _export = React.useRef(null);
   console.log("ExportOptionsButton Template", template);
   console.warn("_export", _export);
-  const handleExport = () => {
+  const handleExport = (wfmBU: string | undefined) => {
     const rows: any = [];
     const columns: any = [];
     template.forEach((t: any) => {
       if(t.options){
-        const options = t.options(state);
+        let options = [];
+        // To generate the wfm field options, the selected Business Unit needs to be passed into the options function
+        // in order to generate the appropriate list of options
+        // all wfm fields are prefixed with wfm
+        if (t.field.includes("wfm")) {
+          options = t.options(state, wfmBU);
+        } else {
+          options = t.options(state);
+        }
         if(options.length > 0){
           columns.push({
             field: t.field,
@@ -55,11 +72,34 @@ const ExportOptionsButton = (props: any) => {
     }
   };
 
+  const handleClick = () => {
+    if (isWFMSelected) {
+      setShowBusinessUnitModal(true);
+    } else {
+      handleExport(null);
+    }
+  };
+
+
+  const handleClose = () => {
+    setShowBusinessUnitModal(false);
+  };
+
   return (
-    <Button onClick={handleExport}>
-      <ExcelExport ref={_export}/>
-      Export Template Options
-    </Button>
+    <>
+      { isWFMSelected && (
+        <Modal open={showBusinessUnitModal} onClose={() => { return; }} >
+          <BusinessUnitModal
+            handleClose={handleClose}
+            handleExport={handleExport}
+          />
+        </Modal>
+      )}
+      <Button onClick={handleClick} disabled={disabled}>
+        <ExcelExport ref={_export}/>
+        Export Template Options
+      </Button>
+    </>
   );
 };
 

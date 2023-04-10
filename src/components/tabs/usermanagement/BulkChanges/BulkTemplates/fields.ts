@@ -13,6 +13,12 @@ import {
   getOverflowSkillFromProfile
 } from "utils";
 import {
+  formatDateFromExcelDate
+} from "../BulkUtils/formatUtils";
+import {
+  allowedEmptyScheduleField
+} from "../BulkUtils/validationUtils";
+import {
   Fields
 } from "../BulkChanges.Interfaces";
 
@@ -98,6 +104,7 @@ export const FIELDS: Fields = {
       const rowNumber = row.rowNumber;
       const fieldName = "N Number";
       const field = cleanupField(row[fieldName], "string");
+
       if(!field){
         return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
       } else if(typeof field !== "string" || field.length !== 8) {
@@ -717,6 +724,816 @@ export const FIELDS: Fields = {
       } else {
         row.timeZone = timeZone.value;
         return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+      }
+    }
+  },
+  CALABRIO_WFM_IDENTITY: {  // this field is only for validation the HR email is the same as the user's ldap email.  It will not be added to the request body
+    field: "wfmIdentity",
+    name: "WFM Identity",
+    type: "string",
+    description: "LDAP Email address of the wfm person.  This field will show an error if the email provided does not match the email in HR. (optional)",
+    example: "",
+    options: null,
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = FIELDS.CALABRIO_WFM_IDENTITY.name;
+      const field = cleanupField(row[fieldName], "string");
+
+      if(!field){
+        return Promise.resolve(`${fieldName} is missing but not required. Skipping validation for row ${rowNumber}`);
+      } else {
+        const hrEmail = row.attributes.email;
+
+        if (field !== cleanupField(hrEmail, "string")) {
+          return rejectPromise(`Invalid ${fieldName}.  The email provided does NOT match the email address in this user's HR data. This user needs to update their email so they match prior to being loaded into WFM for row ${rowNumber}`, rowNumber);
+        } else {  // as long as the provided identity field and the hr email are the same, add what was entered for Identity
+          row.wfmIdentity = row[fieldName].trim();  // keep the same casing as was provided
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        }
+      }
+    }
+  },
+  CALABRIO_WFM_BUSINESS_UNIT: { // required
+    field: "wfmBusinessUnit",
+    name: "WFM Business Unit",
+    type: "string",
+    description: "Business Unit of the Calabrio WFM person. Required",
+    example: "GRM Safeco",
+    options: (state: any) => state.calabrioContext.wfmOptions.map((bu: any) => bu.Name),
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = FIELDS.CALABRIO_WFM_BUSINESS_UNIT.name;
+      const field = cleanupField(row[fieldName], "string");
+
+      if(!field){
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else {
+        const foundBusinessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Name.toLowerCase() === field.toLowerCase());
+
+        if (foundBusinessUnit) {
+          row.businessUnitId = foundBusinessUnit.Id;
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } else {
+          return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
+        }
+      }
+    }
+  },
+  CALABRIO_WFM_ROLES: {  // allowed to be empty...
+    field: "wfmRole",
+    name: "WFM Role",
+    type: "string",
+    description: "Comma delimited list of roles that already exist in Calabrio WFM",
+    example: "Fin_Ops_Agent, Fin_Ops_Team_Lead",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
+      if (businessUnit) {
+        return businessUnit.Roles.map((r: any) => r.Name);
+      }
+      return ["unable to generate options"];
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = FIELDS.CALABRIO_WFM_ROLES.name;
+      const field = cleanupField(row[fieldName], "string");
+
+      row.wfmRoleIds = [];
+      if(!field){
+        return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
+      } else {
+        try {
+          const fieldArray = field.split(",");
+
+          fieldArray.forEach((role: any) => {
+            const cleanRole = cleanupField(role, "string");
+            const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+            if (!businessUnitObj) {
+              throw new Error(`Unable to validate ${fieldName} due to invalid Business Unit for row ${rowNumber}`);
+            }
+
+            const roleObject = businessUnitObj.Roles.find((r:any) => cleanupField(r.Name, "string") === cleanRole);
+            if(!roleObject) {
+              throw new Error(`${cleanRole} is not a valid ${fieldName} for row ${rowNumber}`);
+            } else {
+              row.wfmRoleIds.push(roleObject.Id);
+            }
+          });
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } catch(err) {
+          return rejectPromise(err.message, rowNumber);
+        }
+      }
+    }
+  },
+  CALABRIO_WFM_FIRST_DAY_OF_WEEK: {
+    field: "wfmFirstDayOfWeek",
+    name: "First Day of Week",
+    type: "number",
+    description: "Number (0-6) representing the day of the week that the work week begins on.  1 is Monday",
+    example: "1",
+    options: () => [0, 1, 2, 3, 4, 5, 6],
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = FIELDS.CALABRIO_WFM_FIRST_DAY_OF_WEEK.name;
+      const field = cleanupField(row[fieldName], "number");
+      if(!field){
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else {
+        if ([0, 1, 2, 3, 4, 5, 6].includes(field)) {
+          row.wfmFirstDayOfWeek = field;
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } else {
+          return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
+        }
+      }
+    }
+  },
+  CALABRIO_WFM_WORKFLOW_CONTROL_SET: { // allowed to be empty
+    field: "wfmWorkflowControlSet",
+    name: "Workflow Control Set",
+    type: "string",
+    description: "The rules that manage how and when a worker can request time off, OT, etc",
+    example: "",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
+      if (businessUnit) {
+        return businessUnit.Workflow_Control_Sets.map((wfc: any) => wfc.Name);
+      }
+      return ["unable to generate options"];
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = FIELDS.CALABRIO_WFM_WORKFLOW_CONTROL_SET.name;
+      const field = cleanupField(row[fieldName], "string");
+      if(!field){
+        return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
+      } else {
+        const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+        if (!businessUnitObj) {
+          return rejectPromise(`Unable to validate ${fieldName} due to invalid Business Unit for row ${rowNumber}`, rowNumber);
+        } else {
+          try {
+            const workflowControlSetObj = businessUnitObj.Workflow_Control_Sets.find((wfc: any) => cleanupField(wfc.Name, "string") === field);
+            if (workflowControlSetObj) {
+              row.wfmWorkflowControlSetId = workflowControlSetObj.Id;
+              return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+            } else {
+              return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
+            }
+          } catch (err) {
+            return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+          }
+        }
+      }
+    }
+  },
+  CALABRIO_WFM_TEAM: {  // allowed to be empty only if other scheduling fields are also empty
+    field: "wfmTeam",
+    name: "WFM Team",
+    type: "string",
+    description: "The team of the WFM Person",
+    example: "",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOrg.find((bu: any) => bu.Id === businessUnitId);
+      if (businessUnit) {
+        return businessUnit.Teams.map((t: any) => t.Name);
+      }
+      return ["unable to generate options"];
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = FIELDS.CALABRIO_WFM_TEAM.name;
+      const field = cleanupField(row[fieldName], "string");
+      if(!field){
+        if (allowedEmptyScheduleField(row, fieldName)) {
+          return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
+        } else {
+          return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+        }
+      } else {
+        const businessUnitObj = state.calabrioContext.wfmOrg.find((bu: any) => bu.Id === row.businessUnitId);
+
+        if (!businessUnitObj) {
+          return rejectPromise(`Unable to validate ${fieldName} due to invalid Business Unit for row ${rowNumber}`, rowNumber);
+        } else {
+          try {
+            const teamObj = businessUnitObj.Teams.find((t: any) => cleanupField(t.Name, "string") === field);
+            if (teamObj) {
+              row.wfmTeamId = teamObj.Id;
+              return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+            } else {
+              return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
+            }
+          } catch (err) {
+            return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+          }
+        }
+      }
+    }
+  },
+  CALABRIO_WFM_CONTRACT: {  // allowed to be empty only if other scheduling fields are also empty
+    field: "wfmContract",
+    name: "WFM Contract",
+    type: "string",
+    description: "Represents the schedule of the agent",
+    example: "SAF 8:00 Hour Day",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
+      if (businessUnit) {
+        return businessUnit.Contracts.map((c: any) => c.Name);
+      }
+      return ["unable to generate options"];
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = FIELDS.CALABRIO_WFM_CONTRACT.name;
+      const field = cleanupField(row[fieldName], "string");
+      if(!field){
+        if (allowedEmptyScheduleField(row, fieldName)) {
+          return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
+        } else {
+          return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+        }
+      } else {
+        const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+        if (!businessUnitObj) {
+          return rejectPromise(`Unable to validate ${fieldName} due to invalid Business Unit for row ${rowNumber}`, rowNumber);
+        } else {
+          try {
+            const contractObj = businessUnitObj.Contracts.find((c: any) => cleanupField(c.Name, "string") === field);
+            if (contractObj) {
+              row.wfmContractId = contractObj.Id;
+              return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+            } else {
+              return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
+            }
+          } catch (err) {
+            return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+          }
+        }
+      }
+    }
+  },
+  CALABRIO_WFM_CONTRACT_SCHEDULE: {  // allowed to be empty only if other scheduling fields are also empty
+    field: "wfmContractSchedule",
+    name: "WFM Contract Schedule",
+    type: "string",
+    description: "User's 'hours per day' worked",
+    example: "SAF Mon-Fri",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
+      if (businessUnit) {
+        return businessUnit.Contract_Schedules.map((c: any) => c.Name);
+      }
+      return ["unable to generate options"];
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = FIELDS.CALABRIO_WFM_CONTRACT_SCHEDULE.name;
+      const field = cleanupField(row[fieldName], "string");
+      if(!field){
+        if (allowedEmptyScheduleField(row, fieldName)) {
+          return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
+        } else {
+          return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+        }
+      } else {
+        const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+        if (!businessUnitObj) {
+          return rejectPromise(`Unable to validate ${fieldName} due to invalid Business Unit for row ${rowNumber}`, rowNumber);
+        } else {
+          try {
+            const contractScheduleObj = businessUnitObj.Contract_Schedules.find((c: any) => cleanupField(c.Name, "string") === field);
+            if (contractScheduleObj) {
+              row.wfmContractScheduleId = contractScheduleObj.Id;
+              return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+            } else {
+              return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
+            }
+          } catch (err) {
+            return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+          }
+        }
+      }
+    }
+  },
+  CALABRIO_WFM_PARTTIME_PERCENTAGE: {  // allowed to be empty only if other scheduling fields are also empty
+    field: "wfmPartTimePercentage",
+    name: "WFM Part Time Percentage",
+    type: "string",
+    description: "Represents the % of the day worked",
+    example: "SAF 100%",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
+      if (businessUnit) {
+        return businessUnit.Part_Time_Percentages.map((ptp: any) => ptp.Name);
+      }
+      return ["unable to generate options"];
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = FIELDS.CALABRIO_WFM_PARTTIME_PERCENTAGE.name;
+      const field = cleanupField(row[fieldName], "string");
+      if(!field){
+        if (allowedEmptyScheduleField(row, fieldName)) {
+          return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
+        } else {
+          return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+        }
+      } else {
+        const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+        if (!businessUnitObj) {
+          return rejectPromise(`Unable to validate ${fieldName} due to invalid Business Unit for row ${rowNumber}`, rowNumber);
+        } else {
+          try {
+            const ptPercentageObj = businessUnitObj.Part_Time_Percentages.find((ptp: any) => cleanupField(ptp.Name, "string") === field);
+            if (ptPercentageObj) {
+              row.wfmPartTimePercentageId = ptPercentageObj.Id;
+              return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+            } else {
+              return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
+            }
+          } catch (err) {
+            return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+          }
+        }
+      }
+    }
+  },
+  CALABRIO_WFM_SHIFTBAG: {
+    field: "wfmShiftBag",
+    name: "WFM Shift Bag",
+    type: "string",
+    description: "A bag of rules aligned to a shift",
+    example: "",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
+      if (businessUnit) {
+        return businessUnit.Shift_Bags.map((sb: any) => sb.Name);
+      }
+      return ["unable to generate options"];
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = "WFM Shift Bag";
+      const field = cleanupField(row[fieldName], "string");
+      if(!field){
+        return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
+
+      } else {
+        // If this field is provided, but no other scheduling fields are, throw an error saying 
+        // shiftbag can only be provided if the other schedule fields are given
+        if (
+          !cleanupField(row[FIELDS.CALABRIO_WFM_PERSON_START_DATE.name], "string") &&
+          !cleanupField(row[FIELDS.CALABRIO_WFM_TEAM.name], "string") &&
+          !cleanupField(row[FIELDS.CALABRIO_WFM_TEAM_START_DATE.name], "string") &&
+          !cleanupField(row[FIELDS.CALABRIO_WFM_CONTRACT.name], "string") &&
+          !cleanupField(row[FIELDS.CALABRIO_WFM_CONTRACT_SCHEDULE.name], "string") &&
+          !cleanupField(row[FIELDS.CALABRIO_WFM_PARTTIME_PERCENTAGE.name], "string")
+        ) {
+          return rejectPromise(`${fieldName} is invalid.  ${fieldName} should only be provided when the following fields are also provided: ${FIELDS.CALABRIO_WFM_PERSON_START_DATE.name}, ${FIELDS.CALABRIO_WFM_TEAM.name}, ${FIELDS.CALABRIO_WFM_TEAM_START_DATE.name}, ${FIELDS.CALABRIO_WFM_CONTRACT.name}, ${FIELDS.CALABRIO_WFM_CONTRACT_SCHEDULE.name}, ${FIELDS.CALABRIO_WFM_PARTTIME_PERCENTAGE.name}`, rowNumber);
+        }
+
+        const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+        if (!businessUnitObj) {
+          return rejectPromise(`Unable to validate ${fieldName} due to invalid Business Unit for row ${rowNumber}`, rowNumber);
+        } else {
+          try {
+            const shiftBagObj = businessUnitObj.Shift_Bags.find((ptp: any) => cleanupField(ptp.Name, "string") === field);
+            if (shiftBagObj) {
+              row.wfmShiftBagId = shiftBagObj.Id;
+              return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+            } else {
+              return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
+            }
+          } catch (err) {
+            return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+          }
+        }
+      }
+    }
+  },
+  CALABRIO_WFM_BUDGET_GROUP: {
+    field: "wfmBudgetGroup",
+    name: "WFM Budget Group",
+    type: "string",
+    description: "Defines how many people are allowed to be FTO at once",
+    example: "Gold AM",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
+      if (businessUnit) {
+        return businessUnit.Budget_Groups.map((ptp: any) => ptp.Name);
+      }
+      return ["unable to generate options"];
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = "WFM Budget Group";
+      const field = cleanupField(row[fieldName], "string");
+      if(!field){
+        return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
+      } else {
+        // If this field is provided, but no other scheduling fields are, throw an error saying 
+        // budgetGroup can only be provided if the other schedule fields are given
+        if (
+          !cleanupField(row[FIELDS.CALABRIO_WFM_PERSON_START_DATE.name], "string") &&
+          !cleanupField(row[FIELDS.CALABRIO_WFM_TEAM.name], "string") &&
+          !cleanupField(row[FIELDS.CALABRIO_WFM_TEAM_START_DATE.name], "string") &&
+          !cleanupField(row[FIELDS.CALABRIO_WFM_CONTRACT.name], "string") &&
+          !cleanupField(row[FIELDS.CALABRIO_WFM_CONTRACT_SCHEDULE.name], "string") &&
+          !cleanupField(row[FIELDS.CALABRIO_WFM_PARTTIME_PERCENTAGE.name], "string")
+        ) {
+          return rejectPromise(`${fieldName} is invalid.  ${fieldName} should only be provided when the following fields are also provided: ${FIELDS.CALABRIO_WFM_PERSON_START_DATE.name}, ${FIELDS.CALABRIO_WFM_TEAM.name}, ${FIELDS.CALABRIO_WFM_TEAM_START_DATE.name}, ${FIELDS.CALABRIO_WFM_CONTRACT.name}, ${FIELDS.CALABRIO_WFM_CONTRACT_SCHEDULE.name}, ${FIELDS.CALABRIO_WFM_PARTTIME_PERCENTAGE.name}`, rowNumber);
+        }
+        const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+        if (!businessUnitObj) {
+          return rejectPromise(`Unable to validate ${fieldName} due to invalid Business Unit for row ${rowNumber}`, rowNumber);
+        } else {
+          try {
+            const budgetGroupObj = businessUnitObj.Budget_Groups.find((ptp: any) => cleanupField(ptp.Name, "string") === field);
+            if (budgetGroupObj) {
+              row.wfmBudgetGroupId = budgetGroupObj.Id;
+              return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+            } else {
+              return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
+            }
+          } catch (err) {
+            return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+          }
+        }
+      }
+    }
+  },
+  CALABRIO_WFM_PERSON_START_DATE: { // Excel gives us a number that is "days since jan 1 1900"
+    field: "wfmPersonStartDate", // allowed to be empty only if other scheduling fields are also empty
+    name: "WFM Person Start Date",
+    type: "number",
+    description: "Start date for the WFM Person",
+    example: "excel spreadsheet cell/column must be a DATE type (not text)",
+    options: null,
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = FIELDS.CALABRIO_WFM_PERSON_START_DATE.name;
+      const field = cleanupField(row[fieldName], "number");
+      if(!field){
+        if (allowedEmptyScheduleField(row, fieldName)) {
+          return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
+        } else {
+          return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+        }
+      } else {
+        try {
+          const formattedDate = formatDateFromExcelDate(field);  // throws error if day month or year is NaN
+          row.wfmPersonStartDate = formattedDate;
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } catch (err) {
+          return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+        }
+      }
+    }
+  },
+  CALABRIO_WFM_TEAM_START_DATE: { // allowed to be empty only if other scheduling fields are also empty
+    field: "wfmTeamStartDate",
+    name: "WFM Team Start Date",
+    type: "string",
+    description: "The start date for the team",
+    example: "",
+    options: null,
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = FIELDS.CALABRIO_WFM_TEAM_START_DATE.name;
+      const field = cleanupField(row[fieldName], "number");
+      if(!field){
+        if (allowedEmptyScheduleField(row, fieldName)) {
+          return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
+        } else {
+          return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+        }
+      } else {
+        try {
+          const formattedDate = formatDateFromExcelDate(field); // will throw error if NaN
+          row.wfmTeamStartDate = formattedDate;
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } catch (err) {
+          return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+        }
+      }
+    }
+  },
+  CALABRIO_WFM_SKILLS_START_DATE: {  // allowed to be empty if skills is
+    field: "wfmSkillsStartDate",
+    name: "WFM Skills Start Date",
+    type: "string",
+    description: "The start date for skills",
+    example: "",
+    options: null,
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = FIELDS.CALABRIO_WFM_SKILLS_START_DATE.name;
+      const field = cleanupField(row[fieldName], "number");
+
+      const skillsField = cleanupField(row[FIELDS.CALABRIO_WFM_SKILLS.name], "string");
+      if (!field && !skillsField) {
+        // resolve
+        return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
+      } else if (!field && skillsField) {
+        // reject for missing field
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else if (field && skillsField) {
+        // format date
+        try {
+          const formattedDate = formatDateFromExcelDate(field); // will throw error if NaN
+          row.wfmSkillsStartDate = formattedDate;
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } catch (err) {
+          return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+        }
+      } else {
+        // this would mean we have this skills start date field, but no skills field.  
+        return rejectPromise(`${fieldName} was provided but WFM Skills is empty.`, rowNumber);
+      }
+    }
+  },
+  CALABRIO_WFM_SKILLS: { // allowed to be empty
+    field: "wfmSkills",
+    name: "WFM Skills",
+    type: "string",
+    description: "A comma deliminated list of skills for the WFM person",
+    example: "Gold Spanish, Gold Policy",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
+      if (businessUnit) {
+        return businessUnit.Skills.map((s: any) => s.Name);
+      }
+      return ["unable to generate options"];
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = FIELDS.CALABRIO_WFM_SKILLS.name;
+      const field = cleanupField(row[fieldName], "string");
+
+      if(!field){
+        return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
+      } else {
+        try {
+          const fieldArray = field.split(",");
+          row.wfmSkillIds = [];
+          fieldArray.forEach((role: any) => {
+            const cleanSkill = cleanupField(role, "string");
+            const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+            if (!businessUnitObj) {
+              throw new Error(`Unable to validate ${fieldName} due to invalid Business Unit for row ${rowNumber}`);
+            }
+
+            const skillsObj = businessUnitObj.Skills.find((r:any) => cleanupField(r.Name, "string") === cleanSkill);
+            if(!skillsObj) {
+              throw new Error(`${cleanSkill} is not a valid wfm skill for row ${rowNumber}`);
+            } else {
+              row.wfmSkillIds.push(skillsObj.Id);
+            }
+          });
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } catch(err) {
+          return rejectPromise(err.message, rowNumber);
+        }
+      }
+    }
+  },
+  CALABRIO_WFM_ROTATION_START_DATE: {  // allowed to be empty if rotation is empty
+    field: "wfmRotationStartDate",
+    name: "WFM Rotation Start Date",
+    type: "string",
+    description: "The start date for rotation",
+    example: "",
+    options: null,
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = FIELDS.CALABRIO_WFM_ROTATION_START_DATE.name;
+      const field = cleanupField(row[fieldName], "number");
+
+      const rotationField = cleanupField(row[FIELDS.CALABRIO_WFM_ROTATION.name], "string");
+      if (!field && !rotationField) {
+        // resolve
+        return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
+      } else if (!field && rotationField) {
+        // reject for missing field
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else if (field && rotationField) {
+        // format date
+        try {
+          const formattedDate = formatDateFromExcelDate(field); // will throw error if NaN
+          row.wfmRotationStartDate = formattedDate;
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } catch (err) {
+          return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+        }
+      } else {
+        // this would mean we have this rotation start date field, but no rotation field.  
+        return rejectPromise(`${fieldName} was provided but WFM Rotation is empty.`, rowNumber);      }
+    }
+  },
+  CALABRIO_WFM_ROTATION: { // allowed to be empty
+    field: "wfmRotation",
+    name: "WFM Rotation",
+    type: "string",
+    description: "Sets the start time of the schedule",
+    example: "SAF 07:00a start",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
+      if (businessUnit) {
+        return businessUnit.Rotations.map((r: any) => r.Name);
+      }
+      return ["unable to generate options"];
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = FIELDS.CALABRIO_WFM_ROTATION.name;
+      const field = cleanupField(row[fieldName], "string");
+      if(!field){
+        return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
+      } else {
+        const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+        if (!businessUnitObj) {
+          return rejectPromise(`Unable to validate ${fieldName} due to invalid Business Unit for row ${rowNumber}`, rowNumber);
+        } else {
+          try {
+            const rotationObj = businessUnitObj.Rotations.find((r: any) => cleanupField(r.Name, "string") === field);
+            if (rotationObj) {
+              row.wfmRotationId = rotationObj.Id;
+              return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+            } else {
+              return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
+            }
+          } catch (err) {
+            return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+          }
+        }
+      }
+    }
+  },
+  CALABRIO_WFM_ROTATION_START_WEEK: { // This field is a number from 1-10
+    field: "wfmRotationStartWk", // allowed to be empty if rotation is empty
+    name: "WFM Rotation Start Week",
+    type: "number",
+    description: "Number that represents the week the persons rotation should start on. Must be an integer 1-10",
+    example: "2",
+    options: null,
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = FIELDS.CALABRIO_WFM_ROTATION_START_WEEK.name;
+      const field = cleanupField(row[fieldName], "number");
+
+      const rotationField = cleanupField(row[FIELDS.CALABRIO_WFM_ROTATION.name], "string");
+      if (!field && !rotationField) {
+        // resolve
+        return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
+      } else if (!field && rotationField) {
+        // reject for missing field
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else if (field && rotationField) {
+        if (!isNaN(field) && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].includes(field)) {
+          row.wfmRotationStartWk = field;
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } else {
+          return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
+        }
+      } else {
+        // this would mean we have this Rotation start week field, but no rotation field.  
+        return rejectPromise(`${fieldName} was provided but WFM Rotation is empty.`, rowNumber);
+      }
+    }
+  },
+  CALABRIO_WFM_AVAILABILITY_START_DATE: { // allowed empty if availability is also empty
+    field: "wfmAvailabilityStartDate",
+    name: "WFM Availability Start Date",
+    type: "string",
+    description: "The start date for availibilty",
+    example: "",
+    options: null,
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = FIELDS.CALABRIO_WFM_AVAILABILITY_START_DATE.name;
+      const field = cleanupField(row[fieldName], "number");
+
+      const availabilityField = cleanupField(row[FIELDS.CALABRIO_WFM_AVAILABILITY.name], "string");
+      if (!field && !availabilityField) {
+        // resolve
+        return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
+      } else if (!field && availabilityField) {
+        // reject for missing field
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else if (field && availabilityField) {
+        // format date
+        try {
+          const formattedDate = formatDateFromExcelDate(field); // will throw error if NaN
+          row.wfmAvailabilityStartDate = formattedDate;
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } catch (err) {
+          return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+        }
+      } else {
+        // this would mean we have this availability start date field, but no availability field.  
+        return rejectPromise(`${fieldName} was provided but WFM Availability is empty.`, rowNumber);
+      }
+    }
+  },
+  CALABRIO_WFM_AVAILABILITY: { // check on this, but I think it can be empty?
+    field: "wfmAvailability",
+    name: "WFM Availability",
+    type: "string",
+    description: "Defines what days per week are scheduled days",
+    example: "SAF 5d 8h M-F",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
+      if (businessUnit) {
+        return businessUnit.Availabilities.map((a: any) => a.Name);
+      }
+      return ["unable to generate options"];
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = "WFM Availability";
+      const field = cleanupField(row[fieldName], "string");
+      if(!field){
+        return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
+      } else {
+        const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+        if (!businessUnitObj) {
+          return rejectPromise(`Unable to validate ${fieldName} due to invalid Business Unit for row ${rowNumber}`, rowNumber);
+        } else {
+          try {
+            const availabilityObj = businessUnitObj.Availabilities.find((r: any) => cleanupField(r.Name, "string") === field);
+            if (availabilityObj) {
+              row.wfmAvailabilityId = availabilityObj.Id;
+              return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+            } else {
+              return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
+            }
+          } catch (err) {
+            return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
+          }
+        }
+      }
+    }
+  },
+  CALABRIO_WFM_OPTIONAL_COLUMNS: { // can be empty
+    field: "wfmOptionalCols",
+    name: "WFM Optional Columns",
+    type: "string",
+    description: "Comma deliminated list of optional columns. Optional",
+    example: "SAF Agent Status, SAF Agent Location State",
+    options: (state: any, businessUnitId: string) => {
+      const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
+      if (businessUnit) {
+        return businessUnit.Optional_Columns.map((oc: any) => oc.Name);
+      }
+      return ["unable to generate options"];
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = FIELDS.CALABRIO_WFM_OPTIONAL_COLUMNS.name;
+      const field = cleanupField(row[fieldName], "string");
+      row.wfmOptionalColumns = [];
+
+      if(!field){
+        return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
+      } else {
+        try {
+          const businessUnitObj = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === row.businessUnitId);
+
+          if (!businessUnitObj) {
+            return rejectPromise(`Unable to validate ${fieldName} due to invalid Business Unit for row ${rowNumber}`, rowNumber);
+          }
+          const fieldArray = field.split(",");
+          fieldArray.forEach((oc: any) => {
+            const cleanOptionalColumn = cleanupField(oc, "string");
+
+            const optionalColumnObj = businessUnitObj.Optional_Columns.find((r:any) => cleanupField(r.Name, "string") === cleanOptionalColumn);
+            if(!optionalColumnObj) {
+              throw new Error(`${cleanOptionalColumn} is not a valid WFM Optional Column for row ${rowNumber}`);
+            } else {
+              // reformat - Teleopti api wants Id and Value
+              const optionalColumn = {
+                Id: optionalColumnObj.Id,
+                Value: optionalColumnObj.Name
+              };
+              row.wfmOptionalColumns.push(optionalColumn);
+            }
+          });
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        } catch(err) {
+          return rejectPromise(err.message, rowNumber);
+        }
       }
     }
   }
