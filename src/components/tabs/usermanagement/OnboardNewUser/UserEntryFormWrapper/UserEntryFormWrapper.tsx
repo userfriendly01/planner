@@ -1,7 +1,6 @@
 import {
   UserAction,
   LoadingState,
-  UserEntryFormProps,
   WorkerOpts
 } from "./UserEntryFormWrapper.Interfaces";
 import {
@@ -51,7 +50,7 @@ const UserEntryForm = () => {
 
   const skills = state.skillContext.skills;
   const workers = state.workerContext.workers.sort(sortWorkersByFullName);
-  const tritonWorker = workers.find((w: any) => w?.attributes.n_number === form.nNumber.value)
+  const tritonWorker = workers.find((w: any) => w?.attributes.n_number === form.nNumber.value);
   const managers = state.managerContext.managers;
   const profiles = state.profileContext.profiles;
   const offices = state.officeContext.offices;
