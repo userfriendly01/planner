@@ -77,7 +77,7 @@ export const FlowGridColumnDef: GridColDef[] = [
     valueGetter: params=>`${params.row.content?.callerType || ""}`
   },
   {
-    headerName: "Transfer#",
+    headerName: "Transfer Destination",
     field: "transferNumber",
     sortable: true,
     width: 110,

@@ -85,10 +85,26 @@ export const EditFlow = ({
         type: flowType
       })
     );
+    if(isOpen){
+      initializeFlowRule(selectedRow);
+    }
+
   }, [selectedRow]);
 
   const isInvalidField =(key: string, value: string): boolean =>{
-    return flowRule[key].required && [undefined, "", null].includes(value);
+    return flowRule[key].required && [undefined, "", null, "null"].includes(value);
+  };
+
+  const initializeFlowRule = (data: CctSharedCallFlowDb) =>{
+    const flowInitRule: FormValidationRule = flowFields.reduce((a: FormValidationRule, v: AddFlowFieldsConfigProps) => ({
+      ...a,
+      [v.key]: {
+        error: false,
+        value: v.valueGetter(data),
+        required: v.required || false
+      }
+    }), {});
+    setFlowRule({ ...flowInitRule });
   };
 
   const validateFlow = async (): Promise<boolean> => {
@@ -138,8 +154,8 @@ export const EditFlow = ({
         }));
         return;
       }
-      openEditModal(false, isSubmitted, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully updated!!`, false);
       setFlowRule({ ...initRule });
+      openEditModal(false, isSubmitted, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully updated!!`, false);
     }
   };
 
@@ -177,7 +193,7 @@ export const EditFlow = ({
   ) => {
     let value: string;
     let key : string;
-    if(valuePassed && typeof(valuePassed) === "string" && !displayRecords[key as keyof ViewOrAddProps]){
+    if(valuePassed && typeof valuePassed === "string" && !displayRecords[key as keyof ViewOrAddProps]){
       value = valuePassed;
       key = keyPassed;
     } else{
@@ -217,9 +233,11 @@ export const EditFlow = ({
           <Grid container rowSpacing={3}>
             {
               flowFields.map(({
-                label, key, control, required = false, fieldType, gridSize = 12,
-                valueGetter, disableEdit, valueSetter
+                label, key, control, required = false, disableEdit, valueGetter, valueSetter, dynamicFieldConditionCheck,fieldType, gridSize = 12
               }) => {
+                if(dynamicFieldConditionCheck && !dynamicFieldConditionCheck(flowRule)){
+                  return;
+                }
                 if(fieldType &&displayRecords[key as keyof ViewOrAddProps] ) {
                   control = "input";
                 }
