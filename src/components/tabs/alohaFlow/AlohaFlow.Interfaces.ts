@@ -129,7 +129,6 @@ export interface AddFlowFieldsConfigProps {
     dynamicFieldConditionCheck?: (params: FormValidationRule) => boolean
     fieldType?: "viewAndAdd";
     gridSize?: number;
-    dynamicFieldConditionCheck?: (params: FormValidationRule) => boolean;
 }
 
 export interface FlowListMasterData{
