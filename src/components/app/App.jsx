@@ -128,7 +128,7 @@ const App = () => {
               <Routes>
                 {getRoutes(state, loadResult.home, loadResult.azureClientId).map(r => {
                   const Component = r.element || r.render;
-                  return <Route path={r.path} element={<Component/>}/>
+                  return <Route key={r.path} path={r.path} element={<Component/>}/>
                 })}
               </Routes>
             <Modal onClose={() => { return; }} open={showModal === true}>
