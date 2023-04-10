@@ -85,10 +85,25 @@ export const EditFlow = ({
         type: flowType
       })
     );
+    if(isOpen){
+      initializeFlowRule(selectedRow);
+    }
   }, [selectedRow]);
 
   const isInvalidField =(key: string, value: string): boolean =>{
-    return flowRule[key].required && [undefined, "", null].includes(value);
+    return flowRule[key].required && [undefined, "", null,"null"].includes(value);
+  };
+
+  const initializeFlowRule = (data: CctSharedCallFlowDb) =>{
+    const flowInitRule: FormValidationRule = flowFields.reduce((a: FormValidationRule, v: AddFlowFieldsConfigProps) => ({
+      ...a,
+      [v.key]: {
+        error: false,
+        value: v.valueGetter(data),
+        required: v.required || false
+      }
+    }), {});
+    setFlowRule({ ...flowInitRule });
   };
 
   const validateFlow = async (): Promise<boolean> => {
@@ -139,7 +154,6 @@ export const EditFlow = ({
         return;
       }
       openEditModal(false, isSubmitted, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully updated!!`, false);
-      setFlowRule({ ...initRule });
     }
   };
 
@@ -218,8 +232,11 @@ export const EditFlow = ({
             {
               flowFields.map(({
                 label, key, control, required = false, fieldType, gridSize = 12,
-                valueGetter, disableEdit, valueSetter
+                valueGetter, disableEdit, valueSetter, dynamicFieldConditionCheck
               }) => {
+                if(dynamicFieldConditionCheck && !dynamicFieldConditionCheck(flowRule)){
+                  return;
+                }
                 if(fieldType &&displayRecords[key as keyof ViewOrAddProps] ) {
                   control = "input";
                 }

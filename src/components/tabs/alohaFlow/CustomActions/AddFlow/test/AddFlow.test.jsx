@@ -191,24 +191,6 @@ describe("<AddFlow />", () => {
     });
   });
   describe("Add flow Bottom down",()=>{
-    // test("Validate Flow Rule with null",()=>{
-    //   const {
-    //     getByRole, getByLabelText
-    //   } = renderAddFlow(true);
-    //   addFlowRule.mockResolvedValue({ data: { "items": []}});
-    //   const saveButton = getByRole("button", { name: "createRuleButton" });
-    //   act(() => {
-    //     fireEvent.click(saveButton);
-    //   });
-    //   waitFor(() => {
-    //     expect(openAddModal).toBeCalledTimes(1);
-    //   });
-    //   const closeToastIcon = getByLabelText(/Close/i,{ hidden: true });
-    //   fireEvent.click(closeToastIcon);
-    //   waitFor(() => {
-    //     expect(openAddModal).toBeCalledTimes(2);
-    //   });
-    // });
     test("Validate fields and create flow",()=>{
       const {
         getByRole
@@ -220,7 +202,6 @@ describe("<AddFlow />", () => {
       const brandAttr = ComponentControl.mock.calls[4][0].onChange;
       const userDestAttr = ComponentControl.mock.calls[24][0].onChange;
       const callerTypeAttr = ComponentControl.mock.calls[7][0].onChange;
-      // Check Array indexes
       const callFlowRouteAttr = ComponentControl.mock.calls[7][0].onChange;
       const eventPhoneNumValue = {
         target: {
@@ -273,6 +254,16 @@ describe("<AddFlow />", () => {
       });
       waitFor(() => {
         expect(ComponentControlMock).toBeTruthy();
+      });
+    });
+    test("Validate create Rule with Invalid fields ",()=>{
+      const { getByRole } = renderAddFlow(true);
+      const saveButton = getByRole("button", { name: "createRuleButton" });
+      act(() => {
+        fireEvent.click(saveButton);
+      });
+      waitFor(() => {
+        expect(openAddModal).toBeCalledTimes(0);
       });
     });
     test("Validate Reset Flow Rule ",()=>{
