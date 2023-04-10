@@ -4,6 +4,7 @@ import SelectContainer from "./SelectContainer";
 import TimePickerComponent from "./TimepickerComponent";
 import { Control } from "globals";
 import { Dropdown } from "../index";
+import MultiFieldContainer from "./MultiFieldContainer";
 export interface ComponentControlProps {
   control: Control,
   dropDownOptions: string[],
@@ -88,7 +89,25 @@ function ComponentControl({
       );
 
     case "multiField":
-      return (<></>);
+      return (<MultiFieldContainer
+        label={label}
+        name={name}
+        value={["Mrinal"]}
+        error={error}
+        required={required}
+        formFields={[
+          {
+            label: "Team",
+            name: "team",
+            type: "input"
+          },
+          {
+            label: "Percentage (%)",
+            name: "percentage",
+            type: "number"
+          }
+        ]}
+      />);
     default:
       return null;
   }
