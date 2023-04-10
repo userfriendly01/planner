@@ -43,6 +43,10 @@ const invalidFLowData = {
   brand: "LM"
 };
 
+const DIDFlowData = {
+  type: { value: "DID" }
+};
+
 describe("FlowFieldsConfig", ()=>{
   describe("valueSetter", ()=>{
     it("pkey", ()=>{
@@ -334,6 +338,12 @@ describe("FlowFieldsConfig", ()=>{
       const invalidPKey = flowFields[27].valueGetter({});
       expect(validPKey).toBe("DID");
       expect(invalidPKey).toBe("");
+    });
+    describe("dynamicFieldConditionCheck",()=>{
+      it("userDestination",()=>{
+        const isFiledIncluded = flowFields[25].dynamicFieldConditionCheck(DIDFlowData);
+        expect(isFiledIncluded).toBeTruthy();
+      });
     });
   });
 });
