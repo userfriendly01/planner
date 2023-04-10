@@ -200,10 +200,9 @@ describe("<AddFlow />", () => {
       const descriptionAttr = ComponentControl.mock.calls[1][0].onChange;
       const channelAttr = ComponentControl.mock.calls[3][0].onChange;
       const brandAttr = ComponentControl.mock.calls[4][0].onChange;
-      const userDestAttr = ComponentControl.mock.calls[33][0].onChange;
-      const callerTypeAttr = ComponentControl.mock.calls[24][0].onChange;
+      const callerTypeAttr = ComponentControl.mock.calls[23][0].onChange;
       // Check Array indexes
-      const callFlowRouteAttr = ComponentControl.mock.calls[27][0].onChange;
+      const callFlowRouteAttr = ComponentControl.mock.calls[26][0].onChange;
       const eventPhoneNumValue = {
         target: {
           name: "pkey",
@@ -228,12 +227,6 @@ describe("<AddFlow />", () => {
           value: /Test2 Channel/i
         }
       };
-      const eventDestValue = {
-        target: {
-          name: "userDestination",
-          value: /Twilio/i
-        }
-      };
       const eventCallFlowRoute = {
         target: {
           name: "callFlowRoute",
@@ -251,7 +244,6 @@ describe("<AddFlow />", () => {
         descriptionAttr(eventDescriptionValue);
         channelAttr(eventChannelValue);
         brandAttr(eventBrandValue);
-        userDestAttr(eventDestValue);
         callFlowRouteAttr(eventCallFlowRoute,"testing");
         callerTypeAttr(eventCallerType,"testing");
       });

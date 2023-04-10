@@ -48,6 +48,9 @@ const drcFlowData = {
   channel: { value: "Sales" },
   type: { value: "DRC" }
 };
+const DIDFlowData = {
+  type: { value: "DID" }
+};
 
 describe("FlowFieldsConfig", ()=>{
   describe("valueSetter", ()=>{
@@ -389,6 +392,10 @@ describe("FlowFieldsConfig", ()=>{
     });
     it("rangeIndicator",()=>{
       const isFiledIncluded = flowFields[27].dynamicFieldConditionCheck(drcFlowData);
+      expect(isFiledIncluded).toBeTruthy();
+    });
+    it("userDestination",()=>{
+      const isFiledIncluded = flowFields[26].dynamicFieldConditionCheck(DIDFlowData);
       expect(isFiledIncluded).toBeTruthy();
     });
   });

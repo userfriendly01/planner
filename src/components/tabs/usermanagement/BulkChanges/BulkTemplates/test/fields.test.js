@@ -2096,5 +2096,1794 @@ describe("fields.js", () => {
         });
       });
     });
+    describe("CALABRIO_WFM_IDENTITY", () => {
+      describe("validateFunction", () => {
+        const identityValidation = FIELDS.CALABRIO_WFM_IDENTITY.validateFunction;
+        test("field is empty, resolve with skipping message", async () => {
+          const row = {
+            rowNumber: 1,
+            "WFM Identity": ""
+          };
+          const result = await identityValidation(row, initialTestState);
+          expect(result).toEqual("WFM Identity is missing but not required. Skipping validation for row 1");
+        });
+        test("WFM Identity does not match hr email, reject with invalid message", async () => {
+          const row = {
+            rowNumber: 1,
+            "WFM Identity": "wrongemail@lm.com",
+            attributes: {
+              email: "person@lm.com"
+            }
+          };
+          try {
+            await identityValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 1,
+              error: "Invalid WFM Identity.  The email provided does NOT match the email address in this user's HR data. This user needs to update their email so they match prior to being loaded into WFM for row 1"
+            }));
+          }
+        });
+        test("WFM Identity is provided, matches hr email, is added to row, resolve with successful message", async () => {
+          const row = {
+            rowNumber: 1,
+            "WFM Identity": "person@lm.com",
+            attributes: {
+              email: "person@lm.com"
+            }
+          };
+          const result = await identityValidation(row, initialTestState);
+          expect(result).toEqual("WFM Identity valid for row 1");
+          expect(row).toEqual(
+            {
+              rowNumber: 1,
+              "WFM Identity": "person@lm.com",
+              attributes: {
+                email: "person@lm.com"
+              },
+              wfmIdentity: "person@lm.com"
+            }
+          );
+        });
+      });
+    });
+    describe("CALABRIO_WFM_BUSINESS_UNIT", () => {
+      describe("validateFunction", () => {
+        const BUValidation = FIELDS.CALABRIO_WFM_BUSINESS_UNIT.validateFunction;
+        test("field is empty, reject with missing message", async () => {
+          const row = { rowNumber: 1 };
+          try {
+            await BUValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 1,
+              error: "WFM Business Unit is missing from row 1"
+            }));
+          }
+        });
+        test("There is no Business unit match in the options, reject with invalid message", async () => {
+          const row = {
+            rowNumber: 1,
+            "WFM Business Unit": "Fake BU"
+          };
+          try {
+            await BUValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 1,
+              error: "WFM Business Unit is invalid for row 1"
+            }));
+          }
+        });
+        test("Business unit option found, id is added to row, resolve with successful message", async () => {
+          const row = {
+            rowNumber: 1,
+            "WFM Business Unit": "WFM Business Unit1"
+          };
+          const result = await BUValidation(row, initialTestState);
+          expect(result).toEqual("WFM Business Unit valid for row 1");
+          expect(row).toEqual({
+            ...row,
+            businessUnitId: "123-321"
+          });
+        });
+      });
+      describe("options", () => {
+        const optionsFunction = FIELDS.CALABRIO_WFM_BUSINESS_UNIT.options;
+        test("returns the BU name options", () => {
+          const options = optionsFunction(initialTestState);
+          expect(options).toEqual([
+            "WFM Business Unit1"
+          ]);
+        });
+      });
+    });
+    describe("CALABRIO_WFM_ROLES", () => {
+      describe("validateFunction", () => {
+        const wfmRoleValidation = FIELDS.CALABRIO_WFM_ROLES.validateFunction;
+        test("Field is empty, resolves with empty but not required message", async () => {
+          const row = {
+            rowNumber: 2,
+            "WFM Role": ""
+          };
+          const result = await wfmRoleValidation(row, initialTestState);
+          expect(result).toEqual("WFM Role is empty but not required. Skipping validation for row 2");
+        });
+        test("Field is not empty, but original BU was incorrect, reject with invalid BU message", async () => {
+          const row = {
+            rowNumber: 2,
+            businessUnitId: "0000fakeId",
+            "WFM Role": "Role1"
+          };
+          try {
+            await wfmRoleValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 2,
+              error: "Unable to validate WFM Role due to invalid Business Unit for row 2"
+            }));
+          }
+        });
+        test("Field is not empty, bu is found, no matching role is found, reject with invalid role message", async () => {
+          const row = {
+            rowNumber: 2,
+            businessUnitId: "123-321",
+            "WFM Role": "fakeRole"
+          };
+          try {
+            await wfmRoleValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 2,
+              error: "fakerole is not a valid WFM Role for row 2"
+            }));
+          }
+        });
+        test("Field contains 2 roles, bu is found, 1 matching role, 1 invalid role, reject with error message", async () => {
+          const row = {
+            rowNumber: 2,
+            businessUnitId: "123-321",
+            "WFM Role": "Role1, fakeRole"
+          };
+          try {
+            await wfmRoleValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 2,
+              error: "fakerole is not a valid WFM Role for row 2"
+            }));
+          }
+        });
+        test("Field contains 1 role, bu is found, 1 matching role, role added to role id array, resolves", async () => {
+          const row = {
+            rowNumber: 2,
+            businessUnitId: "123-321",
+            "WFM Role": "Role1"
+          };
+          const result = await wfmRoleValidation(row, initialTestState);
+          expect(result).toEqual("WFM Role valid for row 2");
+          expect(row).toEqual({
+            ...row,
+            wfmRoleIds: ["111"]
+          });
+        });
+        test("Field contains 2 roles, bu is found, 2 matching roles, both added to role id array, resolves", async () => {
+          const row = {
+            rowNumber: 2,
+            businessUnitId: "123-321",
+            "WFM Role": "Role1, Role2"
+          };
+          const result = await wfmRoleValidation(row, initialTestState);
+          expect(result).toEqual("WFM Role valid for row 2");
+          expect(row).toEqual({
+            ...row,
+            wfmRoleIds: ["111", "222"]
+          });
+        });
+      });
+      describe("options", () => {
+        const optionsFunction = FIELDS.CALABRIO_WFM_ROLES.options;
+        test("State and BU Id are passed into function, returns options", () => {
+          const options = optionsFunction(initialTestState, "123-321");
+          expect(options).toEqual(["Role1", "Role2"]);
+        });
+        test("No Business unit id is passed into options function, returns unable to generate message", () => {
+          const options = optionsFunction(initialTestState);
+          expect(options).toEqual(["unable to generate options"]);
+        });
+      });
+    });
+    describe("CALABRIO_WFM_FIRST_DAY_OF_WEEK", () => {
+      describe("validateFunction", () => {
+        const firstDayValidation = FIELDS.CALABRIO_WFM_FIRST_DAY_OF_WEEK.validateFunction;
+        test("Field is empty, rejects with missing message", async () => {
+          const row = {
+            rowNumber: 2,
+            "First Day of Week": ""
+          };
+          try {
+            await firstDayValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 2,
+              error: "First Day of Week is missing from row 2"
+            }));
+          }
+        });
+        test("Field not a number between 0-6, rejects with missing message", async () => {
+          const row = {
+            rowNumber: 2,
+            "First Day of Week": "boo"
+          };
+          try {
+            await firstDayValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 2,
+              error: "First Day of Week is invalid for row 2"
+            }));
+          }
+        });
+        test("Field is valid, resolves with message", async () => {
+          const row = {
+            "First Day of Week": "3",
+            rowNumber: 3
+          };
+          const result = await firstDayValidation(row, initialTestState);
+          expect(result).toEqual("First Day of Week valid for row 3");
+          expect(row).toEqual({
+            ...row,
+            wfmFirstDayOfWeek: 3
+          });
+        });
+      });
+      describe("options", () => {
+        const optionsFunction = FIELDS.CALABRIO_WFM_FIRST_DAY_OF_WEEK.options;
+        test("returns integers 0-6", () => {
+          const options = optionsFunction();
+          expect(options).toEqual([0, 1, 2, 3, 4, 5, 6]);
+        });
+      });
+    });
+    describe("CALABRIO_WFM_WORKFLOW_CONTROL_SET", () => {
+      describe("validateFunction", () => {
+        const wfcSetValidation = FIELDS.CALABRIO_WFM_WORKFLOW_CONTROL_SET.validateFunction;
+        test("Field is empty, resolves with missing but not required message", async () => {
+          const row = {
+            rowNumber: 6,
+            "Workflow Control Set": "",
+            businessUnitId: "123-321"
+          };
+          const result = await wfcSetValidation(row, initialTestState);
+          expect(result).toEqual("Workflow Control Set is empty but not required. Skipping validation for row 6");
+        });
+        test("No BU was provided for the row, rejects with unable to validate message", async () => {
+          const row = {
+            rowNumber: 6,
+            "Workflow Control Set": "WFCSet1",
+            businessUnitId: ""
+          };
+          try {
+            await wfcSetValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 6,
+              error: "Unable to validate Workflow Control Set due to invalid Business Unit for row 6"
+            }));
+          }
+        });
+        test("invalid WFC Set name was provided, rejects with invalid value message", async () => {
+          const row = {
+            rowNumber: 6,
+            "Workflow Control Set": "fakeWFCSet",
+            businessUnitId: "123-321"
+          };
+          try {
+            await wfcSetValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 6,
+              error: "Workflow Control Set is invalid for row 6"
+            }));
+          }
+        });
+        test("If somehow Workflow_Control_Sets does not exist in the BU option, reject with error message", async () => {
+          const row = {
+            rowNumber: 6,
+            "Workflow Control Set": "wfcSet1",
+            businessUnitId: "123-321"
+          };
+          try {
+            await wfcSetValidation(row, {
+              calabrioContext: {
+                wfmOptions: [
+                  { Id: "123-321" }
+                ]
+              }
+            });
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 6,
+              error: "Error encountered validating Workflow Control Set for row 6: Cannot read property 'find' of undefined"
+            }));
+          }
+        });
+        test("Workflow_Control_Sets is valid, resolve and add id to row", async () => {
+          const row = {
+            rowNumber: 6,
+            "Workflow Control Set": "WFCSet1",
+            businessUnitId: "123-321"
+          };
+          const result = await wfcSetValidation(row, initialTestState);
+          expect(result).toEqual("Workflow Control Set valid for row 6");
+          expect(row).toEqual({
+            ...row,
+            wfmWorkflowControlSetId: "111"
+          });
+        });
+      });
+      describe("options", () => {
+        const optionsFunction = FIELDS.CALABRIO_WFM_WORKFLOW_CONTROL_SET.options;
+        test("State and BU Id are passed into function, returns options", () => {
+          const options = optionsFunction(initialTestState, "123-321");
+          expect(options).toEqual(["WFCSet1"]);
+        });
+        test("No Business unit id is passed into options function, returns unable to generate message", () => {
+          const options = optionsFunction(initialTestState);
+          expect(options).toEqual(["unable to generate options"]);
+        });
+      });
+    });
+    describe("CALABRIO_WFM_TEAM", () => {
+      describe("validateFunction", () => {
+        const teamValidation = FIELDS.CALABRIO_WFM_TEAM.validateFunction;
+        test("No field provided, all other scheduling fields are also empty, resolve with empty but not required message", async () => {
+          const row = {
+            rowNumber: 3
+          };
+          const result = await teamValidation(row, initialTestState);
+          expect(result).toEqual("WFM Team is empty but not required. Skipping validation for row 3");
+        });
+        test("No field provided, other scheduling fields have values, reject with missing message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Team": "",
+            "WFM Contract": "contract"
+          };
+          try {
+            await teamValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "WFM Team is missing from row 3"
+            }));
+          }
+        });
+        test("Field has a value, bad BU is on the row, reject with invalid BU message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Team": "Team1",
+            businessUnitId: "boo fake"
+          };
+          try {
+            await teamValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "Unable to validate WFM Team due to invalid Business Unit for row 3"
+            }));
+          }
+        });
+        test("Field has value and good bu on row, No team match is found in options, reject with invalid message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Team": "FAKE TEAM",
+            businessUnitId: "123-321"
+          };
+          try {
+            await teamValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "WFM Team is invalid for row 3"
+            }));
+          }
+        });
+        test("Field has value, good bu on row, team value is good, resolve and add the team id to the row", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Team": "Team1",
+            businessUnitId: "123-321"
+          };
+          const result = await teamValidation(row, initialTestState);
+          expect(result).toEqual("WFM Team valid for row 3");
+          expect(row).toEqual({
+            ...row,
+            wfmTeamId: "111"
+          });
+        });
+        test("Teams is somehow absent within wfmOrg, reject with error message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Team": "FAKE TEAM",
+            businessUnitId: "123-321"
+          };
+          try {
+            await teamValidation(row, {
+              calabrioContext: {
+                wfmOrg: [
+                  { Id: "123-321" }
+                ]
+              }
+            });
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "Error encountered validating WFM Team for row 3: Cannot read property 'find' of undefined"
+            }));
+          }
+        });
+      });
+      describe("options", () => {
+        const optionsFunction = FIELDS.CALABRIO_WFM_TEAM.options;
+        test("State and BU Id are passed into function, returns options", () => {
+          const options = optionsFunction(initialTestState, "123-321");
+          expect(options).toEqual(["Team1", "Team2"]);
+        });
+        test("No Business unit id is passed into options function, returns unable to generate message", () => {
+          const options = optionsFunction(initialTestState);
+          expect(options).toEqual(["unable to generate options"]);
+        });
+      });
+    });
+    describe("CALABRIO_WFM_CONTRACT", () => {
+      describe("validateFunction", () => {
+        const contractValidation = FIELDS.CALABRIO_WFM_CONTRACT.validateFunction;
+        test("No field provided, all other scheduling fields are also empty, resolve with empty but not required message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Contract": ""
+          };
+          const result = await contractValidation(row, initialTestState);
+          expect(result).toEqual("WFM Contract is empty but not required. Skipping validation for row 3");
+        });
+        test("No field provided, other scheduling fields have values, reject with missing message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Team": "Team2",
+            "WFM Contract": ""
+          };
+          try {
+            await contractValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "WFM Contract is missing from row 3"
+            }));
+          }
+        });
+        test("Field has a value, bad BU is on the row, reject with invalid BU message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Contract": "Contract1",
+            businessUnitId: "boo fake"
+          };
+          try {
+            await contractValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "Unable to validate WFM Contract due to invalid Business Unit for row 3"
+            }));
+          }
+        });
+        test("Field has value and good bu on row, No team match is found in options, reject with invalid message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Contract": "FAKE CONTRACT",
+            businessUnitId: "123-321"
+          };
+          try {
+            await contractValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "WFM Contract is invalid for row 3"
+            }));
+          }
+        });
+        test("Field has value, good bu on row, team value is good, resolve and add the team id to the row", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Contract": "Contract1",
+            businessUnitId: "123-321"
+          };
+          const result = await contractValidation(row, initialTestState);
+          expect(result).toEqual("WFM Contract valid for row 3");
+          expect(row).toEqual({
+            ...row,
+            wfmContractId: "111"
+          });
+        });
+        test("Contracts is somehow absent within wfmOptions, reject with error message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Contract": "Contract1",
+            businessUnitId: "123-321"
+          };
+          try {
+            await contractValidation(row, {
+              calabrioContext: {
+                wfmOptions: [
+                  { Id: "123-321" }
+                ]
+              }
+            });
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "Error encountered validating WFM Contract for row 3: Cannot read property 'find' of undefined"
+            }));
+          }
+        });
+      });
+      describe("options", () => {
+        const optionsFunction = FIELDS.CALABRIO_WFM_CONTRACT.options;
+        test("State and BU Id are passed into function, returns options", () => {
+          const options = optionsFunction(initialTestState, "123-321");
+          expect(options).toEqual(["Contract1"]);
+        });
+        test("No Business unit id is passed into options function, returns unable to generate message", () => {
+          const options = optionsFunction(initialTestState);
+          expect(options).toEqual(["unable to generate options"]);
+        });
+      });
+    });
+    describe("CALABRIO_WFM_CONTRACT_SCHEDULE", () => {
+      describe("validateFunction", () => {
+        const contractSchedValidation = FIELDS.CALABRIO_WFM_CONTRACT_SCHEDULE.validateFunction;
+        test("No field provided, all other scheduling fields are also empty, resolve with empty but not required message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Contract Schedule": ""
+          };
+          const result = await contractSchedValidation(row, initialTestState);
+          expect(result).toEqual("WFM Contract Schedule is empty but not required. Skipping validation for row 3");
+        });
+        test("No field provided, other scheduling fields have values, reject with missing message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Contract": "Contract1",
+            "WFM Contract Schedule": ""
+          };
+          try {
+            await contractSchedValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "WFM Contract Schedule is missing from row 3"
+            }));
+          }
+        });
+        test("Field has a value, bad BU is on the row, reject with invalid BU message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Contract Schedule": "ContractSchdule1",
+            businessUnitId: "boo fake"
+          };
+          try {
+            await contractSchedValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "Unable to validate WFM Contract Schedule due to invalid Business Unit for row 3"
+            }));
+          }
+        });
+        test("Field has value and good bu on row, No contract schedule match is found in options, reject with invalid message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Contract Schedule": "FAKE C Schedule",
+            businessUnitId: "123-321"
+          };
+          try {
+            await contractSchedValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "WFM Contract Schedule is invalid for row 3"
+            }));
+          }
+        });
+        test("Field has value, good bu on row, team value is good, resolve and add the team id to the row", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Contract Schedule": "ContractSchedule1",
+            businessUnitId: "123-321"
+          };
+          const result = await contractSchedValidation(row, initialTestState);
+          expect(result).toEqual("WFM Contract Schedule valid for row 3");
+          expect(row).toEqual({
+            ...row,
+            wfmContractScheduleId: "111"
+          });
+        });
+        test("Contract Schedules is somehow absent within wfmOptions, reject with error message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Contract Schedule": "ContractSchedule1",
+            businessUnitId: "123-321"
+          };
+          try {
+            await contractSchedValidation(row, {
+              calabrioContext: {
+                wfmOptions: [
+                  { Id: "123-321" }
+                ]
+              }
+            });
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "Error encountered validating WFM Contract Schedule for row 3: Cannot read property 'find' of undefined"
+            }));
+          }
+        });
+      });
+      describe("options", () => {
+        const optionsFunction = FIELDS.CALABRIO_WFM_CONTRACT_SCHEDULE.options;
+        test("State and BU Id are passed into function, returns options", () => {
+          const options = optionsFunction(initialTestState, "123-321");
+          expect(options).toEqual(["ContractSchedule1"]);
+        });
+        test("No Business unit id is passed into options function, returns unable to generate message", () => {
+          const options = optionsFunction(initialTestState);
+          expect(options).toEqual(["unable to generate options"]);
+        });
+      });
+    });
+    describe("CALABRIO_WFM_PARTTIME_PERCENTAGE", () => {
+      describe("validateFunction", () => {
+        const partTimeValidation = FIELDS.CALABRIO_WFM_PARTTIME_PERCENTAGE.validateFunction;
+        test("No field provided, all other scheduling fields are also empty, resolve with empty but not required message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Part Time Percentage": ""
+          };
+          const result = await partTimeValidation(row, initialTestState);
+          expect(result).toEqual("WFM Part Time Percentage is empty but not required. Skipping validation for row 3");
+        });
+        test("No field provided, other scheduling fields have values, reject with missing message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Contract": "Contract1",
+            "WFM Part Time Percentage": ""
+          };
+          try {
+            await partTimeValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "WFM Part Time Percentage is missing from row 3"
+            }));
+          }
+        });
+        test("Field has a value, bad BU is on the row, reject with invalid BU message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Part Time Percentage": "ParttimePercent1",
+            businessUnitId: "boo fake"
+          };
+          try {
+            await partTimeValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "Unable to validate WFM Part Time Percentage due to invalid Business Unit for row 3"
+            }));
+          }
+        });
+        test("Field has value and good bu on row, No part time percent match is found in options, reject with invalid message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Part Time Percentage": "FAKE PTP",
+            businessUnitId: "123-321"
+          };
+          try {
+            await partTimeValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "WFM Part Time Percentage is invalid for row 3"
+            }));
+          }
+        });
+        test("Field has value, good bu on row, parttime value is good, resolve and add the team id to the row", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Part Time Percentage": "ParttimePercent1",
+            businessUnitId: "123-321"
+          };
+          const result = await partTimeValidation(row, initialTestState);
+          expect(result).toEqual("WFM Part Time Percentage valid for row 3");
+          expect(row).toEqual({
+            ...row,
+            wfmPartTimePercentageId: "111"
+          });
+        });
+        test("Part_Time_Percentages is somehow absent within wfmOptions, reject with error message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Part Time Percentage": "ParttimePercent1",
+            businessUnitId: "123-321"
+          };
+          try {
+            await partTimeValidation(row, {
+              calabrioContext: {
+                wfmOptions: [
+                  { Id: "123-321" }
+                ]
+              }
+            });
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "Error encountered validating WFM Part Time Percentage for row 3: Cannot read property 'find' of undefined"
+            }));
+          }
+        });
+      });
+      describe("options", () => {
+        const optionsFunction = FIELDS.CALABRIO_WFM_PARTTIME_PERCENTAGE.options;
+        test("State and BU Id are passed into function, returns options", () => {
+          const options = optionsFunction(initialTestState, "123-321");
+          expect(options).toEqual(["ParttimePercent1"]);
+        });
+        test("No Business unit id is passed into options function, returns unable to generate message", () => {
+          const options = optionsFunction(initialTestState);
+          expect(options).toEqual(["unable to generate options"]);
+        });
+      });
+    });
+    describe("CALABRIO_WFM_SHIFTBAG", () => {
+      describe("validateFunction", () => {
+        const shiftBagValidation = FIELDS.CALABRIO_WFM_SHIFTBAG.validateFunction;
+        test("No Shiftbag value is provided, resolves with empty but not required message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Shift Bag": "",
+            businessUnitId: "123-321"
+          };
+          const result = await shiftBagValidation(row, initialTestState);
+          expect(result).toEqual("WFM Shift Bag is empty but not required. Skipping validation for row 3");
+          expect(row).toEqual({
+            rowNumber: 3,
+            "WFM Shift Bag": "",
+            businessUnitId: "123-321"
+          });
+        });
+        test("Shiftbag provided, but no other scheduling fields have values on the row, rejects with message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Shift Bag": "ShiftBag1",
+            businessUnitId: "123-321"
+          };
+          try {
+            await shiftBagValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "WFM Shift Bag is invalid.  WFM Shift Bag should only be provided when the following fields are also provided: WFM Person Start Date, WFM Team, WFM Team Start Date, WFM Contract, WFM Contract Schedule, WFM Part Time Percentage"
+            }));
+          }
+        });
+        test("Shiftbag has value, bad BU on the row, reject with invalid BU message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Shift Bag": "ShiftBag1",
+            "WFM Team": "Team1",
+            "WFM Team Start Date": "3/24/2023",
+            "WFM Contract": "Contract1",
+            "WFM Contract Schedule": "ContractSchedule1",
+            "WFM Part Time Percentage": "PartTimePercent1",
+            "WFM Person Start Date": "3/24/2023",
+            businessUnitId: "fake-boooooo"
+          };
+          try {
+            await shiftBagValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "Unable to validate WFM Shift Bag due to invalid Business Unit for row 3"
+            }));
+          }
+        });
+        test("Shiftbag has value, no matching shiftbag in the options, rejects with invalid message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Shift Bag": "fake-shift-bag-arooney",
+            "WFM Team": "Team1",
+            "WFM Team Start Date": "3/24/2023",
+            "WFM Contract": "Contract1",
+            "WFM Contract Schedule": "ContractSchedule1",
+            "WFM Part Time Percentage": "PartTimePercent1",
+            "WFM Person Start Date": "3/24/2023",
+            businessUnitId: "123-321"
+          };
+          try {
+            await shiftBagValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "WFM Shift Bag is invalid for row 3"
+            }));
+          }
+        });
+        test("Shiftbag has value, has a match in shiftbag options, resolves", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Shift Bag": "ShiftBag1",
+            "WFM Team": "Team1",
+            "WFM Team Start Date": "3/24/2023",
+            "WFM Contract": "Contract1",
+            "WFM Contract Schedule": "ContractSchedule1",
+            "WFM Part Time Percentage": "PartTimePercent1",
+            "WFM Person Start Date": "3/24/2023",
+            businessUnitId: "123-321"
+          };
+          const result = await shiftBagValidation(row, initialTestState);
+          expect(result).toEqual("WFM Shift Bag valid for row 3");
+          expect(row).toEqual({
+            ...row,
+            wfmShiftBagId: "111"
+          });
+        });
+        test("Error from no shiftbag options, rejects with error message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Shift Bag": "ShiftBag1",
+            "WFM Team": "Team1",
+            "WFM Team Start Date": "3/24/2023",
+            "WFM Contract": "Contract1",
+            "WFM Contract Schedule": "ContractSchedule1",
+            "WFM Part Time Percentage": "PartTimePercent1",
+            "WFM Person Start Date": "3/24/2023",
+            businessUnitId: "123-321"
+          };
+          try {
+            await shiftBagValidation(row, {
+              calabrioContext: {
+                wfmOptions: [{
+                  Id: "123-321"
+                }]
+              }
+            });
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "Error encountered validating WFM Shift Bag for row 3: Cannot read property 'find' of undefined"
+            }));
+          }
+        });
+      });
+      describe("options", () => {
+        const optionsFunction = FIELDS.CALABRIO_WFM_SHIFTBAG.options;
+        test("State and BU Id are passed into function, returns options", () => {
+          const options = optionsFunction(initialTestState, "123-321");
+          expect(options).toEqual(["ShiftBag1"]);
+        });
+        test("No Business unit id is passed into options function, returns unable to generate message", () => {
+          const options = optionsFunction(initialTestState);
+          expect(options).toEqual(["unable to generate options"]);
+        });
+      });
+    });
+    describe("CALABRIO_WFM_BUDGET_GROUP", () => {
+      describe("validateFunction", () => {
+        const budgetGroupValidation = FIELDS.CALABRIO_WFM_BUDGET_GROUP.validateFunction;
+        test("No budget group value is provided, resolves with empty but not required message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Budget Group": "",
+            businessUnitId: "123-321"
+          };
+          const result = await budgetGroupValidation(row, initialTestState);
+          expect(result).toEqual("WFM Budget Group is empty but not required. Skipping validation for row 3");
+          expect(row).toEqual({
+            rowNumber: 3,
+            "WFM Budget Group": "",
+            businessUnitId: "123-321"
+          });
+        });
+        test("budget group provided, but no other scheduling fields have values on the row, rejects with message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Budget Group": "BudgetGroup1",
+            businessUnitId: "123-321"
+          };
+          try {
+            await budgetGroupValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "WFM Budget Group is invalid.  WFM Budget Group should only be provided when the following fields are also provided: WFM Person Start Date, WFM Team, WFM Team Start Date, WFM Contract, WFM Contract Schedule, WFM Part Time Percentage"
+            }));
+          }
+        });
+        test("BudgetGroup has value, bad BU on the row, reject with invalid BU message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Budget Group": "BudgetGroup1",
+            "WFM Team": "Team1",
+            "WFM Team Start Date": "3/24/2023",
+            "WFM Contract": "Contract1",
+            "WFM Contract Schedule": "ContractSchedule1",
+            "WFM Part Time Percentage": "PartTimePercent1",
+            "WFM Person Start Date": "3/24/2023",
+            businessUnitId: "fake-boooooo"
+          };
+          try {
+            await budgetGroupValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "Unable to validate WFM Budget Group due to invalid Business Unit for row 3"
+            }));
+          }
+        });
+        test("Budget Group has value, no matching budget group in the options, rejects with invalid message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Budget Group": "fake-budget-group",
+            "WFM Team": "Team1",
+            "WFM Team Start Date": "3/24/2023",
+            "WFM Contract": "Contract1",
+            "WFM Contract Schedule": "ContractSchedule1",
+            "WFM Part Time Percentage": "PartTimePercent1",
+            "WFM Person Start Date": "3/24/2023",
+            businessUnitId: "123-321"
+          };
+          try {
+            await budgetGroupValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "WFM Budget Group is invalid for row 3"
+            }));
+          }
+        });
+        test("Budget Group has value, has a match in options, resolves", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Budget Group": "BudgetGroup1",
+            "WFM Team": "Team1",
+            "WFM Team Start Date": "3/24/2023",
+            "WFM Contract": "Contract1",
+            "WFM Contract Schedule": "ContractSchedule1",
+            "WFM Part Time Percentage": "PartTimePercent1",
+            "WFM Person Start Date": "3/24/2023",
+            businessUnitId: "123-321"
+          };
+          const result = await budgetGroupValidation(row, initialTestState);
+          expect(result).toEqual("WFM Budget Group valid for row 3");
+          expect(row).toEqual({
+            ...row,
+            wfmBudgetGroupId: "000"
+          });
+        });
+        test("Error from no shiftbag options, rejects with error message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Budget Group": "BudgetGroup1",
+            "WFM Team": "Team1",
+            "WFM Team Start Date": "3/24/2023",
+            "WFM Contract": "Contract1",
+            "WFM Contract Schedule": "ContractSchedule1",
+            "WFM Part Time Percentage": "PartTimePercent1",
+            "WFM Person Start Date": "3/24/2023",
+            businessUnitId: "123-321"
+          };
+          try {
+            await budgetGroupValidation(row, {
+              calabrioContext: {
+                wfmOptions: [{
+                  Id: "123-321"
+                }]
+              }
+            });
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "Error encountered validating WFM Budget Group for row 3: Cannot read property 'find' of undefined"
+            }));
+          }
+        });
+      });
+      describe("options", () => {
+        const optionsFunction = FIELDS.CALABRIO_WFM_BUDGET_GROUP.options;
+        test("State and BU Id are passed into function, returns options", () => {
+          const options = optionsFunction(initialTestState, "123-321");
+          expect(options).toEqual(["BudgetGroup1"]);
+        });
+        test("No Business unit id is passed into options function, returns unable to generate message", () => {
+          const options = optionsFunction(initialTestState);
+          expect(options).toEqual(["unable to generate options"]);
+        });
+      });
+    });
+    describe("CALABRIO_WFM_PERSON_START_DATE", () => {
+      describe("validateFunction", () => {
+        const personStartDateValidation = FIELDS.CALABRIO_WFM_PERSON_START_DATE.validateFunction;
+        test("No field provided, all other scheduling fields are also empty, resolve with empty but not required message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Person Start Date": ""
+          };
+          const result = await personStartDateValidation(row, initialTestState);
+          expect(result).toEqual("WFM Person Start Date is empty but not required. Skipping validation for row 3");
+        });
+        test("No field provided, other scheduling fields have values, reject with missing message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Contract": "Contract1",
+            "WFM Person Start Date": ""
+          };
+          try {
+            await personStartDateValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "WFM Person Start Date is missing from row 3"
+            }));
+          }
+        });
+        test("start date field provided but is not a number, other scheduling fields have values, reject with missing message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Contract": "Contract1",
+            "WFM Person Start Date": "boo"
+          };
+          try {
+            await personStartDateValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "Error encountered validating WFM Person Start Date for row 3: Invalid date"
+            }));
+          }
+        });
+        test("Field has value, resolve and add the formatted date to the row", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Person Start Date": 44073
+          };
+          const result = await personStartDateValidation(row, initialTestState);
+          expect(result).toEqual("WFM Person Start Date valid for row 3");
+          expect(row).toEqual({
+            ...row,
+            wfmPersonStartDate: "2020-08-30"
+          });
+        });
+      });
+    });
+    describe("CALABRIO_WFM_TEAM_START_DATE", () => {
+      describe("validateFunction", () => {
+        const teamStartDateValidation = FIELDS.CALABRIO_WFM_TEAM_START_DATE.validateFunction;
+        test("No field provided, all other scheduling fields are also empty, resolve with empty but not required message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Team Start Date": ""
+          };
+          const result = await teamStartDateValidation(row, initialTestState);
+          expect(result).toEqual("WFM Team Start Date is empty but not required. Skipping validation for row 3");
+        });
+        test("No field provided, other scheduling fields have values, reject with missing message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Contract": "Contract1",
+            "WFM Team Start Date": ""
+          };
+          try {
+            await teamStartDateValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "WFM Team Start Date is missing from row 3"
+            }));
+          }
+        });
+        test("Team start date field provided but is not a number, other scheduling fields have values, reject with missing message", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Contract": "Contract1",
+            "WFM Team Start Date": "boo"
+          };
+          try {
+            await teamStartDateValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 3,
+              error: "Error encountered validating WFM Team Start Date for row 3: Invalid date"
+            }));
+          }
+        });
+        test("Field has value, resolve and add the formatted date to the row", async () => {
+          const row = {
+            rowNumber: 3,
+            "WFM Team Start Date": 45073
+          };
+          const result = await teamStartDateValidation(row, initialTestState);
+          expect(result).toEqual("WFM Team Start Date valid for row 3");
+          expect(row).toEqual({
+            ...row,
+            wfmTeamStartDate: "2023-05-27"
+          });
+        });
+      });
+    });
+    describe("CALABRIO_WFM_SKILLS_START_DATE", () => {
+      describe("validateFunction", () => {
+        const skillsStartDateValidation = FIELDS.CALABRIO_WFM_SKILLS_START_DATE.validateFunction;
+        test("Skill start date and skill fields both empty, resolve with empty but not required message", async () => {
+          const row = {
+            rowNumber: 7,
+            "WFM Skills Start Date": "",
+            "WFM Skills": ""
+          };
+          const result = await skillsStartDateValidation(row, initialTestState);
+          expect(result).toEqual("WFM Skills Start Date is empty but not required. Skipping validation for row 7");
+        });
+        test("Skill start date empty, but skills are not, reject with missing message", async () => {
+          const row = {
+            rowNumber: 7,
+            "WFM Skills Start Date": "",
+            "WFM Skills": "Skill1"
+          };
+          try {
+            await skillsStartDateValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 7,
+              error: "WFM Skills Start Date is missing from row 7"
+            }));
+          }
+        });
+        test("Both Skill start date and skills are present, but start date is invalid format, reject with error message", async () => {
+          const row = {
+            rowNumber: 7,
+            "WFM Skills Start Date": "BOO",
+            "WFM Skills": "Skill1"
+          };
+          try {
+            await skillsStartDateValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 7,
+              error: "Error encountered validating WFM Skills Start Date for row 7: Invalid date"
+            }));
+          }
+        });
+        test("Both Skill start date and skills are present, date is good, resolve with message and add skill start date to row", async () => {
+          const row = {
+            rowNumber: 7,
+            "WFM Skills Start Date": 45073,
+            "WFM Skills": "Skill1"
+          };
+          const result = await skillsStartDateValidation(row, initialTestState);
+          expect(result).toEqual("WFM Skills Start Date valid for row 7");
+          expect(row).toEqual({
+            ...row,
+            wfmSkillsStartDate: "2023-05-27"
+          });
+        });
+        test("Start date was provided, but no skills, reject with message", async () => {
+          const row = {
+            rowNumber: 7,
+            "WFM Skills Start Date": 45073,
+            "WFM Skills": ""
+          };
+          try {
+            await skillsStartDateValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 7,
+              error: "WFM Skills Start Date was provided but WFM Skills is empty."
+            }));
+          }
+        });
+      });
+    });
+    describe("CALABRIO_WFM_SKILLS", () => {
+      describe("validateFunction", () => {
+        const skillsValidation = FIELDS.CALABRIO_WFM_SKILLS.validateFunction;
+        test("Skills is empty, resolve with not required message", async () => {
+          const row = {
+            rowNumber: 7,
+            "WFM Skills": ""
+          };
+          const result = await skillsValidation(row, initialTestState);
+          expect(result).toEqual("WFM Skills is empty but not required. Skipping validation for row 7");
+        });
+        test("Skills are not empty, BU is invalid on the row, reject with invalid BU message", async () => {
+          const row = {
+            rowNumber: 7,
+            "WFM Skills": "Skill1",
+            businessUnitId: "boo fake"
+          };
+          try {
+            await skillsValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 7,
+              error: "Unable to validate WFM Skills due to invalid Business Unit for row 7"
+            }));
+          }
+        });
+        test("Skills are not empty, BU is good, no matching skill, reject with invalid skill message", async () => {
+          const row = {
+            rowNumber: 7,
+            "WFM Skills": "fakeskill",
+            businessUnitId: "123-321"
+          };
+          try {
+            await skillsValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 7,
+              error: "fakeskill is not a valid wfm skill for row 7"
+            }));
+          }
+        });
+        test("1 skill provided, BU and skill are valid, resolve with message, skill id added to row", async () => {
+          const row = {
+            rowNumber: 7,
+            "WFM Skills": "Skill1",
+            businessUnitId: "123-321"
+          };
+          const result = await skillsValidation(row, initialTestState);
+          expect(result).toEqual("WFM Skills valid for row 7");
+          expect(row).toEqual({
+            ...row,
+            wfmSkillIds: ["111"]
+          });
+        });
+        test("multiple skills provided, 1 skill is invalid, reject with message", async () => {
+          const row = {
+            rowNumber: 7,
+            "WFM Skills": "Skill1, fakeskill",
+            businessUnitId: "123-321"
+          };
+          try {
+            await skillsValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 7,
+              error: "fakeskill is not a valid wfm skill for row 7"
+            }));
+          }
+        });
+        test("multiple skills provided, BU and skills are valid, resolve with message, skill id added to row", async () => {
+          const row = {
+            rowNumber: 7,
+            "WFM Skills": "Skill1, Skill2",
+            businessUnitId: "123-321"
+          };
+          const result = await skillsValidation(row, initialTestState);
+          expect(result).toEqual("WFM Skills valid for row 7");
+          expect(row).toEqual({
+            ...row,
+            wfmSkillIds: ["111", "222"]
+          });
+        });
+      });
+      describe("options", () => {
+        const optionsFunction = FIELDS.CALABRIO_WFM_SKILLS.options;
+        test("State and BU Id are passed into function, returns options", () => {
+          const options = optionsFunction(initialTestState, "123-321");
+          expect(options).toEqual(["Skill1", "Skill2"]);
+        });
+        test("No Business unit id is passed into options function, returns unable to generate message", () => {
+          const options = optionsFunction(initialTestState);
+          expect(options).toEqual(["unable to generate options"]);
+        });
+      });
+    });
+    describe("CALABRIO_WFM_ROTATION_START_DATE", () => {
+      describe("validateFunction", () => {
+        const rotationStartDateValidation = FIELDS.CALABRIO_WFM_ROTATION_START_DATE.validateFunction;
+        test("Rotation start date and Rotation fields both empty, resolve with empty but not required message", async () => {
+          const row = {
+            rowNumber: 7,
+            "WFM Rotation Start Date": "",
+            "WFM Rotation": ""
+          };
+          const result = await rotationStartDateValidation(row, initialTestState);
+          expect(result).toEqual("WFM Rotation Start Date is empty but not required. Skipping validation for row 7");
+        });
+        test("Rotation start date is empty, but Rotation is not, reject with missing message", async () => {
+          const row = {
+            rowNumber: 7,
+            "WFM Rotation Start Date": "",
+            "WFM Rotation": "Rotation1"
+          };
+          try {
+            await rotationStartDateValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 7,
+              error: "WFM Rotation Start Date is missing from row 7"
+            }));
+          }
+        });
+        test("Both Rotation start date and Rotation are present, but start date is invalid format, reject with error message", async () => {
+          const row = {
+            rowNumber: 7,
+            "WFM Rotation Start Date": "BOO",
+            "WFM Rotation": "Rotation1"
+          };
+          try {
+            await rotationStartDateValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 7,
+              error: "Error encountered validating WFM Rotation Start Date for row 7: Invalid date"
+            }));
+          }
+        });
+        test("Both Rotation start date and Rotation are present, date is good, resolve with message and add Rotation start date to row", async () => {
+          const row = {
+            rowNumber: 7,
+            "WFM Rotation Start Date": 45073,
+            "WFM Rotation": "Skill1"
+          };
+          const result = await rotationStartDateValidation(row, initialTestState);
+          expect(result).toEqual("WFM Rotation Start Date valid for row 7");
+          expect(row).toEqual({
+            ...row,
+            wfmRotationStartDate: "2023-05-27"
+          });
+        });
+        test("Start date was provided, but no rotation, resolve with skipping message", async () => {
+          const row = {
+            rowNumber: 7,
+            "WFM Rotation Start Date": 45073,
+            "WFM Rotation": ""
+          };
+          try {
+            await rotationStartDateValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 7,
+              error: "WFM Rotation Start Date was provided but WFM Rotation is empty."
+            }));
+          }
+        });
+      });
+    });
+    describe("CALABRIO_WFM_ROTATION", () => {
+      describe("validateFunction", () => {
+        const rotationValidation = FIELDS.CALABRIO_WFM_ROTATION.validateFunction;
+        test("No Rotation provided, resolve with empty but not required message", async () => {
+          const row = {
+            rowNumber: 7,
+            "WFM Rotation": ""
+          };
+          const result = await rotationValidation(row, initialTestState);
+          expect(result).toEqual("WFM Rotation is empty but not required. Skipping validation for row 7");
+          expect(row).toEqual({
+            rowNumber: 7,
+            "WFM Rotation": ""
+          });
+        });
+        test("Rotation provided, but BU is invalid on row, reject with BU error message", async () => {
+          const row = {
+            rowNumber: 7,
+            "WFM Rotation": "Rotation1",
+            businessUnitId: "bad id"
+          };
+          try {
+            await rotationValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 7,
+              error: "Unable to validate WFM Rotation due to invalid Business Unit for row 7"
+            }));
+          }
+        });
+        test("Rotation provided but is invalid, reject with invalid message", async () => {
+          const row = {
+            rowNumber: 7,
+            "WFM Rotation": "fake rotation",
+            businessUnitId: "123-321"
+          };
+          try {
+            await rotationValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 7,
+              error: "WFM Rotation is invalid for row 7"
+            }));
+          }
+        });
+        test("Error thrown due to missing rotations in wfm options, reject with error message", async () => {
+          const row = {
+            rowNumber: 7,
+            "WFM Rotation": "Rotation1",
+            businessUnitId: "123-321"
+          };
+          try {
+            await rotationValidation(row, {
+              calabrioContext: {
+                wfmOptions: [
+                  {
+                    Id: "123-321"
+                  }
+                ]
+              }
+            });
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 7,
+              error: "Error encountered validating WFM Rotation for row 7: Cannot read property 'find' of undefined"
+            }));
+          }
+        });
+        test("Rotation and BU are valid, resolve with message, rotation id added to row", async () => {
+          const row = {
+            rowNumber: 7,
+            "WFM Rotation": "Rotation1",
+            businessUnitId: "123-321"
+          };
+          const result = await rotationValidation(row, initialTestState);
+          expect(result).toEqual("WFM Rotation valid for row 7");
+          expect(row).toEqual({
+            ...row,
+            wfmRotationId: "111"
+          });
+        });
+      });
+      describe("options", () => {
+        const optionsFunction = FIELDS.CALABRIO_WFM_ROTATION.options;
+        test("State and BU Id are passed into function, returns options", () => {
+          const options = optionsFunction(initialTestState, "123-321");
+          expect(options).toEqual(["Rotation1"]);
+        });
+        test("No Business unit id is passed into options function, returns unable to generate message", () => {
+          const options = optionsFunction(initialTestState);
+          expect(options).toEqual(["unable to generate options"]);
+        });
+      });
+    });
+    describe("CALABRIO_WFM_ROTATION_START_WEEK", () => {
+      describe("validateFunction", () => {
+        const rotationStartWkValidation = FIELDS.CALABRIO_WFM_ROTATION_START_WEEK.validateFunction;
+        test("Rotation start week and Rotation fields both empty, resolve with empty but not required message", async () => {
+          const row = {
+            rowNumber: 5,
+            "WFM Rotation Start Week": "",
+            "WFM Rotation": ""
+          };
+          const result = await rotationStartWkValidation(row, initialTestState);
+          expect(result).toEqual("WFM Rotation Start Week is empty but not required. Skipping validation for row 5");
+        });
+        test("Rotation start week empty, but Rotation are not, reject with missing message", async () => {
+          const row = {
+            rowNumber: 5,
+            "WFM Rotation Start Week": "",
+            "WFM Rotation": "Rotation1",
+            businessUnitId: "123-321"
+          };
+          try {
+            await rotationStartWkValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 5,
+              error: "WFM Rotation Start Week is missing from row 5"
+            }));
+          }
+        });
+        test("Both Rotation start week and Rotation are present, but week is invalid, reject with error message", async () => {
+          const row = {
+            rowNumber: 5,
+            "WFM Rotation Start Week": "20",
+            "WFM Rotation": "Rotation1",
+            businessUnitId: "123-321"
+          };
+          try {
+            await rotationStartWkValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 5,
+              error: "WFM Rotation Start Week is invalid for row 5"
+            }));
+          }
+        });
+        test("Both Rotation start week and Rotation are present, week is good, resolve with message and add Rotation start date to row", async () => {
+          const row = {
+            rowNumber: 5,
+            "WFM Rotation Start Week": "3",
+            "WFM Rotation": "Rotation1",
+            businessUnitId: "123-321"
+          };
+          const result = await rotationStartWkValidation(row, initialTestState);
+          expect(result).toEqual("WFM Rotation Start Week valid for row 5");
+          expect(row).toEqual({
+            ...row,
+            wfmRotationStartWk: 3
+          });
+        });
+        test("Start week was provided, but no rotation, resolve with skipping message", async () => {
+          const row = {
+            rowNumber: 5,
+            "WFM Rotation Start Week": "3",
+            "WFM Rotation": "",
+            businessUnitId: "123-321"
+          };
+          try {
+            await rotationStartWkValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 5,
+              error: "WFM Rotation Start Week was provided but WFM Rotation is empty."
+            }));
+          }
+        });
+      });
+    });
+    describe("CALABRIO_WFM_AVAILABILITY_START_DATE", () => {
+      describe("validateFunction", () => {
+        const availabilityStartDateValidation = FIELDS.CALABRIO_WFM_AVAILABILITY_START_DATE.validateFunction;
+        test("Availability and availability start date are empty, resolve with not required message", async () => {
+          const row = {
+            "WFM Availability Start Date": "",
+            "WFM Availability": "",
+            rowNumber: 2
+          };
+          const result = await availabilityStartDateValidation(row, initialTestState);
+          expect(result).toEqual("WFM Availability Start Date is empty but not required. Skipping validation for row 2");
+        });
+        test("Availability start date is empty, availability is not, reject with missing value message", async () => {
+          const row = {
+            "WFM Availability Start Date": null,
+            "WFM Availability": "Availability1",
+            rowNumber: 2
+          };
+          try {
+            await availabilityStartDateValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 2,
+              error: "WFM Availability Start Date is missing from row 2"
+            }));
+          }
+        });
+        test("Both Availability start date and Availability are provided, start date is bad format, reject with invalid message", async () => {
+          const row = {
+            "WFM Availability Start Date": "nope",
+            "WFM Availability": "Availability1",
+            rowNumber: 2
+          };
+          try {
+            await availabilityStartDateValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 2,
+              error: "Error encountered validating WFM Availability Start Date for row 2: Invalid date"
+            }));
+          }
+        });
+        test("Both Availability start date and Availability are provided, format is valid, resolve with message and add formatted availability start date to row ", async () => {
+          const row = {
+            "WFM Availability Start Date": 43321,
+            "WFM Availability": "Availability1",
+            rowNumber: 2
+          };
+          const result = await availabilityStartDateValidation(row, initialTestState);
+          expect(result).toEqual("WFM Availability Start Date valid for row 2");
+          expect(row).toEqual({
+            ...row,
+            wfmAvailabilityStartDate: "2018-08-09"
+          });
+        });
+        test("Start date was provided, but not availability, resolve with skipping message", async () => {
+          const row = {
+            "WFM Availability Start Date": 43321,
+            "WFM Availability": "",
+            rowNumber: 2
+          };
+          try {
+
+            await availabilityStartDateValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 2,
+              error: "WFM Availability Start Date was provided but WFM Availability is empty."
+            }));
+          }
+        });
+      });
+    });
+    describe("CALABRIO_WFM_AVAILABILITY", () => {
+      describe("validateFunction", () => {
+        const availabilityValidation = FIELDS.CALABRIO_WFM_AVAILABILITY.validateFunction;
+        test("No availability provided, resolve with the empty but not required message", async () => {
+          const row = {
+            "WFM Availability": "",
+            businessUnitId: "123-321",
+            rowNumber: 2
+          };
+          const result = await availabilityValidation(row, initialTestState);
+          expect(result).toEqual("WFM Availability is empty but not required. Skipping validation for row 2");
+        });
+        test("Availability provided, but BU for the row is invalid, reject with unable to validate message", async () => {
+          const row = {
+            "WFM Availability": "Availability1",
+            businessUnitId: "fake bu",
+            rowNumber: 2
+          };
+          try {
+            await availabilityValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 2,
+              error: "Unable to validate WFM Availability due to invalid Business Unit for row 2"
+            }));
+          }
+        });
+        test("Availability provided but invalid, reject with invalid message ", async () => {
+          const row = {
+            "WFM Availability": "fake availability",
+            businessUnitId: "123-321",
+            rowNumber: 2
+          };
+          try {
+            await availabilityValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 2,
+              error: "WFM Availability is invalid for row 2"
+            }));
+          }
+        });
+        test("Availability and BU are both valid, resolve and add availability id to row", async () => {
+          const row = {
+            "WFM Availability": "Availability1",
+            businessUnitId: "123-321",
+            rowNumber: 2
+          };
+          const result = await availabilityValidation(row, initialTestState);
+          expect(result).toEqual("WFM Availability valid for row 2");
+          expect(row).toEqual({
+            ...row,
+            wfmAvailabilityId: "123123"
+          });
+        });
+        test("Error thrown for missing BU availibilities, reject", async () => {
+          const row = {
+            "WFM Availability": "Availability1",
+            businessUnitId: "123-321",
+            rowNumber: 2
+          };
+          try {
+            await availabilityValidation(row, {
+              calabrioContext: {
+                wfmOptions: [
+                  {
+                    Id: "123-321"
+                  }
+                ]
+              }
+            });
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 2,
+              error: "Error encountered validating WFM Availability for row 2: Cannot read property 'find' of undefined"
+            }));
+          }
+        });
+      });
+      describe("options", () => {
+        const optionsFunction = FIELDS.CALABRIO_WFM_AVAILABILITY.options;
+        test("State and BU Id are passed into function, returns options", () => {
+          const options = optionsFunction(initialTestState, "123-321");
+          expect(options).toEqual(["Availability1"]);
+        });
+        test("No Business unit id is passed into options function, returns unable to generate message", () => {
+          const options = optionsFunction(initialTestState);
+          expect(options).toEqual(["unable to generate options"]);
+        });
+      });
+    });
+    describe("CALABRIO_WFM_OPTIONAL_COLUMNS", () => {
+      describe("validateFunction", () => {
+        const optionalColsValidation = FIELDS.CALABRIO_WFM_OPTIONAL_COLUMNS.validateFunction;
+        test("No Optional Columns provided, resolve with empty but not required message", async () => {
+          const row = {
+            "WFM Optional Columns": "",
+            businessUnitId: "123-321",
+            rowNumber: 4
+          };
+          const result = await optionalColsValidation(row, initialTestState);
+          expect(result).toEqual("WFM Optional Columns is empty but not required. Skipping validation for row 4");
+        });
+        test("Optional columns provided, but BU is invalid for the row, reject with invalid bu message", async () => {
+          const row = {
+            "WFM Optional Columns": "OptionalCol1",
+            businessUnitId: "fake bu",
+            rowNumber: 4
+          };
+          try {
+            await optionalColsValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Unable to validate WFM Optional Columns due to invalid Business Unit for row 4"
+            }));
+          }
+        });
+        test("One optional column provided, is valid, resolve and add id to row", async () => {
+          const row = {
+            "WFM Optional Columns": "OptionalCol1",
+            businessUnitId: "123-321",
+            rowNumber: 4
+          };
+          const result = await optionalColsValidation(row, initialTestState);
+          expect(result).toEqual("WFM Optional Columns valid for row 4");
+          expect(row).toEqual({
+            ...row,
+            wfmOptionalColumns: [{
+              Id: "111",
+              Value: "OptionalCol1"
+            }]
+          });
+        });
+        test("Multiple op columns provided, one is bad, reject with invalid message", async () => {
+          const row = {
+            "WFM Optional Columns": "OptionalCol1, fakeCol",
+            businessUnitId: "123-321",
+            rowNumber: 4
+          };
+          try {
+            await optionalColsValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "fakecol is not a valid WFM Optional Column for row 4"
+            }));
+          }
+        });
+        test("Multiple op columns provided, all are valid, resolve with message and add ids to the row", async () => {
+          const row = {
+            "WFM Optional Columns": "OptionalCol1, OptionalCol2",
+            businessUnitId: "123-321",
+            rowNumber: 4
+          };
+          const result = await optionalColsValidation(row, initialTestState);
+          expect(result).toEqual("WFM Optional Columns valid for row 4");
+          expect(row).toEqual({
+            ...row,
+            wfmOptionalColumns: [{
+              Id: "111",
+              Value: "OptionalCol1"
+            },
+            {
+              Id: "222",
+              Value: "OptionalCol2"
+            }]
+          });
+        });
+      });
+      describe("options", () => {
+        const optionsFunction = FIELDS.CALABRIO_WFM_OPTIONAL_COLUMNS.options;
+        test("State and BU Id are passed into function, returns options", () => {
+          const options = optionsFunction(initialTestState, "123-321");
+          expect(options).toEqual(["OptionalCol1", "OptionalCol2"]);
+        });
+        test("No Business unit id is passed into options function, returns unable to generate message", () => {
+          const options = optionsFunction(initialTestState);
+          expect(options).toEqual(["unable to generate options"]);
+        });
+      });
+    });
   });
 });
