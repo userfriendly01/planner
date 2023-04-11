@@ -1,4 +1,5 @@
 import { Control } from "globals";
+import { StringLiteralType } from "typescript";
 import { FormValidationRule } from "utils/interfaces";
 export interface FlowContent {
     callerType?: string;
@@ -139,4 +140,13 @@ export interface ViewOrAddProps{
     callerType:boolean;
     dataRequests:boolean;
     callFlowRoute:boolean;
+}
+export interface MandatoryFieldsProps{
+    name:string;
+    mandatoryValues:Array<string>;
+}
+
+export interface MandatoryViewAndHideProps{
+    fieldName:string;
+    mandatoryFields:MandatoryFieldsProps;
 }

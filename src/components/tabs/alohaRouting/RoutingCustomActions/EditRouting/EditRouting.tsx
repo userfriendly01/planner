@@ -69,7 +69,22 @@ export const EditRouting = ({
       startTime,
       endTime
     });
+    if(isOpen){
+      initializeRouteRule(selectedRow);
+    }
   }, [selectedRow]);
+
+  const initializeRouteRule = (data: CctSharedCallRoutingDb) =>{
+    const RouteInitRule: FormValidationRule = routingFields.reduce((a: FormValidationRule, v: AddPageFieldConfigProps) => ({
+      ...a,
+      [v.key]: {
+        error: false,
+        value: v.valueGetter(data),
+        required: v.required || false
+      }
+    }), {});
+    setRoutingRule({ ...RouteInitRule });
+  };
 
   const handleCancel = () => {
     setRoutingRule({ ...routingInitRule });
@@ -212,10 +227,13 @@ export const EditRouting = ({
           <Grid container rowSpacing={3}>
             {
               routingFields.map(({
-                label, key, control, required = false, disableEdit = false, valueGetter, valueSetter, isBlankFirstValue = false
+                label, key, control, required = false, disableEdit = false, valueGetter, valueSetter, isBlankFirstValue = false,
+                dynamicFieldConditionCheck
               }) => {
+                if(dynamicFieldConditionCheck && !dynamicFieldConditionCheck(routingRule)){
+                  return;
+                }
                 return (
-                  // eslint-disable-next-line react/jsx-key
                   <Grid key={key} item xs={4}>
                     <ComponentControl
                       control={control}

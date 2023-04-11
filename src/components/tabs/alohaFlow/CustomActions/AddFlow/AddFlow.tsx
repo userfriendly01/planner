@@ -12,7 +12,8 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import {
   initRule,
-  flowFields
+  flowFields,
+  MandatoryHideAndViewFields
 } from "../FlowFieldsConfig";
 import {
   ComponentControl, CustomToast
@@ -127,6 +128,21 @@ export const AddFlow = ({
   }
 
   const isInvalidField =(key: string, value: string): boolean =>{
+    let flag = false;
+    let returnType = false;
+    MandatoryHideAndViewFields.forEach(item=>{
+      if(item.fieldName === key){
+        flag = true;
+        const keyName = item.mandatoryFields.name;
+        const keyValue = flowRule[keyName as keyof FlowKeys ].value;
+        if(item.mandatoryFields.mandatoryValues.includes(keyValue) && [undefined, "", null].includes(value)){
+          returnType= true;
+        }
+      }
+    });
+    if(flag){
+      return returnType;
+    }
     return flowRule[key].required && [undefined, "", null].includes(value);
   };
 
