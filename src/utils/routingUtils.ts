@@ -259,7 +259,19 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
     valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => ({
       ...currentValue,
       ...newValue
-    })
+    }),
+    formFields: [
+      {
+        label: "Team",
+        name: "team",
+        type: "input"
+      },
+      {
+        label: "Percentage (%)",
+        name: "percentage",
+        type: "number"
+      }
+    ]
   },
   {
     label: "Routing Steps",
@@ -269,7 +281,19 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
     valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => ({
       ...currentValue,
       ...newValue
-    })
+    }),
+    formFields: [
+      {
+        label: "Team",
+        name: "team",
+        type: "input"
+      },
+      {
+        label: "Time",
+        name: "time",
+        type: "number"
+      }
+    ]
   }
 ];
 

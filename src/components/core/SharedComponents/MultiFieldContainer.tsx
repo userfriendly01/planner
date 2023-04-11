@@ -1,37 +1,45 @@
 import React, { useState } from "react";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import Fade from "@mui/material/Fade";
 import FormControl from "@mui/material/FormControl";
 import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
 import TextField from "@mui/material/TextField";
 
-
-export interface MultiContainerFormFieldsProps{
+export interface MultiFieldContainerFormProps{
     label: string;
     name: string;
     value?: any;
     type: string;
 }
-
 interface MultiFieldContainerProps{
     label: string;
     name: string;
-    value: Array<any>;
+    value?: Array<any>;
     error: boolean;
     required: boolean;
-    formFields: Array<MultiContainerFormFieldsProps>;
+    formFields: Array<MultiFieldContainerFormProps>;
+    updateValue: (event: any,value: any)=>void
+}
+interface MultiFieldContainerModalViewProps{
+    formFields:Array<MultiFieldContainerFormProps>;
+    isOpen: boolean;
+    anchorEl: HTMLDivElement | null;
+    formLabel: string;
+    onClose: ()=>void;
+    handleOnSet:(formData: any)=> void;
 }
 
 const MultiFieldContainer = (
   {
-    error, name, label, required, value, formFields
+    error, name, label, required, value, formFields, updateValue
   }:MultiFieldContainerProps): JSX.Element =>{
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null);
+  const [listItems, setListItems] = useState(value || []);
   const handleClick =(event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
     setModalOpen(!isModalOpen);
@@ -41,6 +49,56 @@ const MultiFieldContainer = (
     setModalOpen(false);
   };
 
+  const handleOnSet = (formData: any) =>{
+    const updatedListItems = [...listItems, formData];
+    setListItems(updatedListItems);
+    setAnchorEl(null);
+    setModalOpen(false);
+    updateValue({
+      target: {
+        name,
+        value: updatedListItems
+      }
+    },updatedListItems);
+  };
+
+  const getTagKey = (item:any): string =>{
+    let tagKey="";
+    if(typeof item === "string"){
+      tagKey = item;
+    }
+    else if (Array.isArray(item)){
+      tagKey=item.join("-");
+    }
+    else{
+      Object.keys(item).forEach((key: string)=>{
+        tagKey+=`${key}-${item[key]}`;
+      });
+    }
+
+    return tagKey;
+  };
+
+  const getTagLabel = (item:any): string =>{
+    let label="";
+    if(typeof item === "string"){
+      label = item;
+    }
+    else if (Array.isArray(item)){
+      label=item.join(", ");
+    }
+    else{
+      Object.keys(item).forEach((key: string, index: number)=>{
+        if(index === 0){
+          label+=item[key];
+        }
+        else{
+          label+=` - ${item[key]}`;
+        } });
+    }
+
+    return label;
+  };
 
   return (
     <>
@@ -50,36 +108,47 @@ const MultiFieldContainer = (
           label={label}
           name={name}
           type="button"
-          //   InputProps={{
-          //     startAdornment: value.map(item=>(
-          //       <Chip
-          //         key={item}
-          //         tabIndex={-1}
-          //         label={item}
-          //       />
-          //     ))
-          //   }}
+          InputProps={{
+            startAdornment: listItems && listItems.map(item=>(
+              <Chip
+                key={getTagKey(item)}
+                tabIndex={-1}
+                label={getTagLabel(item)}
+              />
+            ))
+          }}
           onClick={handleClick}
         />
       </FormControl>
-      <MultiFieldContainerModalView formFields={formFields} isOpen={isModalOpen} anchorEl={anchorEl} formLabel={label} onClose={handleOnClose}/>
+      <MultiFieldContainerModalView
+        formFields={formFields}
+        isOpen={isModalOpen}
+        anchorEl={anchorEl}
+        formLabel={label}
+        onClose={handleOnClose}
+        handleOnSet={handleOnSet}
+      />
     </>
   );
 };
 
-
 const MultiFieldContainerModalView = ({
-  formFields,isOpen,anchorEl, formLabel, onClose
-}: {formFields:Array<MultiContainerFormFieldsProps>, isOpen: boolean, anchorEl: HTMLDivElement | null, formLabel: string, onClose: ()=>void}): JSX.Element =>{
+  formFields,isOpen,anchorEl, formLabel, onClose,handleOnSet
+}: MultiFieldContainerModalViewProps): JSX.Element =>{
+  const [formData, setFormData] = useState({});
   const handleOnSetModalData = () =>{
-    return;
+    handleOnSet(formData);
   };
 
   const handleOnMultiModalOnChange = (event: any) =>{
-    const key = event.target.name;
+    const key: string = event.target.name;
     const value = event.target.value;
+    setFormData(existingData=>({
+      ...existingData,
+      [key]: value
+    }));
   };
-  console.log("anchorEl, isOpen", anchorEl, isOpen);
+
   return (
     <Popper
       disablePortal={true}
@@ -89,18 +158,16 @@ const MultiFieldContainerModalView = ({
       transition
       sx={{
         opacity: 1,
-        backgroundColor: "#fff",
-        zIndex: 1500
+        backgroundColor: "##e6e6e6",
+        zIndex: 1500,
+        width: 300
       }}
     >{
         ({ TransitionProps })=>(
           <Fade {...TransitionProps} timeout={350}>
-            <Box sx={{
-              padding: 2,
-              border: "1px solid"
-            }}>
+            <Paper variant="elevation" elevation={3} sx={{ padding: 3 }}>
               <Grid container rowSpacing={1}>
-                {formFields && formFields.map((item: MultiContainerFormFieldsProps)=>(
+                {formFields && formFields.map((item: MultiFieldContainerFormProps)=>(
                   <Grid key={item.label} item xs={12}>
                     <TextField
                       variant="outlined"
@@ -124,13 +191,12 @@ const MultiFieldContainerModalView = ({
                 Set
                   </Button>
                 </Grid>
-                <Grid key={`set-button-${formLabel}`} item xs={6}>
+                <Grid key={`cancel-button-${formLabel}`} item xs={6}>
                   <Button
                     type="submit"
                     value="Cancel"
                     variant="contained"
                     color="error"
-                    sx={{ marginLeft: 1 }}
                     aria-label = "cancelModal"
                     onClick={()=>onClose()}
                   >
@@ -139,7 +205,7 @@ const MultiFieldContainerModalView = ({
                 </Grid>
               </Grid>
 
-            </Box>
+            </Paper>
           </Fade>
         )}
     </Popper>

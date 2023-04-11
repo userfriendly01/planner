@@ -1,4 +1,5 @@
 import { Control } from "globals";
+import { MultiFieldContainerFormProps } from "components/core/SharedComponents/MultiFieldContainer";
 
 interface RoutingOccupancyCheck {
     team: string;
@@ -91,6 +92,7 @@ export interface AddPageFieldConfigProps {
     isBlankFirstValue?: boolean
     valueGetter?: (params: CctSharedCallRoutingDb, defaultValue?: any) => string;
     valueSetter?: (currentValue: CctSharedCallRoutingDb, newValue: any) => CctSharedCallRoutingDb;
+    formFields?: Array<MultiFieldContainerFormProps>
 }
 export interface AddRoutingModalProps {
     isOpen: boolean;
