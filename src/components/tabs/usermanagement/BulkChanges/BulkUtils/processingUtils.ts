@@ -2,9 +2,14 @@ import { apiPaths } from "globals";
 import {
   getCalabrioUsers,
   getWfmOrg,
-  getManagers
+  getManagers,
+  wfmActivateExternalLogon
 } from "services";
-import { UploadedRow } from "../BulkChanges.Interfaces";
+import {
+  UploadedRow,
+  Template
+} from "../BulkChanges.Interfaces";
+import { cleanupField } from "../BulkUtils";
 import {
   formatWorkerResponse,
   formatManagersResponse,
@@ -332,5 +337,63 @@ export const initiateCalls = async (
       success: identifySuccessfulRecords(rows, finalErrors),
       errors: finalErrors
     });
+  }
+};
+
+/**
+ * Inspects rows that were already successfully processed and, if necessary, activates a WFM person's external logon
+ * @param successfulRows rows to be processed
+ * @param selectedTemplates selected templates to be processed
+ */
+export const handleWfmExternalLogon = async (successfulRows: any, selectedTemplates: any) => {
+
+  // only check if selected template includes Triton
+  if(selectedTemplates.some((t: Template) => t.name === "CREATE_TRITON_USER")) {
+    console.log("selected template = create triton user");
+    const wfmNNumbers: any[] = [];
+
+    // find WFM people that need to activate their external logon
+    successfulRows.forEach((row: any) => {
+      const fieldName = "WFM Activate External Logon";
+      const field = cleanupField(row[fieldName], "string");
+
+      if ( field === "y") {
+        wfmNNumbers.push(row.attributes.n_number);
+      }
+    });
+    console.log("WFMNNumbers: ", wfmNNumbers);
+
+    // process WFM people in batches of max 80
+    const max = 80;
+    const totalNNumbers = wfmNNumbers.length;
+    const resultsArray: any[] = [];
+    let currentIndex = 0;
+
+    const processBatch = async (): Promise<any> => {
+      const endingIndex = currentIndex + max;
+      const processingNNumbers: any[] = wfmNNumbers.slice(currentIndex, endingIndex);
+
+      console.log("handleWfmExternalLogon - inside processBatch");
+      const results = await wfmActivateExternalLogon({
+        workerNNumbers: processingNNumbers
+      });
+      resultsArray.push(results); // todo: parse this nicely
+
+      currentIndex = currentIndex + max;
+
+      // recursive - will stop when you reach the end of wfmNNumbers array
+      if(currentIndex < totalNNumbers){
+        return processBatch();
+      } else {
+        Promise.resolve();
+      }
+    };
+
+    await processBatch();
+    return resultsArray;
+  } else {
+    // if not, return
+    // todo: fix?
+    return;
   }
 };

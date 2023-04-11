@@ -61,11 +61,13 @@ const processCreateTritonUser = async (row: any, state: any) => {
     const profile = getTargetProfile(state.profileContext.profiles, body.attributes.profile_id);
     body.operatingUnitSid = profile?.operating_unit_sid;
 
-    const res = await createUser(body);
-    const workerSid = res.workerSid;
-    console.log("TRITON RESPONSE", res);
-    row.workerSid = workerSid;
-    row.acdId = workerSid;
+    // todo: UNCOMMENT. Commented out for local testing
+    // const res = await createUser(body);
+    // const workerSid = res.workerSid;
+    // console.log("TRITON RESPONSE", res);
+    // row.workerSid = workerSid;
+    const workerSid = "test worker sid";
+    // row.acdId = workerSid;
     console.log(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
     return Promise.resolve(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
   } catch(err) {
@@ -332,7 +334,8 @@ export const getCreateTemplates = (state: any): Templates => {
         FIELDS.DIRECT_DIAL_NUMBER,
         FIELDS.ZERO_OUT_ENABLED,
         FIELDS.OUTGOING_NUMBER,
-        FIELDS.SELF_SERVICE_IND
+        FIELDS.SELF_SERVICE_IND,
+        FIELDS.WFM_ACTIVATE_EXTERNAL_LOGON
       ]
     },
     CREATE_CALABRIO_QM_USER: {

@@ -532,6 +532,31 @@ export const FIELDS: Fields = {
       }
     }
   },
+  WFM_ACTIVATE_EXTERNAL_LOGON: {
+    field: "wfmActivateExternalLogon",
+    name: "WFM Activate External Logon",
+    type: "boolean",
+    description: "Y/N indicator to represent if user needs to activate wfm external logon.",
+    example: "Y",
+    options: null,
+    validateFunction: async (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = FIELDS.WFM_ACTIVATE_EXTERNAL_LOGON.name;
+      const field = cleanupField(row[fieldName], "string");
+
+      // todo more stuff?
+
+      if (typeof field !== "string") {
+        return rejectPromise("aksjdfh", rowNumber);
+      } else if (field !== "y" && field !== "n") {
+        return rejectPromise("asdfsa", rowNumber);
+      } else if (field === "y") {
+        return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+      } else {
+        return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+      }
+    }
+  },
   CALABRIO_SCOPE: {
     field: "calabrioScope",
     name: "Calabrio Scope",

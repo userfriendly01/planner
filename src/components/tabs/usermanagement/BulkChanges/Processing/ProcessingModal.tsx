@@ -16,7 +16,8 @@ import {
 import {
   performValidations,
   initiateCalls,
-  identifySuccessfulRecords
+  identifySuccessfulRecords,
+  handleWfmExternalLogon
 } from "../BulkUtils";
 import ProgressBar from "./ProgressBar";
 import {
@@ -82,6 +83,11 @@ const ProcessingModal = (props: ProcessingModalProps) => {
         ...results,
         successfullyProcessedRows
       });
+
+      // before moving forward, check if any wfm people need to activate external logon
+      const wfmResults = await handleWfmExternalLogon(successfullyProcessedRows, selectedTemplates);
+      console.log("wfmResults: ", wfmResults);
+
       setStatus(PROCESSING_STATES.PROCESSED);
       console.log("PROCESSING IS DONE!!", results);
     } catch(err){
