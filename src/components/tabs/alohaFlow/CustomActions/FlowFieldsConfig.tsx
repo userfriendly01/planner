@@ -105,7 +105,18 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     gridSize: 10
   },
   {
-    label: "Transfer Number",
+    label: "Type",
+    key: "type",
+    control: "autoComplete",
+    required: false,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.type || ""}`,
+    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
+      ...currentValue,
+      ...newValue
+    })
+  },
+  {
+    label: "Transfer Destination",
     key: "transferNumber",
     control: "input",
     valueGetter: (params: CctSharedCallFlowDb) => `${params?.content?.transferNumber || ""}`,
@@ -174,7 +185,10 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
-    })
+    }),
+    dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+    }
   },
   {
     label: "Affinity VDN",
@@ -184,10 +198,13 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
-    })
+    }),
+    dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+    }
   },
   {
-    label: "Call Type",
+    label: "Call Type Description",
     key: "callTypeDescription",
     control: "input",
     valueGetter: (params: CctSharedCallFlowDb) => `${params?.callTypeDescription || ""}`,
@@ -204,7 +221,10 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
-    })
+    }),
+    dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+    }
   },
   {
     label: "Internet Placement",
@@ -214,7 +234,10 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
-    })
+    }),
+    dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+    }
   },
   {
     label: "Call Details 1",
@@ -224,7 +247,10 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
-    })
+    }),
+    dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+    }
   },
   {
     label: "Call Details 2",
@@ -234,7 +260,10 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
-    })
+    }),
+    dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+    }
   },
   {
     label: "Line Of Business",
@@ -244,7 +273,10 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
-    })
+    }),
+    dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+    }
   },
   {
     label: "Marketing Channel",
@@ -254,7 +286,10 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
-    })
+    }),
+    dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+    }
   },
   {
     label: "Toll Free Number",
@@ -274,7 +309,10 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
-    })
+    }),
+    dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+    }
   },
   {
     label: "Request ID",
@@ -284,7 +322,10 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
-    })
+    }),
+    dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+    }
   },
   {
     label: "User Destination",
@@ -309,18 +350,10 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
-    })
-  },
-  {
-    label: "Type",
-    key: "type",
-    control: "autoComplete",
-    required: false,
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.type || ""}`,
-    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
-      ...currentValue,
-      ...newValue
-    })
+    }),
+    dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+    }
   }
 ];
 

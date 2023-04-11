@@ -5,7 +5,7 @@ export interface Field {
   type: string,
   description: string,
   example: any,
-  options: null | ((state?: any) => any[]),
+  options: null | ((state?: any, businessUnit?: string) => any[]),
   validateFunction: (row: any, state?: any) => Promise<string>
 }
 
@@ -69,6 +69,11 @@ export interface ProcessingModalProps {
   handleClose: () => void;
   consolidatedFieldsList: Field[],
   uploadedForm: any[]
+}
+
+export interface BusinessUnitModalProps {
+  handleClose: () => void;
+  handleExport: (wfmBU: string | null) => void
 }
 export interface WorkerAttribute {
   label: string,

@@ -1,7 +1,6 @@
 import {
   UserAction,
   LoadingState,
-  UserEntryFormProps,
   WorkerOpts
 } from "./UserEntryFormWrapper.Interfaces";
 import {
@@ -28,7 +27,7 @@ import {
   userFormActions
 } from "context";
 import React from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { sortWorkersByFullName } from "utils";
 import { formModes } from "globals";
 import { Checkbox } from "@mui/material";
@@ -51,7 +50,7 @@ const UserEntryForm = () => {
 
   const skills = state.skillContext.skills;
   const workers = state.workerContext.workers.sort(sortWorkersByFullName);
-  const tritonWorker = workers.find((w: any) => w?.attributes.n_number === form.nNumber.value)
+  const tritonWorker = workers.find((w: any) => w?.attributes.n_number === form.nNumber.value);
   const managers = state.managerContext.managers;
   const profiles = state.profileContext.profiles;
   const offices = state.officeContext.offices;
@@ -64,6 +63,13 @@ const UserEntryForm = () => {
     saveStatus: null,
     saveUser: false
   });
+
+  React.useEffect(() => {
+
+    return () => {
+      setForm({ type: userFormActions.RESET_FORM });
+    };
+  }, []);
 
   console.log("FORM", form);
 

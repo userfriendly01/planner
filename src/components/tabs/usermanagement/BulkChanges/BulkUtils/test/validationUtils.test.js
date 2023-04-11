@@ -2,12 +2,15 @@ import {
   updateSelectedTemplates,
   consolidateTemplates,
   performValidations,
-  checkConflictingCalabrioUsers
+  checkConflictingCalabrioUsers,
+  checkIfConflictingWFMPeople,
+  allowedEmptyScheduleField
 } from "../validationUtils";
 import {
   getLowestConcurrencyLimit,
   handleConcurrentCalls
 } from "../processingUtils";
+import { initialTestState } from "testUtils";
 
 jest.mock("../processingUtils",() => ({
   handleConcurrentCalls: jest.fn(),
@@ -23,6 +26,8 @@ describe("updateSelectedTemplates", () => {
       consolidateTemplates: jest.fn(),
       performValidations: jest.fn(),
       checkConflictingCalabrioUsers: jest.fn(),
+      checkIfConflictingWFMPeople: jest.fn(),
+      allowedEmptyScheduleField: jest.fn(),
       updateSelectedTemplates: jest.requireActual("validationUtils").updateSelectedTemplates
     }));
   });
@@ -69,6 +74,8 @@ describe("consolidateTemplates", () => {
       consolidateTemplates: jest.requireActual("validationUtils").consolidateTemplates,
       performValidations: jest.fn(),
       checkConflictingCalabrioUsers: jest.fn(),
+      checkIfConflictingWFMPeople: jest.fn(),
+      allowedEmptyScheduleField: jest.fn(),
       updateSelectedTemplates: jest.fn()
     }));
   });
@@ -144,6 +151,8 @@ describe("performValidations", () => {
       consolidateTemplates: jest.fn(),
       performValidations: jest.requireActual("validationUtils").performValidations,
       checkConflictingCalabrioUsers: jest.fn(),
+      checkIfConflictingWFMPeople: jest.fn(),
+      allowedEmptyScheduleField: jest.fn(),
       updateSelectedTemplates: jest.fn()
     }));
     getLowestConcurrencyLimit.mockReturnValue(null);
@@ -313,6 +322,7 @@ describe("checkConflictingCalabrioUsers", () => {
       consolidateTemplates: jest.fn(),
       performValidations: jest.fn(),
       checkConflictingCalabrioUsers: jest.requireActual("validationUtils").checkConflictingCalabrioUsers,
+      checkIfConflictingWFMPeople: jest.fn(),
       updateSelectedTemplates: jest.fn()
     }));
   });
@@ -390,5 +400,129 @@ describe("checkConflictingCalabrioUsers", () => {
         error: "Calabrio Record already exists with this user's nNumber in the AdLogin field for row 1."
       }));
     }
+  });
+});
+
+describe("checkIfConflictingWFMPeople", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+    jest.mock("../validationUtils",() => ({
+      consolidateTemplates: jest.fn(),
+      performValidations: jest.fn(),
+      checkIfConflictingWFMPeople: jest.requireActual("validationUtils").checkIfConflictingWFMPeople,
+      checkConflictingCalabrioUsers: jest.fn(),
+      allowedEmptyScheduleField: jest.fn(),
+      updateSelectedTemplates: jest.fn()
+    }));
+  });
+  const cleanUser = {
+    email: "email@lm.com",
+    attributes: {
+      n_number: "n1234567"
+    }
+  };
+  const userWithConflictingEmail = {
+    email: "Person@libertymutual.com",
+    attributes: {
+      n_number: "n1234567"
+    }
+  };
+  const userWithConflictingNNumber = {
+    email: "dudette@libertymutual.com",
+    attributes: {
+      n_number: "n1111111"
+    }
+  };
+  test("No user is passed to function, returns undefined", () => { // in this case we will rely on errors from WFM
+    const result = checkIfConflictingWFMPeople(null, []);
+    expect(result).toBe(undefined);
+  });
+  test("User passed to function, has no matches in the users list, returns false", () => {
+    const result = checkIfConflictingWFMPeople(cleanUser, initialTestState.calabrioContext.wfmOrg);
+    expect(result).toEqual(false);
+  });
+  test("User passed to function, has nnumber matches in the users list, returns true", () => {
+    const result = checkIfConflictingWFMPeople(userWithConflictingNNumber, initialTestState.calabrioContext.wfmOrg);
+    expect(result).toBe(true);
+  });
+  test("User passed to function, has email matches in the users list, returns true", () => {
+    const result = checkIfConflictingWFMPeople(userWithConflictingEmail, initialTestState.calabrioContext.wfmOrg);
+    expect(result).toBe(true);
+  });
+});
+
+describe("allowedEmptyScheduleField", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+    jest.mock("../validationUtils",() => ({
+      consolidateTemplates: jest.fn(),
+      performValidations: jest.fn(),
+      checkIfConflictingWFMPeople: jest.fn(),
+      checkConflictingCalabrioUsers: jest.fn(),
+      updateSelectedTemplates: jest.fn(),
+      allowedEmptyScheduleField: jest.requireActual("validationUtils").allowedEmptyScheduleField
+    }));
+  });
+  test("FieldName does not exist in the schedule field all or nothing or optional lists, returns true because it is not reliant on the other schedule fields", () => {
+    const row = {
+      "WFM Team": "what",
+      "WFM Team Start Date": "stuff",
+      "WFM Person Start Date": "huh",
+      "WFM Contract": "hi",
+      "WFM Contract Schedule": "yo",
+      "WFM Part Time Percentage": "sup"
+    };
+    const isAllowedEmpty = allowedEmptyScheduleField(row, "WFM Fake Field");
+    expect(isAllowedEmpty).toBe(true);
+  });
+  test("FieldName is Person Start Date, all other schedule fields are empty, returns true, allowed to be empty", () => {
+    const row = {
+      "WFM Team": "",
+      "WFM Team Start Date": "",
+      "WFM Person Start Date": "",
+      "WFM Contract": "",
+      "WFM Contract Schedule": "",
+      "WFM Part Time Percentage": ""
+    };
+    const isAllowedEmpty = allowedEmptyScheduleField(row, "WFM Person Start Date");
+    expect(isAllowedEmpty).toBe(true);
+  });
+  test("FieldName is Contract, all other schedule fields are empty, returns true, allowed to be empty", () => {
+    const row = {
+      "WFM Team": "",
+      "WFM Team Start Date": "",
+      "WFM Person Start Date": "",
+      "WFM Contract": "",
+      "WFM Contract Schedule": "",
+      "WFM Part Time Percentage": ""
+    };
+    const isAllowedEmpty = allowedEmptyScheduleField(row, "WFM Contract");
+    expect(isAllowedEmpty).toBe(true);
+  });
+  test("FieldName is Part Time Percentage, all other schedule fields are empty, returns true, allowed to be empty", () => {
+    const row = {
+      "WFM Team": "",
+      "WFM Team Start Date": "",
+      "WFM Person Start Date": "",
+      "WFM Contract": "",
+      "WFM Contract Schedule": "",
+      "WFM Part Time Percentage": ""
+    };
+    const isAllowedEmpty = allowedEmptyScheduleField(row, "WFM Part Time Percentage");
+    expect(isAllowedEmpty).toBe(true);
+  });
+  test("Fieldname is Team, other schedule fields have values, returns false", () => {
+    const row = {
+      "WFM Team": "",
+      "WFM Team Start Date": "3/24/23",
+      "WFM Person Start Date": "3/24/23",
+      "WFM Contract": "asdf",
+      "WFM Contract Schedule": "asdf",
+      "WFM Part Time Percentage": "asdf"
+    };
+    const isAllowedEmpty = allowedEmptyScheduleField(row, "WFM Person Start Date");
+    expect(isAllowedEmpty).toBe(false);
   });
 });
