@@ -19,8 +19,7 @@ import {
   waitFor
 } from "testUtils";
 import {
-  calabrioTimeZones,
-  calabrioAllowedRoles 
+  calabrioTimeZones
 } from "utils";
 
 
@@ -315,6 +314,89 @@ describe("CallRecordingForm", () => {
       };
       beforeEach(() => {
         useFormState.mockReturnValue(form);
+      });
+      describe("Selected Profile in the form is 18 (Workers Comp)", () => {
+        const workersCompForm = {
+          ...initialFormState,
+          profileId: { value: 18 },
+          calabrioUser: {
+            ...initialFormState.calabrioUser,
+            scope: {
+              groups: [],
+              teams: [{
+                name: "Team 1",
+                id: 2
+              }]
+            }
+          }
+        };
+        test("New User, No Screen is auto selected", () => {
+          useFormState.mockReturnValue(workersCompForm);
+          render(<CallRecordingForm twilioWorker={twilioWorker} />);
+          expect(Dropdown.mock.calls[0][0].options).toEqual([{
+            id: 1,
+            label: "Supervisor",
+            name: "Supervisor",
+            value: 1
+          },
+          {
+            id: 4,
+            label: "No Screen",
+            name: "No Screen",
+            value: 4
+          }]);
+          expect(mockSetForm).toHaveBeenLastCalledWith({
+            type: "SET_CALABRIO_ROLES",
+            payload: [{
+              id: 4,
+              label: "No Screen",
+              name: "No Screen",
+              value: 4
+            }]
+          });
+        });
+        test("Existing user with Supervisor role will auto populate with both No Screen and Supervisor", () => {
+          workersCompForm.calabrioUser.roles.push({
+            id: 1,
+            value: 1,
+            name: "Supervisor",
+            label: "Supervisor"
+          }, {
+            id: 12,
+            value: 12,
+            name: "boo",
+            label: "boo"
+          });
+          useFormState.mockReturnValue(workersCompForm);
+          render(<CallRecordingForm twilioWorker={twilioWorker} />);
+          expect(Dropdown.mock.calls[0][0].options).toEqual([{
+            id: 1,
+            label: "Supervisor",
+            name: "Supervisor",
+            value: 1
+          },
+          {
+            id: 4,
+            label: "No Screen",
+            name: "No Screen",
+            value: 4
+          }]);
+          expect(mockSetForm).toHaveBeenLastCalledWith({
+            type: "SET_CALABRIO_ROLES",
+            payload: [{
+              id: 1,
+              value: 1,
+              name: "Supervisor",
+              label: "Supervisor"
+            },
+            {
+              id: 4,
+              label: "No Screen",
+              name: "No Screen",
+              value: 4
+            }, ]
+          });
+        });
       });
       describe("updateValue is called", () => {
         test("setForm is called with the appropriate params", () => {

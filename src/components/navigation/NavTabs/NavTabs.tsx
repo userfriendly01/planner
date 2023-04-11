@@ -59,6 +59,7 @@ const NavTabs = () => {
                 data-testid="dropdown-action"
                 onMouseEnter={() => handleDropdownOpen(t.value)}
                 onMouseLeave={() => handleDropdownClosed(t.value)}
+                key={t.value}
               >
                 <StyledTab
                   key={t.value}
@@ -71,7 +72,7 @@ const NavTabs = () => {
                 {t.dropdown && dropdownOpen[t.value] &&
                   <DropdownContainer>
                     { t.dropdown.map((d: any) => (
-                      <StyledLink to={d.route}>{d.label}</StyledLink>
+                      <StyledLink key={d.label} to={d.route}>{d.label}</StyledLink>
                     ))
                     }
                   </DropdownContainer>
