@@ -239,20 +239,25 @@ describe("<EditRouting />", () => {
         const eventOnTimeChange={
           $d: "Fri Jan 06 2023 06:24:00 GMT+0530 (India Standard Time)"
         };
+        const eventOnChannel={ target: { value: "Service" }};
+        const eventOnBrand = { target: { value: "Liberty Mutual" }};
+        const editPageChannelAttr= Grid.mock.calls[1][0].children[7].props.children.props.onChange;
+        const editPageBrandAttr= Grid.mock.calls[1][0].children[3].props.children.props.onChange;
+        act(()=>{
+          editPageChannelAttr(eventOnChannel);
+          editPageBrandAttr(eventOnBrand);
+        });
         const gridAttr = Grid.mock.calls[1][0];
         const editPageIdAttr= Grid.mock.calls[1][0].children[0].props.children.props.onChange;
         const editPagePkeyAttr= Grid.mock.calls[1][0].children[1].props.children.props.onChange;
         const editPageSkeyAttr= Grid.mock.calls[1][0].children[2].props.children.props.onChange;
-        const editPageBrandAttr= Grid.mock.calls[1][0].children[3].props.children.props.onChange;
         const editPageCallerStateAttr= Grid.mock.calls[1][0].children[4].props.children.props.onChange;
         const editPageCallerTypeAttr= Grid.mock.calls[1][0].children[5].props.children.props.onChange;
         const editPageCallIntentAttr= Grid.mock.calls[1][0].children[6].props.children.props.onChange;
-        const editPageChannelAttr= Grid.mock.calls[1][0].children[7].props.children.props.onChange;
         const editPageDayAttr= Grid.mock.calls[1][0].children[8].props.children.props.onChange;
         const editPageTDestAttr= Grid.mock.calls[1][0].children[9].props.children.props.onChange;
         const editPageTskillAttr= Grid.mock.calls[1][0].children[10].props.children.props.onChange;
         const editPagePcallersAttr= Grid.mock.calls[1][0].children[12].props.children.props.onChange;
-        const editPageCSkillttr= Grid.mock.calls[1][0].children[11].props.children.props.onChange;
         const editPagePTypeAttr= Grid.mock.calls[1][0].children[15].props.children.props.onChange;
         const editPageTmsgAttr= Grid.mock.calls[1][0].children[16].props.children.props.onChange;
         const editPagePriorityAttr= Grid.mock.calls[1][0].children[17].props.children.props.onChange;
@@ -264,15 +269,12 @@ describe("<EditRouting />", () => {
           editPageIdAttr(eventOnChange);
           editPagePkeyAttr(eventOnChange);
           editPageSkeyAttr(eventOnChange);
-          editPageBrandAttr(eventOnChange);
           editPageCallerStateAttr(eventOnChange);
           editPageCallerTypeAttr(eventOnChange);
           editPageCallIntentAttr(eventOnChange);
           editPageTDestAttr(eventOnChange);
-          editPageChannelAttr(eventOnChange);
           editPageDayAttr(eventOnChange);
           editPageTskillAttr(eventOnChange);
-          editPageCSkillttr(eventOnChange);
           editPagePcallersAttr(eventOnChange);
           editPagePTypeAttr(eventOnChange);
           editPageTmsgAttr(eventOnChange);
