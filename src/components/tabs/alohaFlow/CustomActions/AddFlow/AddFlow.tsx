@@ -134,7 +134,7 @@ export const AddFlow = ({
       if(item.fieldName === key){
         flag = true;
         const keyName = item.mandatoryFields.name;
-        const keyValue = flowRule[keyName as keyof FlowKeys ].value;
+        const keyValue = flowRule[keyName as keyof FlowKeys].value;
         if(item.mandatoryFields.mandatoryValues.includes(keyValue) && [undefined, "", null].includes(value)){
           returnType= true;
         }

@@ -20,7 +20,7 @@ import {
   ViewOrAddProps
 } from "../../AlohaFlow.Interfaces";
 import {
-  flowFields, initRule
+  flowFields, initRule, MandatoryHideAndViewFields
 } from "../FlowFieldsConfig";
 import { CustomToast } from "components";
 import {
@@ -92,6 +92,21 @@ export const EditFlow = ({
   }, [selectedRow]);
 
   const isInvalidField =(key: string, value: string): boolean =>{
+    let flag = false;
+    let returnType = false;
+    MandatoryHideAndViewFields.forEach(item=>{
+      if(item.fieldName === key){
+        flag = true;
+        const keyName = item.mandatoryFields.name;
+        const keyValue = flowRule[keyName as keyof FlowKeys].value;
+        if(item.mandatoryFields.mandatoryValues.includes(keyValue) && [undefined, "", null].includes(value)){
+          returnType= true;
+        }
+      }
+    });
+    if(flag){
+      return returnType;
+    }
     return flowRule[key].required && [undefined, "", null, "null"].includes(value);
   };
 
