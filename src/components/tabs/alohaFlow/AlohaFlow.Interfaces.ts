@@ -127,9 +127,9 @@ export interface AddFlowFieldsConfigProps {
     disableEdit?: boolean;
     valueGetter?: (params: CctSharedCallFlowDb) => string;
     valueSetter?: (currentValue: CctSharedCallFlowDb, newValue: any) => CctSharedCallFlowDb;
+    dynamicFieldConditionCheck?: (params: FormValidationRule) => boolean
     fieldType?: "viewAndAdd";
     gridSize?: number;
-    dynamicFieldConditionCheck?: (params: FormValidationRule) => boolean;
 }
 
 export interface FlowListMasterData{
