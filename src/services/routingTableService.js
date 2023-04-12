@@ -40,8 +40,14 @@ async function queryRoutingData(accessToken, nextToken = null, graphQlApiUrl) {
                         endTime
                         crcSkill
                         priority
-                        occupancyCheck
-                        routingSteps
+                        occupancyCheck {
+                          percentage
+                          team
+                        }
+                        routingSteps {
+                          team
+                          time
+                        }
                     }
                 }
             }
@@ -146,8 +152,14 @@ async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
               twilioSkill
               crcSkill
               priority
-              occupancyCheck
-              routingSteps
+              occupancyCheck {
+                percentage
+                team
+              }
+              routingSteps {
+                team
+                time
+              }
             }
           }
       `,
@@ -172,6 +184,28 @@ async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
  */
 async function addRoutingRule(item, accessToken, graphQlApiUrl) {
   let response;
+  const input = {
+    all: "ALL",
+    pkey: item.pkey.value,
+    skey: item.skey.value,
+    brand: item.brand.value,
+    channel: item.channel.value,
+    callIntent: item.callIntent.value,
+    dayOfWeek: item.dayOfWeek.value,
+    callerState: item.callerState.value,
+    callerType: item.callerType.value,
+    twilioSkill: item.twilioSkill.value || "",
+    transferDestination: item.transferDestination.value || "",
+    percentOfCallers: item.percentOfCallers.value,
+    transferMessage: item.transferMessage.value || "",
+    policyType: item.policyType.value,
+    startTime: item.startTime.value,
+    endTime: item.endTime.value,
+    crcSkill: item.crcSkill.value || "",
+    priority: item.priority.value || "",
+    occupancyCheck: item.occupancyCheck.value || "",
+    routingSteps: item.routingSteps.value || ""
+  };
   try {
     const fetchResponse = await fetch(graphQlApiUrl, {
       method: "POST",
@@ -181,29 +215,8 @@ async function addRoutingRule(item, accessToken, graphQlApiUrl) {
       },
       body: JSON.stringify({
         query: `
-          mutation AddOne {
-            createCctSharedCallRoutingGlobalDb(input: {
-                all: "ALL"
-                pkey: "${item.pkey.value}",
-                skey: "${item.skey.value}",
-                brand: "${item.brand.value}",
-                channel: "${item.channel.value}",
-                callIntent:"${item.callIntent.value}",
-                dayOfWeek: "${item.dayOfWeek.value}",
-                callerState: "${item.callerState.value}",
-                callerType: "${item.callerType.value}",
-                twilioSkill: "${item.twilioSkill.value || ""}",
-                transferDestination: "${item.transferDestination.value || ""}",
-                percentOfCallers: "${item.percentOfCallers.value}",
-                transferMessage: "${item.transferMessage.value || ""}",
-                policyType: "${item.policyType.value}",
-                startTime: "${item.startTime.value}",
-                endTime: "${item.endTime.value}",
-                crcSkill: "${item.crcSkill.value || ""}",
-                priority: "${item.priority.value || ""}",
-                occupancyCheck: "${item.occupancyCheck.value || ""}",
-                routingSteps: "${item.routingSteps.value || ""}"
-              }) {
+          mutation AddOne($input: CreateCctSharedCallRoutingGlobalDbInput!) {
+            createCctSharedCallRoutingGlobalDb(input: $input) {
               pkey
               skey
               brand
@@ -221,12 +234,19 @@ async function addRoutingRule(item, accessToken, graphQlApiUrl) {
               twilioSkill
               crcSkill
               priority
-              occupancyCheck
-              routingSteps
+              occupancyCheck {
+                percentage
+                team
+              }
+              routingSteps {
+                team
+                time
+              }
             }
           }
       `,
         variables: {
+          input
         }
       })
     });
@@ -277,8 +297,14 @@ async function deleteRoutingRule(item, accessToken, graphQlApiUrl) {
               twilioSkill
               crcSkill
               priority
-              occupancyCheck
-              routingSteps
+              occupancyCheck {
+                percentage
+                team
+              }
+              routingSteps {
+                team
+                time
+              }
             }
           }
       `,

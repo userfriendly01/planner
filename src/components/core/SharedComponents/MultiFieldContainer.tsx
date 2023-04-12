@@ -142,7 +142,11 @@ const MultiFieldContainerModalView = ({
 
   const handleOnMultiModalOnChange = (event: any) =>{
     const key: string = event.target.name;
-    const value = event.target.value;
+    let value = event.target.value;
+    const type = event.target.type;
+    if(type === "number" ){
+      value=parseInt(value);
+    }
     setFormData(existingData=>({
       ...existingData,
       [key]: value
@@ -188,7 +192,7 @@ const MultiFieldContainerModalView = ({
                     aria-label = "setModalDataButton"
                     onClick={()=>handleOnSetModalData()}
                   >
-                Set
+                Confirm
                   </Button>
                 </Grid>
                 <Grid key={`cancel-button-${formLabel}`} item xs={6}>
