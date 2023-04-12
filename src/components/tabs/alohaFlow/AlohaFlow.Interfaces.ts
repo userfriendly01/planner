@@ -1,5 +1,4 @@
 import { Control } from "globals";
-import { StringLiteralType } from "typescript";
 import { FormValidationRule } from "utils/interfaces";
 export interface FlowContent {
     callerType?: string;
