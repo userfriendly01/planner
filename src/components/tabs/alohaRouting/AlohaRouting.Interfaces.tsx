@@ -90,7 +90,7 @@ export interface AddPageFieldConfigProps {
     disableAdd?: boolean,
     disableEdit?: boolean,
     isBlankFirstValue?: boolean
-    valueGetter?: (params: CctSharedCallRoutingDb, defaultValue?: any) => string;
+    valueGetter?: (params: CctSharedCallRoutingDb, defaultValue?: any) => any;
     valueSetter?: (currentValue: CctSharedCallRoutingDb, newValue: any) => CctSharedCallRoutingDb;
     formFields?: Array<MultiFieldContainerFormProps>
 }

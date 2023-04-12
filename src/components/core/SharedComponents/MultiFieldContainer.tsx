@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, {
+  useState, useEffect
+} from "react";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import Fade from "@mui/material/Fade";
@@ -39,7 +41,10 @@ const MultiFieldContainer = (
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null);
-  const [listItems, setListItems] = useState(value || []);
+  const [listItems, setListItems] = useState([]);
+  useEffect(()=>{
+    setListItems(value);
+  });
   const handleClick =(event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
     setModalOpen(!isModalOpen);
@@ -71,8 +76,8 @@ const MultiFieldContainer = (
       tagKey=item.join("-");
     }
     else{
-      Object.keys(item).forEach((key: string)=>{
-        tagKey+=`${key}-${item[key]}`;
+      Object.keys(item).forEach((key: string, index: number)=>{
+        tagKey+=`${key}-${index.toString()}`;
       });
     }
 
@@ -88,12 +93,12 @@ const MultiFieldContainer = (
       label=item.join(", ");
     }
     else{
-      Object.keys(item).forEach((key: string, index: number)=>{
+      formFields.forEach((field: MultiFieldContainerFormProps, index: number)=>{
         if(index === 0){
-          label+=item[key];
+          label+=item[field.name];
         }
         else{
-          label+=` - ${item[key]}`;
+          label+=` - ${item[field.name]}`;
         } });
     }
 

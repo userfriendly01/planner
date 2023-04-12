@@ -212,7 +212,7 @@ export const EditRouting = ({
           <Grid container rowSpacing={3}>
             {
               routingFields.map(({
-                label, key, control, required = false, disableEdit = false, valueGetter, valueSetter, isBlankFirstValue = false
+                label, key, control, required = false, disableEdit = false, valueGetter, valueSetter, isBlankFirstValue = false,formFields
               }) => {
                 return (
                   // eslint-disable-next-line react/jsx-key
@@ -229,6 +229,7 @@ export const EditRouting = ({
                       required={required}
                       disabled={disableEdit}
                       isBlankFirstValue = {isBlankFirstValue}
+                      formFields={formFields}
                     />
                   </Grid>
                 );

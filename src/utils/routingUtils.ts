@@ -255,7 +255,7 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
     label: "Occupancy Check",
     key: "occupancyCheck",
     control: "multiField",
-    valueGetter: (params: CctSharedCallRoutingDb) => `${params?.occupancyCheck || ""}`,
+    valueGetter: (params: CctSharedCallRoutingDb) => params?.occupancyCheck || [],
     valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => ({
       ...currentValue,
       ...newValue
@@ -277,7 +277,7 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
     label: "Routing Steps",
     key: "routingSteps",
     control: "multiField",
-    valueGetter: (params: CctSharedCallRoutingDb) => `${params?.routingSteps || ""}`,
+    valueGetter: (params: CctSharedCallRoutingDb) => params?.routingSteps || [],
     valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => ({
       ...currentValue,
       ...newValue
