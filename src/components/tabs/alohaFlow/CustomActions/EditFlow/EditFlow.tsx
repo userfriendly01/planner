@@ -20,7 +20,7 @@ import {
   ViewOrAddProps
 } from "../../AlohaFlow.Interfaces";
 import {
-  flowFields, initRule, MandatoryHideAndViewFields
+  flowFields, initRule
 } from "../FlowFieldsConfig";
 import { CustomToast } from "components";
 import {
@@ -92,21 +92,6 @@ export const EditFlow = ({
   }, [selectedRow]);
 
   const isInvalidField =(key: string, value: string): boolean =>{
-    let flag = false;
-    let returnType = false;
-    MandatoryHideAndViewFields.forEach(item=>{
-      if(item.fieldName === key){
-        flag = true;
-        const keyName = item.mandatoryFields.name;
-        const keyValue = flowRule[keyName as keyof FlowKeys].value;
-        if(item.mandatoryFields.mandatoryValues.includes(keyValue) && [undefined, "", null].includes(value)){
-          returnType= true;
-        }
-      }
-    });
-    if(flag){
-      return returnType;
-    }
     return flowRule[key].required && [undefined, "", null, "null"].includes(value);
   };
 
@@ -125,8 +110,8 @@ export const EditFlow = ({
   const validateFlow = async (): Promise<boolean> => {
     let isValidForm = true;
     Object.keys(flowRule).map(key => {
-      const fieldValue: string = findFieldValue(key);
-      if (isInvalidField(key, fieldValue)) {
+      const fieldValue: {value: string, condition: boolean} = findFieldValue(key);
+      if (isInvalidField(key, fieldValue.value) && fieldValue.condition) {
         const newFlowRule: FormValidationRule = {
           [key]: {
             ...flowRule[key],
@@ -144,14 +129,19 @@ export const EditFlow = ({
     return isValidForm;
   };
 
-  const findFieldValue = (key: string): string => {
+  const findFieldValue = (key: string): {value: string, condition: boolean} => {
     let fieldValue = "";
+    let fieldCondition = false;
     flowFields.map((value: AddFlowFieldsConfigProps) => {
       if (value.key === key) {
         fieldValue = value.valueGetter(selectedRowLocal);
+        fieldCondition = value.dynamicFieldConditionCheck && value.dynamicFieldConditionCheck(flowRule);
       }
     });
-    return fieldValue;
+    return {
+      value: fieldValue,
+      condition: fieldCondition
+    };
   };
 
   const handleOnSave = async () => {

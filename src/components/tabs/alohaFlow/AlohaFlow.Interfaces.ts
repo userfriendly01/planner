@@ -140,12 +140,3 @@ export interface ViewOrAddProps{
     dataRequests:boolean;
     callFlowRoute:boolean;
 }
-export interface MandatoryFieldsProps{
-    name:string;
-    mandatoryValues:Array<string>;
-}
-
-export interface MandatoryViewAndHideProps{
-    fieldName:string;
-    mandatoryFields:MandatoryFieldsProps;
-}

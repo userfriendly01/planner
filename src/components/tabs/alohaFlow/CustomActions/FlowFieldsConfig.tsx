@@ -1,6 +1,6 @@
 import { FormValidationRule } from "utils/interfaces";
 import {
-  AddFlowFieldsConfigProps, CctSharedCallFlowDb, MandatoryViewAndHideProps
+  AddFlowFieldsConfigProps, CctSharedCallFlowDb
 } from "../AlohaFlow.Interfaces";
 
 const flowFields: AddFlowFieldsConfigProps[] = [
@@ -356,15 +356,6 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     }
   }
 ];
-const MandatoryHideAndViewFields:MandatoryViewAndHideProps[] = [
-  {
-    fieldName: "userDestination",
-    mandatoryFields: {
-      name: "type",
-      mandatoryValues: ["DID"]
-    }
-  }
-];
 
 const initRule: FormValidationRule = flowFields.reduce((a: FormValidationRule, v: AddFlowFieldsConfigProps) => ({
   ...a,
@@ -377,6 +368,5 @@ const initRule: FormValidationRule = flowFields.reduce((a: FormValidationRule, v
 
 export {
   flowFields,
-  initRule,
-  MandatoryHideAndViewFields
+  initRule
 };

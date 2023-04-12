@@ -12,13 +12,13 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import {
   initRule,
-  flowFields,
-  MandatoryHideAndViewFields
+  flowFields
 } from "../FlowFieldsConfig";
 import {
   ComponentControl, CustomToast
 } from "components";
 import {
+  AddFlowFieldsConfigProps,
   CctSharedCallFlowDb,
   FlowDropDownList,
   FlowKeys,
@@ -128,28 +128,23 @@ export const AddFlow = ({
   }
 
   const isInvalidField =(key: string, value: string): boolean =>{
-    let flag = false;
-    let returnType = false;
-    MandatoryHideAndViewFields.forEach(item=>{
-      if(item.fieldName === key){
-        flag = true;
-        const keyName = item.mandatoryFields.name;
-        const keyValue = flowRule[keyName as keyof FlowKeys].value;
-        if(item.mandatoryFields.mandatoryValues.includes(keyValue) && [undefined, "", null].includes(value)){
-          returnType= true;
-        }
+    return flowRule[key].required && [undefined, "", null].includes(value);
+  };
+  const findFieldValue = (key: string): boolean => {
+    let fieldCondition = false;
+    flowFields.map((value: AddFlowFieldsConfigProps) => {
+      if (value.key === key) {
+        fieldCondition = value.dynamicFieldConditionCheck && value.dynamicFieldConditionCheck(flowRule);
       }
     });
-    if(flag){
-      return returnType;
-    }
-    return flowRule[key].required && [undefined, "", null].includes(value);
+    return fieldCondition;
   };
 
   function validateRoute() {
     let isValidForm = true;
     Object.keys(flowRule).map((key: string) => {
-      if (isInvalidField(key, flowRule[key].value)) {
+      const condition = findFieldValue(key);
+      if (isInvalidField(key, flowRule[key].value) && condition) {
         const newFlowRule = {
           [key]: {
             ...flowRule[key],
