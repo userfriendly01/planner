@@ -536,7 +536,7 @@ export const FIELDS: Fields = {
     field: "wfmActivateExternalLogon",
     name: "WFM Activate External Logon",
     type: "boolean",
-    description: "Y/N indicator to represent if user needs to activate wfm external logon.",
+    description: "Y/N indicator to represent if user needs to activate WFM external logon.",
     example: "Y",
     options: null,
     validateFunction: async (row: any, state: any): Promise<any> => {
@@ -544,15 +544,15 @@ export const FIELDS: Fields = {
       const fieldName = FIELDS.WFM_ACTIVATE_EXTERNAL_LOGON.name;
       const field = cleanupField(row[fieldName], "string");
 
-      // todo more stuff?
-
-      if (typeof field !== "string") {
-        return rejectPromise("aksjdfh", rowNumber);
+      if (!field || typeof field !== "string") {
+        return rejectPromise(`${fieldName} is missing or not a valid format for ${rowNumber}`, rowNumber);
       } else if (field !== "y" && field !== "n") {
-        return rejectPromise("asdfsa", rowNumber);
+        return rejectPromise(`${fieldName} must be Y or N for ${rowNumber}`, rowNumber);
       } else if (field === "y") {
+        // user needs to activate their external logon
         return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
       } else {
+        // user doesn't need external logon
         return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
       }
     }

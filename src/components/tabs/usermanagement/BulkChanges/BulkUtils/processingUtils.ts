@@ -53,8 +53,12 @@ export const updateCalabrioUserState = async (dispatch: any): Promise<void> => {
 /**
  * Refreshes the calabrio WFM person state after a bulk update on users
  */
-export const updateWFMPersonState = async (dispatch: any): Promise<void> => {
+export const updateWFMPersonState = async (dispatch: any, successfulRows: any, selectedTemplates: any): Promise<void> => {
   try {
+    // activate WFM person's external logon
+    const wfmResults = await handleWfmExternalLogon(successfulRows, selectedTemplates);
+    console.log("wfmResults: ", wfmResults);
+
     const org: any = await getWfmOrg();
     dispatch({
       type: "loadWfmOrg",
@@ -304,10 +308,6 @@ export const initiateCalls = async (
     }));
   }
 
-  await Promise.all(selectedTemplates.map((t: any) => {
-    return Promise.allSettled(t.stateUpdateFunctions.map((f: any) => f(dispatch)));
-  }));
-
   processingPromises.forEach((rowPromise: any) => {
     let rowNumber: any;
     const rowErrors: any = [];
@@ -330,11 +330,18 @@ export const initiateCalls = async (
       });
     }
   });
+
+  const successfulRows = identifySuccessfulRecords(rows, finalErrors);
+
+  await Promise.all(selectedTemplates.map((t: any) => {
+    return Promise.allSettled(t.stateUpdateFunctions.map((f: any) => f(dispatch, successfulRows, selectedTemplates)));
+  }));
+
   if(finalErrors.length === 0){
     return Promise.resolve(rows);
   } else {
     return Promise.reject({
-      success: identifySuccessfulRecords(rows, finalErrors),
+      success: successfulRows,
       errors: finalErrors
     });
   }

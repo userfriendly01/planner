@@ -84,9 +84,10 @@ const ProcessingModal = (props: ProcessingModalProps) => {
         successfullyProcessedRows
       });
 
+      // todo: remove
       // before moving forward, check if any wfm people need to activate external logon
-      const wfmResults = await handleWfmExternalLogon(successfullyProcessedRows, selectedTemplates);
-      console.log("wfmResults: ", wfmResults);
+      // const wfmResults = await handleWfmExternalLogon(successfullyProcessedRows, selectedTemplates);
+      // console.log("wfmResults: ", wfmResults);
 
       setStatus(PROCESSING_STATES.PROCESSED);
       console.log("PROCESSING IS DONE!!", results);
