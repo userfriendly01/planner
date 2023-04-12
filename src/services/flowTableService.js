@@ -61,6 +61,7 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
       })
     });
     result = await response.json();
+    console.log("list", result);
   } catch (error) {
     console.error("Error in queryFlowData", error);
   }
@@ -203,6 +204,42 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
  */
 async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date().toISOString(), dataRequests=[]) {
   let response;
+  const employeeIdExists = item.employeeId?.value?true:false;
+  const input = {
+    pkey: item.pkey.value,
+    content: {
+      callFlowRoute: item.callFlowRoute?.value,
+      callerType: item.callerType?.value,
+      greetingMessages: item.greetingMessages?.value,
+      transferNumber: item.transferNumber?.value,
+      languageOffer: item.languageOffer?.value,
+      dataRequests: dataRequests
+    },
+    createTime: curTime,
+    agentId: item.agentId?.value || "",
+    brand: item.brand.value,
+    callFlowTemplate: item.callFlowTemplate?.value || "",
+    channel: item.channel.value,
+    dialedDescription: item.dialedDescription.value,
+    accountManager: item.accountManager?.value || "",
+    affinityVDN: item.affinityVDN?.value || "",
+    callTypeDescription: item.callTypeDescription?.value || "",
+    transferCode: item.transferCode?.value || "",
+    internetPlacement: item.internetPlacement?.value || "",
+    callDetails1: item.callDetails1?.value || "",
+    callDetails2: item.callDetails2?.value || "",
+    tollFreeNumber: item.tollFreeNumber?.value || "",
+    lineOfBusiness: item.lineOfBusiness?.value || "",
+    marketingChannel: item.marketingChannel?.value || "",
+    whisper: item.whisper?.value || "",
+    requestID: item.requestID?.value || "",
+    userDestination: item.userDestination?.value||"",
+    rangeIndicator: item.rangeIndicator?.value || "",
+    type: item.type?.value || ""
+  };
+  if(employeeIdExists){
+    input.employeeId = item.employeeId.value;
+  }
   try {
     const fetchResponse = await fetch(graphQlApiUrl, {
       method: "POST",
@@ -212,42 +249,8 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
       },
       body: JSON.stringify({
         query: `
-          mutation AddFlowRule {
-            createCctSharedCallFlowDb(
-              input: {
-                  pkey: "${item.pkey.value}"
-                  content: {
-                      callFlowRoute: "${item.callFlowRoute?.value || ""}",
-                      callerType: "${item.callerType?.value || ""}",
-                      greetingMessages: "${item.greetingMessages?.value || ""}",
-                      transferNumber: "${item.transferNumber?.value || ""}",
-                      languageOffer: "${item.languageOffer?.value || ""}",
-                      dataRequests: ${JSON.stringify(dataRequests)},
-                    },
-                  createTime: "${curTime}",
-                  agentId: "${item.agentId?.value || ""}",
-                  brand: "${item.brand.value}",
-                  callFlowTemplate: "${item.callFlowTemplate?.value || ""}",
-                  channel: "${item.channel.value}",
-                  dialedDescription: "${item.dialedDescription.value}",
-                  employeeId: "${item.employeeId?.value || ""}",
-                  accountManager: "${item.accountManager?.value || ""}",
-                  affinityVDN: "${item.affinityVDN?.value || ""}",
-                  callTypeDescription: "${item.callTypeDescription?.value || ""}",
-                  transferCode: "${item.transferCode?.value || ""}",
-                  internetPlacement: "${item.internetPlacement?.value || ""}",
-                  callDetails1: "${item.callDetails1?.value || ""}",
-                  callDetails2: "${item.callDetails2?.value || ""}",
-                  tollFreeNumber: "${item.tollFreeNumber?.value || ""}",
-                  lineOfBusiness: "${item.lineOfBusiness?.value || ""}",
-                  marketingChannel: "${item.marketingChannel?.value || ""}",
-                  whisper: "${item.whisper?.value || ""}",
-                  requestID: "${item.requestID?.value || ""}",
-                  userDestination: "${item.userDestination?.value||""}",
-                  rangeIndicator: "${item.rangeIndicator?.value || ""}",
-                  type: "${item.type?.value || ""}"
-              }
-          ) {
+          mutation AddFlowRule ($input:CctSharedCallFlowDbInput! ){
+            createCctSharedCallFlowDb(input:$input) {
               agentId
               brand
               callFlowTemplate
@@ -283,6 +286,7 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
           }
         `,
         variables: {
+          input
         }
       })
     });
