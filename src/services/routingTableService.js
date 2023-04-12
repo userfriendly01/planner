@@ -104,6 +104,27 @@ async function retrieveRoutingData(accessToken, graphQlApiUrl) {
  */
 async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
   let response;
+  const input = {
+    pkey: item.pkey,
+    skey: item.skey,
+    brand: item.brand,
+    channel: item.channel,
+    callIntent: item.callIntent,
+    dayOfWeek: item.dayOfWeek,
+    callerState: item.callerState,
+    callerType: item.callerType,
+    twilioSkill: item.twilioSkill || "",
+    transferDestination: item.transferDestination || "",
+    percentOfCallers: item.percentOfCallers,
+    transferMessage: item.transferMessage || "",
+    policyType: item.policyType,
+    startTime: item.startTime,
+    endTime: item.endTime,
+    crcSkill: item.crcSkill || "",
+    priority: item?.priority || "",
+    occupancyCheck: item?.occupancyCheck || "",
+    routingSteps: item?.routingSteps || ""
+  };
   try {
     const fetchResponse = await fetch(graphQlApiUrl, {
       method: "POST",
@@ -113,28 +134,8 @@ async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
       },
       body: JSON.stringify({
         query: `
-          mutation updateCctSharedCallRoutingGlobalDb {
-            updateCctSharedCallRoutingGlobalDb(input: {
-                pkey: "${item.pkey}",
-                skey: "${item.skey}",
-                brand: "${item.brand}",
-                channel: "${item.channel}",
-                callIntent:"${item.callIntent}",
-                dayOfWeek: "${item.dayOfWeek}",
-                callerState: "${item.callerState}",
-                callerType: "${item.callerType}",
-                twilioSkill: "${item.twilioSkill || ""}",
-                transferDestination: "${item.transferDestination || ""}",
-                percentOfCallers: "${item.percentOfCallers}",
-                transferMessage: "${item.transferMessage || ""}",
-                policyType: "${item.policyType}",
-                startTime: "${item.startTime}",
-                endTime: "${item.endTime}",
-                crcSkill: "${item.crcSkill || ""}",
-                priority: "${item?.priority || ""}",
-                occupancyCheck: "${item?.occupancyCheck || ""}",
-                routingSteps: "${item?.routingSteps || ""}"
-              }) {
+          mutation updateCctSharedCallRoutingGlobalDb($input: CreateCctSharedCallRoutingGlobalDbInput!) {
+            updateCctSharedCallRoutingGlobalDb(input: $input) {
               pkey
               skey
               brand
@@ -164,6 +165,7 @@ async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
           }
       `,
         variables: {
+          input
         }
       })
     });
