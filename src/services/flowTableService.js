@@ -174,7 +174,7 @@ function updateFlowInput(item){
     type: item.type || ""
   };
   if(item.employeeId){
-    input.employeeId = item.employeeId.value;
+    input.employeeId = item.employeeId;
   }
   return input;
 }
