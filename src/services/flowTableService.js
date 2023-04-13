@@ -136,11 +136,6 @@ function addFlowInput (item, dataRequestsPassed, currentTimePassed){
 }
 
 function updateFlowInput(item){
-  const dataRequestsArray = item.content?.dataRequests
-    ?.split(",")
-    ?.map(a => a.trim())
-    ?.filter(a => a.length > 0)
-      || [];
   const input = {
     pkey: item.pkey,
     agentId: item.agentId || "",
@@ -153,7 +148,7 @@ function updateFlowInput(item){
       greetingMessages: item.content?.greetingMessages || "",
       transferNumber: item.content?.transferNumber || "",
       languageOffer: item.content?.languageOffer || "",
-      dataRequests: dataRequestsArray
+      dataRequests: item.content?.dataRequests
     },
     createTime: item.createTime,
     dialedDescription: item.dialedDescription,
