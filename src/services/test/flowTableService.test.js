@@ -96,7 +96,7 @@ describe("flowTableService",()=>{
         createTime: "2022-24-08",
         dialedDescription: "test",
         employeeId: "n1234567",
-        userDestination: "dest",
+        userDestination: "dest"
       }
       ,{
         id: 2,
@@ -108,7 +108,7 @@ describe("flowTableService",()=>{
         createTime: "2022-24-08",
         dialedDescription: "test",
         employeeId: "n1234567",
-        userDestination: "dest",
+        userDestination: "dest"
       }
     ];
 
@@ -203,7 +203,6 @@ describe("flowTableService",()=>{
     });
     test("Testing the Delete FlowRule error",async()=>{
       const item = {
-        pkey: 1
       };
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
@@ -231,10 +230,11 @@ describe("flowTableService",()=>{
     });
     test("Testing the Update Flow",async()=>{
       const item = {
-        pkey: 1
+        pkey: 1,
+        employeeId: "n123453"
       };
       const updateFlow = await updateFlowDB(item,"1233-3245","http://localhost:3000");
-      expect(updateFlow).toBeDefined;
+      expect(updateFlow).toBeTruthy();
     });
     test("Testing the Update FlowRule error",async()=>{
       const item = {
@@ -244,7 +244,7 @@ describe("flowTableService",()=>{
         throw new Error();
       });
       const updateFlow = await updateFlowDB(item,"1233-3245","http://localhost:3000");
-      expect(updateFlow).toBeDefined;
+      expect(updateFlow).toBeUndefined();
     });
   });
 });
