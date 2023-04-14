@@ -131,11 +131,11 @@ export const EditFlow = ({
 
   const findFieldValue = (key: string): {value: string, condition: boolean} => {
     let fieldValue = "";
-    let fieldCondition = false;
+    let fieldCondition = true;
     flowFields.map((value: AddFlowFieldsConfigProps) => {
       if (value.key === key) {
         fieldValue = value.valueGetter(selectedRowLocal);
-        fieldCondition = value.dynamicFieldConditionCheck && value.dynamicFieldConditionCheck(flowRule);
+        fieldCondition = value.dynamicFieldConditionCheck? value.dynamicFieldConditionCheck(flowRule): true;
       }
     });
     return {

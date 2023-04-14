@@ -131,10 +131,10 @@ export const AddFlow = ({
     return flowRule[key].required && [undefined, "", null].includes(value);
   };
   const findFieldValue = (key: string): boolean => {
-    let fieldCondition = false;
+    let fieldCondition = true;
     flowFields.map((value: AddFlowFieldsConfigProps) => {
-      if (value.key === key) {
-        fieldCondition = value.dynamicFieldConditionCheck && value.dynamicFieldConditionCheck(flowRule);
+      if (value.key === key && value.dynamicFieldConditionCheck) {
+        fieldCondition = value.dynamicFieldConditionCheck(flowRule);
       }
     });
     return fieldCondition;
