@@ -142,7 +142,7 @@ export const EditRouting = ({
         endTime: convertTime24to12(selectedRowLocal.endTime)
       };
       const response = await updateRoutingDB(updatedRow, accessToken, graphQLEndPoint);
-      if (response) {
+      if (response && !response.errors) {
         openEditModal(false, true, updatedRow, `Routing Rule ID ${selectedRow.id} has been successfully updated!! `, false);
         return true;
       }

@@ -1,9 +1,19 @@
+import React from "react";
 import {
   GridColDef, GridRenderCellParams
 } from "@mui/x-data-grid";
-import { CctSharedCallRoutingDb } from "../AlohaRouting.Interfaces";
 import Tooltip from "@mui/material/Tooltip";
-import React from "react";
+import Chip from "@mui/material/Chip";
+import {
+  AddPageFieldConfigProps,
+  CctSharedCallRoutingDb, RoutingOccupancyCheck, RoutingStep
+} from "../AlohaRouting.Interfaces";
+import {
+  getTagLabel, MultiFieldContainerFormProps
+} from "components/core/SharedComponents/MultiFieldContainer";
+import {
+  routingFields
+} from "utils";
 const formatDateTime = (dateTime: string) => {
   if(dateTime.includes("AM") || dateTime.includes("PM")){
     const [time, modifier] = dateTime.split(" ");
@@ -14,6 +24,13 @@ const formatDateTime = (dateTime: string) => {
     return "";
   }
 
+};
+
+const getFormFields = (key: string): Array<MultiFieldContainerFormProps> =>{
+  console.log("Key, routingFields", key, routingFields);
+  const filteredField: Array<AddPageFieldConfigProps> = routingFields.filter((field: AddPageFieldConfigProps)=>field.key === key);
+  console.log("Filtered field", filteredField);
+  return filteredField[0].formFields;
 };
 
 export const RoutingGridColumnDef: GridColDef[] = [
@@ -149,13 +166,37 @@ export const RoutingGridColumnDef: GridColDef[] = [
     field: "occupancyCheck",
     sortable: true,
     width: 110,
-    align: "left"
+    align: "left",
+    renderCell: (params: any) =>(
+      <div>
+        {
+          params.row.occupancyCheck && params.row.occupancyCheck.map((item: RoutingOccupancyCheck, index: number)=>(
+            <Chip
+              key={`occupancyCheck-${params.row.id}-${index}`}
+              tabIndex={-1}
+              label={getTagLabel(item,getFormFields("occupancyCheck"))}
+            />
+          ))}
+      </div>
+    )
   },
   {
     headerName: "Routing Steps",
     field: "routingSteps",
     sortable: false,
     width: 110,
-    align: "left"
+    align: "left",
+    renderCell: (params: any) =>(
+      <div>
+        {
+          params.row.occupancyCheck && params.row.routingSteps.map((item: RoutingStep, index: number)=>(
+            <Chip
+              key={`routingSteps-${params.row.id}-${index}`}
+              tabIndex={-1}
+              label={getTagLabel(item,getFormFields("routingSteps"))}
+            />
+          ))}
+      </div>
+    )
   }
 ];

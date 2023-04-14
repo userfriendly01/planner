@@ -134,7 +134,7 @@ async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
       },
       body: JSON.stringify({
         query: `
-          mutation updateCctSharedCallRoutingGlobalDb($input: CreateCctSharedCallRoutingGlobalDbInput!) {
+          mutation updateCctSharedCallRoutingGlobalDb($input: UpdateCctSharedCallRoutingGlobalDbInput!) {
             updateCctSharedCallRoutingGlobalDb(input: $input) {
               pkey
               skey

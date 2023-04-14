@@ -1,11 +1,11 @@
 import { Control } from "globals";
 import { MultiFieldContainerFormProps } from "components/core/SharedComponents/MultiFieldContainer";
 
-interface RoutingOccupancyCheck {
+export interface RoutingOccupancyCheck {
     team: string;
     percentage: number;
   }
-  interface RoutingStep {
+export interface RoutingStep {
     team: string;
     time: number;
   }

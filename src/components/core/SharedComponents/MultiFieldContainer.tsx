@@ -10,7 +10,7 @@ import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
 import TextField from "@mui/material/TextField";
 
-export interface MultiFieldContainerFormProps{
+interface MultiFieldContainerFormProps{
     label: string;
     name: string;
     value?: any;
@@ -33,6 +33,55 @@ interface MultiFieldContainerModalViewProps{
     onClose: ()=>void;
     handleOnSet:(formData: any)=> void;
 }
+
+/**
+ * This function used to get the key from data for Chip component
+ * @param item can be a String | Array | Object  
+ * @returns string having key for Chip Component
+ */
+const getTagKey = (item:any): string =>{
+  let tagKey="";
+  if(typeof item === "string"){
+    tagKey = item;
+  }
+  else if (Array.isArray(item)){
+    tagKey=item.join("-");
+  }
+  else{
+    Object.keys(item).forEach((key: string, index: number)=>{
+      tagKey+=`${key}-${index.toString()}`;
+    });
+  }
+
+  return tagKey;
+};
+
+/**
+ * This function used to get the Display for Chip Component from multiple data field
+ * @param item data can be a String | Array | Object
+ * @param formFields form design configuration and type should be Array<Object>
+ * @returns 
+ */
+const getTagLabel = (item:any, formFields:Array<MultiFieldContainerFormProps>): string =>{
+  let label="";
+  if(typeof item === "string"){
+    label = item;
+  }
+  else if (Array.isArray(item)){
+    label=item.join(", ");
+  }
+  else{
+    formFields.forEach((field: MultiFieldContainerFormProps, index: number)=>{
+      if(index === 0){
+        label+=item[field.name];
+      }
+      else{
+        label+=` - ${item[field.name]}`;
+      } });
+  }
+
+  return label;
+};
 
 const MultiFieldContainer = (
   {
@@ -67,43 +116,7 @@ const MultiFieldContainer = (
     },updatedListItems);
   };
 
-  const getTagKey = (item:any): string =>{
-    let tagKey="";
-    if(typeof item === "string"){
-      tagKey = item;
-    }
-    else if (Array.isArray(item)){
-      tagKey=item.join("-");
-    }
-    else{
-      Object.keys(item).forEach((key: string, index: number)=>{
-        tagKey+=`${key}-${index.toString()}`;
-      });
-    }
 
-    return tagKey;
-  };
-
-  const getTagLabel = (item:any): string =>{
-    let label="";
-    if(typeof item === "string"){
-      label = item;
-    }
-    else if (Array.isArray(item)){
-      label=item.join(", ");
-    }
-    else{
-      formFields.forEach((field: MultiFieldContainerFormProps, index: number)=>{
-        if(index === 0){
-          label+=item[field.name];
-        }
-        else{
-          label+=` - ${item[field.name]}`;
-        } });
-    }
-
-    return label;
-  };
 
   return (
     <>
@@ -118,7 +131,7 @@ const MultiFieldContainer = (
               <Chip
                 key={getTagKey(item)}
                 tabIndex={-1}
-                label={getTagLabel(item)}
+                label={getTagLabel(item, formFields)}
               />
             ))
           }}
@@ -222,3 +235,8 @@ const MultiFieldContainerModalView = ({
 };
 
 export default MultiFieldContainer;
+export {
+  MultiFieldContainerFormProps,
+  getTagKey,
+  getTagLabel
+};
