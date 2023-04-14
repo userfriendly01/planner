@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useState
+  useEffect, useState, useRef
 } from "react";
 import {
   DataGrid, GridRenderCellParams, GridToolbar
@@ -40,6 +40,7 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
   const graphQlApiUrl: string = getGraphQLEndpoint();
   const [state, setState] = useState<RoutingStateVariables>(routingInitState);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
+  const maxRef = useRef(0);
   useEffect(() => {
     const getTableData = async () =>{
       const result: CctSharedCallRoutingDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl);
@@ -125,16 +126,17 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
       const masterData: RoutingMasterData = getGridMasterData(result);
       const advanceFilter: RoutingFilter = getAdvanceFilter();
       const filteredItems: CctSharedCallRoutingDb[] = filterRecords(result, minId, maxId);
+      maxRef.current = maxId;
       setState({
         ...state,
+        maxId: maxId,
         advanceFilter,
         filteredItems,
         data: result,
         fetching: false,
         idStart: minId,
         idEnd: maxId,
-        maxId,
-        minId,
+        minId: minId,
         masterData,
         isAddModalOpen: false,
         isEditModalOpen: false,
@@ -276,7 +278,7 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
         accessToken={accessToken}
         matchedGroups={matchedGroups}
         isOpen={state.isAddModalOpen}
-        newId={state.maxId + 1}
+        newId={maxRef.current + 1}
         openModal={openAddModal}
       />
       <EditRouting
