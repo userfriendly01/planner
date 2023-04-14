@@ -70,7 +70,7 @@ const renderAddRoutingDefOpen =() => {
     <AddRouting openModal={openModal} newId={1} />
   );
 };
-describe("<AddFlow/>",()=>{
+describe("<AddRouting/>",()=>{
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -103,7 +103,7 @@ describe("<AddFlow/>",()=>{
   afterEach(() => {
     localStorage.removeItem(ROUTING_CACHE_MASTER_DATA);
   });
-  describe("AddFlow ModalBlock",()=>{
+  describe("AddRouting ModalBlock",()=>{
     test("Simulate Close Modal By Clicking Close Icon",()=>{
       const { getByRole } = renderAddRouting(true);
       const closeModalButton = getByRole("img", { name: "Close" });
@@ -192,6 +192,16 @@ describe("<AddFlow/>",()=>{
       });
       waitFor(() => {
         expect(ComponentControlMock).toBeTruthy();
+      });
+    });
+    test("Validate create Rule without mandatory fields ",()=>{
+      const { getByRole } = renderAddRouting(true);
+      const saveButton = getByRole("button", { name: "createRuleButton" });
+      act(() => {
+        fireEvent.click(saveButton);
+      });
+      waitFor(() => {
+        expect(openModal).toBeCalledTimes(0);
       });
     });
     test("Validate Reset Flow Rule ",()=>{
