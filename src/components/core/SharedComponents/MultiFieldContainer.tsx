@@ -39,7 +39,7 @@ interface MultiFieldContainerModalViewProps{
  * @param item can be a String | Array | Object  
  * @returns string having key for Chip Component
  */
-const getTagKey = (item:any): string =>{
+const getTagKey = (item:any, tagIndex:  number): string =>{
   let tagKey="";
   if(typeof item === "string"){
     tagKey = item;
@@ -49,8 +49,9 @@ const getTagKey = (item:any): string =>{
   }
   else{
     Object.keys(item).forEach((key: string, index: number)=>{
-      tagKey+=`${key}-${index.toString()}`;
+      tagKey+=`${key}-${index}`;
     });
+    tagKey+=`-${tagIndex}`;
   }
 
   return tagKey;
@@ -93,7 +94,7 @@ const MultiFieldContainer = (
   const [listItems, setListItems] = useState([]);
   useEffect(()=>{
     setListItems(value);
-  });
+  }, [value]);
   const handleClick =(event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
     setModalOpen(!isModalOpen);
@@ -116,6 +117,17 @@ const MultiFieldContainer = (
     },updatedListItems);
   };
 
+  const handleOnDelete = (tagIndex: number) =>{
+    const filteredIList = listItems.filter((item: any, index: number)=>tagIndex!==index);
+    console.log("index, filteredIList: ", tagIndex,filteredIList);
+    setListItems(filteredIList);
+    updateValue({
+      target: {
+        name,
+        value: filteredIList
+      }
+    },filteredIList);
+  };
 
 
   return (
@@ -127,11 +139,12 @@ const MultiFieldContainer = (
           name={name}
           type="button"
           InputProps={{
-            startAdornment: listItems && listItems.map(item=>(
+            startAdornment: listItems && listItems.map((item:any, index: number)=>(
               <Chip
-                key={getTagKey(item)}
-                tabIndex={-1}
+                key={getTagKey(item, index)}
+                tabIndex={index}
                 label={getTagLabel(item, formFields)}
+                onDelete={(event: any)=>handleOnDelete(index)}
               />
             ))
           }}
