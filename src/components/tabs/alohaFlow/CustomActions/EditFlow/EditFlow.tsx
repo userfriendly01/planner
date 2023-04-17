@@ -110,8 +110,8 @@ export const EditFlow = ({
   const validateFlow = async (): Promise<boolean> => {
     let isValidForm = true;
     Object.keys(flowRule).map(key => {
-      const fieldValue: string = findFieldValue(key);
-      if (isInvalidField(key, fieldValue)) {
+      const fieldValue: {value: string, condition: boolean} = findFieldValue(key);
+      if (isInvalidField(key, fieldValue.value) && fieldValue.condition) {
         const newFlowRule: FormValidationRule = {
           [key]: {
             ...flowRule[key],
@@ -129,14 +129,19 @@ export const EditFlow = ({
     return isValidForm;
   };
 
-  const findFieldValue = (key: string): string => {
+  const findFieldValue = (key: string): {value: string, condition: boolean} => {
     let fieldValue = "";
+    let fieldCondition = true;
     flowFields.map((value: AddFlowFieldsConfigProps) => {
       if (value.key === key) {
         fieldValue = value.valueGetter(selectedRowLocal);
+        fieldCondition = value.dynamicFieldConditionCheck? value.dynamicFieldConditionCheck(flowRule): true;
       }
     });
-    return fieldValue;
+    return {
+      value: fieldValue,
+      condition: fieldCondition
+    };
   };
 
   const handleOnSave = async () => {

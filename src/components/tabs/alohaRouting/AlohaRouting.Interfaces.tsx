@@ -1,5 +1,6 @@
 import { Control } from "globals";
 import { MultiFieldContainerFormProps } from "components/core/SharedComponents/MultiFieldContainer";
+import { FormValidationRule } from "utils/interfaces";
 
 export interface RoutingOccupancyCheck {
     team: string;
@@ -9,6 +10,7 @@ export interface RoutingStep {
     team: string;
     time: number;
   }
+
 export interface CctSharedCallRoutingDb {
     id: number;
     all?: string;
@@ -93,6 +95,7 @@ export interface AddPageFieldConfigProps {
     valueGetter?: (params: CctSharedCallRoutingDb, defaultValue?: any) => any;
     valueSetter?: (currentValue: CctSharedCallRoutingDb, newValue: any) => CctSharedCallRoutingDb;
     formFields?: Array<MultiFieldContainerFormProps>
+    dynamicFieldConditionCheck?: (params: FormValidationRule) => boolean;
 }
 export interface AddRoutingModalProps {
     isOpen: boolean;
