@@ -189,7 +189,7 @@ export const RoutingGridColumnDef: GridColDef[] = [
     renderCell: (params: any) =>(
       <div>
         {
-          params.row.occupancyCheck && params.row.routingSteps.map((item: RoutingStep, index: number)=>(
+          params.row.routingSteps && params.row.routingSteps.map((item: RoutingStep, index: number)=>(
             <Chip
               key={`routingSteps-${params.row.id}-${index}`}
               tabIndex={-1}

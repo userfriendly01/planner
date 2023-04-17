@@ -7,7 +7,7 @@ import { Dropdown } from "../index";
 import MultiFieldContainer, { MultiFieldContainerFormProps } from "./MultiFieldContainer";
 export interface ComponentControlProps {
   control: Control;
-  dropDownOptions: string[];
+  dropDownOptions?: string[];
   name: string;
   label: string;
   type: string;

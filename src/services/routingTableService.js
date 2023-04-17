@@ -122,8 +122,8 @@ async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
     endTime: item.endTime,
     crcSkill: item.crcSkill || "",
     priority: item?.priority || "",
-    occupancyCheck: item?.occupancyCheck || "",
-    routingSteps: item?.routingSteps || ""
+    occupancyCheck: item?.occupancyCheck || [],
+    routingSteps: item?.routingSteps || []
   };
   try {
     const fetchResponse = await fetch(graphQlApiUrl, {
@@ -196,17 +196,17 @@ async function addRoutingRule(item, accessToken, graphQlApiUrl) {
     dayOfWeek: item.dayOfWeek.value,
     callerState: item.callerState.value,
     callerType: item.callerType.value,
-    twilioSkill: item.twilioSkill.value || "",
-    transferDestination: item.transferDestination.value || "",
-    percentOfCallers: item.percentOfCallers.value,
-    transferMessage: item.transferMessage.value || "",
+    twilioSkill: item.twilioSkill?.value || "",
+    transferDestination: item.transferDestination?.value || "",
+    percentOfCallers: item.percentOfCallers?.value,
+    transferMessage: item.transferMessage?.value || "",
     policyType: item.policyType.value,
     startTime: item.startTime.value,
     endTime: item.endTime.value,
-    crcSkill: item.crcSkill.value || "",
-    priority: item.priority.value || "",
-    occupancyCheck: item.occupancyCheck.value || "",
-    routingSteps: item.routingSteps.value || ""
+    crcSkill: item.crcSkill?.value || "",
+    priority: item.priority?.value || "",
+    occupancyCheck: item.occupancyCheck?.value || [],
+    routingSteps: item.routingSteps?.value || []
   };
   try {
     const fetchResponse = await fetch(graphQlApiUrl, {
