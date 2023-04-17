@@ -331,7 +331,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     label: "User Destination",
     key: "userDestination",
     control: "select",
-    required: false,
+    required: true,
     valueGetter: (params: CctSharedCallFlowDb) => `${params?.userDestination || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
