@@ -3,17 +3,26 @@ import {
   formatCalabrioTenant,
   formatCalabrioGroups,
   formatCalabrioRoles,
-  checkConflictingUsers
+  checkConflictingUsers,
+  getCalabrioWfmOptions,
+  getCalabrioWfmOrg
 } from "utils";
 import {
   getCalabrioUser,
-  updateCalabrioUser
+  updateCalabrioUser,
+  getWfmOptions,
+  getWfmOrg
 } from "services";
 import {
   calabrioContext
 } from "testUtils";
+import zlib from "zlib";
 
 Date.now = jest.fn();
+
+jest.mock("zlib", () => ({
+  inflate: jest.fn()
+}));
 
 const orgPayload = [
   {
@@ -132,6 +141,8 @@ const users = [
     }
   }
 ];
+
+const mockDispatch = jest.fn();
 
 let userResponse;
 
@@ -630,5 +641,31 @@ describe("calabrioUtils", () => {
         });
       });
     });
+  });
+  // TODO: these tests need to be done...
+  describe("getCalabrioWfmOptions", () => {
+    test("getWFMOptions succeeds, decompress succeeds, dispatches and returns true", async () => {
+      // const data = Buffer.from(JSON.stringify({ data: { organization: { businessUnits: []}}}));
+      // getWfmOptions.mockResolvedValueOnce({ data: { organization: "blarg how do I know what should go here??"}});
+
+      // zlib.inflate.mockImplementationOnce((buffer, callback) => {
+      //   callback(null, data);
+      // });
+      // const result = await getCalabrioWfmOptions(mockDispatch);
+      // expect(getWfmOptions).toHaveBeenCalledTimes(1);
+      // expect(mockDispatch).toHaveBeenCalledTimes(1);
+      // expect(mockDispatch).toHaveBeenLastCalledWith({
+      //   type: "loadWfmOptions",
+      //   payload: { businessUnits: [] }
+      // })
+      // expect(result).toBe(true);
+    });
+    test("getWFMOptions succeeds, decompress has an error, does not dispatch, returns false", async () => {});
+    test("getWFMOptions call fails, does not dispatch, returns false", async () => {});
+  });
+  describe("getCalabrioWfmOrg", () => {
+    test("getWfmOrg succeeds, decompress succeeds, dispatches and returns true", async () => {});
+    test("getWfmOrg succeeds, decompress has an error, does not dispatch, returns false", async () => {});
+    test("getWfmOrg call fails, does not dispatch, returns false", async () => {});
   });
 });
