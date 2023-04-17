@@ -3,8 +3,6 @@ import { apiPaths } from "globals";
 import {
   getManagers as getManagersServiceCall,
   getOffices as getOfficesServiceCall,
-  getWfmOptions,
-  getWfmOrg,
   getCalabrioUsers as getCalabrioUsersServiceCall,
   getCalabrioRoles as getCalabrioRolesServiceCall,
   getCalabrioOrg as getCalabrioOrgServiceCall
@@ -13,6 +11,8 @@ import {
   formatManagersResponse,
   formatOfficesResponse,
   formatWorkerResponse,
+  getCalabrioWfmOptions,
+  getCalabrioWfmOrg,
   myAxios
 } from "utils";
 
@@ -76,31 +76,7 @@ const getCalabrioOrg = async (dispatch: any) => {
   }
 };
 
-const getCalabrioWfmOrg = async (dispatch: any) => {
-  try {
-    const org: any = await getWfmOrg();
-    console.log("Calabrio WFM Org", org);
-    dispatch({
-      type: "loadWfmOrg",
-      payload: org.data.organization.businessUnits
-    });
-  } catch (error) {
-    console.error("Failed to fetch calabrio wfm org from service");
-  }
-};
 
-const getCalabrioWfmOptions = async (dispatch: any) => {
-  try {
-    const options: any = await getWfmOptions();
-    console.log("Calabrio WFM Options", options);
-    dispatch({
-      type: "loadWfmOptions",
-      payload: options.data.organization.businessUnits
-    });
-  } catch (error) {
-    console.error("Failed to fetch calabrio wfm options from service");
-  }
-};
 const getCalabrioRoles = async (dispatch: any) => {
   try {
     const roles: any = await getCalabrioRolesServiceCall();
