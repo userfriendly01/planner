@@ -6,7 +6,7 @@ export interface AlertBarProps {
 
 export interface FormValidationProps {
     error?: boolean;
-    value?: string;
+    value?: any;
     required?: boolean;
 }
 

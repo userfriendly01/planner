@@ -157,7 +157,7 @@ export const EditRouting = ({
         endTime: convertTime24to12(selectedRowLocal.endTime)
       };
       const response = await updateRoutingDB(updatedRow, accessToken, graphQLEndPoint);
-      if (response) {
+      if (response && !response.errors) {
         openEditModal(false, true, updatedRow, `Routing Rule ID ${selectedRow.id} has been successfully updated!! `, false);
         return true;
       }
@@ -227,7 +227,7 @@ export const EditRouting = ({
           <Grid container rowSpacing={3}>
             {
               routingFields.map(({
-                label, key, control, required = false, disableEdit = false, valueGetter, valueSetter, isBlankFirstValue = false,
+                label, key, control, required = false, disableEdit = false, valueGetter, valueSetter, isBlankFirstValue = false,formFields,
                 dynamicFieldConditionCheck
               }) => {
                 if(dynamicFieldConditionCheck && !dynamicFieldConditionCheck(routingRule)){
@@ -247,6 +247,7 @@ export const EditRouting = ({
                       required={required}
                       disabled={disableEdit}
                       isBlankFirstValue = {isBlankFirstValue}
+                      formFields={formFields}
                     />
                   </Grid>
                 );

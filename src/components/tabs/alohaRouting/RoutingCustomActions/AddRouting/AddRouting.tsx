@@ -126,7 +126,7 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
             percentOfCallers: routingRule.percentOfCallers.value,
             policyType: routingRule.policyType.value,
             priority: routingRule.priority.value,
-            routingSteps: routingRule.routingSteps.value.split(","),
+            routingSteps: routingRule.routingSteps.value,
             startTime: routingRule.startTime.value,
             transferDestination: routingRule.transferDestination.value,
             transferMessage: routingRule.transferMessage.value,
@@ -169,7 +169,6 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
   const handleInputChange = (event: any, key: string, disableEdit: boolean) => {
     let value: string;
     let skey: string;
-
     if (disableEdit) { return; }
 
     if (key === "startTime" || key === "endTime") {
@@ -231,7 +230,7 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
           <Grid container rowSpacing={3}>
             {
               routingFields.map(({
-                label, key, control, required = false, disableAdd = false, isBlankFirstValue = false,
+                label, key, control, required = false, disableAdd = false, isBlankFirstValue = false, formFields,
                 dynamicFieldConditionCheck
               }) => {
                 if(dynamicFieldConditionCheck && !dynamicFieldConditionCheck(routingRule)){
@@ -251,6 +250,7 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
                       onChange={(event: any) => handleInputChange(event, key, disableAdd)}
                       required={required}
                       isBlankFirstValue={isBlankFirstValue}
+                      formFields={formFields}
                     />
                   </Grid>
                 );

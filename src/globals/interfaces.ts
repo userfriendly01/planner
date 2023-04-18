@@ -286,4 +286,4 @@ export interface OperatingUnit {
   ou_name: string
 }
 
-export type Control = "input" | "select" | "autoComplete" | "timePicker";
+export type Control = "input" | "select" | "autoComplete" | "timePicker" | "multiField";

@@ -1,9 +1,20 @@
+import React from "react";
 import {
   GridColDef, GridRenderCellParams
 } from "@mui/x-data-grid";
-import { CctSharedCallRoutingDb } from "../AlohaRouting.Interfaces";
 import Tooltip from "@mui/material/Tooltip";
-import React from "react";
+import Chip from "@mui/material/Chip";
+import Grid from "@mui/material/Grid";
+import {
+  AddPageFieldConfigProps,
+  CctSharedCallRoutingDb, RoutingOccupancyCheck, RoutingStep
+} from "../AlohaRouting.Interfaces";
+import {
+  getTagLabel, MultiFieldContainerFormProps
+} from "components/core/SharedComponents/MultiFieldContainer";
+import {
+  routingFields
+} from "utils";
 const formatDateTime = (dateTime: string) => {
   if(dateTime.includes("AM") || dateTime.includes("PM")){
     const [time, modifier] = dateTime.split(" ");
@@ -14,6 +25,11 @@ const formatDateTime = (dateTime: string) => {
     return "";
   }
 
+};
+
+const getFormFields = (key: string): Array<MultiFieldContainerFormProps> =>{
+  const filteredField: Array<AddPageFieldConfigProps> = routingFields.filter((field: AddPageFieldConfigProps)=>field.key === key);
+  return filteredField[0].formFields;
 };
 
 export const RoutingGridColumnDef: GridColDef[] = [
@@ -130,7 +146,8 @@ export const RoutingGridColumnDef: GridColDef[] = [
     headerName: "Transfer Message",
     field: "transferMessage",
     sortable: false,
-    width: 110,
+    minWidth: 200,
+    flex: 1,
     renderCell: (params: any) =>  (
       <Tooltip title={params.row.transferMessage || ""} >
         <div>{params.row.transferMessage || ""}</div>
@@ -148,14 +165,42 @@ export const RoutingGridColumnDef: GridColDef[] = [
     headerName: "Occupancy Check",
     field: "occupancyCheck",
     sortable: true,
-    width: 110,
-    align: "left"
+    minWidth: 220,
+    flex: 1,
+    align: "left",
+    renderCell: (params: any) =>(
+      <Grid container rowSpacing={1}>
+        {
+          params.row.occupancyCheck && params.row.occupancyCheck.map((item: RoutingOccupancyCheck, index: number)=>(
+            <Grid item xs={6} key={`grid-occupancyCheck-${params.row.id}-${index}`}>
+              <Chip
+                key={`chip-occupancyCheck-${params.row.id}-${index}`}
+                tabIndex={-1}
+                label={getTagLabel(item,getFormFields("occupancyCheck"))}
+              />
+            </Grid>
+          ))}
+      </Grid>
+    )
   },
   {
     headerName: "Routing Steps",
     field: "routingSteps",
     sortable: false,
-    width: 110,
-    align: "left"
+    minWidth: 220,
+    flex: 1,
+    align: "left",
+    renderCell: (params: any) =>(
+      <div>
+        {
+          params.row.routingSteps && params.row.routingSteps.map((item: RoutingStep, index: number)=>(
+            <Chip
+              key={`routingSteps-${params.row.id}-${index}`}
+              tabIndex={-1}
+              label={getTagLabel(item,getFormFields("routingSteps"))}
+            />
+          ))}
+      </div>
+    )
   }
 ];
