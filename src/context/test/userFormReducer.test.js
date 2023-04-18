@@ -1266,7 +1266,7 @@ describe("userFormReducer", () => {
             updated: true
           },
           zeroOutEnabled: true,
-          selfServiceInd: false
+          selfServiceInd: false //TODO Update depending on solution
         };
         expect(result).toStrictEqual(expectedFormState);
       });
@@ -1297,7 +1297,7 @@ describe("userFormReducer", () => {
             updated: true
           },
           zeroOutEnabled: false,
-          selfServiceInd: false
+          selfServiceInd: false //TODO Update depending on solution
         };
         expect(result).toStrictEqual(expectedFormState);
       });
