@@ -619,8 +619,6 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
           updated: true
         },
         zeroOutEnabled: getZeroOutEnabledFromProfile(profiles, profileId)
-        //selfServiceInd: false //TODO check this works as we want it to
-        // selfServiceInd: 
       };
     }
     default:

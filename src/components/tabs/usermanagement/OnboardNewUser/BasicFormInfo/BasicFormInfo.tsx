@@ -132,9 +132,10 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
                 profiles
               }
             });
+            // reset selfServiceInd value to false if set to true and then profile chnaged to value of 39 and below
             if(newValue.value < 39 && form.selfServiceInd){
               setForm({ type: userFormActions.UPDATE_SELF_SERVICE_INDICATOR });
-            } // change self service value to false if manager is incorrect 
+            }
           }}
           value={profiles.find(p => p.profile_id === form.profileId.value)?.profile_nme || ""}
         />
