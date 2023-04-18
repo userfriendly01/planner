@@ -1,4 +1,5 @@
 import { Control } from "globals";
+import { FormValidationRule } from "utils/interfaces";
 export interface CctSharedCallRoutingDb {
     id: number;
     all?: string;
@@ -82,6 +83,7 @@ export interface AddPageFieldConfigProps {
     isBlankFirstValue?: boolean
     valueGetter?: (params: CctSharedCallRoutingDb, defaultValue?: any) => string;
     valueSetter?: (currentValue: CctSharedCallRoutingDb, newValue: any) => CctSharedCallRoutingDb;
+    dynamicFieldConditionCheck?: (params: FormValidationRule) => boolean;
 }
 export interface AddRoutingModalProps {
     isOpen: boolean;

@@ -231,13 +231,12 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
           <Grid container rowSpacing={3}>
             {
               routingFields.map(({
-                label, key, control, required = false, disableAdd = false, isBlankFirstValue = false
+                label, key, control, required = false, disableAdd = false, isBlankFirstValue = false,
+                dynamicFieldConditionCheck
               }) => {
-                let dropDownOptions: string[] = [];
-                if (control === "select") {
-                  dropDownOptions = dropDownValues[key as keyof RoutingDropDownList];
+                if(dynamicFieldConditionCheck && !dynamicFieldConditionCheck(routingRule)){
+                  return;
                 }
-
                 return (
                   <Grid key={key} item xs={4}>
                     <ComponentControl
@@ -248,7 +247,7 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
                       value={routingRule[key].value}
                       error={routingRule[key].error}
                       disabled={disableAdd}
-                      dropDownOptions={dropDownOptions}
+                      dropDownOptions={dropDownValues[key as keyof RoutingDropDownList] || []}
                       onChange={(event: any) => handleInputChange(event, key, disableAdd)}
                       required={required}
                       isBlankFirstValue={isBlankFirstValue}

@@ -15,6 +15,7 @@ import {
   CustomToast, ComponentControl, Dropdown
 } from "components";
 import { AddOrView } from "../../CustomActionsCommon/AddOrView";
+import { flowFields } from "../../FlowFieldsConfig";
 
 const validFlowData = {
   id: 1,
@@ -195,14 +196,15 @@ describe("<AddFlow />", () => {
       const {
         getByRole
       } = renderAddFlow(true);
+      flowFields[8].valueSetter(validFlowData, { type: "DID" });
       const ComponentControlMock = ComponentControl.mock;
       const dialedPhoneNumberAttr = ComponentControl.mock.calls[0][0].onChange;
       const descriptionAttr = ComponentControl.mock.calls[1][0].onChange;
       const channelAttr = ComponentControl.mock.calls[3][0].onChange;
       const brandAttr = ComponentControl.mock.calls[4][0].onChange;
       const callerTypeAttr = ComponentControl.mock.calls[23][0].onChange;
-      // Check Array indexes
       const callFlowRouteAttr = ComponentControl.mock.calls[26][0].onChange;
+      const typeAttr = ComponentControl.mock.calls[8][0].onChange;
       const eventPhoneNumValue = {
         target: {
           name: "pkey",
@@ -239,6 +241,12 @@ describe("<AddFlow />", () => {
           value: /Caller Type/i
         }
       };
+      const eventType = {
+        target: {
+          name: "type",
+          value: /DID/i
+        }
+      };
       act(()=>{
         dialedPhoneNumberAttr(eventPhoneNumValue);
         descriptionAttr(eventDescriptionValue);
@@ -246,6 +254,7 @@ describe("<AddFlow />", () => {
         brandAttr(eventBrandValue);
         callFlowRouteAttr(eventCallFlowRoute,"testing");
         callerTypeAttr(eventCallerType,"testing");
+        typeAttr(eventType);
       });
       addFlowRule.mockResolvedValue({ data: { "items": []}});
       const saveButton = getByRole("button", { name: "createRuleButton" });

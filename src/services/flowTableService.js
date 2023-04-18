@@ -96,6 +96,85 @@ async function retrieveFlowData(accessToken, graphQlApiUrl) {
   return flowData;
 }
 
+function addFlowInput (item, dataRequestsPassed, currentTimePassed){
+  const input = {
+    pkey: item.pkey.value,
+    content: {
+      callFlowRoute: item.callFlowRoute?.value,
+      callerType: item.callerType?.value,
+      greetingMessages: item.greetingMessages?.value,
+      transferNumber: item.transferNumber?.value,
+      languageOffer: item.languageOffer?.value,
+      dataRequests: dataRequestsPassed
+    },
+    createTime: currentTimePassed,
+    agentId: item.agentId?.value || "",
+    brand: item.brand.value,
+    callFlowTemplate: item.callFlowTemplate?.value || "",
+    channel: item.channel.value,
+    dialedDescription: item.dialedDescription.value,
+    accountManager: item.accountManager?.value || "",
+    affinityVDN: item.affinityVDN?.value || "",
+    callTypeDescription: item.callTypeDescription?.value || "",
+    transferCode: item.transferCode?.value || "",
+    internetPlacement: item.internetPlacement?.value || "",
+    callDetails1: item.callDetails1?.value || "",
+    callDetails2: item.callDetails2?.value || "",
+    tollFreeNumber: item.tollFreeNumber?.value || "",
+    lineOfBusiness: item.lineOfBusiness?.value || "",
+    marketingChannel: item.marketingChannel?.value || "",
+    whisper: item.whisper?.value || "",
+    requestID: item.requestID?.value || "",
+    userDestination: item.userDestination?.value||"",
+    rangeIndicator: item.rangeIndicator?.value || "",
+    type: item.type?.value || ""
+  };
+  if(item.employeeId?.value){
+    input.employeeId = item.employeeId.value;
+  }
+  return input;
+}
+
+function updateFlowInput(item){
+  const input = {
+    pkey: item.pkey,
+    agentId: item.agentId || "",
+    brand: item.brand,
+    callFlowTemplate: item.callFlowTemplate || "",
+    channel: item.channel,
+    content: {
+      callFlowRoute: item.content?.callFlowRoute || "",
+      callerType: item.content?.callerType || "",
+      greetingMessages: item.content?.greetingMessages || "",
+      transferNumber: item.content?.transferNumber || "",
+      languageOffer: item.content?.languageOffer || "",
+      dataRequests: item.content?.dataRequests
+    },
+    createTime: item.createTime,
+    dialedDescription: item.dialedDescription,
+    accountManager: item.accountManager || "",
+    affinityVDN: item.affinityVDN || "",
+    callTypeDescription: item.callTypeDescription || "",
+    transferCode: item.transferCode || "",
+    internetPlacement: item.internetPlacement || "",
+    callDetails1: item.callDetails1 || "",
+    callDetails2: item.callDetails2 || "",
+    tollFreeNumber: item.tollFreeNumber || "",
+    lineOfBusiness: item.lineOfBusiness || "",
+    marketingChannel: item.marketingChannel || "",
+    whisper: item.whisper || "",
+    requestID: item.requestID || "",
+    userDestination: item.userDestination || "",
+    rangeIndicator: item.rangeIndicator || "",
+    type: item.type || ""
+  };
+  if(item.employeeId){
+    input.employeeId = item.employeeId;
+  }
+  return input;
+}
+
+
 /**
  * This is the Function to update the Flow Object ]to the DB
  * @param {flowData} item Flow object that need to update
@@ -105,6 +184,7 @@ async function retrieveFlowData(accessToken, graphQlApiUrl) {
  */
 async function updateFlowDB(item, accessToken, graphQlApiUrl) {
   let response;
+  const input = updateFlowInput(item);
   try {
     const fetchResponse = await fetch(graphQlApiUrl, {
       method: "POST",
@@ -114,40 +194,8 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
       },
       body: JSON.stringify({
         query: `
-          mutation updateCctSharedCallFlowDb {
-            updateCctSharedCallFlowDb(input: {
-                pkey: "${item.pkey}",
-                agentId: "${item.agentId || ""}",
-                brand: "${item.brand}",
-                callFlowTemplate: "${item.callFlowTemplate || ""}",
-                channel: "${item.channel}",
-                content: {
-                  callFlowRoute: "${item.content?.callFlowRoute || ""}",
-                  callerType: "${item.content?.callerType || ""}",
-                  greetingMessages: ${JSON.stringify(item.content?.greetingMessages)},
-                  transferNumber: "${item.content?.transferNumber || ""}",
-                  languageOffer: "${item.content?.languageOffer || ""}",
-                  dataRequests: ${JSON.stringify(item.content?.dataRequests)},
-                },
-                createTime: "${item.createTime}",
-                dialedDescription: "${item.dialedDescription}",
-                employeeId: "${item.employeeId || ""}",
-                accountManager: "${item.accountManager || ""}",
-                affinityVDN: "${item.affinityVDN || ""}",
-                callTypeDescription: "${item.callTypeDescription || ""}",
-                transferCode: "${item.transferCode || ""}",
-                internetPlacement: "${item.internetPlacement || ""}",
-                callDetails1: "${item.callDetails1 || ""}",
-                callDetails2: "${item.callDetails2 || ""}",
-                tollFreeNumber: "${item.tollFreeNumber || ""}",
-                lineOfBusiness: "${item.lineOfBusiness || ""}",
-                marketingChannel: "${item.marketingChannel || ""}",
-                whisper: "${item.whisper || ""}",
-                requestID: "${item.requestID || ""}",
-                userDestination: "${item.userDestination || ""}",
-                rangeIndicator:"${item.rangeIndicator || ""}",
-                type: "${item.type || ""}"
-              }) {
+          mutation updateCctSharedCallFlowDb($input:CctSharedCallFlowDbInputMod!) {
+            updateCctSharedCallFlowDb(input:$input) {
               pkey
               agentId
               brand
@@ -183,9 +231,11 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
           }
       `,
         variables: {
+          input
         }
       })
     });
+
     response = await fetchResponse.json();
   } catch (error) {
     console.error("Error in updateFlowDB", error);
@@ -203,6 +253,7 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
  */
 async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date().toISOString(), dataRequests=[]) {
   let response;
+  const input = addFlowInput(item, dataRequests, curTime);
   try {
     const fetchResponse = await fetch(graphQlApiUrl, {
       method: "POST",
@@ -212,42 +263,8 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
       },
       body: JSON.stringify({
         query: `
-          mutation AddFlowRule {
-            createCctSharedCallFlowDb(
-              input: {
-                  pkey: "${item.pkey.value}"
-                  content: {
-                      callFlowRoute: "${item.callFlowRoute?.value || ""}",
-                      callerType: "${item.callerType?.value || ""}",
-                      greetingMessages: "${item.greetingMessages?.value || ""}",
-                      transferNumber: "${item.transferNumber?.value || ""}",
-                      languageOffer: "${item.languageOffer?.value || ""}",
-                      dataRequests: ${JSON.stringify(dataRequests)},
-                    },
-                  createTime: "${curTime}",
-                  agentId: "${item.agentId?.value || ""}",
-                  brand: "${item.brand.value}",
-                  callFlowTemplate: "${item.callFlowTemplate?.value || ""}",
-                  channel: "${item.channel.value}",
-                  dialedDescription: "${item.dialedDescription.value}",
-                  employeeId: "${item.employeeId?.value || ""}",
-                  accountManager: "${item.accountManager?.value || ""}",
-                  affinityVDN: "${item.affinityVDN?.value || ""}",
-                  callTypeDescription: "${item.callTypeDescription?.value || ""}",
-                  transferCode: "${item.transferCode?.value || ""}",
-                  internetPlacement: "${item.internetPlacement?.value || ""}",
-                  callDetails1: "${item.callDetails1?.value || ""}",
-                  callDetails2: "${item.callDetails2?.value || ""}",
-                  tollFreeNumber: "${item.tollFreeNumber?.value || ""}",
-                  lineOfBusiness: "${item.lineOfBusiness?.value || ""}",
-                  marketingChannel: "${item.marketingChannel?.value || ""}",
-                  whisper: "${item.whisper?.value || ""}",
-                  requestID: "${item.requestID?.value || ""}",
-                  userDestination: "${item.userDestination?.value||""}",
-                  rangeIndicator: "${item.rangeIndicator?.value || ""}",
-                  type: "${item.type?.value || ""}"
-              }
-          ) {
+          mutation AddFlowRule ($input:CctSharedCallFlowDbInput! ){
+            createCctSharedCallFlowDb(input:$input) {
               agentId
               brand
               callFlowTemplate
@@ -283,6 +300,7 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
           }
         `,
         variables: {
+          input
         }
       })
     });
@@ -303,6 +321,9 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
  */
 async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
   let response;
+  const input = {
+    pkey: item.pkey
+  };
   try {
     const fetchResponse = await fetch(graphQlApiUrl, {
       method: "POST",
@@ -312,10 +333,8 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
       },
       body: JSON.stringify({
         query: `
-          mutation deleteCctSharedCallFlowDb {
-            deleteCctSharedCallFlowDb(input: {
-                pkey: "${item.pkey}"
-              }) {
+          mutation deleteCctSharedCallFlowDb($input:CctSharedCallFlowDbDelInput!) {
+            deleteCctSharedCallFlowDb(input:$input ){
               pkey
               agentId
               brand
@@ -350,6 +369,7 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
           }
       `,
         variables: {
+          input
         }
       })
     });

@@ -183,7 +183,10 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
     valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => ({
       ...currentValue,
       ...newValue
-    })
+    }),
+    dynamicFieldConditionCheck: (params?: FormValidationRule): boolean=>{
+      return params["channel"]?.value === "Service" && params["brand"]?.value === "Liberty Mutual";
+    }
   },
   {
     label: "Percent Of Callers",
