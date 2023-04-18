@@ -119,7 +119,6 @@ const MultiFieldContainer = (
 
   const handleOnDelete = (tagIndex: number) =>{
     const filteredIList = listItems.filter((item: any, index: number)=>tagIndex!==index);
-    console.log("index, filteredIList: ", tagIndex,filteredIList);
     setListItems(filteredIList);
     updateValue({
       target: {

@@ -4,6 +4,7 @@ import {
 } from "@mui/x-data-grid";
 import Tooltip from "@mui/material/Tooltip";
 import Chip from "@mui/material/Chip";
+import Grid from "@mui/material/Grid";
 import {
   AddPageFieldConfigProps,
   CctSharedCallRoutingDb, RoutingOccupancyCheck, RoutingStep
@@ -27,9 +28,7 @@ const formatDateTime = (dateTime: string) => {
 };
 
 const getFormFields = (key: string): Array<MultiFieldContainerFormProps> =>{
-  console.log("Key, routingFields", key, routingFields);
   const filteredField: Array<AddPageFieldConfigProps> = routingFields.filter((field: AddPageFieldConfigProps)=>field.key === key);
-  console.log("Filtered field", filteredField);
   return filteredField[0].formFields;
 };
 
@@ -147,7 +146,8 @@ export const RoutingGridColumnDef: GridColDef[] = [
     headerName: "Transfer Message",
     field: "transferMessage",
     sortable: false,
-    width: 110,
+    minWidth: 200,
+    flex: 1,
     renderCell: (params: any) =>  (
       <Tooltip title={params.row.transferMessage || ""} >
         <div>{params.row.transferMessage || ""}</div>
@@ -165,26 +165,30 @@ export const RoutingGridColumnDef: GridColDef[] = [
     headerName: "Occupancy Check",
     field: "occupancyCheck",
     sortable: true,
-    width: 110,
+    minWidth: 220,
+    flex: 1,
     align: "left",
     renderCell: (params: any) =>(
-      <div>
+      <Grid container rowSpacing={1}>
         {
           params.row.occupancyCheck && params.row.occupancyCheck.map((item: RoutingOccupancyCheck, index: number)=>(
-            <Chip
-              key={`occupancyCheck-${params.row.id}-${index}`}
-              tabIndex={-1}
-              label={getTagLabel(item,getFormFields("occupancyCheck"))}
-            />
+            <Grid item xs={6} key={`grid-occupancyCheck-${params.row.id}-${index}`}>
+              <Chip
+                key={`chip-occupancyCheck-${params.row.id}-${index}`}
+                tabIndex={-1}
+                label={getTagLabel(item,getFormFields("occupancyCheck"))}
+              />
+            </Grid>
           ))}
-      </div>
+      </Grid>
     )
   },
   {
     headerName: "Routing Steps",
     field: "routingSteps",
     sortable: false,
-    width: 110,
+    minWidth: 220,
+    flex: 1,
     align: "left",
     renderCell: (params: any) =>(
       <div>
