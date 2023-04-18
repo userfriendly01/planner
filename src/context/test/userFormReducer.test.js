@@ -1265,7 +1265,8 @@ describe("userFormReducer", () => {
             value: payload.profileId,
             updated: true
           },
-          zeroOutEnabled: true
+          zeroOutEnabled: true,
+          selfServiceInd: false
         };
         expect(result).toStrictEqual(expectedFormState);
       });
@@ -1295,7 +1296,8 @@ describe("userFormReducer", () => {
             value: payload.profileId,
             updated: true
           },
-          zeroOutEnabled: false
+          zeroOutEnabled: false,
+          selfServiceInd: false
         };
         expect(result).toStrictEqual(expectedFormState);
       });
