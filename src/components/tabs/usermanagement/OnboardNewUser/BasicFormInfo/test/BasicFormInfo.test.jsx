@@ -331,6 +331,27 @@ describe("<BasicFormInfo />", () => {
         }
       });
     });
+    test("updateValue - should set selfServiceInd to false if its true and new profileId is less than 39", () => {
+      useFormState.mockReturnValue({
+        ...initialFormState,
+        selfServiceInd: true
+      });
+      renderComponent(false);
+      act(() => {
+        const updateValue = Dropdown.mock.calls[1][0].updateValue;
+        updateValue(null, { value: profileList[0].profile_id });
+      });
+      expect(mockSetForm).toBeCalledWith({
+        type: userFormActions.UPDATE_TEAM,
+        payload: {
+          profileId: profileList[0].profile_id,
+          profiles: profileList
+        }
+      });
+      expect(mockSetForm).toBeCalledWith({
+        type: userFormActions.UPDATE_SELF_SERVICE_INDICATOR
+      });
+    });
   });
   describe("Outgoing Number", () => {
     test("Should render the correct initial state", () => {
