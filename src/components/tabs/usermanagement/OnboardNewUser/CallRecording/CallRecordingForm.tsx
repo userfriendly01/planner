@@ -54,6 +54,32 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
     }
   }, [form.nNumberFetchedUser]);
 
+  // * Workers Comp restricted Roles
+  React.useEffect(() => {
+    if(parseInt(form.profileId.value) === 18) {
+      console.log("Profile 18, setting role to 'No Screen'");
+      setWorkersCompRoles();
+    }
+
+  }, [form.profileId.value]);
+
+  const setWorkersCompRoles = () => {
+    let selectedRoles:any = [];
+    // If existing user and already has Supervisor role, keep it
+    if (form.calabrioUser.roles.find((role: any) => role.name === "Supervisor")) {
+      selectedRoles = getRoleOptions();
+    } else {
+      // for new users, or existing users without a supervisor role, auto populate role to No Screen
+      selectedRoles = getRoleOptions().filter(role => role.name === "No Screen");
+    }
+
+    setForm({
+      type: userFormActions.SET_CALABRIO_ROLES,
+      payload: selectedRoles
+    });
+  };
+  // * 
+
   const setScopeOnNewUser = () => {
     const userGroups: any[] = [];
     const userTeams: any[] = [];
@@ -187,7 +213,13 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   };
 
   const getRoleOptions = () => {
-    const allowed = roles.filter(role => calabrioAllowedRoles.includes(role.name));
+    let allowed = roles.filter(role => calabrioAllowedRoles.includes(role.name));
+
+    // temporary blocking of roles for Workers Comp Profile 18
+    if (parseInt(form.profileId.value) === 18) {
+      allowed = allowed.filter(role => role.name === "No Screen" || role.name === "Supervisor");
+    }
+
     return allowed.map(role => {
       return {
         ...role,

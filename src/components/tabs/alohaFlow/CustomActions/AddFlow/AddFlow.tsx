@@ -18,6 +18,7 @@ import {
   ComponentControl, CustomToast
 } from "components";
 import {
+  AddFlowFieldsConfigProps,
   CctSharedCallFlowDb,
   FlowDropDownList,
   FlowKeys,
@@ -129,11 +130,21 @@ export const AddFlow = ({
   const isInvalidField =(key: string, value: string): boolean =>{
     return flowRule[key].required && [undefined, "", null].includes(value);
   };
+  const findFieldValue = (key: string): boolean => {
+    let fieldCondition = true;
+    flowFields.map((value: AddFlowFieldsConfigProps) => {
+      if (value.key === key && value.dynamicFieldConditionCheck) {
+        fieldCondition = value.dynamicFieldConditionCheck(flowRule);
+      }
+    });
+    return fieldCondition;
+  };
 
   function validateRoute() {
     let isValidForm = true;
     Object.keys(flowRule).map((key: string) => {
-      if (isInvalidField(key, flowRule[key].value)) {
+      const condition = findFieldValue(key);
+      if (isInvalidField(key, flowRule[key].value) && condition) {
         const newFlowRule = {
           [key]: {
             ...flowRule[key],
@@ -173,7 +184,7 @@ export const AddFlow = ({
     const isValidForm: boolean = validateRoute();
     if (isValidForm) {
       const curTime = new Date().toISOString();
-      const dataRequests = flowRule.dataRequests.value
+      const dataRequests = (flowRule.dataRequests.value as string)
         ?.split(",")
         ?.map(a => a.trim())
         ?.filter(a => a.length > 0)

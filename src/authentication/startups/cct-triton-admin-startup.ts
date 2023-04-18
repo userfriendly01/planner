@@ -3,8 +3,6 @@ import { apiPaths } from "globals";
 import {
   getManagers as getManagersServiceCall,
   getOffices as getOfficesServiceCall,
-  getWfmOptions,
-  getWfmOrg,
   getCalabrioUsers as getCalabrioUsersServiceCall,
   getCalabrioRoles as getCalabrioRolesServiceCall,
   getCalabrioOrg as getCalabrioOrgServiceCall
@@ -13,6 +11,8 @@ import {
   formatManagersResponse,
   formatOfficesResponse,
   formatWorkerResponse,
+  getCalabrioWfmOptions,
+  getCalabrioWfmOrg,
   myAxios
 } from "utils";
 import util from "util";
@@ -77,47 +77,6 @@ const getCalabrioOrg = async (dispatch: any) => {
     console.error("Failed to fetch calabrio org from service");
     //We're not throwing an error here so that we can still load Triton Admin and use its other features if this fails
     //Additionally - there can be local issues we have to work out when trying to call this 
-  }
-};
-
-const getCalabrioWfmOrg = async (dispatch: any) => {
-  try {
-    const org: any = await getWfmOrg();
-    let orgData: any = [];
-    try {
-      let buff = Buffer.from(org.data.organization, 'base64');
-      const data = await inflate(buff);
-      orgData = JSON.parse(data.toString("utf-8"));
-    } catch(err) {
-      console.error("Failed to parse and save Calabrio Org data", err);
-    }
-    dispatch({
-      type: "loadWfmOrg",
-      payload: orgData.businessUnits
-    });
-  } catch (error) {
-    console.error("Failed to fetch calabrio wfm org from service", error);
-  }
-};
-
-const getCalabrioWfmOptions = async (dispatch: any) => {
-  try {
-    const options: any = await getWfmOptions();
-    let optionsData: any = [];
-    try {
-      let buff = Buffer.from(options.data.organization, 'base64');
-      const data = await inflate(buff);
-      optionsData = JSON.parse(data.toString("utf-8"));
-    } catch(err) {
-      console.error("Failed to parse and save Calabrio Org data", err);
-    }
-    console.log("Calabrio WFM Options", optionsData);
-    dispatch({
-      type: "loadWfmOptions",
-      payload: optionsData.businessUnits
-    });
-  } catch (error) {
-    console.error("Failed to fetch calabrio wfm options from service");
   }
 };
 

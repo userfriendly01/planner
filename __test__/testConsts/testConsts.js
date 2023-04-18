@@ -112,6 +112,10 @@ export const calabrioContext = {
     {
       id: 3,
       name: "WFM_Agent_NT_Dashboards"
+    },
+    {
+      id: 4,
+      name: "No Screen"
     }
   ],
   users: [
