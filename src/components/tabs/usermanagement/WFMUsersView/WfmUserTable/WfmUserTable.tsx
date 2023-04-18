@@ -1,3 +1,4 @@
+import { WfmUserTableProps } from "./WfmUserTable.Interfaces";
 import {
   CustomTable,
   CustomTableData,
@@ -11,7 +12,6 @@ import {
   Delete,
   Edit
 } from "@mui/icons-material";
-import { ModalOverlay } from "components";
 import {
   useAdminState,
   useFormDispatch,
@@ -19,7 +19,6 @@ import {
 } from "context";
 import {
   formModes,
-  ModalOverlayStatuses,
   WfmBusinessUnit,
   WfmTeam,
   WfmUser
@@ -31,9 +30,8 @@ import {
   getWfmTeams,
   findMatchingTritonWorker
 } from "utils";
-import { WfmUserTableProps } from "./WfmUserTable.Interfaces";
 
-const TritonUserTable = (props: WfmUserTableProps) => {
+const WfmUserTable = (props: WfmUserTableProps) => {
   const {
     tableState,
     setTableState
@@ -43,6 +41,8 @@ const TritonUserTable = (props: WfmUserTableProps) => {
   const [ selectedUsers, setSelectedUsers ] = React.useState<WfmUser[]>([]);
   const setForm = useFormDispatch();
   const navigate = useNavigate();
+
+  console.log("****tableState in wfm table", tableState.filteredList);
 
   return (
     <TableContainer>
@@ -128,4 +128,4 @@ const TritonUserTable = (props: WfmUserTableProps) => {
   );
 };
 
-export default TritonUserTable;
+export default WfmUserTable;

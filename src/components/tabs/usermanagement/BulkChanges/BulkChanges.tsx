@@ -104,6 +104,7 @@ const BulkChanges = () => {
           </Modal>
           <Modal open={showWFMLoadModal} onClose={() => { return; }} >
             <WFMLoadRetryModal
+              label="WFM Bulk Create"
               handleClose={() => setShowWFMLoadModal(false)}
             />
           </Modal>

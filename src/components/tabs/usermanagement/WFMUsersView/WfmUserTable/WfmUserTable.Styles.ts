@@ -29,18 +29,18 @@ export const CustomTableHeader = styled.th`
   padding-left: 4px;
   text-align: left;
   &:nth-child(1) {
-    width: 10%;
+    width: 12%;
   }
   &:nth-child(2) {
-    width: 10%;
+    width: 12%;
   }
   &:nth-child(3) {
-    width: 15%;
+    width: 18%;
   }
-  &:nth-child(7) {
+  &:nth-child(6) {
     width: ${headerIconWidth};
   }
-  &:nth-child(8) {
+  &:nth-child(7) {
     width: ${headerIconWidth};
   }
 `;

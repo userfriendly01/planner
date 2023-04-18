@@ -15,6 +15,10 @@ import {
   formatWorkerResponse,
   myAxios
 } from "utils";
+import util from "util";
+import zlib from "zlib";
+
+const inflate = util.promisify(zlib.inflate);
 
 const getManagers = async (dispatch: any) => {
   try {
@@ -79,28 +83,44 @@ const getCalabrioOrg = async (dispatch: any) => {
 const getCalabrioWfmOrg = async (dispatch: any) => {
   try {
     const org: any = await getWfmOrg();
-    console.log("Calabrio WFM Org", org);
+    let orgData: any = [];
+    try {
+      let buff = Buffer.from(org.data.organization, 'base64');
+      const data = await inflate(buff);
+      orgData = JSON.parse(data.toString("utf-8"));
+    } catch(err) {
+      console.error("Failed to parse and save Calabrio Org data", err);
+    }
     dispatch({
       type: "loadWfmOrg",
-      payload: org.data.organization.businessUnits
+      payload: orgData.businessUnits
     });
   } catch (error) {
-    console.error("Failed to fetch calabrio wfm org from service");
+    console.error("Failed to fetch calabrio wfm org from service", error);
   }
 };
 
 const getCalabrioWfmOptions = async (dispatch: any) => {
   try {
     const options: any = await getWfmOptions();
-    console.log("Calabrio WFM Options", options);
+    let optionsData: any = [];
+    try {
+      let buff = Buffer.from(options.data.organization, 'base64');
+      const data = await inflate(buff);
+      optionsData = JSON.parse(data.toString("utf-8"));
+    } catch(err) {
+      console.error("Failed to parse and save Calabrio Org data", err);
+    }
+    console.log("Calabrio WFM Options", optionsData);
     dispatch({
       type: "loadWfmOptions",
-      payload: options.data.organization.businessUnits
+      payload: optionsData.businessUnits
     });
   } catch (error) {
     console.error("Failed to fetch calabrio wfm options from service");
   }
 };
+
 const getCalabrioRoles = async (dispatch: any) => {
   try {
     const roles: any = await getCalabrioRolesServiceCall();

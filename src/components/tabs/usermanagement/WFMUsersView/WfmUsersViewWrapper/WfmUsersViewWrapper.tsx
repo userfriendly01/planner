@@ -9,7 +9,9 @@ import {
 } from "components";
 import { useAdminState } from "context";
 import { WfmBusinessUnit, WfmTeam, WfmUser } from "globals";
+import WFMLoadRetryModal from "../../BulkChanges/WFMLoadRetryModal";
 import React from "react";
+import { useNavigate } from 'react-router-dom';
 import {
   getWfmBusinessUnits,
   getWfmTeams,
@@ -27,7 +29,7 @@ const TritonUserManagementWrapper: any = () => {
     businessUnitFilter: false,
     searchResults: [],
     pagination: {
-      usersPerPage: 25,
+      usersPerPage: 2,
       pageNumber: 1,
       length: 0,
       startingUserIndex: null,
@@ -39,6 +41,7 @@ const TritonUserManagementWrapper: any = () => {
   const state = useAdminState();
   const [ tableState, setTableState ] = React.useState(defaultTableState);
   const [ wfmLoaded, setWfmLoaded ] = React.useState(false);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     const wfmPeople = getWfmPeople(state);
@@ -95,7 +98,7 @@ const TritonUserManagementWrapper: any = () => {
     } else {
       setWfmLoaded(false);
     }
-  }, [tableState.searchBy, tableState.deltaFilter, tableState.managerFilter, tableState.pagination.pageNumber, state.workerContext]);
+  }, [tableState.searchBy, tableState.teamFilter, tableState.businessUnitFilter, tableState.pagination.pageNumber, state.calabrioContext.wfmOrg]);
 
   return (
     <ManagementContainer>
@@ -116,7 +119,9 @@ const TritonUserManagementWrapper: any = () => {
             setTableState={setTableState}
           />
         </>
-        : <div>WFM state not loaded</div>
+        : <WFMLoadRetryModal
+        
+        />
       }
     </ManagementContainer>
   );

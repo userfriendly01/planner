@@ -18,6 +18,7 @@ import { theme } from "globals";
 
 const WFMLoadRetryModal = (props: any) => {
   const {
+    label,
     handleClose
   } = props;
 
@@ -41,7 +42,7 @@ const WFMLoadRetryModal = (props: any) => {
       retryLoad(retryAttempts.count, retryAttempts.successfulWFMOptions, retryAttempts.successfulWFMOrg);
     } else {
       setShowLoading(false);
-      setLoadFailedMessage("Max attempts to retrieve WFM Data reached.  Bulk Create for WFM is not available.  Please try again later...");
+      setLoadFailedMessage("Max attempts to retrieve WFM Data reached. This feature is not currently available.  Please try again later...");
     }
   }, [retryAttempts.count, retryAttempts.cancelClicked, retryAttempts.successfulWFMOptions, retryAttempts.successfulWFMOrg]);
 
@@ -118,7 +119,7 @@ const WFMLoadRetryModal = (props: any) => {
       <TextWrapper
         styles={{}}
       >
-        WFM Options have not been successfully loaded into Triton admin but are needed for WFM Bulk Create operations.
+        WFM Data has not been successfully loaded into Triton admin but is needed for this feature.
         Attempting to load WFM Data...
       </TextWrapper>
       {showLoading && <CircularProgress style={{ margin: "15px" }} size={theme.circularProgressSize} />}

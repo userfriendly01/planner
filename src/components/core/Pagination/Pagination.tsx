@@ -28,6 +28,8 @@ const Pagination = (props: PaginationProps) => {
   const onLastPage = tableState.pagination.pageNumber === numPages;
   const endingNumber = tableState.pagination.endingUserIndex > length ? length : tableState.pagination.endingUserIndex;
 
+  console.log("***tableState in pagination", tableState);
+
   return (
     <PaginationWrapper>
       <ShowingSection>
