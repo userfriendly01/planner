@@ -14,9 +14,17 @@ const ComponentControlProps = {
   type: "test",
   onChange: eventOnChange,
   disabled: false,
-  error: "",
+  error: false,
   required: true,
   isBlankFirstValue: true
+};
+
+const MultiFieldFromComponentControlProps = {
+  type: "text",
+  onChange: eventOnChange,
+  disabled: false,
+  error: false,
+  required: false
 };
 
 const renderComponentControl  = (control, value, isBlankFirstValue = true) => {
@@ -28,6 +36,12 @@ const renderComponentControl  = (control, value, isBlankFirstValue = true) => {
 const renderComponentControlNullVal  = control => {
   return render(
     <ComponentControl {...ComponentControlProps} control={control} />
+  );
+};
+
+const renderComponentControlForMultiFormField = (name, label, value, formFields) => {
+  return render(
+    <ComponentControl {...MultiFieldFromComponentControlProps} name={name} label={label} value={value} control="multiField" formFields={formFields}/>
   );
 };
 
@@ -72,5 +86,24 @@ describe(" <ComponentControl />",()=>{
     const { getByDisplayValue } = renderComponentControl("autoComplete","testInput");
     const inputEvent = getByDisplayValue("testInput",{ hidden: true });
     expect(inputEvent).toBeTruthy();
+  });
+  test("Test MultiFieldContainer", ()=>{
+    const {
+      getByText
+    } = renderComponentControlForMultiFormField("testField", "Test Field", [{
+      field1: "Test Field 1",
+      number: 1
+    }], [{
+      label: "Test Field",
+      name: "field1",
+      type: "input"
+    },
+    {
+      label: "Number",
+      name: "number",
+      type: "number"
+    }]);
+    const inputButton = getByText(/Test Field 1 - 1/i);
+    expect(inputButton).toBeInTheDocument();
   });
 });

@@ -184,7 +184,7 @@ export const AddFlow = ({
     const isValidForm: boolean = validateRoute();
     if (isValidForm) {
       const curTime = new Date().toISOString();
-      const dataRequests = flowRule.dataRequests.value
+      const dataRequests = (flowRule.dataRequests.value as string)
         ?.split(",")
         ?.map(a => a.trim())
         ?.filter(a => a.length > 0)
