@@ -1,4 +1,5 @@
 import { Control } from "globals";
+import { FormValidationRule } from "utils/interfaces/core.Interface";
 export interface CctSharedCallRoutingDb {
     id: number;
     all?: string;
@@ -87,4 +88,6 @@ export interface AddRoutingModalProps {
     isOpen: boolean;
     newId: number;
     openModal: (flag: boolean, row?: CctSharedCallRoutingDb) => void;
+    cloneRouteRule?: boolean;
+    routeRule?: FormValidationRule;
 }

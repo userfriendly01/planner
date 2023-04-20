@@ -16,6 +16,7 @@ import {
 import {
   CustomToast, ComponentControl
 } from "components";
+
 const validRoutingData = {
   id: 1,
   all: "test",
@@ -155,29 +156,38 @@ describe("<EditRouting />", () => {
       test("Simulate the Delete Rule Button with Success API Response", () => {
         deleteRoutingRule.mockResolvedValue({ data: { "items": []}});
         renderEditRouting(true, validRoutingData);
-        const deleteButtonClick = Button.mock.calls[1][0].onClick;
-        const deleteButton = Button.mock.calls[1][0];
+        const deleteButtonClick = Button.mock.calls[2][0].onClick;
+        const deleteButton = Button.mock.calls[2][0];
         act(() => {
           deleteButtonClick();
         });
         expect(deleteButton).toBeTruthy();
       });
-      test("Simulate the Delete Button and popUp Error message", () => {
-        deleteRoutingRule.mockResolvedValue(null);
+
+      test("Simulate the clone Button", () => {
         renderEditRouting(true, validRoutingData);
-        const deleteButtonClick = Button.mock.calls[1][0].onClick;
-        const deleteButton = Button.mock.calls[1][0];
+        const cloneButtonClick = Button.mock.calls[1][0].onClick;
         act(() => {
-          deleteButtonClick();
+          cloneButtonClick();
         });
-        expect(deleteButton).toBeTruthy();
+        expect(openEditModal).toBeCalledTimes(1);
       });
+    });
+    test("Simulate the Delete Button and popUp Error message", () => {
+      deleteRoutingRule.mockResolvedValue(null);
+      renderEditRouting(true, validRoutingData);
+      const deleteButtonClick = Button.mock.calls[2][0].onClick;
+      const deleteButton = Button.mock.calls[2][0];
+      act(() => {
+        deleteButtonClick();
+      });
+      expect(deleteButton).toBeTruthy();
     });
     describe("Test for Cancelling popup", () => {
       test("Simulate the Cancel Button ", () => {
         renderEditRouting(true, validRoutingData);
-        const closeButtonClick = Button.mock.calls[2][0].onClick;
-        const closeButton = Button.mock.calls[2][0];
+        const closeButtonClick = Button.mock.calls[3][0].onClick;
+        const closeButton = Button.mock.calls[3][0];
         act(() => {
           closeButtonClick();
         });
