@@ -124,13 +124,19 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           }}
           onBlur={() => handleOnBlur("profileId")}
           options={profiles.sort(sortProfilesByName).map((profile: any) => formatDropdownOption(profile.profile_id, profile.profile_nme, profile))}
-          updateValue={(event: any, newValue: any) => setForm({
-            type: userFormActions.UPDATE_TEAM,
-            payload: {
-              profileId: newValue.value,
-              profiles
+          updateValue={(event: any, newValue: any) => {
+            setForm({
+              type: userFormActions.UPDATE_TEAM,
+              payload: {
+                profileId: newValue.value,
+                profiles
+              }
+            });
+            // reset selfServiceInd value to false if set to true and then profile chnaged to value of 39 and below
+            if(newValue.value < 39 && form.selfServiceInd){
+              setForm({ type: userFormActions.UPDATE_SELF_SERVICE_INDICATOR });
             }
-          })}
+          }}
           value={profiles.find(p => p.profile_id === form.profileId.value)?.profile_nme || ""}
         />
         <NNumberInput

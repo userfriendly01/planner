@@ -8,9 +8,8 @@ import {
   useAdminDispatch
 } from "context";
 import {
-  getWfmOrg,
-  getWfmOptions
-} from "services";
+  getCalabrioWfmOptions, getCalabrioWfmOrg
+} from "utils";
 import React from "react";
 import { CircularProgress } from "@mui/material";
 import { theme } from "globals";
@@ -76,34 +75,6 @@ const WFMLoadRetryModal = (props: any) => {
       successfulWFMOptions: successfulOptionsCall,
       successfulWFMOrg: successfulOrgCall
     });
-  };
-
-  const getCalabrioWfmOrg = async (dispatch: any) => {
-    try {
-      const org: any = await getWfmOrg();
-      dispatch({
-        type: "loadWfmOrg",
-        payload: org.data.organization.businessUnits
-      });
-      return true;
-    } catch (error) {
-      console.error("Failed to fetch calabrio wfm org from service");
-      return false;
-    }
-  };
-
-  const getCalabrioWfmOptions = async (dispatch: any) => {
-    try {
-      const options: any = await getWfmOptions();
-      dispatch({
-        type: "loadWfmOptions",
-        payload: options.data.organization.businessUnits
-      });
-      return true;
-    } catch (error) {
-      console.error("Failed to fetch calabrio wfm options from service");
-      return false;
-    }
   };
 
   const handleCancel = () => {

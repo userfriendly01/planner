@@ -5,8 +5,14 @@ import {
 } from "../components/tabs/usermanagement/OnboardNewUser/CallRecording/CallRecording.Interfaces";
 import {
   getCalabrioUser,
-  updateCalabrioUser
+  updateCalabrioUser,
+  getWfmOptions,
+  getWfmOrg
 } from "services";
+import util from "util";
+import zlib from "zlib";
+
+const inflate = util.promisify(zlib.inflate);
 
 export const calabrioTenants = {
   PROD: "tenant0215",
@@ -164,4 +170,50 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
     console.error("Error thrown trying to fetch and validate Conflicting Users", err);
   }
   return;
+};
+
+export const getCalabrioWfmOptions = async (dispatch: any) => {
+  try {
+    const options: any = await getWfmOptions();
+    let optionsData: any = [];
+    try {
+      const buff = Buffer.from(options.data.organization, "base64");
+      const data = await inflate(buff);
+      optionsData = JSON.parse(data.toString("utf-8"));
+    } catch(err) {
+      console.error("Failed to parse and save Calabrio Org data", err);
+      return false;
+    }
+    dispatch({
+      type: "loadWfmOptions",
+      payload: optionsData.businessUnits
+    });
+    return true;
+  } catch (error) {
+    console.error("Failed to fetch calabrio wfm options from service");
+    return false;
+  }
+};
+
+export const getCalabrioWfmOrg = async (dispatch: any) => {
+  try {
+    const org: any = await getWfmOrg();
+    let orgData: any = [];
+    try {
+      const buff = Buffer.from(org.data.organization, "base64");
+      const data = await inflate(buff);
+      orgData = JSON.parse(data.toString("utf-8"));
+    } catch(err) {
+      console.error("Failed to parse and save Calabrio Org data", err);
+      return false;
+    }
+    dispatch({
+      type: "loadWfmOrg",
+      payload: orgData.businessUnits
+    });
+    return true;
+  } catch (error) {
+    console.error("Failed to fetch calabrio wfm org from service", error);
+    return false;
+  }
 };
