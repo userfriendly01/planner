@@ -33,7 +33,7 @@ const Pagination = (props: PaginationProps) => {
   return (
     <PaginationWrapper>
       <ShowingSection>
-        <Highlight>{tableState.pagination.startingUserIndex}</Highlight>-<Highlight>{endingNumber}</Highlight> of <Highlight>{length}</Highlight> workers
+        <Highlight>{tableState.pagination.startingUserIndex + 1}</Highlight>-<Highlight>{endingNumber}</Highlight> of <Highlight>{length}</Highlight> workers
       </ShowingSection>
       <NavArrowsWrapper>
         <NavArrow

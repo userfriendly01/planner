@@ -59,7 +59,7 @@ const WfmUserTable = (props: WfmUserTableProps) => {
           </tr>
         </thead>
         <tbody>
-          {tableState.filteredList.map((user: WfmUser) => {
+          {tableState.filteredList.map((user: WfmUser, index: number) => {
             const isSelected = selectedUsers.some(selectedUser => selectedUser.Id === user.Id);
             const handleWorkerOnClick = () => setSelectedUsers([ ...selectedUsers, user ]);
             const tritonWorker: Worker | {} = findMatchingTritonWorker(user, state) || {};
@@ -103,7 +103,7 @@ const WfmUserTable = (props: WfmUserTableProps) => {
             const team: WfmTeam | { Name: string } = getWfmTeams(state).find((team: WfmTeam) => team.Id === user.ParentTeam) || { Name: "Not Found" };
 
             return (
-              <CustomTableRow key={user.Id} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">
+              <CustomTableRow key={user.Id + index} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">
                 <CustomTableData><TableText>{user.FirstName} {user.LastName}</TableText></CustomTableData>
                 <CustomTableData><TableText>{businessUnit.Name}</TableText></CustomTableData>
                 <CustomTableData><TableText>{team.Name}</TableText></CustomTableData>

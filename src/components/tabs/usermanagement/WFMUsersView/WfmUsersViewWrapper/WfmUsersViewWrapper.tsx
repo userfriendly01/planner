@@ -29,7 +29,7 @@ const TritonUserManagementWrapper: any = () => {
     businessUnitFilter: false,
     searchResults: [],
     pagination: {
-      usersPerPage: 2,
+      usersPerPage: 5,
       pageNumber: 1,
       length: 0,
       startingUserIndex: null,
@@ -44,6 +44,7 @@ const TritonUserManagementWrapper: any = () => {
   const navigate = useNavigate();
 
   React.useEffect(() => {
+    console.log("*FAITH* Something Changed", tableState);
     const wfmPeople = getWfmPeople(state);
     if(wfmPeople.length > 0){
       setWfmLoaded(true);
@@ -78,9 +79,10 @@ const TritonUserManagementWrapper: any = () => {
       const length = filteredList.slice().length;
       //filter by pagination
       const startingUserIndex = tableState.pagination.pageNumber !== 1 ? ((tableState.pagination.pageNumber - 1) * tableState.pagination.usersPerPage) + 1 : 0;
-      const endingUserIndex = tableState.pagination.pageNumber * tableState.pagination.usersPerPage;
+      const endingUserIndex = tableState.pagination.pageNumber === 1 ? tableState.pagination.pageNumber * tableState.pagination.usersPerPage : tableState.pagination.pageNumber * tableState.pagination.usersPerPage + 1;
       filteredList = filteredList.slice(startingUserIndex, endingUserIndex);
-
+      console.log("*FAITH* Starting Index", startingUserIndex);
+      console.log("*FAITH* Ending Index", endingUserIndex);
       console.log("**pagination FL", filteredList);
 
       setTableState({

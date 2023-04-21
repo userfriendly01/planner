@@ -57,11 +57,11 @@ export const getWfmPeople = (state: AppState) => {
   const wfmTeams: WfmTeam[] = getWfmTeams(state);
 
   state.calabrioContext.wfmOrg.forEach((businessUnit: WfmBusinessUnit) => {
-    businessUnit.People_Without_Team.forEach((person: WfmUser) => wfmPeople.push(person));
+    businessUnit.People_Without_Team?.forEach((person: WfmUser) => wfmPeople.push(person));
   });
 
   wfmTeams.forEach((team: WfmTeam) => {
-    team.People.forEach((person: WfmUser) => wfmPeople.push({
+    team.People?.forEach((person: WfmUser) => wfmPeople.push({
       ParentTeam: team.Id,
       ...person
     }));
