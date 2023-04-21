@@ -1536,5 +1536,37 @@ export const FIELDS: Fields = {
         }
       }
     }
+  },
+  ROUTING_TEAM: {
+    field: "routing_team",
+    name: "Routing Team",
+    type: "string",
+    description: "List of Teams that can be used in dynamic routing",
+    example: "licensedCSC",
+    options: (state: any) => state.profileContext.profiles.map((p: any) => p.profile_id),
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = "Routing Team";
+      const field = cleanupField(row[fieldName], "string");
+      const profileField = "Profile Id";
+      const profile = cleanupField(row[profileField], "number");
+      if(!row.attributes){
+        row.attributes = {};
+      }
+      const routingProfiles = state.profileContext.profiles.filter((p: any) => p.routing_team);
+      const matchingProfile = routingProfiles.find((p: any) => cleanupField(p.profile_id, "number") === profile);
+      if(matchingProfile){
+        if(!field){
+          return rejectPromise(`${fieldName} is missing for row ${rowNumber}`, rowNumber);
+        } else if(!matchingProfile.routing_teams.includes(field)){
+          return rejectPromise(`${fieldName} is not a valid option for profile for row ${rowNumber}`, rowNumber);
+        } else {
+          row.attributes.routing_team = field;
+          return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+        }
+      } else {
+        return Promise.resolve(`${fieldName} is not a valid field for profile id ${rowNumber}`);
+      }
+    }
   }
 };
