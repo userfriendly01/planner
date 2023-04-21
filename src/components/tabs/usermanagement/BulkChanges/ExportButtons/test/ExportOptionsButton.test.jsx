@@ -36,7 +36,7 @@ const expectedRows = [
     defaultSkills: "lscOBDialer1 Available levels: 1,2,3",
     managerNNumber: "n1234567",
     profileId: 1,
-    routing_team: "Profile 2: licencedCSC",
+    // routing_team: "Profile 2: licencedCSC",
   },
   {
     defaultSkills: "aisgL1",
@@ -93,17 +93,17 @@ const expectedColumns = [
     title: "Default Skills",
     width: undefined,
     wrap: true
-  },
-  {
-    field: "routing_team",
-    options: [
-      "Profile 2: licencedCSC"
-    ],
-    textAlign: "center",
-    title: "Routing Team",
-    width: undefined,
-    wrap: true
   }
+  // {
+  //   field: "routing_team",
+  //   options: [
+  //     "Profile 2: licencedCSC"
+  //   ],
+  //   textAlign: "center",
+  //   title: "Routing Team",
+  //   width: undefined,
+  //   wrap: true
+  // } //Not ready to go yet
 ];
 
 const expectedWFMRows = [

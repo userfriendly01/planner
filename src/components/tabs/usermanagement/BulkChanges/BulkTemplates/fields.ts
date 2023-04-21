@@ -539,11 +539,11 @@ export const FIELDS: Fields = {
     description: "List of Teams that can be used in dynamic routing",
     example: "licensedCSC",
     options: (state: any) => {
-      const optionsArray = [];
+      const optionsArray: any = [];
       state.profileContext.profiles.map((p: any) => {
         const profileId = p.profile_id;
         if(p.routing_teams){
-          p.routing_teams.forEach(t => optionsArray.push(`Profile ${profileId}: ${t.routing_team_nme}`))
+          p.routing_teams.forEach((t: any) => optionsArray.push(`Profile ${profileId}: ${t.routing_team_nme}`))
         }
       });
       return optionsArray;
