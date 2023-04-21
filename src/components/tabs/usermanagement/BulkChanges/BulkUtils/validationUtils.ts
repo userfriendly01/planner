@@ -183,7 +183,9 @@ export const checkIfConflictingWFMPeople = (user: any, wfmOrg: any[]): boolean =
 
       wfmOrg.forEach(bu => {
         bu.Teams.forEach((team: any) => {
-          people.push(...team.People);
+          if (team.People) {
+            people.push(...team.People);
+          }
         });
       });
 
