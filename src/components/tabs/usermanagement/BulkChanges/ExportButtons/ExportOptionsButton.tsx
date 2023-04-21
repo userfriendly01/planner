@@ -22,7 +22,6 @@ const ExportOptionsButton = (props: any) => {
 
   const _export = React.useRef(null);
   console.log("ExportOptionsButton Template", template);
-  console.warn("_export", _export);
   const handleExport = (wfmBU: string | undefined) => {
     const rows: any = [];
     const columns: any = [];
