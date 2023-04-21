@@ -159,8 +159,14 @@ const processWFMCreateUser = async (row: any, state: any) => {
     console.log(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
     return Promise.resolve(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
   } catch(err) {
-    const errorMessage = `Failed to create Calabrio WFM person for row ${rowNumber}. ${formatErrorMessage(err)}`;
-    console.error(errorMessage, err);
+    let errorMessage;
+    if (err?.response?.data && err?.response?.data?.exception === "com.netflix.zuul.exception.ZuulException") {
+      errorMessage = `A timeout occured while creating WFM Person ${row.attributes.emp_first_name} ${row.attributes.emp_last_name} for row ${rowNumber}. They may still have been successfully added to WFM. Please verify in WFM.`;
+      console.error(errorMessage, err);
+    } else {
+      errorMessage = `Failed to create Calabrio WFM person for row ${rowNumber}. ${formatErrorMessage(err)}`;
+      console.error(errorMessage, err);
+    }
     return rejectPromise(errorMessage, rowNumber);
   }
 };
