@@ -1,11 +1,14 @@
 import {
-  FormControl, InputLabel, MenuItem, Select
+  Chip,Grid,FormControl, IconButton ,InputLabel, MenuItem, Select, TextField, InputAdornment
 } from "@mui/material";
 import React from "react";
+import {
+  CACHE_FILTER_FLOW, getAdvanceFilter
+} from "utils";
 import { FlowAdvanceFilter } from "../AlohaFlow.Interfaces";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
-import SearchIcon from "@mui/icons-material/Search";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import SearchIcon from "@mui/icons-material/Search";
 
 interface CustomFlowGridToolBarProps {
   openAddModal: (flag: boolean, isSubmitted?: boolean) => void,
@@ -23,9 +26,6 @@ export const CustomFlowGridToolBar = ({
       case "addFlow":
         openAddModal(true);
         break;
-      case "Filter":
-        openAdvanceSearchModal(true);
-        break;
       case "Export":
         exportDataFile();
         break;
@@ -33,38 +33,69 @@ export const CustomFlowGridToolBar = ({
         break;
     }
   };
+  const filterItem: FlowAdvanceFilter = getAdvanceFilter(CACHE_FILTER_FLOW);
+
+  const handleOnDelete = (key: string) =>{
+    delete filterItem[key as keyof FlowAdvanceFilter];
+    localStorage.setItem(CACHE_FILTER_FLOW,JSON.stringify(filterItem));
+  };
+
   return (
-    <div>
-      <FormControl sx={{
-        minWidth: 120,
-        marginLeft: "calc(85%)",
-        marginTop: 1
-      }}>
-        <InputLabel>Actions</InputLabel>
-        <Select
-          inputProps={{
-            sx: {
-              width: 120
-            }
+    <Grid container>
+      <Grid item key="flow-search-box" xs={11}>
+        <TextField
+          InputProps={{
+            startAdornment: Object.keys(filterItem).map((key: string, index:number)=>(
+              <Chip
+                key={key}
+                color="primary"
+                tabIndex={index}
+                label={`${key.toLowerCase()} : ${filterItem[key as keyof FlowAdvanceFilter]}`}
+                onDelete={(event: any)=>{ handleOnDelete(key); }}
+                sx={{ margin: 1 }}
+              />
+            )),
+            endAdornment: (
+              <InputAdornment position="end">
+                <SearchIcon />
+              </InputAdornment>)
           }}
-          label="Actions"
-          value=""
-          onChange={handleChange}
-          variant="filled"
-          size="small"
-          displayEmpty
-        >
-          <MenuItem key="addFlow" value="addFlow">
-            <PlaylistAddIcon />&nbsp;&nbsp; Add Flow
-          </MenuItem>
-          <MenuItem key="Filter" value="Filter">
-            <SearchIcon /> &nbsp;&nbsp; Advance Search
-          </MenuItem>
-          <MenuItem key="Export" value="Export">
-            <FileDownloadIcon /> &nbsp;&nbsp; Export
-          </MenuItem>
-        </Select>
-      </FormControl>
-    </div>
+
+          fullWidth
+          id="flow-SearchBox-input"
+          label="Search"
+          margin="normal"
+          name="flow-SearchBox-input"
+          variant="standard"
+          sx={{ padding: 1 }}
+          onClick={()=>openAdvanceSearchModal(true)}
+        />
+      </Grid>
+      <Grid item key="flow-action-box" xs={1}>
+        <FormControl>
+          <InputLabel>Actions</InputLabel>
+          <Select
+            inputProps={{
+              sx: {
+                width: 120
+              }
+            }}
+            label="Actions"
+            value=""
+            onChange={handleChange}
+            variant="filled"
+            size="small"
+            displayEmpty
+          >
+            <MenuItem key="addFlow" value="addFlow">
+              <PlaylistAddIcon />&nbsp;&nbsp; Add Flow
+            </MenuItem>
+            <MenuItem key="Export" value="Export">
+              <FileDownloadIcon /> &nbsp;&nbsp; Export
+            </MenuItem>
+          </Select>
+        </FormControl>
+      </Grid>
+    </Grid>
   );
 };
