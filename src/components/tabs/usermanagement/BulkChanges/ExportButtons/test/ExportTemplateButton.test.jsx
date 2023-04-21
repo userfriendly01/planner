@@ -33,6 +33,7 @@ const successfulRows = [
     nNumber: "Agents N Number",
     outgoingNumber: "If the user is not a DID user this is their Outgoing number",
     profileId: "Profile Id",
+    routing_team: "List of Teams that can be used in dynamic routing",
     zeroOutEnabled: "Y/N Indicator to represent if the zero out skill aligned to the profile ID should be added to the users current skills. Only required when DID User is true",
     selfServiceInd: "Y/N indicator to represent if user has self-service attribute. Only required when DID User is true."
   },
@@ -45,6 +46,7 @@ const successfulRows = [
     nNumber: "n0263786",
     outgoingNumber: "6038518288",
     profileId: 3,
+    routing_team: "licensedCSC",
     zeroOutEnabled: "Y",
     selfServiceInd: "Y"
   }
@@ -118,6 +120,13 @@ const expectedColumns = [
     field: "selfServiceInd",
     textAlign: "center",
     title: "Self Service Indicator",
+    width: undefined,
+    wrap: true
+  },
+  {
+    field: "routing_team",
+    textAlign: "center",
+    title: "Routing Team",
     width: undefined,
     wrap: true
   }
