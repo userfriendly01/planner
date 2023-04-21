@@ -338,7 +338,8 @@ export const getCreateTemplates = (state: any): Templates => {
         FIELDS.DIRECT_DIAL_NUMBER,
         FIELDS.ZERO_OUT_ENABLED,
         FIELDS.OUTGOING_NUMBER,
-        FIELDS.SELF_SERVICE_IND
+        FIELDS.SELF_SERVICE_IND,
+        // FIELDS.ROUTING_TEAM //this is not ready to be introduced but we dont want to lose the code
       ]
     },
     CREATE_CALABRIO_QM_USER: {
