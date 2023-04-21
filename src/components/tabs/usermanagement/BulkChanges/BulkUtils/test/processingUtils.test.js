@@ -8,7 +8,8 @@ import { act } from "testUtils";
 import {
   formatManagersResponse,
   formatWorkerResponse,
-  myAxios
+  myAxios,
+  getCalabrioWfmOrg
 } from "utils";
 import * as XLSX from "xlsx";
 
@@ -17,7 +18,8 @@ jest.mock("utils",() => ({
   formatWorkerResponse: jest.fn(),
   myAxios: {
     get: jest.fn()
-  }
+  },
+  getCalabrioWfmOrg: jest.fn()
 }));
 
 jest.mock("xlsx",() => ({
@@ -135,37 +137,10 @@ describe("updateWFMPersonState", () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
   });
-  describe("getWfmOrg succeeds", () => {
-    test("dispatch is called, promise resolves", async () => {
-      const response = {
-        data: {
-          organization: {
-            businessUnits: [{
-              Id: "I'm a business unit",
-              otherStuff: "yo"
-            }]
-          }
-        }
-      };
-      getWfmOrg.mockResolvedValue(response);
-      await utils.updateWFMPersonState(mockDispatch);
-      expect(mockDispatch).toHaveBeenCalledTimes(1);
-      expect(mockDispatch).toHaveBeenCalledWith({
-        type: "loadWfmOrg",
-        payload: [{
-          Id: "I'm a business unit",
-          otherStuff: "yo"
-        }]
-      });
-    });
-  });
-  describe("get users fails", () => {
-    test("dispatch is not called, promise resolves", async () => {
-      getWfmOrg.mockRejectedValue("Aww");
-      await utils.updateWFMPersonState(mockDispatch);
-      expect(console.error).toHaveBeenCalledTimes(1);
-      expect(console.error.mock.calls[0][0]).toContain("Failed to update calabrio WFM person state after bulk upload");
-    });
+  test("getCalabrioWfmOrg is called, promise resolves", async () => {
+    getCalabrioWfmOrg.mockResolvedValue(true);
+    await utils.updateWFMPersonState(mockDispatch);
+    expect(getCalabrioWfmOrg).toHaveBeenCalledTimes(1);
   });
 });
 
