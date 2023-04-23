@@ -50,10 +50,11 @@ const WfmUserTable = (props: WfmUserTableProps) => {
         <thead>
           <tr>
             <CustomTableHeader>NAME</CustomTableHeader>
-            <CustomTableHeader>BUSINESS UNIT</CustomTableHeader>
-            <CustomTableHeader>TEAM</CustomTableHeader>
+            <CustomTableHeader>ID</CustomTableHeader>
             <CustomTableHeader>EMAIL</CustomTableHeader>
             <CustomTableHeader>IDENTITY</CustomTableHeader>
+            <CustomTableHeader>BUSINESS UNIT</CustomTableHeader>
+            <CustomTableHeader>TEAM</CustomTableHeader>
             <CustomTableHeader/>
             <CustomTableHeader/>
           </tr>
@@ -105,10 +106,11 @@ const WfmUserTable = (props: WfmUserTableProps) => {
             return (
               <CustomTableRow key={user.Id + index} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">
                 <CustomTableData><TableText>{user.FirstName} {user.LastName}</TableText></CustomTableData>
-                <CustomTableData><TableText>{businessUnit.Name}</TableText></CustomTableData>
-                <CustomTableData><TableText>{team.Name}</TableText></CustomTableData>
+                <CustomTableData><TableText>{user.Id}</TableText></CustomTableData>
                 <CustomTableData><TableText>{user.Email}</TableText></CustomTableData>
                 <CustomTableData><TableText>{user.Identity}</TableText></CustomTableData>
+                <CustomTableData><TableText>{businessUnit.Name}</TableText></CustomTableData>
+                <CustomTableData><TableText>{team.Name}</TableText></CustomTableData>
                 <CustomTableData>
                   <IconWrapper onClick={editButtonOnClick} data-testid="edit-button">
                     <Edit fontSize={"inherit"}/>

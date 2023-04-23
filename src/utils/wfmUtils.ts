@@ -42,13 +42,17 @@ export const getWfmBusinessUnits = (state: AppState) => {
   });
 };
 
-export const getWfmTeams = (state: AppState) => {
+export const getWfmTeams = (state: AppState, businessUnitId?: string) => {
   const wfmTeams: WfmTeam[] = [];
   
-  state.calabrioContext.wfmOrg.forEach((businessUnit: WfmBusinessUnit) => {
+  if(businessUnitId){
+    const businessUnit = state.calabrioContext.wfmOrg.find((bu: WfmBusinessUnit) => bu.Id === businessUnitId);
     businessUnit.Teams.forEach((team: WfmTeam) => wfmTeams.push(team));
-  });
-
+  } else {
+    state.calabrioContext.wfmOrg.forEach((businessUnit: WfmBusinessUnit) => {
+      businessUnit.Teams.forEach((team: WfmTeam) => wfmTeams.push(team));
+    });
+  }
   return wfmTeams;
 };
 

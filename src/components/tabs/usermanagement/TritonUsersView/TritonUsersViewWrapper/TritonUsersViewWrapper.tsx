@@ -64,8 +64,6 @@ const TritonUserManagementWrapper: any = () => {
     //filter by pagination
     const startingUserIndex = tableState.pagination.pageNumber !== 1 ? ((tableState.pagination.pageNumber - 1) * tableState.pagination.usersPerPage) : 0;
     const endingUserIndex = tableState.pagination.pageNumber * tableState.pagination.usersPerPage - 1;
-    console.log("*FAITH* Starting Index", startingUserIndex);
-    console.log("*FAITH* Ending Index", endingUserIndex);
     filteredList = filteredList.slice(startingUserIndex, endingUserIndex + 1);
 
     console.log("**pagination FL", filteredList);

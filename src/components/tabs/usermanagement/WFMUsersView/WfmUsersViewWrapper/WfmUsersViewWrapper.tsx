@@ -1,5 +1,5 @@
 import {
-  ManagementContainer,
+  WfmUsersContainer,
   StyledPaper
 } from "./WfmUsersViewWrapper.Styles";
 import {
@@ -26,10 +26,10 @@ const TritonUserManagementWrapper: any = () => {
     searchBy: "",
     selected: [],
     teamFilter: null,
-    businessUnitFilter: false,
+    businessUnitFilter: null,
     searchResults: [],
     pagination: {
-      usersPerPage: 5,
+      usersPerPage: 25,
       pageNumber: 1,
       length: 0,
       startingUserIndex: null,
@@ -44,7 +44,6 @@ const TritonUserManagementWrapper: any = () => {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    console.log("*FAITH* Something Changed", tableState);
     const wfmPeople = getWfmPeople(state);
     if(wfmPeople.length > 0){
       setWfmLoaded(true);
@@ -53,10 +52,8 @@ const TritonUserManagementWrapper: any = () => {
 
       //filter by business unit
       if(tableState.businessUnitFilter && tableState.businessUnitFilter !== "show-all"){
-        const businessUnit = getWfmBusinessUnits(state).find((bu: WfmBusinessUnit) => bu.Name === tableState.businessUnitFilter)
-        if(businessUnit){
-          filteredList = filteredList.filter((wfmUser: WfmUser) => wfmUser.BusinessUnitId === businessUnit.Id);
-        }
+        const businessUnit = getWfmBusinessUnits(state).find((bu: WfmBusinessUnit) => bu.Id === tableState.businessUnitFilter.Id)
+        filteredList = filteredList.filter((wfmUser: WfmUser) => wfmUser.BusinessUnitId === businessUnit?.Id);
       }
       console.log("**BU FL", filteredList);
 
@@ -80,8 +77,6 @@ const TritonUserManagementWrapper: any = () => {
       //filter by pagination
       const startingUserIndex = tableState.pagination.pageNumber !== 1 ? ((tableState.pagination.pageNumber - 1) * tableState.pagination.usersPerPage) : 0;
       const endingUserIndex = tableState.pagination.pageNumber * tableState.pagination.usersPerPage - 1;
-      console.log("*FAITH* Starting Index", startingUserIndex);
-      console.log("*FAITH* Ending Index", endingUserIndex);
       filteredList = filteredList.slice(startingUserIndex, endingUserIndex + 1);
       console.log("**pagination FL", filteredList.slice());
 
@@ -103,11 +98,11 @@ const TritonUserManagementWrapper: any = () => {
   }, [tableState.searchBy, tableState.teamFilter, tableState.businessUnitFilter, tableState.pagination.pageNumber, state.calabrioContext.wfmOrg]);
 
   return (
-    <ManagementContainer>
-      {/* <WfmUsersHeader
+    <WfmUsersContainer>
+      <WfmUsersHeader
         tableState={tableState}
         setTableState={setTableState}
-      /> */}
+      />
       { wfmLoaded ?
         <>
           <StyledPaper elevation={3}>
@@ -121,11 +116,9 @@ const TritonUserManagementWrapper: any = () => {
             setTableState={setTableState}
           />
         </>
-        : <WFMLoadRetryModal
-        
-        />
+        : <WFMLoadRetryModal handleClose={() => navigate(-1)} />
       }
-    </ManagementContainer>
+    </WfmUsersContainer>
   );
 };
 

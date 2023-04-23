@@ -64,3 +64,5 @@ export const sortWfmWorkersByFullName = (a: WfmUser, b: WfmUser) => {
   const [aName, bName] = [aFullName.trim() || sortLast, bFullName.trim() || sortLast];
   return sortStrings(aName, bName);
 };
+
+export const sortWFMByName = (a: any, b: any) => sortStrings(a.Name.trim(), b.Name.trim());

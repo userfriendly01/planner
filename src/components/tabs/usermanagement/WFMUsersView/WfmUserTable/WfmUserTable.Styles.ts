@@ -13,11 +13,12 @@ export const CustomTableData = styled.td`
   color: ${props => props.theme.textColor};
   padding: 2px 4px;
   vertical-align: top;
-  &:nth-child(6) {
+  overflow-wrap: anywhere;
+  &:nth-child(7) {
     text-align: -webkit-center;
     vertical-align: middle;
   }
-  &:nth-child(7) {
+  &:nth-child(8) {
     text-align: -webkit-center;
     vertical-align: middle;
   }
@@ -28,19 +29,23 @@ export const CustomTableHeader = styled.th`
   border-bottom: 2px solid ${props => props.theme.tableRow.borderColor};
   padding-left: 4px;
   text-align: left;
+  overflow-wrap: anywhere;
   &:nth-child(1) {
     width: 12%;
   }
   &:nth-child(2) {
-    width: 12%;
+    width: 15%;
   }
-  &:nth-child(3) {
-    width: 18%;
+  &:nth-child(5) {
+    width: 10%;
   }
   &:nth-child(6) {
-    width: ${headerIconWidth};
+    width: 10%;
   }
   &:nth-child(7) {
+    width: ${headerIconWidth};
+  }
+  &:nth-child(8) {
     width: ${headerIconWidth};
   }
 `;

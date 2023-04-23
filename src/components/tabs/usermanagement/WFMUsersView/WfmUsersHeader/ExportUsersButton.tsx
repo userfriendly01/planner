@@ -1,26 +1,17 @@
 
 import { StyledExportButton } from "./WfmUsersHeader.Styles";
-import { ExportTritonUserProps } from "./WfmUsersHeader.Interfaces";
+import { ExportWfmUserProps } from "./WfmUsersHeader.Interfaces";
 import React from "react";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
 
-const ExportButton = (props: ExportTritonUserProps) => {
+const ExportButton = (props: ExportWfmUserProps) => {
   const {
     selected,
     label
   } = props;
 
   const _export = React.useRef(null);
-  const rows = selected.map((worker: any) => {
-    const workerObj: any = {
-      ...worker
-    }
-    Object.keys(worker.attributes).forEach((key: any) => {
-      workerObj[key] = worker.attributes[key]
-    });
-    delete workerObj.attrbutes;
-    return workerObj;
-  })
+  const rows: any[] = [];
 
   const handleExport = () => {
     const columns = [
