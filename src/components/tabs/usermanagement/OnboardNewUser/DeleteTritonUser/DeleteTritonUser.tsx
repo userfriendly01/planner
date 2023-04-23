@@ -36,7 +36,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
 
   console.log("TRITON WORKER", tritonWorker);
 
-  const isWorkerDid = form.didUser;
+  const isWorkerDid = form.triton.didUser;
   const [deleteTriton, setDeleteTriton] = React.useState(workerOpts.systems.triton);
   const [deleteCalabrioQm, setDeleteClabrioQm] = React.useState(workerOpts.systems.calabrio_qm);
   const [deleteCalabrioWfm, setDeleteCalabrioWfm ] = React.useState(workerOpts.systems.calabrio_wfm);

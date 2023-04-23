@@ -91,7 +91,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         console.error("Failed to fetch user from peoples database.", err);
       }
     };
-    if(!form.nNumberFetchedUser && form.nNumber.value && form.formMode === formModes.UPDATE){
+    if(!form.nNumber.nNumberFetchedUser && form.nNumber.value && form.formMode === formModes.UPDATE){
       fetchUser();
     }
   }, []);
@@ -108,64 +108,67 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     // https://forge.lmig.com/wiki/display/CICCT/Twilio+Flex+SSO+Saml2+Integration
     const attributes: Partial<Worker["attributes"]> = {
       contact_uri: `client:${form.nNumber.value.toLowerCase()}`,
-      default_skills: form.defaultSkills,
-      department_id: form.nNumberFetchedUser.departmentNumber,// need this value otherwise the department_name will not appear in flex insights,
-      department_name: form.nNumberFetchedUser.departmentName,
-      did: form.outgoing.e164, //if this is a did user it should be the direct dial num
-      email: form.nNumberFetchedUser.email,
-      email_address: form.nNumberFetchedUser.email,
-      emp_first_name: form.nNumberFetchedUser.firstName,
-      emp_last_name: form.nNumberFetchedUser.lastName,
-      extension: form.extension.value,
-      full_name: `${form.nNumberFetchedUser.firstName} ${form.nNumberFetchedUser.lastName}`,
-      location: form.nNumberFetchedUser.officeName,
-      manager_first_name: form.manager.value.manager_first_name,
-      manager_last_name: form.manager.value.manager_last_name,
-      manager_n_number: form.manager.value.manager_n_number,
-      manager: `${form.manager.value.manager_first_name} ${form.manager.value.manager_last_name}`,
+      default_skills: {
+        levels: form.triton.defaultSkills.levels,
+        skills: form.triton.defaultSkills.skills
+      },
+      department_id: form.nNumber.nNumberFetchedUser.departmentNumber,// need this value otherwise the department_name will not appear in flex insights,
+      department_name: form.nNumber.nNumberFetchedUser.departmentName,
+      did: form.triton.outgoing.e164, //if this is a did user it should be the direct dial num
+      email: form.nNumber.nNumberFetchedUser.email,
+      email_address: form.nNumber.nNumberFetchedUser.email,
+      emp_first_name: form.nNumber.nNumberFetchedUser.firstName,
+      emp_last_name: form.nNumber.nNumberFetchedUser.lastName,
+      extension: form.triton.extension.value,
+      full_name: `${form.nNumber.nNumberFetchedUser.firstName} ${form.nNumber.nNumberFetchedUser.lastName}`,
+      location: form.nNumber.nNumberFetchedUser.officeName,
+      manager_first_name: form.triton.manager.value.manager_first_name,
+      manager_last_name: form.triton.manager.value.manager_last_name,
+      manager_n_number: form.triton.manager.value.manager_n_number,
+      manager: `${form.triton.manager.value.manager_first_name} ${form.triton.manager.value.manager_last_name}`,
       n_number: form.nNumber.value.toLowerCase(),
-      office_location_name: form.nNumberFetchedUser.officeName,
-      office_location_number: form.nNumberFetchedUser.officeNumber,
-      primary_dept_name: form.nNumberFetchedUser.departmentName,
-      primary_dept_number: form.nNumberFetchedUser.departmentNumber,
-      profile_id: form.profileId.value,
+      office_location_name: form.nNumber.nNumberFetchedUser.officeName,
+      office_location_number: form.nNumber.nNumberFetchedUser.officeNumber,
+      primary_dept_name: form.nNumber.nNumberFetchedUser.departmentName,
+      primary_dept_number: form.nNumber.nNumberFetchedUser.departmentNumber,
+      profile_id: form.triton.profileId.value,
       unique_id: form.nNumber.value.toLowerCase()
     };
 
     const calabrioAttributes = {
       acdId: "", //populate with workerSid returned
       adLogin: `LM\\${form.nNumber.value.toLowerCase()}`,
-      email: form.nNumberFetchedUser?.email,
-      firstName: form.nNumberFetchedUser?.firstName,
-      lastName: form.nNumberFetchedUser?.lastName,
-      groupId: form.calabrioUser.team?.value,
-      timeZone: form.calabrioUser.timezone?.value,
-      roles: form.calabrioUser.roles,
+      email: form.nNumber.nNumberFetchedUser?.email,
+      firstName: form.nNumber.nNumberFetchedUser?.firstName,
+      lastName: form.nNumber.nNumberFetchedUser?.lastName,
+      groupId: form.calabrio_qm.team?.groupId,
+      timeZone: form.calabrio_qm.timezone?.value,
+      roles: form.calabrio_qm.roles,
       scope: {
-        groups: form.calabrioUser.scope?.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),
-        teams: form.calabrioUser.scope?.teams.filter((team: any) => team.checked).map((g: any) => g.groupId)
+        groups: form.calabrio_qm.scope?.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),
+        teams: form.calabrio_qm.scope?.teams.filter((team: any) => team.checked).map((g: any) => g.groupId)
       }
     };
 
-    const overflowSkill = getOverflowSkillFromProfile(profiles, form.profileId.value);
-    if (overflowSkill !== undefined && form.zeroOutEnabled && form.directDialNum.value) {
+    const overflowSkill = getOverflowSkillFromProfile(profiles, form.triton.profileId.value);
+    if (overflowSkill !== undefined && form.triton.zeroOutEnabled && form.triton.directDialNum.value) {
       attributes.routing = {
         skills: [overflowSkill],
         levels: {}
       };
     }
 
-    const operatingUnitSid = profiles.find(profile => profile.profile_id === form.profileId.value).operating_unit_sid;
+    const operatingUnitSid = profiles.find(profile => profile.profile_id === form.triton.profileId.value).operating_unit_sid;
 
-    const createUserReqBody = form.directDialNum.value ?
+    const createUserReqBody = form.triton.directDialNum.value ?
       {
         attributes,
         activateEp: true,
-        alternateDid: form.alternateDid.e164,
-        directDialNum: form.directDialNum.e164,
+        alternateDid: form.triton.alternateDid.e164,
+        directDialNum: form.triton.directDialNum.e164,
         operatingUnitSid: operatingUnitSid,
-        zeroOutEnabled: form.zeroOutEnabled,
-        selfServiceInd: form.selfServiceInd
+        zeroOutEnabled: form.triton.zeroOutEnabled.value,
+        selfServiceInd: form.triton.selfServiceInd.value
       } : {
         attributes,
         operatingUnitSid: operatingUnitSid,
@@ -210,13 +213,13 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             setForm({
               type: userFormActions.RESET_FORM_AFTER_ADD,
               payload: {
-                managerValue: form.manager.value,
+                managerValue: form.triton.manager.value,
                 outgoing: {
-                  value: form.outgoing.value,
-                  e164: form.outgoing.e164
+                  value: form.triton.outgoing.value,
+                  e164: form.triton.outgoing.e164
                 },
-                profileIdValue: form.profileId.value,
-                didUser: form.didUser
+                profileIdValue: form.triton.profileId.value,
+                didUser: form.triton.didUser
               }
             });
             setForm({ type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
@@ -270,7 +273,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     });
     const attributes: Partial<Worker["attributes"]> = {};
     let operatingUnitSid: string;
-    const nNumberFetchedUser = form.nNumberFetchedUser;
+    const nNumberFetchedUser = form.nNumber.nNumberFetchedUser;
 
     attributes.email = nNumberFetchedUser?.email;
     attributes.email_address = nNumberFetchedUser?.email;
@@ -278,24 +281,27 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     attributes.emp_last_name = nNumberFetchedUser?.lastName;
     attributes.full_name = `${nNumberFetchedUser?.firstName} ${nNumberFetchedUser?.lastName}`;
 
-    if (form.manager.updated) {
-      attributes.manager_first_name = form.manager.value.manager_first_name;
-      attributes.manager_last_name = form.manager.value.manager_last_name;
-      attributes.manager_n_number = form.manager.value.manager_n_number;
-      attributes.manager = form.manager.value.manager_first_name + " " + form.manager.value.manager_last_name;
+    if (form.triton.manager.updated) {
+      attributes.manager_first_name = form.triton.manager.value.manager_first_name;
+      attributes.manager_last_name = form.triton.manager.value.manager_last_name;
+      attributes.manager_n_number = form.triton.manager.value.manager_n_number;
+      attributes.manager = form.triton.manager.value.manager_first_name + " " + form.triton.manager.value.manager_last_name;
     }
-    if (form.profileId.updated) {
-      attributes.profile_id = form.profileId.value;
-      operatingUnitSid = profiles.find(profile => profile.profile_id === form.profileId.value).operating_unit_sid;
+    if (form.triton.profileId.updated) {
+      attributes.profile_id = form.triton.profileId.value;
+      operatingUnitSid = profiles.find(profile => profile.profile_id === form.triton.profileId.value).operating_unit_sid;
     }
-    if (form.outgoing.updated) {
-      attributes.did = form.outgoing.e164;
+    if (form.triton.outgoing.updated) {
+      attributes.did = form.triton.outgoing.e164;
     }
-    if (form.extension.updated) {
-      attributes.extension = form.extension.value;
+    if (form.triton.extension.updated) {
+      attributes.extension = form.triton.extension.value;
     }
-    if (form.defaultSkillsUpdated) {
-      attributes.default_skills = form.defaultSkills;
+    if (form.triton.defaultSkills.updated) {
+      attributes.default_skills = {
+        skills: form.triton.defaultSkills.skills,
+        levels: form.triton.defaultSkills.levels
+      };
     }
     if(nNumberFetchedUser){
       nNumberFetchedUser.departmentNumber ? attributes.department_id = nNumberFetchedUser.departmentNumber : null;
@@ -304,10 +310,10 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     }
 
     // update overflow skill
-    const overflowSkill = getOverflowSkillFromProfile(profiles, form.profileId.value);
+    const overflowSkill = getOverflowSkillFromProfile(profiles, form.triton.profileId.value);
     const nonOverflowSkills: string[] = getNonOverflowSkills(worker, profiles) ? getNonOverflowSkills(worker, profiles) : [];
     const levels = worker.attributes?.routing?.levels ? worker.attributes.routing.levels : {};
-    if ((form.zeroOutEnabledUpdated || form.profileId.updated) && form.zeroOutEnabled) {
+    if ((form.triton.zeroOutEnabled.updated || form.triton.profileId.updated) && form.triton.zeroOutEnabled.value) {
       attributes.routing = {
         skills: [
           ...nonOverflowSkills,
@@ -317,7 +323,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       };
     }
     // remove overflow skill
-    if (!form.zeroOutEnabled && workerHasOverFlowSkill(worker, profiles)) {
+    if (!form.triton.zeroOutEnabled.value && workerHasOverFlowSkill(worker, profiles)) {
       attributes.routing = {
         skills: nonOverflowSkills,
         levels: levels
@@ -326,22 +332,22 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
     const payload: Partial<DbWorker> = {
       attributes,
-      zeroOutEnabled: form.zeroOutEnabled,
-      selfServiceInd: form.selfServiceInd
+      zeroOutEnabled: form.triton.zeroOutEnabled.value,
+      selfServiceInd: form.triton.selfServiceInd.value
     };
 
     if(operatingUnitSid){
       payload.operatingUnitSid = operatingUnitSid;
     }
-    if (form.alternateDid.updated) {
-      payload.alternateDid = form.alternateDid.e164;
+    if (form.triton.alternateDid.updated) {
+      payload.alternateDid = form.triton.alternateDid.e164;
     }
-    if (form.directDialNum.updated) {
-      payload.directDialNum = form.directDialNum.e164;
+    if (form.triton.directDialNum.updated) {
+      payload.directDialNum = form.triton.directDialNum.e164;
       payload.activateEp = true;
     }
-    if (form.inactiveForwardTo.value !== null && form.inactiveForwardTo.updated) {
-      payload.inactiveForwardTo = form.inactiveForwardTo.value;
+    if (form.triton.inactiveForwardTo.value !== null && form.triton.inactiveForwardTo.updated) {
+      payload.inactiveForwardTo = form.triton.inactiveForwardTo.value;
     }
 
     updateUser(worker.sid, payload)
@@ -352,23 +358,23 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         }));
 
         const calabrioAttributes: any = {};
-        if(form.calabrioUser.updated) {
+        if(form.calabrio_qm.updated) {
           calabrioAttributes.acdId = dbWorker.workerSid;
           calabrioAttributes.adLogin = `LM\\${form.nNumber.value.toLowerCase()}`;
-          calabrioAttributes.email = form.nNumberFetchedUser?.email;
-          calabrioAttributes.firstName = form.nNumberFetchedUser?.firstName;
-          calabrioAttributes.lastName = form.nNumberFetchedUser?.lastName;
-          calabrioAttributes.groupId = form.calabrioUser.team?.groupId;
-          calabrioAttributes.timeZone = form.calabrioUser.timezone?.value;
-          calabrioAttributes.roles = form.calabrioUser.roles;
+          calabrioAttributes.email = form.nNumber.nNumberFetchedUser?.email;
+          calabrioAttributes.firstName = form.nNumber.nNumberFetchedUser?.firstName;
+          calabrioAttributes.lastName = form.nNumber.nNumberFetchedUser?.lastName;
+          calabrioAttributes.groupId = form.calabrio_qm.team?.groupId;
+          calabrioAttributes.timeZone = form.calabrio_qm.timezone?.value;
+          calabrioAttributes.roles = form.calabrio_qm.roles;
           calabrioAttributes.scope = {
-            groups: form.calabrioUser.scope?.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),
-            teams: form.calabrioUser.scope?.teams.filter((team: any) => team.checked).map((g: any) => g.groupId)
+            groups: form.calabrio_qm.scope?.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),
+            teams: form.calabrio_qm.scope?.teams.filter((team: any) => team.checked).map((g: any) => g.groupId)
           };
 
           checkConflictingUsers(calabrioAttributes, users, roles, teams).then(() => {
             console.log("Calabrio Attributes sent for update user", calabrioAttributes);
-            const calabrioCall = form.calabrioUser.id ? (attributes: any) => updateCalabrioUser(form.calabrioUser.id, attributes) : (attributes: any) => createCalabrioUser(attributes);
+            const calabrioCall = form.calabrio_qm.id ? (attributes: any) => updateCalabrioUser(form.calabrio_qm.id, attributes) : (attributes: any) => createCalabrioUser(attributes);
             calabrioCall(calabrioAttributes).then(() => {
               getCalabrioUsers().then((users: any) => {
                 dispatch({
@@ -393,7 +399,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             }).catch(err => {
               console.error("Error updating Calabrio user", err);
               let message = "Triton user updated. Error updating Calabrio user";
-              if(!form.calabrioUser.id){
+              if(!form.calabrio_qm.id){
                 message = "Triton user updated.  **Calabrio User Not Updated**  Missing Calabrio profile was not able to be created. To resolve this issue, go into Calabrio and search for this user in the inactive users. Once found, you can re-activate their old profile and come back here, refresh Triton Admin, and update this worker to be accurate. If that does not work, delete and recreate the user.";
               }
               updateLoading({
@@ -453,7 +459,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       </UserFormButton>
       <Tooltip
         title={
-          form.didUser && !isDidDifferentValid(form, worker, forwardToToggle) ?
+          form.triton.didUser && !isDidDifferentValid(form, worker, forwardToToggle) ?
             "You must edit Outgoing Number and Internal Routing before saving" : ""
         }
         placement={"bottom-start"}

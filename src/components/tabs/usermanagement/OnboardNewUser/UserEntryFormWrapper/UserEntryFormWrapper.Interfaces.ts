@@ -6,10 +6,12 @@ import {
   Skill,
   TritonProfile,
   Worker,
-  WorkerAttributeSkills
+  WorkerAttributeSkills,
+  formModes
 } from "globals";
 import { FetchUserResponse } from "services";
 import { ExtensionStatusProps } from "../Extension/ExtensionInput/ExtensionInput.Interfaces";
+import { CalabrioGroup } from "..";
 
 export interface LoadingState {
   lookupUser: boolean;
@@ -84,26 +86,63 @@ export interface FieldState {
   updated: boolean,
   valid?: boolean
 }
+
 export interface UserFormState {
-  [index: string]: any;
-  alternateDid: FieldState,
-  defaultSkills: WorkerAttributeSkills,
-  defaultSkillsUpdated: boolean,
-  didUser: boolean,
-  directDialNum: FieldState,
-  editDisabled: boolean,
-  extension: FieldState,
-  extensionStatus: ExtensionStatusProps,
   formMode: string,
-  inactiveForwardTo: FieldState,
-  manager: FieldState,
-  nNumber: FieldState,
-  nNumberFetchedUser: FetchUserResponse,
-  outgoing: FieldState,
-  profileId: FieldState,
-  userPreviouslyAdded: boolean,
-  zeroOutEnabled: boolean,
-  zeroOutEnabledUpdated: boolean,
-  selfServiceInd?: boolean,
-  selfServiceIndUpdated?: boolean
+  discrepancies: string[],
+  nNumber: {
+    value: any,
+    blurred?: boolean,
+    e164?: string,
+    updated: boolean,
+    valid?: boolean,
+    nNumberFetchedUser: FetchUserResponse,
+  }
+  triton: {
+    [key: string]: any,
+    userFound: boolean,
+    alternateDid: FieldState,
+    defaultSkills: {
+      updated: boolean,
+      levels: {
+        [key: string]: number
+      },
+      skills: string[]
+    },
+    didUser: boolean,
+    directDialNum: FieldState,
+    extension: {
+      value: any,
+      blurred?: boolean,
+      e164?: string,
+      updated: boolean,
+      valid?: boolean,
+      status: ExtensionStatusProps,
+    }
+    inactiveForwardTo: FieldState,
+    manager: FieldState,
+    outgoing: FieldState,
+    profileId: FieldState,
+    userPreviouslyAdded: boolean,
+    zeroOutEnabled: FieldState,
+    selfServiceInd: FieldState
+  },
+  calabrio_qm: {
+    userFound: boolean,
+    updated: boolean,
+    id: number,
+    team: CalabrioGroup,
+    timezone: {
+      label: string
+      value: string
+    },
+    roles: any[],
+    scope: {
+      groups: CalabrioGroup[],
+      teams: CalabrioGroup[]
+    }
+  },
+  calabrio_wfm: {
+    userFound: boolean
+  }
 }

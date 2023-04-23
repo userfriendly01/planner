@@ -17,42 +17,42 @@ import { views } from "components/tabs/usermanagement/UserManagementWrapper/User
 // For a DID user, the outgoing number is tied to the directDialNum, if you change one you must change both in order for the form to be valid
 export const isDidDifferentValid = (form: UserFormState, worker: Worker, forwardToToggle: boolean): boolean => {
   if(forwardToToggle === true) {
-    return removeNonNumericCharacters(form.outgoing.value) !== formatE164PhoneNumber(worker?.attributes?.did)
-    && removeNonNumericCharacters(form.directDialNum.value) !== formatE164PhoneNumber(worker?.directDialNum);
+    return removeNonNumericCharacters(form.triton.outgoing.value) !== formatE164PhoneNumber(worker?.attributes?.did)
+    && removeNonNumericCharacters(form.triton.directDialNum.value) !== formatE164PhoneNumber(worker?.directDialNum);
   } else {
     return true;
   }
 };
 
-export const isExtensionValid = (form: UserFormState): boolean => form.extension.valid || form.extension.value === "";
+export const isExtensionValid = (form: UserFormState): boolean => form.triton.extension.valid || form.triton.extension.value === "";
 
-export const isFormUpdated = (form: UserFormState): boolean => form.defaultSkillsUpdated || form.manager.updated ||
-form.profileId.updated || form.outgoing.updated ||
-form.alternateDid.updated || form.directDialNum.updated ||
-form.nNumber.updated || form.extension.updated ||
-form.inactiveForwardTo.updated || form.zeroOutEnabledUpdated || form.calabrioUser.updated || form.selfServiceIndUpdated;
+export const isFormUpdated = (form: UserFormState): boolean => form.triton.defaultSkills.updated || form.triton.manager.updated ||
+form.triton.profileId.updated || form.triton.outgoing.updated ||
+form.triton.alternateDid.updated || form.triton.directDialNum.updated ||
+form.nNumber.updated || form.triton.extension.updated ||
+form.triton.inactiveForwardTo.updated || form.triton.zeroOutEnabled.updated || form.calabrio_qm.updated || form.triton.selfServiceInd.updated;
 
 export const isFormValid = (form: UserFormState, worker: Worker, forwardToToggle: boolean): boolean =>
   (form.formMode === formModes.INSERT ? isNNumberValid(form) : true)
   && isProfileIdValid(form)
   && isManagerValid(form)
-  && form.outgoing.valid
+  && form.triton.outgoing.valid
   && isExtensionValid(form)
-  && (form.didUser === true ? form.directDialNum.valid && form.alternateDid.valid : true)
+  && (form.triton.didUser === true ? form.triton.directDialNum.valid && form.triton.alternateDid.valid : true)
   && isInactiveForwardToValid(form, forwardToToggle)
   && isDidDifferentValid(form, worker, forwardToToggle)
   && isCalabrioUserValid(form);
 
 export const isCalabrioUserValid =  (form: UserFormState): boolean => {
-  return form.calabrioUser.team && form.calabrioUser.roles.length > 0;
+  return form.calabrio_qm.team && form.calabrio_qm.roles.length > 0;
 };
-export const isManagerValid = (form: UserFormState): boolean => form.manager.value !== "";
+export const isManagerValid = (form: UserFormState): boolean => form.triton.manager.value !== "";
 
-export const isNNumberValid = (form: UserFormState): boolean => form.nNumberFetchedUser ? true : false;
+export const isNNumberValid = (form: UserFormState): boolean => form.nNumber.nNumberFetchedUser ? true : false;
 
-export const isProfileIdValid = (form: UserFormState): boolean => form.profileId.value !== "";
+export const isProfileIdValid = (form: UserFormState): boolean => form.triton.profileId.value !== "";
 
-export const isInactiveForwardToValid = (form: UserFormState, forwardToToggle: boolean): boolean => forwardToToggle === true ? form.inactiveForwardTo.value !== null : true;
+export const isInactiveForwardToValid = (form: UserFormState, forwardToToggle: boolean): boolean => forwardToToggle === true ? form.triton.inactiveForwardTo.value !== null : true;
 
 export const getNonOverflowSkills = (worker: Worker, profiles: TritonProfile[]): string[] => worker?.attributes.routing?.skills.filter((skill: string) => !getOverflowSkills(profiles).includes(skill));
 

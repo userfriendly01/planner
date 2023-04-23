@@ -65,7 +65,6 @@ const UserEntryForm = () => {
   });
 
   React.useEffect(() => {
-
     return () => {
       setForm({ type: userFormActions.RESET_FORM });
     };

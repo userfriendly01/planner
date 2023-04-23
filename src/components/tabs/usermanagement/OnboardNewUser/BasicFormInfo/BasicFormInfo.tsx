@@ -58,16 +58,8 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
     }
   };
 
-  const isOutgoingDisabled = (): boolean => {
-    if (form.formMode === formModes.INSERT) {
-      return false;
-    } else {
-      return form.editDisabled && worker?.directDialNum ? true : false;
-    }
-  };
-
   const handleOnBlur = (field: string) => {
-    const isFieldValid = form[field].valid;
+    const isFieldValid = form.triton[field].valid;
     if(!isFieldValid){
       setForm({
         type: userFormActions.SET_BLUR_ON_FIELD,
@@ -81,7 +73,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
       <FormControlsPane>
         <Dropdown
           disabled={form.formMode === formModes.DELETE}
-          error={form.manager.blurred && !isManagerValid(form)}
+          error={form.triton.manager.blurred && !isManagerValid(form)}
           label={"Manager *"}
           styles={{
             width: "384px",
@@ -112,11 +104,11 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
               });
             }
           }}
-          value={form.manager.value ? `${form.manager.value.manager_first_name} ${form.manager.value.manager_last_name} - ${form.manager.value.manager_n_number}`: ""}
+          value={form.triton.manager.value ? `${form.triton.manager.value.manager_first_name} ${form.triton.manager.value.manager_last_name} - ${form.triton.manager.value.manager_n_number}`: ""}
         />
         <Dropdown
           disabled={form.formMode === formModes.DELETE}
-          error={form.profileId.blurred && !isProfileIdValid(form)}
+          error={form.triton.profileId.blurred && !isProfileIdValid(form)}
           label={"Team *"}
           styles={{
             width: "384px",
@@ -133,19 +125,19 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
               }
             });
             // reset selfServiceInd value to false if set to true and then profile chnaged to value of 39 and below
-            if(newValue.value < 39 && form.selfServiceInd){
+            if(newValue.value < 39 && form.triton.selfServiceInd.value){
               setForm({ type: userFormActions.UPDATE_SELF_SERVICE_INDICATOR });
             }
           }}
-          value={profiles.find(p => p.profile_id === form.profileId.value)?.profile_nme || ""}
+          value={profiles.find(p => p.profile_id === form.triton.profileId.value)?.profile_nme || ""}
         />
         <NNumberInput
           disabled={
             (form.formMode === formModes.UPDATE) ||
-            (form.nNumberFetchedUser ? true : false) ||
+            (form.nNumber.nNumberFetchedUser ? true : false) ||
             form.formMode === formModes.DELETE
           }
-          fetchedUser={form.nNumberFetchedUser}
+          fetchedUser={form.nNumber.nNumberFetchedUser}
           label="N Number *"
           onBlur={() => handleOnBlur("nNumber")}
           onClear={() => setForm({ type: userFormActions.CLEAR_N_NUMBER })}
@@ -174,13 +166,13 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           <ToggleContainer>
             <Switch
               disabled={form.formMode === formModes.UPDATE && worker?.directDialNum ? true : false || form.formMode === formModes.DELETE}
-              checked={form.didUser}
+              checked={form.triton.didUser}
               onChange={() => {
                 setForm({ type: userFormActions.INITIATE_DID_FIELDS });
-                if (form.extension.value) {
+                if (form.triton.extension.value) {
                   setForm({ type: userFormActions.CLEAR_EXTENSION });
                 }
-                if (form.userPreviouslyAdded) {
+                if (form.triton.userPreviouslyAdded) {
                   setForm({ type: userFormActions.CLEAR_OUTGOING_NUMBER });
                 }
               }}
@@ -189,17 +181,17 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
             <ToggleLabel>DID User</ToggleLabel>
           </ToggleContainer>
         </Tooltip>
-        {form.didUser ? (
+        {form.triton.didUser ? (
           <Tooltip
-            title={getOverflowSkillFromProfile(profiles, form.profileId.value) !== undefined ?
+            title={getOverflowSkillFromProfile(profiles, form.triton.profileId.value) !== undefined ?
               "" : "No overflow skill exists for this team"}
             placement={"bottom-start"}
           >
             <ToggleContainer>
               <Switch
-                checked={form.zeroOutEnabled}
-                value={form.zeroOutEnabled}
-                disabled={getOverflowSkillFromProfile(profiles, form.profileId.value) === undefined || form.formMode === formModes.DELETE}
+                checked={form.triton.zeroOutEnabled.value}
+                value={form.triton.zeroOutEnabled.value}
+                disabled={getOverflowSkillFromProfile(profiles, form.triton.profileId.value) === undefined || form.formMode === formModes.DELETE}
                 onChange={() => setForm({ type: userFormActions.INITIATE_ZERO_OUT_FIELDS })}
                 inputProps={{ "aria-label": "toggle-zero-out" }}
               />
@@ -208,21 +200,21 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           </Tooltip>
         ): null
         }
-        {form.didUser ? (
+        {form.triton.didUser ? (
           <ExtensionInput
             disabled={form.formMode === formModes.DELETE}
-            extension={form.extension.value}
-            message={form.extensionStatus.message}
-            isError={form.extensionStatus.isError}
+            extension={form.triton.extension.value}
+            message={form.triton.extension.status.message}
+            isError={form.triton.extension.status.isError}
           />
         ) : null
         }
-        {form.didUser ? (
+        {form.triton.didUser ? (
           <Tooltip title={"enable to add self service indicator attribute to worker - needs to be DID user and profile 39 or above"} placement={"bottom-start"}>
             <ToggleContainer>
               <Switch
-                disabled={form.profileId.value < 39 ? true : false}
-                checked={form.selfServiceInd}
+                disabled={form.triton.profileId.value < 39 ? true : false}
+                checked={form.triton.selfServiceInd.value}
                 onChange={() => {
                   setForm({ type: userFormActions.UPDATE_SELF_SERVICE_INDICATOR });
                 }}
@@ -233,15 +225,15 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           </Tooltip>) : null}
       </FormControlsPane>
       <RightColumn>
-        {!form.didUser ?
+        {!form.triton.didUser ?
           <PhoneNumberInput
-            disabled={isOutgoingDisabled() || form.formMode === formModes.DELETE}
+            disabled={form.formMode === formModes.DELETE}
             allowSevenDigitVdn={false}
             id="outgoing-number"
-            number={form.outgoing.value}
+            number={form.triton.outgoing.value}
             onBlur={() => handleOnBlur("outgoing")}
             label="Outgoing Number *"
-            showError={form.outgoing.blurred}
+            showError={form.triton.outgoing.blurred}
             updateValue={(maskedValue: string, _unmaskedValue: string, isValid: boolean, e164Number: string) => {
               setForm({
                 type: userFormActions.UPDATE_PHONE_NUMBER,

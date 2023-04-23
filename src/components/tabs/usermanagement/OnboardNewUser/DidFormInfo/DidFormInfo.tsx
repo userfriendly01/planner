@@ -14,36 +14,20 @@ import {
 } from "context";
 import { formModes } from "globals";
 import React from "react";
-import { InputAdornment } from "@mui/material";
 
 const DidFormInfo = (props: DidFormInfoProps) => {
 
   const {
     worker,
-    forwardToToggle,
-    setForwardToToggle
+    // forwardToToggle,
+    // setForwardToToggle
   } = props;
 
   const form = useFormState();
   const setForm = useFormDispatch();
 
-  const editPenClick = (): void => {
-    if (forwardToToggle) {
-      // reset did fields to initial form
-      setForm({
-        type: "EDIT_PEN_CLICK_FORWARD_TO_TOGGLE",
-        payload: worker
-      });
-    } else {
-      setForm({
-        type: "EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE"
-      });
-    }
-    setForwardToToggle(!forwardToToggle);
-  };
-
   const handleOnBlur = (field: string) => {
-    const isFieldValid = form[field].valid;
+    const isFieldValid = form.triton[field].valid;
     if(!isFieldValid){
       setForm({
         type: userFormActions.SET_BLUR_ON_FIELD,
@@ -55,12 +39,12 @@ const DidFormInfo = (props: DidFormInfoProps) => {
   return(
     <FormControlsPane>
       <PhoneNumberInput
-        disabled={form.editDisabled || form.formMode === formModes.DELETE}
+        disabled={form.formMode === formModes.DELETE}
         allowSevenDigitVdn={false}
         id="direct-dial-number"
-        number={form.directDialNum.value}
+        number={form.triton.directDialNum.value}
         label="Direct Dial Number *"
-        showError={form.directDialNum.blurred}
+        showError={form.triton.directDialNum.blurred}
         onBlur={() => handleOnBlur("directDialNum")}
         updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
           setForm({
@@ -82,17 +66,8 @@ const DidFormInfo = (props: DidFormInfoProps) => {
             }
           });
         }}
-        icon={worker?.directDialNum && form.formMode !== formModes.INSERT ? (
-          <InputAdornment position="end">
-            <StyledIcon
-              fontSize="large"
-              onClick={() => editPenClick()}
-            />
-          </InputAdornment>
-        ) : null
-        }
       />
-      {forwardToToggle && form.formMode === formModes.UPDATE && (
+      {form.formMode === formModes.UPDATE && form.triton.directDialNum.updated && (
         <ForwardToEntryForm
           label={"Please choose a forward to option for the existing outgoing number"}
           updateForwardTo={(value: string) => {
@@ -111,9 +86,9 @@ const DidFormInfo = (props: DidFormInfoProps) => {
         }
         allowSevenDigitVdn={false}
         id="skype-teams-did"
-        number={form.alternateDid.value}
+        number={form.triton.alternateDid.value}
         label="Skype/Teams DID *"
-        showError={form.alternateDid.blurred}
+        showError={form.triton.alternateDid.blurred}
         onBlur={() => handleOnBlur("alternateDid")}
         updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
           setForm({

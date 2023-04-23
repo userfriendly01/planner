@@ -17,67 +17,77 @@ export const fetchedUser = {
 };
 
 export const initialFormState = {
-  alternateDid: {
-    value: "",
-    blurred: false,
-    e164: undefined,
-    updated: false,
-    valid: false
-  },
-  defaultSkills: {},
-  defaultSkillsUpdated: false,
-  didUser: false,
-  directDialNum: {
-    value: "",
-    blurred: false,
-    e164: undefined,
-    updated: false,
-    valid: false
-  },
+  formMode: formModes.INSERT,
   discrepancies: [],
-  editDisabled: false,
+  nNumber: {
+    value: "n",
+    blurred: false,
+    updated: false,
+    nNumberFetchedUser: null,
+  },
+  triton: {
+    alternateDid: {
+      value: "",
+      blurred: false,
+      e164: undefined,
+      updated: false,
+      valid: false
+    },
+    defaultSkills: {},
+    defaultSkillsUpdated: false,
+    didUser: false,
+    directDialNum: {
+      value: "",
+      blurred: false,
+      e164: undefined,
+      updated: false,
+      valid: false
+    },
+  },
   extension: {
     value: "",
     blurred: false,
     updated: false,
-    valid: false
+    valid: false,
+    status: {
+      searchStatus: ExtensionSearchStatuses.Idle,
+      retriesRemaining: 5,
+      message: "",
+      isError: false,
+      originalExtension: ""
+    },
+    inactiveForwardTo: {
+      value: null,
+      updated: false
+    },
+    manager: {
+      value: "",
+      blurred: false,
+      updated: false
+    },
+    outgoing: {
+      value: "",
+      blurred: false,
+      e164: undefined,
+      updated: false,
+      valid: false
+    },
+    profileId: {
+      value: "",
+      blurred: false,
+      updated: false
+    },
+    userPreviouslyAdded: false,
+    zeroOutEnabled: {
+      value: false,
+      updated: false
+    },
+    selfServiceInd: {
+      value: false,
+      updated: false
+    }
   },
-  extensionStatus: {
-    searchStatus: ExtensionSearchStatuses.Idle,
-    retriesRemaining: 5,
-    message: "",
-    isError: false,
-    originalExtension: ""
-  },
-  formMode: formModes.INSERT,
-  inactiveForwardTo: {
-    value: null,
-    updated: false
-  },
-  manager: {
-    value: "",
-    blurred: false,
-    updated: false
-  },
-  nNumber: {
-    value: "n",
-    blurred: false,
-    updated: false
-  },
-  nNumberFetchedUser: null,
-  outgoing: {
-    value: "",
-    blurred: false,
-    e164: undefined,
-    updated: false,
-    valid: false
-  },
-  profileId: {
-    value: "",
-    blurred: false,
-    updated: false
-  },
-  calabrioUser: {
+  calabrio_qm: {
     updated: false,
     team: null,
     timezone: {
@@ -98,12 +108,7 @@ export const initialFormState = {
         checked: true
       }]
     }
-  },
-  userPreviouslyAdded: false,
-  zeroOutEnabled: false,
-  zeroOutEnabledUpdated: false,
-  selfServiceInd: false,
-  selfServiceIndUpdated: false
+  }
 };
 
 export const validFormOptions = {

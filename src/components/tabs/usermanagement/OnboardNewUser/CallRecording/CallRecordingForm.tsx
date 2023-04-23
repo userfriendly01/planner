@@ -40,7 +40,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   const setForm = useFormDispatch();
 
   React.useEffect(() => {
-    if(form.calabrioUser.scope.groups.length === 0 || form.calabrioUser.scope.teams.length === 0) {
+    if(form.calabrio_qm.scope.groups.length === 0 || form.calabrio_qm.scope.teams.length === 0) {
       console.warn("groups and teams are empty");
       setScopeOnNewUser();
     }
@@ -48,25 +48,25 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   }, [form]);
 
   React.useEffect(() => {
-    if(form.nNumberFetchedUser && form.formMode === formModes.UPDATE) {
-      console.warn("form.nNumberFetchedUser - update and fetched user");
+    if(form.nNumber.nNumberFetchedUser && form.formMode === formModes.UPDATE) {
+      console.warn("form.nNumber.nNumberFetchedUser - update and fetched user");
       setScopeOnExistingUser();
     }
-  }, [form.nNumberFetchedUser]);
+  }, [form.nNumber.nNumberFetchedUser]);
 
   // * Workers Comp restricted Roles
   React.useEffect(() => {
-    if(parseInt(form.profileId.value) === 18) {
+    if(parseInt(form.triton.profileId.value) === 18) {
       console.log("Profile 18, setting role to 'No Screen'");
       setWorkersCompRoles();
     }
 
-  }, [form.profileId.value]);
+  }, [form.triton.profileId.value]);
 
   const setWorkersCompRoles = () => {
     let selectedRoles:any = [];
     // If existing user and already has Supervisor role, keep it
-    if (form.calabrioUser.roles.find((role: any) => role.name === "Supervisor")) {
+    if (form.calabrio_qm.roles.find((role: any) => role.name === "Supervisor")) {
       selectedRoles = getRoleOptions();
     } else {
       // for new users, or existing users without a supervisor role, auto populate role to No Screen
@@ -96,9 +96,9 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
     }));
 
     setForm({
-      type: userFormActions.SET_CALABRIO_USER,
+      type: userFormActions.SET_CALABRIO_QM_USER,
       payload: {
-        ...form.calabrioUser,
+        ...form.calabrio_qm,
         scope: {
           groups: userGroups,
           teams: userTeams
@@ -108,7 +108,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   };
 
   const setScopeOnExistingUser = () => {
-    const email = form.nNumberFetchedUser.email?.toLowerCase();
+    const email = form.nNumber.nNumberFetchedUser.email?.toLowerCase();
     const acdId = twilioWorker.sid?.toLowerCase();
     let updated = false;
     const userRecord = users.find(user => user.acdId?.toLowerCase() === acdId) || users.find(user => user.email?.toLowerCase() === email);
@@ -176,13 +176,13 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         });
 
         setForm({
-          type: userFormActions.SET_CALABRIO_USER,
+          type: userFormActions.SET_CALABRIO_QM_USER,
           payload: {
             updated,
             id: userRecord.id,
-            team: fetchedUser.groupId ? teams.find(team => team.groupId === fetchedUser.groupId) : form.groupId,
-            roles: fetchedUser.roles || form.calabrioUser.roles,
-            timezone: fetchedUser.timeZone || form.calabrioUser.timezone,
+            team: fetchedUser.groupId ? teams.find(team => team.groupId === fetchedUser.groupId) : form.calabrio_qm.team.groupId,
+            roles: fetchedUser.roles || form.calabrio_qm.roles,
+            timezone: fetchedUser.timeZone || form.calabrio_qm.timezone,
             scope: {
               groups: userGroups,
               teams: userTeams
@@ -203,9 +203,9 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         payload: discrepancy
       });
       setForm({
-        type: userFormActions.SET_CALABRIO_USER,
+        type: userFormActions.SET_CALABRIO_QM_USER,
         payload: {
-          ...form.calabrioUser,
+          ...form.calabrio_qm,
           updated: true
         }
       });
@@ -216,7 +216,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
     let allowed = roles.filter(role => calabrioAllowedRoles.includes(role.name));
 
     // temporary blocking of roles for Workers Comp Profile 18
-    if (parseInt(form.profileId.value) === 18) {
+    if (parseInt(form.triton.profileId.value) === 18) {
       allowed = allowed.filter(role => role.name === "No Screen" || role.name === "Supervisor");
     }
 
@@ -232,8 +232,8 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   const getTeamOptions = () => {
     // Gather up the parents of all the teams in the manager's scope
     let parentTeams: number[] = [];
-    if (form.manager.value && form.manager.value.calabrio_team_ids) {
-      parentTeams = form.manager.value.calabrio_team_ids.map(
+    if (form.triton.manager.value && form.triton.manager.value.calabrio_team_ids) {
+      parentTeams = form.triton.manager.value.calabrio_team_ids.map(
         (teamId: number) => {
           const targetTeam = state.calabrioContext.teams.find((team: any) => team.groupId === teamId);
           return targetTeam.parentGroupId; // Array may have some duplicates, but that doesn't hurt anything
@@ -268,7 +268,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
           label="Roles"
           multiple={true}
           options={getRoleOptions()}
-          value={form.calabrioUser.roles}
+          value={form.calabrio_qm.roles}
           updateValue={(event: any, selectedRoles: any) => setForm({
             type: userFormActions.SET_CALABRIO_ROLES,
             payload: selectedRoles
@@ -279,10 +279,10 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
           disabled={form.formMode === formModes.DELETE}
           label="Team"
           options={getTeamOptions()}
-          value={form.calabrioUser.team ?{
-            ...form.calabrioUser.team,
-            label: form.calabrioUser.team.name,
-            value: form.calabrioUser.team.groupId
+          value={form.calabrio_qm.team ? {
+            ...form.calabrio_qm.team,
+            label: form.calabrio_qm.team.name,
+            value: form.calabrio_qm.team.groupId
           }: ""}
           updateValue={(event: any, team: any) => setForm({
             type: userFormActions.SET_CALABRIO_TEAM,
@@ -294,7 +294,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
           disabled={form.formMode === formModes.DELETE}
           label="Time Zone"
           options={calabrioTimeZones}
-          value={form.calabrioUser.timezone}
+          value={form.calabrio_qm.timezone}
           updateValue={(event: any, timezone: any) => setForm({
             type: userFormActions.SET_CALABRIO_TIMEZONE,
             payload: timezone
@@ -303,7 +303,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         />
       </FormControlsPane>
       <CallRecordingScope
-        calabrioUser={form.calabrioUser}
+        calabrioUser={form.calabrio_qm}
         setForm={setForm}
       />
     </FormControlsContainer>
