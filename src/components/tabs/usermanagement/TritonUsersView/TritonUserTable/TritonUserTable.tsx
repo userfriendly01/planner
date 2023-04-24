@@ -69,8 +69,6 @@ const TritonUserTable = (props: TritonUserTableProps) => {
           {tableState.filteredList.map((worker: any) => {
             const isSelected = tableState.selected.some((selectedWorker: any) => selectedWorker.sid === worker.sid);
             const handleWorkerOnClick = () => {
-              console.log("FAITH - handleWorkerOnClick", tableState, worker);
-              console.log("FAITH - ", tableState.selected.filter((w: any) => w.sid !== worker.sid))
               if(isSelected){
                 setTableState({
                   ...tableState,
