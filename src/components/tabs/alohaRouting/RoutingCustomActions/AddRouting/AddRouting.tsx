@@ -32,7 +32,9 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
     isOpen = false,
     matchedGroups,
     newId,
-    openModal
+    openModal,
+    cloneRouteRule,
+    routeRule
   } = props;
 
   const [routingRule, setRoutingRule] = useState({ ...routingInitRule });
@@ -58,7 +60,7 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
 
   const resetRoutingRule = () => {
     setRoutingRule({ ...routingInitRule });
-    openModal(false);
+    openModal(false,false);
   };
 
   useEffect(() => {
@@ -67,15 +69,19 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
     });
   }, []);
   useEffect(()=>{
-    const newRoutingRule :FormValidationRule= {
-      "id": {
-        value: newId.toString()
-      }
-    };
-    setRoutingRule(rule => ({
-      ...rule,
-      ...newRoutingRule
-    }));
+    if(cloneRouteRule) {
+      setRoutingRule({ ...routeRule });
+    } else{
+      const newRoutingRule :FormValidationRule= {
+        "id": {
+          value: newId.toString()
+        }
+      };
+      setRoutingRule(rule => ({
+        ...rule,
+        ...newRoutingRule
+      }));
+    }
   },[openModal]);
 
   const isInvalidField = (key: string, value: string):boolean =>{
@@ -132,7 +138,7 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
             transferMessage: routingRule.transferMessage.value,
             twilioSkill: routingRule.twilioSkill.value
           };
-          openModal(false, newRoutingRule);
+          openModal(false,false, newRoutingRule);
           setRoutingRule({ ...routingInitRule });
           setAlertBar(alertBarProps => ({
             ...alertBarProps,
