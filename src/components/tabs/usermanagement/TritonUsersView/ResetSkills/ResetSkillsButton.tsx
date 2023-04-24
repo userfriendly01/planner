@@ -3,10 +3,7 @@ import {
   ResetSkillsResultsModal,
   StyledButton
 } from "components";
-import {
-  useAdminDispatch,
-  useAdminState
-} from "context";
+import { useAdminDispatch } from "context";
 import { apiPaths } from "globals";
 import React, { useState } from "react";
 import {
@@ -28,10 +25,6 @@ const ResetSkillsButton = (props: any) => {
   } = props;
 
   const dispatch = useAdminDispatch();
-  const state = useAdminState();
-
-  // const selectedWorkers = state.workerContext.selectedWorkers;
-
   const [ resultsModalOpts, setResultsModalOpts ] = useState(defaultResetInformation);
 
   const resetWorkers = () => {
