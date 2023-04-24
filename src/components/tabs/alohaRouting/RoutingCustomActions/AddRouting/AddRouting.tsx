@@ -60,7 +60,7 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
 
   const resetRoutingRule = () => {
     setRoutingRule({ ...routingInitRule });
-    openModal(false);
+    openModal(false,false);
   };
 
   useEffect(() => {
@@ -138,7 +138,7 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
             transferMessage: routingRule.transferMessage.value,
             twilioSkill: routingRule.twilioSkill.value
           };
-          openModal(false, newRoutingRule);
+          openModal(false,false, newRoutingRule);
           setRoutingRule({ ...routingInitRule });
           setAlertBar(alertBarProps => ({
             ...alertBarProps,

@@ -164,8 +164,11 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   };
 
 
-  const openAddModal = (flag: boolean, row?: CctSharedCallRoutingDb) => {
+  const openAddModal = (flag: boolean,openAddModal?:boolean, row?: CctSharedCallRoutingDb) => {
     let newData;
+    if(!openAddModal){
+      setClonedRule(openAddModal);
+    }
     if (!flag) {
       newData = row? state.data.concat(row) : undefined;
 
