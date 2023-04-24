@@ -38,8 +38,6 @@ const TritonUserTable = (props: TritonUserTableProps) => {
   } = props;
 
   const state = useAdminState();
-  const selectedWorkers = state.workerContext.selectedWorkers;
-  const dispatch = useAdminDispatch();
   const setForm = useFormDispatch();
   const navigate = useNavigate();
 
@@ -69,14 +67,30 @@ const TritonUserTable = (props: TritonUserTableProps) => {
         </thead>
         <tbody>
           {tableState.filteredList.map((worker: any) => {
-            const isSelected = selectedWorkers.some(selectedWorker => selectedWorker.sid === worker.sid);
-            const handleWorkerOnClick = () => dispatch({
-              type: "toggleWorkerSelected",
-              payload: {
-                name: worker.attributes.full_name,
-                sid: worker.sid
+            const isSelected = tableState.selected.some((selectedWorker: any) => selectedWorker.sid === worker.sid);
+            const handleWorkerOnClick = () => {
+              console.log("FAITH - handleWorkerOnClick", tableState, worker);
+              console.log("FAITH - ", tableState.selected.filter((w: any) => w.sid !== worker.sid))
+              if(isSelected){
+                setTableState({
+                  ...tableState,
+                  selected: [
+                    ...tableState.selected.filter((w: any) => w.sid !== worker.sid)
+                  ]
+                })
+              } else {
+                setTableState({
+                  ...tableState,
+                  selected: [
+                    ...tableState.selected,
+                    {
+                      name: worker.attributes.full_name,
+                      sid: worker.sid
+                    }
+                  ]
+                })
               }
-            });
+            };
             const editButtonOnClick = (event: any) => {
               event.stopPropagation();
               setForm({

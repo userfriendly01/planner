@@ -195,17 +195,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
         ...state,
         resettingSkills: action.payload
       };
-    case "toggleWorkerSelected":
-      return {
-        ...state,
-        workerContext: {
-          ...state.workerContext,
-          selectedWorkers:
-            state.workerContext.selectedWorkers.find(worker => worker.sid === action.payload.sid)
-              ? state.workerContext.selectedWorkers.filter(worker => worker.sid !== action.payload.sid)
-              : [...state.workerContext.selectedWorkers, action.payload]
-        }
-      };
     case "updateWorker":
       return {
         ...state,

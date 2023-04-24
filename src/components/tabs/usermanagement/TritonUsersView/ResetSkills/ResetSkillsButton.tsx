@@ -22,12 +22,15 @@ const defaultResetInformation: DefaultResetInformation = {
   unsuccessfulResets: []
 };
 
-const ResetSkillsButton = () => {
+const ResetSkillsButton = (props: any) => {
+  const {
+    selected
+  } = props;
 
   const dispatch = useAdminDispatch();
   const state = useAdminState();
 
-  const selectedWorkers = state.workerContext.selectedWorkers;
+  // const selectedWorkers = state.workerContext.selectedWorkers;
 
   const [ resultsModalOpts, setResultsModalOpts ] = useState(defaultResetInformation);
 
@@ -37,7 +40,7 @@ const ResetSkillsButton = () => {
       payload: bool
     });
     dispatchResettingSkills(true);
-    const workerSids = selectedWorkers.map(worker => worker.sid);
+    const workerSids = selected.map((worker: any) => worker.sid);
     myAxios
       .post(apiPaths.RESET_WORKER_SKILLS, { workerSids }).then(response => {
         const failedWorkers: any[] = [];
@@ -47,24 +50,17 @@ const ResetSkillsButton = () => {
             result.worker.workerSid = result.workerSid;
             result.worker.attributes = JSON.parse(result.worker.attributes);
             const updatedWorker = mapWorkerFromDbWorker(result.worker);
-
-            dispatch({
-              type: "toggleWorkerSelected",
-              payload: {
-                sid: result.workerSid
-              }
-            });
             dispatch({
               type: "updateWorker",
               payload: updatedWorker
             });
             passedWorkers.push({
-              name: selectedWorkers.find((worker: any) => result.workerSid === worker.sid).sid
+              name: selected.find((worker: any) => result.workerSid === worker.sid).sid
             });
           } else {
             failedWorkers.push({
               reason: result.reason,
-              name: selectedWorkers.find((worker: any) => result.workerSid === worker.sid).sid
+              name: selected.find((worker: any) => result.workerSid === worker.sid).sid
             });
           }
         });
@@ -102,7 +98,7 @@ const ResetSkillsButton = () => {
           successfulWorkers={resultsModalOpts.successfulResets}
           unsuccessfulWorkers={resultsModalOpts.unsuccessfulResets} />
       </Modal>
-      <StyledButton style={{ width: "100%", height: "50px" }} disabled={selectedWorkers.length === 0} onClick={resetWorkers}>
+      <StyledButton style={{ width: "100%", height: "50px" }} disabled={selected.length === 0} onClick={resetWorkers}>
         Reset Skills
       </StyledButton>
     </div>
