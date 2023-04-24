@@ -1,7 +1,4 @@
-import {
-  FormControlsPane,
-  StyledIcon
-} from "../UserEntryFormWrapper/UserEntryFormWrapper.Styles";
+import { FormControlsPane } from "../UserEntryFormWrapper/UserEntryFormWrapper.Styles";
 import { DidFormInfoProps } from "../UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 import {
   ForwardToEntryForm,
@@ -26,12 +23,15 @@ const DidFormInfo = (props: DidFormInfoProps) => {
   const form = useFormState();
   const setForm = useFormDispatch();
 
-  const handleOnBlur = (field: string) => {
-    const isFieldValid = form.triton[field].valid;
+  const handleOnBlur = (field: string, system: string) => {
+    const isFieldValid = system ? form[system][field].valid: form[field].valid;
     if(!isFieldValid){
       setForm({
         type: userFormActions.SET_BLUR_ON_FIELD,
-        payload: field
+        payload: {
+          field,
+          system
+        }
       });
     }
   };
@@ -45,7 +45,7 @@ const DidFormInfo = (props: DidFormInfoProps) => {
         number={form.triton.directDialNum.value}
         label="Direct Dial Number *"
         showError={form.triton.directDialNum.blurred}
-        onBlur={() => handleOnBlur("directDialNum")}
+        onBlur={() => handleOnBlur("directDialNum", "triton")}
         updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
           setForm({
             type: userFormActions.UPDATE_PHONE_NUMBER,
@@ -89,7 +89,7 @@ const DidFormInfo = (props: DidFormInfoProps) => {
         number={form.triton.alternateDid.value}
         label="Skype/Teams DID *"
         showError={form.triton.alternateDid.blurred}
-        onBlur={() => handleOnBlur("alternateDid")}
+        onBlur={() => handleOnBlur("alternateDid", "triton")}
         updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
           setForm({
             type: userFormActions.UPDATE_PHONE_NUMBER,

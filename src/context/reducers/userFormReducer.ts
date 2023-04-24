@@ -329,17 +329,28 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       };
     }
     case userFormActions.SET_BLUR_ON_FIELD: {
-      const field = action.payload;
-      return {
-        ...state,
-        triton: {
-          ...state.triton,
+      const field = action.payload.field;
+      const system = action.payload.system;
+      if(system){
+        return {
+          ...state,
+          system: {
+            ...state[system],
+            [field]: {
+              ...state[system][field],
+              blurred: true
+            }
+          }
+        };
+      } else {
+        return {
+          ...state,
           [field]: {
-            ...state.triton[field],
+            ...state[field],
             blurred: true
           }
-        }
-      };
+        };
+      }
     }
     case userFormActions.SET_CALABRIO_QM_USER: {
       return {

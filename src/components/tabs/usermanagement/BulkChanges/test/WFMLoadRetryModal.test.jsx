@@ -72,7 +72,7 @@ describe("<WFMLoadRetryModal />", () => {
           render(ButtonWrapper.mock.calls[0][0].children);
           render(TextWrapper.mock.calls[0][0].children);
           expect(Button.mock.calls.length).toBe(1);
-          expect(TextWrapper.mock.calls[0][0].children).toBe("WFM Options have not been successfully loaded into Triton admin but are needed for WFM Bulk Create operations. Attempting to load WFM Data...");
+          expect(TextWrapper.mock.calls[0][0].children).toBe("WFM Data has not been successfully loaded into Triton admin but is needed for this feature. Attempting to load WFM Data...");
 
           const cancelClick = Button.mock.calls[0][0].onClick;
           act(() => cancelClick());
@@ -94,8 +94,7 @@ describe("<WFMLoadRetryModal />", () => {
           render(ButtonWrapper.mock.calls[0][0].children);
           render(TextWrapper.mock.calls[0][0].children);
           expect(Button.mock.calls.length).toBe(1);
-          expect(TextWrapper.mock.calls[0][0].children).toBe("WFM Options have not been successfully loaded into Triton admin but are needed for WFM Bulk Create operations. Attempting to load WFM Data...");
-
+          expect(TextWrapper.mock.calls[0][0].children).toBe("WFM Data has not been successfully loaded into Triton admin but is needed for this feature. Attempting to load WFM Data...");
           await waitFor(() => {
             expect(getCalabrioWfmOptions).toBeCalledTimes(1);
             expect(getCalabrioWfmOrg).toBeCalledTimes(1);
@@ -122,7 +121,7 @@ describe("<WFMLoadRetryModal />", () => {
               render(ButtonWrapper.mock.calls[0][0].children);
               render(TextWrapper.mock.calls[0][0].children);
               expect(Button.mock.calls.length).toBe(1);
-              expect(TextWrapper.mock.calls[0][0].children).toBe("WFM Options have not been successfully loaded into Triton admin but are needed for WFM Bulk Create operations. Attempting to load WFM Data...");
+              expect(TextWrapper.mock.calls[0][0].children).toBe("WFM Data has not been successfully loaded into Triton admin but is needed for this feature. Attempting to load WFM Data...");
 
               await waitFor(() => {
                 expect(getCalabrioWfmOptions).toBeCalledTimes(1);
@@ -153,7 +152,7 @@ describe("<WFMLoadRetryModal />", () => {
               render(ButtonWrapper.mock.calls[0][0].children);
               render(TextWrapper.mock.calls[0][0].children);
               expect(Button.mock.calls.length).toBe(1);
-              expect(TextWrapper.mock.calls[0][0].children).toBe("WFM Options have not been successfully loaded into Triton admin but are needed for WFM Bulk Create operations. Attempting to load WFM Data...");
+              expect(TextWrapper.mock.calls[0][0].children).toBe("WFM Data has not been successfully loaded into Triton admin but is needed for this feature. Attempting to load WFM Data...");
 
               await waitFor(() => {
                 expect(getCalabrioWfmOptions).toBeCalledTimes(1);
@@ -181,7 +180,7 @@ describe("<WFMLoadRetryModal />", () => {
             render(ButtonWrapper.mock.calls[0][0].children);
             render(TextWrapper.mock.calls[0][0].children);
             expect(Button.mock.calls.length).toBe(1);
-            expect(TextWrapper.mock.calls[0][0].children).toBe("WFM Options have not been successfully loaded into Triton admin but are needed for WFM Bulk Create operations. Attempting to load WFM Data...");
+            expect(TextWrapper.mock.calls[0][0].children).toBe("WFM Data has not been successfully loaded into Triton admin but is needed for this feature. Attempting to load WFM Data...");
             expect(TextWrapper.mock.calls[1][0].children).toBe("");
 
             await waitFor(() => {

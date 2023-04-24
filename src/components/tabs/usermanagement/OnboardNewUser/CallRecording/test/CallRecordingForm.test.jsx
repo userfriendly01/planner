@@ -58,7 +58,7 @@ describe("CallRecordingForm", () => {
   describe("User is being created", () => {
     describe("initial render", () => {
       const expectedPayload = {
-        ...initialFormState.calabrioUser,
+        ...initialFormState.calabrio_qm,
         scope: {
           groups: [
             {
@@ -100,8 +100,8 @@ describe("CallRecordingForm", () => {
       describe("groups length is 0 while groups > 0", () => {
         const form = {
           ...initialFormState,
-          calabrioUser: {
-            ...initialFormState.calabrioUser,
+          calabrio_qm: {
+            ...initialFormState.calabrio_qm,
             scope: {
               groups: [],
               teams: [{
@@ -118,7 +118,7 @@ describe("CallRecordingForm", () => {
           render(<CallRecordingForm twilioWorker={twilioWorker} />);
           expect(mockSetForm).toBeCalledTimes(1);
           expect(mockSetForm).toBeCalledWith({
-            type: "SET_CALABRIO_USER",
+            type: "SET_CALABRIO_QM_USER",
             payload: expectedPayload
           });
         });
@@ -126,8 +126,8 @@ describe("CallRecordingForm", () => {
       describe("teams length is 0 while teams > 0", () => {
         const form = {
           ...initialFormState,
-          calabrioUser: {
-            ...initialFormState.calabrioUser,
+          calabrio_qm: {
+            ...initialFormState.calabrio_qm,
             scope: {
               teams: [],
               groups: [{
@@ -144,7 +144,7 @@ describe("CallRecordingForm", () => {
           render(<CallRecordingForm twilioWorker={twilioWorker} />);
           expect(mockSetForm).toBeCalledTimes(1);
           expect(mockSetForm).toBeCalledWith({
-            type: "SET_CALABRIO_USER",
+            type: "SET_CALABRIO_QM_USER",
             payload: expectedPayload
           });
         });
@@ -152,8 +152,8 @@ describe("CallRecordingForm", () => {
       describe("groups and teams are both empty", () => {
         const form = {
           ...initialFormState,
-          calabrioUser: {
-            ...initialFormState.calabrioUser,
+          calabrio_qm: {
+            ...initialFormState.calabrio_qm,
             scope: {
               groups: [],
               teams: []
@@ -193,7 +193,7 @@ describe("CallRecordingForm", () => {
           expect(getCalabrioUser).toHaveBeenCalledTimes(0);
           expect(mockSetForm).toHaveBeenCalledTimes(1);
           expect(mockSetForm).toHaveBeenCalledWith({
-            type: "SET_CALABRIO_USER",
+            type: "SET_CALABRIO_QM_USER",
             payload: {
               updated: false,
               roles: [],
@@ -244,10 +244,10 @@ describe("CallRecordingForm", () => {
       describe("groups and teams are both length > 0", () => {
         const form = {
           ...initialFormState,
-          calabrioUser: {
-            ...initialFormState.calabrioUser,
+          calabrio_qm: {
+            ...initialFormState.calabrio_qm,
             scope: {
-              ...initialFormState.calabrioUser.scope,
+              ...initialFormState.calabrio_qm.scope,
               teams: [{
                 name: "Team 1",
                 id: 2
@@ -297,10 +297,10 @@ describe("CallRecordingForm", () => {
     describe("Role Dropdown", () => {
       const form = {
         ...initialFormState,
-        calabrioUser: {
-          ...initialFormState.calabrioUser,
+        calabrio_qm: {
+          ...initialFormState.calabrio_qm,
           scope: {
-            ...initialFormState.calabrioUser.scope,
+            ...initialFormState.calabrio_qm.scope,
             teams: [{
               name: "Team 1",
               id: 2
@@ -318,9 +318,12 @@ describe("CallRecordingForm", () => {
       describe("Selected Profile in the form is 18 (Workers Comp)", () => {
         const workersCompForm = {
           ...initialFormState,
-          profileId: { value: 18 },
-          calabrioUser: {
-            ...initialFormState.calabrioUser,
+          triton: {
+            ...initialFormState.triton,
+            profileId: { value: 18 },
+          },
+          calabrio_qm: {
+            ...initialFormState.calabrio_qm,
             scope: {
               groups: [],
               teams: [{
@@ -356,7 +359,7 @@ describe("CallRecordingForm", () => {
           });
         });
         test("Existing user with Supervisor role will auto populate with both No Screen and Supervisor", () => {
-          workersCompForm.calabrioUser.roles.push({
+          workersCompForm.calabrio_qm.roles.push({
             id: 1,
             value: 1,
             name: "Supervisor",
@@ -417,9 +420,12 @@ describe("CallRecordingForm", () => {
     describe("Team Dropdown", () => {
       const form = {
         ...initialFormState,
-        manager: {
-          value: {
-            calabrio_team_ids: [102, 101]
+        triton: {
+          ...initialFormState.triton,
+          manager: {
+            value: {
+              calabrio_team_ids: [102, 101]
+            }
           }
         }
       };
@@ -460,10 +466,10 @@ describe("CallRecordingForm", () => {
     describe("Timezone Dropdown", () => {
       const form = {
         ...initialFormState,
-        calabrioUser: {
-          ...initialFormState.calabrioUser,
+        calabrio_qm: {
+          ...initialFormState.calabrio_qm,
           scope: {
-            ...initialFormState.calabrioUser.scope,
+            ...initialFormState.calabrio_qm.scope,
             teams: [{
               name: "Team 1",
               id: 2
@@ -513,10 +519,13 @@ describe("CallRecordingForm", () => {
       const formState = {
         ...initialFormState,
         formMode: "update",
-        nNumberFetchedUser: {
-          email: "faith.Cuneo@libertymutual.com",
-          firstName: "Faith",
-          lastName: "Cuneo"
+        nNumber: {
+          ...initialFormState.nNumber,
+          nNumberFetchedUser: {
+            email: "faith.Cuneo@libertymutual.com",
+            firstName: "Faith",
+            lastName: "Cuneo"
+          }
         }
       };
       beforeEach(() => {
@@ -534,7 +543,7 @@ describe("CallRecordingForm", () => {
         await waitFor(() => {
           expect(mockSetForm).toHaveBeenCalledTimes(2);
           expect(mockSetForm).toHaveBeenCalledWith({
-            type: "SET_CALABRIO_USER",
+            type: "SET_CALABRIO_QM_USER",
             payload: {
               updated: true,
               id: 220,
@@ -608,12 +617,12 @@ describe("CallRecordingForm", () => {
         ...initialFormState,
         formMode: "update",
         nNumber: {
-          value: "n023786"
-        },
-        nNumberFetchedUser: {
-          email: "faith.Cuneo@libertymutual.com",
-          firstName: "Faith",
-          lastName: "Cuneo"
+          value: "n023786",
+          nNumberFetchedUser: {
+            email: "faith.Cuneo@libertymutual.com",
+            firstName: "Faith",
+            lastName: "Cuneo"
+          }
         }
       };
       beforeEach(() => {
@@ -641,7 +650,7 @@ describe("CallRecordingForm", () => {
               }
             });
           expect(mockSetForm).toHaveBeenCalledWith({
-            type: "SET_CALABRIO_USER",
+            type: "SET_CALABRIO_QM_USER",
             payload: {
               updated: true,
               id: 220,
@@ -715,12 +724,12 @@ describe("CallRecordingForm", () => {
         ...initialFormState,
         formMode: "update",
         nNumber: {
-          value: "n0222444"
-        },
-        nNumberFetchedUser: {
-          email: "faith.cuneo@libertymutual.com",
-          firstName: "Faith",
-          lastName: "Cuneo"
+          value: "n0222444",
+          nNumberFetchedUser: {
+            email: "faith.cuneo@libertymutual.com",
+            firstName: "Faith",
+            lastName: "Cuneo"
+          }
         }
       };
       beforeEach(() => {
@@ -748,7 +757,7 @@ describe("CallRecordingForm", () => {
               }
             });
           expect(mockSetForm.mock.calls[1][0]).toStrictEqual({
-            type: "SET_CALABRIO_USER",
+            type: "SET_CALABRIO_QM_USER",
             payload: {
               updated: true,
               id: 200,
@@ -808,8 +817,8 @@ describe("CallRecordingForm", () => {
     describe("worker was not found in Calabrio User state", () => {
       const formState = {
         ...initialFormState,
-        calabrioUser: {
-          ...initialFormState.calabrioUser,
+        calabrio_qm: {
+          ...initialFormState.calabrio_qm,
           team: {
             value: 225,
             label: "Team 1"
@@ -821,10 +830,13 @@ describe("CallRecordingForm", () => {
           }
         },
         formMode: "update",
-        nNumberFetchedUser: {
-          email: "Mike.Nieman@libertymutual.com",
-          firstName: "Mike",
-          lastName: "Nieman"
+        nNumber: {
+          ...initialFormState.nNumber,
+          nNumberFetchedUser: {
+            email: "Mike.Nieman@libertymutual.com",
+            firstName: "Mike",
+            lastName: "Nieman"
+          }
         }
       };
       beforeEach(() => {
@@ -842,7 +854,7 @@ describe("CallRecordingForm", () => {
     describe("Worker was found in Calabrio User state but failed to fetch user", () => {
       const formState = {
         ...initialFormState,
-        calabrioUser: {
+        calabrio_qm: {
           team: {
             value: 225,
             label: "Team 1"
@@ -854,10 +866,13 @@ describe("CallRecordingForm", () => {
           }
         },
         formMode: "update",
-        nNumberFetchedUser: {
-          email: "faith.Cuneo@libertymutual.com",
-          firstName: "Faith",
-          lastName: "Cuneo"
+        nNumber: {
+          ...initialFormState.nNumber,
+          nNumberFetchedUser: {
+            email: "faith.Cuneo@libertymutual.com",
+            firstName: "Faith",
+            lastName: "Cuneo"
+          }
         }
       };
       beforeEach(() => {

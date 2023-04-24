@@ -217,134 +217,146 @@ const mockWorkers = [
 ];
 const validFormState = {
   formMode: formModes.INSERT,
-  calabrioUser: validFormOptions.calabrioUser,
-  defaultSkills: [],
-  defaultSkillsUpdated: false,
-  didUser: false,
-  extension: {
-    value: "5245",
-    blurred: false,
-    updated: true,
-    valid: true
-  },
-  inactiveForwardTo: {
-    value: null,
-    updated: false
-  },
-  manager: {
-    value: "Rebecca Miller",
-    blurred: false,
-    updated: true
-  },
   nNumber: {
     value: "n0263786",
     blurred: false,
-    updated: true
-  },
-  nNumberFetchedUser: {
-    nNumber: "n0263786",
-    firstName: "Faith",
-    lastName: "Cuneo"
-  },
-  outgoing: {
-    value: "6038518200",
-    blurred: false,
-    e164: "+16038518200",
     updated: true,
-    valid: true
+    nNumberFetchedUser: {
+      nNumber: "n0263786",
+      firstName: "Faith",
+      lastName: "Cuneo"
+    },
   },
-  profileId: {
-    value: "2",
-    blurred: false,
-    updated: true
-  },
-  alternateDid: {
-    value: "6032453160",
-    blurred: false,
-    e164: "+16032453160",
-    updated: true,
-    valid: true
-  },
-  directDialNum: {
-    value: "6032453160",
-    blurred: false,
-    e164: "+16032453160",
-    updated: true,
-    valid: true
-  },
-  zeroOutEnabled: false,
-  zeroOutEnabledUpdated: false,
-  selfServiceInd: false,
-  selfServiceIndUpdated: false,
-  editDisabled: false
+  calabrio_qm: validFormOptions.calabrioUser,
+  triton: {
+    defaultSkills: [],
+    defaultSkillsUpdated: false,
+    didUser: false,
+    extension: {
+      value: "5245",
+      blurred: false,
+      updated: true,
+      valid: true
+    },
+    inactiveForwardTo: {
+      value: null,
+      updated: false
+    },
+    manager: {
+      value: "Rebecca Miller",
+      blurred: false,
+      updated: true
+    },
+    outgoing: {
+      value: "6038518200",
+      blurred: false,
+      e164: "+16038518200",
+      updated: true,
+      valid: true
+    },
+    profileId: {
+      value: "2",
+      blurred: false,
+      updated: true
+    },
+    alternateDid: {
+      value: "6032453160",
+      blurred: false,
+      e164: "+16032453160",
+      updated: true,
+      valid: true
+    },
+    directDialNum: {
+      value: "6032453160",
+      blurred: false,
+      e164: "+16032453160",
+      updated: true,
+      valid: true
+    },
+    zeroOutEnabled: {
+      value: false,
+      updated: false
+    },
+    selfServiceInd: {
+      value: false,
+      updated: false
+    },
+  }
 };
 const initialFormState = {
   formMode: formModes.INSERT,
-  defaultSkills: [],
-  defaultSkillsUpdated: false,
-  didUser: false,
-  extension: {
-    value: "",
-    blurred: false,
-    updated: false,
-    valid: false
-  },
-  inactiveForwardTo: {
-    value: null,
-    updated: false
-  },
-  manager: {
-    value: "",
-    blurred: false,
-    updated: false
-  },
   nNumber: {
     value: "n",
     blurred: false,
-    updated: false
-  },
-  nNumberFetchedUser: null,
-  outgoing: {
-    value: "",
-    blurred: false,
-    e164: undefined,
     updated: false,
-    valid: false
+    nNumberFetchedUser: null
   },
-  profileId: {
-    value: "",
-    blurred: false,
+  triton: {
+    defaultSkills: [],
+    defaultSkillsUpdated: false,
+    didUser: false,
+    extension: {
+      value: "",
+      blurred: false,
+      updated: false,
+      valid: false
+    },
+    inactiveForwardTo: {
+      value: null,
+      updated: false
+    },
+    manager: {
+      value: "",
+      blurred: false,
+      updated: false
+    },
+    outgoing: {
+      value: "",
+      blurred: false,
+      e164: undefined,
+      updated: false,
+      valid: false
+    },
+    profileId: {
+      value: "",
+      blurred: false,
+      updated: false
+    },
+    alternateDid: {
+      value: "",
+      blurred: false,
+      e164: undefined,
+      updated: false,
+      valid: false
+    },
+    directDialNum: {
+      value: "",
+      blurred: false,
+      e164: undefined,
+      updated: false,
+      valid: false
+    },
+    zeroOutEnabled: {
+      value: false,
+      updated: false
+    },
+    selfServiceInd: {
+      value: false,
+      updated: false
+    }
+  },
+  calabrio_qm: {
     updated: false
-  },
-  alternateDid: {
-    value: "",
-    blurred: false,
-    e164: undefined,
-    updated: false,
-    valid: false
-  },
-  directDialNum: {
-    value: "",
-    blurred: false,
-    e164: undefined,
-    updated: false,
-    valid: false
-  },
-  calabrioUser: {
-    updated: false
-  },
-  zeroOutEnabled: false,
-  zeroOutEnabledUpdated: false,
-  selfServiceInd: false,
-  selfServiceIndUpdated: false,
-  editDisabled: false
+  }
 };
 
 describe("isProfileIdValid", () => {
   test("should return true when profile is populated", () => {
     const form = {
-      profileId: {
-        value: "2"
+      triton: {
+        profileId: {
+          value: "2"
+        }
       }
     };
     const result = isProfileIdValid(form);
@@ -352,8 +364,10 @@ describe("isProfileIdValid", () => {
   });
   test("should return false when profile is empty string", () => {
     const form = {
-      profileId: {
-        value: ""
+      triton: {
+        profileId: {
+          value: ""
+        }
       }
     };
     const result = isProfileIdValid(form);
@@ -364,8 +378,10 @@ describe("isProfileIdValid", () => {
 describe("isManagerValid", () => {
   test("should return true when manager is populated", () => {
     const form = {
-      manager: {
-        value: "Rebecca"
+      triton: {
+        manager: {
+          value: "Rebecca"
+        }
       }
     };
     const result = isManagerValid(form);
@@ -373,8 +389,10 @@ describe("isManagerValid", () => {
   });
   test("should return false when manager is empty string", () => {
     const form = {
-      manager: {
-        value: ""
+      triton: {
+        manager: {
+          value: ""
+        }
       }
     };
     const result = isManagerValid(form);
@@ -385,8 +403,10 @@ describe("isManagerValid", () => {
 describe("isNNumberValid", () => {
   test("should return true when nNumberFetchedUser is populated", () => {
     const form = {
-      nNumberFetchedUser: {
-        whatever: "Mike"
+      nNumber: {
+        nNumberFetchedUser: {
+          whatever: "Mike"
+        }
       }
     };
     const result = isNNumberValid(form);
@@ -394,7 +414,9 @@ describe("isNNumberValid", () => {
   });
   test("should return false when nNumberFetchedUser is not populated", () => {
     const form = {
-      nNumberFetchedUser: null
+      nNumber: {
+        nNumberFetchedUser: null
+      }
     };
     const result = isNNumberValid(form);
     expect(result).toBe(false);
@@ -404,9 +426,11 @@ describe("isNNumberValid", () => {
 describe("isExtensionValid", () => {
   test("should return true when extension is valid", () => {
     const form = {
-      extension: {
-        valid: true,
-        value: "5245"
+      triton: {
+        extension: {
+          valid: true,
+          value: "5245"
+        }
       }
     };
     const result = isExtensionValid(form);
@@ -414,9 +438,11 @@ describe("isExtensionValid", () => {
   });
   test("should return true when extension is empty string", () => {
     const form = {
-      extension: {
-        value: "",
-        valid: false
+      triton: {
+        extension: {
+          value: "",
+          valid: false
+        }
       }
     };
     const result = isExtensionValid(form);
@@ -424,9 +450,11 @@ describe("isExtensionValid", () => {
   });
   test("should return false when extension is invalid and value is not an empty string", () => {
     const form = {
-      extension: {
-        valid: false,
-        value: "5245"
+      triton: {
+        extension: {
+          valid: false,
+          value: "5245"
+        }
       }
     };
     const result = isExtensionValid(form);
@@ -438,8 +466,10 @@ describe("isInactiveForwardToValid", () => {
   describe("forwardToToggle === true", () => {
     test("should return true when inactiveForwardTo is not null", () => {
       const form = {
-        inactiveForwardTo: {
-          value: "WK12334"
+        triton: {
+          inactiveForwardTo: {
+            value: "WK12334"
+          }
         }
       };
       const result = isInactiveForwardToValid(form, true);
@@ -447,8 +477,10 @@ describe("isInactiveForwardToValid", () => {
     });
     test("should return false when inactiveForwardTo is null", () => {
       const form = {
-        inactiveForwardTo: {
-          value: null
+        triton: {
+          inactiveForwardTo: {
+            value: null
+          }
         }
       };
       const result = isInactiveForwardToValid(form, true);
@@ -467,11 +499,13 @@ describe("isDidDifferentValid", () => {
   describe("forwardToToggle === true", () => {
     test("should return true if both outgoing and directDial Num have been changed", () => {
       const form = {
-        outgoing: {
-          value: "+16038518200"
-        },
-        directDialNum: {
-          value: "+16032453160"
+        triton: {
+          outgoing: {
+            value: "+16038518200"
+          },
+          directDialNum: {
+            value: "+16032453160"
+          }
         }
       };
       const result = isDidDifferentValid(form, mockWorkers[2], true);
@@ -479,11 +513,13 @@ describe("isDidDifferentValid", () => {
     });
     test("should return true if both outgoing and directDial Num are unchanged", () => {
       const form = {
-        outgoing: {
-          value: validFormOptions.didE164
-        },
-        directDialNum: {
-          value: validFormOptions.directDialNum.e164
+        triton: {
+          outgoing: {
+            value: validFormOptions.didE164
+          },
+          directDialNum: {
+            value: validFormOptions.directDialNum.e164
+          }
         }
       };
       const result = isDidDifferentValid(form, mockWorkers[2], true);
@@ -491,11 +527,13 @@ describe("isDidDifferentValid", () => {
     });
     test("should return false if only one number is changed", () => {
       const form = {
-        outgoing: {
-          value: "+16038518200"
-        },
-        directDialNum: {
-          value: validFormOptions.directDialNum.tenDig
+        triton: {
+          outgoing: {
+            value: "+16038518200"
+          },
+          directDialNum: {
+            value: validFormOptions.directDialNum.tenDig
+          }
         }
       };
       const result = isDidDifferentValid(form, mockWorkers[2], true);
@@ -601,7 +639,11 @@ describe("isFormUpdated", () => {
   test("form.defaultSkillsUpdated was updated", () => {
     const updatedForm = {
       ...initialFormState,
-      defaultSkillsUpdated: true
+      triton: {
+        defaultSkills: {
+          updated: true
+        }
+      }
     };
     const result = isFormUpdated(updatedForm);
     expect(result).toBe(true);
@@ -609,8 +651,11 @@ describe("isFormUpdated", () => {
   test("form.manager.updated was updated", () => {
     const updatedForm = {
       ...initialFormState,
-      manager: {
-        updated: true
+      triton: {
+        ...initialFormState.triton,
+        manager: {
+          updated: true
+        }
       }
     };
     const result = isFormUpdated(updatedForm);
@@ -619,8 +664,11 @@ describe("isFormUpdated", () => {
   test("form.profileId.updated was updated", () => {
     const updatedForm = {
       ...initialFormState,
-      profileId: {
-        updated: true
+      triton: {
+        ...initialFormState.triton,
+        profileId: {
+          updated: true
+        }
       }
     };
     const result = isFormUpdated(updatedForm);
@@ -629,8 +677,11 @@ describe("isFormUpdated", () => {
   test("form.outgoing.updated was updated", () => {
     const updatedForm = {
       ...initialFormState,
-      outgoing: {
-        updated: true
+      triton: {
+        ...initialFormState.triton,
+        outgoing: {
+          updated: true
+        }
       }
     };
     const result = isFormUpdated(updatedForm);
@@ -639,8 +690,11 @@ describe("isFormUpdated", () => {
   test("form.alternateDid.updated was updated", () => {
     const updatedForm = {
       ...initialFormState,
-      alternateDid: {
-        updated: true
+      triton: {
+        ...initialFormState.triton,
+        alternateDid: {
+          updated: true
+        }
       }
     };
     const result = isFormUpdated(updatedForm);
@@ -649,8 +703,11 @@ describe("isFormUpdated", () => {
   test("form.directDialNum.updated was updated", () => {
     const updatedForm = {
       ...initialFormState,
-      directDialNum: {
-        updated: true
+      triton: {
+        ...initialFormState.triton,
+        directDialNum: {
+          updated: true
+        }
       }
     };
     const result = isFormUpdated(updatedForm);
@@ -660,6 +717,7 @@ describe("isFormUpdated", () => {
     const updatedForm = {
       ...initialFormState,
       nNumber: {
+        ...initialFormState.nNumber,
         updated: true
       }
     };
@@ -669,8 +727,11 @@ describe("isFormUpdated", () => {
   test("form.extension.updated was updated", () => {
     const updatedForm = {
       ...initialFormState,
-      extension: {
-        updated: true
+      triton: {
+        ...initialFormState.triton,
+        extension: {
+          updated: true
+        }
       }
     };
     const result = isFormUpdated(updatedForm);
@@ -679,8 +740,11 @@ describe("isFormUpdated", () => {
   test("form.inactiveForwardTo.updated was updated", () => {
     const updatedForm = {
       ...initialFormState,
-      inactiveForwardTo: {
-        updated: true
+      triton: {
+        ...initialFormState.triton,
+        inactiveForwardTo: {
+          updated: true
+        }
       }
     };
     const result = isFormUpdated(updatedForm);
@@ -689,7 +753,12 @@ describe("isFormUpdated", () => {
   test("form.zeroOutEnabledUpdated was updated", () => {
     const updatedForm = {
       ...initialFormState,
-      zeroOutEnabledUpdated: true
+      triton: {
+        ...initialFormState.triton,
+        zeroOutEnabled: {
+          updated: true
+        }
+      }
     };
     const result = isFormUpdated(updatedForm);
     expect(result).toBe(true);
@@ -697,7 +766,12 @@ describe("isFormUpdated", () => {
   test("form.selfServiceIndUpdated was updated", () => {
     const updatedForm = {
       ...initialFormState,
-      selfServiceIndUpdated: true
+      triton: {
+        ...initialFormState.triton,
+        selfServiceInd: {
+          updated: true
+        }
+      }
     };
     const result = isFormUpdated(updatedForm);
     expect(result).toBe(true);
@@ -710,9 +784,12 @@ describe("isFormValid", () => {
       test("isFormValid should return true", () => {
         const form = {
           ...validFormState,
-          inactiveForwardTo: {
-            ...validFormState.inactiveForwardTo,
-            value: "WK2345123"
+          triton: {
+            ...validFormState.triton,
+            inactiveForwardTo: {
+              ...validFormState.triton.inactiveForwardTo,
+              value: "WK2345123"
+            }
           }
         };
         expect(isFormValid(form, mockWorkers[2], true)).toBe(true);
@@ -727,10 +804,13 @@ describe("isFormValid", () => {
       test("isFormValid should return true", () => {
         const form = {
           ...validFormState,
-          extension: {
-            ...validFormState.extension,
-            valid: false,
-            value: ""
+          triton: {
+            ...validFormState.triton,
+            extension: {
+              ...validFormState.extension,
+              valid: false,
+              value: ""
+            }
           }
         };
         expect(isFormValid(form, mockWorkers[0], false)).toBe(true);
@@ -742,7 +822,10 @@ describe("isFormValid", () => {
       test("isFormValid should return false", () => {
         const form = {
           ...validFormState,
-          nNumberFetchedUser: null
+          nNumber: {
+            ...initialFormState.nNumber,
+            nNumberFetchedUser: null
+          }
         };
         expect(isFormValid(form, mockWorkers[0], false)).toBe(false);
       });
@@ -752,9 +835,12 @@ describe("isFormValid", () => {
         const form = {
           ...validFormState,
           formMode: formModes.UPDATE,
-          profileId: {
-            ...validFormState.profileId,
-            value: ""
+          triton: {
+            ...initialFormState.triton,
+            profileId: {
+              ...validFormState.profileId,
+              value: ""
+            }
           }
         };
         expect(isFormValid(form, mockWorkers[0], false)).toBe(false);
@@ -764,9 +850,12 @@ describe("isFormValid", () => {
       test("isFormValid should return false", () => {
         const form = {
           ...validFormState,
-          manager: {
-            ...validFormState.manager,
-            value: ""
+          triton: {
+            ...initialFormState.triton,
+            manager: {
+              ...validFormState.manager,
+              value: ""
+            }
           }
         };
         expect(isFormValid(form, mockWorkers[0], false)).toBe(false);
@@ -776,9 +865,12 @@ describe("isFormValid", () => {
       test("isFormValid should return false", () => {
         const form = {
           ...validFormState,
-          outgoing: {
-            ...validFormState.outgoing,
-            valid: false
+          triton: {
+            ...initialFormState.triton,
+            outgoing: {
+              ...validFormState.outgoing,
+              valid: false
+            }
           }
         };
         expect(isFormValid(form, mockWorkers[0], false)).toBe(false);
@@ -788,9 +880,12 @@ describe("isFormValid", () => {
       test("isFormValid should return false", () => {
         const form = {
           ...validFormState,
-          extension: {
-            ...validFormState.extension,
-            valid: false
+          triton: {
+            ...initialFormState.triton,
+            extension: {
+              ...validFormState.extension,
+              valid: false
+            }
           }
         };
         expect(isFormValid(form, mockWorkers[0], false)).toBe(false);
@@ -800,9 +895,12 @@ describe("isFormValid", () => {
       describe("forwardToToggle === true", () => {
         const form = {
           ...validFormState,
-          inactiveForwardTo: {
-            ...validFormState.inactiveForwardTo,
-            value: null
+          triton: {
+            ...initialFormState.triton,
+            inactiveForwardTo: {
+              ...validFormState.inactiveForwardTo,
+              value: null
+            }
           }
         };
         expect(isFormValid(form, mockWorkers[0], true)).toBe(false);
@@ -813,10 +911,13 @@ describe("isFormValid", () => {
         test("isFormValid should return false", () => {
           const form = {
             ...validFormState,
-            didUser: true,
-            directDialNum: {
-              ...validFormState.directDialNum,
-              valid: false
+            triton: {
+              ...initialFormState.triton,
+              didUser: true,
+              directDialNum: {
+                ...validFormState.directDialNum,
+                valid: false
+              }
             }
           };
           expect(isFormValid(form, mockWorkers[2], false)).toBe(false);
@@ -826,10 +927,13 @@ describe("isFormValid", () => {
         test("isFormValid should return false", () => {
           const form = {
             ...validFormState,
-            didUser: true,
-            alternateDid: {
-              ...validFormState.alternateDid,
-              valid: false
+            triton: {
+              ...initialFormState.triton,
+              didUser: true,
+              alternateDid: {
+                ...validFormState.alternateDid,
+                valid: false
+              }
             }
           };
           expect(isFormValid(form, mockWorkers[2], false)).toBe(false);
@@ -840,10 +944,13 @@ describe("isFormValid", () => {
           test("isFormValid should return false", () => {
             const form = {
               ...validFormState,
-              directDialNum: {
-                ...validFormState.directDialNum,
-                updated: false,
-                value: validFormOptions.directDialNum
+              triton: {
+                ...initialFormState.triton,
+                directDialNum: {
+                  ...validFormState.directDialNum,
+                  updated: false,
+                  value: validFormOptions.directDialNum
+                }
               }
             };
             expect(isFormValid(form, mockWorkers[2], true)).toBe(false);
@@ -853,10 +960,13 @@ describe("isFormValid", () => {
           test("isFormValid should return false", () => {
             const form = {
               ...validFormState,
-              outbound: {
-                ...validFormState.outbound,
-                updated: false,
-                value: validFormOptions.didE164
+              triton: {
+                ...initialFormState.triton,
+                outbound: {
+                  ...validFormState.outbound,
+                  updated: false,
+                  value: validFormOptions.didE164
+                }
               }
             };
             expect(isFormValid(form, mockWorkers[2], true)).toBe(false);

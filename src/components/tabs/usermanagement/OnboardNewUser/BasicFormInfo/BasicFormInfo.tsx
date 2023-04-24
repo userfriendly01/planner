@@ -58,12 +58,15 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
     }
   };
 
-  const handleOnBlur = (field: string) => {
-    const isFieldValid = form.triton[field].valid;
+  const handleOnBlur = (field: string, system: string) => {
+    const isFieldValid = system ? form[system][field].valid : form[field].valid;
     if(!isFieldValid){
       setForm({
         type: userFormActions.SET_BLUR_ON_FIELD,
-        payload: field
+        payload: {
+          field,
+          system
+        }
       });
     }
   };
@@ -79,7 +82,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
             width: "384px",
             margin: "8px 0px 5px 0px"
           }}
-          onBlur={() => handleOnBlur("manager")}
+          onBlur={() => handleOnBlur("manager", "triton")}
           options={managers.sort(sortManagersByName).map(manager => formatDropdownOption(manager.manager_n_number, `${manager.manager_first_name} ${manager.manager_last_name} - ${manager.manager_n_number}`, manager))}
           updateValue={(event: any, newValue: any) => {
             setForm({
@@ -114,7 +117,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
             width: "384px",
             margin: "10px 0px"
           }}
-          onBlur={() => handleOnBlur("profileId")}
+          onBlur={() => handleOnBlur("profileId", "triton")}
           options={profiles.sort(sortProfilesByName).map((profile: any) => formatDropdownOption(profile.profile_id, profile.profile_nme, profile))}
           updateValue={(event: any, newValue: any) => {
             setForm({
@@ -139,7 +142,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           }
           fetchedUser={form.nNumber.nNumberFetchedUser}
           label="N Number *"
-          onBlur={() => handleOnBlur("nNumber")}
+          onBlur={() => handleOnBlur("nNumber", null)}
           onClear={() => setForm({ type: userFormActions.CLEAR_N_NUMBER })}
           onComplete={(fetchedUser: any, nNumber: any) => setForm({
             type: userFormActions.COMPLETE_N_NUMBER,
@@ -231,7 +234,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
             allowSevenDigitVdn={false}
             id="outgoing-number"
             number={form.triton.outgoing.value}
-            onBlur={() => handleOnBlur("outgoing")}
+            onBlur={() => handleOnBlur("outgoing", "triton")}
             label="Outgoing Number *"
             showError={form.triton.outgoing.blurred}
             updateValue={(maskedValue: string, _unmaskedValue: string, isValid: boolean, e164Number: string) => {

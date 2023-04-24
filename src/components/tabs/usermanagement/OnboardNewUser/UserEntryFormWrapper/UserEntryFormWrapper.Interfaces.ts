@@ -43,16 +43,6 @@ export interface UserEntryFormProps {
   handleClose: () => void
 }
 
-export interface UserFormAccordionProps {
-  skills: Skill[],
-  worker: Worker | null,
-  workers: Worker[],
-  profiles: TritonProfile[],
-  managers: Manager[]
-  forwardToToggle: boolean,
-  setForwardToToggle: (value: boolean) => void,
-}
-
 export interface BasicFormInfoProps {
   skills: Skill[],
   worker: Worker | null,
@@ -88,6 +78,7 @@ export interface FieldState {
 }
 
 export interface UserFormState {
+  [key: string]: any,
   formMode: string,
   discrepancies: string[],
   nNumber: {

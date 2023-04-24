@@ -43,18 +43,18 @@ export const initialFormState = {
       updated: false,
       valid: false
     },
-  },
-  extension: {
-    value: "",
-    blurred: false,
-    updated: false,
-    valid: false,
-    status: {
-      searchStatus: ExtensionSearchStatuses.Idle,
-      retriesRemaining: 5,
-      message: "",
-      isError: false,
-      originalExtension: ""
+    extension: {
+      value: "",
+      blurred: false,
+      updated: false,
+      valid: false,
+      status: {
+        searchStatus: ExtensionSearchStatuses.Idle,
+        retriesRemaining: 5,
+        message: "",
+        isError: false,
+        originalExtension: ""
+      },
     },
     inactiveForwardTo: {
       value: null,
