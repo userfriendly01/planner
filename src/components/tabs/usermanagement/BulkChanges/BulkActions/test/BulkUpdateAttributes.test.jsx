@@ -68,7 +68,8 @@ describe("<BulkUpdateAttributes />", () => {
           availableAttributes.ZERO_OUT_ENABLED,
           availableAttributes.SELF_SERVICE_INDICATOR,
           availableAttributes.PROFILE,
-          availableAttributes.DID
+          availableAttributes.DID,
+          availableAttributes.ROUTING_TEAM
         ]);
         //Choose an value Dropdown
         expect(Dropdown.mock.calls[1][0].label).toBe("Boolean");
