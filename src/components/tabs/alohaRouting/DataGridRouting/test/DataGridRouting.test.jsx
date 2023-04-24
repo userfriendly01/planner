@@ -79,6 +79,27 @@ const filteredItems = {
   channel: "TestChannel1"
 };
 
+const validRoutingData = {
+  id: 1,
+  all: "test",
+  brand: "Liberty",
+  callIntent: "test",
+  callerState: "test",
+  callerType: "test",
+  channel: "test",
+  dayOfWeek: "Monday",
+  endTime: "2022-02-20",
+  percentOfCallers: "100",
+  pkey: "+12353245",
+  policyType: "Liberty",
+  skey: "liberty_test_test",
+  startTime: "2022-02-20",
+  transferDestination: "Twilo",
+  transferMessage: "HOLD ON while we transfer the call",
+  twilioSkill: "test",
+  crcSkill: "updated"
+};
+
 const renderDataGridRouting = () => render(
   <DataGridRouting accessToken="Token123" matchedGroups="[]"/>,
   initialTestState
@@ -181,7 +202,7 @@ describe("<DataGridRouting />", ()=>{
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const openModal = AddRouting.mock.calls[0][0].openModal;
-      act(()=>{ openModal(false); });
+      act(()=>{ openModal(false, validRoutingData); });
       expect(AddRouting.mock.calls[1][0].openModal).toBeTruthy;
     });
     test("Simulate the AddRouting openModal isOpen true", ()=>{
@@ -189,7 +210,7 @@ describe("<DataGridRouting />", ()=>{
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const openModal = AddRouting.mock.calls[0][0].openModal;
-      act(()=>{ openModal(true); });
+      act(()=>{ openModal(true,validRoutingData); });
       expect(AddRouting.mock.calls[1][0].isOpen).toBe(true);
     });
   });
@@ -206,7 +227,15 @@ describe("<DataGridRouting />", ()=>{
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const openEditModal = EditRouting.mock.calls[0][0].openEditModal;
-      act(()=>{ openEditModal(false, true); });
+      act(()=>{ openEditModal(false, true,validRoutingData); });
+      expect(EditRouting.mock.calls[1][0].openEditModal).toBeTruthy;
+    });
+    test("Simulate the EditRouting openEditModal Type true", ()=>{
+      const validRoutingDataList = createSampleTestRoutingDataList(15);
+      retrieveRoutingData.mockResolvedValue(validRoutingDataList);
+      renderDataGridRouting();
+      const openEditModal = EditRouting.mock.calls[0][0].openEditModal;
+      act(()=>{ openEditModal(false,false,{},"",false,true); });
       expect(EditRouting.mock.calls[1][0].openEditModal).toBeTruthy;
     });
     test("Simulate the EditRouting openEditModal", ()=>{
@@ -214,7 +243,23 @@ describe("<DataGridRouting />", ()=>{
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const openEditModal = EditRouting.mock.calls[0][0].openEditModal;
-      act(()=>{ openEditModal(true, false); });
+      act(()=>{ openEditModal(true, false,validRoutingData); });
+      expect(EditRouting.mock.calls[1][0].openEditModal).toBeTruthy;
+    });
+    test("Simulate the EditRouting openEditModal with deleteRow", ()=>{
+      const validRoutingDataList = createSampleTestRoutingDataList(15);
+      retrieveRoutingData.mockResolvedValue(validRoutingDataList);
+      renderDataGridRouting();
+      const openEditModal = EditRouting.mock.calls[0][0].openEditModal;
+      act(()=>{ openEditModal(false,true,validRoutingData,"",true,false); });
+      expect(EditRouting.mock.calls[1][0].openEditModal).toBeTruthy;
+    });
+    test("Simulate the EditRouting openEditModal with deleteRow false", ()=>{
+      const validRoutingDataList = createSampleTestRoutingDataList(15);
+      retrieveRoutingData.mockResolvedValue(validRoutingDataList);
+      renderDataGridRouting();
+      const openEditModal = EditRouting.mock.calls[0][0].openEditModal;
+      act(()=>{ openEditModal(false,true,validRoutingData,"",false,false); });
       expect(EditRouting.mock.calls[1][0].openEditModal).toBeTruthy;
     });
     test("Simulate the CustomFlowRoutingToolBar Custom Routing Toolbar", async()=>{

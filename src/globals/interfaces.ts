@@ -33,8 +33,7 @@ export interface AppState {
     authenticationProfiles: AuthenticationProfile[]
   },
   workerContext: {
-    workers: Worker[],
-    selectedWorkers: Worker[]
+    workers: Worker[]
   },
   calabrioContext: {
     tenant: any,

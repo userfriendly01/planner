@@ -100,5 +100,7 @@ export interface AddPageFieldConfigProps {
 export interface AddRoutingModalProps {
     isOpen: boolean;
     newId: number;
-    openModal: (flag: boolean, row?: CctSharedCallRoutingDb) => void;
+    openModal: (flag: boolean, addCloneRule?: boolean, row?: CctSharedCallRoutingDb) => void;
+    cloneRouteRule?: boolean;
+    routeRule?: FormValidationRule;
 }
