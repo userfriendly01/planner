@@ -31,22 +31,19 @@ describe("userFormReducer", () => {
   describe("ASSIGN_EXTENSION", () => {
     test("should change searchStatus state", () => {
       const action = { type: userFormActions.ASSIGN_EXTENSION };
-      const initialTestState = {
-        ...initialUserFormState,
-        extension: {
-          ...initialUserFormState.extension
-        },
-        extensionStatus: {
-          ...initialUserFormState.extensionStatus
-        }
-      };
-      const result = userFormReducer(initialTestState, action);
+      const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
-        ...initialTestState,
-        extensionStatus: {
-          ...initialTestState.extensionStatus,
-          searchStatus: ExtensionSearchStatuses.PickANumber,
-          message: "Searching..."
+        ...initialUserFormState,
+        triton: {
+          ...initialUserFormState.triton,
+          extension: {
+            ...initialUserFormState.triton.extension,
+            status: {
+              ...initialUserFormState.triton.extension.status,
+              searchStatus: ExtensionSearchStatuses.PickANumber,
+              message: "Searching..."
+            }
+          }
         }
       };
       expect(result).toStrictEqual(expectedFormState);
@@ -84,10 +81,10 @@ describe("userFormReducer", () => {
         };
         const initialTestState = {
           ...initialUserFormState,
-          calabrioUser: {
-            ...initialUserFormState.calabrioUser,
+          calabrio_qm: {
+            ...initialUserFormState.calabrio_qm,
             scope: {
-              ...initialUserFormState.calabrioUser.scope,
+              ...initialUserFormState.calabrio_qm.scope,
               groups: calabrioGroups
             }
           }
@@ -95,11 +92,11 @@ describe("userFormReducer", () => {
         const result = userFormReducer(initialTestState, action);
         const expectedFormState = {
           ...initialUserFormState,
-          calabrioUser: {
-            ...initialTestState.calabrioUser,
+          calabrio_qm: {
+            ...initialTestState.calabrio_qm,
             updated: true,
             scope: {
-              ...initialTestState.calabrioUser.scope,
+              ...initialTestState.calabrio_qm.scope,
               groups: [
                 {
                   id: 1,
@@ -136,10 +133,10 @@ describe("userFormReducer", () => {
         };
         const initialTestState = {
           ...initialUserFormState,
-          calabrioUser: {
-            ...initialUserFormState.calabrioUser,
+          calabrio_qm: {
+            ...initialUserFormState.calabrio_qm,
             scope: {
-              ...initialUserFormState.calabrioUser.scope,
+              ...initialUserFormState.calabrio_qm.scope,
               groups: calabrioGroups
             }
           }
@@ -147,11 +144,11 @@ describe("userFormReducer", () => {
         const result = userFormReducer(initialTestState, action);
         const expectedFormState = {
           ...initialUserFormState,
-          calabrioUser: {
-            ...initialTestState.calabrioUser,
+          calabrio_qm: {
+            ...initialTestState.calabrio_qm,
             updated: true,
             scope: {
-              ...initialTestState.calabrioUser.scope,
+              ...initialTestState.calabrio_qm.scope,
               groups: [
                 {
                   id: 1,
@@ -204,10 +201,10 @@ describe("userFormReducer", () => {
         };
         const initialTestState = {
           ...initialUserFormState,
-          calabrioUser: {
-            ...initialUserFormState.calabrioUser,
+          calabrio_qm: {
+            ...initialUserFormState.calabrio_qm,
             scope: {
-              ...initialUserFormState.calabrioUser.scope,
+              ...initialUserFormState.calabrio_qm.scope,
               teams: calabrioTeams
             }
           }
@@ -215,11 +212,11 @@ describe("userFormReducer", () => {
         const result = userFormReducer(initialTestState, action);
         const expectedFormState = {
           ...initialUserFormState,
-          calabrioUser: {
-            ...initialTestState.calabrioUser,
+          calabrio_qm: {
+            ...initialTestState.calabrio_qm,
             updated: true,
             scope: {
-              ...initialTestState.calabrioUser.scope,
+              ...initialTestState.calabrio_qm.scope,
               teams: [
                 {
                   id: 1,
@@ -247,21 +244,27 @@ describe("userFormReducer", () => {
       const action = { type: userFormActions.CLEAR_EXTENSION };
       const initialTestState = {
         ...initialUserFormState,
-        extension: {
-          ...initialUserFormState.extension,
-          value: validFormOptions.extension,
-          blurred: true,
-          updated: true,
-          valid: true
+        triton: {
+          ...initialUserFormState.triton,
+          extension: {
+            ...initialUserFormState.triton.extension,
+            value: validFormOptions.extension,
+            blurred: true,
+            updated: true,
+            valid: true
+          }
         }
       };
       const result = userFormReducer(initialTestState, action);
       const expectedFormState = {
         ...initialTestState,
-        extension: {
-          ...initialTestState.extension,
-          value: "",
-          valid: false
+        triton: {
+          ...initialTestState.triton,
+          extension: {
+            ...initialTestState.triton.extension,
+            value: "",
+            valid: false
+          }
         }
       };
       expect(result).toStrictEqual(expectedFormState);
@@ -275,11 +278,11 @@ describe("userFormReducer", () => {
         ...initialUserFormState,
         nNumber: {
           ...initialUserFormState.nNumber,
-          value: "n0263786"
-        },
-        nNumberFetchedUser: {
-          firstName: "Faith",
-          lastName: "Cuneo"
+          value: "n0263786",
+          nNumberFetchedUser: {
+            firstName: "Faith",
+            lastName: "Cuneo"
+          }
         }
       };
       const result = userFormReducer(startingFormState, action);
@@ -291,9 +294,12 @@ describe("userFormReducer", () => {
     const action = { type: userFormActions.CLEAR_OUTGOING_NUMBER };
     const startingFormState = {
       ...initialUserFormState,
-      outgoing: {
-        whatever: "who cares",
-        stuff: "we're gonna clear out"
+      triton: {
+        ...initialUserFormState.triton,
+        outgoing: {
+          whatever: "who cares",
+          stuff: "we're gonna clear out"
+        }
       }
     };
     test("should clear Outgoing Number", () => {
@@ -319,62 +325,11 @@ describe("userFormReducer", () => {
         ...initialUserFormState,
         nNumber: {
           ...initialUserFormState.nNumber,
-          value: payload.nNumber
+          value: payload.nNumber,
+          nNumberFetchedUser: payload.fetchedUser
         },
-        nNumberFetchedUser: payload.fetchedUser
       };
       expect(result).toStrictEqual(expectedFormState);
-    });
-  });
-
-  describe("EDIT_PEN_CLICK_FORWARD_TO_TOGGLE", () => {
-    test("should set forward to toggle fields", () => {
-      const payload = mockWorkers[2];
-      const action = {
-        type: userFormActions.EDIT_PEN_CLICK_FORWARD_TO_TOGGLE,
-        payload
-      };
-      const result = userFormReducer(initialUserFormState, action);
-      const expectedFormState = {
-        ...initialUserFormState,
-        directDialNum: {
-          ...initialUserFormState.directDialNum,
-          value: formatE164PhoneNumber(mockWorkers[2].directDialNum),
-          valid: true
-        },
-        outgoing: {
-          ...initialUserFormState.outgoing,
-          value: formatE164PhoneNumber(mockWorkers[2].attributes.did),
-          valid: true
-        },
-        editDisabled: !initialUserFormState.editDisabled
-      };
-      expect(result).toStrictEqual(expectedFormState);
-    });
-  });
-
-  describe("EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE", () => {
-    test("should reset forward to toggle", () => {
-      const action = { type: userFormActions.EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE };
-      const initialTestState = {
-        ...initialUserFormState,
-        directDialNum: {
-          ...initialUserFormState.directDialNum,
-          value: formatE164PhoneNumber(mockWorkers[2].directDialNum),
-          valid: true
-        },
-        outgoing: {
-          ...initialUserFormState.outgoing,
-          value: formatE164PhoneNumber(mockWorkers[2].attributes.did),
-          valid: true
-        },
-        editDisabled: true
-      };
-      const result = userFormReducer(initialTestState, action);
-      expect(result).toStrictEqual({
-        ...initialTestState,
-        editDisabled: !initialTestState.editDisabled
-      });
     });
   });
 
@@ -383,12 +338,21 @@ describe("userFormReducer", () => {
       const action = { type: userFormActions.INITIATE_DID_FIELDS };
       const result = userFormReducer({
         ...initialUserFormState,
-        didUser: true
+        triton: {
+          ...initialUserFormState.triton,
+          didUser: true
+        }
       }, action);
       const expectedFormState = {
         ...initialUserFormState,
-        didUser: false,
-        zeroOutEnabled: false
+        triton: {
+          ...initialUserFormState.triton,
+          didUser: false,
+          zeroOutEnabled: {
+            ...initialUserFormState.triton.zeroOutEnabled,
+            value: false
+          }
+        }
       };
       expect(result).toStrictEqual(expectedFormState);
     });
@@ -400,8 +364,14 @@ describe("userFormReducer", () => {
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
         ...initialUserFormState,
-        didUser: true,
-        zeroOutEnabled: false
+        triton: {
+          ...initialUserFormState.triton,
+          didUser: true,
+          zeroOutEnabled: {
+            ...initialUserFormState.triton.zeroOutEnabled,
+            value: false
+          }
+        }
       };
       expect(result).toStrictEqual(expectedFormState);
     });
@@ -409,12 +379,24 @@ describe("userFormReducer", () => {
       const action = { type: userFormActions.INITIATE_DID_FIELDS };
       const result = userFormReducer({
         ...initialUserFormState,
-        zeroOutEnabled: true
+        triton: {
+          ...initialUserFormState.triton,
+          zeroOutEnabled: {
+            ...initialUserFormState.triton.zeroOutEnabled,
+            value: true
+          }
+        }
       }, action);
       const expectedFormState = {
         ...initialUserFormState,
-        didUser: true,
-        zeroOutEnabled: true
+        triton: {
+          ...initialUserFormState.triton,
+          didUser: true,
+          zeroOutEnabled: {
+            ...initialUserFormState.triton.zeroOutEnabled,
+            value: true
+          }
+        }
       };
       expect(result).toStrictEqual(expectedFormState);
     });
@@ -427,8 +409,13 @@ describe("userFormReducer", () => {
         const result = userFormReducer(initialUserFormState, action);
         const expectedFormState = {
           ...initialUserFormState,
-          zeroOutEnabled: true,
-          zeroOutEnabledUpdated: true
+          triton: {
+            ...initialUserFormState.triton,
+            zeroOutEnabled: {
+              updated: true,
+              value: true
+            }
+          }
         };
         expect(result).toStrictEqual(expectedFormState);
       });
@@ -438,12 +425,23 @@ describe("userFormReducer", () => {
         const action = { type: userFormActions.INITIATE_ZERO_OUT_FIELDS };
         const result = userFormReducer({
           ...initialUserFormState,
-          zeroOutEnabled: true
+          triton: {
+            ...initialUserFormState.triton,
+            zeroOutEnabled: {
+              ...initialUserFormState.triton.zeroOutEnabled,
+              value: true
+            }
+          }
         }, action);
         const expectedFormState = {
           ...initialUserFormState,
-          zeroOutEnabled: false,
-          zeroOutEnabledUpdated: true
+          triton: {
+            ...initialUserFormState.triton,
+            zeroOutEnabled: {
+              updated: true,
+              value: false
+            }
+          }
         };
         expect(result).toStrictEqual(expectedFormState);
       });
@@ -457,8 +455,13 @@ describe("userFormReducer", () => {
         const result = userFormReducer(initialUserFormState, action);
         const expectedFormState = {
           ...initialUserFormState,
-          selfServiceInd: true,
-          selfServiceIndUpdated: true
+          triton: {
+            ...initialUserFormState.triton,
+            selfServiceInd: {
+              value: true,
+              updated: true
+            }
+          }
         };
         expect(result).toStrictEqual(expectedFormState);
       });
@@ -468,12 +471,23 @@ describe("userFormReducer", () => {
         const action = { type: userFormActions.UPDATE_SELF_SERVICE_INDICATOR  };
         const result = userFormReducer({
           ...initialUserFormState,
-          selfServiceInd: true
+          triton: {
+            ...initialUserFormState.triton,
+            selfServiceInd: {
+              value: true,
+              updated: false
+            }
+          }
         }, action);
         const expectedFormState = {
           ...initialUserFormState,
-          selfServiceInd: false,
-          selfServiceIndUpdated: true
+          triton: {
+            ...initialUserFormState.triton,
+            selfServiceInd: {
+              value: false,
+              updated: true
+            }
+          }
         };
         expect(result).toStrictEqual(expectedFormState);
       });
@@ -484,8 +498,11 @@ describe("userFormReducer", () => {
     test("should reset form to initial state", () => {
       const initialTestState = {
         ...initialUserFormState,
-        profileId: {
-          value: "2"
+        triton: {
+          ...initialUserFormState.triton,
+          profileId: {
+            value: "2"
+          }
         }
       };
       const action = { type: userFormActions.RESET_FORM };
@@ -506,51 +523,8 @@ describe("userFormReducer", () => {
     const updated = false;
     const initialTestState = {
       ...initialUserFormState,
-      manager: {
-        value: managerValue,
-        blurred,
-        updated
-      },
-      outgoing: {
-        value: updatedOutgoingValues.value,
-        e164: updatedOutgoingValues.e164,
-        blurred,
-        updated,
-        valid: false
-      },
-      profileId: {
-        value: profileIdValue,
-        blurred,
-        updated
-      },
-      // randomly selected values that we expect the action to reset
-      extension: {
-        value: "not blank",
-        blurred: true,
-        updated: true,
-        valid: true
-      },
-      directDialNum: {
-        value: "a thousand",
-        blurred: true,
-        e164: "shoelaces",
-        updated: true,
-        valid: true
-      },
-      zeroOutEnabled: true
-    };
-    test("should reset all form fields except Manager, Team & Outbound Number", () => {
-      const managerValue = "Jimini Cricket";
-      const profileIdValue = "42";
-      const updatedOutgoingValues = {
-        value: "8007654321",
-        e164: "+18007654321"
-      };
-      // setting blurred & updated to the opposite of what we expect after the action
-      const blurred = true;
-      const updated = false;
-      const initialTestState = {
-        ...initialUserFormState,
+      triton: {
+        ...initialUserFormState.triton,
         manager: {
           value: managerValue,
           blurred,
@@ -582,7 +556,59 @@ describe("userFormReducer", () => {
           updated: true,
           valid: true
         },
-        zeroOutEnabled: true
+        zeroOutEnabled: {
+          updated: false,
+          value: true,
+        }
+      }
+    };
+    test("should reset all form fields except Manager, Team & Outbound Number", () => {
+      const managerValue = "Jimini Cricket";
+      const profileIdValue = "42";
+      const updatedOutgoingValues = {
+        value: "8007654321",
+        e164: "+18007654321"
+      };
+      // setting blurred & updated to the opposite of what we expect after the action
+      const blurred = true;
+      const updated = false;
+      const initialTestState = {
+        ...initialUserFormState,
+        triton: {
+          ...initialUserFormState.triton,
+          manager: {
+            value: managerValue,
+            blurred,
+            updated
+          },
+          outgoing: {
+            value: updatedOutgoingValues.value,
+            e164: updatedOutgoingValues.e164,
+            blurred,
+            updated,
+            valid: false
+          },
+          profileId: {
+            value: profileIdValue,
+            blurred,
+            updated
+          },
+          // randomly selected values that we expect the action to reset
+          extension: {
+            value: "not blank",
+            blurred: true,
+            updated: true,
+            valid: true
+          },
+          directDialNum: {
+            value: "a thousand",
+            blurred: true,
+            e164: "shoelaces",
+            updated: true,
+            valid: true
+          },
+          zeroOutEnabled: true
+        }
       };
       const action = {
         type: userFormActions.RESET_FORM_AFTER_ADD,
@@ -597,23 +623,26 @@ describe("userFormReducer", () => {
         }
       };
       expect(userFormReducer(initialTestState, action)).toStrictEqual({
-        ...initialUserFormState,
-        manager: {
-          value: managerValue,
-          blurred: false,
-          updated: true
-        },
-        outgoing: {
-          value: updatedOutgoingValues.value,
-          blurred: false,
-          e164: updatedOutgoingValues.e164,
-          updated: true,
-          valid: true
-        },
-        profileId: {
-          value: profileIdValue,
-          blurred: false,
-          updated: true
+        ...initialTestState,
+        triton: {
+          ...initialTestState.triton,
+          manager: {
+            value: managerValue,
+            blurred: false,
+            updated: true
+          },
+          outgoing: {
+            value: updatedOutgoingValues.value,
+            blurred: false,
+            e164: updatedOutgoingValues.e164,
+            updated: true,
+            valid: true
+          },
+          profileId: {
+            value: profileIdValue,
+            blurred: false,
+            updated: true
+          }
         }
       });
     });
@@ -631,24 +660,27 @@ describe("userFormReducer", () => {
         }
       };
       expect(userFormReducer(initialTestState, action)).toStrictEqual({
-        ...initialUserFormState,
-        didUser: true,
-        manager: {
-          value: managerValue,
-          blurred: false,
-          updated: true
-        },
-        outgoing: {
-          value: "",
-          blurred: false,
-          e164: undefined,
-          updated: true,
-          valid: true
-        },
-        profileId: {
-          value: profileIdValue,
-          blurred: false,
-          updated: true
+        ...initialTestState,
+        triton: {
+          ...initialTestState.triton,
+          didUser: true,
+          manager: {
+            value: managerValue,
+            blurred: false,
+            updated: true
+          },
+          outgoing: {
+            value: "",
+            blurred: false,
+            e164: undefined,
+            updated: true,
+            valid: true
+          },
+          profileId: {
+            value: profileIdValue,
+            blurred: false,
+            updated: true
+          }
         }
       });
     });
@@ -656,7 +688,10 @@ describe("userFormReducer", () => {
 
   describe("SET_BLUR_ON_FIELD", () => {
     test("should reset field blurred property to true", () => {
-      const payload = "outgoing";
+      const payload = {
+        field: "outgoing",
+        system: "triton"
+      };
       const action = {
         type: userFormActions.SET_BLUR_ON_FIELD,
         payload
@@ -664,9 +699,12 @@ describe("userFormReducer", () => {
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
         ...initialUserFormState,
-        outgoing: {
-          ...initialUserFormState.outgoing,
-          blurred: true
+        triton: {
+          ...initialUserFormState.triton,
+          outgoing: {
+            ...initialUserFormState.triton.outgoing,
+            blurred: true
+          }
         }
       };
       expect(result).toStrictEqual(expectedFormState);
@@ -679,13 +717,13 @@ describe("userFormReducer", () => {
         user: "new"
       };
       const action = {
-        type: userFormActions.SET_CALABRIO_USER,
+        type: userFormActions.SET_CALABRIO_QM_USER,
         payload
       };
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
         ...initialUserFormState,
-        calabrioUser: payload
+        calabrio_qm: payload
       };
       expect(result).toStrictEqual(expectedFormState);
     });
@@ -701,8 +739,8 @@ describe("userFormReducer", () => {
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
         ...initialUserFormState,
-        calabrioUser: {
-          ...initialUserFormState.calabrioUser,
+        calabrio_qm: {
+          ...initialUserFormState.calabrio_qm,
           updated: true,
           roles: payload
         }
@@ -721,8 +759,8 @@ describe("userFormReducer", () => {
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
         ...initialUserFormState,
-        calabrioUser: {
-          ...initialUserFormState.calabrioUser,
+        calabrio_qm: {
+          ...initialUserFormState.calabrio_qm,
           updated: true,
           team: payload
         }
@@ -741,8 +779,8 @@ describe("userFormReducer", () => {
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
         ...initialUserFormState,
-        calabrioUser: {
-          ...initialUserFormState.calabrioUser,
+        calabrio_qm: {
+          ...initialUserFormState.calabrio_qm,
           updated: true,
           timezone: payload
         }
@@ -785,16 +823,19 @@ describe("userFormReducer", () => {
           isError: false
         }
       };
-      const initialTestState = {
-        ...initialUserFormState
-      };
-      const result = userFormReducer(initialTestState, action);
+      const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
-        ...initialTestState,
-        extensionStatus: {
-          ...initialTestState.extensionStatus,
-          message: testMessage,
-          isError: false
+        ...initialUserFormState,
+        triton: {
+          ...initialUserFormState.triton,
+          extension: {
+            ...initialUserFormState.triton.extension,
+            status: {
+              ...initialUserFormState.triton.extension.status,
+              message: testMessage,
+              isError: false
+            }
+          }
         }
       };
       expect(result).toStrictEqual(expectedFormState);
@@ -807,18 +848,30 @@ describe("userFormReducer", () => {
         const action = { type: userFormActions.SET_EXTENSION_RETRIES };
         const initialTestState = {
           ...initialUserFormState,
-          extensionStatus: {
-            ...initialUserFormState.extensionStatus,
-            searchStatus: ExtensionSearchStatuses.Idle,
-            retriesRemaining: 1
+          triton: {
+            ...initialUserFormState.triton,
+            extension: {
+              ...initialUserFormState.triton.extension,
+              status: {
+                ...initialUserFormState.triton.extension.status,
+                searchStatus: ExtensionSearchStatuses.Idle,
+                retriesRemaining: 1
+              }
+            }
           }
         };
         const result = userFormReducer(initialTestState, action);
         const expectedFormState = {
           ...initialTestState,
-          extensionStatus: {
-            ...initialTestState.extensionStatus,
-            retriesRemaining: 0
+          triton: {
+            ...initialUserFormState.triton,
+            extension: {
+              ...initialUserFormState.triton.extension,
+              status: {
+                ...initialUserFormState.triton.extension.status,
+                retriesRemaining: 0
+              }
+            }
           }
         };
         expect(result).toStrictEqual(expectedFormState);
@@ -829,18 +882,31 @@ describe("userFormReducer", () => {
         const action = { type: userFormActions.SET_EXTENSION_RETRIES };
         const initialTestState = {
           ...initialUserFormState,
-          extensionStatus: {
-            ...initialUserFormState.extensionStatus,
-            searchStatus: ExtensionSearchStatuses.PickANumber,
-            retriesRemaining: 3
+          triton: {
+            ...initialUserFormState.triton,
+            extension: {
+              ...initialUserFormState.triton.extension,
+              status: {
+                ...initialUserFormState.triton.extension.status,
+                searchStatus: ExtensionSearchStatuses.PickANumber,
+                retriesRemaining: 3
+              }
+            }
           }
         };
         const result = userFormReducer(initialTestState, action);
         const expectedFormState = {
           ...initialTestState,
-          extensionStatus: {
-            ...initialTestState.extensionStatus,
-            retriesRemaining: 2
+          triton: {
+            ...initialUserFormState.triton,
+            extension: {
+              ...initialUserFormState.triton.extension,
+              status: {
+                ...initialUserFormState.triton.extension.status,
+                searchStatus: ExtensionSearchStatuses.PickANumber,
+                retriesRemaining: 2
+              }
+            }
           }
         };
         expect(result).toStrictEqual(expectedFormState);
@@ -853,23 +919,35 @@ describe("userFormReducer", () => {
       const action = { type: userFormActions.SET_EXTENSION_VERIFIED };
       const initialTestState = {
         ...initialUserFormState,
-        extensionStatus: {
-          ...initialUserFormState.extensionStatus,
-          searchStatus: ExtensionSearchStatuses.PickANumber,
-          retriesRemaining: 1,
-          message: "Some message",
-          isError: true
+        triton: {
+          ...initialUserFormState.triton,
+          extension: {
+            ...initialUserFormState.triton.extension,
+            status: {
+              ...initialUserFormState.triton.extension.status,
+              searchStatus: ExtensionSearchStatuses.PickANumber,
+              retriesRemaining: 1,
+              message: "Some message",
+              isError: true
+            }
+          }
         }
       };
       const result = userFormReducer(initialTestState, action);
       const expectedFormState = {
         ...initialTestState,
-        extensionStatus: {
-          ...initialTestState.extensionStatus,
-          searchStatus: ExtensionSearchStatuses.Idle,
-          retriesRemaining: searchParams.MaxRetries,
-          message: "Verified",
-          isError: false
+        triton: {
+          ...initialUserFormState.triton,
+          extension: {
+            ...initialUserFormState.triton.extension,
+            status: {
+              ...initialTestState.triton.extension.status,
+              searchStatus: ExtensionSearchStatuses.Idle,
+              retriesRemaining: searchParams.MaxRetries,
+              message: "Verified",
+              isError: false
+            }
+          }
         }
       };
       expect(result).toStrictEqual(expectedFormState);
@@ -891,47 +969,58 @@ describe("userFormReducer", () => {
       const expectedFormState = {
         ...initialUserFormState,
         formMode: formModes.UPDATE,
-        defaultSkills: getValidSkillsObject(worker.attributes.default_skills),
-        extension: {
-          ...initialUserFormState.extension,
-          value: worker.attributes.extension,
-          valid: true
-        },
-        extensionStatus: {
-          ...initialUserFormState.extensionStatus,
-          originalExtension: worker.attributes.extension || ""
-        },
-        manager: {
-          ...initialUserFormState.manager,
-          value: managerList.find(m => m.manager_n_number === worker.attributes.manager_n_number)
-        },
         nNumber: {
           ...initialUserFormState.nNumber,
           value: "n"
         },
-        outgoing: {
-          ...initialUserFormState.outgoing,
-          value: formatE164PhoneNumber(worker.attributes.did),
-          valid: true
-        },
-        profileId: {
-          ...initialUserFormState.profileId,
-          value: worker.attributes.profile_id
-        },
-        alternateDid: {
-          ...initialUserFormState.alternateDid,
-          value: formatE164PhoneNumber(worker.alternateDid),
-          valid: true
-        },
-        directDialNum: {
-          ...initialUserFormState.directDialNum,
-          value: formatE164PhoneNumber(worker.directDialNum),
-          valid: true
-        },
-        didUser: true,
-        zeroOutEnabled: worker.zeroOutEnabled,
-        selfServiceInd: worker.selfServiceInd,
-        editDisabled: true
+        triton: {
+          ...initialUserFormState.triton,
+          defaultSkills: {
+            updated: false,
+            ...getValidSkillsObject(worker.attributes.default_skills)
+          },
+          extension: {
+            ...initialUserFormState.triton.extension,
+            value: worker.attributes.extension,
+            valid: true,
+            status: {
+              ...initialUserFormState.triton.extension.status,
+              originalExtension: worker.attributes.extension || ""
+            },
+          },
+          manager: {
+            ...initialUserFormState.triton.manager,
+            value: managerList.find(m => m.manager_n_number === worker.attributes.manager_n_number)
+          },
+          outgoing: {
+            ...initialUserFormState.triton.outgoing,
+            value: formatE164PhoneNumber(worker.attributes.did),
+            valid: true
+          },
+          profileId: {
+            ...initialUserFormState.triton.profileId,
+            value: worker.attributes.profile_id
+          },
+          alternateDid: {
+            ...initialUserFormState.triton.alternateDid,
+            value: formatE164PhoneNumber(worker.alternateDid),
+            valid: true
+          },
+          directDialNum: {
+            ...initialUserFormState.triton.directDialNum,
+            value: formatE164PhoneNumber(worker.directDialNum),
+            valid: true
+          },
+          didUser: true,
+          zeroOutEnabled: {
+            ...initialUserFormState.triton.zeroOutEnabled,
+            value: worker.zeroOutEnabled,
+          },
+          selfServiceInd: {
+            ...initialUserFormState.triton.selfServiceInd,
+            value: worker.selfServiceInd,
+          }
+        }
       };
       expect(result).toStrictEqual(expectedFormState);
     });
@@ -952,47 +1041,58 @@ describe("userFormReducer", () => {
       const expectedFormState = {
         ...initialUserFormState,
         formMode: formModes.DELETE,
-        defaultSkills: getValidSkillsObject(worker.attributes.default_skills),
-        extension: {
-          ...initialUserFormState.extension,
-          value: worker.attributes.extension,
-          valid: true
-        },
-        extensionStatus: {
-          ...initialUserFormState.extensionStatus,
-          originalExtension: worker.attributes.extension || ""
-        },
-        manager: {
-          ...initialUserFormState.manager,
-          value: managerList.find(m => m.manager_n_number === worker.attributes.manager_n_number)
-        },
         nNumber: {
           ...initialUserFormState.nNumber,
           value: "n"
         },
-        outgoing: {
-          ...initialUserFormState.outgoing,
-          value: formatE164PhoneNumber(worker.attributes.did),
-          valid: true
-        },
-        profileId: {
-          ...initialUserFormState.profileId,
-          value: worker.attributes.profile_id
-        },
-        alternateDid: {
-          ...initialUserFormState.alternateDid,
-          value: formatE164PhoneNumber(worker.alternateDid),
-          valid: true
-        },
-        directDialNum: {
-          ...initialUserFormState.directDialNum,
-          value: formatE164PhoneNumber(worker.directDialNum),
-          valid: true
-        },
-        didUser: true,
-        zeroOutEnabled: worker.zeroOutEnabled,
-        selfServiceInd: worker.selfServiceInd,
-        editDisabled: true
+        triton: {
+          ...initialUserFormState.triton,
+          defaultSkills: {
+            updated: false,
+            ...getValidSkillsObject(worker.attributes.default_skills),
+          },
+          extension: {
+            ...initialUserFormState.triton.extension,
+            value: worker.attributes.extension,
+            valid: true,
+            status: {
+              ...initialUserFormState.triton.extension.status,
+              originalExtension: worker.attributes.extension || ""
+            },
+          },
+          manager: {
+            ...initialUserFormState.triton.manager,
+            value: managerList.find(m => m.manager_n_number === worker.attributes.manager_n_number)
+          },
+          outgoing: {
+            ...initialUserFormState.triton.outgoing,
+            value: formatE164PhoneNumber(worker.attributes.did),
+            valid: true
+          },
+          profileId: {
+            ...initialUserFormState.triton.profileId,
+            value: worker.attributes.profile_id
+          },
+          alternateDid: {
+            ...initialUserFormState.triton.alternateDid,
+            value: formatE164PhoneNumber(worker.alternateDid),
+            valid: true
+          },
+          directDialNum: {
+            ...initialUserFormState.triton.directDialNum,
+            value: formatE164PhoneNumber(worker.directDialNum),
+            valid: true
+          },
+          didUser: true,
+          zeroOutEnabled: {
+            ...initialUserFormState.triton.zeroOutEnabled,
+            value: worker.zeroOutEnabled,
+          },
+          selfServiceInd: {
+            ...initialUserFormState.triton.selfServiceInd,
+            value: worker.selfServiceInd,
+          }
+        }
       };
       expect(result).toStrictEqual(expectedFormState);
     });
@@ -1014,19 +1114,25 @@ describe("userFormReducer", () => {
       const expectedFormState = {
         ...initialUserFormState,
         formMode: payload.formMode,
-        defaultSkills: getValidSkillsObject(worker.attributes.default_skills),
-        extension: {
-          ...initialUserFormState.extension,
-          value: "",
-          valid: true
-        },
-        manager: {
-          ...initialUserFormState.manager,
-          value: JSON.stringify(managerList.find(m => m.manager_n_number === worker.attributes.manager_n_number))
-        },
-        profileId: {
-          ...initialUserFormState.profileId,
-          value: worker.attributes.profile_id
+        triton: {
+          ...initialUserFormState.triton,
+          defaultSkills: {
+            ...getValidSkillsObject(worker.attributes.default_skills),
+            updated: false
+          },
+          extension: {
+            ...initialUserFormState.triton.extension,
+            value: "",
+            valid: true
+          },
+          manager: {
+            ...initialUserFormState.triton.manager,
+            value: JSON.stringify(managerList.find(m => m.manager_n_number === worker.attributes.manager_n_number))
+          },
+          profileId: {
+            ...initialUserFormState.triton.profileId,
+            value: worker.attributes.profile_id
+          }
         }
       };
       expect(result).toStrictEqual(expectedFormState);
@@ -1038,7 +1144,10 @@ describe("userFormReducer", () => {
     test("should set userPreviouslyAdded to true", () => {
       expect(userFormReducer(initialUserFormState, action)).toStrictEqual({
         ...initialUserFormState,
-        userPreviouslyAdded: true
+        triton: {
+          ...initialUserFormState.triton,
+          userPreviouslyAdded: true
+        }
       });
     });
   });
@@ -1053,8 +1162,13 @@ describe("userFormReducer", () => {
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
         ...initialUserFormState,
-        defaultSkillsUpdated: true,
-        defaultSkills: payload
+        triton: {
+          ...initialUserFormState.triton,
+          defaultSkills: {
+            updated: true,
+            ...payload
+          }
+        }
       };
       expect(result).toStrictEqual(expectedFormState);
     });
@@ -1074,18 +1188,21 @@ describe("userFormReducer", () => {
         const result = userFormReducer(initialUserFormState, action);
         const expectedFormState ={
           ...initialUserFormState,
-          extension: {
-            ...initialUserFormState.extension,
-            value: validFormOptions.extension,
-            blurred: payload.isValid,
-            updated: true,
-            valid: payload.isValid
-          },
-          extensionStatus: {
-            ...initialUserFormState.extensionStatus,
-            message: "Extension is valid",
-            searchStatus: ExtensionSearchStatuses.Idle,
-            retriesRemaining: 5
+          triton: {
+            ...initialUserFormState.triton,
+            extension: {
+              ...initialUserFormState.triton.extension,
+              value: validFormOptions.extension,
+              blurred: payload.isValid,
+              updated: true,
+              valid: payload.isValid,
+              status: {
+                ...initialUserFormState.triton.extension.status,
+                message: "Extension is valid",
+                searchStatus: ExtensionSearchStatuses.Idle,
+                retriesRemaining: 5
+              }
+            },
           }
         };
         expect(result).toStrictEqual(expectedFormState);
@@ -1104,18 +1221,21 @@ describe("userFormReducer", () => {
         const result = userFormReducer(initialUserFormState, action);
         const expectedFormState ={
           ...initialUserFormState,
-          extension: {
-            ...initialUserFormState.extension,
-            value: validFormOptions.extension,
-            blurred: payload.isValid,
-            updated: true,
-            valid: payload.isValid
-          },
-          extensionStatus: {
-            ...initialUserFormState.extensionStatus,
-            message: "",
-            searchStatus: ExtensionSearchStatuses.Idle,
-            retriesRemaining: 5
+          triton: {
+            ...initialUserFormState.triton,
+            extension: {
+              ...initialUserFormState.triton.extension,
+              value: validFormOptions.extension,
+              blurred: payload.isValid,
+              updated: true,
+              valid: payload.isValid,
+              status: {
+                ...initialUserFormState.triton.extension.status,
+                message: "",
+                searchStatus: ExtensionSearchStatuses.Idle,
+                retriesRemaining: 5
+              }
+            }
           }
         };
         expect(result).toStrictEqual(expectedFormState);
@@ -1133,9 +1253,12 @@ describe("userFormReducer", () => {
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState ={
         ...initialUserFormState,
-        inactiveForwardTo: {
-          value: payload,
-          updated: true
+        triton: {
+          ...initialUserFormState.triton,
+          inactiveForwardTo: {
+            value: payload,
+            updated: true
+          }
         }
       };
       expect(result).toStrictEqual(expectedFormState);
@@ -1156,10 +1279,13 @@ describe("userFormReducer", () => {
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
         ...initialUserFormState,
-        manager: {
-          ...initialUserFormState.manager,
-          value: payload,
-          updated: true
+        triton: {
+          ...initialUserFormState.triton,
+          manager: {
+            ...initialUserFormState.triton.manager,
+            value: payload,
+            updated: true
+          }
         }
       };
       expect(result).toStrictEqual(expectedFormState);
@@ -1201,12 +1327,15 @@ describe("userFormReducer", () => {
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
         ...initialUserFormState,
-        outgoing: {
-          ...initialUserFormState.outgoing,
-          value: payload.maskedValue,
-          e164: payload.e164Number,
-          updated: true,
-          valid: true
+        triton: {
+          ...initialUserFormState.triton,
+          outgoing: {
+            ...initialUserFormState.triton.outgoing,
+            value: payload.maskedValue,
+            e164: payload.e164Number,
+            updated: true,
+            valid: true
+          }
         }
       };
       expect(result).toStrictEqual(expectedFormState);
@@ -1228,11 +1357,14 @@ describe("userFormReducer", () => {
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
         ...initialUserFormState,
-        outgoing: {
-          ...initialUserFormState.outgoing,
-          value: payload.maskedValue,
-          e164: payload.e164Number,
-          updated: true
+        triton: {
+          ...initialUserFormState.triton,
+          outgoing: {
+            ...initialUserFormState.triton.outgoing,
+            value: payload.maskedValue,
+            e164: payload.e164Number,
+            updated: true
+          }
         }
       };
       expect(result).toStrictEqual(expectedFormState);
@@ -1252,20 +1384,29 @@ describe("userFormReducer", () => {
         };
         const initialTestState = {
           ...initialUserFormState,
-          profileId: {
-            ...initialUserFormState.profileId,
-            value: profileList[0].profile_id
+          triton: {
+            ...initialUserFormState.triton,
+            profileId: {
+              ...initialUserFormState.triton.profileId,
+              value: profileList[0].profile_id
+            }
           }
         };
         const result = userFormReducer(initialTestState, action);
         const expectedFormState = {
           ...initialUserFormState,
-          profileId: {
-            ...initialUserFormState.profileId,
-            value: payload.profileId,
-            updated: true
-          },
-          zeroOutEnabled: true
+          triton: {
+            ...initialUserFormState.triton,
+            profileId: {
+              ...initialUserFormState.triton.profileId,
+              value: payload.profileId,
+              updated: true
+            },
+            zeroOutEnabled: {
+              ...initialUserFormState.triton.zeroOutEnabled,
+              value: true
+            }
+          }
         };
         expect(result).toStrictEqual(expectedFormState);
       });
@@ -1282,20 +1423,29 @@ describe("userFormReducer", () => {
         };
         const initialTestState = {
           ...initialUserFormState,
-          profileId: {
-            ...initialUserFormState.profileId,
-            value: profileList[1].profile_id
+          triton: {
+            ...initialUserFormState.triton,
+            profileId: {
+              ...initialUserFormState.triton.profileId,
+              value: profileList[1].profile_id
+            }
           }
         };
         const result = userFormReducer(initialTestState, action);
         const expectedFormState = {
           ...initialUserFormState,
-          profileId: {
-            ...initialUserFormState.profileId,
-            value: payload.profileId,
-            updated: true
-          },
-          zeroOutEnabled: false
+          triton: {
+            ...initialUserFormState.triton,
+            profileId: {
+              ...initialUserFormState.triton.profileId,
+              value: payload.profileId,
+              updated: true
+            },
+            zeroOutEnabled: {
+              value: false,
+              updated: false
+            }
+          }
         };
         expect(result).toStrictEqual(expectedFormState);
       });

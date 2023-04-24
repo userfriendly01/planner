@@ -62,7 +62,9 @@ describe("DeleteTritonUser", () => {
     useAdminDispatch.mockReturnValue(mockDispatch);
     useAdminState.mockReturnValue(initialTestState);
     useFormState.mockReturnValue({
-      didUser: false,
+      triton: {
+        didUser: false,
+      },
       nNumber: {
         value: mockWorker.attributes.n_number
       }
@@ -73,7 +75,9 @@ describe("DeleteTritonUser", () => {
     describe("worker is DID", () => {
       beforeEach(() => {
         useFormState.mockReturnValue({
-          didUser: true,
+          triton: {
+            didUser: true,
+          },
           nNumber: {
             value: mockWorker.attributes.n_number
           }

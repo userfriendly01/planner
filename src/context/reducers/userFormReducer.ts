@@ -240,7 +240,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       };
     }
     case userFormActions.INITIATE_DID_FIELDS: {
-      const zeroOutEnabledValue = state.triton.didUser ? false : state.triton.zeroOutEnabled;
+      const zeroOutEnabledValue = state.triton.didUser ? false : state.triton.zeroOutEnabled.value;
       return {
         ...state,
         triton: {
@@ -304,7 +304,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       const manager = action.payload.managerValue;
       //FAITH make sure default skills reset
       return {
-        ...initialUserFormState,
+        ...state,
         triton: {
           ...state.triton,
           didUser,
@@ -334,7 +334,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       if(system){
         return {
           ...state,
-          system: {
+          [system]: {
             ...state[system],
             [field]: {
               ...state[system][field],
@@ -684,7 +684,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         triton: {
           ...state.triton,
           profileId: {
-            ...state.profileId,
+            ...state.triton.profileId,
             value: profileId,
             updated: true
           },

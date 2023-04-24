@@ -52,8 +52,6 @@ import {
   workerHasOverFlowSkill
 } from "utils";
 
-jest.useFakeTimers();
-
 jest.mock("components", () => ({
   StyledButton: jest.fn(),
   MergeUsersModal: jest.fn()
@@ -154,6 +152,7 @@ describe("<UserFormButtons />", () => {
   beforeEach(() => {
     addOffice.mockResolvedValue("Override me later");
     jest.clearAllMocks();
+    jest.useFakeTimers();
     useFormDispatch.mockReturnValue(mockSetForm);
     getOverflowSkillFromProfile.mockReturnValue("466");
     useAdminDispatch.mockReturnValue(mockDispatch);
@@ -194,7 +193,10 @@ describe("<UserFormButtons />", () => {
     describe("form.didUser === true", () => {
       const form = {
         ...initialFormState,
-        didUser: true
+        triton: {
+          ...initialFormState.triton,
+          didUser: true
+        }
       };
       beforeEach(() => {
         useFormState.mockReturnValue(form);
@@ -239,12 +241,12 @@ describe("<UserFormButtons />", () => {
     const resetFormAfterAddExpectedAction = {
       type: "RESET_FORM_AFTER_ADD",
       payload: {
-        managerValue: validFormState.manager.value,
+        managerValue: validFormState.triton.manager.value,
         outgoing: {
-          value: validFormState.outgoing.value,
-          e164: validFormState.outgoing.e164
+          value: validFormState.triton.outgoing.value,
+          e164: validFormState.triton.outgoing.e164
         },
-        profileIdValue: validFormState.profileId.value,
+        profileIdValue: validFormState.triton.profileId.value,
         didUser: false
       }
     };
@@ -285,9 +287,12 @@ describe("<UserFormButtons />", () => {
           const createWorkerAttributesAfterFormValid = workerAttributesAfterFormValid;
           const nonDidValidFormState = {
             ...validFormState,
-            directDialNum: {
-              ...validFormState.directDialNum,
-              value: ""
+            triton: {
+              ...validFormState.triton,
+              directDialNum: {
+                ...validFormState.triton.directDialNum,
+                value: ""
+              }
             }
           };
           beforeEach(() => {
@@ -357,7 +362,10 @@ describe("<UserFormButtons />", () => {
           };
           const form = {
             ...validFormState,
-            didUser: true
+            triton: {
+              ...validFormState.triton,
+              didUser: true
+            }
           };
           beforeEach(() => {
             createUser.mockResolvedValue(existingOfficeDbWorker);
@@ -374,10 +382,10 @@ describe("<UserFormButtons />", () => {
               expect(createUser).toHaveBeenCalledWith({
                 activateEp: true, // true for DID workers
                 attributes: createWorkerAttributesAfterFormValid,
-                alternateDid: validFormState.alternateDid.e164,
-                directDialNum: validFormState.directDialNum.e164,
-                zeroOutEnabled: validFormState.zeroOutEnabled,
-                selfServiceInd: validFormState.selfServiceInd,
+                alternateDid: validFormState.triton.alternateDid.e164,
+                directDialNum: validFormState.triton.directDialNum.e164,
+                zeroOutEnabled: validFormState.triton.zeroOutEnabled.value,
+                selfServiceInd: validFormState.triton.selfServiceInd.value,
                 operatingUnitSid: validOperatingUnitId
               });
               expect(mockSetForm).toHaveBeenCalledTimes(2);
@@ -420,8 +428,15 @@ describe("<UserFormButtons />", () => {
           const createWorkerAttributesAfterFormValid = workerAttributesAfterFormValid;
           const form = {
             ...validFormState,
-            zeroOutEnabled: true,
-            selfServiceInd: true
+            triton: {
+              ...validFormState.triton,
+              zeroOutEnabled: {
+                value: true
+              },
+              selfServiceInd: {
+                value: true
+              }
+            }
           };
           beforeEach(() => {
             useFormState.mockReturnValue(form);
@@ -445,8 +460,8 @@ describe("<UserFormButtons />", () => {
                     ]
                   }
                 },
-                alternateDid: validFormState.alternateDid.e164,
-                directDialNum: validFormState.directDialNum.e164,
+                alternateDid: validFormState.triton.alternateDid.e164,
+                directDialNum: validFormState.triton.directDialNum.e164,
                 zeroOutEnabled: true,
                 selfServiceInd: true,
                 operatingUnitSid: validOperatingUnitId
@@ -511,8 +526,8 @@ describe("<UserFormButtons />", () => {
                       ]
                     }
                   },
-                  alternateDid: validFormState.alternateDid.e164,
-                  directDialNum: validFormState.directDialNum.e164,
+                  alternateDid: validFormState.triton.alternateDid.e164,
+                  directDialNum: validFormState.triton.directDialNum.e164,
                   zeroOutEnabled: true,
                   selfServiceInd: true,
                   operatingUnitSid: validOperatingUnitId
@@ -561,9 +576,12 @@ describe("<UserFormButtons />", () => {
         describe("addOffice fails", () => {
           const nonDidValidFormState = {
             ...validFormState,
-            directDialNum: {
-              ...validFormState.directDialNum,
-              value: ""
+            triton: {
+              ...validFormState.triton,
+              directDialNum: {
+                ...validFormState.directDialNum,
+                value: ""
+              }
             }
           };
           beforeEach(() => {
@@ -616,9 +634,12 @@ describe("<UserFormButtons />", () => {
         describe("createUser fails", () => {
           const nonDidValidFormState = {
             ...validFormState,
-            directDialNum: {
-              ...validFormState.directDialNum,
-              value: ""
+            triton: {
+              ...validFormState.triton,
+              directDialNum: {
+                ...validFormState.triton.directDialNum,
+                value: ""
+              }
             }
           };
           beforeEach(() => {
@@ -701,9 +722,12 @@ describe("<UserFormButtons />", () => {
       describe("checkConflictingUsers fails", () => {
         const nonDidValidFormState = {
           ...validFormState,
-          directDialNum: {
-            ...validFormState.directDialNum,
-            value: ""
+          triton: {
+            ...validFormState.triton,
+            directDialNum: {
+              ...validFormState.triton.directDialNum,
+              value: ""
+            }
           }
         };
         beforeEach(() => {
@@ -737,9 +761,12 @@ describe("<UserFormButtons />", () => {
       describe("createCalabrioUser fails", () => {
         const nonDidValidFormState = {
           ...validFormState,
-          directDialNum: {
-            ...validFormState.directDialNum,
-            value: ""
+          triton: {
+            ...validFormState.triton,
+            directDialNum: {
+              ...validFormState.triton.directDialNum,
+              value: ""
+            }
           }
         };
         beforeEach(() => {
@@ -774,9 +801,12 @@ describe("<UserFormButtons />", () => {
       describe("getCalabrioUsers fails", () => {
         const nonDidValidFormState = {
           ...validFormState,
-          directDialNum: {
-            ...validFormState.directDialNum,
-            value: ""
+          triton: {
+            ...validFormState.triton,
+            directDialNum: {
+              ...validFormState.triton.directDialNum,
+              value: ""
+            }
           }
         };
         beforeEach(() => {
@@ -818,7 +848,8 @@ describe("<UserFormButtons />", () => {
       const updateFormState = {
         ...validFormState,
         formMode: formModes.UPDATE,
-        calabrioUser: {
+        calabrio_qm: {
+          ...validFormState.calabrio_qm,
           updated: true
         }
       };
@@ -834,7 +865,10 @@ describe("<UserFormButtons />", () => {
         const updateFormState = {
           ...validFormState,
           formMode: formModes.UPDATE,
-          nNumberFetchedUser: null
+          nNumber: {
+            ...validFormState.nNumber,
+            nNumberFetchedUser: null
+          }
         };
         describe("fetchUser throws an error", () => {
           beforeEach(() => {
@@ -939,22 +973,31 @@ describe("<UserFormButtons />", () => {
         describe("Worker is not a DID user", () => {
           const nonDidValidFormState = {
             ...updateFormState,
-            calabrioUser: {
+            calabrio_qm: {
+              ...updateFormState.calabrio_qm,
               updated: true,
               id: 1
             },
-            directDialNum: {
-              ...updateFormState.directDialNum,
-              value: "",
-              updated: false
-            },
-            zeroOutEnabled: true,
-            selfServiceInd: false
+            triton: {
+              ...updateFormState.triton,
+              directDialNum: {
+                ...updateFormState.triton.directDialNum,
+                value: "",
+                updated: false
+              },
+              zeroOutEnabled: {
+                value: true
+              },
+              selfServiceInd: {
+                value: false
+              }
+            }
           };
           beforeEach(() => {
             updateUser.mockResolvedValue(rawDbWorker);
             fetchUser.mockResolvedValue(fetchedUser);
             useFormState.mockReturnValue(nonDidValidFormState);
+            updateCalabrioUser.mockResolvedValue({ data: ["agent1", "agent2"]});
           });
           test("should save user with non did worker request body when clicked", async () => {
             const updateWorker = {
@@ -975,10 +1018,10 @@ describe("<UserFormButtons />", () => {
               emp_first_name: "Frank",
               emp_last_name: "Rizzo",
               full_name: "Frank Rizzo",
-              department_id: validFormState.nNumberFetchedUser.departmentNumber,
-              department_name: validFormState.nNumberFetchedUser.departmentName,
+              department_id: validFormState.nNumber.nNumberFetchedUser.departmentNumber,
+              department_name: validFormState.nNumber.nNumberFetchedUser.departmentName,
               extension: validFormOptions.extension,
-              location: validFormState.nNumberFetchedUser.departmentName,
+              location: validFormState.nNumber.nNumberFetchedUser.departmentName,
               manager_first_name: validFormOptions.manager.manager_first_name,
               manager_last_name: validFormOptions.manager.manager_last_name,
               manager_n_number: validFormOptions.manager.manager_n_number,
@@ -997,7 +1040,7 @@ describe("<UserFormButtons />", () => {
             });
             await waitFor(() => {
               expect(updateUser).toHaveBeenCalledWith(worker.sid, {
-                alternateDid: updateFormState.alternateDid.e164,
+                alternateDid: updateFormState.triton.alternateDid.e164,
                 attributes: updateWorkerAttributesAfterFormValid,
                 operatingUnitSid: validOperatingUnitId,
                 zeroOutEnabled: true,
@@ -1083,10 +1126,10 @@ describe("<UserFormButtons />", () => {
               expect(updateUser).toHaveBeenCalledWith(worker.sid, {
                 activateEp: true, // true for DID workers
                 attributes: updateWorkerAttributesAfterFormValid,
-                alternateDid: validFormState.alternateDid.e164,
-                directDialNum: validFormState.directDialNum.e164,
-                zeroOutEnabled: validFormState.zeroOutEnabled,
-                selfServiceInd: validFormState.selfServiceInd,
+                alternateDid: validFormState.triton.alternateDid.e164,
+                directDialNum: validFormState.triton.directDialNum.e164,
+                zeroOutEnabled: validFormState.triton.zeroOutEnabled.value,
+                selfServiceInd: validFormState.triton.selfServiceInd.value,
                 operatingUnitSid: validOperatingUnitId
               });
               expect(mockDispatch).toHaveBeenCalledTimes(2);
@@ -1142,10 +1185,10 @@ describe("<UserFormButtons />", () => {
                     emp_last_name: "Rizzo",
                     full_name: "Frank Rizzo"
                   },
-                  alternateDid: validFormState.alternateDid.e164,
-                  directDialNum: validFormState.directDialNum.e164,
-                  zeroOutEnabled: validFormState.zeroOutEnabled,
-                  selfServiceInd: validFormState.selfServiceInd,
+                  alternateDid: validFormState.triton.alternateDid.e164,
+                  directDialNum: validFormState.triton.directDialNum.e164,
+                  zeroOutEnabled: validFormState.triton.zeroOutEnabled.value,
+                  selfServiceInd: validFormState.triton.selfServiceInd.value,
                   operatingUnitSid: validOperatingUnitId
                 });
                 expect(mockDispatch).toHaveBeenCalledTimes(2);
@@ -1179,38 +1222,49 @@ describe("<UserFormButtons />", () => {
         describe("Fields are unchanged", () => {
           const unchangedForm = {
             ...updateFormState,
-            manager: {
-              ...updateFormState.manager,
-              updated: false
-            },
-            profileId: {
-              ...updateFormState.profileId,
-              updated: false
-            },
-            outgoing: {
-              ...updateFormState.outgoing,
-              updated: false
-            },
-            extension: {
-              ...updateFormState.extension,
-              updated: false
-            },
-            alternateDid: {
-              ...updateFormState.alternateDid,
-              updated: false
-            },
-            directDialNum: {
-              ...updateFormState.directDialNum,
-              updated: false
-            },
-            inactiveForwardTo: {
-              ...updateFormState.inactiveForwardTo,
-              updated: false
-            },
-            defaultSkillsUpdated: false,
-            zeroOutEnabledUpdated: false,
-            zeroOutEnabled: true,
-            selfServiceInd: true
+            triton: {
+              ...updateFormState.triton,
+              manager: {
+                ...updateFormState.triton.manager,
+                updated: false
+              },
+              profileId: {
+                ...updateFormState.triton.profileId,
+                updated: false
+              },
+              outgoing: {
+                ...updateFormState.triton.outgoing,
+                updated: false
+              },
+              extension: {
+                ...updateFormState.triton.extension,
+                updated: false
+              },
+              alternateDid: {
+                ...updateFormState.triton.alternateDid,
+                updated: false
+              },
+              directDialNum: {
+                ...updateFormState.triton.directDialNum,
+                updated: false
+              },
+              inactiveForwardTo: {
+                ...updateFormState.triton.inactiveForwardTo,
+                updated: false
+              },
+              defaultSkills: {
+                ...updateFormState.triton.defaultSkills,
+                updated: false
+              },
+              zeroOutEnabled: {
+                value: true,
+                updated: false
+              },
+              selfServiceInd: {
+                value: true,
+                updated: false
+              }
+            }
           };
           beforeEach(() => {
             updateUser.mockResolvedValue(rawDbWorker);
@@ -1311,7 +1365,10 @@ describe("<UserFormButtons />", () => {
             workerHasOverFlowSkill.mockReturnValue(true);
             useFormState.mockReturnValue({
               ...updateFormState,
-              nNumberFetchedUser: null
+              nNumber: {
+                ...updateFormState.nNumber,
+                nNumberFetchedUser: null
+              }
             });
           });
           test("should save user with did worker request body when clicked", async () => {
@@ -1325,10 +1382,10 @@ describe("<UserFormButtons />", () => {
               expect(updateUser).toHaveBeenCalledWith(worker.sid, {
                 activateEp: true, // true for DID workers
                 attributes: updateWorkerAttributesAfterFormValid,
-                alternateDid: validFormState.alternateDid.e164,
-                directDialNum: validFormState.directDialNum.e164,
-                zeroOutEnabled: validFormState.zeroOutEnabled,
-                selfServiceInd: validFormState.selfServiceInd,
+                alternateDid: validFormState.triton.alternateDid.e164,
+                directDialNum: validFormState.triton.directDialNum.e164,
+                zeroOutEnabled: validFormState.triton.zeroOutEnabled.value,
+                selfServiceInd: validFormState.triton.selfServiceInd.value,
                 operatingUnitSid: validOperatingUnitId
               });
               expect(mockDispatch).toHaveBeenCalledTimes(2);
@@ -1393,10 +1450,13 @@ describe("<UserFormButtons />", () => {
             workerHasOverFlowSkill.mockReturnValue(true);
             useFormState.mockReturnValue({
               ...updateFormState,
-              nNumberFetchedUser: {
-                ...updateFormState.nNumberFetchedUser,
-                departmentNumber: null,
-                departmentName: null
+              nNumber: {
+                ...updateFormState.nNumber,
+                nNumberFetchedUser: {
+                  ...updateFormState.nNumber.nNumberFetchedUser,
+                  departmentNumber: null,
+                  departmentName: null
+                }
               }
             });
           });
@@ -1411,10 +1471,10 @@ describe("<UserFormButtons />", () => {
               expect(updateUser).toHaveBeenCalledWith(worker.sid, {
                 activateEp: true, // true for DID workers
                 attributes: updateWorkerAttributesAfterFormValid,
-                alternateDid: validFormState.alternateDid.e164,
-                directDialNum: validFormState.directDialNum.e164,
-                zeroOutEnabled: validFormState.zeroOutEnabled,
-                selfServiceInd: validFormState.selfServiceInd,
+                alternateDid: validFormState.triton.alternateDid.e164,
+                directDialNum: validFormState.triton.directDialNum.e164,
+                zeroOutEnabled: validFormState.triton.zeroOutEnabled.value,
+                selfServiceInd: validFormState.triton.selfServiceInd.value,
                 operatingUnitSid: validOperatingUnitId
               });
               expect(mockDispatch).toHaveBeenCalledTimes(2);
@@ -1448,21 +1508,28 @@ describe("<UserFormButtons />", () => {
       describe("doUpdateUser fails", () => {
         const nonDidValidFormState = {
           ...updateFormState,
-          directDialNum: {
-            ...updateFormState.directDialNum,
-            value: "",
-            updated: false
-          },
-          alternateDid: {
-            ...updateFormState.alternateDid,
-            value: "",
-            updated: false
-          },
-          zeroOutEnabled: false,
-          selfServiceInd: false,
-          inactiveForwardTo: {
-            value: validFormOptions.inactiveForwardTo,
-            updated: true
+          triton: {
+            ...updateFormState.triton,
+            directDialNum: {
+              ...updateFormState.triton.directDialNum,
+              value: "",
+              updated: false
+            },
+            alternateDid: {
+              ...updateFormState.triton.alternateDid,
+              value: "",
+              updated: false
+            },
+            zeroOutEnabled: {
+              value: false
+            },
+            selfServiceInd: {
+              value: false
+            },
+            inactiveForwardTo: {
+              value: validFormOptions.inactiveForwardTo,
+              updated: true
+            }
           }
         };
         const updateWorkerAttributesAfterFormValid = {
@@ -1628,8 +1695,8 @@ describe("<UserFormButtons />", () => {
         const form = {
           ...validFormState,
           formMode: formModes.UPDATE,
-          calabrioUser: {
-            ...validFormState.calabrioUser,
+          calabrio_qm: {
+            ...validFormState.calabrio_qm,
             updated: true,
             id: 2
           }
@@ -1670,8 +1737,8 @@ describe("<UserFormButtons />", () => {
         const form = {
           ...validFormState,
           formMode: formModes.UPDATE,
-          calabrioUser: {
-            ...validFormState.calabrioUser,
+          calabrio_qm: {
+            ...validFormState.calabrio_qm,
             updated: true,
             id: 2
           }

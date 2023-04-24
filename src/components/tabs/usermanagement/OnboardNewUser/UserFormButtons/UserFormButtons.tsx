@@ -151,7 +151,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     };
 
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.triton.profileId.value);
-    if (overflowSkill !== undefined && form.triton.zeroOutEnabled && form.triton.directDialNum.value) {
+    if (overflowSkill !== undefined && form.triton.zeroOutEnabled.value && form.triton.directDialNum.value) {
       attributes.routing = {
         skills: [overflowSkill],
         levels: {}

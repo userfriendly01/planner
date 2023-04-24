@@ -39,7 +39,9 @@ const defaultSkills = {
 
 const formState = {
   ...initialFormState,
-  defaultSkills
+  triton: {
+    defaultSkills
+  }
 };
 
 describe("<SkillsFormInfo />", () => {

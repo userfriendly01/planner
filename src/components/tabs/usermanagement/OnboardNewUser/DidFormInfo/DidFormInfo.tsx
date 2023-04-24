@@ -47,6 +47,7 @@ const DidFormInfo = (props: DidFormInfoProps) => {
         showError={form.triton.directDialNum.blurred}
         onBlur={() => handleOnBlur("directDialNum", "triton")}
         updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
+          //FAITH - check if changed value is the same and mark it as not updated
           setForm({
             type: userFormActions.UPDATE_PHONE_NUMBER,
             payload: {
@@ -69,7 +70,7 @@ const DidFormInfo = (props: DidFormInfoProps) => {
       />
       {form.formMode === formModes.UPDATE && form.triton.directDialNum.updated && (
         <ForwardToEntryForm
-          label={"Please choose a forward to option for the existing outgoing number"}
+          label={"Please choose a forward to option for the existing direct dial number"}
           updateForwardTo={(value: string) => {
             setForm({
               type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
