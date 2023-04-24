@@ -59,6 +59,7 @@ const mockSetForm = jest.fn();
 const mockDispatch = jest.fn();
 const mockSetTableState = jest.fn();
 const tableState = {
+  selected: [],
   deltaFilter: false,
   filteredList: initialTestState.workerContext.workers
 };
@@ -167,13 +168,13 @@ describe("<TritonUserTable />", () => {
       const rendered = renderComponent();
       const rows = rendered.getAllByTestId("table-row");
       act(() => fireEvent.click(rows[1]));
-      expect(mockDispatch).toHaveBeenCalledTimes(1);
-      expect(mockDispatch).toHaveBeenCalledWith({
-        type: "toggleWorkerSelected",
-        payload: {
+      expect(mockSetTableState).toHaveBeenCalledTimes(1);
+      expect(mockSetTableState).toHaveBeenCalledWith({
+        ...tableState,
+        selected: [{
           name: initialTestState.workerContext.workers[1].attributes.full_name,
           sid: initialTestState.workerContext.workers[1].sid
-        }
+        }]
       });
     });
   });

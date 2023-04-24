@@ -26,11 +26,10 @@ import {
   deleteRoutingRule, updateRoutingDB
 } from "services";
 import { AzureSPA } from "globals";
-
 interface EditRoutingComponentProps {
     isOpen: boolean;
     selectedRow: CctSharedCallRoutingDb;
-    openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string, deleteRow?: boolean) => void;
+    openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string, deleteRow?: boolean,isCloneRule?: boolean) => void;
 }
 
 
@@ -43,7 +42,6 @@ export const EditRouting = ({
   const [dropDownValues, setDropDownValues] = useState(routingDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   const defaultValue: { [key: string]: any } = {};
-
   useEffect(() => {
     setDropDownValues((dropDownOptions: RoutingDropDownList) => ({
       ...dropDownOptions,
@@ -89,6 +87,10 @@ export const EditRouting = ({
   const handleCancel = () => {
     setRoutingRule({ ...routingInitRule });
     openEditModal(false);
+  };
+
+  const handleClone = () =>{
+    openEditModal(false,false,selectedRowLocal,"",false,true);
   };
 
   const handleClose = (flag: boolean) => {
@@ -264,6 +266,15 @@ export const EditRouting = ({
             onClick={() => handleOnSave()}
           >
                         Save Rule
+          </Button>
+          <Button
+            variant="contained"
+            value="Clone"
+            color="primary"
+            sx={{ marginRight: 2 }}
+            onClick={() => handleClone()}
+          >
+                        Clone Rule
           </Button>
           <Button
             variant="contained"

@@ -29,8 +29,7 @@ export const initialState: AppState = {
     authenticationProfiles: []
   },
   workerContext: {
-    workers: [],
-    selectedWorkers: []
+    workers: []
   },
   calabrioContext: {
     tenant: {},
@@ -82,7 +81,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
       return {
         ...state,
         workerContext: {
-          selectedWorkers: state.workerContext.selectedWorkers,
           workers: action.payload
         }
       };
@@ -194,17 +192,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
       return {
         ...state,
         resettingSkills: action.payload
-      };
-    case "toggleWorkerSelected":
-      return {
-        ...state,
-        workerContext: {
-          ...state.workerContext,
-          selectedWorkers:
-            state.workerContext.selectedWorkers.find(worker => worker.sid === action.payload.sid)
-              ? state.workerContext.selectedWorkers.filter(worker => worker.sid !== action.payload.sid)
-              : [...state.workerContext.selectedWorkers, action.payload]
-        }
       };
     case "updateWorker":
       return {
