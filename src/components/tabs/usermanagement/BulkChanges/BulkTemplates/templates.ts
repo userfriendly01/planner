@@ -17,6 +17,7 @@ import {
   checkConflictingCalabrioUsers,
   checkIfConflictingWFMPeople,
   formatErrorMessage,
+  handleWfmExternalLogon,
   toProperCase,
   updateCalabrioUserState,
   updateTritonUserState,
@@ -61,13 +62,13 @@ const processCreateTritonUser = async (row: any, state: any) => {
     const profile = getTargetProfile(state.profileContext.profiles, body.attributes.profile_id);
     body.operatingUnitSid = profile?.operating_unit_sid;
 
-    // todo: UNCOMMENT. Commented out for local testing
-    // const res = await createUser(body);
-    // const workerSid = res.workerSid;
-    // console.log("TRITON RESPONSE", res);
-    // row.workerSid = workerSid;
-    const workerSid = "test worker sid";
-    // row.acdId = workerSid;
+    // todo: UNCOMMENT. all but workerSid commented out for local testing
+    const res = await createUser(body);
+    const workerSid = res.workerSid;
+    console.log("TRITON RESPONSE", res);
+    row.workerSid = workerSid;
+    // const workerSid = "test worker sid";
+    row.acdId = workerSid;
     console.log(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
     return Promise.resolve(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
   } catch(err) {
@@ -320,7 +321,7 @@ export const getCreateTemplates = (state: any): Templates => {
       name: "CREATE_TRITON_USER",
       data: {},
       processFunction: (row: any) => processCreateTritonUser(row, state),
-      stateUpdateFunctions: [updateTritonUserState],
+      stateUpdateFunctions: [updateTritonUserState, handleWfmExternalLogon], // todo: move this to WFM template?
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,
@@ -334,7 +335,8 @@ export const getCreateTemplates = (state: any): Templates => {
         FIELDS.DIRECT_DIAL_NUMBER,
         FIELDS.ZERO_OUT_ENABLED,
         FIELDS.OUTGOING_NUMBER,
-        FIELDS.SELF_SERVICE_IND
+        FIELDS.SELF_SERVICE_IND,
+        FIELDS.WFM_ACTIVATE_EXTERNAL_LOGON
       ]
     },
     CREATE_CALABRIO_QM_USER: {
@@ -393,8 +395,7 @@ export const getCreateTemplates = (state: any): Templates => {
         FIELDS.CALABRIO_WFM_ROTATION_START_WEEK,
         FIELDS.CALABRIO_WFM_AVAILABILITY_START_DATE,
         FIELDS.CALABRIO_WFM_AVAILABILITY,
-        FIELDS.CALABRIO_WFM_OPTIONAL_COLUMNS,
-        FIELDS.WFM_ACTIVATE_EXTERNAL_LOGON
+        FIELDS.CALABRIO_WFM_OPTIONAL_COLUMNS
       ]
     },
     CREATE_MANAGER: {

@@ -1532,6 +1532,13 @@ describe("fields.js", () => {
       });
 
     });
+    describe("WFM_ACTIVATE_EXTERNAL_LOGON", () => {
+      describe("validate function", () => {
+        test("field is missing", () => {
+
+        });
+      });
+    });
     describe("CALABRIO_SCOPE", () => {
       describe("validateFunction", () => {
         const calabrioScopeValidation = FIELDS.CALABRIO_SCOPE.validateFunction;

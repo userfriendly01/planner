@@ -31,7 +31,7 @@ export interface Template {
   name: string,
   data?: { [key: string]: any }
   processFunction: (row: Row, template?: Template) => Promise<string>,
-  stateUpdateFunctions: ((dispatch: any, successfulRows?: any, selectedTemplates?: any) => Promise<void>)[],
+  stateUpdateFunctions: ((dispatch: any, successfulRows?: any, selectedTemplates?: any) => Promise<any>)[],
   multiRunDependencies: MultiRunDependency[] | null,
   validationConcurrencyLimit: number,
   processingConcurrencyLimit: number,

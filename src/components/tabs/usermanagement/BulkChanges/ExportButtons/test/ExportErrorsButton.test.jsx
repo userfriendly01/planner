@@ -29,11 +29,16 @@ const expectedColumns = [
   {
     field: "row",
     title: "Row",
-    width: "50px"
+    width: "75px"
   },
   {
     field: "errors",
     title: "Errors",
+    width: "400px"
+  },
+  {
+    field: "wfmErrors",
+    title: "WFM External Logon - Failed Activations",
     width: "400px"
   }
 ];
