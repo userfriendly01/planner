@@ -30,8 +30,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
   sortWorkersByFullName,
-  identifyUserProfiles,
-  findMatchingNNumber
+  identifyUserProfiles
 } from "utils";
 import { formModes } from "globals";
 import { Checkbox } from "@mui/material";
@@ -75,7 +74,7 @@ const UserEntryForm = () => {
         }
       });
     } else {
-      identifyUserProfiles();
+      identifyUserProfiles(state, form, setForm);
     }
     return () => {
       setForm({ type: userFormActions.RESET_FORM });
@@ -83,6 +82,7 @@ const UserEntryForm = () => {
   }, []);
 
   console.log("FORM", form);
+  //FAITH - if it takes a while to populate - set a loaded attribute
 
   const handleResetForm = () => {
     navigate(-1);

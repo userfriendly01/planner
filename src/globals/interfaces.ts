@@ -7,7 +7,8 @@ export interface Action {
 }
 
 export const discrepancyType = {
-  CALABRIO: "Calabrio",
+  CALABRIO_QM: "Calabrio QM",
+  CALABRIO_WFM: "Calabrio WFM",
   TRITON: "Triton",
   GENERAL: "General"
 };

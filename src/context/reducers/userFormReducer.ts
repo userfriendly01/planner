@@ -67,6 +67,7 @@ export const initialUserFormState: UserFormState = {
       updated: false,
       valid: false
     },
+    attributes: [],
     defaultSkills: {
       updated: false,
       skills: [],
@@ -381,7 +382,10 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
     case userFormActions.SET_CALABRIO_QM_USER: {
       return {
         ...state,
-        calabrio_qm: action.payload
+        calabrio_qm: {
+          userFound: true,
+          ...action.payload
+        }
       };
     }
     case userFormActions.SET_CALABRIO_ROLES: {
@@ -483,7 +487,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         formMode: formModes.UPDATE,
         nNumber: {
           ...state.nNumber,
-          value: worker.attributes.n_number || "n"
+          value: worker.attributes.n_number
         },
         triton: {
           ...state.triton,
@@ -535,16 +539,18 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           selfServiceInd: {
             ...state.triton.selfServiceInd,
             value: worker.selfServiceInd || false
-          }
+          },
+          sid: worker.sid
         }
       };
     }
     case userFormActions.SET_UPDATE_WFM_FORM_STATE: {
-      const user = action.payload.user;
+      const user = action.payload;
       return {
         ...state,
         formMode: formModes.UPDATE,
         calabrio_wfm: {
+          ...state.calabrio_wfm,
           userFound: true,
           ...user
         }

@@ -2,13 +2,11 @@ import {
   calabrioGroupLevels,
   CalabrioGroup
 } from "../components/tabs/usermanagement/OnboardNewUser/CallRecording/CallRecording.Interfaces";
-// import { userFormActions } from "context";
 import {
   getCalabrioUser,
   updateCalabrioUser,
   getWfmOptions,
-  getWfmOrg,
-  fetchUser
+  getWfmOrg
 } from "services";
 import util from "util";
 import zlib from "zlib";
@@ -17,12 +15,8 @@ import {
   CalabrioQmUser,
   WfmBusinessUnit,
   WfmTeam,
-  WfmUser,
-  Worker
+  WfmUser
 } from "globals";
-import {
-  UserFormState
-} from "components/tabs/usermanagement/OnboardNewUser/UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 
 const inflate = util.promisify(zlib.inflate);
 
@@ -45,39 +39,6 @@ export const calabrioAllowedRoles = [
   "EXL_Genpact",
   "QM Agent_No Live Monitoring"
 ];
-
-export const findMatchingTritonWorker = (qmUser: any, wfmUser: WfmUser, state: AppState) => {
-  const workers: Worker[] = state.workerContext.workers;
-  let worker: Worker = null;
-
-  const qmEmail = qmUser.email?.toLowerCase();;
-  const qmAcdId = qmUser.acdId?.toLowerCase();;
-  const wfmNNumber = wfmUser.EmploymentNumber?.toLowerCase();
-  const wfmIdentity = wfmUser.Identity?.toLowerCase();
-  const wfmEmail = wfmUser.Email?.toLowerCase();
-
-  workers.forEach((w: Worker) => {
-    if(!worker){
-      const workerSid = w.sid.toLowerCase();
-      const workerNNumber = w.attributes.n_number?.toLowerCase();
-      const workerEmail = w.attributes.email?.toLowerCase();
-
-      if(qmAcdId === workerSid){
-        worker = w;
-      } else if(wfmNNumber === workerNNumber){
-        worker = w;
-      } else if(qmEmail === workerEmail){
-        worker = w;
-      } else if(wfmIdentity === workerEmail){
-        worker = w;
-      } else if(wfmEmail === workerEmail){
-        worker = w;
-      }
-    }
-  })
-
-  return worker;
-};
 
 export const getWfmBusinessUnits = (state: AppState) => {
   const wfmOrg = state.calabrioContext.wfmOrg;

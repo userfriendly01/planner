@@ -28,9 +28,7 @@ import React from "react";
 import { useNavigate } from 'react-router-dom';
 import {
   getWfmBusinessUnits,
-  getWfmTeams,
-  findMatchingNNumber,
-  findMatchingTritonWorker
+  getWfmTeams
 } from "utils";
 
 const WfmUserTable = (props: WfmUserTableProps) => {
@@ -70,10 +68,7 @@ const WfmUserTable = (props: WfmUserTableProps) => {
               event.stopPropagation();
               setForm({
                 type: userFormActions.SET_UPDATE_WFM_FORM_STATE,
-                payload: {
-                  updated: false,
-                  ...user
-                }
+                payload: user
               });
               navigate(`/triton-admin/user`)
             };

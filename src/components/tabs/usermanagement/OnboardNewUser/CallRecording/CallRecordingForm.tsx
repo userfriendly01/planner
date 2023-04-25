@@ -118,7 +118,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
       if(userRecord.adLogin?.toLowerCase() !== `lm\\${form.nNumber.value.toLowerCase()}`){
         console.warn("Windows Login does not match calabrio record");
         const discrepancy: Discrepancy = {
-          type: discrepancyType.CALABRIO,
+          type: discrepancyType.CALABRIO_QM,
           message: "User is not correctly set up for screen recording in Calabrio."
         };
         setForm({
@@ -129,7 +129,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
       }
       if(userRecord.email?.toLowerCase() !== email){
         const discrepancy: Discrepancy = {
-          type: discrepancyType.CALABRIO,
+          type: discrepancyType.CALABRIO_QM,
           message: "Calabrio Email does not match HR email. This could cause Calabrio Login issues"
         };
         setForm({
@@ -196,7 +196,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
     } else {
       console.warn("No user was found in Calabrio with this email");
       const discrepancy: Discrepancy = {
-        type: discrepancyType.CALABRIO,
+        type: discrepancyType.CALABRIO_QM,
         message: "No Record found in Calabrio."
       };
       setForm({
