@@ -50,7 +50,7 @@ describe("configUtils.js", ()=>{
     const routingDataList = createSampleTestRoutingDataList(1);
     downloadCSV(routingPrefix, routingDataList);
     expect(link.download).toContain("TEST_ROUTING");
-    const href = "data:text/csv;charset=utf-8,id,all,brand,callIntent,callerState,callerType,channel,dayOfWeek,endTime,percentOfCallers,pkey,policyType,skey,startTime,transferDestination,transferMessage,twilioSkill,crcSkill%0A1,ALL,TestBrand1,TestCallIntent1,TestCallState1,TestCallType1,TestChannel1,ALL,12:00:00%20PM,10,testcallintent,TestPolicyType1,TestBrand1_TestChannel1_1,05:00:00%20PM,12345671,Test%20Transfer%20Message%201,Test%20Twilio%20Skill1,null%0A";
+    const href = "data:text/csv;charset%3Dutf-8,id,all,brand,callIntent,callerState,callerType,channel,dayOfWeek,endTime,percentOfCallers,pkey,policyType,skey,startTime,transferDestination,transferMessage,twilioSkill,crcSkill%0A1,ALL,TestBrand1,TestCallIntent1,TestCallState1,TestCallType1,TestChannel1,ALL,12:00:00%20PM,10,testcallintent,TestPolicyType1,TestBrand1_TestChannel1_1,05:00:00%20PM,12345671,Test%20Transfer%20Message%201,Test%20Twilio%20Skill1,null%0A";
     expect(link.href).toBe(href);
   });
 
