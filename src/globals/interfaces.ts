@@ -8,7 +8,8 @@ export interface Action {
 
 export const discrepancyType = {
   CALABRIO: "Calabrio",
-  TRITON: "Triton"
+  TRITON: "Triton",
+  GENERAL: "General"
 };
 export interface Discrepancy {
   message: string,

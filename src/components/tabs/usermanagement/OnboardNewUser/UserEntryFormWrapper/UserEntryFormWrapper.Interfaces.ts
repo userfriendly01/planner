@@ -6,6 +6,7 @@ import {
   Skill,
   TritonProfile,
   Worker,
+  WfmUser,
   WorkerAttributeSkills,
   formModes
 } from "globals";
@@ -32,14 +33,7 @@ export interface UserSystem {
   calabrio_wfm: boolean
 }
 
-export interface WorkerOpts {
-  action: UserAction,
-  systems: UserSystem
-}
-
 export interface UserEntryFormProps {
-  workerOpts: WorkerOpts,
-  setWorkerOpts: (opts: WorkerOpts) => void,
   handleClose: () => void
 }
 
@@ -81,35 +75,15 @@ export interface UserFormState {
   [key: string]: any,
   formMode: string,
   discrepancies: string[],
-  nNumber: {
-    value: any,
-    blurred?: boolean,
-    e164?: string,
-    updated: boolean,
-    valid?: boolean,
-    nNumberFetchedUser: FetchUserResponse,
-  }
+  nNumber: FormNNumber
   triton: {
     [key: string]: any,
     userFound: boolean,
     alternateDid: FieldState,
-    defaultSkills: {
-      updated: boolean,
-      levels: {
-        [key: string]: number
-      },
-      skills: string[]
-    },
+    defaultSkills: FormDefaultSkills,
     didUser: boolean,
     directDialNum: FieldState,
-    extension: {
-      value: any,
-      blurred?: boolean,
-      e164?: string,
-      updated: boolean,
-      valid?: boolean,
-      status: ExtensionStatusProps,
-    }
+    extension: FormExtension
     inactiveForwardTo: FieldState,
     manager: FieldState,
     outgoing: FieldState,
@@ -119,6 +93,7 @@ export interface UserFormState {
     selfServiceInd: FieldState
   },
   calabrio_qm: {
+    acdId?: string,
     userFound: boolean,
     updated: boolean,
     id: number,
@@ -133,7 +108,18 @@ export interface UserFormState {
       teams: CalabrioGroup[]
     }
   },
-  calabrio_wfm: {
-    userFound: boolean
-  }
+  calabrio_wfm: CALABRIO_WFM
+}
+
+interface FormDefaultSkills extends WorkerAttributeSkills {
+  updated: boolean
+}
+interface FormNNumber extends FieldState {
+  nNumberFetchedUser: FetchUserResponse,
+}
+interface FormExtension extends FieldState {
+  status: ExtensionStatusProps,
+}
+interface CALABRIO_WFM extends WfmUser {
+  userFound: boolean
 }

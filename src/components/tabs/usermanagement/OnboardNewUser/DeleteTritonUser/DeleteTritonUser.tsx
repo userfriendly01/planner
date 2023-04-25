@@ -25,8 +25,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
   const {
     handleClose,
     loading,
-    updateLoading,
-    workerOpts
+    updateLoading
   } = props;
 
   const state = useAdminState();
@@ -37,9 +36,9 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
   console.log("TRITON WORKER", tritonWorker);
 
   const isWorkerDid = form.triton.didUser;
-  const [deleteTriton, setDeleteTriton] = React.useState(workerOpts.systems.triton);
-  const [deleteCalabrioQm, setDeleteClabrioQm] = React.useState(workerOpts.systems.calabrio_qm);
-  const [deleteCalabrioWfm, setDeleteCalabrioWfm ] = React.useState(workerOpts.systems.calabrio_wfm);
+  const [deleteTriton, setDeleteTriton] = React.useState(form.triton.userFound);
+  const [deleteCalabrioQm, setDeleteClabrioQm] = React.useState(form.calabrio_qm.userFound);
+  const [deleteCalabrioWfm, setDeleteCalabrioWfm ] = React.useState(form.calabrio_wfm.userFound);
 
   const handleDeleteUser = () => {
     const tritonWorkerName =  tritonWorker.attributes ? `${tritonWorker.attributes?.emp_first_name} ${tritonWorker.attributes?.emp_last_name}` : null;

@@ -1,16 +1,28 @@
 import {
   calabrioGroupLevels,
-  CalabrioUser,
   CalabrioGroup
 } from "../components/tabs/usermanagement/OnboardNewUser/CallRecording/CallRecording.Interfaces";
+// import { userFormActions } from "context";
 import {
   getCalabrioUser,
   updateCalabrioUser,
   getWfmOptions,
-  getWfmOrg
+  getWfmOrg,
+  fetchUser
 } from "services";
 import util from "util";
 import zlib from "zlib";
+import {
+  AppState,
+  CalabrioQmUser,
+  WfmBusinessUnit,
+  WfmTeam,
+  WfmUser,
+  Worker
+} from "globals";
+import {
+  UserFormState
+} from "components/tabs/usermanagement/OnboardNewUser/UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 
 const inflate = util.promisify(zlib.inflate);
 
@@ -33,6 +45,81 @@ export const calabrioAllowedRoles = [
   "EXL_Genpact",
   "QM Agent_No Live Monitoring"
 ];
+
+export const findMatchingTritonWorker = (qmUser: any, wfmUser: WfmUser, state: AppState) => {
+  const workers: Worker[] = state.workerContext.workers;
+  let worker: Worker = null;
+
+  const qmEmail = qmUser.email?.toLowerCase();;
+  const qmAcdId = qmUser.acdId?.toLowerCase();;
+  const wfmNNumber = wfmUser.EmploymentNumber?.toLowerCase();
+  const wfmIdentity = wfmUser.Identity?.toLowerCase();
+  const wfmEmail = wfmUser.Email?.toLowerCase();
+
+  workers.forEach((w: Worker) => {
+    if(!worker){
+      const workerSid = w.sid.toLowerCase();
+      const workerNNumber = w.attributes.n_number?.toLowerCase();
+      const workerEmail = w.attributes.email?.toLowerCase();
+
+      if(qmAcdId === workerSid){
+        worker = w;
+      } else if(wfmNNumber === workerNNumber){
+        worker = w;
+      } else if(qmEmail === workerEmail){
+        worker = w;
+      } else if(wfmIdentity === workerEmail){
+        worker = w;
+      } else if(wfmEmail === workerEmail){
+        worker = w;
+      }
+    }
+  })
+
+  return worker;
+};
+
+export const getWfmBusinessUnits = (state: AppState) => {
+  const wfmOrg = state.calabrioContext.wfmOrg;
+  return wfmOrg.map((businessUnit: WfmBusinessUnit) => {
+    return {
+      Id: businessUnit.Id,
+      Name: businessUnit.Name
+    }
+  });
+};
+
+export const getWfmTeams = (state: AppState, businessUnitId?: string) => {
+  const wfmTeams: WfmTeam[] = [];
+  
+  if(businessUnitId){
+    const businessUnit = state.calabrioContext.wfmOrg.find((bu: WfmBusinessUnit) => bu.Id === businessUnitId);
+    businessUnit.Teams.forEach((team: WfmTeam) => wfmTeams.push(team));
+  } else {
+    state.calabrioContext.wfmOrg.forEach((businessUnit: WfmBusinessUnit) => {
+      businessUnit.Teams.forEach((team: WfmTeam) => wfmTeams.push(team));
+    });
+  }
+  return wfmTeams;
+};
+
+export const getWfmPeople = (state: AppState) => {
+  const wfmPeople: WfmUser[] = [];
+  const wfmTeams: WfmTeam[] = getWfmTeams(state);
+
+  state.calabrioContext.wfmOrg.forEach((businessUnit: WfmBusinessUnit) => {
+    businessUnit.People_Without_Team?.forEach((person: WfmUser) => wfmPeople.push(person));
+  });
+
+  wfmTeams.forEach((team: WfmTeam) => {
+    team.People?.forEach((person: WfmUser) => wfmPeople.push({
+      ParentTeam: team.Id,
+      ...person
+    }));
+  });
+
+  return wfmPeople;
+};
 
 //Calabrio doesnt offer an API for this, only PST, MNT, CST, and EST were requested so we hardcoded them here as they are unlikely to change
 //They are also the same through environments
@@ -103,7 +190,7 @@ const toLowerCaseString = (variable: any) => {
 /*
   https://forge.lmig.com/wiki/display/CICCT/Calabrio+Form
 */
-export const checkConflictingUsers = async (user: any, users: CalabrioUser[], roles: any[], teams: any[]): Promise<void> => {
+export const checkConflictingUsers = async (user: any, users: CalabrioQmUser[], roles: any[], teams: any[]): Promise<void> => {
   try {
     const {
       acdId
@@ -125,7 +212,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
       const dupUserLastName = toLowerCaseString(u.lastName);
 
       if (dupUserAdLogin === adLogin || dupUserEmail === email) {
-        const res: CalabrioUser = await getCalabrioUser(u.id);
+        const res: any = await getCalabrioUser(u.id);
         const dupUser = res.data;
         console.warn("Conflicting User Found with Duplicate Email or Windows Login: ", dupUser);
 
@@ -147,7 +234,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
       }
 
       if (!dupUserEmail && acdId && firstName === dupUserFirstName && lastName === dupUserLastName) {
-        const res: CalabrioUser = await getCalabrioUser(u.id);
+        const res: any = await getCalabrioUser(u.id);
         const dupUser = res.data;
         console.warn("Conflicting User Found with First and Last Name: ", dupUser);
 

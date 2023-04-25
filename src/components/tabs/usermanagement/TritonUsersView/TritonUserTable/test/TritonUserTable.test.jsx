@@ -179,7 +179,7 @@ describe("<TritonUserTable />", () => {
     });
   });
   describe("Edit Button is clicked on worker row", () => {
-    test("setForm and setWorkerOpts is called for the worker", () => {
+    test("setForm is called for the worker", () => {
       const rendered = renderComponent();
       const editButtons = rendered.getAllByTestId("edit-button");
       act(() => fireEvent.click(editButtons[0]));
@@ -197,7 +197,7 @@ describe("<TritonUserTable />", () => {
     });
   });
   describe("Delete Button is clicked on worker row", () => {
-    test("setForm and setWorkerOpts is called for the worker", () => {
+    test("setForm is called for the worker", () => {
       const rendered = renderComponent();
       const deleteButtons = rendered.getAllByTestId("delete-button");
       act(() => fireEvent.click(deleteButtons[0]));

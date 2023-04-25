@@ -1,7 +1,6 @@
 import {
   UserAction,
-  LoadingState,
-  WorkerOpts
+  LoadingState
 } from "./UserEntryFormWrapper.Interfaces";
 import {
   DiscrepancyContainer,
@@ -18,7 +17,8 @@ import {
   ModalOverlay,
   BasicFormInfo,
   CallRecordingForm,
-  UserFormButtons
+  UserFormButtons,
+  WfmForm
 } from "components";
 import {
   useFormState,
@@ -28,20 +28,15 @@ import {
 } from "context";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { sortWorkersByFullName } from "utils";
+import {
+  sortWorkersByFullName,
+  identifyUserProfiles,
+  findMatchingNNumber
+} from "utils";
 import { formModes } from "globals";
 import { Checkbox } from "@mui/material";
 
 const UserEntryForm = () => {
-
-  const defaultWorkerOpts: WorkerOpts = {
-    action: UserAction.ADD,
-    systems: {
-      triton: true,
-      calabrio_qm: true,
-      calabrio_wfm: false
-    }
-  };
 
   const state = useAdminState();
   const form = useFormState();
@@ -55,7 +50,6 @@ const UserEntryForm = () => {
   const profiles = state.profileContext.profiles;
   const offices = state.officeContext.offices;
 
-  const [ workerOpts, setWorkerOpts ] = React.useState(defaultWorkerOpts);
   const [ forwardToToggle, setForwardToToggle ] = React.useState(false);
   const [loading, updateLoading] = React.useState<LoadingState>({
     lookupUser: false,
@@ -65,6 +59,24 @@ const UserEntryForm = () => {
   });
 
   React.useEffect(() => {
+    if(form.formMode === formModes.INSERT){
+      setForm({
+        type: userFormActions.UPDATE_USER_FOUND,
+        payload: {
+          system: "triton",
+          isFound: true
+        }
+      });
+      setForm({
+        type: userFormActions.UPDATE_USER_FOUND,
+        payload: {
+          system: "calabrio_qm",
+          isFound: true
+        }
+      });
+    } else {
+      identifyUserProfiles();
+    }
     return () => {
       setForm({ type: userFormActions.RESET_FORM });
     };
@@ -78,24 +90,13 @@ const UserEntryForm = () => {
   };
 
   const handleCheckbox = (checked: boolean, system: string) => {
-    if(!checked && system === "calabrio_qm"){
-      console.log("Please select a reason for skipping the calabrio profile.", checked);
-      setWorkerOpts({
-        ...workerOpts,
-        systems: {
-          ...workerOpts.systems,
-          [system]: checked
-        }
-      });
-    } else {
-      setWorkerOpts({
-        ...workerOpts,
-        systems: {
-          ...workerOpts.systems,
-          [system]: checked
-        }
-      });
-    }
+    setForm({
+      type: userFormActions.UPDATE_USER_FOUND,
+      payload: {
+        system,
+        isFound: checked
+      }
+    });
   };
 
   return (
@@ -119,7 +120,6 @@ const UserEntryForm = () => {
         <DeleteTritonUser
           handleClose={handleResetForm}
           loading={loading}
-          workerOpts={workerOpts}
           updateLoading={updateLoading}
         />
       }
@@ -142,32 +142,44 @@ const UserEntryForm = () => {
         <h2>Triton User Settings</h2>
         { form.formMode !== formModes.DELETE &&
           <Checkbox
-            checked={workerOpts.systems.triton}
+            checked={form.triton.userFound}
             onChange={(event: any) => handleCheckbox(event.target.checked, "triton")}
           />
         }
       </HeaderRow>
-      { workerOpts.systems.triton && <BasicFormInfo
-        skills={skills}
-        worker={tritonWorker}
-        workers={workers}
-        profiles={profiles}
-        managers={managers}
-        forwardToToggle={forwardToToggle}
-        setForwardToToggle={setForwardToToggle}
-      /> }
-
+      { form.triton.userFound && 
+        <BasicFormInfo
+          skills={skills}
+          worker={tritonWorker}
+          workers={workers}
+          profiles={profiles}
+          managers={managers}
+          forwardToToggle={forwardToToggle}
+          setForwardToToggle={setForwardToToggle}
+        /> 
+      }
       <StyledDivider />
       <HeaderRow>
         <h2>Calabrio Quality Management User Settings</h2>
         { form.formMode !== formModes.DELETE &&
           <Checkbox
-            checked={workerOpts.systems.calabrio_qm}
+            checked={form.calabrio_qm.userFound}
             onChange={(event: any) => handleCheckbox(event.target.checked, "calabrio_qm")}
           />
         }
       </HeaderRow>
-      { workerOpts.systems.calabrio_qm && <CallRecordingForm twilioWorker={tritonWorker} /> }
+      { form.calabrio_qm.userFound && <CallRecordingForm twilioWorker={tritonWorker} /> }
+      <StyledDivider />
+      <HeaderRow>
+        <h2>Calabrio Work Force Management User Settings</h2>
+        { form.formMode !== formModes.DELETE &&
+          <Checkbox
+            checked={form.calabrio_wfm.userFound}
+            onChange={(event: any) => handleCheckbox(event.target.checked, "calabrio_wfm")}
+          />
+        }
+      </HeaderRow>
+      { form.calabrio_wfm.userFound && <WfmForm/> }
       <StyledDivider />
       { form.formMode !== formModes.DELETE && <UserFormButtons
         forwardToToggle={forwardToToggle}

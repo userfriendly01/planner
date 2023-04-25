@@ -15,6 +15,7 @@ import {
 import {
   useAdminState,
   useFormDispatch,
+  useFormState,
   userFormActions
 } from "context";
 import {
@@ -28,6 +29,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   getWfmBusinessUnits,
   getWfmTeams,
+  findMatchingNNumber,
   findMatchingTritonWorker
 } from "utils";
 
@@ -53,6 +55,7 @@ const WfmUserTable = (props: WfmUserTableProps) => {
             <CustomTableHeader>ID</CustomTableHeader>
             <CustomTableHeader>EMAIL</CustomTableHeader>
             <CustomTableHeader>IDENTITY</CustomTableHeader>
+            <CustomTableHeader>NNumber</CustomTableHeader>
             <CustomTableHeader>BUSINESS UNIT</CustomTableHeader>
             <CustomTableHeader>TEAM</CustomTableHeader>
             <CustomTableHeader/>
@@ -63,21 +66,13 @@ const WfmUserTable = (props: WfmUserTableProps) => {
           {tableState.filteredList.map((user: WfmUser, index: number) => {
             const isSelected = selectedUsers.some(selectedUser => selectedUser.Id === user.Id);
             const handleWorkerOnClick = () => setSelectedUsers([ ...selectedUsers, user ]);
-            const tritonWorker: Worker | {} = findMatchingTritonWorker(user, state) || {};
             const editButtonOnClick = (event: any) => {
               event.stopPropagation();
               setForm({
-                type: userFormActions.SET_UPDATE_FORM_STATE,
+                type: userFormActions.SET_UPDATE_WFM_FORM_STATE,
                 payload: {
-                  worker: {
-                    ...tritonWorker,
-                    calabrioWfmUser: {
-                      updated: false,
-                      ...user
-                    }
-                  },
-                  managers: state.managerContext.managers,
-                  formMode: formModes.UPDATE
+                  updated: false,
+                  ...user
                 }
               });
               navigate(`/triton-admin/user`)
@@ -88,7 +83,6 @@ const WfmUserTable = (props: WfmUserTableProps) => {
                 type: userFormActions.SET_DELETE_FORM_STATE,
                 payload: {
                   worker: {
-                    ...tritonWorker,
                     calabrioWfmUser: {
                       updated: false,
                       ...user
@@ -109,6 +103,7 @@ const WfmUserTable = (props: WfmUserTableProps) => {
                 <CustomTableData><TableText>{user.Id}</TableText></CustomTableData>
                 <CustomTableData><TableText>{user.Email}</TableText></CustomTableData>
                 <CustomTableData><TableText>{user.Identity}</TableText></CustomTableData>
+                <CustomTableData><TableText>{user.EmploymentNumber}</TableText></CustomTableData>
                 <CustomTableData><TableText>{businessUnit.Name}</TableText></CustomTableData>
                 <CustomTableData><TableText>{team.Name}</TableText></CustomTableData>
                 <CustomTableData>

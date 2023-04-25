@@ -16,9 +16,7 @@ import {
   formModes,
   ModalOverlayStatuses,
   timeouts,
-  Worker,
-  Discrepancy,
-  discrepancyType
+  Worker
 } from "globals";
 import React from "react";
 import {
@@ -65,36 +63,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
   const form = useFormState();
   const setForm = useFormDispatch();
   const dispatch = useAdminDispatch();
-
-  React.useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const fetchedUser = await fetchUserServiceCall(form.nNumber.value);
-        setForm({
-          type: userFormActions.COMPLETE_N_NUMBER,
-          payload: {
-            nNumber: form.nNumber.value,
-            fetchedUser
-          }
-        });
-        if(fetchedUser.email?.toLowerCase() !== worker.attributes?.email?.toLowerCase()){
-          const discrepancy: Discrepancy = {
-            type: discrepancyType.CALABRIO,
-            message: "Triton email does not match HR email."
-          };
-          setForm({
-            type: userFormActions.SET_DISCREPANCIES,
-            payload: discrepancy
-          });
-        }
-      } catch (err) {
-        console.error("Failed to fetch user from peoples database.", err);
-      }
-    };
-    if(!form.nNumber.nNumberFetchedUser && form.nNumber.value && form.formMode === formModes.UPDATE){
-      fetchUser();
-    }
-  }, []);
 
   const doCreateUser = () => {
     updateLoading({

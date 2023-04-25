@@ -14,11 +14,11 @@ export const CustomTableData = styled.td`
   padding: 2px 4px;
   vertical-align: top;
   overflow-wrap: anywhere;
-  &:nth-child(7) {
+  &:nth-child(8) {
     text-align: -webkit-center;
     vertical-align: middle;
   }
-  &:nth-child(8) {
+  &:nth-child(9) {
     text-align: -webkit-center;
     vertical-align: middle;
   }
@@ -42,10 +42,10 @@ export const CustomTableHeader = styled.th`
   &:nth-child(6) {
     width: 10%;
   }
-  &:nth-child(7) {
+  &:nth-child(8) {
     width: ${headerIconWidth};
   }
-  &:nth-child(8) {
+  &:nth-child(9) {
     width: ${headerIconWidth};
   }
 `;

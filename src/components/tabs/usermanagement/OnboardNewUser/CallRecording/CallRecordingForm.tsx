@@ -179,6 +179,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
           type: userFormActions.SET_CALABRIO_QM_USER,
           payload: {
             updated,
+            acdId: res.data.acdId,
             id: userRecord.id,
             team: fetchedUser.groupId ? teams.find(team => team.groupId === fetchedUser.groupId) : form.calabrio_qm.team.groupId,
             roles: fetchedUser.roles || form.calabrio_qm.roles,

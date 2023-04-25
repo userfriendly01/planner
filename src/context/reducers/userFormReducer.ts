@@ -34,7 +34,8 @@ export const userFormActions = {
   SET_EXTENSION_MESSAGE: "SET_EXTENSION_MESSAGE",
   SET_EXTENSION_RETRIES: "SET_EXTENSION_RETRIES",
   SET_EXTENSION_VERIFIED: "EXTENSION_VERIFIED",
-  SET_UPDATE_FORM_STATE: "SET_UPDATE_FORM_STATE",
+  SET_UPDATE_TRITON_FORM_STATE: "SET_UPDATE_TRITON_FORM_STATE",
+  SET_UPDATE_WFM_FORM_STATE: "SET_UPDATE_WFM_FORM_STATE",
   SET_DELETE_FORM_STATE: "SET_DELETE_FORM_STATE",
   SET_USER_PREVIOUSLY_ADDED_TRUE: "SET_USER_PREVIOUSLY_ADDED_TRUE",
   UPDATE_DEFAULT_SKILLS: "UPDATE_DEFAULT_SKILLS",
@@ -44,7 +45,8 @@ export const userFormActions = {
   UPDATE_N_NUMBER: "UPDATE_N_NUMBER",
   UPDATE_PHONE_NUMBER: "UPDATE_PHONE_NUMBER",
   UPDATE_TEAM: "UPDATE_TEAM",
-  UPDATE_SELF_SERVICE_INDICATOR: "UPDATE_SELF_SERVICE_INDICATOR"
+  UPDATE_SELF_SERVICE_INDICATOR: "UPDATE_SELF_SERVICE_INDICATOR",
+  UPDATE_USER_FOUND: "UPDATE_USER_FOUND"
 };
 
 export const initialUserFormState: UserFormState = {
@@ -136,7 +138,31 @@ export const initialUserFormState: UserFormState = {
   },
   calabrio_wfm: {
     userFound: false,
-
+    OptionalColumns: [],
+    Id: null,
+    Identity: null,
+    FirstName: null,
+    LastName: null,
+    EmploymentNumber: null,
+    Email: null,
+    DisplayName: null,
+    TerminationDate: null,
+    EmploymentStartDate: null,
+    TimeZoneId: null,
+    BusinessUnitId: null,
+    SiteId: null,
+    TeamId: null,
+    PersonSkills: null,
+    WorkflowControlSetId: null,
+    ContractId: null,
+    ContractScheduleId: null,
+    BudgetGroupId: null,
+    PartTimePercentageId: null,
+    ShiftBagId: null,
+    Note: null,
+    Roles: [],
+    FirstDayOfWeek: null,
+    ParentTeam: null
   }
 }
 
@@ -449,7 +475,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         }
       };
     }
-    case userFormActions.SET_UPDATE_FORM_STATE: {
+    case userFormActions.SET_UPDATE_TRITON_FORM_STATE: {
       const worker = action.payload.worker;
       const managers = action.payload.managers;
       return {
@@ -461,6 +487,8 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         },
         triton: {
           ...state.triton,
+          userFound: true,
+          attributes: worker.attributes,
           defaultSkills: {
             ...state.triton.defaultSkills,
             ...getValidSkillsObject(worker.attributes.default_skills)
@@ -508,6 +536,17 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
             ...state.triton.selfServiceInd,
             value: worker.selfServiceInd || false
           }
+        }
+      };
+    }
+    case userFormActions.SET_UPDATE_WFM_FORM_STATE: {
+      const user = action.payload.user;
+      return {
+        ...state,
+        formMode: formModes.UPDATE,
+        calabrio_wfm: {
+          userFound: true,
+          ...user
         }
       };
     }
@@ -694,6 +733,17 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           }
         }
       };
+    }
+    case userFormActions.UPDATE_USER_FOUND: {
+      const system = action.payload.system;
+      const isFound = action.payload.isFound;
+      return {
+        ...state,
+        [system]: {
+          ...state[system],
+          userFound: isFound
+        }
+      }
     }
     default:
       return state;

@@ -36,13 +36,6 @@ const mockDispatch = jest.fn();
 const mockHandleClose = jest.fn();
 const mockUpdateLoading = jest.fn();
 const mockWorker = initialTestState.workerContext.workers[0];
-const mockWorkerOpts = {
-  systems: {
-    triton: true,
-    calabrio_qm: false,
-    calabrio_wfm: false
-  }
-};
 
 jest.useFakeTimers();
 
@@ -51,7 +44,6 @@ const renderComponent = () => {
     handleClose={mockHandleClose}
     loading={{}}
     updateLoading={mockUpdateLoading}
-    workerOpts={mockWorkerOpts}
   />)
 }
 
