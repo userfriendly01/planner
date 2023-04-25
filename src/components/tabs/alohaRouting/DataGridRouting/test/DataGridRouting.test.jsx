@@ -5,7 +5,7 @@ import {
   DataGrid, GridRenderCellParams, GridToolbar
 } from "@mui/x-data-grid";
 import {
-  RoutingAdvanceSearch, EditRouting, AddRouting, CustomFlowRoutingToolBar
+  RoutingAdvanceSearch, EditRouting, AddRouting, CustomRoutingGridToolBar
 } from "../../RoutingCustomActions";
 import { CustomToast } from "components";
 import { useAdminState } from "context";
@@ -119,7 +119,7 @@ describe("<DataGridRouting />", ()=>{
       EditRouting,
       AddRouting,
       CustomToast,
-      CustomFlowRoutingToolBar
+      CustomFlowRoutingToolBar: CustomRoutingGridToolBar
     }),
     Object.defineProperty(window, "matchMedia", {
       writable: true,
@@ -266,9 +266,9 @@ describe("<DataGridRouting />", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
-      const exportDataFile = CustomFlowRoutingToolBar.mock.calls[0][0].exportDataFile;
+      const exportDataFile = CustomRoutingGridToolBar.mock.calls[0][0].exportDataFile;
       act(()=>{ exportDataFile(); });
-      expect(CustomFlowRoutingToolBar.mock.calls.length).toBe(1);
+      expect(CustomRoutingGridToolBar.mock.calls.length).toBe(1);
     });
   });
 

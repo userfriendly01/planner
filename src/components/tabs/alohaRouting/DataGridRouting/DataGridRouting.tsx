@@ -28,7 +28,7 @@ import { RoutingTableBox } from "../AlohaRouting.Styles";
 import GridSpinner from "./GridSpinner";
 import { CustomToast } from "components";
 import {
-  RoutingAdvanceSearch, AddRouting, EditRouting, CustomFlowRoutingToolBar
+  RoutingAdvanceSearch, AddRouting, EditRouting, CustomRoutingGridToolBar
 } from "../RoutingCustomActions";
 import {
   AlertBarProps, FormValidationRule
@@ -274,10 +274,11 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
 
   return (
     <div>
-      <CustomFlowRoutingToolBar
+      <CustomRoutingGridToolBar
         openAddModal={openAddModal}
         openAdvanceSearchModal={openAdvanceSearchModal}
         exportDataFile={exportDataFile}
+        applyFilter={applyFilter}
       />
       <RoutingTableBox>
         <DataGrid

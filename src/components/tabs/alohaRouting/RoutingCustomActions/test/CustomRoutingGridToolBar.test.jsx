@@ -1,5 +1,5 @@
 import React from "react";
-import { CustomFlowRoutingToolBar } from "../CustomRoutingGridToolBar";
+import { CustomRoutingGridToolBar } from "../CustomRoutingGridToolBar";
 import {
   render, initialTestState, act, fireEvent, within
 } from "testUtils";
@@ -10,7 +10,7 @@ const exportDataFile = jest.fn();
 
 const renderCustomToolBar = () =>{
   const rendered =render(
-    <CustomFlowRoutingToolBar
+    <CustomRoutingGridToolBar
       openAddModal={openAddModal}
       openAdvanceSearchModal={openAdvanceSearchModal}
       exportDataFile={exportDataFile}

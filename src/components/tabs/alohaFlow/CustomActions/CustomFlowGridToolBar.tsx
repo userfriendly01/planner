@@ -1,7 +1,9 @@
 import {
-  Chip,Grid,FormControl, IconButton ,InputLabel, MenuItem, Select, TextField, InputAdornment
+  Chip,Grid,FormControl, InputLabel, MenuItem, Select, TextField, InputAdornment
 } from "@mui/material";
-import React from "react";
+import React, {
+  useState, useEffect
+} from "react";
 import {
   CACHE_FILTER_FLOW, getAdvanceFilter
 } from "utils";
@@ -14,12 +16,20 @@ interface CustomFlowGridToolBarProps {
   openAddModal: (flag: boolean, isSubmitted?: boolean) => void,
   openAdvanceSearchModal: (flag: boolean, advanceFilter?: FlowAdvanceFilter) => void
   exportDataFile: ()=> void;
+  applyFilter?: () => void;
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const CustomFlowGridToolBar = ({
-  openAddModal, openAdvanceSearchModal, exportDataFile
+  openAddModal, openAdvanceSearchModal, exportDataFile, applyFilter
 }:CustomFlowGridToolBarProps) =>{
+  const [flowFilter, setFlowFilter] = useState<FlowAdvanceFilter>();
+
+  useEffect(()=>{
+    const localFilter = getAdvanceFilter(CACHE_FILTER_FLOW);
+    setFlowFilter(localFilter);
+  },[flowFilter]);
+
   const handleChange=(event:any):void=> {
     const { value } = event.target;
     switch (value) {
@@ -33,32 +43,39 @@ export const CustomFlowGridToolBar = ({
         break;
     }
   };
-  const filterItem: FlowAdvanceFilter = getAdvanceFilter(CACHE_FILTER_FLOW);
 
   const handleOnDelete = (key: string) =>{
+    const filterItem: FlowAdvanceFilter = { ...flowFilter };
     delete filterItem[key as keyof FlowAdvanceFilter];
-    localStorage.setItem(CACHE_FILTER_FLOW,JSON.stringify(filterItem));
+    localStorage.setItem(CACHE_FILTER_FLOW, JSON.stringify(filterItem));
+    applyFilter();
+    setFlowFilter(filterItem);
   };
 
   return (
-    <Grid container>
+    <Grid container columnSpacing={2}>
       <Grid item key="flow-search-box" xs={11}>
         <TextField
+          sx={{ marginLeft: 1 }}
+          placeholder="Click here to apply filter"
           InputProps={{
-            startAdornment: Object.keys(filterItem).map((key: string, index:number)=>(
+            startAdornment:
+            (
+              <InputAdornment position="end">
+                <SearchIcon />
+              </InputAdornment>
+            )
+            &&
+            flowFilter && Object.keys(flowFilter).map((key: string, index:number)=>(
               <Chip
                 key={key}
                 color="primary"
                 tabIndex={index}
-                label={`${key.toLowerCase()} : ${filterItem[key as keyof FlowAdvanceFilter]}`}
+                label={`${key.toLowerCase()} : ${flowFilter[key as keyof FlowAdvanceFilter]}`}
                 onDelete={(event: any)=>{ handleOnDelete(key); }}
                 sx={{ margin: 1 }}
               />
-            )),
-            endAdornment: (
-              <InputAdornment position="end">
-                <SearchIcon />
-              </InputAdornment>)
+            ))
           }}
 
           fullWidth
@@ -67,12 +84,14 @@ export const CustomFlowGridToolBar = ({
           margin="normal"
           name="flow-SearchBox-input"
           variant="standard"
-          sx={{ padding: 1 }}
           onClick={()=>openAdvanceSearchModal(true)}
         />
       </Grid>
       <Grid item key="flow-action-box" xs={1}>
-        <FormControl>
+        <FormControl sx={{
+          marginTop: "16px",
+          marginBottom: "8px"
+        }}>
           <InputLabel>Actions</InputLabel>
           <Select
             inputProps={{

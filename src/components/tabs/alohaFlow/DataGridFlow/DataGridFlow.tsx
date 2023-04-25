@@ -189,12 +189,14 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       });
       setDataFlow((dataFlowProps: FlowStateVariables) => ({
         ...dataFlowProps,
-        filteredItems: advanceFilteredArray
+        filteredItems: advanceFilteredArray,
+        advanceFilter
       }));
     } else {
       setDataFlow((dataFlowProps: FlowStateVariables) => ({
         ...dataFlowProps,
-        filteredItems: result
+        filteredItems: result,
+        advanceFilter
       }));
     }
   };
@@ -288,6 +290,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
             openAddModal={openAddModal}
             openAdvanceSearchModal={openAdvanceSearchModal}
             exportDataFile={exportDataFile}
+            applyFilter={filterRecords}
           />
           <DataGrid
             rows={dataFlow.filteredItems}
