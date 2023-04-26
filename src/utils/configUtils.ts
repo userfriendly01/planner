@@ -4,6 +4,7 @@ import {
 import { useAdminState } from "context";
 import { AlertBarProps } from "./interfaces";
 import { AppState } from "globals";
+
 /**
  *  This function return graphQL endpoint based on running environment  
  * @returns string: GraphQL Endpoint
@@ -105,7 +106,9 @@ export const  downloadCSV = (prefix: string, array:Array<CctSharedCallFlowDb |Cc
   if (!csv.match(/^data:text\/csv/i)) {
     csv = `data:text/csv;charset=utf-8,${csv}`;
   }
-  link.href = encodeURI(csv);
+  link.href = encodeURI(csv)
+    .replace(/#/g, "%23")
+    .replace(/=/g,"%3D");
   link.download = filename;
   link.click();
 };
