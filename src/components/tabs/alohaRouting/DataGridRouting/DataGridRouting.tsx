@@ -279,6 +279,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         openAdvanceSearchModal={openAdvanceSearchModal}
         exportDataFile={exportDataFile}
         applyFilter={applyFilter}
+        isAdvanceSearchOpen={state.isAdvanceSearchModalOpen}
       />
       <RoutingTableBox>
         <DataGrid

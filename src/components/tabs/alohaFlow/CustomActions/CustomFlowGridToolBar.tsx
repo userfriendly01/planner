@@ -1,6 +1,11 @@
-import {
-  Chip,Grid,FormControl, InputLabel, MenuItem, Select, TextField, InputAdornment
-} from "@mui/material";
+import Chip from "@mui/material/Chip";
+import Grid from "@mui/material/Grid";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import TextField from "@mui/material/TextField";
+
 import React, {
   useState, useEffect
 } from "react";
@@ -10,25 +15,25 @@ import {
 import { FlowAdvanceFilter } from "../AlohaFlow.Interfaces";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
-import SearchIcon from "@mui/icons-material/Search";
 
 interface CustomFlowGridToolBarProps {
   openAddModal: (flag: boolean, isSubmitted?: boolean) => void,
   openAdvanceSearchModal: (flag: boolean, advanceFilter?: FlowAdvanceFilter) => void
   exportDataFile: ()=> void;
   applyFilter?: () => void;
+  isAdvanceSearchOpen?: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const CustomFlowGridToolBar = ({
-  openAddModal, openAdvanceSearchModal, exportDataFile, applyFilter
+const CustomFlowGridToolBar = ({
+  openAddModal, openAdvanceSearchModal, exportDataFile, applyFilter, isAdvanceSearchOpen
 }:CustomFlowGridToolBarProps) =>{
   const [flowFilter, setFlowFilter] = useState<FlowAdvanceFilter>();
 
   useEffect(()=>{
     const localFilter = getAdvanceFilter(CACHE_FILTER_FLOW);
     setFlowFilter(localFilter);
-  },[flowFilter]);
+  },[isAdvanceSearchOpen]);
 
   const handleChange=(event:any):void=> {
     const { value } = event.target;
@@ -60,12 +65,6 @@ export const CustomFlowGridToolBar = ({
           placeholder="Click here to apply filter"
           InputProps={{
             startAdornment:
-            (
-              <InputAdornment position="end">
-                <SearchIcon />
-              </InputAdornment>
-            )
-            &&
             flowFilter && Object.keys(flowFilter).map((key: string, index:number)=>(
               <Chip
                 key={key}
@@ -117,4 +116,8 @@ export const CustomFlowGridToolBar = ({
       </Grid>
     </Grid>
   );
+};
+
+export {
+  CustomFlowGridToolBar
 };

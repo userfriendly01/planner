@@ -39,7 +39,7 @@ jest.mock("../../RoutingCustomActions", ()=>({
   RoutingAdvanceSearch: jest.fn(),
   AddRouting: jest.fn(),
   EditRouting: jest.fn(),
-  CustomFlowRoutingToolBar: jest.fn()
+  CustomRoutingGridToolBar: jest.fn()
 }));
 
 jest.mock("context", () => ({
@@ -119,7 +119,7 @@ describe("<DataGridRouting />", ()=>{
       EditRouting,
       AddRouting,
       CustomToast,
-      CustomFlowRoutingToolBar: CustomRoutingGridToolBar
+      CustomRoutingGridToolBar: CustomRoutingGridToolBar
     }),
     Object.defineProperty(window, "matchMedia", {
       writable: true,
@@ -262,7 +262,7 @@ describe("<DataGridRouting />", ()=>{
       act(()=>{ openEditModal(false,true,validRoutingData,"",false,false); });
       expect(EditRouting.mock.calls[1][0].openEditModal).toBeTruthy;
     });
-    test("Simulate the CustomFlowRoutingToolBar Custom Routing Toolbar", async()=>{
+    test("Simulate the CustomRoutingGridToolBar Custom Routing Toolbar", async()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();

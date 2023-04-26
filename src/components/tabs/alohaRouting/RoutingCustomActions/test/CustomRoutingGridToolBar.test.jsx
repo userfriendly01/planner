@@ -7,6 +7,7 @@ import {
 const openAddModal=jest.fn();
 const openAdvanceSearchModal = jest.fn();
 const exportDataFile = jest.fn();
+const applyFilter = jest.fn();
 
 const renderCustomToolBar = () =>{
   const rendered =render(
@@ -14,12 +15,13 @@ const renderCustomToolBar = () =>{
       openAddModal={openAddModal}
       openAdvanceSearchModal={openAdvanceSearchModal}
       exportDataFile={exportDataFile}
+      applyFilter={applyFilter}
     />,
     initialTestState
   );
   return rendered;
 };
-describe("<CustomFlowRoutingToolBar />", ()=>{
+describe("<CustomRoutingGridToolBar />", ()=>{
   beforeEach(()=>{
     jest.clearAllMocks();
   });

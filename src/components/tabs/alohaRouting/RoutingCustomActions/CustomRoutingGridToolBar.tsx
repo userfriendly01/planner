@@ -22,10 +22,11 @@ interface CustomRoutingGridToolBarProps {
   openAdvanceSearchModal:(flag: boolean)=>void;
   exportDataFile: ()=> void;
   applyFilter?: () => void;
+  isAdvanceSearchOpen?: boolean;
 }
 
 export const CustomRoutingGridToolBar = ({
-  openAddModal, openAdvanceSearchModal, exportDataFile, applyFilter
+  openAddModal, openAdvanceSearchModal, exportDataFile, applyFilter, isAdvanceSearchOpen
 }: CustomRoutingGridToolBarProps):JSX.Element => {
 
   const [routingFilter, setRoutingFilter] = useState<RoutingFilter>();
@@ -33,7 +34,7 @@ export const CustomRoutingGridToolBar = ({
   useEffect(()=>{
     const localFilter = getAdvanceFilter(CACHE_FILTER_ROUTING);
     setRoutingFilter(localFilter);
-  },[routingFilter]);
+  },[isAdvanceSearchOpen]);
 
   const handleChange = (event: any):void => {
     const { value } = event.target;
