@@ -11,12 +11,12 @@ import { CACHE_FILTER_FLOW } from "utils";
 jest.mock("@mui/material", () => ({
   __esModule: true,
   Grid: jest.fn(),
+  Chip: jest.fn(),
   TextField: jest.fn(),
   FormControl: jest.fn(),
   InputLabel: jest.fn(),
   Select: jest.fn(),
-  MenuItem: jest.fn(),
-  Chip: jest.fn()
+  MenuItem: jest.fn()
 }));
 
 const openAddModal=jest.fn();
@@ -62,9 +62,8 @@ describe("<CustomFlowGridToolBar/>",()=>{
 
   test("render component for AddFlow",()=>{
     renderCustomToolBar();
-    expect(Grid.mock).toBe("?");
-    const FlowControlMock = FormControl.mock.calls[0][0];
-    const ActionsAttr = FormControl.mock.calls[0][0].children[1].props.onChange;
+    const GridMock = Grid.mock.calls[0][0];
+    const ActionsAttr = GridMock.children[1].props.children.props.children[1].props.onChange;
     const eventAddFlowValue = {
       target: {
         value: "addFlow"
@@ -73,25 +72,13 @@ describe("<CustomFlowGridToolBar/>",()=>{
     act(()=>{
       ActionsAttr(eventAddFlowValue);
     });
-    expect(FlowControlMock).toBeTruthy();
+    expect(GridMock).toBeTruthy();
     expect(openAddModal).toBeCalledTimes(1);
   });
-  test("render component for Filter",()=>{
+  test("render component for Export",()=>{
     renderCustomToolBar();
-    const ActionsAttr = FormControl.mock.calls[0][0].children[1].props.onChange;
-    const eventFilterFlowValue = {
-      target: {
-        value: "Filter"
-      }
-    };
-    act(()=>{
-      ActionsAttr(eventFilterFlowValue);
-    });
-    expect(openAdvanceSearchModal).toBeCalledTimes(1);
-  });
-  test("render component for Filter",()=>{
-    renderCustomToolBar();
-    const ActionsAttr = FormControl.mock.calls[0][0].children[1].props.onChange;
+    const GridMock = Grid.mock.calls[0][0];
+    const ActionsAttr = GridMock.children[1].props.children.props.children[1].props.onChange;
     const eventExportFlowValue = {
       target: {
         value: "Export"
@@ -102,18 +89,13 @@ describe("<CustomFlowGridToolBar/>",()=>{
     });
     expect(exportDataFile).toBeCalledTimes(1);
   });
-  test("render component for Filter",()=>{
+  test("render search Component", ()=>{
     renderCustomToolBar();
-    const FlowControlMock = FormControl.mock.calls[0][0];
-    const ActionsAttr = FormControl.mock.calls[0][0].children[1].props.onChange;
-    const eventDefaultFlowValue = {
-      target: {
-        value: "defaultFlow"
-      }
-    };
+    const GridMock = Grid.mock.calls[0][0];
+    const ActionsAttr = GridMock.children[0].props.children.props.onClick;
     act(()=>{
-      ActionsAttr(eventDefaultFlowValue);
+      ActionsAttr();
     });
-    expect(FlowControlMock).toBeTruthy();
+    expect(openAdvanceSearchModal).toBeCalledTimes(1);
   });
 });

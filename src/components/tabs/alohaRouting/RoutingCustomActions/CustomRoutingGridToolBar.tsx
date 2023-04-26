@@ -1,16 +1,10 @@
 import React, {
   useState, useEffect
 } from "react";
-import Chip from "@mui/material/Chip";
-import FormControl from "@mui/material/FormControl";
-import Grid from "@mui/material/Grid";
-import InputLabel from "@mui/material/InputLabel";
-import InputAdornment from "@mui/material/InputAdornment";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import TextField from "@mui/material/TextField";
+import {
+  Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField
+} from "@mui/material";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
-import SearchIcon from "@mui/icons-material/Search";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { RoutingFilter } from "../AlohaRouting.Interfaces";
 import {
@@ -59,19 +53,13 @@ export const CustomRoutingGridToolBar = ({
   };
 
   return (
-    <Grid container columnSpacing={2}>
-      <Grid item key="routing-search-box" xs={11}>
+    <Grid container>
+      <Grid item key="routing-search-box" xs={10}>
         <TextField
           sx={{ marginLeft: 1 }}
           placeholder="Click here to apply filter"
           InputProps={{
             startAdornment:
-            (
-              <InputAdornment position="end">
-                <SearchIcon />
-              </InputAdornment>
-            )
-            &&
             routingFilter && Object.keys(routingFilter).map((key: string, index:number)=>(
               <Chip
                 key={key}
@@ -93,10 +81,11 @@ export const CustomRoutingGridToolBar = ({
           onClick={()=>openAdvanceSearchModal(true)}
         />
       </Grid>
-      <Grid item key="routing-action-box" xs={1}>
+      <Grid item key="routing-action-box" xs={2}>
         <FormControl sx={{
           marginTop: "16px",
-          marginBottom: "8px"
+          marginBottom: "8px",
+          marginLeft: "calc(40%)"
         }}>
           <InputLabel>Actions</InputLabel>
           <Select
