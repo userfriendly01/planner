@@ -59,7 +59,7 @@ describe("<CustomRoutingGridToolBar />", ()=>{
     localStorage.removeItem(CACHE_FILTER_ROUTING);
   });
   test("Simulate Custom Routing Toolbar Add Routing",()=>{
-    expect(Grid.mock).toBe("?");
+    renderCustomToolBar();
     const GridMock = Grid.mock.calls[0][0];
     const ActionsAttr = GridMock.children[1].props.children.props.children[1].props.onChange;
     const eventAddRoutingValue = {
