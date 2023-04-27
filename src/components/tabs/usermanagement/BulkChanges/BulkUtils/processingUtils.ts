@@ -338,12 +338,13 @@ export const initiateCalls = async (
   // looks for any WFM external logon activations that didn't go through and add them to the exported errors file
   stateUpdateResults.forEach((template: any) => {
     template.forEach((result: any) => {
-      console.log("stateUpdateResult: ", result);
+      console.log("***stateUpdateResult: ", result);
 
-      if (result.value && result.value.failedActivations) {
+      if (result.value) {
         const failedActivations = result.value.failedActivations;
 
         if (failedActivations.nNumbersWithoutTwilioWorkers.length > 0){
+          console.log("***after promiseAllSettled: ", failedActivations.nNumbersWithoutTwilioWorkers);
           finalErrors.push({
             rowNumber: "multiple",
             errors: "No Twilio workers were found with these n-Numbers",
@@ -424,38 +425,35 @@ export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any,
     };
     await processBatch();
 
-    // console.log("wfm resultsArray: ", resultsArray); // todo: remove?
+    console.log("***wfm resultsArray: ", resultsArray); // todo: remove?
 
     // alsdkfhalksjdhfalsiudfn this needs to be more general also >:(
     const failedActivations = resultsArray[0].data?.failedActivations || {};
-    const successfulActivations = resultsArray[0].data?.successfulActivations || {};
-    const success: any = [];
 
     const noWorkers: any = [];
     const failedToActivate: any = [];
     const failedToOffline: any = [];
 
     resultsArray.forEach((result: any) => {
-      if (result.data?.failedActivations !== "{}") {
+      const {
+        nNumbersWithoutTwilioWorkers,
+        workersFailedToActivate,
+        workersFailedToReturnToOffline
+      } = result.data.failedActivations;
+
+      if (nNumbersWithoutTwilioWorkers !== undefined || workersFailedToActivate !== undefined || workersFailedToReturnToOffline !== undefined) {
         const failed1 = result.data.failedActivations.nNumbersWithoutTwilioWorkers;
         const failed2 = result.data.failedActivations.workersFailedToActivate;
         const failed3 = result.data.failedActivations.workersFailedToReturnToOffline;
 
+        console.log("***failures found", failed1);
         noWorkers.push(failed1);
         failedToActivate.push(failed2);
         failedToOffline.push(failed3);
       }
-      // WHEN THIS IS HERE NOTHING GETS PUSHED TO FINALERRORS ARRAAYYYYYYY
-      if (result.data?.successfulActivations) {
-        console.log("FOUND SUCCESSFUL ACTIVATIONS");
-        // const success = result.data.successfulActivations.workersSuccessfullyUpdated;
-        // console.log("success: ", success);
-        // successfulActivations.push(success);
-      }
     });
 
     const wfmExternalLogonResults = {
-      successfulActivations: successfulActivations,
       failedActivations: {
         message: failedActivations.message,
         nNumbersWithoutTwilioWorkers: noWorkers.flat(),
@@ -463,7 +461,7 @@ export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any,
         workersFailedToReturnToOffline: failedToOffline.flat()
       }
     };
-    console.log("external logon results: ", wfmExternalLogonResults);
+    console.log("***external logon results: ", wfmExternalLogonResults);
 
     return wfmExternalLogonResults;
   } else {
