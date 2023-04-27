@@ -338,7 +338,6 @@ export const initiateCalls = async (
   // looks for any WFM external logon activations that didn't go through and add them to the exported errors file
   stateUpdateResults.forEach((template: any) => {
     template.forEach((result: any) => {
-      console.log("***stateUpdateResult: ", result);
 
       if (result.value) {
         const failedActivations = result.value.failedActivations;
@@ -387,17 +386,19 @@ export const initiateCalls = async (
  * @param selectedTemplates selected templates to be processed
  */
 export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any, selectedTemplates: any) => {
-
+  console.log("inside handleWfmExternalLogon");
   if(selectedTemplates.some((t: Template) => t.name === "CREATE_TRITON_USER")) {
     // console.log("inside handleWfmExternalLogon");
     const wfmNNumbers: any[] = [];
 
     successfulRows.forEach((row: any) => {
+      console.log(row);
       if (row.wfmActivateExternalLogon) {
+        console.log("pushing!", row.attributes.n_number);
         wfmNNumbers.push(row.attributes.n_number);
       }
     });
-    // console.log("nNumbers to activate: ", wfmNNumbers);
+    console.log("nNumbers to activate: ", wfmNNumbers);
 
     // process in batches of max 25 to avoid gateway timeouts while waiting for calabrio
     const max = 25;
@@ -409,13 +410,15 @@ export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any,
       const endingIndex = currentIndex + max;
       const processingNNumbers: any[] = wfmNNumbers.slice(currentIndex, endingIndex);
 
-      // console.log("handleWfmExternalLogon - inside processBatch"); // todo: remove
+      console.log("handleWfmExternalLogon - inside processBatch"); // todo: remove
       const results = await wfmActivateExternalLogon({
         workerNNumbers: processingNNumbers
       });
       resultsArray.push(results);
 
       currentIndex = currentIndex + max;
+      console.log("currentIndex: ", currentIndex);
+      console.log("totalNNumbers: ", totalNNumbers);
 
       if(currentIndex < totalNNumbers){
         return processBatch();
@@ -427,7 +430,6 @@ export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any,
 
     console.log("***wfm resultsArray: ", resultsArray); // todo: remove?
 
-    // alsdkfhalksjdhfalsiudfn this needs to be more general also >:(
     const failedActivations = resultsArray[0].data?.failedActivations || {};
 
     const noWorkers: any = [];
