@@ -338,6 +338,7 @@ export const initiateCalls = async (
   // looks for any WFM external logon activations that didn't go through and add them to the exported errors file
   stateUpdateResults.forEach((template: any) => {
     template.forEach((result: any) => {
+      console.log("stateUpdateResult: ", result);
 
       if (result.value && result.value.failedActivations) {
         const failedActivations = result.value.failedActivations;
@@ -387,20 +388,17 @@ export const initiateCalls = async (
 export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any, selectedTemplates: any) => {
 
   if(selectedTemplates.some((t: Template) => t.name === "CREATE_TRITON_USER")) {
-    console.log("inside handleWfmExternalLogon");
+    // console.log("inside handleWfmExternalLogon");
     const wfmNNumbers: any[] = [];
 
     successfulRows.forEach((row: any) => {
-      const fieldName = "WFM Activate External Logon";
-      const field = cleanupField(row[fieldName], "string");
-
-      if ( field === "y") {
+      if (row.wfmActivateExternalLogon) {
         wfmNNumbers.push(row.attributes.n_number);
       }
     });
-    console.log("nNumbers to activate: ", wfmNNumbers);
+    // console.log("nNumbers to activate: ", wfmNNumbers);
 
-    // process in batches of max 25 to avoid timeouts while waiting for calabrio
+    // process in batches of max 25 to avoid gateway timeouts while waiting for calabrio
     const max = 25;
     const totalNNumbers = wfmNNumbers.length;
     const resultsArray: any[] = [];
@@ -410,7 +408,7 @@ export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any,
       const endingIndex = currentIndex + max;
       const processingNNumbers: any[] = wfmNNumbers.slice(currentIndex, endingIndex);
 
-      console.log("handleWfmExternalLogon - inside processBatch");
+      // console.log("handleWfmExternalLogon - inside processBatch"); // todo: remove
       const results = await wfmActivateExternalLogon({
         workerNNumbers: processingNNumbers
       });
@@ -426,25 +424,33 @@ export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any,
     };
     await processBatch();
 
-    console.log("wfm resultsArray: ", resultsArray); // todo: remove?
+    // console.log("wfm resultsArray: ", resultsArray); // todo: remove?
 
+    // alsdkfhalksjdhfalsiudfn this needs to be more general also >:(
     const failedActivations = resultsArray[0].data?.failedActivations || {};
     const successfulActivations = resultsArray[0].data?.successfulActivations || {};
+    const success: any = [];
 
     const noWorkers: any = [];
     const failedToActivate: any = [];
     const failedToOffline: any = [];
 
     resultsArray.forEach((result: any) => {
-      if (result.data?.failedActivations !== "{}"){
-        // todo: rename these...
-        const test = result.data.failedActivations.nNumbersWithoutTwilioWorkers;
-        const test2 = result.data.failedActivations.workersFailedToActivate;
-        const test3 = result.data.failedActivations.workersFailedToReturnToOffline;
+      if (result.data?.failedActivations !== "{}") {
+        const failed1 = result.data.failedActivations.nNumbersWithoutTwilioWorkers;
+        const failed2 = result.data.failedActivations.workersFailedToActivate;
+        const failed3 = result.data.failedActivations.workersFailedToReturnToOffline;
 
-        noWorkers.push(test);
-        failedToActivate.push(test2);
-        failedToOffline.push(test3);
+        noWorkers.push(failed1);
+        failedToActivate.push(failed2);
+        failedToOffline.push(failed3);
+      }
+      // WHEN THIS IS HERE NOTHING GETS PUSHED TO FINALERRORS ARRAAYYYYYYY
+      if (result.data?.successfulActivations) {
+        console.log("FOUND SUCCESSFUL ACTIVATIONS");
+        // const success = result.data.successfulActivations.workersSuccessfullyUpdated;
+        // console.log("success: ", success);
+        // successfulActivations.push(success);
       }
     });
 
@@ -462,6 +468,6 @@ export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any,
     return wfmExternalLogonResults;
   } else {
     // another template was selected, skip
-    return;
+    return Promise.resolve("Selected template not CREATE_TRITON_USER, skipping handleWfmExternalLogon");
   }
 };

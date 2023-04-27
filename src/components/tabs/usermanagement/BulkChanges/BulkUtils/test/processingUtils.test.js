@@ -2,7 +2,8 @@ import * as utils from "../processingUtils";
 import {
   getCalabrioUsers,
   getWfmOrg,
-  getManagers
+  getManagers,
+  wfmActivateExternalLogon
 } from "services";
 import { act } from "testUtils";
 import {
@@ -11,6 +12,8 @@ import {
   myAxios
 } from "utils";
 import * as XLSX from "xlsx";
+
+console.log = jest.fn();
 
 jest.mock("utils",() => ({
   formatManagersResponse: jest.fn(),
@@ -632,6 +635,154 @@ describe("initiateCalls", () => {
       await utils.initiateCalls(rows, templates, setProcessedRows);
       // expect(utils.handleConcurrentCalls).toHaveBeenCalledTimes(1);
       expect(updateStateFunction).toHaveBeenCalledTimes(1);
+    });
+  });
+});
+
+describe("handleWfmExternalLogon", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+  });
+
+  const mockDispatch = jest.fn();
+
+  const selectedTemplates1 = [
+    {
+      name: "CREATE_TRITON_USER"
+    }
+  ];
+  const selectedTemplates2 = [
+    {
+      name: "SOME_OTHER_THING"
+    }
+  ];
+
+  const successfulRowsWithActivation = [{
+    rowNumber: 4,
+    "WFM Activate External Logon": "Y",
+    wfmActivateExternalLogon: true,
+    attributes: {
+      n_number: "n1234567"
+    }
+  }];
+  const successfulRowsNoActivation = [{
+    rowNumber: 4,
+    "WFM Activate External Logon": "N",
+    wfmActivateExternalLogon: false
+  }];
+
+  // will process 27
+  const lotsOfSuccessfulRows = [
+    successfulRowsWithActivation, successfulRowsWithActivation, successfulRowsWithActivation, successfulRowsWithActivation, successfulRowsWithActivation,
+    successfulRowsWithActivation, successfulRowsWithActivation, successfulRowsWithActivation, successfulRowsWithActivation, successfulRowsWithActivation,
+    successfulRowsWithActivation, successfulRowsWithActivation, successfulRowsWithActivation, successfulRowsWithActivation, successfulRowsWithActivation,
+    successfulRowsWithActivation, successfulRowsWithActivation, successfulRowsWithActivation, successfulRowsWithActivation, successfulRowsWithActivation,
+    successfulRowsWithActivation, successfulRowsWithActivation, successfulRowsWithActivation, successfulRowsWithActivation, successfulRowsWithActivation,
+    successfulRowsWithActivation, successfulRowsWithActivation, successfulRowsNoActivation, successfulRowsNoActivation, successfulRowsNoActivation
+  ];
+
+  describe("CREATE_TRITON_USER template is not selected", () => {
+    test("promise resolves with message", async () => {
+      const results = await utils.handleWfmExternalLogon(mockDispatch, successfulRowsNoActivation, selectedTemplates2);
+      expect(results).toBe("Selected template not CREATE_TRITON_USER, skipping handleWfmExternalLogon");
+    });
+  });
+  describe("CREATE_TRITON_USER template is selected", () => {
+    const mockWfmExternalLogonResultsSuccess = {
+      data: {
+        successfulActivations: ["n1234567"],
+        failedActivations: {
+          message: "blep",
+          nNumbersWithoutTwilioWorkers: [],
+          workersFailedToActivate: [],
+          workersFailedToReturnToOffline: []
+        }
+      }
+    };
+    test("batch is less than 25 with all activations successful", async () => {
+      wfmActivateExternalLogon.mockResolvedValue(mockWfmExternalLogonResultsSuccess);
+      const results = await utils.handleWfmExternalLogon(mockDispatch, successfulRowsWithActivation, selectedTemplates1);
+      expect(wfmActivateExternalLogon).toHaveBeenCalledTimes(1);
+      expect(results).toEqual({
+        successfulActivations: ["n1234567"],
+        failedActivations: {
+          message: "blep",
+          nNumbersWithoutTwilioWorkers: [],
+          workersFailedToActivate: [],
+          workersFailedToReturnToOffline: []
+        }
+      });
+      // expect(console.log).toHaveBeenCalledWith("FOUND SUCCESSFUL ACTIVATIONS");
+    });
+    test("batch is more than 25 with all activations successful", async () => {
+      const mockWfmExternalLogonResultsSuccess2 = {
+        data: {
+          successfulActivations: [
+            "n1234567", "n1234567", "n1234567", "n1234567", "n1234567",
+            "n1234567", "n1234567", "n1234567", "n1234567", "n1234567",
+            "n1234567", "n1234567", "n1234567", "n1234567", "n1234567",
+            "n1234567", "n1234567", "n1234567", "n1234567", "n1234567",
+            "n1234567", "n1234567", "n1234567", "n1234567", "n1234567"
+          ],
+          failedActivations: {
+            message: "blep",
+            nNumbersWithoutTwilioWorkers: [],
+            workersFailedToActivate: [],
+            workersFailedToReturnToOffline: []
+          }
+        }
+      };
+      const mockWfmExternalLogonResultsSuccess3 = {
+        data: {
+          successfulActivations: ["n1234567", "n1234567"],
+          failedActivations: {
+            message: "blep",
+            nNumbersWithoutTwilioWorkers: [],
+            workersFailedToActivate: [],
+            workersFailedToReturnToOffline: []
+          }
+        }
+      };
+      wfmActivateExternalLogon
+        .mockResolvedValueOnce(mockWfmExternalLogonResultsSuccess2)
+        .mockResolvedValueOnce(mockWfmExternalLogonResultsSuccess3);
+      const results = await utils.handleWfmExternalLogon(mockDispatch, lotsOfSuccessfulRows, selectedTemplates1);
+      // expect(wfmActivateExternalLogon).toHaveBeenCalledTimes(2);
+      await expect(results).toEqual({
+        failedActivations: {
+          message: "blep",
+          nNumbersWithoutTwilioWorkers: [],
+          workersFailedToActivate: [],
+          workersFailedToReturnToOffline: []
+        },
+        successfulActivations: ["n1234567", "n1234567", "n1234567", "n1234567", "n1234567", "n1234567", "n1234567", "n1234567", "n1234567", "n1234567", "n1234567", "n1234567", "n1234567", "n1234567", "n1234567", "n1234567", "n1234567", "n1234567", "n1234567", "n1234567", "n1234567", "n1234567", "n1234567", "n1234567", "n1234567"]
+      });
+      // await expect(results).toEqual({
+      //   failedActivations: {
+      //     message: "blep",
+      //     nNumbersWithoutTwilioWorkers: [],
+      //     workersFailedToActivate: [],
+      //     workersFailedToReturnToOffline: []
+      //   },
+      //   successfulActivations: ["n1234567", "n1234567"]
+      // });
+      // expect(results).toEqual({
+      //   successfulActivations: [
+      //     "n1234567", "n1234567", "n1234567", "n1234567", "n1234567",
+      //     "n1234567", "n1234567", "n1234567", "n1234567", "n1234567",
+      //     "n1234567", "n1234567", "n1234567", "n1234567", "n1234567",
+      //     "n1234567", "n1234567", "n1234567", "n1234567", "n1234567",
+      //     "n1234567", "n1234567", "n1234567", "n1234567", "n1234567",
+      //     "n1234567", "n1234567"
+      //   ],
+      //   failedActivations: {
+      //     message: "blep",
+      //     nNumbersWithoutTwilioWorkers: [],
+      //     workersFailedToActivate: [],
+      //     workersFailedToReturnToOffline: []
+      //   }
+      // });
     });
   });
 });

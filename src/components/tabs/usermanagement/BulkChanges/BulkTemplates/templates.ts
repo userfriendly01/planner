@@ -63,12 +63,12 @@ const processCreateTritonUser = async (row: any, state: any) => {
     body.operatingUnitSid = profile?.operating_unit_sid;
 
     // todo: UNCOMMENT. all but workerSid commented out for local testing
-    const res = await createUser(body);
-    const workerSid = res.workerSid;
-    console.log("TRITON RESPONSE", res);
-    row.workerSid = workerSid;
-    // const workerSid = "test worker sid";
-    row.acdId = workerSid;
+    // const res = await createUser(body);
+    // const workerSid = res.workerSid;
+    // console.log("TRITON RESPONSE", res);
+    // row.workerSid = workerSid;
+    const workerSid = "test worker sid";
+    // row.acdId = workerSid;
     console.log(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
     return Promise.resolve(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
   } catch(err) {

@@ -544,15 +544,19 @@ export const FIELDS: Fields = {
       const fieldName = FIELDS.WFM_ACTIVATE_EXTERNAL_LOGON.name;
       const field = cleanupField(row[fieldName], "string");
 
-      if (!field || typeof field !== "string") {
-        return rejectPromise(`${fieldName} is missing or not a valid format for ${rowNumber}`, rowNumber);
+      if (!field) {
+        return rejectPromise(`${fieldName} must be Y or N for row ${rowNumber}`, rowNumber);
+      } else if (typeof field !== "string") {
+        return rejectPromise(`${fieldName} must be Y or N for row ${rowNumber}`, rowNumber);
       } else if (field !== "y" && field !== "n") {
-        return rejectPromise(`${fieldName} must be Y or N for ${rowNumber}`, rowNumber);
+        return rejectPromise(`${fieldName} must be Y or N for row ${rowNumber}`, rowNumber);
       } else if (field === "y") {
         // user needs to activate their external logon
+        row.wfmActivateExternalLogon = true;
         return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
       } else {
         // user doesn't need external logon
+        row.wfmActivateExternalLogon = false;
         return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
       }
     }

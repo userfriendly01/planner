@@ -60,5 +60,6 @@ jest.mock("services", () => ({
   updateUser: jest.fn(),
   getCallTagOptions: jest.fn(),
   getCallTags: jest.fn(),
-  getOperatingUnits: jest.fn()
+  getOperatingUnits: jest.fn(),
+  wfmActivateExternalLogon: jest.fn()
 }));
