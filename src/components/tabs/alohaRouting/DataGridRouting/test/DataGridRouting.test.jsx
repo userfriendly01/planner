@@ -210,7 +210,7 @@ describe("<DataGridRouting />", ()=>{
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const openModal = AddRouting.mock.calls[0][0].openModal;
-      act(()=>{ openModal(true,validRoutingData); });
+      act(()=>{ openModal(true,false,validRoutingData); });
       expect(AddRouting.mock.calls[1][0].isOpen).toBe(true);
     });
   });
