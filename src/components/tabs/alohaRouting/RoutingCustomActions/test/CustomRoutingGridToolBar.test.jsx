@@ -96,4 +96,14 @@ describe("<CustomRoutingGridToolBar />", ()=>{
     });
     expect(exportDataFile).toBeCalledTimes(1);
   });
+  test("Simulate Existing Filter Delete Functionality", ()=>{
+    renderCustomToolBar();
+    const GridMock = Grid.mock.calls[1][0];
+    const onDelete = GridMock.children[0].props.children.props.InputProps.startAdornment[0].props.onDelete;
+    act(()=>{
+      onDelete("brand");
+    });
+    const chipTags = Grid.mock.calls[2][0].children[0].props.children.props.InputProps.startAdornment;
+    expect(chipTags.length).toBe(0);
+  });
 });
