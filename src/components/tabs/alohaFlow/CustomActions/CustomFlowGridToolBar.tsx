@@ -1,30 +1,40 @@
 import {
-  FormControl, InputLabel, MenuItem, Select
+  Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField
 } from "@mui/material";
-import React from "react";
+import React, {
+  useState, useEffect
+} from "react";
+import {
+  CACHE_FILTER_FLOW, getAdvanceFilter
+} from "utils";
 import { FlowAdvanceFilter } from "../AlohaFlow.Interfaces";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
-import SearchIcon from "@mui/icons-material/Search";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 
 interface CustomFlowGridToolBarProps {
   openAddModal: (flag: boolean, isSubmitted?: boolean) => void,
   openAdvanceSearchModal: (flag: boolean, advanceFilter?: FlowAdvanceFilter) => void
   exportDataFile: ()=> void;
+  applyFilter?: () => void;
+  isAdvanceSearchOpen?: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const CustomFlowGridToolBar = ({
-  openAddModal, openAdvanceSearchModal, exportDataFile
+const CustomFlowGridToolBar = ({
+  openAddModal, openAdvanceSearchModal, exportDataFile, applyFilter, isAdvanceSearchOpen
 }:CustomFlowGridToolBarProps) =>{
+  const [flowFilter, setFlowFilter] = useState<FlowAdvanceFilter>();
+
+  useEffect(()=>{
+    const localFilter = getAdvanceFilter(CACHE_FILTER_FLOW);
+    setFlowFilter(localFilter);
+  },[isAdvanceSearchOpen]);
+
   const handleChange=(event:any):void=> {
     const { value } = event.target;
     switch (value) {
       case "addFlow":
         openAddModal(true);
-        break;
-      case "Filter":
-        openAdvanceSearchModal(true);
         break;
       case "Export":
         exportDataFile();
@@ -33,38 +43,77 @@ export const CustomFlowGridToolBar = ({
         break;
     }
   };
+
+  const handleOnDelete = (key: string) =>{
+    const filterItem: FlowAdvanceFilter = { ...flowFilter };
+    delete filterItem[key as keyof FlowAdvanceFilter];
+    localStorage.setItem(CACHE_FILTER_FLOW, JSON.stringify(filterItem));
+    applyFilter();
+    setFlowFilter(filterItem);
+  };
+
   return (
-    <div>
-      <FormControl sx={{
-        minWidth: 120,
-        marginLeft: "calc(85%)",
-        marginTop: 1
-      }}>
-        <InputLabel>Actions</InputLabel>
-        <Select
-          inputProps={{
-            sx: {
-              width: 120
-            }
+    <Grid container>
+      <Grid item key="flow-search-box" xs={10}>
+        <TextField
+          sx={{ marginLeft: 1 }}
+          placeholder="Click here to apply filter"
+          InputProps={{
+            startAdornment:
+            flowFilter && Object.keys(flowFilter).map((key: string, index:number)=>(
+              <Chip
+                key={key}
+                color="primary"
+                tabIndex={index}
+                label={`${key.toLowerCase()} : ${flowFilter[key as keyof FlowAdvanceFilter]}`}
+                onDelete={(event: any)=>{ handleOnDelete(key); }}
+                sx={{ margin: 1 }}
+              />
+            ))
           }}
-          label="Actions"
-          value=""
-          onChange={handleChange}
-          variant="filled"
-          size="small"
-          displayEmpty
-        >
-          <MenuItem key="addFlow" value="addFlow">
-            <PlaylistAddIcon />&nbsp;&nbsp; Add Flow
-          </MenuItem>
-          <MenuItem key="Filter" value="Filter">
-            <SearchIcon /> &nbsp;&nbsp; Advance Search
-          </MenuItem>
-          <MenuItem key="Export" value="Export">
-            <FileDownloadIcon /> &nbsp;&nbsp; Export
-          </MenuItem>
-        </Select>
-      </FormControl>
-    </div>
+
+          fullWidth
+          id="flow-SearchBox-input"
+          label="Search"
+          margin="normal"
+          name="flow-SearchBox-input"
+          variant="standard"
+          onClick={()=>openAdvanceSearchModal(true)}
+        />
+      </Grid>
+      <Grid item key="flow-action-box" xs={2}>
+        <FormControl sx={{
+          marginTop: "16px",
+          marginBottom: "8px",
+          marginLeft: "calc(40%)"
+        }}>
+          <InputLabel>Actions</InputLabel>
+          <Select
+            inputProps={{
+              sx: {
+                width: 120
+              }
+            }}
+            label="Actions"
+            value=""
+            onChange={handleChange}
+            variant="filled"
+            size="small"
+            displayEmpty
+          >
+            <MenuItem key="addFlow" value="addFlow">
+              <PlaylistAddIcon />&nbsp;&nbsp; Add Flow
+            </MenuItem>
+            <MenuItem key="Export" value="Export">
+              <FileDownloadIcon /> &nbsp;&nbsp; Export
+            </MenuItem>
+          </Select>
+        </FormControl>
+      </Grid>
+    </Grid>
   );
+};
+
+export {
+  CustomFlowGridToolBar
 };
