@@ -21,6 +21,8 @@ const TritonUserManagementWrapper: any = () => {
     searchBy: "",
     selected: [],
     managerFilter: null,
+    profileFilter: null,
+    ouFilter: null,
     searchResults: [],
     deltaFilter: false,
     pagination: {
@@ -45,6 +47,16 @@ const TritonUserManagementWrapper: any = () => {
       filteredList = filteredList.filter((worker: Worker) => worker.attributes.manager_n_number === tableState.managerFilter);
     }
     console.log("**Manager FL", filteredList);
+
+    //filter by Ou
+    if(tableState.ouFilter && tableState.ouFilter !== "show-all"){
+      filteredList = filteredList.filter((worker: Worker) => {
+        const profile = state.profileContext.profiles.find(p => p.profile_id === worker.attributes.profile_id);
+        const profileOu = profile ? profile.operating_unit_nme?.toLowerCase() : "";
+        return profileOu === tableState.ouFilter;
+      });
+    }
+    console.log("**Ou FL", filteredList);
 
 
     //filter by deltaFilter
@@ -80,7 +92,7 @@ const TritonUserManagementWrapper: any = () => {
       }
     });
     console.log("final filtered list", filteredList);
-  }, [tableState.searchBy, tableState.deltaFilter, tableState.managerFilter, tableState.pagination.pageNumber, state.workerContext]);
+  }, [tableState.searchBy, tableState.deltaFilter, tableState.managerFilter, tableState.ouFilter, tableState.pagination.pageNumber, state.workerContext]);
 
   return (
     <ManagementContainer>

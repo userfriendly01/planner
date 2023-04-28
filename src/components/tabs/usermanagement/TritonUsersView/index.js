@@ -1,4 +1,6 @@
 export { default as ManagerDropdown } from "./ManagerDropdown/ManagerDropdown";
+export { default as ProfileDropdown } from "./ProfileFilter/ProfileDropdown";
+export { default as OuFilterDropdown } from "./OuFilterDropdown/OuFilterDropdown";
 export { default as ManagerModal } from "./ManagerModal/ManagerModal";
 export { default as TritonUserTable } from "./TritonUserTable/TritonUserTable";
 export { default as TritonUsersHeader } from "./TritonUsersHeader/TritonUsersHeader";
