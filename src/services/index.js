@@ -16,3 +16,4 @@ export * from "./profile";
 export * from "./skillgroup";
 export * from "./tfnActivation";
 export * from "./updateUser";
+export * from "./taskQueues";
