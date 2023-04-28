@@ -343,7 +343,6 @@ export const initiateCalls = async (
         const failedActivations = result.value.failedActivations;
 
         if (failedActivations.nNumbersWithoutTwilioWorkers.length > 0){
-          console.log("***after promiseAllSettled: ", failedActivations.nNumbersWithoutTwilioWorkers);
           finalErrors.push({
             rowNumber: "multiple",
             errors: "No Twilio workers were found with these n-Numbers",
@@ -368,7 +367,7 @@ export const initiateCalls = async (
     });
   });
 
-  console.log("final errors: ", finalErrors);
+  console.log("final errors: ", finalErrors); // todo: remove
 
   if(finalErrors.length === 0){
     return Promise.resolve(rows);
@@ -386,19 +385,17 @@ export const initiateCalls = async (
  * @param selectedTemplates selected templates to be processed
  */
 export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any, selectedTemplates: any) => {
-  console.log("inside handleWfmExternalLogon");
+  console.log("inside handleWfmExternalLogon"); // todo: remove
   if(selectedTemplates.some((t: Template) => t.name === "CREATE_TRITON_USER")) {
-    // console.log("inside handleWfmExternalLogon");
+    console.log("inside handleWfmExternalLogon"); // todo: remove
     const wfmNNumbers: any[] = [];
 
     successfulRows.forEach((row: any) => {
-      console.log(row);
       if (row.wfmActivateExternalLogon) {
-        console.log("pushing!", row.attributes.n_number);
         wfmNNumbers.push(row.attributes.n_number);
       }
     });
-    console.log("nNumbers to activate: ", wfmNNumbers);
+    console.log("nNumbers to activate: ", wfmNNumbers); // todo: remove
 
     // process in batches of max 25 to avoid gateway timeouts while waiting for calabrio
     const max = 25;
@@ -417,8 +414,6 @@ export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any,
       resultsArray.push(results);
 
       currentIndex = currentIndex + max;
-      console.log("currentIndex: ", currentIndex);
-      console.log("totalNNumbers: ", totalNNumbers);
 
       if(currentIndex < totalNNumbers){
         return processBatch();
@@ -428,7 +423,7 @@ export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any,
     };
     await processBatch();
 
-    console.log("***wfm resultsArray: ", resultsArray); // todo: remove?
+    console.log("***wfm resultsArray: ", resultsArray); // todo: remove
 
     const failedActivations = resultsArray[0].data?.failedActivations || {};
 
@@ -448,7 +443,7 @@ export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any,
         const failed2 = result.data.failedActivations.workersFailedToActivate;
         const failed3 = result.data.failedActivations.workersFailedToReturnToOffline;
 
-        console.log("***failures found", failed1);
+        console.log("***failures found", failed1); // todo: remove
         noWorkers.push(failed1);
         failedToActivate.push(failed2);
         failedToOffline.push(failed3);
@@ -463,7 +458,7 @@ export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any,
         workersFailedToReturnToOffline: failedToOffline.flat()
       }
     };
-    console.log("***external logon results: ", wfmExternalLogonResults);
+    console.log("***external logon results: ", wfmExternalLogonResults); // todo: remove
 
     return wfmExternalLogonResults;
   } else {

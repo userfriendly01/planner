@@ -683,11 +683,6 @@ describe("initiateCalls", () => {
 });
 
 describe("handleWfmExternalLogon", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-    jest.resetAllMocks();
-  });
-
   const mockDispatch = jest.fn();
 
   const selectedTemplates1 = [
@@ -715,7 +710,6 @@ describe("handleWfmExternalLogon", () => {
     wfmActivateExternalLogon: false
   }];
 
-  // will process 27
   const lotsOfSuccessfulRows = [
     successfulRowsWithActivation[0], successfulRowsWithActivation[0], successfulRowsWithActivation[0], successfulRowsWithActivation[0], successfulRowsWithActivation[0],
     successfulRowsWithActivation[0], successfulRowsWithActivation[0], successfulRowsWithActivation[0], successfulRowsWithActivation[0], successfulRowsWithActivation[0],
@@ -766,6 +760,10 @@ describe("handleWfmExternalLogon", () => {
     }
   }];
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+  });
   describe("CREATE_TRITON_USER template is not selected", () => {
     test("promise resolves with message", async () => {
       const results = await utils.handleWfmExternalLogon(mockDispatch, successfulRowsNoActivation, selectedTemplates2);
@@ -783,8 +781,8 @@ describe("handleWfmExternalLogon", () => {
         }
       }
     };
-    describe("all acitvations were successful", () => {
-      test("batch is less than 25 with all activations successful", async () => {
+    describe("all activations were successful", () => {
+      test("batch is less than 25 users", async () => {
         wfmActivateExternalLogon.mockResolvedValue(mockWfmExternalLogonResultsSuccess);
         const results = await utils.handleWfmExternalLogon(mockDispatch, successfulRowsWithActivation, selectedTemplates1);
         expect(wfmActivateExternalLogon).toHaveBeenCalledTimes(1);
@@ -797,7 +795,7 @@ describe("handleWfmExternalLogon", () => {
           }
         });
       });
-      test("batch is more than 25 with all activations successful", async () => {
+      test("batch is more than 25", async () => {
         const mockWfmExternalLogonResultsSuccess2 = {
           data: {
             successfulActivations: [
@@ -842,8 +840,8 @@ describe("handleWfmExternalLogon", () => {
         });
       });
     });
-    describe("a few failed", () => {
-      test("only 1 batch", async () => {
+    describe("some activations failed", () => {
+      test("batch is less than 25 users, function returns the nNumbers that failed to activate ", async () => {
         const mockWfmExternalLogonResultsSomeFailures = {
           data: {
             failedActivations: {
@@ -867,7 +865,7 @@ describe("handleWfmExternalLogon", () => {
         });
       });
     });
-    test("big batch with some failures", async () => {
+    test("big batch with more than 25 users, results are returned in a single array separated by error", async () => {
       const mockWfmExternalLogonResultsSomeFailures = {
         data: {
           failedActivations: {

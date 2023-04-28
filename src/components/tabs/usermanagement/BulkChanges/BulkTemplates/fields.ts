@@ -546,8 +546,6 @@ export const FIELDS: Fields = {
 
       if (!field) {
         return rejectPromise(`${fieldName} must be Y or N for row ${rowNumber}`, rowNumber);
-      } else if (typeof field !== "string") {
-        return rejectPromise(`${fieldName} must be Y or N for row ${rowNumber}`, rowNumber);
       } else if (field !== "y" && field !== "n") {
         return rejectPromise(`${fieldName} must be Y or N for row ${rowNumber}`, rowNumber);
       } else if (field === "y") {
