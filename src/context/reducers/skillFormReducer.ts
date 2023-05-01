@@ -23,8 +23,13 @@ export const initialSkillFormState: SkillFormState = {
   applicationId: null,
   taskQueue: "",
   profiles: [],
-  vhCallTarget: "",
-  vhThreshold: null,
+  vhCallTarget: {
+    value: "",
+    valid: false,
+    e164: "",
+    blurred: false
+  },
+  vhThreshold: "",
   timeOfDay: {
     sunday: null,
     monday: null,
@@ -33,7 +38,7 @@ export const initialSkillFormState: SkillFormState = {
     thursday: null,
     friday: null,
     saturday: null
-  } // ???  What is this going to look like?
+  }
 };
 
 export const skillFormReducer = (state: SkillFormState, action: Action): any => {  //TODO: change the anys

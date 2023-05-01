@@ -10,7 +10,8 @@ import React from "react";
 import SkillEntryFormModal from "./SkillEntryFormModal";
 import {
   getTaskQueues,
-  getApplications
+  getApplications,
+  getTimeOfDays
 } from "services";
 
 
@@ -18,10 +19,12 @@ const SkillEntryButton = (props: any) => {
 
   const [ taskQueues, setTaskQueues ] = React.useState([]);
   const [ applications, setApplications ] = React.useState([]);
+  const [ timeOfDays, setTimeOfDays ] = React.useState([]);
 
   React.useEffect(() => {
     getTaskQueueOptions();
     getApplicationOptions();
+    getTimeOfDaysOptions();
   }, []);
 
 
@@ -35,7 +38,12 @@ const SkillEntryButton = (props: any) => {
     const results = await getApplications();
     console.log("RESULTS FOR GET APPLICATIONS", results);
     setApplications(results);
+  };
 
+  const getTimeOfDaysOptions = async () => {
+    const results = await getTimeOfDays();
+    console.log("RESULTS FOR GET APPLICATIONS", results);
+    setTimeOfDays(results);
   };
 
   const defaultSaveResult: any = {
@@ -69,6 +77,7 @@ const SkillEntryButton = (props: any) => {
               saveResult={saveResult}
               taskQueues={taskQueues}
               applications={applications}
+              timeOfDays={timeOfDays}
             />
           </>
         </Modal>

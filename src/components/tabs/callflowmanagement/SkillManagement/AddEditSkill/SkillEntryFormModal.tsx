@@ -5,7 +5,8 @@ import {
   StyledButton,
   Dropdown,
   CustomInput,
-  ModalOverlay
+  ModalOverlay,
+  PhoneNumberInput
 } from "components";
 import {
   useAdminState,
@@ -56,7 +57,7 @@ const inputStyles = {
 
 const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
   const {
-    closeModal, saveResult, taskQueues, applications
+    closeModal, saveResult, taskQueues, applications, timeOfDays
   } = props;
 
   const skFormState: SkillFormState = skillFormState();
@@ -70,6 +71,12 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
 
 
   const getDropdownOptions = (list: any[], labelKey: string, valueKey: string) => {
+    if (labelKey === "openTime") {
+      return list.map(option => ({
+        value: option[valueKey],
+        label: `${option[labelKey]} - ${option.closeTime}`
+      }));
+    }
     return list.map(option => ({
       value: option[valueKey],
       label: option[labelKey]
@@ -78,15 +85,21 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
 
   const taskQueueOptions = getDropdownOptions(taskQueues, "friendlyName", "sid");
   const profileOptions = getDropdownOptions(profiles, "profile_nme", "profile_id");
+  const timeOfDayOptions = getDropdownOptions(timeOfDays, "openTime", "timeOfDayId");
 
   const checkIfError = (key: string, value: string) => {
     let alreadyExists: boolean | any = false;
-    if (key === "skillName") {
+    const isInvalidValue = false;
+    if (key === "skillFriendlyName") {
       alreadyExists = skills.find(skill => skill.ctmSkillDisplayName === value);
     } else if (key === "skillNum") {
       alreadyExists = skills.find(skill => skill.name === value);
+    } else if (key === "vhCallTarget") {
+      // check es16
+    } else if (key === "vhThreshold") {
+
     }
-    if (alreadyExists) {
+    if (alreadyExists || isInvalidValue) {
       return true;
     }
   };
@@ -106,7 +119,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
           <CustomInput
             value={skFormState.skillFriendlyName}
             styles={inputStyles}
-            //   error={checkIfError("skillName", skillForm.skillName)}
+            error={checkIfError("skillFriendlyName", skFormState.skillFriendlyName)}
             maxLength="80"
             label="Skill Friendly Name"
             name="Skill Friendly Name"
@@ -120,7 +133,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
           <CustomInput
             value={skFormState.skillNum}
             styles={inputStyles}
-            //   error={checkIfError("skillNum", skillForm.skillNum)}
+            error={checkIfError("skillNum", skFormState.skillNum)}
             maxLength="80"
             label="Skill Number"
             name="Skill Number"
@@ -174,11 +187,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
         <RowContainer>
           <ColumnContainer>
             <Dropdown
-              //   options={getDropdownOptions(taskQueues, "friendlyName", "sid")}
-              options={[{
-                value: "thing",
-                label: "fake application"
-              }]}
+              options={timeOfDayOptions}
               //   value={skillForm.selectedApplication}
               label="Sunday Time of Day"
               updateValue={(e: any, newValue: any) => {
@@ -192,11 +201,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
               }}
             />
             <Dropdown
-              //   options={getDropdownOptions(taskQueues, "friendlyName", "sid")}
-              options={[{
-                value: "thing",
-                label: "fake application"
-              }]}
+              options={timeOfDayOptions}
               //   value={skillForm.selectedApplication}
               label="Saturday Time of day"
               updateValue={(e: any, newValue: any) => {
@@ -212,11 +217,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
           </ColumnContainer>
           <ColumnContainer>
             <Dropdown
-              //   options={getDropdownOptions(taskQueues, "friendlyName", "sid")}
-              options={[{
-                value: "thing",
-                label: "fake application"
-              }]}
+              options={timeOfDayOptions}
               //   value={skillForm.selectedApplication}
               label="Monday Time of Day"
               updateValue={(e: any, newValue: any) => {
@@ -230,11 +231,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
               }}
             />
             <Dropdown
-              //   options={getDropdownOptions(taskQueues, "friendlyName", "sid")}
-              options={[{
-                value: "thing",
-                label: "fake application"
-              }]}
+              options={timeOfDayOptions}
               //   value={skillForm.selectedApplication}
               label="Tuesday Time of Day"
               updateValue={(e: any, newValue: any) => {
@@ -248,11 +245,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
               }}
             />
             <Dropdown
-              //   options={getDropdownOptions(taskQueues, "friendlyName", "sid")}
-              options={[{
-                value: "thing",
-                label: "fake application"
-              }]}
+              options={timeOfDayOptions}
               //   value={skillForm.selectedApplication}
               label="Wednesday Time of Day"
               updateValue={(e: any, newValue: any) => {
@@ -266,11 +259,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
               }}
             />
             <Dropdown
-              //   options={getDropdownOptions(taskQueues, "friendlyName", "sid")}
-              options={[{
-                value: "thing",
-                label: "fake application"
-              }]}
+              options={timeOfDayOptions}
               //   value={skillForm.selectedApplication}
               label="Thursday Time of Day"
               updateValue={(e: any, newValue: any) => {
@@ -284,11 +273,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
               }}
             />
             <Dropdown
-              //   options={getDropdownOptions(taskQueues, "friendlyName", "sid")}
-              options={[{
-                value: "thing",
-                label: "fake application"
-              }]}
+              options={timeOfDayOptions}
               //   value={skillForm.selectedApplication}
               label="Friday Time of Day"
               updateValue={(e: any, newValue: any) => {
@@ -307,27 +292,38 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
 
 
         <RowContainer>
-          <CustomInput
-            value={skFormState.vhCallTarget}
-            styles={inputStyles}
-            //   error={checkIfError("skillNum", skillForm.skillNum)}
-            maxLength="11"
+          <PhoneNumberInput
+            id="Virtual Hold Call Target"
             label="Virtual Hold Call Target"
-            name="vh_call_target"
-            updateValue={value => {
+            number={skFormState.vhCallTarget.value}
+            showError={skFormState.vhCallTarget.blurred && !skFormState.vhCallTarget.valid}
+            onBlur={() => skFormDispatch({
+              type: skillFormActions.SET_VH_CALL_TARGET,
+              payload: {
+                ...skFormState.vhCallTarget,
+                blurred: true
+              }
+            })}
+            updateValue={(maskedValue: string, unmaskedValue: string, isValid: boolean, e164Number: string) => {
+              console.log(`maskedValue: ${maskedValue} - "unmaskedValue: ${unmaskedValue} - isValid: ${isValid} - e164Number: ${e164Number}`);
               skFormDispatch({
                 type: skillFormActions.SET_VH_CALL_TARGET,
-                payload: value
+                payload: {
+                  ...skFormState.vhCallTarget,
+                  value: unmaskedValue,
+                  valid: isValid,
+                  e164: e164Number
+                }
               });
             }}
           />
           <CustomInput
             value={skFormState.vhThreshold}
-            //   error={checkIfError("skillNum", skillForm.skillNum)}
+            error={checkIfError("vhThreshold", skFormState.vhThreshold)}
             styles={inputStyles}
             maxLength="11"
             label="Virtual Hold Threshold"
-            name="vh_threshold"
+            name="vhThreshold"
             updateValue={value => {
               skFormDispatch({
                 type: skillFormActions.SET_VH_THRESHOLD,
@@ -340,11 +336,12 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
           <StyledButton onClick={closeModal} >Cancel</StyledButton>
           <StyledButton
             onClick={closeModal}
-            //   disabled={
-            //     Object.values(skillForm).filter((value: string | any[]) => !value || (value && value.toString().trim() === "")).length > 0 ||
+            disabled={
+              Object.values(skFormState).filter((value: string | any[]) => !value || (value && value.toString().trim() === "")).length > 0 ||
+                Object.values(skFormState.timeOfDay).filter((value: any) => !value || (value && value.toString().trim() === "")).length > 0
             //       checkIfError("skillName", skillForm.skillName) ||
             //       checkIfError("skillNum", skillForm.skillNum)
-            //   }
+            }
           >{skFormState.formMode === formModes.INSERT ? "Add " : "Update "}Skill</StyledButton>
         </ButtonWrapper>
       </PaperContainer>

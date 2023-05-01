@@ -18,3 +18,4 @@ export * from "./tfnActivation";
 export * from "./updateUser";
 export * from "./taskQueues";
 export * from "./applications";
+export * from "./timeOfDays";

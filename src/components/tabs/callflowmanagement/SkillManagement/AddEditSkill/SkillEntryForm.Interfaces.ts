@@ -5,8 +5,13 @@ export interface SkillFormState {
     skillNum: string,
     applicationId: number | null,
     taskQueue: string,
-    profiles: number[],
-    vhCallTarget: string,
+    profiles: any[],
+    vhCallTarget: {
+      value: string,
+      valid: boolean,
+      e164: string,
+      blurred: boolean
+    },
     vhThreshold: string | null,
     timeOfDay: {
       sunday: number | null,

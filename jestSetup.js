@@ -47,6 +47,7 @@ jest.mock("services", () => ({
   getManagers: jest.fn(),
   getTaskQueues: jest.fn(),
   getTfn: jest.fn(),
+  getTimeOfDays: jest.fn(),
   getWfmOrg: jest.fn(),
   getWfmOptions: jest.fn(),
   insertDirectory: jest.fn(),
