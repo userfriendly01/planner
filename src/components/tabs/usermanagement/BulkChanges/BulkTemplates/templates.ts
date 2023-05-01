@@ -30,6 +30,7 @@ import {
   FIELDS,
   isDidUser
 } from "../BulkTemplates";
+import { AppState } from "globals";
 
 const rejectPromise = (error: string, rowNumber: number) => {
   return Promise.reject(JSON.stringify({
@@ -220,16 +221,13 @@ const processCreateManager = async (row: any, state: any) => {
   }
 };
 
-const processUpdateWorkerAttribute = async (row: any, template: Template, state: any) => {
+const processUpdateWorkerAttribute = async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
   const key = template.data.key;
   const value = template.data.value;
   const location = template.data.location;
 
   const newAttribute = { [key]: value };
-  const tritonWorkers = state.workerContext.workers;
-  const worker = tritonWorkers.find((w: any) => w.attributes?.n_number && cleanupField(w.attributes.n_number, "string") === cleanupField(row.nNumber, "string"));
-  console.log("WORKER: " , worker)
   let body: any = {};
 
   if(key === "profile_id"){
@@ -243,12 +241,16 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
     if(typeof location === "string"){
       body[location] = newAttribute;
     } else {
-      body[location[0]] = {
-        ...worker[location[0]],
-        [location[1]] : {
-          ...worker[location[0]][location[1]],
-          [key]: newAttribute
+      try {
+        body[location[0]] = {
+          ...row[location[0]],
+          [location[1]] : {
+            ...row[location[0]][location[1]],
+            [key]: newAttribute
+          }
         }
+      } catch(err){
+        return rejectPromise(`Error thrown when location is array ${err.message}`, rowNumber);
       }
     }
   } else {
