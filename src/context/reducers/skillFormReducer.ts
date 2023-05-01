@@ -2,6 +2,7 @@ import {
   Action,
   formModes
 } from "globals";
+import { SkillFormState } from "../../components/tabs/callflowmanagement/SkillManagement/AddEditSkill/SkillEntryForm.Interfaces";
 
 export const skillFormActions = {
   RESET_FORM: "RESET_FORM",
@@ -11,21 +12,31 @@ export const skillFormActions = {
   SET_PROFILES: "SET_PROFILES",
   SET_VH_CALL_TARGET: "SET_VH_CALL_TARGET",
   SET_VH_THRESHOLD: "SET_VH_THRESHOLD",
-  SET_TIME_OF_DAYS: "SET_TIME_OF_DAYS"
+  SET_TIME_OF_DAYS: "SET_TIME_OF_DAYS",
+  SET_APPLICATION_ID: "SET_APPLICATION_ID"
 };
 
-export const initialSkillFormState: any = {
+export const initialSkillFormState: SkillFormState = {
   formMode: formModes.INSERT,
   skillFriendlyName: "",
   skillNum: "",
+  applicationId: null,
   taskQueue: "",
   profiles: [],
   vhCallTarget: "",
   vhThreshold: null,
-  timeOfDays: {} // ???  What is this going to look like?
+  timeOfDay: {
+    sunday: null,
+    monday: null,
+    tuesday: null,
+    wednesday: null,
+    thursday: null,
+    friday: null,
+    saturday: null
+  } // ???  What is this going to look like?
 };
 
-export const skillFormReducer = (state: any, action: Action): any => {  //TODO: change the anys
+export const skillFormReducer = (state: SkillFormState, action: Action): any => {  //TODO: change the anys
   switch (action.type) {
     case skillFormActions.RESET_FORM: {
       return {
@@ -71,7 +82,13 @@ export const skillFormReducer = (state: any, action: Action): any => {  //TODO: 
     case skillFormActions.SET_TIME_OF_DAYS: {
       return {
         ...state,
-        timeOfDays: action.payload // ???
+        timeOfDay: action.payload // ???
+      };
+    }
+    case skillFormActions.SET_APPLICATION_ID: {
+      return {
+        ...state,
+        applicationId: action.payload
       };
     }
 

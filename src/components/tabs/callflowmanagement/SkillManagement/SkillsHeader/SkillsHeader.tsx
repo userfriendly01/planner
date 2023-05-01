@@ -9,7 +9,7 @@ import { SearchBox } from "components";
 import { useAdminState } from "context";
 import { TritonProfile } from "globals";
 import React from "react";
-import AddSkillButton from "../AddSkill/AddSkillButton";
+import SkillEntryButton from "../AddEditSkill/SkillEntryButton";
 
 const SkillsHeader = (props: SkillsHeaderProps) => {
 
@@ -58,7 +58,7 @@ const SkillsHeader = (props: SkillsHeaderProps) => {
           });
         }}
       />
-      <AddSkillButton />
+      <SkillEntryButton />
       <ExportButton selected={tableState.selected}/>
     </StyledHeader>
   );
