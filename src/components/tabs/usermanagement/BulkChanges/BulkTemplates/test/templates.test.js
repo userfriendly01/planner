@@ -421,7 +421,6 @@ describe("CREATE_CALABRIO_WFM_PERSON", () => {
     });
   });
 });
-
 describe("CREATE_MANAGER", () => {
   const createManagerProcessFunction = createTemplates.CREATE_MANAGER.processFunction;
   beforeEach(() => jest.clearAllMocks());
@@ -575,6 +574,39 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
             "agent_attribute_1": 1
           },
           operatingUnitSid: "operatingUnitSid1"
+        });
+        expect(result).toBe("WK1234 - Worker Attributes updated for row 4");
+      });
+    });
+    describe("location is not of type string", () => {
+      const template = {
+        data: {
+          key: "team",
+          value: "spanish",
+          location: ["attributes", "routing"]
+        }
+      };
+      const row = {
+        rowNumber: 4,
+        workerSid: "WK1234",
+        attributes: {
+          n_number: "n1234",
+          routing: {
+            levels: []
+          }
+        }
+      };
+      test("should call update user with correct body", async () => {
+        const result = await updateWorkerAttributesProcessFunction(row, template);
+        expect(updateUser).toHaveBeenCalledTimes(1);
+        expect(updateUser).toHaveBeenCalledWith("WK1234", {
+          attributes: {
+            n_number: "n1234",
+            routing: {
+              levels: [],
+              team: "spanish"
+            }
+          }
         });
         expect(result).toBe("WK1234 - Worker Attributes updated for row 4");
       });

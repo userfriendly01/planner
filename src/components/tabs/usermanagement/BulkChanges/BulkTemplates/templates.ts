@@ -241,11 +241,13 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
     if(typeof location === "string"){
       body[location] = newAttribute;
     } else {
+      const parentObject: any = row[location[0]] || {}; //attributes
+      const nestedObject: any = row[location[0]] && row[location[0]][location[1]] || {};
       try {
         body[location[0]] = {
-          ...row[location[0]],
+          ...parentObject,
           [location[1]] : {
-            ...row[location[0]][location[1]],
+            ...nestedObject,
             ...newAttribute
           }
         }
