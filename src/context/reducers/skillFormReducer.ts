@@ -13,7 +13,9 @@ export const skillFormActions = {
   SET_VH_CALL_TARGET: "SET_VH_CALL_TARGET",
   SET_VH_THRESHOLD: "SET_VH_THRESHOLD",
   SET_TIME_OF_DAYS: "SET_TIME_OF_DAYS",
-  SET_APPLICATION_ID: "SET_APPLICATION_ID"
+  SET_APPLICATION_ID: "SET_APPLICATION_ID",
+  SET_ENABLE_VIRTUAL_HOLD: "SET_ENABLE_VIRTUAL_HOLD",
+  SET_UPDATE_SKILL: "SET_UPDATE_SKILL"
 };
 
 export const initialSkillFormState: SkillFormState = {
@@ -23,6 +25,7 @@ export const initialSkillFormState: SkillFormState = {
   applicationId: null,
   taskQueue: "",
   profiles: [],
+  enableVirtualHold: false,
   vhCallTarget: {
     value: "",
     valid: false,
@@ -96,6 +99,17 @@ export const skillFormReducer = (state: SkillFormState, action: Action): any => 
         applicationId: action.payload
       };
     }
+    case skillFormActions.SET_ENABLE_VIRTUAL_HOLD: {
+      return {
+        ...state,
+        enableVirtualHold: action.payload
+      };
+    }
+    // case skillFormActions.SET_UPDATE_SKILL:{
+    //   return {
+    //     ...action.payload
+    //   };
+    // }
 
     default: {
       return state;

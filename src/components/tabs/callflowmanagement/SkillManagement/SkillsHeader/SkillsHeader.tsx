@@ -7,7 +7,7 @@ import { StyledHeader } from "../Skills.Styles";
 import { getAuthenticationProfileTemplates } from "authentication";
 import { SearchBox } from "components";
 import { useAdminState } from "context";
-import { TritonProfile } from "globals";
+import { formModes, TritonProfile } from "globals";
 import React from "react";
 import SkillEntryButton from "../AddEditSkill/SkillEntryButton";
 
@@ -58,7 +58,7 @@ const SkillsHeader = (props: SkillsHeaderProps) => {
           });
         }}
       />
-      <SkillEntryButton />
+      <SkillEntryButton formMode={formModes.INSERT} />
       <ExportButton selected={tableState.selected}/>
     </StyledHeader>
   );

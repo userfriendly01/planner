@@ -12,12 +12,17 @@ import {
   useAdminState,
   skillFormState,
   skillFormDispatch,
-  skillFormActions
+  skillFormActions,
+  initialSkillFormState
 } from "context";
 import {
   SkillFormState
 } from "./SkillEntryForm.Interfaces";
 import { formModes } from "globals";
+import {
+  FormControlLabel,
+  Switch
+} from "@mui/material";
 
 const ModalContainer = styled.div`
   display: flex;
@@ -290,48 +295,80 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
         </RowContainer>
         <hr />
 
-
-        <RowContainer>
-          <PhoneNumberInput
-            id="Virtual Hold Call Target"
-            label="Virtual Hold Call Target"
-            number={skFormState.vhCallTarget.value}
-            showError={skFormState.vhCallTarget.blurred && !skFormState.vhCallTarget.valid}
-            onBlur={() => skFormDispatch({
-              type: skillFormActions.SET_VH_CALL_TARGET,
-              payload: {
-                ...skFormState.vhCallTarget,
-                blurred: true
+        <FormControlLabel
+          label={"Virtual Hold"}
+          labelPlacement="end"
+          control={<Switch
+            //   inputProps={{ "aria-label": "toggle-zero-out" }}	
+            //   checked={form[control.fieldKey].value}	
+            onChange={(e: any, isChecked: any) => {
+              if (isChecked) {
+                skFormDispatch({
+                  type: skillFormActions.SET_ENABLE_VIRTUAL_HOLD,
+                  payload: true
+                });
+              } else {
+                skFormDispatch({
+                  type: skillFormActions.SET_ENABLE_VIRTUAL_HOLD,
+                  payload: false
+                });
+                skFormDispatch({
+                  type: skillFormActions.SET_VH_CALL_TARGET,
+                  payload: initialSkillFormState.vhCallTarget
+                });
+                skFormDispatch({
+                  type: skillFormActions.SET_VH_THRESHOLD,
+                  payload: initialSkillFormState.vhThreshold
+                });
               }
-            })}
-            updateValue={(maskedValue: string, unmaskedValue: string, isValid: boolean, e164Number: string) => {
-              console.log(`maskedValue: ${maskedValue} - "unmaskedValue: ${unmaskedValue} - isValid: ${isValid} - e164Number: ${e164Number}`);
-              skFormDispatch({
+            }}
+          />} />
+        {skFormState.enableVirtualHold && <>
+          <div>Note: Adding these fields will not enable virtual hold.  More needs to be done in addition to providing these values here...</div>
+          <RowContainer>
+            <PhoneNumberInput
+              id="Virtual Hold Call Target"
+              label="Virtual Hold Call Target"
+              style={inputStyles}
+              number={skFormState.vhCallTarget.value}
+              showError={skFormState.vhCallTarget.blurred && !skFormState.vhCallTarget.valid}
+              onBlur={() => skFormDispatch({
                 type: skillFormActions.SET_VH_CALL_TARGET,
                 payload: {
                   ...skFormState.vhCallTarget,
-                  value: unmaskedValue,
-                  valid: isValid,
-                  e164: e164Number
+                  blurred: true
                 }
-              });
-            }}
-          />
-          <CustomInput
-            value={skFormState.vhThreshold}
-            error={checkIfError("vhThreshold", skFormState.vhThreshold)}
-            styles={inputStyles}
-            maxLength="11"
-            label="Virtual Hold Threshold"
-            name="vhThreshold"
-            updateValue={value => {
-              skFormDispatch({
-                type: skillFormActions.SET_VH_THRESHOLD,
-                payload: value
-              });
-            }}
-          />
-        </RowContainer>
+              })}
+              updateValue={(maskedValue: string, unmaskedValue: string, isValid: boolean, e164Number: string) => {
+                console.log(`maskedValue: ${maskedValue} - "unmaskedValue: ${unmaskedValue} - isValid: ${isValid} - e164Number: ${e164Number}`);
+                skFormDispatch({
+                  type: skillFormActions.SET_VH_CALL_TARGET,
+                  payload: {
+                    ...skFormState.vhCallTarget,
+                    value: unmaskedValue,
+                    valid: isValid,
+                    e164: e164Number
+                  }
+                });
+              }}
+            />
+            <CustomInput
+              value={skFormState.vhThreshold}
+              error={checkIfError("vhThreshold", skFormState.vhThreshold)}
+              styles={inputStyles}
+              maxLength="11"
+              label="Virtual Hold Threshold"
+              name="vhThreshold"
+              updateValue={value => {
+                skFormDispatch({
+                  type: skillFormActions.SET_VH_THRESHOLD,
+                  payload: value
+                });
+              }}
+            />
+          </RowContainer>
+        </>
+        }
         <ButtonWrapper>
           <StyledButton onClick={closeModal} >Cancel</StyledButton>
           <StyledButton

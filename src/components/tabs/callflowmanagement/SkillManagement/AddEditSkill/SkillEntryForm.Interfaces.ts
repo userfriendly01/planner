@@ -6,6 +6,7 @@ export interface SkillFormState {
     applicationId: number | null,
     taskQueue: string,
     profiles: any[],
+    enableVirtualHold: boolean,
     vhCallTarget: {
       value: string,
       valid: boolean,

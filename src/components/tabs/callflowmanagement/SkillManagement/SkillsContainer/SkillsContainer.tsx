@@ -8,6 +8,9 @@ import {
   SkillsHeader,
   SkillsTable
 } from "components";
+import {
+  SkillFormStateProvider
+} from "context";
 
 const SkillsContainer = (props: SkillsContainerProps) => {
 
@@ -17,18 +20,20 @@ const SkillsContainer = (props: SkillsContainerProps) => {
   } = props;
 
   return (
-    <SkillsWrapper>
-      <SkillsHeader
-        tableState={tableState}
-        setTableState={setTableState}
-      />
-      <SkillsTableWrapper>
-        <SkillsTable
+    <SkillFormStateProvider>
+      <SkillsWrapper>
+        <SkillsHeader
           tableState={tableState}
           setTableState={setTableState}
         />
-      </SkillsTableWrapper>
-    </SkillsWrapper>
+        <SkillsTableWrapper>
+          <SkillsTable
+            tableState={tableState}
+            setTableState={setTableState}
+          />
+        </SkillsTableWrapper>
+      </SkillsWrapper>
+    </SkillFormStateProvider>
   );
 };
 

@@ -3,7 +3,10 @@ import { StyledExportButton } from "../Skills.Styles";
 import { Modal } from "@mui/material";
 import {
   useAdminState,
-  SkillFormStateProvider
+  SkillFormStateProvider,
+  skillFormDispatch,
+  skillFormActions,
+  skillFormState
 } from "context";
 import { getAuthenticationProfileTemplates } from "authentication";
 import React from "react";
@@ -13,18 +16,35 @@ import {
   getApplications,
   getTimeOfDays
 } from "services";
+import { SkillFormState } from "./SkillEntryForm.Interfaces";
 
 
 const SkillEntryButton = (props: any) => {
+
+  const { formMode } = props;
 
   const [ taskQueues, setTaskQueues ] = React.useState([]);
   const [ applications, setApplications ] = React.useState([]);
   const [ timeOfDays, setTimeOfDays ] = React.useState([]);
 
+  const skFormState: SkillFormState = skillFormState();
+
   React.useEffect(() => {
     getTaskQueueOptions();
     getApplicationOptions();
     getTimeOfDaysOptions();
+
+    if (formMode === "UPDATE") {
+      // Placeholder to fill in form the existing data
+      // skillFormDispatch({
+      //   type: skillFormActions.SET_UPDATE_SKILL,
+      //   payload: {
+      //     formMode: formMode,
+      //     // and all the other stuff...
+      //   }
+      // })
+    }
+
   }, []);
 
 
@@ -60,30 +80,45 @@ const SkillEntryButton = (props: any) => {
 
 
   const addSkill = () => {
-    //   check that user is admin
+    //   check that user is admin?
     //   validate the skill info
     //   ADD THE SKILL
     // set save result
+
+    const body = {
+      skillFriendlyName: skFormState.skillFriendlyName,
+      skillNum: skFormState.skillNum,
+      applicationId: skFormState.applicationId,
+      taskQueueSid: skFormState.taskQueue,
+      vhCallTarget: skFormState.vhCallTarget.e164,
+      vhThreshold: skFormState.vhThreshold,
+      timeOfDayIds: {
+        1: skFormState.timeOfDay.sunday,
+        2: skFormState.timeOfDay.monday,
+        3: skFormState.timeOfDay.tuesday,
+        4: skFormState.timeOfDay.wednesday,
+        5: skFormState.timeOfDay.thursday,
+        6: skFormState.timeOfDay.friday,
+        7: skFormState.timeOfDay.saturday
+      }
+    };
   };
 
   return (
-    <SkillFormStateProvider>
-      <>
-        <StyledExportButton onClick={() => setShowSkillModal(true)} styles={{}}>Add Skill </StyledExportButton>
-        <Modal open={showSkillModal}>
-          <>
-            <SkillEntryFormModal
-              closeModal={() => setShowSkillModal(false)}
-              saveResult={saveResult}
-              taskQueues={taskQueues}
-              applications={applications}
-              timeOfDays={timeOfDays}
-            />
-          </>
-        </Modal>
-      </>
-    </SkillFormStateProvider>
-
+    <>
+      <StyledExportButton onClick={() => setShowSkillModal(true)} styles={{}}>Add Skill </StyledExportButton>
+      <Modal open={showSkillModal}>
+        <>
+          <SkillEntryFormModal
+            closeModal={() => setShowSkillModal(false)}
+            saveResult={saveResult}
+            taskQueues={taskQueues}
+            applications={applications}
+            timeOfDays={timeOfDays}
+          />
+        </>
+      </Modal>
+    </>
   );
 };
 
