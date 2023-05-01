@@ -227,6 +227,8 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
   const location = template.data.location;
 
   const newAttribute = { [key]: value };
+  const tritonWorkers = state.workerContext.workers;
+  const worker = tritonWorkers.find((w: any) => cleanupField(w.attributes.n_number, "string") === cleanupField(row.nNumber, "string"));
 
   let body: any = {};
 
@@ -238,7 +240,17 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
     const profile = getTargetProfile(state.profileContext.profiles, value);
     body.operatingUnitSid = profile?.operating_unit_sid;
   } else if(location){
-    body[location] = newAttribute;
+    if(typeof location === "string"){
+      body[location] = newAttribute;
+    } else {
+      body[location[0]] = {
+        ...worker[location[0]],
+        [location[1]] : {
+          ...worker[location[0]][location[1]],
+          [key]: newAttribute
+        }
+      }
+    }
   } else {
     body = newAttribute;
   }
