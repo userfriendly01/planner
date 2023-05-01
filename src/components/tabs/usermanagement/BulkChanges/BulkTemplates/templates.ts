@@ -246,7 +246,7 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
           ...row[location[0]],
           [location[1]] : {
             ...row[location[0]][location[1]],
-            [key]: newAttribute
+            ...newAttribute
           }
         }
       } catch(err){
