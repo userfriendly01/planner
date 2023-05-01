@@ -228,8 +228,8 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
 
   const newAttribute = { [key]: value };
   const tritonWorkers = state.workerContext.workers;
-  const worker = tritonWorkers.find((w: any) => cleanupField(w.attributes.n_number, "string") === cleanupField(row.nNumber, "string"));
-
+  const worker = tritonWorkers.find((w: any) => w.attributes?.n_number && cleanupField(w.attributes.n_number, "string") === cleanupField(row.nNumber, "string"));
+  console.log("WORKER: " , worker)
   let body: any = {};
 
   if(key === "profile_id"){
