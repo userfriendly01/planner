@@ -181,6 +181,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
             updated,
             acdId: res.data.acdId,
             id: userRecord.id,
+            email: userRecord.email,
             team: fetchedUser.groupId ? teams.find(team => team.groupId === fetchedUser.groupId) : form.calabrio_qm.team.groupId,
             roles: fetchedUser.roles || form.calabrio_qm.roles,
             timezone: fetchedUser.timeZone || form.calabrio_qm.timezone,

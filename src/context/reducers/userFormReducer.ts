@@ -35,7 +35,27 @@ export const userFormActions = {
   SET_EXTENSION_RETRIES: "SET_EXTENSION_RETRIES",
   SET_EXTENSION_VERIFIED: "EXTENSION_VERIFIED",
   SET_UPDATE_TRITON_FORM_STATE: "SET_UPDATE_TRITON_FORM_STATE",
+  SET_UPDATE_QM_FORM_STATE: "SET_UPDATE_QM_FORM_STATE",
   SET_UPDATE_WFM_FORM_STATE: "SET_UPDATE_WFM_FORM_STATE",
+  SET_UPDATE_WFM_BUSINESS_UNIT: "SET_UPDATE_WFM_BUSINESS_UNIT",
+  SET_UPDATE_WFM_TEAM: "SET_UPDATE_WFM_TEAM",
+  SET_UPDATE_WFM_TIME_ZONE: "SET_UPDATE_WFM_TIME_ZONE",
+  SET_UPDATE_WFM_SITE: "SET_UPDATE_WFM_SITE",
+  SET_UPDATE_WFM_SKILLS: "SET_UPDATE_WFM_SKILLS",
+  SET_UPDATE_WFM_CONTROL_SET: "SET_UPDATE_WFM_CONTROL_SET",
+  SET_UPDATE_WFM_CONTRACT: "SET_UPDATE_WFM_CONTRACT",
+  SET_UPDATE_WFM_CONTRACT_SCHEDULE: "SET_UPDATE_WFM_CONTRACT_SCHEDULE",
+  SET_UPDATE_WFM_BUDGET_GROUP: "SET_UPDATE_WFM_BUDGET_GROUP",
+  SET_UPDATE_WFM_PART_TIME_PERCENTAGE: "SET_UPDATE_WFM_PART_TIME_PERCENTAGE",
+  SET_UPDATE_WFM_SHIFT_BAG: "SET_UPDATE_WFM_SHIFT_BAG",
+  SET_UPDATE_WFM_NOTE: "SET_UPDATE_WFM_NOTE",
+  SET_UPDATE_WFM_ROLES: "SET_UPDATE_WFM_ROLES",
+  SET_UPDATE_WFM_FIRST_DAY_OF_WEEK: "SET_UPDATE_WFM_FIRST_DAY_OF_WEEK",
+  SET_UPDATE_WFM_OPTIONAL_COLUMNS: "SET_UPDATE_WFM_ROLES",
+  SET_UPDATE_WFM_IDENTITY: "SET_UPDATE_WFM_ROLES",
+  SET_UPDATE_WFM_EMP_NUMBER: "SET_UPDATE_WFM_ROLES",
+
+  SET_UPDATE_WFM_USER_DATA: "SET_UPDATE_WFM_USER_DATA",
   SET_DELETE_FORM_STATE: "SET_DELETE_FORM_STATE",
   SET_USER_PREVIOUSLY_ADDED_TRUE: "SET_USER_PREVIOUSLY_ADDED_TRUE",
   UPDATE_DEFAULT_SKILLS: "UPDATE_DEFAULT_SKILLS",
@@ -544,7 +564,31 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         }
       };
     }
+    case userFormActions.SET_UPDATE_QM_FORM_STATE: {
+      const user = action.payload || {};
+      return {
+        ...state,
+        formMode: formModes.UPDATE,
+        calabrio_qm: {
+          ...state.calabrio_qm,
+          userFound: true,
+          ...user
+        }
+      };
+    }
     case userFormActions.SET_UPDATE_WFM_FORM_STATE: {
+      const user = action.payload;
+      return {
+        ...state,
+        formMode: formModes.UPDATE,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          userFound: true,
+          ...user
+        }
+      };
+    }
+    case userFormActions.SET_UPDATE_WFM_BUSINESS_UNIT: {
       const user = action.payload;
       return {
         ...state,

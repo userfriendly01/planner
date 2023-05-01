@@ -86,7 +86,7 @@ const ManagementHeader = (props: WfmUsersHeaderProps) => {
         })}
         />
       <Dropdown
-        label={"Filter Business Unit"}
+        label={"Add Filter"}
         styles={{
           width: "400px",
           margin: "10px 0px"
@@ -99,6 +99,24 @@ const ManagementHeader = (props: WfmUsersHeaderProps) => {
             ...tableState,
             businessUnitFilter: newValue
           })}
+        }
+        CustomRender={
+          <Dropdown
+            label={"Filter Business Unit"}
+            styles={{
+              width: "400px",
+              margin: "10px 0px"
+            }}
+            options={getBusinessUnitOptions()}
+            value={tableState.businessUnitFilter || ""}
+            updateValue={(event: any, newValue: any) => {
+              console.log("Selected Business Unit", newValue);
+              setTableState({
+                ...tableState,
+                businessUnitFilter: newValue
+              })}
+            }
+          />
         }
       />
       <Dropdown

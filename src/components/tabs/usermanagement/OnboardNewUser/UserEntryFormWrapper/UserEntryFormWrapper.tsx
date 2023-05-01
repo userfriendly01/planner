@@ -30,7 +30,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
   sortWorkersByFullName,
-  identifyUserProfiles
+  identifyUserProfiles,
+  identifyProfileDiscrepancies
 } from "utils";
 import { formModes } from "globals";
 import { Checkbox } from "@mui/material";
@@ -57,6 +58,15 @@ const UserEntryForm = () => {
     saveUser: false
   });
 
+  const initiateUpdateForm = async () => {
+    const res = await identifyUserProfiles(form, setForm, state);
+    console.log("FAITH RES: ", res, form);
+    setTimeout(async () => {
+      console.log("FAITH Form after timeout: ", res, form);
+      await identifyProfileDiscrepancies(form, setForm, state);
+    }, 500);
+    //Trigger form loaded
+  };
   React.useEffect(() => {
     if(form.formMode === formModes.INSERT){
       setForm({
@@ -74,7 +84,7 @@ const UserEntryForm = () => {
         }
       });
     } else {
-      identifyUserProfiles(state, form, setForm);
+      initiateUpdateForm();
     }
     return () => {
       setForm({ type: userFormActions.RESET_FORM });

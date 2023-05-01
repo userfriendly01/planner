@@ -5,8 +5,8 @@ import {
 import {
   getCalabrioUser,
   updateCalabrioUser,
-  getWfmOptions,
-  getWfmOrg
+  getWfmOptions as getWfmOptionsServiceCall,
+  getWfmOrg as getWfmOrgServiceCall
 } from "services";
 import util from "util";
 import zlib from "zlib";
@@ -80,6 +80,25 @@ export const getWfmPeople = (state: AppState) => {
   });
 
   return wfmPeople;
+};
+
+export const getWfmOptions = (state: AppState, businessUnitId?: string) => {
+  let wfmOptions: any = {};
+  
+  if(businessUnitId){
+    const businessUnit = state.calabrioContext.wfmOptions.find((bu: WfmBusinessUnit) => bu.Id === businessUnitId);
+    wfmOptions = businessUnit;
+  } else {
+    state.calabrioContext.wfmOptions.forEach((businessUnit: WfmBusinessUnit, index) => {
+      Object.keys(businessUnit).forEach((option: any) => {
+        if(typeof option === "object"){
+          wfmOptions[index][option] = wfmOptions[option];
+        }
+      });
+    });
+  }
+  console.log("FAITH - getWfmOptions", getWfmOptions);
+  return wfmOptions;
 };
 
 //Calabrio doesnt offer an API for this, only PST, MNT, CST, and EST were requested so we hardcoded them here as they are unlikely to change
@@ -222,7 +241,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioQmUser[], 
 
 export const getCalabrioWfmOptions = async (dispatch: any) => {
   try {
-    const options: any = await getWfmOptions();
+    const options: any = await getWfmOptionsServiceCall();
     let optionsData: any = [];
     try {
       const buff = Buffer.from(options.data.organization, "base64");
@@ -245,7 +264,7 @@ export const getCalabrioWfmOptions = async (dispatch: any) => {
 
 export const getCalabrioWfmOrg = async (dispatch: any) => {
   try {
-    const org: any = await getWfmOrg();
+    const org: any = await getWfmOrgServiceCall();
     let orgData: any = [];
     try {
       const buff = Buffer.from(org.data.organization, "base64");

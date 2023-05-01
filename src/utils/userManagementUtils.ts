@@ -99,16 +99,33 @@ export const getZeroOutEnabledFromProfile = (profiles: TritonProfile[], newProfi
 
 export const workerHasOverFlowSkill = (worker: Worker, profiles: TritonProfile[]): boolean => worker?.attributes.routing?.skills.some(skill => getOverflowSkills(profiles).includes(skill));
 
-export const fetchUser = async (nNumber: string, setForm: any) => {
+export const fetchUser = async (nNumber: string, setForm: any, errorMessage: string, errorType: string) => {
+  try {
     const fetchedUser = await fetchUserServiceCall(nNumber);
+    console.log("FAITH FETCHED USER", fetchedUser);
+    const nNumberPayload = {
+      nNumber,
+      fetchedUser
+    }
     setForm({
       type: "COMPLETE_N_NUMBER",
+      payload: nNumberPayload
+    });
+    return nNumberPayload;
+  } catch(err) {
+    console.error(errorMessage, err);
+    setForm({
+      type: "SET_DISCREPANCIES",
       payload: {
-        nNumber: nNumber,
-        fetchedUser
+        type: errorType,
+        message: errorMessage
       }
     });
-    return fetchedUser;
+    return {
+      nNumber,
+      fetchedUser: null
+    };
+  }
 };
 
 export const findMatchingWorker = (sid: string, nNumber: string, email: string, workers: any[]) => {
@@ -117,14 +134,15 @@ export const findMatchingWorker = (sid: string, nNumber: string, email: string, 
   let matchingWorker: Worker = null;
   workers.forEach((w: any) => {
     const workerSid = w.sid?.toLowerCase() || w.acdId?.toLowerCase();
-    const workerNNumber = w.attributes.n_number?.toLowerCase() || w.EmploymentNumber?.toLowerCase();
-    const workerEmail = w.attributes.email?.toLowerCase() || w.email?.toLowerCase() || w.Identity?.toLowerCase() || w.Email?.toLowerCase();
+    const workerNNumber = w.attributes?.n_number?.toLowerCase() || w.EmploymentNumber?.toLowerCase();
+    const workerEmail = w.attributes?.email?.toLowerCase() || w.email?.toLowerCase() || w.Identity?.toLowerCase() || w.Email?.toLowerCase();
 
-    if(sid && sid === workerSid){
+    if(sid && sid.toLowerCase() === workerSid){
       matchingWorker = w;
-    } else if(nNumber && nNumber === workerNNumber){
+    } else if(nNumber && nNumber.toLowerCase() === workerNNumber){
       matchingWorker = w;
-    } else if(email && email === workerEmail){
+    } else if(email && email.toLowerCase() === workerEmail){
+      console.log("FAITH = do I get here?");
       matchingWorker = w;
     }
   });
@@ -132,23 +150,15 @@ export const findMatchingWorker = (sid: string, nNumber: string, email: string, 
 };
 
 export const identifyProfileDiscrepancies = (form: UserFormState, setForm: any, state: AppState) => {
-  //at this point the form has allllll of the information its going to have to compare
-  
-  const tritonWorkers = state.workerContext.workers;
-  const fetchedUser = form.nNumber.nNumberFetchedUser;
-  // const tritonWorker = tritonWorkers.find((w: Worker) => form.nNumber.value === w.attributes.n_number);
-
-  // if(fetchedUser?.email?.toLowerCase() !== tritonWorker.attributes?.email?.toLowerCase()){
-  //   const discrepancy: Discrepancy = {
-  //     type: discrepancyType.TRITON,
-  //     message: "Triton email does not match HR email."
-  //   };
-  //   setForm({
-  //     type: "SET_DISCREPANCIES",
-  //     payload: discrepancy
-  //   });
-  // }
-
+  console.log("Faith: Final Form.....", form);
+  const tritonSid = "";
+  const tritonEmail = "";
+  const tritonNNumber = "";
+  const calabrioWfmEmail = "";
+  const calabrioWfmIdentity = "";
+  const calabrioWfmNNumber = "";
+  const calabrioQMEmail = "";
+  const calabrioQmAcdId = "";
       
   //If it was not possible to find an n# - set discrepancy
   if(!form.nNumber.value){
@@ -163,8 +173,9 @@ export const identifyProfileDiscrepancies = (form: UserFormState, setForm: any, 
 
 };
 
-export const identifyUserProfiles = async (state: AppState, form: UserFormState, setForm: any) => {
+export const identifyUserProfiles = async (form: UserFormState, setForm: any, state: AppState) => {
   const system = form.triton.userFound && "triton" || form.calabrio_qm.userFound && "calabrio_qm" || form.calabrio_wfm.userFound && "calabrio_wfm";
+  let nNumberObject: any = form.nNumber;
   const tritonWorkers = state.workerContext.workers;
   const calabrioQmUsers = state.calabrioContext.users;
   const calabrioWfmUsers = getWfmPeople(state);
@@ -175,20 +186,9 @@ export const identifyUserProfiles = async (state: AppState, form: UserFormState,
   console.log("FAITH - system", system);
   if(!form.nNumber.nNumberFetchedUser && form.nNumber.value && form.nNumber.value.match(nNumMatcher)){
     //set the nNumber & Triton/Calabrio users based off of the nNumber in the state
-    try {
-      await fetchUser(form.nNumber.value, setForm);
-    } catch(err) {
-      const message = `Failed to fetch nNumber from HR database. ${form.nNumber.value}. 
-      If this nNumber continues to fail, this user may no longer be active in the HR database or needs to reach out to the HR team to investigate the failure.`
-      console.error(message, err);
-      setForm({
-        type: "SET_DISCREPANCIES",
-        payload: {
-          type: discrepancyType.GENERAL,
-          message
-        }
-      });
-    }
+    const errorMessage = `Failed to fetch nNumber from HR database. ${form.nNumber.value}. 
+    If this nNumber continues to fail, this user may no longer be active in the HR database or needs to reach out to the HR team to investigate the failure.`
+    nNumberObject = await fetchUser(form.nNumber.value, setForm, errorMessage, discrepancyType.GENERAL);
   } 
 
   if(system === "triton"){
@@ -213,24 +213,15 @@ export const identifyUserProfiles = async (state: AppState, form: UserFormState,
     } else if(!form.nNumber.nNumberFetchedUser && wfmNNumber && wfmNNumber.match(nNumMatcher)){
       //Use the WFM n# field to set the nNumber fetched user and triton/calabrio user
       console.log("FAITH should land here with an identified wfm n#", wfmNNumber);
-      let fetchedWorker: any = {};
-      try {
-        fetchedWorker = await fetchUser(wfmNNumber, setForm);
-      } catch (err) {
-        const message = `Failed to fetch nNumber from HR database. Value read from WFM User Record Employment Number field: ${wfmNNumber}. 
-        If this nNumber looks accurate and continues to fail, this user may no longer be active in the HR database or needs to reach out to the HR team to investigate the failure. 
-        If this nNumber does not look accurate, please correct the WFM Record Employment Number field and try again.`
-        console.error(message, err);
-        setForm({
-          type: "SET_DISCREPANCIES",
-          payload: {
-            type: discrepancyType.CALABRIO_WFM,
-            message
-          }
-        });
-      }
-      tritonWorker = findMatchingWorker(null, form.nNumber.value, fetchedWorker.email, tritonWorkers);
-      calabrioQmUser = findMatchingWorker(null, form.nNumber.value, fetchedWorker.email, calabrioQmUsers);
+
+      const errorMessage = `Failed to fetch nNumber from HR database. Value read from WFM User Record Employment Number field: ${wfmNNumber}. If this nNumber looks accurate and continues to fail, this user may no longer be active in the HR database or needs to reach out to the HR team to investigate the failure. If this nNumber does not look accurate, please correct the WFM Record Employment Number field and try again.`
+      nNumberObject = await fetchUser(wfmNNumber, setForm, errorMessage, discrepancyType.CALABRIO_WFM);
+      console.log("NNUMBEROBJECT FAITH", nNumberObject);
+      //should be able to not use fetched worker if we're waiting
+      tritonWorker = findMatchingWorker(null, wfmNNumber, nNumberObject.fetchedUser?.email, tritonWorkers);
+      console.log("FAITH - Triton worker", tritonWorker);
+      calabrioQmUser = findMatchingWorker(null, wfmNNumber, nNumberObject.fetchedUser?.email, calabrioQmUsers);
+      console.log("FAITH - Calabrio QM worker", calabrioQmUser);
     } else if(!form.nNumber.nNumberFetchedUser) {
       //WFM Record didnt have an n#, try find the triton & calabrio worker based on the WFM email/identity values
       setForm({
@@ -257,20 +248,8 @@ export const identifyUserProfiles = async (state: AppState, form: UserFormState,
       }
     
       if(tritonWorker){
-        try {
-          await fetchUser(tritonWorker.attributes.n_number, setForm);
-        } catch (err) {
-          const message = `Failed to fetch nNumber from HR database. ${tritonWorker.attributes.n_number}. 
-          If this nNumber continues to fail, this user may no longer be active in the HR database or needs to reach out to the HR team to investigate the failure.`
-          console.error(message, err);
-          setForm({
-            type: "SET_DISCREPANCIES",
-            payload: {
-              type: discrepancyType.GENERAL,
-              message
-            }
-          });
-        }
+        const errorMessage = `Failed to fetch nNumber from HR database. ${tritonWorker.attributes.n_number}. If this nNumber continues to fail, this user may no longer be active in the HR database or needs to reach out to the HR team to investigate the failure.`
+        await fetchUser(tritonWorker.attributes.n_number, setForm, errorMessage, discrepancyType.GENERAL);
       }
     } else {
       //nNumberFetchedUser is populated, save the Triton/Calabrio QM users based off that
@@ -291,10 +270,13 @@ export const identifyUserProfiles = async (state: AppState, form: UserFormState,
   }
 
   //Update state for Calabrio QM if applicable
-  if(!form.calabrio_qm.userFound && calabrioQmUser && form.nNumber.nNumberFetchedUser){
-    //Nothing extra has to be done yet. As it stands the calabrio form uses the nNumber field to trigger its form setting
-    //Keeping this conditional here as it may change when we add a Calabrio QM table
-  } else if(!form.calabrio_qm.userFound && calabrioQmUser && !form.nNumber.nNumberFetchedUser){
+  if(!form.calabrio_qm.userFound && calabrioQmUser && nNumberObject.fetchedUser){
+    setForm({
+      type: "SET_UPDATE_QM_FORM_STATE",
+      payload: calabrioQmUser
+    });
+    //This conditional will change when we add a Calabrio QM table
+  } else if(!form.calabrio_qm.userFound && calabrioQmUser && !nNumberObject.fetchedUser){
     //Spoofing the nNumberFetchedUser so the CallRecordingForm still works. When Calabrio QM has its own table this can be re-orged a bit
     setForm({
       type: "COMPLETE_N_NUMBER",
@@ -313,5 +295,5 @@ export const identifyUserProfiles = async (state: AppState, form: UserFormState,
     });
   }
 
-  // identifyProfileDiscrepancies(form, setForm, state);
+  return Promise.resolve("Faith - we should be done");
 };
