@@ -4,6 +4,7 @@ import {
 import { useAdminState } from "context";
 import { AlertBarProps } from "./interfaces";
 import { AppState } from "globals";
+
 /**
  *  This function return graphQL endpoint based on running environment  
  * @returns string: GraphQL Endpoint
@@ -53,6 +54,8 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
   let keys: string[] = Object.keys(array[0]);
   const contentStore : string[] =[];
   let contentKeys: string[] = [];
+  const jsonFormatKeys: string[] = ["occupancyCheck", "routingSteps"];
+  const nullValueCheck = ["null", null, undefined];
   let flag = false;
   for( let i=0; i<keys.length; i++){
     if(keys[i] === "content"){
@@ -78,16 +81,20 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
     keys.forEach(key => {
       if (ctr > 0) { result += columnDelimiter; }
       let itemValue = item[key as keyof (CctSharedCallFlowDb | CctSharedCallRoutingDb)];
+      itemValue = jsonFormatKeys.includes(key)?JSON.stringify(itemValue):itemValue;
       if(contentKeys.includes(key)){
         let contentItemVal:string|string[];
         if(item.content){
           contentItemVal = item.content[key as keyof FlowContent];
-          itemValue = contentItemVal?contentItemVal.toString():null;
+          itemValue = contentItemVal?contentItemVal.toString():"";
         }
       }
-      if(itemValue){
+      if(typeof(itemValue)!==  "number" && nullValueCheck.includes(itemValue)){
+        itemValue = "";
+      }
+      else if(itemValue){
         itemValue = itemValue.toString();
-        itemValue = itemValue.replace(","," ");
+        itemValue = itemValue.replace(/,/g,"");
       }
       result += itemValue;
       ctr += 1;
@@ -105,7 +112,9 @@ export const  downloadCSV = (prefix: string, array:Array<CctSharedCallFlowDb |Cc
   if (!csv.match(/^data:text\/csv/i)) {
     csv = `data:text/csv;charset=utf-8,${csv}`;
   }
-  link.href = encodeURI(csv);
+  link.href = encodeURI(csv)
+    .replace(/#/g, "%23")
+    .replace(/=/g,"%3D");
   link.download = filename;
   link.click();
 };
