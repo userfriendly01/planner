@@ -51,7 +51,12 @@ export const profileList = [
     profile_id: 2,
     overflow_skill: "whateverOverflowSkill",
     operating_unit_nme: "operatingUnitName",
-    operating_unit_sid: "operatingUnitSid1"
+    operating_unit_sid: "operatingUnitSid1",
+    routing_teams: [
+      {
+        routing_team_nme: "licencedCSC"
+      }
+    ]
   },
   {
     profile_nme: "test3",
@@ -112,6 +117,10 @@ export const calabrioContext = {
     {
       id: 3,
       name: "WFM_Agent_NT_Dashboards"
+    },
+    {
+      id: 4,
+      name: "No Screen"
     }
   ],
   users: [

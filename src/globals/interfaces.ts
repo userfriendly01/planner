@@ -33,8 +33,7 @@ export interface AppState {
     authenticationProfiles: AuthenticationProfile[]
   },
   workerContext: {
-    workers: Worker[],
-    selectedWorkers: Worker[]
+    workers: Worker[]
   },
   calabrioContext: {
     tenant: any,
@@ -286,4 +285,4 @@ export interface OperatingUnit {
   ou_name: string
 }
 
-export type Control = "input" | "select" | "autoComplete" | "timePicker";
+export type Control = "input" | "select" | "autoComplete" | "timePicker" | "multiField";

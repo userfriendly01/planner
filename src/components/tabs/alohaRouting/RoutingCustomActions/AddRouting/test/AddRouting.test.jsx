@@ -70,7 +70,7 @@ const renderAddRoutingDefOpen =() => {
     <AddRouting openModal={openModal} newId={1} />
   );
 };
-describe("<AddFlow/>",()=>{
+describe("<AddRouting/>",()=>{
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -103,7 +103,7 @@ describe("<AddFlow/>",()=>{
   afterEach(() => {
     localStorage.removeItem(ROUTING_CACHE_MASTER_DATA);
   });
-  describe("AddFlow ModalBlock",()=>{
+  describe("AddRouting ModalBlock",()=>{
     test("Simulate Close Modal By Clicking Close Icon",()=>{
       const { getByRole } = renderAddRouting(true);
       const closeModalButton = getByRole("img", { name: "Close" });
@@ -155,10 +155,10 @@ describe("<AddFlow/>",()=>{
       const callerIntentAttr =  ComponentControl.mock.calls[6][0].onChange;
       const callerStateAttr = ComponentControl.mock.calls[4][0].onChange;
       const dayOfWeekAttr = ComponentControl.mock.calls[8][0].onChange;
-      const startTimeAttr = ComponentControl.mock.calls[13][0].onChange;
-      const endTimeAttr = ComponentControl.mock.calls[14][0].onChange;
+      const startTimeAttr = ComponentControl.mock.calls[12][0].onChange;
+      const endTimeAttr = ComponentControl.mock.calls[13][0].onChange;
       const policyTypeAttr = ComponentControl.mock.calls[15][0].onChange;
-      const percentAttr = ComponentControl.mock.calls[12][0].onChange;
+      const percentAttr = ComponentControl.mock.calls[11][0].onChange;
       const channelOnChange = { target: { value: "Test1 Channel" }};
       const brandOnChange = { target: { value: "Test Brand" }};
       const commonOnChange = { target: { value: "Test" }};
@@ -192,6 +192,16 @@ describe("<AddFlow/>",()=>{
       });
       waitFor(() => {
         expect(ComponentControlMock).toBeTruthy();
+      });
+    });
+    test("Validate create Rule without mandatory fields ",()=>{
+      const { getByRole } = renderAddRouting(true);
+      const saveButton = getByRole("button", { name: "createRuleButton" });
+      act(() => {
+        fireEvent.click(saveButton);
+      });
+      waitFor(() => {
+        expect(openModal).toBeCalledTimes(0);
       });
     });
     test("Validate Reset Flow Rule ",()=>{

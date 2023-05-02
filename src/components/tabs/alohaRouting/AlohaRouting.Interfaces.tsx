@@ -1,4 +1,16 @@
 import { Control } from "globals";
+import { MultiFieldContainerFormProps } from "components/core/SharedComponents/MultiFieldContainer";
+import { FormValidationRule } from "utils/interfaces";
+
+export interface RoutingOccupancyCheck {
+    team: string;
+    percentage: number;
+  }
+export interface RoutingStep {
+    team: string;
+    time: number;
+  }
+
 export interface CctSharedCallRoutingDb {
     id: number;
     all?: string;
@@ -19,8 +31,8 @@ export interface CctSharedCallRoutingDb {
     twilioSkill?: string;
     crcSkill?: string;
     priority?: string;
-    occupancyCheck?: string;
-    routingSteps?: Array<string>;
+    occupancyCheck?: Array<RoutingOccupancyCheck>;
+    routingSteps?: Array<RoutingStep>;
 }
 export interface RoutingMasterData {
     channel?: Array<string>;
@@ -80,11 +92,15 @@ export interface AddPageFieldConfigProps {
     disableAdd?: boolean,
     disableEdit?: boolean,
     isBlankFirstValue?: boolean
-    valueGetter?: (params: CctSharedCallRoutingDb, defaultValue?: any) => string;
+    valueGetter?: (params: CctSharedCallRoutingDb, defaultValue?: any) => any;
     valueSetter?: (currentValue: CctSharedCallRoutingDb, newValue: any) => CctSharedCallRoutingDb;
+    formFields?: Array<MultiFieldContainerFormProps>
+    dynamicFieldConditionCheck?: (params: FormValidationRule) => boolean;
 }
 export interface AddRoutingModalProps {
     isOpen: boolean;
     newId: number;
-    openModal: (flag: boolean, row?: CctSharedCallRoutingDb) => void;
+    openModal: (flag: boolean, addCloneRule?: boolean, row?: CctSharedCallRoutingDb) => void;
+    cloneRouteRule?: boolean;
+    routeRule?: FormValidationRule;
 }

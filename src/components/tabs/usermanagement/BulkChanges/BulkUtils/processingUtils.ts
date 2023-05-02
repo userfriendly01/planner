@@ -13,7 +13,8 @@ import { cleanupField } from "../BulkUtils";
 import {
   formatWorkerResponse,
   formatManagersResponse,
-  myAxios
+  myAxios,
+  getCalabrioWfmOrg
 } from "utils";
 import * as XLSX from "xlsx";
 
@@ -54,15 +55,7 @@ export const updateCalabrioUserState = async (dispatch: any): Promise<void> => {
  * Refreshes the calabrio WFM person state after a bulk update on users
  */
 export const updateWFMPersonState = async (dispatch: any): Promise<void> => {
-  try {
-    const org: any = await getWfmOrg();
-    dispatch({
-      type: "loadWfmOrg",
-      payload: org.data.organization.businessUnits
-    });
-  } catch (error) {
-    console.error("Failed to update calabrio WFM person state after bulk upload", error);
-  }
+  await getCalabrioWfmOrg(dispatch);
   return Promise.resolve();
 };
 

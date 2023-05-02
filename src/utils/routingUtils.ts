@@ -183,7 +183,10 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
     valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => ({
       ...currentValue,
       ...newValue
-    })
+    }),
+    dynamicFieldConditionCheck: (params?: FormValidationRule): boolean=>{
+      return params["channel"]?.value === "Service" && params["brand"]?.value === "Liberty Mutual";
+    }
   },
   {
     label: "Percent Of Callers",
@@ -254,22 +257,46 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
   {
     label: "Occupancy Check",
     key: "occupancyCheck",
-    control: "input",
-    valueGetter: (params: CctSharedCallRoutingDb) => `${params?.occupancyCheck || ""}`,
+    control: "multiField",
+    valueGetter: (params: CctSharedCallRoutingDb) => params?.occupancyCheck || [],
     valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => ({
       ...currentValue,
       ...newValue
-    })
+    }),
+    formFields: [
+      {
+        label: "Team",
+        name: "team",
+        type: "input"
+      },
+      {
+        label: "Percentage (%)",
+        name: "percentage",
+        type: "number"
+      }
+    ]
   },
   {
     label: "Routing Steps",
     key: "routingSteps",
-    control: "input",
-    valueGetter: (params: CctSharedCallRoutingDb) => `${params?.routingSteps || ""}`,
+    control: "multiField",
+    valueGetter: (params: CctSharedCallRoutingDb) => params?.routingSteps || [],
     valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => ({
       ...currentValue,
       ...newValue
-    })
+    }),
+    formFields: [
+      {
+        label: "Team",
+        name: "team",
+        type: "input"
+      },
+      {
+        label: "Time",
+        name: "time",
+        type: "number"
+      }
+    ]
   }
 ];
 

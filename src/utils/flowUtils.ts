@@ -17,3 +17,19 @@ export const FLOW_MASTER_DATA = "FLOW_MASTER_DATA";
 export const languageOffer = ["English", "Spanish"];
 export const userDestination = ["Avaya", "Twilio"];
 export const flowType = ["DID", "DRC", "LSC", "TFN"];
+
+export const getAdvanceFilter = (storageKeyName: string): { [key: string]: undefined; } => {
+  let advanceFilter: { [key: string]: undefined; };
+  try {
+    const cachedFilter = localStorage.getItem(storageKeyName);
+    advanceFilter = JSON.parse(cachedFilter) || {};
+    Object.keys(advanceFilter).forEach(key => {
+      if (advanceFilter[key] === "" || advanceFilter[key] === null) {
+        delete advanceFilter[key];
+      }
+    });
+  } catch (e) {
+    advanceFilter = {};
+  }
+  return advanceFilter;
+};

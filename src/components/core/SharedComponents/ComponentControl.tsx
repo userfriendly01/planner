@@ -4,19 +4,21 @@ import SelectContainer from "./SelectContainer";
 import TimePickerComponent from "./TimepickerComponent";
 import { Control } from "globals";
 import { Dropdown } from "../index";
+import MultiFieldContainer, { MultiFieldContainerFormProps } from "./MultiFieldContainer";
 export interface ComponentControlProps {
-  control: Control,
-  dropDownOptions: string[],
-  name: string,
-  label: string,
-  type: string,
-  value: any,
-  onChange: any,
-  disabled?: boolean,
-  error: boolean,
+  control: Control;
+  dropDownOptions?: string[];
+  name: string;
+  label: string;
+  type: string;
+  value: any;
+  onChange: any;
+  disabled?: boolean;
+  error: boolean;
   required: boolean,
-  isBlankFirstValue?: boolean,
-  multiple?: boolean
+  isBlankFirstValue?: boolean;
+  multiple?: boolean;
+  formFields?: Array<MultiFieldContainerFormProps>
 }
 function ComponentControl({
   control,
@@ -29,7 +31,8 @@ function ComponentControl({
   disabled,
   error,
   required,
-  isBlankFirstValue
+  isBlankFirstValue,
+  formFields
 }: ComponentControlProps): JSX.Element {
   switch (control) {
     case "input":
@@ -86,6 +89,17 @@ function ComponentControl({
           }}
         />
       );
+
+    case "multiField":
+      return (<MultiFieldContainer
+        label={label}
+        name={name}
+        value={value}
+        error={error}
+        required={required}
+        formFields={formFields}
+        updateValue={(event: any, value: any)=>onChange(event,value)}
+      />);
     default:
       return null;
   }

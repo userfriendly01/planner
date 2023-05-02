@@ -65,7 +65,7 @@ const convertedWorkers = [
 
 describe("ResetSkillsButton", () => {
 
-  const renderComponent = state => render(<ResetSkillsButton/>, state);
+  const renderComponent = state => render(<ResetSkillsButton selected={selectedWorkers}/>, state);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -108,26 +108,14 @@ describe("ResetSkillsButton", () => {
           getMockedComponentProps(StyledButton).onClick();
           return Promise.resolve();
         }).then(() => {
-          expect(setMockForm).toHaveBeenCalledTimes(6);
+          expect(setMockForm).toHaveBeenCalledTimes(4);
           expect(setMockForm).toHaveBeenCalledWith({
             type: "resettingSkills",
             payload: true
           });
           expect(setMockForm).toHaveBeenCalledWith({
-            type: "toggleWorkerSelected",
-            payload: {
-              sid: selectedWorkers[0].sid
-            }
-          });
-          expect(setMockForm).toHaveBeenCalledWith({
             type: "updateWorker",
             payload: mapWorkerFromDbWorker(convertedWorkers[0])
-          });
-          expect(setMockForm).toHaveBeenCalledWith({
-            type: "toggleWorkerSelected",
-            payload: {
-              sid: selectedWorkers[1].sid
-            }
           });
           expect(setMockForm).toHaveBeenCalledWith({
             type: "updateWorker",
@@ -167,16 +155,10 @@ describe("ResetSkillsButton", () => {
           return Promise.resolve();
         }).then(() => {
           expectMockedComponent(rendered, { ResetSkillsResultsModal }, 1);
-          expect(setMockForm).toHaveBeenCalledTimes(4);
+          expect(setMockForm).toHaveBeenCalledTimes(3);
           expect(setMockForm).toHaveBeenCalledWith({
             type: "resettingSkills",
             payload: true
-          });
-          expect(setMockForm).toHaveBeenCalledWith({
-            type: "toggleWorkerSelected",
-            payload: {
-              sid: selectedWorkers[0].sid
-            }
           });
           expect(setMockForm).toHaveBeenCalledWith({
             type: "updateWorker",

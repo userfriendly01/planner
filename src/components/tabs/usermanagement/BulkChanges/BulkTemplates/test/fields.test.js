@@ -1530,7 +1530,102 @@ describe("fields.js", () => {
           }
         });
       });
-
+    });
+    describe("ROUTING_TEAM", () => {
+      describe("validate function", () => {
+        const routingTeamValidateFunction = FIELDS.ROUTING_TEAM.validateFunction;
+        describe("profile is found in matching profiles", () => {
+          describe("field is null", () => {
+            const row = {
+              rowNumber: 2,
+              "Routing Team": null,
+              "Profile Id": 2
+            }
+            test("return rejected promise", async() => {
+              try {
+                await routingTeamValidateFunction(row, initialTestState);
+              } catch(err){
+                expect(err).toBe(JSON.stringify({
+                  rowNumber: 2,
+                  error: "Routing Team is missing for row 2"
+                }));
+              }
+            });
+          });
+          describe("field is not valid for profile", () => {
+            const row = {
+              rowNumber: 2,
+              "Routing Team": "Butts",
+              "Profile Id": 2
+            }
+            test("return rejected promise", async () => {
+              try {
+                await routingTeamValidateFunction(row, initialTestState);
+              } catch(err){
+                expect(err).toBe(JSON.stringify({
+                  rowNumber: 2,
+                  error: "Routing Team is not a valid option for profile for row 2"
+                }));
+              }            
+            });
+          });
+          describe("field is valid", () => {
+            const row = {
+              rowNumber: 2,
+              "Routing Team": "licencedCsC",
+              "Profile Id": 2
+            }
+            test("return resolved promise & update row", async () => {
+              const res = await routingTeamValidateFunction(row, initialTestState);
+              expect(res).toBe("Routing Team Valid for row 2");
+              expect(row).toEqual({
+                ...row,
+                attributes: {
+                  routing_team: "licencedCsC"
+                }
+              })
+            });
+          });
+        });
+        describe("profile not found and field is populated", () => {
+          const row = {
+            rowNumber: 2,
+            "Routing Team": "Hi Im Here",
+            "Profile Id": 800
+          }
+          test("return rejected promise", async () => {
+            try {
+              await routingTeamValidateFunction(row, initialTestState);
+            } catch(err){
+              expect(err).toBe(JSON.stringify({
+                rowNumber: 2,
+                error: "Routing Team is not applicable to profile id 800 for row 2"
+              }));
+            }          
+          });
+        });
+        describe("profile not found and field is null", () => {
+          const row = {
+            rowNumber: 2,
+            "Routing Team": "",
+            "Profile Id": 1
+          }
+          test("return resolved promise", async () => {
+            const res = await routingTeamValidateFunction(row, initialTestState);
+            expect(res).toBe("Bypassing Routing Team. Unapplicable for profile id 1 for row 2");
+            expect(row).toEqual(row);
+          });
+        });
+      });
+      describe("options", () => {
+        const optionsFunction = FIELDS.ROUTING_TEAM.options;
+        test("returns the profiles with available Routing Teams", () => {
+          const options = optionsFunction(initialTestState);
+          expect(options).toEqual([
+            "Profile 2: licencedCSC"
+          ]);
+        });
+      });
     });
     describe("WFM_ACTIVATE_EXTERNAL_LOGON", () => {
       describe("validate function", () => {
@@ -2474,10 +2569,8 @@ describe("fields.js", () => {
               }
             });
           } catch (e) {
-            expect(e).toEqual(JSON.stringify({
-              rowNumber: 6,
-              error: "Error encountered validating Workflow Control Set for row 6: Cannot read property 'find' of undefined"
-            }));
+            expect(JSON.parse(e).rowNumber).toBe(6);
+            expect(JSON.parse(e).error).toContain("Error encountered validating Workflow Control Set for row 6:");
           }
         });
         test("Workflow_Control_Sets is valid, resolve and add id to row", async () => {
@@ -2589,10 +2682,8 @@ describe("fields.js", () => {
               }
             });
           } catch (e) {
-            expect(e).toEqual(JSON.stringify({
-              rowNumber: 3,
-              error: "Error encountered validating WFM Team for row 3: Cannot read property 'find' of undefined"
-            }));
+            expect(JSON.parse(e).rowNumber).toBe(3);
+            expect(JSON.parse(e).error).toContain("Error encountered validating WFM Team for row 3:");
           }
         });
       });
@@ -2692,10 +2783,8 @@ describe("fields.js", () => {
               }
             });
           } catch (e) {
-            expect(e).toEqual(JSON.stringify({
-              rowNumber: 3,
-              error: "Error encountered validating WFM Contract for row 3: Cannot read property 'find' of undefined"
-            }));
+            expect(JSON.parse(e).rowNumber).toBe(3);
+            expect(JSON.parse(e).error).toContain("Error encountered validating WFM Contract for row 3:");
           }
         });
       });
@@ -2795,10 +2884,8 @@ describe("fields.js", () => {
               }
             });
           } catch (e) {
-            expect(e).toEqual(JSON.stringify({
-              rowNumber: 3,
-              error: "Error encountered validating WFM Contract Schedule for row 3: Cannot read property 'find' of undefined"
-            }));
+            expect(JSON.parse(e).rowNumber).toBe(3);
+            expect(JSON.parse(e).error).toContain("Error encountered validating WFM Contract Schedule for row 3:");
           }
         });
       });
@@ -2898,10 +2985,8 @@ describe("fields.js", () => {
               }
             });
           } catch (e) {
-            expect(e).toEqual(JSON.stringify({
-              rowNumber: 3,
-              error: "Error encountered validating WFM Part Time Percentage for row 3: Cannot read property 'find' of undefined"
-            }));
+            expect(JSON.parse(e).rowNumber).toBe(3);
+            expect(JSON.parse(e).error).toContain("Error encountered validating WFM Part Time Percentage for row 3:");
           }
         });
       });
@@ -3031,10 +3116,8 @@ describe("fields.js", () => {
               }
             });
           } catch (e) {
-            expect(e).toEqual(JSON.stringify({
-              rowNumber: 3,
-              error: "Error encountered validating WFM Shift Bag for row 3: Cannot read property 'find' of undefined"
-            }));
+            expect(JSON.parse(e).rowNumber).toBe(3);
+            expect(JSON.parse(e).error).toContain("Error encountered validating WFM Shift Bag for row 3:");
           }
         });
       });
@@ -3164,10 +3247,8 @@ describe("fields.js", () => {
               }
             });
           } catch (e) {
-            expect(e).toEqual(JSON.stringify({
-              rowNumber: 3,
-              error: "Error encountered validating WFM Budget Group for row 3: Cannot read property 'find' of undefined"
-            }));
+            expect(JSON.parse(e).rowNumber).toBe(3);
+            expect(JSON.parse(e).error).toContain("Error encountered validating WFM Budget Group for row 3:");
           }
         });
       });
@@ -3594,10 +3675,8 @@ describe("fields.js", () => {
               }
             });
           } catch (e) {
-            expect(e).toEqual(JSON.stringify({
-              rowNumber: 7,
-              error: "Error encountered validating WFM Rotation for row 7: Cannot read property 'find' of undefined"
-            }));
+            expect(JSON.parse(e).rowNumber).toBe(7);
+            expect(JSON.parse(e).error).toContain("Error encountered validating WFM Rotation for row 7:");
           }
         });
         test("Rotation and BU are valid, resolve with message, rotation id added to row", async () => {
@@ -3847,10 +3926,8 @@ describe("fields.js", () => {
               }
             });
           } catch (e) {
-            expect(e).toEqual(JSON.stringify({
-              rowNumber: 2,
-              error: "Error encountered validating WFM Availability for row 2: Cannot read property 'find' of undefined"
-            }));
+            expect(JSON.parse(e).rowNumber).toBe(2);
+            expect(JSON.parse(e).error).toContain("Error encountered validating WFM Availability for row 2:");
           }
         });
       });

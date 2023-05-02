@@ -1,12 +1,12 @@
 import React, {
-  useEffect, useState
+  useEffect, useState, useRef
 } from "react";
 import {
   DataGrid, GridRenderCellParams, GridToolbar
 } from "@mui/x-data-grid";
 import { RoutingGridColumnDef } from "./GridColumnDef";
 import {
-  CctSharedCallRoutingDb, RoutingFilter, RoutingStateVariables, RoutingMasterData
+  CctSharedCallRoutingDb, RoutingFilter, RoutingStateVariables, RoutingMasterData, AddPageFieldConfigProps
 } from "../AlohaRouting.Interfaces";
 import { retrieveRoutingData } from "services";
 import {
@@ -17,7 +17,9 @@ import {
   getGraphQLEndpoint,
   initializedAlertBar,
   downloadCSV,
-  EXPORT_FILE_PREFIX
+  EXPORT_FILE_PREFIX,
+  routingInitRule,
+  routingFields
 } from "utils";
 import {
   getGridMasterData
@@ -26,12 +28,14 @@ import { RoutingTableBox } from "../AlohaRouting.Styles";
 import GridSpinner from "./GridSpinner";
 import { CustomToast } from "components";
 import {
-  RoutingAdvanceSearch, AddRouting, EditRouting, CustomFlowRoutingToolBar
+  RoutingAdvanceSearch, AddRouting, EditRouting, CustomRoutingGridToolBar
 } from "../RoutingCustomActions";
-import { AlertBarProps } from "utils/interfaces";
+import {
+  AlertBarProps, FormValidationRule
+} from "utils/interfaces";
 import { AzureSPA } from "globals";
 
-export const DataGridRouting = (props: AzureSPA): JSX.Element => {
+export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   const {
     accessToken,
     matchedGroups
@@ -40,6 +44,9 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
   const graphQlApiUrl: string = getGraphQLEndpoint();
   const [state, setState] = useState<RoutingStateVariables>(routingInitState);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
+  const [routingRule, setRoutingRule] = useState({ ...routingInitRule });
+  const [clonedRule, setClonedRule] = useState(false);
+  const maxRef = useRef(0);
   useEffect(() => {
     const getTableData = async () =>{
       const result: CctSharedCallRoutingDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl);
@@ -125,16 +132,17 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
       const masterData: RoutingMasterData = getGridMasterData(result);
       const advanceFilter: RoutingFilter = getAdvanceFilter();
       const filteredItems: CctSharedCallRoutingDb[] = filterRecords(result, minId, maxId);
+      maxRef.current = maxId;
       setState({
         ...state,
+        maxId: maxId,
         advanceFilter,
         filteredItems,
         data: result,
         fetching: false,
         idStart: minId,
         idEnd: maxId,
-        maxId,
-        minId,
+        minId: minId,
         masterData,
         isAddModalOpen: false,
         isEditModalOpen: false,
@@ -156,8 +164,11 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
   };
 
 
-  const openAddModal = (flag: boolean, row?: CctSharedCallRoutingDb) => {
+  const openAddModal = (flag: boolean,openAddModal?:boolean, row?: CctSharedCallRoutingDb) => {
     let newData;
+    if(!openAddModal){
+      setClonedRule(openAddModal);
+    }
     if (!flag) {
       newData = row? state.data.concat(row) : undefined;
 
@@ -208,9 +219,33 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
     });
   };
 
-  const openEditModal = (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string, deleteRow?: boolean) => {
+  const cloneRule = (flag: boolean, row: CctSharedCallRoutingDb) => {
+    setClonedRule(!flag);
+    row.id = maxRef.current + 1;
+    const skey = row.brand+"__"+row.channel+"__"+row.id;
+    row.skey = skey;
+    const routeInitRule = routingFields.reduce((a: FormValidationRule, v: AddPageFieldConfigProps) => ({
+      ...a,
+      [v.key]: {
+        error: false,
+        value: v.valueGetter(row),
+        required: v.required || false
+      }
+    }), {});
+    setRoutingRule({ ...routeInitRule });
+    setState((currentDataRouting: RoutingStateVariables)=>({
+      ...currentDataRouting,
+      isEditModalOpen: flag,
+      isAddModalOpen: !flag
+    }));
+  };
+
+  const openEditModal = (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string, deleteRow?: boolean,type?: boolean) => {
     let newData;
-    if (!flag && isSubmitted) {
+    if(type){
+      cloneRule(flag,row);
+    }
+    else if (!flag && isSubmitted) {
       if(deleteRow) {
         newData = state.data.filter(x=> x.skey !== row.skey);
       } else {
@@ -239,10 +274,12 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
 
   return (
     <div>
-      <CustomFlowRoutingToolBar
+      <CustomRoutingGridToolBar
         openAddModal={openAddModal}
         openAdvanceSearchModal={openAdvanceSearchModal}
         exportDataFile={exportDataFile}
+        applyFilter={applyFilter}
+        isAdvanceSearchOpen={state.isAdvanceSearchModalOpen}
       />
       <RoutingTableBox>
         <DataGrid
@@ -276,8 +313,10 @@ export const DataGridRouting = (props: AzureSPA): JSX.Element => {
         accessToken={accessToken}
         matchedGroups={matchedGroups}
         isOpen={state.isAddModalOpen}
-        newId={state.maxId + 1}
+        newId={maxRef.current + 1}
         openModal={openAddModal}
+        cloneRouteRule = {clonedRule}
+        routeRule = {routingRule}
       />
       <EditRouting
         accessToken={accessToken}
