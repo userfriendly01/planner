@@ -16,6 +16,7 @@ interface MultiFieldContainerFormProps{
     name: string;
     value?: any;
     type: React.HTMLInputTypeAttribute | "multiValueText";
+    helperText?: string;
 }
 interface MultiFieldContainerProps{
     label: string;
@@ -210,6 +211,7 @@ const MultiFieldContainerModalView = ({
                         value={item.value}
                         label={item.label}
                         onChange={handleOnMultiModalOnChange}
+                        helperText={item.helperText}
                       />
                     ):(
                       <TextField
@@ -218,6 +220,7 @@ const MultiFieldContainerModalView = ({
                         type={item.type}
                         value={item.value}
                         label={item.label}
+                        helperText={item.helperText}
                         onChange={handleOnMultiModalOnChange}
                       />
                     ) }

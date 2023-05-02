@@ -13,10 +13,11 @@ export interface MultiValueTextFieldProps{
   disabled?: boolean;
   error?: boolean;
   required?: boolean;
+  helperText?: string;
 }
 
 const MultiValueTextField = ({
-  name, label, value, onChange, disabled, error, required
+  name, label, value, onChange, disabled, error, required, helperText
 }:MultiValueTextFieldProps ): JSX.Element => {
 
   const [chipList, setChipList] = useState([]);
@@ -58,6 +59,7 @@ const MultiValueTextField = ({
       error={error}
       disabled={disabled}
       required={required}
+      helperText={helperText}
       onChange={e => {
         setTextFieldValue(e.target.value);
       }}
