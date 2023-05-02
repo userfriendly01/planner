@@ -23,7 +23,7 @@ export const initialSkillFormState: SkillFormState = {
   skillFriendlyName: "",
   skillNum: "",
   applicationId: null,
-  taskQueue: "",
+  taskQueueSid: "",
   profiles: [],
   enableVirtualHold: false,
   vhCallTarget: {
@@ -66,7 +66,7 @@ export const skillFormReducer = (state: SkillFormState, action: Action): any => 
     case skillFormActions.SET_TASK_QUEUE: {
       return {
         ...state,
-        taskQueue: action.payload
+        taskQueueSid: action.payload
       };
     }
     case skillFormActions.SET_PROFILES: {

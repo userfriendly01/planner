@@ -85,7 +85,10 @@ export interface SkillsExportButtonProps {
 }
 export interface SkillsHeaderProps {
   tableState: TableState,
-  setTableState: (tableState: TableState) => void
+  setTableState: (tableState: TableState) => void,
+  applications: any[],  // todo: make these better
+  taskQueues: any[],
+  timeOfDays: any[]
 }
 
 export interface SkillsTableProps {

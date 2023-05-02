@@ -15,7 +15,10 @@ const SkillsHeader = (props: SkillsHeaderProps) => {
 
   const {
     tableState,
-    setTableState
+    setTableState,
+    taskQueues,
+    applications,
+    timeOfDays
   } = props;
 
   const state = useAdminState();
@@ -58,7 +61,12 @@ const SkillsHeader = (props: SkillsHeaderProps) => {
           });
         }}
       />
-      <SkillEntryButton formMode={formModes.INSERT} />
+      <SkillEntryButton
+        formMode={formModes.INSERT}
+        taskQueues={taskQueues}
+        applications={applications}
+        timeOfDays={timeOfDays}
+      />
       <ExportButton selected={tableState.selected}/>
     </StyledHeader>
   );
