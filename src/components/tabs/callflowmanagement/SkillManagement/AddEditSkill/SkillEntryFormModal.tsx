@@ -16,13 +16,19 @@ import {
   initialSkillFormState
 } from "context";
 import {
+  AddEditSkill,
   SkillFormState
-} from "./SkillEntryForm.Interfaces";
-import { formModes } from "globals";
+} from "../Skills.Interfaces";
+import {
+  formModes, ModalOverlayStatuses
+} from "globals";
 import {
   FormControlLabel,
   Switch
 } from "@mui/material";
+import {
+  createSkill
+} from "services";
 
 const ModalContainer = styled.div`
   display: flex;
@@ -81,7 +87,6 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
 
   const [ saveResult, setSaveResult ] = React.useState(defaultSaveResult);
 
-
   const getDropdownOptions = (list: any[], labelKey: string, valueKey: string) => {
     if (labelKey === "openTime") {
       return list.map(option => ({
@@ -98,30 +103,12 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
   const taskQueueOptions = getDropdownOptions(taskQueues, "friendlyName", "sid");
   const profileOptions = getDropdownOptions(profiles, "profile_nme", "profile_id");
   const timeOfDayOptions = getDropdownOptions(timeOfDays, "openTime", "timeOfDayId");
+  const applicationOptions = getDropdownOptions(applications, "applicationName", "applicationId")
 
   const invalidSkillFriendlyName = skills.find(skill => skill.ctmSkillDisplayName === skFormState.skillFriendlyName) ? true : false;
   const invalidSkillNum = skills.find(skill => skill.name === skFormState.skillNum) ? true : false;
   const invalidVhCallTarget = skFormState.vhCallTarget.e164.trim() !== "" && !skFormState.vhCallTarget.valid;
   const invalidVhThreshold = skFormState.vhThreshold.trim() !== "" && isNaN(parseInt(skFormState.vhThreshold));
-
-  // const isInputInvalid = (field: string) => {
-  //   let alreadyExists: boolean | any = false;
-  //   let isInvalidValue = false;
-  //   if (field === "skillFriendlyName") {
-  //     alreadyExists = skills.find(skill => skill.ctmSkillDisplayName === skFormState.skillFriendlyName);
-  //   } else if (field === "skillNum") {
-  //     alreadyExists = skills.find(skill => skill.name === skFormState.skillNum);
-  //   } else if (field === "vhCallTarget" && skFormState.enableVirtualHold) {
-  //     isInvalidValue = skFormState.vhCallTarget.e164.trim() !== "" && !skFormState.vhCallTarget.valid;
-  //   } else if (field === "vhThreshold" && skFormState.enableVirtualHold) {
-  //     isInvalidValue = skFormState.vhThreshold.trim() !== "" && isNaN(parseInt(skFormState.vhThreshold));
-  //   }
-  //   if (alreadyExists || isInvalidValue) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // };
 
   const areRequiredFieldsEmpty = () => {
     let hasEmptyValues = true;
@@ -138,7 +125,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
       timeOfDay
     } = skFormState;
 
-    hasEmptyValues = skillFriendlyName === "" || skillNum === "" || !applicationId ||
+    hasEmptyValues = skillFriendlyName === "" || skillNum === "" || applicationId === null ||
       taskQueueSid === "" || !taskQueueSid || profiles.length < 1;
 
     emptyTimeOfDay = Object.values(timeOfDay).filter((value: any) => !value || (value && value.toString().trim() === "")).length > 0;
@@ -154,23 +141,22 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
     }
   };
 
-  const addSkill = () => {
-    //   check that user is admin?
+  const addSkill = async () => {
+    // TODO?  check that user is admin?
 
     //   validate the skill info
-    if (areRequiredFieldsEmpty || invalidSkillFriendlyName || invalidSkillNum || invalidVhCallTarget || invalidVhThreshold) {
-      // set an error message?
+    if (areRequiredFieldsEmpty() || invalidSkillFriendlyName || invalidSkillNum || invalidVhCallTarget || invalidVhThreshold) {
       return;
     }
-    //   ADD THE SKILL
 
-    const body = {
+    const body: AddEditSkill = {
       skillFriendlyName: skFormState.skillFriendlyName,
       skillNum: skFormState.skillNum,
+      profiles: skFormState.profiles,
       applicationId: skFormState.applicationId,
       taskQueueSid: skFormState.taskQueueSid,
       vhCallTarget: skFormState.enableVirtualHold ? skFormState.vhCallTarget.e164 : null,
-      vhThreshold: skFormState.enableVirtualHold ? skFormState.vhThreshold : null,
+      vhThreshold: skFormState.enableVirtualHold ? parseInt(skFormState.vhThreshold) : null,
       timeOfDayIds: [
         {
           dayId: 1,
@@ -204,7 +190,26 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
     };
 
     console.log("^^^^ This is the body we will send to softphone service", body);
-    // set save result
+
+    try {
+
+      const result = await createSkill(body);
+      console.log("%%%%% result", result);
+      closeModal();
+      setSaveResult({
+        message: "Request Successfully Processed",
+        status: ModalOverlayStatuses.SUCCESS
+      });
+      skFormDispatch({
+        type: skillFormActions.RESET_FORM
+      });
+    } catch (err) {
+      console.log("ERROR WHEN ADDING SKILL", err);
+      setSaveResult({
+        message: "Request Failed",
+        status: ModalOverlayStatuses.FAIL
+      });
+    }
   };
 
   return (
@@ -264,6 +269,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
           />
           <Dropdown
             options={taskQueueOptions}
+            value={taskQueueOptions.find((op:any) => op.value === skFormState.taskQueueSid) || null}
             label="Task Queue"
             updateValue={(e: any, newValue: any) => {
               skFormDispatch({
@@ -273,7 +279,8 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
             }}
           />
           <Dropdown
-            options={getDropdownOptions(applications, "applicationName", "applicationId")}
+            options={applicationOptions}
+            value={applicationOptions.find((ap:any) => ap.value === skFormState.applicationId) || null}
             label="Application"
             updateValue={(e: any, newValue: any) => {
               skFormDispatch({
@@ -289,6 +296,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
           <ColumnContainer>
             <Dropdown
               options={timeOfDayOptions}
+              value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.sunday) || null}
               label="Sunday Time of Day"
               updateValue={(e: any, newValue: any) => {
                 skFormDispatch({
@@ -302,6 +310,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
             />
             <Dropdown
               options={timeOfDayOptions}
+              value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.saturday) || null}
               label="Saturday Time of day"
               updateValue={(e: any, newValue: any) => {
                 skFormDispatch({
@@ -317,6 +326,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
           <ColumnContainer>
             <Dropdown
               options={timeOfDayOptions}
+              value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.monday) || null}
               label="Monday Time of Day"
               updateValue={(e: any, newValue: any) => {
                 skFormDispatch({
@@ -330,6 +340,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
             />
             <Dropdown
               options={timeOfDayOptions}
+              value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.tuesday) || null}
               label="Tuesday Time of Day"
               updateValue={(e: any, newValue: any) => {
                 skFormDispatch({
@@ -343,6 +354,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
             />
             <Dropdown
               options={timeOfDayOptions}
+              value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.wednesday) || null}
               label="Wednesday Time of Day"
               updateValue={(e: any, newValue: any) => {
                 skFormDispatch({
@@ -356,6 +368,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
             />
             <Dropdown
               options={timeOfDayOptions}
+              value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.thursday) || null}
               label="Thursday Time of Day"
               updateValue={(e: any, newValue: any) => {
                 skFormDispatch({
@@ -369,6 +382,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
             />
             <Dropdown
               options={timeOfDayOptions}
+              value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.friday) || null}
               label="Friday Time of Day"
               updateValue={(e: any, newValue: any) => {
                 skFormDispatch({
@@ -460,9 +474,14 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
         </>
         }
         <ButtonWrapper>
-          <StyledButton onClick={closeModal} >Cancel</StyledButton>
+          <StyledButton onClick={() => {
+            closeModal();
+            skFormDispatch({
+              type: skillFormActions.RESET_FORM
+            });
+          }} >Cancel</StyledButton>
           <StyledButton
-            onClick={closeModal}
+            onClick={addSkill}
             disabled={
               areRequiredFieldsEmpty() ||
               invalidSkillFriendlyName ||

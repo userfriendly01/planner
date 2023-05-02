@@ -1,4 +1,5 @@
 export * from "./aggregateQueues";
+export * from "./applications";
 export * from "./calabrio";
 export * from "./callTags";
 export * from "./checkExtension";
@@ -13,9 +14,10 @@ export * from "./office";
 export * from "./routingTableService";
 export * from "./operatingUnits";
 export * from "./profile";
+export * from "./skill";
 export * from "./skillgroup";
-export * from "./tfnActivation";
-export * from "./updateUser";
 export * from "./taskQueues";
-export * from "./applications";
+export * from "./tfnActivation";
 export * from "./timeOfDays";
+export * from "./updateUser";
+

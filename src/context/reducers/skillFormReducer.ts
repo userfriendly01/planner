@@ -2,7 +2,7 @@ import {
   Action,
   formModes
 } from "globals";
-import { SkillFormState } from "../../components/tabs/callflowmanagement/SkillManagement/AddEditSkill/SkillEntryForm.Interfaces";
+import { SkillFormState } from "../../components/tabs/callflowmanagement/SkillManagement/Skills.Interfaces";
 
 export const skillFormActions = {
   RESET_FORM: "RESET_FORM",

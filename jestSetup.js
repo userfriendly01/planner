@@ -28,6 +28,7 @@ jest.mock("services", () => ({
   createCalabrioTeam: jest.fn(),
   createCalabrioUser: jest.fn(),
   createProfile: jest.fn(),
+  createSkill: jest.fn(),
   createUser: jest.fn(),
   createCalabrioWFMPerson: jest.fn(),
   deleteDirectory: jest.fn(),

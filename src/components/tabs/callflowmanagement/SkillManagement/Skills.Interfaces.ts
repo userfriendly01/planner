@@ -95,3 +95,45 @@ export interface SkillsTableProps {
   tableState: TableState,
   setTableState: (tableState: TableState) => void
 }
+
+export interface SkillFormState {
+  formMode: string,
+  skillFriendlyName: string,
+  skillNum: string,
+  applicationId: number | null,
+  taskQueueSid: string,
+  profiles: any[],
+  enableVirtualHold: boolean,
+  vhCallTarget: {
+    value: string,
+    valid: boolean,
+    e164: string,
+    blurred: boolean
+  },
+  vhThreshold: string | null,
+  timeOfDay: {
+    sunday: number | null,
+    monday: number | null,
+    tuesday: number | null,
+    wednesday: number | null,
+    thursday: number | null,
+    friday: number | null,
+    saturday: number | null
+  }
+}
+
+interface TimeOfDay {
+  dayId: number,
+  timeOfDayId: number
+}
+
+export interface AddEditSkill {
+  skillFriendlyName: string,
+  skillNum: string,
+  applicationId: number,
+  taskQueueSid: string,
+  profiles: number[],
+  vhCallTarget: string | null,
+  vhThreshold: number | null,
+  timeOfDayIds: TimeOfDay[]
+}
