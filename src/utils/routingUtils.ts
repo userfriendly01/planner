@@ -291,7 +291,7 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
         label: "Team",
         name: "team",
         type: "multiValueText",
-        helperText: "Please use Space in at the end"
+        helperText: "Please use Space at the end"
       },
       {
         label: "Time",
