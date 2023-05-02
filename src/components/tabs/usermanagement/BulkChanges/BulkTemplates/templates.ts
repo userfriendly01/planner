@@ -241,6 +241,7 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
     if(typeof location === "string"){
       body[location] = newAttribute;
     } else {
+      //Allowing for addition of routing object nested within attributes on update.  Will only allow for 2 items being added (attributes and a nested object)
       const parentObject: any = row[location[0]] || {}; //attributes
       const nestedObject: any = row[location[0]] && row[location[0]][location[1]] || {};
       try {
