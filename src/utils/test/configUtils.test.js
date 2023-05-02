@@ -77,13 +77,13 @@ describe("configUtils.js", ()=>{
   test("Simulate cleanErrorMessage", ()=>{
     const duplicateError = [{
       message: "The conditional request failed (Service: DynamoDb, Status Code: 400, Request ID: HMR08U7OR4C9Q33EIKEGJBC5TRVV4KQNSO5AEMVJF66Q9ASUAAJG)",
-      type: "DynamoDB:ConditionalCheckFailedException"
+      errorType: "DynamoDB:ConditionalCheckFailedException"
 
     }];
     const someOtherError = "Failure";
     const otherError = [{
       message: someOtherError,
-      type: "DynamoDB:ConditionalCheckFailedException"
+      errorType: "Boop"
 
     }];
     expect(cleanErrorMessage(duplicateError)).toBe(ErrorDuplicateRecord);
