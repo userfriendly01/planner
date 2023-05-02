@@ -267,7 +267,7 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
       {
         label: "Team",
         name: "team",
-        type: "input"
+        type: "text"
       },
       {
         label: "Percentage (%)",
@@ -289,7 +289,7 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
       {
         label: "Team",
         name: "team",
-        type: "input"
+        type: "multiValueText"
       },
       {
         label: "Time",
