@@ -140,7 +140,3 @@ export interface ViewOrAddProps{
     dataRequests:boolean;
     callFlowRoute:boolean;
 }
-export interface GraphQLErrors {
-    errorType:string;
-    message:string;
-}

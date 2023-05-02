@@ -1,9 +1,9 @@
 import {
-  CctSharedCallFlowDb, CctSharedCallRoutingDb, FlowContent, GraphQLErrors
+  CctSharedCallFlowDb, CctSharedCallRoutingDb, FlowContent
 } from "components";
 import { useAdminState } from "context";
 import { AlertBarProps } from "./interfaces";
-import { AppState } from "globals";
+import { GraphQLErrors } from "globals";
 
 /**
  *  This function return graphQL endpoint based on running environment  
