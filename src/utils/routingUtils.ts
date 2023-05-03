@@ -267,12 +267,13 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
       {
         label: "Team",
         name: "team",
-        type: "input"
+        type: "text"
       },
       {
         label: "Percentage (%)",
         name: "percentage",
-        type: "number"
+        type: "number",
+        helperText: "min: 1,  max: 100"
       }
     ]
   },
@@ -289,12 +290,14 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
       {
         label: "Team",
         name: "team",
-        type: "input"
+        type: "multiValueText",
+        helperText: "Please use Space at the end"
       },
       {
         label: "Time",
         name: "time",
-        type: "number"
+        type: "number",
+        helperText: "min: 1,  max: 100"
       }
     ]
   }
