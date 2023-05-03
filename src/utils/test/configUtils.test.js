@@ -1,4 +1,6 @@
 import {
+  ErrorDuplicateRecord,
+  cleanErrorMessage,
   downloadCSV, getGraphQLEndpoint
 } from "utils";
 import { useAdminState } from "context";
@@ -72,4 +74,20 @@ describe("configUtils.js", ()=>{
     endPointURI.set("production", "https://23gxrcju6rfgvlzp6onvg2az5q.appsync-api.us-east-1.amazonaws.com/graphql");
     expect(endpoint).toBe(endPointURI.get(env));
   });
+  test("Simulate cleanErrorMessage", ()=>{
+    const duplicateError = [{
+      message: "The conditional request failed (Service: DynamoDb, Status Code: 400, Request ID: HMR08U7OR4C9Q33EIKEGJBC5TRVV4KQNSO5AEMVJF66Q9ASUAAJG)",
+      errorType: "DynamoDB:ConditionalCheckFailedException"
+
+    }];
+    const someOtherError = "Failure";
+    const otherError = [{
+      message: someOtherError,
+      errorType: "Boop"
+
+    }];
+    expect(cleanErrorMessage(duplicateError)).toBe(ErrorDuplicateRecord);
+    expect(cleanErrorMessage(otherError)).toBe(someOtherError);
+  });
+
 });
