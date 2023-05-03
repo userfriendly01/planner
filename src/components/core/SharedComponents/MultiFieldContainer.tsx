@@ -9,12 +9,14 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
 import TextField from "@mui/material/TextField";
+import { MultiValueTextField } from "./MultiValueTextField";
 
 interface MultiFieldContainerFormProps{
     label: string;
     name: string;
     value?: any;
-    type: string;
+    type: React.HTMLInputTypeAttribute | "multiValueText";
+    helperText?: string;
 }
 interface MultiFieldContainerProps{
     label: string;
@@ -203,14 +205,25 @@ const MultiFieldContainerModalView = ({
               <Grid container rowSpacing={1}>
                 {formFields && formFields.map((item: MultiFieldContainerFormProps)=>(
                   <Grid key={item.label} item xs={12}>
-                    <TextField
-                      variant="outlined"
-                      name={item.name}
-                      type={item.type}
-                      value={item.value}
-                      label={item.label}
-                      onChange={handleOnMultiModalOnChange}
-                    />
+                    {(item.type === "multiValueText") ? (
+                      <MultiValueTextField
+                        name={item.name}
+                        value={item.value}
+                        label={item.label}
+                        onChange={handleOnMultiModalOnChange}
+                        helperText={item.helperText}
+                      />
+                    ):(
+                      <TextField
+                        variant="outlined"
+                        name={item.name}
+                        type={item.type}
+                        value={item.value}
+                        label={item.label}
+                        helperText={item.helperText}
+                        onChange={handleOnMultiModalOnChange}
+                      />
+                    ) }
                   </Grid>))}
                 <Grid key={`set-button-${formLabel}`} item xs={6}>
                   <Button
