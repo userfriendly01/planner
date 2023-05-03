@@ -360,8 +360,6 @@ export const initiateCalls = async (
     });
   });
 
-  console.log("final errors: ", finalErrors); // todo: remove
-
   if(finalErrors.length === 0){
     return Promise.resolve(rows);
   } else {
@@ -378,9 +376,7 @@ export const initiateCalls = async (
  * @param selectedTemplates selected templates to be processed
  */
 export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any, selectedTemplates: any) => {
-  console.log("inside handleWfmExternalLogon"); // todo: remove
   if(selectedTemplates.some((t: Template) => t.name === "CREATE_TRITON_USER")) {
-    console.log("inside handleWfmExternalLogon"); // todo: remove
     const wfmNNumbers: any[] = [];
 
     successfulRows.forEach((row: any) => {
@@ -388,7 +384,6 @@ export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any,
         wfmNNumbers.push(row.attributes.n_number);
       }
     });
-    console.log("nNumbers to activate: ", wfmNNumbers); // todo: remove
 
     // process in batches of max 25 to avoid gateway timeouts while waiting for calabrio
     const max = 25;
@@ -400,7 +395,6 @@ export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any,
       const endingIndex = currentIndex + max;
       const processingNNumbers: any[] = wfmNNumbers.slice(currentIndex, endingIndex);
 
-      console.log("handleWfmExternalLogon - inside processBatch"); // todo: remove
       const results = await wfmActivateExternalLogon({
         workerNNumbers: processingNNumbers
       });
@@ -415,8 +409,6 @@ export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any,
       }
     };
     await processBatch();
-
-    console.log("***wfm resultsArray: ", resultsArray); // todo: remove
 
     const failedActivations = resultsArray[0].data?.failedActivations || {};
 
@@ -436,7 +428,6 @@ export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any,
         const failed2 = result.data.failedActivations.workersFailedToActivate;
         const failed3 = result.data.failedActivations.workersFailedToReturnToOffline;
 
-        console.log("***failures found", failed1); // todo: remove
         noWorkers.push(failed1);
         failedToActivate.push(failed2);
         failedToOffline.push(failed3);
@@ -451,7 +442,7 @@ export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any,
         workersFailedToReturnToOffline: failedToOffline.flat()
       }
     };
-    console.log("***external logon results: ", wfmExternalLogonResults); // todo: remove
+    console.log("***external logon results: ", wfmExternalLogonResults);
 
     return wfmExternalLogonResults;
   } else {

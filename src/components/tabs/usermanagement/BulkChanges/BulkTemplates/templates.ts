@@ -62,12 +62,10 @@ const processCreateTritonUser = async (row: any, state: any) => {
     const profile = getTargetProfile(state.profileContext.profiles, body.attributes.profile_id);
     body.operatingUnitSid = profile?.operating_unit_sid;
 
-    // todo: UNCOMMENT. all but workerSid commented out for local testing
     const res = await createUser(body);
     const workerSid = res.workerSid;
     console.log("TRITON RESPONSE", res);
     row.workerSid = workerSid;
-    // const workerSid = "test worker sid"; // todo: remove
     row.acdId = workerSid;
     console.log(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
     return Promise.resolve(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
@@ -327,7 +325,7 @@ export const getCreateTemplates = (state: any): Templates => {
       name: "CREATE_TRITON_USER",
       data: {},
       processFunction: (row: any) => processCreateTritonUser(row, state),
-      stateUpdateFunctions: [updateTritonUserState, handleWfmExternalLogon], // todo: move this to WFM template?
+      stateUpdateFunctions: [updateTritonUserState, handleWfmExternalLogon],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,
