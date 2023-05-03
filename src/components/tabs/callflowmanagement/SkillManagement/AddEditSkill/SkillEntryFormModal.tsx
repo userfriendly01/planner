@@ -103,7 +103,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
   const taskQueueOptions = getDropdownOptions(taskQueues, "friendlyName", "sid");
   const profileOptions = getDropdownOptions(profiles, "profile_nme", "profile_id");
   const timeOfDayOptions = getDropdownOptions(timeOfDays, "openTime", "timeOfDayId");
-  const applicationOptions = getDropdownOptions(applications, "applicationName", "applicationId")
+  const applicationOptions = getDropdownOptions(applications, "applicationName", "applicationId");
 
   const invalidSkillFriendlyName = skills.find(skill => skill.ctmSkillDisplayName === skFormState.skillFriendlyName) ? true : false;
   const invalidSkillNum = skills.find(skill => skill.name === skFormState.skillNum) ? true : false;
