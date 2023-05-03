@@ -9,7 +9,7 @@ export const skillFormActions = {
   SET_SKILL_FRIENDLY_NAME: "SET_SKILL_FRIENDLY_NAME",
   SET_SKILL_NUM: "SET_SKILL_NUM",
   SET_TASK_QUEUE: "SET_TASK_QUEUE",
-  SET_PROFILES: "SET_PROFILES",
+  SET_PROFILE_IDS: "SET_PROFILE_IDS",
   SET_VH_CALL_TARGET: "SET_VH_CALL_TARGET",
   SET_VH_THRESHOLD: "SET_VH_THRESHOLD",
   SET_TIME_OF_DAYS: "SET_TIME_OF_DAYS",
@@ -24,7 +24,7 @@ export const initialSkillFormState: SkillFormState = {
   skillNum: "",
   applicationId: null,
   taskQueueSid: "",
-  profiles: [],
+  profileIds: [],
   enableVirtualHold: false,
   vhCallTarget: {
     value: "",
@@ -69,10 +69,10 @@ export const skillFormReducer = (state: SkillFormState, action: Action): any => 
         taskQueueSid: action.payload
       };
     }
-    case skillFormActions.SET_PROFILES: {
+    case skillFormActions.SET_PROFILE_IDS: {
       return {
         ...state,
-        profiles: action.payload
+        profileIds: action.payload
       };
     }
     case skillFormActions.SET_VH_CALL_TARGET: {

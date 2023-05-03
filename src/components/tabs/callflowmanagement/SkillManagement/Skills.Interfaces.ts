@@ -102,7 +102,7 @@ export interface SkillFormState {
   skillNum: string,
   applicationId: number | null,
   taskQueueSid: string,
-  profiles: any[],
+  profileIds: any[],
   enableVirtualHold: boolean,
   vhCallTarget: {
     value: string,
@@ -132,7 +132,7 @@ export interface AddEditSkill {
   skillNum: string,
   applicationId: number,
   taskQueueSid: string,
-  profiles: number[],
+  profileIds: number[],
   vhCallTarget: string | null,
   vhThreshold: number | null,
   timeOfDayIds: TimeOfDay[]

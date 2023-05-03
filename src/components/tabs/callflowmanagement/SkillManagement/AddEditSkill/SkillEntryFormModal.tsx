@@ -118,7 +118,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
       skillNum,
       applicationId,
       taskQueueSid,
-      profiles,
+      profileIds,
       enableVirtualHold,
       vhCallTarget,
       vhThreshold,
@@ -126,7 +126,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
     } = skFormState;
 
     hasEmptyValues = skillFriendlyName === "" || skillNum === "" || applicationId === null ||
-      taskQueueSid === "" || !taskQueueSid || profiles.length < 1;
+      taskQueueSid === "" || !taskQueueSid || profileIds.length < 1;
 
     emptyTimeOfDay = Object.values(timeOfDay).filter((value: any) => !value || (value && value.toString().trim() === "")).length > 0;
 
@@ -152,7 +152,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
     const body: AddEditSkill = {
       skillFriendlyName: skFormState.skillFriendlyName,
       skillNum: skFormState.skillNum,
-      profiles: skFormState.profiles,
+      profileIds: skFormState.profileIds,
       applicationId: skFormState.applicationId,
       taskQueueSid: skFormState.taskQueueSid,
       vhCallTarget: skFormState.enableVirtualHold ? skFormState.vhCallTarget.e164 : null,
@@ -256,13 +256,13 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
         <RowContainer>
           <Dropdown
             options={profileOptions}
-            value={profileOptions.filter((p: any) => skFormState.profiles.includes(p.value))}
+            value={profileOptions.filter((p: any) => skFormState.profileIds.includes(p.value))}
             multiple={true}
             label="Profiles"
             updateValue={(e:any, values: any) => {
               console.log(values);
               skFormDispatch({
-                type: skillFormActions.SET_PROFILES,
+                type: skillFormActions.SET_PROFILE_IDS,
                 payload: [...values.map((val: any) => val.value)]
               });
             }}
