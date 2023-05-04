@@ -288,8 +288,8 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
     }),
     formFields: [
       {
-        label: "Team",
-        name: "team",
+        label: "Teams",
+        name: "teams",
         type: "multiValueText",
         helperText: "Please use Space at the end"
       },

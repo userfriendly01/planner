@@ -51,7 +51,7 @@ describe("<RoutingGridColumnDef />", () => {
       const renderedCell = render(RoutingGridColumnDef[17].renderCell({
         row: {
           routingSteps: [{
-            team: "Team1",
+            teams: ["Team1"],
             time: 10
           }]
         }
