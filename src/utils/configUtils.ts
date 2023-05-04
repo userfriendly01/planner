@@ -3,7 +3,7 @@ import {
 } from "components";
 import { useAdminState } from "context";
 import { AlertBarProps } from "./interfaces";
-import { AppState } from "globals";
+import { GraphQLErrors } from "globals";
 
 /**
  *  This function return graphQL endpoint based on running environment  
@@ -117,4 +117,12 @@ export const  downloadCSV = (prefix: string, array:Array<CctSharedCallFlowDb |Cc
     .replace(/=/g,"%3D");
   link.download = filename;
   link.click();
+};
+
+export const ErrorDuplicateRecord = "Record already exists.";
+export const cleanErrorMessage = (graphQLErrors: GraphQLErrors[]): string => {
+  if (graphQLErrors[0]?.errorType === "DynamoDB:ConditionalCheckFailedException") {
+    return ErrorDuplicateRecord;
+  }
+  return graphQLErrors[0].message;
 };

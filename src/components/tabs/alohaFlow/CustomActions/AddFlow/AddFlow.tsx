@@ -35,6 +35,7 @@ import {
   HeadingStyled
 } from "../../AlohaFlow.Styles";
 import {
+  cleanErrorMessage,
   flowDropDownList,
   FLOW_MASTER_DATA,
   getGraphQLEndpoint,
@@ -239,7 +240,7 @@ export const AddFlow = ({
           ...alertBarProps,
           "open": true,
           "severityType": "error",
-          "msg": apiResponse.errors[0].message
+          "msg": cleanErrorMessage(apiResponse.errors)
         }));
         return false;
       });
