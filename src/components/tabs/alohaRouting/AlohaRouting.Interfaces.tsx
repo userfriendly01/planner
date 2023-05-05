@@ -7,7 +7,7 @@ export interface RoutingOccupancyCheck {
     percentage: number;
   }
 export interface RoutingStep {
-    team: Array<string>;
+    teams: Array<string>;
     time: number;
   }
 

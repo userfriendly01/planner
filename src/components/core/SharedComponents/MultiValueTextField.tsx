@@ -34,7 +34,7 @@ const MultiValueTextField = ({
   };
 
   const handleOnChange = (event: any) =>{
-    if (event.code === "Space" && event.target.value) {
+    if (event.code === "Enter" && event.target.value) {
       const updatedChipList = [...(chipList? chipList : []), event.target.value];
       setChipList(updatedChipList);
       setTextFieldValue("");
