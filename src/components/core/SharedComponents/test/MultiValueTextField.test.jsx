@@ -49,7 +49,7 @@ describe("<MultiValueTextField>", ()=>{
     const onKeyPress = TextField.mock.calls[1][0].onKeyPress;
     act(()=>{
       onKeyPress({
-        code: "Space",
+        code: "Enter",
         target: {
           value: "Spanish"
         }
@@ -78,7 +78,7 @@ describe("<MultiValueTextField>", ()=>{
     const onKeyPress = TextField.mock.calls[1][0].onKeyPress;
     act(()=>{
       onKeyPress({
-        code: "Space",
+        code: "Enter",
         target: {
           value: "Property"
         }
@@ -94,7 +94,7 @@ describe("<MultiValueTextField>", ()=>{
     const onKeyPress = TextField.mock.calls[1][0].onKeyPress;
     act(()=>{
       onKeyPress({
-        code: "Enter",
+        code: "Space",
         target: {
           value: "Property"
         }

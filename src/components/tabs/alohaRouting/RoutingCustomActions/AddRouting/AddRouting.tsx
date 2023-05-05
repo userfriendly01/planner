@@ -152,7 +152,7 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
           ...alertBarProps,
           "open": true,
           "severityType": "error",
-          "msg":cleanErrorMessage(apiResponse.errors)
+          "msg": cleanErrorMessage(apiResponse.errors)
         }));
       });
     }

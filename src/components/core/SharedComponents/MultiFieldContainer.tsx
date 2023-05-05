@@ -170,6 +170,12 @@ const MultiFieldContainerModalView = ({
   const [formData, setFormData] = useState({});
   const handleOnSetModalData = () =>{
     handleOnSet(formData);
+    setFormData({});
+  };
+
+  const handleOnClose = () =>{
+    setFormData({});
+    onClose();
   };
 
   const handleOnMultiModalOnChange = (event: any) =>{
@@ -245,7 +251,7 @@ const MultiFieldContainerModalView = ({
                     variant="contained"
                     color="error"
                     aria-label = "cancelModal"
-                    onClick={()=>onClose()}
+                    onClick={()=>handleOnClose()}
                   >
                 Cancel
                   </Button>
