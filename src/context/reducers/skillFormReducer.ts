@@ -44,7 +44,7 @@ export const initialSkillFormState: SkillFormState = {
   }
 };
 
-export const skillFormReducer = (state: SkillFormState, action: Action): any => {  //TODO: change the anys
+export const skillFormReducer = (state: SkillFormState, action: Action): SkillFormState => {
   switch (action.type) {
     case skillFormActions.RESET_FORM: {
       return {

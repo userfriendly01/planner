@@ -20,6 +20,7 @@ import {
   SkillFormState
 } from "../Skills.Interfaces";
 import {
+  FlexRow, FlexColumn,
   formModes, ModalOverlayStatuses
 } from "globals";
 import {
@@ -42,17 +43,12 @@ const ModalContainer = styled.div`
   width: 900px;
 `;
 
-const RowContainer = styled.div`
-  display: flex;
-  flex-direction: row;
+const CenteredDiv = styled.div`
+  align-self: center;
+  margin-bottom: 5px;
 `;
 
-const ColumnContainer = styled.div`
-  display:flex;
-  flex-direction: column;
-`;
-
-const ButtonWrapper = styled(RowContainer)`
+const ButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
   padding: 8px;
   align-items: flex-end;
@@ -84,6 +80,8 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
   const state = useAdminState();
   const profiles = state.profileContext.profiles;
   const skills = state.skillContext.skills;
+  const nNumber = state.userContext.pingIdentity.sub;
+
 
   const [ saveResult, setSaveResult ] = React.useState(defaultSaveResult);
 
@@ -157,6 +155,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
       taskQueueSid: skFormState.taskQueueSid,
       vhCallTarget: skFormState.enableVirtualHold ? skFormState.vhCallTarget.e164 : null,
       vhThreshold: skFormState.enableVirtualHold ? parseInt(skFormState.vhThreshold) : null,
+      updatedBy: nNumber,
       timeOfDayIds: [
         {
           dayId: 1,
@@ -222,8 +221,8 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
             handleClose={closeModal}
           />
         }
-        Add Skill
-        <RowContainer>
+        <CenteredDiv style={{ fontSize: "25px" }}>Add Skill</CenteredDiv>
+        <FlexRow>
           <CustomInput
             value={skFormState.skillFriendlyName}
             styles={inputStyles}
@@ -252,8 +251,8 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
               });
             }}
           />
-        </RowContainer>
-        <RowContainer>
+        </FlexRow>
+        <FlexRow>
           <Dropdown
             options={profileOptions}
             value={profileOptions.filter((p: any) => skFormState.profileIds.includes(p.value))}
@@ -289,15 +288,15 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
               });
             }}
           />
-        </RowContainer>
+        </FlexRow>
         <hr />
-        <div>Time of Day</div>
-        <RowContainer>
-          <ColumnContainer>
+        <CenteredDiv>Time of Day</CenteredDiv>
+        <FlexRow>
+          <FlexColumn>
             <Dropdown
               options={timeOfDayOptions}
               value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.sunday) || null}
-              label="Sunday Time of Day"
+              label="Sunday"
               updateValue={(e: any, newValue: any) => {
                 skFormDispatch({
                   type: skillFormActions.SET_TIME_OF_DAYS,
@@ -311,7 +310,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
             <Dropdown
               options={timeOfDayOptions}
               value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.saturday) || null}
-              label="Saturday Time of day"
+              label="Saturday"
               updateValue={(e: any, newValue: any) => {
                 skFormDispatch({
                   type: skillFormActions.SET_TIME_OF_DAYS,
@@ -322,12 +321,12 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
                 });
               }}
             />
-          </ColumnContainer>
-          <ColumnContainer>
+          </FlexColumn>
+          <FlexColumn>
             <Dropdown
               options={timeOfDayOptions}
               value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.monday) || null}
-              label="Monday Time of Day"
+              label="Monday"
               updateValue={(e: any, newValue: any) => {
                 skFormDispatch({
                   type: skillFormActions.SET_TIME_OF_DAYS,
@@ -341,7 +340,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
             <Dropdown
               options={timeOfDayOptions}
               value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.tuesday) || null}
-              label="Tuesday Time of Day"
+              label="Tuesday"
               updateValue={(e: any, newValue: any) => {
                 skFormDispatch({
                   type: skillFormActions.SET_TIME_OF_DAYS,
@@ -355,7 +354,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
             <Dropdown
               options={timeOfDayOptions}
               value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.wednesday) || null}
-              label="Wednesday Time of Day"
+              label="Wednesday"
               updateValue={(e: any, newValue: any) => {
                 skFormDispatch({
                   type: skillFormActions.SET_TIME_OF_DAYS,
@@ -369,7 +368,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
             <Dropdown
               options={timeOfDayOptions}
               value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.thursday) || null}
-              label="Thursday Time of Day"
+              label="Thursday"
               updateValue={(e: any, newValue: any) => {
                 skFormDispatch({
                   type: skillFormActions.SET_TIME_OF_DAYS,
@@ -383,7 +382,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
             <Dropdown
               options={timeOfDayOptions}
               value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.friday) || null}
-              label="Friday Time of Day"
+              label="Friday"
               updateValue={(e: any, newValue: any) => {
                 skFormDispatch({
                   type: skillFormActions.SET_TIME_OF_DAYS,
@@ -394,10 +393,9 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
                 });
               }}
             />
-          </ColumnContainer>
-        </RowContainer>
+          </FlexColumn>
+        </FlexRow>
         <hr />
-
         <FormControlLabel
           label={"Virtual Hold"}
           labelPlacement="end"
@@ -428,8 +426,8 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
           />} />
         {skFormState.enableVirtualHold && <>
           {/* todo: make this message better */}
-          <div>Note: Adding these fields will not enable virtual hold.  More needs to be done in addition to providing these values here...</div>
-          <RowContainer>
+          <CenteredDiv>Note: Adding these fields will not enable virtual hold.  More needs to be done in addition to providing these values</CenteredDiv>
+          <FlexRow>
             <PhoneNumberInput
               id="Virtual Hold Call Target"
               label="Virtual Hold Call Target"
@@ -470,7 +468,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
                 });
               }}
             />
-          </RowContainer>
+          </FlexRow>
         </>
         }
         <ButtonWrapper>

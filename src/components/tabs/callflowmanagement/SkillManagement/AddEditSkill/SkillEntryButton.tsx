@@ -1,14 +1,9 @@
 
 import { StyledExportButton } from "../Skills.Styles";
 import { Modal } from "@mui/material";
-import {
-  useAdminState,
-  // skillFormState
-} from "context";
-import { getAuthenticationProfileTemplates } from "authentication";
 import React from "react";
 import SkillEntryFormModal from "./SkillEntryFormModal";
-// import { SkillFormState } from "./SkillEntryForm.Interfaces";
+import { formModes } from "globals";
 
 
 const SkillEntryButton = (props: any) => {  // TODO: make a props type?
@@ -17,14 +12,9 @@ const SkillEntryButton = (props: any) => {  // TODO: make a props type?
     formMode, taskQueues, applications, timeOfDays
   } = props;
 
-  // const [ taskQueues, setTaskQueues ] = React.useState([]);
-  // const [ applications, setApplications ] = React.useState([]);
-  // const [ timeOfDays, setTimeOfDays ] = React.useState([]);
+  const [ showSkillModal, setShowSkillModal ] = React.useState(false);
 
-  // const skFormState: SkillFormState = skillFormState();
-
-  React.useEffect(() => {
-
+  const openModal = () => {
     if (formMode === "UPDATE") {
       // Placeholder to fill in form the existing data
       // skillFormDispatch({
@@ -35,18 +25,12 @@ const SkillEntryButton = (props: any) => {  // TODO: make a props type?
       //   }
       // })
     }
-
-  }, []);
-
-  const [ showSkillModal, setShowSkillModal ] = React.useState(false);
-
-  const state = useAdminState();
-  const tritonProfile = state.userContext.authenticationProfiles.find((p: any) => p.name === getAuthenticationProfileTemplates().TRITON.name);
-  const isAdmin = tritonProfile.isAdmin;
+    setShowSkillModal(true);
+  };
 
   return (
     <>
-      <StyledExportButton onClick={() => setShowSkillModal(true)} styles={{}}>Add Skill </StyledExportButton>
+      <StyledExportButton onClick={openModal} styles={{}}>{formMode === formModes.INSERT ? 'Add' : 'Edit'} Skill </StyledExportButton>
       <Modal open={showSkillModal}>
         <>
           <SkillEntryFormModal

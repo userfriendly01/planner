@@ -16,6 +16,7 @@ import {
 import { UserFormState } from "components/tabs/usermanagement/OnboardNewUser/UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 import React, { ReactElement } from "react";
 import { ProfileEntryFormState } from "components/tabs/profilesettings/ProfileEntryForm/ProfileEntryForm.Interfaces";
+import { SkillFormState } from "components/tabs/callflowmanagement/SkillManagement/Skills.Interfaces";
 
 export const StateContext = React.createContext(undefined);
 export const DispatchContext = React.createContext(undefined);
@@ -130,7 +131,7 @@ const profileEntryFormDispatch = (): (action: Action) => VoidFunction => {
   return context;
 };
 
-const skillFormState = (): any => {  // TODO: Make this not any
+const skillFormState = (): SkillFormState => {
   const context: any = React.useContext(SkillFormStateContext);
   if (context === undefined) {
     throw new Error("SkillFormStateContext must be used within a Context Provider");

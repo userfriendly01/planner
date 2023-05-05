@@ -135,5 +135,6 @@ export interface AddEditSkill {
   profileIds: number[],
   vhCallTarget: string | null,
   vhThreshold: number | null,
+  updatedBy: string,
   timeOfDayIds: TimeOfDay[]
 }
