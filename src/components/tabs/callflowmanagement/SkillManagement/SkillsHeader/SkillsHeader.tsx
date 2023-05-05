@@ -1,6 +1,7 @@
 import {
   Dropdown,
-  ExportButton
+  ExportButton,
+  SkillEntryButton
 } from "components";
 import { SkillsHeaderProps } from "../Skills.Interfaces";
 import { StyledHeader } from "../Skills.Styles";
@@ -11,7 +12,6 @@ import {
   formModes, TritonProfile
 } from "globals";
 import React from "react";
-import SkillEntryButton from "../AddEditSkill/SkillEntryButton";
 
 const SkillsHeader = (props: SkillsHeaderProps) => {
 
@@ -63,12 +63,12 @@ const SkillsHeader = (props: SkillsHeaderProps) => {
           });
         }}
       />
-      <SkillEntryButton
+      {isAdmin && <SkillEntryButton
         formMode={formModes.INSERT}
         taskQueues={taskQueues}
         applications={applications}
         timeOfDays={timeOfDays}
-      />
+      /> }
       <ExportButton selected={tableState.selected}/>
     </StyledHeader>
   );

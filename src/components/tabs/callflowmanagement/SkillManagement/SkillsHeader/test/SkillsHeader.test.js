@@ -4,7 +4,8 @@ import { SearchBox } from "components";
 import React from "react";
 import {
   Dropdown,
-  ExportButton
+  ExportButton,
+  SkillEntryButton
 } from "components";
 import { useAdminState } from "context";
 import {
@@ -17,17 +18,24 @@ import {
   initialTestState,
   profileList
 } from "testUtils";
+// import { SkillEntryButton } from "../../AddEditSkill/SkillEntryButton";
 
 jest.mock("components", () => ({
   SearchBox: jest.fn(),
   Dropdown: jest.fn(),
   ExportButton: jest.fn(),
-  StyledButton: jest.fn()
+  StyledButton: jest.fn(),
+  SkillEntryButton: jest.fn()
 }));
 
 jest.mock("context", () => ({
   useAdminState: jest.fn()
 }));
+
+// jest.mock("../../AddEditSkill/SkillEntryButton", () => ({
+//   __esModule: true,
+//   default: jest.fn()
+// }));
 
 const mockSetTableState = jest.fn();
 const tableState = {
@@ -43,6 +51,9 @@ const renderComponent = () => {
   const rendered = render(<SkillsHeader
     tableState={tableState}
     setTableState={mockSetTableState}
+    taskQueues={[]}
+    applications={[]}
+    timeOfDays={[]}
   />);
   return rendered;
 };
@@ -55,7 +66,8 @@ describe("<SkillsHeader />", () => {
     setupMockedComponents({
       SearchBox,
       Dropdown,
-      ExportButton
+      ExportButton,
+      SkillEntryButton
     });
   });
   describe("initial render", () => {
@@ -84,6 +96,18 @@ describe("<SkillsHeader />", () => {
               }
             ]
           }
+        });
+      });
+      test("should render Add Skill button", () => {
+        renderComponent();
+        console.warn("look here", SkillEntryButton.mock);
+        expect(SkillEntryButton.mock.calls.length).toBe(1);
+        expectOnlyPassedProps(SkillEntryButton, {
+          formMode: "insert"
+        });
+        expect(ExportButton.mock.calls.length).toBe(1);
+        expectOnlyPassedProps(ExportButton, {
+          selected: tableState.selected
         });
       });
       test("should render profile dropdown", () => {

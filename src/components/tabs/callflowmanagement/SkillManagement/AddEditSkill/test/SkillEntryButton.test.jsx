@@ -19,7 +19,6 @@ jest.mock("components", () => ({
 
 jest.mock("@mui/material", () => ({
   Modal: jest.fn()
-
 }));
 
 jest.mock("../SkillEntryFormModal", () => ({
