@@ -408,7 +408,7 @@ describe("fields.js", () => {
           }
         });
         test("n# fetch fails", async () => {
-          fetchUser.mockRejectedValue("Aww")
+          fetchUser.mockRejectedValue("Aww");
           try {
             await managerValidateFunction({
               rowNumber: 9,
@@ -425,7 +425,7 @@ describe("fields.js", () => {
           fetchUser.mockResolvedValue({
             lastName: "Shatz",
             firstName: "Carl"
-          })
+          });
           const row = {
             rowNumber: 9,
             "Manager N Number": "n0002221"
@@ -438,13 +438,13 @@ describe("fields.js", () => {
               manager_first_name: "Carl",
               manager_last_name: "Shatz"
             }
-          })
+          });
         });
         test("n# fetch succeeds, attributes are present", async () => {
           fetchUser.mockResolvedValue({
             lastName: "Shatz",
             firstName: "Carl"
-          })
+          });
           const row = {
             rowNumber: 9,
             "Manager N Number": "n0002221",
@@ -458,7 +458,7 @@ describe("fields.js", () => {
               manager_first_name: "Carl",
               manager_last_name: "Shatz"
             }
-          })
+          });
         });
       });
     });
@@ -1627,6 +1627,78 @@ describe("fields.js", () => {
         });
       });
     });
+    describe("WFM_ACTIVATE_EXTERNAL_LOGON", () => {
+      describe("validate function", () => {
+        const wfmActivateExternalLogonValidateFunction = FIELDS.WFM_ACTIVATE_EXTERNAL_LOGON.validateFunction;
+        test("WFM Activate External Logon is missing, rejects with message", async () => {
+          try {
+            await wfmActivateExternalLogonValidateFunction({
+              rowNumber: 4,
+              "boo": "what"
+            }, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "WFM Activate External Logon must be Y or N for row 4"
+            }));
+          }
+        });
+        test("WFM Activate External Logon is not a string, rejects with message", async () => {
+          try {
+            await wfmActivateExternalLogonValidateFunction({
+              rowNumber: 4,
+              "WFM Activate External Logon": 13
+            });
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "WFM Activate External Logon must be Y or N for row 4"
+            }));
+          }
+        });
+        test("WFM Activate External Logon is not Y or N, rejects with message", async () => {
+          try {
+            await wfmActivateExternalLogonValidateFunction({
+              rowNumber: 4,
+              "WFM Activate External Logon": "blep"
+            });
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "WFM Activate External Logon must be Y or N for row 4"
+            }));
+          }
+        });
+        test("WFM Activate External Logon is Y, resolves with message", async () => {
+          const row = {
+            rowNumber: 4,
+            "WFM Activate External Logon": "Y"
+          };
+          const result = await wfmActivateExternalLogonValidateFunction(row, initialTestState);
+          expect(result).toEqual("WFM Activate External Logon y set for row 4");
+          expect(row).toEqual({
+            ... row,
+            rowNumber: 4,
+            "WFM Activate External Logon": "Y",
+            wfmActivateExternalLogon: true
+          });
+        });
+        test("WFM Activate External Logon is N, resolves with message", async () => {
+          const row = {
+            rowNumber: 4,
+            "WFM Activate External Logon": "N"
+          };
+          const result = await wfmActivateExternalLogonValidateFunction(row, initialTestState);
+          expect(result).toEqual("WFM Activate External Logon n set for row 4");
+          expect(row).toEqual({
+            ... row,
+            rowNumber: 4,
+            "WFM Activate External Logon": "N",
+            wfmActivateExternalLogon: false
+          });
+        });
+      });
+    });
     describe("CALABRIO_SCOPE", () => {
       describe("validateFunction", () => {
         const calabrioScopeValidation = FIELDS.CALABRIO_SCOPE.validateFunction;
@@ -1783,7 +1855,7 @@ describe("fields.js", () => {
           const row = {
             rowNumber: 9,
             "Calabrio Team": "Hawaii Team 50"
-          }
+          };
           await calabrioTeamValidation(row, initialTestState);
           expect(row).toEqual(row);
         });
@@ -1791,7 +1863,7 @@ describe("fields.js", () => {
           const row = {
             rowNumber: 9,
             "Calabrio Team": "Hawaii Team 50"
-          }
+          };
           try {
             await calabrioTeamValidation(row, {
               ...initialTestState,
@@ -1814,7 +1886,7 @@ describe("fields.js", () => {
             rowNumber: 9,
             "Calabrio Team": "New Team",
             "Calabrio Group": "Unknown Group"
-          }
+          };
           try {
             await calabrioTeamValidation(row, initialTestState);
           } catch(e){
@@ -1829,7 +1901,7 @@ describe("fields.js", () => {
             rowNumber: 9,
             "Calabrio Team": "new TEam",
             "Calabrio Group": "FNOL Group"
-          }
+          };
           await calabrioTeamValidation(row, initialTestState);
           expect(row).toEqual({
             rowNumber: 9,
@@ -1943,7 +2015,7 @@ describe("fields.js", () => {
           const row = {
             rowNumber: 9,
             "Calabrio Team": "Hawaii Team 50"
-          }
+          };
           await calabrioGroupValidation(row, initialTestState);
           expect(row).toEqual(row);
         });
@@ -1951,7 +2023,7 @@ describe("fields.js", () => {
           const row = {
             rowNumber: 9,
             "Calabrio Team": "Hawaii Team 50"
-          }
+          };
           try {
             await calabrioGroupValidation(row, {
               ...initialTestState,
@@ -1974,7 +2046,7 @@ describe("fields.js", () => {
             rowNumber: 9,
             "Calabrio Team": "New Team",
             "Calabrio Group": "Unknown Group"
-          }
+          };
           try {
             await calabrioGroupValidation(row, initialTestState);
           } catch(e){
@@ -1989,7 +2061,7 @@ describe("fields.js", () => {
             rowNumber: 9,
             "Calabrio Team": "New Team",
             "Calabrio Group": "FNOL Group"
-          }
+          };
           await calabrioGroupValidation(row, initialTestState);
           expect(row).toEqual(row);
         });

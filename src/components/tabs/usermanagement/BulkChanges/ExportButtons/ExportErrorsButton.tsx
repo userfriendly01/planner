@@ -15,11 +15,16 @@ const ExportErrorsButton = (props: any) => {
       {
         title: "Row",
         field: "row",
-        width: "50px"
+        width: "75px"
       },
       {
         title: "Errors",
         field: "errors",
+        width: "400px"
+      },
+      {
+        title: "WFM External Logon - Failed Activations",
+        field: "wfmErrors",
         width: "400px"
       }
     ];
@@ -27,7 +32,8 @@ const ExportErrorsButton = (props: any) => {
     errors.forEach((error: any) => {
       rows.push({
         row: error.rowNumber,
-        errors: error.errors.toString()
+        errors: error.errors.toString(),
+        wfmErrors: error.wfmErrors
       });
     });
 
