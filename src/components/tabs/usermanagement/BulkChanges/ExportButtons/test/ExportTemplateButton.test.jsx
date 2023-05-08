@@ -35,7 +35,8 @@ const successfulRows = [
     profileId: "Profile Id",
     // routing_team: "List of Teams that can be used in dynamic routing",
     zeroOutEnabled: "Y/N Indicator to represent if the zero out skill aligned to the profile ID should be added to the users current skills. Only required when DID User is true",
-    selfServiceInd: "Y/N indicator to represent if user has self-service attribute. Only required when DID User is true."
+    selfServiceInd: "Y/N indicator to represent if user has self-service attribute. Only required when DID User is true.",
+    wfmActivateExternalLogon: "Y/N indicator to represent if user needs to activate WFM external logon."
   },
   {
     defaultSkills: "bscCommissions:3, blSalesL1:2, aisl1",
@@ -48,7 +49,8 @@ const successfulRows = [
     profileId: 3,
     // routing_team: "licensedCSC",
     zeroOutEnabled: "Y",
-    selfServiceInd: "Y"
+    selfServiceInd: "Y",
+    wfmActivateExternalLogon: "Y"
   }
 ];
 
@@ -120,6 +122,13 @@ const expectedColumns = [
     field: "selfServiceInd",
     textAlign: "center",
     title: "Self Service Indicator",
+    width: undefined,
+    wrap: true
+  },
+  {
+    field: "wfmActivateExternalLogon",
+    textAlign: "center",
+    title: "WFM Activate External Logon",
     width: undefined,
     wrap: true
   },

@@ -576,6 +576,33 @@ export const FIELDS: Fields = {
       }
     }
   },
+  WFM_ACTIVATE_EXTERNAL_LOGON: {
+    field: "wfmActivateExternalLogon",
+    name: "WFM Activate External Logon",
+    type: "boolean",
+    description: "Y/N indicator to represent if user needs to activate WFM external logon.",
+    example: "Y",
+    options: null,
+    validateFunction: async (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = FIELDS.WFM_ACTIVATE_EXTERNAL_LOGON.name;
+      const field = cleanupField(row[fieldName], "string");
+
+      if (!field) {
+        return rejectPromise(`${fieldName} must be Y or N for row ${rowNumber}`, rowNumber);
+      } else if (field !== "y" && field !== "n") {
+        return rejectPromise(`${fieldName} must be Y or N for row ${rowNumber}`, rowNumber);
+      } else if (field === "y") {
+        // user needs to activate their external logon
+        row.wfmActivateExternalLogon = true;
+        return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+      } else {
+        // user doesn't need external logon
+        row.wfmActivateExternalLogon = false;
+        return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+      }
+    }
+  },
   CALABRIO_SCOPE: {
     field: "calabrioScope",
     name: "Calabrio Scope",
