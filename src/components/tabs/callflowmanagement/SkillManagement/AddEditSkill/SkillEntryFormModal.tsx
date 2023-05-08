@@ -242,8 +242,8 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
             styles={inputStyles}
             error={invalidSkillNum}
             maxLength="80"
-            label="Skill Number"
-            name="Skill Number"
+            label="Skill"
+            name="Skill"
             updateValue={value => {
               skFormDispatch({
                 type: skillFormActions.SET_SKILL_NUM,
