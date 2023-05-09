@@ -79,6 +79,78 @@ const timeOfDays = [{
   closeTime: "22:00"
 }];
 
+const completeFormNoVh = {
+  skillFriendlyName: "test",
+  skillNum: "test",
+  applicationId: 3,
+  taskQueueSid: "tqasdf",
+  profileIds: [5],
+  enableVirtualHold: false,
+  vhCallTarget: {
+    value: "",
+    valid: false,
+    e164: "",
+    blurred: false
+  },
+  vhThreshold: "",
+  timeOfDay: {
+    skill: {
+      sunday: 4,
+      monday: 5,
+      tuesday: 5,
+      wednesday: 5,
+      thursday: 5,
+      friday: 5,
+      saturday: 4
+    },
+    vh: {
+      sunday: null,
+      monday: null,
+      tuesday: null,
+      wednesday: null,
+      thursday: null,
+      friday: null,
+      saturday: null
+    }
+  }
+};
+
+const completeFormWithVh = {
+  skillFriendlyName: "test",
+  skillNum: "test",
+  applicationId: 3,
+  taskQueueSid: "tqasdf",
+  profileIds: [5],
+  enableVirtualHold: true,
+  vhCallTarget: {
+    value: "5555554321",
+    valid: true,
+    e164: "+15555554321",
+    blurred: false
+  },
+  vhThreshold: "45",
+  timeOfDay: {
+    skill: {
+      sunday: 4,
+      monday: 5,
+      tuesday: 5,
+      wednesday: 5,
+      thursday: 5,
+      friday: 5,
+      saturday: 4
+    },
+    vh: {
+      sunday: 3,
+      monday: 3,
+      tuesday: 3,
+      wednesday: 3,
+      thursday: 3,
+      friday: 3,
+      saturday: 3
+    }
+  }
+};
+
 const mockCloseModal = jest.fn();
 const mockSkillFormDispatch = jest.fn();
 
@@ -145,8 +217,8 @@ describe("<SkillEntryFormModal />", () => {
       expect(StyledButton.mock.calls[1][0].disabled).toBe(true);
     });
   });
-  describe("virtual hold toggle is enabled", () => {
-    test("should update enablevirtualhold in skillformstate", () => {
+  describe("virtual hold toggle", () => {
+    test("toggle on should update enablevirtualhold in skillformstate", () => {
       render(<SkillEntryFormModal
         closeModal={mockCloseModal}
         taskQueues={taskQueues}
@@ -163,6 +235,35 @@ describe("<SkillEntryFormModal />", () => {
         payload: true
       });
     });
+    test("toggle off should update enablevirtualhold to false and reset vh values in skillformstate", () => {
+      render(<SkillEntryFormModal
+        closeModal={mockCloseModal}
+        taskQueues={taskQueues}
+        applications={applications}
+        timeOfDays={timeOfDays}
+      />);
+      render(PaperContainer.mock.calls[0][0].children);
+      const vhToggle = FormControlLabel.mock.calls[0][0].control.props.onChange;
+      act(() => {
+        vhToggle({}, false);
+      });
+      expect(mockSkillFormDispatch).toBeCalledWith({
+        type: "SET_ENABLE_VIRTUAL_HOLD",
+        payload: false
+      });
+      expect(mockSkillFormDispatch).toBeCalledWith({
+        type: "SET_VH_CALL_TARGET",
+        payload: initialSkillFormState.vhCallTarget
+      });
+      expect(mockSkillFormDispatch).toBeCalledWith({
+        type: "SET_VH_THRESHOLD",
+        payload: initialSkillFormState.vhThreshold
+      });
+      expect(mockSkillFormDispatch).toBeCalledWith({
+        type: "SET_VH_TIME_OF_DAYS",
+        payload: initialSkillFormState.timeOfDay.vh
+      });
+    });
     test("should render additional virtual hold inputs", () => {
       const enabledVH = {
         ...initialSkillFormState,
@@ -177,7 +278,7 @@ describe("<SkillEntryFormModal />", () => {
       />);
       render(PaperContainer.mock.calls[0][0].children);
       expect(CustomInput.mock.calls.length).toBe(3);
-      expect(Dropdown.mock.calls.length).toBe(10);
+      expect(Dropdown.mock.calls.length).toBe(17);
       expect(PhoneNumberInput.mock.calls.length).toBe(1);
     });
   });
@@ -234,7 +335,7 @@ describe("<SkillEntryFormModal />", () => {
         payload: 1
       });
     });
-    test("sunday time of day dropdown options updates applicationId in skillformstate", () => {
+    test("sunday skill time of day dropdown options updates applicationId in skillformstate", () => {
       render(<SkillEntryFormModal
         closeModal={mockCloseModal}
         taskQueues={taskQueues}
@@ -249,12 +350,12 @@ describe("<SkillEntryFormModal />", () => {
       expect(mockSkillFormDispatch).toBeCalledWith({
         type: "SET_TIME_OF_DAYS",
         payload: {
-          ...initialSkillFormState.timeOfDay,
+          ...initialSkillFormState.timeOfDay.skill,
           sunday: 1
         }
       });
     });
-    test("saturday time of day dropdown options updates applicationId in skillformstate", () => {
+    test("saturday skill time of day dropdown options updates applicationId in skillformstate", () => {
       render(<SkillEntryFormModal
         closeModal={mockCloseModal}
         taskQueues={taskQueues}
@@ -269,12 +370,12 @@ describe("<SkillEntryFormModal />", () => {
       expect(mockSkillFormDispatch).toBeCalledWith({
         type: "SET_TIME_OF_DAYS",
         payload: {
-          ...initialSkillFormState.timeOfDay,
+          ...initialSkillFormState.timeOfDay.skill,
           saturday: 12
         }
       });
     });
-    test("monday time of day dropdown options updates applicationId in skillformstate", () => {
+    test("monday skill time of day dropdown options updates applicationId in skillformstate", () => {
       render(<SkillEntryFormModal
         closeModal={mockCloseModal}
         taskQueues={taskQueues}
@@ -289,12 +390,12 @@ describe("<SkillEntryFormModal />", () => {
       expect(mockSkillFormDispatch).toBeCalledWith({
         type: "SET_TIME_OF_DAYS",
         payload: {
-          ...initialSkillFormState.timeOfDay,
+          ...initialSkillFormState.timeOfDay.skill,
           monday: 2
         }
       });
     });
-    test("tuesday time of day dropdown options updates applicationId in skillformstate", () => {
+    test("tuesday skill time of day dropdown options updates applicationId in skillformstate", () => {
       render(<SkillEntryFormModal
         closeModal={mockCloseModal}
         taskQueues={taskQueues}
@@ -309,12 +410,12 @@ describe("<SkillEntryFormModal />", () => {
       expect(mockSkillFormDispatch).toBeCalledWith({
         type: "SET_TIME_OF_DAYS",
         payload: {
-          ...initialSkillFormState.timeOfDay,
+          ...initialSkillFormState.timeOfDay.skill,
           tuesday: 7
         }
       });
     });
-    test("wednesday time of day dropdown options updates applicationId in skillformstate", () => {
+    test("wednesday skill time of day dropdown options updates applicationId in skillformstate", () => {
       render(<SkillEntryFormModal
         closeModal={mockCloseModal}
         taskQueues={taskQueues}
@@ -329,12 +430,12 @@ describe("<SkillEntryFormModal />", () => {
       expect(mockSkillFormDispatch).toBeCalledWith({
         type: "SET_TIME_OF_DAYS",
         payload: {
-          ...initialSkillFormState.timeOfDay,
+          ...initialSkillFormState.timeOfDay.skill,
           wednesday: 37
         }
       });
     });
-    test("thursday time of day dropdown options updates applicationId in skillformstate", () => {
+    test("thursday skill time of day dropdown options updates applicationId in skillformstate", () => {
       render(<SkillEntryFormModal
         closeModal={mockCloseModal}
         taskQueues={taskQueues}
@@ -349,12 +450,12 @@ describe("<SkillEntryFormModal />", () => {
       expect(mockSkillFormDispatch).toBeCalledWith({
         type: "SET_TIME_OF_DAYS",
         payload: {
-          ...initialSkillFormState.timeOfDay,
+          ...initialSkillFormState.timeOfDay.skill,
           thursday: 8
         }
       });
     });
-    test("friday time of day dropdown options updates applicationId in skillformstate", () => {
+    test("friday skill time of day dropdown options updates applicationId in skillformstate", () => {
       render(<SkillEntryFormModal
         closeModal={mockCloseModal}
         taskQueues={taskQueues}
@@ -369,9 +470,158 @@ describe("<SkillEntryFormModal />", () => {
       expect(mockSkillFormDispatch).toBeCalledWith({
         type: "SET_TIME_OF_DAYS",
         payload: {
-          ...initialSkillFormState.timeOfDay,
+          ...initialSkillFormState.timeOfDay.skill,
           friday: 9
         }
+      });
+    });
+    describe("vh dropdowns", () => {
+      beforeEach(() => {
+        const enabledVH = {
+          ...initialSkillFormState,
+          enableVirtualHold: true
+        };
+        skillFormState.mockReturnValueOnce(enabledVH);
+      });
+      test("sunday vh time of day dropdown options updates applicationId in skillformstate", () => {
+        render(<SkillEntryFormModal
+          closeModal={mockCloseModal}
+          taskQueues={taskQueues}
+          applications={applications}
+          timeOfDays={timeOfDays}
+        />);
+        render(PaperContainer.mock.calls[0][0].children);
+        const sundayVhDropdown = Dropdown.mock.calls[10][0];
+        act(() => {
+          sundayVhDropdown.updateValue({}, { value: 1 });
+        });
+        expect(mockSkillFormDispatch).toBeCalledWith({
+          type: "SET_VH_TIME_OF_DAYS",
+          payload: {
+            ...initialSkillFormState.timeOfDay.vh,
+            sunday: 1
+          }
+        });
+      });
+      test("saturday vh time of day dropdown options updates applicationId in skillformstate", () => {
+        render(<SkillEntryFormModal
+          closeModal={mockCloseModal}
+          taskQueues={taskQueues}
+          applications={applications}
+          timeOfDays={timeOfDays}
+        />);
+        render(PaperContainer.mock.calls[0][0].children);
+        const saturdayVhDropdown = Dropdown.mock.calls[11][0];
+        act(() => {
+          saturdayVhDropdown.updateValue({}, { value: 12 });
+        });
+        expect(mockSkillFormDispatch).toBeCalledWith({
+          type: "SET_VH_TIME_OF_DAYS",
+          payload: {
+            ...initialSkillFormState.timeOfDay.vh,
+            saturday: 12
+          }
+        });
+      });
+      test("monday vh time of day dropdown options updates applicationId in skillformstate", () => {
+        render(<SkillEntryFormModal
+          closeModal={mockCloseModal}
+          taskQueues={taskQueues}
+          applications={applications}
+          timeOfDays={timeOfDays}
+        />);
+        render(PaperContainer.mock.calls[0][0].children);
+        const mondayVhDropdown = Dropdown.mock.calls[12][0];
+        act(() => {
+          mondayVhDropdown.updateValue({}, { value: 2 });
+        });
+        expect(mockSkillFormDispatch).toBeCalledWith({
+          type: "SET_VH_TIME_OF_DAYS",
+          payload: {
+            ...initialSkillFormState.timeOfDay.vh,
+            monday: 2
+          }
+        });
+      });
+      test("tuesday vh time of day dropdown options updates applicationId in skillformstate", () => {
+        render(<SkillEntryFormModal
+          closeModal={mockCloseModal}
+          taskQueues={taskQueues}
+          applications={applications}
+          timeOfDays={timeOfDays}
+        />);
+        render(PaperContainer.mock.calls[0][0].children);
+        const tuesdayVhDropdown = Dropdown.mock.calls[13][0];
+        act(() => {
+          tuesdayVhDropdown.updateValue({}, { value: 7 });
+        });
+        expect(mockSkillFormDispatch).toBeCalledWith({
+          type: "SET_VH_TIME_OF_DAYS",
+          payload: {
+            ...initialSkillFormState.timeOfDay.vh,
+            tuesday: 7
+          }
+        });
+      });
+      test("wednesday vh time of day dropdown options updates applicationId in skillformstate", () => {
+        render(<SkillEntryFormModal
+          closeModal={mockCloseModal}
+          taskQueues={taskQueues}
+          applications={applications}
+          timeOfDays={timeOfDays}
+        />);
+        render(PaperContainer.mock.calls[0][0].children);
+        const wednesdayVhDropdown = Dropdown.mock.calls[14][0];
+        act(() => {
+          wednesdayVhDropdown.updateValue({}, { value: 37 });
+        });
+        expect(mockSkillFormDispatch).toBeCalledWith({
+          type: "SET_VH_TIME_OF_DAYS",
+          payload: {
+            ...initialSkillFormState.timeOfDay.vh,
+            wednesday: 37
+          }
+        });
+      });
+      test("thursday vh time of day dropdown options updates applicationId in skillformstate", () => {
+        render(<SkillEntryFormModal
+          closeModal={mockCloseModal}
+          taskQueues={taskQueues}
+          applications={applications}
+          timeOfDays={timeOfDays}
+        />);
+        render(PaperContainer.mock.calls[0][0].children);
+        const thursdayVhVhDropdown = Dropdown.mock.calls[15][0];
+        act(() => {
+          thursdayVhVhDropdown.updateValue({}, { value: 8 });
+        });
+        expect(mockSkillFormDispatch).toBeCalledWith({
+          type: "SET_VH_TIME_OF_DAYS",
+          payload: {
+            ...initialSkillFormState.timeOfDay.vh,
+            thursday: 8
+          }
+        });
+      });
+      test("friday vh time of day dropdown options updates applicationId in skillformstate", () => {
+        render(<SkillEntryFormModal
+          closeModal={mockCloseModal}
+          taskQueues={taskQueues}
+          applications={applications}
+          timeOfDays={timeOfDays}
+        />);
+        render(PaperContainer.mock.calls[0][0].children);
+        const fridayVhDropdown = Dropdown.mock.calls[16][0];
+        act(() => {
+          fridayVhDropdown.updateValue({}, { value: 9 });
+        });
+        expect(mockSkillFormDispatch).toBeCalledWith({
+          type: "SET_VH_TIME_OF_DAYS",
+          payload: {
+            ...initialSkillFormState.timeOfDay.vh,
+            friday: 9
+          }
+        });
       });
     });
   });
@@ -459,5 +709,91 @@ describe("<SkillEntryFormModal />", () => {
         payload: "40"
       });
     });
+  });
+  describe("buttons", () => {
+    test("when cancel button is clicked, calls close modal and clears form", () => {
+      render(<SkillEntryFormModal
+        closeModal={mockCloseModal}
+        taskQueues={taskQueues}
+        applications={applications}
+        timeOfDays={timeOfDays}
+      />);
+      render(PaperContainer.mock.calls[0][0].children);
+      expect(StyledButton.mock.calls.length).toBe(2);
+      expect(StyledButton.mock.calls[1][0].disabled).toBe(true);
+      const clickCancel = StyledButton.mock.calls[0][0].onClick;
+      expect(mockSkillFormDispatch).not.toHaveBeenCalledWith({
+        type: skillFormActions.RESET_FORM
+      });
+      act(() => {
+        clickCancel();
+      });
+      expect(mockSkillFormDispatch).toHaveBeenCalledWith({
+        type: skillFormActions.RESET_FORM
+      });
+      expect(mockCloseModal).toHaveBeenCalledTimes(1);
+    });
+    test("add/update skill button is NOT disabled when required fields are valid/complete (no VH)", () => {
+
+      skillFormState.mockReturnValueOnce(completeFormNoVh);
+      render(<SkillEntryFormModal
+        closeModal={mockCloseModal}
+        taskQueues={taskQueues}
+        applications={applications}
+        timeOfDays={timeOfDays}
+      />);
+      render(PaperContainer.mock.calls[0][0].children);
+      expect(StyledButton.mock.calls.length).toBe(2);
+      const addSkillButton = StyledButton.mock.calls[1][0];
+      expect(addSkillButton.disabled).toBe(false);
+    });
+    test("add/update skill button is disabled when some required fields are empty", () => {
+
+      skillFormState.mockReturnValueOnce(completeFormWithVh);
+      render(<SkillEntryFormModal
+        closeModal={mockCloseModal}
+        taskQueues={taskQueues}
+        applications={applications}
+        timeOfDays={timeOfDays}
+      />);
+      render(PaperContainer.mock.calls[0][0].children);
+      expect(StyledButton.mock.calls.length).toBe(2);
+      const addSkillButton = StyledButton.mock.calls[1][0];
+      expect(addSkillButton.disabled).toBe(false);
+    });
+    test("add/update skill button is disabled when some required fields are empty", () => {
+      const incompleteForm = {
+        ...completeFormWithVh,
+        timeOfDay: {
+          ...completeFormWithVh.timeOfDay,
+          vh: {
+            sunday: null,
+            monday: null,
+            tuesday: null,
+            wednesday: null,
+            thursday: null,
+            friday: null,
+            saturday: null
+          }
+        }
+      };
+      skillFormState.mockReturnValueOnce(incompleteForm);
+      render(<SkillEntryFormModal
+        closeModal={mockCloseModal}
+        taskQueues={taskQueues}
+        applications={applications}
+        timeOfDays={timeOfDays}
+      />);
+      render(PaperContainer.mock.calls[0][0].children);
+      expect(StyledButton.mock.calls.length).toBe(2);
+      const addSkillButton = StyledButton.mock.calls[1][0];
+      expect(addSkillButton.disabled).toBe(true);
+    });
+  });
+//   TODO: FINISH THESE
+  describe("create skill is called", () => {
+    test("call succeeds, form resets and modal displays success overlay, then closes", () => {});
+    test("call partially fails, displays message, stays open", () => {});
+    test("call fails, shows error message", () => {});
   });
 });

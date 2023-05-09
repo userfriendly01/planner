@@ -112,19 +112,31 @@ export interface SkillFormState {
   },
   vhThreshold: string | null,
   timeOfDay: {
-    sunday: number | null,
-    monday: number | null,
-    tuesday: number | null,
-    wednesday: number | null,
-    thursday: number | null,
-    friday: number | null,
-    saturday: number | null
+    skill: {
+      sunday: number | null,
+      monday: number | null,
+      tuesday: number | null,
+      wednesday: number | null,
+      thursday: number | null,
+      friday: number | null,
+      saturday: number | null
+    },
+    vh: {
+      sunday: number | null,
+      monday: number | null,
+      tuesday: number | null,
+      wednesday: number | null,
+      thursday: number | null,
+      friday: number | null,
+      saturday: number | null
+    }
   }
 }
 
 interface TimeOfDay {
   dayId: number,
-  timeOfDayId: number
+  timeOfDayId: number,
+  vhTimeOfDayId: number | null
 }
 
 export interface AddEditSkill {

@@ -43,6 +43,11 @@ const ModalContainer = styled.div`
   width: 900px;
 `;
 
+const ScrollingPaper = styled(PaperContainer)`
+  overflow-y: auto;
+  max-height: 800px;
+`;
+
 const CenteredDiv = styled.div`
   align-self: center;
   margin-bottom: 5px;
@@ -111,6 +116,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
   const areRequiredFieldsEmpty = () => {
     let hasEmptyValues = true;
     let emptyTimeOfDay = true;
+    let emptyVhTimeOfDay;
     const {
       skillFriendlyName,
       skillNum,
@@ -126,13 +132,14 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
     hasEmptyValues = skillFriendlyName === "" || skillNum === "" || applicationId === null ||
       taskQueueSid === "" || !taskQueueSid || profileIds.length < 1;
 
-    emptyTimeOfDay = Object.values(timeOfDay).filter((value: any) => !value || (value && value.toString().trim() === "")).length > 0;
+    emptyTimeOfDay = Object.values(timeOfDay.skill).filter((value: any) => !value || (value && value.toString().trim() === "")).length > 0;
 
     if (enableVirtualHold) {
       hasEmptyValues = hasEmptyValues || vhThreshold === "" || vhCallTarget.e164 === "";
+      emptyVhTimeOfDay = Object.values(timeOfDay.vh).filter((value: any) => !value || (value && value.toString().trim() === "")).length > 0;
     }
 
-    if (hasEmptyValues || emptyTimeOfDay) {
+    if (hasEmptyValues || emptyTimeOfDay || emptyVhTimeOfDay) {
       return true;
     } else {
       return false;
@@ -159,53 +166,70 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
       timeOfDayIds: [
         {
           dayId: 1,
-          timeOfDayId: skFormState.timeOfDay.sunday
+          timeOfDayId: skFormState.timeOfDay.skill.sunday,
+          vhTimeOfDayId: skFormState.timeOfDay.vh.sunday
         },
         {
           dayId: 2,
-          timeOfDayId: skFormState.timeOfDay.monday
+          timeOfDayId: skFormState.timeOfDay.skill.monday,
+          vhTimeOfDayId: skFormState.timeOfDay.vh.monday
         },
         {
           dayId: 3,
-          timeOfDayId: skFormState.timeOfDay.tuesday
+          timeOfDayId: skFormState.timeOfDay.skill.tuesday,
+          vhTimeOfDayId: skFormState.timeOfDay.vh.tuesday
         },
         {
           dayId: 4,
-          timeOfDayId: skFormState.timeOfDay.wednesday
+          timeOfDayId: skFormState.timeOfDay.skill.wednesday,
+          vhTimeOfDayId: skFormState.timeOfDay.vh.wednesday
         },
         {
           dayId: 5,
-          timeOfDayId: skFormState.timeOfDay.thursday
+          timeOfDayId: skFormState.timeOfDay.skill.thursday,
+          vhTimeOfDayId: skFormState.timeOfDay.vh.thursday
         },
         {
           dayId: 6,
-          timeOfDayId: skFormState.timeOfDay.friday
+          timeOfDayId: skFormState.timeOfDay.skill.friday,
+          vhTimeOfDayId: skFormState.timeOfDay.vh.friday
         },
         {
           dayId: 7,
-          timeOfDayId: skFormState.timeOfDay.saturday
+          timeOfDayId: skFormState.timeOfDay.skill.saturday,
+          vhTimeOfDayId: skFormState.timeOfDay.vh.saturday
         }
       ]
     };
 
-    console.log("^^^^ This is the body we will send to softphone service", body);
-
     try {
 
-      const result = await createSkill(body);
-      console.log("%%%%% result", result);
-      closeModal();
-      setSaveResult({
-        message: "Request Successfully Processed",
-        status: ModalOverlayStatuses.SUCCESS
-      });
-      skFormDispatch({
-        type: skillFormActions.RESET_FORM
-      });
+      const response = await createSkill(body);
+      console.log("%%%%% response", response);
+      if (response.status === 200) {
+        setSaveResult({
+          message: "Request Successfully Processed",
+          status: ModalOverlayStatuses.SUCCESS
+        });
+        skFormDispatch({
+          type: skillFormActions.RESET_FORM
+        });
+        closeModal();
+      } else {
+        // a partial success will return 206
+        // meaning either the creation in contactmanager OR the callflow db was sucessful
+        setSaveResult({
+          message: response.data.response.message,
+          status: ModalOverlayStatuses.PARTIAL_FAIL
+        });
+        skFormDispatch({
+          type: skillFormActions.RESET_FORM
+        });
+      }
     } catch (err) {
-      console.log("ERROR WHEN ADDING SKILL", err);
+      console.error("ERROR WHEN ADDING SKILL", err);
       setSaveResult({
-        message: "Request Failed",
+        message: `Request Failed: ${err.message}`,
         status: ModalOverlayStatuses.FAIL
       });
     }
@@ -213,7 +237,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
 
   return (
     <ModalContainer>
-      <PaperContainer>
+      <ScrollingPaper>
         { saveResult.status !== null &&
           <ModalOverlay
             message={saveResult.message}
@@ -290,18 +314,18 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
           />
         </FlexRow>
         <hr />
-        <CenteredDiv>Time of Day</CenteredDiv>
+        <CenteredDiv>Skill Time of Day</CenteredDiv>
         <FlexRow>
           <FlexColumn>
             <Dropdown
               options={timeOfDayOptions}
-              value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.sunday) || null}
+              value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.skill.sunday) || null}
               label="Sunday"
               updateValue={(e: any, newValue: any) => {
                 skFormDispatch({
                   type: skillFormActions.SET_TIME_OF_DAYS,
                   payload: {
-                    ...skFormState.timeOfDay,
+                    ...skFormState.timeOfDay.skill,
                     sunday: newValue.value
                   }
                 });
@@ -309,13 +333,13 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
             />
             <Dropdown
               options={timeOfDayOptions}
-              value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.saturday) || null}
+              value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.skill.saturday) || null}
               label="Saturday"
               updateValue={(e: any, newValue: any) => {
                 skFormDispatch({
                   type: skillFormActions.SET_TIME_OF_DAYS,
                   payload: {
-                    ...skFormState.timeOfDay,
+                    ...skFormState.timeOfDay.skill,
                     saturday: newValue.value
                   }
                 });
@@ -325,13 +349,13 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
           <FlexColumn>
             <Dropdown
               options={timeOfDayOptions}
-              value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.monday) || null}
+              value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.skill.monday) || null}
               label="Monday"
               updateValue={(e: any, newValue: any) => {
                 skFormDispatch({
                   type: skillFormActions.SET_TIME_OF_DAYS,
                   payload: {
-                    ...skFormState.timeOfDay,
+                    ...skFormState.timeOfDay.skill,
                     monday: newValue.value
                   }
                 });
@@ -339,13 +363,13 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
             />
             <Dropdown
               options={timeOfDayOptions}
-              value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.tuesday) || null}
+              value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.skill.tuesday) || null}
               label="Tuesday"
               updateValue={(e: any, newValue: any) => {
                 skFormDispatch({
                   type: skillFormActions.SET_TIME_OF_DAYS,
                   payload: {
-                    ...skFormState.timeOfDay,
+                    ...skFormState.timeOfDay.skill,
                     tuesday: newValue.value
                   }
                 });
@@ -353,13 +377,13 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
             />
             <Dropdown
               options={timeOfDayOptions}
-              value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.wednesday) || null}
+              value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.skill.wednesday) || null}
               label="Wednesday"
               updateValue={(e: any, newValue: any) => {
                 skFormDispatch({
                   type: skillFormActions.SET_TIME_OF_DAYS,
                   payload: {
-                    ...skFormState.timeOfDay,
+                    ...skFormState.timeOfDay.skill,
                     wednesday: newValue.value
                   }
                 });
@@ -367,13 +391,13 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
             />
             <Dropdown
               options={timeOfDayOptions}
-              value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.thursday) || null}
+              value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.skill.thursday) || null}
               label="Thursday"
               updateValue={(e: any, newValue: any) => {
                 skFormDispatch({
                   type: skillFormActions.SET_TIME_OF_DAYS,
                   payload: {
-                    ...skFormState.timeOfDay,
+                    ...skFormState.timeOfDay.skill,
                     thursday: newValue.value
                   }
                 });
@@ -381,13 +405,13 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
             />
             <Dropdown
               options={timeOfDayOptions}
-              value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.friday) || null}
+              value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.skill.friday) || null}
               label="Friday"
               updateValue={(e: any, newValue: any) => {
                 skFormDispatch({
                   type: skillFormActions.SET_TIME_OF_DAYS,
                   payload: {
-                    ...skFormState.timeOfDay,
+                    ...skFormState.timeOfDay.skill,
                     friday: newValue.value
                   }
                 });
@@ -420,6 +444,10 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
                 skFormDispatch({
                   type: skillFormActions.SET_VH_THRESHOLD,
                   payload: initialSkillFormState.vhThreshold
+                });
+                skFormDispatch({
+                  type: skillFormActions.SET_VH_TIME_OF_DAYS,
+                  payload: initialSkillFormState.timeOfDay.vh
                 });
               }
             }}
@@ -469,6 +497,111 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
               }}
             />
           </FlexRow>
+          <CenteredDiv>Virtual Hold Time of Day</CenteredDiv>
+          <FlexRow>
+            <FlexColumn>
+              <Dropdown
+                options={timeOfDayOptions}
+                value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.vh.sunday) || null}
+                label="Virtual Hold Time: Sunday"
+                updateValue={(e: any, newValue: any) => {
+                  skFormDispatch({
+                    type: skillFormActions.SET_VH_TIME_OF_DAYS,
+                    payload: {
+                      ...skFormState.timeOfDay.vh,
+                      sunday: newValue.value
+                    }
+                  });
+                }}
+              />
+              <Dropdown
+                options={timeOfDayOptions}
+                value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.vh.saturday) || null}
+                label="Virtual Hold Time: Saturday"
+                updateValue={(e: any, newValue: any) => {
+                  skFormDispatch({
+                    type: skillFormActions.SET_VH_TIME_OF_DAYS,
+                    payload: {
+                      ...skFormState.timeOfDay.vh,
+                      saturday: newValue.value
+                    }
+                  });
+                }}
+              />
+            </FlexColumn>
+            <FlexColumn>
+              <Dropdown
+                options={timeOfDayOptions}
+                value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.vh.monday) || null}
+                label="Virtual Hold Time: Monday"
+                updateValue={(e: any, newValue: any) => {
+                  skFormDispatch({
+                    type: skillFormActions.SET_VH_TIME_OF_DAYS,
+                    payload: {
+                      ...skFormState.timeOfDay.vh,
+                      monday: newValue.value
+                    }
+                  });
+                }}
+              />
+              <Dropdown
+                options={timeOfDayOptions}
+                value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.vh.tuesday) || null}
+                label="Virtual Hold Time: Tuesday"
+                updateValue={(e: any, newValue: any) => {
+                  skFormDispatch({
+                    type: skillFormActions.SET_VH_TIME_OF_DAYS,
+                    payload: {
+                      ...skFormState.timeOfDay.vh,
+                      tuesday: newValue.value
+                    }
+                  });
+                }}
+              />
+              <Dropdown
+                options={timeOfDayOptions}
+                value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.vh.wednesday) || null}
+                label="Virtual Hold Time: Wednesday"
+                updateValue={(e: any, newValue: any) => {
+                  skFormDispatch({
+                    type: skillFormActions.SET_VH_TIME_OF_DAYS,
+                    payload: {
+                      ...skFormState.timeOfDay.vh,
+                      wednesday: newValue.value
+                    }
+                  });
+                }}
+              />
+              <Dropdown
+                options={timeOfDayOptions}
+                value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.vh.thursday) || null}
+                label="Virtual Hold Time: Thursday"
+                updateValue={(e: any, newValue: any) => {
+                  skFormDispatch({
+                    type: skillFormActions.SET_VH_TIME_OF_DAYS,
+                    payload: {
+                      ...skFormState.timeOfDay.vh,
+                      thursday: newValue.value
+                    }
+                  });
+                }}
+              />
+              <Dropdown
+                options={timeOfDayOptions}
+                value={timeOfDayOptions.find((tod:any) => tod.value === skFormState.timeOfDay.vh.friday) || null}
+                label="Virtual Hold Time: Friday"
+                updateValue={(e: any, newValue: any) => {
+                  skFormDispatch({
+                    type: skillFormActions.SET_VH_TIME_OF_DAYS,
+                    payload: {
+                      ...skFormState.timeOfDay.vh,
+                      friday: newValue.value
+                    }
+                  });
+                }}
+              />
+            </FlexColumn>
+          </FlexRow>
         </>
         }
         <ButtonWrapper>
@@ -489,7 +622,7 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
             }
           >{skFormState.formMode === formModes.INSERT ? "Add " : "Update "}Skill</StyledButton>
         </ButtonWrapper>
-      </PaperContainer>
+      </ScrollingPaper>
     </ModalContainer>
   );
 };

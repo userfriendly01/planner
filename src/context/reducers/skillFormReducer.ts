@@ -12,6 +12,7 @@ export const skillFormActions = {
   SET_PROFILE_IDS: "SET_PROFILE_IDS",
   SET_VH_CALL_TARGET: "SET_VH_CALL_TARGET",
   SET_VH_THRESHOLD: "SET_VH_THRESHOLD",
+  SET_VH_TIME_OF_DAYS: "SET_VH_TIME_OF_DAYS",
   SET_TIME_OF_DAYS: "SET_TIME_OF_DAYS",
   SET_APPLICATION_ID: "SET_APPLICATION_ID",
   SET_ENABLE_VIRTUAL_HOLD: "SET_ENABLE_VIRTUAL_HOLD",
@@ -34,13 +35,24 @@ export const initialSkillFormState: SkillFormState = {
   },
   vhThreshold: "",
   timeOfDay: {
-    sunday: null,
-    monday: null,
-    tuesday: null,
-    wednesday: null,
-    thursday: null,
-    friday: null,
-    saturday: null
+    skill: {
+      sunday: null,
+      monday: null,
+      tuesday: null,
+      wednesday: null,
+      thursday: null,
+      friday: null,
+      saturday: null
+    },
+    vh: {
+      sunday: null,
+      monday: null,
+      tuesday: null,
+      wednesday: null,
+      thursday: null,
+      friday: null,
+      saturday: null
+    }
   }
 };
 
@@ -90,7 +102,19 @@ export const skillFormReducer = (state: SkillFormState, action: Action): SkillFo
     case skillFormActions.SET_TIME_OF_DAYS: {
       return {
         ...state,
-        timeOfDay: action.payload // ???
+        timeOfDay: {
+          ...state.timeOfDay,
+          skill: action.payload
+        }
+      };
+    }
+    case skillFormActions.SET_VH_TIME_OF_DAYS: {
+      return {
+        ...state,
+        timeOfDay: {
+          ...state.timeOfDay,
+          vh: action.payload
+        }
       };
     }
     case skillFormActions.SET_APPLICATION_ID: {

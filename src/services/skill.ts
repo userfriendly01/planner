@@ -4,4 +4,4 @@ import { AddEditSkill } from "../components/tabs/callflowmanagement/SkillManagem
 
 
 export const createSkill = (payload: AddEditSkill): Promise<any> =>
-  myAxios.post(apiPaths.CREATE_SKILL, payload).then(response => response.data);
+  myAxios.post(apiPaths.CREATE_SKILL, payload).then(response => response);
