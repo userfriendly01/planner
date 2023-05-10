@@ -18,7 +18,6 @@ import {
   initialTestState,
   profileList
 } from "testUtils";
-// import { SkillEntryButton } from "../../AddEditSkill/SkillEntryButton";
 
 jest.mock("components", () => ({
   SearchBox: jest.fn(),
@@ -31,11 +30,6 @@ jest.mock("components", () => ({
 jest.mock("context", () => ({
   useAdminState: jest.fn()
 }));
-
-// jest.mock("../../AddEditSkill/SkillEntryButton", () => ({
-//   __esModule: true,
-//   default: jest.fn()
-// }));
 
 const mockSetTableState = jest.fn();
 const tableState = {

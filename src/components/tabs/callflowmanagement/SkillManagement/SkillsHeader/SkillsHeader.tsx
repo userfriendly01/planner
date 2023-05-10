@@ -68,6 +68,7 @@ const SkillsHeader = (props: SkillsHeaderProps) => {
         taskQueues={taskQueues}
         applications={applications}
         timeOfDays={timeOfDays}
+        isAdmin={isAdmin}
       /> }
       <ExportButton selected={tableState.selected}/>
     </StyledHeader>
