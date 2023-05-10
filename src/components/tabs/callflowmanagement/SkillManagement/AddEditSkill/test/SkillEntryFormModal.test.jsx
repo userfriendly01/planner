@@ -16,7 +16,6 @@ import {
   waitFor
 } from "testUtils";
 import {
-  PaperContainer,
   StyledButton,
   Dropdown,
   CustomInput,
@@ -24,7 +23,8 @@ import {
   PhoneNumberInput
 } from "components";
 import {
-  FormControlLabel
+  FormControlLabel,
+  Paper
 } from "@mui/material";
 import {
   createSkill
@@ -42,7 +42,8 @@ jest.mock("authentication", () => ({
 
 jest.mock("@mui/material", () => ({
   FormControlLabel: jest.fn(),
-  Switch: jest.fn()
+  Switch: jest.fn(),
+  Paper: jest.fn()
 }));
 
 jest.mock("context", () => ({
@@ -55,7 +56,6 @@ jest.mock("context", () => ({
 }));
 
 jest.mock("components", () => ({
-  PaperContainer: jest.fn(),
   StyledButton: jest.fn(),
   Dropdown: jest.fn(),
   CustomInput: jest.fn(),
@@ -181,7 +181,6 @@ describe("<SkillEntryFormModal />", () => {
     useAdminDispatch.mockReturnValue(mockAdminDispatch);
     skillFormDispatch.mockReturnValue(mockSkillFormDispatch);
     setupMockedComponents({
-    //   PaperContainer,
       StyledButton,
       Dropdown,
       CustomInput,
@@ -192,7 +191,7 @@ describe("<SkillEntryFormModal />", () => {
   describe("initial render", () => {
     test("should render as expected", () => {
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       expect(CustomInput.mock.calls.length).toBe(2);
       expect(Dropdown.mock.calls.length).toBe(10);
       expect(Dropdown.mock.calls[0][0].options).toEqual([{
@@ -235,7 +234,7 @@ describe("<SkillEntryFormModal />", () => {
   describe("virtual hold toggle", () => {
     test("toggle on should update enablevirtualhold in skillformstate", () => {
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       const vhToggle = FormControlLabel.mock.calls[0][0].control.props.onChange;
       act(() => {
         vhToggle({}, true);
@@ -247,7 +246,7 @@ describe("<SkillEntryFormModal />", () => {
     });
     test("toggle off should update enablevirtualhold to false and reset vh values in skillformstate", () => {
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       const vhToggle = FormControlLabel.mock.calls[0][0].control.props.onChange;
       act(() => {
         vhToggle({}, false);
@@ -276,7 +275,7 @@ describe("<SkillEntryFormModal />", () => {
       };
       skillFormState.mockReturnValueOnce(enabledVH);
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       expect(CustomInput.mock.calls.length).toBe(3);
       expect(Dropdown.mock.calls.length).toBe(17);
       expect(PhoneNumberInput.mock.calls.length).toBe(1);
@@ -285,7 +284,7 @@ describe("<SkillEntryFormModal />", () => {
   describe("dropdowns are updated", () => {
     test("profile dropdown option updates profile in skillformstate", () => {
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       const profileDropdown = Dropdown.mock.calls[0][0];
       expect(profileDropdown.multiple).toBe(true);
       act(() => {
@@ -298,7 +297,7 @@ describe("<SkillEntryFormModal />", () => {
     });
     test("task queue dropdown option updates task queue sid in skillformstate", () => {
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       const taskQDropdown = Dropdown.mock.calls[1][0];
       act(() => {
         taskQDropdown.updateValue({}, { value: "TQ555" });
@@ -310,7 +309,7 @@ describe("<SkillEntryFormModal />", () => {
     });
     test("application dropdown option updates applicationId in skillformstate", () => {
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       const applicationDropdown = Dropdown.mock.calls[2][0];
       act(() => {
         applicationDropdown.updateValue({}, { value: 1 });
@@ -322,7 +321,7 @@ describe("<SkillEntryFormModal />", () => {
     });
     test("sunday skill time of day dropdown options updates applicationId in skillformstate", () => {
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       const sundayDropdown = Dropdown.mock.calls[3][0];
       act(() => {
         sundayDropdown.updateValue({}, { value: 1 });
@@ -337,7 +336,7 @@ describe("<SkillEntryFormModal />", () => {
     });
     test("saturday skill time of day dropdown options updates applicationId in skillformstate", () => {
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       const saturdayDropdown = Dropdown.mock.calls[4][0];
       act(() => {
         saturdayDropdown.updateValue({}, { value: 12 });
@@ -352,7 +351,7 @@ describe("<SkillEntryFormModal />", () => {
     });
     test("monday skill time of day dropdown options updates applicationId in skillformstate", () => {
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       const mondayDropdown = Dropdown.mock.calls[5][0];
       act(() => {
         mondayDropdown.updateValue({}, { value: 2 });
@@ -367,7 +366,7 @@ describe("<SkillEntryFormModal />", () => {
     });
     test("tuesday skill time of day dropdown options updates applicationId in skillformstate", () => {
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       const tuesdayDropdown = Dropdown.mock.calls[6][0];
       act(() => {
         tuesdayDropdown.updateValue({}, { value: 7 });
@@ -382,7 +381,7 @@ describe("<SkillEntryFormModal />", () => {
     });
     test("wednesday skill time of day dropdown options updates applicationId in skillformstate", () => {
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       const wednesdayDropdown = Dropdown.mock.calls[7][0];
       act(() => {
         wednesdayDropdown.updateValue({}, { value: 37 });
@@ -397,7 +396,7 @@ describe("<SkillEntryFormModal />", () => {
     });
     test("thursday skill time of day dropdown options updates applicationId in skillformstate", () => {
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       const thursdayDropdown = Dropdown.mock.calls[8][0];
       act(() => {
         thursdayDropdown.updateValue({}, { value: 8 });
@@ -412,7 +411,7 @@ describe("<SkillEntryFormModal />", () => {
     });
     test("friday skill time of day dropdown options updates applicationId in skillformstate", () => {
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       const fridayDropdown = Dropdown.mock.calls[9][0];
       act(() => {
         fridayDropdown.updateValue({}, { value: 9 });
@@ -435,7 +434,7 @@ describe("<SkillEntryFormModal />", () => {
       });
       test("sunday vh time of day dropdown options updates applicationId in skillformstate", () => {
         renderComponent();
-        render(PaperContainer.mock.calls[0][0].children);
+        render(Paper.mock.calls[0][0].children);
         const sundayVhDropdown = Dropdown.mock.calls[10][0];
         act(() => {
           sundayVhDropdown.updateValue({}, { value: 1 });
@@ -450,7 +449,7 @@ describe("<SkillEntryFormModal />", () => {
       });
       test("saturday vh time of day dropdown options updates applicationId in skillformstate", () => {
         renderComponent();
-        render(PaperContainer.mock.calls[0][0].children);
+        render(Paper.mock.calls[0][0].children);
         const saturdayVhDropdown = Dropdown.mock.calls[11][0];
         act(() => {
           saturdayVhDropdown.updateValue({}, { value: 12 });
@@ -465,7 +464,7 @@ describe("<SkillEntryFormModal />", () => {
       });
       test("monday vh time of day dropdown options updates applicationId in skillformstate", () => {
         renderComponent();
-        render(PaperContainer.mock.calls[0][0].children);
+        render(Paper.mock.calls[0][0].children);
         const mondayVhDropdown = Dropdown.mock.calls[12][0];
         act(() => {
           mondayVhDropdown.updateValue({}, { value: 2 });
@@ -480,7 +479,7 @@ describe("<SkillEntryFormModal />", () => {
       });
       test("tuesday vh time of day dropdown options updates applicationId in skillformstate", () => {
         renderComponent();
-        render(PaperContainer.mock.calls[0][0].children);
+        render(Paper.mock.calls[0][0].children);
         const tuesdayVhDropdown = Dropdown.mock.calls[13][0];
         act(() => {
           tuesdayVhDropdown.updateValue({}, { value: 7 });
@@ -495,7 +494,7 @@ describe("<SkillEntryFormModal />", () => {
       });
       test("wednesday vh time of day dropdown options updates applicationId in skillformstate", () => {
         renderComponent();
-        render(PaperContainer.mock.calls[0][0].children);
+        render(Paper.mock.calls[0][0].children);
         const wednesdayVhDropdown = Dropdown.mock.calls[14][0];
         act(() => {
           wednesdayVhDropdown.updateValue({}, { value: 37 });
@@ -510,7 +509,7 @@ describe("<SkillEntryFormModal />", () => {
       });
       test("thursday vh time of day dropdown options updates applicationId in skillformstate", () => {
         renderComponent();
-        render(PaperContainer.mock.calls[0][0].children);
+        render(Paper.mock.calls[0][0].children);
         const thursdayVhVhDropdown = Dropdown.mock.calls[15][0];
         act(() => {
           thursdayVhVhDropdown.updateValue({}, { value: 8 });
@@ -525,7 +524,7 @@ describe("<SkillEntryFormModal />", () => {
       });
       test("friday vh time of day dropdown options updates applicationId in skillformstate", () => {
         renderComponent();
-        render(PaperContainer.mock.calls[0][0].children);
+        render(Paper.mock.calls[0][0].children);
         const fridayVhDropdown = Dropdown.mock.calls[16][0];
         act(() => {
           fridayVhDropdown.updateValue({}, { value: 9 });
@@ -543,7 +542,7 @@ describe("<SkillEntryFormModal />", () => {
   describe("inputs are updated", () => {
     test("skill friendly name updates skillFriendlyName in skillformstate", () => {
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       const skillNameInput = CustomInput.mock.calls[0][0];
       act(() => {
         skillNameInput.updateValue("new skill");
@@ -555,7 +554,7 @@ describe("<SkillEntryFormModal />", () => {
     });
     test("skill num updates skillNum in skillformstate", () => {
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       const skillNumInput = CustomInput.mock.calls[1][0];
       act(() => {
         skillNumInput.updateValue("skill123  ");
@@ -572,7 +571,7 @@ describe("<SkillEntryFormModal />", () => {
       };
       skillFormState.mockReturnValueOnce(enabledVH);
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       const callTargetInput = PhoneNumberInput.mock.calls[0][0];
       act(() => {
         callTargetInput.updateValue("5555551234", "5555551234", true, "+15555551234");
@@ -594,7 +593,7 @@ describe("<SkillEntryFormModal />", () => {
       };
       skillFormState.mockReturnValueOnce(enabledVH);
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       const skillNumInput = CustomInput.mock.calls[2][0];
       act(() => {
         skillNumInput.updateValue(" 40 ");
@@ -608,7 +607,7 @@ describe("<SkillEntryFormModal />", () => {
   describe("buttons", () => {
     test("when cancel button is clicked, calls close modal and clears form", () => {
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       expect(StyledButton.mock.calls.length).toBe(2);
       expect(StyledButton.mock.calls[1][0].disabled).toBe(true);
       const clickCancel = StyledButton.mock.calls[0][0].onClick;
@@ -627,7 +626,7 @@ describe("<SkillEntryFormModal />", () => {
 
       skillFormState.mockReturnValueOnce(completeFormNoVh);
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       expect(StyledButton.mock.calls.length).toBe(2);
       const addSkillButton = StyledButton.mock.calls[1][0];
       expect(addSkillButton.disabled).toBe(false);
@@ -635,7 +634,7 @@ describe("<SkillEntryFormModal />", () => {
     test("add/update skill button is disabled when some required fields are empty", () => {
       skillFormState.mockReturnValueOnce(completeFormWithVh);
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       expect(StyledButton.mock.calls.length).toBe(2);
       const addSkillButton = StyledButton.mock.calls[1][0];
       expect(addSkillButton.disabled).toBe(false);
@@ -658,7 +657,7 @@ describe("<SkillEntryFormModal />", () => {
       };
       skillFormState.mockReturnValueOnce(incompleteForm);
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       expect(StyledButton.mock.calls.length).toBe(2);
       const addSkillButton = StyledButton.mock.calls[1][0];
       expect(addSkillButton.disabled).toBe(true);
@@ -673,7 +672,7 @@ describe("<SkillEntryFormModal />", () => {
       };
       skillFormState.mockReturnValueOnce(incompleteForm);
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       expect(StyledButton.mock.calls.length).toBe(2);
       const addSkillButton = StyledButton.mock.calls[1][0];
       act(() => {
@@ -687,7 +686,7 @@ describe("<SkillEntryFormModal />", () => {
       });
       skillFormState.mockReturnValueOnce(completeFormNoVh);
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       expect(StyledButton.mock.calls.length).toBe(2);
       const addSkillButton = StyledButton.mock.calls[1][0];
       expect(addSkillButton.disabled).toBe(false);
@@ -718,7 +717,7 @@ describe("<SkillEntryFormModal />", () => {
       });
       skillFormState.mockReturnValueOnce(completeFormNoVh);
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       expect(StyledButton.mock.calls.length).toBe(2);
       const addSkillButton = StyledButton.mock.calls[1][0];
       expect(addSkillButton.disabled).toBe(false);
@@ -742,7 +741,7 @@ describe("<SkillEntryFormModal />", () => {
       createSkill.mockRejectedValueOnce("boo");
       skillFormState.mockReturnValueOnce(completeFormNoVh);
       renderComponent();
-      render(PaperContainer.mock.calls[0][0].children);
+      render(Paper.mock.calls[0][0].children);
       expect(StyledButton.mock.calls.length).toBe(2);
       const addSkillButton = StyledButton.mock.calls[1][0];
       expect(addSkillButton.disabled).toBe(false);

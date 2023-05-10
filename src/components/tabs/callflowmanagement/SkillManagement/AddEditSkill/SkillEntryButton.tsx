@@ -6,6 +6,11 @@ import SkillEntryFormModal from "./SkillEntryFormModal";
 import { formModes } from "globals";
 
 
+const defaultSaveResult: any = {
+  status: null,
+  message: null
+};
+
 const SkillEntryButton = (props: any) => {  // TODO: make a props type?
 
   const {
@@ -31,7 +36,7 @@ const SkillEntryButton = (props: any) => {  // TODO: make a props type?
 
   return (
     <>
-      <StyledExportButton onClick={openModal} styles={{}}>{formMode === formModes.INSERT ? 'Add' : 'Edit'} Skill </StyledExportButton>
+      <StyledExportButton onClick={openModal} styles={{}}>{formMode === formModes.INSERT ? "Add" : "Edit"} Skill </StyledExportButton>
       <Modal open={showSkillModal}>
         <>
           <SkillEntryFormModal

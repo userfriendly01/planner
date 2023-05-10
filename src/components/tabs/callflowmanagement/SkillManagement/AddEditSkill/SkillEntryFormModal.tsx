@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import {
-  PaperContainer,
   StyledButton,
   Dropdown,
   CustomInput,
@@ -26,7 +25,8 @@ import {
 } from "globals";
 import {
   FormControlLabel,
-  Switch
+  Switch,
+  Paper
 } from "@mui/material";
 import {
   createSkill
@@ -45,7 +45,13 @@ const ModalContainer = styled.div`
   width: 900px;
 `;
 
-const ScrollingPaper = styled(PaperContainer)`
+const ScrollingPaper = styled(Paper)`
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 400px;
+  padding: 2%;
+  position: relative;
   overflow-y: auto;
   max-height: 800px;
 `;
@@ -64,12 +70,6 @@ const ButtonWrapper = styled(FlexRow)`
 const inputStyles = {
   width: "350px",
   margin: "5px"
-};
-
-
-const defaultSaveResult: any = {
-  status: null,
-  message: null
 };
 
 // TODO: add TOOLTIPS
