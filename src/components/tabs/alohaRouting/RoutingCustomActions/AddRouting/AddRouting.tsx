@@ -7,7 +7,7 @@ import {
   Modal, ModalHeader
 } from "@lmig/lmds-react-modal";
 import {
-  routingDropDownList, routingInitRule, routingFields, initializedAlertBar, getGraphQLEndpoint, convertTime24to12
+  routingDropDownList, routingInitRule, routingFields, initializedAlertBar, getGraphQLEndpoint, convertTime24to12, cleanErrorMessage
 } from "utils";
 import { getGridMasterData } from "../../DataGridRouting/GridMaster";
 import {
@@ -32,7 +32,9 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
     isOpen = false,
     matchedGroups,
     newId,
-    openModal
+    openModal,
+    cloneRouteRule,
+    routeRule
   } = props;
 
   const [routingRule, setRoutingRule] = useState({ ...routingInitRule });
@@ -58,7 +60,7 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
 
   const resetRoutingRule = () => {
     setRoutingRule({ ...routingInitRule });
-    openModal(false);
+    openModal(false,false);
   };
 
   useEffect(() => {
@@ -67,15 +69,19 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
     });
   }, []);
   useEffect(()=>{
-    const newRoutingRule :FormValidationRule= {
-      "id": {
-        value: newId.toString()
-      }
-    };
-    setRoutingRule(rule => ({
-      ...rule,
-      ...newRoutingRule
-    }));
+    if(cloneRouteRule) {
+      setRoutingRule({ ...routeRule });
+    } else{
+      const newRoutingRule :FormValidationRule= {
+        "id": {
+          value: newId.toString()
+        }
+      };
+      setRoutingRule(rule => ({
+        ...rule,
+        ...newRoutingRule
+      }));
+    }
   },[openModal]);
 
   const isInvalidField = (key: string, value: string):boolean =>{
@@ -126,13 +132,13 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
             percentOfCallers: routingRule.percentOfCallers.value,
             policyType: routingRule.policyType.value,
             priority: routingRule.priority.value,
-            routingSteps: routingRule.routingSteps.value.split(","),
+            routingSteps: routingRule.routingSteps.value,
             startTime: routingRule.startTime.value,
             transferDestination: routingRule.transferDestination.value,
             transferMessage: routingRule.transferMessage.value,
             twilioSkill: routingRule.twilioSkill.value
           };
-          openModal(false, newRoutingRule);
+          openModal(false,false, newRoutingRule);
           setRoutingRule({ ...routingInitRule });
           setAlertBar(alertBarProps => ({
             ...alertBarProps,
@@ -146,7 +152,7 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
           ...alertBarProps,
           "open": true,
           "severityType": "error",
-          "msg": apiResponse.errors[0].message
+          "msg": cleanErrorMessage(apiResponse.errors)
         }));
       });
     }
@@ -169,7 +175,6 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
   const handleInputChange = (event: any, key: string, disableEdit: boolean) => {
     let value: string;
     let skey: string;
-
     if (disableEdit) { return; }
 
     if (key === "startTime" || key === "endTime") {
@@ -231,7 +236,7 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
           <Grid container rowSpacing={3}>
             {
               routingFields.map(({
-                label, key, control, required = false, disableAdd = false, isBlankFirstValue = false,
+                label, key, control, required = false, disableAdd = false, isBlankFirstValue = false, formFields,
                 dynamicFieldConditionCheck
               }) => {
                 if(dynamicFieldConditionCheck && !dynamicFieldConditionCheck(routingRule)){
@@ -251,6 +256,7 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
                       onChange={(event: any) => handleInputChange(event, key, disableAdd)}
                       required={required}
                       isBlankFirstValue={isBlankFirstValue}
+                      formFields={formFields}
                     />
                   </Grid>
                 );

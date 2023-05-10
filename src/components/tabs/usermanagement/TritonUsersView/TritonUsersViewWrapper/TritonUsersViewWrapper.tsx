@@ -37,7 +37,7 @@ const TritonUserManagementWrapper: any = () => {
 
   const state = useAdminState();
   const [ tableState, setTableState ] = React.useState(defaultTableState);
-
+  
   React.useEffect(() => {
     let filteredList = state.workerContext.workers.slice().sort(sortWorkersByFullName);
 

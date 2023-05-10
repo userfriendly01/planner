@@ -35,7 +35,7 @@ const ManagementHeader = (props: ManagementHeaderProps) => {
       </ControlItem>
       <ControlItem>
         <ExportButton selected={tableState.searchResults} label="Export"/>
-        <ResetSkillsButton />
+        <ResetSkillsButton selected={tableState.selected}/>
       </ControlItem>
     </ControlsWrapper>
   );

@@ -532,6 +532,77 @@ export const FIELDS: Fields = {
       }
     }
   },
+  ROUTING_TEAM: {
+    field: "routing_team",
+    name: "Routing Team",
+    type: "string",
+    description: "List of Teams that can be used in dynamic routing",
+    example: "licensedCSC",
+    options: (state: any) => {
+      const optionsArray: any = [];
+      state.profileContext.profiles.map((p: any) => {
+        const profileId = p.profile_id;
+        if(p.routing_teams){
+          p.routing_teams.forEach((t: any) => optionsArray.push(`Profile ${profileId}: ${t.routing_team_nme}`))
+        }
+      });
+      return optionsArray;
+    },
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = "Routing Team";
+      const field = cleanupField(row[fieldName], "string");
+      const profileField = "Profile Id";
+      const profile = cleanupField(row[profileField], "number");
+      if(!row.attributes){
+        row.attributes = {};
+      }
+      const routingProfiles = state.profileContext.profiles.filter((p: any) => p.routing_teams);
+      const matchingProfile = routingProfiles.find((p: any) => cleanupField(p.profile_id, "number") === profile);
+      const routingTeams = matchingProfile?.routing_teams.map((t: any) => t.routing_team_nme.toLowerCase());
+      if(matchingProfile){
+        if(!field){
+          return rejectPromise(`${fieldName} is missing for row ${rowNumber}`, rowNumber);
+        } else if(!routingTeams.includes(field)){
+          return rejectPromise(`${fieldName} is not a valid option for profile for row ${rowNumber}`, rowNumber);
+        } else {
+          row.attributes.routing_team = row[fieldName];
+          return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+        }
+      } else if(field){
+        return rejectPromise(`${fieldName} is not applicable to profile id ${profile} for row ${rowNumber}`, rowNumber);
+      } else {
+        return Promise.resolve(`Bypassing ${fieldName}. Unapplicable for profile id ${profile} for row ${rowNumber}`);
+      }
+    }
+  },
+  WFM_ACTIVATE_EXTERNAL_LOGON: {
+    field: "wfmActivateExternalLogon",
+    name: "WFM Activate External Logon",
+    type: "boolean",
+    description: "Y/N indicator to represent if user needs to activate WFM external logon.",
+    example: "Y",
+    options: null,
+    validateFunction: async (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = FIELDS.WFM_ACTIVATE_EXTERNAL_LOGON.name;
+      const field = cleanupField(row[fieldName], "string");
+
+      if (!field) {
+        return rejectPromise(`${fieldName} must be Y or N for row ${rowNumber}`, rowNumber);
+      } else if (field !== "y" && field !== "n") {
+        return rejectPromise(`${fieldName} must be Y or N for row ${rowNumber}`, rowNumber);
+      } else if (field === "y") {
+        // user needs to activate their external logon
+        row.wfmActivateExternalLogon = true;
+        return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+      } else {
+        // user doesn't need external logon
+        row.wfmActivateExternalLogon = false;
+        return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+      }
+    }
+  },
   CALABRIO_SCOPE: {
     field: "calabrioScope",
     name: "Calabrio Scope",

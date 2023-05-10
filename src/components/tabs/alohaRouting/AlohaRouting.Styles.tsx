@@ -20,7 +20,7 @@ export const RoutingModalBodyStyled = styled(ModalBody)`
 export const RoutingModalFooterStyled = styled(ModalFooter)`
   margin-top: 5px !important;
   margin-bottom: 5px !important;
-  margin-left: 40%;
+  margin-left: 25%;
   padding-top: 10px !important;
 `;
 

@@ -26,11 +26,10 @@ import {
   deleteRoutingRule, updateRoutingDB
 } from "services";
 import { AzureSPA } from "globals";
-
 interface EditRoutingComponentProps {
     isOpen: boolean;
     selectedRow: CctSharedCallRoutingDb;
-    openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string, deleteRow?: boolean) => void;
+    openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string, deleteRow?: boolean,isCloneRule?: boolean) => void;
 }
 
 
@@ -43,7 +42,6 @@ export const EditRouting = ({
   const [dropDownValues, setDropDownValues] = useState(routingDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   const defaultValue: { [key: string]: any } = {};
-
   useEffect(() => {
     setDropDownValues((dropDownOptions: RoutingDropDownList) => ({
       ...dropDownOptions,
@@ -89,6 +87,10 @@ export const EditRouting = ({
   const handleCancel = () => {
     setRoutingRule({ ...routingInitRule });
     openEditModal(false);
+  };
+
+  const handleClone = () =>{
+    openEditModal(false,false,selectedRowLocal,"",false,true);
   };
 
   const handleClose = (flag: boolean) => {
@@ -157,7 +159,7 @@ export const EditRouting = ({
         endTime: convertTime24to12(selectedRowLocal.endTime)
       };
       const response = await updateRoutingDB(updatedRow, accessToken, graphQLEndPoint);
-      if (response) {
+      if (response && !response.errors) {
         openEditModal(false, true, updatedRow, `Routing Rule ID ${selectedRow.id} has been successfully updated!! `, false);
         return true;
       }
@@ -227,7 +229,7 @@ export const EditRouting = ({
           <Grid container rowSpacing={3}>
             {
               routingFields.map(({
-                label, key, control, required = false, disableEdit = false, valueGetter, valueSetter, isBlankFirstValue = false,
+                label, key, control, required = false, disableEdit = false, valueGetter, valueSetter, isBlankFirstValue = false,formFields,
                 dynamicFieldConditionCheck
               }) => {
                 if(dynamicFieldConditionCheck && !dynamicFieldConditionCheck(routingRule)){
@@ -247,6 +249,7 @@ export const EditRouting = ({
                       required={required}
                       disabled={disableEdit}
                       isBlankFirstValue = {isBlankFirstValue}
+                      formFields={formFields}
                     />
                   </Grid>
                 );
@@ -263,6 +266,15 @@ export const EditRouting = ({
             onClick={() => handleOnSave()}
           >
                         Save Rule
+          </Button>
+          <Button
+            variant="contained"
+            value="Clone"
+            color="primary"
+            sx={{ marginRight: 2 }}
+            onClick={() => handleClone()}
+          >
+                        Clone Rule
           </Button>
           <Button
             variant="contained"

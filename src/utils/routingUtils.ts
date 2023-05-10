@@ -257,22 +257,49 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
   {
     label: "Occupancy Check",
     key: "occupancyCheck",
-    control: "input",
-    valueGetter: (params: CctSharedCallRoutingDb) => `${params?.occupancyCheck || ""}`,
+    control: "multiField",
+    valueGetter: (params: CctSharedCallRoutingDb) => params?.occupancyCheck || [],
     valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => ({
       ...currentValue,
       ...newValue
-    })
+    }),
+    formFields: [
+      {
+        label: "Team",
+        name: "team",
+        type: "text"
+      },
+      {
+        label: "Percentage (%)",
+        name: "percentage",
+        type: "number",
+        helperText: "min: 1,  max: 100"
+      }
+    ]
   },
   {
     label: "Routing Steps",
     key: "routingSteps",
-    control: "input",
-    valueGetter: (params: CctSharedCallRoutingDb) => `${params?.routingSteps || ""}`,
+    control: "multiField",
+    valueGetter: (params: CctSharedCallRoutingDb) => params?.routingSteps || [],
     valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => ({
       ...currentValue,
       ...newValue
-    })
+    }),
+    formFields: [
+      {
+        label: "Teams",
+        name: "teams",
+        type: "multiValueText",
+        helperText: "Please use Enter to add team"
+      },
+      {
+        label: "Time",
+        name: "time",
+        type: "number",
+        helperText: "min: 1,  max: 100"
+      }
+    ]
   }
 ];
 

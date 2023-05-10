@@ -17,6 +17,7 @@ import {
   checkConflictingCalabrioUsers,
   checkIfConflictingWFMPeople,
   formatErrorMessage,
+  handleWfmExternalLogon,
   toProperCase,
   updateCalabrioUserState,
   updateTritonUserState,
@@ -30,6 +31,7 @@ import {
   FIELDS,
   isDidUser
 } from "../BulkTemplates";
+import { AppState } from "globals";
 
 const rejectPromise = (error: string, rowNumber: number) => {
   return Promise.reject(JSON.stringify({
@@ -159,8 +161,14 @@ const processWFMCreateUser = async (row: any, state: any) => {
     console.log(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
     return Promise.resolve(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
   } catch(err) {
-    const errorMessage = `Failed to create Calabrio WFM person for row ${rowNumber}. ${formatErrorMessage(err)}`;
-    console.error(errorMessage, err);
+    let errorMessage;
+    if (err?.response?.data && err?.response?.data?.exception === "com.netflix.zuul.exception.ZuulException") {
+      errorMessage = `A timeout occured while creating WFM Person ${row.attributes.emp_first_name} ${row.attributes.emp_last_name} for row ${rowNumber}. They may still have been successfully added to WFM. Please verify in WFM.`;
+      console.error(errorMessage, err);
+    } else {
+      errorMessage = `Failed to create Calabrio WFM person for row ${rowNumber}. ${formatErrorMessage(err)}`;
+      console.error(errorMessage, err);
+    }
     return rejectPromise(errorMessage, rowNumber);
   }
 };
@@ -214,14 +222,13 @@ const processCreateManager = async (row: any, state: any) => {
   }
 };
 
-const processUpdateWorkerAttribute = async (row: any, template: Template, state: any) => {
+const processUpdateWorkerAttribute = async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
   const key = template.data.key;
   const value = template.data.value;
   const location = template.data.location;
 
   const newAttribute = { [key]: value };
-
   let body: any = {};
 
   if(key === "profile_id"){
@@ -232,7 +239,24 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
     const profile = getTargetProfile(state.profileContext.profiles, value);
     body.operatingUnitSid = profile?.operating_unit_sid;
   } else if(location){
-    body[location] = newAttribute;
+    if(typeof location === "string"){
+      body[location] = newAttribute;
+    } else {
+      //Allowing for addition of routing object nested within attributes on update.  Will only allow for 2 items being added (attributes and a nested object)
+      const parentObject: any = row[location[0]] || {}; //attributes
+      const nestedObject: any = row[location[0]] && row[location[0]][location[1]] || {};
+      try {
+        body[location[0]] = {
+          ...parentObject,
+          [location[1]] : {
+            ...nestedObject,
+            ...newAttribute
+          }
+        }
+      } catch(err){
+        return rejectPromise(`Error thrown when location is array ${err.message}`, rowNumber);
+      }
+    }
   } else {
     body = newAttribute;
   }
@@ -318,7 +342,7 @@ export const getCreateTemplates = (state: any): Templates => {
       name: "CREATE_TRITON_USER",
       data: {},
       processFunction: (row: any) => processCreateTritonUser(row, state),
-      stateUpdateFunctions: [updateTritonUserState],
+      stateUpdateFunctions: [updateTritonUserState, handleWfmExternalLogon],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,
@@ -332,7 +356,9 @@ export const getCreateTemplates = (state: any): Templates => {
         FIELDS.DIRECT_DIAL_NUMBER,
         FIELDS.ZERO_OUT_ENABLED,
         FIELDS.OUTGOING_NUMBER,
-        FIELDS.SELF_SERVICE_IND
+        FIELDS.SELF_SERVICE_IND,
+        // FIELDS.ROUTING_TEAM //this is not ready to be introduced but we dont want to lose the code,
+        FIELDS.WFM_ACTIVATE_EXTERNAL_LOGON
       ]
     },
     CREATE_CALABRIO_QM_USER: {
