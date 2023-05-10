@@ -35,7 +35,6 @@ const SkillsContainer = (props: SkillsContainerProps) => {
     getTimeOfDaysOptions();
 
   }, []);
-  // TODO: Should these get saved in context??  or is this good enough?
 
   const getTaskQueueOptions = async () => {
     const results = await getTaskQueues();

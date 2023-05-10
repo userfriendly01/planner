@@ -170,6 +170,7 @@ const renderComponent = () => {
     timeOfDays={timeOfDays}
     saveResult={{}}
     setSaveResult={mockSetSaveResult}
+    isAdmin={true}
   />);
 };
 
@@ -664,6 +665,26 @@ describe("<SkillEntryFormModal />", () => {
     });
   });
   describe("create skill is called", () => {
+    test("user is not admin, does not call createSkill", () => {
+      skillFormState.mockReturnValueOnce(completeFormNoVh);
+      render(<SkillEntryFormModal
+        closeModal={mockCloseModal}
+        taskQueues={taskQueues}
+        applications={applications}
+        timeOfDays={timeOfDays}
+        saveResult={{}}
+        setSaveResult={mockSetSaveResult}
+        isAdmin={false}
+      />);
+      render(Paper.mock.calls[0][0].children);
+      expect(StyledButton.mock.calls.length).toBe(2);
+      const addSkillButton = StyledButton.mock.calls[1][0];
+      expect(addSkillButton.disabled).toBe(false);
+      act(() => {
+        addSkillButton.onClick();
+      });
+      expect(createSkill).toHaveBeenCalledTimes(0);
+    });
     test("add skill gets calls, but not all fields have valid values", () => {
       const incompleteForm = {
         ...completeFormWithVh,

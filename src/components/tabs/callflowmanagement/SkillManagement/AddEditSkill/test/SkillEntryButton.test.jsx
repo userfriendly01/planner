@@ -3,11 +3,15 @@ import React from "react";
 import {
   act,
   render,
-  setupMockedComponents
+  setupMockedComponents,
+  initialTestState,
+  authenticationProfileTemplates
 } from "testUtils";
 import { Modal } from "@mui/material";
 import SkillEntryFormModal from "../SkillEntryFormModal";
 import { StyledExportButton } from "../../Skills.Styles";
+import { useAdminState } from "context";
+import { getAuthenticationProfileTemplates } from "authentication";
 
 jest.mock("../../Skills.Styles", () => ({
   StyledExportButton: jest.fn()
@@ -26,10 +30,27 @@ jest.mock("../SkillEntryFormModal", () => ({
   default: jest.fn()
 }));
 
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
+}));
 
 describe("<SkillEntryButton />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    getAuthenticationProfileTemplates.mockReturnValue(authenticationProfileTemplates);
+    useAdminState.mockReturnValue({
+      ...initialTestState,
+      userContext: {
+        ...initialTestState.userContext,
+        authenticationProfiles: [
+          {
+            ...initialTestState.userContext.authenticationProfiles[0],
+            isAdmin: true,
+            profileId: 0
+          }
+        ]
+      }
+    });
     setupMockedComponents({
       Modal,
       StyledExportButton,
@@ -47,6 +68,29 @@ describe("<SkillEntryButton />", () => {
       expect(Modal.mock.calls[0][0].open).toBe(false);
       expect(Modal.mock.calls.length).toBe(1);
       expect(StyledExportButton.mock.calls.length).toBe(1);
+      expect(SkillEntryFormModal.mock.calls.length).toBe(0);
+    });
+    test("if user is not admin, button does not render", () => {
+      useAdminState.mockReturnValueOnce({
+        ...initialTestState,
+        userContext: {
+          ...initialTestState.userContext,
+          authenticationProfiles: [
+            {
+              ...initialTestState.userContext.authenticationProfiles[0],
+              isAdmin: false,
+              profileId: 10
+            }
+          ]
+        }
+      });
+      render(<SkillEntryButton
+        formMode={"INSERT"}
+        taskQueues={[]}
+        applications={[]}
+        timeOfDays={[]} />);
+      expect(Modal.mock.calls.length).toBe(0);
+      expect(StyledExportButton.mock.calls.length).toBe(0);
       expect(SkillEntryFormModal.mock.calls.length).toBe(0);
     });
   });

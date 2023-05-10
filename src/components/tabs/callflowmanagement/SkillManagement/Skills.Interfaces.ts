@@ -1,4 +1,6 @@
-import { Skill } from "globals";
+import {
+  Skill
+} from "globals";
 import { TableState } from "../CallFlowManagementWrapper/CallFlowManagement.Interfaces";
 import { messageTypes } from "../SkillManagement/ClosedFlashMessage/ClosedFlashMessage.Interfaces";
 import {
@@ -86,9 +88,19 @@ export interface SkillsExportButtonProps {
 export interface SkillsHeaderProps {
   tableState: TableState,
   setTableState: (tableState: TableState) => void,
-  applications: any[],  // todo: make these better
+  applications: any[],
   taskQueues: any[],
   timeOfDays: any[]
+}
+
+export interface SkillEntryFormModalProps {
+  closeModal: () => void,
+  taskQueues: any[],
+  applications: any[],
+  timeOfDays: any[],
+  setSaveResult: (saveResult: SaveResultProps) => void,
+  saveResult: SaveResultProps,
+  isAdmin: boolean
 }
 
 export interface SkillsTableProps {

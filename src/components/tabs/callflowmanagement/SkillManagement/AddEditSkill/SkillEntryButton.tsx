@@ -4,6 +4,8 @@ import { Modal } from "@mui/material";
 import React from "react";
 import SkillEntryFormModal from "./SkillEntryFormModal";
 import { formModes } from "globals";
+import { useAdminState } from "context";
+import { getAuthenticationProfileTemplates } from "authentication";
 
 
 const defaultSaveResult: any = {
@@ -11,11 +13,16 @@ const defaultSaveResult: any = {
   message: null
 };
 
-const SkillEntryButton = (props: any) => {  // TODO: make a props type?
+const SkillEntryButton = (props: any) => {
 
   const {
     formMode, taskQueues, applications, timeOfDays
   } = props;
+
+  const state = useAdminState();
+
+  const tritonProfile = state.userContext.authenticationProfiles.find((p: any) => p.name === getAuthenticationProfileTemplates().TRITON.name);
+  const isAdmin = tritonProfile.isAdmin;
 
   const [ showSkillModal, setShowSkillModal ] = React.useState(false);
   const [ saveResult, setSaveResult ] = React.useState(defaultSaveResult);
@@ -36,19 +43,24 @@ const SkillEntryButton = (props: any) => {  // TODO: make a props type?
 
   return (
     <>
-      <StyledExportButton onClick={openModal} styles={{}}>{formMode === formModes.INSERT ? "Add" : "Edit"} Skill </StyledExportButton>
-      <Modal open={showSkillModal}>
+      {isAdmin && (
         <>
-          <SkillEntryFormModal
-            closeModal={() => setShowSkillModal(false)}
-            taskQueues={taskQueues}
-            applications={applications}
-            timeOfDays={timeOfDays}
-            setSaveResult={setSaveResult}
-            saveResult={saveResult}
-          />
+          <StyledExportButton onClick={openModal} styles={{}}>{formMode === formModes.INSERT ? "Add" : "Edit"} Skill </StyledExportButton>
+          <Modal open={showSkillModal}>
+            <>
+              <SkillEntryFormModal
+                closeModal={() => setShowSkillModal(false)}
+                taskQueues={taskQueues}
+                applications={applications}
+                timeOfDays={timeOfDays}
+                setSaveResult={setSaveResult}
+                saveResult={saveResult}
+                isAdmin={isAdmin}
+              />
+            </>
+          </Modal>
         </>
-      </Modal>
+      )}
     </>
   );
 };

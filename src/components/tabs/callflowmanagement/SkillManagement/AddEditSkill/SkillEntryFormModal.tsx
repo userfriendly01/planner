@@ -17,7 +17,8 @@ import {
 } from "context";
 import {
   AddEditSkill,
-  SkillFormState
+  SkillFormState,
+  SkillEntryFormModalProps
 } from "../Skills.Interfaces";
 import {
   FlexRow, FlexColumn,
@@ -32,6 +33,7 @@ import {
   createSkill
 } from "services";
 import { getSkills } from "authentication";
+
 
 const ModalContainer = styled.div`
   display: flex;
@@ -74,9 +76,9 @@ const inputStyles = {
 
 // TODO: add TOOLTIPS
 
-const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
+const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
   const {
-    closeModal, taskQueues, applications, timeOfDays, saveResult, setSaveResult
+    closeModal, taskQueues, applications, timeOfDays, saveResult, setSaveResult, isAdmin
   } = props;
 
   const skFormState: SkillFormState = skillFormState();
@@ -149,10 +151,9 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
   };
 
   const addSkill = async () => {
-    // TODO?  check that user is admin?
 
     //   validate the skill info
-    if (areRequiredFieldsEmpty() || invalidSkillFriendlyName || invalidSkillNum || invalidVhCallTarget || invalidVhThreshold) {
+    if (!isAdmin || areRequiredFieldsEmpty() || invalidSkillFriendlyName || invalidSkillNum || invalidVhCallTarget || invalidVhThreshold) {
       return;
     }
 
