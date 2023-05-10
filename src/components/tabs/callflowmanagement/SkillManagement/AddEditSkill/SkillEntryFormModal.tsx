@@ -10,6 +10,7 @@ import {
 } from "components";
 import {
   useAdminState,
+  useAdminDispatch,
   skillFormState,
   skillFormDispatch,
   skillFormActions,
@@ -30,6 +31,7 @@ import {
 import {
   createSkill
 } from "services";
+import { getSkills } from "authentication";
 
 const ModalContainer = styled.div`
   display: flex;
@@ -74,12 +76,14 @@ const defaultSaveResult: any = {
 
 const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
   const {
-    closeModal, taskQueues, applications, timeOfDays
+    closeModal, taskQueues, applications, timeOfDays, saveResult, setSaveResult
   } = props;
 
   const skFormState: SkillFormState = skillFormState();
   const skFormDispatch = skillFormDispatch();
   console.log("sskillFormState", skFormState);
+
+  const adminDispatch = useAdminDispatch();
 
 
   const state = useAdminState();
@@ -87,8 +91,6 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
   const skills = state.skillContext.skills;
   const nNumber = state.userContext.pingIdentity.sub;
 
-
-  const [ saveResult, setSaveResult ] = React.useState(defaultSaveResult);
 
   const getDropdownOptions = (list: any[], labelKey: string, valueKey: string) => {
     if (labelKey === "openTime") {
@@ -214,22 +216,25 @@ const SkillEntryFormModal = (props: any) => {  // TODO: Makes a props interface
         skFormDispatch({
           type: skillFormActions.RESET_FORM
         });
+        await getSkills(adminDispatch);
         closeModal();
       } else {
         // a partial success will return 206
         // meaning either the creation in contactmanager OR the callflow db was sucessful
         setSaveResult({
-          message: response.data.response.message,
+          message: response.data.result.message,
           status: ModalOverlayStatuses.PARTIAL_FAIL
         });
         skFormDispatch({
           type: skillFormActions.RESET_FORM
         });
+        await getSkills(adminDispatch);
+
       }
     } catch (err) {
       console.error("ERROR WHEN ADDING SKILL", err);
       setSaveResult({
-        message: `Request Failed: ${err.message}`,
+        message: `Request Failed: ${err}`,
         status: ModalOverlayStatuses.FAIL
       });
     }

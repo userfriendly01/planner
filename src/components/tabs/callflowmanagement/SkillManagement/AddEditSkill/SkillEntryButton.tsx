@@ -13,6 +13,7 @@ const SkillEntryButton = (props: any) => {  // TODO: make a props type?
   } = props;
 
   const [ showSkillModal, setShowSkillModal ] = React.useState(false);
+  const [ saveResult, setSaveResult ] = React.useState(defaultSaveResult);
 
   const openModal = () => {
     if (formMode === "UPDATE") {
@@ -38,6 +39,8 @@ const SkillEntryButton = (props: any) => {  // TODO: make a props type?
             taskQueues={taskQueues}
             applications={applications}
             timeOfDays={timeOfDays}
+            setSaveResult={setSaveResult}
+            saveResult={saveResult}
           />
         </>
       </Modal>
