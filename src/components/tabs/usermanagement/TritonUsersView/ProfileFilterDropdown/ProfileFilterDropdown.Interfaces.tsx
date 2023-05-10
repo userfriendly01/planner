@@ -1,4 +1,4 @@
-export interface ProfileDropDownProps {
+export interface ProfileFilterDropDownProps {
     filterBy: string,
     setFilter: (filter: string) => void
 }

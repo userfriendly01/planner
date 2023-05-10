@@ -1,5 +1,6 @@
 
 import { StyledExportButton } from "./TritonUsersHeader.Styles";
+import { StyledButton } from "components";
 import { ExportTritonUserProps } from "./TritonUsersHeader.Interfaces";
 import React from "react";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
@@ -14,13 +15,13 @@ const ExportButton = (props: ExportTritonUserProps) => {
   const rows = selected.map((worker: any) => {
     const workerObj: any = {
       ...worker
-    }
+    };
     Object.keys(worker.attributes).forEach((key: any) => {
-      workerObj[key] = worker.attributes[key]
+      workerObj[key] = worker.attributes[key];
     });
     delete workerObj.attrbutes;
     return workerObj;
-  })
+  });
 
   const handleExport = () => {
     const columns = [
@@ -81,7 +82,15 @@ const ExportButton = (props: ExportTritonUserProps) => {
   };
 
   return (
-    <StyledExportButton onClick={handleExport}><ExcelExport ref={_export}/>{label ? label : "Export"}</StyledExportButton>
+    <div style={{
+      width: "50%",
+      margin: "10px"
+    }}>
+      <StyledButton   style={{
+        width: "100%",
+        height: "50px"
+      }} onClick={handleExport}><ExcelExport ref={_export}/>{label ? label : "Export"}</StyledButton>
+    </div>
   );
 };
 

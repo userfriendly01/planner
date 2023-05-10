@@ -40,13 +40,22 @@ const TritonUserManagementWrapper: any = () => {
 
   React.useEffect(() => {
     let filteredList = state.workerContext.workers.slice().sort(sortWorkersByFullName);
-    console.log("tableState", tableState);
 
     //filter by manager
     if(tableState.managerFilter && tableState.managerFilter !== "show-all"){
       filteredList = filteredList.filter((worker: Worker) => worker.attributes.manager_n_number === tableState.managerFilter);
     }
     console.log("**Manager FL", filteredList);
+
+    //filter by profile
+    if(tableState.profileFilter && tableState.profileFilter !== "show-all"){
+      filteredList = filteredList.filter((worker: Worker) => {
+        const profile = state.profileContext.profiles.find(p => p.profile_id === worker.attributes.profile_id);
+        const profileId = profile ? (typeof profile.profile_id === "number" ? profile.profile_id.toString() : profile.profile_id) : "";
+        return profileId === tableState.profileFilter;
+      });
+    }
+    console.log("**Profile FL", filteredList);
 
     //filter by Ou
     if(tableState.ouFilter && tableState.ouFilter !== "show-all"){
@@ -92,7 +101,7 @@ const TritonUserManagementWrapper: any = () => {
       }
     });
     console.log("final filtered list", filteredList);
-  }, [tableState.searchBy, tableState.deltaFilter, tableState.managerFilter, tableState.ouFilter, tableState.pagination.pageNumber, state.workerContext]);
+  }, [tableState.searchBy, tableState.deltaFilter, tableState.managerFilter, tableState.profileFilter, tableState.ouFilter, tableState.pagination.pageNumber, state.workerContext]);
 
   return (
     <ManagementContainer>

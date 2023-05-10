@@ -1,41 +1,27 @@
 import {
   DropdownOption,
-  OuFilterDropdownProps
-} from "./OuFilterDropdown.Interfaces";
+  ProfileFilterDropDownProps
+} from "./ProfileFilterDropdown.Interfaces";
 import {
   Label,
-  IconWrapper,
   Wrapper
 } from "../ManagerDropdown/ManagerDropdown.Styles"; // TODO: chnage to local style file
 import {
-  // ManagerModal,
-  // ManagerDelete,
   Dropdown
 } from "components";
 import { useAdminState } from "context";
 import React, { useState } from "react";
-import { getOperatingUnits } from "services";
-import { OperatingUnit } from "globals";
-//import { sortProfilesById } from "utils";
-import {
-  Edit,
-  Delete
-} from "@mui/icons-material";
-import { Modal } from "@mui/material";
+import { sortProfilesById } from "utils";
 
-const OuFilterDropdown = (props: OuFilterDropdownProps) => {
+const ProfileFilterDropdown = (props: ProfileFilterDropDownProps) => {
   const {
     filterBy,
     setFilter
   } = props;
 
-  const [operatingUnitList, setOperatingUnitList] = React.useState([]);
-
-  if(!operatingUnitList.length) {
-    getOperatingUnits().then((allOUs: OperatingUnit[])  => {
-      setOperatingUnitList(allOUs);
-    }).catch(error => console.error(error.msg));
-  }
+  const state = useAdminState();
+  const profiles = state.profileContext.profiles;
+  const sortedProfiles = [ ...profiles ].sort(sortProfilesById);
 
   const options: DropdownOption[] = [
     {
@@ -46,9 +32,10 @@ const OuFilterDropdown = (props: OuFilterDropdownProps) => {
       label: "divider",
       value: "divider"
     },
-    ...operatingUnitList.map(ou => ({
-      label: ou.ou_name,
-      value: ou.ou_name
+    ...sortedProfiles.map(profile => ({
+      label: `${profile.profile_id} - ${profile.profile_nme}`,
+      value: typeof profile.profile_id === "number" ? profile.profile_id.toString() : profile.profile_id,
+      ...profile
     }))
   ];
 
@@ -74,10 +61,10 @@ const OuFilterDropdown = (props: OuFilterDropdownProps) => {
   return (
     <Wrapper>
       <Dropdown
-        label="OU Dropdown"
+        label="Profile Dropdown"
         options={options}
         styles= {{ width: 325 }}
-        value={filterBy ? options.find((option: DropdownOption) => {
+        value= {filterBy ? options.find((option: DropdownOption) => {
           if(option.value === filterBy){
             return option.label;
           }
@@ -86,7 +73,7 @@ const OuFilterDropdown = (props: OuFilterDropdownProps) => {
           if(newInputValue.value === "show-all") {
             setFilter(null);
           } else if(newInputValue.value !== "divider") {
-            setFilter(newInputValue.value.toLowerCase());
+            setFilter(newInputValue.value);
           }
         }}
         CustomRender={DropdownOption}
@@ -95,4 +82,4 @@ const OuFilterDropdown = (props: OuFilterDropdownProps) => {
   );
 };
 
-export default OuFilterDropdown;
+export default ProfileFilterDropdown;

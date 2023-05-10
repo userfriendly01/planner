@@ -114,7 +114,7 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
         label="Manager Dropdown"
         options={options}
         styles= {{ width: 325 }}
-        value={options.find((option: DropdownOption) => option.value === filterBy)}
+        value={filterBy ? options.find((option: DropdownOption) => { if(option.value === filterBy){ return option.label; } }) : ""}
         updateValue={(event: any, newInputValue: any) => {
           if(newInputValue.value === "add-manager"){
             handleOpenManager();
