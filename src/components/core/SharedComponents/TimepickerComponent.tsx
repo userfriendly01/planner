@@ -14,7 +14,6 @@ export interface TimePickerComponentProps {
   disabled?: boolean;
   error?: boolean;
   required?: boolean;
-  withSeconds?: boolean
 }
 
 export default function TimePickerComponent({
@@ -23,8 +22,7 @@ export default function TimePickerComponent({
   onChange,
   disabled,
   error,
-  required,
-  withSeconds
+  required
 }: TimePickerComponentProps): JSX.Element {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -34,8 +32,6 @@ export default function TimePickerComponent({
           onChange={onChange}
           label={label}
           disabled={disabled}
-          inputFormat="HH:mm:ss"
-          mask={withSeconds ? "__:__:__" : "__:__"}
           // eslint-disable-next-line react/jsx-props-no-spreading
           renderInput={(params: TextFieldProps) => <TextField error={error} required={required} {...params} />}
         />
