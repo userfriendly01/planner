@@ -5,7 +5,7 @@ import {
   DataGrid, GridRenderCellParams, GridToolbar
 } from "@mui/x-data-grid";
 import {
-  RoutingAdvanceSearch, EditRouting, AddRouting, CustomFlowRoutingToolBar
+  RoutingAdvanceSearch, EditRouting, AddRouting, CustomRoutingGridToolBar
 } from "../../RoutingCustomActions";
 import { CustomToast } from "components";
 import { useAdminState } from "context";
@@ -39,7 +39,7 @@ jest.mock("../../RoutingCustomActions", ()=>({
   RoutingAdvanceSearch: jest.fn(),
   AddRouting: jest.fn(),
   EditRouting: jest.fn(),
-  CustomFlowRoutingToolBar: jest.fn()
+  CustomRoutingGridToolBar: jest.fn()
 }));
 
 jest.mock("context", () => ({
@@ -119,7 +119,7 @@ describe("<DataGridRouting />", ()=>{
       EditRouting,
       AddRouting,
       CustomToast,
-      CustomFlowRoutingToolBar
+      CustomRoutingGridToolBar: CustomRoutingGridToolBar
     }),
     Object.defineProperty(window, "matchMedia", {
       writable: true,
@@ -210,7 +210,7 @@ describe("<DataGridRouting />", ()=>{
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const openModal = AddRouting.mock.calls[0][0].openModal;
-      act(()=>{ openModal(true,validRoutingData); });
+      act(()=>{ openModal(true,false,validRoutingData); });
       expect(AddRouting.mock.calls[1][0].isOpen).toBe(true);
     });
   });
@@ -262,13 +262,13 @@ describe("<DataGridRouting />", ()=>{
       act(()=>{ openEditModal(false,true,validRoutingData,"",false,false); });
       expect(EditRouting.mock.calls[1][0].openEditModal).toBeTruthy;
     });
-    test("Simulate the CustomFlowRoutingToolBar Custom Routing Toolbar", async()=>{
+    test("Simulate the CustomRoutingGridToolBar Custom Routing Toolbar", async()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
-      const exportDataFile = CustomFlowRoutingToolBar.mock.calls[0][0].exportDataFile;
+      const exportDataFile = CustomRoutingGridToolBar.mock.calls[0][0].exportDataFile;
       act(()=>{ exportDataFile(); });
-      expect(CustomFlowRoutingToolBar.mock.calls.length).toBe(1);
+      expect(CustomRoutingGridToolBar.mock.calls.length).toBe(1);
     });
   });
 

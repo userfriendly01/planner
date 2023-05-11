@@ -1,9 +1,15 @@
 import { apiPaths } from "globals";
 import {
   getCalabrioUsers,
-  getManagers
+  getWfmOrg,
+  getManagers,
+  wfmActivateExternalLogon
 } from "services";
-import { UploadedRow } from "../BulkChanges.Interfaces";
+import {
+  UploadedRow,
+  Template
+} from "../BulkChanges.Interfaces";
+import { cleanupField } from "../BulkUtils";
 import {
   formatWorkerResponse,
   formatManagersResponse,
@@ -291,10 +297,6 @@ export const initiateCalls = async (
     }));
   }
 
-  await Promise.all(selectedTemplates.map((t: any) => {
-    return Promise.allSettled(t.stateUpdateFunctions.map((f: any) => f(dispatch)));
-  }));
-
   processingPromises.forEach((rowPromise: any) => {
     let rowNumber: any;
     const rowErrors: any = [];
@@ -317,12 +319,134 @@ export const initiateCalls = async (
       });
     }
   });
+
+  const successfulRows = identifySuccessfulRecords(rows, finalErrors);
+
+  const stateUpdateResults = await Promise.all(selectedTemplates.map((t: any) => {
+    return Promise.allSettled(t.stateUpdateFunctions.map((f: any) => f(dispatch, successfulRows, selectedTemplates)));
+  }));
+
+  console.log("state update results: ", stateUpdateResults);
+
+  // looks for any WFM external logon activations that didn't go through and add them to the exported errors file
+  stateUpdateResults.forEach((template: any) => {
+    template.forEach((result: any) => {
+
+      if (result.value) {
+        const failedActivations = result.value.failedActivations;
+
+        if (failedActivations.nNumbersWithoutTwilioWorkers.length > 0){
+          finalErrors.push({
+            rowNumber: "multiple",
+            errors: "No Twilio workers were found with these n-Numbers",
+            wfmErrors: failedActivations.nNumbersWithoutTwilioWorkers.toString()
+          });
+        }
+        if (failedActivations.workersFailedToActivate.length > 0){
+          finalErrors.push({
+            rowNumber: "multiple",
+            errors: "An error occurred and we were unable to activate these workers",
+            wfmErrors: failedActivations.workersFailedToActivate.toString()
+          });
+        }
+        if (failedActivations.workersFailedToReturnToOffline.length > 0){
+          finalErrors.push({
+            rowNumber: "multiple",
+            errors: "There was an error returning these workers to offline state",
+            wfmErrors: failedActivations.workersFailedToReturnToOffline.toString()
+          });
+        }
+      }
+    });
+  });
+
   if(finalErrors.length === 0){
     return Promise.resolve(rows);
   } else {
     return Promise.reject({
-      success: identifySuccessfulRecords(rows, finalErrors),
+      success: successfulRows,
       errors: finalErrors
     });
+  }
+};
+
+/**
+ * Inspects rows that were already successfully processed and, if necessary, activates a WFM person's external logon
+ * @param successfulRows rows to be processed
+ * @param selectedTemplates selected templates to be processed
+ */
+export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any, selectedTemplates: any) => {
+  if(selectedTemplates.some((t: Template) => t.name === "CREATE_TRITON_USER")) {
+    const wfmNNumbers: any[] = [];
+
+    successfulRows.forEach((row: any) => {
+      if (row.wfmActivateExternalLogon) {
+        wfmNNumbers.push(row.attributes.n_number);
+      }
+    });
+
+    // process in batches of max 25 to avoid gateway timeouts while waiting for calabrio
+    const max = 25;
+    const totalNNumbers = wfmNNumbers.length;
+    const resultsArray: any[] = [];
+    let currentIndex = 0;
+
+    const processBatch = async (): Promise<any> => {
+      const endingIndex = currentIndex + max;
+      const processingNNumbers: any[] = wfmNNumbers.slice(currentIndex, endingIndex);
+
+      const results = await wfmActivateExternalLogon({
+        workerNNumbers: processingNNumbers
+      });
+      resultsArray.push(results);
+
+      currentIndex = currentIndex + max;
+
+      if(currentIndex < totalNNumbers){
+        return processBatch();
+      } else {
+        Promise.resolve();
+      }
+    };
+    await processBatch();
+
+    const failedActivations = resultsArray[0].data?.failedActivations || {};
+
+    const noWorkers: any = [];
+    const failedToActivate: any = [];
+    const failedToOffline: any = [];
+
+    resultsArray.forEach((result: any) => {
+      const {
+        nNumbersWithoutTwilioWorkers,
+        workersFailedToActivate,
+        workersFailedToReturnToOffline
+      } = result.data.failedActivations;
+
+      if (nNumbersWithoutTwilioWorkers !== undefined || workersFailedToActivate !== undefined || workersFailedToReturnToOffline !== undefined) {
+        const failed1 = result.data.failedActivations.nNumbersWithoutTwilioWorkers;
+        const failed2 = result.data.failedActivations.workersFailedToActivate;
+        const failed3 = result.data.failedActivations.workersFailedToReturnToOffline;
+
+        noWorkers.push(failed1);
+        failedToActivate.push(failed2);
+        failedToOffline.push(failed3);
+      }
+    });
+
+    const wfmExternalLogonResults = {
+      failedActivations: {
+        message: failedActivations.message,
+        nNumbersWithoutTwilioWorkers: noWorkers.flat(),
+        workersFailedToActivate: failedToActivate.flat(),
+        workersFailedToReturnToOffline: failedToOffline.flat()
+      }
+    };
+    console.log("***external logon results: ", wfmExternalLogonResults);
+
+    return wfmExternalLogonResults;
+  } else {
+    // another template was selected, skip
+    return Promise.resolve("Selected template not CREATE_TRITON_USER, skipping handleWfmExternalLogon");
   }
 };
