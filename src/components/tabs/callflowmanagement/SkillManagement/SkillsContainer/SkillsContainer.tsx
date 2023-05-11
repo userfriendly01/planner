@@ -33,24 +33,20 @@ const SkillsContainer = (props: SkillsContainerProps) => {
     getTaskQueueOptions();
     getApplicationOptions();
     getTimeOfDaysOptions();
-
   }, []);
 
   const getTaskQueueOptions = async () => {
     const results = await getTaskQueues();
-    console.log("RESULTS TASK QUEUES", results);
     setTaskQueues(results);
   };
 
   const getApplicationOptions = async () => {
     const results = await getApplications();
-    console.log("RESULTS FOR GET APPLICATIONS", results);
     setApplications(results);
   };
 
   const getTimeOfDaysOptions = async () => {
     const results = await getTimeOfDays();
-    console.log("RESULTS FOR GET Time of day", results);
     setTimeOfDays(results);
   };
 

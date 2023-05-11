@@ -3,9 +3,7 @@ import React from "react";
 import {
   act,
   render,
-  setupMockedComponents,
-  initialTestState,
-  authenticationProfileTemplates
+  setupMockedComponents
 } from "testUtils";
 import { Modal } from "@mui/material";
 import SkillEntryFormModal from "../SkillEntryFormModal";

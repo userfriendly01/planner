@@ -63,6 +63,8 @@ jest.mock("components", () => ({
   PhoneNumberInput: jest.fn()
 }));
 
+jest.useFakeTimers();
+
 const taskQueues = [{
   friendlyName: "task queue 1",
   sid: "TQ123"
@@ -721,6 +723,7 @@ describe("<SkillEntryFormModal />", () => {
           status: "success"
         });
         expect(getSkills).toHaveBeenCalledTimes(1);
+        jest.runAllTimers();
         expect(mockCloseModal).toHaveBeenCalledTimes(1);
         expect(mockSkillFormDispatch).toHaveBeenLastCalledWith({
           type: "RESET_FORM"

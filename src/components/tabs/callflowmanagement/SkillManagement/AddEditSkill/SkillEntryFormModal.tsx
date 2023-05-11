@@ -21,13 +21,17 @@ import {
   SkillEntryFormModalProps
 } from "../Skills.Interfaces";
 import {
-  FlexRow, FlexColumn,
-  formModes, ModalOverlayStatuses
+  FlexRow,
+  FlexColumn,
+  formModes,
+  ModalOverlayStatuses,
+  timeouts
 } from "globals";
 import {
   FormControlLabel,
   Switch,
-  Paper
+  Paper,
+  Tooltip
 } from "@mui/material";
 import {
   createSkill
@@ -60,7 +64,7 @@ const ScrollingPaper = styled(Paper)`
 
 const CenteredDiv = styled.div`
   align-self: center;
-  margin-bottom: 5px;
+  margin: 10px;
 `;
 
 const ButtonWrapper = styled(FlexRow)`
@@ -73,8 +77,6 @@ const inputStyles = {
   width: "350px",
   margin: "5px"
 };
-
-// TODO: add TOOLTIPS
 
 const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
   const {
@@ -218,7 +220,13 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
           type: skillFormActions.RESET_FORM
         });
         await getSkills(adminDispatch);
-        closeModal();
+        setTimeout(() => {
+          closeModal();
+          setSaveResult({
+            message: "",
+            status: null
+          });
+        }, timeouts.MODAL_OVERLAY);
       } else {
         // a partial success will return 206
         // meaning either the creation in contactmanager OR the callflow db was sucessful
@@ -611,14 +619,17 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
         </>
         }
         <ButtonWrapper>
-          <StyledButton onClick={() => {
-            closeModal();
-            skFormDispatch({
-              type: skillFormActions.RESET_FORM
-            });
-          }} >Cancel</StyledButton>
+          <StyledButton
+            style={{ width: "200px" }}
+            onClick={() => {
+              closeModal();
+              skFormDispatch({
+                type: skillFormActions.RESET_FORM
+              });
+            }} >Cancel</StyledButton>
           <StyledButton
             onClick={addSkill}
+            style={{ width: "200px" }}
             disabled={
               areRequiredFieldsEmpty() ||
               invalidSkillFriendlyName ||
