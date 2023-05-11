@@ -28,6 +28,6 @@ export const AddUserButton = styled(StyledButton)`
 
 export const StyledExportButton = styled(StyledButton)`
   height: 50px;
-  width: 35%;
+  width: 100%;
   margin: 10px;
 `;

@@ -31,6 +31,8 @@ const defaultTableState = {
   searchResults: initialTestState.workerContext.workers,
   selected: [],
   managerFilter: null,
+  ouFilter: null,
+  profileFilter: null,
   deltaFilter: false,
   pagination: {
     usersPerPage: 25,

@@ -3,7 +3,8 @@ import {
   FlexRowMax,
   Header,
   ModalContainer,
-  DropdownWrapper
+  DropdownWrapper,
+  CloseButtonContainer
 } from "./Filter.Styles";
 import { FilterModalProps } from "./Filter.Interfaces";
 import {
@@ -36,8 +37,10 @@ const FilterModal = (props: FilterModalProps) => {
 
   return (
     <ModalContainer>
-      <CloseRounded data-testid={"close-button"} onClick={handleClose}/>
       <PaperContainer>
+        <CloseButtonContainer>
+          <CloseRounded data-testid={"close-button"} onClick={handleClose}/>
+        </CloseButtonContainer>
         <Header>Filter Stuff</Header>
         <DropdownWrapper>
           <ProfileFilterDropdown filterBy={tableState.profileFilter} setFilter={(profile_id: string) => setTableState({

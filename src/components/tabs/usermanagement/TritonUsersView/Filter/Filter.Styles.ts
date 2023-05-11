@@ -13,6 +13,11 @@ export const FlexRow = styled.div`
   flex: 1 1 auto;
 `;
 
+export const CloseButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end
+`;
+
 export const FilterButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
 `;

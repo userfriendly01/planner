@@ -5,9 +5,6 @@ import {
 import { ManagementHeaderProps } from "./TritonUsersHeader.Interfaces";
 import ExportButton from "./ExportUsersButton";
 import {
-  ManagerDropdown,
-  ProfileFilterDropdown,
-  OuFilterDropdown,
   ResetSkillsButton,
   FilterButton,
   SearchBox

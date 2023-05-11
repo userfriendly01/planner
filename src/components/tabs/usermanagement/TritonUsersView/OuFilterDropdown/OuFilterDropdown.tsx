@@ -4,24 +4,14 @@ import {
 } from "./OuFilterDropdown.Interfaces";
 import {
   Label,
-  IconWrapper,
   Wrapper
-} from "../ManagerDropdown/ManagerDropdown.Styles"; // TODO: chnage to local style file
+} from "./OuFilterDropdown.Styles";
 import {
-  // ManagerModal,
-  // ManagerDelete,
   Dropdown
 } from "components";
-import { useAdminState } from "context";
-import React, { useState } from "react";
+import React from "react";
 import { getOperatingUnits } from "services";
 import { OperatingUnit } from "globals";
-//import { sortProfilesById } from "utils";
-import {
-  Edit,
-  Delete
-} from "@mui/icons-material";
-import { Modal } from "@mui/material";
 
 const OuFilterDropdown = (props: OuFilterDropdownProps) => {
   const {
@@ -78,7 +68,10 @@ const OuFilterDropdown = (props: OuFilterDropdownProps) => {
         options={options}
         styles= {{ width: 325 }}
         value={filterBy ? options.find((option: DropdownOption) => {
-          if(option.value === filterBy){
+
+          console.log("filterBY:!",filterBy);
+          console.log("OptionValue!", option.value);
+          if(option.value.toLowerCase() === filterBy){
             return option.label;
           }
         }) : ""}

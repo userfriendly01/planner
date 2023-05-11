@@ -86,10 +86,7 @@ const ExportButton = (props: ExportTritonUserProps) => {
       width: "50%",
       margin: "10px"
     }}>
-      <StyledButton   style={{
-        width: "100%",
-        height: "50px"
-      }} onClick={handleExport}><ExcelExport ref={_export}/>{label ? label : "Export"}</StyledButton>
+      <StyledExportButton onClick={handleExport}><ExcelExport ref={_export}/>{label ? label : "Export"}</StyledExportButton>
     </div>
   );
 };

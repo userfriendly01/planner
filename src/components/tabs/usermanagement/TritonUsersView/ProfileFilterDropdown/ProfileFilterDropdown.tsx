@@ -5,12 +5,12 @@ import {
 import {
   Label,
   Wrapper
-} from "../ManagerDropdown/ManagerDropdown.Styles"; // TODO: chnage to local style file
+} from "./ProfileFilterDropdown.Styles";
 import {
   Dropdown
 } from "components";
 import { useAdminState } from "context";
-import React, { useState } from "react";
+import React from "react";
 import { sortProfilesById } from "utils";
 
 const ProfileFilterDropdown = (props: ProfileFilterDropDownProps) => {
