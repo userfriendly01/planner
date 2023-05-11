@@ -762,7 +762,7 @@ describe("<SkillEntryFormModal />", () => {
       });
     });
     test("call fails, shows error message", async () => {
-      createSkill.mockRejectedValueOnce("boo");
+      createSkill.mockRejectedValueOnce({ message: "boo" });
       skillFormState.mockReturnValueOnce(completeFormNoVh);
       renderComponent();
       render(Paper.mock.calls[0][0].children);

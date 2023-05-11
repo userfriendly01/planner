@@ -243,7 +243,7 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
     } catch (err) {
       console.error("ERROR WHEN ADDING SKILL", err);
       setSaveResult({
-        message: `Request Failed: ${err}`,
+        message: `Request Failed: ${err.message}`,
         status: ModalOverlayStatuses.FAIL
       });
     }
@@ -260,6 +260,7 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
           />
         }
         <CenteredDiv style={{ fontSize: "25px" }}>Add Skill</CenteredDiv>
+        <CenteredDiv>*** Before using this form, the skill and task queue must already be set up in the Twilio Console ***</CenteredDiv>
         <FlexRow>
           <CustomInput
             value={skFormState.skillFriendlyName}
@@ -467,8 +468,7 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
             }}
           />} />
         {skFormState.enableVirtualHold && <>
-          {/* todo: make this message better */}
-          <CenteredDiv>Note: Adding these fields will not enable virtual hold.  More needs to be done in addition to providing these values</CenteredDiv>
+          <CenteredDiv>Note: Adding these fields will NOT enable virtual hold by themselves.  More needs to be done in addition to providing these values</CenteredDiv>
           <FlexRow>
             <PhoneNumberInput
               id="Virtual Hold Call Target"
