@@ -81,7 +81,7 @@ const ResetSkillsButton = (props: any) => {
 
   return (
     <div style={{
-      width: "35%",
+      width: "50%",
       margin: "10px"
     }}>
       <Modal open={resultsModalOpts.open}>
