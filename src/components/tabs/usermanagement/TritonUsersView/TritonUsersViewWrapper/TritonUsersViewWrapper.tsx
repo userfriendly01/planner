@@ -56,7 +56,6 @@ const TritonUserManagementWrapper: any = () => {
       });
     }
     console.log("**Profile FL", filteredList);
-    console.log("tableState!", tableState);
 
     //filter by Ou
     if(tableState.ouFilterArray.length > 0){

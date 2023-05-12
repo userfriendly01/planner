@@ -1,6 +1,5 @@
 import {
   FilterButtonWrapper,
-  FlexRowMax,
   Header,
   ModalContainer,
   DropdownWrapper,
@@ -25,7 +24,6 @@ const FilterModal = (props: FilterModalProps) => {
     setTableState
   } = props;
 
-  console.log("MODAL TABLESTATE!", tableState);
   return (
     <ModalContainer>
       <PaperContainer>

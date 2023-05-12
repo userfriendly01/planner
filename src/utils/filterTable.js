@@ -42,10 +42,3 @@ export const filterSkillsByName = (skill, searchValue) => {
   }
   return false;
 };
-
-export const findOuFromProfile = (profileId, profileList) => {
-  const formattedProfileId = typeof profileId !== "string" ? profileId.toString() : profileId;
-  const profile = profileList.find(p => (typeof p.profile_id !== "string" ? p.profile_id.toString() : p.profile_id ) === formattedProfileId);
-  const profileOu = profile ? profile.operating_unit_nme?.toLowerCase() : "";
-  return profileOu;
-};

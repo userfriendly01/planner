@@ -1,6 +1,5 @@
 import OuFilterDropdown from "../OuFilterDropdown";
 import { Dropdown } from "components";
-import { useAdminState } from "context";
 import React from "react";
 import { getOperatingUnits } from "services";
 import {
@@ -8,11 +7,10 @@ import {
   render,
   setupMockedComponents,
   mockOperatingUnits,
-  initialTestState as initialState,
   waitFor
 } from "testUtils";
 import {
-  theme, OperatingUnit
+  theme
 } from "globals";
 import { ThemeProvider } from "styled-components";
 
@@ -25,9 +23,6 @@ jest.mock("context", () => ({
 }));
 
 const statusCode = 500;
-
-//getOperatingUnits.mockImplementation(() => { return Promise.resolve(mockOperatingUnits); });
-//const mockSetOperatingUnit = jest.fn();
 
 jest.mock("../OuFilterDropdown.Styles", () => ({
   Label: jest.requireActual("../OuFilterDropdown.Styles").Label,
@@ -48,7 +43,6 @@ const renderComponent = () => render(
 describe("<OuDropdown />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    //useAdminState.mockReturnValue(initialTestState);
     getOperatingUnits.mockResolvedValue(mockOperatingUnits);
     setupMockedComponents({
       Dropdown
@@ -75,32 +69,14 @@ describe("<OuDropdown />", () => {
         }
       });
     });
-    // describe("Operating unit endpoint returns list of OU", () => {
-    //   beforeEach(() => {
-    //     jest.clearAllMocks();
-    //     getOperatingUnits.mockImplementation(() => {
-    //       return Promise.resolve({
-    //         ou_name: "testname",
-    //         ou_sid: "testsid"
-    //       });
-    //     });
-    //   });
-    //   test("should call setOperatingUnit function", async () => {
-    //     renderComponent();
-    //     //expect(mockSetOperatingUnit).toHaveBeenCalledTimes(1);
-    //     //expect(mockSetOperatingUnit).toHaveBeenLastCalledWith(""); // TODO fix this 
-    //   });
-    // });
   });
   test("upon initial render, should display OU Filter and all Ou should be listed in the dropdown", async () => {
     renderComponent();
     await waitFor(() => {
       expect(Dropdown.mock.calls.length).toBe(2);
     });
-    //expect(Dropdown.mock.calls).toBe("Butts");
-    //expect(Dropdown.mock.calls.length).toBe(2);
     expect(Dropdown.mock.calls[1][0].label).toBe("OU Dropdown");
-    expect(Dropdown.mock.calls[1][0].options).toStrictEqual([   // TODO fix this 
+    expect(Dropdown.mock.calls[1][0].options).toStrictEqual([
       {
         label: "Show All",
         value: "show-all"

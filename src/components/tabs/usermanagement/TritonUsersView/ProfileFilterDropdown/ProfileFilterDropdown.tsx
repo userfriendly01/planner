@@ -10,7 +10,7 @@ import {
   Dropdown
 } from "components";
 import { useAdminState } from "context";
-import React, { useState } from "react";
+import React from "react";
 import { sortProfilesById } from "utils";
 
 const ProfileFilterDropdown = (props: ProfileFilterDropDownProps) => {
@@ -62,24 +62,16 @@ const ProfileFilterDropdown = (props: ProfileFilterDropDownProps) => {
       <Dropdown
         label="Profile Dropdown"
         options={options}
-        // styles= {{ width: 325 }}
         styles={{
           width: "400px",
           margin: "10px 0px"
         }}
-
         multiple={true}
         value= {filterBy}
-        // value= {filterBy ? options.find((option: DropdownOption) => {
-        //   if(option.value === filterBy){
-        //     return option.label;
-        //   }
-        // }) : ""}
         updateValue={(event: any, optionsArray: any[]) => {
           if(optionsArray.find( (o: any) => o.value === "show-all")){
             setFilter([]);
           } else if(optionsArray.find( (o: any) => o.value !== "divider")) {
-            console.log("NewInput!", optionsArray);
             setFilter(optionsArray);
           }
         }}
