@@ -147,20 +147,11 @@ describe("<FilterModal />", () => {
       expect(StyledButton.mock.calls[1][0].children).toBe("Clear Filters");
     });
     test("should clear filters when clicked", () => {
-      tableState = {
-        managerFilter: "n123456",
-        profileFilter: "7",
-        ouFilter: "claims"
-      };
       renderComponent();
       act(() => {
         StyledButton.mock.calls[1][0].onClick();
       });
-    //   expect(tableState).toBe({
-    //     managerFilter: null,
-    //     profileFilter: null,
-    //     ouFilter: null
-    //   }); fix this
+      expect(mockHandleClear).toHaveBeenCalledTimes(1);
     });
   });
 

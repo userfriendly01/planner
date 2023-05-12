@@ -1,7 +1,6 @@
 import TritonUsersHeader from "../TritonUsersHeader";
 import ExportButton from "../ExportUsersButton";
 import {
-  ManagerDropdown,
   FilterButton,
   ResetSkillsButton,
   SearchBox
@@ -14,7 +13,6 @@ import {
 } from "testUtils";
 
 jest.mock("components", () => ({
-  //ManagerDropdown: jest.fn(),
   FilterButton: jest.fn(),
   ResetSkillsButton: jest.fn(),
   SearchBox: jest.fn(),
@@ -27,7 +25,6 @@ jest.mock("../ExportUsersButton", () => ({
 }));
 
 const tableState = {
-  //manager: "Edie Britt",
   searchBy: "Look out!",
   searchResults: ["aww edie"]
 };

@@ -11,8 +11,6 @@ export const filterWorkerSearch = (worker, searchValue, state) => {
   const defaultSkills = worker.attributes.default_skills?.skills?.toString() || "";
   const nNumber = worker.attributes.n_number?.toLowerCase() || "";
   const office = worker.attributes.office_location_name?.toLowerCase() || "";
-  const profile = state.profileContext.profiles.find(p => p.profile_id === worker.attributes.profile_id);
-  console.log(profile);
   const lowerCaseSearch = searchValue.toLowerCase();
   if (name.indexOf(lowerCaseSearch) >= 0) {
     return true;

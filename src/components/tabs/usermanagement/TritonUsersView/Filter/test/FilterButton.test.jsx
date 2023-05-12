@@ -81,7 +81,6 @@ describe("FilterButton", () => {
         ouFilterArray: ["claims"]
       };
       renderComponent();
-      // expect(Modal.mock.calls).toBe("butt");
       const onClick = StyledButton.mock.calls[0][0].onClick;
       act(() => onClick());
       act(() => render(Modal.mock.calls[0][0].children));
