@@ -1,20 +1,24 @@
-import TritonUsersHeader from "../TritonUsersHeader";
+import WfmUsersHeader from "../WfmUsersHeader";
 import ExportButton from "../ExportUsersButton";
 import {
-  ManagerDropdown,
-  ResetSkillsButton,
+  Dropdown,
   SearchBox
 } from "components";
 import React from "react";
 import {
   act,
   render,
-  setupMockedComponents
+  setupMockedComponents,
+  initialTestState
 } from "testUtils";
+import { useAdminState } from "context";
+
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
+}));
 
 jest.mock("components", () => ({
-  ManagerDropdown: jest.fn(),
-  ResetSkillsButton: jest.fn(),
+  Dropdown: jest.fn(),
   SearchBox: jest.fn(),
   StyledButton: jest.fn()
 }));
@@ -33,15 +37,15 @@ const tableState = {
 const mockSetTableState = jest.fn();
 
 const renderComponent = () => {
-  render(<TritonUsersHeader tableState={tableState} setTableState={mockSetTableState}/>);
+  render(<WfmUsersHeader tableState={tableState} setTableState={mockSetTableState}/>);
 };
 
-describe("TritonUsersHeader", () => {
+describe("WfmUsersHeader", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
-      ManagerDropdown,
-      ResetSkillsButton,
+      Dropdown,
       SearchBox,
       ExportButton
     });
@@ -49,39 +53,54 @@ describe("TritonUsersHeader", () => {
   describe("initial render", () => {
     test("component renders as expected", () => {
       renderComponent();
-      expect(ManagerDropdown.mock.calls.length).toBe(1);
-      expect(ManagerDropdown.mock.calls[0][0].filterBy).toBe(tableState.manager);
       expect(ExportButton.mock.calls.length).toBe(1);
       expect(ExportButton.mock.calls[0][0].selected).toBe(tableState.searchResults);
       expect(ExportButton.mock.calls[0][0].label).toBe("Export");
       expect(SearchBox.mock.calls.length).toBe(1);
       expect(SearchBox.mock.calls[0][0].searchBy).toBe(tableState.searchBy);
-      expect(ResetSkillsButton.mock.calls.length).toBe(1);
+      expect(Dropdown.mock.calls.length).toBe(2);
+      expect(ExportButton.mock.calls.length).toBe(1);
     });
   });
-  describe("setFilter is called on Manager Dropdown", () => {
+  describe("updateValue is called on Business Unit Dropdown", () => {
     test("should call setTableState", () => {
-      const managerNNumber = "n0263786";
+      const BUId = "123-321";
       renderComponent();
-      const setFilter = ManagerDropdown.mock.calls[0][0].setFilter;
-      act(() => setFilter(managerNNumber));
+      const updateValue = Dropdown.mock.calls[0][0].updateValue;
+      act(() => updateValue({}, BUId));
       expect(mockSetTableState).toHaveBeenCalledTimes(1);
       expect(mockSetTableState).toHaveBeenCalledWith({
         ...tableState,
-        managerFilter: managerNNumber
+        businessUnitFilter: BUId
+      });
+    });
+  });
+  describe("updateValue is called on Team Dropdown", () => {
+    test("should call setTableState", () => {
+      const TeamId = { value: "111" };
+      renderComponent();
+      const updateValue = Dropdown.mock.calls[1][0].updateValue;
+      act(() => updateValue({}, TeamId));
+      expect(mockSetTableState).toHaveBeenCalledTimes(1);
+      expect(mockSetTableState).toHaveBeenCalledWith({
+        ...tableState,
+        teamFilter: "111"
       });
     });
   });
   describe("setSearch is called on SearchBox", () => {
     test("should call setTableState", () => {
-      const searchBy = "Puppies";
+      const searchBy = "hi";
       renderComponent();
       const setSearch = SearchBox.mock.calls[0][0].setSearch;
       act(() => setSearch(searchBy));
       expect(mockSetTableState).toHaveBeenCalledTimes(1);
       expect(mockSetTableState).toHaveBeenCalledWith({
         ...tableState,
-        searchBy
+        searchBy,
+        pagination: {
+          pageNumber: 1
+        }
       });
     });
   });
