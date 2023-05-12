@@ -1,4 +1,4 @@
-export const filterWorkerSearch = (worker, searchValue, state) => {
+export const filterWorkerSearch = (worker, searchValue) => {
   if (!worker || !worker.attributes) {
     return false;
   }

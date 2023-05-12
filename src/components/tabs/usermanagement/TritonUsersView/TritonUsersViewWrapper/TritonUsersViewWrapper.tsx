@@ -77,7 +77,7 @@ const TritonUserManagementWrapper: any = () => {
 
     //filter by searchBy
     const trimmedSearch = tableState.searchBy.trim();
-    const searchResults = filteredList.filter((worker: any) => filterWorkerSearch(worker, trimmedSearch, state));
+    const searchResults = filteredList.filter((worker: any) => filterWorkerSearch(worker, trimmedSearch));
     filteredList = searchResults;
     console.log("**Search FL", filteredList);
 
