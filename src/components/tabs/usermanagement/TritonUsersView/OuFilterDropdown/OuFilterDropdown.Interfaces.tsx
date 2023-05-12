@@ -1,6 +1,6 @@
 export interface OuFilterDropdownProps {
-    filterBy: string,
-    setFilter: (filter: string) => void
+    filterBy: any[],
+    setFilter: (filter: any[]) => void
 }
 
 export interface DropdownOption {

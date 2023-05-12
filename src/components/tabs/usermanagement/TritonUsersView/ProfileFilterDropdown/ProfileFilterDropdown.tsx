@@ -10,7 +10,7 @@ import {
   Dropdown
 } from "components";
 import { useAdminState } from "context";
-import React from "react";
+import React, { useState } from "react";
 import { sortProfilesById } from "utils";
 
 const ProfileFilterDropdown = (props: ProfileFilterDropDownProps) => {
@@ -34,8 +34,7 @@ const ProfileFilterDropdown = (props: ProfileFilterDropDownProps) => {
     },
     ...sortedProfiles.map(profile => ({
       label: `${profile.profile_id} - ${profile.profile_nme}`,
-      value: typeof profile.profile_id === "number" ? profile.profile_id.toString() : profile.profile_id,
-      ...profile  //TODO - do we need this
+      value: typeof profile.profile_id === "number" ? profile.profile_id.toString() : profile.profile_id
     }))
   ];
 
@@ -63,17 +62,25 @@ const ProfileFilterDropdown = (props: ProfileFilterDropDownProps) => {
       <Dropdown
         label="Profile Dropdown"
         options={options}
-        styles= {{ width: 325 }}
-        value= {filterBy ? options.find((option: DropdownOption) => {
-          if(option.value === filterBy){
-            return option.label;
-          }
-        }) : ""}
-        updateValue={(event: any, newInputValue: any) => {
-          if(newInputValue.value === "show-all") {
-            setFilter(null);
-          } else if(newInputValue.value !== "divider") {
-            setFilter(newInputValue.value);
+        // styles= {{ width: 325 }}
+        styles={{
+          width: "400px",
+          margin: "10px 0px"
+        }}
+
+        multiple={true}
+        value= {filterBy}
+        // value= {filterBy ? options.find((option: DropdownOption) => {
+        //   if(option.value === filterBy){
+        //     return option.label;
+        //   }
+        // }) : ""}
+        updateValue={(event: any, optionsArray: any[]) => {
+          if(optionsArray.find( (o: any) => o.value === "show-all")){
+            setFilter([]);
+          } else if(optionsArray.find( (o: any) => o.value !== "divider")) {
+            console.log("NewInput!", optionsArray);
+            setFilter(optionsArray);
           }
         }}
         CustomRender={DropdownOption}

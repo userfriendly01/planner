@@ -14,9 +14,8 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import { 
-  sortWorkersByFullName,
-  findOuFromProfile 
+import {
+  sortWorkersByFullName
 } from "utils";
 
 jest.mock("components", () => ({
@@ -34,8 +33,8 @@ const defaultTableState = {
   searchResults: initialTestState.workerContext.workers,
   selected: [],
   managerFilter: null,
-  ouFilter: null,
-  profileFilter: null,
+  ouFilterArray: [],
+  profileFilterArray: [],
   deltaFilter: false,
   pagination: {
     usersPerPage: 25,
@@ -131,7 +130,10 @@ describe("TritonUsersViewWrapper", () => {
       const setTritonTable = TritonUsersHeader.mock.calls[1][0].setTableState;
       act(() => setTritonTable({
         ...defaultTableState,
-        profileFilter: "0"
+        profileFilterArray: [{
+          label: "0 - profile0",
+          value: "0"
+        }]
       }));
       expect(TritonUsersHeader.mock.calls.length).toBe(4);
       expect(TritonUsersHeader.mock.calls[3][0].tableState.filteredList).toStrictEqual([workersCopy[3], workersCopy[4]]);

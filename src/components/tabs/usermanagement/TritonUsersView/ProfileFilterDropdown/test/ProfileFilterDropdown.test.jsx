@@ -93,26 +93,25 @@ describe("<ProfileDropdown />", () => {
       },
       ...sortedProfiles.map(profile => ({
         label: `${profile.profile_id} - ${profile.profile_nme}`,
-        value: typeof profile.profile_id === "number" ? profile.profile_id.toString() : profile.profile_id,
-        ...profile
+        value: typeof profile.profile_id === "number" ? profile.profile_id.toString() : profile.profile_id
       }))
     ]);
-    expect(Dropdown.mock.calls[0][0].value).toStrictEqual({
-      value: "show-all",
-      label: "Show All"
-    });
+    expect(Dropdown.mock.calls[0][0].value).toBe("show-all");
   });
 
   test("When an option is clicked in the filter, the setFilter method is fired with the correct parameters", () => {
-    const selection = {
+    const selection = [{
       label: "1 - test1",
       value: "1"
-    };
+    }, {
+      label: "2 - test2",
+      value: "2"
+    }];
     renderComponent();
     act(() => {
       Dropdown.mock.calls[0][0].updateValue(null, selection);
     });
-    expect(setFilter).toHaveBeenCalledWith(selection.value);
+    expect(setFilter).toHaveBeenCalledWith(selection);
   });
   describe("Custom Render", () => {
     describe("Non Profile Option is passed through", () => {
@@ -122,9 +121,9 @@ describe("<ProfileDropdown />", () => {
           value: "show-all"
         };
         renderComponent();
-        act(() => Dropdown.mock.calls[0][0].updateValue(null, option));
+        act(() => Dropdown.mock.calls[0][0].updateValue(null, [option]));
         expect(setFilter).toHaveBeenCalledTimes(1);
-        expect(setFilter).toHaveBeenCalledWith(null);
+        expect(setFilter).toHaveBeenCalledWith([]);
         const rendered = render(Dropdown.mock.calls[0][0].CustomRender({ option }));
         expect(rendered.container).toHaveTextContent("Show All");
       });
@@ -135,7 +134,7 @@ describe("<ProfileDropdown />", () => {
         };
         renderComponent();
         const rendered = render(Dropdown.mock.calls[0][0].CustomRender({ option }));
-        act(() => Dropdown.mock.calls[0][0].updateValue(null, option));
+        act(() => Dropdown.mock.calls[0][0].updateValue(null, [option]));
         expect(setFilter).toHaveBeenCalledTimes(0);
         expect(rendered.container).toHaveTextContent("divider");
       });

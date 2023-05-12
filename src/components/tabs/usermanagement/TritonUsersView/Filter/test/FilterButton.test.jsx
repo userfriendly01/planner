@@ -25,9 +25,9 @@ jest.mock("@mui/material", () => ({
 
 const mockSetTableState = jest.fn();
 let tableState = {
-  managerFilter: null,
-  profileFilter: null,
-  ouFilter: null
+  managerFilter: "n123456",
+  profileFilterArray: ["7"],
+  ouFilterArray: ["claims"]
 };
 
 
@@ -77,10 +77,11 @@ describe("FilterButton", () => {
     test("when filter modal handleClear is called, tableState reset", async () => {
       tableState = {
         managerFilter: "n123456",
-        profileFilter: "7",
-        ouFilter: "claims"
+        profileFilterArray: ["7"],
+        ouFilterArray: ["claims"]
       };
       renderComponent();
+      // expect(Modal.mock.calls).toBe("butt");
       const onClick = StyledButton.mock.calls[0][0].onClick;
       act(() => onClick());
       act(() => render(Modal.mock.calls[0][0].children));
@@ -89,11 +90,11 @@ describe("FilterButton", () => {
       });
       act(() => FilterModal.mock.calls[0][0].handleClear());
       await waitFor(() => {
-        // expect(FilterModal.mock.calls[0][0].tableState).toBe({
-        //   managerFilter: null,
-        //   profileFilter: null,
-        //   ouFilter: null
-        // });  // TODO fix this 
+        expect(mockSetTableState).toHaveBeenCalledWith({
+          managerFilter: null,
+          profileFilterArray: [],
+          ouFilterArray: []
+        });
       });
     });
   });

@@ -25,6 +25,7 @@ const FilterModal = (props: FilterModalProps) => {
     setTableState
   } = props;
 
+  console.log("MODAL TABLESTATE!", tableState);
   return (
     <ModalContainer>
       <PaperContainer>
@@ -33,14 +34,14 @@ const FilterModal = (props: FilterModalProps) => {
         </CloseButtonContainer>
         <Header>Filters</Header>
         <DropdownWrapper>
-          <ProfileFilterDropdown filterBy={tableState.profileFilter} setFilter={(profile_id: string) => setTableState({
+          <ProfileFilterDropdown filterBy={tableState.profileFilterArray} setFilter={(profileIdArray: any[]) => setTableState({
             ...tableState,
-            profileFilter: profile_id
+            profileFilterArray: profileIdArray
           })}
           />
-          <OuFilterDropdown filterBy={tableState.ouFilter} setFilter={(ou_name: string) => setTableState({
+          <OuFilterDropdown filterBy={tableState.ouFilterArray} setFilter={(ouArray: any[]) => setTableState({
             ...tableState,
-            ouFilter: ou_name
+            ouFilterArray: ouArray
           })}
           />
           <ManagerDropdown filterBy={tableState.managerFilter} setFilter={(manager_n_number: string) => setTableState({

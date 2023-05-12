@@ -38,7 +38,7 @@ const OuFilterDropdown = (props: OuFilterDropdownProps) => {
     },
     ...operatingUnitList.map(ou => ({
       label: ou.ou_name,
-      value: ou.ou_name
+      value: ou.ou_sid
     }))
   ];
 
@@ -66,20 +66,17 @@ const OuFilterDropdown = (props: OuFilterDropdownProps) => {
       <Dropdown
         label="OU Dropdown"
         options={options}
-        styles= {{ width: 325 }}
-        value={filterBy ? options.find((option: DropdownOption) => {
-
-          console.log("filterBY:!",filterBy);
-          console.log("OptionValue!", option.value);
-          if(option.value.toLowerCase() === filterBy){
-            return option.label;
-          }
-        }) : ""}
-        updateValue={(event: any, newInputValue: any) => {
-          if(newInputValue.value === "show-all") {
-            setFilter(null);
-          } else if(newInputValue.value !== "divider") {
-            setFilter(newInputValue.value.toLowerCase());
+        styles={{
+          width: "400px",
+          margin: "10px 0px"
+        }}
+        multiple={true}
+        value={filterBy}
+        updateValue={(event: any, optionsArray: any[]) => {
+          if(optionsArray.find( (o: any) => o.value === "show-all")){
+            setFilter([]);
+          }else if(optionsArray.find( (o: any) => o.value !== "divider")) {
+            setFilter(optionsArray);
           }
         }}
         CustomRender={DropdownOption}

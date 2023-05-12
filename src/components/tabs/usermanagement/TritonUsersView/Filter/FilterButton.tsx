@@ -2,10 +2,6 @@ import {
   FilterModal,
   StyledButton
 } from "components";
-import {
-  //useAdminDispatch,
-  useAdminState
-} from "context";
 import React, { useState } from "react";
 import { Modal } from "@mui/material";
 import { FilterButtonProps } from "./Filter.Interfaces";
@@ -15,46 +11,32 @@ const FilterButton = (props: FilterButtonProps) => {
     tableState,
     setTableState
   } = props;
-  //   const dispatch = useAdminDispatch();
-  // const state = useAdminState();
-  // console.log(state);
+
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-
-  const handleOpenFilterModal = () => {
-    setIsFilterModalOpen(true);
-  };
-
-
-  const handleCloseFilterModal = () => {
-    // setSelectedManager(null);
-    //setFilter(null);
-    setIsFilterModalOpen(false);
-    //setIsManagerDeleteOpen(false);
-  };
 
   const handleClearFilters = () => {
     setTableState({
       ...tableState,
       managerFilter: null,
-      profileFilter: null,
-      ouFilter: null
+      profileFilterArray: [],
+      ouFilterArray: []
     });
-    console.log("set table state2!", tableState);
   };
 
   return (
     <div>
       <Modal onClose={() => { return; }} open={isFilterModalOpen}>
-        <FilterModal handleClose={handleCloseFilterModal}
+        <FilterModal handleClose={()=>setIsFilterModalOpen(false)}
           handleClear = {handleClearFilters}
           tableState= {tableState}
-          setTableState={setTableState} />
+          setTableState={setTableState}
+        />
       </Modal>
       <StyledButton style={{
         width: "100%",
         height: "50px",
         padding: "1em"
-      }} onClick={() => handleOpenFilterModal()}>
+      }} onClick={()=>setIsFilterModalOpen(true)}>
         Filters
       </StyledButton>
     </div>

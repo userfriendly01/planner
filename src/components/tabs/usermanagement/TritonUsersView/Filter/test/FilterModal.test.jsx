@@ -16,8 +16,6 @@ import {
 } from "components";
 import { CloseRounded } from "@mui/icons-material";
 
-
-
 jest.mock("@mui/icons-material", () => ({
   __esModule: true,
   CloseRounded: jest.fn()
@@ -26,7 +24,7 @@ jest.mock("@mui/icons-material", () => ({
 jest.mock("components", () => ({
   __esModule: true,
   Dropdown: jest.fn(),
-  PaperContainer: jest.fn(),//jest.requireActual("components").PaperContainer,
+  PaperContainer: jest.fn(),
   StyledButton: jest.fn(),
   ManagerDropdown: jest.fn(),
   ProfileFilterDropdown: jest.fn(),
@@ -70,9 +68,9 @@ describe("<FilterModal />", () => {
       expectMockedComponent(rendered, { ManagerDropdown });
       expect(ManagerDropdown.mock.calls[0][0].filterBy).toBe(tableState.managerFilter);
       expectMockedComponent(rendered, { ProfileFilterDropdown });
-      expect(ProfileFilterDropdown.mock.calls[0][0].filterBy).toBe(tableState.profileFilter);
+      expect(ProfileFilterDropdown.mock.calls[0][0].filterBy).toBe(tableState.profileFilterArray);
       expectMockedComponent(rendered, { OuFilterDropdown });
-      expect(OuFilterDropdown.mock.calls[0][0].filterBy).toBe(tableState.ouFilter);
+      expect(OuFilterDropdown.mock.calls[0][0].filterBy).toBe(tableState.ouFilterArray);
       expect(StyledButton.mock.calls[0][0].children).toBe("Apply Filters");
       expect(StyledButton.mock.calls[1][0].children).toBe("Clear Filters");
     });
@@ -94,28 +92,28 @@ describe("<FilterModal />", () => {
 
   describe("setFilter is called on Ou Dropdown", () => {
     test("should call setTableState", () => {
-      const ou = "claims";
+      const ou = ["claims", "nonsense"];
       renderComponent();
       const setFilter = OuFilterDropdown.mock.calls[0][0].setFilter;
       act(() => setFilter(ou));
       expect(mockSetTableState).toHaveBeenCalledTimes(1);
       expect(mockSetTableState).toHaveBeenCalledWith({
         ...tableState,
-        ouFilter: ou
+        ouFilterArray: ou
       });
     });
   });
 
   describe("setFilter is called on Profile Dropdown", () => {
     test("should call setTableState", () => {
-      const profileId = "12";
+      const profileId = ["12", "14"];
       renderComponent();
       const setFilter = ProfileFilterDropdown.mock.calls[0][0].setFilter;
       act(() => setFilter(profileId));
       expect(mockSetTableState).toHaveBeenCalledTimes(1);
       expect(mockSetTableState).toHaveBeenCalledWith({
         ...tableState,
-        profileFilter: profileId
+        profileFilterArray: profileId
       });
     });
   });

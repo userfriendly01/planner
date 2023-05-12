@@ -8,7 +8,8 @@ import {
   render,
   setupMockedComponents,
   mockOperatingUnits,
-  initialTestState as initialState
+  initialTestState as initialState,
+  waitFor
 } from "testUtils";
 import {
   theme, OperatingUnit
@@ -23,10 +24,10 @@ jest.mock("context", () => ({
   useAdminState: jest.fn()
 }));
 
-getOperatingUnits.mockImplementation(() => { return Promise.resolve(mockOperatingUnits); });
 const statusCode = 500;
 
-const mockSetOperatingUnit = jest.fn();
+//getOperatingUnits.mockImplementation(() => { return Promise.resolve(mockOperatingUnits); });
+//const mockSetOperatingUnit = jest.fn();
 
 jest.mock("../OuFilterDropdown.Styles", () => ({
   Label: jest.requireActual("../OuFilterDropdown.Styles").Label,
@@ -34,7 +35,7 @@ jest.mock("../OuFilterDropdown.Styles", () => ({
 }));
 
 
-const filterBy = "show-all";
+const filterBy = [];
 const setFilter = jest.fn();
 
 const renderComponent = () => render(
@@ -48,6 +49,7 @@ describe("<OuDropdown />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     //useAdminState.mockReturnValue(initialTestState);
+    getOperatingUnits.mockResolvedValue(mockOperatingUnits);
     setupMockedComponents({
       Dropdown
     });
@@ -73,56 +75,61 @@ describe("<OuDropdown />", () => {
         }
       });
     });
-    describe("Operating unit endpoint returns list of OU", () => {
-      beforeEach(() => {
-        jest.clearAllMocks();
-        getOperatingUnits.mockImplementation(() => {
-          return Promise.resolve({
-            ou_name: "testname",
-            ou_sid: "testsid"
-          });
-        });
-      });
-      test("should call setOperatingUnit function", async () => {
-        renderComponent();
-        //expect(mockSetOperatingUnit).toHaveBeenCalledTimes(1);
-        //expect(mockSetOperatingUnit).toHaveBeenLastCalledWith(""); // TODO fix this 
-      });
-    });
+    // describe("Operating unit endpoint returns list of OU", () => {
+    //   beforeEach(() => {
+    //     jest.clearAllMocks();
+    //     getOperatingUnits.mockImplementation(() => {
+    //       return Promise.resolve({
+    //         ou_name: "testname",
+    //         ou_sid: "testsid"
+    //       });
+    //     });
+    //   });
+    //   test("should call setOperatingUnit function", async () => {
+    //     renderComponent();
+    //     //expect(mockSetOperatingUnit).toHaveBeenCalledTimes(1);
+    //     //expect(mockSetOperatingUnit).toHaveBeenLastCalledWith(""); // TODO fix this 
+    //   });
+    // });
   });
-  test("upon initial render, should display OU Filter and all Ou should be listed in the dropdown", () => {
+  test("upon initial render, should display OU Filter and all Ou should be listed in the dropdown", async () => {
     renderComponent();
-    expect(Dropdown.mock.calls[0][0].label).toBe("OU Dropdown");
-    //expect(Dropdown.mock.calls[0][0].options).toStrictEqual([   // TODO fix this 
-    //   {
-    //     label: "Show All",
-    //     value: "show-all"
-    //   },
-    //   {
-    //     label: "divider",
-    //     value: "divider"
-    //   },
-    //   ...mockOperatingUnits.map(ou => ({
-    //     label: ou.ou_name,
-    //     value: ou.ou_name
-    //   }))
-    // ]);
-    expect(Dropdown.mock.calls[0][0].value).toStrictEqual({
-      value: "show-all",
-      label: "Show All"
+    await waitFor(() => {
+      expect(Dropdown.mock.calls.length).toBe(2);
     });
+    //expect(Dropdown.mock.calls).toBe("Butts");
+    //expect(Dropdown.mock.calls.length).toBe(2);
+    expect(Dropdown.mock.calls[1][0].label).toBe("OU Dropdown");
+    expect(Dropdown.mock.calls[1][0].options).toStrictEqual([   // TODO fix this 
+      {
+        label: "Show All",
+        value: "show-all"
+      },
+      {
+        label: "divider",
+        value: "divider"
+      },
+      ...mockOperatingUnits.map(ou => ({
+        label: ou.ou_name,
+        value: ou.ou_sid
+      }))
+    ]);
+    expect(Dropdown.mock.calls[1][0].value).toStrictEqual([]);
   });
 
   test("When an option is clicked in the filter, the setFilter method is fired with the correct parameters", () => {
-    const selection = {
+    const selection = [{
       label: "testname1",
-      value: "testname1"
-    };
+      value: "OuSidTest1"
+    }, {
+      label: "testname1",
+      value: "OuSidTest2"
+    }];
     renderComponent();
     act(() => {
       Dropdown.mock.calls[0][0].updateValue(null, selection);
     });
-    expect(setFilter).toHaveBeenCalledWith(selection.value);
+    expect(setFilter).toHaveBeenCalledWith(selection);
   });
   describe("Custom Render", () => {
     describe("Non OU Option is passed through", () => {
@@ -132,9 +139,9 @@ describe("<OuDropdown />", () => {
           value: "show-all"
         };
         renderComponent();
-        act(() => Dropdown.mock.calls[0][0].updateValue(null, option));
+        act(() => Dropdown.mock.calls[0][0].updateValue(null, [option]));
         expect(setFilter).toHaveBeenCalledTimes(1);
-        expect(setFilter).toHaveBeenCalledWith(null);
+        expect(setFilter).toHaveBeenCalledWith([]);
         const rendered = render(Dropdown.mock.calls[0][0].CustomRender({ option }));
         expect(rendered.container).toHaveTextContent("Show All");
       });
@@ -144,8 +151,8 @@ describe("<OuDropdown />", () => {
           value: "divider"
         };
         renderComponent();
-        const rendered = render(Dropdown.mock.calls[0][0].CustomRender({ option }));
-        act(() => Dropdown.mock.calls[0][0].updateValue(null, option));
+        const rendered = render(Dropdown.mock.calls[0][0].CustomRender({option}));
+        act(() => Dropdown.mock.calls[0][0].updateValue(null, [option]));
         expect(setFilter).toHaveBeenCalledTimes(0);
         expect(rendered.container).toHaveTextContent("divider");
       });
