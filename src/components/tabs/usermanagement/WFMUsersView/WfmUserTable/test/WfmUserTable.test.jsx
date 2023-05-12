@@ -1,7 +1,5 @@
-import TritonUserTable from "../TritonUserTable";
-import { ModalOverlay } from "components";
+import WfmUserTable from "../WfmUserTable";
 import {
-  useAdminDispatch,
   useAdminState,
   useFormDispatch,
   userFormActions
@@ -17,13 +15,10 @@ import {
 import { theme } from "globals";
 import { useNavigate } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
-import { formatWorkerAttributeSkillsToHTML } from "utils";
 import {
   Delete,
-  Edit,
-  ChangeHistoryRounded
+  Edit
 } from "@mui/icons-material";
-import { Switch } from "@mui/material";
 
 jest.mock("components", () => ({
   ModalOverlay: jest.fn()
@@ -34,14 +29,9 @@ jest.mock("react-router-dom", () => ({
 }));
 
 jest.mock("context", () => ({
-  useAdminDispatch: jest.fn(),
   useAdminState: jest.fn(),
   useFormDispatch: jest.fn(),
   userFormActions: jest.requireActual("context").userFormActions
-}));
-
-jest.mock("utils", () => ({
-  formatWorkerAttributeSkillsToHTML: jest.fn()
 }));
 
 jest.mock("@mui/icons-material", () => ({
@@ -56,125 +46,83 @@ jest.mock("@mui/material", () => ({
 
 const mockNavigate = jest.fn();
 const mockSetForm = jest.fn();
-const mockDispatch = jest.fn();
 const mockSetTableState = jest.fn();
+
+const testWFMPeople = [
+  {
+    Id: "1",
+    Identity: "email@mail.com",
+    FirstName: "Michael",
+    LastName: "Scott",
+    EmploymentNumber: "n1234567",
+    Email: "michael.scott@dundermifflin.com",
+    DisplayName: "Michael Scott",
+    EmploymentStartDate: "1-1-2000",
+    TimeZoneId: "EST",
+    BusinessUnitId: "123-321",
+    ParentTeam: "111"
+  },
+  {
+    Id: "2",
+    Identity: "Jim.Halpert@dundermifflin.com",
+    FirstName: "Jim",
+    LastName: "Halpert",
+    EmploymentNumber: "n1234567",
+    Email: "Jim.Halpert@dundermifflin.com",
+    DisplayName: "Michael Scott",
+    EmploymentStartDate: "1-1-2000",
+    TimeZoneId: "EST",
+    BusinessUnitId: "boo",
+    ParentTeam: "fake"
+  }
+];
+
 const tableState = {
   deltaFilter: false,
-  filteredList: initialTestState.workerContext.workers
+  filteredList: testWFMPeople
 };
 const renderComponent = () => {
   return render(
     <ThemeProvider theme={theme}>
-      <TritonUserTable tableState={tableState} setTableState={mockSetTableState} />
+      <WfmUserTable tableState={tableState} setTableState={mockSetTableState} />
     </ThemeProvider>
   );
 };
 
-describe("<TritonUserTable />", () => {
+describe("<WfmUserTable />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useNavigate.mockReturnValue(mockNavigate);
     setupMockedComponents({
-      ModalOverlay,
       Delete,
-      Edit,
-      ChangeHistoryRounded,
-      Switch
+      Edit
     });
-    formatWorkerAttributeSkillsToHTML.mockReturnValue("Skill1, Skill2");
-    useAdminState.mockReturnValue({
-      ...initialTestState,
-      workerContext: {
-        ...initialTestState.workerContext,
-        selectedWorkers: []
-      }
-    });
+    useAdminState.mockReturnValue(initialTestState);
     useFormDispatch.mockReturnValue(mockSetForm);
-    useAdminDispatch.mockReturnValue(mockDispatch);
   });
 
   describe("Initial State", () => {
     test("Table Renders as expected", () => {
       const rendered = renderComponent();
       expect(rendered.container).toHaveTextContent("NAME");
-      expect(rendered.container).toHaveTextContent("N NUMBER");
-      expect(rendered.container).toHaveTextContent("EXTENSION");
-      expect(rendered.container).toHaveTextContent("TEAM/PROFILE");
-      expect(rendered.container).toHaveTextContent("OU");
-      expect(rendered.container).toHaveTextContent("SKILLS (Current)");
-      expect(rendered.container).toHaveTextContent("SKILLS (Default)");
-      initialTestState.workerContext.workers.forEach(w => {
-        expect(rendered.container).toHaveTextContent(w.attributes.emp_first_name);
-        expect(rendered.container).toHaveTextContent(w.attributes.emp_last_name);
-        expect(rendered.container).toHaveTextContent(w.attributes.n_number);
-        expect(rendered.container).toHaveTextContent(w.attributes.extension);
-        const profile = initialTestState.profileContext.profiles.find(p => p.profile_id === w.attributes.profile_id)
-        if(profile){
-          expect(rendered.container).toHaveTextContent(`${profile.profile_nme} - ${profile.profile_id}`);
-          expect(rendered.container).toHaveTextContent(profile.operating_unit_nme);
-        }
-        if(w.attributes.office_location_name){
-          expect(rendered.container).toHaveTextContent(w.attributes.office_location_name);
-        }
-        if(w.attributes.routing){
-          expect(rendered.container).toHaveTextContent(w.attributes.routing);
-        }
-        if(w.attributes.default_skills){
-          expect(rendered.container).toHaveTextContent(w.attributes.default_skills);
-        }
+      expect(rendered.container).toHaveTextContent("ID");
+      expect(rendered.container).toHaveTextContent("EMAIL");
+      expect(rendered.container).toHaveTextContent("IDENTITY");
+      expect(rendered.container).toHaveTextContent("NNumber");
+      expect(rendered.container).toHaveTextContent("BUSINESS UNIT");
+      expect(rendered.container).toHaveTextContent("TEAM");
+      testWFMPeople.forEach(p => {
+        expect(rendered.container).toHaveTextContent(p.DisplayName);
+        expect(rendered.container).toHaveTextContent(p.Id);
+        expect(rendered.container).toHaveTextContent(p.Email);
+        expect(rendered.container).toHaveTextContent(p.Identity);
+        expect(rendered.container).toHaveTextContent(p.EmploymentNumber);
+        expect(rendered.container).toHaveTextContent("Cool WFM Business Unit");
+        expect(rendered.container).toHaveTextContent("Team1");
       });
-      expect(Switch.mock.calls.length).toBe(1);
-      expect(Switch.mock.calls[0][0].checked).toBe(false);
-      expect(ChangeHistoryRounded.mock.calls.length).toBe(1);
-      expect(Edit.mock.calls.length).toBe(initialTestState.workerContext.workers.length);
-      expect(Delete.mock.calls.length).toBe(initialTestState.workerContext.workers.length);
-    });
-    describe("resettingSkills === true", () => {
-      beforeEach(() => {
-        useAdminState.mockReturnValue({
-          ...initialTestState,
-          resettingSkills: true,
-          workerContext: {
-            ...initialTestState.workerContext,
-            selectedWorkers: []
-          }
-        });
-      });
-      test("ModalOverlay is rendered", () => {
-        renderComponent();
-        expect(ModalOverlay.mock.calls.length).toBe(1);
-        expect(ModalOverlay.mock.calls[0][0]).toStrictEqual({
-          message: "Resetting Worker Skills",
-          status: "saving"
-        });
-      });
-    });
-  });
-  describe("Reset Skills Toggle is clicked", () => {
-    test("setTableState is updated ", () => {
-      renderComponent();
-      const toggleWorkers = Switch.mock.calls[0][0].onChange;
-      act(() => toggleWorkers());
-      expect(mockSetTableState).toHaveBeenCalledTimes(1);
-      expect(mockSetTableState).toHaveBeenCalledWith({
-        ...tableState,
-        deltaFilter: true
-      });
-    });
-  });
-  describe("Worker row is selected", () => {
-    test("setDispatch is called for the worker", () => {
-      const rendered = renderComponent();
-      const rows = rendered.getAllByTestId("table-row");
-      act(() => fireEvent.click(rows[1]));
-      expect(mockDispatch).toHaveBeenCalledTimes(1);
-      expect(mockDispatch).toHaveBeenCalledWith({
-        type: "toggleWorkerSelected",
-        payload: {
-          name: initialTestState.workerContext.workers[1].attributes.full_name,
-          sid: initialTestState.workerContext.workers[1].sid
-        }
-      });
+
+      expect(Edit.mock.calls.length).toBe(testWFMPeople.length);
+      expect(Delete.mock.calls.length).toBe(testWFMPeople.length);
     });
   });
   describe("Edit Button is clicked on worker row", () => {
@@ -184,12 +132,8 @@ describe("<TritonUserTable />", () => {
       act(() => fireEvent.click(editButtons[0]));
       expect(mockSetForm).toHaveBeenCalledTimes(1);
       expect(mockSetForm).toHaveBeenCalledWith({
-        type: userFormActions.SET_UPDATE_FORM_STATE,
-        payload: {
-          managers: initialTestState.managerContext.managers,
-          formMode: "update",
-          worker: initialTestState.workerContext.workers[0]
-        }
+        type: userFormActions.SET_UPDATE_WFM_FORM_STATE,
+        payload: testWFMPeople[0]
       });
       expect(mockNavigate).toHaveBeenCalledTimes(1);
       expect(mockNavigate).toHaveBeenCalledWith("/triton-admin/user");
@@ -204,9 +148,14 @@ describe("<TritonUserTable />", () => {
       expect(mockSetForm).toHaveBeenCalledWith({
         type: userFormActions.SET_DELETE_FORM_STATE,
         payload: {
-          managers: initialTestState.managerContext.managers,
           formMode: "delete",
-          worker: initialTestState.workerContext.workers[0]
+          managers: initialTestState.managerContext.managers,
+          worker: {
+            calabrioWfmUser: {
+              updated: false,
+              ...testWFMPeople[0]
+            }
+          }
         }
       });
       expect(mockNavigate).toHaveBeenCalledTimes(1);
