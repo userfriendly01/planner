@@ -124,7 +124,7 @@ describe("TritonUsersViewWrapper", () => {
       expect(TritonUsersHeader.mock.calls[3][0].tableState.filteredList).toStrictEqual([workersCopy[1]]);
     });
   });
-  describe("profileFilter === true", () => {
+  describe("profileFilterArray === true", () => {
     test("filtered list only inlcudes expected options", () => {
       doRender();
       const setTritonTable = TritonUsersHeader.mock.calls[1][0].setTableState;
@@ -139,20 +139,22 @@ describe("TritonUsersViewWrapper", () => {
       expect(TritonUsersHeader.mock.calls[3][0].tableState.filteredList).toStrictEqual([workersCopy[3], workersCopy[4]]);
     });
   });
-  // TODO : FIX THIS OU FILTER TEST 
-  // describe("ouFilter === true", () => {
-  //   test("filtered list only inlcudes expected options", () => {
-  //     doRender();
-  //     const state = initialTestState;
-  //     const setTritonTable = TritonUsersHeader.mock.calls[1][0].setTableState;
-  //     act(() => setTritonTable({
-  //       ...defaultTableState,
-  //       ouFilter: "operatingUnitName"
-  //     }));
-  //     expect(TritonUsersHeader.mock.calls.length).toBe(4);
-  //     expect(TritonUsersHeader.mock.calls[3][0]).toStrictEqual("what");
-  //   });
-  // });
+
+  describe("ouFilterArray === true", () => {
+    test("filtered list only inlcudes expected options", () => {
+      doRender();
+      const setTritonTable = TritonUsersHeader.mock.calls[1][0].setTableState;
+      act(() => setTritonTable({
+        ...defaultTableState,
+        ouFilterArray: [{
+          label: "operatingUnitName",
+          value: "operatingUnitSid1"
+        }]
+      }));
+      expect(TritonUsersHeader.mock.calls.length).toBe(4);
+      expect(TritonUsersHeader.mock.calls[3][0].tableState.filteredList).toStrictEqual([workersCopy[5]]);
+    });
+  });
   describe("searchBy === Faith", () => {
     test("filtered list only inlcudes expected options", () => {
       doRender();
