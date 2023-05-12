@@ -1,6 +1,11 @@
 import React from "react";
 import { useAdminState } from "context";
 import {
+  Button,
+  Row,
+  Wrapper
+} from "./WfmForm.Styles";
+import {
   Dropdown,
   NNumberInput
 } from "components";
@@ -10,13 +15,29 @@ import {
   useFormDispatch
 } from "context";
 import {
+  FormGroup,
+  FormControlLabel,
+  InputAdornment,
   Switch,
-  TextField
+  TextareaAutosize,
+  TextField,
+  IconButton,
+  Tooltip
 } from "@mui/material";
+import {
+  AutoFixHigh
+} from "@mui/icons-material";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import {
+  formModes
+} from "globals";
 import {
   getWfmBusinessUnits,
   getWfmTeams,
-  getWfmOptions
+  getWfmOptions,
+  calabrioTimeZones
 } from "utils";
 import WFMLoadRetryModal from "../../BulkChanges/WFMLoadRetryModal";
 
@@ -24,86 +45,524 @@ const WfmForm = (props: any) => {
   const state = useAdminState();
   const form = useFormState();
   const setForm = useFormDispatch();
-  const [ optionsByBusinessUnit, setOptionsByBusinessUnit ] = React.useState([]);
+  const [ availabilityFields, setAvailabilityFields ] = React.useState({
+    id: null,
+    startDate: null
+  });
+  const [ teamFields, setTeamFields ] = React.useState({
+    id: null,
+    startDate: null
+  });
+  const [ skillFields, setSkillFields ] = React.useState({
+    skills: [],
+    startDate: null
+  });
+  const [ rotationFields, setRotationFields ] = React.useState({
+    id: [],
+    startDate: null,
+    startWeek: null
+  });
+  const [ optionsByBusinessUnit, setOptionsByBusinessUnit ] = React.useState<any>({});
+  const [ scheduling, setScheduling ] = React.useState(false);
+
+  console.log("optionsByBusinessUnit", optionsByBusinessUnit);
+  console.log("FAITH state", state.calabrioContext.wfmOptions);
 
   React.useEffect(() => {
-    setOptionsByBusinessUnit(getWfmOptions(state, form.calabrio_wfm.BusinessUnitId));
+    const trimmedOptions = getWfmOptions(state, form.calabrio_wfm.BusinessUnitId);
+    setOptionsByBusinessUnit(trimmedOptions);
   }, [form.calabrio_wfm.BusinessUnitId]);
 
-  const handleOnBlur = (field: string, system: string) => {
-    const isFieldValid = system ? form[system][field].valid : form[field].valid;
-    if(!isFieldValid){
+  React.useEffect(() => {
+    if(teamFields.id && teamFields.startDate){
       setForm({
-        type: userFormActions.SET_BLUR_ON_FIELD,
+        type: userFormActions.SET_WFM_TEAM,
+        payload: teamFields
+      });
+    } else {
+      setForm({
+        type: userFormActions.SET_WFM_TEAM,
         payload: {
-          field,
-          system
+          id: null,
+          startDate: null
         }
       });
     }
-  };
-/*
-    OptionalColumns: Dropdown, multi-select,
-    Id: text field,
-    Identity: text field with auto populate button
-    FirstName: string, autopopulated
-    LastName: string, autopopulated
-    EmploymentNumber: autopopulated - if Triton is not checked, add in NNumber input
-    Email: string, autopopulated
-    DisplayName: autopopulated
-    TerminationDate: date picker
-    EmploymentStartDate: date picker,
-    TimeZoneId: dropdown,
-    BusinessUnitId: dropdown,
-    SiteId: dropdown,
-    TeamId: dropdown,
-    PersonSkills: dropdown multiselect,
-    WorkflowControlSetId: dropdown,
-    ContractId: dropdown,
-    ContractScheduleId: dropdown,
-    BudgetGroupId: dropdown,
-    PartTimePercentageId: dropdown,
-    ShiftBagId: dropdown,
-    Note: open text field,
-    Roles: any[],
-    FirstDayOfWeek: number,
+  }, [teamFields]);
+
+  React.useEffect(() => {
+    if(skillFields.skills && skillFields.startDate){
+      setForm({
+        type: userFormActions.SET_WFM_SKILLS,
+        payload: skillFields
+      })
+    } else {
+      setForm({
+        type: userFormActions.SET_WFM_SKILLS,
+        payload: {
+          skills: [],
+          startDate: null
+        }
+      });
+    }
+  }, [skillFields]);
+
+  React.useEffect(() => {
+    if(rotationFields.id && rotationFields.startDate && rotationFields.startWeek){
+      setForm({
+        type: userFormActions.SET_WFM_ROTATION,
+        payload: rotationFields
+      })
+    } else {
+      setForm({
+        type: userFormActions.SET_WFM_ROTATION,
+        payload: {
+          id: [],
+          startDate: null,
+          startWeek: null
+        }
+      });
+    }
+  }, [rotationFields]);
+
+  React.useEffect(() => {
+    if(availabilityFields.id && availabilityFields.startDate){
+      setForm({
+        type: userFormActions.SET_WFM_AVAILABILITY,
+        payload: availabilityFields
+      })
+    } else {
+      setForm({
+        type: userFormActions.SET_WFM_AVAILABILITY,
+        payload: {
+          id: [],
+          startDate: null
+        }
+      });
+    }
+  }, [availabilityFields]);
+
+  React.useEffect(() => {
+    console.log("Fetched User!");
+    const worker = form.nNumber.nNumberFetchedUser;
+    if(worker){
+      setForm({
+        type: userFormActions.SET_WFM_USER_DATA,
+        payload: {
+          firstName: worker.firstName,
+          lastName: worker.lastName,
+          nNumber: form.nNumber.value,
+          email: form.nNumber.nNumberFetchedUser.email,
+          fullName: `${worker.firstName} ${worker.lastName}`
+        }
+      });
+    } else {
+      setForm({
+        type: userFormActions.SET_WFM_USER_DATA,
+        payload: {
+          firstName: null,
+          lastName: null,
+          nNumber: null,
+          email: null,
+          fullName: null
+        }
+      });
+    }
+  }, [form.nNumber.nNumberFetchedUser]);
+
+  /*
+    RotationId  
+    RotationStartWeek
+    RotationStartDate
   */
  
+    //Site isnt needed for Create User but its part of a users payload
+    //Is Team Start Date different from Person Start date?
     //options have to be in the applicable BU/team and if the BU/Team changes it has to validate the existing selections
 
-  const generateDropdownOption = (optionsArray: any[]) => {
-    return optionsArray.map((o: any) => {
+  const generateDropdownOptionArray = (optionsArray: any[]) => {
+    if(optionsArray){
+      return optionsArray?.map((o: any) => {
+        return generateDropdownOption(o);
+      });
+    } else {
+      return [];
+    }
+  };
+
+  const generateDropdownOption = (option: any) => {
+    if(option){
       return {
-        value: o.Id,
-        label: o.Name,
-        ...o
+        value: option.Id,
+        label: option.Name,
+        ...option
       }
-    })
+    } else {
+      return ""
+    }
   };
 
   return (
-    <>
-      { state.calabrioContext.wfmOptions ?
-        <div>
+    <Wrapper>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+      {!form.triton.userFound &&
+        <Row>
+          <NNumberInput
+            disabled={(form.formMode === formModes.UPDATE) || (form.nNumber.nNumberFetchedUser ? true : false) || form.formMode === formModes.DELETE}
+            fetchedUser={form.nNumber.nNumberFetchedUser}
+            label="N Number *"
+            onClear={() => setForm({ type: userFormActions.CLEAR_N_NUMBER })}
+            onComplete={(fetchedUser: any, nNumber: any) => setForm({
+              type: userFormActions.COMPLETE_N_NUMBER,
+              payload: {
+                nNumber,
+                fetchedUser
+              }
+            })}
+            onUpdate={(nNumber: string) => {
+              setForm({
+                type: userFormActions.UPDATE_N_NUMBER,
+                payload: nNumber
+              });
+            }}
+            value={form.nNumber.value}
+          />
           <Dropdown
             disabled={false}
             error={false}
             label={"Business Unit *"}
             styles={{
-              width: "384px",
-              margin: "10px 0px"
+              width: "250px",
+              margin: "0px 5px"
             }}
-            onBlur={() => handleOnBlur("TBD", "calabrio_wfm")}
-            options={generateDropdownOption(getWfmBusinessUnits(state))}
+            options={generateDropdownOptionArray(getWfmBusinessUnits(state))}
             updateValue={(event: any, newValue: any) => setForm({
-              type: "SET_UPDATE_WFM_FORM_STATE",
-              payload: calabrioWfmUser
+              type: userFormActions.SET_WFM_BUSINESS_UNIT,
+              payload: newValue.value
             })}
-            value={null}
+            value={generateDropdownOption(getWfmBusinessUnits(state).find((bu: any) => bu.Id === form.calabrio_wfm.BusinessUnitId))}
           />
-        </div>
-    : <WFMLoadRetryModal handleClose={() => {}}/>}
-    </>
+        </Row>
+      }
+      { state.calabrioContext.wfmOptions ?
+      <>
+        <Row>
+          <TextField
+            label={"Identity"}
+            value={form.calabrio_wfm.Identity || ""}
+            onChange={(event: any) => setForm({
+              type: userFormActions.SET_WFM_IDENTITY,
+              payload: event.target.value
+            })}
+            sx={{
+              width: "250px",
+              margin: "0px 5px"
+            }}
+            InputProps={{
+              endAdornment:
+              <InputAdornment
+                position="end"
+              >
+              <Tooltip
+                placement="right"
+                title="Use HR Email">
+                <IconButton
+                  data-testid="clearButton"
+                  edge="end"
+                  aria-label="clear the search field"
+                  onClick={() => 
+                    setForm({
+                      type: userFormActions.SET_WFM_IDENTITY,
+                      payload: form.nNumber.nNumberFetchedUser.email
+                    })}
+                >
+                  <AutoFixHigh/>
+                </IconButton>
+              </Tooltip>
+              </InputAdornment>
+            }}
+          />
+          <Dropdown
+            disabled={false}
+            error={false}
+            label={"First Day of the Week *"}
+            styles={{
+              width: "250px",
+              margin: "0px 5px"
+            }}
+            options={[1,2,3,4,5,6,7]}
+            updateValue={(event: any, newValue: any) => setForm({
+              type: userFormActions.SET_WFM_FIRST_DAY_OF_WEEK,
+              payload: newValue
+            })}
+            value={form.calabrio_wfm.FirstDayOfWeek}
+          />
+          <Dropdown
+            disabled={form.formMode === formModes.DELETE}
+            label="Time Zone"
+            options={calabrioTimeZones}
+            value={calabrioTimeZones.find((t: any) => t.value === form.calabrio_qm.timezone)}
+            updateValue={(event: any, timezone: any) => setForm({
+              type: userFormActions.SET_WFM_TIME_ZONE,
+              payload: timezone.value
+            })}
+            styles={{ width: "250px" }}
+          />
+        </Row>
+        <Row>
+          <Dropdown
+            disabled={form.formMode === formModes.DELETE}
+            label="Availability"
+            options={generateDropdownOptionArray(optionsByBusinessUnit["Availabilities"])}
+            value={generateDropdownOptionArray(optionsByBusinessUnit["Availabilities"]).find((a: any) => a.value === form.calabrio_wfm.AvailabilityId)}
+            updateValue={(event: any, newValue: any) => setAvailabilityFields({
+              ...availabilityFields,
+              id: newValue
+            })}
+            styles={{ width: "250px" }}
+          />
+          <DatePicker
+            label="Availability Start Date"
+            value={availabilityFields.startDate || ""}
+            onChange={(newValue) => {
+              setAvailabilityFields({
+                ...availabilityFields,
+                startDate: newValue
+              })}
+            } 
+            renderInput={props => <TextField {...props} error={false} />}
+          />
+          <Dropdown
+            disabled={form.formMode === formModes.DELETE}
+            multiple={true}
+            label="Roles"
+            options={generateDropdownOptionArray(optionsByBusinessUnit["Roles"])}
+            value={form.calabrio_wfm.Roles}
+            updateValue={(event: any, options: any) => setForm({
+              type: userFormActions.SET_WFM_ROLES,
+              payload: options
+            })}
+            styles={{ width: "250px" }}
+          />
+        </Row>
+        <Row>
+          <Dropdown
+            disabled={form.formMode === formModes.DELETE}
+            multiple={true}
+            label="Skills"
+            options={generateDropdownOptionArray(optionsByBusinessUnit["Skills"])}
+            value={skillFields.skills}
+            updateValue={(event: any, options: any) => setSkillFields({
+              ...skillFields,
+              skills: options
+            })}
+            styles={{ width: "250px" }}
+          />
+          <DatePicker
+            label="Skills Start Date"
+            value={availabilityFields.startDate || ""}
+            onChange={(newValue) => {
+              setAvailabilityFields({
+                ...availabilityFields,
+                startDate: newValue
+              })}
+            } 
+            renderInput={props => <TextField {...props} error={false} />}
+          />
+          <Dropdown
+            disabled={form.formMode === formModes.DELETE}
+            label="Workflow Control Set"
+            options={generateDropdownOptionArray(optionsByBusinessUnit["Workflow_Control_Sets"])}
+            value={optionsByBusinessUnit["Workflow_Control_Sets"]?.find((wcs: any) => wcs.value === form.calabrio_wfm.WorkflowControlSetId) || ""}
+            updateValue={(event: any, newValue: any) => setForm({
+              type: userFormActions.SET_WFM_CONTROL_SET,
+              payload: newValue.value
+            })}
+            styles={{ width: "250px" }}
+          />
+        </Row>
+        <Row>
+        <Dropdown
+            disabled={form.formMode === formModes.DELETE}
+            label="Rotation"
+            options={generateDropdownOptionArray(optionsByBusinessUnit["Rotations"])}
+            value={rotationFields.id || ""}
+            updateValue={(event: any, newValue: any) => setRotationFields({
+              ...rotationFields,
+              id: newValue
+            })}
+            styles={{ width: "250px" }}
+          />
+          <DatePicker
+            label="Rotation Start Date"
+            value={rotationFields.startDate || ""}
+            onChange={(newValue) => {
+              setAvailabilityFields({
+                ...rotationFields,
+                startDate: newValue
+              })}
+            } 
+            renderInput={props => <TextField {...props} error={false} />}
+          />
+          <Dropdown
+            disabled={false}
+            error={false}
+            label={"Rotation Start Week"}
+            styles={{
+              width: "250px",
+              margin: "0px 5px"
+            }}
+            options={[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56]}
+            updateValue={(event: any, newValue: any) => setRotationFields({
+              ...rotationFields,
+              startWeek: newValue
+            })}
+            value={form.calabrio_wfm.FirstDayOfWeek}
+          />
+        </Row>
+        <Row>
+          <Dropdown
+            disabled={form.formMode === formModes.DELETE}
+            multiple={true}
+            label="Optional Columns"
+            options={generateDropdownOptionArray(optionsByBusinessUnit["Optional_Columns"])}
+            value={form.calabrio_wfm.OptionalColumns}
+            updateValue={(event: any, options: any) => setForm({
+              type: userFormActions.SET_WFM_OPTIONAL_COLUMNS,
+              payload: options
+            })}
+            styles={{ width: "250px" }}
+          />
+          <TextareaAutosize 
+            minRows={4}
+            placeholder="Notes"
+            style={{ width: "522px" }}
+            />
+        </Row>
+        <Row>
+          <FormGroup>
+            <FormControlLabel control={<Switch
+              checked={scheduling}
+              onChange={() => setScheduling(!scheduling)}
+            />} label="Create Schedule" />
+          </FormGroup>
+        </Row>
+      { scheduling &&
+      <>
+        <Row>
+          <DatePicker
+            label="Person Start Date"
+            value={form.calabrio_wfm.EmploymentStartDate || ""}
+            onChange={(newValue) => {
+              setForm({
+                type: userFormActions.SET_WFM_EMP_START_DATE,
+                payload: newValue
+              })}
+            } 
+            renderInput={props => <TextField {...props} error={false} />}
+          />
+          <Dropdown
+            disabled={false}
+            error={false}
+            label={"Team *"}
+            styles={{
+              width: "250px"
+            }}
+            options={generateDropdownOptionArray(getWfmTeams(state, form.calabrio_wfm.BusinessUnitId))}
+            updateValue={(event: any, newValue: any) => setTeamFields({
+              ...teamFields,
+              id: newValue.value
+            })}
+            value={generateDropdownOption(getWfmTeams(state, form.calabrio_wfm.BusinessUnitId).find((t: any) => t.Id === teamFields.id))}
+          />
+          <DatePicker
+            label="Team Start Date"
+            value={teamFields.startDate}
+            onChange={(newValue) => {
+              setTeamFields({
+                ...teamFields,
+                startDate: new Date(newValue).toLocaleDateString()
+              })}
+            } 
+            renderInput={props => <TextField {...props} error={false} />}
+          />
+        </Row>
+        <Row>
+          <Dropdown
+            disabled={form.formMode === formModes.DELETE}
+            label="Absence"
+            options={generateDropdownOptionArray(optionsByBusinessUnit["Absences"])}
+            value={optionsByBusinessUnit["Absences"].find((a: any) => a.value === form.calabrio_wfm.AbsenceId)}
+            updateValue={(event: any, newValue: any) => setForm({
+              type: userFormActions.SET_WFM_ABSENCE,
+              payload: newValue
+            })}
+            styles={{ width: "250px" }}
+          />
+          <Dropdown
+            disabled={form.formMode === formModes.DELETE}
+            label="Budget Group"
+            options={generateDropdownOptionArray(optionsByBusinessUnit["Budget_Groups"])}
+            value={generateDropdownOptionArray(optionsByBusinessUnit["Budget_Groups"]?.find((bg: any) => bg.value === form.calabrio_qm.timezone))}
+            updateValue={(event: any, newValue: any) => setForm({
+              type: userFormActions.SET_WFM_BUDGET_GROUP,
+              payload: newValue
+            })}
+            styles={{ width: "250px" }}
+          />
+          <Dropdown
+            disabled={form.formMode === formModes.DELETE}
+            label="Part Time Percentage"
+            options={generateDropdownOptionArray(optionsByBusinessUnit["Part_Time_Percentages"])}
+            value={optionsByBusinessUnit["Part_Time_Percentages"].find((ptp: any) => ptp.value === form.calabrio_wfm.PartTimePercentageId)}
+            updateValue={(event: any, newValue: any) => setForm({
+              type: userFormActions.SET_WFM_PART_TIME_PERCENTAGE,
+              payload: newValue
+            })}
+            styles={{ width: "250px" }}
+          />
+        </Row>
+        <Row>
+          <Dropdown
+            disabled={form.formMode === formModes.DELETE}
+            label="Contract Schedule"
+            options={generateDropdownOptionArray(optionsByBusinessUnit["Contract_Schedules"])}
+            value={optionsByBusinessUnit["Contract_Schedules"].find((cs: any) => cs.value === form.calabrio_wfm.ContractScheduleId)}
+            updateValue={(event: any, newValue: any) => setForm({
+              type: userFormActions.SET_WFM_CONTRACT_SCHEDULE,
+              payload: newValue
+            })}
+            styles={{ width: "250px" }}
+          />
+          <Dropdown
+            disabled={form.formMode === formModes.DELETE}
+            label="Contract"
+            options={generateDropdownOptionArray(optionsByBusinessUnit["Contracts"])}
+            value={optionsByBusinessUnit["Contracts"].find((c: any) => c.value === form.calabrio_wfm.ContractId)}
+            updateValue={(event: any, newValue: any) => setForm({
+              type: userFormActions.SET_WFM_CONTRACT,
+              payload: newValue
+            })}
+            styles={{ width: "250px" }}
+          />
+          <Dropdown
+            disabled={form.formMode === formModes.DELETE}
+            label="Shift Bag"
+            options={generateDropdownOptionArray(optionsByBusinessUnit["Shift_Bags"])}
+            value={optionsByBusinessUnit["Shift_Bags"].find((sb: any) => sb.value === form.calabrio_wfm.ShiftBagId)}
+            updateValue={(event: any, newValue: any) => setForm({
+              type: userFormActions.SET_WFM_SHIFT_BAG,
+              payload: newValue
+            })}
+            styles={{ width: "250px" }}
+          />
+        </Row>
+      </>
+      }
+      </>
+      : <WFMLoadRetryModal handleClose={() => {}}/>}
+      </LocalizationProvider>
+    </Wrapper>
   )
 }
 

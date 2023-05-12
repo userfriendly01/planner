@@ -89,7 +89,14 @@ export const reducer = (state: AppState, action: Action): AppState => {
         ...state,
         calabrioContext: {
           ...state.calabrioContext,
-          wfmOrg: action.payload
+          wfmOrg: [
+            ...action.payload.businessUnits,
+            {
+              Id: "People_Without_Team",
+              Name: "Lost Souls",
+              People: action.payload.People_Without_Team
+            }
+          ]
         }
       };
     case "loadWfmOptions":

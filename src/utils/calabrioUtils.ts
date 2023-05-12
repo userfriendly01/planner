@@ -50,16 +50,26 @@ export const getWfmBusinessUnits = (state: AppState) => {
   });
 };
 
-export const getWfmTeams = (state: AppState, businessUnitId?: string) => {
+export const getWfmTeams = (state: AppState, businessUnitId?: string, includeLostSouls?: boolean) => {
   const wfmTeams: WfmTeam[] = [];
   
   if(businessUnitId){
     const businessUnit = state.calabrioContext.wfmOrg.find((bu: WfmBusinessUnit) => bu.Id === businessUnitId);
     businessUnit.Teams.forEach((team: WfmTeam) => wfmTeams.push(team));
   } else {
-    state.calabrioContext.wfmOrg.forEach((businessUnit: WfmBusinessUnit) => {
-      businessUnit.Teams.forEach((team: WfmTeam) => wfmTeams.push(team));
-    });
+    if(!includeLostSouls){
+      state.calabrioContext.wfmOrg.forEach((businessUnit: WfmBusinessUnit) => {
+        businessUnit.Teams?.forEach((team: WfmTeam) => {
+          if(team.Id){
+            wfmTeams.push(team);
+          }
+        });
+      });
+    } else {
+      state.calabrioContext.wfmOrg.forEach((businessUnit: WfmBusinessUnit) => {
+        businessUnit.Teams?.forEach((team: WfmTeam) => wfmTeams.push(team));
+      });
+    }
   }
   return wfmTeams;
 };
@@ -69,7 +79,9 @@ export const getWfmPeople = (state: AppState) => {
   const wfmTeams: WfmTeam[] = getWfmTeams(state);
 
   state.calabrioContext.wfmOrg.forEach((businessUnit: WfmBusinessUnit) => {
-    businessUnit.People_Without_Team?.forEach((person: WfmUser) => wfmPeople.push(person));
+    if(businessUnit.Id === "People_Without_Team"){
+      businessUnit.People?.forEach((person: WfmUser) => wfmPeople.push(person));
+    }
   });
 
   wfmTeams.forEach((team: WfmTeam) => {
@@ -83,22 +95,33 @@ export const getWfmPeople = (state: AppState) => {
 };
 
 export const getWfmOptions = (state: AppState, businessUnitId?: string) => {
-  let wfmOptions: any = {};
-  
+  const options = JSON.parse(JSON.stringify(state.calabrioContext.wfmOptions));
+
   if(businessUnitId){
-    const businessUnit = state.calabrioContext.wfmOptions.find((bu: WfmBusinessUnit) => bu.Id === businessUnitId);
-    wfmOptions = businessUnit;
+    const businessUnit = options.find((bu: WfmBusinessUnit) => bu.Id === businessUnitId);
+    return businessUnit;
   } else {
-    state.calabrioContext.wfmOptions.forEach((businessUnit: WfmBusinessUnit, index) => {
-      Object.keys(businessUnit).forEach((option: any) => {
-        if(typeof option === "object"){
-          wfmOptions[index][option] = wfmOptions[option];
+    let finalOptions: any = {};
+
+    options.forEach((businessUnit: any) => {
+      Object.keys(businessUnit)?.forEach((option: any) => {
+        if(typeof businessUnit[option] === "object"){
+          if(finalOptions[option]){
+            businessUnit[option]?.forEach((buo: any) => {
+              const optionFound = finalOptions[option].find((o: any) => o.Id === buo.Id);
+              if(!optionFound){
+                finalOptions[option].push(buo);
+              }
+            });
+          } else {
+            finalOptions[option] = businessUnit[option];
+          }
         }
       });
     });
+    console.log("FAITH - getWfmOptions", finalOptions);
+    return finalOptions;
   }
-  console.log("FAITH - getWfmOptions", getWfmOptions);
-  return wfmOptions;
 };
 
 //Calabrio doesnt offer an API for this, only PST, MNT, CST, and EST were requested so we hardcoded them here as they are unlikely to change
@@ -270,13 +293,14 @@ export const getCalabrioWfmOrg = async (dispatch: any) => {
       const buff = Buffer.from(org.data.organization, "base64");
       const data = await inflate(buff);
       orgData = JSON.parse(data.toString("utf-8"));
+      console.log("optionsData", orgData);
     } catch(err) {
       console.error("Failed to parse and save Calabrio Org data", err);
       return false;
     }
     dispatch({
       type: "loadWfmOrg",
-      payload: orgData.businessUnits
+      payload: orgData
     });
     return true;
   } catch (error) {

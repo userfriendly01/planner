@@ -37,25 +37,27 @@ export const userFormActions = {
   SET_UPDATE_TRITON_FORM_STATE: "SET_UPDATE_TRITON_FORM_STATE",
   SET_UPDATE_QM_FORM_STATE: "SET_UPDATE_QM_FORM_STATE",
   SET_UPDATE_WFM_FORM_STATE: "SET_UPDATE_WFM_FORM_STATE",
-  SET_UPDATE_WFM_BUSINESS_UNIT: "SET_UPDATE_WFM_BUSINESS_UNIT",
-  SET_UPDATE_WFM_TEAM: "SET_UPDATE_WFM_TEAM",
-  SET_UPDATE_WFM_TIME_ZONE: "SET_UPDATE_WFM_TIME_ZONE",
-  SET_UPDATE_WFM_SITE: "SET_UPDATE_WFM_SITE",
-  SET_UPDATE_WFM_SKILLS: "SET_UPDATE_WFM_SKILLS",
-  SET_UPDATE_WFM_CONTROL_SET: "SET_UPDATE_WFM_CONTROL_SET",
-  SET_UPDATE_WFM_CONTRACT: "SET_UPDATE_WFM_CONTRACT",
-  SET_UPDATE_WFM_CONTRACT_SCHEDULE: "SET_UPDATE_WFM_CONTRACT_SCHEDULE",
-  SET_UPDATE_WFM_BUDGET_GROUP: "SET_UPDATE_WFM_BUDGET_GROUP",
-  SET_UPDATE_WFM_PART_TIME_PERCENTAGE: "SET_UPDATE_WFM_PART_TIME_PERCENTAGE",
-  SET_UPDATE_WFM_SHIFT_BAG: "SET_UPDATE_WFM_SHIFT_BAG",
-  SET_UPDATE_WFM_NOTE: "SET_UPDATE_WFM_NOTE",
-  SET_UPDATE_WFM_ROLES: "SET_UPDATE_WFM_ROLES",
-  SET_UPDATE_WFM_FIRST_DAY_OF_WEEK: "SET_UPDATE_WFM_FIRST_DAY_OF_WEEK",
-  SET_UPDATE_WFM_OPTIONAL_COLUMNS: "SET_UPDATE_WFM_ROLES",
-  SET_UPDATE_WFM_IDENTITY: "SET_UPDATE_WFM_ROLES",
-  SET_UPDATE_WFM_EMP_NUMBER: "SET_UPDATE_WFM_ROLES",
-
-  SET_UPDATE_WFM_USER_DATA: "SET_UPDATE_WFM_USER_DATA",
+  SET_WFM_BUSINESS_UNIT: "SET_WFM_BUSINESS_UNIT",
+  SET_WFM_AVAILABILITY: "SET_WFM_AVAILABILITY",
+  SET_WFM_ABSENCE: "SET_WFM_ABSENCE",
+  SET_WFM_TEAM: "SET_WFM_TEAM",
+  SET_WFM_TIME_ZONE: "SET_WFM_TIME_ZONE",
+  SET_WFM_SKILLS: "SET_WFM_SKILLS",
+  SET_WFM_CONTROL_SET: "SET_WFM_CONTROL_SET",
+  SET_WFM_CONTRACT: "SET_WFM_CONTRACT",
+  SET_WFM_CONTRACT_SCHEDULE: "SET_WFM_CONTRACT_SCHEDULE",
+  SET_WFM_BUDGET_GROUP: "SET_WFM_BUDGET_GROUP",
+  SET_WFM_EMP_START_DATE: "SET_WFM_EMP_START_DATE",
+  SET_WFM_PART_TIME_PERCENTAGE: "SET_WFM_PART_TIME_PERCENTAGE",
+  SET_WFM_SHIFT_BAG: "SET_WFM_SHIFT_BAG",
+  SET_WFM_NOTE: "SET_WFM_NOTE",
+  SET_WFM_ROLES: "SET_WFM_ROLES",
+  SET_WFM_ROTATION: "SET_WFM_ROTATION",
+  SET_WFM_FIRST_DAY_OF_WEEK: "SET_WFM_FIRST_DAY_OF_WEEK",
+  SET_WFM_OPTIONAL_COLUMNS: "SET_WFM_OPTIONAL_COLUMNS",
+  SET_WFM_IDENTITY: "SET_WFM_IDENTITY",
+  SET_WFM_TERMINATION_DATE: "SET_WFM_TERMINATION_DATE",
+  SET_WFM_USER_DATA: "SET_WFM_USER_DATA",
   SET_DELETE_FORM_STATE: "SET_DELETE_FORM_STATE",
   SET_USER_PREVIOUSLY_ADDED_TRUE: "SET_USER_PREVIOUSLY_ADDED_TRUE",
   UPDATE_DEFAULT_SKILLS: "UPDATE_DEFAULT_SKILLS",
@@ -171,9 +173,8 @@ export const initialUserFormState: UserFormState = {
     EmploymentStartDate: null,
     TimeZoneId: null,
     BusinessUnitId: null,
-    SiteId: null,
     TeamId: null,
-    PersonSkills: null,
+    PersonSkills: [],
     WorkflowControlSetId: null,
     ContractId: null,
     ContractScheduleId: null,
@@ -182,6 +183,9 @@ export const initialUserFormState: UserFormState = {
     ShiftBagId: null,
     Note: null,
     Roles: [],
+    AvailabilityId: null,
+    AbsenceId: null,
+    RotationId: null,
     FirstDayOfWeek: null,
     ParentTeam: null
   }
@@ -588,15 +592,202 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         }
       };
     }
-    case userFormActions.SET_UPDATE_WFM_BUSINESS_UNIT: {
-      const user = action.payload;
+    case userFormActions.SET_WFM_BUSINESS_UNIT: {
       return {
         ...state,
-        formMode: formModes.UPDATE,
         calabrio_wfm: {
           ...state.calabrio_wfm,
-          userFound: true,
-          ...user
+          BusinessUnitId: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_TEAM: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          TeamId: action.payload.id,
+          TeamStartDate: action.payload.startDate
+        }
+      };
+    }
+    case userFormActions.SET_WFM_TIME_ZONE: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          TimeZoneId: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_SKILLS: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          PersonSkills: action.payload.skills,
+          SkillsStartDate: action.payload.startDate
+        }
+      };
+    }
+    case userFormActions.SET_WFM_CONTROL_SET: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          WorkflowControlSetId: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_CONTRACT: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          ContractId: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_CONTRACT_SCHEDULE: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          ContractScheduleId: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_BUDGET_GROUP: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          BudgetGroupId: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_PART_TIME_PERCENTAGE: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          PartTimePercentageId: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_SHIFT_BAG: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          ShiftBagId: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_NOTE: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          Note: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_ROLES: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          Roles: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_FIRST_DAY_OF_WEEK: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          FirstDayOfWeek: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_OPTIONAL_COLUMNS: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          OptionalColumns: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_IDENTITY: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          Identity: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_ABSENCE: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          AbsenceId: action.payload,
+        }
+      };
+    }
+    case userFormActions.SET_WFM_AVAILABILITY: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          AvailabilityId: action.payload.id,
+          AvailabilityStartDate: action.payload.startDate,
+        }
+      };
+    }
+    case userFormActions.SET_WFM_ROTATION: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          RotationId: action.payload.id,
+          RotationStartDate: action.payload.startDate,
+          RotationStartWeek: action.payload.startWeek
+        }
+      };
+    }
+    case userFormActions.SET_WFM_TERMINATION_DATE: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          TerminationDate: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_EMP_START_DATE: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          EmploymentStartDate: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_USER_DATA: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          FirstName: action.payload.firstName,
+          LastName: action.payload.lastName,
+          EmploymentNumber: action.payload.nNumber,
+          Email: action.payload.email,
+          DisplayName: action.payload.fullName,
+
         }
       };
     }

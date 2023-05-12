@@ -201,7 +201,8 @@ export interface WfmBusinessUnit {
   Id: string,
   Name: string,
   People_Without_Team?: WfmUser[],
-  Teams?: WfmTeam[]
+  Teams?: WfmTeam[],
+  People?: WfmUser[]
 }
 
 export interface WfmTeam {
@@ -226,9 +227,11 @@ export interface WfmUser {
   EmploymentStartDate: string,
   TimeZoneId: string,
   BusinessUnitId: string,
-  SiteId: string,
   TeamId: string,
   PersonSkills: any[],
+  AvailabilityId: string,
+  AbsenceId: string,
+  RotationId: string,
   WorkflowControlSetId: string,
   ContractId: string,
   ContractScheduleId: string,

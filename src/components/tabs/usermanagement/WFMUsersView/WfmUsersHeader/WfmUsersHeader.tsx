@@ -65,7 +65,7 @@ const ManagementHeader = (props: WfmUsersHeaderProps) => {
         label: "divider"
       }
     ];
-    getWfmTeams(state, tableState.businessUnitFilter?.Id).sort(sortWFMByName).forEach((team: WfmTeam) => {
+    getWfmTeams(state, tableState.businessUnitFilter?.Id, true).sort(sortWFMByName).forEach((team: WfmTeam) => {
       options.push({
         label: team.Name,
         value: team.Id,

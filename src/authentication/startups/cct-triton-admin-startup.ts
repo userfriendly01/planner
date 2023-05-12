@@ -15,10 +15,6 @@ import {
   getCalabrioWfmOrg,
   myAxios
 } from "utils";
-import util from "util";
-import zlib from "zlib";
-
-const inflate = util.promisify(zlib.inflate);
 
 const getManagers = async (dispatch: any) => {
   try {
