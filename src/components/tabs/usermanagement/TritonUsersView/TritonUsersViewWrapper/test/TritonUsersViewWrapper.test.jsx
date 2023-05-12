@@ -14,7 +14,10 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import { sortWorkersByFullName } from "utils";
+import { 
+  sortWorkersByFullName,
+  findOuFromProfile 
+} from "utils";
 
 jest.mock("components", () => ({
   TritonUsersHeader: jest.fn(),
@@ -45,6 +48,7 @@ const defaultTableState = {
 };
 
 const workersCopy = initialTestState.workerContext.workers.slice();
+const state = initialTestState;
 
 describe("TritonUsersViewWrapper", () => {
   const doRender = () => {
@@ -121,6 +125,32 @@ describe("TritonUsersViewWrapper", () => {
       expect(TritonUsersHeader.mock.calls[3][0].tableState.filteredList).toStrictEqual([workersCopy[1]]);
     });
   });
+  describe("profileFilter === true", () => {
+    test("filtered list only inlcudes expected options", () => {
+      doRender();
+      const setTritonTable = TritonUsersHeader.mock.calls[1][0].setTableState;
+      act(() => setTritonTable({
+        ...defaultTableState,
+        profileFilter: "0"
+      }));
+      expect(TritonUsersHeader.mock.calls.length).toBe(4);
+      expect(TritonUsersHeader.mock.calls[3][0].tableState.filteredList).toStrictEqual([workersCopy[3], workersCopy[4]]);
+    });
+  });
+  // TODO : FIX THIS OU FILTER TEST 
+  // describe("ouFilter === true", () => {
+  //   test("filtered list only inlcudes expected options", () => {
+  //     doRender();
+  //     const state = initialTestState;
+  //     const setTritonTable = TritonUsersHeader.mock.calls[1][0].setTableState;
+  //     act(() => setTritonTable({
+  //       ...defaultTableState,
+  //       ouFilter: "operatingUnitName"
+  //     }));
+  //     expect(TritonUsersHeader.mock.calls.length).toBe(4);
+  //     expect(TritonUsersHeader.mock.calls[3][0]).toStrictEqual("what");
+  //   });
+  // });
   describe("searchBy === Faith", () => {
     test("filtered list only inlcudes expected options", () => {
       doRender();

@@ -16,8 +16,8 @@ const FilterButton = (props: FilterButtonProps) => {
     setTableState
   } = props;
   //   const dispatch = useAdminDispatch();
-  const state = useAdminState();
-  console.log(state);
+  // const state = useAdminState();
+  // console.log(state);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   const handleOpenFilterModal = () => {

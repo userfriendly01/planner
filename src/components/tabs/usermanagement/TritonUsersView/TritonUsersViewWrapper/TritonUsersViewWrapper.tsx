@@ -12,6 +12,7 @@ import { Worker } from "globals";
 import React from "react";
 import {
   filterWorkerSearch,
+  findOuFromProfile,
   sortWorkersByFullName
 } from "utils";
 
@@ -37,7 +38,7 @@ const TritonUserManagementWrapper: any = () => {
 
   const state = useAdminState();
   const [ tableState, setTableState ] = React.useState(defaultTableState);
-  
+
   React.useEffect(() => {
     let filteredList = state.workerContext.workers.slice().sort(sortWorkersByFullName);
 
@@ -50,12 +51,18 @@ const TritonUserManagementWrapper: any = () => {
     //filter by profile
     if(tableState.profileFilter && tableState.profileFilter !== "show-all"){
       filteredList = filteredList.filter((worker: Worker) => {
-        const profile = state.profileContext.profiles.find(p => p.profile_id === worker.attributes.profile_id);
-        const profileId = profile ? (typeof profile.profile_id === "number" ? profile.profile_id.toString() : profile.profile_id) : "";
-        return profileId === tableState.profileFilter;
+        const workerProfileId = typeof worker.attributes.profile_id === "number" ? worker.attributes.profile_id.toString() : worker.attributes.profile_id;
+        return workerProfileId === tableState.profileFilter;
       });
     }
     console.log("**Profile FL", filteredList);
+
+
+    // export const findOuFromProfile = (profileId, profileList) => {
+    //   const profile = profileList.find(p => (typeof p.profile_id === "number" ? p.profile_id.toString() : p.profile_id ) === profileId);
+    //   const profileOu = profile ? profile.operating_unit_nme?.toLowerCase() : "";
+    //   return profileOu;
+    // };
 
     //filter by Ou
     if(tableState.ouFilter && tableState.ouFilter !== "show-all"){

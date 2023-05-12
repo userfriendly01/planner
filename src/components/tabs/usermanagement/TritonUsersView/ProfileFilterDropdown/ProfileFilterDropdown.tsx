@@ -35,7 +35,7 @@ const ProfileFilterDropdown = (props: ProfileFilterDropDownProps) => {
     ...sortedProfiles.map(profile => ({
       label: `${profile.profile_id} - ${profile.profile_nme}`,
       value: typeof profile.profile_id === "number" ? profile.profile_id.toString() : profile.profile_id,
-      ...profile
+      ...profile  //TODO - do we need this
     }))
   ];
 
