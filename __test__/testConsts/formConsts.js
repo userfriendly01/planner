@@ -260,6 +260,7 @@ export const validFormState = {
 export const mockWorkers = [
   {
     attributes: {
+      n_number: "n",
       default_skills: {
         skills: [
           "466",
@@ -304,6 +305,7 @@ export const mockWorkers = [
     selfServiceInd: true,
     attributes: {
       default_skills: validFormOptions.defaultSkills,
+      n_number: "n",
       did: validFormOptions.didE164,
       extension: validFormOptions.extension,
       full_name: "Test 3",
