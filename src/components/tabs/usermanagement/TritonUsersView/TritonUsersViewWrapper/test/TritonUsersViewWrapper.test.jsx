@@ -14,7 +14,9 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import { sortWorkersByFullName } from "utils";
+import {
+  sortWorkersByFullName
+} from "utils";
 
 jest.mock("components", () => ({
   TritonUsersHeader: jest.fn(),
@@ -31,6 +33,8 @@ const defaultTableState = {
   searchResults: initialTestState.workerContext.workers,
   selected: [],
   managerFilter: null,
+  ouFilterArray: [],
+  profileFilterArray: [],
   deltaFilter: false,
   pagination: {
     usersPerPage: 25,
@@ -43,6 +47,7 @@ const defaultTableState = {
 };
 
 const workersCopy = initialTestState.workerContext.workers.slice();
+const state = initialTestState;
 
 describe("TritonUsersViewWrapper", () => {
   const doRender = () => {
@@ -117,6 +122,37 @@ describe("TritonUsersViewWrapper", () => {
       }));
       expect(TritonUsersHeader.mock.calls.length).toBe(4);
       expect(TritonUsersHeader.mock.calls[3][0].tableState.filteredList).toStrictEqual([workersCopy[1]]);
+    });
+  });
+  describe("profileFilterArray === true", () => {
+    test("filtered list only inlcudes expected options", () => {
+      doRender();
+      const setTritonTable = TritonUsersHeader.mock.calls[1][0].setTableState;
+      act(() => setTritonTable({
+        ...defaultTableState,
+        profileFilterArray: [{
+          label: "0 - profile0",
+          value: "0"
+        }]
+      }));
+      expect(TritonUsersHeader.mock.calls.length).toBe(4);
+      expect(TritonUsersHeader.mock.calls[3][0].tableState.filteredList).toStrictEqual([workersCopy[3], workersCopy[4]]);
+    });
+  });
+
+  describe("ouFilterArray === true", () => {
+    test("filtered list only inlcudes expected options", () => {
+      doRender();
+      const setTritonTable = TritonUsersHeader.mock.calls[1][0].setTableState;
+      act(() => setTritonTable({
+        ...defaultTableState,
+        ouFilterArray: [{
+          label: "operatingUnitName",
+          value: "operatingUnitSid1"
+        }]
+      }));
+      expect(TritonUsersHeader.mock.calls.length).toBe(4);
+      expect(TritonUsersHeader.mock.calls[3][0].tableState.filteredList).toStrictEqual([workersCopy[5]]);
     });
   });
   describe("searchBy === Faith", () => {
