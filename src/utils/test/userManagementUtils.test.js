@@ -13,8 +13,20 @@ import {
   workerHasOverFlowSkill,
   getNonOverflowSkills,
   isFormUpdated,
-  isFormValid
+  isFormValid,
+  fetchUser as fetchUserUtil,
+  findMatchingWorker,
+  identifyProfileDiscrepancies,
+  identifyUserProfiles
 } from "../userManagementUtils";
+import { fetchUser } from "services";
+import { initialTestState } from "../../../__test__/testConsts/testConsts";
+
+jest.mock("services", () => ({
+  fetchUser: jest.fn()
+}));
+
+const mockSetForm = jest.fn();
 
 const adminStateIsAdmin = {
   userContext: {
@@ -225,7 +237,7 @@ const validFormState = {
       nNumber: "n0263786",
       firstName: "Faith",
       lastName: "Cuneo"
-    },
+    }
   },
   calabrio_qm: validFormOptions.calabrioUser,
   triton: {
@@ -280,7 +292,7 @@ const validFormState = {
     selfServiceInd: {
       value: false,
       updated: false
-    },
+    }
   }
 };
 const initialFormState = {
@@ -976,3 +988,101 @@ describe("isFormValid", () => {
     });
   });
 });
+
+describe("fetchUser", () => {
+  describe("fetchUserServiceCall fails", () => {
+    test("setForm is called with 'SET_DISCREPANCIES' and returns nNumber and null fetchedUser", async () => {
+      fetchUser.mockRejectedValueOnce("boo");
+      const result = await fetchUserUtil("n1234567", mockSetForm, "error Message", "i am an errorType");
+      expect(result).toEqual({
+        nNumber: "n1234567",
+        fetchedUser: null
+      });
+      expect(mockSetForm).toHaveBeenCalledWith({
+        type: "SET_DISCREPANCIES",
+        payload: {
+          type: "i am an errorType",
+          message: "error Message"
+        }
+      });
+    });
+  });
+  describe("fetchUserServiceCall succeeds", () => {
+    test("setForm is called with 'SET_DISCREPANCIES' and returns nNumber and null fetchedUser", async () => {
+      fetchUser.mockResolvedValueOnce({
+        email: "email@lmig.com",
+        other: "stuff"
+      });
+      const result = await fetchUserUtil("n1234567", mockSetForm, "error Message", "i am an errorType");
+      expect(result).toEqual({
+        nNumber: "n1234567",
+        fetchedUser: {
+          email: "email@lmig.com",
+          other: "stuff"
+        }
+      });
+      expect(mockSetForm).toHaveBeenCalledWith({
+        type: "COMPLETE_N_NUMBER",
+        payload: {
+          nNumber: "n1234567",
+          fetchedUser: {
+            email: "email@lmig.com",
+            other: "stuff"
+          }
+        }
+      });
+    });
+  });
+});
+
+describe("findMatchingWorker", () => {
+  test("no matching worker is found, returns null", () => {
+    const result = findMatchingWorker("boo", "nope", "nomatch@email.com", initialTestState.workerContext.workers);
+    expect(result).toEqual(null);
+  });
+  test("matching worker found on workerSid, returns matching worker", () => {
+    const result = findMatchingWorker("WK049358", "nope", "nomatch@email.com", initialTestState.workerContext.workers);
+    expect(result).toEqual({
+      skillsDifferent: true,
+      sid: "wk049358",
+      attributes: {
+        full_name: "Faith Cuneo",
+        emp_first_name: "Faith",
+        emp_last_name: "Cuneo",
+        n_number: "N0263786",
+        extension: "1234",
+        profile_id: 12,
+        manager_n_number: "n023356"
+      }
+    });
+  });
+  test("matching worker found on nNumber, returns matching worker", () => {
+    const result = findMatchingWorker(null, "N0000000", "nomatch@email.com", initialTestState.workerContext.workers);
+    expect(result).toEqual({
+      attributes: {
+        full_name: "Gloria Sake",
+        emp_first_name: "Gloria",
+        emp_last_name: "Sake",
+        n_number: "n0000000",
+        extension: "2345",
+        profile_id: "12",
+        manager_n_number: "n0263786"
+      },
+      sid: "WK1234"
+    });
+  });
+  test("matching worker found on email, returns matching worker", () => {
+    const result = findMatchingWorker(null, "boo", "Faith.Cuneo@libertymutual.com", initialTestState.calabrioContext.users);
+    expect(result).toEqual({
+      id: 220,
+      acdId: "WK5678",
+      firstName: "Faith",
+      lastName: "Cuneo",
+      groupId: 201,
+      email: "Faith.Cuneo@libertymutual.com"
+    });
+  });
+});
+
+describe("identifyProfileDiscrepancies", () => {});
+describe("identifyUserProfiles", () => {});
