@@ -74,16 +74,18 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
  * @param {String} graphQlApiUrl Endpoint URL
  * @returns {flowData} list of data contain all the result present in DB
  */
-async function retrieveFlowData(accessToken, graphQlApiUrl) {
+async function retrieveFlowData(accessToken, graphQlApiUrl,firstChunkData) {
   const flowData = [];
   let isFirstTime = true;
-  let result = {};
+  let result = firstChunkData;
   let counter = 1;
+  let listItems = firstChunkData.data?.listCctSharedCallFlowDbs?.items || [];
   try {
     while (isFirstTime || result.data?.listCctSharedCallFlowDbs.nextToken) {
-      // eslint-disable-next-line no-shadow
-      result = await queryFlowData(accessToken, result.data?.listCctSharedCallFlowDbs.nextToken, graphQlApiUrl);
-      const listItems = result.data?.listCctSharedCallFlowDbs?.items || [];
+      if(!isFirstTime || Object.keys(firstChunkData).length === 0){
+        result = await queryFlowData(accessToken, result.data?.listCctSharedCallFlowDbs.nextToken, graphQlApiUrl);
+        listItems = result.data?.listCctSharedCallFlowDbs?.items || [];
+      }
       listItems.forEach(item => flowData.push({
         id: counter++,
         ...item
@@ -385,5 +387,6 @@ export {
   addFlowRule,
   deleteFlowRule,
   retrieveFlowData,
-  updateFlowDB
+  updateFlowDB,
+  queryFlowData
 };
