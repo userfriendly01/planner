@@ -15,7 +15,8 @@ import {
   CalabrioQmUser,
   WfmBusinessUnit,
   WfmTeam,
-  WfmUser
+  WfmUser,
+  discrepancyType
 } from "globals";
 
 const inflate = util.promisify(zlib.inflate);
@@ -190,6 +191,17 @@ const toLowerCaseString = (variable: any) => {
   return typeof variable === "string" ? variable.toLowerCase() : variable;
 };
 
+export const isArrayOptionAdded = (originalArray: any, updatedArray: any) => {
+
+  console.log("FAITH - isArrayOptionAdded", originalArray, updatedArray);
+  let added = false;
+  updatedArray.forEach((o: any ) => {
+    if(!originalArray.find((oo: any) => oo.Id === o.Id)){
+      added = true;
+    }
+  });
+  return added;
+}
 /*
   https://forge.lmig.com/wiki/display/CICCT/Calabrio+Form
 */
@@ -260,6 +272,52 @@ export const checkConflictingUsers = async (user: any, users: CalabrioQmUser[], 
     console.error("Error thrown trying to fetch and validate Conflicting Users", err);
   }
   return;
+};
+
+export const findMatchingQmProfiles = (user: any, users: CalabrioQmUser[], setForm: any): any[] => {
+  //Calabrio users should always have a Triton user, the "user" passed through should be a triton user but if that's undefined we can search based on nNumber fetched user
+  try {
+    const acdId = toLowerCaseString(user.sid);
+    const email = toLowerCaseString(user.attributes.email || user.nNumberFetchedUser.email);
+    const adLogin = `lm\\${toLowerCaseString(user.attributes.nNumber || user.value)}`;
+
+    const matchingProfiles: any[] = [];
+    console.log("FAITH HERE IS THE TRITON USER", user);
+    users.forEach(u => {
+      const dupUserAcdId = toLowerCaseString(u.acdId);
+      const dupUserAdLogin = toLowerCaseString(u.adLogin);
+      const dupUserEmail = toLowerCaseString(u.email);
+
+      if(acdId && acdId === dupUserAcdId){
+        console.warn("User Found with ACD Id", u);
+        matchingProfiles.unshift(u);
+      } else if (dupUserAdLogin && dupUserAdLogin === adLogin || dupUserEmail && dupUserEmail === email) {
+        console.warn("User Found with Duplicate Email or Windows Login: ", u);
+        if(acdId){
+          setForm({
+            type: "SET_DISCREPANCIES",
+            payload: {
+              type: discrepancyType.CALABRIO_QM,
+              message: "Calabrio QM Record found for user where the ACD ID does not match the Triton Worker. This will require manual review/correction."
+            }
+          });
+        } else {
+          setForm({
+            type: "SET_DISCREPANCIES",
+            payload: {
+              type: discrepancyType.CALABRIO_QM,
+              message: "Triton Worker Record not found but is required for Calabrio QM. This will require manual review/correction."
+            }
+          });
+        }
+        matchingProfiles.push(u)
+      }
+    });
+    return matchingProfiles;
+  } catch(err) {
+    console.error("Error thrown trying to find QM profiles", err);
+    return [];
+  }
 };
 
 export const getCalabrioWfmOptions = async (dispatch: any) => {

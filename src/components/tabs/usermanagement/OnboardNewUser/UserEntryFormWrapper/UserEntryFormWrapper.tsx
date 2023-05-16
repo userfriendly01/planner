@@ -45,7 +45,7 @@ const UserEntryForm = () => {
 
   const skills = state.skillContext.skills;
   const workers = state.workerContext.workers.sort(sortWorkersByFullName);
-  const tritonWorker = workers.find((w: any) => w?.attributes.n_number === form.nNumber.value);
+  const tritonWorker = workers.find((w: any) => w?.attributes?.n_number === form.nNumber?.value);
   const managers = state.managerContext.managers;
   const profiles = state.profileContext.profiles;
   const offices = state.officeContext.offices;
@@ -63,7 +63,7 @@ const UserEntryForm = () => {
     console.log("FAITH RES: ", res, form);
     setTimeout(async () => {
       console.log("FAITH Form after timeout: ", res, form);
-      await identifyProfileDiscrepancies(form, setForm, state);
+      // await identifyProfileDiscrepancies(form, setForm, state);
     }, 500);
     //Trigger form loaded
   };
@@ -136,7 +136,7 @@ const UserEntryForm = () => {
       {
         form.discrepancies.length > 0
           ? <DiscrepancyContainer>
-            <Header4>Discrepencies have been found for this worker. They will be corrected when you hit Save User </Header4>
+            <Header4>Discrepencies have been found for this worker. They will be corrected when you hit 'Save User' unless otherwise specified </Header4>
             {
               form.discrepancies.map((d:any, index: number) => {
                 return (
