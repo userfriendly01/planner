@@ -78,8 +78,8 @@ async function retrieveFlowData(accessToken, graphQlApiUrl,firstChunkData) {
   const flowData = [];
   let isFirstTime = true;
   let result = firstChunkData;
-  let counter = 1;
-  let listItems = firstChunkData.data?.listCctSharedCallFlowDbs?.items || [];
+  let counter = firstChunkData?.data?.listCctSharedCallFlowDbs?.items?.length+1 || 1;
+  let listItems = firstChunkData?.data?.listCctSharedCallFlowDbs?.items || [];
   try {
     while (isFirstTime || result.data?.listCctSharedCallFlowDbs.nextToken) {
       if(!isFirstTime || Object.keys(firstChunkData).length === 0){
