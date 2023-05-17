@@ -76,7 +76,7 @@ export const AddFlow = ({
       if (masterData !== undefined && masterData !== null) {
         masterDataObject = JSON.parse(masterData);
       } else {
-        const result: CctSharedCallFlowDb[] = await retrieveFlowData(accessToken, graphQlApiUrl);
+        const result: CctSharedCallFlowDb[] = await retrieveFlowData(accessToken, graphQlApiUrl,{});
         masterDataObject = getGridMasterData(result);
       }
       setDropDownValues((dropDownValuesProps: FlowDropDownList) => ({
