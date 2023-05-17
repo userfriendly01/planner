@@ -48,6 +48,8 @@ jest.mock("services", () => ({
   getWfmOrg: jest.fn(),
   getWfmOptions: jest.fn(),
   insertDirectory: jest.fn(),
+  queryFlowData: jest.fn(),
+  queryRoutingData: jest.fn(),
   retrieveFlowData: jest.fn(),
   retrieveRoutingData: jest.fn(),
   updateCalabrioUser: jest.fn(),

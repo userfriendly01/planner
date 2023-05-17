@@ -9,7 +9,9 @@ import React, {
 import {
   DataGrid, GridRenderCellParams, GridToolbar
 } from "@mui/x-data-grid";
-import { retrieveFlowData } from "services";
+import {
+  retrieveFlowData, queryFlowData
+} from "services";
 import {
   CACHE_FILTER_FLOW,
   CALL_FLOW_PAGE_NO,
@@ -63,14 +65,22 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   };
   const [dataFlow, setDataFlow] = useState(flowInitState);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
-
   useEffect(() => {
-    const getTableData = async () =>{
+    const getTableData = async()=>{
+      const firstChunkData:any = await queryFlowData(accessToken, null, graphQLEndpoint);
+      const listItems = firstChunkData.data?.listCctSharedCallFlowDbs?.items || [];
+      let counter =1;
+      const flowData: CctSharedCallFlowDb[] = [];
+      listItems.forEach((item: CctSharedCallFlowDb) => flowData.push({
+        id: counter++,
+        ...item
+      }));
+      await loadDataTable(flowData);
       const result: CctSharedCallFlowDb[] = await retrieveFlowData(
         accessToken,
-        graphQLEndpoint
+        graphQLEndpoint,
+        firstChunkData
       );
-
       await loadDataTable(result);
     };
     getTableData();
