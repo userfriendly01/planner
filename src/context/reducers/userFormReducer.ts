@@ -10,6 +10,7 @@ import { formatE164PhoneNumber } from "utils/formatNumberUtils";
 import { calabrioTimeZones } from "utils/calabrioUtils";
 import { getValidSkillsObject } from "utils/skillsUtils";
 import { getZeroOutEnabledFromProfile } from "utils/userManagementUtils";
+import { getWfmOptions } from "utils/calabrioUtils";
 
 const searchParams = SearchParams.getValues();
 
@@ -581,16 +582,46 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       };
     }
     case userFormActions.SET_UPDATE_WFM_FORM_STATE: {
-      const user = action.payload;
+      console.log("FAITH - We're trying to update the WFM form state", action.payload)
+      const user = action.payload.user;
+      const appState = action.payload.state;
+
+      const Roles: any[] = [];
+      const PersonSkills: any[] = [];
+      const OptionalColumns: any[] = [];
+
+      user.Roles.forEach((ur: any) => {
+        const availableRole = getWfmOptions(appState)?.Roles.find((r: any) => r.Id === ur.RoleId);
+        if(availableRole){
+          Roles.push(availableRole);
+        }
+      });
+      user.PersonSkills.forEach((us: any) => {
+        const availableSkill = getWfmOptions(appState)?.Skills.find((s: any) => s.Id === us.SkillId);
+        if(availableSkill){
+          PersonSkills.push(availableSkill);
+        }
+      });
+      Object.keys(user.OptionalColumns).forEach((id: string) => {
+        const optionalColumn = getWfmOptions(appState)?.Optional_Columns.find((o: any) => o.Id === id);
+        if(optionalColumn){
+          OptionalColumns.push(optionalColumn);
+        }
+      });
+      console.log("FAITH - reducer PersonSkills", PersonSkills);
+
       return {
         ...state,
         formMode: formModes.UPDATE,
         calabrio_wfm: {
           ...state.calabrio_wfm,
           userFound: true,
-          ...user
+          ...user,
+          Roles,
+          PersonSkills,
+          OptionalColumns
         }
-      };
+      }
     }
     case userFormActions.SET_WFM_BUSINESS_UNIT: {
       return {

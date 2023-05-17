@@ -151,7 +151,8 @@ export const findMatchingWorker = (sid: string, nNumber: string, email: string, 
 
 export const identifyProfileDiscrepancies = (form: UserFormState, setForm: any, state: AppState) => {
   console.log("Faith: Final Form.....", form);
-  const tritonSid = "";
+  const tritonWorker = state.workerContext.workers.find((w: Worker) => w.attributes.n_number);
+  const tritonSid = tritonWorker?.sid || "";
   const tritonEmail = "";
   const tritonNNumber = "";
   const calabrioWfmEmail = "";
@@ -169,6 +170,10 @@ export const identifyProfileDiscrepancies = (form: UserFormState, setForm: any, 
         message: "No N Number was found for this Calabrio WFM record. This could cause discrepencies when editing your user. Please make sure the Employment Number is populated with a valid nNumber"
       }
     });
+  }
+
+  if(form.triton.userFound){
+
   }
 
 };
@@ -291,7 +296,10 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
   if(!form.calabrio_wfm.userFound && calabrioWfmUser){
     setForm({
       type: "SET_UPDATE_WFM_FORM_STATE",
-      payload: calabrioWfmUser
+      payload: {
+        user: calabrioWfmUser,
+        state
+      }
     });
   }
 

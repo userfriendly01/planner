@@ -13,13 +13,15 @@ import {
 } from "context";
 import {
   Discrepancy,
+  Worker,
   discrepancyType,
   formModes
 } from "globals";
 import { getCalabrioUser } from "services";
 import {
   calabrioTimeZones,
-  calabrioAllowedRoles
+  calabrioAllowedRoles,
+  findMatchingQmProfiles
 } from "utils";
 
 interface CallRecordingFormInterface {
@@ -50,7 +52,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   React.useEffect(() => {
     if(form.nNumber.nNumberFetchedUser && form.formMode === formModes.UPDATE) {
       console.warn("form.nNumber.nNumberFetchedUser - update and fetched user");
-      setScopeOnExistingUser();
+      initiateEditForm();
     }
   }, [form.nNumber.nNumberFetchedUser]);
 
@@ -60,8 +62,19 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
       console.log("Profile 18, setting role to 'No Screen'");
       setWorkersCompRoles();
     }
-
   }, [form.triton.profileId.value]);
+
+  const initiateEditForm = () => {
+    const matchingProfiles = findMatchingQmProfiles(twilioWorker || form.nNumber, state.calabrioContext.users, setForm)
+    console.log("FAITH - MATCHING PROFILES", matchingProfiles);
+    if(matchingProfiles.length === 0){
+      //No Calabrio Record found
+    } else if(matchingProfiles.length === 1){
+      setScopeOnExistingUser(matchingProfiles[0]);
+    } else {
+      setScopeOnExistingUser(matchingProfiles[0]);
+    }
+  };
 
   const setWorkersCompRoles = () => {
     let selectedRoles:any = [];
@@ -78,7 +91,6 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
       payload: selectedRoles
     });
   };
-  // * 
 
   const setScopeOnNewUser = () => {
     const userGroups: any[] = [];
@@ -107,11 +119,9 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
     });
   };
 
-  const setScopeOnExistingUser = () => {
+  const setScopeOnExistingUser = (userRecord: any) => {
     const email = form.nNumber.nNumberFetchedUser.email?.toLowerCase();
-    const acdId = twilioWorker.sid?.toLowerCase();
     let updated = false;
-    const userRecord = users.find(user => user.acdId?.toLowerCase() === acdId) || users.find(user => user.email?.toLowerCase() === email);
     console.log("User Record Found in Calabrio Users", userRecord);
 
     if(userRecord){

@@ -37,7 +37,8 @@ import {
   getWfmBusinessUnits,
   getWfmTeams,
   getWfmOptions,
-  calabrioTimeZones
+  calabrioTimeZones,
+  isArrayOptionAdded
 } from "utils";
 import WFMLoadRetryModal from "../../BulkChanges/WFMLoadRetryModal";
 
@@ -45,6 +46,7 @@ const WfmForm = (props: any) => {
   const state = useAdminState();
   const form = useFormState();
   const setForm = useFormDispatch();
+  const isAdd = form.formMode === formModes.INSERT;
   const [ availabilityFields, setAvailabilityFields ] = React.useState({
     id: null,
     startDate: null
@@ -54,7 +56,7 @@ const WfmForm = (props: any) => {
     startDate: null
   });
   const [ skillFields, setSkillFields ] = React.useState({
-    skills: [],
+    skills: form.calabrio_wfm.PersonSkills || [],
     startDate: null
   });
   const [ rotationFields, setRotationFields ] = React.useState({
@@ -65,8 +67,8 @@ const WfmForm = (props: any) => {
   const [ optionsByBusinessUnit, setOptionsByBusinessUnit ] = React.useState<any>({});
   const [ scheduling, setScheduling ] = React.useState(false);
 
-  console.log("optionsByBusinessUnit", optionsByBusinessUnit);
-  console.log("FAITH state", state.calabrioContext.wfmOptions);
+  console.log("FAITH optionsByBusinessUnit", optionsByBusinessUnit);
+  console.log("FAITH form", form);
 
   React.useEffect(() => {
     const trimmedOptions = getWfmOptions(state, form.calabrio_wfm.BusinessUnitId);
@@ -143,7 +145,7 @@ const WfmForm = (props: any) => {
   }, [availabilityFields]);
 
   React.useEffect(() => {
-    console.log("Fetched User!");
+    console.log("FAITH Fetched User!");
     const worker = form.nNumber.nNumberFetchedUser;
     if(worker){
       setForm({
@@ -169,12 +171,6 @@ const WfmForm = (props: any) => {
       });
     }
   }, [form.nNumber.nNumberFetchedUser]);
-
-  /*
-    RotationId  
-    RotationStartWeek
-    RotationStartDate
-  */
  
     //Site isnt needed for Create User but its part of a users payload
     //Is Team Start Date different from Person Start date?
@@ -205,30 +201,31 @@ const WfmForm = (props: any) => {
   return (
     <Wrapper>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-      {!form.triton.userFound &&
         <Row>
-          <NNumberInput
-            disabled={(form.formMode === formModes.UPDATE) || (form.nNumber.nNumberFetchedUser ? true : false) || form.formMode === formModes.DELETE}
-            fetchedUser={form.nNumber.nNumberFetchedUser}
-            label="N Number *"
-            onClear={() => setForm({ type: userFormActions.CLEAR_N_NUMBER })}
-            onComplete={(fetchedUser: any, nNumber: any) => setForm({
-              type: userFormActions.COMPLETE_N_NUMBER,
-              payload: {
-                nNumber,
-                fetchedUser
-              }
-            })}
-            onUpdate={(nNumber: string) => {
-              setForm({
-                type: userFormActions.UPDATE_N_NUMBER,
-                payload: nNumber
-              });
-            }}
-            value={form.nNumber.value}
-          />
+          {!form.triton.userFound &&
+            <NNumberInput
+              disabled={(form.formMode === formModes.UPDATE) || (form.nNumber.nNumberFetchedUser ? true : false) || form.formMode === formModes.DELETE}
+              fetchedUser={form.nNumber.nNumberFetchedUser}
+              label="N Number *"
+              onClear={() => setForm({ type: userFormActions.CLEAR_N_NUMBER })}
+              onComplete={(fetchedUser: any, nNumber: any) => setForm({
+                type: userFormActions.COMPLETE_N_NUMBER,
+                payload: {
+                  nNumber,
+                  fetchedUser
+                }
+              })}
+              onUpdate={(nNumber: string) => {
+                setForm({
+                  type: userFormActions.UPDATE_N_NUMBER,
+                  payload: nNumber
+                });
+              }}
+              value={form.nNumber.value}
+            />
+          }
           <Dropdown
-            disabled={false}
+            disabled={!isAdd}
             error={false}
             label={"Business Unit *"}
             styles={{
@@ -243,11 +240,11 @@ const WfmForm = (props: any) => {
             value={generateDropdownOption(getWfmBusinessUnits(state).find((bu: any) => bu.Id === form.calabrio_wfm.BusinessUnitId))}
           />
         </Row>
-      }
-      { state.calabrioContext.wfmOptions ?
+      { state.calabrioContext.wfmOptions && state.calabrioContext.wfmOrg ?
       <>
         <Row>
           <TextField
+            disabled={!isAdd}
             label={"Identity"}
             value={form.calabrio_wfm.Identity || ""}
             onChange={(event: any) => setForm({
@@ -283,7 +280,7 @@ const WfmForm = (props: any) => {
             }}
           />
           <Dropdown
-            disabled={false}
+            disabled={!isAdd}
             error={false}
             label={"First Day of the Week *"}
             styles={{
@@ -298,7 +295,7 @@ const WfmForm = (props: any) => {
             value={form.calabrio_wfm.FirstDayOfWeek}
           />
           <Dropdown
-            disabled={form.formMode === formModes.DELETE}
+            disabled={!isAdd}
             label="Time Zone"
             options={calabrioTimeZones}
             value={calabrioTimeZones.find((t: any) => t.value === form.calabrio_qm.timezone)}
@@ -311,7 +308,7 @@ const WfmForm = (props: any) => {
         </Row>
         <Row>
           <Dropdown
-            disabled={form.formMode === formModes.DELETE}
+            disabled={!isAdd}
             label="Availability"
             options={generateDropdownOptionArray(optionsByBusinessUnit["Availabilities"])}
             value={generateDropdownOptionArray(optionsByBusinessUnit["Availabilities"]).find((a: any) => a.value === form.calabrio_wfm.AvailabilityId)}
@@ -322,22 +319,23 @@ const WfmForm = (props: any) => {
             styles={{ width: "250px" }}
           />
           <DatePicker
+            disabled={!isAdd}
             label="Availability Start Date"
             value={availabilityFields.startDate || ""}
             onChange={(newValue) => {
               setAvailabilityFields({
                 ...availabilityFields,
-                startDate: newValue
+                startDate: new Date(newValue).toLocaleDateString()
               })}
             } 
             renderInput={props => <TextField {...props} error={false} />}
           />
           <Dropdown
-            disabled={form.formMode === formModes.DELETE}
+            disabled={!isAdd}
             multiple={true}
             label="Roles"
             options={generateDropdownOptionArray(optionsByBusinessUnit["Roles"])}
-            value={form.calabrio_wfm.Roles}
+            value={generateDropdownOptionArray(form.calabrio_wfm.Roles)}
             updateValue={(event: any, options: any) => setForm({
               type: userFormActions.SET_WFM_ROLES,
               payload: options
@@ -347,30 +345,33 @@ const WfmForm = (props: any) => {
         </Row>
         <Row>
           <Dropdown
-            disabled={form.formMode === formModes.DELETE}
+            disabled={!isAdd}
             multiple={true}
             label="Skills"
             options={generateDropdownOptionArray(optionsByBusinessUnit["Skills"])}
-            value={skillFields.skills}
+            value={generateDropdownOptionArray(skillFields.skills)}
             updateValue={(event: any, options: any) => setSkillFields({
               ...skillFields,
               skills: options
             })}
             styles={{ width: "250px" }}
           />
-          <DatePicker
-            label="Skills Start Date"
-            value={availabilityFields.startDate || ""}
-            onChange={(newValue) => {
-              setAvailabilityFields({
-                ...availabilityFields,
-                startDate: newValue
-              })}
-            } 
-            renderInput={props => <TextField {...props} error={false} />}
-          />
+          { isArrayOptionAdded(form.calabrio_wfm.PersonSkills, skillFields.skills) &&
+            <DatePicker
+              disabled={!isAdd}
+              label="Skills Start Date"
+              value={skillFields.startDate || ""}
+              onChange={(newValue) => {
+                setSkillFields({
+                  ...skillFields,
+                  startDate: new Date(newValue).toLocaleDateString()
+                })}
+              } 
+              renderInput={props => <TextField {...props} error={false} />}
+            />
+          }
           <Dropdown
-            disabled={form.formMode === formModes.DELETE}
+            disabled={!isAdd}
             label="Workflow Control Set"
             options={generateDropdownOptionArray(optionsByBusinessUnit["Workflow_Control_Sets"])}
             value={optionsByBusinessUnit["Workflow_Control_Sets"]?.find((wcs: any) => wcs.value === form.calabrio_wfm.WorkflowControlSetId) || ""}
@@ -383,7 +384,7 @@ const WfmForm = (props: any) => {
         </Row>
         <Row>
         <Dropdown
-            disabled={form.formMode === formModes.DELETE}
+            disabled={!isAdd}
             label="Rotation"
             options={generateDropdownOptionArray(optionsByBusinessUnit["Rotations"])}
             value={rotationFields.id || ""}
@@ -394,18 +395,19 @@ const WfmForm = (props: any) => {
             styles={{ width: "250px" }}
           />
           <DatePicker
+            disabled={!isAdd}
             label="Rotation Start Date"
             value={rotationFields.startDate || ""}
             onChange={(newValue) => {
               setAvailabilityFields({
                 ...rotationFields,
-                startDate: newValue
+                startDate: new Date(newValue).toLocaleDateString()
               })}
             } 
             renderInput={props => <TextField {...props} error={false} />}
           />
           <Dropdown
-            disabled={false}
+            disabled={!isAdd}
             error={false}
             label={"Rotation Start Week"}
             styles={{
@@ -422,11 +424,11 @@ const WfmForm = (props: any) => {
         </Row>
         <Row>
           <Dropdown
-            disabled={form.formMode === formModes.DELETE}
+            disabled={!isAdd}
             multiple={true}
             label="Optional Columns"
             options={generateDropdownOptionArray(optionsByBusinessUnit["Optional_Columns"])}
-            value={form.calabrio_wfm.OptionalColumns}
+            value={generateDropdownOptionArray(form.calabrio_wfm.OptionalColumns)}
             updateValue={(event: any, options: any) => setForm({
               type: userFormActions.SET_WFM_OPTIONAL_COLUMNS,
               payload: options
@@ -434,6 +436,7 @@ const WfmForm = (props: any) => {
             styles={{ width: "250px" }}
           />
           <TextareaAutosize 
+            disabled={!isAdd}
             minRows={4}
             placeholder="Notes"
             style={{ width: "522px" }}
@@ -442,27 +445,29 @@ const WfmForm = (props: any) => {
         <Row>
           <FormGroup>
             <FormControlLabel control={<Switch
-              checked={scheduling}
+              disabled={!isAdd}
+              checked={isAdd ? scheduling : true}
               onChange={() => setScheduling(!scheduling)}
             />} label="Create Schedule" />
           </FormGroup>
         </Row>
-      { scheduling &&
+      { !isAdd || scheduling &&
       <>
         <Row>
           <DatePicker
             label="Person Start Date"
+            disabled={!isAdd}
             value={form.calabrio_wfm.EmploymentStartDate || ""}
             onChange={(newValue) => {
               setForm({
                 type: userFormActions.SET_WFM_EMP_START_DATE,
-                payload: newValue
+                payload: new Date(newValue).toLocaleDateString()
               })}
             } 
             renderInput={props => <TextField {...props} error={false} />}
           />
           <Dropdown
-            disabled={false}
+            disabled={!isAdd}
             error={false}
             label={"Team *"}
             styles={{
@@ -477,6 +482,7 @@ const WfmForm = (props: any) => {
           />
           <DatePicker
             label="Team Start Date"
+            disabled={!isAdd}
             value={teamFields.startDate}
             onChange={(newValue) => {
               setTeamFields({
@@ -489,7 +495,7 @@ const WfmForm = (props: any) => {
         </Row>
         <Row>
           <Dropdown
-            disabled={form.formMode === formModes.DELETE}
+            disabled={!isAdd}
             label="Absence"
             options={generateDropdownOptionArray(optionsByBusinessUnit["Absences"])}
             value={optionsByBusinessUnit["Absences"].find((a: any) => a.value === form.calabrio_wfm.AbsenceId)}
@@ -500,7 +506,7 @@ const WfmForm = (props: any) => {
             styles={{ width: "250px" }}
           />
           <Dropdown
-            disabled={form.formMode === formModes.DELETE}
+            disabled={!isAdd}
             label="Budget Group"
             options={generateDropdownOptionArray(optionsByBusinessUnit["Budget_Groups"])}
             value={generateDropdownOptionArray(optionsByBusinessUnit["Budget_Groups"]?.find((bg: any) => bg.value === form.calabrio_qm.timezone))}
@@ -511,7 +517,7 @@ const WfmForm = (props: any) => {
             styles={{ width: "250px" }}
           />
           <Dropdown
-            disabled={form.formMode === formModes.DELETE}
+            disabled={!isAdd}
             label="Part Time Percentage"
             options={generateDropdownOptionArray(optionsByBusinessUnit["Part_Time_Percentages"])}
             value={optionsByBusinessUnit["Part_Time_Percentages"].find((ptp: any) => ptp.value === form.calabrio_wfm.PartTimePercentageId)}
@@ -524,7 +530,7 @@ const WfmForm = (props: any) => {
         </Row>
         <Row>
           <Dropdown
-            disabled={form.formMode === formModes.DELETE}
+            disabled={!isAdd}
             label="Contract Schedule"
             options={generateDropdownOptionArray(optionsByBusinessUnit["Contract_Schedules"])}
             value={optionsByBusinessUnit["Contract_Schedules"].find((cs: any) => cs.value === form.calabrio_wfm.ContractScheduleId)}
@@ -535,7 +541,7 @@ const WfmForm = (props: any) => {
             styles={{ width: "250px" }}
           />
           <Dropdown
-            disabled={form.formMode === formModes.DELETE}
+            disabled={!isAdd}
             label="Contract"
             options={generateDropdownOptionArray(optionsByBusinessUnit["Contracts"])}
             value={optionsByBusinessUnit["Contracts"].find((c: any) => c.value === form.calabrio_wfm.ContractId)}
@@ -546,7 +552,7 @@ const WfmForm = (props: any) => {
             styles={{ width: "250px" }}
           />
           <Dropdown
-            disabled={form.formMode === formModes.DELETE}
+            disabled={!isAdd}
             label="Shift Bag"
             options={generateDropdownOptionArray(optionsByBusinessUnit["Shift_Bags"])}
             value={optionsByBusinessUnit["Shift_Bags"].find((sb: any) => sb.value === form.calabrio_wfm.ShiftBagId)}
