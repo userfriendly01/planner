@@ -575,7 +575,7 @@ describe("fields.js", () => {
           } catch (e) {
             expect(e).toEqual(JSON.stringify({
               rowNumber: 5,
-              error: "Default Skills Errors found for row 5 aisgl1 does not support Level boo."
+              error: "Default Skills Errors found for row 5 aisgL1 does not support Level boo."
             }));
           }
         });
@@ -588,7 +588,7 @@ describe("fields.js", () => {
           } catch (e) {
             expect(e).toEqual(JSON.stringify({
               rowNumber: 5,
-              error: "Default Skills Errors found for row 5 fakeskill is not an available skill "
+              error: "Default Skills Errors found for row 5 fakeSkill is not an available skill "
             }));
           }
         });
@@ -601,7 +601,7 @@ describe("fields.js", () => {
           } catch (e) {
             expect(e).toEqual(JSON.stringify({
               rowNumber: 5,
-              error: "Default Skills Errors found for row 5 aisgl1 does not support Level 3."
+              error: "Default Skills Errors found for row 5 aisgL1 does not support Level 3."
             }));
           }
         });
@@ -616,9 +616,9 @@ describe("fields.js", () => {
             ...row,
             attributes: {
               default_skills: {
-                levels: { lscobdialer1: 2 },
+                levels: { lscOBDialer1: 2 },
                 skills: [
-                  "aisgl1", "lscobdialer1"
+                  "aisgL1", "lscOBDialer1"
                 ]
               }
             }
