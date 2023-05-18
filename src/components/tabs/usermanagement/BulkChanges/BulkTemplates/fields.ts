@@ -239,7 +239,7 @@ export const FIELDS: Fields = {
         const fieldArray = field.replace(" ","").split(",");
         fieldArray.forEach((objString: string) => {
           const objKeyValueArray = objString.replace(" ","").split(":");
-          const key: any = cleanupField(objKeyValueArray[0], "string");
+          const key: any = objKeyValueArray[0];
           const value: any = cleanupField(objKeyValueArray[1], "number");
           if(value){
             defaultSkills.levels[key] = value;
@@ -251,7 +251,7 @@ export const FIELDS: Fields = {
         const skillErrors: any = [];
 
         defaultSkills.skills.forEach((ds: any) => {
-          if(!availableSkills.some((as: any) => cleanupField(as.name, "string") === ds)){
+          if(!availableSkills.some((as: any) => cleanupField(as.name, "string") === cleanupField(ds, "string"))){
             skillErrors.push(`${ds} is not an available skill `);
           }
         });
