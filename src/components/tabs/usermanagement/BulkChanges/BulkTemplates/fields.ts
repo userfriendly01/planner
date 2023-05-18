@@ -243,7 +243,6 @@ export const FIELDS: Fields = {
             const objKeyValueArray = objString.replace(" ","").split(":");
             const key: any = objKeyValueArray[0];
             const value: any = cleanupField(objKeyValueArray[1], "number");
-            console.log("FAITH - HMMM", key, value);
             if(value){
               defaultSkills.levels[key] = value;
             }
