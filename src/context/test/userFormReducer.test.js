@@ -8,7 +8,8 @@ import {
   managerList,
   mockWorkers,
   profileList,
-  validFormOptions
+  validFormOptions,
+  initialTestState
 } from "testUtils";
 import {
   formatE164PhoneNumber,
@@ -1421,11 +1422,17 @@ describe("userFormReducer", () => {
   describe("SET_UPDATE_WFM_FORM_STATE", () => {
     test("should update state with the existing calabrio user info", () => {
       const wfmUser = {
-        somanyfields: "i don't want to type them"
+        somanyfields: "i don't want to type them",
+        Roles: [{ RoleId: "333" }],
+        PersonSkills: [{ SkillId: "111" }],
+        OptionalColumns: { "111": "111" }
       };
       const action = {
         type: userFormActions.SET_UPDATE_WFM_FORM_STATE,
-        payload: wfmUser
+        payload: {
+          user: wfmUser,
+          state: initialTestState
+        }
       };
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
@@ -1433,7 +1440,19 @@ describe("userFormReducer", () => {
         formMode: formModes.UPDATE,
         calabrio_wfm: {
           ...initialUserFormState.calabrio_wfm,
-          ...wfmUser,
+          somanyfields: "i don't want to type them",
+          Roles: [{
+            Name: "Role3",
+            Id: "333"
+          }],
+          PersonSkills: [{
+            Name: "Skill1",
+            Id: "111"
+          }],
+          OptionalColumns: [{
+            Name: "OptionalCol1",
+            Id: "111"
+          }],
           userFound: true
         }
       };

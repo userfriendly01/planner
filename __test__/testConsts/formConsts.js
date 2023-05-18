@@ -54,7 +54,7 @@ export const initialFormState = {
         message: "",
         isError: false,
         originalExtension: ""
-      },
+      }
     },
     inactiveForwardTo: {
       value: null,
@@ -108,6 +108,36 @@ export const initialFormState = {
         checked: true
       }]
     }
+  },
+  calabrio_wfm: {
+    userFound: false,
+    OptionalColumns: [],
+    Id: null,
+    Identity: null,
+    FirstName: null,
+    LastName: null,
+    EmploymentNumber: null,
+    Email: null,
+    DisplayName: null,
+    TerminationDate: null,
+    EmploymentStartDate: null,
+    TimeZoneId: null,
+    BusinessUnitId: null,
+    TeamId: null,
+    PersonSkills: [],
+    WorkflowControlSetId: null,
+    ContractId: null,
+    ContractScheduleId: null,
+    BudgetGroupId: null,
+    PartTimePercentageId: null,
+    ShiftBagId: null,
+    Note: null,
+    Roles: [],
+    AvailabilityId: null,
+    AbsenceId: null,
+    RotationId: null,
+    FirstDayOfWeek: null,
+    ParentTeam: null
   }
 };
 
