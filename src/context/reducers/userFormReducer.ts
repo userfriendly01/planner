@@ -190,7 +190,7 @@ export const initialUserFormState: UserFormState = {
     FirstDayOfWeek: null,
     ParentTeam: null
   }
-}
+};
 
 export const userFormReducer = (state: any, action: Action): UserFormState => {
   switch (action.type) {
@@ -255,7 +255,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
               isError: false,
               message: ""
             }
-          },
+          }
         }
       };
     }
@@ -765,7 +765,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         ...state,
         calabrio_wfm: {
           ...state.calabrio_wfm,
-          AbsenceId: action.payload,
+          AbsenceId: action.payload
         }
       };
     }
@@ -775,7 +775,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         calabrio_wfm: {
           ...state.calabrio_wfm,
           AvailabilityId: action.payload.id,
-          AvailabilityStartDate: action.payload.startDate,
+          AvailabilityStartDate: action.payload.startDate
         }
       };
     }
@@ -817,7 +817,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           LastName: action.payload.lastName,
           EmploymentNumber: action.payload.nNumber,
           Email: action.payload.email,
-          DisplayName: action.payload.fullName,
+          DisplayName: action.payload.fullName
 
         }
       };
@@ -926,7 +926,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
               searchStatus: ExtensionSearchStatuses.Idle,
               retriesRemaining: searchParams.MaxRetries
             }
-          },
+          }
         }
       };
     }
@@ -1009,12 +1009,16 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
     case userFormActions.UPDATE_USER_FOUND: {
       const system = action.payload.system;
       const isFound = action.payload.isFound;
-      return {
-        ...state,
-        [system]: {
-          ...state[system],
-          userFound: isFound
-        }
+      if (state[system]) {
+        return {
+          ...state,
+          [system]: {
+            ...state[system],
+            userFound: isFound
+          }
+        };
+      } else {
+        return state;
       }
     }
     default:

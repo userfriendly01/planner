@@ -224,6 +224,50 @@ export const calabrioContext = {
           Id: "111"
         }
       ]
+    },
+    {
+      Id: "999-999",
+      Name: "Other WFM Business Unit",
+      Availabilities: [
+        {
+          Name: "Availability2",
+          Id: "222"
+        }
+      ],
+      Budget_Groups: [],
+      Contract_Schedules: [
+        {
+          Name: "ContractSchedule2",
+          Id: "222"
+        }
+      ],
+      Contracts: [
+        {
+          Name: "Contract2",
+          Id: "222"
+        }
+      ],
+      Optional_Columns: [],
+      Part_Time_Percentages: [
+        {
+          Name: "ParttimePercent2",
+          Id: "222"
+        }
+      ],
+      Roles: [
+        {
+          Name: "Role3",
+          Id: "333"
+        },
+        {
+          Name: "Role4",
+          Id: "444"
+        }
+      ],
+      Rotations: [],
+      Shift_Bags: [],
+      Skills: [],
+      Workflow_Control_Sets: []
     }
   ],
   wfmOrg: [
@@ -244,8 +288,42 @@ export const calabrioContext = {
           Name: "Team2",
           Id: "222",
           People: []
+        },
+        {
+          Name: "Team3 No ID",
+          Id: null,
+          People: []
         }
       ]
+    },
+    {
+      Id: "999-999",
+      Name: "Other WFM Business Unit",
+      People_Without_Team: [],
+      Teams: [
+        {
+          Name: "Fake team",
+          Id: "000",
+          People: [{
+            EmploymentNumber: "n8765432",
+            Email: "dude@libertymutual.com"
+          }]
+        },
+        {
+          Name: "Other Fake team",
+          Id: "999",
+          People: []
+        }
+      ]
+    },
+    {
+      Id: "People_Without_Team",
+      Name: "People_Without_Team",
+      People: [{
+        EmploymentNumber: "n0000000",
+        Email: "ihavenoteam@email.com"
+      }],
+      Teams: []
     }
   ]
 };

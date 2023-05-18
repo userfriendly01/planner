@@ -5,7 +5,11 @@ import {
   formatCalabrioRoles,
   checkConflictingUsers,
   getCalabrioWfmOptions,
-  getCalabrioWfmOrg
+  getCalabrioWfmOrg,
+  getWfmBusinessUnits,
+  getWfmTeams,
+  getWfmPeople,
+  getWfmOptions as getWfmOptionsUtil
 } from "utils";
 import {
   getCalabrioUser,
@@ -150,6 +154,336 @@ describe("calabrioUtils", () => {
   beforeEach(() => {
     jest.resetAllMocks(),
     Date.now.mockReturnValue("Right Now");
+  });
+  describe("getWfmBusinessUnits", () => {
+    test("returns list of Business units containing Name and Id", () => {
+      const result = getWfmBusinessUnits({ calabrioContext });
+      expect(result).toEqual([{
+        Name: "Cool WFM Business Unit",
+        Id: "123-321"
+      }, {
+        Name: "Other WFM Business Unit",
+        Id: "999-999"
+      },
+      {
+        Name: "People_Without_Team",
+        Id: "People_Without_Team"
+      }]);
+    });
+  });
+  describe("getWfmTeams", () => {
+    describe("Business Unit id is provided", () => {
+      describe("includeLostSouls is true", () => {
+        test("should return teams from the provided bu", () => {
+          const result = getWfmTeams({ calabrioContext }, "999-999");
+          expect(result).toEqual([
+            {
+              Name: "Fake team",
+              Id: "000",
+              People: [{
+                EmploymentNumber: "n8765432",
+                Email: "dude@libertymutual.com"
+              }]
+            },
+            {
+              Name: "Other Fake team",
+              Id: "999",
+              People: []
+            }
+          ]);
+        });
+      });
+    });
+    describe("Business Unit id is NOT provided", () => {
+      describe("includeLostSouls is true", () => {
+        test("should return teams from all BUs and will include teams without ids", () => {
+          const result = getWfmTeams({ calabrioContext }, null, true);
+          expect(result).toEqual([
+            {
+              Name: "Team1",
+              Id: "111",
+              People: [{
+                EmploymentNumber: "n1111111",
+                Email: "Person@libertymutual.com"
+              }]
+            },
+            {
+              Name: "Team2",
+              Id: "222",
+              People: []
+            },
+            {
+              Name: "Team3 No ID",
+              Id: null,
+              People: []
+            },
+            {
+              Name: "Fake team",
+              Id: "000",
+              People: [{
+                EmploymentNumber: "n8765432",
+                Email: "dude@libertymutual.com"
+              }]
+            },
+            {
+              Name: "Other Fake team",
+              Id: "999",
+              People: []
+            }
+          ]);
+        });
+      });
+      describe("includeLostSouls is false", () => {
+        test("should return a list of teams from all BUs, not including teams without ids", () => {
+          const result = getWfmTeams({ calabrioContext }, null, false);
+          expect(result).toEqual([
+            {
+              Name: "Team1",
+              Id: "111",
+              People: [{
+                EmploymentNumber: "n1111111",
+                Email: "Person@libertymutual.com"
+              }]
+            },
+            {
+              Name: "Team2",
+              Id: "222",
+              People: []
+            },
+            {
+              Name: "Fake team",
+              Id: "000",
+              People: [{
+                EmploymentNumber: "n8765432",
+                Email: "dude@libertymutual.com"
+              }]
+            },
+            {
+              Name: "Other Fake team",
+              Id: "999",
+              People: []
+            }
+          ]);
+        });
+      });
+    });
+  });
+  describe("getWfmPeople", () => {
+    test("returns all WFM People in wfmOrg and adds team.id as ParentTeam on each person", () => {
+      const result = getWfmPeople({ calabrioContext });
+      expect(result).toEqual([
+        {
+          EmploymentNumber: "n0000000",
+          Email: "ihavenoteam@email.com"
+        },
+        {
+          EmploymentNumber: "n1111111",
+          Email: "Person@libertymutual.com",
+          ParentTeam: "111"
+        },
+        {
+          EmploymentNumber: "n8765432",
+          Email: "dude@libertymutual.com",
+          ParentTeam: "000"
+        }
+      ]);
+    });
+  });
+  describe("getWfmOptions", () => {
+    describe("busniess unit id is passed to function", () => {
+      test("returns list of options for the specified Business unit", () => {
+        const result = getWfmOptionsUtil({ calabrioContext },  "123-321");
+        expect(result).toEqual({
+          Id: "123-321",
+          Name: "WFM Business Unit1",
+          Availabilities: [
+            {
+              Name: "Availability1",
+              Id: "123123"
+            }
+          ],
+          Budget_Groups: [
+            {
+              Name: "BudgetGroup1",
+              Id: "000"
+            }
+          ],
+          Contract_Schedules: [
+            {
+              Name: "ContractSchedule1",
+              Id: "111"
+            }
+          ],
+          Contracts: [
+            {
+              Name: "Contract1",
+              Id: "111"
+            }
+          ],
+          Optional_Columns: [
+            {
+              Name: "OptionalCol1",
+              Id: "111"
+            },
+            {
+              Name: "OptionalCol2",
+              Id: "222"
+            }
+          ],
+          Part_Time_Percentages: [
+            {
+              Name: "ParttimePercent1",
+              Id: "111"
+            }
+          ],
+          Roles: [
+            {
+              Name: "Role1",
+              Id: "111"
+            },
+            {
+              Name: "Role2",
+              Id: "222"
+            }
+          ],
+          Rotations: [
+            {
+              Name: "Rotation1",
+              Id: "111"
+            }
+          ],
+          Shift_Bags: [
+            {
+              Name: "ShiftBag1",
+              Id: "111"
+            }
+          ],
+          Skills: [
+            {
+              Name: "Skill1",
+              Id: "111"
+            },
+            {
+              Name: "Skill2",
+              Id: "222"
+            }
+          ],
+          Workflow_Control_Sets: [
+            {
+              Name: "WFCSet1",
+              Id: "111"
+            }
+          ]
+      })
+      });
+      test("returns list of options for all Business units", () => {
+        const result = getWfmOptionsUtil({ calabrioContext });
+        expect(result).toEqual({
+          Availabilities: [
+            {
+              Name: "Availability1",
+              Id: "123123"
+            },
+            {
+              Name: "Availability2",
+              Id: "222"
+            }
+          ],
+          Budget_Groups: [
+            {
+              Name: "BudgetGroup1",
+              Id: "000"
+            }
+          ],
+          Contract_Schedules: [
+            {
+              Name: "ContractSchedule1",
+              Id: "111"
+            },
+            {
+              Name: "ContractSchedule2",
+              Id: "222"
+            }
+          ],
+          Contracts: [
+            {
+              Name: "Contract1",
+              Id: "111"
+            },
+            {
+              Name: "Contract2",
+              Id: "222"
+            }
+          ],
+          Optional_Columns: [
+            {
+              Name: "OptionalCol1",
+              Id: "111"
+            },
+            {
+              Name: "OptionalCol2",
+              Id: "222"
+            }
+          ],
+          Part_Time_Percentages: [
+            {
+              Name: "ParttimePercent1",
+              Id: "111"
+            },
+            {
+              Name: "ParttimePercent2",
+              Id: "222"
+            }
+          ],
+          Roles: [
+            {
+              Name: "Role1",
+              Id: "111"
+            },
+            {
+              Name: "Role2",
+              Id: "222"
+            },
+            {
+              Name: "Role3",
+              Id: "333"
+            },
+            {
+              Name: "Role4",
+              Id: "444"
+            }
+          ],
+          Rotations: [
+            {
+              Name: "Rotation1",
+              Id: "111"
+            }
+          ],
+          Shift_Bags: [
+            {
+              Name: "ShiftBag1",
+              Id: "111"
+            }
+          ],
+          Skills: [
+            {
+              Name: "Skill1",
+              Id: "111"
+            },
+            {
+              Name: "Skill2",
+              Id: "222"
+            }
+          ],
+          Workflow_Control_Sets: [
+            {
+              Name: "WFCSet1",
+              Id: "111"
+            }
+          ]
+        });
+      });
+    });
   });
   describe("formatCalabrioTeams", () => {
     test("Calabrio payload is filtered as expected", () => {
@@ -695,7 +1029,7 @@ describe("calabrioUtils", () => {
       expect(mockDispatch).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenLastCalledWith({
         type: "loadWfmOrg",
-        payload: [{ Id: "111" }, { Id: "222" }]
+        payload: { businessUnits: [{ Id: "111" }, { Id: "222" }]}
       });
       expect(result).toBe(true);
     });

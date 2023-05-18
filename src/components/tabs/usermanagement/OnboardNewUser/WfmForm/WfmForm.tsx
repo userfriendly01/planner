@@ -1,5 +1,4 @@
 import React from "react";
-import { useAdminState } from "context";
 import {
   Button,
   Row,
@@ -12,7 +11,8 @@ import {
 import {
   userFormActions,
   useFormState,
-  useFormDispatch
+  useFormDispatch,
+  useAdminState
 } from "context";
 import {
   FormGroup,
@@ -137,7 +137,7 @@ const WfmForm = (props: any) => {
       setForm({
         type: userFormActions.SET_WFM_AVAILABILITY,
         payload: {
-          id: [],
+          id: [],  // FAITH LOOK HERE: why is this an array??? - Kaleigh
           startDate: null
         }
       });
@@ -240,7 +240,8 @@ const WfmForm = (props: any) => {
             value={generateDropdownOption(getWfmBusinessUnits(state).find((bu: any) => bu.Id === form.calabrio_wfm.BusinessUnitId))}
           />
         </Row>
-      { state.calabrioContext.wfmOptions && state.calabrioContext.wfmOrg ?
+        {/* FAITH LOOK HERE!  I added the .length here because I assumed you only wanted to show these if we have the options and org loaded.  Test was failing without the .length - KALEIGH*/}
+      { state.calabrioContext.wfmOptions?.length && state.calabrioContext.wfmOrg?.length ?
       <>
         <Row>
           <TextField
@@ -287,7 +288,7 @@ const WfmForm = (props: any) => {
               width: "250px",
               margin: "0px 5px"
             }}
-            options={[1,2,3,4,5,6,7]}
+            options={[0,1,2,3,4,5,6]}  //FAITH LOOD HERE!  In Bulk wfm these are 0-6... 0=sunday, I've changed this from 1-7 to 0-6 - KALEIGH
             updateValue={(event: any, newValue: any) => setForm({
               type: userFormActions.SET_WFM_FIRST_DAY_OF_WEEK,
               payload: newValue

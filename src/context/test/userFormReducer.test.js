@@ -8,7 +8,8 @@ import {
   managerList,
   mockWorkers,
   profileList,
-  validFormOptions
+  validFormOptions,
+  initialTestState
 } from "testUtils";
 import {
   formatE164PhoneNumber,
@@ -327,7 +328,7 @@ describe("userFormReducer", () => {
           ...initialUserFormState.nNumber,
           value: payload.nNumber,
           nNumberFetchedUser: payload.fetchedUser
-        },
+        }
       };
       expect(result).toStrictEqual(expectedFormState);
     });
@@ -558,7 +559,7 @@ describe("userFormReducer", () => {
         },
         zeroOutEnabled: {
           updated: false,
-          value: true,
+          value: true
         }
       }
     };
@@ -711,7 +712,7 @@ describe("userFormReducer", () => {
     });
   });
 
-  describe("SET_CALABRIO_USER", () => {
+  describe("SET_CALABRIO_QM_USER", () => {
     test("should set Calabrio User to Payload", () => {
       const payload = {
         user: "new"
@@ -723,7 +724,10 @@ describe("userFormReducer", () => {
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
         ...initialUserFormState,
-        calabrio_qm: payload
+        calabrio_qm: {
+          ...payload,
+          userFound: true
+        }
       };
       expect(result).toStrictEqual(expectedFormState);
     });
@@ -954,7 +958,7 @@ describe("userFormReducer", () => {
     });
   });
 
-  describe("SET_UPDATE_FORM_STATE for DID User", () => {
+  describe("SET_UPDATE_TRITON_FORM_STATE for DID User", () => {
     test("should reset form to update state", () => {
       const worker = mockWorkers[2];
       const payload = {
@@ -962,7 +966,7 @@ describe("userFormReducer", () => {
         managers: managerList
       };
       const action = {
-        type: userFormActions.SET_UPDATE_FORM_STATE,
+        type: userFormActions.SET_UPDATE_TRITON_FORM_STATE,
         payload
       };
       const result = userFormReducer(initialUserFormState, action);
@@ -975,6 +979,9 @@ describe("userFormReducer", () => {
         },
         triton: {
           ...initialUserFormState.triton,
+          userFound: true,
+          sid: "WK2",
+          attributes: worker.attributes,
           defaultSkills: {
             updated: false,
             ...getValidSkillsObject(worker.attributes.default_skills)
@@ -986,7 +993,7 @@ describe("userFormReducer", () => {
             status: {
               ...initialUserFormState.triton.extension.status,
               originalExtension: worker.attributes.extension || ""
-            },
+            }
           },
           manager: {
             ...initialUserFormState.triton.manager,
@@ -1014,11 +1021,11 @@ describe("userFormReducer", () => {
           didUser: true,
           zeroOutEnabled: {
             ...initialUserFormState.triton.zeroOutEnabled,
-            value: worker.zeroOutEnabled,
+            value: worker.zeroOutEnabled
           },
           selfServiceInd: {
             ...initialUserFormState.triton.selfServiceInd,
-            value: worker.selfServiceInd,
+            value: worker.selfServiceInd
           }
         }
       };
@@ -1049,7 +1056,7 @@ describe("userFormReducer", () => {
           ...initialUserFormState.triton,
           defaultSkills: {
             updated: false,
-            ...getValidSkillsObject(worker.attributes.default_skills),
+            ...getValidSkillsObject(worker.attributes.default_skills)
           },
           extension: {
             ...initialUserFormState.triton.extension,
@@ -1058,7 +1065,7 @@ describe("userFormReducer", () => {
             status: {
               ...initialUserFormState.triton.extension.status,
               originalExtension: worker.attributes.extension || ""
-            },
+            }
           },
           manager: {
             ...initialUserFormState.triton.manager,
@@ -1086,11 +1093,11 @@ describe("userFormReducer", () => {
           didUser: true,
           zeroOutEnabled: {
             ...initialUserFormState.triton.zeroOutEnabled,
-            value: worker.zeroOutEnabled,
+            value: worker.zeroOutEnabled
           },
           selfServiceInd: {
             ...initialUserFormState.triton.selfServiceInd,
-            value: worker.selfServiceInd,
+            value: worker.selfServiceInd
           }
         }
       };
@@ -1098,7 +1105,7 @@ describe("userFormReducer", () => {
     });
   });
 
-  describe("SET_UPDATE_FORM_STATE for NonDID User", () => {
+  describe("SET_UPDATE_TRITON_FORM_STATE for NonDID User", () => {
     test("should reset form to update state", () => {
       const worker = mockWorkers[0];
       const payload = {
@@ -1107,7 +1114,7 @@ describe("userFormReducer", () => {
         managers: managerList
       };
       const action = {
-        type: userFormActions.SET_UPDATE_FORM_STATE,
+        type: userFormActions.SET_UPDATE_TRITON_FORM_STATE,
         payload
       };
       const result = userFormReducer(initialUserFormState, action);
@@ -1116,6 +1123,9 @@ describe("userFormReducer", () => {
         formMode: payload.formMode,
         triton: {
           ...initialUserFormState.triton,
+          userFound: true,
+          attributes: worker.attributes,
+          sid: "WK0",
           defaultSkills: {
             ...getValidSkillsObject(worker.attributes.default_skills),
             updated: false
@@ -1202,7 +1212,7 @@ describe("userFormReducer", () => {
                 searchStatus: ExtensionSearchStatuses.Idle,
                 retriesRemaining: 5
               }
-            },
+            }
           }
         };
         expect(result).toStrictEqual(expectedFormState);
@@ -1371,6 +1381,85 @@ describe("userFormReducer", () => {
     });
   });
 
+  describe("SET_UPDATE_QM_FORM_STATE", () => {
+    test("should update state with the existing calabrio user info", () => {
+      const calabrioUser = {
+        team: 123,
+        timezone: {
+          label: "EST",
+          value: 173
+        },
+        roles: ["QM Agent"],
+        scope: {
+          groups: [{
+            name: "group-woot",
+            groupId: 13
+          }],
+          teams: [{
+            name: "team-awesome",
+            groupId: 22
+          }]
+        }
+      };
+      const action = {
+        type: userFormActions.SET_UPDATE_QM_FORM_STATE,
+        payload: calabrioUser
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        formMode: formModes.UPDATE,
+        calabrio_qm: {
+          ...initialUserFormState.calabrio_qm,
+          ...calabrioUser,
+          userFound: true
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
+  describe("SET_UPDATE_WFM_FORM_STATE", () => {
+    test("should update state with the existing calabrio user info", () => {
+      const wfmUser = {
+        somanyfields: "i don't want to type them",
+        Roles: [{ RoleId: "333" }],
+        PersonSkills: [{ SkillId: "111" }],
+        OptionalColumns: { "111": "111" }
+      };
+      const action = {
+        type: userFormActions.SET_UPDATE_WFM_FORM_STATE,
+        payload: {
+          user: wfmUser,
+          state: initialTestState
+        }
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        formMode: formModes.UPDATE,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          somanyfields: "i don't want to type them",
+          Roles: [{
+            Name: "Role3",
+            Id: "333"
+          }],
+          PersonSkills: [{
+            Name: "Skill1",
+            Id: "111"
+          }],
+          OptionalColumns: [{
+            Name: "OptionalCol1",
+            Id: "111"
+          }],
+          userFound: true
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
   describe("UPDATE_TEAM", () => {
     describe("Profile is updated from a profile without a zero out skill to one with a zero out skill", () => {
       test("should update team and set zeroOutEnabled to true", () => {
@@ -1449,6 +1538,467 @@ describe("userFormReducer", () => {
         };
         expect(result).toStrictEqual(expectedFormState);
       });
+    });
+  });
+  describe("SET_WFM_BUSINESS_UNIT", () => {
+    test("should set BusinessUnitId in the calabrio_wfm", () => {
+      const action = {
+        type: userFormActions.SET_WFM_BUSINESS_UNIT,
+        payload: "BU-i-am-business-unit"
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          BusinessUnitId: "BU-i-am-business-unit"
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+  describe("SET_WFM_AVAILABILITY", () => {
+    test("should set AvailabilityId in the calabrio_wfm", () => {
+      const action = {
+        type: userFormActions.SET_WFM_AVAILABILITY,
+        payload: {
+          id: "availabilityid",
+          startDate: "3-24-2023"
+        }
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          AvailabilityId: "availabilityid",
+          AvailabilityStartDate: "3-24-2023"
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+  describe("SET_WFM_ABSENCE", () => {
+    test("should set AbsenceId in the calabrio_wfm", () => {
+      const action = {
+        type: userFormActions.SET_WFM_ABSENCE,
+        payload: "absenceid1"
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          AbsenceId: "absenceid1"
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+  describe("SET_WFM_TEAM", () => {
+    test("should set TeamId and TeamStartDate in the calabrio_wfm", () => {
+      const action = {
+        type: userFormActions.SET_WFM_TEAM,
+        payload: {
+          id: "i-am-team-id",
+          startDate: "5-12-2023"
+        }
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          TeamId: "i-am-team-id",
+          TeamStartDate: "5-12-2023"
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+  describe("SET_WFM_TIME_ZONE", () => {
+    test("should set TimeZoneId in the calabrio_wfm", () => {
+      const action = {
+        type: userFormActions.SET_WFM_TIME_ZONE,
+        payload: "new york EST"
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          TimeZoneId: "new york EST"
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+  describe("SET_WFM_SKILLS", () => {
+    test("should set PersonSkills and SkillsStartDate in the calabrio_wfm", () => {
+      const action = {
+        type: userFormActions.SET_WFM_SKILLS,
+        payload: {
+          skills: ["skill1", "skill2"],
+          startDate: "5-12-2023"
+        }
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          PersonSkills: ["skill1", "skill2"],
+          SkillsStartDate: "5-12-2023"
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+  describe("SET_WFM_CONTROL_SET", () => {
+    test("should set WorkflowControlSetId in the calabrio_wfm", () => {
+      const action = {
+        type: userFormActions.SET_WFM_CONTROL_SET,
+        payload: "workflow-yo"
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          WorkflowControlSetId: "workflow-yo"
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+  describe("SET_WFM_CONTRACT", () => {
+    test("should set ContractId in the calabrio_wfm", () => {
+      const action = {
+        type: userFormActions.SET_WFM_CONTRACT,
+        payload: "contract-id-1"
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          ContractId: "contract-id-1"
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+  describe("SET_WFM_CONTRACT_SCHEDULE", () => {
+    test("should set ContractScheduleId in the calabrio_wfm", () => {
+      const action = {
+        type: userFormActions.SET_WFM_CONTRACT_SCHEDULE,
+        payload: "hi i am contract schedule"
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          ContractScheduleId: "hi i am contract schedule"
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+  describe("SET_WFM_BUDGET_GROUP", () => {
+    test("should set BudgetGroupId in the calabrio_wfm", () => {
+      const action = {
+        type: userFormActions.SET_WFM_BUDGET_GROUP,
+        payload: "budgetgroup1"
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          BudgetGroupId: "budgetgroup1"
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+  describe("SET_WFM_EMP_START_DATE", () => {
+    test("should set EmploymentStartDate in the calabrio_wfm", () => {
+      const action = {
+        type: userFormActions.SET_WFM_EMP_START_DATE,
+        payload: "5-12-2023"
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          EmploymentStartDate: "5-12-2023"
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+  describe("SET_WFM_PART_TIME_PERCENTAGE", () => {
+    test("should set PartTimePercentageId in the calabrio_wfm", () => {
+      const action = {
+        type: userFormActions.SET_WFM_PART_TIME_PERCENTAGE,
+        payload: "hello!"
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          PartTimePercentageId: "hello!"
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+  describe("SET_WFM_SHIFT_BAG", () => {
+    test("should set ShiftBagId in the calabrio_wfm", () => {
+      const action = {
+        type: userFormActions.SET_WFM_SHIFT_BAG,
+        payload: "shiFFFtbag"
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          ShiftBagId: "shiFFFtbag"
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+  describe("SET_WFM_NOTE", () => {
+    test("should set Note in the calabrio_wfm", () => {
+      const action = {
+        type: userFormActions.SET_WFM_NOTE,
+        payload: "have a nice day!"
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          Note: "have a nice day!"
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+  describe("SET_WFM_ROLES", () => {
+    test("should set Roles in the calabrio_wfm", () => {
+      const action = {
+        type: userFormActions.SET_WFM_ROLES,
+        payload: ["role 1", "role2"]
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          Roles: ["role 1", "role2"]
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+  describe("SET_WFM_ROTATION", () => {
+    test("should set RotationId, RotationStartDate and RotationStartWeek in the calabrio_wfm", () => {
+      const action = {
+        type: userFormActions.SET_WFM_ROTATION,
+        payload: {
+          id: "rotationID",
+          startDate: "4-5-2023",
+          startWeek: 4
+        }
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          RotationId: "rotationID",
+          RotationStartDate: "4-5-2023",
+          RotationStartWeek: 4
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+  describe("SET_WFM_FIRST_DAY_OF_WEEK", () => {
+    test("should set FirstDayOfWeek in the calabrio_wfm", () => {
+      const action = {
+        type: userFormActions.SET_WFM_FIRST_DAY_OF_WEEK,
+        payload: 1
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          FirstDayOfWeek: 1
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+  describe("SET_WFM_OPTIONAL_COLUMNS", () => {
+    test("should set OptionalColumns in the calabrio_wfm", () => {
+      const action = {
+        type: userFormActions.SET_WFM_OPTIONAL_COLUMNS,
+        payload: {
+          Id: "optional column1",
+          Value: "stuff"
+        }
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          OptionalColumns: {
+            Id: "optional column1",
+            Value: "stuff"
+          }
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+  describe("SET_WFM_IDENTITY", () => {
+    test("should set Identity in the calabrio_wfm", () => {
+      const action = {
+        type: userFormActions.SET_WFM_IDENTITY,
+        payload: "email@mail.com"
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          Identity: "email@mail.com"
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+  describe("SET_WFM_TERMINATION_DATE", () => {
+    test("should set TerminationDate in the calabrio_wfm", () => {
+      const action = {
+        type: userFormActions.SET_WFM_TERMINATION_DATE,
+        payload: "12-12-2012"
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          TerminationDate: "12-12-2012"
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+  describe("SET_WFM_USER_DATA", () => {
+    test("should set FirstName, LastName, EmploymentNumber, Email, and DisplayName in the calabrio_wfm", () => {
+      const action = {
+        type: userFormActions.SET_WFM_USER_DATA,
+        payload: {
+          firstName: "Michael",
+          lastName: "Scott",
+          nNumber: "n1231231",
+          email: "michael.scott@dundermifflin.com",
+          fullName: "Michael Scott"
+        }
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          FirstName: "Michael",
+          LastName: "Scott",
+          EmploymentNumber: "n1231231",
+          Email: "michael.scott@dundermifflin.com",
+          DisplayName: "Michael Scott"
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+  describe("UPDATE_USER_FOUND", () => {
+    test("system is calabrio_wfm, should set userFound in calabrio_wfm of the state", () => {
+      const action = {
+        type: userFormActions.UPDATE_USER_FOUND,
+        payload: {
+          system: "calabrio_wfm",
+          isFound: true
+        }
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          userFound: true
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+    test("system is calabrio_qm, should set userFound in calabrio_qm of the state", () => {
+      const action = {
+        type: userFormActions.UPDATE_USER_FOUND,
+        payload: {
+          system: "calabrio_qm",
+          isFound: true
+        }
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        calabrio_qm: {
+          ...initialUserFormState.calabrio_qm,
+          userFound: true
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+    test("system is triton, should set userFound in triton of the state", () => {
+      const action = {
+        type: userFormActions.UPDATE_USER_FOUND,
+        payload: {
+          system: "triton",
+          isFound: true
+        }
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        triton: {
+          ...initialUserFormState.triton,
+          userFound: true
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+    test("system is not found in state, should return state without updating", () => {
+      const action = {
+        type: userFormActions.UPDATE_USER_FOUND,
+        payload: {
+          system: "fake",
+          isFound: true
+        }
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState
+      };
+      expect(result).toStrictEqual(expectedFormState);
     });
   });
 });
