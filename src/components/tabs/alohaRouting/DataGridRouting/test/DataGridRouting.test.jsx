@@ -5,7 +5,7 @@ import {
   DataGrid, GridRenderCellParams, GridToolbar
 } from "@mui/x-data-grid";
 import {
-  RoutingAdvanceSearch, EditRouting, AddRouting, CustomFlowRoutingToolBar
+  RoutingAdvanceSearch, EditRouting, AddRouting, CustomRoutingGridToolBar
 } from "../../RoutingCustomActions";
 import { CustomToast } from "components";
 import { useAdminState } from "context";
@@ -16,7 +16,9 @@ import {
   render,
   fireEvent
 } from "testUtils";
-import { retrieveRoutingData } from "services";
+import {
+  retrieveRoutingData,queryRoutingData
+} from "services";
 import {
   CACHED_CALL_ROUTING_PER_PAGE, CACHED_CALL_ROUTING_PAGE_NO, CACHE_FILTER_ROUTING
 } from "utils";
@@ -39,7 +41,7 @@ jest.mock("../../RoutingCustomActions", ()=>({
   RoutingAdvanceSearch: jest.fn(),
   AddRouting: jest.fn(),
   EditRouting: jest.fn(),
-  CustomFlowRoutingToolBar: jest.fn()
+  CustomRoutingGridToolBar: jest.fn()
 }));
 
 jest.mock("context", () => ({
@@ -109,6 +111,7 @@ describe("<DataGridRouting />", ()=>{
   const matchMedia = window.matchMedia;
   beforeEach(()=>{
     jest.clearAllMocks();
+    queryRoutingData.mockReset();
     retrieveRoutingData.mockReset();
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
@@ -119,7 +122,7 @@ describe("<DataGridRouting />", ()=>{
       EditRouting,
       AddRouting,
       CustomToast,
-      CustomFlowRoutingToolBar
+      CustomRoutingGridToolBar: CustomRoutingGridToolBar
     }),
     Object.defineProperty(window, "matchMedia", {
       writable: true,
@@ -148,6 +151,7 @@ describe("<DataGridRouting />", ()=>{
   describe("Data Table Footer", ()=>{
     test("Simulate Data Table Pagination", async () =>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       expect(DataGrid.mock.calls[0][0].page).toBe(1);
@@ -156,6 +160,7 @@ describe("<DataGridRouting />", ()=>{
 
     test("Simulate Change Rows Per Page", async () => {
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const onPageSizeChange = DataGrid.mock.calls[0][0].onPageSizeChange;
@@ -166,6 +171,7 @@ describe("<DataGridRouting />", ()=>{
 
     test("Simulate Change Go to Next Page", async () => {
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const onPageChange = DataGrid.mock.calls[0][0].onPageChange;
@@ -176,6 +182,7 @@ describe("<DataGridRouting />", ()=>{
 
     test("Simulate Change Go to previous Page", async () => {
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const onPageChange = DataGrid.mock.calls[0][0].onPageChange;
@@ -193,12 +200,14 @@ describe("<DataGridRouting />", ()=>{
   describe("Check the Add Routing from RoutingCustomAction", ()=>{
     test("Simulate the AddRouting Render", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       expect(AddRouting.mock.calls[0][0].newId).toBe(1);
     });
     test("Simulate the AddRouting openModal", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const openModal = AddRouting.mock.calls[0][0].openModal;
@@ -207,16 +216,18 @@ describe("<DataGridRouting />", ()=>{
     });
     test("Simulate the AddRouting openModal isOpen true", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const openModal = AddRouting.mock.calls[0][0].openModal;
-      act(()=>{ openModal(true,validRoutingData); });
+      act(()=>{ openModal(true,false,validRoutingData); });
       expect(AddRouting.mock.calls[1][0].isOpen).toBe(true);
     });
   });
   describe("Check the Edit Routing from RoutingCustomAction", ()=>{
     test("Simulate the EditRouting Render", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       expect(EditRouting.mock.calls[0][0].isOpen).toBe(false);
@@ -224,6 +235,7 @@ describe("<DataGridRouting />", ()=>{
     });
     test("Simulate the EditRouting openEditModal onSubmitted true", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const openEditModal = EditRouting.mock.calls[0][0].openEditModal;
@@ -232,6 +244,7 @@ describe("<DataGridRouting />", ()=>{
     });
     test("Simulate the EditRouting openEditModal Type true", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const openEditModal = EditRouting.mock.calls[0][0].openEditModal;
@@ -240,6 +253,7 @@ describe("<DataGridRouting />", ()=>{
     });
     test("Simulate the EditRouting openEditModal", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const openEditModal = EditRouting.mock.calls[0][0].openEditModal;
@@ -248,6 +262,7 @@ describe("<DataGridRouting />", ()=>{
     });
     test("Simulate the EditRouting openEditModal with deleteRow", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const openEditModal = EditRouting.mock.calls[0][0].openEditModal;
@@ -256,19 +271,21 @@ describe("<DataGridRouting />", ()=>{
     });
     test("Simulate the EditRouting openEditModal with deleteRow false", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const openEditModal = EditRouting.mock.calls[0][0].openEditModal;
       act(()=>{ openEditModal(false,true,validRoutingData,"",false,false); });
       expect(EditRouting.mock.calls[1][0].openEditModal).toBeTruthy;
     });
-    test("Simulate the CustomFlowRoutingToolBar Custom Routing Toolbar", async()=>{
+    test("Simulate the CustomRoutingGridToolBar Custom Routing Toolbar", async()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
-      const exportDataFile = CustomFlowRoutingToolBar.mock.calls[0][0].exportDataFile;
+      const exportDataFile = CustomRoutingGridToolBar.mock.calls[0][0].exportDataFile;
       act(()=>{ exportDataFile(); });
-      expect(CustomFlowRoutingToolBar.mock.calls.length).toBe(1);
+      expect(CustomRoutingGridToolBar.mock.calls.length).toBe(1);
     });
   });
 
@@ -281,12 +298,14 @@ describe("<DataGridRouting />", ()=>{
     });
     test("Simulate Channel in Existing Filtered Item", async()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       expect(DataGrid.mock.calls[0][0].page).toBe(1);
     });
     test("Simulate Empty Filtered Item",()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       localStorage.clear();
       renderDataGridRouting();
@@ -294,6 +313,7 @@ describe("<DataGridRouting />", ()=>{
     });
     test("Simulate openAdvanceSearchModal", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const openModal = RoutingAdvanceSearch.mock.calls[0][0].openModal;
@@ -302,6 +322,7 @@ describe("<DataGridRouting />", ()=>{
     });
     test("Simulate close openAdvanceSearchModal from AdvanceSearch", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const openModal = RoutingAdvanceSearch.mock.calls[0][0].openModal;
@@ -310,6 +331,7 @@ describe("<DataGridRouting />", ()=>{
     });
     test("Simulate openAdvanceSearchModal applyFilter props", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const applyFilter = RoutingAdvanceSearch.mock.calls[0][0].applyFilter;
@@ -318,6 +340,7 @@ describe("<DataGridRouting />", ()=>{
     });
     test("Simulate openAdvanceSearchModal handleChange", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const handleChange = RoutingAdvanceSearch.mock.calls[0][0].handleChange;
@@ -337,6 +360,7 @@ describe("<DataGridRouting />", ()=>{
     });
     test("Simulate openAdvanceSearchModal handleChange with blank string", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const handleChange = RoutingAdvanceSearch.mock.calls[0][0].handleChange;
@@ -358,6 +382,7 @@ describe("<DataGridRouting />", ()=>{
   describe("Different Data Load", ()=>{
     test("Simulate DataGrid with Empty Data",()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(0);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       expect(DataGrid.mock.calls[0][0].page).toBe(1);
@@ -365,6 +390,7 @@ describe("<DataGridRouting />", ()=>{
     test("Simulate CustomToast",()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(1);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const handleClose = CustomToast.mock.calls[0][0].onClose;
       act(()=>{ handleClose(true); });
@@ -372,6 +398,7 @@ describe("<DataGridRouting />", ()=>{
     });
     test("Simulate openAdvanceSearchModal applyFilter with no filter", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const applyFilter = RoutingAdvanceSearch.mock.calls[0][0].applyFilter;
@@ -380,6 +407,7 @@ describe("<DataGridRouting />", ()=>{
     });
     test("Simulate click on hyperlink",()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const hyperLinkFunction = DataGrid.mock.calls[0][0].columns[0].renderCell;
@@ -402,6 +430,7 @@ describe("<DataGridRouting />", ()=>{
     });
     test("Simulate junk filter item in the local storage", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       expect(DataGrid.mock.calls.length).toBe(1);

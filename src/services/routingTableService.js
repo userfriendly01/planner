@@ -45,7 +45,7 @@ async function queryRoutingData(accessToken, nextToken = null, graphQlApiUrl) {
                           team
                         }
                         routingSteps {
-                          team
+                          teams
                           time
                         }
                     }
@@ -69,16 +69,18 @@ async function queryRoutingData(accessToken, nextToken = null, graphQlApiUrl) {
  * @param {*} graphQlApiUrl GraphQL Endpoint for Query and Mutation
  * @returns {routingData} list of data contain all the result present in DB
  */
-async function retrieveRoutingData(accessToken, graphQlApiUrl) {
+async function retrieveRoutingData(accessToken, graphQlApiUrl,firstChunkData) {
   let routingData = [];
   let isFirstTime = true;
-  let result = {};
+  let result = firstChunkData;
+  let listItems = firstChunkData?.data?.listCctSharedCallRoutingGlobalDbs?.items || [];
   try {
     while (isFirstTime || result.data?.listCctSharedCallRoutingGlobalDbs.nextToken) {
-      // eslint-disable-next-line no-shadow
-      result = await queryRoutingData(accessToken, result.data?.listCctSharedCallRoutingGlobalDbs
-        .nextToken, graphQlApiUrl);
-      const listItems = result.data?.listCctSharedCallRoutingGlobalDbs?.items || [];
+      if(!isFirstTime || Object.keys(firstChunkData).length === 0){
+        result = await queryRoutingData(accessToken, result.data?.listCctSharedCallRoutingGlobalDbs
+          .nextToken, graphQlApiUrl);
+        listItems = result.data?.listCctSharedCallRoutingGlobalDbs?.items || [];
+      }
       const tempRoutingData = listItems.map(elem => (
         {
           ...elem,
@@ -158,7 +160,7 @@ async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
                 team
               }
               routingSteps {
-                team
+                teams
                 time
               }
             }
@@ -241,7 +243,7 @@ async function addRoutingRule(item, accessToken, graphQlApiUrl) {
                 team
               }
               routingSteps {
-                team
+                teams
                 time
               }
             }
@@ -304,7 +306,7 @@ async function deleteRoutingRule(item, accessToken, graphQlApiUrl) {
                 team
               }
               routingSteps {
-                team
+                teams
                 time
               }
             }
@@ -326,5 +328,6 @@ export {
   addRoutingRule,
   deleteRoutingRule,
   retrieveRoutingData,
-  updateRoutingDB
+  updateRoutingDB,
+  queryRoutingData
 };

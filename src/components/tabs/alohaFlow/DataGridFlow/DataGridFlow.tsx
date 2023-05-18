@@ -9,7 +9,9 @@ import React, {
 import {
   DataGrid, GridRenderCellParams, GridToolbar
 } from "@mui/x-data-grid";
-import { retrieveFlowData } from "services";
+import {
+  retrieveFlowData, queryFlowData
+} from "services";
 import {
   CACHE_FILTER_FLOW,
   CALL_FLOW_PAGE_NO,
@@ -17,7 +19,8 @@ import {
   getGraphQLEndpoint,
   initializedAlertBar,
   downloadCSV,
-  EXPORT_FILE_PREFIX
+  EXPORT_FILE_PREFIX,
+  getAdvanceFilter
 } from "utils";
 import { CustomToast } from "components";
 import {
@@ -43,21 +46,6 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
 
   const graphQLEndpoint = getGraphQLEndpoint();
 
-  const getAdvanceFilter = () => {
-    let advanceFilter: { [key: string]: undefined; };
-    try {
-      const cachedFilter = localStorage.getItem(CACHE_FILTER_FLOW);
-      advanceFilter = JSON.parse(cachedFilter) || {};
-      Object.keys(advanceFilter).forEach(key => {
-        if (advanceFilter[key] === "" || advanceFilter[key] === null) {
-          delete advanceFilter[key];
-        }
-      });
-    } catch (e) {
-      advanceFilter = {};
-    }
-    return advanceFilter;
-  };
   const flowInitState: FlowStateVariables = {
     data: [],
     filteredItems: [] ,
@@ -77,14 +65,22 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   };
   const [dataFlow, setDataFlow] = useState(flowInitState);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
-
   useEffect(() => {
-    const getTableData = async () =>{
+    const getTableData = async()=>{
+      const firstChunkData:any = await queryFlowData(accessToken, null, graphQLEndpoint);
+      const listItems = firstChunkData.data?.listCctSharedCallFlowDbs?.items || [];
+      let counter =1;
+      const flowData: CctSharedCallFlowDb[] = [];
+      listItems.forEach((item: CctSharedCallFlowDb) => flowData.push({
+        id: counter++,
+        ...item
+      }));
+      await loadDataTable(flowData);
       const result: CctSharedCallFlowDb[] = await retrieveFlowData(
         accessToken,
-        graphQLEndpoint
+        graphQLEndpoint,
+        firstChunkData
       );
-
       await loadDataTable(result);
     };
     getTableData();
@@ -178,7 +174,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     const result = data.filter(
       (item: CctSharedCallFlowDb) => item.id >= idStart && item.id <= idEnd
     );
-    const advanceFilter = getAdvanceFilter();
+    const advanceFilter = getAdvanceFilter(CACHE_FILTER_FLOW);
     const advanceFilterLength: number = Object.keys(advanceFilter).length;
     if (advanceFilterLength > 0) {
       const advanceFilteredArray: Array<FlowAdvanceFilter> = [];
@@ -203,12 +199,14 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       });
       setDataFlow((dataFlowProps: FlowStateVariables) => ({
         ...dataFlowProps,
-        filteredItems: advanceFilteredArray
+        filteredItems: advanceFilteredArray,
+        advanceFilter
       }));
     } else {
       setDataFlow((dataFlowProps: FlowStateVariables) => ({
         ...dataFlowProps,
-        filteredItems: result
+        filteredItems: result,
+        advanceFilter
       }));
     }
   };
@@ -225,7 +223,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       const maxId: number = result[result.length - 1].id;
 
       const masterData = getGridMasterData(result);
-      const advanceFilter: FlowAdvanceFilter = getAdvanceFilter();
+      const advanceFilter: FlowAdvanceFilter = getAdvanceFilter(CACHE_FILTER_FLOW);
       const advanceFilterLength: number = Object.keys(advanceFilter).length;
       if (advanceFilterLength > 0) {
         filterRecords(result, minId, maxId);
@@ -302,6 +300,8 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
             openAddModal={openAddModal}
             openAdvanceSearchModal={openAdvanceSearchModal}
             exportDataFile={exportDataFile}
+            applyFilter={filterRecords}
+            isAdvanceSearchOpen={dataFlow.isAdvanceSearchModalOpen}
           />
           <DataGrid
             rows={dataFlow.filteredItems}

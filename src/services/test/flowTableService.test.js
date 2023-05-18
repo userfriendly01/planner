@@ -131,7 +131,7 @@ describe("flowTableService",()=>{
           })
         })
       );
-      const listFlow = await retrieveFlowData("12345");
+      const listFlow = await retrieveFlowData("12345","",{});
       expect(listFlow).toEqual(jsonFlowData);
     });
     test("CallFlow list not found",async()=>{
@@ -147,7 +147,7 @@ describe("flowTableService",()=>{
           })
         })
       );
-      const listFlow = await retrieveFlowData("1234-5678","TEST");
+      const listFlow = await retrieveFlowData("1234-5678","TEST",jsonFlowData);
       expect(listFlow).toEqual([]);
     });
     test("pass null in list",async()=>{
@@ -158,7 +158,7 @@ describe("flowTableService",()=>{
           })
         })
       );
-      const listFlow = await retrieveFlowData("1234-5678","TEST");
+      const listFlow = await retrieveFlowData("1234-5678","TEST",jsonFlowData);
       expect(listFlow).toEqual([]);
     });
     test("Error scenario ",async()=>{
@@ -172,7 +172,7 @@ describe("flowTableService",()=>{
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
       });
-      const listFlow = await retrieveFlowData("1234-5678","TEST");
+      const listFlow = await retrieveFlowData("1234-5678","TEST",jsonFlowData);
       expect(listFlow).toEqual([]);
 
     });

@@ -21,6 +21,8 @@ const TritonUserManagementWrapper: any = () => {
     searchBy: "",
     selected: [],
     managerFilter: null,
+    profileFilterArray: [],
+    ouFilterArray: [],
     searchResults: [],
     deltaFilter: false,
     pagination: {
@@ -35,10 +37,9 @@ const TritonUserManagementWrapper: any = () => {
 
   const state = useAdminState();
   const [ tableState, setTableState ] = React.useState(defaultTableState);
-  
+
   React.useEffect(() => {
     let filteredList = state.workerContext.workers.slice().sort(sortWorkersByFullName);
-    console.log("tableState", tableState);
 
     //filter by manager
     if(tableState.managerFilter && tableState.managerFilter !== "show-all"){
@@ -46,6 +47,26 @@ const TritonUserManagementWrapper: any = () => {
     }
     console.log("**Manager FL", filteredList);
 
+    //filter by profile
+    if(tableState.profileFilterArray.length > 0){
+      filteredList = filteredList.filter((worker: Worker) => {
+        const workerProfileId = typeof worker.attributes.profile_id === "number" ? worker.attributes.profile_id.toString() : worker.attributes.profile_id;
+        const profileFound = tableState.profileFilterArray.some((p:any) => p.value === workerProfileId);
+        return profileFound;
+      });
+    }
+    console.log("**Profile FL", filteredList);
+
+    //filter by Ou
+    if(tableState.ouFilterArray.length > 0){
+      filteredList = filteredList.filter((worker: Worker) => {
+        const profile = state.profileContext.profiles.find(p => p.profile_id === worker.attributes.profile_id);
+        const ouSid = profile ? profile.operating_unit_sid : "";
+        const ouFound = tableState.ouFilterArray.some((o:any) => o.value === ouSid);
+        return ouFound;
+      });
+    }
+    console.log("**Ou FL", filteredList);
 
     //filter by deltaFilter
     if(tableState.deltaFilter){
@@ -56,7 +77,7 @@ const TritonUserManagementWrapper: any = () => {
 
     //filter by searchBy
     const trimmedSearch = tableState.searchBy.trim();
-    const searchResults = filteredList.filter((worker: any) => filterWorkerSearch(worker, trimmedSearch, state));
+    const searchResults = filteredList.filter((worker: any) => filterWorkerSearch(worker, trimmedSearch));
     filteredList = searchResults;
     console.log("**Search FL", filteredList);
 
@@ -80,7 +101,7 @@ const TritonUserManagementWrapper: any = () => {
       }
     });
     console.log("final filtered list", filteredList);
-  }, [tableState.searchBy, tableState.deltaFilter, tableState.managerFilter, tableState.pagination.pageNumber, state.workerContext]);
+  }, [tableState.searchBy, tableState.deltaFilter, tableState.managerFilter, tableState.profileFilterArray, tableState.ouFilterArray, tableState.pagination.pageNumber, state.workerContext]);
 
   return (
     <ManagementContainer>

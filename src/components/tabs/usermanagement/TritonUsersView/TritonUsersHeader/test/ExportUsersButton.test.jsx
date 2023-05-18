@@ -33,7 +33,7 @@ const renderComponent = () => {
   );
   render(StyledExportButton.mock.calls[0][0].children);
   return rendered;
-}
+};
 
 describe("ExportUsersButton", () => {
   beforeEach(() => {

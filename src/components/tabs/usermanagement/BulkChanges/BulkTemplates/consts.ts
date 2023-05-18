@@ -30,10 +30,10 @@ export const availableAttributes: any = {
     location: "attributes"// add tooltip that this is alone will not update someone's direct dial number, bulk update direct didal is not supported, this field also represents outgoing number for non DID users
   },
   ROUTING_TEAM: {
-    label: "routing_team",
-    value: "routing_team",
+    label: "team",
+    value: "team",
     type: "string",
-    location: "attributes"
+    location: ["attributes","routing"]
   }
 };
 

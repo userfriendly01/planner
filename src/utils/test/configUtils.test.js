@@ -1,4 +1,6 @@
 import {
+  ErrorDuplicateRecord,
+  cleanErrorMessage,
   downloadCSV, getGraphQLEndpoint
 } from "utils";
 import { useAdminState } from "context";
@@ -50,7 +52,7 @@ describe("configUtils.js", ()=>{
     const routingDataList = createSampleTestRoutingDataList(1);
     downloadCSV(routingPrefix, routingDataList);
     expect(link.download).toContain("TEST_ROUTING");
-    const href = "data:text/csv;charset=utf-8,id,all,brand,callIntent,callerState,callerType,channel,dayOfWeek,endTime,percentOfCallers,pkey,policyType,skey,startTime,transferDestination,transferMessage,twilioSkill,crcSkill%0A1,ALL,TestBrand1,TestCallIntent1,TestCallState1,TestCallType1,TestChannel1,ALL,12:00:00%20PM,10,testcallintent,TestPolicyType1,TestBrand1_TestChannel1_1,05:00:00%20PM,12345671,Test%20Transfer%20Message%201,Test%20Twilio%20Skill1,null%0A";
+    const href = "data:text/csv;charset%3Dutf-8,id,all,brand,callIntent,callerState,callerType,channel,dayOfWeek,endTime,percentOfCallers,pkey,policyType,skey,startTime,transferDestination,transferMessage,twilioSkill,crcSkill%0A1,ALL,TestBrand1,TestCallIntent1,TestCallState1,TestCallType1,TestChannel1,ALL,12:00:00%20PM,10,testcallintent,TestPolicyType1,TestBrand1_TestChannel1_1,05:00:00%20PM,12345671,Test%20Transfer%20Message%201,Test%20Twilio%20Skill1,%0A";
     expect(link.href).toBe(href);
   });
 
@@ -72,4 +74,20 @@ describe("configUtils.js", ()=>{
     endPointURI.set("production", "https://23gxrcju6rfgvlzp6onvg2az5q.appsync-api.us-east-1.amazonaws.com/graphql");
     expect(endpoint).toBe(endPointURI.get(env));
   });
+  test("Simulate cleanErrorMessage", ()=>{
+    const duplicateError = [{
+      message: "The conditional request failed (Service: DynamoDb, Status Code: 400, Request ID: HMR08U7OR4C9Q33EIKEGJBC5TRVV4KQNSO5AEMVJF66Q9ASUAAJG)",
+      errorType: "DynamoDB:ConditionalCheckFailedException"
+
+    }];
+    const someOtherError = "Failure";
+    const otherError = [{
+      message: someOtherError,
+      errorType: "Boop"
+
+    }];
+    expect(cleanErrorMessage(duplicateError)).toBe(ErrorDuplicateRecord);
+    expect(cleanErrorMessage(otherError)).toBe(someOtherError);
+  });
+
 });

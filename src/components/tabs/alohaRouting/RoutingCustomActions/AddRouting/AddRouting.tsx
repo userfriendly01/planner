@@ -7,7 +7,7 @@ import {
   Modal, ModalHeader
 } from "@lmig/lmds-react-modal";
 import {
-  routingDropDownList, routingInitRule, routingFields, initializedAlertBar, getGraphQLEndpoint, convertTime24to12
+  routingDropDownList, routingInitRule, routingFields, initializedAlertBar, getGraphQLEndpoint, convertTime24to12, cleanErrorMessage
 } from "utils";
 import { getGridMasterData } from "../../DataGridRouting/GridMaster";
 import {
@@ -49,7 +49,7 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
     if (cachedMasterData !== undefined && cachedMasterData !== null) {
       masterData = JSON.parse(cachedMasterData);
     } else {
-      const result: CctSharedCallRoutingDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl);
+      const result: CctSharedCallRoutingDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl,{});
       masterData = getGridMasterData(result);
     }
     routingDropDownList.brand = masterData.brand;
@@ -152,7 +152,7 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
           ...alertBarProps,
           "open": true,
           "severityType": "error",
-          "msg": apiResponse.errors[0].message
+          "msg": cleanErrorMessage(apiResponse.errors)
         }));
       });
     }

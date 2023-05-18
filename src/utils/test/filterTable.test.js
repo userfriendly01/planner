@@ -149,22 +149,22 @@ describe("filterWorkerSearch", () => {
   });
 
   test("should find the profile id", () => {
-    expect(filterWorkerSearch(goodWorkerData, "396", initialTestState)).toEqual(true);
+    expect(filterWorkerSearch(goodWorkerData, "396", initialTestState)).toEqual(false); // removed profile filter ability from search so changing value to false
   });
 
   test("should find the profile name", () => {
-    expect(filterWorkerSearch(goodWorkerData, "test4", initialTestState)).toEqual(true);
+    expect(filterWorkerSearch(goodWorkerData, "test4", initialTestState)).toEqual(false); // removed profile filter ability from search so changing value to false
   });
 
   test("should find the ou name", () => {
-    expect(filterWorkerSearch(goodWorkerData, "operatingUnitName", initialTestState)).toEqual(true);
+    expect(filterWorkerSearch(goodWorkerData, "operatingUnitName", initialTestState)).toEqual(false); // removed OU filter ability from search so changing value to false
   });
 });
 
 describe("filterSkillsByName", () => {
   const skill = {
     name: "skill1"
-  }
+  };
   test("Skill is null", () => {
     expect(filterSkillsByName(null, "search")).toEqual(false);
   });

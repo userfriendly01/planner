@@ -2,9 +2,13 @@ import * as utils from "../processingUtils";
 import {
   getCalabrioUsers,
   getWfmOrg,
-  getManagers
+  getManagers,
+  wfmActivateExternalLogon
 } from "services";
-import { act } from "testUtils";
+import {
+  act,
+  waitFor
+} from "testUtils";
 import {
   formatManagersResponse,
   formatWorkerResponse,
@@ -12,6 +16,7 @@ import {
   getCalabrioWfmOrg
 } from "utils";
 import * as XLSX from "xlsx";
+
 
 jest.mock("utils",() => ({
   formatManagersResponse: jest.fn(),
@@ -536,17 +541,38 @@ describe("initiateCalls", () => {
           templates[1].processFunction.mockResolvedValue("Yay");
         });
         test("should call process function for each successful dependency row", async () => {
+          const handleWfmExternalLogon = jest.fn();
+          templates[0].stateUpdateFunctions = [jest.fn(), handleWfmExternalLogon];
+          console.log("template", templates[0]);
+          handleWfmExternalLogon
+            .mockResolvedValueOnce({
+              failedActivations: {
+                message: "blep",
+                nNumbersWithoutTwilioWorkers: [],
+                workersFailedToActivate: ["n1234563"],
+                workersFailedToReturnToOffline: ["n1234564"]
+              }
+            });
           const rows = [
             {
               rowNumber: 1,
-              workerSid: "WK1324"
+              workerSid: "WK1324",
+              wfmActivateExternalLogon: true,
+              attributes: {
+                n_number: "n1234564"
+              }
             },
             {
               rowNumber: 2,
-              workerSid: "WK2345"
+              workerSid: "WK2345",
+              wfmActivateExternalLogon: true,
+              attributes: {
+                n_number: "n1234563"
+              }
             },
             {
-              rowNumber: 3
+              rowNumber: 3,
+              wfmActivateExternalLogon: true
             }
           ];
           try {
@@ -561,18 +587,38 @@ describe("initiateCalls", () => {
             expect(templates[1].processFunction).toHaveBeenCalledWith(rows[0], templates[1]);
             expect(templates[1].processFunction).toHaveBeenCalledWith(rows[1], templates[1]);
             expect(err).toStrictEqual({
-              errors: [{
-                errors: ["CREATE_CALABRIO_USER failed due to missing workerSid from CREATE_TRITON_USER. If CREATE_TRITON_USER was successful it could have just taken too long and should be reprocessed."],
-                rowNumber: 3
-              }],
+              errors: [
+                {
+                  errors: ["CREATE_CALABRIO_USER failed due to missing workerSid from CREATE_TRITON_USER. If CREATE_TRITON_USER was successful it could have just taken too long and should be reprocessed."],
+                  rowNumber: 3
+                },
+                {
+                  errors: "An error occurred and we were unable to activate these workers",
+                  rowNumber: "multiple",
+                  wfmErrors: "n1234563"
+                },
+                {
+                  errors: "There was an error returning these workers to offline state",
+                  rowNumber: "multiple",
+                  wfmErrors: "n1234564"
+                }
+              ],
               success: [
                 {
                   rowNumber: 1,
-                  workerSid: "WK1324"
+                  workerSid: "WK1324",
+                  wfmActivateExternalLogon: true,
+                  attributes: {
+                    n_number: "n1234564"
+                  }
                 },
                 {
                   rowNumber: 2,
-                  workerSid: "WK2345"
+                  workerSid: "WK2345",
+                  wfmActivateExternalLogon: true,
+                  attributes: {
+                    n_number: "n1234563"
+                  }
                 }
               ]
             });
@@ -607,6 +653,228 @@ describe("initiateCalls", () => {
       await utils.initiateCalls(rows, templates, setProcessedRows);
       // expect(utils.handleConcurrentCalls).toHaveBeenCalledTimes(1);
       expect(updateStateFunction).toHaveBeenCalledTimes(1);
+    });
+  });
+});
+
+describe("handleWfmExternalLogon", () => {
+  const mockDispatch = jest.fn();
+
+  const selectedTemplates1 = [
+    {
+      name: "CREATE_TRITON_USER"
+    }
+  ];
+  const selectedTemplates2 = [
+    {
+      name: "SOME_OTHER_THING"
+    }
+  ];
+
+  const successfulRowsWithActivation = [{
+    rowNumber: 4,
+    "WFM Activate External Logon": "Y",
+    wfmActivateExternalLogon: true,
+    attributes: {
+      n_number: "n1234567"
+    }
+  }];
+  const successfulRowsNoActivation = [{
+    rowNumber: 4,
+    "WFM Activate External Logon": "N",
+    wfmActivateExternalLogon: false
+  }];
+
+  const lotsOfSuccessfulRows = [
+    successfulRowsWithActivation[0], successfulRowsWithActivation[0], successfulRowsWithActivation[0], successfulRowsWithActivation[0], successfulRowsWithActivation[0],
+    successfulRowsWithActivation[0], successfulRowsWithActivation[0], successfulRowsWithActivation[0], successfulRowsWithActivation[0], successfulRowsWithActivation[0],
+    successfulRowsWithActivation[0], successfulRowsWithActivation[0], successfulRowsWithActivation[0], successfulRowsWithActivation[0], successfulRowsWithActivation[0],
+    successfulRowsWithActivation[0], successfulRowsWithActivation[0], successfulRowsWithActivation[0], successfulRowsWithActivation[0], successfulRowsWithActivation[0],
+    successfulRowsWithActivation[0], successfulRowsWithActivation[0], successfulRowsWithActivation[0], successfulRowsWithActivation[0], successfulRowsWithActivation[0],
+    successfulRowsWithActivation[0], successfulRowsWithActivation[0], successfulRowsNoActivation[0], successfulRowsNoActivation[0], successfulRowsNoActivation[0]
+  ];
+
+  const someFailures = [{
+    rowNumber: 4,
+    "WFM Activate External Logon": "Y",
+    wfmActivateExternalLogon: true,
+    attributes: {
+      n_number: "n1234567"
+    }
+  },
+  {
+    rowNumber: 4,
+    "WFM Activate External Logon": "Y",
+    wfmActivateExternalLogon: true,
+    attributes: {
+      n_number: "n1234568"
+    }
+  },
+  {
+    rowNumber: 4,
+    "WFM Activate External Logon": "Y",
+    wfmActivateExternalLogon: true,
+    attributes: {
+      n_number: "n1234569"
+    }
+  },
+  {
+    rowNumber: 4,
+    "WFM Activate External Logon": "Y",
+    wfmActivateExternalLogon: true,
+    attributes: {
+      n_number: "n1234563"
+    }
+  },
+  {
+    rowNumber: 4,
+    "WFM Activate External Logon": "Y",
+    wfmActivateExternalLogon: true,
+    attributes: {
+      n_number: "n1234564"
+    }
+  }];
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+  });
+  describe("CREATE_TRITON_USER template is not selected", () => {
+    test("promise resolves with message", async () => {
+      const results = await utils.handleWfmExternalLogon(mockDispatch, successfulRowsNoActivation, selectedTemplates2);
+      expect(results).toBe("Selected template not CREATE_TRITON_USER, skipping handleWfmExternalLogon");
+    });
+  });
+  describe("CREATE_TRITON_USER template is selected", () => {
+    const mockWfmExternalLogonResultsSuccess = {
+      data: {
+        failedActivations: {
+          message: "blep",
+          nNumbersWithoutTwilioWorkers: [],
+          workersFailedToActivate: [],
+          workersFailedToReturnToOffline: []
+        }
+      }
+    };
+    describe("all activations were successful", () => {
+      test("batch is less than 25 users", async () => {
+        wfmActivateExternalLogon.mockResolvedValue(mockWfmExternalLogonResultsSuccess);
+        const results = await utils.handleWfmExternalLogon(mockDispatch, successfulRowsWithActivation, selectedTemplates1);
+        expect(wfmActivateExternalLogon).toHaveBeenCalledTimes(1);
+        expect(results).toEqual({
+          failedActivations: {
+            message: "blep",
+            nNumbersWithoutTwilioWorkers: [],
+            workersFailedToActivate: [],
+            workersFailedToReturnToOffline: []
+          }
+        });
+      });
+      test("batch is more than 25", async () => {
+        const mockWfmExternalLogonResultsSuccess2 = {
+          data: {
+            successfulActivations: [
+              "n1234567", "n1234567", "n1234567", "n1234567", "n1234567",
+              "n1234567", "n1234567", "n1234567", "n1234567", "n1234567",
+              "n1234567", "n1234567", "n1234567", "n1234567", "n1234567",
+              "n1234567", "n1234567", "n1234567", "n1234567", "n1234567",
+              "n1234567", "n1234567", "n1234567", "n1234567", "n1234567"
+            ],
+            failedActivations: {
+              message: "blep",
+              nNumbersWithoutTwilioWorkers: [],
+              workersFailedToActivate: [],
+              workersFailedToReturnToOffline: []
+            }
+          }
+        };
+        const mockWfmExternalLogonResultsSuccess3 = {
+          data: {
+            failedActivations: {
+              message: "blep",
+              nNumbersWithoutTwilioWorkers: [],
+              workersFailedToActivate: [],
+              workersFailedToReturnToOffline: []
+            }
+          }
+        };
+        wfmActivateExternalLogon
+          .mockResolvedValueOnce(mockWfmExternalLogonResultsSuccess2)
+          .mockResolvedValueOnce(mockWfmExternalLogonResultsSuccess3);
+        const results = await utils.handleWfmExternalLogon(mockDispatch, lotsOfSuccessfulRows, selectedTemplates1);
+        await waitFor(() => {
+          expect(wfmActivateExternalLogon).toHaveBeenCalledTimes(2);
+          expect(results).toEqual({
+            failedActivations: {
+              message: "blep",
+              nNumbersWithoutTwilioWorkers: [],
+              workersFailedToActivate: [],
+              workersFailedToReturnToOffline: []
+            }
+          });
+        });
+      });
+    });
+    describe("some activations failed", () => {
+      test("batch is less than 25 users, function returns the nNumbers that failed to activate ", async () => {
+        const mockWfmExternalLogonResultsSomeFailures = {
+          data: {
+            failedActivations: {
+              message: "blep",
+              nNumbersWithoutTwilioWorkers: ["n1234567", "n1234568", "n1234569"],
+              workersFailedToActivate: ["n1234563"],
+              workersFailedToReturnToOffline: ["n1234564"]
+            }
+          }
+        };
+        wfmActivateExternalLogon.mockResolvedValue(mockWfmExternalLogonResultsSomeFailures);
+        const results = await utils.handleWfmExternalLogon(mockDispatch, someFailures, selectedTemplates1);
+        expect(wfmActivateExternalLogon).toHaveBeenCalledTimes(1);
+        expect(results).toEqual({
+          failedActivations: {
+            message: "blep",
+            nNumbersWithoutTwilioWorkers: ["n1234567", "n1234568", "n1234569"],
+            workersFailedToActivate: ["n1234563"],
+            workersFailedToReturnToOffline: ["n1234564"]
+          }
+        });
+      });
+    });
+    test("big batch with more than 25 users, results are returned in a single array separated by error", async () => {
+      const mockWfmExternalLogonResultsSomeFailures = {
+        data: {
+          failedActivations: {
+            message: "blep",
+            nNumbersWithoutTwilioWorkers: ["n1234567", "n1234568", "n1234569", "n1234567", "n1234568", "n1234569", "n1234567", "n1234568", "n1234569", "n1234567", "n1234568", "n1234569", "n1234567", "n1234568", "n1234569"],
+            workersFailedToActivate: ["n1234563", "n1234563","n1234563", "n1234563", "n1234563"],
+            workersFailedToReturnToOffline: ["n1234564", "n1234564", "n1234564", "n1234564", "n1234564"]
+          }
+        }
+      };
+      const mockWfmExternalLogonResultsSomeFailures2 = {
+        data: {
+          failedActivations: {
+            message: "blep",
+            nNumbersWithoutTwilioWorkers: ["n1234567", "n1234568", "n1234569"],
+            workersFailedToActivate: ["n1234563"],
+            workersFailedToReturnToOffline: ["n1234564"]
+          }
+        }
+      };
+      const bigBatchFailures = [...someFailures, ...someFailures, ...someFailures, ...someFailures, ...someFailures, ...someFailures];
+      wfmActivateExternalLogon
+        .mockResolvedValueOnce(mockWfmExternalLogonResultsSomeFailures)
+        .mockResolvedValue(mockWfmExternalLogonResultsSomeFailures2);
+      const results = await utils.handleWfmExternalLogon(mockDispatch, bigBatchFailures, selectedTemplates1);
+      expect(wfmActivateExternalLogon).toHaveBeenCalledTimes(2);
+      expect(results).toEqual({
+        failedActivations: {
+          message: "blep",
+          nNumbersWithoutTwilioWorkers: ["n1234567", "n1234568", "n1234569", "n1234567", "n1234568", "n1234569", "n1234567", "n1234568", "n1234569", "n1234567", "n1234568", "n1234569", "n1234567", "n1234568", "n1234569", "n1234567", "n1234568", "n1234569"],
+          workersFailedToActivate: ["n1234563", "n1234563","n1234563", "n1234563", "n1234563", "n1234563"],
+          workersFailedToReturnToOffline: ["n1234564", "n1234564", "n1234564", "n1234564", "n1234564", "n1234564"]
+        }
+      });
     });
   });
 });

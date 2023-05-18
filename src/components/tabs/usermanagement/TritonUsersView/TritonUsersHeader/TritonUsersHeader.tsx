@@ -5,8 +5,8 @@ import {
 import { ManagementHeaderProps } from "./TritonUsersHeader.Interfaces";
 import ExportButton from "./ExportUsersButton";
 import {
-  ManagerDropdown,
   ResetSkillsButton,
+  FilterButton,
   SearchBox
 } from "components";
 import React from "react";
@@ -19,18 +19,15 @@ const ManagementHeader = (props: ManagementHeaderProps) => {
 
   return (
     <ControlsWrapper>
-      <ControlItem>
-        <ManagerDropdown filterBy={tableState.manager} setFilter={(manager_n_number: string) => setTableState({
-          ...tableState,
-          managerFilter: manager_n_number
-        })}
-        />
-      </ControlItem>
-      <ControlItem>
-        <SearchBox searchBy={tableState.searchBy} setSearch={(searchBy: string) => setTableState({
+      <ControlItem >
+        <SearchBox styles={{ width: "100%" }} searchBy={tableState.searchBy} setSearch={(searchBy: string) => setTableState({
           ...tableState,
           searchBy
         })}
+        />
+        <FilterButton
+          tableState= {tableState}
+          setTableState={setTableState}
         />
       </ControlItem>
       <ControlItem>

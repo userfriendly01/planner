@@ -335,3 +335,8 @@ export interface OperatingUnit {
 }
 
 export type Control = "input" | "select" | "autoComplete" | "timePicker" | "multiField";
+
+export interface GraphQLErrors {
+  errorType:string;
+  message:string;
+}

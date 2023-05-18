@@ -8,7 +8,9 @@ import { RoutingGridColumnDef } from "./GridColumnDef";
 import {
   CctSharedCallRoutingDb, RoutingFilter, RoutingStateVariables, RoutingMasterData, AddPageFieldConfigProps
 } from "../AlohaRouting.Interfaces";
-import { retrieveRoutingData } from "services";
+import {
+  retrieveRoutingData, queryRoutingData
+} from "services";
 import {
   CACHED_CALL_ROUTING_PAGE_NO,
   CACHED_CALL_ROUTING_PER_PAGE,
@@ -28,7 +30,7 @@ import { RoutingTableBox } from "../AlohaRouting.Styles";
 import GridSpinner from "./GridSpinner";
 import { CustomToast } from "components";
 import {
-  RoutingAdvanceSearch, AddRouting, EditRouting, CustomFlowRoutingToolBar
+  RoutingAdvanceSearch, AddRouting, EditRouting, CustomRoutingGridToolBar
 } from "../RoutingCustomActions";
 import {
   AlertBarProps, FormValidationRule
@@ -48,13 +50,22 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   const [clonedRule, setClonedRule] = useState(false);
   const maxRef = useRef(0);
   useEffect(() => {
-    const getTableData = async () =>{
-      const result: CctSharedCallRoutingDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl);
+    const getTableData = async()=>{
+      const routingData: CctSharedCallRoutingDb[] = [];
+      const firstChunkData:any = await queryRoutingData(accessToken, null, graphQlApiUrl);
+      const listItems = firstChunkData.data?.listCctSharedCallRoutingGlobalDbs?.items || [];
+      listItems.map((item:CctSharedCallRoutingDb) => routingData.push({
+        ...item,
+        id: item &&
+            item.skey &&
+            parseInt(item.skey.split("__")[2], 10)
+      }) ) || [];
+      loadDataTable(routingData);
+      const result: CctSharedCallRoutingDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl,firstChunkData);
       loadDataTable(result);
     };
     getTableData();
   }, []);
-
   const getAdvanceFilter = (): RoutingFilter => {
     try {
       const cachedFilter: string | null = localStorage.getItem(CACHE_FILTER_ROUTING);
@@ -274,10 +285,12 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
 
   return (
     <div>
-      <CustomFlowRoutingToolBar
+      <CustomRoutingGridToolBar
         openAddModal={openAddModal}
         openAdvanceSearchModal={openAdvanceSearchModal}
         exportDataFile={exportDataFile}
+        applyFilter={applyFilter}
+        isAdvanceSearchOpen={state.isAdvanceSearchModalOpen}
       />
       <RoutingTableBox>
         <DataGrid
