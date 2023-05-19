@@ -17,3 +17,4 @@ export * from "./skillgroup";
 export * from "./tfnActivation";
 export * from "./updateUser";
 export * from "./wfmActivateExternalLogon";
+export * from "./skillgroup";

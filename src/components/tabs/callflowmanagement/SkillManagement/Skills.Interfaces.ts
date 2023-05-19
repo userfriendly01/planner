@@ -61,7 +61,9 @@ export const propertyOptions = {
       variable: "skillGroup"
     },
     actions: [
-      ActionTypes.ADD
+      ActionTypes.ADD,
+      ActionTypes.DELETE,
+      ActionTypes.EDIT
     ]
   }
 };
