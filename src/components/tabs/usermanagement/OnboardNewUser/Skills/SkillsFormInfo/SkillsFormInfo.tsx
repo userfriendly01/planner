@@ -1,4 +1,3 @@
-import { FormControlsPane } from "../../UserEntryFormWrapper/UserEntryFormWrapper.Styles";
 import { DefaultSkillSelector } from "components";
 import {
   useFormState,
@@ -6,6 +5,10 @@ import {
   userFormActions
 } from "context";
 import React from "react";
+import {
+  Accordion, AccordionSummary, AccordionDetails
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const SkillsFormInfo = () => {
 
@@ -13,17 +16,28 @@ const SkillsFormInfo = () => {
   const setForm = useFormDispatch();
 
   return(
-    <FormControlsPane>
-      <DefaultSkillSelector
-        defaultSkills={form.defaultSkills}
-        setDefaultSkills={(defaultSkills: any) => {
-          setForm({
-            type: userFormActions.UPDATE_DEFAULT_SKILLS,
-            payload: defaultSkills
-          });
-        }}
-      />
-    </FormControlsPane>
+    <Accordion  sx={{
+      width: "384px",
+      margin: "8px 0px 5px 0px"
+    }}>
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        aria-controls="panel1a-content"
+        id="panel1a-header"
+      >Default Skill Profile (Optional)
+      </AccordionSummary>
+      <AccordionDetails>
+        <DefaultSkillSelector
+          defaultSkills={form.defaultSkills}
+          setDefaultSkills={(defaultSkills: any) => {
+            setForm({
+              type: userFormActions.UPDATE_DEFAULT_SKILLS,
+              payload: defaultSkills
+            });
+          }}
+        />
+      </AccordionDetails>
+    </Accordion>
   );
 };
 
