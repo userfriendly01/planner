@@ -1,3 +1,4 @@
+export * from "./accessGroup";
 export * from "./aggregateQueues";
 export * from "./calabrio";
 export * from "./callTags";

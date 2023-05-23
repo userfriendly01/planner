@@ -24,6 +24,7 @@ import {
 } from "context";
 import { profileEntryFormActions } from "context/reducers/profileEntryFormReducer";
 import {
+  ProfileAccessGroupField,
   ProfileNameTextField,
   ProfileActivitiesSelectField,
   ProfileCallTagsSelectField,
@@ -99,17 +100,17 @@ const ProfileFormFields = () => {
     <FormControlsContainer>
       <FormControlsPane>
         {
-          form.formMode === formModes.INSERT ? "" :  <Label>Profile ID: { form.profileId } <br/> Operating Unit: { form.operatingUnit.ou_name }</Label>
+          form.formMode === formModes.INSERT ? "" : <Label>Profile ID: {form.profileId} <br /> Operating Unit: {form.operatingUnit.ou_name}</Label>
         }
         <ProfileNameTextField label="Profile Name *" />
 
         {
-          form.formMode === formModes.INSERT ? <ProfileOperatingUnitField  setOperatingUnit={(ou: OperatingUnit) => {
+          form.formMode === formModes.INSERT ? <ProfileOperatingUnitField setOperatingUnit={(ou: OperatingUnit) => {
             setForm({
               type: profileEntryFormActions.SET_OPERATING_UINIT,
               payload: ou
             });
-          } }/> : ""
+          }} /> : ""
         }
 
         {
@@ -135,7 +136,7 @@ const ProfileFormFields = () => {
                     control={<Switch
                       inputProps={{ "aria-label": "toggle-zero-out" }}
                       checked={form.profileId && typeof form.profileId === "string" ? (parseInt(form.profileId) >= 39 ? true : false) : (form.profileId >= 39 ? true : false)}
-                      disabled ={true} />} />
+                      disabled={true} />} />
                 </ToggleContainer>
               </Tooltip>
           ))
@@ -191,6 +192,24 @@ const ProfileFormFields = () => {
             </ToggleContainer>
           ))
         }
+        <ToggleContainer key="accessGroup">
+          <FormControlLabel
+            label="Access Group"
+            labelPlacement="end"
+            control={<Switch
+              inputProps={{ "aria-label": "toggle-zero-out" }}
+              checked={form["accessGroup"].value}
+              onChange={() => setForm({
+                type: profileEntryFormActions.UPDATE_ACCESS_GROUP,
+                fieldKey: "accessGroup"
+              })} />} />
+        </ToggleContainer>
+        <ProfileAccessGroupField enableDropDown={form["accessGroup"].value} accessGroupId={form["accessGroupId"]} setAccessGroupId={(accessGroupId: number) => {
+          setForm({
+            type: profileEntryFormActions.UPDATE_ACCESS_GROUP_ID,
+            payload: accessGroupId
+          });
+        }} />
       </RightColumn>
     </FormControlsContainer>
   );
