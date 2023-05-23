@@ -18,6 +18,7 @@ import {
   formatProfileBooleanData,
   formatProfileACWDataEntry,
   formatOverflowSkillData,
+  formatAccessGroupData,
   formatActivityData,
   sortProfilesById,
   formatSelfServiceIndicatorData
@@ -139,6 +140,9 @@ const ProfileSettingsTable = props => {
                       <TableDataFlex>
                         {formatAggregateQueues(profile.aggregateQueues, BubbleDiv)}
                       </TableDataFlex>
+                    </CustomTableData>
+                    <CustomTableData>
+                      <TableText>{formatAccessGroupData(profile?.accessGroup?.accessGroupName)}</TableText>
                     </CustomTableData>
                     {
                       checkIfPO(loggedInUser, environment) ?

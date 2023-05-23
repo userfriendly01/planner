@@ -100,8 +100,8 @@ export const profileTableColumnHeader = [
     TOOLTIP: "UI Feature: Additional transfer queues that will appear in the Triton queue ticker"
   },
   {
-    COLUMN_NAME: "",
-    TOOLTIP: ""
+    COLUMN_NAME: "Access Group",
+    TOOLTIP: "Access Group Name for BPO profiles"
   }
 ];
 
