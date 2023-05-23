@@ -190,7 +190,7 @@ describe("<DataGridFlow />", () => {
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
       const openModal = AddFlow.mock.calls[0][0].openAddModal;
-      act(()=>{ openModal(false); });
+      act(()=>{ openModal(false,true,{},true); });
       expect(AddFlow.mock.calls[1][0].openAddModal).toBeTruthy;
     });
     test("Simulate the AddFlow openModal isOpen true", ()=>{
@@ -238,6 +238,23 @@ describe("<DataGridFlow />", () => {
       renderComponent();
       const openEditModal = EditFlow.mock.calls[0][0].openEditModal;
       act(()=>{ openEditModal(true, false); });
+      expect(EditFlow.mock.calls[1][0].openEditModal).toBeTruthy;
+    });
+    test("Simulate the EditFlow openEditModal wih clonedFlowRule", ()=>{
+      const flowData = {
+        id: 1,
+        pkey: "+18005551212",
+        agentId: "agent",
+        brand: "brand",
+        callFlowTemplate: "cft",
+        channel: "channel"
+      };
+      const validFlowDataList = createFlowDataList(15);
+      queryFlowData.mockResolvedValue(validFlowDataList);
+      retrieveFlowData.mockResolvedValue(validFlowDataList);
+      renderComponent();
+      const openEditModal = EditFlow.mock.calls[0][0].openEditModal;
+      act(()=>{ openEditModal(true, false,flowData,"",false,true); });
       expect(EditFlow.mock.calls[1][0].openEditModal).toBeTruthy;
     });
     test("Simulate the CustomFlowGridToolBar Custom Routing Toolbar", async()=>{

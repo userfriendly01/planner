@@ -54,10 +54,12 @@ export interface AddFlowModalProps {
   isOpen: boolean;
   newId: number;
   openAddModal: (flag: boolean, isSubmitted?: boolean, row?:CctSharedCallFlowDb) => void;
+  cloneType?: boolean;
+  flowRuleCloned?: FormValidationRule;
 }
 
 export const AddFlow = ({
-  accessToken, matchedGroups, isOpen = false, newId, openAddModal
+  accessToken, matchedGroups, isOpen = false, newId, openAddModal, cloneType, flowRuleCloned
 }: AddFlowModalProps & AzureSPA):JSX.Element => {
 
   const graphQlApiUrl: string = getGraphQLEndpoint();
@@ -98,6 +100,15 @@ export const AddFlow = ({
       callFlowRoute: false
     });
   }, []);
+
+  useEffect(()=>{
+    setFlowRule((rule: FormValidationRule) => ({
+      ...rule
+    }));
+    if(cloneType) {
+      setFlowRule({ ...flowRuleCloned });
+    }
+  },[openAddModal]);
 
   const handleClose = (flag: boolean) => {
     setAlertBar((alertBarProps: AlertBarProps) => ({

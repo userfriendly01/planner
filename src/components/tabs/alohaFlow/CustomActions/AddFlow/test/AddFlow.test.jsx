@@ -102,6 +102,12 @@ const renderAddFlowDefaultOpen = () => {
   );
 };
 
+const renderAddFlowCloneType = flowRule => {
+  return render(
+    <AddFlow openAddModal={openAddModal} newID={1} cloneType = {true} flowRuleCloned = {flowRule} />
+  );
+};
+
 describe("<AddFlow />", () => {
 
   beforeEach(() => {
@@ -276,6 +282,20 @@ describe("<AddFlow />", () => {
       act(() => {
         fireEvent.click(saveButton);
       });
+      waitFor(() => {
+        expect(openAddModal).toBeCalledTimes(0);
+      });
+    });
+    test("Validate Flow type with fields",()=>{
+      const flowInitRule = flowFields.reduce((a, v) => ({
+        ...a,
+        [v.key]: {
+          error: false,
+          value: v.valueGetter(validFlowData),
+          required: v.required || false
+        }
+      }), {});
+      renderAddFlowCloneType(flowInitRule);
       waitFor(() => {
         expect(openAddModal).toBeCalledTimes(0);
       });
