@@ -39,7 +39,13 @@ const SkillEntryButton = (props: any) => {
       <Modal open={showSkillModal}>
         <>
           <SkillEntryFormModal
-            closeModal={() => setShowSkillModal(false)}
+            closeModal={() => {
+              setShowSkillModal(false);
+              setSaveResult({
+                message: "",
+                status: null
+              });
+            }}
             taskQueues={taskQueues}
             applications={applications}
             timeOfDays={timeOfDays}
