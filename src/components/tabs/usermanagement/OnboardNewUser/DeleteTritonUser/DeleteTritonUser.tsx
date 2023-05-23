@@ -34,7 +34,6 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
   const tritonWorker: any = state.workerContext.workers.find((w: any) => w.attributes.n_number === form.nNumber.value);;
 
   console.log("TRITON WORKER", tritonWorker);
-
   const isWorkerDid = form.triton.didUser;
   const [deleteTriton, setDeleteTriton] = React.useState(form.triton.userFound);
   const [deleteCalabrioQm, setDeleteClabrioQm] = React.useState(form.calabrio_qm.userFound);

@@ -133,7 +133,10 @@ describe("<WfmUserTable />", () => {
       expect(mockSetForm).toHaveBeenCalledTimes(1);
       expect(mockSetForm).toHaveBeenCalledWith({
         type: userFormActions.SET_UPDATE_WFM_FORM_STATE,
-        payload: testWFMPeople[0]
+        payload: {
+          user: testWFMPeople[0],
+          state: initialTestState
+        }
       });
       expect(mockNavigate).toHaveBeenCalledTimes(1);
       expect(mockNavigate).toHaveBeenCalledWith("/triton-admin/user");

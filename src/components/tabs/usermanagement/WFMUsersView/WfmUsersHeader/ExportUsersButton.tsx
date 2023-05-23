@@ -11,63 +11,57 @@ const ExportButton = (props: ExportWfmUserProps) => {
   } = props;
 
   const _export = React.useRef(null);
-  const rows: any[] = [];
 
   const handleExport = () => {
     const columns = [
       {
-        field: "emp_first_name",
+        field: "Id",
+        title: "Id",
+        width: "100px"
+      },
+      {
+        field: "FirstName",
         title: "First Name",
         width: "100px"
       },
       {
-        field: "emp_last_name",
+        field: "LastName",
         title: "Last Name",
         width: "100px"
       },
       {
-        field: "n_number",
+        field: "EmploymentNumber",
         title: "N Number",
         width: "100px"
       },
       {
-        field: "email",
+        field: "Email",
         title: "Email",
         width: "100px"
       },
       {
-        field: "extension",
-        title: "Extension",
+        field: "Identity",
+        title: "Identity",
         width: "100px"
       },
       {
-        field: "profile_id",
-        title: "Profile Id",
+        field: "BusinessUnitId",
+        title: "Business Unit Id",
         width: "100px"
       },
       {
-        field: "manager_n_number",
-        title: "Manager N Number",
+        field: "TeamId",
+        title: "TeamId",
         width: "100px"
       },
       {
-        field: "manager",
-        title: "Manager",
-        width: "100px"
-      },
-      {
-        field: "directDialNum",
-        title: "Direct Dial Number",
-        width: "100px"
-      },
-      {
-        field: "sid",
-        title: "Worker Sid",
+        field: "FirstDayOfWeek",
+        title: "First Day Of Week",
         width: "100px"
       }
     ];
     if (_export.current !== null) {
-      _export.current.save(rows, columns);
+      _export.current.save(selected, columns);
     }
   };
 

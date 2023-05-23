@@ -42,7 +42,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   const setForm = useFormDispatch();
 
   React.useEffect(() => {
-    if(form.calabrio_qm.scope.groups.length === 0 || form.calabrio_qm.scope.teams.length === 0) {
+    if((form.calabrio_qm.scope.groups.length === 0 || form.calabrio_qm.scope.teams.length === 0) && form.formMode === formModes.INSERT) {
       console.warn("groups and teams are empty");
       setScopeOnNewUser();
     }
@@ -51,7 +51,6 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
 
   React.useEffect(() => {
     if(form.nNumber.nNumberFetchedUser && form.formMode === formModes.UPDATE) {
-      console.warn("form.nNumber.nNumberFetchedUser - update and fetched user");
       initiateEditForm();
     }
   }, [form.nNumber.nNumberFetchedUser]);
@@ -65,10 +64,12 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   }, [form.triton.profileId.value]);
 
   const initiateEditForm = () => {
+    console.warn("twilioWorker", twilioWorker);
     const matchingProfiles = findMatchingQmProfiles(twilioWorker || form.nNumber, state.calabrioContext.users, setForm)
-    console.log("FAITH - MATCHING PROFILES", matchingProfiles);
+    console.warn("FAITH matchingProfiles", matchingProfiles);
     if(matchingProfiles.length === 0){
-      //No Calabrio Record found
+      console.warn("No matching profile was found in Calabrio for this user");
+      setScopeOnNewUser();
     } else if(matchingProfiles.length === 1){
       setScopeOnExistingUser(matchingProfiles[0]);
     } else {

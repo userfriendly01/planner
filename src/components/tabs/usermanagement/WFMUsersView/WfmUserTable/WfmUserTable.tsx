@@ -101,7 +101,7 @@ const WfmUserTable = (props: WfmUserTableProps) => {
                 <CustomTableData><TableText>{user.Id}</TableText></CustomTableData>
                 <CustomTableData><TableText>{user.Email}</TableText></CustomTableData>
                 <CustomTableData><TableText>{user.Identity}</TableText></CustomTableData>
-                <CustomTableData><TableText>{JSON.stringify(user.OptionalColumns)}</TableText></CustomTableData>
+                <CustomTableData><TableText>{user.EmploymentNumber}</TableText></CustomTableData>
                 <CustomTableData><TableText>{businessUnit.Name}</TableText></CustomTableData>
                 <CustomTableData><TableText>{team.Name}</TableText></CustomTableData>
                 <CustomTableData>

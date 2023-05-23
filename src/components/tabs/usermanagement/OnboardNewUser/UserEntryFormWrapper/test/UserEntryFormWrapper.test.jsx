@@ -154,7 +154,7 @@ describe("<UserEntryForm />", () => {
       test("Should render discrepancy messages", () => {
         const rendered = renderComponent();
         expect(ModalOverlay.mock.calls.length).toBe(0);
-        expect(rendered.container).toHaveTextContent("Discrepencies have been found for this worker. They will be corrected when you hit Save User ");
+        expect(rendered.container).toHaveTextContent("Discrepencies have been found for this worker. They will be corrected when you hit 'Save User' unless otherwise specified ");
         expect(rendered.container).toHaveTextContent("Missing Profile");
       });
     });

@@ -1,12 +1,11 @@
 import ExportUsersButton from "../ExportUsersButton";
-import { StyledExportButton } from "../TritonUsersHeader.Styles";
+import { StyledExportButton } from "../WfmUsersHeader.Styles";
 import React from "react";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
 import { theme } from "globals";
 import {
   act,
   render,
-  initialTestState,
   setupMockedComponents
 } from "testUtils";
 import { ThemeProvider } from "styled-components";
@@ -15,18 +14,31 @@ jest.mock("@progress/kendo-react-excel-export", () => ({
   ExcelExport: jest.fn(),
 }));
 
-jest.mock("../TritonUsersHeader.Styles", () => ({
+jest.mock("../WfmUsersHeader.Styles", () => ({
   StyledExportButton: jest.fn()
 }));
 
 const useRefSpy = jest.spyOn(React, "useRef");
 const mockSave = jest.fn();
+const selected = [
+  {
+    Id: "989234-23406",
+    FirstName: "Pam",
+    LastName: "Beasley",
+    EmploymentNumber: "n0093425",
+    Email: "PBandJ@gmail.com",
+    Identity: "PBandJ@gmail.com",
+    BusinessUnitId: "123-321",
+    TeamId: "Team Jim",
+    FirstDayOfWeek: 3
+  }
+]
 
 const renderComponent = () => {
   const rendered = render(
     <ThemeProvider theme={theme}>
       <ExportUsersButton
-        selected={[initialTestState.workerContext.workers[1]]}
+        selected={selected}
         label="Export"
       />
     </ThemeProvider>
@@ -51,6 +63,13 @@ describe("ExportUsersButton", () => {
       expect(rendered.container).toHaveTextContent("Export");
     });
   });
+  describe("_export.current === null", () => {
+    test("should not call export.current.save", () => {
+      useRefSpy.mockReturnValue({ current: null});
+      renderComponent();
+      expect(useRefSpy().current).toBe(null);
+    });
+  })
   describe("handleExport", () => {
     test("renders with ExcelExport", () => {
       renderComponent();
@@ -58,65 +77,61 @@ describe("ExportUsersButton", () => {
       act(() => onClick());
       expect(mockSave).toHaveBeenCalledTimes(1);
       expect(mockSave).toHaveBeenCalledWith([{
-        ...initialTestState.workerContext.workers[1],
-        "emp_first_name": "Gloria",
-        "emp_last_name": "Sake",
-        "extension": "2345",
-        "full_name": "Gloria Sake",
-        "manager_n_number": "n0263786",
-        "n_number": "n0000000",
-        "profile_id": "12",
-        "sid": "WK1234"}
+        Id: "989234-23406",
+        FirstName: "Pam",
+        LastName: "Beasley",
+        EmploymentNumber: "n0093425",
+        Email: "PBandJ@gmail.com",
+        Identity: "PBandJ@gmail.com",
+        BusinessUnitId: "123-321",
+        TeamId: "Team Jim",
+        FirstDayOfWeek: 3
+      }
       ], 
       [
         {
-          field: "emp_first_name",
+          field: "Id",
+          title: "Id",
+          width: "100px"
+        },
+        {
+          field: "FirstName",
           title: "First Name",
           width: "100px"
         },
         {
-          field: "emp_last_name",
+          field: "LastName",
           title: "Last Name",
           width: "100px"
         },
         {
-          field: "n_number",
+          field: "EmploymentNumber",
           title: "N Number",
           width: "100px"
         },
         {
-          field: "email",
+          field: "Email",
           title: "Email",
           width: "100px"
         },
         {
-          field: "extension",
-          title: "Extension",
+          field: "Identity",
+          title: "Identity",
           width: "100px"
         },
         {
-          field: "profile_id",
-          title: "Profile Id",
+          field: "BusinessUnitId",
+          title: "Business Unit Id",
           width: "100px"
         },
         {
-          field: "manager_n_number",
-          title: "Manager N Number",
+          field: "TeamId",
+          title: "TeamId",
           width: "100px"
         },
         {
-          field: "manager",
-          title: "Manager",
-          width: "100px"
-        },
-        {
-          field: "directDialNum",
-          title: "Direct Dial Number",
-          width: "100px"
-        },
-        {
-          field: "sid",
-          title: "Worker Sid",
+          field: "FirstDayOfWeek",
+          title: "First Day Of Week",
           width: "100px"
         }
       ]);

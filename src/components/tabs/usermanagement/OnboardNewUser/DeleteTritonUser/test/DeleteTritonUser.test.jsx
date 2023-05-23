@@ -12,6 +12,7 @@ import React from "react";
 import { deleteUser } from "services";
 import {
   act,
+  initialFormState,
   initialTestState,
   render,
   waitFor
@@ -54,7 +55,9 @@ describe("DeleteTritonUser", () => {
     useAdminDispatch.mockReturnValue(mockDispatch);
     useAdminState.mockReturnValue(initialTestState);
     useFormState.mockReturnValue({
+      ...initialFormState,
       triton: {
+        userFound: true,
         didUser: false,
       },
       nNumber: {
@@ -67,7 +70,9 @@ describe("DeleteTritonUser", () => {
     describe("worker is DID", () => {
       beforeEach(() => {
         useFormState.mockReturnValue({
+          ...initialFormState,
           triton: {
+            userFound: true,
             didUser: true,
           },
           nNumber: {

@@ -5,7 +5,8 @@ import {
 import {
   WfmUsersHeader,
   Pagination,
-  WfmUserTable
+  WfmUserTable,
+  WfmErrorBanner
 } from "components";
 import { useAdminState } from "context";
 import { WfmBusinessUnit, WfmTeam, WfmUser } from "globals";
@@ -45,6 +46,7 @@ const TritonUserManagementWrapper: any = () => {
 
   React.useEffect(() => {
     const wfmPeople = getWfmPeople(state);
+
     if(wfmPeople.length > 0){
       setWfmLoaded(true);
       let filteredList = wfmPeople.slice().sort(sortWfmWorkersByFullName);
@@ -52,14 +54,14 @@ const TritonUserManagementWrapper: any = () => {
 
       //filter by business unit
       if(tableState.businessUnitFilter && tableState.businessUnitFilter !== "show-all"){
-        const businessUnit = getWfmBusinessUnits(state).find((bu: WfmBusinessUnit) => bu.Id === tableState.businessUnitFilter.Id)
+        const businessUnit = getWfmBusinessUnits(state).find((bu: WfmBusinessUnit) => bu.Id === tableState.businessUnitFilter)
         filteredList = filteredList.filter((wfmUser: WfmUser) => wfmUser.BusinessUnitId === businessUnit?.Id);
       }
       console.log("**BU FL", filteredList);
 
       //filter by team
       if(tableState.teamFilter && tableState.teamFilter !== "show-all"){
-        const team = getWfmTeams(state).find((team: WfmTeam) => team.Name === tableState.teamFilter);
+        const team = getWfmTeams(state).find((team: WfmTeam) => team.Id === tableState.teamFilter);
         if(team){
           filteredList = filteredList.filter((wfmUser: WfmUser) => wfmUser.TeamId === team.Id);
         }
@@ -101,6 +103,7 @@ const TritonUserManagementWrapper: any = () => {
 
   return (
     <WfmUsersContainer>
+      <WfmErrorBanner />
       <WfmUsersHeader
         tableState={tableState}
         setTableState={setTableState}

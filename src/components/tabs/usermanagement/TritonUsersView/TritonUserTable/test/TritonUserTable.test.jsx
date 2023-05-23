@@ -185,10 +185,9 @@ describe("<TritonUserTable />", () => {
       act(() => fireEvent.click(editButtons[0]));
       expect(mockSetForm).toHaveBeenCalledTimes(1);
       expect(mockSetForm).toHaveBeenCalledWith({
-        type: userFormActions.SET_UPDATE_FORM_STATE,
+        type: userFormActions.SET_UPDATE_TRITON_FORM_STATE,
         payload: {
           managers: initialTestState.managerContext.managers,
-          formMode: "update",
           worker: initialTestState.workerContext.workers[0]
         }
       });

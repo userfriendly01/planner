@@ -280,8 +280,10 @@ export const calabrioContext = {
           Name: "Team1",
           Id: "111",
           People: [{
+            BusinessUnitId: "123-321",
             EmploymentNumber: "n1111111",
-            Email: "Person@libertymutual.com"
+            Email: "Person@libertymutual.com",
+            TeamId: "111"
           }]
         },
         {
@@ -305,6 +307,7 @@ export const calabrioContext = {
           Name: "Fake team",
           Id: "000",
           People: [{
+            FirstName: "Faith",
             EmploymentNumber: "n8765432",
             Email: "dude@libertymutual.com"
           }]

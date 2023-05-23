@@ -42,7 +42,7 @@ jest.mock("context", () => ({
 
 const mockSetForm = jest.fn();
 const twilioWorker = {
-  sid: "WK12354345"
+  sid: "WK5678"
 };
 
 describe("CallRecordingForm", () => {
@@ -196,6 +196,7 @@ describe("CallRecordingForm", () => {
             type: "SET_CALABRIO_QM_USER",
             payload: {
               updated: false,
+              userFound: false,
               roles: [],
               scope: {
                 groups: [{
@@ -506,6 +507,8 @@ describe("CallRecordingForm", () => {
   describe("User is being updated", () => {
     describe("initial successful render", () => {
       const user = {
+        id: 220,
+        acdId: "WK5678",
         groupId: 201,
         roles: [{
           id: 2,
@@ -546,6 +549,8 @@ describe("CallRecordingForm", () => {
             type: "SET_CALABRIO_QM_USER",
             payload: {
               updated: true,
+              acdId: "WK5678",
+              email: "Faith.Cuneo@libertymutual.com",
               id: 220,
               roles: [{
                 id: 2,
@@ -602,6 +607,7 @@ describe("CallRecordingForm", () => {
     });
     describe("Ad Login on User Record does not match form.nNumber.value", () => {
       const user = {
+        acdId: "WK5678",
         groupId: 201,
         roles: [{
           id: 2,
@@ -633,7 +639,7 @@ describe("CallRecordingForm", () => {
       });
       test("Form is rendered as expected", async () => {
         render(<CallRecordingForm twilioWorker={{
-          sid: "200"
+          sid: "WK5678"
         }} />);
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
@@ -646,13 +652,15 @@ describe("CallRecordingForm", () => {
               type: "SET_DISCREPANCIES",
               payload: {
                 message: "User is not correctly set up for screen recording in Calabrio.",
-                type: "Calabrio"
+                type: "Calabrio QM"
               }
             });
           expect(mockSetForm).toHaveBeenCalledWith({
             type: "SET_CALABRIO_QM_USER",
             payload: {
               updated: true,
+              acdId: "WK5678",
+              email: "Faith.Cuneo@libertymutual.com",
               id: 220,
               roles: [{
                 id: 2,
@@ -709,6 +717,7 @@ describe("CallRecordingForm", () => {
     });
     describe("Email on User Record does not match form.nNumberFetchedUser.email", () => {
       const user = {
+        acdId: "WK1234",
         groupId: 201,
         roles: [{
           id: 2,
@@ -753,12 +762,14 @@ describe("CallRecordingForm", () => {
               type: "SET_DISCREPANCIES",
               payload: {
                 message: "Calabrio Email does not match HR email. This could cause Calabrio Login issues",
-                type: "Calabrio"
+                type: "Calabrio QM"
               }
             });
           expect(mockSetForm.mock.calls[1][0]).toStrictEqual({
             type: "SET_CALABRIO_QM_USER",
             payload: {
+              acdId: "WK1234",
+              email: "Brittany.Magee@libertymutual.com",
               updated: true,
               id: 200,
               roles: [{
@@ -843,12 +854,12 @@ describe("CallRecordingForm", () => {
         useFormState.mockReturnValue(formState);
       });
       test("Form is rendered as expected", async () => {
-        render(<CallRecordingForm twilioWorker={twilioWorker} />);
+        render(<CallRecordingForm twilioWorker={{ sid: "WK0000"}} />);
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(0);
-        expect(mockSetForm).toHaveBeenCalledTimes(3);
-        expect(console.warn).toHaveBeenCalledWith("No user was found in Calabrio with this email");
+        expect(mockSetForm).toHaveBeenCalledTimes(1);
+        expect(console.warn).toHaveBeenCalledWith("No matching profile was found in Calabrio for this user");
       });
     });
     describe("Worker was found in Calabrio User state but failed to fetch user", () => {
@@ -885,7 +896,7 @@ describe("CallRecordingForm", () => {
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
         expect(getCalabrioUser).toHaveBeenCalledWith(220);
-        expect(mockSetForm).toHaveBeenCalledTimes(2);
+        expect(mockSetForm).toHaveBeenCalledTimes(1);
         await waitFor(() => {
           //Mocking issue to fix
           // expect(console.error.mock.calls.length).toBe(1);

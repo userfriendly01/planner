@@ -15,6 +15,7 @@ import {
 import React from "react";
 import { act } from "react-dom/test-utils";
 import { Modal } from "@mui/material";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {
   addManager,
   editManager
@@ -49,6 +50,10 @@ jest.mock("@mui/material", () => ({
   Tabs: jest.fn(),
   Divider: jest.fn(),
   Checkbox: jest.fn()
+}));
+
+jest.mock("@mui/x-date-pickers/DatePicker",()=>({
+  DatePicker: jest.fn()
 }));
 
 jest.mock("@mui/x-data-grid",()=>({

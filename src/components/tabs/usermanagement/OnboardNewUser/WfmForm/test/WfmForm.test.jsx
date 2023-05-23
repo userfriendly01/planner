@@ -103,7 +103,8 @@ describe("<WfmForm />", () => {
     useFormState.mockReturnValue(initialFormState);
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
-      Dropdown
+      Dropdown,
+      NNumberInput
     });
   });
   describe("initial render", () => {

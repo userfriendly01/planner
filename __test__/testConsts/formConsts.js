@@ -26,6 +26,7 @@ export const initialFormState = {
     nNumberFetchedUser: null,
   },
   triton: {
+    userFound: true,
     alternateDid: {
       value: "",
       blurred: false,
@@ -88,6 +89,7 @@ export const initialFormState = {
     }
   },
   calabrio_qm: {
+    userFound: false,
     updated: false,
     team: null,
     timezone: {

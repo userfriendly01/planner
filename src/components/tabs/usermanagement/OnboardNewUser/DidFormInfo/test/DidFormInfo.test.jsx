@@ -230,7 +230,7 @@ describe("<DidFormInfo />", () => {
         const rendered = renderComponent(true);
         expectMockedComponent(rendered, { ForwardToEntryForm }, 1);
         const expectedForwardToEntryProps = {
-          label: "Please choose a forward to option for the existing outgoing number"
+          label: "Please choose a forward to option for the existing direct dial number"
         };
         expectOnlyPassedProps(ForwardToEntryForm, expectedForwardToEntryProps, 0);
       });

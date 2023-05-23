@@ -44,7 +44,8 @@ export interface AppState {
     users: any[],
     roles: any[],
     wfmOrg: any[],
-    wfmOptions: any[]
+    wfmOptions: any[],
+    wfmErrors: any[]
   },
   resettingSkills: false
 }

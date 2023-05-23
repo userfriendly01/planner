@@ -55,11 +55,11 @@ export const getWfmTeams = (state: AppState, businessUnitId?: string, includeLos
   const wfmTeams: WfmTeam[] = [];
   
   if(businessUnitId){
-    const businessUnit = state.calabrioContext.wfmOrg.find((bu: WfmBusinessUnit) => bu.Id === businessUnitId);
+    const businessUnit = state.calabrioContext.wfmOrg?.find((bu: WfmBusinessUnit) => bu.Id === businessUnitId);
     businessUnit.Teams.forEach((team: WfmTeam) => wfmTeams.push(team));
   } else {
     if(!includeLostSouls){
-      state.calabrioContext.wfmOrg.forEach((businessUnit: WfmBusinessUnit) => {
+      state.calabrioContext.wfmOrg?.forEach((businessUnit: WfmBusinessUnit) => {
         businessUnit.Teams?.forEach((team: WfmTeam) => {
           if(team.Id){
             wfmTeams.push(team);
@@ -67,7 +67,7 @@ export const getWfmTeams = (state: AppState, businessUnitId?: string, includeLos
         });
       });
     } else {
-      state.calabrioContext.wfmOrg.forEach((businessUnit: WfmBusinessUnit) => {
+      state.calabrioContext.wfmOrg?.forEach((businessUnit: WfmBusinessUnit) => {
         businessUnit.Teams?.forEach((team: WfmTeam) => wfmTeams.push(team));
       });
     }
@@ -79,7 +79,7 @@ export const getWfmPeople = (state: AppState) => {
   const wfmPeople: WfmUser[] = [];
   const wfmTeams: WfmTeam[] = getWfmTeams(state);
 
-  state.calabrioContext.wfmOrg.forEach((businessUnit: WfmBusinessUnit) => {
+  state.calabrioContext.wfmOrg?.forEach((businessUnit: WfmBusinessUnit) => {
     if(businessUnit.Id === "People_Without_Team"){
       businessUnit.People?.forEach((person: WfmUser) => wfmPeople.push(person));
     }
@@ -278,11 +278,10 @@ export const findMatchingQmProfiles = (user: any, users: CalabrioQmUser[], setFo
   //Calabrio users should always have a Triton user, the "user" passed through should be a triton user but if that's undefined we can search based on nNumber fetched user
   try {
     const acdId = toLowerCaseString(user.sid);
-    const email = toLowerCaseString(user.attributes.email || user.nNumberFetchedUser.email);
-    const adLogin = `lm\\${toLowerCaseString(user.attributes.nNumber || user.value)}`;
+    const email = toLowerCaseString(user.attributes?.email || user.nNumberFetchedUser?.email);
+    const adLogin = `lm\\${toLowerCaseString(user.attributes?.nNumber || user?.value)}`;
 
     const matchingProfiles: any[] = [];
-    console.log("FAITH HERE IS THE TRITON USER", user);
     users.forEach(u => {
       const dupUserAcdId = toLowerCaseString(u.acdId);
       const dupUserAdLogin = toLowerCaseString(u.adLogin);
@@ -348,6 +347,7 @@ export const getCalabrioWfmOrg = async (dispatch: any) => {
     const org: any = await getWfmOrgServiceCall();
     let orgData: any = [];
     try {
+      console.log("FAITH ORG - ", org.data);
       const buff = Buffer.from(org.data.organization, "base64");
       const data = await inflate(buff);
       orgData = JSON.parse(data.toString("utf-8"));
@@ -358,7 +358,10 @@ export const getCalabrioWfmOrg = async (dispatch: any) => {
     }
     dispatch({
       type: "loadWfmOrg",
-      payload: orgData
+      payload: {
+        org: orgData.businessUnits,
+        errors: org.data.errors
+      }
     });
     return true;
   } catch (error) {

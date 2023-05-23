@@ -38,7 +38,8 @@ export const initialState: AppState = {
     users: [],
     roles: [],
     wfmOrg: [],
-    wfmOptions: []
+    wfmOptions: [],
+    wfmErrors: []
   },
   resettingSkills: false
 };
@@ -84,21 +85,26 @@ export const reducer = (state: AppState, action: Action): AppState => {
           workers: action.payload
         }
       };
-    case "loadWfmOrg":
+    case "loadWfmOrg": {
+      const org = action.payload.org;
+      const errors = action.payload.errors;
+
       return {
         ...state,
         calabrioContext: {
           ...state.calabrioContext,
           wfmOrg: [
-            ...action.payload.businessUnits,
+            ...org,
             {
               Id: "People_Without_Team",
               Name: "Lost Souls",
               People: action.payload.People_Without_Team
             }
-          ]
+          ],
+          wfmErrors: errors
         }
       };
+    }
     case "loadWfmOptions":
       return {
         ...state,

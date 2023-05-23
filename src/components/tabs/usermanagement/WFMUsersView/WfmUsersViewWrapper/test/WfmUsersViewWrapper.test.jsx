@@ -1,10 +1,13 @@
-import TritonUserManagementWrapper from "../TritonUsersViewWrapper";
+import WfmUsersViewWrapper from "../WfmUsersViewWrapper";
 import {
-  TritonUsersHeader,
+  WfmErrorBanner,
+  WfmUsersHeader,
   Pagination,
-  TritonUserTable
+  WfmUserTable
 } from "components";
 import { useAdminState } from "context";
+import { useNavigate } from 'react-router-dom';
+import WFMLoadRetryModal from "../../../BulkChanges/WFMLoadRetryModal";
 import React from "react";
 import {
   act,
@@ -14,24 +17,37 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import { sortWorkersByFullName } from "utils";
+import {
+  getWfmPeople,
+  sortWfmWorkersByFullName
+} from "utils";
 
 jest.mock("components", () => ({
-  TritonUsersHeader: jest.fn(),
+  WfmErrorBanner: jest.fn(),
+  WfmUsersHeader: jest.fn(),
   Pagination: jest.fn(),
-  TritonUserTable: jest.fn()
+  WfmUserTable: jest.fn()
+}));
+
+jest.mock("../../../BulkChanges/WFMLoadRetryModal", () => ({
+  __esModule: true,
+  default: jest.fn()
 }));
 
 jest.mock("context", () => ({
   useAdminState: jest.fn()
 }));
 
+jest.mock("react-router-dom", () => ({
+  useNavigate: jest.fn()
+}));
+
 const defaultTableState = {
   searchBy: "",
-  searchResults: initialTestState.workerContext.workers,
   selected: [],
-  managerFilter: null,
-  deltaFilter: false,
+  teamFilter: null,
+  businessUnitFilter: null,
+  searchResults: getWfmPeople(initialTestState),
   pagination: {
     usersPerPage: 25,
     pageNumber: 1,
@@ -42,119 +58,123 @@ const defaultTableState = {
   filteredList: []
 };
 
-const workersCopy = initialTestState.workerContext.workers.slice();
+const workersCopy = getWfmPeople(initialTestState).slice();
+const mockNavigate = jest.fn();
 
-describe("TritonUsersViewWrapper", () => {
+describe("WfmUsersViewWrapper", () => {
   const doRender = () => {
-    return render(<TritonUserManagementWrapper/>);
+    return render(<WfmUsersViewWrapper/>);
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
     setupMockedComponents({
-      TritonUsersHeader,
+      WfmErrorBanner,
+      WfmUsersHeader,
       Pagination,
-      TritonUserTable
+      WfmUserTable,
+      WFMLoadRetryModal
     });
-    useAdminState.mockReturnValue({
-      ...initialTestState,
-      workerContext: {
-        workers: initialTestState.workerContext.workers.slice()
-      }
-    });
+    useAdminState.mockReturnValue(initialTestState);
+    useNavigate.mockReturnValue(mockNavigate);
   });
   describe("initial render", () => {
-    test("ManagementHeader, TritonUserTable, Pagination are rendered with expected props", () => {
+    test("ManagementHeader, WfmUserTable, Pagination are rendered with expected props", () => {
+      const expectedDefaultTableState = {
+        tableState: {
+          ...defaultTableState,
+          searchResults: getWfmPeople(initialTestState).sort(sortWfmWorkersByFullName),
+          pagination: {
+            ...defaultTableState.pagination,
+            startingUserIndex: 0,
+            length: 3,
+            endingUserIndex: 24
+          },
+          filteredList: getWfmPeople(initialTestState).sort(sortWfmWorkersByFullName)
+        }
+      }
       doRender();
-      expect(TritonUsersHeader).toHaveBeenCalledTimes(2);
-      expectOnlyPassedProps(TritonUsersHeader, {
-        tableState: {
-          ...defaultTableState,
-          pagination: {
-            ...defaultTableState.pagination,
-            startingUserIndex: 0,
-            length: 6,
-            endingUserIndex: 25
-          },
-          filteredList: initialTestState.workerContext.workers.sort(sortWorkersByFullName)
-        }
-      }, getLastInstanceCalled(TritonUsersHeader));
-      expect(TritonUserTable).toHaveBeenCalledTimes(2);
-      expectOnlyPassedProps(TritonUserTable, {
-        tableState: {
-          ...defaultTableState,
-          pagination: {
-            ...defaultTableState.pagination,
-            startingUserIndex: 0,
-            length: 6,
-            endingUserIndex: 25
-          },
-          filteredList: initialTestState.workerContext.workers.sort(sortWorkersByFullName)
-        }
-      }, getLastInstanceCalled(TritonUserTable));
-      expect(Pagination).toHaveBeenCalledTimes(2);
-      expectOnlyPassedProps(Pagination, {
-        tableState: {
-          ...defaultTableState,
-          pagination: {
-            ...defaultTableState.pagination,
-            startingUserIndex: 0,
-            length: 6,
-            endingUserIndex: 25
-          },
-          filteredList: initialTestState.workerContext.workers.sort(sortWorkersByFullName)
-        }
-      }, getLastInstanceCalled(Pagination));
+      expect(WfmUsersHeader).toHaveBeenCalledTimes(2);
+      expectOnlyPassedProps(WfmUsersHeader, expectedDefaultTableState, getLastInstanceCalled(WfmUsersHeader));
+      expect(WfmUserTable).toHaveBeenCalledTimes(1);
+      expect(WfmErrorBanner).toHaveBeenCalledTimes(2);
+      expectOnlyPassedProps(WfmUserTable, expectedDefaultTableState, getLastInstanceCalled(WfmUserTable));
+      expect(Pagination).toHaveBeenCalledTimes(1);
+      expectOnlyPassedProps(Pagination, expectedDefaultTableState, getLastInstanceCalled(Pagination));
     });
-  });
-  describe("managerFilter === true", () => {
-    test("filtered list only inlcudes expected options", () => {
-      doRender();
-      const setTritonTable = TritonUsersHeader.mock.calls[1][0].setTableState;
-      act(() => setTritonTable({
-        ...defaultTableState,
-        managerFilter: "n0263786"
-      }));
-      expect(TritonUsersHeader.mock.calls.length).toBe(4);
-      expect(TritonUsersHeader.mock.calls[3][0].tableState.filteredList).toStrictEqual([workersCopy[1]]);
+    describe("WFM state is not loaded", () => {
+      beforeEach(() => {
+        useAdminState.mockReturnValue({
+          ...initialTestState,
+          calabrioContext: {
+            wfmOrg: null
+          }
+        });
+      });
+      test("should render WFMLoadRetryModal", () => {
+        doRender();
+        expect(WFMLoadRetryModal).toHaveBeenCalledTimes(1);
+      });
+      describe("WFMLoadRetryModal handleClose is called", () => {
+        test("should call navigate with -1", () => {
+          doRender();
+          expect(WFMLoadRetryModal).toHaveBeenCalledTimes(1);     
+          const handleClose = WFMLoadRetryModal.mock.calls[0][0].handleClose;
+          act(() => handleClose());
+          expect(mockNavigate).toHaveBeenCalledTimes(1);
+          expect(mockNavigate).toHaveBeenCalledWith(-1);
+        });
+      })
     });
   });
   describe("searchBy === Faith", () => {
     test("filtered list only inlcudes expected options", () => {
       doRender();
-      const setTritonTable = TritonUserTable.mock.calls[1][0].setTableState;
-      act(() => setTritonTable({
+      const setWfmTable = WfmUserTable.mock.calls[0][0].setTableState;
+      act(() => setWfmTable({
         ...defaultTableState,
         searchBy: "FaiTh"
       }));
-      expect(TritonUserTable.mock.calls.length).toBe(4);
-      expect(TritonUserTable.mock.calls[3][0].tableState.filteredList).toStrictEqual([workersCopy[0]]);
+      expect(WfmUserTable.mock.calls.length).toBe(3);
+      expect(WfmUserTable.mock.calls[2][0].tableState.filteredList).toStrictEqual([workersCopy[2]]);
     });
-    describe("deltaFilter === true", () => {
+    describe("team filter is selected", () => {
       test("filtered list only inlcudes expected options", () => {
         doRender();
-        const setTritonTable = TritonUserTable.mock.calls[1][0].setTableState;
-        act(() => setTritonTable({
+        const setWfmTable = WfmUserTable.mock.calls[0][0].setTableState;
+        act(() => setWfmTable({
           ...defaultTableState,
-          deltaFilter: true
+          teamFilter: "111"
         }));
-        expect(TritonUserTable.mock.calls.length).toBe(4);
-        expect(TritonUserTable.mock.calls[3][0].tableState.filteredList).toStrictEqual([workersCopy[0]]);
+        expect(WfmUserTable.mock.calls.length).toBe(3);
+        expect(WfmUserTable.mock.calls[2][0].tableState.filteredList).toStrictEqual([workersCopy[1]]);
+      });
+    });
+    describe("business Unit filter is selected", () => {
+      test("filtered list only inlcudes expected options", () => {
+        doRender();
+        const setWfmTable = WfmUserTable.mock.calls[0][0].setTableState;
+        act(() => setWfmTable({
+          ...defaultTableState,
+          businessUnitFilter: "123-321"
+        }));
+        expect(WfmUserTable.mock.calls.length).toBe(3);
+        expect(WfmUserTable.mock.calls[2][0].tableState.filteredList).toStrictEqual([workersCopy[1]]);
       });
     });
     describe("pagination is moved to page 2", () => {
       test("filtered list only inlcudes expected options", () => {
         doRender();
-        const setTritonTable = Pagination.mock.calls[1][0].setTableState;
-        act(() => setTritonTable({
+        const setWfmTable = Pagination.mock.calls[0][0].setTableState;
+        act(() => setWfmTable({
           ...defaultTableState,
           pagination: {
             ...defaultTableState.pagination,
             pageNumber: 2
           }
         }));
-        expect(Pagination.mock.calls.length).toBe(4);
-        expect(Pagination.mock.calls[3][0].tableState.filteredList).toStrictEqual([]);
+        expect(Pagination.mock.calls.length).toBe(3);
+        expect(Pagination.mock.calls[2][0].tableState.filteredList).toStrictEqual([]);
       });
     });
   });
