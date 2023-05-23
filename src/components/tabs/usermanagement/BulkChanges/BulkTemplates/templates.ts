@@ -335,6 +335,12 @@ const processUpdateManager = async (row: any, template: Template, state: any) =>
   }
 };
 
+const processUpdateSkills = async (row: any, template: Template, state: any) => {
+  // todo: expand
+  console.log("processing update skills hurr");
+  return Promise.resolve("skills updated");
+};
+
 //Templates
 export const getCreateTemplates = (state: any): Templates => {
   return {
@@ -457,6 +463,18 @@ export const getUpdateTemplates = (state: any): Templates => {
       data: {},
       processFunction: (row: any, template: Template) => processUpdateManager(row, template, state),
       stateUpdateFunctions: [updateTritonUserState, updateCalabrioUserState],
+      multiRunDependencies: null,
+      validationConcurrencyLimit: 500,
+      processingConcurrencyLimit: 5,
+      fields: [
+        FIELDS.N_NUMBER_UPDATE
+      ]
+    },
+    UPDATE_SKILLS: {
+      name: "UPDATE_SKILLS",
+      data: {},
+      processFunction: (row: any, template: Template) => processUpdateSkills(row, template, state),
+      stateUpdateFunctions: [updateTritonUserState, updateCalabrioUserState], // todo: decide which state function needs to be called here
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,
