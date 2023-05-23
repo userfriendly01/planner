@@ -61,6 +61,7 @@ jest.mock("services", () => ({
   updateFlowDB: jest.fn(),
   updateFlashMessage: jest.fn(),
   updateRoutingDB: jest.fn(),
+  updateSkillGroup: jest.fn(),
   updateTfn: jest.fn(),
   updateUser: jest.fn(),
   getCallTagOptions: jest.fn(),
