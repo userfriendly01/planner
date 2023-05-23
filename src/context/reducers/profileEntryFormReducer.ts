@@ -146,7 +146,6 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
       };
     }
     case profileEntryFormActions.UPDATE_ACCESS_GROUP: {
-      console.log("(***********)", !state[action.fieldKey].value? state.accessGroupId : null);
       return {
         ...state,
         accessGroup: {

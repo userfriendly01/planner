@@ -1,5 +1,5 @@
 import React from "react";
-import { Dropdown } from "components/core";
+import { Dropdown } from "components";
 import { getAccessGroup } from "services";
 import { AccessGroup } from "globals";
 import {
