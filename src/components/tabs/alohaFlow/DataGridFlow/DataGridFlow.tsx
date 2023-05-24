@@ -271,19 +271,20 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   };
 
   const cloneRule=(flag:boolean,row:CctSharedCallFlowDb)=>{
-    const pkey = row.pkey;
-    row.pkey = "";
+    const clonedRow = {
+      ...row,
+      pkey: ""
+    };
     const flowInitRule: FormValidationRule = flowFields.reduce((a: FormValidationRule, v: AddFlowFieldsConfigProps) => ({
       ...a,
       [v.key]: {
         error: false,
-        value: v.valueGetter(row),
+        value: v.valueGetter(clonedRow),
         required: v.required || false
       }
     }), {});
     setCloneType(!flag);
     setClonedFlowRule(flowInitRule);
-    row.pkey = pkey;
     setDataFlow((dataFlowProps: FlowStateVariables) => ({
       ...dataFlowProps,
       isEditModalOpen: flag,
