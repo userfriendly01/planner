@@ -503,7 +503,6 @@ describe("CallRecordingForm", () => {
       });
     });
   });
-
   describe("User is being updated", () => {
     describe("initial successful render", () => {
       const user = {
@@ -603,6 +602,192 @@ describe("CallRecordingForm", () => {
             }
           });
         });
+      });
+    });
+    describe("no twilio worker passed", () => {
+      const formState = {
+        ...initialFormState,
+        formMode: "update",
+        nNumber: {
+          value: "n0122227",
+          nNumberFetchedUser: {
+            email: "Mike.Nieman@libertymutual.com",
+            firstName: "Mike",
+            lastName: "Nieman"
+          }
+        }
+      };
+      beforeEach(() => {
+        useFormState.mockReturnValue(formState);
+      });
+      test("should use the form.nNumber.value", () => {
+        render(<CallRecordingForm twilioWorker={null} />);
+        expect(Dropdown.mock.calls.length).toBe(3);
+        expect(CallRecordingScope.mock.calls.length).toBe(1);
+        expect(getCalabrioUser).toHaveBeenCalledTimes(0);
+        expect(mockSetForm).toHaveBeenCalledTimes(1);
+        expect(console.warn).toHaveBeenCalledWith("No matching profile was found in Calabrio for this user");
+      });
+    });
+    describe("no matching profile was found for Calabrio User", () => {
+      const formState = {
+        ...initialFormState,
+        calabrio_qm: {
+          ...initialFormState.calabrio_qm,
+          team: {
+            value: 225,
+            label: "Team 1"
+          },
+          roles: [],
+          scope: {
+            groups: [],
+            teams: []
+          }
+        },
+        formMode: "update",
+        nNumber: {
+          ...initialFormState.nNumber,
+          nNumberFetchedUser: {
+            email: "Mike.Nieman@libertymutual.com",
+            firstName: "Mike",
+            lastName: "Nieman"
+          }
+        }
+      };
+      beforeEach(() => {
+        useFormState.mockReturnValue(formState);
+      });
+      test("Form is rendered as expected", async () => {
+        render(<CallRecordingForm twilioWorker={{ sid: "WK0000"}} />);
+        expect(Dropdown.mock.calls.length).toBe(3);
+        expect(CallRecordingScope.mock.calls.length).toBe(1);
+        expect(getCalabrioUser).toHaveBeenCalledTimes(0);
+        expect(mockSetForm).toHaveBeenCalledTimes(1);
+        expect(console.warn).toHaveBeenCalledWith("No matching profile was found in Calabrio for this user");
+      });
+
+    });
+    describe("multiple matching profiles were found for Calabrio User", () => {
+      const formState = {
+        ...initialFormState,
+        formMode: "update",
+        nNumber: {
+          value: "n0222444",
+          nNumberFetchedUser: {
+            email: "faith.Cuneo@libertymutual.com",
+            firstName: "Faith",
+            lastName: "Cuneo"
+          }
+        }
+      };
+      const noRolesUser = {
+        id: 200,
+        acdId: "WK1234",
+        groupId: 201,
+        roles: null,
+        scope: {
+          groups: [200],
+          teams: [201]
+        }
+      };
+      const tritonWorker = {
+        sid: "WK1234",
+        attributes: {
+          email: "Faith.Cuneo@libertymutual.com"
+        }
+      }
+      beforeEach(() => {
+        getCalabrioUser.mockResolvedValue({
+          data: noRolesUser
+        });
+        useFormState.mockReturnValue(formState);
+      });
+      test("Form is rendered as expected", async () => {
+        render(<CallRecordingForm twilioWorker={tritonWorker} />);
+        expect(Dropdown.mock.calls.length).toBe(3);
+        expect(CallRecordingScope.mock.calls.length).toBe(1);
+        expect(getCalabrioUser).toHaveBeenCalledTimes(1);
+        expect(getCalabrioUser).toHaveBeenCalledWith(200);
+        await waitFor(() => {
+          expect(mockSetForm).toHaveBeenCalledTimes(4);
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: "SET_DISCREPANCIES",
+            payload: {
+              type: "Calabrio QM",
+              message: "Calabrio QM Record found for user where the ACD ID does not match the Triton Worker. This will require manual review/correction."
+            }
+          });
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: "SET_DISCREPANCIES",
+            payload: {
+              type: "Calabrio QM",
+              message: "Calabrio Email does not match HR email. This could cause Calabrio Login issues. This will require manual review/correction."
+            }
+          });
+          expect(mockSetForm.mock.calls[3][0]).toBe("butts");
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: "SET_CALABRIO_QM_USER",
+            payload: {
+              updated: true,
+              acdId: "WK1234",
+              email: "Brittany.Magee@libertymutual.com",
+              id: 200,
+              roles: [],
+              scope: {
+                groups: [{
+                  checked: false,
+                  groupId: 100,
+                  name: "Hawaii 50 Group",
+                  partial: false
+                }, {
+                  checked: true,
+                  groupId: 200,
+                  name: "FNOL Group",
+                  partial: false
+                },
+                {
+                  checked: false,
+                  groupId: 300,
+                  name: "No Teams Group",
+                  partial: false
+                }],
+                teams: [{
+                  checked: false,
+                  groupId: 101,
+                  name: "Hawaii Team 50",
+                  parentGroupId: 100
+                }, {
+                  checked: false,
+                  groupId: 102,
+                  name: "Hawaii Specialty Team",
+                  parentGroupId: 100
+                }, {
+                  checked: true,
+                  groupId: 201,
+                  name: "FNOL Team",
+                  parentGroupId: 200
+                }]
+              },
+              team: {
+                groupId: 201,
+                name: "FNOL Team",
+                parentGroupId: 200
+              },
+              timezone: {
+                label: "EST",
+                value: 173
+              }
+            }
+          });
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: "SET_DISCREPANCIES",
+            payload: {
+              type: "Calabrio QM",
+              message: "Multiple (2) Calabrio Records Found for this user. Requires manual review/correction."
+            }
+          });
+        });
+        expect(console.warn).toHaveBeenCalledWith("Multiple matching profiles were found in Calabrio for this user");
       });
     });
     describe("Ad Login on User Record does not match form.nNumber.value", () => {
@@ -761,7 +946,7 @@ describe("CallRecordingForm", () => {
             {
               type: "SET_DISCREPANCIES",
               payload: {
-                message: "Calabrio Email does not match HR email. This could cause Calabrio Login issues",
+                message: "Calabrio Email does not match HR email. This could cause Calabrio Login issues. This will require manual review/correction.",
                 type: "Calabrio QM"
               }
             });
@@ -823,43 +1008,6 @@ describe("CallRecordingForm", () => {
             }
           });
         });
-      });
-    });
-    describe("worker was not found in Calabrio User state", () => {
-      const formState = {
-        ...initialFormState,
-        calabrio_qm: {
-          ...initialFormState.calabrio_qm,
-          team: {
-            value: 225,
-            label: "Team 1"
-          },
-          roles: [],
-          scope: {
-            groups: [],
-            teams: []
-          }
-        },
-        formMode: "update",
-        nNumber: {
-          ...initialFormState.nNumber,
-          nNumberFetchedUser: {
-            email: "Mike.Nieman@libertymutual.com",
-            firstName: "Mike",
-            lastName: "Nieman"
-          }
-        }
-      };
-      beforeEach(() => {
-        useFormState.mockReturnValue(formState);
-      });
-      test("Form is rendered as expected", async () => {
-        render(<CallRecordingForm twilioWorker={{ sid: "WK0000"}} />);
-        expect(Dropdown.mock.calls.length).toBe(3);
-        expect(CallRecordingScope.mock.calls.length).toBe(1);
-        expect(getCalabrioUser).toHaveBeenCalledTimes(0);
-        expect(mockSetForm).toHaveBeenCalledTimes(1);
-        expect(console.warn).toHaveBeenCalledWith("No matching profile was found in Calabrio for this user");
       });
     });
     describe("Worker was found in Calabrio User state but failed to fetch user", () => {

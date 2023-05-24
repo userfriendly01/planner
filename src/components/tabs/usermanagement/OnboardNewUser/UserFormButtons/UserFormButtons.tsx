@@ -23,7 +23,6 @@ import {
   addOffice,
   createCalabrioUser,
   createUser,
-  fetchUser as fetchUserServiceCall,
   getCalabrioUsers,
   updateUser,
   updateCalabrioUser

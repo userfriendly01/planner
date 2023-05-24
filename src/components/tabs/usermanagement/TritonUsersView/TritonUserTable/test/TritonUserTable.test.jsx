@@ -178,6 +178,29 @@ describe("<TritonUserTable />", () => {
       });
     });
   });
+  describe("Worker row is unselected", () => {
+    test("setDispatch is called for the worker", () => {
+      const selectedTableState = {
+        ...tableState,
+        selected: [{
+          name: initialTestState.workerContext.workers[1].attributes.full_name,
+          sid: initialTestState.workerContext.workers[1].sid
+        }]
+      }
+      const rendered = render(
+        <ThemeProvider theme={theme}>
+          <TritonUserTable tableState={selectedTableState} setTableState={mockSetTableState} />
+        </ThemeProvider>
+      );
+      const rows = rendered.getAllByTestId("table-row");
+      act(() => fireEvent.click(rows[1]));
+      expect(mockSetTableState).toHaveBeenCalledTimes(1);
+      expect(mockSetTableState).toHaveBeenCalledWith({
+        ...tableState,
+        selected: []
+      });
+    });
+  });
   describe("Edit Button is clicked on worker row", () => {
     test("setForm is called for the worker", () => {
       const rendered = renderComponent();

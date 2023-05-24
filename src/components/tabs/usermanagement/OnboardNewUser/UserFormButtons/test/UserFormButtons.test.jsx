@@ -23,7 +23,6 @@ import {
   addOffice,
   createCalabrioUser,
   createUser,
-  fetchUser,
   getCalabrioUsers,
   updateCalabrioUser,
   updateUser
@@ -164,7 +163,6 @@ describe("<UserFormButtons />", () => {
     mapWorkerFromDbWorker.mockReturnValue(formattedWorker);
     checkConflictingUsers.mockResolvedValue({ yay: "woot!" });
     createCalabrioUser.mockResolvedValue({ yay: "woot!" });
-    fetchUser.mockResolvedValue({ yay: "woot!" });
     getCalabrioUsers.mockResolvedValue({ data: "yay!" });
     setupMockedComponents({
       StyledButton,
@@ -861,95 +859,6 @@ describe("<UserFormButtons />", () => {
         createCalabrioUser.mockResolvedValue("yay!");
         getCalabrioUsers.mockResolvedValue({ data: ["agent1", "agent2"]});
       });
-      describe("nNumberFetchedUser is null", () => {
-        const updateFormState = {
-          ...validFormState,
-          formMode: formModes.UPDATE,
-          nNumber: {
-            ...validFormState.nNumber,
-            nNumberFetchedUser: null
-          }
-        };
-        describe("fetchUser throws an error", () => {
-          beforeEach(() => {
-            useFormState.mockReturnValue(updateFormState);
-            fetchUser.mockRejectedValue({ boo: "aww" });
-          });
-          test("Error is caught and logged", async () => {
-            renderComponent(true);
-            expect(fetchUser).toBeCalledTimes(1);
-            await waitFor(() => {
-              expect(mockSetForm).toHaveBeenCalledTimes(0);
-            });
-          });
-        });
-        describe("fetchUser is Successful", () => {
-          beforeEach(() => {
-            useFormState.mockReturnValue(updateFormState);
-          });
-          describe("email matches existing user", () => {
-            const sameEmailUser = {
-              email: "faith.cuneo@libertymutual.com"
-            };
-            beforeEach(() => {
-              fetchUser.mockResolvedValue(sameEmailUser);
-            });
-            test("fetchUser is run on render and mockSetForm is called once", async () => {
-              renderComponent(true, {
-                ...worker,
-                attributes: {
-                  ...worker.attributes,
-                  email: "Faith.Cuneo@libertymutual.com"
-                }
-              });
-              expect(fetchUser).toBeCalledTimes(1);
-              await waitFor(() => {
-                expect(mockSetForm).toBeCalledTimes(1);
-                expect(mockSetForm).toBeCalledWith({
-                  type: "COMPLETE_N_NUMBER",
-                  payload: {
-                    fetchedUser: {
-                      email: "faith.cuneo@libertymutual.com"
-                    },
-                    nNumber: "n1234567"
-                  }
-                });
-              });
-            });
-          });
-          describe("email does not match existing user", () => {
-            const differentEmailUser = {
-              email: "faith.cuneo@safeco.com"
-            };
-            beforeEach(() => {
-              fetchUser.mockResolvedValue(differentEmailUser);
-            });
-            test("fetchUser is run on render and mockSetForm is called twice", async () => {
-              renderComponent(true);
-              expect(fetchUser).toBeCalledTimes(1);
-              await waitFor(() => {
-                expect(mockSetForm).toBeCalledTimes(2);
-                expect(mockSetForm).toBeCalledWith({
-                  type: "COMPLETE_N_NUMBER",
-                  payload: {
-                    fetchedUser: {
-                      email: "faith.cuneo@safeco.com"
-                    },
-                    nNumber: "n1234567"
-                  }
-                });
-                expect(mockSetForm).toBeCalledWith({
-                  type: "SET_DISCREPANCIES",
-                  payload: {
-                    type: discrepancyType.CALABRIO,
-                    message: "Triton email does not match HR email."
-                  }
-                });
-              });
-            });
-          });
-        });
-      });
       describe("Initial State", () => {
         test("UserFormButton should be called 'Save User'", () => {
           renderComponent(true);
@@ -995,7 +904,6 @@ describe("<UserFormButtons />", () => {
           };
           beforeEach(() => {
             updateUser.mockResolvedValue(rawDbWorker);
-            fetchUser.mockResolvedValue(fetchedUser);
             useFormState.mockReturnValue(nonDidValidFormState);
             updateCalabrioUser.mockResolvedValue({ data: ["agent1", "agent2"]});
           });

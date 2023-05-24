@@ -247,6 +247,7 @@ describe("reducer", () => {
         },
         users: [],
         roles: [],
+        wfmErrors: [],
         wfmOptions: [],
         wfmOrg: []
       };
@@ -272,6 +273,7 @@ describe("reducer", () => {
         tenant: {},
         users: [],
         roles: [],
+        wfmErrors: [],
         wfmOptions: [],
         wfmOrg: []
       };
@@ -301,6 +303,7 @@ describe("reducer", () => {
         tenant: {},
         users: payload,
         roles: [],
+        wfmErrors: [],
         wfmOptions: [],
         wfmOrg: []
       };
@@ -330,7 +333,8 @@ describe("reducer", () => {
   });
   describe("loadWfmOrg", () => {
     test("should initialize a map from the offices map sent in", () => {
-      const payload = [
+      const payload = {
+        org: [
         {
           id: 1,
           name: "Administrator"
@@ -339,13 +343,29 @@ describe("reducer", () => {
           id: 2,
           name: "Agent"
         }
-      ];
+      ],
+      errors: [ "oh no" ],
+      People_Without_Team: [{ name: "billy" }]
+    };
       const action = {
         type: "loadWfmOrg",
         payload
       };
       const result = reducer(initialState, action);
-      expect(result.calabrioContext.wfmOrg).toEqual(payload);
+      expect(result.calabrioContext.wfmOrg).toEqual([
+        ...payload.org,
+        {
+          Id: "People_Without_Team",
+          Name: "Lost Souls",
+          People: [
+            {
+              name: "billy",
+            },
+          ]
+        }
+      ]);
+      expect(result.calabrioContext.wfmErrors).toEqual(payload.errors);
+
     });
   });
   describe("loadWfmOptions", () => {

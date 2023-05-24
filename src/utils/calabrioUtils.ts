@@ -360,6 +360,7 @@ export const getCalabrioWfmOrg = async (dispatch: any) => {
       type: "loadWfmOrg",
       payload: {
         org: orgData.businessUnits,
+        People_Without_Team: orgData.People_Without_Team,
         errors: org.data.errors
       }
     });

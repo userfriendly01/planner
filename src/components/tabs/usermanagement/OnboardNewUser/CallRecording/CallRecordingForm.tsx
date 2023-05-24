@@ -64,16 +64,22 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   }, [form.triton.profileId.value]);
 
   const initiateEditForm = () => {
-    console.warn("twilioWorker", twilioWorker);
-    const matchingProfiles = findMatchingQmProfiles(twilioWorker || form.nNumber, state.calabrioContext.users, setForm)
-    console.warn("FAITH matchingProfiles", matchingProfiles);
+    const matchingProfiles = findMatchingQmProfiles(twilioWorker || form.nNumber, users, setForm)
     if(matchingProfiles.length === 0){
       console.warn("No matching profile was found in Calabrio for this user");
       setScopeOnNewUser();
     } else if(matchingProfiles.length === 1){
       setScopeOnExistingUser(matchingProfiles[0]);
     } else {
+      console.warn("Multiple matching profiles were found in Calabrio for this user");
       setScopeOnExistingUser(matchingProfiles[0]);
+      setForm({
+        type: "SET_DISCREPANCIES",
+        payload: {
+          type: discrepancyType.CALABRIO_QM,
+          message: `Multiple (${matchingProfiles.length}) Calabrio Records Found for this user. Requires manual review/correction.`
+        }
+      });
     }
   };
 
@@ -125,104 +131,86 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
     let updated = false;
     console.log("User Record Found in Calabrio Users", userRecord);
 
-    if(userRecord){
-      if(userRecord.adLogin?.toLowerCase() !== `lm\\${form.nNumber.value.toLowerCase()}`){
-        console.warn("Windows Login does not match calabrio record");
-        const discrepancy: Discrepancy = {
-          type: discrepancyType.CALABRIO_QM,
-          message: "User is not correctly set up for screen recording in Calabrio."
-        };
-        setForm({
-          type: userFormActions.SET_DISCREPANCIES,
-          payload: discrepancy
-        });
-        updated = true;
-      }
-      if(userRecord.email?.toLowerCase() !== email){
-        const discrepancy: Discrepancy = {
-          type: discrepancyType.CALABRIO_QM,
-          message: "Calabrio Email does not match HR email. This could cause Calabrio Login issues"
-        };
-        setForm({
-          type: userFormActions.SET_DISCREPANCIES,
-          payload: discrepancy
-        });
-        updated = true;
-        console.warn("Email does not match calabrio record");
-      }
-      getCalabrioUser(userRecord.id).then((res: any) => {
-        const userGroups: any[] = [];
-        const userTeams: any[] = [];
-        const fetchedUser = res.data;
-        console.warn("Fetched Calabrio User: ", res);
-
-        groups.forEach(group => {
-          if(fetchedUser.scope.groups.some((groupId: number) => group.groupId === groupId)){
-            userGroups.push({
-              ...group,
-              checked: true,
-              partial: false
-            });
-          } else {
-            userGroups.push({
-              ...group,
-              checked: false,
-              partial: false
-            });
-          }
-        });
-
-        teams.forEach(team => {
-          if(fetchedUser.scope.teams.some((teamId: number) => team.groupId === teamId)){
-            userTeams.push({
-              ...team,
-              checked: true
-            });
-          } else {
-            userTeams.push({
-              ...team,
-              checked: false
-            });
-          }
-        });
-
-        setForm({
-          type: userFormActions.SET_CALABRIO_QM_USER,
-          payload: {
-            updated,
-            acdId: res.data.acdId,
-            id: userRecord.id,
-            email: userRecord.email,
-            team: fetchedUser.groupId ? teams.find(team => team.groupId === fetchedUser.groupId) : form.calabrio_qm.team.groupId,
-            roles: fetchedUser.roles || form.calabrio_qm.roles,
-            timezone: fetchedUser.timeZone || form.calabrio_qm.timezone,
-            scope: {
-              groups: userGroups,
-              teams: userTeams
-            }
-          }
-        });
-      }).catch(err => {
-        console.error("Failed to fetch Calabrio User.", err);
-      });
-    } else {
-      console.warn("No user was found in Calabrio with this email");
+    if(userRecord.adLogin?.toLowerCase() !== `lm\\${form.nNumber.value.toLowerCase()}`){
+      console.warn("Windows Login does not match calabrio record");
       const discrepancy: Discrepancy = {
         type: discrepancyType.CALABRIO_QM,
-        message: "No Record found in Calabrio."
+        message: "User is not correctly set up for screen recording in Calabrio."
       };
       setForm({
         type: userFormActions.SET_DISCREPANCIES,
         payload: discrepancy
       });
+      updated = true;
+    }
+    if(userRecord.email?.toLowerCase() !== email){
+      const discrepancy: Discrepancy = {
+        type: discrepancyType.CALABRIO_QM,
+        message: "Calabrio Email does not match HR email. This could cause Calabrio Login issues. This will require manual review/correction."
+      };
+      setForm({
+        type: userFormActions.SET_DISCREPANCIES,
+        payload: discrepancy
+      });
+      updated = true;
+      console.warn("Email does not match calabrio record");
+    }
+    getCalabrioUser(userRecord.id).then((res: any) => {
+      const userGroups: any[] = [];
+      const userTeams: any[] = [];
+      const fetchedUser = res.data;
+      console.warn("Fetched Calabrio User: ", res);
+
+      groups.forEach(group => {
+        if(fetchedUser.scope.groups.some((groupId: number) => group.groupId === groupId)){
+          userGroups.push({
+            ...group,
+            checked: true,
+            partial: false
+          });
+        } else {
+          userGroups.push({
+            ...group,
+            checked: false,
+            partial: false
+          });
+        }
+      });
+
+      teams.forEach(team => {
+        if(fetchedUser.scope.teams.some((teamId: number) => team.groupId === teamId)){
+          userTeams.push({
+            ...team,
+            checked: true
+          });
+        } else {
+          userTeams.push({
+            ...team,
+            checked: false
+          });
+        }
+      });
+
+      console.warn("FORM", form);
       setForm({
         type: userFormActions.SET_CALABRIO_QM_USER,
         payload: {
-          ...form.calabrio_qm,
-          updated: true
+          updated,
+          acdId: res.data.acdId,
+          id: userRecord.id,
+          email: userRecord.email,
+          team: fetchedUser.groupId && teams.find(team => team.groupId === fetchedUser.groupId),
+          roles: fetchedUser.roles || form.calabrio_qm.roles,
+          timezone: fetchedUser.timeZone || form.calabrio_qm.timezone,
+          scope: {
+            groups: userGroups,
+            teams: userTeams
+          }
         }
       });
-    }
+    }).catch(err => {
+      console.error("Failed to fetch Calabrio User.", err);
+    });
   };
 
   const getRoleOptions = () => {

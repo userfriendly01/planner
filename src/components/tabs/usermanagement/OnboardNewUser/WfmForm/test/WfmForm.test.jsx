@@ -100,7 +100,13 @@ describe("<WfmForm />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useFormDispatch.mockReturnValue(mockSetForm);
-    useFormState.mockReturnValue(initialFormState);
+    useFormState.mockReturnValue({
+      ...initialFormState,
+      triton: {
+        ...initialFormState.triton,
+        userFound: false
+      }
+    });
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       Dropdown,
@@ -158,8 +164,13 @@ describe("<WfmForm />", () => {
         test("formMode is update, nnumberinput is disabled", () => {
           const formState = {
             ...initialFormState,
-            formMode: "update"
+            formMode: "update",
+            triton: {
+              ...initialFormState.triton,
+              userFound: false
+            }
           };
+            
           useFormState.mockReturnValue(formState);
           renderComponent();
           render(Wrapper.mock.calls[0][0].children);
@@ -171,6 +182,10 @@ describe("<WfmForm />", () => {
         test("formMode is Delete, nnumberinput is disabled", () => {
           const formState = {
             ...initialFormState,
+            triton: {
+              ...initialFormState.triton,
+              userFound: false,
+            },
             formMode: "delete"
           };
           useFormState.mockReturnValue(formState);
@@ -188,6 +203,10 @@ describe("<WfmForm />", () => {
               nNumberFetchedUser: {
                 stuff: "yea"
               }
+            },
+            triton: {
+              ...initialFormState.triton,
+              userFound: false,
             }
           };
           useFormState.mockReturnValue(formState);
@@ -201,7 +220,11 @@ describe("<WfmForm />", () => {
         test("formmode is not update or delete, no form.nNumber.nNumberFetchedUser , nnumberinput is NOT disabled", () => {
           const formState = {
             ...initialFormState,
-            nNumber: {}
+            nNumber: {},
+            triton: {
+              ...initialFormState.triton,
+              userFound: false,
+            }
           };
           useFormState.mockReturnValue(formState);
           renderComponent();
