@@ -463,41 +463,41 @@ describe("CallRecordingForm", () => {
           });
         });
       });
-    });
-    describe("Timezone Dropdown", () => {
-      const form = {
-        ...initialFormState,
-        calabrio_qm: {
-          ...initialFormState.calabrio_qm,
-          scope: {
-            ...initialFormState.calabrio_qm.scope,
-            teams: [{
-              name: "Team 1",
-              id: 2
-            }],
-            groups: [{
-              name: "Group 1",
-              id: 2
-            }]
+      describe("Timezone Dropdown", () => {
+        const form = {
+          ...initialFormState,
+          calabrio_qm: {
+            ...initialFormState.calabrio_qm,
+            scope: {
+              ...initialFormState.calabrio_qm.scope,
+              teams: [{
+                name: "Team 1",
+                id: 2
+              }],
+              groups: [{
+                name: "Group 1",
+                id: 2
+              }]
+            }
           }
-        }
-      };
-      beforeEach(() => {
-        useFormState.mockReturnValue(form);
-      });
-      describe("updateValue is called", () => {
-        test("setForm is called with the appropriate params", () => {
-          render(<CallRecordingForm twilioWorker={twilioWorker} />);
-          expect(Dropdown.mock.calls.length).toBe(3);
-          expect(Dropdown.mock.calls[2][0].options).toBe(calabrioTimeZones);
-          const updateTimeZone = Dropdown.mock.calls[2][0].updateValue;
-          act(() => {
-            updateTimeZone(null, calabrioTimeZones[1]);
-          });
-          expect(mockSetForm).toHaveBeenCalledTimes(1);
-          expect(mockSetForm).toHaveBeenCalledWith({
-            type: "SET_CALABRIO_TIMEZONE",
-            payload: calabrioTimeZones[1]
+        };
+        beforeEach(() => {
+          useFormState.mockReturnValue(form);
+        });
+        describe("updateValue is called", () => {
+          test("setForm is called with the appropriate params", () => {
+            render(<CallRecordingForm twilioWorker={twilioWorker} />);
+            expect(Dropdown.mock.calls.length).toBe(3);
+            expect(Dropdown.mock.calls[2][0].options).toBe(calabrioTimeZones);
+            const updateTimeZone = Dropdown.mock.calls[2][0].updateValue;
+            act(() => {
+              updateTimeZone(null, calabrioTimeZones[1]);
+            });
+            expect(mockSetForm).toHaveBeenCalledTimes(1);
+            expect(mockSetForm).toHaveBeenCalledWith({
+              type: "SET_CALABRIO_TIMEZONE",
+              payload: calabrioTimeZones[1]
+            });
           });
         });
       });
@@ -665,11 +665,14 @@ describe("CallRecordingForm", () => {
         expect(mockSetForm).toHaveBeenCalledTimes(1);
         expect(console.warn).toHaveBeenCalledWith("No matching profile was found in Calabrio for this user");
       });
-
     });
     describe("multiple matching profiles were found for Calabrio User", () => {
-      const formState = {
+      const noRolesFormState = {
         ...initialFormState,
+        calabrio_qm: {
+          ...initialFormState.calabrio_qm,
+          roles: []
+        },
         formMode: "update",
         nNumber: {
           value: "n0222444",
@@ -695,12 +698,12 @@ describe("CallRecordingForm", () => {
         attributes: {
           email: "Faith.Cuneo@libertymutual.com"
         }
-      }
+      };
       beforeEach(() => {
         getCalabrioUser.mockResolvedValue({
           data: noRolesUser
         });
-        useFormState.mockReturnValue(formState);
+        useFormState.mockReturnValue(noRolesFormState);
       });
       test("Form is rendered as expected", async () => {
         render(<CallRecordingForm twilioWorker={tritonWorker} />);
@@ -724,7 +727,6 @@ describe("CallRecordingForm", () => {
               message: "Calabrio Email does not match HR email. This could cause Calabrio Login issues. This will require manual review/correction."
             }
           });
-          expect(mockSetForm.mock.calls[3][0]).toBe("butts");
           expect(mockSetForm).toHaveBeenCalledWith({
             type: "SET_CALABRIO_QM_USER",
             payload: {
