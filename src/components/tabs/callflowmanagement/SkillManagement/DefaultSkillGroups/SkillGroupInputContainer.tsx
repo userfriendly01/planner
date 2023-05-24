@@ -10,7 +10,7 @@ import {
 import { ActionTypes } from "../Skills.Interfaces";
 import {
   addSkillGroup,
-  addSkillGroupsSkill,
+  // addSkillGroupsSkill,
   deleteSkillGroup,
   updateSkillGroup
 } from "services";
@@ -107,14 +107,31 @@ const SkillGroupInputContainer = (props: any) => {
         status: ModalOverlayStatuses.SAVING
       });
       try {
-        const addGroupNameResponse = await addSkillGroup(skillGroupName);
-        setSkillGroupId(addGroupNameResponse.insertId);
-        const results = await Promise.allSettled(tableState.selected.map((skill: Skill) => {
-          return addSkillGroupsSkill(addGroupNameResponse.insertId, skill.ctmSkillId);
-        }));
-        handleResults(results);
+        const skillIds = tableState.selected.map((skill: Skill) => skill.ctmSkillId);
+
+        const requestBody: any = {
+          skill_group_nme: skillGroupName,
+          skillIds
+        };
+        console.log("$$$$$$$ requestBody", requestBody);
+        const addGroupNameResponse = await addSkillGroup(requestBody);
+        console.log("addGroupNameResponse", addGroupNameResponse);
+        setSkillGroupId(addGroupNameResponse[0].insertId); // todo: don't think I'll actually need this in state, I can refactor the update state function more
+        // const results = await Promise.allSettled(tableState.selected.map((skill: Skill) => {
+        //   return addSkillGroupsSkill(addGroupNameResponse.insertId, skill.ctmSkillId);
+        // }));
+        // handleResults(results);
+        setSaveResult({
+          message: "Request Successfully Processed",
+          status: ModalOverlayStatuses.SUCCESS
+        });
+        updateStateOnResolvedPromises(tableState.selected);
+        setTimeout(() => {
+          handleCloseConfirmation();
+          setAction(null);
+        }, timeouts.MODAL_OVERLAY);
       } catch (err) {
-        console.error("Unable to add skill grouping");
+        console.error("Error: Unable to add skill grouping");
         setSaveResult({
           message: "Request Failed",
           status: ModalOverlayStatuses.FAIL
@@ -143,49 +160,49 @@ const SkillGroupInputContainer = (props: any) => {
   };
 
 
-  const handleResults = (results: any[]) => {
-    const successfulPromiseSkills: any[] = [];
-    const rejectedPromiseSkills: any[] = [];
+  // const handleResults = (results: any[]) => {
+  //   const successfulPromiseSkills: any[] = [];
+  //   const rejectedPromiseSkills: any[] = [];
 
-    results.forEach((r, index) => {
-      if(r.status === "fulfilled"){
-        successfulPromiseSkills.push(tableState.selected[index]);
-      }
-      if(r.status === "rejected"){
-        rejectedPromiseSkills.push(tableState.selected[index]);
-      }
-    });
-    if(rejectedPromiseSkills.length === 0){
-      setSaveResult({
-        message: "Request Successfully Processed",
-        status: ModalOverlayStatuses.SUCCESS
-      });
-      updateStateOnResolvedPromises(successfulPromiseSkills);
-      setTimeout(() => {
-        handleCloseConfirmation();
-        setAction(null);
-      }, timeouts.MODAL_OVERLAY);
-    } else if (successfulPromiseSkills.length === 0){
-      setSaveResult({
-        message: "Skill Grouping was created, but all selected skills failed to add",
-        status: ModalOverlayStatuses.FAIL
-      });
-    } else {
-      let message = "Skill group was created, but the following skills failed to be added: ";
-      rejectedPromiseSkills.forEach((skill: any, index: number) => {
-        if(index !== rejectedPromiseSkills.length - 1){
-          message = message + skill.name + ", ";
-        } else {
-          message = message + skill.name;
-        }
-      });
-      updateStateOnResolvedPromises(successfulPromiseSkills);
-      setSaveResult({
-        message,
-        status: ModalOverlayStatuses.PARTIAL_FAIL
-      });
-    }
-  };
+  //   results.forEach((r, index) => {
+  //     if(r.status === "fulfilled"){
+  //       successfulPromiseSkills.push(tableState.selected[index]);
+  //     }
+  //     if(r.status === "rejected"){
+  //       rejectedPromiseSkills.push(tableState.selected[index]);
+  //     }
+  //   });
+  //   if(rejectedPromiseSkills.length === 0){
+  //     setSaveResult({
+  //       message: "Request Successfully Processed",
+  //       status: ModalOverlayStatuses.SUCCESS
+  //     });
+  //     updateStateOnResolvedPromises(successfulPromiseSkills);
+  //     setTimeout(() => {
+  //       handleCloseConfirmation();
+  //       setAction(null);
+  //     }, timeouts.MODAL_OVERLAY);
+  //   } else if (successfulPromiseSkills.length === 0){
+  //     setSaveResult({
+  //       message: "Skill Grouping was created, but all selected skills failed to add",
+  //       status: ModalOverlayStatuses.FAIL
+  //     });
+  //   } else {
+  //     let message = "Skill group was created, but the following skills failed to be added: ";
+  //     rejectedPromiseSkills.forEach((skill: any, index: number) => {
+  //       if(index !== rejectedPromiseSkills.length - 1){
+  //         message = message + skill.name + ", ";
+  //       } else {
+  //         message = message + skill.name;
+  //       }
+  //     });
+  //     updateStateOnResolvedPromises(successfulPromiseSkills);
+  //     setSaveResult({
+  //       message,
+  //       status: ModalOverlayStatuses.PARTIAL_FAIL
+  //     });
+  //   }
+  // };
 
   const handleEditSkillGroup = () => {
     const requestBody: any = {};
@@ -196,7 +213,7 @@ const SkillGroupInputContainer = (props: any) => {
         status: ModalOverlayStatuses.SAVING
       });
       try {
-        const result = await updateSkillGroup(skillGroupToEditDelete.value, requestBody);
+        await updateSkillGroup(skillGroupToEditDelete.value, requestBody);
         setSaveResult({
           message: "Request Successfully Processed",
           status: ModalOverlayStatuses.SUCCESS
