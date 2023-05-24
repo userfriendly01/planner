@@ -142,7 +142,7 @@ const ProfileSettingsTable = props => {
                       </TableDataFlex>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatAccessGroupData(profile?.accessGroup?.accessGroupName)}</TableText>
+                      <TableText>{formatAccessGroupData(profile?.access_group_nme)}</TableText>
                     </CustomTableData>
                     {
                       checkIfPO(loggedInUser, environment) ?
