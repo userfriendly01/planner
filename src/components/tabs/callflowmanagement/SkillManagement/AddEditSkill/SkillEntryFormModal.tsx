@@ -85,7 +85,7 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
 
   const skFormState: SkillFormState = skillFormState();
   const skFormDispatch = skillFormDispatch();
-  console.log("sskillFormState", skFormState);
+  console.log("skill form state", skFormState);
 
   const adminDispatch = useAdminDispatch();
 
@@ -210,7 +210,7 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
     try {
 
       const response = await createSkill(body);
-      console.log("%%%%% response", response);
+
       if (response.status === 200) {
         setSaveResult({
           message: "Request Successfully Processed",
@@ -298,7 +298,6 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
             multiple={true}
             label="Profiles"
             updateValue={(e:any, values: any) => {
-              console.log(values);
               skFormDispatch({
                 type: skillFormActions.SET_PROFILE_IDS,
                 payload: [...values.map((val: any) => val.value)]
@@ -484,7 +483,6 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
                 }
               })}
               updateValue={(maskedValue: string, unmaskedValue: string, isValid: boolean, e164Number: string) => {
-                console.log(`maskedValue: ${maskedValue} - "unmaskedValue: ${unmaskedValue} - isValid: ${isValid} - e164Number: ${e164Number}`);
                 skFormDispatch({
                   type: skillFormActions.SET_VH_CALL_TARGET,
                   payload: {
