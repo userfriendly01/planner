@@ -1,15 +1,20 @@
 import UserEntryForm from "../UserEntryFormWrapper";
 import {
+  CallRecordingForm,
+  DeleteTritonUser,
   ModalOverlay,
   StyledButton,
-  UserFormButtons
+  UserFormButtons,
+  WfmForm
 } from "components";
 import {
   useAdminState,
   useFormState,
-  useFormDispatch
+  useFormDispatch,
+  userFormActions
 } from "context";
 import { formModes } from "globals";
+import { Checkbox } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 import {
@@ -20,11 +25,19 @@ import {
   setupMockedComponents,
   mockWorkers,
   initialFormState,
-  initialTestState
+  initialTestState,
+  waitFor
 } from "testUtils";
 
 jest.mock("react-router-dom", () => ({
   useNavigate: jest.fn()
+}));
+
+jest.mock("@mui/material", () => ({
+  Checkbox: jest.fn(),
+  Divider: jest.fn(),
+  Tabs: jest.fn(),
+  Tab: jest.fn()
 }));
 
 jest.mock("components", () => ({
@@ -34,7 +47,8 @@ jest.mock("components", () => ({
   ModalOverlay: jest.fn(),
   BasicFormInfo: jest.fn(),
   StyledButton: jest.fn(),
-  UserFormButtons: jest.fn()
+  UserFormButtons: jest.fn(),
+  WfmForm: jest.fn()
 }));
 
 jest.mock("context", () => ({
@@ -56,14 +70,19 @@ describe("<UserEntryForm />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.resetAllMocks();
     useFormDispatch.mockReturnValue(mockSetForm);
-    useFormState.mockReturnValue(initialFormState);
+    useFormState.mockReturnValue({ ...initialFormState });
     useAdminState.mockReturnValue(initialTestState);
     useNavigate.mockReturnValue(mockNavigate);
     setupMockedComponents({
+      CallRecordingForm,
+      DeleteTritonUser,
+      Checkbox,
       ModalOverlay,
       UserFormButtons,
-      StyledButton
+      StyledButton,
+      WfmForm
     });
   });
 
@@ -76,12 +95,13 @@ describe("<UserEntryForm />", () => {
   };
   describe("Initial State", () => {
     test("Should render the correct initial state", () => {
-      renderComponent();
+      const { unmount } = renderComponent();
       expect(ModalOverlay.mock.calls.length).toBe(0);
+      act(() => unmount());
     });
     describe("Modal Overlay", () => {
       test("Modal Overlay should render when loading.saveUser", () => {
-        renderComponent();
+        const { unmount } = renderComponent();
         act(() => {
           const updateLoading = UserFormButtons.mock.calls[0][0].updateLoading;
           updateLoading({
@@ -96,6 +116,7 @@ describe("<UserEntryForm />", () => {
           message: "Saving User..."
         };
         expectOnlyPassedProps(ModalOverlay, expectedModalOverlayProps, 0);
+        act(() => unmount());
       });
       test("loading should be updated when ModalOverlay handleClose is called", () => {
         const rendered = renderComponent();
@@ -115,12 +136,14 @@ describe("<UserEntryForm />", () => {
         });
         expectMockedComponent(rendered, ModalOverlay, 0);
         expect(rendered.container).not.toHaveTextContent("ModalOverlay");
+        act(() => rendered.unmount());
       });
     });
     describe("Header", () => {
       test(`Header should read 'Add a User' when form.formMode === ${formModes.INSERT}`, () => {
-        const rendered = renderComponent();
-        expect(rendered.container).toHaveTextContent("Onboard New User");
+        const { container, unmount } = renderComponent();
+        expect(container).toHaveTextContent("Onboard New User");
+        act(() => unmount());
       });
       test(`Header should read 'Edit User' & user's name when form.formMode === ${formModes.UPDATE}`, () => {
         useFormState.mockReturnValue({
@@ -130,13 +153,14 @@ describe("<UserEntryForm />", () => {
             value: "n222354"
           }
         });
-        const rendered = render(
+        const { container, unmount } = render(
           <UserEntryForm
             handleClose={mockHandleClose}
           />
         );
-        expect(rendered.container).toHaveTextContent("Edit User");
-        expect(rendered.container).toHaveTextContent("Susan Delfino");
+        expect(container).toHaveTextContent("Edit User");
+        expect(container).toHaveTextContent("Susan Delfino");
+        act(() => unmount());
       });
     });
     describe("Discrepancies are present", () => {
@@ -152,21 +176,154 @@ describe("<UserEntryForm />", () => {
         });
       });
       test("Should render discrepancy messages", () => {
-        const rendered = renderComponent();
+        const { container, unmount } = renderComponent();
         expect(ModalOverlay.mock.calls.length).toBe(0);
-        expect(rendered.container).toHaveTextContent("Discrepencies have been found for this worker. They will be corrected when you hit 'Save User' unless otherwise specified ");
-        expect(rendered.container).toHaveTextContent("Missing Profile");
+        expect(container).toHaveTextContent("Discrepencies have been found for this worker. They will be corrected when you hit 'Save User' unless otherwise specified ");
+        expect(container).toHaveTextContent("Missing Profile");
+        act(() => unmount());
+      });
+    });
+    describe("check userFound boxes", () => {
+      describe("triton checkbox", () => {
+        test("updates triton.userFound", async () => {
+          const { unmount } = renderComponent();
+          const checkTritonBox = Checkbox.mock.calls[0][0].onChange;
+          act(() => checkTritonBox({
+            target: {
+              checked: false
+            }
+          }));
+          expect(mockSetForm).toHaveBeenCalledTimes(3);
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: userFormActions.UPDATE_USER_FOUND,
+            payload: {
+              system: "triton",
+              isFound: true
+            }
+          });
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: userFormActions.UPDATE_USER_FOUND,
+            payload: {
+              system: "calabrio_qm",
+              isFound: true
+            }
+          });
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: userFormActions.UPDATE_USER_FOUND,
+            payload: {
+              system: "triton",
+              isFound: false
+            }
+          });
+          act(() => unmount());
+        });
+      });
+      describe("calabrio QM", () => {
+        beforeEach(() => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            calabrio_qm: {
+              userFound: true
+            },
+            calabrio_wfm: {
+              userFound: true
+            }
+          });
+        });
+        test("updates calabrio_qm.userFound", () => {
+          const { unmount } = renderComponent();
+          expect(WfmForm).toHaveBeenCalledTimes(1);
+          expect(CallRecordingForm).toHaveBeenCalledTimes(1);
+          const checkQMBox = Checkbox.mock.calls[1][0].onChange;
+          act(() => checkQMBox({
+            target: {
+              checked: false
+            }
+          }));
+          expect(mockSetForm).toHaveBeenCalledTimes(3);
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: userFormActions.UPDATE_USER_FOUND,
+            payload: {
+              system: "triton",
+              isFound: true
+            }
+          });
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: userFormActions.UPDATE_USER_FOUND,
+            payload: {
+              system: "calabrio_qm",
+              isFound: true
+            }
+          });
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: userFormActions.UPDATE_USER_FOUND,
+            payload: {
+              system: "calabrio_qm",
+              isFound: false
+            }
+          });
+          act(() => unmount());
+        });
+      });
+      describe("calabrio WFM", () => {
+        test("updates calabrio_wfm.userFound", () => {
+          const { unmount } = renderComponent();
+          const checkWfmBox = Checkbox.mock.calls[2][0].onChange;
+          act(() => checkWfmBox({
+            target: {
+              checked: true
+            }
+          }));
+          expect(mockSetForm).toHaveBeenCalledTimes(3);
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: userFormActions.UPDATE_USER_FOUND,
+            payload: {
+              system: "triton",
+              isFound: true
+            }
+          });
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: userFormActions.UPDATE_USER_FOUND,
+            payload: {
+              system: "calabrio_qm",
+              isFound: true
+            }
+          });
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: userFormActions.UPDATE_USER_FOUND,
+            payload: {
+              system: "calabrio_wfm",
+              isFound: true
+            }
+          });
+          act(() => unmount());
+        });
       });
     });
     describe("handleClose", () => {
       test("when handle close is called from child components, setForm is called", () => {
-        renderComponent();
+        const { unmount } = renderComponent();
         const handleClose = UserFormButtons.mock.calls[0][0].handleClose;
         act(() => {
           handleClose();
         });
         expect(mockNavigate).toHaveBeenCalledTimes(1);
         expect(mockNavigate).toHaveBeenCalledWith(-1);
+        act(() => unmount());
+      });
+    });
+    describe("formMode === DELETE", () => {
+      beforeEach(() => {
+        useFormState.mockReturnValue({
+          ...initialFormState,
+          formMode: formModes.DELETE
+        });
+      });
+      test("Should render the correct initial state", () => {
+        const { unmount, container } = renderComponent();
+        expect(container).toHaveTextContent("Deactivate User");
+        expect(DeleteTritonUser.mock.calls.length).toBe(1);
+        act(() => unmount());
       });
     });
   });

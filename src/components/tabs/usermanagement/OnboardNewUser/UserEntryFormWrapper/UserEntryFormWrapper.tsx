@@ -60,13 +60,10 @@ const UserEntryForm = () => {
 
   const initiateUpdateForm = async () => {
     const res = await identifyUserProfiles(form, setForm, state);
-    console.log("FAITH RES: ", res, form);
-    setTimeout(async () => {
-      console.log("FAITH Form after timeout: ", res, form);
-      // await identifyProfileDiscrepancies(form, setForm, state);
-    }, 500);
-    //Trigger form loaded
+    console.warn("FAITH RES: ", res, form);
+    identifyProfileDiscrepancies(form, setForm, state);
   };
+  
   React.useEffect(() => {
     if(form.formMode === formModes.INSERT){
       setForm({

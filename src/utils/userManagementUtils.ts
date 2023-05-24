@@ -160,7 +160,8 @@ export const identifyProfileDiscrepancies = (form: UserFormState, setForm: any, 
   const calabrioWfmNNumber = "";
   const calabrioQMEmail = "";
   const calabrioQmAcdId = "";
-      
+  
+  console.warn("HERE ARE DISCREPANCIES!");
   //If it was not possible to find an n# - set discrepancy
   if(!form.nNumber.value){
     setForm({
