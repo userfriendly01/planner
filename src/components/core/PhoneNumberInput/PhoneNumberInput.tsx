@@ -71,6 +71,7 @@ export interface PhoneNumberInputProps {
   id: string,
   label: string,
   number: string,
+  style?: any,
   onBlur?: () => void,
   showError?: boolean,
   updateValue: (maskedValue: string, unmaskedValue: string, isNumberValid: boolean, e164Number: string) => void,
@@ -88,6 +89,7 @@ const PhoneNumberInput = (props: PhoneNumberInputProps) => {
     number,
     onBlur,
     showError,
+    style,
     updateValue,
     icon = null
   } = props;
@@ -113,6 +115,7 @@ const PhoneNumberInput = (props: PhoneNumberInputProps) => {
       label={label}
       name={label}
       onBlur={onBlur}
+      style={style}
       onChange={({
         target: {
           value: maskedValue
