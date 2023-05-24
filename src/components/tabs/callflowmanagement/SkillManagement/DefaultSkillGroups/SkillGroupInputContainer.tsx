@@ -224,14 +224,12 @@ const SkillGroupInputContainer = (props: any) => {
       }
 
       // determine if skills in the skill group changed
-      // if so, how do we update the skill-group skill table? Who handles that logic?  
-      // triton admin, or the contact manager???
       let skillsHaveChanged = false;
       const existingSkillInSkillGroup: number[] = skills.filter(sk => sk.ctmSkillGroups.find(skg => skg.skillGroupId === skillGroupToEditDelete.value))?.slice().map(sk => sk.ctmSkillId);
       const selectedSkills: number[] = tableState.selected.slice().map((sk: Skill) => sk.ctmSkillId);
 
       // check if the selected skills are different from the existing
-      const difference = _.xor(existingSkillInSkillGroup, selectedSkills)
+      const difference = _.xor(existingSkillInSkillGroup, selectedSkills);
 
       if (difference.length > 0) {
         skillsHaveChanged = true;
