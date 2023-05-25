@@ -202,6 +202,7 @@ describe("profileEntryFormReducer", () => {
           value: false,
           updated: true
         },
+        accessGroupIdUpdated: true,
         accessGroupId: null
       };
       const action = {
@@ -224,6 +225,7 @@ describe("profileEntryFormReducer", () => {
           value: true,
           updated: true
         },
+        accessGroupIdUpdated: true,
         accessGroupId: 123
       };
       const action = {
@@ -242,7 +244,8 @@ describe("profileEntryFormReducer", () => {
     test("should update access group id as per payload", () => {
       const expectedState = {
         ...initialProfileEntryFormState,
-        accessGroupId: 234
+        accessGroupId: 234,
+        accessGroupIdUpdated: true
       };
       const action = {
         type: profileEntryFormActions.UPDATE_ACCESS_GROUP_ID,

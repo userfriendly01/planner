@@ -65,7 +65,7 @@ const ProfileAccessGroupField = (props: ProfileAccessGroupFieldProps) => {
     <ProfileDropdownRow>
       <AccessGroupDropdownRowItem>
         <Dropdown
-          label="Access Groups"
+          label="Access Groups *"
           disabled={!enableDropDown}
           styles={{
             "width": "385px",

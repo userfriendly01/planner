@@ -152,13 +152,15 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
           value: !state[action.fieldKey].value,
           updated: true
         },
-        accessGroupId: state[action.fieldKey].value?null:state.accessGroupId
+        accessGroupId: state[action.fieldKey].value?null:state.accessGroupId,
+        accessGroupIdUpdated: true
       };
     }
     case profileEntryFormActions.UPDATE_ACCESS_GROUP_ID: {
       return {
         ...state,
-        accessGroupId: action.payload
+        accessGroupId: action.payload,
+        accessGroupIdUpdated: true
       };
     }
     case profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE: {

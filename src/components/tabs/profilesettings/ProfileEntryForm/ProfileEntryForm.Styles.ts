@@ -137,12 +137,13 @@ export const AccessGroupDropdownRowItem = styled.div`
   &:nth-child(1) {
     display: flex;
     padding-right: 8px;
-    width: 80%;
+    padding-top: 1.5px;
+    width: 90%;
   }
   &:nth-child(2) {
     display: flex;
     justify-content: center;
-    width: 20%;
+    width: 10%;
   }
 `;
 

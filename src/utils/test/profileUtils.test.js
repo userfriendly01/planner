@@ -285,7 +285,13 @@ describe("profileUtils", () => {
       operatingUnit: {
         ou_sid: "123",
         ou_name: "hello"
-      }
+      },
+      accessGroup: {
+        value: true,
+        updated: true
+      },
+      accessGroupId: 2,
+      accessGroupIdUpdated: true
     };
 
     const expected = {
@@ -329,8 +335,9 @@ describe("profileUtils", () => {
           skill_nme: "Gold"
         }
       ],
-      voice_mail_transcription_i: false
-    }
+      voice_mail_transcription_i: false,
+      access_group_id: 2
+    };
 
     test("should return a formatted call tag with one underscore", () => {
       expect(createProfilePayload(form)).toStrictEqual(expected);
@@ -441,7 +448,13 @@ describe("profileUtils", () => {
       operatingUnit: {
         ou_name: "hello",
         ou_sid: "123"
-      }
+      },
+      accessGroup: {
+        value: true,
+        updated: true
+      },
+      accessGroupId: 2,
+      accessGroupIdUpdated: true
     };
 
     const expected = {
@@ -485,7 +498,8 @@ describe("profileUtils", () => {
       ],
       voice_mail_transcription_i: false,
       operating_unit_sid: "123",
-      operating_unit_nme: "hello"
+      operating_unit_nme: "hello",
+      access_group_id: 2
     };
 
     test("should return a formatted call tag with one underscore", () => {
