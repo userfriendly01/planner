@@ -133,10 +133,10 @@ const SkillGroupInputContainer = (props: any) => {
         setTimeout(() => {
           handleCloseConfirmation();
           setAction(null);
-          setTableState({
-            ...tableState,
-            selected: []
-          });
+          // setTableState({
+          //   ...tableState,
+          //   selected: []
+          // });
         }, timeouts.MODAL_OVERLAY);
       } catch (err) {
         console.error("Error: Unable to add skill grouping");
@@ -186,10 +186,10 @@ const SkillGroupInputContainer = (props: any) => {
         setTimeout(() => {
           handleCloseConfirmation();
           setAction(null);
-          setTableState({
-            ...tableState,
-            selected: []
-          });
+          // setTableState({
+          //   ...tableState,
+          //   selected: []
+          // });
         }, timeouts.MODAL_OVERLAY);
       } catch (err) {
         console.error("Error while editing skill grouping", requestBody, err);
@@ -277,10 +277,10 @@ const SkillGroupInputContainer = (props: any) => {
         setTimeout(() => {
           handleCloseConfirmation();
           setAction(null);
-          setTableState({
-            ...tableState,
-            selected: []
-          });
+          // setTableState({
+          //   ...tableState,
+          //   selected: []
+          // });
         }, timeouts.MODAL_OVERLAY);
       } catch (err) {
         console.error("Unable to add skill grouping", err);
