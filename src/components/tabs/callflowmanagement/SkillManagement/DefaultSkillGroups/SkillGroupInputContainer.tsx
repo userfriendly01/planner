@@ -95,11 +95,11 @@ const SkillGroupInputContainer = (props: any) => {
       return false;
     }
     if (action === ActionTypes.ADD) {
-      skillGroupNameExists = skillGroups.find((sg: any) => sg.skillGroupNme.toLowerCase() === skillGroupName.toLowerCase()) ? true : false;
+      skillGroupNameExists = skillGroups.find((sg: any) => sg.skillGroupNme.toLowerCase() === skillGroupName.trim().toLowerCase()) ? true : false;
     } else if (action === ActionTypes.EDIT) {
       // it can have the same name as itself, but no other skillgroups
       const allOtherSkillgroups = skillGroups.filter(sg => sg.skillGroupId !== skillGroupToEditDelete.value);
-      skillGroupNameExists = allOtherSkillgroups.find(sg => sg.skillGroupNme.toLowerCase() === skillGroupName.toLowerCase()) ? true : false;
+      skillGroupNameExists = allOtherSkillgroups.find(sg => sg.skillGroupNme.toLowerCase() === skillGroupName.trim().toLowerCase()) ? true : false;
     }
     return skillGroupNameExists;
   };
@@ -115,7 +115,7 @@ const SkillGroupInputContainer = (props: any) => {
         const skillIds = tableState.selected.map((skill: Skill) => skill.ctmSkillId);
 
         const requestBody: any = {
-          skill_group_nme: skillGroupName,
+          skill_group_nme: skillGroupName.trim(),
           skillIds
         };
         console.log("$$$$$$$ requestBody", requestBody);
@@ -206,7 +206,7 @@ const SkillGroupInputContainer = (props: any) => {
 
       // determine if name changed. if so, add skillGroupName to requestbody
       if (skillGroupName !== skillGroupToEditDelete.label) {
-        requestBody.skillGroupName = skillGroupName;
+        requestBody.skillGroupName = skillGroupName.trim();
       }
 
       // determine if skills in the skill group changed
@@ -344,7 +344,7 @@ const SkillGroupInputContainer = (props: any) => {
       )}
       {action !== ActionTypes.DELETE && (
         <TextField
-          onChange={(event: any) => setSkillGroupName(event.target.value.trim())}
+          onChange={(event: any) => setSkillGroupName(event.target.value)}
           label="Skill Group Name"
           value={skillGroupName}
           helperText={errorText}

@@ -40,7 +40,10 @@ export const getValidSkillsObject = (skillsObject?: WorkerAttributeSkills): Work
 export const formatSkillGroups = (skillsArray: Skill[]): any[] => {
   // filter through the skills that have skillGroups (and levels so they are legit in twilio)
   // and group them by skillGroup
-  const skillsWithGroups = skillsArray.filter(s => s.ctmSkillGroups.length > 0 && s.levels);
+  // TODO: COMMENT THIS BACK IN AND THE ONE BELOW BACK OUT???? or dont. i think i want to just leave it
+  // const skillsWithGroups = skillsArray.filter(s => s.ctmSkillGroups.length > 0 && s.levels);
+  const skillsWithGroups = skillsArray.filter(s => s.ctmSkillGroups.length > 0);
+
   const groups: any[] = [];
   skillsWithGroups.forEach(sk => {
     sk.ctmSkillGroups.forEach(group => {
