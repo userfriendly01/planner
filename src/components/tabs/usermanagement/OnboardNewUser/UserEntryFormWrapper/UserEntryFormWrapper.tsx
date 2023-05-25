@@ -33,7 +33,11 @@ import {
   identifyUserProfiles,
   identifyProfileDiscrepancies
 } from "utils";
-import { formModes } from "globals";
+import {
+  Worker,
+  formModes,
+  discrepancyType
+} from "globals";
 import { Checkbox } from "@mui/material";
 
 const UserEntryForm = () => {
@@ -64,6 +68,26 @@ const UserEntryForm = () => {
     identifyProfileDiscrepancies(form, setForm, state);
   };
   
+  React.useEffect(() => {
+    if(form.formMode === formModes.INSERT){
+      const workerFound = workers.find((w: Worker) => w.attributes?.n_number?.toLowerCase() === form.nNumber.value?.toLowerCase());
+      if(workerFound){
+        setForm({
+          type: userFormActions.SET_DISCREPANCIES,
+          payload: {
+            type: discrepancyType.GENERAL,
+            message: "This user already seems to have a Triton Record. Please cancel out of this form and edit their worker instead."
+          }
+        });
+      } else {
+        setForm({
+          type: userFormActions.CLEAR_DISCREPANCY,
+          payload:"This user already seems to have a Triton Record. Please cancel out of this form and edit their worker instead."
+        });
+      } 
+    }
+  }, [form.nNumber.nNumberFetchedUser]);
+
   React.useEffect(() => {
     if(form.formMode === formModes.INSERT){
       setForm({
@@ -149,6 +173,7 @@ const UserEntryForm = () => {
         <h2>Triton User Settings</h2>
         { form.formMode !== formModes.DELETE &&
           <Checkbox
+            disabled={form.triton.userFound}
             checked={form.triton.userFound}
             onChange={(event: any) => handleCheckbox(event.target.checked, "triton")}
           />
@@ -170,6 +195,7 @@ const UserEntryForm = () => {
         <h2>Calabrio Quality Management User Settings</h2>
         { form.formMode !== formModes.DELETE &&
           <Checkbox
+            disabled={form.calabrio_qm.userFound}
             checked={form.calabrio_qm.userFound}
             onChange={(event: any) => handleCheckbox(event.target.checked, "calabrio_qm")}
           />

@@ -17,3 +17,9 @@ export const Row = styled.div<{align?: string}>`
 export const Button = styled.button`
   margin: 0px 5px;
 `;
+
+export const OptionalColumnRow = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+`;

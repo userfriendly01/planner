@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  Button,
+  OptionalColumnRow,
   Row,
   Wrapper
 } from "./WfmForm.Styles";
@@ -34,15 +34,15 @@ import {
   formModes
 } from "globals";
 import {
+  daysOfTheWeekOptions,
   getWfmBusinessUnits,
   getWfmTeams,
   getWfmOptions,
-  calabrioTimeZones,
-  isArrayOptionAdded
+  isArrayOptionAdded //FYI for whoever does Edit
 } from "utils";
 import WFMLoadRetryModal from "../../BulkChanges/WFMLoadRetryModal";
 
-const WfmForm = (props: any) => {
+const WfmForm = () => {
   const state = useAdminState();
   const form = useFormState();
   const setForm = useFormDispatch();
@@ -56,16 +56,25 @@ const WfmForm = (props: any) => {
     startDate: null
   });
   const [ skillFields, setSkillFields ] = React.useState({
-    skills: form.calabrio_wfm.PersonSkills || [],
+    skills: [],
     startDate: null
   });
   const [ rotationFields, setRotationFields ] = React.useState({
-    id: [],
+    id: null,
     startDate: null,
     startWeek: null
   });
+  const [ optionalColumns, setOptionalColumns ] = React.useState([]);
+
   const [ optionsByBusinessUnit, setOptionsByBusinessUnit ] = React.useState<any>({});
-  const [ scheduling, setScheduling ] = React.useState(false);
+  const scheduleFields = {
+    personStartDate: form.calabrio_wfm.EmploymentStartDate,
+    teamId: teamFields.id,
+    teamStartDate: teamFields.startDate,
+    contractId: form.calabrio_wfm.ContractId,
+    contractScheduleId: form.calabrio_wfm.ContractScheduleId,
+    partTimePercentageId: form.calabrio_wfm.PartTimePercentageId
+  };
 
   console.log("FAITH optionsByBusinessUnit", optionsByBusinessUnit);
   console.log("FAITH form", form);
@@ -74,6 +83,28 @@ const WfmForm = (props: any) => {
     const trimmedOptions = getWfmOptions(state, form.calabrio_wfm.BusinessUnitId);
     setOptionsByBusinessUnit(trimmedOptions);
   }, [form.calabrio_wfm.BusinessUnitId]);
+
+  React.useEffect(() => {
+    let validOptionalColumns: any[] = [];
+
+    optionalColumns.forEach((c:any) => {
+      if(c.columnValue && c.columnValue.length > 0){
+        validOptionalColumns.push(c);
+      }
+    });
+
+    if(validOptionalColumns !== form.calabrio_wfm.OptionalColumns){
+      setForm({
+        type: userFormActions.SET_WFM_OPTIONAL_COLUMNS,
+        payload: validOptionalColumns.map((o:any) => {
+          return {
+            Id: o.Id,
+            Value: o.columnValue
+          }
+        })
+      });
+    }
+  }, [optionalColumns]);
 
   React.useEffect(() => {
     if(teamFields.id && teamFields.startDate){
@@ -137,7 +168,7 @@ const WfmForm = (props: any) => {
       setForm({
         type: userFormActions.SET_WFM_AVAILABILITY,
         payload: {
-          id: [],  // FAITH LOOK HERE: why is this an array??? - Kaleigh
+          id: "",
           startDate: null
         }
       });
@@ -145,7 +176,6 @@ const WfmForm = (props: any) => {
   }, [availabilityFields]);
 
   React.useEffect(() => {
-    console.log("FAITH Fetched User!");
     const worker = form.nNumber.nNumberFetchedUser;
     if(worker){
       setForm({
@@ -172,9 +202,7 @@ const WfmForm = (props: any) => {
     }
   }, [form.nNumber.nNumberFetchedUser]);
  
-    //Site isnt needed for Create User but its part of a users payload
-    //Is Team Start Date different from Person Start date?
-    //options have to be in the applicable BU/team and if the BU/Team changes it has to validate the existing selections
+  //options have to be in the applicable BU/team and if the BU/Team changes it has to validate the existing selections
 
   const generateDropdownOptionArray = (optionsArray: any[]) => {
     if(optionsArray){
@@ -198,35 +226,27 @@ const WfmForm = (props: any) => {
     }
   };
 
+  const requiredFieldMissing = (field: string, fields: any) => {
+    let populatedFields = false;
+    let fieldMissing = false;
+    Object.keys(fields).forEach((key: any) => {
+      if(key === field && (!fields[key] || fields[key].length === 0)){
+        fieldMissing = true;
+      } else if(fields[key]?.length > 0){
+        populatedFields = true
+      }
+    });
+    return populatedFields && fieldMissing;
+  };
+
   return (
     <Wrapper>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
+      { state.calabrioContext.wfmOptions?.length && state.calabrioContext.wfmOrg?.length ?
+      <>
         <Row>
-          {!form.triton.userFound &&
-            <NNumberInput
-              disabled={(form.formMode === formModes.UPDATE) || (form.nNumber.nNumberFetchedUser ? true : false) || form.formMode === formModes.DELETE}
-              fetchedUser={form.nNumber.nNumberFetchedUser}
-              label="N Number *"
-              onClear={() => setForm({ type: userFormActions.CLEAR_N_NUMBER })}
-              onComplete={(fetchedUser: any, nNumber: any) => setForm({
-                type: userFormActions.COMPLETE_N_NUMBER,
-                payload: {
-                  nNumber,
-                  fetchedUser
-                }
-              })}
-              onUpdate={(nNumber: string) => {
-                setForm({
-                  type: userFormActions.UPDATE_N_NUMBER,
-                  payload: nNumber
-                });
-              }}
-              value={form.nNumber.value}
-            />
-          }
           <Dropdown
             disabled={!isAdd}
-            error={false}
             label={"Business Unit *"}
             styles={{
               width: "250px",
@@ -237,12 +257,35 @@ const WfmForm = (props: any) => {
               type: userFormActions.SET_WFM_BUSINESS_UNIT,
               payload: newValue.value
             })}
-            value={generateDropdownOption(getWfmBusinessUnits(state).find((bu: any) => bu.Id === form.calabrio_wfm.BusinessUnitId))}
+            value={generateDropdownOption(getWfmBusinessUnits(state)?.find((bu: any) => bu.Id === form.calabrio_wfm.BusinessUnitId))}
+          />
+          <Dropdown
+            disabled={!isAdd}
+            error={requiredFieldMissing("id", teamFields)}
+            label={"Team"}
+            styles={{
+              width: "250px"
+            }}
+            options={generateDropdownOptionArray(getWfmTeams(state, form.calabrio_wfm.BusinessUnitId))}
+            updateValue={(event: any, newValue: any) => setTeamFields({
+              ...teamFields,
+              id: newValue.value
+            })}
+            value={generateDropdownOption(getWfmTeams(state, form.calabrio_wfm.BusinessUnitId).find((t: any) => t.Id === teamFields.id))}
+          />
+          <DatePicker
+            label="Team Start Date"
+            disabled={!isAdd}
+            value={teamFields.startDate}
+            onChange={(newValue) => {
+              setTeamFields({
+                ...teamFields,
+                startDate: newValue ? new Date(newValue).toLocaleDateString(): newValue
+              })}
+            } 
+            renderInput={props => <TextField {...props} error={requiredFieldMissing("startDate", teamFields)} />}
           />
         </Row>
-        {/* FAITH LOOK HERE!  I added the .length here because I assumed you only wanted to show these if we have the options and org loaded.  Test was failing without the .length - KALEIGH*/}
-      { state.calabrioContext.wfmOptions?.length && state.calabrioContext.wfmOrg?.length ?
-      <>
         <Row>
           <TextField
             disabled={!isAdd}
@@ -265,13 +308,11 @@ const WfmForm = (props: any) => {
                 placement="right"
                 title="Use HR Email">
                 <IconButton
-                  data-testid="clearButton"
                   edge="end"
-                  aria-label="clear the search field"
                   onClick={() => 
                     setForm({
                       type: userFormActions.SET_WFM_IDENTITY,
-                      payload: form.nNumber.nNumberFetchedUser.email
+                      payload: form.nNumber.nNumberFetchedUser?.email
                     })}
                 >
                   <AutoFixHigh/>
@@ -288,49 +329,27 @@ const WfmForm = (props: any) => {
               width: "250px",
               margin: "0px 5px"
             }}
-            options={[0,1,2,3,4,5,6]}  //FAITH LOOD HERE!  In Bulk wfm these are 0-6... 0=sunday, I've changed this from 1-7 to 0-6 - KALEIGH
+            options={daysOfTheWeekOptions}
             updateValue={(event: any, newValue: any) => setForm({
               type: userFormActions.SET_WFM_FIRST_DAY_OF_WEEK,
               payload: newValue
             })}
             value={form.calabrio_wfm.FirstDayOfWeek}
           />
-          <Dropdown
+          <DatePicker
+            label="Person Start Date"
             disabled={!isAdd}
-            label="Time Zone"
-            options={calabrioTimeZones}
-            value={calabrioTimeZones.find((t: any) => t.value === form.calabrio_qm.timezone)}
-            updateValue={(event: any, timezone: any) => setForm({
-              type: userFormActions.SET_WFM_TIME_ZONE,
-              payload: timezone.value
-            })}
-            styles={{ width: "250px" }}
+            value={form.calabrio_wfm.EmploymentStartDate || ""}
+            onChange={(newValue) => {
+              setForm({
+                type: userFormActions.SET_WFM_EMP_START_DATE,
+                payload: newValue ? new Date(newValue).toLocaleDateString(): newValue
+              })}
+            } 
+            renderInput={props => <TextField {...props} error={requiredFieldMissing("personStartDate", scheduleFields)} />}
           />
         </Row>
         <Row>
-          <Dropdown
-            disabled={!isAdd}
-            label="Availability"
-            options={generateDropdownOptionArray(optionsByBusinessUnit["Availabilities"])}
-            value={generateDropdownOptionArray(optionsByBusinessUnit["Availabilities"]).find((a: any) => a.value === form.calabrio_wfm.AvailabilityId)}
-            updateValue={(event: any, newValue: any) => setAvailabilityFields({
-              ...availabilityFields,
-              id: newValue
-            })}
-            styles={{ width: "250px" }}
-          />
-          <DatePicker
-            disabled={!isAdd}
-            label="Availability Start Date"
-            value={availabilityFields.startDate || ""}
-            onChange={(newValue) => {
-              setAvailabilityFields({
-                ...availabilityFields,
-                startDate: new Date(newValue).toLocaleDateString()
-              })}
-            } 
-            renderInput={props => <TextField {...props} error={false} />}
-          />
           <Dropdown
             disabled={!isAdd}
             multiple={true}
@@ -343,11 +362,10 @@ const WfmForm = (props: any) => {
             })}
             styles={{ width: "250px" }}
           />
-        </Row>
-        <Row>
           <Dropdown
             disabled={!isAdd}
             multiple={true}
+            error={requiredFieldMissing("skills", skillFields)}
             label="Skills"
             options={generateDropdownOptionArray(optionsByBusinessUnit["Skills"])}
             value={generateDropdownOptionArray(skillFields.skills)}
@@ -357,21 +375,21 @@ const WfmForm = (props: any) => {
             })}
             styles={{ width: "250px" }}
           />
-          { isArrayOptionAdded(form.calabrio_wfm.PersonSkills, skillFields.skills) &&
-            <DatePicker
-              disabled={!isAdd}
-              label="Skills Start Date"
-              value={skillFields.startDate || ""}
-              onChange={(newValue) => {
-                setSkillFields({
-                  ...skillFields,
-                  startDate: new Date(newValue).toLocaleDateString()
-                })}
-              } 
-              renderInput={props => <TextField {...props} error={false} />}
-            />
-          }
-          <Dropdown
+          <DatePicker
+            disabled={!isAdd}
+            label="Skills Start Date"
+            value={skillFields.startDate || ""}
+            onChange={(newValue) => {
+              setSkillFields({
+                ...skillFields,
+                startDate: newValue ? new Date(newValue).toLocaleDateString(): newValue
+              })}
+            } 
+            renderInput={props => <TextField {...props} error={requiredFieldMissing("startDate", skillFields)} />}
+          />
+        </Row>
+        <Row>
+        <Dropdown
             disabled={!isAdd}
             label="Workflow Control Set"
             options={generateDropdownOptionArray(optionsByBusinessUnit["Workflow_Control_Sets"])}
@@ -382,11 +400,150 @@ const WfmForm = (props: any) => {
             })}
             styles={{ width: "250px" }}
           />
+          <Dropdown
+            disabled={!isAdd}
+            multiple={true}
+            label="Optional Columns"
+            options={generateDropdownOptionArray(optionsByBusinessUnit["Optional_Columns"])}
+            value={generateDropdownOptionArray(optionalColumns)}
+            updateValue={(event: any, options: any) => {
+              const newOptionalColumns = options.map((o:any) => {
+                const columnExists = optionalColumns.find((c:any) => c.value === o.value);
+                if(columnExists){
+                  return columnExists
+                } else {
+                  return {
+                    ...o,
+                    columnValue: ""
+                  }
+                }
+              });
+              setOptionalColumns(newOptionalColumns);
+            }}
+            styles={{ width: "500px" }}
+          />
+        </Row>
+        <OptionalColumnRow>
+          { optionalColumns.map(c => (
+              <TextField
+                disabled={!isAdd}
+                error={!c.columnValue || c.columnValue === ""}
+                label={`${c.Name} value *`}
+                value={c.columnValue || ""}
+                onChange={(event: any) => {
+                  const newOptionalColumns = optionalColumns.map((o: any) => {
+                    if(o.Id === c.Id){
+                      return {
+                        ...o,
+                        columnValue: event.target.value
+                      }
+                    } else { return o; }
+                  });
+                  setOptionalColumns(newOptionalColumns);
+                }}
+                sx={{
+                  width: "250px",
+                  margin: "5px 5px"
+                }}
+              />
+            ))}
+        </OptionalColumnRow>
+        <Row>
+          <TextareaAutosize 
+            disabled={!isAdd}
+            minRows={4}
+            onChange={(event: any) => setForm({
+              type: userFormActions.SET_WFM_NOTE,
+              payload: event.target.value
+            })}
+            placeholder="Notes"
+            style={{
+              width: "90%",
+              marginBottom: "10px"
+            }}
+           />
+        </Row>
+        <Row>
+          Schedule Fields
+        </Row>
+        <Row>
+          <Dropdown
+            disabled={!isAdd}
+            label="Absence"
+            options={generateDropdownOptionArray(optionsByBusinessUnit["Absences"])}
+            value={optionsByBusinessUnit["Absences"]?.find((a: any) => a.value === form.calabrio_wfm.AbsenceId)}
+            updateValue={(event: any, newValue: any) => setForm({
+              type: userFormActions.SET_WFM_ABSENCE,
+              payload: newValue
+            })}
+            styles={{ width: "250px" }}
+          />
+          <Dropdown
+            disabled={!isAdd}
+            label="Budget Group"
+            options={generateDropdownOptionArray(optionsByBusinessUnit["Budget_Groups"])}
+            value={generateDropdownOptionArray(optionsByBusinessUnit["Budget_Groups"]?.find((bg: any) => bg.value === form.calabrio_wfm.BudgetGroupId))}
+            updateValue={(event: any, newValue: any) => setForm({
+              type: userFormActions.SET_WFM_BUDGET_GROUP,
+              payload: newValue
+            })}
+            styles={{ width: "250px" }}
+          />
+          <Dropdown
+            disabled={!isAdd}
+            label="Part Time Percentage"
+            error={requiredFieldMissing("partTimePercentageId", scheduleFields)}
+            options={generateDropdownOptionArray(optionsByBusinessUnit["Part_Time_Percentages"])}
+            value={optionsByBusinessUnit["Part_Time_Percentages"]?.find((ptp: any) => ptp.value === form.calabrio_wfm.PartTimePercentageId)}
+            updateValue={(event: any, newValue: any) => setForm({
+              type: userFormActions.SET_WFM_PART_TIME_PERCENTAGE,
+              payload: newValue
+            })}
+            styles={{ width: "250px" }}
+          />
+        </Row>
+        <Row>
+          <Dropdown
+            disabled={!isAdd}
+            label="Contract Schedule"
+            error={requiredFieldMissing("contractScheduleId", scheduleFields)}
+            options={generateDropdownOptionArray(optionsByBusinessUnit["Contract_Schedules"])}
+            value={optionsByBusinessUnit["Contract_Schedules"]?.find((cs: any) => cs.value === form.calabrio_wfm.ContractScheduleId)}
+            updateValue={(event: any, newValue: any) => setForm({
+              type: userFormActions.SET_WFM_CONTRACT_SCHEDULE,
+              payload: newValue
+            })}
+            styles={{ width: "250px" }}
+          />
+          <Dropdown
+            disabled={!isAdd}
+            error={requiredFieldMissing("contractId", scheduleFields)}
+            label="Contract"
+            options={generateDropdownOptionArray(optionsByBusinessUnit["Contracts"])}
+            value={optionsByBusinessUnit["Contracts"]?.find((c: any) => c.value === form.calabrio_wfm.ContractId)}
+            updateValue={(event: any, newValue: any) => setForm({
+              type: userFormActions.SET_WFM_CONTRACT,
+              payload: newValue
+            })}
+            styles={{ width: "250px" }}
+          />
+          <Dropdown
+            disabled={!isAdd}
+            label="Shift Bag"
+            options={generateDropdownOptionArray(optionsByBusinessUnit["Shift_Bags"])}
+            value={optionsByBusinessUnit["Shift_Bags"]?.find((sb: any) => sb.value === form.calabrio_wfm.ShiftBagId)}
+            updateValue={(event: any, newValue: any) => setForm({
+              type: userFormActions.SET_WFM_SHIFT_BAG,
+              payload: newValue
+            })}
+            styles={{ width: "250px" }}
+          />
         </Row>
         <Row>
         <Dropdown
             disabled={!isAdd}
             label="Rotation"
+            error={requiredFieldMissing("id", rotationFields)}
             options={generateDropdownOptionArray(optionsByBusinessUnit["Rotations"])}
             value={rotationFields.id || ""}
             updateValue={(event: any, newValue: any) => setRotationFields({
@@ -400,16 +557,16 @@ const WfmForm = (props: any) => {
             label="Rotation Start Date"
             value={rotationFields.startDate || ""}
             onChange={(newValue) => {
-              setAvailabilityFields({
+              setRotationFields({
                 ...rotationFields,
-                startDate: new Date(newValue).toLocaleDateString()
+                startDate: newValue ? new Date(newValue).toLocaleDateString(): newValue
               })}
             } 
-            renderInput={props => <TextField {...props} error={false} />}
+            renderInput={props => <TextField {...props} error={requiredFieldMissing("startDate", rotationFields)} />}
           />
           <Dropdown
             disabled={!isAdd}
-            error={false}
+            error={requiredFieldMissing("startWeek", rotationFields)}
             label={"Rotation Start Week"}
             styles={{
               width: "250px",
@@ -420,152 +577,34 @@ const WfmForm = (props: any) => {
               ...rotationFields,
               startWeek: newValue
             })}
-            value={form.calabrio_wfm.FirstDayOfWeek}
+            value={rotationFields.startWeek || ""}
           />
         </Row>
         <Row>
           <Dropdown
             disabled={!isAdd}
-            multiple={true}
-            label="Optional Columns"
-            options={generateDropdownOptionArray(optionsByBusinessUnit["Optional_Columns"])}
-            value={generateDropdownOptionArray(form.calabrio_wfm.OptionalColumns)}
-            updateValue={(event: any, options: any) => setForm({
-              type: userFormActions.SET_WFM_OPTIONAL_COLUMNS,
-              payload: options
+            label="Availability"
+            error={requiredFieldMissing("id", availabilityFields)}
+            options={generateDropdownOptionArray(optionsByBusinessUnit["Availabilities"])}
+            value={generateDropdownOptionArray(optionsByBusinessUnit["Availabilities"])?.find((a: any) => a.value === availabilityFields.id)}
+            updateValue={(event: any, newValue: any) => setAvailabilityFields({
+              ...availabilityFields,
+              id: newValue
             })}
             styles={{ width: "250px" }}
-          />
-          <TextareaAutosize 
-            disabled={!isAdd}
-            minRows={4}
-            placeholder="Notes"
-            style={{ width: "522px" }}
-            />
-        </Row>
-        <Row>
-          <FormGroup>
-            <FormControlLabel control={<Switch
-              disabled={!isAdd}
-              checked={isAdd ? scheduling : true}
-              onChange={() => setScheduling(!scheduling)}
-            />} label="Create Schedule" />
-          </FormGroup>
-        </Row>
-      { !isAdd || scheduling &&
-      <>
-        <Row>
-          <DatePicker
-            label="Person Start Date"
-            disabled={!isAdd}
-            value={form.calabrio_wfm.EmploymentStartDate || ""}
-            onChange={(newValue) => {
-              setForm({
-                type: userFormActions.SET_WFM_EMP_START_DATE,
-                payload: new Date(newValue).toLocaleDateString()
-              })}
-            } 
-            renderInput={props => <TextField {...props} error={false} />}
-          />
-          <Dropdown
-            disabled={!isAdd}
-            error={false}
-            label={"Team *"}
-            styles={{
-              width: "250px"
-            }}
-            options={generateDropdownOptionArray(getWfmTeams(state, form.calabrio_wfm.BusinessUnitId))}
-            updateValue={(event: any, newValue: any) => setTeamFields({
-              ...teamFields,
-              id: newValue.value
-            })}
-            value={generateDropdownOption(getWfmTeams(state, form.calabrio_wfm.BusinessUnitId).find((t: any) => t.Id === teamFields.id))}
           />
           <DatePicker
-            label="Team Start Date"
             disabled={!isAdd}
-            value={teamFields.startDate}
-            onChange={(newValue) => {
-              setTeamFields({
-                ...teamFields,
-                startDate: new Date(newValue).toLocaleDateString()
-              })}
-            } 
-            renderInput={props => <TextField {...props} error={false} />}
+            label="Availability Start Date"
+            value={availabilityFields.startDate || ""}
+            onChange={(newValue) => setAvailabilityFields({
+                ...availabilityFields,
+                startDate: newValue ? new Date(newValue).toLocaleDateString(): newValue
+              })
+            }
+            renderInput={props => <TextField {...props} error={requiredFieldMissing("startDate", availabilityFields)} />}
           />
         </Row>
-        <Row>
-          <Dropdown
-            disabled={!isAdd}
-            label="Absence"
-            options={generateDropdownOptionArray(optionsByBusinessUnit["Absences"])}
-            value={optionsByBusinessUnit["Absences"].find((a: any) => a.value === form.calabrio_wfm.AbsenceId)}
-            updateValue={(event: any, newValue: any) => setForm({
-              type: userFormActions.SET_WFM_ABSENCE,
-              payload: newValue
-            })}
-            styles={{ width: "250px" }}
-          />
-          <Dropdown
-            disabled={!isAdd}
-            label="Budget Group"
-            options={generateDropdownOptionArray(optionsByBusinessUnit["Budget_Groups"])}
-            value={generateDropdownOptionArray(optionsByBusinessUnit["Budget_Groups"]?.find((bg: any) => bg.value === form.calabrio_qm.timezone))}
-            updateValue={(event: any, newValue: any) => setForm({
-              type: userFormActions.SET_WFM_BUDGET_GROUP,
-              payload: newValue
-            })}
-            styles={{ width: "250px" }}
-          />
-          <Dropdown
-            disabled={!isAdd}
-            label="Part Time Percentage"
-            options={generateDropdownOptionArray(optionsByBusinessUnit["Part_Time_Percentages"])}
-            value={optionsByBusinessUnit["Part_Time_Percentages"].find((ptp: any) => ptp.value === form.calabrio_wfm.PartTimePercentageId)}
-            updateValue={(event: any, newValue: any) => setForm({
-              type: userFormActions.SET_WFM_PART_TIME_PERCENTAGE,
-              payload: newValue
-            })}
-            styles={{ width: "250px" }}
-          />
-        </Row>
-        <Row>
-          <Dropdown
-            disabled={!isAdd}
-            label="Contract Schedule"
-            options={generateDropdownOptionArray(optionsByBusinessUnit["Contract_Schedules"])}
-            value={optionsByBusinessUnit["Contract_Schedules"].find((cs: any) => cs.value === form.calabrio_wfm.ContractScheduleId)}
-            updateValue={(event: any, newValue: any) => setForm({
-              type: userFormActions.SET_WFM_CONTRACT_SCHEDULE,
-              payload: newValue
-            })}
-            styles={{ width: "250px" }}
-          />
-          <Dropdown
-            disabled={!isAdd}
-            label="Contract"
-            options={generateDropdownOptionArray(optionsByBusinessUnit["Contracts"])}
-            value={optionsByBusinessUnit["Contracts"].find((c: any) => c.value === form.calabrio_wfm.ContractId)}
-            updateValue={(event: any, newValue: any) => setForm({
-              type: userFormActions.SET_WFM_CONTRACT,
-              payload: newValue
-            })}
-            styles={{ width: "250px" }}
-          />
-          <Dropdown
-            disabled={!isAdd}
-            label="Shift Bag"
-            options={generateDropdownOptionArray(optionsByBusinessUnit["Shift_Bags"])}
-            value={optionsByBusinessUnit["Shift_Bags"].find((sb: any) => sb.value === form.calabrio_wfm.ShiftBagId)}
-            updateValue={(event: any, newValue: any) => setForm({
-              type: userFormActions.SET_WFM_SHIFT_BAG,
-              payload: newValue
-            })}
-            styles={{ width: "250px" }}
-          />
-        </Row>
-      </>
-      }
       </>
       : <WFMLoadRetryModal handleClose={() => {}}/>}
       </LocalizationProvider>

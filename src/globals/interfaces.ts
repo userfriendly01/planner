@@ -242,6 +242,7 @@ export interface WfmUser {
   Note: string | null,
   Roles: any[],
   FirstDayOfWeek: number,
+  TeamStartDate?: string,
   ParentTeam?: string //something we add to verify the team Id listed on the worker aligns to the team they were found in
 }
 

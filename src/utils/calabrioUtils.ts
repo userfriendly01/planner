@@ -41,6 +41,37 @@ export const calabrioAllowedRoles = [
   "QM Agent_No Live Monitoring"
 ];
 
+export const daysOfTheWeekOptions = [
+  {
+    value: 0,
+    label: "Sunday"
+  },
+  {
+    value: 1,
+    label: "Monday"
+  },
+  {
+    value: 2,
+    label: "Tuesday"
+  },
+  {
+    value: 3,
+    label: "Wednesday"
+  },
+  {
+    value: 4,
+    label: "Thursday"
+  },
+  {
+    value: 5,
+    label: "Friday"
+  },
+  {
+    value: 6,
+    label: "Saturday"
+  }
+]
+
 export const getWfmBusinessUnits = (state: AppState) => {
   const wfmOrg = state.calabrioContext.wfmOrg;
   return wfmOrg.map((businessUnit: WfmBusinessUnit) => {

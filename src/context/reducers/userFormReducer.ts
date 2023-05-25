@@ -18,6 +18,7 @@ export const userFormActions = {
   ASSIGN_EXTENSION: "ASSIGN_EXTENSION",
   CHECK_CALABRIO_TEAM: "CHECK_CALABRIO_TEAM",
   CHECK_CALABRIO_GROUP: "CHECK_CALABRIO_GROUP",
+  CLEAR_DISCREPANCY: "CLEAR_DISCREPANCY",
   CLEAR_EXTENSION: "CLEAR_EXTENSION",
   CLEAR_N_NUMBER: "CLEAR_N_NUMBER",
   CLEAR_OUTGOING_NUMBER: "CLEAR_OUTGOING_NUMBER",
@@ -42,7 +43,6 @@ export const userFormActions = {
   SET_WFM_AVAILABILITY: "SET_WFM_AVAILABILITY",
   SET_WFM_ABSENCE: "SET_WFM_ABSENCE",
   SET_WFM_TEAM: "SET_WFM_TEAM",
-  SET_WFM_TIME_ZONE: "SET_WFM_TIME_ZONE",
   SET_WFM_SKILLS: "SET_WFM_SKILLS",
   SET_WFM_CONTROL_SET: "SET_WFM_CONTROL_SET",
   SET_WFM_CONTRACT: "SET_WFM_CONTRACT",
@@ -175,6 +175,7 @@ export const initialUserFormState: UserFormState = {
     TimeZoneId: null,
     BusinessUnitId: null,
     TeamId: null,
+    TeamStartDate: null,
     PersonSkills: [],
     WorkflowControlSetId: null,
     ContractId: null,
@@ -236,6 +237,13 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           },
           updated: true
         }
+      };
+    }
+    case userFormActions.CLEAR_DISCREPANCY: {
+      const message = action.payload;
+      return {
+        ...state,
+        discrepancies: state.discrepancies.filter((d:any) => d.message !== message)
       };
     }
     case userFormActions.CLEAR_EXTENSION: {
@@ -639,15 +647,6 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           ...state.calabrio_wfm,
           TeamId: action.payload.id,
           TeamStartDate: action.payload.startDate
-        }
-      };
-    }
-    case userFormActions.SET_WFM_TIME_ZONE: {
-      return {
-        ...state,
-        calabrio_wfm: {
-          ...state.calabrio_wfm,
-          TimeZoneId: action.payload
         }
       };
     }

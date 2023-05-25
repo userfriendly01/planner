@@ -51,6 +51,12 @@ export const isFormValid = (form: UserFormState, worker: Worker, forwardToToggle
 export const isCalabrioUserValid =  (form: UserFormState): boolean => {
   return form.calabrio_qm.team && form.calabrio_qm.roles.length > 0;
 };
+
+
+//is Calabrio QM User Valid
+//is Calabrio WFM User Valid
+//has a dependent field been selected
+
 export const isManagerValid = (form: UserFormState): boolean => form.triton.manager.value !== "";
 
 export const isNNumberValid = (form: UserFormState): boolean => form.nNumber.nNumberFetchedUser ? true : false;
