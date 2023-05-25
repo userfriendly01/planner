@@ -10,7 +10,6 @@ import {
 import { ActionTypes } from "../Skills.Interfaces";
 import {
   addSkillGroup,
-  // addSkillGroupsSkill,
   deleteSkillGroup,
   updateSkillGroup
 } from "services";
@@ -23,11 +22,12 @@ import {
 } from "./SkillGroup.Styles";
 import { Dropdown } from "components";
 import _ from "lodash";
+import { getSkills } from "authentication";
 
+// TODO: Update teh search filter for skillgroups?
 
 const SkillGroupInputContainer = (props: any) => {
   const [ skillGroupName, setSkillGroupName ] = React.useState("");
-  const [ skillGroupId, setSkillGroupId ] = React.useState();
   const [ errorText, setErrorText ] = React.useState("");
   const [ skillGroupToEditDelete, setSkillGroupToEditDelete ] = React.useState(null);
 
@@ -57,8 +57,8 @@ const SkillGroupInputContainer = (props: any) => {
   };
 
   const handleOnSave = () => {
-    const nameIsValid = validateSkillGroupName();
-    if (!nameIsValid) {
+    const nameIsInvalid = isSkillGroupNameInvalid();
+    if (nameIsInvalid) {
       setErrorText("Skill group names must be unique");
     } else {
       setErrorText("");
@@ -89,14 +89,19 @@ const SkillGroupInputContainer = (props: any) => {
     });
   };
 
-  const validateSkillGroupName = () => {
-    if (action === ActionTypes.ADD) {
-      const skillGroupExists = skillGroups.find((sg: any) => sg.skillGroupNme.toLowerCase() === skillGroupName.toLowerCase());
-      return !skillGroupExists;
-    } else if (action === ActionTypes.EDIT) {
-      // todo... it can have the same name as itself, but no other skillgroups
+  const isSkillGroupNameInvalid = () => {
+    let skillGroupNameExists = false;
+    if (action !== ActionTypes.DELETE && (skillGroupName.trim() === "" || !skillGroupName)) {
+      return false;
     }
-    return true;
+    if (action === ActionTypes.ADD) {
+      skillGroupNameExists = skillGroups.find((sg: any) => sg.skillGroupNme.toLowerCase() === skillGroupName.toLowerCase()) ? true : false;
+    } else if (action === ActionTypes.EDIT) {
+      // it can have the same name as itself, but no other skillgroups
+      const allOtherSkillgroups = skillGroups.filter(sg => sg.skillGroupId !== skillGroupToEditDelete.value);
+      skillGroupNameExists = allOtherSkillgroups.find(sg => sg.skillGroupNme.toLowerCase() === skillGroupName.toLowerCase()) ? true : false;
+    }
+    return skillGroupNameExists;
   };
 
   const handleAddSkillGroup = async () => {
@@ -116,19 +121,22 @@ const SkillGroupInputContainer = (props: any) => {
         console.log("$$$$$$$ requestBody", requestBody);
         const addGroupNameResponse = await addSkillGroup(requestBody);
         console.log("addGroupNameResponse", addGroupNameResponse);
-        setSkillGroupId(addGroupNameResponse[0].insertId); // todo: don't think I'll actually need this in state, I can refactor the update state function more
-        // const results = await Promise.allSettled(tableState.selected.map((skill: Skill) => {
-        //   return addSkillGroupsSkill(addGroupNameResponse.insertId, skill.ctmSkillId);
-        // }));
-        // handleResults(results);
+
         setSaveResult({
           message: "Request Successfully Processed",
           status: ModalOverlayStatuses.SUCCESS
         });
-        updateStateOnResolvedPromises(tableState.selected);
+
+        // refresh skill state
+        await getSkills(dispatch);
+
         setTimeout(() => {
           handleCloseConfirmation();
           setAction(null);
+          setTableState({
+            ...tableState,
+            selected: []
+          });
         }, timeouts.MODAL_OVERLAY);
       } catch (err) {
         console.error("Error: Unable to add skill grouping");
@@ -159,51 +167,6 @@ const SkillGroupInputContainer = (props: any) => {
     });
   };
 
-
-  // const handleResults = (results: any[]) => {
-  //   const successfulPromiseSkills: any[] = [];
-  //   const rejectedPromiseSkills: any[] = [];
-
-  //   results.forEach((r, index) => {
-  //     if(r.status === "fulfilled"){
-  //       successfulPromiseSkills.push(tableState.selected[index]);
-  //     }
-  //     if(r.status === "rejected"){
-  //       rejectedPromiseSkills.push(tableState.selected[index]);
-  //     }
-  //   });
-  //   if(rejectedPromiseSkills.length === 0){
-  //     setSaveResult({
-  //       message: "Request Successfully Processed",
-  //       status: ModalOverlayStatuses.SUCCESS
-  //     });
-  //     updateStateOnResolvedPromises(successfulPromiseSkills);
-  //     setTimeout(() => {
-  //       handleCloseConfirmation();
-  //       setAction(null);
-  //     }, timeouts.MODAL_OVERLAY);
-  //   } else if (successfulPromiseSkills.length === 0){
-  //     setSaveResult({
-  //       message: "Skill Grouping was created, but all selected skills failed to add",
-  //       status: ModalOverlayStatuses.FAIL
-  //     });
-  //   } else {
-  //     let message = "Skill group was created, but the following skills failed to be added: ";
-  //     rejectedPromiseSkills.forEach((skill: any, index: number) => {
-  //       if(index !== rejectedPromiseSkills.length - 1){
-  //         message = message + skill.name + ", ";
-  //       } else {
-  //         message = message + skill.name;
-  //       }
-  //     });
-  //     updateStateOnResolvedPromises(successfulPromiseSkills);
-  //     setSaveResult({
-  //       message,
-  //       status: ModalOverlayStatuses.PARTIAL_FAIL
-  //     });
-  //   }
-  // };
-
   const handleEditSkillGroup = () => {
     const requestBody: any = {};
 
@@ -218,10 +181,15 @@ const SkillGroupInputContainer = (props: any) => {
           message: "Request Successfully Processed",
           status: ModalOverlayStatuses.SUCCESS
         });
-        // todo: update state
+        // refresh skill state
+        await getSkills(dispatch);
         setTimeout(() => {
           handleCloseConfirmation();
           setAction(null);
+          setTableState({
+            ...tableState,
+            selected: []
+          });
         }, timeouts.MODAL_OVERLAY);
       } catch (err) {
         console.error("Error while editing skill grouping", requestBody, err);
@@ -232,10 +200,11 @@ const SkillGroupInputContainer = (props: any) => {
       }
     };
 
-
     try {
-      // determine if name changed
-      // if so, update skill group name
+      // TODO: Is this really necessary?
+      // the contact manager endpoint will just update with the same info if we just add the skillgroupname and skill ids to every body
+
+      // determine if name changed. if so, add skillGroupName to requestbody
       if (skillGroupName !== skillGroupToEditDelete.label) {
         requestBody.skillGroupName = skillGroupName;
       }
@@ -286,7 +255,6 @@ const SkillGroupInputContainer = (props: any) => {
         message: "Request Failed",
         status: ModalOverlayStatuses.FAIL
       });
-      // return;
     }
   };
 
@@ -302,10 +270,17 @@ const SkillGroupInputContainer = (props: any) => {
           message: "Request Successfully Processed",
           status: ModalOverlayStatuses.SUCCESS
         });
-        updateStateOnDelete(skillGroupToEditDelete.value);
+
+        // refresh skill state
+        await getSkills(dispatch);
+
         setTimeout(() => {
           handleCloseConfirmation();
           setAction(null);
+          setTableState({
+            ...tableState,
+            selected: []
+          });
         }, timeouts.MODAL_OVERLAY);
       } catch (err) {
         console.error("Unable to add skill grouping", err);
@@ -335,66 +310,6 @@ const SkillGroupInputContainer = (props: any) => {
         onConfirm: onConfirmDelete,
         handleClose: handleCloseConfirmation
       }
-    });
-  };
-
-  const updateStateOnResolvedPromises = (fulfilledSkills: Skill[])=> {
-    const skills = state.skillContext.skills.slice();
-    const updatedSkills = skills.map(s => {
-      let updatedSkill = s;
-      fulfilledSkills.forEach(skill => {
-        if(s.name === skill.name) {
-          updatedSkill = {
-            ...s,
-            ctmSkillGroups: [...s.ctmSkillGroups, {
-              skillGroupId,
-              skillGroupNme: skillGroupName,
-              skills: tableState.selected
-            }]
-          };
-        }
-      });
-      return updatedSkill;
-    });
-    dispatch({
-      type: "updateSkills",
-      payload: updatedSkills
-    });
-    // reload skillGroups so the default skills dropdown will have the new one
-    dispatch({
-      type: "loadSkillGroups",
-      payload: updatedSkills
-    });
-    setTableState({
-      ...tableState,
-      selected: []
-    });
-  };
-
-  // TODO: can this be consolidated since it is similar to the one we do after add skill group?
-  const updateStateOnDelete = (skillGroupId: number) => {
-    const skills = state.skillContext.skills.slice();
-    const updatedSkills = skills.map(s => {
-      const updatedSkill = s;
-      if (s.ctmSkillGroups.length > 0 && s.ctmSkillGroups.find(sg => sg.skillGroupId === skillGroupId)) {
-        // remove the skill group
-        const updatedSkillGroups = s.ctmSkillGroups.filter(sg => sg.skillGroupId !== skillGroupId);
-        updatedSkill.ctmSkillGroups = updatedSkillGroups;
-      }
-      return updatedSkill;
-    });
-    dispatch({
-      type: "updateSkills",
-      payload: updatedSkills
-    });
-    // reload skillGroups so the default skills dropdown will have the new one
-    dispatch({
-      type: "loadSkillGroups",
-      payload: updatedSkills
-    });
-    setTableState({
-      ...tableState,
-      selected: []
     });
   };
 
@@ -429,11 +344,11 @@ const SkillGroupInputContainer = (props: any) => {
       )}
       {action !== ActionTypes.DELETE && (
         <TextField
-          onChange={(event: any) => setSkillGroupName(event.target.value)}
+          onChange={(event: any) => setSkillGroupName(event.target.value.trim())}
           label="Skill Group Name"
           value={skillGroupName}
           helperText={errorText}
-          error={errorText !== ""}
+          error={isSkillGroupNameInvalid()}
           sx={{
             margin: "10 0",
             width: "400px"
