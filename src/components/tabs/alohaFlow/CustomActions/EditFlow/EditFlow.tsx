@@ -1,3 +1,4 @@
+
 import React, {
   useState, useEffect
 } from "react";
@@ -291,6 +292,7 @@ export const EditFlow = ({
             value="Clone"
             color="primary"
             sx={{ marginRight: 2 }}
+            aria-label="cloneFlowRuleButton"
             onClick={() => handleClone()}
           >
                         Clone Rule

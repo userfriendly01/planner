@@ -179,7 +179,7 @@ export const AddFlow = ({
     openAddModal(false);
   }
   function stringValue(obj: {[index: string]:any}, prop: string, defaultValue: string) {
-    if(obj[prop]) {
+    if(obj[prop].value) {
       return obj[prop].value;
     }
     return defaultValue;
@@ -196,11 +196,10 @@ export const AddFlow = ({
     const isValidForm: boolean = validateRoute();
     if (isValidForm) {
       const curTime = new Date().toISOString();
-      const dataRequests = (flowRule.dataRequests.value as string)
+      const dataRequests = (flowRule?.dataRequests?.value as string)
         ?.split(",")
         ?.map(a => a.trim())
-        ?.filter(a => a.length > 0)
-      || [];
+        ?.filter(a => a.length > 0);
 
       addFlowRule(flowRule, accessToken, graphQlApiUrl, curTime, dataRequests).then(apiResponse => {
         if (!apiResponse.errors) {

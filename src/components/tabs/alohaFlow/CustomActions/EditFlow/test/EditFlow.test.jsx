@@ -116,7 +116,7 @@ describe("<EditFlow />", () => {
 
   describe("Edit FLow Modal Block", ()=>{
     test("Simulate Close Modal By Clicking Close Icon",()=>{
-      const { getByRole } = renderEditFlow(true, validFlowData);
+      const { getByRole } = renderEditFlow(true, validFlowData,false);
       const closeModalButton = getByRole("img", { name: "Close" });
       act(()=>{
         fireEvent.click(closeModalButton);
@@ -186,7 +186,14 @@ describe("<EditFlow />", () => {
         expect(openEditModal).toBeCalledTimes(0);
       });
     });
-
+    test("Simulate the clone Flow Rule", () => {
+      const { getByRole } = renderEditFlow(true, validFlowData);
+      const cloneButton = getByRole("button", { name: "cloneFlowRuleButton" });
+      act(() => {
+        fireEvent.click(cloneButton);
+      });
+      expect(cloneButton).toBeTruthy();
+    });
     test("Simulate the Delete Button with Failed API Response", () => {
       deleteFlowRule.mockResolvedValue(undefined);
       const { getByRole } = renderEditFlow(true, validFlowData);
