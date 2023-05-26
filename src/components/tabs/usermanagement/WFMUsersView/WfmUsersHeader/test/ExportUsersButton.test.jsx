@@ -64,12 +64,25 @@ describe("ExportUsersButton", () => {
     });
   });
   describe("_export.current === null", () => {
-    test("should not call export.current.save", () => {
+    beforeEach(() => {
       useRefSpy.mockReturnValue({ current: null});
-      renderComponent();
-      expect(useRefSpy().current).toBe(null);
     });
-  })
+    test("should not call _export.current.save", () => {
+      render(
+        <ThemeProvider theme={theme}>
+          <ExportUsersButton
+            selected={selected}
+            label="New Label"
+          />
+        </ThemeProvider>
+      );
+      const rendered = render(StyledExportButton.mock.calls[0][0].children);
+      const onClick = StyledExportButton.mock.calls[0][0].onClick;
+      act(() => onClick());
+      expect(mockSave).toHaveBeenCalledTimes(0);
+      expect(rendered.container).toHaveTextContent("New Label");
+    });
+  });
   describe("handleExport", () => {
     test("renders with ExcelExport", () => {
       renderComponent();
@@ -136,5 +149,6 @@ describe("ExportUsersButton", () => {
         }
       ]);
     });
+    
   });
 });

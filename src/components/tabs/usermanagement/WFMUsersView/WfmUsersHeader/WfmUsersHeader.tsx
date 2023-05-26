@@ -76,17 +76,17 @@ const ManagementHeader = (props: WfmUsersHeaderProps) => {
   }
   return (
     <Wrapper>
-        <SearchBox searchBy={tableState.searchBy} setSearch={(searchBy: string) => setTableState({
-          ...tableState,
-          searchBy,
-          pagination: {
-            ...tableState.pagination,
-            pageNumber: 1
-          }
-        })}
-        />
+      <SearchBox searchBy={tableState.searchBy} setSearch={(searchBy: string) => setTableState({
+        ...tableState,
+        searchBy,
+        pagination: {
+          ...tableState.pagination,
+          pageNumber: 1
+        }
+      })}
+      />
       <Dropdown
-        label={"Add Filter"}
+        label={"Filter Business Unit"}
         styles={{
           width: "400px",
           margin: "10px 0px"
@@ -94,29 +94,10 @@ const ManagementHeader = (props: WfmUsersHeaderProps) => {
         options={getBusinessUnitOptions()}
         value={tableState.businessUnitFilter || ""}
         updateValue={(event: any, newValue: any) => {
-          console.log("Selected Business Unit", newValue);
           setTableState({
             ...tableState,
             businessUnitFilter: newValue
           })}
-        }
-        CustomRender={
-          <Dropdown
-            label={"Filter Business Unit"}
-            styles={{
-              width: "400px",
-              margin: "10px 0px"
-            }}
-            options={getBusinessUnitOptions()}
-            value={tableState.businessUnitFilter || ""}
-            updateValue={(event: any, newValue: any) => {
-              console.log("Selected Business Unit", newValue);
-              setTableState({
-                ...tableState,
-                businessUnitFilter: newValue
-              })}
-            }
-          />
         }
       />
       <Dropdown

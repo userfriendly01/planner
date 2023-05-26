@@ -222,17 +222,6 @@ const toLowerCaseString = (variable: any) => {
   return typeof variable === "string" ? variable.toLowerCase() : variable;
 };
 
-export const isArrayOptionAdded = (originalArray: any, updatedArray: any) => {
-
-  console.log("FAITH - isArrayOptionAdded", originalArray, updatedArray);
-  let added = false;
-  updatedArray.forEach((o: any ) => {
-    if(!originalArray.find((oo: any) => oo.Id === o.Id)){
-      added = true;
-    }
-  });
-  return added;
-}
 /*
   https://forge.lmig.com/wiki/display/CICCT/Calabrio+Form
 */
@@ -310,14 +299,14 @@ export const findMatchingQmProfiles = (user: any, users: CalabrioQmUser[], setFo
   try {
     const acdId = toLowerCaseString(user.sid);
     const email = toLowerCaseString(user.attributes?.email || user.nNumberFetchedUser?.email);
-    const adLogin = `lm\\${toLowerCaseString(user.attributes?.nNumber || user?.value)}`;
+    const adLogin = `lm\\${toLowerCaseString(user.attributes?.n_number || user?.value)}`;
 
     const matchingProfiles: any[] = [];
     users.forEach(u => {
       const dupUserAcdId = toLowerCaseString(u.acdId);
       const dupUserAdLogin = toLowerCaseString(u.adLogin);
       const dupUserEmail = toLowerCaseString(u.email);
-
+      console.warn("HMM", dupUserAdLogin, adLogin );
       if(acdId && acdId === dupUserAcdId){
         console.warn("User Found with ACD Id", u);
         matchingProfiles.unshift(u);
@@ -331,16 +320,16 @@ export const findMatchingQmProfiles = (user: any, users: CalabrioQmUser[], setFo
               message: "Calabrio QM Record found for user where the ACD ID does not match the Triton Worker. This will require manual review/correction."
             }
           });
-        } else {
-          setForm({
-            type: "SET_DISCREPANCIES",
-            payload: {
-              type: discrepancyType.CALABRIO_QM,
-              message: "Triton Worker Record not found but is required for Calabrio QM. This will require manual review/correction."
-            }
-          });
-        }
+        };
         matchingProfiles.push(u)
+      } else if(!acdId){
+        setForm({
+          type: "SET_DISCREPANCIES",
+          payload: {
+            type: discrepancyType.CALABRIO_QM,
+            message: "Triton Worker Record not found but is required for Calabrio QM. This will require manual review/correction."
+          }
+        });
       }
     });
     return matchingProfiles;
@@ -378,7 +367,6 @@ export const getCalabrioWfmOrg = async (dispatch: any) => {
     const org: any = await getWfmOrgServiceCall();
     let orgData: any = [];
     try {
-      console.log("FAITH ORG - ", org.data);
       const buff = Buffer.from(org.data.organization, "base64");
       const data = await inflate(buff);
       orgData = JSON.parse(data.toString("utf-8"));

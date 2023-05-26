@@ -1,4 +1,5 @@
 import {
+  findMatchingQmProfiles,
   formatCalabrioTeams,
   formatCalabrioTenant,
   formatCalabrioGroups,
@@ -17,9 +18,7 @@ import {
   getWfmOptions,
   getWfmOrg
 } from "services";
-import {
-  calabrioContext
-} from "testUtils";
+import { calabrioContext } from "testUtils";
 import zlib from "zlib";
 
 Date.now = jest.fn();
@@ -147,12 +146,14 @@ const users = [
 ];
 
 const mockDispatch = jest.fn();
+const mockSetForm = jest.fn();
 
 let userResponse;
 
 describe("calabrioUtils", () => {
   beforeEach(() => {
     jest.resetAllMocks(),
+    jest.clearAllMocks(),
     Date.now.mockReturnValue("Right Now");
   });
   describe("getWfmBusinessUnits", () => {
@@ -181,6 +182,7 @@ describe("calabrioUtils", () => {
               Name: "Fake team",
               Id: "000",
               People: [{
+                FirstName: "Faith",
                 EmploymentNumber: "n8765432",
                 Email: "dude@libertymutual.com"
               }]
@@ -203,8 +205,10 @@ describe("calabrioUtils", () => {
               Name: "Team1",
               Id: "111",
               People: [{
+                BusinessUnitId: "123-321",
                 EmploymentNumber: "n1111111",
-                Email: "Person@libertymutual.com"
+                Email: "Person@libertymutual.com",
+                TeamId: "111"
               }]
             },
             {
@@ -221,6 +225,7 @@ describe("calabrioUtils", () => {
               Name: "Fake team",
               Id: "000",
               People: [{
+                FirstName: "Faith",
                 EmploymentNumber: "n8765432",
                 Email: "dude@libertymutual.com"
               }]
@@ -241,8 +246,10 @@ describe("calabrioUtils", () => {
               Name: "Team1",
               Id: "111",
               People: [{
+                BusinessUnitId: "123-321",
                 EmploymentNumber: "n1111111",
-                Email: "Person@libertymutual.com"
+                Email: "Person@libertymutual.com",
+                TeamId: "111"
               }]
             },
             {
@@ -254,6 +261,7 @@ describe("calabrioUtils", () => {
               Name: "Fake team",
               Id: "000",
               People: [{
+                FirstName: "Faith",
                 EmploymentNumber: "n8765432",
                 Email: "dude@libertymutual.com"
               }]
@@ -277,11 +285,14 @@ describe("calabrioUtils", () => {
           Email: "ihavenoteam@email.com"
         },
         {
+          BusinessUnitId: "123-321",
           EmploymentNumber: "n1111111",
           Email: "Person@libertymutual.com",
-          ParentTeam: "111"
+          ParentTeam: "111",
+          TeamId: "111"
         },
         {
+          FirstName: "Faith",
           EmploymentNumber: "n8765432",
           Email: "dude@libertymutual.com",
           ParentTeam: "000"
@@ -296,6 +307,12 @@ describe("calabrioUtils", () => {
         expect(result).toEqual({
           Id: "123-321",
           Name: "WFM Business Unit1",
+          Absences: [
+            {
+              Name: "Absence1",
+              Id: "111"
+            }
+          ],
           Availabilities: [
             {
               Name: "Availability1",
@@ -379,6 +396,12 @@ describe("calabrioUtils", () => {
       test("returns list of options for all Business units", () => {
         const result = getWfmOptionsUtil({ calabrioContext });
         expect(result).toEqual({
+          Absences: [
+            {
+              Name: "Absence1",
+              Id: "111"
+            }
+          ],
           Availabilities: [
             {
               Name: "Availability1",
@@ -976,6 +999,121 @@ describe("calabrioUtils", () => {
       });
     });
   });
+  describe("findMatchingQmProfiles", () => {
+    const users = [
+      {
+        acdId: "",
+        adLogin: "",
+        email: "Roy.Anderson@libertymutual.com"
+      },
+      {
+      acdId: "WK123456",
+      adLogin: "Lm\\n3582215",
+      email: "Roy.Anderson@libertymutual.com"
+      }
+    ]
+    describe("Error is thrown", () => {
+      test("empty array is returned", () => {
+        const result = findMatchingQmProfiles(null, [], mockSetForm);
+        expect(result).toStrictEqual([]);
+        expect(console.error.mock.calls[0][0]).toContain("Error thrown trying to find QM profiles");
+      });
+    });
+    describe("Triton User is passed through", () => {
+      describe("user found with matching ACD Id & additional profile", () => {
+        test("should be first in the array of matching profiles", () => {
+          const tritonUser = {
+            sid: "WK123456",
+            attributes: {
+              email: "Roy.Anderson@libertymutual.com",
+              n_number: ""
+            }
+          };
+          const result = findMatchingQmProfiles(tritonUser, users, mockSetForm);
+          expect(result[0]).toBe(users[1]);
+        });
+      });
+      describe("user found with duplicate email", () => {
+        test("should return in matching profiles array", () => {
+          const tritonUser = {
+            sid: "WK123456",
+            attributes: {
+              email: "Roy.Anderson@libertymutual.com",
+              n_number: ""
+            }
+          };
+          const result = findMatchingQmProfiles(tritonUser, users, mockSetForm);
+          expect(result.length).toBe(2);
+          expect(result).toStrictEqual([users[1], users[0]]);
+        });
+      });
+      describe("user found with duplicate ad Login", () => {
+        test("should return in matching profiles array", () => {
+          const tritonUser = {
+            sid: "WK994832",
+            attributes: {
+              email: "",
+              n_number: "n3582215"
+            }
+          };
+          const result = findMatchingQmProfiles(tritonUser, users, mockSetForm);
+          expect(result.length).toBe(1);
+          expect(result).toStrictEqual([users[1]]);
+          expect(mockSetForm).toHaveBeenCalledTimes(1);
+          expect(mockSetForm).toBeCalledWith({
+            type: "SET_DISCREPANCIES",
+            payload: {
+              type: "Calabrio QM",
+              message: "Calabrio QM Record found for user where the ACD ID does not match the Triton Worker. This will require manual review/correction."
+            }
+          });
+        });
+      });
+      describe("no Acd Id was passed through", () => {
+        test("should set no Triton User discrepency", () => {
+          const tritonUser = {
+            sid: "",
+            attributes: {
+              email: "",
+              n_number: "n3582215"
+            }
+          };
+          const result = findMatchingQmProfiles(tritonUser, users, mockSetForm);
+          expect(result.length).toBe(1);
+          expect(result).toStrictEqual([users[1]]);
+          expect(mockSetForm).toHaveBeenCalledTimes(1);
+          expect(mockSetForm).toBeCalledWith({
+            type: "SET_DISCREPANCIES",
+            payload: {
+              type: "Calabrio QM",
+              message: "Triton Worker Record not found but is required for Calabrio QM. This will require manual review/correction."
+            }
+          });
+        });
+      })
+    });
+    describe("form.nNumber is passed through", () => {
+      test("should set no Triton User discrepency", () => {
+        const nNumber = {
+          nNumberFetchedUser: {
+            email: ""
+          },
+          value: "n3582215"
+        };
+        const result = findMatchingQmProfiles(nNumber, users, mockSetForm);
+        expect(result.length).toBe(1);
+        expect(result).toStrictEqual([users[1]]);
+        expect(mockSetForm).toHaveBeenCalledTimes(1);
+        expect(mockSetForm).toBeCalledWith({
+          type: "SET_DISCREPANCIES",
+          payload: {
+            type: "Calabrio QM",
+            message: "Triton Worker Record not found but is required for Calabrio QM. This will require manual review/correction."
+          }
+        });
+      });
+    });
+  });
   describe("getCalabrioWfmOptions", () => {
     test("getWFMOptions succeeds, decompress succeeds, dispatches and returns true", async () => {
       const data = Buffer.from(JSON.stringify({ businessUnits: [ { Id: "123" }, { Id: "456" }]}));
@@ -1018,8 +1156,8 @@ describe("calabrioUtils", () => {
   });
   describe("getCalabrioWfmOrg", () => {
     test("getWfmOrg succeeds, decompress succeeds, dispatches and returns true", async () => {
-      const data = Buffer.from(JSON.stringify({ businessUnits: [ { Id: "111" }, { Id: "222" }]}));
-      getWfmOrg.mockResolvedValueOnce({ data: { organization: "eJyrVkoqLc7MSy0uDs3LLClWsoquVvJMUbJSMjQyVqrVgXJMTM2UamNrAVp8Dd0=" }});
+      const data = Buffer.from(JSON.stringify({ businessUnits: [ { Id: "111" }, { Id: "222" }], People_Without_Team: []}));
+      getWfmOrg.mockResolvedValueOnce({ data: { organization: "eJyrVkoqLc7MSy0uDs3LLClWsoquVvJMUbJSMjQyVqrVgXJMTM2UamNrAVp8Dd0=", errors: [] }});
 
       zlib.inflate.mockImplementationOnce((buffer, callback) => {
         callback(null, data);
@@ -1029,7 +1167,11 @@ describe("calabrioUtils", () => {
       expect(mockDispatch).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenLastCalledWith({
         type: "loadWfmOrg",
-        payload: { businessUnits: [{ Id: "111" }, { Id: "222" }]}
+        payload: { 
+          org: [{ Id: "111" }, { Id: "222" }],
+          errors: [],
+          People_Without_Team: []
+        }
       });
       expect(result).toBe(true);
     });

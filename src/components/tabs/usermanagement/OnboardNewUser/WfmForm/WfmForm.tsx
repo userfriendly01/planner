@@ -32,8 +32,7 @@ import {
   daysOfTheWeekOptions,
   getWfmBusinessUnits,
   getWfmTeams,
-  getWfmOptions,
-  isArrayOptionAdded //FYI for whoever does Edit
+  getWfmOptions
 } from "utils";
 import WFMLoadRetryModal from "../../BulkChanges/WFMLoadRetryModal";
 
